@@ -1,0 +1,41 @@
+#
+# nfEngine project - ignored files list
+#
+
+# Documentation
+/Doc
+
+# Folders with binaries
+/Bin/Win32/Debug
+/Bin/Win32/Release
+/Bin/x64/Debug
+/Bin/x64/Release
+
+# Visual Studio precompiled headers
+/ipch
+
+# Visual Studio intermediate projects' directories
+/Obj
+
+# External files updated through GDrive
+/nfEngineTest/Data
+/Deps
+
+# TODO: remove
+/Game/Win32
+/Game/x64
+
+# Shader compilation results
+/ShaderCache
+/ShaderCache_Debug
+
+# Visual Studio Performance Analysis Results
+*.vsp
+*.psess
+
+# Other useless folders and file patterns
+/Logs
+*.opensdf
+*.sdf
+*.suo
+*.vcxproj.user

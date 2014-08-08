@@ -1,0 +1,237 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Base">
+      <UniqueIdentifier>{20e47000-8175-46cb-b49b-9b6799804dfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{b9a8990f-2396-47bd-aa43-d01df06236bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libconfig">
+      <UniqueIdentifier>{06c716cd-8c2b-420a-b68b-d23e86f6a9c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{40738d35-8dbb-4074-bc98-84d31ffc6382}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{ac3755ea-3680-4282-86ec-332da8174ea0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{41ada418-96c2-459b-9938-5eef2c5e34a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PCH">
+      <UniqueIdentifier>{bd29ba41-f88b-4a56-9ef2-0757a7aecb45}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>PCH</Filter>
+    </ClCompile>
+    <ClCompile Include="Core.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourcesManager.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderCommand.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionShape.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Body.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Performance.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Aligned.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsWorld.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneSegment.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshComponent.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManagerRendering.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneEvent.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Globals.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="View.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundSample.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="BVH.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Deps\libconfig\grammar.c">
+      <Filter>libconfig</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Deps\libconfig\libconfig.c">
+      <Filter>libconfig</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Deps\libconfig\scanctx.c">
+      <Filter>libconfig</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Deps\libconfig\scanner.c">
+      <Filter>libconfig</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Deps\libconfig\strbuf.c">
+      <Filter>libconfig</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="Core.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourcesManager.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderCommand.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionShape.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Body.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Performance.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Aligned.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsWorld.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneSegment.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshComponent.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneEvent.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Globals.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Prerequisites.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="View.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundSample.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="BVH.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Deps\libconfig\grammar.h">
+      <Filter>libconfig</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Deps\libconfig\libconfig.h">
+      <Filter>libconfig</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Deps\libconfig\parsectx.h">
+      <Filter>libconfig</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Deps\libconfig\scanctx.h">
+      <Filter>libconfig</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Deps\libconfig\scanner.h">
+      <Filter>libconfig</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Deps\libconfig\strbuf.h">
+      <Filter>libconfig</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Deps\libconfig\wincompat.h">
+      <Filter>libconfig</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

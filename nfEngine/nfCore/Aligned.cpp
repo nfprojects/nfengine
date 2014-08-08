@@ -1,0 +1,40 @@
+/**
+    NFEngine project
+
+    \file   Aligned.cpp
+    \brief  Definition of memory aligning class.
+*/
+
+#include "stdafx.h"
+#include "Aligned.h"
+
+namespace NFE {
+namespace Util {
+
+Aligned::~Aligned()
+{
+
+}
+
+void* Aligned::operator new(size_t size)
+{
+    return _aligned_malloc(size, 16);
+}
+
+void Aligned::operator delete(void* ptr)
+{
+    _aligned_free(ptr);
+}
+
+void* Aligned::operator new[] (size_t size)
+{
+    return _aligned_malloc(size, 16);
+}
+
+void Aligned::operator delete[] (void* ptr)
+{
+    _aligned_free(ptr);
+}
+
+} // namespace Util
+} // namespace NFE
