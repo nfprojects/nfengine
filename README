@@ -1,0 +1,37 @@
+=== INTRODUCTION ===
+
+nfEngine is an open source 3D game engine.
+
+# TODO: fill this section
+
+
+=== DEPENDENCIES ===
+
+To make the code compileable, the following requirements have to be met:
+1. Installed Visual Studio 2012.
+2. Installed DirectX SDK.
+3. Downloaded external dependencies:
+    * "Deps" directory created in repository root with content downloaded form here:
+      https://drive.google.com/?tab=wo#folders/0B_NOQKNycAqtbHQyYjFBcURnLW8
+    * "Data" directory created in "nfEngineTest" with content downloaded form here:
+      https://drive.google.com/?tab=wo#folders/0B6zK51CguCdCUmdlR3lRbS1fTnc
+    * NOTE: it is convenient to use Google Drive application to synchronize these folders
+      automatically and create symbolic links to them:
+	    - on Windows: "mklink /J <dest> <src>"
+	    - on Linux: "ln -s <src> <dest>"
+
+
+=== DOCUMENTATION ===
+
+Doxygen documentation can be generated using "gen_doc.bat" script. Doxygen needs to be installed
+in the system and "doxygen" command must be visible in the shell.
+
+
+=== FORMATTING ===
+
+Keep the code format consistent. Run format.bat script to format the code automatically.
+ArtisticStyle needs to be installed in the system and "astyle" command must be visible
+in the shell.
+
+ArtisticStyle can be downloaded here:
+http://astyle.sourceforge.net/
