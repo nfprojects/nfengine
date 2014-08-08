@@ -200,6 +200,7 @@ popd</Command>
   <ItemGroup>
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MathVectorTest.cpp" />
     <ClCompile Include="MD5Test.cpp" />
     <ClCompile Include="PackerBasicTest.cpp" />
     <ClCompile Include="PackerComplexTest.cpp" />
