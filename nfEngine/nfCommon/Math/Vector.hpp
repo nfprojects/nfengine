@@ -1,8 +1,6 @@
 /**
-    NFEngine project
-
-    \file   Vector.h
-    \brief  Vector class declaration and definitions of inline functions.
+    @file   Vector.h
+    @brief  Vector class declaration and definitions of inline functions.
 */
 
 #pragma once
@@ -10,6 +8,11 @@
 namespace NFE {
 namespace Math {
 
+/**
+ * 4 element vector of floats.
+ * @details Used to perform operations on 4D, 3D and 2D vectors. The content is mapped to
+ *          SSE registers to speedup computations.
+ */
 NFE_ALIGN(16)
 struct Vector
 {
@@ -20,8 +23,7 @@ struct Vector
         __m128 v;
     };
 
-
-    //easy converting vector to SIMD types
+    /// conversion to SIMD types
     NFE_INLINE operator __m128() const
     {
         return v;
@@ -35,9 +37,9 @@ struct Vector
         return reinterpret_cast<const __m128d*>(&v)[0];
     }
 
-    //constructors
+    /// constructors
     NFE_INLINE Vector();
-    NFE_INLINE Vector(__m128 src);
+    NFE_INLINE Vector(const __m128& src);
     NFE_INLINE Vector(float x, float y = 0.0f, float z = 0.0f, float w = 0.0f);
     NFE_INLINE Vector(const float* pSrc);
     NFE_INLINE Vector(const Float2& src);
@@ -49,14 +51,13 @@ struct Vector
         v = _mm_set1_ps(f_);
     }
 
-
-    //element access
+    // element access
     float& operator[] (int index)
     {
         return f[index];
     }
 
-    //simple arithmetics
+    /// simple arithmetics
     NFE_INLINE Vector operator- () const;
     NFE_INLINE Vector operator+ (const Vector& b) const;
     NFE_INLINE Vector operator- (const Vector& b) const;
@@ -71,6 +72,14 @@ struct Vector
     NFE_INLINE Vector& operator*= (float b);
     NFE_INLINE Vector& operator/= (float b);
 
+    /// comparison operators (returns ture, if all the elements satisfy the equation)
+    NFE_INLINE bool operator== (const Vector& b) const;
+    NFE_INLINE bool operator< (const Vector& b) const;
+    NFE_INLINE bool operator<= (const Vector& b) const;
+    NFE_INLINE bool operator> (const Vector& b) const;
+    NFE_INLINE bool operator>= (const Vector& b) const;
+    NFE_INLINE bool operator!= (const Vector& b) const;
+
     //bitwise logic operations
     NFE_INLINE Vector operator& (const Vector& b) const;
     NFE_INLINE Vector operator| (const Vector& b) const;
@@ -78,7 +87,6 @@ struct Vector
     NFE_INLINE Vector& operator&= (const Vector& b);
     NFE_INLINE Vector& operator|= (const Vector& b);
     NFE_INLINE Vector& operator^= (const Vector& b);
-
 
     NFE_INLINE Vector SplatX() const;
     NFE_INLINE Vector SplatY() const;
@@ -173,11 +181,7 @@ const Vectorf g_IdentityR1  = {0.0f, 1.0f, 0.0f, 0.0f};
 const Vectorf g_IdentityR2  = {0.0f, 0.0f, 1.0f, 0.0f};
 const Vectorf g_IdentityR3  = {0.0f, 0.0f, 0.0f, 1.0f};
 
-
 // ====================================================================================
-// ====================================================================================
-// ====================================================================================
-
 
 Vector::Vector()
 {
@@ -195,7 +199,7 @@ Vector::Vector(const float* pSrc)
     v = _mm_loadu_ps(pSrc);
 }
 
-Vector::Vector(__m128 src)
+Vector::Vector(const __m128& src)
 {
     v = src;
 }
@@ -222,13 +226,9 @@ Vector::Vector(const Float4& src)
 }
 
 
-NFE_INLINE Vector VectorSwapXZ(const Vector& V)
-{
-    return _mm_shuffle_ps(V, V, _MM_SHUFFLE(3, 0, 1, 2));
-}
-
-
-// converts unsigned char 4 -> float 4
+/**
+ * Convert 4 unsigned chars to a Vector.
+ */
 NFE_INLINE Vector VectorLoadUChar4(const unsigned char* pSrc)
 {
     static const Vectori mask = {0xFF, 0xFF00, 0xFF0000, 0xFF000000};
@@ -246,7 +246,9 @@ NFE_INLINE Vector VectorLoadUChar4(const unsigned char* pSrc)
     return _mm_mul_ps(vTemp, LoadUByte4Mul);
 }
 
-// converts float 4 -> unsigned char 4
+/**
+ * Convert a Vector to 4 unsigned chars.
+ */
 NFE_INLINE void VectorStoreUChar4(const Vector& src, unsigned char* pDest)
 {
     static const __m128 MaxUByte4 = { 255.0f, 255.0f, 255.0f, 255.0f};
@@ -272,13 +274,20 @@ NFE_INLINE void VectorStore(const Vector& src, float* pDest)
     _mm_store_ss(pDest, src);
 }
 
+NFE_INLINE void VectorStore(const Vector& src, Float2* pDest)
+{
+    __m128 y = _mm_shuffle_ps(src, src, _MM_SHUFFLE(1, 1, 1, 1));
+    _mm_store_ss(&pDest->x, src);
+    _mm_store_ss(&pDest->y, y);
+}
+
 NFE_INLINE void VectorStore(const Vector& src, Float3* pDest)
 {
-    __m128 T1 = _mm_shuffle_ps(src, src, _MM_SHUFFLE(1, 1, 1, 1));
-    __m128 T2 = _mm_shuffle_ps(src, src, _MM_SHUFFLE(2, 2, 2, 2));
+    __m128 y = _mm_shuffle_ps(src, src, _MM_SHUFFLE(1, 1, 1, 1));
+    __m128 z = _mm_shuffle_ps(src, src, _MM_SHUFFLE(2, 2, 2, 2));
     _mm_store_ss(&pDest->x, src);
-    _mm_store_ss(&pDest->y, T1);
-    _mm_store_ss(&pDest->z, T2);
+    _mm_store_ss(&pDest->y, y);
+    _mm_store_ss(&pDest->z, z);
 }
 
 NFE_INLINE void VectorStore(const Vector& src, Float4* pDest)
@@ -362,7 +371,6 @@ Vector& Vector::operator/= (float b)
     v = _mm_div_ps(v, _mm_set1_ps(b));
     return *this;
 }
-
 
 Vector Vector::operator& (const Vector& b) const
 {
@@ -462,8 +470,6 @@ NFE_INLINE Vector Vector::SplatW() const
     return _mm_shuffle_ps(v, v, _MM_SHUFFLE(3, 3, 3, 3));
 }
 
-
-
 NFE_INLINE Vector VectorSplat(float f)
 {
     return _mm_set_ps1(f);
@@ -484,10 +490,21 @@ NFE_INLINE Vector VectorAbs(const Vector& v)
     return _mm_and_ps(v, g_AbsMask);
 }
 
+// Comparison functions ===========================================================================
+
+NFE_INLINE int VectorEqualMask(const Vector& v1, const Vector& v2)
+{
+    return _mm_movemask_ps(_mm_cmpeq_ps(v1, v2));
+}
 
 NFE_INLINE int VectorLessMask(const Vector& v1, const Vector& v2)
 {
     return _mm_movemask_ps(_mm_cmplt_ps(v1, v2));
+}
+
+NFE_INLINE int VectorLessEqMask(const Vector& v1, const Vector& v2)
+{
+    return _mm_movemask_ps(_mm_cmple_ps(v1, v2));
 }
 
 NFE_INLINE int VectorGreaterMask(const Vector& v1, const Vector& v2)
@@ -495,31 +512,51 @@ NFE_INLINE int VectorGreaterMask(const Vector& v1, const Vector& v2)
     return _mm_movemask_ps(_mm_cmpgt_ps(v1, v2));
 }
 
-/*
-NFE_INLINE int VectorLess(const Vector& v1, const Vector& v2)
+NFE_INLINE int VectorGreaterEqMask(const Vector& v1, const Vector& v2)
 {
-    return _mm_comilt_ss(v1, v2);
+    return _mm_movemask_ps(_mm_cmpge_ps(v1, v2));
 }
 
-NFE_INLINE int VectorLequal(const Vector& v1, const Vector& v2)
+NFE_INLINE int VectorNotEqualMask(const Vector& v1, const Vector& v2)
 {
-    return _mm_comile_ss(v1, v2);
+    return _mm_movemask_ps(_mm_cmpneq_ps(v1, v2));
 }
 
-NFE_INLINE int VectorGreater(const Vector& v1, const Vector& v2)
+bool Vector::operator== (const Vector& b) const
 {
-    return _mm_comigt_ss(v1, v2);
+    return VectorEqualMask(*this, b) == 0xF;
 }
 
-NFE_INLINE int VectorGequal(const Vector& v1, const Vector& v2)
+bool Vector::operator< (const Vector& b) const
 {
-    return _mm_comige_ss(v1, v2);
+    return VectorLessMask(*this, b) == 0xF;
 }
-*/
+
+bool Vector::operator<= (const Vector& b) const
+{
+    return VectorLessEqMask(*this, b) == 0xF;
+}
+
+bool Vector::operator> (const Vector& b) const
+{
+    return VectorGreaterMask(*this, b) == 0xF;
+}
+
+bool Vector::operator>= (const Vector& b) const
+{
+    return VectorGreaterEqMask(*this, b) == 0xF;
+}
+
+bool Vector::operator!= (const Vector& b) const
+{
+    return VectorNotEqualMask(*this, b) == 0xF;
+}
 
 
-
-//dot product of 3D vectors, returns vector of results
+/**
+ * Calculate 3D dot product.
+ * @return vector of results.
+ */
 NFE_INLINE Vector VectorDot3(const Vector& v1, const Vector& v2)
 {
     __m128 vDot = _mm_mul_ps(v1, v2);
@@ -530,7 +567,9 @@ NFE_INLINE Vector VectorDot3(const Vector& v1, const Vector& v2)
     return _mm_shuffle_ps(vDot, vDot, _MM_SHUFFLE(0, 0, 0, 0));
 }
 
-//dot product of 3D vectors, returns float
+/**
+ * Calculate 3D dot product.
+ */
 NFE_INLINE float VectorDot3f(const Vector& v1, const Vector& v2)
 {
     float result;
@@ -545,8 +584,9 @@ NFE_INLINE float VectorDot3f(const Vector& v1, const Vector& v2)
     return result;
 }
 
-
-//cross product of 3D vectors
+/**
+ * Calculate 3D cross product.
+ */
 NFE_INLINE Vector VectorCross3(const Vector& V1, const Vector& V2)
 {
     __m128 vTemp1 = _mm_shuffle_ps(V1, V1, _MM_SHUFFLE(3, 0, 2, 1));
@@ -559,6 +599,10 @@ NFE_INLINE Vector VectorCross3(const Vector& V1, const Vector& V2)
     return _mm_and_ps(vResult, g_Mask3);
 }
 
+/**
+ * Calculate length of a 3D vector.
+ * @details 4th element is ignored.
+ */
 NFE_INLINE Vector VectorLength3(const Vector& v)
 {
     __m128 vDot = _mm_mul_ps(v, v);
@@ -570,6 +614,10 @@ NFE_INLINE Vector VectorLength3(const Vector& v)
     return _mm_shuffle_ps(vDot, vDot, _MM_SHUFFLE(0, 0, 0, 0));
 }
 
+/**
+ * Normalize 3D vector.
+ * @details 4th element is ignored.
+ */
 NFE_INLINE Vector VectorNormalize3(const Vector& v)
 {
     __m128 vDot = _mm_mul_ps(v, v);
@@ -582,6 +630,12 @@ NFE_INLINE Vector VectorNormalize3(const Vector& v)
     return _mm_div_ps(v, vTemp);
 }
 
+/**
+ * Reflect a 3D vector.
+ * @param I incident vector
+ * @param N normal vector
+ * @details 4th element is ignored.
+ */
 NFE_INLINE Vector VectorReflect3(const Vector& I, const Vector& N)
 {
     __m128 vDot = _mm_mul_ps(I, N);
@@ -596,8 +650,9 @@ NFE_INLINE Vector VectorReflect3(const Vector& I, const Vector& N)
     return _mm_sub_ps(I, vTemp);
 }
 
-// 4-element vector operations
-
+/**
+ * Calculate 4D dot product.
+ */
 NFE_INLINE Vector VectorDot4(const Vector& v1, const Vector& v2)
 {
     __m128 vTemp = _mm_mul_ps(v1, v2);
@@ -608,6 +663,9 @@ NFE_INLINE Vector VectorDot4(const Vector& v1, const Vector& v2)
     return _mm_shuffle_ps(vTemp, vTemp, _MM_SHUFFLE(0, 0, 0, 0));
 }
 
+/**
+ * Calculate length of a 4D vector.
+ */
 NFE_INLINE Vector VectorLength4(const Vector& v)
 {
     __m128 vTemp = _mm_mul_ps(v, v);
@@ -619,6 +677,9 @@ NFE_INLINE Vector VectorLength4(const Vector& v)
     return _mm_sqrt_ps(vTemp);
 }
 
+/**
+ * Normalize 4D vector.
+ */
 NFE_INLINE Vector VectorNormalize4(const Vector& v)
 {
     __m128 vTemp = _mm_mul_ps(v, v);
@@ -630,6 +691,9 @@ NFE_INLINE Vector VectorNormalize4(const Vector& v)
     return _mm_div_ps(v, _mm_sqrt_ps(vTemp));
 }
 
+/**
+ * Generate a plane equation from 3 points.
+ */
 NFE_INLINE Vector XPlaneFromPoints(const Vector& p1, const Vector& p2, const Vector& p3)
 {
     Vector N;
