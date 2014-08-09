@@ -180,8 +180,14 @@
     <ClInclude Include="Math\Quaternion.h" />
     <ClInclude Include="Math\Random.h" />
     <ClInclude Include="Math\Vector.h" />
+    <ClInclude Include="MD5.h" />
     <ClInclude Include="nfCommon.h" />
     <ClInclude Include="OutputStream.h" />
+    <ClInclude Include="Packer\packer.hpp" />
+    <ClInclude Include="Packer\packerDefines.hpp" />
+    <ClInclude Include="Packer\packerElement.hpp" />
+    <ClInclude Include="Packer\packerReader.hpp" />
+    <ClInclude Include="Packer\packerWriter.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ThreadPool.h" />
@@ -226,7 +232,12 @@
     <ClCompile Include="Math\Matrix.cpp" />
     <ClCompile Include="Math\Quaternion.cpp" />
     <ClCompile Include="Math\Random.cpp" />
+    <ClCompile Include="MD5.cpp" />
     <ClCompile Include="OutputStream.cpp" />
+    <ClCompile Include="Packer\packer.cpp" />
+    <ClCompile Include="Packer\packerDefines.cpp" />
+    <ClCompile Include="Packer\packerReader.cpp" />
+    <ClCompile Include="Packer\packerWriter.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

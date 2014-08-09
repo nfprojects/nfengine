@@ -25,6 +25,9 @@
     </ClCompile>
     <ClCompile Include="ThreadPoolTest.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MD5Test.cpp" />
+    <ClCompile Include="PackerBasicTest.cpp" />
+    <ClCompile Include="PackerComplexTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />

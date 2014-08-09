@@ -1,7 +1,11 @@
 #pragma once
 
 #ifdef WIN32
-#include <Windows.h>
+	#ifndef NOMINMAX
+		#define NOMINMAX
+	#endif
+
+	#include <Windows.h>
 #endif
 
 //STL global definitions
@@ -61,3 +65,4 @@ inline ConsoleColor operator&(ConsoleColor a, ConsoleColor b)
 }
 
 void PrintColored(std::string text, ConsoleColor foreground);
+
