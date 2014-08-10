@@ -58,6 +58,17 @@ struct Vector
         return f[index];
     }
 
+    // element access
+    float operator[] (int index) const
+    {
+        return f[index];
+    }
+
+    NFE_INLINE operator float() const
+    {
+        return f[0];
+    }
+
     /// simple arithmetics
     NFE_INLINE Vector operator- () const;
     NFE_INLINE Vector operator+ (const Vector& b) const;
@@ -721,6 +732,18 @@ NFE_INLINE Vector PlaneFromPoints(const Vector& p1, const Vector& p2, const Vect
     return Result;
 }
 
+/**
+ * Generate a plane equation from a normal and a point.
+ * @return Plane equation
+ */
+NFE_INLINE Vector PlaneFromNormalAndPoint(const Vector& normal, const Vector& p)
+{
+    Vector d = VectorDot3(normal, p);
+    d = _mm_mul_ps(d, g_MinusOne);
+    Vector n = _mm_and_ps(normal, g_Mask3);
+    d = _mm_and_ps(d, g_MaskW);
+    return _mm_or_ps(d, n);
+}
 /**
  * Calculates dot product of a plane and a point.
  * @return Vector of results
