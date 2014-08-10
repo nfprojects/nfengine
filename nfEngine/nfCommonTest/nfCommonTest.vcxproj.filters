@@ -12,6 +12,7 @@
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="TimerTest.cpp" />
     <ClCompile Include="MathVectorTest.cpp" />
+    <ClCompile Include="MathGeometryTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.hpp" />
