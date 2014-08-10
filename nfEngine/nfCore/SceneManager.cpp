@@ -346,7 +346,7 @@ void SceneManager::UpdateSegments()
                 neighbourBox.max = offset + pNeighbour->mSize;
 
                 // switch focus segment
-                if (IntersectBoxPoint(neighbourBox, cameraPos))
+                if (Intersect(neighbourBox, cameraPos))
                 {
                     switchFocus = true;
                     break;
@@ -536,7 +536,7 @@ void SceneManager::FindVisibleMeshEntities(const Frustum& frustum,
 
     for (const auto& mesh : mActiveMeshEntities)
     {
-        if (IntersectBoxFrustum(mesh->mGlobalAABB, frustum))
+        if (Intersect(mesh->mGlobalAABB, frustum))
             pList->push_back(mesh);
     }
 #endif
