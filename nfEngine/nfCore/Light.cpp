@@ -84,10 +84,10 @@ Sphere MakeSphereFromPoints(const Vector& P1, const Vector& P2, const Vector& P3
     matrix[1][2] = 2.0f * (P4.f[1] - P1.f[1]);
     matrix[2][2] = 2.0f * (P4.f[2] - P1.f[2]);
 
-    float Tmp = VectorDot3f(P1, P1);
-    matrix[3][0] = VectorDot3f(P2, P2) - Tmp;
-    matrix[3][1] = VectorDot3f(P3, P3) - Tmp;
-    matrix[3][2] = VectorDot3f(P4, P4) - Tmp;
+    float Tmp = VectorDot3(P1, P1);
+    matrix[3][0] = (float)VectorDot3(P2, P2) - Tmp;
+    matrix[3][1] = (float)VectorDot3(P3, P3) - Tmp;
+    matrix[3][2] = (float)VectorDot3(P4, P4) - Tmp;
 
     Sphere result;
     CalculateEquations(matrix, &result.origin.f[0], &result.origin.f[1], &result.origin.f[2]);
@@ -573,20 +573,10 @@ void LightComponent::OnRenderDebug(IRenderContext* pCtx)
 int LightComponent::IntersectFrustum(const Frustum& frustum)
 {
     if (mLightType == LightType::Spot)
-    {
-        return IntersectFrustumFrustum(frustum, mCameras[0]->mFrustum);
-    }
+        return Intersect(frustum, mCameras[0]->mFrustum);
 
     if (mLightType == LightType::Omni)
-    {
-        Vector radiusVec = Vector(mOmniLight.radius, mOmniLight.radius, mOmniLight.radius);
-
-        Box lightBox; //must be changed to a sphere!!
-        lightBox.min = mOwner->GetPosition() - radiusVec;
-        lightBox.max = mOwner->GetPosition() + radiusVec;
-
-        return IntersectBoxFrustum(lightBox, frustum);
-    }
+        return Intersect(frustum, Sphere(mOwner->GetPosition(), mOmniLight.radius));
 
     return 1;
 }

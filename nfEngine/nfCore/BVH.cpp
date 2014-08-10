@@ -387,7 +387,7 @@ CORE_API void BVH::Query(const Box& shape, BVHQueryCallback pCallback, void* pUs
     {
         BVHNode* pNode = mNodes + pStack[--stackDepth];
 
-        if (IntersectBoxBox(pNode->AABB, shape))
+        if (Intersect(pNode->AABB, shape))
         {
             if (pNode->IsLeaf())
                 pCallback(pNode->userData, pUserData);
@@ -398,27 +398,6 @@ CORE_API void BVH::Query(const Box& shape, BVHQueryCallback pCallback, void* pUs
             }
         }
     }
-}
-
-// TODO: move this to nfCommon
-__forceinline int IntersectBoxFrustum(const Box& box, const Frustum& frustum, bool& inside)
-{
-    Vector plane, vmax, vmin, dot;
-
-    for (int i = 0; i < 6; i++)
-    {
-        // SSE4 version
-        plane = frustum.planes[i];
-        vmax = _mm_blendv_ps(box.max, box.min, plane); // get box corner nearest to the frustum
-        //vmin = _mmblendv_ps(box.Min, box.Max, plane);
-
-        dot = _mm_dp_ps(vmax, plane, 0x71);
-        dot = _mm_add_ss(dot, _mm_shuffle_ps(plane, plane, _MM_SHUFFLE(3, 3, 3, 3)));
-        if (_mm_comilt_ss(dot, _mm_setzero_ps()))
-            return 0;
-    }
-
-    return 1;
 }
 
 template <>
@@ -436,15 +415,14 @@ CORE_API void BVH::Query(const Frustum& shape, BVHQueryCallback pCallback, void*
         uint32 nodeID = pStack[--stackDepth];
         const BVHNode* pNode = mNodes + nodeID;
 
-        bool inside = false;
-        if (IntersectBoxFrustum(pNode->AABB, shape, inside))
+        IntersectionResult result = IntersectEx(pNode->AABB, shape);
+        if (result == IntersectionResult::Inside)
         {
-            if (inside)
-            {
-                QueryAll(nodeID, pCallback, pUserData);
-                continue;
-            }
-
+            QueryAll(nodeID, pCallback, pUserData);
+            continue;
+        }
+        else if (result == IntersectionResult::Intersect)
+        {
             if (pNode->IsLeaf())
             {
                 pCallback(pNode->userData, pUserData);

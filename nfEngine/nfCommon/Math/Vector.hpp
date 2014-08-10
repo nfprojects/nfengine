@@ -57,6 +57,17 @@ struct Vector
         return f[index];
     }
 
+    // element access
+    float operator[] (int index) const
+    {
+        return f[index];
+    }
+
+    NFE_INLINE operator float() const
+    {
+        return f[0];
+    }
+
     /// simple arithmetics
     NFE_INLINE Vector operator- () const;
     NFE_INLINE Vector operator+ (const Vector& b) const;
@@ -568,23 +579,6 @@ NFE_INLINE Vector VectorDot3(const Vector& v1, const Vector& v2)
 }
 
 /**
- * Calculate 3D dot product.
- */
-NFE_INLINE float VectorDot3f(const Vector& v1, const Vector& v2)
-{
-    float result;
-
-    __m128 vDot = _mm_mul_ps(v1, v2);
-    __m128 vTemp = _mm_shuffle_ps(vDot, vDot, _MM_SHUFFLE(2, 1, 2, 1));
-    vDot = _mm_add_ss(vDot, vTemp);
-    vTemp = _mm_shuffle_ps(vTemp, vTemp, _MM_SHUFFLE(1, 1, 1, 1));
-    vDot = _mm_add_ss(vDot, vTemp);
-    _mm_store_ss(&result, vDot);
-
-    return result;
-}
-
-/**
  * Calculate 3D cross product.
  */
 NFE_INLINE Vector VectorCross3(const Vector& V1, const Vector& V2)
@@ -694,7 +688,7 @@ NFE_INLINE Vector VectorNormalize4(const Vector& v)
 /**
  * Generate a plane equation from 3 points.
  */
-NFE_INLINE Vector XPlaneFromPoints(const Vector& p1, const Vector& p2, const Vector& p3)
+NFE_INLINE Vector PlaneFromPoints(const Vector& p1, const Vector& p2, const Vector& p3)
 {
     Vector N;
     Vector D;
@@ -716,7 +710,19 @@ NFE_INLINE Vector XPlaneFromPoints(const Vector& p1, const Vector& p2, const Vec
     return Result;
 }
 
-NFE_INLINE Vector XPlanePointDot3(const Vector& Plane, const Vector& Point)
+/**
+ * Generate a plane equation from a normal and point.
+ */
+NFE_INLINE Vector PlaneFromNormalAndPoint(const Vector& normal, const Vector& p)
+{
+    Vector d = VectorDot3(normal, p);
+    d = _mm_mul_ps(d, g_MinusOne);
+    Vector n = _mm_and_ps(normal, g_Mask3);
+    d = _mm_and_ps(d, g_MaskW);
+    return _mm_or_ps(d, n);
+}
+
+NFE_INLINE Vector PlanePointDot3(const Vector& Plane, const Vector& Point)
 {
     /*
             Vector vTemp2 = _mm_shuffle_ps(Plane, Plane, _MM_SHUFFLE(3,3,3,3));

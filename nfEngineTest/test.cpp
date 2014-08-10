@@ -619,7 +619,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
             omni.radius = 8.0f;
             pLight->SetOmniLight(&omni);
             pLight->SetColor(Float3(50, 50, 50));
-            pLight->SetShadowMap(32);
+            // pLight->SetShadowMap(32);
 
 
             pEntity = g_pScene->CreateEntity();
