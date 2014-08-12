@@ -350,11 +350,11 @@ bool OnLoadCustomShapeResource(ResourceBase* res, void* data)
 
     if (strcmp(shape->GetName(), "shape_floor") == 0)
     {
-        shape->AddBox(Vector(100.0f, 10.0f, 100.0f), MatrixIdentity());
+        shape->AddBox(Vector(100.0f, 10.0f, 100.0f), Matrix());
     }
     else if (strcmp(shape->GetName(), "shape_box") == 0)
     {
-        shape->AddBox(Vector(0.25f, 0.25f, 0.25f), MatrixIdentity());
+        shape->AddBox(Vector(0.25f, 0.25f, 0.25f), Matrix());
     }
     else if (strcmp(shape->GetName(), "shape_frame") == 0)
     {
