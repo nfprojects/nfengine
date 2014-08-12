@@ -449,16 +449,16 @@ void LightsRendererD3D11::SetUp(NFE_CONTEXT_ARG, IRenderTarget* pRT,
         {
             vertexB = Vector(2.0f * (float)x / (float)mTarget->width - 1.0f, 0.0f, 1.0f, 1.0f);
             vertexC = Vector(2.0f * (float)x / (float)mTarget->width - 1.0f, 1.0f, 1.0f, 1.0f);
-            vertexB = VectorTransform4(vertexB, viewProjInverse);
-            vertexC = VectorTransform4(vertexC, viewProjInverse);
+            vertexB = vertexB * viewProjInverse;
+            vertexC = vertexC * viewProjInverse;
             vertexB /= vertexB.f[3];
             vertexC /= vertexC.f[3];
             pPlanes[planeId++] = PlaneFromPoints(vertexA, vertexB, vertexC);
         }
         vertexB = Vector(1.0f, 0.0f, 1.0f, 1.0f);
         vertexC = Vector(1.0f, 1.0f, 1.0f, 1.0f);
-        vertexB = VectorTransform4(vertexB, viewProjInverse);
-        vertexC = VectorTransform4(vertexC, viewProjInverse);
+        vertexB = vertexB * viewProjInverse;
+        vertexC = vertexC * viewProjInverse;
         vertexB /= vertexB.f[3];
         vertexC /= vertexC.f[3];
         pPlanes[planeId] = PlaneFromPoints(vertexA, vertexB, vertexC);
@@ -469,16 +469,16 @@ void LightsRendererD3D11::SetUp(NFE_CONTEXT_ARG, IRenderTarget* pRT,
         {
             vertexB = Vector(0.0f, 1.0f - 2.0f * (float)y / (float)mTarget->height, 1.0f, 1.0f);
             vertexC = Vector(1.0f, 1.0f - 2.0f * (float)y / (float)mTarget->height, 1.0f, 1.0f);
-            vertexB = VectorTransform4(vertexB, viewProjInverse);
-            vertexC = VectorTransform4(vertexC, viewProjInverse);
+            vertexB = vertexB * viewProjInverse;
+            vertexC = vertexC * viewProjInverse;
             vertexB /= vertexB.f[3];
             vertexC /= vertexC.f[3];
             pPlanes[planeId++] = PlaneFromPoints(vertexA, vertexB, vertexC);
         }
         vertexB = Vector(0.0f, 0.0f, 1.0f, 1.0f);
         vertexC = Vector(1.0f, 0.0f, 1.0f, 1.0f);
-        vertexB = VectorTransform4(vertexB, viewProjInverse);
-        vertexC = VectorTransform4(vertexC, viewProjInverse);
+        vertexB = vertexB * viewProjInverse;
+        vertexC = vertexC * viewProjInverse;
         vertexB /= vertexB.f[3];
         vertexC /= vertexC.f[3];
         pPlanes[planeId] = PlaneFromPoints(vertexA, vertexB, vertexC);

@@ -345,11 +345,11 @@ void Mesh::OnUnload()
 Box Mesh::GetGlobalAABB(const Matrix& matrix)
 {
     Box result;
-    result.min = result.max = VectorTransform3(mLocalBox.GetVertex(0), matrix);
+    result.min = result.max = LinearCombination3(mLocalBox.GetVertex(0), matrix);
 
     for (int i = 1; i < 8; i++)
     {
-        Vector vert = VectorTransform3(mLocalBox.GetVertex(i), matrix);
+        Vector vert = LinearCombination3(mLocalBox.GetVertex(i), matrix);
         result.min = VectorMin(result.min, vert);
         result.max = VectorMax(result.max, vert);
     }
