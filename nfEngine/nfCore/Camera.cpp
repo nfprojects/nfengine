@@ -20,8 +20,6 @@ Camera::Camera(Entity* pParent) : Component(pParent)
 {
     mType = ComponentType::Camera;
     projMode = ProjectionMode::Perspective;
-
-    mParentOffset = MatrixIdentity();
 }
 
 void Camera::SetPerspective(const Perspective* pDesc)
@@ -63,9 +61,9 @@ void Camera::OnUpdate(float dt)
     //calculate secondary view matrix for motion blur
     Matrix rotMatrix = MatrixRotationNormal(mOwner->mAngularVelocity, 0.01f);
     Matrix secondaryCameraMatrix;
-    secondaryCameraMatrix.r[0] = VectorTransform3(matrix.r[0], rotMatrix);
-    secondaryCameraMatrix.r[1] = VectorTransform3(matrix.r[1], rotMatrix);
-    secondaryCameraMatrix.r[2] = VectorTransform3(matrix.r[2], rotMatrix);
+    secondaryCameraMatrix.r[0] = LinearCombination3(matrix.r[0], rotMatrix);
+    secondaryCameraMatrix.r[1] = LinearCombination3(matrix.r[1], rotMatrix);
+    secondaryCameraMatrix.r[2] = LinearCombination3(matrix.r[2], rotMatrix);
     secondaryCameraMatrix.r[3] = (Vector)matrix.r[3] + mOwner->mVelocity * 0.01f;
     Matrix secondaryViewMatrix = MatrixLookTo(secondaryCameraMatrix.r[3], secondaryCameraMatrix.r[2],
                                  secondaryCameraMatrix.r[1]);

@@ -138,7 +138,7 @@ Result CollisionShape::LoadFromFile(const char* pPath)
             CompoundShapeChild shape =
             {
                 new btBvhTriangleMeshShape(pMesh, true),
-                MatrixIdentity()
+                Matrix()
             };
             mChildren.push_back(shape);
         }
@@ -178,7 +178,7 @@ Result CollisionShape::AddCylinder(float h, float r)
 {
     CompoundShapeChild shape;
     shape.pShape = new btCylinderShape(btVector3(r, h * 0.5f, r));
-    shape.matrix = MatrixIdentity();
+    shape.matrix = Matrix();
     mChildren.push_back(shape);
 
     return Result::OK;
