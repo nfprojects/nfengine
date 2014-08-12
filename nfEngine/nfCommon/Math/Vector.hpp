@@ -181,12 +181,11 @@ const Vectori g_AbsMask = {0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF};
 const Vectorf g_Byte2Float = {1.0f / 255.0f, 1.0f / 255.0f, 1.0f / 255.0f, 1.0f / 255.0f};
 const Vectorf g_Float2Byte = {255.0f, 255.0f, 255.0f, 255.0f};
 
-
-// identity matrix rows
-const Vectorf g_IdentityR0  = {1.0f, 0.0f, 0.0f, 0.0f};
-const Vectorf g_IdentityR1  = {0.0f, 1.0f, 0.0f, 0.0f};
-const Vectorf g_IdentityR2  = {0.0f, 0.0f, 1.0f, 0.0f};
-const Vectorf g_IdentityR3  = {0.0f, 0.0f, 0.0f, 1.0f};
+/// identity matrix rows
+const Vectorf gIdentityR0 = { 1.0f, 0.0f, 0.0f, 0.0f };
+const Vectorf gIdentityR1 = { 0.0f, 1.0f, 0.0f, 0.0f };
+const Vectorf gIdentityR2 = { 0.0f, 0.0f, 1.0f, 0.0f };
+const Vectorf gIdentityR3 = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 // ====================================================================================
 
@@ -751,7 +750,7 @@ NFE_INLINE Vector PlanePointDot3(const Vector& plane, const Vector& point)
             return _mm_add_ps(vTemp2, vTemp);
     */
     Vector vTemp2 = _mm_and_ps(point, g_Mask3);
-    vTemp2 = _mm_or_ps(vTemp2, g_IdentityR3);
+    vTemp2 = _mm_or_ps(vTemp2, gIdentityR3);
     Vector vTemp = _mm_mul_ps(plane, vTemp2);
     vTemp2 = _mm_shuffle_ps(vTemp2, vTemp, _MM_SHUFFLE(1, 0, 0,
                             0)); // Copy X to the Z position and Y to the W position
