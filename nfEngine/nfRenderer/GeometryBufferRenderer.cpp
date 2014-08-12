@@ -207,7 +207,7 @@ void GBufferRendererD3D11::Enter(NFE_CONTEXT_ARG)
 
     //initialize per instance cbuffer with identity transformation
     PerInstanceCBufferVS CInstanceBufferData;
-    CInstanceBufferData.worldMatrix = MatrixIdentity();
+    CInstanceBufferData.worldMatrix = Matrix();
     CInstanceBufferData.velocity = Vector();
     CInstanceBufferData.angularVelocity = Vector();
     pCtx->D3DContext->UpdateSubresource(mPerInstanceCBuffer, 0, 0, &CInstanceBufferData, 0, 0);

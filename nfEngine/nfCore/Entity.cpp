@@ -19,9 +19,6 @@ using namespace Math;
 
 Entity::Entity()
 {
-    mLocalMatrix = mMatrix = MatrixIdentity();
-    mVelocity = mAngularVelocity = Vector();
-
     mFlags = 0;
     mScene = nullptr;
     mSegment = nullptr;

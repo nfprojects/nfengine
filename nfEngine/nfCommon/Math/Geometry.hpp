@@ -128,7 +128,7 @@ enum class IntersectionResult
  * @return     Distance to the segment.
  */
 NFCOMMON_API float ClosestPointOnSegment(const Vector& p, const Vector& p1, const Vector& p2,
-                                         Vector& out);
+        Vector& out);
 
 /**
  * Template function for intersection tests.
@@ -217,7 +217,7 @@ NFE_INLINE Box TransformBox(const Matrix& matrix, const Box& localBox)
     float z = VectorDot3(localBox.SupportVertex(matrix.r[2]) - boxCenter, matrix.r[2])[0];
     Vector boxDim = Vector(x, y, z);
 
-    Vector transformedBoxCenter = VectorTransform3(boxCenter, matrix);
+    Vector transformedBoxCenter = LinearCombination3(boxCenter, matrix);
 
     Box result;
     result.max = transformedBoxCenter + boxDim;
