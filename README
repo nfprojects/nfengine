@@ -1,11 +1,23 @@
-=== INTRODUCTION ===
+    === INTRODUCTION ===
 
 nfEngine is an open source 3D game engine.
 
 # TODO: fill this section
 
 
-=== DEPENDENCIES ===
+    === CONTENTS ===
+
+This document consists of following sections (in order of appearance in file):
+- DEPENDENCIES
+- DOCUMENTATION
+- FORMATTING
+- ISSUE TRACKING
+- WORKFLOW AND BRANCHING
+- COMMIT MESSAGE FORMAT
+- PULL REQUEST DESCRIPTION FORMAT
+
+
+    === DEPENDENCIES ===
 
 To make the code compileable, the following requirements have to be met:
 1. Installed Visual Studio 2012.
@@ -26,13 +38,13 @@ To make the code compileable, the following requirements have to be met:
 	    - on Linux: "ln -s <src> <dest>"
 
 
-=== DOCUMENTATION ===
+    === DOCUMENTATION ===
 
 Doxygen documentation can be generated using "gen_doc.bat" script. Doxygen needs to be installed
 in the system and "doxygen" command must be visible in the shell.
 
 
-=== FORMATTING ===
+    === FORMATTING ===
 
 Keep the code format consistent. Run format.bat script to format the code automatically.
 ArtisticStyle needs to be installed in the system and "astyle" command must be visible
@@ -55,7 +67,7 @@ Basic coding guidelines:
       namespaces).
 
 
-=== ISSUE TRACKING ===
+    === ISSUE TRACKING ===
 
 Working on nfEngine revolves around GitHub and its issue tracking system. You can find all current
 issues at https://github.com/nfprojects/nfengine/issues
@@ -93,7 +105,7 @@ Milestones don't have specific due date. Issues not assigned to milestones are m
 issues (most of these are probably bugs).
 
 
-=== WORKFLOW AND BRANCHING ===
+    === WORKFLOW AND BRANCHING ===
 
 Working on nfEngine revolves around "long-running branches" Git workflow. See Pro Git book for more
 info: http://git-scm.com/book/en/Git-Branching-Branching-Workflows
@@ -129,7 +141,7 @@ Direct commits to devel and master branch are forbidden and will be deleted imme
 owners.
 
 
-=== COMMIT MESSAGE FORMAT ===
+    === COMMIT MESSAGE FORMAT ===
 
 Commit messages should keep a simple, standard format. Title (first line of commit message) should
 describe briefly what change does. Then contributor should write more detailed description of
@@ -146,7 +158,7 @@ Large changes (more than 500 lines affected) should be split in multiple commits
 process easier.
 
 
-=== PULL REQUEST DESCRIPTION FORMAT ===
+    === PULL REQUEST DESCRIPTION FORMAT ===
 
 After finishing a change a pull request should be properly described. Description of pull request
 should be formatted in commit message format, however with two major changes:
