@@ -40,3 +40,131 @@ in the shell.
 
 ArtisticStyle can be downloaded here:
 http://astyle.sourceforge.net/
+
+Basic coding guidelines:
+    * Code is written in Allman style.
+    * We use spaces to indent parts of code. Each indentation takes 4 spaces. Mixed tabs and spaces
+      are forbidden.
+    * To make code reviewing easier, keep max 100 chars per line. Exceptions to that rule might
+      occur if it is absolutely necessary, depending on the situation (keep in mind, some legacy
+      code in the repository might not obey this rule).
+    * Each source file should have a doxygen boilerplate which will briefly describe what this
+      module does. This rule applies to header files as well.
+    * Use two newlines to separate chunks of code in one file (eg. to split constants from
+      function/method definitions, to split boilerplate from rest of the file, or to split
+      namespaces).
+
+
+=== ISSUE TRACKING ===
+
+Working on nfEngine revolves around GitHub and its issue tracking system. You can find all current
+issues at https://github.com/nfprojects/nfengine/issues
+
+Usually issues are added by owners and categorized according with three labels (together with
+appropriate coloring in issue system):
+1. Type of issue:
+    * bug
+    * enhancement
+    * new feature
+2. Priority (how important is this issue for the project right now):
+    * low priority
+    * medium priority
+    * high priority
+3. Estimated complexity of the issue:
+    * small
+    * medium
+    * huge
+
+Additionall rules applied to labelling issues:
+1. Issues labeled as "new feature" or "enhancement" label can additionally have a "proposal" label.
+   Such issues are most probably not completely defined, might be a subject to change and should
+   not be assigned to anyone until "proposal" label disappears. Removal of "proposal" will happen
+   only after a discussion with project owners, or after completion of issue.
+2. Issues labeled with "bug" label don't need to be tagged with estimate label if reporter cannot
+   perform such estimation.
+
+When a bug is found, it should be reported on issue tracking system with only "bug" label. Such
+issue should contain detailed information on how to reproduce the bug. After verification of the
+issue, one of the owners will further process the issue (either by prioritizing it and assigning it
+to someone, or by closing it if issue is invalid).
+
+Issues crucial to project, usually related to one specific goal, are categorized into milestones.
+Milestones don't have specific due date. Issues not assigned to milestones are mostly general, small
+issues (most of these are probably bugs).
+
+
+=== WORKFLOW AND BRANCHING ===
+
+Working on nfEngine revolves around "long-running branches" Git workflow. See Pro Git book for more
+info: http://git-scm.com/book/en/Git-Branching-Branching-Workflows
+
+nfEngine project contains two main long-running branches with code:
+* Branch "master" - here is kept latest stable version of nfEngine, guaranteed to work. On this
+  branch no new changes are committed - it should contain only merge commits with version change.
+* Branch "devel" - this branch is main development branch used to contribute new changes.
+
+Each change (related to issue in GitHub) should have its own branch on which all changes should be
+kept. After committing a change, contributor should create a pull request to devel branch and begin
+code review process this way. After certain conditions are met, changes are merged to devel branch,
+and in upcoming release to master branch.
+
+Owners and trusted contributors can work directly on main nfEngine repository. Contributors new to
+the project must fork the repository. Contributor should create a pull request to devel branch after
+resolving an issue.
+
+When working on an issue, make sure your remote branch name relates to resolved issue in some way.
+In short terms:
+* Branch names like "aaa", "temp", "work", "devel2" etc. don't tell much about the issue and pull
+  requests from such branches will be closed without reviewing the change.
+* Branch names like "fix_memleaks", "add_threadpool_test", "update_readme" etc. are more than
+  welcome and help owners of repository to get around what such change is about. Though, make sure
+  the branch name is not too long.
+* In some situations (especially when branch name might be too long) contributor can name a feature
+  branch according to "issue_X" scheme, where X is the number of the issue.
+
+Pull request will be merged only when it will pass code review and verification process, and when
+provided change will be mergeable to devel branch without conflicts.
+
+Direct commits to devel and master branch are forbidden and will be deleted immediately by project
+owners.
+
+
+=== COMMIT MESSAGE FORMAT ===
+
+Commit messages should keep a simple, standard format. Title (first line of commit message) should
+describe briefly what change does. Then contributor should write more detailed description of
+committed change. Example commit message is provided below:
+
+<--- example_commit_msg --- begin --->
+Fix memory leaks in nfCommon Math module
+
+This commit fixes memory leaks which occured when using NFE::Common::Vector. Leaks occured due to
+not freed memory in Vector destructor.
+<--- example_commit_msg ---  end  --->
+
+Large changes (more than 500 lines affected) should be split in multiple commits to make review
+process easier.
+
+
+=== PULL REQUEST DESCRIPTION FORMAT ===
+
+After finishing a change a pull request should be properly described. Description of pull request
+should be formatted in commit message format, however with two major changes:
+* Contributor should add [#X] field to title of pull request and replace X with issue number
+  related to created pull request.
+* Contributor should add information to pull request about verification of created change. Such
+  information should give detailed instruction to reviewers what should be done to test the change.
+  
+Example pull request description:
+
+<--- example_pull_request_desc --- begin --->
+[#00] Improvements to nfCommon Math module
+
+This change improves some of Math module functions in nfCommon:
+* Vector performance is sped up on some CPUs by using AVX instruction set
+* Matrix memory management is optimized
+
+Verification:
+Build, run nfCommonTest on CPU with AVX instructions - there should be new test category
+"nfCommonMathAVXTest", all tests should pass.
+<--- example_pull_request_desc ---  end  --->
