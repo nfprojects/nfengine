@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -29,27 +29,27 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -102,7 +102,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>LIBCONFIG_STATIC;USE_ANT_TWEAK;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Deps\FreeType\include;$(SolutionDir)Deps\BulletPhysics\src;$(SolutionDir)Deps\rapidxml-1.13;$(SolutionDir)Deps\AntTweekBar\include;$(SolutionDir)nfEngine\nfCommon;..\FreeType\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Deps\FreeType\include;$(SolutionDir)Deps\bullet-2.82\src;$(SolutionDir)Deps\rapidxml-1.13;$(SolutionDir)Deps\AntTweekBar\include;$(SolutionDir)nfEngine\nfCommon;..\FreeType\include\</AdditionalIncludeDirectories>
       <StructMemberAlignment>Default</StructMemberAlignment>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -112,12 +112,11 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Deps\BulletPhysics\lib;$(SolutionDir)Deps\AntTweekBar\lib;$(SolutionDir)Bin\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Deps\bullet-2.82\lib;$(SolutionDir)Deps\AntTweekBar\lib;$(SolutionDir)Bin\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>nfCommon.lib;zlib.lib;AntTweakBar.lib;freetype.lib;BulletCollision_vs2010_debug.lib;BulletDynamics_vs2010_debug.lib;LinearMath_vs2010_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>COPY "$(SolutionDir)Deps\AntTweekBar\lib\AntTweakBar.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
-COPY "%ProgramFiles(x86)%\Windows Kits\8.0\Redist\D3D\x86\D3DCOMPILER_46.DLL" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
+      <Command>COPY "$(SolutionDir)Deps\AntTweekBar\lib\AntTweakBar.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -126,7 +125,7 @@ COPY "%ProgramFiles(x86)%\Windows Kits\8.0\Redist\D3D\x86\D3DCOMPILER_46.DLL" "$
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>LIBCONFIG_STATIC;USE_ANT_TWEAK;_CRT_SECURE_NO_WARNINGS;WIN64;_DEBUG;_WINDOWS;_USRDLL;NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Deps\FreeType\include;$(SolutionDir)Deps\BulletPhysics\src;$(SolutionDir)Deps\rapidxml-1.13;$(SolutionDir)Deps\AntTweekBar\include;$(SolutionDir)nfEngine\nfCommon;..\FreeType\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Deps\FreeType\include;$(SolutionDir)Deps\bullet-2.82\src;$(SolutionDir)Deps\rapidxml-1.13;$(SolutionDir)Deps\AntTweekBar\include;$(SolutionDir)nfEngine\nfCommon;..\FreeType\include\</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -135,12 +134,11 @@ COPY "%ProgramFiles(x86)%\Windows Kits\8.0\Redist\D3D\x86\D3DCOMPILER_46.DLL" "$
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Deps\BulletPhysics\lib;$(SolutionDir)Deps\AntTweekBar\lib;$(SolutionDir)Bin\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Deps\bullet-2.82\lib;$(SolutionDir)Deps\AntTweekBar\lib;$(SolutionDir)Bin\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>nfCommon.lib;zlib.lib;AntTweakBar64.lib;freetype.lib;BulletCollision_vs2010_x64_debug.lib;BulletDynamics_vs2010_x64_debug.lib;LinearMath_vs2010_x64_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>COPY "$(SolutionDir)Deps\AntTweekBar\lib\AntTweakBar64.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
-COPY "%ProgramFiles(x86)%\Windows Kits\8.0\Redist\D3D\x64\D3DCOMPILER_46.DLL" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
+      <Command>COPY "$(SolutionDir)Deps\AntTweekBar\lib\AntTweakBar64.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -154,7 +152,7 @@ COPY "%ProgramFiles(x86)%\Windows Kits\8.0\Redist\D3D\x64\D3DCOMPILER_46.DLL" "$
       <StringPooling>true</StringPooling>
       <OmitFramePointers>true</OmitFramePointers>
       <FloatingPointModel>Fast</FloatingPointModel>
-      <AdditionalIncludeDirectories>$(SolutionDir)Deps\FreeType\include;$(SolutionDir)Deps\BulletPhysics\src;$(SolutionDir)Deps\rapidxml-1.13;$(SolutionDir)Deps\AntTweekBar\include;$(SolutionDir)nfEngine\nfCommon;..\FreeType\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Deps\FreeType\include;$(SolutionDir)Deps\bullet-2.82\src;$(SolutionDir)Deps\rapidxml-1.13;$(SolutionDir)Deps\AntTweekBar\include;$(SolutionDir)nfEngine\nfCommon;..\FreeType\include\</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -166,13 +164,12 @@ COPY "%ProgramFiles(x86)%\Windows Kits\8.0\Redist\D3D\x64\D3DCOMPILER_46.DLL" "$
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)Deps\BulletPhysics\lib;$(SolutionDir)Deps\AntTweekBar\lib;$(SolutionDir)Bin\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Deps\bullet-2.82\lib;$(SolutionDir)Deps\AntTweekBar\lib;$(SolutionDir)Bin\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>nfCommon.lib;zlib.lib;AntTweakBar.lib;freetype.lib;BulletCollision_vs2010.lib;BulletDynamics_vs2010.lib;LinearMath_vs2010.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Profile>true</Profile>
     </Link>
     <PostBuildEvent>
-      <Command>COPY "$(SolutionDir)Deps\AntTweekBar\lib\AntTweakBar.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
-COPY "%ProgramFiles(x86)%\Windows Kits\8.0\Redist\D3D\x86\D3DCOMPILER_46.DLL" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
+      <Command>COPY "$(SolutionDir)Deps\AntTweekBar\lib\AntTweakBar.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -186,7 +183,7 @@ COPY "%ProgramFiles(x86)%\Windows Kits\8.0\Redist\D3D\x86\D3DCOMPILER_46.DLL" "$
       <StringPooling>true</StringPooling>
       <OmitFramePointers>true</OmitFramePointers>
       <FloatingPointModel>Fast</FloatingPointModel>
-      <AdditionalIncludeDirectories>$(SolutionDir)Deps\FreeType\include;$(SolutionDir)Deps\BulletPhysics\src;$(SolutionDir)Deps\rapidxml-1.13;$(SolutionDir)Deps\AntTweekBar\include;$(SolutionDir)nfEngine\nfCommon;..\..\SDK\bullet-2.80\src\;..\FreeType\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Deps\FreeType\include;$(SolutionDir)Deps\bullet-2.82\src;$(SolutionDir)Deps\rapidxml-1.13;$(SolutionDir)Deps\AntTweekBar\include;$(SolutionDir)nfEngine\nfCommon;..\..\SDK\bullet-2.80\src\;..\FreeType\include\</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -198,13 +195,12 @@ COPY "%ProgramFiles(x86)%\Windows Kits\8.0\Redist\D3D\x86\D3DCOMPILER_46.DLL" "$
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)Deps\BulletPhysics\lib;$(SolutionDir)Deps\AntTweekBar\lib;$(SolutionDir)Bin\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Deps\bullet-2.82\lib;$(SolutionDir)Deps\AntTweekBar\lib;$(SolutionDir)Bin\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalDependencies>nfCommon.lib;zlib.lib;AntTweakBar64.lib;freetype.lib;BulletCollision_vs2010_x64_release.lib;BulletDynamics_vs2010_x64_release.lib;LinearMath_vs2010_x64_release.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Profile>true</Profile>
     </Link>
     <PostBuildEvent>
-      <Command>COPY "$(SolutionDir)Deps\AntTweekBar\lib\AntTweakBar64.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"
-COPY "%ProgramFiles(x86)%\Windows Kits\8.0\Redist\D3D\x64\D3DCOMPILER_46.DLL" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
+      <Command>COPY "$(SolutionDir)Deps\AntTweekBar\lib\AntTweakBar64.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
