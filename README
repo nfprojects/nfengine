@@ -20,7 +20,7 @@ This document consists of following sections (in order of appearance in file):
     === DEPENDENCIES ===
 
 To make the code compileable, the following requirements have to be met:
-1. Installed Visual Studio 2012.
+1. Installed Visual Studio 2013.
 2. Installed DirectX SDK.
 3. Downloaded external dependencies from this folder:
    https://drive.google.com/drive/u/0/#folders/0B66mya2agFOEd0RJUWx1aDZ6Ym8
