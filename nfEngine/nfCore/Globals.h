@@ -34,7 +34,7 @@ extern uint32 g_DeferredContextsNum;
 extern Render::IRenderContext* g_pImmediateContext;
 extern Render::IRenderContext** g_pDeferredContexts;
 
-extern Common::ThreadPool* g_pMainThreadPool;
+extern std::shared_ptr<Common::ThreadPool> g_pMainThreadPool;
 extern Resource::ResManager* g_pResManager;
 
 } // namespace NFE

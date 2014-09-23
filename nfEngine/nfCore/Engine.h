@@ -14,7 +14,7 @@
 #include "Texture.h"
 #include "SceneManager.h"
 #include "../nfCommon/Window.h"
-#include "../nfCommon/ThreadPool.h"
+#include "../nfCommon/ThreadPool.hpp"
 
 namespace NFE {
 

@@ -231,9 +231,7 @@ Result EngineInit()
     }
     */
 
-    g_pMainThreadPool = new Common::ThreadPool;
-    g_pMainThreadPool->Init();
-
+    g_pMainThreadPool.reset(new Common::ThreadPool);
 
     // TODO - plugin searching & enumeration. Better error checking
     HMODULE rendererDll = LoadLibrary(L"nfRendererD3D11.dll");
@@ -263,7 +261,7 @@ Result EngineInit()
             g_pShadowRenderer = g_pRenderer->GetShadowRenderer();
             g_pLightRenderer = g_pRenderer->GetLightsRenderer();
 
-            g_DeferredContextsNum = g_pMainThreadPool->GetThreadsCount();
+            g_DeferredContextsNum = g_pMainThreadPool->GetThreadsNumber();
             g_pDeferredContexts = new IRenderContext* [g_DeferredContextsNum];
             for (uint32 i = 0; i < g_DeferredContextsNum; i++)
                 g_pDeferredContexts[i] = g_pRenderer->CreateDeferredContext();
@@ -328,14 +326,7 @@ Result EngineRelease()
     }
     LOG_INFO("Renderer released.");
 
-
-
-    if (g_pMainThreadPool != NULL)
-    {
-        g_pMainThreadPool->Release();
-        delete g_pMainThreadPool;
-        g_pMainThreadPool = 0;
-    }
+    g_pMainThreadPool.reset();
     LOG_INFO("Main threadpool released.");
 
     g_Initialized = false;

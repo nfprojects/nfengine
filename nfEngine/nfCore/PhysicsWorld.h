@@ -8,7 +8,7 @@
 #pragma once
 #include "Core.h"
 #include "Aligned.h"
-#include "../nfCommon/ThreadPool.h"
+#include "../nfCommon/ThreadPool.hpp"
 
 namespace NFE {
 namespace Scene {
@@ -23,7 +23,7 @@ class PhysicsWorld : public Util::Aligned
 private:
     SceneManager* mScene;
 
-    Common::TaskID mPhysicsTask;
+    Common::TaskPtr mPhysicsTask;
     volatile bool mRunning;
 
     // Bullet Physics objects
@@ -34,6 +34,7 @@ private:
     btDiscreteDynamicsWorld* mDynamicsWorld;
 
     float mDeltaTime;
+    void UpdatePhysics();
 
 public:
     PhysicsWorld(SceneManager* pScene);

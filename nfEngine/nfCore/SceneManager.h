@@ -11,7 +11,7 @@
 #include "MeshComponent.h"
 #include "Light.h"
 #include "Body.h"
-#include "../nfCommon/ThreadPool.h"
+#include "../nfCommon/ThreadPool.hpp"
 #include "SceneEvent.h"
 
 namespace NFE {
