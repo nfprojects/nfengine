@@ -1,289 +1,272 @@
 /**
-    NFEngine project
-
-    \file   ThreadPool.cpp
-    \brief  Thread pool classes declarations.
-*/
+ * @file  ThreadPool.cpp
+ * @brief Thread pool classes declarations.
+ */
 
 #include "stdafx.h"
-#include "ThreadPool.h"
-#include "Logger.h"
+#include "ThreadPool.hpp"
 
 namespace NFE {
 namespace Common {
 
-const int gMaxThreadPoolThreads = 64;
-
-void* ExecutorThread::operator new(size_t size)
+Task::Task(TaskFunction callback, size_t instancesNum) :
+    ptr(0),
+    callback(callback),
+    instancesNum(instancesNum),
+    nextInstance(0),
+    instancesLeft(instancesNum),
+    required(1)
 {
-    return _aligned_malloc(size, 64);
 }
 
-void ExecutorThread::operator delete(void* ptr)
+void Task::RemoveFromParents()
 {
-    _aligned_free(ptr);
+    // assume call under ThreadPool::mDepsQueueMutex lock
+    for (Task* parent : parents)
+        parent->children.erase(this);
 }
 
-void ThreadPool::SchedulerThreadCallback(ExecutorThread* pThreadDesc)
+//=================================================================================================
+
+WorkerThread::WorkerThread(ThreadPool* pPool, size_t id)
 {
-    ThreadPool* pPool = pThreadDesc->pThreadPool;
-
-    TaskCallback pCallback = nullptr;
-    void* pUserData = nullptr;
-    uint32 instance = 0;
-    TaskID nextTaskID = 0;
-
-    for (;;)
-    {
-        //gather a new task from the queue
-        {
-            LockType lock(pPool->mTaskQueueMutex);
-
-            // wait for an event
-            while (pThreadDesc->pThreadPool->mStarted && pPool->mTaskQueue.empty())
-                pPool->mTaskQueueEvent.wait(lock);
-
-            // thread pool was stopped, exit
-            if (!pThreadDesc->pThreadPool->mStarted)
-                return;
-
-            //find next not done task
-            Task& nextTask = pPool->mTaskQueue.front();
-            instance = nextTask.instancesCount - (nextTask.instancesLeft--);
-            pCallback = nextTask.pCallback;
-            pUserData = nextTask.pUserData;
-            nextTaskID = nextTask.id;
-
-            if (nextTask.instancesLeft == 0)
-            {
-                pPool->mTaskQueue.pop();
-            }
-
-            pThreadDesc->busy = true;
-            pThreadDesc->currTask = nextTaskID;
-        }
-
-        //execute task
-        if (pCallback)
-        {
-            try
-            {
-                pCallback((void*)pUserData, instance, pThreadDesc->id);
-            }
-            catch (std::exception& ex)
-            {
-                LOG_ERROR("Unhandled exception in task callback: %s", ex.what());
-            }
-            catch (...)
-            {
-                LOG_ERROR("Unknown exception in task callback");
-            }
-        }
-
-        //inform pool that task instance has been done
-        std::unique_lock<std::mutex> lock(pPool->mTaskFinishedMutex);
-        pThreadDesc->busy = false;
-        pPool->mTaskFinishedEvent.notify_all();
-    }
+    started = true;
+    this->id = id;
+    thread = std::thread(&ThreadPool::SchedulerCallback, pPool, this);
 }
+
+WorkerThread::~WorkerThread()
+{
+    thread.join();
+}
+
+//=================================================================================================
 
 ThreadPool::ThreadPool()
 {
-    mStarted = false;
+    mLastThreadId = 0;
+	mLastTaskId = 0;
+	SpawnWorkerThreads(std::thread::hardware_concurrency());
 }
 
 ThreadPool::~ThreadPool()
 {
-    Release();
+    {
+        Lock lock(mTasksQueueMutex);
+
+        for (auto thread : mThreads)
+            thread->started = false;
+
+        mTaskQueueTask.notify_all();
+    }
+
+    // cleanup
+    mThreads.clear();
+    for (auto taskPair : mTasks)
+    {
+    	delete taskPair.second;
+    }
 }
 
-int ThreadPool::Init(size_t threadsCount)
+void ThreadPool::SpawnWorkerThreads(size_t num)
 {
-    if (mStarted) return 1;
-    mStarted.exchange(true);
+	for (size_t i = 0; i < num; ++i)
+	{
+        mThreads.insert(WorkerThreadPtr(new WorkerThread(this, mLastThreadId++)));
+	}
+}
 
-    if (threadsCount == 0)
+void ThreadPool::TriggerWorkerStop(WorkerThreadPtr workerThread)
+{
+    workerThread->started = false;
+    mTaskQueueTask.notify_all();
+}
+
+size_t ThreadPool::GetThreadsNumber() const
+{
+	return mThreads.size();
+}
+
+void ThreadPool::SetThreadsNumber(size_t newValue)
+{
+    std::unique_lock<std::mutex> lock(mThreadsMutex);
+    if (mThreads.size() < newValue)
+        SpawnWorkerThreads(newValue - mThreads.size());
+
+    // TODO: implement reducing number of worker threads
+}
+
+void ThreadPool::SchedulerCallback(WorkerThread* thread)
+{
+    size_t instanceId;
+    Task* currTask = nullptr;
+
+    for (;;)
     {
-        threadsCount = std::thread::hardware_concurrency();
-        if (threadsCount < 1) threadsCount = 1;
+        {
+            Lock lock(mTasksQueueMutex);
+
+            // wait for new task task
+            while (thread->started && mTasksQueue.empty())
+                mTaskQueueTask.wait(lock);
+
+            if (!thread->started)
+                return;
+
+            // pop a task from the queue
+            currTask = mTasksQueue.front();
+            instanceId = currTask->nextInstance++;
+            if (currTask->nextInstance == currTask->instancesNum)
+                mTasksQueue.pop();
+        }
+
+        // execute
+        if (currTask->callback)
+        {
+            currTask->callback(instanceId, thread->id);
+        }
+
+        // check if task has been completed (last instance just finished its execution)
+        if (--currTask->instancesLeft > 0)
+            continue;
+
+        std::vector<Task*> resolved;
+
+        // mark as done and notify waiting threads
+        {
+            Lock lock(mTasksMutex);
+            mTasks.erase(currTask->ptr);
+            mTasksMutexCV.notify_all();
+
+            // handle dependencies
+            Lock depsLock(mDepsQueueMutex);
+
+			// resolve dependent tasks
+			for (Task* child : currTask->children)
+			{
+				child->parents.erase(currTask);
+				if (--child->required == 0)
+				{
+					resolved.push_back(child);
+				}
+			}
+
+			for (Task* child : resolved)
+				child->RemoveFromParents();
+
+			// cleanup
+			delete currTask;
+			currTask = nullptr;
+        }
+
+        if (!resolved.empty())
+        {
+            Lock queueLock(mTasksQueueMutex);
+
+            // move ready tasks to the queue
+            for (Task* child : resolved)
+                mTasksQueue.push(child);
+
+            // notify waiting threads only if new task moved to the queue
+            mTaskQueueTask.notify_all();
+        }
+    }
+}
+
+TaskPtr ThreadPool::Enqueue(TaskFunction function, size_t instances,
+                             const std::vector<TaskPtr>& dependencies, size_t required)
+{
+    assert(instances > 0);
+
+	TaskPtr taskPtr = mLastTaskId++; //< generate task id
+
+	Task* task = new Task(function, instances);
+	task->ptr = taskPtr;
+    
+    bool insertToQueue = false;
+
+    if (required == 0 || dependencies.empty())
+    {
+        // tasks with no dependencies
+		{
+			Lock lock(mTasksMutex);
+			mTasks.insert(std::pair<TaskPtr, Task*>(taskPtr, task));
+		}
+        insertToQueue = true;
     }
     else
     {
-        if (threadsCount < 1)
-            threadsCount = 1;
-        else if (threadsCount > gMaxThreadPoolThreads)
-            threadsCount = gMaxThreadPoolThreads;
-    }
+		if (required < 0 || required > dependencies.size())
+			task->required = dependencies.size();
+		else
+			task->required = required;
 
-    //create threads
-    for (size_t i = 0; i < threadsCount; i++)
+		Lock tasksLock(mTasksMutex);
+		mTasks.insert(std::pair<TaskPtr, Task*>(taskPtr, task));
+
+		Lock depsLock(mDepsQueueMutex);
+		for (const TaskPtr& parentTaskPtr : dependencies)
+		{
+			Task* parentTask = GetTask(parentTaskPtr);
+			if (parentTask == nullptr)
+			{
+				task->required--;	
+				if (task->required == 0)
+				{
+					// all dependencies already resolved, move to the queue
+                    insertToQueue = true;
+                    break;
+				}
+			}
+			else
+			{
+				task->parents.insert(parentTask);
+				parentTask->children.insert(task);
+			}
+		}
+    }
+    
+    if (insertToQueue)
     {
-        ExecutorThread* pThread = new ExecutorThread(this, i);
-        mThreads.push_back(pThread);
+        Lock lock(mTasksQueueMutex);
+        mTasksQueue.push(task);
+        mTaskQueueTask.notify_all();
+	}
 
-        try
-        {
-            pThread->thread = std::thread(SchedulerThreadCallback, pThread);
-        }
-        catch (...)
-        {
-            delete pThread;
-            break;
-        }
-    }
-
-    mLastTaskId = 0;
-    return 0;
+	return taskPtr;
 }
 
-void ThreadPool::Release()
+Task* ThreadPool::GetTask(const TaskPtr& ptr) const
 {
-    if (!mStarted) return;
+    // assume called in mTasksMutex lock
 
-    {
-        std::unique_lock<std::mutex> lock(mTaskQueueMutex);
-        mStarted.exchange(false);
-        mTaskQueueEvent.notify_all();
-    }
+	auto it = mTasks.find(ptr);
+	if (it != mTasks.end())
+		return it->second;
 
-    //wait for all threads & destroy them
-    for (auto& thread : mThreads)
-    {
-        thread->thread.join();
-        delete thread;
-    }
+	return nullptr;
 }
 
-const size_t ThreadPool::GetThreadsCount() const
+bool ThreadPool::IsTaskFinished(const TaskPtr& taskPtr)
 {
-    return mThreads.size();
+    Lock lock(mTasksMutex);
+	return GetTask(taskPtr) == nullptr;
 }
 
-TaskID ThreadPool::AddTask(TaskCallback pCallback, void* pUserData, uint32 instancesCount)
+void ThreadPool::WaitForTask(const TaskPtr& taskPtr)
 {
-    if (!mStarted) return 0;
-    if (instancesCount == 0) return 0;
-
-    //fill up task structure
-    Task task(mLastTaskId++, pCallback, pUserData, instancesCount);
-
-    //add task to the queue
-    {
-        std::unique_lock<std::mutex> lock(mTaskQueueMutex);
-        mTaskQueue.push(task);
-
-        //inform threads that a new task is waiting
-        mTaskQueueEvent.notify_all();
-    }
-
-    return task.id;
+    Lock lock(mTasksMutex);
+	while (GetTask(taskPtr) != nullptr)
+        mTasksMutexCV.wait(lock);
 }
 
-bool ThreadPool::IsTaskDone(const TaskID task) const
+void ThreadPool::WaitForTasks(const std::vector<TaskPtr>& tasks, size_t required)
 {
-    if (!mStarted) return false;
+    TaskPtr tmpTask = Enqueue(TaskFunction(), 1, tasks, required);
 
-    bool done = true;
-
-    LockType ulock(mTaskQueueMutex);
-
-    //find task in the queue
-    if (!mTaskQueue.empty())
-    {
-        const Task& first = mTaskQueue.front();
-        const Task& last = mTaskQueue.back();
-        done = (task < first.id) || (task > last.id);
-    }
-
-    //check if a thread is processing the task
-    for (auto thread : mThreads)
-    {
-        if (thread->busy && thread->currTask == task)
-        {
-            done = false;
-            break;
-        }
-    }
-
-    return done;
-}
-
-bool ThreadPool::AreAllTasksDone() const
-{
-    if (!mStarted) return false;
-
-    bool done = true;
-    LockType ulock(mTaskQueueMutex);
-
-    //find task in the queue
-    if (!mTaskQueue.empty())
-    {
-        //check if a thread is processing the task
-        for (auto thread : mThreads)
-        {
-            if (thread->busy)
-            {
-                done = false;
-                break;
-            }
-        }
-    }
-    return done;
-}
-
-int ThreadPool::WaitForTask(const TaskID task)
-{
-    if (!mStarted) return 1;
-
-    // deadlock protection
-    for (const auto& thread : mThreads)
-        if (thread->thread.get_id() == std::this_thread::get_id())
-            return 1;
-
-    {
-        LockType lk(mTaskFinishedMutex);
-
-        //wait for signal
-        while (!IsTaskDone(task))
-            mTaskFinishedEvent.wait(lk);
-    }
-
-    return 0;
-}
-
-int ThreadPool::WaitForAllTasks()
-{
-    if (!mStarted) return 1;
-
-    // deadlock protection
-    for (const auto& thread : mThreads)
-        if (thread->thread.get_id() == std::this_thread::get_id())
-            return 1;
-
-    {
-        LockType lk(mTaskFinishedMutex);
-
-        //wait for signal
-        while (!AreAllTasksDone())
-            mTaskFinishedEvent.wait(lk);
-    }
-
-    return 0;
-}
-
-size_t ThreadPool::GetLoad() const
-{
-    if (!mStarted) return 0;
-    if (!mTaskQueue.empty()) return mThreads.size();
-
-    uint32 load = 0;
-    for (auto thread : mThreads)
-    {
-        if (thread->busy)
-            load++;
-    }
-
-    return load;
+    Lock lock(mTasksMutex);
+    while (GetTask(tmpTask) != nullptr)
+        mTasksMutexCV.wait(lock);
 }
 
 } // namespace Common
