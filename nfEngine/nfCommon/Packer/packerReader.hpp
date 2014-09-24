@@ -1,7 +1,7 @@
 /**
     NFEngine project
 
-    \file   packerReader.h
+    \file   packerReader.hpp
     \author LKostyra (costyrra.xl@gmail.com)
     \brief  Module with class used to read files from PAK archive.
 */
@@ -11,7 +11,6 @@
 #include "packerDefines.hpp"
 #include "packerElement.hpp"
 
-// TODO: ../ is temporary, find a better solution to reach Buffer.h
 #include "../Buffer.h"
 
 namespace NFE {

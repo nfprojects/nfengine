@@ -65,4 +65,3 @@ inline ConsoleColor operator&(ConsoleColor a, ConsoleColor b)
 }
 
 void PrintColored(std::string text, ConsoleColor foreground);
-

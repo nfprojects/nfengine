@@ -11,6 +11,8 @@ using namespace NFE::Common;
 std::string s_FilePath;
 const std::string cs_Extension = ".pak";
 bool b_isReading = false;
+PackWriter* VFSWriter;
+PackReader* VFSReader;
 
 /////////////////
 //HELP MESSAGES//
@@ -101,26 +103,6 @@ std::string GetNextToken(std::string& cmd)
     return ret;
 }
 
-///////////////////////
-//UNIQUE PTR TYPEDEFS//
-///////////////////////
-void WriterDeleter(NFE::Common::PackWriter* ptr)
-{
-    Packer_ReleaseWriter();
-    ptr = nullptr;
-}
-typedef std::unique_ptr<PackWriter, std::function<void(PackWriter*)>> WriterUniquePtr;
-
-void ReaderDeleter(NFE::Common::PackReader* ptr)
-{
-    Packer_ReleaseReader();
-    ptr = nullptr;
-}
-typedef std::unique_ptr<PackReader, std::function<void(PackReader*)>> ReaderUniquePtr;
-
-WriterUniquePtr p_VFSWriter(nullptr, WriterDeleter);
-ReaderUniquePtr p_VFSReader(nullptr, ReaderDeleter);
-
 //////////////////
 //INIT CALLBACKS//
 //////////////////
@@ -129,23 +111,20 @@ void OnBeforeLoop()
     ///TODO Add error code translated to string
     PACK_RESULT pr = PACK_RESULT::OK;
 
-    PackWriter* tmpWriter;
-    pr = Packer_CreateWriter(&tmpWriter);
+    pr = Packer_CreateWriter(&VFSWriter);
     AssertMsg(pr == PACK_RESULT::OK, "Error: " + PACK_RESULT_TO_STRING(pr));
 
-    p_VFSWriter.reset(tmpWriter);
-
-    PackReader* tmpReader;
-    pr = Packer_CreateReader(&tmpReader);
+    pr = Packer_CreateReader(&VFSReader);
     AssertMsg(pr == PACK_RESULT::OK, "Error: " + PACK_RESULT_TO_STRING(pr));
-
-    p_VFSReader.reset(tmpReader);
 }
 
 void OnAfterLoop()
 {
-    p_VFSReader.release();
-    p_VFSWriter.release();
+    Packer_ReleaseWriter();
+    Packer_ReleaseReader();
+
+    VFSWriter = nullptr;
+    VFSReader = nullptr;
 }
 
 ///////////////////
@@ -167,7 +146,7 @@ void Callback_LoadArchive(std::string& cmdString)
         return;
     }
 
-    PACK_RESULT pr = p_VFSReader->Init(cmd);
+    PACK_RESULT pr = VFSReader->Init(cmd);
     AssertMsg(pr == PACK_RESULT::OK, "Failed to load Pack Archive. Packer DLL result: " +
               PACK_RESULT_TO_STRING(pr) + " - " + Packer_GetErrorStr(pr));
 
@@ -215,7 +194,7 @@ void Callback_CreateArchive(std::string& cmdString)
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
 
-    PACK_RESULT pr = p_VFSWriter->Init(cmd);
+    PACK_RESULT pr = VFSWriter->Init(cmd);
     AssertMsg(pr == PACK_RESULT::OK, "Failed to initialize new Pack Archive. Packer DLL result: " +
               PACK_RESULT_TO_STRING(pr) + " - " + Packer_GetErrorStr(pr));
 
@@ -244,7 +223,7 @@ void Callback_AddFile(std::string& cmdString)
     if (vfsPath.empty())
         vfsPath = path;
 
-    PACK_RESULT pr = p_VFSWriter->AddFile(path, vfsPath);
+    PACK_RESULT pr = VFSWriter->AddFile(path, vfsPath);
     AssertMsg(pr == PACK_RESULT::OK, "Failed to add file to Pack Archive. Packer DLL result: " +
               PACK_RESULT_TO_STRING(pr) + " - " + Packer_GetErrorStr(pr));
 }
@@ -257,7 +236,7 @@ void Callback_SaveArchive(std::string& cmdString)
         return;
     }
 
-    PACK_RESULT pr = p_VFSWriter->WritePAK();
+    PACK_RESULT pr = VFSWriter->WritePAK();
     AssertMsg(pr == PACK_RESULT::OK, "Failed to save Pack Archive. Packer DLL result: " +
               PACK_RESULT_TO_STRING(pr) + " - " + Packer_GetErrorStr(pr));
 }
@@ -265,9 +244,9 @@ void Callback_SaveArchive(std::string& cmdString)
 void Callback_ListArchive(std::string&)
 {
     if (b_isReading)
-        p_VFSReader->PrintFilesToStdout();
+        VFSReader->PrintFilesToStdout();
     else
-        p_VFSWriter->PrintFilesToStdout();
+        VFSWriter->PrintFilesToStdout();
 }
 
 #ifdef _DEBUG

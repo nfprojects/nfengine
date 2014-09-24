@@ -1,7 +1,7 @@
 /**
     NFEngine project
 
-    \file   packer.h
+    \file   packer.hpp
     \author LKostyra (costyrra.xl@gmail.com)
     \brief  Main module for Packer, which includes all other modules.
 */
@@ -20,8 +20,8 @@
 namespace NFE {
 namespace Common {
 
-NFCOMMON_API PACK_RESULT Packer_CreateWriter(NFE::Common::PackWriter** retwriter);
-NFCOMMON_API PACK_RESULT Packer_CreateReader(NFE::Common::PackReader** retreader);
+NFCOMMON_API PACK_RESULT Packer_CreateWriter(PackWriter** retwriter);
+NFCOMMON_API PACK_RESULT Packer_CreateReader(PackReader** retreader);
 NFCOMMON_API void Packer_ReleaseWriter();
 NFCOMMON_API void Packer_ReleaseReader();
 

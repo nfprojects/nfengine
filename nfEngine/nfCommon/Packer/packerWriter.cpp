@@ -113,10 +113,10 @@ PACK_RESULT PackWriter::WritePAK() const
 
     // Position of first file in archive, calculated as follows
     //   header_size             = version<uint32> + file_table_element_count<size_t>
-    //   file_table_element_size = hash<MD5Hash> + current_pos<long> + file_size<size_t>
+    //   file_table_element_size = hash<MD5Hash> + current_pos<size_t> + file_size<size_t>
     //   ui_CurFilePos           = header_size + file_table_element_size * element_count
-    long ui_CurFilePos = sizeof(uint32) + sizeof(size_t) +
-                         (sizeof(MD5Hash) + sizeof(long) + sizeof(size_t)) * mFileList.size();
+    size_t ui_CurFilePos = sizeof(uint32) + sizeof(size_t) +
+                           (sizeof(MD5Hash) + sizeof(size_t) + sizeof(size_t)) * mFileList.size();
 
     //save file list
     for (size_t i = 0; i < mFileList.size(); i++)
@@ -124,7 +124,7 @@ PACK_RESULT PackWriter::WritePAK() const
         if (!fwrite(reinterpret_cast<const void*>(&mFileList[i].mHash), sizeof(uint32), 4, pFile.get()))
             return PACK_RESULT::WRITE_FAILED;
 
-        if (!fwrite(reinterpret_cast<const void*>(&ui_CurFilePos), sizeof(long), 1, pFile.get()))
+        if (!fwrite(reinterpret_cast<const void*>(&ui_CurFilePos), sizeof(size_t), 1, pFile.get()))
             return PACK_RESULT::WRITE_FAILED;
 
         if (!fwrite(reinterpret_cast<const void*>(&mFileList[i].FileSize), sizeof(size_t), 1, pFile.get()))

@@ -36,12 +36,10 @@ PACK_RESULT PackReader::Init(const std::string& FilePath)
     packElement tempElement;
     for (size_t i = 0; i < mFileSize; ++i)
     {
-        uint32 hash, fullHash[4];
-
         if (!fread(reinterpret_cast<void*>(&tempElement.mHash), sizeof(uint32), 4, pFile.get()))
             return PACK_RESULT::READ_FAILED;
 
-        if (!fread(reinterpret_cast<void*>(&tempElement.FilePos), sizeof(long), 1, pFile.get()))
+        if (!fread(reinterpret_cast<void*>(&tempElement.FilePos), sizeof(size_t), 1, pFile.get()))
             return PACK_RESULT::READ_FAILED;
 
         if (!fread(reinterpret_cast<void*>(&tempElement.FileSize), sizeof(size_t), 1, pFile.get()))
@@ -69,8 +67,8 @@ PACK_RESULT PackReader::GetFile(const std::string& VFSFilePath, Buffer& outbuf)
 
             FILEPtr pFile(fopen(mFilePath.c_str(), "rb"), FILEPtrDestroy);
 
-            long l_FilePos = mFileList[i].FilePos;
-            if (fseek(pFile.get(), l_FilePos, SEEK_SET))
+            size_t filePos = mFileList[i].FilePos;
+            if (fseek(pFile.get(), static_cast<long>(filePos), SEEK_SET))
                 return PACK_RESULT::READ_FAILED;
 
             if (!fread(outbuf.GetData(), sizeof(unsigned char), mFileList[i].FileSize, pFile.get()))

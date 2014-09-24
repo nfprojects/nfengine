@@ -1,7 +1,7 @@
 /**
     NFEngine project
 
-    \file   packerElement.h
+    \file   packerElement.hpp
     \author LKostyra (costyrra.xl@gmail.com)
     \brief  Module with class representing single file.
 */
@@ -18,7 +18,7 @@ struct packElement
 {
     MD5Hash mHash;
     std::string FilePath;
-    long FilePos;
+    size_t FilePos;
     size_t FileSize;
 };
 

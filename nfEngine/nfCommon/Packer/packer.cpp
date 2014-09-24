@@ -12,47 +12,39 @@
 namespace NFE {
 namespace Common {
 
-PackWriter* Writer = 0;
-PackReader* Reader = 0;
+std::unique_ptr<PackWriter> Writer(nullptr);
+std::unique_ptr<PackReader> Reader(nullptr);
 
-PACK_RESULT Packer_CreateWriter(NFE::Common::PackWriter** retwriter)
+PACK_RESULT Packer_CreateWriter(PackWriter** retwriter)
 {
     if (retwriter == 0)
         return PACK_RESULT::NULLPOINTER;
 
-    if (Writer)
-        delete Writer;
-
-    Writer = new NFE::Common::PackWriter;
-    *retwriter = Writer;
+    Writer.reset(new NFE::Common::PackWriter);
+    *retwriter = Writer.get();
 
     return PACK_RESULT::OK;
 }
 
-PACK_RESULT Packer_CreateReader(NFE::Common::PackReader** retreader)
+PACK_RESULT Packer_CreateReader(PackReader** retreader)
 {
     if (retreader == 0)
         return PACK_RESULT::NULLPOINTER;
 
-    if (Reader)
-        delete Reader;
-
-    Reader = new NFE::Common::PackReader;
-    *retreader = Reader;
+    Reader.reset(new NFE::Common::PackReader);
+    *retreader = Reader.get();
 
     return PACK_RESULT::OK;
 }
 
 void Packer_ReleaseWriter()
 {
-    delete Writer;
-    Writer = 0;
+    Writer.reset(nullptr);
 }
 
 void Packer_ReleaseReader()
 {
-    delete Reader;
-    Reader = 0;
+    Reader.reset(nullptr);
 }
 
 } // namespace Common

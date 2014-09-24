@@ -1,7 +1,7 @@
 /**
     NFEngine project
 
-    \file   packerDefines.h
+    \file   packerDefines.hpp
     \author LKostyra (costyrra.xl@gmail.com)
     \brief  Common definitions for Packer
 */
@@ -50,13 +50,10 @@ typedef std::unique_ptr<FILE, FILEPtrDeleter> FILEPtr;
 NFCOMMON_API std::string Packer_GetErrorStr(PACK_RESULT pr);
 void FILEPtrDestroy(FILE* f);
 
-// useful macros
-#define PACK_CHECK_ERROR(x) if(x) { cout << "Error " << x << " (" << Packer_GetErrorStr(x) << ")\n"; return x; }
 #define PACK_RESULT_TO_STRING(x) std::to_string(static_cast<PACK_RESULT_TYPE>(x))
-
 #define PACKER_DEF_BUFFER_SIZE 4096
 
-// information about current file version
+// current archive version
 extern const uint32 NFCOMMON_API gPackFileVersion;
 
 } // namespace Common
