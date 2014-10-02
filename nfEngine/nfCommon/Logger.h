@@ -7,7 +7,7 @@
 #pragma once
 
 #include "nfCommon.h"
-#include "Timer.h"
+#include "Timer.hpp"
 
 namespace NFE {
 namespace Common {

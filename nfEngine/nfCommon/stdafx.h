@@ -10,6 +10,7 @@
 #include "targetver.h"
 
 // TODO: remove platform-dependent libraries!
+//       or move them to some #ifdef...#endif blocks
 #define NOMINMAX
 #include <Windows.h>
 #include <Windowsx.h>
