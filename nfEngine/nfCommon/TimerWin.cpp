@@ -6,14 +6,25 @@
 #include "stdafx.h"
 #include "TimerWin.hpp"
 
+
+namespace {
+    static double GetCounterPeriod()
+    {
+        LARGE_INTEGER freq;
+        QueryPerformanceFrequency(&freq);
+        return 1.0 / static_cast<double>(freq.QuadPart);
+    }
+
+    static const double mPeriod = GetCounterPeriod();
+} // namespace
+
+
 namespace NFE {
 namespace Common {
 
 Timer::Timer()
 {
-    QueryPerformanceFrequency(&mFreq);
     mStart.QuadPart = 0;
-    mStop.QuadPart = 0;
 }
 
 void Timer::Start()
@@ -23,10 +34,10 @@ void Timer::Start()
 
 double Timer::Stop()
 {
-    QueryPerformanceCounter(&mStop);
+    LARGE_INTEGER stop;
+    QueryPerformanceCounter(&stop);
 
-    return static_cast<double>(mStop.QuadPart - mStart.QuadPart) /
-        static_cast<double>(mFreq.QuadPart);
+    return static_cast<double>(stop.QuadPart - mStart.QuadPart) * mPeriod;
 }
 
 } // namespace Common

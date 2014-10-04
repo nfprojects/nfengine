@@ -1,7 +1,7 @@
 /**
-    @file   TimerLinux.cpp
-    @brief  High resolution timer class definition for Linux system
-*/
+ *  @file   TimerLinux.cpp
+ *  @brief  High resolution timer class definition for Linux system
+ */
 
 #include "stdafx.h"
 #include "TimerLinux.hpp"

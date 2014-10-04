@@ -5,11 +5,29 @@
 #include <chrono>
 #include <thread>
 
+
+namespace {
+    const double SLEEP_FOR_ACCURACY = 0.002; // 2 ms
+    const double TOLERANCE = 0.01; // 10 ms
+} // namespace
+
+
 class TimerTest : public testing::Test
 {
 protected:
     NFE::Common::Timer mTimer;
 };
+
+
+TEST_F(TimerTest, ImmediateStartStopTest)
+{
+    double result;
+
+    mTimer.Start();
+    result = mTimer.Stop();
+
+    ASSERT_GE(result, 0.0);
+}
 
 TEST_F(TimerTest, BasicUseTest)
 {
@@ -20,8 +38,14 @@ TEST_F(TimerTest, BasicUseTest)
     std::this_thread::sleep_for(std::chrono::seconds(static_cast<int>(expected)));
     result = mTimer.Stop();
 
+    // make sure we got positive value
     ASSERT_GT(result, 0.0);
-    ASSERT_NEAR(result, expected, 0.01);
+
+    // verify if correct time measured according to formula:
+    //   -SLEEP_FOR_ACCURACY < result - expected < TOLERANCE
+    result -= expected;
+    ASSERT_GT(result, -SLEEP_FOR_ACCURACY);
+    ASSERT_LT(result, TOLERANCE);
 }
 
 TEST_F(TimerTest, MultipleStopTest)

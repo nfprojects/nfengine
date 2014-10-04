@@ -1,7 +1,7 @@
 /**
-    @file   Timer.hpp
-    @brief  High resolution timer class declaration.
-*/
+ *  @file   Timer.hpp
+ *  @brief  High resolution timer class declaration.
+ */
 
 #pragma once
 

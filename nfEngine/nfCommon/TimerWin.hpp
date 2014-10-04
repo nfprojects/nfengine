@@ -7,14 +7,14 @@
 
 #include "nfCommon.h"
 
+
 namespace NFE {
 namespace Common {
 
 class NFCOMMON_API Timer
 {
 private:
-    LARGE_INTEGER mFreq; // frequency of clock
-    LARGE_INTEGER mStart, mStop; // start/stop points
+    LARGE_INTEGER mStart; // start point
 
 public:
     Timer();
