@@ -12,7 +12,7 @@
 #include "SceneEvent.h"
 #include "SceneManager.h"
 #include "Performance.h"
-#include "../nfCommon/Timer.h"
+#include "../nfCommon/Timer.hpp"
 
 namespace NFE {
 namespace Scene {
