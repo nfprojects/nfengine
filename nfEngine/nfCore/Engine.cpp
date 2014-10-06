@@ -16,7 +16,7 @@
 #include "Memory.h"
 
 #include "../nfCommon/Window.h"
-#include "../nfCommon/Timer.h"
+#include "../nfCommon/Timer.hpp"
 #include "../nfCommon/Logger.h"
 
 namespace NFE {

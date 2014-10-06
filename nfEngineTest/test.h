@@ -12,7 +12,7 @@
 #include "../nfEngine/nfCommon/Math/Random.h"
 #include "../nfEngine/nfCommon/InputStream.h"
 #include "../nfEngine/nfCommon/OutputStream.h"
-#include "../nfEngine/nfCommon/Timer.h"
+#include "../nfEngine/nfCommon/Timer.hpp"
 
 
 /*

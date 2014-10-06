@@ -2,7 +2,7 @@
 #include "GuiRenderer.h"
 #include "Renderer.h"
 #include "../nfCommon/Image.h"
-#include "../nfCommon/Timer.h"
+#include "../nfCommon/Timer.hpp"
 
 namespace NFE {
 namespace Render {

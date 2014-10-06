@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "../nfCommon/ThreadPool.hpp"
-#include "../nfCommon/Timer.h"
+#include "../nfCommon/Timer.hpp"
 #include "Common.hpp"
 
 

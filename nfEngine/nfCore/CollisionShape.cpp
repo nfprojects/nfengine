@@ -9,7 +9,7 @@
 #include "CollisionShape.h"
 #include "Globals.h"
 #include "../nfCommon/Logger.h"
-#include "../nfCommon/Timer.h"
+#include "../nfCommon/Timer.hpp"
 
 namespace NFE {
 namespace Resource {
