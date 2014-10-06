@@ -13,7 +13,7 @@
 #include "Engine.h"
 #include "BVH.h"
 #include "Renderer.h"
-#include "../nfCommon/Timer.h"
+#include "../nfCommon/Timer.hpp"
 #include "../nfCommon/Logger.h"
 
 namespace NFE {
