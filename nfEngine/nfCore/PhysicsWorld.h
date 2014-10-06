@@ -23,7 +23,7 @@ class PhysicsWorld : public Util::Aligned
 private:
     SceneManager* mScene;
 
-    Common::TaskPtr mPhysicsTask;
+    Common::TaskID mPhysicsTask;
     volatile bool mRunning;
 
     // Bullet Physics objects

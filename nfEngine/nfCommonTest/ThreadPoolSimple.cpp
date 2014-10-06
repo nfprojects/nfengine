@@ -31,7 +31,7 @@ TEST(ThreadPoolSimple, DestroyWhileExecuting)
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     };
 
-    TaskPtr task = 0;
+    TaskID task = 0;
     ASSERT_NO_THROW(task = tp->Enqueue(taskFunc, 20));
     ASSERT_NO_THROW(tp->Enqueue(taskFunc, 20, { task }));
     ASSERT_NO_THROW(tp.reset());
@@ -41,10 +41,16 @@ TEST(ThreadPoolSimple, DestroyWhileExecuting)
 TEST(ThreadPoolSimple, Wait)
 {
     ThreadPool tp;
-    TaskFunction smallTaskFunc = [](size_t, size_t) { std::this_thread::sleep_for(std::chrono::milliseconds(1)); };
-    TaskFunction longTaskFunc = [](size_t, size_t) { std::this_thread::sleep_for(std::chrono::milliseconds(20)); };
+    TaskFunction smallTaskFunc = [](size_t, size_t)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    };
+    TaskFunction longTaskFunc = [](size_t, size_t)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    };
 
-    TaskPtr taskA, taskB, taskC, taskD;
+    TaskID taskA, taskB, taskC, taskD;
 
     // wait for already executed
     ASSERT_NO_THROW(taskA = tp.Enqueue(smallTaskFunc, 1));
@@ -66,7 +72,7 @@ TEST(ThreadPoolSimple, Wait)
 TEST(ThreadPoolSimple, EnqueueInsideTask)
 {
     ThreadPool tp;
-    TaskPtr taskA, taskB;
+    TaskID taskA, taskB;
     std::atomic<int> condition(0);
     Latch latch;
 
@@ -94,7 +100,7 @@ TEST(ThreadPoolSimple, EnqueueInsideTask)
 TEST(ThreadPoolSimple, ThreadId)
 {
     ThreadPool tp;
-    TaskPtr task;
+    TaskID task;
     size_t workerThreads = tp.GetThreadsNumber();
     std::atomic<size_t> done(0);
     std::unique_ptr<std::atomic<int>[]> counters(new std::atomic<int>[workerThreads]);
@@ -106,7 +112,7 @@ TEST(ThreadPoolSimple, ThreadId)
     TaskFunction taskFunc = [&](size_t, size_t threadId)
     {
         ASSERT_TRUE(threadId >= 0 && threadId < workerThreads) << "Unexpected thread id: "
-            << threadId;
+                << threadId;
         counters[threadId]++;
         done++;
         latch.Wait();
@@ -132,8 +138,11 @@ TEST(ThreadPoolSimple, ThousandTasks)
 
     {
         ThreadPool tp;
-        std::vector<TaskPtr> tasks;
-        auto emptyTaskFunc = [&counter](size_t, size_t) { counter++; };
+        std::vector<TaskID> tasks;
+        auto emptyTaskFunc = [&counter](size_t, size_t)
+        {
+            counter++;
+        };
 
         for (int i = 0; i < numTasks; ++i)
             ASSERT_NO_THROW(tasks.push_back(tp.Enqueue(emptyTaskFunc)));
@@ -160,7 +169,7 @@ TEST(ThreadPoolSimple, InstancesSimple)
         counters[i] = 0;
 
     ThreadPool tp;
-    TaskPtr task;
+    TaskID task;
     ASSERT_NO_THROW(task = tp.Enqueue(func, instancesNum));
     tp.WaitForTask(task);
 
@@ -181,7 +190,7 @@ TEST(ThreadPoolSimple, Instances)
     };
 
     ThreadPool tp;
-    std::vector<TaskPtr> tasks;
+    std::vector<TaskID> tasks;
 
     for (int i = 0; i < tasksNum; ++i)
         counters[i] = 0;
@@ -190,7 +199,7 @@ TEST(ThreadPoolSimple, Instances)
     for (int i = 0; i < tasksNum; ++i)
     {
         using namespace std::placeholders;
-        TaskPtr task;
+        TaskID task;
         ASSERT_NO_THROW(task = tp.Enqueue(std::bind(func, _1, _2, i), instancesPerTask[i]));
         tasks.push_back(task);
     }
@@ -221,7 +230,7 @@ TEST(ThreadPoolSimple, DependencyInProgress)
     };
 
     ThreadPool tp;
-    TaskPtr task0 = 0, task1 = 0;
+    TaskID task0 = 0, task1 = 0;
     ASSERT_NO_THROW(task0 = tp.Enqueue(funcA, numInstances));
     ASSERT_NO_THROW(task1 = tp.Enqueue(funcB, numInstances, { task0 }));
     tp.WaitForTask(task1);
@@ -231,7 +240,7 @@ TEST(ThreadPoolSimple, DependencyInProgress)
 TEST(ThreadPoolSimple, DependencyFinished)
 {
     ThreadPool tp;
-    TaskPtr task0, task1;
+    TaskID task0, task1;
     auto func = [](size_t, size_t) {};
 
     ASSERT_NO_THROW(task0 = tp.Enqueue(func, 1));
@@ -251,7 +260,7 @@ TEST(ThreadPoolSimple, DependencyRequiredNum)
     int cTaskNum = 10000;
 
     ThreadPool tp;
-    TaskPtr taskA = 0, taskB = 0, waitTask;
+    TaskID taskA = 0, taskB = 0, waitTask;
     Latch cFinishLatch;
     std::atomic<int> counterA(0);
     std::atomic<int> counterB(0);
@@ -276,7 +285,7 @@ TEST(ThreadPoolSimple, DependencyRequiredNum)
     ASSERT_NO_THROW(taskA = tp.Enqueue(funcA, 1));
     ASSERT_NO_THROW(taskB = tp.Enqueue(funcB, 1));
 
-    std::vector<TaskPtr> cTasks;
+    std::vector<TaskID> cTasks;
     for (int i = 0; i < cTaskNum; ++i)
         ASSERT_NO_THROW(cTasks.push_back(tp.Enqueue(funcC, 1, { taskA, taskB }, 1)));
 
@@ -318,7 +327,7 @@ TEST(ThreadPoolSimple, DependencyChain)
         counters[i] = 0;
 
     using namespace std::placeholders;
-    TaskPtr prevTask = 0;
+    TaskID prevTask = 0;
     ASSERT_NO_THROW(prevTask = tp.Enqueue(std::bind(func, _1, _2, 0), instancesPerTask));
     for (int i = 1; i < chainLen; ++i)
         ASSERT_NO_THROW(prevTask = tp.Enqueue(std::bind(func, _1, _2, i), instancesPerTask, { prevTask }));

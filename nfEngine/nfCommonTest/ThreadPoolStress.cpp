@@ -16,26 +16,26 @@ TEST(ThreadPoolStress, ComplexDependency)
 
     struct TaskInfo
     {
-        std::vector<TaskPtr> deps;
+        std::vector<TaskID> deps;
         int done;
         int required;
         size_t instanceNum;
     };
 
     ThreadPool tp;
-    std::vector<TaskPtr> taskIds;
+    std::vector<TaskID> taskIds;
     std::vector<TaskInfo> tasks;
-    TaskPtr finishTask;
+    TaskID finishTask;
     tasks.reserve(numTasks);
 
     auto func = [&](size_t instanceId, size_t, size_t id)
     {
         TaskInfo& taskInfo = tasks[id];
         ASSERT_TRUE(instanceId >= 0 && instanceId < taskInfo.instanceNum)
-            << "Task instance ID out of bound";
+                << "Task instance ID out of bound";
 
         int depsResolved = 0;
-        for (TaskPtr dependency : taskInfo.deps)
+        for (TaskID dependency : taskInfo.deps)
             if (tasks[dependency].done)
                 depsResolved++;
 
@@ -52,7 +52,7 @@ TEST(ThreadPoolStress, ComplexDependency)
     {
         using namespace std::placeholders;
         TaskInfo task;
-        TaskPtr taskId;
+        TaskID taskId;
 
         // generate random dependencies
         int range = std::min<int>(tasks.size(), 0);
@@ -70,7 +70,7 @@ TEST(ThreadPoolStress, ComplexDependency)
         task.instanceNum = rand() % 8 + 1;
         tasks.push_back(task);
         ASSERT_NO_THROW(taskId = tp.Enqueue(std::bind(func, _1, _2, i),
-            task.instanceNum, task.deps, task.required));
+                                            task.instanceNum, task.deps, task.required));
         ASSERT_EQ(i, taskId);
         taskIds.push_back(taskId);
     }

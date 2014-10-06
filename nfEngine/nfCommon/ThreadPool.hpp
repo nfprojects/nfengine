@@ -18,7 +18,7 @@ namespace Common {
 /**
  * Thread pool task unique identifier.
  */
-typedef uint64_t TaskPtr;
+typedef uint64_t TaskID;
 
 /**
  * Function object representing a task.
@@ -36,19 +36,19 @@ class ThreadPool;
  */
 class Task final
 {
-friend class ThreadPool;
+    friend class ThreadPool;
 
-	TaskPtr ptr;
+    TaskID ptr;
 
     /// task-related members
-    TaskFunction callback;        //< task routine
-    size_t instancesNum;          //< total number of the task instances
-    size_t nextInstance;          //< next instance ID to execute
-    std::atomic<size_t> instancesLeft;
+    TaskFunction mCallback;      //< task routine
+    size_t mInstancesNum;        //< total number of the task instances
+    size_t mNextInstance;        //< next instance ID to execute
+    std::atomic<size_t> mInstancesLeft;
     
-    std::set<Task*> parents;     //< parent tasks
-    std::set<Task*> children;    //< child tasks
-    size_t required;              //< number of parent tasks left to dependency resolve
+    std::set<Task*> mParents;    //< parent tasks
+    std::set<Task*> mChildren;   //< child tasks
+    size_t mRequired;            //< number of parent tasks left to dependency resolve
 
     void RemoveFromParents();
 
@@ -64,13 +64,12 @@ class WorkerThread
 {
     friend class ThreadPool;
 
-    std::thread thread;
-    std::atomic<bool> started; //< if set to false, exit the thread
-    size_t id;
-
+    std::thread mThread;
+    std::atomic<bool> mStarted; //< if set to false, exit the thread
+    size_t mId;
 
     // force the class objects to occupy different cache lines
-    char pad[64];
+    char mPad[64];
 
 public:
     WorkerThread(ThreadPool* pPool, size_t id);
@@ -92,21 +91,21 @@ class NFCOMMON_API ThreadPool final
 
     size_t mLastThreadId;
     std::set<WorkerThreadPtr> mThreads;
-    std::mutex mThreadsMutex; //< lock for "mThreads"
+    std::mutex mThreadsMutex;               //< lock for "mThreads"
 
-    std::mutex mDepsQueueMutex;    //< lock for task dependencies access (Task members)
+    std::mutex mDepsQueueMutex;             //< lock for task dependencies access (Task members)
 
     std::condition_variable mTaskQueueTask;
-	std::queue<Task*> mTasksQueue; //< Queue for task with resolved dependencies (with "Waiting" state)
-    std::mutex mTasksQueueMutex;      //< lock for "mTasksQueue" access
+	std::queue<Task*> mTasksQueue;          //< Queue for task with resolved dependencies (with "Waiting" state)
+    std::mutex mTasksQueueMutex;            //< lock for "mTasksQueue" access
 
-	std::atomic<TaskPtr> mLastTaskId;
-	std::map<TaskPtr, Task*> mTasks;
-	std::mutex mTasksMutex;                //< lock for "mTasks"
-	std::condition_variable mTasksMutexCV; //< condition variable used to notify about finished task
+	std::atomic<TaskID> mLastTaskId;
+	std::map<TaskID, Task*> mTasks;
+	std::mutex mTasksMutex;                 //< lock for "mTasks"
+	std::condition_variable mTasksMutexCV;  //< condition variable used to notify about finished task
 
-	// translate TaskPtr to Task object
-	Task* GetTask(const TaskPtr& ptr) const;
+	// translate TaskID to Task object
+	Task* GetTask(const TaskID& ptr) const;
 
 	void SchedulerCallback(WorkerThread* thread);
 
@@ -147,20 +146,20 @@ public:
      *                     Less than zero means "all" (dependencies.size()).
      * @return             Task ID
      */
-    TaskPtr Enqueue(TaskFunction function,
+    TaskID Enqueue(TaskFunction function,
                     size_t instances = 1,
-                    const std::vector<TaskPtr>& dependencies = std::vector<TaskPtr>(),
+                    const std::vector<TaskID>& dependencies = std::vector<TaskID>(),
                     size_t required = -1);
 
     /**
      * Check if a task is completed.
      */
-    bool IsTaskFinished(const TaskPtr& taskPtr);
+    bool IsTaskFinished(const TaskID& taskPtr);
 
     /**
      * Waits for an task to finish.
      */
-	void WaitForTask(const TaskPtr& taskPtr);
+	void WaitForTask(const TaskID& taskPtr);
 
     /**
      * Waits for multiple tasks to finish.
@@ -169,7 +168,7 @@ public:
      * @param required Number of tasks needed to the function return. Negative value means waiting
                        for all the tasks.
      */
-    void WaitForTasks(const std::vector<TaskPtr>& tasks, size_t required = -1);
+    void WaitForTasks(const std::vector<TaskID>& tasks, size_t required = -1);
 
 };
 

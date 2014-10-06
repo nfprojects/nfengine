@@ -20,7 +20,7 @@ TEST(ThreadPoolPerformance, SpawnTasks)
     {
         Latch latch;
         ThreadPool tp;
-        std::vector<TaskPtr> tasks;
+        std::vector<TaskID> tasks;
         tasks.reserve(numTasks);
 
         TaskFunction lockTask = [&](size_t, size_t)
@@ -48,8 +48,8 @@ TEST(ThreadPoolPerformance, SpawnTasks)
         double waitTime = 1000.0 * timer.Stop();
 
         std::cout << std::setprecision(4) << std::left
-            << std::setw(9) << numTasks << " | "
-            << std::setw(12) << enqueueTime << " | "
-            << waitTime << std::endl;
+                  << std::setw(9) << numTasks << " | "
+                  << std::setw(12) << enqueueTime << " | "
+                  << waitTime << std::endl;
     }
 }

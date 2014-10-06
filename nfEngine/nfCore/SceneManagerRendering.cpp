@@ -201,13 +201,13 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
     //draw shadow maps
     g_pShadowRenderer->Enter(g_pImmediateContext);
 
-    auto drawShadowMapFunc = [](LightComponent* pLight, size_t instance, size_t threadID)
+    auto drawShadowMapFunc = [](LightComponent * pLight, size_t instance, size_t threadID)
     {
         IRenderContext* pContext = g_pDeferredContexts[threadID];
         pLight->mOwner->GetScene()->RenderShadow(pContext, pLight, static_cast<int>(instance));
     };
 
-    std::vector<Common::TaskPtr> shadowTasks;
+    std::vector<Common::TaskID> shadowTasks;
     for (auto pLight : mLights)
     {
         if (!pLight->mUpdateShadowmap) continue;
@@ -218,7 +218,7 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
         else if (pLight->mLightType == LightType::Dir)
             instancesCount = pLight->mDirLight.splits;
 
-        Common::TaskPtr task =
+        Common::TaskID task =
             g_pMainThreadPool->Enqueue(std::bind(drawShadowMapFunc, pLight, _1, _2),
                                        instancesCount);
         shadowTasks.push_back(task);
@@ -238,7 +238,8 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
     };
 
     // finish all deferred context here - build command lists
-    Common::TaskPtr endCommandListTask = g_pMainThreadPool->Enqueue(std::bind(endCommandListFunc, _1), contextsNum);
+    Common::TaskID endCommandListTask = g_pMainThreadPool->Enqueue(std::bind(endCommandListFunc, _1),
+                                        contextsNum);
     g_pMainThreadPool->WaitForTask(endCommandListTask);
 
     // execute command lists
