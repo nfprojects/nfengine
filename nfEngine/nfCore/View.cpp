@@ -5,15 +5,15 @@
     \brief  Definitions of View class.
 */
 
-#include "stdafx.h"
-#include "View.h"
-#include "Globals.h"
-#include "Renderer.h"
-#include "ResourcesManager.h"
-#include "Texture.h"
-#include "../nfCommon/Window.h"
-#include "../nfCommon/Logger.h"
-#include "../nfCommon/Image.h"
+#include "stdafx.hpp"
+#include "View.hpp"
+#include "Globals.hpp"
+#include "Renderer.hpp"
+#include "ResourcesManager.hpp"
+#include "Texture.hpp"
+#include "../nfCommon/Window.hpp"
+#include "../nfCommon/Logger.hpp"
+#include "../nfCommon/Image.hpp"
 
 namespace NFE {
 namespace Render {

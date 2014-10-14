@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "nfCommon.h"
+#include "nfCommon.hpp"
 
 #if defined(WIN32)
 #include "TimerWin.hpp"

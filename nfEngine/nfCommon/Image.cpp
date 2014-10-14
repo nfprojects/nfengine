@@ -1,10 +1,10 @@
-#include "stdafx.h"
-#include "Image.h"
-#include "Math/Math.h"
-#include "InputStream.h"
-#include "OutputStream.h"
+#include "stdafx.hpp"
+#include "Image.hpp"
+#include "Math/Math.hpp"
+#include "InputStream.hpp"
+#include "OutputStream.hpp"
 #include "jpeg/jpgd.h"
-#include "Logger.h"
+#include "Logger.hpp"
 
 namespace NFE {
 namespace Common {

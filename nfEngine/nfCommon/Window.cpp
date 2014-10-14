@@ -5,8 +5,8 @@
     \brief  Window class definition.
 */
 
-#include "stdafx.h"
-#include "Window.h"
+#include "stdafx.hpp"
+#include "Window.hpp"
 
 namespace NFE {
 namespace Common {

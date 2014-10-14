@@ -5,11 +5,11 @@
     \brief  Camera component declaration.
 */
 
-#include "stdafx.h"
-#include "Camera.h"
-#include "Entity.h"
-#include "..\nfCommon\InputStream.h"
-#include "..\nfCommon\OutputStream.h"
+#include "stdafx.hpp"
+#include "Camera.hpp"
+#include "Entity.hpp"
+#include "..\nfCommon\InputStream.hpp"
+#include "..\nfCommon\OutputStream.hpp"
 
 namespace NFE {
 namespace Scene {

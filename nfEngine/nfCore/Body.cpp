@@ -5,16 +5,16 @@
     \brief  Body component definition.
 */
 
-#include "stdafx.h"
-#include "Globals.h"
-#include "Body.h"
-#include "SceneManager.h"
-#include "PhysicsWorld.h"
-#include "ResourcesManager.h"
-#include "CollisionShape.h"
-#include "Entity.h"
-#include "..\nfCommon\InputStream.h"
-#include "..\nfCommon\OutputStream.h"
+#include "stdafx.hpp"
+#include "Globals.hpp"
+#include "Body.hpp"
+#include "SceneManager.hpp"
+#include "PhysicsWorld.hpp"
+#include "ResourcesManager.hpp"
+#include "CollisionShape.hpp"
+#include "Entity.hpp"
+#include "..\nfCommon\InputStream.hpp"
+#include "..\nfCommon\OutputStream.hpp"
 
 namespace NFE {
 namespace Scene {

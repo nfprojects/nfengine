@@ -5,8 +5,8 @@
     \brief  Performance utilities definitions.
 */
 
-#include "stdafx.h"
-#include "Performance.h"
+#include "stdafx.hpp"
+#include "Performance.hpp"
 
 namespace NFE {
 namespace Util {

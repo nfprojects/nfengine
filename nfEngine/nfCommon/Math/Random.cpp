@@ -5,9 +5,9 @@
     \brief  Pseudorandom number generator definitions.
 */
 
-#include "stdafx.h"
-#include "Math.h"
-#include "Random.h"
+#include "stdafx.hpp"
+#include "Math.hpp"
+#include "Random.hpp"
 
 namespace NFE {
 namespace Math {

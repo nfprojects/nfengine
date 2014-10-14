@@ -5,8 +5,8 @@
     \brief  Definitions of RenderCommand class.
 */
 
-#include "stdafx.h"
-#include "RenderCommand.h"
+#include "stdafx.hpp"
+#include "RenderCommand.hpp"
 
 namespace NFE {
 namespace Render {

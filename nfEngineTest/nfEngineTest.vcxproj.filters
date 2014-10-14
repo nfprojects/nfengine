@@ -11,14 +11,14 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
+    <ClInclude Include="Editor.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="test.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.hpp">
       <Filter>Precomp</Filter>
-    </ClInclude>
-    <ClInclude Include="test.h">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor.h">
-      <Filter>Main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -5,9 +5,9 @@
     \brief  DLL entry point.
 */
 
-#include "stdafx.h"
-#include "Core.h"
-#include "../nfCommon/Logger.h"
+#include "stdafx.hpp"
+#include "Core.hpp"
+#include "../nfCommon/Logger.hpp"
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {

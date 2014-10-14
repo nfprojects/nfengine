@@ -4,8 +4,8 @@
     \file   Quaternion.cpp
 */
 
-#include "stdafx.h"
-#include "Math.h"
+#include "stdafx.hpp"
+#include "Math.hpp"
 
 namespace NFE {
 namespace Math {

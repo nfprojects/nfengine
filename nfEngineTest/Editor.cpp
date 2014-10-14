@@ -1,5 +1,5 @@
-#include "stdafx.h"
-#include "Editor.h"
+#include "stdafx.hpp"
+#include "Editor.hpp"
 
 using namespace NFE;
 using namespace NFE::Render;
@@ -217,6 +217,7 @@ void TW_CALL Demo_EntityGetCallback(void* value, void* clientData)
         }
     }
 }
+
 
 void TW_CALL Demo_EntityDeleteCallback(void* clientData)
 {

@@ -5,8 +5,8 @@
     \brief  All engine's global variables definitions.
 */
 
-#include "stdafx.h"
-#include "Globals.h"
+#include "stdafx.hpp"
+#include "Globals.hpp"
 
 namespace NFE {
 

@@ -5,14 +5,14 @@
     \brief  Mesh resource definition.
 */
 
-#include "stdafx.h"
-#include "Globals.h"
-#include "Mesh.h"
-#include "Material.h"
-#include "Renderer.h"
-#include "ResourcesManager.h"
-#include "Engine.h"
-#include "../nfCommon/Logger.h"
+#include "stdafx.hpp"
+#include "Globals.hpp"
+#include "Mesh.hpp"
+#include "Material.hpp"
+#include "Renderer.hpp"
+#include "ResourcesManager.hpp"
+#include "Engine.hpp"
+#include "../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Resource {

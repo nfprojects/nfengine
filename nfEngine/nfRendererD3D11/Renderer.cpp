@@ -1,14 +1,14 @@
-#include "stdafx.h"
-#include "Renderer.h"
-#include "../nfCommon/Image.h"
-#include "../nfCommon/Logger.h"
+#include "stdafx.hpp"
+#include "Renderer.hpp"
+#include "../nfCommon/Image.hpp"
+#include "../nfCommon/Logger.hpp"
 
-#include "GeometryBufferRenderer.h"
-#include "ShadowsRenderer.h"
-#include "LightsRenderer.h"
-#include "DebugRenderer.h"
-#include "PostProcessRenderer.h"
-#include "GuiRenderer.h"
+#include "GeometryBufferRenderer.hpp"
+#include "ShadowsRenderer.hpp"
+#include "LightsRenderer.hpp"
+#include "DebugRenderer.hpp"
+#include "PostProcessRenderer.hpp"
+#include "GuiRenderer.hpp"
 
 namespace NFE {
 namespace Render {

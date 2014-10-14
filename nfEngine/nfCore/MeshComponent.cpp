@@ -5,13 +5,13 @@
     \brief  Definition of mesh component class.
 */
 
-#include "stdafx.h"
-#include "Globals.h"
-#include "MeshComponent.h"
-#include "Entity.h"
-#include "ResourcesManager.h"
-#include "..\nfCommon\InputStream.h"
-#include "..\nfCommon\OutputStream.h"
+#include "stdafx.hpp"
+#include "Globals.hpp"
+#include "MeshComponent.hpp"
+#include "Entity.hpp"
+#include "ResourcesManager.hpp"
+#include "..\nfCommon\InputStream.hpp"
+#include "..\nfCommon\OutputStream.hpp"
 
 namespace NFE {
 namespace Scene {

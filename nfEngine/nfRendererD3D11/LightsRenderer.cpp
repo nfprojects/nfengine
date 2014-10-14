@@ -1,6 +1,6 @@
-#include "stdafx.h"
-#include "LightsRenderer.h"
-#include "Renderer.h"
+#include "stdafx.hpp"
+#include "LightsRenderer.hpp"
+#include "Renderer.hpp"
 
 namespace NFE {
 namespace Render {

@@ -3,7 +3,7 @@
  *  @brief  High resolution timer class definition for Windows system
  */
 
-#include "stdafx.h"
+#include "stdafx.hpp"
 #include "TimerWin.hpp"
 
 
