@@ -1,5 +1,5 @@
-#include "stdafx.h"
-#include "../nfCommon/ThreadPool.h"
+#include "stdafx.hpp"
+#include "../nfCommon/ThreadPool.hpp"
 
 void TestCallback(void* pUserData, int, int threadID)
 {

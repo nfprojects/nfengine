@@ -1,5 +1,5 @@
-#include "stdafx.h"
-#include "InputStream.h"
+#include "stdafx.hpp"
+#include "InputStream.hpp"
 
 namespace NFE {
 namespace Common {

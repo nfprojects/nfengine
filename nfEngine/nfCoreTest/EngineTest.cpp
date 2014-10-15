@@ -1,6 +1,6 @@
-#include "stdafx.h"
-#include "Engine.h"
-#include "Entity.h"
+#include "stdafx.hpp"
+#include "Engine.hpp"
+#include "Entity.hpp"
 
 using namespace NFE;
 using namespace NFE::Render;

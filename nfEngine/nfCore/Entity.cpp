@@ -5,13 +5,13 @@
     \brief  Scene entity definition.
 */
 
-#include "stdafx.h"
-#include "Entity.h"
-#include "SceneManager.h"
-#include "Memory.h"
-#include "../nfCommon/InputStream.h"
-#include "../nfCommon/OutputStream.h"
-#include "../nfCommon/Logger.h"
+#include "stdafx.hpp"
+#include "Entity.hpp"
+#include "SceneManager.hpp"
+#include "Memory.hpp"
+#include "../nfCommon/InputStream.hpp"
+#include "../nfCommon/OutputStream.hpp"
+#include "../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Scene {

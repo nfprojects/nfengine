@@ -108,6 +108,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Sync</ExceptionHandling>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -130,6 +131,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Sync</ExceptionHandling>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -158,6 +160,7 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -189,6 +192,7 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -276,35 +280,35 @@
     <ClInclude Include="..\..\Deps\libconfig\scanner.h" />
     <ClInclude Include="..\..\Deps\libconfig\strbuf.h" />
     <ClInclude Include="..\..\Deps\libconfig\wincompat.h" />
-    <ClInclude Include="Aligned.h" />
-    <ClInclude Include="BVH.h" />
-    <ClInclude Include="CollisionShape.h" />
-    <ClInclude Include="Body.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Component.h" />
-    <ClInclude Include="Globals.h" />
-    <ClInclude Include="Memory.h" />
-    <ClInclude Include="Prerequisites.h" />
-    <ClInclude Include="Renderer.h" />
-    <ClInclude Include="View.h" />
-    <ClInclude Include="Engine.h" />
-    <ClInclude Include="Entity.h" />
-    <ClInclude Include="Light.h" />
-    <ClInclude Include="Core.h" />
-    <ClInclude Include="Material.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="MeshComponent.h" />
-    <ClInclude Include="Performance.h" />
-    <ClInclude Include="PhysicsWorld.h" />
-    <ClInclude Include="RenderCommand.h" />
-    <ClInclude Include="Resource.h" />
-    <ClInclude Include="ResourcesManager.h" />
-    <ClInclude Include="SceneEvent.h" />
-    <ClInclude Include="SceneManager.h" />
-    <ClInclude Include="SceneSegment.h" />
-    <ClInclude Include="SoundSample.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Texture.h" />
+    <ClInclude Include="Aligned.hpp" />
+    <ClInclude Include="BVH.hpp" />
+    <ClInclude Include="CollisionShape.hpp" />
+    <ClInclude Include="Body.hpp" />
+    <ClInclude Include="Camera.hpp" />
+    <ClInclude Include="Component.hpp" />
+    <ClInclude Include="Globals.hpp" />
+    <ClInclude Include="Memory.hpp" />
+    <ClInclude Include="Prerequisites.hpp" />
+    <ClInclude Include="Renderer.hpp" />
+    <ClInclude Include="View.hpp" />
+    <ClInclude Include="Engine.hpp" />
+    <ClInclude Include="Entity.hpp" />
+    <ClInclude Include="Light.hpp" />
+    <ClInclude Include="Core.hpp" />
+    <ClInclude Include="Material.hpp" />
+    <ClInclude Include="Mesh.hpp" />
+    <ClInclude Include="MeshComponent.hpp" />
+    <ClInclude Include="Performance.hpp" />
+    <ClInclude Include="PhysicsWorld.hpp" />
+    <ClInclude Include="RenderCommand.hpp" />
+    <ClInclude Include="Resource.hpp" />
+    <ClInclude Include="ResourcesManager.hpp" />
+    <ClInclude Include="SceneEvent.hpp" />
+    <ClInclude Include="SceneManager.hpp" />
+    <ClInclude Include="SceneSegment.hpp" />
+    <ClInclude Include="SoundSample.hpp" />
+    <ClInclude Include="stdafx.hpp" />
+    <ClInclude Include="Texture.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

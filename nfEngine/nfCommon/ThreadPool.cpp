@@ -5,9 +5,9 @@
     \brief  Thread pool classes declarations.
 */
 
-#include "stdafx.h"
-#include "ThreadPool.h"
-#include "Logger.h"
+#include "stdafx.hpp"
+#include "ThreadPool.hpp"
+#include "Logger.hpp"
 
 namespace NFE {
 namespace Common {

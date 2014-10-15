@@ -5,13 +5,13 @@
     \brief  Definitions of physics manager.
 */
 
-#include "stdafx.h"
-#include "Globals.h"
-#include "PhysicsWorld.h"
-#include "Engine.h"
-#include "SceneEvent.h"
-#include "SceneManager.h"
-#include "Performance.h"
+#include "stdafx.hpp"
+#include "Globals.hpp"
+#include "PhysicsWorld.hpp"
+#include "Engine.hpp"
+#include "SceneEvent.hpp"
+#include "SceneManager.hpp"
+#include "Performance.hpp"
 #include "../nfCommon/Timer.hpp"
 
 namespace NFE {

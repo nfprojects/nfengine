@@ -5,9 +5,9 @@
     \brief  Sound sample resource definition.
 */
 
-#include "stdafx.h"
-#include "SoundSample.h"
-#include "../nfCommon/Logger.h"
+#include "stdafx.hpp"
+#include "SoundSample.hpp"
+#include "../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Resource {

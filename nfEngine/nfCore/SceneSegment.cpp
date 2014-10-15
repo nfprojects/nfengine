@@ -5,17 +5,17 @@
     \brief  Scene segment definition.
 */
 
-#include "stdafx.h"
-#include "SceneSegment.h"
-#include "Entity.h"
-#include "SceneManager.h"
-#include "MeshComponent.h"
-#include "Light.h"
-#include "Body.h"
-#include "Camera.h"
-#include "../nfCommon/InputStream.h"
-#include "../nfCommon/OutputStream.h"
-#include "../nfCommon/Logger.h"
+#include "stdafx.hpp"
+#include "SceneSegment.hpp"
+#include "Entity.hpp"
+#include "SceneManager.hpp"
+#include "MeshComponent.hpp"
+#include "Light.hpp"
+#include "Body.hpp"
+#include "Camera.hpp"
+#include "../nfCommon/InputStream.hpp"
+#include "../nfCommon/OutputStream.hpp"
+#include "../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Scene {

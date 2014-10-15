@@ -10,44 +10,44 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
+    <ClInclude Include="DebugRenderer.hpp">
       <Filter>Base</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
+    <ClInclude Include="GeometryBufferRenderer.hpp">
       <Filter>Base</Filter>
     </ClInclude>
-    <ClInclude Include="DebugRenderer.h">
-      <Filter>RendererModules</Filter>
-    </ClInclude>
-    <ClInclude Include="GeometryBufferRenderer.h">
-      <Filter>RendererModules</Filter>
-    </ClInclude>
-    <ClInclude Include="GuiRenderer.h">
-      <Filter>RendererModules</Filter>
-    </ClInclude>
-    <ClInclude Include="LightsRenderer.h">
-      <Filter>RendererModules</Filter>
-    </ClInclude>
-    <ClInclude Include="Multishader.h">
-      <Filter>RendererModules</Filter>
-    </ClInclude>
-    <ClInclude Include="PostProcessRenderer.h">
-      <Filter>RendererModules</Filter>
-    </ClInclude>
-    <ClInclude Include="ShadowsRenderer.h">
-      <Filter>RendererModules</Filter>
-    </ClInclude>
-    <ClInclude Include="nfRendererD3D11.h">
+    <ClInclude Include="GuiRenderer.hpp">
       <Filter>Base</Filter>
     </ClInclude>
-    <ClInclude Include="RendererContext.h">
-      <Filter>RendererModules</Filter>
+    <ClInclude Include="LightsRenderer.hpp">
+      <Filter>Base</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>RendererModules</Filter>
+    <ClInclude Include="Multishader.hpp">
+      <Filter>Base</Filter>
     </ClInclude>
-    <ClInclude Include="RendererResources.h">
-      <Filter>RendererModules</Filter>
+    <ClInclude Include="nfRendererD3D11.hpp">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessRenderer.hpp">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.hpp">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="RendererContext.hpp">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="RendererResources.hpp">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowsRenderer.hpp">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.hpp">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.hpp">
+      <Filter>Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

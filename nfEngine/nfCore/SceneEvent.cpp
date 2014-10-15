@@ -5,9 +5,9 @@
     \brief  Definitions of scene events system.
 */
 
-#include "stdafx.h"
-#include "SceneEvent.h"
-#include "../nfCommon/Logger.h"
+#include "stdafx.hpp"
+#include "SceneEvent.hpp"
+#include "../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Scene {

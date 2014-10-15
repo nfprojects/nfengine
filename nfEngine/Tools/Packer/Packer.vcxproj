@@ -188,7 +188,7 @@
     <ClCompile Include="packer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="packer.h" />
+    <ClInclude Include="packer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

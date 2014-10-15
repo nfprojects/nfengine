@@ -1,9 +1,9 @@
-#include "stdafx.h"
-#include "RendererResources.h"
-#include "Renderer.h"
-#include "../nfCommon/Window.h"
-#include "../nfCommon/Logger.h"
-#include "../nfCommon/Image.h"
+#include "stdafx.hpp"
+#include "RendererResources.hpp"
+#include "Renderer.hpp"
+#include "../nfCommon/Window.hpp"
+#include "../nfCommon/Logger.hpp"
+#include "../nfCommon/Image.hpp"
 
 namespace NFE {
 namespace Render {

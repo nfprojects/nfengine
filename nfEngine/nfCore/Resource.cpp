@@ -5,12 +5,12 @@
     \brief  Resource base class definition.
 */
 
-#include "stdafx.h"
-#include "Globals.h"
-#include "Resource.h"
-#include "ResourcesManager.h"
-#include "Memory.h"
-#include "../nfCommon/Logger.h"
+#include "stdafx.hpp"
+#include "Globals.hpp"
+#include "Resource.hpp"
+#include "ResourcesManager.hpp"
+#include "Memory.hpp"
+#include "../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Resource {

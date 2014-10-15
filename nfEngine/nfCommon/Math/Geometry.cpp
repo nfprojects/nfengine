@@ -4,8 +4,8 @@
     \file   Geometry.cpp
 */
 
-#include "stdafx.h"
-#include "Math.h"
+#include "stdafx.hpp"
+#include "Math.hpp"
 #include <smmintrin.h>
 
 namespace NFE {

@@ -1,5 +1,5 @@
-#include "stdafx.h"
-#include "Logger.h"
+#include "stdafx.hpp"
+#include "Logger.hpp"
 
 namespace NFE {
 namespace Common {

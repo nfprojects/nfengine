@@ -5,8 +5,8 @@
     \brief  Memory utilities definitions
 */
 
-#include "stdafx.h"
-#include "Memory.h"
+#include "stdafx.hpp"
+#include "Memory.hpp"
 
 namespace NFE {
 namespace Util {

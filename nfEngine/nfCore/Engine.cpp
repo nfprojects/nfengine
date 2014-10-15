@@ -5,19 +5,19 @@
     \brief  Basic engine's API implementation.
 */
 
-#include "stdafx.h"
-#include "Globals.h"
-#include "Engine.h"
-#include "Renderer.h"
-#include "Texture.h"
-#include "View.h"
-#include "Performance.h"
-#include "Entity.h"
-#include "Memory.h"
+#include "stdafx.hpp"
+#include "Globals.hpp"
+#include "Engine.hpp"
+#include "Renderer.hpp"
+#include "Texture.hpp"
+#include "View.hpp"
+#include "Performance.hpp"
+#include "Entity.hpp"
+#include "Memory.hpp"
 
-#include "../nfCommon/Window.h"
+#include "../nfCommon/Window.hpp"
 #include "../nfCommon/Timer.hpp"
-#include "../nfCommon/Logger.h"
+#include "../nfCommon/Logger.hpp"
 
 namespace NFE {
 

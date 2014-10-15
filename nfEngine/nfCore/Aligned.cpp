@@ -5,8 +5,8 @@
     \brief  Definition of memory aligning class.
 */
 
-#include "stdafx.h"
-#include "Aligned.h"
+#include "stdafx.hpp"
+#include "Aligned.hpp"
 
 namespace NFE {
 namespace Util {
