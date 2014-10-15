@@ -6,19 +6,19 @@
 #include "Common.hpp"
 
 Latch::Latch()
+    : mSet(false)
 {
-    set = false;
 }
 
 void Latch::Set()
 {
-    std::unique_lock<std::mutex> lock(mutex);
-    set = true;
-    cv.notify_all();
+    Lock lock(mMutex);
+    mSet = true;
+    mCV.notify_all();
 }
 
 void Latch::Wait()
 {
-    std::unique_lock<std::mutex> lock(mutex);
-    cv.wait(lock, [this] { return set.load(); });
+    Lock lock(mMutex);
+    mCV.wait(lock, [this] { return mSet.load(); });
 }

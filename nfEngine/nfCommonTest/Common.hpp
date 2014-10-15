@@ -15,9 +15,11 @@
 class Latch final
 {
 private:
-    std::mutex mutex;
-    std::condition_variable cv;
-    std::atomic<bool> set;
+    typedef std::unique_lock<std::mutex> Lock;
+
+    std::mutex mMutex;
+    std::condition_variable mCV;
+    std::atomic<bool> mSet;
 
 public:
     Latch();
