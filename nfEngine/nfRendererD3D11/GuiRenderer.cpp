@@ -1,7 +1,7 @@
-#include "stdafx.h"
-#include "GuiRenderer.h"
-#include "Renderer.h"
-#include "../nfCommon/Image.h"
+#include "stdafx.hpp"
+#include "GuiRenderer.hpp"
+#include "Renderer.hpp"
+#include "../nfCommon/Image.hpp"
 #include "../nfCommon/Timer.hpp"
 
 namespace NFE {

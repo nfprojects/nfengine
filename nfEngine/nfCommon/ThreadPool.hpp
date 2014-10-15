@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "nfCommon.h"
+#include "nfCommon.hpp"
 
 #include <condition_variable>
 #include <set>

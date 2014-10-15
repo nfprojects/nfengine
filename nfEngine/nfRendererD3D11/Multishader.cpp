@@ -1,7 +1,7 @@
-#include "stdafx.h"
-#include "Multishader.h"
-#include "Renderer.h"
-#include "../nfCommon/Logger.h"
+#include "stdafx.hpp"
+#include "Multishader.hpp"
+#include "Renderer.hpp"
+#include "../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Render {

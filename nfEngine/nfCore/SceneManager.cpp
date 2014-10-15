@@ -6,17 +6,17 @@
             entities managing, events handling, etc.
 */
 
-#include "stdafx.h"
-#include "SceneManager.h"
-#include "Performance.h"
-#include "Engine.h"
-#include "SceneSegment.h"
-#include "PhysicsWorld.h"
-#include "BVH.h"
-#include "Memory.h"
-#include "../nfCommon/InputStream.h"
-#include "../nfCommon/OutputStream.h"
-#include "../nfCommon/Logger.h"
+#include "stdafx.hpp"
+#include "SceneManager.hpp"
+#include "Performance.hpp"
+#include "Engine.hpp"
+#include "SceneSegment.hpp"
+#include "PhysicsWorld.hpp"
+#include "BVH.hpp"
+#include "Memory.hpp"
+#include "../nfCommon/InputStream.hpp"
+#include "../nfCommon/OutputStream.hpp"
+#include "../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Scene {

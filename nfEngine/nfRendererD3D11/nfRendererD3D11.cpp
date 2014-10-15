@@ -1,7 +1,7 @@
-#include "stdafx.h"
-#include "nfRendererD3D11.h"
-#include "Renderer.h"
-#include "../nfCommon/Logger.h"
+#include "stdafx.hpp"
+#include "nfRendererD3D11.hpp"
+#include "Renderer.hpp"
+#include "../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Render {

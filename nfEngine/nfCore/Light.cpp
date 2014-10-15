@@ -5,16 +5,16 @@
     \brief  Definition of light component class.
 */
 
-#include "stdafx.h"
-#include "Globals.h"
-#include "Light.h"
-#include "Entity.h"
-#include "Renderer.h"
-#include "ResourcesManager.h"
-#include "../nfCommon/InputStream.h"
-#include "../nfCommon/OutputStream.h"
-#include "../nfCommon/Logger.h"
-#include "Engine.h"
+#include "stdafx.hpp"
+#include "Globals.hpp"
+#include "Light.hpp"
+#include "Entity.hpp"
+#include "Renderer.hpp"
+#include "ResourcesManager.hpp"
+#include "../nfCommon/InputStream.hpp"
+#include "../nfCommon/OutputStream.hpp"
+#include "../nfCommon/Logger.hpp"
+#include "Engine.hpp"
 
 namespace NFE {
 namespace Scene {

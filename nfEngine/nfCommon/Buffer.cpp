@@ -5,8 +5,8 @@
     \brief  Buffer class definition.
 */
 
-#include "stdafx.h"
-#include "Buffer.h"
+#include "stdafx.hpp"
+#include "Buffer.hpp"
 
 namespace NFE {
 namespace Common {

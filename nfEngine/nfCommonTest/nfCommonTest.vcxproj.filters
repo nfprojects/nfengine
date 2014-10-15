@@ -31,9 +31,9 @@
     <ClCompile Include="TimerTest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="test.h" />
     <ClInclude Include="Common.hpp" />
+    <ClInclude Include="stdafx.hpp" />
+    <ClInclude Include="test.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="gtest">

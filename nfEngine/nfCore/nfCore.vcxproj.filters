@@ -125,93 +125,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>PCH</Filter>
-    </ClInclude>
-    <ClInclude Include="Core.h">
-      <Filter>Base</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourcesManager.h">
-      <Filter>Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneManager.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Light.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Entity.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderCommand.h">
-      <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine.h">
-      <Filter>Base</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionShape.h">
-      <Filter>Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Body.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Performance.h">
-      <Filter>Util</Filter>
-    </ClInclude>
-    <ClInclude Include="Aligned.h">
-      <Filter>Util</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsWorld.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneSegment.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshComponent.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Component.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneEvent.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="Globals.h">
-      <Filter>Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Prerequisites.h">
-      <Filter>Base</Filter>
-    </ClInclude>
-    <ClInclude Include="View.h">
-      <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory.h">
-      <Filter>Util</Filter>
-    </ClInclude>
-    <ClInclude Include="SoundSample.h">
-      <Filter>Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="BVH.h">
-      <Filter>Util</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Deps\libconfig\grammar.h">
       <Filter>libconfig</Filter>
     </ClInclude>
@@ -233,5 +146,34 @@
     <ClInclude Include="..\..\Deps\libconfig\wincompat.h">
       <Filter>libconfig</Filter>
     </ClInclude>
+    <ClInclude Include="Aligned.hpp" />
+    <ClInclude Include="BVH.hpp" />
+    <ClInclude Include="CollisionShape.hpp" />
+    <ClInclude Include="Body.hpp" />
+    <ClInclude Include="Camera.hpp" />
+    <ClInclude Include="Component.hpp" />
+    <ClInclude Include="Globals.hpp" />
+    <ClInclude Include="Memory.hpp" />
+    <ClInclude Include="Prerequisites.hpp" />
+    <ClInclude Include="Renderer.hpp" />
+    <ClInclude Include="View.hpp" />
+    <ClInclude Include="Engine.hpp" />
+    <ClInclude Include="Entity.hpp" />
+    <ClInclude Include="Light.hpp" />
+    <ClInclude Include="Core.hpp" />
+    <ClInclude Include="Material.hpp" />
+    <ClInclude Include="Mesh.hpp" />
+    <ClInclude Include="MeshComponent.hpp" />
+    <ClInclude Include="Performance.hpp" />
+    <ClInclude Include="PhysicsWorld.hpp" />
+    <ClInclude Include="RenderCommand.hpp" />
+    <ClInclude Include="Resource.hpp" />
+    <ClInclude Include="ResourcesManager.hpp" />
+    <ClInclude Include="SceneEvent.hpp" />
+    <ClInclude Include="SceneManager.hpp" />
+    <ClInclude Include="SceneSegment.hpp" />
+    <ClInclude Include="SoundSample.hpp" />
+    <ClInclude Include="stdafx.hpp" />
+    <ClInclude Include="Texture.hpp" />
   </ItemGroup>
 </Project>

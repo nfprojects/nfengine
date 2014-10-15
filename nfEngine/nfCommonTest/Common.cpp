@@ -2,7 +2,7 @@
 * @brief Definitions of common functions and classes.
 */
 
-#include "stdafx.h"
+#include "stdafx.hpp"
 #include "Common.hpp"
 
 Latch::Latch()

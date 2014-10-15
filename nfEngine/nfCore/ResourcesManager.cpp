@@ -5,17 +5,17 @@
     \brief  Resource manager definition.
 */
 
-#include "stdafx.h"
-#include "ResourcesManager.h"
-#include "Memory.h"
-#include "../nfCommon/Logger.h"
+#include "stdafx.hpp"
+#include "ResourcesManager.hpp"
+#include "Memory.hpp"
+#include "../nfCommon/Logger.hpp"
 
 // TODO: remove these dependencies - adding a new resource type shouldn't force programmer to modify this file...
-#include "Texture.h"
-#include "Material.h"
-#include "Mesh.h"
-#include "CollisionShape.h"
-#include "SoundSample.h"
+#include "Texture.hpp"
+#include "Material.hpp"
+#include "Mesh.hpp"
+#include "CollisionShape.hpp"
+#include "SoundSample.hpp"
 
 namespace NFE {
 namespace Resource {

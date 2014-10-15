@@ -1,6 +1,6 @@
-#include "stdafx.h"
-#include "GeometryBufferRenderer.h"
-#include "Renderer.h"
+#include "stdafx.hpp"
+#include "GeometryBufferRenderer.hpp"
+#include "Renderer.hpp"
 
 namespace NFE {
 namespace Render {

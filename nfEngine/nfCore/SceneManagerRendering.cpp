@@ -5,16 +5,16 @@
     \brief  Definitions of Scene class methods connected only with rendering.
 */
 
-#include "stdafx.h"
-#include "Globals.h"
-#include "SceneManager.h"
-#include "Entity.h"
-#include "Performance.h"
-#include "Engine.h"
-#include "BVH.h"
-#include "Renderer.h"
+#include "stdafx.hpp"
+#include "Globals.hpp"
+#include "SceneManager.hpp"
+#include "Entity.hpp"
+#include "Performance.hpp"
+#include "Engine.hpp"
+#include "BVH.hpp"
+#include "Renderer.hpp"
 #include "../nfCommon/Timer.hpp"
-#include "../nfCommon/Logger.h"
+#include "../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Scene {

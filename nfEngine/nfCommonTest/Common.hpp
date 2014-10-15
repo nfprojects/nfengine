@@ -2,7 +2,7 @@
 * @brief Common declarations for all the tests.
 */
 
-#include "stdafx.h"
+#include "stdafx.hpp"
 
 #include <mutex>
 #include <condition_variable>
