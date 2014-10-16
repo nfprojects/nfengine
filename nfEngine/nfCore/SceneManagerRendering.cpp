@@ -86,22 +86,6 @@ void SceneManager::RenderShadow(IRenderContext* pCtx, LightComponent* pLight, ui
     }
 }
 
-void DrawShadowMapCallback(void* pUserData, int Instance, int ThreadID)
-{
-    LightComponent* pLight = (LightComponent*)pUserData;
-    IRenderContext* pContext = g_pDeferredContexts[ThreadID];
-
-    pLight->mOwner->GetScene()->RenderShadow(pContext, pLight, Instance);
-}
-
-void EndCommandListCallback(void* pUserData, int Instance, int ThreadID)
-{
-    IRenderContext* pContext = g_pDeferredContexts[Instance];
-
-    if (pContext)
-        pContext->End();
-}
-
 // Perform Geometry Pass for pCamera in pContext
 void SceneManager::RenderGBuffer(IRenderContext* pCtx, Camera* pCamera,
                                  CameraRenderDesc* pCameraDesc, IRenderTarget* pRT)
@@ -163,6 +147,8 @@ void SceneManager::DrawBVHNode(IRenderContext* pCtx, uint32 node, uint32 depth)
 
 void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
 {
+    using namespace std::placeholders;
+
     g_pImmediateContext->Begin();
 
     if (pCamera == 0)
@@ -203,10 +189,10 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
     }
 
     // this value will be reused often...
-    const uint32 contextsNum = g_pMainThreadPool->GetThreadsCount();
+    const size_t contextsNum = g_pMainThreadPool->GetThreadsNumber();
 
     //prepare deferred contexts
-    for (uint32 i = 0; i < contextsNum; i++)
+    for (size_t i = 0; i < contextsNum; i++)
     {
         g_pDeferredContexts[i]->Begin();
         g_pShadowRenderer->Enter(g_pDeferredContexts[i]);
@@ -214,6 +200,12 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
 
     //draw shadow maps
     g_pShadowRenderer->Enter(g_pImmediateContext);
+
+    auto drawShadowMapFunc = [](LightComponent * pLight, size_t instance, size_t threadID)
+    {
+        IRenderContext* pContext = g_pDeferredContexts[threadID];
+        pLight->mOwner->GetScene()->RenderShadow(pContext, pLight, static_cast<int>(instance));
+    };
 
     std::vector<Common::TaskID> shadowTasks;
     for (auto pLight : mLights)
@@ -226,7 +218,9 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
         else if (pLight->mLightType == LightType::Dir)
             instancesCount = pLight->mDirLight.splits;
 
-        Common::TaskID task = g_pMainThreadPool->AddTask(DrawShadowMapCallback, pLight, instancesCount);
+        Common::TaskID task =
+            g_pMainThreadPool->Enqueue(std::bind(drawShadowMapFunc, pLight, _1, _2),
+                                       instancesCount);
         shadowTasks.push_back(task);
     }
 
@@ -236,13 +230,20 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
         g_pMainThreadPool->WaitForTask(task);
     }
 
+    auto endCommandListFunc = [] (size_t instance)
+    {
+        IRenderContext* pContext = g_pDeferredContexts[instance];
+        if (pContext)
+            pContext->End();
+    };
+
     // finish all deferred context here - build command lists
-    Common::TaskID endCommandListTask = g_pMainThreadPool->AddTask(EndCommandListCallback, 0,
+    Common::TaskID endCommandListTask = g_pMainThreadPool->Enqueue(std::bind(endCommandListFunc, _1),
                                         contextsNum);
     g_pMainThreadPool->WaitForTask(endCommandListTask);
 
     // execute command lists
-    for (uint32 i = 0; i < contextsNum; i++)
+    for (size_t i = 0; i < contextsNum; i++)
         g_pRenderer->ExecuteDeferredContext(g_pDeferredContexts[i]);
     g_pShadowRenderer->Leave(g_pImmediateContext);
 

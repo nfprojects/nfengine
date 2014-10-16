@@ -42,10 +42,7 @@
     <ClInclude Include="Image.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ThreadPool.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Logger.hpp">
+    <ClInclude Include="Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Window.hpp">
@@ -80,6 +77,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Deps\jpeg\jpge.h">
       <Filter>Header Files\jpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadPool.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Timer.hpp">
       <Filter>Header Files</Filter>

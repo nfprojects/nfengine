@@ -6,6 +6,7 @@
 */
 
 #pragma once
+
 #include "Core.hpp"
 #include "Aligned.hpp"
 #include "../nfCommon/ThreadPool.hpp"
@@ -34,6 +35,7 @@ private:
     btDiscreteDynamicsWorld* mDynamicsWorld;
 
     float mDeltaTime;
+    void UpdatePhysics();
 
 public:
     PhysicsWorld(SceneManager* pScene);

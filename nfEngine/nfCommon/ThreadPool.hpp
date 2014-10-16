@@ -1,159 +1,175 @@
 /**
-    NFEngine project
-
-    \file   ThreadPool.hpp
-    \brief  Thread pool classes declarations.
-*/
+ * @file  ThreadPool.h
+ * @brief Thread pool classes declarations.
+ */
 
 #pragma once
+
 #include "nfCommon.hpp"
+
+#include <condition_variable>
+#include <set>
+#include <functional>
+#include <inttypes.h>
 
 namespace NFE {
 namespace Common {
 
+/**
+ * Thread pool task unique identifier.
+ */
+typedef uint64_t TaskID;
+
+/**
+ * Function object representing a task.
+ * @param instance Instance id of the whole task
+ * @param thread   Thread id
+ */
+typedef std::function<void(size_t instance, size_t thread)> TaskFunction;
+
 class ThreadPool;
-typedef void (*TaskCallback)(void*, int, int); //user data, instance, thread ID
-typedef long long TaskID;
 
 /**
- * A threadpool task description.
+ * @class Task
+ * @brief Internal task structure.
+ * @remarks Only @p ThreadPool class can access it.
  */
-struct Task
-{
-    TaskID id;
-    TaskCallback pCallback;
-    void* pUserData;
-    uint32 instancesCount;
-    uint32 instancesLeft;
-
-    Task(TaskID _id, TaskCallback _pCallback, void* _pUserData, uint32 _instancesCount) :
-        id(_id), pCallback(_pCallback), pUserData(_pUserData), instancesCount(_instancesCount),
-        instancesLeft(_instancesCount) {}
-
-    /*
-    // TODO: task priorities
-    int priority;
-    struct Compare
-    {
-        bool operator()(const Task& lhs, const Task& rhs) const
-        {
-            if (lhs.priority < lhs.priority)
-                return true;
-            else if (lhs.priority > lhs.priority)
-                return false;
-            else
-                return (lhs.Id < rhs.Id);
-        }
-    };
-    */
-};
-
-/**
- * Helper class containing information about executor thread.
- */
-class ExecutorThread
+class Task final
 {
     friend class ThreadPool;
 
-private:
-    ThreadPool* pThreadPool;    // owner
-    volatile TaskID currTask;   // currenly executed task (if busy == true)
-    std::thread thread;         // thread object
-    volatile bool busy;         // is the thread executing a task?
-    uint32 id;                  // thread id (counting from 0)
+    TaskID ptr;
 
-    ExecutorThread(const ExecutorThread&);
+    /// task-related members
+    TaskFunction mCallback;      //< task routine
+    size_t mInstancesNum;        //< total number of the task instances
+    size_t mNextInstance;        //< next instance ID to execute
+    std::atomic<size_t> mInstancesLeft;
+    
+    std::set<Task*> mParents;    //< parent tasks
+    std::set<Task*> mChildren;   //< child tasks
+    size_t mRequired;            //< number of parent tasks left to dependency resolve
+
+    void RemoveFromParents();
 
 public:
-    void* operator new(size_t size);
-    void operator delete(void* ptr);
-
-    ExecutorThread(ThreadPool* pTP, uint32 _id): busy(false), pThreadPool(pTP), id(_id) {};
+    Task(TaskFunction callback, size_t instancesNum);
 };
 
 /**
- * Thread pool manager.
+ * @class WorkerThread
+ * @brief Executor thread
  */
-class NFCOMMON_API ThreadPool
+class WorkerThread
 {
-private:
-    typedef std::unique_lock<std::mutex> LockType;
-    static void SchedulerThreadCallback(ExecutorThread* pThreadDesc);
+    friend class ThreadPool;
 
-    std::vector<ExecutorThread*> mThreads;
+    std::thread mThread;
+    std::atomic<bool> mStarted; //< if set to false, exit the thread
+    size_t mId;
 
-    // notifies the thread pool that a task finished a task
-    std::condition_variable mTaskFinishedEvent;
-    mutable std::mutex mTaskFinishedMutex;
+    // force the class objects to occupy different cache lines
+    char mPad[64];
 
-    // mTaskQueue synchronization
-    std::condition_variable mTaskQueueEvent;
-    mutable std::mutex mTaskQueueMutex;
-    std::queue<Task> mTaskQueue;
+public:
+    WorkerThread(ThreadPool* pPool, size_t id);
+    ~WorkerThread();
+};
 
-    std::atomic<bool> mStarted; // is thread pool running?
-    std::atomic<TaskID> mLastTaskId;
+typedef std::shared_ptr<WorkerThread> WorkerThreadPtr;
 
-    /// disable default methods
-    ThreadPool(const ThreadPool&);
-    ThreadPool& operator = (const ThreadPool&);
+
+/**
+ * @class ThreadPool
+ * @brief Class enabling parallel tasks (user provided functions) execution.
+ */
+class NFCOMMON_API ThreadPool final
+{
+    friend class WorkerThread;
+
+    typedef std::unique_lock<std::mutex> Lock;
+
+    size_t mLastThreadId;
+    std::set<WorkerThreadPtr> mThreads;
+    std::mutex mThreadsMutex;               //< lock for "mThreads"
+
+    std::mutex mDepsQueueMutex;             //< lock for task dependencies access (Task members)
+
+    std::condition_variable mTaskQueueTask;
+	std::queue<Task*> mTasksQueue;          //< Queue for task with resolved dependencies (with "Waiting" state)
+    std::mutex mTasksQueueMutex;            //< lock for "mTasksQueue" access
+
+	std::atomic<TaskID> mLastTaskId;
+	std::map<TaskID, Task*> mTasks;
+	std::mutex mTasksMutex;                 //< lock for "mTasks"
+	std::condition_variable mTasksMutexCV;  //< condition variable used to notify about finished task
+
+	// translate TaskID to Task object
+	Task* GetTask(const TaskID& ptr) const;
+
+	void SchedulerCallback(WorkerThread* thread);
+
+	// create "num" additional worker threads
+	void SpawnWorkerThreads(size_t num);
+
+	// tell a worker thread to stop it's work
+	void TriggerWorkerStop(WorkerThreadPtr workerThread);
+
+	// worker thread routine
+	void WorkerThreadCallback();
 
 public:
     ThreadPool();
     ~ThreadPool();
 
     /**
-     * Initialize thread pool.
-     * @param threadsCount Threads count (use 0 to detect optimal value)
+     * Get number of worker threads in the pool.
      */
-    int Init(size_t threadsCount = 0);
+    size_t GetThreadsNumber() const;
 
     /**
-     * Wait for currently executed tasks and release thread pool
+     * Change number of worker threads.
+     * @details When decreasing the actual value, task are not stopped - the threads that finish
+                a task instances as first are destroyed.
+     * @remarks This function is thread-safe.
      */
-    void Release();
+    void SetThreadsNumber(size_t newValue);
 
     /**
-     * Get number of threads in the pool
+     * Create a new task.
+     *
+     * @remarks This function is thread-safe.
+     * @param function     Task routine (can be null for creating synchronization point only).
+     * @param instances    Number of task routine instances to run.
+     * @param dependencies List of dependent tasks.
+     * @param required     Number of required finished tasks to finish the created task.
+     *                     Less than zero means "all" (dependencies.size()).
+     * @return             Task ID
      */
-    const size_t GetThreadsCount() const;
+    TaskID Enqueue(TaskFunction function,
+                    size_t instances = 1,
+                    const std::vector<TaskID>& dependencies = std::vector<TaskID>(),
+                    size_t required = -1);
 
     /**
-     * Add a new task to the tasks queue. This function is thread-safe.
-     * @param pCallback Task routine
-     * @param pUserData Custom user data passed to the routine
-     * @param instancesCount Number of task instances to spawn
-     * @return 0 if failed to create task, else unique task identifier
+     * Check if a task is completed.
      */
-    TaskID AddTask(TaskCallback pCallback, void* pUserData = 0, uint32 instancesCount = 1);
+    bool IsTaskFinished(const TaskID& taskPtr);
 
     /**
-     * Check if a task has been completed.
+     * Waits for an task to finish.
      */
-    bool IsTaskDone(const TaskID task) const;
+	void WaitForTask(const TaskID& taskPtr);
 
     /**
-     * Check if all tasks has been completed.
+     * Waits for multiple tasks to finish.
+     *
+     * @param tasks    List of tasks to wait for.
+     * @param required Number of tasks needed to the function return. Negative value means waiting
+                       for all the tasks.
      */
-    bool AreAllTasksDone() const;
+    void WaitForTasks(const std::vector<TaskID>& tasks, size_t required = -1);
 
-    /**
-     * Wait until a task is completed. 
-     * @remarks This function can't be called from task callback, because it could lead to a deadlock.
-     */
-    int WaitForTask(const TaskID task);
-
-    /**
-     * Wait until all tasks are completed.
-     * @remarks This function can't be called from task callback, because it could lead to a deadlock.
-     */
-    int WaitForAllTasks();
-
-    /**
-     * Get thread pool load.
-     * @return Active worker threads
-     */
-    size_t GetLoad() const;
 };
 
 } // namespace Common

@@ -26,7 +26,7 @@ const char g_CustomResourcePrefix = '/';
 
 ResManager::ResManager()
 {
-    mThreadPool.Init();
+    mThreadPool.reset(new Common::ThreadPool);
 }
 
 ResManager::~ResManager()
@@ -38,8 +38,7 @@ ResManager::~ResManager()
     {
         UnloadResource((*it).second);
     }
-    mThreadPool.WaitForAllTasks();
-    mThreadPool.Release();
+    mThreadPool.reset();
 
     //delete all resources
     LOG_INFO("Deleting resources...");
@@ -194,122 +193,39 @@ Result ResManager::AddCustomResource(ResourceBase* pResource, const char* pName)
 
 bool ResManager::IsBusy()
 {
-    return mThreadPool.GetLoad() > 0;
+    // TODO
+    return false;
 }
-
-
-//called by thread pool
-void ResourceLoadingCallback(void* pParam, int Instance, int ThreadID)
-{
-    ResourceBase* pResource = (ResourceBase*)pParam;
-    pResource->Load();
-
-    /*
-    if (InterlockedCompareExchange(&pResource->m_State, RES_LOADING, RES_UNLOADED) == RES_UNLOADED)
-    {
-        //destination status changed during task waiting
-        if (pResource->m_DestState == RES_UNLOADED)
-        {
-            pResource->SetState(RES_UNLOADED);
-            return;
-        }
-
-        for(;;)
-        {
-            bool result = pResource->OnLoad();
-
-            if (pResource->m_DestState == RES_LOADED)
-            {
-                pResource->SetState(result ? RES_LOADED : RES_FAILED);
-                return;
-            }
-
-            //destination status changed during resource loading - unload resource
-            pResource->SetState(RES_UNLOADING);
-            pResource->OnUnload();
-
-            if (pResource->m_DestState == RES_UNLOADED)
-            {
-                pResource->SetState(RES_UNLOADED);
-                return;
-            }
-        }
-    }
-    */
-}
-
-//called by thread pool
-void ResourceUnloadingCallback(void* pParam, int Instance, int ThreadID)
-{
-    ResourceBase* pResource = (ResourceBase*)pParam;
-    pResource->Unload();
-
-    /*
-    if (InterlockedCompareExchange(&pResource->m_State, RES_UNLOADING, RES_LOADED) == RES_LOADED)
-    {
-        //destination status changed during task waiting
-        if (pResource->m_DestState == RES_LOADED)
-        {
-            pResource->SetState(RES_LOADED);
-            return;
-        }
-
-        for(;;)
-        {
-            pResource->OnUnload();
-            if (pResource->m_DestState == RES_UNLOADED)
-            {
-                pResource->SetState(RES_UNLOADED);
-                return;
-            }
-
-            //destination status changed during resource loading - load resource back
-            pResource->SetState(RES_LOADING);
-            bool result = pResource->OnLoad();
-
-            if (pResource->m_DestState == RES_LOADED)
-            {
-                pResource->SetState(result ? RES_LOADED : RES_FAILED);
-                return;
-            }
-        }
-    }
-    */
-}
-
-//called by thread pool
-void ResourceReloadCallback(void* pParam, int Instance, int ThreadID)
-{
-    ResourceBase* pResource = (ResourceBase*)pParam;
-
-    if (InterlockedCompareExchange(&pResource->mState, RES_UNLOADING, RES_LOADED) == RES_LOADED)
-    {
-        LOG_INFO("Resource file '%s' modified", pResource->mName);
-
-        pResource->OnUnload();
-        pResource->SetState(RES_LOADING);
-        bool result = pResource->OnLoad();
-        pResource->SetState(result ? RES_LOADED : RES_FAILED);
-    }
-}
-
 
 void ResManager::LoadResource(ResourceBase* pResource)
 {
     InterlockedExchange(&pResource->mDestState, RES_LOADED);
-    mThreadPool.AddTask(ResourceLoadingCallback, pResource, 1);
+    mThreadPool->Enqueue(std::bind(&ResourceBase::Load, pResource));
 }
 
 void ResManager::UnloadResource(ResourceBase* pResource)
 {
     InterlockedExchange(&pResource->mDestState, RES_UNLOADED);
-    mThreadPool.AddTask(ResourceUnloadingCallback, pResource, 1);
+    mThreadPool->Enqueue(std::bind(&ResourceBase::Unload, pResource));
 }
 
 void ResManager::ReloadResource(ResourceBase* pResource)
 {
+    auto resourceReloadFunc = [pResource] ()
+    {
+        if (InterlockedCompareExchange(&pResource->mState, RES_UNLOADING, RES_LOADED) == RES_LOADED)
+        {
+            LOG_INFO("Resource file '%s' modified", pResource->mName);
+
+            pResource->OnUnload();
+            pResource->SetState(RES_LOADING);
+            bool result = pResource->OnLoad();
+            pResource->SetState(result ? RES_LOADED : RES_FAILED);
+        }
+    };
+
     if (pResource->GetState() == RES_LOADED)
-        mThreadPool.AddTask(ResourceReloadCallback, pResource, 1);
+        mThreadPool->Enqueue(std::bind(resourceReloadFunc));
 }
 
 } // namespace Resource

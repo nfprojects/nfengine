@@ -14,12 +14,11 @@
 #include <queue>
 #include <memory>
 #include <map>
-#include <thread>
-#include <mutex>
-#include <condition_variable>
 #include <atomic>
 #include <fstream>
 #include <iomanip>
+#include <mutex>
+#include <thread>
 
 // DLL import / export macro
 #ifdef NFCOMMON_EXPORTS

@@ -6,6 +6,7 @@
 */
 
 #pragma once
+
 #include "Core.hpp"
 #include "Camera.hpp"
 #include "MeshComponent.hpp"
@@ -96,10 +97,10 @@ private:
         If so, switch focus, unload/load segments and move coordinate system.
     */
     void UpdateSegments();
-    void UpdateSegmentForEntity(Entity* pEntity);
+    void UpdateSegmentForEntity(Entity * pEntity);
 
 
-    void DrawBVHNode(Render::IRenderContext* pCtx, uint32 node, uint32 depth);
+    void DrawBVHNode(Render::IRenderContext * pCtx, uint32 node, uint32 depth);
 #endif
 
 public:
@@ -109,34 +110,34 @@ public:
     /*
         Save scene (entities layout, etc.) to an output stream.
     */
-    Result Serialize(Common::OutputStream* pStream, SerializationFormat format, bool patch);
+    Result Serialize(Common::OutputStream * pStream, SerializationFormat format, bool patch);
 
     /*
         Load scene (entities layout, etc.) from an input file.
     */
-    Result Deserialize(Common::InputStream* pStream, bool patch);
+    Result Deserialize(Common::InputStream * pStream, bool patch);
 
 
     /// Create a new scene segment.
-    Segment* CreateSegment(const char* pName, const Math::Vector& size);
+    Segment* CreateSegment(const char* pName, const Math::Vector & size);
 
     /*
         Create a link between two segments.
         'offset' is displacement between 'pFrom' and 'pTo' segments' centers (order is important!).
     */
-    Result CreateLink(Segment* pFrom, Segment* pTo, const Math::Vector& offset);
+    Result CreateLink(Segment * pFrom, Segment * pTo, const Math::Vector & offset);
 
     // Get segment pointer by world position
-    Segment* FindSegment(const Math::Vector& position);
+    Segment* FindSegment(const Math::Vector & position);
 
-    Result SetFocusSegment(Segment* pSegment);
+    Result SetFocusSegment(Segment * pSegment);
     Segment* GetFocusSegment() const;
 
     /**
         Decode and create entity from input stream.
         Used, when a sector is loaded.
     **/
-    Result DeserializeEntity(Common::InputStream* pStream, const Math::Vector& offset,
+    Result DeserializeEntity(Common::InputStream * pStream, const Math::Vector & offset,
                              Entity** ppEntity);
 
     /*
@@ -161,7 +162,7 @@ public:
         (destroy A, create B, destroy A). To solve this problem,
         use EnqueueDeleteEntity() method.
     */
-    Result DeleteEntity(Entity* pEntity);
+    Result DeleteEntity(Entity * pEntity);
 
     /**
      * Enqueue entity deletion.
@@ -171,15 +172,15 @@ public:
      * @param recursive If true, remove whole child tree.
      * @return Result::OK on success.
      */
-    Result EnqueueDeleteEntity(Entity* pEntity, bool recursive = true);
+    Result EnqueueDeleteEntity(Entity * pEntity, bool recursive = true);
 
 
-    void SetDefaultCamera(Camera* pCamera);
+    void SetDefaultCamera(Camera * pCamera);
     Camera* GetDefaultCamera() const;
 
     // Environment
-    void SetEnvironment(const EnviromentDesc* pDesc);
-    void GetEnvironment(EnviromentDesc* pDesc) const;
+    void SetEnvironment(const EnviromentDesc * pDesc);
+    void GetEnvironment(EnviromentDesc * pDesc) const;
 
     EventSystem* GetEventSystem();
 
@@ -187,14 +188,14 @@ public:
     void Update(float deltaTime);
 
     // Perform Geometry Pass for pCamera in pContext
-    void RenderGBuffer(Render::IRenderContext* pCtx, Camera* pCamera,
-                       Render::CameraRenderDesc* pCameraDesc, Render::IRenderTarget* pRT);
+    void RenderGBuffer(Render::IRenderContext * pCtx, Camera * pCamera,
+                       Render::CameraRenderDesc * pCameraDesc, Render::IRenderTarget * pRT);
 
-    void RenderShadow(Render::IRenderContext* pCtx, LightComponent* pLight, uint32 faceID = 0);
-    void Render(Camera * pCamera, Render::IRenderTarget* pRT);
+    void RenderShadow(Render::IRenderContext * pCtx, LightComponent * pLight, uint32 faceID = 0);
+    void Render(Camera * pCamera, Render::IRenderTarget * pRT);
 
     void FindActiveMeshEntities();
-    void FindVisibleMeshEntities(const Math::Frustum& frustum, std::vector<MeshComponent*>* pList);
+    void FindVisibleMeshEntities(const Math::Frustum & frustum, std::vector<MeshComponent*>* pList);
 };
 
 } // namespace Scene

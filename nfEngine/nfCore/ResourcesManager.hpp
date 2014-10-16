@@ -38,7 +38,7 @@ class CORE_API ResManager
     ResManager(const ResManager&);
     ResManager& operator= (const ResManager&);
 
-    Common::ThreadPool mThreadPool;
+    std::unique_ptr<Common::ThreadPool> mThreadPool;
 
     std::mutex mResListMutex;
     std::map<const char*, ResourceBase*, CompareResName> mResources;

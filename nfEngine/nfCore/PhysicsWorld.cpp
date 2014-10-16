@@ -17,18 +17,6 @@
 namespace NFE {
 namespace Scene {
 
-void PhysicsUpdateCallback(void* pUserData, int Instance, int ThreadID)
-{
-    PhysicsWorld* pWorld = (PhysicsWorld*)pUserData;
-
-    Common::Timer timer;
-    timer.Start();
-    {
-        pWorld->mDynamicsWorld->stepSimulation(pWorld->mDeltaTime, 40, 1.0f / 90.0f);
-    }
-    Util::g_FrameStats.physics = timer.Stop();
-}
-
 PhysicsWorld::PhysicsWorld(SceneManager* pScene)
 {
     mScene = pScene;
@@ -103,12 +91,20 @@ PhysicsWorld::~PhysicsWorld()
     delete mBroadphase;
 }
 
+void PhysicsWorld::UpdatePhysics()
+{
+    Common::Timer timer;
+    timer.Start();
+    mDynamicsWorld->stepSimulation(mDeltaTime, 40, 1.0f / 90.0f);
+    Util::g_FrameStats.physics = timer.Stop();
+}
+
 //Start physics update task
 void PhysicsWorld::StartUpdate(float deltaTime)
 {
     Wait();
     mDeltaTime = deltaTime;
-    mPhysicsTask = g_pMainThreadPool->AddTask(PhysicsUpdateCallback, this, 1);
+    mPhysicsTask = g_pMainThreadPool->Enqueue(std::bind(&PhysicsWorld::UpdatePhysics, this));
     mRunning = true;
 }
 
