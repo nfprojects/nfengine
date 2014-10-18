@@ -5,12 +5,12 @@
     \brief  Material resource declaration.
 */
 
-#include "stdafx.h"
-#include "Material.h"
-#include "ResourcesManager.h"
-#include "Engine.h"
-#include "Globals.h"
-#include "../nfCommon/Logger.h"
+#include "stdafx.hpp"
+#include "Material.hpp"
+#include "ResourcesManager.hpp"
+#include "Engine.hpp"
+#include "Globals.hpp"
+#include "../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Resource {

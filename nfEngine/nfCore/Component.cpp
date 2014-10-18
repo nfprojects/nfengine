@@ -5,9 +5,9 @@
     \brief  Component's base definition.
 */
 
-#include "stdafx.h"
-#include "Component.h"
-#include "Entity.h"
+#include "stdafx.hpp"
+#include "Component.hpp"
+#include "Entity.hpp"
 
 namespace NFE {
 namespace Scene {

@@ -11,7 +11,7 @@
 #include "packerDefines.hpp"
 #include "packerElement.hpp"
 
-#include "../Buffer.h"
+#include "../Buffer.hpp"
 
 namespace NFE {
 namespace Common {

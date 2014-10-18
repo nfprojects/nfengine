@@ -5,8 +5,8 @@
     \brief  Bounding Volume Hierarchy declaration.
 */
 
-#include "stdafx.h"
-#include "BVH.h"
+#include "stdafx.hpp"
+#include "BVH.hpp"
 
 namespace NFE {
 namespace Util {

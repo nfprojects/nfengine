@@ -6,7 +6,7 @@
     \brief  Common definitions for Packer
 */
 
-#include "stdafx.h"
+#include "stdafx.hpp"
 #include "packerDefines.hpp"
 
 namespace NFE {

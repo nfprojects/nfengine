@@ -94,6 +94,7 @@
       <PreprocessorDefinitions>_VARIADIC_MAX=10;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(VSInstallDir)Team Tools\Performance Tools\PerfSDK\;..\nfCore\;$(SolutionDir)Deps\gtest\include\</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -113,6 +114,7 @@
       <PreprocessorDefinitions>_VARIADIC_MAX=10;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\nfCore\;$(SolutionDir)Deps\gtest\include\;$(VSInstallDir)Team Tools\Performance Tools\x64\PerfSDK\</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,6 +136,7 @@
       <PreprocessorDefinitions>_VARIADIC_MAX=10;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(VSInstallDir)Team Tools\Performance Tools\PerfSDK\;..\nfCore\;$(SolutionDir)Deps\gtest\include\</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -157,6 +160,7 @@
       <PreprocessorDefinitions>_VARIADIC_MAX=10;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\nfCore\;$(SolutionDir)Deps\gtest\include\;$(VSInstallDir)Team Tools\Performance Tools\x64\PerfSDK\</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -171,8 +175,9 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="test.h" />
+    <ClInclude Include="Common.hpp" />
+    <ClInclude Include="stdafx.hpp" />
+    <ClInclude Include="test.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Deps\gtest\src\gtest-death-test.cc">
@@ -217,17 +222,22 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Common.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MD5Test.cpp" />
     <ClCompile Include="PackerBasicTest.cpp" />
     <ClCompile Include="PackerComplexTest.cpp" />
     <ClCompile Include="ThreadPoolTest.cpp" />
+    <ClCompile Include="ThreadPoolPerformance.cpp" />
+    <ClCompile Include="ThreadPoolSimple.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ThreadPoolStress.cpp" />
+    <ClCompile Include="TimerTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

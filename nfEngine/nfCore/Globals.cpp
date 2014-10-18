@@ -5,8 +5,8 @@
     \brief  All engine's global variables definitions.
 */
 
-#include "stdafx.h"
-#include "Globals.h"
+#include "stdafx.hpp"
+#include "Globals.hpp"
 
 namespace NFE {
 
@@ -28,7 +28,7 @@ uint32 g_DeferredContextsNum = 0;
 IRenderContext* g_pImmediateContext = NULL;
 IRenderContext** g_pDeferredContexts = NULL;
 
-Common::ThreadPool* g_pMainThreadPool = NULL;
+std::shared_ptr<Common::ThreadPool> g_pMainThreadPool;
 ResManager* g_pResManager = NULL;
 
 } // namespace NFE

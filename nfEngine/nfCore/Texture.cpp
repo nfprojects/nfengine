@@ -5,14 +5,14 @@
     \brief  Texture resource definition.
 */
 
-#include "stdafx.h"
-#include "Globals.h"
-#include "Texture.h"
-#include "Renderer.h"
-#include "ResourcesManager.h"
-#include "../nfCommon/Logger.h"
-#include "../nfCommon/InputStream.h"
-#include "../nfCommon/Image.h"
+#include "stdafx.hpp"
+#include "Globals.hpp"
+#include "Texture.hpp"
+#include "Renderer.hpp"
+#include "ResourcesManager.hpp"
+#include "../nfCommon/Logger.hpp"
+#include "../nfCommon/InputStream.hpp"
+#include "../nfCommon/Image.hpp"
 
 namespace NFE {
 namespace Resource {

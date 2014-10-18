@@ -23,19 +23,27 @@
     <ClCompile Include="..\..\Deps\gtest\src\gtest-typed-test.cc">
       <Filter>gtest</Filter>
     </ClCompile>
-    <ClCompile Include="ThreadPoolTest.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MD5Test.cpp" />
     <ClCompile Include="PackerBasicTest.cpp" />
     <ClCompile Include="PackerComplexTest.cpp" />
+    <ClCompile Include="ThreadPoolSimple.cpp" />
+    <ClCompile Include="ThreadPoolStress.cpp" />
+    <ClCompile Include="ThreadPoolPerformance.cpp" />
+    <ClCompile Include="Common.cpp" />
+    <ClCompile Include="TimerTest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="test.h" />
+    <ClInclude Include="Common.hpp" />
+    <ClInclude Include="stdafx.hpp" />
+    <ClInclude Include="test.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="gtest">
       <UniqueIdentifier>{2e2a1c22-c83f-4055-b47d-8f19aec14692}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThreadPool">
+      <UniqueIdentifier>{389677ad-d60b-4704-9d44-6b77556cb5a8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

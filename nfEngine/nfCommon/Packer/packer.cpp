@@ -6,7 +6,7 @@
     \brief  Main module for Packer, which includes all other modules.
 */
 
-#include "stdafx.h"
+#include "stdafx.hpp"
 #include "packer.hpp"
 
 namespace NFE {

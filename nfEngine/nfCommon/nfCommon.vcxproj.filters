@@ -33,55 +33,49 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
+    <ClInclude Include="stdafx.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
+    <ClInclude Include="targetver.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="InputStream.h">
+    <ClInclude Include="InputStream.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OutputStream.h">
+    <ClInclude Include="OutputStream.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadPool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Timer.h">
+    <ClInclude Include="Image.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Window.h">
+    <ClInclude Include="Window.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Buffer.h">
+    <ClInclude Include="Buffer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Geometry.h">
+    <ClInclude Include="Math\Geometry.hpp">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Matrix.h">
+    <ClInclude Include="Math\Matrix.hpp">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Quaternion.h">
+    <ClInclude Include="Math\Quaternion.hpp">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Random.h">
+    <ClInclude Include="Math\Random.hpp">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Vector.h">
+    <ClInclude Include="Math\Vector.hpp">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="nfCommon.h">
+    <ClInclude Include="nfCommon.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Math.h">
+    <ClInclude Include="Math\Math.hpp">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
     <ClInclude Include="MD5.h">
@@ -107,6 +101,15 @@
     </ClInclude>
     <ClInclude Include="Packer\packerWriter.hpp">
       <Filter>Header Files\Packer</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadPool.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerWin.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -135,9 +138,6 @@
       <Filter>Source Files\Math</Filter>
     </ClCompile>
     <ClCompile Include="ThreadPool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Logger.cpp">
@@ -172,6 +172,9 @@
     </ClCompile>
     <ClCompile Include="Packer\packerWriter.cpp">
       <Filter>Source Files\Packer</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerWin.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "nfCommon.h"
+#include "nfCommon.hpp"
 
 // basic MD5 bitwise operations
 #define MD5_F(x, y, z) (((x) & (y)) | ((~x) & (z)))

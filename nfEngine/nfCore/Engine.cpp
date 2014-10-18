@@ -5,19 +5,19 @@
     \brief  Basic engine's API implementation.
 */
 
-#include "stdafx.h"
-#include "Globals.h"
-#include "Engine.h"
-#include "Renderer.h"
-#include "Texture.h"
-#include "View.h"
-#include "Performance.h"
-#include "Entity.h"
-#include "Memory.h"
+#include "stdafx.hpp"
+#include "Globals.hpp"
+#include "Engine.hpp"
+#include "Renderer.hpp"
+#include "Texture.hpp"
+#include "View.hpp"
+#include "Performance.hpp"
+#include "Entity.hpp"
+#include "Memory.hpp"
 
-#include "../nfCommon/Window.h"
-#include "../nfCommon/Timer.h"
-#include "../nfCommon/Logger.h"
+#include "../nfCommon/Window.hpp"
+#include "../nfCommon/Timer.hpp"
+#include "../nfCommon/Logger.hpp"
 
 namespace NFE {
 
@@ -230,9 +230,7 @@ Result EngineInit()
     }
     */
 
-    g_pMainThreadPool = new Common::ThreadPool;
-    g_pMainThreadPool->Init();
-
+    g_pMainThreadPool.reset(new Common::ThreadPool);
 
     // TODO - plugin searching & enumeration. Better error checking
     HMODULE rendererDll = LoadLibrary(L"nfRendererD3D11.dll");
@@ -262,7 +260,7 @@ Result EngineInit()
             g_pShadowRenderer = g_pRenderer->GetShadowRenderer();
             g_pLightRenderer = g_pRenderer->GetLightsRenderer();
 
-            g_DeferredContextsNum = g_pMainThreadPool->GetThreadsCount();
+            g_DeferredContextsNum = g_pMainThreadPool->GetThreadsNumber();
             g_pDeferredContexts = new IRenderContext* [g_DeferredContextsNum];
             for (uint32 i = 0; i < g_DeferredContextsNum; i++)
                 g_pDeferredContexts[i] = g_pRenderer->CreateDeferredContext();
@@ -327,14 +325,7 @@ Result EngineRelease()
     }
     LOG_INFO("Renderer released.");
 
-
-
-    if (g_pMainThreadPool != NULL)
-    {
-        g_pMainThreadPool->Release();
-        delete g_pMainThreadPool;
-        g_pMainThreadPool = 0;
-    }
+    g_pMainThreadPool.reset();
     LOG_INFO("Main threadpool released.");
 
     g_Initialized = false;

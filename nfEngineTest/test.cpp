@@ -1,7 +1,7 @@
-#include "stdafx.h"
-#include "test.h"
-#include "Editor.h"
-#include "../nfEngine/nfCommon/Logger.h"
+#include "stdafx.hpp"
+#include "test.hpp"
+#include "Editor.hpp"
+#include "../nfEngine/nfCommon/Logger.hpp"
 
 using namespace NFE;
 using namespace NFE::Render;

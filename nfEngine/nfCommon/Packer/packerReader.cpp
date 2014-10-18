@@ -6,7 +6,7 @@
     \brief  Module with class used to read files from PAK archive.
 */
 
-#include "stdafx.h"
+#include "stdafx.hpp"
 #include "packerReader.hpp"
 
 namespace NFE {

@@ -1,6 +1,6 @@
-#include "stdafx.h"
-#include "PostProcessRenderer.h"
-#include "Renderer.h"
+#include "stdafx.hpp"
+#include "PostProcessRenderer.hpp"
+#include "Renderer.hpp"
 
 namespace NFE {
 namespace Render {

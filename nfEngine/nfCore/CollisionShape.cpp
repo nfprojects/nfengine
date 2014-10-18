@@ -5,11 +5,11 @@
     \brief  Collision shape resource definition.
 */
 
-#include "stdafx.h"
-#include "CollisionShape.h"
-#include "Globals.h"
-#include "../nfCommon/Logger.h"
-#include "../nfCommon/Timer.h"
+#include "stdafx.hpp"
+#include "CollisionShape.hpp"
+#include "Globals.hpp"
+#include "../nfCommon/Logger.hpp"
+#include "../nfCommon/Timer.hpp"
 
 namespace NFE {
 namespace Resource {

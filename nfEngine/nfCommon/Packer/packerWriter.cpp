@@ -6,7 +6,7 @@
     \brief  Module with class used to write files to PAK archive.
 */
 
-#include "stdafx.h"
+#include "stdafx.hpp"
 #include "packerWriter.hpp"
 
 namespace NFE {

@@ -95,6 +95,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Deps\FreeType\include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -115,6 +116,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Deps\FreeType\include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -137,6 +139,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Deps\FreeType\include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -161,6 +164,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Deps\FreeType\include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -175,19 +179,19 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="DebugRenderer.h" />
-    <ClInclude Include="GeometryBufferRenderer.h" />
-    <ClInclude Include="GuiRenderer.h" />
-    <ClInclude Include="LightsRenderer.h" />
-    <ClInclude Include="Multishader.h" />
-    <ClInclude Include="nfRendererD3D11.h" />
-    <ClInclude Include="PostProcessRenderer.h" />
-    <ClInclude Include="Renderer.h" />
-    <ClInclude Include="RendererContext.h" />
-    <ClInclude Include="RendererResources.h" />
-    <ClInclude Include="ShadowsRenderer.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
+    <ClInclude Include="DebugRenderer.hpp" />
+    <ClInclude Include="GeometryBufferRenderer.hpp" />
+    <ClInclude Include="GuiRenderer.hpp" />
+    <ClInclude Include="LightsRenderer.hpp" />
+    <ClInclude Include="Multishader.hpp" />
+    <ClInclude Include="nfRendererD3D11.hpp" />
+    <ClInclude Include="PostProcessRenderer.hpp" />
+    <ClInclude Include="Renderer.hpp" />
+    <ClInclude Include="RendererContext.hpp" />
+    <ClInclude Include="RendererResources.hpp" />
+    <ClInclude Include="ShadowsRenderer.hpp" />
+    <ClInclude Include="stdafx.hpp" />
+    <ClInclude Include="targetver.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DebugRenderer.cpp" />

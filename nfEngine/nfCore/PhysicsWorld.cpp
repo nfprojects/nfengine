@@ -5,29 +5,17 @@
     \brief  Definitions of physics manager.
 */
 
-#include "stdafx.h"
-#include "Globals.h"
-#include "PhysicsWorld.h"
-#include "Engine.h"
-#include "SceneEvent.h"
-#include "SceneManager.h"
-#include "Performance.h"
-#include "../nfCommon/Timer.h"
+#include "stdafx.hpp"
+#include "Globals.hpp"
+#include "PhysicsWorld.hpp"
+#include "Engine.hpp"
+#include "SceneEvent.hpp"
+#include "SceneManager.hpp"
+#include "Performance.hpp"
+#include "../nfCommon/Timer.hpp"
 
 namespace NFE {
 namespace Scene {
-
-void PhysicsUpdateCallback(void* pUserData, int Instance, int ThreadID)
-{
-    PhysicsWorld* pWorld = (PhysicsWorld*)pUserData;
-
-    Common::Timer timer;
-    timer.Start();
-    {
-        pWorld->mDynamicsWorld->stepSimulation(pWorld->mDeltaTime, 40, 1.0f / 90.0f);
-    }
-    Util::g_FrameStats.physics = timer.Stop();
-}
 
 PhysicsWorld::PhysicsWorld(SceneManager* pScene)
 {
@@ -103,12 +91,20 @@ PhysicsWorld::~PhysicsWorld()
     delete mBroadphase;
 }
 
+void PhysicsWorld::UpdatePhysics()
+{
+    Common::Timer timer;
+    timer.Start();
+    mDynamicsWorld->stepSimulation(mDeltaTime, 40, 1.0f / 90.0f);
+    Util::g_FrameStats.physics = timer.Stop();
+}
+
 //Start physics update task
 void PhysicsWorld::StartUpdate(float deltaTime)
 {
     Wait();
     mDeltaTime = deltaTime;
-    mPhysicsTask = g_pMainThreadPool->AddTask(PhysicsUpdateCallback, this, 1);
+    mPhysicsTask = g_pMainThreadPool->Enqueue(std::bind(&PhysicsWorld::UpdatePhysics, this));
     mRunning = true;
 }
 

@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "../nfCommon.h"
+#include "../nfCommon.hpp"
 #include <type_traits>
 #include <cstdio>
 #include <iostream>
