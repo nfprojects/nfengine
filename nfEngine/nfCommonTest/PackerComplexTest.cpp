@@ -1,7 +1,7 @@
-#include "stdafx.h"
+#include "stdafx.hpp"
 #include "../nfCommon/Packer/packer.hpp"
 
-#include "test.h"
+#include "test.hpp"
 
 using namespace NFE::Common;
 

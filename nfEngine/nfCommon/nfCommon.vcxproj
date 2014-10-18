@@ -184,7 +184,7 @@
     <ClInclude Include="Math\Quaternion.hpp" />
     <ClInclude Include="Math\Random.hpp" />
     <ClInclude Include="Math\Vector.hpp" />
-    <ClInclude Include="MD5.h" />
+    <ClInclude Include="MD5.hpp" />
     <ClInclude Include="nfCommon.hpp" />
     <ClInclude Include="OutputStream.hpp" />
     <ClInclude Include="Packer\packer.hpp" />

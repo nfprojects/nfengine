@@ -1,5 +1,5 @@
-#include "stdafx.h"
-#include "../nfCommon/MD5.h"
+#include "stdafx.hpp"
+#include "../nfCommon/MD5.hpp"
 
 using namespace NFE::Common;
 

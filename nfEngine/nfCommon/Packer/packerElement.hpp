@@ -9,7 +9,7 @@
 #pragma once
 
 #include "packerDefines.hpp"
-#include "../MD5.h"
+#include "../MD5.hpp"
 
 namespace NFE {
 namespace Common {
