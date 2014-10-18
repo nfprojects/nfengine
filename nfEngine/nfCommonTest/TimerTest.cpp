@@ -7,8 +7,8 @@
 
 
 namespace {
-    const double SLEEP_FOR_ACCURACY = 0.002; // 2 ms
-    const double TOLERANCE = 0.01; // 10 ms
+const double SLEEP_FOR_ACCURACY = 0.002; // 2 ms
+const double TOLERANCE = 0.01; // 10 ms
 } // namespace
 
 

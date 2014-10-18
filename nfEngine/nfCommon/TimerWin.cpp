@@ -8,14 +8,14 @@
 
 
 namespace {
-    static double GetCounterPeriod()
-    {
-        LARGE_INTEGER freq;
-        QueryPerformanceFrequency(&freq);
-        return 1.0 / static_cast<double>(freq.QuadPart);
-    }
+static double GetCounterPeriod()
+{
+    LARGE_INTEGER freq;
+    QueryPerformanceFrequency(&freq);
+    return 1.0 / static_cast<double>(freq.QuadPart);
+}
 
-    static const double mPeriod = GetCounterPeriod();
+static const double mPeriod = GetCounterPeriod();
 } // namespace
 
 

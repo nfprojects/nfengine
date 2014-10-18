@@ -10,7 +10,7 @@
 
 /*
  * @class Latch
- * A tool allowing for threads synchronization. 
+ * A tool allowing for threads synchronization.
  */
 class Latch final
 {
@@ -30,7 +30,7 @@ public:
     void Set();
 
     /*
-     * Waits unitl another thread calls @p Set() method. 
+     * Waits unitl another thread calls @p Set() method.
      */
     void Wait();
 };

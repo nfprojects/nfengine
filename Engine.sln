@@ -57,6 +57,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfCommonTest", "nfEngine\nf
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PackerTool", "nfEngine\Tools\PackerTool\packerTool.vcxproj", "{E59675D7-74B8-4081-A87B-981329564736}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

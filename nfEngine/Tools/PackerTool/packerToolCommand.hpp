@@ -1,10 +1,11 @@
 #pragma once
 
 #include "packerToolDefines.hpp"
+#include <functional>
 #include <vector>
 #include <string>
 
-typedef void (*CommandFunc)(std::string& cmdString);
+typedef std::function<void(std::string& cmdString)> CommandFunc;
 
 class packerToolCommand
 {

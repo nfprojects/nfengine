@@ -1,3 +1,9 @@
+/**
+ * @file   MD5.hpp
+ * @author LKostyra (costyrra.xl@gmail.com)
+ * @brief  Module for handling MD5 calculations
+ */
+
 #pragma once
 
 #include "nfCommon.hpp"
@@ -30,20 +36,20 @@
 #define MD5_ROT_LEFT(x, c) ( ((x) << (c)) | ((x) >> (32 - (c)) ) )
 
 #define MD5_FF(a, b, c, d, x, s, t) { \
-(a) += (MD5_F((b), (c), (d))) + (x) + (t); \
-(a) = MD5_ROT_LEFT((a), (s)) + (b); }
+        (a) += (MD5_F((b), (c), (d))) + (x) + (t); \
+        (a) = MD5_ROT_LEFT((a), (s)) + (b); }
 
 #define MD5_GG(a, b, c, d, x, s, t) { \
-(a) += (MD5_G((b), (c), (d))) + (x) + (t); \
-(a) = MD5_ROT_LEFT((a), (s)) + (b); }
+        (a) += (MD5_G((b), (c), (d))) + (x) + (t); \
+        (a) = MD5_ROT_LEFT((a), (s)) + (b); }
 
 #define MD5_HH(a, b, c, d, x, s, t) { \
-(a) += (MD5_H((b), (c), (d))) + (x) + (t); \
-(a) = MD5_ROT_LEFT((a), (s)) + (b); }
+        (a) += (MD5_H((b), (c), (d))) + (x) + (t); \
+        (a) = MD5_ROT_LEFT((a), (s)) + (b); }
 
 #define MD5_II(a, b, c, d, x, s, t) { \
-(a) += (MD5_I((b), (c), (d))) + (x) + (t); \
-(a) = MD5_ROT_LEFT((a), (s)) + (b); }
+        (a) += (MD5_I((b), (c), (d))) + (x) + (t); \
+        (a) = MD5_ROT_LEFT((a), (s)) + (b); }
 
 namespace NFE {
 namespace Common {
@@ -53,8 +59,7 @@ struct NFCOMMON_API MD5DataSet
     MD5DataSet(const std::string& input);
     ~MD5DataSet();
 
-    uint32* mChunks;
-    size_t mChunkSize;
+    std::vector<uint32> mChunks;
 };
 
 class NFCOMMON_API MD5Hash
@@ -77,6 +82,7 @@ public:
     void Print() const;
 
 private:
+    // TODO Investigate if speeding up MD5 calculations with SSE is possible
     uint32 h[4];
 };
 

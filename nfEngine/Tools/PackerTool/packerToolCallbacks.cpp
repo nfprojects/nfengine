@@ -1,3 +1,4 @@
+#include "stdafx.hpp"
 #include "packerToolCallbacks.hpp"
 
 #include <memory>
@@ -11,50 +12,47 @@ using namespace NFE::Common;
 std::string s_FilePath;
 const std::string cs_Extension = ".pak";
 bool b_isReading = false;
-PackWriter* VFSWriter;
-PackReader* VFSReader;
+std::unique_ptr<PackWriter> VFSWriter;
+std::unique_ptr<PackReader> VFSReader;
 
 /////////////////
 //HELP MESSAGES//
 /////////////////
-const std::string helpStr_load = "\
-Loads PAK archive into memory.\n\
-      Syntax:\n\
-            load <file_path>\n\
-\n\
-      Parameters:\n\
-      + file_path - path to PAK archive\
-";
+const char* helpStr_load = R"(Loads PAK archive into memory.
+      Syntax:
+            load <file_path>
 
-const std::string helpStr_create = "\
-Initializes new PAK archive.\n\
-      Syntax:\n\
-            create <file_path>\n\
-\n\
-      Parameters:\n\
-      + file_path - path where new PAK archive will be created\
-";
+      Parameters:
+      + file_path - path to PAK archive
+)";
 
-const std::string helpStr_add = "\
-Adds a file to PAK Archive.\n\
-      Syntax:\n\
-        add <file_path> <vfs_file_path>\n\
-\n\
-      Parameters:\n\
-      + file_path - path to file to be added\n\
-      + vfs_file_path - path which will be used when loading a file from PAK\n\
-\n\
-Keep in mind - PAK must be saved using SAVE command for changes to apply!\
-";
+const std::string helpStr_create = R"(Initializes new PAK archive.\n\
+      Syntax:
+            create <file_path>
 
-const std::string helpStr_save = "\
-Saves PAK archive to path specified during \"create\" call.\n\
-      Syntax:\n\
-        save\n\
-\n\
-      Parameters:\n\
-        This function takes no additional arguments.\
-";
+      Parameters:
+      + file_path - path where new PAK archive will be created
+)";
+
+const std::string helpStr_add = R"(Adds a file to PAK Archive.
+      Syntax:
+        add <file_path> <vfs_file_path>
+
+      Parameters:
+      + file_path - path to file to be added
+      + vfs_file_path - path which will be used when loading a file from PAK
+
+Keep in mind - PAK must be saved using SAVE command for changes to apply!
+)";
+
+const std::string helpStr_save = R"(
+Saves PAK archive to path specified during "create" call.
+      Syntax:
+        save
+
+      Parameters:
+        This function takes no additional arguments.
+)";
 
 ////////////////////////////////
 //NEXT COMMAND TOKEN EXTRACTOR//
@@ -109,22 +107,19 @@ std::string GetNextToken(std::string& cmd)
 void OnBeforeLoop()
 {
     ///TODO Add error code translated to string
-    PACK_RESULT pr = PACK_RESULT::OK;
+    PackResult pr = PackResult::OK;
 
-    pr = Packer_CreateWriter(&VFSWriter);
-    AssertMsg(pr == PACK_RESULT::OK, "Error: " + PACK_RESULT_TO_STRING(pr));
+    VFSWriter.reset(new PackWriter);
+    AssertMsg(pr == PackResult::OK, "Error: " + PACK_RESULT_TO_STRING(pr));
 
-    pr = Packer_CreateReader(&VFSReader);
-    AssertMsg(pr == PACK_RESULT::OK, "Error: " + PACK_RESULT_TO_STRING(pr));
+    VFSReader.reset(new PackReader);
+    AssertMsg(pr == PackResult::OK, "Error: " + PACK_RESULT_TO_STRING(pr));
 }
 
 void OnAfterLoop()
 {
-    Packer_ReleaseWriter();
-    Packer_ReleaseReader();
-
-    VFSWriter = nullptr;
-    VFSReader = nullptr;
+    VFSWriter.reset();
+    VFSReader.reset();
 }
 
 ///////////////////
@@ -146,8 +141,8 @@ void Callback_LoadArchive(std::string& cmdString)
         return;
     }
 
-    PACK_RESULT pr = VFSReader->Init(cmd);
-    AssertMsg(pr == PACK_RESULT::OK, "Failed to load Pack Archive. Packer DLL result: " +
+    PackResult pr = VFSReader->Init(cmd);
+    AssertMsg(pr == PackResult::OK, "Failed to load Pack Archive. Packer DLL result: " +
               PACK_RESULT_TO_STRING(pr) + " - " + Packer_GetErrorStr(pr));
 
     b_isReading = true;
@@ -194,8 +189,8 @@ void Callback_CreateArchive(std::string& cmdString)
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
 
-    PACK_RESULT pr = VFSWriter->Init(cmd);
-    AssertMsg(pr == PACK_RESULT::OK, "Failed to initialize new Pack Archive. Packer DLL result: " +
+    PackResult pr = VFSWriter->Init(cmd);
+    AssertMsg(pr == PackResult::OK, "Failed to initialize new Pack Archive. Packer DLL result: " +
               PACK_RESULT_TO_STRING(pr) + " - " + Packer_GetErrorStr(pr));
 
     s_FilePath = cmd;
@@ -223,8 +218,8 @@ void Callback_AddFile(std::string& cmdString)
     if (vfsPath.empty())
         vfsPath = path;
 
-    PACK_RESULT pr = VFSWriter->AddFile(path, vfsPath);
-    AssertMsg(pr == PACK_RESULT::OK, "Failed to add file to Pack Archive. Packer DLL result: " +
+    PackResult pr = VFSWriter->AddFile(path, vfsPath);
+    AssertMsg(pr == PackResult::OK, "Failed to add file to Pack Archive. Packer DLL result: " +
               PACK_RESULT_TO_STRING(pr) + " - " + Packer_GetErrorStr(pr));
 }
 
@@ -236,8 +231,8 @@ void Callback_SaveArchive(std::string& cmdString)
         return;
     }
 
-    PACK_RESULT pr = VFSWriter->WritePAK();
-    AssertMsg(pr == PACK_RESULT::OK, "Failed to save Pack Archive. Packer DLL result: " +
+    PackResult pr = VFSWriter->WritePAK();
+    AssertMsg(pr == PackResult::OK, "Failed to save Pack Archive. Packer DLL result: " +
               PACK_RESULT_TO_STRING(pr) + " - " + Packer_GetErrorStr(pr));
 }
 

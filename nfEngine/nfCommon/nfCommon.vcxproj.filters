@@ -31,6 +31,12 @@
     <Filter Include="Source Files\Packer">
       <UniqueIdentifier>{6a3e9a23-d2b4-47c7-9e30-c0e784f6e277}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Win">
+      <UniqueIdentifier>{82f86556-6e16-4b25-ba75-f3376ee985ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Win">
+      <UniqueIdentifier>{bd3f5c23-9ea9-4e8c-9ad5-e1d9ed7a40cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.hpp">
@@ -81,21 +87,6 @@
     <ClInclude Include="..\..\Deps\jpeg\jpge.h">
       <Filter>Header Files\jpeg</Filter>
     </ClInclude>
-    <ClInclude Include="Packer\packer.hpp">
-      <Filter>Header Files\Packer</Filter>
-    </ClInclude>
-    <ClInclude Include="Packer\packerDefines.hpp">
-      <Filter>Header Files\Packer</Filter>
-    </ClInclude>
-    <ClInclude Include="Packer\packerElement.hpp">
-      <Filter>Header Files\Packer</Filter>
-    </ClInclude>
-    <ClInclude Include="Packer\packerReader.hpp">
-      <Filter>Header Files\Packer</Filter>
-    </ClInclude>
-    <ClInclude Include="Packer\packerWriter.hpp">
-      <Filter>Header Files\Packer</Filter>
-    </ClInclude>
     <ClInclude Include="ThreadPool.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -110,6 +101,30 @@
     </ClInclude>
     <ClInclude Include="MD5.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bit.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Packer\Packer.hpp">
+      <Filter>Header Files\Packer</Filter>
+    </ClInclude>
+    <ClInclude Include="Packer\PackerDefines.hpp">
+      <Filter>Header Files\Packer</Filter>
+    </ClInclude>
+    <ClInclude Include="Packer\PackerElement.hpp">
+      <Filter>Header Files\Packer</Filter>
+    </ClInclude>
+    <ClInclude Include="Packer\PackerReader.hpp">
+      <Filter>Header Files\Packer</Filter>
+    </ClInclude>
+    <ClInclude Include="Packer\PackerWriter.hpp">
+      <Filter>Header Files\Packer</Filter>
+    </ClInclude>
+    <ClInclude Include="Console.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Win\Console.hpp">
+      <Filter>Header Files\Win</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -161,20 +176,20 @@
     <ClCompile Include="..\..\Deps\jpeg\jpgd.cpp">
       <Filter>Source Files\jpeg</Filter>
     </ClCompile>
-    <ClCompile Include="Packer\packer.cpp">
-      <Filter>Source Files\Packer</Filter>
-    </ClCompile>
-    <ClCompile Include="Packer\packerDefines.cpp">
-      <Filter>Source Files\Packer</Filter>
-    </ClCompile>
-    <ClCompile Include="Packer\packerReader.cpp">
-      <Filter>Source Files\Packer</Filter>
-    </ClCompile>
-    <ClCompile Include="Packer\packerWriter.cpp">
-      <Filter>Source Files\Packer</Filter>
-    </ClCompile>
     <ClCompile Include="TimerWin.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Packer\PackerDefines.cpp">
+      <Filter>Source Files\Packer</Filter>
+    </ClCompile>
+    <ClCompile Include="Packer\PackerReader.cpp">
+      <Filter>Source Files\Packer</Filter>
+    </ClCompile>
+    <ClCompile Include="Packer\PackerWriter.cpp">
+      <Filter>Source Files\Packer</Filter>
+    </ClCompile>
+    <ClCompile Include="Win\Console.cpp">
+      <Filter>Source Files\Win</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

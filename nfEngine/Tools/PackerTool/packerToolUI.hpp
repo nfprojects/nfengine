@@ -2,13 +2,14 @@
 
 #include "packerToolDefines.hpp"
 #include "packerToolCommand.hpp"
+#include <functional>
 
 const std::string m_helpCommandStr = "help";
 const std::string m_exitCommandStr = "exit";
 
 class packerToolUI
 {
-    typedef void (*UIFunc)();
+    typedef std::function<void()> UIFunc;
 
 public:
     packerToolUI();
@@ -16,11 +17,11 @@ public:
 
     void MainLoop();
 
-    void AddCommand(std::string commandString, CommandFunc command);
-    void AddCommand(std::string commandString, CommandFunc command, std::string commandHelpMessage);
+    void AddCommand(const std::string& commandString, const CommandFunc& command);
+    void AddCommand(const std::string& commandString, const CommandFunc& command, const std::string& commandHelpMessage);
 
-    void AddBeforeLoopCommand(UIFunc command);
-    void AddAfterLoopCommand(UIFunc command);
+    void AddBeforeLoopCommand(const UIFunc& command);
+    void AddAfterLoopCommand(const UIFunc& command);
 
 private:
     /*struct packerConfig
@@ -33,12 +34,12 @@ private:
 
     void PrintCommands();
 
-    packerToolCommandList m_commandList;
+    packerToolCommandList mCommandList;
 
-    UIFunc m_beforeLoopCommand;
-    UIFunc m_afterLoopCommand;
+    UIFunc mBeforeLoopCommand;
+    UIFunc mAfterLoopCommand;
 
     //packerConfig m_curConfig;
-    FILE* m_configFile;
-    bool m_isUsable;
+    FILE* mConfigFile;
+    bool mIsUsable;
 };

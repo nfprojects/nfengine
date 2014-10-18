@@ -103,6 +103,9 @@
       <AdditionalDependencies>AntTweakBar.lib;libpng.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Deps\AntTweekBar\lib;$(SolutionDir)Bin\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>COPY "$(SolutionDir)Deps\AntTweekBar\lib\AntTweakBar.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -121,6 +124,9 @@
       <AdditionalDependencies>AntTweakBar64.lib;libpng.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Deps\AntTweekBar\lib;$(SolutionDir)Bin\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>COPY "$(SolutionDir)Deps\AntTweekBar\lib\AntTweakBar64.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -146,6 +152,9 @@
       <AdditionalDependencies>AntTweakBar.lib;libpng.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Deps\AntTweekBar\lib;$(SolutionDir)Bin\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>COPY "$(SolutionDir)Deps\AntTweekBar\lib\AntTweakBar.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -170,11 +179,16 @@
       <AdditionalDependencies>AntTweakBar64.lib;libpng.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Deps\AntTweekBar\lib;$(SolutionDir)Bin\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>COPY "$(SolutionDir)Deps\AntTweekBar\lib\AntTweakBar64.dll" "$(SolutionDir)Bin\$(Platform)\$(Configuration)\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Deps\jpeg\jpgd.h" />
     <ClInclude Include="..\..\Deps\jpeg\jpge.h" />
+    <ClInclude Include="Bit.hpp" />
     <ClInclude Include="Buffer.hpp" />
+    <ClInclude Include="Console.hpp" />
     <ClInclude Include="Image.hpp" />
     <ClInclude Include="InputStream.hpp" />
     <ClInclude Include="Logger.hpp" />
@@ -187,17 +201,18 @@
     <ClInclude Include="MD5.hpp" />
     <ClInclude Include="nfCommon.hpp" />
     <ClInclude Include="OutputStream.hpp" />
-    <ClInclude Include="Packer\packer.hpp" />
-    <ClInclude Include="Packer\packerDefines.hpp" />
-    <ClInclude Include="Packer\packerElement.hpp" />
-    <ClInclude Include="Packer\packerReader.hpp" />
-    <ClInclude Include="Packer\packerWriter.hpp" />
+    <ClInclude Include="Packer\Packer.hpp" />
+    <ClInclude Include="Packer\PackerDefines.hpp" />
+    <ClInclude Include="Packer\PackerElement.hpp" />
+    <ClInclude Include="Packer\PackerReader.hpp" />
+    <ClInclude Include="Packer\PackerWriter.hpp" />
     <ClInclude Include="stdafx.hpp" />
     <ClInclude Include="targetver.hpp" />
     <ClInclude Include="ThreadPool.hpp" />
     <ClInclude Include="Timer.hpp" />
     <ClInclude Include="TimerWin.hpp" />
     <ClInclude Include="Window.hpp" />
+    <ClInclude Include="Win\Console.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Deps\jpeg\jpgd.cpp">
@@ -239,10 +254,24 @@
     <ClCompile Include="Math\Random.cpp" />
     <ClCompile Include="MD5.cpp" />
     <ClCompile Include="OutputStream.cpp" />
-    <ClCompile Include="Packer\packer.cpp" />
-    <ClCompile Include="Packer\packerDefines.cpp" />
-    <ClCompile Include="Packer\packerReader.cpp" />
-    <ClCompile Include="Packer\packerWriter.cpp" />
+    <ClCompile Include="Packer\PackerDefines.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../stdafx.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Packer\PackerReader.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../stdafx.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Packer\PackerWriter.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../stdafx.hpp</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -252,6 +281,12 @@
     <ClCompile Include="ThreadPool.cpp" />
     <ClCompile Include="TimerWin.cpp" />
     <ClCompile Include="Window.cpp" />
+    <ClCompile Include="Win\Console.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../stdafx.hpp</PrecompiledHeaderFile>
+    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

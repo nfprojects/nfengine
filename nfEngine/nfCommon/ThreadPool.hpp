@@ -45,7 +45,7 @@ class Task final
     size_t mInstancesNum;        //< total number of the task instances
     size_t mNextInstance;        //< next instance ID to execute
     std::atomic<size_t> mInstancesLeft;
-    
+
     std::set<Task*> mParents;    //< parent tasks
     std::set<Task*> mChildren;   //< child tasks
     size_t mRequired;            //< number of parent tasks left to dependency resolve
@@ -96,27 +96,28 @@ class NFCOMMON_API ThreadPool final
     std::mutex mDepsQueueMutex;             //< lock for task dependencies access (Task members)
 
     std::condition_variable mTaskQueueTask;
-	std::queue<Task*> mTasksQueue;          //< Queue for task with resolved dependencies (with "Waiting" state)
+    std::queue<Task*>
+    mTasksQueue;          //< Queue for task with resolved dependencies (with "Waiting" state)
     std::mutex mTasksQueueMutex;            //< lock for "mTasksQueue" access
 
-	std::atomic<TaskID> mLastTaskId;
-	std::map<TaskID, Task*> mTasks;
-	std::mutex mTasksMutex;                 //< lock for "mTasks"
-	std::condition_variable mTasksMutexCV;  //< condition variable used to notify about finished task
+    std::atomic<TaskID> mLastTaskId;
+    std::map<TaskID, Task*> mTasks;
+    std::mutex mTasksMutex;                 //< lock for "mTasks"
+    std::condition_variable mTasksMutexCV;  //< condition variable used to notify about finished task
 
-	// translate TaskID to Task object
-	Task* GetTask(const TaskID& ptr) const;
+    // translate TaskID to Task object
+    Task* GetTask(const TaskID& ptr) const;
 
-	void SchedulerCallback(WorkerThread* thread);
+    void SchedulerCallback(WorkerThread* thread);
 
-	// create "num" additional worker threads
-	void SpawnWorkerThreads(size_t num);
+    // create "num" additional worker threads
+    void SpawnWorkerThreads(size_t num);
 
-	// tell a worker thread to stop it's work
-	void TriggerWorkerStop(WorkerThreadPtr workerThread);
+    // tell a worker thread to stop it's work
+    void TriggerWorkerStop(WorkerThreadPtr workerThread);
 
-	// worker thread routine
-	void WorkerThreadCallback();
+    // worker thread routine
+    void WorkerThreadCallback();
 
 public:
     ThreadPool();
@@ -147,9 +148,9 @@ public:
      * @return             Task ID
      */
     TaskID Enqueue(TaskFunction function,
-                    size_t instances = 1,
-                    const std::vector<TaskID>& dependencies = std::vector<TaskID>(),
-                    size_t required = -1);
+                   size_t instances = 1,
+                   const std::vector<TaskID>& dependencies = std::vector<TaskID>(),
+                   size_t required = -1);
 
     /**
      * Check if a task is completed.
@@ -159,7 +160,7 @@ public:
     /**
      * Waits for an task to finish.
      */
-	void WaitForTask(const TaskID& taskPtr);
+    void WaitForTask(const TaskID& taskPtr);
 
     /**
      * Waits for multiple tasks to finish.

@@ -13,7 +13,6 @@ void SetUpCurrentDirectory()
 
 int main(int argc, char* argv[])
 {
-    //PROFILE_COMMAND_STATUS profstat = StopProfile(PROFILE_GLOBALLEVEL, PROFILE_CURRENTID);
     testing::InitGoogleTest(&argc, argv);
 
     SetUpCurrentDirectory();

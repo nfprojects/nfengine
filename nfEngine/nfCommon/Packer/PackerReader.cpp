@@ -1,84 +1,82 @@
 /**
-    NFEngine project
+ * @file   PackerReader.cpp
+ * @author LKostyra (costyrra.xl@gmail.com)
+ * @brief  Module with class used to read files from PAK archive.
+ */
 
-    \file   packerReader.cpp
-    \author LKostyra (costyrra.xl@gmail.com)
-    \brief  Module with class used to read files from PAK archive.
-*/
-
-#include "stdafx.hpp"
-#include "packerReader.hpp"
+#include "../stdafx.hpp"
+#include "PackerReader.hpp"
 
 namespace NFE {
 namespace Common {
 
 PackReader::PackReader(): mFileVersion(0) {}
-PackReader::PackReader(const std::string& FilePath): mFileVersion(0)
+PackReader::PackReader(const std::string& filePath): mFileVersion(0)
 {
-    Init(FilePath);
+    Init(filePath);
 }
 
-PACK_RESULT PackReader::Init(const std::string& FilePath)
+PackResult PackReader::Init(const std::string& filePath)
 {
-    mFilePath = FilePath;
+    mFilePath = filePath;
     FILEPtr pFile(fopen(mFilePath.c_str(), "rb"), FILEPtrDestroy);
 
     if (!(pFile.get()))
-        return PACK_RESULT::FILE_NOT_FOUND;
+        return PackResult::FileNotFound;
 
     if (!fread(&mFileVersion, sizeof(uint32), 1, pFile.get()))
-        return PACK_RESULT::READ_FAILED;
+        return PackResult::ReadFailed;
 
     size_t mFileSize = 0;
     if (!fread(&mFileSize, sizeof(size_t), 1, pFile.get()))
-        return PACK_RESULT::READ_FAILED;
+        return PackResult::ReadFailed;
 
-    packElement tempElement;
+    PackerElement tempElement;
     for (size_t i = 0; i < mFileSize; ++i)
     {
         if (!fread(reinterpret_cast<void*>(&tempElement.mHash), sizeof(uint32), 4, pFile.get()))
-            return PACK_RESULT::READ_FAILED;
+            return PackResult::ReadFailed;
 
         if (!fread(reinterpret_cast<void*>(&tempElement.FilePos), sizeof(size_t), 1, pFile.get()))
-            return PACK_RESULT::READ_FAILED;
+            return PackResult::ReadFailed;
 
         if (!fread(reinterpret_cast<void*>(&tempElement.FileSize), sizeof(size_t), 1, pFile.get()))
-            return PACK_RESULT::READ_FAILED;
+            return PackResult::ReadFailed;
 
         mFileList.push_back(tempElement);
     }
 
-    return PACK_RESULT::OK;
+    return PackResult::OK;
 }
 
-PACK_RESULT PackReader::GetFile(const std::string& VFSFilePath, Buffer& outbuf)
+PackResult PackReader::GetFile(const std::string& vfsFilePath, Buffer& outputBuffer)
 {
     if (mFileList.empty())
-        return PACK_RESULT::UNINITIALIZED;
+        return PackResult::Uninitialized;
 
     MD5Hash searchHash;
-    searchHash.Calculate(VFSFilePath);
+    searchHash.Calculate(vfsFilePath);
 
     for (size_t i = 0; i < mFileList.size(); ++i)
     {
         if (searchHash == mFileList[i].mHash)
         {
-            outbuf.Create(mFileList[i].FileSize);
+            outputBuffer.Create(mFileList[i].FileSize);
 
             FILEPtr pFile(fopen(mFilePath.c_str(), "rb"), FILEPtrDestroy);
 
             size_t filePos = mFileList[i].FilePos;
             if (fseek(pFile.get(), static_cast<long>(filePos), SEEK_SET))
-                return PACK_RESULT::READ_FAILED;
+                return PackResult::ReadFailed;
 
-            if (!fread(outbuf.GetData(), sizeof(unsigned char), mFileList[i].FileSize, pFile.get()))
-                return PACK_RESULT::READ_FAILED;
+            if (!fread(outputBuffer.GetData(), sizeof(unsigned char), mFileList[i].FileSize, pFile.get()))
+                return PackResult::ReadFailed;
 
-            return PACK_RESULT::OK;
+            return PackResult::OK;
         }
     }
 
-    return PACK_RESULT::FILE_NOT_FOUND;
+    return PackResult::FileNotFound;
 }
 
 void PackReader::PrintFilesToStdout() const

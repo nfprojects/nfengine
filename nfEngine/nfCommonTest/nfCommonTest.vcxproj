@@ -93,7 +93,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_VARIADIC_MAX=10;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(VSInstallDir)Team Tools\Performance Tools\PerfSDK\;..\nfCore\;$(SolutionDir)Deps\gtest\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\nfCore\;$(SolutionDir)Deps\gtest\include\</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -113,7 +113,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_VARIADIC_MAX=10;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\nfCore\;$(SolutionDir)Deps\gtest\include\;$(VSInstallDir)Team Tools\Performance Tools\x64\PerfSDK\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\nfCore\;$(SolutionDir)Deps\gtest\include\</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -135,7 +135,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_VARIADIC_MAX=10;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(VSInstallDir)Team Tools\Performance Tools\PerfSDK\;..\nfCore\;$(SolutionDir)Deps\gtest\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\nfCore\;$(SolutionDir)Deps\gtest\include\</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -159,7 +159,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_VARIADIC_MAX=10;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\nfCore\;$(SolutionDir)Deps\gtest\include\;$(VSInstallDir)Team Tools\Performance Tools\x64\PerfSDK\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\nfCore\;$(SolutionDir)Deps\gtest\include\</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -227,7 +227,6 @@
     <ClCompile Include="MD5Test.cpp" />
     <ClCompile Include="PackerBasicTest.cpp" />
     <ClCompile Include="PackerComplexTest.cpp" />
-    <ClCompile Include="ThreadPoolTest.cpp" />
     <ClCompile Include="ThreadPoolPerformance.cpp" />
     <ClCompile Include="ThreadPoolSimple.cpp" />
     <ClCompile Include="stdafx.cpp">

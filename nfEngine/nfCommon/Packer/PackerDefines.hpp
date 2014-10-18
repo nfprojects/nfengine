@@ -1,10 +1,8 @@
 /**
-    NFEngine project
-
-    \file   packerDefines.hpp
-    \author LKostyra (costyrra.xl@gmail.com)
-    \brief  Common definitions for Packer
-*/
+ * @file   PackerDefines.hpp
+ * @author LKostyra (costyrra.xl@gmail.com)
+ * @brief  Common definitions for Packer
+ */
 
 #pragma once
 
@@ -27,30 +25,30 @@ namespace NFE {
 namespace Common {
 
 // return codes used by Packer
-enum class PACK_RESULT : uint32
+enum class PackResult : uint32
 {
     OK = 0,
-    UNINITIALIZED,
-    FILE_NOT_FOUND,
-    FILE_NOT_CREATED,
-    NULLPOINTER,
-    FILE_EXISTS,
-    INVALID_INPUT_PARAM,
-    ALREADY_INITALIZED,
-    WRITE_FAILED,
-    READ_FAILED
+    Uninitialized,
+    FileNotFound,
+    FileNotCreated,
+    NullPointer,
+    FileExists,
+    InvalidInputParam,
+    AlreadyInitialized,
+    WriteFailed,
+    ReadFailed
 };
 
-typedef std::underlying_type<PACK_RESULT>::type PACK_RESULT_TYPE;
+typedef std::underlying_type<PackResult>::type PackResultType;
 
 // unique_ptr wrapper for FILE
 typedef std::function<void(FILE*)> FILEPtrDeleter;
 typedef std::unique_ptr<FILE, FILEPtrDeleter> FILEPtr;
 
-NFCOMMON_API std::string Packer_GetErrorStr(PACK_RESULT pr);
+NFCOMMON_API std::string Packer_GetErrorStr(PackResult pr);
 void FILEPtrDestroy(FILE* f);
 
-#define PACK_RESULT_TO_STRING(x) std::to_string(static_cast<PACK_RESULT_TYPE>(x))
+#define PACK_RESULT_TO_STRING(x) std::to_string(static_cast<PackResultType>(x))
 #define PACKER_DEF_BUFFER_SIZE 4096
 
 // current archive version

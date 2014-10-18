@@ -1,5 +1,5 @@
 #include "stdafx.hpp"
-#include "../nfCommon/Packer/packer.hpp"
+#include "../nfCommon/Packer/Packer.hpp"
 
 using namespace NFE::Common;
 
@@ -10,22 +10,17 @@ class PackerBasicTest : public testing::Test
 protected:
     void SetUp()
     {
-        PACK_RESULT ret;
-        EXPECT_NO_THROW(ret = Packer_CreateReader(&reader));
-        EXPECT_EQ(PACK_RESULT::OK, ret);
-        EXPECT_NE(nullptr, reader);
+        EXPECT_NO_THROW(mReader.reset(new PackReader()));
+        EXPECT_NE(nullptr, mReader.get());
 
-        EXPECT_NO_THROW(ret = Packer_CreateWriter(&writer));
-        EXPECT_EQ(PACK_RESULT::OK, ret);
-        EXPECT_NE(nullptr, writer);
+        EXPECT_NO_THROW(mWriter.reset(new PackWriter()));
+        EXPECT_NE(nullptr, mWriter.get());
     }
 
     void TearDown()
     {
-        EXPECT_NO_THROW(Packer_ReleaseReader());
-        EXPECT_NO_THROW(Packer_ReleaseWriter());
-        reader = nullptr;
-        writer = nullptr;
+        mReader.reset();
+        mWriter.reset();
 
         std::ifstream fs(testPackFilePath);
         if (fs.good())
@@ -36,25 +31,25 @@ protected:
         }
     }
 
-    PackReader* reader;
-    PackWriter* writer;
+    std::unique_ptr<PackReader> mReader;
+    std::unique_ptr<PackWriter> mWriter;
 };
 
 TEST_F(PackerBasicTest, WriterInitTest)
 {
-    PACK_RESULT pr;
-    EXPECT_NO_THROW(pr = writer->Init(testPackFilePath));
-    EXPECT_EQ(PACK_RESULT::OK, pr);
+    PackResult pr;
+    EXPECT_NO_THROW(pr = mWriter->Init(testPackFilePath));
+    EXPECT_EQ(PackResult::OK, pr);
 }
 
 TEST_F(PackerBasicTest, WriterEmptyTest)
 {
-    PACK_RESULT pr;
-    EXPECT_NO_THROW(pr = writer->Init(testPackFilePath));
-    EXPECT_EQ(PACK_RESULT::OK, pr);
+    PackResult pr;
+    EXPECT_NO_THROW(pr = mWriter->Init(testPackFilePath));
+    EXPECT_EQ(PackResult::OK, pr);
 
-    EXPECT_NO_THROW(pr = writer->WritePAK());
-    EXPECT_EQ(PACK_RESULT::OK, pr);
+    EXPECT_NO_THROW(pr = mWriter->WritePAK());
+    EXPECT_EQ(PackResult::OK, pr);
 
     // open file manually and check if it contains data in order:
     //   * version number
@@ -75,39 +70,39 @@ TEST_F(PackerBasicTest, WriterEmptyTest)
 TEST_F(PackerBasicTest, ReaderEmptyTest)
 {
     // create correct file
-    PACK_RESULT pr;
-    EXPECT_NO_THROW(pr = writer->Init(testPackFilePath));
-    EXPECT_EQ(PACK_RESULT::OK, pr);
+    PackResult pr;
+    EXPECT_NO_THROW(pr = mWriter->Init(testPackFilePath));
+    EXPECT_EQ(PackResult::OK, pr);
 
-    EXPECT_NO_THROW(pr = writer->WritePAK());
-    EXPECT_EQ(PACK_RESULT::OK, pr);
+    EXPECT_NO_THROW(pr = mWriter->WritePAK());
+    EXPECT_EQ(PackResult::OK, pr);
 
     // open it with reader
-    EXPECT_NO_THROW(pr = reader->Init(testPackFilePath));
-    EXPECT_EQ(PACK_RESULT::OK, pr);
+    EXPECT_NO_THROW(pr = mReader->Init(testPackFilePath));
+    EXPECT_EQ(PackResult::OK, pr);
 
     // get file version and file size
     uint32 readFileVersion;
     size_t readFileCount;
-    EXPECT_NO_THROW(readFileVersion = reader->GetFileVersion());
+    EXPECT_NO_THROW(readFileVersion = mReader->GetFileVersion());
     EXPECT_EQ(gPackFileVersion, readFileVersion);
 
-    EXPECT_NO_THROW(readFileCount = reader->GetFileCount());
+    EXPECT_NO_THROW(readFileCount = mReader->GetFileCount());
     EXPECT_EQ(0, readFileCount);
 }
 
 TEST_F(PackerBasicTest, ReaderBuggyPathTest)
 {
-    PACK_RESULT pr;
+    PackResult pr;
 
     // open path to non existing file with reader
-    EXPECT_NO_THROW(pr = reader->Init(testPackFilePath));
-    EXPECT_EQ(PACK_RESULT::FILE_NOT_FOUND, pr);
+    EXPECT_NO_THROW(pr = mReader->Init(testPackFilePath));
+    EXPECT_EQ(PackResult::FileNotFound, pr);
 }
 
 TEST_F(PackerBasicTest, ReaderBuggyFileTest)
 {
-    PACK_RESULT pr;
+    PackResult pr;
 
     // create file with file version only
     std::ofstream file(testPackFilePath);
@@ -117,6 +112,6 @@ TEST_F(PackerBasicTest, ReaderBuggyFileTest)
     file.close();
 
     // initialization should fail - no information about file count inside archive
-    EXPECT_NO_THROW(pr = reader->Init(testPackFilePath));
-    EXPECT_EQ(PACK_RESULT::READ_FAILED, pr);
+    EXPECT_NO_THROW(pr = mReader->Init(testPackFilePath));
+    EXPECT_EQ(PackResult::ReadFailed, pr);
 }

@@ -1,3 +1,4 @@
+#include "stdafx.hpp"
 #include "packerToolCommand.hpp"
 
 packerToolCommand::packerToolCommand()
@@ -31,6 +32,8 @@ std::string packerToolCommand::GetCommandHelpMessage() const
 
 void packerToolCommand::CallCommand(std::string& cmdString) const
 {
+    using namespace NFE::Common;
+
     AssertMsg(m_command != nullptr, "Cannot call null callback.");
 
     try
@@ -41,20 +44,20 @@ void packerToolCommand::CallCommand(std::string& cmdString) const
     {
         std::cout << "Failed to successfully finish command " << this->m_commandString <<
                   ".\nPacker exception caught:\n";
-        PrintColored(e.GetMsg(), ConsoleColor::RED | ConsoleColor::INTENSE);
+        PrintColored(e.GetMsg(), ConsoleColor::Red | ConsoleColor::Intense);
         std::cout << std::endl;
     }
     catch (std::exception& e)
     {
         std::cout << "Failed to successfully finish command " << this->m_commandString <<
                   ".\nPacker exception caught:\n";
-        PrintColored(e.what(), ConsoleColor::RED | ConsoleColor::INTENSE);
+        PrintColored(e.what(), ConsoleColor::Red | ConsoleColor::Intense);
         std::cout << std::endl;
     }
     catch (...)
     {
         std::cout << "Failed to successfully finish command.\n";
-        PrintColored("Unknown error.", ConsoleColor::RED | ConsoleColor::INTENSE);
+        PrintColored("Unknown error.", ConsoleColor::Red | ConsoleColor::Intense);
         std::cout << std::endl;
     }
 }

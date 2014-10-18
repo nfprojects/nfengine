@@ -1,3 +1,4 @@
+#include "stdafx.hpp"
 #include "packerTool.hpp"
 
 #include <memory>
@@ -27,15 +28,19 @@ int main() try
 }
 catch (packerToolException& e)
 {
+    using namespace NFE::Common;
+
     std::cout << "Packer exception caught at main: ";
-    PrintColored(e.GetMsg(), ConsoleColor::RED | ConsoleColor::INTENSE);
+    PrintColored(e.GetMsg(), ConsoleColor::Red | NFE::Common::ConsoleColor::Intense);
     std::cout << "Aborting program execution." << std::endl;
     getchar();
 }
 catch (std::exception& e)
 {
+    using namespace NFE::Common;
+
     std::cout << "STL exception caught at main: ";
-    PrintColored(e.what(), ConsoleColor::RED | ConsoleColor::INTENSE);
+    PrintColored(e.what(), ConsoleColor::Red | ConsoleColor::Intense);
     std::cout << "Aborting program execution." << std::endl;
     getchar();
 }

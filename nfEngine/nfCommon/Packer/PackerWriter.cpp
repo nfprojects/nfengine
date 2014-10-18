@@ -1,65 +1,63 @@
 /**
-    NFEngine project
+ * @file   PackerWriter.cpp
+ * @author LKostyra (costyrra.xl@gmail.com)
+ * @brief  Module with class used to write files to PAK archive.
+ */
 
-    \file   packerWriter.cpp
-    \author LKostyra (costyrra.xl@gmail.com)
-    \brief  Module with class used to write files to PAK archive.
-*/
-
-#include "stdafx.hpp"
-#include "packerWriter.hpp"
+#include "../stdafx.hpp"
+#include "PackerWriter.hpp"
 
 namespace NFE {
 namespace Common {
 
 PackWriter::PackWriter() {}
-PackWriter::PackWriter(const std::string& ArchiveName)
+PackWriter::PackWriter(const std::string& archiveName)
 {
-    Init(ArchiveName);
+    Init(archiveName);
 }
 
-PACK_RESULT PackWriter::Init(const std::string& ArchiveName)
+PackResult PackWriter::Init(const std::string& archiveName)
 {
-    if (ArchiveName.empty())
-        return PACK_RESULT::INVALID_INPUT_PARAM;
+    if (archiveName.empty())
+        return PackResult::InvalidInputParam;
 
     if (!mFilePath.empty())
-        return PACK_RESULT::ALREADY_INITALIZED;
+        return PackResult::AlreadyInitialized;
 
-    mFilePath = ArchiveName;
-    return PACK_RESULT::OK;
+    mFilePath = archiveName;
+    return PackResult::OK;
 }
 
-PACK_RESULT PackWriter::AddFile(const std::string& FilePath, const std::string& VFSFilePath)
+PackResult PackWriter::AddFile(const std::string& filePath, const std::string& vfsFilePath)
 {
-    FILEPtr pFile(fopen(FilePath.c_str(), "r"), FILEPtrDestroy);
+    FILEPtr pFile(fopen(filePath.c_str(), "r"), FILEPtrDestroy);
     if (!(pFile.get()))
-        return PACK_RESULT::FILE_NOT_FOUND;
+        return PackResult::FileNotFound;
 
-    packElement NewElement;
+    PackerElement NewElement;
 
-    NewElement.FilePath = FilePath;
+    NewElement.FilePath = filePath;
 
     fseek(pFile.get(), 0, SEEK_END);
     NewElement.FileSize = ftell(pFile.get());
-    NewElement.mHash.Calculate(VFSFilePath);
+    NewElement.mHash.Calculate(vfsFilePath);
 
     mFileList.push_back(NewElement);
 
-    return PACK_RESULT::OK;
+    return PackResult::OK;
 }
 
 // TODO this function is platform-specific. Implement under Linux when nfCommons will be ported.
-PACK_RESULT PackWriter::AddFilesRecursively(const std::string& FilePath)
+PackResult PackWriter::AddFilesRecursively(const std::string& filePath)
 {
-    PACK_RESULT pr;
+    PackResult pr;
     HANDLE file;
     std::string WorkDir;
 
-    if (*(FilePath.rbegin()) == '/')
-        WorkDir = FilePath + "*";
+    if (*(filePath.rbegin()) == '/')
+        WorkDir = filePath + "*";
     else
-        WorkDir = FilePath + "/*";
+        WorkDir = filePath + "/*";
 
     std::string ResultDir;
     uint64 counter = 0;
@@ -68,7 +66,7 @@ PACK_RESULT PackWriter::AddFilesRecursively(const std::string& FilePath)
     file = FindFirstFileA(WorkDir.c_str(), &fd);
 
     if (file == INVALID_HANDLE_VALUE)
-        return PACK_RESULT::OK;
+        return PackResult::OK;
 
     do
     {
@@ -85,7 +83,7 @@ PACK_RESULT PackWriter::AddFilesRecursively(const std::string& FilePath)
             pr = AddFile(ResultDir, ResultDir);
             ++counter;
 
-            if (pr != PACK_RESULT::OK)
+            if (pr != PackResult::OK)
                 return pr;
         }
     }
@@ -93,23 +91,23 @@ PACK_RESULT PackWriter::AddFilesRecursively(const std::string& FilePath)
 
     FindClose(file);
 
-    return PACK_RESULT::OK;
+    return PackResult::OK;
 }
 
-PACK_RESULT PackWriter::WritePAK() const
+PackResult PackWriter::WritePAK() const
 {
     FILEPtr pFile(fopen(mFilePath.c_str(), "wb"), FILEPtrDestroy);
     if (!(pFile.get()))
-        return PACK_RESULT::FILE_NOT_CREATED;
+        return PackResult::FileNotCreated;
 
     //save file version
     if (!fwrite(reinterpret_cast<const void*>(&gPackFileVersion), sizeof(uint32), 1, pFile.get()))
-        return PACK_RESULT::WRITE_FAILED;
+        return PackResult::WriteFailed;
 
     //save number of files
     size_t fileSize = mFileList.size();
     if (!fwrite(reinterpret_cast<void*>(&fileSize), sizeof(size_t), 1, pFile.get()))
-        return PACK_RESULT::WRITE_FAILED;
+        return PackResult::WriteFailed;
 
     // Position of first file in archive, calculated as follows
     //   header_size             = version<uint32> + file_table_element_count<size_t>
@@ -122,13 +120,13 @@ PACK_RESULT PackWriter::WritePAK() const
     for (size_t i = 0; i < mFileList.size(); i++)
     {
         if (!fwrite(reinterpret_cast<const void*>(&mFileList[i].mHash), sizeof(uint32), 4, pFile.get()))
-            return PACK_RESULT::WRITE_FAILED;
+            return PackResult::WriteFailed;
 
         if (!fwrite(reinterpret_cast<const void*>(&ui_CurFilePos), sizeof(size_t), 1, pFile.get()))
-            return PACK_RESULT::WRITE_FAILED;
+            return PackResult::WriteFailed;
 
         if (!fwrite(reinterpret_cast<const void*>(&mFileList[i].FileSize), sizeof(size_t), 1, pFile.get()))
-            return PACK_RESULT::WRITE_FAILED;
+            return PackResult::WriteFailed;
 
         ui_CurFilePos += mFileList[i].FileSize;
     }
@@ -142,19 +140,18 @@ PACK_RESULT PackWriter::WritePAK() const
     {
         p_AppendedFile.reset(fopen(mFileList[i].FilePath.c_str(), "rb"));
         if (p_AppendedFile == NULL)
-            return PACK_RESULT::FILE_NOT_FOUND;
+            return PackResult::FileNotFound;
 
         do
         {
             readCount = fread(buffer, sizeof(unsigned char), PACKER_DEF_BUFFER_SIZE, p_AppendedFile.get());
-            fseek(pFile.get(), 0, SEEK_END);
             if (fwrite(buffer, sizeof(unsigned char), readCount, pFile.get()) != readCount)
-                return PACK_RESULT::WRITE_FAILED;
+                return PackResult::WriteFailed;
         }
         while (readCount == PACKER_DEF_BUFFER_SIZE);
     }
 
-    return PACK_RESULT::OK;
+    return PackResult::OK;
 }
 
 void PackWriter::PrintFilesToStdout() const

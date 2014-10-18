@@ -1,3 +1,4 @@
+#include "stdafx.hpp"
 #include "packerToolUI.hpp"
 
 #include <streambuf>
@@ -5,9 +6,9 @@
 #include <sstream>
 
 packerToolUI::packerToolUI()
-    : m_isUsable(true)
-    , m_beforeLoopCommand(nullptr)
-    , m_afterLoopCommand(nullptr)
+    : mIsUsable(true)
+    , mBeforeLoopCommand(nullptr)
+    , mAfterLoopCommand(nullptr)
 {
     //TODO Add config support. Uncomment below lines and change isUsable default value when config support is finished.
     /*
@@ -65,49 +66,49 @@ void packerToolUI::ReadConfig()
     //Throw("Reading config failed.");
 }
 
-void packerToolUI::AddCommand(std::string commandString, CommandFunc command)
+void packerToolUI::AddCommand(const std::string& commandString, const CommandFunc& command)
 {
-    AssertMsg(m_isUsable, "Cannot add command - UI is not yet usable.");
+    AssertMsg(mIsUsable, "Cannot add command - UI is not yet usable.");
     AssertMsg(commandString != m_exitCommandStr,
               "Cannot add command - command string used as exit command.");
     AssertMsg(commandString != m_helpCommandStr,
               "Cannot add command - command string used as help command.");
 
-    auto it = std::find_if(m_commandList.begin(), m_commandList.end(),
+    auto it = std::find_if(mCommandList.begin(), mCommandList.end(),
                            [&commandString] (packerToolCommand & cmd) -> bool { return commandString == cmd.GetCommandString(); } );
 
-    if (it == m_commandList.end())
-        m_commandList.push_back(packerToolCommand(commandString, command));
+    if (it == mCommandList.end())
+        mCommandList.push_back(packerToolCommand(commandString, command));
     else
         ThrowMsg("Cannot add command - command string already used.");
 }
 
-void packerToolUI::AddCommand(std::string commandString, CommandFunc command,
-                              std::string commandHelpMessage)
+void packerToolUI::AddCommand(const std::string& commandString, const CommandFunc& command,
+                              const std::string& commandHelpMessage)
 {
-    AssertMsg(m_isUsable, "Cannot add command - UI is not yet usable.");
+    AssertMsg(mIsUsable, "Cannot add command - UI is not yet usable.");
     AssertMsg(commandString != m_exitCommandStr,
               "Cannot add command - command string used as exit command.");
     AssertMsg(commandString != m_helpCommandStr,
               "Cannot add command - command string used as help command.");
 
-    auto it = std::find_if(m_commandList.begin(), m_commandList.end(),
+    auto it = std::find_if(mCommandList.begin(), mCommandList.end(),
                            [&commandString] (packerToolCommand & cmd) -> bool { return commandString == cmd.GetCommandString(); } );
 
-    if (it == m_commandList.end())
-        m_commandList.push_back(packerToolCommand(commandString, command, commandHelpMessage));
+    if (it == mCommandList.end())
+        mCommandList.push_back(packerToolCommand(commandString, command, commandHelpMessage));
     else
         ThrowMsg("Cannot add command - command string already used.");
 }
 
-void packerToolUI::AddBeforeLoopCommand(UIFunc command)
+void packerToolUI::AddBeforeLoopCommand(const UIFunc& command)
 {
-    m_beforeLoopCommand = command;
+    mBeforeLoopCommand = command;
 }
 
-void packerToolUI::AddAfterLoopCommand(UIFunc command)
+void packerToolUI::AddAfterLoopCommand(const UIFunc& command)
 {
-    m_afterLoopCommand = command;
+    mAfterLoopCommand = command;
 }
 
 void packerToolUI::PrintCommands()
@@ -116,7 +117,7 @@ void packerToolUI::PrintCommands()
     std::cout << "    * help - what you see now." << std::endl;
 
     //go through all commands for command strings and help messages
-    std::for_each(m_commandList.begin(), m_commandList.end(),
+    std::for_each(mCommandList.begin(), mCommandList.end(),
                   [](packerToolCommand & cmd) -> void
     {
         if (cmd.GetCommandHelpMessage().empty())
@@ -130,12 +131,12 @@ void packerToolUI::PrintCommands()
 
 void packerToolUI::MainLoop()
 {
-    AssertMsg(m_isUsable, "Cannot enter UI main loop - UI is not initialized.");
+    AssertMsg(mIsUsable, "Cannot enter UI main loop - UI is not initialized.");
 
-    if (m_beforeLoopCommand)
-        m_beforeLoopCommand();
+    if (mBeforeLoopCommand)
+        mBeforeLoopCommand();
 
-    bool b_LoopActive = true;
+    bool loopActive = true;
     std::string input, input_first, input_rest;
     packerToolCommandIt curCommandIt;
 
@@ -153,7 +154,7 @@ void packerToolUI::MainLoop()
 
 #ifdef _DEBUG
         std::cout << "Received ";
-        PrintColored(input_first, ConsoleColor::GREEN);
+        PrintColored(input_first, NFE::Common::ConsoleColor::Green);
         std::cout << " command.\n";
 #endif
 
@@ -161,7 +162,7 @@ void packerToolUI::MainLoop()
         if (input_first == m_exitCommandStr)
         {
             std::cout << "Exiting. Bye!";
-            b_LoopActive = false;
+            loopActive = false;
             continue;
         }
 
@@ -173,10 +174,10 @@ void packerToolUI::MainLoop()
         }
 
         //default commands are not called - try to find current command in list
-        curCommandIt = std::find_if(m_commandList.begin(), m_commandList.end(),
+        curCommandIt = std::find_if(mCommandList.begin(), mCommandList.end(),
                                     [&input_first](packerToolCommand & curCommand) -> bool { return (input_first == curCommand.GetCommandString()); });
 
-        if (curCommandIt == m_commandList.end())
+        if (curCommandIt == mCommandList.end())
         {
             std::cout << "Unknown command.\n";
             continue;
@@ -193,14 +194,14 @@ void packerToolUI::MainLoop()
 
 #ifdef _DEBUG
         std::cout << "Found ";
-        PrintColored(curCommandIt->GetCommandString(), ConsoleColor::GREEN);
+        PrintColored(curCommandIt->GetCommandString(), NFE::Common::ConsoleColor::Green);
         std::cout << " command in database. Calling.\n";
 #endif
 
         curCommandIt->CallCommand(input_rest);
     }
-    while (b_LoopActive);
+    while (loopActive);
 
-    if (m_afterLoopCommand)
-        m_afterLoopCommand();
+    if (mAfterLoopCommand)
+        mAfterLoopCommand();
 }

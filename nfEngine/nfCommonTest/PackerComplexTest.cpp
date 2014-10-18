@@ -1,5 +1,5 @@
 #include "stdafx.hpp"
-#include "../nfCommon/Packer/packer.hpp"
+#include "../nfCommon/Packer/Packer.hpp"
 
 #include "test.hpp"
 
@@ -47,22 +47,17 @@ protected:
 
     void SetUp()
     {
-        PACK_RESULT ret;
-        EXPECT_NO_THROW(ret = Packer_CreateReader(&mReader));
-        EXPECT_EQ(PACK_RESULT::OK, ret);
-        EXPECT_NE(nullptr, mReader);
+        EXPECT_NO_THROW(mReader.reset(new PackReader()));
+        EXPECT_NE(nullptr, mReader.get());
 
-        EXPECT_NO_THROW(ret = Packer_CreateWriter(&mWriter));
-        EXPECT_EQ(PACK_RESULT::OK, ret);
-        EXPECT_NE(nullptr, mWriter);
+        EXPECT_NO_THROW(mWriter.reset(new PackWriter()));
+        EXPECT_NE(nullptr, mWriter.get());
     }
 
     void TearDown()
     {
-        EXPECT_NO_THROW(Packer_ReleaseReader());
-        EXPECT_NO_THROW(Packer_ReleaseWriter());
-        mReader = nullptr;
-        mWriter = nullptr;
+        mReader.reset();
+        mWriter.reset();
     }
 
     static void TearDownTestCase()
@@ -93,17 +88,17 @@ protected:
         std::cout << "DONE" << std::endl;
     }
 
-    PackReader* mReader;
-    PackWriter* mWriter;
+    std::unique_ptr<PackReader> mReader;
+    std::unique_ptr<PackWriter> mWriter;
 };
 
 TEST_F(PackerComplexTest, AddFiles)
 {
-    PACK_RESULT pr;
+    PackResult pr;
 
     // initialize mWriter
     EXPECT_NO_THROW(pr = mWriter->Init(TEST_PACK_PATH));
-    EXPECT_EQ(PACK_RESULT::OK, pr);
+    EXPECT_EQ(PackResult::OK, pr);
 
     // add files
     const std::string prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
@@ -112,61 +107,61 @@ TEST_F(PackerComplexTest, AddFiles)
     {
         path = prefix + std::to_string(i);
         EXPECT_NO_THROW(pr = mWriter->AddFile(path, path));
-        ASSERT_EQ(PACK_RESULT::OK, pr);
+        ASSERT_EQ(PackResult::OK, pr);
     }
 }
 
 TEST_F(PackerComplexTest, AddFilesRecursively)
 {
-    PACK_RESULT pr;
+    PackResult pr;
 
     // initialize mWriter
     EXPECT_NO_THROW(pr = mWriter->Init(TEST_PACK_PATH));
-    EXPECT_EQ(PACK_RESULT::OK, pr);
+    EXPECT_EQ(PackResult::OK, pr);
 
     // add files recursively
     EXPECT_NO_THROW(pr = mWriter->AddFilesRecursively(TEST_SAMPLE_FILE_DIR));
-    ASSERT_EQ(PACK_RESULT::OK, pr);
+    ASSERT_EQ(PackResult::OK, pr);
 }
 
 TEST_F(PackerComplexTest, WriteFiles)
 {
-    PACK_RESULT pr;
+    PackResult pr;
 
     // initialize mWriter
     EXPECT_NO_THROW(pr = mWriter->Init(TEST_PACK_PATH));
-    EXPECT_EQ(PACK_RESULT::OK, pr);
+    EXPECT_EQ(PackResult::OK, pr);
 
     // add files recursively
     EXPECT_NO_THROW(pr = mWriter->AddFilesRecursively(TEST_SAMPLE_FILE_DIR));
-    EXPECT_EQ(PACK_RESULT::OK, pr);
+    EXPECT_EQ(PackResult::OK, pr);
 
     // write files to PAK archive
     EXPECT_NO_THROW(pr = mWriter->WritePAK());
-    ASSERT_EQ(PACK_RESULT::OK, pr);
+    ASSERT_EQ(PackResult::OK, pr);
 }
 
 TEST_F(PackerComplexTest, ReadSingleFile)
 {
-    PACK_RESULT pr;
+    PackResult pr;
     const std::string testFilePathVFS = TEST_SAMPLE_FILE_PREFIX + "0";
     const std::string testFilePath = TEST_SAMPLE_FILE_DIR + testFilePathVFS;
 
     // initialize mWriter
     EXPECT_NO_THROW(pr = mWriter->Init(TEST_PACK_PATH));
-    EXPECT_EQ(PACK_RESULT::OK, pr);
+    EXPECT_EQ(PackResult::OK, pr);
 
     // add files recursively
     EXPECT_NO_THROW(pr = mWriter->AddFile(testFilePath, testFilePathVFS));
-    EXPECT_EQ(PACK_RESULT::OK, pr);
+    EXPECT_EQ(PackResult::OK, pr);
 
     // write files to PAK archive
     EXPECT_NO_THROW(pr = mWriter->WritePAK());
-    ASSERT_EQ(PACK_RESULT::OK, pr);
+    ASSERT_EQ(PackResult::OK, pr);
 
     // initialize mReader
     EXPECT_NO_THROW(pr = mReader->Init(TEST_PACK_PATH));
-    ASSERT_EQ(PACK_RESULT::OK, pr);
+    ASSERT_EQ(PackResult::OK, pr);
 
     // check file count
     size_t fileCount;
@@ -179,7 +174,7 @@ TEST_F(PackerComplexTest, ReadSingleFile)
 
     // read file from PAK
     EXPECT_NO_THROW(pr = mReader->GetFile(testFilePathVFS, *readData));
-    ASSERT_EQ(PACK_RESULT::OK, pr);
+    ASSERT_EQ(PackResult::OK, pr);
 
     // read original file
     FILE* pFile = fopen(testFilePath.c_str(), "rb");
@@ -192,7 +187,7 @@ TEST_F(PackerComplexTest, ReadSingleFile)
 
     // create buffer and read data
     correctData->Create(correctDataSize);
-    fread(correctData->GetData(), sizeof(unsigned char), correctDataSize, pFile);
+    ASSERT_EQ(fread(correctData->GetData(), sizeof(unsigned char), correctDataSize, pFile), correctDataSize);
     fclose(pFile);
 
     // check data size
@@ -204,11 +199,11 @@ TEST_F(PackerComplexTest, ReadSingleFile)
 
 TEST_F(PackerComplexTest, ReadMultipleSimplyAddedFiles)
 {
-    PACK_RESULT pr;
+    PackResult pr;
 
     // initialize mWriter
     EXPECT_NO_THROW(pr = mWriter->Init(TEST_PACK_PATH));
-    EXPECT_EQ(PACK_RESULT::OK, pr);
+    EXPECT_EQ(PackResult::OK, pr);
 
     // add files through simple AddFile function
     const std::string prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
@@ -217,16 +212,16 @@ TEST_F(PackerComplexTest, ReadMultipleSimplyAddedFiles)
     {
         path = prefix + std::to_string(i);
         EXPECT_NO_THROW(pr = mWriter->AddFile(path, path));
-        ASSERT_EQ(PACK_RESULT::OK, pr);
+        ASSERT_EQ(PackResult::OK, pr);
     }
 
     // write files to PAK archive
     EXPECT_NO_THROW(pr = mWriter->WritePAK());
-    ASSERT_EQ(PACK_RESULT::OK, pr);
+    ASSERT_EQ(PackResult::OK, pr);
 
     // initialize mReader
     EXPECT_NO_THROW(pr = mReader->Init(TEST_PACK_PATH));
-    ASSERT_EQ(PACK_RESULT::OK, pr);
+    ASSERT_EQ(PackResult::OK, pr);
 
     // check file count
     size_t fileCount;
@@ -244,7 +239,7 @@ TEST_F(PackerComplexTest, ReadMultipleSimplyAddedFiles)
 
         // read file from archive
         EXPECT_NO_THROW(pr = mReader->GetFile(path, *readData)) << "i = " << i;
-        ASSERT_EQ(PACK_RESULT::OK, pr) << "i = " << i;
+        ASSERT_EQ(PackResult::OK, pr) << "i = " << i;
 
         // read original file
         FILE* pFile = fopen(path.c_str(), "rb");
@@ -257,7 +252,7 @@ TEST_F(PackerComplexTest, ReadMultipleSimplyAddedFiles)
 
         // create buffer and read data
         correctData->Create(correctDataSize);
-        fread(correctData->GetData(), sizeof(unsigned char), correctDataSize, pFile);
+        ASSERT_EQ(fread(correctData->GetData(), sizeof(unsigned char), correctDataSize, pFile), correctDataSize);
         fclose(pFile);
 
         // check data size
@@ -270,23 +265,23 @@ TEST_F(PackerComplexTest, ReadMultipleSimplyAddedFiles)
 
 TEST_F(PackerComplexTest, ReadMultipleRecursivelyAddedFiles)
 {
-    PACK_RESULT pr;
+    PackResult pr;
 
     // initialize mWriter
     EXPECT_NO_THROW(pr = mWriter->Init(TEST_PACK_PATH));
-    EXPECT_EQ(PACK_RESULT::OK, pr);
+    EXPECT_EQ(PackResult::OK, pr);
 
     // add files recursively
     EXPECT_NO_THROW(pr = mWriter->AddFilesRecursively(TEST_SAMPLE_FILE_DIR));
-    EXPECT_EQ(PACK_RESULT::OK, pr);
+    EXPECT_EQ(PackResult::OK, pr);
 
     // write files to PAK archive
     EXPECT_NO_THROW(pr = mWriter->WritePAK());
-    ASSERT_EQ(PACK_RESULT::OK, pr);
+    ASSERT_EQ(PackResult::OK, pr);
 
     // initialize mReader
     EXPECT_NO_THROW(pr = mReader->Init(TEST_PACK_PATH));
-    ASSERT_EQ(PACK_RESULT::OK, pr);
+    ASSERT_EQ(PackResult::OK, pr);
 
     // check file count
     size_t fileCount;
@@ -307,7 +302,7 @@ TEST_F(PackerComplexTest, ReadMultipleRecursivelyAddedFiles)
 
         // read file from archive
         EXPECT_NO_THROW(pr = mReader->GetFile(path, *readData)) << "i = " << i;
-        ASSERT_EQ(PACK_RESULT::OK, pr) << "i = " << i;
+        ASSERT_EQ(PackResult::OK, pr) << "i = " << i;
 
         // read original file
         FILE* pFile = fopen(path.c_str(), "rb");
