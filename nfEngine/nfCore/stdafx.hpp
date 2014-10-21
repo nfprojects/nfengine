@@ -62,9 +62,6 @@
 //AntTweakBar library
 #include "AntTweakBar.h"
 
-//libconfig
-#include "../libconfig/libconfig.h"
-
 /// RapidXML library
 #include "rapidxml.hpp"
 #include "rapidxml_iterators.hpp"
