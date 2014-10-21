@@ -11,9 +11,24 @@
 #include "Engine.hpp"
 #include "Globals.hpp"
 #include "../nfCommon/Logger.hpp"
+#include "../rapidjson/include/rapidjson/document.h"
+#include "../rapidjson/include/rapidjson/filestream.h"
 
 namespace NFE {
 namespace Resource {
+
+namespace {
+
+const char* ATTR_LAYERS = "Layers";
+const char* ATTR_DIFFUSE_TEXTURE = "DiffuseTexture";
+const char* ATTR_NORMAL_TEXTURE = "NormalTexture";
+const char* ATTR_SPECULAR_TEXTURE = "SpecularTexture";
+const char* ATTR_DIFFUSE_COLOR = "DiffuseColor";
+const char* ATTR_EMISSION_COLOR = "EmissionColor";
+const char* ATTR_SPECULAR_POWER = "SpecularPower";
+const char* ATTR_SPECULAR_FACTOR = "SpecularFactor";
+
+} // namespace
 
 using namespace Math;
 
@@ -47,36 +62,54 @@ Material::~Material()
     }
 }
 
+void NodeToColor(const rapidjson::Value& val, Float4& ret)
+{
+    if (!val.IsArray())
+        return;
+
+    size_t num = std::min<size_t>(4, val.Size());
+    for (size_t i = 0; i < num; ++i)
+    {
+        if (!val[i].IsDouble())
+            continue;
+        (&ret.x)[i] = static_cast<float>(val[i].GetDouble());
+    }
+}
+
 bool Material::OnLoad()
 {
     LOG_INFO("Loading material '%s'...", mName);
 
     //get relative path
-    std::string path = g_DataPath + "Materials/" + mName + ".cfg";
+    std::string path = g_DataPath + "Materials/" + mName + ".json";
 
-    config_t cfg;
-    config_setting_t* pLayersNode, *pNode;
-    config_init(&cfg);
-
-    if (!config_read_file(&cfg, path.c_str()))
+    // TODO: support for file in memory
+    FILE * pFile = fopen(path.c_str(), "r");
+    if (pFile == NULL)
     {
-        LOG_ERROR("Failed to load material '%s': %s (line %d)", mName, config_error_text(&cfg),
-                  config_error_line(&cfg));
-        config_destroy(&cfg);
+        LOG_ERROR("Failed to open file: %s", path);
         return false;
     }
 
-
-    pLayersNode = config_lookup(&cfg, "Layers");
-
-    if (pLayersNode == 0)
+    rapidjson::Document document;
+    rapidjson::FileStream fileStream(pFile);
+    document.ParseStream<0>(fileStream);
+    fclose(pFile);
+    if (!document.IsObject())
     {
-        mLayers = new MaterialLayer [1];
-        mLayersCount = 1;
-        goto MaterialLoadedLabel;
+        LOG_ERROR("Failed to load material '%s': %s", mName, document.GetParseError());
+        return false;
     }
 
-    mLayersCount = config_setting_length(pLayersNode);
+    if (!document.HasMember(ATTR_LAYERS) || !document[ATTR_LAYERS].IsArray())
+    {
+        // TODO: improve messages after logger is refactered
+        LOG_ERROR("Failed to load material '%s'", mName);
+        return false;
+    }
+
+    const rapidjson::Value& layersNode = document[ATTR_LAYERS];
+    mLayersCount = layersNode.Size();
 
     if (mLayersCount < 1)
     {
@@ -97,140 +130,69 @@ bool Material::OnLoad()
     for (uint32 i = 0; i < mLayersCount; i++)
     {
         MaterialLayer& layer = mLayers[i];
+        const auto& node = layersNode[i];
 
-        //extract layers array element
-        config_setting_t* pLayer = config_setting_get_elem(pLayersNode, i);
-        if (pLayer == 0) continue;
-
-        const char* pName;
-        if (config_setting_lookup_string(pLayer, "DiffuseTexture", &pName))
+        if (node.HasMember(ATTR_DIFFUSE_TEXTURE))
         {
-            layer.diffuseTexture = ENGINE_GET_TEXTURE(pName);
-            layer.diffuseTexture->AddRef();
+            if (node[ATTR_DIFFUSE_TEXTURE].IsString())
+            {
+                layer.diffuseTexture = ENGINE_GET_TEXTURE(node[ATTR_DIFFUSE_TEXTURE].GetString());
+                layer.diffuseTexture->AddRef();
+            }
+            else
+            {
+                LOG_WARNING("%s attribute must be a string", ATTR_DIFFUSE_TEXTURE);
+            }
         }
 
-        if (config_setting_lookup_string(pLayer, "NormalTexture", &pName))
+        if (node.HasMember(ATTR_NORMAL_TEXTURE))
         {
-            layer.normalTexture = ENGINE_GET_TEXTURE(pName);
-            layer.normalTexture->AddRef();
+            if (node[ATTR_NORMAL_TEXTURE].IsString())
+            {
+                layer.normalTexture = ENGINE_GET_TEXTURE(node[ATTR_NORMAL_TEXTURE].GetString());
+                layer.normalTexture->AddRef();
+            }
+            else
+            {
+                LOG_WARNING("%s attribute must be a string", ATTR_NORMAL_TEXTURE);
+            }
         }
 
-        if (config_setting_lookup_string(pLayer, "SpecularTexture", &pName))
+        if (node.HasMember(ATTR_SPECULAR_TEXTURE))
         {
-            layer.specularTexture = ENGINE_GET_TEXTURE(pName);
-            layer.specularTexture->AddRef();
+            if (node[ATTR_SPECULAR_TEXTURE].IsString())
+            {
+                layer.specularTexture = ENGINE_GET_TEXTURE(node[ATTR_SPECULAR_TEXTURE].GetString());
+                layer.specularTexture->AddRef();
+            }
+            else
+            {
+                LOG_WARNING("%s attribute must be a string", ATTR_SPECULAR_TEXTURE);
+            }
         }
 
         double specPower = 20.0f;
-        config_setting_lookup_float(pLayer, "SpecularPower", &specPower);
+        if (node.HasMember(ATTR_SPECULAR_POWER) && node[ATTR_SPECULAR_POWER].IsDouble())
+            specPower = node[ATTR_SPECULAR_POWER].GetDouble();
         layer.specularColor.w = (float)specPower;
 
         double specFactor = 1.0f;
-        config_setting_lookup_float(pLayer, "SpecularFactor", &specFactor);
+        if (node.HasMember(ATTR_SPECULAR_FACTOR) && node[ATTR_SPECULAR_FACTOR].IsDouble())
+            specPower = node[ATTR_SPECULAR_FACTOR].GetDouble();
         layer.specularColor.x = (float)specFactor;
 
         //look up for diffuse color
         layer.diffuseColor = Float4(1.0f, 1.0f, 1.0f, 1.0f);
-        pNode = config_setting_get_member(pLayer, "DiffuseColor");
-        if (pNode)
-            if (config_setting_length(pNode) == 3)
-            {
-                layer.diffuseColor.x = (float)config_setting_get_float_elem(pNode, 0);
-                layer.diffuseColor.y = (float)config_setting_get_float_elem(pNode, 1);
-                layer.diffuseColor.z = (float)config_setting_get_float_elem(pNode, 2);
-            }
+        if (node.HasMember(ATTR_DIFFUSE_COLOR))
+            NodeToColor(node[ATTR_DIFFUSE_COLOR], layer.diffuseColor);
 
         //look up for emission color
         layer.emissionColor = Float4();
-        pNode = config_setting_get_member(pLayer, "EmissionColor");
-        if (pNode)
-            if (config_setting_length(pNode) == 3)
-            {
-                layer.emissionColor.x = (float)config_setting_get_float_elem(pNode, 0);
-                layer.emissionColor.y = (float)config_setting_get_float_elem(pNode, 1);
-                layer.emissionColor.z = (float)config_setting_get_float_elem(pNode, 2);
-            }
-
-
-        //config_setting_t *pLayer = config_sett
-        //config_setting_lookup_float(
+        if (node.HasMember(ATTR_EMISSION_COLOR))
+            NodeToColor(node[ATTR_EMISSION_COLOR], layer.diffuseColor);
     }
-
-
-    /*
-    mwTokenizer tokenizer;
-    if (tokenizer.LoadFromFile(path) == 0)
-    {
-        LOG_ERROR("Failed to load '%s'.", mName);
-        return false;
-    }
-
-    //
-    mLayers = new MaterialLayer [1];
-    mLayersCount = 1;
-
-
-    int errorOccurred = 0;
-    mwString<char> token;
-    while (tokenizer.GetToken(&token))
-    {
-
-        if (token == "DiffuseTexture")
-        {
-            if (tokenizer.Expect("="))
-            {
-                if (tokenizer.GetToken(&token))
-                {
-                    mLayers[0].diffuseTexture = (Texture*)g_pResManager->GetResource(token.c_str(), RES_TEXTURE);
-                    mLayers[0].diffuseTexture->AddRef();
-                }
-                else
-                    errorOccurred = 1;
-            }
-            else
-                errorOccurred = 1;
-        }
-        else if (token == "NormalTexture")
-        {
-
-            if (tokenizer.Expect("="))
-            {
-                if (tokenizer.GetToken(&token))
-                {
-                    mLayers[0].normalTexture = (Texture*)g_pResManager->GetResource(token.c_str(), RES_TEXTURE);
-                    mLayers[0].normalTexture->AddRef();
-                }
-                else
-                    errorOccurred = 1;
-            }
-            else
-                errorOccurred = 1;
-        }
-        else if (token == "SpecularTexture")
-        {
-
-            if (tokenizer.Expect("="))
-            {
-                if (tokenizer.GetToken(&token))
-                {
-                    mLayers[0].specularTexture = (Texture*)g_pResManager->GetResource(token.c_str(), RES_TEXTURE);
-                    mLayers[0].specularTexture->AddRef();
-                }
-                else
-                    errorOccurred = 1;
-            }
-            else
-                errorOccurred = 1;
-        }
-        else
-            errorOccurred = 1;
-    }
-    */
-
 
 MaterialLoadedLabel:
-
-    config_destroy(&cfg);
     LOG_SUCCESS("Material '%s' loaded successfully.", mName);
     return true;
 }

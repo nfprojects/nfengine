@@ -7,9 +7,6 @@
     <Filter Include="Scene">
       <UniqueIdentifier>{b9a8990f-2396-47bd-aa43-d01df06236bc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="libconfig">
-      <UniqueIdentifier>{06c716cd-8c2b-420a-b68b-d23e86f6a9c7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Util">
       <UniqueIdentifier>{40738d35-8dbb-4074-bc98-84d31ffc6382}</UniqueIdentifier>
     </Filter>
@@ -107,21 +104,6 @@
     </ClCompile>
     <ClCompile Include="BVH.cpp">
       <Filter>Util</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Deps\libconfig\grammar.c">
-      <Filter>libconfig</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Deps\libconfig\libconfig.c">
-      <Filter>libconfig</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Deps\libconfig\scanctx.c">
-      <Filter>libconfig</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Deps\libconfig\scanner.c">
-      <Filter>libconfig</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Deps\libconfig\strbuf.c">
-      <Filter>libconfig</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
