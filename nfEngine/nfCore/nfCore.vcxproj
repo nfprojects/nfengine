@@ -102,7 +102,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>LIBCONFIG_STATIC;USE_ANT_TWEAK;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Deps\FreeType\include;$(SolutionDir)Deps\bullet-2.82\src;$(SolutionDir)Deps\rapidxml-1.13;$(SolutionDir)Deps\AntTweekBar\include;$(SolutionDir)nfEngine\nfCommon;..\FreeType\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Deps\rapidjson\include;$(SolutionDir)Deps\FreeType\include;$(SolutionDir)Deps\bullet-2.82\src;$(SolutionDir)Deps\rapidxml-1.13;$(SolutionDir)Deps\AntTweekBar\include;$(SolutionDir)nfEngine\nfCommon;..\FreeType\include\</AdditionalIncludeDirectories>
       <StructMemberAlignment>Default</StructMemberAlignment>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -126,7 +126,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>LIBCONFIG_STATIC;USE_ANT_TWEAK;_CRT_SECURE_NO_WARNINGS;WIN64;_DEBUG;_WINDOWS;_USRDLL;NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Deps\FreeType\include;$(SolutionDir)Deps\bullet-2.82\src;$(SolutionDir)Deps\rapidxml-1.13;$(SolutionDir)Deps\AntTweekBar\include;$(SolutionDir)nfEngine\nfCommon;..\FreeType\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Deps\rapidjson\include;$(SolutionDir)Deps\FreeType\include;$(SolutionDir)Deps\bullet-2.82\src;$(SolutionDir)Deps\rapidxml-1.13;$(SolutionDir)Deps\AntTweekBar\include;$(SolutionDir)nfEngine\nfCommon;..\FreeType\include\</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -154,7 +154,7 @@
       <StringPooling>true</StringPooling>
       <OmitFramePointers>true</OmitFramePointers>
       <FloatingPointModel>Fast</FloatingPointModel>
-      <AdditionalIncludeDirectories>$(SolutionDir)Deps\FreeType\include;$(SolutionDir)Deps\bullet-2.82\src;$(SolutionDir)Deps\rapidxml-1.13;$(SolutionDir)Deps\AntTweekBar\include;$(SolutionDir)nfEngine\nfCommon;..\FreeType\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Deps\rapidjson\include;$(SolutionDir)Deps\FreeType\include;$(SolutionDir)Deps\bullet-2.82\src;$(SolutionDir)Deps\rapidxml-1.13;$(SolutionDir)Deps\AntTweekBar\include;$(SolutionDir)nfEngine\nfCommon;..\FreeType\include\</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -186,7 +186,7 @@
       <StringPooling>true</StringPooling>
       <OmitFramePointers>true</OmitFramePointers>
       <FloatingPointModel>Fast</FloatingPointModel>
-      <AdditionalIncludeDirectories>$(SolutionDir)Deps\FreeType\include;$(SolutionDir)Deps\bullet-2.82\src;$(SolutionDir)Deps\rapidxml-1.13;$(SolutionDir)Deps\AntTweekBar\include;$(SolutionDir)nfEngine\nfCommon;..\..\SDK\bullet-2.80\src\;..\FreeType\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Deps\rapidjson\include;$(SolutionDir)Deps\FreeType\include;$(SolutionDir)Deps\bullet-2.82\src;$(SolutionDir)Deps\rapidxml-1.13;$(SolutionDir)Deps\AntTweekBar\include;$(SolutionDir)nfEngine\nfCommon;..\..\SDK\bullet-2.80\src\;..\FreeType\include\</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -208,36 +208,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Deps\libconfig\grammar.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\..\Deps\libconfig\libconfig.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\..\Deps\libconfig\scanctx.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\..\Deps\libconfig\scanner.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\..\Deps\libconfig\strbuf.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="Aligned.cpp" />
     <ClCompile Include="BVH.cpp" />
     <ClCompile Include="CollisionShape.cpp" />
@@ -273,13 +243,6 @@
     <ClCompile Include="View.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Deps\libconfig\grammar.h" />
-    <ClInclude Include="..\..\Deps\libconfig\libconfig.h" />
-    <ClInclude Include="..\..\Deps\libconfig\parsectx.h" />
-    <ClInclude Include="..\..\Deps\libconfig\scanctx.h" />
-    <ClInclude Include="..\..\Deps\libconfig\scanner.h" />
-    <ClInclude Include="..\..\Deps\libconfig\strbuf.h" />
-    <ClInclude Include="..\..\Deps\libconfig\wincompat.h" />
     <ClInclude Include="Aligned.hpp" />
     <ClInclude Include="BVH.hpp" />
     <ClInclude Include="CollisionShape.hpp" />
