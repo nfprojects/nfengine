@@ -103,7 +103,7 @@ bool Material::OnLoad()
 
     if (!document.HasMember(ATTR_LAYERS) || !document[ATTR_LAYERS].IsArray())
     {
-        // TODO: improve messages after logger is refactered
+        // TODO: improve messages after logger is refactored
         LOG_ERROR("Failed to load material '%s'", mName);
         return false;
     }
