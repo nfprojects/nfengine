@@ -1,7 +1,6 @@
 #include "stdafx.hpp"
 #include "model_obj/model_obj.h"
 
-
 #define MAT_NAME_MAX_LENGTH (120)
 
 struct XVertex
@@ -19,6 +18,13 @@ struct SubMesh
     int triangleCount;
     char materialName[MAT_NAME_MAX_LENGTH];
 };
+
+// replace backslashes with forward slashes
+inline std::string FixTexturePath(std::string str)
+{
+    std::replace(str.begin(), str.end(), '\\', '/');
+    return str;
+}
 
 void ConvertFileName(const char* pInput, char* pOutput)
 {
@@ -213,27 +219,37 @@ bool Convert(const char* pFilePath)
         ExtractFileDir(pFilePath, fileName);
         strcat(fileName, "..\\Materials\\");
         strcat(fileName, mat.name.c_str());
-        strcat(fileName, ".cfg");
+        strcat(fileName, ".json");
 
         //check if material already exists
         if (FileExists(fileName))
         {
-            printf("Material %s already exists. Skipping cfg generation...\n", mat.name.c_str());
+            printf("Material %s already exists. Skipping material file generation...\n", mat.name.c_str());
             continue;
         }
 
+        /// TODO: This is temporary. Material file generation must be redesigned.
         FILE* pMatFile = fopen(fileName, "w");
-        fprintf(pMatFile, "Layers = \n(\n\t{\n");
+        fprintf(pMatFile, "{\n\t\"Layers\" :\n\t[\n\t\t{\n");
 
         if (mat.colorMapFilename.length())
-            fprintf(pMatFile, "\t\tDiffuseTexture = \"%s\"\n", mat.colorMapFilename.c_str());
+            fprintf(pMatFile, "\t\t\t\"DiffuseTexture\" : \"%s\"",
+                    FixTexturePath(mat.colorMapFilename).c_str());
+
+        if (mat.colorMapFilename.length() > 0 && mat.bumpMapFilename.length() > 0)
+            fprintf(pMatFile, ",\n");
+        else
+            fprintf(pMatFile, "\n");
+
         if (mat.bumpMapFilename.length())
-            fprintf(pMatFile, "\t\tNormalTexture = \"%s\"\n", mat.bumpMapFilename.c_str());
+            fprintf(pMatFile, "\t\t\t\"NormalTexture\" : \"%s\"\n",
+                    FixTexturePath(mat.bumpMapFilename).c_str());
 
-
-        fprintf(pMatFile, "\t}\n);");
+        fprintf(pMatFile, "\t\t}\n\t]\n}\n");
         fclose(pMatFile);
     }
+
+    return true;
 }
 
 int main(int argc, char* argv[])
