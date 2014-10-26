@@ -47,6 +47,14 @@ PackResult PackWriter::AddFile(const std::string& filePath, const std::string& v
     return PackResult::OK;
 }
 
+PackResult PackWriter::AddFile(const Buffer& /*buffer*/, const std::string vfsFilePath)
+{
+    // TODO implement after editing PackerElement (see PackerElement.hpp@15).
+    //      To prevent usage of this function, Uninitialized error is returned
+
+    return PackResult::Uninitialized;
+}
+
 // TODO this function is platform-specific. Implement under Linux when nfCommons will be ported.
 PackResult PackWriter::AddFilesRecursively(const std::string& filePath)
 {

@@ -9,8 +9,6 @@
 #include "PackerDefines.hpp"
 #include "PackerElement.hpp"
 
-#include "../Buffer.hpp"
-
 namespace NFE {
 namespace Common {
 

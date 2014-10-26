@@ -21,6 +21,7 @@ public:
     PackResult Init(const std::string& archiveName);
 
     PackResult AddFile(const std::string& filePath, const std::string& vfsFilePath);
+    PackResult AddFile(const Buffer& buffer, const std::string vfsFilePath);
     PackResult AddFilesRecursively(const std::string& startPath);
     PackResult WritePAK() const;
 

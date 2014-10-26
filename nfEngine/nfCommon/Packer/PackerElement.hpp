@@ -12,6 +12,10 @@
 namespace NFE {
 namespace Common {
 
+// TODO: For now PackerElement is written to hold only one type of resource - file in filesystem.
+//       To prepare PackerElement for holding more types of resources, PackerElement needs to be
+//       rewritten to be an abstract class and inherited classes must be made for each type of
+//       resource to be handled by Packer.
 struct PackerElement
 {
     MD5Hash mHash;

@@ -7,6 +7,7 @@
 #pragma once
 
 #include "../nfCommon.hpp"
+#include "../Buffer.hpp"
 #include <type_traits>
 #include <cstdio>
 #include <iostream>
