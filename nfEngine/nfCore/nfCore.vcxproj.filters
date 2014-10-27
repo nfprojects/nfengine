@@ -146,34 +146,92 @@
     <ClInclude Include="..\..\Deps\libconfig\wincompat.h">
       <Filter>libconfig</Filter>
     </ClInclude>
-    <ClInclude Include="Aligned.hpp" />
-    <ClInclude Include="BVH.hpp" />
-    <ClInclude Include="CollisionShape.hpp" />
-    <ClInclude Include="Body.hpp" />
-    <ClInclude Include="Camera.hpp" />
-    <ClInclude Include="Component.hpp" />
-    <ClInclude Include="Globals.hpp" />
-    <ClInclude Include="Memory.hpp" />
-    <ClInclude Include="Prerequisites.hpp" />
-    <ClInclude Include="Renderer.hpp" />
-    <ClInclude Include="View.hpp" />
-    <ClInclude Include="Engine.hpp" />
-    <ClInclude Include="Entity.hpp" />
-    <ClInclude Include="Light.hpp" />
-    <ClInclude Include="Core.hpp" />
-    <ClInclude Include="Material.hpp" />
-    <ClInclude Include="Mesh.hpp" />
-    <ClInclude Include="MeshComponent.hpp" />
-    <ClInclude Include="Performance.hpp" />
-    <ClInclude Include="PhysicsWorld.hpp" />
-    <ClInclude Include="RenderCommand.hpp" />
-    <ClInclude Include="Resource.hpp" />
-    <ClInclude Include="ResourcesManager.hpp" />
-    <ClInclude Include="SceneEvent.hpp" />
-    <ClInclude Include="SceneManager.hpp" />
-    <ClInclude Include="SceneSegment.hpp" />
-    <ClInclude Include="SoundSample.hpp" />
-    <ClInclude Include="stdafx.hpp" />
-    <ClInclude Include="Texture.hpp" />
+    <ClInclude Include="Aligned.hpp">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="BVH.hpp">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionShape.hpp">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Body.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Globals.hpp">
+      <Filter>=Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory.hpp">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Prerequisites.hpp">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.hpp">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="View.hpp">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.hpp">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Core.hpp">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.hpp">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.hpp">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshComponent.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Performance.hpp">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsWorld.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderCommand.hpp">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.hpp">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourcesManager.hpp">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneEvent.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneSegment.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundSample.hpp">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.hpp">
+      <Filter>PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.hpp">
+      <Filter>Resource</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
