@@ -19,29 +19,29 @@ void FILEPtrDestroy(FILE* f)
     fclose(f);
 }
 
-NFCOMMON_API std::string Packer_GetErrorStr(PackResult pr)
+NFCOMMON_API std::string Packer_GetErrorStr(PackerResult pr)
 {
     switch (pr)
     {
-        case PackResult::OK:
+        case PackerResult::OK:
             return "OK";
-        case PackResult::Uninitialized:
+        case PackerResult::Uninitialized:
             return "Uninitialized";
-        case PackResult::FileNotFound:
+        case PackerResult::FileNotFound:
             return "FileNotFound";
-        case PackResult::FileNotCreated:
+        case PackerResult::FileNotCreated:
             return "FileNotCreated";
-        case PackResult::NullPointer:
+        case PackerResult::NullPointer:
             return "NullPointer";
-        case PackResult::FileExists:
+        case PackerResult::FileExists:
             return "FileExists";
-        case PackResult::InvalidInputParam:
+        case PackerResult::InvalidInputParam:
             return "InvalidInputParam";
-        case PackResult::AlreadyInitialized:
+        case PackerResult::AlreadyInitialized:
             return "AlreadyInitialized";
-        case PackResult::WriteFailed:
+        case PackerResult::WriteFailed:
             return "WriteFailed";
-        case PackResult::ReadFailed:
+        case PackerResult::ReadFailed:
             return "ReadFailed";
         default:
             return "Unknown";

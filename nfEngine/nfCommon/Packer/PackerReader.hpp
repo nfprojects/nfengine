@@ -12,14 +12,14 @@
 namespace NFE {
 namespace Common {
 
-class NFCOMMON_API PackReader
+class NFCOMMON_API PackerReader
 {
 public:
-    PackReader();
-    PackReader(const std::string& filePath);
+    PackerReader();
+    PackerReader(const std::string& filePath);
 
-    PackResult Init(const std::string& filePath);
-    PackResult GetFile(const std::string& vfsFilePath, Buffer& outputBuffer);
+    PackerResult Init(const std::string& filePath);
+    PackerResult GetFile(const std::string& vfsFilePath, Buffer& outputBuffer);
 
     void PrintFilesToStdout() const;
     size_t GetFileCount() const;

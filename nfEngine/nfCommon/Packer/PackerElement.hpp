@@ -19,9 +19,9 @@ namespace Common {
 struct PackerElement
 {
     MD5Hash mHash;
-    std::string FilePath;
-    size_t FilePos;
-    size_t FileSize;
+    std::string mFilePath;
+    size_t mFilePos;
+    size_t mFileSize;
 };
 
 typedef std::vector<PackerElement> FileListType;

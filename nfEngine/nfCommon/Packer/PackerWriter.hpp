@@ -12,18 +12,18 @@
 namespace NFE {
 namespace Common {
 
-class NFCOMMON_API PackWriter
+class NFCOMMON_API PackerWriter
 {
 public:
-    PackWriter();
-    PackWriter(const std::string& archiveName);
+    PackerWriter();
+    PackerWriter(const std::string& archiveName);
 
-    PackResult Init(const std::string& archiveName);
+    PackerResult Init(const std::string& archiveName);
 
-    PackResult AddFile(const std::string& filePath, const std::string& vfsFilePath);
-    PackResult AddFile(const Buffer& buffer, const std::string vfsFilePath);
-    PackResult AddFilesRecursively(const std::string& startPath);
-    PackResult WritePAK() const;
+    PackerResult AddFile(const std::string& filePath, const std::string& vfsFilePath);
+    PackerResult AddFile(const Buffer& buffer, const std::string& vfsFilePath);
+    PackerResult AddFilesRecursively(const std::string& startPath);
+    PackerResult WritePAK() const;
 
     void PrintFilesToStdout() const;
     const FileListType& GetFiles() const;

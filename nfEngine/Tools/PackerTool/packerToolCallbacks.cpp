@@ -12,8 +12,8 @@ using namespace NFE::Common;
 std::string s_FilePath;
 const std::string cs_Extension = ".pak";
 bool b_isReading = false;
-std::unique_ptr<PackWriter> VFSWriter;
-std::unique_ptr<PackReader> VFSReader;
+std::unique_ptr<PackerWriter> VFSWriter;
+std::unique_ptr<PackerReader> VFSReader;
 
 /////////////////
 //HELP MESSAGES//
@@ -107,13 +107,13 @@ std::string GetNextToken(std::string& cmd)
 void OnBeforeLoop()
 {
     ///TODO Add error code translated to string
-    PackResult pr = PackResult::OK;
+    PackerResult pr = PackerResult::OK;
 
-    VFSWriter.reset(new PackWriter);
-    AssertMsg(pr == PackResult::OK, "Error: " + PACK_RESULT_TO_STRING(pr));
+    VFSWriter.reset(new PackerWriter);
+    AssertMsg(pr == PackerResult::OK, "Error: " + PACK_RESULT_TO_STRING(pr));
 
-    VFSReader.reset(new PackReader);
-    AssertMsg(pr == PackResult::OK, "Error: " + PACK_RESULT_TO_STRING(pr));
+    VFSReader.reset(new PackerReader);
+    AssertMsg(pr == PackerResult::OK, "Error: " + PACK_RESULT_TO_STRING(pr));
 }
 
 void OnAfterLoop()
@@ -141,8 +141,8 @@ void Callback_LoadArchive(std::string& cmdString)
         return;
     }
 
-    PackResult pr = VFSReader->Init(cmd);
-    AssertMsg(pr == PackResult::OK, "Failed to load Pack Archive. Packer DLL result: " +
+    PackerResult pr = VFSReader->Init(cmd);
+    AssertMsg(pr == PackerResult::OK, "Failed to load Pack Archive. Packer DLL result: " +
               PACK_RESULT_TO_STRING(pr) + " - " + Packer_GetErrorStr(pr));
 
     b_isReading = true;
@@ -189,8 +189,8 @@ void Callback_CreateArchive(std::string& cmdString)
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
 
-    PackResult pr = VFSWriter->Init(cmd);
-    AssertMsg(pr == PackResult::OK, "Failed to initialize new Pack Archive. Packer DLL result: " +
+    PackerResult pr = VFSWriter->Init(cmd);
+    AssertMsg(pr == PackerResult::OK, "Failed to initialize new Pack Archive. Packer DLL result: " +
               PACK_RESULT_TO_STRING(pr) + " - " + Packer_GetErrorStr(pr));
 
     s_FilePath = cmd;
@@ -218,8 +218,8 @@ void Callback_AddFile(std::string& cmdString)
     if (vfsPath.empty())
         vfsPath = path;
 
-    PackResult pr = VFSWriter->AddFile(path, vfsPath);
-    AssertMsg(pr == PackResult::OK, "Failed to add file to Pack Archive. Packer DLL result: " +
+    PackerResult pr = VFSWriter->AddFile(path, vfsPath);
+    AssertMsg(pr == PackerResult::OK, "Failed to add file to Pack Archive. Packer DLL result: " +
               PACK_RESULT_TO_STRING(pr) + " - " + Packer_GetErrorStr(pr));
 }
 
@@ -231,8 +231,8 @@ void Callback_SaveArchive(std::string& cmdString)
         return;
     }
 
-    PackResult pr = VFSWriter->WritePAK();
-    AssertMsg(pr == PackResult::OK, "Failed to save Pack Archive. Packer DLL result: " +
+    PackerResult pr = VFSWriter->WritePAK();
+    AssertMsg(pr == PackerResult::OK, "Failed to save Pack Archive. Packer DLL result: " +
               PACK_RESULT_TO_STRING(pr) + " - " + Packer_GetErrorStr(pr));
 }
 

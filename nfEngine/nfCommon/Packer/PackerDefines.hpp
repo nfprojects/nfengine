@@ -26,7 +26,7 @@ namespace NFE {
 namespace Common {
 
 // return codes used by Packer
-enum class PackResult : uint32
+enum class PackerResult : uint32
 {
     OK = 0,
     Uninitialized,
@@ -40,16 +40,16 @@ enum class PackResult : uint32
     ReadFailed
 };
 
-typedef std::underlying_type<PackResult>::type PackResultType;
+typedef std::underlying_type<PackerResult>::type PackerResultType;
 
 // unique_ptr wrapper for FILE
 typedef std::function<void(FILE*)> FILEPtrDeleter;
 typedef std::unique_ptr<FILE, FILEPtrDeleter> FILEPtr;
 
-NFCOMMON_API std::string Packer_GetErrorStr(PackResult pr);
+NFCOMMON_API std::string Packer_GetErrorStr(PackerResult pr);
 void FILEPtrDestroy(FILE* f);
 
-#define PACK_RESULT_TO_STRING(x) std::to_string(static_cast<PackResultType>(x))
+#define PACK_RESULT_TO_STRING(x) std::to_string(static_cast<PackerResultType>(x))
 #define PACKER_DEF_BUFFER_SIZE 4096
 
 // current archive version

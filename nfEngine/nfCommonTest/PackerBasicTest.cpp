@@ -10,10 +10,10 @@ class PackerBasicTest : public testing::Test
 protected:
     void SetUp()
     {
-        EXPECT_NO_THROW(mReader.reset(new PackReader()));
+        EXPECT_NO_THROW(mReader.reset(new PackerReader()));
         EXPECT_NE(nullptr, mReader.get());
 
-        EXPECT_NO_THROW(mWriter.reset(new PackWriter()));
+        EXPECT_NO_THROW(mWriter.reset(new PackerWriter()));
         EXPECT_NE(nullptr, mWriter.get());
     }
 
@@ -31,25 +31,25 @@ protected:
         }
     }
 
-    std::unique_ptr<PackReader> mReader;
-    std::unique_ptr<PackWriter> mWriter;
+    std::unique_ptr<PackerReader> mReader;
+    std::unique_ptr<PackerWriter> mWriter;
 };
 
 TEST_F(PackerBasicTest, WriterInitTest)
 {
-    PackResult pr;
+    PackerResult pr;
     EXPECT_NO_THROW(pr = mWriter->Init(testPackFilePath));
-    EXPECT_EQ(PackResult::OK, pr);
+    EXPECT_EQ(PackerResult::OK, pr);
 }
 
 TEST_F(PackerBasicTest, WriterEmptyTest)
 {
-    PackResult pr;
+    PackerResult pr;
     EXPECT_NO_THROW(pr = mWriter->Init(testPackFilePath));
-    EXPECT_EQ(PackResult::OK, pr);
+    EXPECT_EQ(PackerResult::OK, pr);
 
     EXPECT_NO_THROW(pr = mWriter->WritePAK());
-    EXPECT_EQ(PackResult::OK, pr);
+    EXPECT_EQ(PackerResult::OK, pr);
 
     // open file manually and check if it contains data in order:
     //   * version number
@@ -70,16 +70,16 @@ TEST_F(PackerBasicTest, WriterEmptyTest)
 TEST_F(PackerBasicTest, ReaderEmptyTest)
 {
     // create correct file
-    PackResult pr;
+    PackerResult pr;
     EXPECT_NO_THROW(pr = mWriter->Init(testPackFilePath));
-    EXPECT_EQ(PackResult::OK, pr);
+    EXPECT_EQ(PackerResult::OK, pr);
 
     EXPECT_NO_THROW(pr = mWriter->WritePAK());
-    EXPECT_EQ(PackResult::OK, pr);
+    EXPECT_EQ(PackerResult::OK, pr);
 
     // open it with reader
     EXPECT_NO_THROW(pr = mReader->Init(testPackFilePath));
-    EXPECT_EQ(PackResult::OK, pr);
+    EXPECT_EQ(PackerResult::OK, pr);
 
     // get file version and file size
     uint32 readFileVersion;
@@ -93,16 +93,16 @@ TEST_F(PackerBasicTest, ReaderEmptyTest)
 
 TEST_F(PackerBasicTest, ReaderBuggyPathTest)
 {
-    PackResult pr;
+    PackerResult pr;
 
     // open path to non existing file with reader
     EXPECT_NO_THROW(pr = mReader->Init(testPackFilePath));
-    EXPECT_EQ(PackResult::FileNotFound, pr);
+    EXPECT_EQ(PackerResult::FileNotFound, pr);
 }
 
 TEST_F(PackerBasicTest, ReaderBuggyFileTest)
 {
-    PackResult pr;
+    PackerResult pr;
 
     // create file with file version only
     std::ofstream file(testPackFilePath);
@@ -113,5 +113,5 @@ TEST_F(PackerBasicTest, ReaderBuggyFileTest)
 
     // initialization should fail - no information about file count inside archive
     EXPECT_NO_THROW(pr = mReader->Init(testPackFilePath));
-    EXPECT_EQ(PackResult::ReadFailed, pr);
+    EXPECT_EQ(PackerResult::ReadFailed, pr);
 }
