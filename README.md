@@ -93,26 +93,16 @@ Issues crucial to project, usually related to one specific goal, are categorized
 Workflow and branching
 ----------------------
 
-Working on nfEngine revolves around "long-running branches" Git workflow. See [Pro Git book](http://git-scm.com/book/en/Git-Branching-Branching-Workflows) for more info. 
-
 nfEngine project contains two main long-running branches with code:
 
 * **Branch "master"** - here is kept latest stable version of nfEngine, guaranteed to work. On this branch no new changes are committed - it should contain only merge commits with version change.
 * **Branch "devel"** - this branch is main development branch used to contribute new changes.
 
-Each change (related to issue in GitHub) should have its own branch on which all changes should be kept. After committing a change, contributor should create a pull request to devel branch and begin code review process this way. After certain conditions are met, changes are merged to devel branch, and in upcoming release to master branch.
+Since the end of October, review of nfEngine commits is moved to GerritHub. All review should be done there - pull requests coming from GitHub will be automatically rejected.
 
-Owners and trusted contributors can work directly on main nfEngine repository. Contributors new to the project must fork the repository. Contributor should create a pull request to devel branch after resolving an issue.
+Change will be merged only when it will pass code review and verification process, and when provided change will be mergeable to devel branch without conflicts.
 
-When working on an issue, make sure your remote branch name relates to resolved issue in some way. In short terms:
-
-* Branch names like **"aaa"**, **"temp"**, **"work"**, **"devel2"** etc. don't tell much about the issue and pull requests from such branches will be closed without reviewing the change.
-* Branch names like **"fix-memleaks"**, **"add-threadpool-test"**, **"update-readme"** etc. are more than welcome and help owners of repository to get around what such change is about. Though, make sure the branch name is not too long.
-* In some situations (especially when branch name might be too long) contributor can name a feature branch according to **"issue-X"** scheme, where X is the number of the issue.
-
-Pull request will be merged only when it will pass code review and verification process, and when provided change will be mergeable to devel branch without conflicts.
-
-Direct commits to devel and master branch are forbidden and will be deleted immediately by project owners.
+Changes to master branch are forbidden and will be rejected immediately by project owners.
 
 Large changes (more than 500 lines affected) should be split in multiple commits to make review process easier.
 
@@ -120,34 +110,16 @@ Large changes (more than 500 lines affected) should be split in multiple commits
 Commit message format
 ---------------------
 
-Commit messages should keep a simple, standard format. Title (first line of commit message) should describe briefly what change does. Then contributor should write more detailed description of committed change. Example commit message is provided below:
+Commit messages should keep a simple, standard format. Title (first line of commit message) should describe briefly what change does. Then contributor should write more detailed description of committed change and way to verify provided change. Example commit message is provided below:
 
 ```
 Fix memory leaks in nfCommon Math module
 
 This commit fixes memory leaks which occured when using NFE::Common::Vector. Leaks
 occured due to not freed memory in Vector destructor.
-```
-
-
-Pull request description format
--------------------------------
-
-After finishing a change a pull request should be properly described. Description of pull request should be formatted in commit message format, however with two major changes:
-
-* Contributor should add **[#X]** field to title of pull request and replace X with issue number related to created pull request.
-* Contributor should add information to pull request about verification of created change. Such information should give detailed instruction to reviewers what should be done to test the change.
-  
-Example pull request description:
-
-```
-[#00] Improvements to nfCommon Math module
-
-This change improves some of Math module functions in nfCommon:
-  * Vector performance is sped up on some CPUs by using AVX instruction set
-  * Matrix memory management is optimized`
 
 Verification:
-Build, run nfCommonTest on CPU with AVX instructions - there should be new test
-category "nfCommonMathAVXTest", all tests should pass.
+Build, run tests using valgrind - no leaks should occur.
 ```
+
+If needed, change can be split into multiple sub-changes. These changes should depend on each other and appropriate information should be provided in commit message with [PATCH x/y] tag.
