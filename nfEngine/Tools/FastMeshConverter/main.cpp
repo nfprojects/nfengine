@@ -20,7 +20,7 @@ struct SubMesh
 };
 
 // replace backslashes with forward slashes
-std::string FixTexturePath(std::string str)
+inline std::string FixTexturePath(std::string str)
 {
     std::replace(str.begin(), str.end(), '\\', '/');
     return str;
