@@ -24,6 +24,9 @@
       <Filter>gtest</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MD5Test.cpp" />
+    <ClCompile Include="PackerBasicTest.cpp" />
+    <ClCompile Include="PackerComplexTest.cpp" />
     <ClCompile Include="ThreadPoolSimple.cpp" />
     <ClCompile Include="ThreadPoolStress.cpp" />
     <ClCompile Include="ThreadPoolPerformance.cpp" />

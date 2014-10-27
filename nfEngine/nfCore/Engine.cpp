@@ -68,7 +68,6 @@ void ReadHardwareInfo()
 
     //get CPU info
     SYSTEM_INFO sysInfo;
-    GetSystemInfo(&sysInfo);
     LOG_INFO("CPU logical cores: %u", sysInfo.dwNumberOfProcessors);
     LOG_INFO("Memory page size: %u bytes", sysInfo.dwPageSize);
 
@@ -220,7 +219,7 @@ Result EngineInit()
     PACK_RESULT pr;
     Packer_CreateReader(&g_pVfsReader);
     pr = g_pVfsReader->Init("..\\data\\Data.pak");
-    if (pr != PACK_OK)
+    if (pr != PACK_RESULT::OK)
     {
         LOG_ERROR("Failed to open pack file.");
     }

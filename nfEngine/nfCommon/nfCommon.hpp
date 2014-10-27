@@ -8,6 +8,7 @@
 #pragma once
 
 #pragma warning(disable: 4251)
+#pragma warning(disable: 4996) // for crt warnings, macro was not working
 
 #include <string>
 #include <vector>
