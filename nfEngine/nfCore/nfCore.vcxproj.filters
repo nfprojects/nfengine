@@ -148,90 +148,90 @@
     </ClInclude>
     <ClInclude Include="Aligned.hpp">
       <Filter>Util</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="BVH.hpp">
       <Filter>Util</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="CollisionShape.hpp">
       <Filter>Resource</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="Body.hpp">
       <Filter>Scene</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="Camera.hpp">
       <Filter>Scene</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="Component.hpp">
       <Filter>Scene</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="Globals.hpp">
       <Filter>=Base</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="Memory.hpp">
       <Filter>Util</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="Prerequisites.hpp">
       <Filter>Base</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="Renderer.hpp">
       <Filter>Util</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="View.hpp">
       <Filter>Render</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="Engine.hpp">
       <Filter>Base</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="Entity.hpp">
       <Filter>Scene</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="Light.hpp">
       <Filter>Scene</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="Core.hpp">
       <Filter>Base</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="Material.hpp">
       <Filter>Resource</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="Mesh.hpp">
       <Filter>Resource</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="MeshComponent.hpp">
       <Filter>Scene</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="Performance.hpp">
       <Filter>Util</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="PhysicsWorld.hpp">
       <Filter>Scene</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="RenderCommand.hpp">
       <Filter>Render</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="Resource.hpp">
       <Filter>Resource</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="ResourcesManager.hpp">
       <Filter>Resource</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="SceneEvent.hpp">
       <Filter>Scene</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="SceneManager.hpp">
       <Filter>Scene</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="SceneSegment.hpp">
       <Filter>Scene</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="SoundSample.hpp">
       <Filter>Resource</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="stdafx.hpp">
       <Filter>PCH</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="Texture.hpp">
       <Filter>Resource</Filter>
-    </ClCompile>
+    </ClInclude>
   </ItemGroup>
 </Project>
