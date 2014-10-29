@@ -30,8 +30,8 @@ void ConvertFileName(const char* pInput, char* pOutput)
 {
     strcpy(pOutput, pInput);
 
-    int len = strlen(pOutput);
-    for (int i = len - 1; i > 0; i--)
+    size_t len = strlen(pOutput);
+    for (size_t i = len - 1; i > 0; i--)
     {
         if (pOutput[i] == '.')
             break;
@@ -46,8 +46,8 @@ void ExtractFileDir(const char* pFilePath, char* pDir)
 {
     strcpy(pDir, pFilePath);
 
-    int len = strlen(pFilePath);
-    for (int i = len - 1; i > 0; i--)
+    size_t len = strlen(pFilePath);
+    for (size_t i = len - 1; i > 0; i--)
     {
         if (pDir[i] == '\\')
             break;

@@ -380,10 +380,10 @@ void GBufferRendererD3D11::Draw(NFE_CONTEXT_ARG, const RenderCommandBuffer& buff
         if (bufferIsFull)
         {
             //udapte per instance data buffer
-            int instancesToBuffer = Min<int>(MAX_BUFFERED_INSTANCES, buffer.commands.size() - i);
+            size_t instancesToBuffer = Min<size_t>(MAX_BUFFERED_INSTANCES, buffer.commands.size() - i);
 
             D3D11_MAPPED_SUBRESOURCE mappedSubres;
-            for (int j = 0; j < instancesToBuffer; j++)
+            for (size_t j = 0; j < instancesToBuffer; j++)
             {
                 Matrix tmpMatrix = MatrixTranspose(buffer.commands[j + i].matrix);
                 mInstanceData[j].worldMatrix[0] = tmpMatrix.r[0];

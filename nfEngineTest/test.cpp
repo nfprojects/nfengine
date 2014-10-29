@@ -282,8 +282,8 @@ public:
     {
         if (cameraControl)
         {
-            float fDeltaX = (float)deltaX * 0.005f;
-            float fDeltaY = (float)deltaY * 0.005f;
+            float fDeltaX = static_cast<float>(deltaX) * 0.005f;
+            float fDeltaY = static_cast<float>(deltaY) * 0.005f;
 
             cameraXZ += fDeltaX;
             cameraY -= fDeltaY;
@@ -309,7 +309,7 @@ public:
             {
                 Perspective perspective;
                 camera->GetPerspective(&perspective);
-                perspective.aspectRatio = (float)width / (float)height;
+                perspective.aspectRatio = static_cast<float>(width) / static_cast<float>(height);
                 camera->SetPerspective(&perspective);
             }
         }
@@ -600,8 +600,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     {
         for (int z = -4; z < 5; z++)
         {
+            Vector offset = 12.0f * Vector(static_cast<float>(x),
+                                           0.0f,
+                                           static_cast<float>(z));
+
             Entity* pEntity = g_pScene->CreateEntity();
-            pEntity->SetPosition(12.0f * Vector((float)x, 0, (float)z));
+            pEntity->SetPosition(offset);
             MeshComponent* pMesh = new MeshComponent(pEntity);
             pMesh->SetMeshResource("chamber.nfm");
             BodyComponent* pBody = new BodyComponent(pEntity);
@@ -611,7 +615,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
             LightComponent* pLight;
             OmniLightDesc omni;
             pEntity = g_pScene->CreateEntity();
-            pEntity->SetPosition(12.0f * Vector(x, 0, z) + Vector(0.0f, 3.5f, 0.0f));
+            pEntity->SetPosition(offset + Vector(0.0f, 3.5f, 0.0f));
             pLight = new LightComponent(pEntity);
 
             omni.shadowFadeStart = 80.0f;
@@ -623,14 +627,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 
             pEntity = g_pScene->CreateEntity();
-            pEntity->SetPosition(12.0f * Vector(x, 0, z) + Vector(6.0f, 1.8f, 0.0f));
+            pEntity->SetPosition(offset + Vector(6.0f, 1.8f, 0.0f));
             pLight = new LightComponent(pEntity);
             omni.radius = 3.0f;
             pLight->SetOmniLight(&omni);
             pLight->SetColor(Float3(5.0f, 0.5f, 0.25f));
 
             pEntity = g_pScene->CreateEntity();
-            pEntity->SetPosition(12.0f * Vector(x, 0, z) + Vector(0.0f, 1.8f, 6.0f));
+            pEntity->SetPosition(offset + Vector(0.0f, 1.8f, 6.0f));
             pLight = new LightComponent(pEntity);
             omni.radius = 3.0f;
             pLight->SetOmniLight(&omni);
@@ -798,7 +802,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     while (!pWindow->isClosed())
     {
         //measure delta time
-        g_DeltaTime = (float)timer.Stop();
+        g_DeltaTime = static_cast<float>(timer.Stop());
         timer.Start();
 
         UpdateRequest updateReq;

@@ -684,8 +684,12 @@ Result LightComponent::Serialize(Common::OutputStream* pStream) const
             break;
     };
 
+    // can't store directly to "&desc.color", because this address is not aligned to 4 bytes
+    Float3 color;
+    VectorStore(mColor, &color);
+    desc.color = color;
+
     desc.lightType = (char)mLightType;
-    VectorStore(mColor, &desc.color);
     desc.mShadowMapSize = (mShadowMap != nullptr) ? (uint16)mShadowMap->GetSize() : 0;
 
     if (mLightMap)

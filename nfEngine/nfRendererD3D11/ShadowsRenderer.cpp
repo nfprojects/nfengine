@@ -364,7 +364,7 @@ void ShadowRendererD3D11::Draw(NFE_CONTEXT_ARG, const RenderCommandBuffer& buffe
     IRendererBuffer* pCurrIB = NULL;
     uint32 currStartIndex = 0xFFFFFFFF;
 
-    for (int i = 0; i < buffer.commands.size(); i++)
+    for (size_t i = 0; i < buffer.commands.size(); i++)
     {
         const RenderCommand& command = buffer.commands[i];
 

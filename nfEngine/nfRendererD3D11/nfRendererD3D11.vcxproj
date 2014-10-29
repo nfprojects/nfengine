@@ -96,6 +96,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Deps\FreeType\include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -117,6 +118,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Deps\FreeType\include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

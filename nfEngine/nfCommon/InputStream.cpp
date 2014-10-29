@@ -65,8 +65,14 @@ size_t FileInputStream::Read(size_t num, void* pDest)
 {
     if (mFile != INVALID_HANDLE_VALUE)
     {
+        DWORD toRead;
+        if (num > static_cast<size_t>(MAXDWORD))
+            toRead = MAXDWORD;
+        else
+            toRead = static_cast<DWORD>(num);
+
         DWORD bytesRead = 0;
-        ReadFile(mFile, pDest, num, &bytesRead, 0);
+        ReadFile(mFile, pDest, toRead, &bytesRead, 0);
         return bytesRead;
     }
 

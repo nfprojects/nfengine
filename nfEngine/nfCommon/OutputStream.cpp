@@ -39,11 +39,15 @@ size_t FileOutputStream::Write(const void* pSrc, size_t num)
 {
     if (mFile != INVALID_HANDLE_VALUE)
     {
+        DWORD toWrite;
+        if (num > static_cast<size_t>(MAXDWORD))
+            toWrite = MAXDWORD;
+        else
+            toWrite = static_cast<DWORD>(num);
+
         DWORD written;
-        if (WriteFile(mFile, pSrc, num, &written, 0))
-        {
+        if (WriteFile(mFile, pSrc, toWrite, &written, 0))
             return (size_t)written;
-        }
     }
 
     return 0;

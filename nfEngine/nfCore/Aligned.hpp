@@ -123,7 +123,7 @@ public:
         return static_cast<T*>(pv);
     }
 
-    void deallocate(T* const p, const size_t n) const
+    void deallocate(T* const p, const size_t) const
     {
         _mm_free(p);
     }
