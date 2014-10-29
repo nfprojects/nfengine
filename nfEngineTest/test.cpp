@@ -532,13 +532,13 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     orient.y = Vector(0.0f, 1.0f, 0.0f, 0.0f);
     pDirLightEnt->SetOrientation(&orient);
     DirLightDesc dirLight;
-    dirLight.m_Far = 100.0f;
-    dirLight.m_Splits = 4;
-    dirLight.m_LightDist = 1000.0f;
+    dirLight.farDist = 100.0f;
+    dirLight.splits = 4;
+    dirLight.lightDist = 1000.0f;
 
     LightComponent* pDirLight = new LightComponent(pDirLightEnt);
     pDirLight->SetDirLight(&dirLight);
-    pDirLight->SetColor(Float3(2.2, 2, 1.8));
+    pDirLight->SetColor(Float3(2.2f, 2.0f, 1.8f));
     pDirLight->SetShadowMap(1024);
 
     // MINECRAFT
@@ -568,9 +568,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     pEnt->SetPosition(Vector(0.0f, 3.5f, 0.0f));
     LightComponent* pLight = new LightComponent(pEnt);
     OmniLightDesc omni;
-    omni.m_ShadowFadeStart = 12.0f;
-    omni.m_ShadowFadeEnd = 120.0f;
-    omni.m_Radius = 90.0f;
+    omni.shadowFadeStart = 12.0f;
+    omni.shadowFadeEnd = 120.0f;
+    omni.radius = 90.0f;
     pLight->SetOmniLight(&omni);
     pLight->SetColor(Float3(50, 50, 50));
     pLight->SetShadowMap(512);
@@ -666,7 +666,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 // infinite looped scene
 #ifdef SCENE_SEGMENTS
-    BufferOutputStream segmentDesc;
+    NFE::Common::BufferOutputStream segmentDesc;
 
     Matrix mat = MatrixRotationNormal(Vector(0, 1, 0), NFE_MATH_PI / 4.0f);
 
@@ -698,7 +698,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         entity.RemoveAllComponents();
         entity.SetPosition(Vector(6.0f, 1.8f, 0.0f));
         pLight = new LightComponent(&entity);
-        omni.m_Radius = 3.0f;
+        omni.radius = 3.0f;
         pLight->SetOmniLight(&omni);
         pLight->SetColor(Float3(5.0f, 0.5f, 0.25f));
         entity.Serialize(&segmentDesc, Vector());
@@ -706,7 +706,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         entity.RemoveAllComponents();
         entity.SetPosition(Vector(0.0f, 1.8f, 6.0f));
         pLight = new LightComponent(&entity);
-        omni.m_Radius = 3.0f;
+        omni.radius = 3.0f;
         pLight->SetOmniLight(&omni);
         pLight->SetColor(Float3(5.0f, 0.5f, 0.25f));
         entity.Serialize(&segmentDesc, Vector());
