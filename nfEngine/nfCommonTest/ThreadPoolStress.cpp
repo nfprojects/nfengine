@@ -36,7 +36,7 @@ TEST(ThreadPoolStress, ComplexDependency)
 
         int depsResolved = 0;
         for (TaskID dependency : taskInfo.deps)
-            if (tasks[dependency].done)
+            if (tasks[(size_t)dependency].done)
                 depsResolved++;
 
         ASSERT_GE(taskInfo.required, depsResolved) << "Unresolved dependencies";
@@ -55,14 +55,14 @@ TEST(ThreadPoolStress, ComplexDependency)
         TaskID taskId;
 
         // generate random dependencies
-        int range = std::min<int>(tasks.size(), 0);
+        size_t range = std::min<size_t>(tasks.size(), 0);
         task.required = 0;
         if (range > 0)
         {
-            int depsNum = rand() % range;
+            size_t depsNum = rand() % range;
             task.required = rand() % depsNum;
             random_unique(tasks.begin(), tasks.end(), depsNum);
-            for (int j = 0; j < depsNum; ++j)
+            for (size_t j = 0; j < depsNum; ++j)
                 task.deps.push_back(taskIds[i]);
         }
 

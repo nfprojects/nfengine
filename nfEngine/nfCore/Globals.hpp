@@ -30,7 +30,7 @@ extern Render::IShadowRenderer* g_pShadowRenderer;
 
 
 /// Immediate (main) and deferred (secondary) rendering contexts
-extern uint32 g_DeferredContextsNum;
+extern size_t g_DeferredContextsNum;
 extern Render::IRenderContext* g_pImmediateContext;
 extern Render::IRenderContext** g_pDeferredContexts;
 

@@ -163,8 +163,8 @@ void RenderCommandBuffer::Sort()
 
     //build array of pointers and manipulate them instead of RenderCommand structures
     int* pPointers = (int*)malloc(sizeof(int) * size);
-    for (int i = 0; i < size; i++)
-        pPointers[i]  = i;
+    for (size_t i = 0; i < size; i++)
+        pPointers[i]  = static_cast<int>(i); // assume there is less than 2^32 items
 
     int* pTmpPointers = (int*)malloc(sizeof(int) * size);
 
@@ -175,7 +175,7 @@ void RenderCommandBuffer::Sort()
     //reorganize
     RenderCommand* pTmpCommands = (RenderCommand*)_aligned_malloc(sizeof(RenderCommand) * size, 16);
     memcpy(pTmpCommands, &commands[0], sizeof(RenderCommand) * size );
-    for (int i = 0; i < commands.size(); i++)
+    for (size_t i = 0; i < commands.size(); i++)
     {
         commands[i] = pTmpCommands[pPointers[i]];
     }

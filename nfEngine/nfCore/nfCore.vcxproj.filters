@@ -107,27 +107,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Deps\libconfig\grammar.h">
-      <Filter>libconfig</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Deps\libconfig\libconfig.h">
-      <Filter>libconfig</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Deps\libconfig\parsectx.h">
-      <Filter>libconfig</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Deps\libconfig\scanctx.h">
-      <Filter>libconfig</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Deps\libconfig\scanner.h">
-      <Filter>libconfig</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Deps\libconfig\strbuf.h">
-      <Filter>libconfig</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Deps\libconfig\wincompat.h">
-      <Filter>libconfig</Filter>
-    </ClInclude>
     <ClInclude Include="Aligned.hpp">
       <Filter>Util</Filter>
     </ClInclude>
@@ -145,9 +124,6 @@
     </ClInclude>
     <ClInclude Include="Component.hpp">
       <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Globals.hpp">
-      <Filter>=Base</Filter>
     </ClInclude>
     <ClInclude Include="Memory.hpp">
       <Filter>Util</Filter>
@@ -215,5 +191,6 @@
     <ClInclude Include="Texture.hpp">
       <Filter>Resource</Filter>
     </ClInclude>
+    <ClInclude Include="Globals.hpp" />
   </ItemGroup>
 </Project>

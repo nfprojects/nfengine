@@ -572,11 +572,11 @@ public:
 
     int read(jpgd::uint8* pBuf, int max_bytes_to_read, bool* pEOF_flag)
     {
-        int bytesRead = mStream->Read(max_bytes_to_read, pBuf);
+        size_t bytesRead = mStream->Read(max_bytes_to_read, pBuf);
         if (bytesRead == 0)
             *pEOF_flag = true;
 
-        return bytesRead;
+        return static_cast<int>(bytesRead);
     }
 };
 
@@ -757,7 +757,7 @@ int Image::LoadPNG(InputStream* pStream)
 
     //A little for-loop here to set all the row pointers to the starting
     //Adresses for every row in the buffer
-    for (size_t i = 0; i < imgHeight; i++)
+    for (png_uint_32 i = 0; i < imgHeight; i++)
     {
         //Set the pointer to the data pointer + i times the row stride.
         //Notice that the row order is reversed with q.
@@ -798,36 +798,31 @@ struct DDS_PIXELFORMAT
     unsigned int    dwAlphaBitMask;
 };
 
-union DDS_header
+struct DDS_header
 {
+    unsigned int    dwMagic;
+    unsigned int    dwSize;
+    unsigned int    dwFlags;
+    unsigned int    dwHeight;
+    unsigned int    dwWidth;
+    unsigned int    dwPitchOrLinearSize;
+    unsigned int    dwDepth;
+    unsigned int    dwMipMapCount;
+    unsigned int    dwReserved1[ 11 ];
+
+    //  DDPIXELFORMAT
+    DDS_PIXELFORMAT sPixelFormat;
+
+    //  DDCAPS2
     struct
     {
-        unsigned int    dwMagic;
-        unsigned int    dwSize;
-        unsigned int    dwFlags;
-        unsigned int    dwHeight;
-        unsigned int    dwWidth;
-        unsigned int    dwPitchOrLinearSize;
-        unsigned int    dwDepth;
-        unsigned int    dwMipMapCount;
-        unsigned int    dwReserved1[ 11 ];
+        unsigned int    dwCaps1;
+        unsigned int    dwCaps2;
+        unsigned int    dwDDSX;
+        unsigned int    dwReserved;
+    } sCaps;
 
-        //  DDPIXELFORMAT
-        DDS_PIXELFORMAT sPixelFormat;
-
-        //  DDCAPS2
-        struct
-        {
-            unsigned int    dwCaps1;
-            unsigned int    dwCaps2;
-            unsigned int    dwDDSX;
-            unsigned int    dwReserved;
-        } sCaps;
-
-        unsigned int dwReserved2;
-    };
-
-    char data[ 128 ];
+    unsigned int dwReserved2;
 };
 
 #define DDS_MAGIC_NUMBER    0x20534444

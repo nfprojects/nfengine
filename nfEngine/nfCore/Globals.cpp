@@ -24,7 +24,7 @@ IDebugRenderer* g_pDebugRenderer = NULL;
 IGBufferRenderer* g_pGBufferRenderer = NULL;
 IShadowRenderer* g_pShadowRenderer = NULL;
 
-uint32 g_DeferredContextsNum = 0;
+size_t g_DeferredContextsNum = 0;
 IRenderContext* g_pImmediateContext = NULL;
 IRenderContext** g_pDeferredContexts = NULL;
 

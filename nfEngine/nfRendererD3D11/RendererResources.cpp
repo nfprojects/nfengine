@@ -125,7 +125,8 @@ Result RendererTextureD3D11::FromImage(const Common::Image& image)
         }
         else
         {
-            initData[i].SysMemPitch = Math::Max<uint32>(1, image.GetMipmap(i).width * bitsPerPixel / 8);
+            initData[i].SysMemPitch = Math::Max<uint32>(1,
+                static_cast<uint32>(image.GetMipmap(i).width * bitsPerPixel / 8));
         }
 
         initData[i].pSysMem = image.GetMipmap(i).data;
