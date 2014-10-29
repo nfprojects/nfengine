@@ -68,6 +68,7 @@ void ReadHardwareInfo()
 
     //get CPU info
     SYSTEM_INFO sysInfo;
+    GetSystemInfo(&sysInfo);
     LOG_INFO("CPU logical cores: %u", sysInfo.dwNumberOfProcessors);
     LOG_INFO("Memory page size: %u bytes", sysInfo.dwPageSize);
 

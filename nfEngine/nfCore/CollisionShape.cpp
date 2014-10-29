@@ -70,7 +70,7 @@ void CollisionShape::Release()
             mShape = 0;
         }
 
-        for (int i = 0; i < mChildren.size(); i++)
+        for (size_t i = 0; i < mChildren.size(); i++)
             delete mChildren[i].pShape;
     }
     else if (mChildren.size() == 1)
@@ -228,10 +228,8 @@ bool CollisionShape::OnLoad()
                 return false;
             }
 
-            for (int i = 0; i < mChildren.size(); i++)
-            {
+            for (size_t i = 0; i < mChildren.size(); i++)
                 pCompound->addChildShape(Matrix2BulletTransform(mChildren[i].matrix), mChildren[i].pShape);
-            }
 
             mShape = pCompound;
         }

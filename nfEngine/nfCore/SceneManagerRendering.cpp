@@ -278,7 +278,8 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
             }
 
             if (omniLights.size() > 0)
-                g_pLightRenderer->TileBasedPass(pCtx, omniLights.size(), &omniLights[0]);
+                g_pLightRenderer->TileBasedPass(pCtx, static_cast<uint32>(omniLights.size()),
+                                                &omniLights[0]);
             else
                 g_pLightRenderer->TileBasedPass(pCtx, 0, 0);
 

@@ -567,8 +567,8 @@ Result SceneManager::Serialize(Common::OutputStream* pStream, SerializationForma
         // iterate segments
         for (auto pSegment : mSegments)
         {
-            int len = sprintf_s(str, "%g; %g; %g", pSegment->mSize.f[0], pSegment->mSize.f[1],
-                                pSegment->mSize.f[2]); // use "g" formating to reduce text size
+            sprintf_s(str, "%g; %g; %g", pSegment->mSize.f[0], pSegment->mSize.f[1],
+                      pSegment->mSize.f[2]); // use "g" formating to reduce text size
 
             // root node
             xml_node<>* root = doc.allocate_node(node_element, "segment");
@@ -580,8 +580,8 @@ Result SceneManager::Serialize(Common::OutputStream* pStream, SerializationForma
         // iterate links
         for (auto pLink : mLinks)
         {
-            int len = sprintf_s(str, "%g; %g; %g", pLink->offset.f[0], pLink->offset.f[1],
-                                pLink->offset.f[2]);
+            sprintf_s(str, "%g; %g; %g", pLink->offset.f[0], pLink->offset.f[1],
+                      pLink->offset.f[2]);
 
             // root node
             xml_node<>* root = doc.allocate_node(node_element, "link");

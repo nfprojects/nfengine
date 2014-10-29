@@ -611,7 +611,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
             LightComponent* pLight;
             OmniLightDesc omni;
             pEntity = g_pScene->CreateEntity();
-            pEntity->SetPosition(12.0f * Vector(x, 0, z) + Vector(0.0f, 3.5f, 0.0f));
+            pEntity->SetPosition(12.0f * Vector((float)x, 0.0f, (float)z) +
+                                 Vector(0.0f, 3.5f, 0.0f));
             pLight = new LightComponent(pEntity);
 
             omni.shadowFadeStart = 80.0f;
@@ -623,14 +624,16 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 
             pEntity = g_pScene->CreateEntity();
-            pEntity->SetPosition(12.0f * Vector(x, 0, z) + Vector(6.0f, 1.8f, 0.0f));
+            pEntity->SetPosition(12.0f * Vector((float)x, 0.0f, (float)z) +
+                                 Vector(6.0f, 1.8f, 0.0f));
             pLight = new LightComponent(pEntity);
             omni.radius = 3.0f;
             pLight->SetOmniLight(&omni);
             pLight->SetColor(Float3(5.0f, 0.5f, 0.25f));
 
             pEntity = g_pScene->CreateEntity();
-            pEntity->SetPosition(12.0f * Vector(x, 0, z) + Vector(0.0f, 1.8f, 6.0f));
+            pEntity->SetPosition(12.0f * Vector((float)x, 0.0f, (float)z) +
+                                 Vector(0.0f, 1.8f, 6.0f));
             pLight = new LightComponent(pEntity);
             omni.radius = 3.0f;
             pLight->SetOmniLight(&omni);

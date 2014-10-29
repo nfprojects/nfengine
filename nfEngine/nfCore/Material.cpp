@@ -64,11 +64,13 @@ Material::~Material()
 
 void NodeToColor(const rapidjson::Value& val, Float4& ret)
 {
+    using namespace rapidjson;
+
     if (!val.IsArray())
         return;
 
-    size_t num = std::min<size_t>(4, val.Size());
-    for (size_t i = 0; i < num; ++i)
+    SizeType num = std::min<SizeType>(4, val.Size());
+    for (SizeType i = 0; i < num; ++i)
     {
         if (!val[i].IsDouble())
             continue;

@@ -18,8 +18,7 @@ namespace Resource {
 /**
  * Structure describing material layer properties
  */
-NFE_ALIGN(16)
-struct CORE_API MaterialLayer : public Util::Aligned
+struct CORE_API MaterialLayer
 {
     float weight; //how much the layer influences final color
     Math::Float2 textureScale;
