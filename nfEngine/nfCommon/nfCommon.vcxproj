@@ -210,9 +210,9 @@
     <ClInclude Include="targetver.hpp" />
     <ClInclude Include="ThreadPool.hpp" />
     <ClInclude Include="Timer.hpp" />
-    <ClInclude Include="TimerWin.hpp" />
     <ClInclude Include="Window.hpp" />
     <ClInclude Include="Win\Console.hpp" />
+    <ClInclude Include="Win\Timer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Deps\jpeg\jpgd.cpp">
@@ -279,9 +279,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ThreadPool.cpp" />
-    <ClCompile Include="TimerWin.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="Win\Console.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../stdafx.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Win\Timer.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../stdafx.hpp</PrecompiledHeaderFile>

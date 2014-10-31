@@ -1,10 +1,10 @@
 /**
- *  @file   TimerWin.cpp
+ *  @file   Win/Timer.cpp
  *  @brief  High resolution timer class definition for Windows system
  */
 
-#include "stdafx.hpp"
-#include "TimerWin.hpp"
+#include "../stdafx.hpp"
+#include "Timer.hpp"
 
 
 namespace {

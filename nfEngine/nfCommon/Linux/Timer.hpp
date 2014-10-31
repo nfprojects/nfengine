@@ -1,11 +1,11 @@
 /**
- *  @file   TimerLinux.hpp
+ *  @file   Linux/Timer.hpp
  *  @brief  High resolution timer class declaration for Linux systems
  */
 
 #pragma once
 
-#include "nfCommon.h"
+#include "nfCommon.hpp"
 
 
 namespace NFE {

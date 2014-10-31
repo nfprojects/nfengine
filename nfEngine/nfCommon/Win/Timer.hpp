@@ -1,11 +1,11 @@
 /**
- *  @file   TimerWin.hpp
+ *  @file   Win/Timer.hpp
  *  @brief  High resolution timer class declaration for Windows system
  */
 
 #pragma once
 
-#include "nfCommon.hpp"
+#include "../nfCommon.hpp"
 
 
 namespace NFE {

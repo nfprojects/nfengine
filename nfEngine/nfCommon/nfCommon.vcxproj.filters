@@ -93,9 +93,6 @@
     <ClInclude Include="Timer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TimerWin.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Logger.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -124,6 +121,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Win\Console.hpp">
+      <Filter>Header Files\Win</Filter>
+    </ClInclude>
+    <ClInclude Include="Win\Timer.hpp">
       <Filter>Header Files\Win</Filter>
     </ClInclude>
   </ItemGroup>
@@ -176,9 +176,6 @@
     <ClCompile Include="..\..\Deps\jpeg\jpgd.cpp">
       <Filter>Source Files\jpeg</Filter>
     </ClCompile>
-    <ClCompile Include="TimerWin.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Packer\PackerDefines.cpp">
       <Filter>Source Files\Packer</Filter>
     </ClCompile>
@@ -189,6 +186,9 @@
       <Filter>Source Files\Packer</Filter>
     </ClCompile>
     <ClCompile Include="Win\Console.cpp">
+      <Filter>Source Files\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="Win\Timer.cpp">
       <Filter>Source Files\Win</Filter>
     </ClCompile>
   </ItemGroup>

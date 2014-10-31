@@ -8,9 +8,9 @@
 #include "nfCommon.hpp"
 
 #if defined(WIN32)
-#include "TimerWin.hpp"
+#include "Win/Timer.hpp"
 #elif defined(__LINUX__) | defined(__linux__)
-#include "TimerLinux.hpp"
+#include "Linux/Timer.hpp"
 #else
 #error "Target system not supported!"
 #endif // ifdef WIN32 elif __LINUX__  | __linux__

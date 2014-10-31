@@ -1,10 +1,10 @@
 /**
- *  @file   TimerLinux.cpp
+ *  @file   Linux/Timer.cpp
  *  @brief  High resolution timer class definition for Linux system
  */
 
-#include "stdafx.h"
-#include "TimerLinux.hpp"
+#include "../stdafx.hpp"
+#include "Timer.hpp"
 
 
 namespace NFE {
