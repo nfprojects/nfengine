@@ -7,7 +7,7 @@
 #pragma once
 
 #include "PackerDefines.hpp"
-#include "PackerElement.hpp"
+#include "PackerResourceFile.hpp"
 
 namespace NFE {
 namespace Common {
@@ -26,13 +26,13 @@ public:
     PackerResult WritePAK() const;
 
     void PrintFilesToStdout() const;
-    const FileListType& GetFiles() const;
+    const ResourceListType& GetFiles() const;
     size_t GetFileCount() const;
     const std::string& GetPAKName() const;
 
 private:
     std::string mFilePath;
-    FileListType mFileList;
+    ResourceListType mFileList;
 };
 
 } // namespace Common

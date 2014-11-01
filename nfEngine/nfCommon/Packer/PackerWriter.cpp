@@ -30,19 +30,16 @@ PackerResult PackerWriter::Init(const std::string& archiveName)
 
 PackerResult PackerWriter::AddFile(const std::string& filePath, const std::string& vfsFilePath)
 {
-    FILEPtr pFile(fopen(filePath.c_str(), "r"), FILEPtrDestroy);
-    if (!(pFile.get()))
-        return PackerResult::FileNotFound;
+    PackerResourceFile* resource = new PackerResourceFile();
 
-    PackerElement NewElement;
+    PackerResult pr = resource->Init(filePath, vfsFilePath);
+    if (pr != PackerResult::OK)
+    {
+        delete resource;
+        return pr;
+    }
 
-    NewElement.mFilePath = filePath;
-
-    fseek(pFile.get(), 0, SEEK_END);
-    NewElement.mFileSize = ftell(pFile.get());
-    NewElement.mHash.Calculate(vfsFilePath);
-
-    mFileList.push_back(NewElement);
+    mFileList.push_back(std::move(std::shared_ptr<PackerResource>(resource)));
 
     return PackerResult::OK;
 }
@@ -119,44 +116,32 @@ PackerResult PackerWriter::WritePAK() const
 
     // Position of first file in archive, calculated as follows
     //   header_size             = version<uint32> + file_table_element_count<size_t>
-    //   file_table_element_size = hash<MD5Hash> + current_pos<size_t> + file_size<size_t>
+    //   file_table_element_size = current_pos<size_t> + hash<MD5Hash> + file_size<size_t>
     //   curFilePos              = header_size + file_table_element_size * element_count
     size_t curFilePos = sizeof(uint32) + sizeof(size_t) +
-                        (sizeof(MD5Hash) + sizeof(size_t) + sizeof(size_t)) * mFileList.size();
+                        (sizeof(size_t) + sizeof(MD5Hash) + sizeof(size_t)) * mFileList.size();
+
+    PackerResult pr;
 
     //save file list
-    for (size_t i = 0; i < mFileList.size(); i++)
+    for (const auto& it : mFileList)
     {
-        if (!fwrite(reinterpret_cast<const void*>(&mFileList[i].mHash), sizeof(uint32), 4, pFile.get()))
-            return PackerResult::WriteFailed;
-
         if (!fwrite(reinterpret_cast<const void*>(&curFilePos), sizeof(size_t), 1, pFile.get()))
             return PackerResult::WriteFailed;
 
-        if (!fwrite(reinterpret_cast<const void*>(&mFileList[i].mFileSize), sizeof(size_t), 1, pFile.get()))
-            return PackerResult::WriteFailed;
+        pr = it->SaveHeader(pFile.get());
+        if (pr != PackerResult::OK)
+            return pr;
 
-        curFilePos += mFileList[i].mFileSize;
+        curFilePos += it->GetFileSize();
     }
 
-    FILEPtr appendedFile(nullptr, FILEPtrDestroy);
-    unsigned char buffer[PACKER_DEF_BUFFER_SIZE];
-    size_t readCount = 0;
-
     //copy files to PAK archive
-    for (size_t i = 0; i < mFileList.size(); i++)
+    for (const auto& it : mFileList)
     {
-        appendedFile.reset(fopen(mFileList[i].mFilePath.c_str(), "rb"));
-        if (appendedFile == NULL)
-            return PackerResult::FileNotFound;
-
-        do
-        {
-            readCount = fread(buffer, sizeof(unsigned char), PACKER_DEF_BUFFER_SIZE, appendedFile.get());
-            if (fwrite(buffer, sizeof(unsigned char), readCount, pFile.get()) != readCount)
-                return PackerResult::WriteFailed;
-        }
-        while (readCount == PACKER_DEF_BUFFER_SIZE);
+        pr = it->Save(pFile.get());
+        if (pr != PackerResult::OK)
+            return pr;
     }
 
     return PackerResult::OK;
@@ -165,10 +150,10 @@ PackerResult PackerWriter::WritePAK() const
 void PackerWriter::PrintFilesToStdout() const
 {
     for (const auto& it : mFileList)
-        std::cout << "Element " << it.mHash << ", size " << it.mFileSize << std::endl;
+        it->PrintToStdout();
 }
 
-const FileListType& PackerWriter::GetFiles() const
+const ResourceListType& PackerWriter::GetFiles() const
 {
     return mFileList;
 }

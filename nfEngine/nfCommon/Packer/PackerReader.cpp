@@ -27,17 +27,17 @@ PackerResult PackerReader::Init(const std::string& filePath)
     if (!fread(&mFileVersion, sizeof(uint32), 1, pFile.get()))
         return PackerResult::ReadFailed;
 
-    size_t mFileSize = 0;
-    if (!fread(&mFileSize, sizeof(size_t), 1, pFile.get()))
+    size_t fileSize = 0;
+    if (!fread(&fileSize, sizeof(size_t), 1, pFile.get()))
         return PackerResult::ReadFailed;
 
     PackerElement tempElement;
-    for (size_t i = 0; i < mFileSize; ++i)
+    for (size_t i = 0; i < fileSize; ++i)
     {
-        if (!fread(reinterpret_cast<void*>(&tempElement.mHash), sizeof(uint32), 4, pFile.get()))
+        if (!fread(reinterpret_cast<void*>(&tempElement.mFilePos), sizeof(size_t), 1, pFile.get()))
             return PackerResult::ReadFailed;
 
-        if (!fread(reinterpret_cast<void*>(&tempElement.mFilePos), sizeof(size_t), 1, pFile.get()))
+        if (!fread(reinterpret_cast<void*>(&tempElement.mHash), sizeof(uint32), 4, pFile.get()))
             return PackerResult::ReadFailed;
 
         if (!fread(reinterpret_cast<void*>(&tempElement.mFileSize), sizeof(size_t), 1, pFile.get()))

@@ -28,7 +28,7 @@ public:
 private:
     uint32 mFileVersion;
     std::string mFilePath;
-    FileListType mFileList;
+    VFSFileListType mFileList;
 };
 
 } // namespace Common
