@@ -39,3 +39,6 @@
 *.sdf
 *.suo
 *.vcxproj.user
+
+# script outputs
+Scripts/cppcheck_result.txt
