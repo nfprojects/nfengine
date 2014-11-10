@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_51edccc2",
+        "filename": "nfEngine/nfCore/Camera.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2014-11-10T14:31:36Z",
+      "side": 1,
+      "message": "Definition",
+      "revId": "02615da21e267a019624da779b0a4db5b8eca3b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_91ce4459",
+        "filename": "nfEngine/nfCore/Camera.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2014-11-10T14:31:36Z",
+      "side": 1,
+      "message": "hpp",
+      "revId": "02615da21e267a019624da779b0a4db5b8eca3b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_b1d1c0fd",
+        "filename": "nfEngine/nfCore/Camera.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2014-11-10T14:31:36Z",
+      "side": 1,
+      "message": "Declarations",
+      "revId": "02615da21e267a019624da779b0a4db5b8eca3b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_b1f8a07d",
+        "filename": "nfEngine/nfCore/Globals.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2014-11-10T14:31:36Z",
+      "side": 1,
+      "message": "Globals.hpp",
+      "revId": "02615da21e267a019624da779b0a4db5b8eca3b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_f1f21899",
+        "filename": "nfEngine/nfCore/Material.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2014-11-10T14:31:36Z",
+      "side": 1,
+      "message": "definition",
+      "revId": "02615da21e267a019624da779b0a4db5b8eca3b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_d1ef1caf",
+        "filename": "nfEngine/nfCore/Material.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2014-11-10T14:31:36Z",
+      "side": 1,
+      "message": "declaration",
+      "revId": "02615da21e267a019624da779b0a4db5b8eca3b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_5112ecb1",
+        "filename": "nfEngine/nfCore/RenderCommand.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2014-11-10T14:31:36Z",
+      "side": 1,
+      "message": "hpp",
+      "revId": "02615da21e267a019624da779b0a4db5b8eca3b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
