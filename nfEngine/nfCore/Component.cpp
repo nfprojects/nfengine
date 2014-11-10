@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Component.cpp
-    \brief  Component's base definition.
-*/
+ * @file   Component.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Component's base definition.
+ */
 
 #include "stdafx.hpp"
 #include "Component.hpp"

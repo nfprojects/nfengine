@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   PhysicsWorld.cpp
-    \brief  Definitions of physics manager.
-*/
+ * @file   PhysicsWorld.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Definitions of physics manager.
+ */
 
 #include "stdafx.hpp"
 #include "Globals.hpp"

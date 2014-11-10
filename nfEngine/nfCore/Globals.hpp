@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Core.hpp
-    \brief  All engine's global variables declarations.
-*/
+ * @file   Core.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  All engine's global variables declarations.
+ */
 
 #pragma once
 
@@ -12,10 +11,10 @@
 
 namespace NFE {
 
-/*
-    Resources paths, relative to executable.
-    Temporary - This must be changed!!!
-*/
+/**
+ *  Resources paths, relative to executable.
+ *  Temporary - This must be changed!!!
+ */
 extern const std::string g_DataPath;
 extern const std::string g_ShadersPath;
 

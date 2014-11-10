@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   RenderCommand.cpp
-    \brief  Definitions of RenderCommand class.
-*/
+ * @file   RenderCommand.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Definitions of RenderCommand class.
+ */
 
 #include "stdafx.hpp"
 #include "RenderCommand.hpp"

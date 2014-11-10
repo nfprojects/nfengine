@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Performance.cpp
-    \brief  Performance utilities definitions.
-*/
+ * @file   Performance.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Performance utilities definitions.
+ */
 
 #include "stdafx.hpp"
 #include "Performance.hpp"

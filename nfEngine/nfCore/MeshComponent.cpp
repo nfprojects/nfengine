@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   MeshComponent.cpp
-    \brief  Definition of mesh component class.
-*/
+ * @file   MeshComponent.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Definition of mesh component class.
+ */
 
 #include "stdafx.hpp"
 #include "Globals.hpp"

@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   RenderCommand.cpp
-    \brief  Declarations of RenderCommand class.
-*/
+ * @file   RenderCommand.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Declarations of RenderCommand class.
+ */
 
 #pragma once
 

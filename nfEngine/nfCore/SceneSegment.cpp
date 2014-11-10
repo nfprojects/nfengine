@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   SceneSegment.cpp
-    \brief  Scene segment definition.
-*/
+ * @file   SceneSegment.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Scene segment definition.
+ */
 
 #include "stdafx.hpp"
 #include "SceneSegment.hpp"

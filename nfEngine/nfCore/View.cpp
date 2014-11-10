@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   View.cpp
-    \brief  Definitions of View class.
-*/
+ * @file   View.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Definitions of View class.
+ */
 
 #include "stdafx.hpp"
 #include "View.hpp"

@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Camera.cpp
-    \brief  Camera component declaration.
-*/
+ * @file   Camera.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Camera component declaration.
+ */
 
 #include "stdafx.hpp"
 #include "Camera.hpp"

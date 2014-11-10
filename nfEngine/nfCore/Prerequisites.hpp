@@ -1,10 +1,9 @@
 /**
-    NFEngine project
-
-    \file   Prerequisites.h
-    \brief  This file contains predeclarations of all needed clases.
-            Including this file only instead of whole header can decrease compilation time.
-*/
+ * @file   Prerequisites.h
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  This file contains predeclarations of all needed clases.
+ *         Including this file only instead of whole header can decrease compilation time.
+ */
 
 #pragma once
 

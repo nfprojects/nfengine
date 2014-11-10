@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Resource.hpp
-    \brief  Resource base class declarations.
-*/
+ * @file   Resource.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Resource base class declarations.
+ */
 
 #pragma once
 

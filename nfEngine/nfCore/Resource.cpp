@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Resource.cpp
-    \brief  Resource base class definition.
-*/
+ * @file   Resource.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Resource base class definition.
+ */
 
 #include "stdafx.hpp"
 #include "Globals.hpp"

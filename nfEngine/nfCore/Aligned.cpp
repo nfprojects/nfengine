@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Aligned.cpp
-    \brief  Definition of memory aligning class.
-*/
+ * @file   Aligned.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Definition of memory aligning class.
+ */
 
 #include "stdafx.hpp"
 #include "Aligned.hpp"

@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   BVH.hpp
-    \brief  Bounding Volume Hierarchy definitions.
-*/
+ * @file   BVH.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Bounding Volume Hierarchy definitions.
+ */
 
 #pragma once
 

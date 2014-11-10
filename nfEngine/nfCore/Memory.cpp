@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Memory.cpp
-    \brief  Memory utilities definitions
-*/
+ * @file   Memory.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Memory utilities definitions
+ */
 
 #include "stdafx.hpp"
 #include "Memory.hpp"

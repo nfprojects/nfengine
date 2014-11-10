@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Component.hpp
-    \brief  Component's base class declarations.
-*/
+ * @file   Component.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Component's base class declarations.
+ */
 
 #pragma once
 #include "Core.hpp"

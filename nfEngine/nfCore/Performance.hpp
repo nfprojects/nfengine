@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Performance.hpp
-    \brief  Performance utilities declarations.
-*/
+ * @file   Performance.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Performance utilities declarations.
+ */
 
 #pragma once
 

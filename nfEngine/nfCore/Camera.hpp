@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Camera.cpp
-    \brief  Camera component definitions.
-*/
+ * @file   Camera.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Camera component definitions.
+ */
 
 #pragma once
 

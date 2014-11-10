@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Texture.cpp
-    \brief  Texture resource definition.
-*/
+ * @file   Texture.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Texture resource definition.
+ */
 
 #include "stdafx.hpp"
 #include "Globals.hpp"

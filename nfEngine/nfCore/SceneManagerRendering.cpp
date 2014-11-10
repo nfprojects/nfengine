@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   SceneManagerRendering.cpp
-    \brief  Definitions of Scene class methods connected only with rendering.
-*/
+ * @file   SceneManagerRendering.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Definitions of Scene class methods connected only with rendering.
+ */
 
 #include "stdafx.hpp"
 #include "Globals.hpp"

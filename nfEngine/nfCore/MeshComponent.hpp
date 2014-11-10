@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   MeshComponent.hpp
-    \brief  Declarations of mesh component class.
-*/
+ * @file   MeshComponent.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Declarations of mesh component class.
+ */
 
 #pragma once
 #include "Core.hpp"

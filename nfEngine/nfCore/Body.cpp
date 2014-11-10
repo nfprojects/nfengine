@@ -1,8 +1,7 @@
 /**
-    NFEngine project
-
-    \file   Body.cpp
-    \brief  Body component definition.
+ * @file   Body.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Body component definition.
 */
 
 #include "stdafx.hpp"
