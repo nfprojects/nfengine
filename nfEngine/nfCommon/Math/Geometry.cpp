@@ -4,7 +4,7 @@
     \file   Geometry.cpp
 */
 
-#include "stdafx.hpp"
+#include "../stdafx.hpp"
 #include "Math.hpp"
 #include <smmintrin.h>
 

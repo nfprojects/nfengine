@@ -5,7 +5,7 @@
     \brief  Pseudorandom number generator definitions.
 */
 
-#include "stdafx.hpp"
+#include "../stdafx.hpp"
 #include "Math.hpp"
 #include "Random.hpp"
 
