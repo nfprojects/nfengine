@@ -1,5 +1,6 @@
 /**
  * @file  ThreadPool.cpp
+ * @author Witek902 (witek902@gmail.com)
  * @brief Thread pool classes declarations.
  */
 

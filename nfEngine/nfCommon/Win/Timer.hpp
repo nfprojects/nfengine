@@ -1,6 +1,7 @@
 /**
- *  @file   Win/Timer.hpp
- *  @brief  High resolution timer class declaration for Windows system
+ * @file   Win/Timer.hpp
+ * @author LKostyra (costyrra.xl@gmail.com)
+ * @brief  High resolution timer class declaration for Windows system
  */
 
 #pragma once

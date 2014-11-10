@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Math.hpp
-    \brief  Basic math classes and functions declarations.
-*/
+ * @file   Math.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Basic math classes and functions declarations.
+ */
 
 #pragma once
 

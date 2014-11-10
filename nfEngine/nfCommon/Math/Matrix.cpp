@@ -1,8 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Matrix.cpp
-*/
+ * @file   Matrix.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Matrix function definitions.
+ */
 
 #include "stdafx.hpp"
 #include "Math.hpp"

@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Buffer.cpp
-    \brief  Buffer class definition.
-*/
+ * @file   Buffer.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Buffer class definition.
+ */
 
 #include "stdafx.hpp"
 #include "Buffer.hpp"

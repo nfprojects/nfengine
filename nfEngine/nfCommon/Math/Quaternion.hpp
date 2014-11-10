@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Quaternion.h
-    \brief  Quaternion class declarations.
-*/
+ * @file   Quaternion.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Quaternion class declarations.
+ */
 
 #pragma once
 

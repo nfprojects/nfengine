@@ -1,3 +1,9 @@
+/**
+ * @file   OutputStream.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Definition of OutputStream class for writing files, buffers, etc.
+ */
+
 #include "stdafx.hpp"
 #include "OutputStream.hpp"
 

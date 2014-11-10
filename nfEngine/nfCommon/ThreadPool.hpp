@@ -1,6 +1,7 @@
 /**
- * @file  ThreadPool.h
- * @brief Thread pool classes declarations.
+ * @file   ThreadPool.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Thread pool classes declarations.
  */
 
 #pragma once

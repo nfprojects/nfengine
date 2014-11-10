@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Matrix.h
-    \brief  Matrix class declaration.
-*/
+ * @file   Matrix.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Matrix class declaration.
+ */
 
 #pragma once
 

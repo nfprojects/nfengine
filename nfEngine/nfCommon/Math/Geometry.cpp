@@ -1,8 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Geometry.cpp
-*/
+ * @file   Geometry.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Geometry function definitions.
+ */
 
 #include "stdafx.hpp"
 #include "Math.hpp"

@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Image.hpp
-    \brief  Image class declaration.
-*/
+ * @file   Image.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Image class declaration.
+ */
 
 #pragma once
 

@@ -1,8 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Quaternion.cpp
-*/
+ * @file   Quaternion.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Quaternion function definitions.
+ */
 
 #include "stdafx.hpp"
 #include "Math.hpp"

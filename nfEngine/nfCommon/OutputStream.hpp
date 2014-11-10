@@ -1,3 +1,9 @@
+/**
+ * @file   OutputStream.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Declaration of OutputStream class for writing files, buffers, etc.
+ */
+
 #pragma once
 #include "nfCommon.hpp"
 

@@ -1,6 +1,7 @@
 /**
- *  @file   Win/Timer.cpp
- *  @brief  High resolution timer class definition for Windows system
+ * @file   Win/Timer.cpp
+ * @author LKostyra (costyrra.xl@gmail.com)
+ * @brief  High resolution timer class definition for Windows system
  */
 
 #include "../stdafx.hpp"

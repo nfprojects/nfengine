@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   stdafx.hpp
-    \brief  Precompiled header.
-*/
+ * @file   stdafx.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Precompiled header.
+ */
 
 #pragma once
 

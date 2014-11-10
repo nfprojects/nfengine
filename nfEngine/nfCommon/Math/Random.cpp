@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Random.cpp
-    \brief  Pseudorandom number generator definitions.
-*/
+ * @file   Random.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Pseudorandom number generator definitions.
+ */
 
 #include "stdafx.hpp"
 #include "Math.hpp"
