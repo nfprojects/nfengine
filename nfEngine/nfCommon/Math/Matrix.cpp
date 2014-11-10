@@ -4,7 +4,7 @@
  * @brief  Matrix function definitions.
  */
 
-#include "stdafx.hpp"
+#include "../stdafx.hpp"
 #include "Math.hpp"
 
 namespace NFE {
