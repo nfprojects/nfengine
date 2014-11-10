@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_b1db80ec",
+        "filename": "nfEngine/nfCore/Camera.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-11-10T15:16:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_51edccc2",
+      "revId": "02615da21e267a019624da779b0a4db5b8eca3b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_91ce4459",
         "filename": "nfEngine/nfCore/Camera.hpp",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2014-11-10T14:31:36Z",
       "side": 1,
       "message": "hpp",
+      "revId": "02615da21e267a019624da779b0a4db5b8eca3b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_91d804f1",
+        "filename": "nfEngine/nfCore/Camera.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-11-10T15:16:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_91ce4459",
       "revId": "02615da21e267a019624da779b0a4db5b8eca3b4",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_f1e5f8a8",
+        "filename": "nfEngine/nfCore/Camera.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-11-10T15:16:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_b1d1c0fd",
+      "revId": "02615da21e267a019624da779b0a4db5b8eca3b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_b1f8a07d",
         "filename": "nfEngine/nfCore/Globals.hpp",
         "patchSetId": 1
@@ -64,6 +118,24 @@
       "writtenOn": "2014-11-10T14:31:36Z",
       "side": 1,
       "message": "Globals.hpp",
+      "revId": "02615da21e267a019624da779b0a4db5b8eca3b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_11f4f459",
+        "filename": "nfEngine/nfCore/Globals.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-11-10T15:16:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_b1f8a07d",
       "revId": "02615da21e267a019624da779b0a4db5b8eca3b4",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_71e9e87f",
+        "filename": "nfEngine/nfCore/Material.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-11-10T15:16:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_f1f21899",
+      "revId": "02615da21e267a019624da779b0a4db5b8eca3b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_d1ef1caf",
         "filename": "nfEngine/nfCore/Material.hpp",
         "patchSetId": 1
@@ -104,6 +194,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_51ee6c89",
+        "filename": "nfEngine/nfCore/Material.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-11-10T15:16:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_d1ef1caf",
+      "revId": "02615da21e267a019624da779b0a4db5b8eca3b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_5112ecb1",
         "filename": "nfEngine/nfCore/RenderCommand.hpp",
         "patchSetId": 1
@@ -115,6 +223,24 @@
       "writtenOn": "2014-11-10T14:31:36Z",
       "side": 1,
       "message": "hpp",
+      "revId": "02615da21e267a019624da779b0a4db5b8eca3b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_b102603c",
+        "filename": "nfEngine/nfCore/RenderCommand.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-11-10T15:16:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_5112ecb1",
       "revId": "02615da21e267a019624da779b0a4db5b8eca3b4",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
