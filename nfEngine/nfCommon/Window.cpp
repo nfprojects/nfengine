@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Window.cpp
-    \brief  Window class definition.
-*/
+ * @file   Window.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Window class definition.
+ */
 
 #include "stdafx.hpp"
 #include "Window.hpp"

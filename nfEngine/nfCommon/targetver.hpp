@@ -1,3 +1,9 @@
+/**
+ * @file   targetver.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Header with highest available Windows platform definition
+ */
+
 #pragma once
 
 // Including SDKDDKVer.h defines the highest available Windows platform.

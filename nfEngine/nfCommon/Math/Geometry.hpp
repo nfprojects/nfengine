@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Geometry.h
-    \brief  Geometry objects declarations.
-*/
+ * @file   Geometry.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Geometry objects declarations.
+ */
 
 #pragma once
 

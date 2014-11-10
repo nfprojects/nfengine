@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Main.cpp
-    \brief  Entry point of DLL
-*/
+ * @file   Main.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Entry point of DLL
+ */
 
 #include "stdafx.hpp"
 

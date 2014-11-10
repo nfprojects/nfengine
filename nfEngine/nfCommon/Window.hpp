@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Window.hpp
-    \brief  Window class declaration.
-*/
+ * @file   Window.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Window class declaration.
+ */
 
 #pragma once
 #include "nfCommon.hpp"

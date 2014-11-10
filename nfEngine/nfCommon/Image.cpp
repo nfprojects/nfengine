@@ -1,3 +1,9 @@
+/**
+ * @file   Image.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Image function definitions.
+ */
+
 #include "stdafx.hpp"
 #include "Image.hpp"
 #include "Math/Math.hpp"

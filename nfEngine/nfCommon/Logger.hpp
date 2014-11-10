@@ -1,8 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Logger.hpp
-*/
+ * @file   Logger.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Declaration of Logger class
+ */
 
 #pragma once
 

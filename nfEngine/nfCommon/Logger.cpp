@@ -1,3 +1,9 @@
+/**
+ * @file   Logger.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Definition of Logger class
+ */
+
 #include "stdafx.hpp"
 #include "Logger.hpp"
 

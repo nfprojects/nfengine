@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   nfCommon.h
-    \brief  Base header for nfCommon project.
-*/
+ * @file   nfCommon.h
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Base header for nfCommon project.
+ */
 
 #pragma once
 

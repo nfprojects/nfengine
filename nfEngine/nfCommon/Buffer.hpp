@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Buffer.hpp
-    \brief  Buffer class declaration.
-*/
+ * @file   Buffer.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Buffer class declaration.
+ */
 
 #pragma once
 #include "nfCommon.hpp"

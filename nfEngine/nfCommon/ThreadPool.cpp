@@ -1,6 +1,7 @@
 /**
- * @file  ThreadPool.cpp
- * @brief Thread pool classes declarations.
+ * @file   ThreadPool.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Thread pool classes declarations.
  */
 
 #include "stdafx.hpp"

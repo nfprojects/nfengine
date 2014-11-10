@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Random.h
-    \brief  Pseudorandom number generator declaration.
-*/
+ * @file   Random.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Pseudorandom number generator declaration.
+ */
 
 #pragma once
 

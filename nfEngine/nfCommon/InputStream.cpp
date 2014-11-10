@@ -1,3 +1,9 @@
+/**
+ * @file   InputStream.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Definition of InputStream class for reading files, buffers, etc.
+ */
+
 #include "stdafx.hpp"
 #include "InputStream.hpp"
 

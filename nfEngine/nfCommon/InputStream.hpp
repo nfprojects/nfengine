@@ -1,8 +1,8 @@
 /**
-    NFEngine project
-
-    \file   InputStream.hpp
-*/
+ * @file   InputStream.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Declaration of InputStream class for reading files, buffers, etc.
+ */
 
 #pragma once
 #include "nfCommon.hpp"

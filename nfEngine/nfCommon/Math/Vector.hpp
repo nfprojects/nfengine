@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Vector.h
-    \brief  Vector class declaration and definitions of inline functions.
-*/
+ * @file   Vector.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Vector class declaration and definitions of inline functions.
+ */
 
 #pragma once
 
