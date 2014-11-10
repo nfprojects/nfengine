@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   BVH.cpp
-    \brief  Bounding Volume Hierarchy declaration.
-*/
+ * @file   BVH.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Bounding Volume Hierarchy declaration.
+ */
 
 #include "stdafx.hpp"
 #include "BVH.hpp"

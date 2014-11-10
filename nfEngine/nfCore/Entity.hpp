@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Entity.hpp
-    \brief  Scene entity declarations.
-*/
+ * @file   Entity.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Scene entity declarations.
+ */
 
 #pragma once
 

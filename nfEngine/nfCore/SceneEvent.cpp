@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   SceneEvent.cpp
-    \brief  Definitions of scene events system.
-*/
+ * @file   SceneEvent.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Definitions of scene events system.
+ */
 
 #include "stdafx.hpp"
 #include "SceneEvent.hpp"

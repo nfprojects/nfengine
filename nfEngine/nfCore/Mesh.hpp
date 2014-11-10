@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Mesh.hpp
-    \brief  Mesh resource declarations.
-*/
+ * @file   Mesh.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Mesh resource declarations.
+ */
 
 #pragma once
 

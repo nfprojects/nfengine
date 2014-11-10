@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Texture.hpp
-    \brief  Texture resource declaration.
-*/
+ * @file   Texture.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Texture resource declaration.
+ */
 
 #pragma once
 

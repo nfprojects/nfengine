@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Globals.cpp
-    \brief  All engine's global variables definitions.
-*/
+ * @file   Globals.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  All engine's global variables definitions.
+ */
 
 #include "stdafx.hpp"
 #include "Globals.hpp"

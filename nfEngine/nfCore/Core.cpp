@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Core.cpp
-    \brief  DLL entry point.
-*/
+ * @file   Core.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  DLL entry point.
+ */
 
 #include "stdafx.hpp"
 #include "Core.hpp"

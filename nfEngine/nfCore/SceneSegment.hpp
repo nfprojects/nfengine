@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   SceneSegment.hpp
-    \brief  Scene segment declaration.
-*/
+ * @file   SceneSegment.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Scene segment declaration.
+ */
 
 #pragma once
 #include "Core.hpp"

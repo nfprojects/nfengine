@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Body.hpp
-    \brief  Body component declaration.
-*/
+ * @file   Body.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Body component declaration.
+ */
 
 #pragma once
 

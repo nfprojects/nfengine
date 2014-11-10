@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   CollisionShape.cpp
-    \brief  Collision shape resource definition.
-*/
+ * @file   CollisionShape.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Collision shape resource definition.
+ */
 
 #include "stdafx.hpp"
 #include "CollisionShape.hpp"

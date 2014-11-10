@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   SoundSample.cpp
-    \brief  Sound sample resource definition.
-*/
+ * @file   SoundSample.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Sound sample resource definition.
+ */
 
 #include "stdafx.hpp"
 #include "SoundSample.hpp"

@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Entity.cpp
-    \brief  Scene entity definition.
-*/
+ * @file   Entity.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Scene entity definition.
+ */
 
 #include "stdafx.hpp"
 #include "Entity.hpp"

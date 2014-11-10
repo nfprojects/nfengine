@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Material.cpp
-    \brief  Material resource declaration.
-*/
+ * @file   Material.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Material resource definitions.
+ */
 
 #include "stdafx.hpp"
 #include "Material.hpp"

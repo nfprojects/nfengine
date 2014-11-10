@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Material.hpp
-    \brief  Material resource definition.
-*/
+ * @file   Material.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Material resource declaration.
+ */
 
 #pragma once
 

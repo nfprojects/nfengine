@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Light.cpp
-    \brief  Definition of light component class.
-*/
+ * @file   Light.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Definition of light component class.
+ */
 
 #include "stdafx.hpp"
 #include "Globals.hpp"

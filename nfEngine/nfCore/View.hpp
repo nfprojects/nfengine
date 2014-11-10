@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   View.hpp
-    \brief  Declarations of View class.
-*/
+ * @file   View.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Declarations of View class.
+ */
 
 #pragma once
 

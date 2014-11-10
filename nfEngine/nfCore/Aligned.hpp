@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Aligned.hpp
-    \brief  Declarations of memory aligning utilities.
-*/
+ * @file   Aligned.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Declarations of memory aligning utilities.
+ */
 
 #pragma once
 

@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   ResourcesManager.cpp
-    \brief  Resource manager definition.
-*/
+ * @file   ResourcesManager.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Resource manager definition.
+ */
 
 #include "stdafx.hpp"
 #include "ResourcesManager.hpp"

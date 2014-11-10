@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   ResourcesManager.hpp
-    \brief  Resource manager declarations.
-*/
+ * @file   ResourcesManager.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Resource manager declarations.
+ */
 
 #pragma once
 

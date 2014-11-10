@@ -1,10 +1,9 @@
 /**
-    NFEngine project
-
-    \file   Renderer.hpp
-    \brief  This header contains definitions of abstract classes used to interact with
-            a generic renderer unit.
-*/
+ * @file   Renderer.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  This header contains definitions of abstract classes used to interact with
+ *         a generic renderer unit.
+ */
 
 #pragma once
 

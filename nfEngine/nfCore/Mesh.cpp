@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Mesh.cpp
-    \brief  Mesh resource definition.
-*/
+ * @file   Mesh.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Mesh resource definition.
+ */
 
 #include "stdafx.hpp"
 #include "Globals.hpp"

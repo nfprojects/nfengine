@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   SceneEvent.hpp
-    \brief  Declarations of scene events system.
-*/
+ * @file   SceneEvent.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Declarations of scene events system.
+ */
 
 #pragma once
 

@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Light.hpp
-    \brief  Declarations of light component class.
-*/
+ * @file   Light.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Declarations of light component class.
+ */
 
 #pragma once
 

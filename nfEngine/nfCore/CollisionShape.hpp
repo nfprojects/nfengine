@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   CollisionShape.hpp
-    \brief  Collision shape resource declarations.
-*/
+ * @file   CollisionShape.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Collision shape resource declarations.
+ */
 
 #pragma once
 

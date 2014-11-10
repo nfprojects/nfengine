@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   SoundSample.hpp
-    \brief  Sound sample resource declarations.
-*/
+ * @file   SoundSample.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Sound sample resource declarations.
+ */
 
 #pragma once
 #include "Core.hpp"

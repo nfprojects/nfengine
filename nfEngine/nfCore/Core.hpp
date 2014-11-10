@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Core.hpp
-    \brief  Basic types declarations. This file will be included by most of the engine's headers.
-*/
+ * @file   Core.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Basic types declarations. This file will be included by most of the engine's headers.
+ */
 
 #pragma once
 

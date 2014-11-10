@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   SceneManager.hpp
-    \brief  Declaration of Scene class.
-*/
+ * @file   SceneManager.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Declaration of Scene class.
+ */
 
 #pragma once
 

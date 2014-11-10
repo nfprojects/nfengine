@@ -191,6 +191,8 @@
     <ClInclude Include="Texture.hpp">
       <Filter>Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Globals.hpp" />
+    <ClInclude Include="Globals.hpp">
+      <Filter>Base</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

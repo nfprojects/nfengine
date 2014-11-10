@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   PhysicsWorld.hpp
-    \brief  Declarations of physics manager.
-*/
+ * @file   PhysicsWorld.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Declarations of physics manager.
+ */
 
 #pragma once
 

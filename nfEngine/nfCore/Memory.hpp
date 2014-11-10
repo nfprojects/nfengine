@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Memory.hpp
-    \brief  Memory utilities declarations.
-*/
+ * @file   Memory.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Memory utilities declarations.
+ */
 
 #pragma once
 

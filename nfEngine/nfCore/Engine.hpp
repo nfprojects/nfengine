@@ -1,9 +1,8 @@
 /**
-    NFEngine project
-
-    \file   Engine.hpp
-    \brief  Basic engine's API declarations.
-*/
+ * @file   Engine.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Basic engine's API declarations.
+ */
 
 #pragma once
 
