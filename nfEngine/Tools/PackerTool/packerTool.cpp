@@ -7,7 +7,8 @@
 
 int main() try
 {
-    std::cout << "PackerTool\nCreated by LKostyra, 2013-2014.\nFor additional information type \"help\" command.\n\n";
+    std::cout <<
+              "PackerTool\nCreated by LKostyra, 2013-2014.\nFor additional information type \"help\" command.\n\n";
 
     std::unique_ptr<packerToolUI> p_UI(new packerToolUI());
 

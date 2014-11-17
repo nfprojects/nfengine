@@ -16,7 +16,7 @@ namespace Scene {
 #define ENTITY_FLAG_MOVED (1 << 1)
 
 // TODO: move to nfCommon, rename to Matrix3x3
-NFE_ALIGNED_CLASS(XOrientation)
+NFE_ALIGNED_CLASS(class XOrientation)
 {
 public:
     Math::Vector x, y, z;
@@ -136,7 +136,7 @@ public:
 
     /**
      * Get global position and orientation as 4x4 matrix.
-     */  
+     */
     Math::Matrix GetMatrix() const;
 
     /**
@@ -207,7 +207,7 @@ public:
     void SetVelocity(const Math::Vector& newVelocity);
 
     /**
-     * Change angular velocity (in radians per second). 
+     * Change angular velocity (in radians per second).
      */
     void SetAngularVelocity(const Math::Vector& newAngularVelocity);
 

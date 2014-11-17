@@ -29,7 +29,7 @@ struct CORE_API MaterialLayer
     Math::Float4 diffuseColor;
     Math::Float4 specularColor; // x - factor, w - power
     Math::Float4 emissionColor;
-    
+
     /*
     TODO:
         - emission texture

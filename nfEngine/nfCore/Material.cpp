@@ -85,7 +85,7 @@ bool Material::OnLoad()
     std::string path = g_DataPath + "Materials/" + mName + ".json";
 
     // TODO: support for file in memory
-    FILE * pFile = fopen(path.c_str(), "r");
+    FILE* pFile = fopen(path.c_str(), "r");
     if (pFile == NULL)
     {
         LOG_ERROR("Failed to open file: %s", path);

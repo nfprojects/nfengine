@@ -31,7 +31,7 @@ struct CompareEntityName
     }
 };
 
-NFE_ALIGNED_CLASS(CORE_API EnviromentDesc)
+NFE_ALIGNED_CLASS(class CORE_API EnviromentDesc)
 {
 public:
     Math::Vector ambientLight;
@@ -47,7 +47,7 @@ public:
 /**
  * Scene manager.
  */
-NFE_ALIGNED_CLASS(CORE_API SceneManager)
+NFE_ALIGNED_CLASS(class CORE_API SceneManager)
 {
     friend class Entity;
     friend class BodyComponent;

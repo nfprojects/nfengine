@@ -18,7 +18,7 @@ namespace Util {
 #define ACCESS_READWRITE (ACCESS_READ|ACCESS_WRITE)
 
 /**
- * Check memory block access privileges. This function is mainly used to verify pointers 
+ * Check memory block access privileges. This function is mainly used to verify pointers
  *        passed as input parameters to engine API to avoid access violations (segmentation faults).
  * @param ptr Pointer to the beginning of a block
  * @param size Block size

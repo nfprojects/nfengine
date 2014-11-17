@@ -8,72 +8,73 @@
 #pragma once
 
 namespace NFE {
-namespace Common {
-class Window;
-class ThreadPool;
-enum class ImageFormat;
-class Image;
-class InputStream;
-class OutputStream;
-} // namespace Common
 
-namespace Util {
-class BVH;
-class FrameStats;
-class Aligned;
-} // namespace Util
+    namespace Common {
+        class Window;
+        class ThreadPool;
+        enum class ImageFormat;
+        class Image;
+        class InputStream;
+        class OutputStream;
+    } // namespace Common
 
-namespace Resource {
-class ResManager;
-class ResourceBase;
-class Material;
-class Mesh;
-class Texture;
-class CollisionShape;
-class SoundSample;
-} // namespace Resource
+    namespace Util {
+        class BVH;
+        class FrameStats;
+        class Aligned;
+    } // namespace Util
 
-namespace Scene {
-class Entity;
-class Component;
-class MeshComponent;
-class BodyComponent;
-class LightComponent;
-class Camera;
+    namespace Resource {
+        class ResManager;
+        class ResourceBase;
+        class Material;
+        class Mesh;
+        class Texture;
+        class CollisionShape;
+        class SoundSample;
+    } // namespace Resource
 
-class SceneManager;
-class PhysicsWorld;
-class Segment;
-struct SegmentLink;
+    namespace Scene {
+        class Entity;
+        class Component;
+        class MeshComponent;
+        class BodyComponent;
+        class LightComponent;
+        class Camera;
 
-struct MeshComponentDesc;
-struct LightDesc;
-struct CameraDesc;
-struct BodyComponentDesc;
+        class SceneManager;
+        class PhysicsWorld;
+        class Segment;
+        struct SegmentLink;
 
-enum class ComponentMsg;
-enum class ComponentType;
-} // namespace Scene
+        struct MeshComponentDesc;
+        struct LightDesc;
+        struct CameraDesc;
+        struct BodyComponentDesc;
 
-namespace Render {
-class IRenderer;
-class IDebugRenderer;
-class IGBufferRenderer;
-class IGuiRenderer;
-class ILightsRenderer;
-class IShadowRenderer;
-class IPostProcessRenderer;
-class IRenderContext;
-class IRendererBuffer;
-class IRendererTexture;
-class IRenderTarget;
-class IShadowMap;
+        enum class ComponentMsg;
+        enum class ComponentType;
+    } // namespace Scene
+
+    namespace Render {
+        class IRenderer;
+        class IDebugRenderer;
+        class IGBufferRenderer;
+        class IGuiRenderer;
+        class ILightsRenderer;
+        class IShadowRenderer;
+        class IPostProcessRenderer;
+        class IRenderContext;
+        class IRendererBuffer;
+        class IRendererTexture;
+        class IRenderTarget;
+        class IShadowMap;
 #define NFE_CONTEXT_ARG IRenderContext *pContext
 
 /// Structures passed to renderer modules
-struct RendererMaterial;
-struct CameraRenderDesc;
-class View;
-} // namespace Render
+        struct RendererMaterial;
+        struct CameraRenderDesc;
+        class View;
+    } // namespace Render
 
 } // namespace NFE

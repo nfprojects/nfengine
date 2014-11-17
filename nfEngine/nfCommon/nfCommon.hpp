@@ -9,14 +9,14 @@
 
 // disable some Visual Studio specific warnings
 #ifdef _MSC_VER
-    // "class 'type' needs to have dll-interface to be used by clients of class 'type2'"
-    #pragma warning(disable: 4251)
+// "class 'type' needs to have dll-interface to be used by clients of class 'type2'"
+#pragma warning(disable: 4251)
 
-    // "conditional expression is constant"
-    #pragma warning(disable: 4127)
+// "conditional expression is constant"
+#pragma warning(disable: 4127)
 
-    // "interaction between '_setjmp' and C++ object destruction is non - portable"
-    #pragma warning(disable: 4611)
+// "interaction between '_setjmp' and C++ object destruction is non - portable"
+#pragma warning(disable: 4611)
 #endif
 
 #include <string>

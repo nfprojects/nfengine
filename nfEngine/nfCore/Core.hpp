@@ -28,7 +28,7 @@ namespace NFE {
 #endif
 
 
-#define NFE_ALIGNED_CLASS(c) __declspec(align(16)) class c : public Util::Aligned
+#define NFE_ALIGNED_CLASS(c) __declspec(align(16)) c : public Util::Aligned
 #define NFE_ALIGN(size) __declspec(align(size))
 
 // define basic data types

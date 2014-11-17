@@ -8,7 +8,7 @@
 #include "Console.hpp"
 
 namespace {
-    const std::string coloringEnding = "\033[0m";
+const std::string coloringEnding = "\033[0m";
 } // namespace
 
 namespace NFE {

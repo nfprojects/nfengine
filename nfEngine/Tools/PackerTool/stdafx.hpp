@@ -1,11 +1,11 @@
 #pragma once
 
 #ifdef WIN32
-    #ifndef NOMINMAX
-        #define NOMINMAX
-    #endif
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
 
-    #include <Windows.h>
+#include <Windows.h>
 #endif
 
 //STL global definitions

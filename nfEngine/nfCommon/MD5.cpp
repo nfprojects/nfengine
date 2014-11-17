@@ -210,7 +210,7 @@ std::ostream& operator<<(std::ostream& os, const MD5Hash& hash)
     os.setf(std::ios_base::hex, std::ios_base::basefield);
     os << std::setfill('0');
     os << std::setw(8) << dispHash.h[0] << std::setw(8) << dispHash.h[1] << std::setw(8)
-                       << dispHash.h[2] << std::setw(8) << dispHash.h[3];
+       << dispHash.h[2] << std::setw(8) << dispHash.h[3];
     os.unsetf(std::ios_base::hex);
     return os;
 }

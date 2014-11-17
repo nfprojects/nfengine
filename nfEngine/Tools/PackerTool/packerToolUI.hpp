@@ -18,7 +18,8 @@ public:
     void MainLoop();
 
     void AddCommand(const std::string& commandString, const CommandFunc& command);
-    void AddCommand(const std::string& commandString, const CommandFunc& command, const std::string& commandHelpMessage);
+    void AddCommand(const std::string& commandString, const CommandFunc& command,
+                    const std::string& commandHelpMessage);
 
     void AddBeforeLoopCommand(const UIFunc& command);
     void AddAfterLoopCommand(const UIFunc& command);

@@ -187,7 +187,8 @@ TEST_F(PackerComplexTest, ReadSingleFile)
 
     // create buffer and read data
     correctData->Create(correctDataSize);
-    ASSERT_EQ(fread(correctData->GetData(), sizeof(unsigned char), correctDataSize, pFile), correctDataSize);
+    ASSERT_EQ(fread(correctData->GetData(), sizeof(unsigned char), correctDataSize, pFile),
+              correctDataSize);
     fclose(pFile);
 
     // check data size
@@ -252,7 +253,8 @@ TEST_F(PackerComplexTest, ReadMultipleSimplyAddedFiles)
 
         // create buffer and read data
         correctData->Create(correctDataSize);
-        ASSERT_EQ(fread(correctData->GetData(), sizeof(unsigned char), correctDataSize, pFile), correctDataSize);
+        ASSERT_EQ(fread(correctData->GetData(), sizeof(unsigned char), correctDataSize, pFile),
+                  correctDataSize);
         fclose(pFile);
 
         // check data size
