@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_8d87520f",
+        "filename": "Scripts/format.bat",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2014-11-18T13:55:50Z",
+      "side": 1,
+      "message": "Trailing whitespaces",
+      "revId": "4e3f1e41283c308a6573e545347a0ee0c7d0ecca",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
