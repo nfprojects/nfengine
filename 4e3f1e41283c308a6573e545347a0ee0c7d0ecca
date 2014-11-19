@@ -16,6 +16,24 @@
       "revId": "4e3f1e41283c308a6573e545347a0ee0c7d0ecca",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7eb576cc",
+        "filename": "Scripts/format.bat",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-11-19T07:43:37Z",
+      "side": 1,
+      "message": "Needed if you don\u0027t want comments like \"Checking for astyle...DONE\"\n\nThis whitespace makes the message preetier and converts it into \"Checking for astyle... DONE\". Same for lower, except line 26.",
+      "parentUuid": "fafc7978_8d87520f",
+      "revId": "4e3f1e41283c308a6573e545347a0ee0c7d0ecca",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
