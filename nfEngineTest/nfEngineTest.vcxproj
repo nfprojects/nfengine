@@ -172,11 +172,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Editor.hpp" />
+    <ClInclude Include="Scenes.hpp" />
     <ClInclude Include="stdafx.hpp" />
     <ClInclude Include="test.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Editor.cpp" />
+    <ClCompile Include="Scenes.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -7,7 +7,7 @@ using namespace NFE::Math;
 using namespace NFE::Scene;
 using namespace NFE::Resource;
 
-Entity* g_pSelectedEntity = nullptr;
+Entity* gSelectedEntity = nullptr;
 
 // client data passed to AntTweakBar callbacks
 struct EditionType
@@ -26,98 +26,98 @@ struct EditionType
 void TW_CALL Demo_EntitySetCallback(const void* value, void* clientData)
 {
     //myVariable = *(const MyVariableType *)value;
-    if (g_pSelectedEntity == nullptr || value == nullptr)
+    if (gSelectedEntity == nullptr || value == nullptr)
         return;
 
-    Vector pos = g_pSelectedEntity->GetPosition();
-    Vector vel = g_pSelectedEntity->GetVelocity();
-    Vector angVel = g_pSelectedEntity->GetAngularVelocity();
+    Vector pos = gSelectedEntity->GetPosition();
+    Vector vel = gSelectedEntity->GetVelocity();
+    Vector angVel = gSelectedEntity->GetAngularVelocity();
 
     switch ((int)clientData)
     {
         case EditionType::Name:
         {
             const char* str = *(const char**)value;
-            g_pSelectedEntity->SetName(str);
+            gSelectedEntity->SetName(str);
             break;
         }
 
         case EditionType::PosX:
         {
-            Vector pos = g_pSelectedEntity->GetPosition();
+            Vector pos = gSelectedEntity->GetPosition();
             pos[0] = *(const float*)value;
-            g_pSelectedEntity->SetPosition(pos);
+            gSelectedEntity->SetPosition(pos);
             break;
         }
 
         case EditionType::PosY:
         {
-            Vector pos = g_pSelectedEntity->GetPosition();
+            Vector pos = gSelectedEntity->GetPosition();
             pos[1] = *(const float*)value;
-            g_pSelectedEntity->SetPosition(pos);
+            gSelectedEntity->SetPosition(pos);
             break;
         }
 
         case EditionType::PosZ:
         {
-            Vector pos = g_pSelectedEntity->GetPosition();
+            Vector pos = gSelectedEntity->GetPosition();
             pos[2] = *(const float*)value;
-            g_pSelectedEntity->SetPosition(pos);
+            gSelectedEntity->SetPosition(pos);
             break;
         }
 
         case EditionType::Orientation:
         {
-            Matrix matrix = g_pSelectedEntity->GetMatrix();
+            Matrix matrix = gSelectedEntity->GetMatrix();
 
             Quaternion quat = Quaternion((const float*)value);
             Matrix rotMatrix = MatrixFromQuaternion(quat);
             matrix.r[0] = rotMatrix.r[0];
             matrix.r[1] = rotMatrix.r[1];
             matrix.r[2] = rotMatrix.r[2];
-            g_pSelectedEntity->SetMatrix(matrix);
+            gSelectedEntity->SetMatrix(matrix);
             break;
         }
 
         case EditionType::VelocityX:
         {
             vel[0] = *(const float*)value;
-            g_pSelectedEntity->SetVelocity(vel);
+            gSelectedEntity->SetVelocity(vel);
             break;
         }
 
         case EditionType::VelocityY:
         {
             vel[1] = *(const float*)value;
-            g_pSelectedEntity->SetVelocity(vel);
+            gSelectedEntity->SetVelocity(vel);
             break;
         }
 
         case EditionType::VelocityZ:
         {
             vel[2] = *(const float*)value;
-            g_pSelectedEntity->SetVelocity(vel);
+            gSelectedEntity->SetVelocity(vel);
             break;
         }
 
         case EditionType::AngularVelocityX:
         {
             angVel[0] = *(const float*)value;
-            g_pSelectedEntity->SetAngularVelocity(angVel);
+            gSelectedEntity->SetAngularVelocity(angVel);
             break;
         }
 
         case EditionType::AngularVelocityY:
         {
             angVel[1] = *(const float*)value;
-            g_pSelectedEntity->SetAngularVelocity(angVel);
+            gSelectedEntity->SetAngularVelocity(angVel);
             break;
         }
 
         case EditionType::AngularVelocityZ:
         {
             angVel[2] = *(const float*)value;
-            g_pSelectedEntity->SetAngularVelocity(angVel);
+            gSelectedEntity->SetAngularVelocity(angVel);
             break;
         }
     }
@@ -126,24 +126,24 @@ void TW_CALL Demo_EntitySetCallback(const void* value, void* clientData)
 
 void TW_CALL Demo_EntityGetCallback(void* value, void* clientData)
 {
-    if (g_pSelectedEntity == nullptr || value == nullptr)
+    if (gSelectedEntity == nullptr || value == nullptr)
         return;
 
-    Vector pos = g_pSelectedEntity->GetPosition();
-    Vector vel = g_pSelectedEntity->GetVelocity();
-    Vector angVel = g_pSelectedEntity->GetAngularVelocity();
+    Vector pos = gSelectedEntity->GetPosition();
+    Vector vel = gSelectedEntity->GetVelocity();
+    Vector angVel = gSelectedEntity->GetAngularVelocity();
 
     switch ((size_t)clientData)
     {
         case EditionType::Name:
         {
-            TwCopyCDStringToLibrary((char**)value, g_pSelectedEntity->GetName());
+            TwCopyCDStringToLibrary((char**)value, gSelectedEntity->GetName());
             break;
         }
 
         case EditionType::SegmentName:
         {
-            Segment* pSegment = g_pSelectedEntity->GetSceneSegment();
+            Segment* pSegment = gSelectedEntity->GetSceneSegment();
 
             if (pSegment)
                 TwCopyCDStringToLibrary((char**)value, pSegment->GetName());
@@ -173,7 +173,7 @@ void TW_CALL Demo_EntityGetCallback(void* value, void* clientData)
 
         case EditionType::Orientation:
         {
-            Matrix matrix = g_pSelectedEntity->GetMatrix();
+            Matrix matrix = gSelectedEntity->GetMatrix();
             matrix.r[3] = Vector(0.0f, 0.0f, 0.0f, 1.0f); // set position to 0
             Quaternion quat = QuaternionFromMatrix(matrix);
             VectorStore(quat, (Float4*)value);
@@ -221,10 +221,10 @@ void TW_CALL Demo_EntityGetCallback(void* value, void* clientData)
 
 void TW_CALL Demo_EntityDeleteCallback(void* clientData)
 {
-    if (g_pSelectedEntity)
+    if (gSelectedEntity)
     {
-        SceneManager* pScene = g_pSelectedEntity->GetScene();
-        pScene->EnqueueDeleteEntity(g_pSelectedEntity);
+        SceneManager* pScene = gSelectedEntity->GetScene();
+        pScene->EnqueueDeleteEntity(gSelectedEntity);
     }
 }
 
