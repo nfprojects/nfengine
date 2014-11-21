@@ -25,7 +25,7 @@ To make the code compileable, the following requirements have to be met:
 
 1. Installed Visual Studio 2013.
 2. Installed DirectX SDK.
-3. Downloaded external dependencies from [here](https://drive.google.com/drive/u/0/#folders/0B66mya2agFOEd0RJUWx1aDZ6Ym8)
+3. Downloaded external dependencies from [here](http://drive.google.com/open?id=0B66mya2agFOEd0RJUWx1aDZ6Ym8)
     * **"Deps"** directory created in repository root with content copied from subfolder **nfEngineDeps**
     * **"Data"** directory created in **"nfEngineTest"** with content copied from subfolder **nfEngineTestData**
     * **NOTE:** it is convenient to use Google Drive application to synchronize these folders automatically (by adding this folder to your drive) and create symbolic links to them:
