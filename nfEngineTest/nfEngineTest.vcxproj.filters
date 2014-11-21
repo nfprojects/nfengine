@@ -20,6 +20,9 @@
     <ClInclude Include="stdafx.hpp">
       <Filter>Precomp</Filter>
     </ClInclude>
+    <ClInclude Include="Scenes.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="test.cpp">
@@ -29,6 +32,9 @@
       <Filter>Precomp</Filter>
     </ClCompile>
     <ClCompile Include="Editor.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes.cpp">
       <Filter>Main</Filter>
     </ClCompile>
   </ItemGroup>

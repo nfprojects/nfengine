@@ -4,6 +4,6 @@
 #include "../nfEngine/nfCore/SceneEvent.hpp"
 #include "../nfEngine/nfCore/SceneSegment.hpp"
 
-extern NFE::Scene::Entity* g_pSelectedEntity;
+extern NFE::Scene::Entity* gSelectedEntity;
 
 void Demo_InitEditorBar();
