@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_477edbaf",
+        "filename": "nfEngineTest/test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-11-24T10:00:35Z",
+      "side": 1,
+      "message": "Entity* cube \u003d ... :)\n\nCheck other files as well",
+      "revId": "eda8a886afffa4eac16e86f6a4439ebd94fc7fb4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a74a2781",
+        "filename": "nfEngineTest/test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-11-24T10:00:35Z",
+      "side": 1,
+      "message": "Entity* lightEntity \u003d ... :)",
+      "revId": "eda8a886afffa4eac16e86f6a4439ebd94fc7fb4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_874f2392",
+        "filename": "nfEngineTest/test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-11-24T10:00:35Z",
+      "side": 1,
+      "message": "Entity* barrel \u003d ... :)",
+      "revId": "eda8a886afffa4eac16e86f6a4439ebd94fc7fb4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
