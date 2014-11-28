@@ -1,0 +1,3 @@
+[submodule "nfEngineDeps"]
+	path = nfEngineDeps
+	url = git@github.com:nfprojects/nfenginedeps

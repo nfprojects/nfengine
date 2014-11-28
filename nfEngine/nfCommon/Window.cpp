@@ -14,7 +14,7 @@ namespace Common {
 
 
 #ifdef USE_ANT_TWEAK
-#include "AntTweekBar/include/AntTweakBar.h"
+#include "AntTweakBar/include/AntTweakBar.h"
 #endif
 
 namespace {
