@@ -2,27 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="..\..\Deps\gtest\src\gtest.cc">
-      <Filter>gtest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Deps\gtest\src\gtest-death-test.cc">
-      <Filter>gtest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Deps\gtest\src\gtest-filepath.cc">
-      <Filter>gtest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Deps\gtest\src\gtest-port.cc">
-      <Filter>gtest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Deps\gtest\src\gtest-printers.cc">
-      <Filter>gtest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Deps\gtest\src\gtest-test-part.cc">
-      <Filter>gtest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Deps\gtest\src\gtest-typed-test.cc">
-      <Filter>gtest</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MD5Test.cpp" />
     <ClCompile Include="PackerBasicTest.cpp" />
@@ -39,9 +18,6 @@
     <ClInclude Include="test.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="gtest">
-      <UniqueIdentifier>{2e2a1c22-c83f-4055-b47d-8f19aec14692}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ThreadPool">
       <UniqueIdentifier>{389677ad-d60b-4704-9d44-6b77556cb5a8}</UniqueIdentifier>
     </Filter>

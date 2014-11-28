@@ -9,21 +9,11 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Header Files\Math">
       <UniqueIdentifier>{df3bda64-5d62-4bf6-93b9-5235b5403ac3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Math">
       <UniqueIdentifier>{6e6fcf7b-9b40-43f8-af57-5000e952046a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\jpeg">
-      <UniqueIdentifier>{ac8a18cb-d00a-4d48-918d-1ef2af20abd9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\jpeg">
-      <UniqueIdentifier>{e8412cbe-0bf4-4ff2-8ab3-a4af4b44d9bb}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Packer">
       <UniqueIdentifier>{2705f939-6203-4037-8999-840d59e8deeb}</UniqueIdentifier>
@@ -80,12 +70,6 @@
     </ClInclude>
     <ClInclude Include="Math\Math.hpp">
       <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Deps\jpeg\jpgd.h">
-      <Filter>Header Files\jpeg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Deps\jpeg\jpge.h">
-      <Filter>Header Files\jpeg</Filter>
     </ClInclude>
     <ClInclude Include="ThreadPool.hpp">
       <Filter>Header Files</Filter>
@@ -175,12 +159,6 @@
     </ClCompile>
     <ClCompile Include="MD5.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Deps\jpeg\jpge.cpp">
-      <Filter>Source Files\jpeg</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Deps\jpeg\jpgd.cpp">
-      <Filter>Source Files\jpeg</Filter>
     </ClCompile>
     <ClCompile Include="Packer\PackerDefines.cpp">
       <Filter>Source Files\Packer</Filter>
