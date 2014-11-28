@@ -1,5 +1,5 @@
 #include "stdafx.hpp"
-#include "model_obj/model_obj.h"
+#include "model_obj.h"
 
 #define MAT_NAME_MAX_LENGTH (120)
 

@@ -19,7 +19,9 @@
 
 # External files updated through GDrive
 /nfEngineTest/Data
-/Deps
+
+# Deps directory updated through separate Git repo
+/nfenginedeps
 
 # TODO: remove
 /Game/Win32

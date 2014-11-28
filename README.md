@@ -16,7 +16,6 @@ This document consists of following sections (in order of appearance in file):
 - Issue tracking
 - Workflow and branching
 - Commit message format
-- Pull request description format
 
 Dependencies
 ------------
@@ -25,19 +24,19 @@ To make the code compileable, the following requirements have to be met:
 
 1. Installed Visual Studio 2013.
 2. Installed DirectX SDK.
-3. Downloaded external dependencies from [here](http://drive.google.com/open?id=0B66mya2agFOEd0RJUWx1aDZ6Ym8)
-    * **"Deps"** directory created in repository root with content copied from subfolder **nfEngineDeps**
+3. Pulled external dependencies from [here](http://www.github.com/nfprojects/nfenginedeps)
+    * **"nfEngineDeps"** directory created by using git submodules inside repo
+    * **NOTE:** Dependencies need to be built separately from engine. See README.md inside nfEngineDeps repo for more info.
+4. Downloaded resources from [here](http://drive.google.com/open?id=0B66mya2agFOEd0RJUWx1aDZ6Ym8)
     * **"Data"** directory created in **"nfEngineTest"** with content copied from subfolder **nfEngineTestData**
-    * **NOTE:** it is convenient to use Google Drive application to synchronize these folders automatically (by adding this folder to your drive) and create symbolic links to them:
+    * **NOTE:** it is convenient to use Google Drive application to synchronize resources automatically (by adding this folder to your drive) and create symbolic link to them:
             - on Windows: "mklink /J <dest> <src>"
             - on Linux: "ln -s <src> <dest>"
 
 Example code on Windows:
 
 ```
-cd nfengine // go to root of repository
-mklink /J Deps "path-to-nfEngineDeps"
-cd nfEngineTest
+cd nfengine/nfEngineTest // go to root of repository
 mklink /J Data "path-to-nfEngineTestData"
 ```
 
