@@ -651,7 +651,7 @@ void RenderTargetD3D11::Release()
 
     if (window)
     {
-        window->setResizeCallback(NULL, this);
+        window->SetResizeCallback(NULL, this);
         window = NULL;
     }
 }
@@ -763,7 +763,7 @@ int RenderTargetD3D11::InitSwapChain(uint32 width_, uint32 height_, Common::Wind
     RendererD3D11* pRenderer = RendererD3D11::GetInstance();
     HRESULT hr;
 
-    pWindow->setResizeCallback(XEngine_OnWindowResizeD3D11, this);
+    pWindow->SetResizeCallback(XEngine_OnWindowResizeD3D11, this);
     window = pWindow;
     width = width_;
     height = height_;
@@ -780,9 +780,9 @@ int RenderTargetD3D11::InitSwapChain(uint32 width_, uint32 height_, Common::Wind
     scd.BufferDesc.Height = height_;
     scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // use 32-bit color
     scd.BufferUsage = usageFlags;
-    scd.OutputWindow = pWindow->getHandle();
+    scd.OutputWindow = pWindow->GetHandle();
     scd.SampleDesc.Count = 1;                           // how many multisamples
-    scd.Windowed = !pWindow->getFullscreenMode();       // windowed/full-screen mode
+    scd.Windowed = !pWindow->GetFullscreenMode();       // windowed/full-screen mode
 
     hr = D3D_CHECK(pRenderer->DXGIFactory->CreateSwapChain(pRenderer->D3DDevice, &scd,
                    &swapChain));
@@ -830,7 +830,7 @@ int RenderTargetD3D11::OnResize()
 
     //no size change
     UINT width_, height_;
-    window->getSize(width_, height_);
+    window->GetSize(width_, height_);
     if (width_ == width && height_ == height)
     {
         return 1;
