@@ -17,11 +17,14 @@ namespace Common {
 #include "AntTweekBar/include/AntTweakBar.h"
 #endif
 
-const DWORD WindowedExStyle = WS_EX_WINDOWEDGE;
-const DWORD WindowedStyle =
-    WS_OVERLAPPEDWINDOW; //WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU  | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME;
-const DWORD FullscreenExStyle = 0;
-const DWORD FullscreenStyle = WS_POPUP | WS_SYSMENU;
+namespace {
+
+const DWORD gWindowedExStyle = WS_EX_WINDOWEDGE;
+const DWORD gWindowedStyle = WS_OVERLAPPEDWINDOW;
+const DWORD gFullscreenExStyle = 0;
+const DWORD gFullscreenStyle = WS_POPUP | WS_SYSMENU;
+
+} // namespace
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -29,7 +32,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 Window::Window()
 {
     mInstance = GetModuleHandle(0);
-
     mHandle = 0;
     mClosed = true;
     mWidth = 200;
@@ -42,83 +44,81 @@ Window::Window()
 
     mTitle = L"Window";
 
-
     swprintf_s(mWndClass, L"%ws_%p", L"nfEngine_WndClass", this);
-    //mWndClass = L"nfEngine_WndClass";;
 
     WNDCLASSEX wcex;
-    wcex.cbSize = sizeof(WNDCLASSEX);
-    wcex.style          = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc    = WndProc;
-    wcex.cbClsExtra     = 0;
-    wcex.cbWndExtra     = 0;
-    wcex.hInstance      = mInstance;
-    wcex.hIcon          = 0; //LoadIcon(hInstance, MAKEINTRESOURCE(IDI_GAME));
-    wcex.hIconSm        = 0; //LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-    wcex.hCursor        = LoadCursor(NULL, IDC_ARROW);
-    wcex.hbrBackground  = 0; //(HBRUSH)GetStockObject(BLACK_BRUSH);
-    wcex.lpszMenuName   = 0;
-    wcex.lpszClassName  = mWndClass;
+    wcex.cbSize        = sizeof(WNDCLASSEX);
+    wcex.style         = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc   = WndProc;
+    wcex.cbClsExtra    = 0;
+    wcex.cbWndExtra    = 0;
+    wcex.hInstance     = mInstance;
+    wcex.hIcon         = 0; //LoadIcon(hInstance, MAKEINTRESOURCE(IDI_GAME));
+    wcex.hIconSm       = 0; //LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    wcex.hCursor       = LoadCursor(NULL, IDC_ARROW);
+    wcex.hbrBackground = 0; //(HBRUSH)GetStockObject(BLACK_BRUSH);
+    wcex.lpszMenuName  = 0;
+    wcex.lpszClassName = mWndClass;
     RegisterClassEx(&wcex);
 
     for (int i = 0; i < 3; i++)
-        mMouseButtons[i] = 0;
+        mMouseButtons[i] = false;
 
     for (int i = 0; i < 255; i++)
-        mpKeys[i] = 0;
+        mKeys[i] = false;
 }
 
 Window::~Window()
 {
-    close();
+    Close();
     UnregisterClass(mWndClass, mInstance);
 }
 
-void Window::setSize(UINT Width, UINT Height)
+void Window::SetSize(uint32 width, uint32 height)
 {
-    mWidth = Width;
-    mHeight = Height;
+    mWidth = width;
+    mHeight = height;
 
     if (!mClosed)
-        MoveWindow(mHandle, mLeft, mTop, Width, Height, TRUE);
+        MoveWindow(mHandle, mLeft, mTop, width, height, TRUE);
 }
 
-void Window::setTitle(const wchar_t* pTitle)
+void Window::SetTitle(const wchar_t* title)
 {
-    mTitle = pTitle;
+    mTitle = title;
     if (!mClosed)
         SetWindowText(mHandle, mTitle.c_str());
 }
 
-void Window::setFullscreenMode(BOOL Enabled)
+void Window::SetFullscreenMode(bool enabled)
 {
-    if (mFullscreen && !Enabled)
+    if (mFullscreen && !enabled)
     {
-        //escape fullscreen
-        RECT WindowRect;
-        WindowRect.left = mLeft;
-        WindowRect.right = mLeft + mWidth;
-        WindowRect.top = mTop;
-        WindowRect.bottom = mTop + mHeight;
-        AdjustWindowRectEx(&WindowRect, WindowedStyle, FALSE, WindowedExStyle);
+        // escape fullscreen
+        RECT windowRect;
+        windowRect.left = mLeft;
+        windowRect.right = mLeft + mWidth;
+        windowRect.top = mTop;
+        windowRect.bottom = mTop + mHeight;
+        AdjustWindowRectEx(&windowRect, gWindowedStyle, FALSE, gWindowedExStyle);
 
-        SetWindowLong(mHandle, GWL_EXSTYLE, WindowedExStyle);
-        SetWindowLong(mHandle, GWL_STYLE, WindowedStyle);
+        SetWindowLong(mHandle, GWL_EXSTYLE, gWindowedExStyle);
+        SetWindowLong(mHandle, GWL_STYLE, gWindowedStyle);
         SetWindowPos(mHandle, HWND_NOTOPMOST,
                      mTop, mTop,
-                     WindowRect.right - WindowRect.left,
-                     WindowRect.bottom - WindowRect.top,
+                     windowRect.right - windowRect.left,
+                     windowRect.bottom - windowRect.top,
                      SWP_NOACTIVATE | SWP_SHOWWINDOW);
     }
-    else if (!mFullscreen && Enabled)
+    else if (!mFullscreen && enabled)
     {
-        //enter fullscreen
-        SetWindowLong(mHandle, GWL_EXSTYLE, FullscreenExStyle);
+        // enter fullscreen
+        SetWindowLong(mHandle, GWL_EXSTYLE, gFullscreenExStyle);
         SetWindowLong(mHandle, GWL_STYLE, WS_VISIBLE | WS_POPUP );
         SetWindowPos(mHandle, NULL, 0, 0, mWidth, mHeight, SWP_NOZORDER );
     }
 
-    mFullscreen = Enabled;
+    mFullscreen = enabled;
 
     if (mResizeCallback)
     {
@@ -127,35 +127,35 @@ void Window::setFullscreenMode(BOOL Enabled)
 }
 
 
-bool Window::open()
+bool Window::Open()
 {
     if (!mClosed)
         return false;
 
     if (mFullscreen)
     {
-        mHandle = CreateWindowEx(FullscreenExStyle, mWndClass, mTitle.c_str(),
-                                 FullscreenStyle, 0, 0, mWidth, mHeight,
+        mHandle = CreateWindowEx(gFullscreenExStyle, mWndClass, mTitle.c_str(),
+                                 gFullscreenStyle, 0, 0, mWidth, mHeight,
                                  NULL, NULL, mInstance, NULL);
     }
     else
     {
-        RECT WindowRect;
-        WindowRect.left = (long)mLeft;
-        WindowRect.right = (long)(mWidth + mLeft);
-        WindowRect.top = (long)mTop;
-        WindowRect.bottom = (long)(mHeight + mTop);
-        AdjustWindowRectEx(&WindowRect, WindowedStyle, FALSE, WindowedExStyle);
+        RECT windowRect;
+        windowRect.left = (long)mLeft;
+        windowRect.right = (long)(mWidth + mLeft);
+        windowRect.top = (long)mTop;
+        windowRect.bottom = (long)(mHeight + mTop);
+        AdjustWindowRectEx(&windowRect, gWindowedStyle, FALSE, gWindowedExStyle);
 
-        mLeft = -WindowRect.left;
-        mTop = -WindowRect.top;
+        mLeft = -windowRect.left;
+        mTop = -windowRect.top;
 
-        mHandle = CreateWindowEx(WindowedExStyle,
+        mHandle = CreateWindowEx(gWindowedExStyle,
                                  mWndClass, mTitle.c_str(),
-                                 WindowedStyle,
+                                 gWindowedStyle,
                                  mTop, mTop,
-                                 WindowRect.right - WindowRect.left,
-                                 WindowRect.bottom - WindowRect.top,
+                                 windowRect.right - windowRect.left,
+                                 windowRect.bottom - windowRect.top,
                                  NULL, NULL, mInstance, NULL);
     }
 
@@ -172,7 +172,7 @@ bool Window::open()
     return true;
 }
 
-bool Window::close()
+bool Window::Close()
 {
     if (mClosed)
         return false;
@@ -183,19 +183,19 @@ bool Window::close()
 }
 
 
-void Window::mouseDown(UINT Button, int X, int Y)
+void Window::MouseDown(uint32 button, int x, int y)
 {
     SetCapture(mHandle);
-    mMouseButtons[Button] = 1;
-    mMouseDownX[Button] = X;
-    mMouseDownY[Button] = Y;
+    mMouseButtons[button] = true;
+    mMouseDownX[button] = x;
+    mMouseDownY[button] = y;
 
-    OnMouseDown(Button, X, Y);
+    OnMouseDown(button, x, y);
 }
 
-void Window::mouseUp(UINT Button)
+void Window::MouseUp(uint32 button)
 {
-    mMouseButtons[Button] = 0;
+    mMouseButtons[button] = false;
 
     bool ButtonsReleased = true;
     for (int i = 0; i < 3; i++)
@@ -205,33 +205,33 @@ void Window::mouseUp(UINT Button)
     if (ButtonsReleased)
         ReleaseCapture();
 
-    OnMouseUp(Button);
+    OnMouseUp(button);
 }
 
-void Window::mouseMove(int X, int Y)
+void Window::MouseMove(int x, int y)
 {
-    OnMouseMove(X, Y, X - mMouseDownX[0], Y - mMouseDownY[0]);
-    mMouseDownX[0] = X;
-    mMouseDownY[0] = Y;
+    OnMouseMove(x, y, x - mMouseDownX[0], y - mMouseDownY[0]);
+    mMouseDownX[0] = x;
+    mMouseDownY[0] = y;
 }
 
-BOOL Window::isKeyPressed(UCHAR Key)
+bool Window::IsKeyPressed(int Key) const
 {
-    return mpKeys[Key];
+    return mKeys[Key];
 }
 
 LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    Window* pWindow = (Window*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
+    Window* window = (Window*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
-    if (!pWindow)
+    if (!window)
         return DefWindowProc(hWnd, message, wParam, lParam);
 
 #ifdef USE_ANT_TWEAK
     bool handleByTweakBar = true;
 
     for (int i = 0; i < 3; i++)
-        if (pWindow->mMouseButtons[i])
+        if (window->mMouseButtons[i])
             handleByTweakBar = false;
 
     if (handleByTweakBar)
@@ -254,8 +254,8 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 
         case WM_CLOSE:
         {
-            pWindow->close();
-            pWindow->OnClose();
+            window->Close();
+            window->OnClose();
             return 0;
         }
 
@@ -263,12 +263,12 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
         {
             if (wParam != SIZE_MINIMIZED)
             {
-                pWindow->mWidth = LOWORD(lParam);
-                pWindow->mHeight = HIWORD(lParam);
-                pWindow->OnResize(pWindow->mWidth, pWindow->mHeight);
+                window->mWidth = LOWORD(lParam);
+                window->mHeight = HIWORD(lParam);
+                window->OnResize(window->mWidth, window->mHeight);
 
-                if (pWindow->mResizeCallback)
-                    pWindow->mResizeCallback(pWindow->mResizeCallbackUserData);
+                if (window->mResizeCallback)
+                    window->mResizeCallback(window->mResizeCallbackUserData);
             }
 
             return 0;
@@ -276,20 +276,20 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 
         case WM_KEYDOWN:
         {
-            pWindow->mpKeys[wParam] = 1;
-            pWindow->OnKeyPress((int)wParam);
+            window->mKeys[wParam] = true;
+            window->OnKeyPress((int)wParam);
             return 0;
         }
 
         case WM_KEYUP:
         {
-            pWindow->mpKeys[wParam] = 0;
+            window->mKeys[wParam] = false;
             return 0;
         }
 
         case WM_MOUSEWHEEL:
         {
-            pWindow->OnScroll(GET_WHEEL_DELTA_WPARAM(wParam));
+            window->OnScroll(GET_WHEEL_DELTA_WPARAM(wParam));
             return 0;
         }
 
@@ -297,52 +297,52 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
         // MOUSE
         case WM_LBUTTONDOWN:
         {
-            pWindow->mouseDown(0, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            window->MouseDown(0, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
             return 0;
         }
 
         case WM_LBUTTONUP:
         {
-            pWindow->mouseUp(0);
+            window->MouseUp(0);
             return 0;
         }
 
 
         case WM_MBUTTONDOWN:
         {
-            pWindow->mouseDown(2, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            window->MouseDown(2, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
             return 0;
         }
 
         case WM_MBUTTONUP:
         {
-            pWindow->mouseUp(2);
+            window->MouseUp(2);
             return 0;
         }
 
 
         case WM_RBUTTONDOWN:
         {
-            pWindow->mouseDown(1, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            window->MouseDown(1, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
             return 0;
         }
 
         case WM_RBUTTONUP:
         {
-            pWindow->mouseUp(1);
+            window->MouseUp(1);
             return 0;
         }
 
         case WM_MOUSEMOVE:
         {
-            pWindow->mouseMove(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            window->MouseMove(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
             return 0;
         }
 
         case WM_ACTIVATE:
         {
             if (wParam == WA_INACTIVE)
-                pWindow->lostFocus();
+                window->LostFocus();
             return 0;
         }
 
@@ -351,56 +351,56 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
     return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
-void Window::lostFocus()
+void Window::LostFocus()
 {
-    mouseUp(0);
-    mouseUp(1);
-    mouseUp(2);
+    MouseUp(0);
+    MouseUp(1);
+    MouseUp(2);
 
     for (int i = 0; i < 256; i++)
-        mpKeys[i] = 0;
+        mKeys[i] = false;
 }
 
-bool Window::isClosed()
+bool Window::IsClosed() const
 {
     return mClosed;
 }
 
-HWND Window::getHandle()
+HWND Window::GetHandle() const
 {
     return mHandle;
 }
 
-void Window::getSize(UINT& Width, UINT& Height)
+void Window::GetSize(uint32& Width, uint32& Height) const
 {
     Width = mWidth;
     Height = mHeight;
 }
 
-float Window::getAspectRatio()
+float Window::GetAspectRatio() const
 {
     return (float)mWidth / (float)mHeight;
 }
 
-BOOL Window::getFullscreenMode()
+bool Window::GetFullscreenMode() const
 {
     return mFullscreen;
 }
 
-BOOL Window::isMouseButtonDown(UINT Button)
+bool Window::IsMouseButtonDown(uint32 button) const
 {
-    return mMouseButtons[Button];
+    return mMouseButtons[button];
 }
 
 
-void Window::processMessages()
+void Window::ProcessMessages()
 {
     MSG msg;
     while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
     {
         if (msg.message == WM_QUIT)
         {
-            close();
+            Close();
         }
         else
         {
@@ -410,17 +410,17 @@ void Window::processMessages()
     }
 }
 
-void Window::setResizeCallback(WindowResizeCallback pFunc, void* pUserData)
+void Window::SetResizeCallback(WindowResizeCallback func, void* userData)
 {
-    mResizeCallback = pFunc;
-    mResizeCallbackUserData = pUserData;
+    mResizeCallback = func;
+    mResizeCallbackUserData = userData;
 }
 
 void Window::OnClose()
 {
 }
 
-void Window::OnResize(UINT width, UINT height)
+void Window::OnResize(uint32 width, uint32 height)
 {
     (void)width;
     (void)height;
@@ -436,7 +436,7 @@ void Window::OnScroll(int delta)
     (void)delta;
 }
 
-void Window::OnMouseDown(UINT button, int x, int y)
+void Window::OnMouseDown(uint32 button, int x, int y)
 {
     (void)button;
     (void)x;
@@ -451,7 +451,7 @@ void Window::OnMouseMove(int x, int y, int deltaX, int deltaY)
     (void)deltaY;
 }
 
-void Window::OnMouseUp(UINT button)
+void Window::OnMouseUp(uint32 button)
 {
     (void)button;
 }
