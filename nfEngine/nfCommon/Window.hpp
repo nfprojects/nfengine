@@ -25,29 +25,29 @@ private:
     HWND mHandle;
     HINSTANCE mInstance;
 
-    BOOL mFullscreen;
-    UINT mWidth;
-    UINT mHeight;
-    LONG mLeft;
-    LONG mTop;
+    bool mFullscreen;
+    uint32 mWidth;
+    uint32 mHeight;
+    int mLeft;
+    int mTop;
 
     std::wstring mTitle;
     wchar_t mWndClass[48];
 
-    UINT mMouseButtons[3];
+    bool mMouseButtons[3];
     int mMouseDownX[3];
     int mMouseDownY[3];
 
-    BOOL mpKeys[256];
+    bool mpKeys[256];
 
     // used by renderer
     WindowResizeCallback mResizeCallback;
     void* mResizeCallbackUserData;
 
-    void lostFocus();
-    void mouseDown(UINT Button, int X, int Y);
-    void mouseUp(UINT Button);
-    void mouseMove(int X, int Y);
+    void LostFocus();
+    void MouseDown(uint32 button, int x, int y);
+    void MouseUp(uint32 button);
+    void MouseMove(int x, int y);
 
     Window(const Window&);
     Window& operator= (const Window&);
@@ -56,35 +56,35 @@ public:
     Window();
     ~Window();
 
-    bool open();
-    bool close();
+    bool Open();
+    bool Close();
 
-    HWND getHandle();
-    void getSize(UINT& Width, UINT& Height);
-    float getAspectRatio();
-    BOOL getFullscreenMode();
+    HWND GetHandle() const;
+    void GetSize(uint32& width, uint32& height) const;
+    float GetAspectRatio() const;
+    bool GetFullscreenMode() const;
 
-    BOOL isMouseButtonDown(UINT Button);
-    BOOL isKeyPressed(UCHAR Key);
+    bool IsMouseButtonDown(uint32 button) const;
+    bool IsKeyPressed(int key) const;
 
-    void setSize(UINT Width, UINT Height);
-    void setFullscreenMode(BOOL Enabled);
-    void setTitle(const wchar_t* pTitle);
+    void SetSize(uint32 hidth, uint32 height);
+    void SetFullscreenMode(bool enabled);
+    void SetTitle(const wchar_t* title);
 
     // WARINING: only engine shold call this function
-    void setResizeCallback(WindowResizeCallback pFunc, void* pUserData);
+    void SetResizeCallback(WindowResizeCallback func, void* userData);
 
-    void processMessages();
-    bool isClosed();
+    void ProcessMessages();
+    bool IsClosed() const;
 
     //callbacks
     virtual void OnClose();
-    virtual void OnResize(UINT width, UINT height);
+    virtual void OnResize(uint32 width, uint32 height);
     virtual void OnKeyPress(int key);
     virtual void OnScroll(int delta);
-    virtual void OnMouseDown(UINT button, int x, int y);
+    virtual void OnMouseDown(uint32 button, int x, int y);
     virtual void OnMouseMove(int x, int y, int deltaX, int deltaY);
-    virtual void OnMouseUp(UINT button);
+    virtual void OnMouseUp(uint32 button);
 };
 
 } // namespace Common

@@ -74,7 +74,7 @@ Result View::SetWindow(Common::Window* pWindow)
     }
 
     uint32 width, height;
-    pWindow->getSize(width, height);
+    pWindow->GetSize(width, height);
     RT->Init(width, height, pWindow);
     return Result::OK;
 }

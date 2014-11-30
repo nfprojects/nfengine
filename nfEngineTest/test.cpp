@@ -88,7 +88,7 @@ public:
         perspective.FoV = NFE_MATH_PI * 60.0f / 180.0f;
         perspective.nearDist = 0.01f;
         perspective.farDist = 1000.0f;
-        perspective.aspectRatio = getAspectRatio();
+        perspective.aspectRatio = GetAspectRatio();
 
         camera = new Camera(cameraEntity);
         camera->SetPerspective(&perspective);
@@ -134,15 +134,15 @@ public:
         Vector destVelocity = Vector();
         if (cameraControl)
         {
-            if (isKeyPressed('W')) destVelocity += orient.z;
-            if (isKeyPressed('S')) destVelocity -= orient.z;
-            if (isKeyPressed('D')) destVelocity += orient.x;
-            if (isKeyPressed('A')) destVelocity -= orient.x;
-            if (isKeyPressed('R')) destVelocity += orient.y;
-            if (isKeyPressed('F')) destVelocity -= orient.y;
+            if (IsKeyPressed('W')) destVelocity += orient.z;
+            if (IsKeyPressed('S')) destVelocity -= orient.z;
+            if (IsKeyPressed('D')) destVelocity += orient.x;
+            if (IsKeyPressed('A')) destVelocity -= orient.x;
+            if (IsKeyPressed('R')) destVelocity += orient.y;
+            if (IsKeyPressed('F')) destVelocity -= orient.y;
 
-            if (isKeyPressed(VK_SHIFT)) destVelocity *= 30.0f;
-            else if (isKeyPressed(VK_CONTROL)) destVelocity *= 0.2f;
+            if (IsKeyPressed(VK_SHIFT)) destVelocity *= 30.0f;
+            else if (IsKeyPressed(VK_CONTROL)) destVelocity *= 0.2f;
             else destVelocity *= 3.0f;
         }
 
@@ -157,8 +157,8 @@ public:
     {
         if (key == VK_F1)
         {
-            BOOL fullscreen = getFullscreenMode();
-            setFullscreenMode(!fullscreen);
+            BOOL fullscreen = GetFullscreenMode();
+            SetFullscreenMode(!fullscreen);
         }
 
         XOrientation orient;
@@ -401,9 +401,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
     //create window
     CustomWindow* window = new CustomWindow;
-    window->setSize(800, 600);
-    window->setTitle(L"NFEngine Demo - Initializing engine...");
-    window->open();
+    window->SetSize(800, 600);
+    window->SetTitle(L"NFEngine Demo - Initializing engine...");
+    window->Open();
 
     //initialize engine
     if (EngineInit() != Result::OK)
@@ -440,7 +440,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 
     window->InitCamera();
-    window->setTitle(L"NFEngine Demo");
+    window->SetTitle(L"NFEngine Demo");
 
     InitScene(0);
 
@@ -450,7 +450,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
     Common::Timer timer;
     timer.Start();
-    while (!window->isClosed())
+    while (!window->IsClosed())
     {
         //measure delta time
         gDeltaTime = static_cast<float>(timer.Stop());
@@ -460,7 +460,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         updateReq.pScene = gScene;
         updateReq.deltaTime = gDeltaTime;
 
-        window->processMessages();
+        window->ProcessMessages();
         window->UpdateCamera();
 
         drawRequest.deltaTime = gDeltaTime;
@@ -475,7 +475,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         swprintf(str, L"NFEngine Demo (%S) - focus: %S - Press [0-%i] to switch scene",
                  PLATFORM_STR, (focus != 0) ? focus->GetName() : "NONE",
                  GetScenesNum() - 1);
-        window->setTitle(str);
+        window->SetTitle(str);
     }
 
     EngineDeleteScene(gScene);
