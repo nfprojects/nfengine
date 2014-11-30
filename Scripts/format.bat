@@ -53,6 +53,6 @@ astyle --options=Scripts\style.cfg -r -v --suffix=none nfEngine\*.cpp nfEngine\*
 echo.
 :: Prerequisites.hpp should have namespaces indented to improve readability
 :: run astyle once more specifically on this file
-astyle --options=Scripts\style.cfg -v --indent-namespaces nfEngine\nfCore\Prerequisites.hpp
+astyle --options=Scripts\style.cfg -v --suffix=none --indent-namespaces nfEngine\nfCore\Prerequisites.hpp
 
 popd
