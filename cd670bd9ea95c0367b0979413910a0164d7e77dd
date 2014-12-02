@@ -1,0 +1,107 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_f88202ff",
+        "filename": "nfEngine/nfCommon/Window.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 413,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-12-02T15:57:08Z",
+      "side": 1,
+      "message": "Legacy code, huh? :)\n\nI know this isn\u0027t a part of this review, but it is dangerous. And ugly to use.\n\nThis needs to be replaced with std::bind object. It might be a bigger change, so I suggest creating an issue about it and fix all callbacks inside Engine.",
+      "range": {
+        "startLine": 413,
+        "startChar": 58,
+        "endLine": 413,
+        "endChar": 72
+      },
+      "revId": "cd670bd9ea95c0367b0979413910a0164d7e77dd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_589cee69",
+        "filename": "nfEngine/nfCommon/Window.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 425,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-12-02T15:57:08Z",
+      "side": 1,
+      "message": "I guess, these are default calls for On... functions. IMO it should be replaced with proper callbacks and std::bind, then there would be no (void)param nosense.",
+      "revId": "cd670bd9ea95c0367b0979413910a0164d7e77dd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_78c8d274",
+        "filename": "nfEngine/nfCommon/Window.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-12-02T15:57:08Z",
+      "side": 1,
+      "message": "mKeys",
+      "range": {
+        "startLine": 41,
+        "startChar": 9,
+        "endLine": 41,
+        "endChar": 15
+      },
+      "revId": "cd670bd9ea95c0367b0979413910a0164d7e77dd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_18cb8673",
+        "filename": "nfEngine/nfCommon/Window.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-12-02T15:57:08Z",
+      "side": 1,
+      "message": "should",
+      "range": {
+        "startLine": 74,
+        "startChar": 29,
+        "endLine": 74,
+        "endChar": 34
+      },
+      "revId": "cd670bd9ea95c0367b0979413910a0164d7e77dd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d8873e0e",
+        "filename": "nfEngineTest/test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 410,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-12-02T15:57:08Z",
+      "side": 1,
+      "message": "This just occured to me.\n\nHere window is still allocated and we have a memory leak. I bet there are more places like this. Another task-to-add - use unique_ptr where needed to prevent memleaks (isn\u0027t there already a task connected with leaks?).",
+      "revId": "cd670bd9ea95c0367b0979413910a0164d7e77dd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
