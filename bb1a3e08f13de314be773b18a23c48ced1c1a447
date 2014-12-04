@@ -42,6 +42,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_ba2cea4b",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2014-12-04T21:56:44Z",
+      "side": 1,
+      "message": "There is info about it in 4th bullet point. Should I extend it?",
+      "parentUuid": "fafc7978_9a0ac6d0",
+      "revId": "bb1a3e08f13de314be773b18a23c48ced1c1a447",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_3ac47a91",
         "filename": "README.md",
         "patchSetId": 1
