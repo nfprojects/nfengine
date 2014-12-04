@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_1ada5678",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-12-04T21:36:40Z",
+      "side": 1,
+      "message": "(this comment refers to marked section, more to the right)\n\nI think this info is not the best information for reader. README.md is the first thing someone will read, this part of it is the first text someone reads about nfEngine. IMO we shouldn\u0027t attack such reader with \"what needs to be done\" information, especially when it is about API change. It just leaves a bad first impression and we increase our chances to be the only nfEngine developers ever. ;)\n\n\"The engine is in early development stage and many elements of it can be a subject to change.\" sounds much better for reader, more like a warning than a negative statement about our project. If someone needs info what needs to be done, Issue Tracker is at help. :)",
+      "range": {
+        "startLine": 4,
+        "startChar": 118,
+        "endLine": 4,
+        "endChar": 233
+      },
+      "revId": "bb1a3e08f13de314be773b18a23c48ced1c1a447",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9a0ac6d0",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-12-04T21:36:40Z",
+      "side": 1,
+      "message": "Add information, that every file should be documented with boilerplate and provide more info about it.",
+      "revId": "bb1a3e08f13de314be773b18a23c48ced1c1a447",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3ac47a91",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-12-04T21:36:40Z",
+      "side": 1,
+      "message": "IMO this info should be added earlier. Assuming that after reading the introduction someone thinks \"yeah, I\u0027ll contribute here\", this section would be the first thing he would be interested in - more technical details about engine and how to navigate on the repo.\n\nI suggest moving this section to the top, right before Dependencies section.",
+      "revId": "bb1a3e08f13de314be773b18a23c48ced1c1a447",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ba37caaf",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-12-04T21:36:40Z",
+      "side": 1,
+      "message": "Add entry about nfEngineDeps. Make sure to inform user, that this is a submodule in separate repository (maybe add a link, or write \"refer to Dependencies section for more info\" or sth?)",
+      "revId": "bb1a3e08f13de314be773b18a23c48ced1c1a447",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
