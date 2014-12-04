@@ -1,9 +1,7 @@
 nfEngine README file
 ===============
 
-nfEngine is an open source 3D game engine.
-
-*TODO: fill this section*
+The main purpose of this project is to create an open-source, multi-platform, efficient and universal 3D game engine. At the moment the engine has very limited functionality: the API requires major changes and it's not fully designed, only Windows version (with Direct3D 11 renderer) is supported.
 
 Contents
 --------
@@ -17,9 +15,23 @@ This document consists of following sections (in order of appearance in file):
 - Workflow and branching
 - Commit message format
 - Pull request description format
+- Directory structure
 
 Dependencies
 ------------
+
+The engine is dependent on following libraries:
+
+- [AntTweakBar](http://anttweakbar.sourceforge.net/doc/) - simple, temporary GUI
+- [Bullet Physics Library](http://bulletphysics.org/wordpress/) - physics engine
+- [FreeType](http://www.freetype.org/freetype2/) - fonts rendering
+- [libpng](http://www.libpng.org/pub/png/libpng.html) - PNG files decoding
+- [jpgd](https://code.google.com/p/jpgd/) - JPEG decoding
+- [RapidXml](http://rapidxml.sourceforge.net/) - XML parsing
+- [rapidjson](https://code.google.com/p/rapidjson/) - JSON parsing
+- [zlib](http://www.zlib.net/) - libpng and FreeType dependency, will be used to compress/decompress files in the future
+- [model_obj](http://www.dhpoware.com/demos/glObjViewer.html) - OBJ model files parsing
+- [Google Test](https://code.google.com/p/googletest/) - unit tests framework
 
 To make the code compileable, the following requirements have to be met:
 
@@ -55,11 +67,24 @@ ArtisticStyle can be downloaded [here](http://astyle.sourceforge.net/).
 
 Basic coding guidelines:
 
-* Code is written in Allman style.
+* Code is written in [Allman style](http://en.wikipedia.org/wiki/Indent_style#Allman_style).
 * We use spaces to indent parts of code. Each indentation takes 4 spaces. Mixed tabs and spaces are forbidden.
 * To make code reviewing easier, keep max 100 chars per line. Exceptions to that rule might occur if it is absolutely necessary, depending on the situation (keep in mind, some legacy code in the repository might not follow this rule).
 * Each source file should have a doxygen boilerplate which will briefly describe what this module does. This rule applies to header files as well.
-* Use two newlines to separate chunks of code in one file (eg. to split constants from function/method definitions, to split boilerplate from rest of the file, or to split namespaces).
+* Use two newlines to separate chunks of code in one file (e.g. to split constants from function/method definitions, to split boilerplate from rest of the file, or to split namespaces).
+* Naming rules:
+    * **camelCase**, e.g.: ``int fontSize;``
+    * **Begin with lower case:** local variables, public class members, function arguments.
+    * **Begin with Upper case:** namespace names, class/structure/union/enum names, function/method names.
+    * Add "m" prefix before private and protected class member names, e.g.: ``int mWidth;``.
+    * Add "g" prefix before global variable names.
+    * Write preprocessor macros using upper case only, e.g.: ``#define LOG_ERROR(x) ...``.
+    * Don't use Hungarian notation!
+* File naming rules:
+    * Begin with upper case.
+    * Use proper extension: *cpp* if it's C++ source file, *hpp* if it's C++ header, etc.
+* Miscellaneous:
+    * Write comments using [Doxygen](http://www.stack.nl/~dimitri/doxygen/manual/docblocks.html) style.
 
 Issue tracking
 --------------
@@ -115,11 +140,36 @@ Commit messages should keep a simple, standard format. Title (first line of comm
 ```
 Fix memory leaks in nfCommon Math module
 
-This commit fixes memory leaks which occured when using NFE::Common::Vector. Leaks
-occured due to not freed memory in Vector destructor.
+This commit fixes memory leaks which occurred when using NFE::Common::Vector. Leaks
+occurred due to not freed memory in Vector destructor.
 
 Verification:
 Build, run tests using valgrind - no leaks should occur.
 ```
 
 If needed, change can be split into multiple sub-changes. These changes should depend on each other and appropriate information should be provided in commit message with [PATCH x/y] tag.
+
+
+Directory structure
+-------------------
+
+The engine's root directory looks as follows:
+
+* **Bin** - compiled binaries
+* **Logs** - various logs
+* **nfEngine** - main engine's code directory
+    * **nfCommon** - common utilities library that could be used outside the engine
+    * **nfCommonTest** - unit tests for nfCommon
+    * **nfCore** - the engine's core
+    * **nfCoreTest** - unit tests for nfCore
+    * **nfRendererD3D11** - Direct3D 11 renderer implementation
+        * **Shaders** - HLSL shaders for Direct3D 11 renderer
+    * **Tools**
+        * **CollisionShapeConverter** - OBJ to engine's physics collision shape format converter
+        * **FastMeshConverter** - OBJ to engine's model format converter
+        * **PackerTool** - command line utility for PAK files creation
+* **nfEngineTest** - demo application
+* **Obj** - temporary compilation objects
+* **Scripts** - miscellaneous batch and bash scripts
+* **ShaderCache** and **ShaderCache_Debug** - compiled shaders
+
