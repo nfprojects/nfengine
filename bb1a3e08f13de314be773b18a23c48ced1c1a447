@@ -25,6 +25,53 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_fa99526f",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2014-12-04T23:24:13Z",
+      "side": 1,
+      "message": "Done. I\u0027ve added features list just after the description. If you have better ideas how to improve it, go ahead. I\u0027m not good at inventing this kind of text...",
+      "parentUuid": "fafc7978_1ada5678",
+      "range": {
+        "startLine": 4,
+        "startChar": 118,
+        "endLine": 4,
+        "endChar": 233
+      },
+      "revId": "bb1a3e08f13de314be773b18a23c48ced1c1a447",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7aad6288",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2014-12-04T23:24:13Z",
+      "side": 1,
+      "message": "I\u0027ve removed this section, because it\u0027s useless IMO. If it was a least interactive... If somebody reads this kind of readme, he usually jumps straight into the text. He won\u0027t be reading carefully, line by line, including the table of content.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 21
+      },
+      "revId": "bb1a3e08f13de314be773b18a23c48ced1c1a447",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_9a0ac6d0",
         "filename": "README.md",
         "patchSetId": 1
@@ -77,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_da9e0e56",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2014-12-04T23:24:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_3ac47a91",
+      "revId": "bb1a3e08f13de314be773b18a23c48ced1c1a447",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_ba37caaf",
         "filename": "README.md",
         "patchSetId": 1
@@ -88,6 +153,24 @@
       "writtenOn": "2014-12-04T21:36:40Z",
       "side": 1,
       "message": "Add entry about nfEngineDeps. Make sure to inform user, that this is a submodule in separate repository (maybe add a link, or write \"refer to Dependencies section for more info\" or sth?)",
+      "revId": "bb1a3e08f13de314be773b18a23c48ced1c1a447",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3aa3da9f",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2014-12-04T23:24:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_ba37caaf",
       "revId": "bb1a3e08f13de314be773b18a23c48ced1c1a447",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
