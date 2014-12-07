@@ -40,42 +40,33 @@ Mesh::~Mesh()
 
 Result Mesh::AllocateVerticies(uint32 count)
 {
-    mVerticies = (MeshVertex*)realloc(mVerticies, sizeof(MeshVertex) * count);
-
-    if (mVerticies == 0) // TODO: fix memory leak on realloc failure
-    {
-        mVeriticesCount = 0;
+    MeshVertex* newVertices = (MeshVertex*)realloc(mVerticies, sizeof(MeshVertex) * count);
+    if (newVertices == nullptr)
         return Result::AllocationError;
-    }
 
+    mVerticies = newVertices;
     mVeriticesCount = count;
     return Result::OK;
 }
 
 Result Mesh::AllocateIndicies(uint32 count)
 {
-    mIndicies = (uint32*)realloc(mIndicies, sizeof(uint32) * count);
-
-    if (mIndicies == 0) // TODO: fix memory leak on realloc failure
-    {
-        mIndiciesCount = 0;
+    uint32* newIndices = (uint32*)realloc(mIndicies, sizeof(uint32) * count);
+    if (newIndices == 0)
         return Result::AllocationError;
-    }
 
+    mIndicies = newIndices;
     mIndiciesCount = count;
     return Result::OK;
 }
 
 Result Mesh::AllocateSubmeshes(uint32 count)
 {
-    mSubMeshes = (SubMesh*)realloc(mSubMeshes, sizeof(SubMesh) * count);
-
-    if (mSubMeshes == 0) // TODO: fix memory leak on realloc failure
-    {
-        mSubMeshesCount = 0;
+    SubMesh* newSubMeshes = (SubMesh*)realloc(mSubMeshes, sizeof(SubMesh) * count);
+    if (newSubMeshes == nullptr)
         return Result::AllocationError;
-    }
 
+    mSubMeshes = newSubMeshes;
     mSubMeshesCount = count;
     return Result::OK;
 }

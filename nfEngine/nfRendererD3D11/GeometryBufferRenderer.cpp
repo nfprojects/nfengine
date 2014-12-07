@@ -39,6 +39,9 @@ GBufferRendererD3D11::GBufferRendererD3D11()
     mInstancesVB = 0;
     mGlobalCBuffer = 0;
     mPerInstanceCBuffer = 0;
+
+    mMaterialCBuffer = 0;
+    mInstanceData = 0;
 }
 
 GBufferRendererD3D11::~GBufferRendererD3D11()
@@ -173,9 +176,6 @@ void GBufferRendererD3D11::Enter(NFE_CONTEXT_ARG)
 {
     auto pCtx = (RenderContextD3D11*)pContext;
     auto pRenderer = pCtx->GetRenderer();
-    mCurrMaterial = 0;
-
-
     GeometryBuffer& GeomBuffer = pRenderer->geomBuffer;
 
     //Clear G-buffer
@@ -271,9 +271,6 @@ void GBufferRendererD3D11::SetMaterial(NFE_CONTEXT_ARG, const RendererMaterial* 
 {
     auto pCtx = (RenderContextD3D11*)pContext;
     auto pRenderer = pCtx->GetRenderer();
-    //if (mCurrMaterial == pMaterial)
-    //  return;
-    //mCurrMaterial = pMaterial;
 
     RendererTextureD3D11* pDiffuseTexture = 0;
     RendererTextureD3D11* pNormalTexture = 0;
@@ -351,7 +348,7 @@ void GBufferRendererD3D11::Draw(NFE_CONTEXT_ARG, const RenderCommandBuffer& buff
     uint32 currStartIndex = 0xFFFFFFFF;
     uint32 currIndexCount = 0;
 
-    mCurrMaterial = (RendererMaterial*)(-1);
+    const RendererMaterial* currMaterial = (RendererMaterial*)(-1);
     int bufferedInstances = 0;
     uint32 startInstanceLocation = 0;
 
@@ -360,7 +357,7 @@ void GBufferRendererD3D11::Draw(NFE_CONTEXT_ARG, const RenderCommandBuffer& buff
         const RenderCommand& command = buffer.commands[i];
 
         bool bufferIsFull = (bufferedInstances + bufferedInstances >= MAX_BUFFERED_INSTANCES) || (i == 0);
-        bool materialChange = (command.pMaterial != mCurrMaterial);
+        bool materialChange = (command.pMaterial != currMaterial);
         bool meshChange = ((pCurrIB != command.pIB) || (pCurrVB != command.pVB) ||
                            (currStartIndex != command.startIndex));
 
@@ -401,8 +398,8 @@ void GBufferRendererD3D11::Draw(NFE_CONTEXT_ARG, const RenderCommandBuffer& buff
         //material has changed
         if (materialChange)
         {
-            mCurrMaterial = command.pMaterial;
-            SetMaterial(pCtx, mCurrMaterial);
+            currMaterial = command.pMaterial;
+            SetMaterial(pCtx, currMaterial);
         }
 
         //mesh has changed
@@ -431,7 +428,6 @@ void GBufferRendererD3D11::Draw(NFE_CONTEXT_ARG, const RenderCommandBuffer& buff
                                                startInstanceLocation);
 
 #else
-    mCurrMaterial = 0;
     Mesh* pCurrMesh = 0;
     uint32 currStartIndex = 0xFFFFFFFF;
 
@@ -439,14 +435,14 @@ void GBufferRendererD3D11::Draw(NFE_CONTEXT_ARG, const RenderCommandBuffer& buff
     {
         const RenderCommand& command = buffer.m_Commands[i];
 
-        bool materialChange = (command.pMaterial != mCurrMaterial);
+        bool materialChange = (command.pMaterial != currMaterial);
         bool meshChange = ((pCurrMesh != command.pMesh) || (currStartIndex != command.startIndex));
 
         //material has changed
         if (materialChange)
         {
-            mCurrMaterial = command.pMaterial;
-            SetMaterial(mCurrMaterial);
+            currMaterial = command.pMaterial;
+            SetMaterial(currMaterial);
         }
 
         //mesh has changed

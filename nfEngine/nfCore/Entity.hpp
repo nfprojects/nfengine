@@ -89,7 +89,7 @@ class CORE_API Entity : public Util::Aligned
 
 
     // Entity unique name.
-    char* mName;
+    std::string mName;
 
     uint32 mFlags;
     void* mUserPointer;

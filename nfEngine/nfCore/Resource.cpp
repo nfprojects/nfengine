@@ -24,6 +24,8 @@ ResourceBase::ResourceBase()
     mOnLoad = NULL;
     mOnUnload = NULL;
     mUserPtr = NULL;
+
+    memset(mName, '\0', sizeof(mName));
 }
 
 const char* ResourceBase::GetName() const

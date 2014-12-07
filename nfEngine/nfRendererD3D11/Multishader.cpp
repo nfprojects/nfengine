@@ -60,6 +60,7 @@ Multishader::Multishader()
 {
     mType = ShaderType::Unknown;
     mCurrHash = 0;
+    mRenderer = nullptr;
 }
 
 Multishader::~Multishader()
@@ -142,7 +143,7 @@ bool Multishader::Init(RendererD3D11* pRenderer, ShaderType type, const char* sh
 bool Multishader::LoadSubshader(UINT* pMacros, std::string& CompileLog)
 {
     char TmpStrBuffer[1024];
-    ULONG hash = 0;
+    uint32 hash = 0;
 
     if ((macros.size() > 0) && pMacros)
     {

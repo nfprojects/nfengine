@@ -20,6 +20,8 @@ struct GPUStats
     uint32 HSInvocations;
     uint32 DSInvocations;
     uint32 CSInvocations;
+
+    GPUStats();
 };
 
 struct GPUFeatures

@@ -108,7 +108,8 @@ size_t BufferOutputStream::Write(const void* pSrc, size_t num)
             mBufferSize *= 2;
 
         mData = malloc(mBufferSize);
-        if (!mData) return 0; //malloc failed
+        if (!mData)
+            return 0;
 
         mUsed = 0;
     }
@@ -120,8 +121,14 @@ size_t BufferOutputStream::Write(const void* pSrc, size_t num)
             while (mBufferSize < minSize)
                 mBufferSize *= 2;
 
-            mData = realloc(mData, mBufferSize); // TODO: fix memory leak on realloc failure
-            if (!mData) return 0; //realloc failed
+            void* newData = realloc(mData, mBufferSize);
+            if (!newData)
+            {
+                free(mData);
+                mData = nullptr;
+                return 0;
+            }
+            mData = newData;
         }
     }
 

@@ -94,7 +94,7 @@ HRESULT D3DError(HRESULT hr, const char* pStr, const char* pFile, int line, bool
             messageStr += pFile;
             messageStr += "\".\n\n";
 
-            sprintf_s(tmpStr, "0x%08X", hr);
+            sprintf_s(tmpStr, "0x%08X", static_cast<uint32>(hr));
             messageStr += "HRESULT = ";
             messageStr += tmpStr;
             messageStr += " (";
