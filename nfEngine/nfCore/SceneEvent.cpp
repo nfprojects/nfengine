@@ -102,14 +102,16 @@ bool EventSystem::Pop(SceneEvent* pEventID, void** ppData)
 
 void EventSystem::Flush()
 {
-    void* pNewBuffer = realloc(mBuffer, g_EventBuffInitialCapacity);
-    if (mBuffer == NULL)
+    void* newBuffer = realloc(mBuffer, g_EventBuffInitialCapacity);
+    if (newBuffer == nullptr)
     {
+        free(mBuffer);
+        mBuffer = nullptr;
         LOG_ERROR("Events buffer allocation failed");
         return;
     }
 
-    mBuffer = pNewBuffer;
+    mBuffer = newBuffer;
     mCapacity = g_EventBuffInitialCapacity;
     mSize = 0;
     mSeekPos = 0;

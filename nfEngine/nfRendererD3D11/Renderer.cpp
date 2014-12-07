@@ -13,6 +13,22 @@
 namespace NFE {
 namespace Render {
 
+GPUStats::GPUStats()
+{
+    IAVertices = 0;
+    IAPrimitives = 0;
+    VSInvocations = 0;
+    GSInvocations = 0;
+    GSPrimitives = 0;
+    CInvocations = 0;
+    CPrimitives = 0;
+    PSInvocations = 0;
+    HSInvocations = 0;
+    DSInvocations = 0;
+    CSInvocations = 0;
+}
+
+
 RendererD3D11::RendererD3D11()
 {
     // TODO: use smart pointers
@@ -37,6 +53,16 @@ RendererD3D11::RendererD3D11()
     screenQuadVB = 0;
     screenQuadIB = 0;
     fullScreenQuadIL = 0;
+
+    mImmContext = nullptr;
+    mPostProcessRenderer = nullptr;
+    mGuiRenderer = nullptr;
+    mLightRenderer = nullptr;
+    mDebugRenderer = nullptr;
+    mGBufferRenderer = nullptr;
+    mShadowRenderer = nullptr;
+
+    bufferWidth = bufferHeight = 0;
 }
 
 RendererD3D11::~RendererD3D11()

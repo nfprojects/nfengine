@@ -25,6 +25,8 @@ struct SoundInfo
     uint32 sampleRate;
 
     uint64 numSamples;
+
+    SoundInfo();
 };
 
 /**

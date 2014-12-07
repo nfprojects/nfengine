@@ -14,6 +14,7 @@ RenderContextD3D11::RenderContextD3D11()
     mBoundPS = 0;
     mBoundCS = 0;
 
+    mRenderer = 0;
     D3DContext = 0;
     commandList = 0;
 

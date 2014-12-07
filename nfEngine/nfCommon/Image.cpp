@@ -85,15 +85,17 @@ Image::Image()
 {
     mWidth = 0;
     mHeight = 0;
+    mFormat = ImageFormat::UNKNOWN;
 }
 
 Image::Image(const Image& src)
 {
     mWidth = src.mWidth;
     mHeight = src.mHeight;
+    mFormat = src.mFormat;
 
     //clone all mMipmaps
-    for (uint32 i = 0; i < src.mMipmaps.size(); i++)
+    for (size_t i = 0; i < src.mMipmaps.size(); i++)
     {
         ImageMipmap mipmap;
         mipmap.width = src.mMipmaps[i].width;

@@ -27,7 +27,6 @@ Entity::Entity()
     mSegment = nullptr;
     mUserPointer = nullptr;
     mParent = nullptr;
-    mName = nullptr;
 }
 
 /*
@@ -44,22 +43,19 @@ Entity::~Entity()
     for (auto pChild : mChildren) pChild->mParent =
             nullptr; // TODO: switch child's parent to a grandparnet
     mChildren.clear();
-
-    if (mName)
-        free(mName);
 }
 
 
 Result Entity::SetName(const char* pNewName)
 {
     // TODO: validate input, check if a name is not used
-    mName = strdup(pNewName);
+    mName = pNewName;
     return Result::OK;
 }
 
 const char* Entity::GetName() const
 {
-    return mName;
+    return mName.c_str();
 }
 
 SceneManager* Entity::GetScene() const

@@ -41,7 +41,7 @@ GuiRendererD3D11::GuiRendererD3D11()
     mBlendState = NULL;
 
     mQuads = NULL;
-
+    mQueuedQuads = 0;
 }
 
 GuiRendererD3D11::~GuiRendererD3D11()
@@ -185,10 +185,11 @@ unsigned int CeilToPowerOf2(unsigned int x)
 
 Font::Font()
 {
-    texture = 0;
-    characters = 0;
+    texture = nullptr;
+    characters = nullptr;
     height = 0;
     charCount = 0;
+    texWidth = texHeight = 0;
 }
 
 

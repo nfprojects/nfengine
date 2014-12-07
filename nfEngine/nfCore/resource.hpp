@@ -61,7 +61,6 @@ protected:
     volatile uint32 mState;        // current state
     volatile uint32 mDestState;
     volatile uint32 mRefCount;     // reference counter TODO: references tracking in debug mode
-    volatile uint32 mReloadDelay;
     char mName[RES_NAME_MAX_LENGTH]; // resource name
 
     void* mUserPtr;

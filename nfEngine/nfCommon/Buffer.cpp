@@ -19,16 +19,20 @@ Buffer::Buffer()
 Buffer::Buffer(const Buffer& src)
 {
     mSize = src.mSize;
-
     if (mSize)
     {
-        mData = realloc(mData, mSize);
+        void* newData = realloc(mData, mSize);
+        if (newData == nullptr)
+        {
+            Release();
+            return;
+        }
+
+        mData = newData;
         memcpy(mData, src.mData, mSize);
     }
     else
-    {
-        mData = nullptr;
-    }
+        Release();
 }
 
 Buffer::Buffer(Buffer&& other)
@@ -46,11 +50,20 @@ Buffer::~Buffer()
 
 Buffer& Buffer::operator=(const Buffer& src)
 {
-    mSize = src.mSize;
-    if (mSize)
+    if (this != &src)
     {
-        mData = realloc(mData, mSize);
-        memcpy(mData, src.mData, mSize);
+        mSize = src.mSize;
+        if (mSize)
+        {
+            void* newData = realloc(mData, mSize);
+            if (newData)
+            {
+                mData = newData;
+                memcpy(mData, src.mData, mSize);
+            }
+            else
+                Release();
+        }
     }
 
     return *this;
@@ -65,8 +78,15 @@ void Buffer::Create(size_t size)
 void Buffer::Load(void* pData, size_t size)
 {
     mSize = size;
-    mData = realloc(mData, size);
-    memcpy(mData, pData, size);
+    void* newData = realloc(mData, size);
+
+    if (newData)
+    {
+        mData = newData;
+        memcpy(mData, pData, size);
+    }
+    else
+        Release();
 }
 
 void Buffer::Release()

@@ -29,6 +29,16 @@ struct WaveHeader
     unsigned long       subchunk2Size;  /* Sampled data length    */
 };
 
+
+SoundInfo::SoundInfo()
+{
+    numChannels = 0;
+    bytesPerSample = 0;
+    sampleRate = 0;
+    numSamples = 0;
+}
+
+
 SoundSample::SoundSample()
 {
     mSampleData = NULL;

@@ -22,6 +22,10 @@ DebugRendererD3D11::DebugRendererD3D11()
     mVertexQueue = 0;
     mIndexBuffer = 0;
 
+    mIndexQueue = 0;
+    mIndexQueueSize = 0;
+    mVertexQueueSize = 0;
+
     mPolyType = DebugPolyType::Line;
 }
 

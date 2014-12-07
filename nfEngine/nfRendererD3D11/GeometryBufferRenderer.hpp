@@ -33,7 +33,6 @@ private:
 
 
     // TODO: the following must be per-context !!!
-    const RendererMaterial* mCurrMaterial;
     InstanceData* mInstanceData;
 
 public:

@@ -9,6 +9,7 @@ packerToolUI::packerToolUI()
     : mIsUsable(true)
     , mBeforeLoopCommand(nullptr)
     , mAfterLoopCommand(nullptr)
+    , mConfigFile(nullptr)
 {
     //TODO Add config support. Uncomment below lines and change isUsable default value when config support is finished.
     /*

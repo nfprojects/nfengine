@@ -46,7 +46,13 @@ int Logger::OpenFile(const char* pFile, LoggerOutputType outputType)
     pLoggerOutput->file.open(pFile, std::ios::out);
 
     if (!pLoggerOutput->file.good())
+    {
+        delete pLoggerOutput;
         return 1;
+    }
+
+    pLoggerOutput->outputType = outputType;
+    mOutputs[std::string(pFile)] = pLoggerOutput;
 
     time_t rawtime;
     tm timeinfo;
@@ -108,9 +114,6 @@ int Logger::OpenFile(const char* pFile, LoggerOutputType outputType)
         default:
             return 1;
     };
-
-    pLoggerOutput->outputType = outputType;
-    mOutputs[std::string(pFile)] = pLoggerOutput;
 
     mTimer.Start();
     return 0;
@@ -197,6 +200,8 @@ void Logger::Log(LogType type, const char* pFunction, const char* pSource, int l
 
         loggerOut.second->file.flush();
     }
+
+    va_end(args);
 }
 
 } // namespace Common

@@ -169,9 +169,12 @@ void Callback_CreateArchive(std::string& cmdString)
     if (cmd.size() < 4 || cmd.rfind(cs_Extension) == std::string::npos)
         cmd += cs_Extension;
 
-    FILE* p_File = fopen(cmd.c_str(), "r");
-    if (p_File != NULL)
+    FILE* file = fopen(cmd.c_str(), "r");
+    if (file != NULL)
     {
+        // TODO: use dedicated function (when it's created) to check if a file exists
+        fclose(file);
+
         char c;
         std::cout << "PAK under given name already exists! Overwrite? (y/n): ";
         std::cin >> c;

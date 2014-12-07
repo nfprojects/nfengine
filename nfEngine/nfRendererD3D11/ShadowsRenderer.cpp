@@ -189,11 +189,11 @@ void ShadowRendererD3D11::Leave(NFE_CONTEXT_ARG)
 void ShadowRendererD3D11::SetDestination(NFE_CONTEXT_ARG, const CameraRenderDesc* pCamera,
         IShadowMap* pShadowMap, uint32 faceID)
 {
+    if (pShadowMap == nullptr)
+        return;
+
     auto pCtx = (RenderContextD3D11*)pContext;
     ShadowMapD3D11* pSM = (ShadowMapD3D11*)pShadowMap;
-
-    if (pShadowMap == 0)
-        return;
 
     float clearColor[] = {1.0f, 0.0f, 0.0f, 0.0f};
 
