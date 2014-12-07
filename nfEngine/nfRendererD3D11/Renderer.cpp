@@ -284,13 +284,13 @@ int RendererD3D11::Init()
     D3D_CHECK(D3DDevice->CreateBuffer(&bd, &initData, &screenQuadVB));
 
     //full screen quad index buffer
-    uint32 pIndicies[] = {0, 1, 2, 0, 2, 3};
+    uint32 pIndices[] = {0, 1, 2, 0, 2, 3};
     bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
     bd.ByteWidth = 6 * sizeof(uint32);
     bd.CPUAccessFlags = 0;
     bd.Usage = D3D11_USAGE_IMMUTABLE;
     bd.StructureByteStride = sizeof(uint32);
-    initData.pSysMem = pIndicies;
+    initData.pSysMem = pIndices;
     D3D_CHECK(D3DDevice->CreateBuffer(&bd, &initData, &screenQuadIB));
 
 

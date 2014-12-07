@@ -22,10 +22,10 @@ using namespace Render;
 Mesh::Mesh()
 {
     mVerticies = 0;
-    mIndicies = 0;
+    mIndices = 0;
 
     mVeriticesCount = 0;
-    mIndiciesCount = 0;
+    mIndicesCount = 0;
     mSubMeshesCount = 0;
 
     mVB = 0;
@@ -49,14 +49,14 @@ Result Mesh::AllocateVerticies(uint32 count)
     return Result::OK;
 }
 
-Result Mesh::AllocateIndicies(uint32 count)
+Result Mesh::AllocateIndices(uint32 count)
 {
-    uint32* newIndices = (uint32*)realloc(mIndicies, sizeof(uint32) * count);
+    uint32* newIndices = (uint32*)realloc(mIndices, sizeof(uint32) * count);
     if (newIndices == 0)
         return Result::AllocationError;
 
-    mIndicies = newIndices;
-    mIndiciesCount = count;
+    mIndices = newIndices;
+    mIndicesCount = count;
     return Result::OK;
 }
 
@@ -93,7 +93,7 @@ bool Mesh::OnLoad()
             return false;
         }
 
-        mpIB = g_pRenderer->CreateIndexBuffer(mIndiciesCount, mpIndicies);
+        mpIB = g_pRenderer->CreateIndexBuffer(mIndicesCount, mpIndices);
         if (mpIB == 0)
         {
             LOG_ERROR("Failed to create index buffer for mesh '%s'.", mName);
@@ -128,7 +128,7 @@ bool Mesh::OnLoad()
 
     //read basic mesh info
     fread(&mVeriticesCount, sizeof(int), 1, pFile);
-    fread(&mIndiciesCount, sizeof(int), 1, pFile);
+    fread(&mIndicesCount, sizeof(int), 1, pFile);
     fread(&mSubMeshesCount, sizeof(int), 1, pFile);
 
     //read vertices
@@ -148,11 +148,11 @@ bool Mesh::OnLoad()
         return false;
     }
 
-    uint32* pIndicies = (uint32*)malloc(mIndiciesCount * sizeof(uint32));
-    fread(pIndicies, sizeof(uint32), mIndiciesCount, pFile);
+    uint32* pIndices = (uint32*)malloc(mIndicesCount * sizeof(uint32));
+    fread(pIndices, sizeof(uint32), mIndicesCount, pFile);
     mIB = g_pRenderer->CreateBuffer();
     if (!mIB ||
-            !mIB->Init(IRendererBuffer::Type::Index, pIndicies, mIndiciesCount * sizeof(uint32)))
+            !mIB->Init(IRendererBuffer::Type::Index, pIndices, mIndicesCount * sizeof(uint32)))
     {
         LOG_ERROR("Failed to create index buffer for mesh '%s'.", mName);
         fclose(pFile);
@@ -177,12 +177,12 @@ bool Mesh::OnLoad()
         mSubMeshes[i].material->AddRef();
 
         Vector vertex;
-        Vector vMin = pVerticies[pIndicies[startIndex]].position;
+        Vector vMin = pVerticies[pIndices[startIndex]].position;
         Vector vMax = vMin;
 
         for (int j = startIndex + 1; j < lastIndex; j++)
         {
-            vertex = pVerticies[pIndicies[j]].position;
+            vertex = pVerticies[pIndices[j]].position;
             vMin = VectorMin(vMin, vertex);
             vMax = VectorMax(vMax, vertex);
         }
@@ -203,11 +203,11 @@ bool Mesh::OnLoad()
     }
 
     free(pSubMeshes);
-    free(pIndicies);
+    free(pIndices);
     free(pVerticies);
 
-    LOG_SUCCESS("Mesh '%s' loaded in %.3f sec. Verticies: %u, Indicies: %u, Submeshes: %u.", mName,
-                timer.Stop(), mVeriticesCount, mIndiciesCount, mSubMeshesCount);
+    LOG_SUCCESS("Mesh '%s' loaded in %.3f sec. Verticies: %u, Indices: %u, Submeshes: %u.", mName,
+                timer.Stop(), mVeriticesCount, mIndicesCount, mSubMeshesCount);
     return true;
 }
 
@@ -223,7 +223,7 @@ char FloatToChar(float x)
     return (char)x;
 }
 
-void Mesh::Create(const CustomMeshVertex* pVerticies, uint32 verticiesCount, uint32* pIndicies, uint32 indiciesCount, const CustomMeshSubMesh* pSubmeshes, uint32 submeshesCount)
+void Mesh::Create(const CustomMeshVertex* pVerticies, uint32 verticiesCount, uint32* pIndices, uint32 indicesCount, const CustomMeshSubMesh* pSubmeshes, uint32 submeshesCount)
 {
     Release();
     mCustom = true;
@@ -247,10 +247,10 @@ void Mesh::Create(const CustomMeshVertex* pVerticies, uint32 verticiesCount, uin
         mpVerticies[i].Tangent[3] = 0;
     }
 
-    //copy indicies
-    mIndiciesCount = indiciesCount;
-    mpIndicies = (uint32*)malloc(sizeof(uint32) * indiciesCount);
-    memcpy(mpIndicies, pIndicies, sizeof(uint32) * indiciesCount);
+    //copy indices
+    mIndicesCount = indicesCount;
+    mpIndices = (uint32*)malloc(sizeof(uint32) * indicesCount);
+    memcpy(mpIndices, pIndices, sizeof(uint32) * indicesCount);
 
 
     //copy submeshew & calculate AABB
@@ -267,12 +267,12 @@ void Mesh::Create(const CustomMeshVertex* pVerticies, uint32 verticiesCount, uin
 
 
         Vector vertex;
-        Vector vMin = mpVerticies[mpIndicies[startIndex]].Position;
+        Vector vMin = mpVerticies[mpIndices[startIndex]].Position;
         Vector vMax = vMin;
 
         for (int j = startIndex+1; j<lastIndex; j++)
         {
-            vertex = mpVerticies[mpIndicies[j]].Position;
+            vertex = mpVerticies[mpIndices[j]].Position;
             vMin = VectorMin(vMin, vertex);
             vMax = VectorMax(vMax, vertex);
         }
@@ -303,10 +303,10 @@ void Mesh::Release()
         mVerticies = 0;
     }
 
-    if (mIndicies)
+    if (mIndices)
     {
-        free(mIndicies);
-        mIndicies = 0;
+        free(mIndices);
+        mIndices = 0;
     }
 
     if (mSubMeshes)

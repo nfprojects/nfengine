@@ -64,11 +64,11 @@ class CORE_API Mesh : public ResourceBase
 
 private:
     Render::MeshVertex* mVerticies;
-    uint32* mIndicies;
+    uint32* mIndices;
 
     SubMesh* mSubMeshes;
     uint32 mVeriticesCount;
-    uint32 mIndiciesCount;
+    uint32 mIndicesCount;
     uint32 mSubMeshesCount;
 
     Math::Box mLocalBox;
@@ -79,7 +79,7 @@ private:
 protected:
     /// when creating custom mesh, use this functions:
     Result AllocateVerticies(uint32 count);
-    Result AllocateIndicies(uint32 count);
+    Result AllocateIndices(uint32 count);
     Result AllocateSubmeshes(uint32 count);
 
 public:

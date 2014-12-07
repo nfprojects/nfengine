@@ -37,7 +37,7 @@ void CreateCustomFloorMesh()
         verticies[i].Tangent = Float3(1.0f, 0.0f, 0.0f);
     }
 
-    uint32 indicies[] = {0, 1, 2,  1, 3, 2};
+    uint32 indices[] = {0, 1, 2,  1, 3, 2};
 
     CustomMeshSubMesh submeshes[2];
     submeshes[0].m_IndexOffset = 0;
@@ -50,7 +50,7 @@ void CreateCustomFloorMesh()
 
 
     Mesh* pCustomMesh = ENGINE_GET_MESH("floor_mesh");
-    pCustomMesh->Create(verticies, 4,  indicies, 6,  submeshes, 2);
+    pCustomMesh->Create(verticies, 4,  indices, 6,  submeshes, 2);
     //pCustomMesh->AddRef();
 }
 */

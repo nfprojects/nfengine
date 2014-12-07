@@ -122,16 +122,16 @@ bool Convert(const char* pFilePath)
 
     //write basic info
     int verticesCount = model.getNumberOfVertices();
-    int indiciesCount = model.getNumberOfIndices();
+    int indicesCount = model.getNumberOfIndices();
     int subMeshesCount = model.getNumberOfMeshes();
 
     printf("Veritces count: %i\n", verticesCount);
-    printf("Indicies count: %i\n", indiciesCount);
+    printf("Indices count: %i\n", indicesCount);
     printf("Submeshes count: %i\n", subMeshesCount);
 
     fwrite("nfm", 4, 1, pOutput); //signature
     fwrite(&verticesCount, sizeof(int), 1, pOutput);
-    fwrite(&indiciesCount, sizeof(int), 1, pOutput);
+    fwrite(&indicesCount, sizeof(int), 1, pOutput);
     fwrite(&subMeshesCount, sizeof(int), 1, pOutput);
 
 
@@ -187,8 +187,8 @@ bool Convert(const char* pFilePath)
     free(pVertices);
 
 
-    //write indicies
-    fwrite(model.getIndexBuffer(), sizeof(int), indiciesCount, pOutput);
+    //write indices
+    fwrite(model.getIndexBuffer(), sizeof(int), indicesCount, pOutput);
 
 
 

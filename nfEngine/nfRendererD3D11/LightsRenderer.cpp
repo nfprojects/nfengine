@@ -265,9 +265,9 @@ Result LightsRendererD3D11::Init(RendererD3D11* pRenderer)
     bd.StructureByteStride = sizeof(Float3);
     HR |= D3D_CHECK(pRenderer->D3DDevice->CreateBuffer(&bd, 0, &mSpotLightVB));
 
-    uint16 pIndicies[] =
+    uint16 pIndices[] =
     {
-        //indicies for box / cube
+        //indices for box / cube
         0, 1, 3, 0, 3, 2, // Z- face
         7, 5, 4, 7, 4, 6, // Z+ face
         6, 4, 0, 6, 0, 2, // X- face
@@ -275,7 +275,7 @@ Result LightsRendererD3D11::Init(RendererD3D11* pRenderer)
         7, 2, 3, 7, 6, 2, // Y+ face
         5, 1, 0, 5, 0, 4,  // Y- face
 
-        //indicies for
+        //indices for
         2, 1, 10, 2, 10, 6, 2, 6, 5, 2, 5, 9, 2, 9, 1, //top cap
         0, 11, 7, 0, 7, 4, 0, 4, 8, 0, 8, 3, 0, 3, 11, //bottom cap
         9, 4, 1, 4, 7, 1, 7, 10, 1, 7, 11, 10, 11, 6, 10, 6, 11, 3, 6, 3, 5, 5, 3, 8, 9, 5, 8, 9, 8, 4, //rest
@@ -286,7 +286,7 @@ Result LightsRendererD3D11::Init(RendererD3D11* pRenderer)
     bd.CPUAccessFlags = 0;
     bd.Usage = D3D11_USAGE_IMMUTABLE;
     bd.StructureByteStride = sizeof(uint16);
-    initData.pSysMem = pIndicies;
+    initData.pSysMem = pIndices;
     HR |= D3D_CHECK(pRenderer->D3DDevice->CreateBuffer(&bd, &initData, &mLightIB));
 
 
