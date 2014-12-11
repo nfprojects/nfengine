@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_2a7897f1",
+        "filename": "Scripts/cppcheck.bat",
+        "patchSetId": 3
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-12-11T18:18:28Z",
+      "side": 1,
+      "message": "Provide additional check to see if cppcheck is available on the system - see format.bat. If it is not available, output message, pause and then exit the script.",
+      "revId": "7688b221a02a5fff971d0d0596803d55f96aab1c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
