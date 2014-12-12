@@ -45,6 +45,30 @@
       "revId": "ae5a82a2eccd672a1fe69f94970282b45c6b9986",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7e06e1cf",
+        "filename": "Scripts/format.bat",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2014-12-12T21:48:25Z",
+      "side": 1,
+      "message": "You can delete it",
+      "parentUuid": "fafc7978_5e62fdad",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 1
+      },
+      "revId": "ae5a82a2eccd672a1fe69f94970282b45c6b9986",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
