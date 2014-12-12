@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_7e5f01e6",
+        "filename": "Scripts/cppcheck.bat",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-12-12T21:37:45Z",
+      "side": 1,
+      "message": "This is added because these scripts are often launched from Explorer (not command line), which caused screen with error message to disappear.",
+      "range": {
+        "startLine": 12,
+        "startChar": 4,
+        "endLine": 12,
+        "endChar": 9
+      },
+      "revId": "ae5a82a2eccd672a1fe69f94970282b45c6b9986",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5e62fdad",
+        "filename": "Scripts/format.bat",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-12-12T21:37:45Z",
+      "side": 1,
+      "message": "I started wondering, maybe this part is not needed. After all, this scripts won\u0027t be moved from Scripts dir and if someone does so, it is only for his resposibility. Delete it?",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 1
+      },
+      "revId": "ae5a82a2eccd672a1fe69f94970282b45c6b9986",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
