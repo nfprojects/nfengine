@@ -9,6 +9,7 @@ if defined FOUND (
     echo NOT FOUND
     echo     Make sure you download astyle before using this script.
     echo     See README.md for more info. Exiting.
+    pause
     exit /b
 )
 
