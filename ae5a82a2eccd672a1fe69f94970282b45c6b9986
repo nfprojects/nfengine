@@ -69,6 +69,30 @@
       "revId": "ae5a82a2eccd672a1fe69f94970282b45c6b9986",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7e2d4146",
+        "filename": "Scripts/format.bat",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2014-12-12T21:53:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_7e06e1cf",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 1
+      },
+      "revId": "ae5a82a2eccd672a1fe69f94970282b45c6b9986",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
