@@ -43,4 +43,5 @@
 *.vcxproj.user
 
 # script outputs
-Scripts/cppcheck_result.txt
+cppcheck_result.txt
+clean_errors.txt

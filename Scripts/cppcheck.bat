@@ -9,11 +9,12 @@ if defined FOUND (
     echo NOT FOUND
     echo     Make sure you download cppcheck before using this script.
     echo     See README.md for more info. Exiting.
+    pause
     exit /b
 )
 
 pushd .
 cd %~dp0\..
 echo Current dir is %cd%
-cppcheck ./nfEngine/ -j 8 --enable=warning 2> Scripts/cppcheck_result.txt
+cppcheck ./nfEngine/ -j 8 --enable=warning 2> cppcheck_result.txt
 popd
