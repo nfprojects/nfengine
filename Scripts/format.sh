@@ -17,11 +17,20 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd ${DIR}/..
 echo -n "Current directory is "; pwd
 
-# launch astyle for all projects
-astyle --options=Scripts/style.cfg -r -v --suffix=none nfEngine/*.cpp nfEngine/*.hpp
-echo
-# Prerequisites.hpp should have namespaces indented to improve readability
-# run astyle once more specifically on this file
-astyle --options=Scripts/style.cfg -v --suffix=none --indent-namespaces nfEngine/nfCore/Prerequisites.hpp
+if [ "$1" == "dry" ] ; then
+    # launch astyle for all projects
+    astyle --options=Scripts/style.cfg --dry-run --formatted -r -v --suffix=none --exclude=nfEngine/nfCore/Prerequisites.hpp nfEngine/*.cpp nfEngine/*.hpp
+    echo
+    # Prerequisites.hpp should have namespaces indented to improve readability
+    # run astyle once more specifically on this file
+    astyle --options=Scripts/style.cfg --dry-run --formatted -v --suffix=none --indent-namespaces nfEngine/nfCore/Prerequisites.hpp
+else
+    # launch astyle for all projects
+    astyle --options=Scripts/style.cfg -r -v --suffix=none --exclude=nfEngine/nfCore/Prerequisites.hpp nfEngine/*.cpp nfEngine/*.hpp
+    echo
+    # Prerequisites.hpp should have namespaces indented to improve readability
+    # run astyle once more specifically on this file
+    astyle --options=Scripts/style.cfg -v --suffix=none --indent-namespaces nfEngine/nfCore/Prerequisites.hpp
+fi
 
 popd > /dev/null
