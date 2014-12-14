@@ -17,6 +17,10 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd ${DIR}/..
 echo -n "Current directory is "; pwd
 
-cppcheck ./nfEngine/ -j 8 --enable=warning 2> cppcheck_result.txt
+if [ "$1" == "quiet" ] ; then
+    cppcheck ./nfEngine/ -q -j 8 --enable=warning 2> cppcheck_result.txt
+else
+    cppcheck ./nfEngine/ -j 8 --enable=warning 2> cppcheck_result.txt
+fi
 
 popd > /dev/null
