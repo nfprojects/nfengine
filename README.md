@@ -173,7 +173,7 @@ nfEngine project contains two main long-running branches with code:
 
 Since the end of October, review of nfEngine commits is moved to GerritHub. All review should be done there - pull requests coming from GitHub will be automatically rejected.
 
-Change will be merged only when it will pass code review and verification process, and when provided change will be mergeable to devel branch without conflicts.
+Change will be merged only when it will pass code review and verification process, and when provided change will be mergeable to devel branch without conflicts. Before committing it is recommended to use pre-commit script hidden in Scripts directory, which will automatically run cppcheck, astyle and tests. As a point of reference, use this script on current top commit on devel branch - same results between run on remote branch devel and on change to be pushed will almost guarantee passed Verification process.
 
 Changes to master branch are forbidden and will be rejected immediately by project owners.
 

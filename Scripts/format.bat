@@ -19,11 +19,24 @@ pushd .
 cd %~dp0\..
 echo Current dir is %cd%
 
-:: launch astyle for all projects
-astyle --options=Scripts\style.cfg -r -v --suffix=none nfEngine\*.cpp nfEngine\*.hpp
-echo.
-:: Prerequisites.hpp should have namespaces indented to improve readability
-:: run astyle once more specifically on this file
-astyle --options=Scripts\style.cfg -v --suffix=none --indent-namespaces nfEngine\nfCore\Prerequisites.hpp
+if "%1" == "dry" (
+    echo Triggering astyle in dry run mode
+    echo.
+    :: launch astyle for all projects
+    astyle --options=Scripts\style.cfg -r -v --dry-run --formatted --suffix=none --exclude=nfEngine\nfCore\Prerequisites.hpp nfEngine\*.cpp nfEngine\*.hpp
+    echo.
+    :: Prerequisites.hpp should have namespaces indented to improve readability
+    :: run astyle once more specifically on this file
+    astyle --options=Scripts\style.cfg -v --dry-run --formatted --suffix=none --indent-namespaces nfEngine\nfCore\Prerequisites.hpp
+) else (
+    echo Triggering astyle
+    echo.
+    :: launch astyle for all projects
+    astyle --options=Scripts\style.cfg -r -v --suffix=none --exclude=nfEngine\nfCore\Prerequisites.hpp nfEngine\*.cpp nfEngine\*.hpp
+    echo.
+    :: Prerequisites.hpp should have namespaces indented to improve readability
+    :: run astyle once more specifically on this file
+    astyle --options=Scripts\style.cfg -v --suffix=none --indent-namespaces nfEngine\nfCore\Prerequisites.hpp
+)
 
 popd

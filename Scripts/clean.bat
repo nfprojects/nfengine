@@ -21,4 +21,8 @@ rd /S /Q "ShaderCache" 2>> clean_errors.txt
 rd /S /Q "ShaderCache_Debug" 2>> clean_errors.txt
 echo DONE
 
+echo | set /p=Removing other files... 
+del /F /Q "cppcheck_result.txt"
+echo DONE
+
 popd
