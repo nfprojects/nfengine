@@ -116,6 +116,15 @@
     <ClInclude Include="Packer\PackerResourceFile.hpp">
       <Filter>Header Files\Packer</Filter>
     </ClInclude>
+    <ClInclude Include="FileSystem.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Win\Common.hpp">
+      <Filter>Header Files\Win</Filter>
+    </ClInclude>
+    <ClInclude Include="File.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -180,6 +189,15 @@
     </ClCompile>
     <ClCompile Include="Packer\PackerResourceFile.cpp">
       <Filter>Source Files\Packer</Filter>
+    </ClCompile>
+    <ClCompile Include="Win\FileSystem.cpp">
+      <Filter>Source Files\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="Win\File.cpp">
+      <Filter>Source Files\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="Win\Common.cpp">
+      <Filter>Source Files\Win</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
