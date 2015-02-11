@@ -3,7 +3,7 @@
 echo
 echo "Pre-commit script for nfEngine project"
 echo "    Script meant to verify if provided commit is OK"
-echo.
+echo
 
 pushd . > /dev/null
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
@@ -14,7 +14,7 @@ echo "Running code analysis"
 echo "====================="
 echo
 
-cppcheck.sh quiet
+./cppcheck.sh quiet
 if [ -f "../cppcheck_result.txt" ] ; then
     echo "Results from cppcheck:"
     cat ../cppcheck_result.txt
@@ -26,7 +26,7 @@ echo "Running style check"
 echo "==================="
 echo
 
-format.sh dry
+./format.sh dry
 
 echo
 echo "============="
@@ -34,7 +34,7 @@ echo "Running tests"
 echo "============="
 echo
 
-tests.sh
+./tests.sh
 
 popd > /dev/null
 

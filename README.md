@@ -109,7 +109,7 @@ Doxygen documentation can be generated using "gen_doc.bat" script. Doxygen needs
 Formatting
 ----------
 
-Keep the code format consistent. Run format.bat script to format the code automatically. ArtisticStyle needs to be installed in the system and "astyle" command must be visible in the shell.
+Keep the code format consistent. Run format.bat/format.sh script to format the code automatically. ArtisticStyle (minimum version 2.05) needs to be installed in the system and "astyle" command must be visible in the shell.
 
 ArtisticStyle can be downloaded [here](http://astyle.sourceforge.net/).
 
