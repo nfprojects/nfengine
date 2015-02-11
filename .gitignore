@@ -11,21 +11,28 @@
 /Bin/x64/Debug
 /Bin/x64/Release
 
+# CMake intermediate files
+CMakeFiles
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
 # Visual Studio precompiled headers
 /ipch
 
 # Visual Studio intermediate projects' directories
 /Obj
 
+# Output dir and files
+/Bin
+*.a
+*.so
+
 # External files updated through GDrive
 /nfEngineTest/Data
 
 # Deps directory updated through separate Git repo
 /nfenginedeps
-
-# TODO: remove
-/Game/Win32
-/Game/x64
 
 # Shader compilation results
 /ShaderCache
