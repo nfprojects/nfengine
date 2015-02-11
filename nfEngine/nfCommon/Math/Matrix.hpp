@@ -9,9 +9,9 @@
 namespace NFE {
 namespace Math {
 
-NFE_ALIGN(16)
-struct Matrix
+class NFE_ALIGN(16) Matrix
 {
+public:
     union
     {
         __m128 r[4];

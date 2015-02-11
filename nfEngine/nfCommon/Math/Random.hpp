@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include "../nfCommon.hpp"
+
 namespace NFE {
 namespace Math {
 
@@ -15,7 +17,7 @@ namespace Math {
 class NFCOMMON_API Random
 {
 private:
-    unsigned __int64 mSeed;
+    NFE::Common::uint64 mSeed;
 
     // XOR-shift algorithm
     __forceinline void Shuffle()
@@ -27,9 +29,9 @@ private:
 
 public:
     Random();
-    Random(__int64 seed);
+    Random(NFE::Common::int64 seed);
 
-    unsigned __int64 GetLong();
+    NFE::Common::uint64 GetLong();
     unsigned int GetInt();
 
     //Generate random float with uniform distribution from range (0.0f, 1.0f]

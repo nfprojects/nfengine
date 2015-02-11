@@ -19,6 +19,8 @@
 #pragma warning(disable: 4611)
 #endif
 
+
+#include <iostream>
 #include <string>
 #include <vector>
 #include <queue>
@@ -29,19 +31,40 @@
 #include <iomanip>
 #include <mutex>
 #include <thread>
+#include <cstring>
+#include <cassert>
+
 
 // DLL import / export macro
+#ifdef WIN32
 #ifdef NFCOMMON_EXPORTS
 #define NFCOMMON_API __declspec(dllexport)
-#else
+#else // NFCOMMON_EXPORTS
 #define NFCOMMON_API __declspec(dllimport)
-#endif
+#endif // NFCOMMON_EXPORTS
+#else // WIN32
+#define NFCOMMON_API __attribute__((visibility("default")))
+#endif // WIN32
+
+// __forceinline and declspec(align(x)) replacement on other systems
+#if defined(__LINUX__) | defined(__linux__)
+#define __forceinline inline __attribute__((always_inline))
+#endif // defined(__LINUX__) | defined(__linux__)
+
 
 namespace NFE {
 namespace Common {
 
+// Linux datatypes workaround
+#if defined(__LINUX__) | defined(__linux__)
+typedef uint64_t __uint64;
+typedef int64_t __int64;
+#elif defined(WIN32)
+typedef unsigned __int64 __uint64;
+#endif // defined(__LINUX__) | defined(__linux__)
+
 // define basic data types
-typedef unsigned __int64 uint64;
+typedef __uint64 uint64;
 typedef __int64 int64;
 typedef unsigned int uint32;
 typedef int int32;

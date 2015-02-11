@@ -20,7 +20,11 @@
 
 
 #define NFE_INLINE __forceinline
+#ifdef WIN32
 #define NFE_ALIGN(a) __declspec(align(a))
+#else // WIN32
+#define NFE_ALIGN(a) __attribute__((aligned(a)))
+#endif // WIN32
 
 #define NFE_MATH_EPSILON (0.000001f)
 #define NFE_MATH_PI (3.14159265359f)
@@ -62,11 +66,11 @@ struct Float4
 
 
 //predeclarations
-struct Vector;
-struct Matrix;
-struct Box;
-struct Frustum;
-struct Sphere;
+class Vector;
+class Matrix;
+class Box;
+class Frustum;
+class Sphere;
 
 
 
@@ -79,7 +83,7 @@ union FloatInt
 union DoubleInt
 {
     double f;
-    unsigned __int64 u;
+    NFE::Common::uint64 u;
 };
 
 template<typename T>

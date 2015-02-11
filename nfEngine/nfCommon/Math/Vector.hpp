@@ -9,9 +9,9 @@
 namespace NFE {
 namespace Math {
 
-NFE_ALIGN(16)
-struct Vector
+class NFE_ALIGN(16) Vector
 {
+public:
     union
     {
         unsigned int i[4];
@@ -86,9 +86,9 @@ struct Vector
 };
 
 //used to initialize float constants
-NFE_ALIGN(16)
-struct Vectorf
+class NFE_ALIGN(16) Vectorf
 {
+public:
     union
     {
         float f[4];
@@ -117,9 +117,9 @@ struct Vectorf
 };
 
 //used to initialize integer constants
-NFE_ALIGN(16)
-struct Vectori
+class NFE_ALIGN(16) Vectori
 {
+public:
     union
     {
         unsigned int u[4];
