@@ -6,13 +6,16 @@
 
 #pragma once
 
+// TODO This block below is probably not needed in stdafx.hpp and should be included by every file
+//      made by Windows platform.
+#ifdef WIN32
+// TODO seems reduntant, check and remove under Windows
 #include "targetver.hpp"
 
-// TODO: remove platform-dependent libraries!
-//       or move them to some #ifdef...#endif blocks
 #define NOMINMAX
 #include <Windows.h>
 #include <Windowsx.h>
+#endif
 
 /// C lib
 #include <stdlib.h>
