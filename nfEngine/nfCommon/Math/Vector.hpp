@@ -9,8 +9,7 @@
 namespace NFE {
 namespace Math {
 
-NFE_ALIGN(16)
-struct Vector
+struct NFE_ALIGN(16) Vector
 {
     union
     {
@@ -86,8 +85,8 @@ struct Vector
 };
 
 //used to initialize float constants
-NFE_ALIGN(16)
-struct Vectorf
+
+struct NFE_ALIGN(16) Vectorf
 {
     union
     {
@@ -117,8 +116,7 @@ struct Vectorf
 };
 
 //used to initialize integer constants
-NFE_ALIGN(16)
-struct Vectori
+struct NFE_ALIGN(16) Vectori
 {
     union
     {
@@ -149,7 +147,7 @@ struct Vectori
 
 
 //
-// Connstants definitions
+// Constants definitions
 //
 const Vectorf g_Epsilon = {NFE_MATH_EPSILON, NFE_MATH_EPSILON, NFE_MATH_EPSILON, NFE_MATH_EPSILON};
 const Vectorf g_One = {1.0f, 1.0f, 1.0f, 1.0f};

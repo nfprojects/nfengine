@@ -9,8 +9,7 @@
 namespace NFE {
 namespace Math {
 
-NFE_ALIGN(16)
-struct Matrix
+struct NFE_ALIGN(16) Matrix
 {
     union
     {

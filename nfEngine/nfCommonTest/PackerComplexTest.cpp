@@ -20,7 +20,7 @@ protected:
 
         srand(static_cast<unsigned int>(time(nullptr)));
 
-        int result = mkdir(TEST_SAMPLE_FILE_DIR.c_str());
+        int result = _mkdir(TEST_SAMPLE_FILE_DIR.c_str());
         EXPECT_FALSE(result != 0 && errno != EEXIST) << "mkdir() failed. "
                 << "Error: " << errno << " (" << strerror(errno) << ")";
 

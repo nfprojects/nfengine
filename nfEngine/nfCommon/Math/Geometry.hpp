@@ -10,8 +10,7 @@ namespace NFE {
 namespace Math {
 
 //Axis Aligned Box
-NFE_ALIGN(16)
-struct Box
+struct NFE_ALIGN(16) Box
 {
     Vector min;
     Vector max;
@@ -35,8 +34,7 @@ struct Box
 };
 
 //Frustum
-NFE_ALIGN(16)
-struct Frustum
+struct NFE_ALIGN(16) Frustum
 {
     Vector planes[6];
     Vector verticies[8];
@@ -46,9 +44,7 @@ struct Frustum
     NFE_INLINE float SupportVertex(const Vector& dir);
 };
 
-
-NFE_ALIGN(16)
-struct Sphere
+struct NFE_ALIGN(16) Sphere
 {
     Vector origin;
     float r;
@@ -56,24 +52,21 @@ struct Sphere
     NFE_INLINE float SupportVertex(const Vector& dir);
 };
 
-NFE_ALIGN(16)
-struct Triangle
+struct NFE_ALIGN(16) Triangle
 {
     Vector v0;
     Vector v1;
     Vector v2;
 };
 
-NFE_ALIGN(16)
-struct Ray
+struct NFE_ALIGN(16) Ray
 {
     Vector dir;
     Vector invDir;
     Vector origin;
 };
 
-NFE_ALIGN(16)
-struct RayBoxSegment
+struct NFE_ALIGN(16) RayBoxSegment
 {
     Vector nearDist;
     Vector farDist;
