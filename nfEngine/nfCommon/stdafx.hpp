@@ -6,6 +6,7 @@
 
 #pragma once
 
+#ifdef WIN32
 #include "targetver.hpp"
 
 // TODO: remove platform-dependent libraries!
@@ -13,6 +14,7 @@
 #define NOMINMAX
 #include <Windows.h>
 #include <Windowsx.h>
+#endif
 
 /// C lib
 #include <stdlib.h>

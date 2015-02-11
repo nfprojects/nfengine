@@ -1,0 +1,27 @@
+# @file   CMakeLists.txt
+# @author LKostyra (costyrra.xl@gmail.com)
+# @brief  CMake for nfCommon
+
+MESSAGE("Generating Makefile for nfCommon")
+
+FILE(GLOB NFCOMMON_SOURCES *.cpp)
+FILE(GLOB NFCOMMON_HEADERS *.hpp)
+FILE(GLOB NFCOMMON_LINUX_SOURCES Linux/*.cpp)
+FILE(GLOB NFCOMMON_LINUX_HEADERS Linux/*.hpp)
+
+# TODO these sources are not prepared for multi-platform.
+#      Move them to Win directory and appropriately code headers.
+LIST(REMOVE_ITEM NFCOMMON_SOURCES "${NFCOMMON_DIRECTORY}/Logger.cpp")
+LIST(REMOVE_ITEM NFCOMMON_SOURCES "${NFCOMMON_DIRECTORY}/OutputStream.cpp")
+LIST(REMOVE_ITEM NFCOMMON_SOURCES "${NFCOMMON_DIRECTORY}/InputStream.cpp")
+LIST(REMOVE_ITEM NFCOMMON_SOURCES "${NFCOMMON_DIRECTORY}/Window.cpp")
+LIST(REMOVE_ITEM NFCOMMON_SOURCES "${NFCOMMON_DIRECTORY}/Main.cpp")
+LIST(REMOVE_ITEM NFCOMMON_SOURCES "${NFCOMMON_DIRECTORY}/Image.cpp")
+
+INCLUDE_DIRECTORIES(${NFE_ROOT_DIRECTORY}/nfEngineDeps/ ${NFCOMMON_DIRECTORY})
+
+ADD_LIBRARY(nfCommon SHARED
+	    ${NFCOMMON_SOURCES} ${NFCOMMON_LINUX_SOURCES}
+            ${NFCOMMON_HEADERS} ${NFCOMMON_LINUX_HEADERS})
+ADD_CUSTOM_COMMAND(TARGET nfCommon POST_BUILD COMMAND
+                   ${CMAKE_COMMAND} -E copy $<TARGET_FILE:nfCommon> ${NFE_OUTPUT_DIRECTORY}/${targetfile})

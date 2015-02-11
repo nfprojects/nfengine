@@ -1,0 +1,34 @@
+# @file   CMakeLists.txt
+# @author LKostyra (costyrra.xl@gmail.com)
+# @brief  Main CMake file for nfEngine
+
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+
+PROJECT(nfEngine)
+
+# Pre-define Release build
+IF(NOT DEFINED CMAKE_BUILD_TYPE)
+    SET(CMAKE_BUILD_TYPE Release)
+ENDIF(NOT DEFINED CMAKE_BUILD_TYPE)
+
+# Set required variables
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -std=c++0x")
+SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g -std=c++0x")
+
+# If any macros specific to project are needed, prefix them with NFE_
+SET(NFE_ROOT_DIRECTORY ${CMAKE_SOURCE_DIR})
+SET(NFE_OUTPUT_DIRECTORY ${NFE_ROOT_DIRECTORY}/Bin/${CMAKE_BUILD_TYPE})
+SET(NFCOMMON_DIRECTORY ${NFE_ROOT_DIRECTORY}/nfEngine/nfCommon)
+SET(NFCOMMONTEST_DIRECTORY ${NFE_ROOT_DIRECTORY}/nfEngine/nfCommonTest)
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${NFE_OUTPUT_DIRECTORY})
+SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${NFE_OUTPUT_DIRECTORY})
+
+MESSAGE("Creating Makefile for nfEngine")
+
+MESSAGE("Output path is ${NFE_OUTPUT_DIRECTORY}")
+MESSAGE("Build type is ${CMAKE_BUILD_TYPE}")
+
+# Add all projects
+ADD_SUBDIRECTORY("nfEngine")
+
+FILE(MAKE_DIRECTORY ${NFE_OUTPUT_DIRECTORY})
