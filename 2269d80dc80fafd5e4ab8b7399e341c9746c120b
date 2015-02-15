@@ -93,6 +93,23 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_b8906c96",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-15T21:39:11Z",
+      "side": 1,
+      "message": "IMO this is a nice option, but... gtest has lots and lots of other launch options. Instead of wrapping only one of them (like here, with filter), or wrapping all of them (which would be difficult and useless), I recommend performing a nice trick - passing the arguments you provide to the script further to gtest.\n\nTake a look at gdb and its --args option. This is a good example to follow.",
+      "revId": "2269d80dc80fafd5e4ab8b7399e341c9746c120b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_5865f8df",
         "filename": "Scripts/tests.py",
         "patchSetId": 1
