@@ -2,6 +2,154 @@
   "comments": [
     {
       "key": {
+        "uuid": "7a1969be_58acd8ed",
+        "filename": "Scripts/color.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-15T16:58:39Z",
+      "side": 1,
+      "message": "indentation",
+      "revId": "2269d80dc80fafd5e4ab8b7399e341c9746c120b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_985f700e",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-15T16:58:39Z",
+      "side": 1,
+      "message": "Correct indentation - we use 4 spaces per one \u0027indent\u0027 (or, one \u0027tab\u0027 as some would say)",
+      "revId": "2269d80dc80fafd5e4ab8b7399e341c9746c120b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_b8b98c30",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-15T16:58:39Z",
+      "side": 1,
+      "message": "Write variables in camelCase.",
+      "range": {
+        "startLine": 5,
+        "startChar": 2,
+        "endLine": 5,
+        "endChar": 10
+      },
+      "revId": "2269d80dc80fafd5e4ab8b7399e341c9746c120b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_98b6503c",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-15T16:58:39Z",
+      "side": 1,
+      "message": "Comments should have a space separating # and text. Correct this in other modules.",
+      "revId": "2269d80dc80fafd5e4ab8b7399e341c9746c120b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_b8622cd6",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-15T16:58:39Z",
+      "side": 1,
+      "message": "Instead of getopt I recommend using argparse. It\u0027s quicker, cleaner and does help message for you.",
+      "revId": "2269d80dc80fafd5e4ab8b7399e341c9746c120b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_5865f8df",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-15T16:58:39Z",
+      "side": 1,
+      "message": "Remove trailing whitespaces",
+      "revId": "2269d80dc80fafd5e4ab8b7399e341c9746c120b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_18ab80d9",
+        "filename": "Scripts/xmlParser.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-15T16:58:39Z",
+      "side": 1,
+      "message": "Here the indentation is correct. Keep it in other files.",
+      "revId": "2269d80dc80fafd5e4ab8b7399e341c9746c120b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_78af14e4",
+        "filename": "Scripts/xmlParser.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-15T16:58:39Z",
+      "side": 1,
+      "message": "Use camelCase to name variables. Keep the style constant.",
+      "range": {
+        "startLine": 16,
+        "startChar": 13,
+        "endLine": 16,
+        "endChar": 23
+      },
+      "revId": "2269d80dc80fafd5e4ab8b7399e341c9746c120b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_f89b04c7",
         "filename": "Scripts/xmlParser.py",
         "patchSetId": 1
@@ -18,6 +166,53 @@
         "startChar": 8,
         "endLine": 19,
         "endChar": 34
+      },
+      "revId": "2269d80dc80fafd5e4ab8b7399e341c9746c120b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_38a63c11",
+        "filename": "Scripts/xmlParser.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-15T16:58:39Z",
+      "side": 1,
+      "message": "I was just about to say this :)",
+      "parentUuid": "7a1969be_f89b04c7",
+      "range": {
+        "startLine": 19,
+        "startChar": 8,
+        "endLine": 19,
+        "endChar": 34
+      },
+      "revId": "2269d80dc80fafd5e4ab8b7399e341c9746c120b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_f882e450",
+        "filename": "Scripts/xmlParser.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-15T16:58:39Z",
+      "side": 1,
+      "message": "Avoid using tab character - its length might be different on different systems, thus entire output will look bad and inconsistent.\n\nI suggest using a temporary variable - indentStr or something else, which will keep some spaces (let\u0027s now say 4 spaces, when we will get to verification process we will select something that suits us best) - this way it will be possible to easily modify indentation for best test result parsing possible! ;)",
+      "range": {
+        "startLine": 22,
+        "startChar": 18,
+        "endLine": 22,
+        "endChar": 22
       },
       "revId": "2269d80dc80fafd5e4ab8b7399e341c9746c120b",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
