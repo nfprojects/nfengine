@@ -36,6 +36,23 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_0eb176f8",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-16T10:52:17Z",
+      "side": 1,
+      "message": "It looks like this is a main test script, which will be launched by us - please add shebang at the beginning for Linux users.\n\nAlso, make sure that this file has executable permissions under Linux (probably you will have to change its permissions under Linux).",
+      "revId": "2269d80dc80fafd5e4ab8b7399e341c9746c120b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_985f700e",
         "filename": "Scripts/tests.py",
         "patchSetId": 1
@@ -172,6 +189,24 @@
       "writtenOn": "2015-02-15T22:07:57Z",
       "side": 1,
       "message": "It\u0027s a little bit hard to read this loop - add empty lines to separate logical parts",
+      "revId": "2269d80dc80fafd5e4ab8b7399e341c9746c120b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_8ec5665d",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-16T10:52:17Z",
+      "side": 1,
+      "message": "I would even recommend splitting some parts of this loop into separate functions - entire subprocess opening could be inserted into different function to make code more readable.",
+      "parentUuid": "7a1969be_d8ee0822",
       "revId": "2269d80dc80fafd5e4ab8b7399e341c9746c120b",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
