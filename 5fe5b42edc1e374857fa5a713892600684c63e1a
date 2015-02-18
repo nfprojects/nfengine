@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_175186d8",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-18T10:50:59Z",
+      "side": 1,
+      "message": "Unused code - remove",
+      "range": {
+        "startLine": 82,
+        "startChar": 0,
+        "endLine": 91,
+        "endChar": 71
+      },
+      "revId": "5fe5b42edc1e374857fa5a713892600684c63e1a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_775f1ae6",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-18T10:50:59Z",
+      "side": 1,
+      "message": "100 chars limit exceeded. Please, split it into multiple lines, or move to separate function to avoid multiple indentations like here.",
+      "revId": "5fe5b42edc1e374857fa5a713892600684c63e1a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
