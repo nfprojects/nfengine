@@ -25,6 +25,29 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_e3e22800",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-21T22:50:29Z",
+      "side": 1,
+      "message": "Gathering gtest args could be done once outside test loop - now it is done multiple times for no purpose",
+      "range": {
+        "startLine": 121,
+        "startChar": 0,
+        "endLine": 124,
+        "endChar": 44
+      },
+      "revId": "5fe5b42edc1e374857fa5a713892600684c63e1a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_775f1ae6",
         "filename": "Scripts/tests.py",
         "patchSetId": 2
