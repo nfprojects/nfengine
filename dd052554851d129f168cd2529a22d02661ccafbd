@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_9c10e402",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-24T18:36:54Z",
+      "side": 1,
+      "message": "One of the issues that came out during verification process:\n\nWindows generates executable files with .exe ending. However, Linux executables have no extension. Thus, the script does not work properly (no tests are found). Please, correct this (on Windows add .exe, on Linux only \u0027Test\u0027 string)",
+      "range": {
+        "startLine": 112,
+        "startChar": 88,
+        "endLine": 112,
+        "endChar": 92
+      },
+      "revId": "dd052554851d129f168cd2529a22d02661ccafbd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
