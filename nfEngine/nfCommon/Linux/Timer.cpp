@@ -1,17 +1,36 @@
 /**
  *  @file   Linux/Timer.cpp
- *  @brief  High resolution timer class definition for Linux system
+ *  @brief  High resolution timer class definition for Linux systems
  */
 
 #include "../stdafx.hpp"
-#include "Timer.hpp"
+#include "../Timer.hpp"
 
 
 namespace NFE {
 namespace Common {
 
-// TODO implement under Linux when nfCommons will be ported to Linux
+Timer::Timer()
+{
+    mStart.tv_sec = 0;
+    mStart.tv_nsec = 0;
+}
 
+void Timer::Start()
+{
+    clock_gettime(CLOCK_MONOTONIC, &mStart);
+}
+
+double Timer::Stop()
+{
+    struct timespec mStop;
+    clock_gettime(CLOCK_MONOTONIC, &mStop);
+
+    // negative time difference should not occur when using CLOCK_MONOTONIC
+    time_t sec_result = (mStop.tv_sec - mStart.tv_sec) * 1000000000;
+    double result = (double)(sec_result + (mStop.tv_nsec - mStart.tv_nsec)) * 1e-9;
+    return result;
+}
 
 } // namespace Common
 } // namespace NFE
