@@ -107,9 +107,6 @@
     <ClInclude Include="Win\Console.hpp">
       <Filter>Header Files\Win</Filter>
     </ClInclude>
-    <ClInclude Include="Win\Timer.hpp">
-      <Filter>Header Files\Win</Filter>
-    </ClInclude>
     <ClInclude Include="Packer\PackerResource.hpp">
       <Filter>Header Files\Packer</Filter>
     </ClInclude>

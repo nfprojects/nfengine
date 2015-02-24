@@ -229,7 +229,6 @@ popd</Command>
     <ClInclude Include="Window.hpp" />
     <ClInclude Include="Win\Common.hpp" />
     <ClInclude Include="Win\Console.hpp" />
-    <ClInclude Include="Win\Timer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Buffer.cpp" />
