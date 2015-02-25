@@ -23,6 +23,7 @@ echo DONE
 
 echo | set /p=Removing other files... 
 del /F /Q "cppcheck_result.txt"
+del /F /Q "*.pyc" 2>>clean_errors.txt
 echo DONE
 
 popd
