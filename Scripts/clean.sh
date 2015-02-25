@@ -21,4 +21,6 @@ rm -rf ShaderCache
 rm -rf ShaderCache_Debug
 echo "DONE"
 
+echo -n "Removing other files... "
+rm -f *.pyc
 popd > /dev/null
