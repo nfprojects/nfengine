@@ -41,6 +41,7 @@
 *.sdf
 *.suo
 *.vcxproj.user
+*.pyc
 
 # script outputs
 cppcheck_result.txt
