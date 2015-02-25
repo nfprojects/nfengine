@@ -41,6 +41,7 @@
 *.sdf
 *.suo
 *.vcxproj.user
+*.pyc
 
 # Eclipse project files
 .cproject
