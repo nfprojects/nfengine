@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_99baa808",
+        "filename": "nfEngine/nfCommon/Math/Vector.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 573,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-28T18:56:27Z",
+      "side": 1,
+      "message": "Missing @return",
+      "revId": "9fc1dee934f2ed17fd5957bf124d981c0e10ff7d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_f938fca1",
+        "filename": "nfEngine/nfCommon/Math/Vector.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 590,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-28T18:56:27Z",
+      "side": 1,
+      "message": "Missing @return",
+      "revId": "9fc1dee934f2ed17fd5957bf124d981c0e10ff7d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_d93b809a",
+        "filename": "nfEngine/nfCommon/Math/Vector.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 606,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-28T18:56:27Z",
+      "side": 1,
+      "message": "Missing @return\n\nCheck other comments as well",
+      "revId": "9fc1dee934f2ed17fd5957bf124d981c0e10ff7d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_59c0307c",
+        "filename": "nfEngine/nfCommonTest/MathTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-28T18:56:27Z",
+      "side": 1,
+      "message": "IMO these tests do too much. I would separate them into specific categories (according to these comments you made)",
+      "revId": "9fc1dee934f2ed17fd5957bf124d981c0e10ff7d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_b9bfa4fa",
+        "filename": "nfEngine/nfCommonTest/MathTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-28T18:56:27Z",
+      "side": 1,
+      "message": "Same as in VectorSimple test.\n\nAdditionally, turn Vector(2.0f, 3.0f, 4.0f, 5.0f) into constant, since it is repeated too often. Maybe reuse constants from VectorSimple test?",
+      "revId": "9fc1dee934f2ed17fd5957bf124d981c0e10ff7d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_b91b241a",
+        "filename": "nfEngine/nfCommonTest/nfCommonTest.vcxproj",
+        "patchSetId": 2
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-02-28T18:56:27Z",
+      "side": 1,
+      "message": "Change source name from MathTest to MathVectorTest. Other Math modules will be tested in other cpp files, which will allow us to avoid one huge 5000 LoC file.",
+      "revId": "9fc1dee934f2ed17fd5957bf124d981c0e10ff7d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
