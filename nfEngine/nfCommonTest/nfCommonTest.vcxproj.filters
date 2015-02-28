@@ -14,6 +14,7 @@
     <ClCompile Include="MathVectorTest.cpp" />
     <ClCompile Include="MathGeometryTest.cpp" />
     <ClCompile Include="MathMatrixTest.cpp" />
+    <ClCompile Include="FileSystemTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.hpp" />
