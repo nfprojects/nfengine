@@ -12,6 +12,7 @@
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="TimerTest.cpp" />
     <ClCompile Include="FileSystemTest.cpp" />
+    <ClCompile Include="FileTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.hpp" />
