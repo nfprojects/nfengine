@@ -23,3 +23,5 @@
 
 /// STL
 #include <vector>
+#include <locale>
+#include <stack>
