@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_9973c814",
+        "filename": "nfEngine/nfCommon/CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-01T00:57:10Z",
+      "side": 1,
+      "message": "Use spaces",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 5
+      },
+      "revId": "200d3e95bf4407c0def4bd79e1d05d35156735f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_f9611c3a",
+        "filename": "nfEngine/nfCommon/nfCommon.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-01T00:57:10Z",
+      "side": 1,
+      "message": "I wouldn\u0027t say \"do not require\". In gcc all symbols are exported by default. I don\u0027t know if we want that. See https://gcc.gnu.org/wiki/Visibility",
+      "range": {
+        "startLine": 44,
+        "startChar": 3,
+        "endLine": 44,
+        "endChar": 60
+      },
+      "revId": "200d3e95bf4407c0def4bd79e1d05d35156735f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_79552c4f",
+        "filename": "nfEngine/nfCommon/stdafx.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-01T00:57:10Z",
+      "side": 1,
+      "message": "I think that the whole block should be removed - the missing #include \u003cWindows.h\u003e\" should be used only in Windows implementations files.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 6
+      },
+      "revId": "200d3e95bf4407c0def4bd79e1d05d35156735f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
