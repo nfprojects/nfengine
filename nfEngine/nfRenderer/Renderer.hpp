@@ -1,5 +1,5 @@
 #pragma once
-#include "nfRendererD3D11.hpp"
+#include "nfRenderer.hpp"
 #include "RendererResources.hpp"
 #include "RendererContext.hpp"
 #include "../nfCore/Renderer.hpp"

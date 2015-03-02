@@ -13,7 +13,7 @@ using namespace Render;
 using namespace Resource;
 
 const std::string g_DataPath = "nfEngineTest/Data/";
-const std::string g_ShadersPath = "nfEngine/nfRendererD3D11/Shaders/";
+const std::string g_ShadersPath = "nfEngine/nfRenderer/Shaders/";
 
 IRenderer* g_pRenderer = NULL;
 IPostProcessRenderer* g_pPostProcessRenderer = NULL;

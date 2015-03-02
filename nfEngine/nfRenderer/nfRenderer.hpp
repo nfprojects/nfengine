@@ -8,7 +8,7 @@ namespace Render {
 #pragma warning(disable: 4251)
 
 // DLL import / export macro
-#ifdef NFRENDERERD3D11_EXPORTS
+#ifdef NFRENDERER_EXPORTS
 #define NFRENDERER_API __declspec(dllexport)
 #else
 #define NFRENDERER_API __declspec(dllimport)
@@ -24,7 +24,7 @@ typedef short int16;
 typedef unsigned char uchar;
 
 
-#ifdef NFRENDERERD3D11_EXPORTS
+#ifdef NFRENDERER_EXPORTS
 //safe direct3d interface object release
 #ifndef D3D_SAFE_RELEASE
 #define D3D_SAFE_RELEASE(x) { if (x) {(x)->Release(); (x)=0;} }

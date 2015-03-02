@@ -12,7 +12,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfCore", "nfEngine\nfCore\n
 		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfRendererD3D11", "nfEngine\nfRendererD3D11\nfRendererD3D11.vcxproj", "{142DE37C-4616-4F13-9B8D-086DFC6AC4FB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfRenderer", "nfEngine\nfRenderer\nfRenderer.vcxproj", "{142DE37C-4616-4F13-9B8D-086DFC6AC4FB}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
 	EndProjectSection

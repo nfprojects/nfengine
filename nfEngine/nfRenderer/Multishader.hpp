@@ -1,5 +1,5 @@
 #pragma once
-#include "nfRendererD3D11.hpp"
+#include "nfRenderer.hpp"
 #include "../nfCommon/Buffer.hpp"
 
 namespace NFE {

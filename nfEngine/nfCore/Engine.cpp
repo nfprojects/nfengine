@@ -233,7 +233,7 @@ Result EngineInit()
     g_pMainThreadPool.reset(new Common::ThreadPool);
 
     // TODO - plugin searching & enumeration. Better error checking
-    HMODULE rendererDll = LoadLibrary(L"nfRendererD3D11.dll");
+    HMODULE rendererDll = LoadLibrary(L"nfRenderer.dll");
     if (rendererDll == NULL)
     {
         LOG_ERROR("LoadLibrary() failed. Could not initialize renderer module.");

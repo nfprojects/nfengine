@@ -1,5 +1,5 @@
 #include "stdafx.hpp"
-#include "nfRendererD3D11.hpp"
+#include "nfRenderer.hpp"
 #include "Renderer.hpp"
 #include "../nfCommon/Logger.hpp"
 

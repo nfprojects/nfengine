@@ -1,5 +1,5 @@
 #pragma once
-#include "nfRendererD3D11.hpp"
+#include "nfRenderer.hpp"
 #include "Multishader.hpp"
 #include "../nfCore/Renderer.hpp"
 #include "RendererResources.hpp"

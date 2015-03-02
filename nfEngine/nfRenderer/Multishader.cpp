@@ -168,7 +168,7 @@ bool Multishader::LoadSubshader(UINT* pMacros, std::string& CompileLog)
 
 
     //try to load VS from cache file
-    std::string ShaderFilePath = "nfEngine/nfRendererD3D11/Shaders/" + mShaderName + ".hlsl";
+    std::string ShaderFilePath = "nfEngine/nfRenderer/Shaders/" + mShaderName + ".hlsl";
 
 
 #ifdef _DEBUG

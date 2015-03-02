@@ -53,7 +53,7 @@ The engine's root directory looks as follows:
     * **nfCommonTest** - unit tests for nfCommon
     * **nfCore** - the engine's core
     * **nfCoreTest** - unit tests for nfCore
-    * **nfRendererD3D11** - Direct3D 11 renderer implementation
+    * **nfRenderer** - renderer (Direct3D 11 implementation, legacy)
         * **Shaders** - HLSL shaders for Direct3D 11 renderer
     * **Tools**
         * **CollisionShapeConverter** - OBJ to engine's physics collision shape format converter
