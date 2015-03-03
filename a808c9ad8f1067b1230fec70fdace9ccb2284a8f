@@ -1,0 +1,147 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_2384160b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-03T21:36:36Z",
+      "side": 1,
+      "message": "Instead of this long text, use [Win] tag at the beginning.",
+      "range": {
+        "startLine": 7,
+        "startChar": 31,
+        "endLine": 7,
+        "endChar": 60
+      },
+      "revId": "a808c9ad8f1067b1230fec70fdace9ccb2284a8f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_e3b79ed6",
+        "filename": "nfEngine/nfCommon/Win/Common.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-03T21:36:36Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 6
+      },
+      "revId": "a808c9ad8f1067b1230fec70fdace9ccb2284a8f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_c3ba62bf",
+        "filename": "nfEngine/nfCommon/Win/Common.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-03T21:36:36Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 57,
+        "startChar": 0,
+        "endLine": 62,
+        "endChar": 6
+      },
+      "revId": "a808c9ad8f1067b1230fec70fdace9ccb2284a8f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_03875a10",
+        "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-03T21:36:36Z",
+      "side": 1,
+      "message": "Why not move it right now?",
+      "revId": "a808c9ad8f1067b1230fec70fdace9ccb2284a8f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_83722a47",
+        "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-03T21:36:36Z",
+      "side": 1,
+      "message": "I don\u0027t like the idea of namespacing in this code. In Common.cpp you created namespace Windows. However, right now this code (despite being a part of Win directory) is not wrapped in Windows namespace. Instead it has \"using namespace Windows\".\n\nConsole and Timer implementation did not wrap the code in Windows namespace, since it was not compiled one way or another. I would suggest to do so here as well - that is, remove Windows namespace.",
+      "revId": "a808c9ad8f1067b1230fec70fdace9ccb2284a8f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_63a44ea6",
+        "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-03T21:36:36Z",
+      "side": 1,
+      "message": "Char limit exceeded - divide into multiple lines",
+      "revId": "a808c9ad8f1067b1230fec70fdace9ccb2284a8f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_a3dc8613",
+        "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-03T21:36:36Z",
+      "side": 1,
+      "message": "This suggest that the function is useable only for listing contents of a directory (which is not true from what I see).\n\nRename it to \"Iterate\" or \"Traverse\" or sth.",
+      "range": {
+        "startLine": 241,
+        "startChar": 17,
+        "endLine": 241,
+        "endChar": 21
+      },
+      "revId": "a808c9ad8f1067b1230fec70fdace9ccb2284a8f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
