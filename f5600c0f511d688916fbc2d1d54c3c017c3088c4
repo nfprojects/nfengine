@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_6078c4c4",
+        "filename": "Scripts/color.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-03T18:54:08Z",
+      "side": 1,
+      "message": "I\u0027m not quite convinced of this. IMO every text you write should be reset back to previous setting. On Windows we can gather foreground/background color which is currently set (WinAPI provides such functions), however on Linux it is impossible due to how coloring works there.\n\nI would suggest resetting the color back to default values provided by console (there is an escape sequence for that).",
+      "range": {
+        "startLine": 122,
+        "startChar": 29,
+        "endLine": 122,
+        "endChar": 34
+      },
+      "revId": "f5600c0f511d688916fbc2d1d54c3c017c3088c4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_4008282d",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-03T18:54:08Z",
+      "side": 1,
+      "message": "In case there is a reason for -s option to stay - since you use -s, why --gtest_filters is even here?",
+      "range": {
+        "startLine": 15,
+        "startChar": 34,
+        "endLine": 15,
+        "endChar": 49
+      },
+      "revId": "f5600c0f511d688916fbc2d1d54c3c017c3088c4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_0049108b",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-03T18:54:08Z",
+      "side": 1,
+      "message": "This entire fun with semicolons, restricting user\u0027s input etc... It seems redundant. Plus, we can only launch one test with this option. What if user would like to launch entire suite of tests? Or two tests at once?\n\nUnless there is some other usage for this arg, remove it. If we want to launch single test, we can easily use \"--args --gtest_filter\u003d...\" combo, which not only allows us to launch solitary tests, but uses regexp for multiple test launching action spectacular!",
+      "range": {
+        "startLine": 69,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 100
+      },
+      "revId": "f5600c0f511d688916fbc2d1d54c3c017c3088c4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
