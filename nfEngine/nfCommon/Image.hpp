@@ -58,7 +58,10 @@ class NFCOMMON_API Image
     int LoadPNG(InputStream* pStream);
     int LoadJPEG(InputStream* pStream);
     int LoadDDS(InputStream* pStream);
-
+	Vector GetTexel(const void* pData, uint32 x, uint32 y, uint32 width);
+	void SetTexel(const Vector& v, void* pData, uint32 x, uint32 y, uint32 width, ImageFormat fmt);
+	static ImageFormat DDSGetFormat(const DDS_PIXELFORMAT& ddpf);
+									
 public:
     /**
      * Convert ImageFormat to string
