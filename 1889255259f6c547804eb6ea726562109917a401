@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_480e948e",
+        "filename": "nfEngine/nfCommon/Image.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-03T08:56:58Z",
+      "side": 1,
+      "message": "Tab \u003d\u003e spaces",
+      "revId": "1889255259f6c547804eb6ea726562109917a401",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_c821e4fc",
+        "filename": "nfEngine/nfCommon/Image.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-03T08:56:58Z",
+      "side": 1,
+      "message": "I would not expose these 2 functions (SetTexel and GetTexel) in the header. They do not operate on Texture object, but pData pointer. Remove declarations and move definitions to annonymous namespace or make them static.",
+      "revId": "1889255259f6c547804eb6ea726562109917a401",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_08149c9e",
+        "filename": "nfEngine/nfCommon/Image.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-03T08:56:58Z",
+      "side": 1,
+      "message": "Remove tabs",
+      "range": {
+        "startLine": 64,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 9
+      },
+      "revId": "1889255259f6c547804eb6ea726562109917a401",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
