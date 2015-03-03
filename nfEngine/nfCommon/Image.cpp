@@ -206,8 +206,8 @@ const ImageMipmap& Image::GetMipmap(size_t id) const
 }
 
 // get texel from raw data buffer, knowing pixel format and image width
-__forceinline Vector XImage_GetTexel(const void* pData, uint32 x, uint32 y, uint32 width,
-                                     ImageFormat fmt)
+Vector GetTexel(const void* pData, uint32 x, uint32 y, uint32 width,
+                                   ImageFormat fmt)
 {
     switch (fmt)
     {
@@ -262,7 +262,7 @@ __forceinline Vector XImage_GetTexel(const void* pData, uint32 x, uint32 y, uint
 }
 
 // get texel of the raw data buffer, knowing pixel format and image width
-__forceinline void XImage_SetTexel(const Vector& v, void* pData, uint32 x, uint32 y, uint32 width,
+void SetTexel(const Vector& v, void* pData, uint32 x, uint32 y, uint32 width,
                                    ImageFormat fmt)
 {
     switch (fmt)
@@ -318,7 +318,7 @@ __forceinline void XImage_SetTexel(const Vector& v, void* pData, uint32 x, uint3
 
 int Image::GenerateMipmaps(uint32 num)
 {
-    //empty imaga
+    //empty image
     if (GetData() == 0)
     {
         LOG_WARNING("Tried to generate mMipmaps of an empty image");
@@ -359,12 +359,12 @@ int Image::GenerateMipmaps(uint32 num)
             for (uint32 x = 0; x < nextMip.width; x++)
             {
                 // naive box filter
-                Vector a = XImage_GetTexel(pMip->data, 2 * x, 2 * y, pMip->width, mFormat);
-                Vector b = XImage_GetTexel(pMip->data, 2 * x + 1, 2 * y, pMip->width, mFormat);
-                Vector c = XImage_GetTexel(pMip->data, 2 * x, 2 * y + 1, pMip->width, mFormat);
-                Vector d = XImage_GetTexel(pMip->data, 2 * x + 1, 2 * y + 1, pMip->width, mFormat);
+                Vector a = GetTexel(pMip->data, 2 * x, 2 * y, pMip->width, mFormat);
+                Vector b = GetTexel(pMip->data, 2 * x + 1, 2 * y, pMip->width, mFormat);
+                Vector c = GetTexel(pMip->data, 2 * x, 2 * y + 1, pMip->width, mFormat);
+                Vector d = GetTexel(pMip->data, 2 * x + 1, 2 * y + 1, pMip->width, mFormat);
 
-                XImage_SetTexel(((a + b) + (c + d)) * 0.25f, nextMip.data, x, y, nextMip.width, mFormat);
+                SetTexel(((a + b) + (c + d)) * 0.25f, nextMip.data, x, y, nextMip.width, mFormat);
             }
         }
 
@@ -384,7 +384,7 @@ int Image::Convert(ImageFormat destFormat)
     if (destFormat == mFormat)
         return 0;
 
-    //empty imaga
+    //empty image
     if (GetData() == 0)
     {
         LOG_WARNING("Tried to convert pixel format of an empty image");
@@ -425,8 +425,8 @@ int Image::Convert(ImageFormat destFormat)
         {
             for (uint32 x = 0; x < width; x++)
             {
-                tmp = XImage_GetTexel(pOldData, x, y, width, mFormat);
-                XImage_SetTexel(tmp, pNewData, x, y, width, destFormat);
+                tmp = GetTexel(pOldData, x, y, width, mFormat);
+                SetTexel(tmp, pNewData, x, y, width, destFormat);
             }
         }
 
@@ -863,7 +863,7 @@ struct DDS_header
 
 #define ISBITMASK(r, g, b, a) (ddpf.dwRBitMask == r && ddpf.dwGBitMask == g && ddpf.dwBBitMask == b && ddpf.dwAlphaBitMask == a)
 
-static ImageFormat XImage_DDSGetFormat(const DDS_PIXELFORMAT& ddpf)
+static ImageFormat DDSGetFormat(const DDS_PIXELFORMAT& ddpf)
 {
     if (ddpf.dwFlags & DDPF_RGB)
     {
@@ -958,7 +958,7 @@ static ImageFormat XImage_DDSGetFormat(const DDS_PIXELFORMAT& ddpf)
             return ImageFormat::BC3; //DXGI_FORMAT_BC3_UNORM
 
 
-        // While pre-mulitplied alpha isn't directly supported by the DXGI formats,
+        // While pre-multiplied alpha isn't directly supported by the DXGI formats,
         // they are basically the same as these BC formats so they can be mapped
         if (MAKEFOURCC('D', 'X', 'T', '2') == ddpf.dwFourCC)
             return ImageFormat::BC2; //DXGI_FORMAT_BC2_UNORM
@@ -1038,7 +1038,7 @@ int Image::LoadDDS(InputStream* pStream)
     if (numMipmaps > 32) return 1;
 
 
-    mFormat = XImage_DDSGetFormat(header.sPixelFormat);
+    mFormat = DDSGetFormat(header.sPixelFormat);
 
     if (mFormat == ImageFormat::UNKNOWN)
         return 1;
