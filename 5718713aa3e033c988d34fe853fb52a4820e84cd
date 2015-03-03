@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_43caf26e",
+        "filename": "nfEngine/nfCommon/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-03T20:32:42Z",
+      "side": 1,
+      "message": "On second thought, IMO this class needs a serious, huge refactor. Some splitting into sub-modules, some code reorganization, some tests etc.\n\nLeave it as it is, the changes I wrote above will probably be done somewhere in the future.",
+      "parentUuid": "7a1969be_430f922e",
+      "range": {
+        "startLine": 209,
+        "startChar": 0,
+        "endLine": 210,
+        "endChar": 51
+      },
+      "revId": "5718713aa3e033c988d34fe853fb52a4820e84cd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_c303820b",
         "filename": "nfEngine/nfCommon/Image.cpp",
         "patchSetId": 2
