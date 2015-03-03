@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_59e31005",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-03T21:56:13Z",
+      "side": 1,
+      "message": "If it\u0027s only Windows, I suggest using a tag at the beginning of commit title.\n\nHow about, [Win] for Windows-only commits and [Lnx] for Linux-only?",
+      "range": {
+        "startLine": 7,
+        "startChar": 21,
+        "endLine": 7,
+        "endChar": 50
+      },
+      "revId": "e03fa5b07f5825642faed531e81caceb6350d6cb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_6340cea5",
+        "filename": "nfEngine/nfCommon/File.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-03T21:56:13Z",
+      "side": 1,
+      "message": "Just an idea - consider changing AccessMode to allow connecting read and write flags with OR operation (like the flags GENERIC_READ/GENERIC_WRITE you used in File.cpp).",
+      "revId": "e03fa5b07f5825642faed531e81caceb6350d6cb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_83eeaab2",
+        "filename": "nfEngine/nfCommon/File.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-03T21:56:13Z",
+      "side": 1,
+      "message": "I\u0027m wondering if this is a good idea. This creates a mess in header code and looks horrible.\n\nIMO the solution used in Timer.hpp is much cleaner - you include correct header according to these #if...#endif block and the rest is defined and not obscurely obstructed by preprocessor directives. Of course, it has drawbacks (double-definition of almost the same class). Consider changing it to what I wrote with Timer.",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 6
+      },
+      "revId": "e03fa5b07f5825642faed531e81caceb6350d6cb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
