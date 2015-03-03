@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_430f922e",
+        "filename": "nfEngine/nfCommon/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-03T19:25:53Z",
+      "side": 1,
+      "message": "OK, so if these functions are internals and they should not be a part of Image class, they should be at least grouped together (since they are Image.cpp internal functions).\n\nGroup all functions which do not belong to Image class at the top of the file (outside NFE::Common namespace, under #include directives) and wrap them into an anonymous namespace.",
+      "range": {
+        "startLine": 209,
+        "startChar": 0,
+        "endLine": 210,
+        "endChar": 51
+      },
+      "revId": "5718713aa3e033c988d34fe853fb52a4820e84cd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_c303820b",
+        "filename": "nfEngine/nfCommon/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-03T19:25:53Z",
+      "side": 1,
+      "message": "Nice one!",
+      "range": {
+        "startLine": 321,
+        "startChar": 16,
+        "endLine": 321,
+        "endChar": 17
+      },
+      "revId": "5718713aa3e033c988d34fe853fb52a4820e84cd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
