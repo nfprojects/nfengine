@@ -203,12 +203,12 @@ float Sphere::SupportVertex(const Vector& dir)
 
 void Frustum::CalculatePlanes()
 {
-    planes[0] = XPlaneFromPoints(verticies[0], verticies[1], verticies[3]); //front
-    planes[1] = XPlaneFromPoints(verticies[7], verticies[5], verticies[4]); //back
-    planes[2] = XPlaneFromPoints(verticies[4], verticies[0], verticies[6]); //left
-    planes[3] = XPlaneFromPoints(verticies[7], verticies[3], verticies[5]); //right
-    planes[4] = XPlaneFromPoints(verticies[5], verticies[1], verticies[4]); //bottom
-    planes[5] = XPlaneFromPoints(verticies[6], verticies[3], verticies[7]); //top
+    planes[0] = PlaneFromPoints(verticies[0], verticies[1], verticies[3]); //front
+    planes[1] = PlaneFromPoints(verticies[7], verticies[5], verticies[4]); //back
+    planes[2] = PlaneFromPoints(verticies[4], verticies[0], verticies[6]); //left
+    planes[3] = PlaneFromPoints(verticies[7], verticies[3], verticies[5]); //right
+    planes[4] = PlaneFromPoints(verticies[5], verticies[1], verticies[4]); //bottom
+    planes[5] = PlaneFromPoints(verticies[6], verticies[3], verticies[7]); //top
 
     boundingBox.MakeFromPoints(verticies, 8);
 }

@@ -149,7 +149,7 @@ struct Vectori
 
 
 //
-// Connstants definitions
+// Constants definitions
 //
 const Vectorf g_Epsilon = {NFE_MATH_EPSILON, NFE_MATH_EPSILON, NFE_MATH_EPSILON, NFE_MATH_EPSILON};
 const Vectorf g_One = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -629,7 +629,7 @@ NFE_INLINE Vector VectorNormalize4(const Vector& v)
     return _mm_div_ps(v, _mm_sqrt_ps(vTemp));
 }
 
-NFE_INLINE Vector XPlaneFromPoints(const Vector& p1, const Vector& p2, const Vector& p3)
+NFE_INLINE Vector PlaneFromPoints(const Vector& p1, const Vector& p2, const Vector& p3)
 {
     Vector N;
     Vector D;
@@ -651,7 +651,7 @@ NFE_INLINE Vector XPlaneFromPoints(const Vector& p1, const Vector& p2, const Vec
     return Result;
 }
 
-NFE_INLINE Vector XPlanePointDot3(const Vector& Plane, const Vector& Point)
+NFE_INLINE Vector PlanePointDot3(const Vector& Plane, const Vector& Point)
 {
     /*
             Vector vTemp2 = _mm_shuffle_ps(Plane, Plane, _MM_SHUFFLE(3,3,3,3));
