@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_c92f23f5",
+        "filename": "Scripts/color.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-03-04T11:54:42Z",
+      "side": 1,
+      "message": "Ok, I actually misguided myself during validation - i have white font color in console and after THIS print, there are prints with white color - so for me it always went back to default.\nI changed a little bit mechanic for linux font coloring.\nVerified it on Ubuntu 14.04.",
+      "parentUuid": "7a1969be_6078c4c4",
+      "range": {
+        "startLine": 122,
+        "startChar": 29,
+        "endLine": 122,
+        "endChar": 34
+      },
+      "revId": "f5600c0f511d688916fbc2d1d54c3c017c3088c4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_4008282d",
         "filename": "Scripts/tests.py",
         "patchSetId": 9
@@ -36,6 +60,30 @@
       "writtenOn": "2015-03-03T18:54:08Z",
       "side": 1,
       "message": "In case there is a reason for -s option to stay - since you use -s, why --gtest_filters is even here?",
+      "range": {
+        "startLine": 15,
+        "startChar": 34,
+        "endLine": 15,
+        "endChar": 49
+      },
+      "revId": "f5600c0f511d688916fbc2d1d54c3c017c3088c4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_29e997b8",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-03-04T11:54:42Z",
+      "side": 1,
+      "message": "They need to be here, because they\u0027re 2 different things.\nLook below.",
+      "parentUuid": "7a1969be_4008282d",
       "range": {
         "startLine": 15,
         "startChar": 34,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_a9c5873d",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-03-04T11:54:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1969be_46fe8039",
+      "range": {
+        "startLine": 44,
+        "startChar": 29,
+        "endLine": 44,
+        "endChar": 34
+      },
+      "revId": "f5600c0f511d688916fbc2d1d54c3c017c3088c4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_0049108b",
         "filename": "Scripts/tests.py",
         "patchSetId": 9
@@ -82,6 +154,30 @@
       "writtenOn": "2015-03-03T18:54:08Z",
       "side": 1,
       "message": "This entire fun with semicolons, restricting user\u0027s input etc... It seems redundant. Plus, we can only launch one test with this option. What if user would like to launch entire suite of tests? Or two tests at once?\n\nUnless there is some other usage for this arg, remove it. If we want to launch single test, we can easily use \"--args --gtest_filter\u003d...\" combo, which not only allows us to launch solitary tests, but uses regexp for multiple test launching action spectacular!",
+      "range": {
+        "startLine": 69,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 100
+      },
+      "revId": "f5600c0f511d688916fbc2d1d54c3c017c3088c4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_09ec9bc6",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-03-04T11:54:42Z",
+      "side": 1,
+      "message": "-s and --gtest_filter are 2 different things:\n-s is used to launch single gtest instance.\n--gtest_filter is given as an argument to all launched gtest instances.\nSo if u want to lauch few tests only from nfCoreTest.exe, you need to use both of these options simultanously.",
+      "parentUuid": "7a1969be_0049108b",
       "range": {
         "startLine": 69,
         "startChar": 0,
