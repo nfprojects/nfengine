@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "7a1969be_06eda88b",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-04T07:39:13Z",
+      "side": 1,
+      "message": "Missing build platform (x86/x64)",
+      "range": {
+        "startLine": 20,
+        "startChar": 47,
+        "endLine": 20,
+        "endChar": 70
+      },
+      "revId": "200d3e95bf4407c0def4bd79e1d05d35156735f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_9973c814",
         "filename": "nfEngine/nfCommon/CMakeLists.txt",
         "patchSetId": 3
