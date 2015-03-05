@@ -59,6 +59,9 @@ The engine's root directory looks as follows:
         * **CollisionShapeConverter** - OBJ to engine's physics collision shape format converter
         * **FastMeshConverter** - OBJ to engine's model format converter
         * **PackerTool** - command line utility for PAK files creation
+    * **Renderers**
+        * **RendererInterface**
+        * **Shaders** 
 * **nfEngineDeps** - engine's dependencies directory. See "Dependencies" section for more information
 * **nfEngineTest** - demo application
 * **Obj** - temporary compilation objects
