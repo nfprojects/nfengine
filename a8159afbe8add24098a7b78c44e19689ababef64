@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_408addbf",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-05T22:50:22Z",
+      "side": 1,
+      "message": "Probably we will stay with \"Win32\" dir :) Sorry for the mess, but Microsoft sucks. I\u0027ll give -1, just to be sure that nobody merges it by mistake.",
+      "range": {
+        "startLine": 44,
+        "startChar": 10,
+        "endLine": 44,
+        "endChar": 13
+      },
+      "revId": "a8159afbe8add24098a7b78c44e19689ababef64",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
