@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_a01631a5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-05T22:30:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1969be_2384160b",
+      "range": {
+        "startLine": 7,
+        "startChar": 31,
+        "endLine": 7,
+        "endChar": 60
+      },
+      "revId": "a808c9ad8f1067b1230fec70fdace9ccb2284a8f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_e3b79ed6",
         "filename": "nfEngine/nfCommon/Win/Common.cpp",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2015-03-03T21:36:36Z",
       "side": 1,
       "message": "rm",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 6
+      },
+      "revId": "a808c9ad8f1067b1230fec70fdace9ccb2284a8f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_203b6139",
+        "filename": "nfEngine/nfCommon/Win/Common.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-05T22:30:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1969be_e3b79ed6",
       "range": {
         "startLine": 29,
         "startChar": 0,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_804a15c3",
+        "filename": "nfEngine/nfCommon/Win/Common.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-05T22:30:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1969be_c3ba62bf",
+      "range": {
+        "startLine": 57,
+        "startChar": 0,
+        "endLine": 62,
+        "endChar": 6
+      },
+      "revId": "a808c9ad8f1067b1230fec70fdace9ccb2284a8f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_03875a10",
         "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
         "patchSetId": 2
@@ -82,6 +154,24 @@
       "writtenOn": "2015-03-03T21:36:36Z",
       "side": 1,
       "message": "Why not move it right now?",
+      "revId": "a808c9ad8f1067b1230fec70fdace9ccb2284a8f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_20f40186",
+        "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-05T22:30:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1969be_03875a10",
       "revId": "a808c9ad8f1067b1230fec70fdace9ccb2284a8f",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -105,6 +195,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_40f93d7f",
+        "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-05T22:30:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1969be_83722a47",
+      "revId": "a808c9ad8f1067b1230fec70fdace9ccb2284a8f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_63a44ea6",
         "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
         "patchSetId": 2
@@ -122,6 +230,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_80f3359d",
+        "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-05T22:30:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1969be_63a44ea6",
+      "revId": "a808c9ad8f1067b1230fec70fdace9ccb2284a8f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_a3dc8613",
         "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
         "patchSetId": 2
@@ -133,6 +259,30 @@
       "writtenOn": "2015-03-03T21:36:36Z",
       "side": 1,
       "message": "This suggest that the function is useable only for listing contents of a directory (which is not true from what I see).\n\nRename it to \"Iterate\" or \"Traverse\" or sth.",
+      "range": {
+        "startLine": 241,
+        "startChar": 17,
+        "endLine": 241,
+        "endChar": 21
+      },
+      "revId": "a808c9ad8f1067b1230fec70fdace9ccb2284a8f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_e0394942",
+        "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-05T22:30:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1969be_a3dc8613",
       "range": {
         "startLine": 241,
         "startChar": 17,
