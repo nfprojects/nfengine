@@ -46,6 +46,30 @@
       "revId": "a8159afbe8add24098a7b78c44e19689ababef64",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_3be8b6e1",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-06T00:38:44Z",
+      "side": 1,
+      "message": "Officially we did not discuss if we will stay with Win32. And I don\u0027t like the idea of generating 32-bit code into Win32 dir on Linux. There is another way, however we still must discuss it.\n\nSorry to say, but this \"Done\" and patch set 11 are probably too fast. We\u0027ll see, for now just don\u0027t get too fast with another patch sets ;)",
+      "parentUuid": "7a1969be_3b3b96d2",
+      "range": {
+        "startLine": 44,
+        "startChar": 10,
+        "endLine": 44,
+        "endChar": 13
+      },
+      "revId": "a8159afbe8add24098a7b78c44e19689ababef64",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
