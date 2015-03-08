@@ -10,6 +10,7 @@ namespace NFE {
 namespace Renderer {
 
 #define MAX_RENDER_TARGETS 8
+#define MAX_MIPMAP_LEVELS 16
 
 enum class ElementFormat
 {
@@ -29,6 +30,15 @@ enum class ElementFormat
     Uint_8_norm,
 
     // TODO: compressed (BCx), etc.
+};
+
+enum class TextureType
+{
+	Texture1D,
+	Texture2D,
+	Texture3D,
+	TextureCube,
+    Unknown
 };
 
 enum class BufferType
@@ -114,6 +124,35 @@ enum class PrimitiveType
     LinesStrip,
     Triangles,
     TrianglesStrip
+};
+
+/**
+ * Texture adressing mode for coordinates outside range [0.0, 1.0)
+ */
+enum class TextureWrapMode
+{
+    Repeat,
+    Clamp,
+    Mirror,
+    Border
+};
+
+/**
+ * Texture minification filter.
+ */
+enum class TextureMinFilter
+{
+    Nearest,
+    Linear
+};
+
+/**
+ * Texture magnification filter.
+ */
+enum class TextureMagFilter
+{
+    Nearest,
+    Linear
 };
 
 } // namespace Renderer
