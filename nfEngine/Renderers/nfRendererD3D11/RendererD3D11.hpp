@@ -49,7 +49,10 @@ public:
 
 class Sampler : public ISampler
 {
+    friend class CommandBuffer;
+    D3DPtr<ID3D11SamplerState> mSamplerState;
 public:
+    bool Init(const SamplerDesc& desc);
 };
 
 class BlendState : public IBlendState
@@ -79,15 +82,32 @@ public:
 class Texture : virtual public ITexture
 {
     friend class RenderTarget;
+    friend class CommandBuffer;
 
+    TextureType type;
     int mWidth;
     int mHeight;
-    D3DPtr<ID3D11Texture2D> mTexture;
     D3DPtr<ID3D11ShaderResourceView> mSRV;
 
+    union
+    {
+        ID3D11Texture1D* mTexture1D;
+        ID3D11Texture2D* mTexture2D;
+        ID3D11Texture3D* mTexture3D;
+        void* mTextureGeneric;
+    };
+
+    bool InitTexture1D(const TextureDesc& desc);
+    bool InitTexture2D(const TextureDesc& desc);
+    bool InitTexture3D(const TextureDesc& desc);
+
 public:
+    Texture();
+    virtual ~Texture();
+    bool Init(const TextureDesc& desc);
 };
 
+// TODO: consider using pointer to ITexure instead of inheriting
 class RenderTarget : public IRenderTarget, public Texture
 {
     friend class CommandBuffer;
@@ -203,6 +223,7 @@ public:
     IBlendState* CreateBlendState(const BlendStateDesc& desc);
     IDepthState* CreateDepthState(const DepthStateDesc& desc);
     IRasterizerState* CreateRasterizerState(const RasterizerStateDesc& desc);
+    ISampler* CreateSampler(const SamplerDesc& desc);
     IShader* CreateShader(const ShaderDesc& desc);
     IShaderProgram* CreateShaderProgram(const ShaderProgramDesc& desc);
 
@@ -216,6 +237,7 @@ void Log(const char* str);
 int GetElementFormatSize(ElementFormat format);
 DXGI_FORMAT TranslateElementFormat(ElementFormat format, int size);
 D3D11_COMPARISON_FUNC TranslateComparisonFunc(CompareFunc func);
+D3D11_TEXTURE_ADDRESS_MODE TranslateTextureWrapMode(TextureWrapMode mode);
 
 extern std::unique_ptr<Device> gDevice;
 
