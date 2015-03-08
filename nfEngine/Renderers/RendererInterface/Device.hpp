@@ -32,6 +32,7 @@ public:
     virtual IBlendState* CreateBlendState(const BlendStateDesc& desc) = 0;
     virtual IDepthState* CreateDepthState(const DepthStateDesc& desc) = 0;
     virtual IRasterizerState* CreateRasterizerState(const RasterizerStateDesc& desc) = 0;
+    virtual ISampler* CreateSampler(const SamplerDesc& desc) = 0;
     virtual IShader* CreateShader(const ShaderDesc& desc) = 0;
     virtual IShaderProgram* CreateShaderProgram(const ShaderProgramDesc& desc) = 0;
 

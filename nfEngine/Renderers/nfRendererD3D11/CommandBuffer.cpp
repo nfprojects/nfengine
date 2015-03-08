@@ -62,10 +62,60 @@ void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer)
 
 void CommandBuffer::SetSamplers(ISampler** samplers, int num, ShaderType target)
 {
+    ID3D11SamplerState* samplerStates[16];
+    for (int i = 0; i < num; ++i)
+    {
+        Sampler* sampler = dynamic_cast<Sampler*>(samplers[i]);
+        samplerStates[i] = sampler->mSamplerState.get();
+    }
+
+    switch (target)
+    {
+    case ShaderType::Vertex:
+        mContext->VSSetSamplers(0, num, samplerStates);
+        break;
+    case ShaderType::Domain:
+        mContext->DSSetSamplers(0, num, samplerStates);
+        break;
+    case ShaderType::Hull:
+        mContext->HSSetSamplers(0, num, samplerStates);
+        break;
+    case ShaderType::Geometry:
+        mContext->GSSetSamplers(0, num, samplerStates);
+        break;
+    case ShaderType::Pixel:
+        mContext->PSSetSamplers(0, num, samplerStates);
+        break;
+    };
 }
 
 void CommandBuffer::SetTextures(ITexture** textures, int num, ShaderType target)
 {
+    ID3D11ShaderResourceView* srvs[16];
+    for (int i = 0; i < num; ++i)
+    {
+        Texture* texture = dynamic_cast<Texture*>(textures[i]);
+        srvs[i] = texture->mSRV.get();
+    }
+
+    switch (target)
+    {
+    case ShaderType::Vertex:
+        mContext->VSSetShaderResources(0, num, srvs);
+        break;
+    case ShaderType::Domain:
+        mContext->DSSetShaderResources(0, num, srvs);
+        break;
+    case ShaderType::Hull:
+        mContext->HSSetShaderResources(0, num, srvs);
+        break;
+    case ShaderType::Geometry:
+        mContext->GSSetShaderResources(0, num, srvs);
+        break;
+    case ShaderType::Pixel:
+        mContext->PSSetShaderResources(0, num, srvs);
+        break;
+    };
 }
 
 void CommandBuffer::SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target)

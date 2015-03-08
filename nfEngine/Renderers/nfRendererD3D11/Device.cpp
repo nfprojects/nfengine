@@ -80,7 +80,17 @@ IBuffer* Device::CreateBuffer(const BufferDesc& desc)
 
 ITexture* Device::CreateTexture(const TextureDesc& desc)
 {
-    return nullptr;
+    Texture* texture = new (std::nothrow) Texture;
+    if (texture == nullptr)
+        return nullptr;
+
+    if (!texture->Init(desc))
+    {
+        delete texture;
+        return nullptr;
+    }
+
+    return texture;
 }
 
 IRenderTarget* Device::CreateRenderTarget(const RenderTargetDesc& desc)
@@ -133,6 +143,21 @@ IRasterizerState* Device::CreateRasterizerState(const RasterizerStateDesc& desc)
     }
 
     return rs;
+}
+
+ISampler* Device::CreateSampler(const SamplerDesc& desc)
+{
+    Sampler* sampler = new (std::nothrow) Sampler;
+    if (sampler == nullptr)
+        return nullptr;
+
+    if (!sampler->Init(desc))
+    {
+        delete sampler;
+        return nullptr;
+    }
+
+    return sampler;
 }
 
 IShader* Device::CreateShader(const ShaderDesc& desc)

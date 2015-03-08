@@ -192,6 +192,7 @@
     <ClCompile Include="RasterizerState.cpp" />
     <ClCompile Include="RendererD3D11.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
+    <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -200,6 +201,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="VertexLayout.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -180,5 +180,22 @@ D3D11_COMPARISON_FUNC TranslateComparisonFunc(CompareFunc func)
     return D3D11_COMPARISON_NEVER;
 }
 
+D3D11_TEXTURE_ADDRESS_MODE TranslateTextureWrapMode(TextureWrapMode mode)
+{
+    switch (mode)
+    {
+    case TextureWrapMode::Repeat:
+        return D3D11_TEXTURE_ADDRESS_WRAP;
+    case TextureWrapMode::Clamp:
+        return D3D11_TEXTURE_ADDRESS_CLAMP;
+    case TextureWrapMode::Mirror:
+        return D3D11_TEXTURE_ADDRESS_MIRROR;
+    case TextureWrapMode::Border:
+        return D3D11_TEXTURE_ADDRESS_BORDER;
+    };
+
+    return D3D11_TEXTURE_ADDRESS_WRAP;
+}
+
 } // namespace Renderer
 } // namespace NFE
