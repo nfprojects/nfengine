@@ -25,7 +25,7 @@ int RenderTarget::Resize(int newWidth, int newHeight)
     // Release all outstanding references to the swap chain's buffers.
     mRTV.reset();
     mSRV.reset();
-    mTexture.reset();
+    D3D_SAFE_RELEASE(mTexture2D);
 
     // Preserve the existing buffer count and format.
     // Automatically choose the width and height to match the client rect for HWNDs.
@@ -38,14 +38,14 @@ int RenderTarget::Resize(int newWidth, int newHeight)
     }
 
     // Get buffer and create a render-target-view.
-    hr = mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&mTexture);
+    hr = mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&mTexture2D);
     if (FAILED(hr))
     {
         // TODO: logging
         return 1;
     }
 
-    hr = gDevice->mDevice->CreateRenderTargetView(mTexture.get(), NULL, &mRTV);
+    hr = gDevice->mDevice->CreateRenderTargetView(mTexture2D, NULL, &mRTV);
     if (FAILED(hr))
     {
         // TODO: logging
@@ -59,6 +59,7 @@ int RenderTarget::InitSwapChain(int width, int height, HWND window)
 {
     HRESULT hr;
 
+    type = TextureType::Texture2D;
     mWindow = window;
     mWidth = width;
     mHeight = height;
@@ -87,14 +88,14 @@ int RenderTarget::InitSwapChain(int width, int height, HWND window)
     }
 
     // get the address of the back buffer
-    hr = mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&mTexture);
+    hr = mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&mTexture2D);
     if (FAILED(hr))
     {
         // TODO: logging
         return 1;
     }
 
-    hr = gDevice->mDevice->CreateRenderTargetView(mTexture.get(), NULL, &mRTV);
+    hr = gDevice->mDevice->CreateRenderTargetView(mTexture2D, NULL, &mRTV);
     if (FAILED(hr))
         return 1;
 
