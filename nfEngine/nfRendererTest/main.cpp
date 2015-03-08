@@ -92,14 +92,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     float vbData[] =
     {
-        // pos.xyz, color.rgba
-        0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-        0.5f, 0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f,
+        /// Vertex structure: pos.xyz, texCoord.uv, color.rgba
 
-        0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-        0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-        1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+        0.5f, -0.5f, 0.0f,   10.0f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,
+        0.5f, 0.5f, 0.0f,    10.0f, 10.0f,  0.0f, 0.0f, 1.0f, 1.0f,
+
+        0.0f, 0.0f, 0.0f,  0.0f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f,
+        0.0f, 1.0f, 0.0f,  0.0f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f,
+        1.0f, 0.0f, 0.0f,  0.0f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f,
     };
 
     BufferDesc vbDesc;
@@ -112,9 +113,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     VertexLayoutElement vertexLayoutElements[] =
     {
         { ElementFormat::Float_32, 3 }, // position
+        { ElementFormat::Float_32, 2 }, // tex-coords
         { ElementFormat::Float_32, 4 }, // color
     };
-    VertexLayoutDesc vertexLayoutDesc = { vertexLayoutElements, 2, programDesc.vertexShader };
+    VertexLayoutDesc vertexLayoutDesc = { vertexLayoutElements, 3, programDesc.vertexShader };
     IVertexLayout* vertexLayout = gRendererDevice->CreateVertexLayout(vertexLayoutDesc);
 
 
@@ -123,6 +125,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     blendStateDesc.rtDescs[0].enable = true;
     IBlendState* blendState = gRendererDevice->CreateBlendState(blendStateDesc);
 
+    // TEXTURE ====================================================================================
+
+    SamplerDesc samplerDesc;
+    ISampler* sampler = gRendererDevice->CreateSampler(samplerDesc);
+
+    uint32_t bitmap[] = { 0xFFFFFFFF, 0, 0, 0xFFFFFFFF };
+    TextureDataDesc textureDataDesc;
+    textureDataDesc.data = bitmap;
+    textureDataDesc.lineSize = 2 * sizeof(uint32_t);
+    textureDataDesc.sliceSize = 4 * sizeof(uint32_t);
+
+    TextureDesc textureDesc;
+    textureDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER;
+    textureDesc.format = ElementFormat::Uint_8_norm;
+    textureDesc.texelSize = 4;
+    textureDesc.width = 2;
+    textureDesc.height = 2;
+    textureDesc.mipmaps = 1;
+    textureDesc.dataDesc = &textureDataDesc;
+    textureDesc.layers = 1;
+    ITexture* texture = gRendererDevice->CreateTexture(textureDesc);
 
     // RENDERING LOOP =============================================================================
 
@@ -139,15 +162,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         gCommandBuffer->SetShaderProgram(shaderProgram);
         gCommandBuffer->SetVertexLayout(vertexLayout);
 
-        int stride = 7 * sizeof(float);
+        int stride = 9 * sizeof(float);
         int offset = 0;
         gCommandBuffer->SetVertexBuffers(1, &vertexBuffer, &stride, &offset);
+
+        gCommandBuffer->SetTextures(&texture, 1, ShaderType::Pixel);
+        gCommandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
 
         gCommandBuffer->Draw(PrimitiveType::Triangles, 6);
 
         windowRenderTarget->Present();
     }
 
+    delete sampler;
+    delete texture;
     delete blendState;
     delete vertexLayout;
     delete vertexBuffer;
