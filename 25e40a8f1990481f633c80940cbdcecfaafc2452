@@ -1,0 +1,176 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_9c327d5d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-09T07:50:37Z",
+      "side": 1,
+      "message": "Grammar Nazi incoming: have (\"Tests\" are plural)",
+      "range": {
+        "startLine": 10,
+        "startChar": 8,
+        "endLine": 10,
+        "endChar": 11
+      },
+      "revId": "25e40a8f1990481f633c80940cbdcecfaafc2452",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_1c7b2d29",
+        "filename": "nfEngine/nfCommon/Math/Geometry.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-09T07:50:37Z",
+      "side": 1,
+      "message": "Here you compare to double, however param is a float variable. I know this makes no difference to the compiler, but just to keep style consistent, please change it to float.",
+      "range": {
+        "startLine": 23,
+        "startChar": 16,
+        "endLine": 23,
+        "endChar": 19
+      },
+      "revId": "25e40a8f1990481f633c80940cbdcecfaafc2452",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_5c712543",
+        "filename": "nfEngine/nfCommon/Math/Geometry.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-09T07:50:37Z",
+      "side": 1,
+      "message": "Just a question - do we plan to implement SSE\u003c4 version?",
+      "revId": "25e40a8f1990481f633c80940cbdcecfaafc2452",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_fce571dc",
+        "filename": "nfEngine/nfCommon/Math/Geometry.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-09T07:50:37Z",
+      "side": 1,
+      "message": "Not needed - compiler should deduce that from type of out variable.",
+      "range": {
+        "startLine": 289,
+        "startChar": 72,
+        "endLine": 289,
+        "endChar": 81
+      },
+      "revId": "25e40a8f1990481f633c80940cbdcecfaafc2452",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_3cd38905",
+        "filename": "nfEngine/nfCommon/Math/Geometry.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 328,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-09T07:50:37Z",
+      "side": 1,
+      "message": "Other one-liner ifs in this file have such return statement in separate line. Move this to new line as well.",
+      "range": {
+        "startLine": 328,
+        "startChar": 43,
+        "endLine": 328,
+        "endChar": 56
+      },
+      "revId": "25e40a8f1990481f633c80940cbdcecfaafc2452",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_9ce43de2",
+        "filename": "nfEngine/nfCommon/Math/Geometry.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-09T07:50:37Z",
+      "side": 1,
+      "message": "I\u0027m wondering if this is clear enough. Consider changing it to PlanePointDot3(...).f[0] or sth similar, for clarity sake.",
+      "range": {
+        "startLine": 374,
+        "startChar": 12,
+        "endLine": 374,
+        "endChar": 62
+      },
+      "revId": "25e40a8f1990481f633c80940cbdcecfaafc2452",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_3cfa6975",
+        "filename": "nfEngine/nfCommon/Math/Vector.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-09T07:50:37Z",
+      "side": 1,
+      "message": "Shouldn\u0027t these lines be a part of other commit...?\n\nBTW I\u0027m not sure if we want to overload float() operator for Vector. It can get misleading - see my comment in Geometry.cpp @ 374",
+      "range": {
+        "startLine": 61,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 5
+      },
+      "revId": "25e40a8f1990481f633c80940cbdcecfaafc2452",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_1cf7ad8c",
+        "filename": "nfEngine/nfCommonTest/MathGeometryTest.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-09T07:50:37Z",
+      "side": 1,
+      "message": "Oh my... :)",
+      "revId": "25e40a8f1990481f633c80940cbdcecfaafc2452",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
