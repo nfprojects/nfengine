@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "3a1371a2_aaa20b98",
+        "filename": "Engine.sln",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-10T22:35:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1969be_bc1499a0",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a166590_05bfd2d1",
         "filename": "nfEngine/Renderers/nfRendererD3D11/Common.hpp",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2015-03-10T11:30:58Z",
       "side": 1,
       "message": "Remove, or (if this should be filled) define the macro appropriately.",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_242bf2ec",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Common.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-10T22:35:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a166590_05bfd2d1",
       "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "3a1371a2_27e9341b",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-10T22:35:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a166590_a5cd1e89",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a166590_e5c71663",
         "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
         "patchSetId": 1
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "3a1371a2_07eeb822",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-10T22:35:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a166590_e5c71663",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a166590_c5c49a61",
         "filename": "nfEngine/Renderers/nfRendererD3D11/RasterizerState.cpp",
         "patchSetId": 1
@@ -81,6 +153,24 @@
       "writtenOn": "2015-03-10T11:30:58Z",
       "side": 1,
       "message": "Hello",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_67f32c0b",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/RasterizerState.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-10T22:35:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a166590_c5c49a61",
       "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -110,6 +200,30 @@
     },
     {
       "key": {
+        "uuid": "3a1371a2_e7e6fc43",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/RenderTarget.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-10T22:35:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a1371a2_a4124256",
+      "range": {
+        "startLine": 36,
+        "startChar": 17,
+        "endLine": 36,
+        "endChar": 23
+      },
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a166590_45b0aaf4",
         "filename": "nfEngine/Renderers/nfRendererD3D11/RenderTarget.cpp",
         "patchSetId": 1
@@ -121,6 +235,24 @@
       "writtenOn": "2015-03-10T11:30:58Z",
       "side": 1,
       "message": "Brackets are not needed, unless there will be a log message some time later on. Then, add a TODO comment. See other places as well.",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_67ca0ca3",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/RenderTarget.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-10T22:35:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a166590_45b0aaf4",
       "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -144,6 +276,24 @@
     },
     {
       "key": {
+        "uuid": "3a1371a2_47cf10b1",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/RendererD3D11.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-10T22:35:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a1371a2_64096a2c",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a1371a2_242652bb",
         "filename": "nfEngine/Renderers/nfRendererD3D11/Shader.cpp",
         "patchSetId": 1
@@ -161,6 +311,24 @@
     },
     {
       "key": {
+        "uuid": "3a1371a2_a7c36489",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Shader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-10T22:35:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a1371a2_242652bb",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a1371a2_e41c3a6d",
         "filename": "nfEngine/Renderers/nfRendererD3D11/dllmain.cpp",
         "patchSetId": 1
@@ -172,6 +340,24 @@
       "writtenOn": "2015-03-10T11:30:58Z",
       "side": 1,
       "message": "tabs",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_c7bae009",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/dllmain.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-10T22:35:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a1371a2_e41c3a6d",
       "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -235,6 +421,24 @@
     },
     {
       "key": {
+        "uuid": "3a1371a2_e7543ccc",
+        "filename": "nfEngine/nfRendererTest/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-10T22:35:30Z",
+      "side": 1,
+      "message": "@second paragraph: I\u0027m aware of that. I\u0027ve just copy-pasted the code from somewhere",
+      "parentUuid": "3a1371a2_244db273",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a1371a2_c4477e4a",
         "filename": "nfEngine/nfRendererTest/main.cpp",
         "patchSetId": 1
@@ -246,6 +450,30 @@
       "writtenOn": "2015-03-10T11:30:58Z",
       "side": 1,
       "message": "I disagree. This will cause a lot of pain and useless line changes when implementing OpenGL renderer under Linux.\n\nPlease, make sure this program is multi-platform. We have nfCommon Window module - use it.",
+      "range": {
+        "startLine": 71,
+        "startChar": 0,
+        "endLine": 94,
+        "endChar": 31
+      },
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_c75140da",
+        "filename": "nfEngine/nfRendererTest/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-10T22:35:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a1371a2_c4477e4a",
       "range": {
         "startLine": 71,
         "startChar": 0,
@@ -286,6 +514,24 @@
       "writtenOn": "2015-03-10T11:30:58Z",
       "side": 1,
       "message": "...someone\u0027s code got red boxed.\n\n\u003ccue CSI theme\u003e",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_275e54ea",
+        "filename": "nfEngine/nfRendererTest/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-10T22:35:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a1371a2_a439a2da",
       "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
