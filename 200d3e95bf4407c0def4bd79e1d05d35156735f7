@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3a1371a2_aaf84bc5",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T21:41:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1969be_06eda88b",
+      "range": {
+        "startLine": 20,
+        "startChar": 47,
+        "endLine": 20,
+        "endChar": 70
+      },
+      "revId": "200d3e95bf4407c0def4bd79e1d05d35156735f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_9973c814",
         "filename": "nfEngine/nfCommon/CMakeLists.txt",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2015-03-01T00:57:10Z",
       "side": 1,
       "message": "Use spaces",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 5
+      },
+      "revId": "200d3e95bf4407c0def4bd79e1d05d35156735f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_6a5813fb",
+        "filename": "nfEngine/nfCommon/CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T21:41:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1969be_9973c814",
       "range": {
         "startLine": 24,
         "startChar": 0,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "3a1371a2_6a0f73e2",
+        "filename": "nfEngine/nfCommon/nfCommon.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T21:41:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1969be_f9611c3a",
+      "range": {
+        "startLine": 44,
+        "startChar": 3,
+        "endLine": 44,
+        "endChar": 60
+      },
+      "revId": "200d3e95bf4407c0def4bd79e1d05d35156735f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_79552c4f",
         "filename": "nfEngine/nfCommon/stdafx.hpp",
         "patchSetId": 3
@@ -82,6 +154,30 @@
       "writtenOn": "2015-03-01T00:57:10Z",
       "side": 1,
       "message": "I think that the whole block should be removed - the missing #include \u003cWindows.h\u003e\" should be used only in Windows implementations files.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 6
+      },
+      "revId": "200d3e95bf4407c0def4bd79e1d05d35156735f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_4a1437f5",
+        "filename": "nfEngine/nfCommon/stdafx.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T21:41:57Z",
+      "side": 1,
+      "message": "I guess that makes targetver.hpp useless. I\u0027ll leave a comment for now, since probably this change must be made under Windows.",
+      "parentUuid": "7a1969be_79552c4f",
       "range": {
         "startLine": 9,
         "startChar": 0,
