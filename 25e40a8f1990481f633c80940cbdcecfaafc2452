@@ -131,6 +131,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_ebebe175",
+        "filename": "nfEngine/nfCommon/Math/Geometry.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T07:19:17Z",
+      "side": 1,
+      "message": "Okay, got it. I\u0027ll create an issue on GitHub.",
+      "parentUuid": "7a1969be_6be25130",
+      "revId": "25e40a8f1990481f633c80940cbdcecfaafc2452",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_fce571dc",
         "filename": "nfEngine/nfCommon/Math/Geometry.cpp",
         "patchSetId": 4
