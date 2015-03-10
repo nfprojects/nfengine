@@ -1,0 +1,294 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_bc1499a0",
+        "filename": "Engine.sln",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T11:30:58Z",
+      "side": 1,
+      "message": "Treat this comment only as a \"fun fact\"\n\nThat\u0027s kind of stupid - Microsoft keeps users VS version inside .sln file...",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a166590_05bfd2d1",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Common.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T11:30:58Z",
+      "side": 1,
+      "message": "Remove, or (if this should be filled) define the macro appropriately.",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a166590_a5cd1e89",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T11:30:58Z",
+      "side": 1,
+      "message": "What do we have here :)\n\nSince this is another commit where I see a red block with whitespaces in it, I suggest you install CodeMaid, an extension to Visual Studio, which will remove trailing whitespaces automagically for you.",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a166590_e5c71663",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T11:30:58Z",
+      "side": 1,
+      "message": "rm",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a166590_c5c49a61",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/RasterizerState.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T11:30:58Z",
+      "side": 1,
+      "message": "Hello",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_a4124256",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/RenderTarget.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T11:30:58Z",
+      "side": 1,
+      "message": "Grammar Nazi: should be \"logging\", however you don\u0027t have to correct it, since it will disappear sooner or later.",
+      "range": {
+        "startLine": 36,
+        "startChar": 17,
+        "endLine": 36,
+        "endChar": 23
+      },
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a166590_45b0aaf4",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/RenderTarget.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T11:30:58Z",
+      "side": 1,
+      "message": "Brackets are not needed, unless there will be a log message some time later on. Then, add a TODO comment. See other places as well.",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_64096a2c",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/RendererD3D11.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T11:30:58Z",
+      "side": 1,
+      "message": "How are you today?",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_242652bb",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Shader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T11:30:58Z",
+      "side": 1,
+      "message": "Just chillin here",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_e41c3a6d",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/dllmain.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T11:30:58Z",
+      "side": 1,
+      "message": "tabs",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_042b5683",
+        "filename": "nfEngine/nfRendererTest/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T11:30:58Z",
+      "side": 1,
+      "message": "boilerplate",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_64204a9c",
+        "filename": "nfEngine/nfRendererTest/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T11:30:58Z",
+      "side": 1,
+      "message": "We will have to correct this by setting up current directory. I suggest adding a TODO comment.",
+      "range": {
+        "startLine": 4,
+        "startChar": 34,
+        "endLine": 4,
+        "endChar": 42
+      },
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_244db273",
+        "filename": "nfEngine/nfRendererTest/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T11:30:58Z",
+      "side": 1,
+      "message": "This file will probably be a reference to other coders on how to use nfRenderer. Consider switching to nfCommon File module (it should be merged soon - please rebase on these changes)\n\nFun fact: some time ago I stumbled on an article comparing different methods to read a file. It looks like using iterators is one of the slowest methods to read a file (even though it is a handy one-liner). Check it here: http://insanecoding.blogspot.com/2011/11/how-to-read-in-file-in-c.html",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_c4477e4a",
+        "filename": "nfEngine/nfRendererTest/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T11:30:58Z",
+      "side": 1,
+      "message": "I disagree. This will cause a lot of pain and useless line changes when implementing OpenGL renderer under Linux.\n\nPlease, make sure this program is multi-platform. We have nfCommon Window module - use it.",
+      "range": {
+        "startLine": 71,
+        "startChar": 0,
+        "endLine": 94,
+        "endChar": 31
+      },
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_44254eaa",
+        "filename": "nfEngine/nfRendererTest/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T11:30:58Z",
+      "side": 1,
+      "message": "It looks like...",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1371a2_a439a2da",
+        "filename": "nfEngine/nfRendererTest/main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-10T11:30:58Z",
+      "side": 1,
+      "message": "...someone\u0027s code got red boxed.\n\n\u003ccue CSI theme\u003e",
+      "revId": "74491537a49a879868eabfb9bf81f99d8814d940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
