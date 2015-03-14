@@ -1,5 +1,9 @@
 @echo off
 
+:: WARNING
+:: This script was ported in a "just in case" matter.
+:: It was not heavily tested, as we still don't know if we'll ever use it.
+
 :: script assumes following arguments:
 ::   %1   - PlatformDirName
 ::   %2   - ConfigurationDirName

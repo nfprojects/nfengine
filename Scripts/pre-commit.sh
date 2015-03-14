@@ -34,7 +34,7 @@ echo "Running tests"
 echo "============="
 echo
 
-./tests.sh
+./tests.py
 
 popd > /dev/null
 
