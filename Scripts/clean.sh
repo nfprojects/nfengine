@@ -26,6 +26,7 @@ Scripts/clean-cmake.sh > /dev/null
 echo "DONE"
 
 echo -n "Removing other files... "
+rm -f cppcheck_result.txt
 rm -f *.pyc
 echo "DONE"
 

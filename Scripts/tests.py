@@ -37,17 +37,20 @@ def findTestsIntoPaths(path, testlist, isPath):
         for root1, dirs1, files1 in os.walk(path):
             for file1 in files1:
                 if str(file1).lower() in testlist:
-                    pathlist.append(os.path.normpath(root1 + '\\' + file1))
+                    pathlist.append(os.path.normpath(root1 + '/' + file1))
     else:
         for root1, dirs1, files1 in os.walk(path):
             for dir1 in dirs1:
-                for root2, dirs2, files2 in os.walk(root1 + '\\' + dir1):
+                print "Entering dir " + dir1
+                for root2, dirs2, files2 in os.walk(root1 + '/' + dir1):
                     for dir2 in dirs2:
+                        print "Entering dir2 " + dir2
                         if str(dir2).lower() in ['release', 'debug']:
-                            for root3, dirs3, files3 in os.walk(root2 + '\\' + dir2):
+                            for root3, dirs3, files3 in os.walk(root2 + '/' + dir2):
                                 for file3 in files3:
-                                    if str(file3).lower() in testlist:
-                                        pathlist.append(os.path.normpath(root3 + '\\' + file3))
+                                    print "At file " + file3
+                                    if str(file3) in testlist:
+                                        pathlist.append(os.path.normpath(root3 + '/' + file3))
     return pathlist
 
 

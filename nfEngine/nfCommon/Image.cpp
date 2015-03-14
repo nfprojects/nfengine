@@ -206,8 +206,7 @@ const ImageMipmap& Image::GetMipmap(size_t id) const
 }
 
 // get texel from raw data buffer, knowing pixel format and image width
-Vector GetTexel(const void* pData, uint32 x, uint32 y, uint32 width,
-                                   ImageFormat fmt)
+Vector GetTexel(const void* pData, uint32 x, uint32 y, uint32 width, ImageFormat fmt)
 {
     switch (fmt)
     {
@@ -262,8 +261,7 @@ Vector GetTexel(const void* pData, uint32 x, uint32 y, uint32 width,
 }
 
 // get texel of the raw data buffer, knowing pixel format and image width
-void SetTexel(const Vector& v, void* pData, uint32 x, uint32 y, uint32 width,
-                                   ImageFormat fmt)
+void SetTexel(const Vector& v, void* pData, uint32 x, uint32 y, uint32 width, ImageFormat fmt)
 {
     switch (fmt)
     {
