@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a1371a2_e0dd2d44",
+        "filename": "nfEngine/nfCommon/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-18T11:16:35Z",
+      "side": 1,
+      "message": "This can be removed. Look at TODO comment @ lines 16-18 - if the module works, there is no need to keep an issue number with it.",
+      "range": {
+        "startLine": 37,
+        "startChar": 75,
+        "endLine": 37,
+        "endChar": 80
+      },
+      "revId": "28fd9a0a96f5d9f773c1bac3ed172b0cbe8de6e3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
