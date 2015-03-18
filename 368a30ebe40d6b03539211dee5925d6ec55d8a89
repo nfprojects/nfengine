@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a1371a2_f3c0657e",
+        "filename": "nfEngine/nfCommonTest/MathGeometryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-18T12:44:14Z",
+      "side": 1,
+      "message": "This code is resposnible for aforementioned edge cases, which are not working right now?",
+      "range": {
+        "startLine": 258,
+        "startChar": 4,
+        "endLine": 268,
+        "endChar": 6
+      },
+      "revId": "368a30ebe40d6b03539211dee5925d6ec55d8a89",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
