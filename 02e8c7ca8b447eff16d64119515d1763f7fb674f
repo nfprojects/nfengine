@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a1371a2_93a131ac",
+        "filename": "nfEngine/nfCommon/Math/Geometry.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-21T01:23:16Z",
+      "side": 1,
+      "message": "This is yet another astyle bug. Sorry to say this, however as discussed, revert it back to how it was. :)",
+      "revId": "02e8c7ca8b447eff16d64119515d1763f7fb674f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_0ccc1b35",
+        "filename": "nfEngine/nfCommon/Math/Vector.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 751,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-03-21T01:23:16Z",
+      "side": 1,
+      "message": "This is probably a useless piece of code to delete.",
+      "range": {
+        "startLine": 747,
+        "startChar": 0,
+        "endLine": 751,
+        "endChar": 6
+      },
+      "revId": "02e8c7ca8b447eff16d64119515d1763f7fb674f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
