@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_b8941d45",
+        "filename": "nfEngine/nfCommon/Linux/Timer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-03-23T10:02:16Z",
+      "side": 1,
+      "message": "This could be optimized a little bit: instead of calculating everything as doubles, you can multiply seconds by 10^9 and sum with nanoseconds (as integers). This way, you will save one int-\u003edouble conversion and floating-point addition, which are more costly than integer operations.",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 62
+      },
+      "revId": "475be30f68937e4d535a7c08d7c707c765e99c86",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
