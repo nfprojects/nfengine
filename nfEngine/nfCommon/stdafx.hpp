@@ -17,6 +17,13 @@
 #include <Windowsx.h>
 #endif
 
+#if defined(__LINUX__) | defined(__linux__)
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#endif
+
 /// C lib
 #include <stdlib.h>
 #include <time.h>
