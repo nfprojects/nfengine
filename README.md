@@ -1,7 +1,7 @@
 nfEngine
 ========
 
-The main purpose of this project is to create an open-source, multi-platform, efficient and universal 3D game engine. At the moment the engine is in early development state and supports Windows platform only (with Direct3D 11 renderer). Detailed list of features can be found in a section below.
+The main purpose of this project is to create an open-source, multi-platform, efficient and universal 3D game engine. At the moment the engine is in early development state and is fully buildable on Windows platform only (with Direct3D 11 renderer). Detailed list of features can be found in a section below.
 
 Features
 --------
@@ -86,24 +86,69 @@ The engine is dependent on following libraries:
 - [model_obj](http://www.dhpoware.com/demos/glObjViewer.html) - OBJ model files parsing
 - [Google Test](https://code.google.com/p/googletest/) - unit tests framework
 
+
+Building the project - Windows
+------------------------------
+
 To make the code compileable, the following requirements have to be met:
 
 1. Installed Visual Studio 2013.
 2. Installed DirectX SDK.
 3. Pulled external dependencies from [here](http://www.github.com/nfprojects/nfenginedeps)
-    * **"nfEngineDeps"** directory created by using git submodules inside repo
+    * **"nfEngineDeps"** directory will be created by using git submodules inside repo - fetch its contents by using `git submodule init && git submodule update` command
     * **NOTE:** Dependencies need to be built separately from engine. See README.md inside nfEngineDeps repo for more info.
 4. Downloaded resources from [here](http://drive.google.com/open?id=0B66mya2agFOEd0RJUWx1aDZ6Ym8)
     * **"Data"** directory created in **"nfEngineTest"** with content copied from subfolder **nfEngineTestData**
-    * **NOTE:** it is convenient to use Google Drive application to synchronize resources automatically (by adding this folder to your drive) and create symbolic link to them:
-            - on Windows: "mklink /J <dest> <src>"
-            - on Linux: "ln -s <src> <dest>"
+    * **NOTE:** it is convenient to use Google Drive application to synchronize resources automatically (by adding this folder to your drive) and create symbolic link to them.
 
-Example code on Windows:
+Example Batch code on Windows:
 
 ```
 cd nfengine/nfEngineTest // go to root of repository
 mklink /J Data "path-to-nfEngineTestData"
+```
+
+Building the project - Linux
+----------------------------
+
+For now, the only compileable part of nfEngine is nfCommon library and its tests binary, nfCommonTest. Requirements:
+
+1. Installed GCC 4.9.2 or higher
+2. Installed CMake 2.6 or higher
+3. Pulled external dependencies from [here](http://www.github.com/nfprojects/nfenginedeps)
+    * **"nfEngineDeps"** directory will be created by using git submodules inside repo - fetch its contents by using `git submodule init && git submodule update`
+    * **NOTE:** Dependencies need to be built separately from engine. See README.md inside nfEngineDeps repo for more info.
+
+To rebuild the entire project in one go, _Scripts/rebuild-all.sh_ script is available, which works similarly to "Batch Build" feature in Visual Studio. The script will call cleaning script and build the engine in all configurations possible. Similarly to Windows platform, Linux version of nfEngine can be built on two platforms - 32-bit (called **i386**) and 64-bit (called **x86_64**). Keep in mind, that building on i386 platform might require downloading 32-bit versions of standard libraries and compiler libraries to link against:
+
+* On Fedora:
+```
+sudo yum install glibc-devel.i686 gcc-c++.i686
+```
+
+* On Ubuntu:
+```
+sudo apt-get install libc6-dev-i386
+```
+
+Building without _Scripts/rebuild-all.sh_ script is done by explicitly calling CMake and Make. To build nfEngine with default settings (Release build, 64-bit platform), simply call on nfEngine repo root directory:
+
+```
+cmake .
+make
+```
+
+CMake can be called only once, unless there is a need to recreate Makefiles, or to change build type/platform.
+
+Changing build settings is done by defining two CMake variables (both are optional - omitting one of them will use default setting mentioned above):
+* **CMAKE_BUILD_TYPE** - specifies build type. Possible values: **Release**, **Debug**. Building nfEngine with **Debug** build type will turn off compiler optimization and generate debugging information for GDB.
+* **CMAKE_BUILD_PLATFORM** - specifies build platform. Possible values: **i386**, **x86_64**.
+
+Example - forcing 64-bit build with Debug info:
+
+```
+cmake . -DCMAKE_BUILD_TYPE=Debug -DCMAKE_BUILD_PLATFORM=x86_64
+make
 ```
 
 Documentation
