@@ -8,17 +8,17 @@ TEST(FileSystemTest, DirectoryAndRemove)
     const std::string testDir = "testDir1";
     const std::string testDir2 = testDir + "/testDir2";
 
-    ASSERT_EQ(true, FileSystem::CreateDir(testDir));
-    ASSERT_EQ(true, FileSystem::CreateDir(testDir2));
-    EXPECT_EQ(false, FileSystem::Remove(testDir)); // non-recursive remove will fail
-    EXPECT_EQ(true, FileSystem::Remove(testDir2));
-    ASSERT_EQ(true, FileSystem::Remove(testDir));
-    EXPECT_EQ(false, FileSystem::Remove(testDir));
+    ASSERT_TRUE(FileSystem::CreateDir(testDir));
+    ASSERT_TRUE(FileSystem::CreateDir(testDir2));
+    ASSERT_FALSE(FileSystem::Remove(testDir)); // non-recursive remove will fail
+    ASSERT_TRUE(FileSystem::Remove(testDir2));
+    ASSERT_TRUE(FileSystem::Remove(testDir));
+    ASSERT_FALSE(FileSystem::Remove(testDir));
 
-    ASSERT_EQ(true, FileSystem::CreateDir(testDir));
-    ASSERT_EQ(true, FileSystem::CreateDir(testDir2));
-    ASSERT_EQ(true, FileSystem::Remove(testDir, true));
-    EXPECT_EQ(false, FileSystem::Remove(testDir, true));
+    ASSERT_TRUE(FileSystem::CreateDir(testDir));
+    ASSERT_TRUE(FileSystem::CreateDir(testDir2));
+    ASSERT_TRUE(FileSystem::Remove(testDir, true));
+    ASSERT_FALSE(FileSystem::Remove(testDir, true));
 }
 
 TEST(FileSystemTest, TouchFile)
@@ -26,10 +26,10 @@ TEST(FileSystemTest, TouchFile)
     const std::string filePath = "touch_test_file";
 
     ASSERT_EQ(PathType::Invalid, FileSystem::GetPathType(filePath));
-    ASSERT_EQ(true, FileSystem::TouchFile(filePath));
-    EXPECT_EQ(false, FileSystem::TouchFile(filePath));
+    ASSERT_TRUE(FileSystem::TouchFile(filePath));
+    ASSERT_FALSE(FileSystem::TouchFile(filePath));
     ASSERT_EQ(PathType::File, FileSystem::GetPathType(filePath));
-    EXPECT_EQ(true, FileSystem::Remove(filePath));
+    ASSERT_TRUE(FileSystem::Remove(filePath));
 }
 
 TEST(FileSystemTest, Iterate)
@@ -54,9 +54,9 @@ TEST(FileSystemTest, Iterate)
     // prepare test files structure
     ASSERT_EQ(true, FileSystem::CreateDir(root)) << "create directory '" << root << "'";
     for (const std::string& path : test_dirs)
-        ASSERT_EQ(true, FileSystem::CreateDir(path)) << "create directory '" << path << "'";
+        ASSERT_TRUE(FileSystem::CreateDir(path)) << "create directory '" << path << "'";
     for (const std::string& path : test_files)
-        ASSERT_EQ(true, FileSystem::TouchFile(path)) << "create file '" << path << "'";
+        ASSERT_TRUE(FileSystem::TouchFile(path)) << "create file '" << path << "'";
 
 
     std::set<std::string> dirs;
@@ -71,7 +71,7 @@ TEST(FileSystemTest, Iterate)
         return true;
     };
 
-    EXPECT_EQ(true, FileSystem::Iterate(root, callback));
+    ASSERT_TRUE(FileSystem::Iterate(root, callback));
 
     for (const std::string& path : test_dirs)
         EXPECT_EQ(1, dirs.count(path)) << "check directory '" << path << "'";
@@ -79,5 +79,5 @@ TEST(FileSystemTest, Iterate)
         EXPECT_EQ(1, files.count(path)) << "check file '" << path << "'";
 
     // cleanup
-    EXPECT_EQ(true, FileSystem::Remove(root, true));
+    ASSERT_TRUE(FileSystem::Remove(root, true));
 }

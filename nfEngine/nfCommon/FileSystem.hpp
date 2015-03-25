@@ -20,6 +20,13 @@ enum class PathType
 class NFCOMMON_API FileSystem
 {
 public:
+    /*
+     * Callback function called during iterating a directory.
+     * @param path Path found relative to root directory
+     * @param isDirectory Is @p path a directory
+     * @return Return "true" to continue iteration or "false" to break it.
+     * @see FileSystem::Iterate
+     */
     typedef std::function<bool(const std::string& path, bool isDirectory)> DirIterateCallback;
 
     /**
