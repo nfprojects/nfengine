@@ -8,14 +8,21 @@
 
 // TODO This block below is probably not needed in stdafx.hpp and should be included by every file
 //      made by Windows platform.
-#ifdef WIN32
+#if defined(WIN32)
 // TODO seems reduntant, check and remove under Windows
 #include "targetver.hpp"
 
 #define NOMINMAX
 #include <Windows.h>
 #include <Windowsx.h>
-#endif
+#endif // defined(WIN32)
+
+#if defined(__LINUX__) | defined(__linux__)
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#endif // defined(__LINUX__) | defined(__linux__)
 
 /// C lib
 #include <stdlib.h>

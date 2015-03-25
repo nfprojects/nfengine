@@ -9,6 +9,9 @@
 #include "nfCommon.hpp"
 #include "Timer.hpp"
 
+
+#if !defined(__LINUX__) & !defined(__linux__)
+
 namespace NFE {
 namespace Common {
 
@@ -85,3 +88,18 @@ public:
 #define LOG_WARNING(msg, ...)   { if (Common::Logger::GetInstance()) Common::Logger::GetInstance()->Log(Common::LogType::Warning, __FUNCTION__, __FILE__, __LINE__, (msg), __VA_ARGS__); }
 #define LOG_ERROR(msg, ...)     { if (Common::Logger::GetInstance()) Common::Logger::GetInstance()->Log(Common::LogType::Error, __FUNCTION__, __FILE__, __LINE__, (msg), __VA_ARGS__); }
 #define LOG_FATAL(msg, ...)     { if (Common::Logger::GetInstance()) Common::Logger::GetInstance()->Log(Common::LogType::Fatal, __FUNCTION__, __FILE__, __LINE__, (msg), __VA_ARGS__); }
+
+
+/*
+ * TODO:
+ * This is temporary. Logger.cpp is not compiled on Linux, so we need to use dummy logging macros.
+ */
+#else // !defined(__LINUX__) & !defined(__linux__)
+
+#define LOG_INFO(msg, ...)
+#define LOG_SUCCESS(msg, ...)
+#define LOG_WARNING(msg, ...)
+#define LOG_ERROR(msg, ...)
+#define LOG_FATAL(msg, ...)
+
+#endif // !defined(__LINUX__) & !defined(__linux__)
