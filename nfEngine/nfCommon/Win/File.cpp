@@ -72,7 +72,12 @@ bool File::Open(const std::string& path, AccessMode access, bool overwrite)
             return false;
     }
 
-    DWORD creationDisposition = overwrite ? CREATE_ALWAYS : OPEN_ALWAYS;
+    DWORD creationDisposition;
+    if (overwrite && access != AccessMode::Read)
+        creationDisposition = CREATE_ALWAYS;
+    else
+        creationDisposition = OPEN_ALWAYS;
+
     mFile = ::CreateFile(widePath.c_str(), desiredAccess, FILE_SHARE_READ, NULL,
                          creationDisposition, FILE_ATTRIBUTE_NORMAL, 0);
 
@@ -130,19 +135,19 @@ size_t File::Write(const void* data, size_t size)
     return static_cast<size_t>(written);
 }
 
-uint64 File::GetSize() const
+int64 File::GetSize() const
 {
     if (!IsOpened())
-        return 0;
+        return -1;
 
     LARGE_INTEGER size;
     if (::GetFileSizeEx(mFile, &size) == 0)
     {
         LOG_ERROR("GetFileSizeEx failed: %s", GetLastErrorString().c_str());
-        return false;
+        return -1;
     }
 
-    return static_cast<uint64>(size.QuadPart);
+    return static_cast<int64>(size.QuadPart);
 }
 
 bool File::Seek(int64 pos, SeekMode mode)
@@ -178,20 +183,20 @@ bool File::Seek(int64 pos, SeekMode mode)
     return true;
 }
 
-uint64 File::GetPos() const
+int64 File::GetPos() const
 {
     if (!IsOpened())
-        return 0;
+        return -1;
 
     LARGE_INTEGER posLarge, pos;
     posLarge.QuadPart = 0;
     if (::SetFilePointerEx(mFile, posLarge, &pos, FILE_CURRENT) == 0)
     {
         LOG_ERROR("File seek failed: %s", GetLastErrorString().c_str());
-        return 0;
+        return -1;
     }
 
-    return static_cast<uint64>(pos.QuadPart);
+    return static_cast<int64>(pos.QuadPart);
 }
 
 } // namespace Common
