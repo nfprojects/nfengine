@@ -40,7 +40,7 @@ private:
 #if defined(WIN32)
     HANDLE mFile;
 #elif defined(__LINUX__) | defined(__linux__)
-    // TODO
+    int mFD;
 #else
 #error "Target system not supported!"
 #endif
