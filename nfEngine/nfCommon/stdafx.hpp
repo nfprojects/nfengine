@@ -18,6 +18,7 @@
 #endif
 
 #if defined(__LINUX__) | defined(__linux__)
+#define _LARGEFILE64_SOURCE
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
