@@ -40,7 +40,7 @@ private:
 #if defined(WIN32)
     HANDLE mFile;
 #elif defined(__LINUX__) | defined(__linux__)
-    // TODO
+    int mFD;
 #else
 #error "Target system not supported!"
 #endif
@@ -60,7 +60,7 @@ public:
      * Open a file. If the file does not exist it is created automatically.
      * @param path   File path.
      * @param access File access mode.
-     * @param overwrite Overwrite a file if it already exists.
+     * @param overwrite Overwrite a file if it already exists (when opened in write mode)
      */
     bool Open(const std::string& path, AccessMode access, bool overwrite = false);
 
