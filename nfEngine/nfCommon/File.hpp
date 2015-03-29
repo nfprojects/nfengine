@@ -40,7 +40,7 @@ private:
 #if defined(WIN32)
     HANDLE mFile;
 #elif defined(__LINUX__) | defined(__linux__)
-    // TODO
+    int mFD;
 #else
 #error "Target system not supported!"
 #endif
@@ -85,8 +85,9 @@ public:
 
     /**
      * Get total file size in bytes.
+     * @return Non-negative value on success.
      */
-    uint64 GetSize() const;
+    int64 GetSize() const;
 
     /**
      * Change file cursor to a new location.
@@ -98,8 +99,9 @@ public:
 
     /**
      * Get current file cursor position.
+     * @return Non-negative value on success.
      */
-    uint64 GetPos() const;
+    int64 GetPos() const;
 };
 
 } // namespace Common
