@@ -40,3 +40,21 @@ class GtestParser():
                     self.failLinks.append(suite.attrib['name'] + '.' + case.attrib['name'])
                 self.colorizerInstance.printMulti(case.attrib['name'], 'white', None, True)
                 sys.stdout.write('\n')
+
+
+    def parseXmlFailsOnly(self):
+        testSuite = self.root['node'].findall('testsuite')
+        for suite in testSuite:
+            testCase = suite.findall('testcase')
+            for case in testCase:
+                if case.find('failure') is not None:
+                    self.failLinks.append(suite.attrib['name'] + '.' + case.attrib['name'])
+        for failLink in self.failLinks:
+            dotPosition = failLink.find('.')
+            sys.stdout.write(2 * tabIndent)
+            self.colorizerInstance.printMulti('FAILED ', 'red', None, True)
+            sys.stdout.write(' ' + failLink[:dotPosition] + '\\')
+            self.colorizerInstance.printMulti(failLink[dotPosition + 1:], 'white', None, True)
+            sys.stdout.write('\n')
+
+
