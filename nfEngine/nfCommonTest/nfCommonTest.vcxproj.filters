@@ -8,7 +8,6 @@
     <ClCompile Include="PackerComplexTest.cpp" />
     <ClCompile Include="ThreadPoolSimple.cpp" />
     <ClCompile Include="ThreadPoolStress.cpp" />
-    <ClCompile Include="ThreadPoolPerformance.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="TimerTest.cpp" />
     <ClCompile Include="MathVectorTest.cpp" />

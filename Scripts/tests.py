@@ -86,9 +86,13 @@ def main(argv):
     argParser.add_argument('-n', '--name', metavar='testName',
                             help='Runs gtest files with given name')
     argParser.add_argument('-q', '--quiet', action='store_true', help='Suppresses output')
+    argParser.add_argument('-f', '--perf', action='store_true', help='Adds Performance tests to test list')
     argParser.add_argument('--args', default=[], metavar='gtestArguments', nargs=argparse.REMAINDER,
                             help='Pipes args to gtest. For available options see gtest manual.')
     args = argParser.parse_args()
+
+    if args.perf:
+        testList.append('nfCommonPerfTest')
 
     # playing with paths
     currentPath = os.path.realpath(__file__)
