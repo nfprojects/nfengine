@@ -1,16 +1,18 @@
 /**
-* @brief Stress tests for ThreadPool class.
-*/
+ * @file   ThreadPool.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Performance tests for ThreadPool class.
+ */
 
 #include "stdafx.hpp"
+#include "Common.hpp"
 #include "../nfCommon/ThreadPool.hpp"
 #include "../nfCommon/Timer.hpp"
-#include "Common.hpp"
 
 
 using namespace NFE::Common;
 
-TEST(ThreadPoolPerformance, SpawnTasks)
+TEST(ThreadPool, SpawnTasks)
 {
     Timer timer;
 

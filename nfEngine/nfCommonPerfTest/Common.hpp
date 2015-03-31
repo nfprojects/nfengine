@@ -1,6 +1,8 @@
 /**
-* @brief Common declarations for all the tests.
-*/
+ * @file   Common.hpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Common declarations for all the tests.
+ */
 
 #include "stdafx.hpp"
 
