@@ -5,8 +5,7 @@
 ## @brief  Multiplatform testing script
 
 
-import subprocess, shlex, time, xmlParser, os, sys, argparse
-
+import subprocess, shlex, time, xmlParser, os, sys, argparse, color
 
 def gatherFailed(path, name, failLinks):
     fails = []
@@ -85,6 +84,7 @@ def main(argv):
                            'path. Found tests will be listed for choosing.'))
     argParser.add_argument('-n', '--name', metavar='testName',
                             help='Runs gtest files with given name')
+    argParser.add_argument('-q', '--quiet', action='store_true', help='Suppresses output')
     argParser.add_argument('--args', default=[], metavar='gtestArguments', nargs=argparse.REMAINDER,
                             help='Pipes args to gtest. For available options see gtest manual.')
     args = argParser.parse_args()
@@ -151,7 +151,10 @@ def main(argv):
             print '====Parsing {} XML'.format(nameFromPath(testPath))
             if os.path.exists(xmlPath):
                 testParser = xmlParser.GtestParser(xmlPath)
-                testParser.parseXml()
+                if args.quiet:
+                    testParser.parseXmlFailsOnly()
+                else:
+                    testParser.parseXml()
 
                 # gathering failed tests
                 if len(testParser.failLinks) > 0:
@@ -170,7 +173,8 @@ def main(argv):
         for fail in fails:
             print 'python ' + os.path.normpath(os.path.realpath(__file__)),
             print ' ' + fail[0]
-
+    else:
+        color.Colorizer().printMulti('\nALL TESTS PASSED\n', 'green', None, True)
 
 if __name__ == '__main__':
     if sys.platform == 'linux' or sys.platform == 'linux2' or sys.platform == 'win32':
