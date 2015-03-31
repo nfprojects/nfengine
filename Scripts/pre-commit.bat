@@ -32,7 +32,7 @@ echo Running tests
 echo =============
 echo.
 
-call tests.py
+call tests.py -q
 
 popd
 
