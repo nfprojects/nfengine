@@ -7,7 +7,6 @@
 
 import subprocess, shlex, time, xmlParser, os, sys, argparse
 
-
 def gatherFailed(path, name, failLinks):
     fails = []
     failString = '-n {} -p {} --args --gtest_filter='.format(name, path)
@@ -85,6 +84,7 @@ def main(argv):
                            'path. Found tests will be listed for choosing.'))
     argParser.add_argument('-n', '--name', metavar='testName',
                             help='Runs gtest files with given name')
+    argParser.add_argument('-q', '--quiet', action='store_true', help='Suppresses output')
     argParser.add_argument('--args', default=[], metavar='gtestArguments', nargs=argparse.REMAINDER,
                             help='Pipes args to gtest. For available options see gtest manual.')
     args = argParser.parse_args()
@@ -151,7 +151,10 @@ def main(argv):
             print '====Parsing {} XML'.format(nameFromPath(testPath))
             if os.path.exists(xmlPath):
                 testParser = xmlParser.GtestParser(xmlPath)
-                testParser.parseXml()
+                if args.quiet:
+                    testParser.parseXmlFailsOnly()
+                else:
+                    testParser.parseXml()
 
                 # gathering failed tests
                 if len(testParser.failLinks) > 0:
