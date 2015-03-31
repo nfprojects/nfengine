@@ -1,6 +1,8 @@
 /**
-* @brief Stress tests for ThreadPool class.
-*/
+ * @file   ThreadPool.cpp
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Performance tests for ThreadPool class.
+ */
 
 #include "stdafx.hpp"
 #include "../nfCommon/ThreadPool.hpp"
@@ -10,7 +12,7 @@
 
 using namespace NFE::Common;
 
-TEST(ThreadPoolPerformance, SpawnTasks)
+TEST(ThreadPool, SpawnTasks)
 {
     Timer timer;
 
