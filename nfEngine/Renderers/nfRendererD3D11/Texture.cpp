@@ -53,7 +53,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
         return false;
     }
 
-    D3D11_TEXTURE2D_DESC td;  
+    D3D11_TEXTURE2D_DESC td;
     td.Width = desc.width;
     td.Height = desc.height;
     td.ArraySize = desc.layers;
