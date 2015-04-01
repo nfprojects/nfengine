@@ -78,11 +78,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     if (!InitRenderer())
         return 1;
 
+    // create backbuffer connected with the window
+    BackbufferDesc bbDesc;
+    bbDesc.width = WINDOW_WIDTH;
+    bbDesc.height = WINDOW_HEIGHT;
+    bbDesc.windowHandle = static_cast<void*>(window.GetHandle());
+    IBackbuffer* windowBackbuffer = gRendererDevice->CreateBackbuffer(bbDesc);
+
+    // create rendertarget that will render to the window's backbuffer
+    RenderTargetElement rtTarget;
+    rtTarget.texture = windowBackbuffer;
     RenderTargetDesc rtDesc;
-    rtDesc.width = WINDOW_WIDTH;
-    rtDesc.height = WINDOW_HEIGHT;
-    rtDesc.windowHandle = window.GetHandle();
+    rtDesc.numTargets = 1;
+    rtDesc.targets = &rtTarget;
     IRenderTarget* windowRenderTarget = gRendererDevice->CreateRenderTarget(rtDesc);
+
 
     ShaderProgramDesc programDesc;
     programDesc.vertexShader = CompileShader(D3D11_SHADER_PATH_PREFIX "TestVS.hlsl",
@@ -156,7 +166,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         window.ProcessMessages();
 
         float color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-        gCommandBuffer->SetRenderTargets(&windowRenderTarget, 1);
+        gCommandBuffer->SetRenderTarget(windowRenderTarget);
         gCommandBuffer->Clear(color);
         gCommandBuffer->SetShaderProgram(shaderProgram);
         gCommandBuffer->SetVertexLayout(vertexLayout);
@@ -170,7 +180,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
         gCommandBuffer->Draw(PrimitiveType::Triangles, 6);
 
-        windowRenderTarget->Present();
+        windowBackbuffer->Present();
     }
 
     delete sampler;

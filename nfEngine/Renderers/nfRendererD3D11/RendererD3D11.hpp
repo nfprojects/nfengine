@@ -81,9 +81,10 @@ public:
 
 class Texture : virtual public ITexture
 {
-    friend class RenderTarget;
     friend class CommandBuffer;
+    friend class RenderTarget;
 
+protected:
     TextureType type;
     int mWidth;
     int mHeight;
@@ -107,20 +108,28 @@ public:
     bool Init(const TextureDesc& desc);
 };
 
-// TODO: consider using pointer to ITexure instead of inheriting
-class RenderTarget : public IRenderTarget, public Texture
+class Backbuffer : public IBackbuffer, public Texture
 {
     friend class CommandBuffer;
 
-    HANDLE mWindow;
-    D3DPtr<ID3D11RenderTargetView> mRTV;
+    HWND mWindow;
     D3DPtr<IDXGISwapChain> mSwapChain;
 
 public:
-    int Resize(int newWidth, int newHeight);
-    int Present();
+    bool Resize(int newWidth, int newHeight);
+    bool Present();
+    bool Init(const BackbufferDesc& desc);
+};
 
-    int InitSwapChain(int width, int height, HWND window);
+class RenderTarget : public IRenderTarget
+{
+    friend class CommandBuffer;
+
+    std::vector<D3DPtr<ID3D11RenderTargetView>> mRTVs;
+    D3DPtr<ID3D11DepthStencilView> mDSV;
+
+public:
+    bool Init(const RenderTargetDesc& desc);
 };
 
 class Shader : public IShader
@@ -159,7 +168,7 @@ class CommandBuffer : public ICommandBuffer
     friend class Device;
 
     PrimitiveType mCurrentPrimitiveType;
-    RenderTarget* mCurrentRenderTargets[MAX_RENDER_TARGETS];
+    RenderTarget* mCurrentRenderTarget;
     D3DPtr<ID3D11DeviceContext> mContext;
 
     ShaderProgramDesc mBoundShaders;
@@ -176,7 +185,7 @@ public:
     void SetSamplers(ISampler** samplers, int num, ShaderType target);
     void SetTextures(ITexture** textures, int num, ShaderType target);
     void SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target);
-    void SetRenderTargets(IRenderTarget** renderTargets, int num);
+    void SetRenderTarget(IRenderTarget* renderTarget);
     void SetShaderProgram(IShaderProgram* shaderProgram);
     void SetBlendState(IBlendState* state);
     void SetRasterizerState(IRasterizerState* state);
@@ -197,6 +206,7 @@ public:
 
 class Device : public IDevice
 {
+    friend class Backbuffer;
     friend class RenderTarget;
 
     D3DPtr<ID3D11Device> mDevice;
@@ -205,6 +215,7 @@ class Device : public IDevice
     D3D_FEATURE_LEVEL mFeatureLevel;
 
     /// resources tracking
+    std::set<std::unique_ptr<Backbuffer>> mBackbuffers;
     std::set<std::unique_ptr<RenderTarget>> mRenderTargets;
     std::set<std::unique_ptr<Shader>> mShaders;
 
@@ -219,6 +230,7 @@ public:
     IVertexLayout* CreateVertexLayout(const VertexLayoutDesc& desc);
     IBuffer* CreateBuffer(const BufferDesc& desc);
     ITexture* CreateTexture(const TextureDesc& desc);
+    IBackbuffer* CreateBackbuffer(const BackbufferDesc& desc);
     IRenderTarget* CreateRenderTarget(const RenderTargetDesc& desc);
     IBlendState* CreateBlendState(const BlendStateDesc& desc);
     IDepthState* CreateDepthState(const DepthStateDesc& desc);

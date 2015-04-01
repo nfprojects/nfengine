@@ -13,25 +13,45 @@ namespace NFE {
 namespace Renderer {
 
 /**
+ * Description of a single render target texture.
+ */
+struct RenderTargetElement
+{
+    ITexture* texture;    //< target texture object
+    int level;            //< target mipmap level within the texture
+    int layer;            //< target layer (or slice for 3D textures) within the texture
+    ElementFormat format; //< texture format override (use "Unknown" to inherit from the texture)
+
+    RenderTargetElement()
+        : texture(nullptr)
+        , level(0)
+        , layer(0)
+        , format(ElementFormat::Unknown)
+    {}
+};
+
+/*
  * Render target description.
  */
 struct RenderTargetDesc
 {
-    int width;
-    int height;
-    void* windowHandle;
+    int numTargets;                   //< number of targets
+    RenderTargetElement* targets;     //< array of RenderTargetElement
+    RenderTargetElement* depthBuffer; //< optional pointer to a depth buffer description
+
+    RenderTargetDesc()
+        : numTargets(0)
+        , targets(nullptr)
+        , depthBuffer(nullptr)
+    {}
 };
 
-class IRenderTarget : virtual public ITexture
+class IRenderTarget
 {
 public:
     virtual ~IRenderTarget() {}
 
-    // should be called when window has been resized
-    virtual int Resize(int newWidth, int newHeight) = 0;
-
-    // swap buffers
-    virtual int Present() = 0;
+    virtual bool Init(const RenderTargetDesc& desc) = 0;
 };
 
 } // namespace Renderer

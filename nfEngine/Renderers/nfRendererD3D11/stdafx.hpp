@@ -15,3 +15,4 @@
 #include <memory>
 #include <assert.h>
 #include <set>
+#include <vector>
