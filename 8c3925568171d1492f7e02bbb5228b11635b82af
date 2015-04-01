@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_5c45f36e",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-01T06:10:07Z",
+      "side": 1,
+      "message": "I would prefer to display ALL TESTS PASSED message below each test binary, not when test script finishes its work. Fix that one thing and we\u0027ll be ready to rock and roll with this change.",
+      "revId": "8c3925568171d1492f7e02bbb5228b11635b82af",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
