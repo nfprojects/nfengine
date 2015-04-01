@@ -37,6 +37,7 @@ public:
     {
         reset();
         pointer = rhs.pointer;
+        rhs.pointer = nullptr;
     }
 
     ~D3DPtr()
@@ -48,8 +49,8 @@ public:
     {
         if (pointer != ptr)
         {
-            if (nullptr != ptr)
-                ptr->Release();
+            if (nullptr != pointer)
+                pointer->Release();
             pointer = ptr;
         }
         return *this;
@@ -57,7 +58,9 @@ public:
 
     D3DPtr& operator=(D3DPtr&& ptr)
     {
-        std::swap(pointer, ptr.pointer);
+        reset();
+        pointer = ptr.pointer;
+        ptr.pointer = nullptr;
         return *this;
     }
 

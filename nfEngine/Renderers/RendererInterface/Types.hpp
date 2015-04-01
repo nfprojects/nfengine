@@ -14,6 +14,8 @@ namespace Renderer {
 
 enum class ElementFormat
 {
+    Unknown,
+
     Float_32,
     Int_32,
     Uint_32,
