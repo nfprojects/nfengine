@@ -30,6 +30,7 @@ public:
     virtual IVertexLayout* CreateVertexLayout(const VertexLayoutDesc& desc) = 0;
     virtual IBuffer* CreateBuffer(const BufferDesc& desc) = 0;
     virtual ITexture* CreateTexture(const TextureDesc& desc) = 0;
+    virtual IBackbuffer* CreateBackbuffer(const BackbufferDesc& desc) = 0;
     virtual IRenderTarget* CreateRenderTarget(const RenderTargetDesc& desc) = 0;
     virtual IBlendState* CreateBlendState(const BlendStateDesc& desc) = 0;
     virtual IDepthState* CreateDepthState(const DepthStateDesc& desc) = 0;
