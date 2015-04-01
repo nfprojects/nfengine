@@ -37,6 +37,7 @@ struct TextureDesc
 {
     TextureType type;
     ElementFormat format;
+    BufferAccess access;
     int texelSize;  //< number of color channels per texel
     int binding;    //< texture binding mode
     int width;      //< texture width in texels
@@ -55,6 +56,7 @@ struct TextureDesc
     TextureDesc()
         : type(TextureType::Texture2D)
         , format(ElementFormat::Int_8)
+        , access(BufferAccess::GPU_ReadOnly)
         , texelSize(1)
         , binding(0)
         , width(1)

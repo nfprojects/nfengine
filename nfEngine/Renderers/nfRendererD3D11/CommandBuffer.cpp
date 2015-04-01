@@ -13,9 +13,8 @@ namespace Renderer {
 CommandBuffer::CommandBuffer(ID3D11DeviceContext* deviceContext)
     : mContext(deviceContext)
     , mCurrentPrimitiveType(PrimitiveType::Unknown)
+    , mCurrentRenderTarget(nullptr)
 {
-    for (int i = 0; i < MAX_RENDER_TARGETS; ++i)
-        mCurrentRenderTargets[i] = nullptr;
 }
 
 CommandBuffer::~CommandBuffer()
@@ -122,24 +121,22 @@ void CommandBuffer::SetConstantBuffers(IBuffer** constantBuffers, int num, Shade
 {
 }
 
-void CommandBuffer::SetRenderTargets(IRenderTarget** renderTargets, int num)
+void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
 {
-    assert(num < MAX_RENDER_TARGETS && num >= 0);
+    RenderTarget* rt = dynamic_cast<RenderTarget*>(renderTarget);
+    assert(rt != nullptr);
 
-    ID3D11RenderTargetView* rtv[MAX_RENDER_TARGETS] = { nullptr };
+    if (rt == mCurrentRenderTarget)
+        return;
+
+    ID3D11RenderTargetView* rtvs[MAX_RENDER_TARGETS] = { nullptr };
+    int num = rt->mRTVs.size();
+
     for (int i = 0; i < num; ++i)
-    {
-        RenderTarget* renderTarget = dynamic_cast<RenderTarget*>(renderTargets[i]);
-        if (renderTarget)
-        {
-            mCurrentRenderTargets[i] = renderTarget;
-            rtv[i] = renderTarget->mRTV.get();
-        }
-    }
-    for (int i = num; i < MAX_RENDER_TARGETS; ++i)
-        mCurrentRenderTargets[i] = nullptr;
+        rtvs[i] = rt->mRTVs[i].get();
 
-    mContext->OMSetRenderTargets(MAX_RENDER_TARGETS, rtv, NULL);
+    mContext->OMSetRenderTargets(num, rtvs, rt->mDSV.get());
+    mCurrentRenderTarget = rt;
 }
 
 void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
@@ -208,9 +205,9 @@ void CommandBuffer::Clear(const float* color)
 {
     // TODO: what about cleaning individual RTs with different colors?
 
-    for (int i = 0; i < MAX_RENDER_TARGETS; ++i)
-        if (mCurrentRenderTargets[i])
-            mContext->ClearRenderTargetView(mCurrentRenderTargets[i]->mRTV.get(), color);
+    if (mCurrentRenderTarget)
+        for (int i = 0; i < mCurrentRenderTarget->mRTVs.size(); ++i)
+            mContext->ClearRenderTargetView(mCurrentRenderTarget->mRTVs[i].get(), color);
 }
 
 void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum,

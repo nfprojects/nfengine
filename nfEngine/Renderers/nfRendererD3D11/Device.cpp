@@ -91,18 +91,33 @@ ITexture* Device::CreateTexture(const TextureDesc& desc)
     return texture;
 }
 
+IBackbuffer* Device::CreateBackbuffer(const BackbufferDesc& desc)
+{
+    Backbuffer* bb = new (std::nothrow) Backbuffer;
+    if (bb == nullptr)
+        return nullptr;
+
+    if (!bb->Init(desc))
+    {
+        delete bb;
+        return nullptr;
+    }
+
+    mBackbuffers.emplace(bb);
+    return bb;
+}
+
 IRenderTarget* Device::CreateRenderTarget(const RenderTargetDesc& desc)
 {
     RenderTarget* rt = new (std::nothrow) RenderTarget;
     if (rt == nullptr)
         return nullptr;
 
-    if (desc.windowHandle)
+    if (!rt->Init(desc))
     {
-        rt->InitSwapChain(desc.width, desc.height, static_cast<HWND>(desc.windowHandle));
-        // TODO: error checking
+        delete rt;
+        return nullptr;
     }
-
 
     mRenderTargets.emplace(rt);
     return rt;
