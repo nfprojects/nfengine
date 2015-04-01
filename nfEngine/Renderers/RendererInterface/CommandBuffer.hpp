@@ -11,6 +11,7 @@
 #include "Buffer.hpp"
 #include "Shader.hpp"
 #include "Texture.hpp"
+#include "Backbuffer.hpp"
 #include "RenderTarget.hpp"
 
 namespace NFE {
@@ -33,7 +34,7 @@ public:
     virtual void SetSamplers(ISampler** samplers, int num, ShaderType target) = 0;
     virtual void SetTextures(ITexture** textures, int num, ShaderType target) = 0;
     virtual void SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target) = 0;
-    virtual void SetRenderTargets(IRenderTarget** renderTargets, int num) = 0;
+    virtual void SetRenderTarget(IRenderTarget* renderTarget) = 0;
     virtual void SetShaderProgram(IShaderProgram* shaderProgram) = 0;
     virtual void SetBlendState(IBlendState* state) = 0;
     virtual void SetRasterizerState(IRasterizerState* state) = 0;

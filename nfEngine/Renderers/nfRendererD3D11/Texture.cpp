@@ -58,7 +58,6 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
     td.Height = desc.height;
     td.ArraySize = desc.layers;
     td.BindFlags = 0;
-    td.Usage = D3D11_USAGE_IMMUTABLE; // TODO
     td.CPUAccessFlags = 0; // TODO: support for dynamic textures
     td.Format = TranslateElementFormat(desc.format, desc.texelSize);
     td.MipLevels = desc.mipmaps;
@@ -68,12 +67,31 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
     td.SampleDesc.Count = desc.samplesNum;
     td.SampleDesc.Quality = 0;
 
+    switch (desc.access)
+    {
+        case BufferAccess::CPU_Read:
+            td.Usage = D3D11_USAGE_STAGING;
+            break;
+        case BufferAccess::CPU_Write:
+            td.Usage = D3D11_USAGE_DYNAMIC;
+            break;
+        case BufferAccess::GPU_ReadOnly:
+            td.Usage = D3D11_USAGE_IMMUTABLE;
+            break;
+        case BufferAccess::GPU_ReadWrite:
+            td.Usage = D3D11_USAGE_DEFAULT;
+            break;
+        default:
+            Log("Invalid texture access mode");
+            return false;
+    };
+
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER)
-        td.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+        td.BindFlags |= D3D11_BIND_SHADER_RESOURCE;
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_RENDERTARGET)
-        td.BindFlags = D3D11_BIND_RENDER_TARGET;
+        td.BindFlags |= D3D11_BIND_RENDER_TARGET;
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
-        td.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+        td.BindFlags |= D3D11_BIND_DEPTH_STENCIL;
     // TODO: UAV support
 
     if (desc.dataDesc)
