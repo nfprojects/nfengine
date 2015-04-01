@@ -65,6 +65,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "D3D11", "D3D11", "{B5BE3AE0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RendererInterface", "RendererInterface", "{35D637D1-D523-48E5-8AE7-77435A736666}"
 	ProjectSection(SolutionItems) = preProject
+		nfEngine\Renderers\RendererInterface\Backbuffer.hpp = nfEngine\Renderers\RendererInterface\Backbuffer.hpp
 		nfEngine\Renderers\RendererInterface\Buffer.hpp = nfEngine\Renderers\RendererInterface\Buffer.hpp
 		nfEngine\Renderers\RendererInterface\CommandBuffer.hpp = nfEngine\Renderers\RendererInterface\CommandBuffer.hpp
 		nfEngine\Renderers\RendererInterface\Device.hpp = nfEngine\Renderers\RendererInterface\Device.hpp
