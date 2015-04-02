@@ -40,8 +40,8 @@ Window::Window()
     mLeft = 10;
     mTop = 10;
     mFullscreen = false;
-    mResizeCallback = NULL;
-    mResizeCallbackUserData = NULL;
+    mResizeCallback = nullptr;
+    mResizeCallbackUserData = nullptr;
 
     mTitle = "Window";
 
@@ -120,7 +120,7 @@ void Window::SetFullscreenMode(bool enabled)
         // enter fullscreen
         SetWindowLong(mHandle, GWL_EXSTYLE, gFullscreenExStyle);
         SetWindowLong(mHandle, GWL_STYLE, WS_VISIBLE | WS_POPUP );
-        SetWindowPos(mHandle, NULL, 0, 0, mWidth, mHeight, SWP_NOZORDER );
+        SetWindowPos(mHandle, nullptr, 0, 0, mWidth, mHeight, SWP_NOZORDER );
     }
 
     mFullscreen = enabled;
@@ -143,7 +143,7 @@ bool Window::Open()
     {
         mHandle = CreateWindowEx(gFullscreenExStyle, mWndClass, wideTitle.c_str(),
                                  gFullscreenStyle, 0, 0, mWidth, mHeight,
-                                 NULL, NULL, mInstance, NULL);
+                                 nullptr, nullptr, mInstance, nullptr);
     }
     else
     {
@@ -163,7 +163,7 @@ bool Window::Open()
                                  mTop, mTop,
                                  windowRect.right - windowRect.left,
                                  windowRect.bottom - windowRect.top,
-                                 NULL, NULL, mInstance, NULL);
+                                 nullptr, nullptr, mInstance, nullptr);
     }
 
     if (!mHandle)
@@ -403,7 +403,7 @@ bool Window::IsMouseButtonDown(uint32 button) const
 void Window::ProcessMessages()
 {
     MSG msg;
-    while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+    while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
     {
         if (msg.message == WM_QUIT)
         {
