@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_937c7622",
+        "filename": "nfEngine/nfCommon/Window.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-02T12:35:47Z",
+      "side": 1,
+      "message": "Ok, should it just return mWindow?",
+      "parentUuid": "1a106d94_33f942ea",
+      "revId": "b686323d5b5cb119ddb2c0231ebdb9417e096488",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_73da9a79",
         "filename": "nfEngine/nfCommon/Window.hpp",
         "patchSetId": 1
@@ -30,6 +48,30 @@
       "writtenOn": "2015-04-02T11:22:18Z",
       "side": 1,
       "message": "This is very bad. The API MUST be platform independent (there must be no #ifdefs in public section).",
+      "range": {
+        "startLine": 95,
+        "startChar": 0,
+        "endLine": 99,
+        "endChar": 28
+      },
+      "revId": "b686323d5b5cb119ddb2c0231ebdb9417e096488",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_d376ee3d",
+        "filename": "nfEngine/nfCommon/Window.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-02T12:35:47Z",
+      "side": 1,
+      "message": "Ok, i\u0027ll just make conversion from wchar_t insinde SetTitle function.",
+      "parentUuid": "1a106d94_73da9a79",
       "range": {
         "startLine": 95,
         "startChar": 0,
