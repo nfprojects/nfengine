@@ -27,7 +27,7 @@ bool Sampler::Init(const SamplerDesc& desc)
     sd.BorderColor[2] = 0.0f;
     sd.BorderColor[3] = 0.0f;
 
-    HRESULT hr = gDevice->Get()->CreateSamplerState(&sd, &mSamplerState);
+    HRESULT hr = D3D_CALL_CHECK(gDevice->Get()->CreateSamplerState(&sd, &mSamplerState));
     return SUCCEEDED(hr);
 }
 

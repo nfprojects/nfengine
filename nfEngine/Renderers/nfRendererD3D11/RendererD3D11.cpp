@@ -12,12 +12,6 @@ namespace Renderer {
 
 std::unique_ptr<Device> gDevice;
 
-void Log(const char* str)
-{
-    OutputDebugStringA(str);
-    OutputDebugStringA("\n");
-}
-
 IDevice* Init()
 {
     if (gDevice == nullptr)
