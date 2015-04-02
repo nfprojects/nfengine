@@ -5,7 +5,9 @@
  */
 
 #pragma once
+
 #include "nfCommon.hpp"
+
 
 namespace NFE {
 namespace Common {
@@ -15,24 +17,24 @@ typedef void (*WindowResizeCallback)(void*);
 /**
  * Simple UI windows class.
  */
-// TODO: make this class platform independent
 class NFCOMMON_API Window
 {
 private:
+#if defined(WIN32)
     static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-
-    bool mClosed;
     HWND mHandle;
     HINSTANCE mInstance;
+    int mLeft;
+    int mTop;
+    wchar_t mWndClass[48];
+#endif // defined(WIN32)
 
+    bool mClosed;
     bool mFullscreen;
     uint32 mWidth;
     uint32 mHeight;
-    int mLeft;
-    int mTop;
 
-    std::wstring mTitle;
-    wchar_t mWndClass[48];
+    std::string mTitle;
 
     bool mMouseButtons[3];
     int mMouseDownX[3];
@@ -59,7 +61,7 @@ public:
     bool Open();
     bool Close();
 
-    HWND GetHandle() const;
+    void* GetHandle() const;
     void GetSize(uint32& width, uint32& height) const;
     float GetAspectRatio() const;
     bool GetFullscreenMode() const;
@@ -69,7 +71,7 @@ public:
 
     void SetSize(uint32 hidth, uint32 height);
     void SetFullscreenMode(bool enabled);
-    void SetTitle(const wchar_t* title);
+    void SetTitle(const char* title);
 
     // WARINING: only engine should call this function
     void SetResizeCallback(WindowResizeCallback func, void* userData);
