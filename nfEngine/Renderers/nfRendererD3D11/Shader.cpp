@@ -6,6 +6,7 @@
 
 #include "stdafx.hpp"
 #include "RendererD3D11.hpp"
+#include "../../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -72,6 +73,7 @@ bool Shader::Init(const ShaderDesc& desc)
             profileName = "ps_4_0";
             break;
         default:
+            LOG_ERROR("Invalid shader type");
             return false;
     }
 
@@ -81,41 +83,53 @@ bool Shader::Init(const ShaderDesc& desc)
 
     if (errorsBuffer)
     {
-        Log((char*)errorsBuffer->GetBufferPointer());
+        LOG_ERROR("Shader '%s' compilation output:\n%s", desc.name,
+                  (char*)errorsBuffer->GetBufferPointer());
         errorsBuffer->Release();
     }
 
     if (FAILED(hr))
+    {
+        LOG_ERROR("Compilation of shader '%s' failed", desc.name);
         return false;
+    }
 
-    // TODO: verify output of Create*Shader() calls
     switch (mType)
     {
         case ShaderType::Vertex:
-            gDevice->Get()->CreateVertexShader(mBytecode->GetBufferPointer(),
-                                               mBytecode->GetBufferSize(), NULL, &mVS);
+            hr = D3D_CALL_CHECK(gDevice->Get()->CreateVertexShader(mBytecode->GetBufferPointer(),
+                                                                   mBytecode->GetBufferSize(),
+                                                                   NULL, &mVS));
             break;
         case ShaderType::Geometry:
-            gDevice->Get()->CreateGeometryShader(mBytecode->GetBufferPointer(),
-                                                 mBytecode->GetBufferSize(), NULL, &mGS);
+            hr = D3D_CALL_CHECK(gDevice->Get()->CreateGeometryShader(mBytecode->GetBufferPointer(),
+                                                                     mBytecode->GetBufferSize(),
+                                                                     NULL, &mGS));
             break;
         case ShaderType::Hull:
-            gDevice->Get()->CreateHullShader(mBytecode->GetBufferPointer(),
-                                             mBytecode->GetBufferSize(), NULL, &mHS);
+            hr = D3D_CALL_CHECK(gDevice->Get()->CreateHullShader(mBytecode->GetBufferPointer(),
+                                                                 mBytecode->GetBufferSize(),
+                                                                 NULL, &mHS));
             break;
         case ShaderType::Domain:
-            gDevice->Get()->CreateDomainShader(mBytecode->GetBufferPointer(),
-                                               mBytecode->GetBufferSize(), NULL, &mDS);
+            hr = D3D_CALL_CHECK(gDevice->Get()->CreateDomainShader(mBytecode->GetBufferPointer(),
+                                                                   mBytecode->GetBufferSize(),
+                                                                   NULL, &mDS));
             break;
         case ShaderType::Pixel:
-            gDevice->Get()->CreatePixelShader(mBytecode->GetBufferPointer(),
-                                              mBytecode->GetBufferSize(), NULL, &mPS);
+            hr = D3D_CALL_CHECK(gDevice->Get()->CreatePixelShader(mBytecode->GetBufferPointer(),
+                                                                  mBytecode->GetBufferSize(),
+                                                                  NULL, &mPS));
             break;
     }
 
-    std::string msg = "Shader '" + std::string(desc.name) + "' created";
-    Log(msg.c_str());
+    if (FAILED(hr))
+    {
+        mBytecode.reset();
+        return false;
+    }
 
+    LOG_SUCCESS("Shader '%s' compiled successfully", desc.name)
     return true;
 }
 

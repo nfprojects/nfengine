@@ -32,7 +32,7 @@ bool DepthState::Init(const DepthStateDesc& desc)
     dsd.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
     dsd.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
 
-    HRESULT hr = gDevice->Get()->CreateDepthStencilState(&dsd, &mDS);
+    HRESULT hr = D3D_CALL_CHECK(gDevice->Get()->CreateDepthStencilState(&dsd, &mDS));
     return SUCCEEDED(hr);
 }
 

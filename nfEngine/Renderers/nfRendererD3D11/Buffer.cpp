@@ -56,7 +56,7 @@ bool Buffer::Init(const BufferDesc& desc)
     initialData.SysMemPitch = 0;
     initialData.SysMemSlicePitch = 0;
 
-    HRESULT hr = gDevice->Get()->CreateBuffer(&bufferDesc, &initialData, &mBuffer);
+    HRESULT hr = D3D_CALL_CHECK(gDevice->Get()->CreateBuffer(&bufferDesc, &initialData, &mBuffer));
     return SUCCEEDED(hr);
 }
 

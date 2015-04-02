@@ -6,6 +6,7 @@
 
 #include "stdafx.hpp"
 #include "RendererD3D11.hpp"
+#include "../../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -49,7 +50,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
                          NFE_RENDERER_TEXTURE_BIND_RENDERTARGET |
                          NFE_RENDERER_TEXTURE_BIND_DEPTH))
     {
-        Log("Invalid texture binding flags");
+        LOG_ERROR("Invalid texture binding flags");
         return false;
     }
 
@@ -82,7 +83,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
             td.Usage = D3D11_USAGE_DEFAULT;
             break;
         default:
-            Log("Invalid texture access mode");
+            LOG_ERROR("Invalid texture access mode");
             return false;
     };
 
@@ -104,16 +105,14 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
             initialData[i].SysMemSlicePitch = desc.dataDesc[i].sliceSize;
         }
 
-        hr = gDevice->Get()->CreateTexture2D(&td, initialData, &mTexture2D);
+        hr = D3D_CALL_CHECK(gDevice->Get()->CreateTexture2D(&td, initialData, &mTexture2D));
     }
     else
-        hr = gDevice->Get()->CreateTexture2D(&td, NULL, &mTexture2D);
+        hr = D3D_CALL_CHECK(gDevice->Get()->CreateTexture2D(&td, NULL, &mTexture2D));
 
     if (FAILED(hr))
-    {
-        Log("Creation of 2D texture object failed");
         return false;
-    }
+
 
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER)
     {
@@ -131,12 +130,9 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
             srvd.Texture2D.MostDetailedMip = 0;
         }
 
-        hr = gDevice->Get()->CreateShaderResourceView(mTexture2D, &srvd, &mSRV);
+        hr = D3D_CALL_CHECK(gDevice->Get()->CreateShaderResourceView(mTexture2D, &srvd, &mSRV));
         if (FAILED(hr))
-        {
-            Log("Creation of SRV for 2D texture failed");
             return false;
-        }
     }
 
     type = TextureType::Texture2D;

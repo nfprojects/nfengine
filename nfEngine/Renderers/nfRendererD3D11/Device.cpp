@@ -20,21 +20,27 @@ Device::Device()
 #endif
 
     ID3D11DeviceContext* immediateContext;
-    hr = D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, flags, NULL, 0,
-                           D3D11_SDK_VERSION, &mDevice, &mFeatureLevel, &immediateContext);
-    mDefaultCommandBuffer.reset(new CommandBuffer(immediateContext));
+    hr = D3D_CALL_CHECK(D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, flags, NULL, 0,
+                                          D3D11_SDK_VERSION, &mDevice, &mFeatureLevel,
+                                          &immediateContext));
 
     if (FAILED(hr))
-    {
         throw std::exception("D3D11CreateDevice() failed");
-    }
+
+    mDefaultCommandBuffer.reset(new CommandBuffer(immediateContext));
 
     /// get DXGI factory for created Direct3D device
     D3DPtr<IDXGIDevice> pDXGIDevice;
-    hr = mDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&pDXGIDevice);
-    D3DPtr<IDXGIAdapter> pDXGIAdapter;
-    hr = pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&pDXGIAdapter);
-    pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&mDXGIFactory);
+    hr = D3D_CALL_CHECK(mDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&pDXGIDevice));
+
+    if (SUCCEEDED(hr) && pDXGIDevice.get() != nullptr)
+    {
+        D3DPtr<IDXGIAdapter> pDXGIAdapter;
+        hr = D3D_CALL_CHECK(pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&pDXGIAdapter));
+
+        if (SUCCEEDED(hr) && pDXGIAdapter.get() != nullptr)
+            D3D_CALL_CHECK(pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&mDXGIFactory));
+    }
 }
 
 Device::~Device()
