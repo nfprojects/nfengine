@@ -4,17 +4,13 @@
  * @brief  Window class declaration.
  */
 
-
-
 #pragma once
-#include "nfCommon.hpp"
 
+#include "nfCommon.hpp"
 #if defined(__LINUX__) | defined(__linux__)
 #include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/Xos.h>
-#include <X11/Xresource.h>
 #endif // defined(__LINUX__) | defined(__linux__)
+
 
 namespace NFE {
 namespace Common {
@@ -24,36 +20,29 @@ typedef void (*WindowResizeCallback)(void*);
 /**
  * Simple UI windows class.
  */
-// TODO: make this class platform independent
 class NFCOMMON_API Window
 {
 private:
-    #if defined(WIN32)
-        static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-    #endif // defined(WIN32)
-    
-    bool mClosed;
-    #if defined(WIN32)
-        HWND mHandle;
-        HINSTANCE mInstance;
-    #elif defined(__LINUX__) | defined(__linux__)
-        Display mDisplay;
-        Window mWindow;
-        Window mRoot;
-    #endif // defined(WIN32)
+#if defined(WIN32)
+    static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+    HWND mHandle;
+    HINSTANCE mInstance;
+    int mLeft;
+    int mTop;
+    wchar_t mWndClass[48];
+#elif defined(__LINUX__) | defined(__linux__)
+    staic ::Display* mDisplay;
+    ::Window mWindow;
+    ::Window mRoot;
+    static bool mWindowError;
+    static int ErrorHandler(::Display* dpy, XErrorEvent *error);
+#endif // defined(WIN32)
 
+    bool mClosed;
     bool mFullscreen;
     uint32 mWidth;
     uint32 mHeight;
-    #if defined(WIN32)
-        int mLeft;
-        int mTop;
-    
-        wchar_t mWndClass[48];
-        std::wstring mTitle;
-    #elif defined(__LINUX__) | defined(__linux__)
-        std::string mTitle;
-    #endif // defined(WIN32)
+    std::string mTitle;
 
     bool mMouseButtons[3];
     int mMouseDownX[3];
@@ -80,9 +69,7 @@ public:
     bool Open();
     bool Close();
 
-    #if defined(WIN32)
-        HWND GetHandle() const;
-    #endif // defined(WIN32)
+    void* GetHandle() const;
     void GetSize(uint32& width, uint32& height) const;
     float GetAspectRatio() const;
     bool GetFullscreenMode() const;
@@ -92,11 +79,8 @@ public:
 
     void SetSize(uint32 hidth, uint32 height);
     void SetFullscreenMode(bool enabled);
-    #if defined(WIN32)
-        void SetTitle(const wchar_t* title);
-    #elif defined(__LINUX__) | defined(__linux__)
-        void SetTitle(const char* title);
-    #endif // defined(WIN32)
+    void SetTitle(const char* title);
+
     // WARINING: only engine should call this function
     void SetResizeCallback(WindowResizeCallback func, void* userData);
 
