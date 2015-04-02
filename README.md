@@ -63,7 +63,7 @@ The engine's root directory looks as follows:
         * **RendererInterface** - set of headers defining low-level renderer API
         * **Shaders** - set of common shaders used by each renderer implementation
         * **nfRendererD3D11** - Direct3D 11 implementation
-    * **nfRendererTest** - test for renderers
+    * **nfRendererDemo** - demo application used for renderers testing
 * **nfEngineDeps** - engine's dependencies directory. See "Dependencies" section for more information
 * **nfEngineTest** - demo application
 * **Obj** - temporary compilation objects
