@@ -5,7 +5,8 @@
  */
 
 #include "stdafx.hpp"
-#include "Window.hpp"
+#include "Common.hpp"
+#include "../Window.hpp"
 
 namespace NFE {
 namespace Common {
@@ -42,7 +43,7 @@ Window::Window()
     mResizeCallback = NULL;
     mResizeCallbackUserData = NULL;
 
-    mTitle = L"Window";
+    mTitle = "Window";
 
     swprintf_s(mWndClass, L"%ws_%p", L"nfEngine_WndClass", this);
 
@@ -83,11 +84,13 @@ void Window::SetSize(uint32 width, uint32 height)
         MoveWindow(mHandle, mLeft, mTop, width, height, TRUE);
 }
 
-void Window::SetTitle(const wchar_t* title)
+void Window::SetTitle(const char* title)
 {
     mTitle = title;
     if (!mClosed)
-        SetWindowText(mHandle, mTitle.c_str());
+        std::wstring wideTitle;
+        if (UTF8ToUTF16(title, wideTitle))
+            SetWindowText(mHandle, wideTitle.c_str());
 }
 
 void Window::SetFullscreenMode(bool enabled)
@@ -131,10 +134,12 @@ bool Window::Open()
 {
     if (!mClosed)
         return false;
-
+    std::wstring wideTitle;
+    if(!UTF8ToUTF16(title, wideTitle))
+        return false;
     if (mFullscreen)
     {
-        mHandle = CreateWindowEx(gFullscreenExStyle, mWndClass, mTitle.c_str(),
+        mHandle = CreateWindowEx(gFullscreenExStyle, mWndClass, wideTitle.c_str(),
                                  gFullscreenStyle, 0, 0, mWidth, mHeight,
                                  NULL, NULL, mInstance, NULL);
     }
@@ -151,7 +156,7 @@ bool Window::Open()
         mTop = -windowRect.top;
 
         mHandle = CreateWindowEx(gWindowedExStyle,
-                                 mWndClass, mTitle.c_str(),
+                                 mWndClass, wideTitle.c_str(),
                                  gWindowedStyle,
                                  mTop, mTop,
                                  windowRect.right - windowRect.left,
@@ -163,7 +168,7 @@ bool Window::Open()
         return false;
 
     SetWindowLongPtr(mHandle, GWLP_USERDATA, (LONG_PTR)this);
-    SetWindowText(mHandle, mTitle.c_str());
+    SetWindowText(mHandle, wideTitle.c_str());
     ShowWindow(mHandle, SW_SHOW);
     UpdateWindow(mHandle);
     SetFocus(mHandle);
@@ -366,9 +371,9 @@ bool Window::IsClosed() const
     return mClosed;
 }
 
-HWND Window::GetHandle() const
+void* Window::GetHandle() const
 {
-    return mHandle;
+    return std::static_cast<void*>(mHandle);
 }
 
 void Window::GetSize(uint32& Width, uint32& Height) const
