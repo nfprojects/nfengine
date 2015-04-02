@@ -6,6 +6,7 @@
 
 #include "stdafx.hpp"
 #include "RendererD3D11.hpp"
+#include "../../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -28,21 +29,14 @@ bool Backbuffer::Resize(int newWidth, int newHeight)
 
     // Preserve the existing buffer count and format.
     // Automatically choose the width and height to match the client rect for HWNDs.
-    hr = mSwapChain->ResizeBuffers(0, mWidth, mHeight, DXGI_FORMAT_UNKNOWN, 0);
-
+    hr = D3D_CALL_CHECK(mSwapChain->ResizeBuffers(0, mWidth, mHeight, DXGI_FORMAT_UNKNOWN, 0));
     if (FAILED(hr))
-    {
-        // TODO: logging
         return false;
-    }
 
     // Get buffer and create a render-target-view.
-    hr = mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&mTexture2D);
+    hr = D3D_CALL_CHECK(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&mTexture2D));
     if (FAILED(hr))
-    {
-        // TODO: logging
         return false;
-    }
 
     // TODO: what about rendertargets that are using the backbuffer?
 
@@ -75,20 +69,15 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     scd.SampleDesc.Count = 1;
     scd.Windowed = 1;
 
-    hr = gDevice->mDXGIFactory->CreateSwapChain(gDevice->mDevice.get(), &scd, &mSwapChain);
+    hr = D3D_CALL_CHECK(gDevice->mDXGIFactory->CreateSwapChain(gDevice->mDevice.get(), &scd,
+                        &mSwapChain));
     if (FAILED(hr))
-    {
-        // TODO: logging
         return false;
-    }
 
     // get the address of the back buffer
-    hr = mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&mTexture2D);
+    hr = D3D_CALL_CHECK(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&mTexture2D));
     if (FAILED(hr))
-    {
-        // TODO: logging
         return false;
-    }
 
     return true;
 }

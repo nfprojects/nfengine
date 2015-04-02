@@ -41,7 +41,7 @@ bool RasterizerState::Init(const RasterizerStateDesc& desc)
             return false;
     };
 
-    HRESULT hr = gDevice->Get()->CreateRasterizerState(&rd, &mRS);
+    HRESULT hr = D3D_CALL_CHECK(gDevice->Get()->CreateRasterizerState(&rd, &mRS));
     return SUCCEEDED(hr);
 }
 

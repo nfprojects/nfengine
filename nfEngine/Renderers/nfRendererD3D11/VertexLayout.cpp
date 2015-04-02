@@ -40,9 +40,10 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
 
     Shader* vertexShader = dynamic_cast<Shader*>(desc.vertexShader);
     ID3DBlob* byteCode = vertexShader->GetBytecode();
-    HRESULT hr = gDevice->Get()->CreateInputLayout(elementDescs, desc.numElements,
-                 byteCode->GetBufferPointer(),
-                 byteCode->GetBufferSize(), &mIL);
+    HRESULT hr = D3D_CALL_CHECK(gDevice->Get()->CreateInputLayout(elementDescs, desc.numElements,
+                                                                  byteCode->GetBufferPointer(),
+                                                                  byteCode->GetBufferSize(),
+                                                                  &mIL));
     return SUCCEEDED(hr);
 }
 
