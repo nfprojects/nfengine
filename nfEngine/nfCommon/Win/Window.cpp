@@ -5,7 +5,7 @@
  */
 
 #include "stdafx.hpp"
-#include "Window.hpp"
+#include "../Window.hpp"
 
 namespace NFE {
 namespace Common {
