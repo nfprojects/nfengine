@@ -218,6 +218,7 @@ popd</Command>
     </ClCompile>
     <ClCompile Include="ThreadPoolStress.cpp" />
     <ClCompile Include="TimerTest.cpp" />
+    <ClCompile Include="WindowTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
