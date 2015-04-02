@@ -2,6 +2,75 @@
   "comments": [
     {
       "key": {
+        "uuid": "1a106d94_8e960d93",
+        "filename": "nfEngine/nfCommon/Win/Window.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-02T14:28:56Z",
+      "side": 1,
+      "message": "camelCase",
+      "range": {
+        "startLine": 91,
+        "startChar": 21,
+        "endLine": 91,
+        "endChar": 30
+      },
+      "revId": "ffa367e3d23ce48aac8f31b16f263780c822c715",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_4e7d356e",
+        "filename": "nfEngine/nfCommon/Win/Window.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-02T14:28:56Z",
+      "side": 1,
+      "message": "camelCase",
+      "range": {
+        "startLine": 137,
+        "startChar": 17,
+        "endLine": 137,
+        "endChar": 26
+      },
+      "revId": "ffa367e3d23ce48aac8f31b16f263780c822c715",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_ee87c15f",
+        "filename": "nfEngine/nfCommon/Win/Window.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 376,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-02T14:28:56Z",
+      "side": 1,
+      "message": "I\u0027d use static_cast here, because we want to preserve value of mHandle",
+      "range": {
+        "startLine": 376,
+        "startChar": 16,
+        "endLine": 376,
+        "endChar": 32
+      },
+      "revId": "ffa367e3d23ce48aac8f31b16f263780c822c715",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_6e3751e4",
         "filename": "nfEngine/nfCommon/Window.hpp",
         "patchSetId": 2
