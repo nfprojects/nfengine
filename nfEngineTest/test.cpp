@@ -402,7 +402,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     //create window
     CustomWindow* window = new CustomWindow;
     window->SetSize(800, 600);
-    window->SetTitle(L"NFEngine Demo - Initializing engine...");
+    window->SetTitle("NFEngine Demo - Initializing engine...");
     window->Open();
 
     //initialize engine
@@ -440,7 +440,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 
     window->InitCamera();
-    window->SetTitle(L"NFEngine Demo");
+    window->SetTitle("NFEngine Demo");
 
     InitScene(0);
 
@@ -470,9 +470,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         ProcessSceneEvents();
 
         // print focus segment name
-        wchar_t str[128];
+        char str[128];
         Segment* focus = gScene->GetFocusSegment();
-        swprintf(str, L"NFEngine Demo (%S) - focus: %S - Press [0-%i] to switch scene",
+		sprintf(str, "NFEngine Demo (%S) - focus: %S - Press [0-%i] to switch scene",
                  PLATFORM_STR, (focus != 0) ? focus->GetName() : "NONE",
                  GetScenesNum() - 1);
         window->SetTitle(str);

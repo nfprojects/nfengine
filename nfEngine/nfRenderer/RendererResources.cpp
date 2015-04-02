@@ -780,7 +780,7 @@ int RenderTargetD3D11::InitSwapChain(uint32 width_, uint32 height_, Common::Wind
     scd.BufferDesc.Height = height_;
     scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // use 32-bit color
     scd.BufferUsage = usageFlags;
-    scd.OutputWindow = pWindow->GetHandle();
+    scd.OutputWindow = static_cast<HWND>(pWindow->GetHandle());
     scd.SampleDesc.Count = 1;                           // how many multisamples
     scd.Windowed = !pWindow->GetFullscreenMode();       // windowed/full-screen mode
 
