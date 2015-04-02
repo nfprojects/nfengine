@@ -81,6 +81,30 @@
       "revId": "b686323d5b5cb119ddb2c0231ebdb9417e096488",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_7323ba05",
+        "filename": "nfEngine/nfCommon/Window.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-02T12:56:40Z",
+      "side": 1,
+      "message": "From char* :) We should use UTF-8 as a standard",
+      "parentUuid": "1a106d94_d376ee3d",
+      "range": {
+        "startLine": 95,
+        "startChar": 0,
+        "endLine": 99,
+        "endChar": 28
+      },
+      "revId": "b686323d5b5cb119ddb2c0231ebdb9417e096488",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
