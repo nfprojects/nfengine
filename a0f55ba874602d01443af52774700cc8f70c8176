@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_a5b6873b",
+        "filename": "Scripts/xmlParser.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-02T21:19:58Z",
+      "side": 1,
+      "message": "Add indentation like in line 54 - this way ALL TESTS PASSED will be indented just like FAILED messages.",
+      "revId": "a0f55ba874602d01443af52774700cc8f70c8176",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
