@@ -6,6 +6,7 @@
 
 #include "stdafx.hpp"
 #include "RendererD3D11.hpp"
+#include "../../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -32,7 +33,7 @@ bool Backbuffer::Resize(int newWidth, int newHeight)
 
     if (FAILED(hr))
     {
-        // TODO: logging
+        LOG_ERROR("Failed to resize swapchain's buffer");
         return false;
     }
 
@@ -40,7 +41,7 @@ bool Backbuffer::Resize(int newWidth, int newHeight)
     hr = mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&mTexture2D);
     if (FAILED(hr))
     {
-        // TODO: logging
+        LOG_ERROR("Failed to get swapchain's buffer");
         return false;
     }
 
@@ -87,7 +88,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     hr = gDevice->mDXGIFactory->CreateSwapChain(gDevice->mDevice.get(), &scd, &mSwapChain);
     if (FAILED(hr))
     {
-        // TODO: logging
+        LOG_ERROR("Failed to create swapchain");
         return false;
     }
 
@@ -95,7 +96,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     hr = mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&mTexture2D);
     if (FAILED(hr))
     {
-        // TODO: logging
+        LOG_ERROR("Failed to get swapchain's buffer");
         return false;
     }
 

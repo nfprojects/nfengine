@@ -6,6 +6,7 @@
 
 #include "stdafx.hpp"
 #include "RendererD3D11.hpp"
+#include "../../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -49,7 +50,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
                          NFE_RENDERER_TEXTURE_BIND_RENDERTARGET |
                          NFE_RENDERER_TEXTURE_BIND_DEPTH))
     {
-        Log("Invalid texture binding flags");
+        LOG_ERROR("Invalid texture binding flags");
         return false;
     }
 
@@ -82,7 +83,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
             td.Usage = D3D11_USAGE_DEFAULT;
             break;
         default:
-            Log("Invalid texture access mode");
+            LOG_ERROR("Invalid texture access mode");
             return false;
     };
 
@@ -111,7 +112,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
 
     if (FAILED(hr))
     {
-        Log("Creation of 2D texture object failed");
+        LOG_ERROR("Creation of 2D texture object failed");
         return false;
     }
 
@@ -134,7 +135,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
         hr = gDevice->Get()->CreateShaderResourceView(mTexture2D, &srvd, &mSRV);
         if (FAILED(hr))
         {
-            Log("Creation of SRV for 2D texture failed");
+            LOG_ERROR("Creation of SRV for 2D texture failed");
             return false;
         }
     }

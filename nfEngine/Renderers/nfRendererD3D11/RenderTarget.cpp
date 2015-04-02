@@ -6,6 +6,7 @@
 
 #include "stdafx.hpp"
 #include "RendererD3D11.hpp"
+#include "../../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -16,7 +17,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 
     if (desc.numTargets > MAX_RENDER_TARGETS)
     {
-        Log("Too many targets");
+        LOG_ERROR("Too many targets (got %u, max is %u", desc.numTargets, MAX_RENDER_TARGETS);
         return false;
     }
 
@@ -27,7 +28,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 
         if (tex == nullptr)
         {
-            Log("Invalid texture pointer");
+            LOG_ERROR("Invalid texture pointer");
             mRTVs.clear();
             return false;
         }
@@ -37,7 +38,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         hr = gDevice->mDevice->CreateRenderTargetView(tex->mTexture2D, NULL, &rtv);
         if (FAILED(hr))
         {
-            Log("Failed to create render target view");
+            LOG_ERROR("Failed to create render target view");
             mRTVs.clear();
             return false;
         }
@@ -55,7 +56,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         hr = gDevice->mDevice->CreateDepthStencilView(tex->mTexture2D, NULL, &mDSV);
         if (FAILED(hr))
         {
-            Log("Failed to create depth-stencil view");
+            LOG_ERROR("Failed to create depth-stencil view");
             mRTVs.clear();
             return false;
         }

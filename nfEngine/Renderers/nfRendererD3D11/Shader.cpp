@@ -6,6 +6,7 @@
 
 #include "stdafx.hpp"
 #include "RendererD3D11.hpp"
+#include "../../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -81,12 +82,16 @@ bool Shader::Init(const ShaderDesc& desc)
 
     if (errorsBuffer)
     {
-        Log((char*)errorsBuffer->GetBufferPointer());
+        LOG_ERROR("Shader '%s' compilation output:\n%s", desc.name,
+                  (char*)errorsBuffer->GetBufferPointer());
         errorsBuffer->Release();
     }
 
     if (FAILED(hr))
+    {
+        LOG_ERROR("Compilation of shader '%s' failed", desc.name);
         return false;
+    }
 
     // TODO: verify output of Create*Shader() calls
     switch (mType)
@@ -113,9 +118,7 @@ bool Shader::Init(const ShaderDesc& desc)
             break;
     }
 
-    std::string msg = "Shader '" + std::string(desc.name) + "' created";
-    Log(msg.c_str());
-
+    LOG_SUCCESS("Shader '%s' compiled successfully", desc.name)
     return true;
 }
 
