@@ -4,9 +4,18 @@
  * @brief  Window class declaration.
  */
 
+
+
 #pragma once
 #include "nfCommon.hpp"
-
+namespace Xlib {
+#if defined(__LINUX__) | defined(__linux__)
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xos.h>
+#include <X11/Xresource.h>
+#endif // defined(__LINUX__) | defined(__linux__)
+}
 namespace NFE {
 namespace Common {
 
@@ -19,20 +28,32 @@ typedef void (*WindowResizeCallback)(void*);
 class NFCOMMON_API Window
 {
 private:
-    static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-
+    #if defined(WIN32)
+        static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+    #endif // defined(WIN32)
+    
     bool mClosed;
+    
+    #if defined(WIN32)
     HWND mHandle;
     HINSTANCE mInstance;
+    #elif defined(__LINUX__) | defined(__linux__)
+    Xlib::Display mDisplay;
+    Xlib::Window mWindow;
+    Xlib::Window mRoot;
+    #endif // defined(WIN32)
 
     bool mFullscreen;
     uint32 mWidth;
     uint32 mHeight;
+    
+    #if defined(WIN32)
     int mLeft;
     int mTop;
-
-    std::wstring mTitle;
     wchar_t mWndClass[48];
+    #endif // defined(WIN32)
+    
+    std::string mTitle;
 
     bool mMouseButtons[3];
     int mMouseDownX[3];
@@ -59,7 +80,7 @@ public:
     bool Open();
     bool Close();
 
-    HWND GetHandle() const;
+    void* GetHandle() const;
     void GetSize(uint32& width, uint32& height) const;
     float GetAspectRatio() const;
     bool GetFullscreenMode() const;
@@ -69,7 +90,7 @@ public:
 
     void SetSize(uint32 hidth, uint32 height);
     void SetFullscreenMode(bool enabled);
-    void SetTitle(const wchar_t* title);
+    void SetTitle(const char* title);
 
     // WARINING: only engine should call this function
     void SetResizeCallback(WindowResizeCallback func, void* userData);
