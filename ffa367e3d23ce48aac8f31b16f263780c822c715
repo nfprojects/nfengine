@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_6e3751e4",
+        "filename": "nfEngine/nfCommon/Window.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-02T14:25:22Z",
+      "side": 1,
+      "message": "What we have here?",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 4
+      },
+      "revId": "ffa367e3d23ce48aac8f31b16f263780c822c715",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_2eab99d9",
+        "filename": "nfEngine/nfCommon/Window.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-02T14:25:22Z",
+      "side": 1,
+      "message": "No indentation for preprocessor",
+      "revId": "ffa367e3d23ce48aac8f31b16f263780c822c715",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
