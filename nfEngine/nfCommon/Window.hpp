@@ -8,6 +8,9 @@
 
 #include "nfCommon.hpp"
 
+#if defined(__LINUX__) | defined(__linux__)
+#include <X11/Xlib.h>
+#endif // defined(__LINUX__) | defined(__linux__)
 
 namespace NFE {
 namespace Common {
@@ -27,13 +30,20 @@ private:
     int mLeft;
     int mTop;
     wchar_t mWndClass[48];
+#elif defined(__LINUX__) | defined(__linux__)
+    static ::Display* mDisplay;
+    ::Window mWindow;
+    ::Window mRoot;
+    static bool mWindowError;
+    static int ErrorHandler(::Display* dpy, XErrorEvent *error);
+#else //...
+#error "Target not supported!" // TODO Consider supporting Wayland as well
 #endif // defined(WIN32)
 
     bool mClosed;
     bool mFullscreen;
     uint32 mWidth;
     uint32 mHeight;
-
     std::string mTitle;
 
     bool mMouseButtons[3];
@@ -88,6 +98,11 @@ public:
     virtual void OnMouseMove(int x, int y, int deltaX, int deltaY);
     virtual void OnMouseUp(uint32 button);
 };
+
+#if defined(__LINUX__) | defined (__linux__)
+::Display* Window::mDisplay;
+bool Window::mWindowError;
+#endif // defined(__LINUX__) | defined (__linux__)
 
 } // namespace Common
 } // namespace NFE

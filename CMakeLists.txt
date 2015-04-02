@@ -8,6 +8,8 @@ PROJECT(nfEngine)
 
 MESSAGE("Generating Makefile for nfEngine project")
 
+INCLUDE(FindPkgConfig)
+
 # Pre-define Release build
 IF(NOT DEFINED CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL "")
     SET(CMAKE_BUILD_TYPE Release)

@@ -123,12 +123,12 @@ To rebuild the entire project in one go, _Scripts/rebuild-all.sh_ script is avai
 
 * On Fedora:
 ```
-sudo yum install glibc-devel.i686 gcc-c++.i686
+sudo yum install glibc-devel.i686 gcc-c++.i686 libX11-devel.i686
 ```
 
 * On Ubuntu:
 ```
-sudo apt-get install libc6-dev-i386
+sudo apt-get install libc6-dev-i386 g++-multilib libx11-dev:i386
 ```
 
 Building without _Scripts/rebuild-all.sh_ script is done by explicitly calling CMake and Make. To build nfEngine with default settings (Release build, 64-bit platform), simply call on nfEngine repo root directory:
