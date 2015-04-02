@@ -75,7 +75,7 @@ def main(argv):
     # initializing needed variables
     fails = []
 
-    testList = ['nfCommonTest', 'nfCoreTest']
+    testList = ['nfCommonTest', 'nfCoreTest', 'nfRendererTest']
 
     # managing input arguments
     argParser = argparse.ArgumentParser(description='Test script for nfengine project.')
