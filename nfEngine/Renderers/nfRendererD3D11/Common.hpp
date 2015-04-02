@@ -13,6 +13,17 @@
 namespace NFE {
 namespace Renderer {
 
+/**
+ * DirectX API error handling
+ * @param hr           Result of a D3D call
+ * @param srcFile,line Source file name and line with the call
+ */
+HRESULT D3DError(HRESULT hr, const char* srcFile, int line);
+
+#ifndef D3D_CALL_CHECK
+#define D3D_CALL_CHECK(x) D3DError((x), __FILE__, __LINE__)
+#endif
+
 // helper class template for automatic releasing of Direct3D objects
 template<typename T>
 class D3DPtr

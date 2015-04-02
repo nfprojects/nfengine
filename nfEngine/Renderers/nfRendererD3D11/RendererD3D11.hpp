@@ -244,9 +244,6 @@ public:
     void Execute(ICommandBuffer* commandBuffer, bool saveState);
 };
 
-// TODO: temporary, this must be replaced with nfCommon::Logger
-void Log(const char* str);
-
 int GetElementFormatSize(ElementFormat format);
 DXGI_FORMAT TranslateElementFormat(ElementFormat format, int size);
 D3D11_COMPARISON_FUNC TranslateComparisonFunc(CompareFunc func);

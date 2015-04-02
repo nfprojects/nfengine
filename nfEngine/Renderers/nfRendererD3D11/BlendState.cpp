@@ -85,7 +85,7 @@ bool BlendState::Init(const BlendStateDesc& desc)
         bd.RenderTarget[i].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
     }
 
-    HRESULT hr = gDevice->Get()->CreateBlendState(&bd, &mBS);
+    HRESULT hr = D3D_CALL_CHECK(gDevice->Get()->CreateBlendState(&bd, &mBS));
     return SUCCEEDED(hr);
 }
 
