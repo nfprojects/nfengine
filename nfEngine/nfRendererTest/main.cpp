@@ -72,7 +72,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 {
     Window window;
     window.SetSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    window.SetTitle(L"nfEngine Renderer Test");
+    window.SetTitle("nfEngine Renderer Test");
     window.Open();
 
     if (!InitRenderer())
