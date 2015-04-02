@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_0e9cddbf",
+        "filename": "nfEngine/nfCommon/Window.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-02T14:24:39Z",
+      "side": 1,
+      "message": "Use ::Window and ::Display to mark usage of global namespace, not NFE::Common.",
+      "parentUuid": "1a106d94_2e0f1932",
+      "range": {
+        "startLine": 41,
+        "startChar": 8,
+        "endLine": 41,
+        "endChar": 14
+      },
+      "revId": "b686323d5b5cb119ddb2c0231ebdb9417e096488",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_33f942ea",
         "filename": "nfEngine/nfCommon/Window.hpp",
         "patchSetId": 1
