@@ -4,7 +4,7 @@
  * @brief  Window class definition.
  */
 
-#include "stdafx.hpp"
+#include "../stdafx.hpp"
 #include "Common.hpp"
 #include "../Window.hpp"
 
