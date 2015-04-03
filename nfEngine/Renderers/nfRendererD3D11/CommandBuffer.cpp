@@ -4,8 +4,13 @@
  * @brief   D3D11 implementation of renderer's command buffer
  */
 
+// TODO:
+// 1. Improve logging, but be careful - functions from this source file will be called thousands
+//    times per frame. Too much messages could flood a logger output.
+
 #include "stdafx.hpp"
 #include "RendererD3D11.hpp"
+#include "Logger.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -124,10 +129,19 @@ void CommandBuffer::SetConstantBuffers(IBuffer** constantBuffers, int num, Shade
 void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
 {
     RenderTarget* rt = dynamic_cast<RenderTarget*>(renderTarget);
-    assert(rt != nullptr);
+    if (rt == nullptr && renderTarget != nullptr)
+        LOG_ERROR("Invalid 'renderTarget' pointer");
 
     if (rt == mCurrentRenderTarget)
         return;
+
+    // disable rendertargets
+    if (rt == nullptr)
+    {
+        mContext->OMSetRenderTargets(0, NULL, NULL);
+        mCurrentRenderTarget = rt;
+        return;
+    }
 
     ID3D11RenderTargetView* rtvs[MAX_RENDER_TARGETS] = { nullptr };
     int num = rt->mRTVs.size();
@@ -199,6 +213,48 @@ void CommandBuffer::SetDepthState(IDepthState* state)
 
 void CommandBuffer::CopyTexture(ITexture* src, ITexture* dest)
 {
+    Texture* srcTex = dynamic_cast<Texture*>(src);
+    if (srcTex == nullptr)
+    {
+        LOG_ERROR("Invalid 'src' pointer");
+        return;
+    }
+
+    Texture* destTex = dynamic_cast<Texture*>(dest);
+    if (destTex == nullptr)
+    {
+        LOG_ERROR("Invalid 'dest' pointer");
+        return;
+    }
+
+    mContext->CopyResource(reinterpret_cast<ID3D11Resource*>(destTex->mTextureGeneric),
+                           reinterpret_cast<ID3D11Resource*>(srcTex->mTextureGeneric));
+}
+
+bool CommandBuffer::ReadTexture(ITexture* tex, void* data)
+{
+    Texture* texture = dynamic_cast<Texture*>(tex);
+    if (!texture)
+    {
+        LOG_ERROR("Invalid 'tex' pointer");
+        return false;
+    }
+
+    HRESULT hr;
+    D3D11_MAPPED_SUBRESOURCE mapped = { 0 };
+    UINT subresource = 0; // TODO: mipmap and layer selection
+    ID3D11Resource* res = reinterpret_cast<ID3D11Resource*>(texture->mTextureGeneric);
+    hr = D3D_CALL_CHECK(mContext->Map(res, subresource, D3D11_MAP_READ, 0, &mapped));
+    if (FAILED(hr))
+        return false;
+
+    size_t dataSize = static_cast<size_t>(texture->mWidth) *
+                      static_cast<size_t>(texture->mHeight) *
+                      static_cast<size_t>(texture->mTexelSize);
+    memcpy(data, mapped.pData, dataSize);
+
+    mContext->Unmap(res, subresource);
+    return true;
 }
 
 void CommandBuffer::Clear(const float* color)

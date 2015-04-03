@@ -5,6 +5,26 @@ class Texture2D : public RendererTest
 {
 };
 
+TEST_F(Texture2D, Clear)
+{
+    const float color[] = { 0.1f, 0.2f, 0.3f, 0.4f };
+    float pixels[16][16][4];
+
+    ASSERT_TRUE(BeginTestFrame(16, 16, ElementFormat::Float_32, 4));
+
+    gCommandBuffer->SetViewport(0.0f, 16.0f, 0.0f, 16.0f, 0.0f, 1.0f);
+    gCommandBuffer->Clear(color);
+
+    ASSERT_TRUE(EndTestFrame(pixels));
+
+    bool ok = true;
+    for (int i = 0; i < 16; ++i)
+        for (int j = 0; j < 16; ++j)
+            for (int k = 0; k < 4; ++k)
+                ok &= color[k] == pixels[i][j][k];
+    EXPECT_TRUE(ok);
+}
+
 TEST_F(Texture2D, Creation)
 {
     std::unique_ptr<ITexture> texture;
