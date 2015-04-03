@@ -1,0 +1,308 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_2c58bc31",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-03T13:11:49Z",
+      "side": 1,
+      "message": "Shouldn\u0027t be display opened once, even if we create multiple windows?",
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_0c5d0022",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-03T13:11:49Z",
+      "side": 1,
+      "message": "Use \" instead of \u0027",
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_cc52c812",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-03T13:11:49Z",
+      "side": 1,
+      "message": "I\u0027d rather use LOG_ERROR here.",
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_6c411439",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-03T13:11:49Z",
+      "side": 1,
+      "message": "This method does not return any value",
+      "range": {
+        "startLine": 217,
+        "startChar": 26,
+        "endLine": 217,
+        "endChar": 28
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_4c3ed8b9",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-03T13:11:49Z",
+      "side": 1,
+      "message": "As above",
+      "range": {
+        "startLine": 223,
+        "startChar": 18,
+        "endLine": 223,
+        "endChar": 20
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_ac4b0c58",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-03T13:11:49Z",
+      "side": 1,
+      "message": "As above",
+      "range": {
+        "startLine": 228,
+        "startChar": 18,
+        "endLine": 228,
+        "endChar": 20
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_8c48d05c",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-03T13:11:49Z",
+      "side": 1,
+      "message": "As above",
+      "range": {
+        "startLine": 233,
+        "startChar": 18,
+        "endLine": 233,
+        "endChar": 20
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_6c68f4ba",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-03T13:11:49Z",
+      "side": 1,
+      "message": "Magic values",
+      "range": {
+        "startLine": 240,
+        "startChar": 46,
+        "endLine": 240,
+        "endChar": 54
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_ec74e49d",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-03T13:11:49Z",
+      "side": 1,
+      "message": "As above",
+      "range": {
+        "startLine": 241,
+        "startChar": 18,
+        "endLine": 241,
+        "endChar": 20
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_cc792895",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-03T13:11:49Z",
+      "side": 1,
+      "message": "As above",
+      "range": {
+        "startLine": 246,
+        "startChar": 18,
+        "endLine": 246,
+        "endChar": 20
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_2c6f1cc7",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-03T13:11:49Z",
+      "side": 1,
+      "message": "As above",
+      "range": {
+        "startLine": 251,
+        "startChar": 18,
+        "endLine": 251,
+        "endChar": 20
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_4c6538e0",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-03T13:11:49Z",
+      "side": 1,
+      "message": "Is \"this\" required?",
+      "range": {
+        "startLine": 259,
+        "startChar": 16,
+        "endLine": 259,
+        "endChar": 22
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_0c74e097",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-03T13:11:49Z",
+      "side": 1,
+      "message": "As above",
+      "range": {
+        "startLine": 267,
+        "startChar": 18,
+        "endLine": 267,
+        "endChar": 20
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_ac62ecd5",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-03T13:11:49Z",
+      "side": 1,
+      "message": "Use LOG_ERROR",
+      "range": {
+        "startLine": 363,
+        "startChar": 4,
+        "endLine": 363,
+        "endChar": 11
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
