@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_ccbf68cf",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-03T14:59:29Z",
+      "side": 1,
+      "message": "It should...as long as it\u0027s \"XOpenDisplay(NULL)\". If it happens that we will support multiple monitors - it\u0027ll be changed either way and then each display will have to be static and more changes will have to be introduced.\n\nMade mDisplay static member of Window class. I initialize it in Linux/Window.cpp.\nNot sure if this is right tho. This weekend i\u0027ll try to compile this somehow and see what works and what does not.",
+      "parentUuid": "1a106d94_2c58bc31",
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_0c5d0022",
         "filename": "nfEngine/nfCommon/Linux/Window.cpp",
         "patchSetId": 3
@@ -30,6 +48,24 @@
       "writtenOn": "2015-04-03T13:11:49Z",
       "side": 1,
       "message": "Use \" instead of \u0027",
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_2cb55cee",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-03T14:59:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_0c5d0022",
       "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_0cba20de",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-03T14:59:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_cc52c812",
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_6c411439",
         "filename": "nfEngine/nfCommon/Linux/Window.cpp",
         "patchSetId": 3
@@ -64,6 +118,30 @@
       "writtenOn": "2015-04-03T13:11:49Z",
       "side": 1,
       "message": "This method does not return any value",
+      "range": {
+        "startLine": 217,
+        "startChar": 26,
+        "endLine": 217,
+        "endChar": 28
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_6cce3485",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-03T14:59:29Z",
+      "side": 1,
+      "message": "Forgot about swapping them with breaks.",
+      "parentUuid": "1a106d94_6c411439",
       "range": {
         "startLine": 217,
         "startChar": 26,
@@ -99,6 +177,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_4ccb7872",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-03T14:59:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_4c3ed8b9",
+      "range": {
+        "startLine": 223,
+        "startChar": 18,
+        "endLine": 223,
+        "endChar": 20
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_ac4b0c58",
         "filename": "nfEngine/nfCommon/Linux/Window.cpp",
         "patchSetId": 3
@@ -122,6 +224,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_acc82c75",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-03T14:59:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_ac4b0c58",
+      "range": {
+        "startLine": 228,
+        "startChar": 18,
+        "endLine": 228,
+        "endChar": 20
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_8c48d05c",
         "filename": "nfEngine/nfCommon/Linux/Window.cpp",
         "patchSetId": 3
@@ -133,6 +259,30 @@
       "writtenOn": "2015-04-03T13:11:49Z",
       "side": 1,
       "message": "As above",
+      "range": {
+        "startLine": 233,
+        "startChar": 18,
+        "endLine": 233,
+        "endChar": 20
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_8cc5705d",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-03T14:59:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_8c48d05c",
       "range": {
         "startLine": 233,
         "startChar": 18,
@@ -192,6 +342,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_4ca09890",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-03T14:59:29Z",
+      "side": 1,
+      "message": "This time i used if/else - it\u0027s more readable.",
+      "parentUuid": "1a106d94_ac902c96",
+      "range": {
+        "startLine": 240,
+        "startChar": 46,
+        "endLine": 240,
+        "endChar": 54
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_ec74e49d",
         "filename": "nfEngine/nfCommon/Linux/Window.cpp",
         "patchSetId": 3
@@ -203,6 +377,30 @@
       "writtenOn": "2015-04-03T13:11:49Z",
       "side": 1,
       "message": "As above",
+      "range": {
+        "startLine": 241,
+        "startChar": 18,
+        "endLine": 241,
+        "endChar": 20
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_eca184aa",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-03T14:59:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_ec74e49d",
       "range": {
         "startLine": 241,
         "startChar": 18,
@@ -238,6 +436,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_cca648c1",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-03T14:59:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_cc792895",
+      "range": {
+        "startLine": 246,
+        "startChar": 18,
+        "endLine": 246,
+        "endChar": 20
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_2c6f1cc7",
         "filename": "nfEngine/nfCommon/Linux/Window.cpp",
         "patchSetId": 3
@@ -249,6 +471,30 @@
       "writtenOn": "2015-04-03T13:11:49Z",
       "side": 1,
       "message": "As above",
+      "range": {
+        "startLine": 251,
+        "startChar": 18,
+        "endLine": 251,
+        "endChar": 20
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_2cac3ca0",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-03T14:59:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_2c6f1cc7",
       "range": {
         "startLine": 251,
         "startChar": 18,
@@ -284,6 +530,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_6c95943f",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-03T14:59:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_4c6538e0",
+      "range": {
+        "startLine": 259,
+        "startChar": 16,
+        "endLine": 259,
+        "endChar": 22
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_0c74e097",
         "filename": "nfEngine/nfCommon/Linux/Window.cpp",
         "patchSetId": 3
@@ -307,6 +577,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_0cb180f8",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-03T14:59:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_0c74e097",
+      "range": {
+        "startLine": 267,
+        "startChar": 18,
+        "endLine": 267,
+        "endChar": 20
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_ac62ecd5",
         "filename": "nfEngine/nfCommon/Linux/Window.cpp",
         "patchSetId": 3
@@ -318,6 +612,30 @@
       "writtenOn": "2015-04-03T13:11:49Z",
       "side": 1,
       "message": "Use LOG_ERROR",
+      "range": {
+        "startLine": 363,
+        "startChar": 4,
+        "endLine": 363,
+        "endChar": 11
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_2c839c05",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-03T14:59:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_ac62ecd5",
       "range": {
         "startLine": 363,
         "startChar": 4,
