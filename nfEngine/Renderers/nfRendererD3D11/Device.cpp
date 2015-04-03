@@ -109,7 +109,6 @@ IBackbuffer* Device::CreateBackbuffer(const BackbufferDesc& desc)
         return nullptr;
     }
 
-    mBackbuffers.emplace(bb);
     return bb;
 }
 
@@ -125,7 +124,6 @@ IRenderTarget* Device::CreateRenderTarget(const RenderTargetDesc& desc)
         return nullptr;
     }
 
-    mRenderTargets.emplace(rt);
     return rt;
 }
 
@@ -191,7 +189,6 @@ IShader* Device::CreateShader(const ShaderDesc& desc)
         return nullptr;
     }
 
-    mShaders.emplace(shader);
     return shader;
 }
 

@@ -215,11 +215,6 @@ class Device : public IDevice
     D3DPtr<IDXGIFactory> mDXGIFactory;
     D3D_FEATURE_LEVEL mFeatureLevel;
 
-    /// resources tracking
-    std::set<std::unique_ptr<Backbuffer>> mBackbuffers;
-    std::set<std::unique_ptr<RenderTarget>> mRenderTargets;
-    std::set<std::unique_ptr<Shader>> mShaders;
-
 public:
     Device();
     ~Device();
