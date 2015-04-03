@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_8c31f0ee",
+        "filename": "nfEngine/nfCommon/Window.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-03T13:01:01Z",
+      "side": 1,
+      "message": "I suggest moving everything to one ifdef/elif/endif block to improve readability",
+      "revId": "58b4e2225b13a118f25fec049903e7373ee47217",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_ac34acde",
+        "filename": "nfEngine/nfCommon/Window.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-03T13:01:01Z",
+      "side": 1,
+      "message": "Missing ifdef/endif",
+      "revId": "58b4e2225b13a118f25fec049903e7373ee47217",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
