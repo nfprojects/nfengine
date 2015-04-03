@@ -1,6 +1,7 @@
 /**
  * @file
  * @author  Witek902 (witek902@gmail.com)
+ * @author  LKostyra (costyrra.xl@gmail.com)
  * @brief   Main source file of renderer test
  */
 
@@ -21,9 +22,18 @@ using namespace NFE::Renderer;
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;
 
+const std::string NFRENDERER_D3D11_DLL("nfRendererD3D11.dll");
+
 Library gRendererLib;
 IDevice* gRendererDevice = nullptr;
 ICommandBuffer* gCommandBuffer = nullptr;
+
+// flags for checking if features are implemented
+bool gVertexLayout = true;
+bool gShaders = true;
+bool gBlendState = true;
+bool gTextures = true;
+bool gConstantBuffers = true;
 
 struct VertexCBuffer
 {
@@ -35,9 +45,9 @@ struct PixelCBuffer
     Matrix viewMatrix;
 };
 
-bool InitRenderer()
+bool InitRenderer(const std::string& renderer)
 {
-    if (!gRendererLib.Open("nfRendererD3D11.dll"))
+    if (!gRendererLib.Open(renderer))
         return false;
 
     RendererInitFunc proc;
@@ -81,21 +91,24 @@ void ReleaseRenderer()
     gRendererLib.Close();
 }
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int main(int argc, char* argv[])
 {
-    (void)hInstance;
-    (void)hPrevInstance;
-    (void)lpCmdLine;
-    (void)nCmdShow;
-
     std::string execPath = NFE::Common::FileSystem::GetExecutablePath();
     NFE::Common::FileSystem::ChangeDirectory(execPath + "/../../../..");
+
     Window window;
     window.SetSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     window.SetTitle("nfEngine Renderer Test");
     window.Open();
 
-    if (!InitRenderer())
+    /// select renderer to use - the default will be D3D11 renderer
+    std::string rend;
+    if (argc < 2)
+        rend = NFRENDERER_D3D11_DLL;
+    else
+        rend = argv[1];
+
+    if (!InitRenderer(rend))
         return 1;
 
     // create backbuffer connected with the window
@@ -105,6 +118,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     bbDesc.windowHandle = static_cast<void*>(window.GetHandle());
     bbDesc.vSync = true;
     IBackbuffer* windowBackbuffer = gRendererDevice->CreateBackbuffer(bbDesc);
+    if (!windowBackbuffer)
+        return 1;
 
     // create rendertarget that will render to the window's backbuffer
     RenderTargetElement rtTarget;
@@ -113,6 +128,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     rtDesc.numTargets = 1;
     rtDesc.targets = &rtTarget;
     IRenderTarget* windowRenderTarget = gRendererDevice->CreateRenderTarget(rtDesc);
+    if (!windowRenderTarget)
+        return 1;
 
 
     ShaderProgramDesc programDesc;
@@ -120,6 +137,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                                ShaderType::Vertex);
     programDesc.pixelShader = CompileShader(D3D11_SHADER_PATH_PREFIX "TestPS.hlsl", ShaderType::Pixel);
     IShaderProgram* shaderProgram = gRendererDevice->CreateShaderProgram(programDesc);
+    if (!shaderProgram)
+        gShaders = false;
 
     float vbData[] =
     {
@@ -155,11 +174,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     blendStateDesc.independent = false;
     blendStateDesc.rtDescs[0].enable = true;
     IBlendState* blendState = gRendererDevice->CreateBlendState(blendStateDesc);
+    if (!blendState)
+        gBlendState = false;
 
     // TEXTURE ====================================================================================
 
     SamplerDesc samplerDesc;
     ISampler* sampler = gRendererDevice->CreateSampler(samplerDesc);
+    if (!sampler)
+        gTextures = false; // there's no need for textures if we cannot sample them
 
     uint32_t bitmap[] = { 0xFFFFFFFF, 0, 0, 0xFFFFFFFF };
     TextureDataDesc textureDataDesc;
@@ -177,16 +200,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     textureDesc.dataDesc = &textureDataDesc;
     textureDesc.layers = 1;
     ITexture* texture = gRendererDevice->CreateTexture(textureDesc);
+    if (!texture)
+        gTextures = false;
 
     BufferDesc vertexCBufferDesc;
     vertexCBufferDesc.type = BufferType::Constant;
     vertexCBufferDesc.access = BufferAccess::CPU_Write;
     vertexCBufferDesc.size = sizeof(VertexCBuffer);
     IBuffer* constantBuffer = gRendererDevice->CreateBuffer(vertexCBufferDesc);
+    if (!constantBuffer)
+        gConstantBuffers = false;
 
     // RENDERING LOOP =============================================================================
 
-    gCommandBuffer->SetBlendState(blendState);
+    if (gBlendState) gCommandBuffer->SetBlendState(blendState);
     gCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
 
     float angle = 0.0f;
@@ -196,22 +223,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         window.ProcessMessages();
         angle += 0.03f;
 
-        VertexCBuffer vertexCBufferData;
-        vertexCBufferData.viewMatrix = MatrixRotationNormal(Vector(0.0f, 0.0f, 1.0f), angle);
-        gCommandBuffer->WriteBuffer(constantBuffer, 0, sizeof(VertexCBuffer), &vertexCBufferData);
+        if (gConstantBuffers)
+        {
+            VertexCBuffer vertexCBufferData;
+            vertexCBufferData.viewMatrix = MatrixRotationNormal(Vector(0.0f, 0.0f, 1.0f), angle);
+            gCommandBuffer->WriteBuffer(constantBuffer, 0, sizeof(VertexCBuffer), &vertexCBufferData);
+        }
 
         float color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
         gCommandBuffer->SetRenderTarget(windowRenderTarget);
         gCommandBuffer->Clear(color);
-        gCommandBuffer->SetShaderProgram(shaderProgram);
+        if (gShaders) gCommandBuffer->SetShaderProgram(shaderProgram);
         gCommandBuffer->SetVertexLayout(vertexLayout);
 
         int stride = 9 * sizeof(float);
         int offset = 0;
         gCommandBuffer->SetVertexBuffers(1, &vertexBuffer, &stride, &offset);
-        gCommandBuffer->SetConstantBuffers(&constantBuffer, 1, ShaderType::Vertex);
-        gCommandBuffer->SetTextures(&texture, 1, ShaderType::Pixel);
-        gCommandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
+        if (gConstantBuffers) gCommandBuffer->SetConstantBuffers(&constantBuffer, 1, ShaderType::Vertex);
+        if (gTextures) gCommandBuffer->SetTextures(&texture, 1, ShaderType::Pixel);
+        if (gTextures) gCommandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
 
         gCommandBuffer->Draw(PrimitiveType::Triangles, 6);
 

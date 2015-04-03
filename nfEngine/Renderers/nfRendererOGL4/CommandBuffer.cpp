@@ -1,0 +1,174 @@
+/**
+ * @file
+ * @author  LKostyra (costyrra.xl@gmail.com)
+ * @brief   Definitions of OpenGL 4 Command Buffer
+ */
+
+#include "PCH.hpp"
+
+#include "Defines.hpp"
+#include "CommandBuffer.hpp"
+
+
+namespace NFE {
+namespace Renderer {
+
+CommandBuffer::CommandBuffer()
+    : mCurrentPrimitiveType(PrimitiveType::Unknown)
+    , mCurrentRenderTarget(nullptr)
+{
+}
+
+CommandBuffer::~CommandBuffer()
+{
+}
+
+void CommandBuffer::SetVertexLayout(IVertexLayout* vertexLayout)
+{
+    UNUSED(vertexLayout);
+}
+
+void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets)
+{
+    UNUSED(num);
+    UNUSED(vertexBuffers);
+    UNUSED(strides);
+    UNUSED(offsets);
+}
+
+void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer)
+{
+    UNUSED(indexBuffer);
+}
+
+void CommandBuffer::SetSamplers(ISampler** samplers, int num, ShaderType target)
+{
+    UNUSED(samplers);
+    UNUSED(num);
+    UNUSED(target);
+}
+
+void CommandBuffer::SetTextures(ITexture** textures, int num, ShaderType target)
+{
+    UNUSED(textures);
+    UNUSED(num);
+    UNUSED(target);
+}
+
+void CommandBuffer::SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target)
+{
+    UNUSED(constantBuffers);
+    UNUSED(num);
+    UNUSED(target);
+}
+
+void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
+{
+    RenderTarget* rt = dynamic_cast<RenderTarget*>(renderTarget);
+    if (rt == nullptr && renderTarget != nullptr)
+        LOG_ERROR("Invalid 'renderTarget' pointer");
+
+    if (rt == mCurrentRenderTarget)
+        return;
+
+    // TODO support (renderTarget == nullptr) situation
+
+    mCurrentRenderTarget = rt;
+}
+
+void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
+{
+    UNUSED(shaderProgram);
+}
+
+void CommandBuffer::SetBlendState(IBlendState* state)
+{
+    UNUSED(state);
+}
+
+void CommandBuffer::SetRasterizerState(IRasterizerState* state)
+{
+    UNUSED(state);
+}
+
+void CommandBuffer::SetDepthState(IDepthState* state)
+{
+    UNUSED(state);
+}
+
+void CommandBuffer::SetViewport(float left, float width, float top, float height,
+                                float minDepth, float maxDepth)
+{
+    UNUSED(minDepth);
+    UNUSED(maxDepth);
+
+    glViewport(static_cast<GLint>(left),
+               static_cast<GLint>(top),
+               static_cast<GLsizei>(width),
+               static_cast<GLsizei>(height));
+}
+
+bool CommandBuffer::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data)
+{
+    UNUSED(buffer);
+    UNUSED(offset);
+    UNUSED(size);
+    UNUSED(data);
+
+    return false;
+}
+
+bool CommandBuffer::ReadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data)
+{
+    UNUSED(buffer);
+    UNUSED(offset);
+    UNUSED(size);
+    UNUSED(data);
+
+    return false;
+}
+
+void CommandBuffer::CopyTexture(ITexture* src, ITexture* dest)
+{
+    UNUSED(src);
+    UNUSED(dest);
+}
+
+bool CommandBuffer::ReadTexture(ITexture* tex, void* data)
+{
+    UNUSED(tex);
+    UNUSED(data);
+
+    return false;
+}
+
+void CommandBuffer::Clear(const float* color)
+{
+    // TODO Right now Clear assumes one default render target.
+    //      For multiple render targets, one would have to:
+    //        * bind one of the Framebuffers
+    //        * call glClearColor and glClear
+    glClearColor(color[0], color[1], color[2], color[3]);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void CommandBuffer::Draw(PrimitiveType type, int vertexNum,
+                         int instancesNum, int indexOffset,
+                         int vertexOffset, int instanceOffset)
+{
+    UNUSED(type);
+    UNUSED(vertexNum);
+    UNUSED(instancesNum);
+    UNUSED(indexOffset);
+    UNUSED(vertexOffset);
+    UNUSED(instanceOffset);
+}
+
+void CommandBuffer::Execute(ICommandBuffer* commandBuffer, bool saveState)
+{
+    UNUSED(commandBuffer);
+    UNUSED(saveState);
+}
+
+} // namespace Renderer
+} // namespace NFE
