@@ -10,6 +10,26 @@
 namespace NFE {
 namespace Renderer {
 
+namespace {
+
+template<typename Type, typename Desc>
+Type* CreateGenericResource(const Desc& desc)
+{
+    Type* resource = new (std::nothrow) Type;
+    if (resource == nullptr)
+        return nullptr;
+
+    if (!resource->Init(desc))
+    {
+        delete resource;
+        return nullptr;
+    }
+
+    return resource;
+}
+
+} // namespace
+
 Device::Device()
 {
     HRESULT hr;
@@ -54,94 +74,32 @@ ID3D11Device* Device::Get() const
 
 IVertexLayout* Device::CreateVertexLayout(const VertexLayoutDesc& desc)
 {
-    VertexLayout* vl = new (std::nothrow) VertexLayout;
-    if (vl == nullptr)
-        return nullptr;
-
-    if (!vl->Init(desc))
-    {
-        delete vl;
-        return nullptr;
-    }
-
-    return vl;
+    return CreateGenericResource<VertexLayout, VertexLayoutDesc>(desc);
 }
 
 IBuffer* Device::CreateBuffer(const BufferDesc& desc)
 {
-    Buffer* buffer = new (std::nothrow) Buffer;
-    if (buffer == nullptr)
-        return nullptr;
-
-    if (!buffer->Init(desc))
-    {
-        delete buffer;
-        return nullptr;
-    }
-
-    return buffer;
+    return CreateGenericResource<Buffer, BufferDesc>(desc);
 }
 
 ITexture* Device::CreateTexture(const TextureDesc& desc)
 {
-    Texture* texture = new (std::nothrow) Texture;
-    if (texture == nullptr)
-        return nullptr;
-
-    if (!texture->Init(desc))
-    {
-        delete texture;
-        return nullptr;
-    }
-
-    return texture;
+    return CreateGenericResource<Texture, TextureDesc>(desc);
 }
 
 IBackbuffer* Device::CreateBackbuffer(const BackbufferDesc& desc)
 {
-    Backbuffer* bb = new (std::nothrow) Backbuffer;
-    if (bb == nullptr)
-        return nullptr;
-
-    if (!bb->Init(desc))
-    {
-        delete bb;
-        return nullptr;
-    }
-
-    mBackbuffers.emplace(bb);
-    return bb;
+    return CreateGenericResource<Backbuffer, BackbufferDesc>(desc);
 }
 
 IRenderTarget* Device::CreateRenderTarget(const RenderTargetDesc& desc)
 {
-    RenderTarget* rt = new (std::nothrow) RenderTarget;
-    if (rt == nullptr)
-        return nullptr;
-
-    if (!rt->Init(desc))
-    {
-        delete rt;
-        return nullptr;
-    }
-
-    mRenderTargets.emplace(rt);
-    return rt;
+    return CreateGenericResource<RenderTarget, RenderTargetDesc>(desc);
 }
 
 IBlendState* Device::CreateBlendState(const BlendStateDesc& desc)
 {
-    BlendState* bs = new (std::nothrow) BlendState;
-    if (bs == nullptr)
-        return nullptr;
-
-    if (!bs->Init(desc))
-    {
-        delete bs;
-        return nullptr;
-    }
-
-    return bs;
+    return CreateGenericResource<BlendState, BlendStateDesc>(desc);
 }
 
 IDepthState* Device::CreateDepthState(const DepthStateDesc& desc)
@@ -151,48 +109,17 @@ IDepthState* Device::CreateDepthState(const DepthStateDesc& desc)
 
 IRasterizerState* Device::CreateRasterizerState(const RasterizerStateDesc& desc)
 {
-    RasterizerState* rs = new (std::nothrow) RasterizerState;
-    if (rs == nullptr)
-        return nullptr;
-
-    if (!rs->Init(desc))
-    {
-        delete rs;
-        return nullptr;
-    }
-
-    return rs;
+    return CreateGenericResource<RasterizerState, RasterizerStateDesc>(desc);
 }
 
 ISampler* Device::CreateSampler(const SamplerDesc& desc)
 {
-    Sampler* sampler = new (std::nothrow) Sampler;
-    if (sampler == nullptr)
-        return nullptr;
-
-    if (!sampler->Init(desc))
-    {
-        delete sampler;
-        return nullptr;
-    }
-
-    return sampler;
+    return CreateGenericResource<Sampler, SamplerDesc>(desc);
 }
 
 IShader* Device::CreateShader(const ShaderDesc& desc)
 {
-    Shader* shader = new (std::nothrow) Shader;
-    if (shader == nullptr)
-        return nullptr;
-
-    if (!shader->Init(desc))
-    {
-        delete shader;
-        return nullptr;
-    }
-
-    mShaders.emplace(shader);
-    return shader;
+    return CreateGenericResource<Shader, ShaderDesc>(desc);
 }
 
 IShaderProgram* Device::CreateShaderProgram(const ShaderProgramDesc& desc)

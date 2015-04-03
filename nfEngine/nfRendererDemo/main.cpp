@@ -190,6 +190,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     delete blendState;
     delete vertexLayout;
     delete vertexBuffer;
+    delete programDesc.vertexShader;
+    delete programDesc.pixelShader;
+    delete windowRenderTarget;
+    delete windowBackbuffer;
 
     ReleaseRenderer();
     return 0;
