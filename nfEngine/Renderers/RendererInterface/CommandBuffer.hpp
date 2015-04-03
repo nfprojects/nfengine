@@ -45,6 +45,7 @@ public:
     /// "Executive" methods
 
     virtual void CopyTexture(ITexture* src, ITexture* dest) = 0;
+    virtual bool ReadTexture(ITexture* tex, void* data) = 0;
     virtual void Clear(const float* color) = 0;
     virtual void Draw(PrimitiveType type, int vertexNum,
                       int instancesNum = 1, int indexOffset = 0,
