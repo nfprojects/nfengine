@@ -168,6 +168,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_ac902c96",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-03T13:55:55Z",
+      "side": 1,
+      "message": "As i wrote, there is no Mouse Wheel in X11. MW_UP is MBTN4, MW_DOWN is MBTN5. I guess it\u0027s one \u0027tick\u0027 per event, so we ought to get delta +/-1, if my understanding of OnScroll is proper.\nSo we have to map 4-\u003e1 and 5-\u003e-1.\nTo do this i made multiplication and addition. Is elseif + else more efficient than this operation?\n\nIf so I can swap it. Otherwise I can make a variable for this, to look more \u0027dev-friendly\u0027 :P",
+      "parentUuid": "1a106d94_6c68f4ba",
+      "range": {
+        "startLine": 240,
+        "startChar": 46,
+        "endLine": 240,
+        "endChar": 54
+      },
+      "revId": "0bd90e5a5d74cc98917a8e5ed06e751a13971b3f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_ec74e49d",
         "filename": "nfEngine/nfCommon/Linux/Window.cpp",
         "patchSetId": 3
