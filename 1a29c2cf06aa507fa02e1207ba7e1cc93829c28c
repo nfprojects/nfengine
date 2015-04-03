@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_4c237805",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-03T15:26:18Z",
+      "side": 1,
+      "message": "Run what? :) Could you write some small testcase in nfCommonTest?",
+      "range": {
+        "startLine": 10,
+        "startChar": 12,
+        "endLine": 10,
+        "endChar": 15
+      },
+      "revId": "1a29c2cf06aa507fa02e1207ba7e1cc93829c28c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
