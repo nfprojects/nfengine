@@ -72,6 +72,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
     {
         case BufferAccess::CPU_Read:
             td.Usage = D3D11_USAGE_STAGING;
+            td.CPUAccessFlags |= D3D11_CPU_ACCESS_READ;
             break;
         case BufferAccess::CPU_Write:
             td.Usage = D3D11_USAGE_DYNAMIC;
@@ -135,6 +136,9 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
             return false;
     }
 
+    mWidth = desc.width;
+    mHeight = desc.height;
+    mTexelSize = GetElementFormatSize(desc.format) * desc.texelSize;
     type = TextureType::Texture2D;
     return true;
 }
