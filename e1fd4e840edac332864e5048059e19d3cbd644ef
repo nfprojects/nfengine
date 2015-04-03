@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_07bafbdd",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-03T18:53:55Z",
+      "side": 0,
+      "message": "Randomly removed line, huh?",
+      "revId": "e1fd4e840edac332864e5048059e19d3cbd644ef",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
