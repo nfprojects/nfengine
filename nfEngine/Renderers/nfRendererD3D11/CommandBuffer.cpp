@@ -124,10 +124,16 @@ void CommandBuffer::SetConstantBuffers(IBuffer** constantBuffers, int num, Shade
 void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
 {
     RenderTarget* rt = dynamic_cast<RenderTarget*>(renderTarget);
-    assert(rt != nullptr);
 
     if (rt == mCurrentRenderTarget)
         return;
+
+    if (rt == nullptr)
+    {
+        mContext->OMSetRenderTargets(0, NULL, NULL);
+        mCurrentRenderTarget = rt;
+        return;
+    }
 
     ID3D11RenderTargetView* rtvs[MAX_RENDER_TARGETS] = { nullptr };
     int num = rt->mRTVs.size();
@@ -199,6 +205,37 @@ void CommandBuffer::SetDepthState(IDepthState* state)
 
 void CommandBuffer::CopyTexture(ITexture* src, ITexture* dest)
 {
+    Texture* srcTex = dynamic_cast<Texture*>(src);
+    Texture* destTex = dynamic_cast<Texture*>(dest);
+
+    if (!srcTex || !destTex)
+        return;
+
+    mContext->CopyResource(reinterpret_cast<ID3D11Resource*>(destTex->mTextureGeneric),
+                           reinterpret_cast<ID3D11Resource*>(srcTex->mTextureGeneric));
+}
+
+bool CommandBuffer::ReadTexture(ITexture* tex, void* data)
+{
+    Texture* texture = dynamic_cast<Texture*>(tex);
+    if (!texture)
+        return false;
+
+    HRESULT hr;
+    D3D11_MAPPED_SUBRESOURCE mapped = { 0 };
+    UINT subresource = 0; // TODO: mipmap and layer selection
+    ID3D11Resource* res = reinterpret_cast<ID3D11Resource*>(texture->mTextureGeneric);
+    hr = D3D_CALL_CHECK(mContext->Map(res, subresource, D3D11_MAP_READ, 0, &mapped));
+    if (FAILED(hr))
+        return false;
+
+    size_t dataSize = static_cast<size_t>(texture->mWidth) *
+                      static_cast<size_t>(texture->mHeight) *
+                      static_cast<size_t>(texture->mTexelSize);
+    memcpy(data, mapped.pData, dataSize);
+
+    mContext->Unmap(res, subresource);
+    return true;
 }
 
 void CommandBuffer::Clear(const float* color)
