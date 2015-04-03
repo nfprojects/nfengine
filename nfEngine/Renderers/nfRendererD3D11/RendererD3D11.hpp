@@ -88,6 +88,7 @@ protected:
     TextureType type;
     int mWidth;
     int mHeight;
+    int mTexelSize; //< texel size in bytes
     D3DPtr<ID3D11ShaderResourceView> mSRV;
 
     union
@@ -197,6 +198,7 @@ public:
     /// "Executive" methods
 
     void CopyTexture(ITexture* src, ITexture* dest);
+    bool ReadTexture(ITexture* tex, void* data);
     void Clear(const float* color);
     void Draw(PrimitiveType type, int vertexNum,
               int instancesNum = 1, int indexOffset = 0,
