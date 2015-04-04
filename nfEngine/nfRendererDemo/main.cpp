@@ -9,10 +9,12 @@
 #include "../nfCommon/Window.hpp"
 #include "../nfCommon/File.hpp"
 #include "../nfCommon/Library.hpp"
+#include "../nfCommon/Math/Math.hpp"
 
 // TODO: change current directory to nfEngine's root, so the test can be run from any place.
-#define D3D11_SHADER_PATH_PREFIX "../../../nfEngine/Renderers/Shaders/D3D11/"
+#define D3D11_SHADER_PATH_PREFIX "../../../nfEngine/nfRendererDemo/Shaders/D3D11/"
 
+using namespace NFE::Math;
 using namespace NFE::Common;
 using namespace NFE::Renderer;
 
@@ -22,6 +24,16 @@ const int WINDOW_HEIGHT = 600;
 Library gRendererLib;
 IDevice* gRendererDevice = nullptr;
 ICommandBuffer* gCommandBuffer = nullptr;
+
+struct VertexCBuffer
+{
+    Matrix viewMatrix;
+};
+
+struct PixelCBuffer
+{
+    Matrix viewMatrix;
+};
 
 bool InitRenderer()
 {
@@ -160,14 +172,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     textureDesc.layers = 1;
     ITexture* texture = gRendererDevice->CreateTexture(textureDesc);
 
+    BufferDesc vertexCBufferDesc;
+    vertexCBufferDesc.type = BufferType::Constant;
+    vertexCBufferDesc.access = BufferAccess::CPU_Write;
+    vertexCBufferDesc.size = sizeof(VertexCBuffer);
+    IBuffer* constantBuffer = gRendererDevice->CreateBuffer(vertexCBufferDesc);
+
     // RENDERING LOOP =============================================================================
 
     gCommandBuffer->SetBlendState(blendState);
     gCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
 
+    float angle = 0.0f;
+
     while (!window.IsClosed())
     {
         window.ProcessMessages();
+        angle += 0.03f;
+
+        VertexCBuffer vertexCBufferData;
+        vertexCBufferData.viewMatrix = MatrixRotationNormal(Vector(0.0f, 0.0f, 1.0f), angle);
+        gCommandBuffer->WriteBuffer(constantBuffer, 0, sizeof(VertexCBuffer), &vertexCBufferData);
 
         float color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
         gCommandBuffer->SetRenderTarget(windowRenderTarget);
@@ -178,7 +203,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         int stride = 9 * sizeof(float);
         int offset = 0;
         gCommandBuffer->SetVertexBuffers(1, &vertexBuffer, &stride, &offset);
-
+        gCommandBuffer->SetConstantBuffers(&constantBuffer, 1, ShaderType::Vertex);
         gCommandBuffer->SetTextures(&texture, 1, ShaderType::Pixel);
         gCommandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
 
@@ -187,6 +212,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         windowBackbuffer->Present();
     }
 
+    delete constantBuffer;
     delete sampler;
     delete texture;
     delete blendState;

@@ -124,6 +124,31 @@ void CommandBuffer::SetTextures(ITexture** textures, int num, ShaderType target)
 
 void CommandBuffer::SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target)
 {
+    ID3D11Buffer* buffers[16];
+    for (int i = 0; i < num; ++i)
+    {
+        Buffer* cb = dynamic_cast<Buffer*>(constantBuffers[i]);
+        buffers[i] = cb ? cb->mBuffer.get() : NULL;
+    }
+
+    switch (target)
+    {
+        case ShaderType::Vertex:
+            mContext->VSSetConstantBuffers(0, num, buffers);
+            break;
+        case ShaderType::Domain:
+            mContext->DSSetConstantBuffers(0, num, buffers);
+            break;
+        case ShaderType::Hull:
+            mContext->HSSetConstantBuffers(0, num, buffers);
+            break;
+        case ShaderType::Geometry:
+            mContext->GSSetConstantBuffers(0, num, buffers);
+            break;
+        case ShaderType::Pixel:
+            mContext->PSSetConstantBuffers(0, num, buffers);
+            break;
+    };
 }
 
 void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
@@ -206,6 +231,40 @@ void CommandBuffer::SetDepthState(IDepthState* state)
 {
     DepthState* depthState = dynamic_cast<DepthState*>(state);
     mContext->OMSetDepthStencilState(depthState->mDS.get(), 0);
+}
+
+bool CommandBuffer::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data)
+{
+    Buffer* buf = dynamic_cast<Buffer*>(buffer);
+    if (!buf)
+        return false;
+
+    D3D11_MAPPED_SUBRESOURCE mapped = { 0 };
+    ID3D11Resource* res = reinterpret_cast<ID3D11Resource*>(buf->mBuffer.get());
+    HRESULT hr = D3D_CALL_CHECK(mContext->Map(res, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped));
+    if (FAILED(hr))
+        return false;
+
+    memcpy((char*)mapped.pData + offset, data, size);
+    mContext->Unmap(res, 0);
+    return true;
+}
+
+bool CommandBuffer::ReadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data)
+{
+    Buffer* buf = dynamic_cast<Buffer*>(buffer);
+    if (!buf)
+        return false;
+
+    D3D11_MAPPED_SUBRESOURCE mapped = { 0 };
+    ID3D11Resource* res = reinterpret_cast<ID3D11Resource*>(buf->mBuffer.get());
+    HRESULT hr = D3D_CALL_CHECK(mContext->Map(res, 0, D3D11_MAP_READ, 0, &mapped));
+    if (FAILED(hr))
+        return false;
+
+    memcpy(data, (char*)mapped.pData + offset, size);
+    mContext->Unmap(res, 0);
+    return true;
 }
 
 void CommandBuffer::CopyTexture(ITexture* src, ITexture* dest)
