@@ -20,6 +20,13 @@ struct BufferDesc
     BufferAccess access;
     const void* initialData;
     size_t size;
+
+    BufferDesc()
+        : type(BufferType::Vertex)
+        , access(BufferAccess::GPU_ReadOnly)
+        , initialData(nullptr)
+        , size(0)
+    {}
 };
 
 /**
@@ -29,22 +36,6 @@ class IBuffer
 {
 public:
     virtual ~IBuffer() {}
-
-    /**
-     * Write data from CPU memory to the buffer.
-     * @param offset Offset in the GPU buffer in bytes.
-     * @param size   Bytes to write.
-     * @param data   Pointer to data to write.
-     */
-    virtual void Write(size_t offset, size_t size, const void* data) = 0;
-
-    /**
-    * Read data from the GPU buffer to CPU memory.
-    * @param offset Offset in the GPU buffer in bytes.
-    * @param size   Bytes to read.
-    * @param data   Where data should be written.
-    */
-    virtual void Read(size_t offset, size_t size, void* data) = 0;
 };
 
 } // namespace Renderer

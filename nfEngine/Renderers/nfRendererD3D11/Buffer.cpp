@@ -6,6 +6,7 @@
 
 #include "stdafx.hpp"
 #include "RendererD3D11.hpp"
+#include "../../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -33,6 +34,9 @@ bool Buffer::Init(const BufferDesc& desc)
         case BufferType::Constant:
             bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
             break;
+        default:
+            LOG_ERROR("Invalid buffer type");
+            return false;
     }
 
     switch (desc.access)
@@ -45,18 +49,29 @@ bool Buffer::Init(const BufferDesc& desc)
             break;
         case BufferAccess::CPU_Write:
             bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+            bufferDesc.CPUAccessFlags |= D3D11_CPU_ACCESS_WRITE;
             break;
         case BufferAccess::CPU_Read:
             bufferDesc.Usage = D3D11_USAGE_STAGING;
+            bufferDesc.CPUAccessFlags |= D3D11_CPU_ACCESS_READ;
             break;
+        default:
+            LOG_ERROR("Invalid buffer access mode");
+            return false;
     }
 
-    D3D11_SUBRESOURCE_DATA initialData;
-    initialData.pSysMem = desc.initialData;
-    initialData.SysMemPitch = 0;
-    initialData.SysMemSlicePitch = 0;
+    HRESULT hr;
+    if (desc.initialData)
+    {
+        D3D11_SUBRESOURCE_DATA initialData;
+        initialData.pSysMem = desc.initialData;
+        initialData.SysMemPitch = 0;
+        initialData.SysMemSlicePitch = 0;
+        hr = D3D_CALL_CHECK(gDevice->Get()->CreateBuffer(&bufferDesc, &initialData, &mBuffer));
+    }
+    else
+        hr = D3D_CALL_CHECK(gDevice->Get()->CreateBuffer(&bufferDesc, NULL, &mBuffer));
 
-    HRESULT hr = D3D_CALL_CHECK(gDevice->Get()->CreateBuffer(&bufferDesc, &initialData, &mBuffer));
     return SUCCEEDED(hr);
 }
 
