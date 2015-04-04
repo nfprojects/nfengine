@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{5c9993df-5de9-482b-bdc2-6b817b5a33bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\D3D11">
+      <UniqueIdentifier>{6d84e4d5-f34f-421c-b5da-75d6cfabde23}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -26,5 +32,13 @@
     <ClInclude Include="stdafx.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\D3D11\TestPS.hlsl">
+      <Filter>Shaders\D3D11</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\D3D11\TestVS.hlsl">
+      <Filter>Shaders\D3D11</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
