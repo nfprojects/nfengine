@@ -44,6 +44,26 @@ public:
 
     /// "Executive" methods
 
+    /**
+     * Write data from the CPU memory to a GPU buffer.
+     * @param buffer Target buffer.
+     * @param offset Offset in the GPU buffer (in bytes).
+     * @param size   Number of bytes to write.
+     * @param data   Pointer to source CPU buffer.
+     * @return true on success.
+     */
+    virtual bool WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data) = 0;
+
+    /**
+     * Read data from a GPU buffer to the CPU memory.
+     * @param buffer Source buffer.
+     * @param offset Offset in the GPU buffer (in bytes).
+     * @param size   Number of bytes to read.
+     * @param data   Pointer to target CPU buffer.
+     * @return true on success.
+     */
+    virtual bool ReadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data) = 0;
+
     virtual void CopyTexture(ITexture* src, ITexture* dest) = 0;
     virtual bool ReadTexture(ITexture* tex, void* data) = 0;
     virtual void Clear(const float* color) = 0;
