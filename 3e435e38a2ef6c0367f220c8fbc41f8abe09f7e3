@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_ce075b1c",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-05T21:30:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_2ec9cf78",
+      "range": {
+        "startLine": 66,
+        "startChar": 4,
+        "endLine": 76,
+        "endChar": 6
+      },
+      "revId": "3e435e38a2ef6c0367f220c8fbc41f8abe09f7e3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_6ea2a7af",
         "filename": "nfEngine/nfCommon/Linux/Window.cpp",
         "patchSetId": 5
@@ -36,6 +60,30 @@
       "writtenOn": "2015-04-05T17:23:44Z",
       "side": 1,
       "message": "This log line seems too big - I suggest either fitting the entire thing in one line, splitting it into multiple LOG_ERROR calls, or making the message shorter.\n\nIMO only the first line (which should be sth like \"Error in X Server: %s\") is necessary, rest is redundant.",
+      "range": {
+        "startLine": 369,
+        "startChar": 0,
+        "endLine": 372,
+        "endChar": 59
+      },
+      "revId": "3e435e38a2ef6c0367f220c8fbc41f8abe09f7e3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_8e160354",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 372,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-05T21:30:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_6ea2a7af",
       "range": {
         "startLine": 369,
         "startChar": 0,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_ee0cd744",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-05T21:30:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_0ec4d35d",
+      "range": {
+        "startLine": 374,
+        "startChar": 0,
+        "endLine": 374,
+        "endChar": 32
+      },
+      "revId": "3e435e38a2ef6c0367f220c8fbc41f8abe09f7e3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_eece9782",
         "filename": "nfEngine/nfCommon/Window.hpp",
         "patchSetId": 5
@@ -88,6 +160,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_4e1c0b78",
+        "filename": "nfEngine/nfCommon/Window.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-05T21:30:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_eece9782",
+      "revId": "3e435e38a2ef6c0367f220c8fbc41f8abe09f7e3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_cec91b7b",
         "filename": "nfEngine/nfCommon/Window.hpp",
         "patchSetId": 5
@@ -99,6 +189,24 @@
       "writtenOn": "2015-04-05T17:23:44Z",
       "side": 1,
       "message": "I guess this comment is now irrelevant. Remove.",
+      "revId": "3e435e38a2ef6c0367f220c8fbc41f8abe09f7e3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_ae13ff64",
+        "filename": "nfEngine/nfCommon/Window.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-05T21:30:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_cec91b7b",
       "revId": "3e435e38a2ef6c0367f220c8fbc41f8abe09f7e3",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
