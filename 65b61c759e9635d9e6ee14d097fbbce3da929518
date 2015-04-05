@@ -1,0 +1,112 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_8ee1e300",
+        "filename": "nfEngine/nfCommon/Linux/FileSystem.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-05T17:02:23Z",
+      "side": 1,
+      "message": "fix indentation",
+      "revId": "65b61c759e9635d9e6ee14d097fbbce3da929518",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_eee7b710",
+        "filename": "nfEngine/nfCommon/Linux/FileSystem.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-05T17:02:23Z",
+      "side": 1,
+      "message": "Are we supposed to return true when callback returns false?\n\nThis gave me an idea, that two things are missing here:\n* An error message when callback fails\n* A test checking what happens when callback fails",
+      "range": {
+        "startLine": 263,
+        "startChar": 23,
+        "endLine": 263,
+        "endChar": 27
+      },
+      "revId": "65b61c759e9635d9e6ee14d097fbbce3da929518",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_eef977c9",
+        "filename": "nfEngine/nfCommon/Logger.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-05T17:02:23Z",
+      "side": 1,
+      "message": "missing // !defined(__LINUX__)...",
+      "revId": "65b61c759e9635d9e6ee14d097fbbce3da929518",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_cef47bd1",
+        "filename": "nfEngine/nfCommon/Logger.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-05T17:02:23Z",
+      "side": 1,
+      "message": "missing // !defined(__LINUX__)...",
+      "revId": "65b61c759e9635d9e6ee14d097fbbce3da929518",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_0effb3ab",
+        "filename": "nfEngine/nfCommon/stdafx.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-05T17:02:23Z",
+      "side": 1,
+      "message": "Looks like // WIN32 comment is missing here as well. Please, add it.",
+      "revId": "65b61c759e9635d9e6ee14d097fbbce3da929518",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_2e042fbf",
+        "filename": "nfEngine/nfCommon/stdafx.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-05T17:02:23Z",
+      "side": 1,
+      "message": "missing // !defined(__LINUX__)...\n\nCheck other #if...#endif blocks as well, this improves readability of preprocessor blocks.",
+      "revId": "65b61c759e9635d9e6ee14d097fbbce3da929518",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
