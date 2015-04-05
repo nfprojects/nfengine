@@ -16,6 +16,24 @@
       "revId": "0f814c192548074eb765de8272ae8aaf8de8bef7",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_2e30af00",
+        "filename": "nfEngine/nfCommon/Window.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-05T21:29:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_aeb5bfef",
+      "revId": "0f814c192548074eb765de8272ae8aaf8de8bef7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
