@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_aeb5bfef",
+        "filename": "nfEngine/nfCommon/Window.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-05T17:08:30Z",
+      "side": 1,
+      "message": "* Separate #pragma once from #include, these are two different preprocessor directive blocks\n* Remove additional two new lines (lines 7-8)",
+      "revId": "0f814c192548074eb765de8272ae8aaf8de8bef7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
