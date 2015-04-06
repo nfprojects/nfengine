@@ -41,6 +41,11 @@ struct VertexLayoutDesc
     IShader* vertexShader;
 };
 
+/**
+ * @class Vertex layout.
+ *
+ * Represents data layout supplied to a vertex shader and vertex buffers bindings.
+ */
 class IVertexLayout
 {
 public:
