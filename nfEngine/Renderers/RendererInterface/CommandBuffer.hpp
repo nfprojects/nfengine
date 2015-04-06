@@ -64,13 +64,47 @@ public:
      */
     virtual bool ReadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data) = 0;
 
+    /**
+     * Copy contents of texture @p src to @p dest.
+     * The textures source and destination texture must be the same type, size, format
+     * and sample count.
+     */
     virtual void CopyTexture(ITexture* src, ITexture* dest) = 0;
+
+    /**
+     * Read texture content to a CPU buffer.
+     * @param tex Texture to read.
+     * @praram data Target CPU buffer.
+     *
+     * TODO: selecting mipmap level, layer/slice number, etc.
+     */
     virtual bool ReadTexture(ITexture* tex, void* data) = 0;
+
+    /**
+     * Clear bound render targets with a color.
+     * @param color 4 element array of floats.
+     *
+     * TODO: Depth buffer clearing, MRT support.
+     */
     virtual void Clear(const float* color) = 0;
+
+    /**
+     * Draw geometry.
+     * @param type         Primitives type.
+     * @param vertexNum    Vertices number per instance.
+     * @param instancesNum Number of instances to draw.
+     * @indexOffset        Location of the first index
+     * @vertexOffset       Vertex buffer offset (in elements).
+     * @instanceOffset     Per-instance buffer offset (in elements).
+     */
     virtual void Draw(PrimitiveType type, int vertexNum,
                       int instancesNum = 1, int indexOffset = 0,
                       int vertexOffset = 0, int instanceOffset = 0) = 0;
 
+    /**
+     * Execute a command buffer.
+     * @param saveState Save previous pipeline state after finishing executing command buffer.
+     */
     virtual void Execute(ICommandBuffer* commandBuffer, bool saveState) = 0;
 };
 
