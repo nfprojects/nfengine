@@ -18,14 +18,19 @@ namespace NFE {
 namespace Renderer {
 
 /**
- * Interface allowing to create GPU resources and managing command buffers.
+ * Rendering device interface.
+ *
+ * @details Interface allowing to create GPU resources and manage command buffers.
  */
 class IDevice
 {
 public:
     virtual ~IDevice() {}
 
-    /// Resources creation functions
+    /**
+     * DeviceResourcesCreation Resources creation functions
+     * @{
+     */
 
     virtual IVertexLayout* CreateVertexLayout(const VertexLayoutDesc& desc) = 0;
     virtual IBuffer* CreateBuffer(const BufferDesc& desc) = 0;
@@ -38,6 +43,8 @@ public:
     virtual ISampler* CreateSampler(const SamplerDesc& desc) = 0;
     virtual IShader* CreateShader(const ShaderDesc& desc) = 0;
     virtual IShaderProgram* CreateShaderProgram(const ShaderProgramDesc& desc) = 0;
+
+    /**@}*/
 
     virtual ICommandBuffer* GetDefaultCommandBuffer() = 0;
     virtual void Execute(ICommandBuffer* commandBuffer, bool saveState) = 0;

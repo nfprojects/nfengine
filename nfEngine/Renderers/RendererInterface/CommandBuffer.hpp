@@ -25,7 +25,10 @@ class ICommandBuffer
 public:
     virtual ~ICommandBuffer() {}
 
-    /// Shader resources setup methods
+    /**
+     * CommandBufferResources Shader resources setup methods
+     * @{
+     */
 
     virtual void SetVertexLayout(IVertexLayout* vertexLayout) = 0;
     virtual void SetVertexBuffers(int num, IBuffer** vertexBuffers,
@@ -41,8 +44,12 @@ public:
     virtual void SetDepthState(IDepthState* state) = 0;
     virtual void SetViewport(float left, float width, float top, float height,
                              float minDepth, float maxDepth) = 0;
+    /**@}*/
 
-    /// "Executive" methods
+    /**
+     * CommandBufferExe Executive methods
+     * @{
+     */
 
     /**
      * Write data from the CPU memory to a GPU buffer.
@@ -56,22 +63,59 @@ public:
 
     /**
      * Read data from a GPU buffer to the CPU memory.
-     * @param buffer Source buffer.
-     * @param offset Offset in the GPU buffer (in bytes).
-     * @param size   Number of bytes to read.
-     * @param data   Pointer to target CPU buffer.
+     * @param      buffer Source buffer.
+     * @param      offset Offset in the GPU buffer (in bytes).
+     * @param      size   Number of bytes to read.
+     * @param[out] data   Pointer to target CPU buffer.
      * @return true on success.
      */
     virtual bool ReadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data) = 0;
 
+    /**
+     * Copy contents of texture @p src to @p dest.
+     * The textures source and destination texture must be the same type, size, format
+     * and sample count.
+     * @param src  Source texture object.
+     * @param dest Destination texture object.
+     */
     virtual void CopyTexture(ITexture* src, ITexture* dest) = 0;
+
+    /**
+     * Read texture content to a CPU buffer.
+     * @param       tex  Texture to read.
+     * @praram[out] data Target CPU buffer.
+     */
+    // TODO: selecting mipmap level, layer / slice number, etc.
     virtual bool ReadTexture(ITexture* tex, void* data) = 0;
+
+    /**
+     * Clear bound render targets with a color.
+     * @param color 4 element array of floats (RGBA).
+     */
+    // TODO: Depth buffer clearing, MRT support.
     virtual void Clear(const float* color) = 0;
+
+    /**
+     * Draw geometry.
+     * @param type           Primitives type.
+     * @param vertexNum      Vertices number per instance.
+     * @param instancesNum   Number of instances to draw.
+     * @param indexOffset    Location of the first index
+     * @param vertexOffset   Vertex buffer offset (in elements).
+     * @param instanceOffset Per-instance buffer offset (in elements).
+     */
     virtual void Draw(PrimitiveType type, int vertexNum,
                       int instancesNum = 1, int indexOffset = 0,
                       int vertexOffset = 0, int instanceOffset = 0) = 0;
 
+    /**
+     * Execute a command buffer.
+     * @param commandBuffer Command buffer to be executed.
+     * @param saveState     Save previous pipeline state after finishing executing command buffer.
+     */
     virtual void Execute(ICommandBuffer* commandBuffer, bool saveState) = 0;
+
+    /**@}*/
 };
 
 } // namespace Renderer

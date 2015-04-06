@@ -11,6 +11,9 @@
 namespace NFE {
 namespace Renderer {
 
+/**
+ * Blending mode description of a single render target.
+ */
 struct RenderTargetBlendStateDesc
 {
     bool enable;
@@ -34,6 +37,9 @@ struct RenderTargetBlendStateDesc
     {}
 };
 
+/**
+ * Description of Blend State object.
+ */
 struct BlendStateDesc
 {
     RenderTargetBlendStateDesc rtDescs[MAX_RENDER_TARGETS];
@@ -47,12 +53,21 @@ struct BlendStateDesc
     {}
 };
 
+/**
+ * Blend State interface.
+ *
+ * @details Blend State object describes blending mode used in the rendring pipeline.
+ */
 class IBlendState
 {
 public:
     virtual ~IBlendState() {}
 };
 
+
+/**
+ * Description of Rasterizer State object.
+ */
 struct RasterizerStateDesc
 {
     CullMode cullMode;
@@ -60,12 +75,22 @@ struct RasterizerStateDesc
     // TODO: more options
 };
 
+/**
+ * Rasterizer State interface.
+ *
+ * @details Rasterizer State object describes polygon rasterization mode used in the rendring
+ *          pipeline.
+ */
 class IRasterizerState
 {
 public:
     virtual ~IRasterizerState() {}
 };
 
+
+/**
+ * Description of Depth State object.
+ */
 struct DepthStateDesc
 {
     // enable testing pixels against depth buffer
@@ -80,6 +105,11 @@ struct DepthStateDesc
     // TODO: stencil buffer support
 };
 
+/**
+ * Depth State interface.
+ *
+ * @details Depth State object describes depth testing used in the rendring pipeline.
+ */
 class IDepthState
 {
 public:

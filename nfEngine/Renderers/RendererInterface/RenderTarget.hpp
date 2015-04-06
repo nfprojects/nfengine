@@ -46,6 +46,13 @@ struct RenderTargetDesc
     {}
 };
 
+/**
+ * Render Targeet interface.
+ *
+ * @details Render Target object defines where rendering result will be written.
+ *          A Render Target object may contain multiple Render Target Elements
+ *          (aka. MRT - Multiple Render Targets).
+ */
 class IRenderTarget
 {
 public:

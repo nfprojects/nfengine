@@ -12,6 +12,9 @@ namespace Renderer {
 #define MAX_RENDER_TARGETS 8
 #define MAX_MIPMAP_LEVELS 16
 
+/**
+ * GPU resources data format.
+ */
 enum class ElementFormat
 {
     Unknown,
@@ -60,15 +63,42 @@ enum class ShaderType
     Pixel,      //< aka. "fragment"
 };
 
+/**
+ * GPU buffer access modes.
+ */
 enum class BufferAccess
 {
     // TODO: this was taken form D3D11. Accesses may differ in OpenGL
+
+    /**
+     * Read-only resource, for example a static mesh or texture.
+     * The resource content must be specified during creation.
+     */
     GPU_ReadOnly,
+
+    /**
+     * Read-write resource, for example a texture used as a render target.
+     * The content can't be accessed by the CPU.
+     */
     GPU_ReadWrite,
+
+    /**
+     * Read-only resource, for example a constant buffer.
+     * The content can be written by the CPU.
+     */
     CPU_Write,
+
+    /**
+     * Readback resource, for example a screenshot texture.
+     * The content can't be accessed directly by the CPU (only via Copy operations).
+     * The data can be read by the CPU.
+     */
     CPU_Read
 };
 
+/**
+ * Alpha blending functions.
+ */
 enum class BlendFunc
 {
     Zero,
@@ -84,6 +114,9 @@ enum class BlendFunc
     // TODO: support more, if needed
 };
 
+/**
+ * Alpha blending operators.
+ */
 enum class BlendOp
 {
     Add,         //< A + B
@@ -93,6 +126,9 @@ enum class BlendOp
     Max          //< max(A, B)
 };
 
+/**
+ * Polygon culling mode.
+ */
 enum class CullMode
 {
     None, //< disable backface culling
@@ -100,12 +136,18 @@ enum class CullMode
     CCW,  //< cull counter-clockwise faces
 };
 
+/**
+ * Polygon filling mode.
+ */
 enum class FillMode
 {
     Solid,    //< fill triangles (default)
     Wireframe //< draw wireframe only
 };
 
+/*
+ * Comparison function.
+ */
 enum class CompareFunc
 {
     Never,
