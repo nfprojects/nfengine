@@ -18,7 +18,7 @@ namespace NFE {
 namespace Renderer {
 
 /**
- * Interface allowing to create GPU resources and managing command buffers.
+ * Interface allowing to create GPU resources and manage command buffers.
  */
 class IDevice
 {
