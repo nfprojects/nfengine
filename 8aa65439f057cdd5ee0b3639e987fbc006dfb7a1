@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "1a106d94_5a2fa1f6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-07T09:44:24Z",
+      "side": 1,
+      "message": "Missing verification",
+      "revId": "8aa65439f057cdd5ee0b3639e987fbc006dfb7a1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_2eaeef85",
         "filename": "nfEngine/nfRendererTest/main.cpp",
         "patchSetId": 5
