@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_404fb4bd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-07T17:15:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_1ad7e9ee",
+      "revId": "7758255f6d9891f1ca3bfb62d051b6421df17376",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_3adc6512",
         "filename": "nfEngine/Renderers/nfRendererD3D11/Backbuffer.cpp",
         "patchSetId": 4
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_e04fc0bc",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Backbuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-07T17:15:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_3adc6512",
+      "range": {
+        "startLine": 49,
+        "startChar": 0,
+        "endLine": 56,
+        "endChar": 6
+      },
+      "revId": "7758255f6d9891f1ca3bfb62d051b6421df17376",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_dacc3164",
         "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
         "patchSetId": 4
@@ -53,6 +95,30 @@
       "writtenOn": "2015-04-07T09:38:59Z",
       "side": 1,
       "message": "This looks like a repeatable block throughout entire Device.cpp file. How about making it into a function macro, or an inline function for readability purposes?",
+      "range": {
+        "startLine": 100,
+        "startChar": 4,
+        "endLine": 104,
+        "endChar": 5
+      },
+      "revId": "7758255f6d9891f1ca3bfb62d051b6421df17376",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_60cbd01e",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-07T17:15:55Z",
+      "side": 1,
+      "message": "Some of the Create*() functions put created object to a container. Done in \"nfRendererD3D11: Remove automatic resources deletion\"",
+      "parentUuid": "1a106d94_dacc3164",
       "range": {
         "startLine": 100,
         "startChar": 4,
