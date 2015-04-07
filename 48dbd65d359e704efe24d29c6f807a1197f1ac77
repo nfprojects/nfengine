@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_85d41e21",
+        "filename": "nfEngine/nfCommon/Window.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-07T12:32:59Z",
+      "side": 1,
+      "message": "damn son, where\u0027d you find this\n\nShould be \"static\", I presume",
+      "range": {
+        "startLine": 34,
+        "startChar": 4,
+        "endLine": 34,
+        "endChar": 9
+      },
+      "revId": "48dbd65d359e704efe24d29c6f807a1197f1ac77",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_e5aa32d1",
+        "filename": "nfEngine/nfCommonTest/WindowTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-07T12:32:59Z",
+      "side": 1,
+      "message": "Open returns something. Check if it is correct with ASSERT macro.",
+      "revId": "48dbd65d359e704efe24d29c6f807a1197f1ac77",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
