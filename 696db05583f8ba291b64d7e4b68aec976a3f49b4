@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_faf80d7e",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Common.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-07T09:42:46Z",
+      "side": 1,
+      "message": "Consider using WinAPI _com_error object and its ErrorMessage method",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 1
+      },
+      "revId": "696db05583f8ba291b64d7e4b68aec976a3f49b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_daf3919d",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/RenderTarget.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-07T09:42:46Z",
+      "side": 1,
+      "message": "whops :)",
+      "revId": "696db05583f8ba291b64d7e4b68aec976a3f49b4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
