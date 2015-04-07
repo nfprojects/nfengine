@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_71644822",
+        "filename": "nfEngine/nfCommon/Linux/FileSystem.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-07T16:30:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_8ee1e300",
+      "revId": "65b61c759e9635d9e6ee14d097fbbce3da929518",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_eee7b710",
         "filename": "nfEngine/nfCommon/Linux/FileSystem.cpp",
         "patchSetId": 4
@@ -30,6 +48,30 @@
       "writtenOn": "2015-04-05T17:02:23Z",
       "side": 1,
       "message": "Are we supposed to return true when callback returns false?\n\nThis gave me an idea, that two things are missing here:\n* An error message when callback fails\n* A test checking what happens when callback fails",
+      "range": {
+        "startLine": 263,
+        "startChar": 23,
+        "endLine": 263,
+        "endChar": 27
+      },
+      "revId": "65b61c759e9635d9e6ee14d097fbbce3da929518",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_11a6b453",
+        "filename": "nfEngine/nfCommon/Linux/FileSystem.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-07T16:30:41Z",
+      "side": 1,
+      "message": "Return value from the callback equal to \"false\" doesn\u0027t mean that the callback failed. It means that we don\u0027t want to traverse further, because, for example, we found a file we were interested in. I\u0027ll write it in FileStystem.hpp",
+      "parentUuid": "1a106d94_eee7b710",
       "range": {
         "startLine": 263,
         "startChar": 23,
@@ -59,6 +101,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_51678c25",
+        "filename": "nfEngine/nfCommon/Logger.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-07T16:30:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_eef977c9",
+      "revId": "65b61c759e9635d9e6ee14d097fbbce3da929518",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_cef47bd1",
         "filename": "nfEngine/nfCommon/Logger.hpp",
         "patchSetId": 4
@@ -70,6 +130,24 @@
       "writtenOn": "2015-04-05T17:02:23Z",
       "side": 1,
       "message": "missing // !defined(__LINUX__)...",
+      "revId": "65b61c759e9635d9e6ee14d097fbbce3da929518",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_b16ec0ff",
+        "filename": "nfEngine/nfCommon/Logger.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-07T16:30:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_cef47bd1",
       "revId": "65b61c759e9635d9e6ee14d097fbbce3da929518",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -93,6 +171,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_514e6c97",
+        "filename": "nfEngine/nfCommon/stdafx.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-07T16:30:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_0effb3ab",
+      "revId": "65b61c759e9635d9e6ee14d097fbbce3da929518",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_2e042fbf",
         "filename": "nfEngine/nfCommon/stdafx.hpp",
         "patchSetId": 4
@@ -104,6 +200,24 @@
       "writtenOn": "2015-04-05T17:02:23Z",
       "side": 1,
       "message": "missing // !defined(__LINUX__)...\n\nCheck other #if...#endif blocks as well, this improves readability of preprocessor blocks.",
+      "revId": "65b61c759e9635d9e6ee14d097fbbce3da929518",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_714ba887",
+        "filename": "nfEngine/nfCommon/stdafx.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-07T16:30:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_2e042fbf",
       "revId": "65b61c759e9635d9e6ee14d097fbbce3da929518",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
