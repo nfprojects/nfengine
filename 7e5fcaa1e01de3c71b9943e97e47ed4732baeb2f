@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_c310c9aa",
+        "filename": "nfEngine/nfCommon/Win/Window.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-08T15:21:15Z",
+      "side": 1,
+      "message": "Replace tabs with spaces",
+      "range": {
+        "startLine": 90,
+        "startChar": 0,
+        "endLine": 95,
+        "endChar": 2
+      },
+      "revId": "7e5fcaa1e01de3c71b9943e97e47ed4732baeb2f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
