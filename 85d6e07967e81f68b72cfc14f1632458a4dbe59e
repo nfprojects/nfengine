@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_c848e689",
+        "filename": "nfEngine/nfRendererTest/RendererTest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-08T13:04:09Z",
+      "side": 1,
+      "message": "I would add one more thing to the todo list - launching all tests on all renderers.",
+      "revId": "85d6e07967e81f68b72cfc14f1632458a4dbe59e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_a84bea85",
+        "filename": "nfEngine/nfRendererTest/RendererTest.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-08T13:04:09Z",
+      "side": 1,
+      "message": "What about multi-platform compilation? gRendererModule cannot be defined here because it is Windows-specific.\n\nI suggest waiting with this commit (and others) until Library module will be added to nfCommon.",
+      "revId": "85d6e07967e81f68b72cfc14f1632458a4dbe59e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
