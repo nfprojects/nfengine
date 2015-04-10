@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_37062ecf",
+        "filename": "nfEngine/nfCommon/nfCommon.vcxproj",
+        "patchSetId": 11
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-10T11:59:57Z",
+      "side": 1,
+      "message": "Are \"\u003cPrecompiledHeaderFile....\" not needed here?",
+      "revId": "75cab991d5a595c1d76931c35bedb26e189223ce",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
