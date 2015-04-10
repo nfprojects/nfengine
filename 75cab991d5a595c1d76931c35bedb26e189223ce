@@ -16,6 +16,24 @@
       "revId": "75cab991d5a595c1d76931c35bedb26e189223ce",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_f7f136ce",
+        "filename": "nfEngine/nfCommon/nfCommon.vcxproj",
+        "patchSetId": 11
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-10T12:46:43Z",
+      "side": 1,
+      "message": "Well, I\u0027m not sure, this time changes in *.vcxproj files were made by VS13 automatically.\n\nI can vouch that it builds for me. Not sure how else I can check if it\u0027s needed.",
+      "parentUuid": "1a106d94_37062ecf",
+      "revId": "75cab991d5a595c1d76931c35bedb26e189223ce",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
