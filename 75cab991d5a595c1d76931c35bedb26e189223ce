@@ -34,6 +34,24 @@
       "revId": "75cab991d5a595c1d76931c35bedb26e189223ce",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_b7ca1e4d",
+        "filename": "nfEngine/nfCommon/nfCommon.vcxproj",
+        "patchSetId": 11
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-10T13:27:40Z",
+      "side": 1,
+      "message": "Indeed, these are needed. This needs to be corrected from VS13.\n\nHint: Win\\Window.cpp Properties, search for \"Precompiled Header\"",
+      "parentUuid": "1a106d94_f7f136ce",
+      "revId": "75cab991d5a595c1d76931c35bedb26e189223ce",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
