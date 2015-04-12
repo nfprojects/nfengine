@@ -48,6 +48,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Renderers", "Renderers", "{265F0BFF-E485-46E3-9213-D339828982B3}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfRendererD3D11", "nfEngine\Renderers\nfRendererD3D11\nfRendererD3D11.vcxproj", "{EC1CAD07-6B42-4CBC-AC3B-00F0C39ACE44}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shaders", "Shaders", "{5F25A87C-6AA9-4312-8BC7-A63C8B51C68D}"
 EndProject
@@ -74,6 +77,7 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfRendererDemo", "nfEngine\nfRendererDemo\nfRendererDemo.vcxproj", "{EEFC1232-FD3F-429B-B24A-2A37D808A9C5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{EC1CAD07-6B42-4CBC-AC3B-00F0C39ACE44} = {EC1CAD07-6B42-4CBC-AC3B-00F0C39ACE44}
+		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
 	EndProjectSection
 EndProject
 Global
