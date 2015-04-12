@@ -205,6 +205,7 @@ popd</Command>
     <ClInclude Include="FileSystem.hpp" />
     <ClInclude Include="Image.hpp" />
     <ClInclude Include="InputStream.hpp" />
+    <ClInclude Include="Library.hpp" />
     <ClInclude Include="Logger.hpp" />
     <ClInclude Include="Math\Geometry.hpp" />
     <ClInclude Include="Math\Math.hpp" />
@@ -322,6 +323,12 @@ popd</Command>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../stdafx.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../stdafx.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Win\Library.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Win\Timer.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.hpp</PrecompiledHeaderFile>
