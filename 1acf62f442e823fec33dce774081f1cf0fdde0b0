@@ -16,6 +16,24 @@
       "revId": "1acf62f442e823fec33dce774081f1cf0fdde0b0",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_df540c56",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-12T06:40:44Z",
+      "side": 1,
+      "message": "Plus, it\u0027s C++11. Use nullptr instead of NULL.\n\nSince it came out and another patch set is needed, use nullptr here and in other parts of the file. ;)",
+      "parentUuid": "1a106d94_e925dac2",
+      "revId": "1acf62f442e823fec33dce774081f1cf0fdde0b0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
