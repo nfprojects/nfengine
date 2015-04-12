@@ -8,6 +8,7 @@
 #include "../Renderers/RendererInterface/Device.hpp"
 #include "../nfCommon/Window.hpp"
 #include "../nfCommon/File.hpp"
+#include "../nfCommon/Library.hpp"
 
 // TODO: change current directory to nfEngine's root, so the test can be run from any place.
 #define D3D11_SHADER_PATH_PREFIX "../../../nfEngine/Renderers/Shaders/D3D11/"
@@ -18,17 +19,16 @@ using namespace NFE::Renderer;
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;
 
-HMODULE gRendererModule = NULL;
+Library gRendererLib;
 IDevice* gRendererDevice = nullptr;
 ICommandBuffer* gCommandBuffer = nullptr;
 
 bool InitRenderer()
 {
-    gRendererModule = LoadLibrary(L"nfRendererD3D11.dll");
-    if (gRendererModule == NULL)
+    if (!gRendererLib.Open("nfRendererD3D11.dll"))
         return false;
 
-    auto proc = (RendererInitFunc)GetProcAddress(gRendererModule, RENDERER_INIT_FUNC);
+    auto proc = static_cast<RendererInitFunc>(gRendererLib.GetSymbol(RENDERER_INIT_FUNC));
     if (proc == NULL)
         return false;
 
@@ -60,11 +60,13 @@ void ReleaseRenderer()
     if (gRendererDevice != nullptr)
     {
         gRendererDevice = nullptr;
-        auto proc = (RendererReleaseFunc)GetProcAddress(gRendererModule, "Release");
+        auto proc = static_cast<RendererReleaseFunc>(gRendererLib.GetSymbol("Release"));
         if (proc == NULL)
             return;
         proc();
     }
+
+    gRendererLib.Close();
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
