@@ -198,6 +198,8 @@ popd</Command>
     <ClInclude Include="test.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BufferInputStreamTest.cpp" />
+    <ClCompile Include="BufferOutputStreamTest.cpp" />
     <ClCompile Include="FileSystemTest.cpp" />
     <ClCompile Include="FileTest.cpp" />
     <ClCompile Include="LatchTest.cpp" />
