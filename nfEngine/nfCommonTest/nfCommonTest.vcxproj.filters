@@ -16,6 +16,8 @@
     <ClCompile Include="MathMatrixTest.cpp" />
     <ClCompile Include="FileSystemTest.cpp" />
     <ClCompile Include="FileTest.cpp" />
+    <ClCompile Include="BufferInputStreamTest.cpp" />
+    <ClCompile Include="BufferOutputStreamTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.hpp" />
