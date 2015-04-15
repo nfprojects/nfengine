@@ -1,0 +1,429 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_1e1a1d7d",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T10:24:06Z",
+      "side": 1,
+      "message": "Constants should be written in ALL_UPPERCASE.\n\nExample: NOT_EXISTING_PATH",
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_9e0d6d41",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T10:24:06Z",
+      "side": 1,
+      "message": "This part tests ifstream functionality. To be more exact, this tests whether good() will return false if there is no file on the system. Remove that, this is irrelevant.",
+      "range": {
+        "startLine": 23,
+        "startChar": 4,
+        "endLine": 24,
+        "endChar": 29
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_fe1c6179",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T10:24:06Z",
+      "side": 1,
+      "message": "You can use \"using namespace NFE::Common\" at the beginning of the file. This way you won\u0027t have to repeat NFE::Common every now and then.\n\nBTW why use new when you can create an object directly? If you really need to do I/OStream allocation this way for some reason, use std::unique_ptr as a garbage collector, however here it is not needed at all.",
+      "range": {
+        "startLine": 25,
+        "startChar": 22,
+        "endLine": 25,
+        "endChar": 35
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_2984055d",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T10:24:06Z",
+      "side": 1,
+      "message": "Not needed",
+      "range": {
+        "startLine": 38,
+        "startChar": 0,
+        "endLine": 38,
+        "endChar": 62
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_a997558f",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T10:24:06Z",
+      "side": 1,
+      "message": "Do not use new (see above)",
+      "range": {
+        "startLine": 39,
+        "startChar": 18,
+        "endLine": 39,
+        "endChar": 21
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_49818149",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T10:24:06Z",
+      "side": 1,
+      "message": "You can get this from string text. There is no need to re-open the file with ifstream.",
+      "range": {
+        "startLine": 41,
+        "startChar": 4,
+        "endLine": 42,
+        "endChar": 36
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_8992599d",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T10:24:06Z",
+      "side": 1,
+      "message": "Do not use new (see above)",
+      "range": {
+        "startLine": 53,
+        "startChar": 18,
+        "endLine": 53,
+        "endChar": 22
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_c9e3b131",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T10:24:06Z",
+      "side": 1,
+      "message": "As above. If you want to check if stream will be empty, just compare it to 0. No need for ifstream.",
+      "range": {
+        "startLine": 55,
+        "startChar": 4,
+        "endLine": 56,
+        "endChar": 36
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_e9914d9a",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T10:24:06Z",
+      "side": 1,
+      "message": "Do not use new (see above)",
+      "range": {
+        "startLine": 68,
+        "startChar": 18,
+        "endLine": 68,
+        "endChar": 21
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_09d5c942",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T10:24:06Z",
+      "side": 1,
+      "message": "That is weird. It should be added by default by std::string and transferred through ofstream to a file. Are you sure this is needed?",
+      "range": {
+        "startLine": 73,
+        "startChar": 4,
+        "endLine": 73,
+        "endChar": 30
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_4946a124",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T10:24:06Z",
+      "side": 1,
+      "message": "This is a repeatable block. IMO you should do it once, at initialization stage (see how PackerBasic/Complex tests and others do this kind of init and release every test).\n\nIf some more basic tests do not need the file to work, separate them from the others (see Packer Basic/Complex test and diffferences between them).",
+      "range": {
+        "startLine": 81,
+        "startChar": 4,
+        "endLine": 84,
+        "endChar": 17
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_c98c5182",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T10:24:06Z",
+      "side": 1,
+      "message": "Do not use new (see above)",
+      "range": {
+        "startLine": 88,
+        "startChar": 18,
+        "endLine": 88,
+        "endChar": 21
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_a9559551",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T10:24:06Z",
+      "side": 1,
+      "message": "fileSize / 2 is repeated. Create one constant which will equal fileSize/2 and use it (a minor optimization, but still).",
+      "range": {
+        "startLine": 96,
+        "startChar": 28,
+        "endLine": 96,
+        "endChar": 38
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_09ee6922",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T10:24:06Z",
+      "side": 1,
+      "message": "Do not use new (see above)",
+      "range": {
+        "startLine": 108,
+        "startChar": 18,
+        "endLine": 108,
+        "endChar": 21
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_29eb6514",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T10:24:06Z",
+      "side": 1,
+      "message": "I don\u0027t understand what \"TAK JEST ZROBIONE\" means. Use English, please. :)\n\nSeeking out of bounds should return false. If Seek returns true, it is a bug and it should be fixed.",
+      "range": {
+        "startLine": 110,
+        "startChar": 49,
+        "endLine": 110,
+        "endChar": 66
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_69371d4f",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T10:24:06Z",
+      "side": 1,
+      "message": "I suggest separating BufferInputStreamTest from FileInputStreamTest. If there will be more tests and functionalities to Stream (and there might be more), InputStreamTest.cpp will grow to an enormous size and we don\u0027t want that.",
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_69f55ded",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T10:24:06Z",
+      "side": 1,
+      "message": "Do not use new (see above)",
+      "range": {
+        "startLine": 117,
+        "startChar": 18,
+        "endLine": 117,
+        "endChar": 21
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_a9de356b",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T10:24:06Z",
+      "side": 1,
+      "message": "Do not use new (see above)",
+      "range": {
+        "startLine": 127,
+        "startChar": 18,
+        "endLine": 127,
+        "endChar": 21
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_89d9b985",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T10:24:06Z",
+      "side": 1,
+      "message": "Do not use new (see above)",
+      "range": {
+        "startLine": 138,
+        "startChar": 18,
+        "endLine": 138,
+        "endChar": 21
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
