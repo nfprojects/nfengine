@@ -1,0 +1,112 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_64cc64bd",
+        "filename": "nfEngine/nfCommon/Library.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T12:54:23Z",
+      "side": 1,
+      "message": "separate pragma once from include",
+      "revId": "5fa60d88141774edffbf4435d106176e5e76ffa8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_24d26c5c",
+        "filename": "nfEngine/nfCommon/Library.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T12:54:23Z",
+      "side": 1,
+      "message": "// defined (WIN32)",
+      "revId": "5fa60d88141774edffbf4435d106176e5e76ffa8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_04d5b042",
+        "filename": "nfEngine/nfCommon/Library.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T12:54:23Z",
+      "side": 1,
+      "message": "// defined (WIN32)",
+      "revId": "5fa60d88141774edffbf4435d106176e5e76ffa8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_e4e85412",
+        "filename": "nfEngine/nfCommon/Library.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T12:54:23Z",
+      "side": 1,
+      "message": "missing @return",
+      "revId": "5fa60d88141774edffbf4435d106176e5e76ffa8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_64110405",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T12:54:23Z",
+      "side": 1,
+      "message": "If you think this is something to do in a separate commit, I would suggest writing some other tests and removing the one you made now. Try to keep tests multi platform.\n\nThe thing that bothers me is that the test below does not work on Linux - testing Library there would require new test with different code, and this is a really bad idea. Test case code should be consistent between platforms - only some really specific corner cases (like the one in FileSystem) should use #if...#endif.",
+      "revId": "5fa60d88141774edffbf4435d106176e5e76ffa8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_a4fadcba",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-15T12:54:23Z",
+      "side": 1,
+      "message": "This is a material for a separate test case, and it\u0027s platform independent. :)",
+      "range": {
+        "startLine": 11,
+        "startChar": 4,
+        "endLine": 12,
+        "endChar": 55
+      },
+      "revId": "5fa60d88141774edffbf4435d106176e5e76ffa8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
