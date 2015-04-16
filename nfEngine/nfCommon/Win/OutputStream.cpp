@@ -26,12 +26,6 @@ FileOutputStream::FileOutputStream(const char* pFileName)
                         FILE_ATTRIBUTE_NORMAL, 0);
 }
 
-FileOutputStream::FileOutputStream(const wchar_t* pFileName)
-{
-    mFile = CreateFileW(pFileName, GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS,
-                        FILE_ATTRIBUTE_NORMAL, 0);
-}
-
 FileOutputStream::~FileOutputStream()
 {
     if (mFile != INVALID_HANDLE_VALUE)

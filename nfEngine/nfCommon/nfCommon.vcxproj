@@ -233,7 +233,7 @@ popd</Command>
   <ItemGroup>
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="Image.cpp" />
-    <ClCompile Include="InputStream.cpp" />
+    <ClCompile Include="Win\InputStream.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Math\Geometry.cpp">
@@ -261,7 +261,7 @@ popd</Command>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="MD5.cpp" />
-    <ClCompile Include="OutputStream.cpp" />
+    <ClCompile Include="Win\OutputStream.cpp" />
     <ClCompile Include="Packer\PackerDefines.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../stdafx.hpp</PrecompiledHeaderFile>

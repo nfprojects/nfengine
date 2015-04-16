@@ -5,7 +5,7 @@
  */
 
 #include "stdafx.hpp"
-#include "InputStream.hpp"
+#include "../InputStream.hpp"
 
 namespace NFE {
 namespace Common {
@@ -23,12 +23,6 @@ InputStream::~InputStream()
 FileInputStream::FileInputStream(const char* pPath)
 {
     mFile = CreateFileA(pPath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING,
-                        FILE_FLAG_SEQUENTIAL_SCAN, 0);
-}
-
-FileInputStream::FileInputStream(const wchar_t* pPath)
-{
-    mFile = CreateFileW(pPath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING,
                         FILE_FLAG_SEQUENTIAL_SCAN, 0);
 }
 
@@ -58,6 +52,9 @@ bool FileInputStream::Seek(uint64 position)
 {
     if (mFile != INVALID_HANDLE_VALUE)
     {
+        if (position > this->GetSize())
+            return false;
+        
         LONG high = position >> 32;
         SetFilePointer(mFile, (LONG)position, &high, FILE_BEGIN);
         return true;

@@ -51,7 +51,11 @@ public:
  */
 class NFCOMMON_API FileInputStream : public InputStream
 {
+#if defined(WIN32)
     HANDLE mFile;
+#elif defined(__LINUX__) | defined(__linux__)
+    int mFile;
+#endif // defined(WIN32)
 
     /// disable copy methods
     FileInputStream(const FileInputStream&);
@@ -59,7 +63,6 @@ class NFCOMMON_API FileInputStream : public InputStream
 
 public:
     FileInputStream(const char* pPath);
-    FileInputStream(const wchar_t* pPath);
     ~FileInputStream();
 
     uint64 GetSize();

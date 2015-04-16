@@ -38,7 +38,11 @@ public:
  */
 class NFCOMMON_API FileOutputStream : public OutputStream
 {
+#if defined(WIN32)
     HANDLE mFile;
+#elif defined(__LINUX__) | defined(__linux__)
+    int mFile;
+#endif // defined(WIN32)
 
     /// disable copy methods
     FileOutputStream(const FileOutputStream&);
@@ -46,7 +50,6 @@ class NFCOMMON_API FileOutputStream : public OutputStream
 
 public:
     FileOutputStream(const char* pFileName);
-    FileOutputStream(const wchar_t* pFileName);
     ~FileOutputStream();
 
     size_t Write(const void* pSrc, size_t num);
