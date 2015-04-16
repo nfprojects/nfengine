@@ -7,6 +7,13 @@
 #pragma once
 #include "nfCommon.hpp"
 
+#if defined(__LINUX__) | defined(__linux__)
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#endif // defined(__LINUX__) | defined(__linux__)
+
 namespace NFE {
 namespace Common {
 
