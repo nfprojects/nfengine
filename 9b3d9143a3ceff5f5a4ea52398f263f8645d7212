@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_51912351",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-16T00:19:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_1e1a1d7d",
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_9e0d6d41",
         "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
         "patchSetId": 1
@@ -30,6 +48,30 @@
       "writtenOn": "2015-04-15T10:24:06Z",
       "side": 1,
       "message": "This part tests ifstream functionality. To be more exact, this tests whether good() will return false if there is no file on the system. Remove that, this is irrelevant.",
+      "range": {
+        "startLine": 23,
+        "startChar": 4,
+        "endLine": 24,
+        "endChar": 29
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_b1a057a0",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-16T00:19:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_9e0d6d41",
       "range": {
         "startLine": 23,
         "startChar": 4,
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_919b9b71",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-16T00:19:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_fe1c6179",
+      "range": {
+        "startLine": 25,
+        "startChar": 22,
+        "endLine": 25,
+        "endChar": 35
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_2984055d",
         "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
         "patchSetId": 1
@@ -76,6 +142,30 @@
       "writtenOn": "2015-04-15T10:24:06Z",
       "side": 1,
       "message": "Not needed",
+      "range": {
+        "startLine": 38,
+        "startChar": 0,
+        "endLine": 38,
+        "endChar": 62
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_f1892f27",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-16T00:19:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_2984055d",
       "range": {
         "startLine": 38,
         "startChar": 0,
@@ -111,6 +201,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_d18cf337",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-16T00:19:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_a997558f",
+      "range": {
+        "startLine": 39,
+        "startChar": 18,
+        "endLine": 39,
+        "endChar": 21
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_49818149",
         "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
         "patchSetId": 1
@@ -122,6 +236,30 @@
       "writtenOn": "2015-04-15T10:24:06Z",
       "side": 1,
       "message": "You can get this from string text. There is no need to re-open the file with ifstream.",
+      "range": {
+        "startLine": 41,
+        "startChar": 4,
+        "endLine": 42,
+        "endChar": 36
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_3184670b",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-16T00:19:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_49818149",
       "range": {
         "startLine": 41,
         "startChar": 4,
@@ -157,6 +295,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_1187ab10",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-16T00:19:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_8992599d",
+      "range": {
+        "startLine": 53,
+        "startChar": 18,
+        "endLine": 53,
+        "endChar": 22
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_c9e3b131",
         "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
         "patchSetId": 1
@@ -168,6 +330,30 @@
       "writtenOn": "2015-04-15T10:24:06Z",
       "side": 1,
       "message": "As above. If you want to check if stream will be empty, just compare it to 0. No need for ifstream.",
+      "range": {
+        "startLine": 55,
+        "startChar": 4,
+        "endLine": 56,
+        "endChar": 36
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_717d3f1c",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-16T00:19:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_c9e3b131",
       "range": {
         "startLine": 55,
         "startChar": 4,
@@ -203,6 +389,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_91727b47",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-16T00:19:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_e9914d9a",
+      "range": {
+        "startLine": 68,
+        "startChar": 18,
+        "endLine": 68,
+        "endChar": 21
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_09d5c942",
         "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
         "patchSetId": 1
@@ -214,6 +424,30 @@
       "writtenOn": "2015-04-15T10:24:06Z",
       "side": 1,
       "message": "That is weird. It should be added by default by std::string and transferred through ofstream to a file. Are you sure this is needed?",
+      "range": {
+        "startLine": 73,
+        "startChar": 4,
+        "endLine": 73,
+        "endChar": 30
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_048db031",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-16T00:19:12Z",
+      "side": 1,
+      "message": "It is, otherwise garbage is added and test fails.\n\nThat\u0027s because we copy \u0027streamSize\u0027, not \u0027streamSize+1\u0027 chars, I guess.",
+      "parentUuid": "1a106d94_09d5c942",
       "range": {
         "startLine": 73,
         "startChar": 4,
@@ -249,6 +483,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_d164f34a",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-16T00:19:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_4946a124",
+      "range": {
+        "startLine": 81,
+        "startChar": 4,
+        "endLine": 84,
+        "endChar": 17
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_c98c5182",
         "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
         "patchSetId": 1
@@ -260,6 +518,30 @@
       "writtenOn": "2015-04-15T10:24:06Z",
       "side": 1,
       "message": "Do not use new (see above)",
+      "range": {
+        "startLine": 88,
+        "startChar": 18,
+        "endLine": 88,
+        "endChar": 21
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_f1c80f24",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-16T00:19:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_c98c5182",
       "range": {
         "startLine": 88,
         "startChar": 18,
@@ -295,6 +577,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_914a7baa",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-16T00:19:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_a9559551",
+      "range": {
+        "startLine": 96,
+        "startChar": 28,
+        "endLine": 96,
+        "endChar": 38
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_09ee6922",
         "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
         "patchSetId": 1
@@ -306,6 +612,30 @@
       "writtenOn": "2015-04-15T10:24:06Z",
       "side": 1,
       "message": "Do not use new (see above)",
+      "range": {
+        "startLine": 108,
+        "startChar": 18,
+        "endLine": 108,
+        "endChar": 21
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_b14fb7bc",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-16T00:19:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_09ee6922",
       "range": {
         "startLine": 108,
         "startChar": 18,
@@ -358,6 +688,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_71553f4f",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-16T00:19:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_69371d4f",
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_69f55ded",
         "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
         "patchSetId": 1
@@ -369,6 +717,30 @@
       "writtenOn": "2015-04-15T10:24:06Z",
       "side": 1,
       "message": "Do not use new (see above)",
+      "range": {
+        "startLine": 117,
+        "startChar": 18,
+        "endLine": 117,
+        "endChar": 21
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_5150035e",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-16T00:19:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_69f55ded",
       "range": {
         "startLine": 117,
         "startChar": 18,
@@ -404,6 +776,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_115fab73",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-16T00:19:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_a9de356b",
+      "range": {
+        "startLine": 127,
+        "startChar": 18,
+        "endLine": 127,
+        "endChar": 21
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_89d9b985",
         "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
         "patchSetId": 1
@@ -415,6 +811,30 @@
       "writtenOn": "2015-04-15T10:24:06Z",
       "side": 1,
       "message": "Do not use new (see above)",
+      "range": {
+        "startLine": 138,
+        "startChar": 18,
+        "endLine": 138,
+        "endChar": 21
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_315c677e",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-16T00:19:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_89d9b985",
       "range": {
         "startLine": 138,
         "startChar": 18,
