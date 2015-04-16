@@ -110,16 +110,16 @@ TEST_F(nfEngineTest, GetResourceWeirdArguments)
 {
     ResourceBase* pResource = nullptr;
 
-    EXPECT_NO_THROW(pResource = pResourcesManager->GetResource(NULL, ResourceType::UNKNOWN, true));
+    EXPECT_NO_THROW(pResource = pResourcesManager->GetResource(NULL, ResourceType::Unknown, true));
     EXPECT_EQ(nullptr, pResource);
 
-    EXPECT_NO_THROW(pResource = pResourcesManager->GetResource(NULL, ResourceType::UNKNOWN, false));
+    EXPECT_NO_THROW(pResource = pResourcesManager->GetResource(NULL, ResourceType::Unknown, false));
     EXPECT_EQ(nullptr, pResource);
 
-    EXPECT_NO_THROW(pResource = pResourcesManager->GetResource(NULL, ResourceType::TEXTURE, true));
+    EXPECT_NO_THROW(pResource = pResourcesManager->GetResource(NULL, ResourceType::Texture, true));
     EXPECT_EQ(nullptr, pResource);
 
-    EXPECT_NO_THROW(pResource = pResourcesManager->GetResource("blah", ResourceType::UNKNOWN, true));
+    EXPECT_NO_THROW(pResource = pResourcesManager->GetResource("blah", ResourceType::Unknown, true));
     EXPECT_EQ(nullptr, pResource);
 }
 

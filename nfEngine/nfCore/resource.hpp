@@ -25,12 +25,12 @@ namespace Resource {
  */
 enum class ResourceType
 {
-    UNKNOWN,
-    TEXTURE,
-    MATERIAL,
-    MESH,
-    COLLISION_SHAPE,
-    SOUND,
+    Unknown,
+    Texture,
+    Material,
+    Mesh,
+    CollisionShape,
+    Sound,
 };
 
 // Maximum resource's name length in bytes (including terminating null)

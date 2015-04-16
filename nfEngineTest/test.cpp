@@ -236,7 +236,7 @@ public:
 
             BodyComponent* body = new BodyComponent(cube);
             body->SetMass(10.0f);
-            body->EnablePhysics((CollisionShape*)EngineGetResource(ResourceType::COLLISION_SHAPE,
+            body->EnablePhysics((CollisionShape*)EngineGetResource(ResourceType::CollisionShape,
                                  "shape_box"));
 
 
@@ -267,7 +267,7 @@ public:
 
             BodyComponent* body = new BodyComponent(barrel);
             body->SetMass(20.0f);
-            body->EnablePhysics((CollisionShape*)EngineGetResource(ResourceType::COLLISION_SHAPE,
+            body->EnablePhysics((CollisionShape*)EngineGetResource(ResourceType::CollisionShape,
                                  "shape_barrel"));
 
         }

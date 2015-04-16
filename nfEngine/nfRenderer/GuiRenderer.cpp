@@ -327,7 +327,7 @@ Font* GuiRendererD3D11::MakeFont(const char* pPath, int height)
 
 
     Common::Image fontImage;
-    fontImage.SetData(pTexData, texWidth, texHeight, Common::ImageFormat::A_UBYTE);
+    fontImage.SetData(pTexData, texWidth, texHeight, Common::ImageFormat::A_UByte);
 //  pFont->texture = pRenderer->CreateTexture(&fontImage, false);
     pFont->texture = new RendererTextureD3D11;
     pFont->texture->FromImage(fontImage);

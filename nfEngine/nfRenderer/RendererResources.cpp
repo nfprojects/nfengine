@@ -54,23 +54,23 @@ Result RendererTextureD3D11::FromImage(const Common::Image& image)
     size_t bcNumBytesPerBlock = 0;
     switch (image.GetFormat())
     {
-        case ImageFormat::R_UBYTE:
+        case ImageFormat::R_UByte:
             texDesc.Format = DXGI_FORMAT_R8_UNORM;
             break;
 
-        case ImageFormat::A_UBYTE:
+        case ImageFormat::A_UByte:
             texDesc.Format = DXGI_FORMAT_A8_UNORM;
             break;
 
-        case ImageFormat::RGBA_UBYTE:
+        case ImageFormat::RGBA_UByte:
             texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
             break;
 
-        case ImageFormat::RGBA_FLOAT:
+        case ImageFormat::RGBA_Float:
             texDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
             break;
 
-        case ImageFormat::R_FLOAT:
+        case ImageFormat::R_Float:
             texDesc.Format = DXGI_FORMAT_R32_FLOAT;
             break;
 

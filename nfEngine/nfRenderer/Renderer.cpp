@@ -319,19 +319,19 @@ int RendererD3D11::Init()
 
     Common::Image image;
     float diffuseColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
-    image.SetData(diffuseColor, 1, 1, Common::ImageFormat::RGBA_FLOAT);
+    image.SetData(diffuseColor, 1, 1, Common::ImageFormat::RGBA_Float);
     //defaultDiffuseTexture = CreateTexture(&image, 0);
     defaultDiffuseTexture = new RendererTextureD3D11;
     defaultDiffuseTexture->FromImage(image);
 
     float normalColor[] = {0.5f, 0.5f, 1.0f, 1.0f};
-    image.SetData(normalColor, 1, 1, Common::ImageFormat::RGBA_FLOAT);
+    image.SetData(normalColor, 1, 1, Common::ImageFormat::RGBA_Float);
     //defaultNormalTexture = CreateTexture(&image, 0);
     defaultNormalTexture = new RendererTextureD3D11;
     defaultNormalTexture->FromImage(image);
 
     float specularColor[] = {0.1f, 0.1f, 0.1f, 0.0f};
-    image.SetData(specularColor, 1, 1, Common::ImageFormat::RGBA_FLOAT);
+    image.SetData(specularColor, 1, 1, Common::ImageFormat::RGBA_Float);
     //defaultSpecularTexture = CreateTexture(&image, 0);
     defaultSpecularTexture = new RendererTextureD3D11;
     defaultSpecularTexture->FromImage(image);
@@ -342,7 +342,7 @@ int RendererD3D11::Init()
     {
         pData[i] = rand() % 256;
     }
-    image.SetData(pData, 256, 256, Common::ImageFormat::A_UBYTE);
+    image.SetData(pData, 256, 256, Common::ImageFormat::A_UByte);
     noiseTexture = new RendererTextureD3D11;
     noiseTexture->FromImage(image);
 //  noiseTexture = CreateTexture(&image, 0);

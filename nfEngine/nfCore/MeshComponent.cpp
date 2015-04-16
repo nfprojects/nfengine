@@ -62,7 +62,7 @@ Result MeshComponent::SetMeshResource(Mesh* pResource)
 
 Result MeshComponent::SetMeshResource(const char* pName)
 {
-    Mesh* pNewMesh = (Mesh*)g_pResManager->GetResource(pName, ResourceType::MESH);
+    Mesh* pNewMesh = (Mesh*)g_pResManager->GetResource(pName, ResourceType::Mesh);
     return SetMeshResource(pNewMesh);
 }
 

@@ -19,7 +19,7 @@ namespace Resource {
 Texture::Texture()
 {
     mTex = nullptr;
-    mFormat = Common::ImageFormat::UNKNOWN;
+    mFormat = Common::ImageFormat::Unknown;
 }
 
 Texture::~Texture()
@@ -72,15 +72,15 @@ bool Texture::OnLoad()
         mFormat = image.GetFormat();
         if (mFormat != Common::ImageFormat::BC1 && mFormat != Common::ImageFormat::BC2 &&
                 mFormat != Common::ImageFormat::BC3 && mFormat != Common::ImageFormat::BC4 &&
-                mFormat != Common::ImageFormat::BC5 && mFormat != Common::ImageFormat::UNKNOWN)
+                mFormat != Common::ImageFormat::BC5 && mFormat != Common::ImageFormat::Unknown)
         {
             image.GenerateMipmaps();
         }
 
-        // RGBA_UBYTE is not supported by D3D
-        if (mFormat == Common::ImageFormat::RGB_UBYTE)
+        // RGBA_UByte is not supported by D3D
+        if (mFormat == Common::ImageFormat::RGB_UByte)
         {
-            mFormat = Common::ImageFormat::RGBA_UBYTE;
+            mFormat = Common::ImageFormat::RGBA_UByte;
             image.Convert(mFormat);
         }
 

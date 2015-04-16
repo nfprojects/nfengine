@@ -236,7 +236,7 @@ Result BodyComponent::Deserialize(Common::InputStream* pStream)
     mMass = desc.mass;
 
     CollisionShape* pShape = (CollisionShape*)g_pResManager->GetResource(desc.collisionShapeName,
-                             ResourceType::COLLISION_SHAPE);
+                             ResourceType::CollisionShape);
     EnablePhysics(pShape);
 
     return Result::OK;

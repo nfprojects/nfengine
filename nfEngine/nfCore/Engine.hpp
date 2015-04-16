@@ -89,16 +89,16 @@ CORE_API Resource::ResourceBase* EngineGetResource(Resource::ResourceType resTyp
 
 
 #define ENGINE_GET_TEXTURE(name) \
-    ((Texture*)EngineGetResource(ResourceType::TEXTURE, name))
+    ((Texture*)EngineGetResource(ResourceType::Texture, name))
 
 #define ENGINE_GET_MATERIAL(name) \
-    ((Material*)EngineGetResource(ResourceType::MATERIAL, name))
+    ((Material*)EngineGetResource(ResourceType::Material, name))
 
 #define ENGINE_GET_MESH(name) \
-    ((Mesh*)EngineGetResource(ResourceType::MESH, name))
+    ((Mesh*)EngineGetResource(ResourceType::Mesh, name))
 
 #define ENGINE_GET_COLLISION_SHAPE(name) \
-    ((CollisionShape*)EngineGetResource(ResourceType::COLLISION_SHAPE, name))
+    ((CollisionShape*)EngineGetResource(ResourceType::CollisionShape, name))
 
 /**
  *  Add custom resource object to the engine's resources list.

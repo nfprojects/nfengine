@@ -86,12 +86,12 @@ Texture* View::SetOffScreen(uint32 width, uint32 height, const char* pTextureNam
 {
     Release();
 
-    mTexture = (Texture*)g_pResManager->GetResource(pTextureName, ResourceType::TEXTURE);
+    mTexture = (Texture*)g_pResManager->GetResource(pTextureName, ResourceType::Texture);
     if (mTexture == nullptr) return nullptr;
 
     mTexture->Load();
     mTexture->AddRef(this);
-    RT = mTexture->CreateRendertarget(width, height, Common::ImageFormat::RGBA_FLOAT);
+    RT = mTexture->CreateRendertarget(width, height, Common::ImageFormat::RGBA_Float);
 
     return mTexture;
 }

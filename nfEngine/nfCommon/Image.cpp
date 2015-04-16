@@ -21,19 +21,19 @@ const char* Image::FormatToStr(ImageFormat format)
 {
     switch (format)
     {
-        case ImageFormat::A_UBYTE:
+        case ImageFormat::A_UByte:
             return "A_uchar";
-        case ImageFormat::R_UBYTE:
+        case ImageFormat::R_UByte:
             return "R_uchar";
-        case ImageFormat::RGB_UBYTE:
+        case ImageFormat::RGB_UByte:
             return "RGB_uchar";
-        case ImageFormat::RGBA_UBYTE:
+        case ImageFormat::RGBA_UByte:
             return "RGBA_uchar";
 
-        case ImageFormat::R_FLOAT:
-            return "R_FLOAT";
-        case ImageFormat::RGBA_FLOAT:
-            return "RGBA_FLOAT";
+        case ImageFormat::R_Float:
+            return "R_Float";
+        case ImageFormat::RGBA_Float:
+            return "RGBA_Float";
 
         case ImageFormat::BC1:
             return "BC1 (DXT1)";
@@ -54,18 +54,18 @@ size_t Image::BitsPerPixel(ImageFormat format)
 {
     switch (format)
     {
-        case ImageFormat::A_UBYTE:
-        case ImageFormat::R_UBYTE:
+        case ImageFormat::A_UByte:
+        case ImageFormat::R_UByte:
             return 8;
 
-        case ImageFormat::RGB_UBYTE:
+        case ImageFormat::RGB_UByte:
             return 3 * 8;
-        case ImageFormat::RGBA_UBYTE:
+        case ImageFormat::RGBA_UByte:
             return 4 * 8;
 
-        case ImageFormat::R_FLOAT:
+        case ImageFormat::R_Float:
             return sizeof(float) * 8;
-        case ImageFormat::RGBA_FLOAT:
+        case ImageFormat::RGBA_Float:
             return 4 * sizeof(float) * 8;
 
         case ImageFormat::BC1:
@@ -85,7 +85,7 @@ Image::Image()
 {
     mWidth = 0;
     mHeight = 0;
-    mFormat = ImageFormat::UNKNOWN;
+    mFormat = ImageFormat::Unknown;
 }
 
 Image::Image(const Image& src)
@@ -210,21 +210,21 @@ Vector GetTexel(const void* pData, uint32 x, uint32 y, uint32 width, ImageFormat
 {
     switch (fmt)
     {
-        case ImageFormat::A_UBYTE:
+        case ImageFormat::A_UByte:
         {
             const uchar* pSrc = (const uchar*)pData;
             uchar a = pSrc[y * width + x];
             return Vector(255.0f, 255.0f, 255.0f, (float)a) * g_Byte2Float;
         }
 
-        case ImageFormat::R_UBYTE:
+        case ImageFormat::R_UByte:
         {
             const uchar* pSrc = (const uchar*)pData;
             uchar r = pSrc[y * width + x];
             return Vector((float)r, 0.0f, 0.0f, 255.0f) * g_Byte2Float;
         }
 
-        case ImageFormat::RGB_UBYTE:
+        case ImageFormat::RGB_UByte:
         {
             const uchar* pSrc = (const uchar*)pData;
             uchar r = pSrc[3 * (y * width + x)];
@@ -233,7 +233,7 @@ Vector GetTexel(const void* pData, uint32 x, uint32 y, uint32 width, ImageFormat
             return Vector((float)r, (float)g, (float)b, 255.0f) * g_Byte2Float;
         }
 
-        case ImageFormat::RGBA_UBYTE:
+        case ImageFormat::RGBA_UByte:
         {
             const uchar* pSrc = (const uchar*)pData;
             uchar r = pSrc[4 * (y * width + x)];
@@ -243,14 +243,14 @@ Vector GetTexel(const void* pData, uint32 x, uint32 y, uint32 width, ImageFormat
             return Vector((float)r, (float)g, (float)b, float(a)) * g_Byte2Float;
         }
 
-        case ImageFormat::R_FLOAT:
+        case ImageFormat::R_Float:
         {
             const float* pSrc = (const float*)pData;
             float r = pSrc[y * width + x];
             return Vector(r, 0.0f, 0.0f, 1.0f);
         }
 
-        case ImageFormat::RGBA_FLOAT:
+        case ImageFormat::RGBA_Float:
         {
             const float* pSrc = (const float*)pData;
             return Vector(pSrc + 4 * (y * width + x));
@@ -265,21 +265,21 @@ void SetTexel(const Vector& v, void* pData, uint32 x, uint32 y, uint32 width, Im
 {
     switch (fmt)
     {
-        case ImageFormat::A_UBYTE:
+        case ImageFormat::A_UByte:
         {
             uchar* pSrc = (uchar*)pData;
             pSrc[y * width + x] = (uchar)(v.f[3] * 255.0f);
             break;
         }
 
-        case ImageFormat::R_UBYTE:
+        case ImageFormat::R_UByte:
         {
             uchar* pSrc = (uchar*)pData;
             pSrc[y * width + x] = (uchar)(v.f[0] * 255.0f);
             break;
         }
 
-        case ImageFormat::RGB_UBYTE:
+        case ImageFormat::RGB_UByte:
         {
             uchar* pSrc = (uchar*)pData;
             pSrc[3 * (y * width + x)] = (uchar)(v.f[0] * 255.0f);
@@ -288,7 +288,7 @@ void SetTexel(const Vector& v, void* pData, uint32 x, uint32 y, uint32 width, Im
             break;
         }
 
-        case ImageFormat::RGBA_UBYTE:
+        case ImageFormat::RGBA_UByte:
         {
             uchar* pSrc = (uchar*)pData;
             pSrc[4 * (y * width + x)] = (uchar)(v.f[0] * 255.0f);
@@ -298,14 +298,14 @@ void SetTexel(const Vector& v, void* pData, uint32 x, uint32 y, uint32 width, Im
             break;
         }
 
-        case ImageFormat::R_FLOAT:
+        case ImageFormat::R_Float:
         {
             float* pSrc = (float*)pData;
             pSrc[y * width + x] = v.f[0];
             break;
         }
 
-        case ImageFormat::RGBA_FLOAT:
+        case ImageFormat::RGBA_Float:
         {
             Float4* pSrc = (Float4*)pData;
             VectorStore(v, pSrc + y * width + x);
@@ -330,7 +330,7 @@ int Image::GenerateMipmaps(uint32 num)
         return 1;
     }
 
-    if (mFormat == ImageFormat::UNKNOWN)
+    if (mFormat == ImageFormat::Unknown)
     {
         LOG_WARNING("Invalid pixel format");
         return 1;
@@ -401,7 +401,7 @@ int Image::Convert(ImageFormat destFormat)
     }
 
 
-    if (mFormat == ImageFormat::UNKNOWN || destFormat == ImageFormat::UNKNOWN)
+    if (mFormat == ImageFormat::Unknown || destFormat == ImageFormat::Unknown)
     {
         LOG_WARNING("Invalid pixel format");
         return 1;
@@ -437,7 +437,7 @@ int Image::Convert(ImageFormat destFormat)
     return 0;
 
     /*
-    if ((mFormat == ImageFormat::A_UBYTE) && (destFormat == ImageFormat::RGBA_UBYTE))
+    if ((mFormat == ImageFormat::A_UByte) && (destFormat == ImageFormat::RGBA_UByte))
     {
         mMipmaps[0].dataSize = width * height * 4;
         uchar* pNewData = (uchar*)malloc(mMipmaps[0].dataSize);
@@ -459,7 +459,7 @@ int Image::Convert(ImageFormat destFormat)
         mFormat = destFormat;
     }
 
-    if ((mFormat == ImageFormat::RGB_UBYTE) && (destFormat == ImageFormat::RGBA_UBYTE))
+    if ((mFormat == ImageFormat::RGB_UByte) && (destFormat == ImageFormat::RGBA_UByte))
     {
         mMipmaps[0].dataSize = width * height * 4;
         uchar* pNewData = (uchar*)malloc(mMipmaps[0].dataSize);
@@ -518,7 +518,7 @@ int Image::LoadBMP(InputStream* pStream)
 
     if (infoHeader.biBitCount == 24)
     {
-        mFormat = ImageFormat::RGBA_UBYTE;
+        mFormat = ImageFormat::RGBA_UByte;
         uchar* pImageData = (uchar*)malloc(mWidth * mHeight * 4);
 
         if (pImageData == 0)
@@ -600,7 +600,7 @@ int Image::LoadJPEG(InputStream* pStream)
 
     if (mipmap.data)
     {
-        mFormat = ImageFormat::RGBA_UBYTE;
+        mFormat = ImageFormat::RGBA_UByte;
         mMipmaps.push_back(mipmap);
         return 0;
     }
@@ -718,7 +718,7 @@ int Image::LoadPNG(InputStream* pStream)
             //Don't forget to update the channel info (thanks Tom!)
             //It's used later to know how big a buffer we need for the image
             channels = 3;
-            mFormat = ImageFormat::RGB_UBYTE;
+            mFormat = ImageFormat::RGB_UByte;
             break;
 
         case PNG_COLOR_TYPE_GRAY:
@@ -726,15 +726,15 @@ int Image::LoadPNG(InputStream* pStream)
                 png_set_expand_gray_1_2_4_to_8(pngPtr);
             //And the bitdepth info
             bitdepth = 8;
-            mFormat = ImageFormat::A_UBYTE;
+            mFormat = ImageFormat::A_UByte;
             break;
 
         case PNG_COLOR_TYPE_RGB:
-            mFormat = ImageFormat::RGB_UBYTE;
+            mFormat = ImageFormat::RGB_UByte;
             break;
 
         case PNG_COLOR_TYPE_RGBA:
-            mFormat = ImageFormat::RGBA_UBYTE;
+            mFormat = ImageFormat::RGBA_UByte;
             break;
     }
 
@@ -871,11 +871,11 @@ static ImageFormat DDSGetFormat(const DDS_PIXELFORMAT& ddpf)
         {
             case 32:
                 if (ISBITMASK(0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000))
-                    return ImageFormat::RGBA_UBYTE; //DXGI_FORMAT_R8G8B8A8_UNORM;
+                    return ImageFormat::RGBA_UByte; //DXGI_FORMAT_R8G8B8A8_UNORM;
 
                 if (ISBITMASK(0xffffffff, 0x00000000, 0x00000000, 0x00000000))
                     // Only 32-bit color channel format in D3D9 was R32F
-                    return ImageFormat::R_FLOAT; //DXGI_FORMAT_R32_FLOAT
+                    return ImageFormat::R_Float; //DXGI_FORMAT_R32_FLOAT
 
                 //if (ISBITMASK(0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000))
                 //  return DXGI_FORMAT_B8G8R8A8_UNORM;
@@ -925,7 +925,7 @@ static ImageFormat DDSGetFormat(const DDS_PIXELFORMAT& ddpf)
         if (8 == ddpf.dwRGBBitCount)
         {
             if (ISBITMASK(0x000000ff, 0x00000000, 0x00000000, 0x00000000))
-                return ImageFormat::A_UBYTE; //DXGI_FORMAT_R8_UNORM
+                return ImageFormat::A_UByte; //DXGI_FORMAT_R8_UNORM
         }
 
         /*
@@ -942,7 +942,7 @@ static ImageFormat DDSGetFormat(const DDS_PIXELFORMAT& ddpf)
     else if (ddpf.dwFlags & DDPF_ALPHA)
     {
         if (8 == ddpf.dwRGBBitCount)
-            return ImageFormat::A_UBYTE; //DXGI_FORMAT_A8_UNORM
+            return ImageFormat::A_UByte; //DXGI_FORMAT_A8_UNORM
     }
     else if (ddpf.dwFlags & DDPF_FOURCC)
     {
@@ -1004,17 +1004,17 @@ static ImageFormat DDSGetFormat(const DDS_PIXELFORMAT& ddpf)
                 */
 
             case 114: // D3DFMT_R32F
-                return ImageFormat::R_FLOAT; //DXGI_FORMAT_R32_FLOAT
+                return ImageFormat::R_Float; //DXGI_FORMAT_R32_FLOAT
 
             //case 115: // D3DFMT_G32R32F
             //  return DXGI_FORMAT_R32G32_FLOAT;
 
             case 116: // D3DFMT_A32B32G32R32F
-                return ImageFormat::RGBA_FLOAT; //DXGI_FORMAT_R32G32B32A32_FLOAT
+                return ImageFormat::RGBA_Float; //DXGI_FORMAT_R32G32B32A32_FLOAT
         }
     }
 
-    return ImageFormat::UNKNOWN;
+    return ImageFormat::Unknown;
 }
 
 int Image::LoadDDS(InputStream* pStream)
@@ -1038,7 +1038,7 @@ int Image::LoadDDS(InputStream* pStream)
 
     mFormat = DDSGetFormat(header.sPixelFormat);
 
-    if (mFormat == ImageFormat::UNKNOWN)
+    if (mFormat == ImageFormat::Unknown)
         return 1;
 
     int width = mWidth;

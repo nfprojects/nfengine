@@ -75,23 +75,23 @@ ResourceBase* ResManager::GetResource(const char* pName, ResourceType Type, bool
 
     switch (Type)
     {
-        case ResourceType::TEXTURE:
+        case ResourceType::Texture:
             pResource = new Texture;
             break;
 
-        case ResourceType::MATERIAL:
+        case ResourceType::Material:
             pResource = new Material;
             break;
 
-        case ResourceType::MESH:
+        case ResourceType::Mesh:
             pResource = new Mesh;
             break;
 
-        case ResourceType::COLLISION_SHAPE:
+        case ResourceType::CollisionShape:
             pResource = new CollisionShape;
             break;
 
-        case ResourceType::SOUND:
+        case ResourceType::Sound:
             pResource = new SoundSample;
             break;
 
