@@ -671,6 +671,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_9b63addb",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-18T22:29:53Z",
+      "side": 1,
+      "message": "It\u0027s actually fixed in Win \u0026 Linux version, but in different commit. I thought it\u0027d be better not to touch non-testfiles in this commit.",
+      "parentUuid": "1a106d94_29eb6514",
+      "range": {
+        "startLine": 110,
+        "startChar": 49,
+        "endLine": 110,
+        "endChar": 66
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_69371d4f",
         "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
         "patchSetId": 1
