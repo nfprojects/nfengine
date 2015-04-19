@@ -695,6 +695,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_5bc5b58c",
+        "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T08:16:38Z",
+      "side": 1,
+      "message": "And you are absolutely correct, it shouldn\u0027t be fixed here.\n\nIn such situation, if a bug still exists and is unrelated to the commit, I recommend leaving here a TODO comment. That way, when one day we will do a \"git grep -n TODO\" command in the repository, we will know that this needs to be fixed.",
+      "parentUuid": "1a106d94_9b63addb",
+      "range": {
+        "startLine": 110,
+        "startChar": 49,
+        "endLine": 110,
+        "endChar": 66
+      },
+      "revId": "9b3d9143a3ceff5f5a4ea52398f263f8645d7212",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_69371d4f",
         "filename": "nfEngine/nfCommonTest/InputStreamTest.cpp",
         "patchSetId": 1
