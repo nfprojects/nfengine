@@ -1,0 +1,448 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_0af80de4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "Okay, I think it\u0027s time to get on with current Commit Message formatting style.\n\nYour commit updates nfCommonTest and adds IOStream tests. Proper title would be:\n\n\"nfCommonTest: Implement Input/Output Stream tests\"\n\nPlease, do so with other commits.",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_9bbf2dfb",
+        "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "Separate \"namespace\" and \"using namespace\" lines. These are different.\n\nMoreover, I would move \"using namespace NFE::Common\" above anonymous namespace - it is more of a compiler directive, than an actual code.",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_7bba310b",
+        "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "* Add newline separating the function and attributes.\n* Keep class attributes above methods",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_db3885a2",
+        "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "You have halfSize variable. Why not use it?",
+      "range": {
+        "startLine": 47,
+        "startChar": 26,
+        "endLine": 47,
+        "endChar": 38
+      },
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_bb3b099b",
+        "filename": "nfEngine/nfCommonTest/BufferOutputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "As in BufferInputStreamTest",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_1b433d15",
+        "filename": "nfEngine/nfCommonTest/BufferOutputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "As in BufferInputStreamTest",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_fb458117",
+        "filename": "nfEngine/nfCommonTest/BufferOutputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "Why you ask?",
+      "range": {
+        "startLine": 38,
+        "startChar": 56,
+        "endLine": 38,
+        "endChar": 94
+      },
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_3b6ef996",
+        "filename": "nfEngine/nfCommonTest/FileInputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "whops",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_9b6d6d9b",
+        "filename": "nfEngine/nfCommonTest/FileInputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "whops [2x combo]",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_5b4c9542",
+        "filename": "nfEngine/nfCommonTest/FileInputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "whops [3x combo]",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_3b47191f",
+        "filename": "nfEngine/nfCommonTest/FileInputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "whops [4x combo]",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_9b560dd1",
+        "filename": "nfEngine/nfCommonTest/FileInputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "whops [5x combo]",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_7b5191d7",
+        "filename": "nfEngine/nfCommonTest/FileInputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "whops [6x combo]",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_db5fe5e3",
+        "filename": "nfEngine/nfCommonTest/FileInputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "whops [7x combo]",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_bb62e9aa",
+        "filename": "nfEngine/nfCommonTest/FileInputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "whops [8x combo]",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_1b5a1df3",
+        "filename": "nfEngine/nfCommonTest/FileInputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "FINISH HIM",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_fb5c61ef",
+        "filename": "nfEngine/nfCommonTest/FileInputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "fatality",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_5b73f57f",
+        "filename": "nfEngine/nfCommonTest/FileInputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "tab-instead-of-space\u0027o red box wins",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_7b687187",
+        "filename": "nfEngine/nfCommonTest/FileInputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "well... \"// TODO check if result is correct\" sounds better. And is easy git grep-able. ;)\n\nSee my reply on previous patch set",
+      "range": {
+        "startLine": 79,
+        "startChar": 53,
+        "endLine": 79,
+        "endChar": 80
+      },
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_fb13c10a",
+        "filename": "nfEngine/nfCommonTest/FileOutputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "As below",
+      "range": {
+        "startLine": 17,
+        "startChar": 30,
+        "endLine": 17,
+        "endChar": 44
+      },
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_db06c5cd",
+        "filename": "nfEngine/nfCommonTest/FileOutputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "whops",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_5bfad5bd",
+        "filename": "nfEngine/nfCommonTest/FileOutputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "As below",
+      "range": {
+        "startLine": 32,
+        "startChar": 26,
+        "endLine": 32,
+        "endChar": 41
+      },
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_1b117d05",
+        "filename": "nfEngine/nfCommonTest/FileOutputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "GetLastError is Win-specific. You can\u0027t use it in tests.\n\nI spoke about this with Witek in his commit. We must keep the tests consistent between platforms - this is not the way, even though it looks necessary.\n\nThe only way to report an error from-within a constructor is try-catch bloks. However, I can see, that our IOStream has almost no error reporting. Needs further discussion.",
+      "range": {
+        "startLine": 38,
+        "startChar": 12,
+        "endLine": 38,
+        "endChar": 27
+      },
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_bb0949df",
+        "filename": "nfEngine/nfCommonTest/FileOutputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T09:00:37Z",
+      "side": 1,
+      "message": "http://www.quickmeme.com/img/e7/e75d5cb93fc77a13df6e5ffd8f62256e8cc2f1e91d73aa0e31e7aedfc5392afd.jpg\n\nThis is definitely not the way. INVALID_HANDLE_VALUE is WinAPI-specific constant, we don\u0027t want that.",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
