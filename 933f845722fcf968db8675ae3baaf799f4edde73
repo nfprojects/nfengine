@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_4ad96582",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-19T07:27:55Z",
+      "side": 1,
+      "message": "How to verify commit with no verification?\n\nTry to remember about that in your next commits. ;)",
+      "revId": "933f845722fcf968db8675ae3baaf799f4edde73",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
