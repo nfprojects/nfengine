@@ -1,6 +1,6 @@
 /**
  * @file   OutputStream.cpp
- * @author Witek902 (witek902@gmail.com)
+ * @author mkkulagowski (mkulagowski@users.noreply.github.com)
  * @brief  Definition of OutputStream class for writing files, buffers, etc.
  */
 
@@ -15,46 +15,26 @@ OutputStream::~OutputStream()
 }
 
 
-
 // ===============================================================
 // FileOutputStream
 // ===============================================================
 
 FileOutputStream::FileOutputStream(const char* pFileName)
 {
-    mFile = CreateFileA(pFileName, GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS,
-                        FILE_ATTRIBUTE_NORMAL, 0);
-}
-
-FileOutputStream::FileOutputStream(const wchar_t* pFileName)
-{
-    mFile = CreateFileW(pFileName, GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS,
-                        FILE_ATTRIBUTE_NORMAL, 0);
+    mFile = std::make_unique<File>(pFileName, Write, true);
 }
 
 FileOutputStream::~FileOutputStream()
 {
-    if (mFile != INVALID_HANDLE_VALUE)
-    {
-        CloseHandle(mFile);
-    }
+    if (mFile->IsOpened())
+        mFile->Close();
 }
 
 // Write 'num' bytes read from pSrc. Returns number of written bytes.
 size_t FileOutputStream::Write(const void* pSrc, size_t num)
 {
-    if (mFile != INVALID_HANDLE_VALUE)
-    {
-        DWORD toWrite;
-        if (num > static_cast<size_t>(MAXDWORD))
-            toWrite = MAXDWORD;
-        else
-            toWrite = static_cast<DWORD>(num);
-
-        DWORD written;
-        if (WriteFile(mFile, pSrc, toWrite, &written, 0))
-            return (size_t)written;
-    }
+    if (mFile->IsOpened())
+        return mFile->Write(pSrc, num);
 
     return 0;
 }
