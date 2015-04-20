@@ -1,6 +1,6 @@
 /**
  * @file   InputStream.cpp
- * @author Witek902 (witek902@gmail.com)
+ * @author mkkulagowski (mkulagowski@users.noreply.github.com)
  * @brief  Definition of InputStream class for reading files, buffers, etc.
  */
 
@@ -15,40 +15,25 @@ InputStream::~InputStream()
 }
 
 
-
 //-----------------------------------------------------------
 // FileInputStream
 //-----------------------------------------------------------
 
 FileInputStream::FileInputStream(const char* pPath)
 {
-    mFile = CreateFileA(pPath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING,
-                        FILE_FLAG_SEQUENTIAL_SCAN, 0);
-}
-
-FileInputStream::FileInputStream(const wchar_t* pPath)
-{
-    mFile = CreateFileW(pPath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING,
-                        FILE_FLAG_SEQUENTIAL_SCAN, 0);
+    mFile = std::make_unique<File>(pPath, Read, false);
 }
 
 FileInputStream::~FileInputStream()
 {
-    if (mFile != INVALID_HANDLE_VALUE)
-    {
-        CloseHandle(mFile);
-        mFile = 0;
-    }
+    if (mFile->IsOpened())
+        mFile->Close();
 }
 
 uint64 FileInputStream::GetSize()
 {
-    if (mFile != INVALID_HANDLE_VALUE)
-    {
-        DWORD low, high;
-        low = GetFileSize(mFile, &high);
-        return (uint64)low | ((uint64)high << 32);
-    }
+    if (mFile->IsOpened())
+        return mFile->GetSize();
 
     return 0;
 }
@@ -56,12 +41,9 @@ uint64 FileInputStream::GetSize()
 // Jump to specific position in stream.
 bool FileInputStream::Seek(uint64 position)
 {
-    if (mFile != INVALID_HANDLE_VALUE)
-    {
-        LONG high = position >> 32;
-        SetFilePointer(mFile, (LONG)position, &high, FILE_BEGIN);
-        return true;
-    }
+    if (mFile->IsOpened())
+        if (mFile->Seek(position, Begin) > 0);
+            return true;
 
     return false;
 }
@@ -69,23 +51,11 @@ bool FileInputStream::Seek(uint64 position)
 // Fetch 'num' bytes and write to pDest. Returns number of bytes read.
 size_t FileInputStream::Read(size_t num, void* pDest)
 {
-    if (mFile != INVALID_HANDLE_VALUE)
-    {
-        DWORD toRead;
-        if (num > static_cast<size_t>(MAXDWORD))
-            toRead = MAXDWORD;
-        else
-            toRead = static_cast<DWORD>(num);
-
-        DWORD bytesRead = 0;
-        ReadFile(mFile, pDest, toRead, &bytesRead, 0);
-        return bytesRead;
-    }
+    if (mFile->IsOpened())
+        return mFile->Read(pDest, num);
 
     return 0;
 }
-
-
 
 
 //-----------------------------------------------------------
