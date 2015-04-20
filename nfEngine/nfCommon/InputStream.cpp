@@ -1,6 +1,7 @@
 /**
  * @file   InputStream.cpp
  * @author Witek902 (witek902@gmail.com)
+ * @author mkkulagowski (mkulagowski(at)gmail.com)
  * @brief  Definition of InputStream class for reading files, buffers, etc.
  */
 
@@ -15,77 +16,36 @@ InputStream::~InputStream()
 }
 
 
-
 //-----------------------------------------------------------
 // FileInputStream
 //-----------------------------------------------------------
 
 FileInputStream::FileInputStream(const char* pPath)
 {
-    mFile = CreateFileA(pPath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING,
-                        FILE_FLAG_SEQUENTIAL_SCAN, 0);
-}
-
-FileInputStream::FileInputStream(const wchar_t* pPath)
-{
-    mFile = CreateFileW(pPath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING,
-                        FILE_FLAG_SEQUENTIAL_SCAN, 0);
+    mFile.Open(pPath, AccessMode::Read, false);
 }
 
 FileInputStream::~FileInputStream()
 {
-    if (mFile != INVALID_HANDLE_VALUE)
-    {
-        CloseHandle(mFile);
-        mFile = 0;
-    }
+    mFile.Close();
 }
 
 uint64 FileInputStream::GetSize()
 {
-    if (mFile != INVALID_HANDLE_VALUE)
-    {
-        DWORD low, high;
-        low = GetFileSize(mFile, &high);
-        return (uint64)low | ((uint64)high << 32);
-    }
-
-    return 0;
+    return mFile.GetSize();
 }
 
 // Jump to specific position in stream.
 bool FileInputStream::Seek(uint64 position)
 {
-    if (mFile != INVALID_HANDLE_VALUE)
-    {
-        LONG high = position >> 32;
-        SetFilePointer(mFile, (LONG)position, &high, FILE_BEGIN);
-        return true;
-    }
-
-    return false;
+    return mFile.Seek(position, SeekMode::Begin);
 }
 
 // Fetch 'num' bytes and write to pDest. Returns number of bytes read.
 size_t FileInputStream::Read(size_t num, void* pDest)
 {
-    if (mFile != INVALID_HANDLE_VALUE)
-    {
-        DWORD toRead;
-        if (num > static_cast<size_t>(MAXDWORD))
-            toRead = MAXDWORD;
-        else
-            toRead = static_cast<DWORD>(num);
-
-        DWORD bytesRead = 0;
-        ReadFile(mFile, pDest, toRead, &bytesRead, 0);
-        return bytesRead;
-    }
-
-    return 0;
+    return mFile.Read(pDest, num);
 }
-
-
 
 
 //-----------------------------------------------------------

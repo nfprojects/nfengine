@@ -1,6 +1,7 @@
 /**
  * @file   InputStream.hpp
  * @author Witek902 (witek902@gmail.com)
+ * @author mkkulagowski (mkulagowski(at)gmail.com)
  * @brief  Declaration of InputStream class for reading files, buffers, etc.
  */
 
@@ -51,7 +52,7 @@ public:
  */
 class NFCOMMON_API FileInputStream : public InputStream
 {
-    HANDLE mFile;
+    File mFile;
 
     /// disable copy methods
     FileInputStream(const FileInputStream&);
@@ -59,7 +60,6 @@ class NFCOMMON_API FileInputStream : public InputStream
 
 public:
     FileInputStream(const char* pPath);
-    FileInputStream(const wchar_t* pPath);
     ~FileInputStream();
 
     uint64 GetSize();
