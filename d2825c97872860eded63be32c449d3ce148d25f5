@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_36f45086",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-20T07:12:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_0af80de4",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_9bbf2dfb",
         "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
         "patchSetId": 2
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_76d7e8ed",
+        "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-20T07:12:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_9bbf2dfb",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_7bba310b",
         "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
         "patchSetId": 2
@@ -47,6 +83,24 @@
       "writtenOn": "2015-04-19T09:00:37Z",
       "side": 1,
       "message": "* Add newline separating the function and attributes.\n* Keep class attributes above methods",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_d605fc7a",
+        "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-20T07:12:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_7bba310b",
       "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -76,6 +130,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_b6084092",
+        "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-20T07:12:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_db3885a2",
+      "range": {
+        "startLine": 47,
+        "startChar": 26,
+        "endLine": 47,
+        "endChar": 38
+      },
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_bb3b099b",
         "filename": "nfEngine/nfCommonTest/BufferOutputStreamTest.cpp",
         "patchSetId": 2
@@ -87,6 +165,24 @@
       "writtenOn": "2015-04-19T09:00:37Z",
       "side": 1,
       "message": "As in BufferInputStreamTest",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_16003466",
+        "filename": "nfEngine/nfCommonTest/BufferOutputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-20T07:12:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_bb3b099b",
       "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -110,6 +206,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_f602b86d",
+        "filename": "nfEngine/nfCommonTest/BufferOutputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-20T07:12:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_1b433d15",
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_fb458117",
         "filename": "nfEngine/nfCommonTest/BufferOutputStreamTest.cpp",
         "patchSetId": 2
@@ -121,6 +235,30 @@
       "writtenOn": "2015-04-19T09:00:37Z",
       "side": 1,
       "message": "Why you ask?",
+      "range": {
+        "startLine": 38,
+        "startChar": 56,
+        "endLine": 38,
+        "endChar": 94
+      },
+      "revId": "d2825c97872860eded63be32c449d3ce148d25f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_56f90c7f",
+        "filename": "nfEngine/nfCommonTest/BufferOutputStreamTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-20T07:12:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_fb458117",
       "range": {
         "startLine": 38,
         "startChar": 56,
