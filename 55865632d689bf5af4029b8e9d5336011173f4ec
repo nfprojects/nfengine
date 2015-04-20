@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_aad73422",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 18
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-20T13:16:04Z",
+      "side": 1,
+      "message": "Okay, I can see, that this commit implements Tests as well. My previous comment is obsolete, however write a sentence or two about it in between Title and Verification as a more detailed information about your commit. The information about tests should be here as well, and there is none.",
+      "parentUuid": "1a106d94_aa09f4de",
+      "revId": "55865632d689bf5af4029b8e9d5336011173f4ec",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_ca06f0cd",
         "filename": "CMakeLists.txt",
         "patchSetId": 18
