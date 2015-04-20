@@ -18,11 +18,7 @@ FILE(GLOB NFCOMMON_PACKER_HEADERS Packer/*.hpp)
 #      For reference purposes, each line will have a GitHub issue number
 
 LIST(REMOVE_ITEM NFCOMMON_SOURCES "${NFCOMMON_DIRECTORY}/Logger.cpp")       #   2
-LIST(REMOVE_ITEM NFCOMMON_SOURCES "${NFCOMMON_DIRECTORY}/OutputStream.cpp") # 108
-LIST(REMOVE_ITEM NFCOMMON_SOURCES "${NFCOMMON_DIRECTORY}/InputStream.cpp")  # 108
-
-# Image.cpp requires Input/OutputStream to work
-LIST(REMOVE_ITEM NFCOMMON_SOURCES "${NFCOMMON_DIRECTORY}/Image.cpp")
+LIST(REMOVE_ITEM NFCOMMON_SOURCES "${NFCOMMON_DIRECTORY}/Window.cpp")       # 106
 
 # Windows DllMain definition
 IF(NOT WIN32)
