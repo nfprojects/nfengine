@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_aa09f4de",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 18
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-20T12:44:46Z",
+      "side": 1,
+      "message": "[Lnx] nfCommon: Implement Window module",
+      "revId": "55865632d689bf5af4029b8e9d5336011173f4ec",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_ca06f0cd",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 18
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-20T12:44:46Z",
+      "side": 1,
+      "message": "This is not how it\u0027s supposed to be done.\n\n* Remove these changes\n* Instead add new instruction - \"INCLUDE(FindPkgConfig)\"\n* Modify nfEngine/nfCommonTest/CMakeLists.txt - use PKG_CHECK_MODULES to find library and get macros we need.\n* Use macros given to you by PKG_CHECK_MODULES to compile nfCommonTest and link against X11.\n\nThis way, thanks to PkgConfig tool, we will have a generic, working solution, which will support whatever changes X11 (or further versions) will bring. Plus, we will be able to easily add new external dependencies, if they occur.\n\nI\u0027ll leave researching PKG_CHECK_MODULES for you.",
+      "revId": "55865632d689bf5af4029b8e9d5336011173f4ec",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
