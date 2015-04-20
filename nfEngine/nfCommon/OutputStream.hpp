@@ -1,11 +1,13 @@
 /**
  * @file   OutputStream.hpp
  * @author Witek902 (witek902@gmail.com)
+ * @author mkkulagowski (mkulagowski(at)gmail.com)
  * @brief  Declaration of OutputStream class for writing files, buffers, etc.
  */
 
 #pragma once
 #include "nfCommon.hpp"
+#include "File.hpp"
 
 namespace NFE {
 namespace Common {
@@ -38,7 +40,7 @@ public:
  */
 class NFCOMMON_API FileOutputStream : public OutputStream
 {
-    HANDLE mFile;
+    File mFile;
 
     /// disable copy methods
     FileOutputStream(const FileOutputStream&);
@@ -46,7 +48,6 @@ class NFCOMMON_API FileOutputStream : public OutputStream
 
 public:
     FileOutputStream(const char* pFileName);
-    FileOutputStream(const wchar_t* pFileName);
     ~FileOutputStream();
 
     size_t Write(const void* pSrc, size_t num);
