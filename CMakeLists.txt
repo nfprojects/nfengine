@@ -8,6 +8,8 @@ PROJECT(nfEngine)
 
 MESSAGE("Generating Makefile for nfEngine project")
 
+INCLUDE(FindPkgConfig)
+
 # Pre-define Release build
 IF(NOT DEFINED CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL "")
     SET(CMAKE_BUILD_TYPE Release)
@@ -19,8 +21,8 @@ IF(NOT DEFINED CMAKE_BUILD_PLATFORM)
 ENDIF(NOT DEFINED CMAKE_BUILD_PLATFORM)
 
 # Set required variables
-SET(CMAKE_CXX_FLAGS       "${CMAKE_CXX_FLAGS} -O2 -std=c++0x -lXlib")
-SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g -std=c++0x -lXlib")
+SET(CMAKE_CXX_FLAGS       "${CMAKE_CXX_FLAGS} -O2 -std=c++0x")
+SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g -std=c++0x")
 
 # Add build platform to build flags
 IF(CMAKE_BUILD_PLATFORM MATCHES "x86_64")
