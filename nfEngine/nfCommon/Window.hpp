@@ -7,10 +7,10 @@
 #pragma once
 
 #include "nfCommon.hpp"
+
 #if defined(__LINUX__) | defined(__linux__)
 #include <X11/Xlib.h>
 #endif // defined(__LINUX__) | defined(__linux__)
-
 
 namespace NFE {
 namespace Common {
@@ -98,6 +98,11 @@ public:
     virtual void OnMouseMove(int x, int y, int deltaX, int deltaY);
     virtual void OnMouseUp(uint32 button);
 };
+
+#if defined(__LINUX__) | defined (__linux__)
+::Display* Window::mDisplay;
+bool Window::mWindowError;
+#endif // defined(__LINUX__) | defined (__linux__)
 
 } // namespace Common
 } // namespace NFE
