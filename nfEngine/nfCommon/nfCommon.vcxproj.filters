@@ -123,6 +123,10 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Library.hpp">
+    <ClInclude Include="Memory.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemInfo.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -201,6 +205,11 @@
     </ClCompile>
     <ClCompile Include="Win\Library.cpp">
       <Filter>Source Files\Win</Filter>
+    <ClCompile Include="Memory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemInfo.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

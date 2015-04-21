@@ -206,6 +206,7 @@ popd</Command>
     <ClCompile Include="MathMatrixTest.cpp" />
     <ClCompile Include="MathVectorTest.cpp" />
     <ClCompile Include="MD5Test.cpp" />
+    <ClCompile Include="MemoryTest.cpp" />
     <ClCompile Include="PackerBasicTest.cpp" />
     <ClCompile Include="PackerComplexTest.cpp" />
     <ClCompile Include="ThreadPoolPerformance.cpp" />
