@@ -232,7 +232,6 @@ popd</Command>
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="Material.cpp" />
-    <ClCompile Include="Memory.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshComponent.cpp" />
     <ClCompile Include="Performance.cpp" />
@@ -262,7 +261,6 @@ popd</Command>
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="Component.hpp" />
     <ClInclude Include="Globals.hpp" />
-    <ClInclude Include="Memory.hpp" />
     <ClInclude Include="Prerequisites.hpp" />
     <ClInclude Include="Renderer.hpp" />
     <ClInclude Include="View.hpp" />

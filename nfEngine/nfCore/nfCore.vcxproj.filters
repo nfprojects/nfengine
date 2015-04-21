@@ -96,9 +96,6 @@
     <ClCompile Include="View.cpp">
       <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="Memory.cpp">
-      <Filter>Util</Filter>
-    </ClCompile>
     <ClCompile Include="SoundSample.cpp">
       <Filter>Resource</Filter>
     </ClCompile>
@@ -124,9 +121,6 @@
     </ClInclude>
     <ClInclude Include="Component.hpp">
       <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory.hpp">
-      <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="Prerequisites.hpp">
       <Filter>Base</Filter>
