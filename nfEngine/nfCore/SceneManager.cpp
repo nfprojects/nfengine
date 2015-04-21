@@ -12,7 +12,7 @@
 #include "SceneSegment.hpp"
 #include "PhysicsWorld.hpp"
 #include "BVH.hpp"
-#include "Memory.hpp"
+#include "../nfCommon/Memory.hpp"
 #include "../nfCommon/InputStream.hpp"
 #include "../nfCommon/OutputStream.hpp"
 #include "../nfCommon/Logger.hpp"
@@ -60,13 +60,13 @@ SceneManager::~SceneManager()
 
 void SceneManager::SetEnvironment(const EnviromentDesc* pDesc)
 {
-    if (MemoryCheck(pDesc) & ACCESS_READ)
+    if (NFE::Common::MemoryCheck(pDesc) & ACCESS_READ)
         mEnvDesc = *pDesc;
 }
 
 void SceneManager::GetEnvironment(EnviromentDesc* pDesc) const
 {
-    if (MemoryCheck(pDesc) & ACCESS_WRITE)
+    if (NFE::Common::MemoryCheck(pDesc) & ACCESS_WRITE)
         *pDesc = mEnvDesc;
 }
 
@@ -239,13 +239,13 @@ Segment* SceneManager::CreateSegment(const char* pName, const Vector& size)
 */
 Result SceneManager::CreateLink(Segment* pFrom, Segment* pTo, const Vector& offset)
 {
-    if ((MemoryCheck(pFrom) & ACCESS_READWRITE) != ACCESS_READWRITE)
+    if ((NFE::Common::MemoryCheck(pFrom) & ACCESS_READWRITE) != ACCESS_READWRITE)
     {
         LOG_ERROR("'pFrom' pointer (0x%08X) is corrupted", pFrom);
         return Result::CorruptedPointer;
     }
 
-    if ((MemoryCheck(pTo) & ACCESS_READWRITE) != ACCESS_READWRITE)
+    if ((NFE::Common::MemoryCheck(pTo) & ACCESS_READWRITE) != ACCESS_READWRITE)
     {
         LOG_ERROR("'pTo' pointer (0x%08X) is corrupted", pTo);
         return Result::CorruptedPointer;

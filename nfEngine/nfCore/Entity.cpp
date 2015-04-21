@@ -7,7 +7,7 @@
 #include "stdafx.hpp"
 #include "Entity.hpp"
 #include "SceneManager.hpp"
-#include "Memory.hpp"
+#include "../nfCommon/Memory.hpp"
 #include "../nfCommon/InputStream.hpp"
 #include "../nfCommon/OutputStream.hpp"
 #include "../nfCommon/Logger.hpp"
@@ -83,7 +83,7 @@ void* Entity::GetUserPointer() const
 Result Entity::Attach(Entity* pChild)
 {
 #ifdef _DEBUG // check if pointer is valid
-    if (!(Util::MemoryCheck(pChild) & (ACCESS_READ | ACCESS_WRITE)))
+    if (!(NFE::Common::MemoryCheck(pChild) & (ACCESS_READ | ACCESS_WRITE)))
     {
         LOG_ERROR("Invalid entity pointer (%p)", pChild);
         return Result::CorruptedPointer;
@@ -107,7 +107,7 @@ Result Entity::Attach(Entity* pChild)
 Result Entity::Detach(Entity* pChild)
 {
 #ifdef _DEBUG // check if pointer is valid
-    if (!(Util::MemoryCheck(pChild) & (ACCESS_READ | ACCESS_WRITE)))
+    if (!(NFE::Common::MemoryCheck(pChild) & (ACCESS_READ | ACCESS_WRITE)))
     {
         LOG_ERROR("Invalid entity pointer (%p)", pChild);
         return Result::CorruptedPointer;

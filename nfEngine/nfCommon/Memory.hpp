@@ -1,15 +1,15 @@
 /**
  * @file   Memory.hpp
- * @author Witek902 (witek902@gmail.com)
+ * @author mkulagowski (mkkulagowski@gmail.com)
  * @brief  Memory utilities declarations.
  */
 
 #pragma once
 
-#include "Core.hpp"
+#include "nfCommon.hpp"
 
 namespace NFE {
-namespace Util {
+namespace Common {
 
 //memory access rights
 #define ACCESS_READ (1<<0)
@@ -24,7 +24,7 @@ namespace Util {
  * @param size Block size
  * @return Bitfield describing access privileges to the memory block
  */
-CORE_API uint32 MemoryCheck(const void* ptr, size_t size);
+uint32 MemoryCheck(const void* ptr, size_t size);
 
 /**
  * Template version of MemoryCheck(). Useful to verify pointer to a single object.
@@ -35,5 +35,5 @@ uint32 MemoryCheck(const T* ptr)
     return MemoryCheck(ptr, sizeof(T));
 }
 
-} // namespace Util
+} // namespace Common
 } // namespace NFE
