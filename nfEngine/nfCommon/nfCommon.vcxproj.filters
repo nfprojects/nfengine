@@ -122,6 +122,12 @@
     <ClInclude Include="File.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Memory.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemInfo.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -195,6 +201,12 @@
     </ClCompile>
     <ClCompile Include="Win\Window.cpp">
       <Filter>Source Files\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemInfo.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
