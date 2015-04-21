@@ -18,6 +18,7 @@ FILE(GLOB NFCOMMON_PACKER_HEADERS Packer/*.hpp)
 #      For reference purposes, each line will have a GitHub issue number
 
 LIST(REMOVE_ITEM NFCOMMON_SOURCES "${NFCOMMON_DIRECTORY}/Logger.cpp")       #   2
+LIST(REMOVE_ITEM NFCOMMON_SOURCES "${NFCOMMON_DIRECTORY}/Memory.cpp")       # 105
 
 # Image.cpp requires some more things to work, check issues for more info
 LIST(REMOVE_ITEM NFCOMMON_SOURCES "${NFCOMMON_DIRECTORY}/Image.cpp")
