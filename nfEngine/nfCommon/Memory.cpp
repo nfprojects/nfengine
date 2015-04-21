@@ -1,6 +1,7 @@
 /**
  * @file   Memory.cpp
  * @author Witek902 (witek902@gmail.com)
+ * @author mkulagowski (mkkulagowski(at)gmail.com)
  * @brief  Memory utilities definitions
  */
 
@@ -8,7 +9,7 @@
 #include "Memory.hpp"
 
 namespace NFE {
-namespace Util {
+namespace Common {
 
 //check if memory block can be read and/or written
 uint32 MemoryCheck(const void* ptr, size_t size)
@@ -46,5 +47,6 @@ uint32 MemoryCheck(const void* ptr, size_t size)
     return flags;
 }
 
-} // namespace Util
+
+} // namespace Common
 } // namespace NFE
