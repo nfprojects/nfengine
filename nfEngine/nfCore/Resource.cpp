@@ -8,7 +8,7 @@
 #include "Globals.hpp"
 #include "Resource.hpp"
 #include "ResourcesManager.hpp"
-#include "Memory.hpp"
+#include "../nfCommon/Memory.hpp"
 #include "../nfCommon/Logger.hpp"
 
 namespace NFE {
@@ -50,14 +50,14 @@ Result ResourceBase::SetCallbacks(OnLoadCallback onLoadCallback,
     // check if passed pointers are function pointers
 
     if (onLoadCallback)
-        if ((Util::MemoryCheck(onLoadCallback, 1) & ACCESS_EXECUTE) == 0)
+        if ((Common::MemoryCheck(onLoadCallback, 1) & ACCESS_EXECUTE) == 0)
         {
             LOG_ERROR("onLoadCallback does not point to executable memory region");
             return Result::CorruptedPointer;
         }
 
     if (onUnloadCallback)
-        if ((Util::MemoryCheck(onUnloadCallback, 1) & ACCESS_EXECUTE) == 0)
+        if ((Common::MemoryCheck(onUnloadCallback, 1) & ACCESS_EXECUTE) == 0)
         {
             LOG_ERROR("onUnloadCallback does not point to executable memory region");
             return Result::CorruptedPointer;
