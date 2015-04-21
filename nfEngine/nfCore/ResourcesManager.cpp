@@ -6,7 +6,7 @@
 
 #include "stdafx.hpp"
 #include "ResourcesManager.hpp"
-#include "Memory.hpp"
+#include "../nfCommon/Memory.hpp"
 #include "../nfCommon/Logger.hpp"
 
 // TODO: remove these dependencies - adding a new resource type shouldn't force programmer to modify this file...
@@ -157,7 +157,7 @@ Result ResManager::AddCustomResource(ResourceBase* pResource, const char* pName)
 {
     using namespace Util;
 
-    if (!(MemoryCheck(pResource) & (ACCESS_READ | ACCESS_WRITE)))
+    if (!(NFE::Common::MemoryCheck(pResource) & (ACCESS_READ | ACCESS_WRITE)))
     {
         LOG_ERROR("Memory pointed by pResource pointer is corrupted.");
         return Result::CorruptedPointer;
