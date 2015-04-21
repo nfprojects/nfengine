@@ -214,6 +214,7 @@ popd</Command>
     <ClInclude Include="Math\Random.hpp" />
     <ClInclude Include="Math\Vector.hpp" />
     <ClInclude Include="MD5.hpp" />
+    <ClInclude Include="Memory.hpp" />
     <ClInclude Include="nfCommon.hpp" />
     <ClInclude Include="OutputStream.hpp" />
     <ClInclude Include="Packer\Packer.hpp" />
@@ -224,6 +225,7 @@ popd</Command>
     <ClInclude Include="Packer\PackerResourceFile.hpp" />
     <ClInclude Include="Packer\PackerWriter.hpp" />
     <ClInclude Include="stdafx.hpp" />
+    <ClInclude Include="SystemInfo.hpp" />
     <ClInclude Include="targetver.hpp" />
     <ClInclude Include="ThreadPool.hpp" />
     <ClInclude Include="Timer.hpp" />
@@ -263,6 +265,12 @@ popd</Command>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="MD5.cpp" />
+    <ClCompile Include="Memory.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdafx.hpp</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="OutputStream.cpp" />
     <ClCompile Include="Packer\PackerDefines.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../stdafx.hpp</PrecompiledHeaderFile>
@@ -326,6 +334,12 @@ popd</Command>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Win\Library.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\stdafx.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\stdafx.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Win\SystemInfo.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\stdafx.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\stdafx.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\stdafx.hpp</PrecompiledHeaderFile>

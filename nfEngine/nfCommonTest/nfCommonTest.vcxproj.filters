@@ -18,6 +18,7 @@
     <ClCompile Include="LatchTest.cpp" />
     <ClCompile Include="BufferInputStreamTest.cpp" />
     <ClCompile Include="BufferOutputStreamTest.cpp" />
+    <ClCompile Include="MemoryTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.hpp" />
