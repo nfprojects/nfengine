@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_bc281587",
+        "filename": "nfEngine/nfCommon/Window.hpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-23T09:44:22Z",
+      "side": 1,
+      "message": "Why are you defining variables in header file?",
+      "range": {
+        "startLine": 103,
+        "startChar": 0,
+        "endLine": 104,
+        "endChar": 26
+      },
+      "revId": "e1e6114e4edf762153936a583d0191fcecc5be66",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_dc2351a5",
+        "filename": "nfEngine/nfCommonTest/WindowTest.cpp",
+        "patchSetId": 20
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-23T09:44:22Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 5,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 2
+      },
+      "revId": "e1e6114e4edf762153936a583d0191fcecc5be66",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
