@@ -1,0 +1,193 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_1f43166d",
+        "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-24T14:53:11Z",
+      "side": 1,
+      "message": "In fact, this should fail, because you try to create a buffer out of null pointer, so the length should be 0.",
+      "revId": "a433f80dc8d74407fea46da63752ad938665af27",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_9f2d46ab",
+        "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-24T14:53:11Z",
+      "side": 1,
+      "message": "Magic value. Shouldn\u0027t be buffer size equal to \"mStrSize\"?",
+      "range": {
+        "startLine": 36,
+        "startChar": 20,
+        "endLine": 36,
+        "endChar": 22
+      },
+      "revId": "a433f80dc8d74407fea46da63752ad938665af27",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_7f2a0a91",
+        "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-24T14:53:11Z",
+      "side": 1,
+      "message": "As above",
+      "range": {
+        "startLine": 44,
+        "startChar": 20,
+        "endLine": 44,
+        "endChar": 22
+      },
+      "revId": "a433f80dc8d74407fea46da63752ad938665af27",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_5f0e2e3c",
+        "filename": "nfEngine/nfCommonTest/BufferOutputStreamTest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-24T14:53:11Z",
+      "side": 1,
+      "message": "Don\u0027t reuse the same object. Create instance in each test case.",
+      "range": {
+        "startLine": 15,
+        "startChar": 40,
+        "endLine": 15,
+        "endChar": 47
+      },
+      "revId": "a433f80dc8d74407fea46da63752ad938665af27",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_d2017506",
+        "filename": "nfEngine/nfCommonTest/BufferOutputStreamTest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-24T14:53:11Z",
+      "side": 1,
+      "message": "As above, we\u0027re not sure if this test is executed as first (or someone add a new test before the ConstructorTest).",
+      "range": {
+        "startLine": 28,
+        "startChar": 14,
+        "endLine": 28,
+        "endChar": 21
+      },
+      "revId": "a433f80dc8d74407fea46da63752ad938665af27",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_12082d27",
+        "filename": "nfEngine/nfCommonTest/BufferOutputStreamTest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-24T14:53:11Z",
+      "side": 1,
+      "message": "TEXT.c_str()",
+      "range": {
+        "startLine": 40,
+        "startChar": 33,
+        "endLine": 40,
+        "endChar": 38
+      },
+      "revId": "a433f80dc8d74407fea46da63752ad938665af27",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_f20c713d",
+        "filename": "nfEngine/nfCommonTest/BufferOutputStreamTest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-24T14:53:11Z",
+      "side": 1,
+      "message": "doubleStr.c_str()",
+      "range": {
+        "startLine": 46,
+        "startChar": 33,
+        "endLine": 46,
+        "endChar": 43
+      },
+      "revId": "a433f80dc8d74407fea46da63752ad938665af27",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_5215853e",
+        "filename": "nfEngine/nfCommonTest/nfCommonTest.vcxproj",
+        "patchSetId": 3
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-24T14:53:11Z",
+      "side": 1,
+      "message": "?",
+      "revId": "a433f80dc8d74407fea46da63752ad938665af27",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_32128957",
+        "filename": "nfEngine/nfCommonTest/nfCommonTest.vcxproj.filters",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-24T14:53:11Z",
+      "side": 1,
+      "message": "?",
+      "revId": "a433f80dc8d74407fea46da63752ad938665af27",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
