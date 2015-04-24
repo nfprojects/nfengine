@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_7ce21830",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-24T06:48:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_bc84955e",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 12
+      },
+      "revId": "76538a32fac928727bccb929915093676ff518e0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_7c321df3",
         "filename": "nfEngine/nfCommon/InputStream.cpp",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2015-04-23T09:56:43Z",
       "side": 1,
       "message": "Add, not replace",
+      "range": {
+        "startLine": 3,
+        "startChar": 3,
+        "endLine": 3,
+        "endChar": 62
+      },
+      "revId": "76538a32fac928727bccb929915093676ff518e0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_bc893077",
+        "filename": "nfEngine/nfCommon/InputStream.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-24T06:48:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_7c321df3",
       "range": {
         "startLine": 3,
         "startChar": 3,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_1c7b247c",
+        "filename": "nfEngine/nfCommon/InputStream.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-24T06:48:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_9ca279fb",
+      "range": {
+        "startLine": 24,
+        "startChar": 4,
+        "endLine": 24,
+        "endChar": 55
+      },
+      "revId": "76538a32fac928727bccb929915093676ff518e0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_1c67a9ea",
         "filename": "nfEngine/nfCommon/InputStream.cpp",
         "patchSetId": 1
@@ -82,6 +154,30 @@
       "writtenOn": "2015-04-23T09:56:43Z",
       "side": 1,
       "message": "This check is done internally by most of File methods so there is no need to duplicate it",
+      "range": {
+        "startLine": 29,
+        "startChar": 15,
+        "endLine": 29,
+        "endChar": 23
+      },
+      "revId": "76538a32fac928727bccb929915093676ff518e0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_fc7f2864",
+        "filename": "nfEngine/nfCommon/InputStream.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-24T06:48:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_1c67a9ea",
       "range": {
         "startLine": 29,
         "startChar": 15,
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_5c98fcbf",
+        "filename": "nfEngine/nfCommon/InputStream.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-24T06:48:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_7c605dcf",
+      "range": {
+        "startLine": 35,
+        "startChar": 15,
+        "endLine": 35,
+        "endChar": 23
+      },
+      "revId": "76538a32fac928727bccb929915093676ff518e0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_5c5da114",
         "filename": "nfEngine/nfCommon/InputStream.cpp",
         "patchSetId": 1
@@ -128,6 +248,24 @@
       "writtenOn": "2015-04-23T09:56:43Z",
       "side": 1,
       "message": "As above, see File API documentation",
+      "revId": "76538a32fac928727bccb929915093676ff518e0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_3c954087",
+        "filename": "nfEngine/nfCommon/InputStream.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-24T06:48:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_5c5da114",
       "revId": "76538a32fac928727bccb929915093676ff518e0",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -151,6 +289,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_9c8ef477",
+        "filename": "nfEngine/nfCommon/InputStream.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-24T06:48:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_1c1fa909",
+      "revId": "76538a32fac928727bccb929915093676ff518e0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_bc9db5be",
         "filename": "nfEngine/nfCommon/InputStream.cpp",
         "patchSetId": 1
@@ -162,6 +318,30 @@
       "writtenOn": "2015-04-23T09:56:43Z",
       "side": 1,
       "message": "As above, see File API documentation",
+      "range": {
+        "startLine": 54,
+        "startChar": 15,
+        "endLine": 54,
+        "endChar": 23
+      },
+      "revId": "76538a32fac928727bccb929915093676ff518e0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_7c8b3868",
+        "filename": "nfEngine/nfCommon/InputStream.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-24T06:48:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_bc9db5be",
       "range": {
         "startLine": 54,
         "startChar": 15,
@@ -197,6 +377,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_7cb4d834",
+        "filename": "nfEngine/nfCommon/InputStream.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-24T06:48:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_5c2f6188",
+      "range": {
+        "startLine": 3,
+        "startChar": 3,
+        "endLine": 3,
+        "endChar": 62
+      },
+      "revId": "76538a32fac928727bccb929915093676ff518e0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_bc4f756a",
         "filename": "nfEngine/nfCommon/InputStream.hpp",
         "patchSetId": 1
@@ -208,6 +412,30 @@
       "writtenOn": "2015-04-23T09:56:43Z",
       "side": 1,
       "message": "Don\u0027t introduce useless overhead - use File directly",
+      "range": {
+        "startLine": 54,
+        "startChar": 4,
+        "endLine": 54,
+        "endChar": 25
+      },
+      "revId": "76538a32fac928727bccb929915093676ff518e0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_dc84ec5f",
+        "filename": "nfEngine/nfCommon/InputStream.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-24T06:48:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_bc4f756a",
       "range": {
         "startLine": 54,
         "startChar": 4,
@@ -243,6 +471,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_bcf010ff",
+        "filename": "nfEngine/nfCommon/OutputStream.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-24T06:48:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_1cae89e6",
+      "range": {
+        "startLine": 3,
+        "startChar": 3,
+        "endLine": 3,
+        "endChar": 62
+      },
+      "revId": "76538a32fac928727bccb929915093676ff518e0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_3cb1c547",
         "filename": "nfEngine/nfCommon/OutputStream.cpp",
         "patchSetId": 1
@@ -254,6 +506,30 @@
       "writtenOn": "2015-04-23T09:56:43Z",
       "side": 1,
       "message": "mFile.Open(...)",
+      "range": {
+        "startLine": 24,
+        "startChar": 4,
+        "endLine": 24,
+        "endChar": 59
+      },
+      "revId": "76538a32fac928727bccb929915093676ff518e0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_1cf20406",
+        "filename": "nfEngine/nfCommon/OutputStream.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-24T06:48:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_3cb1c547",
       "range": {
         "startLine": 24,
         "startChar": 4,
@@ -289,6 +565,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_fcf608f8",
+        "filename": "nfEngine/nfCommon/OutputStream.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-24T06:48:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_7cb7bd3a",
+      "range": {
+        "startLine": 29,
+        "startChar": 15,
+        "endLine": 29,
+        "endChar": 23
+      },
+      "revId": "76538a32fac928727bccb929915093676ff518e0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_5cb48134",
         "filename": "nfEngine/nfCommon/OutputStream.cpp",
         "patchSetId": 1
@@ -312,6 +612,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_5cdf5c69",
+        "filename": "nfEngine/nfCommon/OutputStream.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-24T06:48:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_5cb48134",
+      "range": {
+        "startLine": 36,
+        "startChar": 15,
+        "endLine": 36,
+        "endChar": 23
+      },
+      "revId": "76538a32fac928727bccb929915093676ff518e0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_dca871dd",
         "filename": "nfEngine/nfCommon/OutputStream.hpp",
         "patchSetId": 1
@@ -323,6 +647,30 @@
       "writtenOn": "2015-04-23T09:56:43Z",
       "side": 1,
       "message": "Add, not replace",
+      "range": {
+        "startLine": 3,
+        "startChar": 3,
+        "endLine": 3,
+        "endChar": 62
+      },
+      "revId": "76538a32fac928727bccb929915093676ff518e0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_dceb4c11",
+        "filename": "nfEngine/nfCommon/OutputStream.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-24T06:48:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_dca871dd",
       "range": {
         "startLine": 3,
         "startChar": 3,
