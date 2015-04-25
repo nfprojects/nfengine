@@ -4,6 +4,7 @@
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="ThreadPool.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Packer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="test.hpp" />

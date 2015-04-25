@@ -75,8 +75,6 @@ def main(argv):
     # initializing needed variables
     fails = []
 
-    testList = ['nfCommonTest', 'nfCoreTest', 'nfRendererTest']
-
     # managing input arguments
     argParser = argparse.ArgumentParser(description='Test script for nfengine project.')
     argParser.add_argument('-v', '--verbose', action='store_true',
@@ -92,7 +90,9 @@ def main(argv):
     args = argParser.parse_args()
 
     if args.perf:
-        testList.append('nfCommonPerfTest')
+        testList = ['nfCommonPerfTest']
+    else:
+        testList = ['nfCommonTest', 'nfCoreTest', 'nfRendererTest']
 
     # playing with paths
     currentPath = os.path.realpath(__file__)

@@ -8,9 +8,11 @@
 
 #include "nfCommon.hpp"
 
-#if defined(__LINUX__) | defined(__linux__)
+#if defined(WIN32)
+#include <Windows.h>
+#elif defined(__LINUX__) | defined(__linux__)
 #include <time.h>
-#endif // defined(__LINUX__) | defined(__linux__)
+#endif
 
 namespace NFE {
 namespace Common {
