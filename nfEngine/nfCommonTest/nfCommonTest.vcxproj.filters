@@ -19,6 +19,7 @@
     <ClCompile Include="BufferInputStreamTest.cpp" />
     <ClCompile Include="BufferOutputStreamTest.cpp" />
     <ClCompile Include="MemoryTest.cpp" />
+    <ClCompile Include="SystemInfoTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.hpp" />
