@@ -17,6 +17,7 @@
     <ClCompile Include="WindowTest.cpp" />
     <ClCompile Include="LatchTest.cpp" />
     <ClCompile Include="MemoryTest.cpp" />
+    <ClCompile Include="SystemInfoTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.hpp" />
