@@ -211,6 +211,7 @@ popd</Command>
     <ClCompile Include="MemoryTest.cpp" />
     <ClCompile Include="PackerBasicTest.cpp" />
     <ClCompile Include="PackerComplexTest.cpp" />
+    <ClCompile Include="SystemInfoTest.cpp" />
     <ClCompile Include="ThreadPoolSimple.cpp" />
     <ClCompile Include="PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
