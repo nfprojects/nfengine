@@ -1,6 +1,6 @@
 /**
  * @file   SystemInfoConstants.hpp
- * @author mkulagowski (mkkulagowski@gmail.com)
+ * @author mkulagowski (mkkulagowski(at)gmail.com)
  * @brief  Constants for SystemInfo class
  */
 
@@ -11,3 +11,4 @@ const int CPU_BRAND_STRING_LENGTH = 0x40;
 const int CPU_BRAND_STRING_1 = 0x80000002;
 const int CPU_BRAND_STRING_2 = 0x80000003;
 const int CPU_BRAND_STRING_3 = 0x80000004;
+const int CPU_CACHE_LINE_SIZE = 0x80000006;
