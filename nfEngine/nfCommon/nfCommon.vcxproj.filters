@@ -205,8 +205,8 @@
     <ClCompile Include="Memory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SystemInfo.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Win\SystemInfo.cpp">
+      <Filter>Source Files\Win</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

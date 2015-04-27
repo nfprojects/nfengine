@@ -153,7 +153,7 @@ Result EngineInit()
         return Result::AlreadyInit;
     }
 
-    Common::ReadHardwareInfo();
+    Common::SystemInfo sysInfo;
 
     /*
     PACK_RESULT pr;
