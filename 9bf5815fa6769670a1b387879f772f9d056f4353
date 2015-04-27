@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "1a106d94_ae8e0dce",
+        "filename": "nfEngine/nfCommonTest/MemoryTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-04-27T12:39:19Z",
+      "side": 1,
+      "message": "Bad indentation - 4 spaces per indent, not 3.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 3
+      },
+      "revId": "9bf5815fa6769670a1b387879f772f9d056f4353",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_0e63e142",
         "filename": "nfEngine/nfCommonTest/MemoryTest.cpp",
         "patchSetId": 2
