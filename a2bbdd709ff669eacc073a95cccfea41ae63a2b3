@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_4e6dd9cb",
+        "filename": "nfEngine/nfCommonTest/MemoryTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-27T09:50:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_e1849d5f",
+      "revId": "a2bbdd709ff669eacc073a95cccfea41ae63a2b3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_a1b74539",
         "filename": "nfEngine/nfCommonTest/MemoryTest.cpp",
         "patchSetId": 1
@@ -30,6 +48,30 @@
       "writtenOn": "2015-04-25T13:57:00Z",
       "side": 1,
       "message": "Fix formatting - here and rest of the file",
+      "range": {
+        "startLine": 11,
+        "startChar": 23,
+        "endLine": 11,
+        "endChar": 24
+      },
+      "revId": "a2bbdd709ff669eacc073a95cccfea41ae63a2b3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_2e721dad",
+        "filename": "nfEngine/nfCommonTest/MemoryTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-27T09:50:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_a1b74539",
       "range": {
         "startLine": 11,
         "startChar": 23,
@@ -59,6 +101,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_ceb70939",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-27T09:50:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_616a6db4",
+      "revId": "a2bbdd709ff669eacc073a95cccfea41ae63a2b3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_416771e9",
         "filename": "nfEngine/nfCore/Engine.cpp",
         "patchSetId": 1
@@ -70,6 +130,24 @@
       "writtenOn": "2015-04-25T13:57:00Z",
       "side": 1,
       "message": "\"NFE::\" not needed, we are in NFE namespace already",
+      "revId": "a2bbdd709ff669eacc073a95cccfea41ae63a2b3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_aeb44d35",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-27T09:50:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_416771e9",
       "revId": "a2bbdd709ff669eacc073a95cccfea41ae63a2b3",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -93,6 +171,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_0e85a159",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-27T09:50:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_a160e5cf",
+      "revId": "a2bbdd709ff669eacc073a95cccfea41ae63a2b3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_815de917",
         "filename": "nfEngine/nfCore/Entity.cpp",
         "patchSetId": 1
@@ -104,6 +200,24 @@
       "writtenOn": "2015-04-25T13:57:00Z",
       "side": 1,
       "message": "\"NFE::\" not needed, we are in NFE namespace already",
+      "revId": "a2bbdd709ff669eacc073a95cccfea41ae63a2b3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_8e6a31b1",
+        "filename": "nfEngine/nfCore/Entity.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-27T09:50:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_815de917",
       "revId": "a2bbdd709ff669eacc073a95cccfea41ae63a2b3",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -127,6 +241,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_ce60a9d1",
+        "filename": "nfEngine/nfCore/Entity.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-27T09:50:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_e19dbdbd",
+      "revId": "a2bbdd709ff669eacc073a95cccfea41ae63a2b3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_c1a241fc",
         "filename": "nfEngine/nfCore/Resource.cpp",
         "patchSetId": 1
@@ -138,6 +270,24 @@
       "writtenOn": "2015-04-25T13:57:00Z",
       "side": 1,
       "message": "\"NFE::\" not needed, we are in NFE namespace already",
+      "revId": "a2bbdd709ff669eacc073a95cccfea41ae63a2b3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_0e9e41b9",
+        "filename": "nfEngine/nfCore/Resource.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-27T09:50:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_c1a241fc",
       "revId": "a2bbdd709ff669eacc073a95cccfea41ae63a2b3",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -161,6 +311,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_eea2c5fb",
+        "filename": "nfEngine/nfCore/Resource.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-27T09:50:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_21a4f506",
+      "revId": "a2bbdd709ff669eacc073a95cccfea41ae63a2b3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_01a9f9de",
         "filename": "nfEngine/nfCore/ResourcesManager.cpp",
         "patchSetId": 1
@@ -172,6 +340,24 @@
       "writtenOn": "2015-04-25T13:57:00Z",
       "side": 1,
       "message": "\"NFE::\" not needed, we are in NFE namespace already",
+      "revId": "a2bbdd709ff669eacc073a95cccfea41ae63a2b3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_4ea4b907",
+        "filename": "nfEngine/nfCore/ResourcesManager.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-27T09:50:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_01a9f9de",
       "revId": "a2bbdd709ff669eacc073a95cccfea41ae63a2b3",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -195,6 +381,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_2ea97ddf",
+        "filename": "nfEngine/nfCore/SceneManager.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-27T09:50:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_61b1cd46",
+      "revId": "a2bbdd709ff669eacc073a95cccfea41ae63a2b3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_41ae51e7",
         "filename": "nfEngine/nfCore/SceneManager.cpp",
         "patchSetId": 1
@@ -206,6 +410,24 @@
       "writtenOn": "2015-04-25T13:57:00Z",
       "side": 1,
       "message": "\"NFE::\" not needed, we are in NFE namespace already",
+      "revId": "a2bbdd709ff669eacc073a95cccfea41ae63a2b3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_8eb19149",
+        "filename": "nfEngine/nfCore/SceneManager.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-27T09:50:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_41ae51e7",
       "revId": "a2bbdd709ff669eacc073a95cccfea41ae63a2b3",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
