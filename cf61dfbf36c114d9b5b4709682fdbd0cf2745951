@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_c56ead2e",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-30T13:21:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_eafd76b2",
+      "range": {
+        "startLine": 2,
+        "startChar": 11,
+        "endLine": 2,
+        "endChar": 14
+      },
+      "revId": "cf61dfbf36c114d9b5b4709682fdbd0cf2745951",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_8a24c260",
         "filename": "nfEngine/nfCommon/Linux/SystemInfo.cpp",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2015-04-30T10:38:01Z",
       "side": 1,
       "message": "Fix formatting",
+      "range": {
+        "startLine": 39,
+        "startChar": 17,
+        "endLine": 39,
+        "endChar": 18
+      },
+      "revId": "cf61dfbf36c114d9b5b4709682fdbd0cf2745951",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_a56bb11c",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-30T13:21:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_8a24c260",
       "range": {
         "startLine": 39,
         "startChar": 17,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_057565f9",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-30T13:21:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_6a298636",
+      "range": {
+        "startLine": 61,
+        "startChar": 4,
+        "endLine": 61,
+        "endChar": 13
+      },
+      "revId": "cf61dfbf36c114d9b5b4709682fdbd0cf2745951",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_ca219a4e",
         "filename": "nfEngine/nfCommon/Linux/SystemInfo.cpp",
         "patchSetId": 1
@@ -88,6 +160,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_e571290d",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-30T13:21:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_ca219a4e",
+      "revId": "cf61dfbf36c114d9b5b4709682fdbd0cf2745951",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_aa1ede09",
         "filename": "nfEngine/nfCommon/Linux/SystemInfo.cpp",
         "patchSetId": 1
@@ -99,6 +189,30 @@
       "writtenOn": "2015-04-30T10:38:01Z",
       "side": 1,
       "message": "Fix formatting",
+      "range": {
+        "startLine": 80,
+        "startChar": 39,
+        "endLine": 80,
+        "endChar": 40
+      },
+      "revId": "cf61dfbf36c114d9b5b4709682fdbd0cf2745951",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_4562bd3e",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-30T13:21:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_aa1ede09",
       "range": {
         "startLine": 80,
         "startChar": 39,
@@ -134,6 +248,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_2567c14e",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-30T13:21:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_4a2e4a44",
+      "range": {
+        "startLine": 95,
+        "startChar": 0,
+        "endLine": 95,
+        "endChar": 2
+      },
+      "revId": "cf61dfbf36c114d9b5b4709682fdbd0cf2745951",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_2a330eac",
         "filename": "nfEngine/nfCommon/Linux/SystemInfo.cpp",
         "patchSetId": 1
@@ -145,6 +283,30 @@
       "writtenOn": "2015-04-30T10:38:01Z",
       "side": 1,
       "message": "As above",
+      "range": {
+        "startLine": 108,
+        "startChar": 0,
+        "endLine": 108,
+        "endChar": 2
+      },
+      "revId": "cf61dfbf36c114d9b5b4709682fdbd0cf2745951",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_8558358b",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-30T13:21:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_2a330eac",
       "range": {
         "startLine": 108,
         "startChar": 0,
@@ -180,6 +342,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_e54809b5",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-30T13:21:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_0a18d21c",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 2
+      },
+      "revId": "cf61dfbf36c114d9b5b4709682fdbd0cf2745951",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_6ae066fa",
         "filename": "nfEngine/nfCommon/SystemInfo.hpp",
         "patchSetId": 1
@@ -191,6 +377,24 @@
       "writtenOn": "2015-04-30T10:38:01Z",
       "side": 1,
       "message": "What about SSE4, AVX, AVX2, etc.? They are more interesting",
+      "revId": "cf61dfbf36c114d9b5b4709682fdbd0cf2745951",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_259ce10e",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-30T13:21:14Z",
+      "side": 1,
+      "message": "Will have further look into these later.",
+      "parentUuid": "1a106d94_6ae066fa",
       "revId": "cf61dfbf36c114d9b5b4709682fdbd0cf2745951",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -214,6 +418,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_45f0fd66",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-30T13:21:14Z",
+      "side": 1,
+      "message": "Have you saw what do these methods do?\nThey only return class members, so without creating an object, there is nothing to return.\n\nIf I were to make them static, I should make all class members static. Yet how do I populate them with no constructor? If I were to get those functions to populate members it would result in too much redundant data.\n\nHow about making this class a singleton?",
+      "parentUuid": "1a106d94_eaebb6d9",
+      "revId": "cf61dfbf36c114d9b5b4709682fdbd0cf2745951",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_cacfda7d",
         "filename": "nfEngine/nfCommon/Win/SystemInfo.cpp",
         "patchSetId": 1
@@ -231,6 +453,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_65a2594c",
+        "filename": "nfEngine/nfCommon/Win/SystemInfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-30T13:21:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_cacfda7d",
+      "revId": "cf61dfbf36c114d9b5b4709682fdbd0cf2745951",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_aacc1e8a",
         "filename": "nfEngine/nfCommonTest/SystemInfoTest.cpp",
         "patchSetId": 1
@@ -242,6 +482,30 @@
       "writtenOn": "2015-04-30T10:38:01Z",
       "side": 1,
       "message": "This should be a method of SystemInfo (it should serialize all the information to a string).",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 63,
+        "endChar": 27
+      },
+      "revId": "cf61dfbf36c114d9b5b4709682fdbd0cf2745951",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_c5b18d90",
+        "filename": "nfEngine/nfCommonTest/SystemInfoTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-04-30T13:21:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_aacc1e8a",
       "range": {
         "startLine": 9,
         "startChar": 0,
