@@ -1,0 +1,118 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_8954cfff",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-30T13:42:39Z",
+      "side": 1,
+      "message": "There\u0027s a lot of redundant code. Using a macro would be a good idea here",
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_29431b43",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-30T13:42:39Z",
+      "side": 1,
+      "message": "Don\u0027t use tabs",
+      "range": {
+        "startLine": 89,
+        "startChar": 44,
+        "endLine": 89,
+        "endChar": 46
+      },
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_a928ab86",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-30T13:42:39Z",
+      "side": 1,
+      "message": "Don\u0027t use tabs. Use std::setw() or sth instead",
+      "range": {
+        "startLine": 96,
+        "startChar": 25,
+        "endLine": 96,
+        "endChar": 27
+      },
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_6949935f",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-30T13:42:39Z",
+      "side": 1,
+      "message": "Why comment?",
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_29983bbf",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-30T13:42:39Z",
+      "side": 1,
+      "message": "Get...() methods should be const",
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_29b15b47",
+        "filename": "nfEngine/nfCommonTest/SystemInfoTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-04-30T13:42:39Z",
+      "side": 1,
+      "message": "Maybe we should check here, if values returned by SystemInfo::Get...() are resonable (no empty strings, no 1KB of RAM, etc.)?",
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
