@@ -5,7 +5,7 @@
 #include "stdafx.hpp"
 #include "../nfCommon/ThreadPool.hpp"
 #include "../nfCommon/Timer.hpp"
-#include "Common.hpp"
+#include "../nfCommon/Latch.hpp"
 
 
 using namespace NFE::Common;

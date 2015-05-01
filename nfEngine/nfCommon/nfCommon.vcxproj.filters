@@ -202,5 +202,13 @@
     <ClCompile Include="Win\Library.cpp">
       <Filter>Source Files\Win</Filter>
     </ClCompile>
+    <ClCompile Include="Latch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Latch.hpp">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

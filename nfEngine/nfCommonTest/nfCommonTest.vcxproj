@@ -198,9 +198,9 @@ popd</Command>
     <ClInclude Include="test.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Common.cpp" />
     <ClCompile Include="FileSystemTest.cpp" />
     <ClCompile Include="FileTest.cpp" />
+    <ClCompile Include="LatchTest.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathGeometryTest.cpp" />
     <ClCompile Include="MathMatrixTest.cpp" />

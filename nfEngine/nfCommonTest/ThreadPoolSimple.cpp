@@ -4,6 +4,7 @@
 
 #include "stdafx.hpp"
 #include "../nfCommon/ThreadPool.hpp"
+#include "../nfCommon/Latch.hpp"
 #include "Common.hpp"
 
 

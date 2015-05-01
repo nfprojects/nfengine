@@ -4,38 +4,6 @@
 
 #include "stdafx.hpp"
 
-#include <mutex>
-#include <condition_variable>
-#include <atomic>
-
-/*
- * @class Latch
- * A tool allowing for threads synchronization.
- */
-class Latch final
-{
-private:
-    typedef std::unique_lock<std::mutex> Lock;
-
-    std::mutex mMutex;
-    std::condition_variable mCV;
-    std::atomic<bool> mSet;
-
-public:
-    Latch();
-
-    /*
-     * Makes all waiting threads return from @p Wait() method.
-     */
-    void Set();
-
-    /*
-     * Waits unitl another thread calls @p Set() method.
-     */
-    void Wait();
-};
-
-
 /*
  * Fisher-Yates shuffle algorithm
  *
