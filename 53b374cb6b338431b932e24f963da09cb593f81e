@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "1a106d94_9dea2ed9",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-01T21:04:01Z",
+      "side": 1,
+      "message": "fix indentation\n\ncheck other files as well",
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_5ddd5641",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-01T21:04:01Z",
+      "side": 1,
+      "message": "fix indentation",
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_8954cfff",
         "filename": "nfEngine/nfCommon/SystemInfo.cpp",
         "patchSetId": 2
@@ -13,6 +47,29 @@
       "writtenOn": "2015-04-30T13:42:39Z",
       "side": 1,
       "message": "There\u0027s a lot of redundant code. Using a macro would be a good idea here",
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_bd4f2a33",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-01T21:04:01Z",
+      "side": 1,
+      "message": "I would add \"String\" word to the method name, to not confuse it with other getters. GetAllInfoString or sth.",
+      "range": {
+        "startLine": 76,
+        "startChar": 24,
+        "endLine": 76,
+        "endChar": 34
+      },
       "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
