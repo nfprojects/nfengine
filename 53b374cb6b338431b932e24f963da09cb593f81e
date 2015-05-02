@@ -36,6 +36,29 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_3deb3a79",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-02T07:31:01Z",
+      "side": 1,
+      "message": "I wouldn\u0027t call them \"getters\". Getters are commonly used to acquire a value and store it in a variable, so they should get something from object and return it to the user for storing in a variable, just like these at the end of this file do.\n\nMethods in SystemInfo constructor are procedures used to initialize an object - how about renaming them to \"InitCPUInfoCommon\", \"InitCPUInfoPlatform\" and \"InitMemoryInfo\"?",
+      "range": {
+        "startLine": 16,
+        "startChar": 4,
+        "endLine": 18,
+        "endChar": 20
+      },
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_8954cfff",
         "filename": "nfEngine/nfCommon/SystemInfo.cpp",
         "patchSetId": 2
@@ -167,6 +190,41 @@
       "writtenOn": "2015-04-30T13:42:39Z",
       "side": 1,
       "message": "Maybe we should check here, if values returned by SystemInfo::Get...() are resonable (no empty strings, no 1KB of RAM, etc.)?",
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_fdf4025c",
+        "filename": "nfEngine/nfCommonTest/SystemInfoTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-02T07:31:01Z",
+      "side": 1,
+      "message": "I agree, some more tests would be a perfect thing to do.",
+      "parentUuid": "1a106d94_29b15b47",
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_5de8b67b",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-02T07:31:01Z",
+      "side": 1,
+      "message": "From what I see, sysInfo is not used later on in the code, which means it is redundant. Use it, or rm it and leave a TODO comment - it\u0027s up to you.",
       "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
