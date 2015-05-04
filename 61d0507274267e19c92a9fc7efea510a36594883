@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_d36657ba",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/CommandBuffer.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-04T08:02:44Z",
+      "side": 1,
+      "message": "This situation requires an information to the user - an error code, an exception or at least a log. I didn\u0027t see a global TODO comment about improving error handling, it would be a good idea to add one.",
+      "revId": "61d0507274267e19c92a9fc7efea510a36594883",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
