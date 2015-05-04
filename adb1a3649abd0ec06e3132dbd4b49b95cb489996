@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_33624bae",
+        "filename": "nfEngine/nfCommon/CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-04T07:22:39Z",
+      "side": 1,
+      "message": "What? Why Window needs to be removed? I thought you reimplemented it on Linux...",
+      "revId": "adb1a3649abd0ec06e3132dbd4b49b95cb489996",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
