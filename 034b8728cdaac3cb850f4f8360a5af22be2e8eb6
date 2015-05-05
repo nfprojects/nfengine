@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_b0958c34",
+        "filename": "nfEngine/nfCommon/nfCommon.vcxproj.filters",
+        "patchSetId": 4
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-05T11:17:53Z",
+      "side": 1,
+      "message": "Invalid syntax. This file does not work in VS. Do not edit this manually - use VS!",
+      "range": {
+        "startLine": 125,
+        "startChar": 4,
+        "endLine": 126,
+        "endChar": 4
+      },
+      "revId": "034b8728cdaac3cb850f4f8360a5af22be2e8eb6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_1099006e",
+        "filename": "nfEngine/nfCommon/nfCommon.vcxproj.filters",
+        "patchSetId": 4
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-05T11:17:53Z",
+      "side": 1,
+      "message": "Invalid syntax. This file does not work in VS. Do not edit this manually - use VS!",
+      "range": {
+        "startLine": 206,
+        "startChar": 4,
+        "endLine": 208,
+        "endChar": 4
+      },
+      "revId": "034b8728cdaac3cb850f4f8360a5af22be2e8eb6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
