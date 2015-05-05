@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_b0bc6cbc",
+        "filename": "nfEngine/nfCommon/nfCommon.vcxproj.filters",
+        "patchSetId": 4
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-05T11:22:21Z",
+      "side": 1,
+      "message": "@Witek902, in MK\u0027s defence - sometimes it is not possible, especially when you get a merge/rebase conflict.\n\nOne way or another, someone did not test his change before commiting. IDK how many times I will have to remind that - please, verify the change for yourself BEFORE pushing! Even if you are 100% sure that it should work.",
+      "parentUuid": "1a106d94_b0958c34",
+      "range": {
+        "startLine": 125,
+        "startChar": 4,
+        "endLine": 126,
+        "endChar": 4
+      },
+      "revId": "034b8728cdaac3cb850f4f8360a5af22be2e8eb6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_1099006e",
         "filename": "nfEngine/nfCommon/nfCommon.vcxproj.filters",
         "patchSetId": 4
