@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_7f2c7399",
+        "filename": "nfEngine/nfCommon/CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-08T14:13:08Z",
+      "side": 0,
+      "message": "It turned out, that not only Input/OutputStream",
+      "range": {
+        "startLine": 24,
+        "startChar": 21,
+        "endLine": 24,
+        "endChar": 47
+      },
+      "revId": "9b76615a99609a5a576a3f39c5600bb3e13cd442",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
