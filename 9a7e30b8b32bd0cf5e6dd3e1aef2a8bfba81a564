@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_db92dc4a",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-08T10:54:04Z",
+      "side": 1,
+      "message": "By \"const\" I meant \"std::string GetCPUBrand() const;\" :)",
+      "revId": "9a7e30b8b32bd0cf5e6dd3e1aef2a8bfba81a564",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
