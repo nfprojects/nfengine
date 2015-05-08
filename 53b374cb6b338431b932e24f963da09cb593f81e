@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_8048f5b3",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-08T09:05:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_9dea2ed9",
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_5ddd5641",
         "filename": "nfEngine/nfCommon/SystemInfo.cpp",
         "patchSetId": 2
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_8071150e",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-08T09:05:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_5ddd5641",
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_3deb3a79",
         "filename": "nfEngine/nfCommon/SystemInfo.cpp",
         "patchSetId": 2
@@ -47,6 +83,30 @@
       "writtenOn": "2015-05-02T07:31:01Z",
       "side": 1,
       "message": "I wouldn\u0027t call them \"getters\". Getters are commonly used to acquire a value and store it in a variable, so they should get something from object and return it to the user for storing in a variable, just like these at the end of this file do.\n\nMethods in SystemInfo constructor are procedures used to initialize an object - how about renaming them to \"InitCPUInfoCommon\", \"InitCPUInfoPlatform\" and \"InitMemoryInfo\"?",
+      "range": {
+        "startLine": 16,
+        "startChar": 4,
+        "endLine": 18,
+        "endChar": 20
+      },
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_e063a93f",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-08T09:05:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_3deb3a79",
       "range": {
         "startLine": 16,
         "startChar": 4,
@@ -99,6 +159,48 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_005d2579",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-08T09:05:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_bd4f2a33",
+      "range": {
+        "startLine": 76,
+        "startChar": 24,
+        "endLine": 76,
+        "endChar": 34
+      },
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_205ae182",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-08T09:05:54Z",
+      "side": 1,
+      "message": "Made lambda, but I still haven\u0027t reduced it very much :/\nAny ideas?",
+      "parentUuid": "1a106d94_8954cfff",
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_29431b43",
         "filename": "nfEngine/nfCommon/SystemInfo.cpp",
         "patchSetId": 2
@@ -110,6 +212,30 @@
       "writtenOn": "2015-04-30T13:42:39Z",
       "side": 1,
       "message": "Don\u0027t use tabs",
+      "range": {
+        "startLine": 89,
+        "startChar": 44,
+        "endLine": 89,
+        "endChar": 46
+      },
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_6057b958",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-08T09:05:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_29431b43",
       "range": {
         "startLine": 89,
         "startChar": 44,
@@ -145,6 +271,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_40527d67",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-08T09:05:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_a928ab86",
+      "range": {
+        "startLine": 96,
+        "startChar": 25,
+        "endLine": 96,
+        "endChar": 27
+      },
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_6949935f",
         "filename": "nfEngine/nfCommon/SystemInfo.cpp",
         "patchSetId": 2
@@ -162,6 +312,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_a04d31c6",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-08T09:05:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_6949935f",
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_29983bbf",
         "filename": "nfEngine/nfCommon/SystemInfo.hpp",
         "patchSetId": 2
@@ -173,6 +341,24 @@
       "writtenOn": "2015-04-30T13:42:39Z",
       "side": 1,
       "message": "Get...() methods should be const",
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_e0ca8919",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-08T09:05:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_29983bbf",
       "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -214,6 +400,42 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_20d141cd",
+        "filename": "nfEngine/nfCommonTest/SystemInfoTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-08T09:05:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_fdf4025c",
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_c0cdcd32",
+        "filename": "nfEngine/nfCommonTest/SystemInfoTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-08T09:05:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_29b15b47",
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_5de8b67b",
         "filename": "nfEngine/nfCore/Engine.cpp",
         "patchSetId": 2
@@ -225,6 +447,24 @@
       "writtenOn": "2015-05-02T07:31:01Z",
       "side": 1,
       "message": "From what I see, sysInfo is not used later on in the code, which means it is redundant. Use it, or rm it and leave a TODO comment - it\u0027s up to you.",
+      "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_00d405bb",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-08T09:05:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_5de8b67b",
       "revId": "53b374cb6b338431b932e24f963da09cb593f81e",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
