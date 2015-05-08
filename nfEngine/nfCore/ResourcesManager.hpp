@@ -29,7 +29,7 @@ public:
  * Resources manager.
  */
 // TODO: provide more functions
-class CORE_API ResManager
+class CORE_API ResManager final
 {
     friend class ResourceBase;
 
@@ -51,21 +51,31 @@ public:
     ~ResManager();
 
     /**
-     * Obtain pointer to a resource by a name.
+     * Obtain pointer to a resource by a name and a type.
+     *
      * @param pName Resource name.
-     * @param type Resource type.
-     * @param check If set to false and a resource does not exist, the resource object is created automatically.
-     * @return Valid resource pointer or NULL on failure (see logs for more information).
+     * @param type  Resource type.
+     * @param check If set to false and a resource does not exist, the resource object is created
+     *              automatically.
+     * @return      Valid resource pointer or NULL on failure (see logs for more information).
      */
     ResourceBase* GetResource(const char* pName, ResourceType Type, bool check = false);
 
     /**
-     * Insert resource object created by the user.
+     * Insert a resource object created by the user.
      */
     Result AddCustomResource(ResourceBase* pResource, const char* pName);
 
 
-    int DeleteResource(const char* pName);
+    /**
+     * Delete a resource from map (if the resource has no references).
+     * @return "true" if the resource was deleted.
+     */
+    bool DeleteResource(const char* pName);
+
+    /**
+     * Check if the resource manager's thread pool is busy.
+     */
     bool IsBusy();
 
     // called when a file in "\Data" directory was changed
