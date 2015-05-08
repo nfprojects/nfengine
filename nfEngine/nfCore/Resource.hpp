@@ -12,13 +12,18 @@
 namespace NFE {
 namespace Resource {
 
-/// resource states
-#define RES_DEFAULT     0
-#define RES_UNLOADED    1
-#define RES_LOADING     2
-#define RES_LOADED      3
-#define RES_UNLOADING   4
-#define RES_FAILED      5 /* resource failed to load, don't try it anymore */
+/**
+ * Resource states
+ */
+enum class ResourceState : int
+{
+    Default,
+    Unloaded,
+    Loading,
+    Loaded,
+    Unloading,
+    Failed     /* resource failed to load, don't try it anymore */
+};
 
 /**
  * Resources supported by the engine.
@@ -57,11 +62,11 @@ class CORE_API ResourceBase : public Util::Aligned
     ResourceBase& operator= (const ResourceBase&);
 
 protected:
-    bool mCustom;                  // custom mesh won't be loaded from a file
-    volatile uint32 mState;        // current state
-    volatile uint32 mDestState;
-    volatile uint32 mRefCount;     // reference counter TODO: references tracking in debug mode
-    char mName[RES_NAME_MAX_LENGTH]; // resource name
+    bool mCustom;                          // custom mesh won't be loaded from a file
+    std::atomic<ResourceState> mState;     // current state
+    std::atomic<ResourceState> mDestState; // destination state
+    std::atomic<uint32> mRefCount;         // reference counter
+    char mName[RES_NAME_MAX_LENGTH];       // resource name
 
     void* mUserPtr;
     OnLoadCallback mOnLoad;
@@ -69,7 +74,7 @@ protected:
 
     virtual bool OnLoad() = 0;
     virtual void OnUnload() = 0;
-    void SetState(uint32 newState);
+    void SetState(ResourceState newState);
 
 public:
     ResourceBase();
@@ -78,23 +83,23 @@ public:
     void SetUserPointer(void* pPtr);
     void* GetUserPointer() const;
 
-    Result SetCallbacks(OnLoadCallback onLoadCallback = NULL,
-                        OnUnloadCallback onUnloadCallback = NULL);
+    Result SetCallbacks(OnLoadCallback onLoadCallback = nullptr,
+                        OnUnloadCallback onUnloadCallback = nullptr);
 
     const char* GetName() const;
-    uint32 GetState() const;
+    ResourceState GetState() const;
 
     /**
      * Increase reference counter. Should be used only in special cases.
      * @param ptr Custom user data used for debugging purposes.
      */
-    void AddRef(void* ptr = NULL);
+    void AddRef(void* ptr = nullptr);
 
     /**
      * Decrease reference counter. Should be used only in special cases.
      * @param ptr Custom user data used for debugging purposes.
      */
-    void DelRef(void* ptr = NULL);
+    void DelRef(void* ptr = nullptr);
 
     /**
      * Change resource's name
