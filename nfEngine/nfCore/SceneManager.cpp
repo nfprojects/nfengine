@@ -480,7 +480,7 @@ void SceneManager::FindActiveMeshEntities()
     {
         Mesh* pMesh = pMeshComp->mMesh;
         if (pMesh == 0) continue;
-        if (pMesh->GetState() != RES_LOADED) continue;
+        if (pMesh->GetState() != ResourceState::Loaded) continue;
 
         pMeshComp->CalcAABB();
         mActiveMeshEntities.push_back(pMeshComp);

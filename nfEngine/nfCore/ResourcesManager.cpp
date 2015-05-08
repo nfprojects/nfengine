@@ -30,7 +30,7 @@ ResManager::ResManager()
 
 ResManager::~ResManager()
 {
-    //unload all resources
+    // unload all resources
     LOG_INFO("Unloading resources...");
     std::map<const char*, ResourceBase*, CompareResName>::iterator it;
     for (it = mResources.begin(); it != mResources.end(); it++)
@@ -39,120 +39,113 @@ ResManager::~ResManager()
     }
     mThreadPool.reset();
 
-    //delete all resources
+    // delete all resources
     LOG_INFO("Deleting resources...");
     for (it = mResources.begin(); it != mResources.end(); it++)
     {
-        ResourceBase* pResource = (*it).second;
-        delete pResource;
+        ResourceBase* resource = (*it).second;
+        delete resource;
     }
     mResources.clear();
-
-    //Packer_ReleaseReader();
 }
 
-
-//This function returns pointer to a resource by name and type
-//If the resource does not exist, the function starts loading
 ResourceBase* ResManager::GetResource(const char* pName, ResourceType type, bool check)
 {
-    //STL is not thread-safe - manual synchronization is needed
     std::unique_lock<std::mutex> ulock(mResListMutex);
 
-    ResourceBase* pResource = NULL;
+    ResourceBase* resource = nullptr;
 
     // check resources list
     if (mResources.count(pName))
     {
-        pResource = mResources[pName];
-        //LoadResource(pResource);
-        return pResource;
+        resource = mResources[pName];
+        return resource;
     }
 
-    //resource does not exist
+    // resource does not exist
     if (check)
-        return 0;
+        return nullptr;
 
     switch (type)
     {
         case ResourceType::Texture:
-            pResource = new Texture;
+            resource = new Texture;
             break;
 
         case ResourceType::Material:
-            pResource = new Material;
+            resource = new Material;
             break;
 
         case ResourceType::Mesh:
-            pResource = new Mesh;
+            resource = new Mesh;
             break;
 
         case ResourceType::CollisionShape:
-            pResource = new CollisionShape;
+            resource = new CollisionShape;
             break;
 
         case ResourceType::Sound:
-            pResource = new SoundSample;
+            resource = new SoundSample;
             break;
 
         default:
             ulock.unlock();
             LOG_ERROR("Wrong 'type' argument");
-            return 0;
+            return nullptr;
     }
 
-    if (pResource == 0)
+    if (resource == nullptr)
     {
         ulock.unlock();
         LOG_ERROR("Memory allocation failed");
-        return 0;
+        return nullptr;
     }
 
-    //copy resource name
-    strcpy(pResource->mName, pName);
+    // copy resource name
+    strcpy(resource->mName, pName);
 
-    //add resource to the resources map
+    // add resource to the resources map
     std::pair<const char*, ResourceBase*> resPair;
-    resPair.first = pResource->mName;
-    resPair.second = pResource;
+    resPair.first = resource->mName;
+    resPair.second = resource;
     mResources.insert(resPair);
 
     ulock.unlock();
 
     if (pName[0] == g_CustomResourcePrefix)
     {
-        pResource->mCustom = true;
+        resource->mCustom = true;
     }
 
-    return pResource;
+    return resource;
 }
 
-//Delete resource from map (if the resource has no references)
-int ResManager::DeleteResource(const char* pName)
+bool ResManager::DeleteResource(const char* pName)
 {
-    std::unique_lock<std::mutex> ulock(mResListMutex); //STL is not thread-safe!
+    std::unique_lock<std::mutex> ulock(mResListMutex);
     std::map<const char*, ResourceBase*, CompareResName>::iterator it;
-    ResourceBase* pResource = 0;
 
     it = mResources.find(pName);
     if (it != mResources.end())
     {
-        pResource = it->second;
+        ResourceBase* resource = it->second;
 
-        //check if resource has no references
-        if (pResource->GetState() == RES_UNLOADED)
+        // check if resource has no references
+        if (resource->GetState() == ResourceState::Unloaded)
         {
             mResources.erase(it);
             ulock.unlock();
-            delete pResource;
-            return 0;
+            delete resource;
+            return true;
         }
-        return 1;
+
+        ulock.unlock();
+        LOG_WARNING("Can't remove resource '%s', because it's still loaded", pName);
+        return false;
     }
-    return 0;
+    return true;
 }
 
-// Insert resource object created by the user.
 Result ResManager::AddCustomResource(ResourceBase* pResource, const char* pName)
 {
     using namespace Util;
@@ -163,11 +156,10 @@ Result ResManager::AddCustomResource(ResourceBase* pResource, const char* pName)
         return Result::CorruptedPointer;
     }
 
-    //STL is not thread-safe!
     std::unique_lock<std::mutex> ulock(mResListMutex);
 
-    //check if resource already exists
-    const char* pNameToCheck = (pName != NULL) ? pName : pResource->mName;
+    // check if resource already exists
+    const char* pNameToCheck = (pName != nullptr) ? pName : pResource->mName;
     if (mResources.count(pNameToCheck) > 0)
     {
         ulock.unlock();
@@ -175,13 +167,13 @@ Result ResManager::AddCustomResource(ResourceBase* pResource, const char* pName)
         return Result::Error;
     }
 
-    if (pName != NULL)
+    if (pName != nullptr)
     {
-        //copy resource name
+        // copy resource name
         strcpy(pResource->mName, pName);
     }
 
-    //add resource to resources map
+    // add resource to resources map
     std::pair<const char*, ResourceBase*> resPair;
     resPair.first = pResource->mName;
     resPair.second = pResource;
@@ -198,13 +190,13 @@ bool ResManager::IsBusy()
 
 void ResManager::LoadResource(ResourceBase* pResource)
 {
-    InterlockedExchange(&pResource->mDestState, RES_LOADED);
+    pResource->mDestState.store(ResourceState::Loaded);
     mThreadPool->Enqueue(std::bind(&ResourceBase::Load, pResource));
 }
 
 void ResManager::UnloadResource(ResourceBase* pResource)
 {
-    InterlockedExchange(&pResource->mDestState, RES_UNLOADED);
+    pResource->mDestState.store(ResourceState::Unloaded);
     mThreadPool->Enqueue(std::bind(&ResourceBase::Unload, pResource));
 }
 
@@ -212,18 +204,18 @@ void ResManager::ReloadResource(ResourceBase* pResource)
 {
     auto resourceReloadFunc = [pResource] ()
     {
-        if (InterlockedCompareExchange(&pResource->mState, RES_UNLOADING, RES_LOADED) == RES_LOADED)
+        ResourceState expected = ResourceState::Loaded;
+        pResource->mState.compare_exchange_strong(expected, ResourceState::Unloading);
+        if (expected == ResourceState::Loaded)
         {
-            LOG_INFO("Resource file '%s' modified", pResource->mName);
-
             pResource->OnUnload();
-            pResource->SetState(RES_LOADING);
+            pResource->SetState(ResourceState::Loading);
             bool result = pResource->OnLoad();
-            pResource->SetState(result ? RES_LOADED : RES_FAILED);
+            pResource->SetState(result ? ResourceState::Loaded : ResourceState::Failed);
         }
     };
 
-    if (pResource->GetState() == RES_LOADED)
+    if (pResource->GetState() == ResourceState::Loaded)
         mThreadPool->Enqueue(std::bind(resourceReloadFunc));
 }
 

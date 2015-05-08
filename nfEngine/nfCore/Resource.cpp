@@ -18,12 +18,12 @@ ResourceBase::ResourceBase()
 {
     mCustom = false;
     mRefCount = 0;
-    mState = RES_UNLOADED;
-    mDestState = RES_DEFAULT;
+    mState = ResourceState::Unloaded;
+    mDestState = ResourceState::Default;
 
-    mOnLoad = NULL;
-    mOnUnload = NULL;
-    mUserPtr = NULL;
+    mOnLoad = nullptr;
+    mOnUnload = nullptr;
+    mUserPtr = nullptr;
 
     memset(mName, '\0', sizeof(mName));
 }
@@ -71,7 +71,7 @@ Result ResourceBase::SetCallbacks(OnLoadCallback onLoadCallback,
 
 bool ResourceBase::Rename(const char* pNewName)
 {
-    //check if name is not too long
+    // check if name is not too long
     size_t nameLenght = strlen(pNewName);
     if (nameLenght >= RES_NAME_MAX_LENGTH)
     {
@@ -80,25 +80,24 @@ bool ResourceBase::Rename(const char* pNewName)
         return false;
     }
 
-    //check if name is not already used
+    // check if name is not already used
     if (g_pResManager->mResources.count(pNewName) > 0)
     {
         LOG_ERROR("Can not rename resource '%s' to '%s'. Name already used.", mName, pNewName);
         return false;
     }
 
-    //erease old name
+    // erease old name
     g_pResManager->mResources.erase(mName);
 
-    //add new entry with new name to resources map
+    // add new entry with new name to resources map
     std::pair<const char*, ResourceBase*> resPair;
     resPair.first = pNewName;
     resPair.second = this;
     g_pResManager->mResources.insert(resPair);
 
-
     // ensure null-filled memory after the string
-    ZeroMemory(mName, RES_NAME_MAX_LENGTH);
+    memset(mName, 0, RES_NAME_MAX_LENGTH);
 
     // change name
     strcpy(mName, pNewName);
@@ -106,42 +105,44 @@ bool ResourceBase::Rename(const char* pNewName)
     return true;
 }
 
-uint32 ResourceBase::GetState() const
+ResourceState ResourceBase::GetState() const
 {
-    return mState;
+    return mState.load();
 }
 
-void ResourceBase::SetState(uint32 newState)
+void ResourceBase::SetState(ResourceState newState)
 {
-    InterlockedExchange(&mState, newState);
+    mState.store(newState);
 }
 
 void ResourceBase::AddRef(void* ptr)
 {
-    if (InterlockedIncrement(&mRefCount) == 1)
+    if (++mRefCount == 1)
         g_pResManager->LoadResource(this);
 }
 
 void ResourceBase::DelRef(void* ptr)
 {
-    if (mRefCount == 0)
+    if (mRefCount.load() == 0)
     {
         LOG_ERROR("'%s' resource reference counting failed.", mName);
         return;
     }
 
-    if (InterlockedDecrement(&mRefCount) == 0)
+    if (--mRefCount == 0)
         g_pResManager->UnloadResource(this);
 }
 
 void ResourceBase::Load()
 {
-    if (InterlockedCompareExchange(&mState, RES_LOADING, RES_UNLOADED) == RES_UNLOADED)
+    ResourceState expected = ResourceState::Unloaded;
+    mState.compare_exchange_strong(expected, ResourceState::Loading);
+    if (expected == ResourceState::Unloaded)
     {
-        //destination status changed during task waiting
-        if (mDestState == RES_UNLOADED)
+        // destination status changed during task waiting
+        if (mDestState == ResourceState::Unloaded)
         {
-            SetState(RES_UNLOADED);
+            SetState(ResourceState::Unloaded);
             return;
         }
 
@@ -149,19 +150,19 @@ void ResourceBase::Load()
         {
             bool result = OnLoad();
 
-            if (mDestState != RES_UNLOADED)
+            if (mDestState != ResourceState::Unloaded)
             {
-                SetState(result ? RES_LOADED : RES_FAILED);
+                SetState(result ? ResourceState::Loaded : ResourceState::Failed);
                 return;
             }
 
-            //destination status changed during resource loading - unload resource
-            SetState(RES_UNLOADING);
+            // destination status changed during resource loading - unload resource
+            SetState(ResourceState::Unloading);
             OnUnload();
 
-            if (mDestState == RES_UNLOADED)
+            if (mDestState == ResourceState::Unloaded)
             {
-                SetState(RES_UNLOADED);
+                SetState(ResourceState::Unloaded);
                 return;
             }
         }
@@ -170,31 +171,33 @@ void ResourceBase::Load()
 
 void ResourceBase::Unload()
 {
-    if (InterlockedCompareExchange(&mState, RES_UNLOADING, RES_LOADED) == RES_LOADED)
+    ResourceState expected = ResourceState::Loaded;
+    mState.compare_exchange_strong(expected, ResourceState::Unloading);
+    if (expected == ResourceState::Loaded)
     {
-        //destination status changed during task waiting
-        if (mDestState == RES_LOADED)
+        // destination status changed during task waiting
+        if (mDestState == ResourceState::Loaded)
         {
-            SetState(RES_LOADED);
+            SetState(ResourceState::Loaded);
             return;
         }
 
         for (;;)
         {
             OnUnload();
-            if (mDestState != RES_LOADED)
+            if (mDestState != ResourceState::Loaded)
             {
-                SetState(RES_UNLOADED);
+                SetState(ResourceState::Unloaded);
                 return;
             }
 
-            //destination status changed during resource loading - load resource back
-            SetState(RES_LOADING);
+            // destination status changed during resource loading - load resource back
+            SetState(ResourceState::Loading);
             bool result = OnLoad();
 
-            if (mDestState == RES_LOADED)
+            if (mDestState == ResourceState::Loaded)
             {
-                SetState(result ? RES_LOADED : RES_FAILED);
+                SetState(result ? ResourceState::Loaded : ResourceState::Failed);
                 return;
             }
         }
