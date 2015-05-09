@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_65bd0602",
+        "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-09T06:11:42Z",
+      "side": 1,
+      "message": "Not needed. Use TEXT.size()",
+      "range": {
+        "startLine": 8,
+        "startChar": 4,
+        "endLine": 8,
+        "endChar": 27
+      },
+      "revId": "a3c9a9f62ee1ab26fc87413848b6d54dbc7f0cf6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_45b8ca10",
+        "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-09T06:11:42Z",
+      "side": 1,
+      "message": "Add comments in-code explaining what you do. Looks not so obvious when you look at it for the first time.",
+      "revId": "a3c9a9f62ee1ab26fc87413848b6d54dbc7f0cf6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_a53a5e96",
+        "filename": "nfEngine/nfCommonTest/BufferOutputStreamTest.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-09T06:11:42Z",
+      "side": 1,
+      "message": "And here you use TEXT.length... Why not use it, or TEXT.size() directly?\n\nThis entire block (TEXT constant especially) is just a copy-paste - move it to common header. nfCommonTest should have one with similar constants for Packer tests, it would be a perfect place to be. Just make sure that if not by constant name, it is at least commented for what tests you made that constant.",
+      "range": {
+        "startLine": 8,
+        "startChar": 25,
+        "endLine": 8,
+        "endChar": 38
+      },
+      "revId": "a3c9a9f62ee1ab26fc87413848b6d54dbc7f0cf6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_853da291",
+        "filename": "nfEngine/nfCommonTest/BufferOutputStreamTest.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-09T06:11:42Z",
+      "side": 1,
+      "message": "comments comments comments",
+      "revId": "a3c9a9f62ee1ab26fc87413848b6d54dbc7f0cf6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
