@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "1a106d94_c55afaf0",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-09T06:59:23Z",
+      "side": 1,
+      "message": "When I google \"CPU GOT\", I cannot find the answer what is that. Expand the shortcut.",
+      "range": {
+        "startLine": 43,
+        "startChar": 69,
+        "endLine": 43,
+        "endChar": 72
+      },
+      "revId": "9a7e30b8b32bd0cf5e6dd3e1aef2a8bfba81a564",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_bbe3a0d7",
         "filename": "nfEngine/nfCommon/SystemInfo.cpp",
         "patchSetId": 4
@@ -13,6 +36,75 @@
       "writtenOn": "2015-05-08T11:56:11Z",
       "side": 1,
       "message": "This is not thread safe. Don\u0027t fix it, just write comment",
+      "revId": "9a7e30b8b32bd0cf5e6dd3e1aef2a8bfba81a564",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_2575ce63",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-09T06:59:23Z",
+      "side": 1,
+      "message": "You will need to get yourself a habit to pass strings with const std::string\u0026. Especially here it is a must, cause it will avoid useless copies of strings, which is slow.",
+      "range": {
+        "startLine": 88,
+        "startChar": 39,
+        "endLine": 88,
+        "endChar": 93
+      },
+      "revId": "9a7e30b8b32bd0cf5e6dd3e1aef2a8bfba81a564",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_1bd114cd",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-09T06:59:23Z",
+      "side": 1,
+      "message": "Magic number. Replace with constant, together with other mode comparisons. Besides, why not use switch?",
+      "range": {
+        "startLine": 91,
+        "startChar": 20,
+        "endLine": 91,
+        "endChar": 21
+      },
+      "revId": "9a7e30b8b32bd0cf5e6dd3e1aef2a8bfba81a564",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_fbd358d2",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-09T06:59:23Z",
+      "side": 1,
+      "message": "GetAllInfoString is a getter and we must assume it will be called multiple times. Comparing to string is slow and IMO should be replaced with something else, especially that at first you use b2s to convert bool to string. How about replacing b2s calls below with another small lambda, which will return a ready-to-use \"NOT supported\" or \"supported\" string?",
+      "range": {
+        "startLine": 107,
+        "startChar": 23,
+        "endLine": 107,
+        "endChar": 45
+      },
       "revId": "9a7e30b8b32bd0cf5e6dd3e1aef2a8bfba81a564",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -88,6 +180,46 @@
       "writtenOn": "2015-05-08T11:56:11Z",
       "side": 1,
       "message": "uint64_t GetCPUCoreNo() const;",
+      "revId": "9a7e30b8b32bd0cf5e6dd3e1aef2a8bfba81a564",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_05709270",
+        "filename": "nfEngine/nfCommonTest/SystemInfoTest.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-09T06:59:23Z",
+      "side": 1,
+      "message": "Use ASSERT_GT (Greater Than), ASSERT_NE (Not Equal) or any other macro. ASSERT_EQ is not the only option to use in tests.\n\nIf you want to make sure the string is not empty, check if its length() return value is not zero. Building additional empty string and comparing it against an entire string is not usual...",
+      "range": {
+        "startLine": 11,
+        "startChar": 4,
+        "endLine": 11,
+        "endChar": 13
+      },
+      "revId": "9a7e30b8b32bd0cf5e6dd3e1aef2a8bfba81a564",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_656b4685",
+        "filename": "nfEngine/nfCommonTest/SystemInfoTest.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-09T06:59:23Z",
+      "side": 1,
+      "message": "These asserts should be separated into specific tests - one for CPU, one for memory. And one for printing sysInfoStr and checking if it is empty.",
       "revId": "9a7e30b8b32bd0cf5e6dd3e1aef2a8bfba81a564",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
