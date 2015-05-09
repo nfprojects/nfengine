@@ -1,0 +1,136 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_c5431a11",
+        "filename": "nfEngine/nfCommon/CMakeLists.txt",
+        "patchSetId": 8
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-09T06:24:25Z",
+      "side": 1,
+      "message": "Gotcha!",
+      "range": {
+        "startLine": 21,
+        "startChar": 71,
+        "endLine": 21,
+        "endChar": 76
+      },
+      "revId": "f864abd1a6eb9437de44b90502267b60fd36f9ec",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_254e6e3b",
+        "filename": "nfEngine/nfCommon/Memory.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-09T06:24:25Z",
+      "side": 1,
+      "message": "newline here is not needed - the comment should stick together with the template",
+      "revId": "f864abd1a6eb9437de44b90502267b60fd36f9ec",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_0549b230",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-09T06:24:25Z",
+      "side": 1,
+      "message": "It\u0027s that kind of magic, magic, magic...\n\nChange into constant and comment it.",
+      "range": {
+        "startLine": 21,
+        "startChar": 24,
+        "endLine": 21,
+        "endChar": 28
+      },
+      "revId": "f864abd1a6eb9437de44b90502267b60fd36f9ec",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_6554e6c9",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-09T06:24:25Z",
+      "side": 1,
+      "message": "Iteration over 0x80000000 and 0x80000001 seems redundant, at least according to the for-loop code below. Why not start the loop straight from 0x80000002? If somehow you need to traverse through 0x80...00 and 0x80...01, write a short comment explaining why is that.",
+      "range": {
+        "startLine": 22,
+        "startChar": 27,
+        "endLine": 22,
+        "endChar": 37
+      },
+      "revId": "f864abd1a6eb9437de44b90502267b60fd36f9ec",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_856482b9",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-09T06:24:25Z",
+      "side": 1,
+      "message": "I see, I see...\n\nThis is a block with WinAPI functions. Which means, this .cpp file is in a wrong place, at the wrong time. ;)",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 60,
+        "endChar": 61
+      },
+      "revId": "f864abd1a6eb9437de44b90502267b60fd36f9ec",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_454f2a34",
+        "filename": "nfEngine/nfCommonTest/CMakeLists.txt",
+        "patchSetId": 8
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-09T06:24:25Z",
+      "side": 1,
+      "message": "Gotta catch em all...",
+      "range": {
+        "startLine": 17,
+        "startChar": 81,
+        "endLine": 17,
+        "endChar": 83
+      },
+      "revId": "f864abd1a6eb9437de44b90502267b60fd36f9ec",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
