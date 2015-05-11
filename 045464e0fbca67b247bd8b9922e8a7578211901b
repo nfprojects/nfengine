@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_b34d849c",
+        "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-11T10:35:49Z",
+      "side": 1,
+      "message": "Why not new char[TEXTSIZE+1] ?",
+      "range": {
+        "startLine": 16,
+        "startChar": 18,
+        "endLine": 16,
+        "endChar": 46
+      },
+      "revId": "045464e0fbca67b247bd8b9922e8a7578211901b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_135c584a",
+        "filename": "nfEngine/nfCommonTest/test.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-11T10:35:49Z",
+      "side": 1,
+      "message": "On one hand, it is rendundant and you could use TEXT.length(), or TEXT.size() directly. On the other hand, since this is a const, why did you switch to malloc/free? MSVC should support array creation when you provide a constant to it.",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 35
+      },
+      "revId": "045464e0fbca67b247bd8b9922e8a7578211901b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
