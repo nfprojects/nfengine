@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_eeb39307",
+        "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-11T10:53:37Z",
+      "side": 1,
+      "message": "Use new with unique_ptr. Then you can remove TearDown()",
+      "parentUuid": "1a106d94_b34d849c",
+      "range": {
+        "startLine": 16,
+        "startChar": 18,
+        "endLine": 16,
+        "endChar": 46
+      },
+      "revId": "045464e0fbca67b247bd8b9922e8a7578211901b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_135c584a",
         "filename": "nfEngine/nfCommonTest/test.hpp",
         "patchSetId": 10
