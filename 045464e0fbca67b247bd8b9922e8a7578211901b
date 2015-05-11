@@ -92,6 +92,30 @@
       "revId": "045464e0fbca67b247bd8b9922e8a7578211901b",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_f97b5b78",
+        "filename": "nfEngine/nfCommonTest/test.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-11T12:40:39Z",
+      "side": 1,
+      "message": "Actually I tried doing:\nchar buffer[TEXTSIZE];\nyet it would result in error saying that for a fixed-sized array I need a constant expression. That\u0027s the whole reason for the magic number \u002743\u0027 from the last patchset.\n\nApart from that...I can use it directly in code, I just thought it would be more clearly-written that way.\nShould I change it?",
+      "parentUuid": "1a106d94_135c584a",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 35
+      },
+      "revId": "045464e0fbca67b247bd8b9922e8a7578211901b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
