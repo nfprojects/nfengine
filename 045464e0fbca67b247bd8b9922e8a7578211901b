@@ -72,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_fc86a4b7",
+        "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-12T10:11:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_eeb39307",
+      "range": {
+        "startLine": 16,
+        "startChar": 18,
+        "endLine": 16,
+        "endChar": 46
+      },
+      "revId": "045464e0fbca67b247bd8b9922e8a7578211901b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_135c584a",
         "filename": "nfEngine/nfCommonTest/test.hpp",
         "patchSetId": 10
@@ -131,6 +155,30 @@
       "side": 1,
       "message": "Nah, you can leave it. Still, it\u0027s weird MSVC did not accept that.",
       "parentUuid": "1a106d94_f97b5b78",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 35
+      },
+      "revId": "045464e0fbca67b247bd8b9922e8a7578211901b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_3c8ddcd3",
+        "filename": "nfEngine/nfCommonTest/test.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-12T10:11:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_19491731",
       "range": {
         "startLine": 12,
         "startChar": 0,
