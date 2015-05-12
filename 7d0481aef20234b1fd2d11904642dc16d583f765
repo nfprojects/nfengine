@@ -49,6 +49,47 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_fc2224b7",
+        "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-12T10:26:32Z",
+      "side": 1,
+      "message": "My bad, this isn\u0027t correct (see below) :)",
+      "parentUuid": "1a106d94_7c3754ff",
+      "range": {
+        "startLine": 12,
+        "startChar": 24,
+        "endLine": 12,
+        "endChar": 26
+      },
+      "revId": "7d0481aef20234b1fd2d11904642dc16d583f765",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_9c1b3080",
+        "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-12T10:26:32Z",
+      "side": 1,
+      "message": "shouldn\u0027t be: \"std::unique_ptr\u003cchar[]\u003e(new char [TEXTSIZE + 1]);\"?",
+      "revId": "7d0481aef20234b1fd2d11904642dc16d583f765",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_3c7b1cbf",
         "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
         "patchSetId": 11
