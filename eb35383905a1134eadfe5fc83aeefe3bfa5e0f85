@@ -22,6 +22,30 @@
       "revId": "eb35383905a1134eadfe5fc83aeefe3bfa5e0f85",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_f25b6d51",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-12T16:50:11Z",
+      "side": 1,
+      "message": "I\u0027d just leave them here, either without anonymous namespace, or in NFE::Common namespace. Maybe this will be a good solution?",
+      "parentUuid": "1a106d94_f26fed8f",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 1
+      },
+      "revId": "eb35383905a1134eadfe5fc83aeefe3bfa5e0f85",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
