@@ -46,6 +46,30 @@
       "revId": "eb35383905a1134eadfe5fc83aeefe3bfa5e0f85",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_6dc04050",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-12T18:34:47Z",
+      "side": 1,
+      "message": "Okay, after a small discussion we got the idea.\n\nThe best solution would be to create a separate header file for constants (SystemInfoConstants.hpp or sth similar). That way, you will be able to include it both in Win/SystemInfo.cpp and Linux/SystemInfo.cpp. No dupliaction, no need for anonymous namespace and both files see the same constant values - a win-win situation.",
+      "parentUuid": "1a106d94_f25b6d51",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 1
+      },
+      "revId": "eb35383905a1134eadfe5fc83aeefe3bfa5e0f85",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
