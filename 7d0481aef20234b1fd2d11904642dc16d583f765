@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_7c3754ff",
+        "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-12T10:23:09Z",
+      "side": 1,
+      "message": "Because \"std::make_unique\u003cchar[]\u003e(TEXTSIZE + 1);\". This is correct",
+      "parentUuid": "1a106d94_5c80988a",
+      "range": {
+        "startLine": 12,
+        "startChar": 24,
+        "endLine": 12,
+        "endChar": 26
+      },
+      "revId": "7d0481aef20234b1fd2d11904642dc16d583f765",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_3c7b1cbf",
         "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
         "patchSetId": 11
