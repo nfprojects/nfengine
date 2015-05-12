@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_f26fed8f",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-12T15:21:50Z",
+      "side": 1,
+      "message": "Don\u0027t use anonymous namespaces in headers: http://www.codeproject.com/Questions/220674/Anonymous-namespace-in-header-files\nMove it to cpp (I know, it will be duplicated in Linux version - maybe you have better idea).",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 1
+      },
+      "revId": "eb35383905a1134eadfe5fc83aeefe3bfa5e0f85",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
