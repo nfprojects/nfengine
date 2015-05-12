@@ -114,6 +114,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_b70ba722",
+        "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-12T10:39:43Z",
+      "side": 1,
+      "message": "Indeed, the definition of mBuffer is correct, however here you enter C++14 territory (make_unique is a C++14 feature). This would require updating CMakeLists.txt for Linux, since they use -std\u003dc++0x option. I\u0027m not sure we want that right now, so don\u0027t use make_unique. Try mBuffer.reset(new char [TEXTSIZE + 1]) or what Witek wrote.",
+      "parentUuid": "1a106d94_9c1b3080",
+      "revId": "7d0481aef20234b1fd2d11904642dc16d583f765",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_3c7b1cbf",
         "filename": "nfEngine/nfCommonTest/BufferInputStreamTest.cpp",
         "patchSetId": 11
