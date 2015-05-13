@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_27cfa057",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/CommandBuffer.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-13T06:10:52Z",
+      "side": 1,
+      "message": "Hello",
+      "range": {
+        "startLine": 7,
+        "startChar": 8,
+        "endLine": 7,
+        "endChar": 9
+      },
+      "revId": "2eba15ad08602c663f832fab613c70b25374c5d0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_f1288ae3",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/CommandBuffer.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-13T06:10:52Z",
+      "side": 1,
+      "message": "Why not add nfCommon, or entire nfEngine directory with sources, to Include directories in VS?",
+      "revId": "2eba15ad08602c663f832fab613c70b25374c5d0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_d16aae18",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/CommandBuffer.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-13T06:10:52Z",
+      "side": 1,
+      "message": "OK, is this a usual scenario, or an error, or what? I would guess this is not an error, because there is no LOG_ERROR message, but on the other hand - when other parameters are equal to nullptr, it is an error... Add a comment.",
+      "revId": "2eba15ad08602c663f832fab613c70b25374c5d0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
