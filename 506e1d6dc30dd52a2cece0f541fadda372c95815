@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_b1d0d2c9",
+        "filename": "nfEngine/nfRendererDemo/stdafx.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-13T06:21:17Z",
+      "side": 1,
+      "message": "And it was going so well...",
+      "revId": "506e1d6dc30dd52a2cece0f541fadda372c95815",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
