@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_d1d8eef0",
+        "filename": "nfEngine/Renderers/RendererInterface/VertexLayout.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-13T06:24:21Z",
+      "side": 1,
+      "message": "Other comments before classes do not have this line. I\u0027m not sure how it really should be done with doxygen, so please check it and then add it in other classes, or remove this one.",
+      "range": {
+        "startLine": 45,
+        "startChar": 3,
+        "endLine": 45,
+        "endChar": 24
+      },
+      "revId": "6c0240c64b72de9abfaa12a2351c3ff2d7ce1c08",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
