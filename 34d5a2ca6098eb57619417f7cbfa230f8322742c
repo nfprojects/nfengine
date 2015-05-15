@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_24501531",
+        "filename": "nfEngine/Renderers/RendererInterface/Device.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-15T11:34:16Z",
+      "side": 1,
+      "message": "Modify the rest of the classes according to what you did in class VertexLayout (I assume this is the correct doxygen way to do it). Check other classes/enum classes in nfRenderer as well.",
+      "revId": "34d5a2ca6098eb57619417f7cbfa230f8322742c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
