@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_3f077c83",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-15T13:21:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_bfdfec67",
+      "range": {
+        "startLine": 216,
+        "startChar": 17,
+        "endLine": 216,
+        "endChar": 35
+      },
+      "revId": "e8cb2fe653b1e1a4ec2a5db96bfad12861e7bb2b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_7ff29406",
         "filename": "nfEngine/nfCommon/SystemInfo.cpp",
         "patchSetId": 7
@@ -72,6 +96,54 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_7ffd746d",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-15T13:21:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_1f0ba0d6",
+      "range": {
+        "startLine": 223,
+        "startChar": 0,
+        "endLine": 224,
+        "endChar": 78
+      },
+      "revId": "e8cb2fe653b1e1a4ec2a5db96bfad12861e7bb2b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_1f0a8089",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-15T13:21:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_7ff29406",
+      "range": {
+        "startLine": 223,
+        "startChar": 0,
+        "endLine": 224,
+        "endChar": 78
+      },
+      "revId": "e8cb2fe653b1e1a4ec2a5db96bfad12861e7bb2b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_df6588af",
         "filename": "nfEngine/nfCommon/SystemInfo.hpp",
         "patchSetId": 7
@@ -83,6 +155,30 @@
       "writtenOn": "2015-05-15T12:33:05Z",
       "side": 1,
       "message": "Move \"{\" to next line",
+      "range": {
+        "startLine": 21,
+        "startChar": 20,
+        "endLine": 21,
+        "endChar": 21
+      },
+      "revId": "e8cb2fe653b1e1a4ec2a5db96bfad12861e7bb2b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_ffd96422",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-15T13:21:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_df6588af",
       "range": {
         "startLine": 21,
         "startChar": 20,
@@ -112,6 +208,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_ff74c436",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-15T13:21:11Z",
+      "side": 1,
+      "message": "O.o Nope...we have it in InitMap method in SystemInfo.cpp in comments.\nIt\u0027s a big blob of different features and I haven\u0027t encountered anyone that would check all of them.",
+      "parentUuid": "1a106d94_bfc6cc97",
+      "revId": "e8cb2fe653b1e1a4ec2a5db96bfad12861e7bb2b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_dfe0e827",
         "filename": "nfEngine/nfCommon/SystemInfo.hpp",
         "patchSetId": 7
@@ -135,6 +249,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_3f92dc4b",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-15T13:21:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_dfe0e827",
+      "range": {
+        "startLine": 72,
+        "startChar": 4,
+        "endLine": 72,
+        "endChar": 56
+      },
+      "revId": "e8cb2fe653b1e1a4ec2a5db96bfad12861e7bb2b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_3f081cd9",
         "filename": "nfEngine/nfCommon/SystemInfo.hpp",
         "patchSetId": 7
@@ -146,6 +284,30 @@
       "writtenOn": "2015-05-15T12:33:05Z",
       "side": 1,
       "message": "const std::string\u0026",
+      "range": {
+        "startLine": 73,
+        "startChar": 28,
+        "endLine": 73,
+        "endChar": 39
+      },
+      "revId": "e8cb2fe653b1e1a4ec2a5db96bfad12861e7bb2b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_1f956032",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-15T13:21:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_3f081cd9",
       "range": {
         "startLine": 73,
         "startChar": 28,
