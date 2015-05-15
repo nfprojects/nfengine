@@ -4,7 +4,7 @@
  * @brief  All engine's global variables definitions.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Globals.hpp"
 
 namespace NFE {

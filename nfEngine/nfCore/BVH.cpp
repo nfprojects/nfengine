@@ -4,7 +4,7 @@
  * @brief  Bounding Volume Hierarchy declaration.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "BVH.hpp"
 
 namespace NFE {

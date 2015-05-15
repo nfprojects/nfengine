@@ -5,7 +5,7 @@
  *         entities managing, events handling, etc.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "SceneManager.hpp"
 #include "Performance.hpp"
 #include "Engine.hpp"

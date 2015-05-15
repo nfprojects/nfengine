@@ -4,7 +4,7 @@
  * @brief  Material resource definitions.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Material.hpp"
 #include "ResourcesManager.hpp"
 #include "Engine.hpp"

@@ -4,7 +4,7 @@
  * @brief  High resolution timer class definition for Windows system
  */
 
-#include "../stdafx.hpp"
+#include "../PCH.hpp"
 #include "../Timer.hpp"
 
 

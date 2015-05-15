@@ -4,7 +4,7 @@
  * @brief  Module for handling MD5 calculations
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "MD5.hpp"
 #include "Bit.hpp"
 

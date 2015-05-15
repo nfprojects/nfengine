@@ -4,7 +4,7 @@
  * @brief  Buffer class definition.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Buffer.hpp"
 
 namespace NFE {

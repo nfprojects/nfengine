@@ -4,7 +4,7 @@
  * @brief  Geometry function definitions.
  */
 
-#include "../stdafx.hpp"
+#include "../PCH.hpp"
 #include "Math.hpp"
 #include <smmintrin.h>
 

@@ -4,7 +4,7 @@
  * @brief  Performance utilities definitions.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Performance.hpp"
 
 namespace NFE {

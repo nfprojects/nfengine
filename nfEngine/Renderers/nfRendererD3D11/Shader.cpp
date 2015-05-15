@@ -4,7 +4,7 @@
  * @brief   D3D11 implementation of renderer's shader
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "RendererD3D11.hpp"
 #include "../../nfCommon/Logger.hpp"
 

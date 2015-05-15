@@ -4,7 +4,7 @@
  * @brief  Texture resource definition.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Globals.hpp"
 #include "Texture.hpp"
 #include "Renderer.hpp"

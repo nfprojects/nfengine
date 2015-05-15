@@ -1,4 +1,4 @@
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "../nfCommon/Window.hpp"
 
 TEST(WindowTest, CreateTest)

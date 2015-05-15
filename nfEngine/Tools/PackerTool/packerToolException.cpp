@@ -1,4 +1,4 @@
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "packerToolException.hpp"
 
 packerToolException::packerToolException(unsigned int line, const char* file)

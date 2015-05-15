@@ -4,7 +4,7 @@
  * @brief  Definitions of RenderCommand class.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "RenderCommand.hpp"
 
 namespace NFE {

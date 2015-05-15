@@ -4,7 +4,7 @@
  * @brief  Implementation of Console-related function specific for Windows
  */
 
-#include "../stdafx.hpp"
+#include "../PCH.hpp"
 #include "Console.hpp"
 #include <iostream>
 

@@ -4,7 +4,7 @@
  * @brief  Definitions of scene events system.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "SceneEvent.hpp"
 #include "../nfCommon/Logger.hpp"
 

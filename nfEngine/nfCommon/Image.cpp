@@ -4,7 +4,7 @@
  * @brief  Image function definitions.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Image.hpp"
 #include "Math/Math.hpp"
 #include "InputStream.hpp"

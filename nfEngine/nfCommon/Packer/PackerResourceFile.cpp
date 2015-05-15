@@ -4,7 +4,7 @@
  * @brief  Module with class representing VFS file from file on disk
  */
 
-#include "../stdafx.hpp"
+#include "../PCH.hpp"
 
 #include "PackerResourceFile.hpp"
 

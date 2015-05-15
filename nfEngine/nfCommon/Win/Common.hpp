@@ -4,7 +4,7 @@
  * @brief  Common Windows helpers declarations.
  */
 
-#include "../stdafx.hpp"
+#include "../PCH.hpp"
 
 namespace NFE {
 namespace Common {

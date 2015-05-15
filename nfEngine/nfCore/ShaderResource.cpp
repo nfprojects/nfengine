@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "PCH.h"
 #include "ShaderResource.h"
 #include "Globals.h"
 #include "RendererD3D11.h"

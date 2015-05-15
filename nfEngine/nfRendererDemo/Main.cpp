@@ -1,10 +1,10 @@
 /**
- * @file    main.cpp
+ * @file    Main.cpp
  * @author  Witek902 (witek902@gmail.com)
  * @brief   Main source file of renderer test
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "../Renderers/RendererInterface/Device.hpp"
 #include "../nfCommon/Window.hpp"
 #include "../nfCommon/File.hpp"

@@ -4,7 +4,7 @@
  * @brief  Component's base definition.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Component.hpp"
 #include "Entity.hpp"
 

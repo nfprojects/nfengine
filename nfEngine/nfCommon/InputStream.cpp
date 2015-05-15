@@ -5,7 +5,7 @@
  * @brief  Definition of InputStream class for reading files, buffers, etc.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "InputStream.hpp"
 
 namespace NFE {

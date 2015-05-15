@@ -4,7 +4,7 @@
  * @brief  Resource manager definition.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "ResourcesManager.hpp"
 #include "../nfCommon/Memory.hpp"
 #include "../nfCommon/Logger.hpp"

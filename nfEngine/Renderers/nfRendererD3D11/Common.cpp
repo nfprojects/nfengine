@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Common.hpp"
 #include "../../nfCommon/Logger.hpp"
 

@@ -3,7 +3,7 @@
  *  @brief  High resolution timer class definition for Linux systems
  */
 
-#include "../stdafx.hpp"
+#include "../PCH.hpp"
 #include "../Timer.hpp"
 
 

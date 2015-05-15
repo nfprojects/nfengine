@@ -4,7 +4,7 @@
  * @brief  Common Windows helpers definitions.
  */
 
-#include "../stdafx.hpp"
+#include "../PCH.hpp"
 #include "Common.hpp"
 
 #include <strsafe.h>

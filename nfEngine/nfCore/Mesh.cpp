@@ -4,7 +4,7 @@
  * @brief  Mesh resource definition.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Globals.hpp"
 #include "Mesh.hpp"
 #include "Material.hpp"

@@ -1,5 +1,5 @@
 /**
- * @file   stdafx.hpp
+ * @file   PCH.hpp
  * @author Witek902 (witek902@gmail.com)
  * @brief  Precompiled header. Not modified headers (STL, external libraries' APIs, etc.)
  *         should be put here.

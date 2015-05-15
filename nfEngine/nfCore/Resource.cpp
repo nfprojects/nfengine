@@ -4,7 +4,7 @@
  * @brief  Resource base class definition.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Globals.hpp"
 #include "Resource.hpp"
 #include "ResourcesManager.hpp"

@@ -1,4 +1,4 @@
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "../nfCommon/MD5.hpp"
 
 using namespace NFE::Common;

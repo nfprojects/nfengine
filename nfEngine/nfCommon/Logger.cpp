@@ -4,7 +4,7 @@
  * @brief  Definition of Logger class
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Logger.hpp"
 
 namespace NFE {

@@ -4,7 +4,7 @@
  * @brief  Unit tests for Latch class.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "../nfCommon/Latch.hpp"
 
 #include <thread>

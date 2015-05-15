@@ -5,7 +5,7 @@
  * @brief  Latch methods definition.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Latch.hpp"
 
 #include <chrono>

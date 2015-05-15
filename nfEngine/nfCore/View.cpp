@@ -4,7 +4,7 @@
  * @brief  Definitions of View class.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "View.hpp"
 #include "Globals.hpp"
 #include "Renderer.hpp"

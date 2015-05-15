@@ -4,7 +4,7 @@
  * @brief  Definition of light component class.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Globals.hpp"
 #include "Light.hpp"
 #include "Entity.hpp"

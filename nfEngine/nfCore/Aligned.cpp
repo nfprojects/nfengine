@@ -4,7 +4,7 @@
  * @brief  Definition of memory aligning class.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Aligned.hpp"
 
 namespace NFE {

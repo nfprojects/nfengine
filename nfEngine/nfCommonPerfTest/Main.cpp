@@ -1,10 +1,10 @@
 /**
- * @file   main.cpp
+ * @file   Main.cpp
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Main source file for Performance tests
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 
 int main(int argc, char* argv[])
 {

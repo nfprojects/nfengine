@@ -4,7 +4,7 @@
  * @brief  Collision shape resource definition.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "CollisionShape.hpp"
 #include "Globals.hpp"
 #include "../nfCommon/Logger.hpp"

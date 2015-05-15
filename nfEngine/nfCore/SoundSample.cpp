@@ -4,7 +4,7 @@
  * @brief  Sound sample resource definition.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "SoundSample.hpp"
 #include "../nfCommon/Logger.hpp"
 

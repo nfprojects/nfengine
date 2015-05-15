@@ -4,7 +4,7 @@
  * @brief  Performance tests for ThreadPool class.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "../nfCommon/ThreadPool.hpp"
 #include "../nfCommon/Timer.hpp"
 #include "../nfCommon/Latch.hpp"

@@ -4,7 +4,7 @@
  * @brief  Scene segment definition.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "SceneSegment.hpp"
 #include "Entity.hpp"
 #include "SceneManager.hpp"

@@ -8,7 +8,7 @@
 // 1. Improve logging, but be careful - functions from this source file will be called thousands
 //    times per frame. Too much messages could flood a logger output.
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "RendererD3D11.hpp"
 #include "Logger.hpp"
 

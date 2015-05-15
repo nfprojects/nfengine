@@ -1,4 +1,4 @@
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "RendererTest.hpp"
 
 /// static members definitions

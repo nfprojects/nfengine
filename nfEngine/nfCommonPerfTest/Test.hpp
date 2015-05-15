@@ -1,5 +1,5 @@
 /**
- * @file   test.hpp
+ * @file   Test.hpp
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Common header for all Performance tests
  */

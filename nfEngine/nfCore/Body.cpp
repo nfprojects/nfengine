@@ -4,7 +4,7 @@
  * @brief  Body component definition.
 */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Globals.hpp"
 #include "Body.hpp"
 #include "SceneManager.hpp"

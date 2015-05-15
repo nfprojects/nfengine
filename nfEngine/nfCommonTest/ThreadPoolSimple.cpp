@@ -2,7 +2,7 @@
 * @brief Simple unit tests for ThreadPool class.
 */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "../nfCommon/ThreadPool.hpp"
 #include "../nfCommon/Latch.hpp"
 #include "Common.hpp"

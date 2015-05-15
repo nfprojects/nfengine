@@ -4,7 +4,7 @@
  * @brief  Windows implementation of Library class.
  */
 
-#include "../stdafx.hpp"
+#include "../PCH.hpp"
 #include "../Library.hpp"
 #include "../Logger.hpp"
 #include "Common.hpp"

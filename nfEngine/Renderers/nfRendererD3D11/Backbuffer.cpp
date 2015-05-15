@@ -4,7 +4,7 @@
  * @brief   D3D11 implementation of renderer's backbuffer
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "RendererD3D11.hpp"
 #include "../../nfCommon/Logger.hpp"
 

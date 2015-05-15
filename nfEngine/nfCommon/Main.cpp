@@ -4,7 +4,7 @@
  * @brief  Entry point of DLL
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
