@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a106d94_bfdfec67",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-15T12:19:26Z",
+      "side": 1,
+      "message": "I would change it to CheckFeature. Having the same name as the API can be misleading - see SystemInfo.hpp comments.",
+      "range": {
+        "startLine": 216,
+        "startChar": 17,
+        "endLine": 216,
+        "endChar": 35
+      },
+      "revId": "e8cb2fe653b1e1a4ec2a5db96bfad12861e7bb2b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_7ff29406",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-15T12:19:26Z",
+      "side": 1,
+      "message": "You search through map twice - one for count, other one for find. IMO it is possible to reduce it to one search only. :)\n\nBesides, you should get a compile warning here known as \"not all paths return a value\", or similar. What if the condition is not met?",
+      "range": {
+        "startLine": 223,
+        "startChar": 0,
+        "endLine": 224,
+        "endChar": 78
+      },
+      "revId": "e8cb2fe653b1e1a4ec2a5db96bfad12861e7bb2b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_bfc6cc97",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-15T12:19:26Z",
+      "side": 1,
+      "message": "Probably, somewhere on the Web, there is a list of features and shortcuts you used on this map. I suggest leaving a link in this comment. Maybe doxy has some nice-and-neat @-directive for such occasions, like external links - check it.",
+      "revId": "e8cb2fe653b1e1a4ec2a5db96bfad12861e7bb2b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_dfe0e827",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-15T12:19:26Z",
+      "side": 1,
+      "message": "Is this supposed to be in public section of SystemInfo?\n\nI\u0027m wondering, because right now CpuidFeature is a structure which has only numbers. For us it is useless - we probably won\u0027t be very keen on constructing a structure using random bit-shifts, numbers, etc. - the function below, which takes the string with feature name, is much better. I suggest renaming it to CheckFeature (see SystemInfo.cpp) and making it private.",
+      "range": {
+        "startLine": 72,
+        "startChar": 4,
+        "endLine": 72,
+        "endChar": 56
+      },
+      "revId": "e8cb2fe653b1e1a4ec2a5db96bfad12861e7bb2b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
