@@ -1,10 +1,10 @@
 /**
- * @file   CollisionShape.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Collision shape resource definition.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "CollisionShape.hpp"
 #include "Globals.hpp"
 #include "../nfCommon/Logger.hpp"

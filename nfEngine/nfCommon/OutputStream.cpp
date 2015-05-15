@@ -1,11 +1,11 @@
 /**
- * @file   OutputStream.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @author mkkulagowski (mkulagowski(at)gmail.com)
  * @brief  Definition of OutputStream class for writing files, buffers, etc.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "OutputStream.hpp"
 
 namespace NFE {

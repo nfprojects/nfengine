@@ -1,10 +1,10 @@
 /**
- * @file   Performance.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Performance utilities definitions.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Performance.hpp"
 
 namespace NFE {

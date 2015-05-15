@@ -1,5 +1,5 @@
 /**
- * @file   Engine.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Basic engine's API declarations.
  */

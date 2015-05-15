@@ -1,10 +1,10 @@
 /**
- * @file   Camera.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Camera component definitions.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Camera.hpp"
 #include "Entity.hpp"
 #include "..\nfCommon\InputStream.hpp"

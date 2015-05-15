@@ -1,10 +1,10 @@
 /**
- * @file   Window.cpp
+ * @file
  * @author mkkulagowski (mkkulagowski@gmail.com)
  * @brief  Window class definition.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "../Window.hpp"
 
 

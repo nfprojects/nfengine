@@ -1,10 +1,10 @@
 /**
- * @file   SceneManagerRendering.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Definitions of Scene class methods connected only with rendering.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Globals.hpp"
 #include "SceneManager.hpp"
 #include "Entity.hpp"

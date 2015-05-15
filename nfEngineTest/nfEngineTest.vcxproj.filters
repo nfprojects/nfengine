@@ -14,10 +14,10 @@
     <ClInclude Include="Editor.hpp">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="test.hpp">
+    <ClInclude Include="Test.hpp">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="stdafx.hpp">
+    <ClInclude Include="PCH.hpp">
       <Filter>Precomp</Filter>
     </ClInclude>
     <ClInclude Include="Scenes.hpp">
@@ -25,10 +25,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test.cpp">
+    <ClCompile Include="Test.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="PCH.cpp">
       <Filter>Precomp</Filter>
     </ClCompile>
     <ClCompile Include="Editor.cpp">

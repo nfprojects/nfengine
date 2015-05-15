@@ -2,7 +2,7 @@
 * @brief Common declarations for all the tests.
 */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 
 /*
  * Fisher-Yates shuffle algorithm

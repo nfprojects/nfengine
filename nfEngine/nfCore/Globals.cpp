@@ -1,10 +1,10 @@
 /**
- * @file   Globals.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  All engine's global variables definitions.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Globals.hpp"
 
 namespace NFE {

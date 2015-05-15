@@ -1,5 +1,5 @@
 /**
- * @file   Bit.hpp
+ * @file
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  File with defined bitwise operations
  */

@@ -1,4 +1,4 @@
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Renderer.hpp"
 #include "../nfCommon/Image.hpp"
 #include "../nfCommon/Logger.hpp"

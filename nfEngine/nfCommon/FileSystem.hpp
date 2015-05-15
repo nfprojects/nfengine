@@ -1,5 +1,5 @@
 /**
- * @file   FileSystem.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Filesystem utilities declarations.
  */

@@ -1,5 +1,5 @@
 /**
- * @file   Resource.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Resource base class declarations.
  */

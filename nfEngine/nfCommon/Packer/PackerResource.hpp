@@ -1,5 +1,5 @@
 /**
- * @file   PackerResource.hpp
+ * @file
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Module with abstract class representing single VFS file.
  */

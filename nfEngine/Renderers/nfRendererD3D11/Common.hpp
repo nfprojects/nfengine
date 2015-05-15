@@ -1,5 +1,5 @@
 /**
-* @file    Common.hpp
+* @file
 * @author  Witek902 (witek902@gmail.com)
 * @brief   Common utilities for D3D11 renderer.
 */

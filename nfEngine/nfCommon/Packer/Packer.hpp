@@ -1,5 +1,5 @@
 /**
- * @file   Packer.hpp
+ * @file
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Main module for Packer, which includes all other modules.
  */

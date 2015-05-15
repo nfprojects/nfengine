@@ -1,5 +1,5 @@
 /**
- * @file   Memory.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @author mkulagowski (mkkulagowski(at)gmail.com)
  * @brief  Memory utilities declarations.

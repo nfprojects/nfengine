@@ -1,5 +1,5 @@
 /**
- * @file   Matrix.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Matrix class declaration.
  */

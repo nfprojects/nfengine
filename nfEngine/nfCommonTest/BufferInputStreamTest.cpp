@@ -1,7 +1,7 @@
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "../nfCommon/InputStream.hpp"
 
-#include "test.hpp"
+#include "Test.hpp"
 
 using namespace NFE::Common;
 

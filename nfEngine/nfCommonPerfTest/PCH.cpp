@@ -1,7 +1,7 @@
 /**
- * @file   stdafx.cpp
+ * @file
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Precompiled header source file
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"

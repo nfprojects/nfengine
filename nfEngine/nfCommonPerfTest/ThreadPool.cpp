@@ -1,10 +1,10 @@
 /**
- * @file   ThreadPool.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Performance tests for ThreadPool class.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "../nfCommon/ThreadPool.hpp"
 #include "../nfCommon/Timer.hpp"
 #include "../nfCommon/Latch.hpp"

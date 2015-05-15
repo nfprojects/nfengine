@@ -1,10 +1,10 @@
 /**
- * @file   ResourcesManager.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Resource manager definition.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "ResourcesManager.hpp"
 #include "../nfCommon/Memory.hpp"
 #include "../nfCommon/Logger.hpp"

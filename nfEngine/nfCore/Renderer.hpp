@@ -1,5 +1,5 @@
 /**
- * @file   Renderer.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  This header contains definitions of abstract classes used to interact with
  *         a generic renderer unit.

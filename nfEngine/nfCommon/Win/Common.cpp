@@ -1,10 +1,10 @@
 /**
- * @file   Common.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Common Windows helpers definitions.
  */
 
-#include "../stdafx.hpp"
+#include "../PCH.hpp"
 #include "Common.hpp"
 
 #include <strsafe.h>

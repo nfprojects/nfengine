@@ -1,5 +1,5 @@
 /**
- * @file   View.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Declarations of View class.
  */

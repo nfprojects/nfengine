@@ -1,5 +1,5 @@
 /**
- * @file   Console.hpp
+ * @file
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Utilities for Console Interface
  */

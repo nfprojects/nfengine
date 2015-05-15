@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "PCH.h"
 #include "..\\Common\model_obj.h"
 
 #define SHAPE_TYPE_TRI_MESH (1)

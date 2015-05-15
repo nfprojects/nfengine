@@ -1,5 +1,5 @@
 /**
- * @file   PackerReader.hpp
+ * @file
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Module with class used to read files from PAK archive.
  */

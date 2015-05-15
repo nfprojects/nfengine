@@ -1,10 +1,10 @@
 /**
- * @file   PhysicsWorld.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Definitions of physics manager.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Globals.hpp"
 #include "PhysicsWorld.hpp"
 #include "Engine.hpp"

@@ -1,5 +1,5 @@
 /**
- * @file   Timer.hpp
+ * @file
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  High resolution timer class declaration
  */

@@ -1,5 +1,5 @@
 /**
- * @file   Globals.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  All engine's global variables declarations.
  */

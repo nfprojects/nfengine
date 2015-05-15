@@ -1,10 +1,10 @@
 /**
- * @file   Aligned.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Definition of memory aligning class.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Aligned.hpp"
 
 namespace NFE {

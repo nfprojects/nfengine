@@ -1,5 +1,5 @@
 /**
- * @file   Core.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Basic types declarations. This file will be included by most of the engine's headers.
  */

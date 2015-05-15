@@ -21,7 +21,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="PCH.cpp">
       <Filter>PCH</Filter>
     </ClCompile>
     <ClCompile Include="Core.cpp">
@@ -179,7 +179,7 @@
     <ClInclude Include="SoundSample.hpp">
       <Filter>Resource</Filter>
     </ClInclude>
-    <ClInclude Include="stdafx.hpp">
+    <ClInclude Include="PCH.hpp">
       <Filter>PCH</Filter>
     </ClInclude>
     <ClInclude Include="Texture.hpp">

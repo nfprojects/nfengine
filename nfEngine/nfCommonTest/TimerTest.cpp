@@ -1,4 +1,4 @@
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "../nfCommon/Timer.hpp"
 
 // required to test because of multi-platform sleep - std::this_thread::sleep_for

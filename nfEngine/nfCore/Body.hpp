@@ -1,5 +1,5 @@
 /**
- * @file   Body.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Body component declaration.
  */

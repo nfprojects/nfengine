@@ -1,10 +1,10 @@
 /**
- * @file   Image.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Image function definitions.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Image.hpp"
 #include "Math/Math.hpp"
 #include "InputStream.hpp"

@@ -1,5 +1,5 @@
 /**
- * @file   Math.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Basic math classes and functions declarations.
  */

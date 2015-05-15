@@ -1,5 +1,5 @@
 /**
- * @file   Texture.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Texture resource declaration.
  */

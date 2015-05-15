@@ -43,10 +43,7 @@
     <ClInclude Include="ShadowsRenderer.hpp">
       <Filter>Base</Filter>
     </ClInclude>
-    <ClInclude Include="stdafx.hpp">
-      <Filter>Base</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.hpp">
+    <ClInclude Include="PCH.hpp">
       <Filter>Base</Filter>
     </ClInclude>
   </ItemGroup>
@@ -54,7 +51,7 @@
     <ClCompile Include="nfRenderer.cpp">
       <Filter>Base</Filter>
     </ClCompile>
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="PCH.cpp">
       <Filter>Base</Filter>
     </ClCompile>
     <ClCompile Include="DebugRenderer.cpp">

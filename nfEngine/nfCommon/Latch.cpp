@@ -1,11 +1,11 @@
 /**
- * @file   Latch.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Latch methods definition.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Latch.hpp"
 
 #include <chrono>

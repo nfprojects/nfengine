@@ -1,5 +1,5 @@
 /**
- * @file   Light.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Declarations of light component class.
  */

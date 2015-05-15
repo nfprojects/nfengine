@@ -1,5 +1,5 @@
 /**
- * @file   InputStream.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @author mkkulagowski (mkulagowski(at)gmail.com)
  * @brief  Declaration of InputStream class for reading files, buffers, etc.

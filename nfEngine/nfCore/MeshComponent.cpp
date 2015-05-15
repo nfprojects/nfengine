@@ -1,10 +1,10 @@
 /**
- * @file   MeshComponent.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Definition of mesh component class.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Globals.hpp"
 #include "MeshComponent.hpp"
 #include "Entity.hpp"

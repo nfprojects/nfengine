@@ -1,5 +1,5 @@
 /**
- * @file   Camera.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Camera component declaration.
  */

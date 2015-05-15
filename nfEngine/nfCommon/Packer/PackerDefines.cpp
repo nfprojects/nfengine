@@ -1,10 +1,10 @@
 /**
- * @file   PackerDefines.cpp
+ * @file
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Common definitions for Packer
  */
 
-#include "../stdafx.hpp"
+#include "../PCH.hpp"
 #include "PackerDefines.hpp"
 
 namespace NFE {

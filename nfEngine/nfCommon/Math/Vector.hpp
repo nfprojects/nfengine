@@ -1,5 +1,5 @@
 /**
- * @file   Vector.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Vector class declaration and definitions of inline functions.
  */

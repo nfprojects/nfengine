@@ -1,5 +1,5 @@
-#include "stdafx.hpp"
-#include "test.hpp"
+#include "PCH.hpp"
+#include "Test.hpp"
 #include "Editor.hpp"
 #include "Scenes.hpp"
 

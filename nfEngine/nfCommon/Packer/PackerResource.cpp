@@ -1,10 +1,10 @@
 /**
- * @file   PackerResource.cpp
+ * @file
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Module with abstract class representing single VFS file.
  */
 
-#include "../stdafx.hpp"
+#include "../PCH.hpp"
 
 #include "PackerResource.hpp"
 

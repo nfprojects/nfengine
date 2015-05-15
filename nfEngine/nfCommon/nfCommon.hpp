@@ -1,5 +1,5 @@
 /**
- * @file   nfCommon.h
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Base header for nfCommon project.
  */

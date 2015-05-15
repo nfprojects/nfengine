@@ -1,10 +1,10 @@
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Packer/Packer.hpp"
 #include "Timer.hpp"
 #include "FileSystem.hpp"
 #include "File.hpp"
 
-#include "test.hpp"
+#include "Test.hpp"
 
 using namespace NFE::Common;
 
