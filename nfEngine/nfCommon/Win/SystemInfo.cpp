@@ -4,7 +4,7 @@
  * @brief  System information API implementation.
  */
 
-#include "../stdafx.hpp"
+#include "../PCH.hpp"
 #include "../SystemInfo.hpp"
 #include "../SystemInfoConstants.hpp"
 

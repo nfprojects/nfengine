@@ -1,10 +1,10 @@
 /**
- * @file   Entity.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Scene entity definition.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Entity.hpp"
 #include "SceneManager.hpp"
 #include "../nfCommon/Memory.hpp"

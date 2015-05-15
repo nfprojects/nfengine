@@ -1,10 +1,10 @@
 /**
- * @file   Main.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Entry point of DLL
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {

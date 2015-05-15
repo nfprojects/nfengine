@@ -1,11 +1,11 @@
 /**
- * @file   InputStream.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @author mkkulagowski (mkulagowski(at)gmail.com)
  * @brief  Definition of InputStream class for reading files, buffers, etc.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "InputStream.hpp"
 
 namespace NFE {

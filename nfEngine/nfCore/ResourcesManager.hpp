@@ -1,5 +1,5 @@
 /**
- * @file   ResourcesManager.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Resource manager declarations.
  */

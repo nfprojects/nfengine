@@ -1,4 +1,4 @@
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Scenes.hpp"
 
 #include "../nfEngine/nfCore/Engine.hpp"

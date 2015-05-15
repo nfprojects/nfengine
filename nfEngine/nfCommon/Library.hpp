@@ -1,5 +1,5 @@
 /**
- * @file   Library.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Library class declaration.
  */

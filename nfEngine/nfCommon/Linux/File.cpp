@@ -1,10 +1,10 @@
 /**
- * @file   File.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Linux implementation of File class.
  */
 
-#include "../stdafx.hpp"
+#include "../PCH.hpp"
 #include "../File.hpp"
 #include "../Logger.hpp"
 

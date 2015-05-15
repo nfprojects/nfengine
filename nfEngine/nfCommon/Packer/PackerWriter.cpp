@@ -1,10 +1,10 @@
 /**
- * @file   PackerWriter.cpp
+ * @file
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Module with class used to write files to PAK archive.
  */
 
-#include "../stdafx.hpp"
+#include "../PCH.hpp"
 #include "PackerWriter.hpp"
 
 namespace NFE {

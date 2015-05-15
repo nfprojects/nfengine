@@ -1,10 +1,10 @@
 /**
- * @file   Light.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Definition of light component class.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Globals.hpp"
 #include "Light.hpp"
 #include "Entity.hpp"

@@ -1,5 +1,5 @@
 /**
- * @file   PackerDefines.hpp
+ * @file
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Common definitions for Packer
  */

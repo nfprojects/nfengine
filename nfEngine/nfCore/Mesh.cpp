@@ -1,10 +1,10 @@
 /**
- * @file   Mesh.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Mesh resource definition.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Globals.hpp"
 #include "Mesh.hpp"
 #include "Material.hpp"

@@ -1,5 +1,5 @@
 /**
- * @file   CollisionShape.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Collision shape resource declarations.
  */

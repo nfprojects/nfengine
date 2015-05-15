@@ -1,10 +1,10 @@
 /**
- * @file   PackerReader.cpp
+ * @file
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Module with class used to read files from PAK archive.
  */
 
-#include "../stdafx.hpp"
+#include "../PCH.hpp"
 #include "PackerReader.hpp"
 
 namespace NFE {

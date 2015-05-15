@@ -1,5 +1,5 @@
 /**
- * @file   Component.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Component's base class declarations.
  */

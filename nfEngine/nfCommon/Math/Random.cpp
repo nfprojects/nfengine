@@ -1,10 +1,10 @@
 /**
- * @file   Random.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Pseudorandom number generator definitions.
  */
 
-#include "../stdafx.hpp"
+#include "../PCH.hpp"
 #include "Math.hpp"
 #include "Random.hpp"
 

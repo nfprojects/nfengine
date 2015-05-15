@@ -1,10 +1,10 @@
 /**
- * @file   Linux/Console.cpp
+ * @file
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Implementation of Console-related function specific for Linux
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Console.hpp"
 
 namespace {

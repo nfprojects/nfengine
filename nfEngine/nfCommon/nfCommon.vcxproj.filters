@@ -29,10 +29,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.hpp">
+    <ClInclude Include="PCH.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InputStream.hpp">
@@ -136,7 +133,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="PCH.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OutputStream.cpp">

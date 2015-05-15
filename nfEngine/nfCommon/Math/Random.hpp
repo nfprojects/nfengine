@@ -1,5 +1,5 @@
 /**
- * @file   Random.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Pseudorandom number generator declaration.
  */

@@ -1,10 +1,10 @@
 /**
- * @file   Common.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Common Windows helpers declarations.
  */
 
-#include "../stdafx.hpp"
+#include "../PCH.hpp"
 
 namespace NFE {
 namespace Common {

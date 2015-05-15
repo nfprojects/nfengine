@@ -1,10 +1,10 @@
 /**
- * @file   Material.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Material resource definitions.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Material.hpp"
 #include "ResourcesManager.hpp"
 #include "Engine.hpp"

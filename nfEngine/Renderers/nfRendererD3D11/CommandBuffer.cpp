@@ -1,5 +1,5 @@
 /**
- * @file    CommandBuffer.cpp
+ * @file
  * @author  Witek902 (witek902@gmail.com)
  * @brief   D3D11 implementation of renderer's command buffer
  */
@@ -8,7 +8,7 @@
 // 1. Improve logging, but be careful - functions from this source file will be called thousands
 //    times per frame. Too much messages could flood a logger output.
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "RendererD3D11.hpp"
 #include "Logger.hpp"
 

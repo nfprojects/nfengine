@@ -1,5 +1,5 @@
 /**
- * @file   SceneManager.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Declaration of Scene class.
  */

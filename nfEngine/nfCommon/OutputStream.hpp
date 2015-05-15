@@ -1,5 +1,5 @@
 /**
- * @file   OutputStream.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @author mkkulagowski (mkulagowski(at)gmail.com)
  * @brief  Declaration of OutputStream class for writing files, buffers, etc.

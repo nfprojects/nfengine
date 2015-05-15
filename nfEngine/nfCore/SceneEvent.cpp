@@ -1,10 +1,10 @@
 /**
- * @file   SceneEvent.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Definitions of scene events system.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "SceneEvent.hpp"
 #include "../nfCommon/Logger.hpp"
 

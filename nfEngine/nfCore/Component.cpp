@@ -1,10 +1,10 @@
 /**
- * @file   Component.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Component's base definition.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Component.hpp"
 #include "Entity.hpp"
 

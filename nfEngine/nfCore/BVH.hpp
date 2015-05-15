@@ -1,5 +1,5 @@
 /**
- * @file   BVH.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Bounding Volume Hierarchy definitions.
  */

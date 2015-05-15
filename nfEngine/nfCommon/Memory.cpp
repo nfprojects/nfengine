@@ -1,11 +1,11 @@
 /**
- * @file   Memory.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @author mkulagowski (mkkulagowski(at)gmail.com)
  * @brief  Memory utilities definitions
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Memory.hpp"
 
 namespace NFE {

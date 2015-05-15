@@ -1,5 +1,5 @@
 /**
- * @file   Quaternion.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Quaternion class declarations.
  */

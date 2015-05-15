@@ -7,7 +7,7 @@
     <ClInclude Include="packerToolDefines.hpp" />
     <ClInclude Include="packerToolException.hpp" />
     <ClInclude Include="packerToolUI.hpp" />
-    <ClInclude Include="stdafx.hpp" />
+    <ClInclude Include="PCH.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="packerTool.cpp" />
@@ -16,6 +16,6 @@
     <ClCompile Include="packerToolDefines.cpp" />
     <ClCompile Include="packerToolException.cpp" />
     <ClCompile Include="packerToolUI.cpp" />
-    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="PCH.cpp" />
   </ItemGroup>
 </Project>

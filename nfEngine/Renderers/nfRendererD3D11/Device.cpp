@@ -1,10 +1,10 @@
 /**
- * @file    Device.cpp
+ * @file
  * @author  Witek902 (witek902@gmail.com)
  * @brief   D3D11 implementation of renderer's device
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "RendererD3D11.hpp"
 
 namespace NFE {

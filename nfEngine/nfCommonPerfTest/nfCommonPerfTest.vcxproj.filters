@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="PCH.cpp" />
     <ClCompile Include="ThreadPool.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="Packer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="test.hpp" />
-    <ClInclude Include="stdafx.hpp" />
+    <ClInclude Include="Test.hpp" />
+    <ClInclude Include="PCH.hpp" />
   </ItemGroup>
 </Project>

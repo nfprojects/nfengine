@@ -1,10 +1,10 @@
 /**
- * @file   Buffer.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Buffer class definition.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Buffer.hpp"
 
 namespace NFE {

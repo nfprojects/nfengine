@@ -1,11 +1,11 @@
 /**
- * @file   SceneManager.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Definitions of Scene class methods connected only with
  *         entities managing, events handling, etc.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "SceneManager.hpp"
 #include "Performance.hpp"
 #include "Engine.hpp"

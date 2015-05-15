@@ -1,10 +1,10 @@
 /**
- * @file   ThreadPool.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Thread pool classes declarations.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "ThreadPool.hpp"
 #include "Logger.hpp"
 

@@ -1,10 +1,10 @@
 /**
- * @file   Resource.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Resource base class definition.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Globals.hpp"
 #include "Resource.hpp"
 #include "ResourcesManager.hpp"

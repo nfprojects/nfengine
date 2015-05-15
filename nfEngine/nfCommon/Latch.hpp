@@ -1,5 +1,5 @@
 /**
- * @file   Latch.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Latch class declaration.

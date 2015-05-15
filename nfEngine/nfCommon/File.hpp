@@ -1,5 +1,5 @@
 /**
- * @file   File.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  File class declaration.
  */

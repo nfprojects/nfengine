@@ -1,5 +1,5 @@
 /**
- * @file   SoundSample.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Sound sample resource declarations.
  */

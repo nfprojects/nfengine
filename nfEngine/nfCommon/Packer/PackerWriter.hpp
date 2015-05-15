@@ -1,5 +1,5 @@
 /**
- * @file   PackerWriter.hpp
+ * @file
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Module with class used to write files to PAK archive.
  */

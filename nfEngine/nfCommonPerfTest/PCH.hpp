@@ -1,5 +1,5 @@
 /**
- * @file   stdafx.hpp
+ * @file
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Precompiled header
  */

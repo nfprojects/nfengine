@@ -1,10 +1,10 @@
 /**
- * @file   Core.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  DLL entry point.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "Core.hpp"
 #include "../nfCommon/Logger.hpp"
 

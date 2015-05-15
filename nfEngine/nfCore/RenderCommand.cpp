@@ -1,10 +1,10 @@
 /**
- * @file   RenderCommand.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Definitions of RenderCommand class.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "RenderCommand.hpp"
 
 namespace NFE {

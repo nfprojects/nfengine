@@ -1,10 +1,10 @@
 /**
- * @file   Quaternion.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Quaternion function definitions.
  */
 
-#include "../stdafx.hpp"
+#include "../PCH.hpp"
 #include "Math.hpp"
 
 namespace NFE {

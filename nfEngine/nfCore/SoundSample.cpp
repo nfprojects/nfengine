@@ -1,10 +1,10 @@
 /**
- * @file   SoundSample.cpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Sound sample resource definition.
  */
 
-#include "stdafx.hpp"
+#include "PCH.hpp"
 #include "SoundSample.hpp"
 #include "../nfCommon/Logger.hpp"
 

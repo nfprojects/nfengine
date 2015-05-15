@@ -1,5 +1,5 @@
 /**
- * @file   Image.hpp
+ * @file
  * @author Witek902 (witek902@gmail.com)
  * @brief  Image class declaration.
  */
