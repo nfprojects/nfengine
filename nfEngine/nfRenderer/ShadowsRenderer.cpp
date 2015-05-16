@@ -9,7 +9,7 @@ using namespace Math;
 
 #define INSTANCING (0)
 
-NFE_ALIGN(16)
+NFE_ALIGN16
 struct ShadowGlobalCBufferVS
 {
     Matrix viewMatrix;
@@ -18,7 +18,7 @@ struct ShadowGlobalCBufferVS
     Vector lightPos;
 };
 
-NFE_ALIGN(16)
+NFE_ALIGN16
 struct PerInstanceCBufferVS
 {
     Matrix worldMatrix;

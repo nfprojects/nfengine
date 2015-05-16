@@ -15,7 +15,7 @@ namespace Resource {
 
 /**
  * Texture resource.
- * @remakrs This class can be inherited to create custom textures.
+ * @remarks This class can be inherited to create custom textures.
  */
 class CORE_API Texture : public ResourceBase
 {
@@ -42,7 +42,7 @@ public:
 
     /**
      * Create renderable texture, for example to show monitor screen with a view from a camera.
-     * @remakrs Should be used only by View class.
+     * @remarks Should be used only by View class.
      */
     Render::IRenderTarget* CreateRendertarget(uint32 width, uint32 height, Common::ImageFormat format);
 

@@ -53,7 +53,7 @@ public:
     /**
      * Obtain pointer to a resource by a name.
      * @param pName Resource name.
-     * @param type Resource type.
+     * @param Type Resource type.
      * @param check If set to false and a resource does not exist, the resource object is created automatically.
      * @return Valid resource pointer or NULL on failure (see logs for more information).
      */

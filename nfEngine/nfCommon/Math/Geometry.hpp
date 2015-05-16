@@ -14,7 +14,7 @@ namespace Math {
 /**
  * Axis Aligned Box
  */
-class NFE_ALIGN(16) Box
+class NFE_ALIGN16 Box
 {
 public:
     Vector min;
@@ -41,7 +41,7 @@ public:
 /**
  * Frustum
  */
-class NFE_ALIGN(16) Frustum
+class NFE_ALIGN16 Frustum
 {
 public:
     /// planes IDs
@@ -77,7 +77,7 @@ public:
 /**
  * Sphere
  */
-class NFE_ALIGN(16) Sphere
+class NFE_ALIGN16 Sphere
 {
 public:
     Vector origin;
@@ -88,7 +88,7 @@ public:
     NFE_INLINE float SupportVertex(const Vector& dir) const;
 };
 
-class NFE_ALIGN(16) Triangle
+class NFE_ALIGN16 Triangle
 {
 public:
     Vector v0;
@@ -100,7 +100,7 @@ public:
         : v0(v0_), v1(v1_), v2(v2_) {}
 };
 
-class NFE_ALIGN(16) Ray
+class NFE_ALIGN16 Ray
 {
 public:
     Vector dir;
@@ -108,7 +108,7 @@ public:
     Vector origin;
 };
 
-class NFE_ALIGN(16) RayBoxSegment
+class NFE_ALIGN16 RayBoxSegment
 {
 public:
     Vector nearDist;

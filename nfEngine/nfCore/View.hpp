@@ -27,7 +27,7 @@ public:
     virtual ~View();
 
     /**
-     * @breif Virtual function called after 3D and post-process pass. Could be used to draw GUI, HUD, etc.
+     * @brief Virtual function called after 3D and post-process pass. Could be used to draw GUI, HUD, etc.
      */
     virtual void OnPostRender(IRenderContext* pCtx, IGuiRenderer* pGuiRenderer);
 
@@ -35,13 +35,14 @@ public:
     Scene::Camera* GetCamera() const;
 
     /**
-     * @breif Link the view to a window
+     * @brief Link the view to a window
      * @return Result::OK on success
      */
     Result SetWindow(Common::Window* pWindow);
 
     /**
-     * @breif Create custom, off-screen render target
+     * @brief Create custom, off-screen render target
+     * @param width,height
      * @param pTextureName Name of a texture resource associated with the view
      * @return Pointer to the created texture object
      */

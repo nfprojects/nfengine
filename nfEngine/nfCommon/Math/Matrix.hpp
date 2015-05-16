@@ -12,7 +12,7 @@ namespace Math {
 /**
  * 4x4 matrix
  */
-class NFE_ALIGN(16) Matrix
+class NFE_ALIGN16 Matrix
 {
 public:
     union
