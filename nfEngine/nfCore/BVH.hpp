@@ -11,7 +11,7 @@
 namespace NFE {
 namespace Util {
 
-NFE_ALIGN(16)
+NFE_ALIGN16
 struct BVHNode
 {
     Math::Box AABB;

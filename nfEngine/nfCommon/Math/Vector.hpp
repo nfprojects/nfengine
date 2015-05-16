@@ -14,7 +14,7 @@ namespace Math {
  * @details Used to perform operations on 4D, 3D and 2D vectors. The content is mapped to
  *          SSE registers to speedup computations.
  */
-class NFE_ALIGN(16) Vector
+class NFE_ALIGN16 Vector
 {
 public:
     union
@@ -102,7 +102,7 @@ public:
 };
 
 // used to initialize float constants
-class NFE_ALIGN(16) Vectorf
+class NFE_ALIGN16 Vectorf
 {
 public:
     union
@@ -133,7 +133,7 @@ public:
 };
 
 // used to initialize integer constants
-class NFE_ALIGN(16) Vectori
+class NFE_ALIGN16 Vectori
 {
 public:
     union

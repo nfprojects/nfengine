@@ -51,6 +51,7 @@ public:
 
     /**
      * Remove a file or a directory.
+     * @param path
      * @param recursive Removes all elements in a directory recursively
      */
     static bool Remove(const std::string& path, bool recursive = false);
@@ -73,6 +74,7 @@ public:
 
     /**
      * Iterate through files and directories in a specified path.
+     * @param path
      * @param callback Callback function called for each found object
      */
     static bool Iterate(const std::string& path, DirIterateCallback callback);
