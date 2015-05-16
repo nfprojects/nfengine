@@ -43,7 +43,7 @@ enum class ComponentMsg
 /**
  * Base abstract class for entity component.
  */
-NFE_ALIGN(16)
+NFE_ALIGN16
 class CORE_API Component : public Util::Aligned
 {
     friend class SceneManager;

@@ -19,7 +19,7 @@ namespace Scene {
 #define X_SEGMENT_UNLOADED_DEPTH 0xFFFFFFFF
 
 //connection between two sectors
-NFE_ALIGN(16)
+NFE_ALIGN16
 struct SegmentLink : public Util::Aligned
 {
     Segment* from;
@@ -44,7 +44,7 @@ struct SegmentDesc
  * @details A scene segment is a list of entities inside, dimensions and neighbours. A state
             of a scene segment can be loaded and saveed to file or memory.
 */
-NFE_ALIGN(16)
+NFE_ALIGN16
 class CORE_API Segment : public Util::Aligned
 {
     friend class SceneManager;

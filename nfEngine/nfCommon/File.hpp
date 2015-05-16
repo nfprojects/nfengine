@@ -72,6 +72,7 @@ public:
     /**
      * Reads @p size bytes from a file.
      * @param data Target data buffer
+     * @param size
      * @return Number of read bytes
      */
     size_t Read(void* data, size_t size);
@@ -79,6 +80,7 @@ public:
     /**
      * Write @p size bytes to a file.
      * @param data Source data buffer
+     * @param size
      * @return Number of written bytes
      */
     size_t Write(const void* data, size_t size);

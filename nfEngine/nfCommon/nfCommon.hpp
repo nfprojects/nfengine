@@ -51,6 +51,17 @@
 #define __forceinline inline __attribute__((always_inline))
 #endif // defined(__LINUX__) | defined(__linux__)
 
+#define NFE_INLINE __forceinline
+
+// 16-byte aligning macro for objects using SSE registers
+#if defined(WIN32)
+#define NFE_ALIGN16 __declspec(align(16))
+#elif defined(__LINUX__) | defined(__linux__)
+#define NFE_ALIGN16 __attribute__((aligned(16)))
+#else
+#error "Target system not supported!"
+#endif // defined(WIN32)
+
 
 namespace NFE {
 namespace Common {
