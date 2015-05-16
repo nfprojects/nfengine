@@ -43,7 +43,7 @@ struct SubMeshDesc
  * Part of the Mesh.
  * @details Submesh is meant to be using one material
  */
-NFE_ALIGN(16)
+NFE_ALIGN16
 struct SubMesh
 {
     Math::Box localBox;
@@ -56,7 +56,7 @@ struct SubMesh
  * Mesh resource class.
  * @details Can be derived to create custom mesh (not loaded from file, but created by an application).
  */
-NFE_ALIGN(16)
+NFE_ALIGN16
 class CORE_API Mesh : public ResourceBase
 {
     friend class Scene::MeshComponent;

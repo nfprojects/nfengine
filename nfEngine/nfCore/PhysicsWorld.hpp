@@ -13,7 +13,7 @@
 namespace NFE {
 namespace Scene {
 
-NFE_ALIGN(16)
+NFE_ALIGN16
 class PhysicsWorld : public Util::Aligned
 {
     friend class SceneManager;

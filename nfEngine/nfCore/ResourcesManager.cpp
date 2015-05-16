@@ -54,7 +54,7 @@ ResManager::~ResManager()
 
 //This function returns pointer to a resource by name and type
 //If the resource does not exist, the function starts loading
-ResourceBase* ResManager::GetResource(const char* pName, ResourceType Type, bool check)
+ResourceBase* ResManager::GetResource(const char* pName, ResourceType type, bool check)
 {
     //STL is not thread-safe - manual synchronization is needed
     std::unique_lock<std::mutex> ulock(mResListMutex);
@@ -73,7 +73,7 @@ ResourceBase* ResManager::GetResource(const char* pName, ResourceType Type, bool
     if (check)
         return 0;
 
-    switch (Type)
+    switch (type)
     {
         case ResourceType::Texture:
             pResource = new Texture;

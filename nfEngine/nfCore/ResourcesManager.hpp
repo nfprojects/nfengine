@@ -57,7 +57,7 @@ public:
      * @param check If set to false and a resource does not exist, the resource object is created automatically.
      * @return Valid resource pointer or NULL on failure (see logs for more information).
      */
-    ResourceBase* GetResource(const char* pName, ResourceType Type, bool check = false);
+    ResourceBase* GetResource(const char* pName, ResourceType type, bool check = false);
 
     /**
      * Insert resource object created by the user.

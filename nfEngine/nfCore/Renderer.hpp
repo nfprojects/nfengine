@@ -21,7 +21,7 @@ struct MeshVertex
     char tangent[4];
 };
 
-NFE_ALIGN(16)
+NFE_ALIGN16
 struct CameraRenderDesc
 {
     Math::Matrix matrix;        // global camera matrix (pos + orientation)

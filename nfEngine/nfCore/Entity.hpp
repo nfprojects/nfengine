@@ -49,7 +49,7 @@ struct EntityDesc
 #pragma pack(pop)
 
 
-NFE_ALIGN(16)
+NFE_ALIGN16
 class CORE_API Entity : public Util::Aligned
 {
     friend class SceneManager;
