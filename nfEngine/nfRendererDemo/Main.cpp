@@ -54,16 +54,9 @@ bool InitRenderer()
 
 IShader* CompileShader(const char* path, ShaderType type)
 {
-    File file(path, AccessMode::Read);
-    size_t size = file.GetSize();
-    std::vector<char> str(size + 1);
-    file.Read(str.data(), size);
-    str[size] = '\0';
-
     ShaderDesc desc;
-    desc.code = str.data();
     desc.type = type;
-    desc.name = path;
+    desc.path = path;
     return gRendererDevice->CreateShader(desc);
 }
 

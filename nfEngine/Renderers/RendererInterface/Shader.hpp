@@ -7,21 +7,59 @@
 #pragma once
 
 #include "Types.hpp"
+#include <map>
 
 namespace NFE {
 namespace Renderer {
 
+
 /**
- * Shader description.
+ * Type of resource that can be bound to a shader
+ */
+enum class ShaderResourceType
+{
+    CBuffer,
+    Texture,
+    Sampler,
+    // TODO: UAVs, etc.
+};
+
+/**
+ * Shader resource binding description
+ */
+struct ShaderResBindingDesc
+{
+    int slot;
+    ShaderResourceType type;
+};
+
+/**
+ * Shader input/outputs description.
+ */
+struct ShaderIODesc
+{
+    std::map<std::string, ShaderResBindingDesc> resBinding;
+};
+
+/**
+ * Shader description used to create and compile a shader object.
+ *
+ * @details When @p code member is null then the shader source is loaded from @p path file.
  */
 struct ShaderDesc
 {
     ShaderType type;
-    const char* code;
-    const char* name;
+    const char* code; //< shader code (optional)
+    const char* path; //< shader path or name (optional)
 
     // TODO: binary format support
     // TODO: macros
+
+    ShaderDesc()
+        : type(ShaderType::Unknown)
+        , code(nullptr)
+        , path(nullptr)
+    {}
 };
 
 class IShader
@@ -29,6 +67,11 @@ class IShader
 public:
     virtual ~IShader() {}
     // TODO: binary format support (saving compiled shader bytecode)
+
+    /**
+     * Parse shader and get inputs/outputs description.
+     */
+    virtual bool GetIODesc(ShaderIODesc& result) = 0;
 };
 
 /**

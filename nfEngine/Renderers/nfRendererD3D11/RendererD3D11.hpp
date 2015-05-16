@@ -155,6 +155,8 @@ public:
     bool Init(const ShaderDesc& desc);
     void* GetShaderObject() const;
     ID3DBlob* GetBytecode() const;
+
+    bool GetIODesc(ShaderIODesc& result);
 };
 
 class ShaderProgram : public IShaderProgram
