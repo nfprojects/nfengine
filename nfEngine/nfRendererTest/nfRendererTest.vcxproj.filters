@@ -7,6 +7,9 @@
     <ClCompile Include="Texture2D.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
@@ -16,5 +19,16 @@
     <Filter Include="TestCases">
       <UniqueIdentifier>{1f1e2c9d-ce46-4b73-879f-da32a5e2106b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{db123e41-284b-4ec3-93f7-29078415323c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\D3D11">
+      <UniqueIdentifier>{3a5c52ac-cb93-4fc2-9c90-bc3b3f6d2c37}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\D3D11\Simple.hlsl">
+      <Filter>Shaders\D3D11</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
