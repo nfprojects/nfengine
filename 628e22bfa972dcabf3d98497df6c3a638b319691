@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_1230b29d",
+        "filename": "nfEngine/nfCore/ResourcesManager.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-17T21:17:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_372a00e8",
+      "range": {
+        "startLine": 99,
+        "startChar": 20,
+        "endLine": 99,
+        "endChar": 21
+      },
+      "revId": "628e22bfa972dcabf3d98497df6c3a638b319691",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_77e638ea",
         "filename": "nfEngine/nfCore/ResourcesManager.cpp",
         "patchSetId": 2
@@ -36,6 +60,24 @@
       "writtenOn": "2015-05-17T10:33:13Z",
       "side": 1,
       "message": "LOG_ERROR",
+      "revId": "628e22bfa972dcabf3d98497df6c3a638b319691",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_7225a65b",
+        "filename": "nfEngine/nfCore/ResourcesManager.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-17T21:17:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_77e638ea",
       "revId": "628e22bfa972dcabf3d98497df6c3a638b319691",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
