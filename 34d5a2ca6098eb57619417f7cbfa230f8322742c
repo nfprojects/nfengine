@@ -16,6 +16,24 @@
       "revId": "34d5a2ca6098eb57619417f7cbfa230f8322742c",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a106d94_32b96eed",
+        "filename": "nfEngine/Renderers/RendererInterface/Device.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-17T21:43:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a106d94_24501531",
+      "revId": "34d5a2ca6098eb57619417f7cbfa230f8322742c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
