@@ -226,6 +226,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_3dfe5f06",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-18T06:07:14Z",
+      "side": 1,
+      "message": "So, when I want to use the function, I have to look beyond the documentation into the source code?\n\n...it is a bit inconvenient, don\u0027t you think? ;)",
+      "parentUuid": "1a106d94_ff74c436",
+      "revId": "e8cb2fe653b1e1a4ec2a5db96bfad12861e7bb2b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_dfe0e827",
         "filename": "nfEngine/nfCommon/SystemInfo.hpp",
         "patchSetId": 7
