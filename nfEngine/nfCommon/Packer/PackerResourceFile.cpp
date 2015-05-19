@@ -13,31 +13,30 @@ namespace Common {
 
 PackerResult PackerResourceFile::Init(const std::string& filePath, const std::string& vfsFilePath)
 {
-    FILEPtr pFile(fopen(filePath.c_str(), "r"), FILEPtrDestroy);
-    if (!(pFile.get()))
+    File file(filePath, AccessMode::Read);
+    if (!(file.IsOpened()))
         return PackerResult::FileNotFound;
 
     mFilePath = filePath;
 
-    fseek(pFile.get(), 0, SEEK_END);
-    mFileSize = ftell(pFile.get());
+    mFileSize = file.GetSize();
     mHash.Calculate(vfsFilePath);
 
     return PackerResult::OK;
 }
 
-PackerResult PackerResourceFile::Save(FILE* file)
+PackerResult PackerResourceFile::Save(File& file)
 {
-    FILEPtr appendedFile(fopen(mFilePath.c_str(), "rb"), FILEPtrDestroy);
-    if (appendedFile.get() == NULL)
+    File appendedFile(mFilePath, AccessMode::Read);
+    if (!(appendedFile.IsOpened()))
         return PackerResult::FileNotFound;
 
     size_t readCount;
     unsigned char buffer[PACKER_DEF_BUFFER_SIZE];
     do
     {
-        readCount = fread(buffer, sizeof(unsigned char), PACKER_DEF_BUFFER_SIZE, appendedFile.get());
-        if (fwrite(buffer, sizeof(unsigned char), readCount, file) != readCount)
+        readCount = appendedFile.Read(buffer, PACKER_DEF_BUFFER_SIZE);
+        if (file.Write(buffer, readCount) != readCount)
             return PackerResult::WriteFailed;
     }
     while (readCount == PACKER_DEF_BUFFER_SIZE);
