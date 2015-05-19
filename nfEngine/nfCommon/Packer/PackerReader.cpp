@@ -19,28 +19,31 @@ PackerReader::PackerReader(const std::string& filePath): mFileVersion(0)
 PackerResult PackerReader::Init(const std::string& filePath)
 {
     mFilePath = filePath;
-    FILEPtr pFile(fopen(mFilePath.c_str(), "rb"), FILEPtrDestroy);
+    File file(mFilePath, AccessMode::Read);
 
-    if (!(pFile.get()))
+    if (!(file.IsOpened()))
         return PackerResult::FileNotFound;
 
-    if (!fread(&mFileVersion, sizeof(uint32), 1, pFile.get()))
+    if (file.GetSize() <= 0)
+        return PackerResult::FileNotFound;
+
+    if (!file.Read(&mFileVersion, sizeof(uint32)))
         return PackerResult::ReadFailed;
 
     size_t fileSize = 0;
-    if (!fread(&fileSize, sizeof(size_t), 1, pFile.get()))
+    if (!file.Read(&fileSize, sizeof(size_t)))
         return PackerResult::ReadFailed;
 
     PackerElement tempElement;
     for (size_t i = 0; i < fileSize; ++i)
     {
-        if (!fread(reinterpret_cast<void*>(&tempElement.mFilePos), sizeof(size_t), 1, pFile.get()))
+        if (!file.Read(reinterpret_cast<void*>(&tempElement.mFilePos), sizeof(size_t)))
             return PackerResult::ReadFailed;
 
-        if (!fread(reinterpret_cast<void*>(&tempElement.mHash), sizeof(uint32), 4, pFile.get()))
+        if (!file.Read(reinterpret_cast<void*>(&tempElement.mHash), 4 * sizeof(uint32)))
             return PackerResult::ReadFailed;
 
-        if (!fread(reinterpret_cast<void*>(&tempElement.mFileSize), sizeof(size_t), 1, pFile.get()))
+        if (!file.Read(reinterpret_cast<void*>(&tempElement.mFileSize), sizeof(size_t)))
             return PackerResult::ReadFailed;
 
         mFileList.push_back(tempElement);
@@ -63,13 +66,13 @@ PackerResult PackerReader::GetFile(const std::string& vfsFilePath, Buffer& outpu
         {
             outputBuffer.Create(mFileList[i].mFileSize);
 
-            FILEPtr pFile(fopen(mFilePath.c_str(), "rb"), FILEPtrDestroy);
+            File file(mFilePath, AccessMode::Read);
 
             size_t filePos = mFileList[i].mFilePos;
-            if (fseek(pFile.get(), static_cast<long>(filePos), SEEK_SET))
+            if (!file.Seek(static_cast<int64>(filePos), SeekMode::Begin))
                 return PackerResult::ReadFailed;
 
-            if (!fread(outputBuffer.GetData(), sizeof(unsigned char), mFileList[i].mFileSize, pFile.get()))
+            if (!file.Read(outputBuffer.GetData(), mFileList[i].mFileSize))
                 return PackerResult::ReadFailed;
 
             return PackerResult::OK;
