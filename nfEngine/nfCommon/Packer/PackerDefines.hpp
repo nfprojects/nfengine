@@ -7,6 +7,8 @@
 #pragma once
 
 #include "../nfCommon.hpp"
+#include "../File.hpp"
+#include "../FileSystem.hpp"
 #include "../Buffer.hpp"
 #include <type_traits>
 #include <cstdio>
@@ -42,12 +44,10 @@ enum class PackerResult : uint32
 
 typedef std::underlying_type<PackerResult>::type PackerResultType;
 
-// unique_ptr wrapper for FILE
-typedef std::function<void(FILE*)> FILEPtrDeleter;
-typedef std::unique_ptr<FILE, FILEPtrDeleter> FILEPtr;
+// unique_ptr wrapper for File
+typedef std::unique_ptr<File> FilePtr;
 
 NFCOMMON_API std::string Packer_GetErrorStr(PackerResult pr);
-void FILEPtrDestroy(FILE* f);
 
 #define PACK_RESULT_TO_STRING(x) std::to_string(static_cast<PackerResultType>(x))
 #define PACKER_DEF_BUFFER_SIZE 4096

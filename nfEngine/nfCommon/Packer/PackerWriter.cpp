@@ -55,63 +55,43 @@ PackerResult PackerWriter::AddFile(const Buffer& /*buffer*/, const std::string& 
 // TODO this function is platform-specific. Implement under Linux when nfCommons will be ported.
 PackerResult PackerWriter::AddFilesRecursively(const std::string& filePath)
 {
+    FileSystem fileSystem;
     PackerResult pr;
-    HANDLE file;
-    std::string WorkDir;
-
-    if (*(filePath.rbegin()) == '/')
-        WorkDir = filePath + "*";
-    else
-        WorkDir = filePath + "/*";
-
-    std::string ResultDir;
     uint64 counter = 0;
 
-    WIN32_FIND_DATAA fd;
-    file = FindFirstFileA(WorkDir.c_str(), &fd);
-
-    if (file == INVALID_HANDLE_VALUE)
-        return PackerResult::OK;
-
-    do
+    auto recursiveAddLambda = [&](const std::string& path, bool isDirectory) -> bool
     {
-        if ((strcmp(fd.cFileName, ".") == 0) || (strcmp(fd.cFileName, "..") == 0)) continue;
-
-        ResultDir = WorkDir;
-        ResultDir.pop_back();
-        ResultDir += fd.cFileName;
-
-        if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
-            AddFilesRecursively(ResultDir);
-        else
+        if (!isDirectory)
         {
-            pr = AddFile(ResultDir, ResultDir);
+            pr = AddFile(path, path);
             ++counter;
 
             if (pr != PackerResult::OK)
-                return pr;
+                return false;
+            return true;
         }
-    }
-    while (FindNextFileA(file, &fd) != 0);
+    };
 
-    FindClose(file);
+    if(!fileSystem.Iterate(filePath, recursiveAddLambda))
+        return pr;
 
     return PackerResult::OK;
 }
 
 PackerResult PackerWriter::WritePAK() const
 {
-    FILEPtr pFile(fopen(mFilePath.c_str(), "wb"), FILEPtrDestroy);
-    if (!(pFile.get()))
+    // it was "wb" here. Also...I added overwrite
+    FilePtr pFile(new File(mFilePath, AccessMode::Write, true));
+    if (!(pFile.get()->IsOpened()))
         return PackerResult::FileNotCreated;
 
     //save file version
-    if (!fwrite(reinterpret_cast<const void*>(&gPackFileVersion), sizeof(uint32), 1, pFile.get()))
+    if (!pFile.get()->Write(reinterpret_cast<const void*>(&gPackFileVersion), sizeof(uint32)))
         return PackerResult::WriteFailed;
 
     //save number of files
     size_t fileSize = mFileList.size();
-    if (!fwrite(reinterpret_cast<void*>(&fileSize), sizeof(size_t), 1, pFile.get()))
+    if (!pFile.get()->Write(reinterpret_cast<void*>(&fileSize), sizeof(size_t)))
         return PackerResult::WriteFailed;
 
     // Position of first file in archive, calculated as follows
@@ -126,7 +106,7 @@ PackerResult PackerWriter::WritePAK() const
     //save file list
     for (const auto& it : mFileList)
     {
-        if (!fwrite(reinterpret_cast<const void*>(&curFilePos), sizeof(size_t), 1, pFile.get()))
+        if (!pFile.get()->Write(reinterpret_cast<const void*>(&curFilePos), sizeof(size_t)))
             return PackerResult::WriteFailed;
 
         pr = it->SaveHeader(pFile.get());
