@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file   PackerResource.hpp
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Module with abstract class representing single VFS file.
  */
@@ -15,9 +15,9 @@ namespace Common {
 class PackerResource
 {
 public:
-    virtual PackerResult Save(FILE* file) = 0;
+    virtual PackerResult Save(File* file) = 0;
 
-    PackerResult SaveHeader(FILE* file);
+    PackerResult SaveHeader(File* file);
 
     const size_t GetFileSize() const;
     void PrintToStdout() const;

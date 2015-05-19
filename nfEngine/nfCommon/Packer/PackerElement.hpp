@@ -1,5 +1,5 @@
 /**
- * @file
+ * @file   PackerElement.hpp
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Module with class representing read VFS file.
  */

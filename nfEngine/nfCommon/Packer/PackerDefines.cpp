@@ -1,10 +1,10 @@
 /**
- * @file
+ * @file   PackerDefines.cpp
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Common definitions for Packer
  */
 
-#include "../PCH.hpp"
+#include "../stdafx.hpp"
 #include "PackerDefines.hpp"
 
 namespace NFE {
@@ -13,11 +13,6 @@ namespace Common {
 // Current version of PAK File
 // Saved at the beginning of every PAK file, allows for file versioning
 const uint32 gPackFileVersion = 1;
-
-void FILEPtrDestroy(FILE* f)
-{
-    fclose(f);
-}
 
 NFCOMMON_API std::string Packer_GetErrorStr(PackerResult pr)
 {

@@ -1,22 +1,22 @@
 /**
- * @file
+ * @file   PackerResource.cpp
  * @author LKostyra (costyrra.xl@gmail.com)
  * @brief  Module with abstract class representing single VFS file.
  */
 
-#include "../PCH.hpp"
+#include "../stdafx.hpp"
 
 #include "PackerResource.hpp"
 
 namespace NFE {
 namespace Common {
 
-PackerResult PackerResource::SaveHeader(FILE* file)
+PackerResult PackerResource::SaveHeader(File* file)
 {
-    if (!fwrite(reinterpret_cast<const void*>(&mHash), sizeof(uint32), 4, file))
+    if (!file->Write(reinterpret_cast<const void*>(&mHash), 4 * sizeof(uint32)))
         return PackerResult::WriteFailed;
 
-    if (!fwrite(reinterpret_cast<const void*>(&mFileSize), sizeof(size_t), 1, file))
+    if (!file->Write(reinterpret_cast<const void*>(&mFileSize), sizeof(size_t)))
         return PackerResult::WriteFailed;
 
     return PackerResult::OK;
