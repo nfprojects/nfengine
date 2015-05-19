@@ -251,6 +251,9 @@ bool FileSystem::Iterate(const std::string& path, DirIterateCallback callback)
             if (dir->d_type != DT_DIR && dir->d_type != DT_REG)
                 continue;
 
+            while (foundPath.back() == '/' || foundPath.back() == '\\')
+                foundPath.pop_back();
+
             foundPath = currentDir + '/' + dir->d_name;
             bool isDir = dir->d_type == DT_DIR;
 
