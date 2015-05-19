@@ -267,6 +267,11 @@ bool FileSystem::Iterate(const std::string& path, DirIterateCallback callback)
             if (wcscmp(findData.cFileName, L".") == 0 ||
                     wcscmp(findData.cFileName, L"..") == 0)
                 continue;
+            
+            // ignore multiple '/' or '\'
+            // TODO create and use function for path normalization
+            while (widePath.back() == L'/' || widePath.back() == L'\\')
+                widePath.pop_back();
 
             foundPath = widePath + L'/' + findData.cFileName;
             bool isDir = false;
