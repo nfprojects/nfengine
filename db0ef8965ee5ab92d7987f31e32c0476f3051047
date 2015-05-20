@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "facab960_f18fd273",
+        "filename": "nfEngine/nfCommon/Packer/PackerDefines.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-20T12:33:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_f6fb4845",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 38
+      },
+      "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_f6e428ae",
         "filename": "nfEngine/nfCommon/Packer/PackerReader.cpp",
         "patchSetId": 2
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "facab960_d192ce9e",
+        "filename": "nfEngine/nfCommon/Packer/PackerReader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-20T12:33:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_f6e428ae",
+      "range": {
+        "startLine": 23,
+        "startChar": 4,
+        "endLine": 23,
+        "endChar": 57
+      },
+      "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_569a3415",
         "filename": "nfEngine/nfCommon/Packer/PackerReader.cpp",
         "patchSetId": 2
@@ -59,6 +107,30 @@
       "writtenOn": "2015-05-20T10:24:01Z",
       "side": 1,
       "message": "Why FileNotFound? If IsOpened succeeded it means that the file exists",
+      "range": {
+        "startLine": 30,
+        "startChar": 29,
+        "endLine": 30,
+        "endChar": 41
+      },
+      "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_b1954a8a",
+        "filename": "nfEngine/nfCommon/Packer/PackerReader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-20T12:33:31Z",
+      "side": 1,
+      "message": "Because File do not in any way tell us that the file doesn\u0027t exist - IsOpened indicates that:\nif (file exists), file opened successfully\nelif (file doesnt exist), file created \u0026 opened successfully.\n\nThat\u0027s what GetSize() is used here for",
+      "parentUuid": "facab960_569a3415",
       "range": {
         "startLine": 30,
         "startChar": 29,
@@ -105,6 +177,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_518dde30",
+        "filename": "nfEngine/nfCommon/Packer/PackerResource.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-20T12:33:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_96a4bc58",
+      "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_b688e0c7",
         "filename": "nfEngine/nfCommon/Packer/PackerResource.hpp",
         "patchSetId": 2
@@ -116,6 +206,24 @@
       "writtenOn": "2015-05-20T10:24:01Z",
       "side": 1,
       "message": "As above",
+      "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_7182e201",
+        "filename": "nfEngine/nfCommon/Packer/PackerResource.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-20T12:33:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_b688e0c7",
       "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -139,6 +247,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_b17b8a28",
+        "filename": "nfEngine/nfCommon/Packer/PackerResourceFile.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-20T12:33:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_36ee908c",
+      "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_76e8187d",
         "filename": "nfEngine/nfCommon/Packer/PackerResourceFile.cpp",
         "patchSetId": 2
@@ -150,6 +276,24 @@
       "writtenOn": "2015-05-20T10:24:01Z",
       "side": 1,
       "message": "As above",
+      "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_d1780e2e",
+        "filename": "nfEngine/nfCommon/Packer/PackerResourceFile.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-20T12:33:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_76e8187d",
       "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -173,6 +317,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_9187660f",
+        "filename": "nfEngine/nfCommon/Packer/PackerResourceFile.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-20T12:33:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_d68564ae",
+      "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_b601c03b",
         "filename": "nfEngine/nfCommon/Packer/PackerWriter.cpp",
         "patchSetId": 2
@@ -184,6 +346,24 @@
       "writtenOn": "2015-05-20T10:24:01Z",
       "side": 1,
       "message": "File file(...);",
+      "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_f1751233",
+        "filename": "nfEngine/nfCommon/Packer/PackerWriter.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-20T12:33:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_b601c03b",
       "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
