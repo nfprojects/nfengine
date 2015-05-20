@@ -4,6 +4,7 @@
 
 ADD_SUBDIRECTORY("nfCommon")
 ADD_SUBDIRECTORY("nfCommonTest")
+ADD_SUBDIRECTORY("TestResources")
 
 # TODO uncomment during Linux version implementation
 #ADD_SUBDIRECTORY("nfCore")
