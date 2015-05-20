@@ -1,5 +1,6 @@
 /**
  * @file
+ * @author Mkkulagowski (mkkulagowski(at)gmail.com)
  * @author Witek902 (witek902@gmail.com)
  * @brief  Library class declaration.
  */
@@ -7,6 +8,7 @@
 #pragma once
 
 #include "nfCommon.hpp"
+
 
 namespace NFE {
 namespace Common {
@@ -20,7 +22,7 @@ private:
 #if defined(WIN32)
     HMODULE mModule;
 #elif defined(__LINUX__) | defined(__linux__)
-    // TODO
+    void* mModule;
 #else
 #error "Target system not supported!"
 #endif
@@ -37,7 +39,7 @@ public:
     bool IsOpened() const;
 
     /**
-     * Open a dyniamic library.
+     * Open a dynamic library.
      * @param  path File path.
      * @return true on success.
      */
