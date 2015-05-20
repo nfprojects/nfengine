@@ -21,6 +21,7 @@
     <ClCompile Include="MemoryTest.cpp" />
     <ClCompile Include="SystemInfoTest.cpp" />
     <ClCompile Include="Constants.cpp" />
+    <ClCompile Include="LibraryTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.hpp" />

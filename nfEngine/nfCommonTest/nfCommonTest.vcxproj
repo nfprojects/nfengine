@@ -208,6 +208,7 @@ popd</Command>
     <ClCompile Include="FileSystemTest.cpp" />
     <ClCompile Include="FileTest.cpp" />
     <ClCompile Include="LatchTest.cpp" />
+    <ClCompile Include="LibraryTest.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MathGeometryTest.cpp" />
     <ClCompile Include="MathMatrixTest.cpp" />
