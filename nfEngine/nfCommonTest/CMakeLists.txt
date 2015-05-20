@@ -4,6 +4,7 @@
 
 MESSAGE("Generating Makefile for nfCommonTest")
 
+ADD_SUBDIRECTORY("testCalcLib")
 FILE(GLOB NFCOMMONTEST_SOURCES *.cpp)
 FILE(GLOB NFCOMMONTEST_HEADERS *.hpp)
 
