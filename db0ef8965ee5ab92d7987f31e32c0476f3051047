@@ -1,0 +1,192 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_f6fb4845",
+        "filename": "nfEngine/nfCommon/Packer/PackerDefines.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-20T10:24:01Z",
+      "side": 1,
+      "message": "Not needed at all now",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 38
+      },
+      "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_f6e428ae",
+        "filename": "nfEngine/nfCommon/Packer/PackerReader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-20T10:24:01Z",
+      "side": 1,
+      "message": "Remove dynamic memory allocation - just do \"File file(mFilePath, AccessMode::Read)\"",
+      "range": {
+        "startLine": 23,
+        "startChar": 4,
+        "endLine": 23,
+        "endChar": 57
+      },
+      "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_569a3415",
+        "filename": "nfEngine/nfCommon/Packer/PackerReader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-20T10:24:01Z",
+      "side": 1,
+      "message": "Why FileNotFound? If IsOpened succeeded it means that the file exists",
+      "range": {
+        "startLine": 30,
+        "startChar": 29,
+        "endLine": 30,
+        "endChar": 41
+      },
+      "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_16e26c9f",
+        "filename": "nfEngine/nfCommon/Packer/PackerReader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-20T10:24:01Z",
+      "side": 1,
+      "message": "As above",
+      "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_96a4bc58",
+        "filename": "nfEngine/nfCommon/Packer/PackerResource.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-20T10:24:01Z",
+      "side": 1,
+      "message": "Hint: you can use reference here instead of pointer now",
+      "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_b688e0c7",
+        "filename": "nfEngine/nfCommon/Packer/PackerResource.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-20T10:24:01Z",
+      "side": 1,
+      "message": "As above",
+      "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_36ee908c",
+        "filename": "nfEngine/nfCommon/Packer/PackerResourceFile.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-20T10:24:01Z",
+      "side": 1,
+      "message": "Don\u0027t use dynamic allocation - use \"File file(...)\"",
+      "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_76e8187d",
+        "filename": "nfEngine/nfCommon/Packer/PackerResourceFile.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-20T10:24:01Z",
+      "side": 1,
+      "message": "As above",
+      "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_d68564ae",
+        "filename": "nfEngine/nfCommon/Packer/PackerResourceFile.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-20T10:24:01Z",
+      "side": 1,
+      "message": "You can use reference",
+      "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_b601c03b",
+        "filename": "nfEngine/nfCommon/Packer/PackerWriter.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-20T10:24:01Z",
+      "side": 1,
+      "message": "File file(...);",
+      "revId": "db0ef8965ee5ab92d7987f31e32c0476f3051047",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
