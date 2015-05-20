@@ -43,15 +43,20 @@ bool Library::Open(const std::string& path)
 {
     Close();
 
+    std::string pathExt(path);
+    std::string libExt = ".dll";
+    if (libExt.compare(pathExt.substr(pathExt.size() - libExt.size())) != 0)
+        pathExt.append(libExt);
+
     std::wstring widePath;
-    if (!UTF8ToUTF16(path, widePath))
+    if (!UTF8ToUTF16(pathExt, widePath))
         return false;
 
     mModule = ::LoadLibrary(widePath.c_str());
 
     if (mModule == NULL)
     {
-        LOG_ERROR("Failed to load library '%s': %s", path.c_str(), GetLastErrorString().c_str());
+        LOG_ERROR("Failed to load library '%s': %s", pathExt.c_str(), GetLastErrorString().c_str());
         return false;
     }
 
@@ -60,7 +65,7 @@ bool Library::Open(const std::string& path)
 
 void Library::Close()
 {
-    if (mModule == NULL)
+    if (mModule != NULL)
     {
         ::FreeLibrary(mModule);
         mModule = NULL;
