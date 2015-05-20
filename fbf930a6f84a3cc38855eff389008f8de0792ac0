@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_369bf0ca",
+        "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-20T07:41:00Z",
+      "side": 1,
+      "message": "The code is allright, however I would leave an additional comment:\n\nTODO create and use function for path construction\n\nLeave it in the other file as well.",
+      "revId": "fbf930a6f84a3cc38855eff389008f8de0792ac0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
