@@ -1,5 +1,6 @@
 /**
  * @file
+ * @author Mkkulagowski (mkkulagowski(at)gmail.com)
  * @author Witek902 (witek902@gmail.com)
  * @brief  Library class declaration.
  */
@@ -7,6 +8,7 @@
 #pragma once
 
 #include "nfCommon.hpp"
+
 
 namespace NFE {
 namespace Common {
@@ -20,10 +22,12 @@ private:
 #if defined(WIN32)
     HMODULE mModule;
 #elif defined(__LINUX__) | defined(__linux__)
-    // TODO
+    void* mModule;
 #else
 #error "Target system not supported!"
 #endif
+
+    void* GetSymbol(const std::string& name);
 
 public:
     Library();
@@ -37,7 +41,7 @@ public:
     bool IsOpened() const;
 
     /**
-     * Open a dyniamic library.
+     * Open a dynamic library.
      * @param  path File path.
      * @return true on success.
      */
@@ -51,9 +55,18 @@ public:
     /**
      * Get symbol address by name.
      * @param name Symbol (function or variable) name.
-     * @return Null pointer if symbol does not exist or the library is not opened.
+     * @param result Variable to load symbol into.
+     * @return False if symbol does not exist or the library is not opened.
      */
-    void* GetSymbol(const std::string& name);
+    template <typename T>
+    bool GetSymbol(const std::string& name, T& result)
+    {
+        result = (T) GetSymbol(name);
+        if (!result)
+            return false;
+
+        return true;
+    }
 };
 
 } // namespace Common
