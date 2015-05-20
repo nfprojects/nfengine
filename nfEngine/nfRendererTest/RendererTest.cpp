@@ -15,7 +15,8 @@ void RendererTest::SetUpTestCase()
 
     ASSERT_TRUE(gRendererLib.Open("nfRendererD3D11.dll"));
 
-    auto proc = static_cast<RendererInitFunc>(gRendererLib.GetSymbol(RENDERER_INIT_FUNC));
+    RendererInitFunc proc;
+    ASSERT_TRUE(gRendererLib.GetSymbol(RENDERER_INIT_FUNC, proc));
     ASSERT_TRUE(proc != nullptr);
 
     gRendererDevice = proc();
@@ -30,7 +31,8 @@ void RendererTest::TearDownTestCase()
     if (gRendererDevice != nullptr)
     {
         gRendererDevice = nullptr;
-        auto proc = static_cast<RendererReleaseFunc>(gRendererLib.GetSymbol("Release"));
+        RendererReleaseFunc proc;
+        ASSERT_TRUE(gRendererLib.GetSymbol("Release", proc));
         ASSERT_TRUE(proc != nullptr);
         proc();
     }

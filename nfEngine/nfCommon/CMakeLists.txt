@@ -1,4 +1,4 @@
-# @file   CMakeLists.txt
+# @file
 # @author LKostyra (costyrra.xl@gmail.com)
 # @brief  CMake for nfCommon
 

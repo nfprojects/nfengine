@@ -40,8 +40,8 @@ bool InitRenderer()
     if (!gRendererLib.Open("nfRendererD3D11.dll"))
         return false;
 
-    auto proc = static_cast<RendererInitFunc>(gRendererLib.GetSymbol(RENDERER_INIT_FUNC));
-    if (proc == NULL)
+    RendererInitFunc proc;
+    if (!gRendererLib.GetSymbol(RENDERER_INIT_FUNC, proc))
         return false;
 
     gRendererDevice = proc();
@@ -72,8 +72,8 @@ void ReleaseRenderer()
     if (gRendererDevice != nullptr)
     {
         gRendererDevice = nullptr;
-        auto proc = static_cast<RendererReleaseFunc>(gRendererLib.GetSymbol("Release"));
-        if (proc == NULL)
+        RendererReleaseFunc proc;
+        if (!gRendererLib.GetSymbol("Release", proc))
             return;
         proc();
     }
