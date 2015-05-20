@@ -4,6 +4,8 @@
 
 MESSAGE("Generating Makefile for nfCommonTest")
 
+ADD_SUBDIRECTORY("TestCalcLib")
+
 FILE(GLOB NFCOMMONTEST_SOURCES *.cpp)
 FILE(GLOB NFCOMMONTEST_HEADERS *.hpp)
 
@@ -28,7 +30,7 @@ ADD_EXECUTABLE(nfCommonTest ${NFCOMMONTEST_SOURCES} ${NFCOMMONTEST_HEADERS})
 SET_TARGET_PROPERTIES(nfCommonTest PROPERTIES
                       COMPILE_FLAGS "-pthread"
                       LINK_FLAGS "-pthread")
-ADD_DEPENDENCIES(nfCommonTest nfCommon)
+ADD_DEPENDENCIES(nfCommonTest nfCommon testCalcLib)
 TARGET_LINK_LIBRARIES(nfCommonTest nfCommon gtest ${NFCOMMONTEST_DEPS_LIBRARIES})
 ADD_CUSTOM_COMMAND(TARGET nfCommonTest POST_BUILD COMMAND
                    ${CMAKE_COMMAND} -E copy $<TARGET_FILE:nfCommonTest> ${NFE_OUTPUT_DIRECTORY}/${targetfile})
