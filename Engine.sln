@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nfEngine", "nfEngine", "{A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}"
 EndProject
@@ -77,11 +77,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfRendererTest", "nfEngine\
 		{EC1CAD07-6B42-4CBC-AC3B-00F0C39ACE44} = {EC1CAD07-6B42-4CBC-AC3B-00F0C39ACE44}
 	EndProjectSection
 EndProject
-
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfCommonPerfTest", "nfEngine\nfCommonPerfTest\nfCommonPerfTest.vcxproj", "{28D2531F-9FEE-4848-B101-B8EB10858371}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testCalcLib", "nfEngine\nfCommonTest\TestCalcLib\testCalcLib.vcxproj", "{1E546F4B-8BA9-4FA1-8386-BCCB82CB5149}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -237,6 +238,18 @@ Global
 		{28D2531F-9FEE-4848-B101-B8EB10858371}.Release|Win32.Build.0 = Release|Win32
 		{28D2531F-9FEE-4848-B101-B8EB10858371}.Release|x64.ActiveCfg = Release|x64
 		{28D2531F-9FEE-4848-B101-B8EB10858371}.Release|x64.Build.0 = Release|x64
+		{1E546F4B-8BA9-4FA1-8386-BCCB82CB5149}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{1E546F4B-8BA9-4FA1-8386-BCCB82CB5149}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{1E546F4B-8BA9-4FA1-8386-BCCB82CB5149}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1E546F4B-8BA9-4FA1-8386-BCCB82CB5149}.Debug|Win32.Build.0 = Debug|Win32
+		{1E546F4B-8BA9-4FA1-8386-BCCB82CB5149}.Debug|x64.ActiveCfg = Debug|x64
+		{1E546F4B-8BA9-4FA1-8386-BCCB82CB5149}.Debug|x64.Build.0 = Debug|x64
+		{1E546F4B-8BA9-4FA1-8386-BCCB82CB5149}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{1E546F4B-8BA9-4FA1-8386-BCCB82CB5149}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{1E546F4B-8BA9-4FA1-8386-BCCB82CB5149}.Release|Win32.ActiveCfg = Release|Win32
+		{1E546F4B-8BA9-4FA1-8386-BCCB82CB5149}.Release|Win32.Build.0 = Release|Win32
+		{1E546F4B-8BA9-4FA1-8386-BCCB82CB5149}.Release|x64.ActiveCfg = Release|x64
+		{1E546F4B-8BA9-4FA1-8386-BCCB82CB5149}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -256,5 +269,6 @@ Global
 		{EEFC1232-FD3F-429B-B24A-2A37D808A9C5} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
 		{36597B67-26C3-4ADB-B0A5-E08D30AA4319} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
 		{28D2531F-9FEE-4848-B101-B8EB10858371} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
+		{1E546F4B-8BA9-4FA1-8386-BCCB82CB5149} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
 	EndGlobalSection
 EndGlobal
