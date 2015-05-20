@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_91176651",
+        "filename": "nfEngine/nfCommon/Packer/PackerReader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-20T14:41:05Z",
+      "side": 1,
+      "message": "What\u0027s that for? (and in other places)",
+      "range": {
+        "startLine": 22,
+        "startChar": 4,
+        "endLine": 22,
+        "endChar": 26
+      },
+      "revId": "0fc213825efbe964cf6958a217786b4d996437a6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
