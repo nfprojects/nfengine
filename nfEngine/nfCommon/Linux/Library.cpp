@@ -1,13 +1,12 @@
 /**
  * @file
- * @author Witek902 (witek902@gmail.com)
- * @brief  Windows implementation of Library class.
+ * @author Mkkulagowski (mkkulagowski(at)gmail.com)
+ * @brief  Linux implementation of Library class.
  */
 
 #include "../PCH.hpp"
 #include "../Library.hpp"
-#include "../Logger.hpp"
-#include "Common.hpp"
+#include <dlfcn.h>
 
 namespace NFE {
 namespace Common {
@@ -48,20 +47,18 @@ bool Library::Open(const std::string& path)
 {
     Close();
 
-    std::string pathExt(path);
-    std::string libExt = ".dll";
+    std::string pathExt = "lib";
+    pathExt += path;
+    std::string libExt = ".so";
     if (libExt.compare(pathExt.substr(pathExt.size() - libExt.size())) != 0)
         pathExt.append(libExt);
 
-    std::wstring widePath;
-    if (!UTF8ToUTF16(pathExt, widePath))
-        return false;
-
-    mModule = ::LoadLibrary(widePath.c_str());
+    mModule = dlopen(pathExt.c_str(), RTLD_LAZY);
 
     if (mModule == nullptr)
     {
-        LOG_ERROR("Failed to load library '%s': %s", pathExt.c_str(), GetLastErrorString().c_str());
+        // TODO Change to LOG_ERROR when Logger is ported
+        std::cout << "Failed to load library " << pathExt.c_str() << ": " << dlerror() << std::endl;
         return false;
     }
 
@@ -72,7 +69,9 @@ void Library::Close()
 {
     if (mModule != nullptr)
     {
-        ::FreeLibrary(mModule);
+        // TODO Change to LOG_ERROR when Logger is ported
+        if (dlclose(mModule))
+            std::cout << "Failed to close library: " << dlerror() << std::endl;
         mModule = nullptr;
     }
 }
@@ -82,15 +81,18 @@ void* Library::GetSymbol(const std::string& name)
     if (mModule == nullptr)
         return nullptr;
 
-    FARPROC ptr = ::GetProcAddress(mModule, name.c_str());
-    if (ptr == nullptr)
+    // it is recommended to clear dlerror first, because nullptr value returned CAN be valid
+    dlerror();
+    void* ptr = dlsym(mModule, name.c_str());
+    char* errorMsg = dlerror();
+    if (errorMsg != nullptr)
     {
-        LOG_ERROR("Failed to get pointer to symbol '%s': %s", name.c_str(),
-                  GetLastErrorString().c_str());
+        // TODO Change to LOG_ERROR when Logger is ported
+        std::cout << "Failed to get pointer to symbol " << name.c_str() << ": " << errorMsg << std::endl;
         return nullptr;
     }
 
-    return static_cast<void*>(ptr);
+    return ptr;
 }
 
 } // namespace Common
