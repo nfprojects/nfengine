@@ -7,7 +7,7 @@
 #include "PCH.hpp"
 #include "Globals.hpp"
 #include "Texture.hpp"
-#include "Renderer.hpp"
+#include "Renderer/Renderer.hpp"
 #include "ResourcesManager.hpp"
 #include "../nfCommon/Logger.hpp"
 #include "../nfCommon/InputStream.hpp"
@@ -145,48 +145,50 @@ Result Texture::CreateFromImage(const Common::Image& image)
 {
     Release();
 
-    mTex = g_pRenderer->CreateTexture();
+    mTex = nullptr; // TODO
     if (mTex == nullptr)
     {
         LOG_ERROR("Failed to create texture object for '%s'.", mName);
         return Result::Error;
     }
 
-    if (mTex->FromImage(image) != Result::OK)
+    // TODO
+    // if (mTex->FromImage(image) != Result::OK)
     {
         LOG_ERROR("Failed to load image to texture object for '%s'.", mName);
         return Result::Error;
     }
 
-    return Result::OK;
+    // return Result::OK;
 }
 
 
-using namespace Render;
+using namespace Renderer;
 
 // Create renderable texture, for example to show monitor screen with a view from a camera.
 IRenderTarget* Texture::CreateRendertarget(uint32 width, uint32 height, Common::ImageFormat format)
 {
     Release();
 
-    IRenderTarget* pRT = g_pRenderer->CreateRenderTarget();
+    IRenderTarget* pRT = nullptr; // TODO
     if (!pRT)
     {
         LOG_ERROR("Failed to allocate texture object");
         return nullptr;
     }
 
-    if (pRT->Init(width, height, nullptr, true) != 0)
+    // TODO
+    // if (pRT->Init(width, height, nullptr, true) != 0)
     {
         LOG_ERROR("Failed to create render target");
         return nullptr;
     }
 
-    mTex = pRT;
-    return pRT;
+    // mTex = pRT;
+    // return pRT;
 }
 
-IRendererTexture* Texture::GetRendererTexture() const
+ITexture* Texture::GetRendererTexture() const
 {
     return mTex;
 }

@@ -6,7 +6,7 @@
 #include "../nfEngine/nfCommon/Logger.hpp"
 
 using namespace NFE;
-using namespace NFE::Render;
+using namespace NFE::Renderer;
 using namespace NFE::Math;
 using namespace NFE::Scene;
 using namespace NFE::Resource;
@@ -26,7 +26,7 @@ MainCameraView::MainCameraView()
 {
 }
 
-void MainCameraView::OnPostRender(IRenderContext* ctx, IGuiRenderer* guiRenderer)
+void MainCameraView::OnPostRender(RenderContext* ctx, GuiRenderer* guiRenderer)
 {
 }
 

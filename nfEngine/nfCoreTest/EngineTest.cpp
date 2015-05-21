@@ -1,9 +1,10 @@
 #include "PCH.hpp"
 #include "Engine.hpp"
 #include "Entity.hpp"
+#include "Renderer/Renderer.hpp"
 
 using namespace NFE;
-using namespace NFE::Render;
+using namespace NFE::Renderer;
 using namespace NFE::Scene;
 using namespace NFE::Resource;
 using namespace NFE::Common;
@@ -37,12 +38,12 @@ protected:
     }
 
     static ResManager* pResourcesManager;
-    static IRenderer* pRenderer;
+    static HighLevelRenderer* pRenderer;
 };
 
 /// static members definitions
 ResManager* nfEngineTest::pResourcesManager = nullptr;
-IRenderer* nfEngineTest::pRenderer = nullptr;
+HighLevelRenderer* nfEngineTest::pRenderer = nullptr;
 
 
 // check if calling Init second time will return a proper value
@@ -51,7 +52,7 @@ TEST_F(nfEngineTest, DoubleInit)
     Result ret = EngineInit();
     ASSERT_EQ(Result::AlreadyInit, ret);
 
-    IRenderer* newRendererPtr = EngineGetRenderer();
+    HighLevelRenderer* newRendererPtr = EngineGetRenderer();
     EXPECT_EQ(pRenderer, newRendererPtr) << "Renderer pointer should not change";
 
     ResManager* newResourcesManagerPtr = EngineGetResManager();

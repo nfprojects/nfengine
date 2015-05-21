@@ -13,11 +13,11 @@
     <Filter Include="Resource">
       <UniqueIdentifier>{ac3755ea-3680-4282-86ec-332da8174ea0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Render">
-      <UniqueIdentifier>{41ada418-96c2-459b-9938-5eef2c5e34a5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="PCH">
       <UniqueIdentifier>{bd29ba41-f88b-4a56-9ef2-0757a7aecb45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer">
+      <UniqueIdentifier>{41ada418-96c2-459b-9938-5eef2c5e34a5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -53,9 +53,6 @@
     </ClCompile>
     <ClCompile Include="Engine.cpp">
       <Filter>Base</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderCommand.cpp">
-      <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="CollisionShape.cpp">
       <Filter>Resource</Filter>
@@ -93,14 +90,44 @@
     <ClCompile Include="Globals.cpp">
       <Filter>Base</Filter>
     </ClCompile>
-    <ClCompile Include="View.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
     <ClCompile Include="SoundSample.cpp">
       <Filter>Resource</Filter>
     </ClCompile>
     <ClCompile Include="BVH.cpp">
       <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\DebugRenderer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\GeometryBufferRenderer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\GuiRenderer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\LightsRenderer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\PostProcessRenderer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\RenderCommand.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Renderer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\RendererContext.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\ShadowsRenderer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\View.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\RendererResources.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -127,9 +154,6 @@
     </ClInclude>
     <ClInclude Include="Renderer.hpp">
       <Filter>Util</Filter>
-    </ClInclude>
-    <ClInclude Include="View.hpp">
-      <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="Engine.hpp">
       <Filter>Base</Filter>
@@ -158,9 +182,6 @@
     <ClInclude Include="PhysicsWorld.hpp">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="RenderCommand.hpp">
-      <Filter>Render</Filter>
-    </ClInclude>
     <ClInclude Include="Resource.hpp">
       <Filter>Resource</Filter>
     </ClInclude>
@@ -187,6 +208,39 @@
     </ClInclude>
     <ClInclude Include="Globals.hpp">
       <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\DebugRenderer.hpp">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\GeometryBufferRenderer.hpp">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\GuiRenderer.hpp">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\LightsRenderer.hpp">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\PostProcessRenderer.hpp">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\RenderCommand.hpp">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\Renderer.hpp">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\RendererContext.hpp">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\RendererResources.hpp">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\ShadowsRenderer.hpp">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\View.hpp">
+      <Filter>Renderer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

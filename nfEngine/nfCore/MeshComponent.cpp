@@ -9,13 +9,15 @@
 #include "MeshComponent.hpp"
 #include "Entity.hpp"
 #include "ResourcesManager.hpp"
-#include "..\nfCommon\InputStream.hpp"
-#include "..\nfCommon\OutputStream.hpp"
+#include "Renderer/DebugRenderer.hpp"
+
+#include "InputStream.hpp"
+#include "OutputStream.hpp"
 
 namespace NFE {
 namespace Scene {
 
-using namespace Render;
+using namespace Renderer;
 using namespace Resource;
 
 MeshComponent::MeshComponent(Entity* pParent) : Component(pParent)
@@ -66,7 +68,7 @@ Result MeshComponent::SetMeshResource(const char* pName)
     return SetMeshResource(pNewMesh);
 }
 
-void MeshComponent::OnRenderDebug(IRenderContext* pCtx)
+void MeshComponent::OnRenderDebug(RenderContext* pCtx)
 {
     if (mMesh)
     {

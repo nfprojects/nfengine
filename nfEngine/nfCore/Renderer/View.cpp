@@ -4,18 +4,20 @@
  * @brief  Definitions of View class.
  */
 
-#include "PCH.hpp"
+#include "../PCH.hpp"
 #include "View.hpp"
-#include "Globals.hpp"
 #include "Renderer.hpp"
-#include "ResourcesManager.hpp"
-#include "Texture.hpp"
-#include "../nfCommon/Window.hpp"
-#include "../nfCommon/Logger.hpp"
-#include "../nfCommon/Image.hpp"
+
+#include "../Globals.hpp"
+#include "../ResourcesManager.hpp"
+#include "../Texture.hpp"
+
+#include "Window.hpp"
+#include "Logger.hpp"
+#include "Image.hpp"
 
 namespace NFE {
-namespace Render {
+namespace Renderer {
 
 View::View()
 {
@@ -45,7 +47,7 @@ void View::Release()
     }
 }
 
-void View::OnPostRender(IRenderContext* pCtx, IGuiRenderer* pGuiRenderer)
+void View::OnPostRender(RenderContext* pCtx, GuiRenderer* pGuiRenderer)
 {
     // no GUI by default
 }
@@ -66,7 +68,7 @@ Result View::SetWindow(Common::Window* pWindow)
 {
     Release();
 
-    RT = g_pRenderer->CreateRenderTarget();
+    RT = nullptr; // TODO
     if (RT == nullptr)
     {
         LOG_ERROR("Memory allocation failed");
@@ -75,7 +77,7 @@ Result View::SetWindow(Common::Window* pWindow)
 
     uint32 width, height;
     pWindow->GetSize(width, height);
-    RT->Init(width, height, pWindow);
+    // RT->Init(width, height, pWindow); // TODO
     return Result::OK;
 }
 
@@ -96,5 +98,5 @@ Texture* View::SetOffScreen(uint32 width, uint32 height, const char* pTextureNam
     return mTexture;
 }
 
-} // namespace Render
+} // namespace Renderer
 } // namespace NFE

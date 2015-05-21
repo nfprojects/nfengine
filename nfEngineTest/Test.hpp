@@ -5,8 +5,8 @@
 #include "../nfEngine/nfCore/SceneEvent.hpp"
 #include "../nfEngine/nfCore/SceneSegment.hpp"
 #include "../nfEngine/nfCore/CollisionShape.hpp"
-#include "../nfEngine/nfCore/Renderer.hpp"
-#include "../nfEngine/nfCore/View.hpp"
+#include "../nfEngine/nfCore/Renderer/Renderer.hpp"
+#include "../nfEngine/nfCore/Renderer/View.hpp"
 #include "../nfEngine/nfCore/BVH.hpp"
 
 #include "../nfEngine/nfCommon/Math/Random.hpp"
@@ -56,10 +56,10 @@ void CreateCustomFloorMesh()
 */
 
 
-class MainCameraView : public NFE::Render::View
+class MainCameraView : public NFE::Renderer::View
 {
 public:
 
     MainCameraView();
-    void OnPostRender(NFE::Render::IRenderContext* pCtx, NFE::Render::IGuiRenderer* pGuiRenderer);
+    void OnPostRender(NFE::Renderer::RenderContext* pCtx, NFE::Renderer::GuiRenderer* pGuiRenderer);
 };
