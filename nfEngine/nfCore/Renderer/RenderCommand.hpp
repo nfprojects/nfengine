@@ -6,11 +6,12 @@
 
 #pragma once
 
-#include "Core.hpp"
-#include "Aligned.hpp"
+#include "../Core.hpp"
+#include "../Aligned.hpp"
+#include "../Renderers/RendererInterface/Buffer.hpp"
 
 namespace NFE {
-namespace Render {
+namespace Renderer {
 
 NFE_ALIGN16
 struct InstanceData
@@ -31,8 +32,8 @@ struct RenderCommand
     float distance;
 
     //mesh data
-    IRendererBuffer* pIB;
-    IRendererBuffer* pVB;
+    IBuffer* pIB;
+    IBuffer* pVB;
     const RendererMaterial* pMaterial;
     uint32 startIndex;
     uint32 indexCount;
@@ -49,5 +50,5 @@ public:
     void Clear();
 };
 
-} // namespace Render
+} // namespace Renderer
 } // namespace NFE

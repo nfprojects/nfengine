@@ -6,11 +6,11 @@
 
 #pragma once
 
-#include "Core.hpp"
-#include "Renderer.hpp"
+#include "../Core.hpp"
+#include "HighLevelRenderer.hpp"
 
 namespace NFE {
-namespace Render {
+namespace Renderer {
 
 class CORE_API View
 {
@@ -29,7 +29,7 @@ public:
     /**
      * @brief Virtual function called after 3D and post-process pass. Could be used to draw GUI, HUD, etc.
      */
-    virtual void OnPostRender(IRenderContext* pCtx, IGuiRenderer* pGuiRenderer);
+    virtual void OnPostRender(RenderContext* pCtx, GuiRenderer* pGuiRenderer);
 
     Result SetCamera(Scene::Camera* pCamera);
     Scene::Camera* GetCamera() const;
@@ -53,5 +53,5 @@ public:
     void Release();
 };
 
-} // namespace Render
+} // namespace Renderer
 } // namespace NFE
