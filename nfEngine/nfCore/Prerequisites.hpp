@@ -56,20 +56,18 @@ namespace NFE {
         enum class ComponentType;
     } // namespace Scene
 
-    namespace Render {
-        class IRenderer;
-        class IDebugRenderer;
-        class IGBufferRenderer;
-        class IGuiRenderer;
-        class ILightsRenderer;
-        class IShadowRenderer;
-        class IPostProcessRenderer;
-        class IRenderContext;
-        class IRendererBuffer;
-        class IRendererTexture;
-        class IRenderTarget;
-        class IShadowMap;
-#define NFE_CONTEXT_ARG IRenderContext *pContext
+    namespace Renderer {
+        class HighLevelRenderer;
+        class DebugRenderer;
+        class GBufferRenderer;
+        class GuiRenderer;
+        class LightsRenderer;
+        class ShadowRenderer;
+        class PostProcessRenderer;
+        class RenderContext;
+        class RenderTarget;
+        class ShadowMap;
+#define NFE_CONTEXT_ARG RenderContext *pContext
 
 /// Structures passed to renderer modules
         struct RendererMaterial;

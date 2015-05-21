@@ -8,7 +8,7 @@
 #include "RenderCommand.hpp"
 
 namespace NFE {
-namespace Render {
+namespace Renderer {
 
 //Merge sorting
 //array - array of elements to be sorted
@@ -183,5 +183,5 @@ void RenderCommandBuffer::Sort()
     free(pPointers);
 }
 
-} // namespace Render
+} // namespace Renderer
 } // namespace NFE

@@ -12,6 +12,12 @@
 #include "Engine.hpp"
 #include "BVH.hpp"
 #include "Renderer.hpp"
+#include "HLRenderer.hpp"
+#include "ShadowsRenderer.hpp"
+#include "LightsRenderer.hpp"
+#include "GeometryBufferRenderer.hpp"
+#include "DebugRenderer.hpp"
+#include "RendererContext.hpp"
 #include "../nfCommon/Timer.hpp"
 #include "../nfCommon/Logger.hpp"
 
@@ -19,10 +25,10 @@ namespace NFE {
 namespace Scene {
 
 using namespace Math;
-using namespace Render;
+using namespace Renderer;
 using namespace Resource;
 
-void SceneManager::RenderShadow(IRenderContext* pCtx, LightComponent* pLight, uint32 faceID)
+void SceneManager::RenderShadow(RenderContext* pCtx, LightComponent* pLight, uint32 faceID)
 {
     Common::Timer timer;
     timer.Start();
@@ -86,7 +92,7 @@ void SceneManager::RenderShadow(IRenderContext* pCtx, LightComponent* pLight, ui
 }
 
 // Perform Geometry Pass for pCamera in pContext
-void SceneManager::RenderGBuffer(IRenderContext* pCtx, Camera* pCamera,
+void SceneManager::RenderGBuffer(RenderContext* pCtx, Camera* pCamera,
                                  CameraRenderDesc* pCameraDesc, IRenderTarget* pRT)
 {
     //draw mesh entities
@@ -132,7 +138,7 @@ void SceneManager::RenderGBuffer(IRenderContext* pCtx, Camera* pCamera,
 }
 
 
-void SceneManager::DrawBVHNode(IRenderContext* pCtx, uint32 node, uint32 depth)
+void SceneManager::DrawBVHNode(RenderContext* pCtx, uint32 node, uint32 depth)
 {
     if (node == 0xFFFFFFFF) return;
     Util::BVHNode* pNode = mMeshesBVH->GetNodeById(node);
@@ -202,7 +208,7 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
 
     auto drawShadowMapFunc = [](LightComponent * pLight, size_t instance, size_t threadID)
     {
-        IRenderContext* pContext = g_pDeferredContexts[threadID];
+        RenderContext* pContext = g_pDeferredContexts[threadID];
         pLight->mOwner->GetScene()->RenderShadow(pContext, pLight, static_cast<int>(instance));
     };
 
@@ -231,7 +237,7 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
 
     auto endCommandListFunc = [] (size_t instance)
     {
-        IRenderContext* pContext = g_pDeferredContexts[instance];
+        RenderContext* pContext = g_pDeferredContexts[instance];
         if (pContext)
             pContext->End();
     };
@@ -253,7 +259,7 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
 
     // LIGHTS RENDERING ===========================================================================
     {
-        IRenderContext* pCtx = g_pImmediateContext;
+        RenderContext* pCtx = g_pImmediateContext;
 
         g_pLightRenderer->Enter(pCtx);
         g_pLightRenderer->SetUp(pCtx, pRT, &cameraRenderDesc, mEnvDesc.ambientLight,
@@ -310,7 +316,7 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
 
     if (g_pRenderer->settings.debugEnable)
     {
-        IRenderContext* pCtx = g_pImmediateContext;
+        RenderContext* pCtx = g_pImmediateContext;
 
         g_pDebugRenderer->Enter(g_pImmediateContext);
         g_pDebugRenderer->SetCamera(pCtx, pCamera->mViewMatrix, pCamera->mProjMatrix);

@@ -56,10 +56,10 @@ void CreateCustomFloorMesh()
 */
 
 
-class MainCameraView : public NFE::Render::View
+class MainCameraView : public NFE::Renderer::View
 {
 public:
 
     MainCameraView();
-    void OnPostRender(NFE::Render::IRenderContext* pCtx, NFE::Render::IGuiRenderer* pGuiRenderer);
+    void OnPostRender(NFE::Renderer::RenderContext* pCtx, NFE::Renderer::GuiRenderer* pGuiRenderer);
 };

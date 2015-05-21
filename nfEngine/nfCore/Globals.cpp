@@ -6,26 +6,27 @@
 
 #include "PCH.hpp"
 #include "Globals.hpp"
+#include "HLRenderer.hpp"
 
 namespace NFE {
 
-using namespace Render;
+using namespace Renderer;
 using namespace Resource;
 
 const std::string g_DataPath = "nfEngineTest/Data/";
 const std::string g_ShadersPath = "nfEngine/nfRenderer/Shaders/";
 
-IRenderer* g_pRenderer = NULL;
-IPostProcessRenderer* g_pPostProcessRenderer = NULL;
-IGuiRenderer* g_pGuiRenderer = NULL;
-ILightsRenderer* g_pLightRenderer = NULL;
-IDebugRenderer* g_pDebugRenderer = NULL;
-IGBufferRenderer* g_pGBufferRenderer = NULL;
-IShadowRenderer* g_pShadowRenderer = NULL;
+std::unique_ptr<HighLevelRenderer> g_pRenderer;
+PostProcessRenderer* g_pPostProcessRenderer = NULL;
+GuiRenderer* g_pGuiRenderer = NULL;
+LightsRenderer* g_pLightRenderer = NULL;
+DebugRenderer* g_pDebugRenderer = NULL;
+GBufferRenderer* g_pGBufferRenderer = NULL;
+ShadowRenderer* g_pShadowRenderer = NULL;
 
 size_t g_DeferredContextsNum = 0;
-IRenderContext* g_pImmediateContext = NULL;
-IRenderContext** g_pDeferredContexts = NULL;
+RenderContext* g_pImmediateContext = NULL;
+RenderContext** g_pDeferredContexts = NULL;
 
 std::shared_ptr<Common::ThreadPool> g_pMainThreadPool;
 ResManager* g_pResManager = NULL;
