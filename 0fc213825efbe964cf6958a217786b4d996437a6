@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "facab960_77449274",
+        "filename": "nfEngine/nfCommon/Packer/PackerReader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-21T12:28:55Z",
+      "side": 1,
+      "message": "All those comments were left here and there in order to remind me that at these times file was opened with \u0027b\u0027 flag.\n\nLater Lukasz said that File ought to read \u0026 write binary, so I don\u0027t need to worry.",
+      "parentUuid": "facab960_91176651",
+      "range": {
+        "startLine": 22,
+        "startChar": 4,
+        "endLine": 22,
+        "endChar": 26
+      },
+      "revId": "0fc213825efbe964cf6958a217786b4d996437a6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_dcf4a589",
         "filename": "nfEngine/nfCommon/Packer/PackerWriter.cpp",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2015-05-20T14:56:18Z",
       "side": 1,
       "message": "Remove. All FileSystem methods are static, so there is no need to create an object.",
+      "range": {
+        "startLine": 58,
+        "startChar": 4,
+        "endLine": 58,
+        "endChar": 26
+      },
+      "revId": "0fc213825efbe964cf6958a217786b4d996437a6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_9772f6e3",
+        "filename": "nfEngine/nfCommon/Packer/PackerWriter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-21T12:28:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_dcf4a589",
       "range": {
         "startLine": 58,
         "startChar": 4,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "facab960_b7761ad7",
+        "filename": "nfEngine/nfCommon/Packer/PackerWriter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-21T12:28:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_3c2bd1ec",
+      "range": {
+        "startLine": 75,
+        "startChar": 8,
+        "endLine": 75,
+        "endChar": 26
+      },
+      "revId": "0fc213825efbe964cf6958a217786b4d996437a6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_7c355945",
         "filename": "nfEngine/nfCommon/Packer/PackerWriter.cpp",
         "patchSetId": 3
@@ -82,6 +154,30 @@
       "writtenOn": "2015-05-20T14:56:18Z",
       "side": 1,
       "message": "rm",
+      "range": {
+        "startLine": 83,
+        "startChar": 4,
+        "endLine": 83,
+        "endChar": 49
+      },
+      "revId": "0fc213825efbe964cf6958a217786b4d996437a6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_d7739ee5",
+        "filename": "nfEngine/nfCommon/Packer/PackerWriter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-21T12:28:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_7c355945",
       "range": {
         "startLine": 83,
         "startChar": 4,
