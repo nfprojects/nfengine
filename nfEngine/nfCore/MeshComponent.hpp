@@ -29,7 +29,7 @@ private:
     Resource::Mesh* mMesh;
     Math::Box mGlobalAABB;
 
-    void OnRenderDebug(Render::IRenderContext* pCtx);
+    void OnRenderDebug(Renderer::RenderContext* pCtx);
     void CalcAABB();
 
 public:

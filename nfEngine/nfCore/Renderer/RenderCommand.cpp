@@ -4,11 +4,11 @@
  * @brief  Definitions of RenderCommand class.
  */
 
-#include "PCH.hpp"
+#include "../PCH.hpp"
 #include "RenderCommand.hpp"
 
 namespace NFE {
-namespace Render {
+namespace Renderer {
 
 //Merge sorting
 //array - array of elements to be sorted
@@ -79,8 +79,8 @@ int RenderCommandMaterialCmp(const int& a, const int& b, void* p)
     const RenderCommand* pA = pList + a;
     const RenderCommand* pB = pList + b;
 
-    size_t p_a = (size_t)(pA->pMaterial);
-    size_t p_b = (size_t)(pB->pMaterial);
+    size_t p_a = (size_t)(pA->material);
+    size_t p_b = (size_t)(pB->material);
 
     if (p_a == p_b) return 0;
 
@@ -115,8 +115,8 @@ int RenderCommandCmp(const int& a, const int& b, void* p)
     const RenderCommand* pB = pList + b;
 
     //compare by material
-    size_t p_a = (size_t)(pA->pMaterial);
-    size_t p_b = (size_t)(pB->pMaterial);
+    size_t p_a = (size_t)(pA->material);
+    size_t p_b = (size_t)(pB->material);
     if (p_a > p_b)
         return 1;
     else if (p_a < p_b)
@@ -183,5 +183,5 @@ void RenderCommandBuffer::Sort()
     free(pPointers);
 }
 
-} // namespace Render
+} // namespace Renderer
 } // namespace NFE

@@ -7,11 +7,13 @@
 #include "PCH.hpp"
 #include "Globals.hpp"
 #include "Engine.hpp"
-#include "Renderer.hpp"
 #include "Texture.hpp"
-#include "View.hpp"
 #include "Performance.hpp"
 #include "Entity.hpp"
+
+#include "Renderer/HighLevelRenderer.hpp"
+#include "Renderer/GuiRenderer.hpp"
+#include "Renderer/View.hpp"
 
 #include "../nfCommon/Memory.hpp"
 #include "../nfCommon/Window.hpp"
@@ -21,7 +23,7 @@
 
 namespace NFE {
 
-using namespace Render;
+using namespace Renderer;
 using namespace Scene;
 using namespace Resource;
 
@@ -52,13 +54,15 @@ Result EngineDeleteScene(SceneManager* pScene)
 
 Result InitAntTweakBar()
 {
-    int err = TwInit(TW_DIRECT3D11, g_pRenderer->GetDevice());
+    int err = TwInit(TW_DIRECT3D11, gRenderer->GetDevice());
     if (err != 1)
     {
         LOG_ERROR("Failed to initialize AntTweakBar.");
         return Result::Error;
     }
 
+    // TODO: restore after high-level renderer is useable
+    /*
     TwBar* pDebugBar = TwNewBar("Debugging");
     TwDefine("Debugging iconified=true color='50 50 50' alpha=200 refresh=0.25");
     TwAddVarRW(pDebugBar, "Debug enable", TW_TYPE_BOOLCPP, &g_pRenderer->settings.debugEnable,
@@ -68,7 +72,6 @@ Result InitAntTweakBar()
     TwAddVarRW(pDebugBar, "Debug lights", TW_TYPE_BOOLCPP, &g_pRenderer->settings.debugLights,
                "help = 'Draw bounding volumes for lights.'");
 
-    /*
     TwBar* pPerfBar = TwNewBar("GPU pipeline statistics");
     TwDefine("'GPU pipeline statistics' iconified=true color='50 50 50' alpha=200 refresh=0.25");
         TwAddVarRW(pPerfBar, "Enable", TW_TYPE_BOOLCPP, &pRenderer->settings.pipelineStats, "help = 'Enable querying for GPU pipeline statistics. It can produce slight performance drop.'");
@@ -86,7 +89,6 @@ Result InitAntTweakBar()
         TwAddSeparator(pPerfBar, "Rasterizer", 0);
         TwAddVarRO(pPerfBar, "Rasterizer invocations", TW_TYPE_UINT32, &pRenderer->pipelineStats.CInvocations, "help = 'Number of primitives that were sent to the rasterizer.'");
         TwAddVarRO(pPerfBar, "Rendered primitives", TW_TYPE_UINT32, &pRenderer->pipelineStats.CPrimitives, "help = 'Number of primitives that were rendered.'");
-    */
 
     TwBar* pAABar = TwNewBar("FXAA");
     TwDefine("FXAA iconified=true color='50 50 50' alpha=200 refresh=0.25");
@@ -135,15 +137,13 @@ Result InitAntTweakBar()
                "min=0.0 max=2.5 step=0.01 help='Noise dithering level of the final image.'");
     TwAddVarRW(pBar, "Noise enabled", TW_TYPE_BOOLCPP, &g_pRenderer->settings.noiseEnabled,
                "help='Noise filter enabled.'");
-
+    */
 
     TwDefine("GLOBAL contained=true"); // bars cannot move outside of the window
 
     LOG_SUCCESS("AntTweakBar initialized.");
     return Result::OK;
 }
-
-typedef IRenderer* (*RendererGetInstanceCallback)();
 
 Result EngineInit()
 {
@@ -172,41 +172,10 @@ Result EngineInit()
 
     g_pMainThreadPool.reset(new Common::ThreadPool);
 
-    // TODO - plugin searching & enumeration. Better error checking
-    HMODULE rendererDll = LoadLibrary(L"nfRenderer.dll");
-    if (rendererDll == NULL)
-    {
-        LOG_ERROR("LoadLibrary() failed. Could not initialize renderer module.");
-    }
-    else
-    {
-        auto proc = (RendererGetInstanceCallback)GetProcAddress(rendererDll, "GetInstance");
-        if (proc == NULL)
-        {
-            LOG_ERROR("GetProcAddress() failed. Could not initialize renderer module.");
-        }
-        else
-        {
-
-            //init renderer
-            LOG_INFO("Initializing renderer...");
-            g_pRenderer = proc();
-            g_pRenderer->Init();
-            g_pImmediateContext = g_pRenderer->GetImmediateContext();
-            g_pDebugRenderer = g_pRenderer->GetDebugRenderer();
-            g_pGuiRenderer = g_pRenderer->GetGuiRenderer();
-            g_pPostProcessRenderer = g_pRenderer->GetPostProcessRenderer();
-            g_pGBufferRenderer = g_pRenderer->GetGBufferRenderer();
-            g_pShadowRenderer = g_pRenderer->GetShadowRenderer();
-            g_pLightRenderer = g_pRenderer->GetLightsRenderer();
-
-            g_DeferredContextsNum = g_pMainThreadPool->GetThreadsNumber();
-            g_pDeferredContexts = new IRenderContext* [g_DeferredContextsNum];
-            for (uint32 i = 0; i < g_DeferredContextsNum; i++)
-                g_pDeferredContexts[i] = g_pRenderer->CreateDeferredContext();
-        }
-    }
-
+    // init renderer
+    LOG_INFO("Initializing renderer...");
+    gRenderer.reset(new Renderer::HighLevelRenderer());
+    gRenderer->Init();
 
 #ifdef USE_ANT_TWEAK
     InitAntTweakBar();
@@ -252,17 +221,7 @@ Result EngineRelease()
 
 
     /// release renderer
-    for (uint32 i = 0; i < g_DeferredContextsNum; i++) delete g_pDeferredContexts[i];
-    delete[] g_pDeferredContexts;
-    g_pDeferredContexts = NULL;
-    delete g_pImmediateContext;
-    g_pImmediateContext = NULL;
-
-    if (g_pRenderer != NULL)
-    {
-        delete g_pRenderer;
-        g_pRenderer = NULL;
-    }
+    gRenderer.reset();
     LOG_INFO("Renderer released.");
 
     g_pMainThreadPool.reset();
@@ -278,7 +237,7 @@ Result EngineAdvance(const DrawRequest* pDrawRequests, uint32 drawRequestsNum,
     using namespace Util;
 
     //renderer is not initialized
-    if (!g_pRenderer)
+    if (!gRenderer)
         return Result::NotInitialized;
 
     //check 'pDrawRequests' array
@@ -313,7 +272,6 @@ Result EngineAdvance(const DrawRequest* pDrawRequests, uint32 drawRequestsNum,
     }
 
 
-    g_pRenderer->Begin();
     for (uint32 i = 0; i < drawRequestsNum; i++)
     {
         // TODO: error checking
@@ -326,29 +284,30 @@ Result EngineAdvance(const DrawRequest* pDrawRequests, uint32 drawRequestsNum,
             SceneManager* pScene = pCamera->GetOwner()->GetScene();
             pScene->Render(pCamera, pView->RT);
         }
-        g_pRenderer->SwapBuffers(pView->RT, &pView->settings, pDrawRequests[i].deltaTime);
+        // TODO
+        // gRenderer->SwapBuffers(pView->RT, &pView->settings, pDrawRequests[i].deltaTime);
 
 
-        IRenderContext* pCtx = g_pImmediateContext;
-        g_pGuiRenderer->Enter(pCtx);
+        RenderContext* ctx = gRenderer->GetImmediateContext();
+        GuiRenderer::Get()->Enter(ctx);
         {
             Recti rect;
-            g_pGuiRenderer->SetTarget(pCtx, pView->RT);
-            pView->OnPostRender(pCtx, g_pGuiRenderer);
+            GuiRenderer::Get()->SetTarget(ctx, pView->RT);
+            pView->OnPostRender(ctx);
 
-            //draw sign
+            // draw sign
             rect = Recti(6, 6, 100, 100);
-            g_pGuiRenderer->PrintTextWithBorder(pCtx, "NFEngine v0.1 [Demo]", rect, 0, 0, 0xFFFFFFFF,
-                                                0x60000000);
+            GuiRenderer::Get()->PrintTextWithBorder(ctx, "NFEngine v0.1 [Demo]", rect, 0, 0,
+                                                    0xFFFFFFFF, 0x60000000);
         }
-        g_pGuiRenderer->Leave(pCtx);
+        GuiRenderer::Get()->Leave(ctx);
 
 #ifdef USE_ANT_TWEAK
         TwDraw();
 #endif
 
         // present frame in the display
-        pView->RT->Present();
+        // pView->RT->Present(); // TODO
     }
 
     Util::g_FrameStats.deltaTime = g_Timer.Stop();
@@ -361,9 +320,9 @@ ResManager* EngineGetResManager()
     return g_pResManager;
 }
 
-IRenderer* EngineGetRenderer()
+HighLevelRenderer* EngineGetRenderer()
 {
-    return g_pRenderer;
+    return gRenderer.get();
 }
 
 ResourceBase* EngineGetResource(ResourceType resType, const char* pResName, bool check)

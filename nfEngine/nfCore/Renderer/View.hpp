@@ -6,11 +6,11 @@
 
 #pragma once
 
-#include "Core.hpp"
-#include "Renderer.hpp"
+#include "../Core.hpp"
+#include "HighLevelRenderer.hpp"
 
 namespace NFE {
-namespace Render {
+namespace Renderer {
 
 class CORE_API View
 {
@@ -29,29 +29,29 @@ public:
     /**
      * @brief Virtual function called after 3D and post-process pass. Could be used to draw GUI, HUD, etc.
      */
-    virtual void OnPostRender(IRenderContext* pCtx, IGuiRenderer* pGuiRenderer);
+    virtual void OnPostRender(RenderContext* context);
 
-    Result SetCamera(Scene::Camera* pCamera);
+    Result SetCamera(Scene::Camera* camera);
     Scene::Camera* GetCamera() const;
 
     /**
      * @brief Link the view to a window
      * @return Result::OK on success
      */
-    Result SetWindow(Common::Window* pWindow);
+    Result SetWindow(Common::Window* window);
 
     /**
      * @brief Create custom, off-screen render target
      * @param width,height
-     * @param pTextureName Name of a texture resource associated with the view
+     * @param textureName Name of a texture resource associated with the view
      * @return Pointer to the created texture object
      */
     // TODO: more parameters (pixel format, etc.)
-    Resource::Texture* SetOffScreen(uint32 width, uint32 height, const char* pTextureName);
+    Resource::Texture* SetOffScreen(uint32 width, uint32 height, const char* textureName);
 
     // destroy render target
     void Release();
 };
 
-} // namespace Render
+} // namespace Renderer
 } // namespace NFE
