@@ -9,7 +9,7 @@
 #include "Core.hpp"
 #include "Resource.hpp"
 #include "Texture.hpp"
-#include "Renderer.hpp"
+#include "Renderer/RendererResources.hpp"
 
 namespace NFE {
 namespace Resource {
@@ -54,7 +54,7 @@ class CORE_API Material : public ResourceBase
     MaterialLayer* mLayers;
     uint32 mLayersCount;
 
-    Render::RendererMaterial mRendererData;
+    Renderer::RendererMaterial mRendererData;
 
 public:
     Material();
@@ -66,7 +66,7 @@ public:
     /**
      * Get renderer's material
      */
-    const Render::RendererMaterial* GetRendererData();
+    const Renderer::RendererMaterial* GetRendererData();
 };
 
 } // namespace Resource

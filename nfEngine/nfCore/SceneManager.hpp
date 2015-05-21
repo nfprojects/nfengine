@@ -99,7 +99,7 @@ private:
     void UpdateSegmentForEntity(Entity * pEntity);
 
 
-    void DrawBVHNode(Render::IRenderContext * pCtx, uint32 node, uint32 depth);
+    void DrawBVHNode(Renderer::RenderContext * pCtx, uint32 node, uint32 depth);
 #endif
 
 public:
@@ -187,11 +187,11 @@ public:
     void Update(float deltaTime);
 
     // Perform Geometry Pass for pCamera in pContext
-    void RenderGBuffer(Render::IRenderContext * pCtx, Camera * pCamera,
-                       Render::CameraRenderDesc * pCameraDesc, Render::IRenderTarget * pRT);
+    void RenderGBuffer(Renderer::RenderContext * pCtx, Camera * pCamera,
+                       Renderer::CameraRenderDesc * pCameraDesc, Renderer::IRenderTarget * pRT);
 
-    void RenderShadow(Render::IRenderContext * pCtx, LightComponent * pLight, uint32 faceID = 0);
-    void Render(Camera * pCamera, Render::IRenderTarget * pRT);
+    void RenderShadow(Renderer::RenderContext * pCtx, LightComponent * pLight, uint32 faceID = 0);
+    void Render(Camera * pCamera, Renderer::IRenderTarget * pRT);
 
     void FindActiveMeshEntities();
     void FindVisibleMeshEntities(const Math::Frustum & frustum, std::vector<MeshComponent*>* pList);
