@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_1d58c455",
+        "filename": "nfEngine/nfCommon/Library.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-21T13:59:10Z",
+      "side": 1,
+      "message": "Move to cpp file",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 49
+      },
+      "revId": "6241831e77cbeaa87bfb89b7c3cff483813d77d8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_bd49988d",
+        "filename": "nfEngine/nfCommon/Linux/Library.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-21T13:59:10Z",
+      "side": 1,
+      "message": "It\u0027s bitfield - you must use \"|\"",
+      "range": {
+        "startLine": 46,
+        "startChar": 45,
+        "endLine": 46,
+        "endChar": 47
+      },
+      "revId": "6241831e77cbeaa87bfb89b7c3cff483813d77d8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_dd5d7c4a",
+        "filename": "nfEngine/nfCommon/Linux/Library.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-21T13:59:10Z",
+      "side": 1,
+      "message": "Space after \"if\"",
+      "revId": "6241831e77cbeaa87bfb89b7c3cff483813d77d8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
