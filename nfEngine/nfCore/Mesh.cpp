@@ -8,7 +8,7 @@
 #include "Globals.hpp"
 #include "Mesh.hpp"
 #include "Material.hpp"
-#include "Renderer.hpp"
+#include "Renderer/HighLevelRenderer.hpp"
 #include "ResourcesManager.hpp"
 #include "Engine.hpp"
 #include "../nfCommon/Logger.hpp"
@@ -17,7 +17,7 @@ namespace NFE {
 namespace Resource {
 
 using namespace Math;
-using namespace Render;
+using namespace Renderer;
 
 Mesh::Mesh()
 {
@@ -139,6 +139,8 @@ bool Mesh::OnLoad()
     for (uint32 i = 0; i < mVeriticesCount; i++)
         pVerticies[i].texCoord.y = 1.0f - pVerticies[i].texCoord.y;
 
+    // TODO
+    /*
     mVB = g_pRenderer->CreateBuffer();
     if (!mVB ||
             !mVB->Init(IRendererBuffer::Type::Vertex, pVerticies, mVeriticesCount * sizeof(MeshVertex)))
@@ -147,9 +149,13 @@ bool Mesh::OnLoad()
         fclose(pFile);
         return false;
     }
+    */
 
     uint32* pIndices = (uint32*)malloc(mIndicesCount * sizeof(uint32));
     fread(pIndices, sizeof(uint32), mIndicesCount, pFile);
+
+    // TODO
+    /*
     mIB = g_pRenderer->CreateBuffer();
     if (!mIB ||
             !mIB->Init(IRendererBuffer::Type::Index, pIndices, mIndicesCount * sizeof(uint32)))
@@ -158,6 +164,7 @@ bool Mesh::OnLoad()
         fclose(pFile);
         return false;
     }
+    */
 
 
     SubMeshDesc* pSubMeshes = (SubMeshDesc*)malloc(mSubMeshesCount * sizeof(SubMeshDesc));

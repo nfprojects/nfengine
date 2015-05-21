@@ -88,7 +88,7 @@ class CORE_API LightComponent : public Component
     std::vector<Camera*> mCameras;
 
     Math::Vector mCascadeRanges[8];
-    Render::IShadowMap* mShadowMap;
+    Renderer::ShadowMap* mShadowMap;
 
     Resource::Texture* mLightMap;
 
@@ -97,7 +97,7 @@ class CORE_API LightComponent : public Component
     void CheckShadowVisibility(const Math::Vector& camPos);
 
 protected:
-    void OnRenderDebug(Render::IRenderContext* pCtx);
+    void OnRenderDebug(Renderer::RenderContext* pCtx);
 
 public:
     LightComponent(Entity* pParent);
@@ -128,7 +128,7 @@ public:
     int IntersectFrustum(const Math::Frustum& frustum);
 
     void Update(Camera* pCamera);
-    void OnRender(Render::IRenderContext* pCtx);
+    void OnRender(Renderer::RenderContext* pCtx);
 
     Result Deserialize(Common::InputStream* pStream);
     Result Serialize(Common::OutputStream* pStream) const;

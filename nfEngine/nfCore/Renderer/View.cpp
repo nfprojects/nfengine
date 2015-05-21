@@ -4,18 +4,20 @@
  * @brief  Definitions of View class.
  */
 
-#include "PCH.hpp"
+#include "../PCH.hpp"
 #include "View.hpp"
-#include "Globals.hpp"
-#include "Renderer.hpp"
-#include "ResourcesManager.hpp"
-#include "Texture.hpp"
-#include "../nfCommon/Window.hpp"
-#include "../nfCommon/Logger.hpp"
-#include "../nfCommon/Image.hpp"
+#include "HighLevelRenderer.hpp"
+
+#include "../Globals.hpp"
+#include "../ResourcesManager.hpp"
+#include "../Texture.hpp"
+
+#include "Window.hpp"
+#include "Logger.hpp"
+#include "Image.hpp"
 
 namespace NFE {
-namespace Render {
+namespace Renderer {
 
 View::View()
 {
@@ -45,7 +47,7 @@ void View::Release()
     }
 }
 
-void View::OnPostRender(IRenderContext* pCtx, IGuiRenderer* pGuiRenderer)
+void View::OnPostRender(RenderContext* context)
 {
     // no GUI by default
 }
@@ -62,11 +64,11 @@ Scene::Camera* View::GetCamera() const
 }
 
 // link the view to a window
-Result View::SetWindow(Common::Window* pWindow)
+Result View::SetWindow(Common::Window* window)
 {
     Release();
 
-    RT = g_pRenderer->CreateRenderTarget();
+    RT = nullptr; // TODO
     if (RT == nullptr)
     {
         LOG_ERROR("Memory allocation failed");
@@ -74,19 +76,19 @@ Result View::SetWindow(Common::Window* pWindow)
     }
 
     uint32 width, height;
-    pWindow->GetSize(width, height);
-    RT->Init(width, height, pWindow);
+    window->GetSize(width, height);
+    // RT->Init(width, height, pWindow); // TODO
     return Result::OK;
 }
 
 using namespace Resource;
 
 // create custom, off-screen render target
-Texture* View::SetOffScreen(uint32 width, uint32 height, const char* pTextureName)
+Texture* View::SetOffScreen(uint32 width, uint32 height, const char* textureName)
 {
     Release();
 
-    mTexture = (Texture*)g_pResManager->GetResource(pTextureName, ResourceType::Texture);
+    mTexture = (Texture*)g_pResManager->GetResource(textureName, ResourceType::Texture);
     if (mTexture == nullptr) return nullptr;
 
     mTexture->Load();
@@ -96,5 +98,5 @@ Texture* View::SetOffScreen(uint32 width, uint32 height, const char* pTextureNam
     return mTexture;
 }
 
-} // namespace Render
+} // namespace Renderer
 } // namespace NFE

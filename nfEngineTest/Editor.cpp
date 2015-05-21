@@ -2,7 +2,7 @@
 #include "Editor.hpp"
 
 using namespace NFE;
-using namespace NFE::Render;
+using namespace NFE::Renderer;
 using namespace NFE::Math;
 using namespace NFE::Scene;
 using namespace NFE::Resource;

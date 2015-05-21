@@ -9,6 +9,7 @@
 #include "Core.hpp"
 #include "Resource.hpp"
 #include "../nfCommon/InputStream.hpp"
+#include "../Renderers/RendererInterface/Device.hpp"
 
 namespace NFE {
 namespace Resource {
@@ -19,7 +20,7 @@ namespace Resource {
  */
 class CORE_API Texture : public ResourceBase
 {
-    Render::IRendererTexture* mTex;
+    Renderer::ITexture* mTex;
     Common::ImageFormat mFormat;
 
     bool OnLoad();
@@ -44,9 +45,9 @@ public:
      * Create renderable texture, for example to show monitor screen with a view from a camera.
      * @remarks Should be used only by View class.
      */
-    Render::IRenderTarget* CreateRendertarget(uint32 width, uint32 height, Common::ImageFormat format);
+    Renderer::IRenderTarget* CreateRendertarget(uint32 width, uint32 height, Common::ImageFormat format);
 
-    Render::IRendererTexture* GetRendererTexture() const;
+    Renderer::ITexture* GetRendererTexture() const;
 };
 
 } // namespace Resource

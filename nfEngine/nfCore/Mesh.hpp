@@ -8,7 +8,7 @@
 
 #include "Core.hpp"
 #include "Resource.hpp"
-#include "Renderer.hpp"
+#include "Renderer/RendererResources.hpp"
 
 namespace NFE {
 namespace Resource {
@@ -63,7 +63,7 @@ class CORE_API Mesh : public ResourceBase
     friend class Scene::SceneManager;
 
 private:
-    Render::MeshVertex* mVerticies;
+    Renderer::MeshVertex* mVerticies;
     uint32* mIndices;
 
     SubMesh* mSubMeshes;
@@ -73,8 +73,8 @@ private:
 
     Math::Box mLocalBox;
 
-    Render::IRendererBuffer* mVB;
-    Render::IRendererBuffer* mIB;
+    Renderer::IBuffer* mVB;
+    Renderer::IBuffer* mIB;
 
 protected:
     /// when creating custom mesh, use this functions:
