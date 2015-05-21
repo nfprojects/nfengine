@@ -21,7 +21,7 @@ namespace NFE {
 namespace Scene {
 
 using namespace Math;
-using namespace Render;
+using namespace Renderer;
 using namespace Resource;
 
 SceneManager::SceneManager()

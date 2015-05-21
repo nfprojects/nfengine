@@ -19,7 +19,7 @@ namespace NFE {
 
 struct DrawRequest
 {
-    Render::View* pView;
+    Renderer::View* pView;
 
     // used for auto exposure
     float deltaTime;
@@ -50,10 +50,10 @@ CORE_API Result EngineRelease();
 CORE_API Resource::ResManager* EngineGetResManager();
 
 /**
- *  Get engine's resources renderer.
+ *  Get engine's high-level renderer.
  * @return NULL on failure.
  */
-CORE_API Render::IRenderer* EngineGetRenderer();
+CORE_API Renderer::HighLevelRenderer* EngineGetRenderer();
 
 /**
  *  Create a new scene.

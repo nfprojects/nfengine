@@ -226,7 +226,7 @@ void Material::OnUnload()
 }
 
 
-using namespace Render;
+using namespace Renderer;
 
 /*
     This function is only temporary (to adapt renderer to the rest of code).

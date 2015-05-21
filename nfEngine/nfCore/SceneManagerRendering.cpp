@@ -11,7 +11,12 @@
 #include "Performance.hpp"
 #include "Engine.hpp"
 #include "BVH.hpp"
-#include "Renderer.hpp"
+#include "Renderer/HighLevelRenderer.hpp"
+#include "Renderer/ShadowsRenderer.hpp"
+#include "Renderer/LightsRenderer.hpp"
+#include "Renderer/GeometryBufferRenderer.hpp"
+#include "Renderer/DebugRenderer.hpp"
+#include "Renderer/RendererContext.hpp"
 #include "../nfCommon/Timer.hpp"
 #include "../nfCommon/Logger.hpp"
 
@@ -19,10 +24,10 @@ namespace NFE {
 namespace Scene {
 
 using namespace Math;
-using namespace Render;
+using namespace Renderer;
 using namespace Resource;
 
-void SceneManager::RenderShadow(IRenderContext* pCtx, LightComponent* pLight, uint32 faceID)
+void SceneManager::RenderShadow(RenderContext* pCtx, LightComponent* pLight, uint32 faceID)
 {
     Common::Timer timer;
     timer.Start();
@@ -41,7 +46,7 @@ void SceneManager::RenderShadow(IRenderContext* pCtx, LightComponent* pLight, ui
         pCamera->perspective.FoV
     };
 
-    g_pShadowRenderer->SetDestination(pCtx, &cameraRenderDesc, pLight->mShadowMap, faceID);
+    ShadowRenderer::Get()->SetDestination(pCtx, &cameraRenderDesc, pLight->mShadowMap, faceID);
 
     pCtx->commandBuffer.Clear();
 
@@ -68,7 +73,7 @@ void SceneManager::RenderShadow(IRenderContext* pCtx, LightComponent* pLight, ui
             {
                 command.indexCount = 3 * pMesh->mSubMeshes[j].trianglesCount;
                 command.startIndex = pMesh->mSubMeshes[j].indexOffset;
-                command.pMaterial = pMesh->mSubMeshes[j].material->GetRendererData();
+                command.material = pMesh->mSubMeshes[j].material->GetRendererData();
                 pCtx->commandBuffer.PushBack(command);
                 Util::g_FrameStats.renderedMeshes++;
             }
@@ -81,12 +86,12 @@ void SceneManager::RenderShadow(IRenderContext* pCtx, LightComponent* pLight, ui
         pCtx->commandBuffer.Sort();
 
         //draw
-        g_pShadowRenderer->Draw(pCtx, pCtx->commandBuffer);
+        ShadowRenderer::Get()->Draw(pCtx, pCtx->commandBuffer);
     }
 }
 
 // Perform Geometry Pass for pCamera in pContext
-void SceneManager::RenderGBuffer(IRenderContext* pCtx, Camera* pCamera,
+void SceneManager::RenderGBuffer(RenderContext* pCtx, Camera* pCamera,
                                  CameraRenderDesc* pCameraDesc, IRenderTarget* pRT)
 {
     //draw mesh entities
@@ -114,7 +119,7 @@ void SceneManager::RenderGBuffer(IRenderContext* pCtx, Camera* pCamera,
             {
                 command.indexCount = 3 * pMesh->mSubMeshes[j].trianglesCount;
                 command.startIndex = pMesh->mSubMeshes[j].indexOffset;
-                command.pMaterial = pMesh->mSubMeshes[j].material->GetRendererData();
+                command.material = pMesh->mSubMeshes[j].material->GetRendererData();
                 commandBuffer.PushBack(command);
                 Util::g_FrameStats.renderedMeshes++;
             }
@@ -124,15 +129,15 @@ void SceneManager::RenderGBuffer(IRenderContext* pCtx, Camera* pCamera,
     commandBuffer.Sort();
 
 
-    g_pGBufferRenderer->Enter(pCtx);
-    g_pGBufferRenderer->SetTarget(pCtx, pRT);
-    g_pGBufferRenderer->SetCamera(pCtx, pCameraDesc);
-    g_pGBufferRenderer->Draw(pCtx, commandBuffer);
-    g_pGBufferRenderer->Leave(pCtx);
+    GBufferRenderer::Get()->Enter(pCtx);
+    GBufferRenderer::Get()->SetTarget(pCtx, pRT);
+    GBufferRenderer::Get()->SetCamera(pCtx, pCameraDesc);
+    GBufferRenderer::Get()->Draw(pCtx, commandBuffer);
+    GBufferRenderer::Get()->Leave(pCtx);
 }
 
 
-void SceneManager::DrawBVHNode(IRenderContext* pCtx, uint32 node, uint32 depth)
+void SceneManager::DrawBVHNode(RenderContext* pCtx, uint32 node, uint32 depth)
 {
     if (node == 0xFFFFFFFF) return;
     Util::BVHNode* pNode = mMeshesBVH->GetNodeById(node);
@@ -141,14 +146,15 @@ void SceneManager::DrawBVHNode(IRenderContext* pCtx, uint32 node, uint32 depth)
     DrawBVHNode(pCtx, pNode->child[1], depth + 1);
 
     uint32 color = 0x7F000000 + depth;
-    g_pDebugRenderer->DrawBox(pCtx, pNode->AABB, color);
+    DebugRenderer::Get()->DrawBox(pCtx, pNode->AABB, color);
 }
 
 void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
 {
     using namespace std::placeholders;
 
-    g_pImmediateContext->Begin();
+    RenderContext* immCtx = gRenderer->GetImmediateContext();
+    immCtx->Begin();
 
     if (pCamera == 0)
     {
@@ -193,17 +199,18 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
     //prepare deferred contexts
     for (size_t i = 0; i < contextsNum; i++)
     {
-        g_pDeferredContexts[i]->Begin();
-        g_pShadowRenderer->Enter(g_pDeferredContexts[i]);
+        RenderContext* ctx = gRenderer->GetDeferredContext(i);
+        ctx->Begin();
+        ShadowRenderer::Get()->Enter(ctx);
     }
 
     //draw shadow maps
-    g_pShadowRenderer->Enter(g_pImmediateContext);
+    ShadowRenderer::Get()->Enter(immCtx);
 
     auto drawShadowMapFunc = [](LightComponent * pLight, size_t instance, size_t threadID)
     {
-        IRenderContext* pContext = g_pDeferredContexts[threadID];
-        pLight->mOwner->GetScene()->RenderShadow(pContext, pLight, static_cast<int>(instance));
+        RenderContext* ctx = gRenderer->GetDeferredContext(threadID);
+        pLight->mOwner->GetScene()->RenderShadow(ctx, pLight, static_cast<int>(instance));
     };
 
     std::vector<Common::TaskID> shadowTasks;
@@ -231,9 +238,9 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
 
     auto endCommandListFunc = [] (size_t instance)
     {
-        IRenderContext* pContext = g_pDeferredContexts[instance];
-        if (pContext)
-            pContext->End();
+        RenderContext* ctx = gRenderer->GetDeferredContext(instance);
+        if (ctx)
+            ctx->End();
     };
 
     // finish all deferred context here - build command lists
@@ -243,23 +250,21 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
 
     // execute command lists
     for (size_t i = 0; i < contextsNum; i++)
-        g_pRenderer->ExecuteDeferredContext(g_pDeferredContexts[i]);
-    g_pShadowRenderer->Leave(g_pImmediateContext);
+        gRenderer->ExecuteDeferredContext(gRenderer->GetDeferredContext(i));
+    ShadowRenderer::Get()->Leave(immCtx);
 
 
     // TODO: this should be recorded to a deffered context as well as lights pass
-    RenderGBuffer(g_pImmediateContext, pCamera, &cameraRenderDesc, pRT);
+    RenderGBuffer(immCtx, pCamera, &cameraRenderDesc, pRT);
 
 
     // LIGHTS RENDERING ===========================================================================
     {
-        IRenderContext* pCtx = g_pImmediateContext;
-
-        g_pLightRenderer->Enter(pCtx);
-        g_pLightRenderer->SetUp(pCtx, pRT, &cameraRenderDesc, mEnvDesc.ambientLight,
+        LightsRenderer::Get()->Enter(immCtx);
+        LightsRenderer::Get()->SetUp(immCtx, pRT, &cameraRenderDesc, mEnvDesc.ambientLight,
                                 mEnvDesc.backgroundColor);
 
-        if (g_pRenderer->settings.tileBasedDeferredShading)
+        if (gRenderer->settings.tileBasedDeferredShading)
         {
             //prepare lights for tile based renderimng
             std::vector<TileOmniLightDesc> omniLights;
@@ -277,10 +282,10 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
             }
 
             if (omniLights.size() > 0)
-                g_pLightRenderer->TileBasedPass(pCtx, static_cast<uint32>(omniLights.size()),
+                LightsRenderer::Get()->TileBasedPass(immCtx, static_cast<uint32>(omniLights.size()),
                                                 &omniLights[0]);
             else
-                g_pLightRenderer->TileBasedPass(pCtx, 0, 0);
+                LightsRenderer::Get()->TileBasedPass(immCtx, 0, 0);
 
 
             //draw remaining lights
@@ -288,7 +293,7 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
             {
                 if (!pLight->CanBeTiled())
                 {
-                    pLight->OnRender(pCtx);
+                    pLight->OnRender(immCtx);
                 }
             }
         }
@@ -296,35 +301,34 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
         {
             for (auto pLight : mLights)
             {
-                pLight->OnRender(pCtx);
+                pLight->OnRender(immCtx);
             }
         }
 
-        g_pLightRenderer->DrawFog(pCtx);
-        g_pLightRenderer->Leave(pCtx);
+        LightsRenderer::Get()->DrawFog(immCtx);
+        LightsRenderer::Get()->Leave(immCtx);
     }
 
 
 
     // DEBUG RENDERING ===========================================================================
 
-    if (g_pRenderer->settings.debugEnable)
+    if (gRenderer->settings.debugEnable)
     {
-        IRenderContext* pCtx = g_pImmediateContext;
-
-        g_pDebugRenderer->Enter(g_pImmediateContext);
-        g_pDebugRenderer->SetCamera(pCtx, pCamera->mViewMatrix, pCamera->mProjMatrix);
+        DebugRenderer::Get()->Enter(immCtx);
+        DebugRenderer::Get()->SetCamera(immCtx, pCamera->mViewMatrix, pCamera->mProjMatrix);
 
 
         //draw meshes bvh
-        DrawBVHNode(pCtx, mMeshesBVH->GetRootId(), 0);
+        // DrawBVHNode(pCtx, mMeshesBVH->GetRootId(), 0);
+        // TODO: removed because of "recursive call has no side effects, deleting" warning
 
 
         //draw coordinate system
         {
-            g_pDebugRenderer->DrawLine(pCtx, Float3(0, 0, 0), Float3(1.0f, 0, 0), 0x8F0000FF);
-            g_pDebugRenderer->DrawLine(pCtx, Float3(0, 0, 0), Float3(0, 1.0f, 0), 0xFF00FF00);
-            g_pDebugRenderer->DrawLine(pCtx, Float3(0, 0, 0), Float3(0, 0, 1.0f), 0xFFFF0000);
+            DebugRenderer::Get()->DrawLine(immCtx, Float3(0, 0, 0), Float3(1.0f, 0, 0), 0x8F0000FF);
+            DebugRenderer::Get()->DrawLine(immCtx, Float3(0, 0, 0), Float3(0, 1.0f, 0), 0xFF00FF00);
+            DebugRenderer::Get()->DrawLine(immCtx, Float3(0, 0, 0), Float3(0, 0, 1.0f), 0xFFFF0000);
         }
 
         // draw entities' coordinate systems
@@ -338,26 +342,26 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
             VectorStore(debugSize * (pEnt->mMatrix.GetRow(1)) + pEnt->mMatrix.GetRow(3), &endY);
             VectorStore(debugSize * (pEnt->mMatrix.GetRow(2)) + pEnt->mMatrix.GetRow(3), &endZ);
 
-            g_pDebugRenderer->DrawLine(pCtx, start, endX, 0xFF0000FF);
-            g_pDebugRenderer->DrawLine(pCtx, start, endY, 0xFF00FF00);
-            g_pDebugRenderer->DrawLine(pCtx, start, endZ, 0xFFFF0000);
+            DebugRenderer::Get()->DrawLine(immCtx, start, endX, 0xFF0000FF);
+            DebugRenderer::Get()->DrawLine(immCtx, start, endY, 0xFF00FF00);
+            DebugRenderer::Get()->DrawLine(immCtx, start, endZ, 0xFFFF0000);
         }
 
         // draw light shapes
-        if (g_pRenderer->settings.debugLights)
+        if (gRenderer->settings.debugLights)
         {
             for (auto pLight : mLights)
-                pLight->OnRenderDebug(pCtx);
+                pLight->OnRenderDebug(immCtx);
         }
 
         //draw meshes AABBs
-        if (g_pRenderer->settings.debugMeshes)
+        if (gRenderer->settings.debugMeshes)
         {
             for (size_t i = 0; i < mActiveMeshEntities.size(); i++)
-                mActiveMeshEntities[i]->OnRenderDebug(pCtx);
+                mActiveMeshEntities[i]->OnRenderDebug(immCtx);
         }
 
-        g_pDebugRenderer->Leave(pCtx);
+        DebugRenderer::Get()->Leave(immCtx);
     }
 }
 

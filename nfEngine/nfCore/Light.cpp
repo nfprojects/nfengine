@@ -8,8 +8,12 @@
 #include "Globals.hpp"
 #include "Light.hpp"
 #include "Entity.hpp"
-#include "Renderer.hpp"
 #include "ResourcesManager.hpp"
+
+#include "Renderer/HighLevelRenderer.hpp"
+#include "Renderer/LightsRenderer.hpp"
+#include "Renderer/DebugRenderer.hpp"
+
 #include "../nfCommon/InputStream.hpp"
 #include "../nfCommon/OutputStream.hpp"
 #include "../nfCommon/Logger.hpp"
@@ -20,7 +24,7 @@ namespace Scene {
 
 using namespace Math;
 using namespace Resource;
-using namespace Render;
+using namespace Renderer;
 
 // TODO: this should be in math library...
 int CalculateEquations(float M[4][3], float* pResult1, float* pResult2, float* pResult3)
@@ -160,7 +164,7 @@ void LightComponent::SetOmniLight(const OmniLightDesc* pDesc)
         mLightType = LightType::Omni;
 
         if (mShadowMap)
-            mShadowMap->Resize(mShadowMap->GetSize(), IShadowMap::Type::Cube);
+            mShadowMap->Resize(mShadowMap->GetSize(), ShadowMap::Type::Cube);
 
         for (int i = 0; i < 6; i++)
         {
@@ -181,7 +185,7 @@ void LightComponent::SetSpotLight(const SpotLightDesc* pDesc)
         mLightType = LightType::Spot;
 
         if (mShadowMap)
-            mShadowMap->Resize(mShadowMap->GetSize(), IShadowMap::Type::Flat);
+            mShadowMap->Resize(mShadowMap->GetSize(), ShadowMap::Type::Flat);
 
         {
             Camera* pCamera = new Camera(mOwner);
@@ -202,7 +206,7 @@ void LightComponent::SetDirLight(const DirLightDesc* pDesc)
         mLightType = LightType::Dir;
 
         if (mShadowMap)
-            mShadowMap->Resize(mShadowMap->GetSize(), IShadowMap::Type::Cascaded);
+            mShadowMap->Resize(mShadowMap->GetSize(), ShadowMap::Type::Cascaded);
 
         for (int i = 0; i < mDirLight.splits; i++)
         {
@@ -217,7 +221,7 @@ Result LightComponent::SetShadowMap(uint32 resolution)
 {
     if (!mShadowMap && resolution > 0)
     {
-        mShadowMap = g_pRenderer->CreateShadowMap();
+        mShadowMap = nullptr; // TODO
         if (mShadowMap == 0)
         {
             LOG_ERROR("Failed to create shadowmap object.");
@@ -236,15 +240,15 @@ Result LightComponent::SetShadowMap(uint32 resolution)
     switch (mLightType)
     {
         case LightType::Omni:
-            mShadowMap->Resize(resolution, IShadowMap::Type::Cube);
+            mShadowMap->Resize(resolution, ShadowMap::Type::Cube);
             break;
 
         case LightType::Spot:
-            mShadowMap->Resize(resolution, IShadowMap::Type::Flat);
+            mShadowMap->Resize(resolution, ShadowMap::Type::Flat);
             break;
 
         case LightType::Dir:
-            mShadowMap->Resize(resolution, IShadowMap::Type::Cascaded, mDirLight.splits);
+            mShadowMap->Resize(resolution, ShadowMap::Type::Cascaded, mDirLight.splits);
             break;
     }
 
@@ -489,13 +493,13 @@ void LightComponent::Update(Camera* pCamera)
     }
 }
 
-void LightComponent::OnRender(IRenderContext* pCtx)
+void LightComponent::OnRender(RenderContext* pCtx)
 {
-    IShadowMap* pShadowMap = mDrawShadow ? mShadowMap : nullptr;
+    ShadowMap* pShadowMap = mDrawShadow ? mShadowMap : nullptr;
 
     if (mLightType == LightType::Omni)
     {
-        g_pLightRenderer->DrawOmniLight(pCtx, mOwner->GetPosition(), mOmniLight.radius, mColor,
+        LightsRenderer::Get()->DrawOmniLight(pCtx, mOwner->GetPosition(), mOmniLight.radius, mColor,
                                         pShadowMap);
     }
 
@@ -514,8 +518,7 @@ void LightComponent::OnRender(IRenderContext* pCtx)
         else
             prop.shadowMapResInv = 0.0f;
 
-
-        g_pLightRenderer->DrawSpotLight(pCtx, prop, mCameras[0]->mFrustum, pShadowMap,
+        LightsRenderer::Get()->DrawSpotLight(pCtx, prop, mCameras[0]->mFrustum, pShadowMap,
                                         mLightMap ? mLightMap->GetRendererTexture() : NULL);
     }
 
@@ -532,24 +535,24 @@ void LightComponent::OnRender(IRenderContext* pCtx)
             prop.viewProjMatrix[i] = mCameras[i]->mViewMatrix * mCameras[i]->mProjMatrix;
         }
 
-        g_pLightRenderer->DrawDirLight(pCtx, prop, pShadowMap);
+        LightsRenderer::Get()->DrawDirLight(pCtx, prop, pShadowMap);
     }
 }
 
 
-void LightComponent::OnRenderDebug(IRenderContext* pCtx)
+void LightComponent::OnRenderDebug(RenderContext* pCtx)
 {
     if (mLightType == LightType::Omni)
     {
         Box box;
         box.min = mOwner->GetPosition() - VectorSplat(mOmniLight.radius);
         box.max = mOwner->GetPosition() + VectorSplat(mOmniLight.radius);
-        g_pDebugRenderer->DrawBox(pCtx, box, 0xFF00FFFF);
+        DebugRenderer::Get()->DrawBox(pCtx, box, 0xFF00FFFF);
     }
 
     if (mLightType == LightType::Spot)
     {
-        g_pDebugRenderer->DrawFrustum(pCtx, mCameras[0]->mFrustum, 0xFF00FFFF);
+        DebugRenderer::Get()->DrawFrustum(pCtx, mCameras[0]->mFrustum, 0xFF00FFFF);
 
         Float3 o, x, y, z;
         VectorStore(mOwner->GetPosition(), &o);
@@ -557,15 +560,15 @@ void LightComponent::OnRenderDebug(IRenderContext* pCtx)
         VectorStore(mOwner->GetPosition() + mOwner->mMatrix.GetRow(1), &y);
         VectorStore(mOwner->GetPosition() + mOwner->mMatrix.GetRow(2), &z);
 
-        g_pDebugRenderer->DrawLine(pCtx, o, x, 0xFF0000FF);
-        g_pDebugRenderer->DrawLine(pCtx, o, y, 0xFF00FF00);
-        g_pDebugRenderer->DrawLine(pCtx, o, z, 0xFFFF0000);
+        DebugRenderer::Get()->DrawLine(pCtx, o, x, 0xFF0000FF);
+        DebugRenderer::Get()->DrawLine(pCtx, o, y, 0xFF00FF00);
+        DebugRenderer::Get()->DrawLine(pCtx, o, z, 0xFFFF0000);
     }
 
     if (mLightType == LightType::Dir)
     {
         //for
-        g_pDebugRenderer->DrawFrustum(pCtx, mCameras[0]->mFrustum, 0xFF00FFFF);
+        DebugRenderer::Get()->DrawFrustum(pCtx, mCameras[0]->mFrustum, 0xFF00FFFF);
     }
 }
 
