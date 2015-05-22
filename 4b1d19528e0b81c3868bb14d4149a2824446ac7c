@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_16925e57",
+        "filename": "nfEngine/nfCommon/Linux/Library.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-22T15:38:26Z",
+      "side": 1,
+      "message": "Does it compile? You try to manipulate on const std::string",
+      "revId": "4b1d19528e0b81c3868bb14d4149a2824446ac7c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_369f6261",
+        "filename": "nfEngine/nfCommon/Linux/Library.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-22T15:38:26Z",
+      "side": 1,
+      "message": "I\u0027m wondering if this file is needed. First of all the code is duplicated (you could avoid it via introducing nfCommon/Library.cpp). Maybe we should enforce that library path in Open() function has no extension? On the other hand it has the advantage that you support both versions (with and without extension).",
+      "revId": "4b1d19528e0b81c3868bb14d4149a2824446ac7c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_d6b9d6ea",
+        "filename": "nfEngine/nfCommon/Linux/Library.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-22T15:38:26Z",
+      "side": 1,
+      "message": "Not a good idea - what if a directory where the file is located contains \".so\". rfind() also won\u0027t be safe. You must ensure that \"libExt\" are the last characters in the path.",
+      "revId": "4b1d19528e0b81c3868bb14d4149a2824446ac7c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_f6cdfa87",
+        "filename": "nfEngine/nfCommon/Win/Library.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-22T15:38:26Z",
+      "side": 1,
+      "message": "See Linux/Library.cpp",
+      "revId": "4b1d19528e0b81c3868bb14d4149a2824446ac7c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
