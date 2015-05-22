@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_7960fd35",
+        "filename": "nfEngine/nfCommon/Packer/PackerWriter.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-22T22:29:50Z",
+      "side": 1,
+      "message": "warning C4715: \u0027\u003clambda_315eb84926d0d3d7553b24875a1a839c\u003e::operator()\u0027 : not all control paths return a value",
+      "revId": "f193c32851eb784d7050cf1e44eda0500fed60ba",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
