@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "facab960_b020da9c",
+        "filename": "nfEngine/nfCommon/Packer/PackerWriter.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-22T06:47:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_1daa8419",
+      "range": {
+        "startLine": 74,
+        "startChar": 6,
+        "endLine": 74,
+        "endChar": 7
+      },
+      "revId": "c8752bac905e1e0f09a7d9343b6823b2bb2b6030",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_3d7e68af",
         "filename": "nfEngine/nfCommon/Packer/PackerWriter.cpp",
         "patchSetId": 4
@@ -42,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_fd2160b5",
+        "filename": "nfEngine/nfCommon/Packer/PackerWriter.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-22T06:47:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_3d7e68af",
+      "revId": "c8752bac905e1e0f09a7d9343b6823b2bb2b6030",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_bd7278e3",
         "filename": "nfEngine/nfCommon/Packer/PackerWriter.cpp",
         "patchSetId": 4
@@ -53,6 +95,24 @@
       "writtenOn": "2015-05-21T13:50:54Z",
       "side": 1,
       "message": "Souldn\u0027t be \"return pr\"? Remeber that if you do \"return false\" in the callback you only tell \"stop iterating\" - the Iterate() function will return true - no internal error happend.",
+      "revId": "c8752bac905e1e0f09a7d9343b6823b2bb2b6030",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_1d2fe4a2",
+        "filename": "nfEngine/nfCommon/Packer/PackerWriter.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-22T06:47:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_bd7278e3",
       "revId": "c8752bac905e1e0f09a7d9343b6823b2bb2b6030",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
