@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_a45a5881",
+        "filename": "nfEngine/nfCommon/Linux/Library.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-23T02:29:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_16925e57",
+      "revId": "4b1d19528e0b81c3868bb14d4149a2824446ac7c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_369f6261",
         "filename": "nfEngine/nfCommon/Linux/Library.cpp",
         "patchSetId": 2
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_c45f5c71",
+        "filename": "nfEngine/nfCommon/Linux/Library.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-23T02:29:29Z",
+      "side": 1,
+      "message": "I changed it to be shorter and inserted it into Open() method.",
+      "parentUuid": "facab960_369f6261",
+      "revId": "4b1d19528e0b81c3868bb14d4149a2824446ac7c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_d6b9d6ea",
         "filename": "nfEngine/nfCommon/Linux/Library.cpp",
         "patchSetId": 2
@@ -47,6 +83,24 @@
       "writtenOn": "2015-05-22T15:38:26Z",
       "side": 1,
       "message": "Not a good idea - what if a directory where the file is located contains \".so\". rfind() also won\u0027t be safe. You must ensure that \"libExt\" are the last characters in the path.",
+      "revId": "4b1d19528e0b81c3868bb14d4149a2824446ac7c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_e453806a",
+        "filename": "nfEngine/nfCommon/Linux/Library.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-23T02:29:29Z",
+      "side": 1,
+      "message": "Now I compare last libExt.length() characters of the string with libExt",
+      "parentUuid": "facab960_d6b9d6ea",
       "revId": "4b1d19528e0b81c3868bb14d4149a2824446ac7c",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
