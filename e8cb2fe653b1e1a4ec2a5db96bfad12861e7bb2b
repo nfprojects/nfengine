@@ -244,6 +244,24 @@
     },
     {
       "key": {
+        "uuid": "1a106d94_fd6047d1",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-23T02:32:37Z",
+      "side": 1,
+      "message": "I can make copy-paste of maps keys \u0026 their descriptions here. Would that be better?",
+      "parentUuid": "1a106d94_3dfe5f06",
+      "revId": "e8cb2fe653b1e1a4ec2a5db96bfad12861e7bb2b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a106d94_dfe0e827",
         "filename": "nfEngine/nfCommon/SystemInfo.hpp",
         "patchSetId": 7
