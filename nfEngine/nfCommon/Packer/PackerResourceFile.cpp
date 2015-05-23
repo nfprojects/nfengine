@@ -19,7 +19,7 @@ PackerResult PackerResourceFile::Init(const std::string& filePath, const std::st
 
     mFilePath = filePath;
 
-    mFileSize = file.GetSize();
+    mFileSize = static_cast<size_t>(file.GetSize());
     mHash.Calculate(vfsFilePath);
 
     return PackerResult::OK;

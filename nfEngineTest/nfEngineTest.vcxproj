@@ -96,6 +96,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -122,6 +123,7 @@ popd</Command>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -149,6 +151,7 @@ popd</Command>
       <AdditionalIncludeDirectories>$(SolutionDir)nfEngine\nfCommon\;$(SolutionDir)nfEngineDeps\AntTweakBar\include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -177,6 +180,7 @@ popd</Command>
       <AdditionalIncludeDirectories>$(SolutionDir)nfEngine\nfCommon\;$(SolutionDir)nfEngineDeps\AntTweakBar\include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

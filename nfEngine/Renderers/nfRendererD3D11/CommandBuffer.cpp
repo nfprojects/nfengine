@@ -62,6 +62,7 @@ void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* stri
 
 void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer)
 {
+    UNUSED(indexBuffer);
 }
 
 void CommandBuffer::SetSamplers(ISampler** samplers, int num, ShaderType target)
@@ -169,12 +170,12 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
     }
 
     ID3D11RenderTargetView* rtvs[MAX_RENDER_TARGETS] = { nullptr };
-    int num = rt->mRTVs.size();
+    size_t num = rt->mRTVs.size();
 
-    for (int i = 0; i < num; ++i)
+    for (size_t i = 0; i < num; ++i)
         rtvs[i] = rt->mRTVs[i].get();
 
-    mContext->OMSetRenderTargets(num, rtvs, rt->mDSV.get());
+    mContext->OMSetRenderTargets(static_cast<UINT>(num), rtvs, rt->mDSV.get());
     mCurrentRenderTarget = rt;
 }
 
@@ -321,13 +322,18 @@ void CommandBuffer::Clear(const float* color)
     // TODO: what about cleaning individual RTs with different colors?
 
     if (mCurrentRenderTarget)
-        for (int i = 0; i < mCurrentRenderTarget->mRTVs.size(); ++i)
+        for (size_t i = 0; i < mCurrentRenderTarget->mRTVs.size(); ++i)
             mContext->ClearRenderTargetView(mCurrentRenderTarget->mRTVs[i].get(), color);
 }
 
 void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum,
                          int indexOffset, int vertexOffset, int instanceOffset)
 {
+    UNUSED(instancesNum);
+    UNUSED(indexOffset);
+    UNUSED(vertexOffset);
+    UNUSED(instanceOffset);
+
     if (type != mCurrentPrimitiveType)
     {
         D3D11_PRIMITIVE_TOPOLOGY topology;
@@ -365,6 +371,8 @@ void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum,
 
 void CommandBuffer::Execute(ICommandBuffer* commandBuffer, bool saveState)
 {
+    UNUSED(commandBuffer);
+    UNUSED(saveState);
 }
 
 } // namespace Renderer

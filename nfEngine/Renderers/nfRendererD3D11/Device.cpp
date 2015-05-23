@@ -104,6 +104,7 @@ IBlendState* Device::CreateBlendState(const BlendStateDesc& desc)
 
 IDepthState* Device::CreateDepthState(const DepthStateDesc& desc)
 {
+    UNUSED(desc);
     return nullptr;
 }
 
@@ -134,6 +135,8 @@ ICommandBuffer* Device::GetDefaultCommandBuffer()
 
 void Device::Execute(ICommandBuffer* commandBuffer, bool saveState)
 {
+    UNUSED(commandBuffer);
+    UNUSED(saveState);
 }
 
 

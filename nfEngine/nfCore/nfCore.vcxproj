@@ -109,6 +109,7 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -135,6 +136,7 @@ popd</Command>
       <ExceptionHandling>Sync</ExceptionHandling>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -167,6 +169,7 @@ popd</Command>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -202,6 +205,7 @@ popd</Command>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
