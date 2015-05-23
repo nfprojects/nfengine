@@ -31,8 +31,7 @@ TEST(ThreadPoolStress, ComplexDependency)
     auto func = [&](size_t instanceId, size_t, size_t id)
     {
         TaskInfo& taskInfo = tasks[id];
-        ASSERT_TRUE(instanceId >= 0 && instanceId < taskInfo.instanceNum)
-                << "Task instance ID out of bound";
+        ASSERT_TRUE(instanceId < taskInfo.instanceNum) << "Task instance ID out of bound";
 
         int depsResolved = 0;
         for (TaskID dependency : taskInfo.deps)

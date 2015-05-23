@@ -15,7 +15,7 @@ TEST(FileTest, Simple)
         ASSERT_EQ(true, file.IsOpened());
 
         ASSERT_EQ(sizeof(testData), file.Write(&testData, sizeof(testData)));
-        EXPECT_EQ(sizeof(testData), file.GetPos());
+        EXPECT_EQ(sizeof(testData), static_cast<size_t>(file.GetPos()));
 
         ASSERT_EQ(true, file.Seek(0, SeekMode::Begin));
         EXPECT_EQ(0, file.GetPos());
@@ -47,7 +47,7 @@ TEST(FileTest, Overwrite)
         // read without overwrite flag
         File file(filePath, AccessMode::Read);
         ASSERT_EQ(true, file.IsOpened());
-        ASSERT_EQ(sizeof(testData), file.GetSize());
+        ASSERT_EQ(static_cast<int64>(sizeof(testData)), file.GetSize());
         ASSERT_EQ(sizeof(testData), file.Read(&data, sizeof(testData)));
         ASSERT_EQ(testData, data);
     }
@@ -56,7 +56,7 @@ TEST(FileTest, Overwrite)
         // read with overwrite flag - should make no difference
         File file(filePath, AccessMode::Read, true);
         ASSERT_EQ(true, file.IsOpened());
-        ASSERT_EQ(sizeof(testData), file.GetSize());
+        ASSERT_EQ(static_cast<int64>(sizeof(testData)), file.GetSize());
         ASSERT_EQ(sizeof(testData), file.Read(&data, sizeof(testData)));
         ASSERT_EQ(testData, data);
     }
@@ -65,14 +65,14 @@ TEST(FileTest, Overwrite)
         // write without overwrite flag - file is not truncated
         File file(filePath, AccessMode::Write);
         ASSERT_EQ(true, file.IsOpened());
-        ASSERT_EQ(sizeof(testData), file.GetSize());
+        ASSERT_EQ(static_cast<int64>(sizeof(testData)), file.GetSize());
     }
 
     {
         // read/write without overwrite flag - file is not truncated
         File file(filePath, AccessMode::ReadWrite);
         ASSERT_EQ(true, file.IsOpened());
-        ASSERT_EQ(sizeof(testData), file.GetSize());
+        ASSERT_EQ(static_cast<int64>(sizeof(testData)), file.GetSize());
         ASSERT_EQ(sizeof(testData), file.Read(&data, sizeof(testData)));
         ASSERT_EQ(testData, data);
     }
@@ -94,7 +94,7 @@ TEST(FileTest, Overwrite)
  *
  * TODO: introduce "access share" flag in File::Open() method
  */
-#if defined(WIN32)
+#ifdef WIN32
 TEST(FileTest, AccessShare)
 {
     const std::string filePath = "access_share_test_file";
@@ -119,4 +119,4 @@ TEST(FileTest, AccessShare)
     // cleanup
     EXPECT_EQ(true, FileSystem::Remove(filePath));
 }
-#endif // defined(WIN32)
+#endif // WIN32

@@ -318,7 +318,6 @@ bool Intersect(const Box& box, const Sphere& sphere)
 template<> NFCOMMON_API
 bool Intersect(const Frustum& frustum, const Sphere& sphere)
 {
-    Vector radius = _mm_set_ps1(sphere.r);
     Vector invRadius = _mm_set_ss(-sphere.r);
 
     // test frustum planes against the sphere

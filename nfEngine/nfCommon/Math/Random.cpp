@@ -45,7 +45,7 @@ float Random::GetFloat()
 {
     Shuffle();
     FloatInt myrand;
-    myrand.u = 1 + (((int)mSeed) & 0x007fffff | 0x3f800000);
+    myrand.u = 1 + ((((int)mSeed) & 0x007fffff) | 0x3f800000);
     return myrand.f - 1.0f;
 }
 
@@ -53,7 +53,7 @@ float Random::GetFloatBipolar()
 {
     Shuffle();
     FloatInt myrand;
-    myrand.u = 1 + (((int)mSeed) & 0x007fffff | 0x40000000);
+    myrand.u = 1 + ((((int)mSeed) & 0x007fffff) | 0x40000000);
     return myrand.f - 3.0f;
 }
 
@@ -61,7 +61,7 @@ double Random::GetDouble()
 {
     Shuffle();
     DoubleInt myrand;
-    myrand.u = 1L + (mSeed & 0x000fffffffffffffUL | 0x3ff0000000000000UL);
+    myrand.u = 1L + ((mSeed & 0x000fffffffffffffUL) | 0x3ff0000000000000UL);
     return myrand.f - 1.0;
 }
 
@@ -72,9 +72,9 @@ Float2 Random::GetFloat2()
 
     Shuffle();
 
-    myrand.u = 1 + (((int)mSeed) & 0x007fffff | 0x3f800000);
+    myrand.u = 1 + ((((int)mSeed) & 0x007fffff) | 0x3f800000);
     result.x = myrand.f - 1.0f;
-    myrand.u = 1 + (((int)(mSeed >> 32)) & 0x007fffff | 0x3f800000);
+    myrand.u = 1 + (((int)(mSeed >> 32) & 0x007fffff) | 0x3f800000);
     result.y = myrand.f - 1.0f;
 
     return result;
@@ -86,13 +86,13 @@ Float3 Random::GetFloat3()
     FloatInt myrand;
 
     Shuffle();
-    myrand.u = 1 + (((int)mSeed) & 0x007fffff | 0x3f800000);
+    myrand.u = 1 + ((((int)mSeed) & 0x007fffff) | 0x3f800000);
     result.x = myrand.f - 1.0f;
-    myrand.u = 1 + (((int)(mSeed >> 32)) & 0x007fffff | 0x3f800000);
+    myrand.u = 1 + (((int)(mSeed >> 32) & 0x007fffff) | 0x3f800000);
     result.y = myrand.f - 1.0f;
 
     Shuffle();
-    myrand.u = 1 + (((int)mSeed) & 0x007fffff | 0x3f800000);
+    myrand.u = 1 + ((((int)mSeed) & 0x007fffff) | 0x3f800000);
     result.z = myrand.f - 1.0f;
 
     return result;
@@ -104,15 +104,15 @@ Float4 Random::GetFloat4()
     FloatInt myrand;
 
     Shuffle();
-    myrand.u = 1 + (((int)mSeed) & 0x007fffff | 0x3f800000);
+    myrand.u = 1 + ((((int)mSeed) & 0x007fffff) | 0x3f800000);
     result.x = myrand.f - 1.0f;
-    myrand.u = 1 + (((int)(mSeed >> 32)) & 0x007fffff | 0x3f800000);
+    myrand.u = 1 + (((int)(mSeed >> 32) & 0x007fffff) | 0x3f800000);
     result.y = myrand.f - 1.0f;
 
     Shuffle();
-    myrand.u = 1 + (((int)mSeed) & 0x007fffff | 0x3f800000);
+    myrand.u = 1 + ((((int)mSeed) & 0x007fffff) | 0x3f800000);
     result.z = myrand.f - 1.0f;
-    myrand.u = 1 + (((int)(mSeed >> 32)) & 0x007fffff | 0x3f800000);
+    myrand.u = 1 + (((int)(mSeed >> 32) & 0x007fffff) | 0x3f800000);
     result.w = myrand.f - 1.0f;
 
     return result;

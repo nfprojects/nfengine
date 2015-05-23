@@ -47,6 +47,9 @@ SET(NFCOMMONTEST_DIRECTORY ${NFE_ROOT_DIRECTORY}/nfEngine/nfCommonTest)
 # Enable SSE4.1 instructions
 ADD_DEFINITIONS("-msse4.1")
 
+# Enable all warnings and make them errors
+ADD_DEFINITIONS("-Wall -Wpedantic -Wextra -Wno-sign-compare -Werror")
+
 # Building outputs
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${NFE_OUTPUT_DIRECTORY})
 SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${NFE_OUTPUT_DIRECTORY})

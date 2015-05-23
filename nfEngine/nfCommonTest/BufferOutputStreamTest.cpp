@@ -44,6 +44,7 @@ TEST(BufferOutputStreamTest, ClearTest)
     // Create stream and insert our TEXT
     BufferOutputStream stream;
     size_t writeResult = stream.Write(TEXT.data(), TEXTSIZE);
+    ASSERT_EQ(TEXTSIZE, writeResult);
 
     // Clear and check if everything got cleared
     stream.Clear();

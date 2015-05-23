@@ -25,8 +25,8 @@ bool UTF8ToUTF16(const std::string& in, std::wstring& out)
 
     ++inChars;
 
-    int result = ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, in.c_str(), inChars, buffer,
-                                       bufferSize);
+    int result = ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, in.c_str(),
+                                       static_cast<int>(inChars), buffer, bufferSize);
     if (result == 0)
         return false;
 
@@ -47,7 +47,8 @@ bool UTF16ToUTF8(const std::wstring& in, std::string& out)
 
     ++inChars;
 
-    int result = ::WideCharToMultiByte(CP_UTF8, 0, in.c_str(), inChars, buffer, bufferSize, 0, 0);
+    int result = ::WideCharToMultiByte(CP_UTF8, 0, in.c_str(), static_cast<int>(inChars), buffer,
+                                       bufferSize, 0, 0);
     if (result == 0)
         return false;
 
