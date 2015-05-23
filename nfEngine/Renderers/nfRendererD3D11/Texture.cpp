@@ -37,6 +37,7 @@ Texture::~Texture()
 bool Texture::InitTexture1D(const TextureDesc& desc)
 {
     // TODO: fill
+    UNUSED(desc);
 
     type = TextureType::Texture1D;
     return true;
@@ -102,8 +103,8 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
         for (int i = 0; i < desc.mipmaps; ++i)
         {
             initialData[i].pSysMem = desc.dataDesc[i].data;
-            initialData[i].SysMemPitch = desc.dataDesc[i].lineSize;
-            initialData[i].SysMemSlicePitch = desc.dataDesc[i].sliceSize;
+            initialData[i].SysMemPitch = static_cast<UINT>(desc.dataDesc[i].lineSize);
+            initialData[i].SysMemSlicePitch = static_cast<UINT>(desc.dataDesc[i].sliceSize);
         }
 
         hr = D3D_CALL_CHECK(gDevice->Get()->CreateTexture2D(&td, initialData, &mTexture2D));
@@ -146,6 +147,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
 bool Texture::InitTexture3D(const TextureDesc& desc)
 {
     // TODO: fill
+    UNUSED(desc);
 
     type = TextureType::Texture3D;
     return true;

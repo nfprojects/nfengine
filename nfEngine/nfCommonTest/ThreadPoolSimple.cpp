@@ -112,8 +112,7 @@ TEST(ThreadPoolSimple, ThreadId)
 
     TaskFunction taskFunc = [&](size_t, size_t threadId)
     {
-        ASSERT_TRUE(threadId >= 0 && threadId < workerThreads) << "Unexpected thread id: "
-                << threadId;
+        ASSERT_TRUE(threadId < workerThreads) << "Unexpected thread id: " << threadId;
         counters[threadId]++;
         done++;
         latch.Wait();
@@ -162,7 +161,7 @@ TEST(ThreadPoolSimple, InstancesSimple)
 
     auto func = [&counters, instancesNum](size_t instanceId, size_t)
     {
-        ASSERT_TRUE(instanceId >= 0 && instanceId < instancesNum);
+        ASSERT_TRUE(instanceId < instancesNum);
         counters[instanceId]++;
     };
 

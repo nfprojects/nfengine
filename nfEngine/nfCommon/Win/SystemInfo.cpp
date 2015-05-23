@@ -20,7 +20,7 @@ void ReadHardwareInfo()
 
     // Get the information associated with each extended ID.
     char CPUBrandString[CPU_BRAND_STRING_LENGTH] = { 0 };
-    for ( unsigned int i = CPU_BRAND_STRING_1; i <= nExIds; ++i)
+    for (unsigned int i = static_cast<unsigned int>(CPU_BRAND_STRING_1); i <= nExIds; ++i)
     {
         __cpuid(CPUInfo, i);
 

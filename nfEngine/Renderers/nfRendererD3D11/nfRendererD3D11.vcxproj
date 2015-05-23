@@ -95,6 +95,7 @@
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)nfEngine\nfCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -115,6 +116,7 @@
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)nfEngine\nfCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -137,6 +139,7 @@
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)nfEngine\nfCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -161,6 +164,7 @@
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)nfEngine\nfCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

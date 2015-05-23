@@ -55,7 +55,7 @@ bool InitRenderer()
 IShader* CompileShader(const char* path, ShaderType type)
 {
     File file(path, AccessMode::Read);
-    size_t size = file.GetSize();
+    size_t size = static_cast<size_t>(file.GetSize());
     std::vector<char> str(size + 1);
     file.Read(str.data(), size);
     str[size] = '\0';
@@ -81,9 +81,13 @@ void ReleaseRenderer()
     gRendererLib.Close();
 }
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                   LPSTR lpCmdLine, int nCmdShow)
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+    (void)hInstance;
+    (void)hPrevInstance;
+    (void)lpCmdLine;
+    (void)nCmdShow;
+
     Window window;
     window.SetSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     window.SetTitle("nfEngine Renderer Test");

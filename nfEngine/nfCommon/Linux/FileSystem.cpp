@@ -147,6 +147,8 @@ bool FileSystem::Remove(const std::string& path, bool recursive)
 
 bool FileSystem::Copy(const std::string& srcPath, const std::string& destPath, bool overwrite)
 {
+    (void)overwrite;
+
     const int bufferSize = 8192;
     char buf[bufferSize];
     ssize_t nread;

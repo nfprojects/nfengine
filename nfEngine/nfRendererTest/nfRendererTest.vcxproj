@@ -96,6 +96,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -120,6 +121,7 @@ popd</Command>
       <AdditionalIncludeDirectories>$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,6 +147,7 @@ popd</Command>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -172,6 +175,7 @@ popd</Command>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

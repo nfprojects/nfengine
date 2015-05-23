@@ -10,6 +10,10 @@
 #define D3D_SAFE_RELEASE(x) { if (x) {(x)->Release(); (x)=0;} }
 #endif
 
+#ifndef UNUSED
+#define UNUSED(x) (void)(x)
+#endif
+
 namespace NFE {
 namespace Renderer {
 

@@ -204,11 +204,12 @@ void Window::ProcessMessages()
     {
         case ClientMessage:
         {
-            if (event.xclient.data.l[0] == XInternAtom(mDisplay, "WM_DELETE_WINDOW", false))
-                {
-                    this->Close();
-                    this->OnClose();
-                }
+            if (static_cast<Atom>(event.xclient.data.l[0]) ==
+                XInternAtom(mDisplay, "WM_DELETE_WINDOW", false))
+            {
+                this->Close();
+                this->OnClose();
+            }
             break;
         }
         case KeyPress:
@@ -251,7 +252,8 @@ void Window::ProcessMessages()
         {
             XConfigureEvent confEvent = event.xconfigure;
 
-            if (confEvent.width != mWidth || confEvent.height != mHeight)
+            if (static_cast<uint32>(confEvent.width) != mWidth ||
+                static_cast<uint32>(confEvent.height) != mHeight)
             {
                 mWidth = confEvent.width;
                 mHeight = confEvent.height;

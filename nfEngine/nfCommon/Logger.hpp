@@ -83,11 +83,11 @@ public:
 
 
 /// logging macros
-#define LOG_INFO(msg, ...)      { if (Common::Logger::GetInstance()) Common::Logger::GetInstance()->Log(Common::LogType::Info, __FUNCTION__, __FILE__, __LINE__, (msg), __VA_ARGS__); }
-#define LOG_SUCCESS(msg, ...)   { if (Common::Logger::GetInstance()) Common::Logger::GetInstance()->Log(Common::LogType::Success, __FUNCTION__, __FILE__, __LINE__, (msg), __VA_ARGS__); }
-#define LOG_WARNING(msg, ...)   { if (Common::Logger::GetInstance()) Common::Logger::GetInstance()->Log(Common::LogType::Warning, __FUNCTION__, __FILE__, __LINE__, (msg), __VA_ARGS__); }
-#define LOG_ERROR(msg, ...)     { if (Common::Logger::GetInstance()) Common::Logger::GetInstance()->Log(Common::LogType::Error, __FUNCTION__, __FILE__, __LINE__, (msg), __VA_ARGS__); }
-#define LOG_FATAL(msg, ...)     { if (Common::Logger::GetInstance()) Common::Logger::GetInstance()->Log(Common::LogType::Fatal, __FUNCTION__, __FILE__, __LINE__, (msg), __VA_ARGS__); }
+#define LOG_INFO(msg, ...)      { if (Common::Logger::GetInstance()) Common::Logger::GetInstance()->Log(Common::LogType::Info, __FUNCTION__, __FILE__, __LINE__, __VA_ARGS__); }
+#define LOG_SUCCESS(msg, ...)   { if (Common::Logger::GetInstance()) Common::Logger::GetInstance()->Log(Common::LogType::Success, __FUNCTION__, __FILE__, __LINE__, __VA_ARGS__); }
+#define LOG_WARNING(msg, ...)   { if (Common::Logger::GetInstance()) Common::Logger::GetInstance()->Log(Common::LogType::Warning, __FUNCTION__, __FILE__, __LINE__, __VA_ARGS__); }
+#define LOG_ERROR(msg, ...)     { if (Common::Logger::GetInstance()) Common::Logger::GetInstance()->Log(Common::LogType::Error, __FUNCTION__, __FILE__, __LINE__, __VA_ARGS__); }
+#define LOG_FATAL(msg, ...)     { if (Common::Logger::GetInstance()) Common::Logger::GetInstance()->Log(Common::LogType::Fatal, __FUNCTION__, __FILE__, __LINE__, __VA_ARGS__); }
 
 
 /*
@@ -96,10 +96,10 @@ public:
  */
 #else // !defined(__LINUX__) & !defined(__linux__)
 
-#define LOG_INFO(msg, ...)
-#define LOG_SUCCESS(msg, ...)
-#define LOG_WARNING(msg, ...)
-#define LOG_ERROR(msg, ...)
-#define LOG_FATAL(msg, ...)
+#define LOG_INFO(...) do {} while (0)
+#define LOG_SUCCESS(...) do {} while (0)
+#define LOG_WARNING(...) do {} while (0)
+#define LOG_ERROR(...) do {} while (0)
+#define LOG_FATAL(...) do {} while (0)
 
 #endif // !defined(__LINUX__) & !defined(__linux__)

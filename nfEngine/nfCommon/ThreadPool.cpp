@@ -198,7 +198,7 @@ TaskID ThreadPool::Enqueue(TaskFunction function, size_t instances,
     }
     else
     {
-        if (required < 0 || required > dependencies.size())
+        if (required > dependencies.size())
             task->mRequired = dependencies.size();
         else
             task->mRequired = required;

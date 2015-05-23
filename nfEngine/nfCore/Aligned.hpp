@@ -11,6 +11,12 @@
 namespace NFE {
 namespace Util {
 
+// we need to do this because of Visual Studio compile bug
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4100)
+#endif // _MSC_VER
+
 /*
     Override to align children objects to 16 bytes.
 */
@@ -144,6 +150,10 @@ public:
 private:
     AlignedAllocator& operator=(const AlignedAllocator&);
 };
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif // _MSC_VER
 
 } // namespace Util
 } // namespace NFE
