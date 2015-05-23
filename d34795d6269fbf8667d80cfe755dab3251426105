@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "facab960_1fad1189",
+        "filename": "nfEngine/nfCommon/Linux/Library.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-23T15:35:18Z",
+      "side": 1,
+      "message": "LOCAL is default. As I understand, GLOBAL makes the library symbol part of the calling program symbol - we rather don\u0027t want to do this.",
+      "parentUuid": "facab960_5f05d9c0",
+      "range": {
+        "startLine": 51,
+        "startChar": 50,
+        "endLine": 51,
+        "endChar": 61
+      },
+      "revId": "d34795d6269fbf8667d80cfe755dab3251426105",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_44034c0f",
         "filename": "nfEngine/nfCommon/Linux/Library.cpp",
         "patchSetId": 3
@@ -84,6 +108,30 @@
       "side": 1,
       "message": "Let\u0027s port Logger first and then log. \nI think that in commit with Logger porting all of files in nfCommon/Linux should be checked and updated.",
       "parentUuid": "facab960_44034c0f",
+      "range": {
+        "startLine": 55,
+        "startChar": 8,
+        "endLine": 55,
+        "endChar": 20
+      },
+      "revId": "d34795d6269fbf8667d80cfe755dab3251426105",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_3faad570",
+        "filename": "nfEngine/nfCommon/Linux/Library.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-23T15:35:18Z",
+      "side": 1,
+      "message": "So leave TODO",
+      "parentUuid": "facab960_7f0a9dd3",
       "range": {
         "startLine": 55,
         "startChar": 8,
