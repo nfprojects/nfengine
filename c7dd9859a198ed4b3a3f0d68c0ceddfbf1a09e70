@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_eaf8a9c6",
+        "filename": "nfEngine/nfCommonTest/TestCalcLib/CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-24T09:44:52Z",
+      "side": 1,
+      "message": "replace testCalcLib to TestCalcLib in the whole file",
+      "revId": "c7dd9859a198ed4b3a3f0d68c0ceddfbf1a09e70",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
