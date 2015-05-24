@@ -16,6 +16,24 @@
       "revId": "c7dd9859a198ed4b3a3f0d68c0ceddfbf1a09e70",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_cad685c5",
+        "filename": "nfEngine/nfCommonTest/TestCalcLib/CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-24T12:03:26Z",
+      "side": 1,
+      "message": "made it, so it resembles result of building through VS",
+      "parentUuid": "facab960_eaf8a9c6",
+      "revId": "c7dd9859a198ed4b3a3f0d68c0ceddfbf1a09e70",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
