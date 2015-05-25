@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_2d6f0894",
+        "filename": "nfEngine/Renderers/RendererInterface/CommandBuffer.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-25T08:00:41Z",
+      "side": 1,
+      "message": "Missing @param, it might generate doxy warnings",
+      "revId": "79cc41661011537981868ca419c9c4881035f613",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_8d2c944c",
+        "filename": "nfEngine/Renderers/RendererInterface/CommandBuffer.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-25T08:00:41Z",
+      "side": 1,
+      "message": "I would separate TODOs from doxy comments. There is no need to see TODOs inside Doxy-generated HTML documentation.",
+      "revId": "79cc41661011537981868ca419c9c4881035f613",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
