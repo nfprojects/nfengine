@@ -33,6 +33,80 @@
       "revId": "62acb0975d8c1b9c690c0824b4bbde36e8929ecc",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_8d74949d",
+        "filename": "nfEngine/nfCommonTest/TestCalcLib/CMakeLists.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-25T07:13:58Z",
+      "side": 1,
+      "message": "I don\u0027t like the localization of TestCalcLib. There\u0027s no way to re-create the directory structure in Visual Studio (which we currently did), plus it may seem that this is a part of nfCommonTest (well, IMO it isn\u0027t, it is a separate library used for test purposes only).\n\nHow about creating a new directory in \u003crepo_root\u003e/nfEngine/ for such projects? \"TestSupports\" or sth else (maybe you\u0027ll think of a better name), inside keep TestCalcLib.",
+      "revId": "62acb0975d8c1b9c690c0824b4bbde36e8929ecc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_6d3110ec",
+        "filename": "nfEngine/nfCommonTest/TestCalcLib/CMakeLists.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-25T07:13:58Z",
+      "side": 1,
+      "message": "Create a new variable, TESTCALCLIB_DIRECTORY in main CMakeLists file",
+      "range": {
+        "startLine": 12,
+        "startChar": 32,
+        "endLine": 12,
+        "endChar": 69
+      },
+      "revId": "62acb0975d8c1b9c690c0824b4bbde36e8929ecc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_ad523811",
+        "filename": "nfEngine/nfCommonTest/TestCalcLib/CMakeLists.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-25T07:13:58Z",
+      "side": 1,
+      "message": "Use FILE GLOB to find these source files, do not hard-code them.",
+      "revId": "62acb0975d8c1b9c690c0824b4bbde36e8929ecc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_ad795895",
+        "filename": "nfEngine/nfCommonTest/TestCalcLib/TestCalcLib.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-25T07:13:58Z",
+      "side": 1,
+      "message": "Am I the only one missing \"DllMain\" for Windows? I always thought this was needed...",
+      "revId": "62acb0975d8c1b9c690c0824b4bbde36e8929ecc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
