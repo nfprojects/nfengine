@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_9a63ec19",
+        "filename": "Engine.sln",
+        "patchSetId": 7
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-25T06:17:35Z",
+      "side": 1,
+      "message": "huh?",
+      "revId": "62acb0975d8c1b9c690c0824b4bbde36e8929ecc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_3a74a0ce",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-25T06:17:35Z",
+      "side": 1,
+      "message": "Separate \"this_file_does_not_exist\" test into separate test case. Tests should be distributed into multiple test cases, each one testing different part of the module. As an example, to better know what I\u0027m talking about, I recommend: http://devopsreactions.tumblr.com/post/118852143728/unit-testing",
+      "revId": "62acb0975d8c1b9c690c0824b4bbde36e8929ecc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
