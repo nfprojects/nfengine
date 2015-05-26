@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_5e10714e",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-26T15:12:41Z",
+      "side": 1,
+      "message": "What does /proc/meminfo have to do with process\u0027 virtual memory?",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_dcd64cc5",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-26T15:12:41Z",
+      "side": 1,
+      "message": "Rename to MEMORY_BYTES_DIVISOR, move to NFE::Common namespace",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_9e3119ef",
+        "filename": "nfEngine/nfCommonTest/SystemInfoTest.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-26T15:12:41Z",
+      "side": 1,
+      "message": "We can have 0B of swap",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_de52c112",
+        "filename": "nfEngine/nfCommonTest/SystemInfoTest.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-26T15:12:41Z",
+      "side": 1,
+      "message": "We can have 0B of swap",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
