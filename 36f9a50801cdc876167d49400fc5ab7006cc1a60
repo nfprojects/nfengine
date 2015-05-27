@@ -36,6 +36,29 @@
     },
     {
       "key": {
+        "uuid": "facab960_e1c1a4e5",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-27T09:20:59Z",
+      "side": 1,
+      "message": "Don\u0027t do that when parsing /proc/... files. Their structure may be different depending on kernel version and configuration",
+      "range": {
+        "startLine": 29,
+        "startChar": 24,
+        "endLine": 29,
+        "endChar": 26
+      },
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_81be18fe",
         "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
         "patchSetId": 15
@@ -64,6 +87,52 @@
       "writtenOn": "2015-05-26T15:12:41Z",
       "side": 1,
       "message": "Rename to MEMORY_BYTES_DIVISOR, move to NFE::Common namespace",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_01b76887",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-27T09:20:59Z",
+      "side": 1,
+      "message": "swap",
+      "range": {
+        "startLine": 71,
+        "startChar": 51,
+        "endLine": 71,
+        "endChar": 58
+      },
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_21bc6c69",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-27T09:20:59Z",
+      "side": 1,
+      "message": "Why the values returned by this functions aren\u0027t updated every call?",
+      "range": {
+        "startLine": 92,
+        "startChar": 0,
+        "endLine": 94,
+        "endChar": 38
+      },
       "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
