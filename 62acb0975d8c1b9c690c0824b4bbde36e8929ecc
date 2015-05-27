@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_2ad198fb",
+        "filename": "Engine.sln",
+        "patchSetId": 7
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-27T23:56:50Z",
+      "side": 1,
+      "message": "I changed it back to previous value.\nNow I\u0027m downloading update for VS2013 ;d",
+      "parentUuid": "facab960_9a63ec19",
+      "revId": "62acb0975d8c1b9c690c0824b4bbde36e8929ecc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_3a74a0ce",
         "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
         "patchSetId": 7
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_0fab06d9",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-27T23:56:50Z",
+      "side": 1,
+      "message": "Actually...that gif opened my eyes.\nI added added few tests.",
+      "parentUuid": "facab960_3a74a0ce",
+      "revId": "62acb0975d8c1b9c690c0824b4bbde36e8929ecc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_8d74949d",
         "filename": "nfEngine/nfCommonTest/TestCalcLib/CMakeLists.txt",
         "patchSetId": 7
@@ -47,6 +83,24 @@
       "writtenOn": "2015-05-25T07:13:58Z",
       "side": 1,
       "message": "I don\u0027t like the localization of TestCalcLib. There\u0027s no way to re-create the directory structure in Visual Studio (which we currently did), plus it may seem that this is a part of nfCommonTest (well, IMO it isn\u0027t, it is a separate library used for test purposes only).\n\nHow about creating a new directory in \u003crepo_root\u003e/nfEngine/ for such projects? \"TestSupports\" or sth else (maybe you\u0027ll think of a better name), inside keep TestCalcLib.",
+      "revId": "62acb0975d8c1b9c690c0824b4bbde36e8929ecc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_0f26a6b7",
+        "filename": "nfEngine/nfCommonTest/TestCalcLib/CMakeLists.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-27T23:56:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_8d74949d",
       "revId": "62acb0975d8c1b9c690c0824b4bbde36e8929ecc",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -76,6 +130,30 @@
     },
     {
       "key": {
+        "uuid": "facab960_6f62d2d9",
+        "filename": "nfEngine/nfCommonTest/TestCalcLib/CMakeLists.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-27T23:56:50Z",
+      "side": 1,
+      "message": "used FILE GLOB, don\u0027t need this",
+      "parentUuid": "facab960_6d3110ec",
+      "range": {
+        "startLine": 12,
+        "startChar": 32,
+        "endLine": 12,
+        "endChar": 69
+      },
+      "revId": "62acb0975d8c1b9c690c0824b4bbde36e8929ecc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_ad523811",
         "filename": "nfEngine/nfCommonTest/TestCalcLib/CMakeLists.txt",
         "patchSetId": 7
@@ -93,6 +171,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_8f5f160e",
+        "filename": "nfEngine/nfCommonTest/TestCalcLib/CMakeLists.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-27T23:56:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_ad523811",
+      "revId": "62acb0975d8c1b9c690c0824b4bbde36e8929ecc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_ad795895",
         "filename": "nfEngine/nfCommonTest/TestCalcLib/TestCalcLib.cpp",
         "patchSetId": 7
@@ -104,6 +200,24 @@
       "writtenOn": "2015-05-25T07:13:58Z",
       "side": 1,
       "message": "Am I the only one missing \"DllMain\" for Windows? I always thought this was needed...",
+      "revId": "62acb0975d8c1b9c690c0824b4bbde36e8929ecc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_2fafeae4",
+        "filename": "nfEngine/nfCommonTest/TestCalcLib/TestCalcLib.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-27T23:56:50Z",
+      "side": 1,
+      "message": "Well...it compiles for me. Tests pass as well, so I think it may NOT be needed after all ;)",
+      "parentUuid": "facab960_ad795895",
       "revId": "62acb0975d8c1b9c690c0824b4bbde36e8929ecc",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
