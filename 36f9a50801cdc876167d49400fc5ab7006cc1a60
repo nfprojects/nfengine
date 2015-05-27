@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "facab960_a1bb1c0d",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-27T06:20:16Z",
+      "side": 1,
+      "message": "I\u0027m not even mad anymore",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_5e10714e",
         "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
         "patchSetId": 15
@@ -13,6 +30,23 @@
       "writtenOn": "2015-05-26T15:12:41Z",
       "side": 1,
       "message": "What does /proc/meminfo have to do with process\u0027 virtual memory?",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_81be18fe",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-27T06:20:16Z",
+      "side": 1,
+      "message": "Add some comments on what platforms will use specified blocks.",
       "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -36,6 +70,23 @@
     },
     {
       "key": {
+        "uuid": "facab960_c13740af",
+        "filename": "nfEngine/nfCommon/Win/SystemInfoPlatform.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-27T06:20:16Z",
+      "side": 1,
+      "message": "Nah, I\u0027m cool with that.",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_9e3119ef",
         "filename": "nfEngine/nfCommonTest/SystemInfoTest.cpp",
         "patchSetId": 15
@@ -47,6 +98,24 @@
       "writtenOn": "2015-05-26T15:12:41Z",
       "side": 1,
       "message": "We can have 0B of swap",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_015928fe",
+        "filename": "nfEngine/nfCommonTest/SystemInfoTest.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-27T06:20:16Z",
+      "side": 1,
+      "message": "I agree, this assert might cause our tests to fail. I personally hate anything SWAP-related and have it turned off on my PC.\n\nThe ideal would be to check how much disk space you have on every partition on your PC and compare the emptiest one returned with swap. However, this seems like a too much hastle - how about assuming that we can\u0027t have more than, for example, 1TB swap?",
+      "parentUuid": "facab960_9e3119ef",
       "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
