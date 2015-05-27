@@ -59,6 +59,23 @@
     },
     {
       "key": {
+        "uuid": "facab960_a78dec7d",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-27T13:20:00Z",
+      "side": 1,
+      "message": "I suggest doing mulpiplication first, and then division by MemoryBytesDivisor.",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_81be18fe",
         "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
         "patchSetId": 15
@@ -70,6 +87,23 @@
       "writtenOn": "2015-05-27T06:20:16Z",
       "side": 1,
       "message": "Add some comments on what platforms will use specified blocks.",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_e7ee1422",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-27T13:20:00Z",
+      "side": 1,
+      "message": "As above",
       "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -150,6 +184,23 @@
       "writtenOn": "2015-05-27T06:20:16Z",
       "side": 1,
       "message": "Nah, I\u0027m cool with that.",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_a7b6cc3b",
+        "filename": "nfEngine/nfCommon/Win/SystemInfoPlatform.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-27T13:20:00Z",
+      "side": 1,
+      "message": "Write a comment why you do so",
       "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
