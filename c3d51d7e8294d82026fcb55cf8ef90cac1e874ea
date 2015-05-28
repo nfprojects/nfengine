@@ -1,0 +1,210 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_ef033f0d",
+        "filename": "nfEngine/TestResources/TestCalcLib/Release/testCalcLib.log",
+        "patchSetId": 8
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-28T08:45:15Z",
+      "side": 1,
+      "message": "Remove this file... Check if you have correct paths in VS project",
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_12008a00",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-28T08:45:15Z",
+      "side": 1,
+      "message": "static_cast",
+      "range": {
+        "startLine": 31,
+        "startChar": 23,
+        "endLine": 31,
+        "endChar": 39
+      },
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_d21d4268",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-28T08:45:15Z",
+      "side": 1,
+      "message": "This way we won\u0027t get value of WinLife on fail. Use: ASSERT_EQ(nullptr, WinLife);",
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_32058e11",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-28T08:45:15Z",
+      "side": 1,
+      "message": "static_cast",
+      "range": {
+        "startLine": 36,
+        "startChar": 14,
+        "endLine": 36,
+        "endChar": 30
+      },
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_f21a466d",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-28T08:45:15Z",
+      "side": 1,
+      "message": "ASSERT_EQ(nullptr, WinLife);",
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_520a1222",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-28T08:45:15Z",
+      "side": 1,
+      "message": "static_cast",
+      "range": {
+        "startLine": 47,
+        "startChar": 19,
+        "endLine": 47,
+        "endChar": 35
+      },
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_720f1631",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-28T08:45:15Z",
+      "side": 1,
+      "message": "static_cast",
+      "range": {
+        "startLine": 48,
+        "startChar": 24,
+        "endLine": 48,
+        "endChar": 40
+      },
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_9213ba5b",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-28T08:45:15Z",
+      "side": 1,
+      "message": "First value is expected. Should be: \"result, funcResult\"",
+      "range": {
+        "startLine": 59,
+        "startChar": 14,
+        "endLine": 59,
+        "endChar": 32
+      },
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_b210be4f",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-28T08:45:15Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 63,
+        "startChar": 14,
+        "endLine": 63,
+        "endChar": 32
+      },
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_322cae99",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-28T08:45:15Z",
+      "side": 1,
+      "message": "Does copy constructor of Library class works as it should? I don\u0027t think so...",
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
