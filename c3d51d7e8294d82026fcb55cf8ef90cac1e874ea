@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "facab960_32374e01",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-05-28T11:40:44Z",
+      "side": 1,
+      "message": "I found something here http://linux.die.net/man/3/dlsym :\n\n/* Writing: cosine \u003d (double (*)(double)) dlsym(handle, \"cos\");\n       would seem more natural, but the C99 standard leaves\n       casting from \"void *\" to a function pointer undefined.\n       The assignment used below is the POSIX.1-2003 (Technical\n       Corrigendum 1) workaround; see the Rationale for the\n       POSIX specification of dlsym(). */\n\n   *(void **) (\u0026cosine) \u003d dlsym(handle, \"cos\");",
+      "parentUuid": "facab960_12008a00",
+      "range": {
+        "startLine": 31,
+        "startChar": 23,
+        "endLine": 31,
+        "endChar": 39
+      },
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_d21d4268",
         "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
         "patchSetId": 8
