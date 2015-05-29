@@ -90,6 +90,54 @@
     },
     {
       "key": {
+        "uuid": "facab960_92957a42",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-29T06:55:51Z",
+      "side": 1,
+      "message": "I\u0027ve changed it",
+      "parentUuid": "facab960_12008a00",
+      "range": {
+        "startLine": 31,
+        "startChar": 23,
+        "endLine": 31,
+        "endChar": 39
+      },
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_86ca984d",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-29T06:55:51Z",
+      "side": 1,
+      "message": "I tried with std::function but encountered few errors and just didn\u0027t know what to do with them.\nMade it exactly as in @Witeks link",
+      "parentUuid": "facab960_004bd087",
+      "range": {
+        "startLine": 31,
+        "startChar": 23,
+        "endLine": 31,
+        "endChar": 39
+      },
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_d21d4268",
         "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
         "patchSetId": 8
@@ -101,6 +149,24 @@
       "writtenOn": "2015-05-28T08:45:15Z",
       "side": 1,
       "message": "This way we won\u0027t get value of WinLife on fail. Use: ASSERT_EQ(nullptr, WinLife);",
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_f2c5e65b",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-29T06:55:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_d21d4268",
       "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -130,6 +196,30 @@
     },
     {
       "key": {
+        "uuid": "facab960_d29f025e",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-29T06:55:51Z",
+      "side": 1,
+      "message": "Look above",
+      "parentUuid": "facab960_32058e11",
+      "range": {
+        "startLine": 36,
+        "startChar": 14,
+        "endLine": 36,
+        "endChar": 30
+      },
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_f21a466d",
         "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
         "patchSetId": 8
@@ -147,6 +237,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_d2c8e276",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-29T06:55:51Z",
+      "side": 1,
+      "message": "ya, my bad :x",
+      "parentUuid": "facab960_f21a466d",
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_520a1222",
         "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
         "patchSetId": 8
@@ -158,6 +266,30 @@
       "writtenOn": "2015-05-28T08:45:15Z",
       "side": 1,
       "message": "static_cast",
+      "range": {
+        "startLine": 47,
+        "startChar": 19,
+        "endLine": 47,
+        "endChar": 35
+      },
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_f29c066c",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-29T06:55:51Z",
+      "side": 1,
+      "message": "Look above",
+      "parentUuid": "facab960_520a1222",
       "range": {
         "startLine": 47,
         "startChar": 19,
@@ -193,6 +325,30 @@
     },
     {
       "key": {
+        "uuid": "facab960_12896a26",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-29T06:55:51Z",
+      "side": 1,
+      "message": "Look above",
+      "parentUuid": "facab960_720f1631",
+      "range": {
+        "startLine": 48,
+        "startChar": 24,
+        "endLine": 48,
+        "endChar": 40
+      },
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_9213ba5b",
         "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
         "patchSetId": 8
@@ -204,6 +360,30 @@
       "writtenOn": "2015-05-28T08:45:15Z",
       "side": 1,
       "message": "First value is expected. Should be: \"result, funcResult\"",
+      "range": {
+        "startLine": 59,
+        "startChar": 14,
+        "endLine": 59,
+        "endChar": 32
+      },
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_328e6e2f",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-29T06:55:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_9213ba5b",
       "range": {
         "startLine": 59,
         "startChar": 14,
@@ -239,6 +419,30 @@
     },
     {
       "key": {
+        "uuid": "facab960_5283f203",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-29T06:55:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_b210be4f",
+      "range": {
+        "startLine": 63,
+        "startChar": 14,
+        "endLine": 63,
+        "endChar": 32
+      },
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_322cae99",
         "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
         "patchSetId": 8
@@ -250,6 +454,24 @@
       "writtenOn": "2015-05-28T08:45:15Z",
       "side": 1,
       "message": "Does copy constructor of Library class works as it should? I don\u0027t think so...",
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_a6c79c44",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-05-29T06:55:51Z",
+      "side": 1,
+      "message": "okaaay, okaaay - move constructor...still it does work just like a copy one...why?",
+      "parentUuid": "facab960_322cae99",
       "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
