@@ -255,8 +255,8 @@ bool FileSystem::Iterate(const std::string& path, DirIterateCallback callback)
 
             // ignore multiple '/' or '\'
             // TODO create and use function for path normalization
-            while (foundPath.back() == '/' || foundPath.back() == '\\')
-                foundPath.pop_back();
+            while (currentDir.back() == '/' || currentDir.back() == '\\')
+                currentDir.pop_back();
 
             foundPath = currentDir + '/' + dir->d_name;
             bool isDir = dir->d_type == DT_DIR;

@@ -11,6 +11,10 @@
 namespace NFE {
 namespace Common {
 
+PackerResourceFile::~PackerResourceFile()
+{
+}
+
 PackerResult PackerResourceFile::Init(const std::string& filePath, const std::string& vfsFilePath)
 {
     File file(filePath, AccessMode::Read);

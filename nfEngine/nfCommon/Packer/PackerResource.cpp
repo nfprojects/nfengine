@@ -11,6 +11,10 @@
 namespace NFE {
 namespace Common {
 
+PackerResource::~PackerResource()
+{
+}
+
 PackerResult PackerResource::SaveHeader(File& file)
 {
     if (!file.Write(reinterpret_cast<const void*>(&mHash), 4 * sizeof(uint32)))
@@ -22,7 +26,7 @@ PackerResult PackerResource::SaveHeader(File& file)
     return PackerResult::OK;
 }
 
-const size_t PackerResource::GetFileSize() const
+size_t PackerResource::GetFileSize() const
 {
     return mFileSize;
 }

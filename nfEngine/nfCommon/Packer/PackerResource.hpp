@@ -15,11 +15,13 @@ namespace Common {
 class PackerResource
 {
 public:
+    virtual ~PackerResource();
+
     virtual PackerResult Save(File& file) = 0;
 
     PackerResult SaveHeader(File& file);
 
-    const size_t GetFileSize() const;
+    size_t GetFileSize() const;
     void PrintToStdout() const;
 
 protected:

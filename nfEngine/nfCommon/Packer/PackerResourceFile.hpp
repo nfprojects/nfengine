@@ -16,6 +16,8 @@ namespace Common {
 class PackerResourceFile: public PackerResource
 {
 public:
+    ~PackerResourceFile();
+
     PackerResult Init(const std::string& filePath, const std::string& vfsFilePath);
     PackerResult Save(File& file);
 
