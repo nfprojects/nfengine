@@ -19,6 +19,29 @@
     },
     {
       "key": {
+        "uuid": "facab960_1b8ee52e",
+        "filename": "nfEngine/nfCommon/Linux/Library.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-05-29T08:12:55Z",
+      "side": 1,
+      "message": "nullptr\n\nCheck rest of the NULLs",
+      "range": {
+        "startLine": 16,
+        "startChar": 14,
+        "endLine": 16,
+        "endChar": 18
+      },
+      "revId": "c3d51d7e8294d82026fcb55cf8ef90cac1e874ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_12008a00",
         "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
         "patchSetId": 8
