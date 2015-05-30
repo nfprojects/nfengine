@@ -10,9 +10,9 @@ Features
 
 **General:**
 
-* Written in C++
+* Written in C++11
 * Portability: Windows, *Linux, MacOS*
-* Verbose logging
+* Well tested
 * Custom math library based on SSE
 * *Advanced scripting (deep configuration, scene modification, resources generation, etc.)*
 
@@ -23,23 +23,26 @@ Features
 * Supported resource types: Texture, Material, Mesh, Collision shape
 * *Resource file modification detection*
 * *Memory usage control, garbage collector*
+* *Procedural generation and serialization*
 
 **Scene management:**
 
-* Infinite worlds
+* Infinite and seamless worlds support
 * Component-entity design
-* Supported components: Mesh, Light, Body, Camera, *SoundSource, Particle Emitter*
+* Supported components: Mesh, Light, Body, Camera, *Sound Source, Particle Emitter*
 * Scene serialization
 * Rigid body physics
 * *Multithreaded streaming & procedural generation*
 
 **Rendering:**
 
-* Switchable renderers: Direct3D 11, *OpenGL 4.4*
+* Switchable rendering backends: Direct3D 11, *OpenGL 4.4, Direct3D 12*
 * Multithreaded pipeline
 * Deferred shading
 * Dynamic lights and shadows
-* Advanced postprocess
+* Advanced postprocess (motion blur, bloom, anit-aliasing, tone mapping, etc.)
+* *Skeletal animations*
+* *Virtual Reality support*
 
 Directory structure
 -------------------
@@ -51,6 +54,7 @@ The engine's root directory looks as follows:
 * **nfEngine** - main engine's code directory
     * **nfCommon** - common utilities library that could be used outside the engine
     * **nfCommonTest** - unit tests for nfCommon
+    * **nfCommonPerfTest** - performance tests for nfCommon
     * **nfCore** - the engine's core
     * **nfCoreTest** - unit tests for nfCore
     * **nfRenderer** - renderer (Direct3D 11 implementation, legacy)
@@ -61,8 +65,7 @@ The engine's root directory looks as follows:
         * **PackerTool** - command line utility for PAK files creation
     * **Renderers** - directory containing low-level renderer backends and related stuff
         * **RendererInterface** - set of headers defining low-level renderer API
-        * **Shaders** - set of common shaders used by each renderer implementation
-        * **nfRendererD3D11** - Direct3D 11 implementation
+        * **nfRendererD3D11** - Direct3D 11 low-level renderer implementation
     * **nfRendererDemo** - demo application used for renderers testing
     * **nfRendererTest** - unit test for renderers
 * **nfEngineDeps** - engine's dependencies directory. See "Dependencies" section for more information
@@ -91,7 +94,7 @@ The engine is dependent on following libraries:
 Building the project - Windows
 ------------------------------
 
-To make the code compileable, the following requirements have to be met:
+To make the code compilable, the following requirements have to be met:
 
 1. Installed Visual Studio 2013.
 2. Installed DirectX SDK.
@@ -112,11 +115,11 @@ mklink /J Data "path-to-nfEngineTestData"
 Building the project - Linux
 ----------------------------
 
-For now, the only compileable part of nfEngine is nfCommon library and its tests binary, nfCommonTest. Requirements:
+For now, the only compilable part of nfEngine is nfCommon library and its tests binary, nfCommonTest. Requirements:
 
-1. Installed GCC 4.9.2 or higher
-2. Installed CMake 2.6 or higher
-3. Pulled external dependencies from [here](http://www.github.com/nfprojects/nfenginedeps)
+1. Installed a C++11-compatible compiler (right now the only compiler tested to work is GCC 4.7).
+2. Installed CMake 2.6 or higher.
+3. Pulled external dependencies from [here](http://www.github.com/nfprojects/nfenginedeps):
     * **"nfEngineDeps"** directory will be created by using git submodules inside repo - fetch its contents by using `git submodule init && git submodule update`
     * **NOTE:** Dependencies need to be built separately from engine. See README.md inside nfEngineDeps repo for more info.
 
@@ -170,6 +173,7 @@ Basic coding guidelines:
 * We use spaces to indent parts of code. Each indentation takes 4 spaces. Mixed tabs and spaces are forbidden.
 * To make code reviewing easier, keep max 100 chars per line. Exceptions to that rule might occur if it is absolutely necessary, depending on the situation (keep in mind, some legacy code in the repository might not follow this rule).
 * Each source file should have a doxygen boilerplate which will briefly describe what this module does. This rule applies to header files as well.
+* Each public API class and method should be well documented in doxygen style.
 * Use two newlines to separate chunks of code in one file (e.g. to split constants from function/method definitions, to split boilerplate from rest of the file, or to split namespaces).
 * Naming rules:
     * **camelCase**, e.g.: ``int fontSize;``
@@ -205,7 +209,7 @@ Usually issues are added by owners and categorized according with three labels:
     * medium
     * huge
 
-Additional rules applied to labelling issues:
+Additional rules applied to labeling issues:
 
 1. Issues labeled as **"new feature"** or **"enhancement"** label can additionally have a **"proposal"** label. Such issues are most probably not completely defined, might be a subject to change and should not be assigned to anyone until **"proposal"** label disappears. Removal of **"proposal"** will happen only after a discussion with project owners, or after completion of issue.
 2. Issues labeled with **"bug"** label don't need to be tagged with estimate label if reporter cannot perform such estimation.
