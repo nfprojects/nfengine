@@ -167,25 +167,26 @@ public:
 //
 // Constants definitions
 //
-const Vectorf g_Epsilon = {NFE_MATH_EPSILON, NFE_MATH_EPSILON, NFE_MATH_EPSILON, NFE_MATH_EPSILON};
-const Vectorf g_One = {1.0f, 1.0f, 1.0f, 1.0f};
-const Vectorf g_One3 = {1.0f, 1.0f, 1.0f, 0.0f};
-const Vectorf g_MinusOne = { -1.0f, -1.0f, -1.0f, -1.0f};
-const Vectori g_MaskX = {0xFFFFFFFF, 0, 0, 0};
-const Vectori g_MaskY = {0, 0xFFFFFFFF, 0, 0};
-const Vectori g_MaskZ = {0, 0, 0xFFFFFFFF, 0};
-const Vectori g_MaskW = {0, 0, 0, 0xFFFFFFFF};
-const Vectori g_Mask3 = {0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0};
-const Vectori g_AbsMask = {0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF};
+const Vectorf g_Epsilon = {{{NFE_MATH_EPSILON, NFE_MATH_EPSILON,
+                             NFE_MATH_EPSILON, NFE_MATH_EPSILON}}};
+const Vectorf g_One = {{{1.0f, 1.0f, 1.0f, 1.0f}}};
+const Vectorf g_One3 = {{{1.0f, 1.0f, 1.0f, 0.0f}}};
+const Vectorf g_MinusOne = {{{-1.0f, -1.0f, -1.0f, -1.0f}}};
+const Vectori g_MaskX = {{{0xFFFFFFFF, 0, 0, 0}}};
+const Vectori g_MaskY = {{{0, 0xFFFFFFFF, 0, 0}}};
+const Vectori g_MaskZ = {{{0, 0, 0xFFFFFFFF, 0}}};
+const Vectori g_MaskW = {{{0, 0, 0, 0xFFFFFFFF}}};
+const Vectori g_Mask3 = {{{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0}}};
+const Vectori g_AbsMask = {{{0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF}}};
 
-const Vectorf g_Byte2Float = {1.0f / 255.0f, 1.0f / 255.0f, 1.0f / 255.0f, 1.0f / 255.0f};
-const Vectorf g_Float2Byte = {255.0f, 255.0f, 255.0f, 255.0f};
+const Vectorf g_Byte2Float = {{{1.0f / 255.0f, 1.0f / 255.0f, 1.0f / 255.0f, 1.0f / 255.0f}}};
+const Vectorf g_Float2Byte = {{{255.0f, 255.0f, 255.0f, 255.0f}}};
 
 /// identity matrix rows
-const Vectorf gIdentityR0 = { 1.0f, 0.0f, 0.0f, 0.0f };
-const Vectorf gIdentityR1 = { 0.0f, 1.0f, 0.0f, 0.0f };
-const Vectorf gIdentityR2 = { 0.0f, 0.0f, 1.0f, 0.0f };
-const Vectorf gIdentityR3 = { 0.0f, 0.0f, 0.0f, 1.0f };
+const Vectorf gIdentityR0 = {{{1.0f, 0.0f, 0.0f, 0.0f}}};
+const Vectorf gIdentityR1 = {{{0.0f, 1.0f, 0.0f, 0.0f}}};
+const Vectorf gIdentityR2 = {{{0.0f, 0.0f, 1.0f, 0.0f}}};
+const Vectorf gIdentityR3 = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
 
 // ====================================================================================
 
@@ -237,9 +238,10 @@ Vector::Vector(const Float4& src)
  */
 NFE_INLINE Vector VectorLoadUChar4(const unsigned char* pSrc)
 {
-    static const Vectori mask = {0xFF, 0xFF00, 0xFF0000, 0xFF000000};
-    static const __m128 LoadUByte4Mul = {1.0f, 1.0f / 256.0f, 1.0f / 65536.0f, 1.0f / (65536.0f * 256.0f)};
-    static const Vectori flipW = {0, 0, 0, 0x80000000};
+    static const Vectori mask = {{{0xFF, 0xFF00, 0xFF0000, 0xFF000000}}};
+    static const __m128 LoadUByte4Mul = {1.0f, 1.0f / 256.0f, 1.0f / 65536.0f,
+                                         1.0f / (65536.0f * 256.0f)};
+    static const Vectori flipW = {{{0, 0, 0, 0x80000000}}};
     static const __m128 unsignedOffset = {0, 0, 0, 32768.0f * 65536.0f};
 
     __m128 vTemp = _mm_load_ps1((const float*)pSrc);
@@ -257,7 +259,7 @@ NFE_INLINE Vector VectorLoadUChar4(const unsigned char* pSrc)
  */
 NFE_INLINE void VectorStoreUChar4(const Vector& src, unsigned char* pDest)
 {
-    static const __m128 MaxUByte4 = { 255.0f, 255.0f, 255.0f, 255.0f};
+    static const __m128 MaxUByte4 = {255.0f, 255.0f, 255.0f, 255.0f};
 
     // Clamp
     __m128 vResult = _mm_max_ps(src, _mm_setzero_ps());
