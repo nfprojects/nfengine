@@ -22,6 +22,30 @@
       "revId": "fee2fd30243d043b972645f4f56a1d7185f71e62",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_baa969e1",
+        "filename": "nfEngine/nfCommonTest/PackerComplexTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-01T20:58:11Z",
+      "side": 1,
+      "message": "Indeed, I misread that in the reference.",
+      "parentUuid": "facab960_7a9fe1b4",
+      "range": {
+        "startLine": 321,
+        "startChar": 18,
+        "endLine": 321,
+        "endChar": 55
+      },
+      "revId": "fee2fd30243d043b972645f4f56a1d7185f71e62",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
