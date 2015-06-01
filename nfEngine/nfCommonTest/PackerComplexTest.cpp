@@ -317,7 +317,8 @@ TEST_F(PackerComplexTest, ReadMultipleRecursivelyAddedFiles)
 
         // create buffer and read data
         correctData->Create(correctDataSize);
-        fread(correctData->GetData(), sizeof(unsigned char), correctDataSize, pFile);
+        EXPECT_EQ(fread(correctData->GetData(), sizeof(unsigned char), correctDataSize, pFile),
+                  correctDataSize*sizeof(unsigned char));
         fclose(pFile);
 
         // check data size
