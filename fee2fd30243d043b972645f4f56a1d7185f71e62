@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_7a9fe1b4",
+        "filename": "nfEngine/nfCommonTest/PackerComplexTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-01T20:57:19Z",
+      "side": 1,
+      "message": "fread returns number of elements written, not bytes. So it should be \"correctDataSize\" only. That won\u0027t change anything for unsigned char, but you should know :)",
+      "range": {
+        "startLine": 321,
+        "startChar": 18,
+        "endLine": 321,
+        "endChar": 55
+      },
+      "revId": "fee2fd30243d043b972645f4f56a1d7185f71e62",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
