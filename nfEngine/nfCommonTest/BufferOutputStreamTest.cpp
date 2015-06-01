@@ -1,7 +1,7 @@
 #include "PCH.hpp"
 #include "../nfCommon/OutputStream.hpp"
 
-#include "Test.hpp"
+#include "Constants.hpp"
 
 using namespace NFE::Common;
 
