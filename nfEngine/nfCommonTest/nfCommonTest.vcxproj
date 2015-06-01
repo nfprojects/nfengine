@@ -198,12 +198,13 @@ popd</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Common.hpp" />
+    <ClInclude Include="Constants.hpp" />
     <ClInclude Include="PCH.hpp" />
-    <ClInclude Include="Test.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BufferInputStreamTest.cpp" />
     <ClCompile Include="BufferOutputStreamTest.cpp" />
+    <ClCompile Include="Constants.cpp" />
     <ClCompile Include="FileSystemTest.cpp" />
     <ClCompile Include="FileTest.cpp" />
     <ClCompile Include="LatchTest.cpp" />
