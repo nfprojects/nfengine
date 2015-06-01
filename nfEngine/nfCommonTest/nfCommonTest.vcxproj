@@ -204,6 +204,7 @@ popd</Command>
   <ItemGroup>
     <ClCompile Include="BufferInputStreamTest.cpp" />
     <ClCompile Include="BufferOutputStreamTest.cpp" />
+    <ClCompile Include="Constants.cpp" />
     <ClCompile Include="FileSystemTest.cpp" />
     <ClCompile Include="FileTest.cpp" />
     <ClCompile Include="LatchTest.cpp" />
