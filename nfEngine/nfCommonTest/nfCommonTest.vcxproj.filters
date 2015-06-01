@@ -20,11 +20,13 @@
     <ClCompile Include="BufferOutputStreamTest.cpp" />
     <ClCompile Include="MemoryTest.cpp" />
     <ClCompile Include="SystemInfoTest.cpp" />
+    <ClCompile Include="Constants.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.hpp" />
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="Test.hpp" />
+    <ClInclude Include="Constants.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ThreadPool">
