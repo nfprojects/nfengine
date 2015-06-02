@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "facab960_e93a49cc",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-02T12:31:34Z",
+      "side": 1,
+      "message": "weird o.o I am SO SURE I did copy the rest as well.\nStill it\u0027s not here, gonna repair in next few hours and send a patchset",
+      "parentUuid": "facab960_2e59975a",
+      "range": {
+        "startLine": 124,
+        "startChar": 0,
+        "endLine": 125,
+        "endChar": 26
+      },
+      "revId": "5f118ccd0e6e1df4d8e61ea4666607a1f6f7828d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_4e541b21",
         "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
         "patchSetId": 16
@@ -36,6 +60,30 @@
       "writtenOn": "2015-06-02T12:27:36Z",
       "side": 1,
       "message": "As above",
+      "range": {
+        "startLine": 133,
+        "startChar": 0,
+        "endLine": 134,
+        "endChar": 26
+      },
+      "revId": "5f118ccd0e6e1df4d8e61ea4666607a1f6f7828d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_09368de7",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-02T12:31:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_4e541b21",
       "range": {
         "startLine": 133,
         "startChar": 0,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "facab960_8951bd10",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-02T12:31:34Z",
+      "side": 1,
+      "message": "I had this sign and replaced it with slash...not sure what happened here.\nWill fix it",
+      "parentUuid": "facab960_2e30b700",
+      "range": {
+        "startLine": 138,
+        "startChar": 73,
+        "endLine": 138,
+        "endChar": 74
+      },
+      "revId": "5f118ccd0e6e1df4d8e61ea4666607a1f6f7828d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_6e19df87",
         "filename": "nfEngine/nfCommon/SystemInfo.cpp",
         "patchSetId": 16
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "facab960_a9584133",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-02T12:31:34Z",
+      "side": 1,
+      "message": "As above",
+      "parentUuid": "facab960_6e19df87",
+      "range": {
+        "startLine": 155,
+        "startChar": 73,
+        "endLine": 155,
+        "endChar": 74
+      },
+      "revId": "5f118ccd0e6e1df4d8e61ea4666607a1f6f7828d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_4e2b3b94",
         "filename": "nfEngine/nfCommon/SystemInfo.cpp",
         "patchSetId": 16
@@ -105,6 +201,24 @@
       "writtenOn": "2015-06-02T12:27:36Z",
       "side": 1,
       "message": "You can just do \"return (mCpuidFeatures[feature.AddressNo] \u0026 feature.FeatureNo)) !\u003d 0;\"",
+      "revId": "5f118ccd0e6e1df4d8e61ea4666607a1f6f7828d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_c95bc52c",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-02T12:31:34Z",
+      "side": 1,
+      "message": "true dat",
+      "parentUuid": "facab960_4e2b3b94",
       "revId": "5f118ccd0e6e1df4d8e61ea4666607a1f6f7828d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
