@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_2e59975a",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-02T12:27:36Z",
+      "side": 1,
+      "message": "I think, there is missing something...",
+      "range": {
+        "startLine": 124,
+        "startChar": 0,
+        "endLine": 125,
+        "endChar": 26
+      },
+      "revId": "5f118ccd0e6e1df4d8e61ea4666607a1f6f7828d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_4e541b21",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-02T12:27:36Z",
+      "side": 1,
+      "message": "As above",
+      "range": {
+        "startLine": 133,
+        "startChar": 0,
+        "endLine": 134,
+        "endChar": 26
+      },
+      "revId": "5f118ccd0e6e1df4d8e61ea4666607a1f6f7828d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_2e30b700",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-02T12:27:36Z",
+      "side": 1,
+      "message": "?",
+      "range": {
+        "startLine": 138,
+        "startChar": 73,
+        "endLine": 138,
+        "endChar": 74
+      },
+      "revId": "5f118ccd0e6e1df4d8e61ea4666607a1f6f7828d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_6e19df87",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-02T12:27:36Z",
+      "side": 1,
+      "message": "?",
+      "range": {
+        "startLine": 155,
+        "startChar": 73,
+        "endLine": 155,
+        "endChar": 74
+      },
+      "revId": "5f118ccd0e6e1df4d8e61ea4666607a1f6f7828d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_4e2b3b94",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-02T12:27:36Z",
+      "side": 1,
+      "message": "You can just do \"return (mCpuidFeatures[feature.AddressNo] \u0026 feature.FeatureNo)) !\u003d 0;\"",
+      "revId": "5f118ccd0e6e1df4d8e61ea4666607a1f6f7828d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
