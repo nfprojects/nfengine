@@ -16,6 +16,24 @@
       "revId": "213c0518f5314b1e0a0c63a7e32ba5f99b831046",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_c3ce44b4",
+        "filename": "nfEngineDeps",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-02T07:33:19Z",
+      "side": 0,
+      "message": "I recommend: https://git-scm.com/book/en/v2/Git-Tools-Submodules",
+      "parentUuid": "facab960_803512f9",
+      "revId": "213c0518f5314b1e0a0c63a7e32ba5f99b831046",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
