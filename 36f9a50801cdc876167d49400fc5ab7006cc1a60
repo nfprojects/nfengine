@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_2378d0f1",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-02T08:55:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_a1bb1c0d",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_5e10714e",
         "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
         "patchSetId": 15
@@ -30,6 +48,24 @@
       "writtenOn": "2015-05-26T15:12:41Z",
       "side": 1,
       "message": "What does /proc/meminfo have to do with process\u0027 virtual memory?",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_6361f838",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-02T08:55:56Z",
+      "side": 1,
+      "message": "Changed to /proc/self/statm",
+      "parentUuid": "facab960_5e10714e",
       "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -59,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "facab960_43731415",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-02T08:55:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_e1c1a4e5",
+      "range": {
+        "startLine": 29,
+        "startChar": 24,
+        "endLine": 29,
+        "endChar": 26
+      },
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_a78dec7d",
         "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
         "patchSetId": 15
@@ -70,6 +130,24 @@
       "writtenOn": "2015-05-27T13:20:00Z",
       "side": 1,
       "message": "I suggest doing mulpiplication first, and then division by MemoryBytesDivisor.",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_83643c4a",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-02T08:55:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_a78dec7d",
       "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -93,6 +171,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_a35b0086",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-02T08:55:56Z",
+      "side": 1,
+      "message": "It\u0027s in Linux folder",
+      "parentUuid": "facab960_81be18fe",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_e7ee1422",
         "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
         "patchSetId": 15
@@ -104,6 +200,24 @@
       "writtenOn": "2015-05-27T13:20:00Z",
       "side": 1,
       "message": "As above",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_e3542856",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-02T08:55:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_e7ee1422",
       "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -127,6 +241,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_03502c5d",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-02T08:55:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_dcd64cc5",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_01b76887",
         "filename": "nfEngine/nfCommon/SystemInfo.hpp",
         "patchSetId": 15
@@ -138,6 +270,30 @@
       "writtenOn": "2015-05-27T09:20:59Z",
       "side": 1,
       "message": "swap",
+      "range": {
+        "startLine": 71,
+        "startChar": 51,
+        "endLine": 71,
+        "endChar": 58
+      },
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_234ff0be",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-02T08:55:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_01b76887",
       "range": {
         "startLine": 71,
         "startChar": 51,
@@ -173,6 +329,30 @@
     },
     {
       "key": {
+        "uuid": "facab960_434a34ad",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-02T08:55:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_21bc6c69",
+      "range": {
+        "startLine": 92,
+        "startChar": 0,
+        "endLine": 94,
+        "endChar": 38
+      },
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_c13740af",
         "filename": "nfEngine/nfCommon/Win/SystemInfoPlatform.cpp",
         "patchSetId": 15
@@ -190,6 +370,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_03d74cc0",
+        "filename": "nfEngine/nfCommon/Win/SystemInfoPlatform.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-02T08:55:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_c13740af",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_a7b6cc3b",
         "filename": "nfEngine/nfCommon/Win/SystemInfoPlatform.cpp",
         "patchSetId": 15
@@ -201,6 +399,24 @@
       "writtenOn": "2015-05-27T13:20:00Z",
       "side": 1,
       "message": "Write a comment why you do so",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_23e610b5",
+        "filename": "nfEngine/nfCommon/Win/SystemInfoPlatform.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-02T08:55:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_a7b6cc3b",
       "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -242,6 +458,42 @@
     },
     {
       "key": {
+        "uuid": "facab960_63ef3888",
+        "filename": "nfEngine/nfCommonTest/SystemInfoTest.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-02T08:55:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_015928fe",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_43e15499",
+        "filename": "nfEngine/nfCommonTest/SystemInfoTest.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-02T08:55:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_9e3119ef",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_de52c112",
         "filename": "nfEngine/nfCommonTest/SystemInfoTest.cpp",
         "patchSetId": 15
@@ -253,6 +505,24 @@
       "writtenOn": "2015-05-26T15:12:41Z",
       "side": 1,
       "message": "We can have 0B of swap",
+      "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_83f27c6d",
+        "filename": "nfEngine/nfCommonTest/SystemInfoTest.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-02T08:55:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_de52c112",
       "revId": "36f9a50801cdc876167d49400fc5ab7006cc1a60",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
