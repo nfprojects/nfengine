@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_a164d549",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-03T08:03:54Z",
+      "side": 1,
+      "message": "Right now we have a TODO waiting for this value to be filled. It is 0, so the function will always return us that we have no memory. IMO... no, I don\u0027t like this.\n\nYou should just return free Swap + Phys for now on. Leave this line in a comment for the future, or just a comment to update this line when Virtual memory will be gathered.",
+      "range": {
+        "startLine": 120,
+        "startChar": 54,
+        "endLine": 120,
+        "endChar": 68
+      },
+      "revId": "0bbd687c915438d26504167b374c996599b83be2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_e15edd75",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-03T08:03:54Z",
+      "side": 1,
+      "message": "Isn\u0027t this an implementation already?\n\nI would remove that. We already discussed, that such method is too slow for us. The TODO comment will be enough. Update other comments as well.",
+      "range": {
+        "startLine": 144,
+        "startChar": 0,
+        "endLine": 152,
+        "endChar": 43
+      },
+      "revId": "0bbd687c915438d26504167b374c996599b83be2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
