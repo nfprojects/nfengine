@@ -70,6 +70,30 @@
       "revId": "8ecd604fb5feb6b6a54fa439f1097428cd4406ee",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_39f547ee",
+        "filename": "nfEngine/nfCommon/Win/SystemInfoPlatform.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-08T20:02:44Z",
+      "side": 1,
+      "message": "Indeed, this is weird. We\u0027ll stay with what we have. Just add a check if TotalSwap is less than TotalPhys.",
+      "parentUuid": "facab960_3919ca88",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 28,
+        "endChar": 38
+      },
+      "revId": "8ecd604fb5feb6b6a54fa439f1097428cd4406ee",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
