@@ -46,6 +46,30 @@
       "revId": "8ecd604fb5feb6b6a54fa439f1097428cd4406ee",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_3919ca88",
+        "filename": "nfEngine/nfCommon/Win/SystemInfoPlatform.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-08T12:25:23Z",
+      "side": 1,
+      "message": "I will check it further on then. For now please, avoid new patch sets. 19 is already enough as it is. I will let you know when I\u0027ll get some more info.",
+      "parentUuid": "facab960_3961ca39",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 28,
+        "endChar": 38
+      },
+      "revId": "8ecd604fb5feb6b6a54fa439f1097428cd4406ee",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
