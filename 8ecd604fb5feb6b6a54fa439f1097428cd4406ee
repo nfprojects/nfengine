@@ -22,6 +22,30 @@
       "revId": "8ecd604fb5feb6b6a54fa439f1097428cd4406ee",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_3961ca39",
+        "filename": "nfEngine/nfCommon/Win/SystemInfoPlatform.cpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-08T11:38:02Z",
+      "side": 1,
+      "message": "I\u0027ve researched it and done tests with various amounts of SWAP declared and came to the same conclusion...as is described on MSDN as I\u0027ve found out later:\nhttps://msdn.microsoft.com/en-us/library/windows/desktop/aa965225(v\u003dvs.85).aspx\n\nYou can see there, that:\n1. We can\u0027t get AvailableSwap from GetPerformanceInfo;\n2. the TotalSwap we get from both is the same one - we need to do subtraction;\n3. You can see there that GlobalMemoryStatusEx should be enough for us.\n\nPlease comment further on this.",
+      "parentUuid": "facab960_5ed75423",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 28,
+        "endChar": 38
+      },
+      "revId": "8ecd604fb5feb6b6a54fa439f1097428cd4406ee",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
