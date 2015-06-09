@@ -4,6 +4,7 @@
 #include "Scenes.hpp"
 
 #include "../nfEngine/nfCommon/Logger.hpp"
+#include "../nfCommon/FileSystem.hpp"
 
 using namespace NFE;
 using namespace NFE::Render;
@@ -384,20 +385,9 @@ bool OnLoadCustomShapeResource(ResourceBase* res, void* data)
     return true;
 }
 
-// temporary
-void SetUpCurrentDirectory()
-{
-    char szFileName[MAX_PATH];
-    GetModuleFileNameA(NULL, szFileName, MAX_PATH);
-    std::string rootDir = std::string(szFileName);
-    size_t found = rootDir.find_last_of("/\\");
-    rootDir = rootDir.substr(0, found) + "/../../../";
-    SetCurrentDirectoryA(rootDir.c_str());
-}
-
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    SetUpCurrentDirectory();
+    Common::FileSystem::ChangeDirectory("./../../..");
 
     //create window
     CustomWindow* window = new CustomWindow;
@@ -472,7 +462,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         // print focus segment name
         char str[128];
         Segment* focus = gScene->GetFocusSegment();
-		sprintf(str, "NFEngine Demo (%S) - focus: %S - Press [0-%i] to switch scene",
+        sprintf(str, "NFEngine Demo (%S) - focus: %S - Press [0-%i] to switch scene",
                  PLATFORM_STR, (focus != 0) ? focus->GetName() : "NONE",
                  GetScenesNum() - 1);
         window->SetTitle(str);

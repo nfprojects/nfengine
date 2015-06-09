@@ -10,8 +10,8 @@
 #include "../nfCommon/File.hpp"
 #include "../nfCommon/Library.hpp"
 #include "../nfCommon/Math/Math.hpp"
+#include "../nfCommon/FileSystem.hpp"
 
-// TODO: change current directory to nfEngine's root, so the test can be run from any place.
 #define D3D11_SHADER_PATH_PREFIX "../../../nfEngine/nfRendererDemo/Shaders/D3D11/"
 
 using namespace NFE::Math;
@@ -88,6 +88,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     (void)lpCmdLine;
     (void)nCmdShow;
 
+    NFE::Common::FileSystem::ChangeDirectory("./../../..");
     Window window;
     window.SetSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     window.SetTitle("nfEngine Renderer Test");
