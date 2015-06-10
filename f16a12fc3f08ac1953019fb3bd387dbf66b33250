@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_13593736",
+        "filename": "nfEngine/nfCommon/Library.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-10T12:05:45Z",
+      "side": 1,
+      "message": "The module won\u0027t compile if you don\u0027t include Windows.h there. Add it.",
+      "revId": "f16a12fc3f08ac1953019fb3bd387dbf66b33250",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
