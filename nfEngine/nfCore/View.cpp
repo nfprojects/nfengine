@@ -12,7 +12,7 @@
 #include "Texture.hpp"
 #include "../nfCommon/Window.hpp"
 #include "../nfCommon/Logger.hpp"
-#include "../nfCommon/Image.hpp"
+#include "../nfCommon/Image/Image.hpp"
 
 namespace NFE {
 namespace Render {

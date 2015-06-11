@@ -3,7 +3,7 @@
 #include "Renderer.hpp"
 #include "../nfCommon/Window.hpp"
 #include "../nfCommon/Logger.hpp"
-#include "../nfCommon/Image.hpp"
+#include "../nfCommon/Image/Image.hpp"
 
 namespace NFE {
 namespace Render {
@@ -36,7 +36,7 @@ Result RendererTextureD3D11::FromImage(const Common::Image& image)
 
 
     HRESULT HR;
-    size_t bitsPerPixel = Image::BitsPerPixel(image.GetFormat());
+    size_t bitsPerPixel = BitsPerPixel(image.GetFormat());
 
     D3D11_TEXTURE2D_DESC texDesc;
     ZeroMemory(&texDesc, sizeof(texDesc));
@@ -119,18 +119,18 @@ Result RendererTextureD3D11::FromImage(const Common::Image& image)
     {
         if (bc) //special case - block coding
         {
-            uint32 numBlocksWide = std::max<uint32>(1, (image.GetMipmap(i).width + 3) / 4);
+            uint32 numBlocksWide = std::max<uint32>(1, (image.GetMipmap(i)->GetWidth() + 3) / 4);
             //uint32 numBlocksHigh = std::max<uint32>(1, (image.m_Mipmaps[i].height + 3) / 4);
             initData[i].SysMemPitch = (UINT)(numBlocksWide * bcNumBytesPerBlock);
         }
         else
         {
             initData[i].SysMemPitch = Math::Max<uint32>(1,
-                                      static_cast<uint32>(image.GetMipmap(i).width * bitsPerPixel / 8));
+                                      static_cast<uint32>(image.GetMipmap(i)->GetWidth() * bitsPerPixel / 8));
         }
 
-        initData[i].pSysMem = image.GetMipmap(i).data;
-        initData[i].SysMemSlicePitch = (UINT)(image.GetMipmap(i).dataSize);
+        initData[i].pSysMem = image.GetMipmap(i)->GetData();
+        initData[i].SysMemSlicePitch = (UINT)(image.GetMipmap(i)->GetDataSize());
     }
 
     //create direct3d texture object

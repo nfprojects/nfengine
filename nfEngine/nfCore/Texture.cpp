@@ -11,7 +11,7 @@
 #include "ResourcesManager.hpp"
 #include "../nfCommon/Logger.hpp"
 #include "../nfCommon/InputStream.hpp"
-#include "../nfCommon/Image.hpp"
+#include "../nfCommon/Image/Image.hpp"
 
 namespace NFE {
 namespace Resource {
@@ -74,7 +74,7 @@ bool Texture::OnLoad()
                 mFormat != Common::ImageFormat::BC3 && mFormat != Common::ImageFormat::BC4 &&
                 mFormat != Common::ImageFormat::BC5 && mFormat != Common::ImageFormat::Unknown)
         {
-            image.GenerateMipmaps();
+            image.GenerateMipmaps(Common::MipmapFilter::Box);
         }
 
         // RGBA_UByte is not supported by D3D
@@ -118,7 +118,7 @@ bool Texture::OnLoad()
 
         LOG_SUCCESS("Texture '%s' loaded in %.3f sec. Dim: %ix%i, format: %s.",
                     mName, timer.Stop(), image.GetWidth(), image.GetHeight(),
-                    Common::Image::FormatToStr(image.GetFormat()));
+                    Common::FormatToStr(image.GetFormat()));
     }
     return true;
 }
