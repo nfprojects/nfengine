@@ -36,7 +36,7 @@ Result RendererTextureD3D11::FromImage(const Common::Image& image)
 
 
     HRESULT HR;
-    size_t bitsPerPixel = Image::BitsPerPixel(image.GetFormat());
+    size_t bitsPerPixel = BitsPerPixel(image.GetFormat());
 
     D3D11_TEXTURE2D_DESC texDesc;
     ZeroMemory(&texDesc, sizeof(texDesc));
@@ -47,7 +47,7 @@ Result RendererTextureD3D11::FromImage(const Common::Image& image)
     texDesc.ArraySize = 1;
     texDesc.SampleDesc.Count = 1;
     texDesc.SampleDesc.Quality = 0;
-    texDesc.MipLevels = (UINT)image.GetMipmapsNum();
+    texDesc.MipLevels = static_cast<UINT>(image.GetMipmapsNum());
     texDesc.MiscFlags = 0;
 
     bool bc = false;
@@ -108,7 +108,7 @@ Result RendererTextureD3D11::FromImage(const Common::Image& image)
             return Result::Error;
     }
 
-    uint32 mipmapLevels = (uint32)image.GetMipmapsNum();
+    uint32 mipmapLevels = static_cast<uint32>(image.GetMipmapsNum());
 
     // fill D3D11_SUBRESOURCE_DATA table
     D3D11_SUBRESOURCE_DATA* initData = new D3D11_SUBRESOURCE_DATA [mipmapLevels];
@@ -119,18 +119,18 @@ Result RendererTextureD3D11::FromImage(const Common::Image& image)
     {
         if (bc) //special case - block coding
         {
-            uint32 numBlocksWide = std::max<uint32>(1, (image.GetMipmap(i).width + 3) / 4);
+            uint32 numBlocksWide = std::max<uint32>(1, (image.GetMipmap(i)->GetWidth() + 3) / 4);
             //uint32 numBlocksHigh = std::max<uint32>(1, (image.m_Mipmaps[i].height + 3) / 4);
-            initData[i].SysMemPitch = (UINT)(numBlocksWide * bcNumBytesPerBlock);
+            initData[i].SysMemPitch = static_cast<UINT>(numBlocksWide * bcNumBytesPerBlock);
         }
         else
         {
             initData[i].SysMemPitch = Math::Max<uint32>(1,
-                                      static_cast<uint32>(image.GetMipmap(i).width * bitsPerPixel / 8));
+                                      static_cast<uint32>(image.GetMipmap(i)->GetWidth() * bitsPerPixel / 8));
         }
 
-        initData[i].pSysMem = image.GetMipmap(i).data;
-        initData[i].SysMemSlicePitch = (UINT)(image.GetMipmap(i).dataSize);
+        initData[i].pSysMem = image.GetMipmap(i)->GetData();
+        initData[i].SysMemSlicePitch = static_cast<UINT>(image.GetMipmap(i)->GetDataSize());
     }
 
     //create direct3d texture object
