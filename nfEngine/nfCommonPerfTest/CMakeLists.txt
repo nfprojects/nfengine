@@ -26,7 +26,7 @@ SET_TARGET_PROPERTIES(nfCommonPerfTest PROPERTIES
                       COMPILE_FLAGS "-pthread"
                       LINK_FLAGS "-pthread")
 ADD_DEPENDENCIES(nfCommonPerfTest nfCommon)
-TARGET_LINK_LIBRARIES(nfCommonPerfTest nfCommon gtest ${NFCOMMONPERFTEST_DEPS_LIBRARIES})
+TARGET_LINK_LIBRARIES(nfCommonPerfTest nfCommon gtest squish jpeg png ${NFCOMMONPERFTEST_DEPS_LIBRARIES})
 ADD_CUSTOM_COMMAND(TARGET nfCommonPerfTest POST_BUILD COMMAND
                    ${CMAKE_COMMAND} -E copy $<TARGET_FILE:nfCommonPerfTest>
                                             ${NFE_OUTPUT_DIRECTORY}/${targetfile})

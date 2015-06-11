@@ -33,6 +33,9 @@
     <Filter Include="Source Files\LoggerBackends\Win">
       <UniqueIdentifier>{8a1f06d7-8a12-4102-b4fe-1932bf32c8f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Image">
+      <UniqueIdentifier>{daff1ecc-f467-4b34-92c3-87eaa8f51f9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp">
@@ -42,9 +45,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OutputStream.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Image.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Window.hpp">
@@ -157,6 +157,15 @@
     </ClInclude>
     <ClInclude Include="LoggerBackends\BackendHTML.hpp">
       <Filter>Source Files\LoggerBackends</Filter>
+	</ClInclude>
+    <ClInclude Include="Image\Image.hpp">
+      <Filter>Source Files\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Image\Mipmap.hpp">
+      <Filter>Source Files\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Image\ImageFormat.hpp">
+      <Filter>Source Files\Image</Filter>
     </ClInclude>
     <ClInclude Include="LoggerBackends\Win\BackendWindowsDebugger.hpp">
       <Filter>Source Files\LoggerBackends\Win</Filter>
@@ -176,9 +185,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InputStream.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Math\Geometry.cpp">
@@ -270,6 +276,27 @@
     </ClCompile>
     <ClCompile Include="LoggerBackends\BackendHTML.cpp">
       <Filter>Source Files\LoggerBackends</Filter>
+	</ClCompile>
+    <ClCompile Include="Image\Image.cpp">
+      <Filter>Source Files\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\ImageLoadBMP.cpp">
+      <Filter>Source Files\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\ImageLoadDDS.cpp">
+      <Filter>Source Files\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\ImageLoadJPG.cpp">
+      <Filter>Source Files\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\ImageLoadPNG.cpp">
+      <Filter>Source Files\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\Mipmap.cpp">
+      <Filter>Source Files\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\ImageFormat.cpp">
+      <Filter>Source Files\Image</Filter>
     </ClCompile>
     <ClCompile Include="Math\Frustum.cpp">
       <Filter>Source Files\Math</Filter>
