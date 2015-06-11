@@ -27,6 +27,9 @@
     <Filter Include="Header Files\Win">
       <UniqueIdentifier>{bd3f5c23-9ea9-4e8c-9ad5-e1d9ed7a40cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Image">
+      <UniqueIdentifier>{daff1ecc-f467-4b34-92c3-87eaa8f51f9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp">
@@ -131,6 +134,24 @@
     <ClInclude Include="SystemInfoConstants.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ImageFormat.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Image\DDSStructures.hpp">
+      <Filter>Source Files\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Image\Image.hpp">
+      <Filter>Source Files\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Image\ImageConverter.hpp">
+      <Filter>Source Files\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Image\Mipmap.hpp">
+      <Filter>Source Files\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Image\MipmapFilter.hpp">
+      <Filter>Source Files\Image</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -140,9 +161,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InputStream.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Math\Geometry.cpp">
@@ -216,6 +234,30 @@
     </ClCompile>
     <ClCompile Include="Latch.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\Image.cpp">
+      <Filter>Source Files\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\ImageConverter.cpp">
+      <Filter>Source Files\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\ImageLoadBMP.cpp">
+      <Filter>Source Files\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\ImageLoadDDS.cpp">
+      <Filter>Source Files\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\ImageLoadJPG.cpp">
+      <Filter>Source Files\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\ImageLoadPNG.cpp">
+      <Filter>Source Files\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\Mipmap.cpp">
+      <Filter>Source Files\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\MipmapFilter.cpp">
+      <Filter>Source Files\Image</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
