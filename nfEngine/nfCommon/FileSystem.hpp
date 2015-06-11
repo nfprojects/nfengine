@@ -30,6 +30,11 @@ public:
     typedef std::function<bool(const std::string& path, bool isDirectory)> DirIterateCallback;
 
     /**
+     * Get location of the executable.
+     */
+    static std::string GetExecutablePath();
+
+    /**
      * Set current working directory.
      */
     static bool ChangeDirectory(const std::string& path);
