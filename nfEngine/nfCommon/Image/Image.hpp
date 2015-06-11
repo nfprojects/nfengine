@@ -6,50 +6,15 @@
 
 #pragma once
 
-#include "nfCommon.hpp"
+#include "Mipmap.hpp"
+#include "../InputStream.hpp"
 
 namespace NFE {
 namespace Common {
 
-/**
- * Image formats
- */
-enum class ImageFormat
-{
-    Unknown,
-
-    A_UByte,     // 8 bit
-    R_UByte,     // 8 bit
-    RGB_UByte,   // 24 bit
-    RGBA_UByte,  // 32 bit
-
-    R_Float,     // 32 bit
-    RGBA_Float,  // 128 bit
-
-    BC1,         // block coding 1, aka. DXT1 - 4 bits per pixel
-    BC2,         // block coding 2, aka. DXT3 - 8 bits per pixel
-    BC3,         // block coding 3, aka. DXT5 - 8 bits per pixel
-    BC4,         // block coding 4 - 4 bits per pixel
-    BC5,         // block coding 5 - 8 bits per pixel
-};
-
-class InputStream;
-class OutputStream;
-
-/**
- * Helper structure describing single mipmap level.
- */
-struct ImageMipmap
-{
-    void* data;
-    size_t dataSize;
-    uint32 width;
-    uint32 height;
-};
-
 class NFCOMMON_API Image
 {
-    std::vector<ImageMipmap> mMipmaps;
+    std::vector<Mipmap> mMipmaps;
     int mWidth;
     int mHeight;
     ImageFormat mFormat;
@@ -60,16 +25,6 @@ class NFCOMMON_API Image
     int LoadDDS(InputStream* pStream);
 
 public:
-    /**
-     * Convert ImageFormat to string
-     */
-    static const char* FormatToStr(ImageFormat format);
-
-    /**
-     * Retrieve number of bits per pixel for an image format
-     */
-    static size_t BitsPerPixel(ImageFormat format);
-
     Image();
     Image(const Image& src);
     ~Image();
@@ -84,7 +39,7 @@ public:
      * @param num Number of mipmaps to generate. Leave this argument default to generate a full set
      * @return 0 on success
      */
-    int GenerateMipmaps(uint32 num = 0xFFFFFFFF);
+    int GenerateMipmaps(int filterType, uint32 num = 0xFFFFFFFF);
 
     /**
      * Change pixel format. Currently converting from and to BC formats is unsupported.
@@ -101,7 +56,7 @@ public:
      * @param format Source data format
      * @return 0 on success
      */
-    int SetData(void* pData, int width, int height, ImageFormat format);
+    int SetData(uchar* pData, int width, int height, ImageFormat format);
 
     /**
      * Load image from a data stream. Supported file formats: BMP, JPEG, PNG, DDS.
@@ -109,6 +64,18 @@ public:
      * @return 0 on success
      */
     int Load(InputStream* pStream);
+
+         /**
+     * Convert ImageFormat to string
+     * @param format Source data format
+     */
+    static const char* FormatToStr(ImageFormat format);
+
+    /**
+     * Retrieve number of bits per pixel for an image format
+     * @param format Source data format
+     */
+    static size_t BitsPerPixel(ImageFormat format);
 
     /**
      * Get width of the image (in pixels).
@@ -124,7 +91,7 @@ public:
      * Get image content.
      * @param mipmap Mipmap level
      */
-    void* GetData(uint32 mipmap = 0) const;
+    const uchar* GetData(uint32 mipmap = 0) const;
 
     /**
      * Get format of the image.
@@ -140,7 +107,7 @@ public:
      * Access n-th mipmap data.
      * @param id Mipmap level.
      */
-    const ImageMipmap& GetMipmap(size_t id) const;
+    const Mipmap* Image::GetMipmap(uint32 id) const;
 };
 
 } // namespace Common
