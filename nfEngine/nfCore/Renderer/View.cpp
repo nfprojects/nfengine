@@ -14,7 +14,6 @@
 
 #include "Window.hpp"
 #include "Logger.hpp"
-#include "Image.hpp"
 
 namespace NFE {
 namespace Renderer {
