@@ -208,6 +208,7 @@ popd</Command>
     <ClInclude Include="File.hpp" />
     <ClInclude Include="FileSystem.hpp" />
     <ClInclude Include="Image.hpp" />
+    <ClInclude Include="ImageFormat.hpp" />
     <ClInclude Include="InputStream.hpp" />
     <ClInclude Include="Library.hpp" />
     <ClInclude Include="Logger.hpp" />
@@ -240,6 +241,11 @@ popd</Command>
   <ItemGroup>
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="Image.cpp" />
+    <ClCompile Include="ImageFormat.cpp" />
+    <ClCompile Include="ImageLoadBMP.cpp" />
+    <ClCompile Include="ImageLoadDDS.cpp" />
+    <ClCompile Include="ImageLoadJPG.cpp" />
+    <ClCompile Include="ImageLoadPNG.cpp" />
     <ClCompile Include="InputStream.cpp" />
     <ClCompile Include="Latch.cpp" />
     <ClCompile Include="Logger.cpp" />

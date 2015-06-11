@@ -7,32 +7,14 @@
 #pragma once
 
 #include "nfCommon.hpp"
+#include "ImageFormat.hpp"
+#include "InputStream.hpp"
+#include "OutputStream.hpp"
 
 namespace NFE {
 namespace Common {
 
-/**
- * Image formats
- */
-enum class ImageFormat
-{
-    Unknown,
-
-    A_UByte,     // 8 bit
-    R_UByte,     // 8 bit
-    RGB_UByte,   // 24 bit
-    RGBA_UByte,  // 32 bit
-
-    R_Float,     // 32 bit
-    RGBA_Float,  // 128 bit
-
-    BC1,         // block coding 1, aka. DXT1 - 4 bits per pixel
-    BC2,         // block coding 2, aka. DXT3 - 8 bits per pixel
-    BC3,         // block coding 3, aka. DXT5 - 8 bits per pixel
-    BC4,         // block coding 4 - 4 bits per pixel
-    BC5,         // block coding 5 - 8 bits per pixel
-};
-
+enum class ImageFormat;
 class InputStream;
 class OutputStream;
 
@@ -60,16 +42,6 @@ class NFCOMMON_API Image
     int LoadDDS(InputStream* pStream);
 
 public:
-    /**
-     * Convert ImageFormat to string
-     */
-    static const char* FormatToStr(ImageFormat format);
-
-    /**
-     * Retrieve number of bits per pixel for an image format
-     */
-    static size_t BitsPerPixel(ImageFormat format);
-
     Image();
     Image(const Image& src);
     ~Image();
@@ -109,6 +81,18 @@ public:
      * @return 0 on success
      */
     int Load(InputStream* pStream);
+
+         /**
+     * Convert ImageFormat to string
+     * @param format Source data format
+     */
+    static const char* FormatToStr(ImageFormat format);
+
+    /**
+     * Retrieve number of bits per pixel for an image format
+     * @param format Source data format
+     */
+    static size_t BitsPerPixel(ImageFormat format);
 
     /**
      * Get width of the image (in pixels).
