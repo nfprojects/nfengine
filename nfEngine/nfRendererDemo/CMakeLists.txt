@@ -24,6 +24,6 @@ SET_TARGET_PROPERTIES(nfRendererDemo PROPERTIES
                       COMPILE_FLAGS "-pthread"
                       LINK_FLAGS "-pthread")
 ADD_DEPENDENCIES(nfRendererDemo nfCommon nfRendererOGL4)
-TARGET_LINK_LIBRARIES(nfRendererDemo nfCommon nfRendererOGL4 ${NFRENDERERDEMO_DEPS_LIBRARIES})
+TARGET_LINK_LIBRARIES(nfRendererDemo nfCommon nfRendererOGL4 squish jpeg png ${NFRENDERERDEMO_DEPS_LIBRARIES})
 ADD_CUSTOM_COMMAND(TARGET nfRendererDemo POST_BUILD COMMAND
                    ${CMAKE_COMMAND} -E copy $<TARGET_FILE:nfRendererDemo> ${NFE_OUTPUT_DIRECTORY}/${targetfile})
