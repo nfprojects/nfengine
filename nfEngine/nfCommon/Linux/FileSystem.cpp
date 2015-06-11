@@ -58,6 +58,20 @@ bool RecursiveDeleteDirectory(const std::string& path)
 
 } // namespace
 
+std::string FileSystem::GetExecutablePath()
+{
+    std::string linkPath = "/proc/self/exe";
+    char* execPath = realpath(linkPath.data(), nullptr);
+    std::string execPathStr = execPath;
+    if (execPath == nullptr)
+    {
+        execPathStr = "";
+        LOG_ERROR("Failed to resolve executable's path : %s", strerror(errno));
+    }
+    free(execPath);
+    return execPathStr;
+}
+
 bool FileSystem::ChangeDirectory(const std::string& path)
 {
     if (::chdir(path.c_str()) != 0)
