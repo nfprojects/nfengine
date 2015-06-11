@@ -13,7 +13,7 @@
 
 #include "../nfCommon/Logger.hpp"
 #include "../nfCommon/InputStream.hpp"
-#include "../nfCommon/Image.hpp"
+#include "../nfCommon/Image/Image.hpp"
 
 namespace NFE {
 namespace Resource {
@@ -27,7 +27,7 @@ Renderer::ITexture* CreateRendererTextureFromImage(const Common::Image& image,
 {
     using namespace Renderer;
 
-    size_t bitsPerPixel = Common::Image::BitsPerPixel(image.GetFormat());
+    size_t bitsPerPixel = Common::BitsPerPixel(image.GetFormat());
 
     TextureDesc texDesc;
     texDesc.type = TextureType::Texture2D;
@@ -94,21 +94,22 @@ Renderer::ITexture* CreateRendererTextureFromImage(const Common::Image& image,
     }
 
     TextureDataDesc initialData[gMaxMipmaps];
-    for (size_t i = 0; i < image.GetMipmapsNum(); i++)
+    uint32 mipmapNum = static_cast<uint32>(image.GetMipmapsNum());
+    for (uint32 i = 0; i < mipmapNum; i++)
     {
         if (bc) //special case - block coding
         {
-            uint32 numBlocksWide = Math::Max<uint32>(1, (image.GetMipmap(i).width + 3) / 4);
+            uint32 numBlocksWide = Math::Max<uint32>(1, (image.GetMipmap(i)->GetWidth() + 3) / 4);
             initialData[i].lineSize = numBlocksWide * bcNumBytesPerBlock;
         }
         else
         {
-            initialData[i].lineSize = Math::Max<uint32>(1,
-                static_cast<uint32>(image.GetMipmap(i).width * bitsPerPixel / 8));
+            uint32 lineSize = image.GetMipmap(i)->GetWidth() * static_cast<uint32>(bitsPerPixel) / 8;
+            initialData[i].lineSize = Math::Max<uint32>(1, lineSize);
         }
 
-        initialData[i].data = image.GetMipmap(i).data;
-        initialData[i].sliceSize = image.GetMipmap(i).dataSize;
+        initialData[i].data = image.GetData(i);
+        initialData[i].sliceSize = image.GetMipmap(i)->GetDataSize();
     }
 
     texDesc.dataDesc = initialData;
@@ -160,7 +161,7 @@ bool Texture::OnLoad()
         Common::Image image;
         Common::InputStream* pInputStream = new Common::FileInputStream(path.c_str());
 
-        if (0 != image.Load(pInputStream))
+        if (!image.Load(pInputStream))
         {
             delete pInputStream;
             LOG_ERROR("Failed to open '%s'.", mName);
@@ -176,7 +177,7 @@ bool Texture::OnLoad()
                 mFormat != Common::ImageFormat::BC3 && mFormat != Common::ImageFormat::BC4 &&
                 mFormat != Common::ImageFormat::BC5 && mFormat != Common::ImageFormat::Unknown)
         {
-            image.GenerateMipmaps();
+            image.GenerateMipmaps(Common::MipmapFilter::Box);
         }
 
         // RGBA_UByte is not supported by D3D
@@ -219,7 +220,7 @@ bool Texture::OnLoad()
 
         LOG_SUCCESS("Texture '%s' loaded in %.3f sec. Dim: %ix%i, format: %s.",
                     mName, timer.Stop(), image.GetWidth(), image.GetHeight(),
-                    Common::Image::FormatToStr(image.GetFormat()));
+                    Common::FormatToStr(image.GetFormat()));
     }
     return true;
 }
