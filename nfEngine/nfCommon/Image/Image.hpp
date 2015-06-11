@@ -6,14 +6,19 @@
 
 #pragma once
 
-#include "nfCommon.hpp"
+#include "Mipmap.hpp"
+#include "ImageConverter.hpp"
+#include "../Math/Math.hpp"
+#include "../nfCommon.hpp"
+#include "../InputStream.hpp"
+#include "../OutputStream.hpp"
 
 namespace NFE {
 namespace Common {
 
-/**
- * Image formats
- */
+class InputStream;
+class OutputStream;
+
 enum class ImageFormat
 {
     Unknown,
@@ -33,23 +38,10 @@ enum class ImageFormat
     BC5,         // block coding 5 - 8 bits per pixel
 };
 
-class InputStream;
-class OutputStream;
-
-/**
- * Helper structure describing single mipmap level.
- */
-struct ImageMipmap
-{
-    void* data;
-    size_t dataSize;
-    uint32 width;
-    uint32 height;
-};
 
 class NFCOMMON_API Image
 {
-    std::vector<ImageMipmap> mMipmaps;
+    std::vector<Mipmap> mMipmaps;
     int mWidth;
     int mHeight;
     ImageFormat mFormat;
@@ -60,16 +52,6 @@ class NFCOMMON_API Image
     int LoadDDS(InputStream* pStream);
 
 public:
-    /**
-     * Convert ImageFormat to string
-     */
-    static const char* FormatToStr(ImageFormat format);
-
-    /**
-     * Retrieve number of bits per pixel for an image format
-     */
-    static size_t BitsPerPixel(ImageFormat format);
-
     Image();
     Image(const Image& src);
     ~Image();
@@ -110,6 +92,18 @@ public:
      */
     int Load(InputStream* pStream);
 
+         /**
+     * Convert ImageFormat to string
+     * @param format Source data format
+     */
+    static const char* FormatToStr(ImageFormat format);
+
+    /**
+     * Retrieve number of bits per pixel for an image format
+     * @param format Source data format
+     */
+    static size_t BitsPerPixel(ImageFormat format);
+
     /**
      * Get width of the image (in pixels).
      */
@@ -140,7 +134,7 @@ public:
      * Access n-th mipmap data.
      * @param id Mipmap level.
      */
-    const ImageMipmap& GetMipmap(size_t id) const;
+    const Mipmap& GetMipmap(size_t id) const;
 };
 
 } // namespace Common

@@ -208,6 +208,12 @@ popd</Command>
     <ClInclude Include="File.hpp" />
     <ClInclude Include="FileSystem.hpp" />
     <ClInclude Include="Image.hpp" />
+    <ClInclude Include="ImageFormat.hpp" />
+    <ClInclude Include="Image\DDSStructures.hpp" />
+    <ClInclude Include="Image\Image.hpp" />
+    <ClInclude Include="Image\ImageConverter.hpp" />
+    <ClInclude Include="Image\Mipmap.hpp" />
+    <ClInclude Include="Image\MipmapFilter.hpp" />
     <ClInclude Include="InputStream.hpp" />
     <ClInclude Include="Library.hpp" />
     <ClInclude Include="Logger.hpp" />
@@ -239,7 +245,30 @@ popd</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Buffer.cpp" />
-    <ClCompile Include="Image.cpp" />
+    <ClCompile Include="Image\Image.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Image\ImageConverter.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Image\ImageLoadBMP.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Image\ImageLoadDDS.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Image\ImageLoadJPG.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Image\ImageLoadPNG.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Image\Mipmap.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Image\MipmapFilter.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="InputStream.cpp" />
     <ClCompile Include="Latch.cpp" />
     <ClCompile Include="Logger.cpp" />
