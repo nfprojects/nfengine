@@ -10,6 +10,8 @@ TEST(FileSystemTest, DirectoryAndRemove)
 
     ASSERT_TRUE(FileSystem::CreateDir(testDir));
     ASSERT_TRUE(FileSystem::CreateDir(testDir2));
+    ASSERT_EQ(PathType::Directory, FileSystem::GetPathType(testDir));
+    ASSERT_EQ(PathType::Directory, FileSystem::GetPathType(testDir2));
     ASSERT_FALSE(FileSystem::Remove(testDir)); // non-recursive remove will fail
     ASSERT_TRUE(FileSystem::Remove(testDir2));
     ASSERT_TRUE(FileSystem::Remove(testDir));
@@ -80,4 +82,10 @@ TEST(FileSystemTest, Iterate)
 
     // cleanup
     ASSERT_TRUE(FileSystem::Remove(root, true));
+}
+TEST(FileSystemTest, GetExecutablePath)
+{
+    std::string path = FileSystem::GetExecutablePath();
+    ASSERT_FALSE(path.empty());
+    ASSERT_EQ(PathType::File, FileSystem::GetPathType(path));
 }
