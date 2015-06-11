@@ -1,7 +1,7 @@
 #include "PCH.hpp"
 #include "GuiRenderer.hpp"
 #include "Renderer.hpp"
-#include "../nfCommon/Image.hpp"
+#include "../nfCommon/Image/Image.hpp"
 #include "../nfCommon/Timer.hpp"
 
 namespace NFE {
