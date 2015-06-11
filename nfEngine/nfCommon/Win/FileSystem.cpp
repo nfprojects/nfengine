@@ -88,6 +88,13 @@ bool RecursiveDeleteDirectory(const std::wstring& path)
 
 } // namespace
 
+std::string FileSystem::GetExecutablePath()
+{
+    char execPath[MAX_PATH];
+    GetModuleFileNameA(NULL, execPath, MAX_PATH);
+    return std::string(execPath);
+}
+
 bool FileSystem::ChangeDirectory(const std::string& path)
 {
     std::wstring widePath;
