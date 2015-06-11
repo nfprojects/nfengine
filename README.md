@@ -69,6 +69,8 @@ The engine's root directory looks as follows:
         * **nfRendererOGL4** - OpenGL 4 low-level renderer implementation
     * **nfRendererDemo** - demo application used for renderers testing
     * **nfRendererTest** - unit test for renderers
+    * **TestResources** - directory containing files needed for nfCommonTest
+        * **TestCalcLib** - simple library used for testing Library module from nfCommon
 * **nfEngineDeps** - engine's dependencies directory. See "Dependencies" section for more information
 * **nfEngineDemo** - demo application
 * **Obj** - temporary compilation objects
@@ -90,6 +92,7 @@ The engine is dependent on following libraries:
 - [zlib](http://www.zlib.net/) - libpng and FreeType dependency, will be used to compress/decompress files in the future
 - [model_obj](http://www.dhpoware.com/demos/glObjViewer.html) - OBJ model files parsing
 - [Google Test](https://code.google.com/p/googletest/) - unit tests framework
+- [libsquish](https://code.google.com/p/libsquish/) - DXT compression/decompression
 
 To keep library versions constant throughout development, all dependent libraries are kept in our external [nfEngineDeps repo](http://www.github.com/nfprojects/nfenginedeps). Libraries are updated on the repo when such need occurs.
 
