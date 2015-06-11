@@ -88,6 +88,38 @@ bool RecursiveDeleteDirectory(const std::wstring& path)
 
 } // namespace
 
+std::string FileSystem::GetExecutablePath()
+{
+    std::unique_ptr<TCHAR[]> execPath;
+    std::string execPathStr;
+    DWORD sizeRead = 0;
+    unsigned int len = MAX_PATH; // Maximum length of a relative paths, available in Windows
+    const unsigned int maxPathWide = 32768; // Maximum length of a path, available in Windows
+
+    for (; len < maxPathWide; len *= 2)
+    {
+        execPath.reset(new TCHAR[len]);
+        sizeRead = GetModuleFileName(nullptr, execPath.get(), len);
+
+        if (sizeRead < len && sizeRead != 0)
+            break;
+    }
+
+    // Check if the buffer did not overflow, if not - convert to UTF8 and check result
+    if (len >= maxPathWide)
+    {
+        LOG_ERROR("Failed to resolve executable's path : %s", GetLastErrorString().c_str());
+        return "";
+    }
+    if (!UTF16ToUTF8(execPath.get(), execPathStr))
+    {
+        LOG_ERROR("UTF conversion of executable's path failed : %s", GetLastErrorString().c_str());
+        return "";
+    }
+
+    return execPathStr;
+}
+
 bool FileSystem::ChangeDirectory(const std::string& path)
 {
     std::wstring widePath;
