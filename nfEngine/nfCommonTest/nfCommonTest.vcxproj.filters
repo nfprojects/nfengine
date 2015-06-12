@@ -20,6 +20,7 @@
     <ClCompile Include="BufferOutputStreamTest.cpp" />
     <ClCompile Include="MemoryTest.cpp" />
     <ClCompile Include="SystemInfoTest.cpp" />
+    <ClCompile Include="ImageTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.hpp" />
