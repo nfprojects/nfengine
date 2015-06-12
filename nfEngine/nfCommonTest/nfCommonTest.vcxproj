@@ -192,6 +192,7 @@
     <ClCompile Include="DirectoryWatchTest.cpp" />
     <ClCompile Include="FileSystemTest.cpp" />
     <ClCompile Include="FileTest.cpp" />
+    <ClCompile Include="ImageTest.cpp" />
     <ClCompile Include="LatchTest.cpp" />
     <ClCompile Include="LibraryTest.cpp" />
     <ClCompile Include="LoggerTest.cpp" />
