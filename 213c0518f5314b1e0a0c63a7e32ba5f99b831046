@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_4a2699cf",
+        "filename": "nfEngine/nfCommonTest/Main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-12T08:40:53Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "facab960_80216bb6",
+      "revId": "213c0518f5314b1e0a0c63a7e32ba5f99b831046",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_a0abcf1b",
         "filename": "nfEngine/nfRendererTest/PCH.hpp",
         "patchSetId": 1
@@ -47,6 +65,24 @@
       "writtenOn": "2015-06-10T11:52:49Z",
       "side": 0,
       "message": "Agreed :)",
+      "parentUuid": "facab960_a0abcf1b",
+      "revId": "213c0518f5314b1e0a0c63a7e32ba5f99b831046",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_aa2ba592",
+        "filename": "nfEngine/nfRendererTest/PCH.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-12T08:40:53Z",
+      "side": 0,
+      "message": "I removed it from here and had to add the same include in nfCommon\\Library.cpp for WIN32.\n\nThe change in Library is mandatory, so it\u0027s in Library\u0027s commit and in here. Merging shouldn\u0027t do any problems with this.",
       "parentUuid": "facab960_a0abcf1b",
       "revId": "213c0518f5314b1e0a0c63a7e32ba5f99b831046",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",

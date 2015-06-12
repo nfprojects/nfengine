@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_6a219db3",
+        "filename": "nfEngine/nfCoreTest/Main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-12T08:40:53Z",
+      "side": 1,
+      "message": "Wrote this function in additional commit and made it a parent commit.",
+      "parentUuid": "facab960_40bbe371",
+      "revId": "5aa4b4a8a2bd30a4351d3737cc0cf1b1627bc503",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_60b1c78e",
         "filename": "nfEngine/nfRendererTest/Main.cpp",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_8a30a102",
+        "filename": "nfEngine/nfRendererTest/Main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-12T08:40:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_60b1c78e",
+      "revId": "5aa4b4a8a2bd30a4351d3737cc0cf1b1627bc503",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_c0a61353",
         "filename": "nfEngineTest/Test.cpp",
         "patchSetId": 1
@@ -47,6 +83,24 @@
       "writtenOn": "2015-06-10T11:37:36Z",
       "side": 1,
       "message": "As in nfEngine/nfCoreTest/Main.cpp",
+      "revId": "5aa4b4a8a2bd30a4351d3737cc0cf1b1627bc503",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_ca19c989",
+        "filename": "nfEngineTest/Test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 390,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-12T08:40:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_c0a61353",
       "revId": "5aa4b4a8a2bd30a4351d3737cc0cf1b1627bc503",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
