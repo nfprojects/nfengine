@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_0d22eba3",
+        "filename": "nfEngine/nfCommon/FileSystem.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-12T08:43:52Z",
+      "side": 1,
+      "message": "Missing space",
+      "revId": "8d171064e8f31d79384d92c3b9f3c5be7ec7aa21",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_4d3b13d1",
+        "filename": "nfEngine/nfCommon/FileSystem.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-12T08:43:52Z",
+      "side": 1,
+      "message": "Missing space",
+      "revId": "8d171064e8f31d79384d92c3b9f3c5be7ec7aa21",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_0d0bcb25",
+        "filename": "nfEngine/nfCommon/Linux/FileSystem.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-12T08:43:52Z",
+      "side": 1,
+      "message": "Value taken from MSDN for Linux version, srsly?",
+      "range": {
+        "startLine": 18,
+        "startChar": 29,
+        "endLine": 18,
+        "endChar": 50
+      },
+      "revId": "8d171064e8f31d79384d92c3b9f3c5be7ec7aa21",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_2d0ecf34",
+        "filename": "nfEngine/nfCommon/Linux/FileSystem.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-12T08:43:52Z",
+      "side": 1,
+      "message": "There is no way to check path length?",
+      "revId": "8d171064e8f31d79384d92c3b9f3c5be7ec7aa21",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
