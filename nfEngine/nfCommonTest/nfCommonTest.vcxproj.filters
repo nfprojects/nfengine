@@ -25,6 +25,7 @@
     <ClCompile Include="LoggerTest.cpp" />
     <ClCompile Include="RayGeometryTest.cpp" />
     <ClCompile Include="DirectoryWatchTest.cpp" />
+    <ClCompile Include="ImageTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.hpp" />
