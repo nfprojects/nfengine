@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_ed2a277d",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-12T08:43:35Z",
+      "side": 1,
+      "message": "This is our trouble maker. I\u0027m not yet sure how, but along with linux\u0027s dl_close() from Library::Close() it causes Segmentation Fault.",
+      "range": {
+        "startLine": 78,
+        "startChar": 19,
+        "endLine": 78,
+        "endChar": 34
+      },
+      "revId": "36901b6aedef815459b9c1e4417a288de6c6da1a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
