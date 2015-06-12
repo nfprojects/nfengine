@@ -377,6 +377,75 @@ int Image::GenerateMipmaps(uint32 num)
     return 0;
 }
 
+
+void Image::Printme()
+{
+	HANDLE  hConsole;
+	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	auto color = [&](float a, float b, float c){	
+		WORD col = 15;
+		if (a == 255 && b == 0 && c == 0)
+			col = 192;//64;
+		else if (a == 0 && b == 255 && c == 0)
+			col = 160;// 32;
+		else if (a == 0 && b == 0 && c == 255)
+			col = 144;//16;
+		else if (a == 255 && b == 255 && c == 255)
+			col = 240;//240;
+		else if (a == 0 && b == 0 && c == 0)
+			col = 0;
+		else
+			col = 15;
+			// color your text in Windows console mode
+			// colors are 0=black 1=blue 2=green and so on to 15=white  
+			// colorattribute = foreground + background * 16
+			// to get red text on yellow use 4 + 14*16 = 228
+			// light red on yellow would be 12 + 14*16 = 236
+
+			FlushConsoleInputBuffer(hConsole);
+		SetConsoleTextAttribute(hConsole, col);
+	};
+	ImageMipmap* pMip = &mMipmaps[0];
+	uint32 w = mMipmaps[0].width;
+	uint32 h = mMipmaps[0].height;
+	std::cout << "Width:" << w << std::endl;
+	std::cout << "Height:" << h << std::endl;
+	auto lamb = [](float b) -> float{
+		/*b *= 255;
+		if (b < 5)
+			return 0;
+		else if (b > 250)
+			return 255;
+		else*/
+			return b;
+	};
+	/*
+	for (uint32 y = 0; y < h; y++)
+	{
+		for (uint32 x = 0; x < w; x++)
+		{
+			// naive box filter
+			Vector a = GetTexel(pMip->data, x, y, pMip->width, mFormat);
+			std::cout << "[" << x << "," << y << "]: (" << lamb(a[0]);
+			std::cout << ", " << lamb(a[1]);
+			std::cout << ", " << lamb(a[2]);
+			std::cout << ", " << lamb(a[3]) << std::endl;
+			//color(lamb(a[0]), lamb(a[1]), lamb(a[2]));
+			//std::cout << "  ";
+		}
+		//color(1, 1, 1);
+		//std::cout << std::endl;
+	}*/
+	const uchar* pSrc = (const uchar*)pMip->data;
+	for (uint32 i = 0; i < pMip->dataSize / 4; i++)
+	{
+		std::cout << std::setw(3) << static_cast<int>(pSrc[i]) << "  ";
+		std::cout << std::setw(3) << static_cast<int>(pSrc[i + 1]) << "  ";
+		std::cout << std::setw(3) << static_cast<int>(pSrc[i + 2]) << "  ";
+		std::cout << std::setw(3) << static_cast<int>(pSrc[i + 3]) << std::endl;
+	}
+}
+
 int Image::Convert(ImageFormat destFormat)
 {
     if (destFormat == mFormat)
@@ -1022,7 +1091,7 @@ int Image::LoadDDS(InputStream* pStream)
     // read header
     DDS_header header;
     if (pStream->Read(sizeof(header), &header) != sizeof(header))
-        return 1;
+        return 1; 
 
     //check magic number
     if (header.dwMagic != DDS_MAGIC_NUMBER)
@@ -1053,6 +1122,7 @@ int Image::LoadDDS(InputStream* pStream)
         mipmap.width = width;
         mipmap.height = height;
         mipmap.dataSize = ((width + 3) / 4) * ((height + 3) / 4) * 16 * BitsPerPixel(mFormat) / 8;
+		printf("width = %d\nheight = %d\n dataSize = %lu\n", width, height, static_cast<unsigned long>(mipmap.dataSize));
         mipmap.data = malloc(mipmap.dataSize);
         mMipmaps.push_back(mipmap);
 

@@ -140,6 +140,7 @@ public:
      * Access n-th mipmap data.
      * @param id Mipmap level.
      */
+     void Printme();
     const ImageMipmap& GetMipmap(size_t id) const;
 };
 
