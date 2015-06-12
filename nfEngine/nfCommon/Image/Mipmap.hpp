@@ -79,7 +79,7 @@ public:
      * @param fmt Mipmap pixel format
      * @return Color object containing 4 values: red, green, blue, alpha
      */
-    Color GetTexel(uint32 x, uint32 y, ImageFormat fmt);
+    Color GetTexel(uint32 x, uint32 y, ImageFormat fmt) const;
 
     /**
      * Set value of the texel on (x,y) position

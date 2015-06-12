@@ -87,19 +87,19 @@ bool Image::SetData(void* pData, uint32 width, uint32 height, ImageFormat format
 bool Image::Load(InputStream* pStream)
 {
     pStream->Seek(0);
-    if (!LoadBMP(pStream))
+    if (LoadBMP(pStream))
         return true;
 
     pStream->Seek(0);
-    if (!LoadPNG(pStream))
+    if (LoadPNG(pStream))
         return true;
 
     pStream->Seek(0);
-    if (!LoadJPG(pStream))
+    if (LoadJPG(pStream))
         return true;
 
     pStream->Seek(0);
-    if (!LoadDDS(pStream))
+    if (LoadDDS(pStream))
         return true;
 
     Release();
@@ -267,7 +267,7 @@ bool Image::GenerateMipmaps(MipmapFilter filterType, uint32 num)
     if (!GetData())
     {
         LOG_WARNING("Tried to generate mMipmaps of an empty image");
-        return true;
+        return false;
     }
 
     if (mFormat == ImageFormat::BC4 || mFormat == ImageFormat::BC5 ||
@@ -295,7 +295,8 @@ bool Image::GenerateMipmaps(MipmapFilter filterType, uint32 num)
         }
     }
 
-    GenerateMipmapsActual(filterType, num);
+    if (!GenerateMipmapsActual(filterType, num))
+        return false;
 
     if (oldFormat != ImageFormat::Unknown)
     {
@@ -397,6 +398,7 @@ bool Image::Convert(ImageFormat destFormat)
         destFormat == ImageFormat::BC4 || destFormat == ImageFormat::BC5 ||
         destFormat == ImageFormat::BC6H || destFormat == ImageFormat::BC7)
     {
+        std::cout << "BC error in generate" << std::endl;
         LOG_ERROR("Block coded (BC4-BC7) pixel formats are currently not supported");
         return false;
     }

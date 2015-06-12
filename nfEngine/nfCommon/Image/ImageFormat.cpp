@@ -55,9 +55,10 @@ const char* FormatToStr(ImageFormat format)
         return "BC6H (BPTC)";
     case ImageFormat::BC7:
         return "BC7 (BPTC)";
-    };
 
-    return "Unknown";
+    default:
+        return "Unknown";
+    };
 }
 
 size_t BitsPerPixel(ImageFormat format)

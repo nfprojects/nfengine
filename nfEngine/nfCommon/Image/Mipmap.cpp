@@ -20,7 +20,7 @@ Mipmap::Mipmap() :
 Mipmap::Mipmap(void* data, uint32 width, uint32 height, size_t dataSize)
     : Mipmap()
 {
-    if (SetData(data, width, height, dataSize))
+    if (!SetData(data, width, height, dataSize))
         Release();
 }
 
@@ -136,7 +136,7 @@ bool Mipmap::SetData(void* data, uint32 width, uint32 height, size_t dataSize)
     return true;
 }
 
-Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt)
+Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
 {
     switch (fmt)
     {

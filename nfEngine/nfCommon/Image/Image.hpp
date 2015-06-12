@@ -105,7 +105,7 @@ public:
      * Access n-th mipmap data.
      * @param id Mipmap level.
      */
-    const Mipmap* GetMipmap(uint32 id) const;
+    const Mipmap* GetMipmap(uint32 id = 0) const;
 };
 
 } // namespace Common
