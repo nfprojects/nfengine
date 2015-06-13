@@ -73,6 +73,24 @@
       "revId": "8d171064e8f31d79384d92c3b9f3c5be7ec7aa21",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_396e1130",
+        "filename": "nfEngine/nfCommon/Linux/FileSystem.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-13T11:06:54Z",
+      "side": 1,
+      "message": "MW has a point right there.\n\nWhat if path exceeds 260 bytes? There must be some way to get it without such harsh restriction.",
+      "parentUuid": "facab960_2d0ecf34",
+      "revId": "8d171064e8f31d79384d92c3b9f3c5be7ec7aa21",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
