@@ -15,8 +15,6 @@ namespace Common {
 
 namespace {
 
-const int MAX_PATH = 260; // Value taken from MSDN
-
 bool RecursiveDeleteDirectory(const std::string& path)
 {
     DIR* d;
@@ -62,8 +60,19 @@ bool RecursiveDeleteDirectory(const std::string& path)
 
 std::string FileSystem::GetExecutablePath()
 {
-    char execPath[MAX_PATH];
-    readlink("/proc/self/exe", execPath, MAX_PATH);
+    std::string linkpath = "/proc/self/exe";
+    struct stat linkStat;
+
+    if (lstat(linkPath.c_str(), &linkStat) == -1)
+    {
+        LOG_ERROR("lstat failed to get information about link to exec: %s", strerror(errno));
+        return std::string();
+    }
+
+    long pathSize = linkStat.st_size + 1;
+
+    char execPath[pathSize];
+    readlink(linkpath.c_str(), execPath, pathSize);
     return std::string(execPath);
 }
 
