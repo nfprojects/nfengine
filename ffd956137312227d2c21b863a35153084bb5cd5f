@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_f984a9d5",
+        "filename": "nfEngine/nfRendererDemo/Main.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-13T11:01:13Z",
+      "side": 1,
+      "message": "No\n\nIf that helps, \"git show\" shows your current commit - I always use it as a pre-review-before-push to make sure that all the places I wanted to fix are fixed. ;)",
+      "revId": "ffd956137312227d2c21b863a35153084bb5cd5f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
