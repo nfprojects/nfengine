@@ -23,11 +23,9 @@ Library::Library(const std::string& path)
 }
 
 Library::Library(Library&& other)
+    : Library()
 {
-    Close();
-
-    mModule = other.mModule;
-    other.mModule = nullptr;
+    std::swap(mModule, other.mModule);
 }
 
 Library::~Library()

@@ -34,7 +34,9 @@ private:
 public:
     Library();
     Library(const std::string& path);
+    Library(const Library& other) = delete;
     Library(Library&& other);
+    Library& operator=(const Library& other) = delete;
     ~Library();
 
     /**
