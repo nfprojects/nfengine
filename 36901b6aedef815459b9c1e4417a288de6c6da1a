@@ -22,6 +22,30 @@
       "revId": "36901b6aedef815459b9c1e4417a288de6c6da1a",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_6e30ca01",
+        "filename": "nfEngine/nfCommonTest/LibraryTest.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-14T22:48:27Z",
+      "side": 1,
+      "message": "I\u0027ve fixed it by making few changes to our move constructor.\nClose() at the begining of the constructor used to broke sth down.",
+      "parentUuid": "facab960_ed2a277d",
+      "range": {
+        "startLine": 78,
+        "startChar": 19,
+        "endLine": 78,
+        "endChar": 34
+      },
+      "revId": "36901b6aedef815459b9c1e4417a288de6c6da1a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
