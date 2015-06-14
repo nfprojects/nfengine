@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_8bd7c0ec",
+        "filename": "nfEngine/nfCommon/FileSystem.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-14T09:41:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_0d22eba3",
+      "revId": "8d171064e8f31d79384d92c3b9f3c5be7ec7aa21",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_4d3b13d1",
         "filename": "nfEngine/nfCommon/FileSystem.hpp",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_ab05647b",
+        "filename": "nfEngine/nfCommon/FileSystem.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-14T09:41:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_4d3b13d1",
+      "revId": "8d171064e8f31d79384d92c3b9f3c5be7ec7aa21",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_0d0bcb25",
         "filename": "nfEngine/nfCommon/Linux/FileSystem.cpp",
         "patchSetId": 1
@@ -47,6 +83,30 @@
       "writtenOn": "2015-06-12T08:43:52Z",
       "side": 1,
       "message": "Value taken from MSDN for Linux version, srsly?",
+      "range": {
+        "startLine": 18,
+        "startChar": 29,
+        "endLine": 18,
+        "endChar": 50
+      },
+      "revId": "8d171064e8f31d79384d92c3b9f3c5be7ec7aa21",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_cb08e893",
+        "filename": "nfEngine/nfCommon/Linux/FileSystem.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-14T09:41:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_0d0bcb25",
       "range": {
         "startLine": 18,
         "startChar": 29,
@@ -88,6 +148,42 @@
       "side": 1,
       "message": "MW has a point right there.\n\nWhat if path exceeds 260 bytes? There must be some way to get it without such harsh restriction.",
       "parentUuid": "facab960_2d0ecf34",
+      "revId": "8d171064e8f31d79384d92c3b9f3c5be7ec7aa21",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_ebff6c65",
+        "filename": "nfEngine/nfCommon/Linux/FileSystem.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-14T09:41:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_2d0ecf34",
+      "revId": "8d171064e8f31d79384d92c3b9f3c5be7ec7aa21",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_0b03b073",
+        "filename": "nfEngine/nfCommon/Linux/FileSystem.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-14T09:41:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_396e1130",
       "revId": "8d171064e8f31d79384d92c3b9f3c5be7ec7aa21",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
