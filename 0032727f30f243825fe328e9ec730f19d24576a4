@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_debdf2b8",
+        "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-18T21:17:55Z",
+      "side": 1,
+      "message": "Sorry, I didn\u0027t notice this earlier, but:\n1. Missing error checking.\n2. Don\u0027t use \"A\" versions - use GetModuleFileName() and UTF16ToUTF8() to convert path to UTF-8.\n3. I think this MAX_PATH is legacy. Take a look here: https://msdn.microsoft.com/en-us/library/aa365247%28VS.85%29.aspx#maxpath (\"The Windows API has many functions that also have Unicode versions to permit an extended-length path for a maximum total path length of 32,767 characters.\" )",
+      "range": {
+        "startLine": 94,
+        "startChar": 4,
+        "endLine": 94,
+        "endChar": 22
+      },
+      "revId": "0032727f30f243825fe328e9ec730f19d24576a4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
