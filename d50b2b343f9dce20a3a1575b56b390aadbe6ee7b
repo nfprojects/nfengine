@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_b2d5c51d",
+        "filename": "nfEngine/nfCommon/Linux/FileSystem.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-18T11:29:57Z",
+      "side": 1,
+      "message": "What if realpath returns NULL?",
+      "revId": "d50b2b343f9dce20a3a1575b56b390aadbe6ee7b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_f2dbcd4c",
+        "filename": "nfEngine/nfCommon/Linux/FileSystem.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-18T11:29:57Z",
+      "side": 1,
+      "message": "std::string constructor not needed. \"execPath\" would be sufficient",
+      "range": {
+        "startLine": 65,
+        "startChar": 30,
+        "endLine": 65,
+        "endChar": 51
+      },
+      "revId": "d50b2b343f9dce20a3a1575b56b390aadbe6ee7b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
