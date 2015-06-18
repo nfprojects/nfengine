@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "facab960_834cf1c9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-18T18:23:37Z",
+      "side": 1,
+      "message": "nfCommonTest: Implement...\n\nUse [] only for platform name, if the commit relates to one platform only.",
+      "revId": "dcc0dc3e9a07471d15eb0c491f1040ecc7af68c0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_c34fd969",
         "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
         "patchSetId": 2
