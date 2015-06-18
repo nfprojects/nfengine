@@ -310,6 +310,23 @@
     },
     {
       "key": {
+        "uuid": "facab960_4356695d",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-18T18:22:48Z",
+      "side": 1,
+      "message": "As below",
+      "revId": "dcc0dc3e9a07471d15eb0c491f1040ecc7af68c0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_03f2a105",
         "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
         "patchSetId": 2
@@ -372,6 +389,23 @@
       "writtenOn": "2015-06-18T17:16:28Z",
       "side": 1,
       "message": "Use uniqie_ptr",
+      "revId": "dcc0dc3e9a07471d15eb0c491f1040ecc7af68c0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_235ec576",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-18T18:22:48Z",
+      "side": 1,
+      "message": "Split into separate test cases, one for each format.",
       "revId": "dcc0dc3e9a07471d15eb0c491f1040ecc7af68c0",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
