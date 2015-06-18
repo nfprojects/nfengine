@@ -16,6 +16,24 @@
       "revId": "d9dbc180884b5120e2c947cdfdd49dbccd6f6754",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_a04c88c9",
+        "filename": "nfEngine/nfCommon/Linux/Library.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-18T23:20:50Z",
+      "side": 1,
+      "message": "Yup, right. In that case it was kinda easier, because I could swap values just like in move constructor ;)",
+      "parentUuid": "facab960_9ebfeaa9",
+      "revId": "d9dbc180884b5120e2c947cdfdd49dbccd6f6754",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
