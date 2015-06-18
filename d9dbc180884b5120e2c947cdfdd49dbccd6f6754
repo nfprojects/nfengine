@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_9ebfeaa9",
+        "filename": "nfEngine/nfCommon/Linux/Library.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-18T21:20:26Z",
+      "side": 1,
+      "message": "You should free library here, as in destructor. MS has good example: https://msdn.microsoft.com/pl-pl/library/dd293665.aspx",
+      "revId": "d9dbc180884b5120e2c947cdfdd49dbccd6f6754",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
