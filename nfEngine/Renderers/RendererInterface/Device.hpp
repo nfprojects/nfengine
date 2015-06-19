@@ -25,6 +25,11 @@ class IDevice
 public:
     virtual ~IDevice() {}
 
+    /**
+     * Get handle to a main rendering API object.
+     */
+    virtual void* GetHandle() const = 0;
+
     /// Resources creation functions
 
     virtual IVertexLayout* CreateVertexLayout(const VertexLayoutDesc& desc) = 0;

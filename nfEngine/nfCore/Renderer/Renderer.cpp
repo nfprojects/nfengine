@@ -8,17 +8,42 @@
 
 #include "../PCH.hpp"
 #include "Renderer.hpp"
+#include "View.hpp"
 
 namespace NFE {
 namespace Renderer {
 
-void* HighLevelRenderer::GetDevice() const
+HighLevelRenderer::HighLevelRenderer()
+    : mRenderingDevice(nullptr)
+    , mCommandBuffer(nullptr)
 {
-    return nullptr;
 }
 
-int HighLevelRenderer::Init()
+HighLevelRenderer::~HighLevelRenderer()
 {
+    Release();
+}
+
+IDevice* HighLevelRenderer::GetDevice()
+{
+    return mRenderingDevice;
+}
+
+bool HighLevelRenderer::Init(const std::string& preferredRendererName)
+{
+    if (!mLowLevelRendererLib.Open(preferredRendererName))
+        return false;
+
+    auto proc = static_cast<RendererInitFunc>(mLowLevelRendererLib.GetSymbol(RENDERER_INIT_FUNC));
+    if (proc == NULL)
+        return false;
+
+    mRenderingDevice = proc();
+    if (mRenderingDevice == nullptr)
+        return false;
+
+    mCommandBuffer = mRenderingDevice->GetDefaultCommandBuffer();
+
     mImmediateContext.reset(new RenderContext());
     mGuiRenderer.reset(new GuiRenderer());
     mPostProcessRenderer.reset(new PostProcessRenderer());
@@ -27,7 +52,21 @@ int HighLevelRenderer::Init()
     mGBufferRenderer.reset(new GBufferRenderer());
     mLightsRenderer.reset(new LightsRenderer());
 
-    return 0;
+    return true;
+}
+
+void HighLevelRenderer::Release()
+{
+    if (mRenderingDevice != nullptr)
+    {
+        mRenderingDevice = nullptr;
+        auto proc = static_cast<RendererReleaseFunc>(mLowLevelRendererLib.GetSymbol("Release"));
+        if (proc == NULL)
+            return;
+        proc();
+    }
+
+    mLowLevelRendererLib.Close();
 }
 
 int HighLevelRenderer::InitModules()
@@ -39,12 +78,10 @@ void HighLevelRenderer::ReleaseModules()
 {
 }
 
-void HighLevelRenderer::Begin()
+void HighLevelRenderer::ProcessView(View* view)
 {
-}
-
-void HighLevelRenderer::SwapBuffers(IRenderTarget* pRenderTarget, ViewSettings* pViewSettings, float dt)
-{
+    // TODO: set viewport
+    mCommandBuffer->SetRenderTarget(view->GetRenderTarget());
 }
 
 void HighLevelRenderer::ExecuteDeferredContext(RenderContext* pContext)

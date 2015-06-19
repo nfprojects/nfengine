@@ -53,7 +53,7 @@ Result EngineDeleteScene(SceneManager* pScene)
 
 Result InitAntTweakBar()
 {
-    int err = TwInit(TW_DIRECT3D11, g_pRenderer->GetDevice());
+    int err = TwInit(TW_DIRECT3D11, g_pRenderer->GetDevice()->GetHandle());
     if (err != 1)
     {
         LOG_ERROR("Failed to initialize AntTweakBar.");
@@ -174,7 +174,7 @@ Result EngineInit()
     //init renderer
     LOG_INFO("Initializing renderer...");
     g_pRenderer.reset(new Renderer::HighLevelRenderer());
-    g_pRenderer->Init();
+    g_pRenderer->Init("nfRendererD3D11");
     g_pImmediateContext = g_pRenderer->GetImmediateContext();
     g_pDebugRenderer = g_pRenderer->GetDebugRenderer();
     g_pGuiRenderer = g_pRenderer->GetGuiRenderer();
@@ -287,8 +287,6 @@ Result EngineAdvance(const DrawRequest* pDrawRequests, uint32 drawRequestsNum,
         pScene->Update(pUpdateRequests[i].deltaTime);
     }
 
-
-    g_pRenderer->Begin();
     for (uint32 i = 0; i < drawRequestsNum; i++)
     {
         // TODO: error checking
@@ -299,16 +297,16 @@ Result EngineAdvance(const DrawRequest* pDrawRequests, uint32 drawRequestsNum,
         if (pCamera != NULL)
         {
             SceneManager* pScene = pCamera->GetOwner()->GetScene();
-            pScene->Render(pCamera, pView->RT);
+            pScene->Render(pCamera, pView->GetRenderTarget());
         }
-        g_pRenderer->SwapBuffers(pView->RT, &pView->settings, pDrawRequests[i].deltaTime);
+        g_pRenderer->ProcessView(pView);
 
 
         RenderContext* pCtx = g_pImmediateContext;
         g_pGuiRenderer->Enter(pCtx);
         {
             Recti rect;
-            g_pGuiRenderer->SetTarget(pCtx, pView->RT);
+            g_pGuiRenderer->SetTarget(pCtx, pView->GetRenderTarget());
             pView->OnPostRender(pCtx, g_pGuiRenderer);
 
             //draw sign
@@ -323,7 +321,7 @@ Result EngineAdvance(const DrawRequest* pDrawRequests, uint32 drawRequestsNum,
 #endif
 
         // present frame in the display
-        // pView->RT->Present(); // TODO
+        pView->Present();
     }
 
     Util::g_FrameStats.deltaTime = g_Timer.Stop();

@@ -15,6 +15,9 @@
 #include "GeometryBufferRenderer.hpp"
 #include "LightsRenderer.hpp"
 
+#include "../nfCommon/Library.hpp"
+#include "../Renderers/RendererInterface/Device.hpp"
+
 namespace NFE {
 namespace Renderer {
 
@@ -47,9 +50,15 @@ struct GPUStats
     {}
 };
 
-class HighLevelRenderer
+class HighLevelRenderer final
 {
 private:
+    Common::Library mLowLevelRendererLib;
+
+    /// low-level renderer objects
+    IDevice* mRenderingDevice;
+    ICommandBuffer* mCommandBuffer;
+
     std::unique_ptr<RenderContext> mImmediateContext;
     std::unique_ptr<GuiRenderer> mGuiRenderer;
     std::unique_ptr<PostProcessRenderer> mPostProcessRenderer;
@@ -58,16 +67,29 @@ private:
     std::unique_ptr<GBufferRenderer> mGBufferRenderer;
     std::unique_ptr<LightsRenderer> mLightsRenderer;
 
+    /// disable unwanted methods
+    HighLevelRenderer(const HighLevelRenderer&) = delete;
+    HighLevelRenderer(HighLevelRenderer&&) = delete;
+    HighLevelRenderer& operator=(const HighLevelRenderer&) = delete;
+    HighLevelRenderer& operator=(HighLevelRenderer&&) = delete;
+
 public:
     GPUStats pipelineStats;
     RendererSettings settings;
 
-    void* GetDevice() const;
-    int Init();
+    HighLevelRenderer();
+    ~HighLevelRenderer();
+    bool Init(const std::string& preferredRendererName);
+    void Release();
+
+    /**
+     * Get low-level rendering device.
+     */
+    IDevice* GetDevice();
+
     int InitModules();
     void ReleaseModules();
-    void Begin();
-    void SwapBuffers(IRenderTarget* pRenderTarget, ViewSettings* pViewSettings, float dt);
+    void ProcessView(View* view);
     void ExecuteDeferredContext(RenderContext* pContext);
 
     GuiRenderer* GetGuiRenderer() const;
