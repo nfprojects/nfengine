@@ -48,7 +48,7 @@ void SceneManager::RenderShadow(RenderContext* pCtx, LightComponent* pLight, uin
 
     ShadowRenderer::Get()->SetDestination(pCtx, &cameraRenderDesc, pLight->mShadowMap, faceID);
 
-    pCtx->commandBuffer.Clear();
+    // pCtx->commandBuffer.Clear(); // TODO
 
     std::vector<MeshComponent*> visibleMeshes; //TODO: dynamic allocation per frame should be avoided
     FindVisibleMeshEntities(pCamera->mFrustum, &visibleMeshes);
@@ -74,12 +74,14 @@ void SceneManager::RenderShadow(RenderContext* pCtx, LightComponent* pLight, uin
                 command.indexCount = 3 * pMesh->mSubMeshes[j].trianglesCount;
                 command.startIndex = pMesh->mSubMeshes[j].indexOffset;
                 command.material = pMesh->mSubMeshes[j].material->GetRendererData();
-                pCtx->commandBuffer.PushBack(command);
+                // pCtx->commandBuffer.PushBack(command); // TODO
                 Util::g_FrameStats.renderedMeshes++;
             }
         }
     }
 
+    // TODO
+    /*
     if (pCtx->commandBuffer.commands.size())
     {
         //sort commands
@@ -88,6 +90,7 @@ void SceneManager::RenderShadow(RenderContext* pCtx, LightComponent* pLight, uin
         //draw
         ShadowRenderer::Get()->Draw(pCtx, pCtx->commandBuffer);
     }
+    */
 }
 
 // Perform Geometry Pass for pCamera in pContext

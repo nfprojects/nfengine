@@ -67,6 +67,11 @@ Device::~Device()
 {
 }
 
+void* Device::GetHandle() const
+{
+    return mDevice.get();
+}
+
 ID3D11Device* Device::Get() const
 {
     return mDevice.get();

@@ -21,8 +21,7 @@ namespace Renderer {
 
 View::View()
 {
-    RT = nullptr;
-    camera = nullptr;
+    mCamera = nullptr;
     mTexture = nullptr;
 }
 
@@ -33,12 +32,6 @@ View::~View()
 
 void View::Release()
 {
-    if (RT != nullptr)
-    {
-        delete RT;
-        RT = 0;
-    }
-
     if (mTexture != nullptr)
     {
         mTexture->DelRef(this);
@@ -52,33 +45,66 @@ void View::OnPostRender(RenderContext* context)
     // no GUI by default
 }
 
-Result View::SetCamera(Scene::Camera* pCamera)
+Result View::SetCamera(Scene::Camera* camera)
 {
-    camera = pCamera;
+    this->mCamera = camera;
     return Result::OK;
 }
 
 Scene::Camera* View::GetCamera() const
 {
-    return camera;
+    return mCamera;
 }
+
 
 // link the view to a window
 Result View::SetWindow(Common::Window* window)
 {
     Release();
 
-    RT = nullptr; // TODO
-    if (RT == nullptr)
+    uint32 width, height;
+    window->GetSize(width, height);
+
+    // create backbuffer connected with the window
+    BackbufferDesc bbDesc;
+    bbDesc.width = width;
+    bbDesc.height = height;
+    bbDesc.windowHandle = static_cast<void*>(window->GetHandle());
+    bbDesc.vSync = false;
+    mWindowBackbuffer.reset(gRenderer->GetDevice()->CreateBackbuffer(bbDesc));
+    if (mWindowBackbuffer == nullptr)
     {
-        LOG_ERROR("Memory allocation failed");
+        LOG_ERROR("Failed to create backbuffer");
         return Result::AllocationError;
     }
 
-    uint32 width, height;
-    window->GetSize(width, height);
-    // RT->Init(width, height, pWindow); // TODO
+    RenderTargetElement rtTarget;
+    rtTarget.texture = mWindowBackbuffer.get();
+
+    RenderTargetDesc rtDesc;
+    rtDesc.depthBuffer = nullptr; // TODO
+    rtDesc.numTargets = 1;
+    rtDesc.targets = &rtTarget;
+
+    mRenderTarget.reset(gRenderer->GetDevice()->CreateRenderTarget(rtDesc));
+    if (mRenderTarget == nullptr)
+    {
+        mWindowBackbuffer.reset();
+        LOG_ERROR("Failed to create render target");
+        return Result::AllocationError;
+    }
+
+    // TODO: window resize handling
+
     return Result::OK;
+}
+
+void View::Present()
+{
+    if (mWindowBackbuffer != nullptr && mRenderTarget != nullptr)
+    {
+        mWindowBackbuffer->Present();
+    }
 }
 
 using namespace Resource;
@@ -93,7 +119,9 @@ Texture* View::SetOffScreen(uint32 width, uint32 height, const char* textureName
 
     mTexture->Load();
     mTexture->AddRef(this);
-    RT = mTexture->CreateRendertarget(width, height, Common::ImageFormat::RGBA_Float);
+
+    // TODO
+    // mRenderTarget = mTexture->CreateRendertarget(width, height, Common::ImageFormat::RGBA_Float);
 
     return mTexture;
 }
