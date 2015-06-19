@@ -1,0 +1,101 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_b4468a4d",
+        "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-19T14:15:10Z",
+      "side": 1,
+      "message": "Use unique_ptr",
+      "revId": "46c9b61e4c5c436b07db31573440288b904c3cd9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_f47bb289",
+        "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-19T14:15:10Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 99,
+        "startChar": 9,
+        "endLine": 99,
+        "endChar": 12
+      },
+      "revId": "46c9b61e4c5c436b07db31573440288b904c3cd9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_345b5a2f",
+        "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-19T14:15:10Z",
+      "side": 1,
+      "message": "According to MSDN: \"If the buffer is too small to hold the module name, the string is truncated to nSize characters including the terminating null character, the function returns nSize, and the function sets the last error to ERROR_INSUFFICIENT_BUFFER.\"",
+      "revId": "46c9b61e4c5c436b07db31573440288b904c3cd9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_94498662",
+        "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-19T14:15:10Z",
+      "side": 1,
+      "message": "Memory leak (execPath)",
+      "revId": "46c9b61e4c5c436b07db31573440288b904c3cd9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_546a9eb3",
+        "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-19T14:15:10Z",
+      "side": 1,
+      "message": "Maybe just move UTF-16 -\u003e UTF-8 conversion to for loop, and after the loop print error only",
+      "range": {
+        "startLine": 111,
+        "startChar": 8,
+        "endLine": 111,
+        "endChar": 43
+      },
+      "revId": "46c9b61e4c5c436b07db31573440288b904c3cd9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
