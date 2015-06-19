@@ -54,6 +54,12 @@ bool File::Open(const std::string& path, AccessMode access, bool overwrite)
         mFile = INVALID_HANDLE_VALUE;
         return false;
     }
+    LPTSTR buffer = new TCHAR[MAX_PATH];
+    GetFullPathName(widePath.c_str(), MAX_PATH, buffer, NULL);
+    std::string fullpath;
+    UTF16ToUTF8(buffer, fullpath);
+    std::cout << fullpath << std::endl;
+    delete[] buffer;
 
     DWORD desiredAccess;
     switch (access)

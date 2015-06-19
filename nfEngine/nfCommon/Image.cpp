@@ -10,6 +10,7 @@
 #include "InputStream.hpp"
 #include "OutputStream.hpp"
 #include "jpeg/jpgd.h"
+#include "squish\squish.h"
 #include "Logger.hpp"
 
 namespace NFE {
@@ -377,9 +378,30 @@ int Image::GenerateMipmaps(uint32 num)
     return 0;
 }
 
+void Image::ConvDDS()
+{
+        const int size = static_cast<int>(mWidth * mHeight * BitsPerPixel(ImageFormat::RGBA_UByte) / 8);
+        squish::u8* pixels = new squish::u8[size];  // 16 pixels of input
+        squish::u8* block = static_cast<uchar*>(GetData());      // 8 bytes of output
+        switch (mFormat)
+        {
+        case ImageFormat::BC1:
+            DecompressImage(pixels, mWidth, mHeight, block, squish::kDxt1);
+            break;
+        case ImageFormat::BC2:
+            DecompressImage(pixels, mWidth, mHeight, block, squish::kDxt3);
+            break;
+        default:
+            DecompressImage(pixels, mWidth, mHeight, block, squish::kDxt5);
+        }
+        SetData(pixels, mWidth, mHeight, ImageFormat::RGBA_UByte);
+}
 
 void Image::Printme()
 {
+    if (mFormat == ImageFormat::BC1 || mFormat == ImageFormat::BC2 || mFormat == ImageFormat::BC3 ||
+        mFormat == ImageFormat::BC4 || mFormat == ImageFormat::BC5)
+        ConvDDS();
 	HANDLE  hConsole;
 	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	auto color = [&](float a, float b, float c){	
@@ -405,45 +427,45 @@ void Image::Printme()
 			FlushConsoleInputBuffer(hConsole);
 		SetConsoleTextAttribute(hConsole, col);
 	};
-	ImageMipmap* pMip = &mMipmaps[0];
-	uint32 w = mMipmaps[0].width;
-	uint32 h = mMipmaps[0].height;
+    const ImageMipmap* pMip = &GetMipmap(0);
+	uint32 w = pMip->width;
+	uint32 h = pMip->height;
 	std::cout << "Width:" << w << std::endl;
 	std::cout << "Height:" << h << std::endl;
 	auto lamb = [](float b) -> float{
-		/*b *= 255;
+		b *= 255;
 		if (b < 5)
 			return 0;
 		else if (b > 250)
 			return 255;
-		else*/
+		else
 			return b;
 	};
-	/*
+    
 	for (uint32 y = 0; y < h; y++)
 	{
 		for (uint32 x = 0; x < w; x++)
 		{
 			// naive box filter
 			Vector a = GetTexel(pMip->data, x, y, pMip->width, mFormat);
-			std::cout << "[" << x << "," << y << "]: (" << lamb(a[0]);
-			std::cout << ", " << lamb(a[1]);
-			std::cout << ", " << lamb(a[2]);
-			std::cout << ", " << lamb(a[3]) << std::endl;
-			//color(lamb(a[0]), lamb(a[1]), lamb(a[2]));
-			//std::cout << "  ";
+			//std::cout << "[" << x << "," << y << "]: (" << lamb(a[0]);
+			//std::cout << ", " << lamb(a[1]);
+			//std::cout << ", " << lamb(a[2]);
+			//std::cout << ", " << lamb(a[3]) << std::endl;
+			color(lamb(a[0]), lamb(a[1]), lamb(a[2]));
+			std::cout << "  ";
 		}
-		//color(1, 1, 1);
-		//std::cout << std::endl;
-	}*/
+		color(1, 1, 1);
+		std::cout << std::endl;
+    }/*
 	const uchar* pSrc = (const uchar*)pMip->data;
-	for (uint32 i = 0; i < pMip->dataSize / 4; i++)
+	for (uint32 i = 0; i < pMip->dataSize; i+=4)
 	{
 		std::cout << std::setw(3) << static_cast<int>(pSrc[i]) << "  ";
 		std::cout << std::setw(3) << static_cast<int>(pSrc[i + 1]) << "  ";
 		std::cout << std::setw(3) << static_cast<int>(pSrc[i + 2]) << "  ";
 		std::cout << std::setw(3) << static_cast<int>(pSrc[i + 3]) << std::endl;
-	}
+	}*/
 }
 
 int Image::Convert(ImageFormat destFormat)
@@ -1019,7 +1041,7 @@ static ImageFormat DDSGetFormat(const DDS_PIXELFORMAT& ddpf)
             return ImageFormat::BC1; //DXGI_FORMAT_BC1_UNORM
 
         if (MAKEFOURCC('D', 'X', 'T', '3') == ddpf.dwFourCC)
-            return ImageFormat::BC1; //DXGI_FORMAT_BC2_UNORM
+            return ImageFormat::BC2; //DXGI_FORMAT_BC2_UNORM
 
         if (MAKEFOURCC('D', 'X', 'T', '5') == ddpf.dwFourCC)
             return ImageFormat::BC3; //DXGI_FORMAT_BC3_UNORM

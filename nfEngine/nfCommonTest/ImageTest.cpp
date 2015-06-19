@@ -2,6 +2,7 @@
 #include "../nfCommon/Image.hpp"
 #include "../nfCommon/InputStream.hpp"
 #include "Test.hpp"
+//#include "libsquish/squish.h"
 
 using namespace NFE::Common;
 
@@ -92,13 +93,13 @@ TEST_F(ImageTest, Load)
 
     // Testing Load() for different types of mImage files
     // JPEG
-    texture = new FileInputStream(textureJPG.data());
+    texture = new FileInputStream((testImagesPath + textureJPG).data());
     LoadAssert();
     ASSERT_EQ(ImageFormat::RGBA_UByte, mImage->GetFormat());
     delete texture;
 
     // PNG
-    texture = new FileInputStream(texturePNG_RGB.data());
+    texture = new FileInputStream((testImagesPath + texturePNG_RGB).data());
     LoadAssert();
     ASSERT_TRUE(ImageFormat::RGBA_UByte == mImage->GetFormat() ||
                 ImageFormat::A_UByte == mImage->GetFormat() ||
@@ -245,9 +246,14 @@ TEST_F(ImageTest, Testtest)
 	Go(textureDDS_BC1);
 	mImage->Printme();
 	Go(textureDDS_BC2);
-	Go(textureDDS_BC3);
+    mImage->Printme();
+    Go(textureDDS_BC3);
+    mImage->Printme();
 	Go(textureDDS_BC4);
+    mImage->Printme();
 	Go(textureDDS_BC5);
+    mImage->Printme();
+    /*
 	Go(textureDDS_MM);
 	Go(textureJPG);
 	//mImage->Printme();
@@ -260,8 +266,7 @@ TEST_F(ImageTest, Testtest)
 	//mImage->Printme();
 	Go(textureBMP);
 	//mImage->Printme();
-
-
+    */
 	/*if (ret != 0 || mImage->GetFormat() == ImageFormat::Unknown)
 		std::cout << "load failed" << std::endl;
 	else

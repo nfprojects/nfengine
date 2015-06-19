@@ -12,7 +12,7 @@ const std::string TEXT = "The quick brown fox jumps over the lazy dog";
 const size_t TEXTSIZE = TEXT.length();
 
 // Image constants
-const std::string testImagesPath = "../../../nfEngine/TestResources/ImageSamples/";
+const std::string testImagesPath = "../../nfEngine/TestResources/ImageSamples/";
 const std::string textureDDS_BC1 = "textureBC1.dds";
 const std::string textureDDS_BC2 = "textureBC2.dds";
 const std::string textureDDS_BC3 = "textureBC3.dds";

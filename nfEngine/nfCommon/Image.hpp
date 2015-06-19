@@ -60,6 +60,7 @@ class NFCOMMON_API Image
     int LoadDDS(InputStream* pStream);
 
 public:
+    void ConvDDS();
     /**
      * Convert ImageFormat to string
      */
