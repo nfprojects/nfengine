@@ -2,6 +2,7 @@
 #include "../nfCommon/Image.hpp"
 #include "../nfCommon/InputStream.hpp"
 #include "Test.hpp"
+//#include "libsquish/squish.h"
 
 using namespace NFE::Common;
 
@@ -243,8 +244,9 @@ TEST_F(ImageTest, Testtest)
 		delete texture;
 	};
 	Go(textureDDS_BC1);
+    mImage->ConvDDS();
 	mImage->Printme();
-	Go(textureDDS_BC2);
+	/*Go(textureDDS_BC2);
 	Go(textureDDS_BC3);
 	Go(textureDDS_BC4);
 	Go(textureDDS_BC5);
@@ -260,7 +262,7 @@ TEST_F(ImageTest, Testtest)
 	//mImage->Printme();
 	Go(textureBMP);
 	//mImage->Printme();
-
+    */
 
 	/*if (ret != 0 || mImage->GetFormat() == ImageFormat::Unknown)
 		std::cout << "load failed" << std::endl;

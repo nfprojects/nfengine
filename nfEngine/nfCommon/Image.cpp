@@ -10,6 +10,7 @@
 #include "InputStream.hpp"
 #include "OutputStream.hpp"
 #include "jpeg/jpgd.h"
+#include "squish\squish.h"
 #include "Logger.hpp"
 
 namespace NFE {
@@ -377,6 +378,19 @@ int Image::GenerateMipmaps(uint32 num)
     return 0;
 }
 
+void Image::ConvDDS()
+{
+    if (mFormat == ImageFormat::BC1 || mFormat == ImageFormat::BC2 || mFormat == ImageFormat::BC3 ||
+        mFormat == ImageFormat::BC4 || mFormat == ImageFormat::BC5)
+    {
+        const int size = static_cast<int>(mWidth * mHeight * BitsPerPixel(ImageFormat::RGBA_UByte) / 8);
+        squish::u8* pixels = new squish::u8[size];  // 16 pixels of input
+        squish::u8* block = static_cast<uchar*>(GetData());      // 8 bytes of output
+
+        DecompressImage(pixels, mWidth, mHeight, block, squish::kDxt1);
+        SetData(pixels, mWidth, mHeight, ImageFormat::RGBA_UByte);
+    }
+}
 
 void Image::Printme()
 {
@@ -405,9 +419,9 @@ void Image::Printme()
 			FlushConsoleInputBuffer(hConsole);
 		SetConsoleTextAttribute(hConsole, col);
 	};
-	ImageMipmap* pMip = &mMipmaps[0];
-	uint32 w = mMipmaps[0].width;
-	uint32 h = mMipmaps[0].height;
+    const ImageMipmap* pMip = &GetMipmap(0);
+	uint32 w = pMip->width;
+	uint32 h = pMip->height;
 	std::cout << "Width:" << w << std::endl;
 	std::cout << "Height:" << h << std::endl;
 	auto lamb = [](float b) -> float{
