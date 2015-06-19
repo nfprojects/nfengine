@@ -14,12 +14,16 @@ namespace Renderer {
 
 class CORE_API View
 {
-    Resource::Texture* mTexture;  // != NULL when rendering to a off-screen render target
+    // not NULL when rendering to a off-screen render target
+    Resource::Texture* mTexture;  
+
+    // not NULL when rendering to a window
+    std::unique_ptr<IBackbuffer> mWindowBackbuffer;
+
+    std::unique_ptr<IRenderTarget> mRenderTarget;
+    Scene::Camera* camera;
 
 public:
-    // TEMPORARY!!!
-    IRenderTarget* RT;   // render target
-    Scene::Camera* camera;       // camera (optional)
 
     ViewSettings settings;
 
@@ -33,6 +37,11 @@ public:
 
     Result SetCamera(Scene::Camera* camera);
     Scene::Camera* GetCamera() const;
+
+    NFE_INLINE IRenderTarget* GetRenderTarget() const
+    {
+        return mRenderTarget.get();
+    }
 
     /**
      * @brief Link the view to a window
@@ -49,8 +58,15 @@ public:
     // TODO: more parameters (pixel format, etc.)
     Resource::Texture* SetOffScreen(uint32 width, uint32 height, const char* textureName);
 
-    // destroy render target
+    /**
+     * Destroy render target
+     */
     void Release();
+
+    /**
+     * Display the render target on a screen, when the View is connected with a window.
+     */
+    void Present();
 };
 
 } // namespace Renderer
