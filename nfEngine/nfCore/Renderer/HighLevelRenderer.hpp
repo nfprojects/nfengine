@@ -9,6 +9,9 @@
 #include "RendererResources.hpp"
 #include "RendererContext.hpp"
 
+#include "../nfCommon/Library.hpp"
+#include "../Renderers/RendererInterface/Device.hpp"
+
 namespace NFE {
 namespace Renderer {
 
@@ -44,23 +47,47 @@ struct GPUStats
 class HighLevelRenderer final
 {
 private:
+    Common::Library mLowLevelRendererLib;
+
+    /// low-level renderer objects
+    IDevice* mRenderingDevice;
+    ICommandBuffer* mCommandBuffer;
+
+    /// TODO: make sure there is no false sharing problem here
+    std::unique_ptr<RenderContext[]> mDeferredContexts;
     std::unique_ptr<RenderContext> mImmediateContext;
+
+    /// disable unwanted methods
+    HighLevelRenderer(const HighLevelRenderer&) = delete;
+    HighLevelRenderer(HighLevelRenderer&&) = delete;
+    HighLevelRenderer& operator=(const HighLevelRenderer&) = delete;
+    HighLevelRenderer& operator=(HighLevelRenderer&&) = delete;
 
 public:
     GPUStats pipelineStats;
     RendererSettings settings;
 
-    /**
-     * Get rendering API handle.
-     */
-    void* GetDevice() const;
+    HighLevelRenderer();
+    ~HighLevelRenderer();
 
     /**
      * Initialize the renderer.
      *
+     * @param preferredRendererName Low-level renderer name
      * @return 0 on success.
      */
-    int Init();
+    bool Init(const std::string& preferredRendererName);
+    void Release();
+
+    /**
+     * Get low-level rendering device.
+     */
+    IDevice* GetDevice();
+
+    /**
+     * Update renderer view and display it on a screen if needed.
+     */
+    void ProcessView(View* view);
 
     /**
      * Get immediate (primary) rendering context.

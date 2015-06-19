@@ -17,8 +17,10 @@ namespace Renderer {
 class RenderContext
 {
 public:
-    InstanceData* instanceData; // used to store per-instance vertex buffers
-    RenderCommandBuffer commandBuffer;
+    ICommandBuffer* commandBuffer; // low-level API command buffer
+
+    RenderContext();
+    RenderContext(ICommandBuffer* commandBuffer);
 
     void Begin();
     void End();
