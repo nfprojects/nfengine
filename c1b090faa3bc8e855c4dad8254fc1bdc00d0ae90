@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "facab960_55fb78c0",
+        "filename": "nfEngine/TestResources/TestCalcLib/TestCalcLib.hpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-20T10:45:10Z",
+      "side": 1,
+      "message": "Correct indentation of comment, check others as well",
+      "revId": "c1b090faa3bc8e855c4dad8254fc1bdc00d0ae90",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_3a02636f",
         "filename": "nfEngine/TestResources/TestCalcLib/testCalcLib.vcxproj",
         "patchSetId": 16
