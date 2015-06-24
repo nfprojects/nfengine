@@ -71,6 +71,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_c36980bf",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Shader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-24T11:05:46Z",
+      "side": 1,
+      "message": "OK, if you say so. I will look more in depth into disassembling shaders in OGL, if all else fails it will return an empty string.",
+      "parentUuid": "facab960_08ab8775",
+      "revId": "d36b895911e4cbba2a5288ca62a40f0cce0cecea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_bd781fc5",
         "filename": "nfEngine/Renderers/nfRendererD3D11/Shader.cpp",
         "patchSetId": 3
@@ -100,6 +118,24 @@
       "side": 1,
       "message": "http://stackoverflow.com/questions/440144/in-opengl-is-there-a-way-to-get-a-list-of-all-uniforms-attribs-used-by-a-shade",
       "parentUuid": "facab960_bd781fc5",
+      "revId": "d36b895911e4cbba2a5288ca62a40f0cce0cecea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_a371dca9",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Shader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-24T11:05:46Z",
+      "side": 1,
+      "message": "Indeed, Uniforms. I always forget the naming, nvm.",
+      "parentUuid": "facab960_88979739",
       "revId": "d36b895911e4cbba2a5288ca62a40f0cce0cecea",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
