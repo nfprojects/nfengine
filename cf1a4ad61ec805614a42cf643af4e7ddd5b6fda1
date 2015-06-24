@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_fd03870d",
+        "filename": "README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-24T08:15:49Z",
+      "side": 1,
+      "message": "Officialy, \"compilable\", or \"compileable\" are a non-existent words. Since we are making modifications here, how about avoiding any confusion and changing it to \"buildable\"?",
+      "range": {
+        "startLine": 118,
+        "startChar": 18,
+        "endLine": 118,
+        "endChar": 28
+      },
+      "revId": "cf1a4ad61ec805614a42cf643af4e7ddd5b6fda1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_48010f04",
+        "filename": "README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-24T08:15:49Z",
+      "side": 1,
+      "message": "\"labelling\" is a correct word.\n\nhttp://pl.bab.la/slownik/angielski-polski/labelling",
+      "range": {
+        "startLine": 212,
+        "startChar": 28,
+        "endLine": 212,
+        "endChar": 37
+      },
+      "revId": "cf1a4ad61ec805614a42cf643af4e7ddd5b6fda1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
