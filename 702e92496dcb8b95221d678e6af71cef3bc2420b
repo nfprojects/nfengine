@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_e83823d5",
+        "filename": "nfEngine/nfCore/Resource.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-24T08:19:20Z",
+      "side": 1,
+      "message": "You missed a WinAPI function here. I would search if ZeroMemory is not used somewhere else inside nfCore.",
+      "range": {
+        "startLine": 101,
+        "startChar": 4,
+        "endLine": 101,
+        "endChar": 14
+      },
+      "revId": "702e92496dcb8b95221d678e6af71cef3bc2420b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
