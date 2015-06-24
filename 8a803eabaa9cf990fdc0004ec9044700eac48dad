@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_5d32b35f",
+        "filename": "nfEngine/nfCore/ResourcesManager.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-24T05:49:27Z",
+      "side": 1,
+      "message": "Doesn\u0027t this go against our coding style? I mean, IMO it should be other way around - GetResource should have a param named \"type\"",
+      "revId": "8a803eabaa9cf990fdc0004ec9044700eac48dad",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
