@@ -1,0 +1,107 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_9d47db76",
+        "filename": "nfEngine/nfCore/Globals.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-24T08:08:58Z",
+      "side": 1,
+      "message": "Do we really need these? They are kept inside g_pRenderer.",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 51
+      },
+      "revId": "e6d6328a49f945bc20586da7c1acc076ceeeeaf1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_bd5f3f40",
+        "filename": "nfEngine/nfCore/Prerequisites.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-24T08:08:58Z",
+      "side": 1,
+      "message": "I would add a TODO to remove this right here. Not only it is in a weird, random place, it is no use for us anyway.",
+      "revId": "e6d6328a49f945bc20586da7c1acc076ceeeeaf1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_dd5c034e",
+        "filename": "nfEngine/nfCore/Renderer/GuiRenderer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-24T08:08:58Z",
+      "side": 1,
+      "message": "X? Why X? Why not NF or NFE?",
+      "range": {
+        "startLine": 15,
+        "startChar": 8,
+        "endLine": 15,
+        "endChar": 9
+      },
+      "revId": "e6d6328a49f945bc20586da7c1acc076ceeeeaf1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_7d3937f1",
+        "filename": "nfEngine/nfCore/Renderer/RendererResources.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-24T08:08:58Z",
+      "side": 1,
+      "message": "This will break doxygen. Now the question is, which commit will be merged first...",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 13
+      },
+      "revId": "e6d6328a49f945bc20586da7c1acc076ceeeeaf1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_9d3efbd8",
+        "filename": "nfEngine/nfCore/SceneManager.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-24T08:08:58Z",
+      "side": 1,
+      "message": "As a since-we-are-already-correcting-this-file, fix pointer styles in the entire file.",
+      "revId": "e6d6328a49f945bc20586da7c1acc076ceeeeaf1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
