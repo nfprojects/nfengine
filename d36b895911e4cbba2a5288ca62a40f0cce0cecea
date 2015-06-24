@@ -53,6 +53,24 @@
     },
     {
       "key": {
+        "uuid": "facab960_08ab8775",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Shader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-24T09:35:38Z",
+      "side": 1,
+      "message": "The purpose of disassembling shaders is to analyze compiler output and optimize it if possible. Without disassembly you don\u0027t know what\u0027s happening underneath. If it\u0027s not supported in OpenGL then the OGL version of this function should return an empty string",
+      "parentUuid": "facab960_1da58b46",
+      "revId": "d36b895911e4cbba2a5288ca62a40f0cce0cecea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_bd781fc5",
         "filename": "nfEngine/Renderers/nfRendererD3D11/Shader.cpp",
         "patchSetId": 3
@@ -64,6 +82,24 @@
       "writtenOn": "2015-06-24T07:42:03Z",
       "side": 1,
       "message": "Reimplementing GetIODesc might be troublesome on OpenGL. Looking at official reference, it looks like there is no function to acquire IODesc from shader. Same questions as above.",
+      "revId": "d36b895911e4cbba2a5288ca62a40f0cce0cecea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_88979739",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Shader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-24T09:35:38Z",
+      "side": 1,
+      "message": "http://stackoverflow.com/questions/440144/in-opengl-is-there-a-way-to-get-a-list-of-all-uniforms-attribs-used-by-a-shade",
+      "parentUuid": "facab960_bd781fc5",
       "revId": "d36b895911e4cbba2a5288ca62a40f0cce0cecea",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
