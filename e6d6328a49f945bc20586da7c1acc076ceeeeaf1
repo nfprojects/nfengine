@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "facab960_437650a5",
+        "filename": "nfEngine/nfCore/Globals.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-24T11:03:36Z",
+      "side": 1,
+      "message": "I just don\u0027t like the fact, that these pointers are lying there and can be by accident modified. If so, maybe const them?",
+      "parentUuid": "facab960_e87ae322",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 51
+      },
+      "revId": "e6d6328a49f945bc20586da7c1acc076ceeeeaf1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_bd5f3f40",
         "filename": "nfEngine/nfCore/Prerequisites.hpp",
         "patchSetId": 1
