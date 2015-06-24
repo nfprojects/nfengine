@@ -16,6 +16,24 @@
       "revId": "8a803eabaa9cf990fdc0004ec9044700eac48dad",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_780f8288",
+        "filename": "nfEngine/nfCore/ResourcesManager.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-24T19:30:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_5d32b35f",
+      "revId": "8a803eabaa9cf990fdc0004ec9044700eac48dad",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
