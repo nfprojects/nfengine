@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "facab960_7d8137c2",
+        "filename": "nfEngine/Renderers/RendererInterface/CommandBuffer.hpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-24T06:59:18Z",
+      "side": 1,
+      "message": "Why @indexOffset insead of @param indexOffset? We should keep the style consistent, even inside comments.",
+      "revId": "7cdcd961b2cbdedde31bd14c6299ec9e67e6c4d8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "facab960_9d86fbd9",
+        "filename": "nfEngine/Renderers/RendererInterface/Device.hpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-24T06:59:18Z",
+      "side": 1,
+      "message": "Missing comment block, like in CommandBuffer.hpp",
+      "revId": "7cdcd961b2cbdedde31bd14c6299ec9e67e6c4d8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
