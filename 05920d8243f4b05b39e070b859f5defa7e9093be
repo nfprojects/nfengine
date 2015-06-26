@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_68b037de",
+        "filename": "nfEngine/nfCommon/Linux/FileSystem.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-26T20:58:24Z",
+      "side": 1,
+      "message": "Wrong style - new line after \"}\"",
+      "revId": "05920d8243f4b05b39e070b859f5defa7e9093be",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_28b62fdd",
+        "filename": "nfEngine/nfCommon/Linux/FileSystem.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-26T20:58:24Z",
+      "side": 1,
+      "message": "Move it to \"else\" block",
+      "range": {
+        "startLine": 74,
+        "startChar": 8,
+        "endLine": 74,
+        "endChar": 23
+      },
+      "revId": "05920d8243f4b05b39e070b859f5defa7e9093be",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_88ec9bc9",
+        "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-26T20:58:24Z",
+      "side": 1,
+      "message": "\"else\" not needed - you return in \"if\" block",
+      "revId": "05920d8243f4b05b39e070b859f5defa7e9093be",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_e8f1a796",
+        "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-26T20:58:24Z",
+      "side": 1,
+      "message": "Why not just \"return\"?",
+      "revId": "05920d8243f4b05b39e070b859f5defa7e9093be",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
