@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "bad4c104_267902fd",
+        "filename": "nfEngine/nfCommon/Linux/FileSystem.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-26T13:58:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_4884af5d",
+      "revId": "46c9b61e4c5c436b07db31573440288b904c3cd9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_887a3775",
         "filename": "nfEngine/nfCommon/Linux/FileSystem.cpp",
         "patchSetId": 5
@@ -89,6 +107,24 @@
     },
     {
       "key": {
+        "uuid": "bad4c104_467e06e6",
+        "filename": "nfEngine/nfCommon/Linux/FileSystem.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-26T13:58:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_6380b4c0",
+      "revId": "46c9b61e4c5c436b07db31573440288b904c3cd9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_b4468a4d",
         "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
         "patchSetId": 5
@@ -135,6 +171,24 @@
       "writtenOn": "2015-06-24T08:37:12Z",
       "side": 1,
       "message": "Make it constant",
+      "revId": "46c9b61e4c5c436b07db31573440288b904c3cd9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bad4c104_86400e58",
+        "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-26T13:58:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_288beb68",
       "revId": "46c9b61e4c5c436b07db31573440288b904c3cd9",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -316,6 +370,24 @@
       "writtenOn": "2015-06-24T08:37:12Z",
       "side": 1,
       "message": "This might be a similar situation to Linux version. I don\u0027t know how your code looks now, after MW\u0027s comments, so just make sure there will be no free/delete on a nullptr.",
+      "revId": "46c9b61e4c5c436b07db31573440288b904c3cd9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bad4c104_c62136b6",
+        "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-26T13:58:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_88f15703",
       "revId": "46c9b61e4c5c436b07db31573440288b904c3cd9",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
