@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_0e73334e",
+        "filename": "nfEngine/nfCommon/Linux/FileSystem.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-27T16:03:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_eebd2f04",
+      "range": {
+        "startLine": 77,
+        "startChar": 4,
+        "endLine": 77,
+        "endChar": 23
+      },
+      "revId": "6bf279651eac62b610d601763be3700df3f7b4b9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_0ebb330f",
         "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
         "patchSetId": 7
@@ -36,6 +60,30 @@
       "writtenOn": "2015-06-27T14:00:58Z",
       "side": 1,
       "message": "Since there will be some corrections one way or another...\n\n\"Check if the buffer did not overflow\" sounds better. ;)",
+      "range": {
+        "startLine": 108,
+        "startChar": 27,
+        "endLine": 108,
+        "endChar": 44
+      },
+      "revId": "6bf279651eac62b610d601763be3700df3f7b4b9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ee752f33",
+        "filename": "nfEngine/nfCommon/Win/FileSystem.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-27T16:03:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_0ebb330f",
       "range": {
         "startLine": 108,
         "startChar": 27,
