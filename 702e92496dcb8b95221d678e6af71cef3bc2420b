@@ -22,6 +22,30 @@
       "revId": "702e92496dcb8b95221d678e6af71cef3bc2420b",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4ef37b73",
+        "filename": "nfEngine/nfCore/Resource.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-27T18:42:27Z",
+      "side": 1,
+      "message": "I\u0027ve changed it only here, because removing WinAPI usage in whole nfCore is not in the scope of this commit.",
+      "parentUuid": "facab960_e83823d5",
+      "range": {
+        "startLine": 101,
+        "startChar": 4,
+        "endLine": 101,
+        "endChar": 14
+      },
+      "revId": "702e92496dcb8b95221d678e6af71cef3bc2420b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
