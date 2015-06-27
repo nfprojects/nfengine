@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_6ed11fcd",
+        "filename": "nfEngine/nfCommonTest/nfCommonTest.vcxproj",
+        "patchSetId": 8
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-27T18:30:49Z",
+      "side": 1,
+      "message": "Good catch, but that was not the point of my comment.\n\nTest.hpp has been renamed, so it does not exist anymore. Remove this - it leads to nowhere and produces errors when trying to open Test.hpp inside Visual Studio.",
+      "range": {
+        "startLine": 203,
+        "startChar": 0,
+        "endLine": 203,
+        "endChar": 36
+      },
+      "revId": "6daccdd7275a25b0631b95e18263f66b46519429",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
