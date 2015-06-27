@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_6e0f5fe2",
+        "filename": "nfEngine/Renderers/RendererInterface/Shader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-27T14:57:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_7db4d781",
+      "revId": "d36b895911e4cbba2a5288ca62a40f0cce0cecea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_5dc393ec",
         "filename": "nfEngine/Renderers/RendererInterface/Shader.hpp",
         "patchSetId": 3
@@ -30,6 +48,24 @@
       "writtenOn": "2015-06-24T07:42:03Z",
       "side": 1,
       "message": "Switch the args. Output should always be at the end of the list.",
+      "revId": "d36b895911e4cbba2a5288ca62a40f0cce0cecea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_8e14a3f6",
+        "filename": "nfEngine/Renderers/RendererInterface/Shader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-27T14:57:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_5dc393ec",
       "revId": "d36b895911e4cbba2a5288ca62a40f0cce0cecea",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -153,6 +189,24 @@
       "writtenOn": "2015-06-24T07:42:03Z",
       "side": 1,
       "message": "You already check for cbufferDesc not being equal to the end iterator. Why not change the check from EXPECT to ASSERT? If the assert fails, there\u0027s no need to check further, because the test is already failed.",
+      "revId": "d36b895911e4cbba2a5288ca62a40f0cce0cecea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ee028fb3",
+        "filename": "nfEngine/nfRendererTest/Shader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-27T14:57:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_1df74b5a",
       "revId": "d36b895911e4cbba2a5288ca62a40f0cce0cecea",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
