@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_4ed8db53",
+        "filename": "README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-27T14:59:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_fd03870d",
+      "range": {
+        "startLine": 118,
+        "startChar": 18,
+        "endLine": 118,
+        "endChar": 28
+      },
+      "revId": "cf1a4ad61ec805614a42cf643af4e7ddd5b6fda1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_48010f04",
         "filename": "README.md",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2015-06-24T08:15:49Z",
       "side": 1,
       "message": "\"labelling\" is a correct word.\n\nhttp://pl.bab.la/slownik/angielski-polski/labelling",
+      "range": {
+        "startLine": 212,
+        "startChar": 28,
+        "endLine": 212,
+        "endChar": 37
+      },
+      "revId": "cf1a4ad61ec805614a42cf643af4e7ddd5b6fda1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_6edd9f42",
+        "filename": "README.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-27T14:59:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_48010f04",
       "range": {
         "startLine": 212,
         "startChar": 28,
