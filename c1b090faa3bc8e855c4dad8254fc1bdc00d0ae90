@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_79a56703",
+        "filename": "nfEngine/TestResources/TestCalcLib/TestCalcLib.hpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-27T22:45:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_55fb78c0",
+      "revId": "c1b090faa3bc8e855c4dad8254fc1bdc00d0ae90",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_1931bbec",
         "filename": "nfEngine/TestResources/TestCalcLib/TestCalcLib.hpp",
         "patchSetId": 16
@@ -30,6 +48,30 @@
       "writtenOn": "2015-06-27T21:29:02Z",
       "side": 1,
       "message": "Assisting Kukasz is here to help.\n\nHere is your problem of inconsistent DLL linkage warnings. Take a closer look at this and... \u003cswitch to testCalcLib.vcxproj now\u003e",
+      "range": {
+        "startLine": 8,
+        "startChar": 7,
+        "endLine": 8,
+        "endChar": 26
+      },
+      "revId": "c1b090faa3bc8e855c4dad8254fc1bdc00d0ae90",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_59a0a3f4",
+        "filename": "nfEngine/TestResources/TestCalcLib/TestCalcLib.hpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-27T22:45:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_1931bbec",
       "range": {
         "startLine": 8,
         "startChar": 7,
