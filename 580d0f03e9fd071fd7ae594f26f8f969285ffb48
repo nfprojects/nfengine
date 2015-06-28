@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_d93bd336",
+        "filename": "nfEngine/TestResources/TestCalcLib/TestCalcLib.hpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-28T08:13:26Z",
+      "side": 1,
+      "message": "It\u0027s a header. #pragma once is missing.",
+      "revId": "580d0f03e9fd071fd7ae594f26f8f969285ffb48",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
