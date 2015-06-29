@@ -1,0 +1,399 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_5cffac01",
+        "filename": "nfEngine/nfCommon/Image/DDSStructures.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-29T23:20:36Z",
+      "side": 1,
+      "message": "Inheritance makes it less readable",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 2
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_c17679d8",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-29T23:20:36Z",
+      "side": 1,
+      "message": "These could be moved to ImageFormat.cpp IMO",
+      "range": {
+        "startLine": 44,
+        "startChar": 0,
+        "endLine": 106,
+        "endChar": 1
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_e1737de5",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-29T23:20:36Z",
+      "side": 1,
+      "message": "I think Mipmap class should do that automatically",
+      "range": {
+        "startLine": 113,
+        "startChar": 12,
+        "endLine": 113,
+        "endChar": 18
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_012f81a2",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-29T23:20:36Z",
+      "side": 1,
+      "message": "This should be done in 1 call",
+      "range": {
+        "startLine": 127,
+        "startChar": 0,
+        "endLine": 130,
+        "endChar": 23
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_212c85ab",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-29T23:20:36Z",
+      "side": 1,
+      "message": "This also",
+      "range": {
+        "startLine": 138,
+        "startChar": 0,
+        "endLine": 140,
+        "endChar": 74
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_816d5107",
+        "filename": "nfEngine/nfCommon/Image/Image.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-29T23:20:36Z",
+      "side": 1,
+      "message": "Why?",
+      "range": {
+        "startLine": 59,
+        "startChar": 16,
+        "endLine": 59,
+        "endChar": 21
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_a17255e3",
+        "filename": "nfEngine/nfCommon/Image/Image.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-29T23:20:36Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 110,
+        "startChar": 18,
+        "endLine": 110,
+        "endChar": 25
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_0106a120",
+        "filename": "nfEngine/nfCommon/Image/ImageConverter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-29T23:20:36Z",
+      "side": 1,
+      "message": "Maybe move to Math?",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_e108dd2f",
+        "filename": "nfEngine/nfCommon/Image/ImageConverter.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-29T23:20:36Z",
+      "side": 1,
+      "message": "1. What\u0027s the purpose of this class?\n2. Why it can be done in Image class?\n3. Why you operate on IO Streams?",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_01aa2119",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-29T23:20:36Z",
+      "side": 1,
+      "message": "By the way you can change all C-like cast to static_cast, etc.",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_a117b550",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-29T23:20:36Z",
+      "side": 1,
+      "message": "Use smart pointer",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_8112b160",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-29T23:20:36Z",
+      "side": 1,
+      "message": "Is copy constructor really neded?",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4118a984",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-29T23:20:36Z",
+      "side": 1,
+      "message": "There\u0027s too much of this stuff. We only need one function - SetData(width, height, size, data) which allocates memory and fills it with \"data\" if it\u0027s not null",
+      "range": {
+        "startLine": 38,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 35
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_611dad73",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-29T23:20:36Z",
+      "side": 1,
+      "message": "What\u0027s this? We can\u0027t assume default pixel format...",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 55
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_2103a510",
+        "filename": "nfEngine/nfCommon/Image/MipmapFilter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-29T23:20:36Z",
+      "side": 1,
+      "message": "It does nothing",
+      "range": {
+        "startLine": 15,
+        "startChar": 4,
+        "endLine": 15,
+        "endChar": 22
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_61684df6",
+        "filename": "nfEngine/nfCommon/Image/MipmapFilter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-29T23:20:36Z",
+      "side": 1,
+      "message": "You force a user to use dynamic allocation? That\u0027s bad. I don\u0027t like the whole idea, as described in MipmapFilter.hpp",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_2152c5dd",
+        "filename": "nfEngine/nfCommon/Image/MipmapFilter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-29T23:20:36Z",
+      "side": 1,
+      "message": "What!?",
+      "range": {
+        "startLine": 57,
+        "startChar": 40,
+        "endLine": 57,
+        "endChar": 41
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4163491a",
+        "filename": "nfEngine/nfCommon/Image/MipmapFilter.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-29T23:20:36Z",
+      "side": 1,
+      "message": "I don\u0027t get it. Why create a separate classes just to handle image filtering? Create appropriate methods in Image/Mipmap classes",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_21a72551",
+        "filename": "nfEngine/nfCommon/Image/MipmapFilter.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-29T23:20:36Z",
+      "side": 1,
+      "message": "I agree",
+      "range": {
+        "startLine": 28,
+        "startChar": 7,
+        "endLine": 28,
+        "endChar": 38
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}

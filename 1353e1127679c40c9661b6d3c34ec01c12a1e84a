@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_5e36c404",
+        "filename": "nfEngine/nfCommon/Image.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-29T23:20:36Z",
+      "side": 0,
+      "message": "Why not rename Image.cpp -\u003e Image/Image.cpp?",
+      "revId": "1353e1127679c40c9661b6d3c34ec01c12a1e84a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
