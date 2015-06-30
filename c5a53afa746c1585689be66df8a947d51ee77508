@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_edc0cc7e",
+        "filename": "nfEngine/nfCommon/Image/DDSStructures.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T14:04:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_f7c6db48",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_5cffac01",
         "filename": "nfEngine/nfCommon/Image/DDSStructures.hpp",
         "patchSetId": 1
@@ -277,6 +295,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_0dbed0ff",
+        "filename": "nfEngine/nfCommon/Image/Image.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T14:04:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_b29e2155",
+      "range": {
+        "startLine": 42,
+        "startChar": 28,
+        "endLine": 42,
+        "endChar": 38
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_816d5107",
         "filename": "nfEngine/nfCommon/Image/Image.hpp",
         "patchSetId": 1
@@ -335,6 +377,30 @@
       "writtenOn": "2015-06-30T08:54:16Z",
       "side": 1,
       "message": "Fix indent",
+      "range": {
+        "startLine": 68,
+        "startChar": 0,
+        "endLine": 68,
+        "endChar": 9
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_2dbb940f",
+        "filename": "nfEngine/nfCommon/Image/Image.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T14:04:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_77e2cbd6",
       "range": {
         "startLine": 68,
         "startChar": 0,
@@ -772,6 +838,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_ed6e0c96",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T14:04:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_f73b3b36",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 32,
+        "endChar": 41
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_52b6b5dd",
         "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
         "patchSetId": 1
@@ -783,6 +873,24 @@
       "writtenOn": "2015-06-30T10:33:07Z",
       "side": 1,
       "message": "unique_ptr",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4d2c584b",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T14:04:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_52b6b5dd",
       "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
