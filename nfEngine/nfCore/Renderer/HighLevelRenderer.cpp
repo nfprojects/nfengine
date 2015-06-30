@@ -71,6 +71,13 @@ bool HighLevelRenderer::Init(const std::string& preferredRendererName)
 
 void HighLevelRenderer::Release()
 {
+    GuiRenderer::Release();
+    PostProcessRenderer::Release();
+    DebugRenderer::Release();
+    ShadowRenderer::Release();
+    GBufferRenderer::Release();
+    LightsRenderer::Release();
+
     if (mRenderingDevice != nullptr)
     {
         mRenderingDevice = nullptr;
@@ -105,6 +112,12 @@ RenderContext* HighLevelRenderer::GetDeferredContext(size_t id) const
 void HighLevelRenderer::ExecuteDeferredContext(RenderContext* pContext)
 {
     // TODO
+}
+
+std::string HighLevelRenderer::GetShadersPath() const
+{
+    // TODO: It's temporary. Shader location must be dependent on low-level renderer.
+    return "nfEngine/Shaders/D3D11/";
 }
 
 } // namespace Renderer
