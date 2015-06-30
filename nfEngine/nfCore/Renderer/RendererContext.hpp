@@ -8,6 +8,7 @@
 
 #include "RenderCommand.hpp"
 #include "HighLevelRenderer.hpp"
+#include "DebugRendererContext.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -21,6 +22,15 @@ public:
 
     RenderContext();
     RenderContext(ICommandBuffer* commandBuffer);
+
+    /*
+        TODO:
+
+        Think of a way of adding new renderers' context data easly
+        (without including renderer's header in this file.
+     */
+    DebugRendererContext debugContext;
+
 
     void Begin();
     void End();
