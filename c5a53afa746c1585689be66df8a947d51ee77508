@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "9ad9bd40_f7c6db48",
+        "filename": "nfEngine/nfCommon/Image/DDSStructures.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-30T08:54:16Z",
+      "side": 1,
+      "message": "Boilerplate missing",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_5cffac01",
         "filename": "nfEngine/nfCommon/Image/DDSStructures.hpp",
         "patchSetId": 1
@@ -284,6 +301,52 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_77e2cbd6",
+        "filename": "nfEngine/nfCommon/Image/Image.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-30T08:54:16Z",
+      "side": 1,
+      "message": "Fix indent",
+      "range": {
+        "startLine": 68,
+        "startChar": 0,
+        "endLine": 68,
+        "endChar": 9
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_57ddc713",
+        "filename": "nfEngine/nfCommon/Image/Image.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-30T08:54:16Z",
+      "side": 1,
+      "message": "Repeating after MW 30 lines above - why?",
+      "range": {
+        "startLine": 94,
+        "startChar": 10,
+        "endLine": 94,
+        "endChar": 15
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_a17255e3",
         "filename": "nfEngine/nfCommon/Image/Image.hpp",
         "patchSetId": 1
@@ -331,6 +394,23 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_d7f7178b",
+        "filename": "nfEngine/nfCommon/Image/ImageConverter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-30T08:54:16Z",
+      "side": 1,
+      "message": "Boilerplate",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_0106a120",
         "filename": "nfEngine/nfCommon/Image/ImageConverter.cpp",
         "patchSetId": 1
@@ -366,6 +446,40 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_77300b57",
+        "filename": "nfEngine/nfCommon/Image/ImageConverter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-30T08:54:16Z",
+      "side": 1,
+      "message": "indentation",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_97fe6f6a",
+        "filename": "nfEngine/nfCommon/Image/ImageConverter.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-30T08:54:16Z",
+      "side": 1,
+      "message": "Add your email, don\u0027t be shy.",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_e108dd2f",
         "filename": "nfEngine/nfCommon/Image/ImageConverter.hpp",
         "patchSetId": 1
@@ -395,6 +509,252 @@
       "side": 1,
       "message": "1. This class is a container for compression and decompression algorithms.\n2. It would make too big of a blob out of Image, if put therein. It works on single mipmap, so putting it in Mipmap/Image would\u0027ve common effect.\n3. IO Streams automatically track position in the file and the size of the file - thanks to that I can omit a lot of class member fields and functions, which are unneeded in this class.",
       "parentUuid": "9ad9bd40_e108dd2f",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_17f25f9a",
+        "filename": "nfEngine/nfCommon/Image/ImageConverter.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-30T08:54:16Z",
+      "side": 1,
+      "message": "If you use pointers, wrap them into unique_ptr. We already have enough memleaks as it is.",
+      "range": {
+        "startLine": 23,
+        "startChar": 4,
+        "endLine": 23,
+        "endChar": 22
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_7709eb94",
+        "filename": "nfEngine/nfCommon/Image/ImageConverter.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-30T08:54:16Z",
+      "side": 1,
+      "message": "Comments, comments, comments. All public members should be commented and described.",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_b73a9334",
+        "filename": "nfEngine/nfCommon/Image/ImageFormat.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-30T08:54:16Z",
+      "side": 1,
+      "message": "boilerplate\n\nCheck for yourself where these are missing. ;)",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_f73b3b36",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-30T08:54:16Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 32,
+        "endChar": 41
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_d73e3729",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-30T08:54:16Z",
+      "side": 1,
+      "message": "I dont understand what \"zmieniłem\" is, sounds like a fancy format.",
+      "range": {
+        "startLine": 67,
+        "startChar": 31,
+        "endLine": 67,
+        "endChar": 84
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_374683c0",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadDDS.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-30T08:54:16Z",
+      "side": 1,
+      "message": "Indentation should be fixed, \u0027\\\u0027 chars at the end should be in the same line",
+      "range": {
+        "startLine": 33,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 65
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_571227b5",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadDDS.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-30T08:54:16Z",
+      "side": 1,
+      "message": "Line too long",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_57eea78c",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadDDS.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-30T08:54:16Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 150,
+        "startChar": 0,
+        "endLine": 158,
+        "endChar": 10
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_77f3ab73",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadDDS.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-30T08:54:16Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 207,
+        "startChar": 0,
+        "endLine": 222,
+        "endChar": 18
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_97e82f7e",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadDDS.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-30T08:54:16Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 227,
+        "startChar": 0,
+        "endLine": 228,
+        "endChar": 48
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_b7ed338e",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadDDS.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-30T08:54:16Z",
+      "side": 1,
+      "message": "Just return? No log message, or anything?",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_17fc1f3e",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadDDS.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 266,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-30T08:54:16Z",
+      "side": 1,
+      "message": "For me it looks useless to keep multiple 1x1 mipmaps, just because (for example) we demanded 32 of them. In some cases, 8 mipmaps will be enough to get to 1x1 mipmap size - why not break the loop there?",
       "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -593,6 +953,29 @@
         "startChar": 0,
         "endLine": 46,
         "endChar": 55
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_379043ec",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-06-30T08:54:16Z",
+      "side": 1,
+      "message": "Vector in graphic-related module sounds weird, more like it should be connected with tex coordinates, than a color. Consider typedefing it somewhere to Color, or similar.",
+      "range": {
+        "startLine": 48,
+        "startChar": 24,
+        "endLine": 48,
+        "endChar": 30
       },
       "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
