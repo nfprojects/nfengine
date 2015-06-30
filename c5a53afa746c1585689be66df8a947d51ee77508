@@ -254,6 +254,29 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_b29e2155",
+        "filename": "nfEngine/nfCommon/Image/Image.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-30T10:33:07Z",
+      "side": 1,
+      "message": "What is filterType? It should be enum",
+      "range": {
+        "startLine": 42,
+        "startChar": 28,
+        "endLine": 42,
+        "endChar": 38
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_816d5107",
         "filename": "nfEngine/nfCommon/Image/Image.hpp",
         "patchSetId": 1
@@ -435,6 +458,40 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_528f9523",
+        "filename": "nfEngine/nfCommon/Image/ImageConverter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-30T10:33:07Z",
+      "side": 1,
+      "message": "Image conversion to/form BC should not require additional allocations. See comments in header",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_72949937",
+        "filename": "nfEngine/nfCommon/Image/ImageConverter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-30T10:33:07Z",
+      "side": 1,
+      "message": "Return value not used",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_0106a120",
         "filename": "nfEngine/nfCommon/Image/ImageConverter.cpp",
         "patchSetId": 1
@@ -464,6 +521,24 @@
       "side": 1,
       "message": "There is similar function Get/SetTexel in Mipmap. They both operate on Vectors...but they do Image/Mipmap things on Vectors. I think that in Math we should leave only purely math related things.\n\nProbably nothing but Image will use this function.",
       "parentUuid": "9ad9bd40_0106a120",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_12ad0d89",
+        "filename": "nfEngine/nfCommon/Image/ImageConverter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-30T10:33:07Z",
+      "side": 1,
+      "message": "Not that in the future we could introduce RGB565 pixel format (DX/OGL support it).",
+      "parentUuid": "9ad9bd40_778d6b31",
       "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -533,6 +608,24 @@
       "side": 1,
       "message": "1. This class is a container for compression and decompression algorithms.\n2. It would make too big of a blob out of Image, if put therein. It works on single mipmap, so putting it in Mipmap/Image would\u0027ve common effect.\n3. IO Streams automatically track position in the file and the size of the file - thanks to that I can omit a lot of class member fields and functions, which are unneeded in this class.",
       "parentUuid": "9ad9bd40_e108dd2f",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_129fcd60",
+        "filename": "nfEngine/nfCommon/Image/ImageConverter.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-30T10:33:07Z",
+      "side": 1,
+      "message": "1. I see only BC compression. The name does not suggest it.\n3. If you compress to/from BC you know the size of the output. The compression/decompression functions should take input and output bufers (pointers). Usage of IO Streams for that is unnecessary for this IMO.",
+      "parentUuid": "9ad9bd40_1755ffc5",
       "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -673,6 +766,23 @@
         "endLine": 32,
         "endChar": 41
       },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_52b6b5dd",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-30T10:33:07Z",
+      "side": 1,
+      "message": "unique_ptr",
       "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -1001,6 +1111,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_d2c9e55b",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadDDS.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 266,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-30T10:33:07Z",
+      "side": 1,
+      "message": "I think that DDS won\u0027t contain multiple 1x1 mipmaps. It\u0027s rather handling the case when width !\u003d height, it\u0027s done in Image::Convert in similar way. For example, you have: 64x16, 32x8, 16x4, 8x2, 4x1, 2x1, 1x1.",
+      "parentUuid": "9ad9bd40_32b6913e",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_01aa2119",
         "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
         "patchSetId": 1
@@ -1030,6 +1158,57 @@
       "side": 1,
       "message": "Ya...it will look really bad, looking at lines with 4 conversions \u003e.\u003e\n\nWill generate more code, but will do.",
       "parentUuid": "9ad9bd40_01aa2119",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_12c42d3f",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-30T10:33:07Z",
+      "side": 1,
+      "message": "Check if there is no function in Math for this. There was something AFAIR",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_52ddd513",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-30T10:33:07Z",
+      "side": 1,
+      "message": "As above",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_b2ec61c9",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-06-30T10:33:07Z",
+      "side": 1,
+      "message": "As above",
       "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
