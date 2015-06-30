@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_97266f67",
+        "filename": "nfEngine/nfCommon/Image/DDSStructures.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T07:56:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_5cffac01",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 2
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_c17679d8",
         "filename": "nfEngine/nfCommon/Image/Image.cpp",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2015-06-29T23:20:36Z",
       "side": 1,
       "message": "These could be moved to ImageFormat.cpp IMO",
+      "range": {
+        "startLine": 44,
+        "startChar": 0,
+        "endLine": 106,
+        "endChar": 1
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_d71f1708",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T07:56:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_c17679d8",
       "range": {
         "startLine": 44,
         "startChar": 0,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_171a5f17",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T07:56:46Z",
+      "side": 1,
+      "message": "Oh darn...I think it already does ;d",
+      "parentUuid": "9ad9bd40_e1737de5",
+      "range": {
+        "startLine": 113,
+        "startChar": 12,
+        "endLine": 113,
+        "endChar": 18
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_012f81a2",
         "filename": "nfEngine/nfCommon/Image/Image.cpp",
         "patchSetId": 1
@@ -82,6 +154,30 @@
       "writtenOn": "2015-06-29T23:20:36Z",
       "side": 1,
       "message": "This should be done in 1 call",
+      "range": {
+        "startLine": 127,
+        "startChar": 0,
+        "endLine": 130,
+        "endChar": 23
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_371763ef",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T07:56:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_012f81a2",
       "range": {
         "startLine": 127,
         "startChar": 0,
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_57d30738",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T07:56:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_212c85ab",
+      "range": {
+        "startLine": 138,
+        "startChar": 0,
+        "endLine": 140,
+        "endChar": 74
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_816d5107",
         "filename": "nfEngine/nfCommon/Image/Image.hpp",
         "patchSetId": 1
@@ -128,6 +248,30 @@
       "writtenOn": "2015-06-29T23:20:36Z",
       "side": 1,
       "message": "Why?",
+      "range": {
+        "startLine": 59,
+        "startChar": 16,
+        "endLine": 59,
+        "endChar": 21
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_97dd8f45",
+        "filename": "nfEngine/nfCommon/Image/Image.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T07:56:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_816d5107",
       "range": {
         "startLine": 59,
         "startChar": 16,
@@ -163,6 +307,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_b7e29301",
+        "filename": "nfEngine/nfCommon/Image/Image.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T07:56:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_a17255e3",
+      "range": {
+        "startLine": 110,
+        "startChar": 18,
+        "endLine": 110,
+        "endChar": 25
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_0106a120",
         "filename": "nfEngine/nfCommon/Image/ImageConverter.cpp",
         "patchSetId": 1
@@ -174,6 +342,24 @@
       "writtenOn": "2015-06-29T23:20:36Z",
       "side": 1,
       "message": "Maybe move to Math?",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_778d6b31",
+        "filename": "nfEngine/nfCommon/Image/ImageConverter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T07:56:46Z",
+      "side": 1,
+      "message": "There is similar function Get/SetTexel in Mipmap. They both operate on Vectors...but they do Image/Mipmap things on Vectors. I think that in Math we should leave only purely math related things.\n\nProbably nothing but Image will use this function.",
+      "parentUuid": "9ad9bd40_0106a120",
       "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -197,6 +383,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_1755ffc5",
+        "filename": "nfEngine/nfCommon/Image/ImageConverter.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T07:56:46Z",
+      "side": 1,
+      "message": "1. This class is a container for compression and decompression algorithms.\n2. It would make too big of a blob out of Image, if put therein. It works on single mipmap, so putting it in Mipmap/Image would\u0027ve common effect.\n3. IO Streams automatically track position in the file and the size of the file - thanks to that I can omit a lot of class member fields and functions, which are unneeded in this class.",
+      "parentUuid": "9ad9bd40_e108dd2f",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_01aa2119",
         "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
         "patchSetId": 1
@@ -208,6 +412,24 @@
       "writtenOn": "2015-06-29T23:20:36Z",
       "side": 1,
       "message": "By the way you can change all C-like cast to static_cast, etc.",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_1776df3e",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T07:56:46Z",
+      "side": 1,
+      "message": "Ya...it will look really bad, looking at lines with 4 conversions \u003e.\u003e\n\nWill generate more code, but will do.",
+      "parentUuid": "9ad9bd40_01aa2119",
       "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -231,6 +453,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_572ce74a",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T07:56:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_a117b550",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_8112b160",
         "filename": "nfEngine/nfCommon/Image/Mipmap.hpp",
         "patchSetId": 1
@@ -248,6 +488,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_176c1f9c",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T07:56:46Z",
+      "side": 1,
+      "message": "Copy and move constructors and their assignment constructors can be deleted.",
+      "parentUuid": "9ad9bd40_8112b160",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_4118a984",
         "filename": "nfEngine/nfCommon/Image/Mipmap.hpp",
         "patchSetId": 1
@@ -259,6 +517,30 @@
       "writtenOn": "2015-06-29T23:20:36Z",
       "side": 1,
       "message": "There\u0027s too much of this stuff. We only need one function - SetData(width, height, size, data) which allocates memory and fills it with \"data\" if it\u0027s not null",
+      "range": {
+        "startLine": 38,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 35
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_575ea7ea",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T07:56:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_4118a984",
       "range": {
         "startLine": 38,
         "startChar": 0,
@@ -294,6 +576,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_f76edb95",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T07:56:46Z",
+      "side": 1,
+      "message": "But I am :D\nI assume that we don\u0027t give ImageFormat, we use most common format - RGBA (as a matter of fact I wanted to use RGBA and BC1-5 formats. Nothing else).\n\nThis can be easily changed, so no worries.",
+      "parentUuid": "9ad9bd40_611dad73",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 55
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_2103a510",
         "filename": "nfEngine/nfCommon/Image/MipmapFilter.cpp",
         "patchSetId": 1
@@ -305,6 +611,30 @@
       "writtenOn": "2015-06-29T23:20:36Z",
       "side": 1,
       "message": "It does nothing",
+      "range": {
+        "startLine": 15,
+        "startChar": 4,
+        "endLine": 15,
+        "endChar": 22
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_578f8723",
+        "filename": "nfEngine/nfCommon/Image/MipmapFilter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T07:56:46Z",
+      "side": 1,
+      "message": "Cause we operate on a (probably) used mipmap. Dont want to delete it. But i guess I\u0027ll incorporate whole this filter into Mipmap class",
+      "parentUuid": "9ad9bd40_2103a510",
       "range": {
         "startLine": 15,
         "startChar": 4,
@@ -334,6 +664,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_77948b37",
+        "filename": "nfEngine/nfCommon/Image/MipmapFilter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T07:56:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_61684df6",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_2152c5dd",
         "filename": "nfEngine/nfCommon/Image/MipmapFilter.cpp",
         "patchSetId": 1
@@ -345,6 +693,30 @@
       "writtenOn": "2015-06-29T23:20:36Z",
       "side": 1,
       "message": "What!?",
+      "range": {
+        "startLine": 57,
+        "startChar": 40,
+        "endLine": 57,
+        "endChar": 41
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_b79e1355",
+        "filename": "nfEngine/nfCommon/Image/MipmapFilter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T07:56:46Z",
+      "side": 1,
+      "message": "Please don\u0027t tell me Math don\u0027t do sqrts and pows ;__;",
+      "parentUuid": "9ad9bd40_2152c5dd",
       "range": {
         "startLine": 57,
         "startChar": 40,
@@ -374,6 +746,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_f79fbb4e",
+        "filename": "nfEngine/nfCommon/Image/MipmapFilter.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T07:56:46Z",
+      "side": 1,
+      "message": "Wanted to make not too much code in a class - so it doesn\u0027t look like Image did before refactoring.\n\nI know it\u0027s already split, but there will be a lot more code, so ya...",
+      "parentUuid": "9ad9bd40_4163491a",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_21a72551",
         "filename": "nfEngine/nfCommon/Image/MipmapFilter.hpp",
         "patchSetId": 1
@@ -385,6 +775,30 @@
       "writtenOn": "2015-06-29T23:20:36Z",
       "side": 1,
       "message": "I agree",
+      "range": {
+        "startLine": 28,
+        "startChar": 7,
+        "endLine": 28,
+        "endChar": 38
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_d7a2b799",
+        "filename": "nfEngine/nfCommon/Image/MipmapFilter.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T07:56:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_21a72551",
       "range": {
         "startLine": 28,
         "startChar": 7,

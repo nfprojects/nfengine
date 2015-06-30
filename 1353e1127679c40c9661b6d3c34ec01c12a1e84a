@@ -16,6 +16,24 @@
       "revId": "1353e1127679c40c9661b6d3c34ec01c12a1e84a",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_37aa0371",
+        "filename": "nfEngine/nfCommon/Image.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T07:56:46Z",
+      "side": 0,
+      "message": "Does it make difference now? I\u0027m not sure, I know how to do this right now o.O",
+      "parentUuid": "9ad9bd40_5e36c404",
+      "revId": "1353e1127679c40c9661b6d3c34ec01c12a1e84a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
