@@ -729,6 +729,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_f7509b60",
+        "filename": "nfEngine/nfCommon/Image/MipmapFilter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-06-30T08:38:34Z",
+      "side": 1,
+      "message": "Ok...I\u0027ve found VectorSqrt(Vector x) ;d",
+      "parentUuid": "9ad9bd40_b79e1355",
+      "range": {
+        "startLine": 57,
+        "startChar": 40,
+        "endLine": 57,
+        "endChar": 41
+      },
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_4163491a",
         "filename": "nfEngine/nfCommon/Image/MipmapFilter.hpp",
         "patchSetId": 1
