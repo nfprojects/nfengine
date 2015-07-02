@@ -186,7 +186,7 @@ public:
 
     void SetVertexLayout(IVertexLayout* vertexLayout);
     void SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets);
-    void SetIndexBuffer(IBuffer* indexBuffer);
+    void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format);
     void SetSamplers(ISampler** samplers, int num, ShaderType target);
     void SetTextures(ITexture** textures, int num, ShaderType target);
     void SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target);
@@ -205,10 +205,10 @@ public:
     void CopyTexture(ITexture* src, ITexture* dest);
     bool ReadTexture(ITexture* tex, void* data);
     void Clear(const float* color);
-    void Draw(PrimitiveType type, int vertexNum,
-              int instancesNum = 1, int indexOffset = 0,
-              int vertexOffset = 0, int instanceOffset = 0);
-
+    void Draw(PrimitiveType type, int vertexNum, int instancesNum = 1, int vertexOffset = 0,
+              int instanceOffset = 0);
+    void DrawIndexed(PrimitiveType type, int indexNum, int instancesNum = 1, int indexOffset = 0,
+                     int vertexOffset = 0, int instanceOffset = 0);
     void Execute(ICommandBuffer* commandBuffer, bool saveState);
 };
 
@@ -248,6 +248,7 @@ public:
 
 int GetElementFormatSize(ElementFormat format);
 DXGI_FORMAT TranslateElementFormat(ElementFormat format, int size);
+D3D11_PRIMITIVE_TOPOLOGY TranslatePrimitiveType(PrimitiveType type);
 D3D11_COMPARISON_FUNC TranslateComparisonFunc(CompareFunc func);
 D3D11_TEXTURE_ADDRESS_MODE TranslateTextureWrapMode(TextureWrapMode mode);
 

@@ -60,9 +60,21 @@ void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* stri
                                  reinterpret_cast<UINT*>(offsets));
 }
 
-void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer)
+void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format)
 {
-    UNUSED(indexBuffer);
+    DXGI_FORMAT dxgiFormat = DXGI_FORMAT_UNKNOWN;
+    switch (format)
+    {
+        case IndexBufferFormat::Uint16:
+            dxgiFormat = DXGI_FORMAT_R16_UINT;
+            break;
+        case IndexBufferFormat::Uint32:
+            dxgiFormat = DXGI_FORMAT_R32_UINT;
+            break;
+    };
+
+    Buffer* ib = dynamic_cast<Buffer*>(indexBuffer);
+    mContext->IASetIndexBuffer(ib->mBuffer.get(), dxgiFormat, 0);
 }
 
 void CommandBuffer::SetSamplers(ISampler** samplers, int num, ShaderType target)
@@ -326,47 +338,40 @@ void CommandBuffer::Clear(const float* color)
             mContext->ClearRenderTargetView(mCurrentRenderTarget->mRTVs[i].get(), color);
 }
 
-void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum,
-                         int indexOffset, int vertexOffset, int instanceOffset)
+void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
+                         int instanceOffset)
 {
     UNUSED(instancesNum);
-    UNUSED(indexOffset);
-    UNUSED(vertexOffset);
     UNUSED(instanceOffset);
 
     if (type != mCurrentPrimitiveType)
     {
-        D3D11_PRIMITIVE_TOPOLOGY topology;
-        switch (type)
-        {
-            case PrimitiveType::Points:
-                topology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
-                break;
-            case PrimitiveType::Lines:
-                topology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
-                break;
-            case PrimitiveType::LinesStrip:
-                topology = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
-                break;
-            case PrimitiveType::Triangles:
-                topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-                break;
-            case PrimitiveType::TrianglesStrip:
-                topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
-                break;
-            default:
-                topology = D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED;
-        };
-        mContext->IASetPrimitiveTopology(topology);
         mCurrentPrimitiveType = type;
+        D3D11_PRIMITIVE_TOPOLOGY topology = TranslatePrimitiveType(type);
+        mContext->IASetPrimitiveTopology(topology);
     };
 
-    /*
-     TODO:
-     * instancing support
-     * indexing support
-     */
     mContext->Draw(vertexNum, vertexOffset);
+
+    // TODO: instancing support
+}
+
+void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesNum,
+                                int indexOffset, int vertexOffset, int instanceOffset)
+{
+    UNUSED(instancesNum);
+    UNUSED(instanceOffset);
+
+    if (type != mCurrentPrimitiveType)
+    {
+        mCurrentPrimitiveType = type;
+        D3D11_PRIMITIVE_TOPOLOGY topology = TranslatePrimitiveType(type);
+        mContext->IASetPrimitiveTopology(topology);
+    };
+
+    mContext->DrawIndexed(indexNum, indexOffset, vertexOffset);
+
+    // TODO: instancing support
 }
 
 void CommandBuffer::Execute(ICommandBuffer* commandBuffer, bool saveState)

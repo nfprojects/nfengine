@@ -33,7 +33,7 @@ public:
     virtual void SetVertexLayout(IVertexLayout* vertexLayout) = 0;
     virtual void SetVertexBuffers(int num, IBuffer** vertexBuffers,
                                   int* strides, int* offsets) = 0;
-    virtual void SetIndexBuffer(IBuffer* indexBuffer) = 0;
+    virtual void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format) = 0;
     virtual void SetSamplers(ISampler** samplers, int num, ShaderType target) = 0;
     virtual void SetTextures(ITexture** textures, int num, ShaderType target) = 0;
     virtual void SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target) = 0;
@@ -97,16 +97,29 @@ public:
 
     /**
      * Draw geometry.
+     *
      * @param type           Primitives type.
      * @param vertexNum      Vertices number per instance.
      * @param instancesNum   Number of instances to draw.
-     * @param indexOffset    Location of the first index
      * @param vertexOffset   Vertex buffer offset (in elements).
      * @param instanceOffset Per-instance buffer offset (in elements).
      */
     virtual void Draw(PrimitiveType type, int vertexNum,
-                      int instancesNum = 1, int indexOffset = 0,
-                      int vertexOffset = 0, int instanceOffset = 0) = 0;
+                      int instancesNum = 1, int vertexOffset = 0, int instanceOffset = 0) = 0;
+
+    /**
+     * Draw geometry (with indexed verticies).
+     *
+     * @param type           Primitives type.
+     * @param indexNum       Indicies number per instance.
+     * @param instancesNum   Number of instances to draw.
+     * @param indexOffset    Location of the first index.
+     * @param vertexOffset   Vertex buffer offset (in elements).
+     * @param instanceOffset Per-instance buffer offset (in elements).
+     */
+    virtual void DrawIndexed(PrimitiveType type, int indexNum,
+                             int instancesNum = 1, int indexOffset = 0,
+                             int vertexOffset = 0, int instanceOffset = 0) = 0;
 
     /**
      * Execute a command buffer.

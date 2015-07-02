@@ -187,6 +187,25 @@ DXGI_FORMAT TranslateElementFormat(ElementFormat format, int size)
     return DXGI_FORMAT_UNKNOWN;
 }
 
+D3D11_PRIMITIVE_TOPOLOGY TranslatePrimitiveType(PrimitiveType type)
+{
+    switch (type)
+    {
+        case PrimitiveType::Points:
+            return D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
+        case PrimitiveType::Lines:
+            return D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+        case PrimitiveType::LinesStrip:
+            return D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
+        case PrimitiveType::Triangles:
+            return D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+        case PrimitiveType::TrianglesStrip:
+            return D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
+    };
+
+    return D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED;
+}
+
 D3D11_COMPARISON_FUNC TranslateComparisonFunc(CompareFunc func)
 {
     switch (func)

@@ -97,6 +97,15 @@ enum class BufferAccess
 };
 
 /**
+ * Data format in a index buffer.
+ */
+enum class IndexBufferFormat
+{
+    Uint16,
+    Uint32
+};
+
+/**
  * Alpha blending functions.
  */
 enum class BlendFunc

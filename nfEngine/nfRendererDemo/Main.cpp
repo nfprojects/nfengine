@@ -114,6 +114,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     programDesc.pixelShader = CompileShader(D3D11_SHADER_PATH_PREFIX "TestPS.hlsl", ShaderType::Pixel);
     IShaderProgram* shaderProgram = gRendererDevice->CreateShaderProgram(programDesc);
 
+
+    // create vertex buffer
+
     float vbData[] =
     {
         /// Vertex structure: pos.xyz, texCoord.uv, color.rgba
@@ -125,6 +128,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         0.0f, 0.0f, 0.0f,  0.0f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f,
         0.0f, 1.0f, 0.0f,  0.0f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f,
         1.0f, 0.0f, 0.0f,  0.0f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+        1.0f, 1.0f, 0.0f,  0.0f, 0.0f,  1.0f, 1.0f, 1.0f, 1.0f,
     };
 
     BufferDesc vbDesc;
@@ -133,6 +137,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     vbDesc.size = sizeof(vbData);
     vbDesc.initialData = vbData;
     IBuffer* vertexBuffer = gRendererDevice->CreateBuffer(vbDesc);
+
+
+    // create index buffer
+
+    uint16 ibData[] =
+    {
+        0, 1, 2,
+        3, 4, 5,
+        5, 4, 6
+    };
+
+    BufferDesc ibDesc;
+    ibDesc.type = BufferType::Index;
+    ibDesc.access = BufferAccess::GPU_ReadOnly;
+    ibDesc.size = sizeof(ibData);
+    ibDesc.initialData = ibData;
+    IBuffer* indexBuffer = gRendererDevice->CreateBuffer(ibDesc);
+
 
     VertexLayoutElement vertexLayoutElements[] =
     {
@@ -202,11 +224,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         int stride = 9 * sizeof(float);
         int offset = 0;
         gCommandBuffer->SetVertexBuffers(1, &vertexBuffer, &stride, &offset);
+        gCommandBuffer->SetIndexBuffer(indexBuffer, IndexBufferFormat::Uint16);
         gCommandBuffer->SetConstantBuffers(&constantBuffer, 1, ShaderType::Vertex);
         gCommandBuffer->SetTextures(&texture, 1, ShaderType::Pixel);
         gCommandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
 
-        gCommandBuffer->Draw(PrimitiveType::Triangles, 6);
+        gCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 9);
 
         windowBackbuffer->Present();
     }
@@ -216,6 +239,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     delete texture;
     delete blendState;
     delete vertexLayout;
+    delete indexBuffer;
     delete vertexBuffer;
     delete programDesc.vertexShader;
     delete programDesc.pixelShader;
