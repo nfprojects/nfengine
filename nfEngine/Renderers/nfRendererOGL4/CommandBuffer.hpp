@@ -29,7 +29,7 @@ public:
     /// Resources setup methods
     void SetVertexLayout(IVertexLayout* vertexLayout);
     void SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets);
-    void SetIndexBuffer(IBuffer* indexBuffer);
+    void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format);
     void SetSamplers(ISampler** samplers, int num, ShaderType target);
     void SetTextures(ITexture** textures, int num, ShaderType target);
     void SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target);
@@ -47,10 +47,10 @@ public:
     void CopyTexture(ITexture* src, ITexture* dest);
     bool ReadTexture(ITexture* tex, void* data);
     void Clear(const float* color);
-    void Draw(PrimitiveType type, int vertexNum,
-              int instancesNum = 1, int indexOffset = 0,
-              int vertexOffset = 0, int instanceOffset = 0);
-
+    void Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
+              int instanceOffset);
+    void DrawIndexed(PrimitiveType type, int indexNum, int instancesNum, int indexOffset,
+                     int vertexOffset, int instanceOffset);
     void Execute(ICommandBuffer* commandBuffer, bool saveState);
 };
 

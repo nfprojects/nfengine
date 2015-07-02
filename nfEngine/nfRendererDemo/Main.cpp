@@ -133,6 +133,9 @@ int main(int argc, char* argv[])
     if (!shaderProgram)
         gShaders = false;
 
+
+    // create vertex buffer
+
     float vbData[] =
     {
         /// Vertex structure: pos.xyz, texCoord.uv, color.rgba
@@ -144,6 +147,7 @@ int main(int argc, char* argv[])
         0.0f, 0.0f, 0.0f,  0.0f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f,
         0.0f, 1.0f, 0.0f,  0.0f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f,
         1.0f, 0.0f, 0.0f,  0.0f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+        1.0f, 1.0f, 0.0f,  0.0f, 0.0f,  1.0f, 1.0f, 1.0f, 1.0f,
     };
 
     BufferDesc vbDesc;
@@ -152,6 +156,24 @@ int main(int argc, char* argv[])
     vbDesc.size = sizeof(vbData);
     vbDesc.initialData = vbData;
     IBuffer* vertexBuffer = gRendererDevice->CreateBuffer(vbDesc);
+
+
+    // create index buffer
+
+    uint16 ibData[] =
+    {
+        0, 1, 2,
+        3, 4, 5,
+        5, 4, 6
+    };
+
+    BufferDesc ibDesc;
+    ibDesc.type = BufferType::Index;
+    ibDesc.access = BufferAccess::GPU_ReadOnly;
+    ibDesc.size = sizeof(ibData);
+    ibDesc.initialData = ibData;
+    IBuffer* indexBuffer = gRendererDevice->CreateBuffer(ibDesc);
+
 
     VertexLayoutElement vertexLayoutElements[] =
     {
@@ -231,12 +253,13 @@ int main(int argc, char* argv[])
 
         int stride = 9 * sizeof(float);
         int offset = 0;
+        gCommandBuffer->SetIndexBuffer(indexBuffer, IndexBufferFormat::Uint16);
         gCommandBuffer->SetVertexBuffers(1, &vertexBuffer, &stride, &offset);
         if (gConstantBuffers) gCommandBuffer->SetConstantBuffers(&constantBuffer, 1, ShaderType::Vertex);
         if (gTextures) gCommandBuffer->SetTextures(&texture, 1, ShaderType::Pixel);
         if (gTextures) gCommandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
 
-        gCommandBuffer->Draw(PrimitiveType::Triangles, 6);
+        gCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 9);
 
         windowBackbuffer->Present();
     }
@@ -246,6 +269,7 @@ int main(int argc, char* argv[])
     delete texture;
     delete blendState;
     delete vertexLayout;
+    delete indexBuffer;
     delete vertexBuffer;
     delete programDesc.vertexShader;
     delete programDesc.pixelShader;

@@ -36,9 +36,10 @@ void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* stri
     UNUSED(offsets);
 }
 
-void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer)
+void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format)
 {
     UNUSED(indexBuffer);
+    UNUSED(format);
 }
 
 void CommandBuffer::SetSamplers(ISampler** samplers, int num, ShaderType target)
@@ -152,12 +153,22 @@ void CommandBuffer::Clear(const float* color)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void CommandBuffer::Draw(PrimitiveType type, int vertexNum,
-                         int instancesNum, int indexOffset,
-                         int vertexOffset, int instanceOffset)
+
+void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
+                         int instanceOffset)
 {
     UNUSED(type);
     UNUSED(vertexNum);
+    UNUSED(instancesNum);
+    UNUSED(vertexOffset);
+    UNUSED(instanceOffset);
+}
+
+void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesNum,
+                                int indexOffset, int vertexOffset, int instanceOffset)
+{
+    UNUSED(type);
+    UNUSED(indexNum);
     UNUSED(instancesNum);
     UNUSED(indexOffset);
     UNUSED(vertexOffset);
