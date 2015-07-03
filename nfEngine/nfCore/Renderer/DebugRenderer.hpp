@@ -9,6 +9,7 @@
 #include "RendererModule.hpp"
 #include "HighLevelRenderer.hpp"
 #include "DebugRendererContext.hpp"
+#include "Multishader.hpp"
 #include "../../nfCommon/Math/Math.hpp"
 
 namespace NFE {
@@ -23,8 +24,7 @@ using namespace Math;
 class DebugRenderer : public RendererModule<DebugRenderer>
 {
     std::unique_ptr<IShader> mVertexShader;
-    std::unique_ptr<IShader> mPixelShader;
-    std::unique_ptr<IShaderProgram> mShaderProgram;
+    Multishader mPixelShader;
     std::unique_ptr<IVertexLayout> mVertexLayout;
     std::unique_ptr<IRasterizerState> mRasterizerState;
 
