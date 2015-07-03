@@ -37,6 +37,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FastMeshConverter", "nfEngi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfCommonTest", "nfEngine\nfCommonTest\nfCommonTest.vcxproj", "{1EEE1F90-5261-43E9-A133-FFBCD7DA4077}"
 	ProjectSection(ProjectDependencies) = postProject
+		{1E546F4B-8BA9-4FA1-8386-BCCB82CB5149} = {1E546F4B-8BA9-4FA1-8386-BCCB82CB5149}
 		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
 	EndProjectSection
 EndProject
