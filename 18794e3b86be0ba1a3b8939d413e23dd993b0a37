@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_24d71cc3",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-04T10:57:50Z",
+      "side": 1,
+      "message": "Maybe just ignore? gluPerspective only sets up projection matrix",
+      "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_44542054",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-04T10:57:50Z",
+      "side": 1,
+      "message": "glClearColor does not clear a framebuffer",
+      "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_44db40ed",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Extensions.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-04T10:57:50Z",
+      "side": 1,
+      "message": "Move to nfglExtensionsInit",
+      "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_64d844f0",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Extensions.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-04T10:57:50Z",
+      "side": 1,
+      "message": "Is do..while(0) really needed here? We are going to use this macro only in nfglExtensionsInit",
+      "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_84e548aa",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Texture.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-04T10:57:50Z",
+      "side": 1,
+      "message": "rm",
+      "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_a4e24c9d",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Texture.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-04T10:57:50Z",
+      "side": 1,
+      "message": "rm",
+      "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_c4ee708b",
+        "filename": "nfEngine/nfRendererDemo/Main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-04T10:57:50Z",
+      "side": 1,
+      "message": "Maybe just read \"nfRendererD3D11\" or \"nfRendererOGL4\" as a paramter to the application instead of \"--d3d\" and \"--ogl\"?",
+      "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_04d218d2",
+        "filename": "nfEngine/nfRendererDemo/Main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-04T10:57:50Z",
+      "side": 1,
+      "message": "LOG_INFO",
+      "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
