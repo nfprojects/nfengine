@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "9ad9bd40_2f0ff531",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-04T12:50:14Z",
+      "side": 1,
+      "message": "It\u0027s not valid now :)",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 68
+      },
+      "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_24d71cc3",
         "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.cpp",
         "patchSetId": 1
