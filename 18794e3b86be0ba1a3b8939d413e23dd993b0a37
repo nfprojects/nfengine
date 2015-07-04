@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_448980c9",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-04T11:37:03Z",
+      "side": 1,
+      "message": "I thought it meant something else. Looking at a D3D11_VIEWPORT spec indeed it is a different variable. Done.",
+      "parentUuid": "9ad9bd40_24d71cc3",
+      "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_44542054",
         "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.cpp",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2015-07-04T10:57:50Z",
       "side": 1,
       "message": "glClearColor does not clear a framebuffer",
+      "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_84aaa817",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-04T11:37:03Z",
+      "side": 1,
+      "message": "Indeed. Done",
+      "parentUuid": "9ad9bd40_44542054",
       "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_a4a7ac4e",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Extensions.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-04T11:37:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_44db40ed",
+      "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_64d844f0",
         "filename": "nfEngine/Renderers/nfRendererOGL4/Extensions.cpp",
         "patchSetId": 1
@@ -64,6 +118,24 @@
       "writtenOn": "2015-07-04T10:57:50Z",
       "side": 1,
       "message": "Is do..while(0) really needed here? We are going to use this macro only in nfglExtensionsInit",
+      "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_24a55c53",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Extensions.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-04T11:37:03Z",
+      "side": 1,
+      "message": "It is a good convention to use it, makes the macro uniform. The compiler will optimize it anyway.",
+      "parentUuid": "9ad9bd40_64d844f0",
       "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_c49590e5",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Texture.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-04T11:37:03Z",
+      "side": 1,
+      "message": "Cannot it stay? It was specifically marked as TODOs to have something to base on. When textures will be implemented, it will be removed anyway...",
+      "parentUuid": "9ad9bd40_84e548aa",
+      "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_a4e24c9d",
         "filename": "nfEngine/Renderers/nfRendererOGL4/Texture.hpp",
         "patchSetId": 1
@@ -98,6 +188,24 @@
       "writtenOn": "2015-07-04T10:57:50Z",
       "side": 1,
       "message": "rm",
+      "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_e49a9413",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Texture.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-04T11:37:03Z",
+      "side": 1,
+      "message": "As above.",
+      "parentUuid": "9ad9bd40_a4e24c9d",
       "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_e468d4f7",
+        "filename": "nfEngine/nfRendererDemo/Main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-04T11:37:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_c4ee708b",
+      "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_04d218d2",
         "filename": "nfEngine/nfRendererDemo/Main.cpp",
         "patchSetId": 1
@@ -132,6 +258,24 @@
       "writtenOn": "2015-07-04T10:57:50Z",
       "side": 1,
       "message": "LOG_INFO",
+      "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_04a05842",
+        "filename": "nfEngine/nfRendererDemo/Main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-04T11:37:03Z",
+      "side": 1,
+      "message": "It is not needed. I forgot to remove it.",
+      "parentUuid": "9ad9bd40_04d218d2",
       "revId": "18794e3b86be0ba1a3b8939d413e23dd993b0a37",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
