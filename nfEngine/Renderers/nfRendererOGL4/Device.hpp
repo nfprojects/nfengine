@@ -24,6 +24,8 @@ public:
     Device();
     ~Device();
 
+    void* GetHandle() const;
+
     IVertexLayout* CreateVertexLayout(const VertexLayoutDesc& desc);
     IBuffer* CreateBuffer(const BufferDesc& desc);
     ITexture* CreateTexture(const TextureDesc& desc);

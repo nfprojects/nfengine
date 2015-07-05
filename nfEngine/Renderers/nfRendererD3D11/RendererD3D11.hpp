@@ -226,6 +226,7 @@ public:
     Device();
     ~Device();
 
+    void* GetHandle() const;
     ID3D11Device* Get() const;
 
     /// Resources creation functions
