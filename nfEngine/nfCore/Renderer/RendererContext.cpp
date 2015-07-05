@@ -8,9 +8,22 @@
 
 #include "../PCH.hpp"
 #include "RendererContext.hpp"
+#include "../Globals.hpp"
 
 namespace NFE {
 namespace Renderer {
+
+
+RenderContext::RenderContext()
+{
+    // TODO: deferred contexts creation
+    commandBuffer = nullptr;
+}
+
+RenderContext::RenderContext(ICommandBuffer* commandBuffer)
+{
+    this->commandBuffer = commandBuffer;
+}
 
 void RenderContext::Begin()
 {
