@@ -93,7 +93,7 @@ void HighLevelRenderer::Release()
         mRenderingDevice = nullptr;
 
         RendererReleaseFunc releaseFunc;
-        if (mLowLevelRendererLib.GetSymbol("Release", releaseFunc))
+        if (mLowLevelRendererLib.GetSymbol(RENDERER_RELEASE_FUNC, releaseFunc))
             releaseFunc();
     }
 
