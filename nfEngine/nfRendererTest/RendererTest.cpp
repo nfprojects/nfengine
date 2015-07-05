@@ -32,7 +32,7 @@ void RendererTest::TearDownTestCase()
     {
         gRendererDevice = nullptr;
         RendererReleaseFunc proc;
-        ASSERT_TRUE(gRendererLib.GetSymbol("Release", proc));
+        ASSERT_TRUE(gRendererLib.GetSymbol(RENDERER_RELEASE_FUNC, proc));
         ASSERT_TRUE(proc != nullptr);
         proc();
     }
