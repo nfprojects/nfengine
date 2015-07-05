@@ -46,6 +46,11 @@ Device::~Device()
 {
 }
 
+void* Device::GetHandle() const
+{
+    return nullptr;
+}
+
 
 IVertexLayout* Device::CreateVertexLayout(const VertexLayoutDesc& desc)
 {
