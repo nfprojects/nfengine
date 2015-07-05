@@ -16,6 +16,24 @@
       "revId": "72a652b6bc4df7cdc222c18dd6628eaae45bce1a",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_18f990e9",
+        "filename": "nfEngine/nfCore/Renderer/HighLevelRenderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-05T19:40:40Z",
+      "side": 1,
+      "message": "SceneManager is using it. If I returned here NULL, then I would have to modify the SceneManager, because it would use NULL objects",
+      "parentUuid": "9ad9bd40_9d7912ff",
+      "revId": "72a652b6bc4df7cdc222c18dd6628eaae45bce1a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
