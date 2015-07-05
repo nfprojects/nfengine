@@ -82,6 +82,11 @@ void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
     UNUSED(shaderProgram);
 }
 
+void CommandBuffer::SetShader(IShader* shader)
+{
+    UNUSED(shader);
+}
+
 void CommandBuffer::SetBlendState(IBlendState* state)
 {
     UNUSED(state);
