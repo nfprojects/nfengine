@@ -16,3 +16,4 @@
 #include <assert.h>
 #include <set>
 #include <vector>
+#include <sstream>

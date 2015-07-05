@@ -136,6 +136,8 @@ public:
 
 class Shader : public IShader
 {
+    friend class CommandBuffer;
+
     ShaderType mType;
     D3DPtr<ID3DBlob> mBytecode;
 
@@ -192,6 +194,7 @@ public:
     void SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target);
     void SetRenderTarget(IRenderTarget* renderTarget);
     void SetShaderProgram(IShaderProgram* shaderProgram);
+    void SetShader(IShader* shader);
     void SetBlendState(IBlendState* state);
     void SetRasterizerState(IRasterizerState* state);
     void SetDepthState(IDepthState* state);

@@ -198,37 +198,85 @@ void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
     if (newProg.vertexShader != mBoundShaders.vertexShader)
     {
         Shader* shader = dynamic_cast<Shader*>(newProg.vertexShader);
-        mContext->VSSetShader((ID3D11VertexShader*)shader->GetShaderObject(), nullptr, 0);
+        mContext->VSSetShader(shader->mVS, nullptr, 0);
         mBoundShaders.vertexShader = newProg.vertexShader;
     }
 
     if (newProg.geometryShader != mBoundShaders.geometryShader)
     {
         Shader* shader = dynamic_cast<Shader*>(newProg.geometryShader);
-        mContext->GSSetShader((ID3D11GeometryShader*)shader->GetShaderObject(), nullptr, 0);
+        mContext->GSSetShader(shader->mGS, nullptr, 0);
         mBoundShaders.geometryShader = newProg.geometryShader;
     }
 
     if (newProg.hullShader != mBoundShaders.hullShader)
     {
         Shader* shader = dynamic_cast<Shader*>(newProg.hullShader);
-        mContext->HSSetShader((ID3D11HullShader*)shader->GetShaderObject(), nullptr, 0);
+        mContext->HSSetShader(shader->mHS, nullptr, 0);
         mBoundShaders.hullShader = newProg.hullShader;
     }
 
     if (newProg.domainShader != mBoundShaders.domainShader)
     {
         Shader* shader = dynamic_cast<Shader*>(newProg.domainShader);
-        mContext->DSSetShader((ID3D11DomainShader*)shader->GetShaderObject(), nullptr, 0);
+        mContext->DSSetShader(shader->mDS, nullptr, 0);
         mBoundShaders.domainShader = newProg.domainShader;
     }
 
     if (newProg.pixelShader != mBoundShaders.pixelShader)
     {
         Shader* shader = dynamic_cast<Shader*>(newProg.pixelShader);
-        mContext->PSSetShader((ID3D11PixelShader*)shader->GetShaderObject(), nullptr, 0);
+        mContext->PSSetShader(shader->mPS, nullptr, 0);
         mBoundShaders.pixelShader = newProg.pixelShader;
     }
+}
+
+void CommandBuffer::SetShader(IShader* shader)
+{
+    Shader* newShader = dynamic_cast<Shader*>(shader);
+
+    switch (newShader->mType)
+    {
+        case ShaderType::Vertex:
+            if (shader != mBoundShaders.vertexShader)
+            {
+                mContext->VSSetShader(newShader->mVS, nullptr, 0);
+                mBoundShaders.vertexShader = shader;
+            }
+            break;
+
+        case ShaderType::Geometry:
+            if (shader != mBoundShaders.geometryShader)
+            {
+                mContext->GSSetShader(newShader->mGS, nullptr, 0);
+                mBoundShaders.geometryShader = shader;
+            }
+            break;
+
+        case ShaderType::Hull:
+            if (shader != mBoundShaders.hullShader)
+            {
+                mContext->HSSetShader(newShader->mHS, nullptr, 0);
+                mBoundShaders.hullShader = shader;
+            }
+            break;
+
+        case ShaderType::Domain:
+            if (shader != mBoundShaders.domainShader)
+            {
+                mContext->DSSetShader(newShader->mDS, nullptr, 0);
+                mBoundShaders.domainShader = shader;
+            }
+            break;
+
+        case ShaderType::Pixel:
+            if (shader != mBoundShaders.pixelShader)
+            {
+                mContext->PSSetShader(newShader->mPS, nullptr, 0);
+                mBoundShaders.pixelShader = shader;
+            }
+            break;
+    };
 }
 
 void CommandBuffer::SetBlendState(IBlendState* state)
