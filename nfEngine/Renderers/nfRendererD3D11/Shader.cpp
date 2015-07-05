@@ -104,9 +104,30 @@ bool Shader::Init(const ShaderDesc& desc)
             return false;
     }
 
+    std::stringstream macrosStr;
+    std::unique_ptr<D3D_SHADER_MACRO[]> d3dMacros;
+    if (desc.macrosNum > 0)
+    {
+        d3dMacros.reset(new D3D_SHADER_MACRO[desc.macrosNum + 1]);
+        for (size_t i = 0; i < desc.macrosNum; ++i)
+        {
+            d3dMacros[i].Name = desc.macros[i].name;
+            d3dMacros[i].Definition = desc.macros[i].value;
+
+            macrosStr << '\'' << d3dMacros[i].Name << "' = '" << desc.macros[i].value << '\'';
+            if (i < desc.macrosNum - 1)
+                macrosStr << ", ";
+        }
+        d3dMacros[desc.macrosNum].Name = nullptr;
+        d3dMacros[desc.macrosNum].Definition = nullptr;
+    }
+
+    LOG_INFO("Compiling shader '%s' with macros: [%s]...", desc.path, macrosStr.str().c_str());
+
     ID3DBlob* errorsBuffer = nullptr;
-    hr = D3DCompile(code, shaderSize, desc.path, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE,
-                    "main", profileName, flags, 0, &mBytecode, &errorsBuffer);
+    hr = D3DCompile(code, shaderSize, desc.path, d3dMacros.get(),
+                    D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", profileName, flags, 0,
+                    &mBytecode, &errorsBuffer);
 
     if (errorsBuffer)
     {
