@@ -90,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_ae3ec727",
+        "filename": "nfEngine/nfCore/Prerequisites.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-05T14:34:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_bd5f3f40",
+      "revId": "e6d6328a49f945bc20586da7c1acc076ceeeeaf1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_dd5c034e",
         "filename": "nfEngine/nfCore/Renderer/GuiRenderer.hpp",
         "patchSetId": 1
@@ -113,6 +131,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_8e3ae334",
+        "filename": "nfEngine/nfCore/Renderer/GuiRenderer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-05T14:34:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_dd5c034e",
+      "range": {
+        "startLine": 15,
+        "startChar": 8,
+        "endLine": 15,
+        "endChar": 9
+      },
+      "revId": "e6d6328a49f945bc20586da7c1acc076ceeeeaf1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_7d3937f1",
         "filename": "nfEngine/nfCore/Renderer/RendererResources.hpp",
         "patchSetId": 1
@@ -124,6 +166,30 @@
       "writtenOn": "2015-06-24T08:08:58Z",
       "side": 1,
       "message": "This will break doxygen. Now the question is, which commit will be merged first...",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 13
+      },
+      "revId": "e6d6328a49f945bc20586da7c1acc076ceeeeaf1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_eef1af96",
+        "filename": "nfEngine/nfCore/Renderer/RendererResources.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-05T14:34:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_7d3937f1",
       "range": {
         "startLine": 23,
         "startChar": 0,
