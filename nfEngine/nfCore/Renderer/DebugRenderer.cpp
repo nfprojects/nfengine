@@ -73,15 +73,8 @@ DebugRenderer::DebugRenderer()
     shaderDesc.type = ShaderType::Vertex;
     mVertexShader.reset(device->CreateShader(shaderDesc));
 
-    /// create pixel shader
-    shaderDesc.path = pixelShaderPath.c_str();
-    shaderDesc.type = ShaderType::Pixel;
-    mPixelShader.reset(device->CreateShader(shaderDesc));
-
-    /// create shader program
-    shaderProgDesc.vertexShader = mVertexShader.get();
-    shaderProgDesc.pixelShader = mPixelShader.get();
-    mShaderProgram.reset(device->CreateShaderProgram(shaderProgDesc));
+    mPixelShader.Load("DebugPS");
+    mUseTexureMacroId = mPixelShader.GetMacroByName("USE_TEXTURE");
 
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
@@ -129,7 +122,10 @@ void DebugRenderer::OnEnter(RenderContext* context)
     context->commandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
     context->commandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
     context->commandBuffer->SetVertexLayout(mVertexLayout.get());
-    context->commandBuffer->SetShaderProgram(mShaderProgram.get());
+    context->commandBuffer->SetShader(mVertexShader.get());
+
+    int macros[] = { 0 }; // USE_TEXTURE
+    context->commandBuffer->SetShader(mPixelShader.GetShader(macros));
 
     IBuffer* cb = mConstantBuffer.get();
     context->commandBuffer->SetConstantBuffers(&cb, 1, ShaderType::Vertex);

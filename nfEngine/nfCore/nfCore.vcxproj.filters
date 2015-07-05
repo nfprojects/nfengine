@@ -129,6 +129,9 @@
     <ClCompile Include="Renderer\HighLevelRenderer.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer\Multishader.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Aligned.hpp">
@@ -243,6 +246,9 @@
       <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\RendererModule.hpp">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\Multishader.hpp">
       <Filter>Renderer</Filter>
     </ClInclude>
   </ItemGroup>
