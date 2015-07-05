@@ -44,6 +44,15 @@ struct ShaderIODesc
 };
 
 /**
+ * Shader macro definition.
+ */
+struct ShaderMacro
+{
+    const char* name;
+    const char* value;
+};
+
+/**
  * Shader description used to create and compile a shader object.
  *
  * @details When @p code member is null then the shader source is loaded from @p path file.
@@ -53,14 +62,17 @@ struct ShaderDesc
     ShaderType type;
     const char* code; //< shader code (optional)
     const char* path; //< shader path or name (optional)
+    const ShaderMacro* macros;
+    size_t macrosNum;
 
     // TODO: binary format support
-    // TODO: macros
 
     ShaderDesc()
         : type(ShaderType::Unknown)
         , code(nullptr)
         , path(nullptr)
+        , macros(nullptr)
+        , macrosNum(0)
     {}
 };
 
