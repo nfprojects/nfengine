@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_9d7912ff",
+        "filename": "nfEngine/nfCore/Renderer/HighLevelRenderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-05T17:06:24Z",
+      "side": 1,
+      "message": "Right now there are deferred contexts created, but no one is using them, nor ExecuteDefferedContext is called. I suggest leaving this as a nullptr and coming back to this with a commit implementing DCs.",
+      "revId": "72a652b6bc4df7cdc222c18dd6628eaae45bce1a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
