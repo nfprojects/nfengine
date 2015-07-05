@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_5dbeaa00",
+        "filename": "nfEngine/nfCore/Renderer/PostProcessRenderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-05T16:49:36Z",
+      "side": 1,
+      "message": "I guess this int is an error-informer. Switch to bool, check other functions.",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 3
+      },
+      "revId": "9dc3cd3428b0accac2bf97611d7f0693a7e05530",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_fd14def6",
+        "filename": "nfEngine/nfCore/Renderer/RendererContext.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-05T16:49:36Z",
+      "side": 1,
+      "message": "Do we need to have this visible? It looks like a good candidate to move to .cpp file and switch to a const int, or const uint.",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 37
+      },
+      "revId": "9dc3cd3428b0accac2bf97611d7f0693a7e05530",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
