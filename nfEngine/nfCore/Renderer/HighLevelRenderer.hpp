@@ -111,6 +111,11 @@ public:
      * @param context A deferred context.
      */
     void ExecuteDeferredContext(RenderContext* context);
+
+    /**
+     * Get shaders location.
+     */
+    std::string GetShadersPath() const;
 };
 
 } // namespace Renderer
