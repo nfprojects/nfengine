@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_13a24eae",
+        "filename": "nfEngine/Shaders/D3D11/DebugPS.hlsl",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-06T22:32:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_dd839aca",
+      "revId": "316bef6319e9460c87c41cc2c3ca245137c1a72e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_fd885ee9",
         "filename": "nfEngine/nfCore/Engine.cpp",
         "patchSetId": 1
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_f317aaeb",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-06T22:32:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_fd885ee9",
+      "range": {
+        "startLine": 283,
+        "startChar": 15,
+        "endLine": 283,
+        "endChar": 19
+      },
+      "revId": "316bef6319e9460c87c41cc2c3ca245137c1a72e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_bdcc1637",
         "filename": "nfEngine/nfCore/Renderer/DebugRenderer.cpp",
         "patchSetId": 1
@@ -53,6 +95,30 @@
       "writtenOn": "2015-07-05T17:19:10Z",
       "side": 1,
       "message": "* These should be consts\n* I don\u0027t understand why these should be 4096 and 8192. Is this temporary? Or will the DebugR have a constant-sized buffers? Leave a comment.",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 31
+      },
+      "revId": "316bef6319e9460c87c41cc2c3ca245137c1a72e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_93e73e12",
+        "filename": "nfEngine/nfCore/Renderer/DebugRenderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-06T22:32:48Z",
+      "side": 1,
+      "message": "Done. Yes, debug renderer will have constant-sized index/vertex buffers. At least for now. They are used to accummulate verticex/indices from multiple DrawXXX() calls, for example when we are drawing multiple box. I\u0027ve chosen index buffer to be 2x bigger, because usually there are more indicies describing a mesh than vericies (one vertex can be reused by many indicies). The values can be bigger, but RAM usage will be bigger then.",
+      "parentUuid": "9ad9bd40_bdcc1637",
       "range": {
         "startLine": 30,
         "startChar": 0,
