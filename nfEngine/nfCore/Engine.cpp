@@ -280,6 +280,17 @@ Result EngineAdvance(const DrawRequest* pDrawRequests, uint32 drawRequestsNum,
         Camera* pCamera = pView->GetCamera();
         if (pCamera != NULL)
         {
+            // FIXME: temporary
+            ICommandBuffer* commandBuffer = gRenderer->GetImmediateContext()->commandBuffer;
+            commandBuffer->SetRenderTarget(pView->GetRenderTarget());
+            uint32 width, height;
+            pView->GetSize(width, height);
+            commandBuffer->SetViewport(0.0f, static_cast<float>(width),
+                                       0.0f, static_cast<float>(height),
+                                       0.0f, 1.0f);
+            const float backgroundColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+            commandBuffer->Clear(backgroundColor);
+
             SceneManager* pScene = pCamera->GetOwner()->GetScene();
             pScene->Render(pCamera, pView->GetRenderTarget());
         }
