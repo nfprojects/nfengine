@@ -134,9 +134,9 @@ struct RendererSettings
         antialiasingReduceMul = 16.0;
         antialiasingReduceMin = 128.0;
 
-        debugEnable = false;
-        debugLights = false;
-        debugMeshes = false;
+        debugEnable = true;
+        debugLights = true;
+        debugMeshes = true;
     }
 };
 

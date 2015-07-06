@@ -73,7 +73,7 @@ bool Shader::Init(const ShaderDesc& desc)
         shaderSize = strlen(code);
     }
 
-    DWORD flags = D3DCOMPILE_ENABLE_STRICTNESS;
+    DWORD flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_PACK_MATRIX_ROW_MAJOR;
 #ifdef _DEBUG //shaders debugging
     flags |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #else
