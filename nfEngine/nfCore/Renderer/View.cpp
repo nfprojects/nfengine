@@ -23,6 +23,7 @@ View::View()
 {
     mCamera = nullptr;
     mTexture = nullptr;
+    mWindow = nullptr;
 }
 
 View::~View()
@@ -37,6 +38,12 @@ void View::Release()
         mTexture->DelRef(this);
         //  mTexture->Unload();
         mTexture = nullptr;
+    }
+
+    if (mWindow != nullptr)
+    {
+        mWindow->SetResizeCallback(nullptr, nullptr);
+        mWindow = nullptr;
     }
 }
 
@@ -94,9 +101,44 @@ Result View::SetWindow(Common::Window* window)
         return Result::AllocationError;
     }
 
-    // TODO: window resize handling
+    window->SetResizeCallback(OnWindowResize, this);
+    mWindow = window;
 
     return Result::OK;
+}
+
+void View::OnWindowResize(void* userData)
+{
+    View* view = static_cast<View*>(userData);
+    
+    if (view->mWindowBackbuffer != nullptr && view->mWindow != nullptr)
+    {
+        /// make sure that the backbuffer is not used
+        ICommandBuffer* commandBuffer = gRenderer->GetImmediateContext()->commandBuffer;
+        commandBuffer->SetRenderTarget(nullptr);
+        view->mRenderTarget.reset();
+
+        uint32 width, height;
+        view->mWindow->GetSize(width, height);
+        view->mWindowBackbuffer->Resize(width, height);
+
+
+        RenderTargetElement rtTarget;
+        rtTarget.texture = view->mWindowBackbuffer.get();
+
+        RenderTargetDesc rtDesc;
+        rtDesc.depthBuffer = nullptr; // TODO
+        rtDesc.numTargets = 1;
+        rtDesc.targets = &rtTarget;
+
+        /// create new rendertarget
+        view->mRenderTarget.reset(gRenderer->GetDevice()->CreateRenderTarget(rtDesc));
+        if (view->mRenderTarget == nullptr)
+        {
+            view->mWindowBackbuffer.reset();
+            LOG_ERROR("Failed to create render target");
+        }
+    }
 }
 
 void View::Present()
@@ -124,6 +166,16 @@ Texture* View::SetOffScreen(uint32 width, uint32 height, const char* textureName
     // mRenderTarget = mTexture->CreateRendertarget(width, height, Common::ImageFormat::RGBA_Float);
 
     return mTexture;
+}
+
+void View::GetSize(uint32& width, uint32& height)
+{
+    if (mWindow != nullptr)
+    {
+        mWindow->GetSize(width, height);
+    }
+
+    // TODO: get off-screen view dimensions when it's implemented
 }
 
 } // namespace Renderer
