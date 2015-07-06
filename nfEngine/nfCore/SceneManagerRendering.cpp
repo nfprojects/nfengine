@@ -320,7 +320,7 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
     {
         DebugRenderer::Get()->Enter(immCtx);
         DebugRenderer::Get()->SetCamera(immCtx, pCamera->mViewMatrix, pCamera->mProjMatrix);
-
+        DebugRenderer::Get()->SetTarget(immCtx, pRT);
 
         //draw meshes bvh
         // DrawBVHNode(pCtx, mMeshesBVH->GetRootId(), 0);
