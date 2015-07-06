@@ -19,9 +19,12 @@ class CORE_API View
 
     // not NULL when rendering to a window
     std::unique_ptr<IBackbuffer> mWindowBackbuffer;
+    Common::Window* mWindow;
 
     std::unique_ptr<IRenderTarget> mRenderTarget;
     Scene::Camera* mCamera;
+
+    static void OnWindowResize(void* userData);
 
 public:
 
@@ -67,6 +70,11 @@ public:
      * Display the render target on a screen, when the View is connected with a window.
      */
     void Present();
+
+    /**
+     * Get view dimensions.
+     */
+    void GetSize(uint32& width, uint32& height);
 };
 
 } // namespace Renderer
