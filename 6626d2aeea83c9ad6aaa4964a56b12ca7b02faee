@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_16f4f759",
+        "filename": "nfEngine/nfCore/Renderer/View.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-07T19:13:14Z",
+      "side": 1,
+      "message": "Since we are here anyway...",
+      "revId": "6626d2aeea83c9ad6aaa4964a56b12ca7b02faee",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
