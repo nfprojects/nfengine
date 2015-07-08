@@ -61,6 +61,7 @@ class CORE_API Mesh : public ResourceBase
 {
     friend class Scene::MeshComponent;
     friend class Scene::SceneManager;
+    friend class Renderer::DebugRenderer;
 
 private:
     Renderer::MeshVertex* mVerticies;
@@ -73,8 +74,8 @@ private:
 
     Math::Box mLocalBox;
 
-    Renderer::IBuffer* mVB;
-    Renderer::IBuffer* mIB;
+    std::unique_ptr<Renderer::IBuffer> mVB;
+    std::unique_ptr<Renderer::IBuffer> mIB;
 
 protected:
     /// when creating custom mesh, use this functions:

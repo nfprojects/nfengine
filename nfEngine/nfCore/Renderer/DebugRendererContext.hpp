@@ -20,6 +20,13 @@ struct DebugVertex
     Float2 texCoord;
 };
 
+enum class DebugRendererMode
+{
+    Unknown,
+    Simple,
+    Meshes
+};
+
 typedef uint16 DebugIndexType;
 
 /**
@@ -27,7 +34,7 @@ typedef uint16 DebugIndexType;
  */
 struct DebugRendererContext
 {
-    // RendererTextureD3D11* texture;
+    DebugRendererMode mode;
     PrimitiveType polyType;
     std::unique_ptr<DebugVertex[]> vertices;
     std::unique_ptr<DebugIndexType[]> indicies;
