@@ -53,6 +53,9 @@ private:
     IDevice* mRenderingDevice;
     ICommandBuffer* mCommandBuffer;
 
+    // default sampler for 3D rendering
+    std::unique_ptr<ISampler> mDefaultSampler;
+
     /// TODO: make sure there is no false sharing problem here
     std::unique_ptr<RenderContext[]> mDeferredContexts;
     std::unique_ptr<RenderContext> mImmediateContext;
@@ -62,6 +65,8 @@ private:
     HighLevelRenderer(HighLevelRenderer&&) = delete;
     HighLevelRenderer& operator=(const HighLevelRenderer&) = delete;
     HighLevelRenderer& operator=(HighLevelRenderer&&) = delete;
+
+    void CreateCommonResources();
 
 public:
     GPUStats pipelineStats;
@@ -116,6 +121,14 @@ public:
      * Get shaders location.
      */
     std::string GetShadersPath() const;
+
+    /**
+     * Get default sampler for 3D meshes rendering.
+     */
+    NFE_INLINE ISampler* GetDefaultSampler() const
+    {
+        return mDefaultSampler.get();
+    }
 };
 
 } // namespace Renderer
