@@ -46,9 +46,9 @@ struct CORE_API MaterialLayer
  */
 class CORE_API Material : public ResourceBase
 {
-    friend class GBufferRendererD3D11;
-    friend class DebugRendererD3D11;
-    friend class ShadowRendererD3D11;
+    friend class Renderer::GBufferRenderer;
+    friend class Renderer::DebugRenderer;
+    friend class Renderer::ShadowRenderer;
 
     // TODO: use std::vector
     MaterialLayer* mLayers;
