@@ -62,8 +62,8 @@ void SceneManager::RenderShadow(RenderContext* pCtx, LightComponent* pLight, uin
         Mesh* pMesh = visibleMeshes[i]->mMesh;
         Vector pos = visibleMeshes[i]->mOwner->GetPosition();
         command.matrix = visibleMeshes[i]->mOwner->mMatrix;
-        command.pVB = pMesh->mVB;
-        command.pIB = pMesh->mIB;
+        command.pVB = pMesh->mVB.get();
+        command.pIB = pMesh->mIB.get();
         command.distance = VectorLength3(pCamera->mOwner->GetPosition() - pos).f[0];
 
         for (uint32 j = 0; j < pMesh->mSubMeshesCount; j++)
@@ -111,8 +111,8 @@ void SceneManager::RenderGBuffer(RenderContext* pCtx, Camera* pCamera,
         command.matrix = visibleMeshes[i]->mOwner->mMatrix;
         command.velocity = visibleMeshes[i]->mOwner->GetVelocity();
         command.angularVelocity = visibleMeshes[i]->mOwner->GetAngularVelocity();
-        command.pVB = pMesh->mVB;
-        command.pIB = pMesh->mIB;
+        command.pVB = pMesh->mVB.get();
+        command.pIB = pMesh->mIB.get();
         command.distance = VectorLength3(pCamera->mOwner->GetPosition() - pos).f[0];
 
         for (uint32 j = 0; j < pMesh->mSubMeshesCount; j++)

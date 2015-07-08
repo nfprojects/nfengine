@@ -139,32 +139,34 @@ bool Mesh::OnLoad()
     for (uint32 i = 0; i < mVeriticesCount; i++)
         pVerticies[i].texCoord.y = 1.0f - pVerticies[i].texCoord.y;
 
-    // TODO
-    /*
-    mVB = g_pRenderer->CreateBuffer();
-    if (!mVB ||
-            !mVB->Init(IRendererBuffer::Type::Vertex, pVerticies, mVeriticesCount * sizeof(MeshVertex)))
+    /// create renderer's vertex buffer
+    BufferDesc bufferDesc;
+    bufferDesc.access = BufferAccess::GPU_ReadOnly;
+    bufferDesc.type = BufferType::Vertex;
+    bufferDesc.size = mVeriticesCount * sizeof(MeshVertex);
+    bufferDesc.initialData = pVerticies;
+    mVB.reset(gRenderer->GetDevice()->CreateBuffer(bufferDesc));
+    if (!mVB)
     {
         LOG_ERROR("Failed to create vertex buffer for mesh '%s'.", mName);
         fclose(pFile);
         return false;
     }
-    */
 
     uint32* pIndices = (uint32*)malloc(mIndicesCount * sizeof(uint32));
     fread(pIndices, sizeof(uint32), mIndicesCount, pFile);
 
-    // TODO
-    /*
-    mIB = g_pRenderer->CreateBuffer();
-    if (!mIB ||
-            !mIB->Init(IRendererBuffer::Type::Index, pIndices, mIndicesCount * sizeof(uint32)))
+    /// create renderer's index buffer
+    bufferDesc.type = BufferType::Index;
+    bufferDesc.size = mIndicesCount * sizeof(uint32);
+    bufferDesc.initialData = pIndices;
+    mIB.reset(gRenderer->GetDevice()->CreateBuffer(bufferDesc));
+    if (!mIB)
     {
         LOG_ERROR("Failed to create index buffer for mesh '%s'.", mName);
         fclose(pFile);
         return false;
     }
-    */
 
 
     SubMeshDesc* pSubMeshes = (SubMeshDesc*)malloc(mSubMeshesCount * sizeof(SubMeshDesc));
@@ -333,18 +335,6 @@ void Mesh::OnUnload()
         for (uint32 i = 0; i < mSubMeshesCount; i++)
             if (mSubMeshes[i].material)
                 mSubMeshes[i].material->DelRef();
-    }
-
-    if (mVB)
-    {
-        delete mVB;
-        mVB = 0;
-    }
-
-    if (mIB)
-    {
-        delete mIB;
-        mIB = 0;
     }
 }
 

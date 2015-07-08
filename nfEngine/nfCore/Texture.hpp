@@ -20,7 +20,7 @@ namespace Resource {
  */
 class CORE_API Texture : public ResourceBase
 {
-    Renderer::ITexture* mTex;
+    std::unique_ptr<Renderer::ITexture> mTex;
     Common::ImageFormat mFormat;
 
     bool OnLoad();
