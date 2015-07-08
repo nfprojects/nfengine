@@ -16,6 +16,104 @@
 namespace NFE {
 namespace Resource {
 
+namespace {
+
+const size_t gMaxMipmaps = 24;
+
+Renderer::ITexture* CreateRendererTextureFromImage(const Common::Image& image)
+{
+    using namespace Renderer;
+
+    size_t bitsPerPixel = Common::Image::BitsPerPixel(image.GetFormat());
+
+    TextureDesc texDesc;
+    texDesc.type = TextureType::Texture2D;
+    texDesc.access = BufferAccess::GPU_ReadOnly;
+    texDesc.width = image.GetWidth();
+    texDesc.height = image.GetHeight();
+    texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER;
+    texDesc.mipmaps = static_cast<int>(image.GetMipmapsNum());
+
+    bool bc = false;
+    size_t bcNumBytesPerBlock = 0;
+    switch (image.GetFormat())
+    {
+    case Common::ImageFormat::A_UByte:
+    case Common::ImageFormat::R_UByte:
+        texDesc.format = ElementFormat::Uint_8_norm;
+        texDesc.texelSize = 1;
+        break;
+    case Common::ImageFormat::RGBA_UByte:
+        texDesc.format = ElementFormat::Uint_8_norm;
+        texDesc.texelSize = 4;
+        break;
+    case Common::ImageFormat::RGBA_Float:
+        texDesc.format = ElementFormat::Float_32;
+        texDesc.texelSize = 4;
+        break;
+    case Common::ImageFormat::R_Float:
+        texDesc.format = ElementFormat::Float_32;
+        texDesc.texelSize = 1;
+        break;
+    case Common::ImageFormat::BC1:
+        texDesc.format = ElementFormat::Unknown; // TODO
+        texDesc.texelSize = 1;
+        bcNumBytesPerBlock = 8;
+        bc = true;
+        break;
+    case Common::ImageFormat::BC2:
+        texDesc.format = ElementFormat::Unknown; // TODO
+        texDesc.texelSize = 1;
+        bcNumBytesPerBlock = 16;
+        bc = true;
+        break;
+    case Common::ImageFormat::BC3:
+        texDesc.format = ElementFormat::Unknown; // TODO
+        texDesc.texelSize = 1;
+        bcNumBytesPerBlock = 16;
+        bc = true;
+        break;
+    case Common::ImageFormat::BC4:
+        texDesc.format = ElementFormat::Unknown; // TODO
+        texDesc.texelSize = 1;
+        bcNumBytesPerBlock = 8;
+        bc = true;
+        break;
+    case Common::ImageFormat::BC5:
+        texDesc.format = ElementFormat::Unknown; // TODO
+        texDesc.texelSize = 1;
+        bcNumBytesPerBlock = 16;
+        bc = true;
+        break;
+    default:
+        return nullptr;
+    }
+
+    TextureDataDesc initialData[gMaxMipmaps];
+    for (size_t i = 0; i < image.GetMipmapsNum(); i++)
+    {
+        if (bc) //special case - block coding
+        {
+            uint32 numBlocksWide = Math::Max<uint32>(1, (image.GetMipmap(i).width + 3) / 4);
+            initialData[i].lineSize = numBlocksWide * bcNumBytesPerBlock;
+        }
+        else
+        {
+            initialData[i].lineSize = Math::Max<uint32>(1,
+                static_cast<uint32>(image.GetMipmap(i).width * bitsPerPixel / 8));
+        }
+
+        initialData[i].data = image.GetMipmap(i).data;
+        initialData[i].sliceSize = image.GetMipmap(i).dataSize;
+    }
+
+    texDesc.dataDesc = initialData;
+
+    return gRenderer->GetDevice()->CreateTexture(texDesc);
+}
+
+} // namespace
+
 Texture::Texture()
 {
     mTex = nullptr;
@@ -29,11 +127,7 @@ Texture::~Texture()
 
 void Texture::Release()
 {
-    if (mTex)
-    {
-        delete mTex;
-        mTex = 0;
-    }
+    mTex.reset();
 }
 
 bool Texture::OnLoad()
@@ -112,7 +206,6 @@ bool Texture::OnLoad()
         }
         */
 
-        //mTex = g_pRenderer->CreateTexture(&image, true);
         if (CreateFromImage(image) != Result::OK)
             return false;
 
@@ -145,21 +238,14 @@ Result Texture::CreateFromImage(const Common::Image& image)
 {
     Release();
 
-    mTex = nullptr; // TODO
-    if (mTex == nullptr)
+    mTex.reset(CreateRendererTextureFromImage(image));
+    if (!mTex)
     {
-        LOG_ERROR("Failed to create texture object for '%s'.", mName);
+        LOG_ERROR("Failed to create renderer's texture for '%s'.", mName);
         return Result::Error;
     }
 
-    // TODO
-    // if (mTex->FromImage(image) != Result::OK)
-    {
-        LOG_ERROR("Failed to load image to texture object for '%s'.", mName);
-        return Result::Error;
-    }
-
-    // return Result::OK;
+    return Result::OK;
 }
 
 
@@ -190,7 +276,7 @@ IRenderTarget* Texture::CreateRendertarget(uint32 width, uint32 height, Common::
 
 ITexture* Texture::GetRendererTexture() const
 {
-    return mTex;
+    return mTex.get();
 }
 
 } // namespace Resource
