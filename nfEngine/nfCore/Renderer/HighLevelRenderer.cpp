@@ -66,6 +66,8 @@ bool HighLevelRenderer::Init(const std::string& preferredRendererName)
     GBufferRenderer::Init();
     LightsRenderer::Init();
 
+    CreateCommonResources();
+
     return true;
 }
 
@@ -78,6 +80,8 @@ void HighLevelRenderer::Release()
     GBufferRenderer::Release();
     LightsRenderer::Release();
 
+    mDefaultSampler.reset();
+
     if (mRenderingDevice != nullptr)
     {
         mRenderingDevice = nullptr;
@@ -88,6 +92,14 @@ void HighLevelRenderer::Release()
     }
 
     mLowLevelRendererLib.Close();
+}
+
+void HighLevelRenderer::CreateCommonResources()
+{
+    SamplerDesc samplerDesc;
+    samplerDesc.magFilter = TextureMagFilter::Linear;
+    samplerDesc.minFilter = TextureMinFilter::Linear; // TODO: anisotropic filter
+    mDefaultSampler.reset(mRenderingDevice->CreateSampler(samplerDesc));
 }
 
 void HighLevelRenderer::ProcessView(View* view)

@@ -251,5 +251,8 @@
     <ClInclude Include="Renderer\Multishader.hpp">
       <Filter>Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="Renderer\DebugRendererContext.hpp">
+      <Filter>Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

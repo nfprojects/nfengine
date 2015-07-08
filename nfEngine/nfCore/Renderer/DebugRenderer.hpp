@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "../Prerequisites.hpp"
 #include "RendererModule.hpp"
 #include "HighLevelRenderer.hpp"
 #include "DebugRendererContext.hpp"
@@ -23,17 +24,21 @@ using namespace Math;
  */
 class DebugRenderer : public RendererModule<DebugRenderer>
 {
-    std::unique_ptr<IShader> mVertexShader;
+    Multishader mVertexShader;
     Multishader mPixelShader;
     std::unique_ptr<IVertexLayout> mVertexLayout;
+    std::unique_ptr<IVertexLayout> mMeshVertexLayout;
     std::unique_ptr<IRasterizerState> mRasterizerState;
 
     std::unique_ptr<IBuffer> mConstantBuffer;
+    std::unique_ptr<IBuffer> mPerMeshConstantBuffer;
     std::unique_ptr<IBuffer> mVertexBuffer;
     std::unique_ptr<IBuffer> mIndexBuffer;
 
+    uint32 mIsMeshMacroId;
     uint32 mUseTextureMacroId;
 
+    void SetMeshMaterial(RenderContext* context, const Resource::Material* material);
     void Flush(RenderContext* context);
 
 public:
@@ -50,6 +55,7 @@ public:
     void DrawBox(RenderContext* context, const Box& box, const uint32 color);
     void DrawFilledBox(RenderContext* context, const Box& box, const uint32 color);
     void DrawFrustum(RenderContext* context, const Frustum& frustum, const uint32 color);
+    void DrawMesh(RenderContext* context, const Resource::Mesh* mesh, const Matrix& matrix);
 };
 
 } // namespace Renderer

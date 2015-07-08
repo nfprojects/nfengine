@@ -10,6 +10,9 @@
 #include "DebugRenderer.hpp"
 #include "HighLevelRenderer.hpp"
 #include "../Globals.hpp"
+#include "../Material.hpp"
+#include "../Mesh.hpp"
+#include "../../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -27,6 +30,10 @@ struct NFE_ALIGN16 DebugCBuffer
     Matrix projMatrix;
 };
 
+struct NFE_ALIGN16 DebugPerMeshCBuffer
+{
+    Matrix modelMatrix;
+};
 
 namespace {
 
@@ -56,6 +63,7 @@ DebugRendererContext::DebugRendererContext()
     queuedVertices = 0;
     queuedIndicies = 0;
     polyType = PrimitiveType::Lines;
+    mode = DebugRendererMode::Unknown;
 }
 
 DebugRenderer::DebugRenderer()
@@ -65,13 +73,9 @@ DebugRenderer::DebugRenderer()
     BufferDesc bufferDesc;
     ShaderDesc shaderDesc;
     ShaderProgramDesc shaderProgDesc;
-    std::string vertexShaderPath = gRenderer->GetShadersPath() + "DebugVS.hlsl";
-    std::string pixelShaderPath = gRenderer->GetShadersPath() + "DebugPS.hlsl";
 
-    /// create vertex shader
-    shaderDesc.path = vertexShaderPath.c_str();
-    shaderDesc.type = ShaderType::Vertex;
-    mVertexShader.reset(device->CreateShader(shaderDesc));
+    mVertexShader.Load("DebugVS");
+    mIsMeshMacroId = mPixelShader.GetMacroByName("IS_MESH");
 
     mPixelShader.Load("DebugPS");
     mUseTextureMacroId = mPixelShader.GetMacroByName("USE_TEXTURE");
@@ -83,15 +87,34 @@ DebugRenderer::DebugRenderer()
         { ElementFormat::Uint_8_norm, 4 }, // color
         { ElementFormat::Float_32,    2 }, // tex-coords
     };
-    VertexLayoutDesc vertexLayoutDesc = { vertexLayoutElements, 3, mVertexShader.get() };
+    int isMesh = 0; // IS_MESH macro
+    VertexLayoutDesc vertexLayoutDesc = { vertexLayoutElements, 3,
+                                          mVertexShader.GetShader(&isMesh) };
     mVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
 
+    /// create vertex layout for meshes
+    VertexLayoutElement meshVertexLayoutElements[] =
+    {
+        { ElementFormat::Float_32,   3 }, // position
+        { ElementFormat::Float_32,   2 }, // tex-coords
+        { ElementFormat::Int_8_norm, 4 }, // normal
+        { ElementFormat::Int_8_norm, 4 }, // tangnet
+    };
+    isMesh = 1;
+    VertexLayoutDesc meshVertexLayoutDesc = { meshVertexLayoutElements, 4,
+                                              mVertexShader.GetShader(&isMesh) };
+    mMeshVertexLayout.reset(device->CreateVertexLayout(meshVertexLayoutDesc));
 
     /// create constant buffer
     bufferDesc.access = BufferAccess::CPU_Write;
     bufferDesc.size = sizeof(DebugCBuffer);
     bufferDesc.type = BufferType::Constant;
     mConstantBuffer.reset(device->CreateBuffer(bufferDesc));
+
+    bufferDesc.access = BufferAccess::CPU_Write;
+    bufferDesc.size = sizeof(DebugPerMeshCBuffer);
+    bufferDesc.type = BufferType::Constant;
+    mPerMeshConstantBuffer.reset(device->CreateBuffer(bufferDesc));
 
     /// create vertex buffer
     bufferDesc.access = BufferAccess::CPU_Write;
@@ -116,22 +139,18 @@ DebugRenderer::DebugRenderer()
 
 void DebugRenderer::OnEnter(RenderContext* context)
 {
-    int stride = sizeof(DebugVertex);
-    int offset = 0;
-    IBuffer* vb = mVertexBuffer.get();
-    context->commandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
-    context->commandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
-    context->commandBuffer->SetVertexLayout(mVertexLayout.get());
-    context->commandBuffer->SetShader(mVertexShader.get());
+    context->debugContext.mode = DebugRendererMode::Unknown;
 
-    int macros[] = { 0 }; // USE_TEXTURE
-    context->commandBuffer->SetShader(mPixelShader.GetShader(macros));
+    int psMacros[] = { 0 }; // USE_TEXTURE
+    context->commandBuffer->SetShader(mPixelShader.GetShader(psMacros));
 
-    IBuffer* cb = mConstantBuffer.get();
-    context->commandBuffer->SetConstantBuffers(&cb, 1, ShaderType::Vertex);
-    context->commandBuffer->SetConstantBuffers(&cb, 1, ShaderType::Pixel);
+    IBuffer* constantBuffers[] = { mConstantBuffer.get(), mPerMeshConstantBuffer.get() };
+    context->commandBuffer->SetConstantBuffers(constantBuffers, 2, ShaderType::Vertex);
 
     context->commandBuffer->SetRasterizerState(mRasterizerState.get());
+
+    ISampler* sampler = gRenderer->GetDefaultSampler();
+    context->commandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
 }
 
 void DebugRenderer::OnLeave(RenderContext* context)
@@ -145,6 +164,21 @@ void DebugRenderer::Flush(RenderContext* context)
 
     if (ctx.queuedVertices == 0 && ctx.queuedIndicies == 0)
         return;
+
+    if (ctx.mode != DebugRendererMode::Simple)
+    {
+        int stride = sizeof(DebugVertex);
+        int offset = 0;
+        IBuffer* vb = mVertexBuffer.get();
+        context->commandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
+        context->commandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
+
+        int vsMacros[] = { 0 }; // IS_MESH
+        context->commandBuffer->SetShader(mVertexShader.GetShader(vsMacros));
+        context->commandBuffer->SetVertexLayout(mVertexLayout.get());
+
+        ctx.mode = DebugRendererMode::Simple;
+    }
 
     context->commandBuffer->WriteBuffer(mVertexBuffer.get(), 0,
                                         ctx.queuedVertices * sizeof(DebugVertex),
@@ -298,6 +332,69 @@ void DebugRenderer::DrawFrustum(RenderContext *context, const Frustum& frustum, 
 
     ctx.queuedVertices += vertexRequired;
     ctx.queuedIndicies += indexRequired;
+}
+
+void DebugRenderer::SetMeshMaterial(RenderContext* context, const Resource::Material* material)
+{
+    ITexture* tex = nullptr;
+
+    if (material && material->mLayers)
+        if (material->mLayers[0].diffuseTexture)
+            tex = material->mLayers[0].diffuseTexture->GetRendererTexture();
+
+    int macros[1] = { tex != nullptr ? 1 : 0 };
+    context->commandBuffer->SetShader(mPixelShader.GetShader(macros));
+
+    if (tex)
+        context->commandBuffer->SetTextures(&tex, 1, ShaderType::Pixel);
+}
+
+void DebugRenderer::DrawMesh(RenderContext* context, const Resource::Mesh* mesh,
+                             const Matrix& matrix)
+{
+    if (mesh->GetState() != Resource::ResourceState::Loaded)
+        return;
+
+    Flush(context);
+
+    DebugRendererContext& ctx = context->debugContext;
+    IBuffer* vb = mesh->mVB.get();
+    IBuffer* ib = mesh->mIB.get();
+
+    if (vb == nullptr || ib == nullptr)
+    {
+        LOG_ERROR("Invalid vertex or index buffer");
+        return;
+    }
+
+    if (ctx.mode != DebugRendererMode::Meshes)
+    {
+        int vsMacros[] = { 1 }; // IS_MESH
+        context->commandBuffer->SetShader(mVertexShader.GetShader(vsMacros));
+        context->commandBuffer->SetVertexLayout(mMeshVertexLayout.get());
+
+        ctx.mode = DebugRendererMode::Meshes;
+        ctx.polyType = PrimitiveType::Unknown;
+    }
+
+    /// update model matrix
+    DebugPerMeshCBuffer perMeshCBuffer;
+    perMeshCBuffer.modelMatrix = matrix;
+    context->commandBuffer->WriteBuffer(mPerMeshConstantBuffer.get(), 0,
+                                        sizeof(DebugPerMeshCBuffer),
+                                        &perMeshCBuffer);
+
+    int strides[] = { sizeof(MeshVertex) };
+    int offsets[] = { 0 };
+    context->commandBuffer->SetVertexBuffers(1, &vb, strides, offsets);
+    context->commandBuffer->SetIndexBuffer(ib, IndexBufferFormat::Uint32);
+    for (uint32 i = 0; i < mesh->mSubMeshesCount; ++i)
+    {
+        const Resource::SubMesh& subMesh = mesh->mSubMeshes[i];
+        SetMeshMaterial(context, subMesh.material);
+        context->commandBuffer->DrawIndexed(PrimitiveType::Triangles, 3 * subMesh.trianglesCount, 1,
+                                            subMesh.indexOffset);
+    }
 }
 
 } // namespace Renderer

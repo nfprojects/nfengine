@@ -347,6 +347,7 @@ popd</Command>
     <ClInclude Include="Performance.hpp" />
     <ClInclude Include="PhysicsWorld.hpp" />
     <ClInclude Include="Renderer\DebugRenderer.hpp" />
+    <ClInclude Include="Renderer\DebugRendererContext.hpp" />
     <ClInclude Include="Renderer\GeometryBufferRenderer.hpp" />
     <ClInclude Include="Renderer\GuiRenderer.hpp" />
     <ClInclude Include="Renderer\HighLevelRenderer.hpp" />
