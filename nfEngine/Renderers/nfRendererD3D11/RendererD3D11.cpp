@@ -248,5 +248,30 @@ D3D11_TEXTURE_ADDRESS_MODE TranslateTextureWrapMode(TextureWrapMode mode)
     return D3D11_TEXTURE_ADDRESS_WRAP;
 }
 
+bool TranslateDepthBufferTypes(DepthBufferFormat inFormat, DXGI_FORMAT& resFormat,
+                               DXGI_FORMAT& srvFormat, DXGI_FORMAT& dsvFormat)
+{
+    switch (inFormat)
+    {
+    case DepthBufferFormat::Depth16:
+        resFormat = DXGI_FORMAT_R16_TYPELESS;
+        srvFormat = DXGI_FORMAT_R16_UNORM;
+        dsvFormat = DXGI_FORMAT_D16_UNORM;
+        return true;
+    case DepthBufferFormat::Depth24_Stencil8:
+        resFormat = DXGI_FORMAT_R24G8_TYPELESS;
+        srvFormat = DXGI_FORMAT_R16_UNORM;
+        dsvFormat = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+        return true;
+    case DepthBufferFormat::Depth32:
+        resFormat = DXGI_FORMAT_R32_TYPELESS;
+        srvFormat = DXGI_FORMAT_R32_FLOAT;
+        dsvFormat = DXGI_FORMAT_D32_FLOAT;
+        return true;
+    }
+
+    return false;
+}
+
 } // namespace Renderer
 } // namespace NFE

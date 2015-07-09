@@ -109,8 +109,7 @@ IBlendState* Device::CreateBlendState(const BlendStateDesc& desc)
 
 IDepthState* Device::CreateDepthState(const DepthStateDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return CreateGenericResource<DepthState, DepthStateDesc>(desc);
 }
 
 IRasterizerState* Device::CreateRasterizerState(const RasterizerStateDesc& desc)
