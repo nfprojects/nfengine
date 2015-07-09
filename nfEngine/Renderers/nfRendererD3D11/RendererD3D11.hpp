@@ -90,6 +90,7 @@ protected:
     int mHeight;
     int mTexelSize; //< texel size in bytes
     D3DPtr<ID3D11ShaderResourceView> mSRV;
+    D3DPtr<ID3D11DepthStencilView> mDSV;
 
     union
     {
@@ -128,9 +129,10 @@ class RenderTarget : public IRenderTarget
     friend class CommandBuffer;
 
     std::vector<D3DPtr<ID3D11RenderTargetView>> mRTVs;
-    D3DPtr<ID3D11DepthStencilView> mDSV;
+    Texture* mDepthBuffer;
 
 public:
+    RenderTarget();
     bool Init(const RenderTargetDesc& desc);
 };
 
@@ -207,7 +209,7 @@ public:
     bool ReadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data);
     void CopyTexture(ITexture* src, ITexture* dest);
     bool ReadTexture(ITexture* tex, void* data);
-    void Clear(const float* color);
+    void Clear(int flags, const float* color, float depthValue);
     void Draw(PrimitiveType type, int vertexNum, int instancesNum = 1, int vertexOffset = 0,
               int instanceOffset = 0);
     void DrawIndexed(PrimitiveType type, int indexNum, int instancesNum = 1, int indexOffset = 0,
@@ -255,6 +257,8 @@ DXGI_FORMAT TranslateElementFormat(ElementFormat format, int size);
 D3D11_PRIMITIVE_TOPOLOGY TranslatePrimitiveType(PrimitiveType type);
 D3D11_COMPARISON_FUNC TranslateComparisonFunc(CompareFunc func);
 D3D11_TEXTURE_ADDRESS_MODE TranslateTextureWrapMode(TextureWrapMode mode);
+bool TranslateDepthBufferTypes(DepthBufferFormat inFormat, DXGI_FORMAT& resFormat,
+                               DXGI_FORMAT& srvFormat, DXGI_FORMAT& dsvFormat);
 
 extern std::unique_ptr<Device> gDevice;
 

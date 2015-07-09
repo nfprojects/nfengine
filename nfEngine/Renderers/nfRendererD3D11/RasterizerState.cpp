@@ -41,6 +41,15 @@ bool RasterizerState::Init(const RasterizerStateDesc& desc)
             return false;
     };
 
+    rd.FrontCounterClockwise = FALSE;
+    rd.DepthBias = FALSE;
+    rd.DepthBiasClamp = 0.0f;
+    rd.SlopeScaledDepthBias = 0.0f;
+    rd.DepthClipEnable = TRUE;
+    rd.ScissorEnable = FALSE;
+    rd.MultisampleEnable = FALSE;
+    rd.AntialiasedLineEnable = FALSE;
+
     HRESULT hr = D3D_CALL_CHECK(gDevice->Get()->CreateRasterizerState(&rd, &mRS));
     return SUCCEEDED(hr);
 }
