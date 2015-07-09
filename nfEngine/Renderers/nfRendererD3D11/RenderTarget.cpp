@@ -11,6 +11,11 @@
 namespace NFE {
 namespace Renderer {
 
+RenderTarget::RenderTarget()
+{
+    mDepthBuffer = nullptr;
+}
+
 bool RenderTarget::Init(const RenderTargetDesc& desc)
 {
     HRESULT hr;
@@ -43,23 +48,12 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             return false;
         }
 
-
         mRTVs.emplace_back(rtv);
     }
 
-
     if (desc.depthBuffer != nullptr)
     {
-        Texture* tex = dynamic_cast<Texture*>(desc.depthBuffer->texture);
-
-        // TODO: provide proper D3D11_DEPTH_STENCIL_VIEW_DESC
-        hr = D3D_CALL_CHECK(gDevice->mDevice->CreateDepthStencilView(tex->mTexture2D, NULL, &mDSV));
-        if (FAILED(hr))
-        {
-            LOG_ERROR("Failed to create depth-stencil view");
-            mRTVs.clear();
-            return false;
-        }
+        mDepthBuffer = dynamic_cast<Texture*>(desc.depthBuffer);
     }
 
     return true;
