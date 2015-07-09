@@ -47,7 +47,7 @@ public:
     bool ReadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data);
     void CopyTexture(ITexture* src, ITexture* dest);
     bool ReadTexture(ITexture* tex, void* data);
-    void Clear(const float* color);
+    void Clear(int flags, const float* color, float depthValue);
     void Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
               int instanceOffset);
     void DrawIndexed(PrimitiveType type, int indexNum, int instancesNum, int indexOffset,
