@@ -247,7 +247,7 @@ int main(int argc, char* argv[])
 
         float color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
         gCommandBuffer->SetRenderTarget(windowRenderTarget);
-        gCommandBuffer->Clear(color);
+        gCommandBuffer->Clear(NFE_CLEAR_FLAG_TARGET, color);
         if (gShaders) gCommandBuffer->SetShaderProgram(shaderProgram);
         gCommandBuffer->SetVertexLayout(vertexLayout);
 
