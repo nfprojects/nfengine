@@ -12,6 +12,11 @@ namespace Renderer {
 #define MAX_RENDER_TARGETS 8
 #define MAX_MIPMAP_LEVELS 16
 
+/// Clear flags passed to ICommandBuffer::Clear()
+#define NFE_CLEAR_FLAG_TARGET  (1<<0)
+#define NFE_CLEAR_FLAG_DEPTH   (1<<1)
+#define NFE_CLEAR_FLAG_STENCIL (1<<2)
+
 /**
  * GPU resources data format.
  */
@@ -35,6 +40,16 @@ enum class ElementFormat
     Uint_8_norm,
 
     // TODO: compressed (BCx), etc.
+};
+
+/**
+ * Depth buffer format
+ */
+enum class DepthBufferFormat
+{
+    Depth16,          // 16-bit depth buffer
+    Depth24_Stencil8, // 24-bit depth buffer + 8-bit stencil buffer
+    Depth32,          // 32-bit depth buffer
 };
 
 enum class TextureType

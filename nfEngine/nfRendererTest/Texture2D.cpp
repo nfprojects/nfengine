@@ -13,7 +13,7 @@ TEST_F(Texture2D, Clear)
     ASSERT_TRUE(BeginTestFrame(16, 16, ElementFormat::Float_32, 4));
 
     gCommandBuffer->SetViewport(0.0f, 16.0f, 0.0f, 16.0f, 0.0f, 1.0f);
-    gCommandBuffer->Clear(color);
+    gCommandBuffer->Clear(NFE_CLEAR_FLAG_TARGET, color);
 
     ASSERT_TRUE(EndTestFrame(pixels));
 

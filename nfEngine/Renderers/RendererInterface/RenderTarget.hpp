@@ -35,9 +35,9 @@ struct RenderTargetElement
  */
 struct RenderTargetDesc
 {
-    unsigned int numTargets;          //< number of targets
-    RenderTargetElement* targets;     //< array of RenderTargetElement
-    RenderTargetElement* depthBuffer; //< optional pointer to a depth buffer description
+    unsigned int numTargets;      //< number of targets
+    RenderTargetElement* targets; //< array of RenderTargetElement
+    ITexture* depthBuffer;        //< optional pointer to a depth buffer's texture
 
     RenderTargetDesc()
         : numTargets(0)

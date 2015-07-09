@@ -91,10 +91,11 @@ public:
 
     /**
      * Clear bound render targets with a color.
-     * @param color 4 element array of floats (RGBA).
+     * @param color      New render targets value - 4 element array of floats (RGBA).
+     * @param depthValue New depth value (should be between 0.0f and 1.0f).
      */
-    // TODO: Depth buffer clearing, MRT support.
-    virtual void Clear(const float* color) = 0;
+    // TODO: MRT support.
+    virtual void Clear(int flags, const float* color, float depthValue = 0.0f) = 0;
 
     /**
      * Draw geometry.
