@@ -148,14 +148,30 @@ bool CommandBuffer::ReadTexture(ITexture* tex, void* data)
     return false;
 }
 
-void CommandBuffer::Clear(const float* color)
+void CommandBuffer::Clear(int flags, const float* color, float depthValue)
 {
     // TODO Right now Clear assumes one default render target.
     //      For multiple render targets, one would have to:
     //        * bind one of the Framebuffers
     //        * call glClearColor and glClear
-    glClearColor(color[0], color[1], color[2], color[3]);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    GLbitfield glFlags = 0;
+
+    if (flags & NFE_CLEAR_FLAG_TARGET)
+    {
+        glFlags = GL_COLOR_BUFFER_BIT;
+        glClearColor(color[0], color[1], color[2], color[3]);
+    }
+
+    if (flags & NFE_CLEAR_FLAG_DEPTH)
+    {
+        glFlags |= GL_DEPTH_BUFFER_BIT;
+        glClearDepth(depthValue);
+    }
+
+    // TODO: stencil buffer support
+
+    glClear(glFlags);
 }
 
 

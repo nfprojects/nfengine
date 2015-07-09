@@ -181,13 +181,17 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
         return;
     }
 
+    ID3D11DepthStencilView* dsv = nullptr;
     ID3D11RenderTargetView* rtvs[MAX_RENDER_TARGETS] = { nullptr };
     size_t num = rt->mRTVs.size();
 
     for (size_t i = 0; i < num; ++i)
         rtvs[i] = rt->mRTVs[i].get();
 
-    mContext->OMSetRenderTargets(static_cast<UINT>(num), rtvs, rt->mDSV.get());
+    if (rt->mDepthBuffer)
+        dsv = rt->mDepthBuffer->mDSV.get();
+
+    mContext->OMSetRenderTargets(static_cast<UINT>(num), rtvs, dsv);
     mCurrentRenderTarget = rt;
 }
 
@@ -377,13 +381,29 @@ bool CommandBuffer::ReadTexture(ITexture* tex, void* data)
     return true;
 }
 
-void CommandBuffer::Clear(const float* color)
+void CommandBuffer::Clear(int flags, const float* color, float depthValue)
 {
     // TODO: what about cleaning individual RTs with different colors?
 
     if (mCurrentRenderTarget)
-        for (size_t i = 0; i < mCurrentRenderTarget->mRTVs.size(); ++i)
-            mContext->ClearRenderTargetView(mCurrentRenderTarget->mRTVs[i].get(), color);
+    {
+        if (flags & NFE_CLEAR_FLAG_TARGET)
+            for (size_t i = 0; i < mCurrentRenderTarget->mRTVs.size(); ++i)
+                mContext->ClearRenderTargetView(mCurrentRenderTarget->mRTVs[i].get(), color);
+
+        if (flags & NFE_CLEAR_FLAG_DEPTH)
+        {
+            ID3D11DepthStencilView* dsv;
+            if (mCurrentRenderTarget->mDepthBuffer)
+            {
+                dsv = mCurrentRenderTarget->mDepthBuffer->mDSV.get();
+                if (dsv)
+                    mContext->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH, depthValue, 0);
+            }
+        }
+
+        // TODO: stencil buffer support
+    }
 }
 
 void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,

@@ -55,13 +55,37 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
         return false;
     }
 
+
+    DXGI_FORMAT resourceFormat = DXGI_FORMAT_UNKNOWN;
+    DXGI_FORMAT srvFormat = DXGI_FORMAT_UNKNOWN;
+    DXGI_FORMAT dsvFormat = DXGI_FORMAT_UNKNOWN;
+    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
+    {
+        if (!TranslateDepthBufferTypes(desc.depthBufferFormat,
+                                       resourceFormat, srvFormat, dsvFormat))
+        {
+            LOG_ERROR("Invalid depth buffer format");
+            return false;
+        }
+    }
+    else
+    {
+        resourceFormat = TranslateElementFormat(desc.format, desc.texelSize);
+        srvFormat = resourceFormat;
+        if (resourceFormat == DXGI_FORMAT_UNKNOWN)
+        {
+            LOG_ERROR("Invalid texture format");
+            return false;
+        }
+    }
+
     D3D11_TEXTURE2D_DESC td;
     td.Width = desc.width;
     td.Height = desc.height;
     td.ArraySize = desc.layers;
     td.BindFlags = 0;
     td.CPUAccessFlags = 0; // TODO: support for dynamic textures
-    td.Format = TranslateElementFormat(desc.format, desc.texelSize);
+    td.Format = resourceFormat;
     td.MipLevels = desc.mipmaps;
     td.MiscFlags = 0;
     if (desc.type == TextureType::TextureCube)
@@ -120,7 +144,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
     {
         D3D11_SHADER_RESOURCE_VIEW_DESC srvd;
         ZeroMemory(&srvd, sizeof(srvd));
-        srvd.Format = td.Format;
+        srvd.Format = srvFormat;
         if (desc.samplesNum > 1)
         {
             srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DMS;
@@ -134,7 +158,34 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
 
         hr = D3D_CALL_CHECK(gDevice->Get()->CreateShaderResourceView(mTexture2D, &srvd, &mSRV));
         if (FAILED(hr))
+        {
+            D3D_SAFE_RELEASE(mTexture2D);
             return false;
+        }
+    }
+
+    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
+    {
+        D3D11_DEPTH_STENCIL_VIEW_DESC dsvd;
+        dsvd.Flags = 0;
+        dsvd.Format = dsvFormat;
+        if (desc.samplesNum > 1)
+        {
+            dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+        }
+        else
+        {
+            dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+            dsvd.Texture2D.MipSlice = 0;
+        }
+
+        hr = D3D_CALL_CHECK(gDevice->Get()->CreateDepthStencilView(mTexture2D, &dsvd, &mDSV));
+        if (FAILED(hr))
+        {
+            mSRV.reset();
+            D3D_SAFE_RELEASE(mTexture2D);
+            return false;
+        }
     }
 
     mWidth = desc.width;

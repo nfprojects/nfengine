@@ -289,7 +289,7 @@ Result EngineAdvance(const DrawRequest* pDrawRequests, uint32 drawRequestsNum,
                                        0.0f, static_cast<float>(height),
                                        0.0f, 1.0f);
             const float backgroundColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-            commandBuffer->Clear(backgroundColor);
+            commandBuffer->Clear(NFE_CLEAR_FLAG_TARGET, backgroundColor);
 
             SceneManager* pScene = pCamera->GetOwner()->GetScene();
             pScene->Render(pCamera, pView->GetRenderTarget());
