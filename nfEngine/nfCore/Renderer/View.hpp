@@ -21,9 +21,11 @@ class CORE_API View
     std::unique_ptr<IBackbuffer> mWindowBackbuffer;
     Common::Window* mWindow;
 
+    std::unique_ptr<ITexture> mDepthBuffer;
     std::unique_ptr<IRenderTarget> mRenderTarget;
     Scene::Camera* mCamera;
 
+    bool InitRenderTarget(uint32 width, uint32 height);
     static void OnWindowResize(void* userData);
 
 public:
@@ -50,7 +52,7 @@ public:
      * @brief Link the view to a window
      * @return Result::OK on success
      */
-    Result SetWindow(Common::Window* window);
+    bool SetWindow(Common::Window* window);
 
     /**
      * @brief Create custom, off-screen render target
