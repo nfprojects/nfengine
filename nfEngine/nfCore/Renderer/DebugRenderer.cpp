@@ -148,6 +148,7 @@ void DebugRenderer::OnEnter(RenderContext* context)
     context->commandBuffer->SetConstantBuffers(constantBuffers, 2, ShaderType::Vertex);
 
     context->commandBuffer->SetRasterizerState(mRasterizerState.get());
+    context->commandBuffer->SetDepthState(gRenderer->GetDefaultDepthState());
 
     ISampler* sampler = gRenderer->GetDefaultSampler();
     context->commandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
