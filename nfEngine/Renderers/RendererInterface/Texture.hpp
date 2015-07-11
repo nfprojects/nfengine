@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Types.hpp"
+#include <array>
 
 namespace NFE {
 namespace Renderer {
@@ -82,12 +83,27 @@ public:
  */
 struct SamplerDesc
 {
-    TextureMinFilter minFilter;
-    TextureMagFilter magFilter;
-    TextureWrapMode wrapModeU;
-    TextureWrapMode wrapModeV;
-    TextureWrapMode wrapModeW;
-    int maxAnisotropy;
+    TextureMinFilter minFilter; //< minification filter
+    TextureMagFilter magFilter; //< magnification filter
+    TextureWrapMode wrapModeU;  //< coordinate wrapping for U axis
+    TextureWrapMode wrapModeV;  //< coordinate wrapping for V axis
+    TextureWrapMode wrapModeW;  //< coordinate wrapping for W axis
+    int maxAnisotropy;          //< maximum anisotropy level
+    float minMipmap;            //< minimal mipmap level
+    float maxMipmap;            //< maximal mimpap level
+    float mipmapBias;           //< mipmap level bias
+
+    /**
+     * If set to "true", texels are compared against a reference value
+     * specified in a shader.
+     */
+    bool compare;
+    CompareFunc compareFunc; //< comparison function, used only when @p compare is true
+
+    /**
+     * Optional 4-element array describing border color for TextureWrapMode::Border wrapping mode.
+     */
+    float* borderColor;
 
     /*
         TODO:
@@ -97,12 +113,18 @@ struct SamplerDesc
      */
 
     SamplerDesc()
-        : minFilter(TextureMinFilter::Nearest)
+        : minFilter(TextureMinFilter::NearestMipmapNearest)
         , magFilter(TextureMagFilter::Nearest)
         , wrapModeU(TextureWrapMode::Repeat)
         , wrapModeV(TextureWrapMode::Repeat)
         , wrapModeW(TextureWrapMode::Repeat)
         , maxAnisotropy(16)
+        , minMipmap(FLT_MIN)
+        , maxMipmap(FLT_MAX)
+        , mipmapBias(0.0f)
+        , compare(false)
+        , compareFunc(CompareFunc::Always)
+        , borderColor(nullptr)
     {}
 };
 
