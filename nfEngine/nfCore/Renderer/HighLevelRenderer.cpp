@@ -81,6 +81,7 @@ void HighLevelRenderer::Release()
     LightsRenderer::Release();
 
     mDefaultSampler.reset();
+    mDefaultDepthState.reset();
 
     if (mRenderingDevice != nullptr)
     {
@@ -100,6 +101,12 @@ void HighLevelRenderer::CreateCommonResources()
     samplerDesc.magFilter = TextureMagFilter::Linear;
     samplerDesc.minFilter = TextureMinFilter::Linear; // TODO: anisotropic filter
     mDefaultSampler.reset(mRenderingDevice->CreateSampler(samplerDesc));
+
+    DepthStateDesc dsDesc;
+    dsDesc.depthCompareFunc = CompareFunc::LessEqual;
+    dsDesc.depthTestEnable = true;
+    dsDesc.depthWriteEnable = true;
+    mDefaultDepthState.reset(mRenderingDevice->CreateDepthState(dsDesc));
 }
 
 void HighLevelRenderer::ProcessView(View* view)

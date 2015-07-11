@@ -55,6 +55,8 @@ private:
 
     // default sampler for 3D rendering
     std::unique_ptr<ISampler> mDefaultSampler;
+    // default depth state for 3D rendering with depth testing enabled
+    std::unique_ptr<IDepthState> mDefaultDepthState;
 
     /// TODO: make sure there is no false sharing problem here
     std::unique_ptr<RenderContext[]> mDeferredContexts;
@@ -128,6 +130,14 @@ public:
     NFE_INLINE ISampler* GetDefaultSampler() const
     {
         return mDefaultSampler.get();
+    }
+
+    /**
+     * Get default depth state for 3D rendering with depth testing enabled.
+     */
+    NFE_INLINE IDepthState* GetDefaultDepthState() const
+    {
+        return mDefaultDepthState.get();
     }
 };
 
