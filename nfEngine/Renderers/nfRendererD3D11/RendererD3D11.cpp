@@ -273,5 +273,80 @@ bool TranslateDepthBufferTypes(DepthBufferFormat inFormat, DXGI_FORMAT& resForma
     return false;
 }
 
+D3D11_FILTER TranslateFilterType(TextureMinFilter minFilter, TextureMagFilter magFilter,
+                                 bool compare, bool anisotropic)
+{
+    if (!compare)
+    {
+        if (magFilter == TextureMagFilter::Nearest)
+        {
+            switch (minFilter)
+            {
+            case TextureMinFilter::NearestMipmapNearest:
+                return D3D11_FILTER_MIN_MAG_MIP_POINT;
+            case TextureMinFilter::LinearMipmapNearest:
+                return D3D11_FILTER_MIN_MAG_POINT_MIP_LINEAR;
+            case TextureMinFilter::NearestMipmapLinear:
+                return D3D11_FILTER_MIN_LINEAR_MAG_MIP_POINT;
+            case TextureMinFilter::LinearMipmapLinear:
+                return D3D11_FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
+            }
+        }
+        else
+        {
+            switch (minFilter)
+            {
+            case TextureMinFilter::NearestMipmapNearest:
+                return D3D11_FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT;
+            case TextureMinFilter::LinearMipmapNearest:
+                return D3D11_FILTER_MIN_POINT_MAG_MIP_LINEAR;
+            case TextureMinFilter::NearestMipmapLinear:
+                return D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
+            case TextureMinFilter::LinearMipmapLinear:
+                if (anisotropic)
+                    return D3D11_FILTER_ANISOTROPIC;
+                else
+                    return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+            }
+        }
+    }
+    else // compare == true
+    {
+        if (magFilter == TextureMagFilter::Nearest)
+        {
+            switch (minFilter)
+            {
+            case TextureMinFilter::NearestMipmapNearest:
+                return D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT;
+            case TextureMinFilter::LinearMipmapNearest:
+                return D3D11_FILTER_COMPARISON_MIN_MAG_POINT_MIP_LINEAR;
+            case TextureMinFilter::NearestMipmapLinear:
+                return D3D11_FILTER_COMPARISON_MIN_LINEAR_MAG_MIP_POINT;
+            case TextureMinFilter::LinearMipmapLinear:
+                return D3D11_FILTER_COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
+            }
+        }
+        else
+        {
+            switch (minFilter)
+            {
+            case TextureMinFilter::NearestMipmapNearest:
+                return D3D11_FILTER_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT;
+            case TextureMinFilter::LinearMipmapNearest:
+                return D3D11_FILTER_COMPARISON_MIN_POINT_MAG_MIP_LINEAR;
+            case TextureMinFilter::NearestMipmapLinear:
+                return D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
+            case TextureMinFilter::LinearMipmapLinear:
+                if (anisotropic)
+                    return D3D11_FILTER_COMPARISON_ANISOTROPIC;
+                else
+                    return D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+            }
+        }
+    }
+
+    return D3D11_FILTER_MIN_MAG_MIP_POINT;
+}
+
 } // namespace Renderer
 } // namespace NFE
