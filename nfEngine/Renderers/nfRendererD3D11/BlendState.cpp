@@ -5,64 +5,12 @@
  */
 
 #include "PCH.hpp"
+#include "PipelineState.hpp"
 #include "RendererD3D11.hpp"
+#include "Translations.hpp"
 
 namespace NFE {
 namespace Renderer {
-
-namespace {
-
-D3D11_BLEND TranslateBlendFunc(BlendFunc func)
-{
-    switch (func)
-    {
-        case BlendFunc::Zero:
-            return D3D11_BLEND_ZERO;
-        case BlendFunc::One:
-            return D3D11_BLEND_ONE;
-
-        case BlendFunc::SrcColor:
-            return D3D11_BLEND_SRC_COLOR;
-        case BlendFunc::DestColor:
-            return D3D11_BLEND_DEST_COLOR;
-        case BlendFunc::SrcAlpha:
-            return D3D11_BLEND_SRC_ALPHA;
-        case BlendFunc::DestAlpha:
-            return D3D11_BLEND_DEST_ALPHA;
-
-        case BlendFunc::OneMinusSrcColor:
-            return D3D11_BLEND_INV_SRC_COLOR;
-        case BlendFunc::OneMinusDestColor:
-            return D3D11_BLEND_INV_DEST_COLOR;
-        case BlendFunc::OneMinusSrcAlpha:
-            return D3D11_BLEND_INV_SRC_ALPHA;
-        case BlendFunc::OneMinusDestAlpha:
-            return D3D11_BLEND_INV_DEST_ALPHA;
-    };
-
-    return D3D11_BLEND_ZERO;
-}
-
-D3D11_BLEND_OP TranslateBlendOp(BlendOp op)
-{
-    switch (op)
-    {
-        case BlendOp::Add:
-            return D3D11_BLEND_OP_ADD;
-        case BlendOp::Subtract:
-            return D3D11_BLEND_OP_SUBTRACT;
-        case BlendOp::RevSubtract:
-            return D3D11_BLEND_OP_REV_SUBTRACT;
-        case BlendOp::Min:
-            return D3D11_BLEND_OP_MIN;
-        case BlendOp::Max:
-            return D3D11_BLEND_OP_MAX;
-    };
-
-    return D3D11_BLEND_OP_ADD;
-}
-
-} // namespace
 
 bool BlendState::Init(const BlendStateDesc& desc)
 {
