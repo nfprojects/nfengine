@@ -9,8 +9,17 @@
 //    times per frame. Too much messages could flood a logger output.
 
 #include "PCH.hpp"
+#include "CommandBuffer.hpp"
 #include "RendererD3D11.hpp"
-#include "Logger.hpp"
+#include "VertexLayout.hpp"
+#include "Buffer.hpp"
+#include "Texture.hpp"
+#include "Shader.hpp"
+#include "RenderTarget.hpp"
+#include "PipelineState.hpp"
+#include "Sampler.hpp"
+#include "Translations.hpp"
+#include "../../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Renderer {

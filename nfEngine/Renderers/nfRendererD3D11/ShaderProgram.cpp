@@ -5,6 +5,7 @@
  */
 
 #include "PCH.hpp"
+#include "Shader.hpp"
 #include "RendererD3D11.hpp"
 
 namespace NFE {

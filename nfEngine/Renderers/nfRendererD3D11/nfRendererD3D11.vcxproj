@@ -213,12 +213,24 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Translations.cpp" />
     <ClCompile Include="VertexLayout.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Backbuffer.hpp" />
+    <ClInclude Include="Buffer.hpp" />
+    <ClInclude Include="CommandBuffer.hpp" />
     <ClInclude Include="Common.hpp" />
+    <ClInclude Include="Device.hpp" />
+    <ClInclude Include="PipelineState.hpp" />
     <ClInclude Include="RendererD3D11.hpp" />
     <ClInclude Include="PCH.hpp" />
+    <ClInclude Include="RenderTarget.hpp" />
+    <ClInclude Include="Sampler.hpp" />
+    <ClInclude Include="Shader.hpp" />
+    <ClInclude Include="Texture.hpp" />
+    <ClInclude Include="Translations.hpp" />
+    <ClInclude Include="VertexLayout.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
