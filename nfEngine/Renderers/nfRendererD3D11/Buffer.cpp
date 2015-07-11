@@ -5,6 +5,7 @@
  */
 
 #include "PCH.hpp"
+#include "Buffer.hpp"
 #include "RendererD3D11.hpp"
 #include "../../nfCommon/Logger.hpp"
 

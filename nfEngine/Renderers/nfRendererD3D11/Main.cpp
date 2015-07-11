@@ -1,3 +1,9 @@
+/**
+ * @file
+ * @author  Witek902 (witek902@gmail.com)
+ * @brief   DLL entry point definition for Direct3D 11 renderer
+ */
+
 #include "PCH.hpp"
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
