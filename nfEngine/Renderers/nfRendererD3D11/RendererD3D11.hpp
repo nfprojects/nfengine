@@ -259,6 +259,8 @@ D3D11_COMPARISON_FUNC TranslateComparisonFunc(CompareFunc func);
 D3D11_TEXTURE_ADDRESS_MODE TranslateTextureWrapMode(TextureWrapMode mode);
 bool TranslateDepthBufferTypes(DepthBufferFormat inFormat, DXGI_FORMAT& resFormat,
                                DXGI_FORMAT& srvFormat, DXGI_FORMAT& dsvFormat);
+D3D11_FILTER TranslateFilterType(TextureMinFilter minFilter, TextureMagFilter magFilter,
+                                 bool compare, bool anisotropic);
 
 extern std::unique_ptr<Device> gDevice;
 

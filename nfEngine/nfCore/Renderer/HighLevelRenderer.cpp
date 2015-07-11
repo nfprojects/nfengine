@@ -99,7 +99,7 @@ void HighLevelRenderer::CreateCommonResources()
 {
     SamplerDesc samplerDesc;
     samplerDesc.magFilter = TextureMagFilter::Linear;
-    samplerDesc.minFilter = TextureMinFilter::Linear; // TODO: anisotropic filter
+    samplerDesc.minFilter = TextureMinFilter::LinearMipmapLinear;
     mDefaultSampler.reset(mRenderingDevice->CreateSampler(samplerDesc));
 
     DepthStateDesc dsDesc;
