@@ -65,7 +65,7 @@ Scene::Camera* View::GetCamera() const
 
 
 // link the view to a window
-Result View::SetWindow(Common::Window* window)
+bool View::SetWindow(Common::Window* window)
 {
     Release();
 
@@ -82,29 +82,16 @@ Result View::SetWindow(Common::Window* window)
     if (mWindowBackbuffer == nullptr)
     {
         LOG_ERROR("Failed to create backbuffer");
-        return Result::AllocationError;
+        return false;
     }
 
-    RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowBackbuffer.get();
-
-    RenderTargetDesc rtDesc;
-    rtDesc.depthBuffer = nullptr; // TODO
-    rtDesc.numTargets = 1;
-    rtDesc.targets = &rtTarget;
-
-    mRenderTarget.reset(gRenderer->GetDevice()->CreateRenderTarget(rtDesc));
-    if (mRenderTarget == nullptr)
-    {
-        mWindowBackbuffer.reset();
-        LOG_ERROR("Failed to create render target");
-        return Result::AllocationError;
-    }
+    if (!InitRenderTarget(width, height))
+        return false;
 
     window->SetResizeCallback(OnWindowResize, this);
     mWindow = window;
 
-    return Result::OK;
+    return true;
 }
 
 void View::OnWindowResize(void* userData)
@@ -122,23 +109,46 @@ void View::OnWindowResize(void* userData)
         view->mWindow->GetSize(width, height);
         view->mWindowBackbuffer->Resize(width, height);
 
-
-        RenderTargetElement rtTarget;
-        rtTarget.texture = view->mWindowBackbuffer.get();
-
-        RenderTargetDesc rtDesc;
-        rtDesc.depthBuffer = nullptr; // TODO
-        rtDesc.numTargets = 1;
-        rtDesc.targets = &rtTarget;
-
-        /// create new rendertarget
-        view->mRenderTarget.reset(gRenderer->GetDevice()->CreateRenderTarget(rtDesc));
-        if (view->mRenderTarget == nullptr)
-        {
-            view->mWindowBackbuffer.reset();
-            LOG_ERROR("Failed to create render target");
-        }
+        view->InitRenderTarget(width, height);
     }
+}
+
+bool View::InitRenderTarget(uint32 width, uint32 height)
+{
+    TextureDesc depthBufferDesc;
+    depthBufferDesc.type = TextureType::Texture2D;
+    depthBufferDesc.access = BufferAccess::GPU_ReadWrite;
+    depthBufferDesc.width = width;
+    depthBufferDesc.height = height;
+    depthBufferDesc.binding = NFE_RENDERER_TEXTURE_BIND_DEPTH;
+    depthBufferDesc.mipmaps = 1;
+    depthBufferDesc.depthBufferFormat = DepthBufferFormat::Depth32;
+    mDepthBuffer.reset(gRenderer->GetDevice()->CreateTexture(depthBufferDesc));
+    if (mDepthBuffer == nullptr)
+    {
+        mWindowBackbuffer.reset();
+        LOG_ERROR("Failed to create depth buffer");
+        return false;
+    }
+
+    RenderTargetElement rtTarget;
+    rtTarget.texture = mWindowBackbuffer.get();
+
+    RenderTargetDesc rtDesc;
+    rtDesc.depthBuffer = mDepthBuffer.get();
+    rtDesc.numTargets = 1;
+    rtDesc.targets = &rtTarget;
+
+    mRenderTarget.reset(gRenderer->GetDevice()->CreateRenderTarget(rtDesc));
+    if (mRenderTarget == nullptr)
+    {
+        mDepthBuffer.reset();
+        mWindowBackbuffer.reset();
+        LOG_ERROR("Failed to create render target");
+        return false;
+    }
+
+    return true;
 }
 
 void View::Present()
