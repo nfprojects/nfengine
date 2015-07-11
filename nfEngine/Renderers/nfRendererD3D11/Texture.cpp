@@ -5,7 +5,9 @@
  */
 
 #include "PCH.hpp"
+#include "Texture.hpp"
 #include "RendererD3D11.hpp"
+#include "Translations.hpp"
 #include "../../nfCommon/Logger.hpp"
 
 namespace NFE {

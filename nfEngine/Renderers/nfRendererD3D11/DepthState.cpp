@@ -5,7 +5,9 @@
  */
 
 #include "PCH.hpp"
+#include "PipelineState.hpp"
 #include "RendererD3D11.hpp"
+#include "Translations.hpp"
 
 namespace NFE {
 namespace Renderer {

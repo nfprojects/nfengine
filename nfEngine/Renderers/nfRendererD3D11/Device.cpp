@@ -5,7 +5,17 @@
  */
 
 #include "PCH.hpp"
+#include "Device.hpp"
+#include "CommandBuffer.hpp"
 #include "RendererD3D11.hpp"
+#include "VertexLayout.hpp"
+#include "Buffer.hpp"
+#include "Texture.hpp"
+#include "Shader.hpp"
+#include "Backbuffer.hpp"
+#include "RenderTarget.hpp"
+#include "PipelineState.hpp"
+#include "Sampler.hpp"
 
 namespace NFE {
 namespace Renderer {
