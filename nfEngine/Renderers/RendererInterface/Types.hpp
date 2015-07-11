@@ -210,8 +210,10 @@ enum class TextureWrapMode
  */
 enum class TextureMinFilter
 {
-    Nearest,
-    Linear
+    NearestMipmapNearest,
+    LinearMipmapNearest,
+    NearestMipmapLinear,
+    LinearMipmapLinear
 };
 
 /**
