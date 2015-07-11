@@ -6,6 +6,9 @@
 
 #include "PCH.hpp"
 #include "RendererD3D11.hpp"
+#include "VertexLayout.hpp"
+#include "Translations.hpp"
+#include "Shader.hpp"
 
 namespace NFE {
 namespace Renderer {
