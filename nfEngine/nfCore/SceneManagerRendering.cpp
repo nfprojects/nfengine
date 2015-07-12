@@ -131,9 +131,8 @@ void SceneManager::RenderGBuffer(RenderContext* pCtx, Camera* pCamera,
     visibleMeshes.clear();
     commandBuffer.Sort();
 
-
     GBufferRenderer::Get()->Enter(pCtx);
-    GBufferRenderer::Get()->SetTarget(pCtx, pRT);
+    // GBufferRenderer::Get()->SetTarget(pCtx, pRT);
     GBufferRenderer::Get()->SetCamera(pCtx, pCameraDesc);
     GBufferRenderer::Get()->Draw(pCtx, commandBuffer);
     GBufferRenderer::Get()->Leave(pCtx);

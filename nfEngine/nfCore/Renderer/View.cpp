@@ -154,6 +154,15 @@ bool View::InitRenderTarget(uint32 width, uint32 height)
         return false;
     }
 
+    mGBuffer.reset(new GeometryBuffer);
+    if (!mGBuffer->Resize(width, height, mDepthBuffer.get()))
+    {
+        mRenderTarget.reset();
+        mDepthBuffer.reset();
+        LOG_ERROR("Failed to create render target");
+        return false;
+    }
+
     return true;
 }
 

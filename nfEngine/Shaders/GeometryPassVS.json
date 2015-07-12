@@ -1,0 +1,8 @@
+{
+    "type": "vertex",
+
+    "macros":
+    [
+        { "name": "USE_MOTION_BLUR", "min": 0, "max": 0, "default": 0 }
+    ]
+}
