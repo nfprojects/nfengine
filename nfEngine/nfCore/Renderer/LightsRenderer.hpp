@@ -9,6 +9,7 @@
 #include "RendererModule.hpp"
 #include "HighLevelRenderer.hpp"
 #include "RendererResources.hpp"
+#include "Multishader.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -29,21 +30,29 @@ struct NFE_ALIGN16 LightGlobalCBuffer
 
 struct AmbientLightCBuffer
 {
-    Float4 outResolution;
     Float4 ambientLight;
     Float4 backgroundColor;
-
-    Float4 focalLen;
 };
 
 class LightsRenderer : public RendererModule<LightsRenderer>
 {
-    void DrawAmbientLight(RenderContext* context, const Vector& ambientLightColor,
-                          const Vector& backgroundColor);
+    Multishader mFullscreenQuadVS;
+    std::unique_ptr<IBuffer> mFullscreenQuadVB;
+    std::unique_ptr<IVertexLayout> mVertexLayout;
+
+    Multishader mAmbientLightPS;
+    std::unique_ptr<IBuffer> mAmbientLightCBuffer;
 
 public:
-    void SetUp(RenderContext* context, IRenderTarget* target, const CameraRenderDesc* camera,
-               const Vector& ambientLightColor, const Vector& backgroundColor);
+    LightsRenderer();
+
+    void OnEnter(RenderContext* context);
+    void OnLeave(RenderContext* context);
+
+    void SetUp(RenderContext* context, IRenderTarget* target, GeometryBuffer *gbuffer,
+               const CameraRenderDesc* camera);
+    void DrawAmbientLight(RenderContext* context, const Vector& ambientLightColor,
+                          const Vector& backgroundColor);
     void TileBasedPass(RenderContext* context, uint32 lightsCount, const TileOmniLightDesc* lights);
     void DrawOmniLight(RenderContext* context, const Vector& pos, float radius, const Vector& color,
                        ShadowMap* shadowMap);
