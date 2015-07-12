@@ -74,9 +74,6 @@ void MeshComponent::OnRenderDebug(RenderContext* pCtx)
     {
         Math::Box box = mMesh->GetGlobalAABB(mOwner->mMatrix);
         DebugRenderer::Get()->DrawBox(pCtx, box, 0xFF0000FF);
-
-        // TODO: remove (it's temporary)
-        DebugRenderer::Get()->DrawMesh(pCtx, mMesh, mOwner->mMatrix);
     }
 }
 

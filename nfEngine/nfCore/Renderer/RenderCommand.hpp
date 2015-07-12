@@ -14,11 +14,11 @@ namespace NFE {
 namespace Renderer {
 
 NFE_ALIGN16
-struct InstanceData
+struct InstanceData : public Util::Aligned
 {
     Math::Vector worldMatrix[3];
-    Math::Vector velocity; //additional data
-    Math::Vector angularVelocity; //additional data
+    Math::Vector velocity;
+    Math::Vector angularVelocity;
 };
 
 NFE_ALIGN16

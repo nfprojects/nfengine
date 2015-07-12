@@ -6,7 +6,10 @@
 
 #include "../PCH.hpp"
 #include "RendererResources.hpp"
+#include "HighLevelRenderer.hpp"
+#include "../Globals.hpp"
 #include "../Renderers/RendererInterface/Device.hpp"
+#include "Logger.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -24,6 +27,67 @@ int ShadowMap::Resize(uint32 size, Type type, uint32 splits)
 uint32 ShadowMap::GetSize() const
 {
     return 0;
+}
+
+
+void GeometryBuffer::Release()
+{
+    mRenderTarget.reset();
+    for (int i = 0; i < gLayers; ++i)
+        mTextures[i].reset();
+}
+
+bool GeometryBuffer::Resize(int width, int height, ITexture* depthBuffer)
+{
+    RenderTargetElement rtTargets[gLayers];
+    TextureDesc texDesc;
+    texDesc.type = TextureType::Texture2D;
+    texDesc.access = BufferAccess::GPU_ReadWrite;
+    texDesc.width = width;
+    texDesc.height = height;
+    texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER | NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
+    texDesc.mipmaps = 1;
+
+    /// TODO: this could be extended in the future
+    ElementFormat elementFormats[] =
+    {
+        ElementFormat::Float_16,
+        ElementFormat::Float_16,
+        ElementFormat::Float_16,
+        ElementFormat::Float_16,
+    };
+    int elementSizes[] = { 4, 4, 4, 2 };
+
+    /// create G-Buffer textures
+    for (int i = 0; i < gLayers; ++i)
+    {
+        texDesc.format = elementFormats[i];
+        texDesc.texelSize = elementSizes[i];
+        mTextures[i].reset(gRenderer->GetDevice()->CreateTexture(texDesc));
+        if (!mTextures[i])
+        {
+            LOG_ERROR("Failed to create G-Buffer's texture (i = %i)", i);
+            Release();
+            return false;
+        }
+
+        rtTargets[i].texture = mTextures[i].get();
+    }
+
+    /// create G-Buffer render target
+    RenderTargetDesc rtDesc;
+    rtDesc.numTargets = gLayers;
+    rtDesc.targets = rtTargets;
+    rtDesc.depthBuffer = depthBuffer;
+    mRenderTarget.reset(gRenderer->GetDevice()->CreateRenderTarget(rtDesc));
+    if (!mRenderTarget)
+    {
+        LOG_ERROR("Failed to create G-Buffer's render target");
+        Release();
+        return false;
+    }
+
+    return true;
 }
 
 } // namespace Renderer

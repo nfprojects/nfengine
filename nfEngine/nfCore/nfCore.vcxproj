@@ -349,6 +349,7 @@ popd</Command>
     <ClInclude Include="Renderer\DebugRenderer.hpp" />
     <ClInclude Include="Renderer\DebugRendererContext.hpp" />
     <ClInclude Include="Renderer\GeometryBufferRenderer.hpp" />
+    <ClInclude Include="Renderer\GeometryBufferRendererContext.hpp" />
     <ClInclude Include="Renderer\GuiRenderer.hpp" />
     <ClInclude Include="Renderer\HighLevelRenderer.hpp" />
     <ClInclude Include="Renderer\LightsRenderer.hpp" />

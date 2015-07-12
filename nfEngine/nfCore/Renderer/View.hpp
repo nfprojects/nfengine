@@ -8,6 +8,7 @@
 
 #include "../Core.hpp"
 #include "HighLevelRenderer.hpp"
+#include "RendererResources.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -21,7 +22,11 @@ class CORE_API View
     std::unique_ptr<IBackbuffer> mWindowBackbuffer;
     Common::Window* mWindow;
 
+    /// TODO: depth buffers, g-buffers and rendertargets should be managed
+    /// by the HighLevelRenderer. For example, multiple views can have the same dimensions,
+    /// so keeping separate copies will be a waste of RAM.
     std::unique_ptr<ITexture> mDepthBuffer;
+    std::unique_ptr<GeometryBuffer> mGBuffer;
     std::unique_ptr<IRenderTarget> mRenderTarget;
     Scene::Camera* mCamera;
 
@@ -46,6 +51,11 @@ public:
     NFE_INLINE IRenderTarget* GetRenderTarget() const
     {
         return mRenderTarget.get();
+    }
+
+    NFE_INLINE GeometryBuffer* GetGeometryBuffer() const
+    {
+        return mGBuffer.get();
     }
 
     /**

@@ -7,6 +7,7 @@
 #pragma once
 
 #include "../Core.hpp"
+#include "../Prerequisites.hpp"
 #include "../Renderers/RendererInterface/Device.hpp"
 
 namespace NFE {
@@ -173,6 +174,20 @@ public:
     void Release();
     int Resize(uint32 size, Type type, uint32 splits = 1);
     uint32 GetSize() const;
+};
+
+class GeometryBuffer
+{
+    friend class GBufferRenderer;
+
+    static const int gLayers = 4;
+
+    std::unique_ptr<ITexture> mTextures[gLayers];
+    std::unique_ptr<IRenderTarget> mRenderTarget;
+
+public:
+    void Release();
+    bool Resize(int width, int height, ITexture* depthBuffer);
 };
 
 struct NFE_ALIGN16 DirLightProperties
