@@ -17,8 +17,8 @@ NFE_ALIGN16
 struct InstanceData
 {
     Math::Vector worldMatrix[3];
-    Math::Vector velocity; //additional data
-    Math::Vector angularVelocity; //additional data
+    Math::Vector velocity;
+    Math::Vector angularVelocity;
 };
 
 NFE_ALIGN16
