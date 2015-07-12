@@ -21,24 +21,18 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
 {
     D3D11_INPUT_ELEMENT_DESC elementDescs[16];
 
-    int offset = 0;
     for (int i = 0; i < desc.numElements; ++i)
     {
-        /*
-         TODO: almost everything here is temporary:
-         * custom offsets not suported
-         * per instance vertex data not supported
-        */
         D3D11_INPUT_ELEMENT_DESC& el = elementDescs[i];
         el.SemanticName = (i == 0) ? "POSITION" : "TEXCOORD";
         el.SemanticIndex = (i == 0) ? 0 : (i - 1);
         el.Format = TranslateElementFormat(desc.elements[i].format, desc.elements[i].size);
-        el.InputSlot = 0;
-        el.AlignedByteOffset = offset;
-        el.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-        el.InstanceDataStepRate = 0;
-
-        offset += GetElementFormatSize(desc.elements[i].format) * desc.elements[i].size;
+        el.InputSlot = desc.elements[i].vertexBufferId;
+        el.AlignedByteOffset = desc.elements[i].offset;
+        el.InputSlotClass = desc.elements[i].perInstance ?
+                            D3D11_INPUT_PER_INSTANCE_DATA : D3D11_INPUT_PER_VERTEX_DATA;
+        el.InstanceDataStepRate = desc.elements[i].perInstance ?
+                                  desc.elements[i].instanceDataStep : 0;
     }
 
     Shader* vertexShader = dynamic_cast<Shader*>(desc.vertexShader);

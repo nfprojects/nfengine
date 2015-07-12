@@ -177,9 +177,9 @@ int main(int argc, char* argv[])
 
     VertexLayoutElement vertexLayoutElements[] =
     {
-        { ElementFormat::Float_32, 3 }, // position
-        { ElementFormat::Float_32, 2 }, // tex-coords
-        { ElementFormat::Float_32, 4 }, // color
+        { ElementFormat::Float_32, 3, 0,  0, false, 0 }, // position
+        { ElementFormat::Float_32, 2, 12, 0, false, 0 }, // tex-coords
+        { ElementFormat::Float_32, 4, 20, 0, false, 0 }, // color
     };
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;
