@@ -42,7 +42,7 @@ bool RasterizerState::Init(const RasterizerStateDesc& desc)
             return false;
     };
 
-    rd.FrontCounterClockwise = FALSE;
+    rd.FrontCounterClockwise = TRUE;
     rd.DepthBias = FALSE;
     rd.DepthBiasClamp = 0.0f;
     rd.SlopeScaledDepthBias = 0.0f;

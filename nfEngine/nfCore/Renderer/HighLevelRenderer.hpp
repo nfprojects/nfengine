@@ -57,6 +57,10 @@ private:
     std::unique_ptr<ISampler> mDefaultSampler;
     // default depth state for 3D rendering with depth testing enabled
     std::unique_ptr<IDepthState> mDefaultDepthState;
+    // default (empty) textures for G-Buffer Renderer
+    std::unique_ptr<ITexture> mDefaultDiffuseTexture;
+    std::unique_ptr<ITexture> mDefaultNormalTexture;
+    std::unique_ptr<ITexture> mDefaultSpecularTexture;
 
     /// TODO: make sure there is no false sharing problem here
     std::unique_ptr<RenderContext[]> mDeferredContexts;
@@ -138,6 +142,22 @@ public:
     NFE_INLINE IDepthState* GetDefaultDepthState() const
     {
         return mDefaultDepthState.get();
+    }
+
+
+    NFE_INLINE ITexture* GetDefaultDiffuseTexture() const
+    {
+        return mDefaultDiffuseTexture.get();
+    }
+
+    NFE_INLINE ITexture* GetDefaultNormalTexture() const
+    {
+        return mDefaultNormalTexture.get();
+    }
+
+    NFE_INLINE ITexture* GetDefaultSpecularTexture() const
+    {
+        return mDefaultSpecularTexture.get();
     }
 };
 

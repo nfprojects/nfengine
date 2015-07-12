@@ -7,6 +7,7 @@
 #pragma once
 
 #include "../PCH.hpp"
+#include "../Core.hpp"
 #include "HighLevelRenderer.hpp"
 #include "View.hpp"
 #include "../Globals.hpp"
@@ -82,6 +83,9 @@ void HighLevelRenderer::Release()
 
     mDefaultSampler.reset();
     mDefaultDepthState.reset();
+    mDefaultDiffuseTexture.reset();
+    mDefaultNormalTexture.reset();
+    mDefaultSpecularTexture.reset();
 
     if (mRenderingDevice != nullptr)
     {
@@ -109,6 +113,38 @@ void HighLevelRenderer::CreateCommonResources()
     dsDesc.depthWriteEnable = true;
     dsDesc.debugName = "HighLevelRenderer::mDefaultDepthState";
     mDefaultDepthState.reset(mRenderingDevice->CreateDepthState(dsDesc));
+
+
+    TextureDataDesc texDataDesc;
+    texDataDesc.lineSize = texDataDesc.sliceSize = 4 * sizeof(uchar);
+    TextureDesc texDesc;
+    texDesc.type = TextureType::Texture2D;
+    texDesc.access = BufferAccess::GPU_ReadOnly;
+    texDesc.width = texDesc.height = 1;
+    texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER;
+    texDesc.mipmaps = 1;
+    texDesc.dataDesc = &texDataDesc;
+    texDesc.format = ElementFormat::Uint_8_norm;
+    texDesc.texelSize = 4;
+
+
+    /// default textures (used when no texture is bound to a material)
+
+    uchar diffuseColor[] = { 255, 255, 255, 255 };
+    texDataDesc.data = diffuseColor;
+    texDesc.debugName = "DefaultDiffuseTexture";
+    mDefaultDiffuseTexture.reset(mRenderingDevice->CreateTexture(texDesc));
+
+    uchar normalColor[] = { 127, 127, 255, 255 };
+    texDataDesc.data = normalColor;
+    texDesc.debugName = "DefaultNormalTexture";
+    mDefaultNormalTexture.reset(mRenderingDevice->CreateTexture(texDesc));
+
+    // TODO: this should be configurable
+    uchar specularColor[] = { 25, 25, 25, 255 };
+    texDataDesc.data = specularColor;
+    texDesc.debugName = "DefaultSpecularTexture";
+    mDefaultSpecularTexture.reset(mRenderingDevice->CreateTexture(texDesc));
 }
 
 void HighLevelRenderer::ProcessView(View* view)
