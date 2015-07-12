@@ -83,9 +83,9 @@ DebugRenderer::DebugRenderer()
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
     {
-        { ElementFormat::Float_32,    3 }, // position
-        { ElementFormat::Uint_8_norm, 4 }, // color
-        { ElementFormat::Float_32,    2 }, // tex-coords
+        { ElementFormat::Float_32,    3, 0,  0, false, 0 }, // position
+        { ElementFormat::Uint_8_norm, 4, 12, 0, false, 0 }, // color
+        { ElementFormat::Float_32,    2, 16, 0, false, 0 }, // tex-coords
     };
     int isMesh = 0; // IS_MESH macro
     VertexLayoutDesc vertexLayoutDesc;
@@ -98,10 +98,10 @@ DebugRenderer::DebugRenderer()
     /// create vertex layout for meshes
     VertexLayoutElement meshVertexLayoutElements[] =
     {
-        { ElementFormat::Float_32,   3 }, // position
-        { ElementFormat::Float_32,   2 }, // tex-coords
-        { ElementFormat::Int_8_norm, 4 }, // normal
-        { ElementFormat::Int_8_norm, 4 }, // tangent
+        { ElementFormat::Float_32,   3, 0,  0, false, 0 }, // position
+        { ElementFormat::Float_32,   2, 12, 0, false, 0 }, // tex-coords
+        { ElementFormat::Int_8_norm, 4, 20, 0, false, 0 }, // normal
+        { ElementFormat::Int_8_norm, 4, 24, 0, false, 0 }, // tangent
     };
     isMesh = 1;
     VertexLayoutDesc meshVertexLayoutDesc;

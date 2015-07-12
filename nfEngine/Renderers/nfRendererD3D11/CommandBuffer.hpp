@@ -53,10 +53,10 @@ public:
     void CopyTexture(ITexture* src, ITexture* dest);
     bool ReadTexture(ITexture* tex, void* data);
     void Clear(int flags, const float* color, float depthValue);
-    void Draw(PrimitiveType type, int vertexNum, int instancesNum = 1, int vertexOffset = 0,
-              int instanceOffset = 0);
-    void DrawIndexed(PrimitiveType type, int indexNum, int instancesNum = 1, int indexOffset = 0,
-                     int vertexOffset = 0, int instanceOffset = 0);
+    void Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
+              int instanceOffset);
+    void DrawIndexed(PrimitiveType type, int indexNum, int instancesNum, int indexOffset,
+                     int vertexOffset, int instanceOffset);
     void Execute(ICommandBuffer* commandBuffer, bool saveState);
 
     /// Debugging

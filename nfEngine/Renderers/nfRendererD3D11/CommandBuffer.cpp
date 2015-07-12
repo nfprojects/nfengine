@@ -424,9 +424,6 @@ void CommandBuffer::Clear(int flags, const float* color, float depthValue)
 void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
                          int instanceOffset)
 {
-    UNUSED(instancesNum);
-    UNUSED(instanceOffset);
-
     if (type != mCurrentPrimitiveType)
     {
         mCurrentPrimitiveType = type;
@@ -434,17 +431,15 @@ void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, in
         mContext->IASetPrimitiveTopology(topology);
     };
 
-    mContext->Draw(vertexNum, vertexOffset);
-
-    // TODO: instancing support
+    if (instancesNum >= 0)
+        mContext->DrawInstanced(vertexNum, instancesNum, vertexOffset, instanceOffset);
+    else
+        mContext->Draw(vertexNum, vertexOffset);
 }
 
 void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesNum,
                                 int indexOffset, int vertexOffset, int instanceOffset)
 {
-    UNUSED(instancesNum);
-    UNUSED(instanceOffset);
-
     if (type != mCurrentPrimitiveType)
     {
         mCurrentPrimitiveType = type;
@@ -452,9 +447,11 @@ void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesN
         mContext->IASetPrimitiveTopology(topology);
     };
 
-    mContext->DrawIndexed(indexNum, indexOffset, vertexOffset);
-
-    // TODO: instancing support
+    if (instancesNum >= 0)
+        mContext->DrawIndexedInstanced(indexNum, instancesNum, indexOffset, vertexOffset,
+                                       instanceOffset);
+    else
+        mContext->DrawIndexed(indexNum, indexOffset, vertexOffset);
 }
 
 void CommandBuffer::Execute(ICommandBuffer* commandBuffer, bool saveState)

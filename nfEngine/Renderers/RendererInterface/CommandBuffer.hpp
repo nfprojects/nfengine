@@ -102,25 +102,27 @@ public:
      *
      * @param type           Primitives type.
      * @param vertexNum      Vertices number per instance.
-     * @param instancesNum   Number of instances to draw.
+     * @param instancesNum   Number of instances to draw. Set to a negative value to disable
+     *                       instancing.
      * @param vertexOffset   Vertex buffer offset (in elements).
      * @param instanceOffset Per-instance buffer offset (in elements).
      */
     virtual void Draw(PrimitiveType type, int vertexNum,
-                      int instancesNum = 1, int vertexOffset = 0, int instanceOffset = 0) = 0;
+                      int instancesNum = -1, int vertexOffset = 0, int instanceOffset = 0) = 0;
 
     /**
      * Draw geometry (with indexed verticies).
      *
      * @param type           Primitives type.
      * @param indexNum       Indicies number per instance.
-     * @param instancesNum   Number of instances to draw.
+     * @param instancesNum   Number of instances to draw. Set to a negative value to disable
+     *                       instancing.
      * @param indexOffset    Location of the first index.
      * @param vertexOffset   Vertex buffer offset (in elements).
      * @param instanceOffset Per-instance buffer offset (in elements).
      */
     virtual void DrawIndexed(PrimitiveType type, int indexNum,
-                             int instancesNum = 1, int indexOffset = 0,
+                             int instancesNum = -1, int indexOffset = 0,
                              int vertexOffset = 0, int instanceOffset = 0) = 0;
 
     /**
