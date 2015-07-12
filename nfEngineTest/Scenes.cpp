@@ -30,8 +30,8 @@ void CreateSceneMinecraft()
 {
     //set ambient & background color
     EnviromentDesc envDesc;
-    envDesc.ambientLight = Vector(0.02f, 0.03f, 0.04f, 0.0f);
-    envDesc.backgroundColor = Vector(0.02f, 0.03f, 0.04f, 0.01f);
+    envDesc.ambientLight = Vector(0.6f, 0.7f, 0.8f, 0.0f);
+    envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
     gScene->SetEnvironment(&envDesc);
 
     // SUNLIGHT
@@ -63,8 +63,8 @@ void CreateSceneSponza()
 {
     //set ambient & background color
     EnviromentDesc envDesc;
-    envDesc.ambientLight = Vector(0.02f, 0.03f, 0.04f, 0.0f);
-    envDesc.backgroundColor = Vector(0.02f, 0.03f, 0.04f, 0.01f);
+    envDesc.ambientLight = Vector(0.6f, 0.7f, 0.8f, 0.0f);
+    envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
     gScene->SetEnvironment(&envDesc);
 
     Entity* ent = gScene->CreateEntity();
@@ -98,8 +98,8 @@ void CreateScenePerformance()
 {
     //set ambient & background color
     EnviromentDesc envDesc;
-    envDesc.ambientLight = Vector(0.02f, 0.03f, 0.04f, 0.0f);
-    envDesc.backgroundColor = Vector(0.02f, 0.03f, 0.04f, 0.01f);
+    envDesc.ambientLight = Vector(0.6f, 0.7f, 0.8f, 0.0f);
+    envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
     gScene->SetEnvironment(&envDesc);
 
     for (int x = -4; x < 5; x++)
@@ -178,8 +178,8 @@ void CreateSceneSegments()
 {
     //set ambient & background color
     EnviromentDesc envDesc;
-    envDesc.ambientLight = Vector(0.02f, 0.03f, 0.04f, 0.0f);
-    envDesc.backgroundColor = Vector(0.02f, 0.03f, 0.04f, 0.01f);
+    envDesc.ambientLight = Vector(0.6f, 0.7f, 0.8f, 0.0f);
+    envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
     gScene->SetEnvironment(&envDesc);
 
     NFE::Common::BufferOutputStream segmentDesc;

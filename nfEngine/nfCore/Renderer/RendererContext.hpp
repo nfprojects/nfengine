@@ -9,6 +9,7 @@
 #include "RenderCommand.hpp"
 #include "HighLevelRenderer.hpp"
 #include "DebugRendererContext.hpp"
+#include "GeometryBufferRendererContext.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -28,7 +29,7 @@ public:
         (without including renderer's header in this file.
      */
     DebugRendererContext debugContext;
-
+    GBufferRendererContext geometryBufferContext;
 
     void Begin();
     void End();
