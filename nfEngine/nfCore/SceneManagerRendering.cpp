@@ -17,6 +17,7 @@
 #include "Renderer/GeometryBufferRenderer.hpp"
 #include "Renderer/DebugRenderer.hpp"
 #include "Renderer/RendererContext.hpp"
+#include "Renderer/View.hpp"
 #include "../nfCommon/Timer.hpp"
 #include "../nfCommon/Logger.hpp"
 
@@ -94,8 +95,7 @@ void SceneManager::RenderShadow(RenderContext* pCtx, LightComponent* pLight, uin
 }
 
 // Perform Geometry Pass for pCamera in pContext
-void SceneManager::RenderGBuffer(RenderContext* pCtx, Camera* pCamera,
-                                 CameraRenderDesc* pCameraDesc, IRenderTarget* pRT)
+void SceneManager::RenderGBuffer(RenderContext* pCtx, Camera* pCamera)
 {
     //draw mesh entities
     std::vector<MeshComponent*> visibleMeshes; //TODO: dynamic allocation per frame should be avoided
@@ -131,12 +131,7 @@ void SceneManager::RenderGBuffer(RenderContext* pCtx, Camera* pCamera,
     visibleMeshes.clear();
     commandBuffer.Sort();
 
-
-    GBufferRenderer::Get()->Enter(pCtx);
-    GBufferRenderer::Get()->SetTarget(pCtx, pRT);
-    GBufferRenderer::Get()->SetCamera(pCtx, pCameraDesc);
     GBufferRenderer::Get()->Draw(pCtx, commandBuffer);
-    GBufferRenderer::Get()->Leave(pCtx);
 }
 
 
@@ -152,34 +147,35 @@ void SceneManager::DrawBVHNode(RenderContext* pCtx, uint32 node, uint32 depth)
     DebugRenderer::Get()->DrawBox(pCtx, pNode->AABB, color);
 }
 
-void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
+void SceneManager::Render(Renderer::View* view)
 {
     using namespace std::placeholders;
 
+    Camera* camera = view->GetCamera();
     RenderContext* immCtx = gRenderer->GetImmediateContext();
     immCtx->Begin();
 
-    if (pCamera == 0)
+    if (camera == 0)
     {
         if (mDefaultCamera)
-            pCamera = mDefaultCamera;
+            camera = mDefaultCamera;
         else
             return; //no default camera
     }
 
-    pCamera->OnUpdate(0.0f);
+    camera->OnUpdate(0.0f);
 
     // define this, common for all renderers object, here
     CameraRenderDesc cameraRenderDesc =
     {
-        pCamera->mOwner->GetMatrix(),
-        pCamera->mViewMatrix,
-        pCamera->mProjMatrix,
-        pCamera->mSecondaryProjViewMatrix,
-        pCamera->mOwner->mVelocity,
-        pCamera->mOwner->mAngularVelocity,
-        pCamera->mScreenScale,
-        pCamera->perspective.FoV
+        camera->mOwner->GetMatrix(),
+        camera->mViewMatrix,
+        camera->mProjMatrix,
+        camera->mSecondaryProjViewMatrix,
+        camera->mOwner->mVelocity,
+        camera->mOwner->mAngularVelocity,
+        camera->mScreenScale,
+        camera->perspective.FoV
     };
 
 
@@ -188,11 +184,11 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
     //update lights
     for (auto pLight : mLights)
     {
-        pLight->Update(pCamera);
-        pLight->CheckShadowVisibility(pCamera->mOwner->GetPosition());
+        pLight->Update(camera);
+        pLight->CheckShadowVisibility(camera->mOwner->GetPosition());
 
         //find visible lights
-        if (pLight->mDrawShadow && pLight->IntersectFrustum(pCamera->mFrustum))
+        if (pLight->mDrawShadow && pLight->IntersectFrustum(camera->mFrustum))
             pLight->mUpdateShadowmap = true;
     }
 
@@ -258,14 +254,19 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
 
 
     // TODO: this should be recorded to a deffered context as well as lights pass
-    RenderGBuffer(immCtx, pCamera, &cameraRenderDesc, pRT);
-
+    GBufferRenderer::Get()->Enter(immCtx);
+    GBufferRenderer::Get()->SetUp(immCtx, view->GetGeometryBuffer());
+    const float backgroundColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    immCtx->commandBuffer->Clear(NFE_CLEAR_FLAG_TARGET | NFE_CLEAR_FLAG_DEPTH, backgroundColor, 1.0f);
+    GBufferRenderer::Get()->SetCamera(immCtx, &cameraRenderDesc);
+    RenderGBuffer(immCtx, camera);
+    GBufferRenderer::Get()->Leave(immCtx);
 
     // LIGHTS RENDERING ===========================================================================
     {
         LightsRenderer::Get()->Enter(immCtx);
-        LightsRenderer::Get()->SetUp(immCtx, pRT, &cameraRenderDesc, mEnvDesc.ambientLight,
-                                mEnvDesc.backgroundColor);
+        LightsRenderer::Get()->SetUp(immCtx, view->GetRenderTarget(), view->GetGeometryBuffer(),
+                                     &cameraRenderDesc);
 
         if (gRenderer->settings.tileBasedDeferredShading)
         {
@@ -319,8 +320,8 @@ void SceneManager::Render(Camera* pCamera, IRenderTarget* pRT)
     if (gRenderer->settings.debugEnable)
     {
         DebugRenderer::Get()->Enter(immCtx);
-        DebugRenderer::Get()->SetCamera(immCtx, pCamera->mViewMatrix, pCamera->mProjMatrix);
-        DebugRenderer::Get()->SetTarget(immCtx, pRT);
+        DebugRenderer::Get()->SetCamera(immCtx, camera->mViewMatrix, camera->mProjMatrix);
+        DebugRenderer::Get()->SetTarget(immCtx, view->GetRenderTarget());
 
         //draw meshes bvh
         // DrawBVHNode(pCtx, mMeshesBVH->GetRootId(), 0);

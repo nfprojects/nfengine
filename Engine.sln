@@ -91,8 +91,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shaders", "Shaders", "{B19B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "D3D11", "D3D11", "{A9D64D99-8D32-4B24-A601-2F8FFF1FC079}"
 	ProjectSection(SolutionItems) = preProject
+		nfEngine\Shaders\D3D11\AmbientLightPS.hlsl = nfEngine\Shaders\D3D11\AmbientLightPS.hlsl
 		nfEngine\Shaders\D3D11\DebugPS.hlsl = nfEngine\Shaders\D3D11\DebugPS.hlsl
 		nfEngine\Shaders\D3D11\DebugVS.hlsl = nfEngine\Shaders\D3D11\DebugVS.hlsl
+		nfEngine\Shaders\D3D11\FullScreenQuadVS.hlsl = nfEngine\Shaders\D3D11\FullScreenQuadVS.hlsl
+		nfEngine\Shaders\D3D11\GeometryPassPS.hlsl = nfEngine\Shaders\D3D11\GeometryPassPS.hlsl
+		nfEngine\Shaders\D3D11\GeometryPassVS.hlsl = nfEngine\Shaders\D3D11\GeometryPassVS.hlsl
 	EndProjectSection
 EndProject
 Global
