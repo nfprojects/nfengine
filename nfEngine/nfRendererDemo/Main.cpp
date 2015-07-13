@@ -181,7 +181,10 @@ int main(int argc, char* argv[])
         { ElementFormat::Float_32, 2 }, // tex-coords
         { ElementFormat::Float_32, 4 }, // color
     };
-    VertexLayoutDesc vertexLayoutDesc = { vertexLayoutElements, 3, programDesc.vertexShader };
+    VertexLayoutDesc vertexLayoutDesc;
+    vertexLayoutDesc.elements = vertexLayoutElements;
+    vertexLayoutDesc.numElements = 3;
+    vertexLayoutDesc.vertexShader = programDesc.vertexShader;
     IVertexLayout* vertexLayout = gRendererDevice->CreateVertexLayout(vertexLayoutDesc);
 
 

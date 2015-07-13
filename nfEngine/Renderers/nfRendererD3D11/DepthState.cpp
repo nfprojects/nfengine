@@ -35,7 +35,20 @@ bool DepthState::Init(const DepthStateDesc& desc)
     dsd.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
 
     HRESULT hr = D3D_CALL_CHECK(gDevice->Get()->CreateDepthStencilState(&dsd, &mDS));
-    return SUCCEEDED(hr);
+    if (FAILED(hr))
+        return false;
+
+#ifdef D3D_DEBUGGING
+    /// set debug name
+    std::string bufferName = "NFE::Renderer::DepthState \"";
+    if (desc.debugName)
+        bufferName += desc.debugName;
+    bufferName += '"';
+    mDS->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(bufferName.length()),
+                        bufferName.c_str());
+#endif // D3D_DEBUGGING
+
+    return true;
 }
 
 } // namespace Renderer

@@ -21,6 +21,7 @@ struct BackbufferDesc
     int width;
     int height;
     bool vSync;
+    const char* debugName; //< optional debug name
     // TODO: options such as: UAV usage, mulitsampling, texture format, etc.
 
     BackbufferDesc()
@@ -28,6 +29,7 @@ struct BackbufferDesc
         , width(0)
         , height(0)
         , vSync(false)
+        , debugName(nullptr)
     {
     }
 };
