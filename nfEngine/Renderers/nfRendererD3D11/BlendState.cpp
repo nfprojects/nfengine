@@ -34,7 +34,20 @@ bool BlendState::Init(const BlendStateDesc& desc)
     }
 
     HRESULT hr = D3D_CALL_CHECK(gDevice->Get()->CreateBlendState(&bd, &mBS));
-    return SUCCEEDED(hr);
+    if (FAILED(hr))
+        return false;
+
+#ifdef D3D_DEBUGGING
+    /// set debug name
+    std::string bufferName = "NFE::Renderer::BlendState \"";
+    if (desc.debugName)
+        bufferName += desc.debugName;
+    bufferName += '"';
+    mBS->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(bufferName.length()),
+                        bufferName.c_str());
+#endif // D3D_DEBUGGING
+
+    return true;
 }
 
 } // namespace Renderer

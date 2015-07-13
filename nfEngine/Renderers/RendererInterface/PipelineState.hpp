@@ -26,6 +26,8 @@ struct RenderTargetBlendStateDesc
     BlendOp colorOperator;
     BlendOp alphaOperator;
 
+    const char* debugName;   //< optional debug name
+
     RenderTargetBlendStateDesc()
         : enable(false)
         , srcColorFunc(BlendFunc::One)
@@ -34,6 +36,7 @@ struct RenderTargetBlendStateDesc
         , destAlphaFunc(BlendFunc::One)
         , colorOperator(BlendOp::Add)
         , alphaOperator(BlendOp::Add)
+        , debugName(nullptr)
     {}
 };
 
@@ -45,11 +48,13 @@ struct BlendStateDesc
     RenderTargetBlendStateDesc rtDescs[MAX_RENDER_TARGETS];
     bool independent; //< if set to false structure at index 0 is applied to all rendertargets
     bool alphaToCoverage;
+    const char* debugName;   //< optional debug name
 
     BlendStateDesc()
         : rtDescs()
         , independent(false)
         , alphaToCoverage(false)
+        , debugName(nullptr)
     {}
 };
 
@@ -73,6 +78,13 @@ struct RasterizerStateDesc
     CullMode cullMode;
     FillMode fillMode;
     // TODO: more options
+    const char* debugName;  //< optional debug name
+
+    RasterizerStateDesc()
+        : cullMode(CullMode::None)
+        , fillMode(FillMode::Solid)
+        , debugName(nullptr)
+    {}
 };
 
 /**
@@ -103,6 +115,15 @@ struct DepthStateDesc
     CompareFunc depthCompareFunc;
 
     // TODO: stencil buffer support
+
+    const char* debugName;   //< optional debug name
+
+    DepthStateDesc()
+        : depthTestEnable(false)
+        , depthWriteEnable(false)
+        , depthCompareFunc(CompareFunc::Always)
+        , debugName(nullptr)
+    {}
 };
 
 /**

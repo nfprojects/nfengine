@@ -12,6 +12,24 @@
 namespace NFE {
 namespace Renderer {
 
+bool Backbuffer::GetBackbufferTexture()
+{
+    HRESULT hr;
+
+    // get the address of the back buffer
+    hr = D3D_CALL_CHECK(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&mTexture2D));
+    if (FAILED(hr))
+        return false;
+
+#ifdef D3D_DEBUGGING
+    std::string textureName = "NFE::Renderer::Backbuffer \"" + mDebugName + '"';
+    mSwapChain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(textureName.length()),
+                               textureName.c_str());
+#endif
+
+    return true;
+}
+
 bool Backbuffer::Resize(int newWidth, int newHeight)
 {
     mWidth = newWidth;
@@ -19,6 +37,8 @@ bool Backbuffer::Resize(int newWidth, int newHeight)
 
     if (mWidth == 0 || mHeight == 0)
         return false;
+
+    LOG_INFO("Resizing backbuffer '%s'", mDebugName.c_str());
 
     HRESULT hr;
     if (!mSwapChain.get())
@@ -34,14 +54,9 @@ bool Backbuffer::Resize(int newWidth, int newHeight)
     if (FAILED(hr))
         return false;
 
-    // Get buffer and create a render-target-view.
-    hr = D3D_CALL_CHECK(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&mTexture2D));
-    if (FAILED(hr))
-        return false;
-
     // TODO: what about rendertargets that are using the backbuffer?
 
-    return true;
+    return GetBackbufferTexture();
 }
 
 bool Backbuffer::Init(const BackbufferDesc& desc)
@@ -53,6 +68,9 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     mWidth = desc.width;
     mHeight = desc.height;
     mVSync = desc.vSync;
+
+    if (desc.debugName)
+        mDebugName = desc.debugName;
 
     DXGI_USAGE usageFlags = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     if (gDevice->mFeatureLevel == D3D_FEATURE_LEVEL_11_0)
@@ -75,12 +93,13 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     if (FAILED(hr))
         return false;
 
-    // get the address of the back buffer
-    hr = D3D_CALL_CHECK(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&mTexture2D));
-    if (FAILED(hr))
-        return false;
+#ifdef D3D_DEBUGGING
+    std::string swapChainName = "NFE::Renderer::Backbuffer \"" + mDebugName + '"';
+    mSwapChain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(swapChainName.length()),
+                               swapChainName.c_str());
+#endif
 
-    return true;
+    return GetBackbufferTexture();
 }
 
 bool Backbuffer::Present()

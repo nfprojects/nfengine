@@ -21,6 +21,11 @@ class Backbuffer : public IBackbuffer, public Texture
     D3DPtr<IDXGISwapChain> mSwapChain;
     bool mVSync;
 
+    std::string mDebugName;
+
+    // get ID3D11Texture2D from the IDXGISwapChain
+    bool GetBackbufferTexture();
+
 public:
     bool Resize(int newWidth, int newHeight);
     bool Present();

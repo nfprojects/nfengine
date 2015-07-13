@@ -1,18 +1,24 @@
 /**
-* @file
-* @author  Witek902 (witek902@gmail.com)
-* @brief   Common utilities for D3D11 renderer.
-*/
+ * @file
+ * @author  Witek902 (witek902@gmail.com)
+ * @brief   Common utilities for D3D11 renderer.
+ */
 
 #pragma once
 
 #ifndef D3D_SAFE_RELEASE
 #define D3D_SAFE_RELEASE(x) { if (x) {(x)->Release(); (x)=0;} }
-#endif
+#endif // D3D_SAFE_RELEASE
 
 #ifndef UNUSED
 #define UNUSED(x) (void)(x)
-#endif
+#endif // UNUSED
+
+#ifdef _DEBUG
+// for now, D3D debugging will be enabled only in "Debug" project's configuration
+#define D3D_DEBUGGING
+#endif // _DEBUG
+
 
 namespace NFE {
 namespace Renderer {

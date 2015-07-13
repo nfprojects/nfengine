@@ -39,6 +39,15 @@ struct VertexLayoutDesc
       only for ID3D11Device::CreateInputLayout call.
     */
     IShader* vertexShader;
+
+    const char* debugName; //< optional debug name
+
+    VertexLayoutDesc()
+        : elements(nullptr)
+        , numElements(0)
+        , vertexShader(nullptr)
+        , debugName(nullptr)
+    {}
 };
 
 /**
