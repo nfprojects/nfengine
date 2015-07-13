@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_0cb5b130",
+        "filename": "nfEngineTest/Scenes.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-13T07:03:37Z",
+      "side": 1,
+      "message": "What for? This is a performance test scene, IMO it should have a lot of objects as it already had.",
+      "revId": "7f3ec9085df35cde07f4077d1da5c791ae7188fa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
