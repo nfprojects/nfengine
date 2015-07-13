@@ -172,6 +172,40 @@ bool Shader::Init(const ShaderDesc& desc)
             break;
     }
 
+
+#ifdef D3D_DEBUGGING
+    /// set debug name
+    std::string shaderName = "NFE::Renderer::Shader \"";
+    if (desc.path)
+        shaderName += desc.path;
+    shaderName += '"';
+
+    switch (mType)
+    {
+    case ShaderType::Vertex:
+        mVS->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(shaderName.length()),
+                            shaderName.c_str());
+        break;
+    case ShaderType::Geometry:
+        mGS->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(shaderName.length()),
+                            shaderName.c_str());
+        break;
+    case ShaderType::Hull:
+        mHS->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(shaderName.length()),
+                            shaderName.c_str());
+        break;
+    case ShaderType::Domain:
+        mDS->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(shaderName.length()),
+                            shaderName.c_str());
+        break;
+    case ShaderType::Pixel:
+        mPS->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(shaderName.length()),
+                            shaderName.c_str());
+        break;
+    }
+#endif // D3D_DEBUGGING
+
+
     if (FAILED(hr))
     {
         mBytecode.reset();

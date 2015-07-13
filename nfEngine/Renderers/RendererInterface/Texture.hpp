@@ -54,6 +54,8 @@ struct TextureDesc
      */
     TextureDataDesc* dataDesc;
 
+    const char* debugName; //< optional debug name
+
     TextureDesc()
         : type(TextureType::Texture2D)
         , format(ElementFormat::Int_8)
@@ -68,6 +70,7 @@ struct TextureDesc
         , samplesNum(1)
         , mipmaps(1)
         , dataDesc(nullptr)
+        , debugName(nullptr)
     {}
 };
 
@@ -111,6 +114,8 @@ struct SamplerDesc
         * LoD settings
      */
 
+    const char* debugName; //< optional debug name
+
     SamplerDesc()
         : minFilter(TextureMinFilter::NearestMipmapNearest)
         , magFilter(TextureMagFilter::Nearest)
@@ -124,6 +129,7 @@ struct SamplerDesc
         , compare(false)
         , compareFunc(CompareFunc::Always)
         , borderColor(nullptr)
+        , debugName(nullptr)
     {}
 };
 

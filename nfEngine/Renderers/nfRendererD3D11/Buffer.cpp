@@ -73,7 +73,20 @@ bool Buffer::Init(const BufferDesc& desc)
     else
         hr = D3D_CALL_CHECK(gDevice->Get()->CreateBuffer(&bufferDesc, NULL, &mBuffer));
 
-    return SUCCEEDED(hr);
+    if (FAILED(hr))
+        return false;
+
+#ifdef D3D_DEBUGGING
+    /// set debug name
+    std::string bufferName = "NFE::Renderer::Buffer \"";
+    if (desc.debugName)
+        bufferName += desc.debugName;
+    bufferName += '"';
+    mBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(bufferName.length()),
+                            bufferName.c_str());
+#endif // D3D_DEBUGGING
+
+    return true;
 }
 
 void Buffer::Write(size_t offset, size_t size, const void* data)
