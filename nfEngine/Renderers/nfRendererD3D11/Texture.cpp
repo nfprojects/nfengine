@@ -142,6 +142,17 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
         return false;
 
 
+#ifdef D3D_DEBUGGING
+    /// set debug name
+    std::string textureName = "NFE::Renderer::Texture \"";
+    if (desc.debugName)
+        textureName += desc.debugName;
+    textureName += '"';
+    mTexture2D->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(textureName.length()),
+                               textureName.c_str());
+#endif // D3D_DEBUGGING
+
+
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER)
     {
         D3D11_SHADER_RESOURCE_VIEW_DESC srvd;
@@ -164,6 +175,12 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
             D3D_SAFE_RELEASE(mTexture2D);
             return false;
         }
+
+#ifdef D3D_DEBUGGING
+        // set debug name
+        mSRV->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(textureName.length()),
+                             textureName.c_str());
+#endif // D3D_DEBUGGING
     }
 
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
@@ -188,6 +205,12 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
             D3D_SAFE_RELEASE(mTexture2D);
             return false;
         }
+
+#ifdef D3D_DEBUGGING
+        // set debug name
+        mDSV->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(textureName.length()),
+                             textureName.c_str());
+#endif // D3D_DEBUGGING
     }
 
     mWidth = desc.width;

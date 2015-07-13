@@ -88,8 +88,10 @@ DebugRenderer::DebugRenderer()
         { ElementFormat::Float_32,    2 }, // tex-coords
     };
     int isMesh = 0; // IS_MESH macro
-    VertexLayoutDesc vertexLayoutDesc = { vertexLayoutElements, 3,
-                                          mVertexShader.GetShader(&isMesh) };
+    VertexLayoutDesc vertexLayoutDesc;
+    vertexLayoutDesc.elements = vertexLayoutElements;
+    vertexLayoutDesc.numElements = 3;
+    vertexLayoutDesc.vertexShader = mVertexShader.GetShader(&isMesh);
     mVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
 
     /// create vertex layout for meshes
@@ -101,8 +103,10 @@ DebugRenderer::DebugRenderer()
         { ElementFormat::Int_8_norm, 4 }, // tangent
     };
     isMesh = 1;
-    VertexLayoutDesc meshVertexLayoutDesc = { meshVertexLayoutElements, 4,
-                                              mVertexShader.GetShader(&isMesh) };
+    VertexLayoutDesc meshVertexLayoutDesc;
+    meshVertexLayoutDesc.elements = meshVertexLayoutElements;
+    meshVertexLayoutDesc.numElements = 4;
+    meshVertexLayoutDesc.vertexShader = mVertexShader.GetShader(&isMesh);
     mMeshVertexLayout.reset(device->CreateVertexLayout(meshVertexLayoutDesc));
 
     /// create constant buffer
