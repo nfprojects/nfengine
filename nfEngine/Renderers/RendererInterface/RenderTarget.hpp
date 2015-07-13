@@ -38,11 +38,13 @@ struct RenderTargetDesc
     unsigned int numTargets;      //< number of targets
     RenderTargetElement* targets; //< array of RenderTargetElement
     ITexture* depthBuffer;        //< optional pointer to a depth buffer's texture
+    const char* debugName;        //< optional debug name
 
     RenderTargetDesc()
         : numTargets(0)
         , targets(nullptr)
         , depthBuffer(nullptr)
+        , debugName(nullptr)
     {}
 };
 

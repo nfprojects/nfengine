@@ -45,9 +45,9 @@ Device::Device()
     HRESULT hr;
     UINT flags = 0;
 
-#ifdef _DEBUG
+#ifdef D3D_DEBUGGING
     flags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif
+#endif // D3D_DEBUGGING
 
     ID3D11DeviceContext* immediateContext;
     hr = D3D_CALL_CHECK(D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, flags, NULL, 0,
@@ -75,6 +75,24 @@ Device::Device()
 
 Device::~Device()
 {
+#ifdef D3D_DEBUGGING
+    D3DPtr<ID3D11Debug> mDebug;
+    /// get D3D debug layer interface
+    D3D_CALL_CHECK(mDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&mDebug));
+
+    if (mDebug.get() != nullptr)
+    {
+        // flush the pipeline
+        mDefaultCommandBuffer->mContext->ClearState();
+        mDefaultCommandBuffer->mContext->Flush();
+
+        mDXGIFactory.reset();
+        mDefaultCommandBuffer.reset();
+        mDevice.reset();
+            
+        mDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+    }
+#endif // D3D_DEBUGGING
 }
 
 void* Device::GetHandle() const
