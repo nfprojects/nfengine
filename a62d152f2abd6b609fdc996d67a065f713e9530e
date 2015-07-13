@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_ece5eda8",
+        "filename": "nfEngine/nfCore/Renderer/Multishader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-13T08:42:50Z",
+      "side": 1,
+      "message": "I have enabled, but they are so faint that I don\u0027t see them :D",
+      "parentUuid": "9ad9bd40_cc902951",
+      "revId": "a62d152f2abd6b609fdc996d67a065f713e9530e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_cccca964",
         "filename": "nfEngine/nfCore/Renderer/Multishader.cpp",
         "patchSetId": 4
