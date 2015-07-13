@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_8fba936c",
+        "filename": "nfEngine/nfCore/Renderer/Multishader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-13T11:59:18Z",
+      "side": 1,
+      "message": "Okay, then CodeMaid will be your friend:\n\nhttp://www.codemaid.net/\n\nTheir only problem is that this is a huge plugin, so it might slow VS down. All in all, it might be helpful :)",
+      "parentUuid": "9ad9bd40_ece5eda8",
+      "revId": "a62d152f2abd6b609fdc996d67a065f713e9530e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_cccca964",
         "filename": "nfEngine/nfCore/Renderer/Multishader.cpp",
         "patchSetId": 4
