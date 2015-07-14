@@ -21,6 +21,7 @@ class CommandBuffer : public ICommandBuffer
     PrimitiveType mCurrentPrimitiveType;
     RenderTarget* mCurrentRenderTarget;
     D3DPtr<ID3D11DeviceContext> mContext;
+    D3DPtr<ID3DUserDefinedAnnotation> mUserDefinedAnnotation;
 
     ShaderProgramDesc mBoundShaders;
 
@@ -57,6 +58,12 @@ public:
     void DrawIndexed(PrimitiveType type, int indexNum, int instancesNum = 1, int indexOffset = 0,
                      int vertexOffset = 0, int instanceOffset = 0);
     void Execute(ICommandBuffer* commandBuffer, bool saveState);
+
+    /// Debugging
+
+    void BeginDebugGroup(const char* text);
+    void EndDebugGroup();
+    void InsertDebugMarker(const char* text);
 };
 
 } // namespace Renderer

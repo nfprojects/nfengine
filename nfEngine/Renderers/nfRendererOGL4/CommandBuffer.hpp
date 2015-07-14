@@ -53,6 +53,11 @@ public:
     void DrawIndexed(PrimitiveType type, int indexNum, int instancesNum, int indexOffset,
                      int vertexOffset, int instanceOffset);
     void Execute(ICommandBuffer* commandBuffer, bool saveState);
+
+    /// Debugging
+    void BeginDebugGroup(const char* text);
+    void EndDebugGroup();
+    void InsertDebugMarker(const char* text);
 };
 
 } // namespace Renderer
