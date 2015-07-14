@@ -131,6 +131,32 @@ public:
     virtual void Execute(ICommandBuffer* commandBuffer, bool saveState) = 0;
 
     /**@}*/
+
+
+    /**
+     * CommandBufferDebug Debugging methods
+     * @{
+     */
+
+    /**
+     * Mark the beginning of a group of commands. Can be used for debugging purposes.
+     * Every BeginGroup call must have corresponding GroupEnd call.
+     * @param name Text displayed in a debugging tool.
+     */
+    virtual void BeginDebugGroup(const char* text) = 0;
+
+    /**
+     * Mark the ending of a group of commands. Can be used for debugging purposes.
+     */
+    virtual void EndDebugGroup() = 0;
+
+    /**
+     * Insert a custom marker into the command buffer. Can be used for debugging purposes.
+     * @param text Text displayed in a debugging tool.
+     */
+    virtual void InsertDebugMarker(const char* text) = 0;
+
+    /**@}*/
 };
 
 } // namespace Renderer

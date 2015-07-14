@@ -202,5 +202,19 @@ void CommandBuffer::Execute(ICommandBuffer* commandBuffer, bool saveState)
     UNUSED(saveState);
 }
 
+void CommandBuffer::BeginDebugGroup(const char* text)
+{
+    UNUSED(text);
+}
+
+void CommandBuffer::EndDebugGroup()
+{
+}
+
+void CommandBuffer::InsertDebugMarker(const char* text)
+{
+    UNUSED(text);
+}
+
 } // namespace Renderer
 } // namespace NFE
