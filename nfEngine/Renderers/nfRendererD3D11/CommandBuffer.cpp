@@ -20,6 +20,7 @@
 #include "Sampler.hpp"
 #include "Translations.hpp"
 #include "../../nfCommon/Logger.hpp"
+#include "../../nfCommon/Win/Common.hpp"  // required for ID3DUserDefinedAnnotation
 
 namespace NFE {
 namespace Renderer {
@@ -29,6 +30,11 @@ CommandBuffer::CommandBuffer(ID3D11DeviceContext* deviceContext)
     , mCurrentPrimitiveType(PrimitiveType::Unknown)
     , mCurrentRenderTarget(nullptr)
 {
+    HRESULT hr;
+    hr = deviceContext->QueryInterface(__uuidof(ID3DUserDefinedAnnotation),
+                                       reinterpret_cast<void**>(&mUserDefinedAnnotation));
+    if (FAILED(hr))
+        mUserDefinedAnnotation.reset();
 }
 
 CommandBuffer::~CommandBuffer()
@@ -455,6 +461,38 @@ void CommandBuffer::Execute(ICommandBuffer* commandBuffer, bool saveState)
 {
     UNUSED(commandBuffer);
     UNUSED(saveState);
+}
+
+void CommandBuffer::BeginDebugGroup(const char* text)
+{
+    if (mUserDefinedAnnotation.get())
+    {
+        std::wstring wideText;
+        if (Common::UTF8ToUTF16(text, wideText))
+            mUserDefinedAnnotation->BeginEvent(wideText.c_str());
+        else
+        {
+            // We must begin an event, even if the UTF-8 -> UTF-16 conversion fails,
+            // because user will call EndDebugGroup().
+            mUserDefinedAnnotation->BeginEvent(L"");
+        }
+    }
+}
+
+void CommandBuffer::EndDebugGroup()
+{
+    if (mUserDefinedAnnotation.get())
+        mUserDefinedAnnotation->EndEvent();
+}
+
+void CommandBuffer::InsertDebugMarker(const char* text)
+{
+    if (mUserDefinedAnnotation.get())
+    {
+        std::wstring wideText;
+        if (Common::UTF8ToUTF16(text, wideText))
+            mUserDefinedAnnotation->SetMarker(wideText.c_str());
+    }
 }
 
 } // namespace Renderer
