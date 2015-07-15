@@ -145,6 +145,7 @@ bool Mesh::OnLoad()
     bufferDesc.type = BufferType::Vertex;
     bufferDesc.size = mVeriticesCount * sizeof(MeshVertex);
     bufferDesc.initialData = pVerticies;
+    bufferDesc.debugName = mName;
     mVB.reset(gRenderer->GetDevice()->CreateBuffer(bufferDesc));
     if (!mVB)
     {
@@ -160,6 +161,7 @@ bool Mesh::OnLoad()
     bufferDesc.type = BufferType::Index;
     bufferDesc.size = mIndicesCount * sizeof(uint32);
     bufferDesc.initialData = pIndices;
+    bufferDesc.debugName = mName;
     mIB.reset(gRenderer->GetDevice()->CreateBuffer(bufferDesc));
     if (!mIB)
     {
