@@ -100,12 +100,14 @@ void HighLevelRenderer::CreateCommonResources()
     SamplerDesc samplerDesc;
     samplerDesc.magFilter = TextureMagFilter::Linear;
     samplerDesc.minFilter = TextureMinFilter::LinearMipmapLinear;
+    samplerDesc.debugName = "HighLevelRenderer::mDefaultSampler";
     mDefaultSampler.reset(mRenderingDevice->CreateSampler(samplerDesc));
 
     DepthStateDesc dsDesc;
     dsDesc.depthCompareFunc = CompareFunc::LessEqual;
     dsDesc.depthTestEnable = true;
     dsDesc.depthWriteEnable = true;
+    dsDesc.debugName = "HighLevelRenderer::mDefaultDepthState";
     mDefaultDepthState.reset(mRenderingDevice->CreateDepthState(dsDesc));
 }
 

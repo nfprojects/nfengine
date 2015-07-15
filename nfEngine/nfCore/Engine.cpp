@@ -277,11 +277,12 @@ Result EngineAdvance(const DrawRequest* pDrawRequests, uint32 drawRequestsNum,
         View* pView = pDrawRequests[i].pView;
         if (pView == NULL) continue;
 
+        ICommandBuffer* commandBuffer = gRenderer->GetImmediateContext()->commandBuffer;
+
         Camera* pCamera = pView->GetCamera();
         if (pCamera != NULL)
         {
             // FIXME: temporary
-            ICommandBuffer* commandBuffer = gRenderer->GetImmediateContext()->commandBuffer;
             commandBuffer->SetRenderTarget(pView->GetRenderTarget());
             uint32 width, height;
             pView->GetSize(width, height);
@@ -312,7 +313,9 @@ Result EngineAdvance(const DrawRequest* pDrawRequests, uint32 drawRequestsNum,
         GuiRenderer::Get()->Leave(ctx);
 
 #ifdef USE_ANT_TWEAK
+        commandBuffer->BeginDebugGroup("AntTweak");
         TwDraw();
+        commandBuffer->EndDebugGroup();
 #endif
 
         // present frame in the display

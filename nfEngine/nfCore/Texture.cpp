@@ -20,7 +20,8 @@ namespace {
 
 const size_t gMaxMipmaps = 24;
 
-Renderer::ITexture* CreateRendererTextureFromImage(const Common::Image& image)
+Renderer::ITexture* CreateRendererTextureFromImage(const Common::Image& image,
+                                                   const char* debugName = nullptr)
 {
     using namespace Renderer;
 
@@ -33,6 +34,7 @@ Renderer::ITexture* CreateRendererTextureFromImage(const Common::Image& image)
     texDesc.height = image.GetHeight();
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER;
     texDesc.mipmaps = static_cast<int>(image.GetMipmapsNum());
+    texDesc.debugName = debugName;
 
     bool bc = false;
     size_t bcNumBytesPerBlock = 0;
@@ -238,7 +240,7 @@ Result Texture::CreateFromImage(const Common::Image& image)
 {
     Release();
 
-    mTex.reset(CreateRendererTextureFromImage(image));
+    mTex.reset(CreateRendererTextureFromImage(image, mName));
     if (!mTex)
     {
         LOG_ERROR("Failed to create renderer's texture for '%s'.", mName);
