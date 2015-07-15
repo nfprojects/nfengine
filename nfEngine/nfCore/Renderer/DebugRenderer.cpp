@@ -92,6 +92,7 @@ DebugRenderer::DebugRenderer()
     vertexLayoutDesc.elements = vertexLayoutElements;
     vertexLayoutDesc.numElements = 3;
     vertexLayoutDesc.vertexShader = mVertexShader.GetShader(&isMesh);
+    vertexLayoutDesc.debugName = "DebugRenderer::mVertexLayout";
     mVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
 
     /// create vertex layout for meshes
@@ -107,35 +108,41 @@ DebugRenderer::DebugRenderer()
     meshVertexLayoutDesc.elements = meshVertexLayoutElements;
     meshVertexLayoutDesc.numElements = 4;
     meshVertexLayoutDesc.vertexShader = mVertexShader.GetShader(&isMesh);
+    meshVertexLayoutDesc.debugName = "DebugRenderer::mMeshVertexLayout";
     mMeshVertexLayout.reset(device->CreateVertexLayout(meshVertexLayoutDesc));
 
     /// create constant buffer
     bufferDesc.access = BufferAccess::CPU_Write;
     bufferDesc.size = sizeof(DebugCBuffer);
     bufferDesc.type = BufferType::Constant;
+    bufferDesc.debugName = "DebugRenderer::mConstantBuffer";
     mConstantBuffer.reset(device->CreateBuffer(bufferDesc));
 
     bufferDesc.access = BufferAccess::CPU_Write;
     bufferDesc.size = sizeof(DebugPerMeshCBuffer);
     bufferDesc.type = BufferType::Constant;
+    bufferDesc.debugName = "DebugRenderer::mPerMeshConstantBuffer";
     mPerMeshConstantBuffer.reset(device->CreateBuffer(bufferDesc));
 
     /// create vertex buffer
     bufferDesc.access = BufferAccess::CPU_Write;
     bufferDesc.size = gVertexBufferSize * sizeof(DebugVertex);
     bufferDesc.type = BufferType::Vertex;
+    bufferDesc.debugName = "DebugRenderer::mVertexBuffer";
     mVertexBuffer.reset(device->CreateBuffer(bufferDesc));
 
     /// create index buffer
     bufferDesc.access = BufferAccess::CPU_Write;
     bufferDesc.size = gIndexBufferSize * sizeof(DebugIndexType);
     bufferDesc.type = BufferType::Index;
+    bufferDesc.debugName = "DebugRenderer::mIndexBuffer";
     mIndexBuffer.reset(device->CreateBuffer(bufferDesc));
 
     /// create rasterizer state
     RasterizerStateDesc rasterizerStateDesc;
     rasterizerStateDesc.cullMode = CullMode::None;
     rasterizerStateDesc.fillMode = FillMode::Solid;
+    rasterizerStateDesc.debugName = "DebugRenderer::mRasterizerState";
     mRasterizerState.reset(device->CreateRasterizerState(rasterizerStateDesc));
 
     // TODO: depth state
@@ -144,6 +151,8 @@ DebugRenderer::DebugRenderer()
 void DebugRenderer::OnEnter(RenderContext* context)
 {
     context->debugContext.mode = DebugRendererMode::Unknown;
+
+    context->commandBuffer->BeginDebugGroup("Debug Renderer stage");
 
     int psMacros[] = { 0 }; // USE_TEXTURE
     context->commandBuffer->SetShader(mPixelShader.GetShader(psMacros));
@@ -161,6 +170,7 @@ void DebugRenderer::OnEnter(RenderContext* context)
 void DebugRenderer::OnLeave(RenderContext* context)
 {
     Flush(context);
+    context->commandBuffer->EndDebugGroup();
 }
 
 void DebugRenderer::Flush(RenderContext* context)

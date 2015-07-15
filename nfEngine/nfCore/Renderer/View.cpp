@@ -129,6 +129,7 @@ bool View::InitRenderTarget(uint32 width, uint32 height)
     depthBufferDesc.binding = NFE_RENDERER_TEXTURE_BIND_DEPTH;
     depthBufferDesc.mipmaps = 1;
     depthBufferDesc.depthBufferFormat = DepthBufferFormat::Depth32;
+    depthBufferDesc.debugName = "View::mDepthBuffer";
     mDepthBuffer.reset(gRenderer->GetDevice()->CreateTexture(depthBufferDesc));
     if (mDepthBuffer == nullptr)
     {
@@ -143,6 +144,7 @@ bool View::InitRenderTarget(uint32 width, uint32 height)
     rtDesc.depthBuffer = mDepthBuffer.get();
     rtDesc.numTargets = 1;
     rtDesc.targets = &rtTarget;
+    rtDesc.debugName = "View::mRenderTarget";
 
     mRenderTarget.reset(gRenderer->GetDevice()->CreateRenderTarget(rtDesc));
     if (mRenderTarget == nullptr)
