@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_9cf3989d",
+        "filename": "nfEngine/Shaders/D3D11/DebugVS.hlsl",
+        "patchSetId": 5
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-16T19:33:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_c74f12bc",
+      "range": {
+        "startLine": 18,
+        "startChar": 11,
+        "endLine": 18,
+        "endChar": 18
+      },
+      "revId": "75ca97dd97491c49fcf1980588122d725239195a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_a773eee5",
         "filename": "nfEngine/nfCore/Renderer/DebugRenderer.cpp",
         "patchSetId": 5
@@ -36,6 +60,24 @@
       "writtenOn": "2015-07-16T09:16:36Z",
       "side": 1,
       "message": "I think there should be some LOG_ERRORs here. This is a Drawing call, so it needs to be fast, however when something is wrong, the slowdown coming from logs shouldn\u0027t be a problem.",
+      "revId": "75ca97dd97491c49fcf1980588122d725239195a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_dc2c4005",
+        "filename": "nfEngine/nfCore/Renderer/DebugRenderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-16T19:33:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_a773eee5",
       "revId": "75ca97dd97491c49fcf1980588122d725239195a",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
