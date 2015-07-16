@@ -22,6 +22,30 @@
       "revId": "f99d44f940b882fcf3dacc0bde7782e5cee2d4e6",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_bcd77cec",
+        "filename": "nfEngine/nfCore/Renderer/View.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-16T19:33:36Z",
+      "side": 1,
+      "message": "The InitRenderTarget is used in 2 places. I moved \"mWindowBackbuffer.reset()\" outside",
+      "parentUuid": "9ad9bd40_e23084ea",
+      "range": {
+        "startLine": 129,
+        "startChar": 8,
+        "endLine": 129,
+        "endChar": 34
+      },
+      "revId": "f99d44f940b882fcf3dacc0bde7782e5cee2d4e6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
