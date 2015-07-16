@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_3d645d48",
+        "filename": "nfEngine/nfCore/Renderer/Multishader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-16T19:33:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_8fba936c",
+      "revId": "a62d152f2abd6b609fdc996d67a065f713e9530e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_cccca964",
         "filename": "nfEngine/nfCore/Renderer/Multishader.cpp",
         "patchSetId": 4
@@ -66,6 +84,30 @@
       "writtenOn": "2015-07-13T08:21:31Z",
       "side": 1,
       "message": "...get modif? What is a modif?\n\nLooks like an unfinished comment. :)",
+      "range": {
+        "startLine": 109,
+        "startChar": 45,
+        "endLine": 109,
+        "endChar": 50
+      },
+      "revId": "a62d152f2abd6b609fdc996d67a065f713e9530e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_5d5be186",
+        "filename": "nfEngine/nfCore/Renderer/Multishader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-16T19:33:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_cccca964",
       "range": {
         "startLine": 109,
         "startChar": 45,
