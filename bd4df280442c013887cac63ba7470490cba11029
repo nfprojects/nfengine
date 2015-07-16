@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_2730be55",
+        "filename": "nfEngine/nfCore/Renderer/DebugRenderer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-16T08:50:36Z",
+      "side": 1,
+      "message": "...and I sense that IntelliSense has propagated it.",
+      "range": {
+        "startLine": 77,
+        "startChar": 4,
+        "endLine": 77,
+        "endChar": 21
+      },
+      "revId": "bd4df280442c013887cac63ba7470490cba11029",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_c7f3929c",
+        "filename": "nfEngine/nfCore/Renderer/DebugRenderer.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-16T08:50:36Z",
+      "side": 1,
+      "message": "I sense a typo",
+      "range": {
+        "startLine": 35,
+        "startChar": 10,
+        "endLine": 35,
+        "endChar": 29
+      },
+      "revId": "bd4df280442c013887cac63ba7470490cba11029",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
