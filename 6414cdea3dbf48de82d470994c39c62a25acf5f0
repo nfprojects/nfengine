@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_c8a0ffa1",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-16T15:57:15Z",
+      "side": 1,
+      "message": "It was going so well...",
+      "revId": "6414cdea3dbf48de82d470994c39c62a25acf5f0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
