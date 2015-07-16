@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_82141845",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/CommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 390,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-16T09:34:50Z",
+      "side": 1,
+      "message": "Technically, this comparison is not needed. When flags will contain NFE_CLEAR_FLAG_TARGET, it will be higher than 0 and the condition will be met. Otherwise it will be 0 and condition will continue on.\n\nYou can check the one below as well. IMO the flags \u0026 \u003csth\u003e will be enough.",
+      "range": {
+        "startLine": 390,
+        "startChar": 43,
+        "endLine": 390,
+        "endChar": 68
+      },
+      "revId": "38eada2bb7ecbb23150370d517371fa298cc8434",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
