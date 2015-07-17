@@ -1,0 +1,2 @@
+Docs/NFE.vsdx filter=lfs diff=lfs merge=lfs -crlf
+Docs/nfEngine.pptx filter=lfs diff=lfs merge=lfs -crlf
