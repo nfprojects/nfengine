@@ -29,6 +29,20 @@ int GetElementFormatSize(ElementFormat format)
         case ElementFormat::Int_8_norm:
         case ElementFormat::Uint_8_norm:
             return 1;
+
+        /// for Block Compressed formats "element" means 4x4 pixels block
+        case ElementFormat::BC1:
+        case ElementFormat::BC4:
+        case ElementFormat::BC4_signed:
+            return 8;
+        case ElementFormat::BC2:
+        case ElementFormat::BC3:
+        case ElementFormat::BC5:
+        case ElementFormat::BC5_signed:
+        case ElementFormat::BC6H:
+        case ElementFormat::BC6H_signed:
+        case ElementFormat::BC7:
+            return 16;
     };
 
     return 0;
@@ -164,6 +178,26 @@ DXGI_FORMAT TranslateElementFormat(ElementFormat format, int size)
                 case 4:
                     return DXGI_FORMAT_R8G8B8A8_UNORM;
             };
+        case ElementFormat::BC1:
+            return DXGI_FORMAT_BC1_UNORM;
+        case ElementFormat::BC2:
+            return DXGI_FORMAT_BC2_UNORM;
+        case ElementFormat::BC3:
+            return DXGI_FORMAT_BC3_UNORM;
+        case ElementFormat::BC4:
+            return DXGI_FORMAT_BC4_UNORM;
+        case ElementFormat::BC4_signed:
+            return DXGI_FORMAT_BC4_SNORM;
+        case ElementFormat::BC5:
+            return DXGI_FORMAT_BC5_UNORM;
+        case ElementFormat::BC5_signed:
+            return DXGI_FORMAT_BC5_SNORM;
+        case ElementFormat::BC6H:
+            return DXGI_FORMAT_BC6H_UF16;
+        case ElementFormat::BC6H_signed:
+            return DXGI_FORMAT_BC6H_SF16;
+        case ElementFormat::BC7:
+            return DXGI_FORMAT_BC7_UNORM;
     };
 
     return DXGI_FORMAT_UNKNOWN;

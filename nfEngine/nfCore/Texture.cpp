@@ -58,31 +58,31 @@ Renderer::ITexture* CreateRendererTextureFromImage(const Common::Image& image,
         texDesc.texelSize = 1;
         break;
     case Common::ImageFormat::BC1:
-        texDesc.format = ElementFormat::Unknown; // TODO
+        texDesc.format = ElementFormat::BC1;
         texDesc.texelSize = 1;
         bcNumBytesPerBlock = 8;
         bc = true;
         break;
     case Common::ImageFormat::BC2:
-        texDesc.format = ElementFormat::Unknown; // TODO
+        texDesc.format = ElementFormat::BC2;
         texDesc.texelSize = 1;
         bcNumBytesPerBlock = 16;
         bc = true;
         break;
     case Common::ImageFormat::BC3:
-        texDesc.format = ElementFormat::Unknown; // TODO
+        texDesc.format = ElementFormat::BC3;
         texDesc.texelSize = 1;
         bcNumBytesPerBlock = 16;
         bc = true;
         break;
     case Common::ImageFormat::BC4:
-        texDesc.format = ElementFormat::Unknown; // TODO
+        texDesc.format = ElementFormat::BC4;
         texDesc.texelSize = 1;
         bcNumBytesPerBlock = 8;
         bc = true;
         break;
     case Common::ImageFormat::BC5:
-        texDesc.format = ElementFormat::Unknown; // TODO
+        texDesc.format = ElementFormat::BC5;
         texDesc.texelSize = 1;
         bcNumBytesPerBlock = 16;
         bc = true;
