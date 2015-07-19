@@ -24,22 +24,32 @@ enum class ElementFormat
 {
     Unknown,
 
-    Float_32,
-    Int_32,
-    Uint_32,
+    Float_32,     //< 32-bit floating-point values
+    Int_32,       //< 32-bit signed integer values
+    Uint_32,      //< 32-bit unsigned integer values
 
-    Float_16,
-    Int_16,
-    Uint_16,
-    Int_16_norm,
-    Uint_16_norm,
+    Float_16,     //< 16-bit floating-point values
+    Int_16,       //< 16-bit signed integer values
+    Uint_16,      //< 16-bit unsigned integer values
+    Int_16_norm,  //< 16-bit signed integer values scaled to [-1.0, 1.0] range
+    Uint_16_norm, //< 16-bit unsigned integer values scaled to [0.0, 1.0] range
 
-    Int_8,
-    Uint_8,
-    Int_8_norm,
-    Uint_8_norm,
+    Int_8,        //< 8-bit signed integer values
+    Uint_8,       //< 8-bit unsigned integer values
+    Int_8_norm,   //< 8-bit signed integer values scaled to [-1.0, 1.0] range
+    Uint_8_norm,  //< 8-bit unsigned integer values scaled to [0.0, 1.0] range
 
-    // TODO: compressed (BCx), etc.
+    /// Block Compressed formats
+    BC1,          //< aka. DXT1;  unsigned, normalized RGB values; 8 bytes per 4x4 block
+    BC2,          //< aka. DXT3;  unsigned, normalized RGBA values; 16 bytes per 4x4 block
+    BC3,          //< aka. DXT5;  unsigned, normalized RGBA values; 16 bytes per 4x4 block
+    BC4,          //< aka. RGTC1; unsigned, normalized Red values; 8 bytes per 4x4 block
+    BC4_signed,   //< aka. RGTC1; signed, normalized Red values; 8 bytes per 4x4 block
+    BC5,          //< aka. RGTC2; unsigned, normalized Red and Green values; 16 bytes per 4x4 block
+    BC5_signed,   //< aka. RGTC2; signed, normalized Red and Green values; 16 bytes per 4x4 block
+    BC6H,         //< aka. BPTC;  unsigned, floating-point RGB values; 16 bytes per 4x4 block
+    BC6H_signed,  //< aka. BPTC;  signed, floating-point RGB values; 16 bytes per 4x4 block
+    BC7,          //< aka. BPTC;  unsigned, normalized RGB/RGBA values; 16 bytes per 4x4 block
 };
 
 /**
