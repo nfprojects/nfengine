@@ -1,0 +1,692 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_6a9df858",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "Use forward slash",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_8aa5dca3",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "LOG_ERROR",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_eaa82879",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "this check is redundant",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4ac914ab",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "Missing \"break;\". I know it won\u0027t change anything here, but it is a good habit.",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_aa6c6036",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "There is too much recursion and dependencies between CompressDDS/DecompressDDS, Convert and GenerateMipmaps. It\u0027s hard to trace what\u0027s happening here. This must be reorganized.",
+      "range": {
+        "startLine": 167,
+        "startChar": 0,
+        "endLine": 168,
+        "endChar": 41
+      },
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_6aced8b5",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "As above",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_8ad31c03",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "Update message",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_6a87b8d7",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "There is too much recursion and dependencies between CompressDDS/DecompressDDS, Convert and GenerateMipmaps. It\u0027s hard to trace what\u0027s happening here. This must be reorganized.",
+      "range": {
+        "startLine": 218,
+        "startChar": 0,
+        "endLine": 232,
+        "endChar": 9
+      },
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_0ae0eccb",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "mip/mipmap",
+      "range": {
+        "startLine": 238,
+        "startChar": 12,
+        "endLine": 238,
+        "endChar": 16
+      },
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ca7524fb",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "There is too much recursion and dependencies between CompressDDS/DecompressDDS, Convert and GenerateMipmaps. It\u0027s hard to trace what\u0027s happening here. This must be reorganized.",
+      "range": {
+        "startLine": 308,
+        "startChar": 0,
+        "endLine": 310,
+        "endChar": 35
+      },
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ea72e80f",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 316,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "There is too much recursion and dependencies between CompressDDS/DecompressDDS, Convert and GenerateMipmaps. It\u0027s hard to trace what\u0027s happening here. This must be reorganized.",
+      "range": {
+        "startLine": 315,
+        "startChar": 0,
+        "endLine": 316,
+        "endChar": 39
+      },
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_0a61cca8",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "Read may fail - check the returned value",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ea5028d6",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "Read may fail - check the returned value",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ca5364e0",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "What is it? It\u0027s a TODO list?",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 57
+      },
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_aa71c077",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "LOG_ERROR(...)",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_2a0db0e9",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadDDS.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "unique_ptr",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4a0e74e6",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadDDS.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "1. Memory leak\n2. LOG_ERROR(...)",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_aa1f0007",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadPNG.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "As you are touching this file, you could fix style:\n1. no oneliners\n2. space after //\nYou could also remove redundant comments - it took the code (with the comments) from somewhere...",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_6ae178fd",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadPNG.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "LOG_ERROR",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4adcb446",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadPNG.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "LOG_ERROR",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_2adbf050",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadPNG.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "LOG_ERROR",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_0ad62c28",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadPNG.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "LOG_ERROR",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ca18c420",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadPNG.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "LOG_ERROR",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_8ae95ce8",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadPNG.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "check if data !\u003d nullptr",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_aae62013",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadPNG.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "std::move?",
+      "range": {
+        "startLine": 169,
+        "startChar": 23,
+        "endLine": 169,
+        "endChar": 29
+      },
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_2ac21059",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "What with mipmap with or height is odd?",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4ab3d409",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "As above",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4aaaf485",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "I see this function is used only in Image::GenerateMipmaps? If so, it\u0027s very optimal:\n1. switch is done every loop iteration\n2. If MipmapFilter is incorrect we are flooded with millions of \"Could not operate on the given filter type...\" messages",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ea9ae86c",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "What about my comment in the previous patch set?",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_0a8b8c1f",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "What about my comment in the previous patch set?",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_aa946043",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "Remove (as in Mipmap::Filter)",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_2a905049",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "What about my comment in the previous patch set?",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_6a86d814",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "What about my comment in the previous patch set?",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ca9d2468",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "As above",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_8a7ebc17",
+        "filename": "nfEngine/nfCore/Texture.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "Rebase the change onto https://review.gerrithub.io/#/c/240686/",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_0a92ac4b",
+        "filename": "nfEngine/nfRenderer/GuiRenderer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "nfRenderer is deprecated and it\u0027s not compiled any more. Do not modify it and rebase the change",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_2a97703c",
+        "filename": "nfEngine/nfRenderer/Renderer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "nfRenderer is deprecated and it\u0027s not compiled any more. Do not modify it and rebase the change",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4a98346a",
+        "filename": "nfEngine/nfRenderer/RendererResources.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-22T09:01:33Z",
+      "side": 1,
+      "message": "nfRenderer is deprecated and it\u0027s not compiled any more. Do not modify it and rebase the change",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
