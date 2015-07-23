@@ -14,6 +14,7 @@ using namespace NFE::Resource;
 
 class CustomWindow;
 
+EntityManager* gEntityManager = nullptr;
 Random gRandom;
 float gDeltaTime = 0.0f;
 
@@ -36,9 +37,8 @@ class CustomWindow : public Common::Window
 {
 public:
     Quaternion cameraOrientation;
-    Entity* cameraEntity;
-    Camera* camera;
-    View* view;
+    EntityID cameraEntity;
+    std::unique_ptr<View> view;
 
     bool cameraControl;
     float cameraXZ;
@@ -57,15 +57,8 @@ public:
     CustomWindow()
     {
         cameraEntity = 0;
-        camera = 0;
         view = 0;
         InitCameraOrientation();
-    }
-
-    ~CustomWindow()
-    {
-        delete view;
-        // TODO: releasing engine before destruction of View without memory leak !!!
     }
 
     void InitCameraOrientation()
@@ -81,8 +74,11 @@ public:
     void InitCamera()
     {
         InitCameraOrientation();
-        cameraEntity = gScene->CreateEntity();
-        cameraEntity->SetPosition(Vector(0.0f, 1.6f, -2.0f, 0.0f));
+        cameraEntity = gEntityManager->CreateEntity();
+
+        TransformComponent transform;
+        transform.SetPosition(Vector(0.0f, 1.6f, -2.0f, 0.0f));
+        gEntityManager->AddComponent(cameraEntity, transform);
 
         UpdateCamera();
         Perspective perspective;
@@ -90,15 +86,15 @@ public:
         perspective.nearDist = 0.01f;
         perspective.farDist = 1000.0f;
         perspective.aspectRatio = GetAspectRatio();
+        CameraComponent camera;
+        camera.SetPerspective(&perspective);
+        gEntityManager->AddComponent(cameraEntity, camera);
 
-        camera = new Camera(cameraEntity);
-        camera->SetPerspective(&perspective);
-        gScene->SetDefaultCamera(camera);
+        BodyComponent body;
+        gEntityManager->AddComponent(cameraEntity, body);
 
-        BodyComponent* cameraBody = new BodyComponent(cameraEntity);
-
-        view = new MainCameraView;
-        view->SetCamera(camera);
+        view.reset(new MainCameraView);
+        view->SetCamera(gScene, cameraEntity);
         view->SetWindow(this);
     }
 
@@ -108,7 +104,9 @@ public:
     // update camera position and orientation
     void UpdateCamera()
     {
-        if (!cameraEntity)
+        auto cameraBody = gEntityManager->GetComponent<BodyComponent>(cameraEntity);
+        auto cameraTransform = gEntityManager->GetComponent<TransformComponent>(cameraEntity);
+        if (cameraBody == nullptr || cameraTransform == nullptr)
             return;
 
         Quaternion destOrientation = QuaternionMultiply(QuaternionRotationY(cameraXZ),
@@ -121,15 +119,16 @@ public:
                             gDeltaTime / (CAMERA_ROTATION_SMOOTHING + gDeltaTime));
         cameraOrientation = QuaternionNormalize(cameraOrientation);
 
-        Quaternion rotation = QuaternionMultiply(prevOrientation, QuaternionInverse(cameraOrientation));
-        cameraEntity->SetAngularVelocity(-QuaternionToAxis(rotation) / gDeltaTime);
+        Quaternion rotation = QuaternionMultiply(prevOrientation,
+                                                 QuaternionInverse(cameraOrientation));
+        cameraBody->SetAngularVelocity(-QuaternionToAxis(rotation) / gDeltaTime);
 
         Matrix rotMatrix = MatrixFromQuaternion(QuaternionNormalize(cameraOrientation));
-        XOrientation orient;
+        Orientation orient;
         orient.x = rotMatrix.r[0];
         orient.y = rotMatrix.r[1];
         orient.z = rotMatrix.r[2];
-        cameraEntity->SetOrientation(&orient);
+        cameraTransform->SetOrientation(orient);
 
 
         Vector destVelocity = Vector();
@@ -147,11 +146,11 @@ public:
             else destVelocity *= 3.0f;
         }
 
-        Vector prevVelocity = cameraEntity->GetVelocity();
+        Vector prevVelocity = cameraBody->GetVelocity();
 
-        //low pass filter - for smooth camera movement
+        // low pass filter - for smooth camera movement
         float factor = gDeltaTime / (CAMERA_TRANSLATION_SMOOTHING + gDeltaTime);
-        cameraEntity->SetVelocity(VectorLerp(prevVelocity, destVelocity, factor));
+        cameraBody->SetVelocity(VectorLerp(prevVelocity, destVelocity, factor));
     }
 
     void OnKeyPress(int key)
@@ -162,54 +161,63 @@ public:
             SetFullscreenMode(!fullscreen);
         }
 
-        XOrientation orient;
+        auto cameraTransform = gEntityManager->GetComponent<TransformComponent>(cameraEntity);
+        Orientation orient;
 
         //place spot light
-        if (key == 'T')
+        if (key == 'T' && cameraTransform != nullptr)
         {
-            Entity* lightEntity = gScene->CreateEntity();
-            cameraEntity->GetOrientation(&orient);
-            lightEntity->SetOrientation(&orient);
-            lightEntity->SetPosition(cameraEntity->GetPosition());
+            EntityID lightEntity = gEntityManager->CreateEntity();
+            gSelectedEntity = lightEntity;
 
-            LightComponent* light = new LightComponent(lightEntity);
+            TransformComponent transform;
+            transform.SetOrientation(cameraTransform->GetOrientation());
+            transform.SetPosition(cameraTransform->GetPosition());
+            gEntityManager->AddComponent(lightEntity, transform);
+
+            LightComponent light;
             SpotLightDesc lightDesc;
             lightDesc.nearDist = 0.1f;
             lightDesc.farDist = 500.0f;
             lightDesc.cutoff = NFE_MATH_PI / 4.0f;
-            lightDesc.maxShadowDistance = 60.0;
-            light->SetSpotLight(&lightDesc);
-            light->SetColor(Float3(600, 200, 50));
-            light->SetLightMap("flashlight.jpg");
-            light->SetShadowMap(1024);
-
-            gSelectedEntity = lightEntity;
+            lightDesc.maxShadowDistance = 60.0f;
+            light.SetSpotLight(&lightDesc);
+            light.SetColor(Float3(600.0f, 200.0f, 50.0f));
+            light.SetLightMap("flashlight.jpg");
+            light.SetShadowMap(1024);
+            gEntityManager->AddComponent(lightEntity, light);
         }
 
         //place omni light
-        if (key == 'O')
+        if (key == 'O' && cameraTransform != nullptr)
         {
             OmniLightDesc lightDesc;
             lightDesc.radius = 10.0f;
-            lightDesc.shadowFadeStart = 20.0;
-            lightDesc.shadowFadeEnd = 30.0;
+            lightDesc.shadowFadeStart = 20.0f;
+            lightDesc.shadowFadeEnd = 30.0f;
 
-            Entity* lightEntity = gScene->CreateEntity();
-            lightEntity->SetPosition(cameraEntity->GetPosition());
-
-            LightComponent* light = new LightComponent(lightEntity);
-            light->SetOmniLight(&lightDesc);
-            light->SetColor(Float3(600, 600, 600));
-            light->SetShadowMap(512);
-
+            EntityID lightEntity = gEntityManager->CreateEntity();
             gSelectedEntity = lightEntity;
+
+            TransformComponent transform;
+            transform.SetPosition(cameraTransform->GetPosition());
+            gEntityManager->AddComponent(lightEntity, transform);
+
+            LightComponent light;
+            light.SetOmniLight(&lightDesc);
+            light.SetColor(Float3(600, 600, 600));
+            light.SetShadowMap(512);
+            gEntityManager->AddComponent(lightEntity, light);
         }
 
         if (key >= '0' && key <= '9')
         {
-            gSelectedEntity = nullptr;
+            gSelectedEntity = -1;
             EngineDeleteScene(gScene);
+
             gScene = EngineCreateScene();
+            gEntityManager = gScene->GetEntityManager();
+
             InitCamera();
             InitScene(key - '0');
         }
@@ -217,60 +225,65 @@ public:
 
     void OnMouseDown(UINT button, int x, int y)
     {
-        XOrientation camOrient;
-        cameraEntity->GetOrientation(&camOrient);
-
         if (button == 0)
             cameraControl = true;
 
+        auto cameraTransform = gEntityManager->GetComponent<TransformComponent>(cameraEntity);
+        if (cameraTransform == nullptr)
+            return;
+        Orientation camOrient = cameraTransform->GetOrientation();
+
         //shoot a cube
-        else if (button == 1)
+        if (button == 1)
         {
-            Entity* cube = gScene->CreateEntity();
+            EntityID cube = gEntityManager->CreateEntity();
             gSelectedEntity = cube;
-            cube->SetPosition(cameraEntity->GetPosition() + camOrient.z);
-            cube->SetVelocity(0.1f * camOrient.z);
-            //cube->SetMaxLifeTime(5.0f);
 
-            MeshComponent* mesh = new MeshComponent(cube);
-            mesh->SetMeshResource("cube.nfm");
+            TransformComponent transform;
+            transform.SetPosition(cameraTransform->GetPosition() + camOrient.z);
+            gEntityManager->AddComponent(cube, transform);
 
-            BodyComponent* body = new BodyComponent(cube);
-            body->SetMass(10.0f);
-            body->EnablePhysics((CollisionShape*)EngineGetResource(ResourceType::CollisionShape,
-                                 "shape_box"));
+            MeshComponent mesh;
+            mesh.SetMeshResource("cube.nfm");
+            gEntityManager->AddComponent(cube, mesh);
 
+            BodyComponent body;
+            body.SetMass(10.0f);
+            body.SetVelocity(0.1f * camOrient.z);
+            body.EnablePhysics((CollisionShape*)EngineGetResource(ResourceType::CollisionShape,
+                                "shape_box"));
+            gEntityManager->AddComponent(cube, body);
 
             OmniLightDesc lightDesc;
             lightDesc.radius = 4.0f;
             lightDesc.shadowFadeStart = 20.0;
             lightDesc.shadowFadeEnd = 30.0;
-
-            Entity* lightEntity = gScene->CreateEntity();
-            cube->Attach(lightEntity);
-            //lightEntity->SetLocalPosition(Vector(0.0f, 1.0f, 0.0f));
-
-            LightComponent* light = new LightComponent(lightEntity);
-            light->SetOmniLight(&lightDesc);
-            light->SetColor(Float3(1.0f, 1.0f, 10.0f));
-            light->SetShadowMap(0);
-
+            LightComponent light;
+            light.SetOmniLight(&lightDesc);
+            light.SetColor(Float3(1.0f, 1.0f, 10.0f));
+            light.SetShadowMap(0);
+            gEntityManager->AddComponent(cube, light);
         }
-        else
+
+        if (button == 2)
         {
-            Entity* barrel = gScene->CreateEntity();
+            EntityID barrel = gEntityManager->CreateEntity();
             gSelectedEntity = barrel;
-            barrel->SetPosition(cameraEntity->GetPosition() + camOrient.z);
-            barrel->SetVelocity(30.0f * camOrient.z);
 
-            MeshComponent* mesh = new MeshComponent(barrel);
-            mesh->SetMeshResource("barrel.nfm");
+            TransformComponent transform;
+            transform.SetPosition(cameraTransform->GetPosition() + camOrient.z);
+            gEntityManager->AddComponent(barrel, transform);
 
-            BodyComponent* body = new BodyComponent(barrel);
-            body->SetMass(20.0f);
-            body->EnablePhysics((CollisionShape*)EngineGetResource(ResourceType::CollisionShape,
-                                 "shape_barrel"));
+            MeshComponent mesh;
+            mesh.SetMeshResource("barrel.nfm");
+            gEntityManager->AddComponent(barrel, mesh);
 
+            BodyComponent body;
+            body.SetMass(20.0f);
+            body.SetVelocity(30.0f * camOrient.z);
+            body.EnablePhysics((CollisionShape*)EngineGetResource(ResourceType::CollisionShape,
+                                "shape_barrel"));
+            gEntityManager->AddComponent(barrel, body);
         }
     }
 
@@ -299,7 +312,11 @@ public:
     // window resized
     void OnResize(UINT width, UINT height)
     {
-        if (camera)
+        if (gEntityManager == nullptr)
+            return;
+
+        auto camera = gEntityManager->GetComponent<CameraComponent>(cameraEntity);
+        if (camera != nullptr)
         {
             if (width || height)
             {
@@ -325,7 +342,7 @@ void ProcessSceneEvents()
                 EventEntityDestroy* event = (EventEntityDestroy*)data;
                 LOG_INFO("Entity destroyed: %p", event->entity);
                 if (event->entity == gSelectedEntity)
-                    gSelectedEntity = nullptr;
+                    gSelectedEntity = -1;
                 break;
             }
 
@@ -404,6 +421,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
     //create scene and camera
     gScene = EngineCreateScene();
+    if (gScene == nullptr)
+        return 1;
+
+    gEntityManager = gScene->GetEntityManager();
+    if (gEntityManager == nullptr)
+        return 1;
 
     CollisionShape* floorShape = ENGINE_GET_COLLISION_SHAPE("shape_floor");
     floorShape->SetCallbacks(OnLoadCustomShapeResource, NULL);
@@ -437,8 +460,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
     // message loop
 
-    DrawRequest drawRequest;
-
     Common::Timer timer;
     timer.Start();
     while (!window->IsClosed())
@@ -447,25 +468,23 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         gDeltaTime = static_cast<float>(timer.Stop());
         timer.Start();
 
+        window->ProcessMessages();
+        window->UpdateCamera();
+
         UpdateRequest updateReq;
         updateReq.pScene = gScene;
         updateReq.deltaTime = gDeltaTime;
 
-        window->ProcessMessages();
-        window->UpdateCamera();
-
+        DrawRequest drawRequest;
         drawRequest.deltaTime = gDeltaTime;
-        drawRequest.pView = window->view;
+        drawRequest.pView = window->view.get();
         EngineAdvance(&drawRequest, 1, &updateReq, 1);
 
         ProcessSceneEvents();
 
-        // print focus segment name
         char str[128];
-        Segment* focus = gScene->GetFocusSegment();
-        sprintf(str, "NFEngine Demo (%S) - focus: %S - Press [0-%i] to switch scene",
-                 PLATFORM_STR, (focus != 0) ? focus->GetName() : "NONE",
-                 GetScenesNum() - 1);
+        sprintf(str, "NFEngine Demo (%s)  -  Press [0-%i] to switch scene",
+                 PLATFORM_STR, GetScenesNum() - 1);
         window->SetTitle(str);
     }
 
