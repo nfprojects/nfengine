@@ -28,7 +28,7 @@ class CORE_API View
     std::unique_ptr<ITexture> mDepthBuffer;
     std::unique_ptr<GeometryBuffer> mGBuffer;
     std::unique_ptr<IRenderTarget> mRenderTarget;
-    Scene::Camera* mCamera;
+    Scene::CameraComponent* mCamera;
 
     bool InitRenderTarget(uint32 width, uint32 height);
     static void OnWindowResize(void* userData);
@@ -45,8 +45,8 @@ public:
      */
     virtual void OnPostRender(RenderContext* context);
 
-    Result SetCamera(Scene::Camera* camera);
-    Scene::Camera* GetCamera() const;
+    Result SetCamera(Scene::CameraComponent* camera);
+    Scene::CameraComponent* GetCamera() const;
 
     NFE_INLINE IRenderTarget* GetRenderTarget() const
     {

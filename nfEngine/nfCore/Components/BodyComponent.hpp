@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include "Core.hpp"
+#include "../Core.hpp"
 #include "Component.hpp"
-#include "CollisionShape.hpp"
+#include "../CollisionShape.hpp"
 
 class  btDefaultMotionState;
 class  btRigidBody;
@@ -27,19 +27,24 @@ struct BodyComponentDesc
 };
 #pragma pack(pop)
 
+#define BODY_COMPONENT_FLAG_INIT (1<<0)
+#define BODY_COMPONENT_FLAG_RELEASE (1<<1)
+
+
 /**
  * Component representing physical body.
  */
 class CORE_API BodyComponent : public Component
 {
-    friend class SceneManager;
-    friend class Entity;
+    friend class PhysicsSystem;
+    friend class RendererSystem;
 
+    int mFlags;
     Resource::CollisionShape* mCollisionShape;
 
     // TODO: these shouldn't be allocated dynamically
-    btDefaultMotionState* mMotionState;
-    btRigidBody* mBody;
+    std::unique_ptr<btDefaultMotionState> mMotionState;
+    std::unique_ptr<btRigidBody> mRigidBody;
 
     // physical properties
     float mMass;
@@ -48,22 +53,39 @@ class CORE_API BodyComponent : public Component
     BodyComponent(const BodyComponent&);
     BodyComponent& operator=(const BodyComponent&);
 
-    void OnUpdate(float dt);
-    void OnMove();
-
 public:
-    BodyComponent(Entity* pParent);
+    BodyComponent();
     ~BodyComponent();
 
     /**
      * Enable physics interaction via assigning a collision shape
      */
-    void EnablePhysics(Resource::CollisionShape* pShape);
+    void EnablePhysics(Resource::CollisionShape* shape);
 
     /**
      * Disable physics interaction
      */
     void DisablePhysics();
+
+    /**
+     * Get current linear velocity.
+     */
+    Math::Vector GetVelocity() const;
+
+    /**
+     * Get current angular velocity (in radians per second).
+     */
+    Math::Vector GetAngularVelocity() const;
+
+    /**
+     * Change linear velocity.
+     */
+    void SetVelocity(const Math::Vector& newVelocity);
+
+    /**
+     * Change angular velocity (in radians per second).
+     */
+    void SetAngularVelocity(const Math::Vector& newAngularVelocity);
 
     /**
      * Set body mass
@@ -72,10 +94,6 @@ public:
     void SetMass(float mass);
 
     float GetMass();
-
-    Result Deserialize(Common::InputStream* pStream);
-    Result Serialize(Common::OutputStream* pStream) const;
-    void ReceiveMessage(ComponentMsg type, void* pData);
 };
 
 } // namespace Scene

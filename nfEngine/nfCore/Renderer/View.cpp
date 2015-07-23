@@ -52,13 +52,13 @@ void View::OnPostRender(RenderContext* context)
     // no GUI by default
 }
 
-Result View::SetCamera(Scene::Camera* camera)
+Result View::SetCamera(Scene::CameraComponent* camera)
 {
     this->mCamera = camera;
     return Result::OK;
 }
 
-Scene::Camera* View::GetCamera() const
+Scene::CameraComponent* View::GetCamera() const
 {
     return mCamera;
 }

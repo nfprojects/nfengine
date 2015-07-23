@@ -16,14 +16,14 @@ SceneManager* gScene = nullptr;
 void CreateSceneMinecraft();
 void CreateSceneSponza();
 void CreateScenePerformance();
-void CreateSceneSegments();
+// void CreateSceneSegments();
 
 std::vector<std::function<void()>> gScenes =
 {
     CreateScenePerformance,
-    CreateSceneSegments,
     CreateSceneSponza,
     CreateSceneMinecraft,
+    // CreateSceneSegments,
 };
 
 void CreateSceneMinecraft()
@@ -36,7 +36,7 @@ void CreateSceneMinecraft()
 
     // SUNLIGHT
     Entity* dirLightEnt = gScene->CreateEntity();
-    XOrientation orient;
+    Orientation orient;
     orient.x = Vector(0.0f, -0.0f, -0.0f, 0.0f);
     orient.z = Vector(-1.5f, -1.0f, 0.5f, 0.0f);
     orient.y = Vector(0.0f, 1.0f, 0.0f, 0.0f);
@@ -171,9 +171,11 @@ void CreateScenePerformance()
     }
 }
 
+// TODO: restore when
 /**
  * Infinite looped scene.
  */
+/*
 void CreateSceneSegments()
 {
     //set ambient & background color
@@ -254,6 +256,7 @@ void CreateSceneSegments()
     // Set focus
     gScene->SetFocusSegment(segments[0][0]);
 }
+*/
 
 int GetScenesNum()
 {

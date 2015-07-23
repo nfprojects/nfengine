@@ -11,6 +11,72 @@
 namespace NFE {
 namespace Math {
 
+int SolveEquationsSystem(float M[4][3], float* x, float* y, float* z)
+{
+    float w = M[0][0] * M[1][1] * M[2][2] +
+        M[1][0] * M[2][1] * M[0][2] +
+        M[2][0] * M[0][1] * M[1][2] -
+        M[2][0] * M[1][1] * M[0][2] -
+        M[1][0] * M[0][1] * M[2][2] -
+        M[0][0] * M[2][1] * M[1][2];
+
+    if ((w < 0.000001f) && (w > -0.000001f))
+        return;
+
+    float invW = 1.0f / w;
+
+    float wx = M[3][0] * M[1][1] * M[2][2] +
+        M[1][0] * M[2][1] * M[3][2] +
+        M[2][0] * M[3][1] * M[1][2] -
+        M[2][0] * M[1][1] * M[3][2] -
+        M[1][0] * M[3][1] * M[2][2] -
+        M[3][0] * M[2][1] * M[1][2];
+
+    float wy = M[0][0] * M[3][1] * M[2][2] +
+        M[3][0] * M[2][1] * M[0][2] +
+        M[2][0] * M[0][1] * M[3][2] -
+        M[2][0] * M[3][1] * M[0][2] -
+        M[3][0] * M[0][1] * M[2][2] -
+        M[0][0] * M[2][1] * M[3][2];
+
+    float wz = M[0][0] * M[1][1] * M[3][2] +
+        M[1][0] * M[3][1] * M[0][2] +
+        M[3][0] * M[0][1] * M[1][2] -
+        M[3][0] * M[1][1] * M[0][2] -
+        M[1][0] * M[0][1] * M[3][2] -
+        M[0][0] * M[3][1] * M[1][2];
+
+    *x = wx * invW;
+    *y = wy * invW;
+    *z = wz * invW;
+
+    return 0;
+}
+
+Sphere::Sphere(const Vector& P1, const Vector& P2, const Vector& P3, const Vector& P4)
+{
+    float matrix[4][3];
+
+    matrix[0][0] = 2.0f * (P2.f[0] - P1.f[0]);
+    matrix[1][0] = 2.0f * (P2.f[1] - P1.f[1]);
+    matrix[2][0] = 2.0f * (P2.f[2] - P1.f[2]);
+
+    matrix[0][1] = 2.0f * (P3.f[0] - P1.f[0]);
+    matrix[1][1] = 2.0f * (P3.f[1] - P1.f[1]);
+    matrix[2][1] = 2.0f * (P3.f[2] - P1.f[2]);
+
+    matrix[0][2] = 2.0f * (P4.f[0] - P1.f[0]);
+    matrix[1][2] = 2.0f * (P4.f[1] - P1.f[1]);
+    matrix[2][2] = 2.0f * (P4.f[2] - P1.f[2]);
+
+    float tmp = VectorDot3(P1, P1)[0];
+    matrix[3][0] = VectorDot3(P2, P2)[0] - tmp;
+    matrix[3][1] = VectorDot3(P3, P3)[0] - tmp;
+    matrix[3][2] = VectorDot3(P4, P4)[0] - tmp;
+
+    SolveEquationsSystem(matrix, &origin.f[0], &origin.f[1], &origin.f[2]);
+    r = VectorLength3(origin - P1).f[0];
+}
 
 float ClosestPointOnSegment(const Vector& p, const Vector& p1, const Vector& p2, Vector& out)
 {

@@ -1,52 +1,47 @@
 /**
  * @file
  * @author Witek902 (witek902@gmail.com)
- * @brief  Camera component definitions.
+ * @brief  CameraComponent component definitions.
  */
 
-#include "PCH.hpp"
-#include "Camera.hpp"
-#include "Entity.hpp"
-#include "..\nfCommon\InputStream.hpp"
-#include "..\nfCommon\OutputStream.hpp"
+#include "../PCH.hpp"
+#include "CameraComponent.hpp"
 
 namespace NFE {
 namespace Scene {
 
 using namespace Math;
 
-Camera::Camera(Entity* pParent) : Component(pParent)
-{
-    mType = ComponentType::Camera;
-    projMode = ProjectionMode::Perspective;
-}
-
-void Camera::SetPerspective(const Perspective* pDesc)
+CameraComponent::CameraComponent()
 {
     projMode = ProjectionMode::Perspective;
-    perspective = *pDesc;
 }
 
-void Camera::GetPerspective(Perspective* pDesc) const
+void CameraComponent::SetPerspective(const Perspective* desc)
 {
-    *pDesc = perspective;
+    projMode = ProjectionMode::Perspective;
+    perspective = *desc;
 }
 
-void Camera::SetOrtho(const Ortho* pDesc)
+void CameraComponent::GetPerspective(Perspective* desc) const
+{
+    *desc = perspective;
+}
+
+void CameraComponent::SetOrtho(const Ortho* desc)
 {
     projMode = ProjectionMode::Ortho;
-    ortho = *pDesc;
+    ortho = *desc;
 }
 
-void Camera::OnUpdate(float dt)
+void CameraComponent::Update(const Matrix& matrix, const Vector& velocity, const Vector& angularVelocity,
+                             float dt)
 {
-    Matrix matrix = mParentOffset * mOwner->mMatrix;
-
-    //calculate view matrix
+    // calculate view matrix
     mViewMatrix = MatrixLookTo(matrix.r[3], matrix.r[2], matrix.r[1]);
     mViewMatrixInv = MatrixInverse(mViewMatrix);
 
-    //calculat projection matrix
+    // calculate projection matrix
     if (projMode == ProjectionMode::Perspective)
         mProjMatrix = MatrixPerspective(perspective.aspectRatio, perspective.FoV,
                                         perspective.farDist, perspective.nearDist);
@@ -58,21 +53,15 @@ void Camera::OnUpdate(float dt)
 
 
     //calculate secondary view matrix for motion blur
-    Matrix rotMatrix = MatrixRotationNormal(mOwner->mAngularVelocity, 0.01f);
+    Matrix rotMatrix = MatrixRotationNormal(angularVelocity, 0.01f);
     Matrix secondaryCameraMatrix;
     secondaryCameraMatrix.r[0] = LinearCombination3(matrix.r[0], rotMatrix);
     secondaryCameraMatrix.r[1] = LinearCombination3(matrix.r[1], rotMatrix);
     secondaryCameraMatrix.r[2] = LinearCombination3(matrix.r[2], rotMatrix);
-    secondaryCameraMatrix.r[3] = (Vector)matrix.r[3] + mOwner->mVelocity * 0.01f;
+    secondaryCameraMatrix.r[3] = (Vector)matrix.r[3] + velocity * 0.01f;
     Matrix secondaryViewMatrix = MatrixLookTo(secondaryCameraMatrix.r[3], secondaryCameraMatrix.r[2],
                                  secondaryCameraMatrix.r[1]);
     mSecondaryProjViewMatrix = secondaryViewMatrix * mProjMatrix;
-
-    /*
-    //calculate secondary view matrix for motion blur
-    Matrix prevViewMatrix = MatrixLookTo(mPrevMatrix.r[3], mPrevMatrix.r[2], mPrevMatrix.r[1]);
-    mSecondaryProjViewMatrix = prevViewMatrix * mProjMatrix;
-    */
 
     Vector xAxis, yAxis, zAxis;
     Vector pos = matrix.GetRow(3);
@@ -126,13 +115,10 @@ void Camera::OnUpdate(float dt)
     mFrustum.CalculatePlanes();
 }
 
-
-//Used for Cascaded Shadow Mapping to calculate shadow cascades.
-//This function doesn't calculate frustum's planes
-void Camera::SplitFrustum(float zn, float zf, Frustum* pFrustum)
+// Used for Cascaded Shadow Mapping to calculate shadow cascades.
+// This function doesn't calculate frustum's planes
+void CameraComponent::SplitFrustum(const Matrix& matrix, float zn, float zf, Frustum* frustum)
 {
-    Matrix matrix = mOwner->mMatrix * mParentOffset;
-
     Vector xAxis, yAxis, zAxis;
     Vector pos = matrix.GetRow(3);
 
@@ -144,15 +130,15 @@ void Camera::SplitFrustum(float zn, float zf, Frustum* pFrustum)
         yAxis = y * matrix.GetRow(1);
         zAxis = matrix.GetRow(2);
 
-        pFrustum->verticies[0] = pos + zn * (zAxis - xAxis - yAxis);
-        pFrustum->verticies[1] = pos + zn * (zAxis + xAxis - yAxis);
-        pFrustum->verticies[2] = pos + zn * (zAxis - xAxis + yAxis);
-        pFrustum->verticies[3] = pos + zn * (zAxis + xAxis + yAxis);
+        frustum->verticies[0] = pos + zn * (zAxis - xAxis - yAxis);
+        frustum->verticies[1] = pos + zn * (zAxis + xAxis - yAxis);
+        frustum->verticies[2] = pos + zn * (zAxis - xAxis + yAxis);
+        frustum->verticies[3] = pos + zn * (zAxis + xAxis + yAxis);
 
-        pFrustum->verticies[4] = pos + zf * (zAxis - xAxis - yAxis);
-        pFrustum->verticies[5] = pos + zf * (zAxis + xAxis - yAxis);
-        pFrustum->verticies[6] = pos + zf * (zAxis - xAxis + yAxis);
-        pFrustum->verticies[7] = pos + zf * (zAxis + xAxis + yAxis);
+        frustum->verticies[4] = pos + zf * (zAxis - xAxis - yAxis);
+        frustum->verticies[5] = pos + zf * (zAxis + xAxis - yAxis);
+        frustum->verticies[6] = pos + zf * (zAxis - xAxis + yAxis);
+        frustum->verticies[7] = pos + zf * (zAxis + xAxis + yAxis);
     }
     else
     {
@@ -160,32 +146,16 @@ void Camera::SplitFrustum(float zn, float zf, Frustum* pFrustum)
         yAxis = matrix.GetRow(1);
         zAxis = matrix.GetRow(2);
 
-        pFrustum->verticies[0] = pos + zn * zAxis + ortho.left * xAxis  + ortho.bottom * yAxis;
-        pFrustum->verticies[1] = pos + zn * zAxis + ortho.right * xAxis + ortho.bottom * yAxis;
-        pFrustum->verticies[2] = pos + zn * zAxis + ortho.left * xAxis  + ortho.top * yAxis;
-        pFrustum->verticies[3] = pos + zn * zAxis + ortho.right * xAxis + ortho.top * yAxis;
+        frustum->verticies[0] = pos + zn * zAxis + ortho.left * xAxis  + ortho.bottom * yAxis;
+        frustum->verticies[1] = pos + zn * zAxis + ortho.right * xAxis + ortho.bottom * yAxis;
+        frustum->verticies[2] = pos + zn * zAxis + ortho.left * xAxis  + ortho.top * yAxis;
+        frustum->verticies[3] = pos + zn * zAxis + ortho.right * xAxis + ortho.top * yAxis;
 
-        pFrustum->verticies[4] = pos + zf * zAxis + ortho.left * xAxis  + ortho.bottom * yAxis;
-        pFrustum->verticies[5] = pos + zf * zAxis + ortho.right * xAxis + ortho.bottom * yAxis;
-        pFrustum->verticies[6] = pos + zf * zAxis + ortho.left * xAxis  + ortho.top * yAxis;
-        pFrustum->verticies[7] = pos + zf * zAxis + ortho.right * xAxis + ortho.top * yAxis;
+        frustum->verticies[4] = pos + zf * zAxis + ortho.left * xAxis  + ortho.bottom * yAxis;
+        frustum->verticies[5] = pos + zf * zAxis + ortho.right * xAxis + ortho.bottom * yAxis;
+        frustum->verticies[6] = pos + zf * zAxis + ortho.left * xAxis  + ortho.top * yAxis;
+        frustum->verticies[7] = pos + zf * zAxis + ortho.right * xAxis + ortho.top * yAxis;
     }
-}
-
-// TODO
-Result Camera::Deserialize(Common::InputStream* pStream)
-{
-    CameraDesc desc;
-    if (pStream->Read(sizeof(desc), &desc) != sizeof(desc))
-        return Result::Error;
-
-    return Result::OK;
-}
-
-// TODO
-Result Camera::Serialize(Common::OutputStream* pStream) const
-{
-    return Result::OK;
 }
 
 } // namespace Scene

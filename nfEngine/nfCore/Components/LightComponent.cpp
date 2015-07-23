@@ -4,20 +4,15 @@
  * @brief  Definition of light component class.
  */
 
-#include "PCH.hpp"
-#include "Globals.hpp"
-#include "Light.hpp"
-#include "Entity.hpp"
-#include "ResourcesManager.hpp"
-
-#include "Renderer/HighLevelRenderer.hpp"
-#include "Renderer/LightsRenderer.hpp"
-#include "Renderer/DebugRenderer.hpp"
+#include "../PCH.hpp"
+#include "LightComponent.hpp"
+#include "../Globals.hpp"
+#include "../ResourcesManager.hpp"
 
 #include "../nfCommon/InputStream.hpp"
 #include "../nfCommon/OutputStream.hpp"
 #include "../nfCommon/Logger.hpp"
-#include "Engine.hpp"
+#include "../Engine.hpp"
 
 namespace NFE {
 namespace Scene {
@@ -26,83 +21,9 @@ using namespace Math;
 using namespace Resource;
 using namespace Renderer;
 
-// TODO: this should be in math library...
-int CalculateEquations(float M[4][3], float* pResult1, float* pResult2, float* pResult3)
+
+LightComponent::LightComponent()
 {
-    float W = M[0][0] * M[1][1] * M[2][2] +
-              M[1][0] * M[2][1] * M[0][2] +
-              M[2][0] * M[0][1] * M[1][2] -
-              M[2][0] * M[1][1] * M[0][2] -
-              M[1][0] * M[0][1] * M[2][2] -
-              M[0][0] * M[2][1] * M[1][2];
-
-    if ((W < 0.000001f) && (W > -0.000001f))
-    {
-        return 1;
-    }
-
-    float Wx = M[3][0] * M[1][1] * M[2][2] +
-               M[1][0] * M[2][1] * M[3][2] +
-               M[2][0] * M[3][1] * M[1][2] -
-               M[2][0] * M[1][1] * M[3][2] -
-               M[1][0] * M[3][1] * M[2][2] -
-               M[3][0] * M[2][1] * M[1][2];
-
-    float Wy = M[0][0] * M[3][1] * M[2][2] +
-               M[3][0] * M[2][1] * M[0][2] +
-               M[2][0] * M[0][1] * M[3][2] -
-               M[2][0] * M[3][1] * M[0][2] -
-               M[3][0] * M[0][1] * M[2][2] -
-               M[0][0] * M[2][1] * M[3][2];
-
-    float Wz = M[0][0] * M[1][1] * M[3][2] +
-               M[1][0] * M[3][1] * M[0][2] +
-               M[3][0] * M[0][1] * M[1][2] -
-               M[3][0] * M[1][1] * M[0][2] -
-               M[1][0] * M[0][1] * M[3][2] -
-               M[0][0] * M[3][1] * M[1][2];
-
-    *pResult1 = Wx / W;
-    *pResult2 = Wy / W;
-    *pResult3 = Wz / W;
-
-    return 0;
-}
-
-// TODO: this should be in math library...
-Sphere MakeSphereFromPoints(const Vector& P1, const Vector& P2, const Vector& P3, const Vector& P4)
-{
-    float matrix[4][3];
-    Vector sphereCenter;
-
-    matrix[0][0] = 2.0f * (P2.f[0] - P1.f[0]);
-    matrix[1][0] = 2.0f * (P2.f[1] - P1.f[1]);
-    matrix[2][0] = 2.0f * (P2.f[2] - P1.f[2]);
-
-    matrix[0][1] = 2.0f * (P3.f[0] - P1.f[0]);
-    matrix[1][1] = 2.0f * (P3.f[1] - P1.f[1]);
-    matrix[2][1] = 2.0f * (P3.f[2] - P1.f[2]);
-
-    matrix[0][2] = 2.0f * (P4.f[0] - P1.f[0]);
-    matrix[1][2] = 2.0f * (P4.f[1] - P1.f[1]);
-    matrix[2][2] = 2.0f * (P4.f[2] - P1.f[2]);
-
-    float tmp = VectorDot3(P1, P1)[0];
-    matrix[3][0] = VectorDot3(P2, P2)[0] - tmp;
-    matrix[3][1] = VectorDot3(P3, P3)[0] - tmp;
-    matrix[3][2] = VectorDot3(P4, P4)[0] - tmp;
-
-    Sphere result;
-    CalculateEquations(matrix, &result.origin.f[0], &result.origin.f[1], &result.origin.f[2]);
-    result.r = VectorLength3(result.origin - P1).f[0];
-    return result;
-}
-
-
-LightComponent::LightComponent(Entity* pParent) : Component(pParent)
-{
-    mType = ComponentType::Light;
-
     mLightType = LightType::Unknown;
     mShadowMap = nullptr;
 
@@ -168,9 +89,9 @@ void LightComponent::SetOmniLight(const OmniLightDesc* pDesc)
 
         for (int i = 0; i < 6; i++)
         {
-            Camera* pCamera = new Camera(mOwner);
-            pCamera->mVirtual = true;
-            mCameras.push_back(pCamera);
+            // CameraComponent* pCamera = new CameraComponent(mOwner);
+            // pCamera->mVirtual = true;
+            // mCameras.push_back(pCamera);
         }
     }
 }
@@ -188,9 +109,9 @@ void LightComponent::SetSpotLight(const SpotLightDesc* pDesc)
             mShadowMap->Resize(mShadowMap->GetSize(), ShadowMap::Type::Flat);
 
         {
-            Camera* pCamera = new Camera(mOwner);
-            pCamera->mVirtual = true;
-            mCameras.push_back(pCamera);
+            // CameraComponent* pCamera = new CameraComponent(mOwner);
+            // pCamera->mVirtual = true;
+            // mCameras.push_back(pCamera);
         }
     }
 }
@@ -210,9 +131,9 @@ void LightComponent::SetDirLight(const DirLightDesc* pDesc)
 
         for (int i = 0; i < mDirLight.splits; i++)
         {
-            Camera* pCamera = new Camera(mOwner);
-            pCamera->mVirtual = true;
-            mCameras.push_back(pCamera);
+            // CameraComponent* pCamera = new CameraComponent(mOwner);
+            // pCamera->mVirtual = true;
+            // mCameras.push_back(pCamera);
         }
     }
 }
@@ -305,7 +226,7 @@ float Quantize(float x, float step)
     return x - r + step;*/
 }
 
-void LightComponent::Update(Camera* pCamera)
+void LightComponent::Update(CameraComponent* pCamera)
 {
     if (mLightType == LightType::Spot)
     {
@@ -321,7 +242,7 @@ void LightComponent::Update(Camera* pCamera)
         //  mCameras[0]->mOwner->mMatrix = mOwner->mMatrix;
 
         //update camera
-        mCameras[0]->OnUpdate(0.0f);
+        mCameras[0]->Update(0.0f);
     }
 
     if (mShadowMap && mShadowMap->GetSize() > 0)
@@ -359,42 +280,7 @@ void LightComponent::Update(Camera* pCamera)
             mCameras[5]->mParentOffset.r[1] = Vector(0, 1, 0);
             mCameras[5]->mParentOffset.r[2] = Vector(0, 0, -1);
 
-            /*
-            //set orientation for each face
-            XOrientation orientation;
-
-            //X+
-            orientation.z = Vector(1, 0, 0);
-            orientation.y = Vector(0, 1, 0);
-            mCameras[0]->mOwner->SetOrientation(&orientation);
-
-            //X-
-            orientation.z = Vector(-1, 0, 0);
-            orientation.y = Vector(0, 1, 0);
-            mCameras[1]->mOwner->SetOrientation(&orientation);
-
-            //Y+
-            orientation.z = Vector(0, 1, 0);
-            orientation.y = Vector(0, 0, -1);
-            mCameras[2]->mOwner->SetOrientation(&orientation);
-
-            //Y-
-            orientation.z = Vector(0, -1, 0);
-            orientation.y = Vector(0, 0, 1);
-            mCameras[3]->mOwner->SetOrientation(&orientation);
-
-            //Z+
-            orientation.z = Vector(0, 0, 1);
-            orientation.y = Vector(0, 1, 0);
-            mCameras[4]->mOwner->SetOrientation(&orientation);
-
-            //Z-
-            orientation.z = Vector(0, 0, -1);
-            orientation.y = Vector(0, 1, 0);
-            mCameras[5]->mOwner->SetOrientation(&orientation);
-            */
-
-            //set perspective projection
+            // set perspective projection
             Perspective perspectiveDesc;
             perspectiveDesc.aspectRatio = 1.0f;
             perspectiveDesc.farDist = mOmniLight.radius;
@@ -443,8 +329,8 @@ void LightComponent::Update(Camera* pCamera)
             for (int i = 0; i < mDirLight.splits; i++)
             {
                 pCamera->SplitFrustum(mCascadeRanges[i].f[0], mCascadeRanges[i].f[1], &frustum);
-                Sphere boundingSphere = MakeSphereFromPoints(frustum.verticies[6], frustum.verticies[7],
-                                        frustum.verticies[5], frustum.verticies[3]);
+                Sphere boundingSphere(frustum.verticies[6], frustum.verticies[7],
+                                      frustum.verticies[5], frustum.verticies[3]);
 
                 Ortho ortho;
                 ortho.right =    boundingSphere.SupportVertex(   mOwner->mMatrix.GetRow(0));
@@ -463,112 +349,13 @@ void LightComponent::Update(Camera* pCamera)
                 mCameras[i]->SetOrtho(&ortho);
 
 
-                XOrientation orient;
+                Orientation orient;
                 mOwner->GetOrientation(&orient);
                 mCameras[i]->mOwner->SetOrientation(&orient);
                 mCameras[i]->mOwner->SetPosition(Vector());
-
-
-
-
-                /*
-                Ortho ortho;
-                ortho.mRight =     frustum.SupportVertex(  mMatrix.GetRow(0));
-                ortho.mLeft =      -frustum.SupportVertex( -mMatrix.GetRow(0));
-                ortho.mTop =       frustum.SupportVertex(  mMatrix.GetRow(1));
-                ortho.mBottom =    -frustum.SupportVertex( -mMatrix.GetRow(1));
-                ortho.farDist =       frustum.SupportVertex(  mMatrix.GetRow(2));
-                ortho.nearDist =      -frustum.SupportVertex( -mMatrix.GetRow(2)) - 50.0f;
-                mCameras[i].SetOrtho(&ortho);
-
-                XOrientation orient;
-                GetOrientation(&orient);
-                mCameras[i].SetOrientation(&orient);
-                mCameras[i].SetPosition(Vector());
-                */
-
                 mCameras[i]->OnUpdate(0.0f);
             }
         }
-    }
-}
-
-void LightComponent::OnRender(RenderContext* pCtx)
-{
-    ShadowMap* pShadowMap = mDrawShadow ? mShadowMap : nullptr;
-
-    if (mLightType == LightType::Omni)
-    {
-        LightsRenderer::Get()->DrawOmniLight(pCtx, mOwner->GetPosition(), mOmniLight.radius, mColor,
-                                        pShadowMap);
-    }
-
-    if (mLightType == LightType::Spot)
-    {
-        SpotLightProperties prop;
-        prop.color = mColor;
-        prop.position = mOwner->mMatrix.r[3];
-        prop.direction = mOwner->mMatrix.r[2];
-        prop.farDist.Set(mSpotLight.farDist);
-        prop.viewProjMatrix = mCameras[0]->mViewMatrix * mCameras[0]->mProjMatrix;
-        prop.viewMatrix = mCameras[0]->mViewMatrix;
-
-        if (pShadowMap)
-            prop.shadowMapResInv = 1.0f / (float)mShadowMap->GetSize();
-        else
-            prop.shadowMapResInv = 0.0f;
-
-        LightsRenderer::Get()->DrawSpotLight(pCtx, prop, mCameras[0]->mFrustum, pShadowMap,
-                                        mLightMap ? mLightMap->GetRendererTexture() : NULL);
-    }
-
-    if (mLightType == LightType::Dir)
-    {
-        DirLightProperties prop;
-        prop.color = mColor;
-        prop.direction = mOwner->mMatrix.GetRow(2);
-        prop.cascadesCount[0] = mDirLight.splits;
-
-        for (int i = 0; i < mDirLight.splits; i++)
-        {
-            prop.splitDistance[i] = mCascadeRanges[i];
-            prop.viewProjMatrix[i] = mCameras[i]->mViewMatrix * mCameras[i]->mProjMatrix;
-        }
-
-        LightsRenderer::Get()->DrawDirLight(pCtx, prop, pShadowMap);
-    }
-}
-
-
-void LightComponent::OnRenderDebug(RenderContext* pCtx)
-{
-    if (mLightType == LightType::Omni)
-    {
-        Box box;
-        box.min = mOwner->GetPosition() - VectorSplat(mOmniLight.radius);
-        box.max = mOwner->GetPosition() + VectorSplat(mOmniLight.radius);
-        DebugRenderer::Get()->DrawBox(pCtx, box, 0xFF00FFFF);
-    }
-
-    if (mLightType == LightType::Spot)
-    {
-        DebugRenderer::Get()->DrawFrustum(pCtx, mCameras[0]->mFrustum, 0xFF00FFFF);
-
-        Float3 o, x, y, z;
-        VectorStore(mOwner->GetPosition(), &o);
-        VectorStore(mOwner->GetPosition() + mOwner->mMatrix.GetRow(0), &x);
-        VectorStore(mOwner->GetPosition() + mOwner->mMatrix.GetRow(1), &y);
-        VectorStore(mOwner->GetPosition() + mOwner->mMatrix.GetRow(2), &z);
-
-        DebugRenderer::Get()->DrawLine(pCtx, o, x, 0xFF0000FF);
-        DebugRenderer::Get()->DrawLine(pCtx, o, y, 0xFF00FF00);
-        DebugRenderer::Get()->DrawLine(pCtx, o, z, 0xFFFF0000);
-    }
-
-    if (mLightType == LightType::Dir)
-    {
-        //for
-        DebugRenderer::Get()->DrawFrustum(pCtx, mCameras[0]->mFrustum, 0xFF00FFFF);
     }
 }
 
@@ -590,7 +377,6 @@ void LightComponent::CheckShadowVisibility(const Vector& camPos)
         mDrawShadow = false;
         return;
     }
-
 
     if (mLightType == LightType::Spot)
     {
@@ -619,82 +405,6 @@ bool LightComponent::CanBeTiled()
         return mShadowMap != NULL;
 
     return false;
-}
-
-Result LightComponent::Deserialize(Common::InputStream* pStream)
-{
-    LightDesc desc;
-    if (pStream->Read(sizeof(desc), &desc) != sizeof(desc))
-    {
-        LOG_ERROR("Could not deserialize light component.");
-        return Result::Error;
-    }
-
-    switch (desc.lightType)
-    {
-        case LightType::Omni:
-            SetOmniLight(&desc.omni);
-            break;
-
-        case LightType::Spot:
-            SetSpotLight(&desc.spot);
-            break;
-
-        case LightType::Dir:
-            SetDirLight(&desc.dir);
-            break;
-
-        default:
-            LOG_ERROR("Light component deserialization failed: invalid light type. Data could be corrupted.");
-            Result::Error;
-    };
-
-    mColor = desc.color;
-    SetShadowMap(desc.mShadowMapSize);
-    SetLightMap(desc.mLightMapName);
-
-    return Result::OK;
-}
-
-Result LightComponent::Serialize(Common::OutputStream* pStream) const
-{
-    LightDesc desc;
-    ZeroMemory(&desc, sizeof(desc));
-
-    switch (mLightType)
-    {
-        case LightType::Omni:
-            desc.omni = mOmniLight;
-            break;
-
-        case LightType::Spot:
-            desc.spot = mSpotLight;
-            break;
-
-        case LightType::Dir:
-            desc.dir = mDirLight;
-            break;
-    };
-
-    // can't store directly to "&desc.color", because this address is not aligned to 4 bytes
-    Float3 color;
-    VectorStore(mColor, &color);
-    desc.color = color;
-
-    desc.lightType = (char)mLightType;
-    desc.mShadowMapSize = (mShadowMap != nullptr) ? (uint16)mShadowMap->GetSize() : 0;
-
-    if (mLightMap)
-        strcpy_s(desc.mLightMapName, mLightMap->GetName());
-
-
-    if (pStream->Write(&desc, sizeof(desc)) != sizeof(desc))
-    {
-        LOG_ERROR("Could not serialize light component.");
-        return Result::Error;
-    }
-
-    return Result::OK;
 }
 
 } // namespace Scene

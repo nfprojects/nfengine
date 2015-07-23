@@ -10,7 +10,8 @@
 #include "Performance.hpp"
 #include "Engine.hpp"
 #include "SceneSegment.hpp"
-#include "PhysicsWorld.hpp"
+#include "Systems/PhysicsSystem.hpp"
+#include "Systems/RendererSystem.hpp"
 #include "BVH.hpp"
 #include "../nfCommon/Memory.hpp"
 #include "../nfCommon/InputStream.hpp"
@@ -29,13 +30,18 @@ SceneManager::SceneManager()
     mFocusSegment = nullptr;
     mDefaultCamera = nullptr;
 
-    mWorld = new PhysicsWorld(this);
-    mMeshesBVH = new Util::BVH();
+    mPhysicsSystem.reset(new PhysicsSystem(this));
+    mRendererSystem.reset(new RendererSystem(this));
 }
 
 SceneManager::~SceneManager()
 {
-    SyncPhysics();
+    // TODO: temporary
+    for (auto bodyTuple : mBodies)
+    {
+        std::get<1>(bodyTuple)->DisablePhysics();
+    }
+    mPhysicsSystem->Update(0.0f);
 
     //delete all entities
     for (auto pEntity : mEntities)
@@ -52,10 +58,6 @@ SceneManager::~SceneManager()
     for (auto pSeg : mSegments)
         delete pSeg;
     mSegments.clear();
-
-
-    delete mMeshesBVH;
-    delete mWorld;
 }
 
 void SceneManager::SetEnvironment(const EnviromentDesc* pDesc)
@@ -90,9 +92,6 @@ Entity* SceneManager::CreateEntity(Entity* pParent, const char* pName)
         LOG_ERROR(ba.what());
         return 0;
     }
-
-    if (pParent)
-        pParent->Attach(pEntity);
 
     mEntities.insert(pEntity);
     return pEntity;
@@ -143,11 +142,6 @@ Result SceneManager::EnqueueDeleteEntity(Entity* pEntity, bool recursive)
     {
         mEntities.erase(pEntity);
         mEntitiesToRemove.push_back(pEntity);
-
-        if (recursive)
-            for (auto pChild : pEntity->mChildren)
-                EnqueueDeleteEntity(pChild, recursive);
-
         return Result::OK;
     }
 
@@ -157,13 +151,13 @@ Result SceneManager::EnqueueDeleteEntity(Entity* pEntity, bool recursive)
 
 
 
-void SceneManager::SetDefaultCamera(Camera* pCamera)
+void SceneManager::SetDefaultCamera(CameraComponent* pCamera)
 {
     // TODO: change default camera if the component is destroyed
     mDefaultCamera = pCamera;
 }
 
-Camera* SceneManager::GetDefaultCamera() const
+CameraComponent* SceneManager::GetDefaultCamera() const
 {
     return mDefaultCamera;
 }
@@ -288,27 +282,18 @@ Result SceneManager::DeserializeEntity(Common::InputStream* pStream, const Vecto
 
     pEntity->mScene = this;
 
-    // Desrialize
-    if (pEntity->Deserialize(pStream, offset) != Result::OK)
-    {
-        delete pEntity; //free, the object won't be used anymore
-        return Result::Error;
-    }
+    // TODO
+    // if (pEntity->Deserialize(pStream, offset) != Result::OK)
+    // {
+    //     delete pEntity; //free, the object won't be used anymore
+    //     return Result::Error;
+    // }
 
     mEntities.insert(pEntity);
-
 
     *ppEntity = pEntity;
     return Result::OK;
 }
-
-
-void SceneManager::SyncPhysics()
-{
-    if (mWorld)
-        mWorld->Wait();
-}
-
 
 /*
     Check if default camera escaped focus segment.
@@ -318,7 +303,8 @@ void SceneManager::UpdateSegments()
 {
     if (mDefaultCamera && mFocusSegment)
     {
-        Vector cameraPos = mDefaultCamera->mOwner->mMatrix.r[3];
+        const TransformComponent& transform = mDefaultCamera->mOwner->mTransform;
+        Vector cameraPos = transform.GetPosition();
 
         Box neighbourBox;
         Segment* pNeighbour = 0;
@@ -354,7 +340,6 @@ void SceneManager::UpdateSegments()
             }
         }
 
-
         if (switchFocus)
         {
             for (auto pSegment : mSegments)
@@ -363,8 +348,9 @@ void SceneManager::UpdateSegments()
             // TODO : avoid SetPosition!!! Apply translation only!
             for (auto pEntity : mEntities)
             {
-                if (pEntity->GetParent() == nullptr)
-                    pEntity->SetPosition(pEntity->GetPosition() - offset);
+                (void)pEntity;
+                // TODO
+                //pEntity->SetPosition(pEntity->GetPosition() - offset);
             }
 
             SetFocusSegment(pNeighbour);
@@ -375,7 +361,7 @@ void SceneManager::UpdateSegments()
 
 void SceneManager::UpdateSegmentForEntity(Entity* pEntity)
 {
-    Segment* pNewSegment = FindSegment(pEntity->GetPosition());
+    Segment* pNewSegment = FindSegment(pEntity->mTransform.GetPosition());
 
     if ((pEntity->mSegment != pNewSegment) && (pNewSegment != nullptr)) // switch segment
     {
@@ -393,15 +379,8 @@ void SceneManager::Update(float deltaTime)
 {
     mEventSystem.Flush();
 
-    SyncPhysics();
-    mDeltaTime = deltaTime;
-
     UpdateSegments();
-
-    mMeshes.clear();
-    mLights.clear();
     mBodies.clear();
-    mCameras.clear();
 
 
     // delete enqueued entities
@@ -409,7 +388,6 @@ void SceneManager::Update(float deltaTime)
     {
         EventEntityDestroy event = {pEntity};
         mEventSystem.Push(SceneEvent::EntityDestroy, &event);
-
         delete pEntity;
     }
 
@@ -422,124 +400,18 @@ void SceneManager::Update(float deltaTime)
         {
             switch (pComp->GetType())
             {
-                case ComponentType::Mesh:
-                    mMeshes.push_back((MeshComponent*)pComp);
-                    break;
-
-                case ComponentType::Light:
-                    mLights.push_back((LightComponent*)pComp);
-                    break;
-
                 case ComponentType::Physics:
                     mBodies.push_back((BodyComponent*)pComp);
-                    break;
-
-                case ComponentType::Camera:
-                    mCameras.push_back((Camera*)pComp);
                     break;
             }
         }
     }
 
-    //get bodies positions from physics engine
-    for (auto pBody : mBodies)
-    {
-        pBody->OnUpdate(deltaTime);
-    }
+    if (mPhysicsSystem)
+        mPhysicsSystem->Update(deltaTime);
 
-    // process collision events
-    if (mWorld)
-        mWorld->ProcessContacts();
-
-    // advance physics
-    if (mWorld)
-        mWorld->StartUpdate(deltaTime);
-
-
-    for (auto pLight : mLights)
-    {
-        pLight->mUpdateShadowmap = false;
-    }
-}
-
-
-//#define USE_BVH
-
-
-//find entities that have mesh bound
-void SceneManager::FindActiveMeshEntities()
-{
-    mActiveMeshEntities.clear();
-    //mMeshesBVH->Clear();
-
-#ifdef USE_BVH
-    bool updateBVH = static_cast<bool>(mMeshesBVH->GetSize() == 0);
-#endif
-
-    for (auto pMeshComp : mMeshes)
-    {
-        Mesh* pMesh = pMeshComp->mMesh;
-        if (pMesh == 0) continue;
-        if (pMesh->GetState() != ResourceState::Loaded) continue;
-
-        pMeshComp->CalcAABB();
-        mActiveMeshEntities.push_back(pMeshComp);
-
-#ifdef USE_BVH
-        // insert to the BVH
-        if (updateBVH)
-            mMeshesBVH->Insert(pMeshComp->mGlobalAABB, pMeshComp);
-#endif
-    }
-
-#ifdef USE_BVH
-    if (updateBVH)
-    {
-        BVHStats stats;
-        mMeshesBVH->GetStats(&stats);
-
-        char str[128];
-        sprintf_s(str,
-                  "!!! NFEngine: Leaves num: %u, nodes num: %u, tree height: %u, area: %f, volume: %f\n",
-                  stats.leavesNum, stats.nodesNum, stats.height, stats.totalArea, stats.totatlVolume);
-        OutputDebugStringA(str);
-    }
-#endif
-}
-
-// Callback used by BVH query
-void MeshQueryCallback(void* pLeafUserData, void* pCallbackUserData)
-{
-    auto pMeshComp = (MeshComponent*)pLeafUserData;
-    auto pList = (std::vector<MeshComponent*>*)pCallbackUserData;
-    pList->push_back(pMeshComp);
-}
-
-
-//build list of meshes visible in a frustum
-void SceneManager::FindVisibleMeshEntities(const Frustum& frustum,
-        std::vector<MeshComponent*>* pList)
-{
-#ifdef USE_BVH
-    mMeshesBVH->Query(frustum, MeshQueryCallback, pList);
-#else
-
-    // TODO: SSE box-frustum check (4 boxes at once)
-    /*
-    Box boxes[4];
-    for (; i<mActiveMeshEntities.size(); i += 4)
-    {
-        for (int j = 0; i<4; j++)
-            boxes[j] = mActiveMeshEntities[i+j]->mGlobalAABB;
-    }
-    */
-
-    for (const auto& mesh : mActiveMeshEntities)
-    {
-        if (Intersect(mesh->mGlobalAABB, frustum))
-            pList->push_back(mesh);
-    }
-#endif
+    if (mRendererSystem)
+        mRendererSystem->Update(deltaTime);
 }
 
 EventSystem* SceneManager::GetEventSystem()
