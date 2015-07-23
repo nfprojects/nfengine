@@ -9,6 +9,7 @@
 #include "../Core.hpp"
 #include "HighLevelRenderer.hpp"
 #include "RendererResources.hpp"
+#include "../EntityManager.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -27,7 +28,9 @@ class CORE_API View
     /// so keeping separate copies will be a waste of RAM.
     std::unique_ptr<GeometryBuffer> mGBuffer;
     std::unique_ptr<IRenderTarget> mRenderTarget;
-    Scene::Camera* mCamera;
+
+    Scene::SceneManager* mScene;
+    Scene::EntityID mCameraEntity;
 
     bool InitRenderTarget(uint32 width, uint32 height);
     static void OnWindowResize(void* userData);
@@ -44,8 +47,17 @@ public:
      */
     virtual void OnPostRender(RenderContext* context);
 
-    Result SetCamera(Scene::Camera* camera);
-    Scene::Camera* GetCamera() const;
+    bool SetCamera(Scene::SceneManager* scene, Scene::EntityID cameraEntity);
+
+    NFE_INLINE Scene::SceneManager* GetSceneManager() const
+    {
+        return mScene;
+    }
+
+    NFE_INLINE Scene::EntityID GetCameraEntity() const
+    {
+        return mCameraEntity;
+    }
 
     NFE_INLINE IRenderTarget* GetRenderTarget() const
     {
