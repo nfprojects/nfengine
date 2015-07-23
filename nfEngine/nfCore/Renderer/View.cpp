@@ -21,7 +21,7 @@ namespace Renderer {
 
 View::View()
 {
-    mCamera = nullptr;
+    mScene = nullptr;
     mTexture = nullptr;
     mWindow = nullptr;
 }
@@ -52,17 +52,12 @@ void View::OnPostRender(RenderContext* context)
     // no GUI by default
 }
 
-Result View::SetCamera(Scene::Camera* camera)
+bool View::SetCamera(Scene::SceneManager* scene, Scene::EntityID cameraEntity)
 {
-    this->mCamera = camera;
-    return Result::OK;
+    mScene = scene;
+    mCameraEntity = cameraEntity;
+    return true;
 }
-
-Scene::Camera* View::GetCamera() const
-{
-    return mCamera;
-}
-
 
 // link the view to a window
 bool View::SetWindow(Common::Window* window)
