@@ -86,6 +86,11 @@ public:
     NFE_INLINE Sphere() : origin(), r() {}
     NFE_INLINE Sphere(const Vector& origin, float r) : origin(origin), r(r) {}
     NFE_INLINE float SupportVertex(const Vector& dir) const;
+
+    /**
+     * Create a sphere intersecting 4 points.
+     */
+    Sphere(const Vector& P1, const Vector& P2, const Vector& P3, const Vector& P4);
 };
 
 class NFE_ALIGN16 Triangle
