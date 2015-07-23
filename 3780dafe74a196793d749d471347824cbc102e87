@@ -16,6 +16,24 @@
       "revId": "3780dafe74a196793d749d471347824cbc102e87",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_14680b1c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-23T08:16:00Z",
+      "side": 1,
+      "message": "I suggest creating a \"Scene\" class, that will contain methods:\n* Init() - will init resources shared by all subscenes\n* SetSubScene() - will init a specific subscene\n* Draw() - will draw the selected subscene\n* Release() - will release all the resources\n\nEach scene and subscene should have it\u0027s name. In the main.cpp all the scenes will be created (not initialized) and registered in a vector.\n\nWhat do you think about it?",
+      "parentUuid": "9ad9bd40_54e1b3fc",
+      "revId": "3780dafe74a196793d749d471347824cbc102e87",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
