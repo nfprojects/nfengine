@@ -70,6 +70,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_2f085a27",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-23T09:37:16Z",
+      "side": 1,
+      "message": "Moreover, some compilers are ready to produce a warning when default: is missing. I would add it, just as another good habit.",
+      "parentUuid": "9ad9bd40_4ac914ab",
+      "revId": "396a4472c58c0fc00b89344d35f656864459810f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_aa6c6036",
         "filename": "nfEngine/nfCommon/Image/Image.cpp",
         "patchSetId": 2
