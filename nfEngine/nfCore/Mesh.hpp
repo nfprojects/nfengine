@@ -59,6 +59,7 @@ struct SubMesh
 NFE_ALIGN16
 class CORE_API Mesh : public ResourceBase
 {
+    friend class Scene::RendererSystem;
     friend class Scene::MeshComponent;
     friend class Scene::SceneManager;
     friend class Renderer::DebugRenderer;

@@ -37,7 +37,6 @@ ResManager::~ResManager()
     {
         UnloadResource((*it).second);
     }
-    mThreadPool.reset();
 
     // delete all resources
     LOG_INFO("Deleting resources...");
@@ -47,6 +46,8 @@ ResManager::~ResManager()
         delete resource;
     }
     mResources.clear();
+
+    mThreadPool.reset();
 }
 
 ResourceBase* ResManager::GetResource(const char* pName, ResourceType type, bool check)
