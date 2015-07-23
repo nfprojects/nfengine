@@ -2,12 +2,18 @@
 
 // TODO: this paths must be changed
 #include "../nfEngine/nfCore/Engine.hpp"
-#include "../nfEngine/nfCore/SceneEvent.hpp"
-#include "../nfEngine/nfCore/SceneSegment.hpp"
+#include "../nfEngine/nfCore/SceneManager.hpp"
+#include "../nfEngine/nfCore/EntityManager.hpp"
+#include "../nfEngine/nfCore/Systems/TransformSystem.hpp"
 #include "../nfEngine/nfCore/CollisionShape.hpp"
 #include "../nfEngine/nfCore/Renderer/HighLevelRenderer.hpp"
 #include "../nfEngine/nfCore/Renderer/View.hpp"
-#include "../nfEngine/nfCore/BVH.hpp"
+
+#include "../nfEngine/nfCore/Components/TransformComponent.hpp"
+#include "../nfEngine/nfCore/Components/BodyComponent.hpp"
+#include "../nfEngine/nfCore/Components/LightComponent.hpp"
+#include "../nfEngine/nfCore/Components/CameraComponent.hpp"
+#include "../nfEngine/nfCore/Components/MeshComponent.hpp"
 
 #include "../nfEngine/nfCommon/Math/Random.hpp"
 #include "../nfEngine/nfCommon/InputStream.hpp"
@@ -63,3 +69,5 @@ public:
     MainCameraView();
     void OnPostRender(NFE::Renderer::RenderContext* pCtx, NFE::Renderer::GuiRenderer* pGuiRenderer);
 };
+
+extern NFE::Scene::EntityManager* gEntityManager;
