@@ -8,10 +8,10 @@
 #include "SceneSegment.hpp"
 #include "Entity.hpp"
 #include "SceneManager.hpp"
-#include "MeshComponent.hpp"
-#include "Light.hpp"
-#include "Body.hpp"
-#include "Camera.hpp"
+#include "Components/MeshComponent.hpp"
+#include "Components/LightComponent.hpp"
+#include "Components/BodyComponent.hpp"
+#include "Components/CameraComponent.hpp"
 #include "../nfCommon/InputStream.hpp"
 #include "../nfCommon/OutputStream.hpp"
 #include "../nfCommon/Logger.hpp"
@@ -109,9 +109,10 @@ void Segment::Unload()
     // serialze and destroy all entities inside this segment
     for (const auto pEntity : entitiesCopy)
     {
-        if ((pEntity->GetParent() == nullptr) && (mScene->mEntities.count(pEntity)))
+        if (mScene->mEntities.count(pEntity))
         {
-            pEntity->Serialize(&mDataStream, mOffset);
+            // TODO
+            // pEntity->Serialize(&mDataStream, mOffset);
             mScene->EnqueueDeleteEntity(pEntity, true);
         }
     }

@@ -49,7 +49,7 @@ public:
     void TileBasedPass(RenderContext* context, uint32 lightsCount, const TileOmniLightDesc* lights);
     void DrawOmniLight(RenderContext* context, const Vector& pos, float radius, const Vector& color,
                        ShadowMap* shadowMap);
-    void DrawSpotLight(RenderContext* context, const SpotLightProperties& prop, const Frustum& frustum,
+    void DrawSpotLight(RenderContext* context, const SpotLightProperties& prop,
                        ShadowMap* shadowMap, ITexture* pLightMap);
     void DrawDirLight(RenderContext* context, const DirLightProperties& prop, ShadowMap* shadowMap);
 

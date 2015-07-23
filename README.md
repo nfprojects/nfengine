@@ -27,11 +27,11 @@ Features
 
 **Scene management:**
 
-* Infinite and seamless worlds support
-* Component-entity design
-* Supported components: Mesh, Light, Body, Camera, *Sound Source, Particle Emitter*
-* Scene serialization
+* Component-Entity-System design
+* Supported components: Transform, Mesh, Light, Body, Camera, *Sound Source, Particle Emitter*
 * Rigid body physics
+* *Infinite and seamless worlds support*
+* *Scene serialization*
 * *Multithreaded streaming & procedural generation*
 
 **Rendering:**
