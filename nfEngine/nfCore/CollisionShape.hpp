@@ -26,6 +26,7 @@ struct CompoundShapeChild
 class CORE_API CollisionShape : public ResourceBase
 {
     friend class Scene::BodyComponent;
+    friend class Scene::PhysicsSystem;
 
 private:
     std::vector<CompoundShapeChild> mChildren;
