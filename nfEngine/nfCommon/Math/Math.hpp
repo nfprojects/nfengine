@@ -113,6 +113,14 @@ NFE_INLINE T Lerp(const T a, const T b, const T w)
     return a + w * (b - a);
 }
 
+// rounds down "x" to nearest multiply of "step"
+NFE_INLINE float Quantize(float x, float step)
+{
+    float tmp = x / step;
+    tmp = floor(tmp);
+    return tmp * step;
+}
+
 // Wang hash
 NFE_INLINE unsigned int Hash(unsigned int x)
 {

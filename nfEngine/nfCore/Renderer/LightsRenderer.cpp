@@ -278,8 +278,7 @@ void LightsRenderer::DrawOmniLight(RenderContext* context, const Vector& pos, fl
 }
 
 void LightsRenderer::DrawSpotLight(RenderContext* context, const SpotLightProperties& prop,
-                                   const Frustum& frustum, ShadowMap* shadowMap,
-                                   ITexture* lightMap)
+                                   ShadowMap* shadowMap, ITexture* lightMap)
 {
 }
 

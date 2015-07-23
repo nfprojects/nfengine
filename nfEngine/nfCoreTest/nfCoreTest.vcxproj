@@ -198,6 +198,7 @@ popd</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EngineTest.cpp" />
+    <ClCompile Include="EntityManagerTest.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
