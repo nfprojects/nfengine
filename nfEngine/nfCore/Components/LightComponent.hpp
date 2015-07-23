@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include "Core.hpp"
+#include "../Core.hpp"
 #include "Component.hpp"
-#include "Camera.hpp"
-#include "Texture.hpp"
+#include "../Texture.hpp"
+#include "../Aligned.hpp"
 
 namespace NFE {
 namespace Scene {
@@ -70,14 +70,16 @@ struct LightDesc
 };
 #pragma pack(pop)
 
-class CORE_API LightComponent : public Component
+NFE_ALIGN16
+class CORE_API LightComponent : public ComponentBase<LightComponent>, public Util::Aligned
 {
     friend class SceneManager;
+    friend class RendererSystem;
+
     friend void DrawShadowMapCallback(void* pUserData, int Instance, int ThreadID);
 
     Math::Vector mColor;
     LightType mLightType;
-    bool mUpdateShadowmap;
     bool mDrawShadow;
 
     OmniLightDesc mOmniLight;
@@ -85,7 +87,7 @@ class CORE_API LightComponent : public Component
     DirLightDesc mDirLight;
 
     // list of cameras used during shadow maps rendering
-    std::vector<Camera*> mCameras;
+    std::vector<CameraComponent*> mCameras;
 
     Math::Vector mCascadeRanges[8];
     Renderer::ShadowMap* mShadowMap;
@@ -94,13 +96,9 @@ class CORE_API LightComponent : public Component
 
     void Release();
     bool CanBeTiled();
-    void CheckShadowVisibility(const Math::Vector& camPos);
-
-protected:
-    void OnRenderDebug(Renderer::RenderContext* pCtx);
 
 public:
-    LightComponent(Entity* pParent);
+    LightComponent();
     ~LightComponent();
 
     void SetColor(const Math::Float3& color);
@@ -122,16 +120,7 @@ public:
     Result SetShadowMap(uint32 resolution);
     bool HasShadowMap() const;
 
-    /**
-     * Test intersection with a frustum shape.
-     */
-    int IntersectFrustum(const Math::Frustum& frustum);
-
-    void Update(Camera* pCamera);
-    void OnRender(Renderer::RenderContext* pCtx);
-
-    Result Deserialize(Common::InputStream* pStream);
-    Result Serialize(Common::OutputStream* pStream) const;
+    void Update(CameraComponent* pCamera);
 };
 
 } // namespace Scene

@@ -1,13 +1,14 @@
 /**
  * @file
  * @author Witek902 (witek902@gmail.com)
- * @brief  Camera component declaration.
+ * @brief  CameraComponent declaration.
  */
 
 #pragma once
 
-#include "Core.hpp"
+#include "../Core.hpp"
 #include "Component.hpp"
+#include "../Aligned.hpp"
 
 namespace NFE {
 namespace Scene {
@@ -26,11 +27,8 @@ struct Perspective
     float farDist;
     float nearDist;
     float aspectRatio;
+    float FoV;          //< vertical Field of View angle (in up-down axis)
 
-    // vertical Field of View angle (in up-down axis)
-    float FoV;
-
-    /* //comented due to union in CameraDesc problems...
     Perspective()
     {
         farDist = 1000.0f;
@@ -38,7 +36,6 @@ struct Perspective
         aspectRatio = 1.0f;
         FoV = 60.0f / 180.0f * NFE_MATH_PI; // [rad]
     }
-    */
 };
 
 /**
@@ -49,68 +46,65 @@ struct Ortho
     float nearDist, farDist;
     float bottom, top;
     float left, right;
-};
 
-
-/**
- * Camera entity descriptor used for serialization
- */
-#pragma pack(push, 1)
-struct CameraDesc
-{
-    char projMode;    //cast to ProjectionMode
-    union
+    Ortho()
     {
-        Perspective perspective;
-        Ortho ortho;
-    };
+        nearDist = -100.0f;
+        farDist = 100.0f;
+        bottom = -1.0f;
+        top = 1.0f;
+        left = -1.0f;
+        right = -1.0f;
+    }
 };
-#pragma pack(pop)
 
 
-class CORE_API Camera : public Component
+NFE_ALIGN16
+class CORE_API CameraComponent : public ComponentBase<CameraComponent>, public Util::Aligned
 {
     friend class SceneManager;
-    friend class LightComponent;
+    friend class RendererSystem;
 
 private:
     // additional matrix that modifies camera matrix relative to parent entity
     Math::Matrix mParentOffset;
+
+    /// projection mode
+    ProjectionMode projMode; // TODO: fix style
+    Perspective perspective;
+    Ortho ortho;
 
     /// matricies
     Math::Matrix mViewMatrix;
     Math::Matrix mProjMatrix;
     Math::Matrix mViewMatrixInv;
     Math::Matrix mProjMatrixInv;
-
-    Math::Vector mScreenScale;
-
     Math::Matrix mSecondaryProjViewMatrix;
-
+    Math::Vector mScreenScale;
     Math::Frustum mFrustum;
 
 public:
-    //Projection
-    ProjectionMode projMode;
-    Perspective perspective;
-    Ortho ortho;
-
-    Camera(Entity* pParent);
+    CameraComponent();
+    ~CameraComponent() {}
 
     /**
      * Set perspective projection
      * @param pDesc Valid pointer to perspective projection settings
      */
-    void SetPerspective(const Perspective* pDesc);
-    void GetPerspective(Perspective* pDesc) const;
+    void SetPerspective(const Perspective* desc);
+    void GetPerspective(Perspective* desc) const;
 
     /**
      * Set orthographic projection
      * @param pDesc Valid pointer to orthographic projection settings
      */
-    void SetOrtho(const Ortho* pDesc);
+    void SetOrtho(const Ortho* desc);
 
-    void OnUpdate(float dt);
+    /**
+     * Update camera's matrices and frustum.
+     */
+    void Update(const Math::Matrix& matrix, const Math::Vector& velocity,
+                const Math::Vector& angularVelocity, float dt);
 
     /**
      * Get a section of the camera frustum
@@ -118,10 +112,7 @@ public:
      * @param zf Far distance
      * @param[out] pFrustum Result
      */
-    void SplitFrustum(float zn, float zf, Math::Frustum* pFrustum);
-
-    Result Deserialize(Common::InputStream* pStream);
-    Result Serialize(Common::OutputStream* pStream) const;
+    void SplitFrustum(const Math::Matrix& matrix, float zn, float zf, Math::Frustum* pFrustum);
 };
 
 } // namespace Scene
