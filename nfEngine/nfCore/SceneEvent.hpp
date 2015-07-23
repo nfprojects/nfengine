@@ -8,6 +8,7 @@
 
 #include "Core.hpp"
 #include "Aligned.hpp"
+#include "EntityManager.hpp"
 
 namespace NFE {
 namespace Scene {
@@ -24,7 +25,7 @@ enum class SceneEvent
 
 struct EventEntityDestroy
 {
-    Entity* entity;
+    EntityID entity;
 };
 
 struct EventBodyEscape

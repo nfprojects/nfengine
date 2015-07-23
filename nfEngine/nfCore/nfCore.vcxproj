@@ -227,19 +227,49 @@ popd</Command>
     <ClCompile Include="Aligned.cpp" />
     <ClCompile Include="BVH.cpp" />
     <ClCompile Include="CollisionShape.cpp" />
-    <ClCompile Include="Body.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Components\BodyComponent.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Components\CameraComponent.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Components\Component.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Components\LightComponent.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Components\MeshComponent.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Components\TransformComponent.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Engine.cpp" />
-    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="Globals.cpp" />
-    <ClCompile Include="Light.cpp" />
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="MeshComponent.cpp" />
     <ClCompile Include="Performance.cpp" />
-    <ClCompile Include="PhysicsWorld.cpp" />
     <ClCompile Include="Renderer\DebugRenderer.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
@@ -316,8 +346,6 @@ popd</Command>
     <ClCompile Include="ResourcesManager.cpp" />
     <ClCompile Include="SceneEvent.cpp" />
     <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="SceneManagerRendering.cpp" />
-    <ClCompile Include="SceneSegment.cpp" />
     <ClCompile Include="SoundSample.cpp" />
     <ClCompile Include="PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -325,27 +353,39 @@ popd</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Systems\PhysicsSystem.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Systems\RendererSystem.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Aligned.hpp" />
     <ClInclude Include="BVH.hpp" />
     <ClInclude Include="CollisionShape.hpp" />
-    <ClInclude Include="Body.hpp" />
-    <ClInclude Include="Camera.hpp" />
-    <ClInclude Include="Component.hpp" />
+    <ClInclude Include="Components\BodyComponent.hpp" />
+    <ClInclude Include="Components\CameraComponent.hpp" />
+    <ClInclude Include="Components\Component.hpp" />
+    <ClInclude Include="Components\LightComponent.hpp" />
+    <ClInclude Include="Components\MeshComponent.hpp" />
+    <ClInclude Include="Components\TransformComponent.hpp" />
+    <ClInclude Include="EntityManager.hpp" />
     <ClInclude Include="Globals.hpp" />
     <ClInclude Include="Prerequisites.hpp" />
     <ClInclude Include="Renderer.hpp" />
     <ClInclude Include="Engine.hpp" />
-    <ClInclude Include="Entity.hpp" />
-    <ClInclude Include="Light.hpp" />
     <ClInclude Include="Core.hpp" />
     <ClInclude Include="Material.hpp" />
     <ClInclude Include="Mesh.hpp" />
-    <ClInclude Include="MeshComponent.hpp" />
     <ClInclude Include="Performance.hpp" />
-    <ClInclude Include="PhysicsWorld.hpp" />
     <ClInclude Include="Renderer\DebugRenderer.hpp" />
     <ClInclude Include="Renderer\DebugRendererContext.hpp" />
     <ClInclude Include="Renderer\GeometryBufferRenderer.hpp" />
@@ -365,9 +405,10 @@ popd</Command>
     <ClInclude Include="ResourcesManager.hpp" />
     <ClInclude Include="SceneEvent.hpp" />
     <ClInclude Include="SceneManager.hpp" />
-    <ClInclude Include="SceneSegment.hpp" />
     <ClInclude Include="SoundSample.hpp" />
     <ClInclude Include="PCH.hpp" />
+    <ClInclude Include="Systems\PhysicsSystem.hpp" />
+    <ClInclude Include="Systems\RendererSystem.hpp" />
     <ClInclude Include="Texture.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

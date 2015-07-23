@@ -46,6 +46,7 @@
 #include <queue>
 #include <memory>
 #include <sstream>
+#include <tuple>
 
 //Bullet physics Engine
 #include "btBulletCollisionCommon.h"
