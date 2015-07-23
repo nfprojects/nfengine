@@ -1,7 +1,10 @@
 #include "PCH.hpp"
 #include "Engine.hpp"
-#include "Entity.hpp"
 #include "Renderer/HighLevelRenderer.hpp"
+
+#include "Components/TransformComponent.hpp"
+#include "Components/MeshComponent.hpp"
+#include "Components/BodyComponent.hpp"
 
 using namespace NFE;
 using namespace NFE::Renderer;
@@ -82,29 +85,150 @@ TEST_F(nfEngineTest, SceneManagement)
 // basic entity creation / removal
 TEST_F(nfEngineTest, EntityManagement)
 {
-    SceneManager* pScene;
-    Entity* pEntity;
+    SceneManager* scene;
     Result ret;
+    std::vector<EntityID> entities;
 
-    EXPECT_NO_THROW(pScene = EngineCreateScene());
-    ASSERT_NE(nullptr, pScene);
+    EXPECT_NO_THROW(scene = EngineCreateScene());
+    ASSERT_NE(nullptr, scene);
 
-    EXPECT_NO_THROW(pEntity = pScene->CreateEntity());
-    ASSERT_NE(nullptr, pEntity);
+    EntityManager& em = scene->GetEntityManager();
 
-    EXPECT_NO_THROW(ret = pScene->DeleteEntity(pEntity));
-    EXPECT_EQ(Result::OK, ret);
+    const int entityNum = 10000;
+    for (int i = 0; i < entityNum; ++i)
+        entities.push_back(em.CreateEntity());
 
-    EXPECT_NO_THROW(ret = pScene->DeleteEntity(pEntity));
-    EXPECT_EQ(Result::Error, ret);
+    for (int i = 0; i < entityNum / 2; ++i)
+        ASSERT_TRUE(em.RemoveEntity(entities[i]));
 
-    EXPECT_NO_THROW(ret = pScene->DeleteEntity(NULL));
-    EXPECT_EQ(Result::Error, ret);
+    for (int i = 0; i < entityNum / 2; ++i)
+        ASSERT_FALSE(em.RemoveEntity(entities[i]));
 
-    EXPECT_NO_THROW(ret = EngineDeleteScene(pScene));
+    for (int i = entityNum / 2; i < entityNum; ++i)
+        ASSERT_TRUE(em.RemoveEntity(entities[i]));
+
+    for (int i = entityNum / 2; i < entityNum; ++i)
+        ASSERT_FALSE(em.RemoveEntity(entities[i]));
+
+    EXPECT_NO_THROW(ret = EngineDeleteScene(scene));
     EXPECT_EQ(Result::OK, ret);
 }
 
+// basic entity creation / removal
+TEST_F(nfEngineTest, EntityComponents)
+{
+    SceneManager* scene;
+    Result ret;
+    std::set<EntityID> entitiesA, entitiesB, entitiesC, entitiesAC, entitiesBC;
+    std::set<EntityID> tmpEntites;
+
+    EXPECT_NO_THROW(scene = EngineCreateScene());
+    ASSERT_NE(nullptr, scene);
+
+    EntityManager& em = scene->GetEntityManager();
+
+    const int entityNum = 3000;
+
+    // attach TransformComponent to components in group A
+    for (int i = 0; i < entityNum; ++i)
+    {
+        EntityID entity = em.CreateEntity();
+        entitiesA.insert(entity);
+        entitiesAC.insert(entity);
+        ASSERT_TRUE(em.AddComponent<TransformComponent>(entity, TransformComponent()));
+    }
+
+    // attach TransformComponent and BodyComponent to components in group A
+    for (int i = 0; i < entityNum; ++i)
+    {
+        EntityID entity = em.CreateEntity();
+        entitiesB.insert(entity);
+        entitiesBC.insert(entity);
+        ASSERT_TRUE(em.AddComponent<MeshComponent>(entity, MeshComponent()));
+    }
+
+    // attach BodyComponent to components in group A
+    for (int i = 0; i < entityNum; ++i)
+    {
+        EntityID entity = em.CreateEntity();
+        entitiesC.insert(entity);
+        entitiesAC.insert(entity);
+        entitiesBC.insert(entity);
+        ASSERT_TRUE(em.AddComponent<TransformComponent>(entity, TransformComponent()));
+        ASSERT_TRUE(em.AddComponent<MeshComponent>(entity, MeshComponent()));
+    }
+
+    int transformComponentId = Component::GetID<TransformComponent>();
+    int bodyComponentId = Component::GetID<MeshComponent>();
+    ASSERT_NE(transformComponentId, bodyComponentId);
+
+    // verify entities in group A
+    tmpEntites.clear();
+    em.ForEach<TransformComponent>(
+        [&](EntityID entity, TransformComponent*)
+        {
+            tmpEntites.insert(entity);
+        }
+    );
+    ASSERT_TRUE(tmpEntites == entitiesAC);
+
+
+    // verify entities in group B
+    tmpEntites.clear();
+    em.ForEach<MeshComponent>(
+        [&](EntityID entity, MeshComponent*)
+    {
+        tmpEntites.insert(entity);
+    }
+    );
+    ASSERT_TRUE(tmpEntites == entitiesBC);
+
+
+    // verify entities in group C
+    tmpEntites.clear();
+    em.ForEach<TransformComponent, MeshComponent>(
+        [&](EntityID entity, TransformComponent*, MeshComponent*)
+        {
+            tmpEntites.insert(entity);
+        }
+    );
+    ASSERT_TRUE(tmpEntites == entitiesC);
+
+
+    // we don't have entities with LightComponents
+    tmpEntites.clear();
+    em.ForEach<LightComponent, MeshComponent>(
+        [&](EntityID entity, LightComponent*, MeshComponent*)
+    {
+        tmpEntites.insert(entity);
+    }
+    );
+    ASSERT_TRUE(tmpEntites.empty());
+
+    // we don't have entities with LightComponents
+    tmpEntites.clear();
+    em.ForEach<LightComponent, TransformComponent>(
+        [&](EntityID entity, LightComponent*, TransformComponent*)
+    {
+        tmpEntites.insert(entity);
+    }
+    );
+    ASSERT_TRUE(tmpEntites.empty());
+
+    // we don't have entities with LightComponents
+    tmpEntites.clear();
+    em.ForEach<LightComponent>(
+        [&](EntityID entity, LightComponent*)
+    {
+        tmpEntites.insert(entity);
+    }
+    );
+    ASSERT_TRUE(tmpEntites.empty());
+
+
+    EXPECT_NO_THROW(ret = EngineDeleteScene(scene));
+    EXPECT_EQ(Result::OK, ret);
+}
 
 // ResManager::GetResource weird arguments test
 TEST_F(nfEngineTest, GetResourceWeirdArguments)
@@ -122,92 +246,4 @@ TEST_F(nfEngineTest, GetResourceWeirdArguments)
 
     EXPECT_NO_THROW(pResource = pResourcesManager->GetResource("blah", ResourceType::Unknown, true));
     EXPECT_EQ(nullptr, pResource);
-}
-
-
-// ResManager::GetResource weird arguments test
-TEST_F(nfEngineTest, EntityComponents)
-{
-    SceneManager* pScene;
-    Entity* pEntity;
-    Result ret;
-    Component* pComponent;
-
-    EXPECT_NO_THROW(pScene = EngineCreateScene());
-    ASSERT_NE(nullptr, pScene);
-
-    EXPECT_NO_THROW(pEntity = pScene->CreateEntity());
-    ASSERT_NE(nullptr, pEntity);
-
-
-    EXPECT_NO_THROW(pComponent = new MeshComponent (pEntity));
-    ASSERT_NE(nullptr, pComponent);
-
-    EXPECT_NO_THROW(pComponent = new LightComponent (pEntity));
-    ASSERT_NE(nullptr, pComponent);
-
-    // doubling MeshComponent should raise an error
-    EXPECT_NO_THROW(pComponent = new MeshComponent (pEntity));
-    ASSERT_EQ(nullptr, pComponent);
-
-    EXPECT_NO_THROW(ret = pScene->DeleteEntity(pEntity));
-    EXPECT_EQ(Result::OK, ret);
-
-    EXPECT_NO_THROW(ret = EngineDeleteScene(pScene));
-    EXPECT_EQ(Result::OK, ret);
-}
-
-// ResManager::GetResource weird arguments test
-TEST_F(nfEngineTest, EntityAttachment)
-{
-    SceneManager* pScene;
-    Entity* pEntityA;
-    Entity* pEntityB;
-    Result ret;
-
-    EXPECT_NO_THROW(pScene = EngineCreateScene());
-    ASSERT_NE(nullptr, pScene);
-
-    EXPECT_NO_THROW(pEntityA = pScene->CreateEntity());
-    ASSERT_NE(nullptr, pEntityA);
-
-    EXPECT_NO_THROW(pEntityB = pScene->CreateEntity());
-    ASSERT_NE(nullptr, pEntityB);
-
-    // verify entity A default position
-    EXPECT_FLOAT_EQ(0.0f, pEntityA->GetPosition().f[0]);
-    EXPECT_FLOAT_EQ(0.0f, pEntityA->GetPosition().f[1]);
-    EXPECT_FLOAT_EQ(0.0f, pEntityA->GetPosition().f[2]);
-
-    // verify entity B default position
-    EXPECT_FLOAT_EQ(0.0f, pEntityB->GetPosition().f[0]);
-    EXPECT_FLOAT_EQ(0.0f, pEntityB->GetPosition().f[1]);
-    EXPECT_FLOAT_EQ(0.0f, pEntityB->GetPosition().f[2]);
-
-    // attach B to A
-    EXPECT_NO_THROW(pEntityA->SetPosition(Math::Vector(1.0f, 2.0f, 3.0f)));
-    EXPECT_NO_THROW(ret = pEntityA->Attach(pEntityB));
-    EXPECT_EQ(Result::OK, ret);
-
-    // verify entity B position (should not change)
-    EXPECT_FLOAT_EQ(0.0f, pEntityB->GetPosition().f[0]);
-    EXPECT_FLOAT_EQ(0.0f, pEntityB->GetPosition().f[1]);
-    EXPECT_FLOAT_EQ(0.0f, pEntityB->GetPosition().f[2]);
-
-    // move at (0,0,0) relative to parent, so (1,2,3) in global space
-    EXPECT_NO_THROW(pEntityB->SetLocalPosition(Math::Vector()));
-
-    // verify entity B position
-    EXPECT_FLOAT_EQ(1.0f, pEntityB->GetPosition().f[0]);
-    EXPECT_FLOAT_EQ(2.0f, pEntityB->GetPosition().f[1]);
-    EXPECT_FLOAT_EQ(3.0f, pEntityB->GetPosition().f[2]);
-
-    EXPECT_NO_THROW(ret = pScene->DeleteEntity(pEntityA));
-    EXPECT_EQ(Result::OK, ret);
-
-    EXPECT_NO_THROW(ret = pScene->DeleteEntity(pEntityB));
-    EXPECT_EQ(Result::OK, ret);
-
-    EXPECT_NO_THROW(ret = EngineDeleteScene(pScene));
-    EXPECT_EQ(Result::OK, ret);
 }

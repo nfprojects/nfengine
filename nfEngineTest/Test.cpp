@@ -14,6 +14,7 @@ using namespace NFE::Resource;
 
 class CustomWindow;
 
+EntityManager* gEntityManager = nullptr;
 Random gRandom;
 float gDeltaTime = 0.0f;
 
@@ -37,7 +38,7 @@ class CustomWindow : public Common::Window
 public:
     Quaternion cameraOrientation;
     Entity* cameraEntity;
-    Camera* camera;
+    CameraComponent* camera;
     View* view;
 
     bool cameraControl;
@@ -91,7 +92,7 @@ public:
         perspective.farDist = 1000.0f;
         perspective.aspectRatio = GetAspectRatio();
 
-        camera = new Camera(cameraEntity);
+        camera = new CameraComponent(cameraEntity);
         camera->SetPerspective(&perspective);
         gScene->SetDefaultCamera(camera);
 
@@ -125,7 +126,7 @@ public:
         cameraEntity->SetAngularVelocity(-QuaternionToAxis(rotation) / gDeltaTime);
 
         Matrix rotMatrix = MatrixFromQuaternion(QuaternionNormalize(cameraOrientation));
-        XOrientation orient;
+        Orientation orient;
         orient.x = rotMatrix.r[0];
         orient.y = rotMatrix.r[1];
         orient.z = rotMatrix.r[2];
@@ -162,7 +163,7 @@ public:
             SetFullscreenMode(!fullscreen);
         }
 
-        XOrientation orient;
+        Orientation orient;
 
         //place spot light
         if (key == 'T')
@@ -217,7 +218,7 @@ public:
 
     void OnMouseDown(UINT button, int x, int y)
     {
-        XOrientation camOrient;
+        Orientation camOrient;
         cameraEntity->GetOrientation(&camOrient);
 
         if (button == 0)
@@ -246,11 +247,7 @@ public:
             lightDesc.shadowFadeStart = 20.0;
             lightDesc.shadowFadeEnd = 30.0;
 
-            Entity* lightEntity = gScene->CreateEntity();
-            cube->Attach(lightEntity);
-            //lightEntity->SetLocalPosition(Vector(0.0f, 1.0f, 0.0f));
-
-            LightComponent* light = new LightComponent(lightEntity);
+            LightComponent* light = new LightComponent(cube);
             light->SetOmniLight(&lightDesc);
             light->SetColor(Float3(1.0f, 1.0f, 10.0f));
             light->SetShadowMap(0);
@@ -460,12 +457,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
         ProcessSceneEvents();
 
-        // print focus segment name
         char str[128];
-        Segment* focus = gScene->GetFocusSegment();
-        sprintf(str, "NFEngine Demo (%S) - focus: %S - Press [0-%i] to switch scene",
-                 PLATFORM_STR, (focus != 0) ? focus->GetName() : "NONE",
-                 GetScenesNum() - 1);
+        sprintf(str, "NFEngine Demo (%s)  -  Press [0-%i] to switch scene",
+                 PLATFORM_STR, GetScenesNum() - 1);
         window->SetTitle(str);
     }
 

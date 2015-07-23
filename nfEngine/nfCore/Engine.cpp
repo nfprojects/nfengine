@@ -9,7 +9,7 @@
 #include "Engine.hpp"
 #include "Texture.hpp"
 #include "Performance.hpp"
-#include "Entity.hpp"
+#include "Systems/RendererSystem.hpp"
 
 #include "Renderer/HighLevelRenderer.hpp"
 #include "Renderer/GuiRenderer.hpp"
@@ -274,33 +274,34 @@ Result EngineAdvance(const DrawRequest* pDrawRequests, uint32 drawRequestsNum,
     for (uint32 i = 0; i < drawRequestsNum; i++)
     {
         // TODO: error checking
-        View* pView = pDrawRequests[i].pView;
-        if (pView == NULL) continue;
+        View* view = pDrawRequests[i].pView;
+        if (view == NULL) continue;
 
         ICommandBuffer* commandBuffer = gRenderer->GetImmediateContext()->commandBuffer;
 
-        Camera* pCamera = pView->GetCamera();
-        if (pCamera != NULL)
+        SceneManager* scene = view->GetSceneManager();
+        EntityManager& em = scene->GetEntityManager();
+
+        if (scene != nullptr)
         {
             // FIXME: temporary
-            commandBuffer->SetRenderTarget(pView->GetRenderTarget());
+            commandBuffer->SetRenderTarget(view->GetRenderTarget());
             uint32 width, height;
-            pView->GetSize(width, height);
+            view->GetSize(width, height);
             commandBuffer->SetViewport(0.0f, static_cast<float>(width),
                                        0.0f, static_cast<float>(height),
                                        0.0f, 1.0f);
-            SceneManager* pScene = pCamera->GetOwner()->GetScene();
-            pScene->Render(pView);
+            scene->GetRendererSystem()->Render(&em, view);
         }
 
-        gRenderer->ProcessView(pView);
+        gRenderer->ProcessView(view);
 
         RenderContext* ctx = gRenderer->GetImmediateContext();
         GuiRenderer::Get()->Enter(ctx);
         {
             Recti rect;
-            GuiRenderer::Get()->SetTarget(ctx, pView->GetRenderTarget());
-            pView->OnPostRender(ctx);
+            GuiRenderer::Get()->SetTarget(ctx, view->GetRenderTarget());
+            view->OnPostRender(ctx);
 
             // draw sign
             rect = Recti(6, 6, 100, 100);
@@ -316,7 +317,7 @@ Result EngineAdvance(const DrawRequest* pDrawRequests, uint32 drawRequestsNum,
 #endif
 
         // present frame in the display
-        pView->Present();
+        view->Present();
     }
 
     Util::g_FrameStats.deltaTime = g_Timer.Stop();

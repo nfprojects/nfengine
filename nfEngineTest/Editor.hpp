@@ -2,8 +2,8 @@
 
 #include "../nfEngine/nfCore/Engine.hpp"
 #include "../nfEngine/nfCore/SceneEvent.hpp"
-#include "../nfEngine/nfCore/SceneSegment.hpp"
+#include "../nfEngine/nfCore/EntityManager.hpp"
 
-extern NFE::Scene::Entity* gSelectedEntity;
+extern NFE::Scene::EntityID gSelectedEntity;
 
 void Demo_InitEditorBar();
