@@ -7,10 +7,11 @@
 #pragma once
 
 #include "Core.hpp"
-#include "Camera.hpp"
-#include "MeshComponent.hpp"
-#include "Light.hpp"
-#include "Body.hpp"
+#include "Components/CameraComponent.hpp"
+#include "Components/MeshComponent.hpp"
+#include "Components/LightComponent.hpp"
+#include "Components/BodyComponent.hpp"
+#include "Components/TransformComponent.hpp"
 #include "../nfCommon/ThreadPool.hpp"
 #include "SceneEvent.hpp"
 
@@ -49,20 +50,13 @@ public:
  */
 NFE_ALIGNED_CLASS(class CORE_API SceneManager)
 {
-    friend class Entity;
-    friend class BodyComponent;
-    friend class PhysicsWorld;
+    friend class PhysicsSystem;
+    friend class RendererSystem;
     friend class Segment;
     friend void PhysicsUpdateCallback(void* pUserData, int Instance, int ThreadID);
 
-#ifdef NF_CORE_EXPORTS
 private:
-    std::vector<MeshComponent*> mMeshes;
-    std::vector<LightComponent*> mLights;
-    std::vector<BodyComponent*> mBodies;
-    std::vector<Camera*> mCameras;
-
-    Util::BVH* mMeshesBVH;
+    std::vector<std::tuple<TransformComponent*, BodyComponent*>> mBodies;
 
     // events queue
     EventSystem mEventSystem;
@@ -71,7 +65,7 @@ private:
     std::map<const char*, Entity*, CompareEntityName> mEntitiesMap;
     std::set<Entity*> mEntities;
     std::vector<Entity*> mEntitiesToRemove;
-    Camera* mDefaultCamera;
+    CameraComponent* mDefaultCamera;
 
     Segment* mFocusSegment;
     std::set<Segment*> mSegments;
@@ -81,15 +75,9 @@ private:
     // environment
     EnviromentDesc mEnvDesc;
 
-    // physics
-    float mDeltaTime;
-    PhysicsWorld* mWorld;
-
-    //entities with loaded meshes
-    std::vector<MeshComponent*> mActiveMeshEntities;
-
-    // Wait for physics update thread to finish.
-    void SyncPhysics();
+    /// Systems
+    std::unique_ptr<PhysicsSystem> mPhysicsSystem;
+    std::unique_ptr<RendererSystem> mRendererSystem;
 
     /*
         Check if default camera escaped focus segment.
@@ -97,10 +85,6 @@ private:
     */
     void UpdateSegments();
     void UpdateSegmentForEntity(Entity * pEntity);
-
-
-    void DrawBVHNode(Renderer::RenderContext * pCtx, uint32 node, uint32 depth);
-#endif
 
 public:
     SceneManager();
@@ -174,8 +158,8 @@ public:
     Result EnqueueDeleteEntity(Entity * pEntity, bool recursive = true);
 
 
-    void SetDefaultCamera(Camera * pCamera);
-    Camera* GetDefaultCamera() const;
+    void SetDefaultCamera(CameraComponent * pCamera);
+    CameraComponent* GetDefaultCamera() const;
 
     // Environment
     void SetEnvironment(const EnviromentDesc * pDesc);
@@ -183,22 +167,16 @@ public:
 
     EventSystem* GetEventSystem();
 
-    // Calculate physics, prepare scene for rendering.
+    /**
+     * Calculate physics, prepare scene for rendering.
+     * @param deltaTime Delta time used for physics simulations.
+     */
     void Update(float deltaTime);
 
-    // Perform Geometry Pass for pCamera in pContext
-    void RenderGBuffer(Renderer::RenderContext* pCtx, Camera* pCamera);
-
-    void RenderShadow(Renderer::RenderContext * pCtx, LightComponent * pLight, uint32 faceID = 0);
-
-    void FindActiveMeshEntities();
-    void FindVisibleMeshEntities(const Math::Frustum & frustum, std::vector<MeshComponent*>* pList);
-
-    /**
-     * Perform scene rendering.
-     * @param view A view describing camera and render target.
-     */
-    void Render(Renderer::View* view);
+    NFE_INLINE RendererSystem* GetRendererSystem() const
+    {
+        return mRendererSystem.get();
+    }
 };
 
 } // namespace Scene

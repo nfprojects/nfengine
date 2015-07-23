@@ -5,8 +5,8 @@
  */
 
 #pragma once
-#include "Core.hpp"
-#include "Mesh.hpp"
+#include "../Core.hpp"
+#include "../Mesh.hpp"
 #include "Component.hpp"
 
 namespace NFE {
@@ -24,30 +24,27 @@ struct MeshComponentDesc
 class CORE_API MeshComponent : public Component
 {
     friend class SceneManager;
+    friend class RendererSystem;
 
 private:
     Resource::Mesh* mMesh;
     Math::Box mGlobalAABB;
 
-    void OnRenderDebug(Renderer::RenderContext* pCtx);
-    void CalcAABB();
+    void CalcAABB(const Math::Matrix& transform);
 
 public:
-    MeshComponent(Entity* pParent);
+    MeshComponent();
     ~MeshComponent();
 
     /**
-     * Set mesh resource by pointer
+     * Set mesh resource by pointer.
      */
-    Result SetMeshResource(Resource::Mesh* pResource);
+    bool SetMeshResource(Resource::Mesh* resource);
 
     /**
-     * Set mesh resource by name
+     * Set mesh resource by name.
      */
-    Result SetMeshResource(const char* pName);
-
-    Result Deserialize(Common::InputStream* pStream);
-    Result Serialize(Common::OutputStream* pStream) const;
+    bool SetMeshResource(const char* name);
 };
 
 } // namespace Scene

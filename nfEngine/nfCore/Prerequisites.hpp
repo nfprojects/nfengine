@@ -40,10 +40,12 @@ namespace NFE {
         class MeshComponent;
         class BodyComponent;
         class LightComponent;
-        class Camera;
+        class CameraComponent;
+        class TransformComponent;
 
         class SceneManager;
-        class PhysicsWorld;
+        class PhysicsSystem;
+        class RendererSystem;
         class Segment;
         struct SegmentLink;
 
@@ -55,6 +57,7 @@ namespace NFE {
         enum class ComponentMsg;
         enum class ComponentType;
     } // namespace Scene
+
 
     namespace Renderer {
         class HighLevelRenderer;
@@ -72,6 +75,6 @@ namespace NFE {
         struct RendererMaterial;
         struct CameraRenderDesc;
         class View;
-    } // namespace Render
+    } // namespace Renderer
 
 } // namespace NFE
