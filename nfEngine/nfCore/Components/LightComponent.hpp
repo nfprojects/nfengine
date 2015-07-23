@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include "Core.hpp"
+#include "../Core.hpp"
 #include "Component.hpp"
-#include "Camera.hpp"
-#include "Texture.hpp"
+#include "CameraComponent.hpp"
+#include "../Texture.hpp"
 
 namespace NFE {
 namespace Scene {
@@ -73,6 +73,8 @@ struct LightDesc
 class CORE_API LightComponent : public Component
 {
     friend class SceneManager;
+    friend class RendererSystem;
+
     friend void DrawShadowMapCallback(void* pUserData, int Instance, int ThreadID);
 
     Math::Vector mColor;
@@ -85,7 +87,7 @@ class CORE_API LightComponent : public Component
     DirLightDesc mDirLight;
 
     // list of cameras used during shadow maps rendering
-    std::vector<Camera*> mCameras;
+    std::vector<CameraComponent*> mCameras;
 
     Math::Vector mCascadeRanges[8];
     Renderer::ShadowMap* mShadowMap;
@@ -100,7 +102,7 @@ protected:
     void OnRenderDebug(Renderer::RenderContext* pCtx);
 
 public:
-    LightComponent(Entity* pParent);
+    LightComponent();
     ~LightComponent();
 
     void SetColor(const Math::Float3& color);
@@ -127,11 +129,8 @@ public:
      */
     int IntersectFrustum(const Math::Frustum& frustum);
 
-    void Update(Camera* pCamera);
+    void Update(CameraComponent* pCamera);
     void OnRender(Renderer::RenderContext* pCtx);
-
-    Result Deserialize(Common::InputStream* pStream);
-    Result Serialize(Common::OutputStream* pStream) const;
 };
 
 } // namespace Scene

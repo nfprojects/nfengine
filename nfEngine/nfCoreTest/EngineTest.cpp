@@ -186,8 +186,8 @@ TEST_F(nfEngineTest, EntityAttachment)
 
     // attach B to A
     EXPECT_NO_THROW(pEntityA->SetPosition(Math::Vector(1.0f, 2.0f, 3.0f)));
-    EXPECT_NO_THROW(ret = pEntityA->Attach(pEntityB));
-    EXPECT_EQ(Result::OK, ret);
+    // EXPECT_NO_THROW(ret = pEntityA->Attach(pEntityB));
+    // EXPECT_EQ(Result::OK, ret);
 
     // verify entity B position (should not change)
     EXPECT_FLOAT_EQ(0.0f, pEntityB->GetPosition().f[0]);

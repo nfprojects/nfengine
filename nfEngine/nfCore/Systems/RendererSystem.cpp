@@ -4,20 +4,22 @@
  * @brief  Definitions of Scene class methods connected only with rendering.
  */
 
-#include "PCH.hpp"
-#include "Globals.hpp"
-#include "SceneManager.hpp"
-#include "Entity.hpp"
-#include "Performance.hpp"
-#include "Engine.hpp"
-#include "BVH.hpp"
-#include "Renderer/HighLevelRenderer.hpp"
-#include "Renderer/ShadowsRenderer.hpp"
-#include "Renderer/LightsRenderer.hpp"
-#include "Renderer/GeometryBufferRenderer.hpp"
-#include "Renderer/DebugRenderer.hpp"
-#include "Renderer/RendererContext.hpp"
-#include "Renderer/View.hpp"
+#include "../PCH.hpp"
+#include "RendererSystem.hpp"
+
+#include "../Globals.hpp"
+#include "../SceneManager.hpp"
+#include "../Entity.hpp"
+#include "../Engine.hpp"
+#include "../BVH.hpp"
+#include "../Renderer/HighLevelRenderer.hpp"
+#include "../Renderer/ShadowsRenderer.hpp"
+#include "../Renderer/LightsRenderer.hpp"
+#include "../Renderer/GeometryBufferRenderer.hpp"
+#include "../Renderer/DebugRenderer.hpp"
+#include "../Renderer/RendererContext.hpp"
+#include "../Renderer/View.hpp"
+
 #include "../nfCommon/Timer.hpp"
 #include "../nfCommon/Logger.hpp"
 
@@ -28,12 +30,18 @@ using namespace Math;
 using namespace Renderer;
 using namespace Resource;
 
-void SceneManager::RenderShadow(RenderContext* pCtx, LightComponent* pLight, uint32 faceID)
+
+RendererSystem::RendererSystem(SceneManager* scene)
+{
+    mScene = scene;
+}
+
+void RendererSystem::RenderShadow(RenderContext* pCtx, LightComponent* pLight, uint32 faceID)
 {
     Common::Timer timer;
     timer.Start();
 
-    Camera* pCamera = pLight->mCameras[faceID];
+    CameraComponent* pCamera = pLight->mCameras[faceID];
 
     CameraRenderDesc cameraRenderDesc =
     {
@@ -69,15 +77,11 @@ void SceneManager::RenderShadow(RenderContext* pCtx, LightComponent* pLight, uin
 
         for (uint32 j = 0; j < pMesh->mSubMeshesCount; j++)
         {
-            //Box globalBox = TransformBox(command.matrix, command.pMesh->mSubMeshes[j].mLocalBox);
-            //if (IntersectBoxFrustum(globalBox, pCamera->mFrustum))
-            {
-                command.indexCount = 3 * pMesh->mSubMeshes[j].trianglesCount;
-                command.startIndex = pMesh->mSubMeshes[j].indexOffset;
-                command.material = pMesh->mSubMeshes[j].material->GetRendererData();
-                // pCtx->commandBuffer.PushBack(command); // TODO
-                Util::g_FrameStats.renderedMeshes++;
-            }
+            // TODO: submesh frustum culling
+            command.indexCount = 3 * pMesh->mSubMeshes[j].trianglesCount;
+            command.startIndex = pMesh->mSubMeshes[j].indexOffset;
+            command.material = pMesh->mSubMeshes[j].material->GetRendererData();
+            // pCtx->commandBuffer.PushBack(command); // TODO
         }
     }
 
@@ -95,7 +99,7 @@ void SceneManager::RenderShadow(RenderContext* pCtx, LightComponent* pLight, uin
 }
 
 // Perform Geometry Pass for pCamera in pContext
-void SceneManager::RenderGBuffer(RenderContext* pCtx, Camera* pCamera)
+void RendererSystem::RenderGBuffer(RenderContext* pCtx, CameraComponent* pCamera)
 {
     //draw mesh entities
     std::vector<MeshComponent*> visibleMeshes; //TODO: dynamic allocation per frame should be avoided
@@ -117,15 +121,11 @@ void SceneManager::RenderGBuffer(RenderContext* pCtx, Camera* pCamera)
 
         for (uint32 j = 0; j < pMesh->mSubMeshesCount; j++)
         {
-            //Box globalBox = TransformBox(command.matrix, command.pMesh->mSubMeshes[j].mLocalBox);
-            //if (IntersectBoxFrustum(globalBox, pCamera->mFrustum))
-            {
-                command.indexCount = 3 * pMesh->mSubMeshes[j].trianglesCount;
-                command.startIndex = pMesh->mSubMeshes[j].indexOffset;
-                command.material = pMesh->mSubMeshes[j].material->GetRendererData();
-                commandBuffer.PushBack(command);
-                Util::g_FrameStats.renderedMeshes++;
-            }
+            // TODO: submesh frustum culling
+            command.indexCount = 3 * pMesh->mSubMeshes[j].trianglesCount;
+            command.startIndex = pMesh->mSubMeshes[j].indexOffset;
+            command.material = pMesh->mSubMeshes[j].material->GetRendererData();
+            commandBuffer.PushBack(command);
         }
     }
     visibleMeshes.clear();
@@ -134,31 +134,18 @@ void SceneManager::RenderGBuffer(RenderContext* pCtx, Camera* pCamera)
     GBufferRenderer::Get()->Draw(pCtx, commandBuffer);
 }
 
-
-void SceneManager::DrawBVHNode(RenderContext* pCtx, uint32 node, uint32 depth)
-{
-    if (node == 0xFFFFFFFF) return;
-    Util::BVHNode* pNode = mMeshesBVH->GetNodeById(node);
-
-    DrawBVHNode(pCtx, pNode->child[0], depth + 1);
-    DrawBVHNode(pCtx, pNode->child[1], depth + 1);
-
-    uint32 color = 0x7F000000 + depth;
-    DebugRenderer::Get()->DrawBox(pCtx, pNode->AABB, color);
-}
-
-void SceneManager::Render(Renderer::View* view)
+void RendererSystem::Render(Renderer::View* view)
 {
     using namespace std::placeholders;
 
-    Camera* camera = view->GetCamera();
+    CameraComponent* camera = view->GetCamera();
     RenderContext* immCtx = gRenderer->GetImmediateContext();
     immCtx->Begin();
 
-    if (camera == 0)
+    if (camera == nullptr)
     {
-        if (mDefaultCamera)
-            camera = mDefaultCamera;
+        if (mScene->mDefaultCamera)
+            camera = mScene->mDefaultCamera;
         else
             return; //no default camera
     }
@@ -182,14 +169,17 @@ void SceneManager::Render(Renderer::View* view)
     FindActiveMeshEntities();
 
     //update lights
-    for (auto pLight : mLights)
+    for (auto lightTuple : mLights)
     {
-        pLight->Update(camera);
-        pLight->CheckShadowVisibility(camera->mOwner->GetPosition());
+        TransformComponent* transform = std::get<0>(lightTuple);
+        LightComponent* light = std::get<1>(lightTuple);
+
+        light->Update(camera);
+        light->CheckShadowVisibility(camera->mOwner->GetPosition());
 
         //find visible lights
-        if (pLight->mDrawShadow && pLight->IntersectFrustum(camera->mFrustum))
-            pLight->mUpdateShadowmap = true;
+        if (light->mDrawShadow && light->IntersectFrustum(camera->mFrustum))
+            light->mUpdateShadowmap = true;
     }
 
     // this value will be reused often...
@@ -206,16 +196,17 @@ void SceneManager::Render(Renderer::View* view)
     //draw shadow maps
     ShadowRenderer::Get()->Enter(immCtx);
 
-    auto drawShadowMapFunc = [](LightComponent * pLight, size_t instance, size_t threadID)
+    auto drawShadowMapFunc = [this](LightComponent * pLight, size_t instance, size_t threadID)
     {
         RenderContext* ctx = gRenderer->GetDeferredContext(threadID);
-        pLight->mOwner->GetScene()->RenderShadow(ctx, pLight, static_cast<int>(instance));
+        RenderShadow(ctx, pLight, static_cast<int>(instance));
     };
 
     std::vector<Common::TaskID> shadowTasks;
     for (auto pLight : mLights)
     {
-        if (!pLight->mUpdateShadowmap) continue;
+        if (!pLight->mUpdateShadowmap)
+            continue;
 
         uint32 instancesCount = 1;
         if (pLight->mLightType == LightType::Omni)
@@ -254,6 +245,7 @@ void SceneManager::Render(Renderer::View* view)
 
 
     // TODO: this should be recorded to a deffered context as well as lights pass
+    /*
     GBufferRenderer::Get()->Enter(immCtx);
     GBufferRenderer::Get()->SetUp(immCtx, view->GetGeometryBuffer());
     const float backgroundColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -261,52 +253,19 @@ void SceneManager::Render(Renderer::View* view)
     GBufferRenderer::Get()->SetCamera(immCtx, &cameraRenderDesc);
     RenderGBuffer(immCtx, camera);
     GBufferRenderer::Get()->Leave(immCtx);
+    */
 
     // LIGHTS RENDERING ===========================================================================
     {
         LightsRenderer::Get()->Enter(immCtx);
         LightsRenderer::Get()->SetUp(immCtx, view->GetRenderTarget(), &cameraRenderDesc,
-                                     mEnvDesc.ambientLight, mEnvDesc.backgroundColor);
+                                     mScene->mEnvDesc.ambientLight, mScene->mEnvDesc.backgroundColor);
 
-        if (gRenderer->settings.tileBasedDeferredShading)
+        for (auto lightTuple : mLights)
         {
-            //prepare lights for tile based renderimng
-            std::vector<TileOmniLightDesc> omniLights;
-            for (auto pLight : mLights)
-            {
-                if (pLight->CanBeTiled())
-                {
-                    TileOmniLightDesc desc;
-                    VectorStore(pLight->mOwner->GetPosition(), &desc.pos);
-                    VectorStore(pLight->mColor, &desc.color);
-                    desc.radius = pLight->mOmniLight.radius;
-                    desc.radiusInv = 1.0f / desc.radius;
-                    omniLights.push_back(desc);
-                }
-            }
-
-            if (omniLights.size() > 0)
-                LightsRenderer::Get()->TileBasedPass(immCtx, static_cast<uint32>(omniLights.size()),
-                                                &omniLights[0]);
-            else
-                LightsRenderer::Get()->TileBasedPass(immCtx, 0, 0);
-
-
-            //draw remaining lights
-            for (auto pLight : mLights)
-            {
-                if (!pLight->CanBeTiled())
-                {
-                    pLight->OnRender(immCtx);
-                }
-            }
-        }
-        else
-        {
-            for (auto pLight : mLights)
-            {
-                pLight->OnRender(immCtx);
-            }
+            TransformComponent* transform = std::get<0>(lightTuple);
+            LightComponent* light = std::get<1>(lightTuple);
+            light->OnRender(immCtx);
         }
 
         LightsRenderer::Get()->DrawFog(immCtx);
@@ -319,9 +278,15 @@ void SceneManager::Render(Renderer::View* view)
 
     if (gRenderer->settings.debugEnable)
     {
+
         DebugRenderer::Get()->Enter(immCtx);
         DebugRenderer::Get()->SetCamera(immCtx, camera->mViewMatrix, camera->mProjMatrix);
         DebugRenderer::Get()->SetTarget(immCtx, view->GetRenderTarget());
+
+
+        const float backgroundColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+        immCtx->commandBuffer->Clear(NFE_CLEAR_FLAG_TARGET | NFE_CLEAR_FLAG_DEPTH, backgroundColor, 1.0f);
+        immCtx->commandBuffer->SetRenderTarget(view->GetRenderTarget());
 
         //draw meshes bvh
         // DrawBVHNode(pCtx, mMeshesBVH->GetRootId(), 0);
@@ -336,6 +301,8 @@ void SceneManager::Render(Renderer::View* view)
         }
 
         // draw entities' coordinate systems
+        // TODO: entities -> transform components
+        /*
         for (auto pEnt : mEntities)
         {
             Float3 start, endX, endY, endZ;
@@ -350,12 +317,17 @@ void SceneManager::Render(Renderer::View* view)
             DebugRenderer::Get()->DrawLine(immCtx, start, endY, 0xFF00FF00);
             DebugRenderer::Get()->DrawLine(immCtx, start, endZ, 0xFFFF0000);
         }
+        */
 
         // draw light shapes
         if (gRenderer->settings.debugLights)
         {
-            for (auto pLight : mLights)
-                pLight->OnRenderDebug(immCtx);
+            for (auto lightTuple : mLights)
+            {
+                TransformComponent* transform = std::get<0>(lightTuple);
+                LightComponent* light = std::get<1>(lightTuple);
+                light->OnRenderDebug(immCtx);
+            }
         }
 
         //draw meshes AABBs
@@ -366,6 +338,106 @@ void SceneManager::Render(Renderer::View* view)
         }
 
         DebugRenderer::Get()->Leave(immCtx);
+    }
+}
+
+//find entities that have mesh bound
+void RendererSystem::FindActiveMeshEntities()
+{
+    mActiveMeshEntities.clear();
+    //mMeshesBVH->Clear();
+
+#ifdef USE_BVH
+    bool updateBVH = static_cast<bool>(mMeshesBVH->GetSize() == 0);
+#endif
+
+    for (auto pMeshComp : mMeshes)
+    {
+        Mesh* pMesh = pMeshComp->mMesh;
+        if (pMesh == 0) continue;
+        if (pMesh->GetState() != ResourceState::Loaded) continue;
+
+        pMeshComp->CalcAABB();
+        mActiveMeshEntities.push_back(pMeshComp);
+
+#ifdef USE_BVH
+        // insert to the BVH
+        if (updateBVH)
+            mMeshesBVH->Insert(pMeshComp->mGlobalAABB, pMeshComp);
+#endif
+    }
+
+#ifdef USE_BVH
+    if (updateBVH)
+    {
+        BVHStats stats;
+        mMeshesBVH->GetStats(&stats);
+
+        char str[128];
+        sprintf_s(str,
+                  "!!! NFEngine: Leaves num: %u, nodes num: %u, tree height: %u, area: %f, volume: %f\n",
+                  stats.leavesNum, stats.nodesNum, stats.height, stats.totalArea, stats.totatlVolume);
+        OutputDebugStringA(str);
+    }
+#endif
+}
+
+// Callback used by BVH query
+void MeshQueryCallback(void* pLeafUserData, void* pCallbackUserData)
+{
+    auto pMeshComp = (MeshComponent*)pLeafUserData;
+    auto pList = (std::vector<MeshComponent*>*)pCallbackUserData;
+    pList->push_back(pMeshComp);
+}
+
+// build list of meshes visible in a frustum
+void RendererSystem::FindVisibleMeshEntities(const Frustum& frustum,
+                                             std::vector<MeshComponent*>* pList)
+{
+#ifdef USE_BVH
+    mMeshesBVH->Query(frustum, MeshQueryCallback, pList);
+#else
+
+    for (const auto& mesh : mActiveMeshEntities)
+    {
+        if (Intersect(mesh->mGlobalAABB, frustum))
+            pList->push_back(mesh);
+    }
+#endif
+}
+
+void RendererSystem::Update(float dt)
+{
+    mMeshes.clear();
+    mCameras.clear();
+    mLights.clear();
+
+    // segregate componets
+    for (auto pEntity : mScene->mEntities)
+    {
+        for (auto pComp : pEntity->mComponents)
+        {
+            switch (pComp->GetType())
+            {
+                case ComponentType::Mesh:
+                {
+                    mMeshes.push_back((MeshComponent*)pComp);
+                    break;
+                }
+                case ComponentType::Light:
+                {
+                    LightComponent* light = (LightComponent*)pComp;
+                    light->mUpdateShadowmap = false;
+                    mLights.push_back((LightComponent*)pComp);
+                    break;
+                }
+                case ComponentType::CameraComponent:
+                {
+                    mCameras.push_back((CameraComponent*)pComp);
+                    break;
+                }
+            }
+        }
     }
 }
 

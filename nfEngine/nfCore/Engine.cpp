@@ -10,6 +10,7 @@
 #include "Texture.hpp"
 #include "Performance.hpp"
 #include "Entity.hpp"
+#include "Systems/RendererSystem.hpp"
 
 #include "Renderer/HighLevelRenderer.hpp"
 #include "Renderer/GuiRenderer.hpp"
@@ -279,7 +280,7 @@ Result EngineAdvance(const DrawRequest* pDrawRequests, uint32 drawRequestsNum,
 
         ICommandBuffer* commandBuffer = gRenderer->GetImmediateContext()->commandBuffer;
 
-        Camera* pCamera = pView->GetCamera();
+        CameraComponent* pCamera = pView->GetCamera();
         if (pCamera != NULL)
         {
             // FIXME: temporary
@@ -290,7 +291,7 @@ Result EngineAdvance(const DrawRequest* pDrawRequests, uint32 drawRequestsNum,
                                        0.0f, static_cast<float>(height),
                                        0.0f, 1.0f);
             SceneManager* pScene = pCamera->GetOwner()->GetScene();
-            pScene->Render(pView);
+            pScene->GetRendererSystem()->Render(pView);
         }
 
         gRenderer->ProcessView(pView);
