@@ -1272,6 +1272,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_af046a18",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-07-24T15:13:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_01aa2119",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_12c42d3f",
         "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
         "patchSetId": 1
@@ -1283,6 +1301,24 @@
       "writtenOn": "2015-06-30T10:33:07Z",
       "side": 1,
       "message": "Check if there is no function in Math for this. There was something AFAIR",
+      "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_8f0b2629",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-07-24T15:13:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_12c42d3f",
       "revId": "c5a53afa746c1585689be66df8a947d51ee77508",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
