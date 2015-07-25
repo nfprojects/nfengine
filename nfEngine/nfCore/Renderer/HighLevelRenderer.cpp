@@ -81,6 +81,7 @@ void HighLevelRenderer::Release()
     GBufferRenderer::Release();
     LightsRenderer::Release();
 
+    mDefaultBlendState.reset();
     mDefaultSampler.reset();
     mDefaultDepthState.reset();
     mDefaultDiffuseTexture.reset();
@@ -101,6 +102,10 @@ void HighLevelRenderer::Release()
 
 void HighLevelRenderer::CreateCommonResources()
 {
+    BlendStateDesc bsDesc;
+    bsDesc.debugName = "HighLevelRenderer::mDefaultDepthState";
+    mDefaultBlendState.reset(mRenderingDevice->CreateBlendState(bsDesc));
+
     SamplerDesc samplerDesc;
     samplerDesc.magFilter = TextureMagFilter::Linear;
     samplerDesc.minFilter = TextureMinFilter::LinearMipmapLinear;
