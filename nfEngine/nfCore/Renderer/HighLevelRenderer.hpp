@@ -53,6 +53,8 @@ private:
     IDevice* mRenderingDevice;
     ICommandBuffer* mCommandBuffer;
 
+    // default blend state (for rendering without alpha blending)
+    std::unique_ptr<IBlendState> mDefaultBlendState;
     // default sampler for 3D rendering
     std::unique_ptr<ISampler> mDefaultSampler;
     // default depth state for 3D rendering with depth testing enabled
@@ -127,6 +129,15 @@ public:
      * Get shaders location.
      */
     std::string GetShadersPath() const;
+
+
+    /**
+     * Get default blend state for rendering without alpha blending.
+     */
+    NFE_INLINE IBlendState* GetDefaultBlendState() const
+    {
+        return mDefaultBlendState.get();
+    }
 
     /**
      * Get default sampler for 3D meshes rendering.

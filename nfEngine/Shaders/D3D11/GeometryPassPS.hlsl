@@ -40,6 +40,7 @@ struct VS_OUTPUT
 
 struct PixelShaderOutput
 {
+    float depth : SV_Depth;
     float4 color0 : SV_TARGET0;
     float4 color1 : SV_TARGET1;
     float4 color2 : SV_TARGET2;
@@ -50,9 +51,13 @@ struct PixelShaderOutput
 
 #define MOTION_BLUR_DT (0.01)
 
+
+static float gMaxDepth = 10000.0f;
+
 PixelShaderOutput main(VS_OUTPUT In)
 {
     PixelShaderOutput output = (PixelShaderOutput)0;
+    output.depth = In.PosVS.z / gMaxDepth;
 
     // --- GEOMETRY BUFFER LAYOUT ---
     // DSV  [float32]    | depth |

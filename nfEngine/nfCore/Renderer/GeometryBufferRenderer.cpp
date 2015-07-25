@@ -126,6 +126,7 @@ void GBufferRenderer::OnEnter(RenderContext* context)
 
     context->commandBuffer->SetRasterizerState(mRasterizerState.get());
     context->commandBuffer->SetDepthState(gRenderer->GetDefaultDepthState());
+    context->commandBuffer->SetBlendState(gRenderer->GetDefaultBlendState());
 
     ISampler* sampler = gRenderer->GetDefaultSampler();
     context->commandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
