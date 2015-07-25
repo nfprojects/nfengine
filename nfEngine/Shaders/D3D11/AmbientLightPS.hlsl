@@ -13,15 +13,16 @@ cbuffer gParams : register (b0)
 
 struct VertexShaderOutput
 {
-    float4 Pos : SV_POSITION;
+    float4 pos : SV_POSITION;
 };
 
+static float gMaxDepth = 10000.0f;
 static float gInfinityDist = 0.999999f;
 
 float4 main(VertexShaderOutput input) : SV_TARGET0
 {
-    int3 texelCoords = int3((int2)input.Pos.xy, 0);
-    float depth = gDepthTex.Load(texelCoords); //depth
+    int3 texelCoords = int3((int2)input.pos.xy, 0);
+    float depth = gDepthTex.Load(texelCoords);
 
     float4 result = gBackgroundColor;
     if (depth < gInfinityDist)

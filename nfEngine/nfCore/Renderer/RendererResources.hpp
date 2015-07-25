@@ -183,6 +183,8 @@ class GeometryBuffer
 
     static const int gLayers = 4;
 
+    int mWidth;
+    int mHeight;
     std::unique_ptr<ITexture> mDepthBuffer;
     std::unique_ptr<ITexture> mTextures[gLayers];
     std::unique_ptr<IRenderTarget> mRenderTarget;
@@ -190,6 +192,16 @@ class GeometryBuffer
 public:
     void Release();
     bool Resize(int width, int height);
+
+    NFE_INLINE int GetWidth() const
+    {
+        return mWidth;
+    }
+
+    NFE_INLINE int GetHeight() const
+    {
+        return mHeight;
+    }
 };
 
 struct NFE_ALIGN16 DirLightProperties
@@ -200,14 +212,6 @@ struct NFE_ALIGN16 DirLightProperties
 
     Math::Vector splitDistance[8];
     Math::Matrix viewProjMatrix[8];
-};
-
-struct NFE_ALIGN16 OmniLightProperties
-{
-    Math::Vector position;
-    Math::Vector radius;
-    Math::Vector color;
-    Math::Vector shadowMapResInv;
 };
 
 struct NFE_ALIGN16 SpotLightProperties

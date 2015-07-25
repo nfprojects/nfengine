@@ -28,13 +28,14 @@ struct VertexShaderOutput
 {
     float4 pos : SV_POSITION;        //< screen-space vertex position
     float4 worldPos : POSITION;      //< world-space vertex position
-    float2 texCoord : TEXCOORD0;     //< texture coordinate
-    float3 normal : TEXCOORD1;       //< world-space normal vector
-    float3 tangent : TEXCOORD2;      //< world-space tangent vector
-    float3 binormal : TEXCOORD3;     //< world-space binormal vector
+    float4 viewPos : TEXCOORD0;      //< view-space vertex position
+    float2 texCoord : TEXCOORD1;     //< texture coordinate
+    float3 normal : TEXCOORD2;       //< world-space normal vector
+    float3 tangent : TEXCOORD3;      //< world-space tangent vector
+    float3 binormal : TEXCOORD4;     //< world-space binormal vector
 #if (USE_MOTION_BLUR > 0)
-    float4 screenPos : TEXCOORD4;    //< screen-space normal vector
-    float4 screenPos_dt : TEXCOORD5;
+    float4 screenPos : TEXCOORD5;    //< screen-space normal vector
+    float4 screenPos_dt : TEXCOORD6;
 #endif // (USE_MOTION_BLUR > 0)
 };
 
@@ -52,6 +53,7 @@ VertexShaderOutput main(VertexShaderInput In)
     // position transformation
     Out.worldPos = mul(float4(In.pos, 1.0f), worldMatrix);
     Out.pos = mul(Out.worldPos, gViewProjMatrix);
+    Out.viewPos = mul(Out.worldPos, gViewMatrix);
 
 #if (USE_MOTION_BLUR > 0)
     // vertex position in moment +dt

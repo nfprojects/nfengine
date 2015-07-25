@@ -26,18 +26,20 @@ struct VertexShaderOutput
 {
     float4 pos : SV_POSITION;
     float3 worldPos : POSITION;
-    float2 texCoord : TEXCOORD0;
-    float3 normal : TEXCOORD1;
-    float3 tangent : TEXCOORD2;
-    float3 binormal : TEXCOORD3;
+    float4 viewPos : TEXCOORD0;
+    float2 texCoord : TEXCOORD1;
+    float3 normal : TEXCOORD2;
+    float3 tangent : TEXCOORD3;
+    float3 binormal : TEXCOORD4;
 #if (USE_MOTION_BLUR > 0)
-    float4 screenPos : TEXCOORD4;
-    float4 screenPos_dt : TEXCOORD5;
+    float4 screenPos : TEXCOORD5;
+    float4 screenPos_dt : TEXCOORD6;
 #endif // (USE_MOTION_BLUR > 0)
 };
 
 struct PixelShaderOutput
 {
+    float depth : SV_Depth;
     float4 color0 : SV_TARGET0;
     float4 color1 : SV_TARGET1;
     float4 color2 : SV_TARGET2;
@@ -46,9 +48,12 @@ struct PixelShaderOutput
 
 #define MOTION_BLUR_DT (0.01)
 
+static float gMaxDepth = 10000.0f;
+
 PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output = (PixelShaderOutput)0;
+    output.depth = input.viewPos.z / gMaxDepth;
 
     // --- GEOMETRY BUFFER LAYOUT ---
     // DSV  [float32]    | depth |
