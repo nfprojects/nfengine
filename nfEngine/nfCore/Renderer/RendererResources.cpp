@@ -39,6 +39,9 @@ void GeometryBuffer::Release()
 
 bool GeometryBuffer::Resize(int width, int height)
 {
+    mWidth = width;
+    mHeight = height;
+
     TextureDesc depthBufferDesc;
     depthBufferDesc.type = TextureType::Texture2D;
     depthBufferDesc.access = BufferAccess::GPU_ReadWrite;
