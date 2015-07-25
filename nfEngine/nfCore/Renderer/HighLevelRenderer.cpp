@@ -81,6 +81,7 @@ void HighLevelRenderer::Release()
     GBufferRenderer::Release();
     LightsRenderer::Release();
 
+    mDefaultBlendState.reset();
     mDefaultSampler.reset();
     mDefaultDepthState.reset();
     mDefaultDiffuseTexture.reset();
@@ -101,6 +102,10 @@ void HighLevelRenderer::Release()
 
 void HighLevelRenderer::CreateCommonResources()
 {
+    BlendStateDesc bsDesc;
+    bsDesc.debugName = "HighLevelRenderer::mDefaultDepthState";
+    mDefaultBlendState.reset(mRenderingDevice->CreateBlendState(bsDesc));
+
     SamplerDesc samplerDesc;
     samplerDesc.magFilter = TextureMagFilter::Linear;
     samplerDesc.minFilter = TextureMinFilter::LinearMipmapLinear;
@@ -132,7 +137,7 @@ void HighLevelRenderer::CreateCommonResources()
     texDesc.debugName = "DefaultDiffuseTexture";
     mDefaultDiffuseTexture.reset(mRenderingDevice->CreateTexture(texDesc));
 
-    uchar normalColor[] = { 127, 127, 127, 255 };
+    uchar normalColor[] = { 127, 127, 255, 255 };
     texDataDesc.data = normalColor;
     texDesc.debugName = "DefaultNormalTexture";
     mDefaultNormalTexture.reset(mRenderingDevice->CreateTexture(texDesc));

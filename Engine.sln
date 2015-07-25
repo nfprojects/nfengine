@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nfEngine", "nfEngine", "{A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}"
 EndProject
@@ -97,6 +97,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "D3D11", "D3D11", "{A9D64D99
 		nfEngine\Shaders\D3D11\FullScreenQuadVS.hlsl = nfEngine\Shaders\D3D11\FullScreenQuadVS.hlsl
 		nfEngine\Shaders\D3D11\GeometryPassPS.hlsl = nfEngine\Shaders\D3D11\GeometryPassPS.hlsl
 		nfEngine\Shaders\D3D11\GeometryPassVS.hlsl = nfEngine\Shaders\D3D11\GeometryPassVS.hlsl
+		nfEngine\Shaders\D3D11\OmniLightPS.hlsl = nfEngine\Shaders\D3D11\OmniLightPS.hlsl
+		nfEngine\Shaders\D3D11\OmniLightVS.hlsl = nfEngine\Shaders\D3D11\OmniLightVS.hlsl
 	EndProjectSection
 EndProject
 Global

@@ -36,12 +36,23 @@ struct AmbientLightCBuffer
 
 class LightsRenderer : public RendererModule<LightsRenderer>
 {
+    std::unique_ptr<IBuffer> mGlobalCBuffer;
+    std::unique_ptr<IDepthState> mLightsDepthState;
+    std::unique_ptr<IRasterizerState> mLightsRasterizerState;
+    std::unique_ptr<IBlendState> mLightsBlendState;
+
+    std::unique_ptr<IBuffer> mVertexBuffer;
+    std::unique_ptr<IBuffer> mIndexBuffer;
+
     Multishader mFullscreenQuadVS;
-    std::unique_ptr<IBuffer> mFullscreenQuadVB;
     std::unique_ptr<IVertexLayout> mVertexLayout;
 
     Multishader mAmbientLightPS;
     std::unique_ptr<IBuffer> mAmbientLightCBuffer;
+
+    Multishader mOmniLightVS;
+    Multishader mOmniLightPS;
+    std::unique_ptr<IBuffer> mOmniLightCBuffer;
 
 public:
     LightsRenderer();
