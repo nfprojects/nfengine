@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_cdc52c5d",
+        "filename": "nfEngine/Shaders/D3D11/AmbientLightPS.hlsl",
+        "patchSetId": 5
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-27T11:33:26Z",
+      "side": 1,
+      "message": "Looks like CodeMaid does not format hlsl\u0027s... :)",
+      "revId": "7cb9648ad3c46b23ee599d4fd55e31e9ec52a6ac",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_6daee099",
+        "filename": "nfEngine/Shaders/D3D11/GeometryPassPS.hlsl",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-27T11:33:26Z",
+      "side": 1,
+      "message": "Keep the style consistent. Either change this to VertexShaderOutput, or change PixelShaderOutput to PS_OUTPUT. The first one would keep more to our code format, and would meet the style of cbuffers. I\u0027ll leave the decision to you.",
+      "range": {
+        "startLine": 26,
+        "startChar": 7,
+        "endLine": 26,
+        "endChar": 16
+      },
+      "revId": "7cb9648ad3c46b23ee599d4fd55e31e9ec52a6ac",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ed43d0ac",
+        "filename": "nfEngine/nfCore/Renderer/GeometryBufferRenderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-27T11:33:26Z",
+      "side": 1,
+      "message": "What if one of the buffers, or RS, fails to initialize and returns nullptr? It looks like there is no checking implemented, and Access Violation would IMO be a bad choice.",
+      "revId": "7cb9648ad3c46b23ee599d4fd55e31e9ec52a6ac",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_2dc3f8ed",
+        "filename": "nfEngine/nfCore/Renderer/HighLevelRenderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-27T11:33:26Z",
+      "side": 1,
+      "message": "Even though this is a default value for default texture, I would add a TODO to somehow configure the values in the future.",
+      "revId": "7cb9648ad3c46b23ee599d4fd55e31e9ec52a6ac",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
