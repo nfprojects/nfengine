@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_a33394a9",
+        "filename": "nfEngine/Shaders/D3D11/AmbientLightPS.hlsl",
+        "patchSetId": 5
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-28T19:16:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_cdc52c5d",
+      "revId": "7cb9648ad3c46b23ee599d4fd55e31e9ec52a6ac",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_6daee099",
         "filename": "nfEngine/Shaders/D3D11/GeometryPassPS.hlsl",
         "patchSetId": 5
@@ -30,6 +48,30 @@
       "writtenOn": "2015-07-27T11:33:26Z",
       "side": 1,
       "message": "Keep the style consistent. Either change this to VertexShaderOutput, or change PixelShaderOutput to PS_OUTPUT. The first one would keep more to our code format, and would meet the style of cbuffers. I\u0027ll leave the decision to you.",
+      "range": {
+        "startLine": 26,
+        "startChar": 7,
+        "endLine": 26,
+        "endChar": 16
+      },
+      "revId": "7cb9648ad3c46b23ee599d4fd55e31e9ec52a6ac",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_63ec2cf4",
+        "filename": "nfEngine/Shaders/D3D11/GeometryPassPS.hlsl",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-28T19:16:05Z",
+      "side": 1,
+      "message": "Done. I\u0027ve also changed all uppercase variables to camelcase (to keep style consistent with engine\u0027s code).",
+      "parentUuid": "9ad9bd40_6daee099",
       "range": {
         "startLine": 26,
         "startChar": 7,
@@ -59,6 +101,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_0397e048",
+        "filename": "nfEngine/nfCore/Renderer/GeometryBufferRenderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-28T19:16:05Z",
+      "side": 1,
+      "message": "If one of the resources fails to load, then we can\u0027t perform rendering correctly. What do you think about adding method like GBufferRenderer::Check, which returns true if everything was created, and then the HighLevelRenderer would verify this for every renderer (if one of the critical renderers was not created correctly, then the engine will close)?",
+      "parentUuid": "9ad9bd40_ed43d0ac",
+      "revId": "7cb9648ad3c46b23ee599d4fd55e31e9ec52a6ac",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_2dc3f8ed",
         "filename": "nfEngine/nfCore/Renderer/HighLevelRenderer.cpp",
         "patchSetId": 5
@@ -70,6 +130,24 @@
       "writtenOn": "2015-07-27T11:33:26Z",
       "side": 1,
       "message": "Even though this is a default value for default texture, I would add a TODO to somehow configure the values in the future.",
+      "revId": "7cb9648ad3c46b23ee599d4fd55e31e9ec52a6ac",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_43748835",
+        "filename": "nfEngine/nfCore/Renderer/HighLevelRenderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-28T19:16:05Z",
+      "side": 1,
+      "message": "These textures are \"dummy\" textures that are used by the shaders when no texture should be bound (instead of introducing additional macros). I\u0027ve added appropriate comments",
+      "parentUuid": "9ad9bd40_2dc3f8ed",
       "revId": "7cb9648ad3c46b23ee599d4fd55e31e9ec52a6ac",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
