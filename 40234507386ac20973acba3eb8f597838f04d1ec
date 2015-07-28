@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_0360c0ff",
+        "filename": "nfEngine/Shaders/D3D11/OmniLightPS.hlsl",
+        "patchSetId": 3
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-28T19:16:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_deef90af",
+      "revId": "40234507386ac20973acba3eb8f597838f04d1ec",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_59071a18",
         "filename": "nfEngine/nfCore/Renderer/LightsRenderer.cpp",
         "patchSetId": 3
@@ -30,6 +48,30 @@
       "writtenOn": "2015-07-28T08:58:20Z",
       "side": 1,
       "message": "Nice random numbers :)\n\nIMO we should be able to modify these parameters of omnis sometime in the future. Add a TODO, plus write down why we have to use 0.6616f scale and 1.6180345f*scale phi (where that came from - a formula or sth, it will be easier to implement it in the future).",
+      "range": {
+        "startLine": 64,
+        "startChar": 0,
+        "endLine": 65,
+        "endChar": 35
+      },
+      "revId": "40234507386ac20973acba3eb8f597838f04d1ec",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_e3475c75",
+        "filename": "nfEngine/nfCore/Renderer/LightsRenderer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-28T19:16:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_59071a18",
       "range": {
         "startLine": 64,
         "startChar": 0,
