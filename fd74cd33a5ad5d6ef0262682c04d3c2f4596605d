@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_37017aaf",
+        "filename": "nfEngine/Shaders/D3D11/GeometryPassPS.hlsl",
+        "patchSetId": 6
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-29T07:20:59Z",
+      "side": 1,
+      "message": "Correction - Omni Lights commit will use it. Even though this still is not supposed to be there, I take that back. \n\nHowever, maybe you could reorganize TEXCOORD numbering - make this TEXCOORD4 and screenPos/screenPos_dt TEXCOORD5 and TEXCOORD6 appropriately?",
+      "parentUuid": "9ad9bd40_57e27e2f",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 28,
+        "endChar": 28
+      },
+      "revId": "fd74cd33a5ad5d6ef0262682c04d3c2f4596605d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_d7cdaeb8",
         "filename": "nfEngine/Shaders/D3D11/GeometryPassPS.hlsl",
         "patchSetId": 6
