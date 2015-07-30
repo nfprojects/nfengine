@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_104717bd",
+        "filename": "nfEngine/nfCore/Renderer/LightsRenderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-30T12:07:51Z",
+      "side": 1,
+      "message": "I have a strange feeling, this is not a good idea to call THAT MUCH calculations every frame. And then repeat some of them at shader level.\n\nLooking at OmniLight VS/PS, these are mostly unused anyway. Why so much data must go to CBuffer every frame?",
+      "range": {
+        "startLine": 214,
+        "startChar": 4,
+        "endLine": 227,
+        "endChar": 50
+      },
+      "revId": "04e5e9cea58e9a5af829e4ac02d710c2ba19babe",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
