@@ -1,0 +1,124 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_ab7fde64",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-30T12:21:30Z",
+      "side": 1,
+      "message": "have",
+      "range": {
+        "startLine": 9,
+        "startChar": 22,
+        "endLine": 9,
+        "endChar": 25
+      },
+      "revId": "43f9e3b460675a824f03bce8f2985e2fe9c463ed",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_cb97c28e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-30T12:21:30Z",
+      "side": 1,
+      "message": "have",
+      "range": {
+        "startLine": 18,
+        "startChar": 13,
+        "endLine": 18,
+        "endChar": 16
+      },
+      "revId": "43f9e3b460675a824f03bce8f2985e2fe9c463ed",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_6b895674",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-30T12:21:30Z",
+      "side": 1,
+      "message": "Engine",
+      "range": {
+        "startLine": 22,
+        "startChar": 22,
+        "endLine": 22,
+        "endChar": 28
+      },
+      "revId": "43f9e3b460675a824f03bce8f2985e2fe9c463ed",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4b9d72bb",
+        "filename": "nfEngine/nfCommon/Math/Geometry.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-30T12:21:30Z",
+      "side": 1,
+      "message": "Would it be possible to rewrite this in SSE? Maybe a TODO would be appropriate here.",
+      "revId": "43f9e3b460675a824f03bce8f2985e2fe9c463ed",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4b84925d",
+        "filename": "nfEngine/nfCore/Components/BodyComponent.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-30T12:21:30Z",
+      "side": 1,
+      "message": "This is a long statement. Consider defining a macro (#define DERIVE_COMPONENT(x) ...) in Component.hpp to make this more readable, and less error-prone. CRTF will be assured that way as well.",
+      "revId": "43f9e3b460675a824f03bce8f2985e2fe9c463ed",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_cbb0a245",
+        "filename": "nfEngine/nfCore/Components/Component.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-07-30T12:21:30Z",
+      "side": 1,
+      "message": "Whops :)",
+      "revId": "43f9e3b460675a824f03bce8f2985e2fe9c463ed",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
