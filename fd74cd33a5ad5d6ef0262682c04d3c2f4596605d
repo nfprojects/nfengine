@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_c1d5dee5",
+        "filename": "nfEngine/Shaders/D3D11/GeometryPassPS.hlsl",
+        "patchSetId": 6
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-31T13:42:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_37017aaf",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 28,
+        "endChar": 28
+      },
+      "revId": "fd74cd33a5ad5d6ef0262682c04d3c2f4596605d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_d7cdaeb8",
         "filename": "nfEngine/Shaders/D3D11/GeometryPassPS.hlsl",
         "patchSetId": 6
@@ -60,6 +84,30 @@
       "writtenOn": "2015-07-29T07:18:08Z",
       "side": 1,
       "message": "screenPos is used only when USE_MOTION_BLUR is 1. I suggest moving it inside #if down below.",
+      "range": {
+        "startLine": 34,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 33
+      },
+      "revId": "fd74cd33a5ad5d6ef0262682c04d3c2f4596605d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_a1da9a14",
+        "filename": "nfEngine/Shaders/D3D11/GeometryPassPS.hlsl",
+        "patchSetId": 6
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-31T13:42:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_d7cdaeb8",
       "range": {
         "startLine": 34,
         "startChar": 0,
