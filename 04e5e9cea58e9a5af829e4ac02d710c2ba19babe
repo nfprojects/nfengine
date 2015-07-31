@@ -22,6 +22,30 @@
       "revId": "04e5e9cea58e9a5af829e4ac02d710c2ba19babe",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_61d412ec",
+        "filename": "nfEngine/nfCore/Renderer/LightsRenderer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-07-31T13:41:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_104717bd",
+      "range": {
+        "startLine": 214,
+        "startChar": 4,
+        "endLine": 227,
+        "endChar": 50
+      },
+      "revId": "04e5e9cea58e9a5af829e4ac02d710c2ba19babe",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
