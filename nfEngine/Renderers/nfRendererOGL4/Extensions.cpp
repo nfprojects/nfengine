@@ -9,9 +9,23 @@
 #include "Defines.hpp"
 #include "Extensions.hpp"
 
-// function pointers
+/// WGL_EXT_swap_control
 wglSwapIntervalEXTType wglSwapIntervalEXT = nullptr;
 wglGetSwapIntervalEXTType wglGetSwapIntervalEXT = nullptr;
+
+/// OpenGL 2.0
+glGetProgramivType glGetProgramiv = nullptr;
+glGetProgramInfoLogType glGetProgramInfoLog = nullptr;
+glDeleteProgramType glDeleteProgram = nullptr;
+
+/// ARB_separate_shader_objects
+glUseProgramStagesType glUseProgramStages = nullptr;
+glActiveShaderProgramType glActiveShaderProgram = nullptr;
+glCreateShaderProgramvType glCreateShaderProgramv = nullptr;
+glBindProgramPipelineType glBindProgramPipeline = nullptr;
+glDeleteProgramPipelinesType glDeleteProgramPipelines = nullptr;
+glGenProgramPipelinesType glGenProgramPipelines = nullptr;
+glProgramParameteriType glProgramParameteri = nullptr;
 
 /**
  * Get an OpenGL extension using wglGetProcAddress.
@@ -36,8 +50,23 @@ bool nfglExtensionsInit()
 {
     bool allExtensionsAvailable = true;
 
+    /// WGL_EXT_swap_control
     NFGL_GET_EXTENSION(wglSwapIntervalEXT);
     NFGL_GET_EXTENSION(wglGetSwapIntervalEXT);
+
+    /// OpenGL 2.0
+    NFGL_GET_EXTENSION(glGetProgramiv);
+    NFGL_GET_EXTENSION(glGetProgramInfoLog);
+    NFGL_GET_EXTENSION(glDeleteProgram);
+
+    /// ARB_separate_shader_objects
+    NFGL_GET_EXTENSION(glUseProgramStages);
+    NFGL_GET_EXTENSION(glActiveShaderProgram);
+    NFGL_GET_EXTENSION(glCreateShaderProgramv);
+    NFGL_GET_EXTENSION(glBindProgramPipeline);
+    NFGL_GET_EXTENSION(glDeleteProgramPipelines);
+    NFGL_GET_EXTENSION(glGenProgramPipelines);
+    NFGL_GET_EXTENSION(glProgramParameteri);
 
     return allExtensionsAvailable;
 }
