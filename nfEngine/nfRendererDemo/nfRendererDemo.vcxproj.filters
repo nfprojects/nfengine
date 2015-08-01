@@ -19,6 +19,9 @@
     <Filter Include="Shaders\D3D11">
       <UniqueIdentifier>{6d84e4d5-f34f-421c-b5da-75d6cfabde23}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\OGL4">
+      <UniqueIdentifier>{a7253636-a188-4d4f-937b-a0d1ed2d7c09}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -55,5 +58,13 @@
     <FxCompile Include="Shaders\D3D11\TestVS.hlsl">
       <Filter>Shaders\D3D11</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\OGL4\TestVS.glsl">
+      <Filter>Shaders\OGL4</Filter>
+    </None>
+    <None Include="Shaders\OGL4\TestPS.glsl">
+      <Filter>Shaders\OGL4</Filter>
+    </None>
   </ItemGroup>
 </Project>
