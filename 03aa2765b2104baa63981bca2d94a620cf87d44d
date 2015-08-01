@@ -1,0 +1,141 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_1351d735",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-01T22:42:30Z",
+      "side": 1,
+      "message": "tabs",
+      "revId": "03aa2765b2104baa63981bca2d94a620cf87d44d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_5370bfdb",
+        "filename": "nfEngine/nfRendererDemo/BasicScene.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-01T22:42:30Z",
+      "side": 1,
+      "message": "I would move everything from annonymous namespace to private section of \"BasicScene\"",
+      "revId": "03aa2765b2104baa63981bca2d94a620cf87d44d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_737a23be",
+        "filename": "nfEngine/nfRendererDemo/BasicScene.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-01T22:42:30Z",
+      "side": 1,
+      "message": "This should a global variable set in Main.cpp (depending on selected backend)",
+      "revId": "03aa2765b2104baa63981bca2d94a620cf87d44d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_d37befbb",
+        "filename": "nfEngine/nfRendererDemo/Main.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-01T22:42:30Z",
+      "side": 1,
+      "message": "NFRENDERER_DEFAULT_BACKEND fits better IMO",
+      "range": {
+        "startLine": 21,
+        "startChar": 18,
+        "endLine": 21,
+        "endChar": 38
+      },
+      "revId": "03aa2765b2104baa63981bca2d94a620cf87d44d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_9375e7cc",
+        "filename": "nfEngine/nfRendererDemo/Main.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-01T22:42:30Z",
+      "side": 1,
+      "message": "is this used somewhere?",
+      "revId": "03aa2765b2104baa63981bca2d94a620cf87d44d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_b3802b8c",
+        "filename": "nfEngine/nfRendererDemo/Main.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-01T22:42:30Z",
+      "side": 1,
+      "message": "I think that VK... defines comes from a Windows header so it won\u0027t compile on Linux. This should be fixed in another commit",
+      "range": {
+        "startLine": 210,
+        "startChar": 13,
+        "endLine": 210,
+        "endChar": 21
+      },
+      "revId": "03aa2765b2104baa63981bca2d94a620cf87d44d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_f34d539b",
+        "filename": "nfEngine/nfRendererDemo/Shaders/D3D11/TestVS.hlsl",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-01T22:42:30Z",
+      "side": 1,
+      "message": "This line thoes nothing :)\nA * I \u003d\u003d A",
+      "range": {
+        "startLine": 35,
+        "startChar": 4,
+        "endLine": 35,
+        "endChar": 46
+      },
+      "revId": "03aa2765b2104baa63981bca2d94a620cf87d44d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
