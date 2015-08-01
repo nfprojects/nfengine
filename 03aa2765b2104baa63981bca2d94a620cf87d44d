@@ -53,6 +53,41 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_5347df76",
+        "filename": "nfEngine/nfRendererDemo/BasicScene.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-01T22:44:12Z",
+      "side": 1,
+      "message": "* should be",
+      "parentUuid": "9ad9bd40_737a23be",
+      "revId": "03aa2765b2104baa63981bca2d94a620cf87d44d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_73614304",
+        "filename": "nfEngine/nfRendererDemo/BasicScene.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-01T22:44:12Z",
+      "side": 1,
+      "message": "Use unique_ptr",
+      "revId": "03aa2765b2104baa63981bca2d94a620cf87d44d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_d37befbb",
         "filename": "nfEngine/nfRendererDemo/Main.cpp",
         "patchSetId": 3
