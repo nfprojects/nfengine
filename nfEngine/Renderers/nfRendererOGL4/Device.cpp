@@ -10,12 +10,13 @@
 // modules
 #include "RenderTarget.hpp"
 #include "Backbuffer.hpp"
+#include "Shader.hpp"
 
 
 namespace {
 
 template<typename Type, typename Desc>
-Type* CreateGenericResource(const Desc& desc)
+Type* GenericCreateResource(const Desc& desc)
 {
     Type* resource = new (std::nothrow) Type;
     if (resource == nullptr)
@@ -72,12 +73,12 @@ ITexture* Device::CreateTexture(const TextureDesc& desc)
 
 IBackbuffer* Device::CreateBackbuffer(const BackbufferDesc& desc)
 {
-    return CreateGenericResource<Backbuffer, BackbufferDesc>(desc);
+    return GenericCreateResource<Backbuffer, BackbufferDesc>(desc);
 }
 
 IRenderTarget* Device::CreateRenderTarget(const RenderTargetDesc& desc)
 {
-    return CreateGenericResource<RenderTarget, RenderTargetDesc>(desc);
+    return GenericCreateResource<RenderTarget, RenderTargetDesc>(desc);
 }
 
 IBlendState* Device::CreateBlendState(const BlendStateDesc& desc)
@@ -106,14 +107,12 @@ ISampler* Device::CreateSampler(const SamplerDesc& desc)
 
 IShader* Device::CreateShader(const ShaderDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<Shader, ShaderDesc>(desc);
 }
 
 IShaderProgram* Device::CreateShaderProgram(const ShaderProgramDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<ShaderProgram, ShaderProgramDesc>(desc);
 }
 
 ICommandBuffer* Device::GetDefaultCommandBuffer()
