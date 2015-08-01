@@ -221,6 +221,7 @@ popd</Command>
     <ClInclude Include="Memory.hpp" />
     <ClInclude Include="nfCommon.hpp" />
     <ClInclude Include="OutputStream.hpp" />
+    <ClInclude Include="PackedArray.hpp" />
     <ClInclude Include="Packer\Packer.hpp" />
     <ClInclude Include="Packer\PackerDefines.hpp" />
     <ClInclude Include="Packer\PackerElement.hpp" />
