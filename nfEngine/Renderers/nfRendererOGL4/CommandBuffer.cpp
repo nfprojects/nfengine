@@ -8,6 +8,7 @@
 
 #include "Defines.hpp"
 #include "CommandBuffer.hpp"
+#include "Shader.hpp"
 
 
 namespace NFE {
@@ -86,7 +87,9 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
 
 void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
 {
-    UNUSED(shaderProgram);
+    ShaderProgram* newShaderProgram = dynamic_cast<ShaderProgram*>(shaderProgram);
+
+    glBindProgramPipeline(newShaderProgram->mProgramPipeline);
 }
 
 void CommandBuffer::SetShader(IShader* shader)
