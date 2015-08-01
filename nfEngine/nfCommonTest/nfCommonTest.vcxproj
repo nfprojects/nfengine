@@ -201,6 +201,7 @@
     <ClCompile Include="MathVectorTest.cpp" />
     <ClCompile Include="MD5Test.cpp" />
     <ClCompile Include="MemoryTest.cpp" />
+    <ClCompile Include="PackedArray.cpp" />
     <ClCompile Include="PackerBasicTest.cpp" />
     <ClCompile Include="PackerComplexTest.cpp" />
     <ClCompile Include="RayGeometryTest.cpp" />
