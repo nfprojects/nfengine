@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_b54d6bc6",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_ed5cb01b",
+      "range": {
+        "startLine": 97,
+        "startChar": 64,
+        "endLine": 97,
+        "endChar": 69
+      },
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_2df058fd",
         "filename": "nfEngine/nfCommon/Image/Image.cpp",
         "patchSetId": 4
@@ -36,6 +60,24 @@
       "writtenOn": "2015-07-27T08:40:24Z",
       "side": 1,
       "message": "(std::nothrow)",
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_d5482fb5",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_2df058fd",
       "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_55d41fbc",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_4da3dcff",
+      "range": {
+        "startLine": 173,
+        "startChar": 19,
+        "endLine": 173,
+        "endChar": 42
+      },
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_edb3d04a",
         "filename": "nfEngine/nfCommon/Image/Image.cpp",
         "patchSetId": 4
@@ -82,6 +148,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_b5e48bac",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_edb3d04a",
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_8db08444",
         "filename": "nfEngine/nfCommon/Image/Image.cpp",
         "patchSetId": 4
@@ -93,6 +177,30 @@
       "writtenOn": "2015-07-27T08:40:24Z",
       "side": 1,
       "message": "Make a const",
+      "range": {
+        "startLine": 176,
+        "startChar": 24,
+        "endLine": 176,
+        "endChar": 47
+      },
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_75de83de",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_8db08444",
       "range": {
         "startLine": 176,
         "startChar": 24,
@@ -128,6 +236,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_35e87b7b",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "size_t -\u003e uint32 implicit conversion produces a warning, which in our project is treated as an error",
+      "parentUuid": "9ad9bd40_edb83013",
+      "range": {
+        "startLine": 200,
+        "startChar": 23,
+        "endLine": 200,
+        "endChar": 34
+      },
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_2dd7784c",
         "filename": "nfEngine/nfCommon/Image/Image.cpp",
         "patchSetId": 4
@@ -139,6 +271,30 @@
       "writtenOn": "2015-07-27T08:40:24Z",
       "side": 1,
       "message": "size_t",
+      "range": {
+        "startLine": 205,
+        "startChar": 4,
+        "endLine": 205,
+        "endChar": 10
+      },
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_55eb3f77",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_2dd7784c",
       "range": {
         "startLine": 205,
         "startChar": 4,
@@ -174,6 +330,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_7505a344",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_4dc83ca8",
+      "range": {
+        "startLine": 206,
+        "startChar": 4,
+        "endLine": 206,
+        "endChar": 10
+      },
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_8dc5e48f",
         "filename": "nfEngine/nfCommon/Image/Image.cpp",
         "patchSetId": 4
@@ -185,6 +365,30 @@
       "writtenOn": "2015-07-27T08:40:24Z",
       "side": 1,
       "message": "size_t, we don\u0027t want to limit texture size to 4GB",
+      "range": {
+        "startLine": 207,
+        "startChar": 11,
+        "endLine": 207,
+        "endChar": 15
+      },
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_95006735",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_8dc5e48f",
       "range": {
         "startLine": 207,
         "startChar": 11,
@@ -214,6 +418,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_b5fbab45",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_4df11c00",
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_4d24bc5f",
         "filename": "nfEngine/nfCommon/Image/Image.cpp",
         "patchSetId": 4
@@ -225,6 +447,24 @@
       "writtenOn": "2015-07-27T08:42:11Z",
       "side": 1,
       "message": ":)",
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_d5f66f5c",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_4d24bc5f",
       "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -248,6 +488,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_b5800b8c",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_cdbb6c0d",
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_2d893875",
         "filename": "nfEngine/nfCommon/Image/Image.cpp",
         "patchSetId": 4
@@ -259,6 +517,24 @@
       "writtenOn": "2015-07-27T08:40:24Z",
       "side": 1,
       "message": "std::move",
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_1551b735",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_2d893875",
       "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -282,6 +558,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_d934e94b",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Made function IsSupportedBC(), which clearly states if given BC format is supported by the engine.\n\nLeft \u0027if\u0027 from line 247 in place.",
+      "parentUuid": "9ad9bd40_cd8d2c7e",
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_2d3e988c",
         "filename": "nfEngine/nfCommon/Image/Image.cpp",
         "patchSetId": 4
@@ -299,6 +593,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_3544fb72",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 297,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_2d3e988c",
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_2d33f8ab",
         "filename": "nfEngine/nfCommon/Image/Image.cpp",
         "patchSetId": 4
@@ -310,6 +622,24 @@
       "writtenOn": "2015-07-27T08:42:11Z",
       "side": 1,
       "message": ":)",
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_5547bf76",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_2d33f8ab",
       "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -339,6 +669,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_955ce74c",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 307,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "I thought that it would be better to just use default filtering - last time there was only box filter, but as You prefer it that way, I\u0027ve changed it to error.",
+      "parentUuid": "9ad9bd40_0deb9413",
+      "range": {
+        "startLine": 307,
+        "startChar": 4,
+        "endLine": 307,
+        "endChar": 12
+      },
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_edfd90b2",
         "filename": "nfEngine/nfCommon/Image/Image.cpp",
         "patchSetId": 4
@@ -350,6 +704,24 @@
       "writtenOn": "2015-07-27T08:42:11Z",
       "side": 1,
       "message": ":)",
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_b5572b25",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_edfd90b2",
       "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -373,6 +745,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_d552ef33",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 418,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Check is a check - I thought it was needed. Imho printing error in nested loop does nothing wrong, when the next statement terminates whole method.",
+      "parentUuid": "9ad9bd40_ede1102b",
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_4d3f5c87",
         "filename": "nfEngine/nfCommon/Image/ImageLoadDDS.cpp",
         "patchSetId": 4
@@ -384,6 +774,24 @@
       "writtenOn": "2015-07-27T08:40:24Z",
       "side": 1,
       "message": "check if mipmapData !\u003d nullptr",
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_196bb1b7",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadDDS.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_4d3f5c87",
       "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -407,6 +815,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_999ee1b7",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadPNG.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_8d4c0444",
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_ad49c832",
         "filename": "nfEngine/nfCommon/Image/ImageLoadPNG.cpp",
         "patchSetId": 4
@@ -424,6 +850,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_b9a1e5f9",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadPNG.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_ad49c832",
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_ed4f5032",
         "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
         "patchSetId": 4
@@ -435,6 +879,30 @@
       "writtenOn": "2015-07-27T08:40:24Z",
       "side": 1,
       "message": "Are you kidding?",
+      "range": {
+        "startLine": 145,
+        "startChar": 44,
+        "endLine": 145,
+        "endChar": 47
+      },
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_b51f2bb6",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_ed4f5032",
       "range": {
         "startLine": 145,
         "startChar": 44,
@@ -470,6 +938,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_d51aefc4",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_6d5b40f6",
+      "range": {
+        "startLine": 146,
+        "startChar": 24,
+        "endLine": 146,
+        "endChar": 25
+      },
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_8d73247f",
         "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
         "patchSetId": 4
@@ -481,6 +973,30 @@
       "writtenOn": "2015-07-27T08:40:24Z",
       "side": 1,
       "message": "255?",
+      "range": {
+        "startLine": 147,
+        "startChar": 24,
+        "endLine": 147,
+        "endChar": 25
+      },
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_f57c53ee",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_8d73247f",
       "range": {
         "startLine": 147,
         "startChar": 24,
@@ -516,6 +1032,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_1580d7be",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_ad70e872",
+      "range": {
+        "startLine": 148,
+        "startChar": 24,
+        "endLine": 148,
+        "endChar": 25
+      },
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_0d60f4a3",
         "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
         "patchSetId": 4
@@ -527,6 +1067,30 @@
       "writtenOn": "2015-07-27T08:40:24Z",
       "side": 1,
       "message": "Are you kidding?",
+      "range": {
+        "startLine": 155,
+        "startChar": 44,
+        "endLine": 155,
+        "endChar": 47
+      },
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_35831bcd",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_0d60f4a3",
       "range": {
         "startLine": 155,
         "startChar": 44,
@@ -562,6 +1126,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_5586dfdb",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_cd69ac8d",
+      "range": {
+        "startLine": 159,
+        "startChar": 24,
+        "endLine": 159,
+        "endChar": 25
+      },
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_2d65b8b4",
         "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
         "patchSetId": 4
@@ -573,6 +1161,30 @@
       "writtenOn": "2015-07-27T08:40:24Z",
       "side": 1,
       "message": "Are you kidding?",
+      "range": {
+        "startLine": 165,
+        "startChar": 44,
+        "endLine": 165,
+        "endChar": 47
+      },
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_7570430b",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_2d65b8b4",
       "range": {
         "startLine": 165,
         "startChar": 44,
@@ -608,6 +1220,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_956b071d",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_4d567ccf",
+      "range": {
+        "startLine": 175,
+        "startChar": 44,
+        "endLine": 175,
+        "endChar": 47
+      },
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_4d0d9ce7",
         "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
         "patchSetId": 4
@@ -619,6 +1255,24 @@
       "writtenOn": "2015-07-27T08:40:24Z",
       "side": 1,
       "message": "Use VectorStoreUChar4. In RGB_UByte and R_UByte there also should be used similar function, but it does not exist. I\u0027ll write it later",
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_b5764b04",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_4d0d9ce7",
       "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -642,6 +1296,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_59753930",
+        "filename": "nfEngine/nfCore/Texture.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "as I\u0027ve said previously size_t-\u003euint32 implicit conversion produces a warning",
+      "parentUuid": "9ad9bd40_6d12600a",
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_8dfa44bb",
         "filename": "nfEngine/nfCore/Texture.cpp",
         "patchSetId": 4
@@ -653,6 +1325,24 @@
       "writtenOn": "2015-07-27T08:40:24Z",
       "side": 1,
       "message": "Line too long",
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_f99b6d63",
+        "filename": "nfEngine/nfCore/Texture.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-04T14:27:05Z",
+      "side": 1,
+      "message": "split into 2 lines",
+      "parentUuid": "9ad9bd40_8dfa44bb",
       "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
