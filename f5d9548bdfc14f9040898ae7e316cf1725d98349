@@ -763,6 +763,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_0ed1a122",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 418,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-05T21:50:59Z",
+      "side": 1,
+      "message": "You\u0027re right, there would be one error printed. But, this function must be fast, we assume that SetTexel is always successfull",
+      "parentUuid": "9ad9bd40_d552ef33",
+      "revId": "f5d9548bdfc14f9040898ae7e316cf1725d98349",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_4d3f5c87",
         "filename": "nfEngine/nfCommon/Image/ImageLoadDDS.cpp",
         "patchSetId": 4
