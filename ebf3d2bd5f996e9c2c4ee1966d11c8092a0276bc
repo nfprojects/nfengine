@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_eeb63df8",
+        "filename": "nfEngine/nfCommon/Image/ImageFormat.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-05T21:50:59Z",
+      "side": 1,
+      "message": "1. global variables should begin with \"g\" prefix\n2. This is used only in Image.cpp - move it there to a annonymous namespace",
+      "revId": "ebf3d2bd5f996e9c2c4ee1966d11c8092a0276bc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
