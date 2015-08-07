@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_a611b45e",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-07T14:32:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_c34fd969",
+      "range": {
+        "startLine": 32,
+        "startChar": 10,
+        "endLine": 32,
+        "endChar": 22
+      },
+      "revId": "dcc0dc3e9a07471d15eb0c491f1040ecc7af68c0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_831b1172",
         "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
         "patchSetId": 2
@@ -53,6 +77,24 @@
       "writtenOn": "2015-06-18T17:16:28Z",
       "side": 1,
       "message": "Maybe create a \"normal\" texture. For example 2x2, one pixel white, one red, etc?",
+      "revId": "dcc0dc3e9a07471d15eb0c491f1040ecc7af68c0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_861e706e",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-07T14:32:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_831b1172",
       "revId": "dcc0dc3e9a07471d15eb0c491f1040ecc7af68c0",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -82,6 +124,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_661b2c81",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-07T14:32:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_e354dd00",
+      "range": {
+        "startLine": 34,
+        "startChar": 10,
+        "endLine": 34,
+        "endChar": 22
+      },
+      "revId": "dcc0dc3e9a07471d15eb0c491f1040ecc7af68c0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_63128d58",
         "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
         "patchSetId": 2
@@ -93,6 +159,24 @@
       "writtenOn": "2015-06-18T17:16:28Z",
       "side": 1,
       "message": "What did you want to achieve here?\n1. If you\u0027re only comparing, then const_cast is not needed\n2. You are comparing pointers, not data this way",
+      "revId": "dcc0dc3e9a07471d15eb0c491f1040ecc7af68c0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4629c899",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-07T14:32:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_63128d58",
       "revId": "dcc0dc3e9a07471d15eb0c491f1040ecc7af68c0",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -116,6 +200,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_c614f84e",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-07T14:32:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_a3181576",
+      "revId": "dcc0dc3e9a07471d15eb0c491f1040ecc7af68c0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_c328b988",
         "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
         "patchSetId": 2
@@ -127,6 +229,24 @@
       "writtenOn": "2015-06-18T17:16:28Z",
       "side": 1,
       "message": "As above",
+      "revId": "dcc0dc3e9a07471d15eb0c491f1040ecc7af68c0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_e60e5c3a",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-07T14:32:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_c328b988",
       "revId": "dcc0dc3e9a07471d15eb0c491f1040ecc7af68c0",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -150,6 +270,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_060a6025",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-07T14:32:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_e3f05d00",
+      "revId": "dcc0dc3e9a07471d15eb0c491f1040ecc7af68c0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_6339add6",
         "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
         "patchSetId": 2
@@ -161,6 +299,24 @@
       "writtenOn": "2015-06-18T17:16:28Z",
       "side": 1,
       "message": "This should fail and you don\u0027t check it",
+      "revId": "dcc0dc3e9a07471d15eb0c491f1040ecc7af68c0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_2605a413",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-07T14:32:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_6339add6",
       "revId": "dcc0dc3e9a07471d15eb0c491f1040ecc7af68c0",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -184,6 +340,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_09119151",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-07T14:32:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_833231f0",
+      "revId": "dcc0dc3e9a07471d15eb0c491f1040ecc7af68c0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "facab960_a32f3587",
         "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
         "patchSetId": 2
@@ -195,6 +369,24 @@
       "writtenOn": "2015-06-18T17:16:28Z",
       "side": 1,
       "message": "Write a comment, why it should fail",
+      "revId": "dcc0dc3e9a07471d15eb0c491f1040ecc7af68c0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_291c9569",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-07T14:32:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "facab960_a32f3587",
       "revId": "dcc0dc3e9a07471d15eb0c491f1040ecc7af68c0",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
