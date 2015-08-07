@@ -1,0 +1,399 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_ecd0fb20",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-07T14:54:24Z",
+      "side": 1,
+      "message": "... and run nfEngineTest",
+      "revId": "7d95583bf374e70894069554b519b0c2cdce3f71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_2c6bc385",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-07T14:54:24Z",
+      "side": 1,
+      "message": "stream",
+      "range": {
+        "startLine": 87,
+        "startChar": 30,
+        "endLine": 87,
+        "endChar": 37
+      },
+      "revId": "7d95583bf374e70894069554b519b0c2cdce3f71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4c6647bc",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-07T14:54:24Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 90,
+        "startChar": 8,
+        "endLine": 90,
+        "endChar": 9
+      },
+      "revId": "7d95583bf374e70894069554b519b0c2cdce3f71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_6c086bda",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-07T14:54:24Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 94,
+        "startChar": 8,
+        "endLine": 94,
+        "endChar": 9
+      },
+      "revId": "7d95583bf374e70894069554b519b0c2cdce3f71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_8c0befd4",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-07T14:54:24Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 98,
+        "startChar": 8,
+        "endLine": 98,
+        "endChar": 9
+      },
+      "revId": "7d95583bf374e70894069554b519b0c2cdce3f71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ac0ef3e2",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-07T14:54:24Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 102,
+        "startChar": 8,
+        "endLine": 102,
+        "endChar": 9
+      },
+      "revId": "7d95583bf374e70894069554b519b0c2cdce3f71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ec747b69",
+        "filename": "nfEngine/nfCommon/Image/Image.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-07T14:54:24Z",
+      "side": 1,
+      "message": "data",
+      "range": {
+        "startLine": 69,
+        "startChar": 23,
+        "endLine": 69,
+        "endChar": 28
+      },
+      "revId": "7d95583bf374e70894069554b519b0c2cdce3f71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_8c64cfb9",
+        "filename": "nfEngine/nfCommon/Image/Image.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-07T14:54:24Z",
+      "side": 1,
+      "message": "stream",
+      "revId": "7d95583bf374e70894069554b519b0c2cdce3f71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_2c02e3b3",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-07T14:54:24Z",
+      "side": 1,
+      "message": "Missing error log",
+      "revId": "7d95583bf374e70894069554b519b0c2cdce3f71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_8c320fa5",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadPNG.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-07T14:54:24Z",
+      "side": 1,
+      "message": "data",
+      "range": {
+        "startLine": 20,
+        "startChar": 10,
+        "endLine": 20,
+        "endChar": 15
+      },
+      "revId": "7d95583bf374e70894069554b519b0c2cdce3f71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ac25135d",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadPNG.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-07T14:54:24Z",
+      "side": 1,
+      "message": "info",
+      "range": {
+        "startLine": 27,
+        "startChar": 17,
+        "endLine": 27,
+        "endChar": 22
+      },
+      "revId": "7d95583bf374e70894069554b519b0c2cdce3f71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_cc289735",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadPNG.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-07T14:54:24Z",
+      "side": 1,
+      "message": "stream",
+      "range": {
+        "startLine": 29,
+        "startChar": 17,
+        "endLine": 29,
+        "endChar": 24
+      },
+      "revId": "7d95583bf374e70894069554b519b0c2cdce3f71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_acdc3347",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-07T14:54:24Z",
+      "side": 1,
+      "message": "missing space",
+      "revId": "7d95583bf374e70894069554b519b0c2cdce3f71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4c1487e8",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-07T14:54:24Z",
+      "side": 1,
+      "message": "rm space",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 1
+      },
+      "revId": "7d95583bf374e70894069554b519b0c2cdce3f71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_6cd6ab29",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-07T14:54:24Z",
+      "side": 1,
+      "message": "rm space",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 1
+      },
+      "revId": "7d95583bf374e70894069554b519b0c2cdce3f71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_8cd92f59",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-07T14:54:24Z",
+      "side": 1,
+      "message": "rm space",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 1
+      },
+      "revId": "7d95583bf374e70894069554b519b0c2cdce3f71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_acb35308",
+        "filename": "nfEngine/nfRenderer/GuiRenderer.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-07T14:54:24Z",
+      "side": 1,
+      "message": "do not modify this file, nfRenderer is not compiled",
+      "revId": "7d95583bf374e70894069554b519b0c2cdce3f71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_2cf023c8",
+        "filename": "nfEngine/nfRenderer/Renderer.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-07T14:54:24Z",
+      "side": 1,
+      "message": "do not modify this file, nfRenderer is not compiled",
+      "revId": "7d95583bf374e70894069554b519b0c2cdce3f71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4ceba7db",
+        "filename": "nfEngine/nfRenderer/RendererResources.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-07T14:54:24Z",
+      "side": 1,
+      "message": "do not modify this file, nfRenderer is not compiled",
+      "revId": "7d95583bf374e70894069554b519b0c2cdce3f71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
