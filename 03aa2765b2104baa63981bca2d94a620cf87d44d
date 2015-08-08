@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_fd0ee339",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-08T17:01:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_1351d735",
+      "revId": "03aa2765b2104baa63981bca2d94a620cf87d44d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_5370bfdb",
         "filename": "nfEngine/nfRendererDemo/BasicScene.cpp",
         "patchSetId": 3
@@ -30,6 +48,24 @@
       "writtenOn": "2015-08-01T22:42:30Z",
       "side": 1,
       "message": "I would move everything from annonymous namespace to private section of \"BasicScene\"",
+      "revId": "03aa2765b2104baa63981bca2d94a620cf87d44d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_7d98131c",
+        "filename": "nfEngine/nfRendererDemo/BasicScene.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-08T17:01:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_5370bfdb",
       "revId": "03aa2765b2104baa63981bca2d94a620cf87d44d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -71,6 +107,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_1d0aa725",
+        "filename": "nfEngine/nfRendererDemo/BasicScene.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-08T17:01:59Z",
+      "side": 1,
+      "message": "Done, added OGL4 variables and Main.cpp chooses between them.",
+      "parentUuid": "9ad9bd40_5347df76",
+      "revId": "03aa2765b2104baa63981bca2d94a620cf87d44d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_73614304",
         "filename": "nfEngine/nfRendererDemo/BasicScene.cpp",
         "patchSetId": 3
@@ -82,6 +136,24 @@
       "writtenOn": "2015-08-01T22:44:12Z",
       "side": 1,
       "message": "Use unique_ptr",
+      "revId": "03aa2765b2104baa63981bca2d94a620cf87d44d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_9d9b1717",
+        "filename": "nfEngine/nfRendererDemo/BasicScene.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-08T17:01:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_73614304",
       "revId": "03aa2765b2104baa63981bca2d94a620cf87d44d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -111,6 +183,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_bd9e1b05",
+        "filename": "nfEngine/nfRendererDemo/Main.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-08T17:01:59Z",
+      "side": 1,
+      "message": "Since I need to select specific backend and adjust shader prefix and extension to it, I moved it to Common.hpp and left similar name - D3D11_BACKEND.",
+      "parentUuid": "9ad9bd40_d37befbb",
+      "range": {
+        "startLine": 21,
+        "startChar": 18,
+        "endLine": 21,
+        "endChar": 38
+      },
+      "revId": "03aa2765b2104baa63981bca2d94a620cf87d44d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_9375e7cc",
         "filename": "nfEngine/nfRendererDemo/Main.cpp",
         "patchSetId": 3
@@ -122,6 +218,24 @@
       "writtenOn": "2015-08-01T22:42:30Z",
       "side": 1,
       "message": "is this used somewhere?",
+      "revId": "03aa2765b2104baa63981bca2d94a620cf87d44d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_dda11f47",
+        "filename": "nfEngine/nfRendererDemo/Main.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-08T17:01:59Z",
+      "side": 1,
+      "message": "Was used, now it is not. Removed.",
+      "parentUuid": "9ad9bd40_9375e7cc",
       "revId": "03aa2765b2104baa63981bca2d94a620cf87d44d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -151,6 +265,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_fd8b43c0",
+        "filename": "nfEngine/nfRendererDemo/Main.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-08T17:01:59Z",
+      "side": 1,
+      "message": "Indeed, Linux uses KEY_... defines to provide input on kernel headers, precisely on linux/input.h. We will have to resolve it in the future, I will leave a TODO.",
+      "parentUuid": "9ad9bd40_b3802b8c",
+      "range": {
+        "startLine": 210,
+        "startChar": 13,
+        "endLine": 210,
+        "endChar": 21
+      },
+      "revId": "03aa2765b2104baa63981bca2d94a620cf87d44d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_f34d539b",
         "filename": "nfEngine/nfRendererDemo/Shaders/D3D11/TestVS.hlsl",
         "patchSetId": 3
@@ -162,6 +300,30 @@
       "writtenOn": "2015-08-01T22:42:30Z",
       "side": 1,
       "message": "This line thoes nothing :)\nA * I \u003d\u003d A",
+      "range": {
+        "startLine": 35,
+        "startChar": 4,
+        "endLine": 35,
+        "endChar": 46
+      },
+      "revId": "03aa2765b2104baa63981bca2d94a620cf87d44d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_3d920bf6",
+        "filename": "nfEngine/nfRendererDemo/Shaders/D3D11/TestVS.hlsl",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-08T17:01:59Z",
+      "side": 1,
+      "message": "Yes, I know that. However, this is actually a very interesting case and this line is there for a reason.\n\nWithout this line the demo behaves inconsistently (at least on my system) when switching between subscenes 2 and 3 (subscene 3 activates constant buffers). The tri-and-quad from BasicScene sometimes snap to their original positions, sometimes stay at a specified angle.\n\nAdding this line made the Demo more consistent between scenes - figures began to stay at a specific angle. However, IMO this is still weird - I would expect them to snap to the original position, since in the final shader code I apply no rotation to their original positions.\n\nI did some investigation for this, however came with no results and don\u0027t know why it happens. I\u0027m more than ready to show you this bug.\n\nThe line was removed, maybe my OS is just too old and needs reinstallation.",
+      "parentUuid": "9ad9bd40_f34d539b",
       "range": {
         "startLine": 35,
         "startChar": 4,
