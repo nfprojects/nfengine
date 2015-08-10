@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_2c481eb2",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-10T09:17:06Z",
+      "side": 1,
+      "message": "What about this function? I thought that SSO will be used to bind separate shaders with SetShader and traditional shader objects will be used for SetShaderProgram",
+      "revId": "4f689f0bda46ca8126c15250ab8e59f5cce1ac77",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ec3c7631",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Shader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-10T09:17:06Z",
+      "side": 1,
+      "message": "Commas, not, needed :)",
+      "range": {
+        "startLine": 45,
+        "startChar": 34,
+        "endLine": 45,
+        "endChar": 44
+      },
+      "revId": "4f689f0bda46ca8126c15250ab8e59f5cce1ac77",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_6c9b0618",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Shader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-10T09:17:06Z",
+      "side": 1,
+      "message": "This function may fail",
+      "range": {
+        "startLine": 144,
+        "startChar": 8,
+        "endLine": 144,
+        "endChar": 26
+      },
+      "revId": "4f689f0bda46ca8126c15250ab8e59f5cce1ac77",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ecd8f6f0",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Shader.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-10T09:17:06Z",
+      "side": 1,
+      "message": "There is no \"shader program\" concept in D3D prior to version 12 (but there it\u0027s named \"pipeline state object\").",
+      "range": {
+        "startLine": 36,
+        "startChar": 72,
+        "endLine": 36,
+        "endChar": 91
+      },
+      "revId": "4f689f0bda46ca8126c15250ab8e59f5cce1ac77",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
