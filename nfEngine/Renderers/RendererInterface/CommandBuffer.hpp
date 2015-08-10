@@ -30,6 +30,11 @@ public:
      * @{
      */
 
+    /**
+     * Reset pipeline state (clean all bound resources and shaders to the pipeline).
+     */
+    virtual void Reset() = 0;
+
     virtual void SetVertexLayout(IVertexLayout* vertexLayout) = 0;
     virtual void SetVertexBuffers(int num, IBuffer** vertexBuffers,
                                   int* strides, int* offsets) = 0;

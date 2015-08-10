@@ -23,6 +23,13 @@ CommandBuffer::~CommandBuffer()
 {
 }
 
+void CommandBuffer::Reset()
+{
+    mCurrentPrimitiveType = PrimitiveType::Unknown;
+    mCurrentRenderTarget = nullptr;
+    mBoundShaders = ShaderProgramDesc();
+}
+
 void CommandBuffer::SetVertexLayout(IVertexLayout* vertexLayout)
 {
     UNUSED(vertexLayout);

@@ -231,15 +231,16 @@ int main(int argc, char* argv[])
 
     // RENDERING LOOP =============================================================================
 
-    if (gBlendState) gCommandBuffer->SetBlendState(blendState);
-    gCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
-
     float angle = 0.0f;
 
     while (!window.IsClosed())
     {
         window.ProcessMessages();
         angle += 0.03f;
+
+        gCommandBuffer->Reset();
+        if (gBlendState) gCommandBuffer->SetBlendState(blendState);
+        gCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
 
         if (gConstantBuffers)
         {

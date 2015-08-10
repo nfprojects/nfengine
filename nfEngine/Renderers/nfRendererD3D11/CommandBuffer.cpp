@@ -41,6 +41,15 @@ CommandBuffer::~CommandBuffer()
 {
 }
 
+void CommandBuffer::Reset()
+{
+    mCurrentPrimitiveType = PrimitiveType::Unknown;
+    mCurrentRenderTarget = nullptr;
+    mBoundShaders = ShaderProgramDesc();
+
+    mContext->ClearState();
+}
+
 void CommandBuffer::SetViewport(float left, float width, float top, float height,
                                 float minDepth, float maxDepth)
 {
