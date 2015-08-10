@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_ccb25293",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-10T09:27:26Z",
+      "side": 1,
+      "message": "This is for the next commit, as stated in the Commit Message.",
+      "parentUuid": "9ad9bd40_2c481eb2",
+      "revId": "4f689f0bda46ca8126c15250ab8e59f5cce1ac77",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_ec3c7631",
         "filename": "nfEngine/Renderers/nfRendererOGL4/Shader.cpp",
         "patchSetId": 2
@@ -76,6 +94,30 @@
       "writtenOn": "2015-08-10T09:17:06Z",
       "side": 1,
       "message": "There is no \"shader program\" concept in D3D prior to version 12 (but there it\u0027s named \"pipeline state object\").",
+      "range": {
+        "startLine": 36,
+        "startChar": 72,
+        "endLine": 36,
+        "endChar": 91
+      },
+      "revId": "4f689f0bda46ca8126c15250ab8e59f5cce1ac77",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ecad5632",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Shader.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-10T09:27:26Z",
+      "side": 1,
+      "message": "But in version 11 there is, I based on that and on Interfaces we have in nfRenderer.",
+      "parentUuid": "9ad9bd40_ecd8f6f0",
       "range": {
         "startLine": 36,
         "startChar": 72,
