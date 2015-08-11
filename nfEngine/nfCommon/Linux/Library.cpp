@@ -18,13 +18,15 @@ Library::Library()
 
 Library::Library(const std::string& path)
 {
+    mModule = nullptr;
     Open(path);
 }
 
 Library::Library(Library&& other)
     : Library()
 {
-    std::swap(mModule, other.mModule);
+    mModule = other.mModule;
+    other.mModule = nullptr;
 }
 
 Library& Library::operator=(Library&& other)

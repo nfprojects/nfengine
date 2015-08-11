@@ -66,7 +66,7 @@ public:
     template <typename T>
     bool GetSymbol(const std::string& name, T& result)
     {
-        result = (T) GetSymbol(name);
+        *(reinterpret_cast<void**>(&result)) = GetSymbol(name);
         if (!result)
             return false;
 
