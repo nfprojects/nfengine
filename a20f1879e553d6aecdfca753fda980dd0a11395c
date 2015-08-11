@@ -16,6 +16,24 @@
       "revId": "a20f1879e553d6aecdfca753fda980dd0a11395c",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_36006501",
+        "filename": "nfEngine/nfRendererDemo/Main.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-11T09:36:17Z",
+      "side": 1,
+      "message": "Yes, to test Reset() and show how it should be used in \"Refactor nfRendererDemo\" commit",
+      "parentUuid": "9ad9bd40_f6a0bd91",
+      "revId": "a20f1879e553d6aecdfca753fda980dd0a11395c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
