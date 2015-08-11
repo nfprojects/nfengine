@@ -66,7 +66,9 @@ public:
     template <typename T>
     bool GetSymbol(const std::string& name, T& result)
     {
-        result = (T) GetSymbol(name);
+        // workaround: simple casting from data pointer to function pointer is not legal in C++
+        *(reinterpret_cast<void**>(&result)) = GetSymbol(name);
+
         if (!result)
             return false;
 
