@@ -13,11 +13,12 @@ namespace NFE {
 namespace Common {
 
 Library::Library()
+    : mModule(nullptr)
 {
-    mModule = nullptr;
 }
 
 Library::Library(const std::string& path)
+    : Library()
 {
     Open(path);
 }
