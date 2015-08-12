@@ -15,6 +15,10 @@ namespace Renderer {
 
 GLuint TranslateShaderTypeToGLMacro(ShaderType type);
 GLuint TranslateShaderTypeToGLBit(ShaderType type);
+GLenum TranslateElementFormat(ElementFormat format, bool& normalized);
+GLenum TranslatePrimitiveType(PrimitiveType type);
+GLenum TranslateIndexBufferFormat(IndexBufferFormat format);
+GLsizei GetElementFormatSize(ElementFormat format);
 
 } // namespace Renderer
 } // namespace NFE

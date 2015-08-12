@@ -17,11 +17,26 @@ class CommandBuffer : public ICommandBuffer
 {
     friend class Device;
 
+    GLenum mCurrentIndexBufferFormat;
     RenderTarget* mCurrentRenderTarget;
+    int mCurrentVertexLayoutElementsNum;
+
+    IBuffer* mSetVertexBuffer;
+    IBuffer* mSetIndexBuffer;
+    IVertexLayout* mSetVertexLayout;
+
+    bool mVertexBufferNeedsUpdate;
+    bool mIndexBufferNeedsUpdate;
+    bool mVertexLayoutNeedsUpdate;
 
     // SSO-related variables
     bool mSSOEnabled;
     GLuint mProgramPipeline;
+
+    /// Private methods which will bind just set resources
+    void BindVertexBuffer();
+    void BindIndexBuffer();
+    void BindVertexLayout();
 
 public:
     CommandBuffer();
