@@ -15,10 +15,19 @@
 namespace NFE {
 namespace Renderer {
 
+/// OpenGL 1.5
+PFNGLGENBUFFERSPROC glGenBuffers = nullptr;
+PFNGLBINDBUFFERPROC glBindBuffer = nullptr;
+PFNGLBUFFERDATAPROC glBufferData = nullptr;
+PFNGLDELETEBUFFERSPROC glDeleteBuffers = nullptr;
+
 /// OpenGL 2.0
 PFNGLGETPROGRAMIVPROC glGetProgramiv = nullptr;
 PFNGLGETPROGRAMINFOLOGPROC glGetProgramInfoLog = nullptr;
 PFNGLDELETEPROGRAMPROC glDeleteProgram = nullptr;
+PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer = nullptr;
+PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = nullptr;
+PFNGLDISABLEVERTEXATTRIBARRAYPROC glDisableVertexAttribArray = nullptr;
 
 /// ARB_separate_shader_objects
 PFNGLUSEPROGRAMSTAGESPROC glUseProgramStages = nullptr;
@@ -44,10 +53,19 @@ bool nfglExtensionsInit()
 #error "Target platform not supported."
 #endif
 
+    /// OpenGL 1.5
+    NFGL_GET_EXTENSION(PFNGLGENBUFFERSPROC, glGenBuffers);
+    NFGL_GET_EXTENSION(PFNGLBINDBUFFERPROC, glBindBuffer);
+    NFGL_GET_EXTENSION(PFNGLBUFFERDATAPROC, glBufferData);
+    NFGL_GET_EXTENSION(PFNGLDELETEBUFFERSPROC, glDeleteBuffers);
+
     /// OpenGL 2.0
     NFGL_GET_EXTENSION(PFNGLGETPROGRAMIVPROC, glGetProgramiv);
     NFGL_GET_EXTENSION(PFNGLGETPROGRAMINFOLOGPROC, glGetProgramInfoLog);
     NFGL_GET_EXTENSION(PFNGLDELETEPROGRAMPROC, glDeleteProgram);
+    NFGL_GET_EXTENSION(PFNGLVERTEXATTRIBPOINTERPROC, glVertexAttribPointer);
+    NFGL_GET_EXTENSION(PFNGLENABLEVERTEXATTRIBARRAYPROC, glEnableVertexAttribArray);
+    NFGL_GET_EXTENSION(PFNGLDISABLEVERTEXATTRIBARRAYPROC, glDisableVertexAttribArray);
 
     /// ARB_separate_shader_objects
     NFGL_GET_EXTENSION(PFNGLUSEPROGRAMSTAGESPROC, glUseProgramStages);

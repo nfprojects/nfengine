@@ -14,6 +14,10 @@ namespace NFE {
 namespace Renderer {
 
 GLuint TranslateShaderType(ShaderType type);
+GLenum TranslateElementFormat(ElementFormat format, bool& normalized);
+GLenum TranslatePrimitiveType(PrimitiveType type);
+GLenum TranslateIndexBufferFormat(IndexBufferFormat format);
+GLsizei GetElementFormatSize(ElementFormat format);
 
 } // namespace Renderer
 } // namespace NFE

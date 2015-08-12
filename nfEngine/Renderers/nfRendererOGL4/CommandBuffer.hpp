@@ -17,10 +17,24 @@ class CommandBuffer : public ICommandBuffer
 {
     friend class Device;
 
-    PrimitiveType mCurrentPrimitiveType;
+    GLenum mCurrentIndexBufferFormat;
     RenderTarget* mCurrentRenderTarget;
+    int mCurrentVertexLayoutElementsNum;
+
+    IBuffer* mSetVertexBuffer;
+    IBuffer* mSetIndexBuffer;
+    IVertexLayout* mSetVertexLayout;
+
+    bool mVertexBufferNeedsUpdate;
+    bool mIndexBufferNeedsUpdate;
+    bool mVertexLayoutNeedsUpdate;
 
     ShaderProgramDesc mBoundShaders;
+
+    /// Private methods which will bind just set resources
+    void BindVertexBuffer();
+    void BindIndexBuffer();
+    void BindVertexLayout();
 
 public:
     CommandBuffer();
