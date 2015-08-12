@@ -56,6 +56,12 @@
     <ClInclude Include="Win\wglExtensions.hpp">
       <Filter>Header Files\Win</Filter>
     </ClInclude>
+    <ClInclude Include="Buffer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexLayout.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Device.cpp">
@@ -93,6 +99,12 @@
     </ClCompile>
     <ClCompile Include="Win\wglExtensions.cpp">
       <Filter>Source Files\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexLayout.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -4,7 +4,6 @@ in VertexShaderOutput
 {
     vec2 TexCoord;
     vec4 Color;
-    vec4 Pos;
 } Input;
 
 out vec3 color;
