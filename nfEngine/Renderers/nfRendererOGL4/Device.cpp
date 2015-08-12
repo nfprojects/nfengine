@@ -11,6 +11,8 @@
 #include "RenderTarget.hpp"
 #include "Backbuffer.hpp"
 #include "Shader.hpp"
+#include "Buffer.hpp"
+#include "VertexLayout.hpp"
 
 
 namespace {
@@ -55,14 +57,12 @@ void* Device::GetHandle() const
 
 IVertexLayout* Device::CreateVertexLayout(const VertexLayoutDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<VertexLayout, VertexLayoutDesc>(desc);
 }
 
 IBuffer* Device::CreateBuffer(const BufferDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<Buffer, BufferDesc>(desc);
 }
 
 ITexture* Device::CreateTexture(const TextureDesc& desc)
