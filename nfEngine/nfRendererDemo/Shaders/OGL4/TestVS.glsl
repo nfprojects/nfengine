@@ -8,13 +8,12 @@ out VertexShaderOutput
 {
     vec2 TexCoord;
     vec4 Color;
-    vec4 Pos;
 } Output;
 
 
 void main()
 {
-    Output.Pos = vec4(InPos, 1.0);
+    gl_Position = vec4(InPos, 1.0);
     Output.TexCoord = InTexCoord;
     Output.Color = InColor;
 }
