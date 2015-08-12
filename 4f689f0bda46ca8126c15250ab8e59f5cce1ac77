@@ -60,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_a460ba01",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Shader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-12T19:30:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_ec3c7631",
+      "range": {
+        "startLine": 45,
+        "startChar": 34,
+        "endLine": 45,
+        "endChar": 44
+      },
+      "revId": "4f689f0bda46ca8126c15250ab8e59f5cce1ac77",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_6c9b0618",
         "filename": "nfEngine/Renderers/nfRendererOGL4/Shader.cpp",
         "patchSetId": 2
@@ -71,6 +95,30 @@
       "writtenOn": "2015-08-10T09:17:06Z",
       "side": 1,
       "message": "This function may fail",
+      "range": {
+        "startLine": 144,
+        "startChar": 8,
+        "endLine": 144,
+        "endChar": 26
+      },
+      "revId": "4f689f0bda46ca8126c15250ab8e59f5cce1ac77",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_0429669a",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Shader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-12T19:30:26Z",
+      "side": 1,
+      "message": "Indeed.\n\nThe traditional way of handling errors is by glGetError. Sad thing is, this might terribly clutter the code by having regular code blocks in the lights of:\n\nGLenum err \u003d glGetError()\nif (err !\u003d GL_NO_ERROR)\n{\n    LOG_ERROR(\"Call to ... failed: %d\", err);\n    // further error handling\n}\n\nI suggest to leave this for another commit. OGL4.3 introduced some neat functions like glDebugMessageCallback, glDebugMessageControl and glDebugMessageInsert. This would be the best way for us to handle errors, however it would require some code to properly add it to nfRendererOGL4.",
+      "parentUuid": "9ad9bd40_6c9b0618",
       "range": {
         "startLine": 144,
         "startChar": 8,
