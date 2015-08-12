@@ -15,6 +15,12 @@
 namespace NFE {
 namespace Renderer {
 
+/// OpenGL 1.5
+PFNGLGENBUFFERSPROC glGenBuffers = nullptr;
+PFNGLBINDBUFFERPROC glBindBuffer = nullptr;
+PFNGLBUFFERDATAPROC glBufferData = nullptr;
+PFNGLDELETEBUFFERSPROC glDeleteBuffers = nullptr;
+
 /// OpenGL 2.0
 PFNGLCREATESHADERPROC glCreateShader = nullptr;
 PFNGLGETSHADERIVPROC glGetShaderiv = nullptr;
@@ -30,6 +36,9 @@ PFNGLGETPROGRAMINFOLOGPROC glGetProgramInfoLog = nullptr;
 PFNGLLINKPROGRAMPROC glLinkProgram = nullptr;
 PFNGLUSEPROGRAMPROC glUseProgram = nullptr;
 PFNGLDELETEPROGRAMPROC glDeleteProgram = nullptr;
+PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer = nullptr;
+PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = nullptr;
+PFNGLDISABLEVERTEXATTRIBARRAYPROC glDisableVertexAttribArray = nullptr;
 
 /// ARB_separate_shader_objects
 PFNGLUSEPROGRAMSTAGESPROC glUseProgramStages = nullptr;
@@ -55,6 +64,12 @@ bool nfglExtensionsInit()
 #error "Target platform not supported."
 #endif
 
+    /// OpenGL 1.5
+    NFGL_GET_EXTENSION(PFNGLGENBUFFERSPROC, glGenBuffers);
+    NFGL_GET_EXTENSION(PFNGLBINDBUFFERPROC, glBindBuffer);
+    NFGL_GET_EXTENSION(PFNGLBUFFERDATAPROC, glBufferData);
+    NFGL_GET_EXTENSION(PFNGLDELETEBUFFERSPROC, glDeleteBuffers);
+
     /// OpenGL 2.0
     NFGL_GET_EXTENSION(PFNGLCREATESHADERPROC, glCreateShader);
     NFGL_GET_EXTENSION(PFNGLGETSHADERIVPROC, glGetShaderiv);
@@ -70,6 +85,9 @@ bool nfglExtensionsInit()
     NFGL_GET_EXTENSION(PFNGLLINKPROGRAMPROC, glLinkProgram);
     NFGL_GET_EXTENSION(PFNGLUSEPROGRAMPROC, glUseProgram);
     NFGL_GET_EXTENSION(PFNGLDELETEPROGRAMPROC, glDeleteProgram);
+    NFGL_GET_EXTENSION(PFNGLVERTEXATTRIBPOINTERPROC, glVertexAttribPointer);
+    NFGL_GET_EXTENSION(PFNGLENABLEVERTEXATTRIBARRAYPROC, glEnableVertexAttribArray);
+    NFGL_GET_EXTENSION(PFNGLDISABLEVERTEXATTRIBARRAYPROC, glDisableVertexAttribArray);
 
     /// ARB_separate_shader_objects
     NFGL_GET_EXTENSION(PFNGLUSEPROGRAMSTAGESPROC, glUseProgramStages);
