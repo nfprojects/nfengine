@@ -5,6 +5,8 @@
 ADD_SUBDIRECTORY("nfCommon")
 ADD_SUBDIRECTORY("nfCommonTest")
 ADD_SUBDIRECTORY("TestResources")
+ADD_SUBDIRECTORY("Renderers")
+ADD_SUBDIRECTORY("nfRendererDemo")
 
 # TODO uncomment during Linux version implementation
 #ADD_SUBDIRECTORY("nfCore")

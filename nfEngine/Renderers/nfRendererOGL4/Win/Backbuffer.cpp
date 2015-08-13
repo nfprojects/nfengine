@@ -4,10 +4,10 @@
  * @brief   OGL4 implementation of renderer's backbuffer
  */
 
-#include "PCH.hpp"
+#include "../PCH.hpp"
 
-#include "Defines.hpp"
-#include "Backbuffer.hpp"
+#include "../Defines.hpp"
+#include "../Backbuffer.hpp"
 
 
 namespace NFE {
@@ -80,7 +80,10 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
         return false;
 
     // enable/disable vsync
-    wglSwapIntervalEXT(desc.vSync);
+    if (wglSwapIntervalEXT)
+        wglSwapIntervalEXT(desc.vSync);
+    else
+        LOG_WARNING("wglSwapIntervalEXT was not acquired, VSync control is disabled.");
 
     return true;
 }
@@ -92,7 +95,7 @@ bool Backbuffer::Present()
     //   * VSync disabled - call glFinish before swap to make sure all calls are done
 
     // VSync is enabled if wglGetSwapIntervalEXT returns 1 or higher
-    if (!wglGetSwapIntervalEXT())
+    if (wglGetSwapIntervalEXT && !wglGetSwapIntervalEXT())
         glFinish();
 
     if (SwapBuffers(mHDC))

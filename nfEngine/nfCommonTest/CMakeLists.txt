@@ -9,7 +9,8 @@ FILE(GLOB NFCOMMONTEST_HEADERS *.hpp)
 
 # Search for dependencies
 PKG_CHECK_MODULES(NFCOMMONTEST_DEPS REQUIRED
-                  x11) # needed by nfCommon Window
+                  x11
+                  gl) # needed by nfCommon Window
 
 # TODO these tests have unfinished linux versions
 LIST(REMOVE_ITEM NFCOMMONTEST_SOURCES "${NFCOMMONTEST_DIRECTORY}/MemoryTest.cpp")       #105

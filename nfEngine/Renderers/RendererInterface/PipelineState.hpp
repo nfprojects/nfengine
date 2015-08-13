@@ -81,7 +81,7 @@ struct RasterizerStateDesc
     const char* debugName;  //< optional debug name
 
     RasterizerStateDesc()
-        : cullMode(CullMode::None)
+        : cullMode(CullMode::Disabled)
         , fillMode(FillMode::Solid)
         , debugName(nullptr)
     {}
@@ -121,7 +121,7 @@ struct DepthStateDesc
     DepthStateDesc()
         : depthTestEnable(false)
         , depthWriteEnable(false)
-        , depthCompareFunc(CompareFunc::Always)
+        , depthCompareFunc(CompareFunc::Pass)
         , debugName(nullptr)
     {}
 };
