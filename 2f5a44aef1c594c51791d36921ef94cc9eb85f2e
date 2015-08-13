@@ -73,6 +73,29 @@
       "revId": "2f5a44aef1c594c51791d36921ef94cc9eb85f2e",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_0a708d3e",
+        "filename": "nfEngine/nfRendererDemo/Shaders/D3D11/TestVS.hlsl",
+        "patchSetId": 9
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-13T09:26:01Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 52
+      },
+      "revId": "2f5a44aef1c594c51791d36921ef94cc9eb85f2e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
