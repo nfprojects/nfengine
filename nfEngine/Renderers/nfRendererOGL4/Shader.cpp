@@ -147,7 +147,7 @@ bool ShaderProgram::Init(const ShaderProgramDesc& desc)
     if (desc.domainShader)
     {
         Shader* ds = dynamic_cast<Shader*>(desc.domainShader);
-        glUseProgramStages(mProgramPipeline, GL_TESS_EVALUATE_SHADER_BIT, ds->mShaderProgram);
+        glUseProgramStages(mProgramPipeline, GL_TESS_EVALUATION_SHADER_BIT, ds->mShaderProgram);
     }
 
     if (desc.geometryShader)
