@@ -7,6 +7,8 @@
 #include "PCH.hpp"
 #include "../Window.hpp"
 
+#include "GL/glx.h"
+
 
 namespace NFE {
 namespace Common {
@@ -31,7 +33,6 @@ Window::Window()
         if (mDisplay == nullptr)
         {
             printf("Cannot connect to X server\n");
-            exit(1);
         }
     }
     mRoot = DefaultRootWindow(mDisplay);
@@ -122,17 +123,20 @@ bool Window::Open()
     if (!mClosed)
         return false;
 
-    XSetWindowAttributes xSetWAttrib;
-    ::Visual* visual = DefaultVisual(mDisplay, XDefaultScreen(mDisplay));
-    ::Colormap colormap = XCreateColormap(mDisplay, mRoot, visual, AllocNone);
+    ::XSetWindowAttributes xSetWAttrib;
+
+    // Visual should be GL-capable, so GLX must choose it
+    GLint oglAttrs[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
+    ::XVisualInfo* visual = glXChooseVisual(mDisplay, 0, oglAttrs);
+    ::Colormap colormap = XCreateColormap(mDisplay, mRoot, visual->visual, AllocNone);
     xSetWAttrib.colormap = colormap;
     xSetWAttrib.event_mask = Button1MotionMask | Button2MotionMask | ButtonPressMask |
                             ButtonReleaseMask | ExposureMask | FocusChangeMask | KeyPressMask |
                             KeyReleaseMask | PointerMotionMask | StructureNotifyMask;
 
     XSetErrorHandler(ErrorHandler);
-    mWindow = XCreateWindow(mDisplay, mRoot, 0, 0, mWidth, mHeight, 1, CopyFromParent,
-                            InputOutput, CopyFromParent, CWColormap | CWEventMask, &xSetWAttrib);
+    mWindow = XCreateWindow(mDisplay, mRoot, 0, 0, mWidth, mHeight, 1, visual->depth,
+                            InputOutput, visual->visual, CWColormap | CWEventMask, &xSetWAttrib);
     if (Window::mWindowError)
     {
         Window::mWindowError = false;

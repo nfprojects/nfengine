@@ -20,8 +20,12 @@
 // macro for unused parameters to supress warnings
 #define UNUSED(x) (void)(x)
 
-#include "gl/gl.h"
-#include "gl/glu.h"
+#include "GL/gl.h"
+#include "GL/glu.h"
+
+#if defined(__linux__) | defined(__LINUX__)
+#include "GL/glx.h"
+#endif
 
 #include "Extensions.hpp"
 
