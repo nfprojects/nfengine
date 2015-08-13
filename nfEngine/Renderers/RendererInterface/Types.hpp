@@ -165,7 +165,7 @@ enum class BlendOp
  */
 enum class CullMode
 {
-    None, //< disable backface culling
+    Disabled, //< disable backface culling
     CW,   //< cull clockwise faces (default)
     CCW,  //< cull counter-clockwise faces
 };
@@ -191,7 +191,7 @@ enum class CompareFunc
     EqualGrater,
     Grater,
     NotEqual,
-    Always
+    Pass
 };
 
 enum class PrimitiveType

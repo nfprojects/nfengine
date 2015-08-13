@@ -96,10 +96,12 @@ public:
  */
 #else // !defined(__LINUX__) & !defined(__linux__)
 
-#define LOG_INFO(...) do {} while (0)
-#define LOG_SUCCESS(...) do {} while (0)
-#define LOG_WARNING(...) do {} while (0)
-#define LOG_ERROR(...) do {} while (0)
-#define LOG_FATAL(...) do {} while (0)
+// Correct log macros will be supplied to Linux version after Logger rewrite.
+// Right now, fprintf to stderr will be enough.
+#define LOG_INFO(...) do { fprintf(stderr, "[INFO]  "  __VA_ARGS__); fprintf(stderr, "\n"); } while (0)
+#define LOG_SUCCESS(...) do { fprintf(stderr, "[GOOD]  " __VA_ARGS__); fprintf(stderr, "\n"); } while (0)
+#define LOG_WARNING(...) do { fprintf(stderr, "[WARN]  " __VA_ARGS__); fprintf(stderr, "\n"); } while (0)
+#define LOG_ERROR(...) do { fprintf(stderr, "[ERROR] " __VA_ARGS__); fprintf(stderr, "\n"); } while (0)
+#define LOG_FATAL(...) do { fprintf(stderr, "[FATAL] " __VA_ARGS__); fprintf(stderr, "\n"); } while (0)
 
 #endif // !defined(__LINUX__) & !defined(__linux__)
