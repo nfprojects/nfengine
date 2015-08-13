@@ -167,19 +167,23 @@
     <ClInclude Include="Defines.hpp" />
     <ClInclude Include="Device.hpp" />
     <ClInclude Include="Extensions.hpp" />
+    <ClInclude Include="GetExtension.hpp" />
+    <ClInclude Include="GL\glext.h" />
+    <ClInclude Include="GL\wglext.h" />
     <ClInclude Include="RendererOGL4.hpp" />
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="RenderTarget.hpp" />
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="Texture.hpp" />
     <ClInclude Include="Translations.hpp" />
+    <ClInclude Include="Win\wglExtensions.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Backbuffer.cpp" />
     <ClCompile Include="CommandBuffer.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Extensions.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="RendererOGL4.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -190,6 +194,18 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Translations.cpp" />
+    <ClCompile Include="Win\Backbuffer.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Win\wglExtensions.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
