@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_447a8e88",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-13T13:52:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_497f07e0",
+      "revId": "c37ea7f06555e7101df275481b48f6cfaceab821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_a96fb329",
         "filename": "nfEngine/nfCommon/Image/Image.cpp",
         "patchSetId": 10
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_0445e641",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 431,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-13T13:52:05Z",
+      "side": 1,
+      "message": "If block from line 401 stops function at the beginning and this function actually just checks whether its BC1/2/3 or other ImageFormat type :P\nStill...naming it IsBC() would cause questions \u0027what about BC4 up to BC7? why don\u0027t they return true?\u0027",
+      "parentUuid": "9ad9bd40_a96fb329",
+      "revId": "c37ea7f06555e7101df275481b48f6cfaceab821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_69820bc9",
         "filename": "nfEngine/nfCommon/Image/Image.cpp",
         "patchSetId": 10
@@ -47,6 +83,24 @@
       "writtenOn": "2015-08-12T14:17:08Z",
       "side": 1,
       "message": "Style. You can just remove \"else\"",
+      "revId": "c37ea7f06555e7101df275481b48f6cfaceab821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_24774aa1",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 438,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-13T13:52:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_69820bc9",
       "revId": "c37ea7f06555e7101df275481b48f6cfaceab821",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -88,6 +142,42 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_e4b72238",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-13T13:52:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_0417a645",
+      "revId": "c37ea7f06555e7101df275481b48f6cfaceab821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_c4acdeef",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-13T13:52:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_29cac31a",
+      "revId": "c37ea7f06555e7101df275481b48f6cfaceab821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_091a5fc5",
         "filename": "nfEngine/nfRenderer/RendererResources.cpp",
         "patchSetId": 10
@@ -105,6 +195,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_3ed91257",
+        "filename": "nfEngine/nfRenderer/RendererResources.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-13T13:52:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_091a5fc5",
+      "revId": "c37ea7f06555e7101df275481b48f6cfaceab821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_297c83eb",
         "filename": "nfEngineDeps",
         "patchSetId": 10
@@ -116,6 +224,24 @@
       "writtenOn": "2015-08-12T14:17:08Z",
       "side": 1,
       "message": "Add libsquish to list of deps in README.md",
+      "revId": "c37ea7f06555e7101df275481b48f6cfaceab821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_04b3264d",
+        "filename": "nfEngineDeps",
+        "patchSetId": 10
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-13T13:52:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_297c83eb",
       "revId": "c37ea7f06555e7101df275481b48f6cfaceab821",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
