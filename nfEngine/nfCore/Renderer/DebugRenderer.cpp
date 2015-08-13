@@ -140,7 +140,7 @@ DebugRenderer::DebugRenderer()
 
     /// create rasterizer state
     RasterizerStateDesc rasterizerStateDesc;
-    rasterizerStateDesc.cullMode = CullMode::None;
+    rasterizerStateDesc.cullMode = CullMode::Disabled;
     rasterizerStateDesc.fillMode = FillMode::Solid;
     rasterizerStateDesc.debugName = "DebugRenderer::mRasterizerState";
     mRasterizerState.reset(device->CreateRasterizerState(rasterizerStateDesc));
