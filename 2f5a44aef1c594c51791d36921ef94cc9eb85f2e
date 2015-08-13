@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_e4048219",
+        "filename": "nfEngine/nfRendererDemo/BasicScene.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-13T09:23:11Z",
+      "side": 1,
+      "message": ":)",
+      "revId": "2f5a44aef1c594c51791d36921ef94cc9eb85f2e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_2f02c309",
+        "filename": "nfEngine/nfRendererDemo/BasicScene.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-13T09:23:11Z",
+      "side": 1,
+      "message": "Line too long",
+      "revId": "2f5a44aef1c594c51791d36921ef94cc9eb85f2e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_c4093e32",
+        "filename": "nfEngine/nfRendererDemo/BasicScene.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 304,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-13T09:23:11Z",
+      "side": 1,
+      "message": "I\u0027d move it to SwitchSubscene or even Draw",
+      "range": {
+        "startLine": 301,
+        "startChar": 0,
+        "endLine": 304,
+        "endChar": 53
+      },
+      "revId": "2f5a44aef1c594c51791d36921ef94cc9eb85f2e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_04008600",
+        "filename": "nfEngine/nfRendererDemo/BasicScene.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 379,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-13T09:23:11Z",
+      "side": 1,
+      "message": "Line too long",
+      "revId": "2f5a44aef1c594c51791d36921ef94cc9eb85f2e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
