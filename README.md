@@ -66,6 +66,7 @@ The engine's root directory looks as follows:
     * **Renderers** - directory containing low-level renderer backends and related stuff
         * **RendererInterface** - set of headers defining low-level renderer API
         * **nfRendererD3D11** - Direct3D 11 low-level renderer implementation
+        * **nfRendererOGL4** - OpenGL 4 low-level renderer implementation
     * **nfRendererDemo** - demo application used for renderers testing
     * **nfRendererTest** - unit test for renderers
 * **nfEngineDeps** - engine's dependencies directory. See "Dependencies" section for more information
@@ -99,7 +100,7 @@ To make the code compilable, the following requirements have to be met:
 1. Installed Visual Studio 2013.
 2. Installed DirectX SDK.
 3. Pulled external dependencies from [here](http://www.github.com/nfprojects/nfenginedeps)
-    * **"nfEngineDeps"** directory will be created by using git submodules inside repo - fetch its contents by using `git submodule init && git submodule update` command
+    * **"nfEngineDeps"** directory will be created by using git submodules inside repo - fetch its contents by using `git submodule update --init` command
     * **NOTE:** Dependencies need to be built separately from engine. See README.md inside nfEngineDeps repo for more info.
 4. Downloaded resources from [here](http://drive.google.com/open?id=0B66mya2agFOEd0RJUWx1aDZ6Ym8)
     * **"Data"** directory created in **"nfEngineTest"** with content copied from subfolder **nfEngineTestData**
@@ -115,24 +116,28 @@ mklink /J Data "path-to-nfEngineTestData"
 Building the project - Linux
 ----------------------------
 
-For now, the only buildable part of nfEngine is nfCommon library and its tests binary, nfCommonTest. Requirements:
+Currently, buildable parts of nfEngine are: nfCommon, nfCommonTest, nfRendererOGL4 and nfRendererDemo. Requirements:
 
-1. Installed a C++11-compatible compiler (right now the only compiler tested to work is GCC 4.7).
+1. Installed a C++11-compatible compiler (right now the only compiler tested to work is GCC 4.7 and higher versions).
 2. Installed CMake 2.6 or higher.
 3. Pulled external dependencies from [here](http://www.github.com/nfprojects/nfenginedeps):
-    * **"nfEngineDeps"** directory will be created by using git submodules inside repo - fetch its contents by using `git submodule init && git submodule update`
+    * **"nfEngineDeps"** directory will be created by using git submodules inside repo - fetch its contents by using `git submodule update --init`
     * **NOTE:** Dependencies need to be built separately from engine. See README.md inside nfEngineDeps repo for more info.
 
-To rebuild the entire project in one go, _Scripts/rebuild-all.sh_ script is available, which works similarly to "Batch Build" feature in Visual Studio. The script will call cleaning script and build the engine in all configurations possible. Similarly to Windows platform, Linux version of nfEngine can be built on two platforms - 32-bit (called **i386**) and 64-bit (called **x86_64**). Keep in mind, that building on i386 platform might require downloading 32-bit versions of standard libraries and compiler libraries to link against:
+To rebuild the entire project in one go, _Scripts/rebuild-all.sh_ script is available, which works similarly to "Batch Build" feature in Visual Studio. The script will call cleaning script and build the engine in all configurations possible. Similarly to Windows platform, Linux version of nfEngine can be built on two platforms - 32-bit (called **i386**) and 64-bit (called **x86_64**).
 
-* On Fedora:
+Keep in mind, that building on i386 platform might require downloading 32-bit versions of standard libraries and compiler libraries to link against:
+
+* On Fedora (on version 22 use **dnf** instead of **yum**):
 ```
-sudo yum install glibc-devel.i686 gcc-c++.i686 libX11-devel.i686
+sudo yum install glibc-devel.i686 gcc-c++.i686 libX11-devel.i686 libX11.i686 mesa-libGL.i686 mesa-libGL-devel.i686
 ```
+
+**WARNING** - Ubuntu 14.04 LTS restricts possibility to install 32-bit and 64-bit versions of some depending packages at the same time. This is due to a conflict between 32-bit and 64-bit versions of packages libgl1-mesa-dev and mesa-common-dev. If you really need to build i386 version of nfEngine on Ubuntu, please do so on an i386 build of Ubuntu, or replace the packages at your own risk.
 
 * On Ubuntu:
 ```
-sudo apt-get install libc6-dev-i386 g++-multilib libx11-dev:i386
+sudo apt-get install libc6-dev-i386 g++-multilib libx11-dev:i386 libgl1-mesa-dev:i386 libglu1-mesa-dev:i386 mesa-common-dev:i386
 ```
 
 Building without _Scripts/rebuild-all.sh_ script is done by explicitly calling CMake and Make. To build nfEngine with default settings (Release build, 64-bit platform), simply call on nfEngine repo root directory:
@@ -151,7 +156,7 @@ Changing build settings is done by defining two CMake variables (both are option
 Example - forcing 64-bit build with Debug info:
 
 ```
-cmake . -DCMAKE_BUILD_TYPE=Debug -DCMAKE_BUILD_PLATFORM=x86_64
+cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_BUILD_PLATFORM=x86_64 .
 make
 ```
 

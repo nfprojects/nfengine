@@ -8,6 +8,8 @@
 
 #include "Types.hpp"
 
+#include <cfloat>
+
 namespace NFE {
 namespace Renderer {
 
@@ -127,7 +129,7 @@ struct SamplerDesc
         , maxMipmap(FLT_MAX)
         , mipmapBias(0.0f)
         , compare(false)
-        , compareFunc(CompareFunc::Always)
+        , compareFunc(CompareFunc::Pass)
         , borderColor(nullptr)
         , debugName(nullptr)
     {}
