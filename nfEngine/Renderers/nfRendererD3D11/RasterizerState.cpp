@@ -23,7 +23,7 @@ bool RasterizerState::Init(const RasterizerStateDesc& desc)
         case CullMode::CCW:
             rd.CullMode = D3D11_CULL_FRONT;
             break;
-        case CullMode::None:
+        case CullMode::Disabled:
             rd.CullMode = D3D11_CULL_NONE;
             break;
         default:
