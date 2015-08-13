@@ -59,6 +59,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_2a92b14b",
+        "filename": "nfEngine/nfRendererDemo/BasicScene.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 304,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-13T09:27:32Z",
+      "side": 1,
+      "message": "Now that I think about it, a lot of setters from Draw can be called only once and can be moved to SwitchSubscene. I will reorganize it.",
+      "parentUuid": "9ad9bd40_c4093e32",
+      "range": {
+        "startLine": 301,
+        "startChar": 0,
+        "endLine": 304,
+        "endChar": 53
+      },
+      "revId": "2f5a44aef1c594c51791d36921ef94cc9eb85f2e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_04008600",
         "filename": "nfEngine/nfRendererDemo/BasicScene.cpp",
         "patchSetId": 9
