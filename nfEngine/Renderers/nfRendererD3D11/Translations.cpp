@@ -240,7 +240,7 @@ D3D11_COMPARISON_FUNC TranslateComparisonFunc(CompareFunc func)
             return D3D11_COMPARISON_GREATER;
         case CompareFunc::NotEqual:
             return D3D11_COMPARISON_NOT_EQUAL;
-        case CompareFunc::Always:
+        case CompareFunc::Pass:
             return D3D11_COMPARISON_ALWAYS;
     };
 

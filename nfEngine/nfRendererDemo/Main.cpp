@@ -15,14 +15,15 @@
 #include "../nfCommon/FileSystem.hpp"
 #include "../nfCommon/Window.hpp"
 
-using namespace NFE::Common;
+#include <algorithm>
+
 using namespace NFE::Renderer;
 
-class DemoWindow : public Window
+class DemoWindow : public NFE::Common::Window
 {
     size_t mCurrentScene;
     size_t mCurrentSubScene;
-    Library mRendererLib;
+    NFE::Common::Library mRendererLib;
     IDevice* mRendererDevice;
     SceneArrayType mScenes;
 
@@ -208,28 +209,28 @@ public:
         size_t newSubSceneId = mCurrentSubScene;
         switch (key)
         {
-        case VK_RIGHT:
+        case 0x27:
             if (newSceneId >= mScenes.size() - 1)
                 return;
             newSceneId++;
             SwitchScene(newSceneId);
             break;
 
-        case VK_LEFT:
+        case 0x25:
             if (newSceneId == 0)
                 return;
             newSceneId--;
             SwitchScene(newSceneId);
             break;
 
-        case VK_UP:
+        case 0x26:
             if (newSubSceneId >= mScenes[mCurrentScene]->GetAvailableSubSceneCount())
                 return;
             newSubSceneId++;
             SwitchSubScene(newSubSceneId);
             break;
 
-        case VK_DOWN:
+        case 0x28:
             if (newSubSceneId == 0)
                 return;
             newSubSceneId--;
@@ -246,14 +247,27 @@ public:
 int main(int argc, char* argv[])
 {
     std::string execPath = NFE::Common::FileSystem::GetExecutablePath();
-    NFE::Common::FileSystem::ChangeDirectory(execPath + "/../../../..");
+
+    // strip the exec name from the path
+    execPath.erase(std::find_if(execPath.rbegin(), execPath.rend(), [](char c) -> bool {
+                       return (c == '/') || (c == '\\');
+                   }).base(),
+                   execPath.end());
+    NFE::Common::FileSystem::ChangeDirectory(execPath + "../../..");
 
     /// select renderer to use - the default will be D3D11
     std::string rend;
     std::string shaderPathPrefix;
     std::string shaderExt;
 
-    if ((argc < 2) || (D3D11_BACKEND.compare(argv[1]) == 0))
+    if (argc < 2)
+    {
+        std::vector<std::string> defBackend = GetDefaultBackend();
+        rend = defBackend[0];
+        shaderPathPrefix = defBackend[1];
+        shaderExt = defBackend[2];
+    }
+    else if (D3D11_BACKEND.compare(argv[1]) == 0)
     {
         // we use D3D11 renderer
         rend = D3D11_BACKEND;

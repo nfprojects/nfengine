@@ -25,7 +25,7 @@ enum class SeekMode
  */
 enum class AccessMode
 {
-    None,
+    No,
     Read,
     Write,
     ReadWrite,
