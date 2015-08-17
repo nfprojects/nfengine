@@ -212,7 +212,7 @@ bool Shader::Init(const ShaderDesc& desc)
         return false;
     }
 
-    LOG_SUCCESS("Shader '%s' compiled successfully", desc.path)
+    LOG_SUCCESS("Shader '%s' compiled successfully", desc.path);
     return true;
 }
 
