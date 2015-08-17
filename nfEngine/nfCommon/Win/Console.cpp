@@ -11,13 +11,13 @@
 namespace NFE {
 namespace Common {
 
-void PrintColored(const std::string& text, const ConsoleColor& foreground)
+void PrintColored(const char* text, const ConsoleColor& foreground)
 {
     HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO console_info;
     GetConsoleScreenBufferInfo(hstdout, &console_info);
     SetConsoleTextAttribute(hstdout, static_cast<ConsoleColorType>(foreground));
-    std::cout << text;
+    printf(text);
     SetConsoleTextAttribute(hstdout, console_info.wAttributes);
 }
 
