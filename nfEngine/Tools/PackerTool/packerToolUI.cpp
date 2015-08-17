@@ -155,7 +155,7 @@ void packerToolUI::MainLoop()
 
 #ifdef _DEBUG
         std::cout << "Received ";
-        PrintColored(input_first, NFE::Common::ConsoleColor::Green);
+        PrintColored(NFE::Common::ConsoleColor::Green, input_first.c_str());
         std::cout << " command.\n";
 #endif
 
@@ -195,7 +195,7 @@ void packerToolUI::MainLoop()
 
 #ifdef _DEBUG
         std::cout << "Found ";
-        PrintColored(curCommandIt->GetCommandString(), NFE::Common::ConsoleColor::Green);
+        PrintColored(NFE::Common::ConsoleColor::Green, curCommandIt->GetCommandString().c_str());
         std::cout << " command in database. Calling.\n";
 #endif
 

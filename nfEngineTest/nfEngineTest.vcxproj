@@ -97,6 +97,7 @@
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <MinimalRebuild>false</MinimalRebuild>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -124,6 +125,7 @@ popd</Command>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <MinimalRebuild>false</MinimalRebuild>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -152,6 +154,7 @@ popd</Command>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -181,6 +184,7 @@ popd</Command>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -12,12 +12,13 @@ FILE(GLOB NFCOMMON_MATH_SOURCES   Math/*.cpp)
 FILE(GLOB NFCOMMON_MATH_HEADERS   Math/*.hpp)
 FILE(GLOB NFCOMMON_PACKER_SOURCES Packer/*.cpp)
 FILE(GLOB NFCOMMON_PACKER_HEADERS Packer/*.hpp)
+FILE(GLOB NFCOMMON_LOGGER_SOURCES LoggerBackends/*.cpp)
+FILE(GLOB NFCOMMON_LOGGER_HEADERS LoggerBackends/*.hpp)
 
 # TODO these sources are not prepared for multi-platform.
 #      Move them to Win directory and appropriately code headers.
 #      For reference purposes, each line will have a GitHub issue number
 
-LIST(REMOVE_ITEM NFCOMMON_SOURCES "${NFCOMMON_DIRECTORY}/Logger.cpp")       #   2
 LIST(REMOVE_ITEM NFCOMMON_SOURCES "${NFCOMMON_DIRECTORY}/Memory.cpp")       # 105
 
 # Image.cpp requires some more things to work, check issues for more info
@@ -34,6 +35,7 @@ ADD_LIBRARY(nfCommon SHARED
             ${NFCOMMON_SOURCES} ${NFCOMMON_HEADERS}
             ${NFCOMMON_MATH_SOURCES} ${NFCOMMON_MATH_HEADERS}
             ${NFCOMMON_PACKER_SOURCES} ${NFCOMMON_PACKER_HEADERS}
+            ${NFCOMMON_LOGGER_SOURCES} ${NFCOMMON_LOGGER_HEADERS}
             ${NFCOMMON_LINUX_SOURCES} ${NFCOMMON_LINUX_HEADERS})
 
 ADD_CUSTOM_COMMAND(TARGET nfCommon POST_BUILD COMMAND

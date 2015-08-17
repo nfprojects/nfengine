@@ -9,37 +9,42 @@
 #include "nfCommon.hpp"
 #include "Timer.hpp"
 
-
-#if !defined(__LINUX__) & !defined(__linux__)
-
 namespace NFE {
 namespace Common {
 
 enum class LogType
 {
-    Info = 0x1,
-    Success = 0x2,
-    Warning = 0x4,
-    Error = 0x8,
-    Fatal = 0x10,
-
-    All = 0x1F,
+    Debug,
+    Info,
+    OK,      //< aka. Success
+    Warning,
+    Error,
+    Fatal,
 };
 
 /**
- * Built-in logger output formats.
- */
-enum LoggerOutputType
+* Logger backend interface.
+*/
+class NFCOMMON_API LoggerBackend
 {
-    Raw = 0,
-    Html,
+public:
+    virtual ~LoggerBackend()
+    {
+    }
+
+    /**
+     * Abstract function for logging messages. This function may be NOT thread-safe.
+     *
+     * @param type        Log level type
+     * @param srcFile     Source file name
+     * @param line        Number of line in the source file
+     * @param str         Message string
+     * @param timeElapsed Seconds elapsed since log beginning
+     */
+    virtual void Log(LogType type, const char* srcFile, int line, const char* str,
+                     double timeElapsed) = 0;
 };
 
-struct LoggerOutput
-{
-    std::ofstream file;
-    LoggerOutputType outputType;
-};
 
 /**
  * Main logger class.
@@ -47,61 +52,78 @@ struct LoggerOutput
 class NFCOMMON_API Logger
 {
 private:
+    std::string mPathPrefix;
+    size_t mPathPrefixLen;
+
     std::mutex mMutex;
     Timer mTimer;
-    std::map<const std::string, LoggerOutput*> mOutputs;
+    std::vector<std::unique_ptr<LoggerBackend>> mBackends;
 
-    Logger(const Logger&);
-    Logger& operator= (const Logger&);
+    Logger(const Logger&) = delete;
+    Logger& operator= (const Logger&) = delete;
 
 public:
     Logger();
     ~Logger();
 
-    int OpenFile(const char* pFile, LoggerOutputType outputType);
-    void CloseAll();
+    void RegisterBackend(std::unique_ptr<LoggerBackend> backend);
 
     /**
      * Log single line using formated string.
-     * @param type Log level type
-     * @param pFunction Function name
-     * @param pSource Source file name
-     * @param line Number of line in the source file
-     * @param pStr Formated string
-     * @remarks Use logging macros to simplify code
+     * This function is thread-safe.
+     *
+     * @param type    Log level type
+     * @param srcFile Source file name
+     * @param line    Number of line in the source file
+     * @param str     Formated string
+     *
+     * @remarks Use LOG_XXX macros to simplify code
      */
-    void Log(LogType type, const char* pFunction, const char* pSource, int line, const char* pStr, ...);
+    void Log(LogType type, const char* srcFile, int line, const char* str, ...);
 
     /**
-     * Access logger singletone instance.
+     * Get pre-calculated file path prefix (nfEngine root directory).
+     */
+    NFE_INLINE size_t GetPathPrefixLen() const
+    {
+        return mPathPrefixLen;
+    }
+
+    /**
+     * Access logger singleton instance.
      */
     static Logger* GetInstance();
+
+    /**
+     * Translate log type to string.
+     */
+    static const char* LogTypeToString(LogType logType);
 };
 
 } // namespace Common
 } // namespace NFE
 
 
+#ifndef NFE_ROOT_DIRECTORY
+    #define NFE_ROOT_DIRECTORY ""
+#endif // NFE_ROOT_DIRECTORY
+
 /// logging macros
-#define LOG_INFO(...)    { if (Common::Logger::GetInstance()) Common::Logger::GetInstance()->Log(Common::LogType::Info, __FUNCTION__, __FILE__, __LINE__, __VA_ARGS__); }
-#define LOG_SUCCESS(...) { if (Common::Logger::GetInstance()) Common::Logger::GetInstance()->Log(Common::LogType::Success, __FUNCTION__, __FILE__, __LINE__, __VA_ARGS__); }
-#define LOG_WARNING(...) { if (Common::Logger::GetInstance()) Common::Logger::GetInstance()->Log(Common::LogType::Warning, __FUNCTION__, __FILE__, __LINE__, __VA_ARGS__); }
-#define LOG_ERROR(...)   { if (Common::Logger::GetInstance()) Common::Logger::GetInstance()->Log(Common::LogType::Error, __FUNCTION__, __FILE__, __LINE__, __VA_ARGS__); }
-#define LOG_FATAL(...)   { if (Common::Logger::GetInstance()) Common::Logger::GetInstance()->Log(Common::LogType::Fatal, __FUNCTION__, __FILE__, __LINE__, __VA_ARGS__); }
+#define LOG_ANY(type, ...)                                             \
+do {                                                                   \
+    NFE::Common::Logger* logger = NFE::Common::Logger::GetInstance();  \
+    if (logger) logger->Log(type,  __FILE__, __LINE__, __VA_ARGS__);   \
+} while (0)
 
 
-/*
- * TODO:
- * This is temporary. Logger.cpp is not compiled on Linux, so we need to use dummy logging macros.
- */
-#else // !defined(__LINUX__) & !defined(__linux__)
+#ifdef _DEBUG
+#define LOG_DEBUG(...)   LOG_ANY(NFE::Common::LogType::Debug, __VA_ARGS__)
+#else
+#define LOG_DEBUG(...) do { } while (0)
+#endif // _DEBUG
 
-// Correct log macros will be supplied to Linux version after Logger rewrite.
-// Right now, fprintf to stderr will be enough.
-#define LOG_INFO(...) do { fprintf(stderr, "[INFO]  "  __VA_ARGS__); fprintf(stderr, "\n"); } while (0)
-#define LOG_SUCCESS(...) do { fprintf(stderr, "[GOOD]  " __VA_ARGS__); fprintf(stderr, "\n"); } while (0)
-#define LOG_WARNING(...) do { fprintf(stderr, "[WARN]  " __VA_ARGS__); fprintf(stderr, "\n"); } while (0)
-#define LOG_ERROR(...) do { fprintf(stderr, "[ERROR] " __VA_ARGS__); fprintf(stderr, "\n"); } while (0)
-#define LOG_FATAL(...) do { fprintf(stderr, "[FATAL] " __VA_ARGS__); fprintf(stderr, "\n"); } while (0)
-
-#endif // !defined(__LINUX__) & !defined(__linux__)
+#define LOG_INFO(...)    LOG_ANY(NFE::Common::LogType::Info, __VA_ARGS__)
+#define LOG_SUCCESS(...) LOG_ANY(NFE::Common::LogType::OK, __VA_ARGS__)
+#define LOG_WARNING(...) LOG_ANY(NFE::Common::LogType::Warning, __VA_ARGS__)
+#define LOG_ERROR(...)   LOG_ANY(NFE::Common::LogType::Error, __VA_ARGS__)
+#define LOG_FATAL(...)   LOG_ANY(NFE::Common::LogType::Fatal, __VA_ARGS__)
