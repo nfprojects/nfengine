@@ -1,6 +1,6 @@
 #include "PCH.hpp"
 #include "Scenes.hpp"
-
+#include "../nfEngine/nfCommon/Logger.hpp"
 #include "../nfEngine/nfCore/Engine.hpp"
 #include "../nfEngine/nfCore/SceneEvent.hpp"
 #include "../nfEngine/nfCore/SceneSegment.hpp"
@@ -265,5 +265,6 @@ void InitScene(int sceneId)
     if (sceneId < 0 || sceneId >= static_cast<int>(gScenes.size()))
         return;
 
+    LOG_INFO("Initializing scene %d", sceneId);
     gScenes[sceneId]();
 }
