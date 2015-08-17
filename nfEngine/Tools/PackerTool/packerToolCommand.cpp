@@ -44,20 +44,20 @@ void packerToolCommand::CallCommand(std::string& cmdString) const
     {
         std::cout << "Failed to successfully finish command " << this->m_commandString <<
                   ".\nPacker exception caught:\n";
-        PrintColored(e.GetMsg(), ConsoleColor::Red | ConsoleColor::Intense);
+        PrintColored(ConsoleColor::Red | ConsoleColor::Intense, e.GetMsg().c_str());
         std::cout << std::endl;
     }
     catch (std::exception& e)
     {
         std::cout << "Failed to successfully finish command " << this->m_commandString <<
                   ".\nPacker exception caught:\n";
-        PrintColored(e.what(), ConsoleColor::Red | ConsoleColor::Intense);
+        PrintColored(ConsoleColor::Red | ConsoleColor::Intense, e.what());
         std::cout << std::endl;
     }
     catch (...)
     {
         std::cout << "Failed to successfully finish command.\n";
-        PrintColored("Unknown error.", ConsoleColor::Red | ConsoleColor::Intense);
+        PrintColored(ConsoleColor::Red | ConsoleColor::Intense, "Unknown error.");
         std::cout << std::endl;
     }
 }
