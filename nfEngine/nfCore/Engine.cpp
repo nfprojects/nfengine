@@ -153,6 +153,8 @@ Result EngineInit()
         return Result::AlreadyInit;
     }
 
+    LOG_INFO("nfCore build date: " __DATE__ ", " __TIME__);
+
     // TODO: Use SystemInfo class to check if hardware is good enough or to monitor memory usage
 
     /*
