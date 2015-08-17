@@ -118,15 +118,17 @@ PathType FileSystem::GetPathType(const std::string& path)
     return PathType::Invalid;
 }
 
-bool FileSystem::CreateDir(const std::string& path)
+bool FileSystem::CreateDir(const std::string& path, bool disableLog)
 {
     if (::mkdir(path.c_str(), 0777) != 0)
     {
-        LOG_ERROR("Failed to create directory '%s': %s", path.c_str(), strerror(errno));
+		if (!disableLog)
+			LOG_ERROR("Failed to create directory '%s': %s", path.c_str(), strerror(errno));
         return false;
     }
 
-    LOG_INFO("Created directory '%s'", path.c_str());
+	if (!disableLog)
+		LOG_INFO("Created directory '%s'", path.c_str());
     return true;
 }
 
