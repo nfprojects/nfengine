@@ -40,7 +40,7 @@ inline ConsoleColor operator&(const ConsoleColor& a, const ConsoleColor& b)
                                      (b));
 }
 
-void PrintColored(const std::string& text, const ConsoleColor& foreground);
+void PrintColored(const char* text, const ConsoleColor& foreground);
 
 } // namespace Common
 } // namespace NFE

@@ -40,7 +40,7 @@ inline ConsoleColor operator&(const ConsoleColor& a, const ConsoleColor& b)
                                      (b));
 }
 
-NFCOMMON_API void PrintColored(const std::string& text, const ConsoleColor& foreground);
+NFCOMMON_API void PrintColored(const char* text, const ConsoleColor& foreground);
 
 } // namespace Common
 } // namespace NFE
