@@ -18,7 +18,7 @@
 #include <zlib/zlib.h>
 #endif
 
-#ifdef _DEBUG
+#if defined(_DEBUG) && defined(WIN32)
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
