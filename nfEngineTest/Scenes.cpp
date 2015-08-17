@@ -315,5 +315,6 @@ void InitScene(int sceneId)
     if (sceneId < 0 || sceneId >= static_cast<int>(gScenes.size()))
         return;
 
+    LOG_INFO("Initializing scene %d", sceneId);
     gScenes[sceneId]();
 }
