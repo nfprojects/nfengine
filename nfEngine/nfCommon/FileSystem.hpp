@@ -52,7 +52,7 @@ public:
     /**
      * Create a directory.
      */
-    static bool CreateDir(const std::string& path);
+    static bool CreateDir(const std::string& path, bool disableLog = false);
 
     /**
      * Remove a file or a directory.
