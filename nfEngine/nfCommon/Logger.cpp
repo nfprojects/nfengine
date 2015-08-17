@@ -6,202 +6,157 @@
 
 #include "PCH.hpp"
 #include "Logger.hpp"
+#include "FileSystem.hpp"
+#include "LoggerBackends/BackendConsole.hpp"
+#include "LoggerBackends/BackendHTML.hpp"
+#include <stdarg.h>
+#include <atomic>
+
+#ifdef WIN32
+#include "Win/Common.hpp"
+#endif // WIN32
 
 namespace NFE {
 namespace Common {
 
+// global logger instance
+Logger gLogger;
+
 Logger::Logger()
+    : mInitialized(false)
 {
+    mTimer.Start();
+
+#ifdef WIN32
+    wchar_t* wideRootDir = NFE_ROOT_DIRECTORY;
+    UTF16ToUTF8(wideRootDir, mPathPrefix);
+#else
+    mPathPrefix = NFE_ROOT_DIRECTORY;
+#endif
+    mPathPrefixLen = mPathPrefix.length();
+
+    std::string execPath = NFE::Common::FileSystem::GetExecutablePath();
+    std::string execDir = NFE::Common::FileSystem::GetParentDir(execPath);
+    mLogsDirectory = execDir + "/../../../Logs";
+    FileSystem::CreateDir(mLogsDirectory);
+
+    RegisterBackend(std::move(std::unique_ptr<LoggerBackend>(new LoggerBackendConsole)));
+    RegisterBackend(std::move(std::unique_ptr<LoggerBackend>(new LoggerBackendHTML)));
+
+    mInitialized = true;
+    LOG_INFO("nfCommon build date: " __DATE__ ", " __TIME__);
+    LogRunTime();
 }
 
 Logger::~Logger()
 {
-    CloseAll();
-}
-
-Logger* InitStaticLogger()
-{
-    CreateDirectoryA("Logs/", 0);
-    Logger* pLogger = new Logger;
-
-    if (pLogger)
-    {
-        pLogger->OpenFile("Logs/nfEngine_full_log.html", Html);
-        pLogger->OpenFile("Logs/raw.txt", Raw);
-    }
-
-    return pLogger;
 }
 
 Logger* Logger::GetInstance()
 {
-    static std::unique_ptr<Logger> s_Logger(InitStaticLogger());
-    return s_Logger.get();
+    /**
+     * We can't use singleton here, because GetInstace() would be called recursively
+     * (e.g. in FileSystem::CreateDir) and cause a deadlock.
+     */
+    return &gLogger;
 }
 
-int Logger::OpenFile(const char* pFile, LoggerOutputType outputType)
+void Logger::LogRunTime()
 {
-    LoggerOutput* pLoggerOutput = new LoggerOutput;
-
-    pLoggerOutput->file.open(pFile, std::ios::out);
-
-    if (!pLoggerOutput->file.good())
+    /// get current date and time
+    time_t rawTime;
+    time(&rawTime);
+    struct tm* timeInfo = localtime(&rawTime);
+    if (timeInfo != nullptr)
     {
-        delete pLoggerOutput;
-        return 1;
+        /// print current date and time, in format
+        const int MAX_DATE_LENGTH = 32;
+        char dateTimeStr[MAX_DATE_LENGTH];
+        strftime(dateTimeStr, MAX_DATE_LENGTH, "%b %d %Y, %X", timeInfo);
+        LOG_INFO("Run date: %s", dateTimeStr);
+    }
+}
+
+void Logger::RegisterBackend(std::unique_ptr<LoggerBackend> backend)
+{
+    mBackends.push_back(std::move(backend));
+}
+
+void Logger::Log(LogType type, const char* srcFile, int line, const char* str, ...)
+{
+    if (!mInitialized)
+        return;
+
+    /// keep shorter strings on the stack for performance
+    const int SHORT_MESSAGE_LENGTH = 1024;
+    char stackBuffer[SHORT_MESSAGE_LENGTH];
+
+    // TODO: consider logging local time instead of time elapsed since Logger initialization
+    double logTime = mTimer.Stop();
+
+    // empty string
+    if (str == nullptr)
+        return;
+
+    std::unique_ptr<char[]> buffer;
+    char* formattedStr = nullptr;
+    va_list args, argsCopy;
+    va_start(args, str);
+
+    int len = vsnprintf(stackBuffer, SHORT_MESSAGE_LENGTH, str, args);
+    if (len < 0)
+    {
+        LOG_ERROR("vsnprintf() failed, format = \"%s\"", str);
+        return;
     }
 
-    pLoggerOutput->outputType = outputType;
-    mOutputs[std::string(pFile)] = pLoggerOutput;
-
-    time_t rawtime;
-    tm timeinfo;
-
-    time(&rawtime);
-    localtime_s(&timeinfo, &rawtime);
-
-    // Nov 24 2011, 23:21:01
-    char pDateTimeStr[32];
-    strftime(pDateTimeStr, 128, "%b %d %Y, %X", &timeinfo);
-
-    switch (outputType)
+    if (len >= SHORT_MESSAGE_LENGTH)  // buffer on the stack is too small
     {
-        case Html:
-            pLoggerOutput->file <<
-                                "<?xml version=\"1.0\" encoding=\"utf-8\"?> <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">"
-                                "<html><head> <title>nfEngine log</title> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>"
-                                "<style type=\"text/css\"> body { background: #404040; color: #E0E0E0; margin-right: 6px; margin-left: 6px; font-size: 13px; font-family: Lucida Console, sans-serif, sans; } a { text-decoration: none; } a:link { color: #b4c8d2; } a:active { color: #ff9900; } a:visited { color: #b4c8d2; } a:hover { color: #ff9900; } h1 { text-align: center; } h2 { color: #ffffff; }"
-
-
-                                ".source, .table_info, .message, .success, .warning, .error, .fatal, "
-                                ".source { background-color: #101010; color: #212221; padding: 0px; } "
-                                ".source:hover { background-color: #202430; color: #ffffff; padding: 0px; } "
-
-                                ".table_info { background-color: #101010; color: #ffffff; padding: 40px; } "
-                                ".table_info:hover { background-color: #202430; color: #ffffff; padding: 40px; } "
-
-                                ".message { background-color: #101010; color: #d4d8d2; padding: 0px; } "
-                                ".message:hover { background-color: #202430; color: #ffffff; padding: 0px; } "
-
-                                ".success { background-color: #101010; color: #339933; padding: 0px; } "
-                                ".success:hover { background-color: #202430; color: #40ff40; padding: 0px; } "
-
-                                ".warning { background-color: #281c10; color: #F2B13A; padding: 0px; } "
-                                ".warning:hover { background-color: #202430; color: #FF7B00; padding: 0px; } "
-
-                                ".error { background-color: #380f10; color: #FF5E5E; padding: 0px; } "
-                                ".error:hover { background-color: #202430; color: #ff0000; padding: 0px; } "
-
-                                ".fatal { background-color: #ff0000; color: #000000; padding: 0px; } "
-                                ".fatal:hover { background-color: #202430; color: #ff0000; padding: 0px; } "
-
-                                "</style></head><body>\n"
-                                "<h3>nfEngine v0.1 - log file</h2>"
-
-                                "<h3><div padding:3px>Build: " __DATE__ ", " __TIME__ ", Run:  " << pDateTimeStr << "</h3>"
-
-                                "\n<table width=\"100%%\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"080c10\" border=\"0\" rules=\"none\" >\n"
-                                "\n<tr class=\"table_info\">\n<td nowrap=\"nowrap\">[<i>Seconds elapsed</i>] {<i>ThreadID</i>} <i>Message...</i></td>\n<td nowrap=\"nowrap\" align=\"right\"><i>Source file</i> : <i>Line of code</i> @ <i>Calling function</i></td>\n</tr>"
-                                "\n</table><br>\n"
-
-                                "\n<table width=\"100%%\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"080c10\" border=\"0\" rules=\"none\" >\n";
-            break;
-
-        case Raw:
-            pLoggerOutput->file << "nfEngine v0.1 - log file\n\n";
-            break;
-
-        default:
-            return 1;
-    };
-
-    mTimer.Start();
-    return 0;
-}
-
-void Logger::CloseAll()
-{
-    for (auto& loggerOut : mOutputs)
-    {
-        if (loggerOut.second->outputType == Html)
+        buffer.reset(new (std::nothrow) char[len + 1]);
+        if (buffer)
         {
-            loggerOut.second->file << "</table>\n</body>\n";
+            formattedStr = buffer.get();
+
+            // we can't call vsnprintf with the same va_list more than once
+            va_copy(argsCopy, args);
+            vsnprintf(formattedStr, len + 1, str, argsCopy);
+            va_end(argsCopy);
         }
-
-        loggerOut.second->file.close();
-        delete loggerOut.second;
     }
-
-    mOutputs.clear();
-}
-
-#define MAX_LOG_MESSAGE_LENGTH 1024
-
-void Logger::Log(LogType type, const char* pFunction, const char* pSource, int line,
-                 const char* pStr, ...)
-{
-    double t = mTimer.Stop();
-
-    char buffer[MAX_LOG_MESSAGE_LENGTH];
-    va_list args;
-    va_start(args, pStr);
-    vsprintf_s(buffer, MAX_LOG_MESSAGE_LENGTH, pStr, args);
-
-    // lock I/O
-    std::unique_lock<std::mutex> lock(mMutex);
-
-    //write to console
-    OutputDebugStringA("NFEngine: ");
-    if (type == LogType::Error) OutputDebugStringA("[ERROR] ");
-    if (type == LogType::Fatal) OutputDebugStringA("[FATAL ERROR] ");
-    if (type == LogType::Warning) OutputDebugStringA("[WARNING] ");
-    OutputDebugStringA(buffer);
-    OutputDebugStringA("\n");
-
-    for (auto& loggerOut : mOutputs)
-    {
-        if (loggerOut.second->outputType == Html)
-        {
-            switch (type)
-            {
-                case LogType::Info:
-                    loggerOut.second->file << "\n<tr class=\"message\">\n<td nowrap=\"nowrap\">";
-                    break;
-
-                case LogType::Success:
-                    loggerOut.second->file << "\n<tr class=\"success\">\n<td nowrap=\"nowrap\">";
-                    break;
-
-                case LogType::Warning:
-                    loggerOut.second->file << "\n<tr class=\"warning\">\n<td nowrap=\"nowrap\">";
-                    break;
-
-                case LogType::Error:
-                    loggerOut.second->file << "\n<tr class=\"error\">\n<td nowrap=\"nowrap\">";
-                    break;
-
-                case LogType::Fatal:
-                    loggerOut.second->file << "\n<tr class=\"fatal\">\n<td nowrap=\"nowrap\">";
-                    break;
-
-                default:
-                    loggerOut.second->file << "\n<tr class=\"message\">\n<td nowrap=\"nowrap\">";
-                    break;
-            }
-
-            loggerOut.second->file << "[" << std::fixed << std::setprecision(4) << t
-                                   << "] {" << std::this_thread::get_id() << "} "
-                                   << buffer << "</td>\n<td nowrap=\"nowrap\" align=\"right\">"
-                                   << pSource << " : " << line << " @ " << pFunction << "</td>\n</tr>";
-        }
-
-        if (loggerOut.second->outputType == Raw)
-            loggerOut.second->file << "[" << t << "] " << buffer << "\n";
-
-        loggerOut.second->file.flush();
-    }
+    else if (len > 0)  // buffer on the stack is sufficient
+        formattedStr = stackBuffer;
 
     va_end(args);
+
+    if (len < 0 || !formattedStr)
+        return;
+
+    std::unique_lock<std::mutex> lock(mMutex);
+    for (auto& backend : mBackends)
+    {
+        backend->Log(type, srcFile, line, formattedStr, logTime);
+    }
+}
+
+const char* Logger::LogTypeToString(LogType logType)
+{
+    switch (logType)
+    {
+    case LogType::Debug:
+        return "DEBUG";
+    case LogType::Info:
+        return "INFO";
+    case LogType::OK:
+        return "SUCCESS";
+    case LogType::Warning:
+        return "WARNING";
+    case LogType::Error:
+        return "ERROR";
+    case LogType::Fatal:
+        return "FATAL";
+    }
+
+    return "UNKNOWN";
 }
 
 } // namespace Common
