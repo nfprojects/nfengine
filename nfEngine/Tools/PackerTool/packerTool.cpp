@@ -32,7 +32,7 @@ catch (packerToolException& e)
     using namespace NFE::Common;
 
     std::cout << "Packer exception caught at main: ";
-    PrintColored(e.GetMsg(), ConsoleColor::Red | NFE::Common::ConsoleColor::Intense);
+    PrintColored(ConsoleColor::Red | NFE::Common::ConsoleColor::Intense, e.GetMsg().c_str());
     std::cout << "Aborting program execution." << std::endl;
     getchar();
 }
@@ -41,7 +41,7 @@ catch (std::exception& e)
     using namespace NFE::Common;
 
     std::cout << "STL exception caught at main: ";
-    PrintColored(e.what(), ConsoleColor::Red | ConsoleColor::Intense);
+    PrintColored(ConsoleColor::Red | ConsoleColor::Intense, e.what());
     std::cout << "Aborting program execution." << std::endl;
     getchar();
 }

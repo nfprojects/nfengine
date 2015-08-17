@@ -19,7 +19,7 @@
 #include "../nfEngine/nfCommon/InputStream.hpp"
 #include "../nfEngine/nfCommon/OutputStream.hpp"
 #include "../nfEngine/nfCommon/Timer.hpp"
-
+#include "../nfEngine/nfCommon/Logger.hpp"
 
 /*
     This function creates an example mesh.

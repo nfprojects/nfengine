@@ -23,7 +23,7 @@ ENDIF(NOT DEFINED BUILD_PLATFORM)
 
 # Set required variables
 SET(CMAKE_CXX_FLAGS       "${CMAKE_CXX_FLAGS} -O2 -std=c++0x")
-SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g -std=c++0x")
+SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG -O0 -g -std=c++0x")
 
 # If any macros specific to project are needed, prefix them with NFE_
 SET(NFE_ROOT_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -40,6 +40,8 @@ ADD_DEFINITIONS("-msse4.1")
 
 # Enable all warnings and make them errors
 ADD_DEFINITIONS("-Wall -Wpedantic -Wextra -Wno-sign-compare -Werror")
+
+ADD_DEFINITIONS(-DNFE_ROOT_DIRECTORY="${NFE_ROOT_DIRECTORY}/")
 
 # Building outputs
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${NFE_OUTPUT_DIRECTORY})

@@ -27,6 +27,9 @@
     <Filter Include="Header Files\Win">
       <UniqueIdentifier>{bd3f5c23-9ea9-4e8c-9ad5-e1d9ed7a40cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\LoggerBackends">
+      <UniqueIdentifier>{df0fe897-aba8-4a28-9be3-6d965ea69f0a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp">
@@ -146,6 +149,12 @@
     <ClInclude Include="Math\Triangle.hpp">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
+    <ClInclude Include="LoggerBackends\BackendConsole.hpp">
+      <Filter>Source Files\LoggerBackends</Filter>
+    </ClInclude>
+    <ClInclude Include="LoggerBackends\BackendHTML.hpp">
+      <Filter>Source Files\LoggerBackends</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -240,6 +249,12 @@
     </ClCompile>
     <ClCompile Include="Math\Box.cpp">
       <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="LoggerBackends\BackendConsole.cpp">
+      <Filter>Source Files\LoggerBackends</Filter>
+    </ClCompile>
+    <ClCompile Include="LoggerBackends\BackendHTML.cpp">
+      <Filter>Source Files\LoggerBackends</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
