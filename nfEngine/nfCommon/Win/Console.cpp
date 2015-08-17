@@ -7,17 +7,23 @@
 #include "../PCH.hpp"
 #include "Console.hpp"
 #include <iostream>
+#include <stdarg.h>
 
 namespace NFE {
 namespace Common {
 
-void PrintColored(const std::string& text, const ConsoleColor& foreground)
+void PrintColored(const ConsoleColor& foreground, const char* format, ...)
 {
     HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO console_info;
     GetConsoleScreenBufferInfo(hstdout, &console_info);
     SetConsoleTextAttribute(hstdout, static_cast<ConsoleColorType>(foreground));
-    std::cout << text;
+
+    va_list args;
+    va_start(args, format);
+    vprintf(format, args);
+    va_end(args);
+
     SetConsoleTextAttribute(hstdout, console_info.wAttributes);
 }
 
