@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_c1dbd97b",
+        "filename": "nfEngine/Renderers/RendererInterface/Texture.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-19T09:04:34Z",
+      "side": 1,
+      "message": "float.h is a header from C, cfloat is a C++ header having same contents as float.h.",
+      "parentUuid": "9ad9bd40_5e35e4f5",
+      "revId": "dfa2fe6f37a57444f70150c0c70928176d193041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_9e168c54",
         "filename": "nfEngine/Renderers/nfRendererOGL4/Defines.hpp",
         "patchSetId": 1
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_e1d8dd81",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Defines.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-19T09:04:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_9e168c54",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 19
+      },
+      "revId": "dfa2fe6f37a57444f70150c0c70928176d193041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_7e43886c",
         "filename": "nfEngine/Renderers/nfRendererOGL4/GL/glext.h",
         "patchSetId": 1
@@ -53,6 +95,24 @@
       "writtenOn": "2015-08-19T08:27:57Z",
       "side": 1,
       "message": "Shouldn\u0027t be this file placed in nfEngineDeps?",
+      "revId": "dfa2fe6f37a57444f70150c0c70928176d193041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_61d4cd47",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/GL/glext.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-19T09:04:34Z",
+      "side": 1,
+      "message": "Maybe yes, maybe not. I never thought of this file as an external dependency package, which needs to be built separately and produces a library to be linked against. :)\n\nIf this is really needed, I can move it there.",
+      "parentUuid": "9ad9bd40_7e43886c",
       "revId": "dfa2fe6f37a57444f70150c0c70928176d193041",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -116,6 +176,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_81c9d1ae",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/GetExtension.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-19T09:04:34Z",
+      "side": 1,
+      "message": "Was done",
+      "parentUuid": "9ad9bd40_de07341c",
+      "range": {
+        "startLine": 30,
+        "startChar": 91,
+        "endLine": 30,
+        "endChar": 92
+      },
+      "revId": "dfa2fe6f37a57444f70150c0c70928176d193041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_81563105",
         "filename": "nfEngine/Renderers/nfRendererOGL4/Linux/Backbuffer.cpp",
         "patchSetId": 1
@@ -133,6 +217,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_c1c2f985",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Linux/Backbuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-19T09:04:34Z",
+      "side": 1,
+      "message": "This behavior maches Windows behavior.\n\nOn Windows, to properly initialize OGL Extensions, you need to have an OpenGL Context made current. On Linux this is not so much context dependent, but I wanted to keep both versions syncrhonized.\n\nBTW there is a TODO for that on Win/Backbuffer.cpp",
+      "parentUuid": "9ad9bd40_81563105",
+      "revId": "dfa2fe6f37a57444f70150c0c70928176d193041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_213005e8",
         "filename": "nfEngine/nfRendererDemo/PCH.hpp",
         "patchSetId": 1
@@ -144,6 +246,24 @@
       "writtenOn": "2015-08-19T08:27:57Z",
       "side": 1,
       "message": "Why not #ifdef or remove completely?",
+      "revId": "dfa2fe6f37a57444f70150c0c70928176d193041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_01bdc102",
+        "filename": "nfEngine/nfRendererDemo/PCH.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-19T09:04:34Z",
+      "side": 1,
+      "message": "Was done",
+      "parentUuid": "9ad9bd40_213005e8",
       "revId": "dfa2fe6f37a57444f70150c0c70928176d193041",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
