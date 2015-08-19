@@ -22,6 +22,23 @@
       "revId": "70275819ffe8cd8a988c397ecff2d29a5e51c6f4",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_3ec66017",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-19T07:21:32Z",
+      "side": 1,
+      "message": "Check if it wouldn\u0027t be easier for you to use NFE::Common::Buffer. It was designed for data storage.",
+      "revId": "70275819ffe8cd8a988c397ecff2d29a5e51c6f4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
