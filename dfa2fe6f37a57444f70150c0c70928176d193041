@@ -1,0 +1,152 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_5e35e4f5",
+        "filename": "nfEngine/Renderers/RendererInterface/Texture.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-19T08:27:57Z",
+      "side": 1,
+      "message": "float.h",
+      "revId": "dfa2fe6f37a57444f70150c0c70928176d193041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_9e168c54",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Defines.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-19T08:27:57Z",
+      "side": 1,
+      "message": "Is this used anywhere?",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 19
+      },
+      "revId": "dfa2fe6f37a57444f70150c0c70928176d193041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_7e43886c",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/GL/glext.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-19T08:27:57Z",
+      "side": 1,
+      "message": "Shouldn\u0027t be this file placed in nfEngineDeps?",
+      "revId": "dfa2fe6f37a57444f70150c0c70928176d193041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_9e484c89",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/GL/glxext.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-19T08:27:57Z",
+      "side": 1,
+      "message": "Shouldn\u0027t be this file placed in nfEngineDeps?",
+      "revId": "dfa2fe6f37a57444f70150c0c70928176d193041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_be5c304e",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/GL/wglext.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-19T08:27:57Z",
+      "side": 1,
+      "message": "Shouldn\u0027t be this file placed in nfEngineDeps?",
+      "revId": "dfa2fe6f37a57444f70150c0c70928176d193041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_de07341c",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/GetExtension.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-19T08:27:57Z",
+      "side": 1,
+      "message": "align",
+      "range": {
+        "startLine": 30,
+        "startChar": 91,
+        "endLine": 30,
+        "endChar": 92
+      },
+      "revId": "dfa2fe6f37a57444f70150c0c70928176d193041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_81563105",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Linux/Backbuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-19T08:27:57Z",
+      "side": 1,
+      "message": "This way extensions will be loaded every time a back buffer is created? IMO this should be done in Device::Init",
+      "revId": "dfa2fe6f37a57444f70150c0c70928176d193041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_213005e8",
+        "filename": "nfEngine/nfRendererDemo/PCH.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-19T08:27:57Z",
+      "side": 1,
+      "message": "Why not #ifdef or remove completely?",
+      "revId": "dfa2fe6f37a57444f70150c0c70928176d193041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
