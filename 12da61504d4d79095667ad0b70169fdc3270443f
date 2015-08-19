@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_77cbab1e",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Shader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-19T16:10:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_c1ad99ec",
+      "range": {
+        "startLine": 77,
+        "startChar": 67,
+        "endLine": 77,
+        "endChar": 74
+      },
+      "revId": "12da61504d4d79095667ad0b70169fdc3270443f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_21b56531",
         "filename": "nfEngine/Renderers/nfRendererOGL4/Shader.cpp",
         "patchSetId": 4
