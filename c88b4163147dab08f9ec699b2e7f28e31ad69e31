@@ -1,0 +1,679 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_9c0bf47c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "specific",
+      "range": {
+        "startLine": 23,
+        "startChar": 11,
+        "endLine": 23,
+        "endChar": 20
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_fc688023",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "S",
+      "range": {
+        "startLine": 25,
+        "startChar": 14,
+        "endLine": 25,
+        "endChar": 15
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_bc87d8d6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "N",
+      "range": {
+        "startLine": 30,
+        "startChar": 52,
+        "endLine": 30,
+        "endChar": 53
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_1c1fe4b8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "make it uniform - either \u0027glX\u0027 or \u0027GLX\u0027",
+      "range": {
+        "startLine": 41,
+        "startChar": 27,
+        "endLine": 41,
+        "endChar": 38
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_1c760407",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "F",
+      "range": {
+        "startLine": 49,
+        "startChar": 10,
+        "endLine": 49,
+        "endChar": 11
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_3c73c816",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "error messages ?",
+      "range": {
+        "startLine": 50,
+        "startChar": 70,
+        "endLine": 50,
+        "endChar": 85
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_bc5ef874",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/CMakeLists.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "You sure about that?",
+      "range": {
+        "startLine": 3,
+        "startChar": 10,
+        "endLine": 3,
+        "endChar": 28
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_dc52dc67",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Defines.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "delete newline",
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_3c4ae8ac",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Extensions.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "delete newline",
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_7ccb901e",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Extensions.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "Why \"///\" instead of \"//\"?",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 14
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_9cd054cb",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Extensions.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 31
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_bcd518bb",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Extensions.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 47,
+        "startChar": 4,
+        "endLine": 47,
+        "endChar": 18
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_dcd9fcf5",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Extensions.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 52,
+        "startChar": 3,
+        "endLine": 52,
+        "endChar": 35
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_fcd6c0c2",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Extensions.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "Is it proper, to change local variable in a macro without any comment whatsoever?\n\nI think it\u0027d be nicer to return a bool and just \u0026 the result with allExtensionAvailable variable. Why macro?",
+      "range": {
+        "startLine": 61,
+        "startChar": 11,
+        "endLine": 61,
+        "endChar": 33
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_5c624c17",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Extensions.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "remove newline",
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_fc4fa0bc",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Extensions.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "Why \"///\" instead of \"//\"?",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 14
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_1c4d24c5",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Extensions.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 31
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_1ca9a424",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Linux/Backbuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "remove newline",
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_3ca66854",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Linux/Backbuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "remove newline",
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_dc757ccd",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Linux/Backbuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "What is this function used for?\nMaybe leave a TODO comment?",
+      "range": {
+        "startLine": 36,
+        "startChar": 4,
+        "endLine": 37,
+        "endChar": 22
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_3c54a820",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Linux/Backbuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "the",
+      "range": {
+        "startLine": 90,
+        "startChar": 28,
+        "endLine": 90,
+        "endChar": 30
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_9c3a14e6",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Linux/glXExtensions.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "remove newline",
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_7c3550f6",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Linux/glXExtensions.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "remove newline",
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_bc3fd8d5",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Linux/glXExtensions.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "as in Extensions.cpp",
+      "range": {
+        "startLine": 27,
+        "startChar": 11,
+        "endLine": 27,
+        "endChar": 33
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_5c308c07",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Linux/glXExtensions.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "remove newline",
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_9c113460",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Win/wglExtensions.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "remove newline",
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_bc16f853",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Win/wglExtensions.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "remove newline",
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_7c1c7078",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Win/wglExtensions.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "as in Extensions.cpp",
+      "range": {
+        "startLine": 28,
+        "startChar": 11,
+        "endLine": 28,
+        "endChar": 33
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_5c17ac54",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Win/wglExtensions.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "remove newline",
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_fc07a01b",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "add newline after",
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_1c052414",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "remove newline",
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_3c02e80b",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "remove newline",
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_57fea706",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-19T15:02:51Z",
+      "side": 1,
+      "message": "would be nice to change it to use logger if it\u0027s already ported. If not, leave here a TODO comment",
+      "range": {
+        "startLine": 35,
+        "startChar": 12,
+        "endLine": 35,
+        "endChar": 18
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
