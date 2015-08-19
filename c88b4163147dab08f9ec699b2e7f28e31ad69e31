@@ -220,6 +220,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_b739b343",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Extensions.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-19T15:57:57Z",
+      "side": 1,
+      "message": "When \"//\" is used just above function/variable/etc Visual Studio thinks that it\u0027s description (when you hover cursor above identifier): in this case \"glGetProgramiv\" whould get desription \"OpenGL 2.0\", which is nonesense. You can disable it by using \"///\".",
+      "parentUuid": "9ad9bd40_7ccb901e",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 14
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_9cd054cb",
         "filename": "nfEngine/Renderers/nfRendererOGL4/Extensions.cpp",
         "patchSetId": 3
