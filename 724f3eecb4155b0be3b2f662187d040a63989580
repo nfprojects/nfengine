@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_25f1e895",
+        "filename": "nfEngine/nfRendererDemo/Main.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-20T20:54:00Z",
+      "side": 1,
+      "message": "On Linux, OpenGL renderer should be default.",
+      "revId": "724f3eecb4155b0be3b2f662187d040a63989580",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
