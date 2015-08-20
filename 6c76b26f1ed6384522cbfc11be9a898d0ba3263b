@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_05914452",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-20T20:04:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_d7af1293",
+      "revId": "6c76b26f1ed6384522cbfc11be9a898d0ba3263b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_7a254bad",
         "filename": "/COMMIT_MSG",
         "patchSetId": 5
@@ -82,6 +100,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_259e4864",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/GL/glext.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-20T20:04:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_b7dc4e48",
+      "revId": "6c76b26f1ed6384522cbfc11be9a898d0ba3263b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_f7e5f60a",
         "filename": "nfEngine/Renderers/nfRendererOGL4/GL/glxext.h",
         "patchSetId": 5
@@ -99,6 +135,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_459b4c72",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/GL/glxext.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-20T20:04:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_f7e5f60a",
+      "revId": "6c76b26f1ed6384522cbfc11be9a898d0ba3263b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_17e33a06",
         "filename": "nfEngine/Renderers/nfRendererOGL4/GL/wglext.h",
         "patchSetId": 5
@@ -110,6 +164,24 @@
       "writtenOn": "2015-08-20T16:05:34Z",
       "side": 1,
       "message": "As we agreed - move to nfEngineDeps",
+      "revId": "6c76b26f1ed6384522cbfc11be9a898d0ba3263b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_65877013",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/GL/wglext.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-20T20:04:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_17e33a06",
       "revId": "6c76b26f1ed6384522cbfc11be9a898d0ba3263b",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
