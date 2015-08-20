@@ -209,28 +209,28 @@ public:
         size_t newSubSceneId = mCurrentSubScene;
         switch (key)
         {
-        case 0x27:
+        case NFE::Common::KeyCode::Right:
             if (newSceneId >= mScenes.size() - 1)
                 return;
             newSceneId++;
             SwitchScene(newSceneId);
             break;
 
-        case 0x25:
+        case NFE::Common::KeyCode::Left:
             if (newSceneId == 0)
                 return;
             newSceneId--;
             SwitchScene(newSceneId);
             break;
 
-        case 0x26:
+        case NFE::Common::KeyCode::Up:
             if (newSubSceneId >= mScenes[mCurrentScene]->GetAvailableSubSceneCount())
                 return;
             newSubSceneId++;
             SwitchSubScene(newSubSceneId);
             break;
 
-        case 0x28:
+        case NFE::Common::KeyCode::Down:
             if (newSubSceneId == 0)
                 return;
             newSubSceneId--;

@@ -142,8 +142,8 @@ public:
             if (IsKeyPressed('R')) destVelocity += orient.y;
             if (IsKeyPressed('F')) destVelocity -= orient.y;
 
-            if (IsKeyPressed(VK_SHIFT)) destVelocity *= 30.0f;
-            else if (IsKeyPressed(VK_CONTROL)) destVelocity *= 0.2f;
+            if (IsKeyPressed(Common::KeyCode::Shift)) destVelocity *= 30.0f;
+            else if (IsKeyPressed(Common::KeyCode::Control)) destVelocity *= 0.2f;
             else destVelocity *= 3.0f;
         }
 
@@ -156,7 +156,7 @@ public:
 
     void OnKeyPress(int key)
     {
-        if (key == VK_F1)
+        if (key == Common::KeyCode::F1)
         {
             BOOL fullscreen = GetFullscreenMode();
             SetFullscreenMode(!fullscreen);
