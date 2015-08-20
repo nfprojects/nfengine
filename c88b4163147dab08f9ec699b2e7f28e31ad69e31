@@ -953,6 +953,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_b708ce29",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Linux/Backbuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-20T13:01:03Z",
+      "side": 1,
+      "message": "It\u0027s a placeholder for future implementation. Win/Backbuffer.cpp has exactly the same, there are multiple similar places in nfRendererOGL4 and in nfRendererD3D11. We don\u0027t TODO them, because they will be filled one way or another. Our backend-related tasks keep track on this for us.\n\nFor more info see:\nD3D11: https://github.com/nfprojects/nfengine/issues/60\nOGL4: https://github.com/nfprojects/nfengine/issues/26\n\nAnd, finally, this method of class implementation is called \"Class skeleton\". See https://en.wikipedia.org/wiki/Class_skeleton",
+      "parentUuid": "9ad9bd40_b4dc4c48",
+      "range": {
+        "startLine": 36,
+        "startChar": 4,
+        "endLine": 37,
+        "endChar": 22
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_3c54a820",
         "filename": "nfEngine/Renderers/nfRendererOGL4/Linux/Backbuffer.cpp",
         "patchSetId": 3
