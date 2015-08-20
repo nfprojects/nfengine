@@ -929,6 +929,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_b4dc4c48",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Linux/Backbuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-20T11:03:50Z",
+      "side": 1,
+      "message": "Sorry, wrote it in an ambiguous way. What I meant was NOT what UNUSED macro is used for, but why do You specify Resize member function if it does nothing at all (with no TODO as well) ?",
+      "parentUuid": "9ad9bd40_97aaef83",
+      "range": {
+        "startLine": 36,
+        "startChar": 4,
+        "endLine": 37,
+        "endChar": 22
+      },
+      "revId": "c88b4163147dab08f9ec699b2e7f28e31ad69e31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_3c54a820",
         "filename": "nfEngine/Renderers/nfRendererOGL4/Linux/Backbuffer.cpp",
         "patchSetId": 3
