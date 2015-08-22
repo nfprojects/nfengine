@@ -463,7 +463,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         // print focus segment name
         char str[128];
         Segment* focus = gScene->GetFocusSegment();
-        sprintf(str, "NFEngine Demo (%S) - focus: %S - Press [0-%i] to switch scene",
+        sprintf(str, "NFEngine Demo (%s) - focus: %s - Press [0-%i] to switch scene",
                  PLATFORM_STR, (focus != 0) ? focus->GetName() : "NONE",
                  GetScenesNum() - 1);
         window->SetTitle(str);

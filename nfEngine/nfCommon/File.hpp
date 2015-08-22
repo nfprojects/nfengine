@@ -7,6 +7,10 @@
 #pragma once
 #include "nfCommon.hpp"
 
+#if defined(WIN32)
+#include <Windows.h>
+#endif
+
 namespace NFE {
 namespace Common {
 

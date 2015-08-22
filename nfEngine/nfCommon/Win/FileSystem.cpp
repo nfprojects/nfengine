@@ -321,10 +321,10 @@ bool FileSystem::Iterate(const std::string& path, DirIterateCallback callback)
              * Consider converting only findData.cFileName. This will require keeping both
              * UTF-8 and UTF-16 versions of directories paths on the stack.
              */
-            std::string path;
-            if (UTF16ToUTF8(foundPath, path))
+            std::string newPath;
+            if (UTF16ToUTF8(foundPath, newPath))
             {
-                if (!callback(path, isDir))
+                if (!callback(newPath, isDir))
                 {
                     FindClose(findHandle);
                     return true;

@@ -1,6 +1,8 @@
 #include "PCH.hpp"
 #include "Editor.hpp"
 
+#include <cstdint>
+
 using namespace NFE;
 using namespace NFE::Renderer;
 using namespace NFE::Math;
@@ -32,8 +34,9 @@ void TW_CALL Demo_EntitySetCallback(const void* value, void* clientData)
     Vector pos = gSelectedEntity->GetPosition();
     Vector vel = gSelectedEntity->GetVelocity();
     Vector angVel = gSelectedEntity->GetAngularVelocity();
+    size_t data = reinterpret_cast<std::size_t>(clientData);
 
-    switch ((int)clientData)
+    switch (data)
     {
         case EditionType::Name:
         {
