@@ -2,6 +2,46 @@
   "comments": [
     {
       "key": {
+        "uuid": "9ad9bd40_09cdd686",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-24T15:18:27Z",
+      "side": 1,
+      "message": "Is this option really still needed?",
+      "revId": "db8f6540b843a4c519a443322945231e32555101",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_e9b8b2e7",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-24T15:18:27Z",
+      "side": 1,
+      "message": "Why we would \"rename\" platform?",
+      "range": {
+        "startLine": 142,
+        "startChar": 39,
+        "endLine": 142,
+        "endChar": 40
+      },
+      "revId": "db8f6540b843a4c519a443322945231e32555101",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_49bd1e02",
         "filename": "README.md",
         "patchSetId": 1
@@ -19,6 +59,63 @@
         "endLine": 145,
         "endChar": 60
       },
+      "revId": "db8f6540b843a4c519a443322945231e32555101",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_89a006a7",
+        "filename": "Scripts/rebuild-all.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-24T15:18:27Z",
+      "side": 1,
+      "message": "Is this really needed? You check platform name in CMake.",
+      "revId": "db8f6540b843a4c519a443322945231e32555101",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_29ca9a6e",
+        "filename": "Scripts/rebuild-all.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-24T15:18:27Z",
+      "side": 1,
+      "message": "Rendundant, cmake will print this ifno",
+      "range": {
+        "startLine": 23,
+        "startChar": 39,
+        "endLine": 23,
+        "endChar": 62
+      },
+      "revId": "db8f6540b843a4c519a443322945231e32555101",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_49c7de64",
+        "filename": "Scripts/rebuild-all.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-24T15:18:27Z",
+      "side": 1,
+      "message": "As above",
       "revId": "db8f6540b843a4c519a443322945231e32555101",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
