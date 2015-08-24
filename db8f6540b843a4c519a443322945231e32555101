@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_49bd1e02",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-24T14:50:30Z",
+      "side": 1,
+      "message": "I thought that You deleted it?",
+      "range": {
+        "startLine": 145,
+        "startChar": 31,
+        "endLine": 145,
+        "endChar": 60
+      },
+      "revId": "db8f6540b843a4c519a443322945231e32555101",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
