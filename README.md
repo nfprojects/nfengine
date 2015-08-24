@@ -124,21 +124,7 @@ Currently, buildable parts of nfEngine are: nfCommon, nfCommonTest, nfRendererOG
     * **"nfEngineDeps"** directory will be created by using git submodules inside repo - fetch its contents by using `git submodule update --init`
     * **NOTE:** Dependencies need to be built separately from engine. See README.md inside nfEngineDeps repo for more info.
 
-To rebuild the entire project in one go, _Scripts/rebuild-all.sh_ script is available, which works similarly to "Batch Build" feature in Visual Studio. The script will call cleaning script and build the engine in all configurations possible. Similarly to Windows platform, Linux version of nfEngine can be built on two platforms - 32-bit (called **i386**) and 64-bit (called **x86_64**).
-
-Keep in mind, that building on i386 platform might require downloading 32-bit versions of standard libraries and compiler libraries to link against:
-
-* On Fedora (on version 22 use **dnf** instead of **yum**):
-```
-sudo yum install glibc-devel.i686 gcc-c++.i686 libX11-devel.i686 libX11.i686 mesa-libGL.i686 mesa-libGL-devel.i686
-```
-
-**WARNING** - Ubuntu 14.04 LTS restricts possibility to install 32-bit and 64-bit versions of some depending packages at the same time. This is due to a conflict between 32-bit and 64-bit versions of packages libgl1-mesa-dev and mesa-common-dev. If you really need to build i386 version of nfEngine on Ubuntu, please do so on an i386 build of Ubuntu, or replace the packages at your own risk.
-
-* On Ubuntu:
-```
-sudo apt-get install libc6-dev-i386 g++-multilib libx11-dev:i386 libgl1-mesa-dev:i386 libglu1-mesa-dev:i386 mesa-common-dev:i386
-```
+To rebuild the entire project in one go, _Scripts/rebuild-all.sh_ script is available, which works similarly to "Batch Build" feature in Visual Studio. The script will call cleaning script and build the engine in all configurations possible. Unlike Windows platform, due to conflict between 32-bit and 64-bit versions of some packages, the Engine builds only in version which conforms Distros version.
 
 Building without _Scripts/rebuild-all.sh_ script is done by explicitly calling CMake and Make. To build nfEngine with default settings (Release build, 64-bit platform), simply call on nfEngine repo root directory:
 
@@ -149,14 +135,13 @@ make
 
 CMake can be called only once, unless there is a need to recreate Makefiles, or to change build type/platform.
 
-Changing build settings is done by defining two CMake variables (both are optional - omitting one of them will use default setting mentioned above):
+Changing build settings is done by defining CMake variables (all are optional - omitting one of them will use default setting mentioned above):
 * **CMAKE_BUILD_TYPE** - specifies build type. Possible values: **Release**, **Debug**. Building nfEngine with **Debug** build type will turn off compiler optimization and generate debugging information for GDB.
-* **CMAKE_BUILD_PLATFORM** - specifies build platform. Possible values: **i386**, **x86_64**.
 
-Example - forcing 64-bit build with Debug info:
+Example - forcing Debug build:
 
 ```
-cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_BUILD_PLATFORM=x86_64 .
+cmake -DCMAKE_BUILD_TYPE=Debug .
 make
 ```
 
