@@ -35,6 +35,10 @@ protected:
 TEST_F(DirectoryWatchTest, Constructor)
 {
     DirectoryWatch watch;
+    /*
+    ASSERT_TRUE(watch.WatchPath("TEST", DirectoryWatch::Event::MoveFrom |
+                                DirectoryWatch::Event::MoveTo |
+                                DirectoryWatch::Event::Delete));*/
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
@@ -237,7 +241,8 @@ TEST_F(DirectoryWatchTest, Move_2)
 
     auto callback = [&](const DirectoryWatch::EventData& event)
     {
-        ASSERT_EQ(DirectoryWatch::Event::MoveTo, event.type);
+        EXPECT_TRUE(DirectoryWatch::Event::MoveTo == event.type ||
+                    DirectoryWatch::Event::Create == event.type);
         ASSERT_EQ(movedFileNameAfter, event.path);
         latch.Set();
     };
@@ -271,7 +276,8 @@ TEST_F(DirectoryWatchTest, Move_3)
 
     auto callback = [&](const DirectoryWatch::EventData& event)
     {
-        ASSERT_EQ(DirectoryWatch::Event::MoveFrom, event.type);
+        EXPECT_TRUE(DirectoryWatch::Event::MoveFrom == event.type ||
+                    DirectoryWatch::Event::Delete == event.type);
         ASSERT_EQ(movedFileName, event.path);
         latch.Set();
     };

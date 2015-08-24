@@ -10,14 +10,48 @@
 namespace NFE {
 namespace Common {
 
+class DirectoryWatch;
+
+#if defined(WIN32)
+struct WatchRequest
+{
+    int filter;
+    DirectoryWatch* watch;
+
+    std::wstring widePath;
+    HANDLE dirHandle;
+    std::vector<char> frontBuffer;
+    std::vector<char> backBuffer;
+    OVERLAPPED overlapped;
+
+    WatchRequest();
+    ~WatchRequest();
+    bool BeginRead();
+};
+#endif // defined(WIN32)
+
 /**
  * Class allowing watching directories changes.
  */
-class DirectoryWatch
+class NFCOMMON_API DirectoryWatch
 {
 private:
 #if defined(WIN32)
-    // TODO
+
+    friend struct WatchRequest;
+
+    HANDLE mThread;
+
+    std::mutex mMutex;
+    std::map<std::string, std::unique_ptr<WatchRequest>> mDirs;
+
+    static DWORD CALLBACK Dispatcher(LPVOID param);
+    static void CALLBACK NotificationCompletion(DWORD errorCode,
+                                                DWORD bytesTransferred,
+                                                LPOVERLAPPED overlapped);
+    static void CALLBACK AddDirectoryProc(ULONG_PTR arg);
+    static void CALLBACK TerminateProc(ULONG_PTR arg);
+
 #elif defined(__LINUX__) | defined(__linux__)
     int inotifyFd; //< inotify file descriptor
 
