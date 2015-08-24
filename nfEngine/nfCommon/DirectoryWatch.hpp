@@ -10,11 +10,67 @@
 namespace NFE {
 namespace Common {
 
+class DirectoryWatch;
+
+#if defined(WIN32)
+struct WatchRequest
+{
+    int filter;
+    DirectoryWatch* watch;
+
+    std::string path;
+    std::wstring widePath;
+
+    HANDLE dirHandle;
+    OVERLAPPED overlapped;
+    std::vector<char> frontBuffer;
+    std::vector<char> backBuffer;
+
+    WatchRequest();
+
+    bool Start();
+    void Stop();
+};
+#endif // defined(WIN32)
+
 /**
  * Class which allows user to watch directories for changes.
  */
-class DirectoryWatch
+class NFCOMMON_API DirectoryWatch
 {
+private:
+#if defined(WIN32)
+
+    friend struct WatchRequest;
+
+    HANDLE mEvent;
+    HANDLE mThread;
+
+    std::mutex mMutex;
+    std::atomic<size_t> mRequestsNum;
+    std::map<std::string, std::unique_ptr<WatchRequest>> mRequests;
+
+    static DWORD CALLBACK Dispatcher(LPVOID param);
+    static void CALLBACK NotificationCompletion(DWORD errorCode,
+                                                DWORD bytesTransferred,
+                                                LPOVERLAPPED overlapped);
+    static void CALLBACK AddDirectoryProc(ULONG_PTR arg);
+    static void CALLBACK RemoveDirectoryProc(ULONG_PTR arg);
+    static void CALLBACK TerminateProc(ULONG_PTR arg);
+
+#elif defined(__LINUX__) | defined(__linux__)
+    std::thread mWatchThread;  //< worker thread
+    int inotifyFd;             //< inotify file descriptor
+
+    std::map<std::string, int> mWatchPathMap;
+    std::map<int, std::string> mWatchDescriptorMap;
+
+    void WatchRoutine();
+    bool ProcessInotifyEvent(void* event);
+#else
+#error "Target system not supported!"
+#endif
+
 public:
     // notification event type
     enum class Event : unsigned int
@@ -66,21 +122,6 @@ public:
     void SetCallback(WatchCallback callback);
 
 private:
-#if defined(WIN32)
-    // TODO
-#elif defined(__LINUX__) | defined(__linux__)
-    std::thread mWatchThread;  //< worker thread
-    int inotifyFd;             //< inotify file descriptor
-
-    std::map<std::string, int> mWatchPathMap;
-    std::map<int, std::string> mWatchDescriptorMap;
-
-    void WatchRoutine();
-    bool ProcessInotifyEvent(void* event);
-#else
-#error "Target system not supported!"
-#endif
-
     std::atomic<bool> mRunning; //< is directory watch running?
     WatchCallback mCallback;
 
