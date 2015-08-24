@@ -12,34 +12,30 @@ echo -n "Current directory is "; pwd
 Scripts/clean.sh
 echo
 
-# Define build platforms
-declare -a BUILD_PLATFORMS=(i386 x86_64)
+PLATFORM=$( uname -m )
 
-# For each platform...
-for PLATFORM in ${BUILD_PLATFORMS[@]}; do
-    # Clean cmake
-    echo "Cleaning CMake files"
-    Scripts/clean-cmake.sh
-    echo
+# Clean cmake
+echo "Cleaning CMake files"
+Scripts/clean-cmake.sh
+echo
 
-    # Build Debug
-    echo "Building nfEngineDeps: Type Debug, Platform ${PLATFORM}"
-    cmake . -DCMAKE_BUILD_TYPE=Debug \
-            -DCMAKE_BUILD_PLATFORM=${PLATFORM}
-    make -j ${CPU_COUNT}
-    echo
+# Build Debug
+echo "Building nfEngineDeps: Type Debug, Platform ${PLATFORM}"
+cmake . -DCMAKE_BUILD_TYPE=Debug \
+        -DCMAKE_BUILD_PLATFORM=${PLATFORM}
+make -j ${CPU_COUNT}
+echo
 
-    # Clean cmake
-    echo "Cleaning CMake files"
-    Scripts/clean-cmake.sh
-    echo
+# Clean cmake
+echo "Cleaning CMake files"
+Scripts/clean-cmake.sh
+echo
 
-    # Build Release
-    echo "Building nfEngineDeps: Type Release, Platform ${PLATFORM}"
-    cmake . -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_BUILD_PLATFORM=${PLATFORM}
-    make -j ${CPU_COUNT}
-    echo
-done
+# Build Release
+echo "Building nfEngineDeps: Type Release, Platform ${PLATFORM}"
+cmake . -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_BUILD_PLATFORM=${PLATFORM}
+make -j ${CPU_COUNT}
+echo
 
 popd > /dev/null
