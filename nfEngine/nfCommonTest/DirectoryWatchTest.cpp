@@ -47,6 +47,10 @@ protected:
 TEST_F(DirectoryWatchTest, Constructor)
 {
     DirectoryWatch watch;
+    /*
+    ASSERT_TRUE(watch.WatchPath("TEST", DirectoryWatch::Event::MoveFrom |
+                                DirectoryWatch::Event::MoveTo |
+                                DirectoryWatch::Event::Delete));*/
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
@@ -250,12 +254,14 @@ TEST_F(DirectoryWatchTest, MoveToAnotherWatchedDir)
 
     auto callback = [&](const DirectoryWatch::EventData& event)
     {
-        if (DirectoryWatch::Event::MoveFrom == event.type)
+        if (DirectoryWatch::Event::MoveFrom == event.type ||
+            DirectoryWatch::Event::Delete == event.type)
         {
             pathMatches.store(TEST_DIR1_FILE1 == event.path);
             moveFromCount++;
         }
-        else if (DirectoryWatch::Event::MoveTo == event.type)
+        else if (DirectoryWatch::Event::MoveTo == event.type ||
+                 DirectoryWatch::Event::Create == event.type)
         {
             pathAfterMatches.store(TEST_DIR2_FILE1 == event.path);
             moveToCount++;
@@ -298,7 +304,8 @@ TEST_F(DirectoryWatchTest, MoveFromNotWatchedDir)
 
     auto callback = [&](const DirectoryWatch::EventData& event)
     {
-        typeMatches.store(DirectoryWatch::Event::MoveTo == event.type);
+        typeMatches.store(DirectoryWatch::Event::MoveTo == event.type ||
+                          DirectoryWatch::Event::Create == event.type);
         pathMatches.store(TEST_DIR1_FILE1 == event.path);
         latch.Set();
     };
@@ -308,6 +315,7 @@ TEST_F(DirectoryWatchTest, MoveFromNotWatchedDir)
     ASSERT_TRUE(watch.WatchPath(TEST_DIR1,
                                 DirectoryWatch::Event::MoveFrom |
                                 DirectoryWatch::Event::MoveTo |
+                                DirectoryWatch::Event::Create |
                                 DirectoryWatch::Event::Delete));
 
     // create file and rename it
@@ -329,7 +337,8 @@ TEST_F(DirectoryWatchTest, MoveToNotWatchedDir)
 
     auto callback = [&](const DirectoryWatch::EventData& event)
     {
-        typeMatches.store(DirectoryWatch::Event::MoveFrom == event.type);
+        typeMatches.store(DirectoryWatch::Event::MoveFrom == event.type ||
+                          DirectoryWatch::Event::Delete == event.type);
         pathMatches.store(TEST_DIR1_FILE1 == event.path);
         latch.Set();
     };
@@ -344,37 +353,6 @@ TEST_F(DirectoryWatchTest, MoveToNotWatchedDir)
     // create file and rename it
     ASSERT_TRUE(FileSystem::TouchFile(TEST_DIR1_FILE1));
     ASSERT_TRUE(FileSystem::Move(TEST_DIR1_FILE1, TEST_DIR0_FILE1));
-    // wait for DirectoryWatch event
-    EXPECT_TRUE(latch.Wait(LATCH_TIMEOUT));
-
-    EXPECT_TRUE(pathMatches);
-    EXPECT_TRUE(typeMatches);
-}
-
-// moves watched directory
-TEST_F(DirectoryWatchTest, MoveWatchedDir)
-{
-    Latch latch;
-    std::atomic<bool> pathMatches(false);
-    std::atomic<bool> typeMatches(false);
-
-    auto callback = [&](const DirectoryWatch::EventData& event)
-    {
-        typeMatches.store(DirectoryWatch::Event::MoveFrom == event.type);
-        pathMatches.store(TEST_DIR1_DIR1 == event.path);
-        latch.Set();
-    };
-
-    ASSERT_TRUE(FileSystem::CreateDir(TEST_DIR1_DIR1));
-
-    DirectoryWatch watch;
-    watch.SetCallback(callback);
-    ASSERT_TRUE(watch.WatchPath(TEST_DIR1_DIR1,
-                                DirectoryWatch::Event::MoveFrom |
-                                DirectoryWatch::Event::MoveTo |
-                                DirectoryWatch::Event::Delete));
-
-    ASSERT_TRUE(FileSystem::Move(TEST_DIR1_DIR1, TEST_DIR1_DIR2));
     // wait for DirectoryWatch event
     EXPECT_TRUE(latch.Wait(LATCH_TIMEOUT));
 
@@ -454,3 +432,41 @@ TEST_F(DirectoryWatchTest, RemoveWatch)
 
     EXPECT_FALSE(callbackCalled);
 }
+
+
+// on Windows, ReadDirectoryChangesW does not report changes to the watched directory itself
+#ifndef WIN32
+
+// moves watched directory
+TEST_F(DirectoryWatchTest, MoveWatchedDir)
+{
+    Latch latch;
+    std::atomic<bool> pathMatches(false);
+    std::atomic<bool> typeMatches(false);
+
+    auto callback = [&] (const DirectoryWatch::EventData& event)
+    {
+        typeMatches.store(DirectoryWatch::Event::MoveFrom == event.type ||
+                          DirectoryWatch::Event::Delete == event.type);
+        pathMatches.store(TEST_DIR1_DIR1 == event.path);
+        latch.Set();
+    };
+
+    ASSERT_TRUE(FileSystem::CreateDir(TEST_DIR1_DIR1));
+
+    DirectoryWatch watch;
+    watch.SetCallback(callback);
+    ASSERT_TRUE(watch.WatchPath(TEST_DIR1_DIR1,
+                                DirectoryWatch::Event::MoveFrom |
+                                DirectoryWatch::Event::MoveTo |
+                                DirectoryWatch::Event::Delete));
+
+    ASSERT_TRUE(FileSystem::Move(TEST_DIR1_DIR1, TEST_DIR1_DIR2));
+    // wait for DirectoryWatch event
+    EXPECT_TRUE(latch.Wait(LATCH_TIMEOUT));
+
+    EXPECT_TRUE(pathMatches);
+    EXPECT_TRUE(typeMatches);
+}
+
+#endif // ifndef WIN32
