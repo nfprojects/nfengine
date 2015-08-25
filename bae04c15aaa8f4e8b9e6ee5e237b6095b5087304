@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_24039c74",
+        "filename": "README.md",
+        "patchSetId": 11
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-25T20:28:21Z",
+      "side": 1,
+      "message": "I\u0027m not sure :)\nhttps://en.wikipedia.org/wiki/Entity_component_system\nIt\u0027s not \"System of Component-Entity\" but pattern consisting of Components, Entities and Systems.",
+      "parentUuid": "9ad9bd40_5986e366",
+      "range": {
+        "startLine": 30,
+        "startChar": 1,
+        "endLine": 30,
+        "endChar": 25
+      },
+      "revId": "bae04c15aaa8f4e8b9e6ee5e237b6095b5087304",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_395d9fed",
         "filename": "nfEngine/nfCore/Components/BodyComponent.cpp",
         "patchSetId": 11
@@ -664,6 +688,30 @@
       "writtenOn": "2015-08-25T08:46:52Z",
       "side": 1,
       "message": "I don\u0027t exactly understand why you need this. I suppose this was for some kind of \"better memory management\", to fill the gaps that RemoveEntity() will leave. But, gLastEntityId is unmodified in RemoveEntity.\n\nWhy is this needed?",
+      "range": {
+        "startLine": 35,
+        "startChar": 3,
+        "endLine": 36,
+        "endChar": 24
+      },
+      "revId": "bae04c15aaa8f4e8b9e6ee5e237b6095b5087304",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_0483f8cc",
+        "filename": "nfEngine/nfCore/EntityManager.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-25T20:28:21Z",
+      "side": 1,
+      "message": "Because if somebody theoretically calls this function 2^32 times, the gLastEntityId will wrap.",
+      "parentUuid": "9ad9bd40_fff6a08f",
       "range": {
         "startLine": 35,
         "startChar": 3,
