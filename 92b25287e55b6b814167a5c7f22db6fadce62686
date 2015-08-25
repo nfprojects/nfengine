@@ -71,6 +71,23 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_fbf23305",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-25T09:18:06Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this float be normalized to 1.0f?",
+      "revId": "92b25287e55b6b814167a5c7f22db6fadce62686",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_2978da2a",
         "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
         "patchSetId": 12
