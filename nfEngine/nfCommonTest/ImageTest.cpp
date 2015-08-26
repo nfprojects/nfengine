@@ -21,6 +21,8 @@ const std::string TEXTURE_DDS_MM = "textureBC1_MM.dds";
 
 const std::string TEXTURE_JPG = "textureJPG.jpg";
 
+const std::string TEXTURE_BMP4 = "textureBMP4.bmp";
+const std::string TEXTURE_BMP8 = "textureBMP8.bmp";
 const std::string TEXTURE_BMP16ARGB = "textureBMP16ARGB.bmp";
 const std::string TEXTURE_BMP16XRGB = "textureBMP16XRGB.bmp";
 const std::string TEXTURE_BMP16RGB = "textureBMP16RGB.bmp";
@@ -54,7 +56,7 @@ const std::vector<ImageFormat> SUPPORTED_CONVERSION_FORMATS_NON_BC = { ImageForm
 const std::vector<ImageFormat> SUPPORTED_CONVERSION_FORMATS_BC = { ImageFormat::BC1,
                                                                     ImageFormat::BC2,
                                                                     ImageFormat::BC3 };
-}
+} // namespace
 
 class ImageTest : public testing::Test
 {
@@ -85,6 +87,7 @@ protected:
         ASSERT_NO_FATAL_FAILURE(LoadAssert(fmt));
         CheckTexels(mImage.get());
     }
+
     // Function to check Convert() functionality
     void ConvertAssert()
     {
@@ -391,36 +394,34 @@ TEST_F(ImageTest, LoadPNG)
 
 TEST_F(ImageTest, LoadBMP)
 {
-    /* TODO Enable, when 16bit BMP support is implemented
+    // 4bpp
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP4).data()));
+    LoadCheck(ImageFormat::RGBA_UByte);
+
+    // 8bpp
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP8).data()));
+    LoadCheck(ImageFormat::RGBA_UByte);
+
     // 16bpp
-    mImageFile.reset(new FileInputStream(TEXTURE_BMP16ARGB.data()));
-    ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGBA_UByte));
-    CheckTexels(mImage.get());
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16ARGB).data()));
+    LoadCheck(ImageFormat::RGBA_UByte);
 
-    mImageFile.reset(new FileInputStream(TEXTURE_BMP16XRGB.data()));
-    ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGBA_UByte));
-    CheckTexels(mImage.get());
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16XRGB).data()));
+    LoadCheck(ImageFormat::RGBA_UByte);
 
-    mImageFile.reset(new FileInputStream(TEXTURE_BMP16RGB.data()));
-    ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGBA_UByte));
-    CheckTexels(mImage.get());
-    */
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16RGB).data()));
+    LoadCheck(ImageFormat::RGBA_UByte);
 
     // 24bpp
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP24).data()));
     LoadCheck(ImageFormat::RGBA_UByte);
 
-
-    /* TODO Enable, when 32bit BMP support is implemented
     // 32bpp
-    mImageFile.reset(new FileInputStream(TEXTURE_BMP32ARGB.data()));
-    ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGBA_UByte));
-    CheckTexels(mImage.get());
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP32ARGB).data()));
+    LoadCheck(ImageFormat::RGBA_UByte);
 
-    mImageFile.reset(new FileInputStream(TEXTURE_BMP32XRGB.data()));
-    ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGBA_UByte));
-    CheckTexels(mImage.get());
-    */
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP32XRGB).data()));
+    LoadCheck(ImageFormat::RGBA_UByte);
 }
 
 TEST_F(ImageTest, LoadDDS)
@@ -491,7 +492,6 @@ TEST_F(ImageTest, ConvertPNG)
 
 TEST_F(ImageTest, ConvertBMP)
 {
-    /* TODO Enable, when 16bit BMP support is implemented
     // 16bpp
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16ARGB).data()));
     ConvertAssert();
@@ -501,20 +501,17 @@ TEST_F(ImageTest, ConvertBMP)
 
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16RGB).data()));
     ConvertAssert();
-    */
 
     // 24bpp
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP24).data()));
     ConvertAssert();
 
-    /* TODO Enable, when 32bit BMP support is implemented
     // 32bpp
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP32ARGB).data()));
     ConvertAssert();
 
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP32XRGB).data()));
     ConvertAssert();
-    */
 }
 
 TEST_F(ImageTest, ConvertDDS)
