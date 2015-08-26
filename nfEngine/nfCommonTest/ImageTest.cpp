@@ -22,6 +22,8 @@ namespace
 
     const std::string TEXTURE_JPG = "textureJPG.jpg";
 
+    const std::string TEXTURE_BMP4 = "textureBMP4.bmp";
+    const std::string TEXTURE_BMP8 = "textureBMP8.bmp";
     const std::string TEXTURE_BMP16ARGB = "textureBMP16ARGB.bmp";
     const std::string TEXTURE_BMP16XRGB = "textureBMP16XRGB.bmp";
     const std::string TEXTURE_BMP16RGB = "textureBMP16RGB.bmp";
@@ -389,36 +391,42 @@ TEST_F(ImageTest, LoadPNG)
 
 TEST_F(ImageTest, LoadBMP)
 {
-    /* TODO Enable, when 16bit BMP support is implemented
+    // 4bpp
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP4).data()));
+    ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGBA_UByte));
+    EXPECT_NO_FATAL_FAILURE(CheckTexels(mImage.get())) << "Load BMP4";
+
+    // 8bpp
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP8).data()));
+    ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGBA_UByte));
+    EXPECT_NO_FATAL_FAILURE(CheckTexels(mImage.get())) << "Load BMP8";
+
     // 16bpp
-    mImageFile.reset(new FileInputStream(TEXTURE_BMP16ARGB.data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16ARGB).data()));
     ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGBA_UByte));
-    CheckTexels(mImage.get());
+    EXPECT_NO_FATAL_FAILURE(CheckTexels(mImage.get())) << "Load BMP16ARGB";
 
-    mImageFile.reset(new FileInputStream(TEXTURE_BMP16XRGB.data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16XRGB).data()));
     ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGBA_UByte));
-    CheckTexels(mImage.get());
+    EXPECT_NO_FATAL_FAILURE(CheckTexels(mImage.get())) << "Load BMP16XRGB";
 
-    mImageFile.reset(new FileInputStream(TEXTURE_BMP16RGB.data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16RGB).data()));
     ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGBA_UByte));
-    CheckTexels(mImage.get());
-    */
+    EXPECT_NO_FATAL_FAILURE(CheckTexels(mImage.get())) << "Load BMP16RGB";
 
     // 24bpp
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP24).data()));
     ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGBA_UByte));
-    CheckTexels(mImage.get());
+    EXPECT_NO_FATAL_FAILURE(CheckTexels(mImage.get())) << "Load BMP24";
 
-    /* TODO Enable, when 32bit BMP support is implemented
     // 32bpp
-    mImageFile.reset(new FileInputStream(TEXTURE_BMP32ARGB.data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP32ARGB).data()));
     ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGBA_UByte));
-    CheckTexels(mImage.get());
+    EXPECT_NO_FATAL_FAILURE(CheckTexels(mImage.get())) << "Load BMP32ARGB";
 
-    mImageFile.reset(new FileInputStream(TEXTURE_BMP32XRGB.data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP32XRGB).data()));
     ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGBA_UByte));
-    CheckTexels(mImage.get());
-    */
+    EXPECT_NO_FATAL_FAILURE(CheckTexels(mImage.get())) << "Load BMP32XRGB";
 }
 
 TEST_F(ImageTest, LoadDDS)
