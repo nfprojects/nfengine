@@ -20,6 +20,8 @@ const std::string textureDDS_MM = "textureBC1_MM.dds";
 
 const std::string textureJPG = "textureJPG.jpg";
 
+const std::string textureBMP4 = "textureBMP4.bmp";
+const std::string textureBMP8 = "textureBMP8.bmp";
 const std::string textureBMP16ARGB = "textureBMP16ARGB.bmp";
 const std::string textureBMP16XRGB = "textureBMP16XRGB.bmp";
 const std::string textureBMP16RGB = "textureBMP16RGB.bmp";
@@ -369,36 +371,42 @@ TEST_F(ImageTest, LoadPNG)
 
 TEST_F(ImageTest, LoadBMP)
 {
-    /* TODO Enable, when 16bit BMP support is implemented
+    // 4bpp
+    mTexture.reset(new FileInputStream((testImagesPath + textureBMP4).data()));
+    LoadAssert(ImageFormat::RGBA_UByte);
+    CheckTexels(mImage.get());
+
+    // 8bpp
+    mTexture.reset(new FileInputStream((testImagesPath + textureBMP8).data()));
+    LoadAssert(ImageFormat::RGBA_UByte);
+    CheckTexels(mImage.get());
+
     // 16bpp
-    mTexture.reset(new FileInputStream(textureBMP16ARGB.data()));
+    mTexture.reset(new FileInputStream((testImagesPath + textureBMP16ARGB).data()));
     LoadAssert(ImageFormat::RGBA_UByte);
     CheckTexels(mImage.get());
 
-    mTexture.reset(new FileInputStream(textureBMP16XRGB.data()));
+    mTexture.reset(new FileInputStream((testImagesPath + textureBMP16XRGB).data()));
     LoadAssert(ImageFormat::RGBA_UByte);
     CheckTexels(mImage.get());
 
-    mTexture.reset(new FileInputStream(textureBMP16RGB.data()));
+    mTexture.reset(new FileInputStream((testImagesPath + textureBMP16RGB).data()));
     LoadAssert(ImageFormat::RGBA_UByte);
     CheckTexels(mImage.get());
-    */
 
     // 24bpp
     mTexture.reset(new FileInputStream((testImagesPath + textureBMP24).data()));
     LoadAssert(ImageFormat::RGBA_UByte);
     CheckTexels(mImage.get());
 
-    /* TODO Enable, when 32bit BMP support is implemented
     // 32bpp
-    mTexture.reset(new FileInputStream(textureBMP32ARGB.data()));
+    mTexture.reset(new FileInputStream((testImagesPath + textureBMP32ARGB).data()));
     LoadAssert(ImageFormat::RGBA_UByte);
     CheckTexels(mImage.get());
 
-    mTexture.reset(new FileInputStream(textureBMP32XRGB.data()));
+    mTexture.reset(new FileInputStream((testImagesPath + textureBMP32XRGB).data()));
     LoadAssert(ImageFormat::RGBA_UByte);
     CheckTexels(mImage.get());
-    */
 }
 
 TEST_F(ImageTest, LoadDDS)
