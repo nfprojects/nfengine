@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_137333b2",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 11
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-27T11:46:23Z",
+      "side": 1,
+      "message": "You can add this to CMAKE_CXX_FLAGS_DEBUG, which is just 4 lines below. :)",
+      "revId": "1230f7ca15c14ea2590b11f1d7d19356ac8799f0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_938ca381",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-27T11:46:23Z",
+      "side": 1,
+      "message": "This is not a good idea IMO. We should not iterate over VA\u0027s and parse them onto printf twice if stack buffer is too low. vsnprintf and va_\u0027s should be called only once if possible.\n\nI like the idea of optimizing the log on stack, however. Maybe there is another way? If not, FIXME should be here anyway.",
+      "range": {
+        "startLine": 104,
+        "startChar": 8,
+        "endLine": 106,
+        "endChar": 21
+      },
+      "revId": "1230f7ca15c14ea2590b11f1d7d19356ac8799f0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_d3ed4b27",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-27T11:46:23Z",
+      "side": 1,
+      "message": "UNKNOWN",
+      "range": {
+        "startLine": 139,
+        "startChar": 12,
+        "endLine": 139,
+        "endChar": 19
+      },
+      "revId": "1230f7ca15c14ea2590b11f1d7d19356ac8799f0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_b3e8c717",
+        "filename": "nfEngine/nfCommon/Logger.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-08-27T11:46:23Z",
+      "side": 1,
+      "message": "The macro is called LOG_SUCCESS, the returned string type is \"SUCCESS\", however the LogType constant is called OK. I sense an inconsistency. :)",
+      "range": {
+        "startLine": 19,
+        "startChar": 4,
+        "endLine": 19,
+        "endChar": 6
+      },
+      "revId": "1230f7ca15c14ea2590b11f1d7d19356ac8799f0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
