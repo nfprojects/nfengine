@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_ee40a609",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-27T14:48:51Z",
+      "side": 1,
+      "message": "Using va_list multiple times generates a crash: http://stackoverflow.com/questions/13508528/vsprintf-on-os-x-exc-bad-access\nMaybe I should use va_copy?\nIf buffer is too small, I must call vsnprintf twice. There is no other way to determine needed buffer size",
+      "parentUuid": "9ad9bd40_938ca381",
+      "range": {
+        "startLine": 104,
+        "startChar": 8,
+        "endLine": 106,
+        "endChar": 21
+      },
+      "revId": "1230f7ca15c14ea2590b11f1d7d19356ac8799f0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_d3ed4b27",
         "filename": "nfEngine/nfCommon/Logger.cpp",
         "patchSetId": 11
@@ -76,6 +100,30 @@
       "writtenOn": "2015-08-27T11:46:23Z",
       "side": 1,
       "message": "The macro is called LOG_SUCCESS, the returned string type is \"SUCCESS\", however the LogType constant is called OK. I sense an inconsistency. :)",
+      "range": {
+        "startLine": 19,
+        "startChar": 4,
+        "endLine": 19,
+        "endChar": 6
+      },
+      "revId": "1230f7ca15c14ea2590b11f1d7d19356ac8799f0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4ed99282",
+        "filename": "nfEngine/nfCommon/Logger.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-27T14:48:51Z",
+      "side": 1,
+      "message": "\"Success\" collides with X/OGL (I don\u0027t remember)...",
+      "parentUuid": "9ad9bd40_b3e8c717",
       "range": {
         "startLine": 19,
         "startChar": 4,
