@@ -88,6 +88,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_ceeda227",
+        "filename": "nfEngine/nfCommon/Linux/DirectoryWatch.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-27T14:41:18Z",
+      "side": 1,
+      "message": "It\u0027s needed, because there is no conversion from \"Event\" to bool",
+      "parentUuid": "9ad9bd40_dd11da5e",
+      "range": {
+        "startLine": 61,
+        "startChar": 37,
+        "endLine": 61,
+        "endChar": 54
+      },
+      "revId": "96e0079d5c3cfc79f8a86d4943b49518e0ee0431",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_58915851",
         "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
         "patchSetId": 6
@@ -145,6 +169,30 @@
       "writtenOn": "2015-08-27T11:10:19Z",
       "side": 1,
       "message": "Duplicated line. Shouldn\u0027t gTestDir be gTestDir2?",
+      "range": {
+        "startLine": 45,
+        "startChar": 4,
+        "endLine": 45,
+        "endChar": 74
+      },
+      "revId": "96e0079d5c3cfc79f8a86d4943b49518e0ee0431",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_0ef86ae4",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-27T14:41:18Z",
+      "side": 1,
+      "message": "I\u0027m testing adding the same directory multiple times :)",
+      "parentUuid": "9ad9bd40_78761c08",
       "range": {
         "startLine": 45,
         "startChar": 4,
