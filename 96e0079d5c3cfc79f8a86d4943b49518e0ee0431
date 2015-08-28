@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_ecfee404",
+        "filename": "nfEngine/nfCommon/DirectoryWatch.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:09:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_1dafc22c",
+      "revId": "96e0079d5c3cfc79f8a86d4943b49518e0ee0431",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_3d21e6b4",
         "filename": "nfEngine/nfCommon/DirectoryWatch.hpp",
         "patchSetId": 6
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_6c12d459",
+        "filename": "nfEngine/nfCommon/DirectoryWatch.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:09:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_3d21e6b4",
+      "range": {
+        "startLine": 36,
+        "startChar": 23,
+        "endLine": 36,
+        "endChar": 26
+      },
+      "revId": "96e0079d5c3cfc79f8a86d4943b49518e0ee0431",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_7d544e21",
         "filename": "nfEngine/nfCommon/DirectoryWatch.hpp",
         "patchSetId": 6
@@ -53,6 +95,30 @@
       "writtenOn": "2015-08-27T11:10:19Z",
       "side": 1,
       "message": "Use underlying_type, it is more generic. Type change of stronlgy typed enum Event will be then only a one-place change, operators will follow them (if possible).\n\nConsole.cpp (or hpp, I don\u0027t remember) uses underlying_type for \u0026 and | operators.",
+      "range": {
+        "startLine": 96,
+        "startChar": 58,
+        "endLine": 96,
+        "endChar": 61
+      },
+      "revId": "96e0079d5c3cfc79f8a86d4943b49518e0ee0431",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_2c09ac2c",
+        "filename": "nfEngine/nfCommon/DirectoryWatch.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:09:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_7d544e21",
       "range": {
         "startLine": 96,
         "startChar": 58,
@@ -135,6 +201,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_cc1680f1",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:09:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_58915851",
+      "range": {
+        "startLine": 10,
+        "startChar": 19,
+        "endLine": 10,
+        "endChar": 27
+      },
+      "revId": "96e0079d5c3cfc79f8a86d4943b49518e0ee0431",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_1887d010",
         "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
         "patchSetId": 6
@@ -146,6 +236,30 @@
       "writtenOn": "2015-08-27T11:10:19Z",
       "side": 1,
       "message": "Not needed. Almost all test suites avoid the word.\n\nBTW we must finally unify these names and remove useless \"Test\" word where applicable...",
+      "range": {
+        "startLine": 17,
+        "startChar": 20,
+        "endLine": 17,
+        "endChar": 24
+      },
+      "revId": "96e0079d5c3cfc79f8a86d4943b49518e0ee0431",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_6d465b25",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:09:20Z",
+      "side": 1,
+      "message": "Needed :) There is already class DirectoryWatch :)",
+      "parentUuid": "9ad9bd40_1887d010",
       "range": {
         "startLine": 17,
         "startChar": 20,
@@ -228,6 +342,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_cd54c7cc",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:09:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_f8430c6a",
+      "range": {
+        "startLine": 138,
+        "startChar": 31,
+        "endLine": 138,
+        "endChar": 33
+      },
+      "revId": "96e0079d5c3cfc79f8a86d4943b49518e0ee0431",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_1849908b",
         "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
         "patchSetId": 6
@@ -239,6 +377,30 @@
       "writtenOn": "2015-08-27T11:10:19Z",
       "side": 1,
       "message": "Since only two events above are interesting in this test case, why Event::Delete is here?",
+      "range": {
+        "startLine": 167,
+        "startChar": 36,
+        "endLine": 167,
+        "endChar": 65
+      },
+      "revId": "96e0079d5c3cfc79f8a86d4943b49518e0ee0431",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ad47831c",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:09:20Z",
+      "side": 1,
+      "message": "To verify that it\u0027s not called in callback",
+      "parentUuid": "9ad9bd40_1849908b",
       "range": {
         "startLine": 167,
         "startChar": 36,
@@ -297,6 +459,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_0d05cfc1",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 388,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:09:20Z",
+      "side": 1,
+      "message": "I don\u0027t understand. How can callbacks be generated after DirectoryWatch destruction?",
+      "parentUuid": "9ad9bd40_1840b055",
+      "range": {
+        "startLine": 388,
+        "startChar": 26,
+        "endLine": 388,
+        "endChar": 38
+      },
+      "revId": "96e0079d5c3cfc79f8a86d4943b49518e0ee0431",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_9347434b",
         "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
         "patchSetId": 6
@@ -308,6 +494,30 @@
       "writtenOn": "2015-08-27T11:10:19Z",
       "side": 1,
       "message": "This is not a good idea on Windows, as discussed.",
+      "range": {
+        "startLine": 394,
+        "startChar": 7,
+        "endLine": 394,
+        "endChar": 26
+      },
+      "revId": "96e0079d5c3cfc79f8a86d4943b49518e0ee0431",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ecd26433",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 394,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:09:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_9347434b",
       "range": {
         "startLine": 394,
         "startChar": 7,
