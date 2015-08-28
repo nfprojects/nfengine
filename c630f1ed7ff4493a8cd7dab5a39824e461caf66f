@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_9b5e8711",
+        "filename": "nfEngine/nfCommonTest/Constants.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-28T08:45:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_114a8b54",
+      "revId": "c630f1ed7ff4493a8cd7dab5a39824e461caf66f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_a2cc37bc",
         "filename": "nfEngine/nfCommonTest/Constants.cpp",
         "patchSetId": 3
@@ -126,6 +144,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_bb9a6bc3",
+        "filename": "nfEngine/nfCommonTest/Constants.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-28T08:45:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_f13e07b7",
+      "range": {
+        "startLine": 38,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 106
+      },
+      "revId": "c630f1ed7ff4493a8cd7dab5a39824e461caf66f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_423a8b99",
         "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
         "patchSetId": 3
@@ -173,6 +215,24 @@
       "side": 1,
       "message": "So convert to BC and back to original format and verify then :) But you need to use another test image (for example for BC1, a block can hold only 2 colors and interpolate between them)",
       "parentUuid": "9ad9bd40_3b484eb2",
+      "revId": "c630f1ed7ff4493a8cd7dab5a39824e461caf66f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_db9f2fb3",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-28T08:45:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_d143c33f",
       "revId": "c630f1ed7ff4493a8cd7dab5a39824e461caf66f",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
