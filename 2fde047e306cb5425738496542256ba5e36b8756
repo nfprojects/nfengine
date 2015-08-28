@@ -1,0 +1,381 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_d951e0d9",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:31:45Z",
+      "side": 1,
+      "message": "Move all constants below to annonymous namespace",
+      "revId": "2fde047e306cb5425738496542256ba5e36b8756",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_2c828c00",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:31:45Z",
+      "side": 1,
+      "message": "According to our coding style, for global constants use UPPER_CASE",
+      "range": {
+        "startLine": 8,
+        "startChar": 18,
+        "endLine": 8,
+        "endChar": 32
+      },
+      "revId": "2fde047e306cb5425738496542256ba5e36b8756",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_2cdd2c43",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:31:45Z",
+      "side": 1,
+      "message": "Align commas. It\u0027s unreadable",
+      "range": {
+        "startLine": 38,
+        "startChar": 41,
+        "endLine": 41,
+        "endChar": 87
+      },
+      "revId": "2fde047e306cb5425738496542256ba5e36b8756",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_acc77c63",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:31:45Z",
+      "side": 1,
+      "message": "mImageFile?",
+      "range": {
+        "startLine": 60,
+        "startChar": 37,
+        "endLine": 60,
+        "endChar": 45
+      },
+      "revId": "2fde047e306cb5425738496542256ba5e36b8756",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_6ce65418",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:31:45Z",
+      "side": 1,
+      "message": "space after //",
+      "revId": "2fde047e306cb5425738496542256ba5e36b8756",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_8ce39804",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:31:45Z",
+      "side": 1,
+      "message": "space after //",
+      "revId": "2fde047e306cb5425738496542256ba5e36b8756",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_0c8dc831",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:31:45Z",
+      "side": 1,
+      "message": "print \"i\" when any of these assertions fails (\u003c\u003c \"bla bla\"), or use SCOPED_TRACE:\nhttps://code.google.com/p/googletest/wiki/AdvancedGuide#Adding_Traces_to_Assertions",
+      "revId": "2fde047e306cb5425738496542256ba5e36b8756",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_6c949444",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:31:45Z",
+      "side": 1,
+      "message": "print \"i\" when any of these assertions fails (\u003c\u003c \"bla bla\"), or use SCOPED_TRACE:\nhttps://code.google.com/p/googletest/wiki/AdvancedGuide#Adding_Traces_to_Assertions",
+      "revId": "2fde047e306cb5425738496542256ba5e36b8756",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_acf05cca",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:31:45Z",
+      "side": 1,
+      "message": "Spaces around operators",
+      "range": {
+        "startLine": 123,
+        "startChar": 34,
+        "endLine": 123,
+        "endChar": 35
+      },
+      "revId": "2fde047e306cb5425738496542256ba5e36b8756",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_cceda0f1",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:31:45Z",
+      "side": 1,
+      "message": "Spaces around operators",
+      "revId": "2fde047e306cb5425738496542256ba5e36b8756",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ecb984ed",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:31:45Z",
+      "side": 1,
+      "message": "Why you don\u0027t use texel values defined in \"testData\"? Is this the same texture? Elaborate",
+      "revId": "2fde047e306cb5425738496542256ba5e36b8756",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4cb0b0f4",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:31:45Z",
+      "side": 1,
+      "message": "Add detailed message (\u003c\u003c \"bla bla\")",
+      "revId": "2fde047e306cb5425738496542256ba5e36b8756",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_b9f09cca",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:31:45Z",
+      "side": 1,
+      "message": "artefacts",
+      "range": {
+        "startLine": 222,
+        "startChar": 41,
+        "endLine": 222,
+        "endChar": 47
+      },
+      "revId": "2fde047e306cb5425738496542256ba5e36b8756",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_2cb44cf1",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:31:45Z",
+      "side": 1,
+      "message": "texels",
+      "range": {
+        "startLine": 223,
+        "startChar": 34,
+        "endLine": 223,
+        "endChar": 39
+      },
+      "revId": "2fde047e306cb5425738496542256ba5e36b8756",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_39b48cf1",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:31:45Z",
+      "side": 1,
+      "message": "I would increase this tresholds a little bit, maybe to 20.",
+      "range": {
+        "startLine": 226,
+        "startChar": 54,
+        "endLine": 226,
+        "endChar": 57
+      },
+      "revId": "2fde047e306cb5425738496542256ba5e36b8756",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_19bfc8d1",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:31:45Z",
+      "side": 1,
+      "message": "Magic numbers",
+      "range": {
+        "startLine": 226,
+        "startChar": 34,
+        "endLine": 226,
+        "endChar": 35
+      },
+      "revId": "2fde047e306cb5425738496542256ba5e36b8756",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_39abac8a",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 281,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:31:45Z",
+      "side": 1,
+      "message": "IMO, this tests are pointless. Unit tests should verify behaviour, not presence of constructors...",
+      "range": {
+        "startLine": 268,
+        "startChar": 0,
+        "endLine": 281,
+        "endChar": 1
+      },
+      "revId": "2fde047e306cb5425738496542256ba5e36b8756",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_6c7bb429",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 346,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:31:45Z",
+      "side": 1,
+      "message": "Note that if an assertion in LoadAssert fails, CheckTexels will be still executed (https://code.google.com/p/googletest/wiki/Primer#Assertions)",
+      "revId": "2fde047e306cb5425738496542256ba5e36b8756",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4c87d00f",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 409,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:31:45Z",
+      "side": 1,
+      "message": "What about texels verification?",
+      "revId": "2fde047e306cb5425738496542256ba5e36b8756",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
