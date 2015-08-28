@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_add94385",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 11
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:07:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_137333b2",
+      "revId": "1230f7ca15c14ea2590b11f1d7d19356ac8799f0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_938ca381",
         "filename": "nfEngine/nfCommon/Logger.cpp",
         "patchSetId": 11
@@ -77,6 +95,30 @@
       "writtenOn": "2015-08-27T11:46:23Z",
       "side": 1,
       "message": "UNKNOWN",
+      "range": {
+        "startLine": 139,
+        "startChar": 12,
+        "endLine": 139,
+        "endChar": 19
+      },
+      "revId": "1230f7ca15c14ea2590b11f1d7d19356ac8799f0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_8c1c7815",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-28T22:07:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_d3ed4b27",
       "range": {
         "startLine": 139,
         "startChar": 12,
