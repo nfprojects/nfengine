@@ -7,6 +7,7 @@
 #pragma once
 
 #include "../RendererInterface/CommandBuffer.hpp"
+#include "PipelineState.hpp"
 #include "Common.hpp"
 
 namespace NFE {
@@ -18,12 +19,18 @@ class CommandBuffer : public ICommandBuffer
 {
     friend class Device;
 
+    unsigned char mStencilRef;
+    unsigned char mCurrentStencilRef;
     PrimitiveType mCurrentPrimitiveType;
     RenderTarget* mCurrentRenderTarget;
+    DepthState* mDepthState;
+    DepthState* mCurrentDepthState;
     D3DPtr<ID3D11DeviceContext> mContext;
     D3DPtr<ID3DUserDefinedAnnotation> mUserDefinedAnnotation;
 
     ShaderProgramDesc mBoundShaders;
+
+    void UpdateState(PrimitiveType primitiveType);
 
 public:
     CommandBuffer(ID3D11DeviceContext* deviceContext);
@@ -44,6 +51,7 @@ public:
     void SetBlendState(IBlendState* state);
     void SetRasterizerState(IRasterizerState* state);
     void SetDepthState(IDepthState* state);
+    void SetStencilRef(unsigned char ref);
     void SetViewport(float left, float width, float top, float height,
                      float minDepth, float maxDepth);
 
@@ -53,7 +61,7 @@ public:
     bool ReadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data);
     void CopyTexture(ITexture* src, ITexture* dest);
     bool ReadTexture(ITexture* tex, void* data);
-    void Clear(int flags, const float* color, float depthValue);
+    void Clear(int flags, const float* color, float depthValue, unsigned char stencilValue);
     void Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
               int instanceOffset);
     void DrawIndexed(PrimitiveType type, int indexNum, int instancesNum, int indexOffset,

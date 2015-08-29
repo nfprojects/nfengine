@@ -51,6 +51,7 @@ public:
     virtual void SetBlendState(IBlendState* state) = 0;
     virtual void SetRasterizerState(IRasterizerState* state) = 0;
     virtual void SetDepthState(IDepthState* state) = 0;
+    virtual void SetStencilRef(unsigned char ref) = 0;
     virtual void SetViewport(float left, float width, float top, float height,
                              float minDepth, float maxDepth) = 0;
     /**@}*/
@@ -99,11 +100,13 @@ public:
 
     /**
      * Clear bound render targets with a color.
-     * @param color      New render targets value - 4 element array of floats (RGBA).
-     * @param depthValue New depth value (should be between 0.0f and 1.0f).
+     * @param color        New render targets value - 4 element array of floats (RGBA).
+     * @param depthValue   New depth value (should be between 0.0f and 1.0f).
+     * @param stencilValue New stencil value.
      */
     // TODO: MRT support.
-    virtual void Clear(int flags, const float* color, float depthValue = 0.0f) = 0;
+    virtual void Clear(int flags, const float* color, float depthValue = 0.0f,
+                       unsigned char stencilValue = 0) = 0;
 
     /**
      * Draw geometry.

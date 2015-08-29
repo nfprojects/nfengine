@@ -147,6 +147,12 @@ NFCOMMON_API Matrix MatrixOrtho(float left, float right, float bottom, float top
                                 float zNear, float zFar);
 
 /**
+ * Create scaling matrix
+ * @param scale Scaling factor (only XYZ components are taken into account).
+ */
+NFCOMMON_API Matrix MatrixScaling(const Vector& scale);
+
+/**
  * Create view matrix.
  * @param eyePosition  Observer's position.
  * @param eyeDirection Observer's direction.
