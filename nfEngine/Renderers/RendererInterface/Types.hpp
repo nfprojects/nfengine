@@ -194,6 +194,18 @@ enum class CompareFunc
     Pass
 };
 
+enum class StencilOperation
+{
+    Keep,          //< Keep the old value
+    Zero,          //< Set value to zero
+    Replace,       //< Set to reference value
+    Increment,     //< Increment by one (with saturation).
+    IncrementWrap, //< Increment by one (with wrapping).
+    Decrement,     //< Decrement by one (with saturation).
+    DecrementWrap, //< Decrement by one (with wrapping).
+    Invert         //< Invert the value
+};
+
 enum class PrimitiveType
 {
     Unknown,

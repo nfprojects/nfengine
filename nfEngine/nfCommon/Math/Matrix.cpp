@@ -49,6 +49,14 @@ Matrix MatrixOrtho(float left, float right, float bottom, float top, float zNear
                       1.0f));
 }
 
+Matrix MatrixScaling(const Vector& scale)
+{
+    return Matrix(Vector(scale.f[0], 0.0f, 0.0f, 0.0f),
+                  Vector(0.0f, scale.f[1], 0.0f, 0.0f),
+                  Vector(0.0f, 0.0f, scale.f[2], 0.0f),
+                  Vector(0.0f, 0.0f, 0.0f, 1.0f));
+}
+
 Matrix MatrixRotationNormal(const Vector& normalAxis, float angle)
 {
     Vector N0, N1;
