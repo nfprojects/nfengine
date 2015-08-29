@@ -112,6 +112,11 @@ void CommandBuffer::SetDepthState(IDepthState* state)
     UNUSED(state);
 }
 
+void CommandBuffer::SetStencilRef(unsigned char ref)
+{
+    UNUSED(ref);
+}
+
 void CommandBuffer::SetViewport(float left, float width, float top, float height,
                                 float minDepth, float maxDepth)
 {
@@ -158,7 +163,8 @@ bool CommandBuffer::ReadTexture(ITexture* tex, void* data)
     return false;
 }
 
-void CommandBuffer::Clear(int flags, const float* color, float depthValue)
+void CommandBuffer::Clear(int flags, const float* color, float depthValue,
+                          unsigned char stencilValue)
 {
     // TODO Right now Clear assumes one default render target.
     //      For multiple render targets, one would have to:
@@ -179,7 +185,12 @@ void CommandBuffer::Clear(int flags, const float* color, float depthValue)
         glClearDepth(depthValue);
     }
 
-    // TODO: stencil buffer support
+
+    if (flags & NFE_CLEAR_FLAG_STENCIL)
+    {
+        glFlags |= GL_STENCIL_BUFFER_BIT;
+        glClearStencil(static_cast<GLint>(stencilValue));
+    }
 
     glClear(glFlags);
 }
