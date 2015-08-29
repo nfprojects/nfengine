@@ -111,17 +111,39 @@ struct DepthStateDesc
     // enable writing to depth buffer
     bool depthWriteEnable;
 
+    // enable testing pixels against stencil buffer
+    bool stencilEnable;
+
     // comparison function for depth tesing
     CompareFunc depthCompareFunc;
 
-    // TODO: stencil buffer support
+    unsigned char stencilReadMask;
+    unsigned char stencilWriteMask;
+
+    // stencil buffer operation taken when stencil test fails
+    StencilOperation stencilOpFail;
+
+    // stencil buffer operation taken when stencil test passes, but depth test fails
+    StencilOperation stencilOpDepthFail;
+
+    // stencil buffer operation taken when both stencil and depth tests pass
+    StencilOperation stencilOpPass;
+
+    CompareFunc stencilFunc;
 
     const char* debugName;   //< optional debug name
 
     DepthStateDesc()
         : depthTestEnable(false)
         , depthWriteEnable(false)
+        , stencilEnable(false)
         , depthCompareFunc(CompareFunc::Pass)
+        , stencilReadMask(0xFF)
+        , stencilWriteMask(0xFF)
+        , stencilOpFail(StencilOperation::Keep)
+        , stencilOpDepthFail(StencilOperation::Keep)
+        , stencilOpPass(StencilOperation::Keep)
+        , stencilFunc(CompareFunc::Pass)
         , debugName(nullptr)
     {}
 };
