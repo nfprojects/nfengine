@@ -277,7 +277,7 @@ bool TranslateDepthBufferTypes(DepthBufferFormat inFormat, DXGI_FORMAT& resForma
     case DepthBufferFormat::Depth24_Stencil8:
         resFormat = DXGI_FORMAT_R24G8_TYPELESS;
         srvFormat = DXGI_FORMAT_R16_UNORM;
-        dsvFormat = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+        dsvFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
         return true;
     case DepthBufferFormat::Depth32:
         resFormat = DXGI_FORMAT_R32_TYPELESS;
@@ -412,6 +412,31 @@ D3D11_BLEND_OP TranslateBlendOp(BlendOp op)
     };
 
     return D3D11_BLEND_OP_ADD;
+}
+
+D3D11_STENCIL_OP TranslateStencilOperation(StencilOperation op)
+{
+    switch (op)
+    {
+    case StencilOperation::Keep:
+        return D3D11_STENCIL_OP_KEEP;
+    case StencilOperation::Zero:
+        return D3D11_STENCIL_OP_ZERO;
+    case StencilOperation::Replace:
+        return D3D11_STENCIL_OP_REPLACE;
+    case StencilOperation::Increment:
+        return D3D11_STENCIL_OP_INCR_SAT;
+    case StencilOperation::IncrementWrap:
+        return D3D11_STENCIL_OP_INCR;
+    case StencilOperation::Decrement:
+        return D3D11_STENCIL_OP_DECR_SAT;
+    case StencilOperation::DecrementWrap:
+        return D3D11_STENCIL_OP_DECR;
+    case StencilOperation::Invert:
+        return D3D11_STENCIL_OP_INVERT;
+    };
+
+    return D3D11_STENCIL_OP_KEEP;
 }
 
 } // namespace Renderer
