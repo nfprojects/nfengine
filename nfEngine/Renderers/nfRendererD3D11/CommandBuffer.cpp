@@ -43,8 +43,11 @@ CommandBuffer::~CommandBuffer()
 
 void CommandBuffer::Reset()
 {
+    mStencilRef = mCurrentStencilRef = 0;
     mCurrentPrimitiveType = PrimitiveType::Unknown;
     mCurrentRenderTarget = nullptr;
+    mDepthState = nullptr;
+    mCurrentDepthState = nullptr;
     mBoundShaders = ShaderProgramDesc();
 
     mContext->ClearState();
@@ -310,7 +313,7 @@ void CommandBuffer::SetShader(IShader* shader)
 void CommandBuffer::SetBlendState(IBlendState* state)
 {
     BlendState* blendState = dynamic_cast<BlendState*>(state);
-    mContext->OMSetBlendState(blendState->mBS.get(), NULL, 0xFFFFFFFF);
+    mContext->OMSetBlendState(blendState ? blendState->mBS.get() : nullptr, nullptr, 0xFFFFFFFF);
 }
 
 void CommandBuffer::SetRasterizerState(IRasterizerState* state)
@@ -321,8 +324,12 @@ void CommandBuffer::SetRasterizerState(IRasterizerState* state)
 
 void CommandBuffer::SetDepthState(IDepthState* state)
 {
-    DepthState* depthState = dynamic_cast<DepthState*>(state);
-    mContext->OMSetDepthStencilState(depthState->mDS.get(), 0);
+    mDepthState = dynamic_cast<DepthState*>(state);
+}
+
+void CommandBuffer::SetStencilRef(unsigned char ref)
+{
+    mStencilRef = ref;
 }
 
 bool CommandBuffer::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data)
@@ -405,7 +412,8 @@ bool CommandBuffer::ReadTexture(ITexture* tex, void* data)
     return true;
 }
 
-void CommandBuffer::Clear(int flags, const float* color, float depthValue)
+void CommandBuffer::Clear(int flags, const float* color, float depthValue,
+                          unsigned char stencilValue)
 {
     // TODO: what about cleaning individual RTs with different colors?
 
@@ -415,30 +423,46 @@ void CommandBuffer::Clear(int flags, const float* color, float depthValue)
             for (size_t i = 0; i < mCurrentRenderTarget->mRTVs.size(); ++i)
                 mContext->ClearRenderTargetView(mCurrentRenderTarget->mRTVs[i].get(), color);
 
-        if (flags & NFE_CLEAR_FLAG_DEPTH)
+        if (flags & (NFE_CLEAR_FLAG_DEPTH | NFE_CLEAR_FLAG_STENCIL))
         {
             ID3D11DepthStencilView* dsv;
             if (mCurrentRenderTarget->mDepthBuffer)
             {
                 dsv = mCurrentRenderTarget->mDepthBuffer->mDSV.get();
-                if (dsv)
-                    mContext->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH, depthValue, 0);
+                if (!dsv)
+                    return;
+
+                UINT d3dFlags = 0;
+                if (flags & NFE_CLEAR_FLAG_DEPTH)   d3dFlags = D3D11_CLEAR_DEPTH;
+                if (flags & NFE_CLEAR_FLAG_STENCIL) d3dFlags |= D3D11_CLEAR_STENCIL;
+                mContext->ClearDepthStencilView(dsv, d3dFlags, depthValue, stencilValue);
             }
         }
-
-        // TODO: stencil buffer support
     }
+}
+
+void CommandBuffer::UpdateState(PrimitiveType primitiveType)
+{
+    if (mCurrentDepthState != mDepthState || mCurrentStencilRef != mStencilRef)
+    {
+        mContext->OMSetDepthStencilState(mDepthState ? mDepthState->mDS.get() : nullptr,
+                                         mStencilRef);
+        mCurrentDepthState = mDepthState;
+        mCurrentStencilRef = mStencilRef;
+    }
+
+    if (primitiveType != mCurrentPrimitiveType)
+    {
+        mCurrentPrimitiveType = primitiveType;
+        D3D11_PRIMITIVE_TOPOLOGY topology = TranslatePrimitiveType(primitiveType);
+        mContext->IASetPrimitiveTopology(topology);
+    };
 }
 
 void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
                          int instanceOffset)
 {
-    if (type != mCurrentPrimitiveType)
-    {
-        mCurrentPrimitiveType = type;
-        D3D11_PRIMITIVE_TOPOLOGY topology = TranslatePrimitiveType(type);
-        mContext->IASetPrimitiveTopology(topology);
-    };
+    UpdateState(type);
 
     if (instancesNum >= 0)
         mContext->DrawInstanced(vertexNum, instancesNum, vertexOffset, instanceOffset);
@@ -449,12 +473,7 @@ void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, in
 void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesNum,
                                 int indexOffset, int vertexOffset, int instanceOffset)
 {
-    if (type != mCurrentPrimitiveType)
-    {
-        mCurrentPrimitiveType = type;
-        D3D11_PRIMITIVE_TOPOLOGY topology = TranslatePrimitiveType(type);
-        mContext->IASetPrimitiveTopology(topology);
-    };
+    UpdateState(type);
 
     if (instancesNum >= 0)
         mContext->DrawIndexedInstanced(indexNum, instancesNum, indexOffset, vertexOffset,

@@ -9,6 +9,7 @@
 
 #include "Common.hpp"
 #include "BasicScene.hpp"
+#include "DepthStencilScene.hpp"
 
 #include "../Renderers/RendererInterface/Device.hpp"
 #include "../nfCommon/Library.hpp"
@@ -97,8 +98,8 @@ public:
         , mRendererLib()
         , mRendererDevice(nullptr)
     {
-        // the first scene ever made
         mScenes.push_back(std::unique_ptr<Scene>(new BasicScene));
+        mScenes.push_back(std::unique_ptr<Scene>(new DepthStencilScene));
     }
 
     /**
