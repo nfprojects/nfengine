@@ -176,6 +176,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Common.cpp" />
+    <ClCompile Include="DepthStencilScene.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -187,6 +188,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.hpp" />
+    <ClInclude Include="DepthStencilScene.hpp" />
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="Scene.hpp" />
     <ClInclude Include="BasicScene.hpp" />

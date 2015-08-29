@@ -9,6 +9,7 @@
 
 #include "Common.hpp"
 #include "BasicScene.hpp"
+#include "DepthStencilScene.hpp"
 
 #include "../Renderers/RendererInterface/Device.hpp"
 #include "../nfCommon/Library.hpp"
@@ -35,7 +36,7 @@ class DemoWindow : public NFE::Common::Window
         mScenes[mCurrentScene]->Release();
 
         std::string title = "nfRendererDemo - scene ";
-        if (!mScenes[scene]->Init(mRendererDevice, GetHandle()))
+        if (mScenes[scene]->Init(mRendererDevice, GetHandle()))
         {
             /// success - update the scene counter and the title
             mCurrentScene = scene;
@@ -102,6 +103,7 @@ public:
     {
         // the first scene ever made
         mScenes.push_back(std::unique_ptr<Scene>(new BasicScene(shaderPathPrefix, shaderExt)));
+        mScenes.push_back(std::unique_ptr<Scene>(new DepthStencilScene(shaderPathPrefix, shaderExt)));
     }
 
     /**
