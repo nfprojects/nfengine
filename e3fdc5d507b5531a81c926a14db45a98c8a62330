@@ -1,0 +1,379 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_cab58032",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "struct BitmapFileHeader\n{\n...\n};",
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_2a7c2c72",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "Keep consistent with nfEngine style: remove \"bf\" and start with lowercase",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 23
+      },
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ea81644e",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "struct BitmapV5Header\n{\n...\n};",
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4a817049",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "Keep consistent with nfEngine style: remove \"bV5\" and start with lowercase",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 25
+      },
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_6a955487",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "struct CIEXYZTriple\n{\n...\n};",
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_8a92989d",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "maybe just \"red\", \"green\" and \"blue\"?",
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_ca8ca082",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "struct CIEXYZ\n{\n...\n};",
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_aa8f5c74",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "Maybe just \"x\", \"y\", \"z\"?",
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_0aee8822",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "Long may have different size depending on architecture and compiler",
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_eae88418",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "struct RGBQUAD\n{\n...\n};",
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4af890e5",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "LOG_ERROR",
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_6adc7475",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "LOG_ERROR",
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_8ad9b885",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "LOG_ERROR",
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_2af34c0b",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "magic number",
+      "range": {
+        "startLine": 114,
+        "startChar": 31,
+        "endLine": 114,
+        "endChar": 33
+      },
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_cae3c031",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "Move to nfCommon/Bit.hpp",
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_eacfa4b1",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "One read would be faster",
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_0ad5a842",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "You are doing the same allocation height*width times, move outside the loops",
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4acfb0b0",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "Why not read whole line in one go?",
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_6ac3948a",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "Why not read whole line in one go?",
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_aab83c2b",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "std::move",
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_8aab78d5",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 319,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-08-30T12:02:07Z",
+      "side": 1,
+      "message": "Move to nfCommon/Bit.hpp. Also, it can be done faster: https://graphics.stanford.edu/~seander/bithacks.html#ZerosOnRightParallel :)",
+      "revId": "e3fdc5d507b5531a81c926a14db45a98c8a62330",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
