@@ -96,6 +96,8 @@
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)nfEngine\nfCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -117,6 +119,8 @@
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)nfEngine\nfCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -140,6 +144,8 @@
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)nfEngine\nfCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -165,6 +171,8 @@
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)nfEngine\nfCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -101,6 +101,7 @@
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <MinimalRebuild>false</MinimalRebuild>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -126,6 +127,7 @@ popd</Command>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <MinimalRebuild>false</MinimalRebuild>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,6 +154,7 @@ popd</Command>
       <AdditionalIncludeDirectories>..\nfCore\;$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -180,6 +183,7 @@ popd</Command>
       <AdditionalIncludeDirectories>..\nfCore\;$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
