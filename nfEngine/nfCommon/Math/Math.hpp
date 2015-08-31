@@ -9,13 +9,21 @@
 #include "../nfCommon.hpp"
 #include <math.h>
 
+
+/// TODO: SSE version should defined by CMake or VS project.
 #define NFE_MATH_USE_SSE
+#define NFE_MATH_USE_SSE4
 
 #ifdef NFE_MATH_USE_SSE
 #include <xmmintrin.h>
-#include <mmintrin.h>
+#endif
+
+#ifdef NFE_MATH_USE_SSE2
 #include <emmintrin.h>
-//#include <smmintrin.h>
+#endif
+
+#ifdef NFE_MATH_USE_SSE4
+#include <smmintrin.h>
 #endif
 
 #define NFE_MATH_EPSILON (0.000001f)
@@ -26,9 +34,9 @@
 namespace NFE {
 namespace Math {
 
-//
-// structures for vector storing
-//
+/**
+ * Structure for efficient 2D vector storing.
+ */
 struct Float2
 {
     float x, y;
@@ -38,6 +46,9 @@ struct Float2
     Float2(float* pArr) : x(pArr[0]), y(pArr[1]) {};
 };
 
+/**
+ * Structure for efficient 3D vector storing.
+ */
 struct Float3
 {
     float x, y, z;
@@ -47,6 +58,9 @@ struct Float3
     Float3(float* pArr) : x(pArr[0]), y(pArr[1]), z(pArr[2]) {};
 };
 
+/**
+ * Structure for efficient 4D vector storing - unaligned version of Vector class.
+ */
 struct Float4
 {
     float x, y, z, w;
@@ -56,28 +70,27 @@ struct Float4
     Float4(float* pArr) : x(pArr[0]), y(pArr[1]), z(pArr[2]), w(pArr[3]) {};
 };
 
-
-//predeclarations
-class Vector;
-class Matrix;
-class Box;
-class Frustum;
-class Sphere;
-
-
-
+/**
+ * Union providing easy "float" bit manipulations.
+ */
 union FloatInt
 {
     float f;
     unsigned int u;
 };
 
+/**
+ * Union providing easy "double" bit manipulations.
+ */
 union DoubleInt
 {
     double f;
     NFE::Common::uint64 u;
 };
 
+/**
+ * Minimum.
+ */
 template<typename T>
 NFE_INLINE T Min(const T a, const T b)
 {
@@ -87,6 +100,9 @@ NFE_INLINE T Min(const T a, const T b)
     return b;
 }
 
+/**
+ * Maximum.
+ */
 template<typename T>
 NFE_INLINE T Max(const T a, const T b)
 {
@@ -96,17 +112,21 @@ NFE_INLINE T Max(const T a, const T b)
     return b;
 }
 
-//returns x with sign of y
+/**
+ * Returns x with sign of y
+ */
 NFE_INLINE float CopySignF(const float x, const float y)
 {
-    FloatInt _x, _y;
-    _x.f = x;
-    _y.f = y;
-    _x.u = (0x7fffffff & _x.u) | (0x80000000 & _y.u);
-    return _x.f;
+    FloatInt xInt, yInt;
+    xInt.f = x;
+    yInt.f = y;
+    xInt.u = (0x7fffffff & xInt.u) | (0x80000000 & yInt.u);
+    return xInt.f;
 }
 
-// linear interpolation
+/**
+ * Linear interpolation.
+ */
 template<typename T>
 NFE_INLINE T Lerp(const T a, const T b, const T w)
 {
@@ -121,7 +141,9 @@ NFE_INLINE float Quantize(float x, float step)
     return tmp * step;
 }
 
-// Wang hash
+/**
+ * Wang hash.
+ */
 NFE_INLINE unsigned int Hash(unsigned int x)
 {
     x = (x ^ 61) ^ (x >> 16);
@@ -132,12 +154,15 @@ NFE_INLINE unsigned int Hash(unsigned int x)
     return x;
 }
 
+/**
+ * Solve a system of linear equations with 3 variables.
+ *
+ * @param M     Coefficients matrix.
+ * @param x,y,z Results.
+ *
+ * @return True on success (the system has exactly one solution).
+ */
+NFCOMMON_API bool SolveEquationsSystem3(float M[4][3], float& x, float& y, float& z);
+
 } // namespace Math
 } // namespace NFE
-
-
-// TODO: remove
-#include "Vector.hpp"
-#include "Matrix.hpp"
-#include "Quaternion.hpp"
-#include "Geometry.hpp"

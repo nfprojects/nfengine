@@ -10,6 +10,7 @@
 #include "../Aligned.hpp"
 #include "Component.hpp"
 #include "../Aligned.hpp"
+#include "../nfCommon/Math/Quaternion.hpp"
 
 namespace NFE {
 namespace Scene {
@@ -84,7 +85,7 @@ public:
      */
     NFE_INLINE Math::Vector GetPosition() const
     {
-        return Math::Vector(mMatrix.r[3]) & Math::g_Mask3;
+        return Math::Vector(mMatrix.r[3]) & Math::VECTOR_MASK_XYZ;
     }
 
     /**
@@ -92,7 +93,7 @@ public:
      */
     NFE_INLINE Math::Vector GetLocalPosition() const
     {
-        return Math::Vector(mLocalMatrix.r[3]) & Math::g_Mask3;
+        return Math::Vector(mLocalMatrix.r[3]) & Math::VECTOR_MASK_XYZ;
     }
 
     /**
