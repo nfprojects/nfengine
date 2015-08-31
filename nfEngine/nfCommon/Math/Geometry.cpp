@@ -5,12 +5,15 @@
  */
 
 #include "../PCH.hpp"
-#include "Math.hpp"
-#include <smmintrin.h>
+#include "Geometry.hpp"
+#include "Box.hpp"
+#include "Sphere.hpp"
+#include "Frustum.hpp"
+#include "Triangle.hpp"
+#include "Ray.hpp"
 
 namespace NFE {
 namespace Math {
-
 
 float ClosestPointOnSegment(const Vector& p, const Vector& p1, const Vector& p2, Vector& out)
 {

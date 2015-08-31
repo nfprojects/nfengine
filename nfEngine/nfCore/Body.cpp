@@ -74,7 +74,7 @@ void BodyComponent::OnUpdate(float dt)
     }
     else
     {
-        isActive = (VectorGreaterMask(VectorAbs(mOwner->mVelocity), g_Epsilon) & 0x7) != 0;
+        isActive = (VectorGreaterMask(VectorAbs(mOwner->mVelocity), VECTOR_EPSILON) & 0x7) != 0;
         if (isActive)
         {
             Vector pos = mOwner->mMatrix.r[3];

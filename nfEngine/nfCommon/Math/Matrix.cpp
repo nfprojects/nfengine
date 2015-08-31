@@ -5,7 +5,7 @@
  */
 
 #include "../PCH.hpp"
-#include "Math.hpp"
+#include "Matrix.hpp"
 
 namespace NFE {
 namespace Math {
@@ -79,7 +79,7 @@ Matrix MatrixRotationNormal(const Vector& normalAxis, float angle)
     R2 = _mm_mul_ps(C0, normalAxis);
     R2 = _mm_sub_ps(V0, R2);
 
-    V0 = _mm_and_ps(R0, g_Mask3);
+    V0 = _mm_and_ps(R0, VECTOR_MASK_XYZ);
 
     V1 = _mm_shuffle_ps(R1, R2, _MM_SHUFFLE(2, 1, 2, 0));
     V1 = _mm_shuffle_ps(V1, V1, _MM_SHUFFLE(0, 3, 2, 1));
@@ -94,7 +94,7 @@ Matrix MatrixRotationNormal(const Vector& normalAxis, float angle)
     M.r[1] = R2;
     V2 = _mm_shuffle_ps(V2, V0, _MM_SHUFFLE(3, 2, 1, 0));
     M.r[2] = V2;
-    M.r[3] = gIdentityR3;
+    M.r[3] = VECTOR_IDENTITY_ROW_3;
     return M;
 }
 
@@ -206,7 +206,7 @@ Matrix MatrixInverse(const Matrix& m)
 
     // Get the determinate
     Vector vTemp = VectorDot4(C0, MT.r[0]);
-    vTemp = _mm_div_ps(g_One, vTemp);
+    vTemp = _mm_div_ps(VECTOR_ONE, vTemp);
 
     return Matrix(_mm_mul_ps(C0, vTemp),
                   _mm_mul_ps(C2, vTemp),
