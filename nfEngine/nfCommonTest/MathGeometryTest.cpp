@@ -1,5 +1,9 @@
 #include "PCH.hpp"
-#include "../nfCommon/Math/Math.hpp"
+#include "../nfCommon/Math/Geometry.hpp"
+#include "../nfCommon/Math/Box.hpp"
+#include "../nfCommon/Math/Frustum.hpp"
+#include "../nfCommon/Math/Sphere.hpp"
+#include "../nfCommon/Math/Triangle.hpp"
 
 /*
 TODO:

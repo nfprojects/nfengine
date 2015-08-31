@@ -11,7 +11,8 @@
 #include "HighLevelRenderer.hpp"
 #include "DebugRendererContext.hpp"
 #include "Multishader.hpp"
-#include "../../nfCommon/Math/Math.hpp"
+#include "../../nfCommon/Math/Box.hpp"
+#include "../../nfCommon/Math/Frustum.hpp"
 
 namespace NFE {
 namespace Renderer {

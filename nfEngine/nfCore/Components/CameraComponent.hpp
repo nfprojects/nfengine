@@ -9,6 +9,7 @@
 #include "../Core.hpp"
 #include "Component.hpp"
 #include "../Aligned.hpp"
+#include "../nfCommon/Math/Frustum.hpp"
 
 namespace NFE {
 namespace Scene {
