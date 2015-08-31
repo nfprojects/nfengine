@@ -75,7 +75,7 @@ void Buffer::Create(size_t size)
     mData = malloc(size);
 }
 
-void Buffer::Load(void* pData, size_t size)
+void Buffer::Load(const void* pData, size_t size)
 {
     mSize = size;
     void* newData = realloc(mData, size);
