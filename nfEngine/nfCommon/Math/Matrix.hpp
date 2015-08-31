@@ -6,6 +6,9 @@
 
 #pragma once
 
+#include "Math.hpp"
+#include "Vector.hpp"
+
 namespace NFE {
 namespace Math {
 
@@ -47,10 +50,10 @@ public:
      */
     NFE_INLINE Matrix()
     {
-        r[0] = gIdentityR0;
-        r[1] = gIdentityR1;
-        r[2] = gIdentityR2;
-        r[3] = gIdentityR3;
+        r[0] = VECTOR_IDENTITY_ROW_0;
+        r[1] = VECTOR_IDENTITY_ROW_1;
+        r[2] = VECTOR_IDENTITY_ROW_2;
+        r[3] = VECTOR_IDENTITY_ROW_3;
     }
 
     /**
@@ -230,9 +233,9 @@ NFE_INLINE bool MatrixEqual(const Matrix& m1, const Matrix& m2, float epsilon)
 NFE_INLINE Matrix MatrixTranslation3(const Vector& pos)
 {
     Matrix m;
-    m.r[0] = gIdentityR0;
-    m.r[1] = gIdentityR1;
-    m.r[2] = gIdentityR2;
+    m.r[0] = VECTOR_IDENTITY_ROW_0;
+    m.r[1] = VECTOR_IDENTITY_ROW_1;
+    m.r[2] = VECTOR_IDENTITY_ROW_2;
     m.r[3] = Vector(pos.f[0], pos.f[1], pos.f[2], 1.0f);
     return m;
 }

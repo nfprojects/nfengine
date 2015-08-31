@@ -5,7 +5,7 @@
  */
 
 #include "../PCH.hpp"
-#include "Math.hpp"
+#include "Quaternion.hpp"
 
 namespace NFE {
 namespace Math {
@@ -43,7 +43,7 @@ Matrix MatrixFromQuaternion(const Quaternion& q)
 }
 
 // Create quaternion from 4x4 matrix (only 3x3 is considered)
-NFCOMMON_API Quaternion QuaternionFromMatrix(const Matrix& m)
+Quaternion QuaternionFromMatrix(const Matrix& m)
 {
     Quaternion q;
     q.f[0] = sqrtf(Max(0.0f, 1.0f + m.m[0][0] - m.m[1][1] - m.m[2][2])) / 2.0f;
