@@ -6,7 +6,8 @@
 
 #pragma once
 
-#include "../nfCommon/Math/Math.hpp"
+#include "../nfCommon/Math/Vector.hpp"
+#include "../nfCommon/Math/Matrix.hpp"
 #include "Prerequisites.hpp"
 
 namespace NFE {
