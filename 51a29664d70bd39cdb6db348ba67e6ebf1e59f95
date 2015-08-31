@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_85c60b48",
+        "filename": "nfEngine/nfCommon/Image/Image.hpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-31T10:40:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_6cc9f459",
+      "revId": "51a29664d70bd39cdb6db348ba67e6ebf1e59f95",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_42ca3ea2",
         "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
         "patchSetId": 13
@@ -30,6 +48,24 @@
       "writtenOn": "2015-08-28T22:42:15Z",
       "side": 1,
       "message": "There is something like \"#pragma pack\"",
+      "revId": "51a29664d70bd39cdb6db348ba67e6ebf1e59f95",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_8521abb6",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-31T10:40:07Z",
+      "side": 1,
+      "message": "Yup, I know but wasn\u0027t sure if I should use it.\nTried to use alignas - brand new feature from cpp11...unfortunately it does only support bigger or equal byte alignment then the default one (which in this case would be 4), leaving \"#pragma pack(2)\" only viable solution.",
+      "parentUuid": "9ad9bd40_42ca3ea2",
       "revId": "51a29664d70bd39cdb6db348ba67e6ebf1e59f95",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -59,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_2599bf6e",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-31T10:40:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_4cb510cc",
+      "range": {
+        "startLine": 87,
+        "startChar": 8,
+        "endLine": 87,
+        "endChar": 24
+      },
+      "revId": "51a29664d70bd39cdb6db348ba67e6ebf1e59f95",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_ac75bc33",
         "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
         "patchSetId": 13
@@ -70,6 +130,24 @@
       "writtenOn": "2015-08-28T22:42:15Z",
       "side": 1,
       "message": "add comment about VectorLoadUChar4",
+      "revId": "51a29664d70bd39cdb6db348ba67e6ebf1e59f95",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_459ec357",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-31T10:40:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_ac75bc33",
       "revId": "51a29664d70bd39cdb6db348ba67e6ebf1e59f95",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -99,6 +177,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_65a2e79b",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-31T10:40:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_cc720049",
+      "range": {
+        "startLine": 144,
+        "startChar": 68,
+        "endLine": 144,
+        "endChar": 71
+      },
+      "revId": "51a29664d70bd39cdb6db348ba67e6ebf1e59f95",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_ec8ee426",
         "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
         "patchSetId": 13
@@ -116,6 +218,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_859feb4f",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-31T10:40:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_ec8ee426",
+      "revId": "51a29664d70bd39cdb6db348ba67e6ebf1e59f95",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_0c94e835",
         "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
         "patchSetId": 13
@@ -127,6 +247,30 @@
       "writtenOn": "2015-08-28T22:42:15Z",
       "side": 1,
       "message": "As above",
+      "range": {
+        "startLine": 163,
+        "startChar": 0,
+        "endLine": 165,
+        "endChar": 80
+      },
+      "revId": "51a29664d70bd39cdb6db348ba67e6ebf1e59f95",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_a5acef8d",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-31T10:40:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_0c94e835",
       "range": {
         "startLine": 163,
         "startChar": 0,
@@ -162,6 +306,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_c5a9f37c",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-31T10:40:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_2c99ac6e",
+      "range": {
+        "startLine": 174,
+        "startChar": 0,
+        "endLine": 177,
+        "endChar": 80
+      },
+      "revId": "51a29664d70bd39cdb6db348ba67e6ebf1e59f95",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_4c9ef057",
         "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
         "patchSetId": 13
@@ -173,6 +341,24 @@
       "writtenOn": "2015-08-28T22:42:15Z",
       "side": 1,
       "message": "255.0f",
+      "revId": "51a29664d70bd39cdb6db348ba67e6ebf1e59f95",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_e5b517d1",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-31T10:40:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_4c9ef057",
       "revId": "51a29664d70bd39cdb6db348ba67e6ebf1e59f95",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -196,6 +382,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_05bbdbc4",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-31T10:40:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_6ca2d49b",
+      "revId": "51a29664d70bd39cdb6db348ba67e6ebf1e59f95",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_acacdc8d",
         "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
         "patchSetId": 13
@@ -207,6 +411,30 @@
       "writtenOn": "2015-08-28T22:42:15Z",
       "side": 1,
       "message": "As above",
+      "range": {
+        "startLine": 227,
+        "startChar": 0,
+        "endLine": 229,
+        "endChar": 78
+      },
+      "revId": "51a29664d70bd39cdb6db348ba67e6ebf1e59f95",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_25b0dfdc",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-31T10:40:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_acacdc8d",
       "range": {
         "startLine": 227,
         "startChar": 0,
@@ -242,6 +470,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_45b5e3cb",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-31T10:40:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_cca9207d",
+      "range": {
+        "startLine": 236,
+        "startChar": 0,
+        "endLine": 239,
+        "endChar": 78
+      },
+      "revId": "51a29664d70bd39cdb6db348ba67e6ebf1e59f95",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_2cb0ccdc",
         "filename": "nfEngine/nfCommon/Image/Mipmap.hpp",
         "patchSetId": 13
@@ -253,6 +505,24 @@
       "writtenOn": "2015-08-28T22:42:15Z",
       "side": 1,
       "message": "I\u0027ve just noticed it: should be \"const void*\"",
+      "revId": "51a29664d70bd39cdb6db348ba67e6ebf1e59f95",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_6524a7c6",
+        "filename": "nfEngine/nfCommon/Image/Mipmap.hpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-31T10:40:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_2cb0ccdc",
       "revId": "51a29664d70bd39cdb6db348ba67e6ebf1e59f95",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -276,6 +546,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_a52eafa3",
+        "filename": "nfEngine/nfRendererDemo/CMakeLists.txt",
+        "patchSetId": 13
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-31T10:40:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_ecb504d1",
+      "revId": "51a29664d70bd39cdb6db348ba67e6ebf1e59f95",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_0cbb08c5",
         "filename": "nfEngine/nfRendererDemo/CMakeLists.txt",
         "patchSetId": 13
@@ -287,6 +575,24 @@
       "writtenOn": "2015-08-28T22:42:15Z",
       "side": 1,
       "message": "By the way, this one too :)",
+      "revId": "51a29664d70bd39cdb6db348ba67e6ebf1e59f95",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_c52bb392",
+        "filename": "nfEngine/nfRendererDemo/CMakeLists.txt",
+        "patchSetId": 13
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-08-31T10:40:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_0cbb08c5",
       "revId": "51a29664d70bd39cdb6db348ba67e6ebf1e59f95",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
