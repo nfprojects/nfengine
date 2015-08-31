@@ -7,6 +7,7 @@
 #pragma once
 
 #include "nfCommon.hpp"
+#include "Math/Vector.hpp"
 
 namespace NFE {
 namespace Common {

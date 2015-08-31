@@ -7,6 +7,7 @@
 #pragma once
 
 #include "../nfCommon.hpp"
+#include "Math.hpp"
 
 namespace NFE {
 namespace Math {
@@ -20,7 +21,7 @@ private:
     NFE::Common::uint64 mSeed;
 
     // XOR-shift algorithm
-    __forceinline void Shuffle()
+    NFE_INLINE void Shuffle()
     {
         mSeed ^= (mSeed << 21);
         mSeed ^= (mSeed >> 35);

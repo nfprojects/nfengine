@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Core.hpp"
+#include "../nfCommon/Math/Box.hpp"
 
 namespace NFE {
 namespace Util {

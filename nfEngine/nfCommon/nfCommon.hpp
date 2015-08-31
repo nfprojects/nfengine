@@ -47,11 +47,12 @@
 #endif // WIN32
 
 // __forceinline and declspec(align(x)) replacement on other systems
-#if defined(__LINUX__) | defined(__linux__)
-#define __forceinline inline __attribute__((always_inline))
-#endif // defined(__LINUX__) | defined(__linux__)
 
+#if defined(__LINUX__) | defined(__linux__)
+#define NFE_INLINE inline __attribute__((always_inline))
+#elif defined(WIN32)
 #define NFE_INLINE __forceinline
+#endif // defined(__LINUX__) | defined(__linux__)
 
 // 16-byte aligning macro for objects using SSE registers
 #if defined(WIN32)

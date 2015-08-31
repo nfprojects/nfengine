@@ -27,6 +27,8 @@
 
 #include "../nfCommon/Timer.hpp"
 #include "../nfCommon/Logger.hpp"
+#include "../nfCommon/Math/Geometry.hpp"
+#include "../nfCommon/Math/Sphere.hpp"
 
 namespace NFE {
 namespace Scene {
