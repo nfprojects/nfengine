@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include "Math.hpp"
+
 namespace NFE {
 namespace Math {
 
@@ -53,13 +55,13 @@ public:
     }
 
     // element access
-    float operator[] (int index) const
+    NFE_INLINE float operator[] (int index) const
     {
         return f[index];
     }
 
     // element access (reference)
-    float& operator[] (int index)
+    NFE_INLINE float& operator[] (int index)
     {
         return f[index];
     }
@@ -167,26 +169,26 @@ public:
 //
 // Constants definitions
 //
-const Vectorf g_Epsilon = {{{NFE_MATH_EPSILON, NFE_MATH_EPSILON,
+const Vectorf VECTOR_EPSILON = {{{NFE_MATH_EPSILON, NFE_MATH_EPSILON,
                              NFE_MATH_EPSILON, NFE_MATH_EPSILON}}};
-const Vectorf g_One = {{{1.0f, 1.0f, 1.0f, 1.0f}}};
-const Vectorf g_One3 = {{{1.0f, 1.0f, 1.0f, 0.0f}}};
-const Vectorf g_MinusOne = {{{-1.0f, -1.0f, -1.0f, -1.0f}}};
-const Vectori g_MaskX = {{{0xFFFFFFFF, 0, 0, 0}}};
-const Vectori g_MaskY = {{{0, 0xFFFFFFFF, 0, 0}}};
-const Vectori g_MaskZ = {{{0, 0, 0xFFFFFFFF, 0}}};
-const Vectori g_MaskW = {{{0, 0, 0, 0xFFFFFFFF}}};
-const Vectori g_Mask3 = {{{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0}}};
-const Vectori g_AbsMask = {{{0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF}}};
+const Vectorf VECTOR_ONE = {{{1.0f, 1.0f, 1.0f, 1.0f}}};
+const Vectorf VECTOR_ONE3 = {{{1.0f, 1.0f, 1.0f, 0.0f}}};
+const Vectorf VECTOR_MINUS_ONE = {{{-1.0f, -1.0f, -1.0f, -1.0f}}};
+const Vectori VECTOR_MASK_X = {{{0xFFFFFFFF, 0, 0, 0}}};
+const Vectori VECTOR_MASK_Y = {{{0, 0xFFFFFFFF, 0, 0}}};
+const Vectori VECTOR_MASK_Z = {{{0, 0, 0xFFFFFFFF, 0}}};
+const Vectori VECTOR_MASK_W = {{{0, 0, 0, 0xFFFFFFFF}}};
+const Vectori VECTOR_MASK_XYZ = {{{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0}}};
+const Vectori VECTOR_MASK_ABS = {{{0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF}}};
 
-const Vectorf g_Byte2Float = {{{1.0f / 255.0f, 1.0f / 255.0f, 1.0f / 255.0f, 1.0f / 255.0f}}};
-const Vectorf g_Float2Byte = {{{255.0f, 255.0f, 255.0f, 255.0f}}};
+const Vectorf VECTOR_INV_255 = {{{1.0f / 255.0f, 1.0f / 255.0f, 1.0f / 255.0f, 1.0f / 255.0f}}};
+const Vectorf VECTOR_255 = {{{255.0f, 255.0f, 255.0f, 255.0f}}};
 
 /// identity matrix rows
-const Vectorf gIdentityR0 = {{{1.0f, 0.0f, 0.0f, 0.0f}}};
-const Vectorf gIdentityR1 = {{{0.0f, 1.0f, 0.0f, 0.0f}}};
-const Vectorf gIdentityR2 = {{{0.0f, 0.0f, 1.0f, 0.0f}}};
-const Vectorf gIdentityR3 = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
+const Vectorf VECTOR_IDENTITY_ROW_0 = {{{1.0f, 0.0f, 0.0f, 0.0f}}};
+const Vectorf VECTOR_IDENTITY_ROW_1 = {{{0.0f, 1.0f, 0.0f, 0.0f}}};
+const Vectorf VECTOR_IDENTITY_ROW_2 = {{{0.0f, 0.0f, 1.0f, 0.0f}}};
+const Vectorf VECTOR_IDENTITY_ROW_3 = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
 
 // ====================================================================================
 
@@ -436,7 +438,7 @@ NFE_INLINE Vector VectorSqrt4(const Vector& V)
 
 NFE_INLINE Vector VectorReciprocal(const Vector& V)
 {
-    return _mm_div_ps(g_One, V);
+    return _mm_div_ps(VECTOR_ONE, V);
 }
 
 NFE_INLINE Vector VectorLerp(const Vector& v1, const Vector& v2, const Vector& weight)
@@ -492,7 +494,7 @@ NFE_INLINE Vector VectorMax(const Vector& a, const Vector& b)
 
 NFE_INLINE Vector VectorAbs(const Vector& v)
 {
-    return _mm_and_ps(v, g_AbsMask);
+    return _mm_and_ps(v, VECTOR_MASK_ABS);
 }
 
 // Comparison functions ===========================================================================
@@ -603,7 +605,7 @@ NFE_INLINE Vector VectorCross3(const Vector& V1, const Vector& V2)
     vTemp2 = _mm_shuffle_ps(vTemp2, vTemp2, _MM_SHUFFLE(3, 1, 0, 2));
     vTemp1 = _mm_mul_ps(vTemp1, vTemp2);
     vResult = _mm_sub_ps(vResult, vTemp1);
-    return _mm_and_ps(vResult, g_Mask3);
+    return _mm_and_ps(vResult, VECTOR_MASK_XYZ);
 }
 
 /**
@@ -721,9 +723,9 @@ NFE_INLINE Vector PlaneFromPoints(const Vector& p1, const Vector& p2, const Vect
     N = VectorNormalize3(N);
 
     D = VectorDot3(N, p1);
-    D = _mm_mul_ps(D, g_MinusOne);
-    N = _mm_and_ps(N, g_Mask3);
-    D = _mm_and_ps(D, g_MaskW);
+    D = _mm_mul_ps(D, VECTOR_MINUS_ONE);
+    N = _mm_and_ps(N, VECTOR_MASK_XYZ);
+    D = _mm_and_ps(D, VECTOR_MASK_W);
     Result = _mm_or_ps(D, N);
     return Result;
 }
@@ -735,9 +737,9 @@ NFE_INLINE Vector PlaneFromPoints(const Vector& p1, const Vector& p2, const Vect
 NFE_INLINE Vector PlaneFromNormalAndPoint(const Vector& normal, const Vector& p)
 {
     Vector d = VectorDot3(normal, p);
-    d = _mm_mul_ps(d, g_MinusOne);
-    Vector n = _mm_and_ps(normal, g_Mask3);
-    d = _mm_and_ps(d, g_MaskW);
+    d = _mm_mul_ps(d, VECTOR_MINUS_ONE);
+    Vector n = _mm_and_ps(normal, VECTOR_MASK_XYZ);
+    d = _mm_and_ps(d, VECTOR_MASK_W);
     return _mm_or_ps(d, n);
 }
 /**
@@ -746,8 +748,8 @@ NFE_INLINE Vector PlaneFromNormalAndPoint(const Vector& normal, const Vector& p)
  */
 NFE_INLINE Vector PlanePointDot3(const Vector& plane, const Vector& point)
 {
-    Vector vTemp2 = _mm_and_ps(point, g_Mask3);
-    vTemp2 = _mm_or_ps(vTemp2, gIdentityR3);
+    Vector vTemp2 = _mm_and_ps(point, VECTOR_MASK_XYZ);
+    vTemp2 = _mm_or_ps(vTemp2, VECTOR_IDENTITY_ROW_3);
     Vector vTemp = _mm_mul_ps(plane, vTemp2);
     vTemp2 = _mm_shuffle_ps(vTemp2, vTemp, _MM_SHUFFLE(1, 0, 0,
                             0)); // Copy X to the Z position and Y to the W position

@@ -214,14 +214,14 @@ Vector GetTexel(const void* pData, uint32 x, uint32 y, uint32 width, ImageFormat
         {
             const uchar* pSrc = (const uchar*)pData;
             uchar a = pSrc[y * width + x];
-            return Vector(255.0f, 255.0f, 255.0f, (float)a) * g_Byte2Float;
+            return Vector(255.0f, 255.0f, 255.0f, (float)a) * VECTOR_INV_255;
         }
 
         case ImageFormat::R_UByte:
         {
             const uchar* pSrc = (const uchar*)pData;
             uchar r = pSrc[y * width + x];
-            return Vector((float)r, 0.0f, 0.0f, 255.0f) * g_Byte2Float;
+            return Vector((float)r, 0.0f, 0.0f, 255.0f) * VECTOR_INV_255;
         }
 
         case ImageFormat::RGB_UByte:
@@ -230,7 +230,7 @@ Vector GetTexel(const void* pData, uint32 x, uint32 y, uint32 width, ImageFormat
             uchar r = pSrc[3 * (y * width + x)];
             uchar g = pSrc[3 * (y * width + x) + 1];
             uchar b = pSrc[3 * (y * width + x) + 2];
-            return Vector((float)r, (float)g, (float)b, 255.0f) * g_Byte2Float;
+            return Vector((float)r, (float)g, (float)b, 255.0f) * VECTOR_INV_255;
         }
 
         case ImageFormat::RGBA_UByte:
@@ -240,7 +240,7 @@ Vector GetTexel(const void* pData, uint32 x, uint32 y, uint32 width, ImageFormat
             uchar g = pSrc[4 * (y * width + x) + 1];
             uchar b = pSrc[4 * (y * width + x) + 2];
             uchar a = pSrc[4 * (y * width + x) + 3];
-            return Vector((float)r, (float)g, (float)b, float(a)) * g_Byte2Float;
+            return Vector((float)r, (float)g, (float)b, float(a)) * VECTOR_INV_255;
         }
 
         case ImageFormat::R_Float:

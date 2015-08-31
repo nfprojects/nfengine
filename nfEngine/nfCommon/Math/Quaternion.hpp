@@ -6,18 +6,26 @@
 
 #pragma once
 
+#include "Math.hpp"
+#include "Vector.hpp"
+#include "Matrix.hpp"
+
 namespace NFE {
 namespace Math {
 
 typedef Vector Quaternion;
 
-// null rotation quaternion
+/**
+ * Create null rotation quaternion.
+ */
 NFE_INLINE Quaternion QuaternionIdentity()
 {
     return Vector(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-//Create quaternion form axis and angle
+/**
+ * Create quaternion form axis and angle.
+ */
 NFE_INLINE Quaternion QuaternionFromAxis(const Vector& axis, float angle)
 {
     angle *= 0.5f;
@@ -34,7 +42,9 @@ NFE_INLINE float safe_acos(float x)
     return acosf(x);
 }
 
-//convert quaternion to rotation vector (eg. angular velocity)
+/**
+ * Extract rotation axis from a quaternion.
+ */
 NFE_INLINE Vector QuaternionToAxis(const Quaternion& quat)
 {
     float x = quat.f[0];
@@ -55,20 +65,11 @@ NFE_INLINE Vector QuaternionToAxis(const Quaternion& quat)
     }
     result.f[3] = 0.0f;
     return result;
-
-    /*
-    float temp = 1.0f - quat.f[3] * quat.f[3];
-    if (temp <= 0.0f)
-        return Vector();
-
-    Vector result = quat;
-    result.f[3] = 0.0;
-    result *= safe_acos(quat.f[3]) * 2.0f / sqrtf(temp);
-
-    return result;
-    */
 }
 
+/**
+ * Create quaternion representing rotation around X axis.
+ */
 NFE_INLINE Quaternion QuaternionRotationX(float angle)
 {
     angle *= 0.5f;
@@ -76,6 +77,9 @@ NFE_INLINE Quaternion QuaternionRotationX(float angle)
     return q;
 }
 
+/**
+ * Create quaternion representing rotation around Y axis.
+ */
 NFE_INLINE Quaternion QuaternionRotationY(float angle)
 {
     angle *= 0.5f;
@@ -83,6 +87,9 @@ NFE_INLINE Quaternion QuaternionRotationY(float angle)
     return q;
 }
 
+/**
+ * Create quaternion representing rotation around Z axis.
+ */
 NFE_INLINE Quaternion QuaternionRotationZ(float angle)
 {
     angle *= 0.5f;
@@ -90,6 +97,9 @@ NFE_INLINE Quaternion QuaternionRotationZ(float angle)
     return q;
 }
 
+/**
+ * Multiply two quaternions.
+ */
 NFE_INLINE Quaternion QuaternionMultiply(const Quaternion& q1, const Quaternion& q2)
 {
     // TODO: convert to SSE!
@@ -107,8 +117,9 @@ NFE_INLINE Quaternion QuaternionNormalize(const Quaternion& q)
     return VectorNormalize4(q);
 }
 
-
-// calculate inverse of quaternion
+/**
+ * Calculate inverse of quaternion.
+ */
 NFE_INLINE Quaternion QuaternionInverse(const Quaternion& q)
 {
     Quaternion result;
@@ -119,13 +130,26 @@ NFE_INLINE Quaternion QuaternionInverse(const Quaternion& q)
     return result / VectorLength4(q);
 }
 
-// Spherical interpolation of two quaternions
+/**
+ * Spherical interpolation of two quaternions.
+ * @param q0,q1 Quaternions to interpolate.
+ * @param t     Interpolation factor.
+ * @return Interpolated quaternion (equal to q0 when t=0.0f and equal tp q1 when t=1.0f).
+ */
 NFCOMMON_API Quaternion QuaternionInterpolate(const Quaternion& q0, const Quaternion& q1, float t);
 
-// Create rotation matrix from quaternion. Quaternion must be normalized!
+/**
+ * Create rotation matrix from quaternion.
+ * @note Quaternion must be normalized.
+ * @return Matrix representing the same rotation as input quaternion.
+ */
 NFCOMMON_API Matrix MatrixFromQuaternion(const Quaternion& q);
 
-// Create quaternion from 4x4 matrix (only 3x3 is considered)
+/**
+ * Create quaternion from 4x4 matrix.
+ * @note Only 3x3 is considered.
+ * @return Quaternion representing the same rotation as input matrix.
+ */
 NFCOMMON_API Quaternion QuaternionFromMatrix(const Matrix& m);
 
 } // namespace Math

@@ -6,6 +6,9 @@
 
 #include "PCH.hpp"
 #include "BVH.hpp"
+#include "../nfCommon/Math/Box.hpp"
+#include "../nfCommon/Math/Frustum.hpp"
+#include "../nfCommon/Math/Geometry.hpp"
 
 namespace NFE {
 namespace Util {
