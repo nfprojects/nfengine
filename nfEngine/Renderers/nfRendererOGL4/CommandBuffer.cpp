@@ -9,26 +9,37 @@
 #include "Defines.hpp"
 #include "CommandBuffer.hpp"
 #include "Shader.hpp"
+#include "Translations.hpp"
 
 
 namespace NFE {
 namespace Renderer {
 
 CommandBuffer::CommandBuffer()
-    : mCurrentPrimitiveType(PrimitiveType::Unknown)
-    , mCurrentRenderTarget(nullptr)
+    : mCurrentRenderTarget(nullptr)
+    , mSSOEnabled(false)
+    , mProgramPipeline(GL_NONE)
 {
 }
 
 CommandBuffer::~CommandBuffer()
 {
+    if (mProgramPipeline)
+        glDeleteProgramPipelines(1, &mProgramPipeline);
 }
 
 void CommandBuffer::Reset()
 {
-    mCurrentPrimitiveType = PrimitiveType::Unknown;
     mCurrentRenderTarget = nullptr;
-    mBoundShaders = ShaderProgramDesc();
+
+    glUseProgram(GL_NONE);
+    glBindProgramPipeline(GL_NONE);
+    if (mProgramPipeline)
+    {
+        glDeleteProgramPipelines(1, &mProgramPipeline);
+        mProgramPipeline = GL_NONE;
+    }
+    mSSOEnabled = false;
 }
 
 void CommandBuffer::SetVertexLayout(IVertexLayout* vertexLayout)
@@ -89,12 +100,66 @@ void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
 {
     ShaderProgram* newShaderProgram = dynamic_cast<ShaderProgram*>(shaderProgram);
 
-    glBindProgramPipeline(newShaderProgram->mProgramPipeline);
+    if (mSSOEnabled)
+    {
+        glBindProgramPipeline(GL_NONE);
+        mSSOEnabled = false;
+    }
+
+    glUseProgram(newShaderProgram->mProgram);
 }
 
 void CommandBuffer::SetShader(IShader* shader)
 {
-    UNUSED(shader);
+    Shader* newShader = dynamic_cast<Shader*>(shader);
+    if (newShader == nullptr)
+        LOG_ERROR("Invalid 'shader' pointer");
+
+    if (!mSSOEnabled)
+    {
+        // generate program pipeline for further use
+        if (!mProgramPipeline)
+            glGenProgramPipelines(1, &mProgramPipeline);
+
+        // unbind any bound program and bind our program pipeline
+        glUseProgram(GL_NONE);
+        glBindProgramPipeline(mProgramPipeline);
+        mSSOEnabled = true;
+    }
+
+    // convert provided shader to shader program with SSO enabled
+    // the behavior below matches glCreateShaderProgramv's implementation
+    GLuint program = glCreateProgram();
+    glProgramParameteri(program, GL_PROGRAM_SEPARABLE, GL_TRUE);
+    glAttachShader(program, newShader->mShader);
+    glLinkProgram(program);
+
+    int programStatus = 0;
+    glGetProgramiv(program, GL_LINK_STATUS, &programStatus);
+    if (!programStatus)
+    {
+        LOG_ERROR("Separable Shader Program failed to link.");
+
+        int logLength = 0;
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
+        // When empty, Info Log contains only \0 char (thus the length is 1)
+        if (logLength > 1)
+        {
+            std::vector<char> log(logLength);
+            glGetProgramInfoLog(program, logLength, &logLength, log.data());
+            LOG_INFO("Separable Shader Program linking output:\n%s", log.data());
+        }
+
+        return;
+    }
+    else
+        LOG_INFO("Separable Shader Program linked successfully.");
+
+    // after successful link we can detach the shader from shader program
+    glDetachShader(program, newShader->mShader);
+
+    // attach created program to the pipeline
+    glUseProgramStages(mProgramPipeline, TranslateShaderTypeToGLBit(newShader->mType), program);
 }
 
 void CommandBuffer::SetBlendState(IBlendState* state)
