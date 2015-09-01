@@ -127,9 +127,56 @@ bool Window::Open()
 
     ::XSetWindowAttributes xSetWAttrib;
 
-    // Visual should be GL-capable, so GLX must choose it
-    GLint oglAttrs[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
-    ::XVisualInfo* visual = glXChooseVisual(mDisplay, 0, oglAttrs);
+    // Visual should be chosen with proper FB Config
+    static int fbAttribs[] =
+    {
+        GLX_X_RENDERABLE,  True,
+        GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+        GLX_RENDER_TYPE,   GLX_RGBA_BIT,
+        GLX_X_VISUAL_TYPE, GLX_TRUE_COLOR,
+        GLX_RED_SIZE,      8,
+        GLX_GREEN_SIZE,    8,
+        GLX_BLUE_SIZE,     8,
+        GLX_ALPHA_SIZE,    8,
+        GLX_DEPTH_SIZE,    24,
+        GLX_STENCIL_SIZE,  8,
+        GLX_DOUBLEBUFFER,  True,
+        None
+    };
+
+    int fbCount;
+    GLXFBConfig* fbc = glXChooseFBConfig(mDisplay, DefaultScreen(mDisplay), fbAttribs, &fbCount);
+
+    // TODO options should allow to select Multisampling level during init
+    LOG_INFO("Found %d matching FB configs:", fbCount);
+    // Select the best FB Config according to highest GLX_SAMPLES attribute value
+    int bestFBID = -1, maxSamples = 16;
+    for (int i = 0; i < fbCount; ++i)
+    {
+        XVisualInfo* vi = glXGetVisualFromFBConfig(mDisplay, fbc[i]);
+        if (vi)
+        {
+            int sampleBuffers;
+            int samples;
+            glXGetFBConfigAttrib(mDisplay, fbc[i], GLX_SAMPLE_BUFFERS, &sampleBuffers);
+            glXGetFBConfigAttrib(mDisplay, fbc[i], GLX_SAMPLES, &samples);
+            LOG_INFO("  #%d: visualID 0x%2lu, SAMPLE_BUFFERS = %d, SAMPLES = %d",
+                     i, vi->visualid, sampleBuffers, samples);
+
+            if (samples < maxSamples)
+            {
+                bestFBID = i;
+                maxSamples = samples;
+            }
+        }
+        XFree(vi);
+    }
+
+    LOG_INFO("Choosing FB config #%d", bestFBID);
+    GLXFBConfig bestFB = fbc[bestFBID];
+    XFree(fbc);
+
+    XVisualInfo* visual = glXGetVisualFromFBConfig(mDisplay, bestFB);
     ::Colormap colormap = XCreateColormap(mDisplay, mRoot, visual->visual, AllocNone);
     xSetWAttrib.colormap = colormap;
     xSetWAttrib.event_mask = Button1MotionMask | Button2MotionMask | ButtonPressMask |

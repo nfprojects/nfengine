@@ -14,6 +14,7 @@ namespace NFE {
 namespace Renderer {
 
 extern PFNGLXSWAPINTERVALEXTPROC glXSwapIntervalEXT;
+extern PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB;
 
 // Initializes only GLX-specific extensions
 bool nfglxExtensionsInit();
