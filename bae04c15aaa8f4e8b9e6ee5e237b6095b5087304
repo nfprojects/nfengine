@@ -1072,6 +1072,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_206c489c",
+        "filename": "nfEngine/nfCore/Components/MeshComponent.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-01T09:54:55Z",
+      "side": 1,
+      "message": "OK, indeed. This will stay.",
+      "parentUuid": "9ad9bd40_afbdae04",
+      "revId": "bae04c15aaa8f4e8b9e6ee5e237b6095b5087304",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_79b5677d",
         "filename": "nfEngine/nfCore/Components/MeshComponent.hpp",
         "patchSetId": 11
