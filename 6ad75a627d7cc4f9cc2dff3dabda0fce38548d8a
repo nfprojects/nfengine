@@ -25,6 +25,29 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_20c8c873",
+        "filename": "nfEngine/nfCommonPerfTest/CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:58:37Z",
+      "side": 1,
+      "message": "Is this needed even though You don\u0027t use nfCommon::Window class?",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 49
+      },
+      "revId": "6ad75a627d7cc4f9cc2dff3dabda0fce38548d8a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_809ef4b6",
         "filename": "nfEngine/nfCommonPerfTest/CMakeLists.txt",
         "patchSetId": 2
