@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_405dcc14",
+        "filename": "README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-01T09:12:36Z",
+      "side": 1,
+      "message": "nfCommonPerfTest :)",
+      "range": {
+        "startLine": 119,
+        "startChar": 68,
+        "endLine": 119,
+        "endChar": 80
+      },
+      "revId": "6ad75a627d7cc4f9cc2dff3dabda0fce38548d8a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_809ef4b6",
+        "filename": "nfEngine/nfCommonPerfTest/CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-01T09:12:36Z",
+      "side": 1,
+      "message": "NFCOMMONPERFTEST",
+      "range": {
+        "startLine": 19,
+        "startChar": 22,
+        "endLine": 19,
+        "endChar": 35
+      },
+      "revId": "6ad75a627d7cc4f9cc2dff3dabda0fce38548d8a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_a0a5b805",
+        "filename": "nfEngine/nfCommonPerfTest/CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-01T09:12:36Z",
+      "side": 1,
+      "message": "IMO testCalcLib is not needed for nfCommonPerfTest. It is used only by nfCommon Unit Tests. Rm.",
+      "range": {
+        "startLine": 28,
+        "startChar": 43,
+        "endLine": 28,
+        "endChar": 54
+      },
+      "revId": "6ad75a627d7cc4f9cc2dff3dabda0fce38548d8a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
