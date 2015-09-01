@@ -1,10 +1,10 @@
-#version 400 core
+#version 330 core
+#extension GL_ARB_separate_shader_objects : enable
 
 in VertexShaderOutput
 {
     vec2 TexCoord;
     vec4 Color;
-    vec4 Pos;
 } Input;
 
 out vec3 color;

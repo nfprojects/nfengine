@@ -9,26 +9,32 @@
 #include "Defines.hpp"
 #include "CommandBuffer.hpp"
 #include "Shader.hpp"
+#include "Translations.hpp"
 
 
 namespace NFE {
 namespace Renderer {
 
 CommandBuffer::CommandBuffer()
-    : mCurrentPrimitiveType(PrimitiveType::Unknown)
-    , mCurrentRenderTarget(nullptr)
+    : mCurrentRenderTarget(nullptr)
+    , mSSOEnabled(false)
+    , mProgramPipeline(GL_NONE)
 {
 }
 
 CommandBuffer::~CommandBuffer()
 {
+    if (mProgramPipeline)
+        glDeleteProgramPipelines(1, &mProgramPipeline);
 }
 
 void CommandBuffer::Reset()
 {
-    mCurrentPrimitiveType = PrimitiveType::Unknown;
     mCurrentRenderTarget = nullptr;
-    mBoundShaders = ShaderProgramDesc();
+
+    glUseProgram(GL_NONE);
+    glBindProgramPipeline(GL_NONE);
+    mSSOEnabled = false;
 }
 
 void CommandBuffer::SetVertexLayout(IVertexLayout* vertexLayout)
@@ -79,7 +85,10 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
 {
     RenderTarget* rt = dynamic_cast<RenderTarget*>(renderTarget);
     if (rt == nullptr && renderTarget != nullptr)
+    {
         LOG_ERROR("Invalid 'renderTarget' pointer");
+        return;
+    }
 
     if (rt == mCurrentRenderTarget)
         return;
@@ -92,13 +101,60 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
 void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
 {
     ShaderProgram* newShaderProgram = dynamic_cast<ShaderProgram*>(shaderProgram);
+    if (newShaderProgram == nullptr)
+    {
+        LOG_ERROR("Invalid 'shader' pointer");
+        return;
+    }
 
-    glBindProgramPipeline(newShaderProgram->mProgramPipeline);
+    if (newShaderProgram->mProgram == GL_NONE)
+    {
+        LOG_ERROR("Invalid or uninitialized Shader Program provided.");
+        return;
+    }
+
+    if (mSSOEnabled)
+    {
+        // SSO was activated, unbind Program Pipeline and switch the flag
+        glBindProgramPipeline(GL_NONE);
+        mSSOEnabled = false;
+    }
+
+    glUseProgram(newShaderProgram->mProgram);
 }
 
 void CommandBuffer::SetShader(IShader* shader)
 {
-    UNUSED(shader);
+    Shader* newShader = dynamic_cast<Shader*>(shader);
+    if (newShader == nullptr)
+    {
+        LOG_ERROR("Invalid 'shader' pointer");
+        return;
+    }
+
+    if (newShader->mShaderProgram == GL_NONE)
+    {
+        LOG_ERROR("Invalid or uninitialized Separable Shader Program provided.");
+        return;
+    }
+
+    if (!mSSOEnabled)
+    {
+        // generate a program pipeline to use if needed
+        // unfortunately we cannot do this in constructor, the exceptions are probably
+        // uninitialized at this stage and the function ptr equals to NULL
+        if (!mProgramPipeline)
+            glGenProgramPipelines(1, &mProgramPipeline);
+
+        // unbind any bound program and bind our program pipeline
+        glUseProgram(GL_NONE);
+        glBindProgramPipeline(mProgramPipeline);
+        mSSOEnabled = true;
+    }
+
+    // attach created program to the pipeline
+    glUseProgramStages(mProgramPipeline, TranslateShaderTypeToGLBit(newShader->mType),
+                       newShader->mShaderProgram);
 }
 
 void CommandBuffer::SetBlendState(IBlendState* state)
