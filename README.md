@@ -91,18 +91,18 @@ The engine is dependent on following libraries:
 - [model_obj](http://www.dhpoware.com/demos/glObjViewer.html) - OBJ model files parsing
 - [Google Test](https://code.google.com/p/googletest/) - unit tests framework
 
+To keep library versions constant throughout development, all dependent libraries are kept in our external [nfEngineDeps repo](http://www.github.com/nfprojects/nfenginedeps). Libraries are updated on the repo when such need occurs.
 
 Building the project - Windows
 ------------------------------
 
 To make the code compilable, the following requirements have to be met:
 
-1. Installed Visual Studio 2013.
-2. Installed DirectX SDK.
-3. Pulled external dependencies from [here](http://www.github.com/nfprojects/nfenginedeps)
+1. Installed Visual Studio 2015 with Windows SDK.
+2. Pulled external dependencies from [here](http://www.github.com/nfprojects/nfenginedeps)
     * **"nfEngineDeps"** directory will be created by using git submodules inside repo - fetch its contents by using `git submodule update --init` command
     * **NOTE:** Dependencies need to be built separately from engine. See README.md inside nfEngineDeps repo for more info.
-4. Downloaded resources from [here](http://drive.google.com/open?id=0B66mya2agFOEd0RJUWx1aDZ6Ym8)
+3. Downloaded resources from [here](http://drive.google.com/open?id=0B66mya2agFOEd0RJUWx1aDZ6Ym8)
     * **"Data"** directory created in **"nfEngineTest"** with content copied from subfolder **nfEngineTestData**
     * **NOTE:** it is convenient to use Google Drive application to synchronize resources automatically (by adding this folder to your drive) and create symbolic link to them.
 
