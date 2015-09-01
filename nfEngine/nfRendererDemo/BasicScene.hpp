@@ -45,13 +45,14 @@ class BasicScene: public Scene
     void ReleaseSubsceneResources();
 
     // Resource creators for subscenes
-    bool CreateShaderProgram(bool useCBuffer, bool useTexture);
+    bool CreateShaderProgram(bool useSSO, bool useCBuffer, bool useTexture);
     bool CreateVertexBuffer(bool withExtraVert);
     bool CreateIndexBuffer();
     bool CreateConstantBuffer();
     bool CreateTexture();
 
     // Subscenes
+    bool CreateSubSceneEmptySSO();
     bool CreateSubSceneEmpty();
     bool CreateSubSceneVertexBuffer();
     bool CreateSubSceneIndexBuffer();
