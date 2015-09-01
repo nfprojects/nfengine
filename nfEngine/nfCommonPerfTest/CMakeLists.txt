@@ -1,0 +1,32 @@
+# @file
+# @author Witek902 (witek902@gmail.com)
+# @brief  CMake for nfCommonPerfTest
+
+MESSAGE("Generating Makefile for nfCommonPerfTest")
+
+FILE(GLOB NFCOMMONPERFTEST_SOURCES *.cpp)
+FILE(GLOB NFCOMMONPERFTEST_HEADERS *.hpp)
+
+# Search for dependencies
+PKG_CHECK_MODULES(NFCOMMONPERFTEST_DEPS REQUIRED
+                  x11
+                  gl) # needed by nfCommon Window
+
+# setup directories
+INCLUDE_DIRECTORIES(${NFE_ROOT_DIRECTORY}/nfEngineDeps/
+                    ${NFCOMMON_DIRECTORY}
+                    ${NFE_ROOT_DIRECTORY}/nfEngineDeps/gtest/include
+                    ${NFECOMMONTEST_DEPS_INCLUDE_DIRS})
+LINK_DIRECTORIES(${NFEDEPS_LIB_DIRECTORY}
+                 ${NFE_OUTPUT_DIRECTORY})
+
+ADD_EXECUTABLE(nfCommonPerfTest
+               ${NFCOMMONPERFTEST_SOURCES} ${NFCOMMONPERFTEST_HEADERS})
+SET_TARGET_PROPERTIES(nfCommonPerfTest PROPERTIES
+                      COMPILE_FLAGS "-pthread"
+                      LINK_FLAGS "-pthread")
+ADD_DEPENDENCIES(nfCommonPerfTest nfCommon testCalcLib)
+TARGET_LINK_LIBRARIES(nfCommonPerfTest nfCommon gtest ${NFCOMMONPERFTEST_DEPS_LIBRARIES})
+ADD_CUSTOM_COMMAND(TARGET nfCommonPerfTest POST_BUILD COMMAND
+                   ${CMAKE_COMMAND} -E copy $<TARGET_FILE:nfCommonPerfTest>
+                                            ${NFE_OUTPUT_DIRECTORY}/${targetfile})
