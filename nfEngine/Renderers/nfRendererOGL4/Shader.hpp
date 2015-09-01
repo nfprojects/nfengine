@@ -14,7 +14,7 @@ class ShaderProgram: public IShaderProgram
 {
     friend class CommandBuffer;
 
-    GLuint mProgramPipeline;
+    GLuint mProgram;
 
 public:
     ShaderProgram();
@@ -28,23 +28,13 @@ class Shader: public IShader
     friend class ShaderProgram;
 
     ShaderType mType;
-
-    /**
-     * The naming convention is a bit different in OpenGL with SSO, comparing to D3D.
-     *
-     * To implement SSO, OpenGL allows creation of a ShaderProgram with only one Shader attached.
-     * Thus, D3D's Shader is OGL's ShaderProgram, and the equivalent of D3D's ShaderProgram is a
-     * ProgramPipeline, newly added by SSO.
-     *
-     * Refer to ARB_separate_shader_objects description on opengl.org for more info about SSO.
-     */
-    GLuint mShaderProgram;
+    GLuint mShader;        //< Old-style shader, only compiled code
+    GLuint mShaderProgram; //< SSO-style shader program, compiled and linked
 
 public:
     Shader();
     ~Shader();
     bool Init(const ShaderDesc& desc);
-    GLuint GetShaderProgram();
 
     bool GetIODesc(ShaderIODesc& result);
     bool Disassemble(bool html, std::string& output);

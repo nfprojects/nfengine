@@ -13,7 +13,8 @@
 namespace NFE {
 namespace Renderer {
 
-GLuint TranslateShaderType(ShaderType type);
+GLuint TranslateShaderTypeToGLMacro(ShaderType type);
+GLuint TranslateShaderTypeToGLBit(ShaderType type);
 
 } // namespace Renderer
 } // namespace NFE

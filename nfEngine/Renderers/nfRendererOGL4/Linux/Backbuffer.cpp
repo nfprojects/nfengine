@@ -45,36 +45,81 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     mWindow = reinterpret_cast<Window>(desc.windowHandle);
     mDisplay = ::XOpenDisplay(0);
 
-    // acquire window's attributes
-    XWindowAttributes winAttrs;
-    XGetWindowAttributes(mDisplay, mWindow, &winAttrs);
-
-    // acquire matching XVisualInfo using window's visual pointer
-    XVisualInfo* visualInfo;
-    XVisualInfo visualInfoTemplate;
-    visualInfoTemplate.visual = winAttrs.visual;
-    visualInfoTemplate.screen = 0;
-    int visualsCount = 0;
-    visualInfo = XGetVisualInfo(mDisplay, VisualScreenMask, &visualInfoTemplate, &visualsCount);
-    if (visualsCount == 0)
-    {
-        // no visuals found, error
-        LOG_ERROR("Unable to retrieve matching Visual from window");
-        return false;
-    }
-    else if (visualsCount > 1)
-    {
-        LOG_INFO("%i visuals found", visualsCount);
-    }
-
-    // create OGL context
-    mContext = glXCreateContext(mDisplay, visualInfo, NULL, GL_TRUE);
-    glXMakeCurrent(mDisplay, mWindow, mContext);
-    mDrawable = glXGetCurrentDrawable();
-
     // acquire OGL extensions
     if (!nfglExtensionsInit())
         return false;
+
+    static int fbAttribs[] =
+    {
+        GLX_X_RENDERABLE,  True,
+        GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+        GLX_RENDER_TYPE,   GLX_RGBA_BIT,
+        GLX_X_VISUAL_TYPE, GLX_TRUE_COLOR,
+        GLX_RED_SIZE,      8,
+        GLX_GREEN_SIZE,    8,
+        GLX_BLUE_SIZE,     8,
+        GLX_ALPHA_SIZE,    8,
+        GLX_DEPTH_SIZE,    24,
+        GLX_STENCIL_SIZE,  8,
+        GLX_DOUBLEBUFFER,  True,
+        None
+    };
+
+    int fbCount;
+    GLXFBConfig* fbc = glXChooseFBConfig(mDisplay, DefaultScreen(mDisplay), fbAttribs, &fbCount);
+
+    // Select the best FB Config according to highest SAMPLES count
+    // FIXME temporarily it is the easiest method for us to get the same FB as in Window.cpp
+    //       In the future, this must be acquired from Window.
+    int bestFBID = -1, maxSamples = -1;
+    for (int i = 0; i < fbCount; ++i)
+    {
+        XVisualInfo* vi = glXGetVisualFromFBConfig(mDisplay, fbc[i]);
+        if (vi)
+        {
+            int samples;
+            glXGetFBConfigAttrib(mDisplay, fbc[i], GLX_SAMPLES, &samples);
+
+            if (samples > maxSamples)
+            {
+                bestFBID = i;
+                maxSamples = samples;
+            }
+        }
+        XFree(vi);
+    }
+
+    LOG_INFO("Renderer selected FB Config #%d", bestFBID);
+    GLXFBConfig bestFB = fbc[bestFBID];
+    XFree(fbc);
+
+    // create OGL context
+    if (glXCreateContextAttribsARB)
+    {
+        // try reaching for 3.0 core context
+        int attribs[] = { GLX_CONTEXT_MAJOR_VERSION_ARB, 3, GLX_CONTEXT_MINOR_VERSION_ARB, 2, None };
+        mContext = glXCreateContextAttribsARB(mDisplay, bestFB, NULL, GL_TRUE, attribs);
+        if (!mContext)
+        {
+            LOG_WARNING("GL 3.3 or newer not acquired. Falling back to old one.");
+            LOG_WARNING("Keep in mind, the renderer MIGHT NOT WORK due to too old OGL version!");
+            // failed, fallback to classic method
+            mContext = glXCreateNewContext(mDisplay, bestFB, GLX_RGBA_TYPE, NULL, GL_TRUE);
+            if (!mContext)
+            {
+                LOG_ERROR("Cannot create OpenGL Context.");
+                return false;
+            }
+        }
+    }
+    else
+    {
+        LOG_WARNING("glXCreateContextAttribsARB not available. Creating OGL context the old way.");
+        LOG_WARNING("Keep in mind, the renderer MIGHT NOT WORK due to too old OGL version!");
+        mContext = glXCreateNewContext(mDisplay, bestFB, GLX_RGBA_TYPE, NULL, GL_TRUE);
+    }
+    glXMakeCurrent(mDisplay, mWindow, mContext);
+    mDrawable = glXGetCurrentDrawable();
 
     // some systems might have glXSwapIntervalEXT unavailable
     if (glXSwapIntervalEXT)
