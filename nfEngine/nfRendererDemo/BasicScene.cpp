@@ -49,7 +49,7 @@ IShader* BasicScene::CompileShader(const char* path,
 
 /// Helper creators for the Scene
 
-bool BasicScene::CreateShaderProgram(bool useCBuffer, bool useTexture)
+bool BasicScene::CreateShaderProgram(bool useSSO, bool useCBuffer, bool useTexture)
 {
     ShaderMacro vsMacro[] = { { "USE_CBUFFER", useCBuffer ? "1" : "0" } };
     std::string vsPath = gShaderPathPrefix + "TestVS" + gShaderPathExt;
@@ -65,9 +65,13 @@ bool BasicScene::CreateShaderProgram(bool useCBuffer, bool useTexture)
 
     mShaderProgramDesc.vertexShader = mVertexShader.get();
     mShaderProgramDesc.pixelShader = mPixelShader.get();
-    mShaderProgram.reset(mRendererDevice->CreateShaderProgram(mShaderProgramDesc));
-    if (!mShaderProgram)
-        return false;
+
+    if (!useSSO)
+    {
+        mShaderProgram.reset(mRendererDevice->CreateShaderProgram(mShaderProgramDesc));
+        if (!mShaderProgram)
+            return false;
+    }
 
     return true;
 }
@@ -201,18 +205,25 @@ bool BasicScene::CreateTexture()
 /// Subscenes ///
 /////////////////
 
+// Basic initialization, additionally to RT & BackBuffer shaders are compiled with SSO
+// Empty window should be visible
+bool BasicScene::CreateSubSceneEmptySSO()
+{
+    return CreateShaderProgram(true, false, false);
+}
+
 // Basic initialization, additionally to RT & BackBuffer shaders are compiled
 // Empty window should be visible
 bool BasicScene::CreateSubSceneEmpty()
 {
-    return CreateShaderProgram(false, false);
+    return CreateShaderProgram(false, false, false);
 }
 
 // Adds vertex buffer creation
 // Two colored triangles should be visible
 bool BasicScene::CreateSubSceneVertexBuffer()
 {
-    if (!CreateShaderProgram(false, false))
+    if (!CreateShaderProgram(false, false, false))
         return false;
 
     return CreateVertexBuffer(false);
@@ -222,7 +233,7 @@ bool BasicScene::CreateSubSceneVertexBuffer()
 // A colored triangle and a colored square should be visible
 bool BasicScene::CreateSubSceneIndexBuffer()
 {
-    if (!CreateShaderProgram(false, false))
+    if (!CreateShaderProgram(false, false, false))
         return false;
 
     if (!CreateVertexBuffer(true))
@@ -235,7 +246,7 @@ bool BasicScene::CreateSubSceneIndexBuffer()
 // The triangle and the square should rotate
 bool BasicScene::CreateSubSceneConstantBuffer()
 {
-    if (!CreateShaderProgram(true, false))
+    if (!CreateShaderProgram(false, true, false))
         return false;
 
     if (!CreateVertexBuffer(true))
@@ -251,7 +262,7 @@ bool BasicScene::CreateSubSceneConstantBuffer()
 // The triangle should be rendered checked
 bool BasicScene::CreateSubSceneTexture()
 {
-    if (!CreateShaderProgram(true, true))
+    if (!CreateShaderProgram(false, true, true))
         return false;
 
     if (!CreateVertexBuffer(true))
@@ -274,6 +285,7 @@ bool BasicScene::CreateSubSceneTexture()
 BasicScene::BasicScene()
     : Scene("Basic")
 {
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneEmptySSO, this), "Empty with SSO");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneEmpty, this), "Empty");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneVertexBuffer, this), "VertexBuffer");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneIndexBuffer, this), "IndexBuffer");
@@ -343,7 +355,14 @@ bool BasicScene::OnSwitchSubscene()
 
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
 
-    if (mShaderProgram) mCommandBuffer->SetShaderProgram(mShaderProgram.get());
+    if (mShaderProgram)
+        mCommandBuffer->SetShaderProgram(mShaderProgram.get());
+    else
+    {
+        mCommandBuffer->SetShader(mShaderProgramDesc.vertexShader);
+        mCommandBuffer->SetShader(mShaderProgramDesc.pixelShader);
+    }
+
     if (mVertexLayout) mCommandBuffer->SetVertexLayout(mVertexLayout.get());
 
     int stride = 9 * sizeof(float);

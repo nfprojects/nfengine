@@ -207,9 +207,13 @@ public:
         // keep temporarily the IDs
         size_t newSceneId = mCurrentScene;
         size_t newSubSceneId = mScenes[mCurrentScene]->GetCurrentSubSceneNumber();
+        // FIXME Because of incorrect IDs in KeyCode enum class, "magic numbers" were added below.
+        //       The key codes are (kind of) mutually exclusive and should not present a problem as
+        //       a temporary workaround (until KeyCode enum class is fixed on Linux).
         switch (key)
         {
         case NFE::Common::KeyCode::Right:
+        case 0x72:
             if (newSceneId >= mScenes.size() - 1)
                 return;
             newSceneId++;
@@ -217,6 +221,7 @@ public:
             break;
 
         case NFE::Common::KeyCode::Left:
+        case 0x71:
             if (newSceneId == 0)
                 return;
             newSceneId--;
@@ -224,6 +229,7 @@ public:
             break;
 
         case NFE::Common::KeyCode::Up:
+        case 0x6F:
             if (newSubSceneId >= mScenes[mCurrentScene]->GetAvailableSubSceneCount())
                 return;
             newSubSceneId++;
@@ -231,6 +237,7 @@ public:
             break;
 
         case NFE::Common::KeyCode::Down:
+        case 0x74:
             if (newSubSceneId == 0)
                 return;
             newSubSceneId--;
