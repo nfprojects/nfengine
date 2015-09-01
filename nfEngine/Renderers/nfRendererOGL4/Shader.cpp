@@ -17,13 +17,14 @@ namespace Renderer {
 
 Shader::Shader()
     : mType(ShaderType::Unknown)
-    , mShaderProgram(0)
+    , mShader(0)
 {
 }
 
 Shader::~Shader()
 {
-    glDeleteProgram(mShaderProgram);
+    //glDeleteProgram(mShaderProgram);
+    glDeleteShader(mShader);
 }
 
 bool Shader::Init(const ShaderDesc& desc)
@@ -61,40 +62,43 @@ bool Shader::Init(const ShaderDesc& desc)
         code = shaderStr.data();
     }
 
-    mShaderProgram = glCreateShaderProgramv(TranslateShaderType(mType), 1, &code);
-    if (!mShaderProgram)
+    // OGL 2.0 SHADERS BEGIN HERE
+    mShader = glCreateShader(TranslateShaderType(mType));
+    if (!mShader)
     {
-        LOG_ERROR("Unable to create Shader Program for shader '%s'", desc.path);
+        LOG_ERROR("Unable to create Shader '%s'", desc.path);
         return false;
     }
 
-    int logLength = 0;
-    glGetProgramiv(mShaderProgram, GL_INFO_LOG_LENGTH, &logLength);
-    // When empty, Info Log contains only \0 char (thus the length is 1)
-    if (logLength > 1)
+    GLint codeLen = static_cast<GLint>(strlen(code));
+    glShaderSource(mShader, 1, &code, &codeLen);
+    glCompileShader(mShader);
+
+    int shaderStatus = 0;
+    glGetShaderiv(mShader, GL_COMPILE_STATUS, &shaderStatus);
+    if (!shaderStatus)
     {
-        std::vector<char> log(logLength);
-        glGetProgramInfoLog(mShaderProgram, logLength, &logLength, log.data());
+        LOG_ERROR("Failed to compile Shader '%s'", desc.path);
+        int logLength = 0;
+        glGetShaderiv(mShader, GL_INFO_LOG_LENGTH, &logLength);
+        // When empty, Info Log contains only \0 char (thus the length is 1)
+        if (logLength > 1)
+        {
+            std::vector<char> log(logLength);
+            glGetShaderInfoLog(mShader, logLength, &logLength, log.data());
 
-        LOG_INFO("Shader '%s' compilation output:\n%s", desc.path, log.data());
+            LOG_INFO("Shader '%s' compilation output:\n%s", desc.path, log.data());
+        }
     }
-
-    int programStatus = 0;
-    glGetProgramiv(mShaderProgram, GL_LINK_STATUS, &programStatus);
-    if (!programStatus)
-    {
-        LOG_ERROR("Shader '%s' failed to compile.", desc.path);
-        return false;
-    }
-
-    LOG_INFO("'%s' - compiled successfully", desc.path);
+    else
+        LOG_INFO("'%s' - compiled successfully", desc.path);
 
     return true;
 }
 
-GLuint Shader::GetShaderProgram()
+GLuint Shader::GetShader()
 {
-    return mShaderProgram;
+    return mShader;
 }
 
 bool Shader::GetIODesc(ShaderIODesc& result)
@@ -112,22 +116,24 @@ bool Shader::Disassemble(bool html, std::string& output)
 
 
 ShaderProgram::ShaderProgram()
-    : mProgramPipeline(0)
+    : mProgram(0)
 {
 }
 
 ShaderProgram::~ShaderProgram()
 {
-    glDeleteProgramPipelines(1, &mProgramPipeline);
+    //glDeleteProgramPipelines(1, &mProgramPipeline);
+    glDeleteProgram(mProgram);
 }
 
 bool ShaderProgram::Init(const ShaderProgramDesc& desc)
 {
     // generate a program pipeline
-    glGenProgramPipelines(1, &mProgramPipeline);
-    if (!mProgramPipeline)
+    //glGenProgramPipelines(1, &mProgramPipeline);
+    mProgram = glCreateProgram();
+    if (!mProgram)
     {
-        LOG_ERROR("Failed to generate Program Pipeline");
+        LOG_ERROR("Failed to generate Shader Program");
         return false;
     }
 
@@ -135,31 +141,56 @@ bool ShaderProgram::Init(const ShaderProgramDesc& desc)
     if (desc.vertexShader)
     {
         Shader* vs = dynamic_cast<Shader*>(desc.vertexShader);
-        glUseProgramStages(mProgramPipeline, GL_VERTEX_SHADER_BIT, vs->mShaderProgram);
+        glAttachShader(mProgram, vs->mShader);
     }
 
     if (desc.hullShader)
     {
         Shader* hs = dynamic_cast<Shader*>(desc.hullShader);
-        glUseProgramStages(mProgramPipeline, GL_TESS_CONTROL_SHADER_BIT, hs->mShaderProgram);
+        glAttachShader(mProgram, hs->mShader);
     }
 
     if (desc.domainShader)
     {
         Shader* ds = dynamic_cast<Shader*>(desc.domainShader);
-        glUseProgramStages(mProgramPipeline, GL_TESS_EVALUATION_SHADER_BIT, ds->mShaderProgram);
+        glAttachShader(mProgram, ds->mShader);
     }
 
     if (desc.geometryShader)
     {
         Shader* gs = dynamic_cast<Shader*>(desc.geometryShader);
-        glUseProgramStages(mProgramPipeline, GL_GEOMETRY_SHADER_BIT, gs->mShaderProgram);
+        glAttachShader(mProgram, gs->mShader);
     }
 
     if (desc.pixelShader)
     {
         Shader* ps = dynamic_cast<Shader*>(desc.pixelShader);
-        glUseProgramStages(mProgramPipeline, GL_FRAGMENT_SHADER_BIT, ps->mShaderProgram);
+        glAttachShader(mProgram, ps->mShader);
+    }
+
+    glLinkProgram(mProgram);
+
+    int programStatus = 0;
+    glGetProgramiv(mProgram, GL_LINK_STATUS, &programStatus);
+    if (!programStatus)
+    {
+        LOG_ERROR("Shader Program failed to link.");
+
+        int logLength = 0;
+        glGetProgramiv(mProgram, GL_INFO_LOG_LENGTH, &logLength);
+        // When empty, Info Log contains only \0 char (thus the length is 1)
+        if (logLength > 1)
+        {
+            std::vector<char> log(logLength);
+            glGetProgramInfoLog(mProgram, logLength, &logLength, log.data());
+            LOG_INFO("Shader Program linking output:\n%s", log.data());
+        }
+
+        return false;
+    }
+    else
+    {
+        LOG_INFO("Shader Program linked successfully.");
     }
 
     return true;

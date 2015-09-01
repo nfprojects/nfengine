@@ -89,7 +89,7 @@ void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
 {
     ShaderProgram* newShaderProgram = dynamic_cast<ShaderProgram*>(shaderProgram);
 
-    glBindProgramPipeline(newShaderProgram->mProgramPipeline);
+    glUseProgram(newShaderProgram->mProgram);
 }
 
 void CommandBuffer::SetShader(IShader* shader)

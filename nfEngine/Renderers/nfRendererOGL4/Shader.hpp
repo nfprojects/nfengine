@@ -14,7 +14,7 @@ class ShaderProgram: public IShaderProgram
 {
     friend class CommandBuffer;
 
-    GLuint mProgramPipeline;
+    GLuint mProgram;
 
 public:
     ShaderProgram();
@@ -38,13 +38,13 @@ class Shader: public IShader
      *
      * Refer to ARB_separate_shader_objects description on opengl.org for more info about SSO.
      */
-    GLuint mShaderProgram;
+    GLuint mShader;
 
 public:
     Shader();
     ~Shader();
     bool Init(const ShaderDesc& desc);
-    GLuint GetShaderProgram();
+    GLuint GetShader();
 
     bool GetIODesc(ShaderIODesc& result);
     bool Disassemble(bool html, std::string& output);
