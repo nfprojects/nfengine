@@ -17,10 +17,11 @@ class CommandBuffer : public ICommandBuffer
 {
     friend class Device;
 
-    PrimitiveType mCurrentPrimitiveType;
     RenderTarget* mCurrentRenderTarget;
 
-    ShaderProgramDesc mBoundShaders;
+    // SSO-related variables
+    bool mSSOEnabled;
+    GLuint mProgramPipeline;
 
 public:
     CommandBuffer();
