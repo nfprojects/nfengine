@@ -1,0 +1,510 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_1d208bf6",
+        "filename": "nfEngine/nfCommon/DirectoryWatch.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "Why do You have private section duplicated?\nPlease merge both private sections together.",
+      "range": {
+        "startLine": 84,
+        "startChar": 0,
+        "endLine": 92,
+        "endChar": 57
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_dd25430b",
+        "filename": "nfEngine/nfCommon/DirectoryWatch.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "Why not NFE_INLINE?",
+      "range": {
+        "startLine": 96,
+        "startChar": 0,
+        "endLine": 96,
+        "endChar": 6
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_7dca771b",
+        "filename": "nfEngine/nfCommon/Linux/DirectoryWatch.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "I can see, that it\u0027s used multiple times. How about overloading some unused operator for this or plain simple lambda expression?",
+      "range": {
+        "startLine": 61,
+        "startChar": 8,
+        "endLine": 61,
+        "endChar": 54
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_9db65b89",
+        "filename": "nfEngine/nfCommon/Linux/DirectoryWatch.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "This could be replaced with lambda either. Would give it additionally boolean argument to do strcat or not, so You can use it in all 7 cases.",
+      "range": {
+        "startLine": 152,
+        "startChar": 8,
+        "endLine": 156,
+        "endChar": 67
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_bdb95f7b",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "Put those in anonymous namespace",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 72
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_bd479f76",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "How does this check if object got properly constructed?",
+      "range": {
+        "startLine": 37,
+        "startChar": 4,
+        "endLine": 38,
+        "endChar": 64
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_7d4d1799",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "I guess it\u0027s about putting duplicate events on one dir?\nplease put some comments.",
+      "range": {
+        "startLine": 44,
+        "startChar": 4,
+        "endLine": 45,
+        "endChar": 74
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_8050b40b",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "Unify these names across all testcases and make them global vars. It doesn\u0027t matter that their name is \u0027a_create_dir\u0027 or \u0027a_move_dir\u0027, because in TearDown() u bring down whole directory anyway.",
+      "range": {
+        "startLine": 51,
+        "startChar": 4,
+        "endLine": 52,
+        "endChar": 73
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_402f8c88",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "Just make this as a helper function in anonymous namespace and use it in those testcases. No need to declare callback lambda in 3 (or so) different testcases, when its logic stays the same.",
+      "range": {
+        "startLine": 102,
+        "startChar": 3,
+        "endLine": 129,
+        "endChar": 74
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_80ec342b",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "Why don\u0027t You count Event::MoveTo events as well?\nI guess it\u0027s due to getting just first MoveTo trigger the Latch, still - comment plz.",
+      "range": {
+        "startLine": 154,
+        "startChar": 4,
+        "endLine": 154,
+        "endChar": 38
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_8085145b",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "no check for unexpected events",
+      "range": {
+        "startLine": 158,
+        "startChar": 3,
+        "endLine": 169,
+        "endChar": 6
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_6082d053",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "why?",
+      "range": {
+        "startLine": 177,
+        "startChar": 36,
+        "endLine": 177,
+        "endChar": 66
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_e0dc2077",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "If this is cleanup, then rm plz. TearDown() does cleanup.",
+      "range": {
+        "startLine": 190,
+        "startChar": 4,
+        "endLine": 191,
+        "endChar": 56
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_00d8247e",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 197,
+        "startChar": 5,
+        "endLine": 198,
+        "endChar": 81
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_60d01054",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 201,
+        "startChar": 4,
+        "endLine": 202,
+        "endChar": 16
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_80d3545e",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 225,
+        "startChar": 35,
+        "endLine": 225,
+        "endChar": 67
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_a0ca189f",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 229,
+        "startChar": 36,
+        "endLine": 230,
+        "endChar": 68
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_c0cd5cb9",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 243,
+        "startChar": 3,
+        "endLine": 244,
+        "endChar": 56
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_e0c34088",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 250,
+        "startChar": 3,
+        "endLine": 251,
+        "endChar": 80
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_603730b1",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 270,
+        "startChar": 36,
+        "endLine": 270,
+        "endChar": 65
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_806194aa",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 283,
+        "startChar": 5,
+        "endLine": 283,
+        "endChar": 56
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_006d8499",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-01T09:48:49Z",
+      "side": 1,
+      "message": "magic number",
+      "range": {
+        "startLine": 384,
+        "startChar": 15,
+        "endLine": 384,
+        "endChar": 19
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
