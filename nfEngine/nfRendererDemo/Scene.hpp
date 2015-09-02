@@ -12,18 +12,47 @@
 
 #include <vector>
 
+typedef std::function<bool()> SubSceneInitializer;
+
+struct SubSceneDefinition
+{
+    SubSceneInitializer initializer;
+    std::string name;
+};
+
 /**
  * Base class describing a scene
  */
 class Scene
 {
+    size_t mCurrentSubScene;
+    size_t mHighestAvailableSubScene;
+    std::string mName;  //< scene name
+    std::vector<SubSceneDefinition> mSubScenes;
+
+protected:
+    // Renderer interfaces, acquired outside of BasicScene
+    NFE::Renderer::IDevice* mRendererDevice;
+    NFE::Renderer::ICommandBuffer* mCommandBuffer;
+
+    virtual bool OnInit(void* winHandle) = 0;
+    virtual bool OnSwitchSubscene() = 0;
+    void RegisterSubScene(SubSceneInitializer initializer, const std::string& name);
+
 public:
+    Scene(const std::string& name);
+
     /**
      * Virtual destructor for Scene
      *
      * Each derived scene should define the descrutor to clean up.
      */
     virtual ~Scene() {};
+
+    /**
+     * Retrieves scene name
+     */
+    std::string GetSceneName() const;
 
     /**
      * Initializes the scene
@@ -35,19 +64,15 @@ public:
      * The method provides rendererDevice for further devices initialization, and winHandle in case
      * Backbuffer must be initialized.
      */
-    virtual bool Init(NFE::Renderer::IDevice* rendererDevice, void* winHandle) = 0;
+    virtual bool Init(NFE::Renderer::IDevice* rendererDevice, void* winHandle);
 
     /**
      * Swiches the SubScene in current Scene
      *
      * @param subScene Subscene ID to switch to
      * @return True on successful switch, false if subscene was unable to initialize
-     *
-     * @note
-     * The check for correct Subscene ID is performed in DemoWindow class. Therefore, it is safe to
-     * assume, that @subScene is correct ID and just perform the switch.
      */
-    virtual bool SwitchSubscene(size_t subScene) = 0;
+    virtual bool SwitchSubscene(size_t subScene);
 
     /**
      * Retrieves subscene count
@@ -60,16 +85,34 @@ public:
      * backend features are not yet implemented), it is recommended to detect such situation and
      * set this value to lower than all subscene count.
      */
-    virtual size_t GetAvailableSubSceneCount() = 0;
+    size_t GetAvailableSubSceneCount() const;
+
+    /**
+     * Retrieves current subscene number
+     *
+     * @return Current subscene number or a negative value when no exists.
+     */
+    size_t GetCurrentSubSceneNumber() const;
+
+    /**
+     * Retrieves current subscene name
+     */
+    std::string GetCurrentSubSceneName() const;
 
     /**
      * Drawing call
      *
-     * The method is called every frame in Drawing loop
+     * @param dt Time passed since last call
      *
+     * @note The method is called every frame in Drawing loop
      * @see DemoWindow::DrawLoop
      */
-    virtual void Draw() = 0;
+    virtual void Draw(float dt) = 0;
+
+    /**
+     * Releases subScene resources
+     */
+    virtual void ReleaseSubsceneResources();
 
     /**
      * Releases scene resources
