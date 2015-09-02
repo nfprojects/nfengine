@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_c020f79d",
+        "filename": "nfEngine/nfCore/Components/BodyComponent.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-02T07:35:51Z",
+      "side": 1,
+      "message": "Vector2bt? mLocalInertia is an NFE::Math::Vector, and then it all could be hidden inside setMassProps call.",
+      "range": {
+        "startLine": 141,
+        "startChar": 8,
+        "endLine": 143,
+        "endChar": 75
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_6cee478d",
+        "filename": "nfEngine/nfCore/Components/BodyComponent.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-02T07:35:51Z",
+      "side": 1,
+      "message": "one space should be enough.",
+      "range": {
+        "startLine": 14,
+        "startChar": 6,
+        "endLine": 14,
+        "endChar": 7
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_8cf1cb6c",
+        "filename": "nfEngine/nfCore/Components/BodyComponent.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-02T07:35:51Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 15,
+        "startChar": 6,
+        "endLine": 15,
+        "endChar": 7
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_4034e7dd",
+        "filename": "nfEngine/nfCore/Components/CameraComponent.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-02T07:35:51Z",
+      "side": 1,
+      "message": "Use init list.",
+      "range": {
+        "startLine": 19,
+        "startChar": 4,
+        "endLine": 19,
+        "endChar": 43
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_e0233ba5",
+        "filename": "nfEngine/nfCore/Components/CameraComponent.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-02T07:35:51Z",
+      "side": 1,
+      "message": "Bottom/top are initialized to -1.0/1.0, but left/right are initialized to -1.0/-1.0. Is this correct?",
+      "range": {
+        "startLine": 54,
+        "startChar": 8,
+        "endLine": 57,
+        "endChar": 22
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_203523db",
+        "filename": "nfEngine/nfCore/Components/CameraComponent.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-02T07:35:51Z",
+      "side": 1,
+      "message": "Not needed",
+      "range": {
+        "startLine": 68,
+        "startChar": 0,
+        "endLine": 68,
+        "endChar": 8
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
