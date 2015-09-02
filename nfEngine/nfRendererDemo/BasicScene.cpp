@@ -51,13 +51,13 @@ IShader* BasicScene::CompileShader(const char* path,
 bool BasicScene::CreateShaderProgram(bool useCBuffer, bool useTexture)
 {
     ShaderMacro vsMacro[] = { { "USE_CBUFFER", useCBuffer ? "1" : "0" } };
-    std::string vsPath = mShaderPathPrefix + "TestVS" + mShaderPathExt;
+    std::string vsPath = gShaderPathPrefix + "TestVS" + gShaderPathExt;
     mVertexShader.reset(CompileShader(vsPath.c_str(), ShaderType::Vertex, vsMacro, 1));
     if (!mVertexShader)
         return false;
 
     ShaderMacro psMacro[] = { { "USE_TEXTURE", useTexture ? "1" : "0" } };
-    std::string psPath = mShaderPathPrefix + "TestPS" + mShaderPathExt;
+    std::string psPath = gShaderPathPrefix + "TestPS" + gShaderPathExt;
     mPixelShader.reset(CompileShader(psPath.c_str(), ShaderType::Pixel, psMacro, 1));
     if (!mPixelShader)
         return false;
@@ -270,17 +270,14 @@ bool BasicScene::CreateSubSceneTexture()
 /// BasicScene methods and virtuals overriden ///
 /////////////////////////////////////////////////
 
-BasicScene::BasicScene(const std::string& shaderPathPrefix, const std::string& shaderPathExt)
-    : mShaderPathPrefix(shaderPathPrefix)
-    , mShaderPathExt(shaderPathExt)
-    , mAngle(0.0f)
-    , mHighestAvailableSubScene(0)
+BasicScene::BasicScene()
+    : Scene("Basic")
 {
-    mSubScenes.push_back(std::bind(&BasicScene::CreateSubSceneEmpty, this));
-    mSubScenes.push_back(std::bind(&BasicScene::CreateSubSceneVertexBuffer, this));
-    mSubScenes.push_back(std::bind(&BasicScene::CreateSubSceneIndexBuffer, this));
-    mSubScenes.push_back(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this));
-    mSubScenes.push_back(std::bind(&BasicScene::CreateSubSceneTexture, this));
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneEmpty, this), "Empty");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneVertexBuffer, this), "VertexBuffer");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneIndexBuffer, this), "IndexBuffer");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this), "ConstantBuffer");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this), "Texture");
 }
 
 BasicScene::~BasicScene()
@@ -302,12 +299,8 @@ void BasicScene::ReleaseSubsceneResources()
     mShaderProgram.reset();
 }
 
-bool BasicScene::Init(IDevice* rendererDevice, void* winHandle)
+bool BasicScene::OnInit(void* winHandle)
 {
-    mRendererDevice = rendererDevice;
-
-    mCommandBuffer = mRendererDevice->GetDefaultCommandBuffer();
-
     // create backbuffer connected with the window
     BackbufferDesc bbDesc;
     bbDesc.width = WINDOW_WIDTH;
@@ -337,28 +330,11 @@ bool BasicScene::Init(IDevice* rendererDevice, void* winHandle)
     if (mBlendState) // incorrectly initialized BlendState is not an error
         mCommandBuffer->SetBlendState(mBlendState.get());
 
-    /// Basic stuff initialized, try to find the highest subscene possible
-    for (mHighestAvailableSubScene = mSubScenes.size()-1; ; mHighestAvailableSubScene--)
-    {
-        if (SwitchSubscene(mHighestAvailableSubScene))
-            break; // the scene initialized successfully
-
-        if (mHighestAvailableSubScene == 0)
-        {
-            ReleaseSubsceneResources();
-            return false; // we hit the end of our scenes vector, no scene successfully inited
-        }
-    }
-
     return true;
 }
 
-bool BasicScene::SwitchSubscene(size_t subScene)
+bool BasicScene::OnSwitchSubscene()
 {
-    ReleaseSubsceneResources();
-    if (!mSubScenes[subScene]())
-        return false;
-
     // reset bound resources and set them once again
     mCommandBuffer->Reset();
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
@@ -401,15 +377,10 @@ bool BasicScene::SwitchSubscene(size_t subScene)
     return true;
 }
 
-size_t BasicScene::GetAvailableSubSceneCount()
-{
-    return mHighestAvailableSubScene;
-}
-
-void BasicScene::Draw()
+void BasicScene::Draw(float dt)
 {
     // apply rotation
-    mAngle += 0.03f;
+    mAngle += 2.0f * dt;
     if (mAngle > NFE_MATH_2PI)
         mAngle -= NFE_MATH_2PI;
 

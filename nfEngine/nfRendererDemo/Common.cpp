@@ -11,6 +11,9 @@
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;
 
+std::string gShaderPathPrefix;
+std::string gShaderPathExt;
+
 const std::string D3D11_BACKEND("nfRendererD3D11");
 const std::string D3D11_SHADER_PATH_PREFIX("nfEngine/nfRendererDemo/Shaders/D3D11/");
 const std::string D3D11_SHADER_EXTENSION(".hlsl");

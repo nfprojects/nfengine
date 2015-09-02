@@ -9,10 +9,12 @@
 #include <vector>
 #include <functional>
 
-typedef std::vector<std::function<bool()>> SubSceneArrayType;
-
 extern const int WINDOW_WIDTH;
 extern const int WINDOW_HEIGHT;
+
+/// Shaders path prefix and extension, used to load appropriate shader source file
+extern std::string gShaderPathPrefix;
+extern std::string gShaderPathExt;
 
 extern const std::string D3D11_BACKEND;
 extern const std::string D3D11_SHADER_PATH_PREFIX;

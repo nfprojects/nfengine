@@ -14,6 +14,7 @@
 #include "../nfCommon/Library.hpp"
 #include "../nfCommon/FileSystem.hpp"
 #include "../nfCommon/Window.hpp"
+#include "../nfCommon/Timer.hpp"
 
 #include <algorithm>
 
@@ -22,10 +23,19 @@ using namespace NFE::Renderer;
 class DemoWindow : public NFE::Common::Window
 {
     size_t mCurrentScene;
-    size_t mCurrentSubScene;
     NFE::Common::Library mRendererLib;
     IDevice* mRendererDevice;
     SceneArrayType mScenes;
+
+    void SetWindowTitle()
+    {
+        std::string title = "nfRendererDemo - scene: " +
+            std::to_string(mCurrentScene) + " (" + mScenes[mCurrentScene]->GetSceneName() + ')' +
+            ", subscene: " + std::to_string(mScenes[mCurrentScene]->GetCurrentSubSceneNumber()) +
+            " (" + mScenes[mCurrentScene]->GetCurrentSubSceneName() + ')';
+
+        SetTitle(title.c_str());
+    }
 
     void SwitchScene(size_t scene)
     {
@@ -34,55 +44,42 @@ class DemoWindow : public NFE::Common::Window
 
         mScenes[mCurrentScene]->Release();
 
-        std::string title = "nfRendererDemo - scene ";
-        if (!mScenes[scene]->Init(mRendererDevice, GetHandle()))
+        if (mScenes[scene]->Init(mRendererDevice, GetHandle()))
         {
-            /// success - update the scene counter and the title
+            /// success - update the scene counter
             mCurrentScene = scene;
-            title += std::to_string(mCurrentScene) + ':' +
-                     std::to_string(mScenes[scene]->GetAvailableSubSceneCount());
         }
         else
         {
             // release failed scene
             mScenes[scene]->Release();
 
-            // construct fail message
-            title += std::to_string(mCurrentScene) + ':' + std::to_string(mCurrentSubScene) +
-                     " - Unable to load scene " + std::to_string(scene);
+            std::cerr << " - ERROR: Unable to load scene " << std::to_string(scene) << std::endl;
 
             // assume current scene was already working correctly and reload it
             // otherwise we probably wouldn't be here in the first place
             mScenes[mCurrentScene]->Init(mRendererDevice, GetHandle());
         }
 
-        SetTitle(title.c_str());
+        SetWindowTitle();
     }
 
     void SwitchSubScene(size_t subScene)
     {
-        if (subScene == mCurrentSubScene)
-            return;
-
-        std::string title = "nfRendererDemo - scene " + std::to_string(mCurrentScene) + ':';
         if (mScenes[mCurrentScene]->SwitchSubscene(subScene))
         {
             // successful switch, update the title
-            mCurrentSubScene = subScene;
-            title += std::to_string(mCurrentSubScene);
+            SetWindowTitle();
         }
         else
         {
-            // construct fail message
-            title += std::to_string(mCurrentScene) + ':' + std::to_string(mCurrentSubScene) +
-                     " - Unable to load subcene " + std::to_string(subScene);
+            std::cerr << " - ERROR: Unable to load subcene " + std::to_string(subScene)<< std::endl;
 
             // assume current subscene was already working correctly and reload it
             // otherwise we probably wouldn't be here in the first place
-            mScenes[mCurrentScene]->SwitchSubscene(mCurrentSubScene);
+            subScene = mScenes[mCurrentScene]->GetCurrentSubSceneNumber();
+            mScenes[mCurrentScene]->SwitchSubscene(subScene);
         }
-
-        SetTitle(title.c_str());
     }
 
 public:
@@ -95,13 +92,13 @@ public:
      * The constructor will initialize mScenes vector with existing scenes. Arguments
      * @shaderPathPrefix and @shaderExt are passed to Scene constructors where applicable.
      */
-    DemoWindow(const std::string& shaderPathPrefix, const std::string shaderExt)
+    DemoWindow()
         : mCurrentScene(0)
         , mRendererLib()
         , mRendererDevice(nullptr)
     {
         // the first scene ever made
-        mScenes.push_back(std::unique_ptr<Scene>(new BasicScene(shaderPathPrefix, shaderExt)));
+        mScenes.push_back(std::unique_ptr<Scene>(new BasicScene));
     }
 
     /**
@@ -160,11 +157,8 @@ public:
             return false;
 
         mCurrentScene = scene;
-        mCurrentSubScene = mScenes[scene]->GetAvailableSubSceneCount();
-        // assume Scene::Init will preinitialize highest available Subscene
-        std::string title = "nfRendererDemo - scene " + std::to_string(mCurrentScene) +
-                            ':' + std::to_string(mCurrentSubScene);
-        SetTitle(title.c_str());
+
+        SetWindowTitle();
         return true;
     }
 
@@ -173,10 +167,16 @@ public:
      */
     void DrawLoop()
     {
-        while(!IsClosed())
+        NFE::Common::Timer timer;
+        timer.Start();
+
+        while (!IsClosed())
         {
+            float dt = static_cast<float>(timer.Stop());
+            timer.Start();
+
             ProcessMessages();
-            mScenes[mCurrentScene]->Draw();
+            mScenes[mCurrentScene]->Draw(dt);
         }
     }
 
@@ -206,7 +206,7 @@ public:
     {
         // keep temporarily the IDs
         size_t newSceneId = mCurrentScene;
-        size_t newSubSceneId = mCurrentSubScene;
+        size_t newSubSceneId = mScenes[mCurrentScene]->GetCurrentSubSceneNumber();
         switch (key)
         {
         case NFE::Common::KeyCode::Right:
@@ -257,28 +257,26 @@ int main(int argc, char* argv[])
 
     /// select renderer to use - the default will be D3D11
     std::string rend;
-    std::string shaderPathPrefix;
-    std::string shaderExt;
 
     if (argc < 2)
     {
         std::vector<std::string> defBackend = GetDefaultBackend();
         rend = defBackend[0];
-        shaderPathPrefix = defBackend[1];
-        shaderExt = defBackend[2];
+        gShaderPathPrefix = defBackend[1];
+        gShaderPathExt = defBackend[2];
     }
     else if (D3D11_BACKEND.compare(argv[1]) == 0)
     {
         // we use D3D11 renderer
         rend = D3D11_BACKEND;
-        shaderPathPrefix = D3D11_SHADER_PATH_PREFIX;
-        shaderExt = D3D11_SHADER_EXTENSION;
+        gShaderPathPrefix = D3D11_SHADER_PATH_PREFIX;
+        gShaderPathExt = D3D11_SHADER_EXTENSION;
     }
     else if (OGL4_BACKEND.compare(argv[1]) == 0)
     {
         rend = OGL4_BACKEND;
-        shaderPathPrefix = OGL4_SHADER_PATH_PREFIX;
-        shaderExt = OGL4_SHADER_EXTENSION;
+        gShaderPathPrefix = OGL4_SHADER_PATH_PREFIX;
+        gShaderPathExt = OGL4_SHADER_EXTENSION;
     }
     else
     {
@@ -286,7 +284,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    DemoWindow window(shaderPathPrefix, shaderExt);
+    DemoWindow window;
     window.SetSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     window.Open();
 
