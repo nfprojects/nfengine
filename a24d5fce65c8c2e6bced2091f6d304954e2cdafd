@@ -1,0 +1,174 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3ae8d1ca_82ed5e8e",
+        "filename": "nfEngine/nfCommon/Bit.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-03T19:14:57Z",
+      "side": 1,
+      "message": "tab",
+      "revId": "a24d5fce65c8c2e6bced2091f6d304954e2cdafd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae8d1ca_22956ae4",
+        "filename": "nfEngine/nfCommon/Bit.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-03T19:14:57Z",
+      "side": 1,
+      "message": "Write where this function comes from",
+      "revId": "a24d5fce65c8c2e6bced2091f6d304954e2cdafd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae8d1ca_e2fb8245",
+        "filename": "nfEngine/nfCommon/Bit.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-03T19:14:57Z",
+      "side": 1,
+      "message": "pass bytes by value, not reference",
+      "revId": "a24d5fce65c8c2e6bced2091f6d304954e2cdafd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae8d1ca_02f94e4d",
+        "filename": "nfEngine/nfCommon/Bit.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-03T19:14:57Z",
+      "side": 1,
+      "message": "IMO this should be written as:\nv \u0026\u003d -static_cast\u003cint32_t\u003e(v);",
+      "revId": "a24d5fce65c8c2e6bced2091f6d304954e2cdafd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae8d1ca_629f7204",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-03T19:14:57Z",
+      "side": 1,
+      "message": "line too long",
+      "revId": "a24d5fce65c8c2e6bced2091f6d304954e2cdafd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae8d1ca_c285a6ae",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-03T19:14:57Z",
+      "side": 1,
+      "message": "add newline to separate \"if\" and \"for\"",
+      "revId": "a24d5fce65c8c2e6bced2091f6d304954e2cdafd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae8d1ca_02906eeb",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 242,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-03T19:14:57Z",
+      "side": 1,
+      "message": "line too long",
+      "revId": "a24d5fce65c8c2e6bced2091f6d304954e2cdafd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae8d1ca_22bc8a6c",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-03T19:14:57Z",
+      "side": 1,
+      "message": "line too long",
+      "revId": "a24d5fce65c8c2e6bced2091f6d304954e2cdafd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae8d1ca_42c196e3",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-03T19:14:57Z",
+      "side": 1,
+      "message": "line too long",
+      "revId": "a24d5fce65c8c2e6bced2091f6d304954e2cdafd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae8d1ca_c2acc638",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 309,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-03T19:14:57Z",
+      "side": 1,
+      "message": "1. floor() accepts doubles, no ints\n2. double \u003c\u003d\u003e int conversion is slow\n3. division is very slow.\n4. increment x by one instead of colorsPerByte to avoid division",
+      "revId": "a24d5fce65c8c2e6bced2091f6d304954e2cdafd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
