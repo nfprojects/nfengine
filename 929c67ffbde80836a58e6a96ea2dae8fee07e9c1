@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3ae8d1ca_02a78e50",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-03T19:24:20Z",
+      "side": 1,
+      "message": "namespace {",
+      "revId": "929c67ffbde80836a58e6a96ea2dae8fee07e9c1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae8d1ca_2263aa1b",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-03T19:24:20Z",
+      "side": 1,
+      "message": "No indent for namepsaces",
+      "revId": "929c67ffbde80836a58e6a96ea2dae8fee07e9c1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae8d1ca_a276dad6",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-03T19:24:20Z",
+      "side": 1,
+      "message": "In LoadJPG() using ASSERT_NO_FATAL_FAILURE is OK, but here, it would be nice to go to the next lines when LoadAssert fails (ommiting only CheckTexels). So why not just move CheckTexels to LoadAssert? Then you colud do simply: EXPECT_TRUE(LoadAssert(...));",
+      "revId": "929c67ffbde80836a58e6a96ea2dae8fee07e9c1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
