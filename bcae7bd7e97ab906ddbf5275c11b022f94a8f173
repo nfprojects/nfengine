@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3ae8d1ca_2b4d4573",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Buffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-04T10:11:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_2a350c46",
+      "range": {
+        "startLine": 92,
+        "startChar": 0,
+        "endLine": 104,
+        "endChar": 1
+      },
+      "revId": "bcae7bd7e97ab906ddbf5275c11b022f94a8f173",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_0a304855",
         "filename": "nfEngine/Renderers/nfRendererOGL4/Buffer.hpp",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2015-08-30T20:17:21Z",
       "side": 1,
       "message": "Not needed. I know, this methods are in D3D11 renderer - they must be removed. Buffer reads/writes are handled via Command Buffer.",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 54
+      },
+      "revId": "bcae7bd7e97ab906ddbf5275c11b022f94a8f173",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae8d1ca_0b3169ec",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Buffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-04T10:11:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_0a304855",
       "range": {
         "startLine": 28,
         "startChar": 0,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "3ae8d1ca_4b529114",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Translations.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-04T10:11:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_6af7148d",
+      "range": {
+        "startLine": 72,
+        "startChar": 30,
+        "endLine": 72,
+        "endChar": 31
+      },
+      "revId": "bcae7bd7e97ab906ddbf5275c11b022f94a8f173",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_8af45888",
         "filename": "nfEngine/Renderers/nfRendererOGL4/Translations.cpp",
         "patchSetId": 1
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "3ae8d1ca_6b574d03",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Translations.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-04T10:11:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_8af45888",
+      "range": {
+        "startLine": 130,
+        "startChar": 30,
+        "endLine": 130,
+        "endChar": 31
+      },
+      "revId": "bcae7bd7e97ab906ddbf5275c11b022f94a8f173",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_aaf11c97",
         "filename": "nfEngine/Renderers/nfRendererOGL4/VertexLayout.cpp",
         "patchSetId": 1
@@ -105,6 +201,24 @@
       "writtenOn": "2015-08-30T20:17:21Z",
       "side": 1,
       "message": "(std::nothrow)",
+      "revId": "bcae7bd7e97ab906ddbf5275c11b022f94a8f173",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae8d1ca_8b5c9927",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/VertexLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-04T10:11:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_aaf11c97",
       "revId": "bcae7bd7e97ab906ddbf5275c11b022f94a8f173",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
