@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "3ae8d1ca_4b87f161",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-04T10:29:41Z",
+      "side": 1,
+      "message": "This is Linux only. Add [Lnx]",
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_1d208bf6",
         "filename": "nfEngine/nfCommon/DirectoryWatch.hpp",
         "patchSetId": 7
