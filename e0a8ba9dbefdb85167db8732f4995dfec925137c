@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ad9bd40_cf44a076",
+        "filename": "nfEngine/nfRendererDemo/Scene.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-04T10:28:32Z",
+      "side": 1,
+      "message": "of what?",
+      "range": {
+        "startLine": 34,
+        "startChar": 48,
+        "endLine": 34,
+        "endChar": 58
+      },
+      "revId": "e0a8ba9dbefdb85167db8732f4995dfec925137c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
