@@ -271,5 +271,12 @@ void ThreadPool::WaitForTasks(const std::vector<TaskID>& tasks, size_t required)
         mTasksMutexCV.wait(lock);
 }
 
+void ThreadPool::WaitForAllTasks()
+{
+    Lock lock(mTasksMutex);
+    while (mTasks.size() > 0)
+        mTasksMutexCV.wait(lock);
+}
+
 } // namespace Common
 } // namespace NFE

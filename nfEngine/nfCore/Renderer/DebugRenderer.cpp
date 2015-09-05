@@ -68,7 +68,7 @@ DebugRendererContext::DebugRendererContext()
 
 DebugRenderer::DebugRenderer()
 {
-    IDevice* device = gRenderer->GetDevice();
+    IDevice* device = mRenderer->GetDevice();
 
     BufferDesc bufferDesc;
     ShaderDesc shaderDesc;
@@ -161,9 +161,9 @@ void DebugRenderer::OnEnter(RenderContext* context)
     context->commandBuffer->SetConstantBuffers(constantBuffers, 2, ShaderType::Vertex);
 
     context->commandBuffer->SetRasterizerState(mRasterizerState.get());
-    context->commandBuffer->SetDepthState(gRenderer->GetDefaultDepthState());
+    context->commandBuffer->SetDepthState(mRenderer->GetDefaultDepthState());
 
-    ISampler* sampler = gRenderer->GetDefaultSampler();
+    ISampler* sampler = mRenderer->GetDefaultSampler();
     context->commandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
 }
 

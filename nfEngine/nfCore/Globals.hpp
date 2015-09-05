@@ -17,10 +17,4 @@ namespace NFE {
  */
 extern const std::string g_DataPath;
 
-// High-level renderer
-extern std::unique_ptr<Renderer::HighLevelRenderer> gRenderer;
-
-extern std::shared_ptr<Common::ThreadPool> g_pMainThreadPool;
-extern Resource::ResManager* g_pResManager;
-
 } // namespace NFE

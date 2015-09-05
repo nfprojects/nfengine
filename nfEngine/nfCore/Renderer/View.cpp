@@ -9,6 +9,7 @@
 #include "HighLevelRenderer.hpp"
 
 #include "../Globals.hpp"
+#include "../Engine.hpp"
 #include "../ResourcesManager.hpp"
 #include "../Texture.hpp"
 
@@ -68,13 +69,15 @@ bool View::SetWindow(Common::Window* window)
     uint32 width, height;
     window->GetSize(width, height);
 
+    HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
+
     // create backbuffer connected with the window
     BackbufferDesc bbDesc;
     bbDesc.width = width;
     bbDesc.height = height;
     bbDesc.windowHandle = static_cast<void*>(window->GetHandle());
     bbDesc.vSync = false;
-    mWindowBackbuffer.reset(gRenderer->GetDevice()->CreateBackbuffer(bbDesc));
+    mWindowBackbuffer.reset(renderer->GetDevice()->CreateBackbuffer(bbDesc));
     if (mWindowBackbuffer == nullptr)
     {
         LOG_ERROR("Failed to create backbuffer");
@@ -99,8 +102,10 @@ void View::OnWindowResize(void* userData)
 
     if (view->mWindowBackbuffer != nullptr && view->mWindow != nullptr)
     {
+        HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
+
         /// make sure that the backbuffer is not used
-        ICommandBuffer* commandBuffer = gRenderer->GetImmediateContext()->commandBuffer;
+        ICommandBuffer* commandBuffer = renderer->GetImmediateContext()->commandBuffer;
         commandBuffer->SetRenderTarget(nullptr);
         view->mRenderTarget.reset();
 
@@ -125,7 +130,8 @@ bool View::InitRenderTarget(uint32 width, uint32 height)
     rtDesc.targets = &rtTarget;
     rtDesc.debugName = "View::mRenderTarget";
 
-    mRenderTarget.reset(gRenderer->GetDevice()->CreateRenderTarget(rtDesc));
+    HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
+    mRenderTarget.reset(renderer->GetDevice()->CreateRenderTarget(rtDesc));
     if (mRenderTarget == nullptr)
     {
         LOG_ERROR("Failed to create render target");
@@ -159,7 +165,8 @@ Texture* View::SetOffScreen(uint32 width, uint32 height, const char* textureName
 {
     Release();
 
-    mTexture = (Texture*)g_pResManager->GetResource(textureName, ResourceType::Texture);
+    ResManager* rm = Engine::GetInstance()->GetResManager();
+    mTexture = static_cast<Texture*>(rm->GetResource(textureName, ResourceType::Texture));
     if (mTexture == nullptr) return nullptr;
 
     mTexture->Load();

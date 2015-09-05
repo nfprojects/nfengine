@@ -32,6 +32,7 @@ public:
 class CORE_API ResManager final
 {
     friend class ResourceBase;
+    friend class Engine;
 
     //disable these:
     ResManager(const ResManager&);
@@ -42,6 +43,7 @@ class CORE_API ResManager final
     std::mutex mResListMutex;
     std::map<const char*, ResourceBase*, CompareResName> mResources;
 
+    void Release();
     void LoadResource(ResourceBase* pResource);
     void UnloadResource(ResourceBase* pResource);
     void ReloadResource(ResourceBase* pResource);
