@@ -8,7 +8,6 @@
 
 #include "../PCH.hpp"
 #include "RendererContext.hpp"
-#include "../Globals.hpp"
 
 namespace NFE {
 namespace Renderer {
