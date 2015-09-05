@@ -6,7 +6,6 @@
 
 #include "../PCH.hpp"
 #include "LightComponent.hpp"
-#include "../Globals.hpp"
 #include "../ResourcesManager.hpp"
 
 #include "../nfCommon/InputStream.hpp"
@@ -158,7 +157,8 @@ void LightComponent::SetLightMap(const char* pName)
         return;
     }
 
-    Texture* pNewTexture = ENGINE_GET_TEXTURE(pName);
+    ResManager* rm = Engine::GetInstance()->GetResManager();
+    Texture* pNewTexture = static_cast<Texture*>(rm->GetResource(pName, ResourceType::Texture));
 
     if (pNewTexture != mLightMap)
     {

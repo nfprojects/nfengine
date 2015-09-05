@@ -7,6 +7,7 @@
 #pragma once
 
 #include "RendererResources.hpp"
+#include "../Engine.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -54,9 +55,12 @@ public:
 
 protected:
 
+    HighLevelRenderer* mRenderer;
+
     // only Init() can create
     RendererModule()
     {
+        mRenderer = Engine::GetInstance()->GetRenderer();
     }
 
     virtual void OnEnter(RenderContext *context)

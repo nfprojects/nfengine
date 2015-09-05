@@ -9,6 +9,8 @@
 
 namespace NFE {
 
+    class Engine;
+
     namespace Common {
         class Window;
         class ThreadPool;

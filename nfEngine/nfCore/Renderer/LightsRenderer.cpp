@@ -8,7 +8,6 @@
 
 #include "../PCH.hpp"
 #include "LightsRenderer.hpp"
-#include "../Globals.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -45,7 +44,7 @@ std::unique_ptr<LightsRenderer> LightsRenderer::mPtr;
 
 LightsRenderer::LightsRenderer()
 {
-    IDevice* device = gRenderer->GetDevice();
+    IDevice* device = mRenderer->GetDevice();
 
     mFullscreenQuadVS.Load("FullScreenQuadVS");
     mAmbientLightPS.Load("AmbientLightPS");
@@ -184,12 +183,12 @@ void LightsRenderer::OnEnter(RenderContext* context)
 void LightsRenderer::OnLeave(RenderContext* context)
 {
     // TODO: allow "NULL" in the array
-    ITexture* nullTextures[] = { gRenderer->GetDefaultDiffuseTexture(),
-        gRenderer->GetDefaultDiffuseTexture(),
-        gRenderer->GetDefaultDiffuseTexture(),
-        gRenderer->GetDefaultDiffuseTexture(),
-        gRenderer->GetDefaultDiffuseTexture(),
-        gRenderer->GetDefaultDiffuseTexture() };
+    ITexture* nullTextures[] = { mRenderer->GetDefaultDiffuseTexture(),
+        mRenderer->GetDefaultDiffuseTexture(),
+        mRenderer->GetDefaultDiffuseTexture(),
+        mRenderer->GetDefaultDiffuseTexture(),
+        mRenderer->GetDefaultDiffuseTexture(),
+        mRenderer->GetDefaultDiffuseTexture() };
     context->commandBuffer->SetTextures(nullTextures, 6, ShaderType::Pixel);
 
     context->commandBuffer->EndDebugGroup();
@@ -227,7 +226,7 @@ void LightsRenderer::SetUp(RenderContext* context, IRenderTarget* target, Geomet
 void LightsRenderer::DrawAmbientLight(RenderContext* context, const Vector& ambientLightColor,
                                       const Vector& backgroundColor)
 {
-    context->commandBuffer->SetBlendState(gRenderer->GetDefaultBlendState());
+    context->commandBuffer->SetBlendState(mRenderer->GetDefaultBlendState());
 
     AmbientLightCBuffer cbuffer;
     VectorStore(ambientLightColor, &cbuffer.ambientLight);
