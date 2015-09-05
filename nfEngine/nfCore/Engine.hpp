@@ -8,105 +8,108 @@
 
 #include "Core.hpp"
 #include "ResourcesManager.hpp"
-#include "Mesh.hpp"
-#include "Material.hpp"
-#include "Texture.hpp"
 #include "SceneManager.hpp"
-#include "../nfCommon/Window.hpp"
+#include "Renderer/HighLevelRenderer.hpp"
 #include "../nfCommon/ThreadPool.hpp"
 
 namespace NFE {
 
 struct DrawRequest
 {
-    Renderer::View* pView;
-
-    // used for auto exposure
-    float deltaTime;
+    Renderer::View* view;
 };
 
 struct UpdateRequest
 {
-    Scene::SceneManager* pScene;
+    Scene::SceneManager* scene;
     float deltaTime;
 };
 
-/**
- *  Initialize engine. This function must be called on an application startup.
- * @return Result::OK on success. See logs for more information.
- */
-CORE_API Result EngineInit();
 
-/**
- *  Initialize engine. This function must be called on an application shutdown.
- * @return Result::OK on success. See logs for more information.
- */
-CORE_API Result EngineRelease();
+class CORE_API Engine
+{
+    Common::ThreadPool mMainThreadPool;
+    Resource::ResManager mResManager;
+    std::unique_ptr<Renderer::HighLevelRenderer> mRenderer;
+    std::set<Scene::SceneManager*> mScenes;
 
-/**
- *  Get engine's resources manager.
- * @return NULL on failure.
- */
-CORE_API Resource::ResManager* EngineGetResManager();
+    bool OnInit();
+    void OnRelease();
+    Engine();
 
-/**
- *  Get engine's high-level renderer.
- * @return NULL on failure.
- */
-CORE_API Renderer::HighLevelRenderer* EngineGetRenderer();
+    /// disable all other constructors and assignment operators
+    Engine(const Engine&) = delete;
+    Engine(Engine&&) = delete;
+    Engine& operator=(const Engine&) = delete;
+    Engine& operator=(Engine&&) = delete;
 
-/**
- *  Create a new scene.
- * @return NULL on failure.
- */
-CORE_API Scene::SceneManager* EngineCreateScene();
+public:
+    /**
+     * Aquire pointer to the Engine instance.
+     * If the function was not called before, the engine will be initialized.
+     *
+     * @return Valid Engine class instance or NULL on failure. See logs for more information.
+     */
+    static Engine* GetInstance();
 
-/**
- *  Destroy a scene and all its entities.
- * @return Result::OK on success.
- */
-CORE_API Result EngineDeleteScene(Scene::SceneManager* pScene);
+    /**
+     * Release engine.
+     * @note This function must be called on an application shutdown.
+     */
+    static void Release();
 
-/**
- *  Update physics and/or draw a scene(s).
- * @param  pDrawRequests List of scene draw requests.
- * @param  pUpdateRequests List of scene updage requests.
- * @return Result::OK on success.
- */
-CORE_API Result EngineAdvance(const DrawRequest* pDrawRequests, uint32 drawRequestsNum,
-                              const UpdateRequest* pUpdateRequests, uint32 updateRequestsNum);
+    /**
+     * Get engine's resources manager.
+     *
+     * @return NULL on failure.
+     */
+    NFE_INLINE Resource::ResManager* GetResManager()
+    {
+        return &mResManager;
+    }
 
-/**
- *  Get resource pointer by name. If the resource with given name does not exist, it is
- *         created automatically.
- * @param  resType Resource type.
- * @param  pResName Resource name. Maximum resource name is restricted by RES_NAME_MAX_LENGTH
- * @param  check Do not create a resource if it does not exist.
- * @return NULL on failure or valid resource pointer.
- */
-CORE_API Resource::ResourceBase* EngineGetResource(Resource::ResourceType resType,
-        const char* pResName, bool check = false);
+    /**
+     * Get engine's high-level renderer.
+     *
+     * @return NULL on failure.
+     */
+    NFE_INLINE Renderer::HighLevelRenderer* GetRenderer() const
+    {
+        return mRenderer.get();
+    }
 
+    /**
+     * Get engine's main threadpool.
+     *
+     * @note The threadpool is used by the engine subsystems.
+     * @return NULL on failure.
+     */
+    NFE_INLINE Common::ThreadPool* GetThreadPool()
+    {
+        return &mMainThreadPool;
+    }
 
-#define ENGINE_GET_TEXTURE(name) \
-    ((Texture*)EngineGetResource(ResourceType::Texture, name))
+    /**
+     * Create a new scene.
+     *
+     * @return NULL on failure.
+     */
+    Scene::SceneManager* CreateScene();
 
-#define ENGINE_GET_MATERIAL(name) \
-    ((Material*)EngineGetResource(ResourceType::Material, name))
+    /**
+     * Destroy a scene and all its entities.
+     */
+    void DeleteScene(Scene::SceneManager* scene);
 
-#define ENGINE_GET_MESH(name) \
-    ((Mesh*)EngineGetResource(ResourceType::Mesh, name))
-
-#define ENGINE_GET_COLLISION_SHAPE(name) \
-    ((CollisionShape*)EngineGetResource(ResourceType::CollisionShape, name))
-
-/**
- *  Add custom resource object to the engine's resources list.
- * @param  pResource Pointer to a user's resource object.
- * @param  pName Name of the resource. If NULL, the name is obtained from the object.
- * @return Result::OK on success.
- */
-CORE_API Result EngineAddResource(Resource::ResourceBase* pResource, const char* pName = 0);
-
+    /**
+     * Update physics and/or draw a scene(s).
+     *
+     * @param  drawRequests List of scene draw requests.
+     * @param  dpdateRequests List of scene updage requests.
+     * @return True on success.
+     */
+    bool Advance(const DrawRequest* drawRequests, uint32 drawRequestsNum,
+                 const UpdateRequest* updateRequests, uint32 updateRequestsNum);
+};
 
 } // namespace NFE

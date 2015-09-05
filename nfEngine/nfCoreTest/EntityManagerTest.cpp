@@ -19,30 +19,26 @@ protected:
     // preapre test case enviroment - initialize the engine
     static void SetUpTestCase()
     {
-        Result ret;
-        EXPECT_NO_THROW(ret = EngineInit());
-        ASSERT_EQ(Result::OK, ret);
+        EXPECT_NO_THROW(mEngine = Engine::GetInstance());
+        ASSERT_NE(nullptr, mEngine);
 
-        pRenderer = EngineGetRenderer();
-        ASSERT_NE(nullptr, pRenderer);
+        mRenderer = mEngine->GetRenderer();
+        ASSERT_NE(nullptr, mRenderer);
     }
 
     // preapre test case enviroment - release the engine
     static void TearDownTestCase()
     {
-        Result ret;
-        EXPECT_NO_THROW(ret = EngineRelease());
-        ASSERT_EQ(Result::OK, ret);
-
-        EXPECT_NO_THROW(ret = EngineRelease());
-        ASSERT_EQ(Result::AlreadyFree, ret);
+        EXPECT_NO_THROW(Engine::Release());
     }
 
-    static HighLevelRenderer* pRenderer;
+    static Engine* mEngine;
+    static HighLevelRenderer* mRenderer;
 };
 
 /// static members definitions
-HighLevelRenderer* EntityManagerTest::pRenderer = nullptr;
+Engine* EntityManagerTest::mEngine = nullptr;
+HighLevelRenderer* EntityManagerTest::mRenderer = nullptr;
 
 
 // basic entity creation / removal
@@ -182,7 +178,7 @@ TEST_F(EntityManagerTest, EntityChildren)
 {
     TransformComponent* transform;
     SceneManager* scene;
-    EXPECT_NO_THROW(scene = EngineCreateScene());
+    EXPECT_NO_THROW(scene = mEngine->CreateScene());
     ASSERT_NE(nullptr, scene);
     EntityManager* em = scene->GetEntityManager();
     ASSERT_TRUE(em != nullptr);

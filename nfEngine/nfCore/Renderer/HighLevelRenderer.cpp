@@ -10,7 +10,7 @@
 #include "../Core.hpp"
 #include "HighLevelRenderer.hpp"
 #include "View.hpp"
-#include "../Globals.hpp"
+#include "../Engine.hpp"
 #include "../../nfCommon/ThreadPool.hpp"
 
 #include "GuiRenderer.hpp"
@@ -54,9 +54,11 @@ bool HighLevelRenderer::Init(const std::string& preferredRendererName)
 
     mCommandBuffer = mRenderingDevice->GetDefaultCommandBuffer();
 
+    Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
+
     /// create immediate and deferred rendering contexts
     mImmediateContext.reset(new RenderContext(mCommandBuffer));
-    mDeferredContexts.reset(new RenderContext[g_pMainThreadPool->GetThreadsNumber()]);
+    mDeferredContexts.reset(new RenderContext[threadPool->GetThreadsNumber()]);
 
     // TODO: multithreaded modules initialization
 

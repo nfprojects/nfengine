@@ -172,6 +172,10 @@ public:
      */
     void WaitForTasks(const std::vector<TaskID>& tasks, size_t required = -1);
 
+    /**
+     * Waits for all tasks in the pool to finish.
+     */
+    void WaitForAllTasks();
 };
 
 } // namespace Common

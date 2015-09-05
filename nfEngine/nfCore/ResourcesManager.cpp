@@ -30,6 +30,10 @@ ResManager::ResManager()
 
 ResManager::~ResManager()
 {
+}
+
+void ResManager::Release()
+{
     // unload all resources
     LOG_INFO("Unloading resources...");
     std::map<const char*, ResourceBase*, CompareResName>::iterator it;
@@ -37,6 +41,9 @@ ResManager::~ResManager()
     {
         UnloadResource((*it).second);
     }
+
+    mThreadPool->WaitForAllTasks();
+    mThreadPool.reset();
 
     // delete all resources
     LOG_INFO("Deleting resources...");
@@ -46,8 +53,6 @@ ResManager::~ResManager()
         delete resource;
     }
     mResources.clear();
-
-    mThreadPool.reset();
 }
 
 ResourceBase* ResManager::GetResource(const char* pName, ResourceType type, bool check)

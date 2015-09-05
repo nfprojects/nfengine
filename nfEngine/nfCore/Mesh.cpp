@@ -139,6 +139,9 @@ bool Mesh::OnLoad()
     for (uint32 i = 0; i < mVeriticesCount; i++)
         pVerticies[i].texCoord.y = 1.0f - pVerticies[i].texCoord.y;
 
+    ResManager* rm = Engine::GetInstance()->GetResManager();
+    HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
+
     /// create renderer's vertex buffer
     BufferDesc bufferDesc;
     bufferDesc.access = BufferAccess::GPU_ReadOnly;
@@ -146,7 +149,7 @@ bool Mesh::OnLoad()
     bufferDesc.size = mVeriticesCount * sizeof(MeshVertex);
     bufferDesc.initialData = pVerticies;
     bufferDesc.debugName = mName;
-    mVB.reset(gRenderer->GetDevice()->CreateBuffer(bufferDesc));
+    mVB.reset(renderer->GetDevice()->CreateBuffer(bufferDesc));
     if (!mVB)
     {
         LOG_ERROR("Failed to create vertex buffer for mesh '%s'.", mName);
@@ -162,7 +165,7 @@ bool Mesh::OnLoad()
     bufferDesc.size = mIndicesCount * sizeof(uint32);
     bufferDesc.initialData = pIndices;
     bufferDesc.debugName = mName;
-    mIB.reset(gRenderer->GetDevice()->CreateBuffer(bufferDesc));
+    mIB.reset(renderer->GetDevice()->CreateBuffer(bufferDesc));
     if (!mIB)
     {
         LOG_ERROR("Failed to create index buffer for mesh '%s'.", mName);
@@ -184,7 +187,9 @@ bool Mesh::OnLoad()
         mSubMeshes[i].indexOffset = pSubMeshes[i].indexOffset;
         mSubMeshes[i].trianglesCount = pSubMeshes[i].triangleCount;
         mSubMeshes[i].material = 0;
-        mSubMeshes[i].material = ENGINE_GET_MATERIAL(pSubMeshes[i].materialName);
+        mSubMeshes[i].material =
+            static_cast<Material*>(rm->GetResource(pSubMeshes[i].materialName,
+                                                   ResourceType::Material));
         mSubMeshes[i].material->AddRef();
 
         Vector vertex;
@@ -336,7 +341,10 @@ void Mesh::OnUnload()
         //delete all references
         for (uint32 i = 0; i < mSubMeshesCount; i++)
             if (mSubMeshes[i].material)
+            {
                 mSubMeshes[i].material->DelRef();
+                mSubMeshes[i].material = nullptr;
+            }
     }
 }
 

@@ -6,7 +6,7 @@
 
 #include "../PCH.hpp"
 #include "MeshComponent.hpp"
-#include "../Globals.hpp"
+#include "../Engine.hpp"
 #include "../ResourcesManager.hpp"
 
 namespace NFE {
@@ -67,7 +67,8 @@ bool MeshComponent::SetMeshResource(Mesh* resource)
 
 bool MeshComponent::SetMeshResource(const char* name)
 {
-    Mesh* newMesh = static_cast<Mesh*>(g_pResManager->GetResource(name, ResourceType::Mesh));
+    ResManager* rm = Engine::GetInstance()->GetResManager();
+    Mesh* newMesh = static_cast<Mesh*>(rm->GetResource(name, ResourceType::Mesh));
     return SetMeshResource(newMesh);
 }
 

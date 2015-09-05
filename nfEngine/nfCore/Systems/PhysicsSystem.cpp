@@ -6,7 +6,6 @@
 
 #include "../PCH.hpp"
 #include "PhysicsSystem.hpp"
-#include "../Globals.hpp"
 #include "../Engine.hpp"
 #include "../Performance.hpp"
 #include "../EntityManager.hpp"
