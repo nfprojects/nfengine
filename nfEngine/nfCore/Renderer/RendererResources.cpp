@@ -7,7 +7,7 @@
 #include "../PCH.hpp"
 #include "RendererResources.hpp"
 #include "HighLevelRenderer.hpp"
-#include "../Globals.hpp"
+#include "../Engine.hpp"
 #include "../Renderers/RendererInterface/Device.hpp"
 #include "Logger.hpp"
 
@@ -42,6 +42,8 @@ bool GeometryBuffer::Resize(int width, int height)
     mWidth = width;
     mHeight = height;
 
+    HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
+
     TextureDesc depthBufferDesc;
     depthBufferDesc.type = TextureType::Texture2D;
     depthBufferDesc.access = BufferAccess::GPU_ReadWrite;
@@ -51,7 +53,7 @@ bool GeometryBuffer::Resize(int width, int height)
     depthBufferDesc.mipmaps = 1;
     depthBufferDesc.depthBufferFormat = DepthBufferFormat::Depth32;
     depthBufferDesc.debugName = "GeometryBuffer::mDepthBuffer";
-    mDepthBuffer.reset(gRenderer->GetDevice()->CreateTexture(depthBufferDesc));
+    mDepthBuffer.reset(renderer->GetDevice()->CreateTexture(depthBufferDesc));
     if (mDepthBuffer == nullptr)
     {
         LOG_ERROR("Failed to create depth buffer");
@@ -82,7 +84,7 @@ bool GeometryBuffer::Resize(int width, int height)
     {
         texDesc.format = elementFormats[i];
         texDesc.texelSize = elementSizes[i];
-        mTextures[i].reset(gRenderer->GetDevice()->CreateTexture(texDesc));
+        mTextures[i].reset(renderer->GetDevice()->CreateTexture(texDesc));
         if (!mTextures[i])
         {
             LOG_ERROR("Failed to create G-Buffer's texture (i = %i)", i);
@@ -99,7 +101,7 @@ bool GeometryBuffer::Resize(int width, int height)
     rtDesc.targets = rtTargets;
     rtDesc.depthBuffer = mDepthBuffer.get();
     rtDesc.debugName = "GeometryBuffer::mRenderTarget";
-    mRenderTarget.reset(gRenderer->GetDevice()->CreateRenderTarget(rtDesc));
+    mRenderTarget.reset(renderer->GetDevice()->CreateRenderTarget(rtDesc));
     if (!mRenderTarget)
     {
         LOG_ERROR("Failed to create G-Buffer's render target");

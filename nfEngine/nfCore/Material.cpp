@@ -127,6 +127,7 @@ bool Material::OnLoad()
 
     mLayers = new MaterialLayer [mLayersCount];
 
+    ResManager* rm = Engine::GetInstance()->GetResManager();
 
     for (uint32 i = 0; i < mLayersCount; i++)
     {
@@ -137,7 +138,9 @@ bool Material::OnLoad()
         {
             if (node[ATTR_DIFFUSE_TEXTURE].IsString())
             {
-                layer.diffuseTexture = ENGINE_GET_TEXTURE(node[ATTR_DIFFUSE_TEXTURE].GetString());
+                layer.diffuseTexture =
+                    static_cast<Texture*>(rm->GetResource(node[ATTR_DIFFUSE_TEXTURE].GetString(),
+                                          ResourceType::Texture));
                 layer.diffuseTexture->AddRef();
             }
             else
@@ -150,7 +153,9 @@ bool Material::OnLoad()
         {
             if (node[ATTR_NORMAL_TEXTURE].IsString())
             {
-                layer.normalTexture = ENGINE_GET_TEXTURE(node[ATTR_NORMAL_TEXTURE].GetString());
+                layer.normalTexture =
+                    static_cast<Texture*>(rm->GetResource(node[ATTR_NORMAL_TEXTURE].GetString(),
+                                                          ResourceType::Texture));
                 layer.normalTexture->AddRef();
             }
             else
@@ -163,7 +168,9 @@ bool Material::OnLoad()
         {
             if (node[ATTR_SPECULAR_TEXTURE].IsString())
             {
-                layer.specularTexture = ENGINE_GET_TEXTURE(node[ATTR_SPECULAR_TEXTURE].GetString());
+                layer.specularTexture =
+                    static_cast<Texture*>(rm->GetResource(node[ATTR_SPECULAR_TEXTURE].GetString(),
+                                                          ResourceType::Texture));
                 layer.specularTexture->AddRef();
             }
             else

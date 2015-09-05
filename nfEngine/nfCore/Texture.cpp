@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "Globals.hpp"
+#include "Engine.hpp"
 #include "Texture.hpp"
 #include "Renderer/HighLevelRenderer.hpp"
 #include "ResourcesManager.hpp"
@@ -111,7 +112,8 @@ Renderer::ITexture* CreateRendererTextureFromImage(const Common::Image& image,
 
     texDesc.dataDesc = initialData;
 
-    return gRenderer->GetDevice()->CreateTexture(texDesc);
+    HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
+    return renderer->GetDevice()->CreateTexture(texDesc);
 }
 
 } // namespace

@@ -6,7 +6,6 @@
 
 #include "../PCH.hpp"
 #include "TransformSystem.hpp"
-#include "../Globals.hpp"
 #include "../Engine.hpp"
 #include "../EntityManager.hpp"
 #include "../Components/TransformComponent.hpp"
