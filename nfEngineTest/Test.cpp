@@ -3,6 +3,7 @@
 #include "Editor.hpp"
 #include "Scenes.hpp"
 
+#include "../nfCommon/Window.hpp"
 #include "../nfEngine/nfCommon/Logger.hpp"
 #include "../nfCommon/FileSystem.hpp"
 
@@ -14,6 +15,7 @@ using namespace NFE::Resource;
 
 class CustomWindow;
 
+Engine* gEngine = nullptr;
 EntityManager* gEntityManager = nullptr;
 Random gRandom;
 float gDeltaTime = 0.0f;
@@ -213,9 +215,9 @@ public:
         if (key >= '0' && key <= '9')
         {
             gSelectedEntity = -1;
-            EngineDeleteScene(gScene);
+            gEngine->DeleteScene(gScene);
 
-            gScene = EngineCreateScene();
+            gScene = gEngine->CreateScene();
             gEntityManager = gScene->GetEntityManager();
 
             InitCamera();
@@ -250,8 +252,7 @@ public:
             BodyComponent body;
             body.SetMass(10.0f);
             body.SetVelocity(0.1f * camOrient.z);
-            body.EnablePhysics((CollisionShape*)EngineGetResource(ResourceType::CollisionShape,
-                                "shape_box"));
+            body.EnablePhysics(ENGINE_GET_COLLISION_SHAPE("shape_box"));
             gEntityManager->AddComponent(cube, body);
 
             {
@@ -292,8 +293,7 @@ public:
             BodyComponent body;
             body.SetMass(20.0f);
             body.SetVelocity(30.0f * camOrient.z);
-            body.EnablePhysics((CollisionShape*)EngineGetResource(ResourceType::CollisionShape,
-                                "shape_barrel"));
+            body.EnablePhysics(ENGINE_GET_COLLISION_SHAPE("shape_barrel"));
             gEntityManager->AddComponent(barrel, body);
         }
     }
@@ -393,13 +393,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     window->Open();
 
     //initialize engine
-    if (EngineInit() != Result::OK)
+    gEngine = Engine::Initialize();
+    if (gEngine == nullptr)
         return 1;
 
     Demo_InitEditorBar();
 
     //create scene and camera
-    gScene = EngineCreateScene();
+    gScene = gEngine->CreateScene();
     if (gScene == nullptr)
         return 1;
 
@@ -451,13 +452,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         window->UpdateCamera();
 
         UpdateRequest updateReq;
-        updateReq.pScene = gScene;
+        updateReq.scene = gScene;
         updateReq.deltaTime = gDeltaTime;
 
         DrawRequest drawRequest;
-        drawRequest.deltaTime = gDeltaTime;
-        drawRequest.pView = window->view.get();
-        EngineAdvance(&drawRequest, 1, &updateReq, 1);
+        drawRequest.view = window->view.get();
+        gEngine->Advance(&drawRequest, 1, &updateReq, 1);
 
         char str[128];
         sprintf(str, "NFEngine Demo (%s)  -  Press [0-%i] to switch scene",
@@ -465,9 +465,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         window->SetTitle(str);
     }
 
-    EngineDeleteScene(gScene);
+    gEngine->DeleteScene(gScene);
     delete window;
-    EngineRelease();
+    Engine::Release();
 
 //detect memory leaks
 #ifdef _DEBUG

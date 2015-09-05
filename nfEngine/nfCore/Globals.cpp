@@ -15,9 +15,4 @@ using namespace Resource;
 
 const std::string g_DataPath = "nfEngineTest/Data/";
 
-std::unique_ptr<HighLevelRenderer> gRenderer;
-
-std::shared_ptr<Common::ThreadPool> g_pMainThreadPool;
-ResManager* g_pResManager = NULL;
-
 } // namespace NFE

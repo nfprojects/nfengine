@@ -7,9 +7,9 @@
 #include "../PCH.hpp"
 #include "RendererSystem.hpp"
 
-#include "../Globals.hpp"
 #include "../EntityManager.hpp"
 #include "../Engine.hpp"
+#include "../Material.hpp"
 
 #include "../Renderer/HighLevelRenderer.hpp"
 #include "../Renderer/ShadowsRenderer.hpp"
@@ -235,13 +235,14 @@ void RendererSystem::Render(Renderer::View* view)
     using namespace std::placeholders;
 
     EntityManager* entityManager = mScene->GetEntityManager();
+    HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
 
     EntityID cameraEntity = view->GetCameraEntity();
     auto camera = entityManager->GetComponent<CameraComponent>(cameraEntity);
     auto cameraTransform = entityManager->GetComponent<TransformComponent>(cameraEntity);
     auto cameraBody = entityManager->GetComponent<BodyComponent>(cameraEntity);
 
-    RenderContext* immCtx = gRenderer->GetImmediateContext();
+    RenderContext* immCtx = renderer->GetImmediateContext();
     immCtx->Begin();
 
     Vector cameraVelocity;
@@ -298,13 +299,13 @@ void RendererSystem::Render(Renderer::View* view)
         }
     }
 
-    // this value will be reused often...
-    const size_t contextsNum = g_pMainThreadPool->GetThreadsNumber();
+    Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
+    const size_t contextsNum = threadPool->GetThreadsNumber();
 
     // prepare deferred contexts
     for (size_t i = 0; i < contextsNum; i++)
     {
-        RenderContext* ctx = gRenderer->GetDeferredContext(i);
+        RenderContext* ctx = renderer->GetDeferredContext(i);
         ctx->Begin();
         ShadowRenderer::Get()->Enter(ctx);
     }
@@ -312,9 +313,10 @@ void RendererSystem::Render(Renderer::View* view)
     // draw shadow maps
     ShadowRenderer::Get()->Enter(immCtx);
 
-    auto drawShadowMapFunc = [this](LightComponent * pLight, size_t instance, size_t threadID)
+    auto drawShadowMapFunc = [this, renderer](LightComponent * pLight, size_t instance,
+                                              size_t threadID)
     {
-        RenderContext* ctx = gRenderer->GetDeferredContext(threadID);
+        RenderContext* ctx = renderer->GetDeferredContext(threadID);
         RenderShadow(ctx, pLight, static_cast<int>(instance));
     };
 
@@ -333,32 +335,31 @@ void RendererSystem::Render(Renderer::View* view)
             instancesCount = light->mDirLight.splits;
 
         Common::TaskID task =
-            g_pMainThreadPool->Enqueue(std::bind(drawShadowMapFunc, light, _1, _2),
-                                       instancesCount);
+            threadPool->Enqueue(std::bind(drawShadowMapFunc, light, _1, _2), instancesCount);
         shadowTasks.push_back(task);
     }
 
     // execute shadowmaps rendering
     for (auto task : shadowTasks)
     {
-        g_pMainThreadPool->WaitForTask(task);
+        threadPool->WaitForTask(task);
     }
 
-    auto endCommandListFunc = [] (size_t instance)
+    auto endCommandListFunc = [renderer] (size_t instance)
     {
-        RenderContext* ctx = gRenderer->GetDeferredContext(instance);
+        RenderContext* ctx = renderer->GetDeferredContext(instance);
         if (ctx)
             ctx->End();
     };
 
     // finish all deferred context here - build command lists
-    Common::TaskID endCommandListTask = g_pMainThreadPool->Enqueue(std::bind(endCommandListFunc, _1),
-                                        contextsNum);
-    g_pMainThreadPool->WaitForTask(endCommandListTask);
+    Common::TaskID endCommandListTask = threadPool->Enqueue(std::bind(endCommandListFunc, _1),
+                                                            contextsNum);
+    threadPool->WaitForTask(endCommandListTask);
 
     // execute command lists
     for (size_t i = 0; i < contextsNum; i++)
-        gRenderer->ExecuteDeferredContext(gRenderer->GetDeferredContext(i));
+        renderer->ExecuteDeferredContext(renderer->GetDeferredContext(i));
     ShadowRenderer::Get()->Leave(immCtx);
 
 
@@ -395,7 +396,7 @@ void RendererSystem::Render(Renderer::View* view)
 
     // DEBUG RENDERING ===========================================================================
 
-    if (gRenderer->settings.debugEnable)
+    if (renderer->settings.debugEnable)
     {
         DebugRenderer::Get()->Enter(immCtx);
         DebugRenderer::Get()->SetCamera(immCtx, camera->mViewMatrix, camera->mProjMatrix);
@@ -428,7 +429,7 @@ void RendererSystem::Render(Renderer::View* view)
         }
 
         // draw light shapes
-        if (gRenderer->settings.debugLights)
+        if (renderer->settings.debugLights)
         {
             for (auto lightTuple : mLights)
             {
@@ -439,7 +440,7 @@ void RendererSystem::Render(Renderer::View* view)
         }
 
         // draw meshes AABBs
-        if (gRenderer->settings.debugMeshes)
+        if (renderer->settings.debugMeshes)
         {
             for (auto meshTuple : mActiveMeshEntities)
             {

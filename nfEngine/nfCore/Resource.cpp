@@ -5,7 +5,7 @@
  */
 
 #include "PCH.hpp"
-#include "Globals.hpp"
+#include "Engine.hpp"
 #include "Resource.hpp"
 #include "ResourcesManager.hpp"
 #include "../nfCommon/Memory.hpp"
@@ -80,21 +80,23 @@ bool ResourceBase::Rename(const char* pNewName)
         return false;
     }
 
+    ResManager* rm = Engine::GetInstance()->GetResManager();
+
     // check if name is not already used
-    if (g_pResManager->mResources.count(pNewName) > 0)
+    if (rm->mResources.count(pNewName) > 0)
     {
         LOG_ERROR("Can not rename resource '%s' to '%s'. Name already used.", mName, pNewName);
         return false;
     }
 
     // erease old name
-    g_pResManager->mResources.erase(mName);
+    rm->mResources.erase(mName);
 
     // add new entry with new name to resources map
     std::pair<const char*, ResourceBase*> resPair;
     resPair.first = pNewName;
     resPair.second = this;
-    g_pResManager->mResources.insert(resPair);
+    rm->mResources.insert(resPair);
 
     // ensure null-filled memory after the string
     memset(mName, 0, RES_NAME_MAX_LENGTH);
@@ -118,7 +120,10 @@ void ResourceBase::SetState(ResourceState newState)
 void ResourceBase::AddRef(void* ptr)
 {
     if (++mRefCount == 1)
-        g_pResManager->LoadResource(this);
+    {
+        ResManager* rm = Engine::GetInstance()->GetResManager();
+        rm->LoadResource(this);
+    }
 }
 
 void ResourceBase::DelRef(void* ptr)
@@ -130,7 +135,10 @@ void ResourceBase::DelRef(void* ptr)
     }
 
     if (--mRefCount == 0)
-        g_pResManager->UnloadResource(this);
+    {
+        ResManager* rm = Engine::GetInstance()->GetResManager();
+        rm->UnloadResource(this);
+    }
 }
 
 void ResourceBase::Load()

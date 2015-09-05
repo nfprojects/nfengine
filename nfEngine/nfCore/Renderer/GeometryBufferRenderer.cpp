@@ -9,7 +9,6 @@
 #include "../PCH.hpp"
 #include "GeometryBufferRenderer.hpp"
 #include "HighLevelRenderer.hpp"
-#include "../Globals.hpp"
 #include "../Material.hpp"
 #include "../Mesh.hpp"
 #include "../../nfCommon/Logger.hpp"
@@ -52,7 +51,7 @@ GBufferRendererContext::GBufferRendererContext()
 
 GBufferRenderer::GBufferRenderer()
 {
-    IDevice* device = gRenderer->GetDevice();
+    IDevice* device = mRenderer->GetDevice();
     BufferDesc bufferDesc;
 
     mVertexShader.Load("GeometryPassVS");
@@ -125,22 +124,22 @@ void GBufferRenderer::OnEnter(RenderContext* context)
     context->commandBuffer->SetVertexLayout(mVertexLayout.get());
 
     context->commandBuffer->SetRasterizerState(mRasterizerState.get());
-    context->commandBuffer->SetDepthState(gRenderer->GetDefaultDepthState());
-    context->commandBuffer->SetBlendState(gRenderer->GetDefaultBlendState());
+    context->commandBuffer->SetDepthState(mRenderer->GetDefaultDepthState());
+    context->commandBuffer->SetBlendState(mRenderer->GetDefaultBlendState());
 
-    ISampler* sampler = gRenderer->GetDefaultSampler();
+    ISampler* sampler = mRenderer->GetDefaultSampler();
     context->commandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
 }
 
 void GBufferRenderer::OnLeave(RenderContext* context)
 {
     // TODO: allow "NULL" in the array
-    ITexture* nullTextures[] = { gRenderer->GetDefaultDiffuseTexture(),
-        gRenderer->GetDefaultDiffuseTexture(),
-        gRenderer->GetDefaultDiffuseTexture(),
-        gRenderer->GetDefaultDiffuseTexture(),
-        gRenderer->GetDefaultDiffuseTexture(),
-        gRenderer->GetDefaultDiffuseTexture() };
+    ITexture* nullTextures[] = { mRenderer->GetDefaultDiffuseTexture(),
+        mRenderer->GetDefaultDiffuseTexture(),
+        mRenderer->GetDefaultDiffuseTexture(),
+        mRenderer->GetDefaultDiffuseTexture(),
+        mRenderer->GetDefaultDiffuseTexture(),
+        mRenderer->GetDefaultDiffuseTexture() };
     context->commandBuffer->SetTextures(nullTextures, 6, ShaderType::Pixel);
 
     context->commandBuffer->EndDebugGroup();
@@ -168,9 +167,9 @@ void GBufferRenderer::SetCamera(RenderContext *context, const CameraRenderDesc* 
 void GBufferRenderer::SetMaterial(RenderContext* context, const RendererMaterial* material)
 {
     // TODO: use additional macros/branching in the shaders instead of using "dummy" textures
-    ITexture* diffuseTexture = gRenderer->GetDefaultDiffuseTexture();
-    ITexture* normalTexture = gRenderer->GetDefaultNormalTexture();
-    ITexture* specularTexture = gRenderer->GetDefaultSpecularTexture();
+    ITexture* diffuseTexture = mRenderer->GetDefaultDiffuseTexture();
+    ITexture* normalTexture = mRenderer->GetDefaultNormalTexture();
+    ITexture* specularTexture = mRenderer->GetDefaultSpecularTexture();
 
     MaterialCBuffer cbuffer;
     cbuffer.diffuseColor = Vector(1.0f, 1.0f, 1.0f, 1.0f);

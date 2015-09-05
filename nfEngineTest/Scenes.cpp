@@ -8,6 +8,7 @@ using namespace NFE::Math;
 using namespace NFE::Scene;
 using namespace NFE::Resource;
 
+
 SceneManager* gScene = nullptr;
 
 void CreateSceneMinecraft();
