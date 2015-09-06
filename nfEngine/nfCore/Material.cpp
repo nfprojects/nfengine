@@ -110,97 +110,105 @@ bool Material::OnLoad()
     }
 
     const rapidjson::Value& layersNode = document[ATTR_LAYERS];
-    mLayersCount = layersNode.Size();
 
-    if (mLayersCount < 1)
+    MaterialLayer* layers = nullptr;
+    uint32 layersCount = layersNode.Size();
+
+    if (layersCount < 1)
     {
-        mLayers = new MaterialLayer [1];
-        mLayersCount = 1;
-        goto MaterialLoadedLabel;
+        layers = new MaterialLayer [1];
+        layersCount = 1;
+    }
+    else if (layersCount > 4) // TODO: unlimited layers or create a global constant for it
+    {
+        layersCount = 4;
+    }
+    else
+    {
+        layers = new MaterialLayer[layersCount];
+
+        ResManager* rm = Engine::GetInstance()->GetResManager();
+
+        for (uint32 i = 0; i < layersCount; i++)
+        {
+            MaterialLayer& layer = layers[i];
+            const auto& node = layersNode[i];
+
+            if (node.HasMember(ATTR_DIFFUSE_TEXTURE))
+            {
+                if (node[ATTR_DIFFUSE_TEXTURE].IsString())
+                {
+                    layer.diffuseTexture = static_cast<Texture*>(
+                        rm->GetResource(node[ATTR_DIFFUSE_TEXTURE].GetString(),
+                                        ResourceType::Texture));
+                    layer.diffuseTexture->AddRef();
+                }
+                else
+                {
+                    LOG_WARNING("%s attribute must be a string", ATTR_DIFFUSE_TEXTURE);
+                }
+            }
+
+            if (node.HasMember(ATTR_NORMAL_TEXTURE))
+            {
+                if (node[ATTR_NORMAL_TEXTURE].IsString())
+                {
+                    layer.normalTexture = static_cast<Texture*>(
+                        rm->GetResource(node[ATTR_NORMAL_TEXTURE].GetString(),
+                                        ResourceType::Texture));
+                    layer.normalTexture->AddRef();
+                }
+                else
+                {
+                    LOG_WARNING("%s attribute must be a string", ATTR_NORMAL_TEXTURE);
+                }
+            }
+
+            if (node.HasMember(ATTR_SPECULAR_TEXTURE))
+            {
+                if (node[ATTR_SPECULAR_TEXTURE].IsString())
+                {
+                    layer.specularTexture = static_cast<Texture*>(
+                        rm->GetResource(node[ATTR_SPECULAR_TEXTURE].GetString(),
+                                        ResourceType::Texture));
+                    layer.specularTexture->AddRef();
+                }
+                else
+                {
+                    LOG_WARNING("%s attribute must be a string", ATTR_SPECULAR_TEXTURE);
+                }
+            }
+
+            double specPower = 20.0f;
+            if (node.HasMember(ATTR_SPECULAR_POWER) && node[ATTR_SPECULAR_POWER].IsDouble())
+                specPower = node[ATTR_SPECULAR_POWER].GetDouble();
+            layer.specularColor.w = (float)specPower;
+
+            double specFactor = 1.0f;
+            if (node.HasMember(ATTR_SPECULAR_FACTOR) && node[ATTR_SPECULAR_FACTOR].IsDouble())
+                specPower = node[ATTR_SPECULAR_FACTOR].GetDouble();
+            layer.specularColor.x = (float)specFactor;
+
+            //look up for diffuse color
+            layer.diffuseColor = Float4(1.0f, 1.0f, 1.0f, 1.0f);
+            if (node.HasMember(ATTR_DIFFUSE_COLOR))
+                NodeToColor(node[ATTR_DIFFUSE_COLOR], layer.diffuseColor);
+
+            //look up for emission color
+            layer.emissionColor = Float4();
+            if (node.HasMember(ATTR_EMISSION_COLOR))
+                NodeToColor(node[ATTR_EMISSION_COLOR], layer.diffuseColor);
+        }
     }
 
-    //max 4 layers (TEMPORARY)
-    if (mLayersCount > 4)
     {
-        mLayersCount = 4;
+        std::mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
+        std::unique_lock<std::mutex> lock(renderingMutex);
+
+        mLayers = layers;
+        mLayersCount = layersCount;
     }
 
-    mLayers = new MaterialLayer [mLayersCount];
-
-    ResManager* rm = Engine::GetInstance()->GetResManager();
-
-    for (uint32 i = 0; i < mLayersCount; i++)
-    {
-        MaterialLayer& layer = mLayers[i];
-        const auto& node = layersNode[i];
-
-        if (node.HasMember(ATTR_DIFFUSE_TEXTURE))
-        {
-            if (node[ATTR_DIFFUSE_TEXTURE].IsString())
-            {
-                layer.diffuseTexture =
-                    static_cast<Texture*>(rm->GetResource(node[ATTR_DIFFUSE_TEXTURE].GetString(),
-                                          ResourceType::Texture));
-                layer.diffuseTexture->AddRef();
-            }
-            else
-            {
-                LOG_WARNING("%s attribute must be a string", ATTR_DIFFUSE_TEXTURE);
-            }
-        }
-
-        if (node.HasMember(ATTR_NORMAL_TEXTURE))
-        {
-            if (node[ATTR_NORMAL_TEXTURE].IsString())
-            {
-                layer.normalTexture =
-                    static_cast<Texture*>(rm->GetResource(node[ATTR_NORMAL_TEXTURE].GetString(),
-                                                          ResourceType::Texture));
-                layer.normalTexture->AddRef();
-            }
-            else
-            {
-                LOG_WARNING("%s attribute must be a string", ATTR_NORMAL_TEXTURE);
-            }
-        }
-
-        if (node.HasMember(ATTR_SPECULAR_TEXTURE))
-        {
-            if (node[ATTR_SPECULAR_TEXTURE].IsString())
-            {
-                layer.specularTexture =
-                    static_cast<Texture*>(rm->GetResource(node[ATTR_SPECULAR_TEXTURE].GetString(),
-                                                          ResourceType::Texture));
-                layer.specularTexture->AddRef();
-            }
-            else
-            {
-                LOG_WARNING("%s attribute must be a string", ATTR_SPECULAR_TEXTURE);
-            }
-        }
-
-        double specPower = 20.0f;
-        if (node.HasMember(ATTR_SPECULAR_POWER) && node[ATTR_SPECULAR_POWER].IsDouble())
-            specPower = node[ATTR_SPECULAR_POWER].GetDouble();
-        layer.specularColor.w = (float)specPower;
-
-        double specFactor = 1.0f;
-        if (node.HasMember(ATTR_SPECULAR_FACTOR) && node[ATTR_SPECULAR_FACTOR].IsDouble())
-            specPower = node[ATTR_SPECULAR_FACTOR].GetDouble();
-        layer.specularColor.x = (float)specFactor;
-
-        //look up for diffuse color
-        layer.diffuseColor = Float4(1.0f, 1.0f, 1.0f, 1.0f);
-        if (node.HasMember(ATTR_DIFFUSE_COLOR))
-            NodeToColor(node[ATTR_DIFFUSE_COLOR], layer.diffuseColor);
-
-        //look up for emission color
-        layer.emissionColor = Float4();
-        if (node.HasMember(ATTR_EMISSION_COLOR))
-            NodeToColor(node[ATTR_EMISSION_COLOR], layer.diffuseColor);
-    }
-
-MaterialLoadedLabel:
     LOG_SUCCESS("Material '%s' loaded successfully.", mName);
     return true;
 }
@@ -209,9 +217,12 @@ void Material::OnUnload()
 {
     LOG_INFO("Unloading material '%s'...", mName);
 
+    std::mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
+    std::unique_lock<std::mutex> lock(renderingMutex);
+
     if (mLayers)
     {
-        //deleta all resource references
+        // delete textures references
         for (uint32 i = 0; i < mLayersCount; i++)
         {
             if (mLayers[i].diffuseTexture != nullptr)
@@ -241,15 +252,17 @@ using namespace Renderer;
 */
 const RendererMaterial* Material::GetRendererData()
 {
-
     if (mRendererData.layersNum != mLayersCount)
     {
         if (mRendererData.layers != nullptr)
         {
             delete[] mRendererData.layers;
+            mRendererData.layers = nullptr;
         }
 
-        mRendererData.layers = new RendererMaterialLayer [mLayersCount];
+        if (mLayersCount > 0)
+            mRendererData.layers = new RendererMaterialLayer[mLayersCount];
+
         mRendererData.layersNum = mLayersCount;
     }
 

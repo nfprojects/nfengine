@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 #include "CollisionShape.hpp"
 #include "Globals.hpp"
+#include "Engine.hpp"
 #include "../nfCommon/Logger.hpp"
 #include "../nfCommon/Timer.hpp"
 
@@ -61,6 +62,9 @@ CollisionShape::~CollisionShape()
 
 void CollisionShape::Release()
 {
+    std::mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
+    std::unique_lock<std::mutex> lock(renderingMutex);
+
     if (mChildren.size() > 1)
     {
         if (mShape)

@@ -131,6 +131,9 @@ Texture::~Texture()
 
 void Texture::Release()
 {
+    std::mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
+    std::unique_lock<std::mutex> lock(renderingMutex);
+
     mTex.reset();
 }
 
@@ -223,7 +226,7 @@ bool Texture::OnLoad()
 void Texture::OnUnload()
 {
     if (mOnUnload)
-        mOnLoad(this, mUserPtr);
+        mOnUnload(this, mUserPtr);
 
     LOG_INFO("Unloading texture '%s'...", mName);
     Release();
@@ -242,7 +245,13 @@ Result Texture::CreateFromImage(const Common::Image& image)
 {
     Release();
 
-    mTex.reset(CreateRendererTextureFromImage(image, mName));
+    {
+        std::mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
+        std::unique_lock<std::mutex> lock(renderingMutex);
+
+        mTex.reset(CreateRendererTextureFromImage(image, mName));
+    }
+
     if (!mTex)
     {
         LOG_ERROR("Failed to create renderer's texture for '%s'.", mName);

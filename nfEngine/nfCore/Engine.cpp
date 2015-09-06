@@ -160,6 +160,8 @@ bool Engine::Advance(const DrawRequest* drawRequests, uint32 drawRequestsNum,
 
     Util::g_FrameStats.Reset();
 
+    std::unique_lock<std::mutex> lock(mRenderingMutex);
+
     // update physics
     bool scenesUpdatedSuccessfully = true;
     for (uint32 i = 0; i < updateRequestsNum; i++)
