@@ -171,6 +171,8 @@ bool Engine::Advance(const DrawRequest* drawRequests, uint32 drawRequestsNum,
 
     Util::g_FrameStats.Reset();
 
+    std::unique_lock<std::mutex> lock(mRenderingMutex);
+
     // update physics
     for (uint32 i = 0; i < updateRequestsNum; i++)
     {
@@ -232,6 +234,7 @@ bool Engine::Advance(const DrawRequest* drawRequests, uint32 drawRequestsNum,
         // present frame in the display
         view->Present();
     }
+    lock.unlock();
 
     return true;
 }
