@@ -31,6 +31,12 @@ class CORE_API Engine
     friend CORE_API Engine* EngineInit();
     friend CORE_API bool EngineRelease();
 
+    /**
+     * Mutex used to synchronize scene rendering and resources allocations.
+     * Resources must be released outside rendering stage.
+     */
+    std::mutex mRenderingMutex;
+
     Common::ThreadPool mMainThreadPool;
     Resource::ResManager mResManager;
     std::unique_ptr<Renderer::HighLevelRenderer> mRenderer;
@@ -114,6 +120,12 @@ public:
      */
     bool Advance(const DrawRequest* drawRequests, uint32 drawRequestsNum,
                  const UpdateRequest* updateRequests, uint32 updateRequestsNum);
+
+
+    NFE_INLINE std::mutex& GetRenderingMutex()
+    {
+        return mRenderingMutex;
+    }
 };
 
 } // namespace NFE
