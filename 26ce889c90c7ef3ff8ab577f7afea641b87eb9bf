@@ -137,6 +137,201 @@
       "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_6a5ae784",
+        "filename": "nfEngine/nfCore/Components/LightComponent.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-06T09:53:19Z",
+      "side": 1,
+      "message": "use init list",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 18
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_8a5f3372",
+        "filename": "nfEngine/nfCore/Components/LightComponent.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-06T09:53:19Z",
+      "side": 1,
+      "message": "Why this is not a part of Release() method?",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 5
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_90468222",
+        "filename": "nfEngine/nfCore/Components/MeshComponent.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-06T09:53:19Z",
+      "side": 1,
+      "message": "I don\u0027t know why some Components have Release() method, however others don\u0027t. IMO this should be unified throughout these classes.",
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_b04a9e25",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-06T09:53:19Z",
+      "side": 1,
+      "message": "nullptr",
+      "range": {
+        "startLine": 278,
+        "startChar": 20,
+        "endLine": 278,
+        "endChar": 24
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_d0472a1c",
+        "filename": "nfEngine/nfCore/EntityManager.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-06T09:53:19Z",
+      "side": 1,
+      "message": "A good question. We are removing an entity, however it does not exist already. It is an error, or a correct behavior and we don\u0027t need to report about an error?",
+      "range": {
+        "startLine": 47,
+        "startChar": 8,
+        "endLine": 47,
+        "endChar": 21
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_f05426cc",
+        "filename": "nfEngine/nfCore/SceneManager.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-06T09:53:19Z",
+      "side": 1,
+      "message": "init list",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 52
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_105272dd",
+        "filename": "nfEngine/nfCore/SceneManager.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-06T09:53:19Z",
+      "side": 1,
+      "message": "Constructor should assure that the objects are there. No need to check.\n\nBesides, since you are already initializing all the systems, why not keep them on stack (without unique_ptr, just as SceneManager\u0027s attributes)?",
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_50631ab1",
+        "filename": "nfEngine/nfCoreTest/EntityManagerTest.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-06T09:53:19Z",
+      "side": 1,
+      "message": "No need for unique_ptr",
+      "range": {
+        "startLine": 52,
+        "startChar": 0,
+        "endLine": 54,
+        "endChar": 47
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_305e8eea",
+        "filename": "nfEngine/nfCoreTest/EntityManagerTest.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-06T09:53:19Z",
+      "side": 1,
+      "message": "No need for unique_ptr",
+      "range": {
+        "startLine": 81,
+        "startChar": 0,
+        "endLine": 83,
+        "endChar": 47
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
