@@ -507,6 +507,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_50f31a73",
+        "filename": "nfEngine/nfCore/EntityManager.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-06T21:29:52Z",
+      "side": 1,
+      "message": "I\u0027ll ask differently then.\n\nFunction RemoveEntity checks if provided entity exists before removal. That\u0027s OK. However, imagine a situation, where mEntities.find() shows us, that provided Entity does not exist. Right now it is an error, why? It could be an OK situation anyway and we could return true here.",
+      "parentUuid": "1ae5cdf2_b0f8dec5",
+      "range": {
+        "startLine": 47,
+        "startChar": 8,
+        "endLine": 47,
+        "endChar": 21
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_f05426cc",
         "filename": "nfEngine/nfCore/SceneManager.cpp",
         "patchSetId": 15
