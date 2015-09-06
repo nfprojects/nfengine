@@ -110,28 +110,28 @@ bool Material::OnLoad()
     }
 
     const rapidjson::Value& layersNode = document[ATTR_LAYERS];
-    mLayersCount = layersNode.Size();
 
-    if (mLayersCount < 1)
+    MaterialLayer* layers = nullptr;
+    uint32 layersCount = layersNode.Size();
+
+    if (layersCount < 1)
     {
-        mLayers = new MaterialLayer [1];
-        mLayersCount = 1;
+        layers = new MaterialLayer [1];
+        layersCount = 1;
         goto MaterialLoadedLabel;
     }
 
-    //max 4 layers (TEMPORARY)
-    if (mLayersCount > 4)
-    {
-        mLayersCount = 4;
-    }
+    // max 4 layers (TEMPORARY)
+    if (layersCount > 4)
+        layersCount = 4;
 
-    mLayers = new MaterialLayer [mLayersCount];
+    layers = new MaterialLayer [layersCount];
 
     ResManager* rm = Engine::GetInstance()->GetResManager();
 
-    for (uint32 i = 0; i < mLayersCount; i++)
+    for (uint32 i = 0; i < layersCount; i++)
     {
-        MaterialLayer& layer = mLayers[i];
+        MaterialLayer& layer = layers[i];
         const auto& node = layersNode[i];
 
         if (node.HasMember(ATTR_DIFFUSE_TEXTURE))
@@ -201,6 +201,15 @@ bool Material::OnLoad()
     }
 
 MaterialLoadedLabel:
+
+    {
+        std::mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
+        std::unique_lock<std::mutex> lock(renderingMutex);
+
+        mLayers = layers;
+        mLayersCount = layersCount;
+    }
+
     LOG_SUCCESS("Material '%s' loaded successfully.", mName);
     return true;
 }
@@ -209,9 +218,12 @@ void Material::OnUnload()
 {
     LOG_INFO("Unloading material '%s'...", mName);
 
+    std::mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
+    std::unique_lock<std::mutex> lock(renderingMutex);
+
     if (mLayers)
     {
-        //deleta all resource references
+        // delete textures references
         for (uint32 i = 0; i < mLayersCount; i++)
         {
             if (mLayers[i].diffuseTexture != nullptr)
@@ -241,15 +253,17 @@ using namespace Renderer;
 */
 const RendererMaterial* Material::GetRendererData()
 {
-
     if (mRendererData.layersNum != mLayersCount)
     {
         if (mRendererData.layers != nullptr)
         {
             delete[] mRendererData.layers;
+            mRendererData.layers = nullptr;
         }
 
-        mRendererData.layers = new RendererMaterialLayer [mLayersCount];
+        if (mLayersCount > 0)
+            mRendererData.layers = new RendererMaterialLayer[mLayersCount];
+
         mRendererData.layersNum = mLayersCount;
     }
 

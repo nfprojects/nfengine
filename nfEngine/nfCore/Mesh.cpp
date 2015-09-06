@@ -336,9 +336,15 @@ void Mesh::OnUnload()
 {
     LOG_INFO("Unloading mesh '%s'...", mName);
 
+    std::mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
+    std::unique_lock<std::mutex> lock(renderingMutex);
+
+    mVB.reset();
+    mIB.reset();
+
     if (mSubMeshes)
     {
-        //delete all references
+        // delete materials references
         for (uint32 i = 0; i < mSubMeshesCount; i++)
             if (mSubMeshes[i].material)
             {
