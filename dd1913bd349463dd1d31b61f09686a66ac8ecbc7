@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_669588e3",
+        "filename": "nfEngine/nfCore/EntityManager.hpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-06T12:30:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_80bd14da",
+      "revId": "dd1913bd349463dd1d31b61f09686a66ac8ecbc7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_001bc41c",
         "filename": "nfEngine/nfCoreTest/EntityManagerTest.cpp",
         "patchSetId": 13
@@ -30,6 +48,24 @@
       "writtenOn": "2015-09-01T09:54:55Z",
       "side": 1,
       "message": ":)\n\nOK, so if CodeMaid doesn\u0027t work, and VS does not support such option, maybe we should add new script to Scripts/ directory? And use it as git hook?",
+      "revId": "dd1913bd349463dd1d31b61f09686a66ac8ecbc7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_c6ebb476",
+        "filename": "nfEngine/nfCoreTest/EntityManagerTest.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-06T12:30:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_001bc41c",
       "revId": "dd1913bd349463dd1d31b61f09686a66ac8ecbc7",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -59,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "9ad9bd40_46f7a459",
+        "filename": "nfEngine/nfCoreTest/EntityManagerTest.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-06T12:30:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_201a8817",
+      "range": {
+        "startLine": 188,
+        "startChar": 2,
+        "endLine": 188,
+        "endChar": 3
+      },
+      "revId": "dd1913bd349463dd1d31b61f09686a66ac8ecbc7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_20f1a8cd",
         "filename": "nfEngineTest/Test.cpp",
         "patchSetId": 13
@@ -70,6 +130,24 @@
       "writtenOn": "2015-09-01T09:54:55Z",
       "side": 1,
       "message": "Still, an information which scene is active would be a good idea. At least a number. :)",
+      "revId": "dd1913bd349463dd1d31b61f09686a66ac8ecbc7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ad9bd40_26fc603e",
+        "filename": "nfEngineTest/Test.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 497,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-06T12:30:56Z",
+      "side": 1,
+      "message": "IMO it\u0027s not in the scope of this commit. It\u0027s \"ECS reimplementation\", not \"nfEngineTest refactor\".",
+      "parentUuid": "9ad9bd40_20f1a8cd",
       "revId": "dd1913bd349463dd1d31b61f09686a66ac8ecbc7",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
