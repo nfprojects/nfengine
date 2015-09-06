@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_f0198623",
+        "filename": "nfEngine/nfCore/Components/BodyComponent.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-06T12:30:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_c020f79d",
+      "range": {
+        "startLine": 141,
+        "startChar": 8,
+        "endLine": 143,
+        "endChar": 75
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_6cee478d",
         "filename": "nfEngine/nfCore/Components/BodyComponent.hpp",
         "patchSetId": 15
@@ -36,6 +60,30 @@
       "writtenOn": "2015-09-02T07:35:51Z",
       "side": 1,
       "message": "one space should be enough.",
+      "range": {
+        "startLine": 14,
+        "startChar": 6,
+        "endLine": 14,
+        "endChar": 7
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_50315aa1",
+        "filename": "nfEngine/nfCore/Components/BodyComponent.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-06T12:30:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_6cee478d",
       "range": {
         "startLine": 14,
         "startChar": 6,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_7026566a",
+        "filename": "nfEngine/nfCore/Components/BodyComponent.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-06T12:30:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_8cf1cb6c",
+      "range": {
+        "startLine": 15,
+        "startChar": 6,
+        "endLine": 15,
+        "endChar": 7
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_4034e7dd",
         "filename": "nfEngine/nfCore/Components/CameraComponent.cpp",
         "patchSetId": 15
@@ -82,6 +154,30 @@
       "writtenOn": "2015-09-02T07:35:51Z",
       "side": 1,
       "message": "Use init list.",
+      "range": {
+        "startLine": 19,
+        "startChar": 4,
+        "endLine": 19,
+        "endChar": 43
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_3005aec2",
+        "filename": "nfEngine/nfCore/Components/CameraComponent.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-06T12:30:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_4034e7dd",
       "range": {
         "startLine": 19,
         "startChar": 4,
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_f06b4683",
+        "filename": "nfEngine/nfCore/Components/CameraComponent.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-06T12:30:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_e0233ba5",
+      "range": {
+        "startLine": 54,
+        "startChar": 8,
+        "endLine": 57,
+        "endChar": 22
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_203523db",
         "filename": "nfEngine/nfCore/Components/CameraComponent.hpp",
         "patchSetId": 15
@@ -128,6 +248,30 @@
       "writtenOn": "2015-09-02T07:35:51Z",
       "side": 1,
       "message": "Not needed",
+      "range": {
+        "startLine": 68,
+        "startChar": 0,
+        "endLine": 68,
+        "endChar": 8
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_1069928b",
+        "filename": "nfEngine/nfCore/Components/CameraComponent.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-06T12:30:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_203523db",
       "range": {
         "startLine": 68,
         "startChar": 0,
@@ -163,6 +307,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_500a3ad3",
+        "filename": "nfEngine/nfCore/Components/LightComponent.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-06T12:30:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_6a5ae784",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 18
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_8a5f3372",
         "filename": "nfEngine/nfCore/Components/LightComponent.cpp",
         "patchSetId": 15
@@ -174,6 +342,30 @@
       "writtenOn": "2015-09-06T09:53:19Z",
       "side": 1,
       "message": "Why this is not a part of Release() method?",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 5
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_700f36e2",
+        "filename": "nfEngine/nfCore/Components/LightComponent.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-06T12:30:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_8a5f3372",
       "range": {
         "startLine": 40,
         "startChar": 0,
@@ -203,6 +395,24 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_d01c8a16",
+        "filename": "nfEngine/nfCore/Components/MeshComponent.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-06T12:30:56Z",
+      "side": 1,
+      "message": "But it depends on class. For example, MeshComponent holds only Mesh resource pointer. But LightComponent is more complex (shadowmap, lightmap, etc.) and releasing all these resources in a single method Release() is more convenient.",
+      "parentUuid": "1ae5cdf2_90468222",
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_b04a9e25",
         "filename": "nfEngine/nfCore/Engine.cpp",
         "patchSetId": 15
@@ -214,6 +424,30 @@
       "writtenOn": "2015-09-06T09:53:19Z",
       "side": 1,
       "message": "nullptr",
+      "range": {
+        "startLine": 278,
+        "startChar": 20,
+        "endLine": 278,
+        "endChar": 24
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_9014c2f6",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-06T12:30:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_b04a9e25",
       "range": {
         "startLine": 278,
         "startChar": 20,
@@ -249,6 +483,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_b0f8dec5",
+        "filename": "nfEngine/nfCore/EntityManager.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-06T12:30:56Z",
+      "side": 1,
+      "message": "What do you mean by \"We are removing an entity, however it does not exist already.\"?",
+      "parentUuid": "1ae5cdf2_d0472a1c",
+      "range": {
+        "startLine": 47,
+        "startChar": 8,
+        "endLine": 47,
+        "endChar": 21
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_f05426cc",
         "filename": "nfEngine/nfCore/SceneManager.cpp",
         "patchSetId": 15
@@ -260,6 +518,30 @@
       "writtenOn": "2015-09-06T09:53:19Z",
       "side": 1,
       "message": "init list",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 52
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_d0f56acc",
+        "filename": "nfEngine/nfCore/SceneManager.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-06T12:30:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_f05426cc",
       "range": {
         "startLine": 26,
         "startChar": 0,
@@ -289,6 +571,24 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_50d87a53",
+        "filename": "nfEngine/nfCore/SceneManager.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-06T12:30:56Z",
+      "side": 1,
+      "message": "1. Done.\n2. This way I can remove including all the systems in SceneManager.hpp decreasing compilation time.",
+      "parentUuid": "1ae5cdf2_105272dd",
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_50631ab1",
         "filename": "nfEngine/nfCoreTest/EntityManagerTest.cpp",
         "patchSetId": 15
@@ -312,6 +612,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_1000b2a9",
+        "filename": "nfEngine/nfCoreTest/EntityManagerTest.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-06T12:30:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_50631ab1",
+      "range": {
+        "startLine": 52,
+        "startChar": 0,
+        "endLine": 54,
+        "endChar": 47
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_305e8eea",
         "filename": "nfEngine/nfCoreTest/EntityManagerTest.cpp",
         "patchSetId": 15
@@ -323,6 +647,30 @@
       "writtenOn": "2015-09-06T09:53:19Z",
       "side": 1,
       "message": "No need for unique_ptr",
+      "range": {
+        "startLine": 81,
+        "startChar": 0,
+        "endLine": 83,
+        "endChar": 47
+      },
+      "revId": "26ce889c90c7ef3ff8ab577f7afea641b87eb9bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_302cce4a",
+        "filename": "nfEngine/nfCoreTest/EntityManagerTest.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-06T12:30:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_305e8eea",
       "range": {
         "startLine": 81,
         "startChar": 0,
