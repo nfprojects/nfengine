@@ -41,7 +41,10 @@ const std::string TEXTURE_BMP32XRGB = "textureBMP32XRGB.bmp";
 
 const std::string TEXTURE_PNG_RGB = "texturePNG_RGB.png";
 const std::string TEXTURE_PNG_RGBA = "texturePNG_RGBA.png";
-const std::string TEXTURE_PNG_A = "texturePNG_A.png";
+const std::string TEXTURE_PNG_RGBA_PALETTE = "texturePNG_RGBA_palette.png";
+const std::string TEXTURE_PNG_RGBA_INTERLACED = "texturePNG_RGBA_interlaced.png";
+const std::string TEXTURE_PNG_G = "texturePNG_G.png";
+const std::string TEXTURE_PNG_GA = "texturePNG_GA.png";
 
 ImageFormat TEST_DATA_FORMAT = ImageFormat::RGB_UByte;
 const int TEST_DATA_WIDTH = 4;
@@ -383,22 +386,31 @@ TEST_F(ImageTest, LoadJPG)
 
 TEST_F(ImageTest, LoadPNG)
 {
-    // TODO Enable, when proper PNG support is implemented
-    /*
+    // TODO Save this file as RGB (3 channels, color PNG)
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGB).data()));
-    ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGB_UByte));
-    CheckTexels(mImage.get());
-    */
+    LoadCheck(ImageFormat::RGBA_UByte);
 
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA).data()));
     LoadCheck(ImageFormat::RGBA_UByte);
 
-    // TODO Enable, when proper PNG support is implemented
-    /*
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_A).data()));
-    ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::A_UByte));
-    CheckTexels(mImage.get());
+    /* TODO Enable when proper RGB -> Grayscale conversion is implemented on our side
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_GA).data()));
+    LoadAssert(ImageFormat::RGBA_UByte);
+    convert testImage to grayscale
+    CheckTexels();
+
+    // TODO Save this file as G (1 channel, no color PNG)
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_G).data()));
+    LoadAssert(ImageFormat::A_UByte);
+    convert testImage to grayscale
+    CheckTexels();
     */
+
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA_PALETTE).data()));
+    LoadCheck(ImageFormat::RGB_UByte);
+
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA_INTERLACED).data()));
+    LoadCheck(ImageFormat::RGBA_UByte);
 }
 
 TEST_F(ImageTest, LoadBMP)

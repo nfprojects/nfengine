@@ -21,6 +21,17 @@ struct pngReadInfo
     size_t offset;
 };
 
+bool usingTrnsChunk(png_structp pngPtr, png_infop infoPtr)
+{
+    if (png_get_valid(pngPtr, infoPtr, PNG_INFO_tRNS))
+    {
+        png_set_tRNS_to_alpha(pngPtr);
+        return true;
+    }
+
+    return false;
+}
+
 void userReadData(png_structp pngPtr, png_bytep data, png_size_t length)
 {
     png_voidp a = png_get_io_ptr(pngPtr);
@@ -34,8 +45,6 @@ void userReadData(png_structp pngPtr, png_bytep data, png_size_t length)
 
 bool Image::LoadPNG(InputStream* stream)
 {
-    png_infopp pngInfoPPZero = static_cast<png_infopp>(0);
-
     // read png signature
     uchar signature[PNGSIGSIZE];
     if (stream->Read(PNGSIGSIZE, signature) != PNGSIGSIZE)
@@ -45,8 +54,7 @@ bool Image::LoadPNG(InputStream* stream)
     }
 
     // verify png signature
-    int is_png = png_sig_cmp(static_cast<png_byte*>(signature), 0, PNGSIGSIZE);
-    if (is_png != 0)
+    if (!png_check_sig(static_cast<png_const_bytep>(signature), PNGSIGSIZE))
     {
         LOG_ERROR("Veryfing PNG signature failed.");
         return false;
@@ -56,7 +64,7 @@ bool Image::LoadPNG(InputStream* stream)
     png_structp pngPtr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
     if (!pngPtr)
     {
-        LOG_ERROR("Reading PNG structure failed.");
+        LOG_ERROR("Creating PNG structure failed.");
         return false;
     }
 
@@ -65,14 +73,14 @@ bool Image::LoadPNG(InputStream* stream)
     if (!infoPtr)
     {
         LOG_ERROR("Creating PNG information structure failed.");
-        png_destroy_read_struct(&pngPtr, pngInfoPPZero, pngInfoPPZero);
+        png_destroy_read_struct(&pngPtr, nullptr, nullptr);
         return false;
     }
 
     if (setjmp(png_jmpbuf(pngPtr)))
     {
         LOG_ERROR("Saving calling environment for long jump in PNG failed.");
-        png_destroy_read_struct(&pngPtr, &infoPtr, pngInfoPPZero);
+        png_destroy_read_struct(&pngPtr, &infoPtr, nullptr);
         return false;
     }
 
@@ -97,41 +105,75 @@ bool Image::LoadPNG(InputStream* stream)
     png_uint_32 channels   = png_get_channels(pngPtr, infoPtr);
     png_uint_32 color_type = png_get_color_type(pngPtr, infoPtr);
 
+    // when 16bpp then scale it down to 8bp
+    if (bitdepth > 8)
+        png_set_scale_16(pngPtr);
+
+
     switch (color_type)
     {
         case PNG_COLOR_TYPE_PALETTE:
             png_set_palette_to_rgb(pngPtr);
             channels = 3;
-            mFormat = ImageFormat::RGB_UByte;
+
+            mFormat = ImageFormat::RGB_UByte; //can be tRNS
+
+            // if the image has a transperancy set, convert it to a full Alpha channel
+            if (png_get_valid(pngPtr, infoPtr, PNG_INFO_tRNS))
+            {
+                // if there is tRNS,
+                // then png_set_palette_to_rgb(pngPtr) should transform it to rgba
+                mFormat = ImageFormat::RGBA_UByte;
+                channels = 4;
+            }
             break;
 
         case PNG_COLOR_TYPE_GRAY:
-            if (bitdepth < 8)
+
+            // if the image has a transperancy set, convert it to a full Alpha channel
+            if (png_get_valid(pngPtr, infoPtr, PNG_INFO_tRNS))
+            {
+                png_set_gray_to_rgb(pngPtr);
+                mFormat = ImageFormat::RGBA_UByte;
+                channels = 4;
+            }
+            else
+            {
                 png_set_expand_gray_1_2_4_to_8(pngPtr);
-            bitdepth = 8;
-            mFormat = ImageFormat::A_UByte;
+                mFormat = ImageFormat::A_UByte;
+            }
             break;
 
         case PNG_COLOR_TYPE_RGB:
-            mFormat = ImageFormat::RGB_UByte;
+            mFormat = ImageFormat::RGB_UByte; //can be tRNS
+
+            // if the image has a transperancy set, convert it to a full Alpha channel
+            if (png_get_valid(pngPtr, infoPtr, PNG_INFO_tRNS))
+            {
+                png_set_tRNS_to_alpha(pngPtr);
+                mFormat = ImageFormat::RGBA_UByte;
+                channels = 4;
+            }
             break;
 
         case PNG_COLOR_TYPE_RGBA:
             mFormat = ImageFormat::RGBA_UByte;
             break;
 
+        case PNG_COLOR_TYPE_GA:
+            // Change G->RGB or GA->RGBA
+            png_set_gray_to_rgb(pngPtr);
+            channels = 4;
+            mFormat = ImageFormat::RGBA_UByte;
+            break;
+
         default:
             mFormat = ImageFormat::Unknown;
-            LOG_ERROR("PNG color type not recognized.");
+            LOG_ERROR("PNG color type %d not recognized.", color_type);
             return false;
     }
 
-    // if the image has a transperancy set, convert it to a full Alpha channel
-    if (png_get_valid(pngPtr, infoPtr, PNG_INFO_tRNS))
-    {
-        png_set_tRNS_to_alpha(pngPtr);
-        channels++;
-    }
+    bitdepth = 8;
 
     size_t dataSize = imgWidth * imgHeight * bitdepth * channels / 8;
     std::unique_ptr<png_bytep[]> rowPtrs(new (std::nothrow) png_bytep[imgHeight]);
@@ -161,7 +203,7 @@ bool Image::LoadPNG(InputStream* stream)
 
     // Create mipmap based on data read from PNG
     Mipmap mipmap(dataPtr.get(), imgWidth, imgHeight, dataSize);
-    png_destroy_read_struct(&pngPtr, &infoPtr, pngInfoPPZero);
+    png_destroy_read_struct(&pngPtr, &infoPtr, nullptr);
 
     mMipmaps.push_back(std::move(mipmap));
     return true;
