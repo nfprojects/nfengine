@@ -22,6 +22,30 @@
       "revId": "c7b9d46ddbcecdeec410f7ec3128ed4c28a0c7d7",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_5d524e14",
+        "filename": "nfEngine/nfCore/EntityManager.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-07T16:36:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_84e727e4",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 5
+      },
+      "revId": "c7b9d46ddbcecdeec410f7ec3128ed4c28a0c7d7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
