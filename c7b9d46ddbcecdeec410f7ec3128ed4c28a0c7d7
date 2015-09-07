@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae5cdf2_84e727e4",
+        "filename": "nfEngine/nfCore/EntityManager.cpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-07T08:09:14Z",
+      "side": 1,
+      "message": "As discussed:\n* Replace function return type to void\n* When an entity does not exist, just leave a log (WARN or DBG, depends if we would like to see these logs on Release compilation) and return from the function.",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 5
+      },
+      "revId": "c7b9d46ddbcecdeec410f7ec3128ed4c28a0c7d7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
