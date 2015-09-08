@@ -80,16 +80,19 @@ class CORE_API LightComponent : public ComponentBase<LightComponent>, public Uti
     friend class RendererSystem;
 
     Math::Vector mColor;
-    LightType mLightType;
-    OmniLightDesc mOmniLight;
-    SpotLightDesc mSpotLight;
-    DirLightDesc mDirLight;
 
-    Math::Vector mCascadeRanges[8];
+    union
+    {
+        OmniLightDesc mOmniLight;
+        SpotLightDesc mSpotLight;
+        DirLightDesc mDirLight;
+    };
+
     Renderer::ShadowMap* mShadowMap;
     Resource::Texture* mLightMap;
 
-    bool mDrawShadow;
+    LightType mLightType;
+
 
     void Release();
     bool CanBeTiled();
@@ -116,8 +119,6 @@ public:
      */
     Result SetShadowMap(uint32 resolution);
     bool HasShadowMap() const;
-
-    void Update(CameraComponent* pCamera);
 };
 
 } // namespace Scene

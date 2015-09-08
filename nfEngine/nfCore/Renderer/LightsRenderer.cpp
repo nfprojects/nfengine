@@ -50,6 +50,8 @@ LightsRenderer::LightsRenderer()
     mAmbientLightPS.Load("AmbientLightPS");
     mOmniLightVS.Load("OmniLightVS");
     mOmniLightPS.Load("OmniLightPS");
+    mSpotLightVS.Load("SpotLightVS");
+    mSpotLightPS.Load("SpotLightPS");
 
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
