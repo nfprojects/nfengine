@@ -475,5 +475,51 @@ bool Image::ConvertActual(ImageFormat destFormat)
     return true;
 }
 
+bool Image::Grayscale()
+{
+    if (mFormat == ImageFormat::RGB_UByte
+        || mFormat == ImageFormat::RGBA_UByte
+        || mFormat == ImageFormat::RGBA_Float)
+    {
+        std::vector<Mipmap> newMipmaps;
+        newMipmaps.resize(mMipmaps.size());
+
+        // These are common values for luminance grayscale transformation
+        Color luminanceMask(0.21f, 0.72f, 0.07f, 1.0f);
+
+        for (uint32 i = 0; i < mMipmaps.size(); i++)
+        {
+            uint32 width = mMipmaps[i].GetWidth();
+            uint32 height = mMipmaps[i].GetHeight();
+            newMipmaps[i].mData.Create(width * height * BitsPerPixel(mFormat));
+            newMipmaps[i].mHeight = height;
+            newMipmaps[i].mWidth = width;
+
+            Color tmp;
+
+            for (uint32 y = 0; y < height; y++)
+            {
+                for (uint32 x = 0; x < width; x++)
+                {
+                    tmp = mMipmaps[i].GetTexel(x, y, mFormat);
+                    tmp *= luminanceMask;
+                    // Calculate grayscale value using luminance transformation
+                    float grayValue = tmp.f[0] + tmp.f[1] + tmp.f[2];
+
+                    // Overwrite only color values with a grayscale one, leaving alpha as it was
+                    tmp = Color(grayValue, grayValue, grayValue, tmp.f[3]);
+
+                    newMipmaps[i].SetTexel(tmp, x, y, mFormat);
+                }
+            }
+        }
+        mMipmaps.assign(newMipmaps.begin(), newMipmaps.end());
+
+        return true;
+    }
+
+    LOG_ERROR("Conversion to grayscale is not available for image format: %s.", FormatToStr(mFormat));
+    return false;
+}
 } // namespace Common
 } // namespace NFE
