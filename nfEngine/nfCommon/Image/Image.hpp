@@ -106,6 +106,13 @@ public:
      * @param id Mipmap level.
      */
     const Mipmap* GetMipmap(uint32 id = 0) const;
+
+    /**
+     * Convert RGB pixel values to grayscale.
+     * Accepted formats are only: RGB_UByte, RGBA_UByte, RGBA_Float
+     * @return true on success
+     */
+    bool Grayscale();
 };
 
 } // namespace Common
