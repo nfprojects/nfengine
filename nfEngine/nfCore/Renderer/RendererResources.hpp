@@ -136,7 +136,7 @@ struct RendererSettings
         antialiasingReduceMin = 128.0;
 
         debugEnable = true;
-        debugLights = false;
+        debugLights = true;
         debugMeshes = false;
     }
 };
@@ -221,8 +221,7 @@ struct NFE_ALIGN16 SpotLightProperties
     Math::Vector color;
     Math::Vector farDist;
     Math::Matrix viewProjMatrix;
-    Math::Matrix viewMatrix;
-    float shadowMapResInv;
+    Math::Matrix viewProjMatrixInv;
 };
 
 struct TileOmniLightDesc
