@@ -43,8 +43,11 @@ const std::string TEXTURE_PNG_RGB = "texturePNG_RGB.png";
 const std::string TEXTURE_PNG_RGBA = "texturePNG_RGBA.png";
 const std::string TEXTURE_PNG_RGBA_PALETTE = "texturePNG_RGBA_palette.png";
 const std::string TEXTURE_PNG_RGBA_INTERLACED = "texturePNG_RGBA_interlaced.png";
-const std::string TEXTURE_PNG_G = "texturePNG_G.png";
 const std::string TEXTURE_PNG_GA = "texturePNG_GA.png";
+
+const int GRAYSCALE_R = 53;
+const int GRAYSCALE_B = 17;
+const int GRAYSCALE_G = 183;
 
 ImageFormat TEST_DATA_FORMAT = ImageFormat::RGB_UByte;
 const int TEST_DATA_WIDTH = 4;
@@ -59,15 +62,15 @@ const int COMPRESSION_ARTEFACT_TRESHOLD = 20;
 
 // Image format tables
 const std::vector<ImageFormat> SUPPORTED_CONVERSION_FORMATS_NON_BC = { ImageFormat::RGB_UByte,
-                                                                        ImageFormat::RGBA_UByte,
-                                                                        ImageFormat::RGBA_Float,
-                                                                        ImageFormat::A_UByte,
-                                                                        ImageFormat::R_UByte,
-                                                                        ImageFormat::R_Float };
+                                                                       ImageFormat::RGBA_UByte,
+                                                                       ImageFormat::RGBA_Float,
+                                                                       ImageFormat::A_UByte,
+                                                                       ImageFormat::R_UByte,
+                                                                       ImageFormat::R_Float };
 // TODO Add BC4-BC7 format, when their conversion is supported
 const std::vector<ImageFormat> SUPPORTED_CONVERSION_FORMATS_BC = { ImageFormat::BC1,
-                                                                    ImageFormat::BC2,
-                                                                    ImageFormat::BC3 };
+                                                                   ImageFormat::BC2,
+                                                                   ImageFormat::BC3 };
 } // namespace
 
 class ImageTest : public testing::Test
@@ -76,6 +79,10 @@ protected:
     // Pointers to used structures
     std::unique_ptr<Image> mImage;
     std::unique_ptr<FileInputStream> mImageFile;
+
+    std::unique_ptr<Image> mTestImageA;
+    std::unique_ptr<Image> mTestImageR;
+    std::unique_ptr<Image> mTestImageRGB;
 
     void SetUp()
     {
@@ -138,92 +145,115 @@ protected:
         }
     }
 
-    // Function to compare texels of loaded images with sample image
-    void CheckTexels(Image* img)
+    void FillTestImage(ImageFormat textureFormat)
     {
-        // Declare variables needed for sample image creation
-        const int testSquareSize = 16 * 16 * 3;
-        const int testSquareLineSize = 16 * 3;
-        const int testSquareHalfLineSize = testSquareLineSize / 2;
+        const int height = 16;
+        const int width = 16;
 
-        uchar testSquare[testSquareSize];
-        ImageFormat textureFormat = img->GetFormat();
-
-        int height = 16;
-        int width = 16;
-
-        // Building array, that image should be read as. It's different depending on the pixel format.
-        for (int i = 0; i < height / 2; i ++)
+        if (textureFormat == ImageFormat::A_UByte || textureFormat == ImageFormat::R_UByte)
         {
-            for (int j = 0; j < width / 2; j++)
+            const int testSquareSize = height * width;
+            const int testSquareLineSize = width;
+            const int testSquareHalfLineSize = testSquareLineSize / 2;
+
+            uchar testSquare[testSquareSize];
+
+
+            for (int i = 0; i < height / 2; i++)
             {
-                int index = (i * width + j) * 3;
-                // 1st half
-                testSquare[index] = 0;
-                testSquare[index + 1] = 0;
-                testSquare[index + 2] = 0;
-                if (textureFormat == ImageFormat::A_UByte)
+                for (int j = 0; j < width / 2; j++)
                 {
-                    testSquare[index] = 255;
-                    testSquare[index + 1] = 255;
-                    testSquare[index + 2] = 255;
+                    int index = (i * width + j);
+                    // 1st half
+                    if (textureFormat == ImageFormat::A_UByte)
+                        testSquare[index] = 255;
+                    else
+                        testSquare[index] = 0;
+
+                    testSquare[testSquareHalfLineSize + index] = 255;
+
+                    // 2nd half
+                    index += testSquareSize / 2;
+                    if (textureFormat == ImageFormat::A_UByte)
+                    {
+                        testSquare[index] = 255;
+                        testSquare[testSquareHalfLineSize + index] = 255;
+                    } else
+                    {
+                        testSquare[index] = 0;
+                        testSquare[testSquareHalfLineSize + index] = 0;
+                    }
                 }
-                else
+            }
+
+            if (textureFormat == ImageFormat::A_UByte)
+            {
+                mTestImageA.reset(new Image());
+                mTestImageA->SetData(testSquare, width, height, textureFormat);
+            }
+            else
+            {
+                mTestImageR.reset(new Image());
+                mTestImageR->SetData(testSquare, width, height, textureFormat);
+            }
+
+        }
+        else
+        {
+            // Declare variables needed for sample image creation
+            const int testSquareSize = height * width * 3;
+            const int testSquareLineSize = width * 3;
+            const int testSquareHalfLineSize = testSquareLineSize / 2;
+
+            uchar testSquare[testSquareSize];
+
+            // Building array, that image should be read as. It's different depending on the pixel format.
+            for (int i = 0; i < height / 2; i++)
+            {
+                for (int j = 0; j < width / 2; j++)
                 {
+                    int index = (i * width + j) * 3;
+                    // 1st half
                     testSquare[index] = 0;
                     testSquare[index + 1] = 0;
                     testSquare[index + 2] = 0;
-                }
 
-
-                testSquare[testSquareHalfLineSize + index] = 255;
-                if (textureFormat == ImageFormat::A_UByte)
-                {
-                    testSquare[testSquareHalfLineSize + index + 1] = 255;
-                    testSquare[testSquareHalfLineSize + index + 2] = 255;
-                }
-                else
-                {
+                    testSquare[testSquareHalfLineSize + index] = 255;
                     testSquare[testSquareHalfLineSize + index + 1] = 0;
                     testSquare[testSquareHalfLineSize + index + 2] = 0;
-                }
 
-                // 2nd half
-                index += testSquareSize / 2;
-                if (textureFormat == ImageFormat::A_UByte)
-                {
-                    testSquare[index] = 255;
-                    testSquare[index + 1] = 255;
-                    testSquare[index + 2] = 255;
-                }
-                else
-                {
+                    // 2nd half
+                    index += testSquareSize / 2;
+
                     testSquare[index] = 0;
                     testSquare[index + 1] = 0;
-                    if (textureFormat == ImageFormat::R_UByte
-                        || textureFormat == ImageFormat::R_Float)
-                        testSquare[index + 2] = 0;
-                    else
-                        testSquare[index + 2] = 255;
-                }
+                    testSquare[index + 2] = 255;
 
-                if (textureFormat == ImageFormat::A_UByte)
-                {
-                    testSquare[testSquareHalfLineSize + index] = 255;
-                    testSquare[testSquareHalfLineSize + index + 1] = 255;
-                    testSquare[testSquareHalfLineSize + index + 2] = 255;
-                }
-                else
-                {
                     testSquare[testSquareHalfLineSize + index] = 0;
-                    if (textureFormat == ImageFormat::R_UByte
-                        || textureFormat == ImageFormat::R_Float)
-                        testSquare[testSquareHalfLineSize + index + 1] = 0;
-                    else
-                        testSquare[testSquareHalfLineSize + index + 1] = 255;
+                    testSquare[testSquareHalfLineSize + index + 1] = 255;
                     testSquare[testSquareHalfLineSize + index + 2] = 0;
                 }
             }
+
+            mTestImageRGB.reset(new Image());
+            mTestImageRGB->SetData(testSquare, width, height, textureFormat);
+        }
+    }
+
+    // Function to compare texels of loaded images with sample image
+    void CheckTexels(Image* img)
+    {
+        Image* imgPtr = nullptr;
+        ImageFormat textureFormat = img->GetFormat();
+
+        if (textureFormat == ImageFormat::A_UByte)
+            imgPtr = mTestImageA.get();
+        else if (textureFormat == ImageFormat::R_UByte
+                 || textureFormat == ImageFormat::R_Float)
+            imgPtr = mTestImageR.get();
+        else
+        {
+            imgPtr = mTestImageRGB.get();
         }
 
         // Texel size is always 3 in sample image, for compatibility reasons.
@@ -236,33 +266,30 @@ protected:
             {
                 // Getting vector object and multiplying it by 255, because it's normalised to 1
                 Color texel = img->GetMipmap()->GetTexel(j, i, textureFormat);
+                Color testTexel = imgPtr->GetMipmap()->GetTexel(j, i, imgPtr->GetFormat());
                 texel *= 255.0f;
+                testTexel *= 255.0f;
+
                 uchar texelUCh[4];
+                uchar testTexelUCh[4];
 
                 // Store vector in uchar table and remove compression errors
                 VectorStoreUChar4(texel, texelUCh);
-                RemoveCompression(texelUCh);
-
-                // Get single texel from sample image
-                uchar* testTexel = &testSquare[singleTexelSize * (i * TEXTURE_WIDTH + j)];
+                VectorStoreUChar4(testTexel, testTexelUCh);
 
                 // Add scoped trace, to give information where exactly the error occured
                 SCOPED_TRACE("X: " + std::to_string(j) + " Y: " + std::to_string(i));
 
                 // Compare single texel of loaded image and sample image
-                ASSERT_EQ(0, memcmp(testTexel, texelUCh, singleTexelSize * sizeof(uchar)));
+                for (int m = 0; m < singleTexelSize; m++)
+                {
+                    uchar diff = (testTexelUCh[m] > texelUCh[m] ?
+                                    testTexelUCh[m] - texelUCh[m] :
+                                    texelUCh[m] - testTexelUCh[m]);
+                    ASSERT_LE(diff, COMPRESSION_ARTEFACT_TRESHOLD);
+                }
             }
         }
-    }
-
-    // Function for removing compression artefacts
-    void RemoveCompression(uchar* table)
-    {
-        int upperLimit = 255 - COMPRESSION_ARTEFACT_TRESHOLD;
-        int lowerLimit = COMPRESSION_ARTEFACT_TRESHOLD;
-
-        for (int i = 0; i < 3; i++)
-            table[i] = table[i] < lowerLimit ? 0 : (table[i] > upperLimit ? 255 : table[i]);
     }
 };
 
@@ -331,6 +358,58 @@ TEST_F(ImageTest, SetData)
     ASSERT_EQ(TEST_DATA_FORMAT, mImage->GetFormat());
 }
 
+TEST_F(ImageTest, Grayscale)
+{
+    // Setting data and checking all set information
+    EXPECT_TRUE(mImage->SetData(TEST_DATA, TEST_DATA_WIDTH,
+                                TEST_DATA_HEIGHT, TEST_DATA_FORMAT));
+
+    ASSERT_TRUE(mImage->Grayscale());
+
+    ASSERT_EQ(1, mImage->GetMipmapsNum());
+    ASSERT_EQ(TEST_DATA_FORMAT, mImage->GetFormat());
+
+    const int singleTexelSize = 3;
+
+    for (int i = 0; i < TEST_DATA_HEIGHT; i++)
+    {
+        for (int j = 0; j < TEST_DATA_WIDTH; j++)
+        {
+            // Getting vector object and multiplying it by 255, because it's normalised to 1
+            Color texel = mImage->GetMipmap()->GetTexel(j, i, TEST_DATA_FORMAT);
+            texel *= 255.0f;
+
+            uchar texelUCh[4];
+            uchar testTexelUCh[4];
+            // Store vector in uchar table
+            VectorStoreUChar4(texel, texelUCh);
+
+            if (i < 2)
+            {
+                if (j < 2)
+                    testTexelUCh[0] = 0;
+                else
+                    testTexelUCh[0] = GRAYSCALE_R;
+            } else
+            {
+                if (j < 2)
+                    testTexelUCh[0] = GRAYSCALE_B;
+                else
+                    testTexelUCh[0] = GRAYSCALE_G;
+            }
+
+            testTexelUCh[1] = testTexelUCh[2] = testTexelUCh[0];
+            testTexelUCh[3] = 255;
+
+            // Add scoped trace, to give information where exactly the error occured
+            SCOPED_TRACE("X: " + std::to_string(j) + " Y: " + std::to_string(i));
+
+            // Compare single texel of loaded image and sample image
+            ASSERT_EQ(0, memcmp(testTexelUCh, texelUCh, singleTexelSize * sizeof(uchar)));
+        }
+    }
+}
+
 TEST_F(ImageTest, GenerateMipmaps)
 {
     // No data
@@ -380,40 +459,38 @@ TEST_F(ImageTest, Release)
 
 TEST_F(ImageTest, LoadJPG)
 {
+    FillTestImage(ImageFormat::RGB_UByte);
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_JPG).data()));
     LoadCheck(ImageFormat::RGBA_UByte);
 }
 
 TEST_F(ImageTest, LoadPNG)
 {
+    FillTestImage(ImageFormat::RGB_UByte);
+
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGB).data()));
     LoadCheck(ImageFormat::RGB_UByte);
 
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA).data()));
     LoadCheck(ImageFormat::RGBA_UByte);
 
-    /* TODO Enable when proper RGB -> Grayscale conversion is implemented on our side
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_GA).data()));
-    LoadAssert(ImageFormat::RGBA_UByte);
-    convert testImage to grayscale
-    CheckTexels();
-
-    // TODO Save this file as G (1 channel, no color PNG)
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_G).data()));
-    LoadAssert(ImageFormat::A_UByte);
-    convert testImage to grayscale
-    CheckTexels();
-    */
-
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA_PALETTE).data()));
     LoadCheck(ImageFormat::RGB_UByte);
 
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA_INTERLACED).data()));
     LoadCheck(ImageFormat::RGBA_UByte);
+
+    // When loading grayscale PNG, convert testImage just before checking texels
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_GA).data()));
+    LoadAssert(ImageFormat::RGBA_UByte);
+    ASSERT_TRUE(mTestImageRGB->Grayscale());
+    CheckTexels(mImage.get());
 }
 
 TEST_F(ImageTest, LoadBMP)
 {
+    FillTestImage(ImageFormat::RGB_UByte);
+
     // 4bpp
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP4).data()));
     LoadCheck(ImageFormat::RGBA_UByte);
@@ -486,32 +563,46 @@ TEST_F(ImageTest, ImageFormatError)
 {
     // Cast to ImageFormat some dummy value, that does not occur in this enum
     ImageFormat dummy = static_cast<ImageFormat>(TEST_DATA_SIZE);
+
     // It should result in an unknown format
     ASSERT_EQ(BitsPerPixel(ImageFormat::Unknown), BitsPerPixel(dummy));
 }
 
 TEST_F(ImageTest, ConvertJPG)
 {
+    FillTestImage(ImageFormat::RGB_UByte);
+    FillTestImage(ImageFormat::A_UByte);
+    FillTestImage(ImageFormat::R_UByte);
+
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_JPG).data()));
     ConvertAssert();
 }
 
 TEST_F(ImageTest, ConvertPNG)
 {
-    // TODO Enable, when proper PNG support is implemented
-    //mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGB).data()));
-    //ConvertAssert();
+    FillTestImage(ImageFormat::RGB_UByte);
+    FillTestImage(ImageFormat::A_UByte);
+    FillTestImage(ImageFormat::R_UByte);
+
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGB).data()));
+    ConvertAssert();
 
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA).data()));
     ConvertAssert();
 
-    // TODO Enable, when proper PNG support is implemented
-    //mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_A).data()));
-    //ConvertAssert();
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA_PALETTE).data()));
+    ConvertAssert();
+
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA_INTERLACED).data()));
+    ConvertAssert();
 }
 
 TEST_F(ImageTest, ConvertBMP)
 {
+    FillTestImage(ImageFormat::RGB_UByte);
+    FillTestImage(ImageFormat::A_UByte);
+    FillTestImage(ImageFormat::R_UByte);
+
     // 16bpp
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16ARGB).data()));
     ConvertAssert();
@@ -536,6 +627,10 @@ TEST_F(ImageTest, ConvertBMP)
 
 TEST_F(ImageTest, ConvertDDS)
 {
+    FillTestImage(ImageFormat::RGB_UByte);
+    FillTestImage(ImageFormat::A_UByte);
+    FillTestImage(ImageFormat::R_UByte);
+
     // BC1
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC1).data()));
     ConvertAssert();
