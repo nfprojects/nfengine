@@ -50,6 +50,10 @@ LightsRenderer::LightsRenderer()
     mAmbientLightPS.Load("AmbientLightPS");
     mOmniLightVS.Load("OmniLightVS");
     mOmniLightPS.Load("OmniLightPS");
+    mSpotLightVS.Load("SpotLightVS");
+
+    mSpotLightPS.Load("SpotLightPS");
+    mUseLightMapMacroId = mSpotLightPS.GetMacroByName("USE_LIGHT_MAP");
 
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
@@ -100,6 +104,16 @@ LightsRenderer::LightsRenderer()
         Float3(-phi * scale,  scale, 0.0f),
         Float3( phi * scale,  scale, 0.0f),
         Float3( phi * scale, -scale, 0.0f),
+
+        // frustum vertices in screen-space (for spot light)
+        Float3(-1.0f, -1.0f, -1.0f),
+        Float3( 1.0f, -1.0f, -1.0f),
+        Float3(-1.0f,  1.0f, -1.0f),
+        Float3( 1.0f,  1.0f, -1.0f),
+        Float3(-1.0f, -1.0f, 1.0f),
+        Float3( 1.0f, -1.0f, 1.0f),
+        Float3(-1.0f,  1.0f, 1.0f),
+        Float3( 1.0f,  1.0f, 1.0f),
     };
 
     uint16 indices[] =
@@ -112,6 +126,14 @@ LightsRenderer::LightsRenderer()
         0, 11, 7, 0, 7, 4, 0, 4, 8, 0, 8, 3, 0, 3, 11, // bottom cap
         9, 4, 1, 4, 7, 1, 7, 10, 1, 7, 11, 10, 11, 6, 10,
         6, 11, 3, 6, 3, 5, 5, 3, 8, 9, 5, 8, 9, 8, 4,
+
+        // indices for frustum
+        0, 1, 3,  0, 3, 2, // near side
+        1, 5, 7,  1, 7, 3, // right side
+        5, 6, 7,  5, 4, 6, // far side
+        4, 0, 2,  4, 2, 6, // left side
+        2, 3, 7,  2, 7, 6, // top side
+        4, 1, 0,  4, 5, 1, // bottom side
     };
 
     BufferDesc bufferDesc;
@@ -129,27 +151,28 @@ LightsRenderer::LightsRenderer()
     bufferDesc.debugName = "LightsRenderer::mIndexBuffer";
     mIndexBuffer.reset(device->CreateBuffer(bufferDesc));
 
-    bufferDesc.access = BufferAccess::CPU_Write;
-    bufferDesc.size = sizeof(LightsGlobalCBuffer);
-    bufferDesc.type = BufferType::Constant;
-    bufferDesc.initialData = nullptr;
-    bufferDesc.debugName = "LightsRenderer::mGlobalCBuffer";
-    mGlobalCBuffer.reset(device->CreateBuffer(bufferDesc));
+    // constant buffers
+    {
+        bufferDesc.access = BufferAccess::CPU_Write;
+        bufferDesc.type = BufferType::Constant;
+        bufferDesc.initialData = nullptr;
 
-    bufferDesc.access = BufferAccess::CPU_Write;
-    bufferDesc.size = sizeof(AmbientLightCBuffer);
-    bufferDesc.type = BufferType::Constant;
-    bufferDesc.initialData = nullptr;
-    bufferDesc.debugName = "LightsRenderer::mAmbientLightCBuffer";
-    mAmbientLightCBuffer.reset(device->CreateBuffer(bufferDesc));
+        bufferDesc.size = sizeof(LightsGlobalCBuffer);
+        bufferDesc.debugName = "LightsRenderer::mGlobalCBuffer";
+        mGlobalCBuffer.reset(device->CreateBuffer(bufferDesc));
 
-    bufferDesc.access = BufferAccess::CPU_Write;
-    bufferDesc.size = sizeof(OmniLightCBuffer);
-    bufferDesc.type = BufferType::Constant;
-    bufferDesc.initialData = nullptr;
-    bufferDesc.debugName = "LightsRenderer::mOmniLightCBuffer";
-    mOmniLightCBuffer.reset(device->CreateBuffer(bufferDesc));
+        bufferDesc.size = sizeof(AmbientLightCBuffer);
+        bufferDesc.debugName = "LightsRenderer::mAmbientLightCBuffer";
+        mAmbientLightCBuffer.reset(device->CreateBuffer(bufferDesc));
 
+        bufferDesc.size = sizeof(OmniLightCBuffer);
+        bufferDesc.debugName = "LightsRenderer::mOmniLightCBuffer";
+        mOmniLightCBuffer.reset(device->CreateBuffer(bufferDesc));
+
+        bufferDesc.size = sizeof(SpotLightProperties);
+        bufferDesc.debugName = "LightsRenderer::mSpotLightCBuffer";
+        mSpotLightCBuffer.reset(device->CreateBuffer(bufferDesc));
+    }
 
     // depth state for light volumes rendering
     DepthStateDesc dsDesc;
@@ -178,6 +201,9 @@ void LightsRenderer::OnEnter(RenderContext* context)
 
     context->commandBuffer->SetShader(mFullscreenQuadVS.GetShader(nullptr));
     context->commandBuffer->SetVertexLayout(mVertexLayout.get());
+
+    ISampler* lightMapSampler = mRenderer->GetDefaultSampler();
+    context->commandBuffer->SetSamplers(&lightMapSampler, 1, ShaderType::Pixel);
 }
 
 void LightsRenderer::OnLeave(RenderContext* context)
@@ -279,6 +305,35 @@ void LightsRenderer::DrawOmniLight(RenderContext* context, const Vector& pos, fl
 void LightsRenderer::DrawSpotLight(RenderContext* context, const SpotLightProperties& prop,
                                    ShadowMap* shadowMap, ITexture* lightMap)
 {
+    // TODO: use instancing to draw lights
+
+    int psMacros[1] = { 0 };
+
+    if (lightMap != nullptr)
+    {
+        psMacros[mUseLightMapMacroId] = 1;
+        context->commandBuffer->SetTextures(&lightMap, 1, ShaderType::Pixel, 5);
+    }
+
+    context->commandBuffer->SetDepthState(mLightsDepthState.get());
+    context->commandBuffer->SetRasterizerState(mLightsRasterizerState.get());
+    context->commandBuffer->SetBlendState(mLightsBlendState.get());
+
+    context->commandBuffer->SetShader(mSpotLightVS.GetShader(nullptr));
+    context->commandBuffer->SetShader(mSpotLightPS.GetShader(psMacros));
+
+    IBuffer* cbuffers[] = { mGlobalCBuffer.get(), mSpotLightCBuffer.get() };
+    context->commandBuffer->SetConstantBuffers(cbuffers, 2, ShaderType::Vertex);
+    context->commandBuffer->SetConstantBuffers(cbuffers, 2, ShaderType::Pixel);
+
+    context->commandBuffer->WriteBuffer(mSpotLightCBuffer.get(), 0, sizeof(SpotLightProperties),
+                                        &prop);
+
+    context->commandBuffer->DrawIndexed(PrimitiveType::Triangles,
+                                        2 * 6 * 3,  // 2 triangles per 6 sides
+                                        -1,         // no instancing
+                                        6 + 20 * 3, // ignore indices
+                                        4 + 12);    // ignore vertices
 }
 
 void LightsRenderer::DrawDirLight(RenderContext* context, const DirLightProperties& prop,

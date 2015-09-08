@@ -36,6 +36,11 @@ class LightsRenderer : public RendererModule<LightsRenderer>
     Multishader mOmniLightPS;
     std::unique_ptr<IBuffer> mOmniLightCBuffer;
 
+    int mUseLightMapMacroId;
+    Multishader mSpotLightVS;
+    Multishader mSpotLightPS;
+    std::unique_ptr<IBuffer> mSpotLightCBuffer;
+
 public:
     LightsRenderer();
 
