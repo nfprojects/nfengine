@@ -475,5 +475,45 @@ bool Image::ConvertActual(ImageFormat destFormat)
     return true;
 }
 
+bool Image::Grayscale()
+{
+    if (mFormat == ImageFormat::RGB_UByte
+        || mFormat == ImageFormat::RGBA_UByte
+        || mFormat == ImageFormat::RGBA_Float)
+    {
+        // These are common values for luminance grayscale transformation
+        Color luminanceMask(0.21f, 0.72f, 0.07f, 1.0f);
+
+        for (uint32 i = 0; i < mMipmaps.size(); i++)
+        {
+            uint32 width = mMipmaps[i].GetWidth();
+            uint32 height = mMipmaps[i].GetHeight();
+
+            Color tmp;
+
+            for (uint32 y = 0; y < height; y++)
+            {
+                for (uint32 x = 0; x < width; x++)
+                {
+                    // Get texel, so we can calculate dot product and use its alpha
+                    tmp = mMipmaps[i].GetTexel(x, y, mFormat);
+
+                    // Calculate grayscale value using luminance transformation
+                    float grayVal = VectorDot3f(tmp, luminanceMask);
+
+                    // Overwrite only color values, leaving alpha as it was
+                    mMipmaps[i].SetTexel(Color(grayVal, grayVal, grayVal, tmp.f[3]),
+                                           x, y, mFormat);
+                }
+            }
+        }
+
+        return true;
+    }
+
+    LOG_ERROR("Conversion to grayscale is not available for image format: %s.",
+              FormatToStr(mFormat));
+    return false;
+}
 } // namespace Common
 } // namespace NFE
