@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae5cdf2_d30e4a34",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendConsole.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-09T08:38:41Z",
+      "side": 1,
+      "message": "Why not incorporate \\n into PrintColored call above?",
+      "range": {
+        "startLine": 48,
+        "startChar": 4,
+        "endLine": 48,
+        "endChar": 17
+      },
+      "revId": "7bfcaca3ffb09ca0a56224353e4ffdf45331ad10",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_1310b24d",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-09T08:38:41Z",
+      "side": 1,
+      "message": "This provides not enough info IMO.\n\n\"Failed to create HTML Logger Backend\" is much better.",
+      "range": {
+        "startLine": 86,
+        "startChar": 19,
+        "endLine": 86,
+        "endChar": 45
+      },
+      "revId": "7bfcaca3ffb09ca0a56224353e4ffdf45331ad10",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_531a3a6f",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-09T08:38:41Z",
+      "side": 1,
+      "message": "Right now we must exit entire engine to close the HTML file and make it readable. This is something I think we should address sometime in the future. Add a TODO to research this and implement if possible.",
+      "revId": "7bfcaca3ffb09ca0a56224353e4ffdf45331ad10",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
