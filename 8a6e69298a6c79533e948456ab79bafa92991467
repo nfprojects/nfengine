@@ -74,6 +74,24 @@
       "revId": "8a6e69298a6c79533e948456ab79bafa92991467",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_1337d2e4",
+        "filename": "nfEngine/nfCore/Material.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-09T08:40:10Z",
+      "side": 1,
+      "message": "C++ coders are divided into two types - the ones who like goto and the ones who hate it and avoid it as much as they can. I\u0027m just the second one.",
+      "parentUuid": "1ae5cdf2_d0172050",
+      "revId": "8a6e69298a6c79533e948456ab79bafa92991467",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
