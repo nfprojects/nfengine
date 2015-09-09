@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_2179eafc",
+        "filename": "nfEngine/nfCommon/DirectoryWatch.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_1d208bf6",
+      "range": {
+        "startLine": 84,
+        "startChar": 0,
+        "endLine": 92,
+        "endChar": 57
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_dd25430b",
         "filename": "nfEngine/nfCommon/DirectoryWatch.hpp",
         "patchSetId": 7
@@ -53,6 +77,30 @@
       "writtenOn": "2015-09-01T09:48:49Z",
       "side": 1,
       "message": "Why not NFE_INLINE?",
+      "range": {
+        "startLine": 96,
+        "startChar": 0,
+        "endLine": 96,
+        "endChar": 6
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_417ef6e5",
+        "filename": "nfEngine/nfCommon/DirectoryWatch.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_dd25430b",
       "range": {
         "startLine": 96,
         "startChar": 0,
@@ -88,6 +136,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_a4a26898",
+        "filename": "nfEngine/nfCommon/Linux/DirectoryWatch.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_7dca771b",
+      "range": {
+        "startLine": 61,
+        "startChar": 8,
+        "endLine": 61,
+        "endChar": 54
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_9db65b89",
         "filename": "nfEngine/nfCommon/Linux/DirectoryWatch.cpp",
         "patchSetId": 7
@@ -99,6 +171,30 @@
       "writtenOn": "2015-09-01T09:48:49Z",
       "side": 1,
       "message": "This could be replaced with lambda either. Would give it additionally boolean argument to do strcat or not, so You can use it in all 7 cases.",
+      "range": {
+        "startLine": 152,
+        "startChar": 8,
+        "endLine": 156,
+        "endChar": 67
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_c4d774be",
+        "filename": "nfEngine/nfCommon/Linux/DirectoryWatch.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_9db65b89",
       "range": {
         "startLine": 152,
         "startChar": 8,
@@ -134,6 +230,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_449a8415",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_bdb95f7b",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 72
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_bd479f76",
         "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
         "patchSetId": 7
@@ -145,6 +265,30 @@
       "writtenOn": "2015-09-01T09:48:49Z",
       "side": 1,
       "message": "How does this check if object got properly constructed?",
+      "range": {
+        "startLine": 37,
+        "startChar": 4,
+        "endLine": 38,
+        "endChar": 64
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_7c7e23e6",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "There is no way to verify that. I can only create the object and wait a little bit for the watching thread to launch. If nothing crashes or hangs, then I assume it\u0027s OK.",
+      "parentUuid": "9ad9bd40_bd479f76",
       "range": {
         "startLine": 37,
         "startChar": 4,
@@ -180,6 +324,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_a4afc82a",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_7d4d1799",
+      "range": {
+        "startLine": 44,
+        "startChar": 4,
+        "endLine": 45,
+        "endChar": 74
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_8050b40b",
         "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
         "patchSetId": 7
@@ -191,6 +359,30 @@
       "writtenOn": "2015-09-01T09:48:49Z",
       "side": 1,
       "message": "Unify these names across all testcases and make them global vars. It doesn\u0027t matter that their name is \u0027a_create_dir\u0027 or \u0027a_move_dir\u0027, because in TearDown() u bring down whole directory anyway.",
+      "range": {
+        "startLine": 51,
+        "startChar": 4,
+        "endLine": 52,
+        "endChar": 73
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_1cad1f89",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_8050b40b",
       "range": {
         "startLine": 51,
         "startChar": 4,
@@ -226,6 +418,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_5c7967fb",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "The logic is not the same - they differ a little bit. What\u0027s more I would have to move these atomics and labdas to anonymous namespace too, which would complicate the code much. This way it\u0027s simple and readable.",
+      "parentUuid": "9ad9bd40_402f8c88",
+      "range": {
+        "startLine": 102,
+        "startChar": 3,
+        "endLine": 129,
+        "endChar": 74
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_80ec342b",
         "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
         "patchSetId": 7
@@ -237,6 +453,30 @@
       "writtenOn": "2015-09-01T09:48:49Z",
       "side": 1,
       "message": "Why don\u0027t You count Event::MoveTo events as well?\nI guess it\u0027s due to getting just first MoveTo trigger the Latch, still - comment plz.",
+      "range": {
+        "startLine": 154,
+        "startChar": 4,
+        "endLine": 154,
+        "endChar": 38
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_3c1d7bbe",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "Fixed",
+      "parentUuid": "9ad9bd40_80ec342b",
       "range": {
         "startLine": 154,
         "startChar": 4,
@@ -272,6 +512,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_1c20bff6",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_8085145b",
+      "range": {
+        "startLine": 158,
+        "startChar": 3,
+        "endLine": 169,
+        "endChar": 6
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_6082d053",
         "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
         "patchSetId": 7
@@ -283,6 +547,30 @@
       "writtenOn": "2015-09-01T09:48:49Z",
       "side": 1,
       "message": "why?",
+      "range": {
+        "startLine": 177,
+        "startChar": 36,
+        "endLine": 177,
+        "endChar": 66
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_bcb50bcf",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "To verify that only MoveTo and MoveFrom events are triggered. Badly implemented dir watcher could generate a Delete event instead of MoveFrom and Create instead of MoveTo.",
+      "parentUuid": "9ad9bd40_6082d053",
       "range": {
         "startLine": 177,
         "startChar": 36,
@@ -318,6 +606,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_dc3e5729",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_e0dc2077",
+      "range": {
+        "startLine": 190,
+        "startChar": 4,
+        "endLine": 191,
+        "endChar": 56
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_00d8247e",
         "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
         "patchSetId": 7
@@ -329,6 +641,30 @@
       "writtenOn": "2015-09-01T09:48:49Z",
       "side": 1,
       "message": "as above",
+      "range": {
+        "startLine": 197,
+        "startChar": 5,
+        "endLine": 198,
+        "endChar": 81
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_fc3b1336",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_00d8247e",
       "range": {
         "startLine": 197,
         "startChar": 5,
@@ -364,6 +700,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_9c83efcb",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_60d01054",
+      "range": {
+        "startLine": 201,
+        "startChar": 4,
+        "endLine": 202,
+        "endChar": 16
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_80d3545e",
         "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
         "patchSetId": 7
@@ -375,6 +735,30 @@
       "writtenOn": "2015-09-01T09:48:49Z",
       "side": 1,
       "message": "as above",
+      "range": {
+        "startLine": 225,
+        "startChar": 35,
+        "endLine": 225,
+        "endChar": 67
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_1c499fd0",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "To verify that only MoveTo and MoveFrom events are triggered. Badly implemented dir watcher could generate a Delete event instead of MoveFrom and Create instead of MoveTo.",
+      "parentUuid": "9ad9bd40_80d3545e",
       "range": {
         "startLine": 225,
         "startChar": 35,
@@ -410,6 +794,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_3c465bc0",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "To verify that only MoveTo and MoveFrom events are triggered. Badly implemented dir watcher could generate a Delete event instead of MoveFrom and Create instead of MoveTo.",
+      "parentUuid": "9ad9bd40_a0ca189f",
+      "range": {
+        "startLine": 229,
+        "startChar": 36,
+        "endLine": 230,
+        "endChar": 68
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_c0cd5cb9",
         "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
         "patchSetId": 7
@@ -421,6 +829,30 @@
       "writtenOn": "2015-09-01T09:48:49Z",
       "side": 1,
       "message": "as above",
+      "range": {
+        "startLine": 243,
+        "startChar": 3,
+        "endLine": 244,
+        "endChar": 56
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_7c30e356",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_c0cd5cb9",
       "range": {
         "startLine": 243,
         "startChar": 3,
@@ -456,6 +888,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_5c2b27eb",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_e0c34088",
+      "range": {
+        "startLine": 250,
+        "startChar": 3,
+        "endLine": 251,
+        "endChar": 80
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_603730b1",
         "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
         "patchSetId": 7
@@ -467,6 +923,30 @@
       "writtenOn": "2015-09-01T09:48:49Z",
       "side": 1,
       "message": "as above",
+      "range": {
+        "startLine": 270,
+        "startChar": 36,
+        "endLine": 270,
+        "endChar": 65
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_3cef3bb2",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_603730b1",
       "range": {
         "startLine": 270,
         "startChar": 36,
@@ -502,6 +982,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_1cf27f9a",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_806194aa",
+      "range": {
+        "startLine": 283,
+        "startChar": 5,
+        "endLine": 283,
+        "endChar": 56
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ad9bd40_006d8499",
         "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
         "patchSetId": 7
@@ -513,6 +1017,30 @@
       "writtenOn": "2015-09-01T09:48:49Z",
       "side": 1,
       "message": "magic number",
+      "range": {
+        "startLine": 384,
+        "startChar": 15,
+        "endLine": 384,
+        "endChar": 19
+      },
+      "revId": "fcd59e6bc034c503597a99fd3b5b08a41568ac40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_fcf4f388",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T20:46:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ad9bd40_006d8499",
       "range": {
         "startLine": 384,
         "startChar": 15,
