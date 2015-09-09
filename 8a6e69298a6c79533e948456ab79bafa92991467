@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_41bb440e",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T16:29:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_3093e4fb",
+      "range": {
+        "startLine": 237,
+        "startChar": 0,
+        "endLine": 237,
+        "endChar": 18
+      },
+      "revId": "8a6e69298a6c79533e948456ab79bafa92991467",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_30fcc43e",
         "filename": "nfEngine/nfCore/Material.cpp",
         "patchSetId": 2
@@ -36,6 +60,24 @@
       "writtenOn": "2015-09-09T08:05:48Z",
       "side": 1,
       "message": "TEMPORARY is not that recognizable keyword. Since we are already here, I would change it to TODO/FIXME (these are much more probable for us to encounter when doing a \"git grep TODO\" in the future ;) )",
+      "revId": "8a6e69298a6c79533e948456ab79bafa92991467",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_01c13c80",
+        "filename": "nfEngine/nfCore/Material.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T16:29:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_30fcc43e",
       "revId": "8a6e69298a6c79533e948456ab79bafa92991467",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -89,6 +131,24 @@
       "side": 1,
       "message": "C++ coders are divided into two types - the ones who like goto and the ones who hate it and avoid it as much as they can. I\u0027m just the second one.",
       "parentUuid": "1ae5cdf2_d0172050",
+      "revId": "8a6e69298a6c79533e948456ab79bafa92991467",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_c1cf54af",
+        "filename": "nfEngine/nfCore/Material.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T16:29:34Z",
+      "side": 1,
+      "message": "As you wish. However, this is one of the cases, where \"goto\" is very useful - without it almost 100 lines require additional indent (or I would heve duplicate some code).",
+      "parentUuid": "1ae5cdf2_1337d2e4",
       "revId": "8a6e69298a6c79533e948456ab79bafa92991467",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
