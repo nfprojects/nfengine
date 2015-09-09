@@ -1,0 +1,176 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae5cdf2_98d144d0",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-09T08:01:10Z",
+      "side": 1,
+      "message": "I assume you wanted to make Engine class a singleton.\n\nUsually singletons have only GetInstance() method which performs all the allocation needed, if needed. Consider moving Initialize() contents to GetInstance().",
+      "revId": "568719f61b4588ba89704cb7c7f9e53b2f53381a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_986dc407",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-09T08:01:10Z",
+      "side": 1,
+      "message": "Put this directly in gEngineInstance.reset(), helper variable \"engine\" is not needed here.",
+      "range": {
+        "startLine": 126,
+        "startChar": 21,
+        "endLine": 126,
+        "endChar": 47
+      },
+      "revId": "568719f61b4588ba89704cb7c7f9e53b2f53381a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_18fc543e",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-09T08:01:10Z",
+      "side": 1,
+      "message": "I would not consider this as an error.\n\nJust like in ECS review - consider swithcing this to void function and printing a warning, not an error.",
+      "range": {
+        "startLine": 153,
+        "startChar": 8,
+        "endLine": 153,
+        "endChar": 21
+      },
+      "revId": "568719f61b4588ba89704cb7c7f9e53b2f53381a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_1390b794",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-09T08:01:10Z",
+      "side": 1,
+      "message": "I doubt this is a good idea. Imagine:\n\nWe have 5 scenes. We want all the scenes to update. Unfortunately, first of these scenes is corrupted and its pointer is invalid. Then, remaining 4 scenes are left both without update and without check if they are valid.",
+      "range": {
+        "startLine": 183,
+        "startChar": 12,
+        "endLine": 183,
+        "endChar": 25
+      },
+      "revId": "568719f61b4588ba89704cb7c7f9e53b2f53381a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_73ee5b24",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-09T08:01:10Z",
+      "side": 1,
+      "message": "This should be captured from some global place with version details. A TODO here would be a good idea.",
+      "range": {
+        "startLine": 221,
+        "startChar": 67,
+        "endLine": 221,
+        "endChar": 71
+      },
+      "revId": "568719f61b4588ba89704cb7c7f9e53b2f53381a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_50e230a0",
+        "filename": "nfEngine/nfCore/Systems/RendererSystem.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 316,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-09T08:01:10Z",
+      "side": 1,
+      "message": "reference",
+      "range": {
+        "startLine": 316,
+        "startChar": 36,
+        "endLine": 316,
+        "endChar": 44
+      },
+      "revId": "568719f61b4588ba89704cb7c7f9e53b2f53381a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_f0017c3a",
+        "filename": "nfEngineTest/Scenes.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-09T08:01:10Z",
+      "side": 1,
+      "message": "rm",
+      "revId": "568719f61b4588ba89704cb7c7f9e53b2f53381a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_b0e8d47d",
+        "filename": "nfEngineTest/Scenes.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-09T08:01:10Z",
+      "side": 1,
+      "message": "These are not used in Engine\u0027s code. Is this correct?",
+      "range": {
+        "startLine": 5,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 121
+      },
+      "revId": "568719f61b4588ba89704cb7c7f9e53b2f53381a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
