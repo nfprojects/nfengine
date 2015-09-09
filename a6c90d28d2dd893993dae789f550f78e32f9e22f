@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_41c5045a",
+        "filename": "nfEngine/nfRendererDemo/DepthStencilScene.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T16:35:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_7063ac1a",
+      "revId": "a6c90d28d2dd893993dae789f550f78e32f9e22f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_906838f7",
         "filename": "nfEngine/nfRendererDemo/DepthStencilScene.cpp",
         "patchSetId": 5
@@ -30,6 +48,30 @@
       "writtenOn": "2015-09-09T08:18:58Z",
       "side": 1,
       "message": "return CreateBasicResources(false);",
+      "range": {
+        "startLine": 243,
+        "startChar": 0,
+        "endLine": 245,
+        "endChar": 16
+      },
+      "revId": "a6c90d28d2dd893993dae789f550f78e32f9e22f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_e1cd3088",
+        "filename": "nfEngine/nfRendererDemo/DepthStencilScene.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T16:35:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_906838f7",
       "range": {
         "startLine": 243,
         "startChar": 0,
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_01cbfc72",
+        "filename": "nfEngine/nfRendererDemo/DepthStencilScene.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T16:35:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_b06d3407",
+      "range": {
+        "startLine": 252,
+        "startChar": 0,
+        "endLine": 254,
+        "endChar": 16
+      },
+      "revId": "a6c90d28d2dd893993dae789f550f78e32f9e22f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_d072c0e4",
         "filename": "nfEngine/nfRendererDemo/DepthStencilScene.cpp",
         "patchSetId": 5
@@ -88,6 +154,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_21c8f873",
+        "filename": "nfEngine/nfRendererDemo/DepthStencilScene.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T16:35:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_d072c0e4",
+      "range": {
+        "startLine": 261,
+        "startChar": 0,
+        "endLine": 263,
+        "endChar": 16
+      },
+      "revId": "a6c90d28d2dd893993dae789f550f78e32f9e22f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_30584456",
         "filename": "nfEngine/nfRendererDemo/DepthStencilScene.cpp",
         "patchSetId": 5
@@ -99,6 +189,30 @@
       "writtenOn": "2015-09-09T08:18:58Z",
       "side": 1,
       "message": "rm",
+      "range": {
+        "startLine": 349,
+        "startChar": 22,
+        "endLine": 349,
+        "endChar": 30
+      },
+      "revId": "a6c90d28d2dd893993dae789f550f78e32f9e22f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_61a120a9",
+        "filename": "nfEngine/nfRendererDemo/DepthStencilScene.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T16:35:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_30584456",
       "range": {
         "startLine": 349,
         "startChar": 22,
