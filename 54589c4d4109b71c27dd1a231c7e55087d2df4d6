@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_33c4ce3f",
+        "filename": "nfEngine/nfCommon/Bit.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-09T10:58:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_2900e4a9",
+      "range": {
+        "startLine": 14,
+        "startChar": 58,
+        "endLine": 14,
+        "endChar": 79
+      },
+      "revId": "54589c4d4109b71c27dd1a231c7e55087d2df4d6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_492c504b",
         "filename": "nfEngine/nfCommon/Bit.hpp",
         "patchSetId": 3
@@ -36,6 +60,24 @@
       "writtenOn": "2015-09-08T17:03:02Z",
       "side": 1,
       "message": "What does it mean? It\u0027s a common function, it may be used anywhere. By \"Write where this function comes from\" I meant put link to https://graphics.stanford.edu/~seander/bithacks.html",
+      "revId": "54589c4d4109b71c27dd1a231c7e55087d2df4d6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_53c15a2d",
+        "filename": "nfEngine/nfCommon/Bit.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-09T10:58:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_492c504b",
       "revId": "54589c4d4109b71c27dd1a231c7e55087d2df4d6",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -59,6 +101,24 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_938da234",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-09T10:58:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_a92b142f",
+      "revId": "54589c4d4109b71c27dd1a231c7e55087d2df4d6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_091a4817",
         "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
         "patchSetId": 3
@@ -70,6 +130,24 @@
       "writtenOn": "2015-09-08T17:03:02Z",
       "side": 1,
       "message": "I still don\u0027t get it. Now you increment \"i\" and \"j\" by one every iteration. Why not just keep one variable and change condition to \"x \u003c colorsPerByte \u0026\u0026 x \u003c width\"?",
+      "revId": "54589c4d4109b71c27dd1a231c7e55087d2df4d6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_9394c238",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 327,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-09T10:58:53Z",
+      "side": 1,
+      "message": "In paletted bmp you have whole palette at the beginning and then pixels are stored as palette\u0027s indexes, thus decreasing number of bits for each pixel.\nThat means, that You have multiple bytes with multiple colors in each.\nI either do for and 1 division or 2 fors and no division \u003e.\u003e",
+      "parentUuid": "1ae5cdf2_091a4817",
       "revId": "54589c4d4109b71c27dd1a231c7e55087d2df4d6",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -93,6 +171,24 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_93e202d4",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-09T10:58:53Z",
+      "side": 1,
+      "message": "not the right commit for this comment, but sure - why not",
+      "parentUuid": "1ae5cdf2_e9e35c03",
+      "revId": "54589c4d4109b71c27dd1a231c7e55087d2df4d6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_69d82c54",
         "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
         "patchSetId": 3
@@ -104,6 +200,24 @@
       "writtenOn": "2015-09-08T17:03:02Z",
       "side": 1,
       "message": "style: missing new line",
+      "revId": "54589c4d4109b71c27dd1a231c7e55087d2df4d6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_b3e7fee3",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-09T10:58:53Z",
+      "side": 1,
+      "message": "as above",
+      "parentUuid": "1ae5cdf2_69d82c54",
       "revId": "54589c4d4109b71c27dd1a231c7e55087d2df4d6",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
