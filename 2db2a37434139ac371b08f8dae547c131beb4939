@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae5cdf2_1c9fdf60",
+        "filename": "nfEngineTest/Scenes.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-09T20:07:34Z",
+      "side": 1,
+      "message": "Revert to previous values.\n\nIf you need to have a less heavy scene (ex. for debugging), add a new default one which will have only 4 rooms. Performance scene should have a lot of objects on it.",
+      "range": {
+        "startLine": 127,
+        "startChar": 0,
+        "endLine": 130,
+        "endChar": 9
+      },
+      "revId": "2db2a37434139ac371b08f8dae547c131beb4939",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
