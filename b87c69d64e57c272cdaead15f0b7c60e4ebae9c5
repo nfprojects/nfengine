@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae5cdf2_47ee018d",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-09T08:01:10Z",
+      "side": 1,
+      "message": "The TODO would fit nicely up above, near to mRenderer-\u003eInit line.",
+      "range": {
+        "startLine": 49,
+        "startChar": 4,
+        "endLine": 49,
+        "endChar": 40
+      },
+      "revId": "b87c69d64e57c272cdaead15f0b7c60e4ebae9c5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_07e5d9a7",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-09T08:01:10Z",
+      "side": 1,
+      "message": "I doubt that this info will be useful for us. I would rm this part, since the TODO above will resolve it anyway.",
+      "range": {
+        "startLine": 114,
+        "startChar": 33,
+        "endLine": 114,
+        "endChar": 44
+      },
+      "revId": "b87c69d64e57c272cdaead15f0b7c60e4ebae9c5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
