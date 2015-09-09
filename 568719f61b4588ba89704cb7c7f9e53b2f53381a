@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_9304c216",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-09T08:31:54Z",
+      "side": 1,
+      "message": "It\u0027s not possible, because in resouces manager and renderer there are Engine::GetInstance() calls, so I would get infinite recursion",
+      "parentUuid": "1ae5cdf2_98d144d0",
+      "revId": "568719f61b4588ba89704cb7c7f9e53b2f53381a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_986dc407",
         "filename": "nfEngine/nfCore/Engine.cpp",
         "patchSetId": 3
