@@ -218,6 +218,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_39ad8832",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T19:12:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_76463fc1",
+      "range": {
+        "startLine": 102,
+        "startChar": 46,
+        "endLine": 102,
+        "endChar": 47
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_e2a28e99",
         "filename": "nfEngine/nfCommon/LoggerBackends/BackendConsole.cpp",
         "patchSetId": 14
@@ -229,6 +253,30 @@
       "writtenOn": "2015-09-10T14:59:56Z",
       "side": 1,
       "message": "Maybe move it to the end, and join with default, which should reside here, then remove line 34 (return White).\nLike so:\ncase LogType::Info:\ndefault:\n return ConsoleColor::White;",
+      "range": {
+        "startLine": 22,
+        "startChar": 4,
+        "endLine": 23,
+        "endChar": 35
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_59aa541a",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendConsole.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T19:12:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_e2a28e99",
       "range": {
         "startLine": 22,
         "startChar": 4,
@@ -311,6 +359,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_59589456",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T19:12:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_a2e7a6e3",
+      "range": {
+        "startLine": 101,
+        "startChar": 4,
+        "endLine": 104,
+        "endChar": 76
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_c249128d",
         "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
         "patchSetId": 14
@@ -381,6 +453,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_99313c0e",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T19:12:05Z",
+      "side": 1,
+      "message": "No, because it means that the format is fucked up, which should not happen. I\u0027ve added an assertion just to be sure",
+      "parentUuid": "1ae5cdf2_82170aa3",
+      "range": {
+        "startLine": 132,
+        "startChar": 4,
+        "endLine": 133,
+        "endChar": 15
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_e2252e0b",
         "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
         "patchSetId": 14
@@ -392,6 +488,30 @@
       "writtenOn": "2015-09-10T14:59:56Z",
       "side": 1,
       "message": "len is converted to size_t multiple times. How about making:\nsize_t outputStrSize \u003d static_cast\u003csize_t\u003e(len); on line 134 and just use this?",
+      "range": {
+        "startLine": 135,
+        "startChar": 8,
+        "endLine": 135,
+        "endChar": 32
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_f9408058",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T19:12:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_e2252e0b",
       "range": {
         "startLine": 135,
         "startChar": 8,
@@ -427,6 +547,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_b936f801",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T19:12:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_0223fa05",
+      "range": {
+        "startLine": 137,
+        "startChar": 15,
+        "endLine": 137,
+        "endChar": 39
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_2220f6f6",
         "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
         "patchSetId": 14
@@ -438,6 +582,30 @@
       "writtenOn": "2015-09-10T14:59:56Z",
       "side": 1,
       "message": "as above",
+      "range": {
+        "startLine": 145,
+        "startChar": 36,
+        "endLine": 145,
+        "endChar": 60
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_19252cc2",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T19:12:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_2220f6f6",
       "range": {
         "startLine": 145,
         "startChar": 36,
@@ -496,6 +664,30 @@
       "writtenOn": "2015-09-10T14:59:56Z",
       "side": 1,
       "message": "Why is it added, when it\u0027s empty - is it used?",
+      "range": {
+        "startLine": 115,
+        "startChar": 4,
+        "endLine": 118,
+        "endChar": 20
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_395bc855",
+        "filename": "nfEngine/nfCommon/nfCommon.vcxproj",
+        "patchSetId": 14
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T19:12:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_569f835f",
       "range": {
         "startLine": 115,
         "startChar": 4,
@@ -606,6 +798,30 @@
       "writtenOn": "2015-09-10T14:59:56Z",
       "side": 1,
       "message": "You use logger, which should produce visible results somewhere, meaning that we test it empirically. How about changing it like this:\nlongMessage +\u003d std::to_string(i) + \" There should be 100 long messages...\\n\";\n\nThis way user will be able to easily assert if the length of the message is right, instead of \"i see something - it must work\".",
+      "range": {
+        "startLine": 21,
+        "startChar": 7,
+        "endLine": 21,
+        "endChar": 52
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_79a71050",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T19:12:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_36ce775b",
       "range": {
         "startLine": 21,
         "startChar": 7,
