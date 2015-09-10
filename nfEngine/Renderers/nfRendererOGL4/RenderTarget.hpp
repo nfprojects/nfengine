@@ -19,6 +19,7 @@ public:
     RenderTarget();
     ~RenderTarget();
 
+    void GetDimensions(int& width, int& height);
     bool Init(const RenderTargetDesc& desc);
 };
 

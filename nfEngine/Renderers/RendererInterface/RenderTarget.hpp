@@ -49,7 +49,7 @@ struct RenderTargetDesc
 };
 
 /**
- * Render Targeet interface.
+ * Render Target interface.
  *
  * @details Render Target object defines where rendering result will be written.
  *          A Render Target object may contain multiple Render Target Elements
@@ -60,6 +60,7 @@ class IRenderTarget
 public:
     virtual ~IRenderTarget() {}
 
+    virtual void GetDimensions(int& width, int& height) = 0;
     virtual bool Init(const RenderTargetDesc& desc) = 0;
 };
 
