@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_8cd01c55",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T20:23:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_6c48305c",
+      "range": {
+        "startLine": 115,
+        "startChar": 4,
+        "endLine": 115,
+        "endChar": 17
+      },
+      "revId": "806fc59df39c6c66f5efd45923bc9621f5ca5f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_cc578401",
         "filename": "nfEngine/nfCore/Engine.hpp",
         "patchSetId": 5
@@ -36,6 +60,30 @@
       "writtenOn": "2015-09-10T20:17:45Z",
       "side": 1,
       "message": "rm",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 32,
+        "endChar": 41
+      },
+      "revId": "806fc59df39c6c66f5efd45923bc9621f5ca5f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_6ce4b03b",
+        "filename": "nfEngine/nfCore/Engine.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T20:23:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_cc578401",
       "range": {
         "startLine": 31,
         "startChar": 0,
