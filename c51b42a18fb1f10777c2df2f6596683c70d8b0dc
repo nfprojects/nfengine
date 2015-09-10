@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae5cdf2_eccfe0ae",
+        "filename": "nfEngine/nfCoreTest/EngineTest.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-10T20:30:37Z",
+      "side": 1,
+      "message": "g:\\github\\nfengine\\nfengine\\nfcoretest\\enginetest.cpp(70): error C2664: \u0027testing::AssertionResult testing::internal::EqHelper\u003cfalse\u003e::Compare(const char *,const char *,testing::internal::BiggestInt,testing::internal::BiggestInt)\u0027: cannot convert argument 4 from \u0027void\u0027 to \u0027testing::internal::BiggestInt\u0027\n  g:\\github\\nfengine\\nfengine\\nfcoretest\\enginetest.cpp(70): note: Expressions of type void cannot be converted to other types\n...",
+      "range": {
+        "startLine": 70,
+        "startChar": 0,
+        "endLine": 72,
+        "endChar": 75
+      },
+      "revId": "c51b42a18fb1f10777c2df2f6596683c70d8b0dc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
