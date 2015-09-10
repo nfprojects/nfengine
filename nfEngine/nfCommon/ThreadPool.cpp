@@ -12,7 +12,7 @@ namespace NFE {
 namespace Common {
 
 Task::Task(TaskFunction callback, size_t instancesNum)
-    : ptr(0)
+    : mState(TaskState::Invalid)
     , mCallback(callback)
     , mInstancesNum(instancesNum)
     , mNextInstance(0)
@@ -176,7 +176,8 @@ void ThreadPool::SchedulerCallback(WorkerThread* thread)
 }
 
 TaskID ThreadPool::Enqueue(TaskFunction function, size_t instances,
-                           const std::vector<TaskID>& dependencies, size_t required)
+                           const TaskID* dependencies, size_t dependenciesNum,
+                           bool noWait)
 {
     assert(instances > 0);
 
@@ -187,7 +188,7 @@ TaskID ThreadPool::Enqueue(TaskFunction function, size_t instances,
 
     bool insertToQueue = false;
 
-    if (required == 0 || dependencies.empty())
+    if (dependenciesNum == 0)
     {
         // tasks with no dependencies
         {
@@ -198,19 +199,17 @@ TaskID ThreadPool::Enqueue(TaskFunction function, size_t instances,
     }
     else
     {
-        if (required > dependencies.size())
-            task->mRequired = dependencies.size();
-        else
-            task->mRequired = required;
+        assert(dependencies != nullptr);
+        task->mRequired = dependenciesNum;
 
         Lock tasksLock(mTasksMutex);
         mTasks.insert(std::pair<TaskID, Task*>(taskPtr, task));
 
         Lock depsLock(mDepsQueueMutex);
-        for (const TaskID& parentTaskPtr : dependencies)
+        for (size_t i = 0; i < dependenciesNum; ++i)
         {
-            Task* parentTask = GetTask(parentTaskPtr);
-            if (parentTask == nullptr)
+            Task* parentTask = GetTask(dependencies[i]);
+            if (parentTask == nullptr) // check if dependent task has not already finished
             {
                 task->mRequired--;
                 if (task->mRequired == 0)
@@ -238,33 +237,31 @@ TaskID ThreadPool::Enqueue(TaskFunction function, size_t instances,
     return taskPtr;
 }
 
-Task* ThreadPool::GetTask(const TaskID& ptr) const
+bool ThreadPool::AddDependency(TaskID taskId, const TaskID* dependencies, size_t dependenciesNum)
 {
-    // assume called in mTasksMutex lock
-
-    auto it = mTasks.find(ptr);
-    if (it != mTasks.end())
-        return it->second;
-
-    return nullptr;
+    Task* task = GetTask(taskId);
+    return true;
 }
 
-bool ThreadPool::IsTaskFinished(const TaskID& taskPtr)
+Task* ThreadPool::GetTask(TaskID ptr) const
 {
-    Lock lock(mTasksMutex);
-    return GetTask(taskPtr) == nullptr;
+    return static_cast<Task*>(ptr);
 }
 
-void ThreadPool::WaitForTask(const TaskID& taskPtr)
+void ThreadPool::WaitForTask(TaskID taskPtr)
 {
     Lock lock(mTasksMutex);
     while (GetTask(taskPtr) != nullptr)
         mTasksMutexCV.wait(lock);
 }
 
-void ThreadPool::WaitForTasks(const std::vector<TaskID>& tasks, size_t required)
+void ThreadPool::WaitForTasks(TaskID* tasks, size_t tasksNum)
 {
-    TaskID tmpTask = Enqueue(TaskFunction(), 1, tasks, required);
+    if (tasksNum == 0)
+        return;
+
+    assert(tesks != nullptr);
+    TaskID tmpTask = Enqueue(TaskFunction(), 1, tasks, tasksNum);
 
     Lock lock(mTasksMutex);
     while (GetTask(tmpTask) != nullptr)

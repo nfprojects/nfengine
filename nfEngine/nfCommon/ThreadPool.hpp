@@ -17,11 +17,6 @@ namespace NFE {
 namespace Common {
 
 /**
- * Thread pool task unique identifier.
- */
-typedef uint64_t TaskID;
-
-/**
  * Function object representing a task.
  * @param instance Instance id of the whole task
  * @param thread   Thread id
@@ -29,6 +24,15 @@ typedef uint64_t TaskID;
 typedef std::function<void(size_t instance, size_t thread)> TaskFunction;
 
 class ThreadPool;
+
+enum class TaskState
+{
+    Invalid,   //< for not used tasks (already created and released with a wait method)
+    Dependent, //< the task has unresolved dependency
+    Queued,    //< the task is ready to execute
+    Executed,  //< the task is being executed
+    Finished   //< the task has finished and now needs to be released with a wait method
+};
 
 /**
  * @class Task
@@ -39,7 +43,7 @@ class Task final
 {
     friend class ThreadPool;
 
-    TaskID ptr;
+    TaskState mState;
 
     /// task-related members
     TaskFunction mCallback;      //< task routine
@@ -56,6 +60,11 @@ class Task final
 public:
     Task(TaskFunction callback, size_t instancesNum);
 };
+
+/**
+ * Thread pool task unique identifier.
+ */
+typedef Task* TaskID;
 
 /**
  * @class WorkerThread
@@ -141,36 +150,30 @@ public:
      * Create a new task.
      *
      * @remarks This function is thread-safe.
-     * @param function     Task routine (can be null for creating synchronization point only).
-     * @param instances    Number of task routine instances to run.
-     * @param dependencies List of dependent tasks.
-     * @param required     Number of required finished tasks to finish the created task.
-     *                     Less than zero means "all" (dependencies.size()).
-     * @return             Task ID
+     * @param function        Task routine (can be null for creating synchronization point only).
+     * @param instances       Number of task routine instances to run.
+     * @param dependencies    List of dependent tasks.
+     * @param dependenciesNum Number of dependent tasks.
+     * @return Task ID
      */
-    TaskID Enqueue(TaskFunction function,
-                   size_t instances = 1,
-                   const std::vector<TaskID>& dependencies = std::vector<TaskID>(),
-                   size_t required = -1);
+    TaskID Enqueue(TaskFunction function, size_t instances = 1,
+                   const TaskID* dependencies = nullptr, size_t dependenciesNum = 0,
+                   bool noWait = false);
 
-    /**
-     * Check if a task is completed.
-     */
-    bool IsTaskFinished(const TaskID& taskPtr);
+    bool AddDependency(TaskID taskId, const TaskID* dependencies, size_t dependenciesNum = 1);
 
     /**
      * Waits for an task to finish.
      */
-    void WaitForTask(const TaskID& taskPtr);
+    void WaitForTask(TaskID taskPtr);
 
     /**
      * Waits for multiple tasks to finish.
      *
      * @param tasks    List of tasks to wait for.
-     * @param required Number of tasks needed to the function return. Negative value means waiting
-                       for all the tasks.
+     * @param tasksNum Number of tasks.
      */
-    void WaitForTasks(const std::vector<TaskID>& tasks, size_t required = -1);
+    void WaitForTasks(const TaskID* tasks = nullptr, size_t tasksNum = 0);
 
     /**
      * Waits for all tasks in the pool to finish.
