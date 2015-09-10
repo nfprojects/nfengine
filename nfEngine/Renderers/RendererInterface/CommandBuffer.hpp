@@ -39,9 +39,12 @@ public:
     virtual void SetVertexBuffers(int num, IBuffer** vertexBuffers,
                                   int* strides, int* offsets) = 0;
     virtual void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format) = 0;
-    virtual void SetSamplers(ISampler** samplers, int num, ShaderType target) = 0;
-    virtual void SetTextures(ITexture** textures, int num, ShaderType target) = 0;
-    virtual void SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target) = 0;
+    virtual void SetSamplers(ISampler** samplers, int num, ShaderType target,
+                             int slotOffset = 0) = 0;
+    virtual void SetTextures(ITexture** textures, int num, ShaderType target,
+                             int slotOffset = 0) = 0;
+    virtual void SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target,
+                                    int slotOffset = 0) = 0;
     virtual void SetRenderTarget(IRenderTarget* renderTarget) = 0;
     virtual void SetShaderProgram(IShaderProgram* shaderProgram) = 0;
     virtual void SetShader(IShader* shader) = 0;
