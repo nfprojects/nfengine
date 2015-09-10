@@ -1,0 +1,95 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae5cdf2_f687af0d",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T13:43:16Z",
+      "side": 1,
+      "message": "missing \"return\"",
+      "revId": "9280cb76a7a92f2b0290a174e5a1bfa565fc8868",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_d699d36f",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T13:43:16Z",
+      "side": 1,
+      "message": "WTF? Why you create and link shader programs every SetShader() call? This is a huge memory leak and is very slow",
+      "range": {
+        "startLine": 130,
+        "startChar": 0,
+        "endLine": 156,
+        "endChar": 66
+      },
+      "revId": "9280cb76a7a92f2b0290a174e5a1bfa565fc8868",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_d6b0f3df",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Linux/Backbuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T13:43:16Z",
+      "side": 1,
+      "message": "You now that you are enabling mulisampling on the backbuffer this way? I don\u0027t know if we want that by default...",
+      "revId": "9280cb76a7a92f2b0290a174e5a1bfa565fc8868",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_9604ab7f",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Shader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T13:43:16Z",
+      "side": 1,
+      "message": "LOG_SUCCESS",
+      "revId": "9280cb76a7a92f2b0290a174e5a1bfa565fc8868",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_76d8ff1d",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Shader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T13:43:16Z",
+      "side": 1,
+      "message": "LOG_SUCCESS",
+      "revId": "9280cb76a7a92f2b0290a174e5a1bfa565fc8868",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
