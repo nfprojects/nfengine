@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_d90f44e0",
+        "filename": "nfEngine/nfCommon/Linux/Console.hpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T15:56:23Z",
+      "side": 1,
+      "message": "I know the Console.* files require some cleanup and improvements, but IMO it\u0027s work for another commit. This one has enough lines of code...",
+      "parentUuid": "1ae5cdf2_7600ffaa",
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_d6263368",
         "filename": "nfEngine/nfCommon/Linux/Console.hpp",
         "patchSetId": 14
@@ -30,6 +48,30 @@
       "writtenOn": "2015-09-10T14:59:56Z",
       "side": 1,
       "message": "NFE_INLINE ?",
+      "range": {
+        "startLine": 32,
+        "startChar": 0,
+        "endLine": 32,
+        "endChar": 6
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_f91400f7",
+        "filename": "nfEngine/nfCommon/Linux/Console.hpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T15:56:23Z",
+      "side": 1,
+      "message": "as above",
+      "parentUuid": "1ae5cdf2_d6263368",
       "range": {
         "startLine": 32,
         "startChar": 0,
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_39f668d8",
+        "filename": "nfEngine/nfCommon/Linux/Console.hpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T15:56:23Z",
+      "side": 1,
+      "message": "as above",
+      "parentUuid": "1ae5cdf2_16209b48",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 6
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_96d3cb37",
         "filename": "nfEngine/nfCommon/Linux/Console.hpp",
         "patchSetId": 14
@@ -82,6 +148,47 @@
         "endLine": 43,
         "endChar": 75
       },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_590334b8",
+        "filename": "nfEngine/nfCommon/Linux/Console.hpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T15:56:23Z",
+      "side": 1,
+      "message": "as above",
+      "parentUuid": "1ae5cdf2_96d3cb37",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 43,
+        "endChar": 75
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_19f9acc8",
+        "filename": "nfEngine/nfCommon/Linux/Console.hpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T15:56:23Z",
+      "side": 1,
+      "message": "as above",
       "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -157,6 +264,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_b93198a4",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T15:56:23Z",
+      "side": 1,
+      "message": "Because, according to C++ standard, just after that line mFile::~File() will be called",
+      "parentUuid": "1ae5cdf2_82e2aad3",
+      "range": {
+        "startLine": 95,
+        "startChar": 4,
+        "endLine": 95,
+        "endChar": 54
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_a2e7a6e3",
         "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
         "patchSetId": 14
@@ -191,6 +322,30 @@
       "writtenOn": "2015-09-10T14:59:56Z",
       "side": 1,
       "message": "Maybe instead of declaring 4 strings and putting them here as parameters, what makes it less readable, it\u0027d be better to manually build this string, using +\u003d operator or append member function?\nIf not, then maybe before this snprintf insert str0,1,2 into format string with sprintf, what would make snprintf call more readable and would get it rid of all HTML-specific parameters?",
+      "range": {
+        "startLine": 129,
+        "startChar": 4,
+        "endLine": 130,
+        "endChar": 107
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_1920cc48",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T15:56:23Z",
+      "side": 1,
+      "message": "I intentionally do it this way due to performance. Using std::string here is very bad idea.",
+      "parentUuid": "1ae5cdf2_c249128d",
       "range": {
         "startLine": 129,
         "startChar": 4,
@@ -312,6 +467,24 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_391d8810",
+        "filename": "nfEngine/nfCommon/Win/Console.hpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T15:56:23Z",
+      "side": 1,
+      "message": "As in Linux/Console.hpp: this is too much changes and it\u0027s not related with Logger refactoring. This will be done in another commit",
+      "parentUuid": "1ae5cdf2_f6e24f02",
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_569f835f",
         "filename": "nfEngine/nfCommon/nfCommon.vcxproj",
         "patchSetId": 14
@@ -386,6 +559,30 @@
       "writtenOn": "2015-09-10T14:59:56Z",
       "side": 1,
       "message": "You test for long messages. What if we print NULL? Will be get empty log message or no message at all?",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 22
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_d9dd8444",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-10T15:56:23Z",
+      "side": 1,
+      "message": "Good idea",
+      "parentUuid": "1ae5cdf2_96b66bdb",
       "range": {
         "startLine": 17,
         "startChar": 0,
