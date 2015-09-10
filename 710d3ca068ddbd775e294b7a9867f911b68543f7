@@ -1,0 +1,423 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae5cdf2_7600ffaa",
+        "filename": "nfEngine/nfCommon/Linux/Console.hpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-10T14:59:56Z",
+      "side": 1,
+      "message": "So ... why do we have 2 copies of Console.hpp in Linux dir and in Win dir? Delete one of those and move to second one to nfCommon.",
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_d6263368",
+        "filename": "nfEngine/nfCommon/Linux/Console.hpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-10T14:59:56Z",
+      "side": 1,
+      "message": "NFE_INLINE ?",
+      "range": {
+        "startLine": 32,
+        "startChar": 0,
+        "endLine": 32,
+        "endChar": 6
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_16209b48",
+        "filename": "nfEngine/nfCommon/Linux/Console.hpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-10T14:59:56Z",
+      "side": 1,
+      "message": "NFE_INLINE ?",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 6
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_96d3cb37",
+        "filename": "nfEngine/nfCommon/Linux/Console.hpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-10T14:59:56Z",
+      "side": 1,
+      "message": "NFCOMMON_API?",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 43,
+        "endChar": 75
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_76463fc1",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-10T14:59:56Z",
+      "side": 1,
+      "message": "delete space",
+      "range": {
+        "startLine": 102,
+        "startChar": 46,
+        "endLine": 102,
+        "endChar": 47
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_e2a28e99",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendConsole.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-10T14:59:56Z",
+      "side": 1,
+      "message": "Maybe move it to the end, and join with default, which should reside here, then remove line 34 (return White).\nLike so:\ncase LogType::Info:\ndefault:\n return ConsoleColor::White;",
+      "range": {
+        "startLine": 22,
+        "startChar": 4,
+        "endLine": 23,
+        "endChar": 35
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_82e2aad3",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-10T14:59:56Z",
+      "side": 1,
+      "message": "Why is file opened in constructor, but not closed in destructor?",
+      "range": {
+        "startLine": 95,
+        "startChar": 4,
+        "endLine": 95,
+        "endChar": 54
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_a2e7a6e3",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-10T14:59:56Z",
+      "side": 1,
+      "message": "explain those with comments and change these generic string names",
+      "range": {
+        "startLine": 101,
+        "startChar": 4,
+        "endLine": 104,
+        "endChar": 76
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_c249128d",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-10T14:59:56Z",
+      "side": 1,
+      "message": "Maybe instead of declaring 4 strings and putting them here as parameters, what makes it less readable, it\u0027d be better to manually build this string, using +\u003d operator or append member function?\nIf not, then maybe before this snprintf insert str0,1,2 into format string with sprintf, what would make snprintf call more readable and would get it rid of all HTML-specific parameters?",
+      "range": {
+        "startLine": 129,
+        "startChar": 4,
+        "endLine": 130,
+        "endChar": 107
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_82170aa3",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-10T14:59:56Z",
+      "side": 1,
+      "message": "shouldn\u0027t there be a console LOG_ERROR, like in the constructor?",
+      "range": {
+        "startLine": 132,
+        "startChar": 4,
+        "endLine": 133,
+        "endChar": 15
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_e2252e0b",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-10T14:59:56Z",
+      "side": 1,
+      "message": "len is converted to size_t multiple times. How about making:\nsize_t outputStrSize \u003d static_cast\u003csize_t\u003e(len); on line 134 and just use this?",
+      "range": {
+        "startLine": 135,
+        "startChar": 8,
+        "endLine": 135,
+        "endChar": 32
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_0223fa05",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-10T14:59:56Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 137,
+        "startChar": 15,
+        "endLine": 137,
+        "endChar": 39
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_2220f6f6",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-10T14:59:56Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 145,
+        "startChar": 36,
+        "endLine": 145,
+        "endChar": 60
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_f6e24f02",
+        "filename": "nfEngine/nfCommon/Win/Console.hpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-10T14:59:56Z",
+      "side": 1,
+      "message": "delete this file",
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_569f835f",
+        "filename": "nfEngine/nfCommon/nfCommon.vcxproj",
+        "patchSetId": 14
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-10T14:59:56Z",
+      "side": 1,
+      "message": "Why is it added, when it\u0027s empty - is it used?",
+      "range": {
+        "startLine": 115,
+        "startChar": 4,
+        "endLine": 118,
+        "endChar": 20
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_b609a797",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-10T14:59:56Z",
+      "side": 1,
+      "message": "If there is no way to assert results via gtest, maybe write comments what result should those tests produce, so if anyone will want to check if the actual logger is working right, they will know what result is expected.\n\nShould we just check output in console or should we look somewhere for html logs as well?",
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_36f59783",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-10T14:59:56Z",
+      "side": 1,
+      "message": "I don\u0027t see it used anywhere. If it is used by logger, it should be included in Logger.hpp (where it is btw.) - rm.",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 3,
+        "endChar": 32
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_96b66bdb",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-10T14:59:56Z",
+      "side": 1,
+      "message": "You test for long messages. What if we print NULL? Will be get empty log message or no message at all?",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 22
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_36ce775b",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-10T14:59:56Z",
+      "side": 1,
+      "message": "You use logger, which should produce visible results somewhere, meaning that we test it empirically. How about changing it like this:\nlongMessage +\u003d std::to_string(i) + \" There should be 100 long messages...\\n\";\n\nThis way user will be able to easily assert if the length of the message is right, instead of \"i see something - it must work\".",
+      "range": {
+        "startLine": 21,
+        "startChar": 7,
+        "endLine": 21,
+        "endChar": 52
+      },
+      "revId": "710d3ca068ddbd775e294b7a9867f911b68543f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
