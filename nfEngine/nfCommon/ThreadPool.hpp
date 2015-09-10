@@ -17,29 +17,33 @@ namespace NFE {
 namespace Common {
 
 /**
- * Thread pool task unique identifier.
- */
-typedef uint64_t TaskID;
-
-/**
  * Function object representing a task.
  * @param instance Instance id of the whole task
  * @param thread   Thread id
  */
 typedef std::function<void(size_t instance, size_t thread)> TaskFunction;
 
-class ThreadPool;
+class FrameThreadPool;
+
+enum class TaskState
+{
+    Invalid,   //< for not used tasks (already created and released with a wait method)
+    Dependent, //< the task has unresolved dependency
+    Queued,    //< the task is ready to execute
+    Executed,  //< the task is being executed
+    Finished   //< the task has finished
+};
 
 /**
  * @class Task
  * @brief Internal task structure.
- * @remarks Only @p ThreadPool class can access it.
+ * @remarks Only @p FrameThreadPool class can access it.
  */
 class Task final
 {
-    friend class ThreadPool;
+    friend class FrameThreadPool;
 
-    TaskID ptr;
+    TaskState mState;
 
     /// task-related members
     TaskFunction mCallback;      //< task routine
@@ -63,7 +67,7 @@ public:
  */
 class WorkerThread
 {
-    friend class ThreadPool;
+    friend class FrameThreadPool;
 
     std::thread mThread;
     std::atomic<bool> mStarted; //< if set to false, exit the thread
@@ -73,7 +77,7 @@ class WorkerThread
     char mPad[64];
 
 public:
-    WorkerThread(ThreadPool* pPool, size_t id);
+    WorkerThread(FrameThreadPool* pool, size_t id);
     ~WorkerThread();
 };
 
@@ -81,10 +85,10 @@ typedef std::shared_ptr<WorkerThread> WorkerThreadPtr;
 
 
 /**
- * @class ThreadPool
+ * @class FrameThreadPool
  * @brief Class enabling parallel tasks (user provided functions) execution.
  */
-class NFCOMMON_API ThreadPool final
+class NFCOMMON_API FrameThreadPool final
 {
     friend class WorkerThread;
 
@@ -97,8 +101,7 @@ class NFCOMMON_API ThreadPool final
     std::mutex mDepsQueueMutex;             //< lock for task dependencies access (Task members)
 
     std::condition_variable mTaskQueueTask;
-    std::queue<Task*>
-    mTasksQueue;          //< Queue for task with resolved dependencies (with "Waiting" state)
+    std::queue<Task*> mTasksQueue;          //< Queue for task in "Queued" state
     std::mutex mTasksQueueMutex;            //< lock for "mTasksQueue" access
 
     std::atomic<TaskID> mLastTaskId;
@@ -121,8 +124,8 @@ class NFCOMMON_API ThreadPool final
     void WorkerThreadCallback();
 
 public:
-    ThreadPool();
-    ~ThreadPool();
+    FrameThreadPool();
+    ~FrameThreadPool();
 
     /**
      * Get number of worker threads in the pool.
@@ -141,41 +144,36 @@ public:
      * Create a new task.
      *
      * @remarks This function is thread-safe.
-     * @param function     Task routine (can be null for creating synchronization point only).
-     * @param instances    Number of task routine instances to run.
-     * @param dependencies List of dependent tasks.
-     * @param required     Number of required finished tasks to finish the created task.
-     *                     Less than zero means "all" (dependencies.size()).
-     * @return             Task ID
+     * @param function        Task routine (can be null for creating synchronization point only).
+     * @param instances       Number of task routine instances to run.
+     * @param dependencies    List of dependent tasks.
+     * @param dependenciesNum Number of dependent tasks.
+     * @param noWait          Spawn a task without a possibility to wait for it.
+     *
+     * @return Task ID
      */
-    TaskID Enqueue(TaskFunction function,
-                   size_t instances = 1,
-                   const std::vector<TaskID>& dependencies = std::vector<TaskID>(),
-                   size_t required = -1);
+    TaskID Enqueue(TaskFunction function, size_t instances = 1,
+                   const TaskID* dependencies = nullptr, size_t dependenciesNum = 0);
 
-    /**
-     * Check if a task is completed.
-     */
-    bool IsTaskFinished(const TaskID& taskPtr);
+    bool AddDependency(TaskID taskId, const TaskID* dependencies, size_t dependenciesNum = 1);
 
     /**
      * Waits for an task to finish.
      */
-    void WaitForTask(const TaskID& taskPtr);
+    void WaitForTask(TaskID taskPtr);
 
     /**
      * Waits for multiple tasks to finish.
      *
      * @param tasks    List of tasks to wait for.
-     * @param required Number of tasks needed to the function return. Negative value means waiting
-                       for all the tasks.
+     * @param tasksNum Number of tasks.
      */
-    void WaitForTasks(const std::vector<TaskID>& tasks, size_t required = -1);
+    void WaitForTasks(const TaskID* tasks = nullptr, size_t tasksNum = 0);
 
     /**
      * Waits for all tasks in the pool to finish.
      */
-    void WaitForAllTasks();
+    void Finish();
 };
 
 } // namespace Common

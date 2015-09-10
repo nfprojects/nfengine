@@ -46,7 +46,7 @@ TEST(ThreadPool, SpawnTasks)
 
         // wait for tasks time measure
         timer.Start();
-        tp.WaitForTasks(tasks);
+        tp.WaitForTasks(tasks.data(), tasks.size());
         double waitTime = 1000.0 * timer.Stop();
 
         std::cout << std::setprecision(4) << std::left

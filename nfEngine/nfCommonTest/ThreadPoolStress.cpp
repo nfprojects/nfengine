@@ -18,7 +18,6 @@ TEST(ThreadPoolStress, ComplexDependency)
     {
         std::vector<TaskID> deps;
         int done;
-        int required;
         size_t instanceNum;
     };
 
@@ -33,12 +32,12 @@ TEST(ThreadPoolStress, ComplexDependency)
         TaskInfo& taskInfo = tasks[id];
         ASSERT_TRUE(instanceId < taskInfo.instanceNum) << "Task instance ID out of bound";
 
-        int depsResolved = 0;
+        size_t depsResolved = 0;
         for (TaskID dependency : taskInfo.deps)
             if (tasks[(size_t)dependency].done)
                 depsResolved++;
 
-        ASSERT_GE(taskInfo.required, depsResolved) << "Unresolved dependencies";
+        ASSERT_GE(taskInfo.deps.size(), depsResolved) << "Unresolved dependencies";
 
         // delay first tasks a little bit
         if (id < 50)
@@ -55,11 +54,10 @@ TEST(ThreadPoolStress, ComplexDependency)
 
         // generate random dependencies
         size_t range = std::min<size_t>(tasks.size(), 0);
-        task.required = 0;
+        size_t depsNum = 0;
         if (range > 0)
         {
-            size_t depsNum = rand() % range;
-            task.required = rand() % depsNum;
+            depsNum = rand() % range;
             random_unique(tasks.begin(), tasks.end(), depsNum);
             for (size_t j = 0; j < depsNum; ++j)
                 task.deps.push_back(taskIds[i]);
@@ -69,11 +67,11 @@ TEST(ThreadPoolStress, ComplexDependency)
         task.instanceNum = rand() % 8 + 1;
         tasks.push_back(task);
         ASSERT_NO_THROW(taskId = tp.Enqueue(std::bind(func, _1, _2, i),
-                                            task.instanceNum, task.deps, task.required));
+                                            task.instanceNum, task.deps.data(), task.deps.size()));
         ASSERT_EQ(i, taskId);
         taskIds.push_back(taskId);
     }
 
-    ASSERT_NO_THROW(finishTask = tp.Enqueue(TaskFunction(), 1, taskIds));
+    ASSERT_NO_THROW(finishTask = tp.Enqueue(TaskFunction(), 1, taskIds.data(), taskIds.size()));
     tp.WaitForTask(finishTask);
 }

@@ -34,7 +34,7 @@ TEST(ThreadPoolSimple, DestroyWhileExecuting)
 
     TaskID task = 0;
     ASSERT_NO_THROW(task = tp->Enqueue(taskFunc, 20));
-    ASSERT_NO_THROW(tp->Enqueue(taskFunc, 20, { task }));
+    ASSERT_NO_THROW(tp->Enqueue(taskFunc, 20, &task, 1));
     ASSERT_NO_THROW(tp.reset());
 }
 
@@ -88,7 +88,7 @@ TEST(ThreadPoolSimple, EnqueueInsideTask)
     {
         EXPECT_EQ(0, instanceId);
         condition = 1;
-        ASSERT_NO_THROW(taskB = tp.Enqueue(taskFuncB, 1, { taskA }));
+        ASSERT_NO_THROW(taskB = tp.Enqueue(taskFuncB, 1, &taskA, 1));
     };
 
     ASSERT_NO_THROW(taskA = tp.Enqueue(taskFuncA, 1));
@@ -232,7 +232,7 @@ TEST(ThreadPoolSimple, DependencyInProgress)
     ThreadPool tp;
     TaskID task0 = 0, task1 = 0;
     ASSERT_NO_THROW(task0 = tp.Enqueue(funcA, numInstances));
-    ASSERT_NO_THROW(task1 = tp.Enqueue(funcB, numInstances, { task0 }));
+    ASSERT_NO_THROW(task1 = tp.Enqueue(funcB, numInstances, &task0, 1));
     tp.WaitForTask(task1);
 }
 
@@ -246,15 +246,14 @@ TEST(ThreadPoolSimple, DependencyFinished)
     ASSERT_NO_THROW(task0 = tp.Enqueue(func, 1));
     tp.WaitForTask(task0);
 
-    ASSERT_NO_THROW(task1 = tp.Enqueue(func, 1, { task0 }));
+    ASSERT_NO_THROW(task1 = tp.Enqueue(func, 1, &task0, 1));
     tp.WaitForTask(task1);
 }
 
 /*
-* Spawn task A (small) and B (big).
-* Then spawn 1000 "C" tasks, which are dependent on A and B, but only
-* one is required to launch.
-*/
+ * Spawn task A (small) and B (big).
+ * Then spawn 1000 "C" tasks, which are dependent on A and B.
+ */
 TEST(ThreadPoolSimple, DependencyRequiredNum)
 {
     int cTaskNum = 10000;
@@ -287,10 +286,13 @@ TEST(ThreadPoolSimple, DependencyRequiredNum)
 
     std::vector<TaskID> cTasks;
     for (int i = 0; i < cTaskNum; ++i)
-        ASSERT_NO_THROW(cTasks.push_back(tp.Enqueue(funcC, 1, { taskA, taskB }, 1)));
+    {
+        TaskID dependencies[] = { taskA, taskB };
+        ASSERT_NO_THROW(cTasks.push_back(tp.Enqueue(funcC, 1, dependencies, 2)));
+    }
 
     // wait for all "C" tasks
-    ASSERT_NO_THROW(waitTask = tp.Enqueue(TaskFunction(), 1, cTasks));
+    ASSERT_NO_THROW(waitTask = tp.Enqueue(TaskFunction(), 1, cTasks.data(), cTasks.size()));
     tp.WaitForTask(waitTask);
     cFinishLatch.Set();
     tp.WaitForTask(taskA);
@@ -330,7 +332,8 @@ TEST(ThreadPoolSimple, DependencyChain)
     TaskID prevTask = 0;
     ASSERT_NO_THROW(prevTask = tp.Enqueue(std::bind(func, _1, _2, 0), instancesPerTask));
     for (int i = 1; i < chainLen; ++i)
-        ASSERT_NO_THROW(prevTask = tp.Enqueue(std::bind(func, _1, _2, i), instancesPerTask, { prevTask }));
+        ASSERT_NO_THROW(prevTask = tp.Enqueue(std::bind(func, _1, _2, i), instancesPerTask,
+                                              &prevTask, 1));
 
     tp.WaitForTask(prevTask);
 
