@@ -21,6 +21,12 @@ RenderTarget::~RenderTarget()
 {
 }
 
+void RenderTarget::GetDimensions(int& width, int& height)
+{
+    UNUSED(width);
+    UNUSED(height);
+}
+
 bool RenderTarget::Init(const RenderTargetDesc& desc)
 {
     UNUSED(desc);

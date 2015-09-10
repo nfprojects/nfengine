@@ -14,8 +14,16 @@ namespace NFE {
 namespace Renderer {
 
 RenderTarget::RenderTarget()
+    : mDepthBuffer(nullptr)
+    , mWidth(0)
+    , mHeight(0)
 {
-    mDepthBuffer = nullptr;
+}
+
+void RenderTarget::GetDimensions(int& width, int& height)
+{
+    width = mWidth;
+    height = mHeight;
 }
 
 bool RenderTarget::Init(const RenderTargetDesc& desc)
@@ -37,6 +45,17 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         {
             LOG_ERROR("Invalid texture pointer");
             mRTVs.clear();
+            return false;
+        }
+
+        if (i == 0)
+        {
+            mWidth = tex->mWidth;
+            mHeight = tex->mHeight;
+        }
+        else if (mWidth != tex->mWidth || mHeight != tex->mHeight)
+        {
+            LOG_ERROR("Render target's texture dimensions do not match");
             return false;
         }
 

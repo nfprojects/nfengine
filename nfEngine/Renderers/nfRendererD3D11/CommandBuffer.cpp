@@ -101,7 +101,7 @@ void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat forma
     mContext->IASetIndexBuffer(ib->mBuffer.get(), dxgiFormat, 0);
 }
 
-void CommandBuffer::SetSamplers(ISampler** samplers, int num, ShaderType target)
+void CommandBuffer::SetSamplers(ISampler** samplers, int num, ShaderType target, int slotOffset)
 {
     ID3D11SamplerState* samplerStates[16];
     for (int i = 0; i < num; ++i)
@@ -113,24 +113,24 @@ void CommandBuffer::SetSamplers(ISampler** samplers, int num, ShaderType target)
     switch (target)
     {
     case ShaderType::Vertex:
-        mContext->VSSetSamplers(0, num, samplerStates);
+        mContext->VSSetSamplers(slotOffset, num, samplerStates);
         break;
     case ShaderType::Domain:
-        mContext->DSSetSamplers(0, num, samplerStates);
+        mContext->DSSetSamplers(slotOffset, num, samplerStates);
         break;
     case ShaderType::Hull:
-        mContext->HSSetSamplers(0, num, samplerStates);
+        mContext->HSSetSamplers(slotOffset, num, samplerStates);
         break;
     case ShaderType::Geometry:
-        mContext->GSSetSamplers(0, num, samplerStates);
+        mContext->GSSetSamplers(slotOffset, num, samplerStates);
         break;
     case ShaderType::Pixel:
-        mContext->PSSetSamplers(0, num, samplerStates);
+        mContext->PSSetSamplers(slotOffset, num, samplerStates);
         break;
     };
 }
 
-void CommandBuffer::SetTextures(ITexture** textures, int num, ShaderType target)
+void CommandBuffer::SetTextures(ITexture** textures, int num, ShaderType target, int slotOffset)
 {
     ID3D11ShaderResourceView* srvs[16];
     for (int i = 0; i < num; ++i)
@@ -142,24 +142,25 @@ void CommandBuffer::SetTextures(ITexture** textures, int num, ShaderType target)
     switch (target)
     {
     case ShaderType::Vertex:
-        mContext->VSSetShaderResources(0, num, srvs);
+        mContext->VSSetShaderResources(slotOffset, num, srvs);
         break;
     case ShaderType::Domain:
-        mContext->DSSetShaderResources(0, num, srvs);
+        mContext->DSSetShaderResources(slotOffset, num, srvs);
         break;
     case ShaderType::Hull:
-        mContext->HSSetShaderResources(0, num, srvs);
+        mContext->HSSetShaderResources(slotOffset, num, srvs);
         break;
     case ShaderType::Geometry:
-        mContext->GSSetShaderResources(0, num, srvs);
+        mContext->GSSetShaderResources(slotOffset, num, srvs);
         break;
     case ShaderType::Pixel:
-        mContext->PSSetShaderResources(0, num, srvs);
+        mContext->PSSetShaderResources(slotOffset, num, srvs);
         break;
     };
 }
 
-void CommandBuffer::SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target)
+void CommandBuffer::SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target,
+                                       int slotOffset)
 {
     ID3D11Buffer* buffers[16];
     for (int i = 0; i < num; ++i)
@@ -171,19 +172,19 @@ void CommandBuffer::SetConstantBuffers(IBuffer** constantBuffers, int num, Shade
     switch (target)
     {
         case ShaderType::Vertex:
-            mContext->VSSetConstantBuffers(0, num, buffers);
+            mContext->VSSetConstantBuffers(slotOffset, num, buffers);
             break;
         case ShaderType::Domain:
-            mContext->DSSetConstantBuffers(0, num, buffers);
+            mContext->DSSetConstantBuffers(slotOffset, num, buffers);
             break;
         case ShaderType::Hull:
-            mContext->HSSetConstantBuffers(0, num, buffers);
+            mContext->HSSetConstantBuffers(slotOffset, num, buffers);
             break;
         case ShaderType::Geometry:
-            mContext->GSSetConstantBuffers(0, num, buffers);
+            mContext->GSSetConstantBuffers(slotOffset, num, buffers);
             break;
         case ShaderType::Pixel:
-            mContext->PSSetConstantBuffers(0, num, buffers);
+            mContext->PSSetConstantBuffers(slotOffset, num, buffers);
             break;
     };
 }

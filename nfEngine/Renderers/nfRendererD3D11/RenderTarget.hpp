@@ -20,9 +20,12 @@ class RenderTarget : public IRenderTarget
 
     std::vector<D3DPtr<ID3D11RenderTargetView>> mRTVs;
     Texture* mDepthBuffer;
+    int mWidth;
+    int mHeight;
 
 public:
     RenderTarget();
+    void GetDimensions(int& width, int& height);
     bool Init(const RenderTargetDesc& desc);
 };
 
