@@ -1,7 +1,7 @@
 /**
  * @file
  * @author  Witek902 (witek902@gmail.com)
- * @brief   Declarations of high-level Geometry Buffer Renderer
+ * @brief   Declarations of high-level Geometry Renderer
  */
 
 #pragma once
@@ -9,14 +9,14 @@
 #include "RendererModule.hpp"
 #include "HighLevelRenderer.hpp"
 #include "RenderCommand.hpp"
-#include "GeometryBufferRendererContext.hpp"
+#include "GeometryRendererContext.hpp"
 #include "RendererResources.hpp"
 #include "Multishader.hpp"
 
 namespace NFE {
 namespace Renderer {
 
-class GBufferRenderer : public RendererModule<GBufferRenderer>
+class GeometryRenderer : public RendererModule<GeometryRenderer>
 {
     Multishader mVertexShader;
     Multishader mPixelShader;
@@ -31,7 +31,7 @@ class GBufferRenderer : public RendererModule<GBufferRenderer>
     uint32 mUseMotionBlurMacroPS;
 
 public:
-    GBufferRenderer();
+    GeometryRenderer();
 
     void OnEnter(RenderContext* context);
     void OnLeave(RenderContext* context);
