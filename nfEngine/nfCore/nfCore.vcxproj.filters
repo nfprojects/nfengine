@@ -78,9 +78,6 @@
     <ClCompile Include="Renderer\DebugRenderer.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\GeometryBufferRenderer.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer\GuiRenderer.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
@@ -94,9 +91,6 @@
       <Filter>Renderer</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\RendererContext.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\ShadowsRenderer.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\View.cpp">
@@ -140,6 +134,9 @@
     </ClCompile>
     <ClCompile Include="Systems\TransformSystem.cpp">
       <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\GeometryRenderer.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -200,9 +197,6 @@
     <ClInclude Include="Renderer\DebugRenderer.hpp">
       <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\GeometryBufferRenderer.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="Renderer\GuiRenderer.hpp">
       <Filter>Renderer</Filter>
     </ClInclude>
@@ -221,9 +215,6 @@
     <ClInclude Include="Renderer\RendererResources.hpp">
       <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\ShadowsRenderer.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="Renderer\View.hpp">
       <Filter>Renderer</Filter>
     </ClInclude>
@@ -237,9 +228,6 @@
       <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\DebugRendererContext.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\GeometryBufferRendererContext.hpp">
       <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Systems\PhysicsSystem.hpp">
@@ -271,6 +259,12 @@
     </ClInclude>
     <ClInclude Include="Systems\TransformSystem.hpp">
       <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\GeometryRenderer.hpp">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\GeometryRendererContext.hpp">
+      <Filter>Renderer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

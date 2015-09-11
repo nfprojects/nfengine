@@ -296,7 +296,7 @@ popd</Command>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Renderer\GeometryBufferRenderer.cpp">
+    <ClCompile Include="Renderer\GeometryRenderer.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
@@ -345,12 +345,6 @@ popd</Command>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Renderer\RendererResources.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Renderer\ShadowsRenderer.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
@@ -414,8 +408,8 @@ popd</Command>
     <ClInclude Include="Performance.hpp" />
     <ClInclude Include="Renderer\DebugRenderer.hpp" />
     <ClInclude Include="Renderer\DebugRendererContext.hpp" />
-    <ClInclude Include="Renderer\GeometryBufferRenderer.hpp" />
-    <ClInclude Include="Renderer\GeometryBufferRendererContext.hpp" />
+    <ClInclude Include="Renderer\GeometryRenderer.hpp" />
+    <ClInclude Include="Renderer\GeometryRendererContext.hpp" />
     <ClInclude Include="Renderer\GuiRenderer.hpp" />
     <ClInclude Include="Renderer\HighLevelRenderer.hpp" />
     <ClInclude Include="Renderer\LightsRenderer.hpp" />
@@ -425,7 +419,6 @@ popd</Command>
     <ClInclude Include="Renderer\RendererContext.hpp" />
     <ClInclude Include="Renderer\RendererModule.hpp" />
     <ClInclude Include="Renderer\RendererResources.hpp" />
-    <ClInclude Include="Renderer\ShadowsRenderer.hpp" />
     <ClInclude Include="Renderer\View.hpp" />
     <ClInclude Include="Resource.hpp" />
     <ClInclude Include="ResourcesManager.hpp" />
