@@ -10,6 +10,11 @@ Texture2D<float> gDepthTex : register(t4);
     Texture2D<float3> gLightMap : register(t5);
 #endif
 
+#if (USE_SHADOW_MAP > 0)
+    SamplerComparisonState gShadowSampler : register(s1);
+    Texture2D<float> gShadowMap : register(t6);
+#endif
+
 cbuffer Global : register(b0)
 {
     float4x4 gCameraMatrix;
@@ -27,6 +32,7 @@ cbuffer SpotLightProps : register(b1)
     float4 gFarDist;
     float4x4 gLightViewProjMatrix;
     float4x4 gLightViewProjMatrixInv;
+    float4 gShadowMapProps;  // x = shadow map resolution inverse
 };
 
 struct VertexShaderOutput
@@ -101,7 +107,27 @@ PixelShaderOutput main(VertexShaderOutput input)
     clip(dot(lightMapColor, float3(1, 1, 1)) - 0.00001f);
 #endif
 
-    // TODO: shadows
+
+#if (USE_SHADOW_MAP > 0)
+    float shadowValue = 0.0f;
+    const int PCF_SIZE = 1;
+    // simple Percentage Closer Filtering
+    for (int i = -PCF_SIZE; i <= PCF_SIZE; i++)
+    {
+        for (int j = -PCF_SIZE; j <= PCF_SIZE; j++)
+        {
+            float2 offset = float2(i, j) * gShadowMapProps.x;
+            shadowValue += gShadowMap.SampleCmpLevelZero(gShadowSampler,
+                                                         lightSpacePos.xy + offset,
+                                                         lightSpacePos.z);
+        }
+    }
+    shadowValue /= (2 * PCF_SIZE + 1) * (2 * PCF_SIZE + 1);
+    clip(shadowValue - 0.00001f);
+#else
+    float shadowValue = 1.0f;
+#endif
+
 
     float fadeOut = 1.0f - lightDist / gFarDist.x;
     fadeOut /= (lightDist * lightDist);
@@ -114,7 +140,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     if (RdotL > 0)
         specular = specularFactor * pow(RdotL, specularPower);
 
-    float3 result = gLightColor.xyz * fadeOut * (color1.xyz * NdotL + specular);
+    float3 result = shadowValue * gLightColor.xyz * fadeOut * (color1.xyz * NdotL + specular);
 
 #if (USE_LIGHT_MAP > 0)
     result *= lightMapColor;

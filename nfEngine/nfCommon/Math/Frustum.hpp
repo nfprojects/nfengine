@@ -100,5 +100,21 @@ void Frustum::Construct(const Vector& origin, const Vector& xAxis, const Vector&
     CalculatePlanes();
 }
 
+/**
+ * Calculate view matrix, projection matrix and frustum parameters for
+ * perspective projection.
+ *
+ * @param      matrix           Camera orientation.
+ * @param      nearDist,farDist Clipping planes distances.
+ * @param      cutoff           Cutoff angle in Y axis (in radians).
+ * @param      aspect           Aspect ratio.
+ * @param[out] viewMatrix       View matrix.
+ * @param[out] projMatrix       Projection matrix.
+ * @param[out] frustum          Camera frustum.
+ */
+NFCOMMON_API void SetupPerspective(const Matrix& matrix,
+                                   float nearDist, float farDist, float cutoff, float aspect,
+                                   Matrix& viewMatrix, Matrix& projMatrix, Frustum& frustum);
+
 } // namespace Math
 } // namespace NFE
