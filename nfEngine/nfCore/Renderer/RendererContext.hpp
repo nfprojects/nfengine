@@ -9,7 +9,7 @@
 #include "RenderCommand.hpp"
 #include "HighLevelRenderer.hpp"
 #include "DebugRendererContext.hpp"
-#include "GeometryBufferRendererContext.hpp"
+#include "GeometryRendererContext.hpp"
 
 namespace NFE {
 namespace Renderer {
