@@ -178,7 +178,7 @@ public:
 
 class GeometryBuffer
 {
-    friend class GBufferRenderer;
+    friend class GeometryRenderer;
     friend class LightsRenderer;
 
     static const int gLayers = 4;

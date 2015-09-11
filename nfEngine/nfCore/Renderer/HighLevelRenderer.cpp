@@ -15,9 +15,8 @@
 
 #include "GuiRenderer.hpp"
 #include "DebugRenderer.hpp"
-#include "GeometryBufferRenderer.hpp"
+#include "GeometryRenderer.hpp"
 #include "LightsRenderer.hpp"
-#include "ShadowsRenderer.hpp"
 #include "PostProcessRenderer.hpp"
 
 namespace NFE {
@@ -65,8 +64,7 @@ bool HighLevelRenderer::Init(const std::string& preferredRendererName)
     GuiRenderer::Init();
     PostProcessRenderer::Init();
     DebugRenderer::Init();
-    ShadowRenderer::Init();
-    GBufferRenderer::Init();
+    GeometryRenderer::Init();
     LightsRenderer::Init();
 
     CreateCommonResources();
@@ -79,8 +77,7 @@ void HighLevelRenderer::Release()
     GuiRenderer::Release();
     PostProcessRenderer::Release();
     DebugRenderer::Release();
-    ShadowRenderer::Release();
-    GBufferRenderer::Release();
+    GeometryRenderer::Release();
     LightsRenderer::Release();
 
     mDefaultBlendState.reset();

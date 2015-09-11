@@ -63,10 +63,9 @@ namespace NFE {
     namespace Renderer {
         class HighLevelRenderer;
         class DebugRenderer;
-        class GBufferRenderer;
+        class GeometryRenderer;
         class GuiRenderer;
         class LightsRenderer;
-        class ShadowRenderer;
         class PostProcessRenderer;
         class RenderContext;
         class RenderTarget;

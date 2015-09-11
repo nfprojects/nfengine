@@ -1,13 +1,13 @@
 /**
  * @file
  * @author  Witek902 (witek902@gmail.com)
- * @brief   Definitions of high-level Geometry Buffer Renderer
+ * @brief   Definitions of high-level Geometry Renderer
  */
 
 #pragma once
 
 #include "../PCH.hpp"
-#include "GeometryBufferRenderer.hpp"
+#include "GeometryRenderer.hpp"
 #include "HighLevelRenderer.hpp"
 #include "../Material.hpp"
 #include "../Mesh.hpp"
@@ -41,7 +41,7 @@ const size_t gMaxBufferedInstances = 4096;
 } // namespace
 
 // renderer modules instance definition
-std::unique_ptr<GBufferRenderer> GBufferRenderer::mPtr;
+std::unique_ptr<GeometryRenderer> GeometryRenderer::mPtr;
 
 
 GBufferRendererContext::GBufferRendererContext()
@@ -49,7 +49,7 @@ GBufferRendererContext::GBufferRendererContext()
     instanceData.resize(gMaxBufferedInstances);
 }
 
-GBufferRenderer::GBufferRenderer()
+GeometryRenderer::GeometryRenderer()
 {
     IDevice* device = mRenderer->GetDevice();
     BufferDesc bufferDesc;
@@ -80,36 +80,36 @@ GBufferRenderer::GBufferRenderer()
     meshVertexLayoutDesc.elements = vertexLayoutElements;
     meshVertexLayoutDesc.numElements = 9;
     meshVertexLayoutDesc.vertexShader = mVertexShader.GetShader(macros);
-    meshVertexLayoutDesc.debugName = "GBufferRenderer::mMeshVertexLayout";
+    meshVertexLayoutDesc.debugName = "GeometryRenderer::mMeshVertexLayout";
     mVertexLayout.reset(device->CreateVertexLayout(meshVertexLayoutDesc));
 
     // create vertex buffer for per-instance data
     bufferDesc.access = BufferAccess::CPU_Write;
     bufferDesc.size = gMaxBufferedInstances * sizeof(InstanceData);
     bufferDesc.type = BufferType::Vertex;
-    bufferDesc.debugName = "GBufferRenderer::mInstancesVertexBuffer";
+    bufferDesc.debugName = "GeometryRenderer::mInstancesVertexBuffer";
     mInstancesVertexBuffer.reset(device->CreateBuffer(bufferDesc));
 
     bufferDesc.access = BufferAccess::CPU_Write;
     bufferDesc.size = sizeof(MaterialCBuffer);
     bufferDesc.type = BufferType::Constant;
-    bufferDesc.debugName = "GBufferRenderer::mMaterialCBuffer";
+    bufferDesc.debugName = "GeometryRenderer::mMaterialCBuffer";
     mMaterialCBuffer.reset(device->CreateBuffer(bufferDesc));
 
     bufferDesc.access = BufferAccess::CPU_Write;
     bufferDesc.size = sizeof(GlobalCBuffer);
     bufferDesc.type = BufferType::Constant;
-    bufferDesc.debugName = "GBufferRenderer::mGlobalCBuffer";
+    bufferDesc.debugName = "GeometryRenderer::mGlobalCBuffer";
     mGlobalCBuffer.reset(device->CreateBuffer(bufferDesc));
 
     RasterizerStateDesc rasterizerStateDesc;
     rasterizerStateDesc.cullMode = CullMode::CW;
     rasterizerStateDesc.fillMode = FillMode::Solid;
-    rasterizerStateDesc.debugName = "GBufferRenderer::mRasterizerState";
+    rasterizerStateDesc.debugName = "GeometryRenderer::mRasterizerState";
     mRasterizerState.reset(device->CreateRasterizerState(rasterizerStateDesc));
 }
 
-void GBufferRenderer::OnEnter(RenderContext* context)
+void GeometryRenderer::OnEnter(RenderContext* context)
 {
     context->commandBuffer->BeginDebugGroup("Geometry Buffer Renderer stage");
 
@@ -131,7 +131,7 @@ void GBufferRenderer::OnEnter(RenderContext* context)
     context->commandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
 }
 
-void GBufferRenderer::OnLeave(RenderContext* context)
+void GeometryRenderer::OnLeave(RenderContext* context)
 {
     // TODO: allow "NULL" in the array
     ITexture* nullTextures[] = { mRenderer->GetDefaultDiffuseTexture(),
@@ -145,12 +145,12 @@ void GBufferRenderer::OnLeave(RenderContext* context)
     context->commandBuffer->EndDebugGroup();
 }
 
-void GBufferRenderer::SetUp(RenderContext *context, GeometryBuffer* geometryBuffer)
+void GeometryRenderer::SetUp(RenderContext *context, GeometryBuffer* geometryBuffer)
 {
     context->commandBuffer->SetRenderTarget(geometryBuffer->mRenderTarget.get());
 }
 
-void GBufferRenderer::SetCamera(RenderContext *context, const CameraRenderDesc* camera)
+void GeometryRenderer::SetCamera(RenderContext *context, const CameraRenderDesc* camera)
 {
     GlobalCBuffer cbuffer;
     cbuffer.ProjMatrix = camera->projMatrix;
@@ -164,7 +164,7 @@ void GBufferRenderer::SetCamera(RenderContext *context, const CameraRenderDesc* 
                                         &cbuffer);
 }
 
-void GBufferRenderer::SetMaterial(RenderContext* context, const RendererMaterial* material)
+void GeometryRenderer::SetMaterial(RenderContext* context, const RendererMaterial* material)
 {
     // TODO: use additional macros/branching in the shaders instead of using "dummy" textures
     ITexture* diffuseTexture = mRenderer->GetDefaultDiffuseTexture();
@@ -202,7 +202,7 @@ void GBufferRenderer::SetMaterial(RenderContext* context, const RendererMaterial
     context->commandBuffer->SetTextures(textures, 3, ShaderType::Pixel);
 }
 
-void GBufferRenderer::Draw(RenderContext* context, const RenderCommandBuffer& buffer)
+void GeometryRenderer::Draw(RenderContext* context, const RenderCommandBuffer& buffer)
 {
     if (buffer.commands.size() <= 0)
         return;
