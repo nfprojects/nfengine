@@ -1,0 +1,234 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae5cdf2_ea2b402e",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-11T15:14:46Z",
+      "side": 1,
+      "message": "Is that compilers constant/define? If so, then please write it in comment.",
+      "range": {
+        "startLine": 27,
+        "startChar": 27,
+        "endLine": 27,
+        "endChar": 45
+      },
+      "revId": "cce0b7dee3efe4049483f47e51bbc6539300b269",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_e5461323",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-11T15:14:46Z",
+      "side": 1,
+      "message": "maybe time or logTime?",
+      "range": {
+        "startLine": 87,
+        "startChar": 11,
+        "endLine": 87,
+        "endChar": 12
+      },
+      "revId": "cce0b7dee3efe4049483f47e51bbc6539300b269",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_e5cff3ae",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-11T15:14:46Z",
+      "side": 1,
+      "message": "Have You thought about LOG_ERROR here? Please elaborate.",
+      "range": {
+        "startLine": 107,
+        "startChar": 6,
+        "endLine": 108,
+        "endChar": 15
+      },
+      "revId": "cce0b7dee3efe4049483f47e51bbc6539300b269",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_65c1232e",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-11T15:14:46Z",
+      "side": 1,
+      "message": "I would change it like this:\n    std::unique_ptr\u003cchar\u003e formattedStr(buffer);\n    va_list args, argsCopy;\n    va_start(args, str);\n    int len \u003d vsnprintf(formattedStr.get(), SHORT_MESSAGE_LENGTH, str, args);\n\n    if (len \u003e\u003d SHORT_MESSAGE_LENGTH)\n    {\n        // buffer on the stack is too small\n        formattedStr.reset(new (std::nothrow) char[len + 1]);\n        if (formattedStr)\n        {\n            // we can\u0027t call vsnprintf with the same va_list more than once\n            va_copy(argsCopy, args);\n            len \u003d vsnprintf(formattedStr, len + 1, str, argsCopy);\n            va_end(argsCopy);\n        }\n    }\n    va_end(args);\n    \n    if (len \u003c 0 || !formattedStr)\n        return;\n    \n    {\n        std::unique_lock\u003cstd::mutex\u003e lock(mMutex);\n        for (auto\u0026 backend : mBackends)\n        {\n            backend-\u003eLog(type, srcFile, line, formattedStr, t);\n        }\n    }",
+      "range": {
+        "startLine": 100,
+        "startChar": 4,
+        "endLine": 134,
+        "endChar": 30
+      },
+      "revId": "cce0b7dee3efe4049483f47e51bbc6539300b269",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_8579cffe",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-11T15:14:46Z",
+      "side": 1,
+      "message": "I\u0027d change it to sth like:\n size_t bufferSize \u003d mBuffer.size();\n int len \u003d snprintf(mBuffer.data(), bufferSize, format,\n                    str0, timeElapsed, str, str1, srcFile, srcFile + pathOffset, line, str2);\n \n // this would only mean, that format is wrong, so no need to check it multiple times for other snprintf\u0027s\n if (len \u003c 0)\n {\n     assert(false);\n     return;\n }\n else if (len \u003e\u003d bufferSize)\n {\n    int resizeFactor \u003d (len / static_cast\u003cint\u003e(bufferSize)) - 1;\n    mBuffer.resize((1 \u003c\u003c resizeFactor) * bufferSize);\n \n    len \u003d snprintf(mBuffer.data(), mBuffer.size(), format,\n                    str0, timeElapsed, str, str1, srcFile, srcFile + pathOffset, line, str2);\n }\n \n mFile.Write(mBuffer.data(), outputStrSize);",
+      "range": {
+        "startLine": 136,
+        "startChar": 4,
+        "endLine": 155,
+        "endChar": 51
+      },
+      "revId": "cce0b7dee3efe4049483f47e51bbc6539300b269",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_6a52d0de",
+        "filename": "nfEngine/nfCommon/nfCommon.vcxproj",
+        "patchSetId": 15
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-11T15:14:46Z",
+      "side": 1,
+      "message": "I see You deleted one of those...unfortunately missed this one ;)",
+      "range": {
+        "startLine": 115,
+        "startChar": 3,
+        "endLine": 118,
+        "endChar": 20
+      },
+      "revId": "cce0b7dee3efe4049483f47e51bbc6539300b269",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_8a5e3ce8",
+        "filename": "nfEngine/nfCommon/nfCommon.vcxproj",
+        "patchSetId": 15
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-11T15:14:46Z",
+      "side": 1,
+      "message": "I see You deleted one of those...unfortunately missed this one ;)",
+      "range": {
+        "startLine": 179,
+        "startChar": 3,
+        "endLine": 182,
+        "endChar": 20
+      },
+      "revId": "cce0b7dee3efe4049483f47e51bbc6539300b269",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_aa63f8af",
+        "filename": "nfEngine/nfCommon/nfCommon.vcxproj",
+        "patchSetId": 15
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-11T15:14:46Z",
+      "side": 1,
+      "message": "I see You deleted one of those...unfortunately missed this one ;)",
+      "range": {
+        "startLine": 215,
+        "startChar": 3,
+        "endLine": 218,
+        "endChar": 20
+      },
+      "revId": "cce0b7dee3efe4049483f47e51bbc6539300b269",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_6a69f08a",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-11T15:14:46Z",
+      "side": 1,
+      "message": "Comments about looking at console/html file would be appreciated. Whatever You\u0027d do, it still has to be checked by looking at, just as that print function in SystemInfo class some time ago ;)",
+      "range": {
+        "startLine": 7,
+        "startChar": 1,
+        "endLine": 13,
+        "endChar": 51
+      },
+      "revId": "cce0b7dee3efe4049483f47e51bbc6539300b269",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_ea5d00eb",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-11T15:14:46Z",
+      "side": 1,
+      "message": "adding \u0027i\u0027 at the beginning is crucial - it makes counting a lot easier.",
+      "range": {
+        "startLine": 25,
+        "startChar": 23,
+        "endLine": 25,
+        "endChar": 75
+      },
+      "revId": "cce0b7dee3efe4049483f47e51bbc6539300b269",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
