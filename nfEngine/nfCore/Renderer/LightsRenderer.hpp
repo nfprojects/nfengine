@@ -22,6 +22,7 @@ class LightsRenderer : public RendererModule<LightsRenderer>
     std::unique_ptr<IDepthState> mLightsDepthState;
     std::unique_ptr<IRasterizerState> mLightsRasterizerState;
     std::unique_ptr<IBlendState> mLightsBlendState;
+    std::unique_ptr<ISampler> mShadowMapSampler;
 
     std::unique_ptr<IBuffer> mVertexBuffer;
     std::unique_ptr<IBuffer> mIndexBuffer;
@@ -32,11 +33,13 @@ class LightsRenderer : public RendererModule<LightsRenderer>
     Multishader mAmbientLightPS;
     std::unique_ptr<IBuffer> mAmbientLightCBuffer;
 
+    int mOmniLightUseShadowMap;
     Multishader mOmniLightVS;
     Multishader mOmniLightPS;
     std::unique_ptr<IBuffer> mOmniLightCBuffer;
 
-    int mUseLightMapMacroId;
+    int mSpotLightUseLightMap;
+    int mSpotLightUseShadowMap;
     Multishader mSpotLightVS;
     Multishader mSpotLightPS;
     std::unique_ptr<IBuffer> mSpotLightCBuffer;

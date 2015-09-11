@@ -55,7 +55,9 @@ LightComponent::LightComponent(const LightComponent& other)
         LOG_ERROR("Invalid light type");
     }
 
-    mShadowMap = nullptr;
+    if (other.HasShadowMap())
+        SetShadowMap(other.mShadowMap->GetSize());
+
     mLightMap = other.mLightMap;
     if (mLightMap)
         mLightMap->AddRef();
@@ -68,12 +70,6 @@ void LightComponent::SetColor(const Float3& color)
 
 void LightComponent::Release()
 {
-    if (mShadowMap != nullptr)
-    {
-        mShadowMap->Release();
-        mShadowMap = nullptr;
-    }
-
     if (mLightMap)
     {
         mLightMap->DelRef();
@@ -125,42 +121,43 @@ void LightComponent::SetDirLight(const DirLightDesc* pDesc)
     }
 }
 
-Result LightComponent::SetShadowMap(uint32 resolution)
+bool LightComponent::SetShadowMap(uint32 resolution)
 {
     if (!mShadowMap && resolution > 0)
     {
-        mShadowMap = nullptr; // TODO
-        if (mShadowMap == 0)
+        mShadowMap.reset(new ShadowMap);
+        if (mShadowMap == nullptr)
         {
             LOG_ERROR("Failed to create shadowmap object.");
-            return Result::AllocationError;
+            return false;
         }
     }
     else if (mShadowMap && resolution == 0)
     {
-        delete mShadowMap;
-        mShadowMap = nullptr;
-        return Result::OK;
+        mShadowMap.reset();
+        return true;
     }
     else if (!mShadowMap && resolution == 0)
-        return Result::OK;
+        return true;
 
+    bool ret;
     switch (mLightType)
     {
     case LightType::Omni:
-        mShadowMap->Resize(resolution, ShadowMap::Type::Cube);
+        ret = mShadowMap->Resize(resolution, ShadowMap::Type::Cube);
         break;
     case LightType::Spot:
-        mShadowMap->Resize(resolution, ShadowMap::Type::Flat);
+        ret = mShadowMap->Resize(resolution, ShadowMap::Type::Flat);
         break;
     case LightType::Dir:
-        mShadowMap->Resize(resolution, ShadowMap::Type::Cascaded, mDirLight.splits);
+        ret = mShadowMap->Resize(resolution, ShadowMap::Type::Cascaded, mDirLight.splits);
         break;
     default:
         LOG_ERROR("Invalid light type");
+        return false;
     }
 
-    return Result::OK;
+    return ret;
 }
 
 bool LightComponent::HasShadowMap() const
