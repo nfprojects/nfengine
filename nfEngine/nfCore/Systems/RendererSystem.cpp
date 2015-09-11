@@ -12,9 +12,8 @@
 #include "../Material.hpp"
 
 #include "../Renderer/HighLevelRenderer.hpp"
-#include "../Renderer/ShadowsRenderer.hpp"
 #include "../Renderer/LightsRenderer.hpp"
-#include "../Renderer/GeometryBufferRenderer.hpp"
+#include "../Renderer/GeometryRenderer.hpp"
 #include "../Renderer/DebugRenderer.hpp"
 #include "../Renderer/RendererContext.hpp"
 #include "../Renderer/View.hpp"
@@ -222,7 +221,7 @@ void RendererSystem::RenderGBuffer(RenderContext* ctx, CameraComponent* camera,
     visibleMeshes.clear();
     commandBuffer.Sort();
 
-    GBufferRenderer::Get()->Draw(ctx, commandBuffer);
+    GeometryRenderer::Get()->Draw(ctx, commandBuffer);
 }
 
 void RendererSystem::Render(Renderer::View* view)
@@ -274,11 +273,13 @@ void RendererSystem::Render(Renderer::View* view)
     {
         RenderContext* ctx = renderer->GetDeferredContext(i);
         ctx->Begin();
-        ShadowRenderer::Get()->Enter(ctx);
+        // TODO
+        // ShadowRenderer::Get()->Enter(ctx);
     }
 
     // draw shadow maps
-    ShadowRenderer::Get()->Enter(immCtx);
+    // TODO
+    // ShadowRenderer::Get()->Enter(immCtx);
 
     auto drawShadowMapFunc = [this, &renderer](LightComponent * pLight, size_t instance,
                                                size_t threadID)
@@ -330,17 +331,18 @@ void RendererSystem::Render(Renderer::View* view)
     // execute command lists
     for (size_t i = 0; i < contextsNum; i++)
         renderer->ExecuteDeferredContext(renderer->GetDeferredContext(i));
-    ShadowRenderer::Get()->Leave(immCtx);
+    // TODO
+    // ShadowRenderer::Get()->Leave(immCtx);
 
 
     // TODO: this should be recorded to a deffered context as well as lights pass
-    GBufferRenderer::Get()->Enter(immCtx);
-    GBufferRenderer::Get()->SetUp(immCtx, view->GetGeometryBuffer());
+    GeometryRenderer::Get()->Enter(immCtx);
+    GeometryRenderer::Get()->SetUp(immCtx, view->GetGeometryBuffer());
     const float backgroundColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
     immCtx->commandBuffer->Clear(NFE_CLEAR_FLAG_TARGET | NFE_CLEAR_FLAG_DEPTH, backgroundColor, 1.0f);
-    GBufferRenderer::Get()->SetCamera(immCtx, &cameraRenderDesc);
+    GeometryRenderer::Get()->SetCamera(immCtx, &cameraRenderDesc);
     RenderGBuffer(immCtx, camera, cameraTransform);
-    GBufferRenderer::Get()->Leave(immCtx);
+    GeometryRenderer::Get()->Leave(immCtx);
 
     // LIGHTS RENDERING ===========================================================================
     {
