@@ -42,14 +42,23 @@ class RendererSystem : public Util::Aligned
 
     SceneManager* mScene;
 
+    void RenderShadowMaps() const;
     void RenderLights(Renderer::RenderContext* ctx) const;
     void RenderLightsDebug(Renderer::RenderContext* ctx) const;
 
-    void RenderGBuffer(Renderer::RenderContext* ctx, CameraComponent* camera,
-                       TransformComponent* cameraTransform);
-    void RenderShadow(Renderer::RenderContext * ctx, LightComponent* pLight, uint32 faceID = 0);
+    /**
+     * Draw all the geometry visible in the @p viewFrustum using GeometryRenderer.
+     * @param ctx             Renderer contex
+     * @param viewFrustum     A frustum against which frustum culling will be performed
+     * @param cameraTransform Transform component of the viewing camera.
+                              Used for distance calculation.
+     */
+    void DrawGeometry(Renderer::RenderContext* ctx, const Math::Frustum& viewFrustum,
+                      const TransformComponent* cameraTransform) const;
+
     void FindActiveMeshEntities();
-    void FindVisibleMeshEntities(const Math::Frustum & frustum, std::vector<MeshEntry>& list);
+    void FindVisibleMeshEntities(const Math::Frustum & frustum,
+                                 std::vector<MeshEntry>& list) const;
     void UpdateLights();
 
 public:

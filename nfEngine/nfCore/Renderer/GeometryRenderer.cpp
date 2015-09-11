@@ -59,6 +59,9 @@ GeometryRenderer::GeometryRenderer()
     mPixelShader.Load("GeometryPassPS");
     mUseMotionBlurMacroPS = mPixelShader.GetMacroByName("USE_MOTION_BLUR");
 
+    mShadowVertexShader.Load("ShadowVS");
+    mShadowPixelShader.Load("ShadowPS");
+
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
     {
@@ -102,6 +105,12 @@ GeometryRenderer::GeometryRenderer()
     bufferDesc.debugName = "GeometryRenderer::mGlobalCBuffer";
     mGlobalCBuffer.reset(device->CreateBuffer(bufferDesc));
 
+    bufferDesc.access = BufferAccess::CPU_Write;
+    bufferDesc.size = sizeof(ShadowCameraRenderDesc);
+    bufferDesc.type = BufferType::Constant;
+    bufferDesc.debugName = "GeometryRenderer::mShadowGlobalCBuffer";
+    mShadowGlobalCBuffer.reset(device->CreateBuffer(bufferDesc));
+
     RasterizerStateDesc rasterizerStateDesc;
     rasterizerStateDesc.cullMode = CullMode::CW;
     rasterizerStateDesc.fillMode = FillMode::Solid;
@@ -113,16 +122,7 @@ void GeometryRenderer::OnEnter(RenderContext* context)
 {
     context->commandBuffer->BeginDebugGroup("Geometry Buffer Renderer stage");
 
-    int macros[] = { 0 }; // USE_MOTION_BLUR
-    context->commandBuffer->SetShader(mVertexShader.GetShader(macros));
-    context->commandBuffer->SetShader(mPixelShader.GetShader(macros));
-
-    IBuffer* vsConstantBuffers[] = { mGlobalCBuffer.get() };
-    context->commandBuffer->SetConstantBuffers(vsConstantBuffers, 1, ShaderType::Vertex);
-    IBuffer* psConstantBuffers[] = { mGlobalCBuffer.get(), mMaterialCBuffer.get() };
-    context->commandBuffer->SetConstantBuffers(psConstantBuffers, 2, ShaderType::Pixel);
     context->commandBuffer->SetVertexLayout(mVertexLayout.get());
-
     context->commandBuffer->SetRasterizerState(mRasterizerState.get());
     context->commandBuffer->SetDepthState(mRenderer->GetDefaultDepthState());
     context->commandBuffer->SetBlendState(mRenderer->GetDefaultBlendState());
@@ -145,23 +145,59 @@ void GeometryRenderer::OnLeave(RenderContext* context)
     context->commandBuffer->EndDebugGroup();
 }
 
-void GeometryRenderer::SetUp(RenderContext *context, GeometryBuffer* geometryBuffer)
+void GeometryRenderer::SetUp(RenderContext* context, GeometryBuffer* geometryBuffer,
+                             const CameraRenderDesc* cameraDesc)
 {
     context->commandBuffer->SetRenderTarget(geometryBuffer->mRenderTarget.get());
-}
+    context->commandBuffer->SetViewport(0.0f, static_cast<float>(geometryBuffer->mWidth),
+                                        0.0f, static_cast<float>(geometryBuffer->mHeight),
+                                        0.0f, 1.0f);
 
-void GeometryRenderer::SetCamera(RenderContext *context, const CameraRenderDesc* camera)
-{
+    const float clearColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    context->commandBuffer->Clear(NFE_CLEAR_FLAG_TARGET | NFE_CLEAR_FLAG_DEPTH, clearColor, 1.0f);
+
+    int macros[] = { 0 }; // USE_MOTION_BLUR
+    context->commandBuffer->SetShader(mVertexShader.GetShader(macros));
+    context->commandBuffer->SetShader(mPixelShader.GetShader(macros));
+
+    IBuffer* vsConstantBuffers[] = { mGlobalCBuffer.get() };
+    context->commandBuffer->SetConstantBuffers(vsConstantBuffers, 1, ShaderType::Vertex);
+    IBuffer* psConstantBuffers[] = { mGlobalCBuffer.get(), mMaterialCBuffer.get() };
+    context->commandBuffer->SetConstantBuffers(psConstantBuffers, 2, ShaderType::Pixel);
+
     GlobalCBuffer cbuffer;
-    cbuffer.ProjMatrix = camera->projMatrix;
-    cbuffer.ViewMatrix = camera->viewMatrix;
-    cbuffer.SecondaryViewProjMatrix = camera->secViewMatrix;
-    cbuffer.ViewProjMatrix = camera->viewMatrix * camera->projMatrix;
-    cbuffer.CameraVelocity = camera->velocity;
-    cbuffer.CameraAngularVelocity = camera->angualrVelocity;
+    cbuffer.ProjMatrix = cameraDesc->projMatrix;
+    cbuffer.ViewMatrix = cameraDesc->viewMatrix;
+    cbuffer.SecondaryViewProjMatrix = cameraDesc->secViewMatrix;
+    cbuffer.ViewProjMatrix = cameraDesc->viewMatrix * cameraDesc->projMatrix;
+    cbuffer.CameraVelocity = cameraDesc->velocity;
+    cbuffer.CameraAngularVelocity = cameraDesc->angualrVelocity;
 
     context->commandBuffer->WriteBuffer(mGlobalCBuffer.get(), 0, sizeof(GlobalCBuffer),
                                         &cbuffer);
+}
+
+void GeometryRenderer::SetUpForShadowMap(RenderContext *context, ShadowMap* shadowMap,
+                                         const ShadowCameraRenderDesc* cameraDesc,
+                                         uint32 faceID)
+{
+    context->commandBuffer->SetRenderTarget(shadowMap->mRenderTarget.get());
+    context->commandBuffer->SetViewport(0.0f, static_cast<float>(shadowMap->mSize),
+                                        0.0f, static_cast<float>(shadowMap->mSize),
+                                        0.0f, 1.0f);
+
+    const float clearColor[] = { 1.0f, 0.0f, 0.0f, 0.0f };
+    context->commandBuffer->Clear(NFE_CLEAR_FLAG_TARGET | NFE_CLEAR_FLAG_DEPTH, clearColor, 1.0f);
+
+    context->commandBuffer->SetShader(mShadowVertexShader.GetShader(nullptr));
+    context->commandBuffer->SetShader(mShadowPixelShader.GetShader(nullptr));
+
+    IBuffer* constantBuffers[] = { mShadowGlobalCBuffer.get() };
+    context->commandBuffer->SetConstantBuffers(constantBuffers, 1, ShaderType::Vertex);
+    context->commandBuffer->SetConstantBuffers(constantBuffers, 1, ShaderType::Pixel);
+
+    context->commandBuffer->WriteBuffer(mShadowGlobalCBuffer.get(), 0,
+                                        sizeof(ShadowCameraRenderDesc), cameraDesc);
 }
 
 void GeometryRenderer::SetMaterial(RenderContext* context, const RendererMaterial* material)

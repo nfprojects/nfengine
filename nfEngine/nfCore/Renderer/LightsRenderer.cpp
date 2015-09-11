@@ -54,6 +54,7 @@ LightsRenderer::LightsRenderer()
 
     mSpotLightPS.Load("SpotLightPS");
     mUseLightMapMacroId = mSpotLightPS.GetMacroByName("USE_LIGHT_MAP");
+    mUseShadowMapMacroId = mSpotLightPS.GetMacroByName("USE_SHADOW_MAP");
 
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
@@ -193,6 +194,16 @@ LightsRenderer::LightsRenderer()
     bsDesc.rtDescs[0].enable = true;
     bsDesc.debugName = "LightsRenderer::mLightsBlendState";
     mLightsBlendState.reset(device->CreateBlendState(bsDesc));
+
+    // shadow map sampler
+    SamplerDesc samplerDesc;
+    samplerDesc.magFilter = TextureMagFilter::Linear;
+    samplerDesc.minFilter = TextureMinFilter::NearestMipmapLinear;
+    samplerDesc.debugName = "LightsRenderer::mShadowMapSampler";
+    samplerDesc.compare = true;
+    samplerDesc.wrapModeU = samplerDesc.wrapModeV = TextureWrapMode::Clamp;
+    samplerDesc.compareFunc = CompareFunc::LessEqual;
+    mShadowMapSampler.reset(device->CreateSampler(samplerDesc));
 }
 
 void LightsRenderer::OnEnter(RenderContext* context)
@@ -202,8 +213,8 @@ void LightsRenderer::OnEnter(RenderContext* context)
     context->commandBuffer->SetShader(mFullscreenQuadVS.GetShader(nullptr));
     context->commandBuffer->SetVertexLayout(mVertexLayout.get());
 
-    ISampler* lightMapSampler = mRenderer->GetDefaultSampler();
-    context->commandBuffer->SetSamplers(&lightMapSampler, 1, ShaderType::Pixel);
+    ISampler* samplers[] = { mRenderer->GetDefaultSampler(), mShadowMapSampler.get() };
+    context->commandBuffer->SetSamplers(samplers, 2, ShaderType::Pixel);
 }
 
 void LightsRenderer::OnLeave(RenderContext* context)
@@ -307,12 +318,19 @@ void LightsRenderer::DrawSpotLight(RenderContext* context, const SpotLightProper
 {
     // TODO: use instancing to draw lights
 
-    int psMacros[1] = { 0 };
+    int psMacros[2] = { 0, 0 };
 
     if (lightMap != nullptr)
     {
         psMacros[mUseLightMapMacroId] = 1;
         context->commandBuffer->SetTextures(&lightMap, 1, ShaderType::Pixel, 5);
+    }
+
+    if (shadowMap && shadowMap->mTexture)
+    {
+        psMacros[mUseShadowMapMacroId] = 1;
+        ITexture* shadowMapTexture = shadowMap->mTexture.get();
+        context->commandBuffer->SetTextures(&shadowMapTexture, 1, ShaderType::Pixel, 6);
     }
 
     context->commandBuffer->SetDepthState(mLightsDepthState.get());
