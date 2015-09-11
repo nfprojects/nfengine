@@ -1,3 +1,5 @@
+#include "Common.hlsl"
+
 cbuffer Global : register(b0)
 {
     float4x4 gViewMatrix;
@@ -7,22 +9,6 @@ cbuffer Global : register(b0)
     float4 gCameraVelocity;
     float4 gCameraAngularVelocity;
 }
-
-struct VertexShaderInput
-{
-    /// per-vertex data
-    float3 pos      : POSITION;
-    float2 texCoord : TEXCOORD0;
-    float4 normal   : TEXCOORD1;
-    float4 tangent  : TEXCOORD2;
-
-    // per-instance data
-    float4 wordMat0 : TEXCOORD3;
-    float4 wordMat1 : TEXCOORD4;
-    float4 wordMat2 : TEXCOORD5;
-    float4 velocity : TEXCOORD6;
-    float4 angularVelocity : TEXCOORD7;  // TODO: remove when MB is off
-};
 
 struct VertexShaderOutput
 {
@@ -43,12 +29,15 @@ struct VertexShaderOutput
 
 #define MOTION_BLUR_DT (0.01)
 
-VertexShaderOutput main(VertexShaderInput In)
+VertexShaderOutput main(MeshVertexShaderInput In)
 {
     VertexShaderOutput Out;
 
     // decode world matrix from per-instance data
-    float4x4 worldMatrix = transpose(float4x4(In.wordMat0, In.wordMat1, In.wordMat2, float4(0, 0, 0, 1)));
+    float4x4 worldMatrix = transpose(float4x4(In.worldMat0,
+                                              In.worldMat1,
+                                              In.worldMat2,
+                                              float4(0, 0, 0, 1)));
 
     // position transformation
     Out.worldPos = mul(float4(In.pos, 1.0f), worldMatrix);

@@ -12,9 +12,6 @@
     <Filter Include="Header Files\Math">
       <UniqueIdentifier>{df3bda64-5d62-4bf6-93b9-5235b5403ac3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Math">
-      <UniqueIdentifier>{6e6fcf7b-9b40-43f8-af57-5000e952046a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Packer">
       <UniqueIdentifier>{2705f939-6203-4037-8999-840d59e8deeb}</UniqueIdentifier>
     </Filter>
@@ -29,6 +26,9 @@
     </Filter>
     <Filter Include="Source Files\LoggerBackends">
       <UniqueIdentifier>{df0fe897-aba8-4a28-9be3-6d965ea69f0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Math">
+      <UniqueIdentifier>{6e6fcf7b-9b40-43f8-af57-5000e952046a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -258,6 +258,9 @@
     </ClCompile>
     <ClCompile Include="LoggerBackends\BackendHTML.cpp">
       <Filter>Source Files\LoggerBackends</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Frustum.cpp">
+      <Filter>Source Files\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -88,7 +88,7 @@ class CORE_API LightComponent : public ComponentBase<LightComponent>, public Uti
         DirLightDesc mDirLight;
     };
 
-    Renderer::ShadowMap* mShadowMap;
+    std::unique_ptr<Renderer::ShadowMap> mShadowMap;
     Resource::Texture* mLightMap;
 
     LightType mLightType;
@@ -116,9 +116,13 @@ public:
     /**
      * Set shadow map resolution.
      * @param resolution Shadow map dimensions in pixels.
-     * @return Result::OK on success
+     * @return "true" on success
      */
-    Result SetShadowMap(uint32 resolution);
+    bool SetShadowMap(uint32 resolution);
+
+    /**
+     * Check if the light has shadowmap enabled.
+     */
     bool HasShadowMap() const;
 };
 

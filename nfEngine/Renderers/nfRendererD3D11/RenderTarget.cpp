@@ -59,9 +59,51 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             return false;
         }
 
-        // TODO: provide proper D3D11_RENDER_TARGET_VIEW_DESC
+        D3D11_RENDER_TARGET_VIEW_DESC rtvDesc;
+        rtvDesc.Format = DXGI_FORMAT_UNKNOWN;
+
+        switch (tex->type)
+        {
+        case TextureType::Texture1D:
+            if (tex->mLayers > 1)
+            {
+                rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE1DARRAY;
+                rtvDesc.Texture1DArray.MipSlice = desc.targets[i].level;
+                rtvDesc.Texture1DArray.FirstArraySlice = desc.targets[i].layer;
+                rtvDesc.Texture1DArray.ArraySize = 1;
+            }
+            else
+            {
+                rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE1D;
+                rtvDesc.Texture1D.MipSlice = desc.targets[i].level;
+            }
+            break;
+        case TextureType::Texture2D:
+        case TextureType::TextureCube:
+            if (tex->mLayers > 1)
+            {
+                rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
+                rtvDesc.Texture2DArray.MipSlice = desc.targets[i].level;
+                rtvDesc.Texture2DArray.FirstArraySlice = desc.targets[i].layer;
+                rtvDesc.Texture2DArray.ArraySize = 1;
+            }
+            else
+            {
+                rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+                rtvDesc.Texture2D.MipSlice = 0;
+            }
+            break;
+            // TODO TextureType::Texture3D
+        default:
+            {
+                LOG_ERROR("Unsupported texture type for render target");
+                mRTVs.clear();
+                return false;
+            }
+        }
+
         ID3D11RenderTargetView* rtv;
-        hr = D3D_CALL_CHECK(gDevice->mDevice->CreateRenderTargetView(tex->mTexture2D, NULL, &rtv));
+        hr = D3D_CALL_CHECK(gDevice->mDevice->CreateRenderTargetView(tex->mTexture2D, &rtvDesc, &rtv));
         if (FAILED(hr))
         {
             LOG_ERROR("Failed to create render target view");
