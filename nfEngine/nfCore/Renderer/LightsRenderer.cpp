@@ -34,6 +34,7 @@ struct NFE_ALIGN16 OmniLightCBuffer
     Vector position;
     Vector radius;
     Vector color;
+    Vector shadowMapProps;
 };
 
 } // namespace
@@ -49,11 +50,15 @@ LightsRenderer::LightsRenderer()
     mFullscreenQuadVS.Load("FullScreenQuadVS");
     mAmbientLightPS.Load("AmbientLightPS");
     mOmniLightVS.Load("OmniLightVS");
+
     mOmniLightPS.Load("OmniLightPS");
+    mOmniLightUseShadowMap = mOmniLightPS.GetMacroByName("USE_SHADOW_MAP");
+
     mSpotLightVS.Load("SpotLightVS");
 
     mSpotLightPS.Load("SpotLightPS");
-    mUseLightMapMacroId = mSpotLightPS.GetMacroByName("USE_LIGHT_MAP");
+    mSpotLightUseLightMap = mSpotLightPS.GetMacroByName("USE_LIGHT_MAP");
+    mSpotLightUseShadowMap = mSpotLightPS.GetMacroByName("USE_SHADOW_MAP");
 
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
@@ -193,6 +198,16 @@ LightsRenderer::LightsRenderer()
     bsDesc.rtDescs[0].enable = true;
     bsDesc.debugName = "LightsRenderer::mLightsBlendState";
     mLightsBlendState.reset(device->CreateBlendState(bsDesc));
+
+    // shadow map sampler
+    SamplerDesc samplerDesc;
+    samplerDesc.magFilter = TextureMagFilter::Linear;
+    samplerDesc.minFilter = TextureMinFilter::NearestMipmapLinear;
+    samplerDesc.debugName = "LightsRenderer::mShadowMapSampler";
+    samplerDesc.compare = true;
+    samplerDesc.wrapModeU = samplerDesc.wrapModeV = TextureWrapMode::Clamp;
+    samplerDesc.compareFunc = CompareFunc::LessEqual;
+    mShadowMapSampler.reset(device->CreateSampler(samplerDesc));
 }
 
 void LightsRenderer::OnEnter(RenderContext* context)
@@ -202,20 +217,20 @@ void LightsRenderer::OnEnter(RenderContext* context)
     context->commandBuffer->SetShader(mFullscreenQuadVS.GetShader(nullptr));
     context->commandBuffer->SetVertexLayout(mVertexLayout.get());
 
-    ISampler* lightMapSampler = mRenderer->GetDefaultSampler();
-    context->commandBuffer->SetSamplers(&lightMapSampler, 1, ShaderType::Pixel);
+    ISampler* samplers[] = { mRenderer->GetDefaultSampler(), mShadowMapSampler.get() };
+    context->commandBuffer->SetSamplers(samplers, 2, ShaderType::Pixel);
 }
 
 void LightsRenderer::OnLeave(RenderContext* context)
 {
     // TODO: allow "NULL" in the array
-    ITexture* nullTextures[] = { mRenderer->GetDefaultDiffuseTexture(),
-        mRenderer->GetDefaultDiffuseTexture(),
-        mRenderer->GetDefaultDiffuseTexture(),
-        mRenderer->GetDefaultDiffuseTexture(),
-        mRenderer->GetDefaultDiffuseTexture(),
-        mRenderer->GetDefaultDiffuseTexture() };
-    context->commandBuffer->SetTextures(nullTextures, 6, ShaderType::Pixel);
+    const int clearTexturesNum = 7;
+    ITexture* nullTextures[clearTexturesNum];
+    for (int i = 0; i < clearTexturesNum; ++i)
+        nullTextures[i] = mRenderer->GetDefaultDiffuseTexture();
+
+    // unbound all the textures
+    context->commandBuffer->SetTextures(nullTextures, clearTexturesNum, ShaderType::Pixel);
 
     context->commandBuffer->EndDebugGroup();
 }
@@ -281,9 +296,6 @@ void LightsRenderer::DrawOmniLight(RenderContext* context, const Vector& pos, fl
     context->commandBuffer->SetRasterizerState(mLightsRasterizerState.get());
     context->commandBuffer->SetBlendState(mLightsBlendState.get());
 
-    context->commandBuffer->SetShader(mOmniLightVS.GetShader(nullptr));
-    context->commandBuffer->SetShader(mOmniLightPS.GetShader(nullptr));
-
     IBuffer* cbuffers[] = { mGlobalCBuffer.get(), mOmniLightCBuffer.get() };
     context->commandBuffer->SetConstantBuffers(cbuffers, 2, ShaderType::Vertex);
     context->commandBuffer->SetConstantBuffers(cbuffers, 2, ShaderType::Pixel);
@@ -292,6 +304,20 @@ void LightsRenderer::DrawOmniLight(RenderContext* context, const Vector& pos, fl
     cbuffer.position = pos;
     cbuffer.radius = VectorSplat(radius);
     cbuffer.color = color;
+    cbuffer.shadowMapProps = Vector();
+
+    int psMacros[] = { 0, 0 };
+    if (shadowMap)
+    {
+        psMacros[mOmniLightUseShadowMap] = 1;
+        cbuffer.shadowMapProps = Vector(1.0f / shadowMap->GetSize());
+        ITexture* shadowMapTexture = shadowMap->mTexture.get();
+        context->commandBuffer->SetTextures(&shadowMapTexture, 1, ShaderType::Pixel, 6);
+    }
+
+    context->commandBuffer->SetShader(mOmniLightVS.GetShader(nullptr));
+    context->commandBuffer->SetShader(mOmniLightPS.GetShader(psMacros));
+
     context->commandBuffer->WriteBuffer(mOmniLightCBuffer.get(), 0, sizeof(OmniLightCBuffer),
                                         &cbuffer);
 
@@ -307,12 +333,19 @@ void LightsRenderer::DrawSpotLight(RenderContext* context, const SpotLightProper
 {
     // TODO: use instancing to draw lights
 
-    int psMacros[1] = { 0 };
+    int psMacros[] = { 0, 0 };
 
     if (lightMap != nullptr)
     {
-        psMacros[mUseLightMapMacroId] = 1;
+        psMacros[mSpotLightUseLightMap] = 1;
         context->commandBuffer->SetTextures(&lightMap, 1, ShaderType::Pixel, 5);
+    }
+
+    if (shadowMap && shadowMap->mTexture)
+    {
+        psMacros[mSpotLightUseShadowMap] = 1;
+        ITexture* shadowMapTexture = shadowMap->mTexture.get();
+        context->commandBuffer->SetTextures(&shadowMapTexture, 1, ShaderType::Pixel, 6);
     }
 
     context->commandBuffer->SetDepthState(mLightsDepthState.get());

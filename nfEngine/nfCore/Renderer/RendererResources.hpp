@@ -21,6 +21,12 @@ struct MeshVertex
     char tangent[4];
 };
 
+struct NFE_ALIGN16 ShadowCameraRenderDesc
+{
+    Math::Matrix viewProjMatrix;
+    Math::Vector lightPos;
+};
+
 struct NFE_ALIGN16 CameraRenderDesc
 {
     Math::Matrix matrix;        // global camera matrix (pos + orientation)
@@ -161,8 +167,15 @@ struct ViewSettings
 // Shadowmap resource (flat, cube and cascaded)
 class ShadowMap
 {
+    friend class GeometryRenderer;
+    friend class LightsRenderer;
+
 public:
-    enum class Type : int
+    const static uchar MAX_CASCADE_SPLITS = 8;
+    const static uint16 MIN_SHADOWMAP_SIZE = 16;
+    const static uint16 MAX_SHADOWMAP_SIZE = 4096;
+
+    enum class Type : uchar
     {
         None = 0,
         Flat,       // spot light
@@ -172,8 +185,21 @@ public:
 
     ShadowMap();
     void Release();
-    int Resize(uint32 size, Type type, uint32 splits = 1);
-    uint32 GetSize() const;
+    bool Resize(uint32 size, Type type, uint32 splits = 1);
+
+    NFE_INLINE uint32 GetSize() const
+    {
+        return static_cast<uint32>(mSize);
+    }
+
+private:
+    std::unique_ptr<ITexture> mTexture;
+    std::unique_ptr<ITexture> mDepthBuffer;
+    std::unique_ptr<IRenderTarget> mRenderTargets[MAX_CASCADE_SPLITS];
+
+    uint16 mSize;
+    Type mType;
+    uchar mSplits;
 };
 
 class GeometryBuffer
@@ -222,6 +248,7 @@ struct NFE_ALIGN16 SpotLightProperties
     Math::Vector farDist;
     Math::Matrix viewProjMatrix;
     Math::Matrix viewProjMatrixInv;
+    Math::Vector shadowMapProps;
 };
 
 struct TileOmniLightDesc

@@ -21,11 +21,15 @@ class GeometryRenderer : public RendererModule<GeometryRenderer>
     Multishader mVertexShader;
     Multishader mPixelShader;
 
+    Multishader mShadowVertexShader;
+    Multishader mShadowPixelShader;
+
     std::unique_ptr<IVertexLayout> mVertexLayout;
     std::unique_ptr<IRasterizerState> mRasterizerState;
     std::unique_ptr<IBuffer> mInstancesVertexBuffer;
     std::unique_ptr<IBuffer> mMaterialCBuffer;
     std::unique_ptr<IBuffer> mGlobalCBuffer;
+    std::unique_ptr<IBuffer> mShadowGlobalCBuffer;
 
     uint32 mUseMotionBlurMacroVS;
     uint32 mUseMotionBlurMacroPS;
@@ -36,8 +40,18 @@ public:
     void OnEnter(RenderContext* context);
     void OnLeave(RenderContext* context);
 
-    void SetUp(RenderContext *context, GeometryBuffer* geometryBuffer);
-    void SetCamera(RenderContext* context, const CameraRenderDesc* camera);
+    /**
+     * Prepare for Geometry Buffer rendering.
+     */
+    void SetUp(RenderContext* context, GeometryBuffer* geometryBuffer,
+               const CameraRenderDesc* cameraDesc);
+
+    /**
+     * Prepare for Shadow Map rendering.
+     */
+    void SetUpForShadowMap(RenderContext* context, ShadowMap* shadowMap,
+                           const ShadowCameraRenderDesc* cameraDesc, uint32 faceID = 0);
+
     void SetMaterial(RenderContext* context, const RendererMaterial* material);
     void Draw(RenderContext* context, const RenderCommandBuffer& buffer);
 };

@@ -156,7 +156,6 @@ void CreateChamberArray(int chambersX, int chambersZ,
             light.SetColor(Float3(50, 50, 50));
             light.SetShadowMap(32);
 
-
             EntityID mainLight = gEntityManager->CreateEntity();
             {
                 TransformComponent transform;
@@ -172,8 +171,10 @@ void CreateChamberArray(int chambersX, int chambersZ,
                 gEntityManager->AddComponent(lightA, transform);
 
                 omni.radius = 3.0f;
+                LightComponent light;
                 light.SetOmniLight(&omni);
                 light.SetColor(Float3(5.0f, 0.5f, 0.25f));
+                light.SetShadowMap(0);
                 gEntityManager->AddComponent(lightA, light);
             }
 
@@ -184,8 +185,10 @@ void CreateChamberArray(int chambersX, int chambersZ,
                 gEntityManager->AddComponent(lightB, transform);
 
                 omni.radius = 3.0f;
+                LightComponent light;
                 light.SetOmniLight(&omni);
                 light.SetColor(Float3(5.0f, 0.5f, 0.25f));
+                light.SetShadowMap(0);
                 gEntityManager->AddComponent(lightB, light);
             }
 
