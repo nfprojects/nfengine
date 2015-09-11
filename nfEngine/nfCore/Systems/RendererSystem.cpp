@@ -50,7 +50,7 @@ void RendererSystem::RenderLights(RenderContext* ctx) const
 
         LightsRenderer::Get()->DrawOmniLight(ctx, transform->GetPosition(),
                                              light->mOmniLight.radius, light->mColor,
-                                             light->mShadowMap);
+                                             light->mShadowMap.get());
     }
 
     for (size_t i = 0; i < mSpotLights.size(); ++i)
@@ -69,7 +69,7 @@ void RendererSystem::RenderLights(RenderContext* ctx) const
 
         ITexture* lightMap = light->mLightMap ? light->mLightMap->GetRendererTexture() : nullptr;
 
-        LightsRenderer::Get()->DrawSpotLight(ctx, prop, nullptr, lightMap);
+        LightsRenderer::Get()->DrawSpotLight(ctx, prop, light->mShadowMap.get(), lightMap);
     }
 
     for (auto lightTuple : mDirLights)
@@ -89,7 +89,7 @@ void RendererSystem::RenderLights(RenderContext* ctx) const
             prop.viewProjMatrix[i] = Matrix();
         }
 
-        LightsRenderer::Get()->DrawDirLight(ctx, prop, light->mShadowMap);
+        LightsRenderer::Get()->DrawDirLight(ctx, prop, light->mShadowMap.get());
     }
 }
 
@@ -116,73 +116,12 @@ void RendererSystem::RenderLightsDebug(Renderer::RenderContext* ctx) const
     // TODO: dir light
 }
 
-void RendererSystem::RenderShadow(RenderContext* pCtx, LightComponent* pLight, uint32 faceID)
+void RendererSystem::DrawGeometry(RenderContext* ctx, const Math::Frustum& viewFrustum,
+                                  const TransformComponent* cameraTransform) const
 {
-    Common::Timer timer;
-    timer.Start();
-
-    /*
-    CameraComponent* pCamera = pLight->mCameras[faceID];
-
-    CameraRenderDesc cameraRenderDesc =
-    {
-        pCamera->mOwner->GetMatrix(),
-        pCamera->mViewMatrix,
-        pCamera->mProjMatrix,
-        pCamera->mSecondaryProjViewMatrix,
-        pCamera->mOwner->mVelocity,
-        pCamera->mOwner->mAngularVelocity,
-        pCamera->mScreenScale,
-        pCamera->perspective.FoV
-    };
-
-    ShadowRenderer::Get()->SetDestination(pCtx, &cameraRenderDesc, pLight->mShadowMap, faceID);
-
-    pCtx->commandBuffer.Clear(); // TODO
-
-    std::vector<MeshComponent*> visibleMeshes;
-    FindVisibleMeshEntities(pCamera->mFrustum, &visibleMeshes);
-
-    //draw mesh entities
-    RenderCommand command;
-    command.velocity = Vector();
-
-    for (size_t i = 0; i < visibleMeshes.size(); i++)
-    {
-        Mesh* pMesh = visibleMeshes[i]->mMesh;
-        Vector pos = visibleMeshes[i]->mOwner->GetPosition();
-        command.matrix = visibleMeshes[i]->mOwner->mMatrix;
-        command.pVB = pMesh->mVB.get();
-        command.pIB = pMesh->mIB.get();
-        command.distance = VectorLength3(pCamera->mOwner->GetPosition() - pos).f[0];
-
-        for (uint32 j = 0; j < pMesh->mSubMeshesCount; j++)
-        {
-            // TODO: submesh frustum culling
-            command.indexCount = 3 * pMesh->mSubMeshes[j].trianglesCount;
-            command.startIndex = pMesh->mSubMeshes[j].indexOffset;
-            command.material = pMesh->mSubMeshes[j].material->GetRendererData();
-            // pCtx->commandBuffer.PushBack(command); // TODO
-        }
-    }
-
-    if (pCtx->commandBuffer.commands.size())
-    {
-        //sort commands
-        pCtx->commandBuffer.Sort();
-
-        //draw
-        ShadowRenderer::Get()->Draw(pCtx, pCtx->commandBuffer);
-    }
-    */
-}
-
-void RendererSystem::RenderGBuffer(RenderContext* ctx, CameraComponent* camera,
-                                   TransformComponent* cameraTransform)
-{
-    //draw mesh entities
+    // draw meshes
     std::vector<MeshEntry> visibleMeshes; //TODO: dynamic allocation per frame should be avoided
-    FindVisibleMeshEntities(camera->mFrustum, visibleMeshes);
+    FindVisibleMeshEntities(viewFrustum, visibleMeshes);
     RenderCommandBuffer commandBuffer;
 
     for (auto meshTuple : visibleMeshes)
@@ -222,6 +161,31 @@ void RendererSystem::RenderGBuffer(RenderContext* ctx, CameraComponent* camera,
     commandBuffer.Sort();
 
     GeometryRenderer::Get()->Draw(ctx, commandBuffer);
+}
+
+void RendererSystem::RenderShadowMaps() const
+{
+    HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
+    RenderContext* immCtx = renderer->GetImmediateContext();
+
+    for (size_t i = 0; i < mSpotLights.size(); ++i)
+    {
+        const SpotLightData& lightData = mSpotLightsData[i];
+        const TransformComponent* transform = std::get<0>(mSpotLights[i]);
+        const LightComponent* light = std::get<1>(mSpotLights[i]);
+
+        if (light->HasShadowMap())
+        {
+            ShadowCameraRenderDesc cameraDesc;
+            cameraDesc.viewProjMatrix = lightData.viewMatrix * lightData.projMatrix;
+
+            GeometryRenderer::Get()->SetUpForShadowMap(immCtx, light->mShadowMap.get(),
+                                                       &cameraDesc, 0);
+            DrawGeometry(immCtx, lightData.frustum, transform);
+        }
+    }
+
+    // TODO: dir and omni light
 }
 
 void RendererSystem::Render(Renderer::View* view)
@@ -265,83 +229,13 @@ void RendererSystem::Render(Renderer::View* view)
 
     FindActiveMeshEntities();
 
-    Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
-    const size_t contextsNum = threadPool->GetThreadsNumber();
-
-    // prepare deferred contexts
-    for (size_t i = 0; i < contextsNum; i++)
-    {
-        RenderContext* ctx = renderer->GetDeferredContext(i);
-        ctx->Begin();
-        // TODO
-        // ShadowRenderer::Get()->Enter(ctx);
-    }
-
-    // draw shadow maps
-    // TODO
-    // ShadowRenderer::Get()->Enter(immCtx);
-
-    auto drawShadowMapFunc = [this, &renderer](LightComponent * pLight, size_t instance,
-                                               size_t threadID)
-    {
-        RenderContext* ctx = renderer->GetDeferredContext(threadID);
-        RenderShadow(ctx, pLight, static_cast<int>(instance));
-    };
-
-    std::vector<Common::TaskID> shadowTasks;
-
-    /*
-    for (auto lightTuple : mLights)
-    {
-        LightComponent* light = std::get<1>(lightTuple);
-
-        if (!light->mDrawShadow)
-            continue;
-
-        uint32 instancesCount = 1;
-        if (light->mLightType == LightType::Omni)
-            instancesCount = 6;
-        else if (light->mLightType == LightType::Dir)
-            instancesCount = light->mDirLight.splits;
-
-        Common::TaskID task =
-            threadPool->Enqueue(std::bind(drawShadowMapFunc, light, _1, _2), instancesCount);
-        shadowTasks.push_back(task);
-    }
-    */
-
-    // execute shadowmaps rendering
-    for (auto task : shadowTasks)
-    {
-        threadPool->WaitForTask(task);
-    }
-
-    auto endCommandListFunc = [&renderer] (size_t instance)
-    {
-        RenderContext* ctx = renderer->GetDeferredContext(instance);
-        if (ctx)
-            ctx->End();
-    };
-
-    // finish all deferred context here - build command lists
-    Common::TaskID endCommandListTask = threadPool->Enqueue(std::bind(endCommandListFunc, _1),
-                                                            contextsNum);
-    threadPool->WaitForTask(endCommandListTask);
-
-    // execute command lists
-    for (size_t i = 0; i < contextsNum; i++)
-        renderer->ExecuteDeferredContext(renderer->GetDeferredContext(i));
-    // TODO
-    // ShadowRenderer::Get()->Leave(immCtx);
-
-
     // TODO: this should be recorded to a deffered context as well as lights pass
     GeometryRenderer::Get()->Enter(immCtx);
-    GeometryRenderer::Get()->SetUp(immCtx, view->GetGeometryBuffer());
-    const float backgroundColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-    immCtx->commandBuffer->Clear(NFE_CLEAR_FLAG_TARGET | NFE_CLEAR_FLAG_DEPTH, backgroundColor, 1.0f);
-    GeometryRenderer::Get()->SetCamera(immCtx, &cameraRenderDesc);
-    RenderGBuffer(immCtx, camera, cameraTransform);
+
+    RenderShadowMaps();
+
+    GeometryRenderer::Get()->SetUp(immCtx, view->GetGeometryBuffer(), &cameraRenderDesc);
+    DrawGeometry(immCtx, camera->mFrustum, cameraTransform);
     GeometryRenderer::Get()->Leave(immCtx);
 
     // LIGHTS RENDERING ===========================================================================
@@ -439,7 +333,8 @@ void RendererSystem::FindActiveMeshEntities()
 }
 
 // build list of meshes visible in a frustum
-void RendererSystem::FindVisibleMeshEntities(const Frustum& frustum, std::vector<MeshEntry>& list)
+void RendererSystem::FindVisibleMeshEntities(const Frustum& frustum,
+                                             std::vector<MeshEntry>& list) const
 {
     for (auto meshTuple : mActiveMeshEntities)
     {

@@ -14,19 +14,116 @@
 namespace NFE {
 namespace Renderer {
 
+ShadowMap::ShadowMap()
+    : mSize(0)
+    , mType(Type::None)
+    , mSplits(0)
+{
+}
+
 void ShadowMap::Release()
 {
+    mRenderTarget.reset();
+    mTexture.reset();
+    mDepthBuffer.reset();
 
+    mSize = 0;
+    mType = Type::None;
+    mSplits = 0;
 }
 
-int ShadowMap::Resize(uint32 size, Type type, uint32 splits)
+bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
 {
-    return 0;
-}
+    if (size == mSize || type == mType || splits == mSplits)
+        return true;
 
-uint32 ShadowMap::GetSize() const
-{
-    return 0;
+    switch (type)
+    {
+    case Type::Flat:
+        splits = 1;
+        break;
+    case Type::Cube:
+        splits = 6;
+    case Type::Cascaded:
+        if (splits < 1 || splits > MAX_CASCADE_SPLITS)
+        {
+            LOG_ERROR("Invalid splits number for cascaded shadow map (%u)", splits);
+            Release();
+            return false;
+        }
+        break;
+    default:
+        LOG_ERROR("Invalid shadow type");
+        Release();
+        return false;
+    }
+
+    HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
+
+    TextureDesc depthBufferDesc;
+    depthBufferDesc.type = TextureType::Texture2D;
+    depthBufferDesc.access = BufferAccess::GPU_ReadWrite;
+    depthBufferDesc.width = depthBufferDesc.height = size;
+    depthBufferDesc.binding = NFE_RENDERER_TEXTURE_BIND_DEPTH;
+    depthBufferDesc.mipmaps = 1;
+    depthBufferDesc.depthBufferFormat = DepthBufferFormat::Depth32;
+    depthBufferDesc.debugName = "ShadowMap::mDepthBuffer";
+    mDepthBuffer.reset(renderer->GetDevice()->CreateTexture(depthBufferDesc));
+    if (mDepthBuffer == nullptr)
+    {
+        LOG_ERROR("Failed to create depth buffer");
+        Release();
+        return false;
+    }
+
+    TextureDesc texDesc;
+    texDesc.type = TextureType::Texture2D;
+    texDesc.access = BufferAccess::GPU_ReadWrite;
+    texDesc.width = texDesc.height = size;
+    texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER | NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
+    texDesc.mipmaps = 1;
+    texDesc.format = ElementFormat::Float_32;
+    texDesc.texelSize = 1;
+    texDesc.debugName = "ShadowMap::mTexture";
+
+    if (type == Type::Flat)
+    {
+        mTexture.reset(renderer->GetDevice()->CreateTexture(texDesc));
+        if (mTexture == nullptr)
+        {
+            LOG_ERROR("Failed to create shadow map texture");
+            Release();
+            return false;
+        }
+
+        RenderTargetElement rtElement;
+        rtElement.texture = mTexture.get();
+
+        RenderTargetDesc rtDesc;
+        rtDesc.numTargets = 1;
+        rtDesc.targets = &rtElement;
+        rtDesc.depthBuffer = mDepthBuffer.get();
+        rtDesc.debugName = "ShadowMap::mRenderTarget";
+
+        mRenderTarget.reset(renderer->GetDevice()->CreateRenderTarget(rtDesc));
+        if (!mRenderTarget)
+        {
+            LOG_ERROR("Failed to create shadow map's render target");
+            Release();
+            return false;
+        }
+    }
+    else
+    {
+        LOG_ERROR("Not implemented");
+        Release();
+        return false;
+    }
+
+    mType = type;
+    mSize = static_cast<uint16>(size);
+    mSplits = static_cast<uchar>(splits);
+    return true;
 }
 
 
