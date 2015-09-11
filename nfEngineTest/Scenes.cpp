@@ -151,14 +151,14 @@ void CreateScenePerformance()
             omni.shadowFadeStart = 80.0f;
             omni.maxShadowDistance = 120.0f;
             omni.radius = 8.0f;
-            LightComponent light;
-            light.SetOmniLight(&omni);
-            light.SetColor(Float3(50, 50, 50));
-            light.SetShadowMap(32);
-
 
             EntityID mainLight = gEntityManager->CreateEntity();
             {
+                LightComponent light;
+                light.SetOmniLight(&omni);
+                light.SetColor(Float3(50, 50, 50));
+                light.SetShadowMap(64);
+
                 TransformComponent transform;
                 transform.SetPosition(offset + Vector(0.0f, 3.5f, 0.0f));
                 gEntityManager->AddComponent(mainLight, transform);
@@ -172,6 +172,7 @@ void CreateScenePerformance()
                 gEntityManager->AddComponent(lightA, transform);
 
                 omni.radius = 3.0f;
+                LightComponent light;
                 light.SetOmniLight(&omni);
                 light.SetColor(Float3(5.0f, 0.5f, 0.25f));
                 gEntityManager->AddComponent(lightA, light);
@@ -184,6 +185,7 @@ void CreateScenePerformance()
                 gEntityManager->AddComponent(lightB, transform);
 
                 omni.radius = 3.0f;
+                LightComponent light;
                 light.SetOmniLight(&omni);
                 light.SetColor(Float3(5.0f, 0.5f, 0.25f));
                 gEntityManager->AddComponent(lightB, light);

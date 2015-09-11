@@ -2,6 +2,7 @@
     "type": "pixel",
     "macros":
     [
-        { "name": "USE_LIGHT_MAP", "min": 0, "max": 1, "default": 0 }
+        { "name": "USE_LIGHT_MAP", "min": 0, "max": 1, "default": 0 },
+        { "name": "USE_SHADOW_MAP", "min": 0, "max": 1, "default": 0 }
     ]
 }
