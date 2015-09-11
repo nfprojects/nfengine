@@ -158,7 +158,14 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
         D3D11_SHADER_RESOURCE_VIEW_DESC srvd;
         ZeroMemory(&srvd, sizeof(srvd));
         srvd.Format = srvFormat;
-        if (desc.samplesNum > 1)
+
+        if (desc.type == TextureType::TextureCube)
+        {
+            srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+            srvd.TextureCube.MipLevels = desc.mipmaps;
+            srvd.TextureCube.MostDetailedMip = 0;
+        }
+        else if (desc.samplesNum > 1)
         {
             srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DMS;
         }
@@ -215,6 +222,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
 
     mWidth = desc.width;
     mHeight = desc.height;
+    mLayers = desc.layers;
     mTexelSize = GetElementFormatSize(desc.format) * desc.texelSize;
     type = TextureType::Texture2D;
     return true;
