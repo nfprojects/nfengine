@@ -1,0 +1,95 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae5cdf2_1fd7c7c2",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Buffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-12T19:02:29Z",
+      "side": 1,
+      "message": "Uninitialized \"mBuffer\"",
+      "revId": "c3ffa639b74a488fa90590d41b4a0c5a23c02256",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_3fdba3ee",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-12T19:02:29Z",
+      "side": 1,
+      "message": "Uninitialized in constructor",
+      "revId": "c3ffa639b74a488fa90590d41b4a0c5a23c02256",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_5fd86fef",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-12T19:02:29Z",
+      "side": 1,
+      "message": "Uninitialized in constructor",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 34
+      },
+      "revId": "c3ffa639b74a488fa90590d41b4a0c5a23c02256",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_9fe2f79d",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/VertexLayout.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-12T19:02:29Z",
+      "side": 1,
+      "message": "There should be some verification performed",
+      "revId": "c3ffa639b74a488fa90590d41b4a0c5a23c02256",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_9f4bd7af",
+        "filename": "nfEngine/nfRendererDemo/Shaders/OGL4/TestVS.glsl",
+        "patchSetId": 4
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-12T19:02:29Z",
+      "side": 1,
+      "message": "What with fix for AMD GPUs?",
+      "revId": "c3ffa639b74a488fa90590d41b4a0c5a23c02256",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
