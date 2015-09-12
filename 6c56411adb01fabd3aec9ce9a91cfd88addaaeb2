@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae5cdf2_bf7973fe",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-12T18:44:20Z",
+      "side": 1,
+      "message": "missing \"return\"?",
+      "revId": "6c56411adb01fabd3aec9ce9a91cfd88addaaeb2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_5f230f05",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-12T18:44:20Z",
+      "side": 1,
+      "message": "missing \"return\"?",
+      "revId": "6c56411adb01fabd3aec9ce9a91cfd88addaaeb2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_7f20cbf7",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-12T18:44:20Z",
+      "side": 1,
+      "message": "Why not create it in the CommandBuffer constructor? Creating anything in CommandBuffers methods is not a good idea...",
+      "revId": "6c56411adb01fabd3aec9ce9a91cfd88addaaeb2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_9f1d97c0",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Linux/Backbuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-12T18:44:20Z",
+      "side": 1,
+      "message": "Unanswered comment from PS3",
+      "revId": "6c56411adb01fabd3aec9ce9a91cfd88addaaeb2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
