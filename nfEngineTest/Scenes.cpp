@@ -154,7 +154,7 @@ void CreateScenePerformance()
             LightComponent light;
             light.SetOmniLight(&omni);
             light.SetColor(Float3(50, 50, 50));
-            light.SetShadowMap(32);
+            light.SetShadowMap(64);
 
 
             EntityID mainLight = gEntityManager->CreateEntity();

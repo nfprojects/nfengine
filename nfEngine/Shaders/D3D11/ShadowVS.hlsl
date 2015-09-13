@@ -4,6 +4,7 @@
 cbuffer Global : register(b0)
 {
     float4x4 gViewProjMatrix;
+    float4 gLightPos;
 };
 
 VertexShaderOutput main(MeshVertexShaderInput input)
@@ -19,6 +20,7 @@ VertexShaderOutput main(MeshVertexShaderInput input)
     float4 worldPos = mul(float4(input.pos, 1), worldMatrix);
     output.pos = mul(worldPos, gViewProjMatrix);
     output.screenPos = output.pos;
+    output.worldPos = worldPos.xyz;
     output.texCoord = input.texCoord;
 
     return output;

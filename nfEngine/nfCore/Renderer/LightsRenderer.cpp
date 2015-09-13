@@ -288,12 +288,21 @@ void LightsRenderer::DrawOmniLight(RenderContext* context, const Vector& pos, fl
 {
     // TODO: use instancing to draw lights
 
+    int psMacros[2] = { 0 };
+
+    if (shadowMap)
+    {
+        psMacros[0] = 1;
+        ITexture* shadowMapTexture = shadowMap->mTexture.get();
+        context->commandBuffer->SetTextures(&shadowMapTexture, 1, ShaderType::Pixel, 6);
+    }
+
     context->commandBuffer->SetDepthState(mLightsDepthState.get());
     context->commandBuffer->SetRasterizerState(mLightsRasterizerState.get());
     context->commandBuffer->SetBlendState(mLightsBlendState.get());
 
     context->commandBuffer->SetShader(mOmniLightVS.GetShader(nullptr));
-    context->commandBuffer->SetShader(mOmniLightPS.GetShader(nullptr));
+    context->commandBuffer->SetShader(mOmniLightPS.GetShader(psMacros));
 
     IBuffer* cbuffers[] = { mGlobalCBuffer.get(), mOmniLightCBuffer.get() };
     context->commandBuffer->SetConstantBuffers(cbuffers, 2, ShaderType::Vertex);

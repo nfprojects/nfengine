@@ -5,6 +5,11 @@ Texture2D<float4> gGBufferTex2 : register(t2);
 Texture2D<float4> gGBufferTex3 : register(t3);
 Texture2D<float> gDepthTex : register(t4);
 
+#if (USE_SHADOW_MAP > 0)
+    SamplerComparisonState gShadowSampler : register(s1);
+    TextureCube<float> gShadowMap : register(t6);
+#endif
+
 cbuffer Global : register(b0)
 {
     float4x4 gCameraMatrix;
@@ -73,7 +78,44 @@ PixelShaderOutput main(VertexShaderInput In)
     clip(NdotL);
     clip(gLightRadius.x - lightDist);
 
-    // TODO: shadows
+
+#if (USE_SHADOW_MAP > 0)
+
+    float3 offsetU;
+    float3 offsetV;
+
+    // PCF sampling offset depends on texture cube side
+    if ((lightVec.x > sqrt(2.0) / 2.0) || (lightVec.x < -sqrt(2.0) / 2.0))
+    {
+        offsetU = float3(0, 0, 1);
+        offsetV = float3(0, 1, 0);
+    }
+    else if ((lightVec.z > sqrt(2.0) / 2.0) || (lightVec.z < -sqrt(2.0) / 2.0))
+    {
+        offsetU = float3(1, 0, 0);
+        offsetV = float3(0, 1, 0);
+    }
+    else
+    {
+        offsetU = float3(1, 0, 0);
+        offsetV = float3(0, 0, 1);
+    }
+
+    const int PCF_SIZE = 1;
+    float shadowValue = 0.0;
+    for (int x = -PCF_SIZE; x <= PCF_SIZE; x++)
+        for (int y = -PCF_SIZE; y <= PCF_SIZE; y++)
+        {
+            float3 offset = (x * offsetU + y * offsetV) / 512.0f;
+            shadowValue += gShadowMap.SampleCmpLevelZero(gShadowSampler,
+                                                         -lightVec + offset,
+                                                         lightDist).x;
+        }
+    shadowValue /= (2 * PCF_SIZE + 1) * (2 * PCF_SIZE + 1);
+#else
+    float shadowValue = 1;
+#endif
+
 
     float fadeOut = 1.0f - lightDist / gLightRadius.x;
     fadeOut *= fadeOut;
@@ -89,6 +131,6 @@ PixelShaderOutput main(VertexShaderInput In)
         specular = specularFactor * pow(RdotL, specularPower);
     }
 
-    output.color = float4(gLightColor.xyz * fadeOut * (color * NdotL + specular), 1.0f);
+    output.color = float4(shadowValue * gLightColor.xyz * fadeOut * (color * NdotL + specular), 1.0f);
     return output;
 }

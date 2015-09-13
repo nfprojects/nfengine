@@ -185,7 +185,7 @@ void GeometryRenderer::SetUpForShadowMap(RenderContext *context, ShadowMap* shad
 {
     context->commandBuffer->InsertDebugMarker(__FUNCTION__);
 
-    context->commandBuffer->SetRenderTarget(shadowMap->mRenderTarget.get());
+    context->commandBuffer->SetRenderTarget(shadowMap->mRenderTargets[faceID].get());
     context->commandBuffer->SetViewport(0.0f, static_cast<float>(shadowMap->mSize),
                                         0.0f, static_cast<float>(shadowMap->mSize),
                                         0.0f, 1.0f);
@@ -193,8 +193,12 @@ void GeometryRenderer::SetUpForShadowMap(RenderContext *context, ShadowMap* shad
     const float clearColor[] = { 1.0f, 0.0f, 0.0f, 0.0f };
     context->commandBuffer->Clear(NFE_CLEAR_FLAG_TARGET | NFE_CLEAR_FLAG_DEPTH, clearColor, 1.0f);
 
+    int psMacros[] = { 0 };
+    if (shadowMap->mType == ShadowMap::Type::Cube)
+        psMacros[0] = 1;
+
     context->commandBuffer->SetShader(mShadowVertexShader.GetShader(nullptr));
-    context->commandBuffer->SetShader(mShadowPixelShader.GetShader(nullptr));
+    context->commandBuffer->SetShader(mShadowPixelShader.GetShader(psMacros));
 
     IBuffer* constantBuffers[] = { mShadowGlobalCBuffer.get() };
     context->commandBuffer->SetConstantBuffers(constantBuffers, 1, ShaderType::Vertex);

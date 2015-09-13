@@ -24,6 +24,7 @@ struct MeshVertex
 struct NFE_ALIGN16 ShadowCameraRenderDesc
 {
     Math::Matrix viewProjMatrix;
+    Math::Vector lightPos;
 };
 
 struct NFE_ALIGN16 CameraRenderDesc
@@ -170,9 +171,9 @@ class ShadowMap
     friend class LightsRenderer;
 
 public:
-    const uint32 MAX_CASCADE_SPLITS = 8;
-    const uint32 MIN_SHADOWMAP_SIZE = 16;
-    const uint32 MAX_SHADOWMAP_SIZE = 4096;
+    const static uint32 MAX_CASCADE_SPLITS = 8;
+    const static uint32 MIN_SHADOWMAP_SIZE = 16;
+    const static uint32 MAX_SHADOWMAP_SIZE = 4096;
 
     enum class Type : uchar
     {
@@ -194,7 +195,7 @@ public:
 private:
     std::unique_ptr<ITexture> mTexture;
     std::unique_ptr<ITexture> mDepthBuffer;
-    std::unique_ptr<IRenderTarget> mRenderTarget;
+    std::unique_ptr<IRenderTarget> mRenderTargets[MAX_CASCADE_SPLITS];
 
     uint16 mSize;
     Type mType;

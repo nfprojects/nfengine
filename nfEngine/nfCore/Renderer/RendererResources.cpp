@@ -23,7 +23,8 @@ ShadowMap::ShadowMap()
 
 void ShadowMap::Release()
 {
-    mRenderTarget.reset();
+    for (uint32 i = 0; i < MAX_CASCADE_SPLITS; ++i)
+        mRenderTargets[i].reset();
     mTexture.reset();
     mDepthBuffer.reset();
 
@@ -44,6 +45,7 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
         break;
     case Type::Cube:
         splits = 6;
+        break;
     case Type::Cascaded:
         if (splits < 1 || splits > MAX_CASCADE_SPLITS)
         {
@@ -77,25 +79,26 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
     }
 
     TextureDesc texDesc;
-    texDesc.type = TextureType::Texture2D;
+    texDesc.type = (type == Type::Cube) ? TextureType::TextureCube : TextureType::Texture2D;
     texDesc.access = BufferAccess::GPU_ReadWrite;
     texDesc.width = texDesc.height = size;
+    texDesc.layers = splits;
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER | NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
     texDesc.mipmaps = 1;
     texDesc.format = ElementFormat::Float_32;
     texDesc.texelSize = 1;
     texDesc.debugName = "ShadowMap::mTexture";
 
+    mTexture.reset(renderer->GetDevice()->CreateTexture(texDesc));
+    if (mTexture == nullptr)
+    {
+        LOG_ERROR("Failed to create shadow map texture");
+        Release();
+        return false;
+    }
+
     if (type == Type::Flat)
     {
-        mTexture.reset(renderer->GetDevice()->CreateTexture(texDesc));
-        if (mTexture == nullptr)
-        {
-            LOG_ERROR("Failed to create shadow map texture");
-            Release();
-            return false;
-        }
-
         RenderTargetElement rtElement;
         rtElement.texture = mTexture.get();
 
@@ -105,8 +108,8 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
         rtDesc.depthBuffer = mDepthBuffer.get();
         rtDesc.debugName = "ShadowMap::mRenderTarget";
 
-        mRenderTarget.reset(renderer->GetDevice()->CreateRenderTarget(rtDesc));
-        if (!mRenderTarget)
+        mRenderTargets[0].reset(renderer->GetDevice()->CreateRenderTarget(rtDesc));
+        if (!mRenderTargets[0])
         {
             LOG_ERROR("Failed to create shadow map's render target");
             Release();
@@ -115,9 +118,28 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
     }
     else
     {
-        LOG_ERROR("Not implemented");
-        Release();
-        return false;
+        RenderTargetElement rtElement;
+        rtElement.texture = mTexture.get();
+
+        RenderTargetDesc rtDesc;
+        rtDesc.numTargets = 1;
+        rtDesc.targets = &rtElement;
+        rtDesc.depthBuffer = mDepthBuffer.get();
+        rtDesc.debugName = "ShadowMap::mRenderTarget";
+
+        // create rendertargets for each split / cube face
+        for (uint32 i = 0; i < splits; ++i)
+        {
+            rtElement.layer = i;
+
+            mRenderTargets[i].reset(renderer->GetDevice()->CreateRenderTarget(rtDesc));
+            if (!mRenderTargets[i])
+            {
+                LOG_ERROR("Failed to create shadow map's render target for i = %u", i);
+                Release();
+                return false;
+            }
+        }
     }
 
     mType = type;

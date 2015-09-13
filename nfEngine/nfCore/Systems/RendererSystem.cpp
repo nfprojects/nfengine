@@ -36,6 +36,36 @@ using namespace Math;
 using namespace Renderer;
 using namespace Resource;
 
+
+// TODO: this should be used also by CameraComponent
+void CalculateFrustum(const Matrix& matrix,
+                      float nearDist, float farDist, float cutoff,
+                      Matrix& viewMatrix, Matrix& projMatrix, Frustum& frustum)
+{
+    float scale = tanf(cutoff / 2.0f);
+
+    // calculate view and projection matrices
+    viewMatrix = MatrixLookTo(matrix.GetRow(3), matrix.GetRow(2), matrix.GetRow(1));
+    projMatrix = MatrixPerspective(1.0f, cutoff, farDist, nearDist);
+
+    Vector pos = matrix.GetRow(3) & VECTOR_MASK_XYZ;
+    Vector xAxis = scale * matrix.GetRow(0);
+    Vector yAxis = scale * matrix.GetRow(1);
+    Vector zAxis = scale * matrix.GetRow(2);
+
+    frustum.verticies[0] = pos + nearDist * (zAxis - xAxis - yAxis);
+    frustum.verticies[1] = pos + nearDist * (zAxis + xAxis - yAxis);
+    frustum.verticies[2] = pos + nearDist * (zAxis - xAxis + yAxis);
+    frustum.verticies[3] = pos + nearDist * (zAxis + xAxis + yAxis);
+    frustum.verticies[4] = pos + farDist * (zAxis - xAxis - yAxis);
+    frustum.verticies[5] = pos + farDist * (zAxis + xAxis - yAxis);
+    frustum.verticies[6] = pos + farDist * (zAxis - xAxis + yAxis);
+    frustum.verticies[7] = pos + farDist * (zAxis + xAxis + yAxis);
+
+    // TODO: plane equations can by calculated directly from perspective projections parameters
+    frustum.CalculatePlanes();
+}
+
 RendererSystem::RendererSystem(SceneManager* scene)
     : mScene(scene)
 {
@@ -178,6 +208,7 @@ void RendererSystem::RenderShadowMaps() const
         {
             ShadowCameraRenderDesc cameraDesc;
             cameraDesc.viewProjMatrix = lightData.viewMatrix * lightData.projMatrix;
+            cameraDesc.lightPos = transform->GetPosition();
 
             GeometryRenderer::Get()->SetUpForShadowMap(immCtx, light->mShadowMap.get(),
                                                        &cameraDesc, 0);
@@ -185,7 +216,58 @@ void RendererSystem::RenderShadowMaps() const
         }
     }
 
-    // TODO: dir and omni light
+    static Vector dirs[] =
+    {
+        Vector( 1.0f,  0.0f,  0.0f),
+        Vector(-1.0f,  0.0f,  0.0f),
+        Vector( 0.0f,  1.0f,  0.0f),
+        Vector( 0.0f, -1.0f,  0.0f),
+        Vector( 0.0f,  0.0f,  1.0f),
+        Vector( 0.0f,  0.0f, -1.0f),
+    };
+
+    static Vector ups[] =
+    {
+        Vector(0.0f, 1.0f,  0.0f),
+        Vector(0.0f, 1.0f,  0.0f),
+        Vector(0.0f, 0.0f, -1.0f),
+        Vector(0.0f, 0.0f,  1.0f),
+        Vector(0.0f, 1.0f,  0.0f),
+        Vector(0.0f, 1.0f,  0.0f),
+    };
+
+    for (size_t i = 0; i < mOmniLights.size(); ++i)
+    {
+        const TransformComponent* transform = std::get<0>(mOmniLights[i]);
+        const LightComponent* light = std::get<1>(mOmniLights[i]);
+
+        if (light->HasShadowMap())
+        {
+            for (int face = 0; face < 6; ++face)
+            {
+                // TODO: include "transform" rotation
+                Matrix matrix = Matrix(VectorCross3(ups[face], dirs[face]),
+                                       ups[face],
+                                       dirs[face],
+                                       transform->GetPosition());
+
+                Matrix viewMatrix, projMatrix;
+                Frustum frustum;
+                CalculateFrustum(matrix, 0.01f, light->mOmniLight.radius, NFE_MATH_PI / 2.0f,
+                                 viewMatrix, projMatrix, frustum);
+
+                ShadowCameraRenderDesc cameraDesc;
+                cameraDesc.viewProjMatrix = viewMatrix * projMatrix;
+                cameraDesc.lightPos = transform->GetPosition();
+
+                GeometryRenderer::Get()->SetUpForShadowMap(immCtx, light->mShadowMap.get(),
+                                                           &cameraDesc, face);
+                DrawGeometry(immCtx, frustum, transform);
+            }
+        }
+    }
+
+    // TODO: dir light
 }
 
 void RendererSystem::Render(Renderer::View* view)
@@ -379,37 +461,13 @@ void RendererSystem::UpdateLights()
     {
         TransformComponent* transform = std::get<0>(mSpotLights[i]);
         LightComponent* light = std::get<1>(mSpotLights[i]);
-
-        float nearD = light->mSpotLight.nearDist;
-        float farD = light->mSpotLight.farDist;
-        float scale = tanf(light->mSpotLight.cutoff / 2.0f);
-
-        Vector xAxis = scale * transform->GetMatrix().GetRow(0);
-        Vector yAxis = scale * transform->GetMatrix().GetRow(1);
-        Vector zAxis = scale * transform->GetMatrix().GetRow(2);
-
-        Vector pos = transform->GetPosition();
-
         SpotLightData& data = mSpotLightsData[i];
 
-        data.frustum.verticies[0] = pos + nearD * (zAxis - xAxis - yAxis);
-        data.frustum.verticies[1] = pos + nearD * (zAxis + xAxis - yAxis);
-        data.frustum.verticies[2] = pos + nearD * (zAxis - xAxis + yAxis);
-        data.frustum.verticies[3] = pos + nearD * (zAxis + xAxis + yAxis);
-        data.frustum.verticies[4] = pos + farD * (zAxis - xAxis - yAxis);
-        data.frustum.verticies[5] = pos + farD * (zAxis + xAxis - yAxis);
-        data.frustum.verticies[6] = pos + farD * (zAxis - xAxis + yAxis);
-        data.frustum.verticies[7] = pos + farD * (zAxis + xAxis + yAxis);
-        data.frustum.CalculatePlanes();
-
-        // calculate view and projection matrices
-        data.viewMatrix = MatrixLookTo(pos,
-                                       transform->GetMatrix().GetRow(2),
-                                       transform->GetMatrix().GetRow(1));
-        data.projMatrix = MatrixPerspective(1.0f,  // aspect ratio
-                                            light->mSpotLight.cutoff,
-                                            light->mSpotLight.farDist,
-                                            light->mSpotLight.nearDist);
+        CalculateFrustum(transform->GetMatrix(),
+                         light->mSpotLight.nearDist,
+                         light->mSpotLight.farDist,
+                         light->mSpotLight.cutoff,
+                         data.viewMatrix, data.projMatrix, data.frustum);
     }
 }
 
