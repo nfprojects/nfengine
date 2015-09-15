@@ -340,6 +340,14 @@ bool Window::IsClosed() const
     return mClosed;
 }
 
+bool Window::HasFocus() const
+{
+    int revert;
+    ::Window window;
+    XGetInputFocus(mDisplay, &window, &revert);
+    return mWindow == window;
+}
+
 void* Window::GetHandle() const
 {
     return reinterpret_cast<void*>(mWindow);

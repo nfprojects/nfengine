@@ -25,6 +25,7 @@ View::View()
     mTexture = nullptr;
     mWindow = nullptr;
     mCameraEntity = 0;
+    drawAntTweakBar = false;
 }
 
 View::~View()
@@ -37,7 +38,6 @@ void View::Release()
     if (mTexture != nullptr)
     {
         mTexture->DelRef(this);
-        //  mTexture->Unload();
         mTexture = nullptr;
     }
 
@@ -83,7 +83,7 @@ bool View::SetWindow(Common::Window* window)
         return false;
     }
 
-    if (!InitRenderTarget(width, height))
+    if (!InitRenderTarget(mWindowBackbuffer.get(), width, height))
     {
         mWindowBackbuffer.reset();
         return false;
@@ -112,17 +112,17 @@ void View::OnWindowResize(void* userData)
         view->mWindow->GetSize(width, height);
         view->mWindowBackbuffer->Resize(width, height);
 
-        if (!view->InitRenderTarget(width, height))
+        if (!view->InitRenderTarget(view->mWindowBackbuffer.get(), width, height))
         {
             view->mWindowBackbuffer.reset();
         }
     }
 }
 
-bool View::InitRenderTarget(uint32 width, uint32 height)
+bool View::InitRenderTarget(ITexture* texture, uint32 width, uint32 height)
 {
     RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowBackbuffer.get();
+    rtTarget.texture = texture;
 
     RenderTargetDesc rtDesc;
     rtDesc.numTargets = 1;
@@ -159,6 +159,16 @@ void View::Present()
 
 using namespace Resource;
 
+/**
+ * This custom load callback function will ommit texture file loading.
+ */
+bool OffscreenViewTextureLoadCallback(ResourceBase* resource, void* userPtr)
+{
+    UNUSED(resource);
+    UNUSED(userPtr);
+    return true;
+}
+
 // create custom, off-screen render target
 Texture* View::SetOffScreen(uint32 width, uint32 height, const char* textureName)
 {
@@ -168,11 +178,21 @@ Texture* View::SetOffScreen(uint32 width, uint32 height, const char* textureName
     mTexture = static_cast<Texture*>(rm->GetResource(textureName, ResourceType::Texture));
     if (mTexture == nullptr) return nullptr;
 
+    mTexture->SetCallbacks(OffscreenViewTextureLoadCallback, nullptr);
     mTexture->Load();
     mTexture->AddRef(this);
 
-    // TODO
-    // mRenderTarget = mTexture->CreateRendertarget(width, height, Common::ImageFormat::RGBA_Float);
+    if (!mTexture->CreateAsRenderTarget(width, height, Renderer::ElementFormat::Uint_8_norm))
+    {
+        Release();
+        return nullptr;
+    }
+
+    if (!InitRenderTarget(mTexture->GetRendererTexture(), width, height))
+    {
+        Release();
+        return nullptr;
+    }
 
     return mTexture;
 }

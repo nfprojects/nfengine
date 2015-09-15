@@ -178,6 +178,7 @@ public:
 
     void ProcessMessages();
     bool IsClosed() const;
+    bool HasFocus() const;
 
     // callbacks
     virtual void OnClose();

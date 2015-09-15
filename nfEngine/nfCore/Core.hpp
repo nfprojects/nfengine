@@ -28,6 +28,9 @@ namespace NFE {
 #endif
 #endif
 
+#ifndef UNUSED
+#define UNUSED(x) (void)(x)
+#endif // UNUSED
 
 #define NFE_ALIGNED_CLASS(c) __declspec(align(16)) c : public Util::Aligned
 
