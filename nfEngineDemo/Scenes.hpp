@@ -14,7 +14,5 @@
 #define ENGINE_GET_COLLISION_SHAPE(name) \
     static_cast<CollisionShape*>(Engine::GetInstance()->GetResManager()->GetResource(name, ResourceType::CollisionShape))
 
-extern NFE::Scene::SceneManager* gScene;
-
-void InitScene(int sceneId);
+NFE::Scene::SceneManager* InitScene(int sceneId);
 int GetScenesNum();

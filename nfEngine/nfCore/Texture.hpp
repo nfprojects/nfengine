@@ -44,9 +44,16 @@ public:
     /**
      * Create renderable texture, for example to show monitor screen with a view from a camera.
      * @remarks Should be used only by View class.
+     * @param width,height Texture dimensions
+     * @param format       Texture format
+     * @return True on success
      */
-    Renderer::IRenderTarget* CreateRendertarget(uint32 width, uint32 height, Common::ImageFormat format);
+    bool CreateAsRenderTarget(uint32 width, uint32 height, Renderer::ElementFormat format =
+                              Renderer::ElementFormat::Uint_8_norm);
 
+    /**
+     * Get low-level renderer texture object.
+     */
     Renderer::ITexture* GetRendererTexture() const;
 };
 
