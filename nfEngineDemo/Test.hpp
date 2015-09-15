@@ -62,4 +62,4 @@ void CreateCustomFloorMesh()
 }
 */
 
-extern NFE::Scene::EntityManager* gEntityManager;
+extern NFE::Engine* gEngine;
