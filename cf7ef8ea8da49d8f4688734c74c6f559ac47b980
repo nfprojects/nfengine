@@ -94,6 +94,23 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_48cb5272",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-15T11:32:22Z",
+      "side": 1,
+      "message": "Same as in HTML Backend, replace it with an error log.",
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_143c06e2",
         "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
         "patchSetId": 17
