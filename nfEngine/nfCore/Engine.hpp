@@ -14,11 +14,6 @@
 
 namespace NFE {
 
-struct DrawRequest
-{
-    Renderer::View* view;
-};
-
 struct UpdateRequest
 {
     Scene::SceneManager* scene;
@@ -110,12 +105,14 @@ public:
     /**
      * Update physics and/or draw a scene(s).
      *
-     * @param  drawRequests List of scene draw requests.
-     * @param  dpdateRequests List of scene updage requests.
+     * @param  views             List of scene draw requests.
+     * @param  viewsNum          Number of elements in @p views array.
+     * @param  updateRequests    List of scene updage requests.
+     * @param  updateRequestsNum Number of elements in @p updateRequests array.
      * @return True on success.
      */
-    bool Advance(const DrawRequest* drawRequests, uint32 drawRequestsNum,
-                 const UpdateRequest* updateRequests, uint32 updateRequestsNum);
+    bool Advance(Renderer::View** views, size_t viewsNum,
+                 const UpdateRequest* updateRequests, size_t updateRequestsNum);
 
 
     NFE_INLINE std::mutex& GetRenderingMutex()

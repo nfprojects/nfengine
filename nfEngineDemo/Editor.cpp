@@ -10,6 +10,7 @@ using namespace NFE::Math;
 using namespace NFE::Scene;
 using namespace NFE::Resource;
 
+EntityManager* gEntityManager = nullptr;
 EntityID gSelectedEntity = -1;
 
 // client data passed to AntTweakBar callbacks
@@ -24,7 +25,7 @@ enum class EditionType : int
 
 void TW_CALL Demo_EntitySetCallback(const void* value, void* clientData)
 {
-    if (value == nullptr)
+    if (value == nullptr || gEntityManager == nullptr)
         return;
 
     EditionType editionType = static_cast<EditionType>(reinterpret_cast<size_t>(clientData));
@@ -125,7 +126,7 @@ void TW_CALL Demo_EntitySetCallback(const void* value, void* clientData)
 
 void TW_CALL Demo_EntityGetCallback(void* value, void* clientData)
 {
-    if (value == nullptr)
+    if (value == nullptr || gEntityManager == nullptr)
         return;
 
     EditionType editionType = static_cast<EditionType>(reinterpret_cast<size_t>(clientData));
@@ -210,7 +211,7 @@ void TW_CALL Demo_EntityGetCallback(void* value, void* clientData)
 
 void TW_CALL Demo_EntityDeleteCallback(void* clientData)
 {
-    if (gSelectedEntity != -1)
+    if (gSelectedEntity != -1 && gEntityManager != nullptr)
     {
         gEntityManager->RemoveEntity(gSelectedEntity);
         gSelectedEntity = -1;
