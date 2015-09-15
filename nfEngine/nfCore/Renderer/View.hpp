@@ -32,7 +32,7 @@ class CORE_API View
     Scene::SceneManager* mScene;
     Scene::EntityID mCameraEntity;
 
-    bool InitRenderTarget(uint32 width, uint32 height);
+    bool InitRenderTarget(ITexture* texture, uint32 width, uint32 height);
     static void OnWindowResize(void* userData);
 
 public:

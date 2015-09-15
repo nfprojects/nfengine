@@ -37,7 +37,6 @@ void View::Release()
     if (mTexture != nullptr)
     {
         mTexture->DelRef(this);
-        //  mTexture->Unload();
         mTexture = nullptr;
     }
 
@@ -83,7 +82,7 @@ bool View::SetWindow(Common::Window* window)
         return false;
     }
 
-    if (!InitRenderTarget(width, height))
+    if (!InitRenderTarget(mWindowBackbuffer.get(), width, height))
     {
         mWindowBackbuffer.reset();
         return false;
@@ -112,17 +111,17 @@ void View::OnWindowResize(void* userData)
         view->mWindow->GetSize(width, height);
         view->mWindowBackbuffer->Resize(width, height);
 
-        if (!view->InitRenderTarget(width, height))
+        if (!view->InitRenderTarget(view->mWindowBackbuffer.get(), width, height))
         {
             view->mWindowBackbuffer.reset();
         }
     }
 }
 
-bool View::InitRenderTarget(uint32 width, uint32 height)
+bool View::InitRenderTarget(ITexture* texture, uint32 width, uint32 height)
 {
     RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowBackbuffer.get();
+    rtTarget.texture = texture;
 
     RenderTargetDesc rtDesc;
     rtDesc.numTargets = 1;
@@ -171,8 +170,16 @@ Texture* View::SetOffScreen(uint32 width, uint32 height, const char* textureName
     mTexture->Load();
     mTexture->AddRef(this);
 
-    // TODO
-    // mRenderTarget = mTexture->CreateRendertarget(width, height, Common::ImageFormat::RGBA_Float);
+    if (!mTexture->CreateAsRenderTarget(width, height, Renderer::ElementFormat::Uint_8_norm))
+    {
+        Release();
+        return nullptr;
+    }
+
+    if (!InitRenderTarget(mTexture->GetRendererTexture(), width, height))
+    {
+        // mTexture->Release();
+    }
 
     return mTexture;
 }

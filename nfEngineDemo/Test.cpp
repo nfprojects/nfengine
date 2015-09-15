@@ -15,10 +15,14 @@ using namespace NFE::Resource;
 
 class CustomWindow;
 
+std::vector<std::unique_ptr<CustomWindow>> gWindows;
 Engine* gEngine = nullptr;
 EntityManager* gEntityManager = nullptr;
 Random gRandom;
 float gDeltaTime = 0.0f;
+
+const int SECONDARY_VIEW_WIDTH = 256;
+const int SECONDARY_VIEW_HEIGHT = 256;
 
 #ifdef WIN64
 #define PLATFORM_STR "x64"
@@ -26,10 +30,13 @@ float gDeltaTime = 0.0f;
 #define PLATFORM_STR "x86"
 #endif
 
+CustomWindow* AddWindow();
+
 class MainCameraView : public NFE::Renderer::View
 {
 public:
     bool drawSecondaryView;
+    std::string secondaryViewTexName;
 
     MainCameraView()
         : drawSecondaryView(false)
@@ -42,8 +49,8 @@ public:
 
         float left = 50.0f;
         float bottom = 50.0f;
-        float width = 256.0f;
-        float height = 256.0f;
+        float width = static_cast<float>(SECONDARY_VIEW_WIDTH);
+        float height = static_cast<float>(SECONDARY_VIEW_HEIGHT);
         float border = 2.0f;
 
         // border
@@ -54,10 +61,10 @@ public:
 
         // draw quad with secondary camera view
 
-        Texture* texture = ENGINE_GET_TEXTURE("secondaryViewTexture");
+        Texture* texture = ENGINE_GET_TEXTURE(secondaryViewTexName.c_str());
         GuiRenderer::Get()->DrawTexturedQuad(ctx,
                                              Rectf(left, bottom, left + width, bottom + height),
-                                             Rectf(0.0f, 0.0f, 1.0f, 1.0f),
+                                             Rectf(0.0f, 1.0f, 1.0f, 0.0f),
                                              texture->GetRendererTexture(),
                                              0xFFFFFFFF);
     }
@@ -69,7 +76,9 @@ class CustomWindow : public Common::Window
 public:
     Quaternion cameraOrientation;
     EntityID cameraEntity;
+    EntityID secondaryCameraEntity;  // camera for seconfary view
     std::unique_ptr<MainCameraView> view;
+    std::unique_ptr<Renderer::View> secondaryView;
 
     bool cameraControl;
     float cameraXZ;
@@ -127,6 +136,37 @@ public:
         view.reset(new MainCameraView);
         view->SetCamera(gScene, cameraEntity);
         view->SetWindow(this);
+
+
+        InitSecondaryCamera();
+
+        std::string secondaryViewTexName = "secondaryViewTexture_" +
+            std::to_string(reinterpret_cast<size_t>(view.get()));
+        secondaryView.reset(new Renderer::View);
+        secondaryView->SetCamera(gScene, secondaryCameraEntity);
+        secondaryView->SetOffScreen(SECONDARY_VIEW_WIDTH, SECONDARY_VIEW_HEIGHT,
+                                    secondaryViewTexName.c_str());
+        view->secondaryViewTexName = secondaryViewTexName;
+    }
+
+    void InitSecondaryCamera()
+    {
+        secondaryCameraEntity = gEntityManager->CreateEntity();
+
+        TransformComponent transform;
+        transform.SetPosition(Vector(0.0f, 1.6f, -2.0f, 0.0f));
+        gEntityManager->AddComponent(secondaryCameraEntity, transform);
+
+        UpdateCamera();
+        Perspective perspective;
+        perspective.FoV = NFE_MATH_PI * 60.0f / 180.0f;
+        perspective.nearDist = 0.01f;
+        perspective.farDist = 1000.0f;
+        perspective.aspectRatio = static_cast<float>(SECONDARY_VIEW_WIDTH) /
+                                  static_cast<float>(SECONDARY_VIEW_HEIGHT);
+        CameraComponent camera;
+        camera.SetPerspective(&perspective);
+        gEntityManager->AddComponent(secondaryCameraEntity, camera);
     }
 
 #define CAMERA_ROTATION_SMOOTHING 0.05f
@@ -246,6 +286,21 @@ public:
             view->drawSecondaryView ^= true;
         }
 
+        // set secondary camera transform to the primary camera transform
+        if (key == 'C')
+        {
+            TransformComponent* camTransform =
+                gEntityManager->GetComponent<TransformComponent>(cameraEntity);
+            TransformComponent* secondaryCamTransform =
+                gEntityManager->GetComponent<TransformComponent>(secondaryCameraEntity);
+
+            if (camTransform && secondaryCamTransform)
+            {
+                Matrix matrix = camTransform->GetMatrix();
+                secondaryCamTransform->SetMatrix(matrix);
+            }
+        }
+
         if (key >= '0' && key <= '9')
         {
             gSelectedEntity = -1;
@@ -254,9 +309,15 @@ public:
             gScene = gEngine->CreateScene();
             gEntityManager = gScene->GetEntityManager();
 
-            InitCamera();
+            for (auto& window : gWindows)
+                window->InitCamera();
+
             InitScene(key - '0');
         }
+
+        // spaw a new window
+        if (key == 'N')
+            AddWindow();
     }
 
     void OnMouseDown(UINT button, int x, int y)
@@ -374,6 +435,19 @@ public:
     }
 };
 
+CustomWindow* AddWindow()
+{
+    std::unique_ptr<CustomWindow> window(new CustomWindow);
+    window->SetSize(800, 600);
+    window->SetTitle("NFEngine Demo");
+    window->Open();
+    window->InitCamera();
+
+    CustomWindow* windowPtr = window.get();
+    gWindows.push_back(std::move(window));
+    return windowPtr;
+}
+
 // temporary
 bool OnLoadCustomShapeResource(ResourceBase* res, void* data)
 {
@@ -420,12 +494,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     std::string execPath = Common::FileSystem::GetExecutablePath();
     Common::FileSystem::ChangeDirectory(execPath + "/../../../..");
 
-    //create window
-    CustomWindow* window = new CustomWindow;
-    window->SetSize(800, 600);
-    window->SetTitle("NFEngine Demo - Initializing engine...");
-    window->Open();
-
     //initialize engine
     gEngine = Engine::GetInstance();
     if (gEngine == nullptr)
@@ -467,40 +535,67 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     chamberShape->AddRef();
 
 
-    window->InitCamera();
-    window->SetTitle("NFEngine Demo");
-
+    AddWindow();
     InitScene(0);
 
     // message loop
 
+
+    std::vector<View*> drawRequests;
     Common::Timer timer;
     timer.Start();
-    while (!window->IsClosed())
+    while (!gWindows.empty())
     {
         //measure delta time
         gDeltaTime = static_cast<float>(timer.Stop());
         timer.Start();
 
-        window->ProcessMessages();
-        window->UpdateCamera();
+        char str[128];
+        sprintf(str, "NFEngine Demo (%s)  -  Press [0-%i] to switch scene",
+                PLATFORM_STR, GetScenesNum() - 1);
+
+        // work on copy of gWindows
+        std::vector<CustomWindow*> windows;
+        for (auto& window : gWindows)
+            windows.push_back(window.get());
+
+        drawRequests.clear();
+        for (auto& window : windows)
+        {
+            window->SetTitle(str);
+            window->ProcessMessages();
+            window->UpdateCamera();
+
+            // remove if closed
+            if (window->IsClosed())
+            {
+                auto it = std::find_if(gWindows.begin(), gWindows.end(),
+                                       [&](const std::unique_ptr<CustomWindow>& w)
+                {
+                    return w.get() == window;
+                });
+                if (it != gWindows.end())
+                    gWindows.erase(it);
+                continue;
+            }
+
+            if (window->view->drawSecondaryView)
+            {
+                drawRequests.push_back(window->secondaryView.get());
+            }
+
+            drawRequests.push_back(window->view.get());
+        }
 
         UpdateRequest updateReq;
         updateReq.scene = gScene;
         updateReq.deltaTime = gDeltaTime;
 
-        DrawRequest drawRequest;
-        drawRequest.view = window->view.get();
-        gEngine->Advance(&drawRequest, 1, &updateReq, 1);
-
-        char str[128];
-        sprintf(str, "NFEngine Demo (%s)  -  Press [0-%i] to switch scene",
-                 PLATFORM_STR, GetScenesNum() - 1);
-        window->SetTitle(str);
+        gEngine->Advance(drawRequests.data(), drawRequests.size(), &updateReq, 1);
     }
 
     gEngine->DeleteScene(gScene);
-    delete window;
+    gWindows.clear();
     Engine::Release();
 
 //detect memory leaks
