@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_1fa50753",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-15T15:36:05Z",
+      "side": 1,
+      "message": "Done in Logger.hpp",
+      "parentUuid": "1ae5cdf2_ea2b402e",
+      "range": {
+        "startLine": 27,
+        "startChar": 27,
+        "endLine": 27,
+        "endChar": 45
+      },
+      "revId": "cce0b7dee3efe4049483f47e51bbc6539300b269",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_e5461323",
         "filename": "nfEngine/nfCommon/Logger.cpp",
         "patchSetId": 15
@@ -71,6 +95,24 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_df68fff7",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-15T15:36:05Z",
+      "side": 1,
+      "message": "I\u0027ve added assert here. As I said before, negative \"len\" means that string format syntax is wrong - it\u0027s coding error, not runtime error",
+      "parentUuid": "1ae5cdf2_e5cff3ae",
+      "revId": "cce0b7dee3efe4049483f47e51bbc6539300b269",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_65c1232e",
         "filename": "nfEngine/nfCommon/Logger.cpp",
         "patchSetId": 15
@@ -88,6 +130,24 @@
         "endLine": 134,
         "endChar": 30
       },
+      "revId": "cce0b7dee3efe4049483f47e51bbc6539300b269",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_9fa7574f",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-15T15:36:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_65c1232e",
       "revId": "cce0b7dee3efe4049483f47e51bbc6539300b269",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -117,6 +177,24 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_ff6dbb05",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-15T15:36:05Z",
+      "side": 1,
+      "message": "To be honest, I don\u0027t get the difference",
+      "parentUuid": "1ae5cdf2_8579cffe",
+      "revId": "cce0b7dee3efe4049483f47e51bbc6539300b269",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_6a52d0de",
         "filename": "nfEngine/nfCommon/nfCommon.vcxproj",
         "patchSetId": 15
@@ -128,6 +206,30 @@
       "writtenOn": "2015-09-11T15:14:46Z",
       "side": 1,
       "message": "I see You deleted one of those...unfortunately missed this one ;)",
+      "range": {
+        "startLine": 115,
+        "startChar": 3,
+        "endLine": 118,
+        "endChar": 20
+      },
+      "revId": "cce0b7dee3efe4049483f47e51bbc6539300b269",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_1f7347ea",
+        "filename": "nfEngine/nfCommon/nfCommon.vcxproj",
+        "patchSetId": 15
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-15T15:36:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_6a52d0de",
       "range": {
         "startLine": 115,
         "startChar": 3,
@@ -163,6 +265,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_3f7723d6",
+        "filename": "nfEngine/nfCommon/nfCommon.vcxproj",
+        "patchSetId": 15
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-15T15:36:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_8a5e3ce8",
+      "range": {
+        "startLine": 179,
+        "startChar": 3,
+        "endLine": 182,
+        "endChar": 20
+      },
+      "revId": "cce0b7dee3efe4049483f47e51bbc6539300b269",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_aa63f8af",
         "filename": "nfEngine/nfCommon/nfCommon.vcxproj",
         "patchSetId": 15
@@ -174,6 +300,30 @@
       "writtenOn": "2015-09-11T15:14:46Z",
       "side": 1,
       "message": "I see You deleted one of those...unfortunately missed this one ;)",
+      "range": {
+        "startLine": 215,
+        "startChar": 3,
+        "endLine": 218,
+        "endChar": 20
+      },
+      "revId": "cce0b7dee3efe4049483f47e51bbc6539300b269",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_5f74efce",
+        "filename": "nfEngine/nfCommon/nfCommon.vcxproj",
+        "patchSetId": 15
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-15T15:36:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_aa63f8af",
       "range": {
         "startLine": 215,
         "startChar": 3,
@@ -209,6 +359,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_df4f1f91",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-15T15:36:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_6a69f08a",
+      "range": {
+        "startLine": 7,
+        "startChar": 1,
+        "endLine": 13,
+        "endChar": 51
+      },
+      "revId": "cce0b7dee3efe4049483f47e51bbc6539300b269",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_ea5d00eb",
         "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
         "patchSetId": 15
@@ -220,6 +394,30 @@
       "writtenOn": "2015-09-11T15:14:46Z",
       "side": 1,
       "message": "adding \u0027i\u0027 at the beginning is crucial - it makes counting a lot easier.",
+      "range": {
+        "startLine": 25,
+        "startChar": 23,
+        "endLine": 25,
+        "endChar": 75
+      },
+      "revId": "cce0b7dee3efe4049483f47e51bbc6539300b269",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_9f7e77ad",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-15T15:36:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_ea5d00eb",
       "range": {
         "startLine": 25,
         "startChar": 23,
