@@ -8,15 +8,13 @@ using namespace NFE::Math;
 using namespace NFE::Scene;
 using namespace NFE::Resource;
 
-SceneManager* gScene = nullptr;
+void CreateSceneSimple(SceneManager* scene);
+void CreateSceneMinecraft(SceneManager* scene);
+void CreateSceneSponza(SceneManager* scene);
+void CreateScenePerformance(SceneManager* scene);
+// void CreateSceneSegments(SceneManager* scene);
 
-void CreateSceneSimple();
-void CreateSceneMinecraft();
-void CreateSceneSponza();
-void CreateScenePerformance();
-// void CreateSceneSegments();
-
-std::vector<std::function<void()>> gScenes =
+std::vector<std::function<void(SceneManager*)>> gScenes =
 {
     CreateSceneSimple,
     CreateScenePerformance,
@@ -25,16 +23,18 @@ std::vector<std::function<void()>> gScenes =
     // CreateSceneSegments,
 };
 
-void CreateSceneMinecraft()
+void CreateSceneMinecraft(SceneManager* scene)
 {
+    EntityManager* entityManager = scene->GetEntityManager();
+
     //set ambient & background color
     EnviromentDesc envDesc;
     envDesc.ambientLight = Vector(0.6f, 0.7f, 0.8f, 0.0f);
     envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
-    gScene->SetEnvironment(&envDesc);
+    scene->SetEnvironment(&envDesc);
 
     // SUNLIGHT
-    EntityID dirLight = gEntityManager->CreateEntity();
+    EntityID dirLight = entityManager->CreateEntity();
     {
         Orientation orient;
         orient.x = Vector(0.0f, -0.0f, -0.0f, 0.0f);
@@ -43,7 +43,7 @@ void CreateSceneMinecraft()
 
         TransformComponent transform;
         transform.SetOrientation(orient);
-        gEntityManager->AddComponent(dirLight, transform);
+        entityManager->AddComponent(dirLight, transform);
 
         // TODO: directional lights are not yet supported
         /*
@@ -56,52 +56,54 @@ void CreateSceneMinecraft()
         light.SetDirLight(&dirLightDesc);
         light.SetColor(Float3(2.2f, 2.0f, 1.8f));
         light.SetShadowMap(1024);
-        gEntityManager->AddComponent(dirLight, light);
+        entityManager->AddComponent(dirLight, light);
         */
     }
 
     // MINECRAFT
-    EntityID map = gEntityManager->CreateEntity();
+    EntityID map = entityManager->CreateEntity();
     {
         TransformComponent transform;
         transform.SetPosition(Vector(0, -70.0f, 0));
-        gEntityManager->AddComponent(map, transform);
+        entityManager->AddComponent(map, transform);
 
         MeshComponent mesh;
         mesh.SetMeshResource("minecraft.nfm");
-        gEntityManager->AddComponent(map, mesh);
+        entityManager->AddComponent(map, mesh);
     }
 }
 
-void CreateSceneSponza()
+void CreateSceneSponza(SceneManager* scene)
 {
+    EntityManager* entityManager = scene->GetEntityManager();
+
     //set ambient & background color
     EnviromentDesc envDesc;
     envDesc.ambientLight = Vector(0.6f, 0.7f, 0.8f, 0.0f);
     envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
-    gScene->SetEnvironment(&envDesc);
+    scene->SetEnvironment(&envDesc);
 
-    EntityID sponza = gEntityManager->CreateEntity();
+    EntityID sponza = entityManager->CreateEntity();
     {
         TransformComponent transform;
-        gEntityManager->AddComponent(sponza, transform);
+        entityManager->AddComponent(sponza, transform);
 
         MeshComponent mesh;
         mesh.SetMeshResource("sponza.nfm");
-        gEntityManager->AddComponent(sponza, mesh);
+        entityManager->AddComponent(sponza, mesh);
 
         CollisionShape* sponzaShape = ENGINE_GET_COLLISION_SHAPE("sponza_collision_shape.nfcs");
         BodyComponent body;
         body.EnablePhysics(sponzaShape);
         body.SetMass(0.0);
-        gEntityManager->AddComponent(sponza, body);
+        entityManager->AddComponent(sponza, body);
     }
 
-    EntityID lightEntity = gEntityManager->CreateEntity();
+    EntityID lightEntity = entityManager->CreateEntity();
     {
         TransformComponent transform;
         transform.SetPosition(Vector(0.0f, 3.5f, 0.0f));
-        gEntityManager->AddComponent(lightEntity, transform);
+        entityManager->AddComponent(lightEntity, transform);
 
         LightComponent light;
         OmniLightDesc omni;
@@ -111,18 +113,21 @@ void CreateSceneSponza()
         light.SetOmniLight(&omni);
         light.SetColor(Float3(50, 50, 50));
         light.SetShadowMap(512);
-        gEntityManager->AddComponent(lightEntity, light);
+        entityManager->AddComponent(lightEntity, light);
     }
 }
 
-void CreateChamberArray(int chambersX, int chambersZ,
+void CreateChamberArray(SceneManager* scene,
+                        int chambersX, int chambersZ,
                         int boxesX, int boxesZ, int boxesY)
 {
-    //set ambient & background color
+    EntityManager* entityManager = scene->GetEntityManager();
+
+    // set ambient & background color
     EnviromentDesc envDesc;
     envDesc.ambientLight = Vector(0.6f, 0.7f, 0.8f, 0.0f);
     envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
-    gScene->SetEnvironment(&envDesc);
+    scene->SetEnvironment(&envDesc);
 
     for (int x = -chambersX; x <= chambersX; x++)
     {
@@ -132,19 +137,19 @@ void CreateChamberArray(int chambersX, int chambersZ,
                                            0.0f,
                                            static_cast<float>(z));
 
-            EntityID chamber = gEntityManager->CreateEntity();
+            EntityID chamber = entityManager->CreateEntity();
             {
                 TransformComponent transform;
                 transform.SetPosition(offset);
-                gEntityManager->AddComponent(chamber, transform);
+                entityManager->AddComponent(chamber, transform);
 
                 MeshComponent mesh;
                 mesh.SetMeshResource("chamber.nfm");
-                gEntityManager->AddComponent(chamber, mesh);
+                entityManager->AddComponent(chamber, mesh);
 
                 BodyComponent body;
                 body.EnablePhysics(ENGINE_GET_COLLISION_SHAPE("chamber_collision_shape.nfcs"));
-                gEntityManager->AddComponent(chamber, body);
+                entityManager->AddComponent(chamber, body);
             }
 
             OmniLightDesc omni;
@@ -152,7 +157,7 @@ void CreateChamberArray(int chambersX, int chambersZ,
             omni.maxShadowDistance = 120.0f;
             omni.radius = 8.0f;
 
-            EntityID mainLight = gEntityManager->CreateEntity();
+            EntityID mainLight = entityManager->CreateEntity();
             {
                 LightComponent light;
                 light.SetOmniLight(&omni);
@@ -161,34 +166,34 @@ void CreateChamberArray(int chambersX, int chambersZ,
 
                 TransformComponent transform;
                 transform.SetPosition(offset + Vector(0.0f, 3.5f, 0.0f));
-                gEntityManager->AddComponent(mainLight, transform);
-                gEntityManager->AddComponent(mainLight, light);
+                entityManager->AddComponent(mainLight, transform);
+                entityManager->AddComponent(mainLight, light);
             }
 
-            EntityID lightA = gEntityManager->CreateEntity();
+            EntityID lightA = entityManager->CreateEntity();
             {
                 TransformComponent transform;
                 transform.SetPosition(offset + Vector(6.0f, 1.8f, 0.0f));
-                gEntityManager->AddComponent(lightA, transform);
+                entityManager->AddComponent(lightA, transform);
 
                 omni.radius = 3.0f;
                 LightComponent light;
                 light.SetOmniLight(&omni);
                 light.SetColor(Float3(5.0f, 0.5f, 0.25f));
-                gEntityManager->AddComponent(lightA, light);
+                entityManager->AddComponent(lightA, light);
             }
 
-            EntityID lightB = gEntityManager->CreateEntity();
+            EntityID lightB = entityManager->CreateEntity();
             {
                 TransformComponent transform;
                 transform.SetPosition(offset + Vector(0.0f, 1.8f, 6.0f));
-                gEntityManager->AddComponent(lightB, transform);
+                entityManager->AddComponent(lightB, transform);
 
                 omni.radius = 3.0f;
                 LightComponent light;
                 light.SetOmniLight(&omni);
                 light.SetColor(Float3(5.0f, 0.5f, 0.25f));
-                gEntityManager->AddComponent(lightB, light);
+                entityManager->AddComponent(lightB, light);
             }
 
             for (int i = -boxesX; i <= boxesX; i++)
@@ -197,22 +202,22 @@ void CreateChamberArray(int chambersX, int chambersZ,
                 {
                     for (int k = -boxesZ; k <= boxesZ; k++)
                     {
-                        EntityID cube = gEntityManager->CreateEntity();
+                        EntityID cube = entityManager->CreateEntity();
 
                         TransformComponent transform;
                         transform.SetPosition(offset + Vector(0.0f, 0.25f, 0.0f) +
                                               0.6f * Vector(static_cast<float>(i),
                                                             static_cast<float>(j),
                                                             static_cast<float>(k)));
-                        gEntityManager->AddComponent(cube, transform);
+                        entityManager->AddComponent(cube, transform);
 
                         MeshComponent mesh;
                         mesh.SetMeshResource("cube.nfm");
-                        gEntityManager->AddComponent(cube, mesh);
+                        entityManager->AddComponent(cube, mesh);
 
                         BodyComponent body;
                         body.EnablePhysics(ENGINE_GET_COLLISION_SHAPE("shape_box"));
-                        gEntityManager->AddComponent(cube, body);
+                        entityManager->AddComponent(cube, body);
                     }
                 }
             }
@@ -223,17 +228,17 @@ void CreateChamberArray(int chambersX, int chambersZ,
 /**
  * Performance test (many objects and shadowmaps)
  */
-void CreateSceneSimple()
+void CreateSceneSimple(SceneManager* scene)
 {
-    CreateChamberArray(0, 0, 2, 2, 1);
+    CreateChamberArray(scene, 0, 0, 2, 2, 1);
 }
 
 /**
  * Performance test (many objects and shadowmaps)
  */
-void CreateScenePerformance()
+void CreateScenePerformance(SceneManager* scene)
 {
-    CreateChamberArray(4, 4, 4, 4, 2);
+    CreateChamberArray(scene, 4, 4, 4, 4, 2);
 }
 
 // TODO: restore when scene segments are implemented
@@ -328,11 +333,14 @@ int GetScenesNum()
     return static_cast<int>(gScenes.size());
 }
 
-void InitScene(int sceneId)
+SceneManager* InitScene(int sceneId)
 {
     if (sceneId < 0 || sceneId >= static_cast<int>(gScenes.size()))
-        return;
+        return nullptr;
 
     LOG_INFO("Initializing scene %d", sceneId);
-    gScenes[sceneId]();
+
+    SceneManager* scene = gEngine->CreateScene();
+    gScenes[sceneId](scene);
+    return scene;
 }

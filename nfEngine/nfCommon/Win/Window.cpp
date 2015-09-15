@@ -235,15 +235,18 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
         return DefWindowProc(hWnd, message, wParam, lParam);
 
 #ifdef USE_ANT_TWEAK
-    bool handleByTweakBar = true;
+    if (window->HasFocus())
+    {
+        bool handleByTweakBar = true;
 
-    for (int i = 0; i < 3; i++)
-        if (window->mMouseButtons[i])
-            handleByTweakBar = false;
+        for (int i = 0; i < 3; i++)
+            if (window->mMouseButtons[i])
+                handleByTweakBar = false;
 
-    if (handleByTweakBar)
-        if (TwEventWin(hWnd, message, wParam, lParam))
-            return 0;
+        if (handleByTweakBar)
+            if (TwEventWin(hWnd, message, wParam, lParam))
+                return 0;
+    }
 #endif
 
     switch (message)
@@ -371,6 +374,11 @@ void Window::LostFocus()
 bool Window::IsClosed() const
 {
     return mClosed;
+}
+
+bool Window::HasFocus() const
+{
+    return GetActiveWindow() == mHandle;
 }
 
 void* Window::GetHandle() const
