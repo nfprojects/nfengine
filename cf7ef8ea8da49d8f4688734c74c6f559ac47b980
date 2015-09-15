@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_cb175ca2",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-15T15:36:05Z",
+      "side": 1,
+      "message": "I get rid of singleton and used simple global variable. Now there are no race condition - everything is synchronized with Logger::mInitialized variable, and there is no recursive call of GetInstance(). The only problem was that I had to move global variables in BackendHTML, because they were initialized before gLogger.",
+      "parentUuid": "1ae5cdf2_14b7a687",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 52,
+        "endChar": 27
+      },
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_b490b2ed",
         "filename": "nfEngine/nfCommon/Logger.cpp",
         "patchSetId": 17
@@ -36,6 +60,30 @@
       "writtenOn": "2015-09-15T10:14:03Z",
       "side": 1,
       "message": "IMO this should not be here. I would suggest to create a separate function for such info, this has not much to do with initialization.",
+      "range": {
+        "startLine": 57,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 9
+      },
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_8bef14b0",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-15T15:36:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_b490b2ed",
       "range": {
         "startLine": 57,
         "startChar": 0,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_68772e03",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-15T15:36:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_9481f691",
+      "range": {
+        "startLine": 87,
+        "startChar": 0,
+        "endLine": 87,
+        "endChar": 35
+      },
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_f4687af7",
         "filename": "nfEngine/nfCommon/Logger.cpp",
         "patchSetId": 17
@@ -82,6 +154,30 @@
       "writtenOn": "2015-09-15T10:14:03Z",
       "side": 1,
       "message": "Why would we want to log empty messages? It looks like there is no use for such functionality.",
+      "range": {
+        "startLine": 93,
+        "startChar": 0,
+        "endLine": 97,
+        "endChar": 15
+      },
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_a8605636",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-15T15:36:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_f4687af7",
       "range": {
         "startLine": 93,
         "startChar": 0,
@@ -111,6 +207,24 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_88747afe",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-15T15:36:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_48cb5272",
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_143c06e2",
         "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
         "patchSetId": 17
@@ -122,6 +236,24 @@
       "writtenOn": "2015-09-15T10:14:03Z",
       "side": 1,
       "message": "I have a feature suggestion for the future (it is not an issue, I would just add it to Logger-related Issue on GH and a TODO here, if you like the idea).\n\nSimilarly to Doxygen, it would be nice if we could accept custom HTML Log Intro and Outro files. First of all, this would improve customizability of Logger output, secondly we would not have to rebuild the library every time we would like to customize something in Logger backend - all would happen in runtime according to HTML code from external files. Of course, whatever is hidden in these strings, would be our default.",
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_a8d05654",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-15T15:36:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_143c06e2",
       "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -145,6 +277,24 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_2b260017",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-15T15:36:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_5425aec0",
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_540cce42",
         "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
         "patchSetId": 17
@@ -156,6 +306,24 @@
       "writtenOn": "2015-09-15T10:14:03Z",
       "side": 1,
       "message": "Shouldn\u0027t there be a boilerplate?",
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_48c1927f",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-15T15:36:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_540cce42",
       "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -185,6 +353,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_68be4e01",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-15T15:36:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_f41dda74",
+      "range": {
+        "startLine": 7,
+        "startChar": 6,
+        "endLine": 7,
+        "endChar": 12
+      },
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_34182281",
         "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
         "patchSetId": 17
@@ -196,6 +388,24 @@
       "writtenOn": "2015-09-15T10:14:03Z",
       "side": 1,
       "message": "Add a test for incorrect syntax format to make sure we do not do anything abnormal :)",
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_a82cd64b",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-15T15:36:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_34182281",
       "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
