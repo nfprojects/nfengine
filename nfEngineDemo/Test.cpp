@@ -15,10 +15,13 @@ using namespace NFE::Resource;
 
 class CustomWindow;
 
+std::vector<std::unique_ptr<CustomWindow>> gWindows;
 Engine* gEngine = nullptr;
-EntityManager* gEntityManager = nullptr;
 Random gRandom;
 float gDeltaTime = 0.0f;
+
+const int SECONDARY_VIEW_WIDTH = 256;
+const int SECONDARY_VIEW_HEIGHT = 256;
 
 #ifdef WIN64
 #define PLATFORM_STR "x64"
@@ -26,10 +29,13 @@ float gDeltaTime = 0.0f;
 #define PLATFORM_STR "x86"
 #endif
 
+CustomWindow* AddWindow(CustomWindow* parent = nullptr);
+
 class MainCameraView : public NFE::Renderer::View
 {
 public:
     bool drawSecondaryView;
+    std::string secondaryViewTexName;
 
     MainCameraView()
         : drawSecondaryView(false)
@@ -42,8 +48,8 @@ public:
 
         float left = 50.0f;
         float bottom = 50.0f;
-        float width = 256.0f;
-        float height = 256.0f;
+        float width = static_cast<float>(SECONDARY_VIEW_WIDTH);
+        float height = static_cast<float>(SECONDARY_VIEW_HEIGHT);
         float border = 2.0f;
 
         // border
@@ -54,22 +60,38 @@ public:
 
         // draw quad with secondary camera view
 
-        Texture* texture = ENGINE_GET_TEXTURE("secondaryViewTexture");
+        Texture* texture = ENGINE_GET_TEXTURE(secondaryViewTexName.c_str());
         GuiRenderer::Get()->DrawTexturedQuad(ctx,
                                              Rectf(left, bottom, left + width, bottom + height),
-                                             Rectf(0.0f, 0.0f, 1.0f, 1.0f),
+                                             Rectf(0.0f, 1.0f, 1.0f, 0.0f),
                                              texture->GetRendererTexture(),
                                              0xFFFFFFFF);
     }
 };
 
+void SceneDeleter(Scene::SceneManager* scene)
+{
+    if (scene->GetEntityManager() == gEntityManager)
+    {
+        gEntityManager = nullptr;
+        gSelectedEntity = -1;
+    }
+
+    gEngine->DeleteScene(scene);
+}
+
 // overload own callback functions
 class CustomWindow : public Common::Window
 {
+    EntityManager* entityManager;
+
 public:
     Quaternion cameraOrientation;
     EntityID cameraEntity;
+    EntityID secondaryCameraEntity;  // camera for seconfary view
     std::unique_ptr<MainCameraView> view;
+    std::unique_ptr<Renderer::View> secondaryView;
+    std::shared_ptr<Scene::SceneManager> scene;
 
     bool cameraControl;
     float cameraXZ;
@@ -86,9 +108,9 @@ public:
     }
 
     CustomWindow()
+        : cameraEntity(-1)
+        , entityManager(nullptr)
     {
-        cameraEntity = 0;
-        view = 0;
         InitCameraOrientation();
     }
 
@@ -101,15 +123,31 @@ public:
                                                QuaternionRotationX(-cameraY));
     }
 
+    void SetUpScene(int sceneId = 0, CustomWindow* parent = nullptr)
+    {
+        if (parent == nullptr)  // init a new scene
+        {
+            SceneManager* newScene = InitScene(sceneId);
+            scene.reset(newScene, SceneDeleter);
+        }
+        else  // fork
+        {
+            scene = parent->scene;
+        }
+
+        entityManager = scene->GetEntityManager();
+        InitCamera();
+    }
+
     // create camera entity, etc.
     void InitCamera()
     {
         InitCameraOrientation();
-        cameraEntity = gEntityManager->CreateEntity();
+        cameraEntity = entityManager->CreateEntity();
 
         TransformComponent transform;
         transform.SetPosition(Vector(0.0f, 1.6f, -2.0f, 0.0f));
-        gEntityManager->AddComponent(cameraEntity, transform);
+        entityManager->AddComponent(cameraEntity, transform);
 
         UpdateCamera();
         Perspective perspective;
@@ -119,14 +157,45 @@ public:
         perspective.aspectRatio = GetAspectRatio();
         CameraComponent camera;
         camera.SetPerspective(&perspective);
-        gEntityManager->AddComponent(cameraEntity, camera);
+        entityManager->AddComponent(cameraEntity, camera);
 
         BodyComponent body;
-        gEntityManager->AddComponent(cameraEntity, body);
+        entityManager->AddComponent(cameraEntity, body);
 
         view.reset(new MainCameraView);
-        view->SetCamera(gScene, cameraEntity);
+        view->SetCamera(scene.get(), cameraEntity);
         view->SetWindow(this);
+
+
+        InitSecondaryCamera();
+
+        std::string secondaryViewTexName = "secondaryViewTexture_" +
+            std::to_string(reinterpret_cast<size_t>(view.get()));
+        secondaryView.reset(new Renderer::View);
+        secondaryView->SetCamera(scene.get(), secondaryCameraEntity);
+        secondaryView->SetOffScreen(SECONDARY_VIEW_WIDTH, SECONDARY_VIEW_HEIGHT,
+                                    secondaryViewTexName.c_str());
+        view->secondaryViewTexName = secondaryViewTexName;
+    }
+
+    void InitSecondaryCamera()
+    {
+        secondaryCameraEntity = entityManager->CreateEntity();
+
+        TransformComponent transform;
+        transform.SetPosition(Vector(0.0f, 1.6f, -2.0f, 0.0f));
+        entityManager->AddComponent(secondaryCameraEntity, transform);
+
+        UpdateCamera();
+        Perspective perspective;
+        perspective.FoV = NFE_MATH_PI * 60.0f / 180.0f;
+        perspective.nearDist = 0.01f;
+        perspective.farDist = 1000.0f;
+        perspective.aspectRatio = static_cast<float>(SECONDARY_VIEW_WIDTH) /
+                                  static_cast<float>(SECONDARY_VIEW_HEIGHT);
+        CameraComponent camera;
+        camera.SetPerspective(&perspective);
+        entityManager->AddComponent(secondaryCameraEntity, camera);
     }
 
 #define CAMERA_ROTATION_SMOOTHING 0.05f
@@ -135,8 +204,8 @@ public:
     // update camera position and orientation
     void UpdateCamera()
     {
-        auto cameraBody = gEntityManager->GetComponent<BodyComponent>(cameraEntity);
-        auto cameraTransform = gEntityManager->GetComponent<TransformComponent>(cameraEntity);
+        auto cameraBody = entityManager->GetComponent<BodyComponent>(cameraEntity);
+        auto cameraTransform = entityManager->GetComponent<TransformComponent>(cameraEntity);
         if (cameraBody == nullptr || cameraTransform == nullptr)
             return;
 
@@ -192,19 +261,20 @@ public:
             SetFullscreenMode(!fullscreen);
         }
 
-        auto cameraTransform = gEntityManager->GetComponent<TransformComponent>(cameraEntity);
+        auto cameraTransform = entityManager->GetComponent<TransformComponent>(cameraEntity);
         Orientation orient;
 
         //place spot light
         if (key == 'T' && cameraTransform != nullptr)
         {
-            EntityID lightEntity = gEntityManager->CreateEntity();
+            EntityID lightEntity = entityManager->CreateEntity();
             gSelectedEntity = lightEntity;
+            gEntityManager = entityManager;
 
             TransformComponent transform;
             transform.SetOrientation(cameraTransform->GetOrientation());
             transform.SetPosition(cameraTransform->GetPosition());
-            gEntityManager->AddComponent(lightEntity, transform);
+            entityManager->AddComponent(lightEntity, transform);
 
             LightComponent light;
             SpotLightDesc lightDesc;
@@ -216,7 +286,7 @@ public:
             light.SetColor(Float3(600.0f, 200.0f, 50.0f));
             light.SetLightMap("flashlight.jpg");
             light.SetShadowMap(1024);
-            gEntityManager->AddComponent(lightEntity, light);
+            entityManager->AddComponent(lightEntity, light);
         }
 
         //place omni light
@@ -227,18 +297,19 @@ public:
             lightDesc.shadowFadeStart = 20.0f;
             lightDesc.maxShadowDistance = 30.0f;
 
-            EntityID lightEntity = gEntityManager->CreateEntity();
+            EntityID lightEntity = entityManager->CreateEntity();
             gSelectedEntity = lightEntity;
+            gEntityManager = entityManager;
 
             TransformComponent transform;
             transform.SetPosition(cameraTransform->GetPosition());
-            gEntityManager->AddComponent(lightEntity, transform);
+            entityManager->AddComponent(lightEntity, transform);
 
             LightComponent light;
             light.SetOmniLight(&lightDesc);
             light.SetColor(Float3(600, 600, 600));
             light.SetShadowMap(512);
-            gEntityManager->AddComponent(lightEntity, light);
+            entityManager->AddComponent(lightEntity, light);
         }
 
         if (key == 'V')
@@ -246,17 +317,27 @@ public:
             view->drawSecondaryView ^= true;
         }
 
-        if (key >= '0' && key <= '9')
+        // set secondary camera transform to the primary camera transform
+        if (key == 'C')
         {
-            gSelectedEntity = -1;
-            gEngine->DeleteScene(gScene);
+            TransformComponent* camTransform =
+                entityManager->GetComponent<TransformComponent>(cameraEntity);
+            TransformComponent* secondaryCamTransform =
+                entityManager->GetComponent<TransformComponent>(secondaryCameraEntity);
 
-            gScene = gEngine->CreateScene();
-            gEntityManager = gScene->GetEntityManager();
-
-            InitCamera();
-            InitScene(key - '0');
+            if (camTransform && secondaryCamTransform)
+            {
+                Matrix matrix = camTransform->GetMatrix();
+                secondaryCamTransform->SetMatrix(matrix);
+            }
         }
+
+        if (key >= '0' && key <= '9')
+            SetUpScene(key - '0');
+
+        // spaw a new window
+        if (key == 'N')
+            AddWindow(this);
     }
 
     void OnMouseDown(UINT button, int x, int y)
@@ -264,7 +345,7 @@ public:
         if (button == 0)
             cameraControl = true;
 
-        auto cameraTransform = gEntityManager->GetComponent<TransformComponent>(cameraEntity);
+        auto cameraTransform = entityManager->GetComponent<TransformComponent>(cameraEntity);
         if (cameraTransform == nullptr)
             return;
         Orientation camOrient = cameraTransform->GetOrientation();
@@ -272,30 +353,30 @@ public:
         //shoot a cube
         if (button == 1)
         {
-            EntityID cube = gEntityManager->CreateEntity();
-            gSelectedEntity = cube;
+            EntityID cube = entityManager->CreateEntity();
 
             TransformComponent transform;
             transform.SetPosition(cameraTransform->GetPosition() + camOrient.z);
-            gEntityManager->AddComponent(cube, transform);
+            entityManager->AddComponent(cube, transform);
 
             MeshComponent mesh;
             mesh.SetMeshResource("cube.nfm");
-            gEntityManager->AddComponent(cube, mesh);
+            entityManager->AddComponent(cube, mesh);
 
             BodyComponent body;
             body.SetMass(10.0f);
             body.SetVelocity(0.1f * camOrient.z);
             body.EnablePhysics(ENGINE_GET_COLLISION_SHAPE("shape_box"));
-            gEntityManager->AddComponent(cube, body);
+            entityManager->AddComponent(cube, body);
 
             {
-                EntityID child = gEntityManager->CreateEntity();
+                EntityID child = entityManager->CreateEntity();
                 gSelectedEntity = cube;
+                gEntityManager = entityManager;
 
                 TransformComponent transform;
                 transform.SetLocalPosition(Vector(0.0f, 1.0f, 0.0f));
-                gEntityManager->AddComponent(child, transform);
+                entityManager->AddComponent(child, transform);
 
                 OmniLightDesc lightDesc;
                 lightDesc.radius = 4.0f;
@@ -305,30 +386,31 @@ public:
                 light.SetOmniLight(&lightDesc);
                 light.SetColor(Float3(1.0f, 1.0f, 10.0f));
                 light.SetShadowMap(0);
-                gEntityManager->AddComponent(child, light);
+                entityManager->AddComponent(child, light);
 
-                gScene->GetTransformSystem()->SetParent(child, cube);
+                scene->GetTransformSystem()->SetParent(child, cube);
             }
         }
 
         if (button == 2)
         {
-            EntityID barrel = gEntityManager->CreateEntity();
+            EntityID barrel = entityManager->CreateEntity();
             gSelectedEntity = barrel;
+            gEntityManager = entityManager;
 
             TransformComponent transform;
             transform.SetPosition(cameraTransform->GetPosition() + camOrient.z);
-            gEntityManager->AddComponent(barrel, transform);
+            entityManager->AddComponent(barrel, transform);
 
             MeshComponent mesh;
             mesh.SetMeshResource("barrel.nfm");
-            gEntityManager->AddComponent(barrel, mesh);
+            entityManager->AddComponent(barrel, mesh);
 
             BodyComponent body;
             body.SetMass(20.0f);
             body.SetVelocity(30.0f * camOrient.z);
             body.EnablePhysics(ENGINE_GET_COLLISION_SHAPE("shape_barrel"));
-            gEntityManager->AddComponent(barrel, body);
+            entityManager->AddComponent(barrel, body);
         }
     }
 
@@ -357,10 +439,10 @@ public:
     // window resized
     void OnResize(UINT width, UINT height)
     {
-        if (gEntityManager == nullptr)
+        if (entityManager == nullptr)
             return;
 
-        auto camera = gEntityManager->GetComponent<CameraComponent>(cameraEntity);
+        auto camera = entityManager->GetComponent<CameraComponent>(cameraEntity);
         if (camera != nullptr)
         {
             if (width || height)
@@ -373,6 +455,19 @@ public:
         }
     }
 };
+
+CustomWindow* AddWindow(CustomWindow* parent)
+{
+    std::unique_ptr<CustomWindow> window(new CustomWindow);
+    window->SetSize(800, 600);
+    window->SetTitle("NFEngine Demo");
+    window->Open();
+    window->SetUpScene(0, parent);
+
+    CustomWindow* windowPtr = window.get();
+    gWindows.push_back(std::move(window));
+    return windowPtr;
+}
 
 // temporary
 bool OnLoadCustomShapeResource(ResourceBase* res, void* data)
@@ -420,27 +515,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     std::string execPath = Common::FileSystem::GetExecutablePath();
     Common::FileSystem::ChangeDirectory(execPath + "/../../../..");
 
-    //create window
-    CustomWindow* window = new CustomWindow;
-    window->SetSize(800, 600);
-    window->SetTitle("NFEngine Demo - Initializing engine...");
-    window->Open();
-
     //initialize engine
     gEngine = Engine::GetInstance();
     if (gEngine == nullptr)
         return 1;
 
     Demo_InitEditorBar();
-
-    //create scene and camera
-    gScene = gEngine->CreateScene();
-    if (gScene == nullptr)
-        return 1;
-
-    gEntityManager = gScene->GetEntityManager();
-    if (gEntityManager == nullptr)
-        return 1;
 
     CollisionShape* floorShape = ENGINE_GET_COLLISION_SHAPE("shape_floor");
     floorShape->SetCallbacks(OnLoadCustomShapeResource, NULL);
@@ -466,41 +546,73 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     chamberShape->Load();
     chamberShape->AddRef();
 
-
-    window->InitCamera();
-    window->SetTitle("NFEngine Demo");
-
-    InitScene(0);
+    AddWindow();
 
     // message loop
 
+    std::vector<UpdateRequest> updateRequests;
+    std::vector<View*> drawRequests;
     Common::Timer timer;
     timer.Start();
-    while (!window->IsClosed())
+    while (!gWindows.empty())
     {
         //measure delta time
         gDeltaTime = static_cast<float>(timer.Stop());
         timer.Start();
 
-        window->ProcessMessages();
-        window->UpdateCamera();
-
-        UpdateRequest updateReq;
-        updateReq.scene = gScene;
-        updateReq.deltaTime = gDeltaTime;
-
-        DrawRequest drawRequest;
-        drawRequest.view = window->view.get();
-        gEngine->Advance(&drawRequest, 1, &updateReq, 1);
-
         char str[128];
         sprintf(str, "NFEngine Demo (%s)  -  Press [0-%i] to switch scene",
-                 PLATFORM_STR, GetScenesNum() - 1);
-        window->SetTitle(str);
+                PLATFORM_STR, GetScenesNum() - 1);
+
+        // work on copy of gWindows
+        std::vector<CustomWindow*> windows;
+        for (auto& window : gWindows)
+            windows.push_back(window.get());
+
+        updateRequests.clear();
+        drawRequests.clear();
+        for (auto& window : windows)
+        {
+            window->SetTitle(str);
+            window->ProcessMessages();
+            window->UpdateCamera();
+
+            // remove if closed
+            if (window->IsClosed())
+            {
+                auto it = std::find_if(gWindows.begin(), gWindows.end(),
+                                       [&](const std::unique_ptr<CustomWindow>& w)
+                                       { return w.get() == window; });
+                if (it != gWindows.end())
+                    gWindows.erase(it);
+                continue;
+            }
+
+            // build list of scene update requests (they should not be duplicated)
+            auto it = std::find_if(updateRequests.begin(), updateRequests.end(),
+                                   [&](const UpdateRequest& request)
+                                   { return request.scene == window->scene.get(); });
+            if (it == updateRequests.end())
+            {
+                UpdateRequest request;
+                request.scene = window->scene.get();
+                request.deltaTime = gDeltaTime;
+                updateRequests.push_back(request);
+            }
+
+            // secondary view draw request
+            if (window->view->drawSecondaryView)
+                drawRequests.push_back(window->secondaryView.get());
+
+            window->view->drawAntTweakBar = window->HasFocus();
+            drawRequests.push_back(window->view.get());
+        }
+
+        gEngine->Advance(drawRequests.data(), drawRequests.size(),
+                         updateRequests.data(), updateRequests.size());
     }
 
-    gEngine->DeleteScene(gScene);
-    delete window;
+    gWindows.clear();
     Engine::Release();
 
 //detect memory leaks

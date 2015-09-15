@@ -147,12 +147,12 @@ void Engine::Release()
     gEngineInstance.reset();
 }
 
-bool Engine::Advance(const DrawRequest* drawRequests, uint32 drawRequestsNum,
-                     const UpdateRequest* updateRequests, uint32 updateRequestsNum)
+bool Engine::Advance(View** views, size_t viewsNum,
+                     const UpdateRequest* updateRequests, size_t updateRequestsNum)
 {
     using namespace Util;
 
-    if (drawRequestsNum > 0 && !mRenderer)
+    if (viewsNum > 0 && !mRenderer)
     {
         LOG_ERROR("Renderer is not initialized, drawing is not supported.");
         return false;
@@ -164,7 +164,7 @@ bool Engine::Advance(const DrawRequest* drawRequests, uint32 drawRequestsNum,
 
     // update physics
     bool scenesUpdatedSuccessfully = true;
-    for (uint32 i = 0; i < updateRequestsNum; i++)
+    for (size_t i = 0; i < updateRequestsNum; i++)
     {
         SceneManager* scene = updateRequests[i].scene;
 
@@ -181,10 +181,10 @@ bool Engine::Advance(const DrawRequest* drawRequests, uint32 drawRequestsNum,
     }
 
     bool scenesRenderedSuccessfully = true;
-    for (uint32 i = 0; i < drawRequestsNum; i++)
+    for (size_t i = 0; i < viewsNum; i++)
     {
         // TODO: error checking
-        View* view = drawRequests[i].view;
+        View* view = views[i];
         if (view == nullptr) continue;
 
         ICommandBuffer* commandBuffer = mRenderer->GetImmediateContext()->commandBuffer;
@@ -213,10 +213,13 @@ bool Engine::Advance(const DrawRequest* drawRequests, uint32 drawRequestsNum,
         }
 
 #ifdef USE_ANT_TWEAK
-        commandBuffer->BeginDebugGroup("AntTweak");
-        commandBuffer->SetRenderTarget(view->GetRenderTarget());
-        TwDraw();
-        commandBuffer->EndDebugGroup();
+        if (view->drawAntTweakBar)
+        {
+            commandBuffer->BeginDebugGroup("AntTweak");
+            commandBuffer->SetRenderTarget(view->GetRenderTarget());
+            TwDraw();
+            commandBuffer->EndDebugGroup();
+        }
 #endif
 
         // present frame in the display
