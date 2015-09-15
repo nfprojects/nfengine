@@ -264,27 +264,30 @@ Result Texture::CreateFromImage(const Common::Image& image)
 
 using namespace Renderer;
 
-// Create renderable texture, for example to show monitor screen with a view from a camera.
-IRenderTarget* Texture::CreateRendertarget(uint32 width, uint32 height, Common::ImageFormat format)
+bool Texture::CreateAsRenderTarget(uint32 width, uint32 height, Renderer::ElementFormat format)
 {
     Release();
 
-    IRenderTarget* pRT = nullptr; // TODO
-    if (!pRT)
+    TextureDesc texDesc;
+    texDesc.type = TextureType::Texture2D;
+    texDesc.access = BufferAccess::GPU_ReadWrite;
+    texDesc.width = width;
+    texDesc.height = height;
+    texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER | NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
+    texDesc.mipmaps = 1;
+    texDesc.debugName = "Texture::mTex";
+    texDesc.format = format;
+    texDesc.texelSize = 4;
+
+    HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
+    mTex.reset(renderer->GetDevice()->CreateTexture(texDesc));
+    if (!mTex)
     {
-        LOG_ERROR("Failed to allocate texture object");
-        return nullptr;
+        LOG_ERROR("Failed to create render target texture");
+        return false;
     }
 
-    // TODO
-    // if (pRT->Init(width, height, nullptr, true) != 0)
-    {
-        LOG_ERROR("Failed to create render target");
-        return nullptr;
-    }
-
-    // mTex = pRT;
-    // return pRT;
+    return true;
 }
 
 ITexture* Texture::GetRendererTexture() const
