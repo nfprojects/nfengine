@@ -1,0 +1,153 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae5cdf2_28152bf1",
+        "filename": "nfEngine/nfCommon/Math/Frustum.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-15T09:33:24Z",
+      "side": 1,
+      "message": "I think a comment for SupportVertex would be useful. As with most functions written in SSE, you cannot easily understand what the function does from code. The name \"SupportVertex\" is not so helpful as well. :)",
+      "revId": "60305c1a0260b448184861fa1da1d5ee8cb41bfd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_a8693b8d",
+        "filename": "nfEngine/nfCommon/Math/Frustum.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-15T09:33:24Z",
+      "side": 1,
+      "message": "no need for braces",
+      "revId": "60305c1a0260b448184861fa1da1d5ee8cb41bfd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_88039fb7",
+        "filename": "nfEngine/nfCommon/Math/Math.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-15T09:33:24Z",
+      "side": 1,
+      "message": "should be defined",
+      "range": {
+        "startLine": 13,
+        "startChar": 22,
+        "endLine": 13,
+        "endChar": 36
+      },
+      "revId": "60305c1a0260b448184861fa1da1d5ee8cb41bfd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_a8005bab",
+        "filename": "nfEngine/nfCommon/Math/Math.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-15T09:33:24Z",
+      "side": 1,
+      "message": "Since we are already here... A one-liner would be better :)\n\nreturn (a \u003c b) ? a : b;\n\nCheck below as well.",
+      "range": {
+        "startLine": 97,
+        "startChar": 0,
+        "endLine": 100,
+        "endChar": 13
+      },
+      "revId": "60305c1a0260b448184861fa1da1d5ee8cb41bfd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_c82cc74d",
+        "filename": "nfEngine/nfCommon/Math/Math.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-15T09:33:24Z",
+      "side": 1,
+      "message": "Convert the comment to doxygen style",
+      "range": {
+        "startLine": 136,
+        "startChar": 0,
+        "endLine": 136,
+        "endChar": 48
+      },
+      "revId": "60305c1a0260b448184861fa1da1d5ee8cb41bfd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_4820b749",
+        "filename": "nfEngine/nfCommon/Math/Quaternion.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-15T09:33:24Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 69,
+        "startChar": 0,
+        "endLine": 79,
+        "endChar": 6
+      },
+      "revId": "60305c1a0260b448184861fa1da1d5ee8cb41bfd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_54020e3f",
+        "filename": "nfEngine/nfCommon/nfCommon.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-15T09:33:24Z",
+      "side": 1,
+      "message": "Is there a reason why this code is changed?",
+      "range": {
+        "startLine": 50,
+        "startChar": 0,
+        "endLine": 55,
+        "endChar": 49
+      },
+      "revId": "60305c1a0260b448184861fa1da1d5ee8cb41bfd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
