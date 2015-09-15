@@ -1,0 +1,204 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae5cdf2_14b7a687",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-15T10:14:03Z",
+      "side": 1,
+      "message": "Three issues with this part:\n\n1. Race condition between two GetInstance calls. One thread calls GetInstance, gLoggerInitialized is false, so it is immediately switched to true, even though the instance is in fact not yet created. Then, while we are creating dir \"Logs\", second thread could call GetInstance, see gLoggerInitialized as true and acquire a nullptr.\n\n2. Logger::GetInstance is called, gLoggerInitialized is false, so (like above) we set it to true. Now, let\u0027s assume, that gLogger.reset() will fail and we return nullptr. Effectively, throughout the lifetime of a program, all further GetInstance calls will return us a nullptr (since gLoggerInitialized is true now, and will be true - there is nothing to switch it back).\n\n3. IMO there should be no such thing as gLoggerInitialized static variable. The check whether gLogger is nullptr should be enough.",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 52,
+        "endChar": 27
+      },
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_b490b2ed",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-15T10:14:03Z",
+      "side": 1,
+      "message": "IMO this should not be here. I would suggest to create a separate function for such info, this has not much to do with initialization.",
+      "range": {
+        "startLine": 57,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 9
+      },
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_9481f691",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-15T10:14:03Z",
+      "side": 1,
+      "message": "I\u0027m wondering if timestamps relative to Logger initialization are enough. Maybe local time values could be useful as well? I would add a TODO to implement the latter one later on. On some backends (HTML, but maybe other ones as well as they are added) we could even implement a switch between both values.",
+      "range": {
+        "startLine": 87,
+        "startChar": 0,
+        "endLine": 87,
+        "endChar": 35
+      },
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_f4687af7",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-15T10:14:03Z",
+      "side": 1,
+      "message": "Why would we want to log empty messages? It looks like there is no use for such functionality.",
+      "range": {
+        "startLine": 93,
+        "startChar": 0,
+        "endLine": 97,
+        "endChar": 15
+      },
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_143c06e2",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-15T10:14:03Z",
+      "side": 1,
+      "message": "I have a feature suggestion for the future (it is not an issue, I would just add it to Logger-related Issue on GH and a TODO here, if you like the idea).\n\nSimilarly to Doxygen, it would be nice if we could accept custom HTML Log Intro and Outro files. First of all, this would improve customizability of Logger output, secondly we would not have to rebuild the library every time we would like to customize something in Logger backend - all would happen in runtime according to HTML code from external files. Of course, whatever is hidden in these strings, would be our default.",
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_5425aec0",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-15T10:14:03Z",
+      "side": 1,
+      "message": "Won\u0027t this abort the execution of whatever uses Logger? I sense this could have terrible repercussions (like some exit() call in some NFE::Common::Window Linux version), and inputting incorrect string format syntax should not be punished so heavily.",
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_540cce42",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-15T10:14:03Z",
+      "side": 1,
+      "message": "Shouldn\u0027t there be a boilerplate?",
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_f41dda74",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-15T10:14:03Z",
+      "side": 1,
+      "message": "verify",
+      "range": {
+        "startLine": 7,
+        "startChar": 6,
+        "endLine": 7,
+        "endChar": 12
+      },
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_34182281",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-15T10:14:03Z",
+      "side": 1,
+      "message": "Add a test for incorrect syntax format to make sure we do not do anything abnormal :)",
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_c804c217",
+        "filename": "nfEngineTest/nfEngineTest.vcxproj",
+        "patchSetId": 17
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-15T10:14:03Z",
+      "side": 1,
+      "message": "The fact that you need to enable such option in nfCommon-derived VS projects (which looks like not something standard according to VC++ standards) should be documented somewhere.\n\nI suggest updating Wiki and adding info about it to a \"Troubleshooting - Windows\" page if it does not exist.",
+      "revId": "cf7ef8ea8da49d8f4688734c74c6f559ac47b980",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
