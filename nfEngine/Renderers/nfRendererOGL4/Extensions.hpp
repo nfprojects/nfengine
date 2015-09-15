@@ -44,11 +44,14 @@ extern PFNGLDELETEPROGRAMPROC glDeleteProgram;
 extern PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
 extern PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
 extern PFNGLDISABLEVERTEXATTRIBARRAYPROC glDisableVertexAttribArray;
+extern PFNGLMAPBUFFERPROC glMapBuffer;
+extern PFNGLUNMAPBUFFERPROC glUnmapBuffer;
 
 /// OpenGL 3.0
 extern PFNGLGENVERTEXARRAYSPROC glGenVertexArrays;
 extern PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
 extern PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;
+extern PFNGLBINDBUFFERRANGEPROC glBindBufferRange;
 
 /// ARB_separate_shader_objects
 extern PFNGLUSEPROGRAMSTAGESPROC glUseProgramStages;

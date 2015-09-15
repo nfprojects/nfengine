@@ -48,8 +48,8 @@ bool Buffer::Init(const BufferDesc& desc)
         bufferTarget = GL_ELEMENT_ARRAY_BUFFER;
         break;
     case BufferType::Constant:
-        LOG_ERROR("Uniforms (aka Constant Buffers) are not yet implemented!");
-        return false;
+        bufferTarget = GL_UNIFORM_BUFFER;
+        break;
     default:
         LOG_ERROR("Invalid buffer type.");
         return false;
@@ -60,17 +60,13 @@ bool Buffer::Init(const BufferDesc& desc)
     switch (mAccess)
     {
     case BufferAccess::GPU_ReadOnly:
+    case BufferAccess::CPU_Read:
         bufferAccess = GL_STATIC_DRAW;
         break;
     case BufferAccess::GPU_ReadWrite:
+    case BufferAccess::CPU_Write:
         bufferAccess = GL_DYNAMIC_DRAW;
         break;
-    case BufferAccess::CPU_Read:
-        LOG_ERROR("CPU Buffer Access is not yet implemented!");
-        return false;
-    case BufferAccess::CPU_Write:
-        LOG_ERROR("CPU Buffer Access is not yet implemented!");
-        return false;
     default:
         LOG_ERROR("Invalid buffer access mode.");
         return false;
@@ -86,6 +82,7 @@ bool Buffer::Init(const BufferDesc& desc)
     // bind buffer and upload data to it
     glBindBuffer(bufferTarget, mBuffer);
     glBufferData(bufferTarget, mSize, desc.initialData, bufferAccess);
+    glBindBuffer(bufferTarget, GL_NONE);
 
     return true;
 }

@@ -15,6 +15,20 @@
 namespace NFE {
 namespace Renderer {
 
+namespace {
+
+const std::string DEFINE_STR = "#define ";
+
+// TODO this might be only a temporary solution. Investigate in the future.
+//      The problem is, #version *must* be the first line in shader code.
+//      If more flexibility is needed in this situation, some additional
+//      parsing to shader code might be necessary.
+const std::string SHADER_HEADER = "#version 330 core\n\
+#extension GL_ARB_separate_shader_objects: enable\n\
+#extension GL_ARB_shading_language_420pack : enable\n";
+
+} // namespace
+
 Shader::Shader()
     : mType(ShaderType::Unknown)
     , mShader(GL_NONE)
@@ -30,15 +44,21 @@ Shader::~Shader()
 
 bool Shader::Init(const ShaderDesc& desc)
 {
-    // TODO macros
-    std::vector<char> shaderStr;
+    // we begin our shader as usual, with a common header
+    std::string shaderStr = SHADER_HEADER;
 
     mType = desc.type;
 
-    const char* code;
+    // construct a shader string containing all the macros
+    if (desc.macrosNum > 0)
+    {
+        for (unsigned int i=0; i<desc.macrosNum; ++i)
+            shaderStr += DEFINE_STR + desc.macros[i].name + ' ' + desc.macros[i].value + '\n';
+    }
+
     if (desc.code)
     {
-        code = desc.code;
+        shaderStr += desc.code;
     }
     else
     {
@@ -51,16 +71,17 @@ bool Shader::Init(const ShaderDesc& desc)
         using namespace Common;
         File shaderFile(desc.path, AccessMode::Read);
         size_t shaderSize = static_cast<size_t>(shaderFile.GetSize());
-        shaderStr.resize(shaderSize+1);
+        std::string shaderCode;
+        shaderCode.resize(shaderSize+1);
 
-        if (shaderFile.Read(shaderStr.data(), shaderSize) != shaderSize)
+        if (shaderFile.Read(&shaderCode.front(), shaderSize) != shaderSize)
         {
             LOG_ERROR("Unable to read shader code.");
             return false;
         }
 
-        shaderStr[shaderSize] = 0;
-        code = shaderStr.data();
+        shaderCode[shaderSize] = 0;
+        shaderStr += shaderCode;
     }
 
     // create old-style shader
@@ -71,8 +92,8 @@ bool Shader::Init(const ShaderDesc& desc)
         return false;
     }
 
-    GLint codeLen = static_cast<GLint>(strlen(code));
-    glShaderSource(mShader, 1, &code, &codeLen);
+    const char* shaderCStr = shaderStr.c_str();
+    glShaderSource(mShader, 1, &shaderCStr, nullptr);
     glCompileShader(mShader);
 
     int shaderStatus = 0;
@@ -121,7 +142,7 @@ bool Shader::Init(const ShaderDesc& desc)
     // after successful link we can detach the shader from shader program
     glDetachShader(mShaderProgram, mShader);
 
-    LOG_INFO("'%s' - Initialized successfully", desc.path);
+    LOG_SUCCESS("'%s' - Initialized successfully", desc.path);
 
     return true;
 }
@@ -212,7 +233,7 @@ bool ShaderProgram::Init(const ShaderProgramDesc& desc)
         return false;
     }
     else
-        LOG_INFO("Shader Program linked successfully.");
+        LOG_SUCCESS("Shader Program linked successfully.");
 
     return true;
 }
