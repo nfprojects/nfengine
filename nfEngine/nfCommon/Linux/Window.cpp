@@ -180,8 +180,8 @@ bool Window::Open()
     ::Colormap colormap = XCreateColormap(mDisplay, mRoot, visual->visual, AllocNone);
     xSetWAttrib.colormap = colormap;
     xSetWAttrib.event_mask = Button1MotionMask | Button2MotionMask | ButtonPressMask |
-                            ButtonReleaseMask | ExposureMask | FocusChangeMask | KeyPressMask |
-                            KeyReleaseMask | PointerMotionMask | StructureNotifyMask;
+                             ButtonReleaseMask | ExposureMask | FocusChangeMask | KeyPressMask |
+                             KeyReleaseMask | PointerMotionMask | StructureNotifyMask;
 
     XSetErrorHandler(ErrorHandler);
     mWindow = XCreateWindow(mDisplay, mRoot, 0, 0, mWidth, mHeight, 1, visual->depth,
@@ -251,71 +251,76 @@ bool Window::IsKeyPressed(int Key) const
 
 void Window::ProcessMessages()
 {
-    XEvent event;
-    XNextEvent(mDisplay, &event);
-    switch (event.type)
+    XFlush(mDisplay);
+    while (XEventsQueued(mDisplay, QueuedAlready))
     {
-        case ClientMessage:
+        XEvent event;
+        XNextEvent(mDisplay, &event);
+        switch (event.type)
         {
-            if (static_cast<Atom>(event.xclient.data.l[0]) ==
-                XInternAtom(mDisplay, "WM_DELETE_WINDOW", false))
+            case ClientMessage:
             {
-                this->Close();
-                this->OnClose();
+                if (static_cast<Atom>(event.xclient.data.l[0]) ==
+                    XInternAtom(mDisplay, "WM_DELETE_WINDOW", false))
+                {
+                    this->Close();
+                    this->OnClose();
+                }
+                break;
             }
-            break;
-        }
-        case KeyPress:
-        {
-            mKeys[event.xkey.keycode] = true;
-            OnKeyPress(static_cast<int>(event.xkey.keycode));
-            break;
-        }
-        case KeyRelease:
-        {
-            this->mKeys[event.xkey.keycode] = false;
-            break;
-        }
-        case MotionNotify:
-        {
-            this->MouseMove(event.xmotion.x, event.xmotion.y);
-            break;
-        }
-        case ButtonPress:
-        {
-            if (event.xbutton.button < 4) // 1-3 MBtns, 4-5 MWheel
-                this->MouseDown(event.xbutton.button - 1, event.xbutton.x, event.xbutton.y); //can be event.x_root,y_root
-            else if (event.xbutton.button == 4)
-                this->OnScroll(1); // btn==4 is UP,
-            else
-                this->OnScroll(-1); // btn==5 is DOWN
-            break;
-        }
-        case ButtonRelease:
-        {
-            this->MouseUp(event.xbutton.button - 1);
-            break;
-        }
-        case FocusOut:
-        {
-            this->LostFocus();
-            break;
-        }
-        case ConfigureNotify:
-        {
-            XConfigureEvent confEvent = event.xconfigure;
-
-            if (static_cast<uint32>(confEvent.width) != mWidth ||
-                static_cast<uint32>(confEvent.height) != mHeight)
+            case KeyPress:
             {
-                mWidth = confEvent.width;
-                mHeight = confEvent.height;
-                this->OnResize(mWidth, mHeight);
-
-                if (mResizeCallback)
-                    mResizeCallback(mResizeCallbackUserData);
+                mKeys[event.xkey.keycode] = true;
+                OnKeyPress(static_cast<int>(event.xkey.keycode));
+                break;
             }
-            break;
+            case KeyRelease:
+            {
+                this->mKeys[event.xkey.keycode] = false;
+                break;
+            }
+            case MotionNotify:
+            {
+                this->MouseMove(event.xmotion.x, event.xmotion.y);
+                break;
+            }
+            case ButtonPress:
+            {
+                if (event.xbutton.button < 4) // 1-3 MBtns, 4-5 MWheel
+                    //can be event.x_root,y_root
+                    this->MouseDown(event.xbutton.button - 1, event.xbutton.x, event.xbutton.y);
+                else if (event.xbutton.button == 4)
+                    this->OnScroll(1); // btn==4 is UP,
+                else
+                    this->OnScroll(-1); // btn==5 is DOWN
+                break;
+            }
+            case ButtonRelease:
+            {
+                this->MouseUp(event.xbutton.button - 1);
+                break;
+            }
+            case FocusOut:
+            {
+                this->LostFocus();
+                break;
+            }
+            case ConfigureNotify:
+            {
+                XConfigureEvent confEvent = event.xconfigure;
+
+                if (static_cast<uint32>(confEvent.width) != mWidth ||
+                    static_cast<uint32>(confEvent.height) != mHeight)
+                {
+                    mWidth = confEvent.width;
+                    mHeight = confEvent.height;
+                    this->OnResize(mWidth, mHeight);
+
+                    if (mResizeCallback)
+                        mResizeCallback(mResizeCallbackUserData);
+                }
+                break;
+            }
         }
     }
 }

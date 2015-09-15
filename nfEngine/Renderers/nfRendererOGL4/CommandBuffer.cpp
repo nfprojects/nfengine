@@ -24,6 +24,8 @@ CommandBuffer::CommandBuffer()
     , mSetVertexBuffer(nullptr)
     , mSetIndexBuffer(nullptr)
     , mSetVertexLayout(nullptr)
+    , mSetShaderProgram(GL_NONE)
+    , mSetConstantBufferSlot(GL_NONE)
     , mVertexBufferNeedsUpdate(false)
     , mIndexBufferNeedsUpdate(false)
     , mVertexLayoutNeedsUpdate(false)
@@ -74,6 +76,20 @@ void CommandBuffer::BindIndexBuffer()
     Buffer* ib = dynamic_cast<Buffer*>(mSetIndexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib->mBuffer);
     mIndexBufferNeedsUpdate = false;
+}
+
+void CommandBuffer::BindConstantBuffer()
+{
+    if (mSetConstantBuffer == nullptr)
+    {
+        glBindBufferRange(GL_UNIFORM_BUFFER, mSetConstantBufferSlot, GL_NONE, 0, 0);
+        mConstantBufferNeedsUpdate = false;
+        return;
+    }
+
+    Buffer* cb = dynamic_cast<Buffer*>(mSetConstantBuffer);
+    glBindBufferRange(GL_UNIFORM_BUFFER, mSetConstantBufferSlot, cb->mBuffer, 0, cb->mSize);
+    mConstantBufferNeedsUpdate = false;
 }
 
 void CommandBuffer::BindVertexLayout()
@@ -193,10 +209,16 @@ void CommandBuffer::SetTextures(ITexture** textures, int num, ShaderType target,
 void CommandBuffer::SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target,
                                        int slotOffset)
 {
-    UNUSED(constantBuffers);
     UNUSED(num);
     UNUSED(target);
-    UNUSED(slotOffset);
+
+    // TODO support multiple Constant Buffers
+    if (num > 1)
+         LOG_WARNING("Binding multiple CBuffers is not yet supported! Only first will be set.");
+
+    mSetConstantBuffer = constantBuffers[0];
+    mSetConstantBufferSlot = slotOffset;
+    mConstantBufferNeedsUpdate = true;
 }
 
 void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
@@ -239,6 +261,7 @@ void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
     }
 
     glUseProgram(newShaderProgram->mProgram);
+    mSetShaderProgram = newShaderProgram->mProgram;
 }
 
 void CommandBuffer::SetShader(IShader* shader)
@@ -304,10 +327,15 @@ void CommandBuffer::SetViewport(float left, float width, float top, float height
 
 bool CommandBuffer::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data)
 {
-    UNUSED(buffer);
-    UNUSED(offset);
-    UNUSED(size);
-    UNUSED(data);
+    Buffer* buf = dynamic_cast<Buffer*>(buffer);
+    if (!buf)
+        return false;
+
+    // copy data like in D3D11 - map buffer, memcpy, unmap
+    glBindBuffer(GL_UNIFORM_BUFFER, buf->mBuffer);
+    GLvoid* dataPtr = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
+    memcpy(static_cast<char*>(dataPtr) + offset, data, size);
+    glUnmapBuffer(GL_UNIFORM_BUFFER);
 
     return false;
 }
@@ -373,6 +401,9 @@ void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, in
     if (mVertexBufferNeedsUpdate)
         BindVertexBuffer();
 
+    if (mConstantBufferNeedsUpdate)
+        BindConstantBuffer();
+
     if (mVertexLayoutNeedsUpdate)
         BindVertexLayout();
 
@@ -389,6 +420,9 @@ void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesN
 
     if (mVertexBufferNeedsUpdate)
         BindVertexBuffer();
+
+    if (mConstantBufferNeedsUpdate)
+        BindConstantBuffer();
 
     if (mVertexLayoutNeedsUpdate)
         BindVertexLayout();

@@ -23,10 +23,15 @@ class CommandBuffer : public ICommandBuffer
 
     IBuffer* mSetVertexBuffer;
     IBuffer* mSetIndexBuffer;
+    IBuffer* mSetConstantBuffer;
     IVertexLayout* mSetVertexLayout;
+
+    GLuint mSetShaderProgram;
+    GLint mSetConstantBufferSlot;
 
     bool mVertexBufferNeedsUpdate;
     bool mIndexBufferNeedsUpdate;
+    bool mConstantBufferNeedsUpdate;
     bool mVertexLayoutNeedsUpdate;
 
     // SSO-related variables
@@ -37,6 +42,7 @@ class CommandBuffer : public ICommandBuffer
     /// Private methods which will bind just set resources
     void BindVertexBuffer();
     void BindIndexBuffer();
+    void BindConstantBuffer();
     void BindVertexLayout();
 
 public:
