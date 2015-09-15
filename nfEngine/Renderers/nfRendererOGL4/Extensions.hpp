@@ -44,6 +44,8 @@ extern PFNGLDELETEPROGRAMPROC glDeleteProgram;
 extern PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
 extern PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
 extern PFNGLDISABLEVERTEXATTRIBARRAYPROC glDisableVertexAttribArray;
+extern PFNGLMAPBUFFERPROC glMapBuffer;
+extern PFNGLUNMAPBUFFERPROC glUnmapBuffer;
 
 /// ARB_separate_shader_objects
 extern PFNGLUSEPROGRAMSTAGESPROC glUseProgramStages;

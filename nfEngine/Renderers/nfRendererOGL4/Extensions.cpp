@@ -39,6 +39,8 @@ PFNGLDELETEPROGRAMPROC glDeleteProgram = nullptr;
 PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer = nullptr;
 PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = nullptr;
 PFNGLDISABLEVERTEXATTRIBARRAYPROC glDisableVertexAttribArray = nullptr;
+PFNGLMAPBUFFERPROC glMapBuffer = nullptr;
+PFNGLUNMAPBUFFERPROC glUnmapBuffer = nullptr;
 
 /// ARB_separate_shader_objects
 PFNGLUSEPROGRAMSTAGESPROC glUseProgramStages = nullptr;
@@ -88,6 +90,8 @@ bool nfglExtensionsInit()
     NFGL_GET_EXTENSION(PFNGLVERTEXATTRIBPOINTERPROC, glVertexAttribPointer);
     NFGL_GET_EXTENSION(PFNGLENABLEVERTEXATTRIBARRAYPROC, glEnableVertexAttribArray);
     NFGL_GET_EXTENSION(PFNGLDISABLEVERTEXATTRIBARRAYPROC, glDisableVertexAttribArray);
+    NFGL_GET_EXTENSION(PFNGLMAPBUFFERPROC, glMapBuffer);
+    NFGL_GET_EXTENSION(PFNGLUNMAPBUFFERPROC, glUnmapBuffer);
 
     /// ARB_separate_shader_objects
     NFGL_GET_EXTENSION(PFNGLUSEPROGRAMSTAGESPROC, glUseProgramStages);

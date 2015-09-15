@@ -58,6 +58,20 @@ void CommandBuffer::BindIndexBuffer()
     mIndexBufferNeedsUpdate = false;
 }
 
+void CommandBuffer::BindConstantBuffer()
+{
+    if (mSetConstantBuffer == nullptr)
+    {
+        glBindBuffer(GL_UNIFORM_BUFFER, GL_NONE);
+        mConstantBufferNeedsUpdate = false;
+        return;
+    }
+
+    Buffer* cb = dynamic_cast<Buffer*>(mSetConstantBuffer);
+    glBindBuffer(GL_UNIFORM_BUFFER, cb->mBuffer);
+    mConstantBufferNeedsUpdate = false;
+}
+
 void CommandBuffer::BindVertexLayout()
 {
     // disable current attributes
@@ -164,9 +178,15 @@ void CommandBuffer::SetTextures(ITexture** textures, int num, ShaderType target)
 
 void CommandBuffer::SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target)
 {
-    UNUSED(constantBuffers);
     UNUSED(num);
     UNUSED(target);
+
+    // TODO support multiple Constant Buffers
+    if (num > 1)
+         LOG_WARNING("Binding multiple CBuffers is not yet supported! Only first will be set.");
+
+    mSetConstantBuffer = constantBuffers[0];
+    mConstantBufferNeedsUpdate = true;
 }
 
 void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
@@ -263,10 +283,26 @@ void CommandBuffer::SetViewport(float left, float width, float top, float height
 
 bool CommandBuffer::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data)
 {
-    UNUSED(buffer);
-    UNUSED(offset);
-    UNUSED(size);
-    UNUSED(data);
+    Buffer* buf = dynamic_cast<Buffer*>(buffer);
+    if (!buf)
+        return false;
+
+    // acquire currently bound UBO to rebind it later on
+    GLint boundBuf = 0;
+    glGetIntegerv(GL_UNIFORM_BUFFER_BINDING, &boundBuf);
+
+    // bind our buffer (if needed)
+   // if (buf->mBuffer != boundBuf)
+        glBindBuffer(GL_UNIFORM_BUFFER, buf->mBuffer);
+
+    // copy data like in D3D11 - map buffer, memcpy, unmap
+    GLvoid* dataPtr = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
+    memcpy(static_cast<char*>(dataPtr) + offset, data, size);
+    glUnmapBuffer(GL_UNIFORM_BUFFER);
+
+    // rebind previously bound buffer (if needed)
+  //  if (buf->mBuffer != boundBuf)
+        glBindBuffer(GL_UNIFORM_BUFFER, boundBuf);
 
     return false;
 }
@@ -332,6 +368,9 @@ void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, in
     if (mVertexBufferNeedsUpdate)
         BindVertexBuffer();
 
+    if (mConstantBufferNeedsUpdate)
+        BindConstantBuffer();
+
     if (mVertexLayoutNeedsUpdate)
         BindVertexLayout();
 
@@ -348,6 +387,9 @@ void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesN
 
     if (mVertexBufferNeedsUpdate)
         BindVertexBuffer();
+
+    if (mConstantBufferNeedsUpdate)
+        BindConstantBuffer();
 
     if (mVertexLayoutNeedsUpdate)
         BindVertexLayout();
