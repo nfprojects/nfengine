@@ -1,0 +1,7 @@
+{
+    "type": "pixel",
+    "macros":
+    [
+        { "name": "USE_TEXTURE", "min": 0, "max": 2, "default": 0 }
+    ]
+}

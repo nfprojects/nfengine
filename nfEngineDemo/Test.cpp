@@ -26,13 +26,42 @@ float gDeltaTime = 0.0f;
 #define PLATFORM_STR "x86"
 #endif
 
-MainCameraView::MainCameraView()
+class MainCameraView : public NFE::Renderer::View
 {
-}
+public:
+    bool drawSecondaryView;
 
-void MainCameraView::OnPostRender(RenderContext* ctx, GuiRenderer* guiRenderer)
-{
-}
+    MainCameraView()
+        : drawSecondaryView(false)
+    {}
+
+    void OnPostRender(RenderContext* ctx)
+    {
+        if (!drawSecondaryView)
+            return;
+
+        float left = 50.0f;
+        float bottom = 50.0f;
+        float width = 256.0f;
+        float height = 256.0f;
+        float border = 2.0f;
+
+        // border
+        GuiRenderer::Get()->DrawQuad(ctx,
+                                     Rectf(left - border, bottom - border,
+                                           left + width + border, bottom + height + border),
+                                     0xAA000000);
+
+        // draw quad with secondary camera view
+
+        Texture* texture = ENGINE_GET_TEXTURE("secondaryViewTexture");
+        GuiRenderer::Get()->DrawTexturedQuad(ctx,
+                                             Rectf(left, bottom, left + width, bottom + height),
+                                             Rectf(0.0f, 0.0f, 1.0f, 1.0f),
+                                             texture->GetRendererTexture(),
+                                             0xFFFFFFFF);
+    }
+};
 
 // overload own callback functions
 class CustomWindow : public Common::Window
@@ -40,7 +69,7 @@ class CustomWindow : public Common::Window
 public:
     Quaternion cameraOrientation;
     EntityID cameraEntity;
-    std::unique_ptr<View> view;
+    std::unique_ptr<MainCameraView> view;
 
     bool cameraControl;
     float cameraXZ;
@@ -210,6 +239,11 @@ public:
             light.SetColor(Float3(600, 600, 600));
             light.SetShadowMap(512);
             gEntityManager->AddComponent(lightEntity, light);
+        }
+
+        if (key == 'V')
+        {
+            view->drawSecondaryView ^= true;
         }
 
         if (key >= '0' && key <= '9')
