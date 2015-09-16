@@ -151,11 +151,6 @@ void HighLevelRenderer::CreateCommonResources()
     mDefaultSpecularTexture.reset(mRenderingDevice->CreateTexture(texDesc));
 }
 
-void HighLevelRenderer::ProcessView(View* view)
-{
-
-}
-
 RenderContext* HighLevelRenderer::GetImmediateContext() const
 {
     return mImmediateContext.get();
