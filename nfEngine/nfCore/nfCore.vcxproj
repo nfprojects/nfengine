@@ -411,6 +411,7 @@ popd</Command>
     <ClInclude Include="Renderer\GeometryRenderer.hpp" />
     <ClInclude Include="Renderer\GeometryRendererContext.hpp" />
     <ClInclude Include="Renderer\GuiRenderer.hpp" />
+    <ClInclude Include="Renderer\GuiRendererContext.hpp" />
     <ClInclude Include="Renderer\HighLevelRenderer.hpp" />
     <ClInclude Include="Renderer\LightsRenderer.hpp" />
     <ClInclude Include="Renderer\Multishader.hpp" />

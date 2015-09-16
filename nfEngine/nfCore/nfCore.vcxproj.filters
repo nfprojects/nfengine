@@ -266,5 +266,8 @@
     <ClInclude Include="Renderer\GeometryRendererContext.hpp">
       <Filter>Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="Renderer\GuiRendererContext.hpp">
+      <Filter>Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
