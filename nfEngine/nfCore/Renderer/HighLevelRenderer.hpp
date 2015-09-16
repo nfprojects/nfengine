@@ -98,11 +98,6 @@ public:
     IDevice* GetDevice();
 
     /**
-     * Update renderer view and display it on a screen if needed.
-     */
-    void ProcessView(View* view);
-
-    /**
      * Get immediate (primary) rendering context.
      * Using the immediate context will result in direct rendering.
      * It can be only used by the main thread.

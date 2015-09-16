@@ -200,32 +200,21 @@ bool Engine::Advance(const DrawRequest* drawRequests, uint32 drawRequestsNum,
         }
 
         if (scene != nullptr)
-        {
-            // FIXME: temporary
-            commandBuffer->SetRenderTarget(view->GetRenderTarget());
-            uint32 width, height;
-            view->GetSize(width, height);
-            commandBuffer->SetViewport(0.0f, static_cast<float>(width),
-                                       0.0f, static_cast<float>(height),
-                                       0.0f, 1.0f);
             scene->GetRendererSystem()->Render(view);
-        }
 
-        mRenderer->ProcessView(view);
-
-        RenderContext* ctx = mRenderer->GetImmediateContext();
-        GuiRenderer::Get()->Enter(ctx);
+        // GUI renderer pass
         {
-            Recti rect;
+            RenderContext* ctx = mRenderer->GetImmediateContext();
+            GuiRenderer::Get()->Enter(ctx);
             GuiRenderer::Get()->SetTarget(ctx, view->GetRenderTarget());
             view->OnPostRender(ctx);
-
             // TODO draw engine signature with current version
+            GuiRenderer::Get()->Leave(ctx);
         }
-        GuiRenderer::Get()->Leave(ctx);
 
 #ifdef USE_ANT_TWEAK
         commandBuffer->BeginDebugGroup("AntTweak");
+        commandBuffer->SetRenderTarget(view->GetRenderTarget());
         TwDraw();
         commandBuffer->EndDebugGroup();
 #endif
