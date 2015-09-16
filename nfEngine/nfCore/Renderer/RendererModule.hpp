@@ -13,7 +13,7 @@ namespace NFE {
 namespace Renderer {
 
 template<typename T>
-class RendererModule
+class CORE_API RendererModule
 {
 private:
     friend class HighLevelRenderer;

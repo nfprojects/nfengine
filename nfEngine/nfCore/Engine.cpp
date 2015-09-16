@@ -216,7 +216,7 @@ bool Engine::Advance(const DrawRequest* drawRequests, uint32 drawRequestsNum,
         RenderContext* ctx = mRenderer->GetImmediateContext();
         GuiRenderer::Get()->Enter(ctx);
         {
-            Recti rect;
+
             GuiRenderer::Get()->SetTarget(ctx, view->GetRenderTarget());
             view->OnPostRender(ctx);
 

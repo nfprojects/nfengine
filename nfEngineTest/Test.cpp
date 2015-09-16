@@ -30,8 +30,14 @@ MainCameraView::MainCameraView()
 {
 }
 
-void MainCameraView::OnPostRender(RenderContext* ctx, GuiRenderer* guiRenderer)
+void MainCameraView::OnPostRender(RenderContext* ctx)
 {
+    // TODO: temporary
+    Texture* texture = ENGINE_GET_TEXTURE("Wood_Box_Diffuse.jpg");
+    GuiRenderer::Get()->DrawTexturedQuad(ctx, Rectf(0.0f, 0.0f, 100.0f, 100.0f),
+                                         Rectf(0.0f, 0.0f, 1.0f, 1.0f),
+                                         texture->GetRendererTexture(),
+                                         0xFFFFFFFF);
 }
 
 // overload own callback functions

@@ -8,6 +8,7 @@
 #include "../nfEngine/nfCore/CollisionShape.hpp"
 #include "../nfEngine/nfCore/Renderer/HighLevelRenderer.hpp"
 #include "../nfEngine/nfCore/Renderer/View.hpp"
+#include "../nfEngine/nfCore/Renderer/GuiRenderer.hpp"
 
 #include "../nfEngine/nfCore/Components/TransformComponent.hpp"
 #include "../nfEngine/nfCore/Components/BodyComponent.hpp"
@@ -65,9 +66,8 @@ void CreateCustomFloorMesh()
 class MainCameraView : public NFE::Renderer::View
 {
 public:
-
     MainCameraView();
-    void OnPostRender(NFE::Renderer::RenderContext* pCtx, NFE::Renderer::GuiRenderer* pGuiRenderer);
+    void OnPostRender(NFE::Renderer::RenderContext* context);
 };
 
 extern NFE::Scene::EntityManager* gEntityManager;

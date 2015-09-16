@@ -124,9 +124,9 @@ void CreateScenePerformance()
     envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
     gScene->SetEnvironment(&envDesc);
 
-    for (int x = -4; x < 5; x++)
+    for (int x = 0; x < 1; x++)
     {
-        for (int z = -4; z < 5; z++)
+        for (int z = 0; z < 1; z++)
         {
             Vector offset = 12.0f * Vector(static_cast<float>(x),
                                            0.0f,
