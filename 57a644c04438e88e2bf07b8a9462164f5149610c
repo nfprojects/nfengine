@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae5cdf2_71471220",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Linux/Backbuffer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-17T08:10:22Z",
+      "side": 1,
+      "message": "Not 3.3?",
+      "range": {
+        "startLine": 99,
+        "startChar": 28,
+        "endLine": 99,
+        "endChar": 31
+      },
+      "revId": "57a644c04438e88e2bf07b8a9462164f5149610c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
