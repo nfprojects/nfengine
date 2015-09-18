@@ -23,7 +23,7 @@ Makefile
 *.so
 
 # External files updated through GDrive
-/nfEngineTest/Data
+/nfEngineDemo/Data
 
 # Shader compilation results
 /ShaderCache

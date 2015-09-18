@@ -70,7 +70,7 @@ The engine's root directory looks as follows:
     * **nfRendererDemo** - demo application used for renderers testing
     * **nfRendererTest** - unit test for renderers
 * **nfEngineDeps** - engine's dependencies directory. See "Dependencies" section for more information
-* **nfEngineTest** - demo application
+* **nfEngineDemo** - demo application
 * **Obj** - temporary compilation objects
 * **Scripts** - miscellaneous batch and bash scripts
 * **ShaderCache** and **ShaderCache_Debug** - compiled shaders
@@ -103,13 +103,13 @@ To make the code compilable, the following requirements have to be met:
     * **"nfEngineDeps"** directory will be created by using git submodules inside repo - fetch its contents by using `git submodule update --init` command
     * **NOTE:** Dependencies need to be built separately from engine. See README.md inside nfEngineDeps repo for more info.
 3. Downloaded resources from [here](http://drive.google.com/open?id=0B66mya2agFOEd0RJUWx1aDZ6Ym8)
-    * **"Data"** directory created in **"nfEngineTest"** with content copied from subfolder **nfEngineTestData**
+    * **"Data"** directory created in **"nfEngineDemo"** with content copied from subfolder **nfEngineTestData**
     * **NOTE:** it is convenient to use Google Drive application to synchronize resources automatically (by adding this folder to your drive) and create symbolic link to them.
 
 Example Batch code on Windows:
 
 ```
-cd nfengine/nfEngineTest // go to root of repository
+cd nfengine/nfEngineDemo // go to root of repository
 mklink /J Data "path-to-nfEngineTestData"
 ```
 

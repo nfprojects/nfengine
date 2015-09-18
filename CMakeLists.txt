@@ -53,6 +53,6 @@ MESSAGE("Platform is ${BUILD_PLATFORM}")
 
 # Add all projects
 ADD_SUBDIRECTORY("nfEngine")
-#ADD_SUBDIRECTORY("nfEngineTest")
+#ADD_SUBDIRECTORY("nfEngineDemo")
 
 FILE(MAKE_DIRECTORY ${NFE_OUTPUT_DIRECTORY})

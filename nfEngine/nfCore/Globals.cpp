@@ -13,6 +13,6 @@ namespace NFE {
 using namespace Renderer;
 using namespace Resource;
 
-const std::string g_DataPath = "nfEngineTest/Data/";
+const std::string g_DataPath = "nfEngineDemo/Data/";
 
 } // namespace NFE
