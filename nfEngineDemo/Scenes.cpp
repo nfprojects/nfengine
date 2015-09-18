@@ -10,6 +10,7 @@ using namespace NFE::Resource;
 
 SceneManager* gScene = nullptr;
 
+void CreateSceneSimple();
 void CreateSceneMinecraft();
 void CreateSceneSponza();
 void CreateScenePerformance();
@@ -17,6 +18,7 @@ void CreateScenePerformance();
 
 std::vector<std::function<void()>> gScenes =
 {
+    CreateSceneSimple,
     CreateScenePerformance,
     CreateSceneSponza,
     CreateSceneMinecraft,
@@ -113,10 +115,8 @@ void CreateSceneSponza()
     }
 }
 
-/**
- * Performance test (many objects and shadowmaps)
- */
-void CreateScenePerformance()
+void CreateChamberArray(int chambersX, int chambersZ,
+                        int boxesX, int boxesZ, int boxesY)
 {
     //set ambient & background color
     EnviromentDesc envDesc;
@@ -124,9 +124,9 @@ void CreateScenePerformance()
     envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
     gScene->SetEnvironment(&envDesc);
 
-    for (int x = -4; x < 5; x++)
+    for (int x = -chambersX; x <= chambersX; x++)
     {
-        for (int z = -4; z < 5; z++)
+        for (int z = -chambersZ; z <= chambersZ; z++)
         {
             Vector offset = 12.0f * Vector(static_cast<float>(x),
                                            0.0f,
@@ -189,11 +189,11 @@ void CreateScenePerformance()
                 gEntityManager->AddComponent(lightB, light);
             }
 
-            for (int i = -3; i <= 3; i++)
+            for (int i = -boxesX; i <= boxesX; i++)
             {
-                for (int j = 0; j < 1; j++)
+                for (int j = 0; j < boxesY; j++)
                 {
-                    for (int k = -3; k <= 3; k++)
+                    for (int k = -boxesZ; k <= boxesZ; k++)
                     {
                         EntityID cube = gEntityManager->CreateEntity();
 
@@ -216,6 +216,22 @@ void CreateScenePerformance()
             }
         }
     }
+}
+
+/**
+ * Performance test (many objects and shadowmaps)
+ */
+void CreateSceneSimple()
+{
+    CreateChamberArray(0, 0, 2, 2, 1);
+}
+
+/**
+ * Performance test (many objects and shadowmaps)
+ */
+void CreateScenePerformance()
+{
+    CreateChamberArray(4, 4, 4, 4, 2);
 }
 
 // TODO: restore when scene segments are implemented
