@@ -19,6 +19,16 @@ namespace NFE {
 namespace Renderer {
 
 /**
+ * Rendering device information.
+ */
+struct DeviceInfo
+{
+    std::string description;  //< GPU name
+    std::string misc;         //< miscellaneous GPU info
+    std::vector<std::string> features; //< list of supported fetures (depends on low-level API)
+};
+
+/**
  * Rendering device interface.
  *
  * @details Interface allowing to create GPU resources and manage command buffers.
@@ -32,6 +42,13 @@ public:
      * Get handle to a main rendering API object.
      */
     virtual void* GetHandle() const = 0;
+
+    /**
+     * Get rendering device information.
+     * @param info Reference to DeviceInfo object, where information will be stored
+     * @return True on success.
+     */
+    virtual bool GetDeviceInfo(DeviceInfo& info) = 0;
 
     /**
      * DeviceResourcesCreation Resources creation functions

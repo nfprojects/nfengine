@@ -126,6 +126,12 @@ void Device::Execute(ICommandBuffer* commandBuffer, bool saveState)
     UNUSED(saveState);
 }
 
+bool Device::GetDeviceInfo(DeviceInfo& info)
+{
+    UNUSED(info);
+    return false;
+}
+
 IDevice* Init()
 {
     if (gDevice == nullptr)
