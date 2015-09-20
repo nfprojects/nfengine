@@ -8,7 +8,7 @@
 
 #include "Core.hpp"
 #include "Resource.hpp"
-#include "../nfCommon/ThreadPool.hpp"
+#include "../nfCommon/AsyncThreadPool.hpp"
 
 namespace NFE {
 namespace Resource {
@@ -38,7 +38,7 @@ class CORE_API ResManager final
     ResManager(const ResManager&);
     ResManager& operator= (const ResManager&);
 
-    std::unique_ptr<Common::ThreadPool> mThreadPool;
+    std::unique_ptr<Common::AsyncThreadPool> mThreadPool;
 
     std::mutex mResListMutex;
     std::map<const char*, ResourceBase*, CompareResName> mResources;

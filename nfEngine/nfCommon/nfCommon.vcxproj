@@ -206,6 +206,7 @@ popd</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AsyncThreadPool.hpp" />
     <ClInclude Include="Bit.hpp" />
     <ClInclude Include="Buffer.hpp" />
     <ClInclude Include="Console.hpp" />
@@ -250,6 +251,7 @@ popd</Command>
     <ClInclude Include="Win\Console.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AsyncThreadPool.cpp" />
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="FileSystemCommon.cpp" />
     <ClCompile Include="Image.cpp" />
