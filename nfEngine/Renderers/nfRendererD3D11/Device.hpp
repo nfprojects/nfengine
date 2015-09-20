@@ -21,7 +21,9 @@ class Device : public IDevice
 
     D3DPtr<ID3D11Device> mDevice;
     std::unique_ptr<CommandBuffer> mDefaultCommandBuffer;
+    D3DPtr<IDXGIDevice> mDXGIDevice;
     D3DPtr<IDXGIFactory> mDXGIFactory;
+    D3DPtr<IDXGIAdapter> mDXGIAdapter;
     D3D_FEATURE_LEVEL mFeatureLevel;
 
 public:
@@ -30,6 +32,7 @@ public:
 
     void* GetHandle() const;
     ID3D11Device* Get() const;
+    bool GetDeviceInfo(DeviceInfo& info);
 
     /// Resources creation functions
 

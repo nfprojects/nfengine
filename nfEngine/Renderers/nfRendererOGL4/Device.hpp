@@ -25,6 +25,7 @@ public:
     ~Device();
 
     void* GetHandle() const;
+    bool GetDeviceInfo(DeviceInfo& info);
 
     IVertexLayout* CreateVertexLayout(const VertexLayoutDesc& desc);
     IBuffer* CreateBuffer(const BufferDesc& desc);
