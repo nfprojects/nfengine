@@ -25,7 +25,7 @@ const char g_CustomResourcePrefix = '/';
 
 ResManager::ResManager()
 {
-    mThreadPool.reset(new Common::ThreadPool);
+    mThreadPool.reset(new Common::AsyncThreadPool);
 }
 
 ResManager::~ResManager()
