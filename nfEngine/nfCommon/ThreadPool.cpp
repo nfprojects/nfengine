@@ -11,30 +11,24 @@
 namespace NFE {
 namespace Common {
 
-Task::Task(TaskFunction callback, size_t instancesNum)
-    : ptr(0)
-    , mCallback(callback)
-    , mInstancesNum(instancesNum)
+Task::Task()
+    : mTasksLeft(1)
+    , mParent(NFE_INVALID_TASK_ID)
+    , mInstancesNum(0)
     , mNextInstance(0)
-    , mInstancesLeft(instancesNum)
-    , mRequired(1)
-{
-}
+    , mInstancesLeft(0)
+    , mDependency(NFE_INVALID_TASK_ID)
+    , mHead(NFE_INVALID_TASK_ID)
+    , mTail(NFE_INVALID_TASK_ID)
+    , mSibling(NFE_INVALID_TASK_ID)
+{}
 
-void Task::RemoveFromParents()
-{
-    // assume call under ThreadPool::mDepsQueueMutex lock
-    for (Task* parent : mParents)
-        parent->mChildren.erase(this);
-}
 
-//=================================================================================================
-
-WorkerThread::WorkerThread(ThreadPool* pPool, size_t id)
+WorkerThread::WorkerThread(ThreadPool* pool, size_t id)
 {
     mStarted = true;
     this->mId = id;
-    mThread = std::thread(&ThreadPool::SchedulerCallback, pPool, this);
+    mThread = std::thread(&ThreadPool::SchedulerCallback, pool, this);
 }
 
 WorkerThread::~WorkerThread()
@@ -42,13 +36,19 @@ WorkerThread::~WorkerThread()
     mThread.join();
 }
 
-//=================================================================================================
 
-ThreadPool::ThreadPool()
+ThreadPool::ThreadPool(size_t maxTasks, size_t threadsNum)
+    : mLastThreadId(0)
+    , mMaxTasks(static_cast<uint32>(maxTasks))
+    , mTasksNum(0)
 {
-    mLastThreadId = 0;
-    mLastTaskId = 0;
-    SpawnWorkerThreads(std::thread::hardware_concurrency());
+    // allocate tasks buffer
+    mTasks.reset(new Task [mMaxTasks]);
+
+    if (threadsNum > 0)
+        SpawnWorkerThreads(threadsNum);
+    else
+        SpawnWorkerThreads(std::thread::hardware_concurrency());
 }
 
 ThreadPool::~ThreadPool()
@@ -59,15 +59,11 @@ ThreadPool::~ThreadPool()
         for (auto thread : mThreads)
             thread->mStarted = false;
 
-        mTaskQueueTask.notify_all();
+        mTaskQueueCV.notify_all();
     }
 
     // cleanup
     mThreads.clear();
-    for (auto taskPair : mTasks)
-    {
-        delete taskPair.second;
-    }
 }
 
 void ThreadPool::SpawnWorkerThreads(size_t num)
@@ -81,7 +77,7 @@ void ThreadPool::SpawnWorkerThreads(size_t num)
 void ThreadPool::TriggerWorkerStop(WorkerThreadPtr workerThread)
 {
     workerThread->mStarted = false;
-    mTaskQueueTask.notify_all();
+    mTaskQueueCV.notify_all();
 }
 
 size_t ThreadPool::GetThreadsNumber() const
@@ -89,19 +85,12 @@ size_t ThreadPool::GetThreadsNumber() const
     return mThreads.size();
 }
 
-void ThreadPool::SetThreadsNumber(size_t newValue)
-{
-    Lock lock(mThreadsMutex);
-    if (mThreads.size() < newValue)
-        SpawnWorkerThreads(newValue - mThreads.size());
-
-    // TODO: implement reducing number of worker threads
-}
-
 void ThreadPool::SchedulerCallback(WorkerThread* thread)
 {
-    size_t instanceId;
-    Task* currTask = nullptr;
+    Task* task = nullptr;
+    TaskContext context;
+    context.threadId = thread->mId;
+    context.pool = this;
 
     for (;;)
     {
@@ -110,172 +99,140 @@ void ThreadPool::SchedulerCallback(WorkerThread* thread)
 
             // wait for new task
             while (thread->mStarted && mTasksQueue.empty())
-                mTaskQueueTask.wait(lock);
+                mTaskQueueCV.wait(lock);
 
             if (!thread->mStarted)
                 return;
 
             // pop a task from the queue
-            currTask = mTasksQueue.front();
-            instanceId = currTask->mNextInstance++;
-            if (currTask->mNextInstance == currTask->mInstancesNum)
+            context.taskId = mTasksQueue.front();
+            task = &mTasks[context.taskId];
+            context.instanceId = task->mNextInstance++;
+            if (task->mNextInstance == task->mInstancesNum)
                 mTasksQueue.pop();
         }
 
         // execute
-        if (currTask->mCallback)
-        {
-            currTask->mCallback(instanceId, thread->mId);
-        }
+        task->mCallback(context);
 
         // check if task has been completed (last instance just finished its execution)
-        if (--currTask->mInstancesLeft > 0)
-            continue;
-
-        std::vector<Task*> resolved;
-
-        // mark as done and notify waiting threads
-        {
-            Lock lock(mTasksMutex);
-            mTasks.erase(currTask->ptr);
-            mTasksMutexCV.notify_all();
-
-            // handle dependencies
-            Lock depsLock(mDepsQueueMutex);
-
-            // resolve dependent tasks
-            for (Task* child : currTask->mChildren)
-            {
-                child->mParents.erase(currTask);
-                if (--child->mRequired == 0)
-                {
-                    resolved.push_back(child);
-                }
-            }
-
-            for (Task* child : resolved)
-                child->RemoveFromParents();
-
-            // cleanup
-            delete currTask;
-            currTask = nullptr;
-        }
-
-        if (!resolved.empty())
-        {
-            Lock queueLock(mTasksQueueMutex);
-
-            // move ready tasks to the queue
-            for (Task* child : resolved)
-                mTasksQueue.push(child);
-
-            // notify waiting threads only if new task moved to the queue
-            mTaskQueueTask.notify_all();
-        }
+        if (--task->mInstancesLeft == 0)
+            FinishTask(task);
     }
 }
 
-TaskID ThreadPool::Enqueue(TaskFunction function, size_t instances,
-                           const std::vector<TaskID>& dependencies, size_t required)
+void ThreadPool::FinishTask(Task* task)
 {
-    assert(instances > 0);
+    if (--task->mTasksLeft > 0)
+        return;
 
-    TaskID taskPtr = mLastTaskId++; //< generate task id
-
-    Task* task = new Task(function, instances);
-    task->ptr = taskPtr;
-
-    bool insertToQueue = false;
-
-    if (required == 0 || dependencies.empty())
     {
-        // tasks with no dependencies
-        {
-            Lock lock(mTasksMutex);
-            mTasks.insert(std::pair<TaskID, Task*>(taskPtr, task));
-        }
-        insertToQueue = true;
+        // TODO: get rid of this lock
+        Lock lock(mFinishedTasksMutex);
+        mFinishedTasksCV.notify_all();
     }
-    else
+
+    // update parent
+    if (task->mParent != NFE_INVALID_TASK_ID)
+        FinishTask(&mTasks[task->mParent]);
+
+    // enqueue dependent tasks
+    TaskID siblingID = task->mHead;
+    while (siblingID != NFE_INVALID_TASK_ID)
     {
-        if (required > dependencies.size())
-            task->mRequired = dependencies.size();
-        else
-            task->mRequired = required;
+        EnqueueTask(siblingID);
+        siblingID = mTasks[siblingID].mSibling;
+    }
+}
 
-        Lock tasksLock(mTasksMutex);
-        mTasks.insert(std::pair<TaskID, Task*>(taskPtr, task));
+void ThreadPool::EnqueueTask(TaskID taskID)
+{
+    Lock lock(mTasksQueueMutex);
+    mTasksQueue.push(taskID);
+    mTaskQueueCV.notify_all();
+}
 
-        Lock depsLock(mDepsQueueMutex);
-        for (const TaskID& parentTaskPtr : dependencies)
+TaskID ThreadPool::CreateTask(TaskFunction function, size_t instancesNum,
+                              TaskID parentID, TaskID dependencyID)
+{
+    assert(instancesNum > 0);
+
+    TaskID taskID = mTasksNum++;
+    if (taskID >= mMaxTasks)
+        return NFE_INVALID_TASK_ID;
+
+    Task& task = mTasks[taskID];
+    task.mCallback = function;
+    task.mParent = parentID;
+    task.mInstancesNum =  task.mInstancesLeft = static_cast<uint32>(instancesNum);
+    task.mDependency = dependencyID;
+    task.mHead = NFE_INVALID_TASK_ID;
+
+    if (parentID != NFE_INVALID_TASK_ID)
+        mTasks[parentID].mTasksLeft++;
+
+    bool canEnqueue = true;
+    if (dependencyID != NFE_INVALID_TASK_ID)
+    {
+        Task& dependency = mTasks[dependencyID];
+
+        Lock lock(mFinishedTasksMutex); // TODO: how to get rid of it?
+        if (dependency.mTasksLeft > 0)
         {
-            Task* parentTask = GetTask(parentTaskPtr);
-            if (parentTask == nullptr)
+            // update dependency list
+            if (dependency.mTail != NFE_INVALID_TASK_ID)
             {
-                task->mRequired--;
-                if (task->mRequired == 0)
-                {
-                    // all dependencies already resolved, move to the queue
-                    insertToQueue = true;
-                    break;
-                }
+                mTasks[dependency.mTail].mSibling = taskID;
             }
             else
             {
-                task->mParents.insert(parentTask);
-                parentTask->mChildren.insert(task);
+                assert(dependency.mHead == NFE_INVALID_TASK_ID);
+                dependency.mHead = taskID;
             }
+            task.mDependency = dependencyID;
+            dependency.mTail = taskID;
+
+            canEnqueue = false;
         }
     }
 
-    if (insertToQueue)
+    if (canEnqueue)
+        EnqueueTask(taskID);
+
+    return taskID;
+}
+
+bool ThreadPool::IsTaskFinished(TaskID taskID) const
+{
+    return mTasks[taskID].mTasksLeft == 0;
+}
+
+void ThreadPool::WaitForTask(TaskID taskID)
+{
+    if (mTasks[taskID].mTasksLeft == 0)
+        return;
+
+    Lock lock(mFinishedTasksMutex);
+    while (mTasks[taskID].mTasksLeft > 0)
+        mFinishedTasksCV.wait(lock);
+}
+
+void ThreadPool::WaitForTasks(TaskID* tasks, size_t tasksNum)
+{
+    for (size_t i = 0; i < tasksNum; ++i)
     {
-        Lock lock(mTasksQueueMutex);
-        mTasksQueue.push(task);
-        mTaskQueueTask.notify_all();
+        if (mTasks[tasks[i]].mTasksLeft == 0)
+            continue;
+
+        Lock lock(mFinishedTasksMutex);
+        while (mTasks[tasks[i]].mTasksLeft > 0)
+            mFinishedTasksCV.wait(lock);
     }
-
-    return taskPtr;
-}
-
-Task* ThreadPool::GetTask(const TaskID& ptr) const
-{
-    // assume called in mTasksMutex lock
-
-    auto it = mTasks.find(ptr);
-    if (it != mTasks.end())
-        return it->second;
-
-    return nullptr;
-}
-
-bool ThreadPool::IsTaskFinished(const TaskID& taskPtr)
-{
-    Lock lock(mTasksMutex);
-    return GetTask(taskPtr) == nullptr;
-}
-
-void ThreadPool::WaitForTask(const TaskID& taskPtr)
-{
-    Lock lock(mTasksMutex);
-    while (GetTask(taskPtr) != nullptr)
-        mTasksMutexCV.wait(lock);
-}
-
-void ThreadPool::WaitForTasks(const std::vector<TaskID>& tasks, size_t required)
-{
-    TaskID tmpTask = Enqueue(TaskFunction(), 1, tasks, required);
-
-    Lock lock(mTasksMutex);
-    while (GetTask(tmpTask) != nullptr)
-        mTasksMutexCV.wait(lock);
 }
 
 void ThreadPool::WaitForAllTasks()
 {
-    Lock lock(mTasksMutex);
-    while (mTasks.size() > 0)
-        mTasksMutexCV.wait(lock);
+    // TODO
 }
 
 } // namespace Common
