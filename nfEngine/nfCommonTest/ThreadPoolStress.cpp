@@ -9,36 +9,30 @@
 
 using namespace NFE::Common;
 
-// Spawn lots of tasks with complex dependencies.
-TEST(ThreadPoolStress, ComplexDependency)
+// Spawn lots of tasks with single dependencies.
+TEST(ThreadPoolStress, SingleDependency)
 {
-    const size_t numTasks = 100000;
+    const size_t numTasks = 1 << 16;
 
     struct TaskInfo
     {
-        std::vector<TaskID> deps;
+        TaskID dependency;
         int done;
-        int required;
         size_t instanceNum;
     };
 
     ThreadPool tp;
     std::vector<TaskID> taskIds;
     std::vector<TaskInfo> tasks;
-    TaskID finishTask;
     tasks.reserve(numTasks);
 
-    auto func = [&](size_t instanceId, size_t, size_t id)
+    auto func = [&](const TaskContext& context, size_t id)
     {
         TaskInfo& taskInfo = tasks[id];
-        ASSERT_TRUE(instanceId < taskInfo.instanceNum) << "Task instance ID out of bound";
+        ASSERT_TRUE(context.instanceId < taskInfo.instanceNum) << "Task instance ID out of bound";
 
-        int depsResolved = 0;
-        for (TaskID dependency : taskInfo.deps)
-            if (tasks[(size_t)dependency].done)
-                depsResolved++;
-
-        ASSERT_GE(taskInfo.required, depsResolved) << "Unresolved dependencies";
+        if (taskInfo.dependency != NFE_INVALID_TASK_ID)
+            ASSERT_EQ(1, tasks[taskInfo.dependency].done) << "Unresolved dependencies";
 
         // delay first tasks a little bit
         if (id < 50)
@@ -54,26 +48,20 @@ TEST(ThreadPoolStress, ComplexDependency)
         TaskID taskId;
 
         // generate random dependencies
-        size_t range = std::min<size_t>(tasks.size(), 0);
-        task.required = 0;
+        size_t range = std::min<size_t>(tasks.size() / 2, 0);
         if (range > 0)
-        {
-            size_t depsNum = rand() % range;
-            task.required = rand() % depsNum;
-            random_unique(tasks.begin(), tasks.end(), depsNum);
-            for (size_t j = 0; j < depsNum; ++j)
-                task.deps.push_back(taskIds[i]);
-        }
+            task.dependency = rand() % range;
+        else
+            task.dependency = NFE_INVALID_TASK_ID;
 
         task.done = 0;
-        task.instanceNum = rand() % 8 + 1;
+        task.instanceNum = rand() % 4 + 1;
         tasks.push_back(task);
-        ASSERT_NO_THROW(taskId = tp.Enqueue(std::bind(func, _1, _2, i),
-                                            task.instanceNum, task.deps, task.required));
+        ASSERT_NO_THROW(taskId = tp.CreateTask(std::bind(func, _1, i), task.instanceNum,
+                                               NFE_INVALID_TASK_ID, task.dependency));
         ASSERT_EQ(i, taskId);
         taskIds.push_back(taskId);
     }
 
-    ASSERT_NO_THROW(finishTask = tp.Enqueue(TaskFunction(), 1, taskIds));
-    tp.WaitForTask(finishTask);
+    tp.WaitForTasks(taskIds.data(), taskIds.size());
 }
