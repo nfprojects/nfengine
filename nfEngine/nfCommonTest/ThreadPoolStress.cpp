@@ -10,6 +10,7 @@
 using namespace NFE::Common;
 
 // Spawn lots of tasks with complex dependencies.
+/*
 TEST(ThreadPoolStress, ComplexDependency)
 {
     const size_t numTasks = 100000;
@@ -77,3 +78,4 @@ TEST(ThreadPoolStress, ComplexDependency)
     ASSERT_NO_THROW(finishTask = tp.Enqueue(TaskFunction(), 1, taskIds));
     tp.WaitForTask(finishTask);
 }
+*/

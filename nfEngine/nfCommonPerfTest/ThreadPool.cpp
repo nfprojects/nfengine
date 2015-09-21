@@ -18,7 +18,7 @@ TEST(ThreadPool, SpawnTasks)
 
     std::cout << "Tasks num | Enqueue time | Wait time" << std::endl;
 
-    for (int numTasks = 2; numTasks < 100000; numTasks *= 2)
+    for (int numTasks = 2; numTasks < 10000; numTasks *= 2)
     {
         Latch latch;
         ThreadPool tp;
@@ -33,12 +33,12 @@ TEST(ThreadPool, SpawnTasks)
         TaskFunction taskFunc = [&](size_t, size_t) {};
 
         // block worker threads
-        tp.Enqueue(lockTask, tp.GetThreadsNumber());
+        tp.CreateTask(lockTask, tp.GetThreadsNumber());
 
         // eneuque time measure
         timer.Start();
         for (int i = 0; i < numTasks; ++i)
-            tasks.push_back(tp.Enqueue(taskFunc, 1));
+            tasks.push_back(tp.CreateTask(taskFunc));
         double enqueueTime = 1000.0 * timer.Stop();
 
         // unlock worker threads
@@ -46,7 +46,7 @@ TEST(ThreadPool, SpawnTasks)
 
         // wait for tasks time measure
         timer.Start();
-        tp.WaitForTasks(tasks);
+        tp.WaitForTasks(tasks.data(), tasks.size());
         double waitTime = 1000.0 * timer.Stop();
 
         std::cout << std::setprecision(4) << std::left
