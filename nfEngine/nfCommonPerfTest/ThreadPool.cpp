@@ -25,33 +25,78 @@ TEST(ThreadPool, SpawnTasks)
         std::vector<TaskID> tasks;
         tasks.reserve(numTasks);
 
-        TaskFunction lockTask = [&](size_t, size_t)
+        TaskFunction lockTask = [&](const TaskContext& /* context */)
         {
             latch.Wait();
         };
 
-        TaskFunction taskFunc = [&](size_t, size_t) {};
+        TaskFunction taskFunc = [&](const TaskContext& /* context */) {};
 
         // block worker threads
-        tp.Enqueue(lockTask, tp.GetThreadsNumber());
+        tp.CreateTask(lockTask, tp.GetThreadsNumber());
 
         // eneuque time measure
         timer.Start();
         for (int i = 0; i < numTasks; ++i)
-            tasks.push_back(tp.Enqueue(taskFunc, 1));
+            tasks.push_back(tp.CreateTask(taskFunc));
         double enqueueTime = 1000.0 * timer.Stop();
 
         // unlock worker threads
+        timer.Start();
         latch.Set();
 
         // wait for tasks time measure
-        timer.Start();
-        tp.WaitForTasks(tasks);
+        tp.WaitForTasks(tasks.data(), tasks.size());
         double waitTime = 1000.0 * timer.Stop();
 
         std::cout << std::setprecision(4) << std::left
                   << std::setw(9) << numTasks << " | "
                   << std::setw(12) << enqueueTime << " | "
                   << waitTime << std::endl;
+    }
+}
+
+TEST(ThreadPool, Dependencies)
+{
+    Timer timer;
+
+    std::cout << "Tasks num | Enqueue time | Wait time" << std::endl;
+
+    for (int numTasks = 2; numTasks < 100000; numTasks *= 2)
+    {
+        Latch latch;
+        ThreadPool tp;
+        std::vector<TaskID> tasks;
+        tasks.reserve(numTasks);
+
+        TaskFunction lockTask = [&](const TaskContext& /* context */)
+        {
+            latch.Wait();
+        };
+
+        TaskFunction taskFunc = [&](const TaskContext& /* context */) {};
+
+        // blocking task
+        TaskID dependencyTask = tp.CreateTask(lockTask);
+        TaskID grouppingTask = tp.CreateTask(taskFunc, 1, NFE_INVALID_TASK_ID, dependencyTask);
+
+        // eneuque time measure
+        timer.Start();
+        for (int i = 0; i < numTasks; ++i)
+            tasks.push_back(tp.CreateTask(taskFunc, 1, grouppingTask, dependencyTask));
+        double enqueueTime = 1000.0 * timer.Stop();
+
+        // unlock worker threads
+        timer.Start();
+        latch.Set();
+
+        // wait for tasks time measure
+        tp.WaitForTask(grouppingTask);
+        double waitTime = 1000.0 * timer.Stop();
+
+        std::cout << std::setprecision(4) << std::left
+            << std::setw(9) << numTasks << " | "
+            << std::setw(12) << enqueueTime << " | "
+            << waitTime << std::endl;
     }
 }
