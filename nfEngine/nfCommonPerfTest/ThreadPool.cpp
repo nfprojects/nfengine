@@ -25,20 +25,20 @@ TEST(ThreadPool, SpawnTasks)
         std::vector<TaskID> tasks;
         tasks.reserve(numTasks);
 
-        TaskFunction lockTask = [&](size_t, size_t)
+        TaskFunction lockTask = [&](const TaskContext& /* context */)
         {
             latch.Wait();
         };
 
-        TaskFunction taskFunc = [&](size_t, size_t) {};
+        TaskFunction taskFunc = [&](const TaskContext& /* context */) {};
 
         // block worker threads
-        tp.Enqueue(lockTask, tp.GetThreadsNumber());
+        tp.CreateTask(lockTask, tp.GetThreadsNumber());
 
         // eneuque time measure
         timer.Start();
         for (int i = 0; i < numTasks; ++i)
-            tasks.push_back(tp.Enqueue(taskFunc, 1));
+            tasks.push_back(tp.CreateTask(taskFunc));
         double enqueueTime = 1000.0 * timer.Stop();
 
         // unlock worker threads
@@ -46,7 +46,7 @@ TEST(ThreadPool, SpawnTasks)
 
         // wait for tasks time measure
         timer.Start();
-        tp.WaitForTasks(tasks);
+        tp.WaitForTasks(tasks.data(), tasks.size());
         double waitTime = 1000.0 * timer.Stop();
 
         std::cout << std::setprecision(4) << std::left
