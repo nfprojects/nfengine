@@ -20,7 +20,7 @@ TEST(ThreadPoolSimple, EmptyTask)
 {
     ThreadPool tp;
     auto emptyTaskFunc = [](size_t, size_t) {};
-    ASSERT_NO_THROW(tp.Enqueue(emptyTaskFunc, 1));
+    ASSERT_NO_THROW(tp.CreateTask(emptyTaskFunc, 1));
 }
 
 // Destroy a pool while executing a task
@@ -33,8 +33,8 @@ TEST(ThreadPoolSimple, DestroyWhileExecuting)
     };
 
     TaskID task = 0;
-    ASSERT_NO_THROW(task = tp->Enqueue(taskFunc, 20));
-    ASSERT_NO_THROW(tp->Enqueue(taskFunc, 20, { task }));
+    ASSERT_NE(NFE_INVALID_TASK_ID, task = tp->CreateTask(taskFunc, 20));
+    ASSERT_NE(NFE_INVALID_TASK_ID, tp->CreateTask(taskFunc, 20, NFE_INVALID_TASK_ID, task));
     ASSERT_NO_THROW(tp.reset());
 }
 
@@ -54,17 +54,17 @@ TEST(ThreadPoolSimple, Wait)
     TaskID taskA, taskB, taskC, taskD;
 
     // wait for already executed
-    ASSERT_NO_THROW(taskA = tp.Enqueue(smallTaskFunc, 1));
+    ASSERT_NE(NFE_INVALID_TASK_ID, taskA = tp.CreateTask(smallTaskFunc, 1));
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
     tp.WaitForTask(taskA);
 
     // wait for being executed
-    ASSERT_NO_THROW(taskB = tp.Enqueue(longTaskFunc, 10));
+    ASSERT_NE(NFE_INVALID_TASK_ID, taskB = tp.CreateTask(longTaskFunc, 10));
     tp.WaitForTask(taskB);
 
     // wait for queued
-    ASSERT_NO_THROW(taskC = tp.Enqueue(longTaskFunc, 10));
-    ASSERT_NO_THROW(taskD = tp.Enqueue(longTaskFunc, 10));
+    ASSERT_NE(NFE_INVALID_TASK_ID, taskC = tp.CreateTask(longTaskFunc, 10));
+    ASSERT_NE(NFE_INVALID_TASK_ID, taskD = tp.CreateTask(longTaskFunc, 10));
     tp.WaitForTask(taskD);
     tp.WaitForTask(taskC);
 }
@@ -88,10 +88,10 @@ TEST(ThreadPoolSimple, EnqueueInsideTask)
     {
         EXPECT_EQ(0, instanceId);
         condition = 1;
-        ASSERT_NO_THROW(taskB = tp.Enqueue(taskFuncB, 1, { taskA }));
+        ASSERT_NO_THROW(taskB = tp.CreateTask(taskFuncB, 1, { taskA }));
     };
 
-    ASSERT_NO_THROW(taskA = tp.Enqueue(taskFuncA, 1));
+    ASSERT_NO_THROW(taskA = tp.CreateTask(taskFuncA, 1));
 
     latch.Wait();
     tp.WaitForTask(taskB);
@@ -118,7 +118,7 @@ TEST(ThreadPoolSimple, ThreadId)
         latch.Wait();
     };
 
-    ASSERT_NO_THROW(task = tp.Enqueue(taskFunc, workerThreads));
+    ASSERT_NE(NFE_INVALID_TASK_ID, task = tp.CreateTask(taskFunc, workerThreads));
     while (done < workerThreads)
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     latch.Set();
@@ -135,20 +135,43 @@ TEST(ThreadPoolSimple, ThousandTasks)
 {
     const int numTasks = 1000;
     std::atomic<int> counter(0);
-
     {
         ThreadPool tp;
         std::vector<TaskID> tasks;
-        auto emptyTaskFunc = [&counter](size_t, size_t)
-        {
-            counter++;
-        };
+        auto emptyTaskFunc = [&counter](size_t, size_t) { counter++; };
 
         for (int i = 0; i < numTasks; ++i)
-            ASSERT_NO_THROW(tasks.push_back(tp.Enqueue(emptyTaskFunc)));
+        {
+            TaskID taskID;
+            ASSERT_NE(NFE_INVALID_TASK_ID, taskID = tp.CreateTask(emptyTaskFunc));
+            tasks.push_back(taskID);
+        }
 
         for (int i = 0; i < numTasks; ++i)
             tp.WaitForTask(tasks[i]);
+    }
+
+    EXPECT_EQ(numTasks, counter);
+}
+
+// Spawn 1000 tasks.
+TEST(ThreadPoolSimple, ThousandTasksWaitForTasks)
+{
+    const int numTasks = 1000;
+    std::atomic<int> counter(0);
+    {
+        ThreadPool tp;
+        std::vector<TaskID> tasks;
+        auto emptyTaskFunc = [&counter](size_t, size_t) { counter++; };
+
+        for (int i = 0; i < numTasks; ++i)
+        {
+            TaskID taskID;
+            ASSERT_NE(NFE_INVALID_TASK_ID, taskID = tp.CreateTask(emptyTaskFunc));
+            tasks.push_back(taskID);
+        }
+
+        tp.WaitForTasks(tasks.data(), tasks.size());
     }
 
     EXPECT_EQ(numTasks, counter);
@@ -170,7 +193,7 @@ TEST(ThreadPoolSimple, InstancesSimple)
 
     ThreadPool tp;
     TaskID task;
-    ASSERT_NO_THROW(task = tp.Enqueue(func, instancesNum));
+    ASSERT_NE(NFE_INVALID_TASK_ID, task = tp.CreateTask(func, instancesNum));
     tp.WaitForTask(task);
 
     for (size_t i = 0; i < instancesNum; ++i)
@@ -200,7 +223,8 @@ TEST(ThreadPoolSimple, Instances)
     {
         using namespace std::placeholders;
         TaskID task;
-        ASSERT_NO_THROW(task = tp.Enqueue(std::bind(func, _1, _2, i), instancesPerTask[i]));
+        ASSERT_NE(NFE_INVALID_TASK_ID, task = tp.CreateTask(std::bind(func, _1, _2, i),
+                                                            instancesPerTask[i]));
         tasks.push_back(task);
     }
 
@@ -231,8 +255,9 @@ TEST(ThreadPoolSimple, DependencyInProgress)
 
     ThreadPool tp;
     TaskID task0 = 0, task1 = 0;
-    ASSERT_NO_THROW(task0 = tp.Enqueue(funcA, numInstances));
-    ASSERT_NO_THROW(task1 = tp.Enqueue(funcB, numInstances, { task0 }));
+    ASSERT_NE(NFE_INVALID_TASK_ID, task0 = tp.CreateTask(funcA, numInstances));
+    ASSERT_NE(NFE_INVALID_TASK_ID, task1 = tp.CreateTask(funcB, numInstances, NFE_INVALID_TASK_ID,
+                                                         task0));
     tp.WaitForTask(task1);
 }
 
@@ -243,10 +268,10 @@ TEST(ThreadPoolSimple, DependencyFinished)
     TaskID task0, task1;
     auto func = [](size_t, size_t) {};
 
-    ASSERT_NO_THROW(task0 = tp.Enqueue(func, 1));
+    ASSERT_NE(NFE_INVALID_TASK_ID, task0 = tp.CreateTask(func, 1));
     tp.WaitForTask(task0);
 
-    ASSERT_NO_THROW(task1 = tp.Enqueue(func, 1, { task0 }));
+    ASSERT_NE(NFE_INVALID_TASK_ID, task1 = tp.CreateTask(func, 1, NFE_INVALID_TASK_ID, task0));
     tp.WaitForTask(task1);
 }
 
@@ -255,6 +280,7 @@ TEST(ThreadPoolSimple, DependencyFinished)
 * Then spawn 1000 "C" tasks, which are dependent on A and B, but only
 * one is required to launch.
 */
+/*
 TEST(ThreadPoolSimple, DependencyRequiredNum)
 {
     int cTaskNum = 10000;
@@ -282,15 +308,17 @@ TEST(ThreadPoolSimple, DependencyRequiredNum)
         EXPECT_EQ(0, counterB);
     };
 
-    ASSERT_NO_THROW(taskA = tp.Enqueue(funcA, 1));
-    ASSERT_NO_THROW(taskB = tp.Enqueue(funcB, 1));
+    ASSERT_NE(NFE_INVALID_TASK_ID, taskA = tp.CreateTask(funcA, 1));
+    ASSERT_NE(NFE_INVALID_TASK_ID, taskB = tp.CreateTask(funcB, 1));
 
     std::vector<TaskID> cTasks;
     for (int i = 0; i < cTaskNum; ++i)
-        ASSERT_NO_THROW(cTasks.push_back(tp.Enqueue(funcC, 1, { taskA, taskB }, 1)));
+    {
+        ASSERT_NO_THROW(cTasks.push_back(tp.CreateTask(funcC, 1, { taskA, taskB }, 1)));
+    }
 
     // wait for all "C" tasks
-    ASSERT_NO_THROW(waitTask = tp.Enqueue(TaskFunction(), 1, cTasks));
+    ASSERT_NE(NFE_INVALID_TASK_ID, waitTask = tp.CreateTask(TaskFunction(), 1, cTasks));
     tp.WaitForTask(waitTask);
     cFinishLatch.Set();
     tp.WaitForTask(taskA);
@@ -299,6 +327,7 @@ TEST(ThreadPoolSimple, DependencyRequiredNum)
     EXPECT_EQ(1, counterA);
     EXPECT_EQ(1, counterB);
 }
+*/
 
 // Create long dependency chain: A -> B -> C -> D ...
 // Verify execution order.
@@ -328,10 +357,14 @@ TEST(ThreadPoolSimple, DependencyChain)
 
     using namespace std::placeholders;
     TaskID prevTask = 0;
-    ASSERT_NO_THROW(prevTask = tp.Enqueue(std::bind(func, _1, _2, 0), instancesPerTask));
+    ASSERT_NE(NFE_INVALID_TASK_ID, prevTask = tp.CreateTask(std::bind(func, _1, _2, 0),
+                                                            instancesPerTask));
     for (int i = 1; i < chainLen; ++i)
-        ASSERT_NO_THROW(prevTask = tp.Enqueue(std::bind(func, _1, _2, i), instancesPerTask, { prevTask }));
-
+    {
+        ASSERT_NE(NFE_INVALID_TASK_ID, prevTask = tp.CreateTask(std::bind(func, _1, _2, i),
+                                                                instancesPerTask,
+                                                                NFE_INVALID_TASK_ID, prevTask));
+    }
     tp.WaitForTask(prevTask);
 
     // verify counters
@@ -355,13 +388,13 @@ TEST(ThreadPoolSimple, EnqueueInsideTaskRecursive)
         EXPECT_EQ(0, instanceId);
 
         if (++count < numTasks)
-            ASSERT_NO_THROW(tp.Enqueue(taskFunc, 1));
+            ASSERT_NE(NFE_INVALID_TASK_ID, tp.CreateTask(taskFunc, 1));
         else
             latch.Set();
     };
 
     /// spawn first task
-    ASSERT_NO_THROW(tp.Enqueue(taskFunc, 1));
+    ASSERT_NE(NFE_INVALID_TASK_ID, tp.CreateTask(taskFunc, 1));
 
     latch.Wait();
     ASSERT_EQ(numTasks, count);
