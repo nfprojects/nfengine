@@ -384,7 +384,8 @@ bool OnLoadCustomShapeResource(ResourceBase* res, void* data)
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
     std::string execPath = Common::FileSystem::GetExecutablePath();
-    Common::FileSystem::ChangeDirectory(execPath + "/../../../..");
+    std::string execDir = NFE::Common::FileSystem::GetParentDir(execPath);
+    NFE::Common::FileSystem::ChangeDirectory(execDir + "/../../..");
 
     //create window
     CustomWindow* window = new CustomWindow;

@@ -244,6 +244,7 @@ popd</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Buffer.cpp" />
+    <ClCompile Include="FileSystemCommon.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="InputStream.cpp" />
     <ClCompile Include="Latch.cpp" />

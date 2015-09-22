@@ -6,7 +6,8 @@ int main(int argc, char* argv[])
     testing::InitGoogleTest(&argc, argv);
 
     std::string execPath = NFE::Common::FileSystem::GetExecutablePath();
-    NFE::Common::FileSystem::ChangeDirectory(execPath + "/../../../..");
+    std::string execDir = NFE::Common::FileSystem::GetParentDir(execPath);
+    NFE::Common::FileSystem::ChangeDirectory(execDir + "/../../..");
     int result = RUN_ALL_TESTS();
 
 #if defined(WIN32) && defined(_CRTDBG_MAP_ALLOC)

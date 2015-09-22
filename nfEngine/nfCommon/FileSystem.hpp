@@ -30,6 +30,11 @@ public:
     typedef std::function<bool(const std::string& path, bool isDirectory)> DirIterateCallback;
 
     /**
+     * Get parent directory of a given path.
+     */
+    static std::string GetParentDir(const std::string& path);
+
+    /**
      * Get location of the executable.
      */
     static std::string GetExecutablePath();

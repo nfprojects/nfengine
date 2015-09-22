@@ -247,13 +247,8 @@ public:
 int main(int argc, char* argv[])
 {
     std::string execPath = NFE::Common::FileSystem::GetExecutablePath();
-
-    // strip the exec name from the path
-    execPath.erase(std::find_if(execPath.rbegin(), execPath.rend(), [](char c) -> bool {
-                       return (c == '/') || (c == '\\');
-                   }).base(),
-                   execPath.end());
-    NFE::Common::FileSystem::ChangeDirectory(execPath + "../../..");
+    std::string execDir = NFE::Common::FileSystem::GetParentDir(execPath);
+    NFE::Common::FileSystem::ChangeDirectory(execDir + "/../../..");
 
     /// select renderer to use - the default will be D3D11
     std::string rend;
