@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_95ed4f28",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-22T19:03:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_9f864e64",
+      "revId": "4045e7f8752da9421f5af05494e9b4cde1aa0e08",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_3cdc6812",
         "filename": "nfEngine/nfCommon/Logger.hpp",
         "patchSetId": 18
@@ -30,6 +48,24 @@
       "writtenOn": "2015-09-22T09:59:55Z",
       "side": 1,
       "message": "I suggest adding a #warning directive with appropriate message.",
+      "revId": "4045e7f8752da9421f5af05494e9b4cde1aa0e08",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_b26ee1ff",
+        "filename": "nfEngine/nfCommon/Logger.hpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-22T19:03:01Z",
+      "side": 1,
+      "message": "I used #error, because #warning is non-standard",
+      "parentUuid": "1ae5cdf2_3cdc6812",
       "revId": "4045e7f8752da9421f5af05494e9b4cde1aa0e08",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_75ea8310",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-22T19:03:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_dfce16b4",
+      "revId": "4045e7f8752da9421f5af05494e9b4cde1aa0e08",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_fc268015",
         "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
         "patchSetId": 18
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_127315e8",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-22T19:03:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_fc268015",
+      "revId": "4045e7f8752da9421f5af05494e9b4cde1aa0e08",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_b2b501f0",
         "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
         "patchSetId": 18
@@ -81,6 +153,30 @@
       "writtenOn": "2015-09-22T16:40:49Z",
       "side": 1,
       "message": "so...invalid format test looks the same to me as \u0027Simple\u0027 test. Shouldnt it throw or maybe print nothing? Write a comment plz",
+      "range": {
+        "startLine": 41,
+        "startChar": 3,
+        "endLine": 41,
+        "endChar": 65
+      },
+      "revId": "4045e7f8752da9421f5af05494e9b4cde1aa0e08",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_f27789d2",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-22T19:03:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_b2b501f0",
       "range": {
         "startLine": 41,
         "startChar": 3,
