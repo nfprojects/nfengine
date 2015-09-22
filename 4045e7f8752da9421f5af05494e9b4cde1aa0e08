@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae5cdf2_3cdc6812",
+        "filename": "nfEngine/nfCommon/Logger.hpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-22T09:59:55Z",
+      "side": 1,
+      "message": "I suggest adding a #warning directive with appropriate message.",
+      "revId": "4045e7f8752da9421f5af05494e9b4cde1aa0e08",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_fc268015",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-22T09:59:55Z",
+      "side": 1,
+      "message": "I still don\u0027t like the fact, that this will clutter the command line... One such message contains ~50 chars, how about reducing loop exit condition to i \u003c 25 or i \u003c 26?",
+      "revId": "4045e7f8752da9421f5af05494e9b4cde1aa0e08",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
