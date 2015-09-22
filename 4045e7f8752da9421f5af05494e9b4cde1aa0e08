@@ -67,6 +67,29 @@
       "revId": "4045e7f8752da9421f5af05494e9b4cde1aa0e08",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_b2b501f0",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-22T16:40:49Z",
+      "side": 1,
+      "message": "so...invalid format test looks the same to me as \u0027Simple\u0027 test. Shouldnt it throw or maybe print nothing? Write a comment plz",
+      "range": {
+        "startLine": 41,
+        "startChar": 3,
+        "endLine": 41,
+        "endChar": 65
+      },
+      "revId": "4045e7f8752da9421f5af05494e9b4cde1aa0e08",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
