@@ -380,8 +380,6 @@ bool BasicScene::OnInit(void* winHandle)
     if (!mWindowRenderTarget)
         return false;
 
-    mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
-
     return true;
 }
 
@@ -394,6 +392,7 @@ void BasicScene::Draw(float dt)
     if (mPipelineState)
         mCommandBuffer->SetPipelineState(mPipelineState.get());
 
+    mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
 
     if (mShaderProgram)
@@ -435,9 +434,9 @@ void BasicScene::Draw(float dt)
 
     // draw
     if (mIndexBuffer)
-        mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 9);
+        mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 9, 1);
     else if (mVertexBuffer)
-        mCommandBuffer->Draw(PrimitiveType::Triangles, 6);
+        mCommandBuffer->Draw(PrimitiveType::Triangles, 6, 1);
 
     mRendererDevice->Execute(mCommandBuffer->Finish().get());
     mWindowBackbuffer->Present();
