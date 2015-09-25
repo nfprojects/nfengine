@@ -1,7 +1,7 @@
 /**
  * @file
  * @author  Witek902 (witek902@gmail.com)
- * @brief   Common utilities for D3D11 renderer.
+ * @brief   Common utilities for D3D12 renderer.
  */
 
 #pragma once
@@ -41,24 +41,25 @@ class D3DPtr
 private:
     T* pointer;
 
-    /// disable "copy" methods
-    D3DPtr(const D3DPtr&);
-    D3DPtr& operator=(const D3DPtr&);
+    D3DPtr(const D3DPtr&) = delete;
+    D3DPtr& operator=(const D3DPtr&) = delete;
 
 public:
-    D3DPtr() : pointer(nullptr) {}
+    D3DPtr() : pointer(nullptr)
+    {
 
-    D3DPtr(T* ptr)
+    }
+
+
+    explicit D3DPtr(T* ptr)
     {
         static_assert(std::is_base_of<IUnknown, T>::value, "D3DPtr only accepts IUnknown-based types");
         pointer = ptr;
     }
 
-    D3DPtr(D3DPtr<T>&& rhs)
+    explicit D3DPtr(D3DPtr<T>&& rhs)
     {
-        reset();
-        pointer = rhs.pointer;
-        rhs.pointer = nullptr;
+        std::swap(pointer, rhs.pointer);
     }
 
     ~D3DPtr()
