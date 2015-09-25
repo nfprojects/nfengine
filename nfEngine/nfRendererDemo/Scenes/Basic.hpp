@@ -20,6 +20,7 @@ class BasicScene: public Scene
     std::unique_ptr<NFE::Renderer::IBackbuffer> mWindowBackbuffer;
     std::unique_ptr<NFE::Renderer::IRenderTarget> mWindowRenderTarget;
     std::unique_ptr<NFE::Renderer::IPipelineState> mPipelineState;
+    std::unique_ptr<NFE::Renderer::IResourceBindingLayout> mResBindingLayout;
     std::unique_ptr<NFE::Renderer::IShader> mVertexShader;
     std::unique_ptr<NFE::Renderer::IShader> mPixelShader;
     std::unique_ptr<NFE::Renderer::IShaderProgram> mShaderProgram;

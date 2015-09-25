@@ -13,6 +13,7 @@
 #include "Texture.hpp"
 #include "Backbuffer.hpp"
 #include "RenderTarget.hpp"
+#include "ResourceBinding.hpp"
 
 namespace NFE {
 namespace Renderer {

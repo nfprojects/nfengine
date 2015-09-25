@@ -311,18 +311,26 @@ bool BasicScene::OnInit(void* winHandle)
 
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
 
+    ResourceBindingLayoutDesc rbld;
+    mResBindingLayout.reset(mRendererDevice->CreateResourceBindingLayout(rbld));
+
     PipelineStateDesc pipelineStateDesc;
     pipelineStateDesc.blendState.independent = false;
     pipelineStateDesc.blendState.rtDescs[0].enable = true;
 
     mPipelineState.reset(mRendererDevice->CreatePipelineState(pipelineStateDesc));
-    if (!mPipelineState)
-        return false;
+    //if (!mPipelineState)
+    //    return false;
 
     return true;
 }
 
 bool BasicScene::OnSwitchSubscene()
+{
+    return true;
+}
+
+void BasicScene::Draw(float dt)
 {
     // reset bound resources and set them once again
     mCommandBuffer->Reset();
@@ -365,11 +373,6 @@ bool BasicScene::OnSwitchSubscene()
         mCommandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
     }
 
-    return true;
-}
-
-void BasicScene::Draw(float dt)
-{
     // apply rotation
     mAngle += 2.0f * dt;
     if (mAngle > NFE_MATH_2PI)
@@ -384,7 +387,7 @@ void BasicScene::Draw(float dt)
     }
 
     // clear target
-    float color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    float color[] = { sinf(mAngle), cosf(mAngle), sinf(mAngle), 1.0f };
     mCommandBuffer->Clear(NFE_CLEAR_FLAG_TARGET, color);
 
     // draw
@@ -393,6 +396,8 @@ void BasicScene::Draw(float dt)
     else if (mVertexBuffer)
         mCommandBuffer->Draw(PrimitiveType::Triangles, 6);
 
+    mCommandBuffer->Finish();
+
     mWindowBackbuffer->Present();
 }
 
@@ -400,6 +405,7 @@ void BasicScene::Release()
 {
     ReleaseSubsceneResources();
     mPipelineState.reset();
+    mResBindingLayout.reset();
     mWindowRenderTarget.reset();
     mWindowBackbuffer.reset();
     mCommandBuffer = nullptr;
