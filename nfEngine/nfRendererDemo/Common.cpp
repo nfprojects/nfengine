@@ -22,6 +22,11 @@ const std::string OGL4_BACKEND("nfRendererOGL4");
 const std::string OGL4_SHADER_PATH_PREFIX("nfEngine/nfRendererDemo/Shaders/OGL4/");
 const std::string OGL4_SHADER_EXTENSION(".glsl");
 
+const std::string D3D12_BACKEND("nfRendererD3D12");
+// for now, all shaders for D3D12 renderer will be the same as for D3D11 renderer
+const std::string D3D12_SHADER_PATH_PREFIX("nfEngine/nfRendererDemo/Shaders/D3D11/");
+const std::string D3D12_SHADER_EXTENSION(".hlsl");
+
 std::vector<std::string> GetDefaultBackend()
 {
 #ifdef WIN32
