@@ -24,6 +24,10 @@ extern const std::string OGL4_BACKEND;
 extern const std::string OGL4_SHADER_PATH_PREFIX;
 extern const std::string OGL4_SHADER_EXTENSION;
 
+extern const std::string D3D12_BACKEND;
+extern const std::string D3D12_SHADER_PATH_PREFIX;
+extern const std::string D3D12_SHADER_EXTENSION;
+
 /**
  * Returns a default backend, according to current system.
  *
