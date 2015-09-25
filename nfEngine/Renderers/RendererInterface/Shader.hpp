@@ -9,6 +9,8 @@
 #include "Types.hpp"
 #include "../../nfCommon/nfCommon.hpp"
 
+#include <string>
+
 namespace NFE {
 namespace Renderer {
 

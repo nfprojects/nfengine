@@ -277,9 +277,9 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
     // get various GPU information
     info.misc =
         "Vendor ID: " + std::to_string(adapterDesc.VendorId) +
-        ", Device ID: " + std::to_string(adapterDesc.VendorId) +
-        ", Sub System ID: " + std::to_string(adapterDesc.VendorId) +
-        ", Revision: " + std::to_string(adapterDesc.VendorId) +
+        ", Device ID: " + std::to_string(adapterDesc.DeviceId) +
+        ", Sub System ID: " + std::to_string(adapterDesc.SubSysId) +
+        ", Revision: " + std::to_string(adapterDesc.Revision) +
         ", Dedicated Video Memory: " + std::to_string(adapterDesc.DedicatedVideoMemory >> 10) + " KB"
         ", Dedicated System Memory: " + std::to_string(adapterDesc.DedicatedSystemMemory >> 10) + " KB"
         ", Shared System Memory: " + std::to_string(adapterDesc.SharedSystemMemory >> 10) + " KB";

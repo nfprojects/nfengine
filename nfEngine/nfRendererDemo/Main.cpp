@@ -319,6 +319,13 @@ int main(int argc, char* argv[])
         gShaderPathPrefix = OGL4_SHADER_PATH_PREFIX;
         gShaderPathExt = OGL4_SHADER_EXTENSION;
     }
+    else if (D3D12_BACKEND.compare(argv[1]) == 0)
+    {
+        // we use D3D11 renderer
+        rend = D3D12_BACKEND;
+        gShaderPathPrefix = D3D12_SHADER_PATH_PREFIX;
+        gShaderPathExt = D3D12_SHADER_EXTENSION;
+    }
     else
     {
         std::cerr << "Incorrect backend provided" << std::endl;
