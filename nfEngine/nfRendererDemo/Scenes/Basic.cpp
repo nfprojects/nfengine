@@ -380,12 +380,15 @@ bool BasicScene::OnInit(void* winHandle)
     if (!mWindowRenderTarget)
         return false;
 
-    mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
-
     return true;
 }
 
 bool BasicScene::OnSwitchSubscene()
+{
+    return true;
+}
+
+void BasicScene::Draw(float dt)
 {
     // reset bound resources and set them once again
     mCommandBuffer->Reset();
@@ -394,6 +397,7 @@ bool BasicScene::OnSwitchSubscene()
     if (mPipelineState)
         mCommandBuffer->SetPipelineState(mPipelineState.get());
 
+    mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
 
     if (mShaderProgram)
@@ -416,11 +420,6 @@ bool BasicScene::OnSwitchSubscene()
     if (mTexture)
         mCommandBuffer->BindResources(1, mPSBindingInstance.get());
 
-    return true;
-}
-
-void BasicScene::Draw(float dt)
-{
     // apply rotation
     mAngle += 2.0f * dt;
     if (mAngle > NFE_MATH_2PI)
@@ -440,9 +439,11 @@ void BasicScene::Draw(float dt)
 
     // draw
     if (mIndexBuffer)
-        mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 9);
+        mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 9, 1);
     else if (mVertexBuffer)
-        mCommandBuffer->Draw(PrimitiveType::Triangles, 6);
+        mCommandBuffer->Draw(PrimitiveType::Triangles, 6, 1);
+
+    mCommandBuffer->Finish();
 
     mWindowBackbuffer->Present();
 }
