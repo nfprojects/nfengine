@@ -113,10 +113,14 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
     if (!mVertexLayout)
         return false;
 
+    ResourceBindingLayoutDesc rbld;
+    mResBindingLayout.reset(mRendererDevice->CreateResourceBindingLayout(rbld));
+
     PipelineStateDesc pipelineStateDesc;
     pipelineStateDesc.blendState.independent = false;
     pipelineStateDesc.blendState.rtDescs[0].enable = true;
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
+    pipelineStateDesc.resourceBindingLayout = mResBindingLayout.get();
     mPipelineState.reset(mRendererDevice->CreatePipelineState(pipelineStateDesc));
     if (!mPipelineState)
         return false;
@@ -293,6 +297,7 @@ void BasicScene::ReleaseSubsceneResources()
     mVertexShader.reset();
     mPipelineState.reset();
     mShaderProgram.reset();
+    mResBindingLayout.reset();
 }
 
 bool BasicScene::OnInit(void* winHandle)
@@ -324,9 +329,15 @@ bool BasicScene::OnInit(void* winHandle)
 
 bool BasicScene::OnSwitchSubscene()
 {
+    return true;
+}
+
+void BasicScene::Draw(float dt)
+{
     // reset bound resources and set them once again
     mCommandBuffer->Reset();
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
+    mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     mCommandBuffer->SetPipelineState(mPipelineState.get());
 
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
@@ -363,11 +374,6 @@ bool BasicScene::OnSwitchSubscene()
         mCommandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
     }
 
-    return true;
-}
-
-void BasicScene::Draw(float dt)
-{
     // apply rotation
     mAngle += 2.0f * dt;
     if (mAngle > NFE_MATH_2PI)
@@ -387,9 +393,11 @@ void BasicScene::Draw(float dt)
 
     // draw
     if (mIndexBuffer)
-        mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 9);
+        mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 9, 1);
     else if (mVertexBuffer)
-        mCommandBuffer->Draw(PrimitiveType::Triangles, 6);
+        mCommandBuffer->Draw(PrimitiveType::Triangles, 6, 1);
+
+    mCommandBuffer->Finish();
 
     mWindowBackbuffer->Present();
 }

@@ -9,6 +9,7 @@
 #include "Types.hpp"
 #include "Shader.hpp"
 #include "VertexLayout.hpp"
+#include "ResourceBinding.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -126,6 +127,7 @@ struct PipelineStateDesc
     BlendStateDesc blendState;
     DepthStateDesc depthState;
     IVertexLayout* vertexLayout;
+    IResourceBindingLayout* resourceBindingLayout;
     const char* debugName;   //< optional debug name
 
     PipelineStateDesc()
@@ -133,6 +135,7 @@ struct PipelineStateDesc
         , blendState()
         , depthState()
         , vertexLayout(nullptr)
+        , resourceBindingLayout(nullptr)
         , debugName(nullptr)
     { }
 };
