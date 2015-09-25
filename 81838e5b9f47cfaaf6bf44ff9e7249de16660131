@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_74b43cd1",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-25T10:30:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_82d54a45",
+      "range": {
+        "startLine": 62,
+        "startChar": 4,
+        "endLine": 63,
+        "endChar": 67
+      },
+      "revId": "81838e5b9f47cfaaf6bf44ff9e7249de16660131",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_a2f32609",
         "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
         "patchSetId": 8
@@ -36,6 +60,30 @@
       "writtenOn": "2015-09-10T11:05:57Z",
       "side": 1,
       "message": "comment please. Even \u0027random data to write to the file\u0027\u0027d suffice",
+      "range": {
+        "startLine": 382,
+        "startChar": 4,
+        "endLine": 382,
+        "endChar": 30
+      },
+      "revId": "81838e5b9f47cfaaf6bf44ff9e7249de16660131",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_94caa84d",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 382,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-25T10:30:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_a2f32609",
       "range": {
         "startLine": 382,
         "startChar": 4,
