@@ -23,6 +23,7 @@ struct BackbufferDesc
     bool vSync;
     const char* debugName; //< optional debug name
     // TODO: options such as: UAV usage, mulitsampling, texture format, etc.
+    // TODO: buffers number (double buffering, tripple buffering, etc.)
 
     BackbufferDesc()
         : windowHandle(nullptr)
