@@ -212,6 +212,9 @@ bool Shader::Init(const ShaderDesc& desc)
         return false;
     }
 
+    if (!GetIODesc())
+        return false;
+
     LOG_SUCCESS("Shader '%s' compiled successfully", desc.path);
     return true;
 }
@@ -253,10 +256,9 @@ ID3DBlob* Shader::GetBytecode() const
     return mBytecode.get();
 }
 
-bool Shader::GetIODesc(ShaderIODesc& result)
+bool Shader::GetIODesc()
 {
     HRESULT hr;
-    result.resBinding.clear();
 
     ID3DBlob* bytecode = mBytecode.get();
     if (bytecode == nullptr)
@@ -288,28 +290,24 @@ bool Shader::GetIODesc(ShaderIODesc& result)
             return false;
         }
 
-        ShaderResBindingDesc bindingDesc;
-        bindingDesc.slot = d3dBindingDesc.BindPoint;
+        std::string bindingInfoStr;
 
         switch (d3dBindingDesc.Type)
         {
         case D3D_SIT_CBUFFER:
-            bindingDesc.type = ShaderResourceType::CBuffer;
+            mResBindings.cbuffers[d3dBindingDesc.Name] = d3dBindingDesc.BindPoint;
             break;
         case D3D_SIT_TEXTURE:
-            bindingDesc.type = ShaderResourceType::Texture;
+            mResBindings.textures[d3dBindingDesc.Name] = d3dBindingDesc.BindPoint;
             break;
         case D3D_SIT_SAMPLER:
-            bindingDesc.type = ShaderResourceType::Sampler;
+            mResBindings.samplers[d3dBindingDesc.Name] = d3dBindingDesc.BindPoint;
             break;
         default:
             LOG_WARNING("Unsupported shader resource type (%d) at slot %d (name: '%s')",
                         d3dBindingDesc.Type, i, d3dBindingDesc.Name);
             continue;
         }
-
-        std::string name = d3dBindingDesc.Name;
-        result.resBinding[name] = bindingDesc;
     }
 
     return true;

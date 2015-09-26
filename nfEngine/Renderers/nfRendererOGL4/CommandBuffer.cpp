@@ -50,29 +50,22 @@ void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat forma
     UNUSED(format);
 }
 
-void CommandBuffer::SetSamplers(ISampler** samplers, int num, ShaderType target, int slotOffset)
+void CommandBuffer::SetSampler(ISampler* sampler, int slot)
 {
-    UNUSED(samplers);
-    UNUSED(num);
-    UNUSED(target);
-    UNUSED(slotOffset);
+    UNUSED(sampler);
+    UNUSED(slot);
 }
 
-void CommandBuffer::SetTextures(ITexture** textures, int num, ShaderType target, int slotOffset)
+void CommandBuffer::SetTexture(ITexture* texture, int slot)
 {
-    UNUSED(textures);
-    UNUSED(num);
-    UNUSED(target);
-    UNUSED(slotOffset);
+    UNUSED(texture);
+    UNUSED(slot);
 }
 
-void CommandBuffer::SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target,
-                                       int slotOffset)
+void CommandBuffer::SetCBuffer(IBuffer* cbuffer, int slot)
 {
-    UNUSED(constantBuffers);
-    UNUSED(num);
-    UNUSED(target);
-    UNUSED(slotOffset);
+    UNUSED(cbuffer);
+    UNUSED(slot);
 }
 
 void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)

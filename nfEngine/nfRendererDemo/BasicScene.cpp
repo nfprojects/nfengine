@@ -359,20 +359,23 @@ bool BasicScene::OnSwitchSubscene()
 
     if (mConstantBuffer)
     {
-        IBuffer* cb = mConstantBuffer.get();
-        mCommandBuffer->SetConstantBuffers(&cb, 1, ShaderType::Vertex);
+        int slot = mShaderProgram->GetCBufferSlotByName("TestCBuffer");
+        mCommandBuffer->SetCBuffer(mConstantBuffer.get(), slot);
     }
 
     if (mTexture)
     {
-        ITexture* tex = mTexture.get();
-        mCommandBuffer->SetTextures(&tex, 1, ShaderType::Pixel);
+        int slot = mShaderProgram->GetTextureSlotByName("gTexture");
+
+
+
+        mCommandBuffer->SetTexture(mTexture.get(), slot);
     }
 
     if (mSampler)
     {
-        ISampler* sampler = mSampler.get();
-        mCommandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
+        int slot = mShaderProgram->GetSamplerSlotByName("gSampler");
+        mCommandBuffer->SetSampler(mSampler.get(), slot);
     }
 
     return true;
