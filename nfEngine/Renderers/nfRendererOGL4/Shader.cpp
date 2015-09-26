@@ -97,12 +97,6 @@ GLuint Shader::GetShaderProgram()
     return mShaderProgram;
 }
 
-bool Shader::GetIODesc(ShaderIODesc& result)
-{
-    UNUSED(result);
-    return false;
-}
-
 bool Shader::Disassemble(bool html, std::string& output)
 {
     UNUSED(html);
@@ -163,6 +157,24 @@ bool ShaderProgram::Init(const ShaderProgramDesc& desc)
     }
 
     return true;
+}
+
+int ShaderProgram::GetTextureSlotByName(const char* textureName)
+{
+    UNUSED(textureName);
+    return -1;
+}
+
+int ShaderProgram::GetCBufferSlotByName(const char* cbufferName)
+{
+    UNUSED(cbufferName);
+    return -1;
+}
+
+int ShaderProgram::GetSamplerSlotByName(const char* samplerName)
+{
+    UNUSED(samplerName);
+    return -1;
 }
 
 } // namespace Renderer

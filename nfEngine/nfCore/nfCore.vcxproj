@@ -326,6 +326,7 @@ popd</Command>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Renderer\MultiShaderProgram.cpp" />
     <ClCompile Include="Renderer\PostProcessRenderer.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
@@ -420,6 +421,7 @@ popd</Command>
     <ClInclude Include="Renderer\HighLevelRenderer.hpp" />
     <ClInclude Include="Renderer\LightsRenderer.hpp" />
     <ClInclude Include="Renderer\Multishader.hpp" />
+    <ClInclude Include="Renderer\MultiShaderProgram.hpp" />
     <ClInclude Include="Renderer\PostProcessRenderer.hpp" />
     <ClInclude Include="Renderer\RenderCommand.hpp" />
     <ClInclude Include="Renderer\RendererContext.hpp" />

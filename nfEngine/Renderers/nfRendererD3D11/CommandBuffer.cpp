@@ -46,6 +46,7 @@ void CommandBuffer::Reset()
     mCurrentPrimitiveType = PrimitiveType::Unknown;
     mCurrentRenderTarget = nullptr;
     mBoundShaders = ShaderProgramDesc();
+    mProgram = nullptr;
 
     mContext->ClearState();
 }
@@ -101,92 +102,58 @@ void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat forma
     mContext->IASetIndexBuffer(ib->mBuffer.get(), dxgiFormat, 0);
 }
 
-void CommandBuffer::SetSamplers(ISampler** samplers, int num, ShaderType target, int slotOffset)
+void CommandBuffer::SetSampler(ISampler* sampler, int slot)
 {
-    ID3D11SamplerState* samplerStates[16];
-    for (int i = 0; i < num; ++i)
-    {
-        Sampler* sampler = dynamic_cast<Sampler*>(samplers[i]);
-        samplerStates[i] = sampler->mSamplerState.get();
-    }
+    assert(slot >= 0 && slot < static_cast<int>(mProgram->mResBinding.samplers.size()));
+    const ShaderProgramResBinding& binding = mProgram->mResBinding.samplers[slot];
+    ID3D11SamplerState* d3dSampler = dynamic_cast<Sampler*>(sampler)->mSamplerState.get();
 
-    switch (target)
-    {
-    case ShaderType::Vertex:
-        mContext->VSSetSamplers(slotOffset, num, samplerStates);
-        break;
-    case ShaderType::Domain:
-        mContext->DSSetSamplers(slotOffset, num, samplerStates);
-        break;
-    case ShaderType::Hull:
-        mContext->HSSetSamplers(slotOffset, num, samplerStates);
-        break;
-    case ShaderType::Geometry:
-        mContext->GSSetSamplers(slotOffset, num, samplerStates);
-        break;
-    case ShaderType::Pixel:
-        mContext->PSSetSamplers(slotOffset, num, samplerStates);
-        break;
-    };
+    if (binding.vertexShaderSlot >= 0)
+        mContext->VSSetSamplers(binding.vertexShaderSlot, 1, &d3dSampler);
+    if (binding.domainShaderSlot >= 0)
+        mContext->DSSetSamplers(binding.domainShaderSlot, 1, &d3dSampler);
+    if (binding.hullShaderSlot >= 0)
+        mContext->HSSetSamplers(binding.hullShaderSlot, 1, &d3dSampler);
+    if (binding.geometryShaderSlot >= 0)
+        mContext->GSSetSamplers(binding.geometryShaderSlot, 1, &d3dSampler);
+    if (binding.pixelShaderSlot >= 0)
+        mContext->PSSetSamplers(binding.pixelShaderSlot, 1, &d3dSampler);
 }
 
-void CommandBuffer::SetTextures(ITexture** textures, int num, ShaderType target, int slotOffset)
+void CommandBuffer::SetTexture(ITexture* texture, int slot)
 {
-    ID3D11ShaderResourceView* srvs[16];
-    for (int i = 0; i < num; ++i)
-    {
-        Texture* texture = dynamic_cast<Texture*>(textures[i]);
-        srvs[i] = texture->mSRV.get();
-    }
+    assert(slot >= 0 && slot < static_cast<int>(mProgram->mResBinding.textures.size()));
+    const ShaderProgramResBinding& binding = mProgram->mResBinding.textures[slot];
+    ID3D11ShaderResourceView* d3dTexture = dynamic_cast<Texture*>(texture)->mSRV.get();
 
-    switch (target)
-    {
-    case ShaderType::Vertex:
-        mContext->VSSetShaderResources(slotOffset, num, srvs);
-        break;
-    case ShaderType::Domain:
-        mContext->DSSetShaderResources(slotOffset, num, srvs);
-        break;
-    case ShaderType::Hull:
-        mContext->HSSetShaderResources(slotOffset, num, srvs);
-        break;
-    case ShaderType::Geometry:
-        mContext->GSSetShaderResources(slotOffset, num, srvs);
-        break;
-    case ShaderType::Pixel:
-        mContext->PSSetShaderResources(slotOffset, num, srvs);
-        break;
-    };
+    if (binding.vertexShaderSlot >= 0)
+        mContext->VSSetShaderResources(binding.vertexShaderSlot, 1, &d3dTexture);
+    if (binding.domainShaderSlot >= 0)
+        mContext->DSSetShaderResources(binding.domainShaderSlot, 1, &d3dTexture);
+    if (binding.hullShaderSlot >= 0)
+        mContext->HSSetShaderResources(binding.hullShaderSlot, 1, &d3dTexture);
+    if (binding.geometryShaderSlot >= 0)
+        mContext->GSSetShaderResources(binding.geometryShaderSlot, 1, &d3dTexture);
+    if (binding.pixelShaderSlot >= 0)
+        mContext->PSSetShaderResources(binding.pixelShaderSlot, 1, &d3dTexture);
 }
 
-void CommandBuffer::SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target,
-                                       int slotOffset)
+void CommandBuffer::SetCBuffer(IBuffer* cbuffer, int slot)
 {
-    ID3D11Buffer* buffers[16];
-    for (int i = 0; i < num; ++i)
-    {
-        Buffer* cb = dynamic_cast<Buffer*>(constantBuffers[i]);
-        buffers[i] = cb ? cb->mBuffer.get() : NULL;
-    }
+    assert(slot >= 0 && slot < static_cast<int>(mProgram->mResBinding.cbuffers.size()));
+    const ShaderProgramResBinding& binding = mProgram->mResBinding.cbuffers[slot];
+    ID3D11Buffer* d3dBuffer = dynamic_cast<Buffer*>(cbuffer)->mBuffer.get();
 
-    switch (target)
-    {
-        case ShaderType::Vertex:
-            mContext->VSSetConstantBuffers(slotOffset, num, buffers);
-            break;
-        case ShaderType::Domain:
-            mContext->DSSetConstantBuffers(slotOffset, num, buffers);
-            break;
-        case ShaderType::Hull:
-            mContext->HSSetConstantBuffers(slotOffset, num, buffers);
-            break;
-        case ShaderType::Geometry:
-            mContext->GSSetConstantBuffers(slotOffset, num, buffers);
-            break;
-        case ShaderType::Pixel:
-            mContext->PSSetConstantBuffers(slotOffset, num, buffers);
-            break;
-    };
+    if (binding.vertexShaderSlot >= 0)
+        mContext->VSSetConstantBuffers(binding.vertexShaderSlot, 1, &d3dBuffer);
+    if (binding.domainShaderSlot >= 0)
+        mContext->DSSetConstantBuffers(binding.domainShaderSlot, 1, &d3dBuffer);
+    if (binding.hullShaderSlot >= 0)
+        mContext->HSSetConstantBuffers(binding.hullShaderSlot, 1, &d3dBuffer);
+    if (binding.geometryShaderSlot >= 0)
+        mContext->GSSetConstantBuffers(binding.geometryShaderSlot, 1, &d3dBuffer);
+    if (binding.pixelShaderSlot >= 0)
+        mContext->PSSetConstantBuffers(binding.pixelShaderSlot, 1, &d3dBuffer);
 }
 
 void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
@@ -222,7 +189,8 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
 
 void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
 {
-    const ShaderProgramDesc& newProg = dynamic_cast<ShaderProgram*>(shaderProgram)->GetDesc();
+    mProgram = dynamic_cast<ShaderProgram*>(shaderProgram);
+    const ShaderProgramDesc& newProg = mProgram->GetDesc();
 
     if (newProg.vertexShader != mBoundShaders.vertexShader)
     {

@@ -20,6 +20,9 @@ public:
     ShaderProgram();
     ~ShaderProgram();
     bool Init(const ShaderProgramDesc& desc);
+    int GetTextureSlotByName(const char* textureName);
+    int GetCBufferSlotByName(const char* cbufferName);
+    int GetSamplerSlotByName(const char* samplerName);
 };
 
 class Shader: public IShader
@@ -46,7 +49,6 @@ public:
     bool Init(const ShaderDesc& desc);
     GLuint GetShaderProgram();
 
-    bool GetIODesc(ShaderIODesc& result);
     bool Disassemble(bool html, std::string& output);
 };
 

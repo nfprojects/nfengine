@@ -12,37 +12,6 @@
 namespace NFE {
 namespace Renderer {
 
-
-/**
- * Type of resource that can be bound to a shader
- */
-enum class ShaderResourceType
-{
-    CBuffer,
-    Texture,
-    Sampler,
-    // TODO: UAVs, etc.
-};
-
-/**
- * Shader resource binding description
- */
-struct ShaderResBindingDesc
-{
-    int slot;
-    ShaderResourceType type;
-    // TODO: cbuffer structure description
-};
-
-/**
- * Shader input/outputs description.
- */
-struct ShaderIODesc
-{
-    std::map<std::string, ShaderResBindingDesc> resBinding;
-    // TODO: Vertex Shader inputs parsing
-};
-
 /**
  * Shader macro definition.
  */
@@ -83,12 +52,6 @@ public:
     // TODO: binary format support (saving compiled shader bytecode)
 
     /**
-     * Parse shader and get inputs/outputs description.
-     * @param[out] result Returned shader inputs/outputs description
-     */
-    virtual bool GetIODesc(ShaderIODesc& result) = 0;
-
-    /**
      * Get assembly code of the shader.
      * @param html        Generate a colorful HTML document.
      * @param output[out] Output string.
@@ -124,6 +87,9 @@ class IShaderProgram
 {
 public:
     virtual ~IShaderProgram() {}
+    virtual int GetTextureSlotByName(const char* textureName) = 0;
+    virtual int GetCBufferSlotByName(const char* cbufferName) = 0;
+    virtual int GetSamplerSlotByName(const char* samplerName) = 0;
 };
 
 } // namespace Renderer

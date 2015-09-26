@@ -141,6 +141,9 @@
     <ClCompile Include="Systems\TransformSystem.cpp">
       <Filter>Systems</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer\MultiShaderProgram.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Aligned.hpp">
@@ -271,6 +274,9 @@
     </ClInclude>
     <ClInclude Include="Systems\TransformSystem.hpp">
       <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\MultiShaderProgram.hpp">
+      <Filter>Renderer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

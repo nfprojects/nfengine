@@ -13,6 +13,7 @@ namespace NFE {
 namespace Renderer {
 
 class RenderTarget;
+class ShaderProgram;
 
 class CommandBuffer : public ICommandBuffer
 {
@@ -24,6 +25,7 @@ class CommandBuffer : public ICommandBuffer
     D3DPtr<ID3DUserDefinedAnnotation> mUserDefinedAnnotation;
 
     ShaderProgramDesc mBoundShaders;
+    ShaderProgram* mProgram;
 
 public:
     CommandBuffer(ID3D11DeviceContext* deviceContext);
@@ -35,9 +37,9 @@ public:
     void SetVertexLayout(IVertexLayout* vertexLayout);
     void SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets);
     void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format);
-    void SetSamplers(ISampler** samplers, int num, ShaderType target, int slotOffset);
-    void SetTextures(ITexture** textures, int num, ShaderType target, int slotOffset);
-    void SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target, int slotOffset);
+    void SetSampler(ISampler* sampler, int slot);
+    void SetTexture(ITexture* texture, int slot);
+    void SetCBuffer(IBuffer* cbuffer, int slot);
     void SetRenderTarget(IRenderTarget* renderTarget);
     void SetShaderProgram(IShaderProgram* shaderProgram);
     void SetShader(IShader* shader);
