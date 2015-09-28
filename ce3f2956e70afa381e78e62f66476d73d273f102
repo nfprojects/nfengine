@@ -1,0 +1,331 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae5cdf2_820a651f",
+        "filename": "nfEngine/Shaders/D3D11/OmniLightPS.hlsl",
+        "patchSetId": 8
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-28T09:36:51Z",
+      "side": 1,
+      "message": "1.0f\n\nreason as below.",
+      "range": {
+        "startLine": 106,
+        "startChar": 24,
+        "endLine": 106,
+        "endChar": 27
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_42005d01",
+        "filename": "nfEngine/Shaders/D3D11/OmniLightPS.hlsl",
+        "patchSetId": 8
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-28T09:36:51Z",
+      "side": 1,
+      "message": "1.0, or even 1.0f.\n\nI know this is picky, but it\u0027s just to keep with style of other floats in this file.",
+      "range": {
+        "startLine": 118,
+        "startChar": 24,
+        "endLine": 118,
+        "endChar": 25
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_6278f98f",
+        "filename": "nfEngine/Shaders/D3D11/ShadowVS.hlsl",
+        "patchSetId": 8
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-28T09:36:51Z",
+      "side": 1,
+      "message": "1.0f",
+      "range": {
+        "startLine": 18,
+        "startChar": 61,
+        "endLine": 18,
+        "endChar": 63
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_4275bd96",
+        "filename": "nfEngine/Shaders/D3D11/ShadowVS.hlsl",
+        "patchSetId": 8
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-28T09:36:51Z",
+      "side": 1,
+      "message": "1.0f",
+      "range": {
+        "startLine": 20,
+        "startChar": 44,
+        "endLine": 20,
+        "endChar": 45
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_a79db35b",
+        "filename": "nfEngine/nfCore/Components/LightComponent.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-28T09:36:51Z",
+      "side": 1,
+      "message": "This is not true anymore...",
+      "range": {
+        "startLine": 119,
+        "startChar": 15,
+        "endLine": 119,
+        "endChar": 36
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_67e1ebcf",
+        "filename": "nfEngine/nfCore/Renderer/LightsRenderer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-28T09:36:51Z",
+      "side": 1,
+      "message": "I think the number here is not needed - compiler can deduce that from { } contents.",
+      "range": {
+        "startLine": 336,
+        "startChar": 17,
+        "endLine": 336,
+        "endChar": 18
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_a7ebf3ae",
+        "filename": "nfEngine/nfCore/Renderer/RendererResources.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-28T09:36:51Z",
+      "side": 1,
+      "message": "I don\u0027t like the fact that here, and below, you overwrite the function argument. IMO this should be mSplits.",
+      "range": {
+        "startLine": 44,
+        "startChar": 8,
+        "endLine": 44,
+        "endChar": 14
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_c7d1dffc",
+        "filename": "nfEngine/nfCore/Renderer/RendererResources.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-28T09:36:51Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 47,
+        "startChar": 8,
+        "endLine": 47,
+        "endChar": 14
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_e7cc1b64",
+        "filename": "nfEngine/nfCore/Renderer/RendererResources.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-28T09:36:51Z",
+      "side": 1,
+      "message": "And here I would write \"mSplits \u003d splits\" and then use mSplits throughout the rest of the function.",
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_27d7e3ee",
+        "filename": "nfEngine/nfCore/Renderer/RendererResources.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-28T09:36:51Z",
+      "side": 1,
+      "message": "Why uint16 and not uint32? You would avoid casting in method definitions if it would be uint32.",
+      "range": {
+        "startLine": 200,
+        "startChar": 4,
+        "endLine": 200,
+        "endChar": 10
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_07dca711",
+        "filename": "nfEngine/nfCore/Renderer/RendererResources.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-28T09:36:51Z",
+      "side": 1,
+      "message": "Why uchar and not uint32? You would avoid casting in method definitions if it would be uint32.",
+      "range": {
+        "startLine": 202,
+        "startChar": 4,
+        "endLine": 202,
+        "endChar": 9
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_c7f8ff7e",
+        "filename": "nfEngine/nfCore/Systems/RendererSystem.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-28T09:36:51Z",
+      "side": 1,
+      "message": "All in all, shouldn\u0027t this be in nfCommon Math?",
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_c76d5f34",
+        "filename": "nfEngine/nfCore/Systems/RendererSystem.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-28T09:36:51Z",
+      "side": 1,
+      "message": "Add a comment, that below Vector arrays are used to construct a matrix for cube shadow mapping. This is not so obvious when you are reading these for the first time.",
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_274523b3",
+        "filename": "nfEngine/nfCore/Systems/RendererSystem.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-28T09:36:51Z",
+      "side": 1,
+      "message": "Y and Z are premade, X is calculated from them. IMO X could be premade as well, this would save us a little time during render.",
+      "range": {
+        "startLine": 245,
+        "startChar": 39,
+        "endLine": 245,
+        "endChar": 83
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_c7771fd3",
+        "filename": "nfEngineDemo/Scenes.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-28T09:36:51Z",
+      "side": 1,
+      "message": "I don\u0027t understand the reason for this change. If you need to set shadows only for main light, just call light.SetShadowMap inside this scope and not in others, or outside.",
+      "range": {
+        "startLine": 157,
+        "startChar": 0,
+        "endLine": 160,
+        "endChar": 39
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
