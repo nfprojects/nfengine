@@ -16,6 +16,24 @@
       "revId": "d1919e817968d5a4e8a66c5c9b5320378927dc4f",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_c2546d56",
+        "filename": "nfEngine/nfCore/Texture.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-09-28T13:58:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_ae02f53b",
+      "revId": "d1919e817968d5a4e8a66c5c9b5320378927dc4f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
