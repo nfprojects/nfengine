@@ -226,6 +226,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_c659d85b",
+        "filename": "nfEngine/nfCore/Renderer/RendererResources.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-30T12:34:24Z",
+      "side": 1,
+      "message": "To reduce the class size. I don\u0027t think that we will need shadow maps larger than 65536x65536",
+      "parentUuid": "1ae5cdf2_27d7e3ee",
+      "range": {
+        "startLine": 200,
+        "startChar": 4,
+        "endLine": 200,
+        "endChar": 10
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_07dca711",
         "filename": "nfEngine/nfCore/Renderer/RendererResources.hpp",
         "patchSetId": 8
@@ -237,6 +261,30 @@
       "writtenOn": "2015-09-28T09:36:51Z",
       "side": 1,
       "message": "Why uchar and not uint32? You would avoid casting in method definitions if it would be uint32.",
+      "range": {
+        "startLine": 202,
+        "startChar": 4,
+        "endLine": 202,
+        "endChar": 9
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_e6541423",
+        "filename": "nfEngine/nfCore/Renderer/RendererResources.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-30T12:34:24Z",
+      "side": 1,
+      "message": "To reduce the class size. I don\u0027t think that we will need more than 256 cascaded shadow map splits",
+      "parentUuid": "1ae5cdf2_07dca711",
       "range": {
         "startLine": 202,
         "startChar": 4,
