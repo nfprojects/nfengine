@@ -297,6 +297,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_111a187d",
+        "filename": "nfEngine/nfCore/Renderer/RendererResources.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-30T17:56:06Z",
+      "side": 1,
+      "message": "5 bytes in total, saved and ready to serve us in RAM... Indeed, such save :) But okay, as you wish.",
+      "parentUuid": "1ae5cdf2_e6541423",
+      "range": {
+        "startLine": 202,
+        "startChar": 4,
+        "endLine": 202,
+        "endChar": 9
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_c7f8ff7e",
         "filename": "nfEngine/nfCore/Systems/RendererSystem.cpp",
         "patchSetId": 8
