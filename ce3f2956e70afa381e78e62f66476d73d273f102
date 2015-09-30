@@ -203,6 +203,29 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_6c462325",
+        "filename": "nfEngine/nfCore/Renderer/RendererResources.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-09-30T19:40:19Z",
+      "side": 1,
+      "message": "Match the type of these variables to the type of attributes",
+      "range": {
+        "startLine": 174,
+        "startChar": 0,
+        "endLine": 176,
+        "endChar": 50
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_27d7e3ee",
         "filename": "nfEngine/nfCore/Renderer/RendererResources.hpp",
         "patchSetId": 8
