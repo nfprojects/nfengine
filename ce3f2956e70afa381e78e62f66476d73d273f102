@@ -321,6 +321,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_cc4c9773",
+        "filename": "nfEngine/nfCore/Renderer/RendererResources.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-09-30T18:26:01Z",
+      "side": 1,
+      "message": "8 bytes, you missed mType. This is 24 -\u003e 16 bytes reduction on 32-bits :)",
+      "parentUuid": "1ae5cdf2_111a187d",
+      "range": {
+        "startLine": 202,
+        "startChar": 4,
+        "endLine": 202,
+        "endChar": 9
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_c7f8ff7e",
         "filename": "nfEngine/nfCore/Systems/RendererSystem.cpp",
         "patchSetId": 8
