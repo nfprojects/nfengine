@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_cff8044c",
+        "filename": "nfEngine/Shaders/D3D11/OmniLightPS.hlsl",
+        "patchSetId": 8
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-02T18:57:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_820a651f",
+      "range": {
+        "startLine": 106,
+        "startChar": 24,
+        "endLine": 106,
+        "endChar": 27
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_42005d01",
         "filename": "nfEngine/Shaders/D3D11/OmniLightPS.hlsl",
         "patchSetId": 8
@@ -36,6 +60,30 @@
       "writtenOn": "2015-09-28T09:36:51Z",
       "side": 1,
       "message": "1.0, or even 1.0f.\n\nI know this is picky, but it\u0027s just to keep with style of other floats in this file.",
+      "range": {
+        "startLine": 118,
+        "startChar": 24,
+        "endLine": 118,
+        "endChar": 25
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_ef96a0ef",
+        "filename": "nfEngine/Shaders/D3D11/OmniLightPS.hlsl",
+        "patchSetId": 8
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-02T18:57:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_42005d01",
       "range": {
         "startLine": 118,
         "startChar": 24,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_2fa16847",
+        "filename": "nfEngine/Shaders/D3D11/ShadowVS.hlsl",
+        "patchSetId": 8
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-02T18:57:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_6278f98f",
+      "range": {
+        "startLine": 18,
+        "startChar": 61,
+        "endLine": 18,
+        "endChar": 63
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_4275bd96",
         "filename": "nfEngine/Shaders/D3D11/ShadowVS.hlsl",
         "patchSetId": 8
@@ -82,6 +154,30 @@
       "writtenOn": "2015-09-28T09:36:51Z",
       "side": 1,
       "message": "1.0f",
+      "range": {
+        "startLine": 20,
+        "startChar": 44,
+        "endLine": 20,
+        "endChar": 45
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_0f9aec13",
+        "filename": "nfEngine/Shaders/D3D11/ShadowVS.hlsl",
+        "patchSetId": 8
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-02T18:57:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_4275bd96",
       "range": {
         "startLine": 20,
         "startChar": 44,
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_acc02b7d",
+        "filename": "nfEngine/nfCore/Components/LightComponent.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-02T18:57:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_a79db35b",
+      "range": {
+        "startLine": 119,
+        "startChar": 15,
+        "endLine": 119,
+        "endChar": 36
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_67e1ebcf",
         "filename": "nfEngine/nfCore/Renderer/LightsRenderer.cpp",
         "patchSetId": 8
@@ -128,6 +248,30 @@
       "writtenOn": "2015-09-28T09:36:51Z",
       "side": 1,
       "message": "I think the number here is not needed - compiler can deduce that from { } contents.",
+      "range": {
+        "startLine": 336,
+        "startChar": 17,
+        "endLine": 336,
+        "endChar": 18
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_4c432714",
+        "filename": "nfEngine/nfCore/Renderer/LightsRenderer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-02T18:57:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_67e1ebcf",
       "range": {
         "startLine": 336,
         "startChar": 17,
@@ -163,6 +307,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_cc5657d2",
+        "filename": "nfEngine/nfCore/Renderer/RendererResources.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-02T18:57:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_a7ebf3ae",
+      "range": {
+        "startLine": 44,
+        "startChar": 8,
+        "endLine": 44,
+        "endChar": 14
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_c7d1dffc",
         "filename": "nfEngine/nfCore/Renderer/RendererResources.cpp",
         "patchSetId": 8
@@ -174,6 +342,30 @@
       "writtenOn": "2015-09-28T09:36:51Z",
       "side": 1,
       "message": "as above",
+      "range": {
+        "startLine": 47,
+        "startChar": 8,
+        "endLine": 47,
+        "endChar": 14
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_ec5153d9",
+        "filename": "nfEngine/nfCore/Renderer/RendererResources.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-02T18:57:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_c7d1dffc",
       "range": {
         "startLine": 47,
         "startChar": 8,
@@ -203,6 +395,24 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_0c603fa4",
+        "filename": "nfEngine/nfCore/Renderer/RendererResources.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-02T18:57:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_e7cc1b64",
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_6c462325",
         "filename": "nfEngine/nfCore/Renderer/RendererResources.hpp",
         "patchSetId": 8
@@ -214,6 +424,30 @@
       "writtenOn": "2015-09-30T19:40:19Z",
       "side": 1,
       "message": "Match the type of these variables to the type of attributes",
+      "range": {
+        "startLine": 174,
+        "startChar": 0,
+        "endLine": 176,
+        "endChar": 50
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_2adf963c",
+        "filename": "nfEngine/nfCore/Renderer/RendererResources.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-02T18:57:28Z",
+      "side": 1,
+      "message": "What do you mean? \"MAX_CASCADE_SPLITS \u003d 255\"? Then ShadowMap size will get huge (look at line 198). I can increase MAX_SHADOWMAP_SIZE to 2^16, but I\u0027m afraid this has no sense (it would be 8GB shadow map...). I set these values as they are to avoid creating huge, useless textures.",
+      "parentUuid": "1ae5cdf2_6c462325",
       "range": {
         "startLine": 174,
         "startChar": 0,
@@ -385,6 +619,24 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_0abf3ad1",
+        "filename": "nfEngine/nfCore/Systems/RendererSystem.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-02T18:57:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_c7f8ff7e",
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_c76d5f34",
         "filename": "nfEngine/nfCore/Systems/RendererSystem.cpp",
         "patchSetId": 8
@@ -396,6 +648,24 @@
       "writtenOn": "2015-09-28T09:36:51Z",
       "side": 1,
       "message": "Add a comment, that below Vector arrays are used to construct a matrix for cube shadow mapping. This is not so obvious when you are reading these for the first time.",
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_ac6e6b94",
+        "filename": "nfEngine/nfCore/Systems/RendererSystem.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-02T18:57:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_c76d5f34",
       "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -425,6 +695,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_6ae8bee2",
+        "filename": "nfEngine/nfCore/Systems/RendererSystem.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-02T18:57:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_274523b3",
+      "range": {
+        "startLine": 245,
+        "startChar": 39,
+        "endLine": 245,
+        "endChar": 83
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_c7771fd3",
         "filename": "nfEngineDemo/Scenes.cpp",
         "patchSetId": 8
@@ -436,6 +730,30 @@
       "writtenOn": "2015-09-28T09:36:51Z",
       "side": 1,
       "message": "I don\u0027t understand the reason for this change. If you need to set shadows only for main light, just call light.SetShadowMap inside this scope and not in others, or outside.",
+      "range": {
+        "startLine": 157,
+        "startChar": 0,
+        "endLine": 160,
+        "endChar": 39
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ae5cdf2_4ae22204",
+        "filename": "nfEngineDemo/Scenes.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-02T18:57:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ae5cdf2_c7771fd3",
       "range": {
         "startLine": 157,
         "startChar": 0,
