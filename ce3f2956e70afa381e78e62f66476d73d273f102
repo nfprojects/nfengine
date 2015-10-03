@@ -460,6 +460,30 @@
     },
     {
       "key": {
+        "uuid": "1ae5cdf2_45e21504",
+        "filename": "nfEngine/nfCore/Renderer/RendererResources.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-03T08:57:17Z",
+      "side": 1,
+      "message": "I told about the type, not the values... Here, just replace it:\n\nconst static uchar MAX_CASCADE_SPLITS \u003d 8;\nconst static uint16 MIN_SHADOWMAP_SIZE \u003d 16;\nconst static uint16 MAX_SHADOWMAP_SIZE \u003d 4096;\n\nAnd I really don\u0027t know why you thought that I wanted to \"increase the value of the variables to maximum possible\" :)",
+      "parentUuid": "1ae5cdf2_2adf963c",
+      "range": {
+        "startLine": 174,
+        "startChar": 0,
+        "endLine": 176,
+        "endChar": 50
+      },
+      "revId": "ce3f2956e70afa381e78e62f66476d73d273f102",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ae5cdf2_27d7e3ee",
         "filename": "nfEngine/nfCore/Renderer/RendererResources.hpp",
         "patchSetId": 8
