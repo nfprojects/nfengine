@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ae5cdf2_e5bb21e3",
+        "filename": "nfEngine/nfCore/Renderer/RendererResources.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-03T09:03:28Z",
+      "side": 1,
+      "message": "And IMO these types should match attribute types as well:\n\nuint16 size, Type type, uchar splits",
+      "range": {
+        "startLine": 36,
+        "startChar": 23,
+        "endLine": 36,
+        "endChar": 60
+      },
+      "revId": "2fa9f7cf0eeabc82d7d2bcde7c39a1151e883098",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
