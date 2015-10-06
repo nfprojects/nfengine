@@ -70,6 +70,30 @@
       "revId": "2fa9f7cf0eeabc82d7d2bcde7c39a1151e883098",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fab399f4_a9c9695c",
+        "filename": "nfEngine/nfCore/Renderer/RendererResources.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-06T09:26:16Z",
+      "side": 1,
+      "message": "Yes, because there are unanswered questions from PS8, as stated in previous comments :)",
+      "parentUuid": "fab399f4_00906aeb",
+      "range": {
+        "startLine": 36,
+        "startChar": 23,
+        "endLine": 36,
+        "endChar": 60
+      },
+      "revId": "2fa9f7cf0eeabc82d7d2bcde7c39a1151e883098",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
