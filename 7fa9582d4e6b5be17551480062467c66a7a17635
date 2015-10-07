@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dab895d6_3f4f4f94",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-07T18:22:58Z",
+      "side": 1,
+      "message": "Can\u0027t we use mSetConstantBufferSlot to avoid rebinding?",
+      "revId": "7fa9582d4e6b5be17551480062467c66a7a17635",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dab895d6_ff54f722",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Shader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-07T18:22:58Z",
+      "side": 1,
+      "message": "As I thought about it now, I realized that in case of a compilation error we will get wrong source line number (which will include all these headers and defines). Can\u0027t we use the second parameter of glShaderSource somehow to separate defines from the \"real\" shader?",
+      "revId": "7fa9582d4e6b5be17551480062467c66a7a17635",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dab895d6_5f440374",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Shader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-07T18:22:58Z",
+      "side": 1,
+      "message": "Style",
+      "revId": "7fa9582d4e6b5be17551480062467c66a7a17635",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dab895d6_df573325",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Shader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-07T18:22:58Z",
+      "side": 1,
+      "message": "Style",
+      "revId": "7fa9582d4e6b5be17551480062467c66a7a17635",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dab895d6_1f31ab0b",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-07T18:22:58Z",
+      "side": 1,
+      "message": "Fix too long line by the way",
+      "revId": "7fa9582d4e6b5be17551480062467c66a7a17635",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
