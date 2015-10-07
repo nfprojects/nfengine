@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "dab895d6_2274949b",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-07T19:38:26Z",
+      "side": 1,
+      "message": "Actually, these are the remains of one of the attempts that I did when I tried to fix CBuffers. From my observations it is as follows:\n\n* glBindBuffer works only if you want to apply changes to one specific buffer (like here, to use it with Map and Unmap)\n* glBindBufferRange works with uniform blocks (which are OGL\u0027s constant buffers)\n\nAll in all, indeed there is no need for rebinding. glBindBuffer used here should not collide with glBindBufferRange. I will remove it.",
+      "parentUuid": "dab895d6_3f4f4f94",
+      "revId": "7fa9582d4e6b5be17551480062467c66a7a17635",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dab895d6_ff54f722",
         "filename": "nfEngine/Renderers/nfRendererOGL4/Shader.cpp",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2015-10-07T18:22:58Z",
       "side": 1,
       "message": "As I thought about it now, I realized that in case of a compilation error we will get wrong source line number (which will include all these headers and defines). Can\u0027t we use the second parameter of glShaderSource somehow to separate defines from the \"real\" shader?",
+      "revId": "7fa9582d4e6b5be17551480062467c66a7a17635",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dab895d6_c292f89e",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Shader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-07T19:38:26Z",
+      "side": 1,
+      "message": "Of course we can.\n\nI split it into two strings - first one contains SHADER_HEADER and defines, second one is the code loaded from .glsl file.",
+      "parentUuid": "dab895d6_ff54f722",
       "revId": "7fa9582d4e6b5be17551480062467c66a7a17635",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "dab895d6_627ccc73",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Shader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-07T19:38:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dab895d6_5f440374",
+      "revId": "7fa9582d4e6b5be17551480062467c66a7a17635",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dab895d6_df573325",
         "filename": "nfEngine/Renderers/nfRendererOGL4/Shader.cpp",
         "patchSetId": 2
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "dab895d6_8281e04c",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Shader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-07T19:38:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dab895d6_df573325",
+      "revId": "7fa9582d4e6b5be17551480062467c66a7a17635",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dab895d6_1f31ab0b",
         "filename": "nfEngine/nfCommon/Linux/Window.cpp",
         "patchSetId": 2
@@ -81,6 +153,24 @@
       "writtenOn": "2015-10-07T18:22:58Z",
       "side": 1,
       "message": "Fix too long line by the way",
+      "revId": "7fa9582d4e6b5be17551480062467c66a7a17635",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dab895d6_a2dc2476",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-07T19:38:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dab895d6_1f31ab0b",
       "revId": "7fa9582d4e6b5be17551480062467c66a7a17635",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
