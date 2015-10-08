@@ -42,6 +42,15 @@ std::unique_ptr<Device> gDevice;
 
 Device::Device()
 {
+    // FIXME Placing this here BREAKS OPENGL RENDERER ON WINDOWS
+    //       OGL requires a window to retrieve a device context and rendering context. Only
+    //       afterwards it is possible to get OGL Extensions.
+    //       A workaround would be to create a temporary invisible window here. Afterwards,
+    //       if Backbuffer will be initialized, the "window" created here must be trashed and
+    //       extensions reinitialized on new context.
+    if (!nfglExtensionsInit())
+        return;
+
     mDefaultCommandBuffer.reset(new CommandBuffer());
 }
 

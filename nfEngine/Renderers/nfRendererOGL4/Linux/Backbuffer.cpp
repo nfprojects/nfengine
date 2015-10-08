@@ -45,10 +45,6 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     mWindow = reinterpret_cast<Window>(desc.windowHandle);
     mDisplay = ::XOpenDisplay(0);
 
-    // acquire OGL extensions
-    if (!nfglExtensionsInit())
-        return false;
-
     static int fbAttribs[] =
     {
         GLX_X_RENDERABLE,  True,
