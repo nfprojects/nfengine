@@ -493,10 +493,26 @@ void CommandBuffer::CopyTexture(ITexture* src, ITexture* dest)
 
 bool CommandBuffer::ReadTexture(ITexture* tex, void* data)
 {
-    UNUSED(tex);
-    UNUSED(data);
+    Texture* texture = dynamic_cast<Texture*>(tex);
+    if (!texture)
+    {
+        LOG_ERROR("Invalid tex pointer");
+        return false;
+    }
 
-    return false;
+    if (!data)
+    {
+        LOG_ERROR("Invalid data pointer");
+        return false;
+    }
+
+    GLint boundTex = 0;
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundTex);
+    glBindTexture(GL_TEXTURE_2D, texture->mTexture);
+    glGetTexImage(GL_TEXTURE_2D, 0, texture->mGLFormat, texture->mGLType, data);
+    glBindTexture(GL_TEXTURE_2D, boundTex);
+
+    return true;
 }
 
 void CommandBuffer::Clear(int flags, const float* color, float depthValue,

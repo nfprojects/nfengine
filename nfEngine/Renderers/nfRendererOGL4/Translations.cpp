@@ -83,6 +83,26 @@ GLenum TranslateTexelSizeToFormat(int texelSize)
     }
 }
 
+GLenum TranslateFormatAndSizeToInternalFormat(ElementFormat format, int texelSize)
+{
+    switch (format)
+    {
+    case ElementFormat::Int_8:          return GL_R8I;
+    case ElementFormat::Int_8_norm:     return GL_R8I;
+    case ElementFormat::Uint_8:         return GL_UNSIGNED_BYTE;
+    case ElementFormat::Uint_8_norm:    return GL_UNSIGNED_BYTE;
+    case ElementFormat::Int_16:         return GL_SHORT;
+    case ElementFormat::Int_16_norm:    return GL_SHORT;
+    case ElementFormat::Uint_16:        return GL_UNSIGNED_SHORT;
+    case ElementFormat::Uint_16_norm:   return GL_UNSIGNED_SHORT;
+    case ElementFormat::Int_32:         return GL_INT;
+    case ElementFormat::Uint_32:        return GL_UNSIGNED_INT;
+    case ElementFormat::Float_16:       return GL_HALF_FLOAT;
+    case ElementFormat::Float_32:       return GL_FLOAT;
+    default:                            return GL_NONE;
+    }
+}
+
 GLenum TranslateDepthFormatToType(DepthBufferFormat format)
 {
     switch (format)

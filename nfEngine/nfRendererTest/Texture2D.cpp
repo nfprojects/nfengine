@@ -22,10 +22,14 @@ TEST_F(Texture2D, Clear)
         for (int j = 0; j < 16; ++j)
         {
             SCOPED_TRACE("i = " + std::to_string(i) + ", = " + std::to_string(j));
-            EXPECT_NEAR(color[0], pixels[i][j][0], NFE_MATH_EPSILON);
+            /*EXPECT_NEAR(color[0], pixels[i][j][0], NFE_MATH_EPSILON);
             EXPECT_NEAR(color[1], pixels[i][j][1], NFE_MATH_EPSILON);
             EXPECT_NEAR(color[2], pixels[i][j][2], NFE_MATH_EPSILON);
-            EXPECT_NEAR(color[3], pixels[i][j][3], NFE_MATH_EPSILON);
+            EXPECT_NEAR(color[3], pixels[i][j][3], NFE_MATH_EPSILON);*/
+            EXPECT_FLOAT_EQ(color[0], pixels[i][j][0]);
+            EXPECT_FLOAT_EQ(color[1], pixels[i][j][1]);
+            EXPECT_FLOAT_EQ(color[2], pixels[i][j][2]);
+            EXPECT_FLOAT_EQ(color[3], pixels[i][j][3]);
 
         }
 }

@@ -1,19 +1,16 @@
 #include "PCH.hpp"
+#include "Backends.hpp"
 #include "RendererTest.hpp"
 
 /// static members definitions
 Common::Library RendererTest::gRendererLib;
 IDevice* RendererTest::gRendererDevice = nullptr;
 ICommandBuffer* RendererTest::gCommandBuffer = nullptr;
+std::string RendererTest::gTestShaderPath;
 
 void RendererTest::SetUpTestCase()
 {
-    /*
-     TODO:
-     * passing renderer name as the application parameter
-     */
-
-    ASSERT_TRUE(gRendererLib.Open("nfRendererD3D11.dll"));
+    ASSERT_TRUE(gRendererLib.Open(gBackend));
 
     RendererInitFunc proc;
     ASSERT_TRUE(gRendererLib.GetSymbol(RENDERER_INIT_FUNC, proc));
@@ -24,6 +21,8 @@ void RendererTest::SetUpTestCase()
 
     gCommandBuffer = gRendererDevice->GetDefaultCommandBuffer();
     ASSERT_TRUE(gCommandBuffer != nullptr);
+
+    gTestShaderPath = gShaderPathPrefix + "Simple" + gShaderPathExt;
 }
 
 void RendererTest::TearDownTestCase()
@@ -76,8 +75,8 @@ bool RendererTest::BeginTestFrame(int width, int height, ElementFormat format, i
 bool RendererTest::EndTestFrame(void* data)
 {
     gCommandBuffer->SetRenderTarget(nullptr);
-    gCommandBuffer->CopyTexture(mTestTexture.get(), mTestTextureRead.get());
-    bool success = gCommandBuffer->ReadTexture(mTestTextureRead.get(), data);
+    //gCommandBuffer->CopyTexture(mTestTexture.get(), mTestTextureRead.get());
+    bool success = gCommandBuffer->ReadTexture(mTestTexture.get(), data);
 
     mTestRenderTarget.reset();
     mTestTexture.reset();

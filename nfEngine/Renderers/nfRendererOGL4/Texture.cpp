@@ -20,6 +20,9 @@ Texture::Texture()
     , mHeight(0)
     , mTexelSize(0)
     , mTexture(GL_NONE)
+    , mGLType(GL_NONE)
+    , mGLFormat(GL_NONE)
+    , mGLInternalFormat(GL_NONE)
     , mHasStencil(false)
 {
 }
@@ -40,26 +43,23 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
 {
     // TODO support compressed formats: http://renderingpipeline.com/2012/07/texture-compression/
     bool isNormalized;
-    GLenum type;
-    GLenum format;
-    GLenum internalFormat;
 
     if (desc.binding & (NFE_RENDERER_TEXTURE_BIND_SHADER | NFE_RENDERER_TEXTURE_BIND_RENDERTARGET))
     {
-        type = TranslateElementFormatToType(desc.format, isNormalized);
-        format = TranslateTexelSizeToFormat(desc.texelSize);
-        internalFormat = format;
+        mGLType = TranslateElementFormatToType(desc.format, isNormalized);
+        mGLFormat = TranslateTexelSizeToFormat(desc.texelSize);
+        mGLInternalFormat = TranslateFormatAndSizeToInternalFormat(desc.format, desc.texelSize);
     }
     else if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
     {
-        type = TranslateDepthFormatToType(desc.depthBufferFormat);
-        format = TranslateDepthFormatToFormat(desc.depthBufferFormat);
-        internalFormat = TranslateDepthFormatToInternalFormat(desc.depthBufferFormat);
+        mGLType = TranslateDepthFormatToType(desc.depthBufferFormat);
+        mGLFormat = TranslateDepthFormatToFormat(desc.depthBufferFormat);
+        mGLInternalFormat = TranslateDepthFormatToInternalFormat(desc.depthBufferFormat);
 
         if (desc.depthBufferFormat == DepthBufferFormat::Depth24_Stencil8)
             mHasStencil = true;
     }
-    else
+    else if (desc.binding)
     {
         LOG_ERROR("Invalid texture binding flags.");
         return false;
@@ -76,8 +76,8 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
         else
             data = desc.dataDesc[i].data;
 
-        glTexImage2D(GL_TEXTURE_2D, i, internalFormat, desc.width, desc.height, 0,
-                     format, type, data);
+        glTexImage2D(GL_TEXTURE_2D, i, mGLInternalFormat, desc.width, desc.height, 0,
+                     mGLFormat, mGLType, data);
     }
 
     // limit mipmap levels, otherwise no texture will be drawn
