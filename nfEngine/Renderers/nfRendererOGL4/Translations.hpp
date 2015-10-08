@@ -17,6 +17,7 @@ GLuint TranslateShaderTypeToGLMacro(ShaderType type);
 GLuint TranslateShaderTypeToGLBit(ShaderType type);
 GLenum TranslateElementFormatToType(ElementFormat format, bool& normalized);
 GLenum TranslateTexelSizeToFormat(int texelSize);
+GLenum TranslateFormatAndSizeToInternalFormat(ElementFormat format, int texelSize);
 GLenum TranslateDepthFormatToType(DepthBufferFormat format);
 GLenum TranslateDepthFormatToFormat(DepthBufferFormat format);
 GLenum TranslateDepthFormatToInternalFormat(DepthBufferFormat format);

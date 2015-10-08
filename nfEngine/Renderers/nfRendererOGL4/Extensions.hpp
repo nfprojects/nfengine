@@ -81,6 +81,12 @@ extern PFNGLDELETEPROGRAMPIPELINESPROC glDeleteProgramPipelines;
 extern PFNGLGENPROGRAMPIPELINESPROC glGenProgramPipelines;
 extern PFNGLPROGRAMPARAMETERIPROC glProgramParameteri;
 
+/// ARB_copy_image
+extern PFNGLCOPYIMAGESUBDATAPROC glCopyImageSubData;
+
+/// ARB_texture_storage
+extern PFNGLTEXSTORAGE2DPROC glTexStorage2D;
+
 
 /**
  * Initializes OpenGL extensions used by nfRendererOGL4.

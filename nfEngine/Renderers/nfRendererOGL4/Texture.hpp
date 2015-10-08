@@ -23,6 +23,9 @@ protected:
     int mHeight;
     int mTexelSize; //< texel size in bytes
     GLuint mTexture;
+    GLenum mGLType;
+    GLenum mGLFormat;
+    GLenum mGLInternalFormat;
     bool mHasStencil;
 
     bool InitTexture1D(const TextureDesc& desc);
