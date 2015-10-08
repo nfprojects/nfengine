@@ -1,4 +1,5 @@
 #include "PCH.hpp"
+#include "Backends.hpp"
 #include "RendererTest.hpp"
 
 /// static members definitions
@@ -13,7 +14,7 @@ void RendererTest::SetUpTestCase()
      * passing renderer name as the application parameter
      */
 
-    ASSERT_TRUE(gRendererLib.Open("nfRendererD3D11.dll"));
+    ASSERT_TRUE(gRendererLib.Open(gBackend));
 
     RendererInitFunc proc;
     ASSERT_TRUE(gRendererLib.GetSymbol(RENDERER_INIT_FUNC, proc));
