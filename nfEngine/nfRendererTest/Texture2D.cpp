@@ -18,15 +18,14 @@ TEST_F(Texture2D, Clear)
 
     ASSERT_TRUE(EndTestFrame(pixels));
 
-    for (int i = 0; i < 16; ++i)
-        for (int j = 0; j < 16; ++j)
+    for (int i = 0; i < 1; ++i)
+        for (int j = 0; j < 1; ++j)
         {
             SCOPED_TRACE("i = " + std::to_string(i) + ", = " + std::to_string(j));
             EXPECT_NEAR(color[0], pixels[i][j][0], NFE_MATH_EPSILON);
             EXPECT_NEAR(color[1], pixels[i][j][1], NFE_MATH_EPSILON);
             EXPECT_NEAR(color[2], pixels[i][j][2], NFE_MATH_EPSILON);
             EXPECT_NEAR(color[3], pixels[i][j][3], NFE_MATH_EPSILON);
-
         }
 }
 
@@ -58,23 +57,23 @@ TEST_F(Texture2D, Creation)
     textureDesc = defTextureDesc;
     textureDesc.dataDesc = nullptr;
     texture.reset(gRendererDevice->CreateTexture(textureDesc));
-    EXPECT_TRUE(texture.get() == nullptr);
+    EXPECT_TRUE(texture.get() == nullptr) << "Texture was created despite null data desc.";
 
     // invalid width
     textureDesc = defTextureDesc;
     textureDesc.width = 0;
     texture.reset(gRendererDevice->CreateTexture(textureDesc));
-    EXPECT_TRUE(texture.get() == nullptr);
+    EXPECT_TRUE(texture.get() == nullptr) << "Texture was created despite incorrect width.";
 
     // invalid height
     textureDesc = defTextureDesc;
     textureDesc.height = 0;
     texture.reset(gRendererDevice->CreateTexture(textureDesc));
-    EXPECT_TRUE(texture.get() == nullptr);
+    EXPECT_TRUE(texture.get() == nullptr) << "Texture was created despite incorrect height.";
 
     // TODO: write more cases
 
     textureDesc = defTextureDesc;
     texture.reset(gRendererDevice->CreateTexture(textureDesc));
-    EXPECT_TRUE(texture.get() != nullptr);
+    EXPECT_TRUE(texture.get() != nullptr) << "Texture was not created despite correct data.";
 }
