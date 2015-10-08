@@ -76,6 +76,12 @@ PFNGLDELETEPROGRAMPIPELINESPROC glDeleteProgramPipelines = nullptr;
 PFNGLGENPROGRAMPIPELINESPROC glGenProgramPipelines = nullptr;
 PFNGLPROGRAMPARAMETERIPROC glProgramParameteri = nullptr;
 
+/// ARB_copy_image
+PFNGLCOPYIMAGESUBDATAPROC glCopyImageSubData = nullptr;
+
+/// ARB_texture_storage
+PFNGLTEXSTORAGE2DPROC glTexStorage2D = nullptr;
+
 
 bool nfglExtensionsInit()
 {
@@ -151,6 +157,12 @@ bool nfglExtensionsInit()
     NFGL_GET_EXTENSION(PFNGLDELETEPROGRAMPIPELINESPROC, glDeleteProgramPipelines);
     NFGL_GET_EXTENSION(PFNGLGENPROGRAMPIPELINESPROC, glGenProgramPipelines);
     NFGL_GET_EXTENSION(PFNGLPROGRAMPARAMETERIPROC, glProgramParameteri);
+
+    /// ARB_copy_image
+    NFGL_GET_EXTENSION(PFNGLCOPYIMAGESUBDATAPROC, glCopyImageSubData);
+
+    /// ARB_texture_storage
+    NFGL_GET_EXTENSION(PFNGLTEXSTORAGE2DPROC, glTexStorage2D);
 
     return allExtensionsAvailable;
 }
