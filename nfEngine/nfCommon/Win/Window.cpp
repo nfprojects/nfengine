@@ -196,7 +196,10 @@ bool Window::Close()
     if (mClosed)
         return false;
 
-    ShowWindow(mHandle, SW_HIDE);
+    if (!mInvisible)
+        ShowWindow(mHandle, SW_HIDE);
+
+    DestroyWindow(mHandle);
     mClosed = true;
     return true;
 }

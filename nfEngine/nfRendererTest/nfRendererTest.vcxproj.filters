@@ -10,10 +10,12 @@
     <ClCompile Include="Shader.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>
+    <ClCompile Include="Backends.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="RendererTest.hpp" />
+    <ClInclude Include="Backends.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="TestCases">

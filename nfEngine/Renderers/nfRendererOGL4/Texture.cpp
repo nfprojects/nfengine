@@ -20,6 +20,9 @@ Texture::Texture()
     , mHeight(0)
     , mTexelSize(0)
     , mTexture(GL_NONE)
+    , mGLType(GL_NONE)
+    , mGLFormat(GL_NONE)
+    , mGLInternalFormat(GL_NONE)
     , mHasStencil(false)
 {
 }
@@ -40,44 +43,55 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
 {
     // TODO support compressed formats: http://renderingpipeline.com/2012/07/texture-compression/
     bool isNormalized;
-    GLenum type;
-    GLenum format;
-    GLenum internalFormat;
 
-    if (desc.binding & (NFE_RENDERER_TEXTURE_BIND_SHADER | NFE_RENDERER_TEXTURE_BIND_RENDERTARGET))
+    if (desc.width == 0 || desc.height == 0)
     {
-        type = TranslateElementFormatToType(desc.format, isNormalized);
-        format = TranslateTexelSizeToFormat(desc.texelSize);
-        internalFormat = format;
+        LOG_ERROR("Invalid Texture dimensions");
+        return false;
+    }
+
+    if (desc.access == BufferAccess::GPU_ReadOnly && desc.dataDesc == nullptr)
+    {
+        LOG_ERROR("Invalid data desc - when access is GPU_ReadOnly, there must be data to init!");
+        return false;
+    }
+
+    if ((desc.binding & (NFE_RENDERER_TEXTURE_BIND_SHADER | NFE_RENDERER_TEXTURE_BIND_RENDERTARGET))
+        || (desc.binding == 0))
+    {
+        mGLType = TranslateElementFormatToType(desc.format, isNormalized);
+        mGLFormat = TranslateTexelSizeToFormat(desc.texelSize);
+        mGLInternalFormat = TranslateFormatAndSizeToInternalFormat(desc.format, desc.texelSize);
     }
     else if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
     {
-        type = TranslateDepthFormatToType(desc.depthBufferFormat);
-        format = TranslateDepthFormatToFormat(desc.depthBufferFormat);
-        internalFormat = TranslateDepthFormatToInternalFormat(desc.depthBufferFormat);
+        mGLType = TranslateDepthFormatToType(desc.depthBufferFormat);
+        mGLFormat = TranslateDepthFormatToFormat(desc.depthBufferFormat);
+        mGLInternalFormat = TranslateDepthFormatToInternalFormat(desc.depthBufferFormat);
 
         if (desc.depthBufferFormat == DepthBufferFormat::Depth24_Stencil8)
             mHasStencil = true;
     }
-    else
+    else if (desc.binding)
     {
         LOG_ERROR("Invalid texture binding flags.");
         return false;
     }
 
+    mWidth = desc.width;
+    mHeight = desc.height;
+
     glBindTexture(GL_TEXTURE_2D, mTexture);
 
-    // upload texture only if needed (for example Render Target might need an empty texture)
-    const void* data;
-    for (int i = 0; i < desc.mipmaps; ++i)
+    if (desc.dataDesc == nullptr)
+        // single-call immutable allocation (could be later changed by copy/TexSubImage)
+        glTexStorage2D(GL_TEXTURE_2D, desc.mipmaps, mGLInternalFormat, mWidth, mHeight);
+    else
     {
-        if (desc.dataDesc == nullptr)
-            data = nullptr;
-        else
-            data = desc.dataDesc[i].data;
-
-        glTexImage2D(GL_TEXTURE_2D, i, internalFormat, desc.width, desc.height, 0,
-                     format, type, data);
+        // allocate all texture levels separately
+        for (int i = 0; i < desc.mipmaps; ++i)
+            glTexImage2D(GL_TEXTURE_2D, i, mGLInternalFormat, mWidth, mHeight, 0,
+                         mGLFormat, mGLType, desc.dataDesc[i].data);
     }
 
     // limit mipmap levels, otherwise no texture will be drawn
@@ -89,9 +103,6 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
     // Depth Buffers will have use from them.
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    mWidth = desc.width;
-    mHeight = desc.height;
 
     return true;
 }
