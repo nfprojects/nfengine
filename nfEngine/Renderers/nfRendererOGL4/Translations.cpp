@@ -83,6 +83,146 @@ GLenum TranslateTexelSizeToFormat(int texelSize)
     }
 }
 
+GLenum TranslateFormatAndSizeToInternalFormat(ElementFormat format, int texelSize)
+{
+    switch (format)
+    {
+    case ElementFormat::Int_8:
+    {
+        switch (texelSize)
+        {
+        case 1:  return GL_R8I;
+        case 2:  return GL_RG8I;
+        case 3:  return GL_RGB8I;
+        case 4:  return GL_RGBA8I;
+        default: return GL_NONE;
+        }
+    }
+    case ElementFormat::Int_8_norm:
+    {
+        switch (texelSize)
+        {
+        case 1:  return GL_R8_SNORM;
+        case 2:  return GL_RG8_SNORM;
+        case 3:  return GL_RGB8_SNORM;
+        case 4:  return GL_RGBA8_SNORM;
+        default: return GL_NONE;
+        }
+    }
+    case ElementFormat::Uint_8:
+    {
+        switch (texelSize)
+        {
+        case 1:  return GL_R8UI;
+        case 2:  return GL_RG8UI;
+        case 3:  return GL_RGB8UI;
+        case 4:  return GL_RGBA8UI;
+        default: return GL_NONE;
+        }
+    }
+    case ElementFormat::Uint_8_norm:
+    {
+        switch (texelSize)
+        {
+        case 1:  return GL_R8;
+        case 2:  return GL_RG8;
+        case 3:  return GL_RGB8;
+        case 4:  return GL_RGBA8;
+        default: return GL_NONE;
+        }
+    }
+    case ElementFormat::Int_16:
+    {
+        switch (texelSize)
+        {
+        case 1:  return GL_R16I;
+        case 2:  return GL_RG16I;
+        case 3:  return GL_RGB16I;
+        case 4:  return GL_RGBA16I;
+        default: return GL_NONE;
+        }
+    }
+    case ElementFormat::Int_16_norm:
+    {
+        switch (texelSize)
+        {
+        case 1:  return GL_R16_SNORM;
+        case 2:  return GL_RG16_SNORM;
+        case 3:  return GL_RGB16_SNORM;
+        case 4:  return GL_RGBA16_SNORM;
+        default: return GL_NONE;
+        }
+    }
+    case ElementFormat::Uint_16:
+    {
+        switch (texelSize)
+        {
+        case 1:  return GL_R16UI;
+        case 2:  return GL_RG16UI;
+        case 3:  return GL_RGB16UI;
+        case 4:  return GL_RGBA16UI;
+        default: return GL_NONE;
+        }
+    }
+    case ElementFormat::Uint_16_norm:
+    {
+        switch (texelSize)
+        {
+        case 1:  return GL_R16;
+        case 2:  return GL_RG16;
+        case 3:  return GL_RGB16;
+        case 4:  return GL_RGBA16;
+        default: return GL_NONE;
+        }
+    }
+    case ElementFormat::Int_32:
+    {
+        switch (texelSize)
+        {
+        case 1:  return GL_R32I;
+        case 2:  return GL_RG32I;
+        case 3:  return GL_RGB32I;
+        case 4:  return GL_RGBA32I;
+        default: return GL_NONE;
+        }
+    }
+    case ElementFormat::Uint_32:
+    {
+        switch (texelSize)
+        {
+        case 1:  return GL_R32UI;
+        case 2:  return GL_RG32UI;
+        case 3:  return GL_RGB32UI;
+        case 4:  return GL_RGBA32UI;
+        default: return GL_NONE;
+        }
+    }
+    case ElementFormat::Float_16:
+    {
+        switch (texelSize)
+        {
+        case 1:  return GL_R16F;
+        case 2:  return GL_RG16F;
+        case 3:  return GL_RGB16F;
+        case 4:  return GL_RGBA16F;
+        default: return GL_NONE;
+        }
+    }
+    case ElementFormat::Float_32:
+    {
+        switch (texelSize)
+        {
+        case 1:  return GL_R32F;
+        case 2:  return GL_RG32F;
+        case 3:  return GL_RGB32F;
+        case 4:  return GL_RGBA32F;
+        default: return GL_NONE;
+        }
+    }
+    default: return GL_NONE;
+    }
+}
+
 GLenum TranslateDepthFormatToType(DepthBufferFormat format)
 {
     switch (format)

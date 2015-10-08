@@ -41,4 +41,5 @@ protected:
     static Common::Library gRendererLib;
     static IDevice* gRendererDevice;
     static ICommandBuffer* gCommandBuffer;
+    static std::string gTestShaderPath;
 };
