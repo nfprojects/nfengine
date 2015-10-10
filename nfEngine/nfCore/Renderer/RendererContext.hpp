@@ -17,11 +17,14 @@ namespace Renderer {
 
 class RenderContext
 {
+    bool mIsDeferred;
+
 public:
     ICommandBuffer* commandBuffer; // low-level API command buffer
 
     RenderContext();
     RenderContext(ICommandBuffer* commandBuffer);
+    ~RenderContext();
 
     /*
         TODO:
@@ -32,15 +35,6 @@ public:
     DebugRendererContext debugContext;
     GBufferRendererContext geometryBufferContext;
     GuiRendererContext guiContext;
-
-    void Begin();
-    void End();
-
-    /*
-        Execute deferred context pCtx.
-        Setting 'saveState' to true restores previous context state after execution
-    */
-    bool Execute(RenderContext* context, bool saveState = false);
 };
 
 } // namespace Renderer

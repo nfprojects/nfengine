@@ -50,6 +50,7 @@ namespace NFE {
         class PhysicsSystem;
         class RendererSystem;
 
+        class RenderingData;
         struct MeshComponentDesc;
         struct LightDesc;
         struct CameraDesc;
