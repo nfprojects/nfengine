@@ -59,19 +59,19 @@ RendererSystem::RendererSystem(SceneManager* scene)
 {
 }
 
-void RendererSystem::RenderLights(RenderContext* ctx) const
+void RendererSystem::RenderLights(RenderingData& data, RenderContext* ctx) const
 {
-    for (auto lightTuple : mOmniLights)
+    for (const uint32 i : data.visibleOmniLights)
     {
-        TransformComponent* transform = std::get<0>(lightTuple);
-        LightComponent* light = std::get<1>(lightTuple);
+        TransformComponent* transform = std::get<0>(mOmniLights[i]);
+        LightComponent* light = std::get<1>(mOmniLights[i]);
 
         LightsRenderer::Get()->DrawOmniLight(ctx, transform->GetPosition(),
                                              light->mOmniLight.radius, light->mColor,
                                              light->mShadowMap.get());
     }
 
-    for (size_t i = 0; i < mSpotLights.size(); ++i)
+    for (const uint32 i : data.visibleSpotLights)
     {
         const SpotLightData& lightData = mSpotLightsData[i];
         const TransformComponent* transform = std::get<0>(mSpotLights[i]);
@@ -117,14 +117,14 @@ void RendererSystem::RenderLights(RenderContext* ctx) const
     }
 }
 
-void RendererSystem::RenderLightsDebug(Renderer::RenderContext* ctx) const
+void RendererSystem::RenderLightsDebug(RenderingData& data, Renderer::RenderContext* ctx) const
 {
     uint32 lightDebugColor = 0xFF00FFFF;
 
-    for (auto lightTuple : mOmniLights)
+    for (const uint32 i : data.visibleOmniLights)
     {
-        TransformComponent* transform = std::get<0>(lightTuple);
-        LightComponent* light = std::get<1>(lightTuple);
+        TransformComponent* transform = std::get<0>(mOmniLights[i]);
+        LightComponent* light = std::get<1>(mOmniLights[i]);
 
         Box box;
         box.min = transform->GetPosition() - VectorSplat(light->mOmniLight.radius);
@@ -132,7 +132,7 @@ void RendererSystem::RenderLightsDebug(Renderer::RenderContext* ctx) const
         DebugRenderer::Get()->DrawBox(ctx, box, lightDebugColor);
     }
 
-    for (size_t i = 0; i < mSpotLights.size(); ++i)
+    for (const uint32 i : data.visibleSpotLights)
     {
         DebugRenderer::Get()->DrawFrustum(ctx, mSpotLightsData[i].frustum, lightDebugColor);
     }
@@ -187,13 +187,19 @@ void RendererSystem::DrawGeometry(RenderContext* ctx, const Math::Frustum& viewF
     GeometryRenderer::Get()->Draw(ctx, commandBuffer);
 }
 
-void RendererSystem::RenderShadowMaps() const
+void RendererSystem::RenderShadowMaps(const Common::TaskContext& context, RenderingData& data)
 {
+    /*
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
     RenderContext* immCtx = renderer->GetImmediateContext();
-
-    for (size_t i = 0; i < mSpotLights.size(); ++i)
+    for (const uint32 i : data.visibleSpotLights)
     {
+        // TODO: atomic
+        if (!mSpotLightsShadowDrawn[i])
+            mSpotLightsShadowDrawn[i] = true;
+        else
+            continue;
+
         const SpotLightData& lightData = mSpotLightsData[i];
         const TransformComponent* transform = std::get<0>(mSpotLights[i]);
         const LightComponent* light = std::get<1>(mSpotLights[i]);
@@ -209,6 +215,7 @@ void RendererSystem::RenderShadowMaps() const
             DrawGeometry(immCtx, lightData.frustum, transform);
         }
     }
+    */
 
     // Z axis for each cube map face
     static Vector zVectors[] =
@@ -232,34 +239,52 @@ void RendererSystem::RenderShadowMaps() const
         Vector(0.0f, 1.0f,  0.0f),
     };
 
-    for (size_t i = 0; i < mOmniLights.size(); ++i)
+    auto omniShadowMapRenderingFuc = [this](const Common::TaskContext& context,
+                                            const TransformComponent* transform,
+                                            const LightComponent* light)
     {
+        HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
+        uint32 face = static_cast<uint32>(context.instanceId);
+        RenderContext* renderContext = renderer->GetDeferredContext(context.threadId);
+
+        // TODO: include "transform" rotation
+        Matrix matrix = Matrix(VectorCross3(yVectors[face], zVectors[face]),
+                               yVectors[face],
+                               zVectors[face],
+                               transform->GetPosition());
+
+        Matrix viewMatrix, projMatrix;
+        Frustum frustum;
+        CalculateFrustum(matrix, 0.01f, light->mOmniLight.radius, NFE_MATH_PI / 2.0f,
+                         viewMatrix, projMatrix, frustum);
+
+        ShadowCameraRenderDesc cameraDesc;
+        cameraDesc.viewProjMatrix = viewMatrix * projMatrix;
+        cameraDesc.lightPos = transform->GetPosition();
+
+        GeometryRenderer::Get()->SetUpForShadowMap(renderContext, light->mShadowMap.get(),
+                                                   &cameraDesc, face);
+        DrawGeometry(renderContext, frustum, transform);
+    };
+
+    Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
+
+    for (const uint32 i : data.visibleOmniLights)
+    {
+        // TODO: atomic
+        if (!mOmniLightsShadowDrawn[i])
+            mOmniLightsShadowDrawn[i] = true;
+        else
+            continue;
+
         const TransformComponent* transform = std::get<0>(mOmniLights[i]);
         const LightComponent* light = std::get<1>(mOmniLights[i]);
 
         if (light->HasShadowMap())
         {
-            for (int face = 0; face < 6; ++face)
-            {
-                // TODO: include "transform" rotation
-                Matrix matrix = Matrix(VectorCross3(yVectors[face], zVectors[face]),
-                                       yVectors[face],
-                                       zVectors[face],
-                                       transform->GetPosition());
-
-                Matrix viewMatrix, projMatrix;
-                Frustum frustum;
-                CalculateFrustum(matrix, 0.01f, light->mOmniLight.radius, NFE_MATH_PI / 2.0f,
-                                 viewMatrix, projMatrix, frustum);
-
-                ShadowCameraRenderDesc cameraDesc;
-                cameraDesc.viewProjMatrix = viewMatrix * projMatrix;
-                cameraDesc.lightPos = transform->GetPosition();
-
-                GeometryRenderer::Get()->SetUpForShadowMap(immCtx, light->mShadowMap.get(),
-                                                           &cameraDesc, face);
-                DrawGeometry(immCtx, frustum, transform);
-            }
+            using namespace std::placeholders;
+            threadPool->CreateTask(std::bind(omniShadowMapRenderingFuc, _1, transform, light),
+                                   6, context.taskId);
         }
     }
 
@@ -279,7 +304,6 @@ void RendererSystem::Render(Renderer::View* view)
     auto cameraBody = entityManager->GetComponent<BodyComponent>(cameraEntity);
 
     RenderContext* immCtx = renderer->GetImmediateContext();
-    immCtx->Begin();
 
     Vector cameraVelocity;
     Vector cameraAngularVelocity;
@@ -305,13 +329,33 @@ void RendererSystem::Render(Renderer::View* view)
         camera->mPerspective.FoV
     };
 
-    FindActiveMeshEntities();
+    // TODO: avoid dynamic allocation
+    RenderingData renderingData;
+    FindVisibleLights(camera->mFrustum, renderingData);
 
-    // TODO: this should be recorded to a deffered context as well as lights pass
+    {
+        for (int i = 0; i < 8; ++i)
+        {
+            RenderContext* context = renderer->GetDeferredContext(i);
+            GeometryRenderer::Get()->Enter(context);
+        }
+
+        using namespace std::placeholders;
+        Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
+        Common::TaskID shadowTask = threadPool->CreateTask(std::bind(&RendererSystem::RenderShadowMaps, this, _1, std::ref(renderingData)));
+        threadPool->WaitForTask(shadowTask);
+
+        for (int i = 0; i < 8; ++i)
+        {
+            RenderContext* context = renderer->GetDeferredContext(i);
+            GeometryRenderer::Get()->Leave(context);
+            ICommandList* list = context->commandBuffer->Finish();
+            // immCtx->commandBuffer->Execute(list);
+            delete list;
+        }
+    }
+
     GeometryRenderer::Get()->Enter(immCtx);
-
-    RenderShadowMaps();
-
     GeometryRenderer::Get()->SetUp(immCtx, view->GetGeometryBuffer(), &cameraRenderDesc);
     DrawGeometry(immCtx, camera->mFrustum, cameraTransform);
     GeometryRenderer::Get()->Leave(immCtx);
@@ -324,7 +368,7 @@ void RendererSystem::Render(Renderer::View* view)
         LightsRenderer::Get()->DrawAmbientLight(immCtx,
                                                 Vector(0.4f, 0.5f, 0.6f),
                                                 Vector(0.2f, 0.25f, 0.3f));
-        RenderLights(immCtx);
+        RenderLights(renderingData, immCtx);
 
         LightsRenderer::Get()->DrawFog(immCtx);
         LightsRenderer::Get()->Leave(immCtx);
@@ -369,7 +413,7 @@ void RendererSystem::Render(Renderer::View* view)
         // draw light shapes
         if (renderer->settings.debugLights)
         {
-            RenderLightsDebug(immCtx);
+            RenderLightsDebug(renderingData, immCtx);
         }
 
         // draw meshes AABBs
@@ -423,6 +467,30 @@ void RendererSystem::FindVisibleMeshEntities(const Frustum& frustum,
     }
 }
 
+void RendererSystem::FindVisibleLights(const Math::Frustum & frustum, RenderingData& data) const
+{
+    for (size_t i = 0; i < mOmniLights.size(); ++i)
+    {
+        TransformComponent* transform = std::get<0>(mOmniLights[i]);
+        LightComponent* light = std::get<1>(mOmniLights[i]);
+
+        Sphere lightSphere;
+        lightSphere.origin = transform->GetPosition();
+        lightSphere.r = light->mOmniLight.radius;
+
+        if (Intersect(frustum, lightSphere))
+            data.visibleOmniLights.push_back(static_cast<uint32>(i));
+    }
+
+    for (size_t i = 0; i < mSpotLights.size(); ++i)
+    {
+        const SpotLightData& lightData = mSpotLightsData[i];
+
+        if (Intersect(frustum, lightData.frustum))
+            data.visibleSpotLights.push_back(static_cast<uint32>(i));
+    }
+}
+
 void RendererSystem::UpdateLights()
 {
     EntityManager* entityManager = mScene->GetEntityManager();
@@ -465,6 +533,12 @@ void RendererSystem::UpdateLights()
                          light->mSpotLight.cutoff,
                          data.viewMatrix, data.projMatrix, data.frustum);
     }
+
+    // mark all shadow maps as not-drawn
+    mSpotLightsShadowDrawn.clear();
+    mSpotLightsShadowDrawn.resize(mSpotLights.size(), false);
+    mOmniLightsShadowDrawn.clear();
+    mOmniLightsShadowDrawn.resize(mOmniLights.size(), false);
 }
 
 void RendererSystem::Update(float dt)
@@ -483,6 +557,8 @@ void RendererSystem::Update(float dt)
             mMeshes.push_back(std::make_tuple(transform, mesh, body));
         }
     );
+
+    FindActiveMeshEntities();
 
     entityManager->ForEach<TransformComponent, CameraComponent>(
         [&](EntityID entity,

@@ -181,11 +181,6 @@ RenderContext* HighLevelRenderer::GetDeferredContext(size_t id) const
     return mDeferredContexts.get() + id;
 }
 
-void HighLevelRenderer::ExecuteDeferredContext(RenderContext* pContext)
-{
-    // TODO
-}
-
 std::string HighLevelRenderer::GetShadersPath() const
 {
     // TODO: It's temporary. Shader location must be dependent on low-level renderer.

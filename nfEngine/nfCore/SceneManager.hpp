@@ -43,6 +43,8 @@ private:
     std::unique_ptr<PhysicsSystem> mPhysicsSystem;
     std::unique_ptr<RendererSystem> mRendererSystem;
 
+    Common::TaskID mUpdateTask;
+
 public:
     SceneManager();
     ~SceneManager();

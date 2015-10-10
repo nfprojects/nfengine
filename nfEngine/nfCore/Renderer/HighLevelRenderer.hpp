@@ -114,13 +114,6 @@ public:
     RenderContext* GetDeferredContext(size_t id) const;
 
     /**
-     * Execute buffered by deferred context commands on the immediate context.
-     *
-     * @param context A deferred context.
-     */
-    void ExecuteDeferredContext(RenderContext* context);
-
-    /**
      * Get shaders location.
      */
     std::string GetShadersPath() const;

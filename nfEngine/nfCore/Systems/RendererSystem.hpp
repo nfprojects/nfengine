@@ -24,6 +24,15 @@ struct NFE_ALIGN16 SpotLightData
     Math::Matrix projMatrix;
 };
 
+/**
+ * Temporary data used during view rendering.
+ */
+struct RenderingData
+{
+    std::vector<uint32> visibleOmniLights;
+    std::vector<uint32> visibleSpotLights;
+};
+
 NFE_ALIGN16
 class RendererSystem : public Util::Aligned
 {
@@ -36,15 +45,18 @@ class RendererSystem : public Util::Aligned
     std::vector<LightEntry> mDirLights;
     std::vector<SpotLightData, Util::AlignedAllocator<SpotLightData, 16>> mSpotLightsData;
 
+    std::vector<bool> mSpotLightsShadowDrawn;
+    std::vector<bool> mOmniLightsShadowDrawn;
+
     std::vector<MeshEntry> mMeshes;
     std::vector<MeshEntry> mActiveMeshEntities;
     std::vector<CameraEntry> mCameras;
 
     SceneManager* mScene;
 
-    void RenderShadowMaps() const;
-    void RenderLights(Renderer::RenderContext* ctx) const;
-    void RenderLightsDebug(Renderer::RenderContext* ctx) const;
+    void RenderShadowMaps(const Common::TaskContext& context, RenderingData& data);
+    void RenderLights(RenderingData& data, Renderer::RenderContext* ctx) const;
+    void RenderLightsDebug(RenderingData& data, Renderer::RenderContext* ctx) const;
 
     /**
      * Draw all the geometry visible in the @p viewFrustum using GeometryRenderer.
@@ -59,6 +71,8 @@ class RendererSystem : public Util::Aligned
     void FindActiveMeshEntities();
     void FindVisibleMeshEntities(const Math::Frustum & frustum,
                                  std::vector<MeshEntry>& list) const;
+    void FindVisibleLights(const Math::Frustum & frustum, RenderingData& data) const;
+
     void UpdateLights();
 
 public:

@@ -8,6 +8,8 @@
 
 #include "../PCH.hpp"
 #include "RendererContext.hpp"
+#include "HighLevelRenderer.hpp"
+#include "../Engine.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -15,26 +17,13 @@ namespace Renderer {
 
 RenderContext::RenderContext()
 {
-    // TODO: deferred contexts creation
-    commandBuffer = nullptr;
+    HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
+    commandBuffer = renderer->GetDevice()->CreateCommandBuffer();
 }
 
 RenderContext::RenderContext(ICommandBuffer* commandBuffer)
 {
     this->commandBuffer = commandBuffer;
-}
-
-void RenderContext::Begin()
-{
-}
-
-void RenderContext::End()
-{
-}
-
-bool RenderContext::Execute(RenderContext* context, bool saveState)
-{
-    return false;
 }
 
 } // namespace Renderer

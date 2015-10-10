@@ -161,7 +161,7 @@ void CreateChamberArray(SceneManager* scene,
             {
                 LightComponent light;
                 light.SetOmniLight(&omni);
-                light.SetColor(Float3(50, 50, 50));
+                light.SetColor(Float3(100, 100, 100));
                 light.SetShadowMap(64);
 
                 TransformComponent transform;
@@ -215,9 +215,9 @@ void CreateChamberArray(SceneManager* scene,
                         mesh.SetMeshResource("cube.nfm");
                         entityManager->AddComponent(cube, mesh);
 
-                        BodyComponent body;
-                        body.EnablePhysics(ENGINE_GET_COLLISION_SHAPE("shape_box"));
-                        entityManager->AddComponent(cube, body);
+                        // BodyComponent body;
+                        // body.EnablePhysics(ENGINE_GET_COLLISION_SHAPE("shape_box"));
+                        // entityManager->AddComponent(cube, body);
                     }
                 }
             }

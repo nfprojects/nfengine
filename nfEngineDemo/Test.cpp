@@ -551,6 +551,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
     // message loop
 
+
+    float avgDeltaTime = 0.0f;
+
     std::vector<UpdateRequest> updateRequests;
     std::vector<View*> drawRequests;
     Common::Timer timer;
@@ -559,11 +562,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     {
         //measure delta time
         gDeltaTime = static_cast<float>(timer.Stop());
+        avgDeltaTime = Lerp(avgDeltaTime, gDeltaTime, 0.1f);
         timer.Start();
 
         char str[128];
-        sprintf(str, "NFEngine Demo (%s)  -  Press [0-%i] to switch scene",
-                PLATFORM_STR, GetScenesNum() - 1);
+        sprintf(str, "NFEngine Demo (%s)  -  Press [0-%i] to switch scene  -  %.2f ms",
+                PLATFORM_STR, GetScenesNum() - 1, avgDeltaTime * 1000.0f);
 
         // work on copy of gWindows
         std::vector<CustomWindow*> windows;
