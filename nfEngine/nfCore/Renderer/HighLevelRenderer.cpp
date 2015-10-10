@@ -25,7 +25,6 @@ namespace Renderer {
 
 HighLevelRenderer::HighLevelRenderer()
     : mRenderingDevice(nullptr)
-    , mCommandBuffer(nullptr)
 {
 }
 
@@ -70,13 +69,10 @@ bool HighLevelRenderer::Init(const std::string& preferredRendererName)
         LOG_INFO("GPU features: %s", features.c_str());
     }
 
-
-    mCommandBuffer = mRenderingDevice->GetDefaultCommandBuffer();
-
     Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
 
     /// create immediate and deferred rendering contexts
-    mImmediateContext.reset(new RenderContext(mCommandBuffer));
+    mImmediateContext.reset(new RenderContext(mRenderingDevice->GetDefaultCommandBuffer()));
     mDeferredContexts.reset(new RenderContext[threadPool->GetThreadsNumber()]);
 
     // TODO: multithreaded modules initialization
@@ -103,9 +99,12 @@ void HighLevelRenderer::Release()
     mDefaultBlendState.reset();
     mDefaultSampler.reset();
     mDefaultDepthState.reset();
+    mDefaultRasterizerState.reset();
     mDefaultDiffuseTexture.reset();
     mDefaultNormalTexture.reset();
     mDefaultSpecularTexture.reset();
+
+    mDeferredContexts.reset();
 
     if (mRenderingDevice != nullptr)
     {
@@ -138,6 +137,11 @@ void HighLevelRenderer::CreateCommonResources()
     dsDesc.debugName = "HighLevelRenderer::mDefaultDepthState";
     mDefaultDepthState.reset(mRenderingDevice->CreateDepthState(dsDesc));
 
+    RasterizerStateDesc rsDesc;
+    rsDesc.cullMode = CullMode::Disabled;
+    rsDesc.fillMode = FillMode::Solid;
+    rsDesc.debugName = "HighLevelRenderer::mDefaultRasterizerState";
+    mDefaultRasterizerState.reset(mRenderingDevice->CreateRasterizerState(rsDesc));
 
     TextureDataDesc texDataDesc;
     texDataDesc.lineSize = texDataDesc.sliceSize = 4 * sizeof(uchar);
@@ -179,11 +183,6 @@ RenderContext* HighLevelRenderer::GetImmediateContext() const
 RenderContext* HighLevelRenderer::GetDeferredContext(size_t id) const
 {
     return mDeferredContexts.get() + id;
-}
-
-void HighLevelRenderer::ExecuteDeferredContext(RenderContext* pContext)
-{
-    // TODO
 }
 
 std::string HighLevelRenderer::GetShadersPath() const

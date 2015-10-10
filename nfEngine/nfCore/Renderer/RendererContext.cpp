@@ -8,33 +8,34 @@
 
 #include "PCH.hpp"
 #include "RendererContext.hpp"
+#include "HighLevelRenderer.hpp"
+#include "../Engine.hpp"
 
 namespace NFE {
 namespace Renderer {
 
 
 RenderContext::RenderContext()
+    : mIsDeferred(true)
 {
-    // TODO: deferred contexts creation
-    commandBuffer = nullptr;
+    HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
+    commandBuffer = renderer->GetDevice()->CreateCommandBuffer();
 }
 
 RenderContext::RenderContext(ICommandBuffer* commandBuffer)
+    : mIsDeferred(false)
 {
     this->commandBuffer = commandBuffer;
 }
 
-void RenderContext::Begin()
+RenderContext::~RenderContext()
 {
-}
-
-void RenderContext::End()
-{
-}
-
-bool RenderContext::Execute(RenderContext* context, bool saveState)
-{
-    return false;
+    // immediate command buffer must not be deleted - it's owned by IDevice
+    if (mIsDeferred && commandBuffer != nullptr)
+    {
+        delete commandBuffer;
+        commandBuffer = nullptr;
+    }
 }
 
 } // namespace Renderer

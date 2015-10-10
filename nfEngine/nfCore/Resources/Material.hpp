@@ -49,6 +49,8 @@ class CORE_API Material : public ResourceBase
     friend class Renderer::GeometryRenderer;
     friend class Renderer::DebugRenderer;
 
+    std::mutex mMutex;
+
     // TODO: use std::vector
     MaterialLayer* mLayers;
     uint32 mLayersCount;

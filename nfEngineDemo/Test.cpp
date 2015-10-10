@@ -142,6 +142,8 @@ public:
         if (parent == nullptr)  // init a new scene
         {
             SceneManager* newScene = InitScene(sceneId);
+            if (newScene == nullptr)
+                return;
             scene.reset(newScene, SceneDeleter);
         }
         else  // fork

@@ -91,6 +91,7 @@ void GuiRenderer::OnEnter(RenderContext* context)
     IBuffer* constantBuffers[] = { mConstantBuffer.get() };
     context->commandBuffer->SetConstantBuffers(constantBuffers, 1, ShaderType::Geometry);
 
+    context->commandBuffer->SetRasterizerState(mRenderer->GetDefaultRasterizerState());
     context->commandBuffer->SetDepthState(mRenderer->GetDefaultDepthState());
     context->commandBuffer->SetBlendState(mBlendState.get());
 
@@ -126,6 +127,9 @@ void GuiRenderer::SetTarget(RenderContext* context, IRenderTarget* target)
                                         &cbuffer);
 
     context->commandBuffer->SetRenderTarget(target);
+    context->commandBuffer->SetViewport(0.0f, static_cast<float>(width),
+                                        0.0f, static_cast<float>(height),
+                                        0.0f, 1.0f);
 }
 
 void GuiRenderer::FlushQueue(RenderContext* context)

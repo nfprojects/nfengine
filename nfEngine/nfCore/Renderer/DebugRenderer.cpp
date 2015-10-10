@@ -213,7 +213,13 @@ void DebugRenderer::SetTarget(RenderContext *context, IRenderTarget* target)
 {
     if (target)
     {
+        int width, height;
+        target->GetDimensions(width, height);
+
         context->commandBuffer->SetRenderTarget(target);
+        context->commandBuffer->SetViewport(0.0f, static_cast<float>(width),
+                                            0.0f, static_cast<float>(height),
+                                            0.0f, 1.0f);
     }
 }
 
