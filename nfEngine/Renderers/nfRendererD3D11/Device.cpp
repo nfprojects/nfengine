@@ -17,6 +17,7 @@
 #include "PipelineState.hpp"
 #include "Sampler.hpp"
 #include "../../nfCommon/Win/Common.hpp"
+#include "../../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -164,10 +165,23 @@ ICommandBuffer* Device::GetDefaultCommandBuffer()
     return mDefaultCommandBuffer.get();
 }
 
-void Device::Execute(ICommandBuffer* commandBuffer, bool saveState)
+ICommandBuffer* Device::CreateCommandBuffer()
 {
-    UNUSED(commandBuffer);
-    UNUSED(saveState);
+    HRESULT hr;
+    ID3D11DeviceContext* context;
+    hr = D3D_CALL_CHECK(mDevice->CreateDeferredContext(0, &context));
+    if (FAILED(hr))
+        return nullptr;
+
+    CommandBuffer* commandBuffer = new (std::nothrow) CommandBuffer(context);
+    if (!commandBuffer)
+    {
+        D3D_SAFE_RELEASE(context);
+        LOG_ERROR("Memory allocation failed");
+        return nullptr;
+    }
+
+    return commandBuffer;
 }
 
 bool Device::GetDeviceInfo(DeviceInfo& info)

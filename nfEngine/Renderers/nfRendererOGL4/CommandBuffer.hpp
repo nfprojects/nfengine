@@ -85,7 +85,8 @@ public:
               int instanceOffset);
     void DrawIndexed(PrimitiveType type, int indexNum, int instancesNum, int indexOffset,
                      int vertexOffset, int instanceOffset);
-    void Execute(ICommandBuffer* commandBuffer, bool saveState);
+    ICommandList* Finish();
+    void Execute(ICommandList* commandList);
 
     /// Debugging
     void BeginDebugGroup(const char* text);

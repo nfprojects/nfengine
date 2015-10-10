@@ -49,7 +49,7 @@ public:
     IShaderProgram* CreateShaderProgram(const ShaderProgramDesc& desc);
 
     ICommandBuffer* GetDefaultCommandBuffer();
-    void Execute(ICommandBuffer* commandBuffer, bool saveState);
+    ICommandBuffer* CreateCommandBuffer();
 };
 
 } // namespace Renderer
