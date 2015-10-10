@@ -14,6 +14,12 @@ namespace Renderer {
 
 class RenderTarget;
 
+class CommandList : public ICommandList
+{
+public:
+    D3DPtr<ID3D11CommandList> mD3DList;
+};
+
 class CommandBuffer : public ICommandBuffer
 {
     friend class Device;
@@ -58,7 +64,8 @@ public:
               int instanceOffset);
     void DrawIndexed(PrimitiveType type, int indexNum, int instancesNum, int indexOffset,
                      int vertexOffset, int instanceOffset);
-    void Execute(ICommandBuffer* commandBuffer, bool saveState);
+    ICommandList* Finish();
+    void Execute(ICommandList* commandList);
 
     /// Debugging
 

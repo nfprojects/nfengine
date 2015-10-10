@@ -210,10 +210,14 @@ void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesN
     UNUSED(instanceOffset);
 }
 
-void CommandBuffer::Execute(ICommandBuffer* commandBuffer, bool saveState)
+ICommandList* CommandBuffer::Finish()
 {
-    UNUSED(commandBuffer);
-    UNUSED(saveState);
+    return nullptr;
+}
+
+void CommandBuffer::Execute(ICommandList* commandList)
+{
+    UNUSED(commandList);
 }
 
 void CommandBuffer::BeginDebugGroup(const char* text)
