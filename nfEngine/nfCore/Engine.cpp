@@ -185,14 +185,16 @@ bool Engine::Advance(View** views, size_t viewsNum,
         scene->Update(updateRequests[i].deltaTime);
     }
 
+    // temporary rendering data for each view
+    std::vector<RenderingData, Util::AlignedAllocator<RenderingData, 16>> renderingData;
+    renderingData.resize(viewsNum);
+
     bool scenesRenderedSuccessfully = true;
     for (size_t i = 0; i < viewsNum; i++)
     {
-        // TODO: error checking
         View* view = views[i];
-        if (view == nullptr) continue;
-
-        ICommandBuffer* commandBuffer = mRenderer->GetImmediateContext()->commandBuffer;
+        if (view == nullptr)
+            continue;
         SceneManager* scene = view->GetSceneManager();
 
         //check if scene is valid
@@ -205,11 +207,25 @@ bool Engine::Advance(View** views, size_t viewsNum,
         }
 
         if (scene != nullptr)
-            scene->GetRendererSystem()->Render(view);
+        {
+            renderingData[i].view = view;
+            scene->Render(renderingData[i]);
+        }
+    }
+
+    for (size_t i = 0; i < viewsNum; i++)
+    {
+        View* view = views[i];
+        if (view == nullptr)
+            continue;
+
+        // execute scene command lists
+        renderingData[i].ExecuteCommandLists();
 
         // GUI renderer pass
         {
             RenderContext* ctx = mRenderer->GetImmediateContext();
+            ctx->commandBuffer->Reset();
             GuiRenderer::Get()->Enter(ctx);
             GuiRenderer::Get()->SetTarget(ctx, view->GetRenderTarget());
             view->OnPostRender(ctx);
@@ -220,6 +236,7 @@ bool Engine::Advance(View** views, size_t viewsNum,
 #ifdef USE_ANT_TWEAK
         if (view->drawAntTweakBar)
         {
+            ICommandBuffer* commandBuffer = mRenderer->GetImmediateContext()->commandBuffer;
             commandBuffer->BeginDebugGroup("AntTweak");
             commandBuffer->SetRenderTarget(view->GetRenderTarget());
             TwDraw();
@@ -230,6 +247,8 @@ bool Engine::Advance(View** views, size_t viewsNum,
         // present frame in the display
         view->Present();
     }
+
+    mMainThreadPool.WaitForAllTasks();
 
     return scenesUpdatedSuccessfully && scenesRenderedSuccessfully;
 }
