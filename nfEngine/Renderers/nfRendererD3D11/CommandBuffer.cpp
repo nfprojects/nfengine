@@ -464,10 +464,34 @@ void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesN
         mContext->DrawIndexed(indexNum, indexOffset, vertexOffset);
 }
 
-void CommandBuffer::Execute(ICommandBuffer* commandBuffer, bool saveState)
+ICommandList* CommandBuffer::Finish()
 {
-    UNUSED(commandBuffer);
-    UNUSED(saveState);
+    HRESULT hr;
+    ID3D11CommandList* d3dList;
+    hr = D3D_CALL_CHECK(mContext->FinishCommandList(FALSE, &d3dList));
+    if (FAILED(hr))
+        return nullptr;
+
+    // TODO: use memory pool
+    CommandList* list = new (std::nothrow) CommandList;
+    if (!list)
+    {
+        D3D_SAFE_RELEASE(d3dList);
+        LOG_ERROR("Memory allocation failed");
+        return nullptr;
+    }
+
+    list->mD3DList = d3dList;
+    return list;
+}
+
+void CommandBuffer::Execute(ICommandList* commandList)
+{
+    CommandList* list = dynamic_cast<CommandList*>(commandList);
+    if (!list)
+        return;
+
+    mContext->ExecuteCommandList(list->mD3DList.get(), FALSE);
 }
 
 void CommandBuffer::BeginDebugGroup(const char* text)

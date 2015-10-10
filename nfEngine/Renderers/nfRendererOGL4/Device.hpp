@@ -40,7 +40,7 @@ public:
     IShaderProgram* CreateShaderProgram(const ShaderProgramDesc& desc);
 
     ICommandBuffer* GetDefaultCommandBuffer();
-    void Execute(ICommandBuffer* commandBuffer, bool saveState);
+    ICommandBuffer* CreateCommandBuffer();
 };
 
 extern std::unique_ptr<Device> gDevice;
