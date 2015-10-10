@@ -120,10 +120,9 @@ ICommandBuffer* Device::GetDefaultCommandBuffer()
     return mDefaultCommandBuffer.get();
 }
 
-void Device::Execute(ICommandBuffer* commandBuffer, bool saveState)
+ICommandBuffer* Device::CreateCommandBuffer()
 {
-    UNUSED(commandBuffer);
-    UNUSED(saveState);
+    return nullptr;
 }
 
 bool Device::GetDeviceInfo(DeviceInfo& info)

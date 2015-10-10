@@ -17,6 +17,12 @@
 namespace NFE {
 namespace Renderer {
 
+class ICommandList
+{
+public:
+    virtual ~ICommandList() {}
+};
+
 /**
  * Interface allowing to control rendering pipeline state and executing rendering commands.
  */
@@ -137,11 +143,16 @@ public:
                              int vertexOffset = 0, int instanceOffset = 0) = 0;
 
     /**
-     * Execute a command buffer.
-     * @param commandBuffer Command buffer to be executed.
-     * @param saveState     Save previous pipeline state after finishing executing command buffer.
+     * Store all executed commands to a command list.
+     * @return Saved command list or NULL on error.
      */
-    virtual void Execute(ICommandBuffer* commandBuffer, bool saveState) = 0;
+    virtual ICommandList* Finish() = 0;
+
+    /**
+     * Execute a command list.
+     * @param commandList Command list to be executed.
+     */
+    virtual void Execute(ICommandList* commandList) = 0;
 
     /**@}*/
 
