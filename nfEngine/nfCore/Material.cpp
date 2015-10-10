@@ -252,6 +252,9 @@ using namespace Renderer;
 */
 const RendererMaterial* Material::GetRendererData()
 {
+    // TODO: temporary
+    std::unique_lock<std::mutex> lock(mMutex);
+
     if (mRendererData.layersNum != mLayersCount)
     {
         if (mRendererData.layers != nullptr)

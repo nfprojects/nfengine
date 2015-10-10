@@ -238,7 +238,14 @@ void LightsRenderer::OnLeave(RenderContext* context)
 void LightsRenderer::SetUp(RenderContext* context, IRenderTarget* target, GeometryBuffer *gbuffer,
                            const CameraRenderDesc* camera)
 {
+    assert(target != nullptr);
     context->commandBuffer->SetRenderTarget(target);
+
+    int width, height;
+    target->GetDimensions(width, height);
+    context->commandBuffer->SetViewport(0.0f, static_cast<float>(width),
+                                        0.0f, static_cast<float>(height),
+                                        0.0f, 1.0f);
 
     /// bind gbuffer to pixel shader
     ITexture* textures[] = { gbuffer->mTextures[0].get(),
@@ -267,6 +274,8 @@ void LightsRenderer::SetUp(RenderContext* context, IRenderTarget* target, Geomet
 void LightsRenderer::DrawAmbientLight(RenderContext* context, const Vector& ambientLightColor,
                                       const Vector& backgroundColor)
 {
+    context->commandBuffer->SetDepthState(mLightsDepthState.get());
+    context->commandBuffer->SetRasterizerState(mRenderer->GetDefaultRasterizerState());
     context->commandBuffer->SetBlendState(mRenderer->GetDefaultBlendState());
 
     AmbientLightCBuffer cbuffer;
