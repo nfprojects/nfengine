@@ -70,7 +70,11 @@ public:
     /**@}*/
 
     virtual ICommandBuffer* GetDefaultCommandBuffer() = 0;
-    virtual void Execute(ICommandBuffer* commandBuffer, bool saveState) = 0;
+
+    /**
+     * Create a deffered context.
+     */
+    virtual ICommandBuffer* CreateCommandBuffer() = 0;
 };
 
 typedef IDevice* (*RendererInitFunc)();
