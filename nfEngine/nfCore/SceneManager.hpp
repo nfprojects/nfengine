@@ -38,10 +38,14 @@ private:
     // environment
     EnviromentDesc mEnvDesc;
 
+    Common::TaskID mRendererUpdateTask;
+
     /// Systems
     std::unique_ptr<TransformSystem> mTransformSystem;
     std::unique_ptr<PhysicsSystem> mPhysicsSystem;
     std::unique_ptr<RendererSystem> mRendererSystem;
+
+    Common::TaskID mUpdateTask;
 
 public:
     SceneManager();
@@ -55,6 +59,12 @@ public:
      * @param deltaTime Delta time used for physics simulations.
      */
     void Update(float deltaTime);
+
+    /**
+     * Launch rendering task.
+     * @param renderingData Temporary rendering data.
+     */
+    void Render(RenderingData& renderingData);
 
     NFE_INLINE EntityManager* GetEntityManager()
     {
