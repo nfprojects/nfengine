@@ -103,6 +103,7 @@ void HighLevelRenderer::Release()
     mDefaultBlendState.reset();
     mDefaultSampler.reset();
     mDefaultDepthState.reset();
+    mDefaultRasterizerState.reset();
     mDefaultDiffuseTexture.reset();
     mDefaultNormalTexture.reset();
     mDefaultSpecularTexture.reset();
@@ -138,6 +139,11 @@ void HighLevelRenderer::CreateCommonResources()
     dsDesc.debugName = "HighLevelRenderer::mDefaultDepthState";
     mDefaultDepthState.reset(mRenderingDevice->CreateDepthState(dsDesc));
 
+    RasterizerStateDesc rsDesc;
+    rsDesc.cullMode = CullMode::Disabled;
+    rsDesc.fillMode = FillMode::Solid;
+    rsDesc.debugName = "HighLevelRenderer::mDefaultRasterizerState";
+    mDefaultRasterizerState.reset(mRenderingDevice->CreateRasterizerState(rsDesc));
 
     TextureDataDesc texDataDesc;
     texDataDesc.lineSize = texDataDesc.sliceSize = 4 * sizeof(uchar);
@@ -179,11 +185,6 @@ RenderContext* HighLevelRenderer::GetImmediateContext() const
 RenderContext* HighLevelRenderer::GetDeferredContext(size_t id) const
 {
     return mDeferredContexts.get() + id;
-}
-
-void HighLevelRenderer::ExecuteDeferredContext(RenderContext* pContext)
-{
-    // TODO
 }
 
 std::string HighLevelRenderer::GetShadersPath() const

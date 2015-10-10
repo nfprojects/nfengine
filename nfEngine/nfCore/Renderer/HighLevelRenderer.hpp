@@ -59,6 +59,9 @@ private:
     std::unique_ptr<ISampler> mDefaultSampler;
     // default depth state for 3D rendering with depth testing enabled
     std::unique_ptr<IDepthState> mDefaultDepthState;
+    // default rasterizer state (solid, no culling)
+    std::unique_ptr<IRasterizerState> mDefaultRasterizerState;
+
     // default (empty) textures for G-Buffer Renderer
     std::unique_ptr<ITexture> mDefaultDiffuseTexture;
     std::unique_ptr<ITexture> mDefaultNormalTexture;
@@ -114,13 +117,6 @@ public:
     RenderContext* GetDeferredContext(size_t id) const;
 
     /**
-     * Execute buffered by deferred context commands on the immediate context.
-     *
-     * @param context A deferred context.
-     */
-    void ExecuteDeferredContext(RenderContext* context);
-
-    /**
      * Get shaders location.
      */
     std::string GetShadersPath() const;
@@ -148,6 +144,14 @@ public:
     NFE_INLINE IDepthState* GetDefaultDepthState() const
     {
         return mDefaultDepthState.get();
+    }
+
+    /**
+     * Get default rasterizer state (solid, no culling).
+     */
+    NFE_INLINE IRasterizerState* GetDefaultRasterizerState() const
+    {
+        return mDefaultRasterizerState.get();
     }
 
 
