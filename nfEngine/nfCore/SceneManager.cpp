@@ -46,11 +46,33 @@ void SceneManager::GetEnvironment(EnviromentDesc* desc) const
 
 void SceneManager::Update(float deltaTime)
 {
+    using namespace std::placeholders;
+    Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
+
     mPhysicsSystem->Update(deltaTime);
     mTransformSystem->Update();
-    mRendererSystem->Update(deltaTime);
-
     mEntityManager.FlushInvalidComponents();
+
+    mRendererUpdateTask = threadPool->CreateTask(
+        std::bind(&RendererSystem::Update,
+                  mRendererSystem.get(), // "this"
+                  _1,                    // task context
+                  deltaTime));
+}
+
+void SceneManager::Render(RenderingData& renderingData)
+{
+    using namespace std::placeholders;
+    Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
+
+    renderingData.sceneRenderTask =
+        threadPool->CreateTask(std::bind(&RendererSystem::Render,
+                                         mRendererSystem.get(), // "this"
+                                         _1,                    // task context
+                                         std::ref(renderingData)),
+                               1,                   // instances number
+                               NFE_INVALID_TASK_ID, // no parent
+                               mRendererUpdateTask);
 }
 
 } // namespace Scene
