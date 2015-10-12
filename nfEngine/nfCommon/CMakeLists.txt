@@ -15,6 +15,10 @@ FILE(GLOB NFCOMMON_PACKER_HEADERS Packer/*.hpp)
 FILE(GLOB NFCOMMON_LOGGER_SOURCES LoggerBackends/*.cpp)
 FILE(GLOB NFCOMMON_LOGGER_HEADERS LoggerBackends/*.hpp)
 
+# do not compile Windows-specific logger backend
+LIST(REMOVE_ITEM NFCOMMON_SOURCES "${NFCOMMON_DIRECTORY}/LoggerBackends/BackendWindowsDebugger.hpp")
+LIST(REMOVE_ITEM NFCOMMON_SOURCES "${NFCOMMON_DIRECTORY}/LoggerBackends/BackendWindowsDebugger.cpp")
+
 # TODO these sources are not prepared for multi-platform.
 #      Move them to Win directory and appropriately code headers.
 #      For reference purposes, each line will have a GitHub issue number
