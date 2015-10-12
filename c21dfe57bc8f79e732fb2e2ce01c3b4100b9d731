@@ -210,6 +210,30 @@
       "revId": "c21dfe57bc8f79e732fb2e2ce01c3b4100b9d731",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baada198_354da773",
+        "filename": "nfEngine/nfCore/Renderer/LightsRenderer.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-12T18:03:10Z",
+      "side": 1,
+      "message": "Still, we should construct this outside. Then changing GetDefaultDiffuseTexture calls onto nullptrs will be easy. But OK, I will be picky about it when the TODO will be resolved.",
+      "parentUuid": "baada198_626847f6",
+      "range": {
+        "startLine": 226,
+        "startChar": 0,
+        "endLine": 230,
+        "endChar": 64
+      },
+      "revId": "c21dfe57bc8f79e732fb2e2ce01c3b4100b9d731",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
