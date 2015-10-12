@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baada198_c2af532a",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/RenderTarget.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-12T16:54:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baada198_a225ffac",
+      "range": {
+        "startLine": 99,
+        "startChar": 46,
+        "endLine": 99,
+        "endChar": 50
+      },
+      "revId": "c21dfe57bc8f79e732fb2e2ce01c3b4100b9d731",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baada198_c2403338",
         "filename": "nfEngine/Shaders/D3D11/Common.hlsl",
         "patchSetId": 12
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "baada198_e2ac5738",
+        "filename": "nfEngine/Shaders/D3D11/Common.hlsl",
+        "patchSetId": 12
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-12T16:54:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baada198_c2403338",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 3
+      },
+      "revId": "c21dfe57bc8f79e732fb2e2ce01c3b4100b9d731",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baada198_a25c1f27",
         "filename": "nfEngine/Shaders/D3D11/Common.hlsl",
         "patchSetId": 12
@@ -59,6 +107,30 @@
       "writtenOn": "2015-10-12T10:42:24Z",
       "side": 1,
       "message": "word? :)\n\nCorrect below as well",
+      "range": {
+        "startLine": 17,
+        "startChar": 11,
+        "endLine": 17,
+        "endChar": 15
+      },
+      "revId": "c21dfe57bc8f79e732fb2e2ce01c3b4100b9d731",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baada198_02aa2b19",
+        "filename": "nfEngine/Shaders/D3D11/Common.hlsl",
+        "patchSetId": 12
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-12T16:54:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baada198_a25c1f27",
       "range": {
         "startLine": 17,
         "startChar": 11,
@@ -105,6 +177,30 @@
       "writtenOn": "2015-10-12T10:42:24Z",
       "side": 1,
       "message": "This gets constructed every time OnLeave is called. Cannot we just keep nullTextures as a constant or sth and provide it to context-\u003ecommandBuffer-\u003eSetTextures?",
+      "range": {
+        "startLine": 226,
+        "startChar": 0,
+        "endLine": 230,
+        "endChar": 64
+      },
+      "revId": "c21dfe57bc8f79e732fb2e2ce01c3b4100b9d731",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baada198_626847f6",
+        "filename": "nfEngine/nfCore/Renderer/LightsRenderer.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-12T16:54:35Z",
+      "side": 1,
+      "message": "We could. But notice \u0027allow \"NULL\" in the array\u0027 comment. The renderer backed should accept null textures in the future, so then we can do just:\nITexture* nullTextures[] \u003d {nullptr, nullptr, ... };",
+      "parentUuid": "baada198_62876762",
       "range": {
         "startLine": 226,
         "startChar": 0,
