@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baada198_a225ffac",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/RenderTarget.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-12T10:42:24Z",
+      "side": 1,
+      "message": "type :)\n\nBesides, I think the comment should somehow relate to the fact it is a RTV described here. \"Unsupported texture type for Render Target\" or sth similar.",
+      "range": {
+        "startLine": 99,
+        "startChar": 46,
+        "endLine": 99,
+        "endChar": 50
+      },
+      "revId": "c21dfe57bc8f79e732fb2e2ce01c3b4100b9d731",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baada198_c2403338",
+        "filename": "nfEngine/Shaders/D3D11/Common.hlsl",
+        "patchSetId": 12
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-12T10:42:24Z",
+      "side": 1,
+      "message": "I highly doubt these shaders will be documented by Doxy. Even if, I don\u0027t see a need to do so. Rm.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 3
+      },
+      "revId": "c21dfe57bc8f79e732fb2e2ce01c3b4100b9d731",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baada198_a25c1f27",
+        "filename": "nfEngine/Shaders/D3D11/Common.hlsl",
+        "patchSetId": 12
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-12T10:42:24Z",
+      "side": 1,
+      "message": "word? :)\n\nCorrect below as well",
+      "range": {
+        "startLine": 17,
+        "startChar": 11,
+        "endLine": 17,
+        "endChar": 15
+      },
+      "revId": "c21dfe57bc8f79e732fb2e2ce01c3b4100b9d731",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baada198_826e3bc8",
+        "filename": "nfEngine/Shaders/D3D11/ShadowVS.hlsl",
+        "patchSetId": 12
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-12T10:42:24Z",
+      "side": 1,
+      "message": "Fix here as well after Common.hlsl is fixed",
+      "range": {
+        "startLine": 15,
+        "startChar": 52,
+        "endLine": 17,
+        "endChar": 61
+      },
+      "revId": "c21dfe57bc8f79e732fb2e2ce01c3b4100b9d731",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baada198_62876762",
+        "filename": "nfEngine/nfCore/Renderer/LightsRenderer.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-12T10:42:24Z",
+      "side": 1,
+      "message": "This gets constructed every time OnLeave is called. Cannot we just keep nullTextures as a constant or sth and provide it to context-\u003ecommandBuffer-\u003eSetTextures?",
+      "range": {
+        "startLine": 226,
+        "startChar": 0,
+        "endLine": 230,
+        "endChar": 64
+      },
+      "revId": "c21dfe57bc8f79e732fb2e2ce01c3b4100b9d731",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
