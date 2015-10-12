@@ -30,6 +30,9 @@
     <Filter Include="Source Files\Math">
       <UniqueIdentifier>{6e6fcf7b-9b40-43f8-af57-5000e952046a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\LoggerBackends\Win">
+      <UniqueIdentifier>{8a1f06d7-8a12-4102-b4fe-1932bf32c8f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp">
@@ -155,6 +158,9 @@
     <ClInclude Include="LoggerBackends\BackendHTML.hpp">
       <Filter>Source Files\LoggerBackends</Filter>
     </ClInclude>
+    <ClInclude Include="LoggerBackends\Win\BackendWindowsDebugger.hpp">
+      <Filter>Source Files\LoggerBackends\Win</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -261,6 +267,9 @@
     </ClCompile>
     <ClCompile Include="Math\Frustum.cpp">
       <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="LoggerBackends\Win\BackendWindowsDebugger.cpp">
+      <Filter>Source Files\LoggerBackends\Win</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
