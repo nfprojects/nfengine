@@ -13,6 +13,7 @@
 #include <atomic>
 
 #ifdef WIN32
+#include "LoggerBackends/BackendWindowsDebugger.hpp"
 #include "Win/Common.hpp"
 #endif // WIN32
 
@@ -42,6 +43,10 @@ Logger::Logger()
 
     RegisterBackend(std::move(std::unique_ptr<LoggerBackend>(new LoggerBackendConsole)));
     RegisterBackend(std::move(std::unique_ptr<LoggerBackend>(new LoggerBackendHTML)));
+#ifdef WIN32
+    if (IsDebuggerPresent())
+        RegisterBackend(std::move(std::unique_ptr<LoggerBackend>(new LoggerBackendWinDebugger)));
+#endif // WIN32
 
     mInitialized = true;
     LOG_INFO("nfCommon build date: " __DATE__ ", " __TIME__);

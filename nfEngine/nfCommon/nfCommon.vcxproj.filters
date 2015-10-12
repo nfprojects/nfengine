@@ -155,6 +155,9 @@
     <ClInclude Include="LoggerBackends\BackendHTML.hpp">
       <Filter>Source Files\LoggerBackends</Filter>
     </ClInclude>
+    <ClInclude Include="LoggerBackends\BackendWindowsDebugger.hpp">
+      <Filter>Source Files\LoggerBackends</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -261,6 +264,9 @@
     </ClCompile>
     <ClCompile Include="Math\Frustum.cpp">
       <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="LoggerBackends\BackendWindowsDebugger.cpp">
+      <Filter>Source Files\LoggerBackends</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
