@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baada198_b8dc4e76",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-13T09:38:39Z",
+      "side": 1,
+      "message": "rendered",
+      "range": {
+        "startLine": 19,
+        "startChar": 48,
+        "endLine": 19,
+        "endChar": 56
+      },
+      "revId": "cbddc7ab2c409ea0bc778f2c031488cbb9e8bf60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baada198_f8e6c643",
+        "filename": "nfEngine/nfCore/Engine.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-13T09:38:39Z",
+      "side": 1,
+      "message": "Correct spelling, add viewsNum and updateRequestsNum description. I\u0027m almost sure Doxy will put up a warning that viewsNum and updateRequestsNum are not documented.",
+      "range": {
+        "startLine": 109,
+        "startChar": 15,
+        "endLine": 109,
+        "endChar": 29
+      },
+      "revId": "cbddc7ab2c409ea0bc778f2c031488cbb9e8bf60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baada198_985dcaec",
+        "filename": "nfEngine/nfCore/Renderer/View.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-13T09:38:39Z",
+      "side": 1,
+      "message": "omit",
+      "range": {
+        "startLine": 163,
+        "startChar": 43,
+        "endLine": 163,
+        "endChar": 48
+      },
+      "revId": "cbddc7ab2c409ea0bc778f2c031488cbb9e8bf60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baada198_98b94aec",
+        "filename": "nfEngine/nfCore/Texture.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-13T09:38:39Z",
+      "side": 1,
+      "message": "This desc creates texture for a render target. I suggest renaming it to sth more related, like \"mRenderTargetTex\" or sth else",
+      "range": {
+        "startLine": 278,
+        "startChar": 34,
+        "endLine": 278,
+        "endChar": 38
+      },
+      "revId": "cbddc7ab2c409ea0bc778f2c031488cbb9e8bf60",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
