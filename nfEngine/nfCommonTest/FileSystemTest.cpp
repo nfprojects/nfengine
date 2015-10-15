@@ -76,9 +76,9 @@ TEST(FileSystemTest, Iterate)
     ASSERT_TRUE(FileSystem::Iterate(root, callback));
 
     for (const std::string& path : test_dirs)
-        EXPECT_EQ(1, dirs.count(path)) << "check directory '" << path << "'";
+        EXPECT_EQ(1u, dirs.count(path)) << "check directory '" << path << "'";
     for (const std::string& path : test_files)
-        EXPECT_EQ(1, files.count(path)) << "check file '" << path << "'";
+        EXPECT_EQ(1u, files.count(path)) << "check file '" << path << "'";
 
     // cleanup
     ASSERT_TRUE(FileSystem::Remove(root, true));

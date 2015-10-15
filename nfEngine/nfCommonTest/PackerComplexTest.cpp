@@ -6,7 +6,7 @@
 using namespace NFE::Common;
 
 namespace {
-const unsigned int TEST_FILE_COUNT = 1000; // amount of random files to generate for testing
+const size_t TEST_FILE_COUNT = 1000; // amount of random files to generate for testing
 const unsigned int TEST_FILE_MAX_DATA_COUNT =
     8192; // maximum amount of random data to put inside files
 } // namespace
@@ -103,7 +103,7 @@ TEST_F(PackerComplexTest, AddFiles)
     // add files
     const std::string prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
     std::string path;
-    for (int i = 0; i < TEST_FILE_COUNT; ++i)
+    for (size_t i = 0; i < TEST_FILE_COUNT; ++i)
     {
         path = prefix + std::to_string(i);
         EXPECT_NO_THROW(pr = mWriter->AddFile(path, path));
@@ -166,7 +166,7 @@ TEST_F(PackerComplexTest, ReadSingleFile)
     // check file count
     size_t fileCount;
     EXPECT_NO_THROW(fileCount = mReader->GetFileCount());
-    ASSERT_EQ(1, fileCount);
+    ASSERT_EQ(1u, fileCount);
 
     std::unique_ptr<Buffer> readData, correctData;
     readData.reset(new Buffer());
@@ -209,7 +209,7 @@ TEST_F(PackerComplexTest, ReadMultipleSimplyAddedFiles)
     // add files through simple AddFile function
     const std::string prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
     std::string path;
-    for (int i = 0; i < TEST_FILE_COUNT; ++i)
+    for (size_t i = 0; i < TEST_FILE_COUNT; ++i)
     {
         path = prefix + std::to_string(i);
         EXPECT_NO_THROW(pr = mWriter->AddFile(path, path));
@@ -231,7 +231,7 @@ TEST_F(PackerComplexTest, ReadMultipleSimplyAddedFiles)
 
     std::unique_ptr<Buffer> readData, correctData;
     // read every file and see if data was copied correctly
-    for (int i = 0; i < TEST_FILE_COUNT; ++i)
+    for (size_t i = 0; i < TEST_FILE_COUNT; ++i)
     {
         //initialize loop iteration
         path = prefix + std::to_string(i);
@@ -295,7 +295,7 @@ TEST_F(PackerComplexTest, ReadMultipleRecursivelyAddedFiles)
     std::string path;
 
     // read every file and see if data was copied correctly
-    for (int i = 0; i < TEST_FILE_COUNT; ++i)
+    for (size_t i = 0; i < TEST_FILE_COUNT; ++i)
     {
         //initialize loop iteration
         path = prefix + std::to_string(i);

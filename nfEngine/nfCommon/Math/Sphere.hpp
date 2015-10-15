@@ -22,7 +22,8 @@ public:
     float r; //< Sphere radius
 
     NFE_INLINE Sphere() : origin(), r() {}
-    NFE_INLINE Sphere(const Vector& origin, float r) : origin(origin), r(r) {}
+    NFE_INLINE Sphere(const Vector& initialOrigin, float initialR)
+        : origin(initialOrigin), r(initialR) {}
 
     /**
      * Construct a sphere intersecting four points.

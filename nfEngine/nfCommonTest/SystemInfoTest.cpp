@@ -7,22 +7,22 @@ TEST(SystemInfoTest, CpuInfoTest)
 {
     SystemInfo* sysInfoPtr = SystemInfo::Instance();
     ASSERT_FALSE(sysInfoPtr->GetCPUBrand().empty());
-    ASSERT_GE(sysInfoPtr->GetCPUCoreNo(), 1);
-    ASSERT_GT(sysInfoPtr->GetPageSize(), 100);
-    ASSERT_GE(sysInfoPtr->GetCacheLineSize(), 32);
-    ASSERT_GT(sysInfoPtr->GetCPUSpeedMHz(), 100);
+    ASSERT_GE(sysInfoPtr->GetCPUCoreNo(), 1u);
+    ASSERT_GT(sysInfoPtr->GetPageSize(), 100u);
+    ASSERT_GE(sysInfoPtr->GetCacheLineSize(), 32u);
+    ASSERT_GT(sysInfoPtr->GetCPUSpeedMHz(), 100u);
 
 }
 TEST(SystemInfoTest, MemoryInfoTest)
 {
     SystemInfo* sysInfoPtr = SystemInfo::Instance();
-    ASSERT_GT(sysInfoPtr->GetMemTotalPhysKb(), 1000);
-    ASSERT_GE(sysInfoPtr->GetMemTotalVirtKb(), 0);
-    ASSERT_LT(sysInfoPtr->GetMemTotalSwapKb(), 1000000000);
-    ASSERT_GT(sysInfoPtr->GetMemFreePhysKb(), 1000);
-    ASSERT_GE(sysInfoPtr->GetMemFreeVirtKb(), 0);
-    ASSERT_LT(sysInfoPtr->GetMemFreeSwapKb(), 1000000000);
-    ASSERT_GT(sysInfoPtr->GetFreeMemoryKb(), 0);
+    ASSERT_GT(sysInfoPtr->GetMemTotalPhysKb(), 1000u);
+    ASSERT_GE(sysInfoPtr->GetMemTotalVirtKb(), 0u);
+    ASSERT_LT(sysInfoPtr->GetMemTotalSwapKb(), 1000000000u);
+    ASSERT_GT(sysInfoPtr->GetMemFreePhysKb(), 1000u);
+    ASSERT_GE(sysInfoPtr->GetMemFreeVirtKb(), 0u);
+    ASSERT_LT(sysInfoPtr->GetMemFreeSwapKb(), 1000000000u);
+    ASSERT_GT(sysInfoPtr->GetFreeMemoryKb(), 0u);
 }
 TEST(SystemInfoTest, InfoStringTest)
 {

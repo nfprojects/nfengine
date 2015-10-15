@@ -64,7 +64,7 @@ TEST_F(PackerBasicTest, WriterEmptyTest)
     fs.read(reinterpret_cast<char*>(&readFileCount), sizeof(size_t));
 
     EXPECT_EQ(gPackFileVersion, readFileVersion);
-    EXPECT_EQ(0, readFileCount);
+    EXPECT_EQ(0u, readFileCount);
 }
 
 TEST_F(PackerBasicTest, ReaderEmptyTest)
@@ -88,7 +88,7 @@ TEST_F(PackerBasicTest, ReaderEmptyTest)
     EXPECT_EQ(gPackFileVersion, readFileVersion);
 
     EXPECT_NO_THROW(readFileCount = mReader->GetFileCount());
-    EXPECT_EQ(0, readFileCount);
+    EXPECT_EQ(0u, readFileCount);
 }
 
 TEST_F(PackerBasicTest, ReaderBuggyPathTest)

@@ -39,7 +39,8 @@ SET(NFRENDEREROGL4_DIRECTORY ${RENDERERS_DIRECTORY}/nfRendererOGL4)
 ADD_DEFINITIONS("-msse4.1")
 
 # Enable all warnings and make them errors
-ADD_DEFINITIONS("-Wall -Wpedantic -Wextra -Wno-sign-compare -Werror")
+ADD_DEFINITIONS("-Wall -Wpedantic -Wextra -Werror")
+ADD_DEFINITIONS("-Wshadow -Wpointer-arith -Wcast-qual -Wwrite-strings")
 
 ADD_DEFINITIONS(-DNFE_ROOT_DIRECTORY="${NFE_ROOT_DIRECTORY}/")
 

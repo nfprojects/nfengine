@@ -80,13 +80,13 @@ TEST(ThreadPoolSimple, EnqueueInsideTask)
     TaskFunction taskFuncB = [&](size_t instanceId, size_t)
     {
         EXPECT_EQ(1, condition);
-        EXPECT_EQ(0, instanceId);
+        EXPECT_EQ(0u, instanceId);
         latch.Set();
     };
 
     TaskFunction taskFuncA = [&](size_t instanceId, size_t)
     {
-        EXPECT_EQ(0, instanceId);
+        EXPECT_EQ(0u, instanceId);
         condition = 1;
         ASSERT_NO_THROW(taskB = tp.Enqueue(taskFuncB, 1, { taskA }));
     };
@@ -174,7 +174,7 @@ TEST(ThreadPoolSimple, InstancesSimple)
     tp.WaitForTask(task);
 
     for (size_t i = 0; i < instancesNum; ++i)
-        EXPECT_EQ(1, counters[i]) << "Task instance #" << i;
+        EXPECT_EQ(1u, counters[i]) << "Task instance #" << i;
 }
 
 // Spawn tasks with various instances numbers.
@@ -183,7 +183,7 @@ TEST(ThreadPoolSimple, Instances)
     const int tasksNum = 8;
     size_t instancesPerTask[] = { 1, 5, 10, 50, 100, 500, 1000, 5000 };
     // set up counter and test function
-    std::atomic<int> counters[tasksNum];
+    std::atomic<size_t> counters[tasksNum];
     auto func = [&counters](size_t, size_t, int task)
     {
         counters[task]++;
@@ -305,7 +305,7 @@ TEST(ThreadPoolSimple, DependencyRequiredNum)
 TEST(ThreadPoolSimple, DependencyChain)
 {
     const int chainLen = 4000; // chain length
-    const int instancesPerTask = 1;
+    const size_t instancesPerTask = 1;
 
     std::atomic<size_t> counters[chainLen];
 
@@ -352,7 +352,7 @@ TEST(ThreadPoolSimple, EnqueueInsideTaskRecursive)
 
     TaskFunction taskFunc = [&](size_t instanceId, size_t)
     {
-        EXPECT_EQ(0, instanceId);
+        EXPECT_EQ(0u, instanceId);
 
         if (++count < numTasks)
             ASSERT_NO_THROW(tp.Enqueue(taskFunc, 1));
