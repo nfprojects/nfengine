@@ -22,6 +22,30 @@
       "revId": "6212a43314410254c00cce2956a9dc4df41c0cc0",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_91aa0cd3",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-16T15:59:14Z",
+      "side": 1,
+      "message": "But this convention is used everywhere (in nfRendererD3D11, nfCore, nfCommonTest).",
+      "parentUuid": "baada198_c4cd9b88",
+      "range": {
+        "startLine": 19,
+        "startChar": 10,
+        "endLine": 19,
+        "endChar": 16
+      },
+      "revId": "6212a43314410254c00cce2956a9dc4df41c0cc0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
