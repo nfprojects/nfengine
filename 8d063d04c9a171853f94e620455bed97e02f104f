@@ -22,6 +22,30 @@
       "revId": "8d063d04c9a171853f94e620455bed97e02f104f",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_00906794",
+        "filename": "nfEngine/nfCommon/CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-17T19:51:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baada198_041dd366",
+      "range": {
+        "startLine": 19,
+        "startChar": 26,
+        "endLine": 19,
+        "endChar": 33
+      },
+      "revId": "8d063d04c9a171853f94e620455bed97e02f104f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
