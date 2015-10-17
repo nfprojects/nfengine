@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "9ab29df4_4c1d3b73",
+        "filename": "Scripts/ftpSyncher.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-17T10:21:20Z",
+      "side": 1,
+      "message": "A name is cool, but can be painful to use on a long term. \"syncher.py\" should be enough IMO.",
+      "revId": "30c2680cb98bc0b0df74415c89feeec984a20a05",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ab29df4_91720ce4",
         "filename": "Scripts/ftpSyncher.py",
         "patchSetId": 1
@@ -64,6 +81,29 @@
         "startChar": 20,
         "endLine": 42,
         "endChar": 45
+      },
+      "revId": "30c2680cb98bc0b0df74415c89feeec984a20a05",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_2c180784",
+        "filename": "Scripts/ftpSyncher.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-17T10:21:20Z",
+      "side": 1,
+      "message": "You know what to do with this and others below... ;)",
+      "range": {
+        "startLine": 68,
+        "startChar": 61,
+        "endLine": 68,
+        "endChar": 62
       },
       "revId": "30c2680cb98bc0b0df74415c89feeec984a20a05",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
@@ -180,6 +220,24 @@
     },
     {
       "key": {
+        "uuid": "9ab29df4_ec2e0fa5",
+        "filename": "Scripts/ftpSyncher.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-17T10:21:20Z",
+      "side": 1,
+      "message": "Because \"init\" is supposed to do so. For now, by doing small steps, it is the easiest way to achieve complete synchronization.",
+      "parentUuid": "9ab29df4_3131400c",
+      "revId": "30c2680cb98bc0b0df74415c89feeec984a20a05",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ab29df4_71449874",
         "filename": "Scripts/ftpSyncher.py",
         "patchSetId": 1
@@ -214,6 +272,41 @@
       "writtenOn": "2015-10-16T19:08:58Z",
       "side": 1,
       "message": "Why all files? Shouldn\u0027t be downloaded only the files that are not present locally? And what about syncing only modified files?",
+      "revId": "30c2680cb98bc0b0df74415c89feeec984a20a05",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_0c2c23ab",
+        "filename": "Scripts/ftpSyncher.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-17T10:21:20Z",
+      "side": 1,
+      "message": "As above. I asked MK to do it with small steps, not to implement 30000 lines of code at once. The issue asks for the same thing.",
+      "parentUuid": "9ab29df4_b15d504b",
+      "revId": "30c2680cb98bc0b0df74415c89feeec984a20a05",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_8c175351",
+        "filename": "Scripts/ftpSyncher.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-17T10:21:20Z",
+      "side": 1,
+      "message": "ftplib is not linux/windows specific. I think there is no need to exit the script if we are using OSX - one thing less to change when nfEngine on OSX becomes real.",
       "revId": "30c2680cb98bc0b0df74415c89feeec984a20a05",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
