@@ -75,6 +75,7 @@ namespace NFE {
         struct RendererMaterial;
         struct CameraRenderDesc;
         class View;
+        class Font;
     } // namespace Renderer
 
 } // namespace NFE

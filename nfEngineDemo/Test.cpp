@@ -15,6 +15,7 @@ using namespace NFE::Resource;
 
 class CustomWindow;
 
+std::unique_ptr<Font> gFont;
 std::vector<std::unique_ptr<CustomWindow>> gWindows;
 Engine* gEngine = nullptr;
 Random gRandom;
@@ -43,6 +44,19 @@ public:
 
     void OnPostRender(RenderContext* ctx)
     {
+        uint32 viewWidth, viewHeight;
+        this->GetSize(viewWidth, viewHeight);
+
+        // print time delta
+        static float avgDeltaTime = 0.0f;
+        avgDeltaTime = Lerp(avgDeltaTime, gDeltaTime, 0.1f);
+        char text[128];
+        sprintf(text, "dt = %.2fms", 1000.0f * avgDeltaTime);
+        GuiRenderer::Get()->PrintTextWithBorder(ctx, gFont.get(), text,
+                                                Recti(4, 0, viewWidth, viewHeight - 2),
+                                                0xFFFFFFFF, 0x40000000,
+                                                VerticalAlignment::Top);
+
         if (!drawSecondaryView)
             return;
 
@@ -521,6 +535,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     if (gEngine == nullptr)
         return 1;
 
+    gFont.reset(new Font);
+    gFont->Init("nfEngineDemo/Data/Fonts/Inconsolata.otf", 11);
+
     Demo_InitEditorBar();
 
     CollisionShape* floorShape = ENGINE_GET_COLLISION_SHAPE("shape_floor");
@@ -613,6 +630,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
                          updateRequests.data(), updateRequests.size());
     }
 
+    gFont.reset();
     gWindows.clear();
     Engine::Release();
 

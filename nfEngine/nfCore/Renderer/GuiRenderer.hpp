@@ -10,9 +10,25 @@
 #include "HighLevelRenderer.hpp"
 #include "Multishader.hpp"
 #include "GuiRendererContext.hpp"
+#include "Font.hpp"
 
 namespace NFE {
 namespace Renderer {
+
+enum class VerticalAlignment
+{
+    Top,
+    Center,
+    Bottom,
+};
+
+enum class HorizontalAlignment
+{
+    Left,
+    Right,
+    Center,
+    Justify
+};
 
 class CORE_API GuiRenderer : public RendererModule<GuiRenderer>
 {
@@ -39,6 +55,14 @@ public:
     void DrawQuad(RenderContext* context, const Rectf& rect, uint32 color);
     void DrawTexturedQuad(RenderContext* context, const Rectf& rect, const Rectf& texCoords,
                           ITexture* texture, uint32 color, bool alpha = false);
+    bool PrintText(RenderContext* context, Font* font, const char* text,
+                   const Recti& rect, uint32 color,
+                   VerticalAlignment vAlign = VerticalAlignment::Top,
+                   HorizontalAlignment hAlign = HorizontalAlignment::Right);
+    bool PrintTextWithBorder(RenderContext* context, Font* font, const char* text,
+                             const Recti& rect, uint32 color, uint32 borderColor,
+                             VerticalAlignment vAlign = VerticalAlignment::Top,
+                             HorizontalAlignment hAlign = HorizontalAlignment::Right);
 };
 
 } // namespace Renderer
