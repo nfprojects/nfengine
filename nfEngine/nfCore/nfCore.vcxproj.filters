@@ -138,6 +138,9 @@
     <ClCompile Include="Renderer\GeometryRenderer.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer\Font.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Aligned.hpp">
@@ -267,6 +270,9 @@
       <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\GuiRendererContext.hpp">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\Font.hpp">
       <Filter>Renderer</Filter>
     </ClInclude>
   </ItemGroup>
