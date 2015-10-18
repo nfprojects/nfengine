@@ -12,7 +12,7 @@ float4 main(GS_OUT In) : SV_TARGET0
 #if (USE_TEXTURE == 1) // normal mode
     color *= gTexture.Sample(gSampler, In.TexCoord);
 #elif (USE_TEXTURE == 2) // alpha mode
-    color.a *= gTexture.Sample(gSampler, In.TexCoord).a;
+    color.a *= gTexture.Sample(gSampler, In.TexCoord).r;
 #endif
 
     return color;

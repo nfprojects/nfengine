@@ -13,6 +13,7 @@
 #include "Renderer/HighLevelRenderer.hpp"
 #include "Renderer/GuiRenderer.hpp"
 #include "Renderer/View.hpp"
+#include "Renderer/Font.hpp"
 
 #include "../nfCommon/Memory.hpp"
 #include "../nfCommon/Window.hpp"
@@ -35,6 +36,8 @@ Engine::Engine()
 bool Engine::OnInit()
 {
     // TODO: Use SystemInfo class to check if hardware is good enough or to monitor memory usage
+
+    Font::InitFreeType();
 
     // init renderer
     LOG_INFO("Initializing renderer...");
@@ -86,6 +89,8 @@ void Engine::OnRelease()
     // release renderer
     mRenderer.reset();
     LOG_INFO("Renderer released.");
+
+    Font::ReleaseFreeType();
 }
 
 SceneManager* Engine::CreateScene()
