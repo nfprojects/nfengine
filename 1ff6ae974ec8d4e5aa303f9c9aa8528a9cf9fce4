@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "9ab29df4_4c5291de",
+        "filename": "nfEngine/nfCommon/AsyncThreadPool.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-20T19:06:15Z",
+      "side": 1,
+      "message": "Maybe I should explain it a little bit more:\nSuppose we are waiting for a condition in line 58. But no task is created, we want to destroy the pool. So in the constructor in the line 31 I set \"mStarted\" to true and trigger the condition. So, if wait() method in line 58 returns I must verify if mStarted is not true.\nMaybe \"mTasksQueueMutex\" is confusing, because it also handles destroying the pool?",
+      "parentUuid": "9ab29df4_2555751d",
+      "range": {
+        "startLine": 60,
+        "startChar": 0,
+        "endLine": 61,
+        "endChar": 23
+      },
+      "revId": "1ff6ae974ec8d4e5aa303f9c9aa8528a9cf9fce4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ab29df4_45ba69e2",
         "filename": "nfEngine/nfCommon/AsyncThreadPool.cpp",
         "patchSetId": 5
