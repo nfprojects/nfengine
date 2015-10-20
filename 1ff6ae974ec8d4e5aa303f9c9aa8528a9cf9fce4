@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ab29df4_c51f5908",
+        "filename": "nfEngine/nfCommon/AsyncThreadPool.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-20T12:41:52Z",
+      "side": 1,
+      "message": "Why not move it outside the loops as a first condition in this method? You could then remove mStarted condition inside while statement three lines above.",
+      "range": {
+        "startLine": 60,
+        "startChar": 0,
+        "endLine": 61,
+        "endChar": 23
+      },
+      "revId": "1ff6ae974ec8d4e5aa303f9c9aa8528a9cf9fce4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_45ba69e2",
+        "filename": "nfEngine/nfCommon/AsyncThreadPool.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-20T12:41:52Z",
+      "side": 1,
+      "message": "as below",
+      "range": {
+        "startLine": 104,
+        "startChar": 55,
+        "endLine": 104,
+        "endChar": 58
+      },
+      "revId": "1ff6ae974ec8d4e5aa303f9c9aa8528a9cf9fce4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_25ee55ed",
+        "filename": "nfEngine/nfCommon/AsyncThreadPool.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-20T12:41:52Z",
+      "side": 1,
+      "message": "Not to be ultra picky about it, however it is not exactly a pointer (well, it kind of is, but... not in C/Cpp meaning :) ). If it\u0027s not a big problem, I would rename it to taskId or taskID.",
+      "range": {
+        "startLine": 115,
+        "startChar": 56,
+        "endLine": 115,
+        "endChar": 63
+      },
+      "revId": "1ff6ae974ec8d4e5aa303f9c9aa8528a9cf9fce4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_a5b985eb",
+        "filename": "nfEngine/nfCommon/AsyncThreadPool.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-20T12:41:52Z",
+      "side": 1,
+      "message": "mTasksMutexCV.wait(lock, [\u0026taskPtr] { return GetTask(taskPtr) \u003d\u003d nullptr; });",
+      "range": {
+        "startLine": 124,
+        "startChar": 0,
+        "endLine": 125,
+        "endChar": 33
+      },
+      "revId": "1ff6ae974ec8d4e5aa303f9c9aa8528a9cf9fce4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_c5cd9988",
+        "filename": "nfEngine/nfCommon/AsyncThreadPool.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-20T12:41:52Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 131,
+        "startChar": 0,
+        "endLine": 132,
+        "endChar": 33
+      },
+      "revId": "1ff6ae974ec8d4e5aa303f9c9aa8528a9cf9fce4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_43ba69e2",
+        "filename": "nfEngine/nfCommon/AsyncThreadPool.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-20T12:41:52Z",
+      "side": 1,
+      "message": "a",
+      "range": {
+        "startLine": 94,
+        "startChar": 17,
+        "endLine": 94,
+        "endChar": 19
+      },
+      "revId": "1ff6ae974ec8d4e5aa303f9c9aa8528a9cf9fce4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
