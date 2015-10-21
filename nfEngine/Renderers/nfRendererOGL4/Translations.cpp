@@ -126,6 +126,64 @@ GLenum TranslateIndexBufferFormat(IndexBufferFormat format)
     }
 }
 
+GLenum TranslateTextureMinFilter(TextureMinFilter minFilter)
+{
+    switch (minFilter)
+    {
+    case TextureMinFilter::NearestMipmapNearest: return GL_NEAREST_MIPMAP_NEAREST;
+    case TextureMinFilter::LinearMipmapNearest:  return GL_LINEAR_MIPMAP_NEAREST;
+    case TextureMinFilter::NearestMipmapLinear:  return GL_NEAREST_MIPMAP_LINEAR;
+    case TextureMinFilter::LinearMipmapLinear:   return GL_LINEAR_MIPMAP_LINEAR;
+    default:
+        LOG_ERROR("Incorrect Texture Min Filter provided.");
+        return GL_NONE;
+    }
+}
+
+GLenum TranslateTextureMagFilter(TextureMagFilter magFilter)
+{
+    switch (magFilter)
+    {
+    case TextureMagFilter::Nearest: return GL_NEAREST;
+    case TextureMagFilter::Linear:  return GL_LINEAR;
+    default:
+        LOG_ERROR("Incorrect Texture Mag Filter provided.");
+        return GL_NONE;
+    }
+}
+
+GLenum TranslateTextureWrapMode(TextureWrapMode wrapMode)
+{
+    switch (wrapMode)
+    {
+    case TextureWrapMode::Repeat: return GL_REPEAT;
+    case TextureWrapMode::Clamp:  return GL_CLAMP_TO_EDGE;
+    case TextureWrapMode::Mirror: return GL_MIRRORED_REPEAT;
+    case TextureWrapMode::Border: return GL_CLAMP_TO_BORDER;
+    default:
+        LOG_ERROR("Incorrect Texture Wrap Mode provided.");
+        return GL_NONE;
+    }
+}
+
+GLenum TranslateCompareFunc(CompareFunc func)
+{
+    switch (func)
+    {
+    case CompareFunc::Never:        return GL_NEVER;
+    case CompareFunc::Less:         return GL_LESS;
+    case CompareFunc::LessEqual:    return GL_LEQUAL;
+    case CompareFunc::Equal:        return GL_EQUAL;
+    case CompareFunc::EqualGreater: return GL_GEQUAL;
+    case CompareFunc::Greater:      return GL_GREATER;
+    case CompareFunc::NotEqual:     return GL_NOTEQUAL;
+    case CompareFunc::Pass:         return GL_ALWAYS;
+    default:
+        LOG_ERROR("Incorrect Compare Func provided.");
+        return GL_NONE;
+    }
+}
+
 GLsizei GetElementFormatSize(ElementFormat format)
 {
     switch (format)

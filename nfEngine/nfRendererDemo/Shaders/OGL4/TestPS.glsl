@@ -1,12 +1,20 @@
+#if USE_TEXTURE == 1
+layout (binding = 0) uniform sampler2D gTextureSampler;
+#endif
+
 in VertexShaderOutput
 {
     vec2 TexCoord;
     vec4 Color;
 } Input;
 
-out vec3 color;
+out vec4 color;
 
 void main()
 {
-    color = vec3(Input.Color);
+#if USE_TEXTURE == 1
+    color = Input.Color * texture2D(gTextureSampler, Input.TexCoord);
+#else
+    color = Input.Color;
+#endif
 }

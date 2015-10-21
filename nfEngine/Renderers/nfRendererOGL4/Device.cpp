@@ -13,6 +13,8 @@
 #include "Shader.hpp"
 #include "Buffer.hpp"
 #include "VertexLayout.hpp"
+#include "Texture.hpp"
+#include "Sampler.hpp"
 
 
 namespace {
@@ -67,8 +69,7 @@ IBuffer* Device::CreateBuffer(const BufferDesc& desc)
 
 ITexture* Device::CreateTexture(const TextureDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<Texture, TextureDesc>(desc);
 }
 
 IBackbuffer* Device::CreateBackbuffer(const BackbufferDesc& desc)
@@ -101,8 +102,7 @@ IRasterizerState* Device::CreateRasterizerState(const RasterizerStateDesc& desc)
 
 ISampler* Device::CreateSampler(const SamplerDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<Sampler, SamplerDesc>(desc);
 }
 
 IShader* Device::CreateShader(const ShaderDesc& desc)
