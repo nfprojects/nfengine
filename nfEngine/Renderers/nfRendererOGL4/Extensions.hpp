@@ -53,6 +53,14 @@ extern PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
 extern PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;
 extern PFNGLBINDBUFFERRANGEPROC glBindBufferRange;
 
+/// OpenGL 3.3
+extern PFNGLGENSAMPLERSPROC glGenSamplers;
+extern PFNGLBINDSAMPLERSPROC glBindSamplers;
+extern PFNGLDELETESAMPLERSPROC glDeleteSamplers;
+extern PFNGLSAMPLERPARAMETERIPROC glSamplerParameteri;
+extern PFNGLSAMPLERPARAMETERFPROC glSamplerParameterf;
+extern PFNGLSAMPLERPARAMETERFVPROC glSamplerParameterfv;
+
 /// ARB_separate_shader_objects
 extern PFNGLUSEPROGRAMSTAGESPROC glUseProgramStages;
 extern PFNGLACTIVESHADERPROGRAMPROC glActiveShaderProgram;

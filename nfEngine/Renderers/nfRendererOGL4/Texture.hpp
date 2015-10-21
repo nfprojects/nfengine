@@ -5,6 +5,7 @@
  */
 
 #include "../RendererInterface/Texture.hpp"
+#include "Defines.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -19,20 +20,11 @@ protected:
     int mWidth;
     int mHeight;
     int mTexelSize; //< texel size in bytes
+    GLuint mTexture;
 
-    union
-    {
-        /* TODO
-        ID3D11Texture1D* mTexture1D;
-        ID3D11Texture2D* mTexture2D;
-        ID3D11Texture3D* mTexture3D;*/
-        void* mTextureGeneric;
-    };
-
-    /* TODO
     bool InitTexture1D(const TextureDesc& desc);
     bool InitTexture2D(const TextureDesc& desc);
-    bool InitTexture3D(const TextureDesc& desc);*/
+	bool InitTexture3D(const TextureDesc& desc);
 
 public:
     Texture();

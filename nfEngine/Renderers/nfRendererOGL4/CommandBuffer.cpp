@@ -12,6 +12,8 @@
 #include "Shader.hpp"
 #include "Buffer.hpp"
 #include "VertexLayout.hpp"
+#include "Texture.hpp"
+#include "Sampler.hpp"
 
 
 namespace NFE {
@@ -127,6 +129,27 @@ void CommandBuffer::BindVertexLayout()
     mVertexLayoutNeedsUpdate = false;
 }
 
+void CommandBuffer::BindTexture()
+{
+    Texture* t = dynamic_cast<Texture*>(mSetTexture);
+
+    if (mSetTexture == nullptr)
+        glBindTexture(GL_TEXTURE_2D, GL_NONE);
+    else
+        glBindTexture(GL_TEXTURE_2D, t->mTexture);
+
+    mTextureNeedsUpdate = false;
+}
+
+void CommandBuffer::BindSampler()
+{
+    Sampler* s = dynamic_cast<Sampler*>(mSetSampler);
+
+    glBindSamplers(mSetSamplerSlot, 1, &(s->mSampler));
+
+    mSamplerNeedsUpdate = false;
+}
+
 void CommandBuffer::Reset()
 {
     mCurrentRenderTarget = nullptr;
@@ -192,10 +215,16 @@ void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat forma
 
 void CommandBuffer::SetSamplers(ISampler** samplers, int num, ShaderType target, int slotOffset)
 {
-    UNUSED(samplers);
+    // TODO support multiple Samplers
     UNUSED(num);
     UNUSED(target);
-    UNUSED(slotOffset);
+
+    if (num > 1)
+        LOG_WARNING("Binding multiple Samplers is not yet supported! Only first will be set.");
+
+    mSetSampler = samplers[0];
+    mSetSamplerSlot = slotOffset;
+    mSamplerNeedsUpdate = true;
 }
 
 void CommandBuffer::SetTextures(ITexture** textures, int num, ShaderType target, int slotOffset)
@@ -204,6 +233,12 @@ void CommandBuffer::SetTextures(ITexture** textures, int num, ShaderType target,
     UNUSED(num);
     UNUSED(target);
     UNUSED(slotOffset);
+
+    if (num > 1)
+        LOG_WARNING("Binding multiple Textures is not yet supported! Only first will be set.");
+
+    mSetTexture = textures[0];
+    mTextureNeedsUpdate = true;
 }
 
 void CommandBuffer::SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target,
@@ -407,6 +442,12 @@ void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, in
     if (mVertexLayoutNeedsUpdate)
         BindVertexLayout();
 
+    if (mTextureNeedsUpdate)
+        BindTexture();
+
+    if (mSamplerNeedsUpdate)
+        BindSampler();
+
     glDrawArrays(TranslatePrimitiveType(type), vertexOffset, vertexNum);
 }
 
@@ -429,6 +470,12 @@ void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesN
 
     if (mIndexBufferNeedsUpdate)
         BindIndexBuffer();
+
+    if (mTextureNeedsUpdate)
+        BindTexture();
+
+    if (mSamplerNeedsUpdate)
+        BindSampler();
 
     glDrawElements(TranslatePrimitiveType(type), indexNum, mCurrentIndexBufferFormat,
                    reinterpret_cast<void*>(static_cast<size_t>(indexOffset)));
