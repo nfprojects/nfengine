@@ -29,10 +29,9 @@ protected:
         void* mTextureGeneric;
     };
 
-    /* TODO
     bool InitTexture1D(const TextureDesc& desc);
     bool InitTexture2D(const TextureDesc& desc);
-    bool InitTexture3D(const TextureDesc& desc);*/
+	bool InitTexture3D(const TextureDesc& desc);
 
 public:
     Texture();
