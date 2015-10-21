@@ -18,6 +18,10 @@ GLuint TranslateShaderTypeToGLBit(ShaderType type);
 GLenum TranslateElementFormat(ElementFormat format, bool& normalized);
 GLenum TranslatePrimitiveType(PrimitiveType type);
 GLenum TranslateIndexBufferFormat(IndexBufferFormat format);
+GLenum TranslateTextureMinFilter(TextureMinFilter minFilter);
+GLenum TranslateTextureMagFilter(TextureMagFilter magFilter);
+GLenum TranslateTextureWrapMode(TextureWrapMode wrapMode);
+GLenum TranslateCompareFunc(CompareFunc func);
 GLsizei GetElementFormatSize(ElementFormat format);
 
 } // namespace Renderer
