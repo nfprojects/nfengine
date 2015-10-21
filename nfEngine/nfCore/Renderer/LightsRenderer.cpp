@@ -181,7 +181,7 @@ LightsRenderer::LightsRenderer()
 
     // depth state for light volumes rendering
     DepthStateDesc dsDesc;
-    dsDesc.depthCompareFunc = CompareFunc::Grater;
+    dsDesc.depthCompareFunc = CompareFunc::Greater;
     dsDesc.depthTestEnable = false;
     dsDesc.depthWriteEnable = false;
     dsDesc.debugName = "LightsRenderer::mLightsDepthState";

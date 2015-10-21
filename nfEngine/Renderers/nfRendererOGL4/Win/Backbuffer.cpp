@@ -46,7 +46,7 @@ bool Backbuffer::Resize(int newWidth, int newHeight)
 
 bool Backbuffer::Init(const BackbufferDesc& desc)
 {
-    type = TextureType::Texture2D;
+    mType = TextureType::Texture2D;
     mHWND = static_cast<HWND>(desc.windowHandle);
     mWidth = desc.width;
     mHeight = desc.height;

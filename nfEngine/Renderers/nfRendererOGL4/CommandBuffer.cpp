@@ -12,6 +12,8 @@
 #include "Shader.hpp"
 #include "Buffer.hpp"
 #include "VertexLayout.hpp"
+#include "Texture.hpp"
+#include "Sampler.hpp"
 
 
 namespace NFE {
@@ -127,6 +129,33 @@ void CommandBuffer::BindVertexLayout()
     mVertexLayoutNeedsUpdate = false;
 }
 
+void CommandBuffer::BindTexture()
+{
+    if (mSetTexture == nullptr)
+    {
+        glBindTextures(mSetTextureSlot, 1, GL_NONE);
+        return;
+    }
+
+    Texture* t = dynamic_cast<Texture*>(mSetTexture);
+    glBindTextures(mSetTextureSlot, 1, &(t->mTexture));
+    mTextureNeedsUpdate = false;
+}
+
+void CommandBuffer::BindSampler()
+{
+    if (mSetSampler == nullptr)
+    {
+        GLuint nullSampler = GL_NONE;
+        glBindSamplers(mSetSamplerSlot, 1, &nullSampler);
+        return;
+    }
+
+    Sampler* s = dynamic_cast<Sampler*>(mSetSampler);
+    glBindSamplers(mSetSamplerSlot, 1, &(s->mSampler));
+    mSamplerNeedsUpdate = false;
+}
+
 void CommandBuffer::Reset()
 {
     mCurrentRenderTarget = nullptr;
@@ -192,18 +221,30 @@ void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat forma
 
 void CommandBuffer::SetSamplers(ISampler** samplers, int num, ShaderType target, int slotOffset)
 {
-    UNUSED(samplers);
-    UNUSED(num);
+    // TODO support SSO, or remove target argument (which requires fixes in D3D11 renderer)
     UNUSED(target);
-    UNUSED(slotOffset);
+
+    // TODO support multiple Samplers
+    if (num > 1)
+        LOG_WARNING("Binding multiple Samplers is not yet supported! Only first will be set.");
+
+    mSetSampler = samplers[0];
+    mSetSamplerSlot = slotOffset;
+    mSamplerNeedsUpdate = true;
 }
 
 void CommandBuffer::SetTextures(ITexture** textures, int num, ShaderType target, int slotOffset)
 {
-    UNUSED(textures);
-    UNUSED(num);
+    // TODO support SSO, or remove target argument (which requires fixes in D3D11 renderer)
     UNUSED(target);
-    UNUSED(slotOffset);
+
+    // TODO support multiple Textures
+    if (num > 1)
+        LOG_WARNING("Binding multiple Textures is not yet supported! Only first will be set.");
+
+    mSetTexture = textures[0];
+    mSetTextureSlot = slotOffset;
+    mTextureNeedsUpdate = true;
 }
 
 void CommandBuffer::SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target,
@@ -418,6 +459,12 @@ void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, in
     if (mVertexLayoutNeedsUpdate)
         BindVertexLayout();
 
+    if (mTextureNeedsUpdate)
+        BindTexture();
+
+    if (mSamplerNeedsUpdate)
+        BindSampler();
+
     glDrawArrays(TranslatePrimitiveType(type), vertexOffset, vertexNum);
 }
 
@@ -440,6 +487,12 @@ void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesN
 
     if (mIndexBufferNeedsUpdate)
         BindIndexBuffer();
+
+    if (mTextureNeedsUpdate)
+        BindTexture();
+
+    if (mSamplerNeedsUpdate)
+        BindSampler();
 
     glDrawElements(TranslatePrimitiveType(type), indexNum, mCurrentIndexBufferFormat,
                    reinterpret_cast<void*>(static_cast<size_t>(indexOffset)));

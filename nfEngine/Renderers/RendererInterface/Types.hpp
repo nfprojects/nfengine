@@ -188,8 +188,8 @@ enum class CompareFunc
     Less,
     LessEqual,
     Equal,
-    EqualGrater,
-    Grater,
+    EqualGreater,
+    Greater,
     NotEqual,
     Pass
 };
