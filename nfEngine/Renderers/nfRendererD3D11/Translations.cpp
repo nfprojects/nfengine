@@ -234,9 +234,9 @@ D3D11_COMPARISON_FUNC TranslateComparisonFunc(CompareFunc func)
             return D3D11_COMPARISON_LESS_EQUAL;
         case CompareFunc::Equal:
             return D3D11_COMPARISON_EQUAL;
-        case CompareFunc::EqualGrater:
+        case CompareFunc::EqualGreater:
             return D3D11_COMPARISON_GREATER_EQUAL;
-        case CompareFunc::Grater:
+        case CompareFunc::Greater:
             return D3D11_COMPARISON_GREATER;
         case CompareFunc::NotEqual:
             return D3D11_COMPARISON_NOT_EQUAL;

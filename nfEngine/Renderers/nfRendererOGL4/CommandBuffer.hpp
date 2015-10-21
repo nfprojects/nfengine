@@ -25,7 +25,11 @@ class CommandBuffer : public ICommandBuffer
     IBuffer* mSetIndexBuffer;
     IBuffer* mSetConstantBuffer;
     IVertexLayout* mSetVertexLayout;
+    ITexture* mSetTexture;
+    ISampler* mSetSampler;
 
+    GLint mSetTextureSlot;
+    GLint mSetSamplerSlot;
     GLuint mSetShaderProgram;
     GLint mSetConstantBufferSlot;
 
@@ -33,6 +37,8 @@ class CommandBuffer : public ICommandBuffer
     bool mIndexBufferNeedsUpdate;
     bool mConstantBufferNeedsUpdate;
     bool mVertexLayoutNeedsUpdate;
+    bool mTextureNeedsUpdate;
+    bool mSamplerNeedsUpdate;
 
     // SSO-related variables
     bool mSSOEnabled;
@@ -44,6 +50,8 @@ class CommandBuffer : public ICommandBuffer
     void BindIndexBuffer();
     void BindConstantBuffer();
     void BindVertexLayout();
+    void BindTexture();
+    void BindSampler();
 
 public:
     CommandBuffer();
