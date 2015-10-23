@@ -138,6 +138,9 @@
     <ClCompile Include="Resources\Multishader.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\Profiler.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Prerequisites.hpp">
@@ -265,6 +268,9 @@
     </ClInclude>
     <ClInclude Include="Resources\Multishader.hpp">
       <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Profiler.hpp">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

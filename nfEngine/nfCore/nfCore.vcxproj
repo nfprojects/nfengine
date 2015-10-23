@@ -397,6 +397,7 @@
     </ClCompile>
     <ClCompile Include="Utils\Aligned.cpp" />
     <ClCompile Include="Utils\BVH.cpp" />
+    <ClCompile Include="Utils\Profiler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\BodyComponent.hpp" />
@@ -441,6 +442,7 @@
     <ClInclude Include="Systems\TransformSystem.hpp" />
     <ClInclude Include="Utils\Aligned.hpp" />
     <ClInclude Include="Utils\BVH.hpp" />
+    <ClInclude Include="Utils\Profiler.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
