@@ -138,6 +138,9 @@
     <ClCompile Include="Utils\BVH.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\Profiler.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Prerequisites.hpp">
@@ -264,6 +267,9 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Utils\BVH.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Profiler.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
