@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9ab29df4_e236fc02",
+        "filename": "nfEngine/nfCore/Renderer/Font.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-27T11:19:36Z",
+      "side": 1,
+      "message": "Then FreeType library sources must be included by every app using the engine. I\u0027d like to avoid this. I think this is the reason why in Unreal Engine they have \"Private\" and \"Public\" directories everywhere... :)",
+      "parentUuid": "9ab29df4_22ed54c4",
+      "revId": "2974066c7d08235c9e4f9a6dac00821595eb1edd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ab29df4_a2efa4af",
         "filename": "nfEngine/nfCore/Renderer/Font.cpp",
         "patchSetId": 1
