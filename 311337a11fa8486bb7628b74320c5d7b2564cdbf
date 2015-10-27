@@ -16,6 +16,24 @@
       "revId": "311337a11fa8486bb7628b74320c5d7b2564cdbf",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_626aec1b",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-27T10:33:26Z",
+      "side": 1,
+      "message": "D3D_CALL_CHECK will do that",
+      "parentUuid": "9ab29df4_229f1454",
+      "revId": "311337a11fa8486bb7628b74320c5d7b2564cdbf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
