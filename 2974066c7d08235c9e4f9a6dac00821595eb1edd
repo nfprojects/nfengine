@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "9ab29df4_6222ecba",
+        "filename": "nfEngine/nfCore/Renderer/Font.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-27T11:20:57Z",
+      "side": 1,
+      "message": "OK, indeed. It might stay then.",
+      "parentUuid": "9ab29df4_e236fc02",
+      "revId": "2974066c7d08235c9e4f9a6dac00821595eb1edd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ab29df4_a2efa4af",
         "filename": "nfEngine/nfCore/Renderer/Font.cpp",
         "patchSetId": 1
