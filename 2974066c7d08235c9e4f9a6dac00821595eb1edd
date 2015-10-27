@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ab29df4_22ed54c4",
+        "filename": "nfEngine/nfCore/Renderer/Font.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-27T11:11:22Z",
+      "side": 1,
+      "message": "IMO this should be a member of Font class.",
+      "revId": "2974066c7d08235c9e4f9a6dac00821595eb1edd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_a2efa4af",
+        "filename": "nfEngine/nfCore/Renderer/Font.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-27T11:11:22Z",
+      "side": 1,
+      "message": "Two issues with this part:\n1) Magic number (IMO this and 13 should be a const)\n2) Assuming someone for some weird reason enters Windows/DOS style newline (\\r\\n; such text could be loaded from a file, which is very possible thing to happen when producing multiple language support), this code will assume two new lines on screen instead of one. Since \\n is Unix-friendly, I would just skip \\r char and react with newline only on \\n char.",
+      "range": {
+        "startLine": 52,
+        "startChar": 23,
+        "endLine": 52,
+        "endChar": 25
+      },
+      "revId": "2974066c7d08235c9e4f9a6dac00821595eb1edd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_2212b4b1",
+        "filename": "nfEngine/nfCore/Renderer/Font.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-27T11:11:22Z",
+      "side": 1,
+      "message": "Do You Have To Use Capitals In Every Word Of This Comment? :)",
+      "range": {
+        "startLine": 101,
+        "startChar": 11,
+        "endLine": 101,
+        "endChar": 44
+      },
+      "revId": "2974066c7d08235c9e4f9a6dac00821595eb1edd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_428968c9",
+        "filename": "nfEngine/nfCore/Renderer/GuiRenderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-10-27T11:11:22Z",
+      "side": 1,
+      "message": "Same as in Font.cpp",
+      "range": {
+        "startLine": 252,
+        "startChar": 11,
+        "endLine": 252,
+        "endChar": 40
+      },
+      "revId": "2974066c7d08235c9e4f9a6dac00821595eb1edd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
