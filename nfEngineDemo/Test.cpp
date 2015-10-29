@@ -191,6 +191,11 @@ public:
         secondaryView->SetCamera(scene.get(), secondaryCameraEntity);
         secondaryView->SetOffScreen(SECONDARY_VIEW_WIDTH, SECONDARY_VIEW_HEIGHT,
                                     secondaryViewTexName.c_str());
+
+        // set custom postprocessing parameters
+        secondaryView->postProcessParams.noiseFactor = 0.1f;
+        secondaryView->postProcessParams.saturation = 0.5f;
+
         view->secondaryViewTexName = secondaryViewTexName;
     }
 
@@ -299,7 +304,7 @@ public:
             lightDesc.cutoff = NFE_MATH_PI / 4.0f;
             lightDesc.maxShadowDistance = 60.0f;
             light.SetSpotLight(&lightDesc);
-            light.SetColor(Float3(600.0f, 200.0f, 50.0f));
+            light.SetColor(Float3(30.0f, 15.0f, 5.0f));
             light.SetLightMap("flashlight.jpg");
             light.SetShadowMap(1024);
             entityManager->AddComponent(lightEntity, light);
@@ -309,7 +314,7 @@ public:
         if (key == 'O' && cameraTransform != nullptr)
         {
             OmniLightDesc lightDesc;
-            lightDesc.radius = 10.0f;
+            lightDesc.radius = 20.0f;
             lightDesc.shadowFadeStart = 20.0f;
             lightDesc.maxShadowDistance = 30.0f;
 
@@ -323,7 +328,7 @@ public:
 
             LightComponent light;
             light.SetOmniLight(&lightDesc);
-            light.SetColor(Float3(600, 600, 600));
+            light.SetColor(Float3(25.0f, 25.0f, 25.0f));
             light.SetShadowMap(512);
             entityManager->AddComponent(lightEntity, light);
         }
@@ -400,7 +405,7 @@ public:
                 lightDesc.maxShadowDistance = 30.0;
                 LightComponent light;
                 light.SetOmniLight(&lightDesc);
-                light.SetColor(Float3(1.0f, 1.0f, 10.0f));
+                light.SetColor(Float3(0.5f, 0.5f, 3.0f));
                 light.SetShadowMap(0);
                 entityManager->AddComponent(child, light);
 
