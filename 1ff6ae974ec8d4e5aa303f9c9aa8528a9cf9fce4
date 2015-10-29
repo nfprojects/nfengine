@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "9ab29df4_65158cf0",
+        "filename": "nfEngine/nfCommon/AsyncThreadPool.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-29T21:33:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ab29df4_45ba69e2",
+      "range": {
+        "startLine": 104,
+        "startChar": 55,
+        "endLine": 104,
+        "endChar": 58
+      },
+      "revId": "1ff6ae974ec8d4e5aa303f9c9aa8528a9cf9fce4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ab29df4_25ee55ed",
         "filename": "nfEngine/nfCommon/AsyncThreadPool.cpp",
         "patchSetId": 5
@@ -107,6 +131,30 @@
       "writtenOn": "2015-10-20T12:41:52Z",
       "side": 1,
       "message": "Not to be ultra picky about it, however it is not exactly a pointer (well, it kind of is, but... not in C/Cpp meaning :) ). If it\u0027s not a big problem, I would rename it to taskId or taskID.",
+      "range": {
+        "startLine": 115,
+        "startChar": 56,
+        "endLine": 115,
+        "endChar": 63
+      },
+      "revId": "1ff6ae974ec8d4e5aa303f9c9aa8528a9cf9fce4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_45108801",
+        "filename": "nfEngine/nfCommon/AsyncThreadPool.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-29T21:33:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ab29df4_25ee55ed",
       "range": {
         "startLine": 115,
         "startChar": 56,
@@ -142,6 +190,30 @@
     },
     {
       "key": {
+        "uuid": "9ab29df4_250b94d7",
+        "filename": "nfEngine/nfCommon/AsyncThreadPool.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-29T21:33:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ab29df4_a5b985eb",
+      "range": {
+        "startLine": 124,
+        "startChar": 0,
+        "endLine": 125,
+        "endChar": 33
+      },
+      "revId": "1ff6ae974ec8d4e5aa303f9c9aa8528a9cf9fce4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ab29df4_c5cd9988",
         "filename": "nfEngine/nfCommon/AsyncThreadPool.cpp",
         "patchSetId": 5
@@ -165,6 +237,30 @@
     },
     {
       "key": {
+        "uuid": "9ab29df4_050690ce",
+        "filename": "nfEngine/nfCommon/AsyncThreadPool.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-29T21:33:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ab29df4_c5cd9988",
+      "range": {
+        "startLine": 131,
+        "startChar": 0,
+        "endLine": 132,
+        "endChar": 33
+      },
+      "revId": "1ff6ae974ec8d4e5aa303f9c9aa8528a9cf9fce4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ab29df4_454a6984",
         "filename": "nfEngine/nfCommon/AsyncThreadPool.hpp",
         "patchSetId": 5
@@ -176,6 +272,30 @@
       "writtenOn": "2015-10-20T13:52:34Z",
       "side": 1,
       "message": "bool",
+      "range": {
+        "startLine": 61,
+        "startChar": 16,
+        "endLine": 61,
+        "endChar": 27
+      },
+      "revId": "1ff6ae974ec8d4e5aa303f9c9aa8528a9cf9fce4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_85f9c0ca",
+        "filename": "nfEngine/nfCommon/AsyncThreadPool.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-29T21:33:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ab29df4_454a6984",
       "range": {
         "startLine": 61,
         "startChar": 16,
