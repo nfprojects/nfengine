@@ -112,7 +112,8 @@ void RendererSystem::RenderLights(const Common::TaskContext& context, RenderingD
     EnviromentDesc envDesc;
     mScene->GetEnvironment(&envDesc);
     LightsRenderer::Get()->DrawAmbientLight(renderCtx,
-                                            envDesc.ambientLight, envDesc.backgroundColor);
+                                            renderer->GammaFix(envDesc.ambientLight),
+                                            renderer->GammaFix(envDesc.backgroundColor));
 
 
 
@@ -122,7 +123,8 @@ void RendererSystem::RenderLights(const Common::TaskContext& context, RenderingD
         LightComponent* light = std::get<1>(mOmniLights[i]);
 
         LightsRenderer::Get()->DrawOmniLight(renderCtx, transform->GetPosition(),
-                                             light->mOmniLight.radius, light->mColor,
+                                             light->mOmniLight.radius,
+                                             renderer->GammaFix(light->mColor),
                                              light->mShadowMap.get());
     }
 
@@ -133,7 +135,7 @@ void RendererSystem::RenderLights(const Common::TaskContext& context, RenderingD
         const LightComponent* light = std::get<1>(mSpotLights[i]);
 
         SpotLightProperties prop;
-        prop.color = light->mColor;
+        prop.color = renderer->GammaFix(light->mColor);
         prop.position = transform->GetPosition();
         prop.direction = transform->GetMatrix().r[2];
         prop.farDist.Set(light->mSpotLight.farDist);
@@ -157,7 +159,7 @@ void RendererSystem::RenderLights(const Common::TaskContext& context, RenderingD
         LightComponent* light = std::get<1>(lightTuple);
 
         DirLightProperties prop;
-        prop.color = light->mColor;
+        prop.color = renderer->GammaFix(light->mColor);
         prop.direction = transform->GetMatrix().GetRow(2);
         prop.cascadesCount[0] = light->mDirLight.splits;
 
