@@ -44,6 +44,17 @@ struct GPUStats
     {}
 };
 
+
+/**
+ * Global renderer configuration.
+ */
+struct RendererConfig
+{
+    float gamma;
+
+    RendererConfig();
+};
+
 class HighLevelRenderer final
 {
 private:
@@ -70,6 +81,8 @@ private:
     std::unique_ptr<RenderContext[]> mDeferredContexts;
     std::unique_ptr<RenderContext> mImmediateContext;
 
+    RendererConfig mConfig;
+
     /// disable unwanted methods
     HighLevelRenderer(const HighLevelRenderer&) = delete;
     HighLevelRenderer(HighLevelRenderer&&) = delete;
@@ -80,6 +93,7 @@ private:
 
 public:
     GPUStats pipelineStats;
+
 
     HighLevelRenderer();
     ~HighLevelRenderer();
@@ -166,6 +180,11 @@ public:
     NFE_INLINE ITexture* GetDefaultSpecularTexture() const
     {
         return mDefaultSpecularTexture.get();
+    }
+
+    NFE_INLINE Math::Vector GammaFix(const Math::Vector& color) const
+    {
+        return color * color;
     }
 };
 

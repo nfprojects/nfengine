@@ -222,12 +222,15 @@ bool Engine::Advance(View** views, size_t viewsNum,
         // execute scene command lists
         renderingData[i].ExecuteCommandLists();
 
+        // perform postprocess
+        view->Postprocess();
+
         // GUI renderer pass
         {
             RenderContext* ctx = mRenderer->GetImmediateContext();
             ctx->commandBuffer->Reset();
             GuiRenderer::Get()->Enter(ctx);
-            GuiRenderer::Get()->SetTarget(ctx, view->GetRenderTarget());
+            GuiRenderer::Get()->SetTarget(ctx, view->GetRenderTarget(true));
             view->OnPostRender(ctx);
             // TODO draw engine signature with current version
             GuiRenderer::Get()->Leave(ctx);
@@ -238,7 +241,7 @@ bool Engine::Advance(View** views, size_t viewsNum,
         {
             ICommandBuffer* commandBuffer = mRenderer->GetImmediateContext()->commandBuffer;
             commandBuffer->BeginDebugGroup("AntTweak");
-            commandBuffer->SetRenderTarget(view->GetRenderTarget());
+            commandBuffer->SetRenderTarget(view->GetRenderTarget(true));
             TwDraw();
             commandBuffer->EndDebugGroup();
         }

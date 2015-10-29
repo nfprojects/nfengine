@@ -11,6 +11,7 @@
 #include "DebugRendererContext.hpp"
 #include "GeometryRendererContext.hpp"
 #include "GuiRendererContext.hpp"
+#include "../nfCommon/Math/Random.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -21,6 +22,7 @@ class RenderContext
 
 public:
     ICommandBuffer* commandBuffer; // low-level API command buffer
+    Math::Random random;
 
     RenderContext();
     RenderContext(ICommandBuffer* commandBuffer);
