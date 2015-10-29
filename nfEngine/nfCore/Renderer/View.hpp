@@ -9,13 +9,30 @@
 #include "../Core.hpp"
 #include "HighLevelRenderer.hpp"
 #include "RendererResources.hpp"
+#include "PostProcessRenderer.hpp"
 #include "../EntityManager.hpp"
 
 namespace NFE {
 namespace Renderer {
 
+struct PostProcessParameters
+{
+    bool enabled;
+
+    float exposure;
+
+    float minExposure;
+    float maxExposure;
+    float exposureOffset;
+    float adaptationRate;
+
+    PostProcessParameters();
+};
+
 class CORE_API View
 {
+    PostProcessParameters mPostProcess;
+
     // not NULL when rendering to a off-screen render target
     Resource::Texture* mTexture;
 
@@ -27,11 +44,14 @@ class CORE_API View
     /// by the HighLevelRenderer. For example, multiple views can have the same dimensions,
     /// so keeping separate copies will be a waste of RAM.
     std::unique_ptr<GeometryBuffer> mGBuffer;
-    std::unique_ptr<IRenderTarget> mRenderTarget;
+    std::unique_ptr<ITexture> mTemporaryBuffer;
+    std::unique_ptr<IRenderTarget> mTemporaryRenderTarget;  // before postprocess
+    std::unique_ptr<IRenderTarget> mRenderTarget;           // postprocessed
 
     Scene::SceneManager* mScene;
     Scene::EntityID mCameraEntity;
 
+    bool InitTemporaryRenderTarget(uint32 width, uint32 height);
     bool InitRenderTarget(ITexture* texture, uint32 width, uint32 height);
     static void OnWindowResize(void* userData);
 
@@ -61,6 +81,9 @@ public:
 
     NFE_INLINE IRenderTarget* GetRenderTarget() const
     {
+        if (mPostProcess.enabled && mTemporaryRenderTarget)
+            return mTemporaryRenderTarget.get();
+
         return mRenderTarget.get();
     }
 

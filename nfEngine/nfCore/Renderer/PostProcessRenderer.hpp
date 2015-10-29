@@ -8,26 +8,33 @@
 
 #include "RendererModule.hpp"
 #include "HighLevelRenderer.hpp"
+#include "Multishader.hpp"
 
 namespace NFE {
 namespace Renderer {
 
+struct ToneMappingParameters
+{
+    float exposure;
+};
+
 class PostProcessRenderer : public RendererModule<PostProcessRenderer>
 {
+    // TODO: these are common with lights renderer:
+    Multishader mFullscreenQuadVS;
+    std::unique_ptr<IVertexLayout> mVertexLayout;
+    std::unique_ptr<IBuffer> mVertexBuffer;
+
+    Multishader mTonemappingPS;
+    std::unique_ptr<IBuffer> mTonemappingCBuffer;
+
 public:
-    bool ApplyAntialiasing(RenderContext* context, ITexture* source, IRenderTarget* dest);
-    bool ApplyFXAA(RenderContext* context, const FXAADesc& desc);
+    PostProcessRenderer();
+    void OnEnter(RenderContext* context);
+    void OnLeave(RenderContext* context);
 
-    bool ApplyTonemapping(RenderContext* context, const ToneMappingDesc& desc);
-    bool Downsaple(RenderContext* context, uint32 srcWidth, uint32 srcHeight, ITexture* source,
-                  IRenderTarget* dest);
-    bool Blur(RenderContext* context, uint32 srcWidth, uint32 srcHeight, ITexture* source,
-              IRenderTarget* dest, UINT Mode);
-    bool AverageTexture(RenderContext* context, ITexture* pSource, uint32 width, uint32 height);
-    float GetAverageColor(RenderContext* context, uint32 width, uint32 height);
-
-    bool ApplyMotionBlur(RenderContext* context, uint32 srcWidth, uint32 srcHeight,
-                         ITexture* source, IRenderTarget* dest, float dt);
+    bool ApplyTonemapping(RenderContext* context, const ToneMappingParameters& params,
+                          ITexture* src, IRenderTarget* dest);
 };
 
 } // namespace Renderer

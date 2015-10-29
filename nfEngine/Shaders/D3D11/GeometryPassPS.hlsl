@@ -63,9 +63,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     // TEX3 [float16]    | motionVector.uv  | <unused> |  <unused>   |
 
     float4 diffuseColor = gDiffuseColor * gDiffuseTexture.Sample(gTextureSampler, input.texCoord);
-
-    // TODO: gamma correction
-    // diffuseColor.rgb *= diffuseColor.rgb;
+    diffuseColor.rgb *= diffuseColor.rgb; // gamma correction
 
     output.color1 = float4(diffuseColor.rgb, gSpecularColor.w); //difuse color + spec power
 

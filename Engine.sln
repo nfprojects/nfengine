@@ -109,6 +109,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "D3D11", "D3D11", "{A9D64D99
 		nfEngine\Shaders\D3D11\ShadowVS.hlsl = nfEngine\Shaders\D3D11\ShadowVS.hlsl
 		nfEngine\Shaders\D3D11\SpotLightPS.hlsl = nfEngine\Shaders\D3D11\SpotLightPS.hlsl
 		nfEngine\Shaders\D3D11\SpotLightVS.hlsl = nfEngine\Shaders\D3D11\SpotLightVS.hlsl
+		nfEngine\Shaders\D3D11\TonemappingPS.hlsl = nfEngine\Shaders\D3D11\TonemappingPS.hlsl
 	EndProjectSection
 EndProject
 Global

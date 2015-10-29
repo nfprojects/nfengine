@@ -7,6 +7,7 @@
 #include "../PCH.hpp"
 #include "View.hpp"
 #include "HighLevelRenderer.hpp"
+#include "PostProcessRenderer.hpp"
 
 #include "../Engine.hpp"
 #include "../ResourcesManager.hpp"
@@ -18,6 +19,15 @@
 
 namespace NFE {
 namespace Renderer {
+
+PostProcessParameters::PostProcessParameters()
+    : enabled(true)
+    , exposure(1.0f)
+    , minExposure(0.3f)
+    , maxExposure(3.0f)
+    , exposureOffset(0.0f)
+    , adaptationRate(1.0f)
+{}
 
 View::View()
 {
@@ -119,6 +129,45 @@ void View::OnWindowResize(void* userData)
     }
 }
 
+bool View::InitTemporaryRenderTarget(uint32 width, uint32 height)
+{
+    HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
+
+    TextureDesc texDesc;
+    texDesc.type = TextureType::Texture2D;
+    texDesc.access = BufferAccess::GPU_ReadWrite;
+    texDesc.width = width;
+    texDesc.height = height;
+    texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER | NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
+    texDesc.mipmaps = 1;
+    texDesc.debugName = "View::mTemporaryBuffer";
+    texDesc.format = ElementFormat::Float_16; // TODO: support for other formats
+    texDesc.texelSize = 4;
+
+    mTemporaryBuffer.reset(renderer->GetDevice()->CreateTexture(texDesc));
+    if (!mTemporaryBuffer)
+    {
+        LOG_ERROR("Failed to create temporary buffer texture");
+        return false;
+    }
+
+    RenderTargetElement rtTarget;
+    rtTarget.texture = mTemporaryBuffer.get();
+    RenderTargetDesc rtDesc;
+    rtDesc.numTargets = 1;
+    rtDesc.targets = &rtTarget;
+    rtDesc.debugName = "View::mTemporaryRenderTarget";
+
+    mTemporaryRenderTarget.reset(renderer->GetDevice()->CreateRenderTarget(rtDesc));
+    if (!mTemporaryRenderTarget)
+    {
+        LOG_ERROR("Failed to create temporary buffer's render target");
+        return false;
+    }
+
+    return true;
+}
+
 bool View::InitRenderTarget(ITexture* texture, uint32 width, uint32 height)
 {
     RenderTargetElement rtTarget;
@@ -146,13 +195,36 @@ bool View::InitRenderTarget(ITexture* texture, uint32 width, uint32 height)
         return false;
     }
 
+    // TODO: temporary buffer is not needed when post-process is disabled
+    if (!InitTemporaryRenderTarget(width, height))
+        return false;
+
     return true;
 }
 
 void View::Present()
 {
+    // perfor post process (if enabled)
+    if (mRenderTarget && mPostProcess.enabled && mTemporaryBuffer)
+    {
+        HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
+        RenderContext* ctx = renderer->GetImmediateContext();
+
+        ToneMappingParameters params; // TODO
+        params.exposure = 1.0f;
+
+        PostProcessRenderer::Get()->Enter(ctx);
+        PostProcessRenderer::Get()->ApplyTonemapping(ctx, params,
+                                                     mTemporaryBuffer.get(),
+                                                     mRenderTarget.get());
+        PostProcessRenderer::Get()->Leave(ctx);
+
+        // ctx->commandBuffer->CopyTexture(mTemporaryBuffer.get(), targetTexture);
+    }
+
     if (mWindowBackbuffer != nullptr && mRenderTarget != nullptr)
     {
+
         mWindowBackbuffer->Present();
     }
 }

@@ -15,51 +15,119 @@ namespace Renderer {
 // renderer modules instance definition
 std::unique_ptr<PostProcessRenderer> PostProcessRenderer::mPtr;
 
-
-bool PostProcessRenderer::ApplyAntialiasing(RenderContext* context, ITexture* source,
-                                           IRenderTarget* dest)
+struct NFE_ALIGN16 ToneMappingCBuffer
 {
-    return 0;
+    Vector bufferInvRes;
+    Vector seed;
+    Vector params;
+};
+
+PostProcessRenderer::PostProcessRenderer()
+{
+    IDevice* device = mRenderer->GetDevice();
+
+    mFullscreenQuadVS.Load("FullScreenQuadVS");
+    mTonemappingPS.Load("TonemappingPS");
+
+    /// create vertex layout
+    VertexLayoutElement vertexLayoutElements[] =
+    {
+        { ElementFormat::Float_32, 3, 0, 0, false, 0 }, // position
+    };
+    VertexLayoutDesc vertexLayoutDesc;
+    vertexLayoutDesc.elements = vertexLayoutElements;
+    vertexLayoutDesc.numElements = 1;
+    vertexLayoutDesc.vertexShader = mFullscreenQuadVS.GetShader(nullptr);
+    vertexLayoutDesc.debugName = "PostProcessRenderer::mVertexLayout";
+    mVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
+
+    // vertices for full-screen quad
+    Float3 vertices[] =
+    {
+        Float3(-1.0f, -1.0f, 0.0f),
+        Float3(1.0f, -1.0f, 0.0f),
+        Float3(1.0f, 1.0f, 0.0f),
+
+        Float3(-1.0f, -1.0f, 0.0f),
+        Float3(1.0f,  1.0f, 0.0f),
+        Float3(-1.0f,  1.0f, 0.0f),
+    };
+
+    BufferDesc bufferDesc;
+    bufferDesc.access = BufferAccess::GPU_ReadOnly;
+    bufferDesc.size = sizeof(vertices);
+    bufferDesc.type = BufferType::Vertex;
+    bufferDesc.initialData = vertices;
+    bufferDesc.debugName = "PostProcessRenderer::mVertexBuffer";
+    mVertexBuffer.reset(device->CreateBuffer(bufferDesc));
+
+
+    bufferDesc.access = BufferAccess::CPU_Write;
+    bufferDesc.type = BufferType::Constant;
+    bufferDesc.initialData = nullptr;
+    bufferDesc.size = sizeof(ToneMappingCBuffer);
+    bufferDesc.debugName = "PostProcessRenderer::mTonemappingCBuffer";
+    mTonemappingCBuffer.reset(device->CreateBuffer(bufferDesc));
 }
 
-bool PostProcessRenderer::ApplyFXAA(RenderContext* context, const FXAADesc& desc)
+void PostProcessRenderer::OnEnter(RenderContext* context)
 {
-    return 0;
+    context->commandBuffer->BeginDebugGroup("Post Process Renderer stage");
+
+    context->commandBuffer->SetRasterizerState(mRenderer->GetDefaultRasterizerState());
+    context->commandBuffer->SetDepthState(mRenderer->GetDefaultDepthState());
+    context->commandBuffer->SetBlendState(mRenderer->GetDefaultBlendState());
+
+    ISampler* sampler = mRenderer->GetDefaultSampler();
+    context->commandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
+
+    IBuffer* veretexBuffers[] = { mVertexBuffer.get() };
+    int strides[] = { sizeof(Float3) };
+    int offsets[] = { 0 };
+    context->commandBuffer->SetVertexBuffers(1, veretexBuffers, strides, offsets);
+    context->commandBuffer->SetVertexLayout(mVertexLayout.get());
 }
 
-bool PostProcessRenderer::ApplyTonemapping(RenderContext* context, const ToneMappingDesc& desc)
+void PostProcessRenderer::OnLeave(RenderContext* context)
 {
-    return 0;
+    context->commandBuffer->EndDebugGroup();
 }
 
-bool PostProcessRenderer::Downsaple(RenderContext* context, uint32 srcWidth, uint32 srcHeight,
-                                    ITexture* source, IRenderTarget* dest)
+bool PostProcessRenderer::ApplyTonemapping(RenderContext* context,
+                                           const ToneMappingParameters& params,
+                                           ITexture* src, IRenderTarget* dest)
 {
-    return 0;
-}
+    int width, height;
+    dest->GetDimensions(width, height);
+    context->commandBuffer->SetViewport(0.0f, static_cast<float>(width),
+                                        0.0f, static_cast<float>(height),
+                                        0.0f, 1.0f);
 
-bool PostProcessRenderer::Blur(RenderContext* context, uint32 srcWidth, uint32 srcHeight,
-                               ITexture* source, IRenderTarget* dest, UINT Mode)
-{
-    return 0;
-}
+    context->commandBuffer->SetShader(mFullscreenQuadVS.GetShader(nullptr));
+    context->commandBuffer->SetShader(mTonemappingPS.GetShader(nullptr));
 
-bool PostProcessRenderer::AverageTexture(RenderContext* context, ITexture* source,
-                                         uint32 width, uint32 height)
-{
-    return 0;
-}
+    ToneMappingCBuffer cbufferData;
+    cbufferData.bufferInvRes = Vector(1.0f / static_cast<float>(width),
+                                      1.0f / static_cast<float>(height));
+    cbufferData.params = Vector(params.exposure, 1.0f, 0.01f); // TODO: pass parameters
+    cbufferData.seed = Vector(context->random.GetFloat2());
 
-float PostProcessRenderer::GetAverageColor(RenderContext* context, uint32 width, uint32 height)
-{
-    return 0;
-}
+    IBuffer* cbuffers[] = { mTonemappingCBuffer.get() };
+    context->commandBuffer->SetConstantBuffers(cbuffers, 1, ShaderType::Pixel);
+    context->commandBuffer->WriteBuffer(mTonemappingCBuffer.get(), 0,
+                                        sizeof(cbufferData), &cbufferData);
 
-bool PostProcessRenderer::ApplyMotionBlur(RenderContext* context, uint32 srcWidth,
-                                          uint32 srcHeight, ITexture* source, IRenderTarget* dest,
-                                          float dt)
-{
-    return 0;
+    context->commandBuffer->SetRenderTarget(dest);
+    context->commandBuffer->SetTextures(&src, 1, ShaderType::Pixel);
+
+    context->commandBuffer->Draw(PrimitiveType::Triangles, 2 * 3);  // draw 2 traingles
+
+    /// unbind source texture
+    ITexture* nullTextures[] = { mRenderer->GetDefaultDiffuseTexture() };
+    context->commandBuffer->SetTextures(nullTextures, 1, ShaderType::Pixel);
+
+
+    return true;
 }
 
 } // namespace Renderer
