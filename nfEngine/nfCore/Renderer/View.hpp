@@ -14,6 +14,21 @@
 namespace NFE {
 namespace Renderer {
 
+struct PostProcessParameters
+{
+    bool enabled;
+    float saturation;
+    float noiseFactor;
+    float exposureOffset;
+
+    PostProcessParameters()
+        : enabled(true)
+        , saturation(1.0f)
+        , noiseFactor(0.015f)
+        , exposureOffset(0.0f)
+    {}
+};
+
 class CORE_API View
 {
     // not NULL when rendering to a off-screen render target
@@ -29,14 +44,19 @@ class CORE_API View
     std::unique_ptr<GeometryBuffer> mGBuffer;
     std::unique_ptr<IRenderTarget> mRenderTarget;
 
+    std::unique_ptr<ITexture> mTemporaryBuffer;
+    std::unique_ptr<IRenderTarget> mTemporaryRenderTarget;  // before postprocess
+
     Scene::SceneManager* mScene;
     Scene::EntityID mCameraEntity;
 
+    bool InitTemporaryRenderTarget(uint32 width, uint32 height);
     bool InitRenderTarget(ITexture* texture, uint32 width, uint32 height);
     static void OnWindowResize(void* userData);
 
 public:
     bool drawAntTweakBar;
+    PostProcessParameters postProcessParams;
 
     View();
     virtual ~View();
@@ -58,8 +78,20 @@ public:
         return mCameraEntity;
     }
 
-    NFE_INLINE IRenderTarget* GetRenderTarget() const
+    /**
+     * Get render target.
+     * @param afterPostProcess If set to "true", it returns render target that must be used for
+     *                         rendering after post-process pass. For example: debug info, GUI.
+     * @return Render target interface pointer
+     */
+    NFE_INLINE IRenderTarget* GetRenderTarget(bool afterPostProcess = false) const
     {
+        if (afterPostProcess)
+            return mRenderTarget.get();
+
+        if (postProcessParams.enabled && mTemporaryRenderTarget)
+            return mTemporaryRenderTarget.get();
+
         return mRenderTarget.get();
     }
 
@@ -87,6 +119,12 @@ public:
      * Destroy render target
      */
     void Release();
+
+    /**
+     * Perform post-process. If something more needs to be rendered after postprocessing,
+     * pass "ture" to @p GetRenderTarget method after this call.
+     */
+    void Postprocess();
 
     /**
      * Display the render target on a screen, when the View is connected with a window.
