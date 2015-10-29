@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9ab29df4_e59c3c6c",
+        "filename": "nfEngine/nfCommon/ThreadPool.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-29T21:34:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ab29df4_05db111c",
+      "range": {
+        "startLine": 48,
+        "startChar": 16,
+        "endLine": 48,
+        "endChar": 35
+      },
+      "revId": "c2845df3ccd9c73d3a816c810a5496899d19f2fa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ab29df4_e5fe1d38",
         "filename": "nfEngine/nfCommon/ThreadPool.cpp",
         "patchSetId": 10
@@ -36,6 +60,30 @@
       "writtenOn": "2015-10-21T10:23:42Z",
       "side": 1,
       "message": "I think we are going back to where we were in Logger. :)\n\nWhy assert? I know this will only happen in Debug, but IMO it is too brutal to break entire program execution due to one incorrect argument.",
+      "range": {
+        "startLine": 164,
+        "startChar": 4,
+        "endLine": 164,
+        "endChar": 29
+      },
+      "revId": "c2845df3ccd9c73d3a816c810a5496899d19f2fa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_05893026",
+        "filename": "nfEngine/nfCommon/ThreadPool.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-29T21:34:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ab29df4_e5fe1d38",
       "range": {
         "startLine": 164,
         "startChar": 4,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "9ab29df4_258e342f",
+        "filename": "nfEngine/nfCommon/ThreadPool.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-29T21:34:14Z",
+      "side": 1,
+      "message": "removed, it was for debugging",
+      "parentUuid": "9ab29df4_e9c35788",
+      "range": {
+        "startLine": 197,
+        "startChar": 15,
+        "endLine": 197,
+        "endChar": 64
+      },
+      "revId": "c2845df3ccd9c73d3a816c810a5496899d19f2fa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ab29df4_c5a2f999",
         "filename": "nfEngine/nfCommon/ThreadPool.hpp",
         "patchSetId": 10
@@ -82,6 +154,30 @@
       "writtenOn": "2015-10-21T10:23:42Z",
       "side": 1,
       "message": "a",
+      "range": {
+        "startLine": 172,
+        "startChar": 17,
+        "endLine": 172,
+        "endChar": 19
+      },
+      "revId": "c2845df3ccd9c73d3a816c810a5496899d19f2fa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_c59f385e",
+        "filename": "nfEngine/nfCommon/ThreadPool.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-29T21:34:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ab29df4_c5a2f999",
       "range": {
         "startLine": 172,
         "startChar": 17,
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "9ab29df4_45832804",
+        "filename": "nfEngine/nfCommonTest/ThreadPoolSimple.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-29T21:34:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ab29df4_693747b1",
+      "range": {
+        "startLine": 184,
+        "startChar": 23,
+        "endLine": 184,
+        "endChar": 48
+      },
+      "revId": "c2845df3ccd9c73d3a816c810a5496899d19f2fa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ab29df4_a9415f0d",
         "filename": "nfEngine/nfCommonTest/ThreadPoolSimple.cpp",
         "patchSetId": 10
@@ -128,6 +248,30 @@
       "writtenOn": "2015-10-21T10:23:42Z",
       "side": 1,
       "message": "How different is this comment from the one above? (@ 376)",
+      "range": {
+        "startLine": 406,
+        "startChar": 0,
+        "endLine": 406,
+        "endChar": 48
+      },
+      "revId": "c2845df3ccd9c73d3a816c810a5496899d19f2fa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_65882c20",
+        "filename": "nfEngine/nfCommonTest/ThreadPoolSimple.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 406,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-10-29T21:34:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ab29df4_a9415f0d",
       "range": {
         "startLine": 406,
         "startChar": 0,
