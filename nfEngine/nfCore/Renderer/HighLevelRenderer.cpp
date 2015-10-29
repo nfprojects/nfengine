@@ -23,6 +23,10 @@
 namespace NFE {
 namespace Renderer {
 
+RendererConfig::RendererConfig()
+    : gamma(2.0f)
+{}
+
 HighLevelRenderer::HighLevelRenderer()
     : mRenderingDevice(nullptr)
 {

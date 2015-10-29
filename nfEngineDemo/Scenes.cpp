@@ -111,7 +111,7 @@ void CreateSceneSponza(SceneManager* scene)
         omni.maxShadowDistance = 120.0f;
         omni.radius = 90.0f;
         light.SetOmniLight(&omni);
-        light.SetColor(Float3(50, 50, 50));
+        light.SetColor(Float3(8.0f, 8.0f, 8.0f));
         light.SetShadowMap(512);
         entityManager->AddComponent(lightEntity, light);
     }
@@ -158,7 +158,7 @@ void CreateChamberArray(SceneManager* scene,
             omni.radius = 8.0f;
             LightComponent light;
             light.SetOmniLight(&omni);
-            light.SetColor(Float3(50, 50, 50));
+            light.SetColor(Float3(12.0f, 12.0f, 12.0f));
             light.SetShadowMap(32);
 
             EntityID mainLight = entityManager->CreateEntity();
@@ -178,7 +178,7 @@ void CreateChamberArray(SceneManager* scene,
                 omni.radius = 3.0f;
                 LightComponent light;
                 light.SetOmniLight(&omni);
-                light.SetColor(Float3(5.0f, 0.5f, 0.25f));
+                light.SetColor(Float3(1.0f, 0.2f, 0.1f));
                 light.SetShadowMap(0);
                 entityManager->AddComponent(lightA, light);
             }
@@ -192,7 +192,7 @@ void CreateChamberArray(SceneManager* scene,
                 omni.radius = 3.0f;
                 LightComponent light;
                 light.SetOmniLight(&omni);
-                light.SetColor(Float3(5.0f, 0.5f, 0.25f));
+                light.SetColor(Float3(1.0f, 0.2f, 0.1f));
                 light.SetShadowMap(0);
                 entityManager->AddComponent(lightB, light);
             }
@@ -280,7 +280,7 @@ void CreateSceneSegments()
         light = new LightComponent(&entity);
         omni.radius = 3.0f;
         light->SetOmniLight(&omni);
-        light->SetColor(Float3(5.0f, 0.5f, 0.25f));
+        light->SetColor(Float3(1.0f, 0.5f, 0.25f));
         entity.Serialize(&segmentDesc, Vector());
 
         entity.RemoveAllComponents();
@@ -288,7 +288,7 @@ void CreateSceneSegments()
         light = new LightComponent(&entity);
         omni.radius = 3.0f;
         light->SetOmniLight(&omni);
-        light->SetColor(Float3(5.0f, 0.5f, 0.25f));
+        light->SetColor(Float3(1.0f, 0.5f, 0.25f));
         entity.Serialize(&segmentDesc, Vector());
     }
 
