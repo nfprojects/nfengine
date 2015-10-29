@@ -64,8 +64,8 @@ PixelShaderOutput main(VertexShaderOutput input)
 
     float4 diffuseColor = gDiffuseColor * gDiffuseTexture.Sample(gTextureSampler, input.texCoord);
 
-    // TODO: gamma correction
-    // diffuseColor.rgb *= diffuseColor.rgb;
+    // gamma correction
+    diffuseColor.rgb *= diffuseColor.rgb;  // TODO: use SRGB format for color textures
 
     output.color1 = float4(diffuseColor.rgb, gSpecularColor.w); //difuse color + spec power
 
