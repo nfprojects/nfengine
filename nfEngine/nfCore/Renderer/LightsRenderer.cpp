@@ -291,11 +291,6 @@ void LightsRenderer::DrawAmbientLight(RenderContext* context, const Vector& ambi
     context->commandBuffer->DrawIndexed(PrimitiveType::Triangles, 6);
 }
 
-void LightsRenderer::TileBasedPass(RenderContext* context, uint32 lightsCount,
-                                   const TileOmniLightDesc* lights)
-{
-}
-
 void LightsRenderer::DrawOmniLight(RenderContext* context, const Vector& pos, float radius,
                                    const Vector& color, ShadowMap* shadowMap)
 {

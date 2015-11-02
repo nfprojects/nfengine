@@ -29,7 +29,7 @@ void CreateSceneMinecraft(SceneManager* scene)
 
     //set ambient & background color
     EnviromentDesc envDesc;
-    envDesc.ambientLight = Vector(0.6f, 0.7f, 0.8f, 0.0f);
+    envDesc.ambientLight = Vector(0.3f, 0.35f, 0.4f, 0.0f);
     envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
     scene->SetEnvironment(&envDesc);
 
@@ -79,7 +79,7 @@ void CreateSceneSponza(SceneManager* scene)
 
     //set ambient & background color
     EnviromentDesc envDesc;
-    envDesc.ambientLight = Vector(0.6f, 0.7f, 0.8f, 0.0f);
+    envDesc.ambientLight = Vector(0.3f, 0.35f, 0.4f, 0.0f);
     envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
     scene->SetEnvironment(&envDesc);
 
@@ -125,7 +125,7 @@ void CreateChamberArray(SceneManager* scene,
 
     // set ambient & background color
     EnviromentDesc envDesc;
-    envDesc.ambientLight = Vector(0.6f, 0.7f, 0.8f, 0.0f);
+    envDesc.ambientLight = Vector(0.3f, 0.35f, 0.4f, 0.0f);
     envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
     scene->SetEnvironment(&envDesc);
 
@@ -251,7 +251,7 @@ void CreateSceneSegments()
 {
     //set ambient & background color
     EnviromentDesc envDesc;
-    envDesc.ambientLight = Vector(0.6f, 0.7f, 0.8f, 0.0f);
+    envDesc.ambientLight = Vector(0.3f, 0.35f, 0.4f, 0.0f);
     envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
     gScene->SetEnvironment(&envDesc);
 
