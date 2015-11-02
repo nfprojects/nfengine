@@ -80,7 +80,6 @@ private:
 
 public:
     GPUStats pipelineStats;
-    RendererSettings settings;
 
     HighLevelRenderer();
     ~HighLevelRenderer();

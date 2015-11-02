@@ -41,10 +41,10 @@ struct NFE_ALIGN16 CameraRenderDesc
     float fov;
 };
 
-/*
-    Structure describing material layer information.
-    Used by GBuffer renderer.
-*/
+/**
+ *  Structure describing material layer information.
+ *  Used by GBuffer renderer.
+ */
 struct RendererMaterialLayer
 {
     ITexture* diffuseTex;
@@ -76,91 +76,6 @@ struct RendererMaterial
             delete[] layers;
             layers = 0;
         }
-    }
-};
-
-
-// Global renderer settings
-struct RendererSettings
-{
-    bool VSync;
-
-
-    bool tileBasedDeferredShading;
-
-    bool pipelineStats;
-
-    bool motionBlur;
-    float motionBlurFactor;
-
-    bool bloom;
-    int bloomSize;
-    float bloomVariance;
-    float bloomFactor;
-
-    bool autoExposure;
-    bool gammaCorrection;
-    float saturation;
-    float noiseLevel;
-    bool noiseEnabled;
-
-    bool antialiasing;
-    float antialiasingSpanMax;
-    float antialiasingReduceMul;
-    float antialiasingReduceMin;
-    bool antialiasingLumaOpt;
-
-    bool debugEnable;
-    bool debugLights;
-    bool debugMeshes;
-
-    RendererSettings()
-    {
-        VSync = false;
-
-        tileBasedDeferredShading = false;
-        autoExposure = true;
-
-        bloom = true;
-        bloomSize = 16;
-        bloomVariance = 4.0f;
-        bloomFactor = 0.4f;
-
-        motionBlur = true;
-        motionBlurFactor = 0.2f;
-
-        pipelineStats = false;
-        gammaCorrection = true;
-        noiseLevel = 0.02f;
-        noiseEnabled = true;
-        saturation = 1.0f;
-
-        antialiasing = true;
-        antialiasingLumaOpt = true;
-        antialiasingSpanMax = 8.0;
-        antialiasingReduceMul = 16.0;
-        antialiasingReduceMin = 128.0;
-
-        debugEnable = true;
-        debugLights = false;
-        debugMeshes = false;
-    }
-};
-
-
-// Contains rendering preferences, etc.
-struct ViewSettings
-{
-    // this parameter is modified by the engine if auto-exposure is ON
-    float exposure;
-    float clampedExposure;
-
-    // TODO: move RendererSettings here (most of them)
-
-    ViewSettings()
-    {
-        exposure = 1.0f;
-        clampedExposure = 1.0f;
     }
 };
 
@@ -228,62 +143,6 @@ public:
     {
         return mHeight;
     }
-};
-
-struct NFE_ALIGN16 DirLightProperties
-{
-    Math::Vector direction;
-    Math::Vector color;
-    uint32 cascadesCount[4];
-
-    Math::Vector splitDistance[8];
-    Math::Matrix viewProjMatrix[8];
-};
-
-struct NFE_ALIGN16 SpotLightProperties
-{
-    Math::Vector position;
-    Math::Vector direction;
-    Math::Vector color;
-    Math::Vector farDist;
-    Math::Matrix viewProjMatrix;
-    Math::Matrix viewProjMatrixInv;
-    Math::Vector shadowMapProps;
-};
-
-struct TileOmniLightDesc
-{
-    Math::Float3 pos;
-    float radius;
-    float radiusInv;
-    Math::Float3 color;
-};
-
-struct ToneMappingDesc
-{
-    ITexture* source;
-    ITexture* bloom;
-    IRenderTarget* dest;
-
-    float exposure;
-    float bloomFactor;
-    float noiseLevel;
-    bool  noiseEnabled;
-    float saturation;
-};
-
-struct FXAADesc
-{
-    ITexture* source;
-    IRenderTarget* dest;
-
-    float noiseLevel;
-    bool  noiseEnabled;
-
-    bool lumaOpt;
-    float spanMax;
-    float reduceMul;
-    float reduceMin;
 };
 
 } // namespace Renderer
