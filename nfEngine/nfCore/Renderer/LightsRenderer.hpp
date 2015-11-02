@@ -8,13 +8,33 @@
 
 #include "RendererModule.hpp"
 #include "HighLevelRenderer.hpp"
-#include "RendererResources.hpp"
 #include "Multishader.hpp"
 
 namespace NFE {
 namespace Renderer {
 
 using namespace Math;
+
+struct NFE_ALIGN16 DirLightProperties
+{
+    Math::Vector direction;
+    Math::Vector color;
+    uint32 cascadesCount[4];
+
+    Math::Vector splitDistance[8];
+    Math::Matrix viewProjMatrix[8];
+};
+
+struct NFE_ALIGN16 SpotLightProperties
+{
+    Math::Vector position;
+    Math::Vector direction;
+    Math::Vector color;
+    Math::Vector farDist;
+    Math::Matrix viewProjMatrix;
+    Math::Matrix viewProjMatrixInv;
+    Math::Vector shadowMapProps;
+};
 
 class LightsRenderer : public RendererModule<LightsRenderer>
 {
@@ -54,7 +74,6 @@ public:
                const CameraRenderDesc* camera);
     void DrawAmbientLight(RenderContext* context, const Vector& ambientLightColor,
                           const Vector& backgroundColor);
-    void TileBasedPass(RenderContext* context, uint32 lightsCount, const TileOmniLightDesc* lights);
     void DrawOmniLight(RenderContext* context, const Vector& pos, float radius, const Vector& color,
                        ShadowMap* shadowMap);
     void DrawSpotLight(RenderContext* context, const SpotLightProperties& prop,

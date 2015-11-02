@@ -108,9 +108,13 @@ void RendererSystem::RenderLights(const Common::TaskContext& context, RenderingD
                                  data.view->GetRenderTarget(),
                                  data.view->GetGeometryBuffer(),
                                  &data.cameraRenderDesc);
+
+    EnviromentDesc envDesc;
+    mScene->GetEnvironment(&envDesc);
     LightsRenderer::Get()->DrawAmbientLight(renderCtx,
-                                            Vector(0.4f, 0.5f, 0.6f),
-                                            Vector(0.2f, 0.25f, 0.3f));
+                                            envDesc.ambientLight, envDesc.backgroundColor);
+
+
 
     for (const uint32 i : data.visibleOmniLights)
     {
@@ -390,7 +394,6 @@ void RendererSystem::Render(const Common::TaskContext& context, RenderingData& r
     using namespace std::placeholders;
 
     EntityManager* entityManager = mScene->GetEntityManager();
-    HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
     Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
 
     /// extract viewing camera information
@@ -471,7 +474,7 @@ void RendererSystem::Render(const Common::TaskContext& context, RenderingData& r
         std::bind(&RendererSystem::RenderLights, this, _1, std::ref(renderingData)));
 
     // enqueue debug layer pass task
-    if (renderer->settings.debugEnable)
+    // TODO: temporary - add "if" statement when renderer configuration is implemented
     {
         renderingData.debugLayerTask = threadPool->CreateTask(
             std::bind(&RendererSystem::RenderDebugLayer, this, _1, std::ref(renderingData)));
@@ -517,13 +520,15 @@ void RendererSystem::RenderDebugLayer(const Common::TaskContext& context, Render
     }
 
     // draw light shapes
-    if (renderer->settings.debugLights)
+    // TODO: temporary - fix "if" statement when renderer configuration is implemented
+    if (false)
     {
         RenderLightsDebug(data, renderCtx);
     }
 
     // draw meshes AABBs
-    if (renderer->settings.debugMeshes)
+    // TODO: temporary - fix "if" statement when renderer configuration is implemented
+    if (false)
     {
         for (auto meshTuple : mMeshes)
         {
