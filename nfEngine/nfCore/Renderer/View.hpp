@@ -36,7 +36,6 @@ class CORE_API View
     static void OnWindowResize(void* userData);
 
 public:
-    ViewSettings settings;
     bool drawAntTweakBar;
 
     View();
