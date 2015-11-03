@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ab29df4_27e8efb3",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-11-03T10:31:49Z",
+      "side": 1,
+      "message": "rm. The @file directive does not have anything afterwards.",
+      "range": {
+        "startLine": 3,
+        "startChar": 8,
+        "endLine": 3,
+        "endChar": 21
+      },
+      "revId": "ec277252afcd59acf32e912336e4544aa151061b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_c7d81320",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-11-03T10:31:49Z",
+      "side": 1,
+      "message": "Since this is a dir, end it with /\n\nDo the same with dataSubDir.",
+      "range": {
+        "startLine": 12,
+        "startChar": 10,
+        "endLine": 12,
+        "endChar": 25
+      },
+      "revId": "ec277252afcd59acf32e912336e4544aa151061b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_67d107fb",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-11-03T10:31:49Z",
+      "side": 1,
+      "message": "dataDirectory \u003d dataDir + dataSubDir\n\nPlus, use ALL_CAPITALS to write these constant strings.",
+      "range": {
+        "startLine": 14,
+        "startChar": 16,
+        "endLine": 14,
+        "endChar": 36
+      },
+      "revId": "ec277252afcd59acf32e912336e4544aa151061b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_67f8277d",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-11-03T10:31:49Z",
+      "side": 1,
+      "message": "IMO \u0027## DONE ##\u0027 will be more readable. :)",
+      "range": {
+        "startLine": 123,
+        "startChar": 10,
+        "endLine": 123,
+        "endChar": 20
+      },
+      "revId": "ec277252afcd59acf32e912336e4544aa151061b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
