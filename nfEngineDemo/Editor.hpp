@@ -6,5 +6,3 @@
 
 extern NFE::Scene::EntityManager* gEntityManager;
 extern NFE::Scene::EntityID gSelectedEntity;
-
-void Demo_InitEditorBar();

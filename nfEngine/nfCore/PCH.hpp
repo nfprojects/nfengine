@@ -59,9 +59,6 @@
 #include "freetype/ftoutln.h"
 #include "freetype/fttrigon.h"
 
-//AntTweakBar library
-#include "AntTweakBar.h"
-
 /// RapidXML library
 #include "rapidxml.hpp"
 #include "rapidxml_iterators.hpp"
