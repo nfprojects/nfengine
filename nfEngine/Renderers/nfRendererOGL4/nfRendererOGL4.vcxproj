@@ -179,6 +179,7 @@
     <ClInclude Include="Device.hpp" />
     <ClInclude Include="Extensions.hpp" />
     <ClInclude Include="GetExtension.hpp" />
+    <ClInclude Include="PipelineState.hpp" />
     <ClInclude Include="RendererOGL4.hpp" />
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="RenderTarget.hpp" />
@@ -190,11 +191,14 @@
     <ClInclude Include="Win\wglExtensions.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BlendState.cpp" />
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="CommandBuffer.cpp" />
+    <ClCompile Include="DepthState.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Extensions.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="RasterizerState.cpp" />
     <ClCompile Include="RendererOGL4.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="PCH.cpp">

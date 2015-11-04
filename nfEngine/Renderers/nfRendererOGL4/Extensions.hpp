@@ -20,6 +20,9 @@
 namespace NFE {
 namespace Renderer {
 
+/// OpenGL 1.4
+extern PFNGLBLENDFUNCSEPARATEPROC glBlendFuncSeparate;
+
 /// OpenGL 1.5
 extern PFNGLGENBUFFERSPROC glGenBuffers;
 extern PFNGLBINDBUFFERPROC glBindBuffer;
@@ -46,6 +49,7 @@ extern PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
 extern PFNGLDISABLEVERTEXATTRIBARRAYPROC glDisableVertexAttribArray;
 extern PFNGLMAPBUFFERPROC glMapBuffer;
 extern PFNGLUNMAPBUFFERPROC glUnmapBuffer;
+extern PFNGLBLENDEQUATIONSEPARATEPROC glBlendEquationSeparate;
 
 /// OpenGL 3.0
 extern PFNGLGENVERTEXARRAYSPROC glGenVertexArrays;

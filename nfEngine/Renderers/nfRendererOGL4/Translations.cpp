@@ -144,6 +144,75 @@ GLenum TranslateCompareFunc(CompareFunc func)
     }
 }
 
+GLenum TranslateCullMode(CullMode mode)
+{
+    // assumes CW culling mode is front (will be force-set by CommandBuffer)
+    switch (mode)
+    {
+    case CullMode::Disabled: return GL_FRONT_AND_BACK;
+    case CullMode::CW:       return GL_FRONT;
+    case CullMode::CCW:      return GL_BACK;
+    default:                 return GL_NONE;
+    }
+}
+
+GLenum TranslateFillMode(FillMode mode)
+{
+    switch (mode)
+    {
+    case FillMode::Solid:     return GL_FILL;
+    case FillMode::Wireframe: return GL_LINE;
+    default:                  return GL_NONE;
+    }
+}
+
+GLenum TranslateBlendFunc(BlendFunc func)
+{
+    switch (func)
+    {
+    case BlendFunc::Zero:              return GL_ZERO;
+    case BlendFunc::One:               return GL_ONE;
+    case BlendFunc::SrcColor:          return GL_SRC_COLOR;
+    case BlendFunc::DestColor:         return GL_DST_COLOR;
+    case BlendFunc::SrcAlpha:          return GL_SRC_ALPHA;
+    case BlendFunc::DestAlpha:         return GL_DST_ALPHA;
+    case BlendFunc::OneMinusSrcColor:  return GL_ONE_MINUS_SRC_COLOR;
+    case BlendFunc::OneMinusDestColor: return GL_ONE_MINUS_DST_COLOR;
+    case BlendFunc::OneMinusSrcAlpha:  return GL_ONE_MINUS_SRC_ALPHA;
+    case BlendFunc::OneMinusDestAlpha: return GL_ONE_MINUS_DST_ALPHA;
+    default:                           return GL_NONE;
+    }
+}
+
+GLenum TranslateBlendOp(BlendOp op)
+{
+    switch (op)
+    {
+    case BlendOp::Add:         return GL_FUNC_ADD;
+    case BlendOp::Subtract:    return GL_FUNC_SUBTRACT;
+    case BlendOp::RevSubtract: return GL_FUNC_REVERSE_SUBTRACT;
+    case BlendOp::Min:         return GL_MIN;
+    case BlendOp::Max:         return GL_MAX;
+    default:                   return GL_NONE;
+    }
+}
+
+GLenum TranslateStencilOp(StencilOp op)
+{
+    switch(op)
+    {
+    case StencilOp::Keep:          return GL_KEEP;
+    case StencilOp::Zero:          return GL_ZERO;
+    case StencilOp::Replace:       return GL_REPLACE;
+    case StencilOp::Increment:     return GL_INCR;
+    case StencilOp::IncrementWrap: return GL_INCR_WRAP;
+    case StencilOp::Decrement:     return GL_DECR;
+    case StencilOp::DecrementWrap: return GL_DECR_WRAP;
+    case StencilOp::Invert:        return GL_INVERT;
+    default:                       return GL_NONE;
+    }
+}
+
 GLsizei GetElementFormatSize(ElementFormat format)
 {
     switch (format)

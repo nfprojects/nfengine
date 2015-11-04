@@ -119,17 +119,16 @@ struct DepthStateDesc
     // comparison function for depth tesing
     CompareFunc depthCompareFunc;
 
-    unsigned char stencilReadMask;
-    unsigned char stencilWriteMask;
+    unsigned char stencilMask;
 
     // stencil buffer operation taken when stencil test fails
-    StencilOperation stencilOpFail;
+    StencilOp stencilOpFail;
 
     // stencil buffer operation taken when stencil test passes, but depth test fails
-    StencilOperation stencilOpDepthFail;
+    StencilOp stencilOpDepthFail;
 
     // stencil buffer operation taken when both stencil and depth tests pass
-    StencilOperation stencilOpPass;
+    StencilOp stencilOpPass;
 
     CompareFunc stencilFunc;
 
@@ -140,11 +139,10 @@ struct DepthStateDesc
         , depthWriteEnable(false)
         , stencilEnable(false)
         , depthCompareFunc(CompareFunc::Pass)
-        , stencilReadMask(0xFF)
-        , stencilWriteMask(0xFF)
-        , stencilOpFail(StencilOperation::Keep)
-        , stencilOpDepthFail(StencilOperation::Keep)
-        , stencilOpPass(StencilOperation::Keep)
+        , stencilMask(0xFF)
+        , stencilOpFail(StencilOp::Keep)
+        , stencilOpDepthFail(StencilOp::Keep)
+        , stencilOpPass(StencilOp::Keep)
         , stencilFunc(CompareFunc::Pass)
         , debugName(nullptr)
     {}
