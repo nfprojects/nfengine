@@ -82,7 +82,6 @@ Dependencies
 
 The engine is dependent on following libraries:
 
-- [AntTweakBar](http://anttweakbar.sourceforge.net/doc/) - simple, temporary GUI
 - [Bullet Physics Library](http://bulletphysics.org/wordpress/) - physics engine
 - [FreeType](http://www.freetype.org/freetype2/) - fonts rendering
 - [libpng](http://www.libpng.org/pub/png/libpng.html) - PNG files decoding

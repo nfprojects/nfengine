@@ -101,8 +101,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";LIBCONFIG_STATIC;USE_ANT_TWEAK;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngineDeps\rapidjson\include;$(SolutionDir)nfEngineDeps\FreeType\include;$(SolutionDir)nfEngineDeps\bullet\src;$(SolutionDir)nfEngineDeps\rapidxml-1.13;$(SolutionDir)nfEngineDeps\AntTweakBar\include;$(SolutionDir)nfEngine\nfCommon;..\FreeType\include\</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";LIBCONFIG_STATIC;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngineDeps\rapidjson\include;$(SolutionDir)nfEngineDeps\FreeType\include;$(SolutionDir)nfEngineDeps\bullet\src;$(SolutionDir)nfEngineDeps\rapidxml-1.13;$(SolutionDir)nfEngine\nfCommon;..\FreeType\include\</AdditionalIncludeDirectories>
       <StructMemberAlignment>Default</StructMemberAlignment>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -116,14 +116,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)nfEngineDeps\Bin\$(Platform)\$(Configuration);$(SolutionDir)Bin\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>nfCommon.lib;zlib.lib;AntTweakBar.lib;freetype.lib;BulletCollision_vs2010_debug.lib;BulletDynamics_vs2010_debug.lib;LinearMath_vs2010_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>nfCommon.lib;zlib.lib;freetype.lib;BulletCollision_vs2010_debug.lib;BulletDynamics_vs2010_debug.lib;LinearMath_vs2010_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>pushd .
-cd $(SolutionDir)
-Scripts\copy_deps.bat $(Platform) $(Configuration) AntTweakBar.dll
-popd</Command>
-    </PostBuildEvent>
     <PreBuildEvent>
       <Command>
       </Command>
@@ -134,8 +128,8 @@ popd</Command>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";LIBCONFIG_STATIC;USE_ANT_TWEAK;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;WIN64;_DEBUG;_WINDOWS;_USRDLL;NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngineDeps\rapidjson\include;$(SolutionDir)nfEngineDeps\FreeType\include;$(SolutionDir)nfEngineDeps\bullet\src;$(SolutionDir)nfEngineDeps\rapidxml-1.13;$(SolutionDir)nfEngineDeps\AntTweakBar\include;$(SolutionDir)nfEngine\nfCommon;..\FreeType\include\</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";LIBCONFIG_STATIC;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;WIN64;_DEBUG;_WINDOWS;_USRDLL;NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngineDeps\rapidjson\include;$(SolutionDir)nfEngineDeps\FreeType\include;$(SolutionDir)nfEngineDeps\bullet\src;$(SolutionDir)nfEngineDeps\rapidxml-1.13;$(SolutionDir)nfEngine\nfCommon;..\FreeType\include\</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -148,14 +142,8 @@ popd</Command>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)nfEngineDeps\Bin\$(Platform)\$(Configuration);$(SolutionDir)Bin\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>nfCommon.lib;zlib.lib;AntTweakBar.lib;freetype.lib;BulletCollision_vs2010_x64_debug.lib;BulletDynamics_vs2010_x64_debug.lib;LinearMath_vs2010_x64_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>nfCommon.lib;zlib.lib;freetype.lib;BulletCollision_vs2010_x64_debug.lib;BulletDynamics_vs2010_x64_debug.lib;LinearMath_vs2010_x64_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>pushd .
-cd $(SolutionDir)
-Scripts\copy_deps.bat $(Platform) $(Configuration) AntTweakBar.dll
-popd</Command>
-    </PostBuildEvent>
     <PreBuildEvent>
       <Command>
       </Command>
@@ -168,11 +156,11 @@ popd</Command>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";LIBCONFIG_STATIC;USE_ANT_TWEAK;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";LIBCONFIG_STATIC;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <OmitFramePointers>true</OmitFramePointers>
       <FloatingPointModel>Fast</FloatingPointModel>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngineDeps\rapidjson\include;$(SolutionDir)nfEngineDeps\FreeType\include;$(SolutionDir)nfEngineDeps\bullet\src;$(SolutionDir)nfEngineDeps\rapidxml-1.13;$(SolutionDir)nfEngineDeps\AntTweakBar\include;$(SolutionDir)nfEngine\nfCommon;..\FreeType\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngineDeps\rapidjson\include;$(SolutionDir)nfEngineDeps\FreeType\include;$(SolutionDir)nfEngineDeps\bullet\src;$(SolutionDir)nfEngineDeps\rapidxml-1.13;$(SolutionDir)nfEngine\nfCommon;..\FreeType\include\</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -188,15 +176,9 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)nfEngineDeps\Bin\$(Platform)\$(Configuration);$(SolutionDir)Bin\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>nfCommon.lib;zlib.lib;AntTweakBar.lib;freetype.lib;BulletCollision_vs2010.lib;BulletDynamics_vs2010.lib;LinearMath_vs2010.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>nfCommon.lib;zlib.lib;freetype.lib;BulletCollision_vs2010.lib;BulletDynamics_vs2010.lib;LinearMath_vs2010.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Profile>true</Profile>
     </Link>
-    <PostBuildEvent>
-      <Command>pushd .
-cd $(SolutionDir)
-Scripts\copy_deps.bat $(Platform) $(Configuration) AntTweakBar.dll
-popd</Command>
-    </PostBuildEvent>
     <PreBuildEvent>
       <Command>
       </Command>
@@ -209,11 +191,11 @@ popd</Command>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";LIBCONFIG_STATIC;USE_ANT_TWEAK;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;WIN64;NDEBUG;_WINDOWS;_USRDLL;NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";LIBCONFIG_STATIC;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;WIN64;NDEBUG;_WINDOWS;_USRDLL;NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <OmitFramePointers>true</OmitFramePointers>
       <FloatingPointModel>Fast</FloatingPointModel>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngineDeps\rapidjson\include;$(SolutionDir)nfEngineDeps\FreeType\include;$(SolutionDir)nfEngineDeps\bullet\src;$(SolutionDir)nfEngineDeps\rapidxml-1.13;$(SolutionDir)nfEngineDeps\AntTweakBar\include;$(SolutionDir)nfEngine\nfCommon;..\..\SDK\bullet-2.80\src\;..\FreeType\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngineDeps\rapidjson\include;$(SolutionDir)nfEngineDeps\FreeType\include;$(SolutionDir)nfEngineDeps\bullet\src;$(SolutionDir)nfEngineDeps\rapidxml-1.13;$(SolutionDir)nfEngine\nfCommon;..\..\SDK\bullet-2.80\src\;..\FreeType\include\</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -229,15 +211,9 @@ popd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)nfEngineDeps\Bin\$(Platform)\$(Configuration);$(SolutionDir)Bin\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>nfCommon.lib;zlib.lib;AntTweakBar.lib;freetype.lib;BulletCollision_vs2010_x64_release.lib;BulletDynamics_vs2010_x64_release.lib;LinearMath_vs2010_x64_release.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>nfCommon.lib;zlib.lib;freetype.lib;BulletCollision_vs2010_x64_release.lib;BulletDynamics_vs2010_x64_release.lib;LinearMath_vs2010_x64_release.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Profile>true</Profile>
     </Link>
-    <PostBuildEvent>
-      <Command>pushd .
-cd $(SolutionDir)
-Scripts\copy_deps.bat $(Platform) $(Configuration) AntTweakBar.dll
-popd</Command>
-    </PostBuildEvent>
     <PreBuildEvent>
       <Command>
       </Command>

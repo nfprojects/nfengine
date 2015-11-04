@@ -47,20 +47,6 @@ bool Engine::OnInit()
         LOG_ERROR("Failed to initialize renderer. Drawing will not be supported");
     }
 
-#ifdef USE_ANT_TWEAK
-    // TODO: support for OpenGL renderer
-    int err = TwInit(TW_DIRECT3D11, mRenderer->GetDevice()->GetHandle());
-    if (err != 1)
-    {
-        LOG_ERROR("Failed to initialize AntTweakBar.");
-    }
-    else
-    {
-        TwDefine("GLOBAL contained=true"); // bars cannot move outside of the window
-        LOG_SUCCESS("AntTweakBar initialized.");
-    }
-#endif
-
     return true;
 }
 
@@ -75,11 +61,6 @@ void Engine::OnRelease()
         mScenes.clear();
         LOG_WARNING("Not all scenes has been released before engine shutdown.");
     }
-
-#ifdef USE_ANT_TWEAK
-    // free AntTweakBar library
-    TwTerminate();
-#endif
 
     // release resources manager
     mResManager.Release();
@@ -230,17 +211,6 @@ bool Engine::Advance(View** views, size_t viewsNum,
             // TODO draw engine signature with current version
             GuiRenderer::Get()->Leave(ctx);
         }
-
-#ifdef USE_ANT_TWEAK
-        if (view->drawAntTweakBar)
-        {
-            ICommandBuffer* commandBuffer = mRenderer->GetImmediateContext()->commandBuffer;
-            commandBuffer->BeginDebugGroup("AntTweak");
-            commandBuffer->SetRenderTarget(view->GetRenderTarget(true));
-            TwDraw();
-            commandBuffer->EndDebugGroup();
-        }
-#endif
 
         // present frame in the display
         view->Present();

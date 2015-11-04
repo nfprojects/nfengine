@@ -25,7 +25,6 @@ View::View()
     mTexture = nullptr;
     mWindow = nullptr;
     mCameraEntity = 0;
-    drawAntTweakBar = false;
 }
 
 View::~View()
