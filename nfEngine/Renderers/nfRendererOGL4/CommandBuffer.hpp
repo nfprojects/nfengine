@@ -20,6 +20,9 @@ class CommandBuffer : public ICommandBuffer
     GLenum mCurrentIndexBufferFormat;
     RenderTarget* mCurrentRenderTarget;
     int mCurrentVertexLayoutElementsNum;
+    GLenum mCurrentStencilFunc;
+    GLint mCurrentStencilRef;
+    GLuint mCurrentStencilMask;
 
     IBuffer* mSetVertexBuffer;
     IBuffer* mSetIndexBuffer;

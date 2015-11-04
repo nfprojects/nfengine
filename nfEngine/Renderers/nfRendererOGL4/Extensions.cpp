@@ -15,6 +15,9 @@
 namespace NFE {
 namespace Renderer {
 
+/// OpenGL 1.4
+PFNGLBLENDFUNCSEPARATEPROC glBlendFuncSeparate = nullptr;
+
 /// OpenGL 1.5
 PFNGLGENBUFFERSPROC glGenBuffers = nullptr;
 PFNGLBINDBUFFERPROC glBindBuffer = nullptr;
@@ -41,6 +44,7 @@ PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = nullptr;
 PFNGLDISABLEVERTEXATTRIBARRAYPROC glDisableVertexAttribArray = nullptr;
 PFNGLMAPBUFFERPROC glMapBuffer = nullptr;
 PFNGLUNMAPBUFFERPROC glUnmapBuffer = nullptr;
+PFNGLBLENDEQUATIONSEPARATEPROC glBlendEquationSeparate = nullptr;
 
 /// OpenGL 3.0
 PFNGLGENVERTEXARRAYSPROC glGenVertexArrays = nullptr;
@@ -81,6 +85,9 @@ bool nfglExtensionsInit()
 #error "Target platform not supported."
 #endif
 
+    /// OpenGL 1.4
+    NFGL_GET_EXTENSION(PFNGLBLENDFUNCSEPARATEPROC, glBlendFuncSeparate);
+
     /// OpenGL 1.5
     NFGL_GET_EXTENSION(PFNGLGENBUFFERSPROC, glGenBuffers);
     NFGL_GET_EXTENSION(PFNGLBINDBUFFERPROC, glBindBuffer);
@@ -107,6 +114,7 @@ bool nfglExtensionsInit()
     NFGL_GET_EXTENSION(PFNGLDISABLEVERTEXATTRIBARRAYPROC, glDisableVertexAttribArray);
     NFGL_GET_EXTENSION(PFNGLMAPBUFFERPROC, glMapBuffer);
     NFGL_GET_EXTENSION(PFNGLUNMAPBUFFERPROC, glUnmapBuffer);
+    NFGL_GET_EXTENSION(PFNGLBLENDEQUATIONSEPARATEPROC, glBlendEquationSeparate);
 
     /// OpenGL 3.0
     NFGL_GET_EXTENSION(PFNGLGENVERTEXARRAYSPROC, glGenVertexArrays);
