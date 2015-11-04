@@ -161,9 +161,6 @@
     <ClInclude Include="LoggerBackends\Win\BackendWindowsDebugger.hpp">
       <Filter>Source Files\LoggerBackends\Win</Filter>
     </ClInclude>
-    <ClInclude Include="LoggerBackends\BackendWindowsDebugger.hpp">
-      <Filter>Source Files\LoggerBackends</Filter>
-    </ClInclude>
     <ClInclude Include="AsyncThreadPool.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

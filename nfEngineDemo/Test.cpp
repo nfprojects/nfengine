@@ -545,8 +545,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     gFont.reset(new Font);
     gFont->Init("nfEngineDemo/Data/Fonts/Inconsolata.otf", 11);
 
-    Demo_InitEditorBar();
-
     CollisionShape* floorShape = ENGINE_GET_COLLISION_SHAPE("shape_floor");
     floorShape->SetCallbacks(OnLoadCustomShapeResource, NULL);
     floorShape->Load();
@@ -629,7 +627,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
             if (window->view->drawSecondaryView)
                 drawRequests.push_back(window->secondaryView.get());
 
-            window->view->drawAntTweakBar = window->HasFocus();
             drawRequests.push_back(window->view.get());
         }
 

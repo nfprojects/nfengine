@@ -103,13 +103,13 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>AntTweakBar.lib;libpng.lib;jpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng.lib;jpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)nfEngineDeps\Bin\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>pushd .
 cd $(SolutionDir)
-Scripts\copy_deps.bat $(Platform) $(Configuration) AntTweakBar.dll libpng.dll zlib.dll
+Scripts\copy_deps.bat $(Platform) $(Configuration) libpng.dll zlib.dll
 popd</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -130,13 +130,13 @@ popd</Command>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>AntTweakBar.lib;libpng.lib;jpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng.lib;jpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)nfEngineDeps\Bin\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>pushd .
 cd $(SolutionDir)
-Scripts\copy_deps.bat $(Platform) $(Configuration) AntTweakBar.dll libpng.dll zlib.dll
+Scripts\copy_deps.bat $(Platform) $(Configuration) libpng.dll zlib.dll
 popd</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -163,13 +163,13 @@ popd</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>AntTweakBar.lib;libpng.lib;jpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng.lib;jpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)nfEngineDeps\Bin\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>pushd .
 cd $(SolutionDir)
-Scripts\copy_deps.bat $(Platform) $(Configuration) AntTweakBar.dll libpng.dll zlib.dll
+Scripts\copy_deps.bat $(Platform) $(Configuration) libpng.dll zlib.dll
 popd</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -195,13 +195,13 @@ popd</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>AntTweakBar.lib;libpng.lib;jpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng.lib;jpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)nfEngineDeps\Bin\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>pushd .
 cd $(SolutionDir)
-Scripts\copy_deps.bat $(Platform) $(Configuration) AntTweakBar.dll libpng.dll zlib.dll
+Scripts\copy_deps.bat $(Platform) $(Configuration) libpng.dll zlib.dll
 popd</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
