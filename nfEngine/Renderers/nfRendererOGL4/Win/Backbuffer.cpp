@@ -93,6 +93,9 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
 
     CreateCommonResources(desc);
 
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_STENCIL_TEST);
+
     return true;
 }
 

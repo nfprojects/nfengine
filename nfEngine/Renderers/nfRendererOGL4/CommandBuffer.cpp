@@ -14,10 +14,17 @@
 #include "VertexLayout.hpp"
 #include "Texture.hpp"
 #include "Sampler.hpp"
+#include "PipelineState.hpp"
 
 
 namespace NFE {
 namespace Renderer {
+
+namespace {
+BlendState gDefaultBlendState;
+DepthState gDefaultDepthState;
+RasterizerState gDefaultRasterizerState;
+} // namespace
 
 CommandBuffer::CommandBuffer()
     : mCurrentIndexBufferFormat(GL_NONE)
@@ -108,7 +115,7 @@ void CommandBuffer::BindVertexLayout()
     for (int i = 0; i < mCurrentVertexLayoutElementsNum; ++i)
     {
         bool isNormalized = false;
-        GLenum type = TranslateElementFormat(vl->mDesc.elements[i].format, isNormalized);
+        GLenum type = TranslateElementFormatToType(vl->mDesc.elements[i].format, isNormalized);
 
         glEnableVertexAttribArray(i);
         glVertexAttribPointer(i,
@@ -324,22 +331,82 @@ void CommandBuffer::SetShader(IShader* shader)
 
 void CommandBuffer::SetBlendState(IBlendState* state)
 {
-    UNUSED(state);
+    BlendState* bs;
+    if (!state)
+        bs = &gDefaultBlendState;
+    else
+        bs = dynamic_cast<BlendState*>(state);
+
+    if (bs->mDesc.alphaToCoverage)
+        glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+    else
+        glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+
+    // TODO multiple Render Targets should also take BlendStateDesc::independent into account
+    //      When supporting multiple RTs, replace gl* functions in this call with gl*i equivalents
+    if (bs->mDesc.independent)
+        LOG_WARNING("Separate Blend States are not yet supported! Only the first one will be set.");
+
+    RenderTargetBlendStateDesc& desc = bs->mDesc.rtDescs[0];
+    if (desc.enable)
+        glEnable(GL_BLEND);
+    else
+        glDisable(GL_BLEND);
+
+    glBlendFuncSeparate(TranslateBlendFunc(desc.srcColorFunc),
+                        TranslateBlendFunc(desc.destColorFunc),
+                        TranslateBlendFunc(desc.srcAlphaFunc),
+                        TranslateBlendFunc(desc.destAlphaFunc));
+    glBlendEquationSeparate(TranslateBlendOp(desc.colorOperator),
+                            TranslateBlendOp(desc.alphaOperator));
 }
 
 void CommandBuffer::SetRasterizerState(IRasterizerState* state)
 {
-    UNUSED(state);
+    RasterizerState* rs;
+    if (!state)
+        rs = &gDefaultRasterizerState;
+    else
+        rs = dynamic_cast<RasterizerState*>(state);
+
+    RasterizerStateDesc& desc = rs->mDesc;
+    glFrontFace(GL_CW); // force set front face to CW to be compatible with cullMode options
+    glCullFace(TranslateCullMode(desc.cullMode));
+    glPolygonMode(GL_FRONT_AND_BACK, TranslateFillMode(desc.fillMode));
 }
 
 void CommandBuffer::SetDepthState(IDepthState* state)
 {
-    UNUSED(state);
+    DepthState* ds;
+    if (!state)
+        ds = &gDefaultDepthState;
+    else
+        ds = dynamic_cast<DepthState*>(state);
+    DepthStateDesc& desc = ds->mDesc;
+
+    // set up depth testing
+    if (desc.depthTestEnable)
+        glEnable(GL_DEPTH_TEST);
+    else
+        glDisable(GL_DEPTH_TEST);
+    glDepthFunc(TranslateCompareFunc(desc.depthCompareFunc));
+    glDepthMask(desc.depthWriteEnable ? GL_TRUE : GL_FALSE);
+
+    // set up stencil testing
+    if (desc.stencilEnable)
+        glEnable(GL_STENCIL_TEST);
+    else
+        glDisable(GL_STENCIL_TEST);
+    glStencilOp(TranslateStencilOp(desc.stencilOpFail),
+                TranslateStencilOp(desc.stencilOpDepthFail),
+                TranslateStencilOp(desc.stencilOpPass));
+
+    glStencilFunc(TranslateCompareFunc(desc.stencilFunc), 0, static_cast<GLuint>(desc.stencilMask));
 }
 
 void CommandBuffer::SetStencilRef(unsigned char ref)
 {
-    UNUSED(ref);
+    glStencilMask(ref);
 }
 
 void CommandBuffer::SetViewport(float left, float width, float top, float height,

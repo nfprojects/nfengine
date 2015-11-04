@@ -15,48 +15,49 @@ namespace NFE {
 namespace Renderer {
 
 Texture::Texture()
+    : mType(TextureType::Unknown)
+    , mWidth(0)
+    , mHeight(0)
+    , mTexelSize(0)
+    , mTexture(GL_NONE)
+    , mHasStencil(false)
 {
 }
 
 Texture::~Texture()
 {
+    glDeleteTextures(1, &mTexture);
 }
 
 bool Texture::InitTexture1D(const TextureDesc& desc)
 {
     UNUSED(desc);
 
-    mType = TextureType::Texture1D;
     return true;
 }
 
 bool Texture::InitTexture2D(const TextureDesc& desc)
 {
-    bool isNormalized;
-    GLenum type = TranslateElementFormat(desc.format, isNormalized);
-    if (type == GL_NONE)
-        return false;
-
     // TODO support compressed formats: http://renderingpipeline.com/2012/07/texture-compression/
-    GLenum format; // TODO provide support for GL_DEPTH_COMPONENT and GL_DEPTH_STENCIL
+    bool isNormalized;
+    GLenum type;
+    GLenum format;
+    GLenum internalFormat;
 
     if (desc.binding & (NFE_RENDERER_TEXTURE_BIND_SHADER | NFE_RENDERER_TEXTURE_BIND_RENDERTARGET))
     {
-        switch (desc.texelSize)
-        {
-        case 1: format = GL_RED; break;
-        case 2: format = GL_RG; break;
-        case 3: format = GL_RGB; break;
-        case 4: format = GL_RGBA; break;
-        default:
-            LOG_ERROR("Incorrect Texel Size provided.");
-            return false;
-        }
+        type = TranslateElementFormatToType(desc.format, isNormalized);
+        format = TranslateTexelSizeToFormat(desc.texelSize);
+        internalFormat = format;
     }
     else if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
     {
-        LOG_ERROR("Depth binding is not yet supported!");
-        return false;
+        type = TranslateDepthFormatToType(desc.depthBufferFormat);
+        format = TranslateDepthFormatToFormat(desc.depthBufferFormat);
+        internalFormat = TranslateDepthFormatToInternalFormat(desc.depthBufferFormat);
+
+        if (desc.depthBufferFormat == DepthBufferFormat::Depth24_Stencil8)
+            mHasStencil = true;
     }
     else
     {
@@ -64,16 +65,19 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
         return false;
     }
 
-    mType = TextureType::Texture2D;
-
     glBindTexture(GL_TEXTURE_2D, mTexture);
 
     // upload texture only if needed (for example Render Target might need an empty texture)
-    if (desc.dataDesc != nullptr)
+    const void* data;
+    for (int i = 0; i < desc.mipmaps; ++i)
     {
-        for (int i = 0; i < desc.mipmaps; ++i)
-            glTexImage2D(GL_TEXTURE_2D, i, format, desc.width, desc.height, 0,
-                         format, type, desc.dataDesc[i].data);
+        if (desc.dataDesc == nullptr)
+            data = nullptr;
+        else
+            data = desc.dataDesc[i].data;
+
+        glTexImage2D(GL_TEXTURE_2D, i, internalFormat, desc.width, desc.height, 0,
+                     format, type, data);
     }
 
     // limit mipmap levels, otherwise no texture will be drawn
@@ -86,6 +90,9 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+    mWidth = desc.width;
+    mHeight = desc.height;
+
     return true;
 }
 
@@ -93,7 +100,6 @@ bool Texture::InitTexture3D(const TextureDesc& desc)
 {
     UNUSED(desc);
 
-    mType = TextureType::Texture3D;
     return true;
 }
 
@@ -101,8 +107,9 @@ bool Texture::Init(const TextureDesc& desc)
 {
     // we can generate the texture here
     glGenTextures(1, &mTexture);
+    mType = desc.type;
 
-    switch (desc.type)
+    switch (mType)
     {
     case TextureType::Texture1D:
         return InitTexture1D(desc);

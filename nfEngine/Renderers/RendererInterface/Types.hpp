@@ -204,7 +204,7 @@ enum class CompareFunc
     Pass
 };
 
-enum class StencilOperation
+enum class StencilOp
 {
     Keep,          //< Keep the old value
     Zero,          //< Set value to zero
