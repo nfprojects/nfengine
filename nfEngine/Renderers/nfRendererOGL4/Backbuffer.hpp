@@ -24,6 +24,7 @@ class Backbuffer : public IBackbuffer, public Texture
     Display* mDisplay; //< Xorg Display pointer, extracted from mWindow
     GLXContext mContext;
     GLXDrawable mDrawable;
+    GLuint mDummyVAO;
 #else
 #error "Target platform not supported."
 #endif

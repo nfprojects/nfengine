@@ -20,11 +20,14 @@ Backbuffer::Backbuffer()
     , mDisplay(nullptr)
     , mContext(0)
     , mDrawable(0)
+    , mDummyVAO(0)
 {
 }
 
 Backbuffer::~Backbuffer()
 {
+    glBindVertexArray(GL_NONE);
+    glDeleteVertexArrays(1, &mDummyVAO);
     glXMakeCurrent(mDisplay, None, 0);
     glXDestroyContext(mDisplay, mContext);
     XCloseDisplay(mDisplay);
@@ -137,6 +140,13 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
         glXSwapIntervalEXT(mDisplay, mDrawable, desc.vSync);
     else
         LOG_WARNING("glXSwapIntervalEXT was not acquired, VSync control is disabled.");
+
+    // On Linux using OGL Core Profile a VAO must be bound to the pipeline for rendering. It can
+    // be any VAO, however without it no drawing is performed.
+    // Since VAOs are not shared between contexts, it is best to assume that each context
+    // will create its own VAO for use.
+    glGenVertexArrays(1, &mDummyVAO);
+    glBindVertexArray(mDummyVAO);
 
     return true;
 }

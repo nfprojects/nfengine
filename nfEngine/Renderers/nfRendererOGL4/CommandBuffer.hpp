@@ -20,6 +20,9 @@ class CommandBuffer : public ICommandBuffer
     GLenum mCurrentIndexBufferFormat;
     RenderTarget* mCurrentRenderTarget;
     int mCurrentVertexLayoutElementsNum;
+    GLenum mCurrentStencilFunc;
+    GLint mCurrentStencilRef;
+    GLuint mCurrentStencilMask;
 
     IBuffer* mSetVertexBuffer;
     IBuffer* mSetIndexBuffer;
@@ -43,7 +46,6 @@ class CommandBuffer : public ICommandBuffer
     // SSO-related variables
     bool mSSOEnabled;
     GLuint mProgramPipeline;
-    GLuint mVAO;   //< For linux needs. This will probably be used for multiple VB support.
 
     /// Private methods which will bind just set resources
     void BindVertexBuffer();

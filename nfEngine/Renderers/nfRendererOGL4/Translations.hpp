@@ -22,6 +22,11 @@ GLenum TranslateTextureMinFilter(TextureMinFilter minFilter);
 GLenum TranslateTextureMagFilter(TextureMagFilter magFilter);
 GLenum TranslateTextureWrapMode(TextureWrapMode wrapMode);
 GLenum TranslateCompareFunc(CompareFunc func);
+GLenum TranslateCullMode(CullMode mode);
+GLenum TranslateFillMode(FillMode mode);
+GLenum TranslateBlendFunc(BlendFunc func);
+GLenum TranslateBlendOp(BlendOp op);
+GLenum TranslateStencilOp(StencilOp op);
 GLsizei GetElementFormatSize(ElementFormat format);
 
 } // namespace Renderer

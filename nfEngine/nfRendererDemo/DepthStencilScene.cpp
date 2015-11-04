@@ -76,13 +76,12 @@ bool DepthStencilScene::CreateBasicResources(bool withStencil)
     {
         depthStateDesc.depthWriteEnable = false;
         depthStateDesc.depthTestEnable = false;
-        depthStateDesc.stencilOpPass = StencilOperation::Replace;
-        depthStateDesc.stencilOpDepthFail = StencilOperation::Replace;
-        depthStateDesc.stencilOpFail = StencilOperation::Replace;
+        depthStateDesc.stencilOpPass = StencilOp::Replace;
+        depthStateDesc.stencilOpDepthFail = StencilOp::Replace;
+        depthStateDesc.stencilOpFail = StencilOp::Replace;
         depthStateDesc.stencilFunc = CompareFunc::Pass;
         depthStateDesc.stencilEnable = true;
-        depthStateDesc.stencilReadMask = 0x0;
-        depthStateDesc.stencilWriteMask = 0xFF;
+        depthStateDesc.stencilMask = 0xFF;
         mMaskDepthState.reset(mRendererDevice->CreateDepthState(depthStateDesc));
         if (!mMaskDepthState)
             return false;
@@ -90,13 +89,12 @@ bool DepthStencilScene::CreateBasicResources(bool withStencil)
         depthStateDesc.depthCompareFunc = CompareFunc::Less;
         depthStateDesc.depthWriteEnable = true;
         depthStateDesc.depthTestEnable = true;
-        depthStateDesc.stencilOpPass = StencilOperation::Keep;
-        depthStateDesc.stencilOpDepthFail = StencilOperation::Keep;
-        depthStateDesc.stencilOpFail = StencilOperation::Keep;
+        depthStateDesc.stencilOpPass = StencilOp::Keep;
+        depthStateDesc.stencilOpDepthFail = StencilOp::Keep;
+        depthStateDesc.stencilOpFail = StencilOp::Keep;
         depthStateDesc.stencilFunc = CompareFunc::Equal;
         depthStateDesc.stencilEnable = true;
-        depthStateDesc.stencilReadMask = 0xFF;
-        depthStateDesc.stencilWriteMask = 0x0;
+        depthStateDesc.stencilMask = 0xFF;
         mReflectionDepthState.reset(mRendererDevice->CreateDepthState(depthStateDesc));
         if (!mReflectionDepthState)
             return false;

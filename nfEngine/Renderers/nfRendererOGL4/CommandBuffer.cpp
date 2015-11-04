@@ -14,15 +14,25 @@
 #include "VertexLayout.hpp"
 #include "Texture.hpp"
 #include "Sampler.hpp"
+#include "PipelineState.hpp"
 
 
 namespace NFE {
 namespace Renderer {
 
+namespace {
+BlendState gDefaultBlendState;
+DepthState gDefaultDepthState;
+RasterizerState gDefaultRasterizerState;
+} // namespace
+
 CommandBuffer::CommandBuffer()
     : mCurrentIndexBufferFormat(GL_NONE)
     , mCurrentRenderTarget(nullptr)
     , mCurrentVertexLayoutElementsNum(0)
+    , mCurrentStencilFunc(GL_KEEP)
+    , mCurrentStencilRef(0)
+    , mCurrentStencilMask(0xFF)
     , mSetVertexBuffer(nullptr)
     , mSetIndexBuffer(nullptr)
     , mSetVertexLayout(nullptr)
@@ -33,7 +43,6 @@ CommandBuffer::CommandBuffer()
     , mVertexLayoutNeedsUpdate(false)
     , mSSOEnabled(false)
     , mProgramPipeline(GL_NONE)
-    , mVAO(GL_NONE)
 {
 }
 
@@ -43,12 +52,6 @@ CommandBuffer::~CommandBuffer()
     {
         glBindProgramPipeline(GL_NONE);
         glDeleteProgramPipelines(1, &mProgramPipeline);
-    }
-
-    if (mVAO)
-    {
-        glBindVertexArray(GL_NONE);
-        glDeleteVertexArrays(1, &mVAO);
     }
 }
 
@@ -191,19 +194,6 @@ void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* stri
     UNUSED(strides);
     UNUSED(offsets);
 
-    if (mVAO == GL_NONE)
-    {
-        // Here Linux has it's needs.
-        // On Linux using OGL Core Profile a VAO must be bound to the pipeline for rendering. It can
-        // be any VAO, however without it no drawing is performed. Since we don't have use for it
-        // right now, just create a dummy and bind it for the future. We will probably reuse the VAO
-        // later on when multiple VB support will be implemented.
-        // Moreover, as with mProgramPipeline, the OGL extensions are not accessible in constructor,
-        // so, we must do the VAO generation and binding here.
-        glGenVertexArrays(1, &mVAO);
-        glBindVertexArray(mVAO);
-    }
-
     // TODO multiple vertex buffers
     if (num > 1)
         LOG_WARNING("Binding multiple Vertex Buffers is not yet supported! Only first Buffer will be set.");
@@ -341,22 +331,91 @@ void CommandBuffer::SetShader(IShader* shader)
 
 void CommandBuffer::SetBlendState(IBlendState* state)
 {
-    UNUSED(state);
+    BlendState* bs;
+    if (!state)
+        bs = &gDefaultBlendState;
+    else
+        bs = dynamic_cast<BlendState*>(state);
+
+    if (bs->mDesc.alphaToCoverage)
+        glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+    else
+        glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+
+    // TODO multiple Render Targets should also take BlendStateDesc::independent into account
+    //      When supporting multiple RTs, replace gl* functions in this call with gl*i equivalents
+    if (bs->mDesc.independent)
+        LOG_WARNING("Separate Blend States are not yet supported! Only the first one will be set.");
+
+    RenderTargetBlendStateDesc& desc = bs->mDesc.rtDescs[0];
+    if (desc.enable)
+        glEnable(GL_BLEND);
+    else
+        glDisable(GL_BLEND);
+
+    glBlendFuncSeparate(TranslateBlendFunc(desc.srcColorFunc),
+                        TranslateBlendFunc(desc.destColorFunc),
+                        TranslateBlendFunc(desc.srcAlphaFunc),
+                        TranslateBlendFunc(desc.destAlphaFunc));
+    glBlendEquationSeparate(TranslateBlendOp(desc.colorOperator),
+                            TranslateBlendOp(desc.alphaOperator));
 }
 
 void CommandBuffer::SetRasterizerState(IRasterizerState* state)
 {
-    UNUSED(state);
+    RasterizerState* rs;
+    if (!state)
+        rs = &gDefaultRasterizerState;
+    else
+        rs = dynamic_cast<RasterizerState*>(state);
+
+    RasterizerStateDesc& desc = rs->mDesc;
+    glFrontFace(GL_CW); // force set front face to CW to be compatible with cullMode options
+    glCullFace(TranslateCullMode(desc.cullMode));
+    glPolygonMode(GL_FRONT_AND_BACK, TranslateFillMode(desc.fillMode));
 }
 
 void CommandBuffer::SetDepthState(IDepthState* state)
 {
-    UNUSED(state);
+    DepthState* ds;
+    if (!state)
+        ds = &gDefaultDepthState;
+    else
+        ds = dynamic_cast<DepthState*>(state);
+    DepthStateDesc& desc = ds->mDesc;
+
+    // set up depth testing
+    if (desc.depthTestEnable)
+        glEnable(GL_DEPTH_TEST);
+    else
+        glDisable(GL_DEPTH_TEST);
+    glDepthFunc(TranslateCompareFunc(desc.depthCompareFunc));
+    glDepthMask(desc.depthWriteEnable ? GL_TRUE : GL_FALSE);
+
+    // set up stencil testing
+    if (desc.stencilEnable)
+        glEnable(GL_STENCIL_TEST);
+    else
+        glDisable(GL_STENCIL_TEST);
+    glStencilOp(TranslateStencilOp(desc.stencilOpFail),
+                TranslateStencilOp(desc.stencilOpDepthFail),
+                TranslateStencilOp(desc.stencilOpPass));
+
+    // glStencilFunc needs these values, so save them for the future
+    mCurrentStencilFunc = TranslateCompareFunc(desc.stencilFunc);
+    mCurrentStencilMask = static_cast<GLuint>(desc.stencilMask);
+    glStencilMask(mCurrentStencilMask);
+
+    // glStencilFunc still should be called.
+    // Call it with OGL-default Stencil reference value now to apply requested
+    // func and mask, later on (if needed) it will be re-called by user with different ref.
+    glStencilFunc(mCurrentStencilFunc, mCurrentStencilRef, mCurrentStencilMask);
 }
 
 void CommandBuffer::SetStencilRef(unsigned char ref)
 {
-    UNUSED(ref);
+    mCurrentStencilRef = ref;
+    glStencilFunc(mCurrentStencilFunc, mCurrentStencilRef, mCurrentStencilMask);
 }
 
 void CommandBuffer::SetViewport(float left, float width, float top, float height,
