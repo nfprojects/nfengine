@@ -110,12 +110,6 @@
       <AdditionalLibraryDirectories>$(SolutionDir)nfenginedeps\Bin\$(Platform)\$(Configuration)\;$(SolutionDir)Bin\$(Platform)\$(Configuration)\;$(VSInstallDir)Team Tools\Performance Tools\PerfSDK\</AdditionalLibraryDirectories>
       <AdditionalDependencies>gtest.lib;nfCommon.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>pushd .
-cd $(SolutionDir)
-Scripts\copy_deps.bat $(Platform) $(Configuration) AntTweakBar.dll
-popd</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -137,12 +131,6 @@ popd</Command>
       <AdditionalLibraryDirectories>$(SolutionDir)nfenginedeps\Bin\$(Platform)\$(Configuration)\;$(SolutionDir)Bin\$(Platform)\$(Configuration)\;$(VSInstallDir)Team Tools\Performance Tools\x64\PerfSDK\</AdditionalLibraryDirectories>
       <AdditionalDependencies>gtest.lib;nfCommon.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>pushd .
-cd $(SolutionDir)
-Scripts\copy_deps.bat $(Platform) $(Configuration) AntTweakBar.dll
-popd</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -167,12 +155,6 @@ popd</Command>
       <AdditionalLibraryDirectories>$(SolutionDir)nfenginedeps\Bin\$(Platform)\$(Configuration)\;$(SolutionDir)Bin\$(Platform)\$(Configuration)\;$(VSInstallDir)Team Tools\Performance Tools\PerfSDK\</AdditionalLibraryDirectories>
       <AdditionalDependencies>gtest.lib;nfCommon.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>pushd .
-cd $(SolutionDir)
-Scripts\copy_deps.bat $(Platform) $(Configuration) AntTweakBar.dll
-popd</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -197,12 +179,6 @@ popd</Command>
       <AdditionalLibraryDirectories>$(SolutionDir)nfenginedeps\Bin\$(Platform)\$(Configuration)\;$(SolutionDir)Bin\$(Platform)\$(Configuration)\;$(VSInstallDir)Team Tools\Performance Tools\x64\PerfSDK\</AdditionalLibraryDirectories>
       <AdditionalDependencies>gtest.lib;nfCommon.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>pushd .
-cd $(SolutionDir)
-Scripts\copy_deps.bat $(Platform) $(Configuration) AntTweakBar.dll
-popd</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Common.hpp" />
