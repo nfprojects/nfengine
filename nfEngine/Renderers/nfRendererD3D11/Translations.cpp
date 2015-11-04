@@ -414,25 +414,25 @@ D3D11_BLEND_OP TranslateBlendOp(BlendOp op)
     return D3D11_BLEND_OP_ADD;
 }
 
-D3D11_STENCIL_OP TranslateStencilOperation(StencilOperation op)
+D3D11_STENCIL_OP TranslateStencilOp(StencilOp op)
 {
     switch (op)
     {
-    case StencilOperation::Keep:
+    case StencilOp::Keep:
         return D3D11_STENCIL_OP_KEEP;
-    case StencilOperation::Zero:
+    case StencilOp::Zero:
         return D3D11_STENCIL_OP_ZERO;
-    case StencilOperation::Replace:
+    case StencilOp::Replace:
         return D3D11_STENCIL_OP_REPLACE;
-    case StencilOperation::Increment:
+    case StencilOp::Increment:
         return D3D11_STENCIL_OP_INCR_SAT;
-    case StencilOperation::IncrementWrap:
+    case StencilOp::IncrementWrap:
         return D3D11_STENCIL_OP_INCR;
-    case StencilOperation::Decrement:
+    case StencilOp::Decrement:
         return D3D11_STENCIL_OP_DECR_SAT;
-    case StencilOperation::DecrementWrap:
+    case StencilOp::DecrementWrap:
         return D3D11_STENCIL_OP_DECR;
-    case StencilOperation::Invert:
+    case StencilOp::Invert:
         return D3D11_STENCIL_OP_INVERT;
     };
 

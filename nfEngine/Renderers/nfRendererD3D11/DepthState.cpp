@@ -23,15 +23,15 @@ bool DepthState::Init(const DepthStateDesc& desc)
     // TODO: stencil buffer support
     const D3D11_DEPTH_STENCILOP_DESC stencilOpDesc =
     {
-        TranslateStencilOperation(desc.stencilOpFail),
-        TranslateStencilOperation(desc.stencilOpDepthFail),
-        TranslateStencilOperation(desc.stencilOpPass),
+        TranslateStencilOp(desc.stencilOpFail),
+        TranslateStencilOp(desc.stencilOpDepthFail),
+        TranslateStencilOp(desc.stencilOpPass),
         TranslateComparisonFunc(desc.stencilFunc),
     };
     dsd.FrontFace = dsd.BackFace = stencilOpDesc;
     dsd.StencilEnable = desc.stencilEnable;
-    dsd.StencilReadMask = desc.stencilReadMask;
-    dsd.StencilWriteMask = desc.stencilWriteMask;
+    dsd.StencilReadMask = desc.stencilMask;
+    dsd.StencilWriteMask = desc.stencilMask;
 
     HRESULT hr = D3D_CALL_CHECK(gDevice->Get()->CreateDepthStencilState(&dsd, &mDS));
     if (FAILED(hr))

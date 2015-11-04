@@ -91,6 +91,9 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     else
         LOG_WARNING("wglSwapIntervalEXT was not acquired, VSync control is disabled.");
 
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_STENCIL_TEST);
+
     // To match OpenGL Core Profile behavior on Linux
     // See Linux/Backbuffer.cpp for more info
     glGenVertexArrays(1, &mDummyVAO);

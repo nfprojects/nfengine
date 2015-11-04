@@ -23,6 +23,7 @@ protected:
     int mHeight;
     int mTexelSize; //< texel size in bytes
     GLuint mTexture;
+    bool mHasStencil;
 
     bool InitTexture1D(const TextureDesc& desc);
     bool InitTexture2D(const TextureDesc& desc);
