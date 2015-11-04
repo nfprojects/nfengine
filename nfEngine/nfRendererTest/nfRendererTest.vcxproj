@@ -106,12 +106,6 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Bin\$(Platform)\$(Configuration)\;$(SolutionDir)nfEngineDeps\Bin\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>gtest.lib;nfCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>pushd .
-cd $(SolutionDir)
-Scripts\copy_deps.bat $(Platform) $(Configuration) AntTweakBar.dll
-popd</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -133,12 +127,6 @@ popd</Command>
       <AdditionalLibraryDirectories>$(SolutionDir)Bin\$(Platform)\$(Configuration)\;$(SolutionDir)nfEngineDeps\Bin\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>gtest.lib;nfCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>pushd .
-cd $(SolutionDir)
-Scripts\copy_deps.bat $(Platform) $(Configuration) AntTweakBar.dll
-popd</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -163,12 +151,6 @@ popd</Command>
       <AdditionalLibraryDirectories>$(SolutionDir)Bin\$(Platform)\$(Configuration)\;$(SolutionDir)nfEngineDeps\Bin\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>gtest.lib;nfCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>pushd .
-cd $(SolutionDir)
-Scripts\copy_deps.bat $(Platform) $(Configuration) AntTweakBar.dll
-popd</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -193,12 +175,6 @@ popd</Command>
       <AdditionalLibraryDirectories>$(SolutionDir)Bin\$(Platform)\$(Configuration)\;$(SolutionDir)nfEngineDeps\Bin\$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>gtest.lib;nfCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>pushd .
-cd $(SolutionDir)
-Scripts\copy_deps.bat $(Platform) $(Configuration) AntTweakBar.dll
-popd</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="RendererTest.hpp" />

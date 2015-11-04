@@ -53,7 +53,6 @@ class CORE_API View
     static void OnWindowResize(void* userData);
 
 public:
-    bool drawAntTweakBar;
     PostProcessParameters postProcessParams;
 
     View();

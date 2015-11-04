@@ -11,13 +11,6 @@
 namespace NFE {
 namespace Common {
 
-#define USE_ANT_TWEAK
-
-
-#ifdef USE_ANT_TWEAK
-#include "AntTweakBar/include/AntTweakBar.h"
-#endif
-
 namespace {
 
 const DWORD gWindowedExStyle = WS_EX_WINDOWEDGE;
@@ -233,21 +226,6 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 
     if (!window)
         return DefWindowProc(hWnd, message, wParam, lParam);
-
-#ifdef USE_ANT_TWEAK
-    if (window->HasFocus())
-    {
-        bool handleByTweakBar = true;
-
-        for (int i = 0; i < 3; i++)
-            if (window->mMouseButtons[i])
-                handleByTweakBar = false;
-
-        if (handleByTweakBar)
-            if (TwEventWin(hWnd, message, wParam, lParam))
-                return 0;
-    }
-#endif
 
     switch (message)
     {
