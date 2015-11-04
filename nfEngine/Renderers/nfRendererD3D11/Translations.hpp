@@ -22,7 +22,7 @@ D3D11_FILTER TranslateFilterType(TextureMinFilter minFilter, TextureMagFilter ma
                                  bool compare, bool anisotropic);
 D3D11_BLEND TranslateBlendFunc(BlendFunc func);
 D3D11_BLEND_OP TranslateBlendOp(BlendOp op);
-D3D11_STENCIL_OP TranslateStencilOperation(StencilOperation op);
+D3D11_STENCIL_OP TranslateStencilOp(StencilOp op);
 
 } // namespace Renderer
 } // namespace NFE

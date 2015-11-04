@@ -62,8 +62,19 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
     if (desc.depthBuffer)
     {
         Texture* depthTex = dynamic_cast<Texture*>(desc.depthBuffer);
-        glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,
+        glFramebufferTexture2D(GL_READ_FRAMEBUFFER,
+                               depthTex->mHasStencil
+                                   ? GL_DEPTH_STENCIL_ATTACHMENT
+                                   : GL_DEPTH_ATTACHMENT,
+                               GL_TEXTURE_2D,
                                depthTex->mTexture, 0);
+    }
+
+    GLenum status = glCheckFramebufferStatus(GL_READ_FRAMEBUFFER);
+    if (status != GL_FRAMEBUFFER_COMPLETE)
+    {
+        LOG_ERROR("Framebuffer Object is incomplete! Status: 0x%x", status);
+        return false;
     }
 
     glBindFramebuffer(GL_READ_FRAMEBUFFER, boundFBO);

@@ -15,6 +15,7 @@
 #include "VertexLayout.hpp"
 #include "Texture.hpp"
 #include "Sampler.hpp"
+#include "PipelineState.hpp"
 
 
 namespace {
@@ -84,20 +85,17 @@ IRenderTarget* Device::CreateRenderTarget(const RenderTargetDesc& desc)
 
 IBlendState* Device::CreateBlendState(const BlendStateDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<BlendState, BlendStateDesc>(desc);
 }
 
 IDepthState* Device::CreateDepthState(const DepthStateDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<DepthState, DepthStateDesc>(desc);
 }
 
 IRasterizerState* Device::CreateRasterizerState(const RasterizerStateDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<RasterizerState, RasterizerStateDesc>(desc);
 }
 
 ISampler* Device::CreateSampler(const SamplerDesc& desc)

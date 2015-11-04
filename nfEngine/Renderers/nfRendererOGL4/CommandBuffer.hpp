@@ -18,6 +18,9 @@ class CommandBuffer : public ICommandBuffer
     friend class Device;
 
     GLenum mCurrentIndexBufferFormat;
+    GLenum mCurrentStencilFunc;
+    GLuint mCurrentStencilRef;
+    GLuint mCurrentStencilMask;
     RenderTarget* mCurrentRenderTarget;
     int mCurrentVertexLayoutElementsNum;
 
