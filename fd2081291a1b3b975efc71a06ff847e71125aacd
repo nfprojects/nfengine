@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7ac7a964_5920a79b",
+        "filename": "nfEngine/nfCommonTest/CMakeLists.txt",
+        "patchSetId": 10
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-11-05T16:50:43Z",
+      "side": 1,
+      "message": "Why? Add comment in CM",
+      "revId": "fd2081291a1b3b975efc71a06ff847e71125aacd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
