@@ -8,6 +8,7 @@
 #include "View.hpp"
 #include "HighLevelRenderer.hpp"
 #include "PostProcessRenderer.hpp"
+#include "GuiRenderer.hpp"
 
 #include "Engine.hpp"
 #include "Resources/ResourcesManager.hpp"
@@ -25,10 +26,19 @@ View::View()
     mTexture = nullptr;
     mWindow = nullptr;
     mCameraEntity = 0;
+
+    InitImGui();
 }
 
 View::~View()
 {
+    if (mImGuiState)
+    {
+        ImGui::SetInternalState(mImGuiState, true);
+        ImGui::Shutdown();
+        mImGuiState = nullptr;
+    }
+
     Release();
 }
 
@@ -50,6 +60,11 @@ void View::Release()
 void View::OnPostRender(RenderContext* context)
 {
     // no GUI by default
+}
+
+void View::OnDrawImGui(void* state)
+{
+    UNUSED(state);
 }
 
 bool View::SetCamera(Scene::SceneManager* scene, Scene::EntityID cameraEntity)
@@ -268,6 +283,174 @@ void View::GetSize(uint32& width, uint32& height)
     }
 
     // TODO: get off-screen view dimensions when it's implemented
+}
+
+bool View::InitImGui()
+{
+    // create and initialize internal state for ImGui
+    mImGuiState = malloc(ImGui::GetInternalStateSize());
+    ImGui::SetInternalState(mImGuiState, true);
+
+    ImGuiIO& io = ImGui::GetIO();
+
+    /// get texture atlas from ImGui
+    unsigned char* pixels;
+    int width, height;
+    io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
+
+    TextureDataDesc texDataDesc;
+    texDataDesc.lineSize = texDataDesc.sliceSize = width * 4 * sizeof(uchar);
+    texDataDesc.data = pixels;
+
+    TextureDesc texDesc;
+    texDesc.type = TextureType::Texture2D;
+    texDesc.access = BufferAccess::GPU_ReadOnly;
+    texDesc.width = width;
+    texDesc.height = height;
+    texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER;
+    texDesc.mipmaps = 1;
+    texDesc.dataDesc = &texDataDesc;
+    texDesc.format = ElementFormat::Uint_8_norm;
+    texDesc.texelSize = 4;
+    texDesc.debugName = "GuiRenderer::mImGuiTexture";
+
+    HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
+    mImGuiTexture.reset(renderer->GetDevice()->CreateTexture(texDesc));
+    if (!mImGuiTexture)
+        return false;
+
+    io.Fonts->TexID = mImGuiTexture.get();
+    io.Fonts->ClearInputData();
+    io.Fonts->ClearTexData();
+    io.IniFilename = nullptr;  // don't use INI file
+
+    /**
+     * Configure style.
+     * TODO: move to engine's configuration.
+     */
+    ImGuiStyle& style = ImGui::GetStyle();
+    style.WindowMinSize             = ImVec2(160, 20);
+    style.FramePadding              = ImVec2(4, 4);
+    style.ItemSpacing               = ImVec2(6, 2);
+    style.ItemInnerSpacing          = ImVec2(6, 4);
+    style.Alpha                     = 0.9f;
+    style.WindowFillAlphaDefault    = 0.9f;
+    style.WindowRounding            = 3.0f;
+    style.FrameRounding             = 2.0f;
+    style.IndentSpacing             = 6.0f;
+    style.ItemInnerSpacing          = ImVec2(2, 4);
+    style.ColumnsMinSpacing         = 50.0f;
+    style.GrabMinSize               = 8.0f;
+    style.GrabRounding              = 2.0f;
+    style.ScrollbarSize             = 12.0f;
+    style.ScrollbarRounding         = 16.0f;
+    style.Colors[ImGuiCol_MenuBarBg]            = ImVec4(0.1f, 0.1f, 0.1f, 0.9f);
+    style.Colors[ImGuiCol_Text]                 = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+    style.Colors[ImGuiCol_ScrollbarGrab]        = ImVec4(1.0f, 1.0f, 1.0f, 0.5f);
+    style.Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(1.0f, 1.0f, 1.0f, 0.75f);
+    style.Colors[ImGuiCol_ScrollbarGrabActive]  = ImVec4(1.0f, 1.0f, 1.0f, 0.25f);
+    style.Colors[ImGuiCol_ScrollbarBg]          = ImVec4(0.2f, 0.25f, 0.3f, 0.8f);
+    style.Colors[ImGuiCol_Header]               = ImVec4(0.4f, 0.5f, 0.6f, 1.0f);
+    style.Colors[ImGuiCol_HeaderActive]         = ImVec4(0.3f, 0.4f, 0.5f, 1.0f);
+    style.Colors[ImGuiCol_HeaderHovered]        = ImVec4(0.5f, 0.6f, 0.7f, 1.0f);
+    style.Colors[ImGuiCol_TitleBg]              = ImVec4(0.4f, 0.5f, 0.6f, 1.0f);
+    style.Colors[ImGuiCol_TitleBgActive]        = ImVec4(0.5f, 0.55f, 0.66f, 1.0f);
+    style.Colors[ImGuiCol_TitleBgCollapsed]     = ImVec4(0.3f, 0.4f, 0.5f, 1.0f);
+    style.Colors[ImGuiCol_CloseButton]          = ImVec4(0.0f, 0.0f, 0.0f, 0.5f);
+    style.Colors[ImGuiCol_CloseButtonActive]    = ImVec4(0.5f, 0.05f, 0.05f, 0.9f);
+    style.Colors[ImGuiCol_CloseButtonHovered]   = ImVec4(1.0f, 0.1f, 0.1f, 0.9f);
+    style.Colors[ImGuiCol_Button]               = ImVec4(0.5f, 0.5f, 0.5f, 1.0f);
+    style.Colors[ImGuiCol_ButtonActive]         = ImVec4(0.3f, 0.3f, 0.3f, 1.0f);
+    style.Colors[ImGuiCol_ButtonHovered]        = ImVec4(0.7f, 0.7f, 0.7f, 1.0f);
+
+    /**
+     * Keyboard mapping.
+     */
+    io.KeyMap[ImGuiKey_Tab]         = Common::Tab;
+    io.KeyMap[ImGuiKey_LeftArrow]   = Common::Left;
+    io.KeyMap[ImGuiKey_RightArrow]  = Common::Right;
+    io.KeyMap[ImGuiKey_UpArrow]     = Common::Up;
+    io.KeyMap[ImGuiKey_DownArrow]   = Common::Down;
+    io.KeyMap[ImGuiKey_PageUp]      = Common::PageUp;
+    io.KeyMap[ImGuiKey_PageDown]    = Common::PageDown;
+    io.KeyMap[ImGuiKey_Home]        = Common::Home;
+    io.KeyMap[ImGuiKey_End]         = Common::End;
+    io.KeyMap[ImGuiKey_Delete]      = Common::Delete;
+    io.KeyMap[ImGuiKey_Backspace]   = Common::Backspace;
+    io.KeyMap[ImGuiKey_Enter]       = Common::Enter;
+    io.KeyMap[ImGuiKey_Escape]      = Common::Escape;
+    io.KeyMap[ImGuiKey_A]           = 'A';
+    io.KeyMap[ImGuiKey_C]           = 'C';
+    io.KeyMap[ImGuiKey_V]           = 'V';
+    io.KeyMap[ImGuiKey_X]           = 'X';
+    io.KeyMap[ImGuiKey_Y]           = 'Y';
+    io.KeyMap[ImGuiKey_Z]           = 'Z';
+
+    return true;
+}
+
+void View::UpdateGui()
+{
+    ImGui::SetInternalState(mImGuiState);
+
+    uint32 width, height;
+    GetSize(width, height);
+
+    ImGuiIO& io = ImGui::GetIO();
+    io.DisplaySize.x = static_cast<float>(width);
+    io.DisplaySize.y = static_cast<float>(height);
+    io.RenderDrawListsFn = nullptr;
+
+    // process input
+    if (mWindow)
+    {
+        io.MouseDown[0] = mWindow->IsMouseButtonDown(0);
+        io.MouseDown[1] = mWindow->IsMouseButtonDown(1);
+        io.MouseDown[2] = mWindow->IsMouseButtonDown(2);
+
+        int x, y;
+        mWindow->GetMousePosition(x, y);
+        io.MousePos.x = static_cast<float>(x);
+        io.MousePos.y = static_cast<float>(y);
+        io.MouseWheel = static_cast<float>(mWindow->GetMouseWheelDelta());
+
+        io.KeyCtrl = mWindow->IsKeyPressed(Common::Control);
+        io.KeyShift = mWindow->IsKeyPressed(Common::Shift);
+        io.KeyAlt = mWindow->IsKeyPressed(Common::Alt);
+        for (int i = 0; i < NFE_WINDOW_KEYS_NUM; ++i)
+            io.KeysDown[i] = mWindow->IsKeyPressed(i);
+
+        io.AddInputCharactersUTF8(mWindow->GetInputCharacters());
+    }
+
+    ImGui::NewFrame();
+    OnDrawImGui(mImGuiState);
+}
+
+void View::DrawGui(RenderContext* context)
+{
+    ITexture* imGuiTexture = mImGuiTexture.get();
+    context->commandBuffer->SetTextures(&imGuiTexture, 1, ShaderType::Pixel);
+    GuiRenderer::Get()->DrawImGui(context);
+}
+
+void View::DrawViewPropertiesGui()
+{
+    if (ImGui::Begin("View properties", nullptr, ImVec2(300, 200), 0.8f))
+    {
+        uint32 width, height;
+        GetSize(width, height);
+        ImGui::Text("Dimensions: %ix%i", width, height);
+        ImGui::Spacing();
+
+        if (ImGui::CollapsingHeader("Postprocess parameters", nullptr, true, true))
+        {
+            ImGui::SliderFloat("Noise Factor", &postProcessParams.noiseFactor, 0.0f, 1.0f);
+            ImGui::SliderFloat("Saturation", &postProcessParams.saturation, 0.0f, 3.0f);
+            ImGui::SliderFloat("Exposure", &postProcessParams.exposureOffset, -3.0f, 3.0f);
+        }
+    }
+    ImGui::End();
 }
 
 } // namespace Renderer

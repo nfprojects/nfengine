@@ -55,11 +55,14 @@ Window::Window()
     wcex.lpszClassName = mWndClass;
     RegisterClassEx(&wcex);
 
+    mMouseWheelDelta = 0;
     for (int i = 0; i < 3; i++)
         mMouseButtons[i] = false;
 
-    for (int i = 0; i < 255; i++)
+    for (int i = 0; i < NFE_WINDOW_KEYS_NUM; i++)
         mKeys[i] = false;
+
+    mMousePos[0] = mMousePos[1] = -1;
 }
 
 Window::~Window()
@@ -187,8 +190,8 @@ void Window::MouseDown(uint32 button, int x, int y)
 {
     SetCapture(mHandle);
     mMouseButtons[button] = true;
-    mMouseDownX[button] = x;
-    mMouseDownY[button] = y;
+    mMousePos[0] = x;
+    mMousePos[1] = y;
 
     OnMouseDown(button, x, y);
 }
@@ -210,14 +213,9 @@ void Window::MouseUp(uint32 button)
 
 void Window::MouseMove(int x, int y)
 {
-    OnMouseMove(x, y, x - mMouseDownX[0], y - mMouseDownY[0]);
-    mMouseDownX[0] = x;
-    mMouseDownY[0] = y;
-}
-
-bool Window::IsKeyPressed(int Key) const
-{
-    return mKeys[Key];
+    OnMouseMove(x, y, x - mMousePos[0], y - mMousePos[1]);
+    mMousePos[0] = x;
+    mMousePos[1] = y;
 }
 
 LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -277,7 +275,8 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 
         case WM_MOUSEWHEEL:
         {
-            window->OnScroll(GET_WHEEL_DELTA_WPARAM(wParam));
+            window->mMouseWheelDelta = GET_WHEEL_DELTA_WPARAM(wParam);
+            window->OnScroll(window->mMouseWheelDelta);
             return 0;
         }
 
@@ -334,6 +333,22 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
             return 0;
         }
 
+        case WM_CHAR:
+        {
+            wchar_t input[] = { static_cast<wchar_t>(wParam), 0 };
+            const int bufferSize = 8;
+            char buffer[bufferSize];
+
+            // convert UTF-16 char to UTF-8
+            int result = ::WideCharToMultiByte(CP_UTF8, 0, input, 1, buffer, bufferSize, 0, 0);
+            if (result > 0)
+            {
+                buffer[result] = '\0';
+                window->mCharacters.append(buffer);
+            }
+
+            return 0;
+        }
     }
 
     return DefWindowProc(hWnd, message, wParam, lParam);
@@ -345,7 +360,7 @@ void Window::LostFocus()
     MouseUp(1);
     MouseUp(2);
 
-    for (int i = 0; i < 256; i++)
+    for (int i = 0; i < NFE_WINDOW_KEYS_NUM; i++)
         mKeys[i] = false;
 }
 
@@ -380,14 +395,10 @@ bool Window::GetFullscreenMode() const
     return mFullscreen;
 }
 
-bool Window::IsMouseButtonDown(uint32 button) const
-{
-    return mMouseButtons[button];
-}
-
-
 void Window::ProcessMessages()
 {
+    mCharacters.clear();
+
     MSG msg;
     while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
     {

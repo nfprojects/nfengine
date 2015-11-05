@@ -201,14 +201,17 @@ bool Engine::Advance(View** views, size_t viewsNum,
 
         view->Postprocess();
 
+        view->UpdateGui();
+
         // GUI renderer pass
         {
             RenderContext* ctx = mRenderer->GetImmediateContext();
             ctx->commandBuffer->Reset();
             GuiRenderer::Get()->Enter(ctx);
             GuiRenderer::Get()->SetTarget(ctx, view->GetRenderTarget(true));
+            view->DrawGui(ctx);
+            GuiRenderer::Get()->BeginOrdinaryGuiRendering(ctx);
             view->OnPostRender(ctx);
-            // TODO draw engine signature with current version
             GuiRenderer::Get()->Leave(ctx);
         }
 

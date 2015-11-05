@@ -17,6 +17,9 @@ std::unique_ptr<GuiRenderer> GuiRenderer::mPtr;
 
 namespace {
 
+const int VERTEX_BUFFER_HYSTERESIS = 5000;
+const int INDEX_BUFFER_HYSTERESIS = 10000;
+
 struct GlobalCBuffer
 {
     Matrix projMatrix;
@@ -31,6 +34,8 @@ GuiRendererContext::GuiRendererContext()
     quadData.reset(new GuiQuadData[gQuadsBufferSize]);
     quadVertices.reset(new GuiQuadVertex[gQuadsBufferSize]);
     queuedQuads = 0;
+    vertexBufferSize = 0;
+    indexBufferSize = 0;
 }
 
 GuiRenderer::GuiRenderer()
@@ -40,6 +45,8 @@ GuiRenderer::GuiRenderer()
     mVertexShader.Load("GuiVS");
     mGeometryShader.Load("GuiGS");
     mPixelShader.Load("GuiPS");
+    mImGuiVertexShader.Load("ImGuiVS");
+    mImGuiPixelShader.Load("ImGuiPS");
 
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
@@ -54,6 +61,18 @@ GuiRenderer::GuiRenderer()
     vertexLayoutDesc.vertexShader = mVertexShader.GetShader(nullptr);
     vertexLayoutDesc.debugName = "GuiRenderer::mVertexLayout";
     mVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
+
+    VertexLayoutElement imGuiVertexLayoutElements[] =
+    {
+        { ElementFormat::Float_32,    2, 0,  0, false, 0 }, // pos
+        { ElementFormat::Float_32,    2, 8,  0, false, 0 }, // texture coord
+        { ElementFormat::Uint_8_norm, 4, 16, 0, false, 0 }, // color
+    };
+    vertexLayoutDesc.elements = imGuiVertexLayoutElements;
+    vertexLayoutDesc.numElements = 3;
+    vertexLayoutDesc.vertexShader = mImGuiVertexShader.GetShader(nullptr);
+    vertexLayoutDesc.debugName = "GuiRenderer::mImGuiVertexLayout";
+    mImGuiVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
 
     BufferDesc bufferDesc;
     bufferDesc.access = BufferAccess::CPU_Write;
@@ -76,6 +95,17 @@ GuiRenderer::GuiRenderer()
     bsDesc.rtDescs[0].srcColorFunc = BlendFunc::SrcAlpha;
     bsDesc.debugName = "GuiRenderer::mBlendState";
     mBlendState.reset(device->CreateBlendState(bsDesc));
+
+    DepthStateDesc dsDesc;
+    dsDesc.debugName = "GuiRenderer::mDepthState";
+    mDepthState.reset(device->CreateDepthState(dsDesc));
+
+    RasterizerStateDesc rsDesc;
+    rsDesc.cullMode = CullMode::Disabled;
+    rsDesc.fillMode = FillMode::Solid;
+    rsDesc.scissorTest = true;
+    rsDesc.debugName = "GuiRenderer::mImGuiRasterizerState";
+    mImGuiRasterizerState.reset(device->CreateRasterizerState(rsDesc));
 }
 
 
@@ -85,24 +115,27 @@ void GuiRenderer::OnEnter(RenderContext* context)
 
     context->commandBuffer->BeginDebugGroup("GUI Renderer stage");
 
-    context->commandBuffer->SetShader(mVertexShader.GetShader(nullptr));
-    context->commandBuffer->SetShader(mGeometryShader.GetShader(nullptr));
-
     IBuffer* constantBuffers[] = { mConstantBuffer.get() };
+    context->commandBuffer->SetConstantBuffers(constantBuffers, 1, ShaderType::Vertex);
     context->commandBuffer->SetConstantBuffers(constantBuffers, 1, ShaderType::Geometry);
 
-    context->commandBuffer->SetRasterizerState(mRenderer->GetDefaultRasterizerState());
-    context->commandBuffer->SetDepthState(mRenderer->GetDefaultDepthState());
+    context->commandBuffer->SetDepthState(mDepthState.get());
     context->commandBuffer->SetBlendState(mBlendState.get());
 
     ISampler* sampler = mRenderer->GetDefaultSampler();
     context->commandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
+}
 
-    IBuffer* veretexBuffers[] = { mVertexBuffer.get() };
+void GuiRenderer::BeginOrdinaryGuiRendering(RenderContext* context)
+{
+    IBuffer* vertexBuffers[] = { mVertexBuffer.get() };
     int strides[] = { sizeof(GuiQuadVertex) };
     int offsets[] = { 0 };
-    context->commandBuffer->SetVertexBuffers(1, veretexBuffers, strides, offsets);
+    context->commandBuffer->SetVertexBuffers(1, vertexBuffers, strides, offsets);
     context->commandBuffer->SetVertexLayout(mVertexLayout.get());
+    context->commandBuffer->SetShader(mVertexShader.GetShader(nullptr));
+    context->commandBuffer->SetShader(mGeometryShader.GetShader(nullptr));
+    context->commandBuffer->SetRasterizerState(mRenderer->GetDefaultRasterizerState());
 }
 
 void GuiRenderer::OnLeave(RenderContext* context)
@@ -121,7 +154,7 @@ void GuiRenderer::SetTarget(RenderContext* context, IRenderTarget* target)
     int width, height;
     target->GetDimensions(width, height);
     cbuffer.projMatrix = MatrixOrtho(0.0f, static_cast<float>(width),
-                                     0.0f, static_cast<float>(height),
+                                     static_cast<float>(height), 0.0f,
                                      -1.0f, 1.0f);
     context->commandBuffer->WriteBuffer(mConstantBuffer.get(), 0, sizeof(GlobalCBuffer),
                                         &cbuffer);
@@ -219,7 +252,7 @@ bool GuiRenderer::PrintText(RenderContext* context, Font* font, const char* text
     float texInvHeight = 1.0f / (float)font->mTexHeight;
 
     int offsetX = rect.Xmin;
-    int offsetY = rect.Ymax;
+    int offsetY = rect.Ymin;
 
     int textWidth, textLines;
     font->GetTextSize(text, textWidth, textLines);
@@ -230,18 +263,18 @@ bool GuiRenderer::PrintText(RenderContext* context, Font* font, const char* text
     switch (vAlign)
     {
     case VerticalAlignment::Top:
-        offsetY = rect.Ymax;
+        offsetY = rect.Ymin;
         break;
     case VerticalAlignment::Center:
-        offsetY = rect.Ymax - (rect.Ymax - rect.Ymin - textLines * lineHeight) / 2;
+        offsetY = rect.Ymin + (rect.Ymax - rect.Ymin - textLines * lineHeight) / 2;
         break;
     case VerticalAlignment::Bottom:
-        offsetY = rect.Ymax - (rect.Ymax - rect.Ymin - textLines * lineHeight);
+        offsetY = rect.Ymin + (rect.Ymax - rect.Ymin - textLines * lineHeight);
         break;
     default:
         return false;
     }
-    offsetY -= lineHeight;
+    offsetY += lineHeight;
 
     int defaultOffsetX = offsetX;
 
@@ -267,14 +300,14 @@ bool GuiRenderer::PrintText(RenderContext* context, Font* font, const char* text
         Rectf quadRect;
         quadRect.Xmin = static_cast<float>(offsetX + charInfo.left);
         quadRect.Xmax = static_cast<float>(quadRect.Xmin + charInfo.width);
-        quadRect.Ymin = static_cast<float>(offsetY + charInfo.top - charInfo.height);
+        quadRect.Ymin = static_cast<float>(offsetY - charInfo.top);
         quadRect.Ymax = static_cast<float>(quadRect.Ymin + charInfo.height);
 
         Rectf texRect;
         texRect.Xmin = static_cast<float>(charInfo.u) * texInvWidth;
-        texRect.Ymax = static_cast<float>(charInfo.v) * texInvHeight;
+        texRect.Ymin = static_cast<float>(charInfo.v) * texInvHeight;
         texRect.Xmax = static_cast<float>(charInfo.u + charInfo.width) * texInvWidth;
-        texRect.Ymin = static_cast<float>(charInfo.v + charInfo.height) * texInvHeight;
+        texRect.Ymax = static_cast<float>(charInfo.v + charInfo.height) * texInvHeight;
 
         PushQuad(context, quadData, GuiQuadVertex(quadRect, texRect, color));
         offsetX += charInfo.spacing;
@@ -304,6 +337,105 @@ bool GuiRenderer::PrintTextWithBorder(RenderContext* context, Font* font, const 
     }
 
     return PrintText(context, font, text, rect, color, vAlign, hAlign);
+}
+
+bool GuiRenderer::DrawImGui(RenderContext* context)
+{
+    GuiRendererContext& ctx = context->guiContext;
+
+    ImGui::Render();
+    ImDrawData* drawData = ImGui::GetDrawData();
+    if (!drawData)
+        return false;
+
+    // grow vertex buffer if too small
+    if (!mImGuiVertexBuffer || ctx.vertexBufferSize < drawData->TotalVtxCount)
+    {
+        ctx.vertexBufferSize = drawData->TotalVtxCount + VERTEX_BUFFER_HYSTERESIS;
+
+        BufferDesc bufferDesc;
+        bufferDesc.access = BufferAccess::CPU_Write;
+        bufferDesc.size = ctx.vertexBufferSize * sizeof(ImDrawVert);
+        bufferDesc.type = BufferType::Vertex;
+        bufferDesc.debugName = "GuiRenderer::mImGuiVertexBuffer";
+        mImGuiVertexBuffer.reset(mRenderer->GetDevice()->CreateBuffer(bufferDesc));
+    }
+
+    // grow index buffer if too small
+    if (!mImGuiIndexBuffer || ctx.indexBufferSize < drawData->TotalIdxCount)
+    {
+        ctx.indexBufferSize = drawData->TotalIdxCount + INDEX_BUFFER_HYSTERESIS;
+
+        BufferDesc bufferDesc;
+        bufferDesc.access = BufferAccess::CPU_Write;
+        bufferDesc.size = ctx.indexBufferSize * sizeof(ImDrawIdx);
+        bufferDesc.type = BufferType::Index;
+        bufferDesc.debugName = "GuiRenderer::mImGuiIndexBuffer";
+        mImGuiIndexBuffer.reset(mRenderer->GetDevice()->CreateBuffer(bufferDesc));
+    }
+
+    // copy vertices and indicies to GPU
+
+    ImDrawVert* vertices = static_cast<ImDrawVert*>(
+        context->commandBuffer->MapBuffer(mImGuiVertexBuffer.get(), MapType::WriteOnly));
+    ImDrawIdx* indicies = static_cast<ImDrawIdx*>(
+        context->commandBuffer->MapBuffer(mImGuiIndexBuffer.get(), MapType::WriteOnly));
+
+    for (int i = 0; i < drawData->CmdListsCount; ++i)
+    {
+        const ImDrawList* cmdList = drawData->CmdLists[i];
+        memcpy(vertices, &cmdList->VtxBuffer[0], cmdList->VtxBuffer.size() * sizeof(ImDrawVert));
+        memcpy(indicies, &cmdList->IdxBuffer[0], cmdList->IdxBuffer.size() * sizeof(ImDrawIdx));
+        vertices += cmdList->VtxBuffer.size();
+        indicies += cmdList->IdxBuffer.size();
+    }
+
+    context->commandBuffer->UnmapBuffer(mImGuiVertexBuffer.get());
+    context->commandBuffer->UnmapBuffer(mImGuiIndexBuffer.get());
+
+    // setup pipeline
+
+    IBuffer* vertexBuffers[] = { mImGuiVertexBuffer.get() };
+    int strides[] = { sizeof(ImDrawVert) };
+    int offsets[] = { 0 };
+    context->commandBuffer->SetVertexBuffers(1, vertexBuffers, strides, offsets);
+    context->commandBuffer->SetIndexBuffer(mImGuiIndexBuffer.get(), IndexBufferFormat::Uint16);
+    context->commandBuffer->SetVertexLayout(mImGuiVertexLayout.get());
+    context->commandBuffer->SetShader(mImGuiVertexShader.GetShader(nullptr));
+    context->commandBuffer->SetShader(mImGuiPixelShader.GetShader(nullptr));
+    context->commandBuffer->SetRasterizerState(mImGuiRasterizerState.get());
+
+    int vertexOffset = 0, indexOffset = 0;
+    for (int i = 0; i < drawData->CmdListsCount; ++i)
+    {
+        const ImDrawList* cmdList = drawData->CmdLists[i];
+
+        for (int j = 0; j < cmdList->CmdBuffer.size(); ++j)
+        {
+            const ImDrawCmd* command = &cmdList->CmdBuffer[j];
+            if (command->UserCallback)
+            {
+                command->UserCallback(cmdList, command);
+            }
+            else
+            {
+                context->commandBuffer->SetScissors(static_cast<int>(command->ClipRect.x),
+                                                    static_cast<int>(command->ClipRect.y),
+                                                    static_cast<int>(command->ClipRect.z),
+                                                    static_cast<int>(command->ClipRect.w));
+
+                context->commandBuffer->DrawIndexed(PrimitiveType::Triangles,
+                                                    command->ElemCount,
+                                                    -1,
+                                                    indexOffset,
+                                                    vertexOffset);
+            }
+            indexOffset += command->ElemCount;
+        }
+        vertexOffset += cmdList->VtxBuffer.size();
+    }
+
+    return true;
 }
 
 } // namespace Renderer
