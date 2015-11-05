@@ -40,6 +40,15 @@ class CORE_API GuiRenderer : public RendererModule<GuiRenderer>
     std::unique_ptr<IVertexLayout> mVertexLayout;
     std::unique_ptr<IBuffer> mConstantBuffer;
     std::unique_ptr<IBlendState> mBlendState;
+    std::unique_ptr<IDepthState> mDepthState;
+
+    /// ImGui resources
+    Multishader mImGuiVertexShader;
+    Multishader mImGuiPixelShader;
+    std::unique_ptr<IVertexLayout> mImGuiVertexLayout;
+    std::unique_ptr<IRasterizerState> mImGuiRasterizerState;
+    std::unique_ptr<IBuffer> mImGuiVertexBuffer;
+    std::unique_ptr<IBuffer> mImGuiIndexBuffer;
 
     void FlushQueue(RenderContext* context);
     void PushQuad(RenderContext* context, const GuiQuadData& quad,
@@ -51,6 +60,7 @@ public:
     void OnEnter(RenderContext* context);
     void OnLeave(RenderContext* context);
     void SetTarget(RenderContext* context, IRenderTarget* target);
+    void BeginOrdinaryGuiRendering(RenderContext* context);
 
     void DrawQuad(RenderContext* context, const Rectf& rect, uint32 color);
     void DrawTexturedQuad(RenderContext* context, const Rectf& rect, const Rectf& texCoords,
@@ -63,6 +73,7 @@ public:
                              const Recti& rect, uint32 color, uint32 borderColor,
                              VerticalAlignment vAlign = VerticalAlignment::Top,
                              HorizontalAlignment hAlign = HorizontalAlignment::Right);
+    bool DrawImGui(RenderContext* context);
 };
 
 } // namespace Renderer

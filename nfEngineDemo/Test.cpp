@@ -35,12 +35,63 @@ CustomWindow* AddWindow(CustomWindow* parent = nullptr);
 class MainCameraView : public NFE::Renderer::View
 {
 public:
+    bool showViewProperties;
+    bool showProfiler;
     bool drawSecondaryView;
     std::string secondaryViewTexName;
 
+    const int dtHistorySize = 100;
+    std::vector<float> dtHistory;
+
     MainCameraView()
         : drawSecondaryView(false)
-    {}
+        , showViewProperties(false)
+        , showProfiler(false)
+    {
+        dtHistory.resize(dtHistorySize);
+    }
+
+    void OnDrawImGui(void* state)
+    {
+        ImGui::SetInternalState(state);
+
+        // Main menu bar
+        if (ImGui::BeginMainMenuBar())
+        {
+            // TODO: switching default scenes, loading/saving, entity editor, etc.
+
+            if (ImGui::BeginMenu("Tools"))
+            {
+                ImGui::MenuItem("Profiler", nullptr, &showProfiler);
+                ImGui::MenuItem("Entity Editor", nullptr, false, false);
+                ImGui::MenuItem("View properties", nullptr, &showViewProperties);
+                ImGui::EndMenu();
+            }
+
+            ImGui::EndMainMenuBar();
+        }
+
+        if (showViewProperties)
+            DrawViewPropertiesGui();
+
+        if (showProfiler)
+        {
+            if (ImGui::Begin("Profiler", nullptr, ImVec2(340, 300), 0.8f))
+            {
+                ImGui::Text("Delta time: %.2fms", 1000.0f * gDeltaTime);
+                ImGui::Text("FPS: %.1f", 1.0f / gDeltaTime);
+                ImGui::Separator();
+
+                memmove(dtHistory.data(), dtHistory.data() + 1, sizeof(float) * (dtHistorySize - 1));
+                dtHistory[dtHistorySize - 1] = 1000.0f * gDeltaTime;
+                ImGui::PlotLines("dt history",
+                                 dtHistory.data(), dtHistorySize,  // data
+                                 0,  // no offset
+                                 nullptr, 0.0f, FLT_MAX, ImVec2(0, 100));
+            }
+            ImGui::End();
+        }
+    }
 
     void OnPostRender(RenderContext* ctx)
     {

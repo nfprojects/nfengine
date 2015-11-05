@@ -54,6 +54,8 @@ struct GuiQuadVertex
 struct GuiRendererContext
 {
     size_t queuedQuads;
+    int vertexBufferSize;
+    int indexBufferSize;
 
     // texture data
     std::unique_ptr<GuiQuadData[]> quadData;

@@ -31,6 +31,8 @@ GuiRendererContext::GuiRendererContext()
     quadData.reset(new GuiQuadData[gQuadsBufferSize]);
     quadVertices.reset(new GuiQuadVertex[gQuadsBufferSize]);
     queuedQuads = 0;
+    vertexBufferSize = 0;
+    indexBufferSize = 0;
 }
 
 GuiRenderer::GuiRenderer()
@@ -40,6 +42,8 @@ GuiRenderer::GuiRenderer()
     mVertexShader.Load("GuiVS");
     mGeometryShader.Load("GuiGS");
     mPixelShader.Load("GuiPS");
+    mImGuiVertexShader.Load("ImGuiVS");
+    mImGuiPixelShader.Load("ImGuiPS");
 
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
@@ -54,6 +58,18 @@ GuiRenderer::GuiRenderer()
     vertexLayoutDesc.vertexShader = mVertexShader.GetShader(nullptr);
     vertexLayoutDesc.debugName = "GuiRenderer::mVertexLayout";
     mVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
+
+    VertexLayoutElement imGuiVertexLayoutElements[] =
+    {
+        { ElementFormat::Float_32,    2, 0,  0, false, 0 }, // pos
+        { ElementFormat::Float_32,    2, 8,  0, false, 0 }, // texture coord
+        { ElementFormat::Uint_8_norm, 4, 16, 0, false, 0 }, // color
+    };
+    vertexLayoutDesc.elements = imGuiVertexLayoutElements;
+    vertexLayoutDesc.numElements = 3;
+    vertexLayoutDesc.vertexShader = mImGuiVertexShader.GetShader(nullptr);
+    vertexLayoutDesc.debugName = "GuiRenderer::mImGuiVertexLayout";
+    mImGuiVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
 
     BufferDesc bufferDesc;
     bufferDesc.access = BufferAccess::CPU_Write;
@@ -76,6 +92,17 @@ GuiRenderer::GuiRenderer()
     bsDesc.rtDescs[0].srcColorFunc = BlendFunc::SrcAlpha;
     bsDesc.debugName = "GuiRenderer::mBlendState";
     mBlendState.reset(device->CreateBlendState(bsDesc));
+
+    DepthStateDesc dsDesc;
+    dsDesc.debugName = "GuiRenderer::mDepthState";
+    mDepthState.reset(device->CreateDepthState(dsDesc));
+
+    RasterizerStateDesc rsDesc;
+    rsDesc.cullMode = CullMode::Disabled;
+    rsDesc.fillMode = FillMode::Solid;
+    rsDesc.scissorTest = false;  // TODO
+    rsDesc.debugName = "GuiRenderer::mImGuiRasterizerState";
+    mImGuiRasterizerState.reset(device->CreateRasterizerState(rsDesc));
 }
 
 
@@ -85,24 +112,27 @@ void GuiRenderer::OnEnter(RenderContext* context)
 
     context->commandBuffer->BeginDebugGroup("GUI Renderer stage");
 
-    context->commandBuffer->SetShader(mVertexShader.GetShader(nullptr));
-    context->commandBuffer->SetShader(mGeometryShader.GetShader(nullptr));
-
     IBuffer* constantBuffers[] = { mConstantBuffer.get() };
+    context->commandBuffer->SetConstantBuffers(constantBuffers, 1, ShaderType::Vertex);
     context->commandBuffer->SetConstantBuffers(constantBuffers, 1, ShaderType::Geometry);
 
-    context->commandBuffer->SetRasterizerState(mRenderer->GetDefaultRasterizerState());
-    context->commandBuffer->SetDepthState(mRenderer->GetDefaultDepthState());
+    context->commandBuffer->SetDepthState(mDepthState.get());
     context->commandBuffer->SetBlendState(mBlendState.get());
 
     ISampler* sampler = mRenderer->GetDefaultSampler();
     context->commandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
+}
 
-    IBuffer* veretexBuffers[] = { mVertexBuffer.get() };
+void GuiRenderer::BeginOrdinaryGuiRendering(RenderContext* context)
+{
+    IBuffer* vertexBuffers[] = { mVertexBuffer.get() };
     int strides[] = { sizeof(GuiQuadVertex) };
     int offsets[] = { 0 };
-    context->commandBuffer->SetVertexBuffers(1, veretexBuffers, strides, offsets);
+    context->commandBuffer->SetVertexBuffers(1, vertexBuffers, strides, offsets);
     context->commandBuffer->SetVertexLayout(mVertexLayout.get());
+    context->commandBuffer->SetShader(mVertexShader.GetShader(nullptr));
+    context->commandBuffer->SetShader(mGeometryShader.GetShader(nullptr));
+    context->commandBuffer->SetRasterizerState(mRenderer->GetDefaultRasterizerState());
 }
 
 void GuiRenderer::OnLeave(RenderContext* context)
@@ -304,6 +334,113 @@ bool GuiRenderer::PrintTextWithBorder(RenderContext* context, Font* font, const 
     }
 
     return PrintText(context, font, text, rect, color, vAlign, hAlign);
+}
+
+bool GuiRenderer::DrawImGui(RenderContext* context)
+{
+    GuiRendererContext& ctx = context->guiContext;
+
+    ImGui::Render();
+    ImDrawData* drawData = ImGui::GetDrawData();
+    if (!drawData)
+        return false;
+
+    // grow vertex buffer if too small
+    if (!mImGuiVertexBuffer || ctx.vertexBufferSize < drawData->TotalVtxCount)
+    {
+        const int vertexBufferHysteresis = 5000;
+        ctx.vertexBufferSize = drawData->TotalVtxCount + vertexBufferHysteresis;
+
+        BufferDesc bufferDesc;
+        bufferDesc.access = BufferAccess::CPU_Write;
+        bufferDesc.size = ctx.vertexBufferSize * sizeof(ImDrawVert);
+        bufferDesc.type = BufferType::Vertex;
+        bufferDesc.debugName = "GuiRenderer::mImGuiVertexBuffer";
+        mImGuiVertexBuffer.reset(mRenderer->GetDevice()->CreateBuffer(bufferDesc));
+    }
+
+    // grow index buffer if too small
+    if (!mImGuiIndexBuffer || ctx.indexBufferSize < drawData->TotalIdxCount)
+    {
+        const int indexBufferHysteresis = 10000;
+        ctx.indexBufferSize = drawData->TotalIdxCount + indexBufferHysteresis;
+
+        BufferDesc bufferDesc;
+        bufferDesc.access = BufferAccess::CPU_Write;
+        bufferDesc.size = ctx.indexBufferSize * sizeof(ImDrawIdx);
+        bufferDesc.type = BufferType::Index;
+        bufferDesc.debugName = "GuiRenderer::mImGuiIndexBuffer";
+        mImGuiIndexBuffer.reset(mRenderer->GetDevice()->CreateBuffer(bufferDesc));
+    }
+
+
+    // copy vertices and indicies to GPU
+
+    ImDrawVert* vertices = static_cast<ImDrawVert*>(
+        context->commandBuffer->MapBuffer(mImGuiVertexBuffer.get(), MapType::WriteOnly));
+    ImDrawIdx* indicies = static_cast<ImDrawIdx*>(
+        context->commandBuffer->MapBuffer(mImGuiIndexBuffer.get(), MapType::WriteOnly));
+
+    for (int i = 0; i < drawData->CmdListsCount; ++i)
+    {
+        const ImDrawList* cmdList = drawData->CmdLists[i];
+        memcpy(vertices, &cmdList->VtxBuffer[0], cmdList->VtxBuffer.size() * sizeof(ImDrawVert));
+        memcpy(indicies, &cmdList->IdxBuffer[0], cmdList->IdxBuffer.size() * sizeof(ImDrawIdx));
+        vertices += cmdList->VtxBuffer.size();
+        indicies += cmdList->IdxBuffer.size();
+    }
+
+    context->commandBuffer->UnmapBuffer(mImGuiVertexBuffer.get());
+    context->commandBuffer->UnmapBuffer(mImGuiIndexBuffer.get());
+
+
+    // setup pipeline
+
+    IBuffer* vertexBuffers[] = { mImGuiVertexBuffer.get() };
+    int strides[] = { sizeof(ImDrawVert) };
+    int offsets[] = { 0 };
+    context->commandBuffer->SetVertexBuffers(1, vertexBuffers, strides, offsets);
+    context->commandBuffer->SetIndexBuffer(mImGuiIndexBuffer.get(), IndexBufferFormat::Uint16);
+    context->commandBuffer->SetVertexLayout(mImGuiVertexLayout.get());
+    context->commandBuffer->SetShader(mImGuiVertexShader.GetShader(nullptr));
+    context->commandBuffer->SetShader(mImGuiPixelShader.GetShader(nullptr));
+    context->commandBuffer->SetRasterizerState(mImGuiRasterizerState.get());
+
+    context->commandBuffer->SetScissors(0, 600, 800, 0);
+
+    int vertexOffset = 0, indexOffset = 0;
+    for (int i = 0; i < drawData->CmdListsCount; ++i)
+    {
+        const ImDrawList* cmdList = drawData->CmdLists[i];
+
+        for (int j = 0; j < cmdList->CmdBuffer.size(); ++j)
+        {
+            const ImDrawCmd* command = &cmdList->CmdBuffer[j];
+            if (command->UserCallback)
+            {
+                command->UserCallback(cmdList, command);
+            }
+            else
+            {
+                /*
+                context->commandBuffer->SetScissors(static_cast<int>(command->ClipRect.x),
+                                                    static_cast<int>(command->ClipRect.y),
+                                                    static_cast<int>(command->ClipRect.z),
+                                                    static_cast<int>(command->ClipRect.w));
+                                                    */
+
+                context->commandBuffer->DrawIndexed(PrimitiveType::Triangles,
+                                                    command->ElemCount,
+                                                    -1,
+                                                    indexOffset,
+                                                    vertexOffset);
+            }
+            indexOffset += command->ElemCount;
+        }
+        vertexOffset += cmdList->VtxBuffer.size();
+    }
+
+    return true;
 }
 
 } // namespace Renderer
