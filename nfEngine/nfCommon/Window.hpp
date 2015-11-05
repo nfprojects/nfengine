@@ -12,6 +12,8 @@
 #include <X11/Xlib.h>
 #endif // defined(__LINUX__) | defined(__linux__)
 
+#define NFE_WINDOW_KEYS_NUM 256
+
 namespace NFE {
 namespace Common {
 
@@ -136,11 +138,12 @@ private:
     uint32 mHeight;
     std::string mTitle;
 
+    /// input recorded since last @p ProcessMessages() method call
     bool mMouseButtons[3];
-    int mMouseDownX[3];
-    int mMouseDownY[3];
-
-    bool mKeys[256];
+    int mMousePos[2];
+    int mMouseWheelDelta;
+    std::string mCharacters;
+    bool mKeys[NFE_WINDOW_KEYS_NUM];
 
     // used by renderer
     WindowResizeCallback mResizeCallback;
@@ -166,10 +169,42 @@ public:
     float GetAspectRatio() const;
     bool GetFullscreenMode() const;
 
-    bool IsMouseButtonDown(uint32 button) const;
-    bool IsKeyPressed(int key) const;
 
-    void SetSize(uint32 hidth, uint32 height);
+    NFE_INLINE int GetMouseWheelDelta() const
+    {
+        return mMouseWheelDelta;
+    }
+
+    NFE_INLINE void GetMousePosition(int& x, int& y) const
+    {
+        x = mMousePos[0];
+        y = mMousePos[1];
+    }
+
+    NFE_INLINE bool IsMouseButtonDown(uint32 button) const
+    {
+        return mMouseButtons[button];
+    }
+
+    /**
+     * Check if a key is pressed.
+     */
+    NFE_INLINE bool IsKeyPressed(int key) const
+    {
+        if (key >= 0 && key <= NFE_WINDOW_KEYS_NUM)
+            return mKeys[key];
+        return false;
+    }
+
+    /**
+     * Get typed UTF-8 characters typed since last @p ProcessMessages() method call.
+     */
+    NFE_INLINE const char* GetInputCharacters() const
+    {
+        return mCharacters.c_str();
+    }
+
+    void SetSize(uint32 width, uint32 height);
     void SetFullscreenMode(bool enabled);
     void SetTitle(const char* title);
 
