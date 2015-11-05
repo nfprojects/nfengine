@@ -42,6 +42,13 @@ public:
         : drawSecondaryView(false)
     {}
 
+    void OnDrawImGui(void* state)
+    {
+        ImGui::SetInternalState(state);
+        //ImGui::Begin("Custom window...");
+        //ImGui::End();
+    }
+
     void OnPostRender(RenderContext* ctx)
     {
         uint32 viewWidth, viewHeight;

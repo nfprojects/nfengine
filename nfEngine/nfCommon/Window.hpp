@@ -12,6 +12,8 @@
 #include <X11/Xlib.h>
 #endif // defined(__LINUX__) | defined(__linux__)
 
+#define NFE_WINDOW_KEYS_NUM 256
+
 namespace NFE {
 namespace Common {
 
@@ -137,10 +139,9 @@ private:
     std::string mTitle;
 
     bool mMouseButtons[3];
-    int mMouseDownX[3];
-    int mMouseDownY[3];
+    int mMousePos[2];
 
-    bool mKeys[256];
+    bool mKeys[NFE_WINDOW_KEYS_NUM];
 
     // used by renderer
     WindowResizeCallback mResizeCallback;
@@ -166,10 +167,11 @@ public:
     float GetAspectRatio() const;
     bool GetFullscreenMode() const;
 
+    void GetMousePosition(int& x, int& y) const;
     bool IsMouseButtonDown(uint32 button) const;
     bool IsKeyPressed(int key) const;
 
-    void SetSize(uint32 hidth, uint32 height);
+    void SetSize(uint32 width, uint32 height);
     void SetFullscreenMode(bool enabled);
     void SetTitle(const char* title);
 
