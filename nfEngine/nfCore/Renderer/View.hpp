@@ -50,6 +50,11 @@ class CORE_API View
     Scene::SceneManager* mScene;
     Scene::EntityID mCameraEntity;
 
+    // ImGui internal state
+    void* mImGuiState;
+    std::unique_ptr<ITexture> mImGuiTexture;
+
+    bool InitImGui();
     bool InitTemporaryRenderTarget(uint32 width, uint32 height);
     bool InitRenderTarget(ITexture* texture, uint32 width, uint32 height);
     static void OnWindowResize(void* userData);
@@ -64,6 +69,13 @@ public:
      * @brief Virtual function called after 3D and post-process pass. Could be used to draw GUI, HUD, etc.
      */
     virtual void OnPostRender(RenderContext* context);
+
+    /**
+     * Virtual function called when custom ImGui widgets can be drawn.
+     * @param state ImGui internal state. Callee must use ImGui::SetInternalState with this
+                    argument in order to use a valid state.
+     */
+    virtual void OnDrawImGui(void* state);
 
     bool SetCamera(Scene::SceneManager* scene, Scene::EntityID cameraEntity);
 
@@ -134,6 +146,16 @@ public:
      * Get view dimensions.
      */
     void GetSize(uint32& width, uint32& height);
+
+    void UpdateGui();
+
+    void DrawGui(RenderContext* context);
+
+    /**
+     * Draw ImGui window with the view properties.
+     */
+    void DrawViewPropertiesGui();
+
 };
 
 } // namespace Renderer
