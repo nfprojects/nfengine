@@ -8,6 +8,11 @@
 #include "Common.hpp"
 #include "../Window.hpp"
 
+#ifdef GetWindowFont
+#undef GetWindowFont  // ImGui workaround - GetWindowFont is both WinAPI macro and ImGui function
+#endif
+#include "imgui/imgui.h"
+
 namespace NFE {
 namespace Common {
 
@@ -190,6 +195,9 @@ void Window::MouseDown(uint32 button, int x, int y)
     mMouseDownX[button] = x;
     mMouseDownY[button] = y;
 
+    ImGuiIO& io = ImGui::GetIO();
+    io.MouseDown[button] = true;
+
     OnMouseDown(button, x, y);
 }
 
@@ -205,6 +213,9 @@ void Window::MouseUp(uint32 button)
     if (ButtonsReleased)
         ReleaseCapture();
 
+    ImGuiIO& io = ImGui::GetIO();
+    io.MouseDown[button] = false;
+
     OnMouseUp(button);
 }
 
@@ -213,6 +224,10 @@ void Window::MouseMove(int x, int y)
     OnMouseMove(x, y, x - mMouseDownX[0], y - mMouseDownY[0]);
     mMouseDownX[0] = x;
     mMouseDownY[0] = y;
+
+    ImGuiIO& io = ImGui::GetIO();
+    io.MousePos.x = static_cast<float>(x);
+    io.MousePos.y = static_cast<float>(y);
 }
 
 bool Window::IsKeyPressed(int Key) const
@@ -388,6 +403,9 @@ bool Window::IsMouseButtonDown(uint32 button) const
 
 void Window::ProcessMessages()
 {
+    ImGuiIO& io = ImGui::GetIO();
+    io.ImeWindowHandle = mHandle;
+
     MSG msg;
     while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
     {

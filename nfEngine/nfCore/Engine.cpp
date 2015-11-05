@@ -206,14 +206,34 @@ bool Engine::Advance(View** views, size_t viewsNum,
         // perform postprocess
         view->Postprocess();
 
+
+        // TEMPORARY !!!
+        {
+            int width, height;
+            IRenderTarget* rt = view->GetRenderTarget(true);
+            rt->GetDimensions(width, height);
+
+            ImGuiIO& io = ImGui::GetIO();
+            io.DisplaySize.x = static_cast<float>(width);
+            io.DisplaySize.y = static_cast<float>(height);
+            io.RenderDrawListsFn = nullptr;
+
+            static float f = 0.0f;
+            ImGui::NewFrame();
+            ImGui::Text("Hello, world!");
+            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+        }
+
+
         // GUI renderer pass
         {
             RenderContext* ctx = mRenderer->GetImmediateContext();
             ctx->commandBuffer->Reset();
             GuiRenderer::Get()->Enter(ctx);
             GuiRenderer::Get()->SetTarget(ctx, view->GetRenderTarget(true));
+            GuiRenderer::Get()->DrawImGui(ctx);
+            GuiRenderer::Get()->BeginOrdinaryGuiRendering(ctx);
             view->OnPostRender(ctx);
-            // TODO draw engine signature with current version
             GuiRenderer::Get()->Leave(ctx);
         }
 
