@@ -58,8 +58,10 @@ Window::Window()
     for (int i = 0; i < 3; i++)
         mMouseButtons[i] = false;
 
-    for (int i = 0; i < 255; i++)
+    for (int i = 0; i < NFE_WINDOW_KEYS_NUM; i++)
         mKeys[i] = false;
+
+    mMousePos[0] = mMousePos[1] = -1;
 }
 
 Window::~Window()
@@ -187,8 +189,8 @@ void Window::MouseDown(uint32 button, int x, int y)
 {
     SetCapture(mHandle);
     mMouseButtons[button] = true;
-    mMouseDownX[button] = x;
-    mMouseDownY[button] = y;
+    mMousePos[0] = x;
+    mMousePos[1] = y;
 
     OnMouseDown(button, x, y);
 }
@@ -210,9 +212,9 @@ void Window::MouseUp(uint32 button)
 
 void Window::MouseMove(int x, int y)
 {
-    OnMouseMove(x, y, x - mMouseDownX[0], y - mMouseDownY[0]);
-    mMouseDownX[0] = x;
-    mMouseDownY[0] = y;
+    OnMouseMove(x, y, x - mMousePos[0], y - mMousePos[1]);
+    mMousePos[0] = x;
+    mMousePos[1] = y;
 }
 
 bool Window::IsKeyPressed(int Key) const
@@ -345,7 +347,7 @@ void Window::LostFocus()
     MouseUp(1);
     MouseUp(2);
 
-    for (int i = 0; i < 256; i++)
+    for (int i = 0; i < NFE_WINDOW_KEYS_NUM; i++)
         mKeys[i] = false;
 }
 
@@ -378,6 +380,12 @@ float Window::GetAspectRatio() const
 bool Window::GetFullscreenMode() const
 {
     return mFullscreen;
+}
+
+void Window::GetMousePosition(int& x, int& y) const
+{
+    x = mMousePos[0];
+    y = mMousePos[1];
 }
 
 bool Window::IsMouseButtonDown(uint32 button) const

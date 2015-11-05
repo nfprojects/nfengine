@@ -22,3 +22,8 @@
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
+
+#ifdef GetWindowFont
+#undef GetWindowFont  // ImGui workaround - GetWindowFont is both WinAPI macro and ImGui function
+#endif
+#include "imgui.h"

@@ -35,12 +35,101 @@ CustomWindow* AddWindow(CustomWindow* parent = nullptr);
 class MainCameraView : public NFE::Renderer::View
 {
 public:
+    bool showViewProperties;
+    bool showProfiler;
+    bool showStyleEditor;
     bool drawSecondaryView;
     std::string secondaryViewTexName;
 
+    const int dtHistorySize = 100;
+    std::vector<float> dtHistory;
+
     MainCameraView()
         : drawSecondaryView(false)
-    {}
+        , showViewProperties(false)
+        , showProfiler(true)
+        , showStyleEditor(false)
+    {
+        dtHistory.resize(dtHistorySize);
+    }
+
+    void OnDrawImGui(void* state)
+    {
+        ImGui::SetInternalState(state);
+
+        // Main menu bar
+        if (ImGui::BeginMainMenuBar())
+        {
+            if (ImGui::BeginMenu("File"))
+            {
+                ImGui::MenuItem("Load", "CTRL+O", false, false);
+                ImGui::MenuItem("Save", "CTRL+S", false, false);
+                ImGui::Separator();
+                if (ImGui::MenuItem("Close")) { }
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Edit"))
+            {
+                ImGui::MenuItem("Undo", "CTRL+Z", false, false);
+                ImGui::MenuItem("Redo", "CTRL+Y", false, false);
+                ImGui::Separator();
+                ImGui::MenuItem("Cut", "CTRL+X", false, false);
+                ImGui::MenuItem("Copy", "CTRL+C", false, false);
+                ImGui::MenuItem("Paste", "CTRL+V", false, false);
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Tools"))
+            {
+                ImGui::MenuItem("Profiler", "CTRL+P", &showProfiler);
+                ImGui::MenuItem("Entity Editor", "CTRL+E", false, false);
+                ImGui::MenuItem("View properties", "CTRL+W", &showViewProperties);
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Misc"))
+            {
+                ImGui::MenuItem("ImGui style editor", nullptr, &showStyleEditor);
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Help"))
+            {
+                ImGui::EndMenu();
+            }
+
+            ImGui::EndMainMenuBar();
+        }
+
+        if (showViewProperties)
+            DrawViewPropertiesGui();
+
+        if (showProfiler)
+        {
+            if (ImGui::Begin("Profiler", nullptr, ImVec2(340, 300), 0.8f))
+            {
+                ImGui::Text("Delta time: %.2fms", 1000.0f * gDeltaTime);
+                ImGui::Text("FPS: %.1fms", 1.0f / gDeltaTime);
+                ImGui::Separator();
+
+                memmove(dtHistory.data(), dtHistory.data() + 1, sizeof(float) * (dtHistorySize - 1));
+                dtHistory[dtHistorySize - 1] = 1000.0f * gDeltaTime;
+                ImGui::PlotLines("dt history",
+                                 dtHistory.data(), dtHistorySize,  // data
+                                 0,  // no offset
+                                 nullptr, 0.0f, FLT_MAX, ImVec2(0, 200));
+            }
+            ImGui::End();
+        }
+
+        if (showStyleEditor)
+        {
+            if (ImGui::Begin("ImGui style editor", nullptr, ImVec2(400, 500), 0.8f))
+                ImGui::ShowStyleEditor();
+            ImGui::End();
+        }
+    }
 
     void OnPostRender(RenderContext* ctx)
     {

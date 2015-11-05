@@ -63,3 +63,8 @@
 #include "rapidxml.hpp"
 #include "rapidxml_iterators.hpp"
 #include "rapidxml_print.hpp"
+
+#ifdef GetWindowFont
+#undef GetWindowFont  // ImGui workaround - GetWindowFont is both WinAPI macro and ImGui function
+#endif
+#include "imgui.h"
