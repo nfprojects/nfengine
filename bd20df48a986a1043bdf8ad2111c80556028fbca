@@ -1,0 +1,112 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7ac7a964_8ae2db01",
+        "filename": "nfEngine/nfCommon/CMakeLists.txt",
+        "patchSetId": 21
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-11-06T13:02:15Z",
+      "side": 1,
+      "message": "align to other entries",
+      "revId": "bd20df48a986a1043bdf8ad2111c80556028fbca",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7ac7a964_aae6b714",
+        "filename": "nfEngine/nfCommon/CMakeLists.txt",
+        "patchSetId": 21
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-11-06T13:02:15Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "bd20df48a986a1043bdf8ad2111c80556028fbca",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7ac7a964_4a652344",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 354,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-11-06T13:02:15Z",
+      "side": 1,
+      "message": "I would suggest leaving a LOG_WARNING about this here. Or a LOG_ERROR and returning false.",
+      "revId": "bd20df48a986a1043bdf8ad2111c80556028fbca",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7ac7a964_ca505361",
+        "filename": "nfEngine/nfCommon/Image/ImageFormat.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-11-06T13:02:15Z",
+      "side": 1,
+      "message": "IMO it would make more sense, if Unknown was at the end of this enum. Then, all valid Filters are numbered from 0 to sth, and all values after sth are unknown filter types. What do you think?",
+      "revId": "bd20df48a986a1043bdf8ad2111c80556028fbca",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7ac7a964_ea4d0fc6",
+        "filename": "nfEngine/nfCommon/Image/ImageFormat.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-11-06T13:02:15Z",
+      "side": 1,
+      "message": "As above",
+      "revId": "bd20df48a986a1043bdf8ad2111c80556028fbca",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7ac7a964_2aee278c",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-11-06T13:02:15Z",
+      "side": 1,
+      "message": "To make the future work easier, I would create LoadBMP24 (or sth else) internal function and call it here. Then, I would transform this if...else to switch...case statement.\n\nOne way or another, this will happen (when other bit formats of BMP will be supported). Doing so will not only give us a good foundation for future development of this file, but also will make the code more readable.\n\nSo, I would see it like this in pseudocode:\n\n\n switch (infoHeader.biBitCount)\n {\n case 24: return LoadBMP24(...);\n\n default:\n     LOG_ERROR(...);\n     Release();\n     return false;\n }",
+      "range": {
+        "startLine": 78,
+        "startChar": 0,
+        "endLine": 109,
+        "endChar": 80
+      },
+      "revId": "bd20df48a986a1043bdf8ad2111c80556028fbca",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
