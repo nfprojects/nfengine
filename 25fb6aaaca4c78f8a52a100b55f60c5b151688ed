@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ab29df4_4226b1b8",
+        "filename": "nfEngine/nfCore/Renderer/LightsRenderer.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-11-06T14:22:01Z",
+      "side": 1,
+      "message": "And here we go again...",
+      "revId": "25fb6aaaca4c78f8a52a100b55f60c5b151688ed",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ab29df4_a2622dd6",
+        "filename": "nfEngine/nfCore/Systems/RendererSystem.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-11-06T14:22:01Z",
+      "side": 1,
+      "message": ":)",
+      "range": {
+        "startLine": 251,
+        "startChar": 0,
+        "endLine": 252,
+        "endChar": 29
+      },
+      "revId": "25fb6aaaca4c78f8a52a100b55f60c5b151688ed",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
