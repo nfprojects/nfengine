@@ -122,6 +122,16 @@ enum class BufferAccess
 };
 
 /**
+ * GPU resource mapping type.
+ */
+enum class MapType
+{
+    WriteOnly,
+    ReadOnly,
+    ReadWrite
+};
+
+/**
  * Data format in a index buffer.
  */
 enum class IndexBufferFormat

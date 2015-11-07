@@ -59,12 +59,27 @@ public:
     virtual void SetDepthState(IDepthState* state) = 0;
     virtual void SetViewport(float left, float width, float top, float height,
                              float minDepth, float maxDepth) = 0;
+    virtual void SetScissors(int left, int top, int right, int bottom) = 0;
     /**@}*/
 
     /**
      * CommandBufferExe Executive methods
      * @{
      */
+
+    /**
+     * Map buffer content into process virtual memory.
+     * @param buffer Target buffer.
+     * @param type   Mapping type.
+     * @return Valid pointer on success or NULL on failure.
+     */
+    virtual void* MapBuffer(IBuffer* buffer, MapType type) = 0;
+
+    /**
+     * Unmap buffer content mapped with @p Map method.
+     * @param buffer Target buffer.
+     */
+    virtual void UnmapBuffer(IBuffer* buffer) = 0;
 
     /**
      * Write data from the CPU memory to a GPU buffer.

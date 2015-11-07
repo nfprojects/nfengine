@@ -65,8 +65,12 @@ public:
     void SetDepthState(IDepthState* state);
     void SetViewport(float left, float width, float top, float height,
                      float minDepth, float maxDepth);
+    void SetScissors(int left, int top, int right, int bottom);
 
     /// Executives
+
+    void* MapBuffer(IBuffer* buffer, MapType type);
+    void UnmapBuffer(IBuffer* buffer);
     bool WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data);
     bool ReadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data);
     void CopyTexture(ITexture* src, ITexture* dest);
