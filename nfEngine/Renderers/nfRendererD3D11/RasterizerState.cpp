@@ -47,7 +47,7 @@ bool RasterizerState::Init(const RasterizerStateDesc& desc)
     rd.DepthBiasClamp = 0.0f;
     rd.SlopeScaledDepthBias = 0.0f;
     rd.DepthClipEnable = TRUE;
-    rd.ScissorEnable = FALSE;
+    rd.ScissorEnable = desc.scissorTest ? TRUE : FALSE;
     rd.MultisampleEnable = FALSE;
     rd.AntialiasedLineEnable = FALSE;
 
