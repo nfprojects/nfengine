@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7ac7a964_6bd101cd",
+        "filename": "nfEngine/nfCommon/CMakeLists.txt",
+        "patchSetId": 21
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-11-07T13:49:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7ac7a964_8ae2db01",
+      "revId": "bd20df48a986a1043bdf8ad2111c80556028fbca",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7ac7a964_aae6b714",
         "filename": "nfEngine/nfCommon/CMakeLists.txt",
         "patchSetId": 21
@@ -30,6 +48,24 @@
       "writtenOn": "2015-11-06T13:02:15Z",
       "side": 1,
       "message": "as above",
+      "revId": "bd20df48a986a1043bdf8ad2111c80556028fbca",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7ac7a964_8bd65dc4",
+        "filename": "nfEngine/nfCommon/CMakeLists.txt",
+        "patchSetId": 21
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-11-07T13:49:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7ac7a964_aae6b714",
       "revId": "bd20df48a986a1043bdf8ad2111c80556028fbca",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "7ac7a964_abda39e7",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 354,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-11-07T13:49:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7ac7a964_4a652344",
+      "revId": "bd20df48a986a1043bdf8ad2111c80556028fbca",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7ac7a964_ca505361",
         "filename": "nfEngine/nfCommon/Image/ImageFormat.hpp",
         "patchSetId": 21
@@ -64,6 +118,24 @@
       "writtenOn": "2015-11-06T13:02:15Z",
       "side": 1,
       "message": "IMO it would make more sense, if Unknown was at the end of this enum. Then, all valid Filters are numbered from 0 to sth, and all values after sth are unknown filter types. What do you think?",
+      "revId": "bd20df48a986a1043bdf8ad2111c80556028fbca",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7ac7a964_cbd775be",
+        "filename": "nfEngine/nfCommon/Image/ImageFormat.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-11-07T13:49:37Z",
+      "side": 1,
+      "message": "If You say so. It makes no difference here, test for random number casted to this enum gives Unknown anyway.",
+      "parentUuid": "7ac7a964_ca505361",
       "revId": "bd20df48a986a1043bdf8ad2111c80556028fbca",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "7ac7a964_ebe431ae",
+        "filename": "nfEngine/nfCommon/Image/ImageFormat.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-11-07T13:49:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7ac7a964_ea4d0fc6",
+      "revId": "bd20df48a986a1043bdf8ad2111c80556028fbca",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7ac7a964_2aee278c",
         "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
         "patchSetId": 21
@@ -98,6 +188,30 @@
       "writtenOn": "2015-11-06T13:02:15Z",
       "side": 1,
       "message": "To make the future work easier, I would create LoadBMP24 (or sth else) internal function and call it here. Then, I would transform this if...else to switch...case statement.\n\nOne way or another, this will happen (when other bit formats of BMP will be supported). Doing so will not only give us a good foundation for future development of this file, but also will make the code more readable.\n\nSo, I would see it like this in pseudocode:\n\n\n switch (infoHeader.biBitCount)\n {\n case 24: return LoadBMP24(...);\n\n default:\n     LOG_ERROR(...);\n     Release();\n     return false;\n }",
+      "range": {
+        "startLine": 78,
+        "startChar": 0,
+        "endLine": 109,
+        "endChar": 80
+      },
+      "revId": "bd20df48a986a1043bdf8ad2111c80556028fbca",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7ac7a964_0be24d9f",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2015-11-07T13:49:37Z",
+      "side": 1,
+      "message": "Please refrain from giving comments about LoadBMP function, as commit for its full refactor (i added support for most bmp formats) is already in review - move those comments there.",
+      "parentUuid": "7ac7a964_2aee278c",
       "range": {
         "startLine": 78,
         "startChar": 0,
