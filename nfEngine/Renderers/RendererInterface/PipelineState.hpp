@@ -77,12 +77,14 @@ struct RasterizerStateDesc
 {
     CullMode cullMode;
     FillMode fillMode;
+    bool scissorTest;
     // TODO: more options
     const char* debugName;  //< optional debug name
 
     RasterizerStateDesc()
         : cullMode(CullMode::Disabled)
         , fillMode(FillMode::Solid)
+        , scissorTest(false)
         , debugName(nullptr)
     {}
 };

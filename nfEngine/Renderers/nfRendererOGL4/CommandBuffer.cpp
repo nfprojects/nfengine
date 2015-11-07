@@ -371,6 +371,26 @@ void CommandBuffer::SetViewport(float left, float width, float top, float height
                static_cast<GLsizei>(height));
 }
 
+void CommandBuffer::SetScissors(int left, int top, int right, int bottom)
+{
+    UNUSED(left);
+    UNUSED(top);
+    UNUSED(right);
+    UNUSED(bottom);
+}
+
+void* CommandBuffer::MapBuffer(IBuffer* buffer, MapType type)
+{
+    UNUSED(buffer);
+    UNUSED(type);
+    return nullptr;
+}
+
+void CommandBuffer::UnmapBuffer(IBuffer* buffer)
+{
+    UNUSED(buffer);
+}
+
 bool CommandBuffer::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data)
 {
     Buffer* buf = dynamic_cast<Buffer*>(buffer);
