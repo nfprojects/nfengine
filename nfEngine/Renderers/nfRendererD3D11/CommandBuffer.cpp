@@ -333,6 +333,57 @@ void CommandBuffer::SetStencilRef(unsigned char ref)
     mStencilRef = ref;
 }
 
+void CommandBuffer::SetScissors(int left, int top, int right, int bottom)
+{
+    D3D11_RECT rect;
+    rect.left = left;
+    rect.top = top;
+    rect.right = right;
+    rect.bottom = bottom;
+    mContext->RSSetScissorRects(1, &rect);
+}
+
+void* CommandBuffer::MapBuffer(IBuffer* buffer, MapType type)
+{
+    Buffer* buf = dynamic_cast<Buffer*>(buffer);
+    if (!buf)
+        return nullptr;
+
+    D3D11_MAP mapType;
+    switch (type)
+    {
+    case MapType::ReadOnly:
+        mapType = D3D11_MAP_READ;
+        break;
+    case MapType::WriteOnly:
+        mapType = D3D11_MAP_WRITE_DISCARD;
+        break;
+    case MapType::ReadWrite:
+        mapType = D3D11_MAP_READ_WRITE;
+        break;
+    default:
+        return nullptr;
+    }
+
+    D3D11_MAPPED_SUBRESOURCE mapped = { 0 };
+    ID3D11Resource* res = reinterpret_cast<ID3D11Resource*>(buf->mBuffer.get());
+    HRESULT hr = D3D_CALL_CHECK(mContext->Map(res, 0, mapType, 0, &mapped));
+    if (FAILED(hr))
+        return nullptr;
+
+    return mapped.pData;
+}
+
+void CommandBuffer::UnmapBuffer(IBuffer* buffer)
+{
+    Buffer* buf = dynamic_cast<Buffer*>(buffer);
+    if (!buf)
+        return;
+
+    ID3D11Resource* res = reinterpret_cast<ID3D11Resource*>(buf->mBuffer.get());
+    mContext->Unmap(res, 0);
+}
+
 bool CommandBuffer::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data)
 {
     Buffer* buf = dynamic_cast<Buffer*>(buffer);
