@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7ac7a964_c26caf39",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-11-10T11:58:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7ac7a964_51187384",
+      "range": {
+        "startLine": 225,
+        "startChar": 4,
+        "endLine": 225,
+        "endChar": 19
+      },
+      "revId": "b5f3c00241df70bacd64dd03f3a950cf353b121a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7ac7a964_711d6f73",
         "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.cpp",
         "patchSetId": 4
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "7ac7a964_e269ab26",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-11-10T11:58:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7ac7a964_711d6f73",
+      "range": {
+        "startLine": 237,
+        "startChar": 4,
+        "endLine": 237,
+        "endChar": 19
+      },
+      "revId": "b5f3c00241df70bacd64dd03f3a950cf353b121a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7ac7a964_5163131a",
         "filename": "nfEngine/Renderers/nfRendererOGL4/Texture.cpp",
         "patchSetId": 4
@@ -59,6 +107,24 @@
       "writtenOn": "2015-11-09T20:29:17Z",
       "side": 1,
       "message": "IMO this is not needed, because TranslateElementFormat logs this error.",
+      "revId": "b5f3c00241df70bacd64dd03f3a950cf353b121a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7ac7a964_a28893e8",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Texture.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-11-10T11:58:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7ac7a964_5163131a",
       "revId": "b5f3c00241df70bacd64dd03f3a950cf353b121a",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
