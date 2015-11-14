@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "SoundSample.hpp"
+
 #include "../nfCommon/Logger.hpp"
 
 namespace NFE {

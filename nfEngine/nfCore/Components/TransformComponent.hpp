@@ -7,9 +7,8 @@
 #pragma once
 
 #include "../Core.hpp"
-#include "../Aligned.hpp"
 #include "Component.hpp"
-#include "../Aligned.hpp"
+#include "../Utils/Aligned.hpp"
 #include "../nfCommon/Math/Quaternion.hpp"
 
 namespace NFE {

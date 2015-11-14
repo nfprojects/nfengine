@@ -4,25 +4,25 @@
  * @brief  Definitions of Scene class methods connected only with rendering.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "RendererSystem.hpp"
 
-#include "../EntityManager.hpp"
-#include "../Engine.hpp"
-#include "../Material.hpp"
+#include "Scene/EntityManager.hpp"
+#include "Engine.hpp"
+#include "Resources/Material.hpp"
 
-#include "../Renderer/HighLevelRenderer.hpp"
-#include "../Renderer/LightsRenderer.hpp"
-#include "../Renderer/GeometryRenderer.hpp"
-#include "../Renderer/DebugRenderer.hpp"
-#include "../Renderer/RendererContext.hpp"
-#include "../Renderer/View.hpp"
+#include "Renderer/HighLevelRenderer.hpp"
+#include "Renderer/LightsRenderer.hpp"
+#include "Renderer/GeometryRenderer.hpp"
+#include "Renderer/DebugRenderer.hpp"
+#include "Renderer/RendererContext.hpp"
+#include "Renderer/View.hpp"
 
-#include "../Components/TransformComponent.hpp"
-#include "../Components/BodyComponent.hpp"
-#include "../Components/MeshComponent.hpp"
-#include "../Components/CameraComponent.hpp"
-#include "../Components/LightComponent.hpp"
+#include "Components/TransformComponent.hpp"
+#include "Components/BodyComponent.hpp"
+#include "Components/MeshComponent.hpp"
+#include "Components/CameraComponent.hpp"
+#include "Components/LightComponent.hpp"
 
 #include "../nfCommon/Timer.hpp"
 #include "../nfCommon/Logger.hpp"

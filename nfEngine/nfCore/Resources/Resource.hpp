@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include "Core.hpp"
-#include "Aligned.hpp"
+#include "../Core.hpp"
+#include "../Utils/Aligned.hpp"
 
 namespace NFE {
 namespace Resource {

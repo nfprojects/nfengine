@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "RendererContext.hpp"
 
 namespace NFE {

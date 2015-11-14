@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include "Core.hpp"
+#include "../Core.hpp"
 #include "Resource.hpp"
-#include "Renderer/RendererResources.hpp"
+#include "../Renderer/RendererResources.hpp"
 #include "../nfCommon/Math/Box.hpp"
 
 namespace NFE {

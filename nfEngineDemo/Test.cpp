@@ -4,7 +4,7 @@
 #include "Scenes.hpp"
 
 #include "../nfCommon/Window.hpp"
-#include "../nfEngine/nfCommon/Logger.hpp"
+#include "../nfCommon/Logger.hpp"
 #include "../nfCommon/FileSystem.hpp"
 
 using namespace NFE;

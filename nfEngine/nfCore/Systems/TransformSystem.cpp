@@ -4,11 +4,12 @@
  * @brief  Definitions of transform system.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "TransformSystem.hpp"
-#include "../Engine.hpp"
-#include "../EntityManager.hpp"
-#include "../Components/TransformComponent.hpp"
+#include "Engine.hpp"
+#include "Scene/EntityManager.hpp"
+#include "Components/TransformComponent.hpp"
+
 #include "../nfCommon/Logger.hpp"
 
 namespace NFE {

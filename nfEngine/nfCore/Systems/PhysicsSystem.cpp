@@ -4,13 +4,13 @@
  * @brief  Definitions of physics system.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "PhysicsSystem.hpp"
-#include "../Engine.hpp"
-#include "../Performance.hpp"
-#include "../EntityManager.hpp"
-#include "../Components/TransformComponent.hpp"
-#include "../Components/BodyComponent.hpp"
+#include "Engine.hpp"
+#include "Scene/EntityManager.hpp"
+#include "Components/TransformComponent.hpp"
+#include "Components/BodyComponent.hpp"
+
 #include "../nfCommon/Timer.hpp"
 
 namespace NFE {
@@ -55,10 +55,7 @@ PhysicsSystem::PhysicsSystem(SceneManager* scene)
 
 void PhysicsSystem::UpdatePhysics(float dt)
 {
-    Common::Timer timer;
-    timer.Start();
     mDynamicsWorld->stepSimulation(dt, 40, 1.0f / 90.0f);
-    Util::g_FrameStats.physics = timer.Stop();
 }
 
 void PhysicsSystem::ProcessContacts()

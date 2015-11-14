@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include "Core.hpp"
-#include "Components/Component.hpp"
+#include "../Core.hpp"
+#include "../Components/Component.hpp"
 
 namespace NFE {
 namespace Scene {

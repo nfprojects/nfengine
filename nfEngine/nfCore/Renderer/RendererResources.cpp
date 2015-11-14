@@ -4,12 +4,12 @@
  * @brief  Definitions of high-level renderer resources.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "RendererResources.hpp"
 #include "HighLevelRenderer.hpp"
-#include "../Engine.hpp"
+#include "Engine.hpp"
 #include "../Renderers/RendererInterface/Device.hpp"
-#include "Logger.hpp"
+#include "../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Renderer {

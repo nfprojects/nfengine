@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../nfEngine/nfCore/SceneManager.hpp"
+#include "../nfEngine/nfCore/Scene/SceneManager.hpp"
 
 #define ENGINE_GET_TEXTURE(name) \
     static_cast<Texture*>(Engine::GetInstance()->GetResManager()->GetResource(name, ResourceType::Texture))

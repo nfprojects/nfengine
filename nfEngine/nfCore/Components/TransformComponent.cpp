@@ -4,7 +4,7 @@
  * @brief  Definition of transform component.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "TransformComponent.hpp"
 
 namespace NFE {

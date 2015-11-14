@@ -4,10 +4,10 @@
  * @brief  Body component definition.
 */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "BodyComponent.hpp"
-#include "../ResourcesManager.hpp"
-#include "../CollisionShape.hpp"
+#include "Resources/ResourcesManager.hpp"
+#include "Resources/CollisionShape.hpp"
 #include "../nfCommon/InputStream.hpp"
 #include "../nfCommon/OutputStream.hpp"
 

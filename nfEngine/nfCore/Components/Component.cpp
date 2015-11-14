@@ -4,7 +4,7 @@
  * @brief  Component's base definition.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "Component.hpp"
 
 namespace NFE {

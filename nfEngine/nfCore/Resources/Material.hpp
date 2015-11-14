@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include "Core.hpp"
+#include "../Core.hpp"
 #include "Resource.hpp"
 #include "Texture.hpp"
-#include "Renderer/RendererResources.hpp"
+#include "../Renderer/RendererResources.hpp"
 
 namespace NFE {
 namespace Resource {

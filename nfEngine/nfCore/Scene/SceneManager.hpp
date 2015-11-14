@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include "Core.hpp"
-#include "../nfCommon/ThreadPool.hpp"
+#include "../Core.hpp"
 #include "SceneEvent.hpp"
 #include "EntityManager.hpp"
+#include "../nfCommon/ThreadPool.hpp"
 
 namespace NFE {
 namespace Scene {

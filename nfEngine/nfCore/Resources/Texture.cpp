@@ -10,6 +10,7 @@
 #include "Texture.hpp"
 #include "Renderer/HighLevelRenderer.hpp"
 #include "ResourcesManager.hpp"
+
 #include "../nfCommon/Logger.hpp"
 #include "../nfCommon/InputStream.hpp"
 #include "../nfCommon/Image.hpp"

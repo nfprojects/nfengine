@@ -6,11 +6,11 @@
 
 #pragma once
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "GeometryRenderer.hpp"
 #include "HighLevelRenderer.hpp"
-#include "../Material.hpp"
-#include "../Mesh.hpp"
+#include "Resources/Material.hpp"
+#include "Resources/Mesh.hpp"
 #include "../../nfCommon/Logger.hpp"
 
 namespace NFE {

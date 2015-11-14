@@ -7,8 +7,8 @@
 #pragma once
 
 #include "Core.hpp"
-#include "ResourcesManager.hpp"
-#include "SceneManager.hpp"
+#include "Resources/ResourcesManager.hpp"
+#include "Scene/SceneManager.hpp"
 #include "Renderer/HighLevelRenderer.hpp"
 #include "../nfCommon/ThreadPool.hpp"
 

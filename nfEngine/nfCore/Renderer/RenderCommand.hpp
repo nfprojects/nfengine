@@ -7,7 +7,7 @@
 #pragma once
 
 #include "../Core.hpp"
-#include "../Aligned.hpp"
+#include "../Utils/Aligned.hpp"
 #include "../Renderers/RendererInterface/Buffer.hpp"
 
 namespace NFE {

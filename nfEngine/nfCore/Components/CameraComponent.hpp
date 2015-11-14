@@ -8,7 +8,7 @@
 
 #include "../Core.hpp"
 #include "Component.hpp"
-#include "../Aligned.hpp"
+#include "../Utils/Aligned.hpp"
 #include "../nfCommon/Math/Frustum.hpp"
 
 namespace NFE {

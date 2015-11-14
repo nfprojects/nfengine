@@ -4,7 +4,7 @@
  * @brief  CameraComponent definitions.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "CameraComponent.hpp"
 
 namespace NFE {

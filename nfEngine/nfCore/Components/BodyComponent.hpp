@@ -8,8 +8,8 @@
 
 #include "../Core.hpp"
 #include "Component.hpp"
-#include "../CollisionShape.hpp"
-#include "../Aligned.hpp"
+#include "../Resources/CollisionShape.hpp"
+#include "../Utils/Aligned.hpp"
 
 class btDefaultMotionState;
 class btRigidBody;

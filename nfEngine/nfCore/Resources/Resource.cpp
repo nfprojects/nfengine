@@ -8,6 +8,7 @@
 #include "Engine.hpp"
 #include "Resource.hpp"
 #include "ResourcesManager.hpp"
+
 #include "../nfCommon/Memory.hpp"
 #include "../nfCommon/Logger.hpp"
 

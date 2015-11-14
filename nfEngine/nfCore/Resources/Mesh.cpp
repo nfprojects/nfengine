@@ -11,6 +11,7 @@
 #include "Renderer/HighLevelRenderer.hpp"
 #include "ResourcesManager.hpp"
 #include "Engine.hpp"
+
 #include "../nfCommon/Logger.hpp"
 
 namespace NFE {
