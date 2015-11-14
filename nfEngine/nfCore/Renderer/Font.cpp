@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "Font.hpp"
-#include "../Engine.hpp"
+#include "Engine.hpp"
 #include "../../nfCommon/Logger.hpp"
 
 namespace NFE {

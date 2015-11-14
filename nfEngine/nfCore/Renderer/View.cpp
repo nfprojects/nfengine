@@ -4,13 +4,13 @@
  * @brief  Definitions of View class.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "View.hpp"
 #include "HighLevelRenderer.hpp"
 
-#include "../Engine.hpp"
-#include "../ResourcesManager.hpp"
-#include "../Texture.hpp"
+#include "Engine.hpp"
+#include "Resources/ResourcesManager.hpp"
+#include "Resources/Texture.hpp"
 
 #include "Window.hpp"
 #include "Logger.hpp"

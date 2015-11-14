@@ -9,7 +9,7 @@
 #include "../Core.hpp"
 #include "HighLevelRenderer.hpp"
 #include "RendererResources.hpp"
-#include "../EntityManager.hpp"
+#include "../Scene/EntityManager.hpp"
 
 namespace NFE {
 namespace Renderer {

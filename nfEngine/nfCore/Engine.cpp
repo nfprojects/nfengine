@@ -6,8 +6,7 @@
 
 #include "PCH.hpp"
 #include "Engine.hpp"
-#include "Texture.hpp"
-#include "Performance.hpp"
+#include "Resources/Texture.hpp"
 #include "Systems/RendererSystem.hpp"
 
 #include "Renderer/HighLevelRenderer.hpp"
@@ -162,8 +161,6 @@ bool Engine::Advance(View** views, size_t viewsNum,
         LOG_ERROR("Renderer is not initialized, drawing is not supported.");
         return false;
     }
-
-    Util::g_FrameStats.Reset();
 
     std::unique_lock<std::mutex> lock(mRenderingMutex);
 

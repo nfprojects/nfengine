@@ -6,11 +6,11 @@
 
 #pragma once
 
-#include "../PCH.hpp"
-#include "../Core.hpp"
+#include "PCH.hpp"
+#include "Core.hpp"
 #include "HighLevelRenderer.hpp"
 #include "View.hpp"
-#include "../Engine.hpp"
+#include "Engine.hpp"
 #include "../../nfCommon/ThreadPool.hpp"
 #include "../../nfCommon/Logger.hpp"
 

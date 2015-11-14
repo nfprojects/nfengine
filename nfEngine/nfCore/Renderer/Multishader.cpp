@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "Multishader.hpp"
 #include "../nfCommon/Logger.hpp"
 #include "../nfCommon/File.hpp"

@@ -5,10 +5,11 @@
  */
 
 #pragma once
+
 #include "../Core.hpp"
-#include "../Mesh.hpp"
+#include "../Resources/Mesh.hpp"
 #include "Component.hpp"
-#include "../Aligned.hpp"
+#include "../Utils/Aligned.hpp"
 
 namespace NFE {
 namespace Scene {

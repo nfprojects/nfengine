@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include "Core.hpp"
-#include "Aligned.hpp"
+#include "../Core.hpp"
 #include "EntityManager.hpp"
+#include "../Utils/Aligned.hpp"
 
 namespace NFE {
 namespace Scene {

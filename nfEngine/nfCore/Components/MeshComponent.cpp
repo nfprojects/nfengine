@@ -4,10 +4,10 @@
  * @brief  Definition of mesh component class.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "MeshComponent.hpp"
-#include "../Engine.hpp"
-#include "../ResourcesManager.hpp"
+#include "Engine.hpp"
+#include "Resources/ResourcesManager.hpp"
 
 namespace NFE {
 namespace Scene {

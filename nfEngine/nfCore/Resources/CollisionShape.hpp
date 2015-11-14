@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "Core.hpp"
+#include "../Core.hpp"
 #include "Resource.hpp"
 
 //predeclarations

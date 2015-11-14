@@ -4,14 +4,14 @@
  * @brief  Definition of light component class.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "LightComponent.hpp"
-#include "../ResourcesManager.hpp"
+#include "Resources/ResourcesManager.hpp"
+#include "Engine.hpp"
 
 #include "../nfCommon/InputStream.hpp"
 #include "../nfCommon/OutputStream.hpp"
 #include "../nfCommon/Logger.hpp"
-#include "../Engine.hpp"
 
 namespace NFE {
 namespace Scene {

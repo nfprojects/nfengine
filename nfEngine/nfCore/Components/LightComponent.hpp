@@ -8,8 +8,8 @@
 
 #include "../Core.hpp"
 #include "Component.hpp"
-#include "../Texture.hpp"
-#include "../Aligned.hpp"
+#include "../Resources/Texture.hpp"
+#include "../Utils/Aligned.hpp"
 
 namespace NFE {
 namespace Scene {

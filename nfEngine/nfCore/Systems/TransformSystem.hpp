@@ -7,7 +7,7 @@
 #pragma once
 
 #include "../Core.hpp"
-#include "../EntityManager.hpp"
+#include "../Scene/EntityManager.hpp"
 
 namespace NFE {
 namespace Scene {

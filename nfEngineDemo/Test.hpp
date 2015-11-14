@@ -2,10 +2,9 @@
 
 // TODO: this paths must be changed
 #include "../nfEngine/nfCore/Engine.hpp"
-#include "../nfEngine/nfCore/SceneManager.hpp"
-#include "../nfEngine/nfCore/EntityManager.hpp"
+#include "../nfEngine/nfCore/Scene/SceneManager.hpp"
+#include "../nfEngine/nfCore/Scene/EntityManager.hpp"
 #include "../nfEngine/nfCore/Systems/TransformSystem.hpp"
-#include "../nfEngine/nfCore/CollisionShape.hpp"
 #include "../nfEngine/nfCore/Renderer/HighLevelRenderer.hpp"
 #include "../nfEngine/nfCore/Renderer/View.hpp"
 #include "../nfEngine/nfCore/Renderer/GuiRenderer.hpp"
