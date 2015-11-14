@@ -9,6 +9,7 @@
 #include "RendererModule.hpp"
 #include "HighLevelRenderer.hpp"
 #include "../Resources/Multishader.hpp"
+#include "../Resources/MultiShaderProgram.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -47,21 +48,18 @@ class LightsRenderer : public RendererModule<LightsRenderer>
     std::unique_ptr<IBuffer> mVertexBuffer;
     std::unique_ptr<IBuffer> mIndexBuffer;
 
-    Resource::Multishader* mFullscreenQuadVS;
     std::unique_ptr<IVertexLayout> mVertexLayout;
 
-    Resource::Multishader* mAmbientLightPS;
+    Resource::MultiShaderProgram mAmbientLightShaderProgram;
     std::unique_ptr<IBuffer> mAmbientLightCBuffer;
 
     int mOmniLightUseShadowMap;
-    Resource::Multishader* mOmniLightVS;
-    Resource::Multishader* mOmniLightPS;
+    Resource::MultiShaderProgram mOmniLightShaderProgram;
     std::unique_ptr<IBuffer> mOmniLightCBuffer;
 
     int mSpotLightUseLightMap;
     int mSpotLightUseShadowMap;
-    Resource::Multishader* mSpotLightVS;
-    Resource::Multishader* mSpotLightPS;
+    Resource::MultiShaderProgram mSpotLightShaderProgram;
     std::unique_ptr<IBuffer> mSpotLightCBuffer;
 
 public:
