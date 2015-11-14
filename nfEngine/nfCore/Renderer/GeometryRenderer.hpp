@@ -11,18 +11,15 @@
 #include "RenderCommand.hpp"
 #include "GeometryRendererContext.hpp"
 #include "RendererResources.hpp"
-#include "../Resources/Multishader.hpp"
+#include "../Resources/MultiShaderProgram.hpp"
 
 namespace NFE {
 namespace Renderer {
 
 class GeometryRenderer : public RendererModule<GeometryRenderer>
 {
-    Resource::Multishader* mVertexShader;
-    Resource::Multishader* mPixelShader;
-
-    Resource::Multishader* mShadowVertexShader;
-    Resource::Multishader* mShadowPixelShader;
+    Resource::MultiShaderProgram mGeometryPassShaderProgram;
+    Resource::MultiShaderProgram mShadowShaderProgram;
 
     std::unique_ptr<IVertexLayout> mVertexLayout;
     std::unique_ptr<IRasterizerState> mRasterizerState;
@@ -31,8 +28,8 @@ class GeometryRenderer : public RendererModule<GeometryRenderer>
     std::unique_ptr<IBuffer> mGlobalCBuffer;
     std::unique_ptr<IBuffer> mShadowGlobalCBuffer;
 
-    uint32 mUseMotionBlurMacroVS;
-    uint32 mUseMotionBlurMacroPS;
+    uint32 mUseMotionBlurMacroId;
+    uint32 mCubeShadowMapMacroId;
 
 public:
     GeometryRenderer();
