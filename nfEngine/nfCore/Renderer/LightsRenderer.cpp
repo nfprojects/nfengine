@@ -57,27 +57,24 @@ LightsRenderer::LightsRenderer()
                                                                 ResourceType::Shader));
     mOmniLightVS = static_cast<Multishader*>(rm->GetResource("OmniLightVS", ResourceType::Shader));
     mOmniLightPS = static_cast<Multishader*>(rm->GetResource("OmniLightPS", ResourceType::Shader));
-    mSpotLightVS = static_cast<Multishader*>(rm->GetResource("SpotLightVS", ResourceType::Shader));
-    mSpotLightPS = static_cast<Multishader*>(rm->GetResource("SpotLightPS", ResourceType::Shader));
 
     mFullscreenQuadVS->AddRef(this);
     mAmbientLightPS->AddRef(this);
     mOmniLightVS->AddRef(this);
     mOmniLightPS->AddRef(this);
-    mSpotLightVS->AddRef(this);
-    mSpotLightPS->AddRef(this);
 
     rm->WaitForResource(mOmniLightPS);
     mOmniLightUseShadowMap = mOmniLightPS->GetMacroByName("USE_SHADOW_MAP");
 
-    rm->WaitForResource(mSpotLightPS);
-    mSpotLightUseLightMap = mSpotLightPS->GetMacroByName("USE_LIGHT_MAP");
-    mSpotLightUseShadowMap = mSpotLightPS->GetMacroByName("USE_SHADOW_MAP");
-
     rm->WaitForResource(mFullscreenQuadVS);
     rm->WaitForResource(mAmbientLightPS);
     rm->WaitForResource(mOmniLightVS);
-    rm->WaitForResource(mSpotLightVS);
+
+
+    mSpotLightShaderProgram.Load("SpotLight");
+    mSpotLightUseLightMap = mSpotLightShaderProgram.GetMacroByName("USE_LIGHT_MAP");
+    mSpotLightUseShadowMap = mSpotLightShaderProgram.GetMacroByName("USE_SHADOW_MAP");
+
 
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
@@ -355,17 +352,17 @@ void LightsRenderer::DrawSpotLight(RenderContext* context, const SpotLightProper
 {
     // TODO: use instancing to draw lights
 
-    int psMacros[] = { 0, 0 };
+    int macros[] = { 0, 0 };
 
     if (lightMap != nullptr)
     {
-        psMacros[mSpotLightUseLightMap] = 1;
+        macros[mSpotLightUseLightMap] = 1;
         context->commandBuffer->SetTextures(&lightMap, 1, ShaderType::Pixel, 5);
     }
 
     if (shadowMap && shadowMap->mTexture)
     {
-        psMacros[mSpotLightUseShadowMap] = 1;
+        macros[mSpotLightUseShadowMap] = 1;
         ITexture* shadowMapTexture = shadowMap->mTexture.get();
         context->commandBuffer->SetTextures(&shadowMapTexture, 1, ShaderType::Pixel, 6);
     }
@@ -373,9 +370,7 @@ void LightsRenderer::DrawSpotLight(RenderContext* context, const SpotLightProper
     context->commandBuffer->SetDepthState(mLightsDepthState.get());
     context->commandBuffer->SetRasterizerState(mLightsRasterizerState.get());
     context->commandBuffer->SetBlendState(mLightsBlendState.get());
-
-    context->commandBuffer->SetShader(mSpotLightVS->GetShader(nullptr));
-    context->commandBuffer->SetShader(mSpotLightPS->GetShader(psMacros));
+    context->commandBuffer->SetShaderProgram(mSpotLightShaderProgram.GetShaderProgram(macros));
 
     IBuffer* cbuffers[] = { mGlobalCBuffer.get(), mSpotLightCBuffer.get() };
     context->commandBuffer->SetConstantBuffers(cbuffers, 2, ShaderType::Vertex);
