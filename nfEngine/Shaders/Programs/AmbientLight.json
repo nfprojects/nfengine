@@ -1,0 +1,4 @@
+{
+    "vertexShader": "FullScreenQuadVS",
+    "pixelShader": "AmbientLightPS"
+}
