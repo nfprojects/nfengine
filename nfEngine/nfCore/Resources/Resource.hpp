@@ -33,6 +33,7 @@ enum class ResourceType
 {
     Unknown,
     Shader,
+    ShaderProgram,
     Texture,
     Material,
     Mesh,

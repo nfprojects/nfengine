@@ -11,6 +11,7 @@
 
 // TODO: remove these dependencies - adding a new resource type shouldn't force programmer to modify this file...
 #include "Multishader.hpp"
+#include "MultiShaderProgram.hpp"
 #include "Texture.hpp"
 #include "Material.hpp"
 #include "Mesh.hpp"
@@ -77,6 +78,10 @@ ResourceBase* ResManager::GetResource(const char* name, ResourceType type, bool 
     {
         case ResourceType::Shader:
             resource = new Multishader;
+            break;
+
+        case ResourceType::ShaderProgram:
+            resource = new MultiShaderProgram;
             break;
 
         case ResourceType::Texture:

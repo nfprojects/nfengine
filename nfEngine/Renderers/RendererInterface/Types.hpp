@@ -17,6 +17,9 @@ namespace Renderer {
 #define NFE_CLEAR_FLAG_DEPTH   (1<<1)
 #define NFE_CLEAR_FLAG_STENCIL (1<<2)
 
+// number of graphics shader types
+#define NFE_SHADER_TYPES_NUM 5
+
 /**
  * GPU resources data format.
  */
@@ -78,10 +81,10 @@ enum class BufferType
     Constant
 };
 
-enum class ShaderType
+enum class ShaderType : int
 {
-    Unknown,
-    Vertex,
+    Unknown = -1,
+    Vertex = 0,
     Hull,       //< aka. "tessellation control"
     Domain,     //< aka. "tessellation eveluation"
     Geometry,
