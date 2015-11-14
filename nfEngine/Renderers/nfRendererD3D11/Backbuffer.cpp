@@ -12,6 +12,11 @@
 namespace NFE {
 namespace Renderer {
 
+Backbuffer::~Backbuffer()
+{
+    Release();
+}
+
 bool Backbuffer::GetBackbufferTexture()
 {
     HRESULT hr;
@@ -88,6 +93,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     scd.SampleDesc.Count = 1;
     scd.Windowed = 1;
 
+    Release();
     hr = D3D_CALL_CHECK(gDevice->mDXGIFactory->CreateSwapChain(gDevice->mDevice.get(), &scd,
                         &mSwapChain));
     if (FAILED(hr))
@@ -111,6 +117,17 @@ bool Backbuffer::Present()
 
     HRESULT hr = swapChain->Present(mVSync ? 1 : 0, 0);
     return SUCCEEDED(hr);
+}
+
+void Backbuffer::Release()
+{
+    IDXGISwapChain* swapChain = mSwapChain.get();
+    if (swapChain)
+    {
+        // swap chain must enter windowed state before releasing
+        swapChain->SetFullscreenState(FALSE, nullptr);
+        mSwapChain.reset();
+    }
 }
 
 } // namespace Renderer
