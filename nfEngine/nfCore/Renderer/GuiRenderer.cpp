@@ -422,7 +422,6 @@ bool GuiRenderer::DrawImGui(RenderContext* context)
                                                     static_cast<int>(command->ClipRect.y),
                                                     static_cast<int>(command->ClipRect.z),
                                                     static_cast<int>(command->ClipRect.w));
-
                 context->commandBuffer->DrawIndexed(PrimitiveType::Triangles,
                                                     command->ElemCount,
                                                     -1,

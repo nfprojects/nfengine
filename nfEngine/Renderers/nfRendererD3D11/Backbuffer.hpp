@@ -25,8 +25,10 @@ class Backbuffer : public IBackbuffer, public Texture
 
     // get ID3D11Texture2D from the IDXGISwapChain
     bool GetBackbufferTexture();
+    void Release();
 
 public:
+    ~Backbuffer();
     bool Resize(int newWidth, int newHeight);
     bool Present();
     bool Init(const BackbufferDesc& desc);

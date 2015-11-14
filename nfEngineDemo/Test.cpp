@@ -180,6 +180,11 @@ public:
         InitCameraOrientation();
     }
 
+    ~CustomWindow()
+    {
+        entityManager = nullptr;
+    }
+
     void InitCameraOrientation()
     {
         cameraControl = 0;
@@ -230,9 +235,12 @@ public:
         BodyComponent body;
         entityManager->AddComponent(cameraEntity, body);
 
-        view.reset(new MainCameraView);
+        if (!view)
+        {
+            view.reset(new MainCameraView);
+            view->SetWindow(this);
+        }
         view->SetCamera(scene.get(), cameraEntity);
-        view->SetWindow(this);
 
 
         InitSecondaryCamera();
