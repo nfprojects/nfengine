@@ -62,6 +62,11 @@ void Engine::OnRelease()
         LOG_WARNING("Not all scenes has been released before engine shutdown.");
     }
 
+    // release renderer modules before threadpool - shaders are resources,
+    // so they need to be released first
+    mRenderer->ReleaseModules();
+    LOG_INFO("Renderer modules released.");
+
     // release resources manager
     mResManager.Release();
     LOG_INFO("Resources manager released.");

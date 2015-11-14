@@ -24,19 +24,9 @@ struct NFE_ALIGN16 ToneMappingCBuffer
 
 PostProcessRenderer::PostProcessRenderer()
 {
-    using namespace Resource;
-
     IDevice* device = mRenderer->GetDevice();
-    ResManager* rm = Engine::GetInstance()->GetResManager();
 
-    mFullscreenQuadVS = static_cast<Multishader*>(rm->GetResource("FullScreenQuadVS",
-                                                                  ResourceType::Shader));
-    mTonemappingPS = static_cast<Multishader*>(rm->GetResource("TonemappingPS",
-                                                               ResourceType::Shader));
-    mFullscreenQuadVS->AddRef(this);
-    mTonemappingPS->AddRef(this);
-    rm->WaitForResource(mFullscreenQuadVS);
-    rm->WaitForResource(mTonemappingPS);
+    mTonemappingShaderProgram.Load("Tonemapping");
 
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
@@ -46,7 +36,7 @@ PostProcessRenderer::PostProcessRenderer()
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;
     vertexLayoutDesc.numElements = 1;
-    vertexLayoutDesc.vertexShader = mFullscreenQuadVS->GetShader(nullptr);
+    vertexLayoutDesc.vertexShader = mTonemappingShaderProgram.GetShader(ShaderType::Vertex);
     vertexLayoutDesc.debugName = "PostProcessRenderer::mVertexLayout";
     mVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
 
@@ -112,8 +102,7 @@ void PostProcessRenderer::ApplyTonemapping(RenderContext* context,
                                         0.0f, static_cast<float>(height),
                                         0.0f, 1.0f);
 
-    context->commandBuffer->SetShader(mFullscreenQuadVS->GetShader(nullptr));
-    context->commandBuffer->SetShader(mTonemappingPS->GetShader(nullptr));
+    context->commandBuffer->SetShaderProgram(mTonemappingShaderProgram.GetShaderProgram());
 
     ToneMappingCBuffer cbufferData;
     cbufferData.bufferInvRes = Vector(1.0f / static_cast<float>(width),
