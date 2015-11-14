@@ -80,12 +80,13 @@ enum class BufferType
 
 enum class ShaderType
 {
-    Unknown,
-    Vertex,
+    Unknown = -1,
+    Vertex  = 0,
     Hull,       //< aka. "tessellation control"
     Domain,     //< aka. "tessellation eveluation"
     Geometry,
     Pixel,      //< aka. "fragment"
+    Number      //< number of shader types
 };
 
 /**
