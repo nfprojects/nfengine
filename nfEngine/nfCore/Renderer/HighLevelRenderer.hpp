@@ -106,6 +106,7 @@ public:
      */
     bool Init(const std::string& preferredRendererName);
     void Release();
+    void ReleaseModules();
 
     /**
      * Get low-level rendering device.

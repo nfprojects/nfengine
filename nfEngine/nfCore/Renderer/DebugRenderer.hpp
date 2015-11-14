@@ -10,7 +10,7 @@
 #include "RendererModule.hpp"
 #include "HighLevelRenderer.hpp"
 #include "DebugRendererContext.hpp"
-#include "../Resources/Multishader.hpp"
+#include "../Resources/MultiShaderProgram.hpp"
 #include "../../nfCommon/Math/Box.hpp"
 #include "../../nfCommon/Math/Frustum.hpp"
 
@@ -25,8 +25,7 @@ using namespace Math;
  */
 class DebugRenderer : public RendererModule<DebugRenderer>
 {
-    Resource::Multishader* mVertexShader;
-    Resource::Multishader* mPixelShader;
+    Resource::MultiShaderProgram mShaderProgram;
     std::unique_ptr<IVertexLayout> mVertexLayout;
     std::unique_ptr<IVertexLayout> mMeshVertexLayout;
     std::unique_ptr<IRasterizerState> mRasterizerState;

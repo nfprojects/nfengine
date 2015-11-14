@@ -92,14 +92,17 @@ bool HighLevelRenderer::Init(const std::string& preferredRendererName)
     return true;
 }
 
-void HighLevelRenderer::Release()
+void HighLevelRenderer::ReleaseModules()
 {
     GuiRenderer::Release();
     PostProcessRenderer::Release();
     DebugRenderer::Release();
     GeometryRenderer::Release();
     LightsRenderer::Release();
+}
 
+void HighLevelRenderer::Release()
+{
     mDefaultBlendState.reset();
     mDefaultSampler.reset();
     mDefaultDepthState.reset();
