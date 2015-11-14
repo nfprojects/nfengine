@@ -51,34 +51,15 @@ GBufferRendererContext::GBufferRendererContext()
 
 GeometryRenderer::GeometryRenderer()
 {
-    using namespace Resource;
-
     IDevice* device = mRenderer->GetDevice();
-    ResManager* rm = Engine::GetInstance()->GetResManager();
 
     BufferDesc bufferDesc;
 
-    mVertexShader = static_cast<Multishader*>(rm->GetResource("GeometryPassVS",
-                                                              ResourceType::Shader));
-    mPixelShader = static_cast<Multishader*>(rm->GetResource("GeometryPassPS",
-                                                             ResourceType::Shader));
-    mShadowVertexShader = static_cast<Multishader*>(rm->GetResource("ShadowVS",
-                                                                    ResourceType::Shader));
-    mShadowPixelShader = static_cast<Multishader*>(rm->GetResource("ShadowPS",
-                                                                   ResourceType::Shader));
+    mGeometryPassShaderProgram.Load("GeometryPass");
+    mShadowShaderProgram.Load("Shadow");
 
-    mVertexShader->AddRef(this);
-    mPixelShader->AddRef(this);
-    mShadowVertexShader->AddRef(this);
-    mShadowPixelShader->AddRef(this);
-
-    rm->WaitForResource(mVertexShader);
-    rm->WaitForResource(mPixelShader);
-    mUseMotionBlurMacroVS = mVertexShader->GetMacroByName("USE_MOTION_BLUR");
-    mUseMotionBlurMacroPS = mPixelShader->GetMacroByName("USE_MOTION_BLUR");
-
-    rm->WaitForResource(mShadowVertexShader);
-    rm->WaitForResource(mShadowPixelShader);
+    mUseMotionBlurMacroId = mGeometryPassShaderProgram.GetMacroByName("USE_MOTION_BLUR");
+    mCubeShadowMapMacroId = mShadowShaderProgram.GetMacroByName("CUBE_SHADOW_MAP");
 
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
@@ -95,12 +76,11 @@ GeometryRenderer::GeometryRenderer()
         { ElementFormat::Float_32, 4, 48, 1, true, 1 },
         { ElementFormat::Float_32, 4, 64, 1, true, 1 },
     };
-    int macros[] = { 0 };
 
     VertexLayoutDesc meshVertexLayoutDesc;
     meshVertexLayoutDesc.elements = vertexLayoutElements;
     meshVertexLayoutDesc.numElements = 9;
-    meshVertexLayoutDesc.vertexShader = mVertexShader->GetShader(macros);
+    meshVertexLayoutDesc.vertexShader = mGeometryPassShaderProgram.GetShader(ShaderType::Vertex);
     meshVertexLayoutDesc.debugName = "GeometryRenderer::mMeshVertexLayout";
     mVertexLayout.reset(device->CreateVertexLayout(meshVertexLayoutDesc));
 
@@ -177,8 +157,7 @@ void GeometryRenderer::SetUp(RenderContext* context, GeometryBuffer* geometryBuf
     context->commandBuffer->Clear(NFE_CLEAR_FLAG_TARGET | NFE_CLEAR_FLAG_DEPTH, clearColor, 1.0f);
 
     int macros[] = { 0 }; // USE_MOTION_BLUR
-    context->commandBuffer->SetShader(mVertexShader->GetShader(macros));
-    context->commandBuffer->SetShader(mPixelShader->GetShader(macros));
+    context->commandBuffer->SetShaderProgram(mGeometryPassShaderProgram.GetShaderProgram(macros));
 
     IBuffer* vsConstantBuffers[] = { mGlobalCBuffer.get() };
     context->commandBuffer->SetConstantBuffers(vsConstantBuffers, 1, ShaderType::Vertex);
@@ -211,12 +190,11 @@ void GeometryRenderer::SetUpForShadowMap(RenderContext *context, ShadowMap* shad
     const float clearColor[] = { 1.0f, 0.0f, 0.0f, 0.0f };
     context->commandBuffer->Clear(NFE_CLEAR_FLAG_TARGET | NFE_CLEAR_FLAG_DEPTH, clearColor, 1.0f);
 
-    int psMacros[] = { 0 };
+    int macros[] = { 0 };
     if (shadowMap->mType == ShadowMap::Type::Cube)
-        psMacros[0] = 1;
+        macros[0] = 1;
 
-    context->commandBuffer->SetShader(mShadowVertexShader->GetShader(nullptr));
-    context->commandBuffer->SetShader(mShadowPixelShader->GetShader(psMacros));
+    context->commandBuffer->SetShaderProgram(mShadowShaderProgram.GetShaderProgram(macros));
 
     IBuffer* constantBuffers[] = { mShadowGlobalCBuffer.get() };
     context->commandBuffer->SetConstantBuffers(constantBuffers, 1, ShaderType::Vertex);
