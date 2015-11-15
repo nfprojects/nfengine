@@ -66,9 +66,6 @@
     <ClCompile Include="Renderer\HighLevelRenderer.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Multishader.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="Systems\PhysicsSystem.cpp">
       <Filter>Systems</Filter>
     </ClCompile>
@@ -138,6 +135,9 @@
     <ClCompile Include="Utils\BVH.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Resources\Multishader.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Prerequisites.hpp">
@@ -183,9 +183,6 @@
       <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\RendererModule.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\Multishader.hpp">
       <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\DebugRendererContext.hpp">
@@ -265,6 +262,9 @@
     </ClInclude>
     <ClInclude Include="Utils\BVH.hpp">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\Multishader.hpp">
+      <Filter>Resources</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
