@@ -16,18 +16,12 @@ GLuint TranslateShaderTypeToGLMacro(ShaderType type)
 {
     switch (type)
     {
-    case ShaderType::Vertex:
-        return GL_VERTEX_SHADER;
-    case ShaderType::Pixel:
-        return GL_FRAGMENT_SHADER;
-    case ShaderType::Geometry:
-        return GL_GEOMETRY_SHADER;
-    case ShaderType::Hull:
-        return GL_TESS_CONTROL_SHADER;
-    case ShaderType::Domain:
-        return GL_TESS_EVALUATION_SHADER;
-    default:
-        return 0;
+    case ShaderType::Vertex:   return GL_VERTEX_SHADER;
+    case ShaderType::Pixel:    return GL_FRAGMENT_SHADER;
+    case ShaderType::Geometry: return GL_GEOMETRY_SHADER;
+    case ShaderType::Hull:     return GL_TESS_CONTROL_SHADER;
+    case ShaderType::Domain:   return GL_TESS_EVALUATION_SHADER;
+    default:                   return 0;
     }
 }
 
@@ -35,18 +29,12 @@ GLuint TranslateShaderTypeToGLBit(ShaderType type)
 {
     switch(type)
     {
-    case ShaderType::Vertex:
-        return GL_VERTEX_SHADER_BIT;
-    case ShaderType::Pixel:
-        return GL_FRAGMENT_SHADER_BIT;
-    case ShaderType::Geometry:
-        return GL_GEOMETRY_SHADER_BIT;
-    case ShaderType::Hull:
-        return GL_TESS_CONTROL_SHADER_BIT;
-    case ShaderType::Domain:
-        return GL_TESS_EVALUATION_SHADER_BIT;
-    default:
-        return 0;
+    case ShaderType::Vertex:   return GL_VERTEX_SHADER_BIT;
+    case ShaderType::Pixel:    return GL_FRAGMENT_SHADER_BIT;
+    case ShaderType::Geometry: return GL_GEOMETRY_SHADER_BIT;
+    case ShaderType::Hull:     return GL_TESS_CONTROL_SHADER_BIT;
+    case ShaderType::Domain:   return GL_TESS_EVALUATION_SHADER_BIT;
+    default:                   return GL_NONE;
     }
 }
 
@@ -88,7 +76,6 @@ GLenum TranslateElementFormat(ElementFormat format, bool& normalized)
     case ElementFormat::Float_32:
         return GL_FLOAT;
     default:
-        LOG_ERROR("Unsupported or incorrect Element Format provided.");
         return GL_NONE;
     }
 }
@@ -97,18 +84,12 @@ GLenum TranslatePrimitiveType(PrimitiveType type)
 {
     switch (type)
     {
-    case PrimitiveType::Points:
-        return GL_POINTS;
-    case PrimitiveType::Lines:
-        return GL_LINES;
-    case PrimitiveType::LinesStrip:
-        return GL_LINE_STRIP;
-    case PrimitiveType::Triangles:
-        return GL_TRIANGLES;
-    case PrimitiveType::TrianglesStrip:
-        return GL_TRIANGLE_STRIP;
-    default:
-        return GL_NONE;
+    case PrimitiveType::Points:         return GL_POINTS;
+    case PrimitiveType::Lines:          return GL_LINES;
+    case PrimitiveType::LinesStrip:     return GL_LINE_STRIP;
+    case PrimitiveType::Triangles:      return GL_TRIANGLES;
+    case PrimitiveType::TrianglesStrip: return GL_TRIANGLE_STRIP;
+    default:                            return GL_NONE;
     }
 }
 
@@ -116,13 +97,9 @@ GLenum TranslateIndexBufferFormat(IndexBufferFormat format)
 {
     switch (format)
     {
-    case IndexBufferFormat::Uint16:
-        return GL_UNSIGNED_SHORT;
-    case IndexBufferFormat::Uint32:
-        return GL_UNSIGNED_INT;
-    default:
-        LOG_ERROR("Incorrect Index Buffer Format provided.");
-        return GL_NONE;
+    case IndexBufferFormat::Uint16: return GL_UNSIGNED_SHORT;
+    case IndexBufferFormat::Uint32: return GL_UNSIGNED_INT;
+    default:                        return GL_NONE;
     }
 }
 
@@ -134,9 +111,7 @@ GLenum TranslateTextureMinFilter(TextureMinFilter minFilter)
     case TextureMinFilter::LinearMipmapNearest:  return GL_LINEAR_MIPMAP_NEAREST;
     case TextureMinFilter::NearestMipmapLinear:  return GL_NEAREST_MIPMAP_LINEAR;
     case TextureMinFilter::LinearMipmapLinear:   return GL_LINEAR_MIPMAP_LINEAR;
-    default:
-        LOG_ERROR("Incorrect Texture Min Filter provided.");
-        return GL_NONE;
+    default:                                     return GL_NONE;
     }
 }
 
@@ -146,9 +121,7 @@ GLenum TranslateTextureMagFilter(TextureMagFilter magFilter)
     {
     case TextureMagFilter::Nearest: return GL_NEAREST;
     case TextureMagFilter::Linear:  return GL_LINEAR;
-    default:
-        LOG_ERROR("Incorrect Texture Mag Filter provided.");
-        return GL_NONE;
+    default:                        return GL_NONE;
     }
 }
 
@@ -160,9 +133,7 @@ GLenum TranslateTextureWrapMode(TextureWrapMode wrapMode)
     case TextureWrapMode::Clamp:  return GL_CLAMP_TO_EDGE;
     case TextureWrapMode::Mirror: return GL_MIRRORED_REPEAT;
     case TextureWrapMode::Border: return GL_CLAMP_TO_BORDER;
-    default:
-        LOG_ERROR("Incorrect Texture Wrap Mode provided.");
-        return GL_NONE;
+    default:                      return GL_NONE;
     }
 }
 
@@ -178,9 +149,7 @@ GLenum TranslateCompareFunc(CompareFunc func)
     case CompareFunc::Greater:      return GL_GREATER;
     case CompareFunc::NotEqual:     return GL_NOTEQUAL;
     case CompareFunc::Pass:         return GL_ALWAYS;
-    default:
-        LOG_ERROR("Incorrect Compare Func provided.");
-        return GL_NONE;
+    default:                        return GL_NONE;
     }
 }
 
@@ -204,7 +173,6 @@ GLsizei GetElementFormatSize(ElementFormat format)
     case ElementFormat::Float_32:
         return 4;
     default:
-        LOG_ERROR("Unsupported or incorrect Element Format provided.");
         return 0;
     }
 }
