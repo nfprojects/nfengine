@@ -37,13 +37,28 @@ GuiRendererContext::GuiRendererContext()
 
 GuiRenderer::GuiRenderer()
 {
-    IDevice* device = mRenderer->GetDevice();
+    using namespace Resource;
 
-    mVertexShader.Load("GuiVS");
-    mGeometryShader.Load("GuiGS");
-    mPixelShader.Load("GuiPS");
-    mImGuiVertexShader.Load("ImGuiVS");
-    mImGuiPixelShader.Load("ImGuiPS");
+    IDevice* device = mRenderer->GetDevice();
+    ResManager* rm = Engine::GetInstance()->GetResManager();
+
+    mVertexShader = static_cast<Multishader*>(rm->GetResource("GuiVS", ResourceType::Shader));
+    mGeometryShader = static_cast<Multishader*>(rm->GetResource("GuiGS", ResourceType::Shader));
+    mPixelShader = static_cast<Multishader*>(rm->GetResource("GuiPS", ResourceType::Shader));
+    mImGuiVertexShader = static_cast<Multishader*>(rm->GetResource("ImGuiVS", ResourceType::Shader));
+    mImGuiPixelShader = static_cast<Multishader*>(rm->GetResource("ImGuiPS", ResourceType::Shader));
+
+    mVertexShader->AddRef(this);
+    mGeometryShader->AddRef(this);
+    mPixelShader->AddRef(this);
+    mImGuiVertexShader->AddRef(this);
+    mImGuiPixelShader->AddRef(this);
+
+    rm->WaitForResource(mVertexShader);
+    rm->WaitForResource(mGeometryShader);
+    rm->WaitForResource(mPixelShader);
+    rm->WaitForResource(mImGuiVertexShader);
+    rm->WaitForResource(mImGuiPixelShader);
 
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
@@ -55,7 +70,7 @@ GuiRenderer::GuiRenderer()
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;
     vertexLayoutDesc.numElements = 3;
-    vertexLayoutDesc.vertexShader = mVertexShader.GetShader(nullptr);
+    vertexLayoutDesc.vertexShader = mVertexShader->GetShader(nullptr);
     vertexLayoutDesc.debugName = "GuiRenderer::mVertexLayout";
     mVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
 
@@ -67,7 +82,7 @@ GuiRenderer::GuiRenderer()
     };
     vertexLayoutDesc.elements = imGuiVertexLayoutElements;
     vertexLayoutDesc.numElements = 3;
-    vertexLayoutDesc.vertexShader = mImGuiVertexShader.GetShader(nullptr);
+    vertexLayoutDesc.vertexShader = mImGuiVertexShader->GetShader(nullptr);
     vertexLayoutDesc.debugName = "GuiRenderer::mImGuiVertexLayout";
     mImGuiVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
 
@@ -130,8 +145,8 @@ void GuiRenderer::BeginOrdinaryGuiRendering(RenderContext* context)
     int offsets[] = { 0 };
     context->commandBuffer->SetVertexBuffers(1, vertexBuffers, strides, offsets);
     context->commandBuffer->SetVertexLayout(mVertexLayout.get());
-    context->commandBuffer->SetShader(mVertexShader.GetShader(nullptr));
-    context->commandBuffer->SetShader(mGeometryShader.GetShader(nullptr));
+    context->commandBuffer->SetShader(mVertexShader->GetShader(nullptr));
+    context->commandBuffer->SetShader(mGeometryShader->GetShader(nullptr));
     context->commandBuffer->SetRasterizerState(mRenderer->GetDefaultRasterizerState());
 }
 
@@ -177,7 +192,7 @@ void GuiRenderer::FlushQueue(RenderContext* context)
     int macros[1] = { 0 }; // use texture
     ITexture* currTexture = nullptr;
     bool currAlphaTexture = false;
-    context->commandBuffer->SetShader(mPixelShader.GetShader(macros));
+    context->commandBuffer->SetShader(mPixelShader->GetShader(macros));
 
     int firstQuad = 0;
     int packetSize = 0;
@@ -201,7 +216,7 @@ void GuiRenderer::FlushQueue(RenderContext* context)
             }
             else
                 macros[0] = 0;
-            context->commandBuffer->SetShader(mPixelShader.GetShader(macros));
+            context->commandBuffer->SetShader(mPixelShader->GetShader(macros));
         }
         packetSize++;
     }
@@ -400,8 +415,8 @@ bool GuiRenderer::DrawImGui(RenderContext* context)
     context->commandBuffer->SetVertexBuffers(1, vertexBuffers, strides, offsets);
     context->commandBuffer->SetIndexBuffer(mImGuiIndexBuffer.get(), IndexBufferFormat::Uint16);
     context->commandBuffer->SetVertexLayout(mImGuiVertexLayout.get());
-    context->commandBuffer->SetShader(mImGuiVertexShader.GetShader(nullptr));
-    context->commandBuffer->SetShader(mImGuiPixelShader.GetShader(nullptr));
+    context->commandBuffer->SetShader(mImGuiVertexShader->GetShader(nullptr));
+    context->commandBuffer->SetShader(mImGuiPixelShader->GetShader(nullptr));
     context->commandBuffer->SetRasterizerState(mImGuiRasterizerState.get());
 
     int vertexOffset = 0, indexOffset = 0;

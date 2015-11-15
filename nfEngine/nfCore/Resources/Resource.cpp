@@ -21,6 +21,7 @@ ResourceBase::ResourceBase()
     mRefCount = 0;
     mState = ResourceState::Unloaded;
     mDestState = ResourceState::Default;
+    mFuncID = 0;
 
     mOnLoad = nullptr;
     mOnUnload = nullptr;

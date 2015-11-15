@@ -8,7 +8,7 @@
 
 #include "RendererModule.hpp"
 #include "HighLevelRenderer.hpp"
-#include "Multishader.hpp"
+#include "../Resources/Multishader.hpp"
 #include "GuiRendererContext.hpp"
 #include "Font.hpp"
 
@@ -32,9 +32,9 @@ enum class HorizontalAlignment
 
 class CORE_API GuiRenderer : public RendererModule<GuiRenderer>
 {
-    Multishader mVertexShader;
-    Multishader mGeometryShader;
-    Multishader mPixelShader;
+    Resource::Multishader* mVertexShader;
+    Resource::Multishader* mGeometryShader;
+    Resource::Multishader* mPixelShader;
 
     std::unique_ptr<IBuffer> mVertexBuffer;
     std::unique_ptr<IVertexLayout> mVertexLayout;
@@ -43,8 +43,8 @@ class CORE_API GuiRenderer : public RendererModule<GuiRenderer>
     std::unique_ptr<IDepthState> mDepthState;
 
     /// ImGui resources
-    Multishader mImGuiVertexShader;
-    Multishader mImGuiPixelShader;
+    Resource::Multishader* mImGuiVertexShader;
+    Resource::Multishader* mImGuiPixelShader;
     std::unique_ptr<IVertexLayout> mImGuiVertexLayout;
     std::unique_ptr<IRasterizerState> mImGuiRasterizerState;
     std::unique_ptr<IBuffer> mImGuiVertexBuffer;

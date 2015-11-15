@@ -6,13 +6,13 @@
 
 #pragma once
 
-#include "RendererModule.hpp"
-#include "HighLevelRenderer.hpp"
-#include "RenderCommand.hpp"
+#include "Resource.hpp"
+#include "../Renderer/RendererModule.hpp"
+#include "../Renderer/HighLevelRenderer.hpp"
+#include "../Renderer/RenderCommand.hpp"
 
 namespace NFE {
-namespace Renderer {
-
+namespace Resource {
 
 struct MultishaderMacro
 {
@@ -27,16 +27,14 @@ struct MultishaderMacro
     {}
 };
 
-class Multishader
+class Multishader : public ResourceBase
 {
-    std::string mName;
-
     std::vector<MultishaderMacro> mMacros;
     /// don't keep names along with ranges - it's bad for cache
     std::vector<std::string> mMacroNames;
 
-    std::vector<std::unique_ptr<IShader>> mSubShaders;
-    ShaderType mType;
+    std::vector<std::unique_ptr<Renderer::IShader>> mSubShaders;
+    Renderer::ShaderType mType;
 
     /// disable unwanted methods
     Multishader(const Multishader&) = delete;
@@ -47,12 +45,8 @@ class Multishader
 public:
     Multishader();
 
-    /**
-     * Load a multishader.
-     *
-     * @param name Multishader name.
-     */
-    bool Load(const char* name);
+    bool OnLoad();
+    void OnUnload();
 
     /**
      * Get number of macros used in the multishader.
@@ -75,16 +69,16 @@ public:
                       Must not be null.
      * @return Shader interface pointer.
      */
-    IShader* GetShader(int* values) const;
+    Renderer::IShader* GetShader(int* values) const;
 
     /**
      * Get shader type.
      */
-    NFE_INLINE ShaderType GetType() const
+    NFE_INLINE Renderer::ShaderType GetType() const
     {
         return mType;
     }
 };
 
-} // namespace Renderer
+} // namespace Resource
 } // namespace NFE
