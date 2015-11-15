@@ -44,9 +44,9 @@ class CORE_API ResManager final
     std::map<const char*, ResourceBase*, CompareResName> mResources;
 
     void Release();
-    void LoadResource(ResourceBase* pResource);
-    void UnloadResource(ResourceBase* pResource);
-    void ReloadResource(ResourceBase* pResource);
+    void LoadResource(ResourceBase* resource);
+    void UnloadResource(ResourceBase* resource);
+    void ReloadResource(ResourceBase* resource);
 
 public:
     ResManager();
@@ -61,27 +61,23 @@ public:
      *              automatically.
      * @return      Valid resource pointer or NULL on failure (see logs for more information).
      */
-    ResourceBase* GetResource(const char* pName, ResourceType type, bool check = false);
+    ResourceBase* GetResource(const char* name, ResourceType type, bool check = false);
 
     /**
      * Insert a resource object created by the user.
      */
-    Result AddCustomResource(ResourceBase* pResource, const char* pName);
-
+    Result AddCustomResource(ResourceBase* resource, const char* name);
 
     /**
      * Delete a resource from map (if the resource has no references).
      * @return "true" if the resource was deleted.
      */
-    bool DeleteResource(const char* pName);
+    bool DeleteResource(const char* name);
 
     /**
-     * Check if the resource manager's thread pool is busy.
+     * Wait for a resource to be loaded/unloaded.
      */
-    bool IsBusy();
-
-    // called when a file in "\Data" directory was changed
-    void OnFileChanged(const char* pFile);
+    bool WaitForResource(ResourceBase* resource);
 };
 
 } // namespace Resource

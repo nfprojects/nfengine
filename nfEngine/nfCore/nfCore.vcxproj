@@ -295,12 +295,6 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Renderer\Multishader.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
     <ClCompile Include="Renderer\PostProcessRenderer.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
@@ -349,6 +343,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Resources\Multishader.cpp" />
     <ClCompile Include="Resources\Resource.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
@@ -423,7 +418,6 @@
     <ClInclude Include="Renderer\GuiRendererContext.hpp" />
     <ClInclude Include="Renderer\HighLevelRenderer.hpp" />
     <ClInclude Include="Renderer\LightsRenderer.hpp" />
-    <ClInclude Include="Renderer\Multishader.hpp" />
     <ClInclude Include="Renderer\PostProcessRenderer.hpp" />
     <ClInclude Include="Renderer\RenderCommand.hpp" />
     <ClInclude Include="Renderer\RendererContext.hpp" />
@@ -433,6 +427,7 @@
     <ClInclude Include="Resources\CollisionShape.hpp" />
     <ClInclude Include="Resources\Material.hpp" />
     <ClInclude Include="Resources\Mesh.hpp" />
+    <ClInclude Include="Resources\Multishader.hpp" />
     <ClInclude Include="Resources\Resource.hpp" />
     <ClInclude Include="Resources\ResourcesManager.hpp" />
     <ClInclude Include="Resources\SoundSample.hpp" />

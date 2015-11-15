@@ -8,6 +8,7 @@
 
 #include "../Core.hpp"
 #include "../Utils/Aligned.hpp"
+#include "../nfCommon/AsyncThreadPool.hpp"
 
 namespace NFE {
 namespace Resource {
@@ -31,6 +32,7 @@ enum class ResourceState : int
 enum class ResourceType
 {
     Unknown,
+    Shader,
     Texture,
     Material,
     Mesh,
@@ -66,6 +68,7 @@ protected:
     std::atomic<ResourceState> mState;     // current state
     std::atomic<ResourceState> mDestState; // destination state
     std::atomic<uint32> mRefCount;         // reference counter
+    Common::AsyncFuncID mFuncID;           // loading/unloading function ID
     char mName[RES_NAME_MAX_LENGTH];       // resource name
 
     void* mUserPtr;

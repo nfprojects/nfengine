@@ -8,7 +8,7 @@
 
 #include "RendererModule.hpp"
 #include "HighLevelRenderer.hpp"
-#include "Multishader.hpp"
+#include "../Resources/Multishader.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -23,11 +23,11 @@ struct ToneMappingParameters
 class PostProcessRenderer : public RendererModule<PostProcessRenderer>
 {
     // TODO: these are common with lights renderer:
-    Multishader mFullscreenQuadVS;
+    Resource::Multishader* mFullscreenQuadVS;
     std::unique_ptr<IVertexLayout> mVertexLayout;
     std::unique_ptr<IBuffer> mVertexBuffer;
 
-    Multishader mTonemappingPS;
+    Resource::Multishader* mTonemappingPS;
     std::unique_ptr<IBuffer> mTonemappingCBuffer;
 
 public:
