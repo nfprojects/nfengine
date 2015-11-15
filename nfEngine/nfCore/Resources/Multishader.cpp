@@ -14,7 +14,7 @@
 #include "../rapidjson/include/rapidjson/filestream.h"
 
 namespace NFE {
-namespace Renderer {
+namespace Resource {
 
 namespace {
 
@@ -22,16 +22,21 @@ const std::string gShadersRoot = "nfEngine/Shaders/";
 
 } // namespace
 
+using namespace Renderer;
 
 Multishader::Multishader()
 {
     mType = ShaderType::Unknown;
 }
 
-bool Multishader::Load(const char* name)
+void Multishader::OnUnload()
 {
-    LOG_INFO("Loading multishader '%s'...", name);
-    mName = name;
+    mSubShaders.clear();
+}
+
+bool Multishader::OnLoad()
+{
+    LOG_INFO("Loading multishader '%s'...", mName);
 
     // TODO: check JSON file modification date
 
@@ -51,7 +56,7 @@ bool Multishader::Load(const char* name)
     rapidjson::Document document;
     if (document.Parse<0>(str.data()).HasParseError())
     {
-        LOG_ERROR("Failed to parse multishader file '%s'...", name);
+        LOG_ERROR("Failed to parse multishader file '%s'...", mName);
         return false;
     }
 

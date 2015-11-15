@@ -67,17 +67,24 @@ DebugRendererContext::DebugRendererContext()
 
 DebugRenderer::DebugRenderer()
 {
+    using namespace Resource;
+
     IDevice* device = mRenderer->GetDevice();
+    ResManager* rm = Engine::GetInstance()->GetResManager();
 
     BufferDesc bufferDesc;
     ShaderDesc shaderDesc;
     ShaderProgramDesc shaderProgDesc;
 
-    mVertexShader.Load("DebugVS");
-    mIsMeshMacroId = mPixelShader.GetMacroByName("IS_MESH");
+    mVertexShader = static_cast<Multishader*>(rm->GetResource("DebugVS", ResourceType::Shader));
+    mPixelShader = static_cast<Multishader*>(rm->GetResource("DebugPS", ResourceType::Shader));
+    mVertexShader->AddRef(this);
+    mPixelShader->AddRef(this);
+    rm->WaitForResource(mVertexShader);
+    rm->WaitForResource(mPixelShader);
 
-    mPixelShader.Load("DebugPS");
-    mUseTextureMacroId = mPixelShader.GetMacroByName("USE_TEXTURE");
+    mIsMeshMacroId = mPixelShader->GetMacroByName("IS_MESH");
+    mUseTextureMacroId = mPixelShader->GetMacroByName("USE_TEXTURE");
 
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
@@ -90,7 +97,7 @@ DebugRenderer::DebugRenderer()
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;
     vertexLayoutDesc.numElements = 3;
-    vertexLayoutDesc.vertexShader = mVertexShader.GetShader(&isMesh);
+    vertexLayoutDesc.vertexShader = mVertexShader->GetShader(&isMesh);
     vertexLayoutDesc.debugName = "DebugRenderer::mVertexLayout";
     mVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
 
@@ -106,7 +113,7 @@ DebugRenderer::DebugRenderer()
     VertexLayoutDesc meshVertexLayoutDesc;
     meshVertexLayoutDesc.elements = meshVertexLayoutElements;
     meshVertexLayoutDesc.numElements = 4;
-    meshVertexLayoutDesc.vertexShader = mVertexShader.GetShader(&isMesh);
+    meshVertexLayoutDesc.vertexShader = mVertexShader->GetShader(&isMesh);
     meshVertexLayoutDesc.debugName = "DebugRenderer::mMeshVertexLayout";
     mMeshVertexLayout.reset(device->CreateVertexLayout(meshVertexLayoutDesc));
 
@@ -154,7 +161,7 @@ void DebugRenderer::OnEnter(RenderContext* context)
     context->commandBuffer->BeginDebugGroup("Debug Renderer stage");
 
     int psMacros[] = { 0 }; // USE_TEXTURE
-    context->commandBuffer->SetShader(mPixelShader.GetShader(psMacros));
+    context->commandBuffer->SetShader(mPixelShader->GetShader(psMacros));
 
     IBuffer* constantBuffers[] = { mConstantBuffer.get(), mPerMeshConstantBuffer.get() };
     context->commandBuffer->SetConstantBuffers(constantBuffers, 2, ShaderType::Vertex);
@@ -188,7 +195,7 @@ void DebugRenderer::Flush(RenderContext* context)
         context->commandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
 
         int vsMacros[] = { 0 }; // IS_MESH
-        context->commandBuffer->SetShader(mVertexShader.GetShader(vsMacros));
+        context->commandBuffer->SetShader(mVertexShader->GetShader(vsMacros));
         context->commandBuffer->SetVertexLayout(mVertexLayout.get());
 
         ctx.mode = DebugRendererMode::Simple;
@@ -363,7 +370,7 @@ void DebugRenderer::SetMeshMaterial(RenderContext* context, const Resource::Mate
             tex = material->mLayers[0].diffuseTexture->GetRendererTexture();
 
     int macros[1] = { tex != nullptr ? 1 : 0 };
-    context->commandBuffer->SetShader(mPixelShader.GetShader(macros));
+    context->commandBuffer->SetShader(mPixelShader->GetShader(macros));
 
     if (tex)
         context->commandBuffer->SetTextures(&tex, 1, ShaderType::Pixel);
@@ -390,7 +397,7 @@ void DebugRenderer::DrawMesh(RenderContext* context, const Resource::Mesh* mesh,
     if (ctx.mode != DebugRendererMode::Meshes)
     {
         int vsMacros[] = { 1 }; // IS_MESH
-        context->commandBuffer->SetShader(mVertexShader.GetShader(vsMacros));
+        context->commandBuffer->SetShader(mVertexShader->GetShader(vsMacros));
         context->commandBuffer->SetVertexLayout(mMeshVertexLayout.get());
 
         ctx.mode = DebugRendererMode::Meshes;

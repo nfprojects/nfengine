@@ -45,20 +45,39 @@ std::unique_ptr<LightsRenderer> LightsRenderer::mPtr;
 
 LightsRenderer::LightsRenderer()
 {
+    using namespace Resource;
+
     IDevice* device = mRenderer->GetDevice();
+    ResManager* rm = Engine::GetInstance()->GetResManager();
 
-    mFullscreenQuadVS.Load("FullScreenQuadVS");
-    mAmbientLightPS.Load("AmbientLightPS");
-    mOmniLightVS.Load("OmniLightVS");
 
-    mOmniLightPS.Load("OmniLightPS");
-    mOmniLightUseShadowMap = mOmniLightPS.GetMacroByName("USE_SHADOW_MAP");
+    mFullscreenQuadVS = static_cast<Multishader*>(rm->GetResource("FullScreenQuadVS",
+                                                                  ResourceType::Shader));
+    mAmbientLightPS = static_cast<Multishader*>(rm->GetResource("AmbientLightPS",
+                                                                ResourceType::Shader));
+    mOmniLightVS = static_cast<Multishader*>(rm->GetResource("OmniLightVS", ResourceType::Shader));
+    mOmniLightPS = static_cast<Multishader*>(rm->GetResource("OmniLightPS", ResourceType::Shader));
+    mSpotLightVS = static_cast<Multishader*>(rm->GetResource("SpotLightVS", ResourceType::Shader));
+    mSpotLightPS = static_cast<Multishader*>(rm->GetResource("SpotLightPS", ResourceType::Shader));
 
-    mSpotLightVS.Load("SpotLightVS");
+    mFullscreenQuadVS->AddRef(this);
+    mAmbientLightPS->AddRef(this);
+    mOmniLightVS->AddRef(this);
+    mOmniLightPS->AddRef(this);
+    mSpotLightVS->AddRef(this);
+    mSpotLightPS->AddRef(this);
 
-    mSpotLightPS.Load("SpotLightPS");
-    mSpotLightUseLightMap = mSpotLightPS.GetMacroByName("USE_LIGHT_MAP");
-    mSpotLightUseShadowMap = mSpotLightPS.GetMacroByName("USE_SHADOW_MAP");
+    rm->WaitForResource(mOmniLightPS);
+    mOmniLightUseShadowMap = mOmniLightPS->GetMacroByName("USE_SHADOW_MAP");
+
+    rm->WaitForResource(mSpotLightPS);
+    mSpotLightUseLightMap = mSpotLightPS->GetMacroByName("USE_LIGHT_MAP");
+    mSpotLightUseShadowMap = mSpotLightPS->GetMacroByName("USE_SHADOW_MAP");
+
+    rm->WaitForResource(mFullscreenQuadVS);
+    rm->WaitForResource(mAmbientLightPS);
+    rm->WaitForResource(mOmniLightVS);
+    rm->WaitForResource(mSpotLightVS);
 
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
@@ -68,7 +87,7 @@ LightsRenderer::LightsRenderer()
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;
     vertexLayoutDesc.numElements = 1;
-    vertexLayoutDesc.vertexShader = mFullscreenQuadVS.GetShader(nullptr);
+    vertexLayoutDesc.vertexShader = mFullscreenQuadVS->GetShader(nullptr);
     vertexLayoutDesc.debugName = "LightsRenderer::mVertexLayout";
     mVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
 
@@ -214,7 +233,7 @@ void LightsRenderer::OnEnter(RenderContext* context)
 {
     context->commandBuffer->BeginDebugGroup("Lights Renderer stage");
 
-    context->commandBuffer->SetShader(mFullscreenQuadVS.GetShader(nullptr));
+    context->commandBuffer->SetShader(mFullscreenQuadVS->GetShader(nullptr));
     context->commandBuffer->SetVertexLayout(mVertexLayout.get());
 
     ISampler* samplers[] = { mRenderer->GetDefaultSampler(), mShadowMapSampler.get() };
@@ -284,7 +303,7 @@ void LightsRenderer::DrawAmbientLight(RenderContext* context, const Vector& ambi
                                         &cbuffer);
 
     IBuffer* cbuffers[] = { mAmbientLightCBuffer.get() };
-    context->commandBuffer->SetShader(mAmbientLightPS.GetShader(nullptr));
+    context->commandBuffer->SetShader(mAmbientLightPS->GetShader(nullptr));
     context->commandBuffer->SetConstantBuffers(cbuffers, 1, ShaderType::Pixel);
 
     context->commandBuffer->DrawIndexed(PrimitiveType::Triangles, 6);
@@ -318,8 +337,8 @@ void LightsRenderer::DrawOmniLight(RenderContext* context, const Vector& pos, fl
         context->commandBuffer->SetTextures(&shadowMapTexture, 1, ShaderType::Pixel, 6);
     }
 
-    context->commandBuffer->SetShader(mOmniLightVS.GetShader(nullptr));
-    context->commandBuffer->SetShader(mOmniLightPS.GetShader(psMacros));
+    context->commandBuffer->SetShader(mOmniLightVS->GetShader(nullptr));
+    context->commandBuffer->SetShader(mOmniLightPS->GetShader(psMacros));
 
     context->commandBuffer->WriteBuffer(mOmniLightCBuffer.get(), 0, sizeof(OmniLightCBuffer),
                                         &cbuffer);
@@ -355,8 +374,8 @@ void LightsRenderer::DrawSpotLight(RenderContext* context, const SpotLightProper
     context->commandBuffer->SetRasterizerState(mLightsRasterizerState.get());
     context->commandBuffer->SetBlendState(mLightsBlendState.get());
 
-    context->commandBuffer->SetShader(mSpotLightVS.GetShader(nullptr));
-    context->commandBuffer->SetShader(mSpotLightPS.GetShader(psMacros));
+    context->commandBuffer->SetShader(mSpotLightVS->GetShader(nullptr));
+    context->commandBuffer->SetShader(mSpotLightPS->GetShader(psMacros));
 
     IBuffer* cbuffers[] = { mGlobalCBuffer.get(), mSpotLightCBuffer.get() };
     context->commandBuffer->SetConstantBuffers(cbuffers, 2, ShaderType::Vertex);
