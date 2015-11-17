@@ -42,6 +42,9 @@
     <ClCompile Include="DepthStencilScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="VertexBuffersScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp">
@@ -59,12 +62,21 @@
     <ClInclude Include="DepthStencilScene.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="VertexBuffersScene.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\D3D11\TestPS.hlsl">
       <Filter>Shaders\D3D11</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\D3D11\TestVS.hlsl">
+      <Filter>Shaders\D3D11</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\D3D11\InstancingTestPS.hlsl">
+      <Filter>Shaders\D3D11</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\D3D11\InstancingTestVS.hlsl">
       <Filter>Shaders\D3D11</Filter>
     </FxCompile>
   </ItemGroup>
