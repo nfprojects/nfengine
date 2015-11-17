@@ -21,7 +21,7 @@ struct VertexLayoutElement
 {
     ElementFormat format; //< element format
     int size;             //< element size
-    int offset;           //< element size in bytes
+    int offset;           //< element offset in bytes
     int vertexBufferId;   //< source vertex buffer slot
     bool perInstance;     //< is the vertex element constant for entire instance?
     int instanceDataStep; //< number of instances to be drawn with one perInstance data

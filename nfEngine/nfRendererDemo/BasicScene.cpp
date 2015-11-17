@@ -18,8 +18,6 @@
 using namespace NFE::Math;
 using namespace NFE::Common;
 
-std::string gUsedBackend;
-
 namespace {
 
 struct VertexCBuffer
