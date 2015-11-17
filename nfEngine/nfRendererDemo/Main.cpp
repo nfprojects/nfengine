@@ -10,6 +10,7 @@
 #include "Common.hpp"
 #include "BasicScene.hpp"
 #include "DepthStencilScene.hpp"
+#include "VertexBuffersScene.hpp"
 
 #include "../Renderers/RendererInterface/Device.hpp"
 #include "../nfCommon/Library.hpp"
@@ -100,6 +101,7 @@ public:
     {
         mScenes.push_back(std::unique_ptr<Scene>(new BasicScene));
         mScenes.push_back(std::unique_ptr<Scene>(new DepthStencilScene));
+        mScenes.push_back(std::unique_ptr<Scene>(new VertexBuffersScene));
     }
 
     /**
