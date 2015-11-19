@@ -20,7 +20,7 @@ class NFE_ALIGN16 Matrix
 public:
     union
     {
-        __m128 r[4];   //< rows
+        Vector r[4];   //< rows
         float f[16];
         float m[4][4];
     };
@@ -69,35 +69,29 @@ public:
 
     NFE_INLINE Matrix operator+ (const Matrix& b) const
     {
-        return Matrix(_mm_add_ps(r[0], b.r[0]),
-                      _mm_add_ps(r[1], b.r[1]),
-                      _mm_add_ps(r[2], b.r[2]),
-                      _mm_add_ps(r[3], b.r[3]));
+        return Matrix(r[0] + b.r[0], r[1] + b.r[1], r[2] + b.r[2], r[3] + b.r[3]);
     }
 
     NFE_INLINE Matrix operator- (const Matrix& b) const
     {
-        return Matrix(_mm_sub_ps(r[0], b.r[0]),
-                      _mm_sub_ps(r[1], b.r[1]),
-                      _mm_sub_ps(r[2], b.r[2]),
-                      _mm_sub_ps(r[3], b.r[3]));
+        return Matrix(r[0] - b.r[0], r[1] - b.r[1], r[2] - b.r[2], r[3] - b.r[3]);
     }
 
     NFE_INLINE Matrix& operator+= (const Matrix& b)
     {
-        r[0] = _mm_add_ps(r[0], b.r[0]);
-        r[1] = _mm_add_ps(r[1], b.r[1]);
-        r[2] = _mm_add_ps(r[2], b.r[2]);
-        r[3] = _mm_add_ps(r[3], b.r[3]);
+        r[0] += b.r[0];
+        r[1] += b.r[1];
+        r[2] += b.r[2];
+        r[3] += b.r[3];
         return *this;
     }
 
     NFE_INLINE Matrix& operator-= (const Matrix& b)
     {
-        r[0] = _mm_sub_ps(r[0], b.r[0]);
-        r[1] = _mm_sub_ps(r[1], b.r[1]);
-        r[2] = _mm_sub_ps(r[2], b.r[2]);
-        r[3] = _mm_sub_ps(r[3], b.r[3]);
+        r[0] -= b.r[0];
+        r[1] -= b.r[1];
+        r[2] -= b.r[2];
+        r[3] -= b.r[3];
         return *this;
     }
 
@@ -109,11 +103,11 @@ public:
      */
     NFE_INLINE bool operator== (const Matrix& b) const
     {
-        int tmp0 = _mm_movemask_ps(_mm_cmpeq_ps(r[0], b.r[0]));
-        int tmp1 = _mm_movemask_ps(_mm_cmpeq_ps(r[1], b.r[1]));
-        int tmp2 = _mm_movemask_ps(_mm_cmpeq_ps(r[2], b.r[2]));
-        int tmp3 = _mm_movemask_ps(_mm_cmpeq_ps(r[3], b.r[3]));
-        return ((tmp0 & tmp1) & (tmp2 & tmp3)) == 0xF;
+        int tmp0 = r[0] == b.r[0];
+        int tmp1 = r[1] == b.r[1];
+        int tmp2 = r[2] == b.r[2];
+        int tmp3 = r[3] == b.r[3];
+        return (tmp0 && tmp1) & (tmp2 && tmp3);
     }
 };
 
@@ -167,10 +161,10 @@ NFCOMMON_API Matrix MatrixLookTo(const Vector& eyePosition, const Vector& eyeDir
  */
 NFE_INLINE Vector LinearCombination(const Vector& a, const Matrix& m)
 {
-    Vector tmp0 = _mm_mul_ps(_mm_shuffle_ps(a, a, _MM_SHUFFLE(0, 0, 0, 0)), m[0]);
-    Vector tmp1 = _mm_mul_ps(_mm_shuffle_ps(a, a, _MM_SHUFFLE(1, 1, 1, 1)), m[1]);
-    Vector tmp2 = _mm_mul_ps(_mm_shuffle_ps(a, a, _MM_SHUFFLE(2, 2, 2, 2)), m[2]);
-    Vector tmp3 = _mm_mul_ps(_mm_shuffle_ps(a, a, _MM_SHUFFLE(3, 3, 3, 3)), m[3]);
+    Vector tmp0 = a.SplatX() * m.r[0];
+    Vector tmp1 = a.SplatY() * m.r[1];
+    Vector tmp2 = a.SplatZ() * m.r[2];
+    Vector tmp3 = a.SplatW() * m.r[3];
     return (tmp0 + tmp1) + (tmp2 + tmp3);
 }
 
@@ -188,9 +182,9 @@ NFE_INLINE Vector operator* (const Vector& a, const Matrix& m)
  */
 NFE_INLINE Vector LinearCombination3(const Vector& a, const Matrix& m)
 {
-    Vector tmp0 = _mm_mul_ps(_mm_shuffle_ps(a, a, _MM_SHUFFLE(0, 0, 0, 0)), m[0]);
-    Vector tmp1 = _mm_mul_ps(_mm_shuffle_ps(a, a, _MM_SHUFFLE(1, 1, 1, 1)), m[1]);
-    Vector tmp2 = _mm_mul_ps(_mm_shuffle_ps(a, a, _MM_SHUFFLE(2, 2, 2, 2)), m[2]);
+    Vector tmp0 = a.SplatX() * m.r[0];
+    Vector tmp1 = a.SplatY() * m.r[1];
+    Vector tmp2 = a.SplatZ() * m.r[2];
     return (tmp0 + tmp1) + (tmp2 + m[3]);
 }
 
@@ -199,15 +193,23 @@ NFE_INLINE Vector LinearCombination3(const Vector& a, const Matrix& m)
  */
 NFE_INLINE Matrix MatrixTranspose(const Matrix& m)
 {
+#ifdef NFE_USE_SSE
     Vector tmp0 = _mm_shuffle_ps(m[0], m[1], 0x44);
     Vector tmp2 = _mm_shuffle_ps(m[0], m[1], 0xEE);
     Vector tmp1 = _mm_shuffle_ps(m[2], m[3], 0x44);
     Vector tmp3 = _mm_shuffle_ps(m[2], m[3], 0xEE);
-
     return Matrix(_mm_shuffle_ps(tmp0, tmp1, 0x88),
                   _mm_shuffle_ps(tmp0, tmp1, 0xDD),
                   _mm_shuffle_ps(tmp2, tmp3, 0x88),
                   _mm_shuffle_ps(tmp2, tmp3, 0xDD));
+#else
+    Matrix mat;
+    mat.r[0] = Vector(m.r[0].f[0], m.r[1].f[0], m.r[2].f[0], m.r[3].f[0]);
+    mat.r[1] = Vector(m.r[0].f[1], m.r[1].f[1], m.r[2].f[1], m.r[3].f[1]);
+    mat.r[2] = Vector(m.r[0].f[2], m.r[1].f[2], m.r[2].f[2], m.r[3].f[2]);
+    mat.r[3] = Vector(m.r[0].f[3], m.r[1].f[3], m.r[2].f[3], m.r[3].f[3]);
+    return mat;
+#endif
 }
 
 /**

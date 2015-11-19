@@ -161,11 +161,14 @@
     <ClInclude Include="LoggerBackends\Win\BackendWindowsDebugger.hpp">
       <Filter>Source Files\LoggerBackends\Win</Filter>
     </ClInclude>
-    <ClInclude Include="LoggerBackends\BackendWindowsDebugger.hpp">
-      <Filter>Source Files\LoggerBackends</Filter>
-    </ClInclude>
     <ClInclude Include="AsyncThreadPool.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\VectorSSE.hpp">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\VectorFPU.hpp">
+      <Filter>Header Files\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

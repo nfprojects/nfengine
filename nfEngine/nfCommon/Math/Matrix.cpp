@@ -59,14 +59,15 @@ Matrix MatrixScaling(const Vector& scale)
 
 Matrix MatrixRotationNormal(const Vector& normalAxis, float angle)
 {
+    Matrix M;
+    float sinAngle = sinf(angle);
+    float cosAngle = cosf(angle);
+
+#ifdef NFE_USE_SSE
     Vector N0, N1;
     Vector V0, V1, V2;
     Vector R0, R1, R2;
     Vector C0, C1, C2;
-    Matrix M;
-
-    float sinAngle = sinf(angle);
-    float cosAngle = cosf(angle);
 
     C2 = _mm_set_ps1(1.0f - cosAngle);
     C1 = _mm_set_ps1(cosAngle);
@@ -103,11 +104,18 @@ Matrix MatrixRotationNormal(const Vector& normalAxis, float angle)
     V2 = _mm_shuffle_ps(V2, V0, _MM_SHUFFLE(3, 2, 1, 0));
     M.r[2] = V2;
     M.r[3] = VECTOR_IDENTITY_ROW_3;
+#else
+
+    // TODO
+
+#endif  // NFE_USE_SSE
+
     return M;
 }
 
 Matrix MatrixInverse(const Matrix& m)
 {
+#ifdef NFE_USE_SSE
     Matrix MT = MatrixTranspose(m);
     Vector V00 = _mm_shuffle_ps(MT.r[2], MT.r[2], _MM_SHUFFLE(1, 1, 0, 0));
     Vector V10 = _mm_shuffle_ps(MT.r[3], MT.r[3], _MM_SHUFFLE(3, 2, 3, 2));
@@ -220,6 +228,11 @@ Matrix MatrixInverse(const Matrix& m)
                   _mm_mul_ps(C2, vTemp),
                   _mm_mul_ps(C4, vTemp),
                   _mm_mul_ps(C6, vTemp));
+#else
+
+// TODO
+
+#endif  // NFE_USE_SSE
 }
 
 Matrix Matrix::operator* (const Matrix& b) const
