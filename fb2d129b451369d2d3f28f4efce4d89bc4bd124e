@@ -91,6 +91,30 @@
       "revId": "fb2d129b451369d2d3f28f4efce4d89bc4bd124e",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_1e036c10",
+        "filename": "nfEngine/nfCore/Renderer/View.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-11-24T15:02:46Z",
+      "side": 1,
+      "message": "Callee. I meant that if you override this vitual function it must look like this:\nOnDrawImGui(void* state)\n{\n    ImGui::SetInternalState(state);\n    ....\n}\n\nThat\u0027s because OnDrawImGui can be implemented in another module (DLL) and then ImGui would access wrong context (ImGui context is hold in global variable and must be set manually if you want to use the library in multiple DLLs).",
+      "parentUuid": "5ac4a560_7e8380cc",
+      "range": {
+        "startLine": 75,
+        "startChar": 42,
+        "endLine": 75,
+        "endChar": 48
+      },
+      "revId": "fb2d129b451369d2d3f28f4efce4d89bc4bd124e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
