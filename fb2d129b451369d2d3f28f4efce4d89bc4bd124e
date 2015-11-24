@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5ac4a560_5e17a4a3",
+        "filename": "nfEngine/nfCore/Renderer/GuiRenderer.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-11-24T14:39:56Z",
+      "side": 1,
+      "message": "I suggest two things:\n* Move the constant to the top of this file to anonymous namespace\n* USE_ALL_CAPITALS as it should be with our style",
+      "range": {
+        "startLine": 351,
+        "startChar": 8,
+        "endLine": 351,
+        "endChar": 48
+      },
+      "revId": "fb2d129b451369d2d3f28f4efce4d89bc4bd124e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_7e0c6095",
+        "filename": "nfEngine/nfCore/Renderer/GuiRenderer.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 365,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-11-24T14:39:56Z",
+      "side": 1,
+      "message": "As above",
+      "range": {
+        "startLine": 365,
+        "startChar": 8,
+        "endLine": 365,
+        "endChar": 48
+      },
+      "revId": "fb2d129b451369d2d3f28f4efce4d89bc4bd124e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_9e5f7c72",
+        "filename": "nfEngine/nfCore/Renderer/View.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-11-24T14:39:56Z",
+      "side": 1,
+      "message": "Some day we probably should move this to a configuration file... Please add a TODO",
+      "range": {
+        "startLine": 329,
+        "startChar": 0,
+        "endLine": 329,
+        "endChar": 23
+      },
+      "revId": "fb2d129b451369d2d3f28f4efce4d89bc4bd124e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_7e8380cc",
+        "filename": "nfEngine/nfCore/Renderer/View.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-11-24T14:39:56Z",
+      "side": 1,
+      "message": "Caller. Callee in this case is OnDrawImGui function.\n\nUnless you really talk about callee here. Then this is the internal of this function behavior and gives no valuable info for the reader (it should be written as a comment inside the function, not as a documentation part).",
+      "range": {
+        "startLine": 75,
+        "startChar": 42,
+        "endLine": 75,
+        "endChar": 48
+      },
+      "revId": "fb2d129b451369d2d3f28f4efce4d89bc4bd124e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
