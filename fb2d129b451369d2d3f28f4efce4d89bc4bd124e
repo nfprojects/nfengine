@@ -115,6 +115,30 @@
       "revId": "fb2d129b451369d2d3f28f4efce4d89bc4bd124e",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_4d0534c1",
+        "filename": "nfEngine/nfCore/Renderer/View.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-11-25T07:07:21Z",
+      "side": 1,
+      "message": "OK, so I suggest rewriting this comment. It was a bit misleading. :)",
+      "parentUuid": "5ac4a560_1e036c10",
+      "range": {
+        "startLine": 75,
+        "startChar": 42,
+        "endLine": 75,
+        "endChar": 48
+      },
+      "revId": "fb2d129b451369d2d3f28f4efce4d89bc4bd124e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
