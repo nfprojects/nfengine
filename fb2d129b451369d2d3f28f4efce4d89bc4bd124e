@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "5ac4a560_f1240dc8",
+        "filename": "nfEngine/nfCore/Renderer/GuiRenderer.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-11-29T22:01:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5ac4a560_5e17a4a3",
+      "range": {
+        "startLine": 351,
+        "startChar": 8,
+        "endLine": 351,
+        "endChar": 48
+      },
+      "revId": "fb2d129b451369d2d3f28f4efce4d89bc4bd124e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5ac4a560_7e0c6095",
         "filename": "nfEngine/nfCore/Renderer/GuiRenderer.cpp",
         "patchSetId": 7
@@ -36,6 +60,30 @@
       "writtenOn": "2015-11-24T14:39:56Z",
       "side": 1,
       "message": "As above",
+      "range": {
+        "startLine": 365,
+        "startChar": 8,
+        "endLine": 365,
+        "endChar": 48
+      },
+      "revId": "fb2d129b451369d2d3f28f4efce4d89bc4bd124e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_112269b9",
+        "filename": "nfEngine/nfCore/Renderer/GuiRenderer.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 365,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-11-29T22:01:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5ac4a560_7e0c6095",
       "range": {
         "startLine": 365,
         "startChar": 8,
@@ -130,6 +178,30 @@
       "side": 1,
       "message": "OK, so I suggest rewriting this comment. It was a bit misleading. :)",
       "parentUuid": "5ac4a560_1e036c10",
+      "range": {
+        "startLine": 75,
+        "startChar": 42,
+        "endLine": 75,
+        "endChar": 48
+      },
+      "revId": "fb2d129b451369d2d3f28f4efce4d89bc4bd124e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_b1129560",
+        "filename": "nfEngine/nfCore/Renderer/View.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2015-11-29T22:01:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5ac4a560_4d0534c1",
       "range": {
         "startLine": 75,
         "startChar": 42,
