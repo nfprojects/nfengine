@@ -36,6 +36,12 @@
     <Filter Include="Source Files\Image">
       <UniqueIdentifier>{daff1ecc-f467-4b34-92c3-87eaa8f51f9b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Math\SSE">
+      <UniqueIdentifier>{01473106-35d7-40a6-addb-38a02e0575e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Math\FPU">
+      <UniqueIdentifier>{9d9b53de-5cb2-46fb-bfde-7308a88ca9b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp">
@@ -172,6 +178,12 @@
     </ClInclude>
     <ClInclude Include="AsyncThreadPool.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\FPU\Vector.hpp">
+      <Filter>Header Files\Math\FPU</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\SSE\Vector.hpp">
+      <Filter>Header Files\Math\SSE</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
