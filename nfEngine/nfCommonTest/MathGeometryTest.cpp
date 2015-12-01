@@ -235,7 +235,7 @@ TEST(MathGeometry, FrustumPointIntersection)
     EXPECT_FALSE(Intersect(Vector(-5.5f, -5.5f, 5.0f), frustum));
     EXPECT_TRUE(Intersect(Vector(-4.5f, -4.5f, 5.0f), frustum));
     EXPECT_FALSE(Intersect(Vector(10.5f, 10.5f, 10.0f), frustum));
-    EXPECT_TRUE(Intersect(Vector(9.5f, 9.5f, 10.0f), frustum));
+    EXPECT_TRUE(Intersect(Vector(9.5f, 9.5f, 10.0f) - VECTOR_EPSILON, frustum));
 }
 
 TEST(MathGeometry, TriangleFrustumIntersection)

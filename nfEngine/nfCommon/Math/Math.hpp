@@ -9,20 +9,19 @@
 #include "../nfCommon.hpp"
 #include <math.h>
 
-
 /// TODO: SSE version should be defined by CMake or VS project.
-#define NFE_MATH_USE_SSE
-#define NFE_MATH_USE_SSE4
+#define NFE_USE_SSE
+// #define NFE_USE_SSE4
 
-#ifdef NFE_MATH_USE_SSE
+#ifdef NFE_USE_SSE
 #include <xmmintrin.h>
 #endif
 
-#ifdef NFE_MATH_USE_SSE2
+#ifdef NFE_USE_SSE2
 #include <emmintrin.h>
 #endif
 
-#ifdef NFE_MATH_USE_SSE4
+#ifdef NFE_USE_SSE4
 #include <smmintrin.h>
 #endif
 

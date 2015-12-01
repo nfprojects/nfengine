@@ -87,7 +87,7 @@ Matrix MatrixRotationNormal(const Vector& normalAxis, float angle)
     R2 = _mm_mul_ps(C0, normalAxis);
     R2 = _mm_sub_ps(V0, R2);
 
-    V0 = _mm_and_ps(R0, VECTOR_MASK_XYZ);
+    V0 = _mm_and_ps(R0, Vector(VECTOR_MASK_XYZ));
 
     V1 = _mm_shuffle_ps(R1, R2, _MM_SHUFFLE(2, 1, 2, 0));
     V1 = _mm_shuffle_ps(V1, V1, _MM_SHUFFLE(0, 3, 2, 1));
@@ -214,7 +214,7 @@ Matrix MatrixInverse(const Matrix& m)
 
     // Get the determinate
     Vector vTemp = VectorDot4(C0, MT.r[0]);
-    vTemp = _mm_div_ps(VECTOR_ONE, vTemp);
+    vTemp = _mm_div_ps(Vector(VECTOR_ONE), vTemp);
 
     return Matrix(_mm_mul_ps(C0, vTemp),
                   _mm_mul_ps(C2, vTemp),
