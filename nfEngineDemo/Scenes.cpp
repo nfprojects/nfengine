@@ -64,7 +64,7 @@ void CreateSceneMinecraft(SceneManager* scene)
     EntityID map = entityManager->CreateEntity();
     {
         TransformComponent transform;
-        transform.SetPosition(Vector(0, -70.0f, 0));
+        transform.SetPosition(Vector(0.0f, -70.0f, 0.0f));
         entityManager->AddComponent(map, transform);
 
         MeshComponent mesh;

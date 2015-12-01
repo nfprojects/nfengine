@@ -76,7 +76,7 @@ void CameraComponent::Update(const Matrix& matrix, const Vector& velocity,
     {
         float y = tanf(mPerspective.FoV / 2.0f);
         float x = mPerspective.aspectRatio * y;
-        mScreenScale = Vector(x, y, 0, 0);
+        mScreenScale = Vector(x, y);
 
         xAxis = x * matrix.GetRow(0);
         yAxis = y * matrix.GetRow(1);
