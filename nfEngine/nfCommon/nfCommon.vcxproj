@@ -99,6 +99,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <TreatWarningAsError>true</TreatWarningAsError>
       <UseFullPaths>true</UseFullPaths>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -222,6 +223,7 @@ popd</Command>
     <ClInclude Include="LoggerBackends\BackendHTML.hpp" />
     <ClInclude Include="LoggerBackends\Win\BackendWindowsDebugger.hpp" />
     <ClInclude Include="Math\Box.hpp" />
+    <ClInclude Include="Math\FPU\Vector.hpp" />
     <ClInclude Include="Math\Frustum.hpp" />
     <ClInclude Include="Math\Geometry.hpp" />
     <ClInclude Include="Math\Math.hpp" />
@@ -230,6 +232,7 @@ popd</Command>
     <ClInclude Include="Math\Random.hpp" />
     <ClInclude Include="Math\Ray.hpp" />
     <ClInclude Include="Math\Sphere.hpp" />
+    <ClInclude Include="Math\SSE\Vector.hpp" />
     <ClInclude Include="Math\Triangle.hpp" />
     <ClInclude Include="Math\Vector.hpp" />
     <ClInclude Include="MD5.hpp" />

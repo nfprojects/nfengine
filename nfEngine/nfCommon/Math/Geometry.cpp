@@ -11,6 +11,9 @@
 #include "Frustum.hpp"
 #include "Triangle.hpp"
 
+// TODO: remove after porting Geometry module to non-SSE version
+#include <smmintrin.h>
+
 namespace NFE {
 namespace Math {
 
@@ -144,7 +147,7 @@ bool Intersect(const Frustum& f1, const Frustum& f2)
         int count = 0;
 
         for (int j = 0; j < 8; j++)
-            if (_mm_comilt_ss(PlanePointDot3(f2.planes[i], f1.verticies[j]), _mm_setzero_ps()))
+            if (!PlanePointSide(f2.planes[i], f1.verticies[j]))
                 count++;
 
         if (count == 8)
@@ -157,7 +160,7 @@ bool Intersect(const Frustum& f1, const Frustum& f2)
         int count = 0;
 
         for (int j = 0; j < 8; j++)
-            if (_mm_comilt_ss(PlanePointDot3(f1.planes[i], f2.verticies[j]), _mm_setzero_ps()))
+            if (!PlanePointSide(f1.planes[i], f2.verticies[j]))
                 count++;
 
         if (count == 8)
@@ -172,7 +175,7 @@ template<> NFCOMMON_API
 bool Intersect(const Vector& point, const Frustum& frustum)
 {
     for (int i = 0; i < 6; i++)
-        if (_mm_comilt_ss(PlanePointDot3(frustum.planes[i], point), _mm_setzero_ps()))
+        if (!PlanePointSide(frustum.planes[i], point))
             return false;
 
     return true;
@@ -185,28 +188,28 @@ bool Intersect(const Triangle& tri, const Frustum& frustum)
     // frustum planes vs. triangle verticies
     for (int i = 0; i < 6; i++)
     {
-        int outside = _mm_comilt_ss(PlanePointDot3(frustum.planes[i], tri.v0), _mm_setzero_ps());
-        outside &= _mm_comilt_ss(PlanePointDot3(frustum.planes[i], tri.v1), _mm_setzero_ps());
-        outside &= _mm_comilt_ss(PlanePointDot3(frustum.planes[i], tri.v2), _mm_setzero_ps());
+        bool outside = !PlanePointSide(frustum.planes[i], tri.v0);
+        outside &= !PlanePointSide(frustum.planes[i], tri.v1);
+        outside &= !PlanePointSide(frustum.planes[i], tri.v2);
         if (outside)
             return false;
     }
 
     // traingle plane vs. frustum vertices
     Vector plane = PlaneFromPoints(tri.v0, tri.v1, tri.v2);
-    int side = 0;
+    int tmpSide = 0;
     for (int i = 0; i < 8; i++)
     {
-        float dot = PlanePointDot3(plane, frustum.verticies[i]).f[0];
+        bool side = PlanePointSide(plane, frustum.verticies[i]);
 
-        if (dot < 0.0f && side > 0)
+        if (!side && tmpSide > 0)
             return true;
 
-        if (dot > 0.0f && side < 0)
+        if (side && tmpSide < 0)
             return true;
 
-        if (side == 0)
-            side = dot > 0.0f ? 1 : -1;
+        if (tmpSide == 0)
+            tmpSide = side ? 1 : -1;
     }
 
     return false;
@@ -266,13 +269,12 @@ bool Intersect(const Box& box, const Sphere& sphere)
 template<> NFCOMMON_API
 bool Intersect(const Frustum& frustum, const Sphere& sphere)
 {
-    Vector invRadius = _mm_set_ss(-sphere.r);
-
     // test frustum planes against the sphere
     for (int i = 0; i < 6; i++)
     {
-        Vector dot = PlanePointDot3(frustum.planes[i], sphere.origin);
-        if (_mm_comilt_ss(dot, invRadius))
+        Vector plane = frustum.planes[i];
+        plane.f[3] += sphere.r;
+        if (!PlanePointSide(plane, sphere.origin))
             return false;
     }
 
@@ -318,9 +320,13 @@ bool Intersect(const Frustum& frustum, const Sphere& sphere)
 
     // test sphere against frustum vertices
     Vector plane = PlaneFromNormalAndPoint(VectorNormalize3(nearest - sphere.origin), sphere.origin);
+    plane.f[3] -= sphere.r;
+
     for (int i = 0; i < 8; ++i)
-        if (PlanePointDot3(plane, frustum.verticies[i])[0] < sphere.r)
+    {
+        if (!PlanePointSide(plane, frustum.verticies[i]))
             return true;
+    }
 
     return false;
 }

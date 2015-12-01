@@ -20,7 +20,7 @@ class NFE_ALIGN16 Matrix
 public:
     union
     {
-        __m128 r[4];   //< rows
+        Vector r[4];   //< rows
         float f[16];
         float m[4][4];
     };
