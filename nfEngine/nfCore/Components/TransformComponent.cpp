@@ -53,7 +53,7 @@ void TransformComponent::SetPosition(const Vector& pos)
 {
     mFlags |= NFE_TRANSFORM_FLAG_GLOBAL_MOVED;
     mMatrix.r[3] = pos;
-    mMatrix.r[3].m128_f32[3] = 1.0f;
+    mMatrix.r[3].f[3] = 1.0f;
 }
 
 void TransformComponent::SetOrientation(const Quaternion& quat)
@@ -80,15 +80,15 @@ void TransformComponent::SetOrientation(const Orientation& orientation)
     mMatrix.r[1] = yAxis;
     mMatrix.r[2] = zAxis;
 
-    mMatrix.r[0].m128_f32[3] = 0.0f;
-    mMatrix.r[1].m128_f32[3] = 0.0f;
-    mMatrix.r[2].m128_f32[3] = 0.0f;
+    mMatrix.r[0].f[3] = 0.0f;
+    mMatrix.r[1].f[3] = 0.0f;
+    mMatrix.r[2].f[3] = 0.0f;
 }
 
 void TransformComponent::SetLocalPosition(const Vector& pos)
 {
     mLocalMatrix.r[3] = pos;
-    mLocalMatrix.r[3].m128_f32[3] = 1.0f;
+    mLocalMatrix.r[3].f[3] = 1.0f;
 
     mFlags |= NFE_TRANSFORM_FLAG_LOCAL_MOVED;
 }
@@ -105,9 +105,9 @@ void TransformComponent::SetLocalOrientation(const Orientation& orientation)
     mLocalMatrix.r[1] = yAxis;
     mLocalMatrix.r[2] = zAxis;
 
-    mLocalMatrix.r[0].m128_f32[3] = 0.0f;
-    mLocalMatrix.r[1].m128_f32[3] = 0.0f;
-    mLocalMatrix.r[2].m128_f32[3] = 0.0f;
+    mLocalMatrix.r[0].f[3] = 0.0f;
+    mLocalMatrix.r[1].f[3] = 0.0f;
+    mLocalMatrix.r[2].f[3] = 0.0f;
 
     mFlags |= NFE_TRANSFORM_FLAG_LOCAL_MOVED;
 }
