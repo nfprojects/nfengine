@@ -1,0 +1,130 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5ac4a560_162c0899",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-12-03T10:33:41Z",
+      "side": 1,
+      "message": ":)",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 1
+      },
+      "revId": "007bd70e5c27546835aadd134ae77de8ec690646",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_76affce3",
+        "filename": "nfEngine/nfRendererDemo/VertexBuffersScene.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-12-03T10:33:41Z",
+      "side": 1,
+      "message": "rm to align to Subscenes comment",
+      "range": {
+        "startLine": 185,
+        "startChar": 17,
+        "endLine": 185,
+        "endChar": 49
+      },
+      "revId": "007bd70e5c27546835aadd134ae77de8ec690646",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_56abe0d7",
+        "filename": "nfEngine/nfRendererDemo/VertexBuffersScene.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-12-03T10:33:41Z",
+      "side": 1,
+      "message": "rm to align to Subscenes comment",
+      "range": {
+        "startLine": 187,
+        "startChar": 16,
+        "endLine": 187,
+        "endChar": 49
+      },
+      "revId": "007bd70e5c27546835aadd134ae77de8ec690646",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_96ac98ef",
+        "filename": "nfEngine/nfRendererDemo/VertexBuffersScene.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-12-03T10:33:41Z",
+      "side": 1,
+      "message": "Add / to align to comment below",
+      "revId": "007bd70e5c27546835aadd134ae77de8ec690646",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_b6b99430",
+        "filename": "nfEngine/nfRendererDemo/VertexBuffersScene.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-12-03T10:33:41Z",
+      "side": 1,
+      "message": "Add / to align to comment above",
+      "revId": "007bd70e5c27546835aadd134ae77de8ec690646",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac4a560_763a9cce",
+        "filename": "nfEngine/nfRendererDemo/VertexBuffersScene.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-12-03T10:33:41Z",
+      "side": 1,
+      "message": "By what? :)",
+      "range": {
+        "startLine": 20,
+        "startChar": 40,
+        "endLine": 20,
+        "endChar": 50
+      },
+      "revId": "007bd70e5c27546835aadd134ae77de8ec690646",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
