@@ -28,9 +28,9 @@
     <ClCompile Include="PackedArray.cpp" />
     <ClCompile Include="ConfigTest.cpp" />
     <ClCompile Include="AlignedTest.cpp" />
+    <ClCompile Include="BVHTest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Common.hpp" />
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="Constants.hpp" />
   </ItemGroup>
