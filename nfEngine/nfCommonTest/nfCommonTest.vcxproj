@@ -190,6 +190,7 @@
     <ClCompile Include="BufferInputStreamTest.cpp" />
     <ClCompile Include="BufferOutputStreamTest.cpp" />
     <ClCompile Include="ConfigTest.cpp" />
+    <ClCompile Include="BVHTest.cpp" />
     <ClCompile Include="Constants.cpp" />
     <ClCompile Include="DirectoryWatchTest.cpp" />
     <ClCompile Include="FileSystemTest.cpp" />

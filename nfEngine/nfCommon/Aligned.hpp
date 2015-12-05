@@ -51,6 +51,13 @@ public:
 #else
 #error "Target system not supported!"
 #endif // defined(WIN32)
+
+    // placement new
+    void* operator new(size_t size, void* ptr)
+    {
+        (void)size;
+        return ptr;
+    }
 };
 
 
