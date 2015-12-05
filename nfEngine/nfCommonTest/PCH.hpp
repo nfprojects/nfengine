@@ -12,11 +12,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
-// TODO: remove this dependencies, engine should include everything what's needed
 #include <set>
 #include <map>
 #include <vector>
+#include <algorithm>
 
 #include "gtest/gtest.h"
 
