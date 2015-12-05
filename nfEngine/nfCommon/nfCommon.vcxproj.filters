@@ -218,6 +218,9 @@
     <ClInclude Include="Aligned.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BVH.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -351,6 +354,9 @@
     </ClCompile>
     <ClCompile Include="Math\RayGeometry.cpp">
       <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="BVH.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Math\SSE\MatrixSSE.cpp">
       <Filter>Source Files\Math\SSE</Filter>
