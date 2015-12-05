@@ -129,9 +129,6 @@
     <ClCompile Include="Scene\SceneManager.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\BVH.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
     <ClCompile Include="Resources\Multishader.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
@@ -253,9 +250,6 @@
     </ClInclude>
     <ClInclude Include="Scene\SceneManager.hpp">
       <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\BVH.hpp">
-      <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Resources\Multishader.hpp">
       <Filter>Resources</Filter>
