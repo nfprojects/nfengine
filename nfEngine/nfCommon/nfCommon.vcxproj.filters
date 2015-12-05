@@ -185,6 +185,9 @@
     <ClInclude Include="Math\SSE\Vector.hpp">
       <Filter>Header Files\Math\SSE</Filter>
     </ClInclude>
+    <ClInclude Include="BVH.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -318,6 +321,9 @@
     </ClCompile>
     <ClCompile Include="Math\RayGeometry.cpp">
       <Filter>Source Files\Math</Filter>
+    </ClInclude>
+    <ClCompile Include="BVH.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

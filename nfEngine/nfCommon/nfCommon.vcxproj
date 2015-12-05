@@ -210,6 +210,7 @@ popd</Command>
     <ClInclude Include="AsyncThreadPool.hpp" />
     <ClInclude Include="Bit.hpp" />
     <ClInclude Include="Buffer.hpp" />
+    <ClInclude Include="BVH.hpp" />
     <ClInclude Include="Console.hpp" />
     <ClInclude Include="File.hpp" />
     <ClInclude Include="FileSystem.hpp" />
@@ -258,6 +259,7 @@ popd</Command>
   <ItemGroup>
     <ClCompile Include="AsyncThreadPool.cpp" />
     <ClCompile Include="Buffer.cpp" />
+    <ClCompile Include="BVH.cpp" />
     <ClCompile Include="FileSystemCommon.cpp" />
     <ClCompile Include="Image\Image.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>

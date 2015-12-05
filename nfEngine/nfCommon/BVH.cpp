@@ -6,18 +6,18 @@
 
 #include "PCH.hpp"
 #include "BVH.hpp"
-#include "../nfCommon/Math/Box.hpp"
-#include "../nfCommon/Math/Frustum.hpp"
-#include "../nfCommon/Math/Geometry.hpp"
+#include "Math/Box.hpp"
+#include "Math/Frustum.hpp"
+#include "Math/Geometry.hpp"
 
 namespace NFE {
-namespace Util {
+namespace Common {
 
 using namespace Math;
 
-#define X_BVH_STACK_SIZE 128
-#define X_BVH_INITIAL_CAPACITY 128
-#define X_BVH_NULL_NODE 0xFFFFFFFF
+#define NFE_BVH_STACK_SIZE 128
+#define NFE_BVH_INITIAL_CAPACITY 128
+#define NFE_BVH_NULL_NODE 0xFFFFFFFF
 
 BVHNode::BVHNode()
 {
@@ -38,7 +38,7 @@ void BVHNode::operator delete(void* ptr)
 
 bool BVHNode::IsLeaf() const
 {
-    return (child[0] == X_BVH_NULL_NODE);
+    return (child[0] == NFE_BVH_NULL_NODE);
 }
 
 
@@ -59,17 +59,17 @@ BVH::~BVH()
 
 void BVH::Clear()
 {
-    mRoot = X_BVH_NULL_NODE;
+    mRoot = NFE_BVH_NULL_NODE;
     mLeavesNum = 0;
 
-    mNodesCapacity = X_BVH_INITIAL_CAPACITY;
+    mNodesCapacity = NFE_BVH_INITIAL_CAPACITY;
     mNodesNum = 0;
     mNodes = (BVHNode*)_aligned_realloc(mNodes, mNodesCapacity * sizeof(BVHNode), 16);
 
     // init free list
     for (uint32 i = 0; i < mNodesCapacity - 1; i++)
         mNodes[i].next = i + 1;
-    mNodes[mNodesCapacity - 1].next = X_BVH_NULL_NODE;
+    mNodes[mNodesCapacity - 1].next = NFE_BVH_NULL_NODE;
     mFreeNode = 0;
 
     mRebalancePath = 0;
@@ -84,22 +84,22 @@ uint32 BVH::GetSize() const
 uint32 BVH::AllocNode()
 {
     // expand free list
-    if (mFreeNode == X_BVH_NULL_NODE)
+    if (mFreeNode == NFE_BVH_NULL_NODE)
     {
         mNodesCapacity *= 2;
         mNodes = (BVHNode*)_aligned_realloc(mNodes, mNodesCapacity * sizeof(BVHNode), 16);
 
         for (uint32 i = mNodesNum; i < mNodesCapacity - 1; i++)
             mNodes[i].next = i + 1;
-        mNodes[mNodesCapacity - 1].next = X_BVH_NULL_NODE;
+        mNodes[mNodesCapacity - 1].next = NFE_BVH_NULL_NODE;
         mFreeNode = mNodesNum;
     }
 
     int id = mFreeNode;
     mFreeNode = mNodes[mFreeNode].next;
-    mNodes[id].parent = X_BVH_NULL_NODE;
-    mNodes[id].child[0] = X_BVH_NULL_NODE;
-    mNodes[id].child[1] = X_BVH_NULL_NODE;
+    mNodes[id].parent = NFE_BVH_NULL_NODE;
+    mNodes[id].child[0] = NFE_BVH_NULL_NODE;
+    mNodes[id].child[1] = NFE_BVH_NULL_NODE;
 
     mNodesNum++;
     return id;
@@ -108,22 +108,18 @@ uint32 BVH::AllocNode()
 // mark node as free
 void BVH::FreeNode(uint32 nodeID)
 {
-    NFE_ASSERT(nodeID < mNodesCapacity, L"Invalid nodeID");
-    NFE_ASSERT(0 < mNodesNum, L"Tree is empty");
-
     mNodes[nodeID].next = mFreeNode;
     mFreeNode = nodeID;
     mNodesNum--;
 
     // TODO: if (mNodesNum < hysteresis_factor * mNodesCapacity) then rearrange and reallocate list
-
 }
 
-uint32 BVH::Insert(const Box& aabb, void* pUserData)
+uint32 BVH::Insert(const Box& aabb, void* userData)
 {
     uint32 leaf = AllocNode();
     mNodes[leaf].AABB = Box(aabb, aabb); //make sure that (min <= max)
-    mNodes[leaf].userData = pUserData;
+    mNodes[leaf].userData = userData;
     InsertLeaf(leaf);
 
     Rebalance(1);// + (mNodesNum>>5));
@@ -162,10 +158,10 @@ void BVH::InsertLeaf(uint32 leaf)
     mLeavesNum++;
 
     // empty tree => make node as root
-    if (mRoot == X_BVH_NULL_NODE)
+    if (mRoot == NFE_BVH_NULL_NODE)
     {
         mRoot = leaf;
-        mNodes[mRoot].parent = X_BVH_NULL_NODE;
+        mNodes[mRoot].parent = NFE_BVH_NULL_NODE;
         return;
     }
 
@@ -199,7 +195,7 @@ void BVH::InsertLeaf(uint32 leaf)
     mNodes[node2].parent = node1;
     mNodes[node2].AABB = Box(mNodes[leaf].AABB, mNodes[sibling].AABB);
 
-    if (node1 != X_BVH_NULL_NODE)
+    if (node1 != NFE_BVH_NULL_NODE)
     {
         if (mNodes[mNodes[sibling].parent].child[0] == sibling)
             mNodes[node1].child[0] = node2;
@@ -219,7 +215,7 @@ void BVH::InsertLeaf(uint32 leaf)
             node2 = node1;
             node1 = mNodes[node1].parent;
         }
-        while (node1 != X_BVH_NULL_NODE);
+        while (node1 != NFE_BVH_NULL_NODE);
     }
     else
     {
@@ -235,7 +231,7 @@ void BVH::RemoveLeaf(uint32 leaf)
 {
     if (mRoot == leaf)
     {
-        mRoot = X_BVH_NULL_NODE;
+        mRoot = NFE_BVH_NULL_NODE;
         return;
     }
 
@@ -247,7 +243,7 @@ void BVH::RemoveLeaf(uint32 leaf)
     else
         sibling = mNodes[node2].child[0];
 
-    if (node1 != X_BVH_NULL_NODE)
+    if (node1 != NFE_BVH_NULL_NODE)
     {
         // Destroy node2 and connect node1 to sibling.
         if (mNodes[node1].child[0] == node2)
@@ -259,7 +255,7 @@ void BVH::RemoveLeaf(uint32 leaf)
         FreeNode(node2);
 
         // Adjust ancestor bounds.
-        while (node1 != X_BVH_NULL_NODE)
+        while (node1 != NFE_BVH_NULL_NODE)
         {
             Box oldAABB = mNodes[node1].AABB;
             mNodes[node1].AABB = Box(mNodes[mNodes[node1].child[0]].AABB,
@@ -274,14 +270,14 @@ void BVH::RemoveLeaf(uint32 leaf)
     else
     {
         mRoot = sibling;
-        mNodes[sibling].parent = X_BVH_NULL_NODE;
+        mNodes[sibling].parent = NFE_BVH_NULL_NODE;
         FreeNode(node2);
     }
 }
 
 void BVH::Rebalance(uint32 iterations)
 {
-    if (mRoot == X_BVH_NULL_NODE) return;
+    if (mRoot == NFE_BVH_NULL_NODE) return;
 
     for (uint32 i = 0; i < iterations; i++)
     {
@@ -290,8 +286,8 @@ void BVH::Rebalance(uint32 iterations)
         uint32 bit = 0;
         while (!mNodes[node].IsLeaf())
         {
-            uint32* pChildren = mNodes[node].child;
-            node = pChildren[(mRebalancePath >> bit) & 1];
+            uint32* children = mNodes[node].child;
+            node = children[(mRebalancePath >> bit) & 1];
             bit = (bit + 1) & (8 * sizeof(uint32) - 1);
         }
         mRebalancePath *= 1103515245;
@@ -304,8 +300,8 @@ void BVH::Rebalance(uint32 iterations)
 
 uint32 BVH::CalculateHeight(uint32 nodeID) const
 {
-    if (nodeID == X_BVH_NULL_NODE) return 0;
-    NFE_ASSERT(nodeID < mNodesCapacity, L"Invalid nodeID");
+    if (nodeID == NFE_BVH_NULL_NODE)
+        return 0;
 
     uint32 leftHeight = CalculateHeight(mNodes[nodeID].child[0]);
     uint32 rightHeight = CalculateHeight(mNodes[nodeID].child[1]);
@@ -317,30 +313,29 @@ uint32 BVH::CalculateHeight() const
     return CalculateHeight(mRoot);
 }
 
-void BVH::GetNodeStats(uint32 nodeID, BVHStats* pStats) const
+void BVH::GetNodeStats(uint32 nodeID, BVHStats* stats) const
 {
-    if (nodeID == X_BVH_NULL_NODE) return;
-    NFE_ASSERT(nodeID < mNodesCapacity, L"Invalid nodeID");
+    if (nodeID == NFE_BVH_NULL_NODE)
+        return;
 
-    pStats->totalArea += (double)mNodes[nodeID].AABB.SurfaceArea();
-    pStats->totatlVolume += (double)mNodes[nodeID].AABB.Volume();
+    stats->totalArea += (double)mNodes[nodeID].AABB.SurfaceArea();
+    stats->totalVolume += (double)mNodes[nodeID].AABB.Volume();
 
-    GetNodeStats(mNodes[nodeID].child[0], pStats);
-    GetNodeStats(mNodes[nodeID].child[1], pStats);
+    GetNodeStats(mNodes[nodeID].child[0], stats);
+    GetNodeStats(mNodes[nodeID].child[1], stats);
 }
 
-void BVH::GetStats(BVHStats* pStats) const
+void BVH::GetStats(BVHStats* stats) const
 {
-    pStats->height = CalculateHeight();
-    pStats->nodesNum = mNodesNum;
-    pStats->leavesNum = mLeavesNum;
+    stats->height = CalculateHeight();
+    stats->nodesNum = mNodesNum;
+    stats->leavesNum = mLeavesNum;
 
-    pStats->totalArea = 0.0;
-    pStats->totatlVolume = 0.0;
-    GetNodeStats(mRoot, pStats);
+    stats->totalArea = 0.0;
+    stats->totalVolume = 0.0;
+    GetNodeStats(mRoot, stats);
 }
 
-// get root node ID
 uint32 BVH::GetRootId() const
 {
     return mRoot;
@@ -353,90 +348,94 @@ BVHNode* BVH::GetNodeById(uint32 id) const
     return mNodes + id;
 }
 
-void BVH::QueryAll(uint32 node, BVHQueryCallback pCallback, void* pUserData) const
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Query functions ////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+void BVH::QueryAll(uint32 nodeID, BVHQueryCallback callback, void* userData) const
 {
     int stackDepth = 0;
-    uint32 pStack[X_BVH_STACK_SIZE];
-    pStack[stackDepth++] = node;
+    uint32 stack[NFE_BVH_STACK_SIZE];
+    stack[stackDepth++] = nodeID;
 
     while (stackDepth > 0)
     {
-        BVHNode* pNode = mNodes + pStack[--stackDepth];
+        BVHNode* node = mNodes + stack[--stackDepth];
 
-        if (pNode->IsLeaf())
+        if (node->IsLeaf())
         {
-            pCallback(pNode->userData, pUserData);
+            callback(node->userData, userData);
         }
-        else if (stackDepth + 2 <= X_BVH_STACK_SIZE)
+        else if (stackDepth + 2 <= NFE_BVH_STACK_SIZE)
         {
-            pStack[stackDepth++] = pNode->child[0];
-            pStack[stackDepth++] = pNode->child[1];
+            stack[stackDepth++] = node->child[0];
+            stack[stackDepth++] = node->child[1];
         }
     }
 }
 
 template <>
-CORE_API void BVH::Query(const Box& shape, BVHQueryCallback pCallback, void* pUserData) const
+NFCOMMON_API void BVH::Query(const Box& shape, BVHQueryCallback callback, void* userData) const
 {
-    if (mRoot == X_BVH_NULL_NODE)
+    if (mRoot == NFE_BVH_NULL_NODE)
         return;
 
     int stackDepth = 0;
-    uint32 pStack[X_BVH_STACK_SIZE];
-    pStack[stackDepth++] = mRoot;
+    uint32 stack[NFE_BVH_STACK_SIZE];
+    stack[stackDepth++] = mRoot;
 
     while (stackDepth > 0)
     {
-        BVHNode* pNode = mNodes + pStack[--stackDepth];
+        BVHNode* node = mNodes + stack[--stackDepth];
 
-        if (Intersect(pNode->AABB, shape))
+        if (Intersect(node->AABB, shape))
         {
-            if (pNode->IsLeaf())
-                pCallback(pNode->userData, pUserData);
-            else if (stackDepth + 2 <= X_BVH_STACK_SIZE)
+            if (node->IsLeaf())
+                callback(node->userData, userData);
+            else if (stackDepth + 2 <= NFE_BVH_STACK_SIZE)
             {
-                pStack[stackDepth++] = pNode->child[0];
-                pStack[stackDepth++] = pNode->child[1];
+                stack[stackDepth++] = node->child[0];
+                stack[stackDepth++] = node->child[1];
             }
         }
     }
 }
 
 template <>
-CORE_API void BVH::Query(const Frustum& shape, BVHQueryCallback pCallback, void* pUserData) const
+NFCOMMON_API void BVH::Query(const Frustum& shape, BVHQueryCallback callback, void* userData) const
 {
-    if (mRoot == X_BVH_NULL_NODE)
+    if (mRoot == NFE_BVH_NULL_NODE)
         return;
 
     int stackDepth = 0;
-    uint32 pStack[X_BVH_STACK_SIZE];
-    pStack[stackDepth++] = mRoot;
+    uint32 stack[NFE_BVH_STACK_SIZE];
+    stack[stackDepth++] = mRoot;
 
     while (stackDepth > 0)
     {
-        uint32 nodeID = pStack[--stackDepth];
-        const BVHNode* pNode = mNodes + nodeID;
+        uint32 nodeID = stack[--stackDepth];
+        const BVHNode* node = mNodes + nodeID;
 
-        IntersectionResult result = IntersectEx(pNode->AABB, shape);
+        IntersectionResult result = IntersectEx(node->AABB, shape);
         if (result == IntersectionResult::Inside)
         {
-            QueryAll(nodeID, pCallback, pUserData);
+            QueryAll(nodeID, callback, userData);
             continue;
         }
         else if (result == IntersectionResult::Intersect)
         {
-            if (pNode->IsLeaf())
+            if (node->IsLeaf())
             {
-                pCallback(pNode->userData, pUserData);
+                callback(node->userData, userData);
             }
-            else if (stackDepth + 2 <= X_BVH_STACK_SIZE)
+            else if (stackDepth + 2 <= NFE_BVH_STACK_SIZE)
             {
-                pStack[stackDepth++] = pNode->child[0];
-                pStack[stackDepth++] = pNode->child[1];
+                stack[stackDepth++] = node->child[0];
+                stack[stackDepth++] = node->child[1];
             }
         }
     }
 }
 
-} // namespace Util
+} // namespace Common
 } // namespace NFE

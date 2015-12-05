@@ -132,12 +132,6 @@
     <ClCompile Include="Utils\Aligned.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\BVH.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Resources\Multishader.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Prerequisites.hpp">
@@ -259,12 +253,6 @@
     </ClInclude>
     <ClInclude Include="Utils\Aligned.hpp">
       <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\BVH.hpp">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\Multishader.hpp">
-      <Filter>Resources</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
