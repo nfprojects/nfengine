@@ -181,7 +181,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Common.hpp" />
     <ClInclude Include="Constants.hpp" />
     <ClInclude Include="PCH.hpp" />
   </ItemGroup>
@@ -190,6 +189,7 @@
     <ClCompile Include="BufferInputStreamTest.cpp" />
     <ClCompile Include="BufferOutputStreamTest.cpp" />
     <ClCompile Include="ConfigTest.cpp" />
+    <ClCompile Include="BVHTest.cpp" />
     <ClCompile Include="Constants.cpp" />
     <ClCompile Include="DirectoryWatchTest.cpp" />
     <ClCompile Include="FileSystemTest.cpp" />
