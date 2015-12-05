@@ -214,6 +214,7 @@ popd</Command>
     <ClInclude Include="Config.hpp" />
     <ClInclude Include="ConfigDataTranslator.hpp" />
     <ClInclude Include="ConfigTokenizer.hpp" />
+    <ClInclude Include="BVH.hpp" />
     <ClInclude Include="Console.hpp" />
     <ClInclude Include="DirectoryWatch.hpp" />
     <ClInclude Include="File.hpp" />
@@ -270,6 +271,7 @@ popd</Command>
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="ConfigTokenizer.cpp" />
+    <ClCompile Include="BVH.cpp" />
     <ClCompile Include="FileSystemCommon.cpp" />
     <ClCompile Include="Image\Image.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
