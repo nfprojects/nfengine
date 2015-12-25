@@ -216,8 +216,8 @@ void Window::MouseDown(uint32 button, int x, int y)
     XGrabPointer(mDisplay, mWindow, True, 0, GrabModeAsync,
                 GrabModeAsync, mWindow, None, CurrentTime);
     mMouseButtons[button] = true;
-    mMouseDownX[button] = x;
-    mMouseDownY[button] = y;
+    mMousePos[button] = x;
+    mMousePos[button] = y;
 
     OnMouseDown(button, x, y);
 }
@@ -239,14 +239,9 @@ void Window::MouseUp(uint32 button)
 
 void Window::MouseMove(int x, int y)
 {
-    OnMouseMove(x, y, x - mMouseDownX[0], y - mMouseDownY[0]);
-    mMouseDownX[0] = x;
-    mMouseDownY[0] = y;
-}
-
-bool Window::IsKeyPressed(int Key) const
-{
-    return mKeys[Key];
+    OnMouseMove(x, y, x - mMousePos[0], y - mMousePos[0]);
+    mMousePos[0] = x;
+    mMousePos[0] = y;
 }
 
 void Window::ProcessMessages()
@@ -367,11 +362,6 @@ float Window::GetAspectRatio() const
 bool Window::GetFullscreenMode() const
 {
     return mFullscreen;
-}
-
-bool Window::IsMouseButtonDown(uint32 button) const
-{
-    return mMouseButtons[button];
 }
 
 void Window::SetResizeCallback(WindowResizeCallback func, void* userData)
