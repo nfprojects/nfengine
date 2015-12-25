@@ -151,7 +151,6 @@ bool DirectoryWatch::ProcessInotifyEvent(void* event)
     {
         if (includeSubpath)
         {
-            assert(e->name != nullptr);
             strcat(path, "/");
             strcat(path, e->name);
         }

@@ -71,7 +71,7 @@ public:
     Logger();
     ~Logger();
 
-    void RegisterBackend(std::unique_ptr<LoggerBackend> backend);
+    void RegisterBackend(LoggerBackend* backend);
 
     /**
      * Log single line using formated string.

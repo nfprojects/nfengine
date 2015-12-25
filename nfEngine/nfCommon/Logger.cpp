@@ -41,8 +41,8 @@ Logger::Logger()
     mLogsDirectory = execDir + "/../../../Logs";
     FileSystem::CreateDir(mLogsDirectory);
 
-    RegisterBackend(std::move(std::unique_ptr<LoggerBackend>(new LoggerBackendConsole)));
-    RegisterBackend(std::move(std::unique_ptr<LoggerBackend>(new LoggerBackendHTML)));
+    RegisterBackend(new LoggerBackendConsole);
+    RegisterBackend(new LoggerBackendHTML);
 #ifdef WIN32
     if (IsDebuggerPresent())
         RegisterBackend(std::move(std::unique_ptr<LoggerBackend>(new LoggerBackendWinDebugger)));
@@ -82,9 +82,9 @@ void Logger::LogRunTime()
     }
 }
 
-void Logger::RegisterBackend(std::unique_ptr<LoggerBackend> backend)
+void Logger::RegisterBackend(LoggerBackend* backend)
 {
-    mBackends.push_back(std::move(backend));
+    mBackends.emplace_back(std::unique_ptr<LoggerBackend>(backend));
 }
 
 void Logger::Log(LogType type, const char* srcFile, int line, const char* str, ...)

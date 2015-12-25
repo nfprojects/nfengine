@@ -235,7 +235,7 @@ bool Image::CompressDDS(ImageFormat destFormat)
 
     // Compress the first mipmap
     squish::CompressImage(pixels, width, height, block.get(), compressionFlag);
-    newMipmaps.push_back(std::move(Mipmap(block.get(), width, height, size)));
+    newMipmaps.emplace_back(Mipmap(block.get(), width, height, size));
 
     // Compress the rest
     for (uint32 i = 1; i < mipmapNum; i++)
@@ -257,7 +257,7 @@ bool Image::CompressDDS(ImageFormat destFormat)
         }
 
         squish::CompressImage(pixels, width, height, block.get(), compressionFlag);
-        newMipmaps.push_back(std::move(Mipmap(block.get(), width, height, size)));
+        newMipmaps.emplace_back(Mipmap(block.get(), width, height, size));
     }
 
     Release();

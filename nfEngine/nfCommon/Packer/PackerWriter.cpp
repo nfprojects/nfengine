@@ -40,7 +40,7 @@ PackerResult PackerWriter::AddFile(const std::string& filePath, const std::strin
         return pr;
     }
 
-    mFileList.push_back(std::move(std::shared_ptr<PackerResource>(resource)));
+    mFileList.emplace_back(std::shared_ptr<PackerResource>(resource));
 
     return PackerResult::OK;
 }
