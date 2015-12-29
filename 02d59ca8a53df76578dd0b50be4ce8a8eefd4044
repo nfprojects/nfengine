@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a961159_150516c2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2015-12-29T08:53:27Z",
+      "side": 1,
+      "message": "I think I will turn on my commit-msg-nazi once again. :)\n\nPlease describe more what was wrong and why it needed to be fixed (ex. what caused the build to be broken).",
+      "revId": "02d59ca8a53df76578dd0b50be4ce8a8eefd4044",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
