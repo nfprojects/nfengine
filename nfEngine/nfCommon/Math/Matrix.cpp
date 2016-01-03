@@ -59,14 +59,16 @@ Matrix MatrixScaling(const Vector& scale)
 
 Matrix MatrixRotationNormal(const Vector& normalAxis, float angle)
 {
+    Matrix result;
+
+#ifdef NFE_USE_SSE
+
+    float sinAngle = sinf(angle);
+    float cosAngle = cosf(angle);
     Vector N0, N1;
     Vector V0, V1, V2;
     Vector R0, R1, R2;
     Vector C0, C1, C2;
-    Matrix M;
-
-    float sinAngle = sinf(angle);
-    float cosAngle = cosf(angle);
 
     C2 = _mm_set_ps1(1.0f - cosAngle);
     C1 = _mm_set_ps1(cosAngle);
@@ -96,18 +98,48 @@ Matrix MatrixRotationNormal(const Vector& normalAxis, float angle)
 
     R2 = _mm_shuffle_ps(V0, V1, _MM_SHUFFLE(1, 0, 3, 0));
     R2 = _mm_shuffle_ps(R2, R2, _MM_SHUFFLE(1, 3, 2, 0));
-    M.r[0] = R2;
+    result.r[0] = R2;
     R2 = _mm_shuffle_ps(V0, V1, _MM_SHUFFLE(3, 2, 3, 1));
     R2 = _mm_shuffle_ps(R2, R2, _MM_SHUFFLE(1, 3, 0, 2));
-    M.r[1] = R2;
+    result.r[1] = R2;
     V2 = _mm_shuffle_ps(V2, V0, _MM_SHUFFLE(3, 2, 1, 0));
-    M.r[2] = V2;
-    M.r[3] = VECTOR_IDENTITY_ROW_3;
-    return M;
+    result.r[2] = V2;
+    result.r[3] = VECTOR_IDENTITY_ROW_3;
+
+#else
+
+    float x = normalAxis[0];
+    float y = normalAxis[1];
+    float z = normalAxis[2];
+    float c = cosf(angle);
+    float s = sinf(angle);
+    float t = 1.0f - c;
+
+    result.r[0] = Vector(t * x * x + c,
+                         t * x * y - s * z,
+                         t * x *z + s * y,
+                         0.0f);
+
+    result.r[1] = Vector(t * x * y + s * z,
+                         t * y * y + c,
+                         t * y * z - s * x,
+                         0.0f);
+
+    result.r[2] = Vector(t * x * z - s * y,
+                         t * y * z + s * x,
+                         t * z * z + c,
+                         0.0f);
+
+    result.r[3] = VECTOR_IDENTITY_ROW_3;
+
+#endif  // NFE_USE_SSE
+
+    return result;
 }
 
 Matrix MatrixInverse(const Matrix& m)
 {
+#ifdef NFE_USE_SSE
     Matrix MT = MatrixTranspose(m);
     Vector V00 = _mm_shuffle_ps(MT.r[2], MT.r[2], _MM_SHUFFLE(1, 1, 0, 0));
     Vector V10 = _mm_shuffle_ps(MT.r[3], MT.r[3], _MM_SHUFFLE(3, 2, 3, 2));
@@ -220,6 +252,68 @@ Matrix MatrixInverse(const Matrix& m)
                   _mm_mul_ps(C2, vTemp),
                   _mm_mul_ps(C4, vTemp),
                   _mm_mul_ps(C6, vTemp));
+#else
+
+    float inv[16], det;
+
+    // formula taken from MESA implmentation of GLU library
+    inv[0 ] =  m.f[5 ] * m.f[10] * m.f[15] - m.f[5 ] * m.f[11] * m.f[14] -
+               m.f[9 ] * m.f[6 ] * m.f[15] + m.f[9 ] * m.f[7 ] * m.f[14] +
+               m.f[13] * m.f[6 ] * m.f[11] - m.f[13] * m.f[7 ] * m.f[10];
+    inv[1 ] = -m.f[1 ] * m.f[10] * m.f[15] + m.f[1 ] * m.f[11] * m.f[14] +
+               m.f[9 ] * m.f[2 ] * m.f[15] - m.f[9 ] * m.f[3 ] * m.f[14] -
+               m.f[13] * m.f[2 ] * m.f[11] + m.f[13] * m.f[3 ] * m.f[10];
+    inv[2 ] =  m.f[1 ] * m.f[6 ] * m.f[15] - m.f[1 ] * m.f[7 ] * m.f[14] -
+               m.f[5 ] * m.f[2 ] * m.f[15] + m.f[5 ] * m.f[3 ] * m.f[14] +
+               m.f[13] * m.f[2 ] * m.f[7 ] - m.f[13] * m.f[3 ] * m.f[6 ];
+    inv[3 ] = -m.f[1 ] * m.f[6 ] * m.f[11] + m.f[1 ] * m.f[7 ] * m.f[10] +
+               m.f[5 ] * m.f[2 ] * m.f[11] - m.f[5 ] * m.f[3 ] * m.f[10] -
+               m.f[9 ] * m.f[2 ] * m.f[7 ] + m.f[9 ] * m.f[3 ] * m.f[6 ];
+    inv[4 ] = -m.f[4 ] * m.f[10] * m.f[15] + m.f[4 ] * m.f[11] * m.f[14] +
+               m.f[8 ] * m.f[6 ] * m.f[15] - m.f[8 ] * m.f[7 ] * m.f[14] -
+               m.f[12] * m.f[6 ] * m.f[11] + m.f[12] * m.f[7 ] * m.f[10];
+    inv[5 ] =  m.f[0 ] * m.f[10] * m.f[15] - m.f[0 ] * m.f[11] * m.f[14] -
+               m.f[8 ] * m.f[2 ] * m.f[15] + m.f[8 ] * m.f[3 ] * m.f[14] +
+               m.f[12] * m.f[2 ] * m.f[11] - m.f[12] * m.f[3 ] * m.f[10];
+    inv[6 ] = -m.f[0 ] * m.f[6 ] * m.f[15] + m.f[0 ] * m.f[7 ] * m.f[14] +
+               m.f[4 ] * m.f[2 ] * m.f[15] - m.f[4 ] * m.f[3 ] * m.f[14] -
+               m.f[12] * m.f[2 ] * m.f[7 ] + m.f[12] * m.f[3 ] * m.f[6 ];
+    inv[7 ] =  m.f[0 ] * m.f[6 ] * m.f[11] - m.f[0 ] * m.f[7 ] * m.f[10] -
+               m.f[4 ] * m.f[2 ] * m.f[11] + m.f[4 ] * m.f[3 ] * m.f[10] +
+               m.f[8 ] * m.f[2 ] * m.f[7 ] - m.f[8 ] * m.f[3 ] * m.f[6 ];
+    inv[8 ] =  m.f[4 ] * m.f[9 ] * m.f[15] - m.f[4 ] * m.f[11] * m.f[13] -
+               m.f[8 ] * m.f[5 ] * m.f[15] + m.f[8 ] * m.f[7 ] * m.f[13] +
+               m.f[12] * m.f[5 ] * m.f[11] - m.f[12] * m.f[7 ] * m.f[9 ];
+    inv[9 ] = -m.f[0 ] * m.f[9 ] * m.f[15] + m.f[0 ] * m.f[11] * m.f[13] +
+               m.f[8 ] * m.f[1 ] * m.f[15] - m.f[8 ] * m.f[3 ] * m.f[13] -
+               m.f[12] * m.f[1 ] * m.f[11] + m.f[12] * m.f[3 ] * m.f[9 ];
+    inv[10] =  m.f[0 ] * m.f[5 ] * m.f[15] - m.f[0 ] * m.f[7 ] * m.f[13] -
+               m.f[4 ] * m.f[1 ] * m.f[15] + m.f[4 ] * m.f[3 ] * m.f[13] +
+               m.f[12] * m.f[1 ] * m.f[7 ] - m.f[12] * m.f[3 ] * m.f[5 ];
+    inv[11] = -m.f[0 ] * m.f[5 ] * m.f[11] + m.f[0 ] * m.f[7 ] * m.f[9 ] +
+               m.f[4 ] * m.f[1 ] * m.f[11] - m.f[4 ] * m.f[3 ] * m.f[9 ] -
+               m.f[8 ] * m.f[1 ] * m.f[7 ] + m.f[8 ] * m.f[3 ] * m.f[5 ];
+    inv[12] = -m.f[4 ] * m.f[9 ] * m.f[14] + m.f[4 ] * m.f[10] * m.f[13] +
+               m.f[8 ] * m.f[5 ] * m.f[14] - m.f[8 ] * m.f[6 ] * m.f[13] -
+               m.f[12] * m.f[5 ] * m.f[10] + m.f[12] * m.f[6 ] * m.f[9 ];
+    inv[13] =  m.f[0 ] * m.f[9 ] * m.f[14] - m.f[0 ] * m.f[10] * m.f[13] -
+               m.f[8 ] * m.f[1 ] * m.f[14] + m.f[8 ] * m.f[2 ] * m.f[13] +
+               m.f[12] * m.f[1 ] * m.f[10] - m.f[12] * m.f[2 ] * m.f[9 ];
+    inv[14] = -m.f[0 ] * m.f[5 ] * m.f[14] + m.f[0 ] * m.f[6 ] * m.f[13] +
+               m.f[4 ] * m.f[1 ] * m.f[14] - m.f[4 ] * m.f[2 ] * m.f[13] -
+               m.f[12] * m.f[1 ] * m.f[6 ] + m.f[12] * m.f[2 ] * m.f[5 ];
+    inv[15] =  m.f[0 ] * m.f[5 ] * m.f[10] - m.f[0 ] * m.f[6 ] * m.f[9 ] -
+               m.f[4 ] * m.f[1 ] * m.f[10] + m.f[4 ] * m.f[2 ] * m.f[9 ] +
+               m.f[8 ] * m.f[1 ] * m.f[6 ] - m.f[8 ] * m.f[2 ] * m.f[5 ];
+
+    det = m.f[0] * inv[0] + m.f[1] * inv[4] + m.f[2] * inv[8] + m.f[3] * inv[12];
+
+    return Matrix(inv[0 ], inv[1 ], inv[2 ], inv[3 ],
+                  inv[4 ], inv[5 ], inv[6 ], inv[7 ],
+                  inv[8 ], inv[9 ], inv[10], inv[11],
+                  inv[12], inv[13], inv[14], inv[15]) / det;
+
+#endif  // NFE_USE_SSE
 }
 
 Matrix Matrix::operator* (const Matrix& b) const
