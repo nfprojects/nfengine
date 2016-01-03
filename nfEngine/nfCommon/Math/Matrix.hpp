@@ -67,37 +67,85 @@ public:
         r[3] = r3;
     }
 
+    /**
+     * Create matrix from element values.
+     */
+    NFE_INLINE Matrix(float e0, float e1, float e2, float e3,
+                      float e4, float e5, float e6, float e7,
+                      float e8, float e9, float e10, float e11,
+                      float e12, float e13, float e14, float e15)
+    {
+        f[0] = e0;
+        f[1] = e1;
+        f[2] = e2;
+        f[3] = e3;
+        f[4] = e4;
+        f[5] = e5;
+        f[6] = e6;
+        f[7] = e7;
+        f[8] = e8;
+        f[9] = e9;
+        f[10] = e10;
+        f[11] = e11;
+        f[12] = e12;
+        f[13] = e13;
+        f[14] = e14;
+        f[15] = e15;
+    }
+
     NFE_INLINE Matrix operator+ (const Matrix& b) const
     {
-        return Matrix(_mm_add_ps(r[0], b.r[0]),
-                      _mm_add_ps(r[1], b.r[1]),
-                      _mm_add_ps(r[2], b.r[2]),
-                      _mm_add_ps(r[3], b.r[3]));
+        return Matrix(r[0] + b.r[0], r[1] + b.r[1], r[2] + b.r[2], r[3] + b.r[3]);
     }
 
     NFE_INLINE Matrix operator- (const Matrix& b) const
     {
-        return Matrix(_mm_sub_ps(r[0], b.r[0]),
-                      _mm_sub_ps(r[1], b.r[1]),
-                      _mm_sub_ps(r[2], b.r[2]),
-                      _mm_sub_ps(r[3], b.r[3]));
+        return Matrix(r[0] - b.r[0], r[1] - b.r[1], r[2] - b.r[2], r[3] - b.r[3]);
     }
 
     NFE_INLINE Matrix& operator+= (const Matrix& b)
     {
-        r[0] = _mm_add_ps(r[0], b.r[0]);
-        r[1] = _mm_add_ps(r[1], b.r[1]);
-        r[2] = _mm_add_ps(r[2], b.r[2]);
-        r[3] = _mm_add_ps(r[3], b.r[3]);
+        r[0] += b.r[0];
+        r[1] += b.r[1];
+        r[2] += b.r[2];
+        r[3] += b.r[3];
         return *this;
     }
 
     NFE_INLINE Matrix& operator-= (const Matrix& b)
     {
-        r[0] = _mm_sub_ps(r[0], b.r[0]);
-        r[1] = _mm_sub_ps(r[1], b.r[1]);
-        r[2] = _mm_sub_ps(r[2], b.r[2]);
-        r[3] = _mm_sub_ps(r[3], b.r[3]);
+        r[0] -= b.r[0];
+        r[1] -= b.r[1];
+        r[2] -= b.r[2];
+        r[3] -= b.r[3];
+        return *this;
+    }
+
+    NFE_INLINE Matrix operator* (float b) const
+    {
+        return Matrix(r[0] * b, r[1] * b, r[2] * b, r[3] * b);
+    }
+
+    NFE_INLINE Matrix operator/ (float b) const
+    {
+        return Matrix(r[0] / b, r[1] / b, r[2] / b, r[3] / b);
+    }
+
+    NFE_INLINE Matrix& operator*= (float b)
+    {
+        r[0] *= b;
+        r[1] *= b;
+        r[2] *= b;
+        r[3] *= b;
+        return *this;
+    }
+
+    NFE_INLINE Matrix& operator/= (float b)
+    {
+        r[0] /= b;
+        r[1] /= b;
+        r[2] /= b;
+        r[3] /= b;
         return *this;
     }
 
@@ -109,11 +157,11 @@ public:
      */
     NFE_INLINE bool operator== (const Matrix& b) const
     {
-        int tmp0 = _mm_movemask_ps(_mm_cmpeq_ps(r[0], b.r[0]));
-        int tmp1 = _mm_movemask_ps(_mm_cmpeq_ps(r[1], b.r[1]));
-        int tmp2 = _mm_movemask_ps(_mm_cmpeq_ps(r[2], b.r[2]));
-        int tmp3 = _mm_movemask_ps(_mm_cmpeq_ps(r[3], b.r[3]));
-        return ((tmp0 & tmp1) & (tmp2 & tmp3)) == 0xF;
+        int tmp0 = r[0] == b.r[0];
+        int tmp1 = r[1] == b.r[1];
+        int tmp2 = r[2] == b.r[2];
+        int tmp3 = r[3] == b.r[3];
+        return (tmp0 && tmp1) & (tmp2 && tmp3);
     }
 };
 
@@ -167,10 +215,10 @@ NFCOMMON_API Matrix MatrixLookTo(const Vector& eyePosition, const Vector& eyeDir
  */
 NFE_INLINE Vector LinearCombination(const Vector& a, const Matrix& m)
 {
-    Vector tmp0 = _mm_mul_ps(_mm_shuffle_ps(a, a, _MM_SHUFFLE(0, 0, 0, 0)), m[0]);
-    Vector tmp1 = _mm_mul_ps(_mm_shuffle_ps(a, a, _MM_SHUFFLE(1, 1, 1, 1)), m[1]);
-    Vector tmp2 = _mm_mul_ps(_mm_shuffle_ps(a, a, _MM_SHUFFLE(2, 2, 2, 2)), m[2]);
-    Vector tmp3 = _mm_mul_ps(_mm_shuffle_ps(a, a, _MM_SHUFFLE(3, 3, 3, 3)), m[3]);
+    Vector tmp0 = a.SplatX() * m.r[0];
+    Vector tmp1 = a.SplatY() * m.r[1];
+    Vector tmp2 = a.SplatZ() * m.r[2];
+    Vector tmp3 = a.SplatW() * m.r[3];
     return (tmp0 + tmp1) + (tmp2 + tmp3);
 }
 
@@ -188,26 +236,10 @@ NFE_INLINE Vector operator* (const Vector& a, const Matrix& m)
  */
 NFE_INLINE Vector LinearCombination3(const Vector& a, const Matrix& m)
 {
-    Vector tmp0 = _mm_mul_ps(_mm_shuffle_ps(a, a, _MM_SHUFFLE(0, 0, 0, 0)), m[0]);
-    Vector tmp1 = _mm_mul_ps(_mm_shuffle_ps(a, a, _MM_SHUFFLE(1, 1, 1, 1)), m[1]);
-    Vector tmp2 = _mm_mul_ps(_mm_shuffle_ps(a, a, _MM_SHUFFLE(2, 2, 2, 2)), m[2]);
+    Vector tmp0 = a.SplatX() * m.r[0];
+    Vector tmp1 = a.SplatY() * m.r[1];
+    Vector tmp2 = a.SplatZ() * m.r[2];
     return (tmp0 + tmp1) + (tmp2 + m[3]);
-}
-
-/**
- * Calculate transpose matrix.
- */
-NFE_INLINE Matrix MatrixTranspose(const Matrix& m)
-{
-    Vector tmp0 = _mm_shuffle_ps(m[0], m[1], 0x44);
-    Vector tmp2 = _mm_shuffle_ps(m[0], m[1], 0xEE);
-    Vector tmp1 = _mm_shuffle_ps(m[2], m[3], 0x44);
-    Vector tmp3 = _mm_shuffle_ps(m[2], m[3], 0xEE);
-
-    return Matrix(_mm_shuffle_ps(tmp0, tmp1, 0x88),
-                  _mm_shuffle_ps(tmp0, tmp1, 0xDD),
-                  _mm_shuffle_ps(tmp2, tmp3, 0x88),
-                  _mm_shuffle_ps(tmp2, tmp3, 0xDD));
 }
 
 /**
@@ -232,7 +264,6 @@ NFE_INLINE bool MatrixEqual(const Matrix& m1, const Matrix& m2, float epsilon)
            ((diff[2] < epsilonV) && (diff[3] < epsilonV));
 }
 
-
 /**
  * Create matrix representing a translation by 3D vector.
  */
@@ -246,5 +277,18 @@ NFE_INLINE Matrix MatrixTranslation3(const Vector& pos)
     return m;
 }
 
+/**
+* Calculate transpose matrix.
+*/
+NFE_INLINE Matrix MatrixTranspose(const Matrix& m);
+
 } // namespace Math
 } // namespace NFE
+
+
+// include architecture-specific implementations
+#ifdef NFE_USE_SSE
+#include "SSE/Matrix.hpp"
+#else
+#include "FPU/Matrix.hpp"
+#endif
