@@ -223,6 +223,7 @@ popd</Command>
     <ClInclude Include="LoggerBackends\BackendHTML.hpp" />
     <ClInclude Include="LoggerBackends\Win\BackendWindowsDebugger.hpp" />
     <ClInclude Include="Math\Box.hpp" />
+    <ClInclude Include="Math\FPU\Matrix.hpp" />
     <ClInclude Include="Math\FPU\Vector.hpp" />
     <ClInclude Include="Math\Frustum.hpp" />
     <ClInclude Include="Math\Geometry.hpp" />
@@ -232,6 +233,7 @@ popd</Command>
     <ClInclude Include="Math\Random.hpp" />
     <ClInclude Include="Math\Ray.hpp" />
     <ClInclude Include="Math\Sphere.hpp" />
+    <ClInclude Include="Math\SSE\Matrix.hpp" />
     <ClInclude Include="Math\SSE\Vector.hpp" />
     <ClInclude Include="Math\Triangle.hpp" />
     <ClInclude Include="Math\Vector.hpp" />
@@ -329,6 +331,12 @@ popd</Command>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Math\FPU\MatrixFPU.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Math\Frustum.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
@@ -370,6 +378,12 @@ popd</Command>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Math\SSE\MatrixSSE.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="MD5.cpp" />
     <ClCompile Include="Memory.cpp">
