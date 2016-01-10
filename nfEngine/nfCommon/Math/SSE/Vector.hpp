@@ -156,6 +156,16 @@ Vector VectorSplat(float f)
     return _mm_set_ps1(f);
 }
 
+Vector VectorSelectBySign(const Vector& a, const Vector& b, const Vector& sel)
+{
+#if defined(NFE_USE_SSE4)
+    return _mm_blendv_ps(a, b, sel);
+#else
+    Vector mask = _mm_cmplt_ps(sel, _mm_setzero_ps());
+    return _mm_xor_ps(a, _mm_and_ps(mask, _mm_xor_ps(b, a)));
+#endif
+}
+
 // Logical operations =============================================================================
 
 Vector Vector::operator& (const Vector& b) const
@@ -357,6 +367,72 @@ int VectorNotEqualMask(const Vector& v1, const Vector& v2)
 {
     return _mm_movemask_ps(_mm_cmpneq_ps(v1, v2));
 }
+
+// 2D vector comparison functions =================================================================
+
+bool VectorEqual2(const Vector& v1, const Vector& v2)
+{
+    return (_mm_movemask_ps(_mm_cmpeq_ps(v1, v2)) & 0x3) == 0x3;
+}
+
+bool VectorLess2(const Vector& v1, const Vector& v2)
+{
+    return (_mm_movemask_ps(_mm_cmplt_ps(v1, v2)) & 0x3) == 0x3;
+}
+
+bool VectorLessEq2(const Vector& v1, const Vector& v2)
+{
+    return (_mm_movemask_ps(_mm_cmple_ps(v1, v2)) & 0x3) == 0x3;
+}
+
+bool VectorGreater2(const Vector& v1, const Vector& v2)
+{
+    return (_mm_movemask_ps(_mm_cmpgt_ps(v1, v2)) & 0x3) == 0x3;
+}
+
+bool VectorGreaterEq2(const Vector& v1, const Vector& v2)
+{
+    return (_mm_movemask_ps(_mm_cmpge_ps(v1, v2)) & 0x3) == 0x3;
+}
+
+bool VectorNotEqual2(const Vector& v1, const Vector& v2)
+{
+    return (_mm_movemask_ps(_mm_cmpneq_ps(v1, v2)) & 0x3) == 0x3;
+}
+
+// 3D vector comparison functions =================================================================
+
+bool VectorEqual3(const Vector& v1, const Vector& v2)
+{
+    return (_mm_movemask_ps(_mm_cmpeq_ps(v1, v2)) & 0x7) == 0x7;
+}
+
+bool VectorLess3(const Vector& v1, const Vector& v2)
+{
+    return (_mm_movemask_ps(_mm_cmplt_ps(v1, v2)) & 0x7) == 0x7;
+}
+
+bool VectorLessEq3(const Vector& v1, const Vector& v2)
+{
+    return (_mm_movemask_ps(_mm_cmple_ps(v1, v2)) & 0x7) == 0x7;
+}
+
+bool VectorGreater3(const Vector& v1, const Vector& v2)
+{
+    return (_mm_movemask_ps(_mm_cmpgt_ps(v1, v2)) & 0x7) == 0x7;
+}
+
+bool VectorGreaterEq3(const Vector& v1, const Vector& v2)
+{
+    return (_mm_movemask_ps(_mm_cmpge_ps(v1, v2)) & 0x7) == 0x7;
+}
+
+bool VectorNotEqual3(const Vector& v1, const Vector& v2)
+{
+    return (_mm_movemask_ps(_mm_cmpneq_ps(v1, v2)) & 0x7) == 0x7;
+}
+
+// 4D vector comparison functions =================================================================
 
 bool Vector::operator== (const Vector& b) const
 {
