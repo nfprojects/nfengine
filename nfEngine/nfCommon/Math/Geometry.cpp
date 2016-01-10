@@ -11,9 +11,6 @@
 #include "Frustum.hpp"
 #include "Triangle.hpp"
 
-// TODO: remove after porting Geometry module to non-SSE version
-#include <smmintrin.h>
-
 namespace NFE {
 namespace Math {
 
@@ -40,24 +37,44 @@ float ClosestPointOnSegment(const Vector& p, const Vector& p1, const Vector& p2,
 template<> NFCOMMON_API
 bool Intersect(const Box& box1, const Box& box2)
 {
-    __m128 vTemp = _mm_cmpge_ps(box1.min, box2.max);
-    if (_mm_movemask_ps(vTemp) & 7)
-        return false;
-
-    vTemp = _mm_cmpge_ps(box2.min, box1.max);
-    if (_mm_movemask_ps(vTemp) & 7)
-        return false;
-
-    return true;
+#ifdef NFE_USE_SSE
+    Vector temp0 = _mm_cmpge_ps(box1.min, box2.max);
+    Vector temp1 = _mm_cmpge_ps(box2.min, box1.max);
+    return (_mm_movemask_ps(_mm_or_ps(temp0, temp1)) & 7) == 0;
+#else
+    return VectorLess3(box1.min, box2.max) && VectorLess3(box2.min, box1.max);
+#endif
 }
 
 // Box-point intersection test
 template<> NFCOMMON_API
 bool Intersect(const Box& box, const Vector& point)
 {
+#ifdef NFE_USE_SSE
     Vector cmpMax = _mm_cmpge_ps(box.max, point);
     Vector cmpMin = _mm_cmpge_ps(point, box.min);
     return (_mm_movemask_ps(_mm_and_ps(cmpMax, cmpMin)) & 7) == 7;
+#else
+    return VectorGreaterEq3(box.max, point) && VectorGreaterEq3(point, box.min);
+#endif
+}
+
+
+NFE_INLINE Vector VectorSelectBySign(const Vector& a, const Vector& b, const Vector& sel)
+{
+#if defined(NFE_USE_SSE4)
+    return _mm_blendv_ps(a, b, sel);
+#elif defined(NFE_USE_SSE)
+    Vector mask = _mm_cmplt_ps(sel, _mm_setzero_ps());
+    return _mm_xor_ps(a, _mm_and_ps(mask, _mm_xor_ps(b, a)));
+#else // FPU only
+    Vector ret;
+    ret[0] = sel[0] > 0.0f ? a[0] : b[0];
+    ret[1] = sel[1] > 0.0f ? a[1] : b[1];
+    ret[2] = sel[2] > 0.0f ? a[2] : b[2];
+    ret[3] = sel[3] > 0.0f ? a[3] : b[3];
+    return ret;
+#endif
 }
 
 // Box-frustum intersection test
@@ -69,8 +86,8 @@ bool Intersect(const Box& box, const Frustum& frustum)
     int minMask = 0x7;
     for (int i = 0; i < 8; i++)
     {
-        maxMask &= _mm_movemask_ps(_mm_cmpgt_ps(frustum.verticies[i], box.max));
-        minMask &= _mm_movemask_ps(_mm_cmplt_ps(frustum.verticies[i], box.min));
+        maxMask &= VectorGreaterMask(frustum.verticies[i], box.max);
+        minMask &= VectorLessMask(frustum.verticies[i], box.min);
     }
 
     if (maxMask | minMask)
@@ -79,12 +96,9 @@ bool Intersect(const Box& box, const Frustum& frustum)
     // test frustum planes against box vertices
     for (int i = 0; i < 6; i++)
     {
-        // SSE4 version
-        __m128 plane = frustum.planes[i];
-        __m128 vmax = _mm_blendv_ps(box.max, box.min, plane);
-        __m128 dot = _mm_dp_ps(vmax, plane, 0x71);
-        dot = _mm_add_ss(dot, _mm_shuffle_ps(plane, plane, _MM_SHUFFLE(3, 3, 3, 3)));
-        if (_mm_comilt_ss(dot, _mm_setzero_ps()))
+        Vector plane = frustum.planes[i];
+        Vector vmax = VectorSelectBySign(box.max, box.min, plane);
+        if (!PlanePointSide(plane, vmax))
             return false;
     }
 
@@ -107,8 +121,8 @@ IntersectionResult IntersectEx(const Box& box, const Frustum& frustum)
     int minMask = 0x7;
     for (int i = 0; i < 8; i++)
     {
-        maxMask &= _mm_movemask_ps(_mm_cmpgt_ps(frustum.verticies[i], box.max));
-        minMask &= _mm_movemask_ps(_mm_cmplt_ps(frustum.verticies[i], box.min));
+        maxMask &= VectorGreaterMask(frustum.verticies[i], box.max);
+        minMask &= VectorLessMask(frustum.verticies[i], box.min);
     }
 
     if (maxMask | minMask)
@@ -117,18 +131,15 @@ IntersectionResult IntersectEx(const Box& box, const Frustum& frustum)
     // test frustum planes against box vertices
     for (int i = 0; i < 6; i++)
     {
-        __m128 plane = frustum.planes[i];
-        __m128 vmax = _mm_blendv_ps(box.max, box.min, plane);
-        __m128 vmin = _mm_blendv_ps(box.min, box.max, plane);
+        Vector plane = frustum.planes[i];
+        Vector vmax = VectorSelectBySign(box.max, box.min, plane);
+        Vector vmin = VectorSelectBySign(box.min, box.max, plane);
 
-        __m128 dot = _mm_dp_ps(vmax, plane, 0x71);
-        dot = _mm_add_ss(dot, _mm_shuffle_ps(plane, plane, _MM_SHUFFLE(3, 3, 3, 3)));
-        if (_mm_comilt_ss(dot, _mm_setzero_ps()))
+        if (!PlanePointSide(plane, vmax))
             return IntersectionResult::Outside;
 
-        dot = _mm_dp_ps(vmin, plane, 0x71);
-        dot = _mm_add_ss(dot, _mm_shuffle_ps(plane, plane, _MM_SHUFFLE(3, 3, 3, 3)));
-        numPlanes += _mm_comilt_ss(dot, _mm_setzero_ps());
+        if (!PlanePointSide(plane, vmin))
+            numPlanes++;
     }
 
     return (numPlanes == 6) ? IntersectionResult::Inside : IntersectionResult::Intersect;
@@ -219,18 +230,17 @@ bool Intersect(const Triangle& tri, const Frustum& frustum)
 template<> NFCOMMON_API
 bool Intersect(const Vector& point, const Sphere& sphere)
 {
-    __m128 segment = point - sphere.origin;
-    __m128 radiiSum = _mm_set_ps1(sphere.r);
-    return _mm_comile_ss(VectorDot3(segment, segment), _mm_mul_ss(radiiSum, radiiSum)) != 0;
+    Vector segment = point - sphere.origin;
+    return VectorDot3f(segment, segment) <= sphere.r * sphere.r;
 }
 
 // Sphere-sphere intersection test
 template<> NFCOMMON_API
 bool Intersect(const Sphere& sphere1, const Sphere& sphere2)
 {
-    __m128 segment = sphere1.origin - sphere2.origin;
-    __m128 radiiSum = _mm_set_ps1(sphere1.r + sphere2.r);
-    return _mm_comile_ss(VectorDot3(segment, segment), _mm_mul_ss(radiiSum, radiiSum)) != 0;
+    Vector segment = sphere1.origin - sphere2.origin;
+    float radiiSum = sphere1.r + sphere2.r;
+    return VectorDot3f(segment, segment) <= radiiSum * radiiSum;
 }
 
 // Box-sphere intersection test

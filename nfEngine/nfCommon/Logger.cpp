@@ -50,6 +50,15 @@ Logger::Logger()
 
     mInitialized = true;
     LOG_INFO("nfCommon build date: " __DATE__ ", " __TIME__);
+
+#ifdef NFE_USE_SSE
+    LOG_INFO("nfCommon built with SSE instructions");
+#endif
+
+#ifdef NFE_USE_SSE4
+    LOG_INFO("nfCommon built with SSE4.1 instructions");
+#endif
+
     LogRunTime();
 }
 

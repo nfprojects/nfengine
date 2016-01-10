@@ -73,16 +73,25 @@ void Frustum::CalculatePlanes()
 
 float Frustum::SupportVertex(const Vector& dir) const
 {
+#ifdef NFE_USE_SSE
     Vector d = VectorDot3(dir, verticies[0]);
-
     for (int i = 1; i < 8; i++)
     {
         Vector tmp_d = VectorDot3(dir, verticies[i]);
         if (_mm_comigt_ss(tmp_d, d))
             d = tmp_d;
     }
-
     return d.f[0];
+#else
+    float d = VectorDot3f(dir, verticies[0]);
+    for (int i = 1; i < 8; i++)
+    {
+        float tmp_d = VectorDot3f(dir, verticies[i]);
+        if (tmp_d > d)
+            d = tmp_d;
+    }
+    return d;
+#endif
 }
 
 void Frustum::Construct(const Vector& origin, const Vector& xAxis, const Vector& yAxis,
