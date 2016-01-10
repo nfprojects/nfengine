@@ -95,7 +95,7 @@ TEST(MathGeometry, RayTriangleIntersection)
     auto onTrianglePlane = [&tri](const Vector& p) -> bool
     {
         Vector plane = PlaneFromPoints(tri.v0, tri.v1, tri.v2);
-        float d = PlanePointDot3(plane, p).f[0];
+        float d = VectorDot3(plane, p).f[0] + plane.f[3];
         return fabsf(d) < NFE_MATH_EPSILON;
     };
 

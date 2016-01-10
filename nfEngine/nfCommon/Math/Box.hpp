@@ -57,10 +57,18 @@ Vector Box::GetVertex(int id) const
 
 Vector Box::SupportVertex(const Vector& dir) const
 {
+#ifdef NFE_USE_SSE
     __m128 compResult = _mm_cmpgt_ps(dir, _mm_setzero_ps());
     __m128 selMax = _mm_and_ps(compResult, max);
     __m128 selMin = _mm_andnot_ps(compResult, min);
     return _mm_or_ps(selMin, selMax);
+#else
+    Vector v;
+    v.f[0] = dir.f[0] > 0.0f ? max.f[0] : min.f[0];
+    v.f[1] = dir.f[1] > 0.0f ? max.f[1] : min.f[1];
+    v.f[2] = dir.f[2] > 0.0f ? max.f[2] : min.f[2];
+    return v;
+#endif
 }
 
 void Box::MakeFromPoints(const Vector* pPoints, int number)
