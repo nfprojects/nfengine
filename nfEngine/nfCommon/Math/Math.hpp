@@ -9,22 +9,16 @@
 #include "../nfCommon.hpp"
 #include <math.h>
 
-/// TODO: SSE version should be defined by CMake or VS project.
-#define NFE_USE_SSE
-// #define NFE_USE_SSE4
-
-// TODO: remove comments when whole Math library is ported to non-SSE version
-// #ifdef NFE_USE_SSE
+#ifdef NFE_USE_SSE
 #include <xmmintrin.h>
-// #endif
-
-#ifdef NFE_USE_SSE2
-#include <emmintrin.h>
-#endif
+#endif // NFE_USE_SSE
 
 #ifdef NFE_USE_SSE4
+    #ifndef NFE_USE_SSE
+        #error "SSE must be enabled when using SSE4"
+    #endif // NFE_USE_SSE
 #include <smmintrin.h>
-#endif
+#endif // NFE_USE_SSE4
 
 #define NFE_MATH_EPSILON (0.000001f)
 #define NFE_MATH_PI (3.14159265359f)
