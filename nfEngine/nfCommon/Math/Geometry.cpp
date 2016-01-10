@@ -41,30 +41,34 @@ float ClosestPointOnSegment(const Vector& p, const Vector& p1, const Vector& p2,
 template<> NFCOMMON_API
 bool Intersect(const Box& box1, const Box& box2)
 {
-    __m128 vTemp = _mm_cmpge_ps(box1.min, box2.max);
-    if (_mm_movemask_ps(vTemp) & 7)
-        return false;
-
-    vTemp = _mm_cmpge_ps(box2.min, box1.max);
-    if (_mm_movemask_ps(vTemp) & 7)
-        return false;
-
-    return true;
+#ifdef NFE_USE_SSE
+    Vector temp0 = _mm_cmpge_ps(box1.min, box2.max);
+    Vector temp1 = _mm_cmpge_ps(box2.min, box1.max);
+    return (_mm_movemask_ps(_mm_or_ps(temp0, temp1)) & 7) == 0;
+#else
+    return VectorLess3(box1.min, box2.max) && VectorLess3(box2.min, box1.max);
+#endif
 }
 
 // Box-point intersection test
 template<> NFCOMMON_API
 bool Intersect(const Box& box, const Vector& point)
 {
+#ifdef NFE_USE_SSE
     Vector cmpMax = _mm_cmpge_ps(box.max, point);
     Vector cmpMin = _mm_cmpge_ps(point, box.min);
     return (_mm_movemask_ps(_mm_and_ps(cmpMax, cmpMin)) & 7) == 7;
+#else
+    return VectorGreaterEq3(box.max, point) && VectorGreaterEq3(point, box.min);
+#endif
 }
 
 // Box-frustum intersection test
 template<> NFCOMMON_API
 bool Intersect(const Box& box, const Frustum& frustum)
 {
+    // TODO: non-SSE
+
     // test frustum vertices against box planes
     int maxMask = 0x7;
     int minMask = 0x7;
@@ -102,6 +106,8 @@ template<> NFCOMMON_API
 IntersectionResult IntersectEx(const Box& box, const Frustum& frustum)
 {
     int numPlanes = 0;
+
+    // TODO: non-SSE
 
     // test frustum vertices against box planes
     int maxMask = 0x7;
@@ -220,20 +226,22 @@ bool Intersect(const Triangle& tri, const Frustum& frustum)
 template<> NFCOMMON_API
 bool Intersect(const Box& box, const Ray& ray)
 {
-    __m128 lmin, lmax, tmp1, tmp2;
-    tmp1 = _mm_sub_ps(box.min, ray.origin);
-    tmp2 = _mm_sub_ps(box.max, ray.origin);
-    tmp1 = _mm_mul_ps(tmp1, ray.invDir);
-    tmp2 = _mm_mul_ps(tmp2, ray.invDir);
-    lmin = _mm_min_ps(tmp1, tmp2);
-    lmax = _mm_max_ps(tmp1, tmp2);
+    // TODO: non-SSE
 
-    __m128 lx = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(0, 0, 0, 0));
-    __m128 ly = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(1, 1, 1, 1));
-    __m128 lz = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(2, 2, 2, 2));
+    Vector lmin, lmax, tmp1, tmp2;
+    tmp1 = box.min - ray.origin;
+    tmp2 = box.max - ray.origin;
+    tmp1 = tmp1 * ray.invDir;
+    tmp2 = tmp2 * ray.invDir;
+    lmin = VectorMin(tmp1, tmp2);
+    lmax = VectorMax(tmp1, tmp2);
 
-    lmin = _mm_max_ps(lx, _mm_max_ps(ly, lz));
-    lmax = _mm_min_ps(lx, _mm_min_ps(ly, lz));
+    Vector lx = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(0, 0, 0, 0));
+    Vector ly = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(1, 1, 1, 1));
+    Vector lz = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(2, 2, 2, 2));
+
+    lmin = VectorMax(lx, VectorMax(ly, lz));
+    lmax = VectorMin(lx, VectorMin(ly, lz));
     lmax = _mm_shuffle_ps(lmax, lmax, _MM_SHUFFLE(2, 2, 2, 2));
     lmin = _mm_shuffle_ps(lmin, _mm_setzero_ps(), _MM_SHUFFLE(0, 0, 0, 0));
 
@@ -244,6 +252,8 @@ bool Intersect(const Box& box, const Ray& ray)
 template<> NFCOMMON_API
 bool Intersect(const Ray& ray, const Triangle& tri, Vector& dist)
 {
+    // TODO: non-SSE
+
     Vector edge0 = tri.v1 - tri.v0;
     Vector edge1 = tri.v2 - tri.v0;
 
@@ -274,8 +284,10 @@ bool Intersect(const Ray& ray, const Triangle& tri, Vector& dist)
 template<> NFCOMMON_API
 bool Intersect(const Vector& point, const Sphere& sphere)
 {
-    __m128 segment = point - sphere.origin;
-    __m128 radiiSum = _mm_set_ps1(sphere.r);
+    // TODO: non-SSE
+
+    Vector segment = point - sphere.origin;
+    Vector radiiSum = VectorSplat(sphere.r);
     return _mm_comile_ss(VectorDot3(segment, segment), _mm_mul_ss(radiiSum, radiiSum)) != 0;
 }
 
@@ -283,8 +295,10 @@ bool Intersect(const Vector& point, const Sphere& sphere)
 template<> NFCOMMON_API
 bool Intersect(const Sphere& sphere1, const Sphere& sphere2)
 {
-    __m128 segment = sphere1.origin - sphere2.origin;
-    __m128 radiiSum = _mm_set_ps1(sphere1.r + sphere2.r);
+    // TODO: non-SSE
+
+    Vector segment = sphere1.origin - sphere2.origin;
+    Vector radiiSum = VectorSplat(sphere1.r + sphere2.r);
     return _mm_comile_ss(VectorDot3(segment, segment), _mm_mul_ss(radiiSum, radiiSum)) != 0;
 }
 
