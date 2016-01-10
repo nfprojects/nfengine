@@ -35,8 +35,19 @@ SET(NFCOMMONPERFTEST_DIRECTORY ${NFE_ROOT_DIRECTORY}/nfEngine/nfCommonPerfTest)
 SET(RENDERERS_DIRECTORY ${NFE_ROOT_DIRECTORY}/nfEngine/Renderers)
 SET(NFRENDEREROGL4_DIRECTORY ${RENDERERS_DIRECTORY}/nfRendererOGL4)
 
-# Enable SSE4.1 instructions
-ADD_DEFINITIONS("-msse4.1")
+# TODO: available SIMD instructions should be detected automatically
+SET(CMAKE_BUILD_USE_SSE "TRUE")
+SET(CMAKE_BUILD_USE_SSE4 "TRUE")
+
+IF(DEFINED CMAKE_BUILD_USE_SSE)
+    MESSAGE("Using SSE instructions")
+    ADD_DEFINITIONS("-msse -DNFE_USE_SSE")
+ENDIF(DEFINED CMAKE_BUILD_USE_SSE)
+
+IF(DEFINED CMAKE_BUILD_USE_SSE4)
+    MESSAGE("Using SSE4.1 instructions")
+    ADD_DEFINITIONS("-msse4.1 -DNFE_USE_SSE4")
+ENDIF(DEFINED CMAKE_BUILD_USE_SSE4)
 
 # Enable all warnings and make them errors
 ADD_DEFINITIONS("-Wall -Wpedantic -Wextra -Wno-sign-compare -Werror")

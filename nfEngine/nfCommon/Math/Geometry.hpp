@@ -51,3 +51,10 @@ bool Intersect(const Ray& ray, const ShapeType& shape, Vector& dist);
 
 } // namespace Math
 } // namespace NFE
+
+
+#ifdef NFE_USE_SSE
+#include "SSE/RayGeometry.hpp"
+#else
+#include "FPU/RayGeometry.hpp"
+#endif

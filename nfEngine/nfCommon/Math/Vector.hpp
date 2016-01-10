@@ -27,10 +27,12 @@ struct NFE_ALIGN16 Vector
         int i[4];
         unsigned int u[4];
 
-        // TODO: remove when NFE_USE_SSE is not defined
+#ifdef NFE_USE_SSE
         __m128 v;
+#endif
     };
 
+#ifdef NFE_USE_SSE
     /// conversion to/from SSE types
     NFE_INLINE operator __m128() const
     {
@@ -48,6 +50,7 @@ struct NFE_ALIGN16 Vector
     {
         v = src;
     }
+#endif
 
     /// constructors
     NFE_INLINE Vector();
@@ -115,11 +118,12 @@ struct NFE_ALIGN16 Vectorf
     union
     {
         float f[4];
-
-        // TODO: remove when NFE_USE_SSE is not defined
+#ifdef NFE_USE_SSE
         __m128 v;
+#endif
     };
 
+#ifdef NFE_USE_SSE
     NFE_INLINE operator Vector() const
     {
         Vector temp;
@@ -139,16 +143,26 @@ struct NFE_ALIGN16 Vectorf
     {
         return reinterpret_cast<const __m128d*>(&v)[0];
     }
+#else
+    NFE_INLINE operator Vector() const
+    {
+        Vector temp;
+        temp.f[0] = f[0];
+        temp.f[1] = f[1];
+        temp.f[2] = f[2];
+        temp.f[3] = f[3];
+        return temp;
+    }
+#endif // NFE_USE_SSE
 };
 
 // used to initialize integer constants
 struct NFE_ALIGN16 Vectori
 {
+#ifdef NFE_USE_SSE
     union
     {
         unsigned int u[4];
-
-        // TODO: remove when NFE_USE_SSE is not defined
         __m128 v;
     };
 
@@ -171,6 +185,22 @@ struct NFE_ALIGN16 Vectori
     {
         return reinterpret_cast<const __m128d*>(&v)[0];
     }
+#else
+    union
+    {
+        unsigned int u[4];
+    };
+
+    NFE_INLINE operator Vector() const
+    {
+        Vector temp;
+        temp.u[0] = u[0];
+        temp.u[1] = u[1];
+        temp.u[2] = u[2];
+        temp.u[3] = u[3];
+        return temp;
+    }
+#endif
 };
 
 //
@@ -236,6 +266,25 @@ NFE_INLINE int VectorLessEqMask(const Vector& v1, const Vector& v2);
 NFE_INLINE int VectorGreaterMask(const Vector& v1, const Vector& v2);
 NFE_INLINE int VectorGreaterEqMask(const Vector& v1, const Vector& v2);
 NFE_INLINE int VectorNotEqualMask(const Vector& v1, const Vector& v2);
+
+NFE_INLINE bool VectorEqual2(const Vector& v1, const Vector& v2);
+NFE_INLINE bool VectorLess2(const Vector& v1, const Vector& v2);
+NFE_INLINE bool VectorLessEq2(const Vector& v1, const Vector& v2);
+NFE_INLINE bool VectorGreater2(const Vector& v1, const Vector& v2);
+NFE_INLINE bool VectorGreaterEq2(const Vector& v1, const Vector& v2);
+NFE_INLINE bool VectorNotEqual2(const Vector& v1, const Vector& v2);
+
+NFE_INLINE bool VectorEqual3(const Vector& v1, const Vector& v2);
+NFE_INLINE bool VectorLess3(const Vector& v1, const Vector& v2);
+NFE_INLINE bool VectorLessEq3(const Vector& v1, const Vector& v2);
+NFE_INLINE bool VectorGreater3(const Vector& v1, const Vector& v2);
+NFE_INLINE bool VectorGreaterEq3(const Vector& v1, const Vector& v2);
+NFE_INLINE bool VectorNotEqual3(const Vector& v1, const Vector& v2);
+
+/**
+ * For each vector component, copy value from "a" if "sel" > 0.0f, or from "b" otherwise.
+ */
+NFE_INLINE Vector VectorSelectBySign(const Vector& a, const Vector& b, const Vector& sel);
 
 /**
  * Calculate 3D dot product.

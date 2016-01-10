@@ -152,6 +152,16 @@ Vector VectorSplat(float f)
     return Vector(f, f, f, f);
 }
 
+Vector VectorSelectBySign(const Vector& a, const Vector& b, const Vector& sel)
+{
+    Vector ret;
+    ret[0] = sel[0] > 0.0f ? a[0] : b[0];
+    ret[1] = sel[1] > 0.0f ? a[1] : b[1];
+    ret[2] = sel[2] > 0.0f ? a[2] : b[2];
+    ret[3] = sel[3] > 0.0f ? a[3] : b[3];
+    return ret;
+}
+
 // Logical operations =============================================================================
 
 Vector Vector::operator& (const Vector& b) const
@@ -423,6 +433,72 @@ int VectorNotEqualMask(const Vector& v1, const Vector& v2)
     ret |= (v1.f[3] != v2.f[3]) ? (1 << 3) : 0;
     return ret;
 }
+
+// 2D vector comparison functions =================================================================
+
+bool VectorEqual2(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] == v2.f[0]) && (v1.f[1] == v2.f[1]);
+}
+
+bool VectorLess2(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] < v2.f[0]) && (v1.f[1] < v2.f[1]);
+}
+
+bool VectorLessEq2(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] <= v2.f[0]) && (v1.f[1] <= v2.f[1]);
+}
+
+bool VectorGreater2(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] > v2.f[0]) && (v1.f[1] > v2.f[1]);
+}
+
+bool VectorGreaterEq2(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] >= v2.f[0]) && (v1.f[1] >= v2.f[1]);
+}
+
+bool VectorNotEqual2(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] != v2.f[0]) && (v1.f[1] != v2.f[1]);
+}
+
+// 3D vector comparison functions =================================================================
+
+bool VectorEqual3(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] == v2.f[0]) && (v1.f[1] == v2.f[1]) && (v1.f[2] == v2.f[2]);
+}
+
+bool VectorLess3(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] < v2.f[0]) && (v1.f[1] < v2.f[1]) && (v1.f[2] < v2.f[2]);
+}
+
+bool VectorLessEq3(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] <= v2.f[0]) && (v1.f[1] <= v2.f[1]) && (v1.f[2] <= v2.f[2]);
+}
+
+bool VectorGreater3(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] > v2.f[0]) && (v1.f[1] > v2.f[1]) && (v1.f[2] > v2.f[2]);
+}
+
+bool VectorGreaterEq3(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] >= v2.f[0]) && (v1.f[1] >= v2.f[1]) && (v1.f[2] >= v2.f[2]);
+}
+
+bool VectorNotEqual3(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] != v2.f[0]) && (v1.f[1] != v2.f[1]) && (v1.f[2] != v2.f[2]);
+}
+
+// 4D vector comparison functions =================================================================
 
 bool Vector::operator== (const Vector& b) const
 {
