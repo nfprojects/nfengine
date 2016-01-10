@@ -237,6 +237,20 @@ NFE_INLINE int VectorGreaterMask(const Vector& v1, const Vector& v2);
 NFE_INLINE int VectorGreaterEqMask(const Vector& v1, const Vector& v2);
 NFE_INLINE int VectorNotEqualMask(const Vector& v1, const Vector& v2);
 
+NFE_INLINE bool VectorEqual2(const Vector& v1, const Vector& v2);
+NFE_INLINE bool VectorLess2(const Vector& v1, const Vector& v2);
+NFE_INLINE bool VectorLessEq2(const Vector& v1, const Vector& v2);
+NFE_INLINE bool VectorGreater2(const Vector& v1, const Vector& v2);
+NFE_INLINE bool VectorGreaterEq2(const Vector& v1, const Vector& v2);
+NFE_INLINE bool VectorNotEqual2(const Vector& v1, const Vector& v2);
+
+NFE_INLINE bool VectorEqual3(const Vector& v1, const Vector& v2);
+NFE_INLINE bool VectorLess3(const Vector& v1, const Vector& v2);
+NFE_INLINE bool VectorLessEq3(const Vector& v1, const Vector& v2);
+NFE_INLINE bool VectorGreater3(const Vector& v1, const Vector& v2);
+NFE_INLINE bool VectorGreaterEq3(const Vector& v1, const Vector& v2);
+NFE_INLINE bool VectorNotEqual3(const Vector& v1, const Vector& v2);
+
 /**
  * Calculate 3D dot product.
  * @return Dot product (scalar value).

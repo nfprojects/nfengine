@@ -416,6 +416,72 @@ int VectorNotEqualMask(const Vector& v1, const Vector& v2)
     return ret;
 }
 
+// 2D vector comparison functions =================================================================
+
+bool VectorEqual2(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] == v2.f[0]) && (v1.f[1] == v2.f[1]);
+}
+
+bool VectorLess2(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] < v2.f[0]) && (v1.f[1] < v2.f[1]);
+}
+
+bool VectorLessEq2(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] <= v2.f[0]) && (v1.f[1] <= v2.f[1]);
+}
+
+bool VectorGreater2(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] > v2.f[0]) && (v1.f[1] > v2.f[1]);
+}
+
+bool VectorGreaterEq2(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] >= v2.f[0]) && (v1.f[1] >= v2.f[1]);
+}
+
+bool VectorNotEqual2(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] != v2.f[0]) && (v1.f[1] != v2.f[1]);
+}
+
+// 3D vector comparison functions =================================================================
+
+bool VectorEqual3(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] == v2.f[0]) && (v1.f[1] == v2.f[1]) && (v1.f[2] == v2.f[2]);
+}
+
+bool VectorLess3(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] < v2.f[0]) && (v1.f[1] < v2.f[1]) && (v1.f[2] < v2.f[2]);
+}
+
+bool VectorLessEq3(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] <= v2.f[0]) && (v1.f[1] <= v2.f[1]) && (v1.f[2] <= v2.f[2]);
+}
+
+bool VectorGreater3(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] > v2.f[0]) && (v1.f[1] > v2.f[1]) && (v1.f[2] > v2.f[2]);
+}
+
+bool VectorGreaterEq3(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] >= v2.f[0]) && (v1.f[1] >= v2.f[1]) && (v1.f[2] >= v2.f[2]);
+}
+
+bool VectorNotEqual3(const Vector& v1, const Vector& v2)
+{
+    return (v1.f[0] != v2.f[0]) && (v1.f[1] != v2.f[1]) && (v1.f[2] != v2.f[2]);
+}
+
+// 4D vector comparison functions =================================================================
+
 bool Vector::operator== (const Vector& b) const
 {
     return ((f[0] == b.f[0]) && (f[1] == b.f[1])) &&
