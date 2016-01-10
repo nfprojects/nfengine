@@ -63,6 +63,12 @@
 #error "Target system not supported!"
 #endif // defined(WIN32)
 
+// we assume that when using Windows we build for x86 CPU supporting SSE and SSE4
+#if defined(WIN32)
+#define NFE_USE_SSE
+#define NFE_USE_SSE4
+#endif // defined(WIN32)
+
 
 namespace NFE {
 namespace Common {

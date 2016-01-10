@@ -197,6 +197,12 @@
     <ClInclude Include="Math\FPU\Matrix.hpp">
       <Filter>Header Files\Math\FPU</Filter>
     </ClInclude>
+    <ClInclude Include="Math\FPU\RayGeometry.hpp">
+      <Filter>Header Files\Math\FPU</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\SSE\RayGeometry.hpp">
+      <Filter>Header Files\Math\SSE</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -335,6 +341,12 @@
       <Filter>Source Files\Math\SSE</Filter>
     </ClCompile>
     <ClCompile Include="Math\FPU\MatrixFPU.cpp">
+      <Filter>Source Files\Math\FPU</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\SSE\GeometrySSE.cpp">
+      <Filter>Source Files\Math\SSE</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\FPU\GeometryFPU.cpp">
       <Filter>Source Files\Math\FPU</Filter>
     </ClCompile>
   </ItemGroup>
