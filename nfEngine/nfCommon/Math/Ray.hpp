@@ -18,6 +18,14 @@ public:
     Vector dir;
     Vector invDir;
     Vector origin;
+
+    Ray() {}
+    Ray(const Vector& direction, const Vector& origin)
+        : origin(origin)
+    {
+        dir = VectorNormalize3(direction);
+        invDir = VectorReciprocal(dir);
+    }
 };
 
 class NFE_ALIGN16 RayBoxSegment
