@@ -18,6 +18,13 @@ public:
     Vector dir;
     Vector invDir;
     Vector origin;
+
+    Ray() {}
+    Ray(const Vector& dir, const Vector& origin)
+        : dir(dir), origin(origin)
+    {
+        invDir = Vector(VECTOR_ONE) / dir;
+    }
 };
 
 class NFE_ALIGN16 RayBoxSegment

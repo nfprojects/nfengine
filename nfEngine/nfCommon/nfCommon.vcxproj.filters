@@ -157,7 +157,7 @@
     </ClInclude>
     <ClInclude Include="LoggerBackends\BackendHTML.hpp">
       <Filter>Source Files\LoggerBackends</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="Image\Image.hpp">
       <Filter>Source Files\Image</Filter>
     </ClInclude>
@@ -273,7 +273,7 @@
     </ClCompile>
     <ClCompile Include="LoggerBackends\BackendHTML.cpp">
       <Filter>Source Files\LoggerBackends</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="Image\Image.cpp">
       <Filter>Source Files\Image</Filter>
     </ClCompile>
@@ -303,6 +303,9 @@
     </ClCompile>
     <ClCompile Include="AsyncThreadPool.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\RayGeometry.cpp">
+      <Filter>Source Files\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

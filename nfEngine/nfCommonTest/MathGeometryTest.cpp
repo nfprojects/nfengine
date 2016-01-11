@@ -4,6 +4,7 @@
 #include "../nfCommon/Math/Frustum.hpp"
 #include "../nfCommon/Math/Sphere.hpp"
 #include "../nfCommon/Math/Triangle.hpp"
+#include "../nfCommon/Math/Random.hpp"
 
 /*
 TODO:
@@ -280,4 +281,173 @@ TEST(MathGeometry, TriangleFrustumIntersection)
     EXPECT_TRUE(Intersect(Triangle(Vector(-20.0f, 1.0f, 15.0f),
                                    Vector(20.0f, -1.0f, 15.0f),
                                    Vector(0.0f, 0.0f, -5.0f)), frustum));
+}
+
+TEST(MathGeometry, RayBoxIntersection)
+{
+    const Vector boxHalfExtent = Vector(1.0f, 2.0f, 3.0f);
+    const int MAX_RAY_TESTS = 100;
+    const int MAX_BOX_OFFSETS = 10;
+    Random random(0);
+
+    for (int i = 0; i < MAX_BOX_OFFSETS; ++i)
+    {
+        const Vector boxOffset = (2.0f * random.GetFloat3() - VECTOR_ONE) * 5.0f;
+        SCOPED_TRACE("boxOffset = [" + std::to_string(boxOffset[0]) + ", " +
+                     std::to_string(boxOffset[1]) + ", " + std::to_string(boxOffset[2]) + "]");
+
+        // test box
+        Box box(boxOffset - boxHalfExtent, boxOffset + boxHalfExtent);
+
+        // check if a point 'p' is on the surface of the test box
+        auto onBoxSurface = [&boxHalfExtent, &boxOffset](const Vector& p) -> bool
+        {
+            return (VectorLessEqMask(boxOffset + boxHalfExtent - p, VECTOR_EPSILON) != 0) ||
+                   (VectorLessEqMask(boxOffset - boxHalfExtent - p, VECTOR_EPSILON) != 0);
+        };
+
+        EXPECT_TRUE(Intersect(Ray(Vector(-1.0f, 0.0f, 0.0f),
+                                  boxOffset + Vector(2.0f, 0.0f, 0.0f)), box));
+        EXPECT_TRUE(Intersect(Ray(Vector(1.0f, 0.0f, 0.0f),
+                                  boxOffset + Vector(-2.0f, 0.0f, 0.0f)), box));
+        EXPECT_TRUE(Intersect(Ray(Vector(0.0f, -1.0f, 0.0f),
+                                  boxOffset + Vector(0.0f, 3.0f, 0.0f)), box));
+        EXPECT_TRUE(Intersect(Ray(Vector(0.0f, 1.0f, 0.0f),
+                                  boxOffset + Vector(0.0f, -3.0f, 0.0f)), box));
+        EXPECT_TRUE(Intersect(Ray(Vector(0.0f, 0.0f, -1.0f),
+                                  boxOffset + Vector(0.0f, 0.0f, 4.0f)), box));
+        EXPECT_TRUE(Intersect(Ray(Vector(0.0f, 0.0f, 1.0f),
+                                  boxOffset + Vector(0.0f, 0.0f, -4.0f)), box));
+
+        EXPECT_FALSE(Intersect(Ray(Vector(1.0f, 0.0f, 0.0f),
+                                   boxOffset + Vector(2.0f, 0.0f, 0.0f)), box));
+        EXPECT_FALSE(Intersect(Ray(Vector(-1.0f, 0.0f, 0.0f),
+                                   boxOffset + Vector(-2.0f, 0.0f, 0.0f)), box));
+        EXPECT_FALSE(Intersect(Ray(Vector(0.0f, 1.0f, 0.0f),
+                                   boxOffset + Vector(0.0f, 3.0f, 0.0f)), box));
+        EXPECT_FALSE(Intersect(Ray(Vector(0.0f, -1.0f, 0.0f),
+                                   boxOffset + Vector(0.0f, -3.0f, 0.0f)), box));
+        EXPECT_FALSE(Intersect(Ray(Vector(0.0f, 0.0f, 1.0f),
+                                   boxOffset + Vector(0.0f, 0.0f, 4.0f)), box));
+        EXPECT_FALSE(Intersect(Ray(Vector(0.0f, 0.0f, -1.0f),
+                                   boxOffset + Vector(0.0f, 0.0f, -4.0f)), box));
+
+        // missing rays
+        EXPECT_FALSE(Intersect(Ray(Vector(-1.0f, 2.1f, 0.0f),
+                                   boxOffset + Vector(2.0f, 0.0f, 0.0f)), box));
+        EXPECT_FALSE(Intersect(Ray(Vector(1.0f, 2.1f, 0.0f),
+                                   boxOffset + Vector(-2.0f, 0.0f, 0.0f)), box));
+        EXPECT_FALSE(Intersect(Ray(Vector(1.1f, -1.0f, 0.0f),
+                                   boxOffset + Vector(0.0f, 3.0f, 0.0f)), box));
+        EXPECT_FALSE(Intersect(Ray(Vector(1.1f, 1.0f, 0.0f),
+                                   boxOffset + Vector(0.0f, -3.0f, 0.0f)), box));
+        EXPECT_FALSE(Intersect(Ray(Vector(1.1f, 0.0f, -1.0f),
+                                   boxOffset + Vector(0.0f, 0.0f, 4.0f)), box));
+        EXPECT_FALSE(Intersect(Ray(Vector(1.1f, 0.0f, 1.0f),
+                                   boxOffset + Vector(0.0f, 0.0f, 4.0f)), box));
+
+        // rays with origin inside the box
+        for (int j = 0; j < MAX_RAY_TESTS; ++j)
+        {
+            const Vector rayOrigin = boxOffset +
+                boxHalfExtent * (Vector(random.GetFloat3()) * 2.0f - VECTOR_ONE);
+            const Vector rayDir = Vector(random.GetFloat3()) * 2.0f - VECTOR_ONE;
+            const Ray ray = Ray(rayDir, rayOrigin);
+            EXPECT_TRUE(Intersect(ray, box));
+
+            Vector dist;
+            EXPECT_TRUE(Intersect(ray, box, dist));
+            EXPECT_TRUE(onBoxSurface(ray.origin + ray.dir * dist));
+        }
+    }
+}
+
+TEST(MathGeometry, RayTriangleIntersection)
+{
+    // TODO
+}
+
+TEST(MathGeometry, RaySphereIntersection)
+{
+    EXPECT_TRUE(Intersect(Ray(Vector(0.4f, 1.0f, -0.2f), Vector(0.0f, -2.0f, 0.0f)),
+                          Sphere(Vector(), 1.0f)));
+
+    const int MAX_RAY_TESTS = 100;
+    const int MAX_SPHERE_OFFSETS = 10;
+    Random random(0);
+
+    for (int i = 0; i < MAX_SPHERE_OFFSETS; ++i)
+    {
+        float radius = random.GetFloat();
+        const Vector sphereOffset = (2.0f * random.GetFloat3() - VECTOR_ONE) * 5.0f;
+        SCOPED_TRACE("sphereOffset = [" +
+                     std::to_string(sphereOffset[0]) + ", " +
+                     std::to_string(sphereOffset[1]) + ", " +
+                     std::to_string(sphereOffset[2]) + "]");
+
+        Sphere sphere(sphereOffset, radius);
+
+        // check if a point 'p' is on the surface of the test sphere
+        auto onSphereSurface = [&radius, &sphereOffset](const Vector& p) -> bool
+        {
+            float len = VectorLength3(sphereOffset - p).f[0];
+            return fabsf(len - radius) < NFE_MATH_EPSILON;
+        };
+
+        Vector dist;
+        EXPECT_TRUE(Intersect(Ray(Vector(1.0f, 0.0f, 0.0f),
+                                  Vector(-2.0f * radius, 0.5f * radius, 0.0f) + sphereOffset),
+                              sphere));
+        EXPECT_TRUE(Intersect(Ray(Vector(1.0f, 0.0f, 0.0f),
+                                  Vector(-2.0f * radius, -0.5f * radius, 0.0f) + sphereOffset),
+                              sphere));
+        EXPECT_TRUE(Intersect(Ray(Vector(1.0f, 0.0f, 0.0f),
+                                  Vector(-2.0f * radius, 0.5f * radius, 0.0f) + sphereOffset),
+                              sphere));
+        EXPECT_TRUE(Intersect(Ray(Vector(1.0f, 0.0f, 0.0f),
+                                  Vector(-2.0f * radius, -0.70710678f * radius, 0.0f) + sphereOffset),
+                              sphere, dist));
+        ASSERT_LT(fabsf(dist.f[0] - radius * (2.0f - 0.70710678f)), NFE_MATH_EPSILON);
+
+        EXPECT_FALSE(Intersect(Ray(Vector(1.0f, 0.0f, 0.0f),
+                                   Vector(-2.0f * radius, 1.01f * radius, 0.0f) + sphereOffset),
+                               sphere));
+        EXPECT_FALSE(Intersect(Ray(Vector(1.0f, 0.0f, 0.0f),
+                                   Vector(-2.0f * radius, -1.01f * radius, 0.0f) + sphereOffset),
+                               sphere));
+        EXPECT_FALSE(Intersect(Ray(Vector(1.0f, 0.0f, 0.0f),
+                                   Vector(-2.0f * radius, 1.01f * radius, 0.0f) + sphereOffset),
+                               sphere));
+        EXPECT_FALSE(Intersect(Ray(Vector(1.0f, 0.0f, 0.0f),
+                                   Vector(-2.0f * radius, -1.01f * radius, 0.0f) + sphereOffset),
+                               sphere));
+
+        // rays with origin inside the sphere
+        for (int j = 0; j < MAX_RAY_TESTS; ++j)
+        {
+            const Vector rayOrigin = sphereOffset + 3.0f * radius * (Vector(random.GetFloat3()) * 2.0f - VECTOR_ONE);
+            const Vector rayDir = Vector(random.GetFloat3()) * 2.0f - VECTOR_ONE;
+            const Ray ray = Ray(rayDir, rayOrigin);
+
+            //Vector dist;
+            if (VectorLength3(rayOrigin - sphereOffset).f[0] <= radius)
+            {
+                EXPECT_TRUE(Intersect(ray, sphere));
+                EXPECT_TRUE(Intersect(ray, sphere, dist));
+                EXPECT_TRUE(onSphereSurface(ray.origin + ray.dir * dist));  // WTF?
+            }
+            else if (Intersect(ray, sphere))
+            {
+                EXPECT_TRUE(Intersect(ray, sphere, dist));
+                EXPECT_TRUE(onSphereSurface(ray.origin + ray.dir * dist));  // WTF?
+            }
+        }
+    }
+
+    // TODO
+}
+
+TEST(MathGeometry, RayFrustumIntersection)
+{
+    // TODO
 }
