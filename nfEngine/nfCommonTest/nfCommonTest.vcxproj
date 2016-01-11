@@ -202,6 +202,7 @@
     <ClCompile Include="MemoryTest.cpp" />
     <ClCompile Include="PackerBasicTest.cpp" />
     <ClCompile Include="PackerComplexTest.cpp" />
+    <ClCompile Include="RayGeometryTest.cpp" />
     <ClCompile Include="SystemInfoTest.cpp" />
     <ClCompile Include="ThreadPoolSimple.cpp" />
     <ClCompile Include="PCH.cpp">
