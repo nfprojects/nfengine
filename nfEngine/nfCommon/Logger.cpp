@@ -45,7 +45,7 @@ Logger::Logger()
     RegisterBackend(new LoggerBackendHTML);
 #ifdef WIN32
     if (IsDebuggerPresent())
-        RegisterBackend(std::move(std::unique_ptr<LoggerBackend>(new LoggerBackendWinDebugger)));
+        RegisterBackend(new LoggerBackendWinDebugger);
 #endif // WIN32
 
     mInitialized = true;
