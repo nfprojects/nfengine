@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "Common.hpp"
+#include "../Common.hpp"
 
 #include "../Renderers/RendererInterface/Device.hpp"
 
@@ -38,6 +38,13 @@ protected:
     virtual bool OnInit(void* winHandle) = 0;
     virtual bool OnSwitchSubscene() = 0;
     void RegisterSubScene(SubSceneInitializer initializer, const std::string& name);
+
+    // Methods common for all scenes:
+
+    NFE::Renderer::IShader* CompileShader(const char* path,
+                                          NFE::Renderer::ShaderType type,
+                                          NFE::Renderer::ShaderMacro* macros,
+                                          size_t macrosNum);
 
 public:
     Scene(const std::string& name);

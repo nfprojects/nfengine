@@ -4,10 +4,10 @@
  * @brief  Source file with scene definitions
  */
 
-#include "PCH.hpp"
+#include "../PCH.hpp"
 
-#include "BasicScene.hpp"
-#include "Common.hpp"
+#include "Basic.hpp"
+#include "../Common.hpp"
 
 #include "../nfCommon/Math/Math.hpp"
 #include "../nfCommon/Math/Matrix.hpp"
@@ -17,6 +17,7 @@
 
 using namespace NFE::Math;
 using namespace NFE::Common;
+using namespace NFE::Renderer;
 
 namespace {
 
@@ -31,19 +32,6 @@ struct PixelCBuffer
 };
 
 } // namespace
-
-IShader* BasicScene::CompileShader(const char* path,
-                                   ShaderType type,
-                                   ShaderMacro* macros,
-                                   size_t macrosNum)
-{
-    ShaderDesc desc;
-    desc.type = type;
-    desc.path = path;
-    desc.macros = macros;
-    desc.macrosNum = macrosNum;
-    return mRendererDevice->CreateShader(desc);
-}
 
 /// Helper creators for the Scene
 
