@@ -13,6 +13,7 @@
 namespace NFE {
 namespace Renderer {
 
+// TODO this has a LOT of members. Consider organizing some of them together.
 class CommandBuffer : public ICommandBuffer
 {
     friend class Device;

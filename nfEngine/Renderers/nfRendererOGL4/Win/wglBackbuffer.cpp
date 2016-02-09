@@ -57,9 +57,6 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     mHeight = desc.height;
 
     // Initialize OpenGL
-    // FIXME OGL initialization should be probably moved to Device. Unfortunately, current Device
-    //       implementation is not OGL-friendly. To initialize OGL inside Device we need HWND,
-    //       plus Backbuffer would need to have hDC passed for Backbuffer::Present. Needs research.
 
     // TODO PFD configuration
     PIXELFORMATDESCRIPTOR pfd = { sizeof(PIXELFORMATDESCRIPTOR), 1,
