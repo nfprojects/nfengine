@@ -179,6 +179,7 @@
     <ClInclude Include="Device.hpp" />
     <ClInclude Include="Extensions.hpp" />
     <ClInclude Include="GetExtension.hpp" />
+    <ClInclude Include="MasterContext.hpp" />
     <ClInclude Include="PipelineState.hpp" />
     <ClInclude Include="RendererOGL4.hpp" />
     <ClInclude Include="PCH.hpp" />
@@ -188,6 +189,7 @@
     <ClInclude Include="Texture.hpp" />
     <ClInclude Include="Translations.hpp" />
     <ClInclude Include="VertexLayout.hpp" />
+    <ClInclude Include="Win\wglContextData.hpp" />
     <ClInclude Include="Win\wglExtensions.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -220,6 +222,12 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Win\wglExtensions.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Win\wglMasterContext.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
