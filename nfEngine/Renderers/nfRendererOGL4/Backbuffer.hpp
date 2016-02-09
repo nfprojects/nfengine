@@ -21,7 +21,7 @@ class Backbuffer : public IBackbuffer, public Texture
     HGLRC mHRC; //< Rendering Context for OpenGL
 #elif defined(__linux__) | defined(__LINUX__)
     Window mWindow; //< Xorg Window pointer, extracted from NFE::Common::Window
-    Display* mDisplay; //< Xorg Display pointer, extracted from mWindow
+    Display* mMasterDisplay;
     GLXContext mContext;
     GLXDrawable mDrawable;
 #else
