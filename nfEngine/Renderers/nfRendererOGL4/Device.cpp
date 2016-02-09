@@ -16,6 +16,7 @@
 #include "Texture.hpp"
 #include "Sampler.hpp"
 #include "PipelineState.hpp"
+#include "MasterContext.hpp"
 
 
 namespace {
@@ -135,6 +136,8 @@ IDevice* Init()
     {
         gDevice.reset(new Device);
     }
+
+    MasterContext::Instance().Init();
 
     return gDevice.get();
 }
