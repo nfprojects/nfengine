@@ -297,7 +297,7 @@ int main(int argc, char* argv[])
         return 2;
 
     /// Initial scene to begin with
-    if (!window.InitScene(0))
+    if (!window.InitScene(1))
         return 3;
 
     window.DrawLoop();
