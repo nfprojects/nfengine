@@ -4,10 +4,10 @@
  * @brief  VertexBuffersScene definition
  */
 
-#include "PCH.hpp"
+#include "../PCH.hpp"
 
-#include "VertexBuffersScene.hpp"
-#include "Common.hpp"
+#include "VertexBuffers.hpp"
+#include "../Common.hpp"
 
 #include "../nfCommon/Math/Vector.hpp"
 #include "../nfCommon/Math/Random.hpp"
@@ -17,6 +17,7 @@
 
 using namespace NFE::Math;
 using namespace NFE::Common;
+using namespace NFE::Renderer;
 
 namespace {
 
@@ -30,17 +31,6 @@ int gInstancesNumber = 200;
 
 } // namespace
 
-
-IShader* VertexBuffersScene::CompileShader(const char* path, ShaderType type,
-                                          ShaderMacro* macros, size_t macrosNum)
-{
-    ShaderDesc desc;
-    desc.type = type;
-    desc.path = path;
-    desc.macros = macros;
-    desc.macrosNum = macrosNum;
-    return mRendererDevice->CreateShader(desc);
-}
 
 bool VertexBuffersScene::CreateShaderProgram(bool useInstancing)
 {

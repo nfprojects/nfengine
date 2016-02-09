@@ -8,9 +8,9 @@
 #include "PCH.hpp"
 
 #include "Common.hpp"
-#include "BasicScene.hpp"
-#include "DepthStencilScene.hpp"
-#include "VertexBuffersScene.hpp"
+#include "Scenes/Basic.hpp"
+#include "Scenes/DepthStencil.hpp"
+#include "Scenes/VertexBuffers.hpp"
 
 #include "../Renderers/RendererInterface/Device.hpp"
 #include "../nfCommon/Library.hpp"

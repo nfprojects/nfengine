@@ -4,12 +4,10 @@
  * @brief  DepthStencil scene definition
  */
 
+#include "../PCH.hpp"
 
-
-#include "PCH.hpp"
-
-#include "DepthStencilScene.hpp"
-#include "Common.hpp"
+#include "DepthStencil.hpp"
+#include "../Common.hpp"
 
 #include "../nfCommon/Math/Matrix.hpp"
 
@@ -18,6 +16,7 @@
 
 using namespace NFE::Math;
 using namespace NFE::Common;
+using namespace NFE::Renderer;
 
 namespace {
 
@@ -43,18 +42,6 @@ DepthStencilScene::~DepthStencilScene()
 {
     Release();
 }
-
-IShader* DepthStencilScene::CompileShader(const char* path, ShaderType type,
-                                          ShaderMacro* macros, size_t macrosNum)
-{
-    ShaderDesc desc;
-    desc.type = type;
-    desc.path = path;
-    desc.macros = macros;
-    desc.macrosNum = macrosNum;
-    return mRendererDevice->CreateShader(desc);
-}
-
 
 bool DepthStencilScene::CreateBasicResources(bool withStencil)
 {

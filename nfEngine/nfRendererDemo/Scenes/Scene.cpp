@@ -4,8 +4,10 @@
  * @brief  Scene base class definition
  */
 
-#include "PCH.hpp"
+#include "../PCH.hpp"
 #include "Scene.hpp"
+
+using namespace NFE::Renderer;
 
 Scene::Scene(const std::string& name)
     : mCurrentSubScene(SIZE_MAX)
@@ -95,4 +97,15 @@ bool Scene::SwitchSubscene(size_t subScene)
 
     mCurrentSubScene = subScene;
     return true;
+}
+
+IShader* Scene::CompileShader(const char* path, ShaderType type, ShaderMacro* macros,
+                              size_t macrosNum)
+{
+    ShaderDesc desc;
+    desc.type = type;
+    desc.path = path;
+    desc.macros = macros;
+    desc.macrosNum = macrosNum;
+    return mRendererDevice->CreateShader(desc);
 }

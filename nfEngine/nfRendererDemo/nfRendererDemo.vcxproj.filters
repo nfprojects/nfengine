@@ -22,6 +22,12 @@
     <Filter Include="Shaders\OGL4">
       <UniqueIdentifier>{a7253636-a188-4d4f-937b-a0d1ed2d7c09}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Scenes">
+      <UniqueIdentifier>{f1dfaed2-e9f5-499f-bdb9-9afcb67d1ced}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scenes">
+      <UniqueIdentifier>{1f6f2919-84c8-4b3e-bd28-019d71c0066f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -33,17 +39,17 @@
     <ClCompile Include="Common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BasicScene.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Scenes\Basic.cpp">
+      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Scenes\DepthStencil.cpp">
+      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="DepthStencilScene.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Scenes\VertexBuffers.cpp">
+      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="VertexBuffersScene.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Scenes\Scene.cpp">
+      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -53,17 +59,17 @@
     <ClInclude Include="Common.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BasicScene.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Scenes\DepthStencil.hpp">
+      <Filter>Header Files\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Scenes\VertexBuffers.hpp">
+      <Filter>Header Files\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="DepthStencilScene.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Scenes\Basic.hpp">
+      <Filter>Header Files\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="VertexBuffersScene.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Scenes\Scene.hpp">
+      <Filter>Header Files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
