@@ -16,6 +16,7 @@
 #include "Texture.hpp"
 #include "Sampler.hpp"
 #include "PipelineState.hpp"
+#include "MasterContext.hpp"
 
 
 namespace {
@@ -136,11 +137,15 @@ IDevice* Init()
         gDevice.reset(new Device);
     }
 
+    // for now we skip the result value, so Windows version will work as it did.
+    MasterContext::Instance().Init();
+
     return gDevice.get();
 }
 
 void Release()
 {
+    MasterContext::Instance().Release();
     gDevice.reset();
 }
 

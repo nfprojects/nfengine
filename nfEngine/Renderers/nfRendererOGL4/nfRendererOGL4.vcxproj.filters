@@ -68,6 +68,12 @@
     <ClInclude Include="PipelineState.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MasterContext.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Win\wglContextData.hpp">
+      <Filter>Header Files\Win</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Device.cpp">
@@ -126,6 +132,9 @@
     </ClCompile>
     <ClCompile Include="RasterizerState.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Win\wglMasterContext.cpp">
+      <Filter>Source Files\Win</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
