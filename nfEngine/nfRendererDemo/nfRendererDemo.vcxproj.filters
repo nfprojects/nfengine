@@ -51,6 +51,9 @@
     <ClCompile Include="Scenes\Scene.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Scenes\RenderTargets.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp">
@@ -71,6 +74,9 @@
     <ClInclude Include="Scenes\Scene.hpp">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="Scenes\RenderTargets.hpp">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\D3D11\TestPS.hlsl">
@@ -83,6 +89,12 @@
       <Filter>Shaders\D3D11</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\D3D11\InstancingTestVS.hlsl">
+      <Filter>Shaders\D3D11</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\D3D11\PostProcessPS.hlsl">
+      <Filter>Shaders\D3D11</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\D3D11\RenderTargetPS.hlsl">
       <Filter>Shaders\D3D11</Filter>
     </FxCompile>
   </ItemGroup>
