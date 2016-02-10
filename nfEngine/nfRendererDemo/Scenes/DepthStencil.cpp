@@ -353,7 +353,6 @@ void DepthStencilScene::Draw(float dt)
 
 void DepthStencilScene::ReleaseSubsceneResources()
 {
-    // clear resources
     mWindowRenderTarget.reset();
     mDepthBuffer.reset();
     mVertexShader.reset();
