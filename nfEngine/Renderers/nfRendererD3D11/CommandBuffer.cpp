@@ -139,7 +139,7 @@ void CommandBuffer::SetTextures(ITexture** textures, int num, ShaderType target,
     for (int i = 0; i < num; ++i)
     {
         Texture* texture = dynamic_cast<Texture*>(textures[i]);
-        srvs[i] = texture->mSRV.get();
+        srvs[i] = texture ? texture->mSRV.get() : NULL;
     }
 
     switch (target)
