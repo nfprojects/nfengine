@@ -7,13 +7,17 @@
 #pragma once
 
 #include "../RendererInterface/RenderTarget.hpp"
+#include "Defines.hpp"
+
 
 namespace NFE {
 namespace Renderer {
 
 class RenderTarget : public IRenderTarget
 {
-private:
+    friend class CommandBuffer;
+
+    GLuint mFBO;
 
 public:
     RenderTarget();

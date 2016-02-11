@@ -28,6 +28,9 @@ class Backbuffer : public IBackbuffer, public Texture
 #error "Target platform not supported."
 #endif
 
+    GLuint mDummyVAO;
+    GLuint mFBO;
+
 public:
     Backbuffer();
     ~Backbuffer();
