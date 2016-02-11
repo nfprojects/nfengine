@@ -20,11 +20,17 @@ Backbuffer::Backbuffer()
     , mDisplay(nullptr)
     , mContext(0)
     , mDrawable(0)
+    , mDummyVAO(0)
+    , mFBO(0)
 {
 }
 
 Backbuffer::~Backbuffer()
 {
+    glDeleteFramebuffers(1, &mFBO);
+    glDeleteTextures(1, &mTexture);
+    glBindVertexArray(0);
+    glDeleteVertexArrays(1, &mDummyVAO);
     glXMakeCurrent(mDisplay, None, 0);
     glXDestroyContext(mDisplay, mContext);
     XCloseDisplay(mDisplay);
@@ -138,11 +144,15 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     else
         LOG_WARNING("glXSwapIntervalEXT was not acquired, VSync control is disabled.");
 
+    CreateCommonResources(desc);
+
     return true;
 }
 
 bool Backbuffer::Present()
 {
+    BlitFramebuffers();
+
     // Function behavior is the same as its Win version.
     // See Win/BackBuffer.cpp for more details.
     unsigned int vSync;

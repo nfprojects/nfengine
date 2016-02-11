@@ -39,20 +39,26 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
 
     // TODO support compressed formats: http://renderingpipeline.com/2012/07/texture-compression/
     GLenum format; // TODO provide support for GL_DEPTH_COMPONENT and GL_DEPTH_STENCIL
-    switch (desc.texelSize)
+
+    if (desc.binding & (NFE_RENDERER_TEXTURE_BIND_SHADER | NFE_RENDERER_TEXTURE_BIND_RENDERTARGET))
     {
-    case 1: format = GL_RED; break;
-    case 2: format = GL_RG; break;
-    case 3: format = GL_RGB; break;
-    case 4: format = GL_RGBA; break;
-    default:
-        LOG_ERROR("Incorrect Texel Size provided.");
+        switch (desc.texelSize)
+        {
+        case 1: format = GL_RED; break;
+        case 2: format = GL_RG; break;
+        case 3: format = GL_RGB; break;
+        case 4: format = GL_RGBA; break;
+        default:
+            LOG_ERROR("Incorrect Texel Size provided.");
+            return false;
+        }
+    }
+    else if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
+    {
+        LOG_ERROR("Depth binding is not yet supported!");
         return false;
     }
-
-    if (desc.binding & ~(NFE_RENDERER_TEXTURE_BIND_SHADER |
-                         NFE_RENDERER_TEXTURE_BIND_RENDERTARGET |
-                         NFE_RENDERER_TEXTURE_BIND_DEPTH))
+    else
     {
         LOG_ERROR("Invalid texture binding flags.");
         return false;
@@ -73,6 +79,12 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
     // limit mipmap levels, otherwise no texture will be drawn
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, desc.mipmaps - 1);
+
+    // Some basic filter settings to begin with.
+    // Regular Textures will probably overwrite these settings with Sampler Objects, however
+    // Depth Buffers will have use from them.
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     return true;
 }
