@@ -94,9 +94,6 @@
     <ClCompile Include="Translations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Win\Backbuffer.cpp">
-      <Filter>Source Files\Win</Filter>
-    </ClCompile>
     <ClCompile Include="RendererOGL4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -111,6 +108,12 @@
     </ClCompile>
     <ClCompile Include="Sampler.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Backbuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Win\wglBackbuffer.cpp">
+      <Filter>Source Files\Win</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
