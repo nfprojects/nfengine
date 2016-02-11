@@ -43,7 +43,6 @@ class CommandBuffer : public ICommandBuffer
     // SSO-related variables
     bool mSSOEnabled;
     GLuint mProgramPipeline;
-    GLuint mVAO;   //< For linux needs. This will probably be used for multiple VB support.
 
     /// Private methods which will bind just set resources
     void BindVertexBuffer();

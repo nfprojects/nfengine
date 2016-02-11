@@ -33,7 +33,6 @@ CommandBuffer::CommandBuffer()
     , mVertexLayoutNeedsUpdate(false)
     , mSSOEnabled(false)
     , mProgramPipeline(GL_NONE)
-    , mVAO(GL_NONE)
 {
 }
 
@@ -43,12 +42,6 @@ CommandBuffer::~CommandBuffer()
     {
         glBindProgramPipeline(GL_NONE);
         glDeleteProgramPipelines(1, &mProgramPipeline);
-    }
-
-    if (mVAO)
-    {
-        glBindVertexArray(GL_NONE);
-        glDeleteVertexArrays(1, &mVAO);
     }
 }
 
@@ -191,19 +184,6 @@ void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* stri
     UNUSED(strides);
     UNUSED(offsets);
 
-    if (mVAO == GL_NONE)
-    {
-        // Here Linux has it's needs.
-        // On Linux using OGL Core Profile a VAO must be bound to the pipeline for rendering. It can
-        // be any VAO, however without it no drawing is performed. Since we don't have use for it
-        // right now, just create a dummy and bind it for the future. We will probably reuse the VAO
-        // later on when multiple VB support will be implemented.
-        // Moreover, as with mProgramPipeline, the OGL extensions are not accessible in constructor,
-        // so, we must do the VAO generation and binding here.
-        glGenVertexArrays(1, &mVAO);
-        glBindVertexArray(mVAO);
-    }
-
     // TODO multiple vertex buffers
     if (num > 1)
         LOG_WARNING("Binding multiple Vertex Buffers is not yet supported! Only first Buffer will be set.");
@@ -274,9 +254,14 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
     if (rt == mCurrentRenderTarget)
         return;
 
-    // TODO support (renderTarget == nullptr) situation
+    if (rt == nullptr)
+    {
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        return;
+    }
 
     mCurrentRenderTarget = rt;
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, rt->mFBO);
 }
 
 void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)

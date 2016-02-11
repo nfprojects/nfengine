@@ -22,6 +22,11 @@ Backbuffer::Backbuffer()
 
 Backbuffer::~Backbuffer()
 {
+    glDeleteFramebuffers(1, &mFBO);
+    glDeleteTextures(1, &mTexture);
+    glBindVertexArray(0);
+    glDeleteVertexArrays(1, &mDummyVAO);
+
     if (mHRC)
     {
         wglMakeCurrent(nullptr, nullptr);
@@ -69,6 +74,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     unsigned int pixelFormat = ChoosePixelFormat(mHDC, &pfd);
     SetPixelFormat(mHDC, pixelFormat, &pfd);
 
+    // TODO Proper creation of OpenGL context (wglCreateContext -> extract wglCreateContextAttribsARB)
     mHRC = wglCreateContext(mHDC);
     if (!mHRC)
         return false;
@@ -85,11 +91,57 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     else
         LOG_WARNING("wglSwapIntervalEXT was not acquired, VSync control is disabled.");
 
+    // To match OpenGL Core Profile behavior on Linux
+    // See Linux/Backbuffer.cpp for more info
+    glGenVertexArrays(1, &mDummyVAO);
+    glBindVertexArray(mDummyVAO);
+
+    // prepare a texture to draw to
+    glGenTextures(1, &mTexture);
+    glBindTexture(GL_TEXTURE_2D, mTexture);
+    // TODO match settings to default FBO
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, desc.width, desc.height, 0,
+                 GL_RGBA, GL_UNSIGNED_INT, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    mWidth = desc.width;
+    mHeight = desc.height;
+
+    // Bind current texture to its own FBO
+    // This way, the texture will be shared between two FBOs - drawing (set by RenderTarget class)
+    // and reading (this one). We will be able to Blit the texture to a window when Present()
+    // is called.
+    glGenFramebuffers(1, &mFBO);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, mFBO);
+    glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+                           mTexture, 0);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+
     return true;
 }
 
 bool Backbuffer::Present()
 {
+    // Acquire currently bound draw FBO
+    // Eventual blitting to window FBO will require rebinding Framebuffers, so we need to remember
+    // our original state.
+    GLint boundDrawFBO = 0;
+    GLint boundReadFBO = 0;
+    glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &boundDrawFBO);
+    glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &boundReadFBO);
+
+    // Set the Framebuffers as we want them
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, mFBO);
+
+    // Do the copy
+    glBlitFramebuffer(0, 0, mWidth, mHeight, 0, 0, mWidth, mHeight,
+                      GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+    // Restore FBO state
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, boundDrawFBO);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, boundReadFBO);
+
     // OGL wiki recommends following scheme of work:
     //   * VSync enabled - just swap buffers, we can buy us some CPU work that way
     //   * VSync disabled - call glFinish before swap to make sure all calls are done
