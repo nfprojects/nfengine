@@ -7,6 +7,8 @@
 #pragma once
 
 #include "../RendererInterface/RenderTarget.hpp"
+#include "Defines.hpp"
+
 
 namespace NFE {
 namespace Renderer {
@@ -14,6 +16,7 @@ namespace Renderer {
 class RenderTarget : public IRenderTarget
 {
 private:
+    GLuint mFBO;
 
 public:
     RenderTarget();

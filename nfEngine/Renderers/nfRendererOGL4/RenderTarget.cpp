@@ -19,6 +19,7 @@ RenderTarget::RenderTarget()
 
 RenderTarget::~RenderTarget()
 {
+    glDeleteFramebuffers(1, &mFBO);
 }
 
 void RenderTarget::GetDimensions(int& width, int& height)
@@ -29,7 +30,17 @@ void RenderTarget::GetDimensions(int& width, int& height)
 
 bool RenderTarget::Init(const RenderTargetDesc& desc)
 {
-    UNUSED(desc);
+    if (desc.numTargets > 1)
+    {
+        LOG_ERROR("Multiple targets are not supported!");
+        return false;
+    }
+
+    glGenFramebuffers(1, &mFBO);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, mFBO);
+    //glFramebufferTexture2D(GL_READ_FRAMEBUFFER, )
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+
     return true;
 }
 
