@@ -22,6 +22,11 @@ Backbuffer::Backbuffer()
 
 Backbuffer::~Backbuffer()
 {
+    glDeleteFramebuffers(1, &mFBO);
+    glDeleteTextures(1, &mTexture);
+    glBindVertexArray(0);
+    glDeleteVertexArrays(1, &mDummyVAO);
+
     if (mHRC)
     {
         wglMakeCurrent(nullptr, nullptr);
@@ -69,6 +74,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     unsigned int pixelFormat = ChoosePixelFormat(mHDC, &pfd);
     SetPixelFormat(mHDC, pixelFormat, &pfd);
 
+    // TODO Proper creation of OpenGL context (wglCreateContext -> extract wglCreateContextAttribsARB)
     mHRC = wglCreateContext(mHDC);
     if (!mHRC)
         return false;
@@ -85,11 +91,15 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     else
         LOG_WARNING("wglSwapIntervalEXT was not acquired, VSync control is disabled.");
 
+    CreateCommonResources(desc);
+
     return true;
 }
 
 bool Backbuffer::Present()
 {
+    BlitFramebuffers();
+
     // OGL wiki recommends following scheme of work:
     //   * VSync enabled - just swap buffers, we can buy us some CPU work that way
     //   * VSync disabled - call glFinish before swap to make sure all calls are done

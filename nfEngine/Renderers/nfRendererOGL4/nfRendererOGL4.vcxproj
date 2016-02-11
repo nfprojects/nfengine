@@ -190,6 +190,7 @@
     <ClInclude Include="Win\wglExtensions.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Backbuffer.cpp" />
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="CommandBuffer.cpp" />
     <ClCompile Include="Device.cpp" />
@@ -208,7 +209,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Translations.cpp" />
     <ClCompile Include="VertexLayout.cpp" />
-    <ClCompile Include="Win\Backbuffer.cpp">
+    <ClCompile Include="Win\wglBackbuffer.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>

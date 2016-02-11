@@ -10,7 +10,7 @@
 namespace NFE {
 namespace Renderer {
 
-// TODO: Linux implementation of Backbuffer methods
+
 class Backbuffer : public IBackbuffer, public Texture
 {
     friend class CommandBuffer;
@@ -27,6 +27,12 @@ class Backbuffer : public IBackbuffer, public Texture
 #else
 #error "Target platform not supported."
 #endif
+
+    GLuint mDummyVAO;
+    GLuint mFBO;
+
+    void CreateCommonResources(const BackbufferDesc& desc);
+    void BlitFramebuffers();
 
 public:
     Backbuffer();
