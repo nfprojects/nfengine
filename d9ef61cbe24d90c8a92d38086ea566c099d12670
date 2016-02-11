@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fa81d914_92e98be8",
+        "filename": "nfEngine/nfCommon/Math/Vector.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-02-11T21:10:23Z",
+      "side": 1,
+      "message": "Why there would be conflict in linker? All the functions in this header are inlined, so they won\u0027t be exported in nfCommon library",
+      "parentUuid": "fa81d914_820bfc28",
+      "range": {
+        "startLine": 337,
+        "startChar": 0,
+        "endLine": 341,
+        "endChar": 6
+      },
+      "revId": "d9ef61cbe24d90c8a92d38086ea566c099d12670",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fa81d914_0220ecaa",
         "filename": "nfEngine/nfCommon/Math/VectorFPU.hpp",
         "patchSetId": 7
@@ -42,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "fa81d914_d2ef83e7",
+        "filename": "nfEngine/nfCommon/Math/VectorFPU.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-02-11T21:10:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fa81d914_0220ecaa",
+      "revId": "d9ef61cbe24d90c8a92d38086ea566c099d12670",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fa81d914_423f44d6",
         "filename": "nfEngine/nfCommon/Math/VectorFPU.hpp",
         "patchSetId": 7
@@ -53,6 +95,24 @@
       "writtenOn": "2016-02-11T10:53:35Z",
       "side": 1,
       "message": "To avoid copy-pasting of the code, I would recommend following code:\n\nreturn Vector(*this) +\u003d b;\n\nSame for other operators. This way we will not duplicate code and reuse the operators if needed. Unless, of course, you want to optimize and reduce one function call...",
+      "revId": "d9ef61cbe24d90c8a92d38086ea566c099d12670",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa81d914_92d0ab20",
+        "filename": "nfEngine/nfCommon/Math/VectorFPU.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-02-11T21:10:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fa81d914_423f44d6",
       "revId": "d9ef61cbe24d90c8a92d38086ea566c099d12670",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
