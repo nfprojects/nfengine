@@ -36,6 +36,7 @@ Makefile
 # Other useless folders and file patterns
 /Logs
 *.opensdf
+*.opendb
 *.sdf
 *.suo
 *.vcxproj.user
