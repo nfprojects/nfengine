@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa81d914_f6e4743d",
+        "filename": "nfEngine/nfCommon/Math/Matrix.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-02-14T10:05:33Z",
+      "side": 1,
+      "message": "Why not use initializer list?",
+      "revId": "d09021884eb79e5b78b844cf5b7d353b0ab0e858",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa81d914_b6c59c8f",
+        "filename": "nfEngine/nfCommon/Math/Matrix.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-02-14T10:05:33Z",
+      "side": 1,
+      "message": "Same as with Vector - use +\u003d trick to avoid code duplication.",
+      "revId": "d09021884eb79e5b78b844cf5b7d353b0ab0e858",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa81d914_f6bb940c",
+        "filename": "nfEngine/nfCommon/Math/SSE/Matrix.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-02-14T10:05:33Z",
+      "side": 1,
+      "message": "Comment",
+      "revId": "d09021884eb79e5b78b844cf5b7d353b0ab0e858",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
