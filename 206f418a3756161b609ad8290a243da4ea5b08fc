@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da86d52c_2cc1fbe4",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-02-15T18:34:34Z",
+      "side": 1,
+      "message": "what about \"mCurrentRenderTarget \u003d rt\"?",
+      "revId": "206f418a3756161b609ad8290a243da4ea5b08fc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da86d52c_4c6d4f04",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Texture.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-02-15T18:34:34Z",
+      "side": 1,
+      "message": "How will NFE_RENDERER_TEXTURE_BIND_SHADER work then?",
+      "revId": "206f418a3756161b609ad8290a243da4ea5b08fc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da86d52c_ec7d23b3",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Win/Backbuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-02-15T18:34:34Z",
+      "side": 1,
+      "message": "This code is identical as in Linux/Backbuffer.cpp. Maybe move it to common Backbuffer.cpp?",
+      "revId": "206f418a3756161b609ad8290a243da4ea5b08fc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da86d52c_0c4a7783",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Win/Backbuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-02-15T18:34:34Z",
+      "side": 1,
+      "message": "As above",
+      "revId": "206f418a3756161b609ad8290a243da4ea5b08fc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
