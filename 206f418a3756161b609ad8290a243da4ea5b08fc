@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "da86d52c_6f0e8536",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Texture.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-02-15T18:46:59Z",
+      "side": 1,
+      "message": "nvm",
+      "parentUuid": "da86d52c_4c6d4f04",
+      "revId": "206f418a3756161b609ad8290a243da4ea5b08fc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da86d52c_ec7d23b3",
         "filename": "nfEngine/Renderers/nfRendererOGL4/Win/Backbuffer.cpp",
         "patchSetId": 4
