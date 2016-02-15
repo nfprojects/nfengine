@@ -223,6 +223,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
     mWidth = desc.width;
     mHeight = desc.height;
     mLayers = desc.layers;
+    mSamples = desc.samplesNum;
     mTexelSize = GetElementFormatSize(desc.format) * desc.texelSize;
     type = TextureType::Texture2D;
     return true;
