@@ -20,6 +20,9 @@ using namespace NFE::Renderer;
 
 namespace {
 
+// TODO: this should be obtained in the runtime
+const int MULTISAMPLE_SAMPLES = 8;
+
 struct VertexCBuffer
 {
     Matrix viewMatrix;
@@ -36,6 +39,8 @@ RenderTargetsScene::RenderTargetsScene()
                      "Single target with depth buffer");
     RegisterSubScene(std::bind(&RenderTargetsScene::CreateSubSceneMRT, this),
                      "Two targets with depth buffer");
+    RegisterSubScene(std::bind(&RenderTargetsScene::CreateSubSceneMRTandMSAA, this),
+                     "Two targets with depth buffer (with MSAA)");
 }
 
 RenderTargetsScene::~RenderTargetsScene()
@@ -75,48 +80,6 @@ bool RenderTargetsScene::CreateBasicResources()
     rasterizerStateDesc.cullMode = CullMode::Disabled;
     mRasterizerState.reset(mRendererDevice->CreateRasterizerState(rasterizerStateDesc));
     if (!mRasterizerState)
-        return false;
-
-    ShaderMacro vsMacro[] = { { "USE_CBUFFER", "1" } };
-    std::string vsPath = gShaderPathPrefix + "TestVS" + gShaderPathExt;
-    mVertexShader.reset(CompileShader(vsPath.c_str(), ShaderType::Vertex, vsMacro, 1));
-    if (!mVertexShader)
-        return false;
-
-    ShaderMacro psMacrosNormal[] = { { "MODE", "0" } };
-    std::string psPath = gShaderPathPrefix + "PostProcessPS" + gShaderPathExt;
-    mPrimaryTargetPixelShader.reset(CompileShader(psPath.c_str(), ShaderType::Pixel,
-                                                  psMacrosNormal, 1));
-    if (!mPrimaryTargetPixelShader)
-        return false;
-    ShaderProgramDesc shaderProgramDesc;
-    shaderProgramDesc.vertexShader = mVertexShader.get();
-    shaderProgramDesc.pixelShader = mPrimaryTargetPixelShader.get();
-    mPrimaryTargetShaderProgram.reset(mRendererDevice->CreateShaderProgram(shaderProgramDesc));
-    if (!mPrimaryTargetShaderProgram)
-        return false;
-
-    ShaderMacro psMacroDepth[] = { { "MODE", "1" } };
-    psPath = gShaderPathPrefix + "PostProcessPS" + gShaderPathExt;
-    mDepthPixelShader.reset(CompileShader(psPath.c_str(), ShaderType::Pixel, psMacroDepth, 1));
-    if (!mDepthPixelShader)
-        return false;
-    shaderProgramDesc.vertexShader = mVertexShader.get();
-    shaderProgramDesc.pixelShader = mDepthPixelShader.get();
-    mDepthShaderProgram.reset(mRendererDevice->CreateShaderProgram(shaderProgramDesc));
-    if (!mDepthShaderProgram)
-        return false;
-
-    ShaderMacro psMacroSecondary[] = { { "MODE", "2" } };
-    psPath = gShaderPathPrefix + "PostProcessPS" + gShaderPathExt;
-    mSecondTargetPixelShader.reset(CompileShader(psPath.c_str(), ShaderType::Pixel,
-                                                 psMacroSecondary, 1));
-    if (!mSecondTargetPixelShader)
-        return false;
-    shaderProgramDesc.vertexShader = mVertexShader.get();
-    shaderProgramDesc.pixelShader = mSecondTargetPixelShader.get();
-    mSecondTargetShaderProgram.reset(mRendererDevice->CreateShaderProgram(shaderProgramDesc));
-    if (!mSecondTargetShaderProgram)
         return false;
 
     // create vertex buffers
@@ -198,7 +161,7 @@ bool RenderTargetsScene::CreateBasicResources()
     return true;
 }
 
-bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleRT)
+bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleRT, bool withMSAA)
 {
     TextureDesc texDesc;
     texDesc.type = TextureType::Texture2D;
@@ -206,6 +169,7 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
     texDesc.width = WINDOW_WIDTH / 2;
     texDesc.height = WINDOW_HEIGHT / 2;
     texDesc.mipmaps = 1;
+    texDesc.samplesNum = withMSAA ? MULTISAMPLE_SAMPLES : 1;
 
     // render target texture
     texDesc.format = ElementFormat::Uint_8_norm;
@@ -247,6 +211,21 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
     if (!mRenderTarget)
         return false;
 
+    return true;
+}
+
+bool RenderTargetsScene::CreateShaders(bool multipleRT, bool withMSAA)
+{
+    // Common Vertex Shader
+
+    ShaderMacro vsMacro[] = { { "USE_CBUFFER", "1" } };
+    std::string vsPath = gShaderPathPrefix + "TestVS" + gShaderPathExt;
+    mVertexShader.reset(CompileShader(vsPath.c_str(), ShaderType::Vertex, vsMacro, 1));
+    if (!mVertexShader)
+        return false;
+
+    // Pixel Shader for 3D cube rendering
+
     ShaderMacro psMacroRT[] = { { "TARGETS", multipleRT ? "2" : "1" } };
     std::string psPath = gShaderPathPrefix + "RenderTargetPS" + gShaderPathExt;
     mRTPixelShader.reset(CompileShader(psPath.c_str(), ShaderType::Pixel, psMacroRT, 1));
@@ -259,28 +238,87 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
     if (!mRTShaderProgram)
         return false;
 
+    char samplesNumStr[8];
+    snprintf(samplesNumStr, 8, "%i", withMSAA ? MULTISAMPLE_SAMPLES : 1);
+
+    // Pixel Shader for primary render target preview
+
+    ShaderMacro psMacrosNormal[] = { { "MODE", "0" }, { "SAMPLES_NUM", samplesNumStr } };
+    psPath = gShaderPathPrefix + "PostProcessPS" + gShaderPathExt;
+    mPrimaryTargetPixelShader.reset(CompileShader(psPath.c_str(), ShaderType::Pixel,
+                                                  psMacrosNormal, 2));
+    if (!mPrimaryTargetPixelShader)
+        return false;
+    shaderProgramDesc.vertexShader = mVertexShader.get();
+    shaderProgramDesc.pixelShader = mPrimaryTargetPixelShader.get();
+    mPrimaryTargetShaderProgram.reset(mRendererDevice->CreateShaderProgram(shaderProgramDesc));
+    if (!mPrimaryTargetShaderProgram)
+        return false;
+
+    // Pixel Shader for depthbuffer preview
+
+    ShaderMacro psMacroDepth[] = { { "MODE", "1" }, { "SAMPLES_NUM", samplesNumStr } };
+    psPath = gShaderPathPrefix + "PostProcessPS" + gShaderPathExt;
+    mDepthPixelShader.reset(CompileShader(psPath.c_str(), ShaderType::Pixel, psMacroDepth, 2));
+    if (!mDepthPixelShader)
+        return false;
+    shaderProgramDesc.vertexShader = mVertexShader.get();
+    shaderProgramDesc.pixelShader = mDepthPixelShader.get();
+    mDepthShaderProgram.reset(mRendererDevice->CreateShaderProgram(shaderProgramDesc));
+    if (!mDepthShaderProgram)
+        return false;
+
+    // Pixel Shader for secondary render target preview
+
+    ShaderMacro psMacroSecondary[] = { { "MODE", "2" }, { "SAMPLES_NUM", samplesNumStr } };
+    psPath = gShaderPathPrefix + "PostProcessPS" + gShaderPathExt;
+    mSecondTargetPixelShader.reset(CompileShader(psPath.c_str(), ShaderType::Pixel,
+                                                 psMacroSecondary, 2));
+    if (!mSecondTargetPixelShader)
+        return false;
+    shaderProgramDesc.vertexShader = mVertexShader.get();
+    shaderProgramDesc.pixelShader = mSecondTargetPixelShader.get();
+    mSecondTargetShaderProgram.reset(mRendererDevice->CreateShaderProgram(shaderProgramDesc));
+    if (!mSecondTargetShaderProgram)
+        return false;
+
     return true;
 }
 
 bool RenderTargetsScene::CreateSubSceneNoDepthBuffer()
 {
+    if (!CreateShaders())
+        return false;
     if (!CreateBasicResources())
         return false;
-    return CreateRenderTarget(false, false);
+    return CreateBasicResources();
 }
 
 bool RenderTargetsScene::CreateSubSceneDepthBuffer()
 {
+    if (!CreateShaders())
+        return false;
     if (!CreateBasicResources())
         return false;
-    return CreateRenderTarget(true, false);
+    return CreateRenderTarget(true);
 }
 
 bool RenderTargetsScene::CreateSubSceneMRT()
 {
+    if (!CreateShaders(true))
+        return false;
     if (!CreateBasicResources())
         return false;
     return CreateRenderTarget(true, true);
+}
+
+bool RenderTargetsScene::CreateSubSceneMRTandMSAA()
+{
+    if (!CreateShaders(true, true))
+        return false;
+    if (!CreateBasicResources())
+        return false;
+    return CreateRenderTarget(true, true, true);
 }
 
 bool RenderTargetsScene::OnInit(void* winHandle)

@@ -44,13 +44,17 @@ class RenderTargetsScene : public Scene
     void ReleaseSubsceneResources();
 
     bool CreateBasicResources();
-    bool CreateRenderTarget(bool withDepthBuffer, bool multipleRT);
+    bool CreateRenderTarget(bool withDepthBuffer = false,
+                            bool multipleRT = false,
+                            bool withMSAA = false);
+    bool CreateShaders(bool multipleRT = false,
+                       bool withMSAA = false);
 
     /// Subscenes
     bool CreateSubSceneNoDepthBuffer();
     bool CreateSubSceneDepthBuffer();
     bool CreateSubSceneMRT();
-    // TODO: MRT, multisampling
+    bool CreateSubSceneMRTandMSAA();
 
 public:
     RenderTargetsScene();
