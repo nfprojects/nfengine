@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da86d52c_5d125b63",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/CommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-02-16T11:52:37Z",
+      "side": 1,
+      "message": "Indeed. Done",
+      "parentUuid": "da86d52c_2cc1fbe4",
+      "revId": "206f418a3756161b609ad8290a243da4ea5b08fc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da86d52c_4c6d4f04",
         "filename": "nfEngine/Renderers/nfRendererOGL4/Texture.cpp",
         "patchSetId": 4
@@ -71,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "da86d52c_b86445e6",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Win/Backbuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-02-16T11:52:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da86d52c_ec7d23b3",
+      "revId": "206f418a3756161b609ad8290a243da4ea5b08fc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da86d52c_0c4a7783",
         "filename": "nfEngine/Renderers/nfRendererOGL4/Win/Backbuffer.cpp",
         "patchSetId": 4
@@ -82,6 +118,24 @@
       "writtenOn": "2016-02-15T18:34:34Z",
       "side": 1,
       "message": "As above",
+      "revId": "206f418a3756161b609ad8290a243da4ea5b08fc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da86d52c_986781ea",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Win/Backbuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-02-16T11:52:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da86d52c_0c4a7783",
       "revId": "206f418a3756161b609ad8290a243da4ea5b08fc",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
