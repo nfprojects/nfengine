@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ba7be1f8_d1dab616",
+        "filename": "nfEngine/nfCommon/Win/DirectoryWatch.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-02-18T22:21:14Z",
+      "side": 1,
+      "message": "It\u0027s required, because eventType is enum class. Otherwise I get:\nerror C2451: conditional expression of type \u0027NFE::Common::DirectoryWatch::Event\u0027 is illegal",
+      "parentUuid": "7ac7a964_cb366e03",
+      "range": {
+        "startLine": 232,
+        "startChar": 37,
+        "endLine": 232,
+        "endChar": 49
+      },
+      "revId": "798b970cf42ad13f4d2fe907f5d377798df34174",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7ac7a964_cb1d8e75",
         "filename": "nfEngine/nfCommon/Win/DirectoryWatch.cpp",
         "patchSetId": 3
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "ba7be1f8_b1cd4260",
+        "filename": "nfEngine/nfCommon/Win/DirectoryWatch.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-02-18T22:21:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7ac7a964_cb1d8e75",
+      "range": {
+        "startLine": 251,
+        "startChar": 5,
+        "endLine": 251,
+        "endChar": 6
+      },
+      "revId": "798b970cf42ad13f4d2fe907f5d377798df34174",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7ac7a964_a6ffa700",
         "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
         "patchSetId": 3
@@ -59,6 +107,30 @@
       "writtenOn": "2015-11-18T09:17:50Z",
       "side": 1,
       "message": "If so, I would move the test to the very end of the file. It will be much better for code organization.",
+      "range": {
+        "startLine": 363,
+        "startChar": 92,
+        "endLine": 363,
+        "endChar": 92
+      },
+      "revId": "798b970cf42ad13f4d2fe907f5d377798df34174",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba7be1f8_f1d7baeb",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-02-18T22:21:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7ac7a964_a6ffa700",
       "range": {
         "startLine": 363,
         "startChar": 92,
