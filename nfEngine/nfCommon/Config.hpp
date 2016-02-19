@@ -15,6 +15,7 @@ namespace Common {
 /// Predeclarations
 class ConfigTokenizer;
 struct Token;
+template <class T> class DataTranslator;
 
 /**
  * Pointers to config structure elements (values, array nodes and object nodes).
@@ -56,10 +57,11 @@ public:
  * Class representing a value in the config tree. A value can be of simple type
  * (bool, int, float, string), subobject or an array of values.
  */
-class ConfigValue
+class NFCOMMON_API ConfigValue
 {
     friend class Config;
 
+protected:
     enum class Type
     {
         None, Bool, Int, Float, String, Object, Array,
@@ -238,7 +240,50 @@ public:
      * @param val         Value.
      */
     Config& AddValue(ConfigArray& configArray, const ConfigValue& val);
+
+    template <class T>
+    bool TranslateConfigObject(ConfigObjectNodePtr node,
+                               DataTranslator<T>& translator,
+                               T& object) const;
 };
+
+
+/**
+ * Extension of ConfigValue allowing for accessing child values
+ * (sub-objects or array elements) with easy-to-use operators at expense of performance.
+ */
+class NFCOMMON_API ConfigGenericValue : public ConfigValue
+{
+    const Config* mConfig;
+
+    // TODO: implement a map of object keys / array indicies to speed up lookup
+
+public:
+    ConfigGenericValue() : ConfigValue(), mConfig(nullptr) { }
+    ConfigGenericValue(const Config* config);
+    ConfigGenericValue(const Config* config, const ConfigValue& val);
+
+    /**
+     * Check if a value with a given key exists in the object.
+     */
+    bool HasMember(const char* key) const;
+
+    /**
+     * Find value in object by key.
+     */
+    ConfigGenericValue operator[](const char* key) const;
+
+    /**
+     * Get array size.
+     */
+    size_t GetSize() const;
+
+    /**
+     * Get value from array by index.
+     */
+    ConfigGenericValue operator[](int index) const;
+};
+
 
 } // namespace Common
 } // namespace NFE
