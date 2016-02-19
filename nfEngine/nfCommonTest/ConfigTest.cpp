@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "../nfCommon/Config.hpp"
+#include "../nfCommon/ConfigDataTranslator.hpp"
 
 using namespace NFE::Common;
 
@@ -41,6 +42,17 @@ stringWithCommentInIt2 = "blah/*"
 /* multiline comment
 * / this is not the end of the comment yet
 */
+)";
+
+const char* TRANSLATOR_TEST_CONFIG = R"(
+integerValue = -1
+booleanValue = true
+floatValue = 10.0
+stringValue = "this is a string"
+intArray = [ 1 2 3 ]
+boolArray = [ true false true ]
+floatArray = [ 1.0 2.0 3.0 ]
+stringArray = [ "aaa" "bbb" ]
 )";
 
 } // namespace
@@ -246,4 +258,158 @@ TEST(Config, Generate)
     config.SetRoot(root);
 
     EXPECT_EQ(REFERENCE_STRING, config.ToString(false));
+}
+
+// iterate through a test config and check values
+TEST(Config, GenericValue)
+{
+    Config config;
+    EXPECT_TRUE(config.Parse(TEST_CONFIG));
+    ConfigGenericValue root(&config);
+
+    ASSERT_TRUE(root.HasMember("integerValue"));
+    ASSERT_TRUE(root["integerValue"].IsInt());
+    EXPECT_EQ(-1, root["integerValue"].GetInt());
+
+    ASSERT_TRUE(root.HasMember("hexValue"));
+    ASSERT_TRUE(root["hexValue"].IsInt());
+    EXPECT_EQ(0xFF, root["hexValue"].GetInt());
+
+    ASSERT_TRUE(root.HasMember("booleanValue"));
+    ASSERT_TRUE(root["booleanValue"].IsBool());
+    EXPECT_EQ(true, root["booleanValue"].GetBool());
+
+    ASSERT_TRUE(root.HasMember("floatValue"));
+    ASSERT_TRUE(root["floatValue"].IsFloat());
+    EXPECT_EQ(10.0f, root["floatValue"].GetFloat());
+
+    ASSERT_TRUE(root.HasMember("stringValue"));
+    ASSERT_TRUE(root["stringValue"].IsString());
+    EXPECT_STREQ("this is a string", root["stringValue"].GetString());
+
+    ASSERT_TRUE(root.HasMember("object"));
+    ASSERT_TRUE(root["object"].IsObject());
+    {
+        ConfigGenericValue object = root["object"];
+
+        ASSERT_TRUE(object.HasMember("int"));
+        ASSERT_TRUE(object["int"].IsInt());
+        EXPECT_EQ(1, object["int"].GetInt());
+
+        ASSERT_TRUE(object.HasMember("nestedObject"));
+        ASSERT_TRUE(object["nestedObject"].IsObject());
+        ASSERT_TRUE(object["nestedObject"].HasMember("bla"));
+        ASSERT_TRUE(object["nestedObject"]["bla"].IsInt());
+        EXPECT_EQ(123, object["nestedObject"]["bla"].GetInt());
+    }
+
+    ASSERT_TRUE(root.HasMember("array"));
+    ASSERT_TRUE(root["array"].IsArray());
+    ASSERT_EQ(3, root["array"].GetSize());
+    EXPECT_EQ(1, root["array"][0].GetInt());
+    EXPECT_EQ(2, root["array"][1].GetInt());
+    EXPECT_EQ(3, root["array"][2].GetInt());
+
+    ASSERT_TRUE(root.HasMember("emptyObject"));
+    ASSERT_TRUE(root["emptyObject"].IsObject());
+
+    ASSERT_TRUE(root.HasMember("emptyArray"));
+    ASSERT_TRUE(root["emptyArray"].IsArray());
+    EXPECT_EQ(0, root["emptyArray"].GetSize());
+
+    ASSERT_TRUE(root.HasMember("twoDimensionArray"));
+    ASSERT_TRUE(root["twoDimensionArray"].IsArray());
+
+    ASSERT_TRUE(root.HasMember("arrayOfObjects"));
+    ASSERT_TRUE(root["arrayOfObjects"].IsArray());
+}
+
+TEST(Config, DataTranslator)
+{
+    Config config;
+    ASSERT_TRUE(config.Parse(TRANSLATOR_TEST_CONFIG));
+
+    struct TestStruct
+    {
+        int integerValue;
+        bool booleanValue;
+        float floatValue;
+        const char* stringValue;
+
+        std::vector<int> intArray;
+        std::vector<bool> boolArray;
+        std::vector<float> floatArray;
+        std::vector<const char*> stringArray;
+    };
+
+    // set up data translator
+    auto translator = DataTranslator<TestStruct>()
+        .Add("integerValue", &TestStruct::integerValue)
+        .Add("booleanValue", &TestStruct::booleanValue)
+        .Add("floatValue", &TestStruct::floatValue)
+        .Add("stringValue", &TestStruct::stringValue)
+        .Add("intArray", &TestStruct::intArray)
+        .Add("boolArray", &TestStruct::boolArray)
+        .Add("floatArray", &TestStruct::floatArray)
+        .Add("stringArray", &TestStruct::stringArray);
+
+    TestStruct object;
+    ASSERT_TRUE(config.TranslateConfigObject(config.GetRootNode(), translator, object));
+
+    EXPECT_EQ(-1, object.integerValue);
+    EXPECT_EQ(true, object.booleanValue);
+    EXPECT_EQ(10.0f, object.floatValue);
+    EXPECT_STREQ("this is a string", object.stringValue);
+
+    ASSERT_EQ(3, object.intArray.size());
+    EXPECT_EQ(1, object.intArray[0]);
+    EXPECT_EQ(2, object.intArray[1]);
+    EXPECT_EQ(3, object.intArray[2]);
+
+    ASSERT_EQ(3, object.boolArray.size());
+    EXPECT_TRUE(object.boolArray[0]);
+    EXPECT_FALSE(object.boolArray[1]);
+    EXPECT_TRUE(object.boolArray[2]);
+
+    ASSERT_EQ(3, object.floatArray.size());
+    EXPECT_EQ(1.0f, object.floatArray[0]);
+    EXPECT_EQ(2.0f, object.floatArray[1]);
+    EXPECT_EQ(3.0f, object.floatArray[2]);
+
+    ASSERT_EQ(2, object.stringArray.size());
+    EXPECT_STREQ("aaa", object.stringArray[0]);
+    EXPECT_STREQ("bbb", object.stringArray[1]);
+}
+
+TEST(Config, DataTranslatorInvalidTypes)
+{
+    Config config;
+    ASSERT_TRUE(config.Parse(TRANSLATOR_TEST_CONFIG));
+
+    struct TestStruct
+    {
+        int integerValue;
+        bool booleanValue;
+        float floatValue;
+        const char* stringValue;
+
+        std::vector<int> intArray;
+        std::vector<bool> boolArray;
+        std::vector<float> floatArray;
+        std::vector<const char*> stringArray;
+    };
+
+    // set up data translator with messed up types
+    auto translator = DataTranslator<TestStruct>()
+        .Add("integerValue", &TestStruct::stringValue)
+        .Add("booleanValue", &TestStruct::floatValue)
+        .Add("floatValue", &TestStruct::booleanValue)
+        .Add("stringValue", &TestStruct::integerValue)
+        .Add("intArray", &TestStruct::stringArray)
+        .Add("boolArray", &TestStruct::floatArray)
+        .Add("floatArray", &TestStruct::boolArray)
+        .Add("stringArray", &TestStruct::intArray);
+
+    TestStruct object;
+    ASSERT_FALSE(config.TranslateConfigObject(config.GetRootNode(), translator, object));
 }
