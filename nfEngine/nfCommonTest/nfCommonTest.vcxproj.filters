@@ -27,6 +27,7 @@
     <ClCompile Include="DirectoryWatchTest.cpp" />
     <ClCompile Include="PackedArray.cpp" />
     <ClCompile Include="ImageTest.cpp" />
+    <ClCompile Include="ConfigTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.hpp" />
