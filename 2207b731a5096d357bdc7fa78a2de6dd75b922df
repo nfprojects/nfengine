@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba7be1f8_8f5c9627",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-02-19T22:01:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba7be1f8_9d676fea",
+      "revId": "2207b731a5096d357bdc7fa78a2de6dd75b922df",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba7be1f8_1d9b7fca",
         "filename": "nfEngine/nfCommon/Math/FPU/RayGeometry.hpp",
         "patchSetId": 8
@@ -30,6 +48,30 @@
       "writtenOn": "2016-02-19T17:04:35Z",
       "side": 1,
       "message": "I guess this shouldn\u0027t be here.",
+      "range": {
+        "startLine": 43,
+        "startChar": 4,
+        "endLine": 43,
+        "endChar": 28
+      },
+      "revId": "2207b731a5096d357bdc7fa78a2de6dd75b922df",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba7be1f8_af407a36",
+        "filename": "nfEngine/nfCommon/Math/FPU/RayGeometry.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-02-19T22:01:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba7be1f8_1d9b7fca",
       "range": {
         "startLine": 43,
         "startChar": 4,
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "ba7be1f8_cf3daebd",
+        "filename": "nfEngine/nfCommon/Math/Vector.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-02-19T22:01:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba7be1f8_bd92739d",
+      "range": {
+        "startLine": 118,
+        "startChar": 0,
+        "endLine": 118,
+        "endChar": 18
+      },
+      "revId": "2207b731a5096d357bdc7fa78a2de6dd75b922df",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba7be1f8_1de9bf1a",
         "filename": "nfEngine/nfCommon/nfCommon.hpp",
         "patchSetId": 8
@@ -76,6 +142,24 @@
       "writtenOn": "2016-02-19T17:04:35Z",
       "side": 1,
       "message": "What about Linux? SSE should work there as well (at least Common was built with SSE until now)",
+      "revId": "2207b731a5096d357bdc7fa78a2de6dd75b922df",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba7be1f8_3dccc335",
+        "filename": "nfEngine/nfCommon/nfCommon.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-02-19T22:01:26Z",
+      "side": 1,
+      "message": "It\u0027s defined in CMakeLists.txt. In the future, engine on the Linux could be compiled for other architectures, so usage of architecture-specific extensions should be defined there IMO.",
+      "parentUuid": "ba7be1f8_1de9bf1a",
       "revId": "2207b731a5096d357bdc7fa78a2de6dd75b922df",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
