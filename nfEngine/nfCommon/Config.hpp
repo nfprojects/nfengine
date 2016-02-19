@@ -15,6 +15,7 @@ namespace Common {
 /// Predeclarations
 class ConfigTokenizer;
 struct Token;
+template <class T> class DataTranslator;
 
 /**
  * Pointers to config structure elements (values, array nodes and object nodes).
@@ -236,6 +237,11 @@ public:
      * @param val         Value.
      */
     Config& AddValue(ConfigArray& configArray, const ConfigValue& val);
+
+    template <class T>
+    bool TranslateConfigObject(ConfigObjectNodePtr node,
+                               DataTranslator<T>& translator,
+                               T& object) const;
 };
 
 } // namespace Common

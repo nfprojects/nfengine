@@ -6,8 +6,25 @@
 
 #include "PCH.hpp"
 #include "../nfCommon/Config.hpp"
+#include "../nfCommon/ConfigDataTranslator.hpp"
 
 using namespace NFE::Common;
+
+namespace {
+
+const char* TRANSLATOR_TEST_CONFIG = R"(
+integerValue = -1
+booleanValue = true
+floatValue = 10.0
+stringValue = "this is a string"
+intArray = [ 1 2 3 ]
+boolArray = [ true false true ]
+floatArray = [ 1.0 2.0 3.0 ]
+stringArray = [ "aaa" "bbb" ]
+)";
+
+} // namespace
+
 
 // simple sanity tests
 TEST(Config, Simple)
@@ -242,4 +259,94 @@ TEST(Config, Generate)
     config.SetRoot(root);
 
     EXPECT_EQ(REFERENCE_STRING, config.ToString(false));
+}
+
+TEST(Config, DataTranslator)
+{
+    Config config;
+    ASSERT_TRUE(config.Parse(TRANSLATOR_TEST_CONFIG));
+
+    struct TestStruct
+    {
+        int integerValue;
+        bool booleanValue;
+        float floatValue;
+        const char* stringValue;
+
+        std::vector<int> intArray;
+        std::vector<bool> boolArray;
+        std::vector<float> floatArray;
+        std::vector<const char*> stringArray;
+    };
+
+    // set up data translator
+    auto translator = DataTranslator<TestStruct>()
+        .Add("integerValue", &TestStruct::integerValue)
+        .Add("booleanValue", &TestStruct::booleanValue)
+        .Add("floatValue", &TestStruct::floatValue)
+        .Add("stringValue", &TestStruct::stringValue)
+        .Add("intArray", &TestStruct::intArray)
+        .Add("boolArray", &TestStruct::boolArray)
+        .Add("floatArray", &TestStruct::floatArray)
+        .Add("stringArray", &TestStruct::stringArray);
+
+    TestStruct object;
+    ASSERT_TRUE(config.TranslateConfigObject(config.GetRootNode(), translator, object));
+
+    EXPECT_EQ(-1, object.integerValue);
+    EXPECT_EQ(true, object.booleanValue);
+    EXPECT_EQ(10.0f, object.floatValue);
+    EXPECT_STREQ("this is a string", object.stringValue);
+
+    ASSERT_EQ(3, object.intArray.size());
+    EXPECT_EQ(1, object.intArray[0]);
+    EXPECT_EQ(2, object.intArray[1]);
+    EXPECT_EQ(3, object.intArray[2]);
+
+    ASSERT_EQ(3, object.boolArray.size());
+    EXPECT_TRUE(object.boolArray[0]);
+    EXPECT_FALSE(object.boolArray[1]);
+    EXPECT_TRUE(object.boolArray[2]);
+
+    ASSERT_EQ(3, object.floatArray.size());
+    EXPECT_EQ(1.0f, object.floatArray[0]);
+    EXPECT_EQ(2.0f, object.floatArray[1]);
+    EXPECT_EQ(3.0f, object.floatArray[2]);
+
+    ASSERT_EQ(2, object.stringArray.size());
+    EXPECT_STREQ("aaa", object.stringArray[0]);
+    EXPECT_STREQ("bbb", object.stringArray[1]);
+}
+
+TEST(Config, DataTranslatorNegative)
+{
+    Config config;
+    ASSERT_TRUE(config.Parse(TRANSLATOR_TEST_CONFIG));
+
+    struct TestStruct
+    {
+        int integerValue;
+        bool booleanValue;
+        float floatValue;
+        const char* stringValue;
+
+        std::vector<int> intArray;
+        std::vector<bool> boolArray;
+        std::vector<float> floatArray;
+        std::vector<const char*> stringArray;
+    };
+
+    // set up data translator with messed up types
+    auto translator = DataTranslator<TestStruct>()
+        .Add("integerValue", &TestStruct::stringValue)
+        .Add("booleanValue", &TestStruct::floatValue)
+        .Add("floatValue", &TestStruct::booleanValue)
+        .Add("stringValue", &TestStruct::integerValue)
+        .Add("intArray", &TestStruct::stringArray)
+        .Add("boolArray", &TestStruct::floatArray)
+        .Add("floatArray", &TestStruct::boolArray)
+        .Add("stringArray", &TestStruct::intArray);
+
+    TestStruct object;
+    ASSERT_FALSE(config.TranslateConfigObject(config.GetRootNode(), translator, object));
 }
