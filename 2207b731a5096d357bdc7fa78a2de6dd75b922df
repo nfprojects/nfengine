@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba7be1f8_9d676fea",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-02-19T17:04:35Z",
+      "side": 1,
+      "message": "I think a message about native instructions would be in place here. \"nfCommon built with native instructions\" or sth.",
+      "revId": "2207b731a5096d357bdc7fa78a2de6dd75b922df",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba7be1f8_1d9b7fca",
+        "filename": "nfEngine/nfCommon/Math/FPU/RayGeometry.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-02-19T17:04:35Z",
+      "side": 1,
+      "message": "I guess this shouldn\u0027t be here.",
+      "range": {
+        "startLine": 43,
+        "startChar": 4,
+        "endLine": 43,
+        "endChar": 28
+      },
+      "revId": "2207b731a5096d357bdc7fa78a2de6dd75b922df",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba7be1f8_bd92739d",
+        "filename": "nfEngine/nfCommon/Math/Vector.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-02-19T17:04:35Z",
+      "side": 1,
+      "message": "I think you must standarize this setup. Whichever you choose (this method, or the above multi-#ifdef style) is fine for me, however this must be the same throughout the entire file.",
+      "range": {
+        "startLine": 118,
+        "startChar": 0,
+        "endLine": 118,
+        "endChar": 18
+      },
+      "revId": "2207b731a5096d357bdc7fa78a2de6dd75b922df",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba7be1f8_1de9bf1a",
+        "filename": "nfEngine/nfCommon/nfCommon.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-02-19T17:04:35Z",
+      "side": 1,
+      "message": "What about Linux? SSE should work there as well (at least Common was built with SSE until now)",
+      "revId": "2207b731a5096d357bdc7fa78a2de6dd75b922df",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
