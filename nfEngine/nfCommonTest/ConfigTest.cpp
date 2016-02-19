@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "../nfCommon/Config.hpp"
+#include "../nfCommon/ConfigDataTranslator.hpp"
 
 using namespace NFE::Common;
 
@@ -242,4 +243,40 @@ TEST(Config, Generate)
     config.SetRoot(root);
 
     EXPECT_EQ(REFERENCE_STRING, config.ToString(false));
+}
+
+TEST(Config, DataTranslator)
+{
+    const char* TRANSLATOR_TEST_CONFIG = R"(
+    integerValue = -1
+    booleanValue = true
+    floatValue = 10.0
+    stringValue = "this is a string"
+    subObject = { a = 123 }
+    array = [ 1 2 3 ]
+    )";
+
+    Config config;
+    ASSERT_TRUE(config.Parse(TRANSLATOR_TEST_CONFIG));
+
+    struct TestStruct
+    {
+        int integerValue;
+        bool booleanValue;
+        float floatValue;
+        const char* stringValue;
+    };
+
+    auto translator = DataTranslator<TestStruct>()
+        .Add("integerValue", &TestStruct::integerValue)
+        .Add("booleanValue", &TestStruct::booleanValue)
+        .Add("floatValue", &TestStruct::floatValue)
+        .Add("stringValue", &TestStruct::stringValue);
+
+    TestStruct object;
+    ASSERT_TRUE(config.TranslateConfigObject(config.GetRootNode(), translator, object));
+    EXPECT_EQ(-1, object.integerValue);
+    EXPECT_EQ(true, object.booleanValue);
+    EXPECT_EQ(10.0f, object.floatValue);
+    EXPECT_STREQ("this is a string", object.stringValue);
 }
