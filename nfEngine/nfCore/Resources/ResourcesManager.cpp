@@ -58,6 +58,12 @@ void ResManager::Release()
 
 ResourceBase* ResManager::GetResource(const char* name, ResourceType type, bool check)
 {
+    if (name == nullptr)
+    {
+        LOG_ERROR("Resource name is NULL");
+        return nullptr;
+    }
+
     std::unique_lock<std::mutex> ulock(mResListMutex);
 
     ResourceBase* resource = nullptr;
