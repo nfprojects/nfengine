@@ -1,5 +1,6 @@
 #include "PCH.hpp"
 #include "RendererTest.hpp"
+#include "../nfCommon/Math/Math.hpp"
 
 class Texture2D : public RendererTest
 {
@@ -17,12 +18,16 @@ TEST_F(Texture2D, Clear)
 
     ASSERT_TRUE(EndTestFrame(pixels));
 
-    bool ok = true;
     for (int i = 0; i < 16; ++i)
         for (int j = 0; j < 16; ++j)
-            for (int k = 0; k < 4; ++k)
-                ok &= color[k] == pixels[i][j][k];
-    EXPECT_TRUE(ok);
+        {
+            SCOPED_TRACE("i = " + std::to_string(i) + ", = " + std::to_string(j));
+            EXPECT_NEAR(color[0], pixels[i][j][0], NFE_MATH_EPSILON);
+            EXPECT_NEAR(color[1], pixels[i][j][1], NFE_MATH_EPSILON);
+            EXPECT_NEAR(color[2], pixels[i][j][2], NFE_MATH_EPSILON);
+            EXPECT_NEAR(color[3], pixels[i][j][3], NFE_MATH_EPSILON);
+
+        }
 }
 
 TEST_F(Texture2D, Creation)

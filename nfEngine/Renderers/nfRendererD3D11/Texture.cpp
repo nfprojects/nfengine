@@ -49,6 +49,14 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
 {
     HRESULT hr;
 
+    if (desc.width < 1 || desc.height < 1 || desc.depth < 1)
+    {
+        LOG_ERROR("Invalid texture dimensions (width = %i, height = %i, depth = %i)",
+                  desc.width, desc.height, desc.depth);
+        return false;
+    }
+
+
     if (desc.binding & ~(NFE_RENDERER_TEXTURE_BIND_SHADER |
                          NFE_RENDERER_TEXTURE_BIND_RENDERTARGET |
                          NFE_RENDERER_TEXTURE_BIND_DEPTH))
@@ -136,7 +144,16 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
         hr = D3D_CALL_CHECK(gDevice->Get()->CreateTexture2D(&td, initialData, &mTexture2D));
     }
     else
+    {
+        if (desc.access == BufferAccess::GPU_ReadOnly)
+        {
+            LOG_ERROR("GPU read-only textures must be created with initial data provided");
+            return false;
+        }
+
         hr = D3D_CALL_CHECK(gDevice->Get()->CreateTexture2D(&td, NULL, &mTexture2D));
+    }
+
 
     if (FAILED(hr))
         return false;
