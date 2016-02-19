@@ -209,6 +209,12 @@
     <ClInclude Include="PackedArray.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Config.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigTokenizer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -357,6 +363,12 @@
     </ClCompile>
     <ClCompile Include="Math\FPU\GeometryFPU.cpp">
       <Filter>Source Files\Math\FPU</Filter>
+    </ClCompile>
+    <ClCompile Include="Config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigTokenizer.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -30,3 +30,5 @@
 #include <vector>
 #include <locale>
 #include <stack>
+#include <string>
+#include <sstream>
