@@ -143,7 +143,8 @@ TEST(MathGeometry, RaySphereIntersection)
     auto onSphereSurface = [&radius](const Vector& p) -> bool
     {
         float len = VectorLength3(p).f[0];
-        return fabsf(len - radius) < NFE_MATH_EPSILON;
+        // increased epsilon in order to handle corner cases
+        return fabsf(len - radius) < 10.0f * NFE_MATH_EPSILON;
     };
 
     Vector dist;
