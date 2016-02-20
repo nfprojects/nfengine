@@ -36,6 +36,25 @@ TEST(MathVector, VectorLoadAndStore)
     EXPECT_TRUE(Vector(4.0f, 4.0f, 4.0f, 4.0f) == vecB.SplatW());
 }
 
+TEST(MathVector, VectorMisc)
+{
+    Vector vA(1.0f, 2.0f, 3.0f, 4.0f);
+    Vector vB(5.0f, 6.0f, 7.0f, 8.0f);
+
+    EXPECT_TRUE(Vector(1.0f, 2.0f, 3.0f, 4.0f) ==
+                VectorSelectBySign(vA, vB, Vector(1.0f, 1.0f, 1.0f, 1.0f)));
+    EXPECT_TRUE(Vector(5.0f, 2.0f, 3.0f, 4.0f) ==
+                VectorSelectBySign(vA, vB, Vector(-1.0f, 1.0f, 1.0f, 1.0f)));
+    EXPECT_TRUE(Vector(1.0f, 6.0f, 3.0f, 4.0f) ==
+                VectorSelectBySign(vA, vB, Vector(1.0f, -1.0f, 1.0f, 1.0f)));
+    EXPECT_TRUE(Vector(1.0f, 2.0f, 7.0f, 4.0f) ==
+                VectorSelectBySign(vA, vB, Vector(1.0f, 1.0f, -1.0f, 1.0f)));
+    EXPECT_TRUE(Vector(1.0f, 2.0f, 3.0f, 8.0f) ==
+                VectorSelectBySign(vA, vB, Vector(1.0f, 1.0f, 1.0f, -1.0f)));
+    EXPECT_TRUE(Vector(5.0f, 6.0f, 7.0f, 8.0f) ==
+                VectorSelectBySign(vA, vB, Vector(-1.0f, -1.0f, -1.0f, -1.0f)));
+}
+
 TEST(MathVector, VectorArithmetics)
 {
     EXPECT_TRUE(vecA + vecB == vecC);
@@ -45,7 +64,6 @@ TEST(MathVector, VectorArithmetics)
     EXPECT_TRUE(vecB * 2.0f == Vector(2.0f, 4.0f, 6.0f, 8.0f));
     EXPECT_TRUE(vecB / 2.0f == Vector(0.5f, 1.0f, 1.5f, 2.0f));
     EXPECT_TRUE(VectorAbs(Vector(-1.0f, -2.0f, 0.0f, 3.0f)) == Vector(1.0f, 2.0f, 0.0f, 3.0f));
-
 }
 
 TEST(MathVector, VectorLerp)
@@ -53,7 +71,6 @@ TEST(MathVector, VectorLerp)
     EXPECT_TRUE(VectorLerp(vecA, vecB, 0.0f) == vecA);
     EXPECT_TRUE(VectorLerp(vecA, vecB, 1.0f) == vecB);
     EXPECT_TRUE(VectorLerp(vecA, vecB, 0.5f) == Vector(1.0f, 1.5f, 2.0f, 2.5f));
-
 }
 
 TEST(MathVector, VectorMinMax)
@@ -62,7 +79,6 @@ TEST(MathVector, VectorMinMax)
     EXPECT_TRUE(VectorMin(vecE, vecB) == Vector(1.0f, 2.0f, 2.0f, 1.0f));
     EXPECT_TRUE(VectorMax(vecB, vecE) == Vector(4.0f, 3.0f, 3.0f, 4.0f));
     EXPECT_TRUE(VectorMax(vecB, vecE) == Vector(4.0f, 3.0f, 3.0f, 4.0f));
-
 }
 
 TEST(MathVector, VectorGeometrics)

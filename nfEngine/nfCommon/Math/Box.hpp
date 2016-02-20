@@ -57,7 +57,7 @@ Vector Box::GetVertex(int id) const
 
 Vector Box::SupportVertex(const Vector& dir) const
 {
-    return VectorSelectBySign(dir, max, min);
+    return VectorSelectBySign(max, min, dir);
 }
 
 void Box::MakeFromPoints(const Vector* pPoints, int number)
