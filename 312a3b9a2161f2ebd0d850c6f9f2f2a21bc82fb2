@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a72e520_04524bdd",
+        "filename": "nfEngine/nfCommonTest/DirectoryWatchTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-02-24T11:46:35Z",
+      "side": 1,
+      "message": "This should not be commented.",
+      "revId": "312a3b9a2161f2ebd0d850c6f9f2f2a21bc82fb2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
