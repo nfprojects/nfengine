@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a72e520_5387a761",
+        "filename": "nfEngine/nfCommon/DirectoryWatch.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-02-25T10:31:01Z",
+      "side": 1,
+      "message": "Since you already did a part of the reorganization, move the rest of this private field up. :)",
+      "revId": "f85c06595cb28d3671b77d3915fb3c3744cf8fa0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
