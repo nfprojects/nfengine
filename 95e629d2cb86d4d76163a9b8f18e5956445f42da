@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a72e520_c45af34f",
+        "filename": "nfEngine/nfRendererDemo/Main.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-02-25T09:52:23Z",
+      "side": 1,
+      "message": "As this scene seems to extend the DepthStencilScene, I suggest moving this line one line upwards. This way, it will be accessible without the need for Instancing support.",
+      "revId": "95e629d2cb86d4d76163a9b8f18e5956445f42da",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a72e520_0455eb1c",
+        "filename": "nfEngine/nfRendererDemo/Scenes/RenderTargets.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 420,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-02-25T09:52:23Z",
+      "side": 1,
+      "message": "rm, unneeded comment",
+      "revId": "95e629d2cb86d4d76163a9b8f18e5956445f42da",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a72e520_b80b582a",
+        "filename": "nfEngine/nfRendererDemo/Shaders/D3D11/PostProcessPS.hlsl",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-02-25T09:52:23Z",
+      "side": 1,
+      "message": "Other shader files do not have this boilerplate. I think we can skip it, especially because the .glsl and .hlsl files are not analyzed by Doxy",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 3
+      },
+      "revId": "95e629d2cb86d4d76163a9b8f18e5956445f42da",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a72e520_d8081430",
+        "filename": "nfEngine/nfRendererDemo/Shaders/D3D11/RenderTargetPS.hlsl",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-02-25T09:52:23Z",
+      "side": 1,
+      "message": "As in earlier file",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 3
+      },
+      "revId": "95e629d2cb86d4d76163a9b8f18e5956445f42da",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
