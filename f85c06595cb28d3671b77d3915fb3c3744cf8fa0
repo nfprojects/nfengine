@@ -34,6 +34,24 @@
       "revId": "f85c06595cb28d3671b77d3915fb3c3744cf8fa0",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a72e520_f9c6b148",
+        "filename": "nfEngine/nfCommon/DirectoryWatch.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-02-26T07:03:18Z",
+      "side": 1,
+      "message": "Nvm. It was more about the fact, that I didn\u0027t notice Event and WatchCallback being defined in public.",
+      "parentUuid": "5a72e520_735823fb",
+      "revId": "f85c06595cb28d3671b77d3915fb3c3744cf8fa0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
