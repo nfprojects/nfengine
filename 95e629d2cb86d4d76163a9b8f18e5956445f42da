@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "5a72e520_b95fd971",
+        "filename": "nfEngine/nfRendererDemo/Main.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-02-26T08:30:38Z",
+      "side": 1,
+      "message": "Yes, I do agree and I had plans for that. For now, however, since this would not be a part of this commit, I would prefer you to switch places of VertexBuffersScene and RenderTargetsScene.\n\nA TODO comment would be a good thing here as well, so the issue won\u0027t be forgotten. :)",
+      "parentUuid": "5a72e520_1369af8b",
+      "revId": "95e629d2cb86d4d76163a9b8f18e5956445f42da",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a72e520_0455eb1c",
         "filename": "nfEngine/nfRendererDemo/Scenes/RenderTargets.cpp",
         "patchSetId": 3
