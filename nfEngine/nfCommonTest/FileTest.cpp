@@ -31,6 +31,18 @@ TEST(FileTest, Simple)
     EXPECT_EQ(true, FileSystem::Remove(filePath));
 }
 
+TEST(FileTest, OpenNotExisting)
+{
+    const std::string filePath = "test_file";
+
+    File file(filePath, AccessMode::Read);
+    EXPECT_FALSE(file.IsOpened());
+    EXPECT_EQ(PathType::Invalid, FileSystem::GetPathType(filePath));
+
+    // cleanup
+    FileSystem::Remove(filePath);
+}
+
 TEST(FileTest, Overwrite)
 {
     const std::string filePath = "test_file";

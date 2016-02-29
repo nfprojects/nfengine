@@ -73,10 +73,10 @@ bool File::Open(const std::string& path, AccessMode access, bool overwrite)
     }
 
     DWORD creationDisposition;
-    if (overwrite && access != AccessMode::Read)
-        creationDisposition = CREATE_ALWAYS;
+    if (access == AccessMode::Read) // when opening for read-only, open only exising files
+        creationDisposition = OPEN_EXISTING;
     else
-        creationDisposition = OPEN_ALWAYS;
+        creationDisposition = overwrite ? CREATE_ALWAYS : OPEN_ALWAYS;
 
     mFile = ::CreateFile(widePath.c_str(), desiredAccess, FILE_SHARE_READ, NULL,
                          creationDisposition, FILE_ATTRIBUTE_NORMAL, 0);
