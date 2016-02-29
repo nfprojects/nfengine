@@ -129,9 +129,6 @@
     <ClCompile Include="Scene\SceneManager.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\Aligned.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
     <ClCompile Include="Utils\BVH.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
@@ -256,9 +253,6 @@
     </ClInclude>
     <ClInclude Include="Scene\SceneManager.hpp">
       <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\Aligned.hpp">
-      <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Utils\BVH.hpp">
       <Filter>Utils</Filter>
