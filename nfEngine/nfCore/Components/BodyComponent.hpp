@@ -9,7 +9,7 @@
 #include "../Core.hpp"
 #include "Component.hpp"
 #include "../Resources/CollisionShape.hpp"
-#include "../Utils/Aligned.hpp"
+#include "../nfCommon/Aligned.hpp"
 
 class btDefaultMotionState;
 class btRigidBody;
@@ -36,7 +36,9 @@ struct BodyComponentDesc
  * Component representing physical body.
  */
 NFE_ALIGN16
-class CORE_API BodyComponent : public ComponentBase<BodyComponent>, public Util::Aligned
+class CORE_API BodyComponent
+    : public ComponentBase<BodyComponent>
+    , public Common::Aligned<16>
 {
     friend class PhysicsSystem;
     friend class RendererSystem;
