@@ -8,14 +8,14 @@
 
 #include "../Core.hpp"
 #include "Component.hpp"
-#include "../Utils/Aligned.hpp"
+#include "../nfCommon/Aligned.hpp"
 #include "../nfCommon/Math/Quaternion.hpp"
 
 namespace NFE {
 namespace Scene {
 
 // TODO: consider moving to nfCommon/Math and renaming to Matrix3x4
-class Orientation : public Util::Aligned
+class Orientation : public Common::Aligned<16>
 {
 public:
     Math::Vector x, y, z;
@@ -40,7 +40,9 @@ public:
 #define NFE_TRANSFORM_FLAG_LOCAL_MOVED  (1 << 1)
 
 NFE_ALIGN16
-class CORE_API TransformComponent : public ComponentBase<TransformComponent>, public Util::Aligned
+class CORE_API TransformComponent
+    : public ComponentBase<TransformComponent>
+    , public Common::Aligned<16>
 {
     friend class PhysicsSystem;
     friend class SceneManager;
