@@ -7,7 +7,7 @@
 #pragma once
 
 #include "../Core.hpp"
-#include "../Utils/Aligned.hpp"
+#include "../nfCommon/Aligned.hpp"
 #include "../nfCommon/ThreadPool.hpp"
 #include "../nfCommon/Math/Frustum.hpp"
 #include "../Renderer/RendererResources.hpp"
@@ -63,7 +63,7 @@ struct NFE_ALIGN16 RenderingData
 };
 
 NFE_ALIGN16
-class RendererSystem : public Util::Aligned
+class RendererSystem : public Common::Aligned<16>
 {
     typedef std::tuple<TransformComponent*, MeshComponent*, BodyComponent*> MeshEntry;
     typedef std::tuple<TransformComponent*, LightComponent*> LightEntry;
@@ -80,7 +80,7 @@ class RendererSystem : public Util::Aligned
     std::vector<LightEntry> mOmniLights;  // active omni light entities
     std::vector<LightEntry> mSpotLights;  // active spot light entities
     std::vector<LightEntry> mDirLights;   // active dir light entities
-    std::vector<SpotLightData, Util::AlignedAllocator<SpotLightData, 16>> mSpotLightsData;
+    std::vector<SpotLightData, Common::AlignedAllocator<SpotLightData, 16>> mSpotLightsData;
     // which spot lights have its shadow map already rendered?
     std::unique_ptr<std::atomic_bool[]> mSpotLightsShadowDrawn;
     // which omni lights have its shadow map already rendered?
