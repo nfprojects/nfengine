@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "5a72e520_35fcc53e",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-02-29T15:15:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ab29df4_27e8efb3",
+      "range": {
+        "startLine": 3,
+        "startChar": 8,
+        "endLine": 3,
+        "endChar": 21
+      },
+      "revId": "ec277252afcd59acf32e912336e4544aa151061b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ab29df4_c7d81320",
         "filename": "Scripts/syncher.py",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2015-11-03T10:31:49Z",
       "side": 1,
       "message": "Since this is a dir, end it with /\n\nDo the same with dataSubDir.",
+      "range": {
+        "startLine": 12,
+        "startChar": 10,
+        "endLine": 12,
+        "endChar": 25
+      },
+      "revId": "ec277252afcd59acf32e912336e4544aa151061b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a72e520_15ffc935",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-02-29T15:15:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ab29df4_c7d81320",
       "range": {
         "startLine": 12,
         "startChar": 10,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "5a72e520_f5014d3a",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-02-29T15:15:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ab29df4_67d107fb",
+      "range": {
+        "startLine": 14,
+        "startChar": 16,
+        "endLine": 14,
+        "endChar": 36
+      },
+      "revId": "ec277252afcd59acf32e912336e4544aa151061b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9ab29df4_67f8277d",
         "filename": "Scripts/syncher.py",
         "patchSetId": 3
@@ -82,6 +154,30 @@
       "writtenOn": "2015-11-03T10:31:49Z",
       "side": 1,
       "message": "IMO \u0027## DONE ##\u0027 will be more readable. :)",
+      "range": {
+        "startLine": 123,
+        "startChar": 10,
+        "endLine": 123,
+        "endChar": 20
+      },
+      "revId": "ec277252afcd59acf32e912336e4544aa151061b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a72e520_75955de3",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-02-29T15:15:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9ab29df4_67f8277d",
       "range": {
         "startLine": 123,
         "startChar": 10,
