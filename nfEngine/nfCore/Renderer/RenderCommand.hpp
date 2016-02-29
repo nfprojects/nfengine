@@ -7,7 +7,7 @@
 #pragma once
 
 #include "../Core.hpp"
-#include "../Utils/Aligned.hpp"
+#include "../nfCommon/Aligned.hpp"
 #include "../Renderers/RendererInterface/Buffer.hpp"
 
 namespace NFE {
@@ -43,7 +43,7 @@ class RenderCommandBuffer
 {
 public:
     // use custom aligned allocator because RenderCommand uses SIMD types
-    std::vector<RenderCommand, Util::AlignedAllocator<RenderCommand, 64>> commands;
+    std::vector<RenderCommand, Common::AlignedAllocator<RenderCommand, 64>> commands;
 
     void PushBack(const RenderCommand& command);
     void Sort();
