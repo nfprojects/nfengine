@@ -186,6 +186,7 @@
     <ClInclude Include="PCH.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AlignedTest.cpp" />
     <ClCompile Include="BufferInputStreamTest.cpp" />
     <ClCompile Include="BufferOutputStreamTest.cpp" />
     <ClCompile Include="ConfigTest.cpp" />

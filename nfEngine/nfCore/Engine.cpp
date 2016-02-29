@@ -164,7 +164,7 @@ bool Engine::Advance(View** views, size_t viewsNum,
     }
 
     // temporary rendering data for each view
-    std::vector<RenderingData, Util::AlignedAllocator<RenderingData, 16>> renderingData;
+    std::vector<RenderingData, Common::AlignedAllocator<RenderingData, 16>> renderingData;
     renderingData.resize(viewsNum);
 
     bool scenesRenderedSuccessfully = true;
