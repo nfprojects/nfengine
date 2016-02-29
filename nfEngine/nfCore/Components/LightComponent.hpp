@@ -9,7 +9,7 @@
 #include "../Core.hpp"
 #include "Component.hpp"
 #include "../Resources/Texture.hpp"
-#include "../Utils/Aligned.hpp"
+#include "../nfCommon/Aligned.hpp"
 
 namespace NFE {
 namespace Scene {
@@ -74,7 +74,9 @@ struct LightDesc
 #pragma pack(pop)
 
 NFE_ALIGN16
-class CORE_API LightComponent : public ComponentBase<LightComponent>, public Util::Aligned
+class CORE_API LightComponent
+    : public ComponentBase<LightComponent>
+    , public Common::Aligned<16>
 {
     friend class SceneManager;
     friend class RendererSystem;
