@@ -18,7 +18,7 @@ using namespace Math;
  */
 struct GBufferRendererContext
 {
-    std::vector<InstanceData, Util::AlignedAllocator<InstanceData, 64>> instanceData;
+    std::vector<InstanceData, Common::AlignedAllocator<InstanceData, 64>> instanceData;
 
     GBufferRendererContext();
 
