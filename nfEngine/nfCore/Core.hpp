@@ -32,7 +32,7 @@ namespace NFE {
 #define UNUSED(x) (void)(x)
 #endif // UNUSED
 
-#define NFE_ALIGNED_CLASS(c) __declspec(align(16)) c : public Util::Aligned
+#define NFE_ALIGNED_CLASS(c) __declspec(align(16)) c : public Common::Aligned<16>
 
 // define basic data types
 typedef unsigned __int64 uint64;

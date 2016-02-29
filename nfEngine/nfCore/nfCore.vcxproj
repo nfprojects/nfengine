@@ -395,7 +395,6 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Utils\Aligned.cpp" />
     <ClCompile Include="Utils\BVH.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -439,7 +438,6 @@
     <ClInclude Include="Systems\PhysicsSystem.hpp" />
     <ClInclude Include="Systems\RendererSystem.hpp" />
     <ClInclude Include="Systems\TransformSystem.hpp" />
-    <ClInclude Include="Utils\Aligned.hpp" />
     <ClInclude Include="Utils\BVH.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
