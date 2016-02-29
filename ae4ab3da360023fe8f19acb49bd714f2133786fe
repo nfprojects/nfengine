@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "5a72e520_b0dd2345",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-02-29T17:23:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a72e520_508dcf7a",
+      "range": {
+        "startLine": 20,
+        "startChar": 4,
+        "endLine": 20,
+        "endChar": 7
+      },
+      "revId": "ae4ab3da360023fe8f19acb49bd714f2133786fe",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a72e520_109357a4",
         "filename": "Scripts/syncher.py",
         "patchSetId": 4
@@ -36,6 +60,30 @@
       "writtenOn": "2016-02-29T16:18:06Z",
       "side": 1,
       "message": "is this really needed here?",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 40,
+        "endChar": 7
+      },
+      "revId": "ae4ab3da360023fe8f19acb49bd714f2133786fe",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a72e520_90d82755",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-02-29T17:23:40Z",
+      "side": 1,
+      "message": "It is not. It was intended for the next commit.",
+      "parentUuid": "5a72e520_109357a4",
       "range": {
         "startLine": 35,
         "startChar": 0,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "5a72e520_70d3ab38",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-02-29T17:23:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a72e520_70e9eb19",
+      "range": {
+        "startLine": 42,
+        "startChar": 4,
+        "endLine": 42,
+        "endChar": 7
+      },
+      "revId": "ae4ab3da360023fe8f19acb49bd714f2133786fe",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a72e520_90874761",
         "filename": "Scripts/syncher.py",
         "patchSetId": 4
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "5a72e520_50178fed",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-02-29T17:23:40Z",
+      "side": 1,
+      "message": "Yup.\nI was asked to do single thing in a single commit, so adding some management for multiple arguments, when there is only 1 available would be criticized.",
+      "parentUuid": "5a72e520_90874761",
+      "range": {
+        "startLine": 73,
+        "startChar": 28,
+        "endLine": 73,
+        "endChar": 32
+      },
+      "revId": "ae4ab3da360023fe8f19acb49bd714f2133786fe",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a72e520_f095db88",
         "filename": "Scripts/syncher.py",
         "patchSetId": 4
@@ -105,6 +201,24 @@
       "writtenOn": "2016-02-29T16:18:06Z",
       "side": 1,
       "message": "Maybe add some progress indicator? e.g.:\nDownloading 1/123: Bla.txt",
+      "revId": "ae4ab3da360023fe8f19acb49bd714f2133786fe",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a72e520_301a1318",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-02-29T17:23:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a72e520_f095db88",
       "revId": "ae4ab3da360023fe8f19acb49bd714f2133786fe",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
