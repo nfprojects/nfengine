@@ -9,7 +9,7 @@
 #include "../Core.hpp"
 #include "../Resources/Mesh.hpp"
 #include "Component.hpp"
-#include "../Utils/Aligned.hpp"
+#include "../nfCommon/Aligned.hpp"
 
 namespace NFE {
 namespace Scene {
@@ -23,7 +23,9 @@ struct MeshComponentDesc
 #pragma pack(pop)
 
 NFE_ALIGN16
-class CORE_API MeshComponent : public ComponentBase<MeshComponent>, public Util::Aligned
+class CORE_API MeshComponent
+    : public ComponentBase<MeshComponent>
+    , public Common::Aligned<16>
 {
     friend class SceneManager;
     friend class RendererSystem;

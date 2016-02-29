@@ -7,7 +7,7 @@
 #pragma once
 
 #include "../Core.hpp"
-#include "../Utils/Aligned.hpp"
+#include "../nfCommon/Aligned.hpp"
 #include "../nfCommon/AsyncThreadPool.hpp"
 
 namespace NFE {
@@ -52,7 +52,7 @@ typedef bool (*OnUnloadCallback)(ResourceBase*, void*);
  * @details Abstract resource class. It's main role is reference counter tracking and
             loading/unloading data when needed.
 */
-class CORE_API ResourceBase : public Util::Aligned
+class CORE_API ResourceBase : public Common::Aligned<16>
 {
     friend class ResManager;
     friend void ResourceLoadingCallback(void*, int, int);
