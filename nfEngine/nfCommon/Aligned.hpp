@@ -6,34 +6,66 @@
 
 #pragma once
 
-#include "../Core.hpp"
+#include "nfCommon.hpp"
 
 namespace NFE {
-namespace Util {
+namespace Common {
 
-// we need to do this because of Visual Studio compile bug
+// workaround for Visual Studio compiler bug that generates
+// "warning C4100: 'p': unreferenced formal parameter" in AlignedAllocator::destroy
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable: 4100)
 #endif // _MSC_VER
 
-/*
-    Override to align children objects to 16 bytes.
-*/
-class CORE_API Aligned
+
+/**
+ * Override this class to align children objects.
+ */
+template <size_t Alignment = 16>
+class Aligned
 {
 public:
-    virtual ~Aligned();
+    virtual ~Aligned() { }
 
-    void* operator new(size_t size);
-    void operator delete(void* ptr);
-    void* operator new[] (size_t size);
-    void operator delete[] (void* ptr);
+#if defined(WIN32)
+    void* operator new(size_t size)
+    {
+        return _aligned_malloc(size, Alignment);
+    }
+
+    void operator delete(void* ptr)
+    {
+        _aligned_free(ptr);
+    }
+#elif defined(__LINUX__) | defined(__linux__)
+    void* operator new(size_t size)
+    {
+        return aligned_alloc(Alignment, size);
+    }
+
+    void operator delete(void* ptr)
+    {
+        free(ptr);
+    }
+#else
+#error "Target system not supported!"
+#endif // defined(WIN32)
+
+    // placement new
+    void* operator new(size_t size, void* ptr)
+    {
+        (void)size;
+        return ptr;
+    }
 };
 
-/*
-    This code comes from https://gist.github.com/donny-dont/1471329
-*/
+
+/**
+ * This code comes from https://gist.github.com/donny-dont/1471329
+ *
+ * TODO rewrite the implementation
+ */
 template <typename T, size_t Alignment>
 class AlignedAllocator
 {
@@ -45,7 +77,7 @@ public:
     typedef const T& const_reference;
     typedef T value_type;
     typedef size_t size_type;
-    typedef ptrdiff_t difference_type;
+    typedef std::ptrdiff_t difference_type;
 
     T* address(T& r) const
     {
@@ -90,7 +122,7 @@ public:
     // Returns true if and only if storage allocated from *this
     // can be deallocated from other, and vice versa.
     // Always returns true for stateless allocators.
-    bool operator==(const AlignedAllocator& other) const
+    bool operator==(const AlignedAllocator&) const
     {
         return true;
     }
@@ -120,7 +152,11 @@ public:
             throw std::length_error("AlignedAllocator<T>::allocate() - Integer overflow.");
 
         // Mallocator wraps malloc().
-        void* const pv = _mm_malloc(n * sizeof(T), Alignment);
+#if defined(WIN32)
+        void* const pv = _aligned_malloc(n * sizeof(T), Alignment);
+#elif defined(__LINUX__) | defined(__linux__)
+        void* const pv = aligned_alloc(Alignment, n * sizeof(T));
+#endif
         // Allocators should throw std::bad_alloc in the case of memory allocation failure.
         if (nullptr == pv)
             throw std::bad_alloc();
@@ -130,7 +166,11 @@ public:
 
     void deallocate(T* const p, const size_t) const
     {
-        _mm_free(p);
+#if defined(WIN32)
+        _aligned_free(p);
+#elif defined(__LINUX__) | defined(__linux__)
+        free(p);
+#endif
     }
 
     // The following will be the same for all allocators that ignore hints.
@@ -155,5 +195,5 @@ private:
 #pragma warning(pop)
 #endif // _MSC_VER
 
-} // namespace Util
+} // namespace Common
 } // namespace NFE

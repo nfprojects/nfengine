@@ -216,6 +216,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ConfigDataTranslator.hpp">
+        <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Aligned.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

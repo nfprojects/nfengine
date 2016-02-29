@@ -28,6 +28,7 @@
     <ClCompile Include="PackedArray.cpp" />
     <ClCompile Include="ImageTest.cpp" />
     <ClCompile Include="ConfigTest.cpp" />
+    <ClCompile Include="AlignedTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.hpp" />
