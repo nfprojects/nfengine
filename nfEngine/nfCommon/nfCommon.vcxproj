@@ -207,6 +207,7 @@ popd</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Aligned.hpp" />
     <ClInclude Include="AsyncThreadPool.hpp" />
     <ClInclude Include="Bit.hpp" />
     <ClInclude Include="Buffer.hpp" />
