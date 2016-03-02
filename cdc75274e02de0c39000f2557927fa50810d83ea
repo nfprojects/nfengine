@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a72e520_23472221",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/MasterContext.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-03-02T16:20:47Z",
+      "side": 1,
+      "message": "Why are you complicating this so much? You need to create object, cast, etc. Why not just put context data in ifdef like you did below:\n\n// Platform-sepcific context data\n#if defined(__linux__) \u0026\u0026 defined(__LINUX__)\n    Display* mDisplay; // TODO replace with std::shared_ptr\n    GLXFBConfig mBestFB;\n    GLXContext mContext;\n    Pixmap mPixmap;\n    GLXPixmap mGLXPixmap; ///\u003c Pixmap used for off-window rendering context\n    GLXDrawable mDrawable;\n#elif defined(WIN32)\n    // TODO\n#endif",
+      "revId": "cdc75274e02de0c39000f2557927fa50810d83ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
