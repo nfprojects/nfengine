@@ -1,0 +1,141 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a72e520_b217dda2",
+        "filename": "nfEngine/nfCommon/PackedArray.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-03T10:26:26Z",
+      "side": 1,
+      "message": "Add an extra line to separate from includes.",
+      "revId": "a8b07227f8ee6d380012301b28c6b0a563601cd7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a72e520_9212e1b2",
+        "filename": "nfEngine/nfCommon/PackedArray.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-03T10:26:26Z",
+      "side": 1,
+      "message": "No need for this. You already are in private.",
+      "revId": "a8b07227f8ee6d380012301b28c6b0a563601cd7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a72e520_d20c5997",
+        "filename": "nfEngine/nfCommon/PackedArray.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-03T10:26:26Z",
+      "side": 1,
+      "message": "I know this is a template, but I would prefer splitting the contents of class definition and its method definitions.\n\nNo worries, I do not ask for a separate file or sth. Just move method definitions outside of class scope.",
+      "revId": "a8b07227f8ee6d380012301b28c6b0a563601cd7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a72e520_92602137",
+        "filename": "nfEngine/nfCommon/PackedArray.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-03T10:26:26Z",
+      "side": 1,
+      "message": "Correct me if I\u0027m wrong, but I think this condition is always true when (index \u003c mSize) is met. After all MaxSize will always be higher than, or equal to mSize.",
+      "range": {
+        "startLine": 173,
+        "startChar": 11,
+        "endLine": 173,
+        "endChar": 32
+      },
+      "revId": "a8b07227f8ee6d380012301b28c6b0a563601cd7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a72e520_32512d63",
+        "filename": "nfEngine/nfCommon/PackedArray.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-03T10:26:26Z",
+      "side": 1,
+      "message": "Do we really need this overload? You can constify the result of the operator above, there should be no need to create a new operator overload specifically for const version.",
+      "range": {
+        "startLine": 236,
+        "startChar": 0,
+        "endLine": 245,
+        "endChar": 5
+      },
+      "revId": "a8b07227f8ee6d380012301b28c6b0a563601cd7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a72e520_32d84def",
+        "filename": "nfEngine/nfCommonTest/PackedArray.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-03T10:26:26Z",
+      "side": 1,
+      "message": "newline",
+      "revId": "a8b07227f8ee6d380012301b28c6b0a563601cd7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a72e520_72e2c5a0",
+        "filename": "nfEngine/nfCommonTest/PackedArray.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-03T10:26:26Z",
+      "side": 1,
+      "message": "The value repeats itself across the tests. Move it to anon namespace at the top.",
+      "range": {
+        "startLine": 56,
+        "startChar": 0,
+        "endLine": 56,
+        "endChar": 31
+      },
+      "revId": "a8b07227f8ee6d380012301b28c6b0a563601cd7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
