@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "5a72e520_2b9374a4",
+        "filename": "nfEngine/nfCommon/PackedArray.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-03-03T17:16:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a72e520_55585356",
+      "revId": "a8b07227f8ee6d380012301b28c6b0a563601cd7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a72e520_b217dda2",
         "filename": "nfEngine/nfCommon/PackedArray.hpp",
         "patchSetId": 4
@@ -89,6 +107,24 @@
     },
     {
       "key": {
+        "uuid": "5a72e520_4b90b095",
+        "filename": "nfEngine/nfCommon/PackedArray.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-03-03T17:16:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a72e520_9212e1b2",
+      "revId": "a8b07227f8ee6d380012301b28c6b0a563601cd7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a72e520_d20c5997",
         "filename": "nfEngine/nfCommon/PackedArray.hpp",
         "patchSetId": 4
@@ -106,6 +142,24 @@
     },
     {
       "key": {
+        "uuid": "5a72e520_eb46bc22",
+        "filename": "nfEngine/nfCommon/PackedArray.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-03-03T17:16:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a72e520_d20c5997",
+      "revId": "a8b07227f8ee6d380012301b28c6b0a563601cd7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a72e520_92602137",
         "filename": "nfEngine/nfCommon/PackedArray.hpp",
         "patchSetId": 4
@@ -117,6 +171,30 @@
       "writtenOn": "2016-03-03T10:26:26Z",
       "side": 1,
       "message": "Correct me if I\u0027m wrong, but I think this condition is always true when (index \u003c mSize) is met. After all MaxSize will always be higher than, or equal to mSize.",
+      "range": {
+        "startLine": 173,
+        "startChar": 11,
+        "endLine": 173,
+        "endChar": 32
+      },
+      "revId": "a8b07227f8ee6d380012301b28c6b0a563601cd7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a72e520_8be9c81c",
+        "filename": "nfEngine/nfCommon/PackedArray.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-03-03T17:16:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a72e520_92602137",
       "range": {
         "startLine": 173,
         "startChar": 11,
@@ -228,6 +306,30 @@
       "writtenOn": "2016-03-03T10:26:26Z",
       "side": 1,
       "message": "The value repeats itself across the tests. Move it to anon namespace at the top.",
+      "range": {
+        "startLine": 56,
+        "startChar": 0,
+        "endLine": 56,
+        "endChar": 31
+      },
+      "revId": "a8b07227f8ee6d380012301b28c6b0a563601cd7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a72e520_6be48c3b",
+        "filename": "nfEngine/nfCommonTest/PackedArray.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-03-03T17:16:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a72e520_72e2c5a0",
       "range": {
         "startLine": 56,
         "startChar": 0,
