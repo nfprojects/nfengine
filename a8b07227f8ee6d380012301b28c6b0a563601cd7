@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "5a72e520_b5526711",
+        "filename": "nfEngine/nfCommon/PackedArray.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-03-03T11:20:08Z",
+      "side": 1,
+      "message": "This must be standarized somehow...",
+      "parentUuid": "5a72e520_b217dda2",
+      "revId": "a8b07227f8ee6d380012301b28c6b0a563601cd7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a72e520_9212e1b2",
         "filename": "nfEngine/nfCommon/PackedArray.hpp",
         "patchSetId": 4
@@ -87,6 +105,30 @@
       "writtenOn": "2016-03-03T10:26:26Z",
       "side": 1,
       "message": "Do we really need this overload? You can constify the result of the operator above, there should be no need to create a new operator overload specifically for const version.",
+      "range": {
+        "startLine": 236,
+        "startChar": 0,
+        "endLine": 245,
+        "endChar": 5
+      },
+      "revId": "a8b07227f8ee6d380012301b28c6b0a563601cd7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a72e520_353757e5",
+        "filename": "nfEngine/nfCommon/PackedArray.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-03-03T11:20:08Z",
+      "side": 1,
+      "message": "There is need for this, because we could use operator[] inside a const method (access instance of PackedArray class via const reference) and then we can\u0027t use non-const version. I hope you understand :)",
+      "parentUuid": "5a72e520_32512d63",
       "range": {
         "startLine": 236,
         "startChar": 0,
