@@ -134,6 +134,7 @@ private:
 
     bool mClosed;
     bool mFullscreen;
+    bool mInvisible;
     uint32 mWidth;
     uint32 mHeight;
     std::string mTitle;
@@ -206,6 +207,7 @@ public:
 
     void SetSize(uint32 width, uint32 height);
     void SetFullscreenMode(bool enabled);
+    void SetInvisible(bool invisible);
     void SetTitle(const char* title);
 
     // WARINING: only engine should call this function

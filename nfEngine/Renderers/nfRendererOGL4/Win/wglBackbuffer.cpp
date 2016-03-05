@@ -8,7 +8,7 @@
 
 #include "../Defines.hpp"
 #include "../Backbuffer.hpp"
-
+#include "../MasterContext.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -55,32 +55,40 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     mHWND = static_cast<HWND>(desc.windowHandle);
     mWidth = desc.width;
     mHeight = desc.height;
+    const MasterContext& mc = MasterContext::Instance();
 
     // Initialize OpenGL
-
-    // TODO PFD configuration
-    PIXELFORMATDESCRIPTOR pfd = { sizeof(PIXELFORMATDESCRIPTOR), 1,
-                                  PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
-                                  PFD_TYPE_RGBA, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16,
-                                  0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0 };
-
     mHDC = GetDC(mHWND);
-    if (!mHDC)
+
+    int pixelFormat = 0;
+    unsigned int numFormats = 0;
+    if (!wglChoosePixelFormatARB(mHDC, mc.mPixelFormatIntAttribs, mc.mPixelFormatFloatAttribs,
+                                 1, &pixelFormat, &numFormats))
+    {
+        LOG_ERROR("Failed to choose a Pixel Format for Slave Context.");
         return false;
+    }
 
-    unsigned int pixelFormat = ChoosePixelFormat(mHDC, &pfd);
-    SetPixelFormat(mHDC, pixelFormat, &pfd);
+    PIXELFORMATDESCRIPTOR pfd;
+    memset(&pfd, 0, sizeof(pfd));
+    if (!SetPixelFormat(mHDC, pixelFormat, &pfd))
+    {
+        LOG_ERROR("Failed to set pixel format.");
+        return false;
+    }
 
-    // TODO Proper creation of OpenGL context (wglCreateContext -> extract wglCreateContextAttribsARB)
-    mHRC = wglCreateContext(mHDC);
+    mHRC = wglCreateContextAttribsARB(mHDC, mc.mHRC, mc.mAttribs);
     if (!mHRC)
+    {
+        LOG_ERROR("Failed to create Slave Context.");
         return false;
+    }
 
-    wglMakeCurrent(mHDC, mHRC);
-
-    // OpenGL Extensions can be initialized only after GL context is current
-    if (!nfglExtensionsInit())
+    if (!wglMakeCurrent(mHDC, mHRC))
+    {
+        LOG_ERROR("Failed to make Core Context current.");
         return false;
+    }
 
     // enable/disable vsync
     if (wglSwapIntervalEXT)
@@ -89,6 +97,10 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
         LOG_WARNING("wglSwapIntervalEXT was not acquired, VSync control is disabled.");
 
     CreateCommonResources(desc);
+
+    const GLubyte* glv = glGetString(GL_VERSION);
+    const char* glvStr = reinterpret_cast<const char*>(glv);
+    LOG_INFO("OpenGL %s Slave Context obtained.", glvStr);
 
     return true;
 }

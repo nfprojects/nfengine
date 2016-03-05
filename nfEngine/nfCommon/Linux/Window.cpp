@@ -25,6 +25,7 @@ Window::Window()
     mWidth = 200;
     mHeight = 200;
     mFullscreen = false;
+    mInvisible = false;
     mResizeCallback = nullptr;
     mResizeCallbackUserData = nullptr;
     mTitle = "Window";
@@ -120,6 +121,23 @@ void Window::SetFullscreenMode(bool enabled)
     }
 }
 
+void Window::SetInvisible(bool invisible)
+{
+    mInvisible = invisible;
+
+    if (mWindow)
+    {
+        if (mInvisible)
+        {
+            XUnmapWindow(mDisplay, mWindow);
+        }
+        else
+        {
+            XMapWindow(mDisplay, mWindow);
+        }
+    }
+}
+
 bool Window::Open()
 {
     if (!mClosed)
@@ -196,7 +214,10 @@ bool Window::Open()
     XStoreName(mDisplay, mWindow, mTitle.c_str());
     ::Atom WmDelete = XInternAtom(mDisplay, "WM_DELETE_WINDOW", false);
     XSetWMProtocols(mDisplay, mWindow, &WmDelete, 1);
-    XMapWindow(mDisplay, mWindow);
+
+    if (!mInvisible)
+        XMapWindow(mDisplay, mWindow);
+
     mClosed = false;
     return true;
 }

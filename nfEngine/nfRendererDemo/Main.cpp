@@ -299,11 +299,17 @@ int main(int argc, char* argv[])
     window.Open();
 
     if (!window.InitRenderer(rend))
+    {
+        std::cerr << "Renderer failed to initialize" << std::endl;
         return 2;
+    }
 
     /// Initial scene to begin with
     if (!window.InitScene(0))
+    {
+        std::cerr << "Scene failed to initialize" << std::endl;
         return 3;
+    }
 
     window.DrawLoop();
 
