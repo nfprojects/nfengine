@@ -61,7 +61,8 @@ public:
     bool IsOpened() const;
 
     /**
-     * Open a file. If the file does not exist it is created automatically.
+     * Open a file.
+     * For write-only and read-write mode, the file is automatically created if it does not exist.
      * @param path   File path.
      * @param access File access mode.
      * @param overwrite Overwrite a file if it already exists.

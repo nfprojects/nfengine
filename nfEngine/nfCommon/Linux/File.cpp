@@ -68,9 +68,12 @@ bool File::Open(const std::string& path, AccessMode access, bool overwrite)
             return false;
     }
 
-    flags |= O_CREAT;
-    if (overwrite && access != AccessMode::Read)
-        flags |= O_TRUNC;
+    if (access != AccessMode::Read)
+    {
+        flags |= O_CREAT;
+        if (overwrite)
+            flags |= O_TRUNC;
+    }
 
     mFD = ::open(path.c_str(), flags, 0644);
 
