@@ -137,8 +137,11 @@ IDevice* Init()
         gDevice.reset(new Device);
     }
 
-    // for now we skip the result value, so Windows version will work as it did.
-    MasterContext::Instance().Init();
+    if (!MasterContext::Instance().Init())
+    {
+        gDevice.reset();
+        return nullptr;
+    }
 
     return gDevice.get();
 }

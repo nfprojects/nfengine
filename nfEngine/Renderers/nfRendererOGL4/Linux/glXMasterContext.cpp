@@ -91,49 +91,42 @@ bool MasterContext::Init()
     mPixmap = XCreatePixmap(mDisplay, DefaultRootWindow(mDisplay), 1, 1, 24);
     mGLXPixmap = glXCreatePixmap(mDisplay, mBestFB, mPixmap, NULL);
 
-    // create OGL context
-    if (glXCreateContextAttribsARB)
+    if (!glXCreateContextAttribsARB)
     {
-        // try reaching for 3.3 core context
-        int attribs[] =
-        {
-            GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
-            GLX_CONTEXT_MINOR_VERSION_ARB, 3,
-            None
-        };
+        LOG_ERROR("Failed to extract glXCreateContextAttribsARB.");
+        return false;
+    }
 
-        mContext = glXCreateContextAttribsARB(mDisplay, mBestFB, NULL, GL_TRUE, attribs);
-        if (!mContext)
-        {
-            LOG_WARNING("GL 3.3 or newer not acquired. Falling back to old one.");
-            LOG_WARNING("Keep in mind, the renderer MIGHT NOT WORK due to too old OGL version!");
-            // failed, fallback to classic method
-            mContext = glXCreateNewContext(mDisplay, mBestFB, GLX_RGBA_TYPE, NULL, GL_TRUE);
-            if (!mContext)
-            {
-                LOG_ERROR("Cannot create OpenGL Master Context.");
-                return false;
-            }
-        }
-    }
-    else
+    // TODO debug context
+    int attribs[] =
     {
-        LOG_WARNING("glXCreateContextAttribsARB not available. Creating OGL context the old way.");
-        LOG_WARNING("Keep in mind, the renderer MIGHT NOT WORK due to too old OGL version!");
-        mContext = glXCreateNewContext(mDisplay, mBestFB, GLX_RGBA_TYPE, NULL, GL_TRUE);
-        if (!mContext)
-        {
-            LOG_ERROR("Cannot create OpenGL Master Context.");
-            return false;
-        }
+        // use Core Profile
+        GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
+        // disable deprecated APIs
+        GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+        // select context version
+        GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
+        GLX_CONTEXT_MINOR_VERSION_ARB, 3,
+        None
+    };
+
+    // create our requested context
+    mContext = glXCreateContextAttribsARB(mDisplay, mBestFB, NULL, GL_TRUE, attribs);
+    if (!mContext)
+    {
+        LOG_ERROR("Failed to create OpenGL Master Context.");
+        return false;
     }
+
     glXMakeCurrent(mDisplay, mGLXPixmap, mContext);
     mDrawable = glXGetCurrentDrawable();
 
-    if (!glXIsDirect(mDisplay, mContext))
-        LOG_INFO("Indirect GLX Master Context obtained");
-    else
-        LOG_INFO("Direct GLX Master Context obtained");
+    // For information purposes - print what OpenGL Context we achieved
+    const GLubyte* glv = glGetString(GL_VERSION);
+    const char* glvStr = reinterpret_cast<const char*>(glv);
+    bool direct = glXIsDirect(mDisplay, mContext);
+    LOG_INFO("OpenGL %s %s Master Context obtained.", glvStr,
+             direct ? "Direct" : "Indirect");
 
     return true;
 }

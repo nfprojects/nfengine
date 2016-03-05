@@ -8,7 +8,6 @@
 
 #include "Defines.hpp"
 
-
 namespace NFE {
 namespace Renderer {
 
@@ -25,7 +24,12 @@ class MasterContext
     ~MasterContext();
 
 #if defined(WIN32)
-    // TODO fill
+    HWND mHWND;
+    HDC mHDC;
+    HGLRC mHRC;
+    GLint mAttribs[16];
+    GLint mPixelFormatIntAttribs[16];
+    GLfloat mPixelFormatFloatAttribs[2];
 #elif defined(__linux__) || defined(__LINUX__)
     Pixmap mPixmap;
     GLXPixmap mGLXPixmap; ///< Pixmap used for off-window rendering context

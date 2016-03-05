@@ -33,6 +33,7 @@ Window::Window()
     mLeft = 10;
     mTop = 10;
     mFullscreen = false;
+    mInvisible = false;
     mResizeCallback = nullptr;
     mResizeCallbackUserData = nullptr;
 
@@ -127,6 +128,18 @@ void Window::SetFullscreenMode(bool enabled)
     }
 }
 
+void Window::SetInvisible(bool invisible)
+{
+    mInvisible = invisible;
+
+    if (mHandle)
+    {
+        if (mInvisible)
+            ShowWindow(mHandle, SW_SHOW);
+        else
+            ShowWindow(mHandle, SW_HIDE);
+    }
+}
 
 bool Window::Open()
 {
@@ -167,7 +180,10 @@ bool Window::Open()
 
     SetWindowLongPtr(mHandle, GWLP_USERDATA, (LONG_PTR)this);
     SetWindowText(mHandle, wideTitle.c_str());
-    ShowWindow(mHandle, SW_SHOW);
+
+    if (!mInvisible)
+        ShowWindow(mHandle, SW_SHOW);
+
     UpdateWindow(mHandle);
     SetFocus(mHandle);
 

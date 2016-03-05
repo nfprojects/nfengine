@@ -15,6 +15,8 @@ namespace Renderer {
 
 extern PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT;
 extern PFNWGLGETSWAPINTERVALEXTPROC wglGetSwapIntervalEXT;
+extern PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB;
+extern PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB;
 
 // Initializes only GLX-specific extensions
 bool nfwglExtensionsInit();

@@ -96,10 +96,12 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     glXMakeCurrent(mMasterDisplay, mWindow, mContext);
     mDrawable = glXGetCurrentDrawable();
 
-    if (!glXIsDirect(mMasterDisplay, mContext))
-        LOG_INFO("Indirect GLX Slave Context obtained");
-    else
-        LOG_INFO("Direct GLX Slave Context obtained");
+    // For information purposes - print what OpenGL Context we achieved
+    const GLubyte* glv = glGetString(GL_VERSION);
+    const char* glvStr = reinterpret_cast<const char*>(glv);
+    bool direct = glXIsDirect(mMasterDisplay, mContext);
+    LOG_INFO("OpenGL %s %s Slave Context obtained.", glvStr,
+             direct ? "Direct" : "Indirect");
 
     // some systems might have glXSwapIntervalEXT unavailable
     if (glXSwapIntervalEXT)
