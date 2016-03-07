@@ -65,6 +65,24 @@
     },
     {
       "key": {
+        "uuid": "5a72e520_ac585157",
+        "filename": "nfEngine/Renderers/nfRendererOGL4/Win/wglMasterContext.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-07T16:25:12Z",
+      "side": 1,
+      "message": "Why should I move Window object to Window class?\n\nIf you ask about MasterContext though, I do not want to include Window.hpp in there, plus it is a Windows-only thing. If both MasterContext implementations would make use from it, then why not.",
+      "parentUuid": "5a72e520_4c735de9",
+      "revId": "5839753dbb1a3525511c2674cd3d232748392633",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a72e520_6c7739d5",
         "filename": "nfEngine/Renderers/nfRendererOGL4/Win/wglMasterContext.cpp",
         "patchSetId": 1
@@ -116,6 +134,24 @@
     },
     {
       "key": {
+        "uuid": "5a72e520_cc558d1e",
+        "filename": "nfEngine/nfCommon/Win/Window.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-07T16:25:12Z",
+      "side": 1,
+      "message": "No, I thought the variable is a leftover. Then I saw it was used somewhere else in the .cpp, but forgot to revert it.",
+      "parentUuid": "5a72e520_ecb6c9db",
+      "revId": "5839753dbb1a3525511c2674cd3d232748392633",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a72e520_8cad5534",
         "filename": "nfEngine/nfCommon/Win/Window.cpp",
         "patchSetId": 1
@@ -127,6 +163,24 @@
       "writtenOn": "2016-03-07T16:19:43Z",
       "side": 1,
       "message": "Side note: I\u0027ve just noticed that this method does what it should not do :)",
+      "revId": "5839753dbb1a3525511c2674cd3d232748392633",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a72e520_ec31690c",
+        "filename": "nfEngine/nfCommon/Win/Window.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-07T16:25:12Z",
+      "side": 1,
+      "message": "Indeed...",
+      "parentUuid": "5a72e520_8cad5534",
       "revId": "5839753dbb1a3525511c2674cd3d232748392633",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
