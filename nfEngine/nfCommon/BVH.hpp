@@ -8,20 +8,36 @@
 
 #include "nfCommon.hpp"
 #include "Math/Box.hpp"
+#include "Math/Geometry.hpp"
 #include "Aligned.hpp"
 
-
+#define NFE_BVH_STACK_SIZE 128
 #define NFE_BVH_NULL_NODE 0xFFFFFFFF
+
+
+// TODO temporary workaround
+#pragma warning(disable : 4201)
 
 namespace NFE {
 namespace Common {
 
-struct NFE_ALIGN16 BVHNode : public Aligned<16>
+struct NFE_ALIGN16 BVHNode
 {
-    Math::Box box;
-    void* userData;
+    union
+    {
+        Math::Box box;
 
-    uint32 child[2]; // child nodes or NFE_BVH_NULL_NODE when the node is leaf node
+        struct
+        {
+            float boxMin[3]; // not used directly
+            uint32 child0;   // set to NFE_BVH_NULL_NODE when the node is leaf node
+            float boxMax[3]; // not used directly
+            uint32 child1;
+        };
+    };
+
+    // TODO: move to separate arrays
+    void* userData;
     uint32 height; // node height (counting from leaves)
 
     union
@@ -32,6 +48,15 @@ struct NFE_ALIGN16 BVHNode : public Aligned<16>
 
     BVHNode();
 
+    NFE_INLINE void SetBox(const Math::Box& newBox)
+    {
+        uint32 tmp0 = child0;
+        uint32 tmp1 = child1;
+        box = newBox;
+        child0 = tmp0;
+        child1 = tmp1;
+    }
+
     NFE_INLINE bool IsValid() const
     {
         return height != NFE_BVH_NULL_NODE;
@@ -39,7 +64,7 @@ struct NFE_ALIGN16 BVHNode : public Aligned<16>
 
     NFE_INLINE bool IsLeaf() const
     {
-        return child[0] == NFE_BVH_NULL_NODE;
+        return child0 == NFE_BVH_NULL_NODE;
     }
 };
 
@@ -60,7 +85,7 @@ struct BVHStats
 class NFCOMMON_API BVH
 {
     // free list
-    std::vector<BVHNode, AlignedAllocator<BVHNode, 64>> mNodes;
+    std::vector<BVHNode, AlignedAllocator<BVHNode, 32>> mNodes;
     uint32 mNodesNum;
     uint32 mNodesCapacity;
     uint32 mFreeNode;
@@ -82,6 +107,12 @@ class NFCOMMON_API BVH
     {
         return mRoot;
     }
+
+    /**
+     * Perform tree rotation if @p node is imbalanced.
+     * @return New node index
+     */
+    int32 Rebalance(int32 node);
 
 public:
     typedef std::function<void(void *leafUserData)> QueryCallback;
@@ -155,6 +186,44 @@ public:
      */
     void QueryAll(uint32 nodeID, const QueryCallback& callback) const;
 };
+
+
+template <typename ShapeType>
+__declspec(noinline)
+void BVH::Query(const ShapeType& shape, const QueryCallback& callback) const
+{
+    if (mRoot == NFE_BVH_NULL_NODE)
+        return;
+
+    int stackDepth = 0;
+    uint32 stack[NFE_BVH_STACK_SIZE];
+    stack[stackDepth++] = mRoot;
+
+    while (stackDepth > 0)
+    {
+        uint32 nodeID = stack[--stackDepth];
+        const BVHNode& node = mNodes[nodeID];
+
+        IntersectionResult result = IntersectEx(node.box, shape);
+        if (result == IntersectionResult::Inside)
+        {
+            QueryAll(nodeID, callback);
+            continue;
+        }
+        else if (result == IntersectionResult::Intersect)
+        {
+            if (node.IsLeaf())
+            {
+                callback(node.userData);
+            }
+            else if (stackDepth + 2 <= NFE_BVH_STACK_SIZE)
+            {
+                stack[stackDepth++] = node.child0;
+                stack[stackDepth++] = node.child1;
+            }
+        }
+    }
+}
 
 } // namespace Common
 } // namespace NFE
