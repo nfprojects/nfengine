@@ -46,13 +46,19 @@
 #define NFCOMMON_API __attribute__((visibility("default")))
 #endif // WIN32
 
-// __forceinline and declspec(align(x)) replacement on other systems
-
+// macro forcing a function to be inlined
 #if defined(__LINUX__) | defined(__linux__)
 #define NFE_INLINE inline __attribute__((always_inline))
 #elif defined(WIN32)
 #define NFE_INLINE __forceinline
 #endif // defined(__LINUX__) | defined(__linux__)
+
+// macro forcing a function not to be inlined
+#ifdef WIN32
+#define NFE_NO_INLINE __declspec(noinline)
+#elif defined(__LINUX__) || defined(__linux__)
+#define NFE_NO_INLINE __attribute__((noinline))
+#endif // WIN32
 
 // 16-byte aligning macro for objects using SSE registers
 #if defined(WIN32)
@@ -68,6 +74,17 @@
 #define NFE_USE_SSE
 #define NFE_USE_SSE4
 #endif // defined(WIN32)
+
+// macro for data prefetching from RAM to CPU cache.
+#ifdef WIN32
+#ifdef NFE_USE_SSE
+#define NFE_PREFETCH(addr) _mm_prefetch(addr, _MM_HINT_T0)
+#else
+#define NFE_PREFETCH(addr)
+#endif // NFE_USE_SSE
+#elif defined(__LINUX__) || defined(__linux__)
+#define NFE_PREFETCH(addr) __builtin_prefetch(addr, 0, 3) // prefetch for read to all cache levels
+#endif // WIN32
 
 
 namespace NFE {
