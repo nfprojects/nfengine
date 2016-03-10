@@ -68,7 +68,6 @@ def runTest(args, isVerbose):
         else:
             print animation[animationIter % len(animation)] + "\r",
             animationIter += 1
-            time.sleep(0.1)
 
 
 def main(argv):
