@@ -48,24 +48,6 @@ void* ResourceBase::GetUserPointer() const
 Result ResourceBase::SetCallbacks(OnLoadCallback onLoadCallback,
                                   OnUnloadCallback onUnloadCallback)
 {
-#ifdef _DEBUG
-    // check if passed pointers are function pointers
-
-    if (onLoadCallback)
-        if ((Common::MemoryCheck(onLoadCallback, 1) & ACCESS_EXECUTE) == 0)
-        {
-            LOG_ERROR("onLoadCallback does not point to executable memory region");
-            return Result::CorruptedPointer;
-        }
-
-    if (onUnloadCallback)
-        if ((Common::MemoryCheck(onUnloadCallback, 1) & ACCESS_EXECUTE) == 0)
-        {
-            LOG_ERROR("onUnloadCallback does not point to executable memory region");
-            return Result::CorruptedPointer;
-        }
-#endif
-
     mOnLoad = onLoadCallback;
     mOnUnload = onUnloadCallback;
     return Result::OK;

@@ -283,9 +283,6 @@
     <ClCompile Include="Win\Library.cpp">
       <Filter>Source Files\Win</Filter>
     </ClCompile>
-    <ClCompile Include="Memory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Latch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -357,6 +354,9 @@
     </ClCompile>
     <ClCompile Include="Math\FPU\GeometryFPU.cpp">
       <Filter>Source Files\Math\FPU</Filter>
+    </ClCompile>
+    <ClCompile Include="Win\Memory.cpp">
+      <Filter>Source Files\Win</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
