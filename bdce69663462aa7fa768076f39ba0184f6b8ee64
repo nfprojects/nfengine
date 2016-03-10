@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3a6ff13c_ea4503b4",
+        "filename": "nfEngine/nfCommon/Bit.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-03-10T14:29:36Z",
+      "side": 1,
+      "message": "Changed all uint32_t and uint8_t, though I needed to include nfCommon.hpp for this and grab over namespaces :/\n\nAlso there is no uint32\u003c-\u003euint8 conversion in here to begin with, so no troubles there.",
+      "parentUuid": "3a6ff13c_aaf5cbcc",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 40,
+        "endChar": 1
+      },
+      "revId": "bdce69663462aa7fa768076f39ba0184f6b8ee64",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a6ff13c_ca0207b4",
         "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
         "patchSetId": 5
@@ -36,6 +60,24 @@
       "writtenOn": "2016-03-10T13:45:26Z",
       "side": 1,
       "message": "Missing newline before \"{\"",
+      "revId": "bdce69663462aa7fa768076f39ba0184f6b8ee64",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a6ff13c_6a8833e8",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-03-10T14:29:36Z",
+      "side": 1,
+      "message": "Srry, I aligned all structs according to the typedefs in previous version.",
+      "parentUuid": "3a6ff13c_ca0207b4",
       "revId": "bdce69663462aa7fa768076f39ba0184f6b8ee64",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "3a6ff13c_2a7e3be5",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-03-10T14:29:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a6ff13c_0ad33f39",
+      "range": {
+        "startLine": 18,
+        "startChar": 4,
+        "endLine": 18,
+        "endChar": 12
+      },
+      "revId": "bdce69663462aa7fa768076f39ba0184f6b8ee64",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a6ff13c_eaffc3a8",
         "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
         "patchSetId": 5
@@ -76,6 +142,24 @@
       "writtenOn": "2016-03-10T13:45:26Z",
       "side": 1,
       "message": "Missing newline before \"{\"",
+      "revId": "bdce69663462aa7fa768076f39ba0184f6b8ee64",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a6ff13c_8a6c8f38",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-03-10T14:29:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a6ff13c_eaffc3a8",
       "revId": "bdce69663462aa7fa768076f39ba0184f6b8ee64",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -99,6 +183,24 @@
     },
     {
       "key": {
+        "uuid": "3a6ff13c_aa694b27",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-03-10T14:29:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a6ff13c_0a2c1f4a",
+      "revId": "bdce69663462aa7fa768076f39ba0184f6b8ee64",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a6ff13c_4a26176a",
         "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
         "patchSetId": 5
@@ -110,6 +212,24 @@
       "writtenOn": "2016-03-10T13:45:26Z",
       "side": 1,
       "message": "Missing newline before \"{\"",
+      "revId": "bdce69663462aa7fa768076f39ba0184f6b8ee64",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a6ff13c_ca768706",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-03-10T14:29:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a6ff13c_4a26176a",
       "revId": "bdce69663462aa7fa768076f39ba0184f6b8ee64",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -133,6 +253,24 @@
     },
     {
       "key": {
+        "uuid": "3a6ff13c_ea734313",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-03-10T14:29:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a6ff13c_8ae64f15",
+      "revId": "bdce69663462aa7fa768076f39ba0184f6b8ee64",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a6ff13c_aae30b04",
         "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
         "patchSetId": 5
@@ -150,6 +288,24 @@
     },
     {
       "key": {
+        "uuid": "3a6ff13c_0a609f34",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-03-10T14:29:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a6ff13c_aae30b04",
+      "revId": "bdce69663462aa7fa768076f39ba0184f6b8ee64",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a6ff13c_caf047cc",
         "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
         "patchSetId": 5
@@ -161,6 +317,24 @@
       "writtenOn": "2016-03-10T13:45:26Z",
       "side": 1,
       "message": "Fix alignment",
+      "revId": "bdce69663462aa7fa768076f39ba0184f6b8ee64",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a6ff13c_2a655b45",
+        "filename": "nfEngine/nfCommon/Image/ImageLoadBMP.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-03-10T14:29:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a6ff13c_caf047cc",
       "revId": "bdce69663462aa7fa768076f39ba0184f6b8ee64",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
