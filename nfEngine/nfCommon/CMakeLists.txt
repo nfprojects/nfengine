@@ -21,12 +21,6 @@ FILE(GLOB NFCOMMON_LOGGER_HEADERS   LoggerBackends/*.hpp)
 FILE(GLOB NFCOMMON_IMAGE_SOURCES    Image/*.cpp)
 FILE(GLOB NFCOMMON_IMAGE_HEADERS    Image/*.hpp)
 
-# TODO these sources are not prepared for multi-platform.
-#      Move them to Win directory and appropriately code headers.
-#      For reference purposes, each line will have a GitHub issue number
-
-LIST(REMOVE_ITEM NFCOMMON_SOURCES "${NFCOMMON_DIRECTORY}/Memory.cpp")       # 105
-
 # Windows DllMain definition
 IF(NOT WIN32)
     LIST(REMOVE_ITEM NFCOMMON_SOURCES "${NFCOMMON_DIRECTORY}/Main.cpp")
