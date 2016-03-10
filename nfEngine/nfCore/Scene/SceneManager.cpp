@@ -34,13 +34,13 @@ SceneManager::~SceneManager()
 
 void SceneManager::SetEnvironment(const EnviromentDesc* desc)
 {
-    if (Common::MemoryCheck(desc) & ACCESS_READ)
+    if (!Common::MemoryCheck(desc))
         mEnvDesc = *desc;
 }
 
 void SceneManager::GetEnvironment(EnviromentDesc* desc) const
 {
-    if (Common::MemoryCheck(desc) & ACCESS_WRITE)
+    if (!Common::MemoryCheck(desc))
         *desc = mEnvDesc;
 }
 

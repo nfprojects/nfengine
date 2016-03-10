@@ -167,7 +167,7 @@ Result ResManager::AddCustomResource(ResourceBase* resource, const char* name)
 {
     using namespace Util;
 
-    if (!(Common::MemoryCheck(resource) & (ACCESS_READ | ACCESS_WRITE)))
+    if (!Common::MemoryCheck(resource))
     {
         LOG_ERROR("Memory pointed by resource pointer is corrupted.");
         return Result::CorruptedPointer;
