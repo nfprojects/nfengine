@@ -12,9 +12,6 @@ PKG_CHECK_MODULES(NFCOMMONTEST_DEPS REQUIRED
                   x11
                   gl) # needed by nfCommon Window
 
-# TODO these tests have unfinished linux versions
-LIST(REMOVE_ITEM NFCOMMONTEST_SOURCES "${NFCOMMONTEST_DIRECTORY}/MemoryTest.cpp")       #105
-
 # setup directories
 INCLUDE_DIRECTORIES(${NFE_ROOT_DIRECTORY}/nfEngineDeps/
                     ${NFCOMMON_DIRECTORY}
