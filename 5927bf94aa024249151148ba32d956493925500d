@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a6ff13c_67406c57",
+        "filename": "nfEngine/nfRendererTest/Texture2D.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-03-10T11:51:02Z",
+      "side": 1,
+      "message": "Why?",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 35
+      },
+      "revId": "5927bf94aa024249151148ba32d956493925500d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
