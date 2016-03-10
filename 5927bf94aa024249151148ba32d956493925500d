@@ -2,6 +2,46 @@
   "comments": [
     {
       "key": {
+        "uuid": "3a6ff13c_c72e80a5",
+        "filename": "nfEngine/nfRendererTest/CMakeLists.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-03-10T11:58:27Z",
+      "side": 1,
+      "message": "Is this really needed by nfRendererTest?",
+      "range": {
+        "startLine": 28,
+        "startChar": 41,
+        "endLine": 28,
+        "endChar": 52
+      },
+      "revId": "5927bf94aa024249151148ba32d956493925500d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a6ff13c_67178c52",
+        "filename": "nfEngine/nfRendererTest/CMakeLists.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-03-10T11:58:27Z",
+      "side": 1,
+      "message": "Why nfRendererTest is linking with nfRendererOGL4 (which we link dynamically) and these: gtest png squish jpeg?",
+      "revId": "5927bf94aa024249151148ba32d956493925500d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a6ff13c_67406c57",
         "filename": "nfEngine/nfRendererTest/Texture2D.cpp",
         "patchSetId": 7
