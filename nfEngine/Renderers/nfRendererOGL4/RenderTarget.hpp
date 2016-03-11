@@ -20,6 +20,7 @@ class RenderTarget : public IRenderTarget
     GLuint mFBO;
     int mWidth;
     int mHeight;
+    std::vector<GLenum> mAttachments;
 
 public:
     RenderTarget();

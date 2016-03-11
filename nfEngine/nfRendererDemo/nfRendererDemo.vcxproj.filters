@@ -105,5 +105,11 @@
     <None Include="Shaders\OGL4\TestPS.glsl">
       <Filter>Shaders\OGL4</Filter>
     </None>
+    <None Include="Shaders\OGL4\PostProcessPS.glsl">
+      <Filter>Shaders\OGL4</Filter>
+    </None>
+    <None Include="Shaders\OGL4\RenderTargetPS.glsl">
+      <Filter>Shaders\OGL4</Filter>
+    </None>
   </ItemGroup>
 </Project>

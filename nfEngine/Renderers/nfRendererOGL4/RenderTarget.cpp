@@ -34,13 +34,6 @@ void RenderTarget::GetDimensions(int& width, int& height)
 
 bool RenderTarget::Init(const RenderTargetDesc& desc)
 {
-    // TODO this limitation must be removed
-    if (desc.numTargets > 1)
-    {
-        LOG_ERROR("Multiple targets are not supported!");
-        return false;
-    }
-
     glGenFramebuffers(1, &mFBO);
 
     int boundFBO = 0;
@@ -49,14 +42,15 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 
     if (desc.numTargets > 0)
     {
-        Texture* tex = dynamic_cast<Texture*>(desc.targets[0].texture);
-        glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                               tex->mTexture, 0);
+        mAttachments.resize(desc.numTargets);
 
-        // D3D requires same size for all buffers bound to Render Target,
-        // so we can extract width/height duo here
-        mWidth = tex->mWidth;
-        mHeight = tex->mHeight;
+        for (unsigned int i = 0; i < desc.numTargets; ++i)
+        {
+            Texture* tex = dynamic_cast<Texture*>(desc.targets[i].texture);
+            glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, tex->mGLTarget,
+                                   tex->mTexture, 0);
+            mAttachments[i] = GL_COLOR_ATTACHMENT0 + i;
+        }
     }
 
     if (desc.depthBuffer)
@@ -66,8 +60,13 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
                                depthTex->mHasStencil
                                    ? GL_DEPTH_STENCIL_ATTACHMENT
                                    : GL_DEPTH_ATTACHMENT,
-                               GL_TEXTURE_2D,
+                               depthTex->mGLTarget,
                                depthTex->mTexture, 0);
+
+        // D3D requires same size for all buffers bound to Render Target,
+        // so we can assume the sizes match and extract width/height duo here
+        mWidth = depthTex->mWidth;
+        mHeight = depthTex->mHeight;
     }
 
     GLenum status = glCheckFramebufferStatus(GL_READ_FRAMEBUFFER);

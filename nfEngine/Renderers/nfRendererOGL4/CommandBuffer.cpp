@@ -177,7 +177,10 @@ void CommandBuffer::Reset()
     // reset pointers
     mSetVertexBuffer = nullptr;
     mSetIndexBuffer = nullptr;
+    mSetConstantBuffer = nullptr;
     mSetVertexLayout = nullptr;
+    mSetTexture = nullptr;
+    mSetSampler = nullptr;
 }
 
 void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets)
@@ -261,6 +264,8 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     else
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, rt->mFBO);
+
+    glDrawBuffers(static_cast<GLsizei>(rt->mAttachments.size()), rt->mAttachments.data());
 }
 
 void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
