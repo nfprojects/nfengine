@@ -56,14 +56,8 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
         return false;
     }
 
-    if ((desc.binding & (NFE_RENDERER_TEXTURE_BIND_SHADER | NFE_RENDERER_TEXTURE_BIND_RENDERTARGET))
-        || (desc.binding == 0))
-    {
-        mGLType = TranslateElementFormatToType(desc.format, isNormalized);
-        mGLFormat = TranslateTexelSizeToFormat(desc.texelSize);
-        mGLInternalFormat = TranslateFormatAndSizeToInternalFormat(desc.format, desc.texelSize);
-    }
-    else if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
+
+    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
     {
         mGLType = TranslateDepthFormatToType(desc.depthBufferFormat);
         mGLFormat = TranslateDepthFormatToFormat(desc.depthBufferFormat);
@@ -72,10 +66,12 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
         if (desc.depthBufferFormat == DepthBufferFormat::Depth24_Stencil8)
             mHasStencil = true;
     }
-    else if (desc.binding)
+    else if ((desc.binding & (NFE_RENDERER_TEXTURE_BIND_SHADER | NFE_RENDERER_TEXTURE_BIND_RENDERTARGET))
+              || (desc.binding == 0))
     {
-        LOG_ERROR("Invalid texture binding flags.");
-        return false;
+        mGLType = TranslateElementFormatToType(desc.format, isNormalized);
+        mGLFormat = TranslateTexelSizeToFormat(desc.texelSize);
+        mGLInternalFormat = TranslateFormatAndSizeToInternalFormat(desc.format, desc.texelSize);
     }
 
     mWidth = desc.width;
@@ -86,6 +82,8 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
     if (desc.dataDesc == nullptr)
         // single-call immutable allocation (could be later changed by copy/TexSubImage)
         glTexStorage2D(GL_TEXTURE_2D, desc.mipmaps, mGLInternalFormat, mWidth, mHeight);
+       /* glTexImage2D(GL_TEXTURE_2D, 0, mGLInternalFormat, mWidth, mHeight, 0,
+                     mGLFormat, mGLType, nullptr);*/
     else
     {
         // allocate all texture levels separately

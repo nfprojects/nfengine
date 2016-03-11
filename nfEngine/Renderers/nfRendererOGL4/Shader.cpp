@@ -27,6 +27,8 @@ const std::string SHADER_HEADER = "#version 330 core\n\
 #extension GL_ARB_separate_shader_objects: enable\n\
 #extension GL_ARB_shading_language_420pack : enable\n";
 
+const std::string SHADER_HEADER_TAIL = "#line 0 1\n";
+
 } // namespace
 
 Shader::Shader()
@@ -55,7 +57,7 @@ bool Shader::Init(const ShaderDesc& desc)
     }
 
     // null-termination for easier work with glShaderSource
-    shaderHead += '\0';
+    shaderHead += SHADER_HEADER_TAIL + '\0';
 
     const char* shaderCode;
     std::string shaderStr;
