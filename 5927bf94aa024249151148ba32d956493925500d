@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3a6ff13c_3e0af9d2",
+        "filename": "nfEngine/nfRendererTest/CMakeLists.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-11T07:14:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a6ff13c_c72e80a5",
+      "range": {
+        "startLine": 28,
+        "startChar": 41,
+        "endLine": 28,
+        "endChar": 52
+      },
+      "revId": "5927bf94aa024249151148ba32d956493925500d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a6ff13c_67178c52",
         "filename": "nfEngine/nfRendererTest/CMakeLists.txt",
         "patchSetId": 7
@@ -60,6 +84,24 @@
     },
     {
       "key": {
+        "uuid": "3a6ff13c_5e0fb5e1",
+        "filename": "nfEngine/nfRendererTest/CMakeLists.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-11T07:14:50Z",
+      "side": 1,
+      "message": "Wait, I do understand now why nfRendererOGL4 was here. I put it here by mistake, it was supposed to go to ADD_DEPENDENCIES line. ;)\n\nMoved one line up.",
+      "parentUuid": "3a6ff13c_d8e49dae",
+      "revId": "5927bf94aa024249151148ba32d956493925500d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a6ff13c_58e7cde4",
         "filename": "nfEngine/nfRendererTest/Main.cpp",
         "patchSetId": 7
@@ -83,6 +125,30 @@
     },
     {
       "key": {
+        "uuid": "3a6ff13c_7e1471f5",
+        "filename": "nfEngine/nfRendererTest/Main.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-11T07:14:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a6ff13c_58e7cde4",
+      "range": {
+        "startLine": 5,
+        "startChar": 40,
+        "endLine": 5,
+        "endChar": 50
+      },
+      "revId": "5927bf94aa024249151148ba32d956493925500d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a6ff13c_98d065f9",
         "filename": "nfEngine/nfRendererTest/Main.cpp",
         "patchSetId": 7
@@ -94,6 +160,24 @@
       "writtenOn": "2016-03-10T18:52:53Z",
       "side": 1,
       "message": "no need to break line, missing spaces around \"+\"",
+      "revId": "5927bf94aa024249151148ba32d956493925500d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a6ff13c_9ef84dc6",
+        "filename": "nfEngine/nfRendererTest/Main.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-11T07:14:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a6ff13c_98d065f9",
       "revId": "5927bf94aa024249151148ba32d956493925500d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
