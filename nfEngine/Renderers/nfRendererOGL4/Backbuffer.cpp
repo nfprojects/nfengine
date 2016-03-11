@@ -30,6 +30,7 @@ void Backbuffer::CreateCommonResources(const BackbufferDesc& desc)
 
     mWidth = desc.width;
     mHeight = desc.height;
+    mGLTarget = GL_TEXTURE_2D;
 
     // Bind current texture to its own FBO
     // This way, the texture will be shared between two FBOs - drawing (set by RenderTarget class)

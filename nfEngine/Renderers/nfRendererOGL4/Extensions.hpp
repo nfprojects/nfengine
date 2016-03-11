@@ -50,6 +50,7 @@ extern PFNGLDISABLEVERTEXATTRIBARRAYPROC glDisableVertexAttribArray;
 extern PFNGLMAPBUFFERPROC glMapBuffer;
 extern PFNGLUNMAPBUFFERPROC glUnmapBuffer;
 extern PFNGLBLENDEQUATIONSEPARATEPROC glBlendEquationSeparate;
+extern PFNGLDRAWBUFFERSPROC glDrawBuffers;
 
 /// OpenGL 3.0
 extern PFNGLGENVERTEXARRAYSPROC glGenVertexArrays;
@@ -62,6 +63,9 @@ extern PFNGLBLITFRAMEBUFFERPROC glBlitFramebuffer;
 extern PFNGLFRAMEBUFFERTEXTURE2DPROC glFramebufferTexture2D;
 extern PFNGLCHECKFRAMEBUFFERSTATUSPROC glCheckFramebufferStatus;
 extern PFNGLDELETEFRAMEBUFFERSPROC glDeleteFramebuffers;
+
+/// OpenGL 3.2
+extern PFNGLTEXIMAGE2DMULTISAMPLEPROC glTexImage2DMultisample;
 
 /// OpenGL 3.3
 extern PFNGLGENSAMPLERSPROC glGenSamplers;
@@ -86,6 +90,7 @@ extern PFNGLCOPYIMAGESUBDATAPROC glCopyImageSubData;
 
 /// ARB_texture_storage
 extern PFNGLTEXSTORAGE2DPROC glTexStorage2D;
+extern PFNGLTEXSTORAGE2DMULTISAMPLEPROC glTexStorage2DMultisample;
 
 
 /**
