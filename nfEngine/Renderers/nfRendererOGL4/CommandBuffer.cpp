@@ -261,6 +261,8 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     else
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, rt->mFBO);
+
+    glDrawBuffers(static_cast<GLsizei>(rt->mAttachments.size()), rt->mAttachments.data());
 }
 
 void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)

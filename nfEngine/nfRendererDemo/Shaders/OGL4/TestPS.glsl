@@ -1,5 +1,10 @@
 #if USE_TEXTURE == 1
 layout (binding = 0) uniform sampler2D gTextureSampler;
+
+layout (row_major, binding=0) uniform TestCBuffer
+{
+    mat4 viewMatrix;
+};
 #endif
 
 in VertexShaderOutput
