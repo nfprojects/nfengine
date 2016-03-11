@@ -23,6 +23,7 @@ protected:
     int mHeight;
     int mTexelSize; //< texel size in bytes
     GLuint mTexture;
+    GLenum mGLTarget;
     GLenum mGLType;
     GLenum mGLFormat;
     GLenum mGLInternalFormat;
