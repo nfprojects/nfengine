@@ -45,6 +45,7 @@ PFNGLDISABLEVERTEXATTRIBARRAYPROC glDisableVertexAttribArray = nullptr;
 PFNGLMAPBUFFERPROC glMapBuffer = nullptr;
 PFNGLUNMAPBUFFERPROC glUnmapBuffer = nullptr;
 PFNGLBLENDEQUATIONSEPARATEPROC glBlendEquationSeparate = nullptr;
+PFNGLDRAWBUFFERSPROC glDrawBuffers = nullptr;
 
 /// OpenGL 3.0
 PFNGLGENVERTEXARRAYSPROC glGenVertexArrays = nullptr;
@@ -57,6 +58,9 @@ PFNGLBLITFRAMEBUFFERPROC glBlitFramebuffer = nullptr;
 PFNGLFRAMEBUFFERTEXTURE2DPROC glFramebufferTexture2D = nullptr;
 PFNGLCHECKFRAMEBUFFERSTATUSPROC glCheckFramebufferStatus = nullptr;
 PFNGLDELETEFRAMEBUFFERSPROC glDeleteFramebuffers = nullptr;
+
+/// OpenGL 3.2
+PFNGLTEXIMAGE2DMULTISAMPLEPROC glTexImage2DMultisample = nullptr;
 
 /// OpenGL 3.3
 PFNGLGENSAMPLERSPROC glGenSamplers = nullptr;
@@ -81,6 +85,7 @@ PFNGLCOPYIMAGESUBDATAPROC glCopyImageSubData = nullptr;
 
 /// ARB_texture_storage
 PFNGLTEXSTORAGE2DPROC glTexStorage2D = nullptr;
+PFNGLTEXSTORAGE2DMULTISAMPLEPROC glTexStorage2DMultisample = nullptr;
 
 
 bool nfglExtensionsInit()
@@ -127,6 +132,7 @@ bool nfglExtensionsInit()
     NFGL_GET_EXTENSION(PFNGLMAPBUFFERPROC, glMapBuffer);
     NFGL_GET_EXTENSION(PFNGLUNMAPBUFFERPROC, glUnmapBuffer);
     NFGL_GET_EXTENSION(PFNGLBLENDEQUATIONSEPARATEPROC, glBlendEquationSeparate);
+    NFGL_GET_EXTENSION(PFNGLDRAWBUFFERSPROC, glDrawBuffers);
 
     /// OpenGL 3.0
     NFGL_GET_EXTENSION(PFNGLGENVERTEXARRAYSPROC, glGenVertexArrays);
@@ -139,6 +145,9 @@ bool nfglExtensionsInit()
     NFGL_GET_EXTENSION(PFNGLFRAMEBUFFERTEXTURE2DPROC, glFramebufferTexture2D);
     NFGL_GET_EXTENSION(PFNGLCHECKFRAMEBUFFERSTATUSPROC, glCheckFramebufferStatus);
     NFGL_GET_EXTENSION(PFNGLDELETEFRAMEBUFFERSPROC, glDeleteFramebuffers);
+
+    /// OpenGL 3.2
+    NFGL_GET_EXTENSION(PFNGLTEXIMAGE2DMULTISAMPLEPROC, glTexImage2DMultisample);
 
     /// OpenGL 3.3
     NFGL_GET_EXTENSION(PFNGLGENSAMPLERSPROC, glGenSamplers);
@@ -163,6 +172,7 @@ bool nfglExtensionsInit()
 
     /// ARB_texture_storage
     NFGL_GET_EXTENSION(PFNGLTEXSTORAGE2DPROC, glTexStorage2D);
+    NFGL_GET_EXTENSION(PFNGLTEXSTORAGE2DMULTISAMPLEPROC, glTexStorage2DMultisample);
 
     return allExtensionsAvailable;
 }

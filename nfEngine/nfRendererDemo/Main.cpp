@@ -305,7 +305,7 @@ int main(int argc, char* argv[])
     }
 
     /// Initial scene to begin with
-    if (!window.InitScene(0))
+    if (!window.InitScene(2))
     {
         std::cerr << "Scene failed to initialize" << std::endl;
         return 3;

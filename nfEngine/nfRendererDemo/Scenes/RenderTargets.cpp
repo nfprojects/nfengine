@@ -286,7 +286,7 @@ bool RenderTargetsScene::CreateSubSceneNoDepthBuffer()
         return false;
     if (!CreateBasicResources())
         return false;
-    return CreateBasicResources();
+    return CreateRenderTarget();
 }
 
 bool RenderTargetsScene::CreateSubSceneDepthBuffer()
