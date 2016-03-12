@@ -35,7 +35,7 @@ struct PixelCBuffer
 
 /// Helper creators for the Scene
 
-bool BasicScene::CreateShaderProgram(bool useSSO, bool useCBuffer, bool useTexture)
+bool BasicScene::CreateShaderProgram(bool useCBuffer, bool useTexture)
 {
     ShaderMacro vsMacro[] = { { "USE_CBUFFER", useCBuffer ? "1" : "0" } };
     std::string vsPath = gShaderPathPrefix + "TestVS" + gShaderPathExt;
@@ -52,12 +52,9 @@ bool BasicScene::CreateShaderProgram(bool useSSO, bool useCBuffer, bool useTextu
     mShaderProgramDesc.vertexShader = mVertexShader.get();
     mShaderProgramDesc.pixelShader = mPixelShader.get();
 
-    if (!useSSO)
-    {
-        mShaderProgram.reset(mRendererDevice->CreateShaderProgram(mShaderProgramDesc));
-        if (!mShaderProgram)
-            return false;
-    }
+    mShaderProgram.reset(mRendererDevice->CreateShaderProgram(mShaderProgramDesc));
+    if (!mShaderProgram)
+        return false;
 
     return true;
 }
@@ -191,25 +188,18 @@ bool BasicScene::CreateTexture()
 /// Subscenes ///
 /////////////////
 
-// Basic initialization, additionally to RT & BackBuffer shaders are compiled with SSO
-// Empty window should be visible
-bool BasicScene::CreateSubSceneEmptySSO()
-{
-    return CreateShaderProgram(true, false, false);
-}
-
 // Basic initialization, additionally to RT & BackBuffer shaders are compiled
 // Empty window should be visible
 bool BasicScene::CreateSubSceneEmpty()
 {
-    return CreateShaderProgram(false, false, false);
+    return CreateShaderProgram(false, false);
 }
 
 // Adds vertex buffer creation
 // Two colored triangles should be visible
 bool BasicScene::CreateSubSceneVertexBuffer()
 {
-    if (!CreateShaderProgram(false, false, false))
+    if (!CreateShaderProgram(false, false))
         return false;
 
     return CreateVertexBuffer(false);
@@ -219,7 +209,7 @@ bool BasicScene::CreateSubSceneVertexBuffer()
 // A colored triangle and a colored square should be visible
 bool BasicScene::CreateSubSceneIndexBuffer()
 {
-    if (!CreateShaderProgram(false, false, false))
+    if (!CreateShaderProgram(false, false))
         return false;
 
     if (!CreateVertexBuffer(true))
@@ -232,7 +222,7 @@ bool BasicScene::CreateSubSceneIndexBuffer()
 // The triangle and the square should rotate
 bool BasicScene::CreateSubSceneConstantBuffer()
 {
-    if (!CreateShaderProgram(false, true, false))
+    if (!CreateShaderProgram(true, false))
         return false;
 
     if (!CreateVertexBuffer(true))
@@ -248,7 +238,7 @@ bool BasicScene::CreateSubSceneConstantBuffer()
 // The triangle should be rendered checked
 bool BasicScene::CreateSubSceneTexture()
 {
-    if (!CreateShaderProgram(false, true, true))
+    if (!CreateShaderProgram(true, true))
         return false;
 
     if (!CreateVertexBuffer(true))
@@ -271,7 +261,6 @@ bool BasicScene::CreateSubSceneTexture()
 BasicScene::BasicScene()
     : Scene("Basic")
 {
-    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneEmptySSO, this), "Empty with SSO");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneEmpty, this), "Empty");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneVertexBuffer, this), "VertexBuffer");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneIndexBuffer, this), "IndexBuffer");
@@ -322,12 +311,13 @@ bool BasicScene::OnInit(void* winHandle)
 
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
 
-    BlendStateDesc blendStateDesc;
-    blendStateDesc.independent = false;
-    blendStateDesc.rtDescs[0].enable = true;
-    mBlendState.reset(mRendererDevice->CreateBlendState(blendStateDesc));
-    if (mBlendState) // incorrectly initialized BlendState is not an error
-        mCommandBuffer->SetBlendState(mBlendState.get());
+    PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.blendState.independent = false;
+    pipelineStateDesc.blendState.rtDescs[0].enable = true;
+
+    mPipelineState.reset(mRendererDevice->CreatePipelineState(pipelineStateDesc));
+    if (!mPipelineState)
+        return false;
 
     return true;
 }
@@ -337,17 +327,12 @@ bool BasicScene::OnSwitchSubscene()
     // reset bound resources and set them once again
     mCommandBuffer->Reset();
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
-    mCommandBuffer->SetBlendState(mBlendState.get());
+    mCommandBuffer->SetPipelineState(mPipelineState.get());
 
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
 
     if (mShaderProgram)
         mCommandBuffer->SetShaderProgram(mShaderProgram.get());
-    else
-    {
-        mCommandBuffer->SetShader(mShaderProgramDesc.vertexShader);
-        mCommandBuffer->SetShader(mShaderProgramDesc.pixelShader);
-    }
 
     if (mVertexLayout) mCommandBuffer->SetVertexLayout(mVertexLayout.get());
 
@@ -414,7 +399,7 @@ void BasicScene::Draw(float dt)
 void BasicScene::Release()
 {
     ReleaseSubsceneResources();
-    mBlendState.reset();
+    mPipelineState.reset();
     mWindowRenderTarget.reset();
     mWindowBackbuffer.reset();
     mCommandBuffer = nullptr;

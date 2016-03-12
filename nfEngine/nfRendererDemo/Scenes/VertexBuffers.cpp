@@ -256,10 +256,10 @@ bool VertexBuffersScene::OnInit(void* winHandle)
 
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
 
-    RasterizerStateDesc rasterizerStateDesc;
-    rasterizerStateDesc.cullMode = CullMode::Disabled;
-    mRasterizerState.reset(mRendererDevice->CreateRasterizerState(rasterizerStateDesc));
-    if (!mRasterizerState)
+    PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
+    mPipelineState.reset(mRendererDevice->CreatePipelineState(pipelineStateDesc));
+    if (!mPipelineState)
         return false;
 
     return true;
@@ -272,7 +272,7 @@ bool VertexBuffersScene::OnSwitchSubscene()
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
 
-    mCommandBuffer->SetRasterizerState(mRasterizerState.get());
+    mCommandBuffer->SetPipelineState(mPipelineState.get());
     mCommandBuffer->SetShaderProgram(mShaderProgram.get());
     mCommandBuffer->SetVertexLayout(mVertexLayout.get());
     mCommandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);

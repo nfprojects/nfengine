@@ -29,7 +29,7 @@ class VertexBuffersScene : public Scene
     std::unique_ptr<NFE::Renderer::IBuffer> mIndexBuffer;
     std::unique_ptr<NFE::Renderer::IVertexLayout> mVertexLayout;
 
-    std::unique_ptr<NFE::Renderer::IRasterizerState> mRasterizerState;
+    std::unique_ptr<NFE::Renderer::IPipelineState> mPipelineState;
 
     // ShaderProgramDesc must be a member, VertexLayout requires vertex shader access
     NFE::Renderer::ShaderProgramDesc mShaderProgramDesc;
