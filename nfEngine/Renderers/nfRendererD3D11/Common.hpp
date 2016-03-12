@@ -113,6 +113,11 @@ public:
             pointer = nullptr;
         }
     }
+
+    operator bool() const
+    {
+        return pointer != nullptr;
+    }
 };
 
 } // namespace Renderer

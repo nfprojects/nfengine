@@ -85,24 +85,20 @@ GuiRenderer::GuiRenderer()
     bufferDesc.debugName = "GuiRenderer::mVertexBuffer";
     mVertexBuffer.reset(device->CreateBuffer(bufferDesc));
 
+
+    PipelineStateDesc pipelineStateDesc;
     // blend state that enables additive alpha-blending
-    BlendStateDesc bsDesc;
-    bsDesc.rtDescs[0].enable = true;
-    bsDesc.rtDescs[0].destColorFunc = BlendFunc::OneMinusSrcAlpha;
-    bsDesc.rtDescs[0].srcColorFunc = BlendFunc::SrcAlpha;
-    bsDesc.debugName = "GuiRenderer::mBlendState";
-    mBlendState.reset(device->CreateBlendState(bsDesc));
+    pipelineStateDesc.blendState.rtDescs[0].enable = true;
+    pipelineStateDesc.blendState.rtDescs[0].destColorFunc = BlendFunc::OneMinusSrcAlpha;
+    pipelineStateDesc.blendState.rtDescs[0].srcColorFunc = BlendFunc::SrcAlpha;
+    pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
+    pipelineStateDesc.raterizerState.fillMode = FillMode::Solid;
+    pipelineStateDesc.debugName = "GuiRenderer::mPipelineState";
+    mPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
 
-    DepthStateDesc dsDesc;
-    dsDesc.debugName = "GuiRenderer::mDepthState";
-    mDepthState.reset(device->CreateDepthState(dsDesc));
-
-    RasterizerStateDesc rsDesc;
-    rsDesc.cullMode = CullMode::Disabled;
-    rsDesc.fillMode = FillMode::Solid;
-    rsDesc.scissorTest = true;
-    rsDesc.debugName = "GuiRenderer::mImGuiRasterizerState";
-    mImGuiRasterizerState.reset(device->CreateRasterizerState(rsDesc));
+    pipelineStateDesc.raterizerState.scissorTest = true;
+    pipelineStateDesc.debugName = "GuiRenderer::mImGuiPipelineState";
+    mImGuiPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
 }
 
 
@@ -116,9 +112,6 @@ void GuiRenderer::OnEnter(RenderContext* context)
     context->commandBuffer->SetConstantBuffers(constantBuffers, 1, ShaderType::Vertex);
     context->commandBuffer->SetConstantBuffers(constantBuffers, 1, ShaderType::Geometry);
 
-    context->commandBuffer->SetDepthState(mDepthState.get());
-    context->commandBuffer->SetBlendState(mBlendState.get());
-
     ISampler* sampler = mRenderer->GetDefaultSampler();
     context->commandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
 }
@@ -130,7 +123,8 @@ void GuiRenderer::BeginOrdinaryGuiRendering(RenderContext* context)
     int offsets[] = { 0 };
     context->commandBuffer->SetVertexBuffers(1, vertexBuffers, strides, offsets);
     context->commandBuffer->SetVertexLayout(mVertexLayout.get());
-    context->commandBuffer->SetRasterizerState(mRenderer->GetDefaultRasterizerState());
+
+    context->commandBuffer->SetPipelineState(mPipelineState.get());
 }
 
 void GuiRenderer::OnLeave(RenderContext* context)
@@ -397,7 +391,7 @@ bool GuiRenderer::DrawImGui(RenderContext* context)
     context->commandBuffer->SetIndexBuffer(mImGuiIndexBuffer.get(), IndexBufferFormat::Uint16);
     context->commandBuffer->SetVertexLayout(mImGuiVertexLayout.get());
     context->commandBuffer->SetShaderProgram(mImGuiShaderProgram.GetShaderProgram());
-    context->commandBuffer->SetRasterizerState(mImGuiRasterizerState.get());
+    context->commandBuffer->SetPipelineState(mImGuiPipelineState.get());
 
     int vertexOffset = 0, indexOffset = 0;
     for (int i = 0; i < drawData->CmdListsCount; ++i)
