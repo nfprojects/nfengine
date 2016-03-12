@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Types.hpp"
+#include "Shader.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -26,8 +27,6 @@ struct RenderTargetBlendStateDesc
     BlendOp colorOperator;
     BlendOp alphaOperator;
 
-    const char* debugName;   //< optional debug name
-
     RenderTargetBlendStateDesc()
         : enable(false)
         , srcColorFunc(BlendFunc::One)
@@ -36,7 +35,6 @@ struct RenderTargetBlendStateDesc
         , destAlphaFunc(BlendFunc::One)
         , colorOperator(BlendOp::Add)
         , alphaOperator(BlendOp::Add)
-        , debugName(nullptr)
     {}
 };
 
@@ -48,25 +46,12 @@ struct BlendStateDesc
     RenderTargetBlendStateDesc rtDescs[MAX_RENDER_TARGETS];
     bool independent; //< if set to false structure at index 0 is applied to all rendertargets
     bool alphaToCoverage;
-    const char* debugName;   //< optional debug name
 
     BlendStateDesc()
         : rtDescs()
         , independent(false)
         , alphaToCoverage(false)
-        , debugName(nullptr)
     {}
-};
-
-/**
- * Blend State interface.
- *
- * @details Blend State object describes blending mode used in the rendring pipeline.
- */
-class IBlendState
-{
-public:
-    virtual ~IBlendState() {}
 };
 
 
@@ -79,26 +64,12 @@ struct RasterizerStateDesc
     FillMode fillMode;
     bool scissorTest;
     // TODO: more options
-    const char* debugName;  //< optional debug name
 
     RasterizerStateDesc()
         : cullMode(CullMode::Disabled)
         , fillMode(FillMode::Solid)
         , scissorTest(false)
-        , debugName(nullptr)
     {}
-};
-
-/**
- * Rasterizer State interface.
- *
- * @details Rasterizer State object describes polygon rasterization mode used in the rendring
- *          pipeline.
- */
-class IRasterizerState
-{
-public:
-    virtual ~IRasterizerState() {}
 };
 
 
@@ -132,8 +103,6 @@ struct DepthStateDesc
 
     CompareFunc stencilFunc;
 
-    const char* debugName;   //< optional debug name
-
     DepthStateDesc()
         : depthTestEnable(false)
         , depthWriteEnable(false)
@@ -144,19 +113,35 @@ struct DepthStateDesc
         , stencilOpDepthFail(StencilOp::Keep)
         , stencilOpPass(StencilOp::Keep)
         , stencilFunc(CompareFunc::Pass)
-        , debugName(nullptr)
     {}
 };
 
 /**
- * Depth State interface.
- *
- * @details Depth State object describes depth testing used in the rendring pipeline.
+ * Description of Pipeline State object.
  */
-class IDepthState
+struct PipelineStateDesc
+{
+    RasterizerStateDesc raterizerState;
+    BlendStateDesc blendState;
+    DepthStateDesc depthState;
+    const char* debugName;   //< optional debug name
+
+    PipelineStateDesc()
+        : raterizerState()
+        , blendState()
+        , depthState()
+        , debugName(nullptr)
+    { }
+};
+
+/**
+ * Pipeline State interface.
+ * @details Pipeline State object aggregates rasterizer, blend and depth states.
+ */
+class IPipelineState
 {
 public:
-    virtual ~IDepthState() {}
+    virtual ~IPipelineState() {}
 };
 
 } // namespace Renderer

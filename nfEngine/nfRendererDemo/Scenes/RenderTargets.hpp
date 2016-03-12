@@ -36,8 +36,7 @@ class RenderTargetsScene : public Scene
     std::unique_ptr<NFE::Renderer::IVertexLayout> mVertexLayout;
 
     std::unique_ptr<NFE::Renderer::ISampler> mSampler;
-    std::unique_ptr<NFE::Renderer::IDepthState> mDepthState;
-    std::unique_ptr<NFE::Renderer::IRasterizerState> mRasterizerState;
+    std::unique_ptr<NFE::Renderer::IPipelineState> mPipelineState;
 
     float mAngle;
 

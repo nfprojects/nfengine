@@ -46,8 +46,8 @@ void CommandBuffer::Reset()
     mStencilRef = mCurrentStencilRef = 0;
     mCurrentPrimitiveType = PrimitiveType::Unknown;
     mCurrentRenderTarget = nullptr;
-    mDepthState = nullptr;
-    mCurrentDepthState = nullptr;
+    mPipelineState = nullptr;
+    mCurrentPipelineState = nullptr;
     mBoundShaders = ShaderProgramDesc();
 
     mContext->ClearState();
@@ -263,69 +263,9 @@ void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
     }
 }
 
-void CommandBuffer::SetShader(IShader* shader)
+void CommandBuffer::SetPipelineState(IPipelineState* state)
 {
-    Shader* newShader = dynamic_cast<Shader*>(shader);
-
-    switch (newShader->mType)
-    {
-        case ShaderType::Vertex:
-            if (shader != mBoundShaders.vertexShader)
-            {
-                mContext->VSSetShader(newShader->mVS, nullptr, 0);
-                mBoundShaders.vertexShader = shader;
-            }
-            break;
-
-        case ShaderType::Geometry:
-            if (shader != mBoundShaders.geometryShader)
-            {
-                mContext->GSSetShader(newShader->mGS, nullptr, 0);
-                mBoundShaders.geometryShader = shader;
-            }
-            break;
-
-        case ShaderType::Hull:
-            if (shader != mBoundShaders.hullShader)
-            {
-                mContext->HSSetShader(newShader->mHS, nullptr, 0);
-                mBoundShaders.hullShader = shader;
-            }
-            break;
-
-        case ShaderType::Domain:
-            if (shader != mBoundShaders.domainShader)
-            {
-                mContext->DSSetShader(newShader->mDS, nullptr, 0);
-                mBoundShaders.domainShader = shader;
-            }
-            break;
-
-        case ShaderType::Pixel:
-            if (shader != mBoundShaders.pixelShader)
-            {
-                mContext->PSSetShader(newShader->mPS, nullptr, 0);
-                mBoundShaders.pixelShader = shader;
-            }
-            break;
-    };
-}
-
-void CommandBuffer::SetBlendState(IBlendState* state)
-{
-    BlendState* blendState = dynamic_cast<BlendState*>(state);
-    mContext->OMSetBlendState(blendState ? blendState->mBS.get() : nullptr, nullptr, 0xFFFFFFFF);
-}
-
-void CommandBuffer::SetRasterizerState(IRasterizerState* state)
-{
-    RasterizerState* rasterizerState = dynamic_cast<RasterizerState*>(state);
-    mContext->RSSetState(rasterizerState->mRS.get());
-}
-
-void CommandBuffer::SetDepthState(IDepthState* state)
-{
-    mDepthState = dynamic_cast<DepthState*>(state);
+    mPipelineState = dynamic_cast<PipelineState*>(state);
 }
 
 void CommandBuffer::SetStencilRef(unsigned char ref)
@@ -495,11 +435,13 @@ void CommandBuffer::Clear(int flags, const float* color, float depthValue,
 
 void CommandBuffer::UpdateState(PrimitiveType primitiveType)
 {
-    if (mCurrentDepthState != mDepthState || mCurrentStencilRef != mStencilRef)
+    if (mCurrentPipelineState != mPipelineState || mCurrentStencilRef != mStencilRef)
     {
-        mContext->OMSetDepthStencilState(mDepthState ? mDepthState->mDS.get() : nullptr,
-                                         mStencilRef);
-        mCurrentDepthState = mDepthState;
+        mContext->OMSetBlendState(mPipelineState->mBS.get(), nullptr, 0xFFFFFFFF);
+        mContext->RSSetState(mPipelineState->mRS.get());
+        mContext->OMSetDepthStencilState(mPipelineState->mDS.get(), mStencilRef);
+
+        mCurrentPipelineState = mPipelineState;
         mCurrentStencilRef = mStencilRef;
     }
 

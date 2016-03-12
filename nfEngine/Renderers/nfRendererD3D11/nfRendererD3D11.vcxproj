@@ -192,11 +192,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Backbuffer.cpp" />
-    <ClCompile Include="BlendState.cpp" />
+    <ClCompile Include="PipelineState.cpp" />
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="CommandBuffer.cpp" />
     <ClCompile Include="Common.cpp" />
-    <ClCompile Include="DepthState.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Main.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -212,7 +211,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="RasterizerState.cpp" />
     <ClCompile Include="RendererD3D11.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="Sampler.cpp" />

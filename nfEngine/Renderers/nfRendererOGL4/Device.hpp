@@ -32,9 +32,7 @@ public:
     ITexture* CreateTexture(const TextureDesc& desc);
     IBackbuffer* CreateBackbuffer(const BackbufferDesc& desc);
     IRenderTarget* CreateRenderTarget(const RenderTargetDesc& desc);
-    IBlendState* CreateBlendState(const BlendStateDesc& desc);
-    IDepthState* CreateDepthState(const DepthStateDesc& desc);
-    IRasterizerState* CreateRasterizerState(const RasterizerStateDesc& desc);
+    IPipelineState* CreatePipelineState(const PipelineStateDesc& desc);
     ISampler* CreateSampler(const SamplerDesc& desc);
     IShader* CreateShader(const ShaderDesc& desc);
     IShaderProgram* CreateShaderProgram(const ShaderProgramDesc& desc);

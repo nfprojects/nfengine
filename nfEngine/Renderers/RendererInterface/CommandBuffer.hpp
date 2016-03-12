@@ -53,10 +53,7 @@ public:
                                     int slotOffset = 0) = 0;
     virtual void SetRenderTarget(IRenderTarget* renderTarget) = 0;
     virtual void SetShaderProgram(IShaderProgram* shaderProgram) = 0;
-    virtual void SetShader(IShader* shader) = 0;
-    virtual void SetBlendState(IBlendState* state) = 0;
-    virtual void SetRasterizerState(IRasterizerState* state) = 0;
-    virtual void SetDepthState(IDepthState* state) = 0;
+    virtual void SetPipelineState(IPipelineState* state) = 0;
     virtual void SetStencilRef(unsigned char ref) = 0;
     virtual void SetViewport(float left, float width, float top, float height,
                              float minDepth, float maxDepth) = 0;
