@@ -23,13 +23,10 @@ class DepthStencilScene: public Scene
     std::unique_ptr<NFE::Renderer::IVertexLayout> mVertexLayout;
     std::unique_ptr<NFE::Renderer::IShaderProgram> mShaderProgram;
 
-    std::unique_ptr<NFE::Renderer::IBlendState> mFloorBlendState;
-    std::unique_ptr<NFE::Renderer::IDepthState> mMaskDepthState;
-    std::unique_ptr<NFE::Renderer::IDepthState> mReflectionDepthState;
-    std::unique_ptr<NFE::Renderer::IDepthState> mDepthState;
-    std::unique_ptr<NFE::Renderer::IRasterizerState> mRasterizerState;
-
-    NFE::Renderer::ShaderProgramDesc mShaderProgramDesc;
+    std::unique_ptr<NFE::Renderer::IPipelineState> mMaskPipelineState;
+    std::unique_ptr<NFE::Renderer::IPipelineState> mReflectionPipelineState;
+    std::unique_ptr<NFE::Renderer::IPipelineState> mFloorPipelineState;
+    std::unique_ptr<NFE::Renderer::IPipelineState> mCubePipelineState;
 
     float mAngle;
 

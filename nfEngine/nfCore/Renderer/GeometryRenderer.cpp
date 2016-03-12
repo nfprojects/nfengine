@@ -109,11 +109,14 @@ GeometryRenderer::GeometryRenderer()
     bufferDesc.debugName = "GeometryRenderer::mShadowGlobalCBuffer";
     mShadowGlobalCBuffer.reset(device->CreateBuffer(bufferDesc));
 
-    RasterizerStateDesc rasterizerStateDesc;
-    rasterizerStateDesc.cullMode = CullMode::CW;
-    rasterizerStateDesc.fillMode = FillMode::Solid;
-    rasterizerStateDesc.debugName = "GeometryRenderer::mRasterizerState";
-    mRasterizerState.reset(device->CreateRasterizerState(rasterizerStateDesc));
+    PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.depthState.depthCompareFunc = CompareFunc::Less;
+    pipelineStateDesc.depthState.depthTestEnable = true;
+    pipelineStateDesc.depthState.depthWriteEnable = true;
+    pipelineStateDesc.raterizerState.cullMode = CullMode::CW;
+    pipelineStateDesc.raterizerState.fillMode = FillMode::Solid;
+    pipelineStateDesc.debugName = "GeometryRenderer::mPipelineState";
+    mPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
 }
 
 void GeometryRenderer::OnEnter(RenderContext* context)
@@ -121,9 +124,7 @@ void GeometryRenderer::OnEnter(RenderContext* context)
     context->commandBuffer->BeginDebugGroup("Geometry Buffer Renderer stage");
 
     context->commandBuffer->SetVertexLayout(mVertexLayout.get());
-    context->commandBuffer->SetRasterizerState(mRasterizerState.get());
-    context->commandBuffer->SetDepthState(mRenderer->GetDefaultDepthState());
-    context->commandBuffer->SetBlendState(mRenderer->GetDefaultBlendState());
+    context->commandBuffer->SetPipelineState(mPipelineState.get());
 
     ISampler* sampler = mRenderer->GetDefaultSampler();
     context->commandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
