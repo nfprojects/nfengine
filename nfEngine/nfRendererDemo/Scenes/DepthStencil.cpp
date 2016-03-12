@@ -57,57 +57,59 @@ bool DepthStencilScene::CreateBasicResources(bool withStencil)
     if (!mWindowRenderTarget)
         return false;
 
+
     DepthStateDesc depthStateDesc;
-
-    if (withStencil)
-    {
-        depthStateDesc.depthWriteEnable = false;
-        depthStateDesc.depthTestEnable = false;
-        depthStateDesc.stencilOpPass = StencilOp::Replace;
-        depthStateDesc.stencilOpDepthFail = StencilOp::Replace;
-        depthStateDesc.stencilOpFail = StencilOp::Replace;
-        depthStateDesc.stencilFunc = CompareFunc::Pass;
-        depthStateDesc.stencilEnable = true;
-        depthStateDesc.stencilMask = 0xFF;
-        mMaskDepthState.reset(mRendererDevice->CreateDepthState(depthStateDesc));
-        if (!mMaskDepthState)
-            return false;
-
-        depthStateDesc.depthCompareFunc = CompareFunc::Less;
-        depthStateDesc.depthWriteEnable = true;
-        depthStateDesc.depthTestEnable = true;
-        depthStateDesc.stencilOpPass = StencilOp::Keep;
-        depthStateDesc.stencilOpDepthFail = StencilOp::Keep;
-        depthStateDesc.stencilOpFail = StencilOp::Keep;
-        depthStateDesc.stencilFunc = CompareFunc::Equal;
-        depthStateDesc.stencilEnable = true;
-        depthStateDesc.stencilMask = 0xFF;
-        mReflectionDepthState.reset(mRendererDevice->CreateDepthState(depthStateDesc));
-        if (!mReflectionDepthState)
-            return false;
-    }
-
     depthStateDesc.depthCompareFunc = CompareFunc::Less;
     depthStateDesc.depthWriteEnable = true;
     depthStateDesc.depthTestEnable = true;
     depthStateDesc.stencilEnable = false;
-    mDepthState.reset(mRendererDevice->CreateDepthState(depthStateDesc));
-    if (!mDepthState)
-        return false;
-
-    RasterizerStateDesc rasterizerStateDesc;
-    rasterizerStateDesc.cullMode = CullMode::Disabled;
-    mRasterizerState.reset(mRendererDevice->CreateRasterizerState(rasterizerStateDesc));
-    if (!mRasterizerState)
-        return false;
 
     BlendStateDesc blendStateDesc;
     blendStateDesc.independent = false;
     blendStateDesc.rtDescs[0].enable = true;
     blendStateDesc.rtDescs[0].srcColorFunc = BlendFunc::SrcAlpha;
     blendStateDesc.rtDescs[0].destColorFunc = BlendFunc::OneMinusSrcAlpha;
-    mFloorBlendState.reset(mRendererDevice->CreateBlendState(blendStateDesc));
-    if (!mFloorBlendState)
+
+    PipelineStateDesc psd;
+    psd.raterizerState.cullMode = CullMode::Disabled;
+
+    if (withStencil)
+    {
+        psd.depthState.depthWriteEnable = false;
+        psd.depthState.depthTestEnable = false;
+        psd.depthState.stencilOpPass = StencilOp::Replace;
+        psd.depthState.stencilOpDepthFail = StencilOp::Replace;
+        psd.depthState.stencilOpFail = StencilOp::Replace;
+        psd.depthState.stencilFunc = CompareFunc::Pass;
+        psd.depthState.stencilEnable = true;
+        psd.depthState.stencilMask = 0xFF;
+        mMaskPipelineState.reset(mRendererDevice->CreatePipelineState(psd));
+        if (!mMaskPipelineState)
+            return false;
+
+        psd.depthState.depthCompareFunc = CompareFunc::Less;
+        psd.depthState.depthWriteEnable = true;
+        psd.depthState.depthTestEnable = true;
+        psd.depthState.stencilOpPass = StencilOp::Keep;
+        psd.depthState.stencilOpDepthFail = StencilOp::Keep;
+        psd.depthState.stencilOpFail = StencilOp::Keep;
+        psd.depthState.stencilFunc = CompareFunc::Equal;
+        psd.depthState.stencilEnable = true;
+        psd.depthState.stencilMask = 0xFF;
+        mReflectionPipelineState.reset(mRendererDevice->CreatePipelineState(psd));
+        if (!mReflectionPipelineState)
+            return false;
+    }
+
+    psd.depthState = depthStateDesc;
+    mCubePipelineState.reset(mRendererDevice->CreatePipelineState(psd));
+    if (!mCubePipelineState)
+        return false;
+
+    psd.depthState = depthStateDesc;
+    psd.blendState = blendStateDesc;
+    mFloorPipelineState.reset(mRendererDevice->CreatePipelineState(psd));
+    if (!mFloorPipelineState)
         return false;
 
     ShaderMacro vsMacro[] = { { "USE_CBUFFER", "1" } };
@@ -122,9 +124,10 @@ bool DepthStencilScene::CreateBasicResources(bool withStencil)
     if (!mPixelShader)
         return false;
 
-    mShaderProgramDesc.vertexShader = mVertexShader.get();
-    mShaderProgramDesc.pixelShader = mPixelShader.get();
-    mShaderProgram.reset(mRendererDevice->CreateShaderProgram(mShaderProgramDesc));
+    ShaderProgramDesc shaderProgramDesc;
+    shaderProgramDesc.vertexShader = mVertexShader.get();
+    shaderProgramDesc.pixelShader = mPixelShader.get();
+    mShaderProgram.reset(mRendererDevice->CreateShaderProgram(shaderProgramDesc));
     if (!mShaderProgram)
         return false;
 
@@ -189,7 +192,7 @@ bool DepthStencilScene::CreateBasicResources(bool withStencil)
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;
     vertexLayoutDesc.numElements = 3;
-    vertexLayoutDesc.vertexShader = mShaderProgramDesc.vertexShader;
+    vertexLayoutDesc.vertexShader = shaderProgramDesc.vertexShader;
     mVertexLayout.reset(mRendererDevice->CreateVertexLayout(vertexLayoutDesc));
     if (!mVertexLayout)
         return false;
@@ -280,7 +283,6 @@ bool DepthStencilScene::OnSwitchSubscene()
 
     mCommandBuffer->SetShaderProgram(mShaderProgram.get());
     mCommandBuffer->SetVertexLayout(mVertexLayout.get());
-    mCommandBuffer->SetRasterizerState(mRasterizerState.get());
 
     return true;
 }
@@ -314,8 +316,7 @@ void DepthStencilScene::Draw(float dt)
         mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
         // Step 1: draw floor to stencil buffer
-        mCommandBuffer->SetBlendState(nullptr);
-        mCommandBuffer->SetDepthState(mMaskDepthState.get());
+        mCommandBuffer->SetPipelineState(mMaskPipelineState.get());
         mCommandBuffer->SetStencilRef(0x01);
         mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 2 * 3, -1, 2 * 6 * 3);
 
@@ -323,7 +324,7 @@ void DepthStencilScene::Draw(float dt)
         mCommandBuffer->Clear(NFE_CLEAR_FLAG_TARGET, color);
 
         // Step 2: draw cube reflection
-        mCommandBuffer->SetDepthState(mReflectionDepthState.get());
+        mCommandBuffer->SetPipelineState(mReflectionPipelineState.get());
         mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 2 * 6 * 3);
     }
     else
@@ -340,12 +341,11 @@ void DepthStencilScene::Draw(float dt)
     mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
     // Step 3: draw floor
-    mCommandBuffer->SetDepthState(mDepthState.get());
-    mCommandBuffer->SetBlendState(mFloorBlendState.get());
+    mCommandBuffer->SetPipelineState(mFloorPipelineState.get());
     mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 2 * 3, -1, 2 * 6 * 3);
 
     // Step 4: draw "normal" cube
-    mCommandBuffer->SetBlendState(nullptr);
+    mCommandBuffer->SetPipelineState(mCubePipelineState.get());
     mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 2 * 6 * 3);
 
     mWindowBackbuffer->Present();
@@ -362,11 +362,10 @@ void DepthStencilScene::ReleaseSubsceneResources()
     mIndexBuffer.reset();
     mVertexLayout.reset();
     mShaderProgram.reset();
-    mFloorBlendState.reset();
-    mMaskDepthState.reset();
-    mReflectionDepthState.reset();
-    mDepthState.reset();
-    mRasterizerState.reset();
+    mMaskPipelineState.reset();
+    mReflectionPipelineState.reset();
+    mFloorPipelineState.reset();
+    mCubePipelineState.reset();
 }
 
 void DepthStencilScene::Release()

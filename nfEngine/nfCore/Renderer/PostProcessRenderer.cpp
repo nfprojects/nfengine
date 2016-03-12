@@ -66,6 +66,12 @@ PostProcessRenderer::PostProcessRenderer()
     bufferDesc.size = sizeof(ToneMappingCBuffer);
     bufferDesc.debugName = "PostProcessRenderer::mTonemappingCBuffer";
     mTonemappingCBuffer.reset(device->CreateBuffer(bufferDesc));
+
+    PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
+    pipelineStateDesc.raterizerState.fillMode = FillMode::Solid;
+    pipelineStateDesc.debugName = "PostProcessRenderer::mPipelineState";
+    mPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
 }
 
 void PostProcessRenderer::OnEnter(RenderContext* context)
@@ -73,9 +79,7 @@ void PostProcessRenderer::OnEnter(RenderContext* context)
     context->commandBuffer->Reset();
     context->commandBuffer->BeginDebugGroup("Post Process Renderer stage");
 
-    context->commandBuffer->SetRasterizerState(mRenderer->GetDefaultRasterizerState());
-    context->commandBuffer->SetDepthState(mRenderer->GetDefaultDepthState());
-    context->commandBuffer->SetBlendState(mRenderer->GetDefaultBlendState());
+    context->commandBuffer->SetPipelineState(mPipelineState.get());
 
     ISampler* sampler = mRenderer->GetDefaultSampler();
     context->commandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);

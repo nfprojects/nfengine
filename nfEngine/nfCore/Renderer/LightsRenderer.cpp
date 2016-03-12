@@ -178,25 +178,20 @@ LightsRenderer::LightsRenderer()
         mSpotLightCBuffer.reset(device->CreateBuffer(bufferDesc));
     }
 
-    // depth state for light volumes rendering
-    DepthStateDesc dsDesc;
-    dsDesc.depthCompareFunc = CompareFunc::Greater;
-    dsDesc.depthTestEnable = false;
-    dsDesc.depthWriteEnable = false;
-    dsDesc.debugName = "LightsRenderer::mLightsDepthState";
-    mLightsDepthState.reset(device->CreateDepthState(dsDesc));
-
-    // rasterizer state for light volumes rendering
-    RasterizerStateDesc rsDesc;
-    rsDesc.cullMode = CullMode::CCW;
-    rsDesc.debugName = "LightsRenderer::mLightsRasterizerState";
-    mLightsRasterizerState.reset(device->CreateRasterizerState(rsDesc));
+    PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.debugName = "LightsRenderer::mAmbientLightPipelineState";
+    mAmbientLightPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
 
     // blend state that enables additive alpha-blending
-    BlendStateDesc bsDesc;
-    bsDesc.rtDescs[0].enable = true;
-    bsDesc.debugName = "LightsRenderer::mLightsBlendState";
-    mLightsBlendState.reset(device->CreateBlendState(bsDesc));
+    pipelineStateDesc.blendState.rtDescs[0].enable = true;
+    // depth state for light volumes rendering
+    pipelineStateDesc.depthState.depthCompareFunc = CompareFunc::Greater;
+    pipelineStateDesc.depthState.depthTestEnable = true;
+    pipelineStateDesc.depthState.depthWriteEnable = false;
+    // rasterizer state for light volumes rendering
+    pipelineStateDesc.raterizerState.cullMode = CullMode::CCW;
+    pipelineStateDesc.debugName = "LightsRenderer::mLightVolumePipelineState";
+    mLightVolumePipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
 
     // shadow map sampler
     SamplerDesc samplerDesc;
@@ -271,9 +266,7 @@ void LightsRenderer::SetUp(RenderContext* context, IRenderTarget* target, Geomet
 void LightsRenderer::DrawAmbientLight(RenderContext* context, const Vector& ambientLightColor,
                                       const Vector& backgroundColor)
 {
-    context->commandBuffer->SetDepthState(mLightsDepthState.get());
-    context->commandBuffer->SetRasterizerState(mRenderer->GetDefaultRasterizerState());
-    context->commandBuffer->SetBlendState(mRenderer->GetDefaultBlendState());
+    context->commandBuffer->SetPipelineState(mAmbientLightPipelineState.get());
 
     AmbientLightCBuffer cbuffer;
     VectorStore(ambientLightColor, &cbuffer.ambientLight);
@@ -293,9 +286,7 @@ void LightsRenderer::DrawOmniLight(RenderContext* context, const Vector& pos, fl
 {
     // TODO: use instancing to draw lights
 
-    context->commandBuffer->SetDepthState(mLightsDepthState.get());
-    context->commandBuffer->SetRasterizerState(mLightsRasterizerState.get());
-    context->commandBuffer->SetBlendState(mLightsBlendState.get());
+    context->commandBuffer->SetPipelineState(mLightVolumePipelineState.get());
 
     IBuffer* cbuffers[] = { mGlobalCBuffer.get(), mOmniLightCBuffer.get() };
     context->commandBuffer->SetConstantBuffers(cbuffers, 2, ShaderType::Vertex);
@@ -348,9 +339,7 @@ void LightsRenderer::DrawSpotLight(RenderContext* context, const SpotLightProper
         context->commandBuffer->SetTextures(&shadowMapTexture, 1, ShaderType::Pixel, 6);
     }
 
-    context->commandBuffer->SetDepthState(mLightsDepthState.get());
-    context->commandBuffer->SetRasterizerState(mLightsRasterizerState.get());
-    context->commandBuffer->SetBlendState(mLightsBlendState.get());
+    context->commandBuffer->SetPipelineState(mLightVolumePipelineState.get());
     context->commandBuffer->SetShaderProgram(mSpotLightShaderProgram.GetShaderProgram(macros));
 
     IBuffer* cbuffers[] = { mGlobalCBuffer.get(), mSpotLightCBuffer.get() };
