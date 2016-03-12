@@ -39,9 +39,8 @@ struct NFE_ALIGN16 SpotLightProperties
 class LightsRenderer : public RendererModule<LightsRenderer>
 {
     std::unique_ptr<IBuffer> mGlobalCBuffer;
-    std::unique_ptr<IDepthState> mLightsDepthState;
-    std::unique_ptr<IRasterizerState> mLightsRasterizerState;
-    std::unique_ptr<IBlendState> mLightsBlendState;
+    std::unique_ptr<IPipelineState> mAmbientLightPipelineState;
+    std::unique_ptr<IPipelineState> mLightVolumePipelineState;
     std::unique_ptr<ISampler> mShadowMapSampler;
 
     std::unique_ptr<IBuffer> mVertexBuffer;
