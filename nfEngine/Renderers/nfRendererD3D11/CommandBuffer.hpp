@@ -29,8 +29,8 @@ class CommandBuffer : public ICommandBuffer
     unsigned char mCurrentStencilRef;
     PrimitiveType mCurrentPrimitiveType;
     RenderTarget* mCurrentRenderTarget;
-    DepthState* mDepthState;
-    DepthState* mCurrentDepthState;
+    PipelineState* mPipelineState;
+    PipelineState* mCurrentPipelineState;
     D3DPtr<ID3D11DeviceContext> mContext;
     D3DPtr<ID3DUserDefinedAnnotation> mUserDefinedAnnotation;
 
@@ -53,10 +53,7 @@ public:
     void SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target, int slotOffset);
     void SetRenderTarget(IRenderTarget* renderTarget);
     void SetShaderProgram(IShaderProgram* shaderProgram);
-    void SetShader(IShader* shader);
-    void SetBlendState(IBlendState* state);
-    void SetRasterizerState(IRasterizerState* state);
-    void SetDepthState(IDepthState* state);
+    void SetPipelineState(IPipelineState* state);
     void SetStencilRef(unsigned char ref);
     void SetViewport(float left, float width, float top, float height,
                      float minDepth, float maxDepth);

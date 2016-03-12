@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Types.hpp"
+#include "Shader.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -58,17 +59,6 @@ struct BlendStateDesc
     {}
 };
 
-/**
- * Blend State interface.
- *
- * @details Blend State object describes blending mode used in the rendring pipeline.
- */
-class IBlendState
-{
-public:
-    virtual ~IBlendState() {}
-};
-
 
 /**
  * Description of Rasterizer State object.
@@ -87,18 +77,6 @@ struct RasterizerStateDesc
         , scissorTest(false)
         , debugName(nullptr)
     {}
-};
-
-/**
- * Rasterizer State interface.
- *
- * @details Rasterizer State object describes polygon rasterization mode used in the rendring
- *          pipeline.
- */
-class IRasterizerState
-{
-public:
-    virtual ~IRasterizerState() {}
 };
 
 
@@ -149,14 +127,24 @@ struct DepthStateDesc
 };
 
 /**
- * Depth State interface.
- *
- * @details Depth State object describes depth testing used in the rendring pipeline.
+ * Description of Pipeline State object.
  */
-class IDepthState
+struct PipelineStateDesc
+{
+    RasterizerStateDesc raterizerState;
+    BlendStateDesc blendState;
+    DepthStateDesc depthState;
+    ShaderProgramDesc shaderProgram;
+};
+
+/**
+ * Pipeline State interface.
+ * @details Pipeline State object aggregates rasterizer, blend and depth states.
+ */
+class IPipelineState
 {
 public:
-    virtual ~IDepthState() {}
+    virtual ~IPipelineState() {}
 };
 
 } // namespace Renderer

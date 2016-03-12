@@ -56,6 +56,10 @@ class CommandBuffer : public ICommandBuffer
     void BindTexture();
     void BindSampler();
 
+    void SetBlendState(const BlendStateDesc& desc);
+    void SetRasterizerState(const RasterizerStateDesc& desc);
+    void SetDepthState(const DepthStateDesc& desc);
+
 public:
     CommandBuffer();
     ~CommandBuffer();
@@ -70,10 +74,7 @@ public:
     void SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target, int slotOffset);
     void SetRenderTarget(IRenderTarget* renderTarget);
     void SetShaderProgram(IShaderProgram* shaderProgram);
-    void SetShader(IShader* shader);
-    void SetBlendState(IBlendState* state);
-    void SetRasterizerState(IRasterizerState* state);
-    void SetDepthState(IDepthState* state);
+    void SetPipelineState(IPipelineState* state);
     void SetStencilRef(unsigned char ref);
     void SetViewport(float left, float width, float top, float height,
                      float minDepth, float maxDepth);

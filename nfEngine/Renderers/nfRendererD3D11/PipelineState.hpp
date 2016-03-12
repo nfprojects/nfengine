@@ -12,28 +12,17 @@
 namespace NFE {
 namespace Renderer {
 
-class BlendState : public IBlendState
+class PipelineState : public IPipelineState
 {
     friend class CommandBuffer;
-    D3DPtr<ID3D11BlendState> mBS;
-public:
-    bool Init(const BlendStateDesc& desc);
-};
 
-class RasterizerState : public IRasterizerState
-{
-    friend class CommandBuffer;
     D3DPtr<ID3D11RasterizerState> mRS;
-public:
-    bool Init(const RasterizerStateDesc& desc);
-};
-
-class DepthState : public IDepthState
-{
-    friend class CommandBuffer;
+    D3DPtr<ID3D11BlendState> mBS;
     D3DPtr<ID3D11DepthStencilState> mDS;
+    // TODO Blend, Rasterizer and DepthStencil states can be shared in D3D11
+
 public:
-    bool Init(const DepthStateDesc& desc);
+    bool Init(const PipelineStateDesc& desc);
 };
 
 } // namespace Renderer
