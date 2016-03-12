@@ -62,24 +62,19 @@ bool RenderTargetsScene::CreateBasicResources()
     if (!mWindowRenderTarget)
         return false;
 
-    DepthStateDesc depthStateDesc;
-    depthStateDesc.depthCompareFunc = CompareFunc::Less;
-    depthStateDesc.depthWriteEnable = true;
-    depthStateDesc.depthTestEnable = true;
-    depthStateDesc.stencilEnable = false;
-    mDepthState.reset(mRendererDevice->CreateDepthState(depthStateDesc));
-    if (!mDepthState)
-        return false;
-
     SamplerDesc samplerDesc;
     mSampler.reset(mRendererDevice->CreateSampler(samplerDesc));
     if (!mSampler)
         return false;
 
-    RasterizerStateDesc rasterizerStateDesc;
-    rasterizerStateDesc.cullMode = CullMode::Disabled;
-    mRasterizerState.reset(mRendererDevice->CreateRasterizerState(rasterizerStateDesc));
-    if (!mRasterizerState)
+    PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.depthState.depthCompareFunc = CompareFunc::Less;
+    pipelineStateDesc.depthState.depthWriteEnable = true;
+    pipelineStateDesc.depthState.depthTestEnable = true;
+    pipelineStateDesc.depthState.stencilEnable = false;
+    pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
+    mPipelineState.reset(mRendererDevice->CreatePipelineState(pipelineStateDesc));
+    if (!mPipelineState)
         return false;
 
     // create vertex buffers
@@ -350,7 +345,7 @@ bool RenderTargetsScene::OnSwitchSubscene()
     mCommandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
 
     mCommandBuffer->SetVertexLayout(mVertexLayout.get());
-    mCommandBuffer->SetRasterizerState(mRasterizerState.get());
+    mCommandBuffer->SetPipelineState(mPipelineState.get());
 
     ISampler* samplers[] = { mSampler.get() };
     mCommandBuffer->SetSamplers(samplers, 1, ShaderType::Pixel, 0);
@@ -474,8 +469,7 @@ void RenderTargetsScene::ReleaseSubsceneResources()
     mIndexBuffer.reset();
     mVertexLayout.reset();
     mSampler.reset();
-    mDepthState.reset();
-    mRasterizerState.reset();
+    mPipelineState.reset();
 }
 
 void RenderTargetsScene::Release()

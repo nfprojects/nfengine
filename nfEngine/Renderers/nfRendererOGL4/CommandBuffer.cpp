@@ -21,15 +21,6 @@ namespace NFE {
 namespace Renderer {
 
 
-namespace {
-
-BlendState gDefaultBlendState;
-DepthState gDefaultDepthState;
-RasterizerState gDefaultRasterizerState;
-
-} // namespace
-
-
 CommandBuffer::CommandBuffer()
     : mCurrentIndexBufferFormat(GL_NONE)
     , mCurrentStencilFunc(GL_KEEP)
@@ -304,49 +295,9 @@ void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
     mSetShaderProgram = newShaderProgram->mProgram;
 }
 
-void CommandBuffer::SetShader(IShader* shader)
+void CommandBuffer::SetBlendState(const BlendStateDesc& desc)
 {
-    Shader* newShader = dynamic_cast<Shader*>(shader);
-    if (newShader == nullptr)
-    {
-        LOG_ERROR("Invalid 'shader' pointer");
-        return;
-    }
-
-    if (newShader->mShaderProgram == GL_NONE)
-    {
-        LOG_ERROR("Invalid or uninitialized Separable Shader Program provided.");
-        return;
-    }
-
-    if (!mSSOEnabled)
-    {
-        // generate a program pipeline to use if needed
-        // unfortunately we cannot do this in constructor, the exceptions are probably
-        // uninitialized at this stage and the function ptr equals to NULL
-        if (!mProgramPipeline)
-            glGenProgramPipelines(1, &mProgramPipeline);
-
-        // unbind any bound program and bind our program pipeline
-        glUseProgram(GL_NONE);
-        glBindProgramPipeline(mProgramPipeline);
-        mSSOEnabled = true;
-    }
-
-    // attach created program to the pipeline
-    glUseProgramStages(mProgramPipeline, TranslateShaderTypeToGLBit(newShader->mType),
-                       newShader->mShaderProgram);
-}
-
-void CommandBuffer::SetBlendState(IBlendState* state)
-{
-    BlendState* bs;
-    if (!state)
-        bs = &gDefaultBlendState;
-    else
-        bs = dynamic_cast<BlendState*>(state);
-
-    if (bs->mDesc.alphaToCoverage)
+    if (desc.alphaToCoverage)
     {
         glEnable(GL_SAMPLE_COVERAGE);
         glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
@@ -359,46 +310,32 @@ void CommandBuffer::SetBlendState(IBlendState* state)
 
     // TODO multiple Render Targets should also take BlendStateDesc::independent into account
     //      When supporting multiple RTs, replace gl* functions in this call with gl*i equivalents
-    if (bs->mDesc.independent)
+    if (desc.independent)
         LOG_WARNING("Separate Blend States are not yet supported! Only the first one will be set.");
 
-    RenderTargetBlendStateDesc& desc = bs->mDesc.rtDescs[0];
-    if (desc.enable)
+    const RenderTargetBlendStateDesc& rtBlendState = desc.rtDescs[0];
+    if (rtBlendState.enable)
         glEnable(GL_BLEND);
     else
         glDisable(GL_BLEND);
 
-    glBlendFuncSeparate(TranslateBlendFunc(desc.srcColorFunc),
-                        TranslateBlendFunc(desc.destColorFunc),
-                        TranslateBlendFunc(desc.srcAlphaFunc),
-                        TranslateBlendFunc(desc.destAlphaFunc));
-    glBlendEquationSeparate(TranslateBlendOp(desc.colorOperator),
-                            TranslateBlendOp(desc.alphaOperator));
+    glBlendFuncSeparate(TranslateBlendFunc(rtBlendState.srcColorFunc),
+                        TranslateBlendFunc(rtBlendState.destColorFunc),
+                        TranslateBlendFunc(rtBlendState.srcAlphaFunc),
+                        TranslateBlendFunc(rtBlendState.destAlphaFunc));
+    glBlendEquationSeparate(TranslateBlendOp(rtBlendState.colorOperator),
+                            TranslateBlendOp(rtBlendState.alphaOperator));
 }
 
-void CommandBuffer::SetRasterizerState(IRasterizerState* state)
+void CommandBuffer::SetRasterizerState(const RasterizerStateDesc& desc)
 {
-    RasterizerState* rs;
-    if (!state)
-        rs = &gDefaultRasterizerState;
-    else
-        rs = dynamic_cast<RasterizerState*>(state);
-
-    RasterizerStateDesc& desc = rs->mDesc;
     glFrontFace(GL_CW); // force set front face to CW to be compatible with cullMode options
     glCullFace(TranslateCullMode(desc.cullMode));
     glPolygonMode(GL_FRONT_AND_BACK, TranslateFillMode(desc.fillMode));
 }
 
-void CommandBuffer::SetDepthState(IDepthState* state)
+void CommandBuffer::SetDepthState(const DepthStateDesc& desc)
 {
-    DepthState* ds;
-    if (!state)
-        ds = &gDefaultDepthState;
-    else
-        ds = dynamic_cast<DepthState*>(state);
-    DepthStateDesc& desc = ds->mDesc;
-
     // set up depth testing
     if (desc.depthTestEnable)
         glEnable(GL_DEPTH_TEST);
@@ -420,6 +357,15 @@ void CommandBuffer::SetDepthState(IDepthState* state)
     mCurrentStencilFunc = TranslateCompareFunc(desc.stencilFunc);
     mCurrentStencilMask = static_cast<GLuint>(desc.stencilMask);
     glStencilFunc(mCurrentStencilFunc, mCurrentStencilRef, mCurrentStencilMask);
+}
+
+void CommandBuffer::SetPipelineState(IPipelineState* state)
+{
+    PipelineState* pipelineState = dynamic_cast<PipelineState*>(state);
+
+    SetBlendState(pipelineState->mDesc.blendState);
+    SetRasterizerState(pipelineState->mDesc.raterizerState);
+    SetDepthState(pipelineState->mDesc.depthState);
 }
 
 void CommandBuffer::SetStencilRef(unsigned char ref)
