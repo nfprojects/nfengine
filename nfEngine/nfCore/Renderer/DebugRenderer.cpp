@@ -136,12 +136,11 @@ DebugRenderer::DebugRenderer()
     bufferDesc.debugName = "DebugRenderer::mIndexBuffer";
     mIndexBuffer.reset(device->CreateBuffer(bufferDesc));
 
-    /// create rasterizer state
-    RasterizerStateDesc rasterizerStateDesc;
-    rasterizerStateDesc.cullMode = CullMode::Disabled;
-    rasterizerStateDesc.fillMode = FillMode::Solid;
-    rasterizerStateDesc.debugName = "DebugRenderer::mRasterizerState";
-    mRasterizerState.reset(device->CreateRasterizerState(rasterizerStateDesc));
+    PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
+    pipelineStateDesc.raterizerState.fillMode = FillMode::Solid;
+    pipelineStateDesc.debugName = "DebugRenderer::mPipelineState";
+    mPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
 
     // TODO: depth state
 }
@@ -155,8 +154,7 @@ void DebugRenderer::OnEnter(RenderContext* context)
     IBuffer* constantBuffers[] = { mConstantBuffer.get(), mPerMeshConstantBuffer.get() };
     context->commandBuffer->SetConstantBuffers(constantBuffers, 2, ShaderType::Vertex);
 
-    context->commandBuffer->SetRasterizerState(mRasterizerState.get());
-    context->commandBuffer->SetDepthState(mRenderer->GetDefaultDepthState());
+    context->commandBuffer->SetPipelineState(mPipelineState.get());
 
     ISampler* sampler = mRenderer->GetDefaultSampler();
     context->commandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);

@@ -1,7 +1,7 @@
 /**
  * @file
  * @author LKostyra (costyrra.xl@gmail.com)
- * @brief  OGL4 Renderer's Rasterizer State definitions
+ * @brief  OGL4 Renderer's pipeline state definitions
  */
 
 #include "PCH.hpp"
@@ -10,15 +10,7 @@
 namespace NFE {
 namespace Renderer {
 
-RasterizerState::RasterizerState()
-{
-}
-
-RasterizerState::~RasterizerState()
-{
-}
-
-bool RasterizerState::Init(const RasterizerStateDesc& desc)
+bool PipelineState::Init(const PipelineStateDesc& desc)
 {
     // OGL states are split between functions
     // Remember whatever we must set, it will be done by CommandBuffer
