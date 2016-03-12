@@ -36,13 +36,12 @@ class CORE_API GuiRenderer : public RendererModule<GuiRenderer>
     std::unique_ptr<IBuffer> mVertexBuffer;
     std::unique_ptr<IVertexLayout> mVertexLayout;
     std::unique_ptr<IBuffer> mConstantBuffer;
-    std::unique_ptr<IBlendState> mBlendState;
-    std::unique_ptr<IDepthState> mDepthState;
+    std::unique_ptr<IPipelineState> mPipelineState;
 
     /// ImGui resources
+    std::unique_ptr<IPipelineState> mImGuiPipelineState;
     Resource::MultiShaderProgram mImGuiShaderProgram;
     std::unique_ptr<IVertexLayout> mImGuiVertexLayout;
-    std::unique_ptr<IRasterizerState> mImGuiRasterizerState;
     std::unique_ptr<IBuffer> mImGuiVertexBuffer;
     std::unique_ptr<IBuffer> mImGuiIndexBuffer;
 

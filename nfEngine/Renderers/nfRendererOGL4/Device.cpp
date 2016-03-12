@@ -84,19 +84,9 @@ IRenderTarget* Device::CreateRenderTarget(const RenderTargetDesc& desc)
     return GenericCreateResource<RenderTarget, RenderTargetDesc>(desc);
 }
 
-IBlendState* Device::CreateBlendState(const BlendStateDesc& desc)
+IPipelineState* Device::CreatePipelineState(const PipelineStateDesc& desc)
 {
-    return GenericCreateResource<BlendState, BlendStateDesc>(desc);
-}
-
-IDepthState* Device::CreateDepthState(const DepthStateDesc& desc)
-{
-    return GenericCreateResource<DepthState, DepthStateDesc>(desc);
-}
-
-IRasterizerState* Device::CreateRasterizerState(const RasterizerStateDesc& desc)
-{
-    return GenericCreateResource<RasterizerState, RasterizerStateDesc>(desc);
+    return GenericCreateResource<PipelineState, PipelineStateDesc>(desc);
 }
 
 ISampler* Device::CreateSampler(const SamplerDesc& desc)

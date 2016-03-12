@@ -103,10 +103,7 @@ void HighLevelRenderer::ReleaseModules()
 
 void HighLevelRenderer::Release()
 {
-    mDefaultBlendState.reset();
     mDefaultSampler.reset();
-    mDefaultDepthState.reset();
-    mDefaultRasterizerState.reset();
     mDefaultDiffuseTexture.reset();
     mDefaultNormalTexture.reset();
     mDefaultSpecularTexture.reset();
@@ -127,28 +124,11 @@ void HighLevelRenderer::Release()
 
 void HighLevelRenderer::CreateCommonResources()
 {
-    BlendStateDesc bsDesc;
-    bsDesc.debugName = "HighLevelRenderer::mDefaultDepthState";
-    mDefaultBlendState.reset(mRenderingDevice->CreateBlendState(bsDesc));
-
     SamplerDesc samplerDesc;
     samplerDesc.magFilter = TextureMagFilter::Linear;
     samplerDesc.minFilter = TextureMinFilter::LinearMipmapLinear;
     samplerDesc.debugName = "HighLevelRenderer::mDefaultSampler";
     mDefaultSampler.reset(mRenderingDevice->CreateSampler(samplerDesc));
-
-    DepthStateDesc dsDesc;
-    dsDesc.depthCompareFunc = CompareFunc::LessEqual;
-    dsDesc.depthTestEnable = true;
-    dsDesc.depthWriteEnable = true;
-    dsDesc.debugName = "HighLevelRenderer::mDefaultDepthState";
-    mDefaultDepthState.reset(mRenderingDevice->CreateDepthState(dsDesc));
-
-    RasterizerStateDesc rsDesc;
-    rsDesc.cullMode = CullMode::Disabled;
-    rsDesc.fillMode = FillMode::Solid;
-    rsDesc.debugName = "HighLevelRenderer::mDefaultRasterizerState";
-    mDefaultRasterizerState.reset(mRenderingDevice->CreateRasterizerState(rsDesc));
 
     TextureDataDesc texDataDesc;
     texDataDesc.lineSize = texDataDesc.sliceSize = 4 * sizeof(uchar);
@@ -161,7 +141,6 @@ void HighLevelRenderer::CreateCommonResources()
     texDesc.dataDesc = &texDataDesc;
     texDesc.format = ElementFormat::Uint_8_norm;
     texDesc.texelSize = 4;
-
 
     /// default textures (used when no texture is bound to a material)
 

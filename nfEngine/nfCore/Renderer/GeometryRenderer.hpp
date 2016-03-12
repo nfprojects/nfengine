@@ -22,7 +22,7 @@ class GeometryRenderer : public RendererModule<GeometryRenderer>
     Resource::MultiShaderProgram mShadowShaderProgram;
 
     std::unique_ptr<IVertexLayout> mVertexLayout;
-    std::unique_ptr<IRasterizerState> mRasterizerState;
+    std::unique_ptr<IPipelineState> mPipelineState;
     std::unique_ptr<IBuffer> mInstancesVertexBuffer;
     std::unique_ptr<IBuffer> mMaterialCBuffer;
     std::unique_ptr<IBuffer> mGlobalCBuffer;
