@@ -29,6 +29,8 @@ class PostProcessRenderer : public RendererModule<PostProcessRenderer>
     Resource::MultiShaderProgram mTonemappingShaderProgram;
     std::unique_ptr<IBuffer> mTonemappingCBuffer;
 
+    std::unique_ptr<IPipelineState> mPipelineState;
+
 public:
     PostProcessRenderer();
     void OnEnter(RenderContext* context);
