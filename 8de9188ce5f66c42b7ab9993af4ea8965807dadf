@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a6ff13c_7fa54803",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 485,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-03-13T20:31:32Z",
+      "side": 1,
+      "message": "do you really need to create a copy? can\u0027t you do the conversion in-place?",
+      "range": {
+        "startLine": 484,
+        "startChar": 0,
+        "endLine": 485,
+        "endChar": 43
+      },
+      "revId": "8de9188ce5f66c42b7ab9993af4ea8965807dadf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a6ff13c_3f9bd0ca",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 488,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-03-13T20:31:32Z",
+      "side": 1,
+      "message": "shouldn\u0027t be 0.0f? IMO we should preserve alpha channel",
+      "range": {
+        "startLine": 488,
+        "startChar": 49,
+        "endLine": 488,
+        "endChar": 53
+      },
+      "revId": "8de9188ce5f66c42b7ab9993af4ea8965807dadf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a6ff13c_5fa08cf4",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 507,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-03-13T20:31:32Z",
+      "side": 1,
+      "message": "you can use dot product here",
+      "range": {
+        "startLine": 505,
+        "startChar": 0,
+        "endLine": 507,
+        "endChar": 69
+      },
+      "revId": "8de9188ce5f66c42b7ab9993af4ea8965807dadf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
