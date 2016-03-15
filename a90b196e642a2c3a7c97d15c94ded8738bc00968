@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a6ff13c_7f3c6194",
+        "filename": "nfEngine/nfCommon/Linux/Memory.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-15T10:25:08Z",
+      "side": 1,
+      "message": "Instead of duplicating resource release I suggest following schema of work:\n\n* At the beginning, bool result \u003d true;\n* In the function, before goto fail; write result \u003d false;\n* Remove 38-39\n* return result;",
+      "range": {
+        "startLine": 38,
+        "startChar": 0,
+        "endLine": 43,
+        "endChar": 17
+      },
+      "revId": "a90b196e642a2c3a7c97d15c94ded8738bc00968",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
