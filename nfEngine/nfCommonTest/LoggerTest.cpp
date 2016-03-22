@@ -34,6 +34,7 @@ TEST(LoggerTest, Long)
         longMessage += std::to_string(i) + ": There should be 25 this veeery long messages...\n";
 
     ASSERT_NO_THROW(LOG_INFO(longMessage.c_str()));
+    ASSERT_NO_THROW(LOG_INFO("%s", longMessage.c_str()));
 }
 
 TEST(LoggerTest, Invalid)

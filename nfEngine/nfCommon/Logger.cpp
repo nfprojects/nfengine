@@ -118,9 +118,14 @@ void Logger::Log(LogType type, const char* srcFile, int line, const char* str, .
     va_list args, argsCopy;
     va_start(args, str);
 
+    // we can't call vsnprintf with the same va_list more than once
+    va_copy(argsCopy, args);
+
     int len = vsnprintf(stackBuffer, SHORT_MESSAGE_LENGTH, str, args);
     if (len < 0)
     {
+        va_end(argsCopy);
+        va_end(args);
         LOG_ERROR("vsnprintf() failed, format = \"%s\"", str);
         return;
     }
@@ -131,16 +136,13 @@ void Logger::Log(LogType type, const char* srcFile, int line, const char* str, .
         if (buffer)
         {
             formattedStr = buffer.get();
-
-            // we can't call vsnprintf with the same va_list more than once
-            va_copy(argsCopy, args);
             vsnprintf(formattedStr, len + 1, str, argsCopy);
-            va_end(argsCopy);
         }
     }
     else if (len > 0)  // buffer on the stack is sufficient
         formattedStr = stackBuffer;
 
+    va_end(argsCopy);
     va_end(args);
 
     if (len < 0 || !formattedStr)
