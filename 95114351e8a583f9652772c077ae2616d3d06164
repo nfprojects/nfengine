@@ -1,0 +1,193 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da9b358b_0a82df52",
+        "filename": "nfEngine/nfCommon/Config.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-23T10:55:11Z",
+      "side": 1,
+      "message": "where is step 2? :)",
+      "range": {
+        "startLine": 161,
+        "startChar": 16,
+        "endLine": 161,
+        "endChar": 17
+      },
+      "revId": "95114351e8a583f9652772c077ae2616d3d06164",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da9b358b_8a96ef92",
+        "filename": "nfEngine/nfCommon/Config.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-23T10:55:11Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 166,
+        "startChar": 16,
+        "endLine": 166,
+        "endChar": 17
+      },
+      "revId": "95114351e8a583f9652772c077ae2616d3d06164",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da9b358b_0ae9bf1a",
+        "filename": "nfEngine/nfCommon/Config.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-23T10:55:11Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this line add SPACING as well?",
+      "range": {
+        "startLine": 326,
+        "startChar": 8,
+        "endLine": 326,
+        "endChar": 27
+      },
+      "revId": "95114351e8a583f9652772c077ae2616d3d06164",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da9b358b_aaa9b3e1",
+        "filename": "nfEngine/nfCommon/Config.hpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-23T10:55:11Z",
+      "side": 1,
+      "message": "@return",
+      "revId": "95114351e8a583f9652772c077ae2616d3d06164",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da9b358b_8aaf0fe3",
+        "filename": "nfEngine/nfCommon/Config.hpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-23T10:55:11Z",
+      "side": 1,
+      "message": "Add @note or @remarks about the returned value in this function and below.\n\nIt would be nice to have info, that AddValue returns a reference to itself, so AddValue \"combos\" are possible.",
+      "revId": "95114351e8a583f9652772c077ae2616d3d06164",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da9b358b_87026a3d",
+        "filename": "nfEngine/nfCommon/ConfigTokenizer.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-23T10:55:11Z",
+      "side": 1,
+      "message": "http://www.cplusplus.com/reference/cctype/isalnum/\n\nI believe this is incorrect. Or, the name of the function is incorrect - should be IsIdentOrNumberOrLetter(). :)\n\nSounds stupid, but you probably get what I mean - the function should be called differently, or something else should be used instead of isalnum().",
+      "range": {
+        "startLine": 23,
+        "startChar": 11,
+        "endLine": 23,
+        "endChar": 18
+      },
+      "revId": "95114351e8a583f9652772c077ae2616d3d06164",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a6ced46_0395eee3",
+        "filename": "nfEngine/nfCommon/ConfigTokenizer.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-23T10:55:11Z",
+      "side": 1,
+      "message": "highest/higher (depending on what you wanted to explain here)",
+      "range": {
+        "startLine": 129,
+        "startChar": 24,
+        "endLine": 129,
+        "endChar": 30
+      },
+      "revId": "95114351e8a583f9652772c077ae2616d3d06164",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da9b358b_8a414f3c",
+        "filename": "nfEngine/nfCommonTest/ConfigTest.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-23T10:55:11Z",
+      "side": 1,
+      "message": "It does not matter much, but...\n\nsingle :)",
+      "range": {
+        "startLine": 15,
+        "startChar": 3,
+        "endLine": 15,
+        "endChar": 9
+      },
+      "revId": "95114351e8a583f9652772c077ae2616d3d06164",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da9b358b_4ab9072e",
+        "filename": "nfEngine/nfCommonTest/ConfigTest.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-23T10:55:11Z",
+      "side": 1,
+      "message": "This would be a good place to test some AddValue \"combos\". Add a similar test to the above, however build the structure using combos.",
+      "revId": "95114351e8a583f9652772c077ae2616d3d06164",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
