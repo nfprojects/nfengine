@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da9b358b_2d31380c",
+        "filename": "nfEngine/nfCore/Resources/MultiShaderProgram.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-24T15:19:37Z",
+      "side": 1,
+      "message": "as below",
+      "range": {
+        "startLine": 61,
+        "startChar": 13,
+        "endLine": 61,
+        "endChar": 17
+      },
+      "revId": "116b10dd7c46b08141b62471606f853dfd7c50c6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da9b358b_4d559c1b",
+        "filename": "nfEngine/nfCore/Resources/MultiShaderProgram.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-24T15:19:37Z",
+      "side": 1,
+      "message": "Is this really a JSON file? :)",
+      "range": {
+        "startLine": 73,
+        "startChar": 13,
+        "endLine": 73,
+        "endChar": 17
+      },
+      "revId": "116b10dd7c46b08141b62471606f853dfd7c50c6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da9b358b_2d2b78ed",
+        "filename": "nfEngine/nfCore/Resources/MultiShaderProgram.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-24T15:19:37Z",
+      "side": 1,
+      "message": "I think the better way would be to create a new enum value in ShaderType enum. This way it will be kept in one place and will update automagically.",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 30
+      },
+      "revId": "116b10dd7c46b08141b62471606f853dfd7c50c6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
