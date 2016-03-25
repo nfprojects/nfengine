@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "da9b358b_ef08e02a",
+        "filename": "nfEngine/nfCommon/Config.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 382,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-03-25T23:49:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da9b358b_ea08db93",
+      "range": {
+        "startLine": 382,
+        "startChar": 69,
+        "endLine": 382,
+        "endChar": 80
+      },
+      "revId": "6b7129a9b2f505ff8016885814de6110a0e5b096",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da9b358b_0a041f7c",
         "filename": "nfEngine/nfCommon/Config.cpp",
         "patchSetId": 5
@@ -36,6 +60,30 @@
       "writtenOn": "2016-03-23T12:20:35Z",
       "side": 1,
       "message": "rm, same with value. I think there is no need to write these.",
+      "range": {
+        "startLine": 422,
+        "startChar": 29,
+        "endLine": 422,
+        "endChar": 40
+      },
+      "revId": "6b7129a9b2f505ff8016885814de6110a0e5b096",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da9b358b_cf0d1c39",
+        "filename": "nfEngine/nfCommon/Config.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 422,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-03-25T23:49:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da9b358b_0a041f7c",
       "range": {
         "startLine": 422,
         "startChar": 29,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "da9b358b_af13f85b",
+        "filename": "nfEngine/nfCommonTest/ConfigTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-03-25T23:49:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da9b358b_0a053fc1",
+      "range": {
+        "startLine": 263,
+        "startChar": 37,
+        "endLine": 263,
+        "endChar": 42
+      },
+      "revId": "6b7129a9b2f505ff8016885814de6110a0e5b096",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da9b358b_2ad8031d",
         "filename": "nfEngine/nfCommonTest/ConfigTest.cpp",
         "patchSetId": 5
@@ -82,6 +154,30 @@
       "writtenOn": "2016-03-23T12:20:35Z",
       "side": 1,
       "message": "BadTypes fits more into what is happening inside the test case.",
+      "range": {
+        "startLine": 384,
+        "startChar": 27,
+        "endLine": 384,
+        "endChar": 35
+      },
+      "revId": "6b7129a9b2f505ff8016885814de6110a0e5b096",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da9b358b_8f103450",
+        "filename": "nfEngine/nfCommonTest/ConfigTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-03-25T23:49:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da9b358b_2ad8031d",
       "range": {
         "startLine": 384,
         "startChar": 27,
