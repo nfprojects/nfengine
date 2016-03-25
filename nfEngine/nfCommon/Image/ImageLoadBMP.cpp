@@ -285,7 +285,7 @@ bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
         }
     }
 
-    dest.push_back(std::move(Mipmap(imageData.get(), width, height, dataSize)));
+    dest.emplace_back(Mipmap(imageData.get(), width, height, dataSize));
     return true;
 }
 
@@ -342,7 +342,7 @@ bool ReadPixelsWithPalette(InputStream* stream, size_t offset, uint32 width,
         stream->Seek(offset);
     }
 
-    dest.push_back(std::move(Mipmap(imageData.get(), width, height, dataSize)));
+    dest.emplace_back(Mipmap(imageData.get(), width, height, dataSize));
     return true;
 }
 } // namespace Common
