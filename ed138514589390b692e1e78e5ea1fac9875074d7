@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da9b358b_de16f454",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/CommandBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-25T08:40:46Z",
+      "side": 1,
+      "message": "Technically you shouldn\u0027t remove redunant APIs in this commit (as it is about something else), but okay...\n\nPlease try to avoid it next time. :)",
+      "revId": "ed138514589390b692e1e78e5ea1fac9875074d7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
