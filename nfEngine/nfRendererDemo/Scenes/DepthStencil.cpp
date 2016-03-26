@@ -57,6 +57,19 @@ bool DepthStencilScene::CreateBasicResources(bool withStencil)
     if (!mWindowRenderTarget)
         return false;
 
+    VertexLayoutElement vertexLayoutElements[] =
+    {
+        { ElementFormat::Float_32, 3,  0, 0, false, 0 }, // position
+        { ElementFormat::Float_32, 2, 12, 0, false, 0 }, // tex-coords
+        { ElementFormat::Float_32, 4, 20, 0, false, 0 }, // color
+    };
+
+    VertexLayoutDesc vertexLayoutDesc;
+    vertexLayoutDesc.elements = vertexLayoutElements;
+    vertexLayoutDesc.numElements = 3;
+    mVertexLayout.reset(mRendererDevice->CreateVertexLayout(vertexLayoutDesc));
+    if (!mVertexLayout)
+        return false;
 
     DepthStateDesc depthStateDesc;
     depthStateDesc.depthCompareFunc = CompareFunc::Less;
@@ -72,6 +85,7 @@ bool DepthStencilScene::CreateBasicResources(bool withStencil)
 
     PipelineStateDesc psd;
     psd.raterizerState.cullMode = CullMode::Disabled;
+    psd.vertexLayout = mVertexLayout.get();
 
     if (withStencil)
     {
@@ -182,21 +196,6 @@ bool DepthStencilScene::CreateBasicResources(bool withStencil)
     if (!mIndexBuffer)
         return false;
 
-    VertexLayoutElement vertexLayoutElements[] =
-    {
-        { ElementFormat::Float_32, 3,  0, 0, false, 0 }, // position
-        { ElementFormat::Float_32, 2, 12, 0, false, 0 }, // tex-coords
-        { ElementFormat::Float_32, 4, 20, 0, false, 0 }, // color
-    };
-
-    VertexLayoutDesc vertexLayoutDesc;
-    vertexLayoutDesc.elements = vertexLayoutElements;
-    vertexLayoutDesc.numElements = 3;
-    vertexLayoutDesc.vertexShader = shaderProgramDesc.vertexShader;
-    mVertexLayout.reset(mRendererDevice->CreateVertexLayout(vertexLayoutDesc));
-    if (!mVertexLayout)
-        return false;
-
     bufferDesc.type = BufferType::Constant;
     bufferDesc.access = BufferAccess::CPU_Write;
     bufferDesc.size = sizeof(VertexCBuffer);
@@ -282,7 +281,6 @@ bool DepthStencilScene::OnSwitchSubscene()
     mCommandBuffer->SetConstantBuffers(&cb, 1, ShaderType::Vertex);
 
     mCommandBuffer->SetShaderProgram(mShaderProgram.get());
-    mCommandBuffer->SetVertexLayout(mVertexLayout.get());
 
     return true;
 }

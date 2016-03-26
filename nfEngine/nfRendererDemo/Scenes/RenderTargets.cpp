@@ -67,7 +67,22 @@ bool RenderTargetsScene::CreateBasicResources()
     if (!mSampler)
         return false;
 
+    VertexLayoutElement vertexLayoutElements[] =
+    {
+        { ElementFormat::Float_32, 3,  0, 0, false, 0 }, // position
+        { ElementFormat::Float_32, 2, 12, 0, false, 0 }, // tex-coords
+        { ElementFormat::Float_32, 4, 20, 0, false, 0 }, // color
+    };
+
+    VertexLayoutDesc vertexLayoutDesc;
+    vertexLayoutDesc.elements = vertexLayoutElements;
+    vertexLayoutDesc.numElements = 3;
+    mVertexLayout.reset(mRendererDevice->CreateVertexLayout(vertexLayoutDesc));
+    if (!mVertexLayout)
+        return false;
+
     PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.depthState.depthCompareFunc = CompareFunc::Less;
     pipelineStateDesc.depthState.depthWriteEnable = true;
     pipelineStateDesc.depthState.depthTestEnable = true;
@@ -128,21 +143,6 @@ bool RenderTargetsScene::CreateBasicResources()
     bufferDesc.initialData = ibData;
     mIndexBuffer.reset(mRendererDevice->CreateBuffer(bufferDesc));
     if (!mIndexBuffer)
-        return false;
-
-    VertexLayoutElement vertexLayoutElements[] =
-    {
-        { ElementFormat::Float_32, 3,  0, 0, false, 0 }, // position
-        { ElementFormat::Float_32, 2, 12, 0, false, 0 }, // tex-coords
-        { ElementFormat::Float_32, 4, 20, 0, false, 0 }, // color
-    };
-
-    VertexLayoutDesc vertexLayoutDesc;
-    vertexLayoutDesc.elements = vertexLayoutElements;
-    vertexLayoutDesc.numElements = 3;
-    vertexLayoutDesc.vertexShader = mVertexShader.get();
-    mVertexLayout.reset(mRendererDevice->CreateVertexLayout(vertexLayoutDesc));
-    if (!mVertexLayout)
         return false;
 
     bufferDesc.type = BufferType::Constant;
@@ -344,7 +344,6 @@ bool RenderTargetsScene::OnSwitchSubscene()
     mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
     mCommandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
 
-    mCommandBuffer->SetVertexLayout(mVertexLayout.get());
     mCommandBuffer->SetPipelineState(mPipelineState.get());
 
     ISampler* samplers[] = { mSampler.get() };
