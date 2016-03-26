@@ -386,6 +386,24 @@
       "revId": "95114351e8a583f9652772c077ae2616d3d06164",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da9b358b_6f7e0fb0",
+        "filename": "nfEngine/nfCommonTest/ConfigTest.cpp",
+        "patchSetId": 23
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-26T16:56:09Z",
+      "side": 1,
+      "message": "I think in this case the tests should be more granular, so the separate test case would test a separate mechanism of config generation.\n\nThe new test case doesn\u0027t have to be exactly like this test, but IMO it should be separate, as it uses a slightly different mechanism of config construction.",
+      "parentUuid": "da9b358b_d416d554",
+      "revId": "95114351e8a583f9652772c077ae2616d3d06164",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
