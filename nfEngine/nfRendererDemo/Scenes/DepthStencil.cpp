@@ -192,7 +192,6 @@ bool DepthStencilScene::CreateBasicResources(bool withStencil)
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;
     vertexLayoutDesc.numElements = 3;
-    vertexLayoutDesc.vertexShader = shaderProgramDesc.vertexShader;
     mVertexLayout.reset(mRendererDevice->CreateVertexLayout(vertexLayoutDesc));
     if (!mVertexLayout)
         return false;

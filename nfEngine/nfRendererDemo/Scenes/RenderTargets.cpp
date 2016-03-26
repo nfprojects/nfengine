@@ -140,7 +140,6 @@ bool RenderTargetsScene::CreateBasicResources()
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;
     vertexLayoutDesc.numElements = 3;
-    vertexLayoutDesc.vertexShader = mVertexShader.get();
     mVertexLayout.reset(mRendererDevice->CreateVertexLayout(vertexLayoutDesc));
     if (!mVertexLayout)
         return false;

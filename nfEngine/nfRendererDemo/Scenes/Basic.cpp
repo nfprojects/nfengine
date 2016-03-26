@@ -109,7 +109,6 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;
     vertexLayoutDesc.numElements = 3;
-    vertexLayoutDesc.vertexShader = mShaderProgramDesc.vertexShader;
     mVertexLayout.reset(mRendererDevice->CreateVertexLayout(vertexLayoutDesc));
     if (!mVertexLayout)
         return false;

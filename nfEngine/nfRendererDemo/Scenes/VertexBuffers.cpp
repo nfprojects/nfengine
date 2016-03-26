@@ -148,7 +148,6 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer)
         VertexLayoutDesc vertexLayoutDesc;
         vertexLayoutDesc.elements = vertexLayoutElements;
         vertexLayoutDesc.numElements = 4;
-        vertexLayoutDesc.vertexShader = mShaderProgramDesc.vertexShader;
         mVertexLayout.reset(mRendererDevice->CreateVertexLayout(vertexLayoutDesc));
     }
     else
@@ -162,7 +161,6 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer)
         VertexLayoutDesc vertexLayoutDesc;
         vertexLayoutDesc.elements = vertexLayoutElements;
         vertexLayoutDesc.numElements = 2;
-        vertexLayoutDesc.vertexShader = mShaderProgramDesc.vertexShader;
         mVertexLayout.reset(mRendererDevice->CreateVertexLayout(vertexLayoutDesc));
     }
 
