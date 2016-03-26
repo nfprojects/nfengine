@@ -49,10 +49,10 @@ bool BasicScene::CreateShaderProgram(bool useCBuffer, bool useTexture)
     if (!mPixelShader)
         return false;
 
-    mShaderProgramDesc.vertexShader = mVertexShader.get();
-    mShaderProgramDesc.pixelShader = mPixelShader.get();
-
-    mShaderProgram.reset(mRendererDevice->CreateShaderProgram(mShaderProgramDesc));
+    ShaderProgramDesc shaderProgramDesc;
+    shaderProgramDesc.vertexShader = mVertexShader.get();
+    shaderProgramDesc.pixelShader = mPixelShader.get();
+    mShaderProgram.reset(mRendererDevice->CreateShaderProgram(shaderProgramDesc));
     if (!mShaderProgram)
         return false;
 
@@ -109,9 +109,16 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;
     vertexLayoutDesc.numElements = 3;
-    vertexLayoutDesc.vertexShader = mShaderProgramDesc.vertexShader;
     mVertexLayout.reset(mRendererDevice->CreateVertexLayout(vertexLayoutDesc));
     if (!mVertexLayout)
+        return false;
+
+    PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.blendState.independent = false;
+    pipelineStateDesc.blendState.rtDescs[0].enable = true;
+    pipelineStateDesc.vertexLayout = mVertexLayout.get();
+    mPipelineState.reset(mRendererDevice->CreatePipelineState(pipelineStateDesc));
+    if (!mPipelineState)
         return false;
 
     return true;
@@ -284,6 +291,7 @@ void BasicScene::ReleaseSubsceneResources()
     mVertexBuffer.reset();
     mPixelShader.reset();
     mVertexShader.reset();
+    mPipelineState.reset();
     mShaderProgram.reset();
 }
 
@@ -311,14 +319,6 @@ bool BasicScene::OnInit(void* winHandle)
 
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
 
-    PipelineStateDesc pipelineStateDesc;
-    pipelineStateDesc.blendState.independent = false;
-    pipelineStateDesc.blendState.rtDescs[0].enable = true;
-
-    mPipelineState.reset(mRendererDevice->CreatePipelineState(pipelineStateDesc));
-    if (!mPipelineState)
-        return false;
-
     return true;
 }
 
@@ -333,8 +333,6 @@ bool BasicScene::OnSwitchSubscene()
 
     if (mShaderProgram)
         mCommandBuffer->SetShaderProgram(mShaderProgram.get());
-
-    if (mVertexLayout) mCommandBuffer->SetVertexLayout(mVertexLayout.get());
 
     int stride = 9 * sizeof(float);
     int offset = 0;
@@ -399,7 +397,6 @@ void BasicScene::Draw(float dt)
 void BasicScene::Release()
 {
     ReleaseSubsceneResources();
-    mPipelineState.reset();
     mWindowRenderTarget.reset();
     mWindowBackbuffer.reset();
     mCommandBuffer = nullptr;

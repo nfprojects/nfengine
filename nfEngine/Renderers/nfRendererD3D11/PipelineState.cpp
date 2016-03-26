@@ -5,6 +5,7 @@
  */
 
 #include "PCH.hpp"
+#include "../nfCommon/Logger.hpp"
 #include "PipelineState.hpp"
 #include "RendererD3D11.hpp"
 #include "Translations.hpp"
@@ -127,6 +128,13 @@ ID3D11DepthStencilState* CreateDepthState(const DepthStateDesc& desc)
 
 bool PipelineState::Init(const PipelineStateDesc& desc)
 {
+    mVertexLayout = dynamic_cast<VertexLayout*>(desc.vertexLayout);
+    if (!mVertexLayout)
+    {
+        LOG_ERROR("Invalid vertexLayout parameter");
+        return false;
+    }
+
     mRS = CreateRasterizerState(desc.raterizerState);
     mBS = CreateBlendState(desc.blendState);
     mDS = CreateDepthState(desc.depthState);

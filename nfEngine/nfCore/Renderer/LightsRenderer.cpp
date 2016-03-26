@@ -67,7 +67,6 @@ LightsRenderer::LightsRenderer()
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;
     vertexLayoutDesc.numElements = 1;
-    vertexLayoutDesc.vertexShader = mAmbientLightShaderProgram.GetShader(ShaderType::Vertex);
     vertexLayoutDesc.debugName = "LightsRenderer::mVertexLayout";
     mVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
 
@@ -179,6 +178,8 @@ LightsRenderer::LightsRenderer()
     }
 
     PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.vertexLayout = mVertexLayout.get();
+
     pipelineStateDesc.debugName = "LightsRenderer::mAmbientLightPipelineState";
     mAmbientLightPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
 
@@ -207,8 +208,6 @@ LightsRenderer::LightsRenderer()
 void LightsRenderer::OnEnter(RenderContext* context)
 {
     context->commandBuffer->BeginDebugGroup("Lights Renderer stage");
-
-    context->commandBuffer->SetVertexLayout(mVertexLayout.get());
 
     ISampler* samplers[] = { mRenderer->GetDefaultSampler(), mShadowMapSampler.get() };
     context->commandBuffer->SetSamplers(samplers, 2, ShaderType::Pixel);
