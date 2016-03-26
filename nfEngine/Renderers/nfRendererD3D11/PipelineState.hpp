@@ -8,6 +8,7 @@
 
 #include "../RendererInterface/PipelineState.hpp"
 #include "Common.hpp"
+#include "VertexLayout.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -19,7 +20,7 @@ class PipelineState : public IPipelineState
     D3DPtr<ID3D11RasterizerState> mRS;
     D3DPtr<ID3D11BlendState> mBS;
     D3DPtr<ID3D11DepthStencilState> mDS;
-    // TODO Blend, Rasterizer and DepthStencil states can be shared in D3D11
+    VertexLayout* mVertexLayout;
 
 public:
     bool Init(const PipelineStateDesc& desc);

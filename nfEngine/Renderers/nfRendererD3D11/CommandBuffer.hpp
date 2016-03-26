@@ -45,7 +45,6 @@ public:
     /// Shader resources setup methods
 
     void Reset();
-    void SetVertexLayout(IVertexLayout* vertexLayout);
     void SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets);
     void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format);
     void SetSamplers(ISampler** samplers, int num, ShaderType target, int slotOffset);
