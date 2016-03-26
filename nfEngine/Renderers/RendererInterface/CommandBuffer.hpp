@@ -41,7 +41,6 @@ public:
      */
     virtual void Reset() = 0;
 
-    virtual void SetVertexLayout(IVertexLayout* vertexLayout) = 0;
     virtual void SetVertexBuffers(int num, IBuffer** vertexBuffers,
                                   int* strides, int* offsets) = 0;
     virtual void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format) = 0;

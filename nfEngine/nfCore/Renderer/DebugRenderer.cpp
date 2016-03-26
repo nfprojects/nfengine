@@ -83,13 +83,9 @@ DebugRenderer::DebugRenderer()
         { ElementFormat::Uint_8_norm, 4, 12, 0, false, 0 }, // color
         { ElementFormat::Float_32,    2, 16, 0, false, 0 }, // tex-coords
     };
-    int macros[2];
-    macros[mIsMeshMacroId] = 0;
-    macros[mUseTextureMacroId] = 0;
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;
     vertexLayoutDesc.numElements = 3;
-    vertexLayoutDesc.vertexShader = mShaderProgram.GetShader(ShaderType::Vertex, macros);
     vertexLayoutDesc.debugName = "DebugRenderer::mVertexLayout";
     mVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
 
@@ -101,11 +97,9 @@ DebugRenderer::DebugRenderer()
         { ElementFormat::Int_8_norm, 4, 20, 0, false, 0 }, // normal
         { ElementFormat::Int_8_norm, 4, 24, 0, false, 0 }, // tangent
     };
-    macros[mIsMeshMacroId] = 0;
     VertexLayoutDesc meshVertexLayoutDesc;
     meshVertexLayoutDesc.elements = meshVertexLayoutElements;
     meshVertexLayoutDesc.numElements = 4;
-    meshVertexLayoutDesc.vertexShader = mShaderProgram.GetShader(ShaderType::Vertex, macros);
     meshVertexLayoutDesc.debugName = "DebugRenderer::mMeshVertexLayout";
     mMeshVertexLayout.reset(device->CreateVertexLayout(meshVertexLayoutDesc));
 
@@ -137,10 +131,15 @@ DebugRenderer::DebugRenderer()
     mIndexBuffer.reset(device->CreateBuffer(bufferDesc));
 
     PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
     pipelineStateDesc.raterizerState.fillMode = FillMode::Solid;
     pipelineStateDesc.debugName = "DebugRenderer::mPipelineState";
     mPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
+
+    pipelineStateDesc.vertexLayout = mMeshVertexLayout.get();
+    pipelineStateDesc.debugName = "DebugRenderer::mMeshPipelineState";
+    mMeshPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
 
     // TODO: depth state
 }
@@ -153,8 +152,6 @@ void DebugRenderer::OnEnter(RenderContext* context)
 
     IBuffer* constantBuffers[] = { mConstantBuffer.get(), mPerMeshConstantBuffer.get() };
     context->commandBuffer->SetConstantBuffers(constantBuffers, 2, ShaderType::Vertex);
-
-    context->commandBuffer->SetPipelineState(mPipelineState.get());
 
     ISampler* sampler = mRenderer->GetDefaultSampler();
     context->commandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
@@ -183,7 +180,7 @@ void DebugRenderer::Flush(RenderContext* context)
 
         int macros[] = { 0, 0 }; // IS_MESH
         context->commandBuffer->SetShaderProgram(mShaderProgram.GetShaderProgram(macros));
-        context->commandBuffer->SetVertexLayout(mVertexLayout.get());
+        context->commandBuffer->SetPipelineState(mPipelineState.get());
 
         ctx.mode = DebugRendererMode::Simple;
     }
@@ -385,7 +382,7 @@ void DebugRenderer::DrawMesh(RenderContext* context, const Resource::Mesh* mesh,
 
     if (ctx.mode != DebugRendererMode::Meshes)
     {
-        context->commandBuffer->SetVertexLayout(mMeshVertexLayout.get());
+        context->commandBuffer->SetPipelineState(mMeshPipelineState.get());
         ctx.mode = DebugRendererMode::Meshes;
         ctx.polyType = PrimitiveType::Unknown;
     }
