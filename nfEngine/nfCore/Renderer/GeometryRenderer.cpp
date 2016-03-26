@@ -80,7 +80,6 @@ GeometryRenderer::GeometryRenderer()
     VertexLayoutDesc meshVertexLayoutDesc;
     meshVertexLayoutDesc.elements = vertexLayoutElements;
     meshVertexLayoutDesc.numElements = 9;
-    meshVertexLayoutDesc.vertexShader = mGeometryPassShaderProgram.GetShader(ShaderType::Vertex);
     meshVertexLayoutDesc.debugName = "GeometryRenderer::mMeshVertexLayout";
     mVertexLayout.reset(device->CreateVertexLayout(meshVertexLayoutDesc));
 
@@ -115,6 +114,7 @@ GeometryRenderer::GeometryRenderer()
     pipelineStateDesc.depthState.depthWriteEnable = true;
     pipelineStateDesc.raterizerState.cullMode = CullMode::CW;
     pipelineStateDesc.raterizerState.fillMode = FillMode::Solid;
+    pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.debugName = "GeometryRenderer::mPipelineState";
     mPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
 }
@@ -123,7 +123,6 @@ void GeometryRenderer::OnEnter(RenderContext* context)
 {
     context->commandBuffer->BeginDebugGroup("Geometry Buffer Renderer stage");
 
-    context->commandBuffer->SetVertexLayout(mVertexLayout.get());
     context->commandBuffer->SetPipelineState(mPipelineState.get());
 
     ISampler* sampler = mRenderer->GetDefaultSampler();

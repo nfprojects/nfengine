@@ -45,9 +45,10 @@ bool VertexBuffersScene::CreateShaderProgram(bool useInstancing)
     if (!mPixelShader)
         return false;
 
-    mShaderProgramDesc.vertexShader = mVertexShader.get();
-    mShaderProgramDesc.pixelShader = mPixelShader.get();
-    mShaderProgram.reset(mRendererDevice->CreateShaderProgram(mShaderProgramDesc));
+    ShaderProgramDesc shaderProgramDesc;
+    shaderProgramDesc.vertexShader = mVertexShader.get();
+    shaderProgramDesc.pixelShader = mPixelShader.get();
+    mShaderProgram.reset(mRendererDevice->CreateShaderProgram(shaderProgramDesc));
     if (!mShaderProgram)
         return false;
 
@@ -148,7 +149,6 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer)
         VertexLayoutDesc vertexLayoutDesc;
         vertexLayoutDesc.elements = vertexLayoutElements;
         vertexLayoutDesc.numElements = 4;
-        vertexLayoutDesc.vertexShader = mShaderProgramDesc.vertexShader;
         mVertexLayout.reset(mRendererDevice->CreateVertexLayout(vertexLayoutDesc));
     }
     else
@@ -162,11 +162,17 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer)
         VertexLayoutDesc vertexLayoutDesc;
         vertexLayoutDesc.elements = vertexLayoutElements;
         vertexLayoutDesc.numElements = 2;
-        vertexLayoutDesc.vertexShader = mShaderProgramDesc.vertexShader;
         mVertexLayout.reset(mRendererDevice->CreateVertexLayout(vertexLayoutDesc));
     }
 
     if (!mVertexLayout)
+        return false;
+
+    PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.vertexLayout = mVertexLayout.get();
+    pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
+    mPipelineState.reset(mRendererDevice->CreatePipelineState(pipelineStateDesc));
+    if (!mPipelineState)
         return false;
 
     return true;
@@ -226,6 +232,7 @@ void VertexBuffersScene::ReleaseSubsceneResources()
     mInstanceBuffer.reset();
     mIndexBuffer.reset();
     mVertexLayout.reset();
+    mPipelineState.reset();
 
     mPixelShader.reset();
     mVertexShader.reset();
@@ -256,12 +263,6 @@ bool VertexBuffersScene::OnInit(void* winHandle)
 
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
 
-    PipelineStateDesc pipelineStateDesc;
-    pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
-    mPipelineState.reset(mRendererDevice->CreatePipelineState(pipelineStateDesc));
-    if (!mPipelineState)
-        return false;
-
     return true;
 }
 
@@ -274,7 +275,7 @@ bool VertexBuffersScene::OnSwitchSubscene()
 
     mCommandBuffer->SetPipelineState(mPipelineState.get());
     mCommandBuffer->SetShaderProgram(mShaderProgram.get());
-    mCommandBuffer->SetVertexLayout(mVertexLayout.get());
+
     mCommandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
 
     if (mInstanceBuffer)

@@ -30,9 +30,6 @@ class BasicScene: public Scene
     std::unique_ptr<NFE::Renderer::ISampler> mSampler;
     std::unique_ptr<NFE::Renderer::ITexture> mTexture;
 
-    // ShaderProgramDesc must be a member, VertexLayout requires vertex shader access
-    NFE::Renderer::ShaderProgramDesc mShaderProgramDesc;
-
     // Used for objects rotation in Constant Buffer scenes and onward
     float mAngle;
 

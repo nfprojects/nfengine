@@ -67,12 +67,6 @@ void CommandBuffer::SetViewport(float left, float width, float top, float height
     mContext->RSSetViewports(1, &viewport);
 }
 
-void CommandBuffer::SetVertexLayout(IVertexLayout* vertexLayout)
-{
-    VertexLayout* vl = dynamic_cast<VertexLayout*>(vertexLayout);
-    mContext->IASetInputLayout(vl->mIL.get());
-}
-
 void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets)
 {
     ID3D11Buffer* vbs[16];
@@ -440,6 +434,7 @@ void CommandBuffer::UpdateState(PrimitiveType primitiveType)
         mContext->OMSetBlendState(mPipelineState->mBS.get(), nullptr, 0xFFFFFFFF);
         mContext->RSSetState(mPipelineState->mRS.get());
         mContext->OMSetDepthStencilState(mPipelineState->mDS.get(), mStencilRef);
+        mContext->IASetInputLayout(mPipelineState->mVertexLayout->mIL.get());
 
         mCurrentPipelineState = mPipelineState;
         mCurrentStencilRef = mStencilRef;

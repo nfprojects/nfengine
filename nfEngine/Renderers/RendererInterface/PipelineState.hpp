@@ -8,6 +8,7 @@
 
 #include "Types.hpp"
 #include "Shader.hpp"
+#include "VertexLayout.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -124,12 +125,14 @@ struct PipelineStateDesc
     RasterizerStateDesc raterizerState;
     BlendStateDesc blendState;
     DepthStateDesc depthState;
+    IVertexLayout* vertexLayout;
     const char* debugName;   //< optional debug name
 
     PipelineStateDesc()
         : raterizerState()
         , blendState()
         , depthState()
+        , vertexLayout(nullptr)
         , debugName(nullptr)
     { }
 };

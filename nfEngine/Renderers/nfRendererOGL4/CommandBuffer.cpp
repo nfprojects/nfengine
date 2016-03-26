@@ -180,12 +180,6 @@ void CommandBuffer::Reset()
     mSetVertexLayout = nullptr;
 }
 
-void CommandBuffer::SetVertexLayout(IVertexLayout* vertexLayout)
-{
-    mSetVertexLayout = vertexLayout;
-    mVertexLayoutNeedsUpdate = true;
-}
-
 void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets)
 {
     UNUSED(strides);
@@ -366,6 +360,9 @@ void CommandBuffer::SetPipelineState(IPipelineState* state)
     SetBlendState(pipelineState->mDesc.blendState);
     SetRasterizerState(pipelineState->mDesc.raterizerState);
     SetDepthState(pipelineState->mDesc.depthState);
+
+    mSetVertexLayout = pipelineState->mDesc.vertexLayout;
+    mVertexLayoutNeedsUpdate = true;
 }
 
 void CommandBuffer::SetStencilRef(unsigned char ref)
