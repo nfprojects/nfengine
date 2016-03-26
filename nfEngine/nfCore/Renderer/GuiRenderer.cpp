@@ -55,7 +55,6 @@ GuiRenderer::GuiRenderer()
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;
     vertexLayoutDesc.numElements = 3;
-    vertexLayoutDesc.vertexShader = mShaderProgram.GetShader(ShaderType::Vertex);
     vertexLayoutDesc.debugName = "GuiRenderer::mVertexLayout";
     mVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
 
@@ -67,7 +66,6 @@ GuiRenderer::GuiRenderer()
     };
     vertexLayoutDesc.elements = imGuiVertexLayoutElements;
     vertexLayoutDesc.numElements = 3;
-    vertexLayoutDesc.vertexShader = mImGuiShaderProgram.GetShader(ShaderType::Vertex);
     vertexLayoutDesc.debugName = "GuiRenderer::mImGuiVertexLayout";
     mImGuiVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
 
@@ -93,10 +91,12 @@ GuiRenderer::GuiRenderer()
     pipelineStateDesc.blendState.rtDescs[0].srcColorFunc = BlendFunc::SrcAlpha;
     pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
     pipelineStateDesc.raterizerState.fillMode = FillMode::Solid;
+    pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.debugName = "GuiRenderer::mPipelineState";
     mPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
 
     pipelineStateDesc.raterizerState.scissorTest = true;
+    pipelineStateDesc.vertexLayout = mImGuiVertexLayout.get();
     pipelineStateDesc.debugName = "GuiRenderer::mImGuiPipelineState";
     mImGuiPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
 }
@@ -122,7 +122,6 @@ void GuiRenderer::BeginOrdinaryGuiRendering(RenderContext* context)
     int strides[] = { sizeof(GuiQuadVertex) };
     int offsets[] = { 0 };
     context->commandBuffer->SetVertexBuffers(1, vertexBuffers, strides, offsets);
-    context->commandBuffer->SetVertexLayout(mVertexLayout.get());
 
     context->commandBuffer->SetPipelineState(mPipelineState.get());
 }
@@ -389,7 +388,6 @@ bool GuiRenderer::DrawImGui(RenderContext* context)
     int offsets[] = { 0 };
     context->commandBuffer->SetVertexBuffers(1, vertexBuffers, strides, offsets);
     context->commandBuffer->SetIndexBuffer(mImGuiIndexBuffer.get(), IndexBufferFormat::Uint16);
-    context->commandBuffer->SetVertexLayout(mImGuiVertexLayout.get());
     context->commandBuffer->SetShaderProgram(mImGuiShaderProgram.GetShaderProgram());
     context->commandBuffer->SetPipelineState(mImGuiPipelineState.get());
 

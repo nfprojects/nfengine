@@ -36,7 +36,6 @@ PostProcessRenderer::PostProcessRenderer()
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;
     vertexLayoutDesc.numElements = 1;
-    vertexLayoutDesc.vertexShader = mTonemappingShaderProgram.GetShader(ShaderType::Vertex);
     vertexLayoutDesc.debugName = "PostProcessRenderer::mVertexLayout";
     mVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
 
@@ -70,6 +69,7 @@ PostProcessRenderer::PostProcessRenderer()
     PipelineStateDesc pipelineStateDesc;
     pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
     pipelineStateDesc.raterizerState.fillMode = FillMode::Solid;
+    pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.debugName = "PostProcessRenderer::mPipelineState";
     mPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
 }
@@ -88,7 +88,6 @@ void PostProcessRenderer::OnEnter(RenderContext* context)
     int strides[] = { sizeof(Float3) };
     int offsets[] = { 0 };
     context->commandBuffer->SetVertexBuffers(1, veretexBuffers, strides, offsets);
-    context->commandBuffer->SetVertexLayout(mVertexLayout.get());
 }
 
 void PostProcessRenderer::OnLeave(RenderContext* context)

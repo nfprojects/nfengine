@@ -31,9 +31,6 @@ class VertexBuffersScene : public Scene
 
     std::unique_ptr<NFE::Renderer::IPipelineState> mPipelineState;
 
-    // ShaderProgramDesc must be a member, VertexLayout requires vertex shader access
-    NFE::Renderer::ShaderProgramDesc mShaderProgramDesc;
-
     // Releases only subscene-related resources. Backbuffer, RT and BlendState stay intact.
     void ReleaseSubsceneResources();
 

@@ -34,20 +34,11 @@ struct VertexLayoutDesc
 {
     VertexLayoutElement* elements;
     int numElements;
-
-    /*
-      This parameter is present only due to weird D3D11 API.
-      It must be removed in final version. A nice workaround is to generate dummy vertex shader
-      only for ID3D11Device::CreateInputLayout call.
-    */
-    IShader* vertexShader;
-
     const char* debugName; //< optional debug name
 
     VertexLayoutDesc()
         : elements(nullptr)
         , numElements(0)
-        , vertexShader(nullptr)
         , debugName(nullptr)
     {}
 };

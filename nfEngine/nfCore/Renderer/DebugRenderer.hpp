@@ -29,6 +29,7 @@ class DebugRenderer : public RendererModule<DebugRenderer>
     std::unique_ptr<IVertexLayout> mVertexLayout;
     std::unique_ptr<IVertexLayout> mMeshVertexLayout;
     std::unique_ptr<IPipelineState> mPipelineState;
+    std::unique_ptr<IPipelineState> mMeshPipelineState;
 
     std::unique_ptr<IBuffer> mConstantBuffer;
     std::unique_ptr<IBuffer> mPerMeshConstantBuffer;
