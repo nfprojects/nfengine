@@ -5,12 +5,12 @@
 ## @brief  Multiplatform testing script
 
 
-import subprocess, shlex, time, xmlParser, os, sys, argparse
+import subprocess, shlex, time, xmlParser, os, sys, argparse, time
 
 
 def gatherFailed(path, name, failLinks):
     fails = []
-    failString = '-n {} -p {} --args --gtest_filter='.format(name, path)
+    failString = '-v -n {} -p {} --args --gtest_filter='.format(name, path)
     for fail in failLinks:
         failString += (fail + ':')
     fails.append(failString[:-1] + '')
@@ -58,16 +58,25 @@ def findTestsIntoPaths(path, testlist, isPath):
 
 
 def runTest(args, isVerbose):
-    animation = "|/-\\"
+    # first we get total number of tests via listing all tests and counting the lines
+    testNoArgs = [args[0], "--gtest_list_tests"]
+    testNoProcess = subprocess.Popen(testNoArgs, stdout = subprocess.PIPE)
+    linesIterator = iter(testNoProcess.stdout.readline, b"")
+    testNo = 0
+    for line in linesIterator:
+        if line[:2] == "  ":
+            testNo += 1
+
+    # then we run the tests and print only number of currently running test or everything
     testProcess = subprocess.Popen(args, stdout = subprocess.PIPE)
     linesIterator = iter(testProcess.stdout.readline, b"")
-    animationIter = 0
+    testNoCurrent = 0
     for line in linesIterator:
         if isVerbose is True:
-            print(line),
-        else:
-            print animation[animationIter % len(animation)] + "\r",
-            animationIter += 1
+            print line,
+        elif line[:5] == "[ RUN":
+            print "Running testcase " + str(testNoCurrent) + "/" + str(testNo) + "...\r",
+            testNoCurrent += 1
 
 
 def main(argv):
@@ -84,6 +93,7 @@ def main(argv):
                             help='Runs gtest files with given name')
     argParser.add_argument('-q', '--quiet', action='store_true', help='Suppresses output')
     argParser.add_argument('-f', '--perf', action='store_true', help='Adds Performance tests to test list')
+    argParser.add_argument('-t', '--time', action='store_true', help='Prints tests duration in seconds.')
     argParser.add_argument('--args', default=[], metavar='gtestArguments', nargs=argparse.REMAINDER,
                             help='Pipes args to gtest. For available options see gtest manual.')
     args = argParser.parse_args()
@@ -134,7 +144,11 @@ def main(argv):
     if len(pathList) > 0:
         print '\nRunning found tests ====='
 
+    if args.time:
+        timeTotal = time.clock()
+        
     for path in pathList:
+        timeTest = time.clock()
         testPath = os.path.normpath(path)
 
         # check for '.exe' if ran under windows os
@@ -144,13 +158,13 @@ def main(argv):
         # check if test file is valid
         if os.path.isfile(testPath) and os.access(testPath, os.X_OK):
             print '\n====Running {} for {}'.format(nameFromPath(testPath), typeFromPath(testPath))
-
+            
             # building args for subprocess
             testArgs = [testPath, '--gtest_output=xml', gtestArgs]
 
             # running subprocess
             runTest(testArgs, args.verbose)
-
+            
             # managing test's output xml
             print '====Parsing {} XML'.format(nameFromPath(testPath))
             if os.path.exists(xmlPath):
@@ -168,6 +182,9 @@ def main(argv):
             else:
                 print '====Output XML for {} not found in: {}'.format(nameFromPath(testPath),xmlPath)
 
+            if args.time:
+                print 'Test ran for {:.2f} seconds.'.format(time.clock() - timeTest)
+
         else:
             print '===={} NOT FOUND!'.format(nameFromPath(testPath).upper())
 
@@ -175,8 +192,11 @@ def main(argv):
         print ('\n====\nTo run again failed tests, use commands shown below:\n')
 
         for fail in fails:
-            print 'python ' + os.path.normpath(os.path.realpath(__file__)),
-            print ' ' + fail[0]
+            print os.path.normpath('./Scripts/tests.py'),
+            print fail[0]
+
+    if args.time:
+        print '====All tests ran for {:.2f} seconds'.format(time.clock() - timeTotal)
 
 
 if __name__ == '__main__':
