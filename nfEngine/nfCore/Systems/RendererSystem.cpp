@@ -304,12 +304,12 @@ void RendererSystem::RenderOmniShadowMap(const Common::TaskContext& context,
     // X axis for each cube map face
     static const Vector xVectors[] =
     {
-        Vector(0.0f, 1.0f, -1.0f),
-        Vector(0.0f, 1.0f,  1.0f),
-        Vector(1.0f, 0.0f,  0.0f),
-        Vector(1.0f, 0.0f,  0.0f),
-        Vector(1.0f, 0.0f,  0.0f),
-        Vector(-1.0f, 0.0f,  0.0f),
+        Vector(0.0f, 0.0f, -1.0f),
+        Vector(0.0f, 0.0f, 1.0f),
+        Vector(1.0f, 0.0f, 0.0f),
+        Vector(1.0f, 0.0f, 0.0f),
+        Vector(1.0f, 0.0f, 0.0f),
+        Vector(-1.0f, 0.0f, 0.0f),
     };
 
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
