@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da9b358b_c2096533",
+        "filename": "Scripts/tests.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-03-30T10:16:01Z",
+      "side": 1,
+      "message": "time.clock() won\u0027t be good enough on some systems:\n\nhttp://www.tutorialspoint.com/python/time_clock.htm\n\nBasically, since some tests are sleeping (ex. Timer tests), the result will be incorrect - when sleeping, the process time does not advance. I would use time.time() instead.",
+      "range": {
+        "startLine": 148,
+        "startChar": 20,
+        "endLine": 148,
+        "endChar": 32
+      },
+      "revId": "4c168186de489785755a1d3e8f8fd8f9f1b7b747",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
