@@ -386,9 +386,8 @@ TEST_F(ImageTest, LoadJPG)
 
 TEST_F(ImageTest, LoadPNG)
 {
-    // TODO Save this file as RGB (3 channels, color PNG)
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGB).data()));
-    LoadCheck(ImageFormat::RGBA_UByte);
+    LoadCheck(ImageFormat::RGB_UByte);
 
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA).data()));
     LoadCheck(ImageFormat::RGBA_UByte);
