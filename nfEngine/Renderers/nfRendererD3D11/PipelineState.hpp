@@ -9,6 +9,8 @@
 #include "../RendererInterface/PipelineState.hpp"
 #include "Common.hpp"
 
+#include "VertexLayout.hpp"
+#include "ResourceBinding.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -23,6 +25,7 @@ class PipelineState : public IPipelineState
     D3DPtr<ID3D11BlendState> mBS;
     D3DPtr<ID3D11DepthStencilState> mDS;
     VertexLayout* mVertexLayout;
+    ResourceBindingLayout* mResBindingLayout;
 
 public:
     bool Init(const PipelineStateDesc& desc);

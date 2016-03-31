@@ -164,9 +164,16 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer)
     if (!mVertexLayout)
         return false;
 
+    // create empty binding layout
+    mResBindingLayout.reset(mRendererDevice->CreateResourceBindingLayout(
+        ResourceBindingLayoutDesc()));
+    if (!mResBindingLayout)
+        return false;
+
     PipelineStateDesc pipelineStateDesc;
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
+    pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
     mPipelineState.reset(mRendererDevice->CreatePipelineState(pipelineStateDesc));
     if (!mPipelineState)
         return false;
@@ -233,6 +240,7 @@ void VertexBuffersScene::ReleaseSubsceneResources()
     mPixelShader.reset();
     mVertexShader.reset();
     mShaderProgram.reset();
+    mResBindingLayout.reset();
 }
 
 bool VertexBuffersScene::OnInit(void* winHandle)

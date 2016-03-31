@@ -72,6 +72,43 @@ bool DepthStencilScene::CreateBasicResources(bool withStencil)
     if (!mVertexLayout)
         return false;
 
+    ShaderMacro vsMacro[] = { { "USE_CBUFFER", "1" } };
+    std::string vsPath = gShaderPathPrefix + "TestVS" + gShaderPathExt;
+    mVertexShader.reset(CompileShader(vsPath.c_str(), ShaderType::Vertex, vsMacro, 1));
+    if (!mVertexShader)
+        return false;
+
+    ShaderMacro psMacro[] = { { "USE_TEXTURE", "0" } };
+    std::string psPath = gShaderPathPrefix + "TestPS" + gShaderPathExt;
+    mPixelShader.reset(CompileShader(psPath.c_str(), ShaderType::Pixel, psMacro, 1));
+    if (!mPixelShader)
+        return false;
+
+    ShaderProgramDesc shaderProgramDesc;
+    shaderProgramDesc.vertexShader = mVertexShader.get();
+    shaderProgramDesc.pixelShader = mPixelShader.get();
+    mShaderProgram.reset(mRendererDevice->CreateShaderProgram(shaderProgramDesc));
+    if (!mShaderProgram)
+        return false;
+
+    int cbufferSlot = mShaderProgram->GetResourceSlotByName("TestCBuffer");
+    if (cbufferSlot < 0)
+        return false;
+
+    // create binding set for vertex shader bindings
+    ResourceBindingDesc vertexShaderBinding(ShaderResourceType::CBuffer, cbufferSlot);
+    mResBindingSet.reset(mRendererDevice->CreateResourceBindingSet(
+        ResourceBindingSetDesc(&vertexShaderBinding, 1, ShaderType::Vertex)));
+    if (!mResBindingSet)
+        return false;
+
+    // create binding layout
+    IResourceBindingSet* bindingSet = mResBindingSet.get();
+    mResBindingLayout.reset(mRendererDevice->CreateResourceBindingLayout(
+        ResourceBindingLayoutDesc(&bindingSet, 1)));
+    if (!mResBindingLayout)
+        return false;
+
     DepthStateDesc depthStateDesc;
     depthStateDesc.depthCompareFunc = CompareFunc::Less;
     depthStateDesc.depthWriteEnable = true;
@@ -87,6 +124,7 @@ bool DepthStencilScene::CreateBasicResources(bool withStencil)
     PipelineStateDesc psd;
     psd.raterizerState.cullMode = CullMode::Disabled;
     psd.vertexLayout = mVertexLayout.get();
+    psd.resBindingLayout = mResBindingLayout.get();
 
     if (withStencil)
     {
@@ -125,25 +163,6 @@ bool DepthStencilScene::CreateBasicResources(bool withStencil)
     psd.blendState = blendStateDesc;
     mFloorPipelineState.reset(mRendererDevice->CreatePipelineState(psd));
     if (!mFloorPipelineState)
-        return false;
-
-    ShaderMacro vsMacro[] = { { "USE_CBUFFER", "1" } };
-    std::string vsPath = gShaderPathPrefix + "TestVS" + gShaderPathExt;
-    mVertexShader.reset(CompileShader(vsPath.c_str(), ShaderType::Vertex, vsMacro, 1));
-    if (!mVertexShader)
-        return false;
-
-    ShaderMacro psMacro[] = { { "USE_TEXTURE", "0" } };
-    std::string psPath = gShaderPathPrefix + "TestPS" + gShaderPathExt;
-    mPixelShader.reset(CompileShader(psPath.c_str(), ShaderType::Pixel, psMacro, 1));
-    if (!mPixelShader)
-        return false;
-
-    ShaderProgramDesc shaderProgramDesc;
-    shaderProgramDesc.vertexShader = mVertexShader.get();
-    shaderProgramDesc.pixelShader = mPixelShader.get();
-    mShaderProgram.reset(mRendererDevice->CreateShaderProgram(shaderProgramDesc));
-    if (!mShaderProgram)
         return false;
 
     // create vertex buffers
@@ -203,6 +222,13 @@ bool DepthStencilScene::CreateBasicResources(bool withStencil)
     bufferDesc.initialData = nullptr;
     mConstantBuffer.reset(mRendererDevice->CreateBuffer(bufferDesc));
     if (!mConstantBuffer)
+        return false;
+
+    // create and fill binding set instance for cbuffer
+    mResBindingInstance.reset(mRendererDevice->CreateResourceBindingInstance(mResBindingSet.get()));
+    if (!mResBindingInstance)
+        return false;
+    if (!mResBindingInstance->WriteCBufferView(0, mConstantBuffer.get()))
         return false;
 
     return true;
@@ -290,18 +316,17 @@ void DepthStencilScene::Draw(float dt)
     mCommandBuffer->SetViewport(0.0f, static_cast<float>(WINDOW_WIDTH), 0.0f,
                                 static_cast<float>(WINDOW_HEIGHT), 0.0f, 1.0f);
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
+    mCommandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
+    mCommandBuffer->BindResources(0, mResBindingInstance.get());
 
     int stride = 9 * sizeof(float);
     int offset = 0;
     IBuffer* vb = mVertexBuffer.get();
     mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
     mCommandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
-
-    IBuffer* cb = mConstantBuffer.get();
-    mCommandBuffer->SetConstantBuffers(&cb, 1, ShaderType::Vertex);
-
     mCommandBuffer->SetShaderProgram(mShaderProgram.get());
 
+    IBuffer* cb = mConstantBuffer.get();
     VertexCBuffer cbuffer;
 
     if (GetCurrentSubSceneNumber() >= 2)
@@ -366,6 +391,10 @@ void DepthStencilScene::ReleaseSubsceneResources()
     mReflectionPipelineState.reset();
     mFloorPipelineState.reset();
     mCubePipelineState.reset();
+
+    mResBindingInstance.reset();
+    mResBindingLayout.reset();
+    mResBindingSet.reset();
 }
 
 void DepthStencilScene::Release()
