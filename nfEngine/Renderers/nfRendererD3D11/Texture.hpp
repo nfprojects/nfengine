@@ -17,6 +17,7 @@ class Texture : virtual public ITexture
     friend class CommandBuffer;
     friend class RenderTarget;
     friend class Device;
+    friend class ResourceBindingInstance;
 
 protected:
     TextureType mType;

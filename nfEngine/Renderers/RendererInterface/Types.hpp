@@ -9,6 +9,20 @@
 namespace NFE {
 namespace Renderer {
 
+/// predeclarations
+class ITexture;
+class IBuffer;
+class ISampler;
+class IBackbuffer;
+class IResourceBindingLayout;
+class ICommandList;
+class ICommandBuffer;
+class IPipelineState;
+class IRenderTarget;
+class IShader;
+class IShaderProgram;
+class IVertexLayout;
+
 #define MAX_RENDER_TARGETS 8
 #define MAX_MIPMAP_LEVELS 16
 
@@ -86,7 +100,8 @@ enum class ShaderType
     Domain,     //< aka. "tessellation eveluation"
     Geometry,
     Pixel,      //< aka. "fragment"
-    Number      //< number of shader types
+    Number,     //< number of shader types
+    All = Number
 };
 
 /**
