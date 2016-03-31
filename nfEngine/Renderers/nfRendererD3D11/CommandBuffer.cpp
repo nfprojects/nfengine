@@ -186,6 +186,98 @@ void CommandBuffer::SetConstantBuffers(IBuffer** constantBuffers, int num, Shade
     };
 }
 
+void CommandBuffer::SetBindingSet(size_t slot, IResourceBindingInstance* bindingSetInstance)
+{
+    const ResourceBindingLayout* resBindingLayout = mPipelineState->mResBindingLayout;
+    const ResourceBindingInstance* instance =
+        dynamic_cast<ResourceBindingInstance*>(bindingSetInstance);
+
+    if (slot >= resBindingLayout->mBindingSets.size())
+    {
+        LOG_ERROR("Invalid binding set slot");
+        return;
+    }
+
+    const ResourceBindingSet* bindingSet = resBindingLayout->mBindingSets[slot];
+    for (size_t i = 0; i < bindingSet->mBindings.size(); ++i)
+    {
+        const ResourceBindingDesc& bindingDesc = bindingSet->mBindings[i];
+        UINT slotOffset = bindingDesc.slot & 0xFFFF;
+
+        if (bindingDesc.resourceType == ShaderResourceType::CBuffer)
+        {
+            ID3D11Buffer* buffer = static_cast<ID3D11Buffer*>(instance->mViews[i]);
+
+            switch (bindingSet->mShaderVisibility)
+            {
+            case ShaderType::Vertex:
+                mContext->VSSetConstantBuffers(slotOffset, 1, &buffer);
+                break;
+            case ShaderType::Domain:
+                mContext->DSSetConstantBuffers(slotOffset, 1, &buffer);
+                break;
+            case ShaderType::Hull:
+                mContext->HSSetConstantBuffers(slotOffset, 1, &buffer);
+                break;
+            case ShaderType::Geometry:
+                mContext->GSSetConstantBuffers(slotOffset, 1, &buffer);
+                break;
+            case ShaderType::Pixel:
+                mContext->PSSetConstantBuffers(slotOffset, 1, &buffer);
+                break;
+            }
+        }
+        else if (bindingDesc.resourceType == ShaderResourceType::Texture)
+        {
+            ID3D11ShaderResourceView* srv =
+                static_cast<ID3D11ShaderResourceView*>(instance->mViews[i]);
+
+            switch (bindingSet->mShaderVisibility)
+            {
+            case ShaderType::Vertex:
+                mContext->VSSetShaderResources(slotOffset, 1, &srv);
+                break;
+            case ShaderType::Domain:
+                mContext->DSSetShaderResources(slotOffset, 1, &srv);
+                break;
+            case ShaderType::Hull:
+                mContext->HSSetShaderResources(slotOffset, 1, &srv);
+                break;
+            case ShaderType::Geometry:
+                mContext->GSSetShaderResources(slotOffset, 1, &srv);
+                break;
+            case ShaderType::Pixel:
+                mContext->PSSetShaderResources(slotOffset, 1, &srv);
+                break;
+            };
+        }
+        else if (bindingDesc.resourceType == ShaderResourceType::Sampler)
+        {
+            ID3D11SamplerState* samplerState =
+                static_cast<ID3D11SamplerState*>(instance->mViews[i]);
+
+            switch (bindingSet->mShaderVisibility)
+            {
+            case ShaderType::Vertex:
+                mContext->VSSetSamplers(slotOffset, 1, &samplerState);
+                break;
+            case ShaderType::Domain:
+                mContext->DSSetSamplers(slotOffset, 1, &samplerState);
+                break;
+            case ShaderType::Hull:
+                mContext->HSSetSamplers(slotOffset, 1, &samplerState);
+                break;
+            case ShaderType::Geometry:
+                mContext->GSSetSamplers(slotOffset, 1, &samplerState);
+                break;
+            case ShaderType::Pixel:
+                mContext->PSSetSamplers(slotOffset, 1, &samplerState);
+                break;
+            };
+        }
+    }
+}
+
 void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
 {
     RenderTarget* rt = dynamic_cast<RenderTarget*>(renderTarget);
