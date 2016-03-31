@@ -16,6 +16,7 @@ class Buffer : public IBuffer
 {
     friend class CommandBuffer;
     friend class Device;
+    friend class ResourceBindingInstance;
 
     size_t mSize;
     BufferType mType;
