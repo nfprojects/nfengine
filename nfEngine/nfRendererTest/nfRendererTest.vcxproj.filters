@@ -11,6 +11,9 @@
       <Filter>TestCases</Filter>
     </ClCompile>
     <ClCompile Include="Backends.cpp" />
+    <ClCompile Include="ResourceBinding.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />

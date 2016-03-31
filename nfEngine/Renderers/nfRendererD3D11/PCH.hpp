@@ -16,5 +16,6 @@
 #include <memory>
 #include <assert.h>
 #include <set>
+#include <map>
 #include <vector>
 #include <sstream>
