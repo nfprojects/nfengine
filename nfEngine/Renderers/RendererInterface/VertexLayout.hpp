@@ -11,9 +11,6 @@
 namespace NFE {
 namespace Renderer {
 
-// TODO: remove
-class IShader;
-
 /**
  * Vertex layout element description.
  */

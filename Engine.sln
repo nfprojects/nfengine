@@ -55,6 +55,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RendererInterface", "Render
 		nfEngine\Renderers\RendererInterface\Device.hpp = nfEngine\Renderers\RendererInterface\Device.hpp
 		nfEngine\Renderers\RendererInterface\PipelineState.hpp = nfEngine\Renderers\RendererInterface\PipelineState.hpp
 		nfEngine\Renderers\RendererInterface\RenderTarget.hpp = nfEngine\Renderers\RendererInterface\RenderTarget.hpp
+		nfEngine\Renderers\RendererInterface\ResourceBinding.hpp = nfEngine\Renderers\RendererInterface\ResourceBinding.hpp
 		nfEngine\Renderers\RendererInterface\Shader.hpp = nfEngine\Renderers\RendererInterface\Shader.hpp
 		nfEngine\Renderers\RendererInterface\Texture.hpp = nfEngine\Renderers\RendererInterface\Texture.hpp
 		nfEngine\Renderers\RendererInterface\Types.hpp = nfEngine\Renderers\RendererInterface\Types.hpp
