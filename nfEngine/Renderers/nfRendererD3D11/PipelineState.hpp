@@ -14,6 +14,7 @@ namespace NFE {
 namespace Renderer {
 
 class VertexLayout;
+class ResourceBindingLayout;
 
 class PipelineState : public IPipelineState
 {
@@ -23,6 +24,7 @@ class PipelineState : public IPipelineState
     D3DPtr<ID3D11BlendState> mBS;
     D3DPtr<ID3D11DepthStencilState> mDS;
     VertexLayout* mVertexLayout;
+    ResourceBindingLayout* mResBindingLayout;
 
 public:
     bool Init(const PipelineStateDesc& desc);

@@ -7,40 +7,21 @@
 #pragma once
 
 #include "Types.hpp"
-#include <map>
+#include "../../nfCommon/nfCommon.hpp"
 
 namespace NFE {
 namespace Renderer {
-
 
 /**
  * Type of resource that can be bound to a shader
  */
 enum class ShaderResourceType
 {
-    CBuffer,
+    Unknown = -1,
+    CBuffer = 0,
     Texture,
     Sampler,
     // TODO: UAVs, etc.
-};
-
-/**
- * Shader resource binding description
- */
-struct ShaderResBindingDesc
-{
-    int slot;
-    ShaderResourceType type;
-    // TODO: cbuffer structure description
-};
-
-/**
- * Shader input/outputs description.
- */
-struct ShaderIODesc
-{
-    std::map<std::string, ShaderResBindingDesc> resBinding;
-    // TODO: Vertex Shader inputs parsing
 };
 
 /**
@@ -83,12 +64,6 @@ public:
     // TODO: binary format support (saving compiled shader bytecode)
 
     /**
-     * Parse shader and get inputs/outputs description.
-     * @param[out] result Returned shader inputs/outputs description
-     */
-    virtual bool GetIODesc(ShaderIODesc& result) = 0;
-
-    /**
      * Get assembly code of the shader.
      * @param html        Generate a colorful HTML document.
      * @param output[out] Output string.
@@ -115,6 +90,19 @@ struct ShaderProgramDesc
         , pixelShader(nullptr)
     {
     }
+
+    NFE_INLINE IShader* GetShaderByType(ShaderType type) const
+    {
+        switch (type)
+        {
+        case ShaderType::Vertex:   return vertexShader;
+        case ShaderType::Hull:     return hullShader;
+        case ShaderType::Domain:   return domainShader;
+        case ShaderType::Geometry: return geometryShader;
+        case ShaderType::Pixel:    return pixelShader;
+        }
+        return nullptr;
+    }
 };
 
 /**
@@ -124,6 +112,12 @@ class IShaderProgram
 {
 public:
     virtual ~IShaderProgram() {}
+
+    /**
+     * Get shader program resource (texture, cbuffer, etc.) slot ID by name.
+     * @return Negative value if resource is not found.
+     */
+    virtual int GetResourceSlotByName(const char* name) = 0;
 };
 
 } // namespace Renderer

@@ -19,6 +19,7 @@
 #include "PipelineState.hpp"
 #include "Sampler.hpp"
 #include "Translations.hpp"
+#include "ResourceBinding.hpp"
 
 #include "nfCommon/Logger.hpp"
 #include "nfCommon/Win/Common.hpp"  // required for ID3DUserDefinedAnnotation
@@ -31,6 +32,9 @@ CommandBuffer::CommandBuffer(ID3D11DeviceContext* deviceContext)
     : mContext(deviceContext)
     , mCurrentPrimitiveType(PrimitiveType::Unknown)
     , mCurrentRenderTarget(nullptr)
+    , mBindingLayout(nullptr)
+    , mPipelineState(nullptr)
+    , mCurrentPipelineState(nullptr)
     , mReset(false)
 {
     HRESULT hr;
@@ -52,6 +56,7 @@ void CommandBuffer::Reset()
     mStencilRef = mCurrentStencilRef = 0;
     mCurrentPrimitiveType = PrimitiveType::Unknown;
     mCurrentRenderTarget = nullptr;
+    mBindingLayout = nullptr;
     mPipelineState = nullptr;
     mCurrentPipelineState = nullptr;
     mBoundShaders = ShaderProgramDesc();
@@ -104,92 +109,156 @@ void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat forma
     mContext->IASetIndexBuffer(ib->mBuffer.get(), dxgiFormat, 0);
 }
 
-void CommandBuffer::SetSamplers(ISampler** samplers, int num, ShaderType target, int slotOffset)
+void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance)
 {
-    ID3D11SamplerState* samplerStates[16];
-    for (int i = 0; i < num; ++i)
+    if (!mBindingLayout)
     {
-        Sampler* sampler = dynamic_cast<Sampler*>(samplers[i]);
-        samplerStates[i] = sampler->mSamplerState.get();
+        LOG_ERROR("Binding layout is not set");
+        return;
     }
 
-    switch (target)
+    const ResourceBindingInstance* instance =
+        dynamic_cast<ResourceBindingInstance*>(bindingSetInstance);
+
+    if (slot >= mBindingLayout->mBindingSets.size())
     {
-    case ShaderType::Vertex:
-        mContext->VSSetSamplers(slotOffset, num, samplerStates);
-        break;
-    case ShaderType::Domain:
-        mContext->DSSetSamplers(slotOffset, num, samplerStates);
-        break;
-    case ShaderType::Hull:
-        mContext->HSSetSamplers(slotOffset, num, samplerStates);
-        break;
-    case ShaderType::Geometry:
-        mContext->GSSetSamplers(slotOffset, num, samplerStates);
-        break;
-    case ShaderType::Pixel:
-        mContext->PSSetSamplers(slotOffset, num, samplerStates);
-        break;
-    };
+        LOG_ERROR("Invalid binding set slot");
+        return;
+    }
+
+    const ResourceBindingSet* bindingSet = mBindingLayout->mBindingSets[slot];
+    for (size_t i = 0; i < bindingSet->mBindings.size(); ++i)
+    {
+        const ResourceBindingDesc& bindingDesc = bindingSet->mBindings[i];
+        UINT slotOffset = bindingDesc.slot & SHADER_RES_SLOT_MASK;
+
+        if (bindingDesc.resourceType == ShaderResourceType::CBuffer)
+        {
+            ID3D11Buffer* buffer = instance ?
+                static_cast<ID3D11Buffer*>(instance->mViews[i]) : nullptr;
+
+            switch (bindingSet->mShaderVisibility)
+            {
+            case ShaderType::Vertex:
+                mContext->VSSetConstantBuffers(slotOffset, 1, &buffer);
+                break;
+            case ShaderType::Domain:
+                mContext->DSSetConstantBuffers(slotOffset, 1, &buffer);
+                break;
+            case ShaderType::Hull:
+                mContext->HSSetConstantBuffers(slotOffset, 1, &buffer);
+                break;
+            case ShaderType::Geometry:
+                mContext->GSSetConstantBuffers(slotOffset, 1, &buffer);
+                break;
+            case ShaderType::Pixel:
+                mContext->PSSetConstantBuffers(slotOffset, 1, &buffer);
+                break;
+            case ShaderType::All:
+                if (mBoundShaders.vertexShader)
+                    mContext->VSSetConstantBuffers(slotOffset, 1, &buffer);
+                if (mBoundShaders.domainShader)
+                    mContext->DSSetConstantBuffers(slotOffset, 1, &buffer);
+                if (mBoundShaders.hullShader)
+                    mContext->HSSetConstantBuffers(slotOffset, 1, &buffer);
+                if (mBoundShaders.geometryShader)
+                    mContext->GSSetConstantBuffers(slotOffset, 1, &buffer);
+                if (mBoundShaders.pixelShader)
+                    mContext->PSSetConstantBuffers(slotOffset, 1, &buffer);
+                break;
+            }
+        }
+        else if (bindingDesc.resourceType == ShaderResourceType::Texture)
+        {
+            ID3D11ShaderResourceView* srv =
+                instance ? static_cast<ID3D11ShaderResourceView*>(instance->mViews[i]) : nullptr;
+
+            switch (bindingSet->mShaderVisibility)
+            {
+            case ShaderType::Vertex:
+                mContext->VSSetShaderResources(slotOffset, 1, &srv);
+                break;
+            case ShaderType::Domain:
+                mContext->DSSetShaderResources(slotOffset, 1, &srv);
+                break;
+            case ShaderType::Hull:
+                mContext->HSSetShaderResources(slotOffset, 1, &srv);
+                break;
+            case ShaderType::Geometry:
+                mContext->GSSetShaderResources(slotOffset, 1, &srv);
+                break;
+            case ShaderType::Pixel:
+                mContext->PSSetShaderResources(slotOffset, 1, &srv);
+                break;
+            case ShaderType::All:
+                if (mBoundShaders.vertexShader)
+                    mContext->VSSetShaderResources(slotOffset, 1, &srv);
+                if (mBoundShaders.domainShader)
+                    mContext->DSSetShaderResources(slotOffset, 1, &srv);
+                if (mBoundShaders.hullShader)
+                    mContext->HSSetShaderResources(slotOffset, 1, &srv);
+                if (mBoundShaders.geometryShader)
+                    mContext->GSSetShaderResources(slotOffset, 1, &srv);
+                if (mBoundShaders.pixelShader)
+                    mContext->PSSetShaderResources(slotOffset, 1, &srv);
+                break;
+            };
+        }
+    }
 }
 
-void CommandBuffer::SetTextures(ITexture** textures, int num, ShaderType target, int slotOffset)
+void CommandBuffer::UpdateSamplers()
 {
-    ID3D11ShaderResourceView* srvs[16];
-    for (int i = 0; i < num; ++i)
+    for (size_t j = 0; j < mBindingLayout->mBindingSets.size(); ++j)
     {
-        Texture* texture = dynamic_cast<Texture*>(textures[i]);
-        srvs[i] = texture ? texture->mSRV.get() : NULL;
+        const ResourceBindingSet* bindingSet = mBindingLayout->mBindingSets[j];
+
+        for (size_t i = 0; i < bindingSet->mBindings.size(); ++i)
+        {
+            const ResourceBindingDesc& bindingDesc = bindingSet->mBindings[i];
+            UINT slotOffset = bindingDesc.slot & SHADER_RES_SLOT_MASK;
+
+            if (bindingDesc.resourceType != ShaderResourceType::Texture)
+                continue;
+
+            Sampler* sampler = dynamic_cast<Sampler*>(bindingDesc.staticSampler);
+            if (!sampler)
+                continue;
+
+            ID3D11SamplerState* samplerState = sampler->mSamplerState.get();
+
+            switch (bindingSet->mShaderVisibility)
+            {
+            case ShaderType::Vertex:
+                mContext->VSSetSamplers(slotOffset, 1, &samplerState);
+                break;
+            case ShaderType::Domain:
+                mContext->DSSetSamplers(slotOffset, 1, &samplerState);
+                break;
+            case ShaderType::Hull:
+                mContext->HSSetSamplers(slotOffset, 1, &samplerState);
+                break;
+            case ShaderType::Geometry:
+                mContext->GSSetSamplers(slotOffset, 1, &samplerState);
+                break;
+            case ShaderType::Pixel:
+                mContext->PSSetSamplers(slotOffset, 1, &samplerState);
+                break;
+            case ShaderType::All:
+                if (mBoundShaders.vertexShader)
+                    mContext->VSSetSamplers(slotOffset, 1, &samplerState);
+                if (mBoundShaders.domainShader)
+                    mContext->DSSetSamplers(slotOffset, 1, &samplerState);
+                if (mBoundShaders.hullShader)
+                    mContext->HSSetSamplers(slotOffset, 1, &samplerState);
+                if (mBoundShaders.geometryShader)
+                    mContext->GSSetSamplers(slotOffset, 1, &samplerState);
+                if (mBoundShaders.pixelShader)
+                    mContext->PSSetSamplers(slotOffset, 1, &samplerState);
+                break;
+            };
+        }
     }
-
-    switch (target)
-    {
-    case ShaderType::Vertex:
-        mContext->VSSetShaderResources(slotOffset, num, srvs);
-        break;
-    case ShaderType::Domain:
-        mContext->DSSetShaderResources(slotOffset, num, srvs);
-        break;
-    case ShaderType::Hull:
-        mContext->HSSetShaderResources(slotOffset, num, srvs);
-        break;
-    case ShaderType::Geometry:
-        mContext->GSSetShaderResources(slotOffset, num, srvs);
-        break;
-    case ShaderType::Pixel:
-        mContext->PSSetShaderResources(slotOffset, num, srvs);
-        break;
-    };
-}
-
-void CommandBuffer::SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target,
-                                       int slotOffset)
-{
-    ID3D11Buffer* buffers[16];
-    for (int i = 0; i < num; ++i)
-    {
-        Buffer* cb = dynamic_cast<Buffer*>(constantBuffers[i]);
-        buffers[i] = cb ? cb->mBuffer.get() : NULL;
-    }
-
-    switch (target)
-    {
-        case ShaderType::Vertex:
-            mContext->VSSetConstantBuffers(slotOffset, num, buffers);
-            break;
-        case ShaderType::Domain:
-            mContext->DSSetConstantBuffers(slotOffset, num, buffers);
-            break;
-        case ShaderType::Hull:
-            mContext->HSSetConstantBuffers(slotOffset, num, buffers);
-            break;
-        case ShaderType::Geometry:
-            mContext->GSSetConstantBuffers(slotOffset, num, buffers);
-            break;
-        case ShaderType::Pixel:
-            mContext->PSSetConstantBuffers(slotOffset, num, buffers);
-            break;
-    };
 }
 
 void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
@@ -263,9 +332,15 @@ void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
     }
 }
 
+void CommandBuffer::SetResourceBindingLayout(IResourceBindingLayout* layout)
+{
+    mBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout);
+}
+
 void CommandBuffer::SetPipelineState(IPipelineState* state)
 {
     mPipelineState = dynamic_cast<PipelineState*>(state);
+    mBindingLayout = mPipelineState->mResBindingLayout;
 }
 
 void CommandBuffer::SetStencilRef(unsigned char ref)
@@ -394,6 +469,11 @@ void CommandBuffer::UpdateState(PrimitiveType primitiveType)
 {
     if (mCurrentPipelineState != mPipelineState || mCurrentStencilRef != mStencilRef)
     {
+        if (mBindingLayout != mPipelineState->mResBindingLayout)
+            LOG_ERROR("Binding layout mismatch");
+
+        UpdateSamplers();
+
         mContext->OMSetBlendState(mPipelineState->mBS.get(), nullptr, 0xFFFFFFFF);
         mContext->RSSetState(mPipelineState->mRS.get());
         mContext->OMSetDepthStencilState(mPipelineState->mDS.get(), mStencilRef);

@@ -16,6 +16,7 @@
 #include "RenderTarget.hpp"
 #include "PipelineState.hpp"
 #include "Sampler.hpp"
+#include "ResourceBinding.hpp"
 
 #include "nfCommon/Win/Common.hpp"
 #include "nfCommon/Logger.hpp"
@@ -170,6 +171,21 @@ IShader* Device::CreateShader(const ShaderDesc& desc)
 IShaderProgram* Device::CreateShaderProgram(const ShaderProgramDesc& desc)
 {
     return new (std::nothrow) ShaderProgram(desc);
+}
+
+IResourceBindingSet* Device::CreateResourceBindingSet(const ResourceBindingSetDesc& desc)
+{
+    return CreateGenericResource<ResourceBindingSet, ResourceBindingSetDesc>(desc);
+}
+
+IResourceBindingLayout* Device::CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc)
+{
+    return CreateGenericResource<ResourceBindingLayout, ResourceBindingLayoutDesc>(desc);
+}
+
+IResourceBindingInstance* Device::CreateResourceBindingInstance(IResourceBindingSet* set)
+{
+    return CreateGenericResource<ResourceBindingInstance, IResourceBindingSet*>(set);
 }
 
 ICommandBuffer* Device::CreateCommandBuffer()
