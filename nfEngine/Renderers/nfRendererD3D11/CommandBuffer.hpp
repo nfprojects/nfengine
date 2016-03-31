@@ -48,10 +48,7 @@ public:
     void Reset() override;
     void SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets) override;
     void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format) override;
-    void SetSamplers(ISampler** samplers, int num, ShaderType target, int slotOffset) override;
-    void SetTextures(ITexture** textures, int num, ShaderType target, int slotOffset) override;
-    void SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target,
-                            int slotOffset) override;
+    void BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance) override;
     void SetRenderTarget(IRenderTarget* renderTarget) override;
     void SetShaderProgram(IShaderProgram* shaderProgram) override;
     void SetPipelineState(IPipelineState* state) override;

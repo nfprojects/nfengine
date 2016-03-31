@@ -212,6 +212,9 @@ bool Shader::Init(const ShaderDesc& desc)
         return false;
     }
 
+    if (!GetIODesc())
+        return false;
+
     LOG_SUCCESS("Shader '%s' compiled successfully", desc.path);
     return true;
 }
@@ -253,10 +256,9 @@ ID3DBlob* Shader::GetBytecode() const
     return mBytecode.get();
 }
 
-bool Shader::GetIODesc(ShaderIODesc& result)
+bool Shader::GetIODesc()
 {
     HRESULT hr;
-    result.resBinding.clear();
 
     ID3DBlob* bytecode = mBytecode.get();
     if (bytecode == nullptr)
@@ -288,7 +290,7 @@ bool Shader::GetIODesc(ShaderIODesc& result)
             return false;
         }
 
-        ShaderResBindingDesc bindingDesc;
+        ResBinding bindingDesc;
         bindingDesc.slot = d3dBindingDesc.BindPoint;
 
         switch (d3dBindingDesc.Type)
@@ -309,7 +311,13 @@ bool Shader::GetIODesc(ShaderIODesc& result)
         }
 
         std::string name = d3dBindingDesc.Name;
-        result.resBinding[name] = bindingDesc;
+        if (mResBindings.find(name) != mResBindings.end())
+        {
+            LOG_ERROR("Multiple declarations of shader resource named '%s'", d3dBindingDesc.Name);
+            return false;
+        }
+
+        mResBindings[name] = bindingDesc;
     }
 
     return true;
