@@ -128,6 +128,13 @@ ID3D11DepthStencilState* CreateDepthState(const DepthStateDesc& desc)
 
 bool PipelineState::Init(const PipelineStateDesc& desc)
 {
+    mResBindingLayout = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout);
+    if (!mResBindingLayout)
+    {
+        LOG_ERROR("Invalid shader resource binding layout");
+        return false;
+    }
+
     mVertexLayout = dynamic_cast<VertexLayout*>(desc.vertexLayout);
     if (!mVertexLayout)
     {

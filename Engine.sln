@@ -55,6 +55,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RendererInterface", "Render
 		nfEngine\Renderers\RendererInterface\Device.hpp = nfEngine\Renderers\RendererInterface\Device.hpp
 		nfEngine\Renderers\RendererInterface\PipelineState.hpp = nfEngine\Renderers\RendererInterface\PipelineState.hpp
 		nfEngine\Renderers\RendererInterface\RenderTarget.hpp = nfEngine\Renderers\RendererInterface\RenderTarget.hpp
+		nfEngine\Renderers\RendererInterface\ResourceBinding.hpp = nfEngine\Renderers\RendererInterface\ResourceBinding.hpp
 		nfEngine\Renderers\RendererInterface\Shader.hpp = nfEngine\Renderers\RendererInterface\Shader.hpp
 		nfEngine\Renderers\RendererInterface\Texture.hpp = nfEngine\Renderers\RendererInterface\Texture.hpp
 		nfEngine\Renderers\RendererInterface\Types.hpp = nfEngine\Renderers\RendererInterface\Types.hpp
@@ -64,7 +65,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfRendererDemo", "nfEngine\nfRendererDemo\nfRendererDemo.vcxproj", "{EEFC1232-FD3F-429B-B24A-2A37D808A9C5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{EC1CAD07-6B42-4CBC-AC3B-00F0C39ACE44} = {EC1CAD07-6B42-4CBC-AC3B-00F0C39ACE44}
-		{7D5F8B13-8926-4553-87A0-2FD31038EE0B} = {7D5F8B13-8926-4553-87A0-2FD31038EE0B}
 		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
 	EndProjectSection
 EndProject
