@@ -103,92 +103,79 @@ void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat forma
     mContext->IASetIndexBuffer(ib->mBuffer.get(), dxgiFormat, 0);
 }
 
-void CommandBuffer::SetSamplers(ISampler** samplers, int num, ShaderType target, int slotOffset)
+void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance)
 {
-    ID3D11SamplerState* samplerStates[16];
-    for (int i = 0; i < num; ++i)
+    const ResourceBindingLayout* resBindingLayout = mPipelineState->mResBindingLayout;
+    const ResourceBindingInstance* instance =
+        dynamic_cast<ResourceBindingInstance*>(bindingSetInstance);
+
+    if (slot >= resBindingLayout->mBindingSets.size())
     {
-        Sampler* sampler = dynamic_cast<Sampler*>(samplers[i]);
-        samplerStates[i] = sampler->mSamplerState.get();
+        LOG_ERROR("Invalid binding set slot");
+        return;
     }
 
-    switch (target)
+    const ResourceBindingSet* bindingSet = resBindingLayout->mBindingSets[slot];
+    for (size_t i = 0; i < bindingSet->mBindings.size(); ++i)
     {
-    case ShaderType::Vertex:
-        mContext->VSSetSamplers(slotOffset, num, samplerStates);
-        break;
-    case ShaderType::Domain:
-        mContext->DSSetSamplers(slotOffset, num, samplerStates);
-        break;
-    case ShaderType::Hull:
-        mContext->HSSetSamplers(slotOffset, num, samplerStates);
-        break;
-    case ShaderType::Geometry:
-        mContext->GSSetSamplers(slotOffset, num, samplerStates);
-        break;
-    case ShaderType::Pixel:
-        mContext->PSSetSamplers(slotOffset, num, samplerStates);
-        break;
-    };
-}
+        const ResourceBindingDesc& bindingDesc = bindingSet->mBindings[i];
+        UINT slotOffset = bindingDesc.slot & 0xFFFF;
 
-void CommandBuffer::SetTextures(ITexture** textures, int num, ShaderType target, int slotOffset)
-{
-    ID3D11ShaderResourceView* srvs[16];
-    for (int i = 0; i < num; ++i)
-    {
-        Texture* texture = dynamic_cast<Texture*>(textures[i]);
-        srvs[i] = texture ? texture->mSRV.get() : NULL;
+        if (bindingDesc.resourceType == ShaderResourceType::CBuffer)
+        {
+            ID3D11Buffer* buffer = instance ?
+                static_cast<ID3D11Buffer*>(instance->mViews[i]) : nullptr;
+
+            switch (bindingSet->mShaderVisibility)
+            {
+            case ShaderType::Vertex:
+                mContext->VSSetConstantBuffers(slotOffset, 1, &buffer);
+                break;
+            case ShaderType::Domain:
+                mContext->DSSetConstantBuffers(slotOffset, 1, &buffer);
+                break;
+            case ShaderType::Hull:
+                mContext->HSSetConstantBuffers(slotOffset, 1, &buffer);
+                break;
+            case ShaderType::Geometry:
+                mContext->GSSetConstantBuffers(slotOffset, 1, &buffer);
+                break;
+            case ShaderType::Pixel:
+                mContext->PSSetConstantBuffers(slotOffset, 1, &buffer);
+                break;
+            }
+        }
+        else if (bindingDesc.resourceType == ShaderResourceType::Texture)
+        {
+            ID3D11ShaderResourceView* srv =
+                instance ? static_cast<ID3D11ShaderResourceView*>(instance->mViews[i]) : nullptr;
+            ID3D11SamplerState* samplerState = instance ? instance->mSamplers[i] : nullptr;
+
+            switch (bindingSet->mShaderVisibility)
+            {
+            case ShaderType::Vertex:
+                mContext->VSSetShaderResources(slotOffset, 1, &srv);
+                mContext->VSSetSamplers(slotOffset, 1, &samplerState);
+                break;
+            case ShaderType::Domain:
+                mContext->DSSetShaderResources(slotOffset, 1, &srv);
+                mContext->DSSetSamplers(slotOffset, 1, &samplerState);
+                break;
+            case ShaderType::Hull:
+                mContext->HSSetShaderResources(slotOffset, 1, &srv);
+                mContext->HSSetSamplers(slotOffset, 1, &samplerState);
+                break;
+            case ShaderType::Geometry:
+                mContext->GSSetShaderResources(slotOffset, 1, &srv);
+                mContext->GSSetSamplers(slotOffset, 1, &samplerState);
+                break;
+            case ShaderType::Pixel:
+                mContext->PSSetShaderResources(slotOffset, 1, &srv);
+                mContext->PSSetSamplers(slotOffset, 1, &samplerState);
+                break;
+            };
+        }
     }
-
-    switch (target)
-    {
-    case ShaderType::Vertex:
-        mContext->VSSetShaderResources(slotOffset, num, srvs);
-        break;
-    case ShaderType::Domain:
-        mContext->DSSetShaderResources(slotOffset, num, srvs);
-        break;
-    case ShaderType::Hull:
-        mContext->HSSetShaderResources(slotOffset, num, srvs);
-        break;
-    case ShaderType::Geometry:
-        mContext->GSSetShaderResources(slotOffset, num, srvs);
-        break;
-    case ShaderType::Pixel:
-        mContext->PSSetShaderResources(slotOffset, num, srvs);
-        break;
-    };
-}
-
-void CommandBuffer::SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target,
-                                       int slotOffset)
-{
-    ID3D11Buffer* buffers[16];
-    for (int i = 0; i < num; ++i)
-    {
-        Buffer* cb = dynamic_cast<Buffer*>(constantBuffers[i]);
-        buffers[i] = cb ? cb->mBuffer.get() : NULL;
-    }
-
-    switch (target)
-    {
-        case ShaderType::Vertex:
-            mContext->VSSetConstantBuffers(slotOffset, num, buffers);
-            break;
-        case ShaderType::Domain:
-            mContext->DSSetConstantBuffers(slotOffset, num, buffers);
-            break;
-        case ShaderType::Hull:
-            mContext->HSSetConstantBuffers(slotOffset, num, buffers);
-            break;
-        case ShaderType::Geometry:
-            mContext->GSSetConstantBuffers(slotOffset, num, buffers);
-            break;
-        case ShaderType::Pixel:
-            mContext->PSSetConstantBuffers(slotOffset, num, buffers);
-            break;
-    };
 }
 
 void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
