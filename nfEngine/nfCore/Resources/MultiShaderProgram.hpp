@@ -11,7 +11,7 @@
 #include "../Renderer/RenderCommand.hpp"
 #include "Multishader.hpp"
 
-#define NFE_SHADER_TYPES_NUM static_cast<size_t>(Renderer::ShaderType::Number)
+#define NFE_SHADER_TYPES_NUM static_cast<size_t>(Renderer::ShaderType::Count)
 
 namespace NFE {
 namespace Resource {

@@ -9,6 +9,7 @@
 #include "RendererD3D11.hpp"
 #include "Translations.hpp"
 #include "VertexLayout.hpp"
+#include "ResourceBinding.hpp"
 
 #include "nfCommon/Logger.hpp"
 
@@ -131,6 +132,13 @@ ID3D11DepthStencilState* CreateDepthState(const DepthStateDesc& desc)
 
 bool PipelineState::Init(const PipelineStateDesc& desc)
 {
+    mResBindingLayout = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout);
+    if (!mResBindingLayout)
+    {
+        LOG_ERROR("Invalid shader resource binding layout");
+        return false;
+    }
+
     mVertexLayout = dynamic_cast<VertexLayout*>(desc.vertexLayout);
     if (!mVertexLayout)
     {

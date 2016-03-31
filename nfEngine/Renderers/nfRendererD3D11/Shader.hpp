@@ -8,16 +8,26 @@
 
 #include "../RendererInterface/Shader.hpp"
 #include "Common.hpp"
+#include <map>
 
 namespace NFE {
 namespace Renderer {
 
 class Shader : public IShader
 {
+    struct ResBinding
+    {
+        ShaderResourceType type;
+        int slot;
+        ResBinding() : type(ShaderResourceType::Unknown), slot(0) { }
+    };
+
+    friend class ShaderProgram;
     friend class CommandBuffer;
 
     ShaderType mType;
     D3DPtr<ID3DBlob> mBytecode;
+    std::map<std::string, ResBinding> mResBindings;
 
     union
     {
@@ -29,6 +39,8 @@ class Shader : public IShader
         void* mGeneric;
     };
 
+    bool GetIODesc();
+
 public:
     Shader();
     ~Shader();
@@ -36,7 +48,6 @@ public:
     void* GetShaderObject() const;
     ID3DBlob* GetBytecode() const;
 
-    bool GetIODesc(ShaderIODesc& result) override;
     bool Disassemble(bool html, std::string& output) override;
 };
 
@@ -46,7 +57,12 @@ class ShaderProgram : public IShaderProgram
 public:
     ShaderProgram(const ShaderProgramDesc& desc);
     const ShaderProgramDesc& GetDesc() const;
+    int GetResourceSlotByName(const char* name);
 };
+
+extern const int SHADER_TYPE_BIT_OFFSET;
+extern const int SHADER_RES_TYPE_BIT_OFFSET;
+extern const int SHADER_RES_SLOT_MASK;
 
 } // namespace Renderer
 } // namespace NFE

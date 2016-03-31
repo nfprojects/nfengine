@@ -14,6 +14,7 @@ namespace Renderer {
 
 class RenderTarget;
 class PipelineState;
+class ResourceBindingLayout;
 
 class CommandList : public ICommandList
 {
@@ -30,6 +31,7 @@ class CommandBuffer : public ICommandBuffer
     unsigned char mCurrentStencilRef;
     PrimitiveType mCurrentPrimitiveType;
     RenderTarget* mCurrentRenderTarget;
+    ResourceBindingLayout* mBindingLayout;
     PipelineState* mPipelineState;
     PipelineState* mCurrentPipelineState;
     D3DPtr<ID3D11DeviceContext> mContext;
@@ -37,6 +39,7 @@ class CommandBuffer : public ICommandBuffer
 
     ShaderProgramDesc mBoundShaders;
 
+    void UpdateSamplers();
     void UpdateState(PrimitiveType primitiveType);
 
 public:
@@ -48,10 +51,8 @@ public:
     void Reset() override;
     void SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets) override;
     void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format) override;
-    void SetSamplers(ISampler** samplers, int num, ShaderType target, int slotOffset) override;
-    void SetTextures(ITexture** textures, int num, ShaderType target, int slotOffset) override;
-    void SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target,
-                            int slotOffset) override;
+    void BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance) override;
+    void SetResourceBindingLayout(IResourceBindingLayout* layout) override;
     void SetRenderTarget(IRenderTarget* renderTarget) override;
     void SetShaderProgram(IShaderProgram* shaderProgram) override;
     void SetPipelineState(IPipelineState* state) override;
