@@ -126,6 +126,7 @@ struct PipelineStateDesc
     BlendStateDesc blendState;
     DepthStateDesc depthState;
     IVertexLayout* vertexLayout;
+    IResourceBindingLayout* resBindingLayout;
     const char* debugName;   //< optional debug name
 
     PipelineStateDesc()
@@ -133,6 +134,7 @@ struct PipelineStateDesc
         , blendState()
         , depthState()
         , vertexLayout(nullptr)
+        , resBindingLayout(nullptr)
         , debugName(nullptr)
     { }
 };
