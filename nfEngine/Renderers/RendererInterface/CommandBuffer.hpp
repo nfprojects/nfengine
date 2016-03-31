@@ -13,6 +13,7 @@
 #include "Texture.hpp"
 #include "Backbuffer.hpp"
 #include "RenderTarget.hpp"
+#include "ResourceBinding.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -44,12 +45,17 @@ public:
     virtual void SetVertexBuffers(int num, IBuffer** vertexBuffers,
                                   int* strides, int* offsets) = 0;
     virtual void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format) = 0;
+
+    virtual void SetBindingSet(int slot, IResourceBindingInstance* bindingSetInstance) = 0;
+
+    // TODO remove
     virtual void SetSamplers(ISampler** samplers, int num, ShaderType target,
                              int slotOffset = 0) = 0;
     virtual void SetTextures(ITexture** textures, int num, ShaderType target,
                              int slotOffset = 0) = 0;
     virtual void SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target,
                                     int slotOffset = 0) = 0;
+
     virtual void SetRenderTarget(IRenderTarget* renderTarget) = 0;
     virtual void SetShaderProgram(IShaderProgram* shaderProgram) = 0;
     virtual void SetPipelineState(IPipelineState* state) = 0;
