@@ -45,6 +45,9 @@ public:
     ISampler* CreateSampler(const SamplerDesc& desc);
     IShader* CreateShader(const ShaderDesc& desc);
     IShaderProgram* CreateShaderProgram(const ShaderProgramDesc& desc);
+    IResourceBindingSet* CreateResourceBindingSet(const ResourceBindingSetDesc& desc);
+    IResourceBindingLayout* CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc);
+    IResourceBindingInstance* CreateResourceBindingInstance(IResourceBindingSet* set);
 
     ICommandBuffer* CreateCommandBuffer();
     bool Execute(ICommandList* commandList);
