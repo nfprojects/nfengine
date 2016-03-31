@@ -17,8 +17,7 @@ cbuffer TestCBuffer : register(b1)
 };
 
 Texture2D<float4> TestTexture : register(t3);
-
-SamplerState TestSampler : register(s5);
+SamplerState TestSampler : register(s3);
 
 VS_OUTPUT main(VS_IN In)
 {

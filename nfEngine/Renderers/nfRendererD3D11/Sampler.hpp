@@ -15,6 +15,8 @@ namespace Renderer {
 class Sampler : public ISampler
 {
     friend class CommandBuffer;
+    friend class ResourceBindingInstance;
+
     D3DPtr<ID3D11SamplerState> mSamplerState;
 public:
     bool Init(const SamplerDesc& desc);
