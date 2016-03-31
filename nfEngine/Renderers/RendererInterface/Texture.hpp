@@ -76,6 +76,25 @@ struct TextureDesc
     {}
 };
 
+/**
+ * Texture view descriptor.
+ * Used in @p IResourceBindingInstance class.
+ */
+struct TextureViewDesc
+{
+    unsigned int firstMipmap;
+    unsigned int numMipmaps;
+    unsigned int firstLayer;
+    unsigned int numLayers;
+
+    TextureViewDesc()
+        : firstMipmap(0)
+        , numMipmaps(0xFFFFFFFF)
+        , firstLayer(0)
+        , numLayers(0xFFFFFFFF)
+    { }
+};
+
 class ITexture
 {
 public:

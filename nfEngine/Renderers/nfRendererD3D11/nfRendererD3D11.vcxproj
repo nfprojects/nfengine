@@ -213,6 +213,7 @@
     </ClCompile>
     <ClCompile Include="RendererD3D11.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
+    <ClCompile Include="ResourceBinding.cpp" />
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
@@ -236,6 +237,7 @@
     <ClInclude Include="RendererD3D11.hpp" />
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="RenderTarget.hpp" />
+    <ClInclude Include="ResourceBinding.hpp" />
     <ClInclude Include="Sampler.hpp" />
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="Texture.hpp" />

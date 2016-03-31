@@ -30,6 +30,7 @@ class VertexBuffersScene : public Scene
     std::unique_ptr<NFE::Renderer::IVertexLayout> mVertexLayout;
 
     std::unique_ptr<NFE::Renderer::IPipelineState> mPipelineState;
+    std::unique_ptr<NFE::Renderer::IResourceBindingLayout> mResBindingLayout;
 
     // Releases only subscene-related resources. Backbuffer, RT and BlendState stay intact.
     void ReleaseSubsceneResources();

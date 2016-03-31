@@ -37,6 +37,9 @@ struct PixelCBuffer
 
 bool BasicScene::CreateShaderProgram(bool useCBuffer, bool useTexture)
 {
+    mTextureSlot = -1;
+    mCBufferSlot = -1;
+
     ShaderMacro vsMacro[] = { { "USE_CBUFFER", useCBuffer ? "1" : "0" } };
     std::string vsPath = gShaderPathPrefix + "TestVS" + gShaderPathExt;
     mVertexShader.reset(CompileShader(vsPath.c_str(), ShaderType::Vertex, vsMacro, 1));
@@ -54,6 +57,45 @@ bool BasicScene::CreateShaderProgram(bool useCBuffer, bool useTexture)
     shaderProgramDesc.pixelShader = mPixelShader.get();
     mShaderProgram.reset(mRendererDevice->CreateShaderProgram(shaderProgramDesc));
     if (!mShaderProgram)
+        return false;
+
+    std::vector<IResourceBindingSet*> bindingSets;
+
+    // create binding set
+    if (useCBuffer)
+    {
+        mCBufferSlot = mShaderProgram->GetResourceSlotByName("TestCBuffer");
+        if (mCBufferSlot < 0)
+            return false;
+
+        // create binding set for vertex shader bindings
+        ResourceBindingDesc vertexShaderBinding(ShaderResourceType::CBuffer, mCBufferSlot);
+        mVSBindingSet.reset(mRendererDevice->CreateResourceBindingSet(
+            ResourceBindingSetDesc(&vertexShaderBinding, 1, ShaderType::Vertex)));
+        if (!mVSBindingSet)
+            return false;
+        bindingSets.push_back(mVSBindingSet.get());
+
+        if (useTexture)
+        {
+            mTextureSlot = mShaderProgram->GetResourceSlotByName("gTexture");
+            if (mTextureSlot < 0)
+                return false;
+
+            // create binding set for pixel shader bindings
+            ResourceBindingDesc pixelShaderBinding(ShaderResourceType::Texture, mTextureSlot);
+            mPSBindingSet.reset(mRendererDevice->CreateResourceBindingSet(
+                ResourceBindingSetDesc(&pixelShaderBinding, 1, ShaderType::Pixel)));
+            if (!mPSBindingSet)
+                return false;
+            bindingSets.push_back(mPSBindingSet.get());
+        }
+    }
+
+    // create binding layout
+    mResBindingLayout.reset(mRendererDevice->CreateResourceBindingLayout(
+        ResourceBindingLayoutDesc(bindingSets.data(), bindingSets.size())));
+    if (!mResBindingLayout)
         return false;
 
     return true;
@@ -117,6 +159,7 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
     pipelineStateDesc.blendState.independent = false;
     pipelineStateDesc.blendState.rtDescs[0].enable = true;
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
+    pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
     mPipelineState.reset(mRendererDevice->CreatePipelineState(pipelineStateDesc));
     if (!mPipelineState)
         return false;
@@ -158,6 +201,13 @@ bool BasicScene::CreateConstantBuffer()
     if (!mConstantBuffer)
         return false;
 
+    // create and fill binding set instance for cbuffer
+    mVSBindingInstance.reset(mRendererDevice->CreateResourceBindingInstance(mVSBindingSet.get()));
+    if (!mVSBindingInstance)
+        return false;
+    if (!mVSBindingInstance->WriteCBufferView(0, mConstantBuffer.get()))
+        return false;
+
     return true;
 }
 
@@ -185,6 +235,13 @@ bool BasicScene::CreateTexture()
     textureDesc.layers = 1;
     mTexture.reset(mRendererDevice->CreateTexture(textureDesc));
     if (!mTexture)
+        return false;
+
+    // create and fill binding set instance
+    mPSBindingInstance.reset(mRendererDevice->CreateResourceBindingInstance(mPSBindingSet.get()));
+    if (!mPSBindingInstance)
+        return false;
+    if (!mPSBindingInstance->WriteTextureView(0, mTexture.get(), mSampler.get()))
         return false;
 
     return true;
@@ -293,6 +350,12 @@ void BasicScene::ReleaseSubsceneResources()
     mVertexShader.reset();
     mPipelineState.reset();
     mShaderProgram.reset();
+
+    mVSBindingInstance.reset();
+    mPSBindingInstance.reset();
+    mResBindingLayout.reset();
+    mVSBindingSet.reset();
+    mPSBindingSet.reset();
 }
 
 bool BasicScene::OnInit(void* winHandle)
@@ -353,22 +416,10 @@ void BasicScene::Draw(float dt)
     }
 
     if (mConstantBuffer)
-    {
-        IBuffer* cb = mConstantBuffer.get();
-        mCommandBuffer->SetConstantBuffers(&cb, 1, ShaderType::Vertex);
-    }
+        mCommandBuffer->BindResources(0, mVSBindingInstance.get());
 
     if (mTexture)
-    {
-        ITexture* tex = mTexture.get();
-        mCommandBuffer->SetTextures(&tex, 1, ShaderType::Pixel);
-    }
-
-    if (mSampler)
-    {
-        ISampler* sampler = mSampler.get();
-        mCommandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
-    }
+        mCommandBuffer->BindResources(1, mPSBindingInstance.get());
 
     // apply rotation
     mAngle += 2.0f * dt;
