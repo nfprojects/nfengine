@@ -49,6 +49,9 @@ public:
     ISampler* CreateSampler(const SamplerDesc& desc) override;
     IShader* CreateShader(const ShaderDesc& desc) override;
     IShaderProgram* CreateShaderProgram(const ShaderProgramDesc& desc) override;
+    IResourceBindingSet* CreateResourceBindingSet(const ResourceBindingSetDesc& desc) override;
+    IResourceBindingLayout* CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc) override;
+    IResourceBindingInstance* CreateResourceBindingInstance(IResourceBindingSet* set) override;
 
     ICommandBuffer* CreateCommandBuffer() override;
     bool Execute(ICommandList* commandList) override;

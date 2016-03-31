@@ -13,6 +13,7 @@
 #include "Texture.hpp"
 #include "Backbuffer.hpp"
 #include "RenderTarget.hpp"
+#include "ResourceBinding.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -45,12 +46,21 @@ public:
     virtual void SetVertexBuffers(int num, IBuffer** vertexBuffers,
                                   int* strides, int* offsets) = 0;
     virtual void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format) = 0;
-    virtual void SetSamplers(ISampler** samplers, int num, ShaderType target,
-                             int slotOffset = 0) = 0;
-    virtual void SetTextures(ITexture** textures, int num, ShaderType target,
-                             int slotOffset = 0) = 0;
-    virtual void SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target,
-                                    int slotOffset = 0) = 0;
+
+    /**
+     * Bind shader resources via setting a binding set instance.
+     * @param slot               Target binding set slot within current binding layout.
+     * @param bindingSetInstance Binding set instance to be bound to the pipeline or NULL
+     *                           to clear all bound resources for this set.
+     */
+    virtual void BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance) = 0;
+
+    /**
+     * Set new shaders resources binding layout.
+     * @param layout Resource binding layout
+     */
+    virtual void SetResourceBindingLayout(IResourceBindingLayout* layout) = 0;
+
     virtual void SetRenderTarget(IRenderTarget* renderTarget) = 0;
     virtual void SetShaderProgram(IShaderProgram* shaderProgram) = 0;
     virtual void SetPipelineState(IPipelineState* state) = 0;
