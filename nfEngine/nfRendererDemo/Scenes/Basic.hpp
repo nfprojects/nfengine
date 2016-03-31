@@ -30,6 +30,15 @@ class BasicScene: public Scene
     std::unique_ptr<NFE::Renderer::ISampler> mSampler;
     std::unique_ptr<NFE::Renderer::ITexture> mTexture;
 
+    std::unique_ptr<NFE::Renderer::IResourceBindingSet> mVSBindingSet;
+    std::unique_ptr<NFE::Renderer::IResourceBindingSet> mPSBindingSet;
+    std::unique_ptr<NFE::Renderer::IResourceBindingLayout> mResBindingLayout;
+    std::unique_ptr<NFE::Renderer::IResourceBindingInstance> mVSBindingInstance;
+    std::unique_ptr<NFE::Renderer::IResourceBindingInstance> mPSBindingInstance;
+
+    int mTextureSlot;
+    int mCBufferSlot;
+
     // Used for objects rotation in Constant Buffer scenes and onward
     float mAngle;
 
