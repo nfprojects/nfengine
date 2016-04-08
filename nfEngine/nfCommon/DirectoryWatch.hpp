@@ -63,6 +63,7 @@ private:
     int inotifyFd;             //< inotify file descriptor
 
     std::map<std::string, int> mWatchPathMap;
+    std::mutex mWatchDescriptorMapMutex; //< lock for mWatchDescriptorMap
     std::map<int, std::string> mWatchDescriptorMap;
 
     void WatchRoutine();

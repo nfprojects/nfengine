@@ -29,10 +29,10 @@ DirectoryWatch::DirectoryWatch()
 DirectoryWatch::~DirectoryWatch()
 {
     mRunning.store(false);
+    mWatchThread.join();
+
     if (inotifyFd != -1)
         ::close(inotifyFd);
-
-    mWatchThread.join();
 }
 
 void DirectoryWatch::SetCallback(WatchCallback callback)
@@ -52,6 +52,8 @@ bool DirectoryWatch::WatchPath(const std::string& path, Event eventFilter)
         int fd = mWatchPathMap[path];
         ::inotify_rm_watch(inotifyFd, fd);
         mWatchPathMap.erase(path);
+
+        std::unique_lock<std::mutex> lock(mWatchDescriptorMapMutex);
         mWatchDescriptorMap.erase(fd);
         return true;
     }
@@ -76,9 +78,12 @@ bool DirectoryWatch::WatchPath(const std::string& path, Event eventFilter)
     }
 
     int oldFd = mWatchPathMap[path];
-    mWatchDescriptorMap.erase(oldFd);
-    mWatchPathMap[path] = fd;
-    mWatchDescriptorMap[fd] = path;
+    {
+        std::unique_lock<std::mutex> lock(mWatchDescriptorMapMutex);
+        mWatchDescriptorMap.erase(oldFd);
+        mWatchPathMap[path] = fd;
+        mWatchDescriptorMap[fd] = path;
+    }
     LOG_DEBUG("Directory watch for path '%s' added, wd = %d", path.c_str(), fd);
     return true;
 }
@@ -141,7 +146,10 @@ bool DirectoryWatch::ProcessInotifyEvent(void* event)
     struct ::inotify_event* e = reinterpret_cast<struct ::inotify_event*>(event);
 
     char path[PATH_MAX];
-    strcpy(path, mWatchDescriptorMap[e->wd].c_str());
+    {
+        std::unique_lock<std::mutex> lock(mWatchDescriptorMapMutex);
+        strcpy(path, mWatchDescriptorMap[e->wd].c_str());
+    }
 
     EventData eventData;
     eventData.type = Event::None;
