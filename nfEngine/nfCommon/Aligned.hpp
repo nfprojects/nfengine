@@ -41,7 +41,11 @@ public:
 #elif defined(__LINUX__) | defined(__linux__)
     void* operator new(size_t size)
     {
-        return aligned_alloc(Alignment, size);
+        void* ptr;
+        if (posix_memalign(&ptr, Alignment, size) == 0)
+            return ptr;
+
+        return nullptr;
     }
 
     void operator delete(void* ptr)
@@ -155,7 +159,9 @@ public:
 #if defined(WIN32)
         void* const pv = _aligned_malloc(n * sizeof(T), Alignment);
 #elif defined(__LINUX__) | defined(__linux__)
-        void* const pv = aligned_alloc(Alignment, n * sizeof(T));
+        void* pv;
+        if (posix_memalign(&pv, Alignment, n * sizeof(T)) != 0)
+            return nullptr;
 #endif
         // Allocators should throw std::bad_alloc in the case of memory allocation failure.
         if (nullptr == pv)
