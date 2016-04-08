@@ -16,8 +16,17 @@ TEST(ThreadPoolStress, SingleDependency)
     struct TaskInfo
     {
         TaskID dependency;
-        int done;
         size_t instanceNum;
+        std::atomic<bool> done;
+
+        TaskInfo() : dependency(NFE_INVALID_TASK_ID) , instanceNum(0), done(false) { }
+
+        TaskInfo(const TaskInfo& other)
+        {
+            dependency = other.dependency;
+            instanceNum = other.instanceNum;
+            done = other.done.load();
+        }
     };
 
     ThreadPool tp;
@@ -31,13 +40,13 @@ TEST(ThreadPoolStress, SingleDependency)
         ASSERT_TRUE(context.instanceId < taskInfo.instanceNum) << "Task instance ID out of bound";
 
         if (taskInfo.dependency != NFE_INVALID_TASK_ID)
-            ASSERT_EQ(1, tasks[taskInfo.dependency].done) << "Unresolved dependencies";
+            ASSERT_TRUE(tasks[taskInfo.dependency].done) << "Unresolved dependencies";
 
         // delay first tasks a little bit
         if (id < 50)
             std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 32));
 
-        taskInfo.done = 1;
+        taskInfo.done = true;
     };
 
     for (size_t i = 0; i < numTasks; ++i)
@@ -53,7 +62,6 @@ TEST(ThreadPoolStress, SingleDependency)
         else
             task.dependency = NFE_INVALID_TASK_ID;
 
-        task.done = 0;
         task.instanceNum = rand() % 4 + 1;
         tasks.push_back(task);
         ASSERT_NO_THROW(taskId = tp.CreateTask(std::bind(func, _1, i), task.instanceNum,

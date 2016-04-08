@@ -49,6 +49,7 @@ CMake can be called only once, unless there is a need to recreate Makefiles, or 
 
 Changing build settings is done by defining CMake variables (all are optional - omitting one of them will use default setting mentioned above):
 * **CMAKE_BUILD_TYPE** - specifies build type. Possible values: **Release**, **Debug**. Building nfEngine with **Debug** build type will turn off compiler optimization and generate debugging information for GDB.
+* **SANITIZE** - specifies sanitizer to be used (by adding **-fsanitize=** compiler flag). Possible values: **thread**, **address**, **memory**, **undefined**. This requires support in a compiler (GCC >= 4.8 or clang).
 
 Example - forcing Debug build:
 
