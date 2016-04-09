@@ -6,6 +6,8 @@
 
 #include "../PCH.hpp"
 #include "../Library.hpp"
+#include "../Logger.hpp"
+
 #include <dlfcn.h>
 
 namespace NFE {
@@ -62,8 +64,7 @@ bool Library::Open(const std::string& path)
 
     if (mModule == nullptr)
     {
-        // TODO Change to LOG_ERROR when Logger is ported
-        std::cout << "Failed to load library " << pathExt.c_str() << ": " << dlerror() << std::endl;
+        LOG_ERROR("Failed to load library %s: %s", pathExt.c_str(), dlerror());
         return false;
     }
 
@@ -74,9 +75,8 @@ void Library::Close()
 {
     if (mModule != nullptr)
     {
-        // TODO Change to LOG_ERROR when Logger is ported
         if (dlclose(mModule))
-            std::cout << "Failed to close library: " << dlerror() << std::endl;
+            LOG_ERROR("Failed to close library: %s", dlerror());
         mModule = nullptr;
     }
 }
@@ -92,8 +92,7 @@ void* Library::GetSymbol(const std::string& name)
     char* errorMsg = dlerror();
     if (errorMsg != nullptr)
     {
-        // TODO Change to LOG_ERROR when Logger is ported
-        std::cout << "Failed to get pointer to symbol " << name.c_str() << ": " << errorMsg << std::endl;
+        LOG_ERROR("Failed to get pointer to symbol %s: %s", name.c_str(), errorMsg);
         return nullptr;
     }
 
