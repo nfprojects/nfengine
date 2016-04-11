@@ -154,6 +154,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_a2d09e54",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-11T11:47:12Z",
+      "side": 1,
+      "message": "So, you have considered? :D And what\u0027s the outcome? I was just thinking that you can remove whole InitMode() - IMO updating empty direcory should result the same thing",
+      "parentUuid": "baa041b7_ff22bfb8",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_7f658f43",
         "filename": "Scripts/syncher.py",
         "patchSetId": 2
