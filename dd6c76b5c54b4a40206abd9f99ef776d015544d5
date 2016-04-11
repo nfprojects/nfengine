@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_df581b59",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:00:16Z",
+      "side": 1,
+      "message": "I\u0027ve split it, because some tests need single test image, others need 3 different.\nI\u0027ve tried to do it with one in previous versions of image and came to conclusion, that this way would be cleaner and more efficient (even though we have 3 pointers here).",
+      "parentUuid": "baa041b7_fc22cdb8",
+      "range": {
+        "startLine": 83,
+        "startChar": 0,
+        "endLine": 85,
+        "endChar": 41
+      },
+      "revId": "dd6c76b5c54b4a40206abd9f99ef776d015544d5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_7f046f14",
         "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
         "patchSetId": 5
@@ -36,6 +60,30 @@
       "writtenOn": "2016-04-11T08:47:28Z",
       "side": 1,
       "message": "\"TEXTURE_WIDTH * TEXTURE_HEIGHT\"?",
+      "range": {
+        "startLine": 155,
+        "startChar": 39,
+        "endLine": 155,
+        "endChar": 46
+      },
+      "revId": "dd6c76b5c54b4a40206abd9f99ef776d015544d5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_5f352b44",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:00:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_7f046f14",
       "range": {
         "startLine": 155,
         "startChar": 39,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_fff51f83",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:00:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_9c31810e",
+      "range": {
+        "startLine": 192,
+        "startChar": 27,
+        "endLine": 192,
+        "endChar": 33
+      },
+      "revId": "dd6c76b5c54b4a40206abd9f99ef776d015544d5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_7c36bd04",
         "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
         "patchSetId": 5
@@ -82,6 +154,30 @@
       "writtenOn": "2016-04-11T08:47:28Z",
       "side": 1,
       "message": "not needed",
+      "range": {
+        "startLine": 197,
+        "startChar": 27,
+        "endLine": 197,
+        "endChar": 33
+      },
+      "revId": "dd6c76b5c54b4a40206abd9f99ef776d015544d5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7f30ef56",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:00:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_7c36bd04",
       "range": {
         "startLine": 197,
         "startChar": 27,
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_1f40c3a4",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:00:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_3f0ee734",
+      "range": {
+        "startLine": 204,
+        "startChar": 0,
+        "endLine": 205,
+        "endChar": 50
+      },
+      "revId": "dd6c76b5c54b4a40206abd9f99ef776d015544d5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_5c3bf9eb",
         "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
         "patchSetId": 5
@@ -128,6 +248,30 @@
       "writtenOn": "2016-04-11T08:47:28Z",
       "side": 1,
       "message": "not needed",
+      "range": {
+        "startLine": 239,
+        "startChar": 25,
+        "endLine": 239,
+        "endChar": 31
+      },
+      "revId": "dd6c76b5c54b4a40206abd9f99ef776d015544d5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_df493bd2",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:00:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_5c3bf9eb",
       "range": {
         "startLine": 239,
         "startChar": 25,
@@ -163,6 +307,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_3fbb8774",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:00:16Z",
+      "side": 1,
+      "message": "true, but much more changes later on would be needed",
+      "parentUuid": "baa041b7_df1dbb67",
+      "range": {
+        "startLine": 249,
+        "startChar": 0,
+        "endLine": 257,
+        "endChar": 9
+      },
+      "revId": "dd6c76b5c54b4a40206abd9f99ef776d015544d5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_1f3b23d3",
         "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
         "patchSetId": 5
@@ -174,6 +342,24 @@
       "writtenOn": "2016-04-11T08:47:28Z",
       "side": 1,
       "message": "move \"uchar diff\" to line 287",
+      "revId": "dd6c76b5c54b4a40206abd9f99ef776d015544d5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7f9a2f16",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:00:16Z",
+      "side": 1,
+      "message": "why?",
+      "parentUuid": "baa041b7_1f3b23d3",
       "revId": "dd6c76b5c54b4a40206abd9f99ef776d015544d5",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
