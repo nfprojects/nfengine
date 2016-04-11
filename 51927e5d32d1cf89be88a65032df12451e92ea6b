@@ -1,0 +1,277 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_ff3cff30",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-11T10:52:38Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 50,
+        "startChar": 4,
+        "endLine": 50,
+        "endChar": 10
+      },
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_5f0c0b94",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-11T10:52:38Z",
+      "side": 1,
+      "message": "line too long",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7fc10fe4",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-11T10:52:38Z",
+      "side": 1,
+      "message": "consider implementing \"init\" operation as \"update\" on empty local directory",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7f658f43",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-11T10:52:38Z",
+      "side": 1,
+      "message": "add comment, why this is needed",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_5f5acb84",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-11T10:52:38Z",
+      "side": 1,
+      "message": "line too long",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3f5f0774",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-11T10:52:38Z",
+      "side": 1,
+      "message": "line too long",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_df4edbc0",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-11T10:52:38Z",
+      "side": 1,
+      "message": "line too long",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_9fc73312",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 322,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-11T10:52:38Z",
+      "side": 1,
+      "message": "line too long",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_1f032344",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-11T10:52:38Z",
+      "side": 1,
+      "message": "wrong message",
+      "range": {
+        "startLine": 331,
+        "startChar": 32,
+        "endLine": 331,
+        "endChar": 75
+      },
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_bff9d74f",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-11T10:52:38Z",
+      "side": 1,
+      "message": "UPDATING?",
+      "range": {
+        "startLine": 344,
+        "startChar": 19,
+        "endLine": 344,
+        "endChar": 28
+      },
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_9f95f3e5",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-11T10:52:38Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_5f9f6b03",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-11T10:52:38Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3fa4a755",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-11T10:52:38Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_1f8a03c0",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 372,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-11T10:52:38Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ff863fb8",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 404,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-11T10:52:38Z",
+      "side": 1,
+      "message": "are you sure argParser will filter invalid choices?",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
