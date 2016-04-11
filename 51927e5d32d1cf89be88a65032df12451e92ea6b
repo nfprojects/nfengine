@@ -172,6 +172,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_82bfdacf",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T12:40:39Z",
+      "side": 1,
+      "message": "Outcome can be see in changes between last 2 patchsets.\nI\u0027ve added some check to see if Data directory even exists (thx for finding that bug) and proper actions in Update and Push modes.\n\nAs for InitMode() - It basically does the same (maybe apart Data directory creation), yet the form of output is different and I think it\u0027s a good thing.\nTo be precise InitMode() is good, when You need to download most of the repo - You get the list of files \u0026 You are sure that there is only downloading going on. It\u0027s a little bit cleaner, because it\u0027s for downloading a looot of files in total.\nUpdateMode() is for \"little\" batches of updates, when the list of all changes is still readable \u0026 perhaps fits on the single screen. You can make sure, that those changes look ok \u0026 that there is nothing wrong.\n\nSoooo...yea - initMode potentially could be a part of UpdateMode (or maybe there could be no difference, provided few tweaks in UpdateMode), yet I like it as another function and see it as a pros, not a con.",
+      "parentUuid": "baa041b7_a2d09e54",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_7f658f43",
         "filename": "Scripts/syncher.py",
         "patchSetId": 2
