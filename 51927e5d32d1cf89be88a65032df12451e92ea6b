@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_02662aed",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:21:11Z",
+      "side": 1,
+      "message": "At first I did...but then I thought that the creator shouldn\u0027t dictate how to test his code. That\u0027s why I ask for as full of a testing, as You can manage in the commit msg.\nComment on the gerrit is just a hint.\nIf You think it\u0027s better Your way, I can format it and put into commit msg.",
+      "parentUuid": "baa041b7_bfa7974e",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_ff3cff30",
         "filename": "Scripts/syncher.py",
         "patchSetId": 2
@@ -30,6 +48,30 @@
       "writtenOn": "2016-04-11T10:52:38Z",
       "side": 1,
       "message": "rm",
+      "range": {
+        "startLine": 50,
+        "startChar": 4,
+        "endLine": 50,
+        "endChar": 10
+      },
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3f402756",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:21:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_ff3cff30",
       "range": {
         "startLine": 50,
         "startChar": 4,
@@ -59,6 +101,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_1f2683ce",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:21:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_5f0c0b94",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_7fc10fe4",
         "filename": "Scripts/syncher.py",
         "patchSetId": 2
@@ -70,6 +130,24 @@
       "writtenOn": "2016-04-11T10:52:38Z",
       "side": 1,
       "message": "consider implementing \"init\" operation as \"update\" on empty local directory",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ff22bfb8",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:21:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_7fc10fe4",
       "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -93,6 +171,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_3f170753",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:21:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_7f658f43",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_5f5acb84",
         "filename": "Scripts/syncher.py",
         "patchSetId": 2
@@ -104,6 +200,24 @@
       "writtenOn": "2016-04-11T10:52:38Z",
       "side": 1,
       "message": "line too long",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ff099f32",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:21:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_5f5acb84",
       "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -127,6 +241,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_df06db1f",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:21:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_3f5f0774",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_df4edbc0",
         "filename": "Scripts/syncher.py",
         "patchSetId": 2
@@ -138,6 +270,24 @@
       "writtenOn": "2016-04-11T10:52:38Z",
       "side": 1,
       "message": "line too long",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_bf03170f",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:21:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_df4edbc0",
       "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -161,6 +311,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_a2ff7e00",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 322,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:21:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_9fc73312",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_1f032344",
         "filename": "Scripts/syncher.py",
         "patchSetId": 2
@@ -172,6 +340,30 @@
       "writtenOn": "2016-04-11T10:52:38Z",
       "side": 1,
       "message": "wrong message",
+      "range": {
+        "startLine": 331,
+        "startChar": 32,
+        "endLine": 331,
+        "endChar": 75
+      },
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_420e7235",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:21:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_1f032344",
       "range": {
         "startLine": 331,
         "startChar": 32,
@@ -207,6 +399,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_22148e42",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:21:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_bff9d74f",
+      "range": {
+        "startLine": 344,
+        "startChar": 19,
+        "endLine": 344,
+        "endChar": 28
+      },
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_9f95f3e5",
         "filename": "Scripts/syncher.py",
         "patchSetId": 2
@@ -218,6 +434,24 @@
       "writtenOn": "2016-04-11T10:52:38Z",
       "side": 1,
       "message": "as above",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_02118a52",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:21:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_9f95f3e5",
       "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -241,6 +475,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_e21d8667",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:21:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_5f9f6b03",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_3fa4a755",
         "filename": "Scripts/syncher.py",
         "patchSetId": 2
@@ -252,6 +504,24 @@
       "writtenOn": "2016-04-11T10:52:38Z",
       "side": 1,
       "message": "as above",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c21a826e",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:21:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_3fa4a755",
       "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -275,6 +545,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_a2265eb8",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 372,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:21:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_1f8a03c0",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_ff863fb8",
         "filename": "Scripts/syncher.py",
         "patchSetId": 2
@@ -286,6 +574,24 @@
       "writtenOn": "2016-04-11T10:52:38Z",
       "side": 1,
       "message": "are you sure argParser will filter invalid choices?",
+      "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_82523a12",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 404,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-11T11:21:11Z",
+      "side": 1,
+      "message": "Yup, I tried.",
+      "parentUuid": "baa041b7_ff863fb8",
       "revId": "51927e5d32d1cf89be88a65032df12451e92ea6b",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
