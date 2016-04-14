@@ -254,7 +254,7 @@ bool DepthStencilScene::OnInit(void* winHandle)
     bbDesc.width = WINDOW_WIDTH;
     bbDesc.height = WINDOW_HEIGHT;
     bbDesc.windowHandle = winHandle;
-    bbDesc.vSync = true;
+    bbDesc.vSync = false;
     bbDesc.debugName = "DepthStencilScene::mWindowBackbuffer";
     mWindowBackbuffer.reset(mRendererDevice->CreateBackbuffer(bbDesc));
     if (!mWindowBackbuffer)
