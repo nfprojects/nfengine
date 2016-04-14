@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_77b1248f",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-04-14T10:57:15Z",
+      "side": 1,
+      "message": "What if credentials are invalid?",
+      "range": {
+        "startLine": 256,
+        "startChar": 4,
+        "endLine": 256,
+        "endChar": 32
+      },
+      "revId": "7301b6999a687e70c44518f7dfae742b528b38a9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
