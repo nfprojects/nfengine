@@ -302,7 +302,7 @@ bool BasicScene::OnInit(void* winHandle)
     bbDesc.width = WINDOW_WIDTH;
     bbDesc.height = WINDOW_HEIGHT;
     bbDesc.windowHandle = winHandle;
-    bbDesc.vSync = true;
+    bbDesc.vSync = false;
     mWindowBackbuffer.reset(mRendererDevice->CreateBackbuffer(bbDesc));
     if (!mWindowBackbuffer)
         return false;

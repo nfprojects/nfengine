@@ -19,6 +19,7 @@
 #include "../nfCommon/Window.hpp"
 #include "../nfCommon/Timer.hpp"
 #include "../nfCommon/KeyCodes.hpp"
+#include "../nfCommon/Logger.hpp"
 
 #include <algorithm>
 
@@ -30,13 +31,15 @@ class DemoWindow : public NFE::Common::Window
     NFE::Common::Library mRendererLib;
     IDevice* mRendererDevice;
     SceneArrayType mScenes;
+    float mDeltaTime;
 
     void SetWindowTitle()
     {
         std::string title = "nfRendererDemo - scene: " +
             std::to_string(mCurrentScene) + " (" + mScenes[mCurrentScene]->GetSceneName() + ')' +
             ", subscene: " + std::to_string(mScenes[mCurrentScene]->GetCurrentSubSceneNumber()) +
-            " (" + mScenes[mCurrentScene]->GetCurrentSubSceneName() + ')';
+            " (" + mScenes[mCurrentScene]->GetCurrentSubSceneName() + "), dt: " +
+            std::to_string(mDeltaTime * 1000.0f) + "ms";
 
         SetTitle(title.c_str());
     }
@@ -100,6 +103,7 @@ public:
         : mCurrentScene(0)
         , mRendererLib()
         , mRendererDevice(nullptr)
+        , mDeltaTime(0.0f)
     {
         // TODO: move scene registration to their source files
         // TODO: switching to arbitrary scene (e.g. ommiting a single scene should be
@@ -143,6 +147,24 @@ public:
         if (mRendererDevice == nullptr)
             return false;
 
+        DeviceInfo deviceInfo;
+        if (!mRendererDevice->GetDeviceInfo(deviceInfo))
+            LOG_ERROR("Failed to get rendering device information");
+        else
+        {
+            LOG_INFO("GPU name: %s", deviceInfo.description.c_str());
+            LOG_INFO("GPU info: %s", deviceInfo.misc.c_str());
+
+            std::string features;
+            for (size_t i = 0; i < deviceInfo.features.size(); ++i)
+            {
+                if (i > 0)
+                    features += ", ";
+                features += deviceInfo.features[i];
+            }
+            LOG_INFO("GPU features: %s", features.c_str());
+        }
+
         return true;
     }
 
@@ -179,10 +201,24 @@ public:
         NFE::Common::Timer timer;
         timer.Start();
 
+        float timeElapsed = 0.0f;
+        int frames = 0;
+
         while (!IsClosed())
         {
             float dt = static_cast<float>(timer.Stop());
             timer.Start();
+
+            frames++;
+            timeElapsed += dt;
+
+            if (timeElapsed > 1.0f)
+            {
+                mDeltaTime = timeElapsed / frames;
+                timeElapsed = 0;
+                frames = 0;
+                SetWindowTitle();
+            }
 
             ProcessMessages();
             mScenes[mCurrentScene]->Draw(dt);
