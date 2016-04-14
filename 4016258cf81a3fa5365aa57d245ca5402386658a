@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_57118051",
+        "filename": "nfEngine/nfCommon/Linux/Library.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-04-14T08:26:40Z",
+      "side": 1,
+      "message": "I\u0027ve added quotes as it is in Win/Library.cpp to match both versions, so only the first string is quoted.",
+      "parentUuid": "baa041b7_68127eb6",
+      "revId": "4016258cf81a3fa5365aa57d245ca5402386658a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_4817baa3",
         "filename": "nfEngine/nfCommon/Linux/Library.cpp",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_371efc63",
+        "filename": "nfEngine/nfCommon/Linux/Library.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-04-14T08:26:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_4817baa3",
+      "revId": "4016258cf81a3fa5365aa57d245ca5402386658a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_280c7693",
         "filename": "nfEngine/nfCommon/Linux/Library.cpp",
         "patchSetId": 1
@@ -47,6 +83,24 @@
       "writtenOn": "2016-04-09T19:47:02Z",
       "side": 1,
       "message": "as above",
+      "revId": "4016258cf81a3fa5365aa57d245ca5402386658a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_171bf873",
+        "filename": "nfEngine/nfCommon/Linux/Library.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-04-14T08:26:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_280c7693",
       "revId": "4016258cf81a3fa5365aa57d245ca5402386658a",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
