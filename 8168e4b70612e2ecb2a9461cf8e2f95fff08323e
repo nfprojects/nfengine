@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_3f424a3f",
+        "filename": "nfEngine/nfCore/Utils/Profiler.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-17T14:14:30Z",
+      "side": 1,
+      "message": "Not needed, the nodes will get destructed automatically",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 1
+      },
+      "revId": "8168e4b70612e2ecb2a9461cf8e2f95fff08323e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_1f3f86b5",
+        "filename": "nfEngine/nfCore/Utils/Profiler.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-17T14:14:30Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 73,
+        "startChar": 0,
+        "endLine": 77,
+        "endChar": 1
+      },
+      "revId": "8168e4b70612e2ecb2a9461cf8e2f95fff08323e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7f6e92ca",
+        "filename": "nfEngine/nfCore/Utils/Profiler.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-17T14:14:30Z",
+      "side": 1,
+      "message": "I suggest removoving other ctors and assign operator like you did this in Profiler class.",
+      "revId": "8168e4b70612e2ecb2a9461cf8e2f95fff08323e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_9f795696",
+        "filename": "nfEngine/nfCore/Utils/Profiler.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-17T14:14:30Z",
+      "side": 1,
+      "message": "This won\u0027t make the c-tor and d-tor inlined, because their definition is in cpp file. You should do it like this:\n\nNFE_INLINE ProfilerScope(ProfilerNode* node) : mNode(node)\n{\n    mNode-\u003eStartScope();\n}\n\nNFE_INLINE ~ProfilerScope()\n{\n    mNode-\u003eStopScope();\n}",
+      "range": {
+        "startLine": 90,
+        "startChar": 0,
+        "endLine": 91,
+        "endChar": 28
+      },
+      "revId": "8168e4b70612e2ecb2a9461cf8e2f95fff08323e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_5f73ceb1",
+        "filename": "nfEngine/nfCoreTest/Profiler.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-04-17T14:14:30Z",
+      "side": 1,
+      "message": "VISIT_COUNT_CHILD3 is int, not unsigned int",
+      "range": {
+        "startLine": 79,
+        "startChar": 13,
+        "endLine": 79,
+        "endChar": 25
+      },
+      "revId": "8168e4b70612e2ecb2a9461cf8e2f95fff08323e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
