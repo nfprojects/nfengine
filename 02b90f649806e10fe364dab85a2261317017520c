@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_df311eee",
+        "filename": "nfEngine/nfCore/Utils/Profiler.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-04-17T13:49:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_0374da32",
+      "revId": "02b90f649806e10fe364dab85a2261317017520c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_63a4c6a5",
         "filename": "nfEngine/nfCore/Utils/Profiler.hpp",
         "patchSetId": 3
@@ -30,6 +48,30 @@
       "writtenOn": "2016-04-14T21:48:11Z",
       "side": 1,
       "message": "unique_ptr",
+      "range": {
+        "startLine": 41,
+        "startChar": 16,
+        "endLine": 41,
+        "endChar": 29
+      },
+      "revId": "02b90f649806e10fe364dab85a2261317017520c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ae6872f6",
+        "filename": "nfEngine/nfCore/Utils/Profiler.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-04-17T13:49:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_63a4c6a5",
       "range": {
         "startLine": 41,
         "startChar": 16,
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_8e6dae06",
+        "filename": "nfEngine/nfCore/Utils/Profiler.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-04-17T13:49:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_43c8a255",
+      "range": {
+        "startLine": 62,
+        "startChar": 35,
+        "endLine": 62,
+        "endChar": 60
+      },
+      "revId": "02b90f649806e10fe364dab85a2261317017520c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_e3b696db",
         "filename": "nfEngine/nfCore/Utils/Profiler.hpp",
         "patchSetId": 3
@@ -82,6 +148,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_6e726ae7",
+        "filename": "nfEngine/nfCore/Utils/Profiler.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-04-17T13:49:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_e3b696db",
+      "revId": "02b90f649806e10fe364dab85a2261317017520c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_83b58ace",
         "filename": "nfEngine/nfCore/Utils/Profiler.hpp",
         "patchSetId": 3
@@ -93,6 +177,30 @@
       "writtenOn": "2016-04-14T21:48:11Z",
       "side": 1,
       "message": "this must be inlinded to reduce function calling overhead",
+      "range": {
+        "startLine": 84,
+        "startChar": 0,
+        "endLine": 85,
+        "endChar": 21
+      },
+      "revId": "02b90f649806e10fe364dab85a2261317017520c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_4e78c6c4",
+        "filename": "nfEngine/nfCore/Utils/Profiler.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-04-17T13:49:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_83b58ace",
       "range": {
         "startLine": 84,
         "startChar": 0,
@@ -128,6 +236,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_2e7582ca",
+        "filename": "nfEngine/nfCore/Utils/Profiler.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-04-17T13:49:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_43a1c293",
+      "range": {
+        "startLine": 99,
+        "startChar": 16,
+        "endLine": 99,
+        "endChar": 29
+      },
+      "revId": "02b90f649806e10fe364dab85a2261317017520c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_6396064e",
         "filename": "nfEngine/nfCoreTest/Profiler.cpp",
         "patchSetId": 3
@@ -139,6 +271,24 @@
       "writtenOn": "2016-04-14T21:48:11Z",
       "side": 1,
       "message": "Add a loop somewhere to test \"visitCount\"",
+      "revId": "02b90f649806e10fe364dab85a2261317017520c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_9f527612",
+        "filename": "nfEngine/nfCoreTest/Profiler.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-04-17T13:49:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_6396064e",
       "revId": "02b90f649806e10fe364dab85a2261317017520c",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
