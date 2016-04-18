@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_4c756796",
+        "filename": "nfEngine/nfCore/Utils/Profiler.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-04-18T20:07:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_3f424a3f",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 1
+      },
+      "revId": "8168e4b70612e2ecb2a9461cf8e2f95fff08323e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_1f3f86b5",
         "filename": "nfEngine/nfCore/Utils/Profiler.cpp",
         "patchSetId": 4
@@ -36,6 +60,30 @@
       "writtenOn": "2016-04-17T14:14:30Z",
       "side": 1,
       "message": "as above",
+      "range": {
+        "startLine": 73,
+        "startChar": 0,
+        "endLine": 77,
+        "endChar": 1
+      },
+      "revId": "8168e4b70612e2ecb2a9461cf8e2f95fff08323e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_0c6f5fc6",
+        "filename": "nfEngine/nfCore/Utils/Profiler.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-04-18T20:07:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_1f3f86b5",
       "range": {
         "startLine": 73,
         "startChar": 0,
@@ -65,6 +113,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_ac64f3e4",
+        "filename": "nfEngine/nfCore/Utils/Profiler.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-04-18T20:07:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_7f6e92ca",
+      "revId": "8168e4b70612e2ecb2a9461cf8e2f95fff08323e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_9f795696",
         "filename": "nfEngine/nfCore/Utils/Profiler.hpp",
         "patchSetId": 4
@@ -88,6 +154,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_8c636fdc",
+        "filename": "nfEngine/nfCore/Utils/Profiler.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-04-18T20:07:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_9f795696",
+      "range": {
+        "startLine": 90,
+        "startChar": 0,
+        "endLine": 91,
+        "endChar": 28
+      },
+      "revId": "8168e4b70612e2ecb2a9461cf8e2f95fff08323e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_5f73ceb1",
         "filename": "nfEngine/nfCoreTest/Profiler.cpp",
         "patchSetId": 4
@@ -99,6 +189,30 @@
       "writtenOn": "2016-04-17T14:14:30Z",
       "side": 1,
       "message": "VISIT_COUNT_CHILD3 is int, not unsigned int",
+      "range": {
+        "startLine": 79,
+        "startChar": 13,
+        "endLine": 79,
+        "endChar": 25
+      },
+      "revId": "8168e4b70612e2ecb2a9461cf8e2f95fff08323e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_cc6977c0",
+        "filename": "nfEngine/nfCoreTest/Profiler.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-04-18T20:07:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_5f73ceb1",
       "range": {
         "startLine": 79,
         "startChar": 13,
