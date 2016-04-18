@@ -60,6 +60,7 @@ def findTestsIntoPaths(path, testlist, isPath):
 def runTest(args, isVerbose):
     # first we get total number of tests via listing all tests and counting the lines
     testNoArgs = [args[0], "--gtest_list_tests"]
+    testNoArgs.extend(args[1:])
     testNoProcess = subprocess.Popen(testNoArgs, stdout = subprocess.PIPE)
     linesIterator = iter(testNoProcess.stdout.readline, b"")
     testNo = 0
