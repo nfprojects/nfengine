@@ -111,5 +111,11 @@
     <None Include="Shaders\OGL4\RenderTargetPS.glsl">
       <Filter>Shaders\OGL4</Filter>
     </None>
+    <None Include="Shaders\OGL4\InstancingTestPS.glsl">
+      <Filter>Shaders\OGL4</Filter>
+    </None>
+    <None Include="Shaders\OGL4\InstancingTestVS.glsl">
+      <Filter>Shaders\OGL4</Filter>
+    </None>
   </ItemGroup>
 </Project>

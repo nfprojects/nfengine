@@ -59,6 +59,10 @@ PFNGLFRAMEBUFFERTEXTURE2DPROC glFramebufferTexture2D = nullptr;
 PFNGLCHECKFRAMEBUFFERSTATUSPROC glCheckFramebufferStatus = nullptr;
 PFNGLDELETEFRAMEBUFFERSPROC glDeleteFramebuffers = nullptr;
 
+/// OpenGL 3.1
+PFNGLDRAWELEMENTSINSTANCEDPROC glDrawElementsInstanced = nullptr;
+PFNGLDRAWARRAYSINSTANCEDPROC glDrawArraysInstanced = nullptr;
+
 /// OpenGL 3.2
 PFNGLTEXIMAGE2DMULTISAMPLEPROC glTexImage2DMultisample = nullptr;
 
@@ -70,6 +74,7 @@ PFNGLDELETESAMPLERSPROC glDeleteSamplers = nullptr;
 PFNGLSAMPLERPARAMETERIPROC glSamplerParameteri = nullptr;
 PFNGLSAMPLERPARAMETERFPROC glSamplerParameterf = nullptr;
 PFNGLSAMPLERPARAMETERFVPROC glSamplerParameterfv = nullptr;
+PFNGLVERTEXATTRIBDIVISORPROC glVertexAttribDivisor = nullptr;
 
 /// ARB_separate_shader_objects
 PFNGLUSEPROGRAMSTAGESPROC glUseProgramStages = nullptr;
@@ -146,6 +151,10 @@ bool nfglExtensionsInit()
     NFGL_GET_EXTENSION(PFNGLCHECKFRAMEBUFFERSTATUSPROC, glCheckFramebufferStatus);
     NFGL_GET_EXTENSION(PFNGLDELETEFRAMEBUFFERSPROC, glDeleteFramebuffers);
 
+    /// OpenGL 3.1
+    NFGL_GET_EXTENSION(PFNGLDRAWELEMENTSINSTANCEDPROC, glDrawElementsInstanced);
+    NFGL_GET_EXTENSION(PFNGLDRAWARRAYSINSTANCEDPROC, glDrawArraysInstanced);
+
     /// OpenGL 3.2
     NFGL_GET_EXTENSION(PFNGLTEXIMAGE2DMULTISAMPLEPROC, glTexImage2DMultisample);
 
@@ -157,6 +166,7 @@ bool nfglExtensionsInit()
     NFGL_GET_EXTENSION(PFNGLSAMPLERPARAMETERIPROC, glSamplerParameteri);
     NFGL_GET_EXTENSION(PFNGLSAMPLERPARAMETERFPROC, glSamplerParameterf);
     NFGL_GET_EXTENSION(PFNGLSAMPLERPARAMETERFVPROC, glSamplerParameterfv);
+    NFGL_GET_EXTENSION(PFNGLVERTEXATTRIBDIVISORPROC, glVertexAttribDivisor);
 
     /// ARB_separate_shader_objects
     NFGL_GET_EXTENSION(PFNGLUSEPROGRAMSTAGESPROC, glUseProgramStages);

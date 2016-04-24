@@ -28,7 +28,6 @@ CommandBuffer::CommandBuffer()
     , mCurrentStencilMask(0xFF)
     , mCurrentRenderTarget(nullptr)
     , mCurrentVertexLayoutElementsNum(0)
-    , mSetVertexBuffer(nullptr)
     , mSetIndexBuffer(nullptr)
     , mSetVertexLayout(nullptr)
     , mSetTexture(nullptr)
@@ -52,22 +51,59 @@ CommandBuffer::~CommandBuffer()
     }
 }
 
-void CommandBuffer::BindVertexBuffer()
+void CommandBuffer::BindVertexBufferAndLayout()
 {
-    if (mSetVertexBuffer == nullptr)
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+    // disable current attributes
+    for (int i = 0; i < mCurrentVertexLayoutElementsNum; ++i)
+        glDisableVertexAttribArray(i);
+
+    mVertexBufferNeedsUpdate = false;
+    mVertexLayoutNeedsUpdate = false;
+
+    if (mSetVertexLayout == nullptr)
         return;
+
+    if (mSetVertexBuffers.empty())
+        return;
+
+    VertexLayout* vl = dynamic_cast<VertexLayout*>(mSetVertexLayout);
+    mCurrentVertexLayoutElementsNum = vl->mDesc.numElements;
+
+    // calculate stride for current vertex layout
+    // each of them must be calculated per bound VBO
+    std::vector<GLsizei> strides(mSetVertexBuffers.size(), 0);
+    for (int i = 0; i < mCurrentVertexLayoutElementsNum; ++i)
+        strides[vl->mDesc.elements[i].vertexBufferId] +=
+            vl->mDesc.elements[i].size * GetElementFormatSize(vl->mDesc.elements[i].format);
+
+    Buffer* vb = nullptr;
+
+    for (int i = 0; i < mCurrentVertexLayoutElementsNum; ++i)
+    {
+        glEnableVertexAttribArray(i);
+        vb = dynamic_cast<Buffer*>(mSetVertexBuffers[vl->mDesc.elements[i].vertexBufferId]);
+        glBindBuffer(GL_ARRAY_BUFFER, vb->mBuffer);
+
+        bool isNormalized = false;
+        GLenum type = TranslateElementFormatToType(vl->mDesc.elements[i].format, isNormalized);
+
+        glVertexAttribPointer(i,
+            vl->mDesc.elements[i].size,
+            type,
+            isNormalized ? GL_TRUE : GL_FALSE,
+            strides[vl->mDesc.elements[i].vertexBufferId],
+            reinterpret_cast<const void*>(static_cast<size_t>(vl->mDesc.elements[i].offset)));
+
+        glVertexAttribDivisor(i, vl->mDesc.elements[i].instanceDataStep);
     }
 
-    /// TODO multiple VB support
-    Buffer* vb = dynamic_cast<Buffer*>(mSetVertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vb->mBuffer);
-    mVertexBufferNeedsUpdate = false;
+    glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 }
 
 void CommandBuffer::BindIndexBuffer()
 {
+    mIndexBufferNeedsUpdate = false;
+
     if (mSetIndexBuffer == nullptr)
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_NONE);
@@ -77,60 +113,26 @@ void CommandBuffer::BindIndexBuffer()
 
     Buffer* ib = dynamic_cast<Buffer*>(mSetIndexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib->mBuffer);
-    mIndexBufferNeedsUpdate = false;
 }
 
 void CommandBuffer::BindConstantBuffer()
 {
+    mConstantBufferNeedsUpdate = false;
+
     if (mSetConstantBuffer == nullptr)
     {
         glBindBufferRange(GL_UNIFORM_BUFFER, mSetConstantBufferSlot, GL_NONE, 0, 0);
-        mConstantBufferNeedsUpdate = false;
         return;
     }
 
     Buffer* cb = dynamic_cast<Buffer*>(mSetConstantBuffer);
     glBindBufferRange(GL_UNIFORM_BUFFER, mSetConstantBufferSlot, cb->mBuffer, 0, cb->mSize);
-    mConstantBufferNeedsUpdate = false;
-}
-
-void CommandBuffer::BindVertexLayout()
-{
-    // disable current attributes
-    for (int i = 0; i < mCurrentVertexLayoutElementsNum; ++i)
-        glDisableVertexAttribArray(i);
-
-    if (mSetVertexLayout == nullptr)
-        return;
-
-    VertexLayout* vl = dynamic_cast<VertexLayout*>(mSetVertexLayout);
-    mCurrentVertexLayoutElementsNum = vl->mDesc.numElements;
-
-    // calculate stride for current vertex layout
-    GLsizei stride = 0;
-    for (int i = 0; i < mCurrentVertexLayoutElementsNum; ++i)
-        stride += vl->mDesc.elements[i].size * GetElementFormatSize(vl->mDesc.elements[i].format);
-
-    // enable & assgin new ones
-    for (int i = 0; i < mCurrentVertexLayoutElementsNum; ++i)
-    {
-        bool isNormalized = false;
-        GLenum type = TranslateElementFormatToType(vl->mDesc.elements[i].format, isNormalized);
-
-        glEnableVertexAttribArray(i);
-        glVertexAttribPointer(i,
-            vl->mDesc.elements[i].size,
-            type,
-            isNormalized ? GL_TRUE : GL_FALSE,
-            stride,
-            reinterpret_cast<const void*>(static_cast<size_t>(vl->mDesc.elements[i].offset)));
-    }
-
-    mVertexLayoutNeedsUpdate = false;
 }
 
 void CommandBuffer::BindTexture()
 {
+    mTextureNeedsUpdate = false;
+
     if (mSetTexture == nullptr)
     {
         glBindTextures(mSetTextureSlot, 1, GL_NONE);
@@ -139,11 +141,12 @@ void CommandBuffer::BindTexture()
 
     Texture* t = dynamic_cast<Texture*>(mSetTexture);
     glBindTextures(mSetTextureSlot, 1, &(t->mTexture));
-    mTextureNeedsUpdate = false;
 }
 
 void CommandBuffer::BindSampler()
 {
+    mSamplerNeedsUpdate = false;
+
     if (mSetSampler == nullptr)
     {
         GLuint nullSampler = GL_NONE;
@@ -153,7 +156,6 @@ void CommandBuffer::BindSampler()
 
     Sampler* s = dynamic_cast<Sampler*>(mSetSampler);
     glBindSamplers(mSetSamplerSlot, 1, &(s->mSampler));
-    mSamplerNeedsUpdate = false;
 }
 
 void CommandBuffer::Reset()
@@ -175,7 +177,7 @@ void CommandBuffer::Reset()
     mCurrentIndexBufferFormat = GL_NONE;
 
     // reset pointers
-    mSetVertexBuffer = nullptr;
+    mSetVertexBuffers.clear();
     mSetIndexBuffer = nullptr;
     mSetConstantBuffer = nullptr;
     mSetVertexLayout = nullptr;
@@ -188,11 +190,10 @@ void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* stri
     UNUSED(strides);
     UNUSED(offsets);
 
-    // TODO multiple vertex buffers
-    if (num > 1)
-        LOG_WARNING("Binding multiple Vertex Buffers is not yet supported! Only first Buffer will be set.");
+    mSetVertexBuffers.clear();
+    for (int i = 0; i < num; ++i)
+        mSetVertexBuffers.push_back(vertexBuffers[i]);
 
-    mSetVertexBuffer = vertexBuffers[0];
     mVertexBufferNeedsUpdate = true;
 }
 
@@ -515,18 +516,13 @@ void CommandBuffer::Clear(int flags, const float* color, float depthValue,
 void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
                          int instanceOffset)
 {
-    // TODO instancing
-    UNUSED(instancesNum);
     UNUSED(instanceOffset);
-
-    if (mVertexBufferNeedsUpdate)
-        BindVertexBuffer();
 
     if (mConstantBufferNeedsUpdate)
         BindConstantBuffer();
 
-    if (mVertexLayoutNeedsUpdate)
-        BindVertexLayout();
+    if (mVertexBufferNeedsUpdate || mVertexLayoutNeedsUpdate)
+        BindVertexBufferAndLayout();
 
     if (mTextureNeedsUpdate)
         BindTexture();
@@ -534,25 +530,24 @@ void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, in
     if (mSamplerNeedsUpdate)
         BindSampler();
 
-    glDrawArrays(TranslatePrimitiveType(type), vertexOffset, vertexNum);
+    if (instancesNum >= 0)
+        glDrawArraysInstanced(TranslatePrimitiveType(type), vertexOffset, vertexNum,
+                              instancesNum);
+    else
+        glDrawArrays(TranslatePrimitiveType(type), vertexOffset, vertexNum);
 }
 
 void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesNum,
                                 int indexOffset, int vertexOffset, int instanceOffset)
 {
-    // TODO instancing
-    UNUSED(instancesNum);
     UNUSED(vertexOffset);
     UNUSED(instanceOffset);
-
-    if (mVertexBufferNeedsUpdate)
-        BindVertexBuffer();
 
     if (mConstantBufferNeedsUpdate)
         BindConstantBuffer();
 
-    if (mVertexLayoutNeedsUpdate)
-        BindVertexLayout();
+    if (mVertexBufferNeedsUpdate || mVertexLayoutNeedsUpdate)
+        BindVertexBufferAndLayout();
 
     if (mIndexBufferNeedsUpdate)
         BindIndexBuffer();
@@ -564,8 +559,14 @@ void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesN
         BindSampler();
 
     int bytePerIndex = mCurrentIndexBufferFormat == GL_UNSIGNED_SHORT ? 2 : 4;
-    glDrawElements(TranslatePrimitiveType(type), indexNum, mCurrentIndexBufferFormat,
-                   reinterpret_cast<void*>(static_cast<size_t>(indexOffset * bytePerIndex)));
+
+    if (instancesNum >= 0)
+        glDrawElementsInstanced(TranslatePrimitiveType(type), indexNum, mCurrentIndexBufferFormat,
+                        reinterpret_cast<void*>(static_cast<size_t>(indexOffset * bytePerIndex)),
+                        instancesNum);
+    else
+        glDrawElements(TranslatePrimitiveType(type), indexNum, mCurrentIndexBufferFormat,
+                       reinterpret_cast<void*>(static_cast<size_t>(indexOffset * bytePerIndex)));
 }
 
 ICommandList* CommandBuffer::Finish()
