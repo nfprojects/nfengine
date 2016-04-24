@@ -66,6 +66,49 @@ void CommandBuffer::BindVertexBuffer()
     mVertexBufferNeedsUpdate = false;
 }
 
+void CommandBuffer::BindVertexBufferAndLayout()
+{
+    // disable current attributes
+    for (int i = 0; i < mCurrentVertexLayoutElementsNum; ++i)
+        glDisableVertexAttribArray(i);
+/*
+    if (mSetVertexLayout == nullptr)
+        return;*/
+
+    VertexLayout* vl = dynamic_cast<VertexLayout*>(mSetVertexLayout);
+    mCurrentVertexLayoutElementsNum = vl->mDesc.numElements;
+
+    for (auto& vertexbuffer: mSetVertexBuffers)
+    {
+        VertexBuffer* vb = dynamic_cast<VertexBuffer*>(vertexbuffer);
+        {
+
+        }
+    }
+/*
+    // calculate stride for current vertex layout
+    GLsizei stride = 0;
+    for (int i = 0; i < mCurrentVertexLayoutElementsNum; ++i)
+        stride += vl->mDesc.elements[i].size * GetElementFormatSize(vl->mDesc.elements[i].format);
+
+    // enable & assgin new ones
+    for (int i = 0; i < mCurrentVertexLayoutElementsNum; ++i)
+    {
+        bool isNormalized = false;
+        GLenum type = TranslateElementFormatToType(vl->mDesc.elements[i].format, isNormalized);
+
+        glEnableVertexAttribArray(i);
+        glVertexAttribPointer(i,
+            vl->mDesc.elements[i].size,
+            type,
+            isNormalized ? GL_TRUE : GL_FALSE,
+            stride,
+            reinterpret_cast<const void*>(static_cast<size_t>(vl->mDesc.elements[i].offset)));
+    }
+*/
+    mVertexLayoutNeedsUpdate = false;
+}
+
 void CommandBuffer::BindIndexBuffer()
 {
     if (mSetIndexBuffer == nullptr)
@@ -188,11 +231,11 @@ void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* stri
     UNUSED(strides);
     UNUSED(offsets);
 
-    // TODO multiple vertex buffers
-    if (num > 1)
-        LOG_WARNING("Binding multiple Vertex Buffers is not yet supported! Only first Buffer will be set.");
+    // TODO Vector might be a slow idea here. Consider changing to something faster.
+    mSetVertexBuffers.clear();
+    for (unsigned int i = 0; i < num; ++i)
+        mSetVertexBuffers.push_back(vertexBuffers[i]);
 
-    mSetVertexBuffer = vertexBuffers[0];
     mVertexBufferNeedsUpdate = true;
 }
 
@@ -515,8 +558,6 @@ void CommandBuffer::Clear(int flags, const float* color, float depthValue,
 void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
                          int instanceOffset)
 {
-    // TODO instancing
-    UNUSED(instancesNum);
     UNUSED(instanceOffset);
 
     if (mVertexBufferNeedsUpdate)
@@ -534,14 +575,16 @@ void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, in
     if (mSamplerNeedsUpdate)
         BindSampler();
 
-    glDrawArrays(TranslatePrimitiveType(type), vertexOffset, vertexNum);
+    if (instancesNum >= 0)
+        glDrawArraysInstanced(TranslatePrimitiveType(type), vertexOffset, vertexNum,
+                              instancesNum);
+    else
+        glDrawArrays(TranslatePrimitiveType(type), vertexOffset, vertexNum);
 }
 
 void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesNum,
                                 int indexOffset, int vertexOffset, int instanceOffset)
 {
-    // TODO instancing
-    UNUSED(instancesNum);
     UNUSED(vertexOffset);
     UNUSED(instanceOffset);
 
@@ -564,8 +607,14 @@ void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesN
         BindSampler();
 
     int bytePerIndex = mCurrentIndexBufferFormat == GL_UNSIGNED_SHORT ? 2 : 4;
-    glDrawElements(TranslatePrimitiveType(type), indexNum, mCurrentIndexBufferFormat,
-                   reinterpret_cast<void*>(static_cast<size_t>(indexOffset * bytePerIndex)));
+
+    if (instancesNum >= 0)
+        glDrawElementsInstanced(TranslatePrimitiveType(type), indexNum, mCurrentIndexBufferFormat,
+                        reinterpret_cast<void*>(static_cast<size_t>(indexOffset * bytePerIndex)),
+                        instancesNum);
+    else
+        glDrawElements(TranslatePrimitiveType(type), indexNum, mCurrentIndexBufferFormat,
+                       reinterpret_cast<void*>(static_cast<size_t>(indexOffset * bytePerIndex)));
 }
 
 ICommandList* CommandBuffer::Finish()

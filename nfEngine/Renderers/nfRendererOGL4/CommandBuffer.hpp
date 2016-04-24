@@ -25,7 +25,7 @@ class CommandBuffer : public ICommandBuffer
     RenderTarget* mCurrentRenderTarget;
     int mCurrentVertexLayoutElementsNum;
 
-    IBuffer* mSetVertexBuffer;
+    std::vector<IBuffer*> mSetVertexBuffers;
     IBuffer* mSetIndexBuffer;
     IBuffer* mSetConstantBuffer;
     IVertexLayout* mSetVertexLayout;
@@ -50,6 +50,7 @@ class CommandBuffer : public ICommandBuffer
 
     /// Private methods which will bind just set resources
     void BindVertexBuffer();
+    void BindVertexBufferAndLayout();
     void BindIndexBuffer();
     void BindConstantBuffer();
     void BindVertexLayout();

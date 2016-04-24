@@ -64,6 +64,10 @@ extern PFNGLFRAMEBUFFERTEXTURE2DPROC glFramebufferTexture2D;
 extern PFNGLCHECKFRAMEBUFFERSTATUSPROC glCheckFramebufferStatus;
 extern PFNGLDELETEFRAMEBUFFERSPROC glDeleteFramebuffers;
 
+/// OpenGL 3.1
+extern PFNGLDRAWELEMENTSINSTANCEDPROC glDrawElementsInstanced;
+extern PFNGLDRAWARRAYSINSTANCEDPROC glDrawArraysInstanced;
+
 /// OpenGL 3.2
 extern PFNGLTEXIMAGE2DMULTISAMPLEPROC glTexImage2DMultisample;
 
@@ -75,6 +79,7 @@ extern PFNGLDELETESAMPLERSPROC glDeleteSamplers;
 extern PFNGLSAMPLERPARAMETERIPROC glSamplerParameteri;
 extern PFNGLSAMPLERPARAMETERFPROC glSamplerParameterf;
 extern PFNGLSAMPLERPARAMETERFVPROC glSamplerParameterfv;
+extern PFNGLVERTEXATTRIBDIVISORPROC glVertexAttribDivisor;
 
 /// ARB_separate_shader_objects
 extern PFNGLUSEPROGRAMSTAGESPROC glUseProgramStages;
