@@ -515,8 +515,6 @@ void CommandBuffer::Clear(int flags, const float* color, float depthValue,
 void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
                          int instanceOffset)
 {
-    // TODO instancing
-    UNUSED(instancesNum);
     UNUSED(instanceOffset);
 
     if (mVertexBufferNeedsUpdate)
@@ -534,14 +532,16 @@ void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, in
     if (mSamplerNeedsUpdate)
         BindSampler();
 
-    glDrawArrays(TranslatePrimitiveType(type), vertexOffset, vertexNum);
+    if (instancesNum >= 0)
+        glDrawArraysInstanced(TranslatePrimitiveType(type), vertexOffset, vertexNum,
+                              instancesNum);
+    else
+        glDrawArrays(TranslatePrimitiveType(type), vertexOffset, vertexNum);
 }
 
 void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesNum,
                                 int indexOffset, int vertexOffset, int instanceOffset)
 {
-    // TODO instancing
-    UNUSED(instancesNum);
     UNUSED(vertexOffset);
     UNUSED(instanceOffset);
 
@@ -564,8 +564,14 @@ void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesN
         BindSampler();
 
     int bytePerIndex = mCurrentIndexBufferFormat == GL_UNSIGNED_SHORT ? 2 : 4;
-    glDrawElements(TranslatePrimitiveType(type), indexNum, mCurrentIndexBufferFormat,
-                   reinterpret_cast<void*>(static_cast<size_t>(indexOffset * bytePerIndex)));
+
+    if (instancesNum >= 0)
+        glDrawElementsInstanced(TranslatePrimitiveType(type), indexNum, mCurrentIndexBufferFormat,
+                        reinterpret_cast<void*>(static_cast<size_t>(indexOffset * bytePerIndex)),
+                        instancesNum);
+    else
+        glDrawElements(TranslatePrimitiveType(type), indexNum, mCurrentIndexBufferFormat,
+                       reinterpret_cast<void*>(static_cast<size_t>(indexOffset * bytePerIndex)));
 }
 
 ICommandList* CommandBuffer::Finish()
