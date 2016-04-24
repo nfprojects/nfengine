@@ -75,6 +75,12 @@ bool Shader::Init(const ShaderDesc& desc)
 
         using namespace Common;
         File shaderFile(desc.path, AccessMode::Read);
+        if (!shaderFile.IsOpened())
+        {
+            LOG_ERROR("Failed to open Shader file '%s'", desc.path);
+            return false;
+        }
+
         size_t shaderSize = static_cast<size_t>(shaderFile.GetSize());
         shaderStr.resize(shaderSize + 1);
 
