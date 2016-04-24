@@ -18,6 +18,8 @@ class CommandBuffer : public ICommandBuffer
 {
     friend class Device;
 
+    typedef std::vector<IBuffer*> VertexBufferList;
+
     GLenum mCurrentIndexBufferFormat;
     GLenum mCurrentStencilFunc;
     GLuint mCurrentStencilRef;
@@ -25,7 +27,7 @@ class CommandBuffer : public ICommandBuffer
     RenderTarget* mCurrentRenderTarget;
     int mCurrentVertexLayoutElementsNum;
 
-    IBuffer* mSetVertexBuffer;
+    VertexBufferList mSetVertexBuffers;
     IBuffer* mSetIndexBuffer;
     IBuffer* mSetConstantBuffer;
     IVertexLayout* mSetVertexLayout;
@@ -49,10 +51,9 @@ class CommandBuffer : public ICommandBuffer
     GLuint mProgramPipeline;
 
     /// Private methods which will bind just set resources
-    void BindVertexBuffer();
+    void BindVertexBufferAndLayout();
     void BindIndexBuffer();
     void BindConstantBuffer();
-    void BindVertexLayout();
     void BindTexture();
     void BindSampler();
 

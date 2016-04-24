@@ -57,10 +57,7 @@ bool VertexBuffersScene::CreateShaderProgram(bool useInstancing)
 
 bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer)
 {
-    (void)withInstanceBuffer;
-
     /// create vertex buffers
-
     BufferDesc vbDesc;
     vbDesc.type = BufferType::Vertex;
     vbDesc.access = BufferAccess::GPU_ReadOnly;
@@ -99,7 +96,6 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer)
 
 
     /// create index buffer
-
     uint16 ibData[] =
     {
         0, 1, 2,  // triangle 0
@@ -117,7 +113,6 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer)
 
 
     /// create vertex layout object
-
     if (withInstanceBuffer)
     {
         Random random;
