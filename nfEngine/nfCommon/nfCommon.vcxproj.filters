@@ -216,13 +216,16 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ConfigDataTranslator.hpp">
-        <Filter>Header Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Aligned.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BVH.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoggerBackends\BackendTxt.hpp">
+      <Filter>Source Files\LoggerBackends</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -381,6 +384,9 @@
     </ClCompile>
     <ClCompile Include="ConfigTokenizer.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoggerBackends\BackendTxt.cpp">
+      <Filter>Source Files\LoggerBackends</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
