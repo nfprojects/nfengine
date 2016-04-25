@@ -22,6 +22,30 @@
       "revId": "7301b6999a687e70c44518f7dfae742b528b38a9",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_6559475a",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-04-25T13:39:31Z",
+      "side": 1,
+      "message": "Well... it would throw some ugly error.\n\nI\u0027ve changed it and right now user has 3 chances to give valid password AND no ugly errors from this",
+      "parentUuid": "baa041b7_77b1248f",
+      "range": {
+        "startLine": 256,
+        "startChar": 4,
+        "endLine": 256,
+        "endChar": 32
+      },
+      "revId": "7301b6999a687e70c44518f7dfae742b528b38a9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
