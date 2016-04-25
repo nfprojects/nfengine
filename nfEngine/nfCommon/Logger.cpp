@@ -9,6 +9,7 @@
 #include "FileSystem.hpp"
 #include "LoggerBackends/BackendConsole.hpp"
 #include "LoggerBackends/BackendHTML.hpp"
+#include "LoggerBackends/BackendTxt.hpp"
 #include <stdarg.h>
 #include <atomic>
 
@@ -43,6 +44,7 @@ Logger::Logger()
 
     RegisterBackend(new LoggerBackendConsole);
     RegisterBackend(new LoggerBackendHTML);
+    RegisterBackend(new LoggerBackendTxt);
 #ifdef WIN32
     if (IsDebuggerPresent())
         RegisterBackend(new LoggerBackendWinDebugger);
