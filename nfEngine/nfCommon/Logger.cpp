@@ -51,6 +51,7 @@ Logger::Logger()
 #endif // WIN32
 
     mInitialized = true;
+
     LOG_INFO("nfCommon build date: " __DATE__ ", " __TIME__);
 
 #ifdef NFE_USE_SSE
@@ -154,6 +155,21 @@ void Logger::Log(LogType type, const char* srcFile, int line, const char* str, .
     for (auto& backend : mBackends)
     {
         backend->Log(type, srcFile, line, formattedStr, logTime);
+    }
+}
+
+void Logger::Log(LogType type, const char* srcFile, const char* msg, int line)
+{
+    if (!mInitialized)
+        return;
+
+    // TODO: consider logging local time instead of time elapsed since Logger initialization
+    double logTime = mTimer.Stop();
+
+    std::unique_lock<std::mutex> lock(mMutex);
+    for (auto& backend : mBackends)
+    {
+        backend->Log(type, srcFile, line, msg, logTime);
     }
 }
 
