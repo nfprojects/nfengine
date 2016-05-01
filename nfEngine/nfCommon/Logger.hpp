@@ -85,6 +85,7 @@ public:
      * @remarks Use LOG_XXX macros to simplify code
      */
     void Log(LogType type, const char* srcFile, int line, const char* str, ...);
+    void Log(LogType type, const char* srcFile, const char* msg, int line);
 
     /**
      * Get pre-calculated file path prefix (nfEngine root directory).
@@ -123,21 +124,39 @@ public:
 #endif // NFE_ROOT_DIRECTORY
 
 /// logging macros
-#define LOG_ANY(type, ...)                                             \
-do {                                                                   \
-    NFE::Common::Logger* logger = NFE::Common::Logger::GetInstance();  \
-    if (logger) logger->Log(type,  __FILE__, __LINE__, __VA_ARGS__);   \
+#define LOG_ANY(type, ...)                                              \
+do {                                                                    \
+    NFE::Common::Logger* logger = NFE::Common::Logger::GetInstance();   \
+    if (logger) logger->Log(type,  __FILE__, __LINE__, __VA_ARGS__);    \
 } while (0)
 
+#define LOG_ANY_STREAM(type, msg)                                       \
+do {                                                                    \
+    NFE::Common::Logger* logger = NFE::Common::Logger::GetInstance();   \
+    if (logger)                                                         \
+    {                                                                   \
+        std::stringstream stream;                                       \
+        stream << msg;                                                  \
+        logger->Log(type, __FILE__, stream.str().c_str(), __LINE__);    \
+    }                                                                   \
+} while (0)
 
 #ifdef _DEBUG
-#define LOG_DEBUG(...)   LOG_ANY(NFE::Common::LogType::Debug, __VA_ARGS__)
+#define LOG_DEBUG(...)     LOG_ANY(NFE::Common::LogType::Debug, __VA_ARGS__)
+#define LOG_DEBUG_S(msg)   LOG_ANY_STREAM(NFE::Common::LogType::Debug, msg)
 #else
-#define LOG_DEBUG(...) do { } while (0)
+#define LOG_DEBUG(...)   do { } while (0)
+#define LOG_DEBUG_S(...) do { } while (0)
 #endif // _DEBUG
 
-#define LOG_INFO(...)    LOG_ANY(NFE::Common::LogType::Info, __VA_ARGS__)
-#define LOG_SUCCESS(...) LOG_ANY(NFE::Common::LogType::OK, __VA_ARGS__)
-#define LOG_WARNING(...) LOG_ANY(NFE::Common::LogType::Warning, __VA_ARGS__)
-#define LOG_ERROR(...)   LOG_ANY(NFE::Common::LogType::Error, __VA_ARGS__)
-#define LOG_FATAL(...)   LOG_ANY(NFE::Common::LogType::Fatal, __VA_ARGS__)
+#define LOG_INFO(...)      LOG_ANY(NFE::Common::LogType::Info, __VA_ARGS__)
+#define LOG_INFO_S(msg)    LOG_ANY_STREAM(NFE::Common::LogType::Info, msg)
+#define LOG_SUCCESS(...)   LOG_ANY(NFE::Common::LogType::OK, __VA_ARGS__)
+#define LOG_SUCCESS_S(msg) LOG_ANY_STREAM(NFE::Common::LogType::OK, msg)
+#define LOG_WARNING(...)   LOG_ANY(NFE::Common::LogType::Warning, __VA_ARGS__)
+#define LOG_WARNING_S(msg) LOG_ANY_STREAM(NFE::Common::LogType::Warning, msg)
+#define LOG_ERROR(...)     LOG_ANY(NFE::Common::LogType::Error, __VA_ARGS__)
+#define LOG_ERROR_S(msg)   LOG_ANY_STREAM(NFE::Common::LogType::Error, msg)
+#define LOG_FATAL(...)     LOG_ANY(NFE::Common::LogType::Fatal, __VA_ARGS__)
+#define LOG_FATAL_S(msg)   LOG_ANY_STREAM(NFE::Common::LogType::Fatal, msg)
+

@@ -15,16 +15,31 @@ using namespace NFE::Common;
 TEST(LoggerTest, Simple)
 {
     ASSERT_NO_THROW(LOG_DEBUG("Test log - debug"));
+    ASSERT_NO_THROW(LOG_DEBUG_S("Test stream log - " << "debug"));
     ASSERT_NO_THROW(LOG_INFO("Test log - info"));
+    ASSERT_NO_THROW(LOG_INFO_S("Test stream log - " << "info"));
     ASSERT_NO_THROW(LOG_SUCCESS("Test log - success"));
+    ASSERT_NO_THROW(LOG_SUCCESS_S("Test stream log - " << "success"));
     ASSERT_NO_THROW(LOG_WARNING("Test log - warning"));
+    ASSERT_NO_THROW(LOG_WARNING_S("Test stream log - " << "warning"));
     ASSERT_NO_THROW(LOG_ERROR("Test log - error"));
+    ASSERT_NO_THROW(LOG_ERROR_S("Test stream log - " << "error"));
     ASSERT_NO_THROW(LOG_FATAL("Test log - fatal"));
+    ASSERT_NO_THROW(LOG_FATAL_S("Test stream log - " << "fatal"));
 }
 
 TEST(LoggerTest, Null)
 {
     ASSERT_NO_THROW(LOG_DEBUG(nullptr));
+}
+
+TEST(LoggerTest, MultipleTypes)
+{
+    int num = 5;
+    std::string text = "text";
+    float quarter = 1.0f / 4.0f;
+    ASSERT_NO_THROW(LOG_INFO("String: %s, int: %d, float: %f", text.c_str(), num, quarter));
+    ASSERT_NO_THROW(LOG_INFO_S("String: " << text << ", int: " << num << ", float: " << quarter));
 }
 
 TEST(LoggerTest, Long)

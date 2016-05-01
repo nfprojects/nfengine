@@ -157,6 +157,21 @@ void Logger::Log(LogType type, const char* srcFile, int line, const char* str, .
     }
 }
 
+void Logger::Log(LogType type, const char* srcFile, const char* msg, int line)
+{
+    if (!mInitialized)
+        return;
+
+    // TODO: consider logging local time instead of time elapsed since Logger initialization
+    double logTime = mTimer.Stop();
+
+    std::unique_lock<std::mutex> lock(mMutex);
+    for (auto& backend : mBackends)
+    {
+        backend->Log(type, srcFile, line, msg, logTime);
+    }
+}
+
 const char* Logger::LogTypeToString(LogType logType)
 {
     switch (logType)
