@@ -155,6 +155,10 @@ void Logger::Log(LogType type, const char* srcFile, int line, const char* str, .
     {
         backend->Log(type, srcFile, line, formattedStr, logTime);
     }
+
+    // If it's a fatal log, exit the engine
+    if (type == NFE::Common::LogType::Fatal)
+        exit(1);
 }
 
 void Logger::Log(LogType type, const char* srcFile, const char* msg, int line)
@@ -170,6 +174,10 @@ void Logger::Log(LogType type, const char* srcFile, const char* msg, int line)
     {
         backend->Log(type, srcFile, line, msg, logTime);
     }
+
+    // If it's a fatal log, exit the engine
+    if (type == NFE::Common::LogType::Fatal)
+        exit(1);
 }
 
 const char* Logger::LogTypeToString(LogType logType)
