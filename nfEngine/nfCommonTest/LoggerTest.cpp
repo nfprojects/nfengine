@@ -29,6 +29,12 @@ TEST(LoggerTest, Simple)
     ASSERT_NO_THROW(LOG_ERROR_S("Test stream log - " << "error"));
 }
 
+TEST(LoggerTest, XMLEscapeSeqs)
+{
+    ASSERT_NO_THROW(LOG_INFO("These are amps && and a <node<>> and some \"\"qoutes\" \'\'in quotes\'\'\"."));
+    ASSERT_NO_THROW(LOG_INFO_S("These are amps && and a <node<>> and some \"\"qoutes\" \'\'in quotes\'\'\"."));
+}
+
 TEST(LoggerDeathTest, FatalLogs)
 {
     ASSERT_EXIT(LOG_FATAL("Some fatal log."), testing::ExitedWithCode(1), "");
