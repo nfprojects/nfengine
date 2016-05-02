@@ -232,6 +232,12 @@
     </ClInclude>
     <ClInclude Include="EnumIterator.hpp">
       <Filter>Header Files</Filter>
+     </ClInclude>
+    <ClInclude Include="LoggerBackends\BackendXML.hpp">
+      <Filter>Source Files\LoggerBackends</Filter>
+    </ClInclude>
+    <ClInclude Include="LoggerBackends\BackendCommon.hpp">
+      <Filter>Source Files\LoggerBackends</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -392,6 +398,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LoggerBackends\BackendTxt.cpp">
+      <Filter>Source Files\LoggerBackends</Filter>
+    </ClCompile>
+    <ClCompile Include="LoggerBackends\BackendXML.cpp">
       <Filter>Source Files\LoggerBackends</Filter>
     </ClCompile>
   </ItemGroup>
