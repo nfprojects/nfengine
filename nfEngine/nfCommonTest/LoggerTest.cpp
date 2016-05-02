@@ -9,6 +9,9 @@
 
 using namespace NFE::Common;
 
+class LoggerTest : public testing::Test {};
+using LoggerDeathTest = LoggerTest;
+
 /**
  * To verify if this test really passes, one should look at console and HTML logs.
  */
@@ -24,8 +27,12 @@ TEST(LoggerTest, Simple)
     ASSERT_NO_THROW(LOG_WARNING_S("Test stream log - " << "warning"));
     ASSERT_NO_THROW(LOG_ERROR("Test log - error"));
     ASSERT_NO_THROW(LOG_ERROR_S("Test stream log - " << "error"));
-    ASSERT_NO_THROW(LOG_FATAL("Test log - fatal"));
-    ASSERT_NO_THROW(LOG_FATAL_S("Test stream log - " << "fatal"));
+}
+
+TEST(LoggerDeathTest, FatalLogs)
+{
+    ASSERT_EXIT(LOG_FATAL("Some fatal log."), testing::ExitedWithCode(1), "");
+    ASSERT_EXIT(LOG_FATAL_S("Some fatal log."), testing::ExitedWithCode(1), "");
 }
 
 TEST(LoggerTest, Null)
