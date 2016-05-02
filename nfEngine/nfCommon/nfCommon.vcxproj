@@ -227,9 +227,11 @@ popd</Command>
     <ClInclude Include="KeyCodes.hpp" />
     <ClInclude Include="Library.hpp" />
     <ClInclude Include="Logger.hpp" />
+    <ClInclude Include="LoggerBackends\BackendCommon.hpp" />
     <ClInclude Include="LoggerBackends\BackendConsole.hpp" />
     <ClInclude Include="LoggerBackends\BackendHTML.hpp" />
     <ClInclude Include="LoggerBackends\BackendTxt.hpp" />
+    <ClInclude Include="LoggerBackends\BackendXML.hpp" />
     <ClInclude Include="LoggerBackends\Win\BackendWindowsDebugger.hpp" />
     <ClInclude Include="Math\Box.hpp" />
     <ClInclude Include="Math\FPU\Matrix.hpp" />
@@ -337,6 +339,12 @@ popd</Command>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="LoggerBackends\BackendXML.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="LoggerBackends\Win\BackendWindowsDebugger.cpp">
