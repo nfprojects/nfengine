@@ -88,6 +88,12 @@ TEST_F(LoggerTest, Simple)
     ASSERT_NO_THROW(LOG_ERROR_S("Test stream log - " << "error"));
 }
 
+TEST_F(LoggerTest, EscapeSymbols)
+{
+    ASSERT_NO_THROW(LOG_INFO("These are amps && and a <node<>> and some \"\"qoutes\" \'\'in quotes\'\'\"."));
+    ASSERT_NO_THROW(LOG_INFO_S("These are amps && and a <node<>> and some \"\"qoutes\" \'\'in quotes\'\'\"."));
+}
+
 TEST_F(LoggerTest, Null)
 {
     ASSERT_NO_THROW(LOG_DEBUG(nullptr));
