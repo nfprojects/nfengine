@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_00da5078",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-02T17:05:58Z",
+      "side": 1,
+      "message": "this is copy-pasted in 3 files...",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 6
+      },
+      "revId": "e99d895ac474d1cab9fe0d9168237964f4da55df",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_60f47cf1",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-02T17:05:58Z",
+      "side": 1,
+      "message": "I suggest the following format:\n\n\u003cLogInfo sourceFile\u003d\"blah.cpp\" lineOfCode\u003d123\u003eThis is an info...\u003c/LogInfo\u003e",
+      "revId": "e99d895ac474d1cab9fe0d9168237964f4da55df",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a0ea840d",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-02T17:05:58Z",
+      "side": 1,
+      "message": "rm",
+      "revId": "e99d895ac474d1cab9fe0d9168237964f4da55df",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_e091ac9a",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-02T17:05:58Z",
+      "side": 1,
+      "message": "really?",
+      "revId": "e99d895ac474d1cab9fe0d9168237964f4da55df",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
