@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_4d7d306d",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-03T11:58:49Z",
+      "side": 1,
+      "message": "map not required, array will be OK (or even switch...case). See comment below",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 1
+      },
+      "revId": "d641c891f0df015ca9c7dde345daf12897dce041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2d80ac45",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-03T11:58:49Z",
+      "side": 1,
+      "message": "what\u0027s this?",
+      "range": {
+        "startLine": 74,
+        "startChar": 12,
+        "endLine": 74,
+        "endChar": 25
+      },
+      "revId": "d641c891f0df015ca9c7dde345daf12897dce041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8d833856",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-03T11:58:49Z",
+      "side": 1,
+      "message": "This will be too slow. You should iterate thtough the message and find characters that must be escaped (\u0027\u0026\u0027, \u0027\u003c\u0027, \u0027\u003e\u0027, etc.) and emit apropriate escape sequence. Generally, you must get rid of std::string and use char buffer for this (like mBuffer)",
+      "range": {
+        "startLine": 87,
+        "startChar": 0,
+        "endLine": 102,
+        "endChar": 5
+      },
+      "revId": "d641c891f0df015ca9c7dde345daf12897dce041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_6d86b466",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-03T11:58:49Z",
+      "side": 1,
+      "message": "not required here, can be moved to annonymous namespace in cpp",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 50
+      },
+      "revId": "d641c891f0df015ca9c7dde345daf12897dce041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
