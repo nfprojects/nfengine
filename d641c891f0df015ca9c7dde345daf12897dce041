@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_7c642021",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-04T15:15:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_4d7d306d",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 1
+      },
+      "revId": "d641c891f0df015ca9c7dde345daf12897dce041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_2d80ac45",
         "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
         "patchSetId": 2
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_dc732ce6",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-04T15:15:52Z",
+      "side": 1,
+      "message": "magical attribute specifier (there will be better one in cpp14 or 17) to make it explicitly visible, that this fallthrough is intentional",
+      "parentUuid": "baa041b7_2d80ac45",
+      "range": {
+        "startLine": 74,
+        "startChar": 12,
+        "endLine": 74,
+        "endChar": 25
+      },
+      "revId": "d641c891f0df015ca9c7dde345daf12897dce041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_8d833856",
         "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
         "patchSetId": 2
@@ -59,6 +107,30 @@
       "writtenOn": "2016-05-03T11:58:49Z",
       "side": 1,
       "message": "This will be too slow. You should iterate thtough the message and find characters that must be escaped (\u0027\u0026\u0027, \u0027\u003c\u0027, \u0027\u003e\u0027, etc.) and emit apropriate escape sequence. Generally, you must get rid of std::string and use char buffer for this (like mBuffer)",
+      "range": {
+        "startLine": 87,
+        "startChar": 0,
+        "endLine": 102,
+        "endChar": 5
+      },
+      "revId": "d641c891f0df015ca9c7dde345daf12897dce041",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_bc82a892",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-04T15:15:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_8d833856",
       "range": {
         "startLine": 87,
         "startChar": 0,
