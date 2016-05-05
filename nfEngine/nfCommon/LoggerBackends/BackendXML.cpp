@@ -77,7 +77,7 @@ void LoggerBackendXML::Log(LogType type, const char* srcFile, int line, const ch
             nodeName += "Fatal";
             break;
         case LogType::Info:
-            __fallthrough;
+
         default:
             nodeName += "Info";
             break;

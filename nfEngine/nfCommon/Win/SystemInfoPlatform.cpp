@@ -7,6 +7,7 @@
 #include "../PCH.hpp"
 #include "../SystemInfo.hpp"
 #include "../Math/Math.hpp"
+#include <VersionHelpers.h>
 
 namespace NFE {
 namespace Common {
@@ -18,6 +19,76 @@ void SystemInfo::InitCPUInfoPlatform()
     GetSystemInfo(&sysInfo);
     mCPUCoreNo = sysInfo.dwNumberOfProcessors;
     mPageSize = sysInfo.dwPageSize;
+}
+
+void SystemInfo::InitOSVersion()
+{
+    mOSVersion = "Microsoft Windows ";
+
+    if (IsWindowsVersionOrGreater(10, 0, 0))
+    {
+        if (IsWindowsServer())
+            mOSVersion += "Server 2016 Technical Preview";
+        else
+            mOSVersion += "10";
+    }
+    else if (IsWindows8Point1OrGreater())
+    {
+        if (IsWindowsServer())
+            mOSVersion += "Server 2012 R2";
+        else
+            mOSVersion += "8.1";
+    }
+    else if (IsWindows8OrGreater())
+    {
+        if (IsWindowsServer())
+            mOSVersion += "Server 2012";
+        else
+            mOSVersion += "8";
+    }
+    else if (IsWindows7OrGreater())
+    {
+        if (IsWindowsServer())
+            mOSVersion += "Server 2008 R2";
+        else
+        {
+            if (IsWindows7SP1OrGreater())
+                mOSVersion += "7 SP1";
+            else
+                mOSVersion += "7";
+        }
+    }
+    else if (IsWindowsVistaOrGreater())
+    {
+        if (IsWindowsServer())
+            mOSVersion += "Server 2008";
+        else
+        {
+            if (IsWindowsVistaSP2OrGreater())
+                mOSVersion += "Vista SP2";
+            else if (IsWindowsVistaSP1OrGreater())
+                mOSVersion += "Vista SP1";
+            else
+                mOSVersion += "Vista";
+        }
+    }
+    else if (IsWindowsServer())
+        mOSVersion += "Server";
+    else
+    {
+        if (IsWindowsXPSP3OrGreater())
+            mOSVersion += "XP SP3";
+        else if (IsWindowsXPSP2OrGreater())
+            mOSVersion += "XP SP2";
+        else if (IsWindowsXPSP1OrGreater())
+            mOSVersion += "XP SP1";
+        else if (IsWindowsXPOrGreater())
+            mOSVersion += "XP";
+        else if (IsWindowsVersionOrGreater(5, 0, 0))
+            mOSVersion += "2000";
+        else
+            mOSVersion += "Unknown";
+    }
 }
 
 void SystemInfo::InitMemoryInfo()
