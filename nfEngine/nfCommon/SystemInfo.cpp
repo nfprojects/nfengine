@@ -12,22 +12,19 @@
 namespace NFE {
 namespace Common {
 
-std::unique_ptr<SystemInfo> SystemInfo::mInstance = 0;
-
 SystemInfo::SystemInfo()
 {
     InitCPUInfoCommon();
     InitCPUInfoPlatform();
+    InitOSVersion();
     InitMemoryInfo();
     InitMap();
 }
 
-SystemInfo* SystemInfo::Instance()
+SystemInfo& SystemInfo::Instance()
 {
-    // TODO: This is not thread safe.
-    if (!mInstance)
-        mInstance.reset(new SystemInfo);
-    return mInstance.get();
+    static SystemInfo instance;
+    return instance;
 }
 
 void SystemInfo::InitCPUInfoCommon()
@@ -231,6 +228,11 @@ bool SystemInfo::IsFeatureSupported(const std::string& featureName) const
 const std::string& SystemInfo::GetCPUBrand() const
 {
     return mCPUBrand;
+}
+
+const std::string& SystemInfo::GetOSVersion() const
+{
+    return mOSVersion;
 }
 
 uint64_t SystemInfo::GetCPUCoreNo() const

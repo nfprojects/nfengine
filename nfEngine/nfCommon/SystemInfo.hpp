@@ -37,10 +37,10 @@ struct CpuidFeature
 class NFCOMMON_API SystemInfo
 {
 private:
-    static std::unique_ptr<SystemInfo> mInstance;
     SystemInfo();
 
     std::map<std::string, CpuidFeature> mCpuidFeatureMap;
+    std::string mOSVersion;
     std::string mCPUBrand;
     uint64_t mCPUCoreNo;
     uint64_t mPageSize;
@@ -58,6 +58,7 @@ private:
     uint64_t Rdtsc();
 
     void InitCPUInfoCommon();
+    void InitOSVersion();
     void InitMap();
     void InitCPUInfoPlatform();
     void InitMemoryInfo();
@@ -65,7 +66,7 @@ private:
     bool CheckFeature(CpuidFeature feature) const;
 
 public:
-    static SystemInfo* Instance();
+    static SystemInfo& Instance();
 
     /**
      * Update mMemFree fields
@@ -107,6 +108,7 @@ public:
      * Get class fields
      */
     const std::string& GetCPUBrand() const;
+    const std::string& GetOSVersion() const;
     uint64_t GetCPUCoreNo() const;
     uint64_t GetPageSize() const;
     uint64_t GetCacheLineSize() const;

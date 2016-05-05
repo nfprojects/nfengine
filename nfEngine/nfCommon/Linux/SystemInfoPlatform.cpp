@@ -20,6 +20,22 @@ void SystemInfo::InitCPUInfoPlatform()
     mPageSize = sysconf(_SC_PAGESIZE); // may be 'PAGE_SIZE' on some systems
 }
 
+void SystemInfo::InitOSVersion()
+{
+    FILE* lsbR = popen("lsb_release -ds", "r");
+    if (lsbR == 0)
+    {
+        LOG_ERROR("Not an lsb_release compatible Linux distribution.");
+        mOSVersion = "Linux";
+    } else
+    {
+        char buffer[100];
+        fscanf(lsbR, "%100s", buffer);
+        mOSVersion(buffer);
+        pclose(lsbR);
+    }
+}
+
 void SystemInfo::InitMemoryInfo()
 {
     // get memory information
