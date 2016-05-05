@@ -1,5 +1,5 @@
 /**
- * @file   SystemInfoConstants.hpp
+ * @file
  * @author mkulagowski (mkkulagowski(at)gmail.com)
  * @brief  Constants for SystemInfo class
  */

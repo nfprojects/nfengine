@@ -1,5 +1,5 @@
 /**
- * @file   Linux/SystemInfoPlatform.cpp
+ * @file
  * @author mkulagowski (mkkulagowski(at)gmail.com)
  * @brief  System information API implementation for Linux system
  */
@@ -7,7 +7,11 @@
 #include "../PCH.hpp"
 #include "../SystemInfo.hpp"
 #include "../Math/Math.hpp"
+#include "../Logger.hpp"
+#include <vector>
 #include <stdio.h>
+#include <sys/utsname.h>
+
 
 namespace NFE {
 namespace Common {
@@ -18,6 +22,42 @@ void SystemInfo::InitCPUInfoPlatform()
     mCPUCoreNo = sysconf(_SC_NPROCESSORS_ONLN); // 'ONLN' are currently available,
                                                 // 'CONF' are configured
     mPageSize = sysconf(_SC_PAGESIZE); // may be 'PAGE_SIZE' on some systems
+}
+
+void SystemInfo::InitOSVersion()
+{
+    static const std::vector<std::string> osFiles = { "/etc/redhat-release",
+                                                      "/etc/issue",};
+    FILE* sysFile;
+    bool found = false;
+
+    for (const auto& i : osFiles)
+    {
+        if (!found)
+        {
+            sysFile = fopen(i.c_str(), "r");
+            if (sysFile > 0)
+            {
+                char buffer[100];
+                fgets(buffer, 100, sysFile);
+                mOSVersion = std::string(buffer);
+
+                // There often is a newline char at the end
+                if (mOSVersion.back() == '\n')
+                    mOSVersion.pop_back();
+
+                fclose(sysFile);
+                found = true;
+            }
+        }
+    }
+
+    struct utsname ver;
+    uname(&ver);
+
+    if (!found)
+        mOSVersion = std::string(ver.sysname);
+    mOSVersion += " Build: " + std::string(ver.release);
 }
 
 void SystemInfo::InitMemoryInfo()
