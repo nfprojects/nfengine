@@ -1,5 +1,5 @@
 /**
- * @file   Linux/SystemInfoPlatform.cpp
+ * @file
  * @author mkulagowski (mkkulagowski(at)gmail.com)
  * @brief  System information API implementation for Linux system
  */
@@ -7,7 +7,9 @@
 #include "../PCH.hpp"
 #include "../SystemInfo.hpp"
 #include "../Math/Math.hpp"
+#include "../Logger.hpp"
 #include <stdio.h>
+#include <sys/utsname.h>
 
 namespace NFE {
 namespace Common {
@@ -18,6 +20,29 @@ void SystemInfo::InitCPUInfoPlatform()
     mCPUCoreNo = sysconf(_SC_NPROCESSORS_ONLN); // 'ONLN' are currently available,
                                                 // 'CONF' are configured
     mPageSize = sysconf(_SC_PAGESIZE); // may be 'PAGE_SIZE' on some systems
+}
+
+void SystemInfo::InitOSVersion()
+{
+    // If built with CMake, use it's macro
+#ifdef CMAKE_OS
+    mOSVersion = CMAKE_OS;
+#else
+    FILE* lsbR = popen("lsb_release -ds", "r");
+    if (lsbR == 0)
+    {
+        struct utsname ver;
+        uname(&ver);
+        mOSVersion = std::string(ver.sysname) + " " + std::string(ver.version)
+                        + " " + std::string(ver.release);
+    } else
+    {
+        char buffer[100];
+        fscanf(lsbR, "%100s", buffer);
+        mOSVersion = std::string(buffer);
+        pclose(lsbR);
+    }
+#endif
 }
 
 void SystemInfo::InitMemoryInfo()
