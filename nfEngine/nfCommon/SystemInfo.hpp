@@ -1,5 +1,5 @@
 /**
- * @file   SystemInfo.hpp
+ * @file
  * @author mkulagowski (mkkulagowski(at)gmail.com)
  * @brief  System information API declarations.
  */
@@ -37,11 +37,12 @@ struct CpuidFeature
 class NFCOMMON_API SystemInfo
 {
 private:
-    static std::unique_ptr<SystemInfo> mInstance;
     SystemInfo();
 
     std::map<std::string, CpuidFeature> mCpuidFeatureMap;
     std::string mCPUBrand;
+    std::string mOSVersion;
+    std::string mCompilerInfo;
     uint64_t mCPUCoreNo;
     uint64_t mPageSize;
     uint64_t mCacheLineSize;
@@ -58,6 +59,8 @@ private:
     uint64_t Rdtsc();
 
     void InitCPUInfoCommon();
+    void InitOSVersion();
+    void InitCompilerInfo();
     void InitMap();
     void InitCPUInfoPlatform();
     void InitMemoryInfo();
@@ -65,7 +68,7 @@ private:
     bool CheckFeature(CpuidFeature feature) const;
 
 public:
-    static SystemInfo* Instance();
+    static SystemInfo& Instance();
 
     /**
      * Update mMemFree fields
@@ -107,6 +110,8 @@ public:
      * Get class fields
      */
     const std::string& GetCPUBrand() const;
+    const std::string& GetOSVersion() const;
+    const std::string& GetCompilerInfo() const;
     uint64_t GetCPUCoreNo() const;
     uint64_t GetPageSize() const;
     uint64_t GetCacheLineSize() const;
