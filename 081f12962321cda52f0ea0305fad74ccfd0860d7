@@ -82,6 +82,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_531f066c",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-05-05T18:02:08Z",
+      "side": 1,
+      "message": "Excuse me, but why do we need this here in the first place?\n\nFalling through case blocks is a supported and known behavior in C++. All compilers support it from the get-go since pre-Cpp0x era just by leaving the case block without ending \"break\" (leaving it empty counts as well). So, is there a reason why this is here?",
+      "parentUuid": "baa041b7_b0564828",
+      "range": {
+        "startLine": 80,
+        "startChar": 12,
+        "endLine": 80,
+        "endChar": 26
+      },
+      "revId": "081f12962321cda52f0ea0305fad74ccfd0860d7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_13473e78",
         "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
         "patchSetId": 4
