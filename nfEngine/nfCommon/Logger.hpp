@@ -67,6 +67,7 @@ class NFCOMMON_API Logger
 
     void LogInit();
     void LogRunTime();
+    void LogSysInfo();
 
 public:
     Logger();

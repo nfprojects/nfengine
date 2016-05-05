@@ -1,5 +1,5 @@
 /**
- * @file   Win/SystemInfoPlatform.cpp
+ * @file
  * @author mkulagowski (mkkulagowski(at)gmail.com)
  * @brief  System information API implementation for Windows system
  */
@@ -7,6 +7,56 @@
 #include "../PCH.hpp"
 #include "../SystemInfo.hpp"
 #include "../Math/Math.hpp"
+#include <VersionHelpers.h>
+
+
+namespace {
+typedef void (WINAPI * RtlGetVersion_FUNC) (OSVERSIONINFOEXW *);
+
+bool GetVersion(OSVERSIONINFOEX * os)
+{
+    HMODULE hMod;
+    RtlGetVersion_FUNC func;
+#ifdef UNICODE
+    OSVERSIONINFOEXW * osw = os;
+#else
+    OSVERSIONINFOEXW o;
+    OSVERSIONINFOEXW * osw = &o;
+#endif
+
+    hMod = LoadLibrary(TEXT("ntdll.dll"));
+    if (hMod)
+    {
+        func = (RtlGetVersion_FUNC)GetProcAddress(hMod, "RtlGetVersion");
+        if (func == 0)
+        {
+            FreeLibrary(hMod);
+            return false;
+        }
+        ZeroMemory(osw, sizeof(*osw));
+        osw->dwOSVersionInfoSize = sizeof(*osw);
+        func(osw);
+#ifndef UNICODE
+        os->dwBuildNumber = osw->dwBuildNumber;
+        os->dwMajorVersion = osw->dwMajorVersion;
+        os->dwMinorVersion = osw->dwMinorVersion;
+        os->dwPlatformId = osw->dwPlatformId;
+        os->dwOSVersionInfoSize = sizeof(*os);
+        DWORD sz = sizeof(os->szCSDVersion);
+        WCHAR * src = osw->szCSDVersion;
+        unsigned char * dtc = (unsigned char *)os->szCSDVersion;
+        while (*src)
+            * Dtc++ = (unsigned char)* src++;
+        *Dtc = '\ 0';
+#endif
+
+    }
+    else
+        return false;
+    FreeLibrary(hMod);
+    return true;
+}
+}
 
 namespace NFE {
 namespace Common {
@@ -18,6 +68,64 @@ void SystemInfo::InitCPUInfoPlatform()
     GetSystemInfo(&sysInfo);
     mCPUCoreNo = sysInfo.dwNumberOfProcessors;
     mPageSize = sysInfo.dwPageSize;
+}
+
+void SystemInfo::InitOSVersion()
+{
+    OSVERSIONINFOEX os;
+    mOSVersion = "Microsoft Windows ";
+
+    if (GetVersion(&os) && os.dwMajorVersion == 10)
+    {
+        if (IsWindowsServer())
+            mOSVersion += "Server 2016 Technical Preview";
+        else
+            mOSVersion += "10";
+    }
+    else if (IsWindows8Point1OrGreater())
+    {
+        if (IsWindowsServer())
+            mOSVersion += "Server 2012 R2";
+        else
+            mOSVersion += "8.1";
+    }
+    else if (IsWindows8OrGreater())
+    {
+        if (IsWindowsServer())
+            mOSVersion += "Server 2012";
+        else
+            mOSVersion += "8";
+    }
+    else if (IsWindows7OrGreater())
+    {
+        if (IsWindowsServer())
+            mOSVersion += "Server 2008 R2";
+        else
+        {
+            if (IsWindows7SP1OrGreater())
+                mOSVersion += "7 SP1";
+            else
+                mOSVersion += "7";
+        }
+    }
+    else if (IsWindowsVistaOrGreater())
+    {
+        if (IsWindowsServer())
+            mOSVersion += "Server 2008";
+        else
+        {
+            if (IsWindowsVistaSP2OrGreater())
+                mOSVersion += "Vista SP2";
+            else if (IsWindowsVistaSP1OrGreater())
+                mOSVersion += "Vista SP1";
+            else
+                mOSVersion += "Vista";
+        }
+    }
+    else
+    {
+        mOSVersion += "Unknown";
+    }
 }
 
 void SystemInfo::InitMemoryInfo()

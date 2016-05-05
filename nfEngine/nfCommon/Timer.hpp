@@ -29,6 +29,7 @@ class NFCOMMON_API Timer
 private:
 #if defined(WIN32)
     LARGE_INTEGER mStart; // start point
+    double mPeriod;
 #elif defined(__LINUX__) | defined(__linux__)
     struct timespec mStart;
 #endif // defined(WIN32)

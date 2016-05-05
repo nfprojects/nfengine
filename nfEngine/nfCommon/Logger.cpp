@@ -10,6 +10,7 @@
 #include "LoggerBackends/BackendConsole.hpp"
 #include "LoggerBackends/BackendHTML.hpp"
 #include "LoggerBackends/BackendTxt.hpp"
+#include "SystemInfo.hpp"
 #include <stdarg.h>
 #include <atomic>
 
@@ -89,6 +90,7 @@ void Logger::LogInit()
 #endif // NFE_USE_SSE
 
     LogRunTime();
+    LogSysInfo();
 }
 
 void Logger::LogRunTime()
@@ -105,6 +107,16 @@ void Logger::LogRunTime()
         strftime(dateTimeStr, MAX_DATE_LENGTH, "%b %d %Y, %X", timeInfo);
         LOG_INFO("Run date: %s", dateTimeStr);
     }
+}
+
+void Logger::LogSysInfo()
+{
+    SystemInfo& sysInfo = SystemInfo::Instance();
+
+    LOG_INFO("CPU: %s, %u cores", sysInfo.GetCPUBrand().c_str(), sysInfo.GetCPUCoreNo());
+    LOG_INFO("RAM: %uKB total, %uKB free", sysInfo.GetMemTotalPhysKb(), sysInfo.GetMemFreePhysKb());
+    LOG_INFO("OS: %s", sysInfo.GetOSVersion().c_str());
+    LOG_INFO("Compiler: %s", sysInfo.GetCompilerInfo().c_str());
 }
 
 void Logger::RegisterBackend(LoggerBackend* backend)
