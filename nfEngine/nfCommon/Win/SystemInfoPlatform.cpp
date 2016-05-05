@@ -20,6 +20,63 @@ void SystemInfo::InitCPUInfoPlatform()
     mPageSize = sysInfo.dwPageSize;
 }
 
+void SystemInfo::InitOSVersion()
+{
+    OSVERSIONINFOEX osVersionEx;
+    osVersionEx.dwOSVersionInfoSize = sizeof(osVersionEx);
+    GetVersionEx((OSVERSIONINFO*) &osVersionEx);
+
+    mOSVersion = "Microsoft Windows ";
+
+    switch (osVersionEx.dwMajorVersion)
+    {
+        case 5:
+            if (osVersionEx.dwMinorVersion == 0)
+                mOSVersion += "2000";
+            else if (osVersionEx.dwMinorVersion == 1)
+                mOSVersion += "XP";
+            else
+            {
+                if (osVersionEx.wProductType == VER_NT_WORKSTATION)
+                    mOSVersion += "XP Professional x64 Edition";
+                else if (osVersionEx.wSuiteMask & VER_SUITE_WH_SERVER)
+                    mOSVersion += "Home Server";
+                else if (GetSystemMetrics(SM_SERVERR2) == 0)
+                    mOSVersion += "Server 2003";
+                else
+                    mOSVersion += "Server 2003 R2";
+            }
+            break;
+        case 6:
+            if (osVersionEx.dwMinorVersion == 0)
+                if (osVersionEx.wProductType == VER_NT_WORKSTATION)
+                    mOSVersion += "Vista";
+                else
+                    mOSVersion += "Server 2008";
+            else if (osVersionEx.dwMinorVersion == 1)
+                if (osVersionEx.wProductType == VER_NT_WORKSTATION)
+                    mOSVersion += "7";
+                else
+                    mOSVersion += "Server 2008 R2";
+            else if (osVersionEx.dwMinorVersion == 2)
+                if (osVersionEx.wProductType == VER_NT_WORKSTATION)
+                    mOSVersion += "8";
+                else
+                    mOSVersion += "Server 2012";
+            else
+                if (osVersionEx.wProductType == VER_NT_WORKSTATION)
+                    mOSVersion += "8.1";
+                else
+                    mOSVersion += "Server 2012 R2";
+            break;
+        case 10:
+            if (osVersionEx.wProductType == VER_NT_WORKSTATION)
+                mOSVersion += "10";
+            else
+                mOSVersion += "Server 2016 Technical Preview";
+    }
+}
+
 void SystemInfo::InitMemoryInfo()
 {
     // get memory information

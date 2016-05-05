@@ -7,6 +7,7 @@
 #include "../PCH.hpp"
 #include "../SystemInfo.hpp"
 #include "../Math/Math.hpp"
+#include "../Logger.hpp"
 #include <stdio.h>
 
 namespace NFE {
@@ -18,6 +19,22 @@ void SystemInfo::InitCPUInfoPlatform()
     mCPUCoreNo = sysconf(_SC_NPROCESSORS_ONLN); // 'ONLN' are currently available,
                                                 // 'CONF' are configured
     mPageSize = sysconf(_SC_PAGESIZE); // may be 'PAGE_SIZE' on some systems
+}
+
+void SystemInfo::InitOSVersion()
+{
+    FILE* lsbR = popen("lsb_release -ds", "r");
+    if (lsbR == 0)
+    {
+        LOG_ERROR("Not an lsb_release compatible Linux distribution.");
+        mOSVersion = "Linux";
+    } else
+    {
+        char buffer[100];
+        fscanf(lsbR, "%100s", buffer);
+        mOSVersion = std::string(buffer);
+        pclose(lsbR);
+    }
 }
 
 void SystemInfo::InitMemoryInfo()
