@@ -15,8 +15,6 @@ static double GetCounterPeriod()
     QueryPerformanceFrequency(&freq);
     return 1.0 / static_cast<double>(freq.QuadPart);
 }
-
-static const double mPeriod = GetCounterPeriod();
 } // namespace
 
 
@@ -25,6 +23,9 @@ namespace Common {
 
 Timer::Timer()
 {
+    static double gPeriod = GetCounterPeriod();
+    mPeriod = gPeriod;
+
     mStart.QuadPart = 0;
 }
 

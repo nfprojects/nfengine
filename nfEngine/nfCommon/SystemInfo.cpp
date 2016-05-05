@@ -1,5 +1,5 @@
 /**
- * @file   SystemInfo.cpp
+ * @file
  * @author mkulagowski (mkkulagowski(at)gmail.com)
  * @brief  System information API implementation.
  */
@@ -12,22 +12,20 @@
 namespace NFE {
 namespace Common {
 
-std::unique_ptr<SystemInfo> SystemInfo::mInstance = 0;
-
 SystemInfo::SystemInfo()
 {
     InitCPUInfoCommon();
     InitCPUInfoPlatform();
+    InitOSVersion();
+    InitCompilerInfo();
     InitMemoryInfo();
     InitMap();
 }
 
-SystemInfo* SystemInfo::Instance()
+SystemInfo& SystemInfo::Instance()
 {
-    // TODO: This is not thread safe.
-    if (!mInstance)
-        mInstance.reset(new SystemInfo);
-    return mInstance.get();
+    static SystemInfo instance;
+    return instance;
 }
 
 void SystemInfo::InitCPUInfoCommon()
@@ -78,6 +76,12 @@ void SystemInfo::InitCPUInfoCommon()
         }
     }
     mCPUBrand.assign(CPUBrandString);
+    // Intel is known for a long space before CPU name
+    {
+        const size_t strBegin = mCPUBrand.find_first_not_of(" \t");
+        if (strBegin != std::string::npos)
+            mCPUBrand.erase(0, strBegin);
+    }
 
     // Get cache line size
     Cpuid(CPUInfo, CPU_CACHE_LINE_SIZE);
@@ -93,6 +97,21 @@ void SystemInfo::InitCPUInfoCommon()
         timerResult = timer.Stop();
     } while (timerResult < 1);
     mCPUSpeedMHz = (Rdtsc() - cyclesNo) / 1000000;
+}
+
+void SystemInfo::InitCompilerInfo()
+{
+#ifdef _MSC_VER
+    mCompilerInfo = "MSVC++ ";
+
+    // All versions below the newest one can be calculated
+    if (_MSC_VER == 1900)
+        mCompilerInfo += "14";
+    else
+        mCompilerInfo += std::to_string((_MSC_VER / 100) - 6);
+#elif defined NFE_COMPILER
+    mCompilerInfo = NFE_COMPILER;
+#endif
 }
 
 void SystemInfo::InitMap()
@@ -231,6 +250,16 @@ bool SystemInfo::IsFeatureSupported(const std::string& featureName) const
 const std::string& SystemInfo::GetCPUBrand() const
 {
     return mCPUBrand;
+}
+
+const std::string& SystemInfo::GetOSVersion() const
+{
+    return mOSVersion;
+}
+
+const std::string& SystemInfo::GetCompilerInfo() const
+{
+    return mCompilerInfo;
 }
 
 uint64_t SystemInfo::GetCPUCoreNo() const
