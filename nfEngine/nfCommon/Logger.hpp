@@ -66,6 +66,7 @@ class NFCOMMON_API Logger
     Logger& operator= (const Logger&) = delete;
 
     void LogRunTime();
+    void LogSysInfo();
 
 public:
     Logger();
