@@ -10,6 +10,8 @@
 #include "Translations.hpp"
 #include "Shader.hpp"
 #include "VertexLayout.hpp"
+#include "ResourceBinding.hpp"
+#include "Logger.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -103,25 +105,13 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     mInputLayoutDesc.NumElements = static_cast<UINT>(vertexLayout->mElements.size());
     mInputLayoutDesc.pInputElementDescs = vertexLayout->mElements.data();
 
-
-    // create dummy root signature
-
-    D3D12_ROOT_SIGNATURE_DESC rsd;
-    rsd.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-    rsd.NumParameters = 0;
-    rsd.NumStaticSamplers = 0;
-
-    HRESULT hr;
-    D3DPtr<ID3D10Blob> rootSignature, errorsBuffer;
-    hr = D3D_CALL_CHECK(D3D12SerializeRootSignature(&rsd, D3D_ROOT_SIGNATURE_VERSION_1,
-                                                    &rootSignature, &errorsBuffer));
-    if (FAILED(hr))
+    ResourceBindingLayout* resBindingLayout = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout);
+    if (!resBindingLayout)
+    {
+        LOG_ERROR("Invalid resource binding layout");
         return false;
-
-    hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateRootSignature(0,
-                                                                  rootSignature->GetBufferPointer(),
-                                                                  rootSignature->GetBufferSize(),
-                                                                  IID_PPV_ARGS(&mRootSignature)));
+    }
+    mRootSignature = resBindingLayout->mRootSignature.get();
 
     return true;
 }
@@ -143,7 +133,7 @@ bool FullPipelineState::Init(const FullPipelineStateParts& parts)
     nullBytecode.pShaderBytecode = nullptr;
 
     D3D12_GRAPHICS_PIPELINE_STATE_DESC psd;
-    psd.pRootSignature = pipelineState->mRootSignature.get();
+    psd.pRootSignature = pipelineState->mRootSignature;
     psd.VS = mVS ? mVS->GetD3D12Bytecode() : nullBytecode;
     psd.HS = mHS ? mHS->GetD3D12Bytecode() : nullBytecode;
     psd.DS = mDS ? mDS->GetD3D12Bytecode() : nullBytecode;
