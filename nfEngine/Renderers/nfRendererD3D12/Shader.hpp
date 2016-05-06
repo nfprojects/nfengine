@@ -14,10 +14,19 @@ namespace Renderer {
 
 class Shader : public IShader
 {
+    struct ResBinding
+    {
+        ShaderResourceType type;
+        int slot;
+        ResBinding() : type(ShaderResourceType::Unknown), slot(0) { }
+    };
+
+    friend class ShaderProgram;
     friend class CommandBuffer;
 
     ShaderType mType;
     D3DPtr<ID3DBlob> mBytecode;
+    std::map<std::string, ResBinding> mResBindings;
 
     bool GetIODesc();
 
@@ -38,6 +47,10 @@ public:
     const ShaderProgramDesc& GetDesc() const;
     int GetResourceSlotByName(const char* name) override;
 };
+
+extern const int SHADER_TYPE_BIT_OFFSET;
+extern const int SHADER_RES_TYPE_BIT_OFFSET;
+extern const int SHADER_RES_SLOT_MASK;
 
 } // namespace Renderer
 } // namespace NFE

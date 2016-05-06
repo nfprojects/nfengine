@@ -31,6 +31,9 @@ class Device : public IDevice
     D3DPtr<ID3D12Device> mDevice;
     D3DPtr<ID3D12CommandQueue> mCommandQueue;
     D3DPtr<ID3D12DescriptorHeap> mRtvHeap;
+    D3DPtr<ID3D12DescriptorHeap> mCbvSrvUavHeap;
+
+    std::vector<bool> mCbvSrvUavHeapMap;
 
     std::map<FullPipelineStateParts, std::unique_ptr<FullPipelineState>> mPipelineStateMap;
 
@@ -68,6 +71,10 @@ public:
     bool DownloadTexture(ITexture* tex, void* data, int mipmap, int layer) override;
 
     FullPipelineState* GetFullPipelineState(const FullPipelineStateParts& parts);
+
+    void GetCbvSrvUavHeapInfo(UINT& descriptorSize, D3D12_CPU_DESCRIPTOR_HANDLE& ptr);
+    size_t AllocateCbvSrvUavHeap(size_t numDescriptors);
+    void FreeCbvSrvUavHeap(size_t offset, size_t numDescriptors);
 };
 
 } // namespace Renderer

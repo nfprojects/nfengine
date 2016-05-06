@@ -26,6 +26,9 @@ namespace Renderer {
 
 namespace {
 
+// TODO dynamic heap expansion
+const UINT INITIAL_CBV_SRV_UAV_HEAP_SIZE = 1024;
+
 template<typename Type, typename Desc>
 Type* CreateGenericResource(const Desc& desc)
 {
@@ -152,6 +155,18 @@ Device::Device()
     hr = D3D_CALL_CHECK(mDevice->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&mRtvHeap)));
     if (FAILED(hr))
         return;
+
+    D3D12_DESCRIPTOR_HEAP_DESC cbvSrvUavHeapDesc = {};
+    cbvSrvUavHeapDesc.NumDescriptors = INITIAL_CBV_SRV_UAV_HEAP_SIZE;
+    cbvSrvUavHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+    cbvSrvUavHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+    hr = D3D_CALL_CHECK(mDevice->CreateDescriptorHeap(&cbvSrvUavHeapDesc, IID_PPV_ARGS(&mCbvSrvUavHeap)));
+    if (FAILED(hr))
+        return;
+
+    mCbvSrvUavHeapMap.resize(INITIAL_CBV_SRV_UAV_HEAP_SIZE);
+    for (size_t i = 0; i < mCbvSrvUavHeapMap.size(); ++i)
+        mCbvSrvUavHeapMap[i] = false;
 
     // obtain descriptor sizes
     mCbvSrvUavDescSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
@@ -372,6 +387,46 @@ FullPipelineState* Device::GetFullPipelineState(const FullPipelineStateParts& pa
     }
 
     return fullState.get();
+}
+
+void Device::GetCbvSrvUavHeapInfo(UINT& descriptorSize, D3D12_CPU_DESCRIPTOR_HANDLE& ptr)
+{
+    descriptorSize = mCbvSrvUavDescSize;
+    ptr = mCbvSrvUavHeap->GetCPUDescriptorHandleForHeapStart();
+}
+
+size_t Device::AllocateCbvSrvUavHeap(size_t numDescriptors)
+{
+    size_t first = 0;
+    size_t count = 0;
+    for (size_t i = 0; i < mCbvSrvUavHeapMap.size(); ++i)
+    {
+        if (mCbvSrvUavHeapMap[i])
+        {
+            count = 0;
+            first = i + 1;
+            continue;
+        }
+
+        count++;
+        if (count >= numDescriptors)
+        {
+            for (size_t j = first; j < first + count; ++j)
+                mCbvSrvUavHeapMap[i] = true;
+            return first;
+        }
+    }
+
+    LOG_ERROR("Descriptor heap allocation failed");
+    return static_cast<size_t>(-1);
+}
+
+void Device::FreeCbvSrvUavHeap(size_t offset, size_t numDescriptors)
+{
+    assert(offset + numDescriptors < INITIAL_CBV_SRV_UAV_HEAP_SIZE);
+
+    for (size_t i = offset; i < offset + numDescriptors; ++i)
+        mCbvSrvUavHeapMap[i] = true;
 }
 
 } // namespace Renderer
