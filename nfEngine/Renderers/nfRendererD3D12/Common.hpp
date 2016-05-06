@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include "../../nfCommon/nfCommon.hpp"
+
 #ifndef D3D_SAFE_RELEASE
 #define D3D_SAFE_RELEASE(x) { if (x) {(x)->Release(); (x)=0;} }
 #endif // D3D_SAFE_RELEASE

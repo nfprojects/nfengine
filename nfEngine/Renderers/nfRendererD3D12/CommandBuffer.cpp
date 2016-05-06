@@ -19,6 +19,7 @@
 #include "PipelineState.hpp"
 #include "Sampler.hpp"
 #include "Translations.hpp"
+#include "ResourceBinding.hpp"
 #include "../../nfCommon/Logger.hpp"
 #include "../../nfCommon/Win/Common.hpp"  // required for ID3DUserDefinedAnnotation
 
@@ -27,6 +28,7 @@ namespace Renderer {
 
 CommandBuffer::CommandBuffer(ID3D12Device* device)
     : mCurrRenderTarget(nullptr)
+    , mBindingLayout(nullptr)
     , mCurrShaderProgram(nullptr)
     , mShaderProgram(nullptr)
     , mCurrPipelineState(nullptr)
@@ -69,7 +71,11 @@ void CommandBuffer::Reset()
     if (FAILED(hr))
         return;
 
+    ID3D12DescriptorHeap* heaps[] = { gDevice->mCbvSrvUavHeap.get() };
+    mCommandList->SetDescriptorHeaps(1, heaps);
+
     mCurrRenderTarget = nullptr;
+    mBindingLayout = nullptr;
     mCurrShaderProgram = nullptr;
     mShaderProgram = nullptr;
     mCurrPipelineState = nullptr;
@@ -152,8 +158,13 @@ void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat forma
 
 void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance)
 {
-    UNUSED(slot);
-    UNUSED(bindingSetInstance);
+    ResourceBindingInstance* instance = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance);
+    if (!instance)
+        return;
+
+    D3D12_GPU_DESCRIPTOR_HANDLE ptr = gDevice->mCbvSrvUavHeap->GetGPUDescriptorHandleForHeapStart();
+    ptr.ptr += instance->mDescriptorHeapOffset * gDevice->mCbvSrvUavDescSize;
+    mCommandList->SetGraphicsRootDescriptorTable(static_cast<UINT>(slot), ptr);
 }
 
 void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
@@ -233,7 +244,8 @@ void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
 
 void CommandBuffer::SetResourceBindingLayout(IResourceBindingLayout* layout)
 {
-    UNUSED(layout);
+    mBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout);
+    mCommandList->SetGraphicsRootSignature(mBindingLayout->mRootSignature.get());
 }
 
 void CommandBuffer::SetPipelineState(IPipelineState* state)
@@ -249,11 +261,19 @@ void CommandBuffer::SetStencilRef(unsigned char ref)
 
 bool CommandBuffer::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data)
 {
-    UNUSED(buffer);
-    UNUSED(offset);
-    UNUSED(size);
-    UNUSED(data);
-    return false;
+    Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer);
+    if (!bufferPtr || !bufferPtr->mData)
+    {
+        LOG_ERROR("Invalid buffer");
+        return false;
+    }
+
+    if (offset + size > bufferPtr->mSize)
+        return false;
+
+    char* target = reinterpret_cast<char*>(bufferPtr->mData);
+    memcpy(target + offset, data, size);
+    return true;
 }
 
 void CommandBuffer::CopyTexture(ITexture* src, ITexture* dest)
@@ -287,10 +307,13 @@ void CommandBuffer::UpdateStates()
     if (mCurrPipelineState != mPipelineState ||
         mCurrShaderProgram != mShaderProgram)
     {
+        if (mBindingLayout != mPipelineState->mBindingLayout)
+            LOG_ERROR("Resource binding layout mismatch");
+
         FullPipelineStateParts parts(mPipelineState, mShaderProgram);
         FullPipelineState* fullPipelineState = gDevice->GetFullPipelineState(parts);
         mCommandList->SetPipelineState(fullPipelineState->mPipelineState.get());
-        mCommandList->SetGraphicsRootSignature(mPipelineState->mRootSignature.get());
+        mCommandList->SetGraphicsRootSignature(mBindingLayout->mRootSignature.get());
 
         mCurrPipelineState = mPipelineState;
         mCurrShaderProgram = mShaderProgram;

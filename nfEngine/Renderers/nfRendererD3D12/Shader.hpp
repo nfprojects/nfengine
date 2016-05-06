@@ -12,12 +12,25 @@
 namespace NFE {
 namespace Renderer {
 
+#define NFE_D3D12_SHADER_RES_SLOT_MASK       0xFFFF
+#define NFE_D3D12_SHADER_TYPE_BIT_OFFSET     24
+#define NFE_D3D12_SHADER_RES_TYPE_BIT_OFFSET 16
+
 class Shader : public IShader
 {
+    struct ResBinding
+    {
+        ShaderResourceType type;
+        int slot;
+        ResBinding() : type(ShaderResourceType::Unknown), slot(0) { }
+    };
+
+    friend class ShaderProgram;
     friend class CommandBuffer;
 
     ShaderType mType;
     D3DPtr<ID3DBlob> mBytecode;
+    std::map<std::string, ResBinding> mResBindings;
 
     bool GetIODesc();
 
