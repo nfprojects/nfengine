@@ -61,14 +61,14 @@ LoggerBackendHTML::LoggerBackendHTML()
 
 <body>
 <h3>nfEngine - log file</h3>
-<table width="100%%" cellspacing="0" cellpadding="0" bordercolor="080c10" border="0" rules="none">
+<table width="100%%" cellspacing="0" cellpadding="0" bordercolor="080c10" border="1">
 <tr class="table_info">
     <td nowrap="nowrap">[<i>Seconds elapsed</i>] <i>Message...</i></td>
     <td nowrap="nowrap" align="right"><i>SourceFile</i>:<i>LineOfCode</i></td>
 </tr>
 </table><br>
 
-<table width="100%%" cellspacing="0" cellpadding="0" bordercolor="080c10" border="0" rules="none">
+<table width="100%%" cellspacing="0" cellpadding="0" bordercolor="080c10" border="1">
 )";
 
     const std::string logFileName = "log.html";
@@ -105,22 +105,22 @@ void LoggerBackendHTML::Log(LogType type, const char* srcFile, int line, const c
     switch (type)
     {
     case LogType::Info:
-        str0 = "<tr class=\"info\"><td>";
+        str0 = "<tr class=\"info\"><td style='width: 80px'>";
         break;
     case LogType::OK:
-        str0 = "<tr class=\"ok\"><td>";
+        str0 = "<tr class=\"ok\"><td style='width: 80px'>";
         break;
     case LogType::Warning:
-        str0 = "<tr class=\"warn\"><td>";
+        str0 = "<tr class=\"warn\"><td style='width: 80px'>";
         break;
     case LogType::Error:
-        str0 = "<tr class=\"err\"><td>";
+        str0 = "<tr class=\"err\"><td style='width: 80px'>";
         break;
     case LogType::Fatal:
-        str0 = "<tr class=\"fatal\"><td>";
+        str0 = "<tr class=\"fatal\"><td style='width: 80px'>";
         break;
     default:
-        str0 = "<tr class=\"info\"><td>";
+        str0 = "<tr class=\"info\"><td style='width: 80px'>";
         break;
     }
 
@@ -131,7 +131,7 @@ void LoggerBackendHTML::Log(LogType type, const char* srcFile, int line, const c
     const char* str2 = "</td></tr>\n";
 
     // string format for source file and line number information
-    const char* format = R"(%s[%.4f] %s%s<a href="file:///%s">%s</a>:%i%s)";
+    const char* format = R"(%s[%.4f]</td><td>%s%s<a href="file:///%s">%s</a>:%i%s)";
 
 
     size_t pathOffset = Logger::GetInstance()->GetPathPrefixLen();
