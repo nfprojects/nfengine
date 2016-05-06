@@ -26,6 +26,9 @@ namespace Renderer {
 
 namespace {
 
+// TODO dynamic heap expansion
+const UINT INITIAL_CBV_SRV_UAV_HEAP_SIZE = 1024;
+
 template<typename Type, typename Desc>
 Type* CreateGenericResource(const Desc& desc)
 {
@@ -130,6 +133,18 @@ Device::Device()
     D3DPtr<ID3D12InfoQueue> infoQueue;
     if (SUCCEEDED(mDevice->QueryInterface(IID_PPV_ARGS(&infoQueue))))
     {
+        D3D12_MESSAGE_ID messagesToHide[] =
+        {
+            // this warning makes debugging with VS Graphics Debugger impossible
+            D3D12_MESSAGE_ID_MAP_INVALID_NULLRANGE,
+        };
+
+        D3D12_INFO_QUEUE_FILTER filter;
+        memset(&filter, 0, sizeof(filter));
+        filter.DenyList.NumIDs = _countof(messagesToHide);
+        filter.DenyList.pIDList = messagesToHide;
+        infoQueue->AddStorageFilterEntries(&filter);
+
         infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
         infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
         infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE);
@@ -152,6 +167,18 @@ Device::Device()
     hr = D3D_CALL_CHECK(mDevice->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&mRtvHeap)));
     if (FAILED(hr))
         return;
+
+    D3D12_DESCRIPTOR_HEAP_DESC cbvSrvUavHeapDesc = {};
+    cbvSrvUavHeapDesc.NumDescriptors = INITIAL_CBV_SRV_UAV_HEAP_SIZE;
+    cbvSrvUavHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+    cbvSrvUavHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+    hr = D3D_CALL_CHECK(mDevice->CreateDescriptorHeap(&cbvSrvUavHeapDesc, IID_PPV_ARGS(&mCbvSrvUavHeap)));
+    if (FAILED(hr))
+        return;
+
+    mCbvSrvUavHeapMap.resize(INITIAL_CBV_SRV_UAV_HEAP_SIZE);
+    for (size_t i = 0; i < mCbvSrvUavHeapMap.size(); ++i)
+        mCbvSrvUavHeapMap[i] = false;
 
     // obtain descriptor sizes
     mCbvSrvUavDescSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
@@ -362,16 +389,79 @@ bool Device::DownloadTexture(ITexture* tex, void* data, int mipmap, int layer)
     return false;
 }
 
-FullPipelineState* Device::GetFullPipelineState(const FullPipelineStateParts& parts)
+ID3D12PipelineState* Device::GetFullPipelineState(const FullPipelineStateParts& parts)
 {
-    std::unique_ptr<FullPipelineState>& fullState = mPipelineStateMap[parts];
+    D3DPtr<ID3D12PipelineState>& fullState = mPipelineStateMap[parts];
     if (!fullState)
-    {
-        fullState.reset(new FullPipelineState);
-        fullState->Init(parts);
-    }
+        fullState = PipelineState::CreateFullPipelineState(parts);
 
     return fullState.get();
+}
+
+void Device::OnShaderProgramDestroyed(IShaderProgram* program)
+{
+    // TODO this is extremely slow
+
+    std::vector<FullPipelineStateParts> toRemove;
+    for (const auto& pair : mPipelineStateMap)
+        if (std::get<1>(pair.first) == program)
+            toRemove.push_back(pair.first);
+
+    for (const auto& parts : toRemove)
+        mPipelineStateMap.erase(parts);
+}
+
+void Device::OnPipelineStateDestroyed(IPipelineState* pipelineState)
+{
+    // TODO this is extremely slow
+
+    std::vector<FullPipelineStateParts> toRemove;
+    for (const auto& pair : mPipelineStateMap)
+        if (std::get<0>(pair.first) == pipelineState)
+            toRemove.push_back(pair.first);
+
+    for (const auto& parts : toRemove)
+        mPipelineStateMap.erase(parts);
+}
+
+void Device::GetCbvSrvUavHeapInfo(UINT& descriptorSize, D3D12_CPU_DESCRIPTOR_HANDLE& ptr)
+{
+    descriptorSize = mCbvSrvUavDescSize;
+    ptr = mCbvSrvUavHeap->GetCPUDescriptorHandleForHeapStart();
+}
+
+size_t Device::AllocateCbvSrvUavHeap(size_t numDescriptors)
+{
+    size_t first = 0;
+    size_t count = 0;
+    for (size_t i = 0; i < mCbvSrvUavHeapMap.size(); ++i)
+    {
+        if (mCbvSrvUavHeapMap[i])
+        {
+            count = 0;
+            first = i + 1;
+            continue;
+        }
+
+        count++;
+        if (count >= numDescriptors)
+        {
+            for (size_t j = first; j < first + count; ++j)
+                mCbvSrvUavHeapMap[i] = true;
+            return first;
+        }
+    }
+
+    LOG_ERROR("Descriptor heap allocation failed");
+    return static_cast<size_t>(-1);
+}
+
+void Device::FreeCbvSrvUavHeap(size_t offset, size_t numDescriptors)
+{
+    assert(offset + numDescriptors < INITIAL_CBV_SRV_UAV_HEAP_SIZE);
+
+    for (size_t i = offset; i < offset + numDescriptors; ++i)
+        mCbvSrvUavHeapMap[i] = true;
 }
 
 } // namespace Renderer
