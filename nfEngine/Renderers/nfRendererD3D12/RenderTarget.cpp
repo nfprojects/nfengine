@@ -20,6 +20,17 @@ RenderTarget::RenderTarget()
 {
 }
 
+RenderTarget::~RenderTarget()
+{
+    HeapAllocator& allocator = gDevice->GetRtvHeapAllocator();
+
+    for (size_t i = 0; i < 2; ++i)
+    {
+        for (uint32 offset : mRTVs[i])
+            allocator.Free(offset, 1);
+    }
+}
+
 void RenderTarget::GetDimensions(int& width, int& height)
 {
     width = mWidth;
@@ -28,7 +39,7 @@ void RenderTarget::GetDimensions(int& width, int& height)
 
 bool RenderTarget::Init(const RenderTargetDesc& desc)
 {
-    D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = gDevice->mRtvHeap->GetCPUDescriptorHandleForHeapStart();
+    HeapAllocator& rtvAllocator = gDevice->GetRtvHeapAllocator();
 
     for (unsigned int i = 0; i < desc.numTargets; ++i)
     {
@@ -42,10 +53,14 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         // Create a RTV for each frame
         for (UINT n = 0; n < tex->mBuffersNum; n++)
         {
-            gDevice->mDevice->CreateRenderTargetView(tex->mBuffers[n].get(), nullptr, rtvHandle);
-            mRTVs[n].push_back(rtvHandle);
+            uint32 offset = rtvAllocator.Allocate(1);
+            if (offset == UINT32_MAX)
+                return false;
 
-            rtvHandle.ptr += gDevice->mRtvDescSize;
+            D3D12_CPU_DESCRIPTOR_HANDLE handle = rtvAllocator.GetCpuHandle();
+            handle.ptr += rtvAllocator.GetDescriptorSize() * offset;
+            gDevice->mDevice->CreateRenderTargetView(tex->mBuffers[n].get(), nullptr, handle);
+            mRTVs[n].push_back(offset);
         }
 
         mTextures.push_back(tex);
