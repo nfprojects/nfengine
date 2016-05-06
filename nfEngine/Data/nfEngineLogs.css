@@ -1,0 +1,126 @@
+body {
+   background: #000000 ;
+   color: #E0E0E0 ;
+   margin-right: 6px;
+   margin-left: 6px;
+   font-size: 13px;
+   font-family: "Lucida Console", monospace, sans-serif;
+}
+a {
+   text-decoration: none;
+}
+a:link {
+   color: #b4c8d2 ;
+}
+a:active {
+   color: #ff9900 ;
+}
+a:visited {
+   color: #b4c8d2 ;
+}
+a:hover {
+   color: #ff9900 ;
+}
+h1 {
+   text-align: center;
+}
+h2 {
+   color: #ffffff ;
+}
+.dbg {
+   background-color: #000000 ;
+   color: #333399 ;
+   padding: 0px;
+}
+.dbg:hover {
+   background-color: #101030 ;
+   color: #4040ff ;
+   padding: 0px;
+}
+.info {
+   background-color: #000000 ;
+   color: #d4d8d2 ;
+   padding: 0px;
+}
+.info:hover {
+   background-color: #202020 ;
+   color: #ffffff ;
+   padding: 0px;
+}
+.ok {
+   background-color: #091D09 ;
+   color: #339933 ;
+   padding: 0px;
+}
+.ok:hover {
+   background-color: #123A12 ;
+   color: #40ff40 ;
+   padding: 0px;
+}
+.warn {
+   background-color: #282410 ;
+   color: #ba8d3b ;
+   padding: 0px;
+}
+.warn:hover {
+   background-color: #504820 ;
+   color: #fcc35b ;
+   padding: 0px;
+}
+.err {
+   background-color: #301010 ;
+   color: #b43434 ;
+   padding: 0px;
+}
+.err:hover {
+   background-color: #602020 ;
+   color: #ff4040 ;
+   padding: 0px;
+}
+.fatal {
+   background-color: #ff0000 ;
+   color: #000000 ;
+   padding: 0px;
+}
+.fatal:hover {
+   background-color: #303030 ;
+   color: #ff0000 ;
+   padding: 0px;
+}
+
+
+<!-- Style for filtering related stuff -->
+
+table {
+   background-color: #000000 ;
+   border: 0;
+   border-spacing: 0;
+   font-family: inherit;
+   -webkit-box-sizing: border-box;
+   -moz-box-sizing: border-box;
+   box-sizing: border-box;
+}
+table th {
+   text-align: left;
+   height: 35px;
+   margin: 0;
+   background-color: #575757 ;
+   border-bottom: 1px solid #959595 ;
+   border-top: 1px solid #3c3c3c ;
+   border-left: 1px solid #3c3c3c ;
+   border-right: 1px solid #959595 ;
+   padding: .1em .7em;
+   color: #fff;
+}
+table th:last-child {
+   border-right: 1px solid #959595 
+}
+input {
+ width: 100%;
+ height: 75%
+}
+table td {
+   margin: 0;
+   padding: .5em .7em;
+   border-bottom: 1px solid #959595 
+}
