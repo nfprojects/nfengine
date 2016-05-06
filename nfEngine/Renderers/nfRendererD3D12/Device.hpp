@@ -27,6 +27,9 @@ class Device : public IDevice
     D3DPtr<ID3D12Device> mDevice;
     D3DPtr<ID3D12CommandQueue> mCommandQueue;
     D3DPtr<ID3D12DescriptorHeap> mRtvHeap;
+    D3DPtr<ID3D12DescriptorHeap> mCbvSrvUavHeap;
+
+    std::vector<bool> mCbvSrvUavHeapMap;
 
     std::unique_ptr<CommandBuffer> mDefaultCommandBuffer;
 
@@ -64,6 +67,10 @@ public:
     ICommandBuffer* CreateCommandBuffer() override;
 
     FullPipelineState* GetFullPipelineState(const FullPipelineStateParts& parts);
+
+    void GetCbvSrvUavHeapInfo(UINT& descriptorSize, D3D12_CPU_DESCRIPTOR_HANDLE& ptr);
+    size_t AllocateCbvSrvUavHeap(size_t numDescriptors);
+    void FreeCbvSrvUavHeap(size_t offset, size_t numDescriptors);
 };
 
 } // namespace Renderer

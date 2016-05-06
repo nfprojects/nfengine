@@ -13,16 +13,21 @@ namespace NFE {
 namespace Renderer {
 
 Buffer::Buffer()
+    : mSize(0)
+    , mData(nullptr)
 {
 }
 
 bool Buffer::Init(const BufferDesc& desc)
 {
-    if (desc.type == BufferType::Constant)
+    if (desc.access == BufferAccess::GPU_ReadWrite || desc.access == BufferAccess::CPU_Read)
     {
-        LOG_ERROR("Only vertex buffers are supported now");
+        LOG_ERROR("This access mode is not supported yet.");
         return false;
     }
+
+    // buffer size is required to be 256-byte aligned
+    mSize = (desc.size + 255) & ~255;
 
     D3D12_HEAP_PROPERTIES heapProperties;
     heapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
@@ -34,7 +39,7 @@ bool Buffer::Init(const BufferDesc& desc)
     D3D12_RESOURCE_DESC resourceDesc;
     resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
     resourceDesc.Alignment = 0;
-    resourceDesc.Width = desc.size;
+    resourceDesc.Width = mSize;
     resourceDesc.Height = 1;
     resourceDesc.DepthOrArraySize = 1;
     resourceDesc.MipLevels = 1;
@@ -54,22 +59,27 @@ bool Buffer::Init(const BufferDesc& desc)
     if (FAILED(hr))
         return false;
 
+    D3D12_RANGE range;
+    range.Begin = 0;
+    range.End = 0;
+    if (FAILED(D3D_CALL_CHECK(mResource->Map(0, &range, &mData))))
+        return false;
+
     // write initial data
     if (desc.initialData)
+        memcpy(mData, desc.initialData, desc.size);
+
+    if (desc.access == BufferAccess::GPU_ReadOnly)
     {
-        D3D12_RANGE range;
-        range.Begin = 0;
-        range.End = 0;
-
-        void* mappedData;
-        if (FAILED(D3D_CALL_CHECK(mResource->Map(0, &range, &mappedData))))
-            return false;
-
-        memcpy(mappedData, desc.initialData, desc.size);
         mResource->Unmap(0, nullptr);
+        mData = nullptr;
+
+        if (!desc.initialData)
+            LOG_WARNING("Initial data for GPU read-only buffer was not provided.");
     }
 
-    mSize = desc.size;
+    mType = desc.type;
+    mAccess = desc.access;
     return true;
 }
 
