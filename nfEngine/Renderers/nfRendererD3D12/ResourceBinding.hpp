@@ -15,6 +15,7 @@ namespace Renderer {
 class ResourceBindingSet : public IResourceBindingSet
 {
     friend class ResourceBindingInstance;
+    friend class ResourceBindingLayout;
     friend class CommandBuffer;
 
     std::vector<ResourceBindingDesc> mBindings;
@@ -27,6 +28,10 @@ public:
 class ResourceBindingLayout : public IResourceBindingLayout
 {
     friend class CommandBuffer;
+    friend class PipelineState;
+
+    D3DPtr<ID3D12RootSignature> mRootSignature;
+    std::vector<ResourceBindingSet*> mBindingSets;
 
 public:
     bool Init(const ResourceBindingLayoutDesc& desc) override;
@@ -36,7 +41,12 @@ class ResourceBindingInstance : public IResourceBindingInstance
 {
     friend class CommandBuffer;
 
+    size_t mDescriptorHeapOffset;
+    ResourceBindingSet* mSet;
+
 public:
+    ResourceBindingInstance() : mDescriptorHeapOffset(0), mSet(nullptr) { }
+    ~ResourceBindingInstance();
     bool Init(IResourceBindingSet* bindingSet) override;
     bool WriteTextureView(size_t slot, ITexture* texture, ISampler* sampler) override;
     bool WriteCBufferView(size_t slot, IBuffer* buffer) override;

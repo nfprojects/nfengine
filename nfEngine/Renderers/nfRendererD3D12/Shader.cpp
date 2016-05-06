@@ -119,6 +119,9 @@ bool Shader::Init(const ShaderDesc& desc)
         return false;
     }
 
+    if (!GetIODesc())
+        return false;
+
     LOG_SUCCESS("Shader '%s' compiled successfully", desc.path);
     return true;
 }
@@ -174,8 +177,71 @@ D3D12_SHADER_BYTECODE Shader::GetD3D12Bytecode() const
 
 bool Shader::GetIODesc()
 {
-    // TODO
-    return false;
+    HRESULT hr;
+
+    ID3DBlob* bytecode = mBytecode.get();
+    if (bytecode == nullptr)
+    {
+        LOG_ERROR("Shader is not compiled");
+        return false;
+    }
+
+    // get reflector object
+    D3DPtr<ID3D11ShaderReflection> reflection;
+    hr = D3D_CALL_CHECK(D3DReflect(bytecode->GetBufferPointer(), bytecode->GetBufferSize(),
+                                   IID_PPV_ARGS(&reflection)));
+    if (FAILED(hr))
+        return false;
+
+    // TODO add support for ID3D12ShaderReflection for Shader Model 5.1
+
+    // get shader descriptior via reflector
+    D3D11_SHADER_DESC desc;
+    hr = D3D_CALL_CHECK(reflection->GetDesc(&desc));
+    if (FAILED(hr))
+        return false;
+
+    for (UINT i = 0; i < desc.BoundResources; ++i)
+    {
+        D3D11_SHADER_INPUT_BIND_DESC d3dBindingDesc;
+        hr = D3D_CALL_CHECK(reflection->GetResourceBindingDesc(i, &d3dBindingDesc));
+        if (FAILED(hr))
+        {
+            LOG_ERROR("Failed to parse resource binding, i = %d", i);
+            return false;
+        }
+
+        ResBinding bindingDesc;
+        bindingDesc.slot = d3dBindingDesc.BindPoint;
+
+        switch (d3dBindingDesc.Type)
+        {
+        case D3D_SIT_CBUFFER:
+            bindingDesc.type = ShaderResourceType::CBuffer;
+            break;
+        case D3D_SIT_TEXTURE:
+            bindingDesc.type = ShaderResourceType::Texture;
+            break;
+        case D3D_SIT_SAMPLER:
+            bindingDesc.type = ShaderResourceType::Sampler;
+            break;
+        default:
+            LOG_WARNING("Unsupported shader resource type (%d) at slot %d (name: '%s')",
+                        d3dBindingDesc.Type, i, d3dBindingDesc.Name);
+            continue;
+        }
+
+        std::string name = d3dBindingDesc.Name;
+        if (mResBindings.find(name) != mResBindings.end())
+        {
+            LOG_ERROR("Multiple declarations of shader resource named '%s'", d3dBindingDesc.Name);
+            return false;
+        }
+
+        mResBindings[name] = bindingDesc;
+    }
+
+    return true;
 }
 
 } // namespace Renderer
