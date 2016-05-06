@@ -11,6 +11,7 @@
 #include "RenderTarget.hpp"
 #include "Shader.hpp"
 #include "PipelineState.hpp"
+#include "ResourceBinding.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -29,6 +30,8 @@ class CommandBuffer : public ICommandBuffer
     D3DPtr<ID3D12GraphicsCommandList> mCommandList;
 
     RenderTarget* mCurrRenderTarget;
+    ResourceBindingLayout* mBindingLayout;
+    ResourceBindingLayout* mCurrBindingLayout;
     ShaderProgram* mCurrShaderProgram;
     ShaderProgram* mShaderProgram;
     PipelineState* mCurrPipelineState;

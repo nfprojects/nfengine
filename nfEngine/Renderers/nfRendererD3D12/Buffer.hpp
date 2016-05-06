@@ -15,8 +15,10 @@ namespace Renderer {
 class Buffer : public IBuffer
 {
     friend class CommandBuffer;
+    friend class ResourceBindingInstance;
 
     size_t mSize;
+    void* mData; // mapped data
     BufferType mType;
     BufferAccess mAccess;
 

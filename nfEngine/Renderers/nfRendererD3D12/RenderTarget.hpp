@@ -26,12 +26,13 @@ class RenderTarget : public IRenderTarget
 
     // TODO: temporary
     std::vector<Texture*> mTextures;
-    std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> mRTVs[2];
+    std::vector<uint32> mRTVs[2];
 
     // TODO depth buffer
 
 public:
     RenderTarget();
+    ~RenderTarget();
     void GetDimensions(int& width, int& height);
     bool Init(const RenderTargetDesc& desc);
 };
