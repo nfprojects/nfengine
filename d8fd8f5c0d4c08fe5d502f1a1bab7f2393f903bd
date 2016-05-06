@@ -1,0 +1,186 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_c518e820",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-06T15:21:38Z",
+      "side": 1,
+      "message": "const int",
+      "revId": "d8fd8f5c0d4c08fe5d502f1a1bab7f2393f903bd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_450df8e6",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-06T15:21:38Z",
+      "side": 1,
+      "message": "This way you are measuring performance of the logger and timer overhead... Surround only LOG_WARNING with for loop and use Stop and Start methods only once, not 10000 times...",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 5
+      },
+      "revId": "d8fd8f5c0d4c08fe5d502f1a1bab7f2393f903bd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_05fc90b6",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-06T15:21:38Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "d8fd8f5c0d4c08fe5d502f1a1bab7f2393f903bd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_85d5401d",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-06T15:21:38Z",
+      "side": 1,
+      "message": "This is a little bit misleading - I suggest creating local variable named \"longMessageLength\" or sth. And 10k is too small IMO - go with 100k",
+      "revId": "d8fd8f5c0d4c08fe5d502f1a1bab7f2393f903bd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c50108b1",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-06T15:21:38Z",
+      "side": 1,
+      "message": "I would reduce strings in the format to minimum. Ideally, format string should look like \"%s%i%u%s%i%u%s%i%u\"",
+      "revId": "d8fd8f5c0d4c08fe5d502f1a1bab7f2393f903bd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a5fe04ac",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-06T15:21:38Z",
+      "side": 1,
+      "message": "shouldn\u0027t be %f?",
+      "range": {
+        "startLine": 120,
+        "startChar": 73,
+        "endLine": 120,
+        "endChar": 75
+      },
+      "revId": "d8fd8f5c0d4c08fe5d502f1a1bab7f2393f903bd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_65335cac",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-06T15:21:38Z",
+      "side": 1,
+      "message": "as in the first comment",
+      "revId": "d8fd8f5c0d4c08fe5d502f1a1bab7f2393f903bd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_4524d85e",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-06T15:21:38Z",
+      "side": 1,
+      "message": "as in the first comment",
+      "revId": "d8fd8f5c0d4c08fe5d502f1a1bab7f2393f903bd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_05237057",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-06T15:21:38Z",
+      "side": 1,
+      "message": "Reduce strings lengths",
+      "revId": "d8fd8f5c0d4c08fe5d502f1a1bab7f2393f903bd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_e51f6c06",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-06T15:21:38Z",
+      "side": 1,
+      "message": "And lines too long",
+      "revId": "d8fd8f5c0d4c08fe5d502f1a1bab7f2393f903bd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
