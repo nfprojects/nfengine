@@ -193,6 +193,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Backbuffer.cpp" />
+    <ClCompile Include="HeapAllocator.cpp" />
     <ClCompile Include="PipelineState.cpp" />
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="CommandBuffer.cpp" />
@@ -234,6 +235,7 @@
     <ClInclude Include="CommandBuffer.hpp" />
     <ClInclude Include="Common.hpp" />
     <ClInclude Include="Device.hpp" />
+    <ClInclude Include="HeapAllocator.hpp" />
     <ClInclude Include="PipelineState.hpp" />
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="RendererD3D12.hpp" />

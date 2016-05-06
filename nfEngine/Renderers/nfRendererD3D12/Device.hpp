@@ -9,6 +9,7 @@
 #include "../RendererInterface/Device.hpp"
 #include "Common.hpp"
 #include "PipelineState.hpp"
+#include "HeapAllocator.hpp"
 
 #include <map>
 
@@ -30,18 +31,17 @@ class Device : public IDevice
     D3DPtr<IDXGIAdapter> mPrimaryAdapter;
     D3DPtr<ID3D12Device> mDevice;
     D3DPtr<ID3D12CommandQueue> mCommandQueue;
-    D3DPtr<ID3D12DescriptorHeap> mRtvHeap;
 
-    std::map<FullPipelineStateParts, std::unique_ptr<FullPipelineState>> mPipelineStateMap;
+    HeapAllocator mCbvSrvUavHeapAllocator;
+    HeapAllocator mRtvHeapAllocator;
+    HeapAllocator mDsvHeapAllocator;
 
-    UINT mCbvSrvUavDescSize;
-    UINT mSamplerDescSize;
-    UINT mRtvDescSize;
-    UINT mDsvDescSize;
+    std::map<FullPipelineStateParts, D3DPtr<ID3D12PipelineState>> mPipelineStateMap;
 
 public:
     Device();
     ~Device();
+    bool Init();
 
     ID3D12Device* GetDevice() const;
     void* GetHandle() const override;
@@ -67,7 +67,29 @@ public:
     bool DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data) override;
     bool DownloadTexture(ITexture* tex, void* data, int mipmap, int layer) override;
 
-    FullPipelineState* GetFullPipelineState(const FullPipelineStateParts& parts);
+    ID3D12PipelineState* GetFullPipelineState(const FullPipelineStateParts& parts);
+    void OnShaderProgramDestroyed(IShaderProgram* program);
+    void OnPipelineStateDestroyed(IPipelineState* pipelineState);
+
+    /**
+     * Waits until all operations sent to the command queue has been completed.
+     */
+    bool WaitForGPU();
+
+    NFE_INLINE HeapAllocator& GetCbvSrvUavHeapAllocator()
+    {
+        return mCbvSrvUavHeapAllocator;
+    }
+
+    NFE_INLINE HeapAllocator& GetRtvHeapAllocator()
+    {
+        return mRtvHeapAllocator;
+    }
+
+    NFE_INLINE HeapAllocator& GetDsvHeapAllocator()
+    {
+        return mDsvHeapAllocator;
+    }
 };
 
 } // namespace Renderer
