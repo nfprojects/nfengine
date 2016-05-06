@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_c5490862",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T15:06:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_8a330f14",
+      "revId": "c90348ffb4636b52a018692ead904d36efa6bf14",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_4a3987f1",
         "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2016-05-06T13:53:02Z",
       "side": 1,
       "message": "as above",
+      "revId": "c90348ffb4636b52a018692ead904d36efa6bf14",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a546044d",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T15:06:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_4a3987f1",
       "revId": "c90348ffb4636b52a018692ead904d36efa6bf14",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_857660a2",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T15:06:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_6a38cbef",
+      "revId": "c90348ffb4636b52a018692ead904d36efa6bf14",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_2a3e43da",
         "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
         "patchSetId": 1
@@ -64,6 +118,24 @@
       "writtenOn": "2016-05-06T13:53:02Z",
       "side": 1,
       "message": "as above",
+      "revId": "c90348ffb4636b52a018692ead904d36efa6bf14",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_657b5c8d",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T15:06:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_2a3e43da",
       "revId": "c90348ffb4636b52a018692ead904d36efa6bf14",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_456cd8cf",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T15:06:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_0a281f99",
+      "revId": "c90348ffb4636b52a018692ead904d36efa6bf14",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_ea24dbc5",
         "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
         "patchSetId": 1
@@ -98,6 +188,24 @@
       "writtenOn": "2016-05-06T13:53:02Z",
       "side": 1,
       "message": "as above",
+      "revId": "c90348ffb4636b52a018692ead904d36efa6bf14",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2571d4a8",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T15:06:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_ea24dbc5",
       "revId": "c90348ffb4636b52a018692ead904d36efa6bf14",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_056b70b8",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T15:06:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_ca2d97a9",
+      "revId": "c90348ffb4636b52a018692ead904d36efa6bf14",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_aa2a538e",
         "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
         "patchSetId": 1
@@ -132,6 +258,24 @@
       "writtenOn": "2016-05-06T13:53:02Z",
       "side": 1,
       "message": "as above",
+      "revId": "c90348ffb4636b52a018692ead904d36efa6bf14",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_e5676ce7",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T15:06:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_aa2a538e",
       "revId": "c90348ffb4636b52a018692ead904d36efa6bf14",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -155,6 +299,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_c560e8d1",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T15:06:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_8a1aef7b",
+      "revId": "c90348ffb4636b52a018692ead904d36efa6bf14",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_aa013308",
         "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
         "patchSetId": 1
@@ -166,6 +328,24 @@
       "writtenOn": "2016-05-06T13:53:02Z",
       "side": 1,
       "message": "What does this test? Logging 1 char, 2 char, etc.? There will be slight differences. I would log long, formatted messages (10000 characters)",
+      "revId": "c90348ffb4636b52a018692ead904d36efa6bf14",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a55de416",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T15:06:00Z",
+      "side": 1,
+      "message": "This test logged powers of 2 starting with length 4, up to 32k.\n\nI guess You\u0027re right - I\u0027ll just log long messages.",
+      "parentUuid": "baa041b7_aa013308",
       "revId": "c90348ffb4636b52a018692ead904d36efa6bf14",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -195,6 +375,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_859d40be",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T15:06:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_4a106759",
+      "range": {
+        "startLine": 96,
+        "startChar": 24,
+        "endLine": 96,
+        "endChar": 26
+      },
+      "revId": "c90348ffb4636b52a018692ead904d36efa6bf14",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_6a1fab6c",
         "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
         "patchSetId": 1
@@ -212,6 +416,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_65a23cff",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T15:06:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_6a1fab6c",
+      "revId": "c90348ffb4636b52a018692ead904d36efa6bf14",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_ca047719",
         "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
         "patchSetId": 1
@@ -223,6 +445,24 @@
       "writtenOn": "2016-05-06T13:53:02Z",
       "side": 1,
       "message": "as above",
+      "revId": "c90348ffb4636b52a018692ead904d36efa6bf14",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_45a3b800",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T15:06:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_ca047719",
       "revId": "c90348ffb4636b52a018692ead904d36efa6bf14",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
