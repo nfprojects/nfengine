@@ -27,6 +27,7 @@ class Device : public IDevice
     D3DPtr<ID3D12Device> mDevice;
     D3DPtr<ID3D12CommandQueue> mCommandQueue;
     D3DPtr<ID3D12DescriptorHeap> mRtvHeap;
+    D3DPtr<ID3D12DescriptorHeap> mCbvSrvUavHeap;
 
     std::unique_ptr<CommandBuffer> mDefaultCommandBuffer;
 

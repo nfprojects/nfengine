@@ -298,7 +298,7 @@ void CommandBuffer::UpdateStates()
         FullPipelineStateParts parts(mPipelineState, mShaderProgram);
         FullPipelineState* fullPipelineState = gDevice->GetFullPipelineState(parts);
         mCommandList->SetPipelineState(fullPipelineState->mPipelineState.get());
-        mCommandList->SetGraphicsRootSignature(mPipelineState->mRootSignature.get());
+        mCommandList->SetGraphicsRootSignature(mPipelineState->mRootSignature);
 
         mCurrPipelineState = mPipelineState;
         mCurrShaderProgram = mShaderProgram;

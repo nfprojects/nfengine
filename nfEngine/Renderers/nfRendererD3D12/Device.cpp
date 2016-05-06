@@ -142,6 +142,14 @@ Device::Device()
     if (FAILED(hr))
         return;
 
+    D3D12_DESCRIPTOR_HEAP_DESC cbvSrvUavHeapDesc = {};
+    cbvSrvUavHeapDesc.NumDescriptors = 1024; // TODO dynamic heap expansion
+    cbvSrvUavHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+    cbvSrvUavHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+    hr = D3D_CALL_CHECK(mDevice->CreateDescriptorHeap(&cbvSrvUavHeapDesc, IID_PPV_ARGS(&mCbvSrvUavHeap)));
+    if (FAILED(hr))
+        return;
+
     // obtain descriptor sizes
     mCbvSrvUavDescSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
     LOG_DEBUG("CBV/SRV/UAV descriptor heap handle increment: %u", mCbvSrvUavDescSize);

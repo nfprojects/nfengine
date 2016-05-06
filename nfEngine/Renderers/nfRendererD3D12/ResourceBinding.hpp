@@ -15,6 +15,7 @@ namespace Renderer {
 class ResourceBindingSet : public IResourceBindingSet
 {
     friend class ResourceBindingInstance;
+    friend class ResourceBindingLayout;
     friend class CommandBuffer;
 
     std::vector<ResourceBindingDesc> mBindings;
@@ -27,6 +28,10 @@ public:
 class ResourceBindingLayout : public IResourceBindingLayout
 {
     friend class CommandBuffer;
+    friend class PipelineState;
+
+    D3DPtr<ID3D12RootSignature> mRootSignature;
+    std::vector<ResourceBindingSet*> mBindingSets;
 
 public:
     bool Init(const ResourceBindingLayoutDesc& desc) override;
