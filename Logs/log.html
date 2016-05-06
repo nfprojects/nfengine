@@ -1,0 +1,235 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<title>nfEngine log</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<style type="text/css">
+body { background: #000000; color: #E0E0E0; margin-right: 6px; margin-left: 6px;
+font-size: 13px; font-family: "Lucida Console", monospace, sans-serif; }
+a { text-decoration: none; }
+a:link { color: #b4c8d2; }
+a:active { color: #ff9900; }
+a:visited { color: #b4c8d2; }
+a:hover { color: #ff9900; }
+h1 { text-align: center; }
+h2 { color: #ffffff; }
+.dbg, .info, .ok, .warn, .err, .fatal,
+.dbg { background-color: #000000; color: #333399; padding: 0px; }
+.dbg:hover { background-color: #101030; color: #4040ff; padding: 0px; }
+.info { background-color: #000000; color: #d4d8d2; padding: 0px; }
+.info:hover { background-color: #202020; color: #ffffff; padding: 0px; }
+.ok { background-color: #000000; color: #339933; padding: 0px; }
+.ok:hover { background-color: #103010; color: #40ff40; padding: 0px; }
+.warn { background-color: #281c10; color: #F2B13A; padding: 0px; }
+.warn:hover { background-color: #303030; color: #ff7b00; padding: 0px; }
+.err { background-color: #301010; color: #ff5e5e; padding: 0px; }
+.err:hover { background-color: #602020; color: #ffffff; padding: 0px; }
+.fatal { background-color: #ff0000; color: #000000; padding: 0px; }
+.fatal:hover { background-color: #303030; color: #ff0000; padding: 0px; }
+
+<!-- Style for filtering related stuff -->
+table { background-color: #000;
+        border: 0;
+        border-spacing: 0;
+        font-family: inherit;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box; }
+table th { 
+           text-align: left;
+           height: 35px;
+           margin: 0;
+           background-color: #575757;
+           border-bottom: 1px solid #959595;
+           border-top: 1px solid #3c3c3c;
+           border-left: 1px solid #3c3c3c;
+           border-right: 1px solid #959595;
+           padding: .1em .7em;
+           color:#fff; }
+table th:last-child { border-right: 1px solid #959595 }
+.fltrow { height: 1em;
+          background-color: #575757;
+          -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          box-sizing: border-box; }
+.fltrow td { border-bottom: 1px solid #959595;
+             border-top: 1px solid #3c3c3c;
+             border-left: 1px solid #3c3c3c;
+             border-right: 1px solid #959595;
+             padding: .2em; }
+.fltrow td:last-child { border-right: 1px solid #959595 }
+table td{ margin: 0;
+          padding: .5em .7em;
+          border-bottom: 1px solid #959595
+        }
+.flt { font-family: inherit;
+       display: block;
+       color: #e0e0e0;
+       border: 1px outset #696969;
+       background-color: #000;
+       margin: 0;
+       padding: 0 0 0 .2em;
+       width: 100%;
+       height: 35px;
+       vertical-align: middle;
+       border-radius: 2px;
+       box-sizing: border-box; }
+.flt:focus { border-color: #66e968;
+             outline: 0 none;
+             -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(102, 233, 117, 0.6);
+             -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(102, 233, 117, 0.6);
+             box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(102, 233, 117, 0.6) }
+
+
+             
+             
+.loader { position: absolute;
+          padding: .5em .7em;
+          margin: 10em 0 0 3em;
+          width: auto;
+          z-index: 1000;
+          font-weight: 600;
+          background-color: #a7a7a8;
+          vertical-align: middle;
+          border-radius: 10px;
+          color: #fff;
+          text-shadow: 1px 1px #333 }
+
+
+
+.inf a { color: #b4c8d2;
+        text-decoration: none;
+        font-weight: bold;
+        box-sizing: initial; }
+        
+.inf a:hover { color: #ff9900; }
+span.keyword {
+    font-weight: 700;
+    font-style: italic;
+    border-bottom: 1px dotted #ccc; }
+.rdiv{float:right;width:30%;position:inherit;text-align:left}
+div.helpCont{position:relative;background:#fff;-webkit-box-shadow:3px 3px 2px #888;-moz-box-shadow:3px 3px 2px #888;box-shadow:3px 3px 2px #888;position:absolute;display:none;width:300px;padding:10px;margin:45px 0 0 -150px;border:1px solid #ccc;line-height:20px;font-size:inherit;color:#333;background:#fff;text-align:left;}
+div.helpCont:after,div.helpCont:before{bottom:100%;left:50%;border:solid transparent;content:" ";height:0;width:0;position:absolute;pointer-events:none}
+div.helpCont:after{border-color:rgba(255,255,255,0);border-bottom-color:#fff;border-width:10px;margin-left:-10px}
+div.helpCont:before{border-color:rgba(255,255,255,0);border-bottom-color:#ccc;border-width:12px;margin-left:-12px}
+div.helpCont a{color:#c00;text-decoration:underline;font-weight:normal}
+div.helpCont a.close{color:#333 !important;text-decoration:none !important;font-weight:bold;}
+div.helpCont a.close:hover{text-decoration:none}
+div.helpCont hr{border:1px solid #ccc}
+div.helpFooter{margin:10px 0 0 0;}
+div.helpFooter h4{margin:2px 2px 2px 2px;color:#333}
+.helpBtn{display:inline-block;height:27px;margin:0;padding:8px 15px 0 15px;vertical-align:top;}
+.helpBtn:hover{background-color:#424242}
+input.reset{display:inline-block;width:35px;height:35px;border:0;background:transparent url("../nfEngineDeps/TableFilter/style/themes/btn_clear_filters.png") center center no-repeat;vertical-align:top;}
+input.reset:hover{background-color:#424242}
+.no-results{display:none;color:#fff;margin:0;padding:1em 0;text-align:center;max-height:5em;background-color:#424242}
+</style>
+</head>
+
+<body>
+<h3>nfEngine - log file</h3>
+<table id='log' width="100%" cellspacing="0" cellpadding="0" bordercolor="080c10" border="0">
+<col width='7%' valign='top'>
+<col width='74%' valign='top'>
+<col width='19%' valign='middle'>
+<thead>
+<tr>
+    <th>Seconds elapsed</th>
+    <th>Message...</th>
+    <th>SourceFile:LineOfCode</th>
+</tr>
+<tr class="info"><td valign='top'>[0.0000]</td><td>nfCommon build date: May 10 2016, 10:57:17</td><td nowrap='nowrap'><a href="file:///e:\git\nfengine\nfengine\nfcommon\logger.cpp">nfengine\nfcommon\logger.cpp</a>:54</td></tr>
+<tr class="info"><td valign='top'>[0.0000]</td><td>nfCommon built with SSE instructions</td><td nowrap='nowrap'><a href="file:///e:\git\nfengine\nfengine\nfcommon\logger.cpp">nfengine\nfcommon\logger.cpp</a>:57</td></tr>
+<tr class="info"><td valign='top'>[0.0000]</td><td>nfCommon built with SSE4.1 instructions</td><td nowrap='nowrap'><a href="file:///e:\git\nfengine\nfengine\nfcommon\logger.cpp">nfengine\nfcommon\logger.cpp</a>:59</td></tr>
+<tr class="info"><td valign='top'>[0.0000]</td><td>Run date: May 10 2016, 12:21:26</td><td nowrap='nowrap'><a href="file:///e:\git\nfengine\nfengine\nfcommon\logger.cpp">nfengine\nfcommon\logger.cpp</a>:93</td></tr>
+<tr class="info"><td valign='top'>[0.0153]</td><td>Current directory changed to: 'E:\git\nfengine\Bin\x64\Debug/../../..'</td><td nowrap='nowrap'><a href="file:///e:\git\nfengine\nfengine\nfcommon\win\filesystem.cpp">nfengine\nfcommon\win\filesystem.cpp</a>:136</td></tr>
+<tr class="info"><td valign='top'>[0.1003]</td><td>Test log - debug</td><td nowrap='nowrap'><a href="file:///e:\git\nfengine\nfengine\nfcommontest\loggertest.cpp">nfengine\nfcommontest\loggertest.cpp</a>:20</td></tr>
+<tr class="info"><td valign='top'>[0.1004]</td><td>Test stream log - debug</td><td nowrap='nowrap'><a href="file:///e:\git\nfengine\nfengine\nfcommontest\loggertest.cpp">nfengine\nfcommontest\loggertest.cpp</a>:21</td></tr>
+<tr class="info"><td valign='top'>[0.1005]</td><td>Test log - info</td><td nowrap='nowrap'><a href="file:///e:\git\nfengine\nfengine\nfcommontest\loggertest.cpp">nfengine\nfcommontest\loggertest.cpp</a>:22</td></tr>
+<tr class="info"><td valign='top'>[0.1005]</td><td>Test stream log - info</td><td nowrap='nowrap'><a href="file:///e:\git\nfengine\nfengine\nfcommontest\loggertest.cpp">nfengine\nfcommontest\loggertest.cpp</a>:23</td></tr>
+<tr class="ok"><td valign='top'>[0.1006]</td><td>Test log - success</td><td nowrap='nowrap'><a href="file:///e:\git\nfengine\nfengine\nfcommontest\loggertest.cpp">nfengine\nfcommontest\loggertest.cpp</a>:24</td></tr>
+<tr class="ok"><td valign='top'>[0.1007]</td><td>Test stream log - success</td><td nowrap='nowrap'><a href="file:///e:\git\nfengine\nfengine\nfcommontest\loggertest.cpp">nfengine\nfcommontest\loggertest.cpp</a>:25</td></tr>
+<tr class="warn"><td valign='top'>[0.1007]</td><td>Test log - warning</td><td nowrap='nowrap'><a href="file:///e:\git\nfengine\nfengine\nfcommontest\loggertest.cpp">nfengine\nfcommontest\loggertest.cpp</a>:26</td></tr>
+<tr class="warn"><td valign='top'>[0.1008]</td><td>Test stream log - warning</td><td nowrap='nowrap'><a href="file:///e:\git\nfengine\nfengine\nfcommontest\loggertest.cpp">nfengine\nfcommontest\loggertest.cpp</a>:27</td></tr>
+<tr class="err"><td valign='top'>[0.1008]</td><td>Test log - error</td><td nowrap='nowrap'><a href="file:///e:\git\nfengine\nfengine\nfcommontest\loggertest.cpp">nfengine\nfcommontest\loggertest.cpp</a>:28</td></tr>
+<tr class="err"><td valign='top'>[0.1009]</td><td>Test stream log - error</td><td nowrap='nowrap'><a href="file:///e:\git\nfengine\nfengine\nfcommontest\loggertest.cpp">nfengine\nfcommontest\loggertest.cpp</a>:29</td></tr>
+<tr class="info"><td valign='top'>[0.1012]</td><td>String: text, int: 5, float: 0.250000</td><td nowrap='nowrap'><a href="file:///e:\git\nfengine\nfengine\nfcommontest\loggertest.cpp">nfengine\nfcommontest\loggertest.cpp</a>:48</td></tr>
+<tr class="info"><td valign='top'>[0.1013]</td><td>String: text, int: 5, float: 0.25</td><td nowrap='nowrap'><a href="file:///e:\git\nfengine\nfengine\nfcommontest\loggertest.cpp">nfengine\nfcommontest\loggertest.cpp</a>:49</td></tr>
+<tr class="info"><td valign='top'>[0.1020]</td><td>0: There should be 25 this veeery long messages...
+1: There should be 25 this veeery long messages...
+2: There should be 25 this veeery long messages...
+3: There should be 25 this veeery long messages...
+4: There should be 25 this veeery long messages...
+5: There should be 25 this veeery long messages...
+6: There should be 25 this veeery long messages...
+7: There should be 25 this veeery long messages...
+8: There should be 25 this veeery long messages...
+9: There should be 25 this veeery long messages...
+10: There should be 25 this veeery long messages...
+11: There should be 25 this veeery long messages...
+12: There should be 25 this veeery long messages...
+13: There should be 25 this veeery long messages...
+14: There should be 25 this veeery long messages...
+15: There should be 25 this veeery long messages...
+16: There should be 25 this veeery long messages...
+17: There should be 25 this veeery long messages...
+18: There should be 25 this veeery long messages...
+19: There should be 25 this veeery long messages...
+20: There should be 25 this veeery long messages...
+21: There should be 25 this veeery long messages...
+22: There should be 25 this veeery long messages...
+23: There should be 25 this veeery long messages...
+24: There should be 25 this veeery long messages...
+</td><td nowrap='nowrap'><a href="file:///e:\git\nfengine\nfengine\nfcommontest\loggertest.cpp">nfengine\nfcommontest\loggertest.cpp</a>:58</td></tr>
+<tr class="info"><td valign='top'>[0.1025]</td><td>0: There should be 25 this veeery long messages...
+1: There should be 25 this veeery long messages...
+2: There should be 25 this veeery long messages...
+3: There should be 25 this veeery long messages...
+4: There should be 25 this veeery long messages...
+5: There should be 25 this veeery long messages...
+6: There should be 25 this veeery long messages...
+7: There should be 25 this veeery long messages...
+8: There should be 25 this veeery long messages...
+9: There should be 25 this veeery long messages...
+10: There should be 25 this veeery long messages...
+11: There should be 25 this veeery long messages...
+12: There should be 25 this veeery long messages...
+13: There should be 25 this veeery long messages...
+14: There should be 25 this veeery long messages...
+15: There should be 25 this veeery long messages...
+16: There should be 25 this veeery long messages...
+17: There should be 25 this veeery long messages...
+18: There should be 25 this veeery long messages...
+19: There should be 25 this veeery long messages...
+20: There should be 25 this veeery long messages...
+21: There should be 25 this veeery long messages...
+22: There should be 25 this veeery long messages...
+23: There should be 25 this veeery long messages...
+24: There should be 25 this veeery long messages...
+</td><td nowrap='nowrap'><a href="file:///e:\git\nfengine\nfengine\nfcommontest\loggertest.cpp">nfengine\nfcommontest\loggertest.cpp</a>:59</td></tr>
+<tr class="info"><td valign='top'>[0.1028]</td><td>This is an invalid format  </td><td nowrap='nowrap'><a href="file:///e:\git\nfengine\nfengine\nfcommontest\loggertest.cpp">nfengine\nfcommontest\loggertest.cpp</a>:65</td></tr>
+
+</table>
+<script src='../nfEngineDeps/TableFilter/tablefilter.js'></script>
+<script>
+    var filtersConfig = {
+            base_path: '../nfEngineDeps/TableFilter',
+            auto_filter: true,
+            auto_filter_delay: 500, //milliseconds
+            filters_row_index: 1,
+            state: true,
+            status_nar:true,
+            btn_reset: true,
+            msg_filter: 'Filtering...',
+            no_results_message: true,
+            highlight_keywords: true
+        };
+    var tf = new TableFilter('log', filtersConfig);
+    tf.init();
+</script>
+</body>
+</html>
+    

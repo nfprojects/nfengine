@@ -56,19 +56,48 @@ LoggerBackendHTML::LoggerBackendHTML()
         .err:hover { background-color: #602020; color: #ffffff; padding: 0px; }
         .fatal { background-color: #ff0000; color: #000000; padding: 0px; }
         .fatal:hover { background-color: #303030; color: #ff0000; padding: 0px; }
+
+<!-- Style for filtering related stuff -->
+    .loader { position: absolute; padding: .5em .7em; margin: 10em 0 0 3em; width: auto;
+              z-index: 1000; font-weight: 600; background-color: #a7a7a8; vertical-align: middle;
+              border-radius: 10px; color: #fff; text-shadow: 1px 1px #333 }
+
+    .fltrow { height: 1em; background-color: #eaeaea; }
+    .fltrow td { border-top: 1px solid #f4f4f4; border-left: 1px solid #ccc; padding: .05em; }
+    .fltrow td:last-child { border-right: 1px solid #ccc }
+
+    .flt,
+    .flt_s,
+    .single_flt { font-family: inherit; display: block; color: #fff; background-color: #000;
+                  margin: 0; padding: 0 0 0 .2em; width: 100%; height: 35px;
+                  vertical-align: middle; border-radius: 2px; box-sizing: border-box; }
+
+    .flt:focus,
+    .flt_s:focus,
+    .single_flt:focus{ border-color: #66afe9; outline: 0 none;
+                       -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.075) inset,
+                                           0 0 8px rgba(102,175,233,0.6);
+                       -moz-box-shadow: 0 1px 1px rgba(0,0,0,0.075) inset,
+                                        0 0 8px rgba(102,175,233,0.6);
+                       box-shadow: 0 1px 1px rgba(0,0,0,0.075) inset,
+                                   0 0 8px rgba(102,175,233,0.6) }
 </style>
 </head>
 
 <body>
 <h3>nfEngine - log file</h3>
-<table width="100%%" cellspacing="0" cellpadding="0" bordercolor="080c10" border="0" rules="none">
-<tr class="table_info">
-    <td nowrap="nowrap">[<i>Seconds elapsed</i>] <i>Message...</i></td>
-    <td nowrap="nowrap" align="right"><i>SourceFile</i>:<i>LineOfCode</i></td>
+<table id='log'> <!-- width="100%" cellspacing="0" cellpadding="0" bordercolor="080c10" border="0">-->
+<col width='7%' valign='top'>
+<col width='74%' valign='top'>
+<col width='19%' valign='middle'>
+<thead>
+<tr>
+    <th>Seconds elapsed</th>
+    <th>Message...</th>
+    <th>SourceFile:LineOfCode</th>
 </tr>
-</table><br>
-
-<table width="100%%" cellspacing="0" cellpadding="0" bordercolor="080c10" border="0" rules="none">
+</thead>
+<tbody>
 )";
 
     const std::string logFileName = "log.html";
@@ -89,7 +118,21 @@ LoggerBackendHTML::LoggerBackendHTML()
 LoggerBackendHTML::~LoggerBackendHTML()
 {
     const static std::string gLogOutro = R"(
+</tbody>
 </table>
+<script src='../nfEngineDeps/TableFilter/tablefilter.js'></script>
+<script>
+    var filtersConfig = {
+            base_path: '../nfEngineDeps/TableFilter',
+            auto_filter: true,
+            auto_filter_delay: 500, //milliseconds
+            btn_reset: true,
+            msg_filter: 'Filtering...',
+            no_results_message: true
+        };
+    var tf = new TableFilter('log', filtersConfig);
+    tf.init();
+</script>
 </body>
 </html>
     )";
@@ -105,33 +148,33 @@ void LoggerBackendHTML::Log(LogType type, const char* srcFile, int line, const c
     switch (type)
     {
     case LogType::Info:
-        str0 = "<tr class=\"info\"><td>";
+        str0 = "<tr class=\"info\">";
         break;
     case LogType::OK:
-        str0 = "<tr class=\"ok\"><td>";
+        str0 = "<tr class=\"ok\">";
         break;
     case LogType::Warning:
-        str0 = "<tr class=\"warn\"><td>";
+        str0 = "<tr class=\"warn\">";
         break;
     case LogType::Error:
-        str0 = "<tr class=\"err\"><td>";
+        str0 = "<tr class=\"err\">";
         break;
     case LogType::Fatal:
-        str0 = "<tr class=\"fatal\"><td>";
+        str0 = "<tr class=\"fatal\">";
         break;
     default:
-        str0 = "<tr class=\"info\"><td>";
+        str0 = "<tr class=\"info\">";
         break;
     }
 
     // close column tag + begin column tag with right justification
-    const char* str1 = "</td><td nowrap=\"nowrap\" align=\"right\">";
+    const char* str1 = "</td><td nowrap='nowrap'>";
 
     // close column tag + close row column
     const char* str2 = "</td></tr>\n";
 
     // string format for source file and line number information
-    const char* format = R"(%s[%.4f] %s%s<a href="file:///%s">%s</a>:%i%s)";
+    const char* format = R"(%s<td valign='top'>[%.4f]</td><td>%s%s<a href="file:///%s">%s</a>:%i%s)";
 
 
     size_t pathOffset = Logger::GetInstance()->GetPathPrefixLen();
