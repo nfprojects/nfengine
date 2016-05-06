@@ -78,6 +78,4 @@ TEST(Config, GenerateAndParse)
             << std::setw(10) << parseTime << " | "
             << configString.length() << std::endl;
     }
-
-    getchar();
 }
