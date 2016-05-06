@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_4aae2782",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T12:28:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_df1f9706",
+      "range": {
+        "startLine": 64,
+        "startChar": 18,
+        "endLine": 64,
+        "endChar": 24
+      },
+      "revId": "1eb3024c24591c55de38245cf350ab5eae64b319",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_9f158fe6",
         "filename": "CMakeLists.txt",
         "patchSetId": 1
@@ -41,6 +65,53 @@
         "startChar": 18,
         "endLine": 65,
         "endChar": 23
+      },
+      "revId": "1eb3024c24591c55de38245cf350ab5eae64b319",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2ab3e3ea",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T12:28:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_9f158fe6",
+      "range": {
+        "startLine": 65,
+        "startChar": 18,
+        "endLine": 65,
+        "endChar": 23
+      },
+      "revId": "1eb3024c24591c55de38245cf350ab5eae64b319",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_0a7fff15",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T12:28:05Z",
+      "side": 1,
+      "message": ":\u003c",
+      "range": {
+        "startLine": 2,
+        "startChar": 11,
+        "endLine": 2,
+        "endChar": 39
       },
       "revId": "1eb3024c24591c55de38245cf350ab5eae64b319",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
@@ -82,6 +153,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_aa713346",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T12:28:05Z",
+      "side": 1,
+      "message": "I think not - if file wasn\u0027t opened in the first place, why would we close it?\nBut if it did...then we use pclose.",
+      "parentUuid": "baa041b7_bfef33e8",
+      "revId": "1eb3024c24591c55de38245cf350ab5eae64b319",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_9fec6ff4",
         "filename": "nfEngine/nfCommon/Logger.cpp",
         "patchSetId": 1
@@ -93,6 +182,30 @@
       "writtenOn": "2016-05-06T07:17:34Z",
       "side": 1,
       "message": "This change is against our code style. Revert the clamps back to same line.",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 1
+      },
+      "revId": "1eb3024c24591c55de38245cf350ab5eae64b319",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_6a968b40",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T12:28:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_9fec6ff4",
       "range": {
         "startLine": 23,
         "startChar": 0,
@@ -128,6 +241,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_8a91cf49",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T12:28:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_7fbc0bdc",
+      "range": {
+        "startLine": 203,
+        "startChar": 0,
+        "endLine": 214,
+        "endChar": 27
+      },
+      "revId": "1eb3024c24591c55de38245cf350ab5eae64b319",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_1fb73ff6",
         "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
         "patchSetId": 1
@@ -139,6 +276,93 @@
       "writtenOn": "2016-05-06T07:17:34Z",
       "side": 1,
       "message": "I guess this belongs to another commit...",
+      "revId": "1eb3024c24591c55de38245cf350ab5eae64b319",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_0acdbf65",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T12:28:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_1fb73ff6",
+      "revId": "1eb3024c24591c55de38245cf350ab5eae64b319",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_0aa6dfad",
+        "filename": "nfEngine/nfCommon/SystemInfo.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T12:28:05Z",
+      "side": 1,
+      "message": ":\u003c",
+      "range": {
+        "startLine": 2,
+        "startChar": 11,
+        "endLine": 2,
+        "endChar": 25
+      },
+      "revId": "1eb3024c24591c55de38245cf350ab5eae64b319",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_4a97473a",
+        "filename": "nfEngine/nfCommon/SystemInfo.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T12:28:05Z",
+      "side": 1,
+      "message": ":\u003c",
+      "range": {
+        "startLine": 2,
+        "startChar": 11,
+        "endLine": 2,
+        "endChar": 25
+      },
+      "revId": "1eb3024c24591c55de38245cf350ab5eae64b319",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_6abd6bb6",
+        "filename": "nfEngine/nfCommon/Win/SystemInfoPlatform.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-06T12:28:05Z",
+      "side": 1,
+      "message": ":\u003c",
+      "range": {
+        "startLine": 2,
+        "startChar": 11,
+        "endLine": 2,
+        "endChar": 37
+      },
       "revId": "1eb3024c24591c55de38245cf350ab5eae64b319",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
