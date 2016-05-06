@@ -38,46 +38,25 @@ void LoggerBackendHTML::Reset()
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
-<head>
-<title>nfEngine log</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
-<style type="text/css">
-    body { background: #000000; color: #E0E0E0; margin-right: 6px; margin-left: 6px;
-           font-size: 13px; font-family: "Lucida Console", monospace, sans-serif; }
-    a { text-decoration: none; }
-    a:link { color: #b4c8d2; }
-    a:active { color: #ff9900; }
-    a:visited { color: #b4c8d2; }
-    a:hover { color: #ff9900; }
-    h1 { text-align: center; }
-    h2 { color: #ffffff; }
-        .dbg, .info, .ok, .warn, .err, .fatal,
-        .dbg { background-color: #000000; color: #333399; padding: 0px; }
-        .dbg:hover { background-color: #101030; color: #4040ff; padding: 0px; }
-        .info { background-color: #000000; color: #d4d8d2; padding: 0px; }
-        .info:hover { background-color: #202020; color: #ffffff; padding: 0px; }
-        .ok { background-color: #000000; color: #339933; padding: 0px; }
-        .ok:hover { background-color: #103010; color: #40ff40; padding: 0px; }
-        .warn { background-color: #281c10; color: #F2B13A; padding: 0px; }
-        .warn:hover { background-color: #303030; color: #ff7b00; padding: 0px; }
-        .err { background-color: #301010; color: #ff5e5e; padding: 0px; }
-        .err:hover { background-color: #602020; color: #ffffff; padding: 0px; }
-        .fatal { background-color: #ff0000; color: #000000; padding: 0px; }
-        .fatal:hover { background-color: #303030; color: #ff0000; padding: 0px; }
-</style>
-</head>
-
-<body>
-<h3>nfEngine - log file</h3>
-<table width="100%%" cellspacing="0" cellpadding="0" bordercolor="080c10" border="0" rules="none">
-<tr class="table_info">
-    <td nowrap="nowrap">[<i>Seconds elapsed</i>] <i>Message...</i></td>
-    <td nowrap="nowrap" align="right"><i>SourceFile</i>:<i>LineOfCode</i></td>
-</tr>
-</table><br>
-
-<table width="100%%" cellspacing="0" cellpadding="0" bordercolor="080c10" border="0" rules="none">
+    <head>
+        <title>nfEngine log</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <link rel="stylesheet" type="text/css" href="../nfEngine/Data/nfEngineLogs.css">
+    </head>
+    <body>
+        <h3>nfEngine - log file</h3>
+        <table id='log'>
+        <col width='7%' valign='top'>
+        <col width='74%' valign='top'>
+        <col width='19%' valign='middle'>
+        <thead>
+            <tr>
+                <th>Seconds elapsed</th>
+                <th>Message ...</th>
+                <th>SourceFile : LineOfCode</th>
+            </tr>
+        </thead>
+        <tbody>
 )";
 
     const std::string logFileName = "log.html";
@@ -98,10 +77,28 @@ void LoggerBackendHTML::Reset()
 LoggerBackendHTML::~LoggerBackendHTML()
 {
     const static std::string gLogOutro = R"(
-</table>
-</body>
+            </tbody>
+        </table>
+        <script src='../nfEngineDeps/TableFilter/tablefilter.js'></script>
+        <script>
+            var filtersConfig = {
+                    base_path: '../nfEngineDeps/TableFilter',
+                    auto_filter: true,
+                    auto_filter_delay: 500, // milliseconds
+                    filters_row_index: 1,
+                    status_nar:true,
+                    btn_reset: true,
+                    msg_filter: 'Filtering...',
+                    no_results_message: true,
+                    highlight_keywords: true,
+                    watermark: 'Search...'
+                };
+            var tf = new TableFilter('log', filtersConfig);
+            tf.init();
+        </script>
+    </body>
 </html>
-    )";
+)";
 
     mFile.Write(gLogOutro.data(), gLogOutro.length());
 }
@@ -114,33 +111,33 @@ void LoggerBackendHTML::Log(LogType type, const char* srcFile, int line, const c
     switch (type)
     {
     case LogType::Info:
-        str0 = "<tr class=\"info\"><td>";
+        str0 = "<tr class=\"info\">";
         break;
     case LogType::OK:
-        str0 = "<tr class=\"ok\"><td>";
+        str0 = "<tr class=\"ok\">";
         break;
     case LogType::Warning:
-        str0 = "<tr class=\"warn\"><td>";
+        str0 = "<tr class=\"warn\">";
         break;
     case LogType::Error:
-        str0 = "<tr class=\"err\"><td>";
+        str0 = "<tr class=\"err\">";
         break;
     case LogType::Fatal:
-        str0 = "<tr class=\"fatal\"><td>";
+        str0 = "<tr class=\"fatal\">";
         break;
     default:
-        str0 = "<tr class=\"info\"><td>";
+        str0 = "<tr class=\"info\">";
         break;
     }
 
     // close column tag + begin column tag with right justification
-    const char* str1 = "</td><td nowrap=\"nowrap\" align=\"right\">";
+    const char* str1 = "</td><td nowrap='nowrap'>";
 
     // close column tag + close row column
     const char* str2 = "</td></tr>\n";
 
     // string format for source file and line number information
-    const char* format = R"(%s[%.4f] %s%s<a href="file:///%s">%s</a>:%i%s)";
+    const char* format = R"(%s<td>[%.4f]</td><td>%s%s<a href="file:///%s">%s</a>:%i%s)";
 
 
     size_t pathOffset = Logger::GetInstance()->GetPathPrefixLen();
