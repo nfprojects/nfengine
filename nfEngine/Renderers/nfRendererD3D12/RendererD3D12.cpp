@@ -17,6 +17,8 @@ IDevice* Init()
     if (gDevice == nullptr)
     {
         gDevice.reset(new Device);
+        if (!gDevice->Init())
+            gDevice.reset();
     }
 
     return gDevice.get();

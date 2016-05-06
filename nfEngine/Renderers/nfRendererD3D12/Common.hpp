@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include "../../nfCommon/nfCommon.hpp"
+
 #ifndef D3D_SAFE_RELEASE
 #define D3D_SAFE_RELEASE(x) { if (x) {(x)->Release(); (x)=0;} }
 #endif // D3D_SAFE_RELEASE
@@ -47,17 +49,15 @@ private:
 public:
     D3DPtr() : pointer(nullptr)
     {
-
     }
 
-
-    explicit D3DPtr(T* ptr)
+    D3DPtr(T* ptr)
     {
         static_assert(std::is_base_of<IUnknown, T>::value, "D3DPtr only accepts IUnknown-based types");
         pointer = ptr;
     }
 
-    explicit D3DPtr(D3DPtr<T>&& rhs)
+    D3DPtr(D3DPtr<T>&& rhs)
     {
         std::swap(pointer, rhs.pointer);
     }
@@ -106,13 +106,14 @@ public:
         return pointer;
     }
 
-    void reset()
+    void reset(T* newPtr = nullptr)
     {
         if (pointer)
         {
             pointer->Release();
             pointer = nullptr;
         }
+        pointer = newPtr;
     }
 
     operator bool() const

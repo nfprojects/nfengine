@@ -19,6 +19,7 @@
 #include "PipelineState.hpp"
 #include "Sampler.hpp"
 #include "Translations.hpp"
+#include "ResourceBinding.hpp"
 #include "nfCommon/Logger.hpp"
 #include "nfCommon/Win/Common.hpp"  // required for ID3DUserDefinedAnnotation
 
@@ -28,6 +29,8 @@ namespace Renderer {
 
 CommandBuffer::CommandBuffer(ID3D12Device* device)
     : mCurrRenderTarget(nullptr)
+    , mBindingLayout(nullptr)
+    , mCurrBindingLayout(nullptr)
     , mCurrShaderProgram(nullptr)
     , mShaderProgram(nullptr)
     , mCurrPipelineState(nullptr)
@@ -69,7 +72,15 @@ void CommandBuffer::Reset()
     if (FAILED(hr))
         return;
 
+    ID3D12DescriptorHeap* heaps[] =
+    {
+        gDevice->GetCbvSrvUavHeapAllocator().GetHeap(),
+    };
+    mCommandList->SetDescriptorHeaps(1, heaps);
+
     mCurrRenderTarget = nullptr;
+    mBindingLayout = nullptr;
+    mCurrBindingLayout = nullptr;
     mCurrShaderProgram = nullptr;
     mShaderProgram = nullptr;
     mCurrPipelineState = nullptr;
@@ -152,8 +163,20 @@ void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat forma
 
 void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance)
 {
-    UNUSED(slot);
-    UNUSED(bindingSetInstance);
+    ResourceBindingInstance* instance = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance);
+    if (!instance)
+        return;
+
+    if (mCurrBindingLayout != mBindingLayout)
+    {
+        mCommandList->SetGraphicsRootSignature(mBindingLayout->mRootSignature.get());
+        mCurrBindingLayout = mBindingLayout;
+    }
+
+    HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
+    D3D12_GPU_DESCRIPTOR_HANDLE ptr = allocator.GetGpuHandle();
+    ptr.ptr += instance->mDescriptorHeapOffset * allocator.GetDescriptorSize();
+    mCommandList->SetGraphicsRootDescriptorTable(static_cast<UINT>(slot), ptr);
 }
 
 void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
@@ -167,6 +190,7 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
 
     if (mCurrRenderTarget != nullptr)
     {
+        HeapAllocator& allocator = gDevice->GetRtvHeapAllocator();
         D3D12_CPU_DESCRIPTOR_HANDLE rtvs[MAX_RENDER_TARGETS];
 
         for (size_t i = 0; i < mCurrRenderTarget->mTextures.size(); ++i)
@@ -174,7 +198,8 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
             Texture* tex = mCurrRenderTarget->mTextures[i];
             int currBuffer = tex->mCurrentBuffer;
 
-            rtvs[i] = mCurrRenderTarget->mRTVs[currBuffer][i];
+            rtvs[i] = allocator.GetCpuHandle();
+            rtvs[i].ptr += mCurrRenderTarget->mRTVs[currBuffer][i] * allocator.GetDescriptorSize();
 
             if (tex->mResourceState != D3D12_RESOURCE_STATE_RENDER_TARGET)
             {
@@ -221,6 +246,8 @@ void CommandBuffer::UnsetRenderTarget()
                 rb.Transition.StateBefore = tex->mResourceState;
                 rb.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
                 mCommandList->ResourceBarrier(1, &rb);
+
+                tex->mResourceState = D3D12_RESOURCE_STATE_PRESENT;
             }
         }
     }
@@ -233,7 +260,7 @@ void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
 
 void CommandBuffer::SetResourceBindingLayout(IResourceBindingLayout* layout)
 {
-    UNUSED(layout);
+    mBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout);
 }
 
 void CommandBuffer::SetPipelineState(IPipelineState* state)
@@ -249,11 +276,19 @@ void CommandBuffer::SetStencilRef(unsigned char ref)
 
 bool CommandBuffer::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data)
 {
-    UNUSED(buffer);
-    UNUSED(offset);
-    UNUSED(size);
-    UNUSED(data);
-    return false;
+    Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer);
+    if (!bufferPtr || !bufferPtr->mData)
+    {
+        LOG_ERROR("Invalid buffer");
+        return false;
+    }
+
+    if (offset + size > bufferPtr->mSize)
+        return false;
+
+    char* target = reinterpret_cast<char*>(bufferPtr->mData);
+    memcpy(target + offset, data, size);
+    return true;
 }
 
 void CommandBuffer::CopyTexture(ITexture* src, ITexture* dest)
@@ -267,13 +302,16 @@ void CommandBuffer::Clear(int flags, const float* color, float depthValue,
 {
     if (mCurrRenderTarget != nullptr)
     {
+        HeapAllocator& allocator = gDevice->GetRtvHeapAllocator();
+
         for (size_t i = 0; i < mCurrRenderTarget->mTextures.size(); ++i)
         {
             Texture* tex = mCurrRenderTarget->mTextures[i];
             int currentBuffer = tex->mCurrentBuffer;
 
-            mCommandList->ClearRenderTargetView(mCurrRenderTarget->mRTVs[currentBuffer][i], color,
-                                                0, nullptr);
+            D3D12_CPU_DESCRIPTOR_HANDLE handle = allocator.GetCpuHandle();
+            handle.ptr += mCurrRenderTarget->mRTVs[currentBuffer][i] * allocator.GetDescriptorSize();
+            mCommandList->ClearRenderTargetView(handle, color, 0, nullptr);
         }
     }
 
@@ -284,17 +322,26 @@ void CommandBuffer::Clear(int flags, const float* color, float depthValue,
 
 void CommandBuffer::UpdateStates()
 {
-    if (mCurrPipelineState != mPipelineState ||
-        mCurrShaderProgram != mShaderProgram)
+    if (mCurrPipelineState != mPipelineState || mCurrShaderProgram != mShaderProgram)
     {
-        FullPipelineStateParts parts(mPipelineState, mShaderProgram);
-        FullPipelineState* fullPipelineState = gDevice->GetFullPipelineState(parts);
-        mCommandList->SetPipelineState(fullPipelineState->mPipelineState.get());
-        mCommandList->SetGraphicsRootSignature(mPipelineState->mRootSignature.get());
+        if (mBindingLayout != mPipelineState->mBindingLayout)
+            LOG_ERROR("Resource binding layout mismatch");
 
+        // set pipeline state
+        const FullPipelineStateParts parts(mPipelineState, mShaderProgram);
+        ID3D12PipelineState* state = gDevice->GetFullPipelineState(parts);
+        mCommandList->SetPipelineState(state);
         mCurrPipelineState = mPipelineState;
         mCurrShaderProgram = mShaderProgram;
 
+        // set root signature
+        if (mCurrBindingLayout != mBindingLayout)
+        {
+            mCommandList->SetGraphicsRootSignature(mBindingLayout->mRootSignature.get());
+            mCurrBindingLayout = mBindingLayout;
+        }
+
+        // set primitive type
         if (mCurrPipelineState->mPrimitiveType != mCurrPrimitiveType)
         {
             mCurrPrimitiveType = mCurrPipelineState->mPrimitiveType;

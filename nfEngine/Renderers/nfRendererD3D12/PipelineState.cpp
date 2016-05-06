@@ -10,9 +10,17 @@
 #include "Translations.hpp"
 #include "Shader.hpp"
 #include "VertexLayout.hpp"
+#include "ResourceBinding.hpp"
+#include "nfCommon/Logger.hpp"
+
 
 namespace NFE {
 namespace Renderer {
+
+PipelineState::~PipelineState()
+{
+    gDevice->OnPipelineStateDestroyed(this);
+}
 
 bool PipelineState::Init(const PipelineStateDesc& desc)
 {
@@ -105,30 +113,18 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     mInputLayoutDesc.NumElements = static_cast<UINT>(vertexLayout->mElements.size());
     mInputLayoutDesc.pInputElementDescs = vertexLayout->mElements.data();
 
-
-    // create dummy root signature
-
-    D3D12_ROOT_SIGNATURE_DESC rsd;
-    rsd.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-    rsd.NumParameters = 0;
-    rsd.NumStaticSamplers = 0;
-
-    HRESULT hr;
-    D3DPtr<ID3D10Blob> rootSignature, errorsBuffer;
-    hr = D3D_CALL_CHECK(D3D12SerializeRootSignature(&rsd, D3D_ROOT_SIGNATURE_VERSION_1,
-                                                    &rootSignature, &errorsBuffer));
-    if (FAILED(hr))
+    ResourceBindingLayout* resBindingLayout = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout);
+    if (!resBindingLayout)
+    {
+        LOG_ERROR("Invalid resource binding layout");
         return false;
-
-    hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateRootSignature(0,
-                                                                  rootSignature->GetBufferPointer(),
-                                                                  rootSignature->GetBufferSize(),
-                                                                  IID_PPV_ARGS(&mRootSignature)));
+    }
+    mBindingLayout = resBindingLayout;
 
     return true;
 }
 
-bool FullPipelineState::Init(const FullPipelineStateParts& parts)
+ID3D12PipelineState* PipelineState::CreateFullPipelineState(const FullPipelineStateParts& parts)
 {
     PipelineState* pipelineState = dynamic_cast<PipelineState*>(std::get<0>(parts));
     ShaderProgram* shaderProgram = dynamic_cast<ShaderProgram*>(std::get<1>(parts));
@@ -145,7 +141,7 @@ bool FullPipelineState::Init(const FullPipelineStateParts& parts)
     nullBytecode.pShaderBytecode = nullptr;
 
     D3D12_GRAPHICS_PIPELINE_STATE_DESC psd;
-    psd.pRootSignature = pipelineState->mRootSignature.get();
+    psd.pRootSignature = pipelineState->mBindingLayout->GetD3DRootSignature();
     psd.VS = mVS ? mVS->GetD3D12Bytecode() : nullBytecode;
     psd.HS = mHS ? mHS->GetD3D12Bytecode() : nullBytecode;
     psd.DS = mDS ? mDS->GetD3D12Bytecode() : nullBytecode;
@@ -172,10 +168,11 @@ bool FullPipelineState::Init(const FullPipelineStateParts& parts)
     psd.CachedPSO.CachedBlobSizeInBytes = 0;
     psd.CachedPSO.pCachedBlob = nullptr;
 
+    ID3D12PipelineState* result = nullptr;
     HRESULT hr;
     hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateGraphicsPipelineState(&psd,
-                                                                          IID_PPV_ARGS(&mPipelineState)));
-    return SUCCEEDED(hr);
+                                                                          IID_PPV_ARGS(&result)));
+    return result;
 }
 
 } // namespace Renderer

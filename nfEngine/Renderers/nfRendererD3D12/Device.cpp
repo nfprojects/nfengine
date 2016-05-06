@@ -45,6 +45,13 @@ Type* CreateGenericResource(const Desc& desc)
 } // namespace
 
 Device::Device()
+    : mCbvSrvUavHeapAllocator(HeapAllocator::Type::CbvSrvUav, 16)
+    , mRtvHeapAllocator(HeapAllocator::Type::Rtv, 2)
+    , mDsvHeapAllocator(HeapAllocator::Type::Dsv, 1)
+{
+}
+
+bool Device::Init()
 {
     HRESULT hr;
 
@@ -62,15 +69,15 @@ Device::Device()
 
     hr = D3D_CALL_CHECK(CreateDXGIFactory1(IID_PPV_ARGS(&mDXGIFactory)));
     if (FAILED(hr))
-        return;
+        return false;
 
     hr = D3D_CALL_CHECK(mDXGIFactory->EnumAdapters(0, &mPrimaryAdapter));
     if (FAILED(hr))
-        return;
+        return false;
 
     hr = D3D_CALL_CHECK(D3D12CreateDevice(nullptr, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&mDevice)));
     if (FAILED(hr))
-        return;
+        return false;
 
     D3D_FEATURE_LEVEL featureLevels[] =
     {
@@ -130,6 +137,18 @@ Device::Device()
     D3DPtr<ID3D12InfoQueue> infoQueue;
     if (SUCCEEDED(mDevice->QueryInterface(IID_PPV_ARGS(&infoQueue))))
     {
+        D3D12_MESSAGE_ID messagesToHide[] =
+        {
+            // this warning makes debugging with VS Graphics Debugger impossible
+            D3D12_MESSAGE_ID_MAP_INVALID_NULLRANGE,
+        };
+
+        D3D12_INFO_QUEUE_FILTER filter;
+        memset(&filter, 0, sizeof(filter));
+        filter.DenyList.NumIDs = _countof(messagesToHide);
+        filter.DenyList.pIDList = messagesToHide;
+        infoQueue->AddStorageFilterEntries(&filter);
+
         infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
         infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
         infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE);
@@ -142,26 +161,27 @@ Device::Device()
     queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
     hr = D3D_CALL_CHECK(mDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&mCommandQueue)));
     if (FAILED(hr))
-        return;
+        return false;
 
-    // TODO: temporary
-    D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
-    rtvHeapDesc.NumDescriptors = 256;
-    rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-    rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-    hr = D3D_CALL_CHECK(mDevice->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&mRtvHeap)));
-    if (FAILED(hr))
-        return;
+    if (!mCbvSrvUavHeapAllocator.Init())
+    {
+        LOG_ERROR("Failed to initialize heap allocator for CBV, SRV and UAV");
+        return false;
+    }
 
-    // obtain descriptor sizes
-    mCbvSrvUavDescSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-    LOG_DEBUG("CBV/SRV/UAV descriptor heap handle increment: %u", mCbvSrvUavDescSize);
-    mSamplerDescSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER);
-    LOG_DEBUG("Sampler descriptor heap handle increment: %u", mSamplerDescSize);
-    mRtvDescSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-    LOG_DEBUG("RTV descriptor heap handle increment: %u", mRtvDescSize);
-    mDsvDescSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
-    LOG_DEBUG("DSV descriptor heap handle increment: %u", mDsvDescSize);
+    if (!mRtvHeapAllocator.Init())
+    {
+        LOG_ERROR("Failed to initialize heap allocator for CBV, SRV and UAV");
+        return false;
+    }
+
+    if (!mDsvHeapAllocator.Init())
+    {
+        LOG_ERROR("Failed to initialize heap allocator for CBV, SRV and UAV");
+        return false;
+    }
+
+    return true;
 }
 
 Device::~Device()
@@ -362,16 +382,39 @@ bool Device::DownloadTexture(ITexture* tex, void* data, int mipmap, int layer)
     return false;
 }
 
-FullPipelineState* Device::GetFullPipelineState(const FullPipelineStateParts& parts)
+ID3D12PipelineState* Device::GetFullPipelineState(const FullPipelineStateParts& parts)
 {
-    std::unique_ptr<FullPipelineState>& fullState = mPipelineStateMap[parts];
+    D3DPtr<ID3D12PipelineState>& fullState = mPipelineStateMap[parts];
     if (!fullState)
-    {
-        fullState.reset(new FullPipelineState);
-        fullState->Init(parts);
-    }
+        fullState = PipelineState::CreateFullPipelineState(parts);
 
     return fullState.get();
+}
+
+void Device::OnShaderProgramDestroyed(IShaderProgram* program)
+{
+    // TODO this is extremely slow
+
+    std::vector<FullPipelineStateParts> toRemove;
+    for (const auto& pair : mPipelineStateMap)
+        if (std::get<1>(pair.first) == program)
+            toRemove.push_back(pair.first);
+
+    for (const auto& parts : toRemove)
+        mPipelineStateMap.erase(parts);
+}
+
+void Device::OnPipelineStateDestroyed(IPipelineState* pipelineState)
+{
+    // TODO this is extremely slow
+
+    std::vector<FullPipelineStateParts> toRemove;
+    for (const auto& pair : mPipelineStateMap)
+        if (std::get<0>(pair.first) == pipelineState)
+            toRemove.push_back(pair.first);
+
+    for (const auto& parts : toRemove)
+        mPipelineStateMap.erase(parts);
 }
 
 } // namespace Renderer
