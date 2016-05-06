@@ -1,0 +1,170 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_df1f9706",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-05-06T07:17:34Z",
+      "side": 1,
+      "message": "I highly doubt these variables are CMAKE-specific...\n\nI recommend switching this to NFE.",
+      "range": {
+        "startLine": 64,
+        "startChar": 18,
+        "endLine": 64,
+        "endChar": 24
+      },
+      "revId": "1eb3024c24591c55de38245cf350ab5eae64b319",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_9f158fe6",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-05-06T07:17:34Z",
+      "side": 1,
+      "message": "As above",
+      "range": {
+        "startLine": 65,
+        "startChar": 18,
+        "endLine": 65,
+        "endChar": 23
+      },
+      "revId": "1eb3024c24591c55de38245cf350ab5eae64b319",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7fd52b1a",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-05-06T07:17:34Z",
+      "side": 1,
+      "message": "Hai",
+      "revId": "1eb3024c24591c55de38245cf350ab5eae64b319",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_bfef33e8",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-05-06T07:17:34Z",
+      "side": 1,
+      "message": "Technically this code is not compiled, but still.\n\nShouldn\u0027t pclose be outside if..else block?",
+      "revId": "1eb3024c24591c55de38245cf350ab5eae64b319",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_9fec6ff4",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-05-06T07:17:34Z",
+      "side": 1,
+      "message": "This change is against our code style. Revert the clamps back to same line.",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 1
+      },
+      "revId": "1eb3024c24591c55de38245cf350ab5eae64b319",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7fbc0bdc",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-05-06T07:17:34Z",
+      "side": 1,
+      "message": "Why add indentation? This is against our code style as well.",
+      "range": {
+        "startLine": 203,
+        "startChar": 0,
+        "endLine": 214,
+        "endChar": 27
+      },
+      "revId": "1eb3024c24591c55de38245cf350ab5eae64b319",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_1fb73ff6",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-05-06T07:17:34Z",
+      "side": 1,
+      "message": "I guess this belongs to another commit...",
+      "revId": "1eb3024c24591c55de38245cf350ab5eae64b319",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7fa3ebb2",
+        "filename": "nfEngine/nfCommon/Win/SystemInfoPlatform.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-05-06T07:17:34Z",
+      "side": 1,
+      "message": "I think we can skip this check. We are already using D3D11 renderer, which is not compatible with anything from pre-Vista era.\n\n@Wit, what do you think?",
+      "range": {
+        "startLine": 77,
+        "startChar": 0,
+        "endLine": 91,
+        "endChar": 5
+      },
+      "revId": "1eb3024c24591c55de38245cf350ab5eae64b319",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
