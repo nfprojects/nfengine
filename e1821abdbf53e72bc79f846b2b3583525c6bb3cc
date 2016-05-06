@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_25a8b4da",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-06T16:26:16Z",
+      "side": 1,
+      "message": "maybe add also \"release\" and \"version\"?",
+      "range": {
+        "startLine": 33,
+        "startChar": 17,
+        "endLine": 33,
+        "endChar": 28
+      },
+      "revId": "e1821abdbf53e72bc79f846b2b3583525c6bb3cc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c53228f2",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-06T16:26:16Z",
+      "side": 1,
+      "message": "rm, write comment or use lsb_release if present on a system",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 50,
+        "endChar": 6
+      },
+      "revId": "e1821abdbf53e72bc79f846b2b3583525c6bb3cc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_259c345c",
+        "filename": "nfEngine/nfCommon/Win/Timer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-06T16:26:16Z",
+      "side": 1,
+      "message": "GetCounterPeriod() function is slow at must be called only once. You should create a static variable here and init it like so:\n\n    static double gPeriod \u003d GetCounterPeriod();\n    mPeriod \u003d gPeriod;",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 33
+      },
+      "revId": "e1821abdbf53e72bc79f846b2b3583525c6bb3cc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
