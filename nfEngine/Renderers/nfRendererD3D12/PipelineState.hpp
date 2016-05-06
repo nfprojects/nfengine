@@ -19,9 +19,7 @@ class PipelineState : public IPipelineState
     friend class CommandBuffer;
     friend class FullPipelineState;
 
-    // TODO this should be obtained from separate structure describing resource bindings
-    D3DPtr<ID3D12RootSignature> mRootSignature;
-
+    ID3D12RootSignature* mRootSignature;
     D3D12_INPUT_LAYOUT_DESC mInputLayoutDesc;
     D3D12_RASTERIZER_DESC mRasterizerDesc;
     D3D12_DEPTH_STENCIL_DESC mDepthStencilDesc;
