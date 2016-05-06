@@ -57,18 +57,19 @@ LoggerBackendHTML::LoggerBackendHTML()
         .fatal { background-color: #ff0000; color: #000000; padding: 0px; }
         .fatal:hover { background-color: #303030; color: #ff0000; padding: 0px; }
 </style>
+<script language="javascript" type="text/javascript" src="tablefilter.js"></script>
 </head>
 
 <body>
 <h3>nfEngine - log file</h3>
-<table width="100%%" cellspacing="0" cellpadding="0" bordercolor="080c10" border="0" rules="none">
+<table id='log' width="100%" cellspacing="0" cellpadding="0" bordercolor="080c10" border="0">
+<col width='7%' valign='top'>
+<col width='74%' valign='top'>
+<col width='19%' valign='middle'>
 <tr class="table_info">
-    <td nowrap="nowrap">[<i>Seconds elapsed</i>] <i>Message...</i></td>
-    <td nowrap="nowrap" align="right"><i>SourceFile</i>:<i>LineOfCode</i></td>
+    <td nowrap="nowrap">[<i>Secs elapsed</i>]</td><td><i>Message...</i></td>
+    <td nowrap="nowrap"><i>SourceFile</i>:<i>LineOfCode</i></td>
 </tr>
-</table><br>
-
-<table width="100%%" cellspacing="0" cellpadding="0" bordercolor="080c10" border="0" rules="none">
 )";
 
     const std::string logFileName = "log.html";
@@ -90,6 +91,18 @@ LoggerBackendHTML::~LoggerBackendHTML()
 {
     const static std::string gLogOutro = R"(
 </table>
+<script language="javascript" type="text/javascript">
+//<![CDATA[
+    var logTableProps = {
+                            loader: true,
+                            loader_text: "Filtering data...",
+                            col_width: ['7%', '74%', '19%'],
+                            btn_reset: true,
+                            btn_reset_text: "Clear filters"
+                        }
+    setFilterGrid( "log", logTableProps, 0 );
+//]]>
+</script>
 </body>
 </html>
     )";
@@ -105,33 +118,33 @@ void LoggerBackendHTML::Log(LogType type, const char* srcFile, int line, const c
     switch (type)
     {
     case LogType::Info:
-        str0 = "<tr class=\"info\"><td>";
+        str0 = "<tr class=\"info\">";
         break;
     case LogType::OK:
-        str0 = "<tr class=\"ok\"><td>";
+        str0 = "<tr class=\"ok\">";
         break;
     case LogType::Warning:
-        str0 = "<tr class=\"warn\"><td>";
+        str0 = "<tr class=\"warn\">";
         break;
     case LogType::Error:
-        str0 = "<tr class=\"err\"><td>";
+        str0 = "<tr class=\"err\">";
         break;
     case LogType::Fatal:
-        str0 = "<tr class=\"fatal\"><td>";
+        str0 = "<tr class=\"fatal\">";
         break;
     default:
-        str0 = "<tr class=\"info\"><td>";
+        str0 = "<tr class=\"info\">";
         break;
     }
 
     // close column tag + begin column tag with right justification
-    const char* str1 = "</td><td nowrap=\"nowrap\" align=\"right\">";
+    const char* str1 = "</td><td nowrap='nowrap'>";
 
     // close column tag + close row column
     const char* str2 = "</td></tr>\n";
 
     // string format for source file and line number information
-    const char* format = R"(%s[%.4f] %s%s<a href="file:///%s">%s</a>:%i%s)";
+    const char* format = R"(%s<td valign='top'>[%.4f]</td><td>%s%s<a href="file:///%s">%s</a>:%i%s)";
 
 
     size_t pathOffset = Logger::GetInstance()->GetPathPrefixLen();
