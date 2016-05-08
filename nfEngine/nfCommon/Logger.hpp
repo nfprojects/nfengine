@@ -65,6 +65,7 @@ class NFCOMMON_API Logger
     Logger(const Logger&) = delete;
     Logger& operator= (const Logger&) = delete;
 
+    void LogInit();
     void LogRunTime();
 
 public:
@@ -86,6 +87,11 @@ public:
      */
     void Log(LogType type, const char* srcFile, int line, const char* str, ...);
     void Log(LogType type, const char* srcFile, const char* msg, int line);
+
+    /**
+     * Reset all backends that save to a file
+     */
+    void Reset();
 
     /**
      * Get pre-calculated file path prefix (nfEngine root directory).
