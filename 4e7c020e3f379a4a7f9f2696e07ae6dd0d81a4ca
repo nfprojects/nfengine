@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_7a6ad6ef",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-08T18:01:50Z",
+      "side": 1,
+      "message": "Maybe instead of adding a new method to LoggerBacked, just clear logger backends vector and initialize it again with RegisterBackend(...)",
+      "revId": "4e7c020e3f379a4a7f9f2696e07ae6dd0d81a4ca",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
