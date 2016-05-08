@@ -51,18 +51,7 @@ Logger::Logger()
 #endif // WIN32
 
     mInitialized = true;
-    LOG_INFO("nfCommon build date: " __DATE__ ", " __TIME__);
-
-#ifdef NFE_USE_SSE
-    LOG_INFO("nfCommon built with SSE instructions");
-#ifdef NFE_USE_SSE4
-    LOG_INFO("nfCommon built with SSE4.1 instructions");
-#endif // NFE_USE_SSE4
-#else
-    LOG_INFO("nfCommon built with native FPU instructions only");
-#endif // NFE_USE_SSE
-
-    LogRunTime();
+    LogInit();
 }
 
 Logger::~Logger()
@@ -76,6 +65,39 @@ Logger* Logger::GetInstance()
      * (e.g. in FileSystem::CreateDir) and cause a deadlock.
      */
     return &gLogger;
+}
+
+void Logger::Reset()
+{
+    mInitialized = false;
+    mBackends.clear();
+
+    RegisterBackend(new LoggerBackendConsole);
+    RegisterBackend(new LoggerBackendHTML);
+    RegisterBackend(new LoggerBackendTxt);
+#ifdef WIN32
+    if (IsDebuggerPresent())
+        RegisterBackend(new LoggerBackendWinDebugger);
+#endif // WIN32
+
+    mInitialized = true;
+    LogInit();
+}
+
+void Logger::LogInit()
+{
+    LOG_INFO("nfCommon build date: " __DATE__ ", " __TIME__);
+
+#ifdef NFE_USE_SSE
+    LOG_INFO("nfCommon built with SSE instructions");
+#ifdef NFE_USE_SSE4
+    LOG_INFO("nfCommon built with SSE4.1 instructions");
+#endif // NFE_USE_SSE4
+#else
+    LOG_INFO("nfCommon built with native FPU instructions only");
+#endif // NFE_USE_SSE
+
+    LogRunTime();
 }
 
 void Logger::LogRunTime()
