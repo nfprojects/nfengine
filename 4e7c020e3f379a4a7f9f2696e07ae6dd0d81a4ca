@@ -16,6 +16,24 @@
       "revId": "4e7c020e3f379a4a7f9f2696e07ae6dd0d81a4ca",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ad46ea4c",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-08T21:11:27Z",
+      "side": 1,
+      "message": "That is a great idea! Actually I thought about it, but then it came to me, that it\u0027s whole other commit (about removing and adding LoggerBackends).\nStill, it can be done easily and it will be - good idea.",
+      "parentUuid": "baa041b7_7a6ad6ef",
+      "revId": "4e7c020e3f379a4a7f9f2696e07ae6dd0d81a4ca",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
