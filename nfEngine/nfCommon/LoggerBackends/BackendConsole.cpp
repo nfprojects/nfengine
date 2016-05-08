@@ -46,5 +46,9 @@ void LoggerBackendConsole::Log(LogType type, const char* srcFile, int line, cons
                  str);
 }
 
+void LoggerBackendConsole::Reset()
+{
+}
+
 } // namespace Common
 } // namespace NFE

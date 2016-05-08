@@ -21,6 +21,11 @@ namespace Common {
 
 LoggerBackendHTML::LoggerBackendHTML()
 {
+    Reset();
+}
+
+void LoggerBackendHTML::Reset()
+{
     /**
      * TODO: move intro, outro and the other HTML code templates to another file, so the logger
      * backend can be easly customizable.

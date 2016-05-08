@@ -53,5 +53,9 @@ void LoggerBackendWinDebugger::Log(LogType type, const char* srcFile, int line, 
     OutputDebugStringW(mWideDebugString.c_str());
 }
 
+void LoggerBackendWinDebugger::Reset()
+{
+}
+
 } // namespace Common
 } // namespace NFE

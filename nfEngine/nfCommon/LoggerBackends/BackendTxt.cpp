@@ -21,6 +21,11 @@ namespace Common {
 
 LoggerBackendTxt::LoggerBackendTxt()
 {
+    Reset();
+}
+
+void LoggerBackendTxt::Reset()
+{
     const static std::string gLogIntro = "nfEngine - log file\n"
                                          "[Seconds elapsed] [LogType] "
                                          "[SourceFile]:[LineOfCode]: [Message]\n";

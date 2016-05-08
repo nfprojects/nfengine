@@ -61,7 +61,8 @@ def runTest(args, isVerbose):
     # first we get total number of tests via listing all tests and counting the lines
     testNoArgs = [args[0], "--gtest_list_tests"]
     testNoArgs.extend(args[1:])
-    testNoProcess = subprocess.Popen(testNoArgs, stdout = subprocess.PIPE)
+    with open(os.devnull, 'w') as devNull:
+        testNoProcess = subprocess.Popen(testNoArgs, stdout = subprocess.PIPE, stderr = devNull)
     linesIterator = iter(testNoProcess.stdout.readline, b"")
     testNo = 0
     for line in linesIterator:
@@ -69,7 +70,7 @@ def runTest(args, isVerbose):
             testNo += 1
 
     # then we run the tests and print only number of currently running test or everything
-    testProcess = subprocess.Popen(args, stdout = subprocess.PIPE)
+    testProcess = subprocess.Popen(args, stdout = subprocess.PIPE, stderr = subprocess.STDOUT)
     linesIterator = iter(testProcess.stdout.readline, b"")
     testNoCurrent = 0
     for line in linesIterator:

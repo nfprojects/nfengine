@@ -24,6 +24,7 @@ class NFCOMMON_API LoggerBackendWinDebugger : public LoggerBackend
 public:
     LoggerBackendWinDebugger();
     void Log(LogType type, const char* srcFile, int line, const char* str, double timeElapsed);
+    void Reset();
 };
 
 } // namespace Common
