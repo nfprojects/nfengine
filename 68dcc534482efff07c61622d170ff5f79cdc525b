@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_06413338",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-09T17:27:11Z",
+      "side": 1,
+      "message": "Duplicated code. Remove code from the constructor - let the Reset() method create all the backends.",
+      "range": {
+        "startLine": 75,
+        "startChar": 0,
+        "endLine": 81,
+        "endChar": 15
+      },
+      "revId": "68dcc534482efff07c61622d170ff5f79cdc525b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
