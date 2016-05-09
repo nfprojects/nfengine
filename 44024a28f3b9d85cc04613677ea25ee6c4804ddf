@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_867b038c",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-09T17:35:52Z",
+      "side": 1,
+      "message": "This looks bad... You don\u0027t know what is \"mFile\" if you look at this macro for the first time.",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 11
+      },
+      "revId": "44024a28f3b9d85cc04613677ea25ee6c4804ddf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c65d8b16",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-09T17:35:52Z",
+      "side": 1,
+      "message": "This should be in some \"common\" header, that will be used by other performance tests as well, because we don\u0027t want to copy-paste this for BVH, ThreadPool and Packer perftests... There should also be a \"Write\" method which would do what \"WRITE\" macro does now.",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 2
+      },
+      "revId": "44024a28f3b9d85cc04613677ea25ee6c4804ddf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
