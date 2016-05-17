@@ -39,6 +39,11 @@ std::string Scene::GetCurrentSubSceneName() const
     return mSubScenes[mCurrentSubScene].name;
 }
 
+bool Scene::OnSwitchSubscene()
+{
+    return true;
+}
+
 void Scene::RegisterSubScene(SubSceneInitializer initializer, const std::string& name)
 {
     SubSceneDefinition def;
@@ -54,7 +59,7 @@ void Scene::ReleaseSubsceneResources()
 bool Scene::Init(NFE::Renderer::IDevice* rendererDevice, void* winHandle)
 {
     mRendererDevice = rendererDevice;
-    mCommandBuffer = mRendererDevice->GetDefaultCommandBuffer();
+    mCommandBuffer.reset(mRendererDevice->CreateCommandBuffer());
 
     if (!OnInit(winHandle))
         return false;

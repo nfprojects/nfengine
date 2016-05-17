@@ -62,7 +62,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         D3D11_RENDER_TARGET_VIEW_DESC rtvDesc;
         rtvDesc.Format = DXGI_FORMAT_UNKNOWN;
 
-        switch (tex->type)
+        switch (tex->mType)
         {
         case TextureType::Texture1D:
             if (tex->mLayers > 1)

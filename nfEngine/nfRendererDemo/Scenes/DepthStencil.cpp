@@ -266,9 +266,28 @@ bool DepthStencilScene::OnInit(void* winHandle)
 bool DepthStencilScene::OnSwitchSubscene()
 {
     mAngle = 0.0f;
+    return true;
+}
+
+void DepthStencilScene::Draw(float dt)
+{
+    mAngle += 2.0f * dt;
+    if (mAngle > NFE_MATH_2PI)
+        mAngle -= NFE_MATH_2PI;
+
+    Matrix modelMatrix = MatrixRotationNormal(Vector(0.0f, 1.0f, 0.0f), mAngle);
+    Matrix viewMatrix = MatrixLookTo(Vector(6.0f, 1.2f, 0.0f), Vector(-2.0f, -1.0f, 0.0f),
+                                     Vector(0.0f, 1.0f, 0.0f));
+    Matrix projMatrix = MatrixPerspective(static_cast<float>(WINDOW_WIDTH) /
+                                          static_cast<float>(WINDOW_HEIGHT),
+                                          70.0f * NFE_MATH_PI / 180.0f, 100.0f, 0.1f);
+
+    Matrix reflectionMatrix = MatrixScaling(Vector(1.0f, -1.0f, 1.0f)) *
+                              MatrixTranslation3(Vector(0.0f, -2.0f, 0.0f));
 
     mCommandBuffer->Reset();
-    mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
+    mCommandBuffer->SetViewport(0.0f, static_cast<float>(WINDOW_WIDTH), 0.0f,
+                                static_cast<float>(WINDOW_HEIGHT), 0.0f, 1.0f);
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
 
     int stride = 9 * sizeof(float);
@@ -282,25 +301,6 @@ bool DepthStencilScene::OnSwitchSubscene()
 
     mCommandBuffer->SetShaderProgram(mShaderProgram.get());
 
-    return true;
-}
-
-void DepthStencilScene::Draw(float dt)
-{
-    mAngle += 2.0f * dt;
-    if (mAngle > NFE_MATH_2PI)
-        mAngle -= NFE_MATH_2PI;
-
-    Matrix modelMatrix = MatrixRotationNormal(Vector(0.0f, 1.0f, 0.0f), mAngle);
-    Matrix viewMatrix = MatrixLookTo(Vector(6.0f, 1.2f, 0.0f), Vector(-2.0f, -1.0f, 0.0f),
-                                     Vector(0.0f, 1.0f, 0.0f));
-    Matrix projMatrix = MatrixPerspective((float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
-                                          70.0f * NFE_MATH_PI / 180.0f, 100.0f, 0.1f);
-
-    Matrix reflectionMatrix = MatrixScaling(Vector(1.0f, -1.0f, 1.0f)) *
-                              MatrixTranslation3(Vector(0.0f, -2.0f, 0.0f));
-
-    IBuffer* cb = mConstantBuffer.get();
     VertexCBuffer cbuffer;
 
     if (GetCurrentSubSceneNumber() >= 2)
@@ -346,6 +346,7 @@ void DepthStencilScene::Draw(float dt)
     mCommandBuffer->SetPipelineState(mCubePipelineState.get());
     mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 2 * 6 * 3);
 
+    mRendererDevice->Execute(mCommandBuffer->Finish().get());
     mWindowBackbuffer->Present();
 }
 
