@@ -14,8 +14,12 @@ namespace Renderer {
 
 class Sampler : public ISampler
 {
+    SamplerDesc mDesc;
+
 public:
     bool Init(const SamplerDesc& desc);
+
+    void FillD3DStaticSampler(D3D12_STATIC_SAMPLER_DESC& sampler) const;
 };
 
 } // namespace Renderer
