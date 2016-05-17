@@ -62,17 +62,18 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     const size_t maxSets = 16;
     const size_t maxBindings = 64;
 
+    D3D12_STATIC_SAMPLER_DESC staticSamplers[maxBindings];
     D3D12_DESCRIPTOR_RANGE descriptorRanges[maxBindings];
     D3D12_ROOT_PARAMETER rootParameters[maxSets];
 
     D3D12_ROOT_SIGNATURE_DESC rsd;
     rsd.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
     rsd.NumParameters = static_cast<UINT>(desc.numBindingSets);
-    rsd.NumStaticSamplers = 0;
     rsd.pParameters = rootParameters;
 
     mBindingSets.reserve(desc.numBindingSets);
 
+    size_t samplerCounter = 0;
     size_t rangeCounter = 0;
     for (size_t i = 0; i < desc.numBindingSets; ++i)
     {
@@ -143,8 +144,29 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
             descriptorRanges[rangeCounter].RegisterSpace = 0;
             descriptorRanges[rangeCounter].OffsetInDescriptorsFromTableStart = 0;
             rangeCounter++;
+
+            // fill static samplers
+            if (bindingDesc.resourceType == ShaderResourceType::Texture &&
+                bindingDesc.staticSampler != nullptr)
+            {
+                Sampler* sampler = dynamic_cast<Sampler*>(bindingDesc.staticSampler);
+                if (!sampler)
+                {
+                    LOG_ERROR("Invalid static sampler in binding set %zu at slot %zu", i, j);
+                    return false;
+                }
+
+                D3D12_STATIC_SAMPLER_DESC& targetSampler = staticSamplers[samplerCounter++];
+                sampler->FillD3DStaticSampler(targetSampler);
+                targetSampler.ShaderRegister = bindingDesc.slot & SHADER_RES_SLOT_MASK;
+                targetSampler.RegisterSpace = 0;
+                targetSampler.ShaderVisibility = rootParameters[i].ShaderVisibility;
+            }
         }
     }
+
+    rsd.NumStaticSamplers = static_cast<UINT>(samplerCounter);
+    rsd.pStaticSamplers = staticSamplers;
 
     HRESULT hr;
     D3DPtr<ID3D10Blob> rootSignature, errorsBuffer;
@@ -188,9 +210,54 @@ bool ResourceBindingInstance::Init(IResourceBindingSet* bindingSet)
 
 bool ResourceBindingInstance::WriteTextureView(size_t slot, ITexture* texture)
 {
-    UNUSED(slot);
-    UNUSED(texture);
-    return false;
+    // TODO this won't work if there are multiple buffers (frames) in the texture
+
+    Texture* tex = dynamic_cast<Texture*>(texture);
+    if (!tex || !tex->mBuffers[0])
+    {
+        LOG_ERROR("Invalid buffer");
+        return false;
+    }
+
+    D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc;
+    srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+    srvDesc.Format = tex->mSrvFormat;
+    switch (tex->mType)
+    {
+    case TextureType::Texture1D:
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE1D;
+        srvDesc.Texture1D.MipLevels = tex->mMipmapsNum;
+        srvDesc.Texture1D.MostDetailedMip = 0;
+        srvDesc.Texture1D.ResourceMinLODClamp = 0.0f;
+        break;
+    case TextureType::Texture2D:
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+        srvDesc.Texture2D.MipLevels = tex->mMipmapsNum;
+        srvDesc.Texture2D.MostDetailedMip = 0;
+        srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
+        srvDesc.Texture2D.PlaneSlice = 0;
+        break;
+    case TextureType::TextureCube:
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+        srvDesc.TextureCube.MipLevels = tex->mMipmapsNum;
+        srvDesc.TextureCube.MostDetailedMip = 0;
+        srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+        break;
+    case TextureType::Texture3D:
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE3D;
+        srvDesc.Texture3D.MipLevels = tex->mMipmapsNum;
+        srvDesc.Texture3D.MostDetailedMip = 0;
+        srvDesc.Texture3D.ResourceMinLODClamp = 0.0f;
+        break;
+    // TODO multisampled and multilayered textures
+    }
+
+    HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
+    D3D12_CPU_DESCRIPTOR_HANDLE handle = allocator.GetCpuHandle();
+    handle.ptr += allocator.GetDescriptorSize() * (mDescriptorHeapOffset + slot);
+    gDevice->GetDevice()->CreateShaderResourceView(tex->mBuffers[0].get(), &srvDesc, handle);
+
+    return true;
 }
 
 bool ResourceBindingInstance::WriteCBufferView(size_t slot, IBuffer* buffer)
