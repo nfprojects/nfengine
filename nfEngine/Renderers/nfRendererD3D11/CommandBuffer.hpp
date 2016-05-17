@@ -25,6 +25,7 @@ class CommandBuffer : public ICommandBuffer
 {
     friend class Device;
 
+	bool mReset;
     unsigned char mStencilRef;
     unsigned char mCurrentStencilRef;
     PrimitiveType mCurrentPrimitiveType;
@@ -63,16 +64,13 @@ public:
     void* MapBuffer(IBuffer* buffer, MapType type);
     void UnmapBuffer(IBuffer* buffer);
     bool WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data);
-    bool ReadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data);
     void CopyTexture(ITexture* src, ITexture* dest);
-    bool ReadTexture(ITexture* tex, void* data);
     void Clear(int flags, const float* color, float depthValue, unsigned char stencilValue);
     void Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
               int instanceOffset);
     void DrawIndexed(PrimitiveType type, int indexNum, int instancesNum, int indexOffset,
                      int vertexOffset, int instanceOffset);
     ICommandList* Finish();
-    void Execute(ICommandList* commandList);
 
     /// Debugging
 

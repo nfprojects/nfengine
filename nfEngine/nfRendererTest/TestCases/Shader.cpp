@@ -1,6 +1,6 @@
-#include "PCH.hpp"
-#include "Backends.hpp"
-#include "RendererTest.hpp"
+#include "../PCH.hpp"
+#include "../Backends.hpp"
+#include "../RendererTest.hpp"
 
 class ShaderTest : public RendererTest
 {
