@@ -47,7 +47,6 @@ public:
     ~VertexBuffersScene();
 
     bool OnInit(void* winHandle);
-    bool OnSwitchSubscene();
     void Draw(float dt);
     void Release();
 };

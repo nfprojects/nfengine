@@ -76,7 +76,6 @@ PostProcessRenderer::PostProcessRenderer()
 
 void PostProcessRenderer::OnEnter(RenderContext* context)
 {
-    context->commandBuffer->Reset();
     context->commandBuffer->BeginDebugGroup("Post Process Renderer stage");
 
     context->commandBuffer->SetPipelineState(mPipelineState.get());
