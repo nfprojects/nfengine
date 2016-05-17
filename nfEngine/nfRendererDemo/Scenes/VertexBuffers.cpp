@@ -261,11 +261,15 @@ bool VertexBuffersScene::OnInit(void* winHandle)
     return true;
 }
 
-bool VertexBuffersScene::OnSwitchSubscene()
+void VertexBuffersScene::Draw(float dt)
 {
+    // not used - the scene is static
+    (void)dt;
+
     // reset bound resources and set them once again
     mCommandBuffer->Reset();
-    mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
+    mCommandBuffer->SetViewport(0.0f, static_cast<float>(WINDOW_WIDTH), 0.0f,
+                                static_cast<float>(WINDOW_HEIGHT), 0.0f, 1.0f);
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
 
     mCommandBuffer->SetPipelineState(mPipelineState.get());
@@ -290,12 +294,6 @@ bool VertexBuffersScene::OnSwitchSubscene()
         mCommandBuffer->SetVertexBuffers(2, vertexBuffers, strides, offsets);
     }
 
-    return true;
-}
-
-void VertexBuffersScene::Draw(float dt)
-{
-    (void)dt;
 
     // clear target
     float color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -307,6 +305,7 @@ void VertexBuffersScene::Draw(float dt)
     else
         mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 6);
 
+    mRendererDevice->Execute(mCommandBuffer->Finish().get());
     mWindowBackbuffer->Present();
 }
 

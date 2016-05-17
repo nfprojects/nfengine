@@ -204,14 +204,13 @@ bool Engine::Advance(View** views, size_t viewsNum,
 
         renderingData[i].ExecuteCommandLists();
 
-        view->Postprocess();
-
+        RenderContext* ctx = mRenderer->GetDefaultContext();
+        ctx->commandBuffer->Reset();
+        view->Postprocess(ctx);
         view->UpdateGui();
 
         // GUI renderer pass
         {
-            RenderContext* ctx = mRenderer->GetImmediateContext();
-            ctx->commandBuffer->Reset();
             GuiRenderer::Get()->Enter(ctx);
             GuiRenderer::Get()->SetTarget(ctx, view->GetRenderTarget(true));
             view->DrawGui(ctx);
@@ -219,6 +218,8 @@ bool Engine::Advance(View** views, size_t viewsNum,
             view->OnPostRender(ctx);
             GuiRenderer::Get()->Leave(ctx);
         }
+
+        mRenderer->GetDevice()->Execute(ctx->commandBuffer->Finish().get());
 
         // present frame in the display
         view->Present();
