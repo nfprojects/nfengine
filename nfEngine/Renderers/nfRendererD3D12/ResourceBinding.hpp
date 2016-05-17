@@ -50,6 +50,7 @@ class ResourceBindingInstance : public IResourceBindingInstance
     friend class CommandBuffer;
 
     size_t mDescriptorHeapOffset;
+    size_t mSamplerDescriptorHeapOffset;
     ResourceBindingSet* mSet;
 
 public:

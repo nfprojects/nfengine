@@ -38,7 +38,6 @@ class Device : public IDevice
     std::map<FullPipelineStateParts, D3DPtr<ID3D12PipelineState>> mPipelineStateMap;
 
     UINT mCbvSrvUavDescSize;
-    UINT mSamplerDescSize;
     UINT mRtvDescSize;
     UINT mDsvDescSize;
 
@@ -47,6 +46,7 @@ public:
     ~Device();
 
     ID3D12Device* GetDevice() const;
+    ID3D12CommandQueue* GetCommandQueue() const;
     void* GetHandle() const override;
     bool GetDeviceInfo(DeviceInfo& info) override;
 
@@ -78,6 +78,11 @@ public:
 
     void OnShaderProgramDestroyed(IShaderProgram* program);
     void OnPipelineStateDestroyed(IPipelineState* pipelineState);
+
+    /**
+     * Waits until all operations sent to the command queue has been completed.
+     */
+    bool WaitForGPU();
 };
 
 } // namespace Renderer

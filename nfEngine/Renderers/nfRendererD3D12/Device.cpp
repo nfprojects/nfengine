@@ -183,8 +183,6 @@ Device::Device()
     // obtain descriptor sizes
     mCbvSrvUavDescSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
     LOG_DEBUG("CBV/SRV/UAV descriptor heap handle increment: %u", mCbvSrvUavDescSize);
-    mSamplerDescSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER);
-    LOG_DEBUG("Sampler descriptor heap handle increment: %u", mSamplerDescSize);
     mRtvDescSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
     LOG_DEBUG("RTV descriptor heap handle increment: %u", mRtvDescSize);
     mDsvDescSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
@@ -198,6 +196,11 @@ Device::~Device()
 ID3D12Device* Device::GetDevice() const
 {
     return mDevice.get();
+}
+
+ID3D12CommandQueue* Device::GetCommandQueue() const
+{
+    return mCommandQueue.get();
 }
 
 void* Device::GetHandle() const
@@ -462,6 +465,43 @@ void Device::FreeCbvSrvUavHeap(size_t offset, size_t numDescriptors)
 
     for (size_t i = offset; i < offset + numDescriptors; ++i)
         mCbvSrvUavHeapMap[i] = true;
+}
+
+bool Device::WaitForGPU()
+{
+    UINT64 fenceValue = 1;
+    D3DPtr<ID3D12Fence> fenceObject; // TODO this could be created once in the constructor
+    HRESULT hr;
+
+    if (FAILED(D3D_CALL_CHECK(gDevice->mDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE,
+                                                            IID_PPV_ARGS(&fenceObject)))))
+        return false;
+
+    // Create an event handle to use for frame synchronization.
+    HANDLE fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+    if (fenceEvent == nullptr)
+    {
+        LOG_ERROR("Failed to create fence event object");
+        return false;
+    }
+
+    // Signal and increment the fence value.
+    const UINT64 fence = fenceValue;
+    hr = D3D_CALL_CHECK(mCommandQueue->Signal(fenceObject.get(), fence));
+    if (FAILED(hr))
+        return false;
+    fenceValue++;
+
+    // Wait until the previous frame is finished.
+    if (fenceObject->GetCompletedValue() < fence)
+    {
+        hr = D3D_CALL_CHECK(fenceObject->SetEventOnCompletion(fence, fenceEvent));
+        if (FAILED(hr))
+            return false;
+        WaitForSingleObject(fenceEvent, INFINITE);
+    }
+
+    return true;
 }
 
 } // namespace Renderer
