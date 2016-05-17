@@ -16,26 +16,9 @@ namespace Renderer {
 
 
 RenderContext::RenderContext()
-    : mIsDeferred(true)
 {
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
-    commandBuffer = renderer->GetDevice()->CreateCommandBuffer();
-}
-
-RenderContext::RenderContext(ICommandBuffer* commandBuffer)
-    : mIsDeferred(false)
-{
-    this->commandBuffer = commandBuffer;
-}
-
-RenderContext::~RenderContext()
-{
-    // immediate command buffer must not be deleted - it's owned by IDevice
-    if (mIsDeferred && commandBuffer != nullptr)
-    {
-        delete commandBuffer;
-        commandBuffer = nullptr;
-    }
+    commandBuffer.reset(renderer->GetDevice()->CreateCommandBuffer());
 }
 
 } // namespace Renderer

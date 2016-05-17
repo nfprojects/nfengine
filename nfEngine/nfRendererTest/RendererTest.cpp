@@ -5,7 +5,6 @@
 /// static members definitions
 Common::Library RendererTest::gRendererLib;
 IDevice* RendererTest::gRendererDevice = nullptr;
-ICommandBuffer* RendererTest::gCommandBuffer = nullptr;
 std::string RendererTest::gTestShaderPath;
 
 void RendererTest::SetUpTestCase()
@@ -18,9 +17,6 @@ void RendererTest::SetUpTestCase()
 
     gRendererDevice = proc();
     ASSERT_TRUE(gRendererDevice != nullptr);
-
-    gCommandBuffer = gRendererDevice->GetDefaultCommandBuffer();
-    ASSERT_TRUE(gCommandBuffer != nullptr);
 
     gTestShaderPath = gShaderPathPrefix + "Simple" + gShaderPathExt;
 }
@@ -39,8 +35,13 @@ void RendererTest::TearDownTestCase()
     gRendererLib.Close();
 }
 
-bool RendererTest::BeginTestFrame(int width, int height, ElementFormat format, int texelSize)
+void RendererTest::BeginTestFrame(int width, int height, ElementFormat format, int texelSize)
 {
+    mCommandBuffer.reset(gRendererDevice->CreateCommandBuffer());
+    ASSERT_FALSE(!mCommandBuffer);
+
+    mCommandBuffer->Reset();
+
     TextureDesc texDesc;
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
     texDesc.access = BufferAccess::GPU_ReadWrite;
@@ -49,8 +50,7 @@ bool RendererTest::BeginTestFrame(int width, int height, ElementFormat format, i
     texDesc.width = width;
     texDesc.height = height;
     mTestTexture.reset(gRendererDevice->CreateTexture(texDesc));
-    if (!mTestTexture.get())
-        return false;
+    ASSERT_FALSE(!mTestTexture);
 
     RenderTargetElement rtTarget;
     rtTarget.texture = mTestTexture.get();
@@ -58,29 +58,29 @@ bool RendererTest::BeginTestFrame(int width, int height, ElementFormat format, i
     rtDesc.numTargets = 1;
     rtDesc.targets = &rtTarget;
     mTestRenderTarget.reset(gRendererDevice->CreateRenderTarget(rtDesc));
-    if (!mTestRenderTarget.get())
-        return false;
+    ASSERT_FALSE(!mTestRenderTarget);
 
     texDesc.binding = 0;
     texDesc.access = BufferAccess::CPU_Read;
     mTestTextureRead.reset(gRendererDevice->CreateTexture(texDesc));
-    if (!mTestTextureRead.get())
-        return false;
+    ASSERT_FALSE(!mTestTextureRead);
 
-    gCommandBuffer->SetRenderTarget(mTestRenderTarget.get());
-
-    return true;
+    mCommandBuffer->SetRenderTarget(mTestRenderTarget.get());
 }
 
-bool RendererTest::EndTestFrame(void* data)
+void RendererTest::EndTestFrame(void* data)
 {
-    gCommandBuffer->SetRenderTarget(nullptr);
-    gCommandBuffer->CopyTexture(mTestTexture.get(), mTestTextureRead.get());
-    bool success = gCommandBuffer->ReadTexture(mTestTextureRead.get(), data);
+    mCommandBuffer->SetRenderTarget(nullptr);
+    mCommandBuffer->CopyTexture(mTestTexture.get(), mTestTextureRead.get());
+
+    {
+        std::unique_ptr<ICommandList> commandList(mCommandBuffer->Finish());
+        gRendererDevice->Execute(commandList.get());
+    }
+
+    ASSERT_TRUE(gRendererDevice->DownloadTexture(mTestTextureRead.get(), data));
 
     mTestRenderTarget.reset();
     mTestTexture.reset();
     mTestTextureRead.reset();
-
-    return success;
 }

@@ -89,16 +89,6 @@ public:
     virtual bool WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data) = 0;
 
     /**
-     * Read data from a GPU buffer to the CPU memory.
-     * @param      buffer Source buffer.
-     * @param      offset Offset in the GPU buffer (in bytes).
-     * @param      size   Number of bytes to read.
-     * @param[out] data   Pointer to target CPU buffer.
-     * @return true on success.
-     */
-    virtual bool ReadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data) = 0;
-
-    /**
      * Copy contents of texture @p src to @p dest.
      * The textures source and destination texture must be the same type, size, format
      * and sample count.
@@ -106,14 +96,6 @@ public:
      * @param dest Destination texture object.
      */
     virtual void CopyTexture(ITexture* src, ITexture* dest) = 0;
-
-    /**
-     * Read texture content to a CPU buffer.
-     * @param      tex  Texture to read.
-     * @param[out] data Target CPU buffer.
-     */
-    // TODO: selecting mipmap level, layer / slice number, etc.
-    virtual bool ReadTexture(ITexture* tex, void* data) = 0;
 
     /**
      * Clear bound render targets with a color.
@@ -155,15 +137,9 @@ public:
 
     /**
      * Store all executed commands to a command list.
-     * @return Saved command list or NULL on error.
+     * @return Saved command list or NULL on an error.
      */
     virtual ICommandList* Finish() = 0;
-
-    /**
-     * Execute a command list.
-     * @param commandList Command list to be executed.
-     */
-    virtual void Execute(ICommandList* commandList) = 0;
 
     /**@}*/
 

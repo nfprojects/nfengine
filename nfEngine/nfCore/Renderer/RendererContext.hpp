@@ -18,15 +18,11 @@ namespace Renderer {
 
 class RenderContext
 {
-    bool mIsDeferred;
-
 public:
-    ICommandBuffer* commandBuffer; // low-level API command buffer
+    std::unique_ptr<ICommandBuffer> commandBuffer; // low-level API command buffer
     Math::Random random;
 
     RenderContext();
-    RenderContext(ICommandBuffer* commandBuffer);
-    ~RenderContext();
 
     /*
         TODO:

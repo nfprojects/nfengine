@@ -335,23 +335,6 @@ bool CommandBuffer::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, con
     return true;
 }
 
-bool CommandBuffer::ReadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data)
-{
-    Buffer* buf = dynamic_cast<Buffer*>(buffer);
-    if (!buf)
-        return false;
-
-    D3D11_MAPPED_SUBRESOURCE mapped = { 0 };
-    ID3D11Resource* res = reinterpret_cast<ID3D11Resource*>(buf->mBuffer.get());
-    HRESULT hr = D3D_CALL_CHECK(mContext->Map(res, 0, D3D11_MAP_READ, 0, &mapped));
-    if (FAILED(hr))
-        return false;
-
-    memcpy(data, (char*)mapped.pData + offset, size);
-    mContext->Unmap(res, 0);
-    return true;
-}
-
 void CommandBuffer::CopyTexture(ITexture* src, ITexture* dest)
 {
     Texture* srcTex = dynamic_cast<Texture*>(src);
@@ -370,32 +353,6 @@ void CommandBuffer::CopyTexture(ITexture* src, ITexture* dest)
 
     mContext->CopyResource(reinterpret_cast<ID3D11Resource*>(destTex->mTextureGeneric),
                            reinterpret_cast<ID3D11Resource*>(srcTex->mTextureGeneric));
-}
-
-bool CommandBuffer::ReadTexture(ITexture* tex, void* data)
-{
-    Texture* texture = dynamic_cast<Texture*>(tex);
-    if (!texture)
-    {
-        LOG_ERROR("Invalid 'tex' pointer");
-        return false;
-    }
-
-    HRESULT hr;
-    D3D11_MAPPED_SUBRESOURCE mapped = { 0 };
-    UINT subresource = 0; // TODO: mipmap and layer selection
-    ID3D11Resource* res = reinterpret_cast<ID3D11Resource*>(texture->mTextureGeneric);
-    hr = D3D_CALL_CHECK(mContext->Map(res, subresource, D3D11_MAP_READ, 0, &mapped));
-    if (FAILED(hr))
-        return false;
-
-    size_t dataSize = static_cast<size_t>(texture->mWidth) *
-                      static_cast<size_t>(texture->mHeight) *
-                      static_cast<size_t>(texture->mTexelSize);
-    memcpy(data, mapped.pData, dataSize);
-
-    mContext->Unmap(res, subresource);
-    return true;
 }
 
 void CommandBuffer::Clear(int flags, const float* color, float depthValue,
@@ -490,15 +447,6 @@ ICommandList* CommandBuffer::Finish()
 
     list->mD3DList = d3dList;
     return list;
-}
-
-void CommandBuffer::Execute(ICommandList* commandList)
-{
-    CommandList* list = dynamic_cast<CommandList*>(commandList);
-    if (!list)
-        return;
-
-    mContext->ExecuteCommandList(list->mD3DList.get(), FALSE);
 }
 
 void CommandBuffer::BeginDebugGroup(const char* text)

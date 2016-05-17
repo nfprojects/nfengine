@@ -16,12 +16,14 @@ class Texture : virtual public ITexture
 {
     friend class CommandBuffer;
     friend class RenderTarget;
+    friend class Device;
 
 protected:
     TextureType type;
     int mWidth;
     int mHeight;
     int mLayers;
+    int mMipmaps;
     int mSamples;
     int mTexelSize; //< texel size in bytes
     D3DPtr<ID3D11ShaderResourceView> mSRV;

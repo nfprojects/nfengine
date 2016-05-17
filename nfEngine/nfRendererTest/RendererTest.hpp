@@ -15,6 +15,8 @@ protected:
     // preapre test case enviroment - release the renderer
     static void TearDownTestCase();
 
+    std::unique_ptr<ICommandBuffer> mCommandBuffer;
+
     // texture used as render target
     std::unique_ptr<ITexture> mTestTexture;
     std::unique_ptr<IRenderTarget> mTestRenderTarget;
@@ -24,22 +26,21 @@ protected:
 
     /**
      * Start rendering into test render target texture.
-     * width,height      Texture dimensions
-     * format, texelSize Texture format
+     * @param width,height      Texture dimensions
+     * @param format, texelSize Texture format
      * @see EndFrame
      */
-    bool BeginTestFrame(int width, int height, ElementFormat format, int texelSize);
+    void BeginTestFrame(int width, int height, ElementFormat format, int texelSize);
 
     /**
      * Finish rendering into test render target texture and return rendered pixels buffer.
-     * data[out] Buffer, where renderer pixels will be written into. Note that the buffer
-                 size must be big enough to store all the pixels.
+     * @param data[out] Buffer, where renderer pixels will be written into. Note that the buffer
+     *                  size must be big enough to store all the pixels.
      * @see BeginFrame
      */
-    bool EndTestFrame(void* data);
+    void EndTestFrame(void* data);
 
     static Common::Library gRendererLib;
     static IDevice* gRendererDevice;
-    static ICommandBuffer* gCommandBuffer;
     static std::string gTestShaderPath;
 };

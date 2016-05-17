@@ -67,12 +67,34 @@ public:
 
     /**@}*/
 
-    virtual ICommandBuffer* GetDefaultCommandBuffer() = 0;
-
     /**
      * Create a deffered context.
      */
     virtual ICommandBuffer* CreateCommandBuffer() = 0;
+
+    /**
+     * Execute a command list.
+     * @param commandList Command list to be executed.
+     * @return True on success.
+     */
+    virtual bool Execute(ICommandList* commandList) = 0;
+
+    /**
+     * Read data from a GPU buffer to the CPU memory.
+     * @param      buffer Source buffer.
+     * @param      offset Offset in the GPU buffer (in bytes).
+     * @param      size   Number of bytes to read.
+     * @param[out] data   Pointer to target CPU buffer.
+     * @return true on success.
+     */
+    virtual bool DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data) = 0;
+
+    /**
+     * Read texture content to a CPU buffer.
+     * @param      tex  Texture to read.
+     * @param[out] data Target CPU buffer.
+     */
+    virtual bool DownloadTexture(ITexture* tex, void* data, int mipmap = 0, int layer = 0) = 0;
 };
 
 typedef IDevice* (*RendererInitFunc)();

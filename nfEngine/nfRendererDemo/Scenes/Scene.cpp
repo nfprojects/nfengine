@@ -54,7 +54,7 @@ void Scene::ReleaseSubsceneResources()
 bool Scene::Init(NFE::Renderer::IDevice* rendererDevice, void* winHandle)
 {
     mRendererDevice = rendererDevice;
-    mCommandBuffer = mRendererDevice->GetDefaultCommandBuffer();
+    mCommandBuffer = mRendererDevice->CreateCommandBuffer();
 
     if (!OnInit(winHandle))
         return false;

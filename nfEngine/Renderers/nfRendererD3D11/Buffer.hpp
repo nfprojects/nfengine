@@ -15,6 +15,7 @@ namespace Renderer {
 class Buffer : public IBuffer
 {
     friend class CommandBuffer;
+    friend class Device;
 
     size_t mSize;
     BufferType mType;

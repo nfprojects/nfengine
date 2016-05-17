@@ -73,7 +73,7 @@ private:
 
     /// TODO: make sure there is no false sharing problem here
     std::unique_ptr<RenderContext[]> mDeferredContexts;
-    std::unique_ptr<RenderContext> mImmediateContext;
+    std::unique_ptr<RenderContext> mDefaultContext;
 
     RendererConfig mConfig;
 
@@ -108,11 +108,10 @@ public:
     IDevice* GetDevice();
 
     /**
-     * Get immediate (primary) rendering context.
-     * Using the immediate context will result in direct rendering.
-     * It can be only used by the main thread.
+     * Get default rendering context.
+     * It will be used only by the main thread.
      */
-    RenderContext* GetImmediateContext() const;
+    RenderContext* GetDefaultContext() const;
 
     /**
      * Get deferred (secondary) rendering context.

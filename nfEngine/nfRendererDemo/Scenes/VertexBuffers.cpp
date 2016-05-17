@@ -268,6 +268,13 @@ bool VertexBuffersScene::OnInit(void* winHandle)
 
 bool VertexBuffersScene::OnSwitchSubscene()
 {
+    return true;
+}
+
+void VertexBuffersScene::Draw(float dt)
+{
+    (void)dt;
+
     // reset bound resources and set them once again
     mCommandBuffer->Reset();
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
@@ -281,8 +288,8 @@ bool VertexBuffersScene::OnSwitchSubscene()
     if (mInstanceBuffer)
     {
         IBuffer* vertexBuffers[] = { mPositionsVertexBuffer.get(),
-                                     mColorVertexBuffer.get(),
-                                     mInstanceBuffer.get() };
+            mColorVertexBuffer.get(),
+            mInstanceBuffer.get() };
         int strides[] = { 3 * sizeof(float), 4 * sizeof(float), sizeof(InstanceData) };
         int offsets[] = { 0, 0, 0 };
         mCommandBuffer->SetVertexBuffers(3, vertexBuffers, strides, offsets);
@@ -295,12 +302,6 @@ bool VertexBuffersScene::OnSwitchSubscene()
         mCommandBuffer->SetVertexBuffers(2, vertexBuffers, strides, offsets);
     }
 
-    return true;
-}
-
-void VertexBuffersScene::Draw(float dt)
-{
-    (void)dt;
 
     // clear target
     float color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -311,6 +312,10 @@ void VertexBuffersScene::Draw(float dt)
         mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 6, gInstancesNumber);
     else
         mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 6);
+
+    ICommandList* commandList = mCommandBuffer->Finish();
+    mRendererDevice->Execute(commandList);
+    delete commandList;
 
     mWindowBackbuffer->Present();
 }
