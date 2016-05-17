@@ -240,8 +240,8 @@ bool DepthStencilScene::CreateDepthBuffer(bool withStencil)
     TextureDesc depthBufferDesc;
     depthBufferDesc.type = TextureType::Texture2D;
     depthBufferDesc.access = BufferAccess::GPU_ReadWrite;
-    depthBufferDesc.width = WINDOW_WIDTH;
-    depthBufferDesc.height = WINDOW_HEIGHT;
+    depthBufferDesc.width = static_cast<uint16>(WINDOW_WIDTH);
+    depthBufferDesc.height = static_cast<uint16>(WINDOW_HEIGHT);
     depthBufferDesc.binding = NFE_RENDERER_TEXTURE_BIND_DEPTH;
     depthBufferDesc.mipmaps = 1;
     depthBufferDesc.depthBufferFormat = withStencil ?

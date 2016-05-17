@@ -171,8 +171,8 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
     TextureDesc texDesc;
     texDesc.type = TextureType::Texture2D;
     texDesc.access = BufferAccess::GPU_ReadWrite;
-    texDesc.width = WINDOW_WIDTH / 2;
-    texDesc.height = WINDOW_HEIGHT / 2;
+    texDesc.width = static_cast<uint16>(WINDOW_WIDTH / 2);
+    texDesc.height = static_cast<uint16>(WINDOW_HEIGHT / 2);
     texDesc.mipmaps = 1;
     texDesc.samplesNum = withMSAA ? MULTISAMPLE_SAMPLES : 1;
 

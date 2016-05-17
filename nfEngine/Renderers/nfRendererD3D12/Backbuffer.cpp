@@ -29,6 +29,19 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
 {
     HRESULT hr;
 
+    if (desc.width < 1 || desc.height < 1 ||
+        desc.width >= std::numeric_limits<uint16>::max() ||
+        desc.height >= std::numeric_limits<uint16>::max())
+    {
+        LOG_ERROR("Invalid backbuffer size");
+        return false;
+    }
+
+    mType = TextureType::Texture2D;
+    mWidth = static_cast<uint16>(desc.width);
+    mHeight = static_cast<uint16>(desc.height);
+    mSrvFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+    mLayers = 1;
     mWindow = static_cast<HWND>(desc.windowHandle);
     mVSync = desc.vSync;
 
