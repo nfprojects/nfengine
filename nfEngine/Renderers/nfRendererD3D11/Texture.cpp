@@ -16,12 +16,12 @@ namespace Renderer {
 Texture::Texture()
 {
     mTextureGeneric = nullptr;
-    type = TextureType::Unknown;
+    mType = TextureType::Unknown;
 }
 
 Texture::~Texture()
 {
-    switch (type)
+    switch (mType)
     {
     case TextureType::Texture1D:
         D3D_SAFE_RELEASE(mTexture1D);
@@ -41,7 +41,7 @@ bool Texture::InitTexture1D(const TextureDesc& desc)
     // TODO: fill
     UNUSED(desc);
 
-    type = TextureType::Texture1D;
+    mType = TextureType::Texture1D;
     return true;
 }
 
@@ -240,9 +240,10 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
     mWidth = desc.width;
     mHeight = desc.height;
     mLayers = desc.layers;
+    mMipmaps = desc.mipmaps;
     mSamples = desc.samplesNum;
     mTexelSize = GetElementFormatSize(desc.format) * desc.texelSize;
-    type = TextureType::Texture2D;
+    mType = TextureType::Texture2D;
     return true;
 }
 
@@ -251,7 +252,7 @@ bool Texture::InitTexture3D(const TextureDesc& desc)
     // TODO: fill
     UNUSED(desc);
 
-    type = TextureType::Texture3D;
+    mType = TextureType::Texture3D;
     return true;
 }
 

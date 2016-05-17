@@ -116,11 +116,6 @@ void View::OnWindowResize(void* userData)
 
     if (view->mWindowBackbuffer != nullptr && view->mWindow != nullptr)
     {
-        HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
-
-        /// make sure that the backbuffer is not used
-        ICommandBuffer* commandBuffer = renderer->GetImmediateContext()->commandBuffer;
-        commandBuffer->SetRenderTarget(nullptr);
         view->mRenderTarget.reset();
 
         uint32 width, height;
@@ -207,14 +202,11 @@ bool View::InitRenderTarget(ITexture* texture, uint32 width, uint32 height)
     return true;
 }
 
-void View::Postprocess()
+void View::Postprocess(RenderContext* ctx)
 {
     // perform post process (if enabled)
     if (mRenderTarget && postProcessParams.enabled && mTemporaryBuffer)
     {
-        HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
-        RenderContext* ctx = renderer->GetImmediateContext();
-
         ToneMappingParameters params;
         params.saturation = postProcessParams.saturation;
         params.noiseFactor = postProcessParams.noiseFactor;

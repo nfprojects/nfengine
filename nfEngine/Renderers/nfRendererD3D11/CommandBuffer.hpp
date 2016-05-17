@@ -25,6 +25,7 @@ class CommandBuffer : public ICommandBuffer
 {
     friend class Device;
 
+    bool mReset;
     unsigned char mStencilRef;
     unsigned char mCurrentStencilRef;
     PrimitiveType mCurrentPrimitiveType;
@@ -64,17 +65,14 @@ public:
     void* MapBuffer(IBuffer* buffer, MapType type) override;
     void UnmapBuffer(IBuffer* buffer) override;
     bool WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data) override;
-    bool ReadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data) override;
     void CopyTexture(ITexture* src, ITexture* dest) override;
-    bool ReadTexture(ITexture* tex, void* data) override;
     void Clear(int flags, const float* color, float depthValue,
                unsigned char stencilValue) override;
     void Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
               int instanceOffset) override;
     void DrawIndexed(PrimitiveType type, int indexNum, int instancesNum, int indexOffset,
                      int vertexOffset, int instanceOffset) override;
-    ICommandList* Finish() override;
-    void Execute(ICommandList* commandList) override;
+    std::unique_ptr<ICommandList> Finish() override;
 
     /// Debugging
 

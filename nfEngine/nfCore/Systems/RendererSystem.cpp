@@ -54,7 +54,6 @@ RenderingData::RenderingData(const RenderingData& other)
 void RenderingData::ExecuteCommandLists() const
 {
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
-    RenderContext* immCtx = renderer->GetImmediateContext();
     Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
 
     // wait for the main renderer task - it spawns the rest of tasks used here...
@@ -67,28 +66,28 @@ void RenderingData::ExecuteCommandLists() const
         threadPool->WaitForTask(shadowPassTask);
         for (const auto& commandLists : shadowPassCLs)
             for (const auto& commandList : commandLists)
-                immCtx->commandBuffer->Execute(commandList.get());
+                renderer->GetDevice()->Execute(commandList.get());
     }
 
     // execute collected geometry pass command list
     if (geometryPassTask != NFE_INVALID_TASK_ID)
     {
         threadPool->WaitForTask(geometryPassTask);
-        immCtx->commandBuffer->Execute(geometryPassCL.get());
+        renderer->GetDevice()->Execute(geometryPassCL.get());
     }
 
     // execute collected light pass command list
     if (lightsPassTask != NFE_INVALID_TASK_ID)
     {
         threadPool->WaitForTask(lightsPassTask);
-        immCtx->commandBuffer->Execute(lightsPassCL.get());
+        renderer->GetDevice()->Execute(lightsPassCL.get());
     }
 
     // execute collected debug layer pass command list
     if (debugLayerTask != NFE_INVALID_TASK_ID)
     {
         threadPool->WaitForTask(debugLayerTask);
-        immCtx->commandBuffer->Execute(debugLayerCL.get());
+        renderer->GetDevice()->Execute(debugLayerCL.get());
     }
 }
 
@@ -175,7 +174,7 @@ void RendererSystem::RenderLights(const Common::TaskContext& context, RenderingD
 
     LightsRenderer::Get()->DrawFog(renderCtx);
     LightsRenderer::Get()->Leave(renderCtx);
-    data.lightsPassCL.reset(renderCtx->commandBuffer->Finish());
+    data.lightsPassCL = renderCtx->commandBuffer->Finish();
 }
 
 void RendererSystem::RenderLightsDebug(RenderingData& data, Renderer::RenderContext* ctx) const
@@ -268,8 +267,7 @@ void RendererSystem::RenderSpotShadowMap(const Common::TaskContext& context,
     RenderGeometry(renderCtx, lightData.frustum, transform);
     GeometryRenderer::Get()->Leave(renderCtx);
 
-    ICommandList* list = renderCtx->commandBuffer->Finish();
-    data.shadowPassCLs[context.threadId].emplace_back(list);
+    data.shadowPassCLs[context.threadId].emplace_back(renderCtx->commandBuffer->Finish());
 };
 
 void RendererSystem::RenderOmniShadowMap(const Common::TaskContext& context,
@@ -336,8 +334,7 @@ void RendererSystem::RenderOmniShadowMap(const Common::TaskContext& context,
     RenderGeometry(renderCtx, frustum, transform);
     GeometryRenderer::Get()->Leave(renderCtx);
 
-    ICommandList* list = renderCtx->commandBuffer->Finish();
-    data.shadowPassCLs[context.threadId].emplace_back(list);
+    data.shadowPassCLs[context.threadId].emplace_back(renderCtx->commandBuffer->Finish());
 };
 
 void RendererSystem::RenderShadowMaps(const Common::TaskContext& context, RenderingData& data)
@@ -458,7 +455,7 @@ void RendererSystem::Render(const Common::TaskContext& context, RenderingData& r
         RenderGeometry(renderCtx, data.cameraComponent->mFrustum, data.cameraTransform);
 
         GeometryRenderer::Get()->Leave(renderCtx);
-        data.geometryPassCL.reset(renderCtx->commandBuffer->Finish());
+        data.geometryPassCL = renderCtx->commandBuffer->Finish();
     };
 
     // enqueue geometry pass task
@@ -537,7 +534,7 @@ void RendererSystem::RenderDebugLayer(const Common::TaskContext& context, Render
     }
 
     DebugRenderer::Get()->Leave(renderCtx);
-    data.debugLayerCL.reset(renderCtx->commandBuffer->Finish());
+    data.debugLayerCL = renderCtx->commandBuffer->Finish();
 }
 
 // build list of meshes visible in a frustum

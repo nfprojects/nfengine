@@ -33,10 +33,10 @@ class Scene
 protected:
     // Renderer interfaces
     NFE::Renderer::IDevice* mRendererDevice;
-    NFE::Renderer::ICommandBuffer* mCommandBuffer;
+    std::unique_ptr<NFE::Renderer::ICommandBuffer> mCommandBuffer;
 
     virtual bool OnInit(void* winHandle) = 0;
-    virtual bool OnSwitchSubscene() = 0;
+    virtual bool OnSwitchSubscene();
     void RegisterSubScene(SubSceneInitializer initializer, const std::string& name);
 
     // Methods common for all scenes:
