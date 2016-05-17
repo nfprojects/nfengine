@@ -492,15 +492,6 @@ ICommandList* CommandBuffer::Finish()
     return list;
 }
 
-void CommandBuffer::Execute(ICommandList* commandList)
-{
-    CommandList* list = dynamic_cast<CommandList*>(commandList);
-    if (!list)
-        return;
-
-    mContext->ExecuteCommandList(list->mD3DList.get(), FALSE);
-}
-
 void CommandBuffer::BeginDebugGroup(const char* text)
 {
     if (mUserDefinedAnnotation.get())

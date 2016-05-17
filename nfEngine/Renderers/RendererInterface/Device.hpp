@@ -67,12 +67,17 @@ public:
 
     /**@}*/
 
-    virtual ICommandBuffer* GetDefaultCommandBuffer() = 0;
-
     /**
      * Create a deffered context.
      */
     virtual ICommandBuffer* CreateCommandBuffer() = 0;
+
+    /**
+     * Execute a command list.
+     * @param commandList Command list to be executed.
+     * @return True on success.
+     */
+    virtual bool Execute(ICommandList* commandList) = 0;
 };
 
 typedef IDevice* (*RendererInitFunc)();

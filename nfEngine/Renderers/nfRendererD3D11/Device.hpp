@@ -20,7 +20,7 @@ class Device : public IDevice
     friend class RenderTarget;
 
     D3DPtr<ID3D11Device> mDevice;
-    std::unique_ptr<CommandBuffer> mDefaultCommandBuffer;
+    D3DPtr<ID3D11DeviceContext> mImmediateContext;
     D3DPtr<IDXGIDevice> mDXGIDevice;
     D3DPtr<IDXGIFactory> mDXGIFactory;
     D3DPtr<IDXGIAdapter> mDXGIAdapter;
@@ -46,8 +46,8 @@ public:
     IShader* CreateShader(const ShaderDesc& desc);
     IShaderProgram* CreateShaderProgram(const ShaderProgramDesc& desc);
 
-    ICommandBuffer* GetDefaultCommandBuffer();
     ICommandBuffer* CreateCommandBuffer();
+    bool Execute(ICommandList* commandList);
 };
 
 } // namespace Renderer

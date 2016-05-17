@@ -155,15 +155,9 @@ public:
 
     /**
      * Store all executed commands to a command list.
-     * @return Saved command list or NULL on error.
+     * @return Saved command list or NULL on an error.
      */
     virtual ICommandList* Finish() = 0;
-
-    /**
-     * Execute a command list.
-     * @param commandList Command list to be executed.
-     */
-    virtual void Execute(ICommandList* commandList) = 0;
 
     /**@}*/
 

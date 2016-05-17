@@ -72,7 +72,6 @@ public:
     void DrawIndexed(PrimitiveType type, int indexNum, int instancesNum, int indexOffset,
                      int vertexOffset, int instanceOffset);
     ICommandList* Finish();
-    void Execute(ICommandList* commandList);
 
     /// Debugging
 
