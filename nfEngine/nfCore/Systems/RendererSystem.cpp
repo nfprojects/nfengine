@@ -54,7 +54,6 @@ RenderingData::RenderingData(const RenderingData& other)
 void RenderingData::ExecuteCommandLists() const
 {
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
-    RenderContext* immCtx = renderer->GetImmediateContext();
     Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
 
     // wait for the main renderer task - it spawns the rest of tasks used here...
@@ -67,28 +66,28 @@ void RenderingData::ExecuteCommandLists() const
         threadPool->WaitForTask(shadowPassTask);
         for (const auto& commandLists : shadowPassCLs)
             for (const auto& commandList : commandLists)
-                immCtx->commandBuffer->Execute(commandList.get());
+                renderer->GetDevice()->Execute(commandList.get());
     }
 
     // execute collected geometry pass command list
     if (geometryPassTask != NFE_INVALID_TASK_ID)
     {
         threadPool->WaitForTask(geometryPassTask);
-        immCtx->commandBuffer->Execute(geometryPassCL.get());
+        renderer->GetDevice()->Execute(geometryPassCL.get());
     }
 
     // execute collected light pass command list
     if (lightsPassTask != NFE_INVALID_TASK_ID)
     {
         threadPool->WaitForTask(lightsPassTask);
-        immCtx->commandBuffer->Execute(lightsPassCL.get());
+        renderer->GetDevice()->Execute(lightsPassCL.get());
     }
 
     // execute collected debug layer pass command list
     if (debugLayerTask != NFE_INVALID_TASK_ID)
     {
         threadPool->WaitForTask(debugLayerTask);
-        immCtx->commandBuffer->Execute(debugLayerCL.get());
+        renderer->GetDevice()->Execute(debugLayerCL.get());
     }
 }
 

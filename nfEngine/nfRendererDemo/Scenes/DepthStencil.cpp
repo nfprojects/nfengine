@@ -266,22 +266,6 @@ bool DepthStencilScene::OnInit(void* winHandle)
 bool DepthStencilScene::OnSwitchSubscene()
 {
     mAngle = 0.0f;
-
-    mCommandBuffer->Reset();
-    mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
-    mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
-
-    int stride = 9 * sizeof(float);
-    int offset = 0;
-    IBuffer* vb = mVertexBuffer.get();
-    mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
-    mCommandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
-
-    IBuffer* cb = mConstantBuffer.get();
-    mCommandBuffer->SetConstantBuffers(&cb, 1, ShaderType::Vertex);
-
-    mCommandBuffer->SetShaderProgram(mShaderProgram.get());
-
     return true;
 }
 
@@ -300,7 +284,21 @@ void DepthStencilScene::Draw(float dt)
     Matrix reflectionMatrix = MatrixScaling(Vector(1.0f, -1.0f, 1.0f)) *
                               MatrixTranslation3(Vector(0.0f, -2.0f, 0.0f));
 
+    mCommandBuffer->Reset();
+    mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
+    mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
+
+    int stride = 9 * sizeof(float);
+    int offset = 0;
+    IBuffer* vb = mVertexBuffer.get();
+    mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
+    mCommandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
+
     IBuffer* cb = mConstantBuffer.get();
+    mCommandBuffer->SetConstantBuffers(&cb, 1, ShaderType::Vertex);
+
+    mCommandBuffer->SetShaderProgram(mShaderProgram.get());
+
     VertexCBuffer cbuffer;
 
     if (GetCurrentSubSceneNumber() >= 2)
@@ -345,6 +343,10 @@ void DepthStencilScene::Draw(float dt)
     // Step 4: draw "normal" cube
     mCommandBuffer->SetPipelineState(mCubePipelineState.get());
     mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 2 * 6 * 3);
+
+    ICommandList* commandList = mCommandBuffer->Finish();
+    mRendererDevice->Execute(commandList);
+    delete commandList;
 
     mWindowBackbuffer->Present();
 }

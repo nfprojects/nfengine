@@ -324,6 +324,11 @@ bool BasicScene::OnInit(void* winHandle)
 
 bool BasicScene::OnSwitchSubscene()
 {
+    return true;
+}
+
+void BasicScene::Draw(float dt)
+{
     // reset bound resources and set them once again
     mCommandBuffer->Reset();
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
@@ -365,11 +370,6 @@ bool BasicScene::OnSwitchSubscene()
         mCommandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
     }
 
-    return true;
-}
-
-void BasicScene::Draw(float dt)
-{
     // apply rotation
     mAngle += 2.0f * dt;
     if (mAngle > NFE_MATH_2PI)
@@ -392,6 +392,10 @@ void BasicScene::Draw(float dt)
         mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 9);
     else if (mVertexBuffer)
         mCommandBuffer->Draw(PrimitiveType::Triangles, 6);
+
+    ICommandList* commandList = mCommandBuffer->Finish();
+    mRendererDevice->Execute(commandList);
+    delete commandList;
 
     mWindowBackbuffer->Present();
 }
