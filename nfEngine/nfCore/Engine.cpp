@@ -204,21 +204,24 @@ bool Engine::Advance(View** views, size_t viewsNum,
 
         renderingData[i].ExecuteCommandLists();
 
-        view->Postprocess();
-
-        view->UpdateGui();
-
-        // GUI renderer pass
+        RenderContext* ctx = mRenderer->GetDefaultContext();
+        ctx->commandBuffer->Reset();
         {
-            RenderContext* ctx = mRenderer->GetImmediateContext();
-            ctx->commandBuffer->Reset();
-            GuiRenderer::Get()->Enter(ctx);
-            GuiRenderer::Get()->SetTarget(ctx, view->GetRenderTarget(true));
-            view->DrawGui(ctx);
-            GuiRenderer::Get()->BeginOrdinaryGuiRendering(ctx);
-            view->OnPostRender(ctx);
-            GuiRenderer::Get()->Leave(ctx);
+            view->Postprocess(ctx);
+            view->UpdateGui();
+
+            // GUI renderer pass
+            {
+                GuiRenderer::Get()->Enter(ctx);
+                GuiRenderer::Get()->SetTarget(ctx, view->GetRenderTarget(true));
+                view->DrawGui(ctx);
+                GuiRenderer::Get()->BeginOrdinaryGuiRendering(ctx);
+                view->OnPostRender(ctx);
+                GuiRenderer::Get()->Leave(ctx);
+            }
         }
+        std::unique_ptr<ICommandList> commandList(ctx->commandBuffer->Finish());
+        mRenderer->GetDevice()->Execute(commandList.get());
 
         // present frame in the display
         view->Present();

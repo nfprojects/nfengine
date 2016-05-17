@@ -51,15 +51,12 @@ Device::Device()
     flags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif // D3D_DEBUGGING
 
-    ID3D11DeviceContext* immediateContext;
     hr = D3D_CALL_CHECK(D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, flags, NULL, 0,
                                           D3D11_SDK_VERSION, &mDevice, &mFeatureLevel,
-                                          &immediateContext));
+                                          &mImmediateContext));
 
     if (FAILED(hr))
         throw std::exception("D3D11CreateDevice() failed");
-
-    mDefaultCommandBuffer.reset(new CommandBuffer(immediateContext));
 
     /// get DXGI factory for created Direct3D device
     hr = D3D_CALL_CHECK(mDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&mDXGIDevice));
@@ -81,13 +78,13 @@ Device::~Device()
     if (mDebug.get() != nullptr)
     {
         // flush the pipeline
-        mDefaultCommandBuffer->mContext->ClearState();
-        mDefaultCommandBuffer->mContext->Flush();
+        mImmediateContext->ClearState();
+        mImmediateContext->Flush();
 
         mDXGIFactory.reset();
         mDXGIAdapter.reset();
         mDXGIDevice.reset();
-        mDefaultCommandBuffer.reset();
+        mImmediateContext.reset();
         mDevice.reset();
 
         mDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
@@ -150,11 +147,6 @@ IShaderProgram* Device::CreateShaderProgram(const ShaderProgramDesc& desc)
     return new (std::nothrow) ShaderProgram(desc);
 }
 
-ICommandBuffer* Device::GetDefaultCommandBuffer()
-{
-    return mDefaultCommandBuffer.get();
-}
-
 ICommandBuffer* Device::CreateCommandBuffer()
 {
     HRESULT hr;
@@ -172,6 +164,60 @@ ICommandBuffer* Device::CreateCommandBuffer()
     }
 
     return commandBuffer;
+}
+
+
+bool Device::Execute(ICommandList* commandList)
+{
+    CommandList* list = dynamic_cast<CommandList*>(commandList);
+    if (!list || !list->mD3DList)
+        return false;
+
+    mImmediateContext->ExecuteCommandList(list->mD3DList.get(), FALSE);
+    return true;
+}
+
+bool Device::DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data)
+{
+    Buffer* buf = dynamic_cast<Buffer*>(buffer);
+    if (!buf)
+        return false;
+
+    D3D11_MAPPED_SUBRESOURCE mapped = { 0 };
+    ID3D11Resource* res = reinterpret_cast<ID3D11Resource*>(buf->mBuffer.get());
+    HRESULT hr = D3D_CALL_CHECK(mImmediateContext->Map(res, 0, D3D11_MAP_READ, 0, &mapped));
+    if (FAILED(hr))
+        return false;
+
+    memcpy(data, (char*)mapped.pData + offset, size);
+    mImmediateContext->Unmap(res, 0);
+    return true;
+}
+
+bool Device::DownloadTexture(ITexture* tex, void* data, int mipmap, int layer)
+{
+    Texture* texture = dynamic_cast<Texture*>(tex);
+    if (!texture)
+    {
+        LOG_ERROR("Invalid 'tex' pointer");
+        return false;
+    }
+
+    HRESULT hr;
+    D3D11_MAPPED_SUBRESOURCE mapped = { 0 };
+    UINT subresource = D3D11CalcSubresource(mipmap, layer, texture->mMipmaps);
+    ID3D11Resource* res = reinterpret_cast<ID3D11Resource*>(texture->mTextureGeneric);
+    hr = D3D_CALL_CHECK(mImmediateContext->Map(res, subresource, D3D11_MAP_READ, 0, &mapped));
+    if (FAILED(hr))
+        return false;
+
+    size_t dataSize = static_cast<size_t>(texture->mWidth) *
+        static_cast<size_t>(texture->mHeight) *
+        static_cast<size_t>(texture->mTexelSize);
+    memcpy(data, mapped.pData, dataSize);
+
+    mImmediateContext->Unmap(res, subresource);
+    return true;
 }
 
 bool Device::GetDeviceInfo(DeviceInfo& info)

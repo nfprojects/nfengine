@@ -335,20 +335,6 @@ bool RenderTargetsScene::OnInit(void* winHandle)
 bool RenderTargetsScene::OnSwitchSubscene()
 {
     mAngle = 0.0f;
-
-    mCommandBuffer->Reset();
-
-    int stride = 9 * sizeof(float);
-    int offset = 0;
-    IBuffer* vb = mVertexBuffer.get();
-    mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
-    mCommandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
-
-    mCommandBuffer->SetPipelineState(mPipelineState.get());
-
-    ISampler* samplers[] = { mSampler.get() };
-    mCommandBuffer->SetSamplers(samplers, 1, ShaderType::Pixel, 0);
-
     return true;
 }
 
@@ -363,6 +349,19 @@ void RenderTargetsScene::Draw(float dt)
                                      Vector(0.0f, 1.0f, 0.0f));
     Matrix projMatrix = MatrixPerspective((float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
                                           70.0f * NFE_MATH_PI / 180.0f, 5.0f, 1.0f);
+
+    mCommandBuffer->Reset();
+
+    int stride = 9 * sizeof(float);
+    int offset = 0;
+    IBuffer* vb = mVertexBuffer.get();
+    mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
+    mCommandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
+
+    mCommandBuffer->SetPipelineState(mPipelineState.get());
+
+    ISampler* samplers[] = { mSampler.get() };
+    mCommandBuffer->SetSamplers(samplers, 1, ShaderType::Pixel, 0);
 
     IBuffer* cb = mConstantBuffer.get();
     mCommandBuffer->SetConstantBuffers(&cb, 1, ShaderType::Vertex);
@@ -443,6 +442,10 @@ void RenderTargetsScene::Draw(float dt)
 
     ITexture* nullTextures[] = { nullptr };
     mCommandBuffer->SetTextures(nullTextures, 1, ShaderType::Pixel, 0);
+
+    ICommandList* commandList = mCommandBuffer->Finish();
+    mRendererDevice->Execute(commandList);
+    delete commandList;
 
     mWindowBackbuffer->Present();
 }
