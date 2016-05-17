@@ -130,9 +130,6 @@ void GuiRenderer::OnLeave(RenderContext* context)
 {
     FlushQueue(context);
 
-    // TODO: we only need to reset geometry shader
-    context->commandBuffer->Reset();
-
     context->commandBuffer->EndDebugGroup();
 }
 

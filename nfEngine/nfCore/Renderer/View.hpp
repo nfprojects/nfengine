@@ -134,9 +134,10 @@ public:
 
     /**
      * Perform post-process. If something more needs to be rendered after postprocessing,
-     * pass "ture" to @p GetRenderTarget method after this call.
+     * pass "true" to @p GetRenderTarget method after this call.
+     * @param ctx Rendering context
      */
-    void Postprocess();
+    void Postprocess(RenderContext* ctx);
 
     /**
      * Display the render target on a screen, when the View is connected with a window.
