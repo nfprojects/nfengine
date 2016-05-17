@@ -284,5 +284,97 @@ D3D12_PRIMITIVE_TOPOLOGY TranslatePrimitiveType(PrimitiveType type)
     return D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
 }
 
+D3D12_FILTER TranslateFilterType(TextureMinFilter minFilter, TextureMagFilter magFilter,
+                                 bool compare, bool anisotropic)
+{
+    if (!compare)
+    {
+        if (magFilter == TextureMagFilter::Nearest)
+        {
+            switch (minFilter)
+            {
+            case TextureMinFilter::NearestMipmapNearest:
+                return D3D12_FILTER_MIN_MAG_MIP_POINT;
+            case TextureMinFilter::LinearMipmapNearest:
+                return D3D12_FILTER_MIN_MAG_POINT_MIP_LINEAR;
+            case TextureMinFilter::NearestMipmapLinear:
+                return D3D12_FILTER_MIN_LINEAR_MAG_MIP_POINT;
+            case TextureMinFilter::LinearMipmapLinear:
+                return D3D12_FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
+            }
+        }
+        else
+        {
+            switch (minFilter)
+            {
+            case TextureMinFilter::NearestMipmapNearest:
+                return D3D12_FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT;
+            case TextureMinFilter::LinearMipmapNearest:
+                return D3D12_FILTER_MIN_POINT_MAG_MIP_LINEAR;
+            case TextureMinFilter::NearestMipmapLinear:
+                return D3D12_FILTER_MIN_MAG_LINEAR_MIP_POINT;
+            case TextureMinFilter::LinearMipmapLinear:
+                if (anisotropic)
+                    return D3D12_FILTER_ANISOTROPIC;
+                else
+                    return D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+            }
+        }
+    }
+    else // compare == true
+    {
+        if (magFilter == TextureMagFilter::Nearest)
+        {
+            switch (minFilter)
+            {
+            case TextureMinFilter::NearestMipmapNearest:
+                return D3D12_FILTER_COMPARISON_MIN_MAG_MIP_POINT;
+            case TextureMinFilter::LinearMipmapNearest:
+                return D3D12_FILTER_COMPARISON_MIN_MAG_POINT_MIP_LINEAR;
+            case TextureMinFilter::NearestMipmapLinear:
+                return D3D12_FILTER_COMPARISON_MIN_LINEAR_MAG_MIP_POINT;
+            case TextureMinFilter::LinearMipmapLinear:
+                return D3D12_FILTER_COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
+            }
+        }
+        else
+        {
+            switch (minFilter)
+            {
+            case TextureMinFilter::NearestMipmapNearest:
+                return D3D12_FILTER_COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT;
+            case TextureMinFilter::LinearMipmapNearest:
+                return D3D12_FILTER_COMPARISON_MIN_POINT_MAG_MIP_LINEAR;
+            case TextureMinFilter::NearestMipmapLinear:
+                return D3D12_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
+            case TextureMinFilter::LinearMipmapLinear:
+                if (anisotropic)
+                    return D3D12_FILTER_COMPARISON_ANISOTROPIC;
+                else
+                    return D3D12_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+            }
+        }
+    }
+
+    return D3D12_FILTER_MIN_MAG_MIP_POINT;
+}
+
+D3D12_TEXTURE_ADDRESS_MODE TranslateTextureAddressMode(TextureWrapMode mode)
+{
+    switch (mode)
+    {
+    case TextureWrapMode::Repeat:
+        return D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+    case TextureWrapMode::Clamp:
+        return D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+    case TextureWrapMode::Mirror:
+        return D3D12_TEXTURE_ADDRESS_MODE_MIRROR;
+    case TextureWrapMode::Border:
+        return D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+    };
+
+    return D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+}
+
 } // namespace Renderer
 } // namespace NFE

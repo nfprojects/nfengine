@@ -16,6 +16,7 @@ class Texture : virtual public ITexture
 {
     friend class CommandBuffer;
     friend class RenderTarget;
+    friend class ResourceBindingInstance;
 
 protected:
 
@@ -27,16 +28,15 @@ protected:
 
     Class mClass;
     TextureType mType;
+    int mMipmapsNum;
+    int mLayersNum;
+    DXGI_FORMAT mSrvFormat;
 
     UINT mBuffersNum;
     UINT mCurrentBuffer;
     D3DPtr<ID3D12Resource> mBuffers[2];
 
     D3D12_RESOURCE_STATES mResourceState;
-
-    bool InitTexture1D(const TextureDesc& desc);
-    bool InitTexture2D(const TextureDesc& desc);
-    bool InitTexture3D(const TextureDesc& desc);
 
 public:
     Texture();
