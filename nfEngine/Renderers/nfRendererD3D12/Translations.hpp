@@ -17,6 +17,9 @@ D3D12_STENCIL_OP TranslateStencilOp(StencilOp op);
 D3D12_BLEND TranslateBlendFunc(BlendFunc func);
 D3D12_BLEND_OP TranslateBlendOp(BlendOp op);
 D3D12_PRIMITIVE_TOPOLOGY TranslatePrimitiveType(PrimitiveType type);
+D3D12_FILTER TranslateFilterType(TextureMinFilter minFilter, TextureMagFilter magFilter,
+                                 bool compare, bool anisotropic);
+D3D12_TEXTURE_ADDRESS_MODE TranslateTextureAddressMode(TextureWrapMode mode);
 
 } // namespace Renderer
 } // namespace NFE
