@@ -1,6 +1,6 @@
-#include "PCH.hpp"
-#include "RendererTest.hpp"
-#include "../nfCommon/Math/Math.hpp"
+#include "../PCH.hpp"
+#include "../RendererTest.hpp"
+#include "../../nfCommon/Math/Math.hpp"
 
 class Texture2D : public RendererTest
 {
@@ -11,12 +11,12 @@ TEST_F(Texture2D, Clear)
     const float color[] = { 0.1f, 0.2f, 0.3f, 0.4f };
     float pixels[16][16][4];
 
-    ASSERT_TRUE(BeginTestFrame(16, 16, ElementFormat::Float_32, 4));
+    BeginTestFrame(16, 16, ElementFormat::Float_32, 4);
 
-    gCommandBuffer->SetViewport(0.0f, 16.0f, 0.0f, 16.0f, 0.0f, 1.0f);
-    gCommandBuffer->Clear(NFE_CLEAR_FLAG_TARGET, color);
+    mCommandBuffer->SetViewport(0.0f, 16.0f, 0.0f, 16.0f, 0.0f, 1.0f);
+    mCommandBuffer->Clear(NFE_CLEAR_FLAG_TARGET, color);
 
-    ASSERT_TRUE(EndTestFrame(pixels));
+    EndTestFrame(pixels);
 
     for (int i = 0; i < 16; ++i)
         for (int j = 0; j < 16; ++j)
