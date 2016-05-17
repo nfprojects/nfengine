@@ -28,6 +28,7 @@ class Device : public IDevice
     D3DPtr<ID3D12CommandQueue> mCommandQueue;
     D3DPtr<ID3D12DescriptorHeap> mRtvHeap;
     D3DPtr<ID3D12DescriptorHeap> mCbvSrvUavHeap;
+    D3DPtr<ID3D12DescriptorHeap> mSamplerHeap;
 
     std::vector<bool> mCbvSrvUavHeapMap;
 
@@ -43,6 +44,7 @@ public:
     ~Device();
 
     ID3D12Device* GetDevice() const;
+    ID3D12CommandQueue* GetCommandQueue() const;
     void* GetHandle() const override;
     bool GetDeviceInfo(DeviceInfo& info) override;
 
@@ -71,6 +73,13 @@ public:
     void GetCbvSrvUavHeapInfo(UINT& descriptorSize, D3D12_CPU_DESCRIPTOR_HANDLE& ptr);
     size_t AllocateCbvSrvUavHeap(size_t numDescriptors);
     void FreeCbvSrvUavHeap(size_t offset, size_t numDescriptors);
+
+    void GetSamplerHeapInfo(UINT& descriptorSize, D3D12_CPU_DESCRIPTOR_HANDLE& ptr);
+
+    /**
+     * Waits until all operations sent to the command queue has been completed.
+     */
+    bool WaitForGPU();
 };
 
 } // namespace Renderer

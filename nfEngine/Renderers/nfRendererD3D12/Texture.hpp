@@ -16,6 +16,7 @@ class Texture : virtual public ITexture
 {
     friend class CommandBuffer;
     friend class RenderTarget;
+    friend class ResourceBindingInstance;
 
 protected:
 
@@ -27,6 +28,9 @@ protected:
 
     Class mClass;
     TextureType mType;
+    int mMipmapsNum;
+    int mLayersNum;
+    DXGI_FORMAT mSrvFormat;
 
     UINT mBuffersNum;
     UINT mCurrentBuffer;
