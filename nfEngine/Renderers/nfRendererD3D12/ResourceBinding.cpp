@@ -62,13 +62,30 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     const size_t maxSets = 16;
     const size_t maxBindings = 64;
 
+    // TEMP
+    D3D12_STATIC_SAMPLER_DESC sampler = {};
+    sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
+    sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+    sampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+    sampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+    sampler.MipLODBias = 0;
+    sampler.MaxAnisotropy = 0;
+    sampler.ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+    sampler.BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
+    sampler.MinLOD = 0.0f;
+    sampler.MaxLOD = D3D12_FLOAT32_MAX;
+    sampler.ShaderRegister = 0;
+    sampler.RegisterSpace = 0;
+    sampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
     D3D12_DESCRIPTOR_RANGE descriptorRanges[maxBindings];
     D3D12_ROOT_PARAMETER rootParameters[maxSets];
 
     D3D12_ROOT_SIGNATURE_DESC rsd;
     rsd.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
     rsd.NumParameters = static_cast<UINT>(desc.numBindingSets);
-    rsd.NumStaticSamplers = 0;
+    rsd.NumStaticSamplers = 1;
+    rsd.pStaticSamplers = &sampler;
     rsd.pParameters = rootParameters;
 
     mBindingSets.reserve(desc.numBindingSets);
@@ -185,10 +202,59 @@ bool ResourceBindingInstance::Init(IResourceBindingSet* bindingSet)
 
 bool ResourceBindingInstance::WriteTextureView(size_t slot, ITexture* texture, ISampler* sampler)
 {
-    UNUSED(slot);
-    UNUSED(texture);
+    // TODO this won't work if there are multiple buffers (frames) in the texture
+
     UNUSED(sampler);
-    return false;
+
+    Texture* tex = dynamic_cast<Texture*>(texture);
+    if (!tex || !tex->mBuffers[0])
+    {
+        LOG_ERROR("Invalid buffer");
+        return false;
+    }
+
+    D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc;
+    srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+    srvDesc.Format = tex->mSrvFormat;
+    switch (tex->mType)
+    {
+    case TextureType::Texture1D:
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE1D;
+        srvDesc.Texture1D.MipLevels = tex->mMipmapsNum;
+        srvDesc.Texture1D.MostDetailedMip = 0;
+        srvDesc.Texture1D.ResourceMinLODClamp = 0.0f;
+        break;
+    case TextureType::Texture2D:
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+        srvDesc.Texture2D.MipLevels = tex->mMipmapsNum;
+        srvDesc.Texture2D.MostDetailedMip = 0;
+        srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
+        srvDesc.Texture2D.PlaneSlice = 0;
+        break;
+    case TextureType::TextureCube:
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+        srvDesc.TextureCube.MipLevels = tex->mMipmapsNum;
+        srvDesc.TextureCube.MostDetailedMip = 0;
+        srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+        break;
+    case TextureType::Texture3D:
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE3D;
+        srvDesc.Texture3D.MipLevels = tex->mMipmapsNum;
+        srvDesc.Texture3D.MostDetailedMip = 0;
+        srvDesc.Texture3D.ResourceMinLODClamp = 0.0f;
+        break;
+    // TODO multisampled and multilayered textures
+    }
+
+    UINT descriptorSize;
+    D3D12_CPU_DESCRIPTOR_HANDLE heapPtr;
+    gDevice->GetCbvSrvUavHeapInfo(descriptorSize, heapPtr);
+
+    D3D12_CPU_DESCRIPTOR_HANDLE target;
+    target.ptr = heapPtr.ptr + descriptorSize * (mDescriptorHeapOffset + slot);
+    gDevice->GetDevice()->CreateShaderResourceView(tex->mBuffers[0].get(), &srvDesc, target);
+
+    return true;
 }
 
 bool ResourceBindingInstance::WriteCBufferView(size_t slot, IBuffer* buffer)
