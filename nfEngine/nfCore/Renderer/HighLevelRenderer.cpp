@@ -75,8 +75,8 @@ bool HighLevelRenderer::Init(const std::string& preferredRendererName)
 
     Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
 
-    /// create immediate and deferred rendering contexts
-    mImmediateContext.reset(new RenderContext(mRenderingDevice->GetDefaultCommandBuffer()));
+    /// create default and deferred rendering contexts
+    mDefaultContext.reset(new RenderContext);
     mDeferredContexts.reset(new RenderContext[threadPool->GetThreadsNumber()]);
 
     // TODO: multithreaded modules initialization
@@ -109,6 +109,7 @@ void HighLevelRenderer::Release()
     mDefaultSpecularTexture.reset();
 
     mDeferredContexts.reset();
+    mDefaultContext.reset();
 
     if (mRenderingDevice != nullptr)
     {
@@ -161,9 +162,9 @@ void HighLevelRenderer::CreateCommonResources()
     mDefaultSpecularTexture.reset(mRenderingDevice->CreateTexture(texDesc));
 }
 
-RenderContext* HighLevelRenderer::GetImmediateContext() const
+RenderContext* HighLevelRenderer::GetDefaultContext() const
 {
-    return mImmediateContext.get();
+    return mDefaultContext.get();
 }
 
 RenderContext* HighLevelRenderer::GetDeferredContext(size_t id) const

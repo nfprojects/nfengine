@@ -4,13 +4,16 @@
     <ClCompile Include="PCH.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="RendererTest.cpp" />
-    <ClCompile Include="Texture2D.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
     <ClCompile Include="Backends.cpp" />
+    <ClCompile Include="TestCases\Shader.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Texture2D.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\CommandBuffer.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
