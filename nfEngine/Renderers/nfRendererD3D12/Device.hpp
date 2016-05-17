@@ -44,6 +44,7 @@ public:
     bool Init();
 
     ID3D12Device* GetDevice() const;
+    ID3D12CommandQueue* GetCommandQueue() const;
     void* GetHandle() const override;
     bool GetDeviceInfo(DeviceInfo& info) override;
 
