@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_f955a2c1",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-20T16:50:05Z",
+      "side": 1,
+      "message": "Actually, I\u0027ll just rename CastBase() method from CommonPerfTest class - it will work, surely look better than \"*this\" \u0026 there won\u0027t be unnecessary code duplication.",
+      "parentUuid": "baa041b7_798e327a",
+      "range": {
+        "startLine": 43,
+        "startChar": 5,
+        "endLine": 43,
+        "endChar": 9
+      },
+      "revId": "93f8aca196c4f9bf57db428f9f5aac50fe061b40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_b9b15a49",
         "filename": "nfEngine/nfCommonPerfTest/Main.cpp",
         "patchSetId": 8
@@ -42,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_d95adef1",
+        "filename": "nfEngine/nfCommonPerfTest/Main.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-20T16:50:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_b9b15a49",
+      "revId": "93f8aca196c4f9bf57db428f9f5aac50fe061b40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_99ae96e4",
         "filename": "nfEngine/nfCommonPerfTest/Main.cpp",
         "patchSetId": 8
@@ -53,6 +95,24 @@
       "writtenOn": "2016-05-20T14:24:19Z",
       "side": 1,
       "message": "as above",
+      "revId": "93f8aca196c4f9bf57db428f9f5aac50fe061b40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b974ba67",
+        "filename": "nfEngine/nfCommonPerfTest/Main.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-20T16:50:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_99ae96e4",
       "revId": "93f8aca196c4f9bf57db428f9f5aac50fe061b40",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -106,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_796ab282",
+        "filename": "nfEngine/nfCommonPerfTest/Test.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-20T16:50:05Z",
+      "side": 1,
+      "message": "typeinfo header is unneeded here.",
+      "parentUuid": "baa041b7_39842a5c",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 19
+      },
+      "revId": "93f8aca196c4f9bf57db428f9f5aac50fe061b40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_b9983ac1",
         "filename": "nfEngine/nfCommonPerfTest/Test.hpp",
         "patchSetId": 8
@@ -123,6 +207,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_5967eeb6",
+        "filename": "nfEngine/nfCommonPerfTest/Test.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-20T16:50:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_b9983ac1",
+      "revId": "93f8aca196c4f9bf57db428f9f5aac50fe061b40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_99957688",
         "filename": "nfEngine/nfCommonPerfTest/Test.hpp",
         "patchSetId": 8
@@ -134,6 +236,30 @@
       "writtenOn": "2016-05-20T14:24:19Z",
       "side": 1,
       "message": "manip",
+      "range": {
+        "startLine": 77,
+        "startChar": 46,
+        "endLine": 77,
+        "endChar": 52
+      },
+      "revId": "93f8aca196c4f9bf57db428f9f5aac50fe061b40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_39078acb",
+        "filename": "nfEngine/nfCommonPerfTest/Test.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-20T16:50:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_99957688",
       "range": {
         "startLine": 77,
         "startChar": 46,
