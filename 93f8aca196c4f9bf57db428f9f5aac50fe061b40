@@ -2,6 +2,63 @@
   "comments": [
     {
       "key": {
+        "uuid": "baa041b7_798e327a",
+        "filename": "nfEngine/nfCommonPerfTest/Logger.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-20T14:24:19Z",
+      "side": 1,
+      "message": "This looks a little wierd. Maybe create a method GetStatsStream() that returns the std::ostream?",
+      "range": {
+        "startLine": 43,
+        "startChar": 5,
+        "endLine": 43,
+        "endChar": 9
+      },
+      "revId": "93f8aca196c4f9bf57db428f9f5aac50fe061b40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b9b15a49",
+        "filename": "nfEngine/nfCommonPerfTest/Main.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-20T14:24:19Z",
+      "side": 1,
+      "message": "You should set current directory to nfegine\u0027s root (where .git is located), because this way \"TestDir\" is created in \"Logs\\PerfTests\"",
+      "revId": "93f8aca196c4f9bf57db428f9f5aac50fe061b40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_99ae96e4",
+        "filename": "nfEngine/nfCommonPerfTest/Main.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-20T14:24:19Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "93f8aca196c4f9bf57db428f9f5aac50fe061b40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_bc5df616",
         "filename": "nfEngine/nfCommonPerfTest/Test.hpp",
         "patchSetId": 8
@@ -18,6 +75,70 @@
         "startChar": 0,
         "endLine": 10,
         "endChar": 19
+      },
+      "revId": "93f8aca196c4f9bf57db428f9f5aac50fe061b40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_39842a5c",
+        "filename": "nfEngine/nfCommonPerfTest/Test.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-20T14:24:19Z",
+      "side": 1,
+      "message": "about what?",
+      "parentUuid": "baa041b7_bc5df616",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 19
+      },
+      "revId": "93f8aca196c4f9bf57db428f9f5aac50fe061b40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b9983ac1",
+        "filename": "nfEngine/nfCommonPerfTest/Test.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-20T14:24:19Z",
+      "side": 1,
+      "message": "unnecessary line break",
+      "revId": "93f8aca196c4f9bf57db428f9f5aac50fe061b40",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_99957688",
+        "filename": "nfEngine/nfCommonPerfTest/Test.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-20T14:24:19Z",
+      "side": 1,
+      "message": "manip",
+      "range": {
+        "startLine": 77,
+        "startChar": 46,
+        "endLine": 77,
+        "endChar": 52
       },
       "revId": "93f8aca196c4f9bf57db428f9f5aac50fe061b40",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
