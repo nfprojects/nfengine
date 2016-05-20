@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_f4f007ff",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-20T17:01:24Z",
+      "side": 1,
+      "message": "\"Compiler\" - it\u0027s not an abbreviation like the others :)",
+      "range": {
+        "startLine": 119,
+        "startChar": 14,
+        "endLine": 119,
+        "endChar": 22
+      },
+      "revId": "d0cd03e619217757403406854794e5eb45080c71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
