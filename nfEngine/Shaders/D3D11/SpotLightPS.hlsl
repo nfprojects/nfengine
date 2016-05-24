@@ -1,45 +1,14 @@
-// g-buffer
-Texture2D<float4> gGBufferTex0 : register(t0);
-Texture2D<float4> gGBufferTex1 : register(t1);
-Texture2D<float4> gGBufferTex2 : register(t2);
-Texture2D<float4> gGBufferTex3 : register(t3);
-Texture2D<float> gDepthTex : register(t4);
-
-#if (USE_LIGHT_MAP > 0)
-    SamplerState gLightMapSampler : register(s0);
-    Texture2D<float3> gLightMap : register(t5);
-#endif
+#include "SpotLightCommon.hlsl"
 
 #if (USE_SHADOW_MAP > 0)
-    SamplerComparisonState gShadowSampler : register(s1);
-    Texture2D<float> gShadowMap : register(t6);
+    SamplerComparisonState gShadowSampler : register(s5);
+    Texture2D<float> gShadowMap : register(t5);
 #endif
 
-cbuffer Global : register(b0)
-{
-    float4x4 gCameraMatrix;
-    float4x4 gViewMatrix;
-    float4x4 gProjMatrix;
-    float4 gViewportResInv;
-    float4 gScreenScale;
-};
-
-cbuffer SpotLightProps : register(b1)
-{
-    float4 gLightPos;
-    float4 gDirection;
-    float4 gLightColor;
-    float4 gFarDist;
-    float4x4 gLightViewProjMatrix;
-    float4x4 gLightViewProjMatrixInv;
-    float4 gShadowMapProps;  // x = shadow map resolution inverse
-};
-
-struct VertexShaderOutput
-{
-    float4 pos : SV_POSITION;
-    float3 viewPos : POSITION;
-};
+#if (USE_LIGHT_MAP > 0)
+    SamplerState gLightMapSampler : register(s6);
+    Texture2D<float3> gLightMap : register(t6);
+#endif
 
 float3 TransformLightCoords(float4 coord)
 {
@@ -54,9 +23,6 @@ struct PixelShaderOutput
     float depth : SV_Depth;
     float4 color : SV_TARGET0;
 };
-
-static float gMaxDepth = 10000.0f;
-static float gInfinityDist = 0.999999f;
 
 PixelShaderOutput main(VertexShaderOutput input)
 {
@@ -138,7 +104,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     float3 reflectVector = reflect(eyeVector, normal);
     float RdotL = dot(reflectVector, lightVec);
     if (RdotL > 0)
-        specular = specularFactor * pow(RdotL, specularPower);
+        specular = specularFactor * pow(abs(RdotL), specularPower);
 
     float3 result = shadowValue * gLightColor.xyz * fadeOut * (color1.xyz * NdotL + specular);
 

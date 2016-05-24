@@ -154,6 +154,14 @@ bool View::InitTemporaryRenderTarget(uint32 width, uint32 height)
         return false;
     }
 
+    mTemporaryBufferPostprocessBinding =
+        PostProcessRenderer::Get()->CreateTextureBinding(mTemporaryBuffer.get());
+    if (!mTemporaryBufferPostprocessBinding)
+    {
+        LOG_ERROR("Failed to create binding for temporary buffer texture");
+        return false;
+    }
+
     RenderTargetElement rtTarget;
     rtTarget.texture = mTemporaryBuffer.get();
     RenderTargetDesc rtDesc;
@@ -217,7 +225,7 @@ void View::Postprocess(RenderContext* ctx)
 
         PostProcessRenderer::Get()->Enter(ctx);
         PostProcessRenderer::Get()->ApplyTonemapping(ctx, params,
-                                                     mTemporaryBuffer.get(),
+                                                     mTemporaryBufferPostprocessBinding.get(),
                                                      mRenderTarget.get());
         PostProcessRenderer::Get()->Leave(ctx);
     }
@@ -315,7 +323,11 @@ bool View::InitImGui()
     if (!mImGuiTexture)
         return false;
 
-    io.Fonts->TexID = mImGuiTexture.get();
+    mImGuiTextureBinding = GuiRenderer::Get()->CreateTextureBinding(mImGuiTexture.get());
+    if (!mImGuiTextureBinding)
+        return false;
+
+    io.Fonts->TexID = mImGuiTextureBinding.get();
     io.Fonts->ClearInputData();
     io.Fonts->ClearTexData();
     io.IniFilename = nullptr;  // don't use INI file
@@ -425,9 +437,7 @@ void View::UpdateGui()
 
 void View::DrawGui(RenderContext* context)
 {
-    ITexture* imGuiTexture = mImGuiTexture.get();
-    context->commandBuffer->SetTextures(&imGuiTexture, 1, ShaderType::Pixel);
-    GuiRenderer::Get()->DrawImGui(context);
+    GuiRenderer::Get()->DrawImGui(context, mImGuiTextureBinding.get());
 }
 
 void View::DrawViewPropertiesGui()

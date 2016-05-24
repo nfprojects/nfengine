@@ -9,12 +9,14 @@
 #include "PCH.hpp"
 #include "Font.hpp"
 #include "Engine.hpp"
+
 #include "nfCommon/Logger.hpp"
 
 #include "ft2build.h"
 #include "freetype/freetype.h"
 #include "freetype/ftglyph.h"
 
+#include "GuiRenderer.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -184,6 +186,10 @@ bool Font::Init(const char* file, int size)
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
     mTexture.reset(renderer->GetDevice()->CreateTexture(texDesc));
     if (!mTexture)
+        return false;
+
+    mTextureBinding = GuiRenderer::Get()->CreateTextureBinding(mTexture.get());
+    if (!mTextureBinding)
         return false;
 
     LOG_SUCCESS("Font '%s' of size %i loaded successfully", file, size);

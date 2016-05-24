@@ -81,13 +81,13 @@ bool HighLevelRenderer::Init(const std::string& preferredRendererName)
 
     // TODO: multithreaded modules initialization
 
+    CreateCommonResources();
+
     GuiRenderer::Init();
     PostProcessRenderer::Init();
     DebugRenderer::Init();
     GeometryRenderer::Init();
     LightsRenderer::Init();
-
-    CreateCommonResources();
 
     return true;
 }

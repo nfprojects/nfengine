@@ -47,6 +47,8 @@ enum class ResourceType
 typedef bool (*OnLoadCallback)(ResourceBase*, void*);
 typedef bool (*OnUnloadCallback)(ResourceBase*, void*);
 
+typedef std::function<void()> ResourcePostLoadCallback;
+
 /**
  * Base resource class.
  * @details Abstract resource class. It's main role is reference counter tracking and
@@ -62,6 +64,11 @@ class CORE_API ResourceBase : public Common::Aligned<16>
     /// disable unwanted methods
     ResourceBase(const ResourceBase&);
     ResourceBase& operator= (const ResourceBase&);
+
+    // TODO: temporary hack
+    std::mutex mCallbacksMutex;
+    std::vector<ResourcePostLoadCallback> mPostLoadCallbacks;
+
 
 protected:
     bool mCustom;                          // custom mesh won't be loaded from a file
@@ -119,6 +126,8 @@ public:
      * Force to unload resource
      */
     void Unload();
+
+    void AddPostLoadCallback(const ResourcePostLoadCallback& callback);
 };
 
 } // namespace Resource
