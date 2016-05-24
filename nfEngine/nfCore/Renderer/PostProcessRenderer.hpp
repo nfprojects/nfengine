@@ -29,7 +29,15 @@ class PostProcessRenderer : public RendererModule<PostProcessRenderer>
     Resource::MultiShaderProgram mTonemappingShaderProgram;
     std::unique_ptr<IBuffer> mTonemappingCBuffer;
 
+    std::unique_ptr<IResourceBindingSet> mParamsBindingSet;
+    std::unique_ptr<IResourceBindingSet> mTexturesBindingSet;
+    std::unique_ptr<IResourceBindingLayout> mResBindingLayout;
+    std::unique_ptr<IResourceBindingInstance> mTonemappingBindingInstance;
+    std::unique_ptr<IResourceBindingInstance> mNullTextureBindingInstance;
+
     std::unique_ptr<IPipelineState> mPipelineState;
+
+    bool CreateResourceBindingLayouts();
 
 public:
     PostProcessRenderer();
@@ -37,10 +45,16 @@ public:
     void OnLeave(RenderContext* context);
 
     /**
+     * Create shader resource binding for a texture that will be input for a postprocess
+     * pass.
+     */
+    std::unique_ptr<IResourceBindingInstance> CreateTextureBinding(ITexture* texture);
+
+    /**
      * Apply tonemapping, gamma correction and dithering (final post-process).
      */
     void ApplyTonemapping(RenderContext* context, const ToneMappingParameters& params,
-                          ITexture* src, IRenderTarget* dest);
+                          IResourceBindingInstance* src, IRenderTarget* dest);
 };
 
 } // namespace Renderer
