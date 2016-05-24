@@ -15,16 +15,16 @@ using namespace Math;
 
 struct GuiQuadData
 {
-    ITexture* texture;
+    IResourceBindingInstance* textureBinding;
     bool alphaTexture;
 
     GuiQuadData()
-        : texture(nullptr)
+        : textureBinding(nullptr)
         , alphaTexture(false)
     {}
 
-    GuiQuadData(ITexture* texture, bool alphaTexture)
-        : texture(texture)
+    GuiQuadData(IResourceBindingInstance* textureBinding, bool alphaTexture)
+        : textureBinding(textureBinding)
         , alphaTexture(alphaTexture)
     {}
 };

@@ -21,6 +21,7 @@ namespace Resource {
 class CORE_API Texture : public ResourceBase
 {
     std::unique_ptr<Renderer::ITexture> mTex;
+    std::unique_ptr<Renderer::IResourceBindingInstance> mTexBinding; // for GUI renderer
     Common::ImageFormat mFormat;
 
     bool OnLoad();
@@ -52,9 +53,14 @@ public:
                               Renderer::ElementFormat::Uint_8_norm);
 
     /**
-     * Get low-level renderer texture object.
+     * Get low-level renderer texture.
      */
     Renderer::ITexture* GetRendererTexture() const;
+
+    /**
+     * Get GUI renderer texture binding instance.
+     */
+    Renderer::IResourceBindingInstance* GetRendererTextureBinding() const;
 };
 
 } // namespace Resource

@@ -33,6 +33,7 @@ class CORE_API Font
     friend class GuiRenderer;
 
     std::unique_ptr<ITexture> mTexture;
+    std::unique_ptr<IResourceBindingInstance> mTextureBinding; // GUI Renderer texture binding
     std::vector<CharacterInfo> mChars;
     int mSize;
     int mTexWidth, mTexHeight;
