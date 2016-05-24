@@ -9,6 +9,7 @@
 #include "Engine.hpp"
 #include "Texture.hpp"
 #include "Renderer/HighLevelRenderer.hpp"
+#include "Renderer/GuiRenderer.hpp"
 #include "ResourcesManager.hpp"
 
 #include "../nfCommon/Logger.hpp"
@@ -133,8 +134,8 @@ Texture::~Texture()
 
 void Texture::Release()
 {
-    std::mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
-    std::unique_lock<std::mutex> lock(renderingMutex);
+    std::recursive_mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
+    std::unique_lock<std::recursive_mutex> lock(renderingMutex);
 
     mTex.reset();
 }
@@ -248,8 +249,8 @@ Result Texture::CreateFromImage(const Common::Image& image)
     Release();
 
     {
-        std::mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
-        std::unique_lock<std::mutex> lock(renderingMutex);
+        std::recursive_mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
+        std::unique_lock<std::recursive_mutex> lock(renderingMutex);
 
         mTex.reset(CreateRendererTextureFromImage(image, mName));
     }
@@ -289,12 +290,21 @@ bool Texture::CreateAsRenderTarget(uint32 width, uint32 height, Renderer::Elemen
         return false;
     }
 
+    mTexBinding = GuiRenderer::Get()->CreateTextureBinding(mTex.get());
+    if (!mTexBinding)
+        return false;
+
     return true;
 }
 
-ITexture* Texture::GetRendererTexture() const
+Renderer::ITexture* Texture::GetRendererTexture() const
 {
     return mTex.get();
+}
+
+IResourceBindingInstance* Texture::GetRendererTextureBinding() const
+{
+    return mTexBinding.get();
 }
 
 } // namespace Resource

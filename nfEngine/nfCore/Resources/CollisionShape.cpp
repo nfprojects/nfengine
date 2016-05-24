@@ -62,8 +62,8 @@ CollisionShape::~CollisionShape()
 
 void CollisionShape::Release()
 {
-    std::mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
-    std::unique_lock<std::mutex> lock(renderingMutex);
+    std::recursive_mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
+    std::unique_lock<std::recursive_mutex> lock(renderingMutex);
 
     if (mChildren.size() > 1)
     {

@@ -9,6 +9,7 @@
 #include "ResourcesManager.hpp"
 #include "Engine.hpp"
 #include "Globals.hpp"
+#include "Renderer/GeometryRenderer.hpp"
 
 #include "../nfCommon/Logger.hpp"
 
@@ -35,6 +36,7 @@ using namespace Math;
 
 MaterialLayer::MaterialLayer()
 {
+    numTextures = 0;
     weight = 1.0f;
 
     diffuseTexture = 0;
@@ -50,17 +52,10 @@ MaterialLayer::MaterialLayer()
 
 Material::Material()
 {
-    mLayers = nullptr;
-    mLayersCount = 0;
 }
 
 Material::~Material()
 {
-    if (mLayers)
-    {
-        delete[] mLayers;
-        mLayers = 0;
-    }
 }
 
 void NodeToColor(const rapidjson::Value& val, Float4& ret)
@@ -113,102 +108,97 @@ bool Material::OnLoad()
 
     const rapidjson::Value& layersNode = document[ATTR_LAYERS];
 
-    MaterialLayer* layers = nullptr;
-    uint32 layersCount = layersNode.Size();
+    std::recursive_mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
+    std::unique_lock<std::recursive_mutex> lock(renderingMutex);
 
-    if (layersCount < 1)
-    {
-        layers = new MaterialLayer [1];
-        layersCount = 1;
-    }
-    else if (layersCount > 4) // TODO: unlimited layers or create a global constant for it
-    {
-        layersCount = 4;
-    }
-    else
-    {
-        layers = new MaterialLayer[layersCount];
+    ResManager* rm = Engine::GetInstance()->GetResManager();
 
-        ResManager* rm = Engine::GetInstance()->GetResManager();
+    for (uint32 i = 0; i < layersNode.Size(); i++)
+    {
+        MaterialLayer layer;
+        const auto& node = layersNode[i];
 
-        for (uint32 i = 0; i < layersCount; i++)
+        if (node.HasMember(ATTR_DIFFUSE_TEXTURE))
         {
-            MaterialLayer& layer = layers[i];
-            const auto& node = layersNode[i];
-
-            if (node.HasMember(ATTR_DIFFUSE_TEXTURE))
+            if (node[ATTR_DIFFUSE_TEXTURE].IsString())
             {
-                if (node[ATTR_DIFFUSE_TEXTURE].IsString())
-                {
-                    layer.diffuseTexture = static_cast<Texture*>(
-                        rm->GetResource(node[ATTR_DIFFUSE_TEXTURE].GetString(),
-                                        ResourceType::Texture));
-                    layer.diffuseTexture->AddRef();
-                }
-                else
-                {
-                    LOG_WARNING("%s attribute must be a string", ATTR_DIFFUSE_TEXTURE);
-                }
+                layer.diffuseTexture = static_cast<Texture*>(
+                    rm->GetResource(node[ATTR_DIFFUSE_TEXTURE].GetString(), ResourceType::Texture));
+                layer.diffuseTexture->AddRef();
+                layer.numTextures++;
             }
-
-            if (node.HasMember(ATTR_NORMAL_TEXTURE))
+            else
             {
-                if (node[ATTR_NORMAL_TEXTURE].IsString())
-                {
-                    layer.normalTexture = static_cast<Texture*>(
-                        rm->GetResource(node[ATTR_NORMAL_TEXTURE].GetString(),
-                                        ResourceType::Texture));
-                    layer.normalTexture->AddRef();
-                }
-                else
-                {
-                    LOG_WARNING("%s attribute must be a string", ATTR_NORMAL_TEXTURE);
-                }
+                LOG_WARNING("%s attribute must be a string", ATTR_DIFFUSE_TEXTURE);
             }
-
-            if (node.HasMember(ATTR_SPECULAR_TEXTURE))
-            {
-                if (node[ATTR_SPECULAR_TEXTURE].IsString())
-                {
-                    layer.specularTexture = static_cast<Texture*>(
-                        rm->GetResource(node[ATTR_SPECULAR_TEXTURE].GetString(),
-                                        ResourceType::Texture));
-                    layer.specularTexture->AddRef();
-                }
-                else
-                {
-                    LOG_WARNING("%s attribute must be a string", ATTR_SPECULAR_TEXTURE);
-                }
-            }
-
-            double specPower = 20.0f;
-            if (node.HasMember(ATTR_SPECULAR_POWER) && node[ATTR_SPECULAR_POWER].IsDouble())
-                specPower = node[ATTR_SPECULAR_POWER].GetDouble();
-            layer.specularColor.w = (float)specPower;
-
-            double specFactor = 1.0f;
-            if (node.HasMember(ATTR_SPECULAR_FACTOR) && node[ATTR_SPECULAR_FACTOR].IsDouble())
-                specPower = node[ATTR_SPECULAR_FACTOR].GetDouble();
-            layer.specularColor.x = (float)specFactor;
-
-            //look up for diffuse color
-            layer.diffuseColor = Float4(1.0f, 1.0f, 1.0f, 1.0f);
-            if (node.HasMember(ATTR_DIFFUSE_COLOR))
-                NodeToColor(node[ATTR_DIFFUSE_COLOR], layer.diffuseColor);
-
-            //look up for emission color
-            layer.emissionColor = Float4();
-            if (node.HasMember(ATTR_EMISSION_COLOR))
-                NodeToColor(node[ATTR_EMISSION_COLOR], layer.diffuseColor);
         }
+
+        if (node.HasMember(ATTR_NORMAL_TEXTURE))
+        {
+            if (node[ATTR_NORMAL_TEXTURE].IsString())
+            {
+                layer.normalTexture = static_cast<Texture*>(
+                    rm->GetResource(node[ATTR_NORMAL_TEXTURE].GetString(),ResourceType::Texture));
+                layer.normalTexture->AddRef();
+                layer.numTextures++;
+            }
+            else
+            {
+                LOG_WARNING("%s attribute must be a string", ATTR_NORMAL_TEXTURE);
+            }
+        }
+
+        if (node.HasMember(ATTR_SPECULAR_TEXTURE))
+        {
+            if (node[ATTR_SPECULAR_TEXTURE].IsString())
+            {
+                layer.specularTexture = static_cast<Texture*>(
+                    rm->GetResource(node[ATTR_SPECULAR_TEXTURE].GetString(), ResourceType::Texture));
+                layer.specularTexture->AddRef();
+                layer.numTextures++;
+            }
+            else
+            {
+                LOG_WARNING("%s attribute must be a string", ATTR_SPECULAR_TEXTURE);
+            }
+        }
+
+        double specPower = 20.0f;
+        if (node.HasMember(ATTR_SPECULAR_POWER) && node[ATTR_SPECULAR_POWER].IsDouble())
+            specPower = node[ATTR_SPECULAR_POWER].GetDouble();
+        layer.specularColor.w = (float)specPower;
+
+        double specFactor = 1.0f;
+        if (node.HasMember(ATTR_SPECULAR_FACTOR) && node[ATTR_SPECULAR_FACTOR].IsDouble())
+            specPower = node[ATTR_SPECULAR_FACTOR].GetDouble();
+        layer.specularColor.x = (float)specFactor;
+
+        //look up for diffuse color
+        layer.diffuseColor = Float4(1.0f, 1.0f, 1.0f, 1.0f);
+        if (node.HasMember(ATTR_DIFFUSE_COLOR))
+            NodeToColor(node[ATTR_DIFFUSE_COLOR], layer.diffuseColor);
+
+        //look up for emission color
+        layer.emissionColor = Float4();
+        if (node.HasMember(ATTR_EMISSION_COLOR))
+            NodeToColor(node[ATTR_EMISSION_COLOR], layer.diffuseColor);
+
+        mLayers.push_back(layer);
+
+        // register callbacks for each texture
+        if (layer.diffuseTexture)
+            layer.diffuseTexture->AddPostLoadCallback(std::bind(&Material::OnTextureLoaded, this));
+        if (layer.normalTexture)
+            layer.normalTexture->AddPostLoadCallback(std::bind(&Material::OnTextureLoaded, this));
+        if (layer.specularTexture)
+            layer.specularTexture->AddPostLoadCallback(std::bind(&Material::OnTextureLoaded, this));
     }
 
+    if (mLayers.size() > 0)
     {
-        std::mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
-        std::unique_lock<std::mutex> lock(renderingMutex);
-
-        mLayers = layers;
-        mLayersCount = layersCount;
+        mRendererData.layers[0].diffuseColor = mLayers[0].diffuseColor;
+        mRendererData.layers[0].emissionColor = mLayers[0].emissionColor;
+        mRendererData.layers[0].specularColor = mLayers[0].specularColor;
     }
 
     LOG_SUCCESS("Material '%s' loaded successfully.", mName);
@@ -219,82 +209,66 @@ void Material::OnUnload()
 {
     LOG_INFO("Unloading material '%s'...", mName);
 
-    std::mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
-    std::unique_lock<std::mutex> lock(renderingMutex);
+    std::recursive_mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
+    std::unique_lock<std::recursive_mutex> lock(renderingMutex);
 
-    if (mLayers)
-    {
-        // delete textures references
-        for (uint32 i = 0; i < mLayersCount; i++)
-        {
-            if (mLayers[i].diffuseTexture != nullptr)
-                mLayers[i].diffuseTexture->DelRef();
-
-            if (mLayers[i].normalTexture != nullptr)
-                mLayers[i].normalTexture->DelRef();
-
-            if (mLayers[i].specularTexture != nullptr)
-                mLayers[i].specularTexture->DelRef();
-        }
-
-
-        delete[] mLayers;
-        mLayers = 0;
-    }
-
-    mLayersCount = 0;
+    mRendererData.layers[0].bindingInstance.reset();
+    mLayers.clear();
 }
 
-
-using namespace Renderer;
-
-/*
-    This function is only temporary (to adapt renderer to the rest of code).
-    It must be redesigned.
-*/
-const RendererMaterial* Material::GetRendererData()
+void Material::OnTextureLoaded()
 {
-    // TODO: temporary
-    std::unique_lock<std::mutex> lock(mMutex);
+    using namespace Renderer;
+    HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
 
-    if (mRendererData.layersNum != mLayersCount)
+    std::recursive_mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
+    std::lock_guard<std::recursive_mutex> lock(renderingMutex);
+
+    // TODO multi-layered textures
+    if (mLayers.size() > 0)
     {
-        if (mRendererData.layers != nullptr)
+        // return if it was not the last texture required
+        if (++mTexturesLoaded < mLayers[0].numTextures)
+            return;
+
+        auto& bindingInstance = mRendererData.layers[0].bindingInstance;
+        bindingInstance.reset(renderer->GetDevice()->CreateResourceBindingInstance(
+            GeometryRenderer::Get()->GetMaterialTexturesBindingSet()));
+        if (!bindingInstance)
         {
-            delete[] mRendererData.layers;
-            mRendererData.layers = nullptr;
+            LOG_ERROR("Failed to create material's binding instance");
+            return;
         }
 
-        if (mLayersCount > 0)
-            mRendererData.layers = new RendererMaterialLayer[mLayersCount];
+        ITexture* diffuseTexture = renderer->GetDefaultDiffuseTexture();
+        if (mLayers[0].diffuseTexture && mLayers[0].diffuseTexture->GetRendererTexture())
+            diffuseTexture = mLayers[0].diffuseTexture->GetRendererTexture();
+        if (!bindingInstance->WriteTextureView(0, diffuseTexture))
+        {
+            LOG_ERROR("Failed to write material's diffuse texture to binding instance");
+            return;
+        }
 
-        mRendererData.layersNum = mLayersCount;
+        ITexture* normalTexture = renderer->GetDefaultNormalTexture();
+        if (mLayers[0].normalTexture && mLayers[0].normalTexture->GetRendererTexture())
+            normalTexture = mLayers[0].normalTexture->GetRendererTexture();
+        if (!bindingInstance->WriteTextureView(1, normalTexture))
+        {
+            LOG_ERROR("Failed to write material's diffuse texture to binding instance");
+            return;
+        }
+
+        ITexture* specularTexture = renderer->GetDefaultSpecularTexture();
+        if (mLayers[0].specularTexture && mLayers[0].specularTexture->GetRendererTexture())
+            specularTexture = mLayers[0].specularTexture->GetRendererTexture();
+        if (!bindingInstance->WriteTextureView(2, specularTexture))
+        {
+            LOG_ERROR("Failed to write material's diffuse texture to binding instance");
+            return;
+        }
+
+        LOG_SUCCESS("Binding instance for material '%s' created successfully", mName);
     }
-
-    // TODO: optimize
-    for (uint32 i = 0; i < mLayersCount; i++)
-    {
-        mRendererData.layers[i].diffuseColor = mLayers[i].diffuseColor;
-        mRendererData.layers[i].emissionColor = mLayers[i].emissionColor;
-        mRendererData.layers[i].specularColor = mLayers[i].specularColor;
-
-        if (mLayers[i].diffuseTexture != nullptr)
-            mRendererData.layers[i].diffuseTex = mLayers[i].diffuseTexture->GetRendererTexture();
-        else
-            mRendererData.layers[i].diffuseTex = nullptr;
-
-        if (mLayers[i].normalTexture != nullptr)
-            mRendererData.layers[i].normalTex = mLayers[i].normalTexture->GetRendererTexture();
-        else
-            mRendererData.layers[i].normalTex = nullptr;
-
-        if (mLayers[i].specularTexture != nullptr)
-            mRendererData.layers[i].specularTex = mLayers[i].specularTexture->GetRendererTexture();
-        else
-            mRendererData.layers[i].specularTex = nullptr;
-    }
-
-    return &mRendererData;
 }
 
 } // namespace Resource
