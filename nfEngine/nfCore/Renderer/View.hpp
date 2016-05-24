@@ -45,6 +45,7 @@ class CORE_API View
     std::unique_ptr<IRenderTarget> mRenderTarget;
 
     std::unique_ptr<ITexture> mTemporaryBuffer;
+    std::unique_ptr<IResourceBindingInstance> mTemporaryBufferPostprocessBinding;
     std::unique_ptr<IRenderTarget> mTemporaryRenderTarget;  // before postprocess
 
     Scene::SceneManager* mScene;
@@ -53,6 +54,7 @@ class CORE_API View
     // ImGui internal state
     void* mImGuiState;
     std::unique_ptr<ITexture> mImGuiTexture;
+    std::unique_ptr<IResourceBindingInstance> mImGuiTextureBinding; // For GUI Renderer
 
     bool InitImGui();
     bool InitTemporaryRenderTarget(uint32 width, uint32 height);
