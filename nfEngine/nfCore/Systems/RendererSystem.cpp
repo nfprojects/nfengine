@@ -439,6 +439,8 @@ void RendererSystem::Render(const Common::TaskContext& context, RenderingData& r
     // frustum culling for lights
     FindVisibleLights(camera->mFrustum, renderingData);
 
+    // FIXME
+    /*
     renderingData.shadowPassTask = threadPool->CreateTask(
         std::bind(&RendererSystem::RenderShadowMaps, this, _1, std::ref(renderingData)));
 
@@ -465,6 +467,7 @@ void RendererSystem::Render(const Common::TaskContext& context, RenderingData& r
     // enqueue light pass task
     renderingData.lightsPassTask = threadPool->CreateTask(
         std::bind(&RendererSystem::RenderLights, this, _1, std::ref(renderingData)));
+        */
 
     // enqueue debug layer pass task
     // TODO: temporary - add "if" statement when renderer configuration is implemented

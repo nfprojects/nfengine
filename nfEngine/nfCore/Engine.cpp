@@ -202,6 +202,7 @@ bool Engine::Advance(View** views, size_t viewsNum,
         if (view == nullptr)
             continue;
 
+        // FIXME
         renderingData[i].ExecuteCommandLists();
 
         RenderContext* ctx = mRenderer->GetDefaultContext();

@@ -61,6 +61,8 @@ GeometryRenderer::GeometryRenderer()
     mUseMotionBlurMacroId = mGeometryPassShaderProgram.GetMacroByName("USE_MOTION_BLUR");
     mCubeShadowMapMacroId = mShadowShaderProgram.GetMacroByName("CUBE_SHADOW_MAP");
 
+    CreateResourceBindingLayouts();
+
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
     {
@@ -95,20 +97,30 @@ GeometryRenderer::GeometryRenderer()
     bufferDesc.type = BufferType::Constant;
     bufferDesc.debugName = "GeometryRenderer::mMaterialCBuffer";
     mMaterialCBuffer.reset(device->CreateBuffer(bufferDesc));
+    mMatCBufferBindingInstance.reset(device->CreateResourceBindingInstance(mMatCBufferBindingSet.get()));
+    if (mMatCBufferBindingInstance)
+        mMatCBufferBindingInstance->WriteCBufferView(0, mMaterialCBuffer.get());
 
     bufferDesc.access = BufferAccess::CPU_Write;
     bufferDesc.size = sizeof(GlobalCBuffer);
     bufferDesc.type = BufferType::Constant;
     bufferDesc.debugName = "GeometryRenderer::mGlobalCBuffer";
     mGlobalCBuffer.reset(device->CreateBuffer(bufferDesc));
+    mGlobalBindingInstance.reset(device->CreateResourceBindingInstance(mGlobalBindingSet.get()));
+    if (mGlobalBindingInstance)
+        mGlobalBindingInstance->WriteCBufferView(0, mGlobalCBuffer.get());
 
     bufferDesc.access = BufferAccess::CPU_Write;
     bufferDesc.size = sizeof(ShadowCameraRenderDesc);
     bufferDesc.type = BufferType::Constant;
     bufferDesc.debugName = "GeometryRenderer::mShadowGlobalCBuffer";
     mShadowGlobalCBuffer.reset(device->CreateBuffer(bufferDesc));
+    mShadowGlobalBindingInstance.reset(device->CreateResourceBindingInstance(mGlobalBindingSet.get()));
+    if (mShadowGlobalBindingInstance)
+        mShadowGlobalBindingInstance->WriteCBufferView(0, mShadowGlobalCBuffer.get());
 
     PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
     pipelineStateDesc.depthState.depthCompareFunc = CompareFunc::Less;
     pipelineStateDesc.depthState.depthTestEnable = true;
     pipelineStateDesc.depthState.depthWriteEnable = true;
@@ -119,18 +131,74 @@ GeometryRenderer::GeometryRenderer()
     mPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
 }
 
+bool GeometryRenderer::CreateResourceBindingLayouts()
+{
+    IDevice* device = mRenderer->GetDevice();
+
+    int globalCBufferSlot = mGeometryPassShaderProgram.GetResourceSlotByName("Global");
+    if (globalCBufferSlot < 0)
+        return false;
+
+    int materialCBufferSlot = mGeometryPassShaderProgram.GetResourceSlotByName("Material");
+    if (materialCBufferSlot < 0)
+        return false;
+
+    int diffuseTextureSlot  = mGeometryPassShaderProgram.GetResourceSlotByName("gDiffuseTexture");
+    int normalTextureSlot   = mGeometryPassShaderProgram.GetResourceSlotByName("gNormalTexture");
+    int specularTextureSlot = mGeometryPassShaderProgram.GetResourceSlotByName("gSpecularTexture");
+    int emissionTextureSlot = mGeometryPassShaderProgram.GetResourceSlotByName("gEmissionTexture");
+    if (materialCBufferSlot < 0)
+        return false;
+
+    std::vector<IResourceBindingSet*> bindingSets;
+
+    ResourceBindingDesc binding0(ShaderResourceType::CBuffer, globalCBufferSlot);
+    mGlobalBindingSet.reset(device->CreateResourceBindingSet(
+        ResourceBindingSetDesc(&binding0, 1, ShaderType::All)));
+    if (!mGlobalBindingSet)
+        return false;
+    bindingSets.push_back(mGlobalBindingSet.get());
+
+    ResourceBindingDesc binding1(ShaderResourceType::CBuffer, materialCBufferSlot);
+    mMatCBufferBindingSet.reset(device->CreateResourceBindingSet(
+        ResourceBindingSetDesc(&binding1, 1, ShaderType::Pixel)));
+    if (!mMatCBufferBindingSet)
+        return false;
+    bindingSets.push_back(mGlobalBindingSet.get());
+
+    ResourceBindingDesc binding2[4] =
+    {
+        ResourceBindingDesc(ShaderResourceType::Texture, diffuseTextureSlot),
+        ResourceBindingDesc(ShaderResourceType::Texture, normalTextureSlot),
+        ResourceBindingDesc(ShaderResourceType::Texture, specularTextureSlot),
+        ResourceBindingDesc(ShaderResourceType::Texture, emissionTextureSlot),
+    };
+    mMatTexturesBindingSet.reset(device->CreateResourceBindingSet(
+        ResourceBindingSetDesc(binding2, 4, ShaderType::Pixel)));
+    if (!mMatTexturesBindingSet)
+        return false;
+    bindingSets.push_back(mMatTexturesBindingSet.get());
+
+    // create binding layout
+    mResBindingLayout.reset(device->CreateResourceBindingLayout(
+        ResourceBindingLayoutDesc(bindingSets.data(), bindingSets.size())));
+    if (!mResBindingLayout)
+        return false;
+
+    return true;
+}
+
 void GeometryRenderer::OnEnter(RenderContext* context)
 {
     context->commandBuffer->BeginDebugGroup("Geometry Buffer Renderer stage");
 
     context->commandBuffer->SetPipelineState(mPipelineState.get());
-
-    ISampler* sampler = mRenderer->GetDefaultSampler();
-    context->commandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
 }
 
 void GeometryRenderer::OnLeave(RenderContext* context)
 {
+    // FIXME
+    /*
     // TODO: allow "NULL" in the array
     ITexture* nullTextures[] = { mRenderer->GetDefaultDiffuseTexture(),
         mRenderer->GetDefaultDiffuseTexture(),
@@ -139,6 +207,7 @@ void GeometryRenderer::OnLeave(RenderContext* context)
         mRenderer->GetDefaultDiffuseTexture(),
         mRenderer->GetDefaultDiffuseTexture() };
     context->commandBuffer->SetTextures(nullTextures, 6, ShaderType::Pixel);
+    */
 
     context->commandBuffer->EndDebugGroup();
 }
@@ -159,10 +228,8 @@ void GeometryRenderer::SetUp(RenderContext* context, GeometryBuffer* geometryBuf
     int macros[] = { 0 }; // USE_MOTION_BLUR
     context->commandBuffer->SetShaderProgram(mGeometryPassShaderProgram.GetShaderProgram(macros));
 
-    IBuffer* vsConstantBuffers[] = { mGlobalCBuffer.get() };
-    context->commandBuffer->SetConstantBuffers(vsConstantBuffers, 1, ShaderType::Vertex);
-    IBuffer* psConstantBuffers[] = { mGlobalCBuffer.get(), mMaterialCBuffer.get() };
-    context->commandBuffer->SetConstantBuffers(psConstantBuffers, 2, ShaderType::Pixel);
+    context->commandBuffer->BindResources(0, mGlobalBindingInstance.get());
+    context->commandBuffer->BindResources(1, mMatCBufferBindingInstance.get());
 
     GlobalCBuffer cbuffer;
     cbuffer.ProjMatrix = cameraDesc->projMatrix;
@@ -196,9 +263,7 @@ void GeometryRenderer::SetUpForShadowMap(RenderContext *context, ShadowMap* shad
 
     context->commandBuffer->SetShaderProgram(mShadowShaderProgram.GetShaderProgram(macros));
 
-    IBuffer* constantBuffers[] = { mShadowGlobalCBuffer.get() };
-    context->commandBuffer->SetConstantBuffers(constantBuffers, 1, ShaderType::Vertex);
-    context->commandBuffer->SetConstantBuffers(constantBuffers, 1, ShaderType::Pixel);
+    context->commandBuffer->BindResources(0, mShadowGlobalBindingInstance.get());
 
     context->commandBuffer->WriteBuffer(mShadowGlobalCBuffer.get(), 0,
                                         sizeof(ShadowCameraRenderDesc), cameraDesc);
@@ -206,11 +271,6 @@ void GeometryRenderer::SetUpForShadowMap(RenderContext *context, ShadowMap* shad
 
 void GeometryRenderer::SetMaterial(RenderContext* context, const RendererMaterial* material)
 {
-    // TODO: use additional macros/branching in the shaders instead of using "dummy" textures
-    ITexture* diffuseTexture = mRenderer->GetDefaultDiffuseTexture();
-    ITexture* normalTexture = mRenderer->GetDefaultNormalTexture();
-    ITexture* specularTexture = mRenderer->GetDefaultSpecularTexture();
-
     MaterialCBuffer cbuffer;
     cbuffer.diffuseColor = Vector(1.0f, 1.0f, 1.0f, 1.0f);
     cbuffer.specularColor = Vector(1.0f, 1.0f, 1.0f, 1.0f);
@@ -219,15 +279,11 @@ void GeometryRenderer::SetMaterial(RenderContext* context, const RendererMateria
     // TODO: multi-layer textures
     if (material)
     {
-        RendererMaterialLayer* layer = &material->layers[0];
+        const RendererMaterialLayer* layer = &material->layers[0];
         if (layer)
         {
-            if (layer->diffuseTex != nullptr)
-                diffuseTexture = layer->diffuseTex;
-            if (layer->normalTex != nullptr)
-                normalTexture = layer->normalTex;
-            if (layer->specularTex != nullptr)
-                specularTexture = layer->specularTex;
+            // FIXME
+            context->commandBuffer->BindResources(2, layer->bindingInstance.get());
 
             cbuffer.diffuseColor = layer->diffuseColor;
             cbuffer.specularColor = layer->specularColor;
@@ -235,11 +291,10 @@ void GeometryRenderer::SetMaterial(RenderContext* context, const RendererMateria
         }
     }
 
+    // FIXME: else - bind "dummy" texture
+
     context->commandBuffer->WriteBuffer(mMaterialCBuffer.get(), 0, sizeof(MaterialCBuffer),
                                         &cbuffer);
-
-    ITexture* textures[] = { diffuseTexture, normalTexture, specularTexture };
-    context->commandBuffer->SetTextures(textures, 3, ShaderType::Pixel);
 }
 
 void GeometryRenderer::Draw(RenderContext* context, const RenderCommandBuffer& buffer)

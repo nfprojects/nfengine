@@ -47,9 +47,7 @@ struct NFE_ALIGN16 CameraRenderDesc
  */
 struct RendererMaterialLayer
 {
-    ITexture* diffuseTex;
-    ITexture* normalTex;
-    ITexture* specularTex;
+    std::unique_ptr<IResourceBindingInstance> bindingInstance;
 
     Math::Float4 diffuseColor;
     Math::Float4 specularColor; // x - factor, w - power
@@ -58,25 +56,9 @@ struct RendererMaterialLayer
 
 struct RendererMaterial
 {
-    RendererMaterialLayer* layers;
-    uint32 layersNum;
+    std::vector<RendererMaterialLayer> layers;
 
     // TODO: layers mixing
-
-    RendererMaterial()
-    {
-        layers = NULL;
-        layersNum = 0;
-    }
-
-    ~RendererMaterial()
-    {
-        if (layers)
-        {
-            delete[] layers;
-            layers = 0;
-        }
-    }
 };
 
 // Shadowmap resource (flat, cube and cascaded)

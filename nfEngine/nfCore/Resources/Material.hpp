@@ -49,8 +49,6 @@ class CORE_API Material : public ResourceBase
     friend class Renderer::GeometryRenderer;
     friend class Renderer::DebugRenderer;
 
-    std::mutex mMutex;
-
     // TODO: use std::vector
     MaterialLayer* mLayers;
     uint32 mLayersCount;
@@ -65,9 +63,17 @@ public:
     void OnUnload();
 
     /**
+     * Called when all textures has been loaded.
+     */
+    void OnTexturesLoaded();
+
+    /**
      * Get renderer's material
      */
-    const Renderer::RendererMaterial* GetRendererData();
+    NFE_INLINE const Renderer::RendererMaterial* GetRendererData()
+    {
+        return &mRendererData;
+    }
 };
 
 } // namespace Resource

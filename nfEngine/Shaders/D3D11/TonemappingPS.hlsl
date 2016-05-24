@@ -1,6 +1,6 @@
 Texture2D<float4> gSourceTexture : register(t0);
 
-cbuffer ToneMappingParams : register(b0)
+cbuffer Params : register(b0)
 {
     float4 gBufferInvRes;
     float4 gSeed;

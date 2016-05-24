@@ -222,6 +222,8 @@ void Material::OnUnload()
     std::mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
     std::unique_lock<std::mutex> lock(renderingMutex);
 
+    mRendererData.layers.clear();
+
     if (mLayers)
     {
         // delete textures references
@@ -245,36 +247,14 @@ void Material::OnUnload()
     mLayersCount = 0;
 }
 
-
-using namespace Renderer;
-
-/*
-    This function is only temporary (to adapt renderer to the rest of code).
-    It must be redesigned.
-*/
-const RendererMaterial* Material::GetRendererData()
+void Material::OnTexturesLoaded()
 {
-    // TODO: temporary
-    std::unique_lock<std::mutex> lock(mMutex);
-
-    if (mRendererData.layersNum != mLayersCount)
+    for (size_t i = 0; i < mLayersCount; ++i)
     {
-        if (mRendererData.layers != nullptr)
-        {
-            delete[] mRendererData.layers;
-            mRendererData.layers = nullptr;
-        }
+        // TODO
 
-        if (mLayersCount > 0)
-            mRendererData.layers = new RendererMaterialLayer[mLayersCount];
-
-        mRendererData.layersNum = mLayersCount;
-    }
-
-    // TODO: optimize
-    for (uint32 i = 0; i < mLayersCount; i++)
-    {
-        mRendererData.layers[i].diffuseColor = mLayers[i].diffuseColor;
+        /*
+                mRendererData.layers[i].diffuseColor = mLayers[i].diffuseColor;
         mRendererData.layers[i].emissionColor = mLayers[i].emissionColor;
         mRendererData.layers[i].specularColor = mLayers[i].specularColor;
 
@@ -292,9 +272,8 @@ const RendererMaterial* Material::GetRendererData()
             mRendererData.layers[i].specularTex = mLayers[i].specularTexture->GetRendererTexture();
         else
             mRendererData.layers[i].specularTex = nullptr;
+            */
     }
-
-    return &mRendererData;
 }
 
 } // namespace Resource

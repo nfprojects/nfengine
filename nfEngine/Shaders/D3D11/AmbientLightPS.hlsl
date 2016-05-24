@@ -1,25 +1,17 @@
-// g-buffer
-Texture2D<float4> gGBufferTex0 : register(t0);
-Texture2D<float4> gGBufferTex1 : register(t1);
-Texture2D<float4> gGBufferTex2 : register(t2);
-Texture2D<float4> gGBufferTex3 : register(t3);
-Texture2D<float> gDepthTex : register(t4);
+#include "LightCommon.hlsl"
 
-cbuffer gParams : register (b0)
+cbuffer AmbientLightParams : register (b1)
 {
     float4 gAmbientLight;
     float4 gBackgroundColor;
 };
 
-struct VertexShaderOutput
+struct QuadVertexShaderOutput
 {
     float4 pos : SV_POSITION;
 };
 
-static float gMaxDepth = 10000.0f;
-static float gInfinityDist = 0.999999f;
-
-float4 main(VertexShaderOutput input) : SV_TARGET0
+float4 main(QuadVertexShaderOutput input) : SV_TARGET0
 {
     int3 texelCoords = int3((int2)input.pos.xy, 0);
     float depth = gDepthTex.Load(texelCoords);

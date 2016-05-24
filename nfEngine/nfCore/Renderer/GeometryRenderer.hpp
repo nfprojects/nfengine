@@ -28,8 +28,18 @@ class GeometryRenderer : public RendererModule<GeometryRenderer>
     std::unique_ptr<IBuffer> mGlobalCBuffer;
     std::unique_ptr<IBuffer> mShadowGlobalCBuffer;
 
+    std::unique_ptr<IResourceBindingSet> mGlobalBindingSet;
+    std::unique_ptr<IResourceBindingSet> mMatCBufferBindingSet;
+    std::unique_ptr<IResourceBindingSet> mMatTexturesBindingSet;
+    std::unique_ptr<IResourceBindingLayout> mResBindingLayout;
+    std::unique_ptr<IResourceBindingInstance> mGlobalBindingInstance;
+    std::unique_ptr<IResourceBindingInstance> mShadowGlobalBindingInstance;
+    std::unique_ptr<IResourceBindingInstance> mMatCBufferBindingInstance;
+
     uint32 mUseMotionBlurMacroId;
     uint32 mCubeShadowMapMacroId;
+
+    bool CreateResourceBindingLayouts();
 
 public:
     GeometryRenderer();
