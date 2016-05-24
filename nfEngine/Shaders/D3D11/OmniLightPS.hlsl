@@ -1,47 +1,17 @@
-// g-buffer
-Texture2D<float4> gGBufferTex0 : register(t0);
-Texture2D<float4> gGBufferTex1 : register(t1);
-Texture2D<float4> gGBufferTex2 : register(t2);
-Texture2D<float4> gGBufferTex3 : register(t3);
-Texture2D<float> gDepthTex : register(t4);
+#include "OmniLightCommon.hlsl"
 
+// Binding slot 2: shadow map
 #if (USE_SHADOW_MAP > 0)
-    SamplerComparisonState gShadowSampler : register(s1);
-    TextureCube<float> gShadowMap : register(t6);
+    SamplerComparisonState gShadowSampler : register(s5);
+    TextureCube<float> gShadowMap : register(t5);
 #endif
-
-cbuffer Global : register(b0)
-{
-    float4x4 gCameraMatrix;
-    float4x4 gViewMatrix;
-    float4x4 gProjMatrix;
-    float4 gViewportResInv;
-    float4 gScreenScale;
-};
-
-cbuffer OmniLightProps : register(b1)
-{
-    float4 gLightPos;
-    float4 gLightRadius;
-    float4 gLightColor;
-    float4 gShadowMapProps;  // x = shadow map resolution inverse
-};
-
-struct VertexShaderInput
-{
-    float4 pos : SV_POSITION;
-    float4 viewPos : POSITION;
-};
 
 struct PixelShaderOutput
 {
     float4 color : SV_TARGET0;
 };
 
-static float gMaxDepth = 10000.0f;
-static float gInfinityDist = 0.999999f;
-
-PixelShaderOutput main(VertexShaderInput In)
+PixelShaderOutput main(VertexShaderOutput In)
 {
     PixelShaderOutput output;
 
@@ -130,7 +100,7 @@ PixelShaderOutput main(VertexShaderInput In)
     float RdotL = dot(reflectVector, lightVec);
     if (RdotL > 0)
     {
-        specular = specularFactor * pow(RdotL, specularPower);
+        specular = specularFactor * pow(abs(RdotL), specularPower);
     }
 
     output.color = float4(shadowValue * gLightColor.xyz * fadeOut * (color * NdotL + specular), 1.0f);
