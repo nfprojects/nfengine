@@ -76,6 +76,8 @@ DebugRenderer::DebugRenderer()
     mIsMeshMacroId = mShaderProgram.GetMacroByName("IS_MESH");
     mUseTextureMacroId = mShaderProgram.GetMacroByName("USE_TEXTURE");
 
+    CreateResourceBindingLayouts();
+
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
     {
@@ -116,6 +118,15 @@ DebugRenderer::DebugRenderer()
     bufferDesc.debugName = "DebugRenderer::mPerMeshConstantBuffer";
     mPerMeshConstantBuffer.reset(device->CreateBuffer(bufferDesc));
 
+    mVertexShaderBindingInstance.reset(
+        device->CreateResourceBindingInstance(mVertexShaderBindingSet.get()));
+    if (mVertexShaderBindingInstance)
+    {
+        mVertexShaderBindingInstance->WriteCBufferView(0, mConstantBuffer.get());
+        mVertexShaderBindingInstance->WriteCBufferView(1, mPerMeshConstantBuffer.get());
+    }
+
+
     /// create vertex buffer
     bufferDesc.access = BufferAccess::CPU_Write;
     bufferDesc.size = gVertexBufferSize * sizeof(DebugVertex);
@@ -131,6 +142,7 @@ DebugRenderer::DebugRenderer()
     mIndexBuffer.reset(device->CreateBuffer(bufferDesc));
 
     PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
     pipelineStateDesc.raterizerState.fillMode = FillMode::Solid;
@@ -144,17 +156,44 @@ DebugRenderer::DebugRenderer()
     // TODO: depth state
 }
 
+bool DebugRenderer::CreateResourceBindingLayouts()
+{
+    IDevice* device = mRenderer->GetDevice();
+
+    int globalCBufferSlot = mShaderProgram.GetResourceSlotByName("Global");
+    if (globalCBufferSlot < 0)
+        return false;
+
+    int perMeshCBufferSlot = mShaderProgram.GetResourceSlotByName("PerMesh");
+    if (perMeshCBufferSlot < 0)
+        return false;
+
+    ResourceBindingDesc gbufferBindings[2] =
+    {
+        ResourceBindingDesc(ShaderResourceType::CBuffer, globalCBufferSlot),
+        ResourceBindingDesc(ShaderResourceType::CBuffer, perMeshCBufferSlot),
+    };
+    mVertexShaderBindingSet.reset(device->CreateResourceBindingSet(
+        ResourceBindingSetDesc(gbufferBindings, 2, ShaderType::Vertex)));
+    if (!mVertexShaderBindingSet)
+        return false;
+    // TODO: material binding set (textures)
+
+    // create binding layout
+    IResourceBindingSet* sets[] = { mVertexShaderBindingSet.get() };
+    mResBindingLayout.reset(device->CreateResourceBindingLayout(
+        ResourceBindingLayoutDesc(sets, 1)));
+    if (!mResBindingLayout)
+        return false;
+
+    return true;
+}
+
 void DebugRenderer::OnEnter(RenderContext* context)
 {
     context->debugContext.mode = DebugRendererMode::Unknown;
 
     context->commandBuffer->BeginDebugGroup("Debug Renderer stage");
-
-    IBuffer* constantBuffers[] = { mConstantBuffer.get(), mPerMeshConstantBuffer.get() };
-    context->commandBuffer->SetConstantBuffers(constantBuffers, 2, ShaderType::Vertex);
-
-    ISampler* sampler = mRenderer->GetDefaultSampler();
-    context->commandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
 }
 
 void DebugRenderer::OnLeave(RenderContext* context)
@@ -181,6 +220,7 @@ void DebugRenderer::Flush(RenderContext* context)
         int macros[] = { 0, 0 }; // IS_MESH
         context->commandBuffer->SetShaderProgram(mShaderProgram.GetShaderProgram(macros));
         context->commandBuffer->SetPipelineState(mPipelineState.get());
+        context->commandBuffer->BindResources(0, mVertexShaderBindingInstance.get());
 
         ctx.mode = DebugRendererMode::Simple;
     }
@@ -347,19 +387,27 @@ void DebugRenderer::DrawFrustum(RenderContext *context, const Frustum& frustum, 
 
 void DebugRenderer::SetMeshMaterial(RenderContext* context, const Resource::Material* material)
 {
-    ITexture* tex = nullptr;
+    // ITexture* tex = nullptr;
 
+    // FIXME
+    /*
     if (material && material->mLayers)
         if (material->mLayers[0].diffuseTexture)
             tex = material->mLayers[0].diffuseTexture->GetRendererTexture();
+            */
 
     int macros[2];
     macros[mIsMeshMacroId] = 1;
-    macros[mUseTextureMacroId] = tex != nullptr ? 1 : 0;
+
+    // FIXME
+    macros[mUseTextureMacroId] = 0;
+    // macros[mUseTextureMacroId] = tex != nullptr ? 1 : 0;
+
     context->commandBuffer->SetShaderProgram(mShaderProgram.GetShaderProgram(macros));
 
-    if (tex)
-        context->commandBuffer->SetTextures(&tex, 1, ShaderType::Pixel);
+    // FIXME
+    // if (tex)
+    //    context->commandBuffer->SetTextures(&tex, 1, ShaderType::Pixel);
 }
 
 void DebugRenderer::DrawMesh(RenderContext* context, const Resource::Mesh* mesh,
@@ -383,6 +431,7 @@ void DebugRenderer::DrawMesh(RenderContext* context, const Resource::Mesh* mesh,
     if (ctx.mode != DebugRendererMode::Meshes)
     {
         context->commandBuffer->SetPipelineState(mMeshPipelineState.get());
+        context->commandBuffer->BindResources(0, mVertexShaderBindingInstance.get());
         ctx.mode = DebugRendererMode::Meshes;
         ctx.polyType = PrimitiveType::Unknown;
     }

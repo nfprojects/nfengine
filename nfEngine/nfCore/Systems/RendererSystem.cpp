@@ -147,9 +147,8 @@ void RendererSystem::RenderLights(const Common::TaskContext& context, RenderingD
             prop.shadowMapProps = Vector(1.0f / light->mShadowMap->GetSize());
         }
 
-        ITexture* lightMap = light->mLightMap ? light->mLightMap->GetRendererTexture() : nullptr;
-
-        LightsRenderer::Get()->DrawSpotLight(renderCtx, prop, light->mShadowMap.get(), lightMap);
+        LightsRenderer::Get()->DrawSpotLight(renderCtx, prop, light->mShadowMap.get(),
+                                             light->mLightMapBindingInstance.get());
     }
 
     for (auto lightTuple : mDirLights)
