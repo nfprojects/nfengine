@@ -1,7 +1,6 @@
 Texture2D gDiffuseTexture : register(t0);
 Texture2D gNormalTexture : register(t1);
 Texture2D gSpecularTexture : register(t2);
-Texture2D gEmissionTexture : register(t3);
 
 SamplerState gTextureSampler : register(s0);
 
@@ -43,7 +42,7 @@ struct PixelShaderOutput
     float4 color0 : SV_TARGET0;
     float4 color1 : SV_TARGET1;
     float4 color2 : SV_TARGET2;
-    float2 color3 : SV_TARGET3;
+    // float2 color3 : SV_TARGET3;
 };
 
 #define MOTION_BLUR_DT (0.01)

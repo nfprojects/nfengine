@@ -8,6 +8,7 @@
 
 #include "PCH.hpp"
 #include "GuiRenderer.hpp"
+#include "../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -45,6 +46,8 @@ GuiRenderer::GuiRenderer()
     mShaderProgram.Load("Gui");
     mImGuiShaderProgram.Load("ImGui");
 
+    CreateResourceBindingLayouts();
+
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
     {
@@ -76,6 +79,10 @@ GuiRenderer::GuiRenderer()
     bufferDesc.debugName = "GuiRenderer::mConstantBuffer";
     mConstantBuffer.reset(device->CreateBuffer(bufferDesc));
 
+    mCBufferBindingInstance.reset(device->CreateResourceBindingInstance(mVSBindingSet.get()));
+    if (mCBufferBindingInstance)
+        mCBufferBindingInstance->WriteCBufferView(0, mConstantBuffer.get());
+
     // create dynamic vertex buffer
     bufferDesc.access = BufferAccess::CPU_Write;
     bufferDesc.size = gQuadsBufferSize * sizeof(GuiQuadVertex);
@@ -83,8 +90,8 @@ GuiRenderer::GuiRenderer()
     bufferDesc.debugName = "GuiRenderer::mVertexBuffer";
     mVertexBuffer.reset(device->CreateBuffer(bufferDesc));
 
-
     PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
     // blend state that enables additive alpha-blending
     pipelineStateDesc.blendState.rtDescs[0].enable = true;
     pipelineStateDesc.blendState.rtDescs[0].destColorFunc = BlendFunc::OneMinusSrcAlpha;
@@ -101,19 +108,63 @@ GuiRenderer::GuiRenderer()
     mImGuiPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
 }
 
+bool GuiRenderer::CreateResourceBindingLayouts()
+{
+    IDevice* device = mRenderer->GetDevice();
+
+    int cbufferSlot = mImGuiShaderProgram.GetResourceSlotByName("VertexCBuffer");
+    if (cbufferSlot < 0)
+        return false;
+
+    int textureSlot = mImGuiShaderProgram.GetResourceSlotByName("gTexture");
+    if (textureSlot < 0)
+        return false;
+
+    std::vector<IResourceBindingSet*> bindingSets;
+
+    ResourceBindingDesc vertexShaderBinding(ShaderResourceType::CBuffer, cbufferSlot);
+    mVSBindingSet.reset(device->CreateResourceBindingSet(
+        ResourceBindingSetDesc(&vertexShaderBinding, 1, ShaderType::Vertex)));
+    if (!mVSBindingSet)
+        return false;
+    bindingSets.push_back(mVSBindingSet.get());
+
+    ResourceBindingDesc pixelShaderBinding(ShaderResourceType::Texture, textureSlot,
+                                           mRenderer->GetDefaultSampler());
+    mPSBindingSet.reset(device->CreateResourceBindingSet(
+        ResourceBindingSetDesc(&pixelShaderBinding, 1, ShaderType::Pixel)));
+    if (!mPSBindingSet)
+        return false;
+    bindingSets.push_back(mPSBindingSet.get());
+
+    // create binding layout
+    mResBindingLayout.reset(device->CreateResourceBindingLayout(
+        ResourceBindingLayoutDesc(bindingSets.data(), bindingSets.size())));
+    if (!mResBindingLayout)
+        return false;
+
+    return true;
+}
+
+std::unique_ptr<IResourceBindingInstance> GuiRenderer::CreateTextureBinding(ITexture* texture)
+{
+    IDevice* device = mRenderer->GetDevice();
+
+    std::unique_ptr<IResourceBindingInstance> bindingInstance(
+        device->CreateResourceBindingInstance(mPSBindingSet.get()));
+    if (!bindingInstance)
+        return std::unique_ptr<IResourceBindingInstance>();
+    if (!bindingInstance->WriteTextureView(0, texture))
+        return std::unique_ptr<IResourceBindingInstance>();
+
+    return bindingInstance;
+}
 
 void GuiRenderer::OnEnter(RenderContext* context)
 {
     context->debugContext.mode = DebugRendererMode::Unknown;
 
     context->commandBuffer->BeginDebugGroup("GUI Renderer stage");
-
-    IBuffer* constantBuffers[] = { mConstantBuffer.get() };
-    context->commandBuffer->SetConstantBuffers(constantBuffers, 1, ShaderType::Vertex);
-    context->commandBuffer->SetConstantBuffers(constantBuffers, 1, ShaderType::Geometry);
-
-    ISampler* sampler = mRenderer->GetDefaultSampler();
-    context->commandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
 }
 
 void GuiRenderer::BeginOrdinaryGuiRendering(RenderContext* context)
@@ -163,7 +214,7 @@ void GuiRenderer::FlushQueue(RenderContext* context)
                                         ctx.quadVertices.get());
 
     int macros[1] = { 0 }; // use texture
-    ITexture* currTexture = nullptr;
+    IResourceBindingInstance* currTextureBinding = nullptr;
     bool currAlphaTexture = false;
     context->commandBuffer->SetShaderProgram(mShaderProgram.GetShaderProgram());
 
@@ -171,7 +222,7 @@ void GuiRenderer::FlushQueue(RenderContext* context)
     int packetSize = 0;
     for (size_t i = 0; i < ctx.queuedQuads; ++i)
     {
-        if ((ctx.quadData[i].texture != currTexture) ||
+        if ((ctx.quadData[i].textureBinding != currTextureBinding) ||
             (ctx.quadData[i].alphaTexture != currAlphaTexture))
         {
             // flush quads
@@ -180,11 +231,11 @@ void GuiRenderer::FlushQueue(RenderContext* context)
             firstQuad = static_cast<int>(i);
 
             // update texture & shader
-            currTexture = ctx.quadData[i].texture;
+            currTextureBinding = ctx.quadData[i].textureBinding;
             currAlphaTexture = ctx.quadData[i].alphaTexture;
-            if (currTexture)
+            if (currTextureBinding)
             {
-                context->commandBuffer->SetTextures(&currTexture, 1, ShaderType::Pixel);
+                context->commandBuffer->BindResources(1, currTextureBinding);
                 macros[0] = currAlphaTexture ? 2 : 1;
             }
             else
@@ -219,10 +270,10 @@ void GuiRenderer::DrawQuad(RenderContext* context, const Rectf& rect, uint32 col
 }
 
 void GuiRenderer::DrawTexturedQuad(RenderContext* context, const Rectf& rect,
-                                   const Rectf& texCoords, ITexture* texture,
+                                   const Rectf& texCoords, IResourceBindingInstance* textureBinding,
                                    uint32 color, bool alpha)
 {
-    PushQuad(context, GuiQuadData(texture, alpha), GuiQuadVertex(rect, texCoords, color));
+    PushQuad(context, GuiQuadData(textureBinding, alpha), GuiQuadVertex(rect, texCoords, color));
 }
 
 bool GuiRenderer::PrintText(RenderContext* context, Font* font, const char* text,
@@ -263,7 +314,7 @@ bool GuiRenderer::PrintText(RenderContext* context, Font* font, const char* text
 
     int defaultOffsetX = offsetX;
 
-    GuiQuadData quadData(font->mTexture.get(), true);
+    GuiQuadData quadData(font->mTextureBinding.get(), true);
     for (int i = 0; text[i]; i++)
     {
         // TODO: UTF-8 support
@@ -324,7 +375,7 @@ bool GuiRenderer::PrintTextWithBorder(RenderContext* context, Font* font, const 
     return PrintText(context, font, text, rect, color, vAlign, hAlign);
 }
 
-bool GuiRenderer::DrawImGui(RenderContext* context)
+bool GuiRenderer::DrawImGui(RenderContext* context, IResourceBindingInstance* imGuiTextureBinding)
 {
     GuiRendererContext& ctx = context->guiContext;
 
@@ -387,6 +438,8 @@ bool GuiRenderer::DrawImGui(RenderContext* context)
     context->commandBuffer->SetIndexBuffer(mImGuiIndexBuffer.get(), IndexBufferFormat::Uint16);
     context->commandBuffer->SetShaderProgram(mImGuiShaderProgram.GetShaderProgram());
     context->commandBuffer->SetPipelineState(mImGuiPipelineState.get());
+    context->commandBuffer->BindResources(0, mCBufferBindingInstance.get());
+    context->commandBuffer->BindResources(1, imGuiTextureBinding);
 
     int vertexOffset = 0, indexOffset = 0;
     for (int i = 0; i < drawData->CmdListsCount; ++i)

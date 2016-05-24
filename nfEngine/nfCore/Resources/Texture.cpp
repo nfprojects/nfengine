@@ -9,6 +9,7 @@
 #include "Engine.hpp"
 #include "Texture.hpp"
 #include "Renderer/HighLevelRenderer.hpp"
+#include "Renderer/GuiRenderer.hpp"
 #include "ResourcesManager.hpp"
 
 #include "../nfCommon/Logger.hpp"
@@ -289,12 +290,21 @@ bool Texture::CreateAsRenderTarget(uint32 width, uint32 height, Renderer::Elemen
         return false;
     }
 
+    mTexBinding = GuiRenderer::Get()->CreateTextureBinding(mTex.get());
+    if (!mTexBinding)
+        return false;
+
     return true;
 }
 
-ITexture* Texture::GetRendererTexture() const
+Renderer::ITexture* Texture::GetRendererTexture() const
 {
     return mTex.get();
+}
+
+IResourceBindingInstance* Texture::GetRendererTextureBinding() const
+{
+    return mTexBinding.get();
 }
 
 } // namespace Resource

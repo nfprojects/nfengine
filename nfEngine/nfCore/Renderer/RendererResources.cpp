@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 #include "RendererResources.hpp"
 #include "HighLevelRenderer.hpp"
+#include "LightsRenderer.hpp"
 #include "Engine.hpp"
 #include "../Renderers/RendererInterface/Device.hpp"
 #include "../nfCommon/Logger.hpp"
@@ -25,6 +26,7 @@ void ShadowMap::Release()
 {
     for (uint32 i = 0; i < MAX_CASCADE_SPLITS; ++i)
         mRenderTargets[i].reset();
+    mBindingInstance.reset();
     mTexture.reset();
     mDepthBuffer.reset();
 
@@ -98,6 +100,21 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
         return false;
     }
 
+    // create binding instance
+    mBindingInstance.reset(renderer->GetDevice()->CreateResourceBindingInstance(
+        LightsRenderer::Get()->GetShadowMapBindingSet().get()));
+    if (!mBindingInstance)
+    {
+        LOG_ERROR("Failed to create shadow map's resource binding instance");
+        return false;
+    }
+    if (!mBindingInstance->WriteTextureView(0, mTexture.get()))
+    {
+        LOG_ERROR("Failed to write shadow map's binding instance");
+        Release();
+        return false;
+    }
+
     if (type == Type::Flat)
     {
         RenderTargetElement rtElement;
@@ -151,6 +168,7 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
 
 void GeometryBuffer::Release()
 {
+    mBindingInstance.reset();
     mRenderTarget.reset();
     for (int i = 0; i < gLayers; ++i)
         mTextures[i].reset();
@@ -198,6 +216,21 @@ bool GeometryBuffer::Resize(int width, int height)
     };
     int elementSizes[] = { 4, 4, 4, 2 };
 
+
+    mBindingInstance.reset(renderer->GetDevice()->CreateResourceBindingInstance(
+        LightsRenderer::Get()->GetGBufferBindingSet().get()));
+    if (!mBindingInstance)
+    {
+        LOG_ERROR("Failed to create G-Buffer's resource binding instance");
+        return false;
+    }
+    if (!mBindingInstance->WriteTextureView(0, mDepthBuffer.get()))
+    {
+        LOG_ERROR("Failed to write depth buffer texture to binding instance");
+        Release();
+        return false;
+    }
+
     /// create G-Buffer textures
     for (int i = 0; i < gLayers; ++i)
     {
@@ -207,6 +240,13 @@ bool GeometryBuffer::Resize(int width, int height)
         if (!mTextures[i])
         {
             LOG_ERROR("Failed to create G-Buffer's texture (i = %i)", i);
+            Release();
+            return false;
+        }
+
+        if (!mBindingInstance->WriteTextureView(i + 1, mTextures[i].get()))
+        {
+            LOG_ERROR("Failed to write G-Buffer's texture (i = %i) to binding instance", i);
             Release();
             return false;
         }
