@@ -312,7 +312,11 @@ bool View::InitImGui()
     if (!mImGuiTexture)
         return false;
 
-    io.Fonts->TexID = mImGuiTexture.get();
+    mImGuiTextureBinding = GuiRenderer::Get()->CreateTextureBinding(mImGuiTexture.get());
+    if (!mImGuiTextureBinding)
+        return false;
+
+    io.Fonts->TexID = mImGuiTextureBinding.get();
     io.Fonts->ClearInputData();
     io.Fonts->ClearTexData();
     io.IniFilename = nullptr;  // don't use INI file
@@ -422,9 +426,7 @@ void View::UpdateGui()
 
 void View::DrawGui(RenderContext* context)
 {
-    ITexture* imGuiTexture = mImGuiTexture.get();
-    context->commandBuffer->SetTextures(&imGuiTexture, 1, ShaderType::Pixel);
-    GuiRenderer::Get()->DrawImGui(context);
+    GuiRenderer::Get()->DrawImGui(context, mImGuiTextureBinding.get());
 }
 
 void View::DrawViewPropertiesGui()

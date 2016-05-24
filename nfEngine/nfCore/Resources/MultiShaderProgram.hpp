@@ -19,6 +19,8 @@ namespace Resource {
 // TODO this class should inherit from ResourceBase
 class MultiShaderProgram
 {
+    std::string mName;
+
     typedef std::unique_ptr<Multishader, void(*)(Multishader*)> ShaderResourcePtr;
     ShaderResourcePtr mShaderResources[NFE_SHADER_TYPES_NUM];
 
@@ -86,6 +88,13 @@ public:
      * @return True on success.
      */
     bool Load(const char* name);
+
+    /**
+     * Get low-level renderer's shader program slot ID by name.
+     *
+     * @return Negative value on error.
+     */
+    int GetResourceSlotByName(const char* slotName);
 };
 
 } // namespace Resource

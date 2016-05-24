@@ -278,6 +278,9 @@ const RendererMaterial* Material::GetRendererData()
         mRendererData.layers[i].emissionColor = mLayers[i].emissionColor;
         mRendererData.layers[i].specularColor = mLayers[i].specularColor;
 
+        // FIXME
+
+        /*
         if (mLayers[i].diffuseTexture != nullptr)
             mRendererData.layers[i].diffuseTex = mLayers[i].diffuseTexture->GetRendererTexture();
         else
@@ -292,6 +295,7 @@ const RendererMaterial* Material::GetRendererData()
             mRendererData.layers[i].specularTex = mLayers[i].specularTexture->GetRendererTexture();
         else
             mRendererData.layers[i].specularTex = nullptr;
+            */
     }
 
     return &mRendererData;

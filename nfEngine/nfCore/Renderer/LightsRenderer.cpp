@@ -8,6 +8,7 @@
 
 #include "PCH.hpp"
 #include "LightsRenderer.hpp"
+#include "../../nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -177,7 +178,29 @@ LightsRenderer::LightsRenderer()
         mSpotLightCBuffer.reset(device->CreateBuffer(bufferDesc));
     }
 
+    CreateResourceBindingLayouts();
+
+    // binding instances for cbuffers
+    {
+        mOmniLightBindingInstance.reset(
+            device->CreateResourceBindingInstance(mGlobalBindingSet.get()));
+        if (mOmniLightBindingInstance)
+        {
+            mOmniLightBindingInstance->WriteCBufferView(0, mGlobalCBuffer.get());
+            mOmniLightBindingInstance->WriteCBufferView(1, mOmniLightCBuffer.get());
+        }
+
+        mSpotLightBindingInstance.reset(
+            device->CreateResourceBindingInstance(mGlobalBindingSet.get()));
+        if (mSpotLightBindingInstance)
+        {
+            mSpotLightBindingInstance->WriteCBufferView(0, mGlobalCBuffer.get());
+            mSpotLightBindingInstance->WriteCBufferView(1, mSpotLightCBuffer.get());
+        }
+    }
+
     PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
 
     pipelineStateDesc.debugName = "LightsRenderer::mAmbientLightPipelineState";
@@ -205,12 +228,84 @@ LightsRenderer::LightsRenderer()
     mShadowMapSampler.reset(device->CreateSampler(samplerDesc));
 }
 
+bool LightsRenderer::CreateResourceBindingLayouts()
+{
+    IDevice* device = mRenderer->GetDevice();
+
+    int globalCBufferSlot = mOmniLightShaderProgram.GetResourceSlotByName("Global");
+    int lightParamsSlot = mOmniLightShaderProgram.GetResourceSlotByName("OmniLightProps");
+    // TODO: verify other light types
+    if (globalCBufferSlot < 0 || lightParamsSlot < 0)
+    {
+        LOG_ERROR("Invalid cbuffer slot");
+        return false;
+    }
+
+    int gbufferTex0Slot = mOmniLightShaderProgram.GetResourceSlotByName("gGBufferTex0");
+    int gbufferTex1Slot = mOmniLightShaderProgram.GetResourceSlotByName("gGBufferTex1");
+    // not used in pixel shaders right now
+    // int gbufferTex2Slot = mOmniLightShaderProgram.GetResourceSlotByName("gGBufferTex2");
+    // int gbufferTex3Slot = mOmniLightShaderProgram.GetResourceSlotByName("gGBufferTex3");
+    if (gbufferTex0Slot < 0 || gbufferTex1Slot < 0
+        /* || gbufferTex2Slot < 0 || gbufferTex3Slot < 0 */ )
+    {
+        LOG_ERROR("Invalid gbuffer slot");
+        return false;
+    }
+
+    int shadowMapSlot = mOmniLightShaderProgram.GetResourceSlotByName("gShadowMap");
+    if (shadowMapSlot < 0)
+    {
+        LOG_ERROR("Invalid shadowMapSlot slot");
+        return false;
+    }
+
+    // global binding set (cbuffers with camera and light properties)
+    ResourceBindingDesc globalBindings[2] =
+    {
+        ResourceBindingDesc(ShaderResourceType::CBuffer, globalCBufferSlot),
+        ResourceBindingDesc(ShaderResourceType::CBuffer, lightParamsSlot),
+    };
+    mGlobalBindingSet.reset(device->CreateResourceBindingSet(
+        ResourceBindingSetDesc(globalBindings, 2, ShaderType::All)));
+    if (!mGlobalBindingSet)
+        return false;
+
+    // G-Buffer binding set
+    ResourceBindingDesc gbufferBindings[2] =
+    {
+        ResourceBindingDesc(ShaderResourceType::Texture, gbufferTex0Slot),
+        ResourceBindingDesc(ShaderResourceType::Texture, gbufferTex1Slot),
+        // ResourceBindingDesc(ShaderResourceType::Texture, gbufferTex2Slot),
+        // ResourceBindingDesc(ShaderResourceType::Texture, gbufferTex3Slot),
+    };
+    mGBufferBindingSet.reset(device->CreateResourceBindingSet(
+        ResourceBindingSetDesc(gbufferBindings, 2, ShaderType::Pixel)));
+    if (!mGBufferBindingSet)
+        return false;
+
+    // shadow map binding set
+    ResourceBindingDesc shadowMapBindings(ShaderResourceType::Texture, shadowMapSlot);
+    mShadowMapBindingSet.reset(device->CreateResourceBindingSet(
+        ResourceBindingSetDesc(&shadowMapBindings, 1, ShaderType::Pixel)));
+    if (!mShadowMapBindingSet)
+        return false;
+
+    // create binding layout
+    IResourceBindingSet* sets[] = { mGlobalBindingSet.get(),
+                                    mGlobalBindingSet.get(),
+                                    mShadowMapBindingSet.get() };
+    mResBindingLayout.reset(device->CreateResourceBindingLayout(
+        ResourceBindingLayoutDesc(sets, 3)));
+    if (!mResBindingLayout)
+        return false;
+
+    return true;
+}
+
 void LightsRenderer::OnEnter(RenderContext* context)
 {
     context->commandBuffer->BeginDebugGroup("Lights Renderer stage");
-
-    ISampler* samplers[] = { mRenderer->GetDefaultSampler(), mShadowMapSampler.get() };
-    context->commandBuffer->SetSamplers(samplers, 2, ShaderType::Pixel);
 }
 
 void LightsRenderer::OnLeave(RenderContext* context)
@@ -222,7 +317,8 @@ void LightsRenderer::OnLeave(RenderContext* context)
         nullTextures[i] = mRenderer->GetDefaultDiffuseTexture();
 
     // unbound all the textures
-    context->commandBuffer->SetTextures(nullTextures, clearTexturesNum, ShaderType::Pixel);
+    // context->commandBuffer->SetTextures(nullTextures, clearTexturesNum, ShaderType::Pixel);
+    // FIXME
 
     context->commandBuffer->EndDebugGroup();
 }
@@ -238,6 +334,8 @@ void LightsRenderer::SetUp(RenderContext* context, IRenderTarget* target, Geomet
                                         0.0f, static_cast<float>(height),
                                         0.0f, 1.0f);
 
+    // FIXME
+    /*
     /// bind gbuffer to pixel shader
     ITexture* textures[] = { gbuffer->mTextures[0].get(),
         gbuffer->mTextures[1].get(),
@@ -245,6 +343,7 @@ void LightsRenderer::SetUp(RenderContext* context, IRenderTarget* target, Geomet
         gbuffer->mTextures[3].get(),
         gbuffer->mDepthBuffer.get() };
     context->commandBuffer->SetTextures(textures, 5, ShaderType::Pixel);
+    */
 
     IBuffer* buffers[] = { mVertexBuffer.get() };
     int strides[] = { sizeof(Float3) };
@@ -273,9 +372,11 @@ void LightsRenderer::DrawAmbientLight(RenderContext* context, const Vector& ambi
     context->commandBuffer->WriteBuffer(mAmbientLightCBuffer.get(), 0, sizeof(AmbientLightCBuffer),
                                         &cbuffer);
 
-    IBuffer* cbuffers[] = { mAmbientLightCBuffer.get() };
     context->commandBuffer->SetShaderProgram(mAmbientLightShaderProgram.GetShaderProgram(nullptr));
-    context->commandBuffer->SetConstantBuffers(cbuffers, 1, ShaderType::Pixel);
+
+    // FIXME
+    // IBuffer* cbuffers[] = { mAmbientLightCBuffer.get() };
+    // context->commandBuffer->SetConstantBuffers(cbuffers, 1, ShaderType::Pixel);
 
     context->commandBuffer->DrawIndexed(PrimitiveType::Triangles, 6);
 }
@@ -286,10 +387,7 @@ void LightsRenderer::DrawOmniLight(RenderContext* context, const Vector& pos, fl
     // TODO: use instancing to draw lights
 
     context->commandBuffer->SetPipelineState(mLightVolumePipelineState.get());
-
-    IBuffer* cbuffers[] = { mGlobalCBuffer.get(), mOmniLightCBuffer.get() };
-    context->commandBuffer->SetConstantBuffers(cbuffers, 2, ShaderType::Vertex);
-    context->commandBuffer->SetConstantBuffers(cbuffers, 2, ShaderType::Pixel);
+    context->commandBuffer->BindResources(0, mOmniLightBindingInstance.get());
 
     OmniLightCBuffer cbuffer;
     cbuffer.position = pos;
@@ -302,8 +400,10 @@ void LightsRenderer::DrawOmniLight(RenderContext* context, const Vector& pos, fl
     {
         macros[mOmniLightUseShadowMap] = 1;
         cbuffer.shadowMapProps = Vector(1.0f / shadowMap->GetSize());
-        ITexture* shadowMapTexture = shadowMap->mTexture.get();
-        context->commandBuffer->SetTextures(&shadowMapTexture, 1, ShaderType::Pixel, 6);
+
+        // FIXME
+        // ITexture* shadowMapTexture = shadowMap->mTexture.get();
+        // context->commandBuffer->SetTextures(&shadowMapTexture, 1, ShaderType::Pixel, 6);
     }
 
     context->commandBuffer->SetShaderProgram(mOmniLightShaderProgram.GetShaderProgram(macros));
@@ -328,22 +428,22 @@ void LightsRenderer::DrawSpotLight(RenderContext* context, const SpotLightProper
     if (lightMap != nullptr)
     {
         macros[mSpotLightUseLightMap] = 1;
-        context->commandBuffer->SetTextures(&lightMap, 1, ShaderType::Pixel, 5);
+        // FIXME
+        // context->commandBuffer->SetTextures(&lightMap, 1, ShaderType::Pixel, 5);
     }
 
     if (shadowMap && shadowMap->mTexture)
     {
         macros[mSpotLightUseShadowMap] = 1;
-        ITexture* shadowMapTexture = shadowMap->mTexture.get();
-        context->commandBuffer->SetTextures(&shadowMapTexture, 1, ShaderType::Pixel, 6);
+
+        // FIXME
+        // ITexture* shadowMapTexture = shadowMap->mTexture.get();
+        // context->commandBuffer->SetTextures(&shadowMapTexture, 1, ShaderType::Pixel, 6);
     }
 
     context->commandBuffer->SetPipelineState(mLightVolumePipelineState.get());
     context->commandBuffer->SetShaderProgram(mSpotLightShaderProgram.GetShaderProgram(macros));
-
-    IBuffer* cbuffers[] = { mGlobalCBuffer.get(), mSpotLightCBuffer.get() };
-    context->commandBuffer->SetConstantBuffers(cbuffers, 2, ShaderType::Vertex);
-    context->commandBuffer->SetConstantBuffers(cbuffers, 2, ShaderType::Pixel);
+    context->commandBuffer->BindResources(0, mSpotLightBindingInstance.get());
 
     context->commandBuffer->WriteBuffer(mSpotLightCBuffer.get(), 0, sizeof(SpotLightProperties),
                                         &prop);

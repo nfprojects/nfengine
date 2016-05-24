@@ -192,7 +192,8 @@ bool Engine::Advance(View** views, size_t viewsNum,
         if (scene != nullptr)
         {
             renderingData[i].view = view;
-            scene->Render(renderingData[i]);
+            // FIXME
+            // scene->Render(renderingData[i]);
         }
     }
 
@@ -202,12 +203,14 @@ bool Engine::Advance(View** views, size_t viewsNum,
         if (view == nullptr)
             continue;
 
-        renderingData[i].ExecuteCommandLists();
+        // FIXME
+        // renderingData[i].ExecuteCommandLists();
 
         RenderContext* ctx = mRenderer->GetDefaultContext();
         ctx->commandBuffer->Reset();
         {
-            view->Postprocess(ctx);
+            // FIXME
+            // view->Postprocess(ctx);
             view->UpdateGui();
 
             // GUI renderer pass

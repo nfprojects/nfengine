@@ -80,9 +80,6 @@ void PostProcessRenderer::OnEnter(RenderContext* context)
 
     context->commandBuffer->SetPipelineState(mPipelineState.get());
 
-    ISampler* sampler = mRenderer->GetDefaultSampler();
-    context->commandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
-
     IBuffer* veretexBuffers[] = { mVertexBuffer.get() };
     int strides[] = { sizeof(Float3) };
     int offsets[] = { 0 };
@@ -114,20 +111,24 @@ void PostProcessRenderer::ApplyTonemapping(RenderContext* context,
                                 expf(params.exposureOffset));
     cbufferData.seed = Vector(context->random.GetFloat2());
 
-    IBuffer* cbuffers[] = { mTonemappingCBuffer.get() };
-    context->commandBuffer->SetConstantBuffers(cbuffers, 1, ShaderType::Pixel);
+    // FIXME
+    // IBuffer* cbuffers[] = { mTonemappingCBuffer.get() };
+    // context->commandBuffer->SetConstantBuffers(cbuffers, 1, ShaderType::Pixel);
     context->commandBuffer->WriteBuffer(mTonemappingCBuffer.get(), 0,
                                         sizeof(cbufferData), &cbufferData);
 
     context->commandBuffer->SetRenderTarget(dest);
-    context->commandBuffer->SetTextures(&src, 1, ShaderType::Pixel);
+
+    // FIXME
+    //context->commandBuffer->SetTextures(&src, 1, ShaderType::Pixel);
 
     // TODO: use compute shaders if supported
     context->commandBuffer->Draw(PrimitiveType::Triangles, 2 * 3);  // draw 2 traingles
 
     // unbind source texture
-    ITexture* nullTextures[] = { mRenderer->GetDefaultDiffuseTexture() };
-    context->commandBuffer->SetTextures(nullTextures, 1, ShaderType::Pixel);
+    // FIXME
+    // ITexture* nullTextures[] = { mRenderer->GetDefaultDiffuseTexture() };
+    // context->commandBuffer->SetTextures(nullTextures, 1, ShaderType::Pixel);
 }
 
 } // namespace Renderer
