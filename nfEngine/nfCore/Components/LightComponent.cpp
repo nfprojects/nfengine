@@ -8,6 +8,7 @@
 #include "LightComponent.hpp"
 #include "Resources/ResourcesManager.hpp"
 #include "Engine.hpp"
+#include "Renderer/LightsRenderer.hpp"
 
 #include "../nfCommon/InputStream.hpp"
 #include "../nfCommon/OutputStream.hpp"
@@ -139,6 +140,28 @@ bool LightComponent::HasShadowMap() const
     return (mShadowMap->GetSize() > 0);
 }
 
+void LightComponent::OnLightMapTextureLoaded()
+{
+    HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
+
+    std::mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
+    std::unique_lock<std::mutex> lock(renderingMutex);
+
+    mLightMapBindingInstance.reset(renderer->GetDevice()->CreateResourceBindingInstance(
+        LightsRenderer::Get()->GetLightMapBindingSet().get()));
+    if (!mLightMapBindingInstance)
+    {
+        LOG_ERROR("Failed to create light map's binding instance");
+        return;
+    }
+
+    if (!mLightMapBindingInstance->WriteTextureView(0, mLightMap->GetRendererTexture()))
+    {
+        LOG_ERROR("Failed to write light map's binding instance");
+        return;
+    }
+}
+
 void LightComponent::SetLightMap(const char* pName)
 {
     if ((pName == NULL) || (strnlen_s(pName, RES_NAME_MAX_LENGTH) == 0))
@@ -161,7 +184,10 @@ void LightComponent::SetLightMap(const char* pName)
 
         mLightMap = newTexture;
         if (mLightMap)
+        {
+            mLightMap->AddPostLoadCallback(std::bind(&LightComponent::OnLightMapTextureLoaded, this));
             mLightMap->AddRef();
+        }
     }
 }
 

@@ -145,6 +145,11 @@ void ResourceBase::Load()
             if (mDestState != ResourceState::Unloaded)
             {
                 SetState(result ? ResourceState::Loaded : ResourceState::Failed);
+
+                std::lock_guard<std::mutex> lock(mCallbacksMutex);
+                for (const auto& callback : mPostLoadCallbacks)
+                    callback();
+
                 return;
             }
 
@@ -194,6 +199,12 @@ void ResourceBase::Unload()
             }
         }
     }
+}
+
+void ResourceBase::AddPostLoadCallback(const ResourcePostLoadCallback& callback)
+{
+    std::lock_guard<std::mutex> lock(mCallbacksMutex);
+    mPostLoadCallbacks.push_back(callback);
 }
 
 } // namespace Resource
