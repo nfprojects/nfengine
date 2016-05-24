@@ -55,6 +55,8 @@ MultiShaderProgram::MultiShaderProgram()
 
 bool MultiShaderProgram::Load(const char* name)
 {
+    mName = name;
+
     ResManager* rm = Engine::GetInstance()->GetResManager();
     LOG_INFO("Loading multi shader program '%s'...", name);
 
@@ -287,6 +289,32 @@ IShader* MultiShaderProgram::GetShader(Renderer::ShaderType type, int* values) c
     }
 
     return mShaderResources[typeId]->GetShader(macroValues);
+}
+
+int MultiShaderProgram::GetResourceSlotByName(const char* slotName)
+{
+    int slot = -1;
+
+    // resource slot ID must be the same for all sub programs
+    for (const auto& subProgram : mSubPrograms)
+    {
+        int currSlot = subProgram->GetResourceSlotByName(slotName);
+
+        if (slot < 0 && currSlot >= 0)
+            slot = currSlot;
+        else if (slot >= 0 && currSlot != slot)
+        {
+            LOG_ERROR("Resource slot ID for slot name '%s' is mismatched in multi shader program '%s'",
+                      slotName, mName.c_str());
+            continue;
+        }
+    }
+
+    if (slot < 0)
+        LOG_ERROR("Resource slot '%s' not found in multi shader program '%s'",
+                  slotName, mName.c_str());
+
+    return slot;
 }
 
 } // namespace Renderer

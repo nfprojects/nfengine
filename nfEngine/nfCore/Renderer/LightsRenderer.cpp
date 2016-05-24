@@ -208,9 +208,6 @@ LightsRenderer::LightsRenderer()
 void LightsRenderer::OnEnter(RenderContext* context)
 {
     context->commandBuffer->BeginDebugGroup("Lights Renderer stage");
-
-    ISampler* samplers[] = { mRenderer->GetDefaultSampler(), mShadowMapSampler.get() };
-    context->commandBuffer->SetSamplers(samplers, 2, ShaderType::Pixel);
 }
 
 void LightsRenderer::OnLeave(RenderContext* context)
@@ -222,7 +219,8 @@ void LightsRenderer::OnLeave(RenderContext* context)
         nullTextures[i] = mRenderer->GetDefaultDiffuseTexture();
 
     // unbound all the textures
-    context->commandBuffer->SetTextures(nullTextures, clearTexturesNum, ShaderType::Pixel);
+    // context->commandBuffer->SetTextures(nullTextures, clearTexturesNum, ShaderType::Pixel);
+    // FIXME
 
     context->commandBuffer->EndDebugGroup();
 }
@@ -238,6 +236,8 @@ void LightsRenderer::SetUp(RenderContext* context, IRenderTarget* target, Geomet
                                         0.0f, static_cast<float>(height),
                                         0.0f, 1.0f);
 
+    // FIXME
+    /*
     /// bind gbuffer to pixel shader
     ITexture* textures[] = { gbuffer->mTextures[0].get(),
         gbuffer->mTextures[1].get(),
@@ -245,6 +245,7 @@ void LightsRenderer::SetUp(RenderContext* context, IRenderTarget* target, Geomet
         gbuffer->mTextures[3].get(),
         gbuffer->mDepthBuffer.get() };
     context->commandBuffer->SetTextures(textures, 5, ShaderType::Pixel);
+    */
 
     IBuffer* buffers[] = { mVertexBuffer.get() };
     int strides[] = { sizeof(Float3) };
@@ -273,9 +274,11 @@ void LightsRenderer::DrawAmbientLight(RenderContext* context, const Vector& ambi
     context->commandBuffer->WriteBuffer(mAmbientLightCBuffer.get(), 0, sizeof(AmbientLightCBuffer),
                                         &cbuffer);
 
-    IBuffer* cbuffers[] = { mAmbientLightCBuffer.get() };
     context->commandBuffer->SetShaderProgram(mAmbientLightShaderProgram.GetShaderProgram(nullptr));
-    context->commandBuffer->SetConstantBuffers(cbuffers, 1, ShaderType::Pixel);
+
+    // FIXME
+    // IBuffer* cbuffers[] = { mAmbientLightCBuffer.get() };
+    // context->commandBuffer->SetConstantBuffers(cbuffers, 1, ShaderType::Pixel);
 
     context->commandBuffer->DrawIndexed(PrimitiveType::Triangles, 6);
 }
@@ -287,9 +290,10 @@ void LightsRenderer::DrawOmniLight(RenderContext* context, const Vector& pos, fl
 
     context->commandBuffer->SetPipelineState(mLightVolumePipelineState.get());
 
-    IBuffer* cbuffers[] = { mGlobalCBuffer.get(), mOmniLightCBuffer.get() };
-    context->commandBuffer->SetConstantBuffers(cbuffers, 2, ShaderType::Vertex);
-    context->commandBuffer->SetConstantBuffers(cbuffers, 2, ShaderType::Pixel);
+    // FIXME
+    // IBuffer* cbuffers[] = { mGlobalCBuffer.get(), mOmniLightCBuffer.get() };
+    // context->commandBuffer->SetConstantBuffers(cbuffers, 2, ShaderType::Vertex);
+    // context->commandBuffer->SetConstantBuffers(cbuffers, 2, ShaderType::Pixel);
 
     OmniLightCBuffer cbuffer;
     cbuffer.position = pos;
@@ -302,8 +306,10 @@ void LightsRenderer::DrawOmniLight(RenderContext* context, const Vector& pos, fl
     {
         macros[mOmniLightUseShadowMap] = 1;
         cbuffer.shadowMapProps = Vector(1.0f / shadowMap->GetSize());
-        ITexture* shadowMapTexture = shadowMap->mTexture.get();
-        context->commandBuffer->SetTextures(&shadowMapTexture, 1, ShaderType::Pixel, 6);
+
+        // FIXME
+        // ITexture* shadowMapTexture = shadowMap->mTexture.get();
+        // context->commandBuffer->SetTextures(&shadowMapTexture, 1, ShaderType::Pixel, 6);
     }
 
     context->commandBuffer->SetShaderProgram(mOmniLightShaderProgram.GetShaderProgram(macros));
@@ -328,22 +334,26 @@ void LightsRenderer::DrawSpotLight(RenderContext* context, const SpotLightProper
     if (lightMap != nullptr)
     {
         macros[mSpotLightUseLightMap] = 1;
-        context->commandBuffer->SetTextures(&lightMap, 1, ShaderType::Pixel, 5);
+        // FIXME
+        // context->commandBuffer->SetTextures(&lightMap, 1, ShaderType::Pixel, 5);
     }
 
     if (shadowMap && shadowMap->mTexture)
     {
         macros[mSpotLightUseShadowMap] = 1;
-        ITexture* shadowMapTexture = shadowMap->mTexture.get();
-        context->commandBuffer->SetTextures(&shadowMapTexture, 1, ShaderType::Pixel, 6);
+
+        // FIXME
+        // ITexture* shadowMapTexture = shadowMap->mTexture.get();
+        // context->commandBuffer->SetTextures(&shadowMapTexture, 1, ShaderType::Pixel, 6);
     }
 
     context->commandBuffer->SetPipelineState(mLightVolumePipelineState.get());
     context->commandBuffer->SetShaderProgram(mSpotLightShaderProgram.GetShaderProgram(macros));
 
-    IBuffer* cbuffers[] = { mGlobalCBuffer.get(), mSpotLightCBuffer.get() };
-    context->commandBuffer->SetConstantBuffers(cbuffers, 2, ShaderType::Vertex);
-    context->commandBuffer->SetConstantBuffers(cbuffers, 2, ShaderType::Pixel);
+    // FIXME
+    // IBuffer* cbuffers[] = { mGlobalCBuffer.get(), mSpotLightCBuffer.get() };
+    // context->commandBuffer->SetConstantBuffers(cbuffers, 2, ShaderType::Vertex);
+    // context->commandBuffer->SetConstantBuffers(cbuffers, 2, ShaderType::Pixel);
 
     context->commandBuffer->WriteBuffer(mSpotLightCBuffer.get(), 0, sizeof(SpotLightProperties),
                                         &prop);

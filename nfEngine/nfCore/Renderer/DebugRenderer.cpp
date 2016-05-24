@@ -150,11 +150,9 @@ void DebugRenderer::OnEnter(RenderContext* context)
 
     context->commandBuffer->BeginDebugGroup("Debug Renderer stage");
 
-    IBuffer* constantBuffers[] = { mConstantBuffer.get(), mPerMeshConstantBuffer.get() };
-    context->commandBuffer->SetConstantBuffers(constantBuffers, 2, ShaderType::Vertex);
-
-    ISampler* sampler = mRenderer->GetDefaultSampler();
-    context->commandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
+    // FIXME
+    // IBuffer* constantBuffers[] = { mConstantBuffer.get(), mPerMeshConstantBuffer.get() };
+    // context->commandBuffer->SetConstantBuffers(constantBuffers, 2, ShaderType::Vertex);
 }
 
 void DebugRenderer::OnLeave(RenderContext* context)
@@ -349,17 +347,21 @@ void DebugRenderer::SetMeshMaterial(RenderContext* context, const Resource::Mate
 {
     ITexture* tex = nullptr;
 
+    // FIXME
+    /*
     if (material && material->mLayers)
         if (material->mLayers[0].diffuseTexture)
             tex = material->mLayers[0].diffuseTexture->GetRendererTexture();
+            */
 
     int macros[2];
     macros[mIsMeshMacroId] = 1;
     macros[mUseTextureMacroId] = tex != nullptr ? 1 : 0;
     context->commandBuffer->SetShaderProgram(mShaderProgram.GetShaderProgram(macros));
 
-    if (tex)
-        context->commandBuffer->SetTextures(&tex, 1, ShaderType::Pixel);
+    // FIXME
+    // if (tex)
+    //    context->commandBuffer->SetTextures(&tex, 1, ShaderType::Pixel);
 }
 
 void DebugRenderer::DrawMesh(RenderContext* context, const Resource::Mesh* mesh,

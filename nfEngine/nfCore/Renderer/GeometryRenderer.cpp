@@ -124,13 +124,12 @@ void GeometryRenderer::OnEnter(RenderContext* context)
     context->commandBuffer->BeginDebugGroup("Geometry Buffer Renderer stage");
 
     context->commandBuffer->SetPipelineState(mPipelineState.get());
-
-    ISampler* sampler = mRenderer->GetDefaultSampler();
-    context->commandBuffer->SetSamplers(&sampler, 1, ShaderType::Pixel);
 }
 
 void GeometryRenderer::OnLeave(RenderContext* context)
 {
+    // FIXME
+    /*
     // TODO: allow "NULL" in the array
     ITexture* nullTextures[] = { mRenderer->GetDefaultDiffuseTexture(),
         mRenderer->GetDefaultDiffuseTexture(),
@@ -139,6 +138,7 @@ void GeometryRenderer::OnLeave(RenderContext* context)
         mRenderer->GetDefaultDiffuseTexture(),
         mRenderer->GetDefaultDiffuseTexture() };
     context->commandBuffer->SetTextures(nullTextures, 6, ShaderType::Pixel);
+    */
 
     context->commandBuffer->EndDebugGroup();
 }
@@ -159,10 +159,11 @@ void GeometryRenderer::SetUp(RenderContext* context, GeometryBuffer* geometryBuf
     int macros[] = { 0 }; // USE_MOTION_BLUR
     context->commandBuffer->SetShaderProgram(mGeometryPassShaderProgram.GetShaderProgram(macros));
 
-    IBuffer* vsConstantBuffers[] = { mGlobalCBuffer.get() };
-    context->commandBuffer->SetConstantBuffers(vsConstantBuffers, 1, ShaderType::Vertex);
-    IBuffer* psConstantBuffers[] = { mGlobalCBuffer.get(), mMaterialCBuffer.get() };
-    context->commandBuffer->SetConstantBuffers(psConstantBuffers, 2, ShaderType::Pixel);
+    // FIXME
+    // IBuffer* vsConstantBuffers[] = { mGlobalCBuffer.get() };
+    // context->commandBuffer->SetConstantBuffers(vsConstantBuffers, 1, ShaderType::Vertex);
+    // IBuffer* psConstantBuffers[] = { mGlobalCBuffer.get(), mMaterialCBuffer.get() };
+    // context->commandBuffer->SetConstantBuffers(psConstantBuffers, 2, ShaderType::Pixel);
 
     GlobalCBuffer cbuffer;
     cbuffer.ProjMatrix = cameraDesc->projMatrix;
@@ -196,9 +197,10 @@ void GeometryRenderer::SetUpForShadowMap(RenderContext *context, ShadowMap* shad
 
     context->commandBuffer->SetShaderProgram(mShadowShaderProgram.GetShaderProgram(macros));
 
-    IBuffer* constantBuffers[] = { mShadowGlobalCBuffer.get() };
-    context->commandBuffer->SetConstantBuffers(constantBuffers, 1, ShaderType::Vertex);
-    context->commandBuffer->SetConstantBuffers(constantBuffers, 1, ShaderType::Pixel);
+    // FIXME
+    // IBuffer* constantBuffers[] = { mShadowGlobalCBuffer.get() };
+    // context->commandBuffer->SetConstantBuffers(constantBuffers, 1, ShaderType::Vertex);
+    // context->commandBuffer->SetConstantBuffers(constantBuffers, 1, ShaderType::Pixel);
 
     context->commandBuffer->WriteBuffer(mShadowGlobalCBuffer.get(), 0,
                                         sizeof(ShadowCameraRenderDesc), cameraDesc);
@@ -238,8 +240,9 @@ void GeometryRenderer::SetMaterial(RenderContext* context, const RendererMateria
     context->commandBuffer->WriteBuffer(mMaterialCBuffer.get(), 0, sizeof(MaterialCBuffer),
                                         &cbuffer);
 
-    ITexture* textures[] = { diffuseTexture, normalTexture, specularTexture };
-    context->commandBuffer->SetTextures(textures, 3, ShaderType::Pixel);
+    // FIXME
+    // ITexture* textures[] = { diffuseTexture, normalTexture, specularTexture };
+    // context->commandBuffer->SetTextures(textures, 3, ShaderType::Pixel);
 }
 
 void GeometryRenderer::Draw(RenderContext* context, const RenderCommandBuffer& buffer)
