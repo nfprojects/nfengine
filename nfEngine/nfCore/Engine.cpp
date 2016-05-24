@@ -148,7 +148,7 @@ bool Engine::Advance(View** views, size_t viewsNum,
         return false;
     }
 
-    std::unique_lock<std::mutex> lock(mRenderingMutex);
+    std::unique_lock<std::recursive_mutex> lock(mRenderingMutex);
 
     // update physics
     bool scenesUpdatedSuccessfully = true;

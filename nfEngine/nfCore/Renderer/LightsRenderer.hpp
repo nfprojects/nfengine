@@ -45,23 +45,48 @@ class LightsRenderer : public RendererModule<LightsRenderer>
 
     std::unique_ptr<IBuffer> mVertexBuffer;
     std::unique_ptr<IBuffer> mIndexBuffer;
-
     std::unique_ptr<IVertexLayout> mVertexLayout;
+
+    std::unique_ptr<IResourceBindingSet> mGlobalBindingSet;
+    std::unique_ptr<IResourceBindingSet> mGBufferBindingSet;
+    std::unique_ptr<IResourceBindingSet> mShadowMapBindingSet;
+    std::unique_ptr<IResourceBindingSet> mLightMapBindingSet;
+    std::unique_ptr<IResourceBindingLayout> mResBindingLayout;
 
     Resource::MultiShaderProgram mAmbientLightShaderProgram;
     std::unique_ptr<IBuffer> mAmbientLightCBuffer;
+    std::unique_ptr<IResourceBindingInstance> mAmbientLightBindingInstance;
 
     int mOmniLightUseShadowMap;
     Resource::MultiShaderProgram mOmniLightShaderProgram;
     std::unique_ptr<IBuffer> mOmniLightCBuffer;
+    std::unique_ptr<IResourceBindingInstance> mOmniLightBindingInstance;
 
     int mSpotLightUseLightMap;
     int mSpotLightUseShadowMap;
     Resource::MultiShaderProgram mSpotLightShaderProgram;
     std::unique_ptr<IBuffer> mSpotLightCBuffer;
+    std::unique_ptr<IResourceBindingInstance> mSpotLightBindingInstance;
+
+    bool CreateResourceBindingLayouts();
 
 public:
     LightsRenderer();
+
+    NFE_INLINE std::unique_ptr<IResourceBindingSet>& GetGBufferBindingSet()
+    {
+        return mGBufferBindingSet;
+    }
+
+    NFE_INLINE std::unique_ptr<IResourceBindingSet>& GetShadowMapBindingSet()
+    {
+        return mShadowMapBindingSet;
+    }
+
+    NFE_INLINE std::unique_ptr<IResourceBindingSet>& GetLightMapBindingSet()
+    {
+        return mLightMapBindingSet;
+    }
 
     void OnEnter(RenderContext* context);
     void OnLeave(RenderContext* context);
@@ -73,7 +98,7 @@ public:
     void DrawOmniLight(RenderContext* context, const Vector& pos, float radius, const Vector& color,
                        ShadowMap* shadowMap);
     void DrawSpotLight(RenderContext* context, const SpotLightProperties& prop,
-                       ShadowMap* shadowMap, ITexture* pLightMap);
+                       ShadowMap* shadowMap, IResourceBindingInstance* pLightMap);
     void DrawDirLight(RenderContext* context, const DirLightProperties& prop, ShadowMap* shadowMap);
 
     void DrawFog(RenderContext* context);
