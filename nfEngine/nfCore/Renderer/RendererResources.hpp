@@ -47,9 +47,7 @@ struct NFE_ALIGN16 CameraRenderDesc
  */
 struct RendererMaterialLayer
 {
-    ITexture* diffuseTex;
-    ITexture* normalTex;
-    ITexture* specularTex;
+    std::unique_ptr<IResourceBindingInstance> bindingInstance;
 
     Math::Float4 diffuseColor;
     Math::Float4 specularColor; // x - factor, w - power
@@ -58,25 +56,8 @@ struct RendererMaterialLayer
 
 struct RendererMaterial
 {
-    RendererMaterialLayer* layers;
-    uint32 layersNum;
-
-    // TODO: layers mixing
-
-    RendererMaterial()
-    {
-        layers = NULL;
-        layersNum = 0;
-    }
-
-    ~RendererMaterial()
-    {
-        if (layers)
-        {
-            delete[] layers;
-            layers = 0;
-        }
-    }
+    RendererMaterialLayer layers[1];
+    // TODO mutliple texture layers support
 };
 
 // Shadowmap resource (flat, cube and cascaded)
@@ -111,6 +92,7 @@ private:
     std::unique_ptr<ITexture> mTexture;
     std::unique_ptr<ITexture> mDepthBuffer;
     std::unique_ptr<IRenderTarget> mRenderTargets[MAX_CASCADE_SPLITS];
+    std::unique_ptr<IResourceBindingInstance> mBindingInstance;
 
     uint16 mSize;
     Type mType;
@@ -122,13 +104,14 @@ class GeometryBuffer
     friend class GeometryRenderer;
     friend class LightsRenderer;
 
-    static const int gLayers = 4;
+    static const int gLayers = 3;
 
     int mWidth;
     int mHeight;
     std::unique_ptr<ITexture> mDepthBuffer;
     std::unique_ptr<ITexture> mTextures[gLayers];
     std::unique_ptr<IRenderTarget> mRenderTarget;
+    std::unique_ptr<IResourceBindingInstance> mBindingInstance;
 
 public:
     void Release();

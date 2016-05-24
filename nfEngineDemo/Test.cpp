@@ -125,7 +125,7 @@ public:
                                              Rectf(left, viewHeight - bottom - height,
                                                    left + width, viewHeight - bottom),
                                              Rectf(0.0f, 0.0f, 1.0f, 1.0f),
-                                             texture->GetRendererTexture(),
+                                             texture->GetRendererTextureBinding(),
                                              0xFFFFFFFF);
     }
 };

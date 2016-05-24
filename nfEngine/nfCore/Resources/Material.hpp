@@ -22,6 +22,7 @@ struct CORE_API MaterialLayer
     float weight; //how much the layer influences final color
     Math::Float2 textureScale;
 
+    uint32 numTextures;
     Texture* diffuseTexture;
     Texture* normalTexture;
     Texture* specularTexture;
@@ -49,13 +50,11 @@ class CORE_API Material : public ResourceBase
     friend class Renderer::GeometryRenderer;
     friend class Renderer::DebugRenderer;
 
-    std::mutex mMutex;
-
-    // TODO: use std::vector
-    MaterialLayer* mLayers;
-    uint32 mLayersCount;
-
+    std::atomic<uint32> mTexturesLoaded;
+    std::vector<MaterialLayer> mLayers;
     Renderer::RendererMaterial mRendererData;
+
+    void OnTextureLoaded();
 
 public:
     Material();
@@ -65,9 +64,17 @@ public:
     void OnUnload();
 
     /**
+     * Called when all textures has been loaded.
+     */
+    void OnTexturesLoaded();
+
+    /**
      * Get renderer's material
      */
-    const Renderer::RendererMaterial* GetRendererData();
+    NFE_INLINE const Renderer::RendererMaterial* GetRendererData()
+    {
+        return &mRendererData;
+    }
 };
 
 } // namespace Resource
