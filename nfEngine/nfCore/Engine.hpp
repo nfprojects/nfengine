@@ -27,7 +27,7 @@ class CORE_API Engine
      * Mutex used to synchronize scene rendering and resources allocations.
      * Resources must be released outside rendering stage.
      */
-    std::mutex mRenderingMutex;
+    std::recursive_mutex mRenderingMutex;
 
     Common::ThreadPool mMainThreadPool;
     Resource::ResManager mResManager;
@@ -115,7 +115,7 @@ public:
                  const UpdateRequest* updateRequests, size_t updateRequestsNum);
 
 
-    NFE_INLINE std::mutex& GetRenderingMutex()
+    NFE_INLINE std::recursive_mutex& GetRenderingMutex()
     {
         return mRenderingMutex;
     }
