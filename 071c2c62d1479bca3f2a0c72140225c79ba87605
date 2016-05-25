@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_23c4e93d",
+        "filename": "nfEngine/nfCommon/Win/SystemInfoPlatform.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-25T19:14:33Z",
+      "side": 1,
+      "message": "It looks like the code is copy-pasted - please fix style:\n* RtlGetVersion_FUNC -\u003e RtlGetVersionFunc\n* \"OSVERSIONINFOEXW * osw\" -\u003e \"OSVERSIONINFOEXW* osw\"\n* static_cast insead of C-cast",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 1
+      },
+      "revId": "071c2c62d1479bca3f2a0c72140225c79ba87605",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
