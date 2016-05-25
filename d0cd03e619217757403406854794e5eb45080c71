@@ -22,6 +22,30 @@
       "revId": "d0cd03e619217757403406854794e5eb45080c71",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_28d048f5",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-25T15:24:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_f4f007ff",
+      "range": {
+        "startLine": 119,
+        "startChar": 14,
+        "endLine": 119,
+        "endChar": 22
+      },
+      "revId": "d0cd03e619217757403406854794e5eb45080c71",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
