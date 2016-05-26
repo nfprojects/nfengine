@@ -10,11 +10,13 @@
 #include "SceneEvent.hpp"
 #include "EntityManager.hpp"
 #include "../nfCommon/ThreadPool.hpp"
+#include "../nfCommon/ClassRegister.hpp"
 
 namespace NFE {
 namespace Scene {
 
-NFE_ALIGNED_CLASS(class CORE_API EnviromentDesc)
+NFE_ALIGN16
+class CORE_API EnviromentDesc
 {
 public:
     Math::Vector ambientLight;
@@ -30,7 +32,8 @@ public:
 /**
  * Scene manager.
  */
-NFE_ALIGNED_CLASS(class CORE_API SceneManager)
+NFE_ALIGN16
+class CORE_API SceneManager
 {
 private:
     EntityManager mEntityManager;
@@ -48,6 +51,8 @@ private:
     Common::TaskID mUpdateTask;
 
 public:
+    NFE_DECLARE_CLASS;
+
     SceneManager();
     ~SceneManager();
 

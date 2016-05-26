@@ -33,6 +33,9 @@ const char* ATTR_SPECULAR_FACTOR = "SpecularFactor";
 
 using namespace Math;
 
+NFE_DEFINE_CLASS(Material, 16, ClassAllocatorType::Pool);
+NFE_DEFINE_CLASS(MaterialLayer, 16, ClassAllocatorType::Pool);
+
 MaterialLayer::MaterialLayer()
 {
     weight = 1.0f;

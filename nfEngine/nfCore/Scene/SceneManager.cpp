@@ -21,6 +21,8 @@ using namespace Math;
 using namespace Renderer;
 using namespace Resource;
 
+NFE_DEFINE_CLASS(SceneManager, 16, ClassAllocatorType::Pool);
+
 SceneManager::SceneManager()
     : mTransformSystem(new TransformSystem(this))
     , mPhysicsSystem(new PhysicsSystem(this))

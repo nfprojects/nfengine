@@ -314,5 +314,11 @@ int main(int argc, char* argv[])
     window.DrawLoop();
 
     window.Release();
+
+    // detect memory leaks
+#if defined(WIN32) && defined(_CRTDBG_MAP_ALLOC)
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif // defined(WIN32) && defined(_CRTDBG_MAP_ALLOC)
+
     return 0;
 }

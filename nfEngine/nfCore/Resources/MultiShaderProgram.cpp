@@ -40,6 +40,7 @@ void ShaderResourceDeleter(Multishader* multishader)
 
 using namespace Renderer;
 
+NFE_DEFINE_CLASS(MultiShaderProgram, 16, ClassAllocatorType::Pool);
 
 MultiShaderProgram::MultiShaderProgram()
     : mShaderResources

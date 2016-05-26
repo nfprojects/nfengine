@@ -8,8 +8,10 @@
 #include "CollisionShape.hpp"
 #include "Globals.hpp"
 #include "Engine.hpp"
+
 #include "../nfCommon/Logger.hpp"
 #include "../nfCommon/Timer.hpp"
+#include "../nfCommon/Memory/GenericAllocator.hpp"
 
 namespace NFE {
 namespace Resource {
@@ -38,16 +40,7 @@ struct TriMeshTriangle
 };
 
 
-
-CollisionShape* CollisionShape::Allocate()
-{
-    return new CollisionShape;
-}
-
-void CollisionShape::Free(CollisionShape* ptr)
-{
-    delete ptr;
-}
+NFE_DEFINE_CLASS(CollisionShape, 16, ClassAllocatorType::Pool);
 
 CollisionShape::CollisionShape()
 {
@@ -113,9 +106,8 @@ Result CollisionShape::LoadFromFile(const char* pPath)
 
 
 
-            float* pVertices = (float*)_aligned_malloc(sizeof(float) * 3 * triMeshInfo.verticesCount, 16);
-            TriMeshTriangle* pTriangles = (TriMeshTriangle*)_aligned_malloc(sizeof(
-                                              TriMeshTriangle) * triMeshInfo.trianglesCount, 16);
+            float* pVertices = (float*)NFE_GENERIC_MALLOC(sizeof(float) * 3 * triMeshInfo.verticesCount, 16);
+            TriMeshTriangle* pTriangles = (TriMeshTriangle*)NFE_GENERIC_MALLOC(sizeof(TriMeshTriangle) * triMeshInfo.trianglesCount, 16);
             fread(pVertices, sizeof(float) * 3 * triMeshInfo.verticesCount, 1, pFile);
             fread(pTriangles, sizeof(TriMeshTriangle) * triMeshInfo.trianglesCount, 1, pFile);
 
@@ -133,9 +125,8 @@ Result CollisionShape::LoadFromFile(const char* pPath)
                 pMesh->addTriangle(v1, v2, v3);
             }
 
-
-            _aligned_free(pTriangles);
-            _aligned_free(pVertices);
+            NFE_GENERIC_FREE(pTriangles);
+            NFE_GENERIC_FREE(pVertices);
 
 
             CompoundShapeChild shape =

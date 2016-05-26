@@ -7,6 +7,7 @@
 #pragma once
 
 #include "nfCommon.hpp"
+#include "ClassRegister.hpp"
 
 #include <condition_variable>
 #include <set>

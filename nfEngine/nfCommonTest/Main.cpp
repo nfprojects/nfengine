@@ -11,7 +11,7 @@ int main(int argc, char* argv[])
     int result = RUN_ALL_TESTS();
 
 #if defined(WIN32) && defined(_CRTDBG_MAP_ALLOC)
-    _CrtDumpMemoryLeaks();
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif // defined(WIN32) && defined(_CRTDBG_MAP_ALLOC)
     return result;
 }

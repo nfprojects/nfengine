@@ -8,14 +8,15 @@
 
 #include "../Core.hpp"
 #include "Component.hpp"
-#include "../nfCommon/Aligned.hpp"
 #include "../nfCommon/Math/Quaternion.hpp"
+#include "../nfCommon/ClassRegister.hpp"
 
 namespace NFE {
 namespace Scene {
 
 // TODO: consider moving to nfCommon/Math and renaming to Matrix3x4
-class Orientation : public Common::Aligned<16>
+NFE_ALIGN16
+class Orientation
 {
 public:
     Math::Vector x, y, z;
@@ -42,7 +43,6 @@ public:
 NFE_ALIGN16
 class CORE_API TransformComponent
     : public ComponentBase<TransformComponent>
-    , public Common::Aligned<16>
 {
     friend class PhysicsSystem;
     friend class SceneManager;
@@ -60,6 +60,8 @@ class CORE_API TransformComponent
     std::set<TransformComponent*> mChildren;
 
 public:
+    NFE_DECLARE_CLASS;
+
     TransformComponent();
 
     void Invalidate();

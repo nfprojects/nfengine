@@ -9,6 +9,7 @@
 #include "../Core.hpp"
 #include "Resource.hpp"
 #include "../nfCommon/AsyncThreadPool.hpp"
+#include "../../nfCommon/ClassRegister.hpp"
 
 namespace NFE {
 namespace Resource {
@@ -49,6 +50,8 @@ class CORE_API ResManager final
     void ReloadResource(ResourceBase* resource);
 
 public:
+    NFE_DECLARE_CLASS;
+
     ResManager();
     ~ResManager();
 

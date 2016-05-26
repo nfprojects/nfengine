@@ -14,7 +14,7 @@
 #pragma warning (disable: 4324)
 #pragma warning (disable: 4099)
 
-//VS memory leak detector
+// VS memory leak detector
 #ifdef _DEBUG
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
