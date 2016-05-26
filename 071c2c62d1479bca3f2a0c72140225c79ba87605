@@ -22,6 +22,30 @@
       "revId": "071c2c62d1479bca3f2a0c72140225c79ba87605",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_34241dc3",
+        "filename": "nfEngine/nfCommon/Win/SystemInfoPlatform.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-26T21:18:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_23c4e93d",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 1
+      },
+      "revId": "071c2c62d1479bca3f2a0c72140225c79ba87605",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
