@@ -15,6 +15,7 @@ namespace Scene {
 using namespace Renderer;
 using namespace Resource;
 
+NFE_DEFINE_CLASS(MeshComponent, 16, ClassAllocatorType::Pool);
 NFE_REGISTER_COMPONENT(MeshComponent);
 
 MeshComponent::MeshComponent()

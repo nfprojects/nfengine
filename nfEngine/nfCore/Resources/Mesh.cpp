@@ -13,6 +13,7 @@
 #include "Engine.hpp"
 
 #include "../nfCommon/Logger.hpp"
+#include "../nfCommon/Memory/GenericAllocator.hpp"
 
 namespace NFE {
 namespace Resource {
@@ -20,18 +21,18 @@ namespace Resource {
 using namespace Math;
 using namespace Renderer;
 
+
+NFE_DEFINE_CLASS(Mesh, 16, ClassAllocatorType::Pool);
+
 Mesh::Mesh()
 {
-    mVerticies = 0;
-    mIndices = 0;
+    mVerticies = nullptr;
+    mIndices = nullptr;
+    mSubMeshes = nullptr;
 
     mVeriticesCount = 0;
     mIndicesCount = 0;
     mSubMeshesCount = 0;
-
-    mVB = 0;
-    mIB = 0;
-    mSubMeshes = 0;
 }
 
 Mesh::~Mesh()
@@ -39,44 +40,13 @@ Mesh::~Mesh()
     Release();
 }
 
-Result Mesh::AllocateVerticies(uint32 count)
-{
-    MeshVertex* newVertices = (MeshVertex*)realloc(mVerticies, sizeof(MeshVertex) * count);
-    if (newVertices == nullptr)
-        return Result::AllocationError;
-
-    mVerticies = newVertices;
-    mVeriticesCount = count;
-    return Result::OK;
-}
-
-Result Mesh::AllocateIndices(uint32 count)
-{
-    uint32* newIndices = (uint32*)realloc(mIndices, sizeof(uint32) * count);
-    if (newIndices == 0)
-        return Result::AllocationError;
-
-    mIndices = newIndices;
-    mIndicesCount = count;
-    return Result::OK;
-}
-
-Result Mesh::AllocateSubmeshes(uint32 count)
-{
-    SubMesh* newSubMeshes = (SubMesh*)realloc(mSubMeshes, sizeof(SubMesh) * count);
-    if (newSubMeshes == nullptr)
-        return Result::AllocationError;
-
-    mSubMeshes = newSubMeshes;
-    mSubMeshesCount = count;
-    return Result::OK;
-}
-
 bool Mesh::OnLoad()
 {
     LOG_INFO("Loading mesh '%s'...", mName);
     Common::Timer timer;
     timer.Start();
+
+    Release();
 
     /*
     if (mCustom)
@@ -133,7 +103,8 @@ bool Mesh::OnLoad()
     fread(&mSubMeshesCount, sizeof(int), 1, pFile);
 
     //read vertices
-    MeshVertex* pVerticies = (MeshVertex*)malloc(mVeriticesCount * sizeof(MeshVertex));
+    MeshVertex* pVerticies =
+        reinterpret_cast<MeshVertex*>(NFE_GENERIC_MALLOC(mVeriticesCount * sizeof(MeshVertex), 1));
     fread(pVerticies, sizeof(MeshVertex), mVeriticesCount, pFile);
 
     //TEMPORARY!!! Texture coordinates exported from cinema 4d are flipped in 't' axis!!!!
@@ -158,7 +129,8 @@ bool Mesh::OnLoad()
         return false;
     }
 
-    uint32* pIndices = (uint32*)malloc(mIndicesCount * sizeof(uint32));
+    uint32* pIndices =
+        reinterpret_cast<uint32*>(NFE_GENERIC_MALLOC(mIndicesCount * sizeof(uint32), 1));
     fread(pIndices, sizeof(uint32), mIndicesCount, pFile);
 
     /// create renderer's index buffer
@@ -175,11 +147,12 @@ bool Mesh::OnLoad()
     }
 
 
-    SubMeshDesc* pSubMeshes = (SubMeshDesc*)malloc(mSubMeshesCount * sizeof(SubMeshDesc));
+    SubMeshDesc* pSubMeshes =
+        reinterpret_cast<SubMeshDesc*>(NFE_GENERIC_MALLOC(mSubMeshesCount * sizeof(SubMeshDesc), 1));
     fread(pSubMeshes, sizeof(SubMeshDesc), mSubMeshesCount, pFile);
     fclose(pFile);
 
-    mSubMeshes = (SubMesh*)_aligned_malloc(mSubMeshesCount * sizeof(SubMesh), 16);
+    mSubMeshes = reinterpret_cast<SubMesh*>(NFE_GENERIC_MALLOC(mSubMeshesCount * sizeof(SubMesh), 16));
     for (uint32 i = 0; i < mSubMeshesCount; i++)
     {
         int startIndex = pSubMeshes[i].indexOffset;
@@ -219,9 +192,9 @@ bool Mesh::OnLoad()
         }
     }
 
-    free(pSubMeshes);
-    free(pIndices);
-    free(pVerticies);
+    NFE_GENERIC_FREE(pSubMeshes);
+    NFE_GENERIC_FREE(pIndices);
+    NFE_GENERIC_FREE(pVerticies);
 
     LOG_SUCCESS("Mesh '%s' loaded in %.3f sec. Verticies: %u, Indices: %u, Submeshes: %u.", mName,
                 timer.Stop(), mVeriticesCount, mIndicesCount, mSubMeshesCount);
@@ -316,20 +289,20 @@ void Mesh::Release()
 {
     if (mVerticies)
     {
-        free(mVerticies);
-        mVerticies = 0;
+        NFE_GENERIC_FREE(mVerticies);
+        mVerticies = nullptr;
     }
 
     if (mIndices)
     {
-        free(mIndices);
-        mIndices = 0;
+        NFE_GENERIC_FREE(mIndices);
+        mIndices = nullptr;
     }
 
     if (mSubMeshes)
     {
-        _aligned_free(mSubMeshes);
-        mSubMeshes = 0;
+        NFE_GENERIC_FREE(mSubMeshes);
+        mSubMeshes = nullptr;
     }
 }
 

@@ -10,6 +10,7 @@
 #include "../Renderer/HighLevelRenderer.hpp"
 #include "../Renderer/RenderCommand.hpp"
 #include "Multishader.hpp"
+#include "../../nfCommon/ClassRegister.hpp"
 
 #define NFE_SHADER_TYPES_NUM static_cast<size_t>(Renderer::ShaderType::Number)
 
@@ -44,6 +45,8 @@ class MultiShaderProgram
     bool LoadSubShaderProgram(int* macroValues);
 
 public:
+    NFE_DECLARE_CLASS;
+
     MultiShaderProgram();
 
     /**

@@ -7,11 +7,12 @@
 #pragma once
 
 #include "../Core.hpp"
+#include "../Renderer/RendererResources.hpp"
+#include "../Renderers/RendererInterface/CommandBuffer.hpp"
+#include "../nfCommon/ClassRegister.hpp"
 #include "../nfCommon/Aligned.hpp"
 #include "../nfCommon/ThreadPool.hpp"
 #include "../nfCommon/Math/Frustum.hpp"
-#include "../Renderer/RendererResources.hpp"
-#include "../Renderers/RendererInterface/CommandBuffer.hpp"
 
 namespace NFE {
 namespace Scene {
@@ -63,7 +64,7 @@ struct NFE_ALIGN16 RenderingData
 };
 
 NFE_ALIGN16
-class RendererSystem : public Common::Aligned<16>
+class RendererSystem
 {
     typedef std::tuple<TransformComponent*, MeshComponent*, BodyComponent*> MeshEntry;
     typedef std::tuple<TransformComponent*, LightComponent*> LightEntry;
@@ -121,6 +122,8 @@ class RendererSystem : public Common::Aligned<16>
     void UpdateLights();
 
 public:
+    NFE_DECLARE_CLASS;
+
     RendererSystem(SceneManager* scene);
 
     /**

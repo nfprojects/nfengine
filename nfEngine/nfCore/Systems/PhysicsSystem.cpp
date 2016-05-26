@@ -38,6 +38,9 @@ btVector3 Vector2bt(const Vector& v)
 
 } // namespace
 
+
+NFE_DEFINE_CLASS(PhysicsSystem, 16, ClassAllocatorType::Generic);
+
 PhysicsSystem::PhysicsSystem(SceneManager* scene)
     : mScene(scene)
 {
@@ -118,7 +121,7 @@ void PhysicsSystem::Update(float dt)
             btCollisionShape* shape = &mEmptyCollisionShape;
             if (body->mCollisionShape != nullptr)
                 if (body->mCollisionShape->mShape != nullptr)
-                    shape = body->mCollisionShape->mShape;
+                    shape = body->mCollisionShape->mShape.get();
 
             btTransform bodyTransform;
             bodyTransform.setFromOpenGLMatrix(transform->GetMatrix().f);

@@ -23,6 +23,7 @@ namespace Resource {
 // TEMPORARY
 const char g_CustomResourcePrefix = '/';
 
+NFE_DEFINE_CLASS(ResManager, 16, ClassAllocatorType::Generic);
 
 ResManager::ResManager()
 {

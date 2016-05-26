@@ -10,6 +10,7 @@
 #include "Resource.hpp"
 #include "../nfCommon/InputStream.hpp"
 #include "../Renderers/RendererInterface/Device.hpp"
+#include "../../nfCommon/ClassRegister.hpp"
 
 namespace NFE {
 namespace Resource {
@@ -28,6 +29,8 @@ class CORE_API Texture : public ResourceBase
     void Release();
 
 public:
+    NFE_DECLARE_CLASS;
+
     Texture();
     virtual ~Texture();
 

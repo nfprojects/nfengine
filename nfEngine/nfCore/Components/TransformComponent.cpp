@@ -12,6 +12,7 @@ namespace Scene {
 
 using namespace Math;
 
+NFE_DEFINE_CLASS(TransformComponent, 16, ClassAllocatorType::Pool);
 NFE_REGISTER_COMPONENT(TransformComponent);
 
 TransformComponent::TransformComponent()

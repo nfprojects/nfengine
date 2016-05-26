@@ -10,6 +10,7 @@
 #include "../Renderer/RendererModule.hpp"
 #include "../Renderer/HighLevelRenderer.hpp"
 #include "../Renderer/RenderCommand.hpp"
+#include "../../nfCommon/ClassRegister.hpp"
 
 namespace NFE {
 namespace Resource {
@@ -43,6 +44,8 @@ class Multishader : public ResourceBase
     bool LoadSubshader(int* macroValues);
 
 public:
+    NFE_DECLARE_CLASS;
+
     Multishader();
 
     bool OnLoad();

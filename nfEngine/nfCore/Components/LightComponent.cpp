@@ -20,6 +20,7 @@ using namespace Math;
 using namespace Resource;
 using namespace Renderer;
 
+NFE_DEFINE_CLASS(LightComponent, 16, ClassAllocatorType::Pool);
 NFE_REGISTER_COMPONENT(LightComponent);
 
 LightComponent::LightComponent()

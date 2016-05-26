@@ -8,10 +8,12 @@
 
 #include "../Core.hpp"
 #include "Resource.hpp"
+#include "../../nfCommon/ClassRegister.hpp"
 
 //predeclarations
 class btCollisionShape;
 class btCompoundShape;
+class btTriangleMesh;
 
 namespace NFE {
 namespace Resource {
@@ -19,7 +21,8 @@ namespace Resource {
 NFE_ALIGN16
 struct CompoundShapeChild
 {
-    btCollisionShape* pShape;
+    std::unique_ptr<btTriangleMesh> mesh;
+    std::unique_ptr<btCollisionShape> shape;
     Math::Matrix matrix;
 };
 
@@ -29,18 +32,20 @@ class CORE_API CollisionShape : public ResourceBase
     friend class Scene::PhysicsSystem;
 
 private:
+    CollisionShape(const CollisionShape&) = delete;
+    CollisionShape& operator=(const CollisionShape&) = delete;
+
     std::vector<CompoundShapeChild> mChildren;
-    btCollisionShape* mShape;
+    std::unique_ptr<btCollisionShape> mShape;
     Math::Vector mLocalInertia;
 
     void Release();
 
 public:
+    NFE_DECLARE_CLASS;
+
     CollisionShape();
     virtual ~CollisionShape();
-
-    static CollisionShape* Allocate();
-    static void Free(CollisionShape* ptr);
 
     bool OnLoad();
     void OnUnload();

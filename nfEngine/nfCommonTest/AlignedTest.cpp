@@ -6,27 +6,36 @@
 
 #include "PCH.hpp"
 #include "../nfCommon/Aligned.hpp"
+#include "../nfCommon/ClassRegister.hpp"
 
 using namespace NFE::Common;
 
 namespace {
 
-struct TestClass16 : public Aligned<16>
+struct TestClass16
 {
+    NFE_DECLARE_CLASS;
     int a;
 };
 
-struct TestClass64 : public Aligned<64>
+struct TestClass64
 {
+    NFE_DECLARE_CLASS;
     int a;
 };
 
-struct TestClass4096 : public Aligned<4096>
+struct TestClass4096
 {
+    NFE_DECLARE_CLASS;
     int a;
 };
 
 } // namespace
+
+NFE_DEFINE_CLASS(TestClass16, 16, ClassAllocatorType::Generic);
+NFE_DEFINE_CLASS(TestClass64, 64, ClassAllocatorType::Generic);
+NFE_DEFINE_CLASS(TestClass4096, 4096, ClassAllocatorType::Generic);
+
 
 TEST(Aligned, AlignedObject)
 {

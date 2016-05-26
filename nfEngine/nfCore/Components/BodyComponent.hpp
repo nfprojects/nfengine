@@ -9,7 +9,7 @@
 #include "../Core.hpp"
 #include "Component.hpp"
 #include "../Resources/CollisionShape.hpp"
-#include "../nfCommon/Aligned.hpp"
+#include "../nfCommon/ClassRegister.hpp"
 
 class btDefaultMotionState;
 class btRigidBody;
@@ -38,7 +38,6 @@ struct BodyComponentDesc
 NFE_ALIGN16
 class CORE_API BodyComponent
     : public ComponentBase<BodyComponent>
-    , public Common::Aligned<16>
 {
     friend class PhysicsSystem;
     friend class RendererSystem;
@@ -59,6 +58,8 @@ class CORE_API BodyComponent
     BodyComponent& operator=(const BodyComponent&) = delete;
 
 public:
+    NFE_DECLARE_CLASS;
+
     BodyComponent();
     ~BodyComponent();
     BodyComponent(const BodyComponent& other);
