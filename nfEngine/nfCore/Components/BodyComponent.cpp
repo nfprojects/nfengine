@@ -37,6 +37,7 @@ btVector3 Vector2bt(const Vector& v)
 
 } // namespace
 
+NFE_DEFINE_CLASS(BodyComponent, 16, ClassAllocatorType::Pool);
 NFE_REGISTER_COMPONENT(BodyComponent);
 
 BodyComponent::BodyComponent()

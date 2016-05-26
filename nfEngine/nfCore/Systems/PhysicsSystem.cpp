@@ -38,6 +38,9 @@ btVector3 Vector2bt(const Vector& v)
 
 } // namespace
 
+
+NFE_DEFINE_CLASS(PhysicsSystem, 16, ClassAllocatorType::Generic);
+
 PhysicsSystem::PhysicsSystem(SceneManager* scene)
     : mScene(scene)
 {

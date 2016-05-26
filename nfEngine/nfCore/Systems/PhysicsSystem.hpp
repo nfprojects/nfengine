@@ -8,13 +8,13 @@
 
 #include "../Core.hpp"
 #include "../nfCommon/Aligned.hpp"
-#include "../nfCommon/ThreadPool.hpp"
+#include "../nfCommon/ClassRegister.hpp"
 
 namespace NFE {
 namespace Scene {
 
 NFE_ALIGN16
-class PhysicsSystem : public Common::Aligned<16>
+class PhysicsSystem
 {
     friend void PhysicsUpdateCallback(void* userData, int instance, int threadID);
 
@@ -33,6 +33,8 @@ class PhysicsSystem : public Common::Aligned<16>
     void ProcessContacts();
 
 public:
+    NFE_DECLARE_CLASS;
+
     PhysicsSystem(SceneManager* scene);
 
     /**

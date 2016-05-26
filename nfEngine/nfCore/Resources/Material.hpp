@@ -10,6 +10,7 @@
 #include "Resource.hpp"
 #include "Texture.hpp"
 #include "../Renderer/RendererResources.hpp"
+#include "../../nfCommon/ClassRegister.hpp"
 
 namespace NFE {
 namespace Resource {
@@ -37,6 +38,8 @@ struct CORE_API MaterialLayer
         - cubemap reflection (static & dynamic)
     */
 
+    NFE_DECLARE_CLASS;
+
     MaterialLayer();
 };
 
@@ -58,6 +61,8 @@ class CORE_API Material : public ResourceBase
     Renderer::RendererMaterial mRendererData;
 
 public:
+    NFE_DECLARE_CLASS;
+
     Material();
     ~Material();
 

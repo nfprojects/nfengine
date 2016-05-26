@@ -10,6 +10,9 @@ int main(int argc, char* argv[])
     NFE::Common::FileSystem::ChangeDirectory(execDir + "/../../..");
     int result = RUN_ALL_TESTS();
 
-    _CrtDumpMemoryLeaks();
+    // detect memory leaks
+#if defined(WIN32) && defined(_CRTDBG_MAP_ALLOC)
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif // defined(WIN32) && defined(_CRTDBG_MAP_ALLOC)
     return result;
 }
