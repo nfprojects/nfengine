@@ -9,7 +9,7 @@
 #include "../Core.hpp"
 #include "Component.hpp"
 #include "../Resources/Texture.hpp"
-#include "../nfCommon/Aligned.hpp"
+#include "../nfCommon/ClassRegister.hpp"
 
 namespace NFE {
 namespace Scene {
@@ -76,7 +76,6 @@ struct LightDesc
 NFE_ALIGN16
 class CORE_API LightComponent
     : public ComponentBase<LightComponent>
-    , public Common::Aligned<16>
 {
     friend class SceneManager;
     friend class RendererSystem;
@@ -100,6 +99,8 @@ class CORE_API LightComponent
     bool CanBeTiled();
 
 public:
+    NFE_DECLARE_CLASS;
+
     LightComponent();
     ~LightComponent();
     LightComponent(const LightComponent& other);

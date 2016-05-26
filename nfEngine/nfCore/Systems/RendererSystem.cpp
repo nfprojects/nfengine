@@ -36,6 +36,8 @@ using namespace Math;
 using namespace Renderer;
 using namespace Resource;
 
+NFE_DEFINE_CLASS(RendererSystem, 16, ClassAllocatorType::Generic);
+
 RenderingData::RenderingData()
     : view(nullptr)
     , cameraComponent(nullptr)

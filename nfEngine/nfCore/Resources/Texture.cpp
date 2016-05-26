@@ -120,6 +120,9 @@ Renderer::ITexture* CreateRendererTextureFromImage(const Common::Image& image,
 
 } // namespace
 
+
+NFE_DEFINE_CLASS(Texture, 1, ClassAllocatorType::Pool);
+
 Texture::Texture()
 {
     mTex = nullptr;

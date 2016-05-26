@@ -24,6 +24,8 @@ const std::string gShadersRoot = "nfEngine/Shaders/";
 
 using namespace Renderer;
 
+NFE_DEFINE_CLASS(Multishader, 16, ClassAllocatorType::Pool);
+
 Multishader::Multishader()
 {
     mType = ShaderType::Unknown;

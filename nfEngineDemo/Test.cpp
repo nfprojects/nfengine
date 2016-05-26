@@ -163,16 +163,6 @@ public:
     float cameraXZ;
     float cameraY;
 
-    void* operator new(size_t size)
-    {
-        return _aligned_malloc(size, 16);
-    }
-
-    void operator delete(void* ptr)
-    {
-        _aligned_free(ptr);
-    }
-
     CustomWindow()
         : cameraEntity(-1)
         , entityManager(nullptr)
@@ -698,10 +688,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     gWindows.clear();
     Engine::Release();
 
-//detect memory leaks
-#ifdef _DEBUG
-    _CrtDumpMemoryLeaks();
-#endif
-
+// detect memory leaks
+#if defined(WIN32) && defined(_CRTDBG_MAP_ALLOC)
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif // defined(WIN32) && defined(_CRTDBG_MAP_ALLOC)
     return 0;
 }

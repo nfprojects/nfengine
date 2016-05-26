@@ -10,6 +10,7 @@
 #include "Resource.hpp"
 #include "../Renderer/RendererResources.hpp"
 #include "../nfCommon/Math/Box.hpp"
+#include "../../nfCommon/ClassRegister.hpp"
 
 namespace NFE {
 namespace Resource {
@@ -79,13 +80,9 @@ private:
     std::unique_ptr<Renderer::IBuffer> mVB;
     std::unique_ptr<Renderer::IBuffer> mIB;
 
-protected:
-    /// when creating custom mesh, use this functions:
-    Result AllocateVerticies(uint32 count);
-    Result AllocateIndices(uint32 count);
-    Result AllocateSubmeshes(uint32 count);
-
 public:
+    NFE_DECLARE_CLASS;
+
     Mesh();
     virtual ~Mesh();
 

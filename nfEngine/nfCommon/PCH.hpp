@@ -6,6 +6,13 @@
 
 #pragma once
 
+ // VS memory leak detector
+#ifdef _DEBUG
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#endif
+
 // TODO This block below is probably not needed in PCH.hpp and should be included by every file
 //      made by Windows platform.
 #if defined(WIN32)

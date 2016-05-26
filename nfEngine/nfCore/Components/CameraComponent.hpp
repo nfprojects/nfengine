@@ -8,8 +8,8 @@
 
 #include "../Core.hpp"
 #include "Component.hpp"
-#include "../nfCommon/Aligned.hpp"
 #include "../nfCommon/Math/Frustum.hpp"
+#include "../nfCommon/ClassRegister.hpp"
 
 namespace NFE {
 namespace Scene {
@@ -63,7 +63,6 @@ struct Ortho
 NFE_ALIGN16
 class CORE_API CameraComponent
     : public ComponentBase<CameraComponent>
-    , public Common::Aligned<16>
 {
     friend class SceneManager;
     friend class RendererSystem;
@@ -86,6 +85,8 @@ class CORE_API CameraComponent
     Math::Frustum mFrustum;
 
 public:
+    NFE_DECLARE_CLASS;
+
     CameraComponent();
     ~CameraComponent() {}
 

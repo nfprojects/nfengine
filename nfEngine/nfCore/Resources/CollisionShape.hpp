@@ -8,6 +8,7 @@
 
 #include "../Core.hpp"
 #include "Resource.hpp"
+#include "../../nfCommon/ClassRegister.hpp"
 
 //predeclarations
 class btCollisionShape;
@@ -36,11 +37,10 @@ private:
     void Release();
 
 public:
+    NFE_DECLARE_CLASS;
+
     CollisionShape();
     virtual ~CollisionShape();
-
-    static CollisionShape* Allocate();
-    static void Free(CollisionShape* ptr);
 
     bool OnLoad();
     void OnUnload();
