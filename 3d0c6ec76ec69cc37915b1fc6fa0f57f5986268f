@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_fdde99db",
+        "filename": "nfEngine/nfCommon/ClassRegister.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-27T12:57:31Z",
+      "side": 1,
+      "message": "u sure brah?",
+      "range": {
+        "startLine": 4,
+        "startChar": 11,
+        "endLine": 4,
+        "endChar": 47
+      },
+      "revId": "3d0c6ec76ec69cc37915b1fc6fa0f57f5986268f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ddd995f4",
+        "filename": "nfEngine/nfCommon/ClassRegister.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-27T12:57:31Z",
+      "side": 1,
+      "message": "u sure brah?",
+      "range": {
+        "startLine": 4,
+        "startChar": 10,
+        "endLine": 4,
+        "endChar": 48
+      },
+      "revId": "3d0c6ec76ec69cc37915b1fc6fa0f57f5986268f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_9df66d5b",
+        "filename": "nfEngine/nfCommon/Memory/GenericAllocator.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-27T12:57:31Z",
+      "side": 1,
+      "message": "why commented out?",
+      "range": {
+        "startLine": 44,
+        "startChar": 8,
+        "endLine": 44,
+        "endChar": 35
+      },
+      "revId": "3d0c6ec76ec69cc37915b1fc6fa0f57f5986268f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_dd6bd51c",
+        "filename": "nfEngine/nfCommon/Memory/GenericAllocator.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-27T12:57:31Z",
+      "side": 1,
+      "message": "already",
+      "range": {
+        "startLine": 70,
+        "startChar": 38,
+        "endLine": 70,
+        "endChar": 44
+      },
+      "revId": "3d0c6ec76ec69cc37915b1fc6fa0f57f5986268f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3d59a18e",
+        "filename": "nfEngine/nfCommon/Memory/GenericAllocator.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-27T12:57:31Z",
+      "side": 1,
+      "message": "You could also do it like this:\nif (mAllocationsDebugInfo.count(ptr))\n    mAllocationsDebugInfo.erase(ptr);\nelse\n    LOG_FATAL(...);\n\nor with .at() and try-catch...but You don\u0027t use the value from map here, so it would be weird.\n\nAlso think about using unordered_map - even though worst case scenario for all of these (find, at, [], count) is linear, the average is constant, which is better than for maps - also there is no sorting with every insert, which I\u0027m not sure if You really use here.",
+      "range": {
+        "startLine": 66,
+        "startChar": 8,
+        "endLine": 72,
+        "endChar": 42
+      },
+      "revId": "3d0c6ec76ec69cc37915b1fc6fa0f57f5986268f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_1dd37dd6",
+        "filename": "nfEngine/nfCommon/Memory/GenericAllocator.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-27T12:57:31Z",
+      "side": 1,
+      "message": "Can\u0027t we assign nullptr to the ptr variable here?\nThis way we would get pointer freed and with a proper \"clean\" value.",
+      "range": {
+        "startLine": 84,
+        "startChar": 0,
+        "endLine": 84,
+        "endChar": 1
+      },
+      "revId": "3d0c6ec76ec69cc37915b1fc6fa0f57f5986268f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
