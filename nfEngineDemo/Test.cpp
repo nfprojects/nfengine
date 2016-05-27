@@ -24,12 +24,6 @@ float gDeltaTime = 0.0f;
 const int SECONDARY_VIEW_WIDTH = 256;
 const int SECONDARY_VIEW_HEIGHT = 256;
 
-#ifdef WIN64
-#define PLATFORM_STR "x64"
-#else
-#define PLATFORM_STR "x86"
-#endif
-
 CustomWindow* AddWindow(CustomWindow* parent = nullptr);
 
 class MainCameraView : public NFE::Renderer::View
@@ -644,8 +638,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         timer.Start();
 
         char str[128];
-        sprintf(str, "NFEngine Demo (%s)  -  Press [0-%i] to switch scene",
-                PLATFORM_STR, GetScenesNum() - 1);
+        sprintf(str, "NFEngine Demo  -  Press [0-%i] to switch scene", GetScenesNum() - 1);
 
         // work on copy of gWindows
         std::vector<CustomWindow*> windows;
@@ -698,10 +691,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     gWindows.clear();
     Engine::Release();
 
-//detect memory leaks
-#ifdef _DEBUG
-    _CrtDumpMemoryLeaks();
-#endif
+    // enable memory leak detection at the process exit (Windows only)
+#ifdef _CRTDBG_MAP_ALLOC
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif // _CRTDBG_MAP_ALLOC
 
     return 0;
 }

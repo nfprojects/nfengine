@@ -1,10 +1,13 @@
 #pragma once
 
-#ifdef WIN32
+// enable memory allocation tracking (Windows only)
+#if defined(WIN32) && defined(_DEBUG)
 #define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
 #include <crtdbg.h>
-#include <tchar.h>
+#endif // defined(WIN32) && defined(_DEBUG)
 
+#ifdef WIN32
 #define NOMINMAX
 #include <Windows.h>
 #endif // WIN32

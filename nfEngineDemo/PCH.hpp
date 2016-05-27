@@ -4,14 +4,14 @@
 #pragma warning (disable: 4251)
 #pragma warning (disable: 4100)
 
-#ifdef _DEBUG
+// enable memory allocation tracking (Windows only)
+#if defined(WIN32) && defined(_DEBUG)
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
-#endif
+#endif // defined(WIN32) && defined(_DEBUG)
 
 #include <cstdio>
-#include <cstdlib>
 
 // TODO: remove this dependencies. Engine should include everything what is needed
 #include <string>
