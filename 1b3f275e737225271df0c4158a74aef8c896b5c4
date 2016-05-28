@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_0ee905b7",
+        "filename": "nfEngine/nfCommon/Image/ImageFormat.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-28T19:12:44Z",
+      "side": 1,
+      "message": "Why did you remove multiplication by 8 everywhere (almost)? It\u0027s all wrong. This function returns BITS not BYTES. Note that BC1 and BC4 uses 4 bits per pixel (0.5 bytes), that\u0027s why we are counting bits here.",
+      "revId": "1b3f275e737225271df0c4158a74aef8c896b5c4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
