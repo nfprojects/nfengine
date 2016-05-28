@@ -44,7 +44,7 @@ bool Image::LoadJPG(InputStream* stream)
                   4);
     size_t dataSize = mWidth * mHeight * 4;
     Mipmap mipmap(data, mWidth, mHeight, dataSize);
-
+    free(data);
     mFormat = ImageFormat::RGBA_UByte;
     mMipmaps.push_back(mipmap);
     return true;
