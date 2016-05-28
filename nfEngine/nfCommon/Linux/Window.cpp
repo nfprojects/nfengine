@@ -200,6 +200,7 @@ bool Window::Open()
     XSetErrorHandler(ErrorHandler);
     mWindow = XCreateWindow(mDisplay, mRoot, 0, 0, mWidth, mHeight, 1, visual->depth,
                             InputOutput, visual->visual, CWColormap | CWEventMask, &xSetWAttrib);
+    XFree(visual);
     if (Window::mWindowError)
     {
         Window::mWindowError = false;

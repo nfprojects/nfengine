@@ -64,7 +64,7 @@ void Image::Release()
 bool Image::SetData(const void* data, uint32 width, uint32 height, ImageFormat format)
 {
     Release();
-    size_t dataSize = width * height * BitsPerPixel(format);
+    size_t dataSize = (width * height * BitsPerPixel(format)) / 8;
 
     Mipmap mipmap(data, width, height, dataSize);
 
