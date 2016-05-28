@@ -23,7 +23,7 @@ TEST(PackedArray, AddUnsignedChar)
     for (int i = 0; i < maxObj; ++i)
     {
         unsigned char idx = array.Add(i);
-        ASSERT_NE(array.InvalidIndex, idx);
+        ASSERT_NE(array.InvalidIndex, idx) << i;
     }
     ASSERT_EQ(maxObj, array.Size());
 

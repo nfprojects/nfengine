@@ -17,6 +17,8 @@
 #include "Window.hpp"
 #include "Logger.hpp"
 
+#include "../../nfCommon/Memory/DefaultAllocator.hpp"
+
 namespace NFE {
 namespace Renderer {
 
@@ -34,8 +36,11 @@ View::~View()
 {
     if (mImGuiState)
     {
-        ImGui::SetInternalState(mImGuiState, true);
+        ImGui::SetInternalState(mImGuiState);
         ImGui::Shutdown();
+        ImGui::SetInternalState(mDefaultImGuiState);
+
+        NFE_FREE(mImGuiState);
         mImGuiState = nullptr;
     }
 
@@ -287,8 +292,10 @@ void View::GetSize(uint32& width, uint32& height)
 
 bool View::InitImGui()
 {
+    mDefaultImGuiState = ImGui::GetInternalState();
+
     // create and initialize internal state for ImGui
-    mImGuiState = malloc(ImGui::GetInternalStateSize());
+    mImGuiState = NFE_MALLOC(ImGui::GetInternalStateSize(), 1);
     ImGui::SetInternalState(mImGuiState, true);
 
     ImGuiIO& io = ImGui::GetIO();
