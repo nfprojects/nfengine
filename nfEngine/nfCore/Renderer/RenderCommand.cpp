@@ -7,6 +7,8 @@
 #include "PCH.hpp"
 #include "RenderCommand.hpp"
 
+#include "../../nfCommon/Memory/DefaultAllocator.hpp"
+
 namespace NFE {
 namespace Renderer {
 
@@ -160,27 +162,27 @@ void RenderCommandBuffer::Sort()
     if (size <= 1)
         return;
 
-    //build array of pointers and manipulate them instead of RenderCommand structures
-    int* pPointers = (int*)malloc(sizeof(int) * size);
+    // build array of pointers and manipulate them instead of RenderCommand structures
+    int* pPointers = (int*)NFE_MALLOC(sizeof(int) * size, 1); // TODO avoid per-frame allocations
     for (size_t i = 0; i < size; i++)
         pPointers[i]  = static_cast<int>(i); // assume there is less than 2^32 items
 
-    int* pTmpPointers = (int*)malloc(sizeof(int) * size);
+    int* pTmpPointers = (int*)NFE_MALLOC(sizeof(int) * size, 1);
 
     merge_sort<int>(pPointers, size, pTmpPointers, RenderCommandCmp, &commands[0]);
 
-    free(pTmpPointers);
+    NFE_FREE(pTmpPointers);
 
     //reorganize
-    RenderCommand* pTmpCommands = (RenderCommand*)_aligned_malloc(sizeof(RenderCommand) * size, 16);
+    RenderCommand* pTmpCommands = (RenderCommand*)NFE_MALLOC(sizeof(RenderCommand) * size, 16);
     memcpy(pTmpCommands, &commands[0], sizeof(RenderCommand) * size );
     for (size_t i = 0; i < commands.size(); i++)
     {
         commands[i] = pTmpCommands[pPointers[i]];
     }
-    _aligned_free(pTmpCommands);
+    NFE_FREE(pTmpCommands);
 
-    free(pPointers);
+    NFE_FREE(pPointers);
 }
 
 } // namespace Renderer
