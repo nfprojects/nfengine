@@ -68,17 +68,17 @@ size_t BitsPerPixel(ImageFormat format)
     {
     case ImageFormat::A_UByte:
     case ImageFormat::R_UByte:
-        return 8;
+        return sizeof(uchar);
 
     case ImageFormat::RGB_UByte:
-        return 3 * 8;
+        return 3 * sizeof(uchar);
     case ImageFormat::RGBA_UByte:
-        return 4 * 8;
+        return 4 * sizeof(uchar);
 
     case ImageFormat::R_Float:
-        return sizeof(float) * 8;
+        return sizeof(float);
     case ImageFormat::RGBA_Float:
-        return 4 * sizeof(float) * 8;
+        return 4 * sizeof(float);
 
     case ImageFormat::BC1:
     case ImageFormat::BC4:
