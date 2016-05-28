@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_6ee091cd",
+        "filename": "nfEngineDemo/Test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-28T19:00:26Z",
+      "side": 0,
+      "message": "removal should be in other commit, but nvm",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 6
+      },
+      "revId": "1e8107354e51f66bbf898090fd1feeda7805ddab",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
