@@ -48,6 +48,12 @@
     <Filter Include="Source Files\Math\FPU">
       <UniqueIdentifier>{9cd7e1d2-dbe2-4932-b2c4-4ce945f2bf7f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Memory">
+      <UniqueIdentifier>{ba683b64-b258-4ec0-9c7c-6d98391dbc76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Memory">
+      <UniqueIdentifier>{84fccf24-1002-4827-8796-97433d6f6d6a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp">
@@ -140,9 +146,6 @@
     <ClInclude Include="Library.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Memory.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SystemInfo.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -226,6 +229,12 @@
     </ClInclude>
     <ClInclude Include="LoggerBackends\BackendTxt.hpp">
       <Filter>Source Files\LoggerBackends</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory.hpp">
+      <Filter>Header Files\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\DefaultAllocator.hpp">
+      <Filter>Header Files\Memory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -387,6 +396,9 @@
     </ClCompile>
     <ClCompile Include="LoggerBackends\BackendTxt.cpp">
       <Filter>Source Files\LoggerBackends</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\DefaultAllocator.cpp">
+      <Filter>Source Files\Memory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
