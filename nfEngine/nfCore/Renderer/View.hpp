@@ -51,6 +51,7 @@ class CORE_API View
     Scene::EntityID mCameraEntity;
 
     // ImGui internal state
+    void* mDefaultImGuiState;
     void* mImGuiState;
     std::unique_ptr<ITexture> mImGuiTexture;
 

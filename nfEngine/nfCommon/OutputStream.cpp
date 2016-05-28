@@ -7,6 +7,7 @@
 
 #include "PCH.hpp"
 #include "OutputStream.hpp"
+#include "Memory/DefaultAllocator.hpp"
 
 namespace NFE {
 namespace Common {
@@ -57,7 +58,7 @@ void BufferOutputStream::Clear()
 {
     if (mData)
     {
-        free(mData);
+        NFE_FREE(mData);
         mData = 0;
     }
 
@@ -84,7 +85,7 @@ size_t BufferOutputStream::Write(const void* pSrc, size_t num)
         while (mBufferSize < num)
             mBufferSize *= 2;
 
-        mData = malloc(mBufferSize);
+        mData = NFE_MALLOC(mBufferSize, 1);
         if (!mData)
             return 0;
 
@@ -95,17 +96,18 @@ size_t BufferOutputStream::Write(const void* pSrc, size_t num)
         size_t minSize = mUsed + num;
         if (mBufferSize < minSize)
         {
+            size_t oldSize = mBufferSize;
             while (mBufferSize < minSize)
                 mBufferSize *= 2;
 
-            void* newData = realloc(mData, mBufferSize);
-            if (!newData)
-            {
-                free(mData);
-                mData = nullptr;
-                return 0;
-            }
+            void* newData = NFE_MALLOC(mBufferSize, 1);
+            if (newData)
+                memcpy(newData, mData, oldSize);
+            NFE_FREE(mData);
             mData = newData;
+
+            if (!mData)
+                return 0;
         }
     }
 
