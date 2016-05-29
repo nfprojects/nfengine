@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_e9993bc5",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-29T17:25:17Z",
+      "side": 1,
+      "message": "What if at some point outputStrSize \u003e\u003d mBuffer.size()?\n\nAdd a test which prints 1024 or more \" (quote character) and see what happens now. Will it crash? :) If not, what address sanitizer will report?\n\nYou can move strcmp and mBuffer.insert() out from the switch (in switch you only determine const char* and size) and flush mBuffer if it\u0027s too small.",
+      "range": {
+        "startLine": 103,
+        "startChar": 0,
+        "endLine": 120,
+        "endChar": 35
+      },
+      "revId": "f998f1ef44810cc9ae24db81b19b6ccb3a1e1f7a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
