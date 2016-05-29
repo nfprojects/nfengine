@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_6ef1b16a",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-29T14:26:39Z",
+      "side": 1,
+      "message": "I\u0027ve decided to get rid of this \u0026 lsb_release and just stick to simple uname + /etc/*release.\n\nI\u0027ve implemented Redhat \u0026 Ubuntu distros (just to make sure multiple vector elements work here) and the rest will either be added to the vector or taken from uname.sysname.",
+      "parentUuid": "baa041b7_eec70194",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 5
+      },
+      "revId": "26d8161ad63ea1067acb3284355bab065d9348d7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_8eb87512",
         "filename": "nfEngine/nfCommon/Win/SystemInfoPlatform.cpp",
         "patchSetId": 8
@@ -36,6 +60,30 @@
       "writtenOn": "2016-05-27T21:58:22Z",
       "side": 1,
       "message": "You get a lot of information from this call (build number, major and minor version, etc.) - print them as well.",
+      "range": {
+        "startLine": 78,
+        "startChar": 8,
+        "endLine": 78,
+        "endChar": 23
+      },
+      "revId": "26d8161ad63ea1067acb3284355bab065d9348d7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_4ef4ad59",
+        "filename": "nfEngine/nfCommon/Win/SystemInfoPlatform.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-29T14:26:39Z",
+      "side": 1,
+      "message": "Major and minor versions are practically the same as \"Windows XP\" or \"Windows Vista\", so I\u0027ll show these only, when we don\u0027t know what version it is (instead of UNKNOWN).\n\nI\u0027ve added build number, the rest should be useless for users. This way also Linux and Windows implementations are almost the same, meaning that they provide the same information.",
+      "parentUuid": "baa041b7_8eb87512",
       "range": {
         "startLine": 78,
         "startChar": 8,
