@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_69508b0b",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-29T16:27:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_63d551e6",
+      "revId": "7bb143c836962e103e41c06beb678903082c4753",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_83e975b9",
         "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
         "patchSetId": 5
@@ -30,6 +48,30 @@
       "writtenOn": "2016-05-25T19:21:12Z",
       "side": 1,
       "message": "They will be calculated every LoggerBackendXML::Log is called, not \"once\" :P",
+      "range": {
+        "startLine": 99,
+        "startChar": 63,
+        "endLine": 99,
+        "endChar": 67
+      },
+      "revId": "7bb143c836962e103e41c06beb678903082c4753",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_892e2f8a",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-29T16:27:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_83e975b9",
       "range": {
         "startLine": 99,
         "startChar": 63,
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_a93333f5",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-29T16:27:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_e3072180",
+      "range": {
+        "startLine": 116,
+        "startChar": 35,
+        "endLine": 116,
+        "endChar": 66
+      },
+      "revId": "7bb143c836962e103e41c06beb678903082c4753",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_03d685f0",
         "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
         "patchSetId": 5
@@ -76,6 +142,30 @@
       "writtenOn": "2016-05-25T19:21:12Z",
       "side": 1,
       "message": "you could simplify this by doing something like this:\n\nauto iter \u003d mBuffer.begin();\n\nand then just::\n\niter++",
+      "range": {
+        "startLine": 141,
+        "startChar": 19,
+        "endLine": 141,
+        "endChar": 52
+      },
+      "revId": "7bb143c836962e103e41c06beb678903082c4753",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2393c9fb",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendXML.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-29T16:27:59Z",
+      "side": 1,
+      "message": "I still need to increment outputStrSize. Swapped it to strcopy, to reduce size of code.",
+      "parentUuid": "baa041b7_03d685f0",
       "range": {
         "startLine": 141,
         "startChar": 19,
