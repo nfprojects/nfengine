@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_0970dfa2",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-29T16:31:20Z",
+      "side": 1,
+      "message": "was supposed to be 100, still string is better - used std::getline(streambuf, string).",
+      "parentUuid": "baa041b7_09221fa3",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 42
+      },
+      "revId": "d28b5c42dc32f2e11e07315461e7a510a464a6ad",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_e93dbbc4",
         "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
         "patchSetId": 10
@@ -36,6 +60,24 @@
       "writtenOn": "2016-05-29T16:17:02Z",
       "side": 1,
       "message": "Not needed, file will be closed at the destructor",
+      "revId": "d28b5c42dc32f2e11e07315461e7a510a464a6ad",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_89450f44",
+        "filename": "nfEngine/nfCommon/Linux/SystemInfoPlatform.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-29T16:31:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_e93dbbc4",
       "revId": "d28b5c42dc32f2e11e07315461e7a510a464a6ad",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
