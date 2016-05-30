@@ -376,7 +376,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Scene\EntityManager.cpp" />
-    <ClCompile Include="Scene\SceneEvent.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Systems\PhysicsSystem.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
@@ -435,7 +434,6 @@
     <ClInclude Include="Resources\Texture.hpp" />
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="Scene\EntityManager.hpp" />
-    <ClInclude Include="Scene\SceneEvent.hpp" />
     <ClInclude Include="Scene\SceneManager.hpp" />
     <ClInclude Include="Systems\PhysicsSystem.hpp" />
     <ClInclude Include="Systems\RendererSystem.hpp" />
