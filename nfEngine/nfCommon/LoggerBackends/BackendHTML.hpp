@@ -23,6 +23,8 @@ class NFCOMMON_API LoggerBackendHTML : public LoggerBackend
 public:
     LoggerBackendHTML();
     ~LoggerBackendHTML();
+
+    void Reset();
     void Log(LogType type, const char* srcFile, int line, const char* str, double timeElapsed);
 };
 

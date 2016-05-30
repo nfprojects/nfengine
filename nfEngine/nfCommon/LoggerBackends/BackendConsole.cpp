@@ -6,10 +6,19 @@
 
 #include "../PCH.hpp"
 #include "BackendConsole.hpp"
+#include "../Logger.hpp"
 #include "../Console.hpp"
+
+ // TODO Remove when std::make_unique is available in gcc & clang
+#if defined(__LINUX__) | defined(__linux__)
+#include "../Linux/MakeUniqueTemp.hpp"
+#endif
 
 namespace NFE {
 namespace Common {
+
+// Register Console backend
+bool gLoggerBackendConsoleRegistered = Logger::RegisterBackend("Console", std::make_unique<LoggerBackendConsole>());
 
 namespace {
 
@@ -34,6 +43,7 @@ ConsoleColor LogTypeToColor(LogType logType)
 }
 
 } // namespace
+
 
 void LoggerBackendConsole::Log(LogType type, const char* srcFile, int line, const char* str,
                                double timeElapsed)

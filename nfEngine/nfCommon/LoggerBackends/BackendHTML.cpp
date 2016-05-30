@@ -6,6 +6,12 @@
 
 #include "../PCH.hpp"
 #include "BackendHTML.hpp"
+#include "../Logger.hpp"
+
+ // TODO Remove when std::make_unique is available in gcc & clang
+#if defined(__LINUX__) | defined(__linux__)
+#include "../Linux/MakeUniqueTemp.hpp"
+#endif
 
 #define NFE_MAX_LOG_MESSAGE_LENGTH 1024
 
@@ -19,7 +25,15 @@
 namespace NFE {
 namespace Common {
 
+// Register HTML backend
+bool gLoggerBackendHTMLRegistered = Logger::RegisterBackend("HTML", std::make_unique<LoggerBackendHTML>());
+
 LoggerBackendHTML::LoggerBackendHTML()
+{
+    Reset();
+}
+
+void LoggerBackendHTML::Reset()
 {
     /**
      * TODO: move intro, outro and the other HTML code templates to another file, so the logger
