@@ -22,6 +22,30 @@
       "revId": "6ae80ac056aa77e3f6adba41fa40551f196d7e37",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c18d2bd4",
+        "filename": "Scripts/build.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-05-30T18:01:12Z",
+      "side": 1,
+      "message": "Should be. CMake shouldn\u0027t care.",
+      "parentUuid": "baa041b7_8166034f",
+      "range": {
+        "startLine": 13,
+        "startChar": 41,
+        "endLine": 13,
+        "endChar": 56
+      },
+      "revId": "6ae80ac056aa77e3f6adba41fa40551f196d7e37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
