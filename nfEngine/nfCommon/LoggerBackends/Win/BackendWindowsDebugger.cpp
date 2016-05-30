@@ -11,6 +11,13 @@
 namespace NFE {
 namespace Common {
 
+// Register Windows debbuger backend
+bool gLoggerBackendWinDebuggerRegistered = IsDebuggerPresent() ?
+                                           Logger::RegisterBackend("WinDebugger",
+                                                                   std::make_unique<LoggerBackendWinDebugger>())
+                                           : false;
+
+
 LoggerBackendWinDebugger::LoggerBackendWinDebugger()
 {
     const size_t initialBufferSize = 1024;
