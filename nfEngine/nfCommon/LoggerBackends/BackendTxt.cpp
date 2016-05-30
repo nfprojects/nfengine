@@ -6,6 +6,7 @@
 
 #include "../PCH.hpp"
 #include "BackendTxt.hpp"
+#include "../Logger.hpp"
 
 #define NFE_MAX_LOG_MESSAGE_LENGTH 1024
 
@@ -19,7 +20,15 @@
 namespace NFE {
 namespace Common {
 
+// Register Txt backend
+bool gLoggerBackendTxtRegistered = Logger::RegisterBackend("TXT", new LoggerBackendTxt);
+
 LoggerBackendTxt::LoggerBackendTxt()
+{
+    Reset();
+}
+
+void LoggerBackendTxt::Reset()
 {
     const static std::string gLogIntro = "nfEngine - log file\n"
                                          "[Seconds elapsed] [LogType] "

@@ -6,10 +6,14 @@
 
 #include "../PCH.hpp"
 #include "BackendConsole.hpp"
+#include "../Logger.hpp"
 #include "../Console.hpp"
 
 namespace NFE {
 namespace Common {
+
+// Register Console backend
+bool gLoggerBackendConsoleRegistered = Logger::RegisterBackend("Console", new LoggerBackendConsole);
 
 namespace {
 
@@ -34,6 +38,7 @@ ConsoleColor LogTypeToColor(LogType logType)
 }
 
 } // namespace
+
 
 void LoggerBackendConsole::Log(LogType type, const char* srcFile, int line, const char* str,
                                double timeElapsed)
