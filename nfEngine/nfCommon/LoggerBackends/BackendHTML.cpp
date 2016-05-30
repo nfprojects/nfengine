@@ -6,6 +6,7 @@
 
 #include "../PCH.hpp"
 #include "BackendHTML.hpp"
+#include "../Logger.hpp"
 
 #define NFE_MAX_LOG_MESSAGE_LENGTH 1024
 
@@ -18,6 +19,9 @@
 
 namespace NFE {
 namespace Common {
+
+// Register HTML backend
+bool gLoggerBackendHTMLRegistered = Logger::RegisterBackend("HTML", new LoggerBackendHTML);
 
 LoggerBackendHTML::LoggerBackendHTML()
 {
@@ -84,6 +88,7 @@ LoggerBackendHTML::LoggerBackendHTML()
     }
 
     mFile.Write(gLogIntro.data(), gLogIntro.length());
+    mIsEnabled = true;
 }
 
 LoggerBackendHTML::~LoggerBackendHTML()

@@ -8,6 +8,7 @@
 
 #include "nfCommon.hpp"
 #include "Timer.hpp"
+#include <unordered_map>
 
 namespace NFE {
 namespace Common {
@@ -22,11 +23,15 @@ enum class LogType
     Fatal,
 };
 
+
 /**
 * Logger backend interface.
 */
 class NFCOMMON_API LoggerBackend
 {
+protected:
+    bool mIsEnabled;
+
 public:
     virtual ~LoggerBackend()
     {
@@ -43,6 +48,9 @@ public:
      */
     virtual void Log(LogType type, const char* srcFile, int line, const char* str,
                      double timeElapsed) = 0;
+
+    void Enable(bool enable) { mIsEnabled = enable; };
+    bool IsEnabled() { return mIsEnabled; };
 };
 
 
@@ -60,7 +68,10 @@ class NFCOMMON_API Logger
     std::atomic<bool> mInitialized; //< set in constructor to true when Logger is fully initialized
     std::mutex mMutex;              //< for synchronizing logger output
     Timer mTimer;
-    std::vector<std::unique_ptr<LoggerBackend>> mBackends;
+    static std::unordered_map<std::string, std::unique_ptr<LoggerBackend>>& mBackends();
+
+    Logger();
+    ~Logger();
 
     Logger(const Logger&) = delete;
     Logger& operator= (const Logger&) = delete;
@@ -70,10 +81,9 @@ class NFCOMMON_API Logger
     void LogSysInfo();
 
 public:
-    Logger();
-    ~Logger();
-
-    void RegisterBackend(LoggerBackend* backend);
+    static bool RegisterBackend(const std::string& backendCode, LoggerBackend* backend);
+    static const LoggerBackend* GetBackend(std::string backendCode);
+    static std::vector<std::string> ListBackends();
 
     /**
      * Log single line using formated string.

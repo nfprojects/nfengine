@@ -17,6 +17,7 @@ namespace Common {
 class NFCOMMON_API LoggerBackendConsole : public LoggerBackend
 {
 public:
+    LoggerBackendConsole();
     void Log(LogType type, const char* srcFile, int line, const char* str, double timeElapsed);
 };
 
