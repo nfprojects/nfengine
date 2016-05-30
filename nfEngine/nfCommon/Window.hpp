@@ -123,7 +123,7 @@ private:
     int mTop;
     wchar_t mWndClass[48];
 #elif defined(__LINUX__) | defined(__linux__)
-    static ::Display* mDisplay;
+    ::Display* mDisplay; // TODO make only one X connection for all Window instances
     ::Window mWindow;
     ::Window mRoot;
     static bool mWindowError;
