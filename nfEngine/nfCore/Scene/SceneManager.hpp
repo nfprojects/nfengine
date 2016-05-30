@@ -7,8 +7,8 @@
 #pragma once
 
 #include "../Core.hpp"
-#include "SceneEvent.hpp"
 #include "EntityManager.hpp"
+#include "../nfCommon/Aligned.hpp"
 #include "../nfCommon/ThreadPool.hpp"
 
 namespace NFE {
