@@ -8,6 +8,7 @@
 
 #include "nfCommon.hpp"
 #include "Timer.hpp"
+#include <unordered_map>
 
 namespace NFE {
 namespace Common {
@@ -22,12 +23,21 @@ enum class LogType
     Fatal,
 };
 
+
 /**
 * Logger backend interface.
 */
 class NFCOMMON_API LoggerBackend
 {
+protected:
+    bool mIsEnabled;
+
 public:
+    LoggerBackend()
+        : mIsEnabled(true)
+    {
+    }
+
     virtual ~LoggerBackend()
     {
     }
@@ -43,7 +53,17 @@ public:
      */
     virtual void Log(LogType type, const char* srcFile, int line, const char* str,
                      double timeElapsed) = 0;
+
+    NFE_INLINE virtual void Reset() {};
+    NFE_INLINE void Enable(bool enable) { mIsEnabled = enable; };
+    NFE_INLINE bool IsEnabled() const { return mIsEnabled; };
 };
+
+
+// Typedefs to make these types shorter and more readable
+typedef std::unique_ptr<LoggerBackend> LoggerBackendPtr;
+typedef std::unordered_map<std::string, LoggerBackendPtr> LoggerBackendMap;
+typedef std::vector<std::string> StrVector;
 
 
 /**
@@ -51,29 +71,60 @@ public:
  */
 class NFCOMMON_API Logger
 {
+    enum class InitStage
+    {
+        Uninitialized,
+        Initializing,
+        Initialized,
+    };
+
     std::string mLogsDirectory;
 
     /// for trimming source file paths in Log() method
     std::string mPathPrefix;
     size_t mPathPrefixLen;
 
-    std::atomic<bool> mInitialized; //< set in constructor to true when Logger is fully initialized
-    std::mutex mMutex;              //< for synchronizing logger output
+    std::atomic<InitStage> mInitialized;  //< Set to Initialized, when Logger is fully initialized
+    std::mutex mLogMutex;                 //< For synchronizing logger output
+    std::mutex mResetMutex;               //< For locking logger initialization
     Timer mTimer;
-    std::vector<std::unique_ptr<LoggerBackend>> mBackends;
+    static LoggerBackendMap& mBackends(); //< Method encapsulation to solve "static initialization order fiasco"
+
+    Logger();
+    ~Logger();
 
     Logger(const Logger&) = delete;
     Logger& operator= (const Logger&) = delete;
 
     void LogInit();
+    void LogBuildInfo();
     void LogRunTime();
     void LogSysInfo();
 
 public:
-    Logger();
-    ~Logger();
+    /**
+     * Register backend to be used for logging.
+     *
+     * @param name    Backend name.
+     * @param backend Backend object - must implement LoggerBackend class.
+     *
+     * @return True, if new backend with @name was inserted. False if @name is already in use.
+     */
+    static bool RegisterBackend(const std::string& name, LoggerBackend* backend);
 
-    void RegisterBackend(LoggerBackend* backend);
+    /**
+     * Get pointer to already registered backend.
+     *
+     * @param name    Backend name.
+     *
+     * @return Pointer to the backend if registered, otherwise nullptr.
+     */
+    static LoggerBackend* GetBackend(const std::string& name);
+
+    /**
+     * Get list of the registered backends.
+     */
+    static StrVector ListBackends();
 
     /**
      * Log single line using formated string.
@@ -87,7 +138,7 @@ public:
      * @remarks Use LOG_XXX macros to simplify code
      */
     void Log(LogType type, const char* srcFile, int line, const char* str, ...);
-    void Log(LogType type, const char* srcFile, const char* msg, int line);
+    void Log(LogType type, const char* srcFile, const char* str, int line);
 
     /**
      * Reset all backends that save to a file
