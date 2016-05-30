@@ -123,9 +123,6 @@
     <ClCompile Include="Scene\EntityManager.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Scene\SceneEvent.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Scene\SceneManager.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
@@ -249,9 +246,6 @@
       <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="Scene\EntityManager.hpp">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\SceneEvent.hpp">
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="Scene\SceneManager.hpp">

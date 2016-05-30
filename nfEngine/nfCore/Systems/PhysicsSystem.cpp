@@ -60,6 +60,8 @@ void PhysicsSystem::UpdatePhysics(float dt)
 
 void PhysicsSystem::ProcessContacts()
 {
+    // TODO: finish when event system is implemented
+    /*
     EventBodyCollide event;
 
     // process contacts
@@ -80,13 +82,13 @@ void PhysicsSystem::ProcessContacts()
             btManifoldPoint& pt = contactManifold->getContactPoint(j);
             if (pt.getDistance() < 0.0f)
             {
-                // TODO: finish when event system is implemented
-                //const btVector3& ptA = pt.getPositionWorldOnA();
-                //const btVector3& ptB = pt.getPositionWorldOnB();
-                //const btVector3& normalOnB = pt.m_normalWorldOnB;
+                const btVector3& ptA = pt.getPositionWorldOnA();
+                const btVector3& ptB = pt.getPositionWorldOnB();
+                const btVector3& normalOnB = pt.m_normalWorldOnB;
             }
         }
     }
+    */
 }
 
 void PhysicsSystem::Update(float dt)
