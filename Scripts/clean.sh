@@ -21,8 +21,8 @@ rm -rf ShaderCache
 rm -rf ShaderCache_Debug
 echo "DONE"
 
-echo -n "Removing CMake files... "
-Scripts/clean-cmake.sh > /dev/null
+echo -n "Removing build-produced files... "
+rm -rf build-*
 echo "DONE"
 
 echo -n "Removing other files... "
