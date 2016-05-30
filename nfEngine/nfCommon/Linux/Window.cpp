@@ -15,7 +15,6 @@
 namespace NFE {
 namespace Common {
 
-::Display* Window::mDisplay;
 bool Window::mWindowError;
 
 Window::Window()
@@ -30,14 +29,10 @@ Window::Window()
     mResizeCallbackUserData = nullptr;
     mTitle = "Window";
 
-    if (!mDisplay)
-    {
-        mDisplay = XOpenDisplay(nullptr);
-        if (mDisplay == nullptr)
-        {
-            LOG_ERROR("Cannot connect to X server\n");
-        }
-    }
+    mDisplay = XOpenDisplay(nullptr);
+    if (mDisplay == nullptr)
+        LOG_ERROR("Failed to connect to X server\n");
+
     mRoot = DefaultRootWindow(mDisplay);
     XSetScreenSaver(mDisplay, 0, 0, DontPreferBlanking, AllowExposures);
 
