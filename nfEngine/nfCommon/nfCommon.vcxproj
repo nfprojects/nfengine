@@ -217,6 +217,7 @@ popd</Command>
     <ClInclude Include="BVH.hpp" />
     <ClInclude Include="Console.hpp" />
     <ClInclude Include="DirectoryWatch.hpp" />
+    <ClInclude Include="EnumIterator.hpp" />
     <ClInclude Include="File.hpp" />
     <ClInclude Include="FileSystem.hpp" />
     <ClInclude Include="Image\Image.hpp" />
