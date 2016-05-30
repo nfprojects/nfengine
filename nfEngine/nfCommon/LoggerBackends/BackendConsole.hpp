@@ -14,10 +14,11 @@ namespace Common {
 /**
  * Console logger backend implementation.
  */
-class NFCOMMON_API LoggerBackendConsole : public LoggerBackend
+class NFCOMMON_API LoggerBackendConsole final : public LoggerBackend
 {
 public:
-    void Log(LogType type, const char* srcFile, int line, const char* str, double timeElapsed);
+    void Log(LogType type, const char* srcFile, int line, const char* str,
+             double timeElapsed) override;
 };
 
 } // namespace Common
