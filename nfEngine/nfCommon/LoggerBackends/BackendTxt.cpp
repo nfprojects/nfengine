@@ -6,6 +6,11 @@
 
 #include "../PCH.hpp"
 #include "BackendTxt.hpp"
+#include "../Logger.hpp"
+
+#if defined(__LINUX__) | defined(__linux__)
+#include "../Linux/MakeUniqueTemp.hpp"
+#endif
 
 #define NFE_MAX_LOG_MESSAGE_LENGTH 1024
 
@@ -19,7 +24,15 @@
 namespace NFE {
 namespace Common {
 
+// Register Txt backend
+bool gLoggerBackendTxtRegistered = Logger::RegisterBackend("TXT", std::make_unique<LoggerBackendTxt>());
+
 LoggerBackendTxt::LoggerBackendTxt()
+{
+    Reset();
+}
+
+void LoggerBackendTxt::Reset()
 {
     const static std::string gLogIntro = "nfEngine - log file\n"
                                          "[Seconds elapsed] [LogType] "
