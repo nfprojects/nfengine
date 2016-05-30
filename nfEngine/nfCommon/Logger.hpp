@@ -22,6 +22,19 @@ enum class LogType
     Fatal,
 };
 
+enum class LoggerBackendType
+{
+    All,
+    Console,
+    Txt,
+    HTML,
+    WinDebugger, //< Available only on Windows OS
+
+    First = Console,
+    Last = WinDebugger,
+};
+
+
 /**
 * Logger backend interface.
 */
@@ -73,7 +86,8 @@ public:
     Logger();
     ~Logger();
 
-    void RegisterBackend(LoggerBackend* backend);
+    void RegisterBackend(LoggerBackendType backend = LoggerBackendType::All);
+    void UnRegisterBackend(LoggerBackendType backend = LoggerBackendType::All);
 
     /**
      * Log single line using formated string.
