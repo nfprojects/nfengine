@@ -6,6 +6,7 @@
 
 #include "../PCH.hpp"
 #include "BackendHTML.hpp"
+#include "../Logger.hpp"
 
 #define NFE_MAX_LOG_MESSAGE_LENGTH 1024
 
@@ -19,7 +20,15 @@
 namespace NFE {
 namespace Common {
 
+// Register HTML backend
+bool gLoggerBackendHTMLRegistered = Logger::RegisterBackend("HTML", new LoggerBackendHTML);
+
 LoggerBackendHTML::LoggerBackendHTML()
+{
+    Reset();
+}
+
+void LoggerBackendHTML::Reset()
 {
     /**
      * TODO: move intro, outro and the other HTML code templates to another file, so the logger

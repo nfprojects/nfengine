@@ -7,26 +7,69 @@
 #include "PCH.hpp"
 #include "Logger.hpp"
 #include "FileSystem.hpp"
-#include "LoggerBackends/BackendConsole.hpp"
-#include "LoggerBackends/BackendHTML.hpp"
-#include "LoggerBackends/BackendTxt.hpp"
 #include "SystemInfo.hpp"
 #include <stdarg.h>
-#include <atomic>
 
 #ifdef WIN32
-#include "LoggerBackends/Win/BackendWindowsDebugger.hpp"
 #include "Win/Common.hpp"
 #endif // WIN32
+
 
 namespace NFE {
 namespace Common {
 
-// global logger instance
-Logger gLogger;
-
 Logger::Logger()
-    : mInitialized(false)
+    : mInitialized(InitStage::Uninitialized)
+{
+}
+
+Logger::~Logger()
+{
+}
+
+Logger* Logger::GetInstance()
+{
+    static Logger mInstance;
+
+    // Double check, because we don't want uninit variable and compare_exchange every GetInstance call
+    if (mInstance.mInitialized != InitStage::Initialized)
+    {
+        InitStage uninit = InitStage::Uninitialized;
+        if (mInstance.mInitialized.compare_exchange_strong(uninit, InitStage::Initializing))
+            mInstance.LogInit();
+    }
+    return &mInstance;
+}
+
+void Logger::Reset()
+{
+    if (mInitialized == InitStage::Uninitialized)
+        return;
+
+    std::lock_guard<std::mutex> lock(mInitMutex);
+    // Change mInitialized, to avoid Logging while backends are resetting
+    mInitialized.store(InitStage::Initializing);
+
+    for (const auto& i : mBackends())
+    {
+        i.second->Reset();
+    }
+
+    // Backends are done resetting - allow logging
+    mInitialized.store(InitStage::Initialized);
+
+    LogBuildInfo();
+    LogRunTime();
+    LogSysInfo();
+}
+
+LoggerBackendMap& Logger::mBackends()
+{
+    static LoggerBackendMap mBackend;
+    return mBackend;
+}
+
+void Logger::LogInit()
 {
     mTimer.Start();
 
@@ -43,41 +86,14 @@ Logger::Logger()
     mLogsDirectory = execDir + "/../../../Logs";
     FileSystem::CreateDir(mLogsDirectory);
 
+    // Reset all backends, so they recreate log files now, that the Logs dir is created.
+    // Reset() methods will change mInitialize to Initialized state after resetting backends.
     Reset();
 }
 
-Logger::~Logger()
+void Logger::LogBuildInfo()
 {
-}
-
-Logger* Logger::GetInstance()
-{
-    /**
-     * We can't use singleton here, because GetInstace() would be called recursively
-     * (e.g. in FileSystem::CreateDir) and cause a deadlock.
-     */
-    return &gLogger;
-}
-
-void Logger::Reset()
-{
-    mInitialized = false;
-    mBackends.clear();
-
-    RegisterBackend(new LoggerBackendConsole);
-    RegisterBackend(new LoggerBackendHTML);
-    RegisterBackend(new LoggerBackendTxt);
-#ifdef WIN32
-    if (IsDebuggerPresent())
-        RegisterBackend(new LoggerBackendWinDebugger);
-#endif // WIN32
-
-    mInitialized = true;
-    LogInit();
-}
-
-void Logger::LogInit()
-{
+    LOG_INFO("Compiler: %s", SystemInfo::Instance().GetCompilerInfo().c_str());
     LOG_INFO("nfCommon build date: " __DATE__ ", " __TIME__);
 
 #ifdef NFE_USE_SSE
@@ -88,9 +104,6 @@ void Logger::LogInit()
 #else
     LOG_INFO("nfCommon built with native FPU instructions only");
 #endif // NFE_USE_SSE
-
-    LogRunTime();
-    LogSysInfo();
 }
 
 void Logger::LogRunTime()
@@ -116,17 +129,38 @@ void Logger::LogSysInfo()
     LOG_INFO("CPU: %s, %u cores", sysInfo.GetCPUBrand().c_str(), sysInfo.GetCPUCoreNo());
     LOG_INFO("RAM: %uKB total, %uKB free", sysInfo.GetMemTotalPhysKb(), sysInfo.GetMemFreePhysKb());
     LOG_INFO("OS: %s", sysInfo.GetOSVersion().c_str());
-    LOG_INFO("Compiler: %s", sysInfo.GetCompilerInfo().c_str());
 }
 
-void Logger::RegisterBackend(LoggerBackend* backend)
+bool Logger::RegisterBackend(const std::string& name, LoggerBackend* backend)
 {
-    mBackends.emplace_back(std::unique_ptr<LoggerBackend>(backend));
+    mBackends().emplace(name, backend);
+    return true;
+}
+
+LoggerBackend* Logger::GetBackend(const std::string& name)
+{
+    LoggerBackendMap::const_iterator backend = mBackends().find(name);
+
+    if (backend == mBackends().end())
+        return nullptr;
+
+    return backend->second.get();
+}
+
+std::vector<std::string> Logger::ListBackends()
+{
+    std::vector<std::string> vect;
+    vect.reserve(mBackends().size());
+
+    for (const auto& i : mBackends())
+        vect.push_back(i.first);
+
+    return vect;
 }
 
 void Logger::Log(LogType type, const char* srcFile, int line, const char* str, ...)
 {
-    if (!mInitialized)
+    if (mBackends().empty() || mInitialized != InitStage::Initialized)
         return;
 
     /// keep shorter strings on the stack for performance
@@ -175,10 +209,11 @@ void Logger::Log(LogType type, const char* srcFile, int line, const char* str, .
     if (len < 0 || !formattedStr)
         return;
 
-    std::unique_lock<std::mutex> lock(mMutex);
-    for (auto& backend : mBackends)
+    std::lock_guard<std::mutex> lock(mLogMutex);
+    for (const auto& backend : mBackends())
     {
-        backend->Log(type, srcFile, line, formattedStr, logTime);
+        if (backend.second->IsEnabled())
+            backend.second->Log(type, srcFile, line, formattedStr, logTime);
     }
 
     // If it's a fatal log, exit the engine
@@ -188,16 +223,17 @@ void Logger::Log(LogType type, const char* srcFile, int line, const char* str, .
 
 void Logger::Log(LogType type, const char* srcFile, const char* msg, int line)
 {
-    if (!mInitialized)
+    if (mBackends().empty() || mInitialized != InitStage::Initialized)
         return;
 
     // TODO: consider logging local time instead of time elapsed since Logger initialization
     double logTime = mTimer.Stop();
 
-    std::unique_lock<std::mutex> lock(mMutex);
-    for (auto& backend : mBackends)
+    std::lock_guard<std::mutex> lock(mLogMutex);
+    for (const auto& backend : mBackends())
     {
-        backend->Log(type, srcFile, line, msg, logTime);
+        if (backend.second->IsEnabled())
+            backend.second->Log(type, srcFile, line, msg, logTime);
     }
 
     // If it's a fatal log, exit the engine
