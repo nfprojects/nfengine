@@ -22,6 +22,30 @@
       "revId": "de4bcf2c8c64818863fa3c332d8cd1ae41c95940",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_610bff7d",
+        "filename": "nfEngine/nfCommonTest/WindowTest.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-05-30T16:08:33Z",
+      "side": 1,
+      "message": "Iterating over mWindows 3 times processes windows in following order:\n\n  All Windows get null handle -\u003e All Windows open -\u003e All windows get not-null-handle\n\nHiding it in one loop changes the order:\n\n  Window 1 get null-handle -\u003e Window 1 open -\u003e Window 1 get not-null-handle -\u003e Window 2 get null-handle etc etc\n\nMy goal behavior of the test was the first one, due to distinction of these three different operations into separate test parts: checking for NULLs, opening and then checking for not-NULLs.",
+      "parentUuid": "baa041b7_a115879c",
+      "range": {
+        "startLine": 33,
+        "startChar": 4,
+        "endLine": 40,
+        "endChar": 47
+      },
+      "revId": "de4bcf2c8c64818863fa3c332d8cd1ae41c95940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
