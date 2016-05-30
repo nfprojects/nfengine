@@ -11,6 +11,11 @@
 namespace NFE {
 namespace Common {
 
+// Register Windows debbuger backend
+bool gLoggerBackendWinDebuggerRegistered = Logger::RegisterBackend("WinDebugger",
+                                                                   new LoggerBackendWinDebugger);
+
+
 LoggerBackendWinDebugger::LoggerBackendWinDebugger()
 {
     const size_t initialBufferSize = 1024;

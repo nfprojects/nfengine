@@ -11,9 +11,10 @@ using namespace NFE::Common;
 
 class LoggerTest : public testing::Test {};
 using LoggerDeathTest = LoggerTest;
+using LoggerBackendsTest = LoggerTest;
 
 /**
- * To verify if this test really passes, one should look at console and HTML logs.
+ * To verify if this test really passes, one should look at different logs.
  */
 TEST(LoggerTest, Simple)
 {
@@ -27,12 +28,6 @@ TEST(LoggerTest, Simple)
     ASSERT_NO_THROW(LOG_WARNING_S("Test stream log - " << "warning"));
     ASSERT_NO_THROW(LOG_ERROR("Test log - error"));
     ASSERT_NO_THROW(LOG_ERROR_S("Test stream log - " << "error"));
-}
-
-TEST(LoggerDeathTest, FatalLogs)
-{
-    ASSERT_EXIT(LOG_FATAL("Some fatal log."), testing::ExitedWithCode(1), "");
-    ASSERT_EXIT(LOG_FATAL_S("Some fatal log."), testing::ExitedWithCode(1), "");
 }
 
 TEST(LoggerTest, Null)
@@ -63,4 +58,69 @@ TEST(LoggerTest, Invalid)
 {
     // this message won't be printed
     ASSERT_NO_THROW(LOG_INFO("This is an invalid format %.s %"));
+}
+
+
+// LOGGER DEATHTESTS
+TEST(LoggerDeathTest, FatalLogs)
+{
+    ASSERT_EXIT(LOG_FATAL("Some fatal log."), testing::ExitedWithCode(1), "");
+    ASSERT_EXIT(LOG_FATAL_S("Some fatal log."), testing::ExitedWithCode(1), "");
+}
+
+
+// LOGGER BACKENDS
+TEST(LoggerBackendsTest, ListBackends)
+{
+    // We get the list of the standard nfCommon backends and we create the anticipated set
+    std::vector<std::string> existingBackends = Logger::GetInstance()->ListBackends();
+    std::vector<std::string> plannedBackends = {"Console", "HTML", "TXT"};
+#ifdef WIN32
+    plannedBackends.push_back("WinDebugger");
+#endif
+
+    // We create the container for the difference set of these 2 vectors
+    std::vector<std::string> difference;
+
+    std::sort(existingBackends.begin(), existingBackends.end());
+    std::sort(plannedBackends.begin(), plannedBackends.end());
+
+    // Differences vector should be empty now - initialized
+    ASSERT_TRUE(difference.empty());
+    std::set_difference(existingBackends.begin(), existingBackends.end(),
+                        plannedBackends.begin(), plannedBackends.end(),
+                        std::back_inserter(difference));
+
+    // Differences vector should be empty now as well - no differences
+    ASSERT_TRUE(difference.empty());
+}
+
+TEST(LoggerBackendsTest, DisableAll)
+{
+    std::vector<std::string> existingBackends = Logger::GetInstance()->ListBackends();
+
+    LOG_SUCCESS("DisableAll: This log should be seen in every standard backend");
+
+    for (auto& i : existingBackends)
+        Logger::GetBackend(i)->Enable(false);
+
+    LOG_ERROR("DisableAll: This log should NOT be seen anywhere!");
+
+    // Turn back on all backends
+    for (auto& i : existingBackends)
+        Logger::GetBackend(i)->Enable(true);
+}
+
+TEST(LoggerBackendsTest, DisableSingle)
+{
+    std::vector<std::string> existingBackends = Logger::GetInstance()->ListBackends();
+
+    LOG_SUCCESS("DisableSingle: This log should be seen in every standard backend");
+
+    for (auto& i : existingBackends)
+    {
+        Logger::GetBackend(i)->Enable(false);
+        LOG_SUCCESS_S("DisableSingle: This log should NOT be seen in " << i << " backend.");
+        Logger::GetBackend(i)->Enable(true);
+    }
 }
