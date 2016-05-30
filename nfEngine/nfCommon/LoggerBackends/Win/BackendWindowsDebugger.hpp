@@ -14,7 +14,7 @@ namespace Common {
 /**
  * Implementation of Windows debugger logger backend.
  */
-class NFCOMMON_API LoggerBackendWinDebugger : public LoggerBackend
+class NFCOMMON_API LoggerBackendWinDebugger final : public LoggerBackend
 {
     std::vector<char> mBuffer;
 
@@ -23,7 +23,8 @@ class NFCOMMON_API LoggerBackendWinDebugger : public LoggerBackend
 
 public:
     LoggerBackendWinDebugger();
-    void Log(LogType type, const char* srcFile, int line, const char* str, double timeElapsed);
+    void Log(LogType type, const char* srcFile, int line, const char* str,
+             double timeElapsed) override;
 };
 
 } // namespace Common

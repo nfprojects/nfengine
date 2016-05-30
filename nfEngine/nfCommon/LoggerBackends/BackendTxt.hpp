@@ -15,7 +15,7 @@ namespace Common {
 /**
  * Raw txt logger backend implementation.
  */
-class NFCOMMON_API LoggerBackendTxt : public LoggerBackend
+class NFCOMMON_API LoggerBackendTxt final : public LoggerBackend
 {
     File mFile;
     std::vector<char> mBuffer;
@@ -23,7 +23,9 @@ class NFCOMMON_API LoggerBackendTxt : public LoggerBackend
 public:
     LoggerBackendTxt();
 
-    void Log(LogType type, const char* srcFile, int line, const char* str, double timeElapsed);
+    void Reset() override;
+    void Log(LogType type, const char* srcFile, int line, const char* str,
+             double timeElapsed) override;
 };
 
 } // namespace Common
