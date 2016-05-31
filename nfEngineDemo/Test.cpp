@@ -6,6 +6,7 @@
 #include "../nfCommon/Window.hpp"
 #include "../nfCommon/Logger.hpp"
 #include "../nfCommon/FileSystem.hpp"
+#include "../nfCommon/KeyCodes.hpp"
 
 using namespace NFE;
 using namespace NFE::Renderer;
@@ -309,15 +310,15 @@ public:
         Vector destVelocity = Vector();
         if (cameraControl)
         {
-            if (IsKeyPressed('W')) destVelocity += orient.z;
-            if (IsKeyPressed('S')) destVelocity -= orient.z;
-            if (IsKeyPressed('D')) destVelocity += orient.x;
-            if (IsKeyPressed('A')) destVelocity -= orient.x;
-            if (IsKeyPressed('R')) destVelocity += orient.y;
-            if (IsKeyPressed('F')) destVelocity -= orient.y;
+            if (IsKeyPressed(Common::KeyCode::W)) destVelocity += orient.z;
+            if (IsKeyPressed(Common::KeyCode::S)) destVelocity -= orient.z;
+            if (IsKeyPressed(Common::KeyCode::D)) destVelocity += orient.x;
+            if (IsKeyPressed(Common::KeyCode::A)) destVelocity -= orient.x;
+            if (IsKeyPressed(Common::KeyCode::R)) destVelocity += orient.y;
+            if (IsKeyPressed(Common::KeyCode::F)) destVelocity -= orient.y;
 
-            if (IsKeyPressed(Common::KeyCode::Shift)) destVelocity *= 30.0f;
-            else if (IsKeyPressed(Common::KeyCode::Control)) destVelocity *= 0.2f;
+            if (IsKeyPressed(Common::KeyCode::ShiftLeft)) destVelocity *= 30.0f;
+            else if (IsKeyPressed(Common::KeyCode::ControlLeft)) destVelocity *= 0.2f;
             else destVelocity *= 3.0f;
         }
 
@@ -340,7 +341,7 @@ public:
         Orientation orient;
 
         //place spot light
-        if (key == 'T' && cameraTransform != nullptr)
+        if (key == Common::KeyCode::T && cameraTransform != nullptr)
         {
             EntityID lightEntity = entityManager->CreateEntity();
             gSelectedEntity = lightEntity;
@@ -365,7 +366,7 @@ public:
         }
 
         //place omni light
-        if (key == 'O' && cameraTransform != nullptr)
+        if (key == Common::KeyCode::O && cameraTransform != nullptr)
         {
             OmniLightDesc lightDesc;
             lightDesc.radius = 20.0f;
@@ -387,13 +388,13 @@ public:
             entityManager->AddComponent(lightEntity, light);
         }
 
-        if (key == 'V')
+        if (key == Common::KeyCode::V)
         {
             view->drawSecondaryView ^= true;
         }
 
         // set secondary camera transform to the primary camera transform
-        if (key == 'C')
+        if (key == Common::KeyCode::C)
         {
             TransformComponent* camTransform =
                 entityManager->GetComponent<TransformComponent>(cameraEntity);
@@ -407,11 +408,11 @@ public:
             }
         }
 
-        if (key >= '0' && key <= '9')
-            SetUpScene(key - '0');
+        if (key >= Common::KeyCode::Num0 && key <= Common::KeyCode::Num9)
+            SetUpScene(key - Common::KeyCode::Num0);
 
         // spaw a new window
-        if (key == 'N')
+        if (key == Common::KeyCode::N)
             AddWindow(this);
     }
 
