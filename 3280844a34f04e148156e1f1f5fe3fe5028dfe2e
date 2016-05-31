@@ -139,6 +139,29 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_7053c317",
+        "filename": "nfEngine/nfCommon/Logger.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-05-31T19:14:30Z",
+      "side": 1,
+      "message": "And please, use the Typedefify charm on this long incantation of types.",
+      "range": {
+        "startLine": 71,
+        "startChar": 11,
+        "endLine": 71,
+        "endChar": 75
+      },
+      "revId": "3280844a34f04e148156e1f1f5fe3fe5028dfe2e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_f0111353",
         "filename": "nfEngine/nfCommon/Logger.hpp",
         "patchSetId": 2
@@ -155,6 +178,29 @@
         "startChar": 43,
         "endLine": 85,
         "endChar": 54
+      },
+      "revId": "3280844a34f04e148156e1f1f5fe3fe5028dfe2e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3059bb35",
+        "filename": "nfEngine/nfCommon/Logger.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-05-31T19:14:30Z",
+      "side": 1,
+      "message": "Same here, Typedefify.",
+      "range": {
+        "startLine": 86,
+        "startChar": 11,
+        "endLine": 86,
+        "endChar": 35
       },
       "revId": "3280844a34f04e148156e1f1f5fe3fe5028dfe2e",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
