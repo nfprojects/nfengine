@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_eb492832",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-31T22:31:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_702ce398",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 69
+      },
+      "revId": "3280844a34f04e148156e1f1f5fe3fe5028dfe2e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_b02eeb89",
         "filename": "nfEngine/nfCommon/Logger.cpp",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2016-05-31T18:34:55Z",
       "side": 1,
       "message": "And now all backends are gone :) Maybe we should have LoggerBackend::Start/Stop methods and here we would call Stop and Start for every register backend?",
+      "range": {
+        "startLine": 56,
+        "startChar": 0,
+        "endLine": 56,
+        "endChar": 24
+      },
+      "revId": "3280844a34f04e148156e1f1f5fe3fe5028dfe2e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_cb5424cb",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-31T22:31:29Z",
+      "side": 1,
+      "message": "Reset method as You can see in a comment on line 54 is unsure right now. I\u0027m not sure how it should work...I think it needs a rework, along with a pure virtual Reset method in LoggerBackend (Resetting each backend may be done in another way)",
+      "parentUuid": "baa041b7_b02eeb89",
       "range": {
         "startLine": 56,
         "startChar": 0,
@@ -65,6 +113,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_8b617cab",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-31T22:31:29Z",
+      "side": 1,
+      "message": "ok, sorry for that. I thought that performance wasn\u0027t so important in a GetBackend function",
+      "parentUuid": "baa041b7_10459744",
+      "revId": "3280844a34f04e148156e1f1f5fe3fe5028dfe2e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_f03fd3b1",
         "filename": "nfEngine/nfCommon/Logger.cpp",
         "patchSetId": 2
@@ -76,6 +142,24 @@
       "writtenOn": "2016-05-31T18:40:11Z",
       "side": 1,
       "message": "you can use find()",
+      "revId": "3280844a34f04e148156e1f1f5fe3fe5028dfe2e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_6b64f8b7",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-31T22:31:29Z",
+      "side": 1,
+      "message": "I know, I will",
+      "parentUuid": "baa041b7_f03fd3b1",
       "revId": "3280844a34f04e148156e1f1f5fe3fe5028dfe2e",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -99,6 +183,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_4b57f4c9",
+        "filename": "nfEngine/nfCommon/Logger.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-31T22:31:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_300bfb25",
+      "revId": "3280844a34f04e148156e1f1f5fe3fe5028dfe2e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_1017d748",
         "filename": "nfEngine/nfCommon/Logger.hpp",
         "patchSetId": 2
@@ -110,6 +212,24 @@
       "writtenOn": "2016-05-31T18:34:55Z",
       "side": 1,
       "message": "NFE_INLINE bool IsEnabled() const",
+      "revId": "3280844a34f04e148156e1f1f5fe3fe5028dfe2e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2b5a70f2",
+        "filename": "nfEngine/nfCommon/Logger.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-31T22:31:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_1017d748",
       "revId": "3280844a34f04e148156e1f1f5fe3fe5028dfe2e",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -162,6 +282,54 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_0b768c6f",
+        "filename": "nfEngine/nfCommon/Logger.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-31T22:31:29Z",
+      "side": 1,
+      "message": "Function ensures, that static variable will be created upon first call.\n\nOtherwise it may not yet get created, when it is called.\nAt least that was my guess, based on:\nhttps://isocpp.org/wiki/faq/ctors#static-init-order-on-first-use",
+      "parentUuid": "baa041b7_b0170b44",
+      "range": {
+        "startLine": 71,
+        "startChar": 76,
+        "endLine": 71,
+        "endChar": 88
+      },
+      "revId": "3280844a34f04e148156e1f1f5fe3fe5028dfe2e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_eb700874",
+        "filename": "nfEngine/nfCommon/Logger.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-31T22:31:29Z",
+      "side": 1,
+      "message": "I hope You mean std::unique_ptr\u003cLoggerBackend\u003e and no more",
+      "parentUuid": "baa041b7_7053c317",
+      "range": {
+        "startLine": 71,
+        "startChar": 11,
+        "endLine": 71,
+        "endChar": 75
+      },
+      "revId": "3280844a34f04e148156e1f1f5fe3fe5028dfe2e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_f0111353",
         "filename": "nfEngine/nfCommon/Logger.hpp",
         "patchSetId": 2
@@ -173,6 +341,30 @@
       "writtenOn": "2016-05-31T18:34:55Z",
       "side": 1,
       "message": "const std::string\u0026",
+      "range": {
+        "startLine": 85,
+        "startChar": 43,
+        "endLine": 85,
+        "endChar": 54
+      },
+      "revId": "3280844a34f04e148156e1f1f5fe3fe5028dfe2e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_cb6b0484",
+        "filename": "nfEngine/nfCommon/Logger.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-31T22:31:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_f0111353",
       "range": {
         "startLine": 85,
         "startChar": 43,
@@ -208,6 +400,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_ab6680b8",
+        "filename": "nfEngine/nfCommon/Logger.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-31T22:31:29Z",
+      "side": 1,
+      "message": "Errrr, ok. I thought that it was quite a short type - just a vector of strings...I thought that we don\u0027t typedefify everything",
+      "parentUuid": "baa041b7_3059bb35",
+      "range": {
+        "startLine": 86,
+        "startChar": 11,
+        "endLine": 86,
+        "endChar": 35
+      },
+      "revId": "3280844a34f04e148156e1f1f5fe3fe5028dfe2e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_d033aff4",
         "filename": "nfEngine/nfCommon/LoggerBackends/BackendConsole.cpp",
         "patchSetId": 2
@@ -219,6 +435,30 @@
       "writtenOn": "2016-05-31T18:34:55Z",
       "side": 1,
       "message": "initialize mIsEnabled in LoggerBackend constructor. Then you don\u0027t need to write this in every backend",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 1
+      },
+      "revId": "3280844a34f04e148156e1f1f5fe3fe5028dfe2e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_6b0bd8d6",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendConsole.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-05-31T22:31:29Z",
+      "side": 1,
+      "message": "I wanted, but wasn\u0027t sure how\u0027d You react to definitions in a header file, when there is a lot of cpp files.\n\nThat\u0027s why I\u0027ve put Enable() and IsEnabled() in loggerBackend - to see which way will be accepted.",
+      "parentUuid": "baa041b7_d033aff4",
       "range": {
         "startLine": 42,
         "startChar": 0,
