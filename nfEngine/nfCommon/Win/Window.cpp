@@ -281,6 +281,7 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 
         case WM_KEYDOWN:
         {
+            wParam = window->MapLeftRightSpecialKey(wParam, lParam);
             window->mKeys[wParam] = true;
             window->OnKeyPress((int)wParam);
             return 0;
@@ -288,6 +289,7 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 
         case WM_KEYUP:
         {
+            wParam = window->MapLeftRightSpecialKey(wParam, lParam);
             window->mKeys[wParam] = false;
             return 0;
         }
@@ -371,6 +373,36 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
     }
 
     return DefWindowProc(hWnd, message, wParam, lParam);
+}
+
+WPARAM Window::MapLeftRightSpecialKey(WPARAM wParam, LPARAM lParam)
+{
+    WPARAM newKey;
+
+    // 16-23 bits are scancode needed for left/right distinguishment
+    UINT scanCode = (lParam & 0x00FF0000) >> 16;
+    // 24th bit is an "extended" bit, set to true if right control/alt are pressed
+    UINT extended = (lParam & 0x01000000);
+
+    switch (wParam)
+    {
+    case VK_SHIFT:
+        newKey = MapVirtualKey(scanCode, MAPVK_VSC_TO_VK_EX);
+        if (newKey == 0)
+            // MapVirtualKey failed to map scan code to vkey, fallback to old value
+            newKey = wParam;
+        break;
+    case VK_CONTROL:
+        newKey = extended ? VK_RCONTROL : VK_LCONTROL;
+        break;
+    case VK_MENU:
+        newKey = extended ? VK_RMENU : VK_LMENU;
+        break;
+    default:
+        return wParam;
+    }
+
+    return newKey;
 }
 
 void Window::LostFocus()

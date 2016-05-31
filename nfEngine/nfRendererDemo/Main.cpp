@@ -18,6 +18,7 @@
 #include "../nfCommon/FileSystem.hpp"
 #include "../nfCommon/Window.hpp"
 #include "../nfCommon/Timer.hpp"
+#include "../nfCommon/KeyCodes.hpp"
 
 #include <algorithm>
 
@@ -221,7 +222,6 @@ public:
         switch (key)
         {
         case NFE::Common::KeyCode::Right:
-        case 0x72:
             if (newSceneId >= mScenes.size() - 1)
                 return;
             newSceneId++;
@@ -229,7 +229,6 @@ public:
             break;
 
         case NFE::Common::KeyCode::Left:
-        case 0x71:
             if (newSceneId == 0)
                 return;
             newSceneId--;
@@ -237,7 +236,6 @@ public:
             break;
 
         case NFE::Common::KeyCode::Up:
-        case 0x6F:
             if (newSubSceneId >= mScenes[mCurrentScene]->GetAvailableSubSceneCount())
                 return;
             newSubSceneId++;
@@ -245,7 +243,6 @@ public:
             break;
 
         case NFE::Common::KeyCode::Down:
-        case 0x74:
             if (newSubSceneId == 0)
                 return;
             newSubSceneId--;
