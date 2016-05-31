@@ -18,6 +18,36 @@ const DWORD gWindowedStyle = WS_OVERLAPPEDWINDOW;
 const DWORD gFullscreenExStyle = 0;
 const DWORD gFullscreenStyle = WS_POPUP | WS_SYSMENU;
 
+WPARAM MapLeftRightSpecialKey(WPARAM wParam, LPARAM lParam)
+{
+    WPARAM newKey;
+
+    // 16-23 bits are scancode needed for left/right distinguishment
+    UINT scanCode = (lParam & 0x00FF0000) >> 16;
+    // 24th bit is an "extended" bit, set to true if right control/alt are pressed
+    UINT extended = (lParam & 0x01000000);
+
+    switch (wParam)
+    {
+    case VK_SHIFT:
+        newKey = MapVirtualKey(scanCode, MAPVK_VSC_TO_VK_EX);
+        if (newKey == 0)
+            // MapVirtualKey failed to map scan code to vkey, fallback to old value
+            newKey = wParam;
+        break;
+    case VK_CONTROL:
+        newKey = extended ? VK_RCONTROL : VK_LCONTROL;
+        break;
+    case VK_MENU:
+        newKey = extended ? VK_RMENU : VK_LMENU;
+        break;
+    default:
+        return wParam;
+    }
+
+    return newKey;
+}
+
 } // namespace
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -281,13 +311,15 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 
         case WM_KEYDOWN:
         {
+            wParam = MapLeftRightSpecialKey(wParam, lParam);
             window->mKeys[wParam] = true;
-            window->OnKeyPress((int)wParam);
+            window->OnKeyPress(static_cast<KeyCode>(wParam));
             return 0;
         }
 
         case WM_KEYUP:
         {
+            wParam = MapLeftRightSpecialKey(wParam, lParam);
             window->mKeys[wParam] = false;
             return 0;
         }
@@ -449,7 +481,7 @@ void Window::OnResize(uint32 width, uint32 height)
     (void)height;
 }
 
-void Window::OnKeyPress(int key)
+void Window::OnKeyPress(KeyCode key)
 {
     (void)key;
 }

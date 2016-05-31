@@ -279,7 +279,7 @@ void Window::ProcessMessages()
             case KeyPress:
             {
                 mKeys[event.xkey.keycode] = true;
-                OnKeyPress(static_cast<int>(event.xkey.keycode));
+                OnKeyPress(static_cast<KeyCode>(event.xkey.keycode));
                 break;
             }
             case KeyRelease:
@@ -393,7 +393,7 @@ void Window::OnResize(uint32 width, uint32 height)
     (void)height;
 }
 
-void Window::OnKeyPress(int key)
+void Window::OnKeyPress(KeyCode key)
 {
     (void)key;
 }

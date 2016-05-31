@@ -16,6 +16,7 @@
 
 #include "Window.hpp"
 #include "Logger.hpp"
+#include "KeyCodes.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -366,25 +367,25 @@ bool View::InitImGui()
     /**
      * Keyboard mapping.
      */
-    io.KeyMap[ImGuiKey_Tab]         = Common::Tab;
-    io.KeyMap[ImGuiKey_LeftArrow]   = Common::Left;
-    io.KeyMap[ImGuiKey_RightArrow]  = Common::Right;
-    io.KeyMap[ImGuiKey_UpArrow]     = Common::Up;
-    io.KeyMap[ImGuiKey_DownArrow]   = Common::Down;
-    io.KeyMap[ImGuiKey_PageUp]      = Common::PageUp;
-    io.KeyMap[ImGuiKey_PageDown]    = Common::PageDown;
-    io.KeyMap[ImGuiKey_Home]        = Common::Home;
-    io.KeyMap[ImGuiKey_End]         = Common::End;
-    io.KeyMap[ImGuiKey_Delete]      = Common::Delete;
-    io.KeyMap[ImGuiKey_Backspace]   = Common::Backspace;
-    io.KeyMap[ImGuiKey_Enter]       = Common::Enter;
-    io.KeyMap[ImGuiKey_Escape]      = Common::Escape;
-    io.KeyMap[ImGuiKey_A]           = 'A';
-    io.KeyMap[ImGuiKey_C]           = 'C';
-    io.KeyMap[ImGuiKey_V]           = 'V';
-    io.KeyMap[ImGuiKey_X]           = 'X';
-    io.KeyMap[ImGuiKey_Y]           = 'Y';
-    io.KeyMap[ImGuiKey_Z]           = 'Z';
+    io.KeyMap[ImGuiKey_Tab]         = static_cast<int>(Common::KeyCode::Tab);
+    io.KeyMap[ImGuiKey_LeftArrow]   = static_cast<int>(Common::KeyCode::Left);
+    io.KeyMap[ImGuiKey_RightArrow]  = static_cast<int>(Common::KeyCode::Right);
+    io.KeyMap[ImGuiKey_UpArrow]     = static_cast<int>(Common::KeyCode::Up);
+    io.KeyMap[ImGuiKey_DownArrow]   = static_cast<int>(Common::KeyCode::Down);
+    io.KeyMap[ImGuiKey_PageUp]      = static_cast<int>(Common::KeyCode::PageUp);
+    io.KeyMap[ImGuiKey_PageDown]    = static_cast<int>(Common::KeyCode::PageDown);
+    io.KeyMap[ImGuiKey_Home]        = static_cast<int>(Common::KeyCode::Home);
+    io.KeyMap[ImGuiKey_End]         = static_cast<int>(Common::KeyCode::End);
+    io.KeyMap[ImGuiKey_Delete]      = static_cast<int>(Common::KeyCode::Delete);
+    io.KeyMap[ImGuiKey_Backspace]   = static_cast<int>(Common::KeyCode::Backspace);
+    io.KeyMap[ImGuiKey_Enter]       = static_cast<int>(Common::KeyCode::Enter);
+    io.KeyMap[ImGuiKey_Escape]      = static_cast<int>(Common::KeyCode::Escape);
+    io.KeyMap[ImGuiKey_A]           = static_cast<int>(Common::KeyCode::A);
+    io.KeyMap[ImGuiKey_C]           = static_cast<int>(Common::KeyCode::C);
+    io.KeyMap[ImGuiKey_V]           = static_cast<int>(Common::KeyCode::V);
+    io.KeyMap[ImGuiKey_X]           = static_cast<int>(Common::KeyCode::X);
+    io.KeyMap[ImGuiKey_Y]           = static_cast<int>(Common::KeyCode::Y);
+    io.KeyMap[ImGuiKey_Z]           = static_cast<int>(Common::KeyCode::Z);
 
     return true;
 }
@@ -414,11 +415,11 @@ void View::UpdateGui()
         io.MousePos.y = static_cast<float>(y);
         io.MouseWheel = static_cast<float>(mWindow->GetMouseWheelDelta());
 
-        io.KeyCtrl = mWindow->IsKeyPressed(Common::Control);
-        io.KeyShift = mWindow->IsKeyPressed(Common::Shift);
-        io.KeyAlt = mWindow->IsKeyPressed(Common::Alt);
-        for (int i = 0; i < NFE_WINDOW_KEYS_NUM; ++i)
-            io.KeysDown[i] = mWindow->IsKeyPressed(i);
+        io.KeyCtrl = mWindow->IsKeyPressed(Common::KeyCode::ControlLeft);
+        io.KeyShift = mWindow->IsKeyPressed(Common::KeyCode::ShiftLeft);
+        io.KeyAlt = mWindow->IsKeyPressed(Common::KeyCode::AltLeft);
+        for (unsigned int i = 0; i < NFE_WINDOW_KEYS_NUM; ++i)
+            io.KeysDown[i] = mWindow->IsKeyPressed(static_cast<Common::KeyCode>(i));
 
         io.AddInputCharactersUTF8(mWindow->GetInputCharacters());
     }
