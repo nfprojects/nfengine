@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_90cac719",
+        "filename": "nfEngine/nfCommon/KeyCodes.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-31T20:09:22Z",
+      "side": 1,
+      "message": "Use enum class, because now there is huge namespace pollution",
+      "revId": "8ba63aa82ce00ab64ddab1aad2dca22141f3b763",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_10dfd7d9",
+        "filename": "nfEngine/nfCommon/Window.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-05-31T20:09:22Z",
+      "side": 1,
+      "message": "this can be static",
+      "revId": "8ba63aa82ce00ab64ddab1aad2dca22141f3b763",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
