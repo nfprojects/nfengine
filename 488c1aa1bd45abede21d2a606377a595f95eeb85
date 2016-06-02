@@ -1,0 +1,130 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_ebf11e02",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-02T19:25:35Z",
+      "side": 1,
+      "message": "I would move compare_exchange here:\n\nif (mInstance.mInitialized !\u003d InitStage::Uninitialized)\n{\n    InitStage uninit \u003d InitStage::Uninitialized;\n    if (mInitialized.compare_exchange_strong(uninit, InitStage::Initializing))\n        LogInit();\n}",
+      "range": {
+        "startLine": 33,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 28
+      },
+      "revId": "488c1aa1bd45abede21d2a606377a595f95eeb85",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8bdbb27b",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-02T19:25:35Z",
+      "side": 1,
+      "message": "IMO you should use mMutex here, because when calling Reset() some other threads may be logging.",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 43,
+        "endChar": 15
+      },
+      "revId": "488c1aa1bd45abede21d2a606377a595f95eeb85",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_4be12a29",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-02T19:25:35Z",
+      "side": 1,
+      "message": "then this won\u0027t be required",
+      "range": {
+        "startLine": 51,
+        "startChar": 4,
+        "endLine": 51,
+        "endChar": 49
+      },
+      "revId": "488c1aa1bd45abede21d2a606377a595f95eeb85",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_cba65a0e",
+        "filename": "nfEngine/nfCommon/Logger.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-02T19:25:35Z",
+      "side": 1,
+      "message": "not needed now",
+      "range": {
+        "startLine": 87,
+        "startChar": 4,
+        "endLine": 87,
+        "endChar": 29
+      },
+      "revId": "488c1aa1bd45abede21d2a606377a595f95eeb85",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_cbcbfaa2",
+        "filename": "nfEngine/nfCommon/LoggerBackends/Win/BackendWindowsDebugger.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-02T19:25:35Z",
+      "side": 1,
+      "message": "You forgot about IsDebuggerPresent(). We don\u0027t want to use this backend if debuger is not attached",
+      "revId": "488c1aa1bd45abede21d2a606377a595f95eeb85",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2bd38661",
+        "filename": "nfEngine/nfCommon/LoggerBackends/Win/BackendWindowsDebugger.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-02T19:25:35Z",
+      "side": 1,
+      "message": "git checkout HEAD^ BackendWindowsDebugger.hpp",
+      "revId": "488c1aa1bd45abede21d2a606377a595f95eeb85",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
