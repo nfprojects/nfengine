@@ -354,6 +354,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_0dfd7d6d",
+        "filename": "nfEngine/nfCommon/Logger.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-02T07:41:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_e6703d74",
+      "range": {
+        "startLine": 71,
+        "startChar": 11,
+        "endLine": 71,
+        "endChar": 75
+      },
+      "revId": "3280844a34f04e148156e1f1f5fe3fe5028dfe2e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_f0111353",
         "filename": "nfEngine/nfCommon/Logger.hpp",
         "patchSetId": 2
