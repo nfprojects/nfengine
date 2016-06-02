@@ -71,6 +71,23 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_4bb80a11",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-02T19:29:08Z",
+      "side": 1,
+      "message": "I think there\u0027s missing Reset(). After creating the Log dir we must start the backends",
+      "revId": "488c1aa1bd45abede21d2a606377a595f95eeb85",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_cba65a0e",
         "filename": "nfEngine/nfCommon/Logger.hpp",
         "patchSetId": 4
