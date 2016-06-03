@@ -51,6 +51,24 @@
       "revId": "8ba63aa82ce00ab64ddab1aad2dca22141f3b763",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_aeb32497",
+        "filename": "nfEngine/nfCommon/Window.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-06-03T09:32:48Z",
+      "side": 1,
+      "message": "I already considered it - it will be moved to .cpp file, since this does not require class members and is more of an utility function, than a Window method",
+      "parentUuid": "baa041b7_9ee65142",
+      "revId": "8ba63aa82ce00ab64ddab1aad2dca22141f3b763",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
