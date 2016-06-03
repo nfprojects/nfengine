@@ -1,0 +1,498 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_b90a4f24",
+        "filename": "nfEngine/nfCommon/Aligned.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "if this is how we actually use DefaultAllocator::Malloc, then static_cast over there would work - no overhead and errors while compiling",
+      "range": {
+        "startLine": 26,
+        "startChar": 10,
+        "endLine": 26,
+        "endChar": 31
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_591b4381",
+        "filename": "nfEngine/nfCommon/Aligned.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "why do You static cast to T*, when p is already T*? Moreover there probably will be implicit cast to void* anyway",
+      "range": {
+        "startLine": 100,
+        "startChar": 8,
+        "endLine": 100,
+        "endChar": 44
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_eb07de15",
+        "filename": "nfEngine/nfCommon/Buffer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "Why did u delete the check on mSize? Calling malloc with size\u003d0 wouldn\u0027t be bigger overhead, than just if(mSize\u003c\u003d0)return; ?",
+      "range": {
+        "startLine": 22,
+        "startChar": 4,
+        "endLine": 29,
+        "endChar": 22
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8b3852d4",
+        "filename": "nfEngine/nfCommon/Buffer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "can\u0027t You do this(src)?\nWriting the same code twice makes more places prone to an error. Either use copy constructor here or use assignment operator over there.\n\nI don\u0027t understand also why here we got this if at the beginning and in copy constructor we dont?",
+      "range": {
+        "startLine": 49,
+        "startChar": 8,
+        "endLine": 56,
+        "endChar": 26
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ab3d56c5",
+        "filename": "nfEngine/nfCommon/Buffer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "check if size\u003e0 at the beginning, if not - return.",
+      "range": {
+        "startLine": 70,
+        "startChar": 4,
+        "endLine": 77,
+        "endChar": 17
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_39507f31",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "I know that both mallocs verify given alignment and got 2-3 error values that tells us what to do.\nThough should we really not check values, due to an overhead (quite big if i may say so - modulo probably for unix version and some bitwise operation for both) and just let it throw error?\n\nI can see, that You don\u0027t check any of the alignment\u0027s requirements, yet You cancel out the case when posix_memalign gets 0 - cause it would need a free() afterwards.",
+      "range": {
+        "startLine": 35,
+        "startChar": 6,
+        "endLine": 35,
+        "endChar": 30
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_f9b7b782",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "1. static_assert or sth similar on alignment - I think it should be checked...and maybe \"roofed\" in case of an error?\n2. it would be nice to use errno while logging - it gives us explanation what went wrong - wrong val, requested size2big, mem exhausted.",
+      "range": {
+        "startLine": 40,
+        "startChar": 4,
+        "endLine": 40,
+        "endChar": 43
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3ed98557",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "put space before for readability",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 45
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_99a9cb26",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "1. it should be power of 2 as well as the WIN32 version.\n2. it should be multiple of sizeof(void*)\n\nnot sure how these 2 actually work? ONLY power of 2, that is multiple of sizeof(void*)?\n\n3. if 0 is given, then the return value is either NULL or some unique ptr to free - i guess, we should just free it in case of an error and return nullptr. Right now minimal value is sizeof(void*) so we don\u0027t have to do that, but if there are changes here, remember about this.",
+      "range": {
+        "startLine": 43,
+        "startChar": 4,
+        "endLine": 43,
+        "endChar": 52
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_fe279d60",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "As I can see, all locks in these methods are mostly \"scoped\". Wouldn\u0027t it be better to use lock_guards, that have smaller overhead?",
+      "range": {
+        "startLine": 56,
+        "startChar": 8,
+        "endLine": 56,
+        "endChar": 50
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_f945776e",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "using errno and ret would actually be quite nice.",
+      "range": {
+        "startLine": 66,
+        "startChar": 8,
+        "endLine": 67,
+        "endChar": 59
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_de23b954",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 79,
+        "startChar": 8,
+        "endLine": 79,
+        "endChar": 50
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_79528736",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "is that really an error that should abort the engine? I guess the assumption made here is \"he\u0027s done some error with memory management, let\u0027s not make him do anything potentially harmful\"?",
+      "range": {
+        "startLine": 83,
+        "startChar": 12,
+        "endLine": 83,
+        "endChar": 67
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_bee59509",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "space above for more readability",
+      "range": {
+        "startLine": 94,
+        "startChar": 0,
+        "endLine": 94,
+        "endChar": 45
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7eeb8ddc",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "They say nothing in documentation about it, but maybe we could overwrite these with nullptr after a successfull free() call?",
+      "range": {
+        "startLine": 92,
+        "startChar": 0,
+        "endLine": 95,
+        "endChar": 14
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7e14ade7",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "Can\u0027t You make this method actually do something when in Release ?\n\nWouldn\u0027t it be better to put #ifdefs around this methods call in destructor?",
+      "range": {
+        "startLine": 101,
+        "startChar": 0,
+        "endLine": 108,
+        "endChar": 16
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_1e0ec1e4",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "1. some documentation would be nice.\n\nAlso please document macros, if we\u0027re supposed to use them instead of these methods.\n\nInformation about alignment constraints is obligatory imho.\n\n2. No realloc?",
+      "range": {
+        "startLine": 43,
+        "startChar": 4,
+        "endLine": 49,
+        "endChar": 36
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_cee8a8b5",
+        "filename": "nfEngine/nfCommon/PackedArray.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "Because we use templates here, if there will be no check in the DefaulAllocator class, we can easily put static_assert on alignment here.",
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8ef6208d",
+        "filename": "nfEngine/nfCommonTest/PackedArray.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "Maybe add some text, so the value does not look unintuitive while testing.",
+      "range": {
+        "startLine": 26,
+        "startChar": 42,
+        "endLine": 26,
+        "endChar": 47
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8e3d002d",
+        "filename": "nfEngine/nfCore/Renderer/RenderCommand.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "why c-style cast? I know \"it\u0027s not the score of this commit\", but You could at least change it in the lines with NFE_MALLOC",
+      "range": {
+        "startLine": 166,
+        "startChar": 21,
+        "endLine": 166,
+        "endChar": 27
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ae29e4e7",
+        "filename": "nfEngine/nfCore/Renderer/View.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "why is this mDefaultImGuiState needed when we use our malloc?\nMoreover...why there wasn\u0027t ANY free() in here before this commit?",
+      "range": {
+        "startLine": 41,
+        "startChar": 8,
+        "endLine": 43,
+        "endChar": 30
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_6e1f5cb7",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T09:37:30Z",
+      "side": 1,
+      "message": "How are new class field and changes in this class related to DefaultAllocator? Another commit?",
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
