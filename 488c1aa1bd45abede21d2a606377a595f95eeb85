@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_8e0aa024",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T10:36:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_ebf11e02",
+      "range": {
+        "startLine": 33,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 28
+      },
+      "revId": "488c1aa1bd45abede21d2a606377a595f95eeb85",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_8bdbb27b",
         "filename": "nfEngine/nfCommon/Logger.cpp",
         "patchSetId": 4
@@ -36,6 +60,30 @@
       "writtenOn": "2016-06-02T19:25:35Z",
       "side": 1,
       "message": "IMO you should use mMutex here, because when calling Reset() some other threads may be logging.",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 43,
+        "endChar": 15
+      },
+      "revId": "488c1aa1bd45abede21d2a606377a595f95eeb85",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_6e051c12",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T10:36:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_8bdbb27b",
       "range": {
         "startLine": 41,
         "startChar": 0,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_4e001802",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T10:36:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_4be12a29",
+      "range": {
+        "startLine": 51,
+        "startChar": 4,
+        "endLine": 51,
+        "endChar": 49
+      },
+      "revId": "488c1aa1bd45abede21d2a606377a595f95eeb85",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_4bb80a11",
         "filename": "nfEngine/nfCommon/Logger.cpp",
         "patchSetId": 4
@@ -82,6 +154,24 @@
       "writtenOn": "2016-06-02T19:29:08Z",
       "side": 1,
       "message": "I think there\u0027s missing Reset(). After creating the Log dir we must start the backends",
+      "revId": "488c1aa1bd45abede21d2a606377a595f95eeb85",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_0b31e259",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T10:36:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_4bb80a11",
       "revId": "488c1aa1bd45abede21d2a606377a595f95eeb85",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -111,6 +201,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_61b88d2a",
+        "filename": "nfEngine/nfCommon/Logger.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T10:36:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_cba65a0e",
+      "range": {
+        "startLine": 87,
+        "startChar": 4,
+        "endLine": 87,
+        "endChar": 29
+      },
+      "revId": "488c1aa1bd45abede21d2a606377a595f95eeb85",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_cbcbfaa2",
         "filename": "nfEngine/nfCommon/LoggerBackends/Win/BackendWindowsDebugger.cpp",
         "patchSetId": 4
@@ -128,6 +242,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_0e69f0f8",
+        "filename": "nfEngine/nfCommon/LoggerBackends/Win/BackendWindowsDebugger.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T10:36:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_cbcbfaa2",
+      "revId": "488c1aa1bd45abede21d2a606377a595f95eeb85",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_2bd38661",
         "filename": "nfEngine/nfCommon/LoggerBackends/Win/BackendWindowsDebugger.hpp",
         "patchSetId": 4
@@ -139,6 +271,24 @@
       "writtenOn": "2016-06-02T19:25:35Z",
       "side": 1,
       "message": "git checkout HEAD^ BackendWindowsDebugger.hpp",
+      "revId": "488c1aa1bd45abede21d2a606377a595f95eeb85",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2e66f429",
+        "filename": "nfEngine/nfCommon/LoggerBackends/Win/BackendWindowsDebugger.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-03T10:36:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_2bd38661",
       "revId": "488c1aa1bd45abede21d2a606377a595f95eeb85",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
