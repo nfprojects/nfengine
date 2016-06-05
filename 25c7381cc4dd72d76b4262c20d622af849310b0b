@@ -16,6 +16,24 @@
       "revId": "25c7381cc4dd72d76b4262c20d622af849310b0b",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_10a105f8",
+        "filename": "nfEngine/nfCommon/LoggerBackends/Win/BackendWindowsDebugger.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-05T10:47:06Z",
+      "side": 1,
+      "message": "Neither did I, but if() didn\u0027t work so I tried this workaround and it built, so...",
+      "parentUuid": "baa041b7_f55693cc",
+      "revId": "25c7381cc4dd72d76b4262c20d622af849310b0b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
