@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_903f55b3",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-05T10:47:06Z",
+      "side": 1,
+      "message": "There will be 2 mutexes - 1 for init and 1 for logging. I checked and the tests pass with this solution.",
+      "parentUuid": "baa041b7_150b37d7",
+      "revId": "9b50bf04947910d1ab1a0a74f932e47525255f6f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_f50d73e8",
         "filename": "nfEngine/nfCommon/Logger.cpp",
         "patchSetId": 6
@@ -30,6 +48,24 @@
       "writtenOn": "2016-06-04T16:38:18Z",
       "side": 1,
       "message": "If it\u0027s \"build info\", I\u0027d move \"Compiler\" message log here",
+      "revId": "9b50bf04947910d1ab1a0a74f932e47525255f6f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_d06f1dc2",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-05T10:47:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_f50d73e8",
       "revId": "9b50bf04947910d1ab1a0a74f932e47525255f6f",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -59,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_50454d40",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-05T10:47:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_b5fc8bb8",
+      "range": {
+        "startLine": 134,
+        "startChar": 48,
+        "endLine": 134,
+        "endChar": 59
+      },
+      "revId": "9b50bf04947910d1ab1a0a74f932e47525255f6f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_d5102f02",
         "filename": "nfEngine/nfCommon/Logger.cpp",
         "patchSetId": 6
@@ -70,6 +130,24 @@
       "writtenOn": "2016-06-04T16:38:18Z",
       "side": 1,
       "message": "Check if the name is not currently in use",
+      "revId": "9b50bf04947910d1ab1a0a74f932e47525255f6f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_f06c61d1",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-05T10:47:06Z",
+      "side": 1,
+      "message": "No need to - unordered map is still a map - it holds only unique keys:\nhttp://www.cplusplus.com/reference/unordered_map/unordered_map/emplace/",
+      "parentUuid": "baa041b7_d5102f02",
       "revId": "9b50bf04947910d1ab1a0a74f932e47525255f6f",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -99,6 +177,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_307769a1",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-05T10:47:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_95f747d2",
+      "range": {
+        "startLine": 140,
+        "startChar": 53,
+        "endLine": 140,
+        "endChar": 64
+      },
+      "revId": "9b50bf04947910d1ab1a0a74f932e47525255f6f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_55665fbb",
         "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
         "patchSetId": 6
@@ -116,6 +218,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_309e49b9",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-05T10:47:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_55665fbb",
+      "revId": "9b50bf04947910d1ab1a0a74f932e47525255f6f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_35087bd9",
         "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
         "patchSetId": 6
@@ -127,6 +247,24 @@
       "writtenOn": "2016-06-04T16:38:18Z",
       "side": 1,
       "message": "This test is stupid. If we add a new backed we must modify the test to pass",
+      "revId": "9b50bf04947910d1ab1a0a74f932e47525255f6f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_505c2d18",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-05T10:47:06Z",
+      "side": 1,
+      "message": "That is true, but these are ONLY nfCommon backends \u0026 we don\u0027t have many of them.\nWould You prefer if I\u0027d create custom backend, then get the list, then make sure it\u0027s there?",
+      "parentUuid": "baa041b7_35087bd9",
       "revId": "9b50bf04947910d1ab1a0a74f932e47525255f6f",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
