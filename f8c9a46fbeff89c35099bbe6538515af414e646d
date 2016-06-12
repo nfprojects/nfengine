@@ -1,0 +1,464 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_f681ddc4",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/CommandBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-12T18:47:28Z",
+      "side": 1,
+      "message": "So resetting/cleaning the CommandBuffer object has no meaning, apart from initialization?\n\nIf it\u0027s redundant, just don\u0027t do it and return after LOG_WARNING and change the methods name to Init().\n\nOtherwise change to LOG_DEBUG.",
+      "range": {
+        "startLine": 47,
+        "startChar": 4,
+        "endLine": 50,
+        "endChar": 18
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_f6cf9d27",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/CommandBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-12T18:47:28Z",
+      "side": 1,
+      "message": "If you need to use \u0027new\u0027 here, return unique_ptr, instead of hoping that everytime Finish() is called You will remember to \u0027delete\u0027 it.",
+      "range": {
+        "startLine": 436,
+        "startChar": 0,
+        "endLine": 463,
+        "endChar": 1
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b6da35e8",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-12T18:47:28Z",
+      "side": 1,
+      "message": "Remake it to return unique_ptr. Moreover I see that there isn\u0027t any check for \u0027Desc\u0027. If that\u0027s the case, then make the call easier, by removing \u0027typename Desc\u0027 and replacing argument with \u0027(const auto\u0026 desc)\u0027.\n\nIf You want to make it more how it should be - You can make static_assert to ensure that \u0027Type\u0027 is object type and not a pointer.",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 1
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_96d731bf",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-12T18:47:28Z",
+      "side": 1,
+      "message": "return unique_ptr",
+      "range": {
+        "startLine": 147,
+        "startChar": 4,
+        "endLine": 147,
+        "endChar": 50
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_76e4adab",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-12T18:47:28Z",
+      "side": 1,
+      "message": "return unique_ptr",
+      "range": {
+        "startLine": 150,
+        "startChar": 0,
+        "endLine": 167,
+        "endChar": 1
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_d686d9da",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-12T18:47:28Z",
+      "side": 1,
+      "message": "why C-style cast?",
+      "range": {
+        "startLine": 192,
+        "startChar": 17,
+        "endLine": 192,
+        "endChar": 36
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_96697128",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-12T18:47:28Z",
+      "side": 1,
+      "message": "Could You align the following casts? It would look much clearer.\n\nAlso...3 casts to size_t - only logical reason would be overflow possibility, isn\u0027t there any other way?\nMaybe Texture structure could hold these variables in a size_t to begin with?",
+      "range": {
+        "startLine": 214,
+        "startChar": 4,
+        "endLine": 216,
+        "endChar": 49
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7676ed07",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Texture.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-12T18:47:28Z",
+      "side": 1,
+      "message": "I know it wasn\u0027t changed here...but why is it \u0027type\u0027 instead of \u0027mType\u0027?",
+      "range": {
+        "startLine": 22,
+        "startChar": 4,
+        "endLine": 22,
+        "endChar": 21
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_5673e915",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-12T18:47:28Z",
+      "side": 1,
+      "message": "what is the reason for the extra scopes here?",
+      "range": {
+        "startLine": 209,
+        "startChar": 8,
+        "endLine": 222,
+        "endChar": 9
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_365f4577",
+        "filename": "nfEngine/nfCore/Renderer/RendererContext.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-12T18:47:28Z",
+      "side": 1,
+      "message": "remove first line and move second to the initalization list",
+      "range": {
+        "startLine": 20,
+        "startChar": 4,
+        "endLine": 21,
+        "endChar": 70
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_16644147",
+        "filename": "nfEngine/nfCore/Renderer/View.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-12T18:47:28Z",
+      "side": 1,
+      "message": "Update comment as well",
+      "range": {
+        "startLine": 135,
+        "startChar": 4,
+        "endLine": 139,
+        "endChar": 41
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_f658bd8c",
+        "filename": "nfEngine/nfRendererDemo/Scenes/Basic.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 328,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-12T18:47:28Z",
+      "side": 1,
+      "message": "Errr...not sure what happened here.\n\nIf OnSwitchSubscene is redundant - remove it. Else comment it, add a TODO if needed.\n\nDraw(dt) may need some update in it\u0027s comment in header.",
+      "range": {
+        "startLine": 325,
+        "startChar": 0,
+        "endLine": 328,
+        "endChar": 1
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_d65db97a",
+        "filename": "nfEngine/nfRendererDemo/Scenes/DepthStencil.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-12T18:47:28Z",
+      "side": 1,
+      "message": "Same as in Basic.cpp",
+      "range": {
+        "startLine": 266,
+        "startChar": 1,
+        "endLine": 269,
+        "endChar": 16
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_96505160",
+        "filename": "nfEngine/nfRendererDemo/Scenes/DepthStencil.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-12T18:47:28Z",
+      "side": 1,
+      "message": "static_cast",
+      "range": {
+        "startLine": 288,
+        "startChar": 65,
+        "endLine": 288,
+        "endChar": 72
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b653556c",
+        "filename": "nfEngine/nfRendererDemo/Scenes/DepthStencil.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-12T18:47:28Z",
+      "side": 1,
+      "message": "static_cast",
+      "range": {
+        "startLine": 288,
+        "startChar": 38,
+        "endLine": 288,
+        "endChar": 45
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_764dcdc3",
+        "filename": "nfEngine/nfRendererDemo/Scenes/RenderTargets.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-12T18:47:28Z",
+      "side": 1,
+      "message": "as in Basic.cpp",
+      "range": {
+        "startLine": 336,
+        "startChar": 0,
+        "endLine": 338,
+        "endChar": 16
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_564ac9ad",
+        "filename": "nfEngine/nfRendererDemo/Scenes/VertexBuffers.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-12T18:47:28Z",
+      "side": 1,
+      "message": "as in Basic.cpp",
+      "range": {
+        "startLine": 265,
+        "startChar": 0,
+        "endLine": 271,
+        "endChar": 13
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_36c62517",
+        "filename": "nfEngine/nfRendererDemo/Scenes/VertexBuffers.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-12T18:47:28Z",
+      "side": 1,
+      "message": "put a comment, that it\u0027s just to ignore the warning...but if that\u0027s the case, why not remove the argument?",
+      "range": {
+        "startLine": 271,
+        "startChar": 4,
+        "endLine": 271,
+        "endChar": 13
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_16cb2120",
+        "filename": "nfEngine/nfRendererDemo/Scenes/VertexBuffers.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-12T18:47:28Z",
+      "side": 1,
+      "message": "previous alignment looked better imho",
+      "range": {
+        "startLine": 286,
+        "startChar": 12,
+        "endLine": 287,
+        "endChar": 36
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_d6d499be",
+        "filename": "nfEngine/nfRendererTest/RendererTest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-12T18:47:28Z",
+      "side": 1,
+      "message": "after changing CommandBuffer::Finish, you can put \u0027mCommandBuffer-\u003eFinish().get() in the following call to Execute.\nThen You can also loose the scope, as it won\u0027t do anything.",
+      "range": {
+        "startLine": 77,
+        "startChar": 8,
+        "endLine": 77,
+        "endChar": 76
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
