@@ -1,0 +1,124 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_d5536c6b",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-13T19:38:40Z",
+      "side": 1,
+      "message": "This mutex is only for Reset(), so maybe it should be named mResetMutex?",
+      "range": {
+        "startLine": 49,
+        "startChar": 37,
+        "endLine": 49,
+        "endChar": 47
+      },
+      "revId": "51b6c501d39c8a87c910a889f9f565355d382b48",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b550e85f",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-13T19:38:40Z",
+      "side": 1,
+      "message": "Just merge TestBackend with LogInfoStruct and make everything public. This is unit test, it should be as simple as possible",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 2
+      },
+      "revId": "51b6c501d39c8a87c910a889f9f565355d382b48",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_754a60ae",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-13T19:38:40Z",
+      "side": 1,
+      "message": "This test will fail if it\u0027s executed more than once",
+      "revId": "51b6c501d39c8a87c910a889f9f565355d382b48",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_35cbb820",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-13T19:38:40Z",
+      "side": 1,
+      "message": "This test will fail if ListBackends was not launched. Test cases must be independent",
+      "revId": "51b6c501d39c8a87c910a889f9f565355d382b48",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_954de4c6",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-13T19:38:40Z",
+      "side": 1,
+      "message": "You should register TestBackend here",
+      "revId": "51b6c501d39c8a87c910a889f9f565355d382b48",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_f55d507a",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-13T19:38:40Z",
+      "side": 1,
+      "message": "nice one :)",
+      "range": {
+        "startLine": 182,
+        "startChar": 36,
+        "endLine": 182,
+        "endChar": 48
+      },
+      "revId": "51b6c501d39c8a87c910a889f9f565355d382b48",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
