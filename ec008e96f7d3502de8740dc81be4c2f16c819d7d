@@ -16,6 +16,24 @@
       "revId": "ec008e96f7d3502de8740dc81be4c2f16c819d7d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_d9aba2d5",
+        "filename": "nfEngine/nfCommonTest/EnumIteratorTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-06-15T07:20:18Z",
+      "side": 1,
+      "message": "Wait, nvm. It\u0027s a compile-time assert, missed that.",
+      "parentUuid": "baa041b7_19a90ae0",
+      "revId": "ec008e96f7d3502de8740dc81be4c2f16c819d7d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
