@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_87da5616",
+        "filename": "nfEngine/nfCommon/EnumIterator.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-15T00:48:44Z",
+      "side": 1,
+      "message": "tru dat",
+      "parentUuid": "baa041b7_fb5ae129",
+      "range": {
+        "startLine": 35,
+        "startChar": 30,
+        "endLine": 35,
+        "endChar": 38
+      },
+      "revId": "30575249aac45f5cf2665baa894a965792a12236",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_db403d38",
         "filename": "nfEngine/nfCommon/EnumIterator.hpp",
         "patchSetId": 3
@@ -53,6 +77,30 @@
       "writtenOn": "2016-06-14T12:52:29Z",
       "side": 1,
       "message": "As above",
+      "range": {
+        "startLine": 40,
+        "startChar": 30,
+        "endLine": 40,
+        "endChar": 38
+      },
+      "revId": "30575249aac45f5cf2665baa894a965792a12236",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_67d752ee",
+        "filename": "nfEngine/nfCommon/EnumIterator.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-15T00:48:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_db403d38",
       "range": {
         "startLine": 40,
         "startChar": 30,
