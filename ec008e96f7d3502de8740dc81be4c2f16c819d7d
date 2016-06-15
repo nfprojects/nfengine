@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_19a90ae0",
+        "filename": "nfEngine/nfCommonTest/EnumIteratorTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-06-15T07:14:04Z",
+      "side": 1,
+      "message": "Your tests should check for asserts as well.",
+      "revId": "ec008e96f7d3502de8740dc81be4c2f16c819d7d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
