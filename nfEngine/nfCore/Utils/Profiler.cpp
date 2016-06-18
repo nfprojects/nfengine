@@ -8,6 +8,12 @@
 
 #include "Profiler.hpp"
 
+namespace {
+
+const unsigned int STATS_BUFFER_SIZE = 2;
+
+} // namespace
+
 namespace NFE {
 namespace Util {
 
@@ -20,6 +26,8 @@ ProfilerNodeStats::ProfilerNodeStats()
 
 ProfilerNode::ProfilerNode(const char* name)
     : mName(name)
+    , mStatsBuffer(STATS_BUFFER_SIZE)
+    , mCurrentStatsBuffer(0)
 {
 }
 
@@ -30,21 +38,46 @@ void ProfilerNode::StartScope()
 
 void ProfilerNode::StopScope()
 {
-    mStats.time += mTimer.Stop();
-    mStats.visitCount++;
+    mStatsBuffer[mCurrentStatsBuffer].time += mTimer.Stop();
+    mStatsBuffer[mCurrentStatsBuffer].visitCount++;
 }
 
 const ProfilerNodeStats& ProfilerNode::GetStats() const
 {
-    return mStats;
+    return mStatsBuffer[mOldStatsBuffer];
+}
+
+const char* ProfilerNode::GetName() const
+{
+    return mName;
+}
+
+const ProfilerNodeArray& ProfilerNode::GetChildren() const
+{
+    return mChildren;
 }
 
 void ProfilerNode::ResetStats()
 {
-    mStats = ProfilerNodeStats();
+    for (auto& stat : mStatsBuffer)
+        stat = ProfilerNodeStats();
 
     for (auto& child : mChildren)
         child->ResetStats();
+}
+
+void ProfilerNode::SwitchStats()
+{
+    mOldStatsBuffer = mCurrentStatsBuffer;
+
+    ++mCurrentStatsBuffer;
+    if (mCurrentStatsBuffer >= STATS_BUFFER_SIZE)
+        mCurrentStatsBuffer = 0;
+
+    mStatsBuffer[mCurrentStatsBuffer] = ProfilerNodeStats();
+
+    for (auto& child : mChildren)
+        child->SwitchStats();
 }
 
 
@@ -86,6 +119,16 @@ void Profiler::ResetAllStats()
         node->ResetStats();
 }
 
+void Profiler::SwitchAllStats()
+{
+    for (auto& node : mNodes)
+        node->SwitchStats();
+}
+
+const ProfilerNodeArray& Profiler::GetNodes() const
+{
+    return mNodes;
+}
 
 } // namespace Util
 } // namespace NFE
