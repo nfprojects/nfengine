@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_187b4b7d",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-18T18:01:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_d5536c6b",
+      "range": {
+        "startLine": 49,
+        "startChar": 37,
+        "endLine": 49,
+        "endChar": 47
+      },
+      "revId": "51b6c501d39c8a87c910a889f9f565355d382b48",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_b550e85f",
         "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
         "patchSetId": 7
@@ -36,6 +60,30 @@
       "writtenOn": "2016-06-13T19:38:40Z",
       "side": 1,
       "message": "Just merge TestBackend with LogInfoStruct and make everything public. This is unit test, it should be as simple as possible",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 2
+      },
+      "revId": "51b6c501d39c8a87c910a889f9f565355d382b48",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b52108b7",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-18T18:01:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_b550e85f",
       "range": {
         "startLine": 16,
         "startChar": 0,
@@ -65,6 +113,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_98b87b2c",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-18T18:01:16Z",
+      "side": 1,
+      "message": "Moved to SetUpTestCase() for LoggerBackendsTest tests - it will be executed once, before first test from this \u0027suite\u0027.",
+      "parentUuid": "baa041b7_754a60ae",
+      "revId": "51b6c501d39c8a87c910a889f9f565355d382b48",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_35cbb820",
         "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
         "patchSetId": 7
@@ -76,6 +142,24 @@
       "writtenOn": "2016-06-13T19:38:40Z",
       "side": 1,
       "message": "This test will fail if ListBackends was not launched. Test cases must be independent",
+      "revId": "51b6c501d39c8a87c910a889f9f565355d382b48",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_78b5b72f",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-18T18:01:16Z",
+      "side": 1,
+      "message": "Now ListBackends will always launch, when any test from LoggerBackendsTest is launched.",
+      "parentUuid": "baa041b7_35cbb820",
       "revId": "51b6c501d39c8a87c910a889f9f565355d382b48",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -99,6 +183,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_5881d34c",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-18T18:01:16Z",
+      "side": 1,
+      "message": "nope",
+      "parentUuid": "baa041b7_954de4c6",
+      "revId": "51b6c501d39c8a87c910a889f9f565355d382b48",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_f55d507a",
         "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
         "patchSetId": 7
@@ -110,6 +212,30 @@
       "writtenOn": "2016-06-13T19:38:40Z",
       "side": 1,
       "message": "nice one :)",
+      "range": {
+        "startLine": 182,
+        "startChar": 36,
+        "endLine": 182,
+        "endChar": 48
+      },
+      "revId": "51b6c501d39c8a87c910a889f9f565355d382b48",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_38860f66",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-18T18:01:16Z",
+      "side": 1,
+      "message": "When u test everything, u test everything.",
+      "parentUuid": "baa041b7_f55d507a",
       "range": {
         "startLine": 182,
         "startChar": 36,
