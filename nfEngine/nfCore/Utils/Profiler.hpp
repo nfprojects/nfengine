@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "Core.hpp"
+#include "../Core.hpp"
 
 #include "Timer.hpp"
 
@@ -16,6 +16,8 @@ namespace Util {
 class ProfilerNode;
 typedef std::unique_ptr<ProfilerNode> ProfilerNodePtr;
 typedef std::vector<ProfilerNodePtr> ProfilerNodeArray;
+
+#define NFE_PROFILER_STATSBUFFER_SIZE 2
 
 /**
  * Structure with statistics gathered by every node.
@@ -42,7 +44,10 @@ class CORE_API ProfilerNode final
     ProfilerNodeArray mChildren;
 
     NFE::Common::Timer mTimer;
-    ProfilerNodeStats mStats;
+    ProfilerNodeStats mStatsBuffer[NFE_PROFILER_STATSBUFFER_SIZE];
+
+    static unsigned int mCurrentStatsBuffer;
+    static unsigned int mOldStatsBuffer;
 
 public:
     ProfilerNode(const char* mName);
@@ -71,9 +76,24 @@ public:
     const ProfilerNodeStats& GetStats() const;
 
     /**
+     * Acquire node's name string.
+     */
+    const char* GetName() const;
+
+    /**
+     * Get reference to Node's children.
+     */
+    const ProfilerNodeArray& GetChildren() const;
+
+    /**
      * Reset statistics gathered by the node.
      */
-    void ResetStats();
+    void ClearAllStats();
+
+    /**
+     * Clear current stats buffer. Done performing a switch to prepare the buffer before use.
+     */
+    void ClearCurrentStats();
 };
 
 /**
@@ -149,6 +169,16 @@ public:
      * For default values see ProfilerNodeStats structure definition.
      */
     void ResetAllStats();
+
+    /**
+     * Switches stats buffer to a new one. The old stats are set to be accessible for reading.
+     */
+    void SwitchAllStats();
+
+    /**
+     * Returns reference for all root Nodes kept within Profiler instance.
+     */
+    const ProfilerNodeArray& GetNodes() const;
 };
 
 
@@ -158,7 +188,7 @@ public:
  *
  * @param nodename Name of registered ProfilerNode object.
  */
-#define PROFILER_SCOPE(nodename) ProfilerScope nodename##Scope(nodename)
+#define PROFILER_SCOPE(nodename) NFE::Util::ProfilerScope nodename##Scope(nodename)
 
 
 /**
@@ -168,7 +198,7 @@ public:
  * @param nodename Name of created node pointer object. Used to refer in other Profiler functions.
  */
 #define PROFILER_REGISTER_ROOT_NODE(name, nodename) \
-        static ProfilerNode* nodename = Profiler::Instance().RegisterNode(name, nullptr)
+        NFE::Util::ProfilerNode* nodename = NFE::Util::Profiler::Instance().RegisterNode(name, nullptr)
 
 /**
  * Register a Profiler node, which is a child to other node.
@@ -178,7 +208,19 @@ public:
  * @param parent   Parent node to which created child node will be attached.
  */
 #define PROFILER_REGISTER_NODE(name, nodename, parent) \
-        static ProfilerNode* nodename = Profiler::Instance().RegisterNode(name, parent)
+        NFE::Util::ProfilerNode* nodename = NFE::Util::Profiler::Instance().RegisterNode(name, parent)
+
+/**
+ * Declare a Profiler Node.
+ *
+ * @param nodename Name of node to be declared. Same name must be later on used in
+ *                 PROFILER_REGISTER_NODE macros.
+ *
+ * This macro produces a node declaration, useful in header files where the Node must be visible
+ * to other files in the project.
+ */
+#define PROFILER_DECLARE_NODE(nodename) \
+        extern NFE::Util::ProfilerNode* nodename
 
 } // namespace Util
 } // namespace NFE
