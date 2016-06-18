@@ -48,6 +48,8 @@ TEST_F(ProfilerTest, Scope)
         std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_CHILD1CHILD));
     }
 
+    Profiler::Instance().SwitchAllStats();
+
     const ProfilerNodeStats& stats = Child1Child->GetStats();
     ASSERT_NEAR(stats.time, static_cast<double>(WAIT_TIME_CHILD1CHILD) / 1000.0, 0.002);
     ASSERT_EQ(stats.visitCount, 1);
@@ -83,6 +85,8 @@ TEST_F(ProfilerTest, Stats)
         }
     }
 
+    Profiler::Instance().SwitchAllStats();
+
     // expected time is bigger here due to all the child nodes creating extra latency
     const ProfilerNodeStats& rootStats = Root->GetStats();
     EXPECT_NEAR(rootStats.time, static_cast<double>(WAIT_TIME_SUM) / 1000.0, 0.05);
@@ -104,4 +108,37 @@ TEST_F(ProfilerTest, Stats)
     const ProfilerNodeStats& child3Stats = Child3->GetStats();
     EXPECT_NEAR(child3Stats.time, static_cast<double>(WAIT_TIME_CHILD3 * VISIT_COUNT_CHILD3) / 1000.0, 0.008);
     EXPECT_EQ(child3Stats.visitCount, VISIT_COUNT_CHILD3);
+}
+
+TEST_F(ProfilerTest, Buffers)
+{
+    Profiler::Instance().ResetAllStats();
+
+    // gather statistics from "first frame"
+    {
+        PROFILER_SCOPE(Child1Child);
+        std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_CHILD1CHILD));
+    }
+
+    Profiler::Instance().SwitchAllStats();
+
+    const ProfilerNodeStats& stats1 = Child1Child->GetStats();
+    ASSERT_NEAR(stats1.time, static_cast<double>(WAIT_TIME_CHILD1CHILD) / 1000.0, 0.002);
+    ASSERT_EQ(stats1.visitCount, 1);
+
+    // gather statistics from "second frame"
+    {
+        PROFILER_SCOPE(Child1Child);
+        std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_CHILD1CHILD));
+    }
+
+    Profiler::Instance().SwitchAllStats();
+
+    const ProfilerNodeStats& stats2 = Child1Child->GetStats();
+    ASSERT_NEAR(stats2.time, static_cast<double>(WAIT_TIME_CHILD1CHILD) / 1000.0, 0.002);
+    ASSERT_EQ(stats2.visitCount, 1);
+
+    // switching should zero the data on the first buffer
+    ASSERT_EQ(stats1.time, 0.0);
+    ASSERT_EQ(stats1.visitCount, 0);
 }
