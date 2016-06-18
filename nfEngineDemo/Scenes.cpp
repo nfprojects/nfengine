@@ -239,7 +239,7 @@ void CreateSceneSimple(SceneManager* scene)
  */
 void CreateScenePerformance(SceneManager* scene)
 {
-    CreateChamberArray(scene, 4, 4, 4, 4, 2);
+    CreateChamberArray(scene, 2, 2, 2, 2, 2); // LKTODO revert
 }
 
 // TODO: restore when scene segments are implemented

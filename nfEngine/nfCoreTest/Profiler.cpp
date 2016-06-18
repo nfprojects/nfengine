@@ -32,27 +32,27 @@ PROFILER_REGISTER_ROOT_NODE("Root", Root);
 
 void EmulateProfiling()
 {
-    PROFILER_SCOPE(Root);
+    PROFILER_SCOPE(Root, Root);
     std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_ROOT));
 
     {
-        PROFILER_SCOPE(Child1);
+        PROFILER_SCOPE(Child1, Child1);
         std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_CHILD1));
 
         {
-            PROFILER_SCOPE(Child1Child);
+            PROFILER_SCOPE(Child1Child, Child1Child);
             std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_CHILD1CHILD));
         }
     }
 
     {
-        PROFILER_SCOPE(Child2);
+        PROFILER_SCOPE(Child2, Child2);
         std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_CHILD2));
     }
 
     for (int i = 0; i < VISIT_COUNT_CHILD3; ++i)
     {
-        PROFILER_SCOPE(Child3);
+        PROFILER_SCOPE(Child3, Child3);
         std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_CHILD3));
     }
 }
@@ -71,7 +71,7 @@ TEST_F(ProfilerTest, Scope)
     Profiler::Instance().ResetAllStats();
 
     {
-        PROFILER_SCOPE(Child1Child);
+        PROFILER_SCOPE(Child1Child, Child1Child);
         std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_CHILD1CHILD));
     }
 
@@ -119,7 +119,7 @@ TEST_F(ProfilerTest, Buffers)
 
     // gather statistics from "first frame"
     {
-        PROFILER_SCOPE(Child1Child);
+        PROFILER_SCOPE(Child1Child, Child1Child);
         std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_CHILD1CHILD));
     }
 
@@ -131,7 +131,7 @@ TEST_F(ProfilerTest, Buffers)
 
     // gather statistics from "second frame"
     {
-        PROFILER_SCOPE(Child1Child);
+        PROFILER_SCOPE(Child1Child, Child1Child);
         std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_CHILD1CHILD));
     }
 

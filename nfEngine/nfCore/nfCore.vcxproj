@@ -398,6 +398,7 @@
     </ClCompile>
     <ClCompile Include="Utils\Profiler.cpp" />
     <ClCompile Include="Utils\ProfilerNodeStats.cpp" />
+    <ClCompile Include="Utils\ProfilerNodes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\BodyComponent.hpp" />
@@ -443,6 +444,7 @@
     <ClInclude Include="Systems\TransformSystem.hpp" />
     <ClInclude Include="Utils\Profiler.hpp" />
     <ClInclude Include="Utils\ProfilerNodeStats.hpp" />
+    <ClInclude Include="Utils\ProfilerNodes.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

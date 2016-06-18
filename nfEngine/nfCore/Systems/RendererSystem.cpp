@@ -29,6 +29,8 @@
 #include "../nfCommon/Math/Geometry.hpp"
 #include "../nfCommon/Math/Sphere.hpp"
 
+#include "Utils/ProfilerNodes.hpp"
+
 namespace NFE {
 namespace Scene {
 
@@ -204,6 +206,8 @@ void RendererSystem::RenderLightsDebug(RenderingData& data, Renderer::RenderCont
 void RendererSystem::RenderGeometry(RenderContext* ctx, const Math::Frustum& viewFrustum,
                                     const TransformComponent* cameraTransform) const
 {
+    PROFILER_SCOPE(GeometryRenderer, NFE::Util::GeometryRendererNode);
+
     // draw meshes
     std::vector<MeshEntry> visibleMeshes; //TODO: dynamic allocation per frame should be avoided
     FindVisibleMeshEntities(viewFrustum, visibleMeshes);
@@ -254,6 +258,8 @@ void RendererSystem::RenderSpotShadowMap(const Common::TaskContext& context,
                                          const LightComponent* light,
                                          RenderingData& data) const
 {
+    PROFILER_SCOPE(SpotShadowsRenderer, NFE::Util::SpotShadowsRendererNode);
+
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
     RenderContext* renderCtx = renderer->GetDeferredContext(context.threadId);
     renderCtx->commandBuffer->Reset();
@@ -277,6 +283,8 @@ void RendererSystem::RenderOmniShadowMap(const Common::TaskContext& context,
                                          const LightComponent* light,
                                          RenderingData& data) const
 {
+    PROFILER_SCOPE(OmniShadowsRenderer, NFE::Util::OmniShadowsRendererNode);
+
     // The below vector arrays are front, up and right vectors for each cubemap face camera matrix:
 
     // Z axis for each cube map face

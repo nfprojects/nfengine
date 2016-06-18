@@ -180,7 +180,7 @@ public:
  *
  * @param nodename Name of registered ProfilerNode object.
  */
-#define PROFILER_SCOPE(nodename) NFE::Util::ProfilerScope nodename##Scope(nodename)
+#define PROFILER_SCOPE(scopename, nodename) NFE::Util::ProfilerScope scopename##Scope(nodename)
 
 
 /**

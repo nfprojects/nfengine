@@ -8,6 +8,8 @@
 #include "../nfCommon/FileSystem.hpp"
 #include "../nfCommon/KeyCodes.hpp"
 
+#include "../nfCore/Utils/Profiler.hpp"
+
 using namespace NFE;
 using namespace NFE::Renderer;
 using namespace NFE::Math;
@@ -27,6 +29,19 @@ const int SECONDARY_VIEW_HEIGHT = 256;
 
 CustomWindow* AddWindow(CustomWindow* parent = nullptr);
 
+void RecurseProfilerNodes(const NFE::Util::ProfilerNodePtr& node, int depth)
+{
+    const NFE::Util::ProfilerNodeStats& stats = node->GetStats(true);
+    std::string tabs;
+    for (int i = 0; i < depth; ++i)
+        tabs += '\t';
+
+    ImGui::Text("%s%s: %.2fms (%u)", tabs.c_str(), node->GetName(), stats.time * 1000.0, stats.visitCount);
+
+    for (const NFE::Util::ProfilerNodePtr& child : node->GetChildren())
+        RecurseProfilerNodes(child, depth+1);
+}
+
 class MainCameraView : public NFE::Renderer::View
 {
 public:
@@ -41,7 +56,7 @@ public:
     MainCameraView()
         : drawSecondaryView(false)
         , showViewProperties(false)
-        , showProfiler(false)
+        , showProfiler(true) // LKTODO revert
     {
         dtHistory.resize(dtHistorySize);
     }
@@ -76,6 +91,12 @@ public:
                 ImGui::Text("Delta time: %.2fms", 1000.0f * gDeltaTime);
                 ImGui::Text("FPS: %.1f", 1.0f / gDeltaTime);
                 ImGui::Separator();
+
+                // Profiler data
+                NFE::Util::Profiler& profiler = NFE::Util::Profiler::Instance();
+                ImGui::Text("Profiler staticstics:");
+                for (const NFE::Util::ProfilerNodePtr& node : profiler.GetNodes())
+                    RecurseProfilerNodes(node, 0);
 
                 memmove(dtHistory.data(), dtHistory.data() + 1, sizeof(float) * (dtHistorySize - 1));
                 dtHistory[dtHistorySize - 1] = 1000.0f * gDeltaTime;
@@ -412,7 +433,7 @@ public:
             SetUpScene(static_cast<unsigned int>(key) -
                        static_cast<unsigned int>(Common::KeyCode::Num0));
 
-        // spaw a new window
+        // spawn a new window
         if (key == Common::KeyCode::N)
             AddWindow(this);
     }

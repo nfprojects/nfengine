@@ -20,6 +20,8 @@
 #include "../nfCommon/Logger.hpp"
 #include "../nfCommon/SystemInfo.hpp"
 
+#include "Utils/Profiler.hpp"
+
 namespace NFE {
 
 using namespace Renderer;
@@ -141,6 +143,8 @@ bool Engine::Advance(View** views, size_t viewsNum,
                      const UpdateRequest* updateRequests, size_t updateRequestsNum)
 {
     using namespace Util;
+
+    Profiler::Instance().SwitchAllStats();
 
     if (viewsNum > 0 && !mRenderer)
     {
