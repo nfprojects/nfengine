@@ -218,6 +218,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ThreadPoolStress.cpp" />
+    <ClCompile Include="ThreadTest.cpp" />
     <ClCompile Include="TimerTest.cpp" />
     <ClCompile Include="WindowTest.cpp" />
   </ItemGroup>
