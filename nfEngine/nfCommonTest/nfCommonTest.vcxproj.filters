@@ -30,6 +30,7 @@
     <ClCompile Include="ConfigTest.cpp" />
     <ClCompile Include="AlignedTest.cpp" />
     <ClCompile Include="BVHTest.cpp" />
+    <ClCompile Include="ThreadTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />

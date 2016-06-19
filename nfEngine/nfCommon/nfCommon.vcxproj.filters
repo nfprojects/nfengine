@@ -230,6 +230,9 @@
     <ClInclude Include="KeyCodes.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Thread.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -390,6 +393,9 @@
     </ClCompile>
     <ClCompile Include="LoggerBackends\BackendTxt.cpp">
       <Filter>Source Files\LoggerBackends</Filter>
+    </ClCompile>
+    <ClCompile Include="Win\Thread.cpp">
+      <Filter>Source Files\Win</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
