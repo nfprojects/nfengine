@@ -17,13 +17,6 @@ const unsigned int STATS_BUFFER_SIZE = 2;
 namespace NFE {
 namespace Util {
 
-ProfilerNodeStats::ProfilerNodeStats()
-    : time(0.0)
-    , visitCount(0)
-{
-}
-
-
 ProfilerNode::ProfilerNode(const char* name)
     : mName(name)
     , mStatsBuffer(STATS_BUFFER_SIZE)
@@ -51,12 +44,7 @@ const ProfilerNodeStats& ProfilerNode::GetStats(bool childrenStats)
         if (!mChildrenStatsCalculated)
         {
             for (auto& child : mChildren)
-            {
-                const ProfilerNodeStats& childStats = child->GetStats(true);
-                // TODO replace with overloaded += operator
-                mChildrenStats.time += childStats.time;
-                mChildrenStats.visitCount += childStats.visitCount;
-            }
+                mChildrenStats += child->GetStats(true);
 
             mChildrenStatsCalculated = true;
         }
@@ -78,10 +66,10 @@ const ProfilerNodeArray& ProfilerNode::GetChildren() const
 void ProfilerNode::ResetStats()
 {
     for (auto& stat : mStatsBuffer)
-        stat = ProfilerNodeStats();
+        stat.Reset();
 
     // TODO it might be faster to just implement a .Reset() call to NodeStats
-    mChildrenStats = ProfilerNodeStats();
+    mChildrenStats.Reset();
     mChildrenStatsCalculated = false;
 
     for (auto& child : mChildren)
@@ -96,8 +84,8 @@ void ProfilerNode::SwitchStats()
     if (mCurrentStatsBuffer >= STATS_BUFFER_SIZE)
         mCurrentStatsBuffer = 0;
 
-    mStatsBuffer[mCurrentStatsBuffer] = ProfilerNodeStats();
-    mChildrenStats = ProfilerNodeStats();
+    mStatsBuffer[mCurrentStatsBuffer].Reset();
+    mChildrenStats.Reset();
     mChildrenStatsCalculated = false;
 
     for (auto& child : mChildren)

@@ -10,23 +10,14 @@
 
 #include "Timer.hpp"
 
+#include "ProfilerNodeStats.hpp"
+
 namespace NFE {
 namespace Util {
 
 class ProfilerNode;
 typedef std::unique_ptr<ProfilerNode> ProfilerNodePtr;
 typedef std::vector<ProfilerNodePtr> ProfilerNodeArray;
-
-/**
- * Structure with statistics gathered by every node.
- */
-struct ProfilerNodeStats
-{
-    double time;                ///< Time between StartScope and StopScope calls
-    unsigned int visitCount;    ///< Amount of times the Node has been visited
-
-    ProfilerNodeStats();
-};
 
 /**
  * Object representing single node to profile in code.

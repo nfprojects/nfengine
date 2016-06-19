@@ -138,6 +138,9 @@
     <ClCompile Include="Utils\Profiler.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\ProfilerNodeStats.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Prerequisites.hpp">
@@ -264,6 +267,9 @@
       <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="Utils\Profiler.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\ProfilerNodeStats.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
