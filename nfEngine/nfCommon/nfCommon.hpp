@@ -107,5 +107,7 @@ typedef unsigned short uint16;
 typedef short int16;
 typedef unsigned char uchar;
 
+#define NFE_TLS thread_local const
+
 } // namespace Common
 } // namespace NFE
