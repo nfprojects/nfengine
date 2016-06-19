@@ -22,6 +22,8 @@ const int VISIT_COUNT_CHILD3 = 3;
 
 const int WAIT_TIME_SUM = WAIT_TIME_ROOT + WAIT_TIME_CHILD1 + WAIT_TIME_CHILD1CHILD
                         + WAIT_TIME_CHILD2 + WAIT_TIME_CHILD3 * VISIT_COUNT_CHILD3;
+
+const unsigned int VISIT_COUNT_MULTITHREADED = 1000;
 } // namespace
 
 PROFILER_REGISTER_ROOT_NODE("Root", Root);
@@ -141,4 +143,29 @@ TEST_F(ProfilerTest, Buffers)
     // switching should zero the data on the first buffer
     ASSERT_EQ(stats1.time, 0.0);
     ASSERT_EQ(stats1.visitCount, 0);
+}
+
+void Scoper()
+{
+    for (unsigned int i = 0; i < VISIT_COUNT_MULTITHREADED; ++i)
+        PROFILER_SCOPE(Child1Child);
+}
+
+TEST_F(ProfilerTest, Threads)
+{
+    Profiler::Instance().ResetAllStats();
+
+    std::thread t1(Scoper);
+    std::thread t2(Scoper);
+    std::thread t3(Scoper);
+    std::thread t4(Scoper);
+
+    t1.join();
+    t2.join();
+    t3.join();
+    t4.join();
+
+    Profiler::Instance().SwitchAllStats();
+    const ProfilerNodeStats& stats = Child1Child->GetStats();
+    ASSERT_EQ(VISIT_COUNT_MULTITHREADED * 4, stats.visitCount);
 }

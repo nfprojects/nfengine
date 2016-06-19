@@ -15,13 +15,6 @@ namespace Util {
 unsigned int ProfilerNode::mCurrentStatsBuffer = 1;
 unsigned int ProfilerNode::mOldStatsBuffer = 0;
 
-ProfilerNodeStats::ProfilerNodeStats()
-    : time(0.0)
-    , visitCount(0)
-{
-}
-
-
 ProfilerNode::ProfilerNode(const char* name)
     : mName(name)
 {
@@ -34,12 +27,15 @@ void ProfilerNode::StartScope()
 
 void ProfilerNode::StopScope()
 {
+    std::unique_lock<std::mutex> lock(mStatAccessMutex);
+
     mStatsBuffer[mCurrentStatsBuffer].time += mTimer.Stop();
     mStatsBuffer[mCurrentStatsBuffer].visitCount++;
 }
 
 const ProfilerNodeStats& ProfilerNode::GetStats() const
 {
+    // no need for mutex - we access the old stat buffer here
     return mStatsBuffer[mOldStatsBuffer];
 }
 
@@ -56,7 +52,7 @@ const ProfilerNodeArray& ProfilerNode::GetChildren() const
 void ProfilerNode::ClearAllStats()
 {
     for (auto& stat : mStatsBuffer)
-        stat = ProfilerNodeStats();
+        stat.Reset();
 
     for (auto& child : mChildren)
         child->ClearAllStats();

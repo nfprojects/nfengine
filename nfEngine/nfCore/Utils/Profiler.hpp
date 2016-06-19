@@ -10,6 +10,10 @@
 
 #include "Timer.hpp"
 
+#include <mutex>
+
+#include "ProfilerNodeStats.hpp"
+
 namespace NFE {
 namespace Util {
 
@@ -18,17 +22,6 @@ typedef std::unique_ptr<ProfilerNode> ProfilerNodePtr;
 typedef std::vector<ProfilerNodePtr> ProfilerNodeArray;
 
 #define NFE_PROFILER_STATSBUFFER_SIZE 2
-
-/**
- * Structure with statistics gathered by every node.
- */
-struct ProfilerNodeStats
-{
-    double time;                ///< Time between StartScope and StopScope calls
-    unsigned int visitCount;    ///< Amount of times the Node has been visited
-
-    ProfilerNodeStats();
-};
 
 /**
  * Object representing single node to profile in code.
@@ -48,6 +41,8 @@ class CORE_API ProfilerNode final
 
     static unsigned int mCurrentStatsBuffer;
     static unsigned int mOldStatsBuffer;
+
+    std::mutex mStatAccessMutex;
 
 public:
     ProfilerNode(const char* mName);
