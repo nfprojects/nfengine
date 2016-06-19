@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_91c042e2",
+        "filename": "nfEngine/nfCommon/Thread.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-19T10:18:56Z",
+      "side": 1,
+      "message": "I don\u0027t like that enum is defined in cpp",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 43
+      },
+      "revId": "9ec30698c71984744e01650bfafa21423297485e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_51baba6f",
+        "filename": "nfEngine/nfCommon/Thread.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-19T10:18:56Z",
+      "side": 1,
+      "message": "I\u0027d like this function to use TLS as well.",
+      "range": {
+        "startLine": 56,
+        "startChar": 0,
+        "endLine": 56,
+        "endChar": 42
+      },
+      "revId": "9ec30698c71984744e01650bfafa21423297485e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b1bb4675",
+        "filename": "nfEngine/nfCommon/Thread.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-19T10:18:56Z",
+      "side": 1,
+      "message": "ThreadPriority",
+      "range": {
+        "startLine": 13,
+        "startChar": 11,
+        "endLine": 13,
+        "endChar": 25
+      },
+      "revId": "9ec30698c71984744e01650bfafa21423297485e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_71b5be7c",
+        "filename": "nfEngine/nfCommon/Thread.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-19T10:18:56Z",
+      "side": 1,
+      "message": "1. Variables should be defined in cpp.\n2. This should be turned to Thread::GetCurrentThreadName()",
+      "revId": "9ec30698c71984744e01650bfafa21423297485e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
