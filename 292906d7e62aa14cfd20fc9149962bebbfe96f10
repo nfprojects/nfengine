@@ -81,6 +81,24 @@
       "revId": "292906d7e62aa14cfd20fc9149962bebbfe96f10",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_d1e12a9c",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-06-19T05:55:27Z",
+      "side": 1,
+      "message": "The only place it\u0027s used is in SetUpTestCase. No need to wrap it into a function, if it\u0027s the only place.\n\nI say, move it.",
+      "parentUuid": "baa041b7_51399a40",
+      "revId": "292906d7e62aa14cfd20fc9149962bebbfe96f10",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
