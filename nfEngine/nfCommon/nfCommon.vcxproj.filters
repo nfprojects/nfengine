@@ -242,6 +242,9 @@
     <ClInclude Include="LogGrouper.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Thread.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -408,6 +411,9 @@
     </ClCompile>
     <ClCompile Include="LogGrouper.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Win\Thread.cpp">
+      <Filter>Source Files\Win</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
