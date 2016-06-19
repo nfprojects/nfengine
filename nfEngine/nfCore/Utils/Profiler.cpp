@@ -15,13 +15,6 @@ namespace Util {
 unsigned int ProfilerNode::mCurrentStatsBuffer = 1;
 unsigned int ProfilerNode::mOldStatsBuffer = 0;
 
-ProfilerNodeStats::ProfilerNodeStats()
-    : time(0.0)
-    , visitCount(0)
-{
-}
-
-
 ProfilerNode::ProfilerNode(const char* name)
     : mName(name)
 {
@@ -56,7 +49,7 @@ const ProfilerNodeArray& ProfilerNode::GetChildren() const
 void ProfilerNode::ClearAllStats()
 {
     for (auto& stat : mStatsBuffer)
-        stat = ProfilerNodeStats();
+        stat.Reset();
 
     for (auto& child : mChildren)
         child->ClearAllStats();

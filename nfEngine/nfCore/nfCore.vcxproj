@@ -397,6 +397,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Utils\Profiler.cpp" />
+    <ClCompile Include="Utils\ProfilerNodeStats.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\BodyComponent.hpp" />
@@ -441,6 +442,7 @@
     <ClInclude Include="Systems\RendererSystem.hpp" />
     <ClInclude Include="Systems\TransformSystem.hpp" />
     <ClInclude Include="Utils\Profiler.hpp" />
+    <ClInclude Include="Utils\ProfilerNodeStats.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
