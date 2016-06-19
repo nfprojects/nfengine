@@ -23,142 +23,220 @@ class LoggerPerf : public CommonPerfTest
 
 TEST_F(LoggerPerf, SimpleChars)
 {
-    GetOStream() << "SimpleChars:" << std::endl;
-    Timer timer;
-    const char* simple = "c";
-    double logTime, logStreamTime;
+    auto bckndList = Logger::ListBackends();
+    for (auto b : bckndList)
+        Logger::GetBackend(b)->Enable(false);
 
-    timer.Start();
-    for (int i = LOG_TEST_NUMBER; i > 0; i--)
-        LOG_WARNING(simple);
-    logTime = timer.Stop();
+    for (auto b : bckndList)
+    {
+        auto backend = Logger::GetBackend(b);
+        backend->Enable(true);
+        GetOStream() << "<>LOGGER BACKEND: " << b << std::endl;
 
-    timer.Start();
-    for (int i = LOG_TEST_NUMBER; i > 0; i--)
-        LOG_WARNING_S(simple);
-    logStreamTime = timer.Stop();
+        GetOStream() << "SimpleChars:" << std::endl;
+        Timer timer;
+        const char* simple = "c";
+        double logTime, logStreamTime;
+
+        timer.Start();
+        for (int i = LOG_TEST_NUMBER; i > 0; i--)
+            LOG_WARNING(simple);
+        logTime = timer.Stop();
+
+        timer.Start();
+        for (int i = LOG_TEST_NUMBER; i > 0; i--)
+            LOG_WARNING_S(simple);
+        logStreamTime = timer.Stop();
 
 
-    // print stats
-    GetOStream()  << std::setprecision(5) << std::left
-           << std::setw(10) << "NORMAL:" << logTime << " s" << std::endl
-           << std::setw(10) << "STREAM:" << logStreamTime << " s" << std::endl;
+        // print stats
+        GetOStream() << std::setprecision(5) << std::left
+            << std::setw(10) << "NORMAL:" << logTime << " s" << std::endl
+            << std::setw(10) << "STREAM:" << logStreamTime << " s" << std::endl;
+
+        backend->Enable(false);
+    }
 }
 
 TEST_F(LoggerPerf, SymbolsShort)
 {
-    GetOStream() << std::endl << "SymbolsShort:" << std::endl;
-    Timer timer;
-    const std::string text = "<>'\"&";
-    double logTime[5], logStreamTime[5];
-    unsigned char counter = 0;
+    auto bckndList = Logger::ListBackends();
+    for (auto b : bckndList)
+        Logger::GetBackend(b)->Enable(false);
 
-    for (auto& i : text)
+    for (auto b : bckndList)
     {
-        timer.Start();
-        for (int j = LOG_TEST_NUMBER; j > 0; j--)
-            LOG_WARNING(std::to_string(i).c_str());
-        logTime[counter] = timer.Stop();
+        auto backend = Logger::GetBackend(b);
+        backend->Enable(true);
+        GetOStream() << "<>LOGGER BACKEND: " << b << std::endl;
 
-        timer.Start();
-        for (int j = LOG_TEST_NUMBER; j > 0; j--)
-            LOG_WARNING_S(std::to_string(i).c_str());
-        logStreamTime[counter++] = timer.Stop();
-    }
+        GetOStream() << std::endl << "SymbolsShort:" << std::endl;
+        Timer timer;
+        const std::string text = "<>'\"&";
+        double logTime[5], logStreamTime[5];
+        unsigned char counter = 0;
 
-    GetOStream() << "Symbol | LOG_* time | LOG_*_S time" << std::endl;
-    for (int i = 0; i < counter; i++)
-    {
-        // print stats
-        GetOStream() << std::setprecision(5) << std::left
-              << std::setw(6) << text[i] << " | "
-              << std::setw(8) << logTime[i] << " s | "
-              << std::setw(10) << logStreamTime[i] << " s" << std::endl;
+        for (auto& i : text)
+        {
+            timer.Start();
+            for (int j = LOG_TEST_NUMBER; j > 0; j--)
+                LOG_WARNING(std::to_string(i).c_str());
+            logTime[counter] = timer.Stop();
+
+            timer.Start();
+            for (int j = LOG_TEST_NUMBER; j > 0; j--)
+                LOG_WARNING_S(std::to_string(i).c_str());
+            logStreamTime[counter++] = timer.Stop();
+        }
+
+        GetOStream() << "Symbol | LOG_* time | LOG_*_S time" << std::endl;
+        for (int i = 0; i < counter; i++)
+        {
+            // print stats
+            GetOStream() << std::setprecision(5) << std::left
+                << std::setw(6) << text[i] << " | "
+                << std::setw(8) << logTime[i] << " s | "
+                << std::setw(10) << logStreamTime[i] << " s" << std::endl;
+        }
+
+        backend->Enable(false);
     }
 }
 
 TEST_F(LoggerPerf, SymbolsLong)
 {
-    GetOStream() << std::endl << "SymbolsLong:" << std::endl;
-    Timer timer;
-    const char* text = "~!@#$%^&*()_+=-<?.';][\\,>/:\"{}|";
-    double logTime, logStreamTime;
+    auto bckndList = Logger::ListBackends();
+    for (auto b : bckndList)
+        Logger::GetBackend(b)->Enable(false);
 
-    timer.Start();
-    for (int i = LOG_TEST_NUMBER; i > 0; i--)
-        LOG_WARNING(text);
-    logTime = timer.Stop();
+    for (auto b : bckndList)
+    {
+        auto backend = Logger::GetBackend(b);
+        backend->Enable(true);
+        GetOStream() << "<>LOGGER BACKEND: " << b << std::endl;
 
-    timer.Start();
-    for (int i = LOG_TEST_NUMBER; i > 0; i--)
-        LOG_WARNING_S(text);
-    logStreamTime = timer.Stop();
+        GetOStream() << std::endl << "SymbolsLong:" << std::endl;
+        Timer timer;
+        const char* text = "~!@#$%^&*()_+=-<?.';][\\,>/:\"{}|";
+        double logTime, logStreamTime;
 
-// print stats
-    GetOStream() << std::setprecision(5) << std::left
-          << std::setw(10) << "NORMAL:" << logTime << " s" << std::endl
-          << std::setw(10) << "STREAM:" << logStreamTime << " s" << std::endl;
+        timer.Start();
+        for (int i = LOG_TEST_NUMBER; i > 0; i--)
+            LOG_WARNING(text);
+        logTime = timer.Stop();
+
+        timer.Start();
+        for (int i = LOG_TEST_NUMBER; i > 0; i--)
+            LOG_WARNING_S(text);
+        logStreamTime = timer.Stop();
+
+    // print stats
+        GetOStream() << std::setprecision(5) << std::left
+            << std::setw(10) << "NORMAL:" << logTime << " s" << std::endl
+            << std::setw(10) << "STREAM:" << logStreamTime << " s" << std::endl;
+
+        backend->Enable(false);
+    }
 }
 
 TEST_F(LoggerPerf, LongText)
 {
-    GetOStream() << std::endl << "LongText:" << std::endl;
-    Timer timer;
-    const unsigned int longMessageLength = 100000;
-    std::string text(longMessageLength, 'x');
-    double logTime, logStreamTime;
+    auto bckndList = Logger::ListBackends();
+    for (auto b : bckndList)
+        Logger::GetBackend(b)->Enable(false);
 
-    timer.Start();
-    LOG_WARNING(text.c_str());
-    logTime = timer.Stop();
+    for (auto b : bckndList)
+    {
+        auto backend = Logger::GetBackend(b);
+        backend->Enable(true);
+        GetOStream() << "<>LOGGER BACKEND: " << b << std::endl;
 
-    timer.Start();
-    LOG_WARNING_S(text.c_str());
-    logStreamTime = timer.Stop();
+        GetOStream() << std::endl << "LongText:" << std::endl;
+        Timer timer;
+        const unsigned int longMessageLength = 100000;
+        std::string text(longMessageLength, 'x');
+        double logTime, logStreamTime;
 
-    // print stats
-    GetOStream() << std::setprecision(5) << std::left
-          << std::setw(10) << "NORMAL:" << logTime << " s" << std::endl
-          << std::setw(10) << "STREAM:" << logStreamTime << " s" << std::endl;
+        timer.Start();
+        LOG_WARNING(text.c_str());
+        logTime = timer.Stop();
+
+        timer.Start();
+        LOG_WARNING_S(text.c_str());
+        logStreamTime = timer.Stop();
+
+        // print stats
+        GetOStream() << std::setprecision(5) << std::left
+            << std::setw(10) << "NORMAL:" << logTime << " s" << std::endl
+            << std::setw(10) << "STREAM:" << logStreamTime << " s" << std::endl;
+
+        backend->Enable(false);
+    }
 }
 
 TEST_F(LoggerPerf, FormattedMsg)
 {
-    GetOStream() << std::endl << "FormattedMsg:" << std::endl;
-    Timer timer;
-    int numInt = 5;
-    double logTime, numDbl = 5.55;
-    const char* text = "Lorem ipsum";
-    const char* format = "%s%i%f%s%i%f%s%i%f";
+    auto bckndList = Logger::ListBackends();
+    for (auto b : bckndList)
+        Logger::GetBackend(b)->Enable(false);
 
-    timer.Start();
-    for (int i = LOG_TEST_NUMBER; i > 0; i--)
-        LOG_INFO(format, text, numInt, numDbl,
-                 text, numInt, numDbl,
-                 text, numInt, numDbl);
-    logTime = timer.Stop();
+    for (auto b : bckndList)
+    {
+        auto backend = Logger::GetBackend(b);
+        backend->Enable(true);
+        GetOStream() << "<>LOGGER BACKEND: " << b << std::endl;
 
-     // print stats
-    GetOStream() << std::setprecision(5) << std::left
-          << std::setw(10) << "NORMAL:" << logTime << " s" << std::endl;
+        GetOStream() << std::endl << "FormattedMsg:" << std::endl;
+        Timer timer;
+        int numInt = 5;
+        double logTime, numDbl = 5.55;
+        const char* text = "Lorem ipsum";
+        const char* format = "%s%i%f%s%i%f%s%i%f";
+
+        timer.Start();
+        for (int i = LOG_TEST_NUMBER; i > 0; i--)
+            LOG_INFO(format, text, numInt, numDbl,
+                     text, numInt, numDbl,
+                     text, numInt, numDbl);
+        logTime = timer.Stop();
+
+         // print stats
+        GetOStream() << std::setprecision(5) << std::left
+            << std::setw(10) << "NORMAL:" << logTime << " s" << std::endl;
+
+        backend->Enable(false);
+    }
 }
 
 TEST_F(LoggerPerf, StreamMsg)
 {
-    GetOStream() << std::endl << "StreamMsg:" << std::endl;
-    Timer timer;
-    int numInt = 5;
-    double logTime, numDbl = 5.55;
-    const char* text = "Lorem ipsum";
+    auto bckndList = Logger::ListBackends();
+    for (auto b : bckndList)
+        Logger::GetBackend(b)->Enable(false);
 
-    timer.Start();
-    for (int i = LOG_TEST_NUMBER; i > 0; i--)
-        LOG_INFO_S(text << numInt << numDbl <<
-                   text << numInt << numDbl <<
-                   text << numInt << numDbl);
-    logTime = timer.Stop();
+    for (auto b : bckndList)
+    {
+        auto backend = Logger::GetBackend(b);
+        backend->Enable(true);
+        GetOStream() << "<>LOGGER BACKEND: " << b << std::endl;
 
-// print stats
-    GetOStream() << std::setprecision(5) << std::left
-          << std::setw(10) << "STREAM:" << logTime << " s" << std::endl;
+        GetOStream() << std::endl << "StreamMsg:" << std::endl;
+        Timer timer;
+        int numInt = 5;
+        double logTime, numDbl = 5.55;
+        const char* text = "Lorem ipsum";
+
+        timer.Start();
+        for (int i = LOG_TEST_NUMBER; i > 0; i--)
+            LOG_INFO_S(text << numInt << numDbl <<
+                       text << numInt << numDbl <<
+                       text << numInt << numDbl);
+        logTime = timer.Stop();
+
+        // print stats
+        GetOStream() << std::setprecision(5) << std::left
+            << std::setw(10) << "STREAM:" << logTime << " s" << std::endl;
+
+        backend->Enable(false);
+    }
 }
