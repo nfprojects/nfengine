@@ -1,0 +1,107 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_23d5adb8",
+        "filename": "nfEngine/nfCommon/Linux/Thread.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-19T20:03:10Z",
+      "side": 1,
+      "message": "maybe NFE_TLS and move to nfCommon.hpp?",
+      "range": {
+        "startLine": 15,
+        "startChar": 8,
+        "endLine": 15,
+        "endChar": 11
+      },
+      "revId": "d213f033c846bd261daf325c4de33399abd3e683",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_43d0b1c9",
+        "filename": "nfEngine/nfCommon/Linux/Thread.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-19T20:03:10Z",
+      "side": 1,
+      "message": "Is static really required for global variable?",
+      "range": {
+        "startLine": 15,
+        "startChar": 25,
+        "endLine": 15,
+        "endChar": 31
+      },
+      "revId": "d213f033c846bd261daf325c4de33399abd3e683",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c3e4c1ad",
+        "filename": "nfEngine/nfCommon/Linux/Thread.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-19T20:03:10Z",
+      "side": 1,
+      "message": "This methods should be inlined. Move their definitions to hpp file.",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 1
+      },
+      "revId": "d213f033c846bd261daf325c4de33399abd3e683",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_03dbc9ee",
+        "filename": "nfEngine/nfCommon/Win/Thread.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-19T20:03:10Z",
+      "side": 1,
+      "message": "see Linux/Thread.cpp",
+      "revId": "d213f033c846bd261daf325c4de33399abd3e683",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_e3d7c5bd",
+        "filename": "nfEngine/nfCommonTest/ThreadTest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-19T20:03:10Z",
+      "side": 1,
+      "message": "I would spawn multiple threads and check that each has different ID",
+      "revId": "d213f033c846bd261daf325c4de33399abd3e683",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
