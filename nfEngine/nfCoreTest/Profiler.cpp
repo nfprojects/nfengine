@@ -30,6 +30,33 @@ PROFILER_REGISTER_ROOT_NODE("Root", Root);
     PROFILER_REGISTER_NODE("Child2", Child2, Root);
     PROFILER_REGISTER_NODE("Child3", Child3, Root);
 
+void EmulateProfiling()
+{
+    PROFILER_SCOPE(Root);
+    std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_ROOT));
+
+    {
+        PROFILER_SCOPE(Child1);
+        std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_CHILD1));
+
+        {
+            PROFILER_SCOPE(Child1Child);
+            std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_CHILD1CHILD));
+        }
+    }
+
+    {
+        PROFILER_SCOPE(Child2);
+        std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_CHILD2));
+    }
+
+    for (int i = 0; i < VISIT_COUNT_CHILD3; ++i)
+    {
+        PROFILER_SCOPE(Child3);
+        std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_CHILD3));
+    }
+}
+
 TEST_F(ProfilerTest, Basic)
 {
     ASSERT_NE(Root, nullptr);
@@ -50,7 +77,7 @@ TEST_F(ProfilerTest, Scope)
 
     Profiler::Instance().SwitchAllStats();
 
-    const ProfilerNodeStats& stats = Child1Child->GetStats();
+    const ProfilerNodeStats& stats = Child1Child->GetStats(false);
     ASSERT_NEAR(stats.time, static_cast<double>(WAIT_TIME_CHILD1CHILD) / 1000.0, 0.002);
     ASSERT_EQ(stats.visitCount, 1);
 }
@@ -59,53 +86,29 @@ TEST_F(ProfilerTest, Stats)
 {
     Profiler::Instance().ResetAllStats();
 
-    {
-        PROFILER_SCOPE(Root);
-        std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_ROOT));
-
-        {
-            PROFILER_SCOPE(Child1);
-            std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_CHILD1));
-
-            {
-                PROFILER_SCOPE(Child1Child);
-                std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_CHILD1CHILD));
-            }
-        }
-
-        {
-            PROFILER_SCOPE(Child2);
-            std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_CHILD2));
-        }
-
-        for (int i = 0; i < VISIT_COUNT_CHILD3; ++i)
-        {
-            PROFILER_SCOPE(Child3);
-            std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_CHILD3));
-        }
-    }
+    EmulateProfiling();
 
     Profiler::Instance().SwitchAllStats();
 
     // expected time is bigger here due to all the child nodes creating extra latency
-    const ProfilerNodeStats& rootStats = Root->GetStats();
+    const ProfilerNodeStats& rootStats = Root->GetStats(false);
     EXPECT_NEAR(rootStats.time, static_cast<double>(WAIT_TIME_SUM) / 1000.0, 0.05);
     EXPECT_EQ(rootStats.visitCount, 1);
 
-    const ProfilerNodeStats& child1Stats = Child1->GetStats();
+    const ProfilerNodeStats& child1Stats = Child1->GetStats(false);
     EXPECT_NEAR(child1Stats.time,
                 static_cast<double>(WAIT_TIME_CHILD1 + WAIT_TIME_CHILD1CHILD) / 1000.0, 0.004);
     EXPECT_EQ(child1Stats.visitCount, 1);
 
-    const ProfilerNodeStats& child1childStats = Child1Child->GetStats();
+    const ProfilerNodeStats& child1childStats = Child1Child->GetStats(false);
     EXPECT_NEAR(child1childStats.time, static_cast<double>(WAIT_TIME_CHILD1CHILD) / 1000.0, 0.004);
     EXPECT_EQ(child1childStats.visitCount, 1);
 
-    const ProfilerNodeStats& child2Stats = Child2->GetStats();
+    const ProfilerNodeStats& child2Stats = Child2->GetStats(false);
     EXPECT_NEAR(child2Stats.time, static_cast<double>(WAIT_TIME_CHILD2) / 1000.0, 0.004);
     EXPECT_EQ(child2Stats.visitCount, 1);
 
-    const ProfilerNodeStats& child3Stats = Child3->GetStats();
+    const ProfilerNodeStats& child3Stats = Child3->GetStats(false);
     EXPECT_NEAR(child3Stats.time, static_cast<double>(WAIT_TIME_CHILD3 * VISIT_COUNT_CHILD3) / 1000.0, 0.008);
     EXPECT_EQ(child3Stats.visitCount, VISIT_COUNT_CHILD3);
 }
@@ -122,7 +125,7 @@ TEST_F(ProfilerTest, Buffers)
 
     Profiler::Instance().SwitchAllStats();
 
-    const ProfilerNodeStats& stats1 = Child1Child->GetStats();
+    const ProfilerNodeStats& stats1 = Child1Child->GetStats(false);
     ASSERT_NEAR(stats1.time, static_cast<double>(WAIT_TIME_CHILD1CHILD) / 1000.0, 0.002);
     ASSERT_EQ(stats1.visitCount, 1);
 
@@ -134,11 +137,41 @@ TEST_F(ProfilerTest, Buffers)
 
     Profiler::Instance().SwitchAllStats();
 
-    const ProfilerNodeStats& stats2 = Child1Child->GetStats();
+    const ProfilerNodeStats& stats2 = Child1Child->GetStats(false);
     ASSERT_NEAR(stats2.time, static_cast<double>(WAIT_TIME_CHILD1CHILD) / 1000.0, 0.002);
     ASSERT_EQ(stats2.visitCount, 1);
 
     // switching should zero the data on the first buffer
     ASSERT_EQ(stats1.time, 0.0);
     ASSERT_EQ(stats1.visitCount, 0);
+}
+
+TEST_F(ProfilerTest, ChildrenSums)
+{
+    Profiler::Instance().ResetAllStats();
+
+    EmulateProfiling();
+
+    Profiler::Instance().SwitchAllStats();
+
+    const ProfilerNodeStats& rootStats = Root->GetStats(true);
+    EXPECT_NEAR(rootStats.time, static_cast<double>(WAIT_TIME_SUM - WAIT_TIME_ROOT) / 1000.0, 0.05);
+    EXPECT_EQ(rootStats.visitCount, 2 + VISIT_COUNT_CHILD3);
+
+    const ProfilerNodeStats& child1Stats = Child1->GetStats(true);
+    EXPECT_NEAR(child1Stats.time,
+                static_cast<double>(WAIT_TIME_CHILD1CHILD) / 1000.0, 0.004);
+    EXPECT_EQ(child1Stats.visitCount, 1);
+
+    const ProfilerNodeStats& child1childStats = Child1Child->GetStats(true);
+    EXPECT_NEAR(child1childStats.time, static_cast<double>(WAIT_TIME_CHILD1CHILD) / 1000.0, 0.004);
+    EXPECT_EQ(child1childStats.visitCount, 1);
+
+    const ProfilerNodeStats& child2Stats = Child2->GetStats(true);
+    EXPECT_NEAR(child2Stats.time, static_cast<double>(WAIT_TIME_CHILD2) / 1000.0, 0.004);
+    EXPECT_EQ(child2Stats.visitCount, 1);
+
+    const ProfilerNodeStats& child3Stats = Child3->GetStats(true);
+    EXPECT_NEAR(child3Stats.time, static_cast<double>(WAIT_TIME_CHILD3 * VISIT_COUNT_CHILD3) / 1000.0, 0.008);
+    EXPECT_EQ(child3Stats.visitCount, VISIT_COUNT_CHILD3);
 }

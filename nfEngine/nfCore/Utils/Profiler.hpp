@@ -42,6 +42,8 @@ class CORE_API ProfilerNode final
     ProfilerNodeArray mChildren;
 
     NFE::Common::Timer mTimer;
+    ProfilerNodeStats mChildrenStats;
+    bool mChildrenStatsCalculated;
     std::vector<ProfilerNodeStats> mStatsBuffer;
     unsigned int mCurrentStatsBuffer;
     unsigned int mOldStatsBuffer;
@@ -70,7 +72,7 @@ public:
      *
      * @return Structure containing statistics gathered by node.
      */
-    const ProfilerNodeStats& GetStats() const;
+    const ProfilerNodeStats& GetStats(bool childrenStats);
 
     /**
      * Acquire node's name string.

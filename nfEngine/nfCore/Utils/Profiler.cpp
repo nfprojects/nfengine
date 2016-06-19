@@ -42,9 +42,27 @@ void ProfilerNode::StopScope()
     mStatsBuffer[mCurrentStatsBuffer].visitCount++;
 }
 
-const ProfilerNodeStats& ProfilerNode::GetStats() const
+const ProfilerNodeStats& ProfilerNode::GetStats(bool childrenStats)
 {
-    return mStatsBuffer[mOldStatsBuffer];
+    if (mChildren.empty() || !childrenStats)
+        return mStatsBuffer[mOldStatsBuffer];
+    else
+    {
+        if (!mChildrenStatsCalculated)
+        {
+            for (auto& child : mChildren)
+            {
+                const ProfilerNodeStats& childStats = child->GetStats(true);
+                // TODO replace with overloaded += operator
+                mChildrenStats.time += childStats.time;
+                mChildrenStats.visitCount += childStats.visitCount;
+            }
+
+            mChildrenStatsCalculated = true;
+        }
+
+        return mChildrenStats;
+    }
 }
 
 const char* ProfilerNode::GetName() const
@@ -62,6 +80,10 @@ void ProfilerNode::ResetStats()
     for (auto& stat : mStatsBuffer)
         stat = ProfilerNodeStats();
 
+    // TODO it might be faster to just implement a .Reset() call to NodeStats
+    mChildrenStats = ProfilerNodeStats();
+    mChildrenStatsCalculated = false;
+
     for (auto& child : mChildren)
         child->ResetStats();
 }
@@ -75,6 +97,8 @@ void ProfilerNode::SwitchStats()
         mCurrentStatsBuffer = 0;
 
     mStatsBuffer[mCurrentStatsBuffer] = ProfilerNodeStats();
+    mChildrenStats = ProfilerNodeStats();
+    mChildrenStatsCalculated = false;
 
     for (auto& child : mChildren)
         child->SwitchStats();
