@@ -39,6 +39,40 @@
       "revId": "130069d9818a0ee638c28efbb5d32514731cf9c0",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_42e4200c",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/CommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:32:52Z",
+      "side": 1,
+      "message": "No support for \"All\" visibility",
+      "revId": "130069d9818a0ee638c28efbb5d32514731cf9c0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_22f11cce",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/CommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:32:52Z",
+      "side": 1,
+      "message": "No support for \"All\" visibility",
+      "revId": "130069d9818a0ee638c28efbb5d32514731cf9c0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
