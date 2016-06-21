@@ -25,7 +25,7 @@ ADD_EXECUTABLE(nfRendererTest ${NFRENDERERTEST_SOURCES} ${NFRENDERERTEST_HEADERS
 SET_TARGET_PROPERTIES(nfRendererTest PROPERTIES
                       COMPILE_FLAGS "-pthread"
                       LINK_FLAGS "-pthread")
-ADD_DEPENDENCIES(nfRendererTest nfCommon nfRendererOGL4)
+ADD_DEPENDENCIES(nfRendererTest nfCommon)
 TARGET_LINK_LIBRARIES(nfRendererTest nfCommon gtest png squish jpeg
                       ${NFRENDERERTEST_DEPS_LIBRARIES})
 ADD_CUSTOM_COMMAND(TARGET nfRendererTest POST_BUILD COMMAND

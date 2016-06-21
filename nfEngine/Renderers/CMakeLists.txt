@@ -2,4 +2,5 @@
 # @author LKostyra (costyrra.xl@gmail.com)
 # @brief  CMake for nfEngine
 
-ADD_SUBDIRECTORY("nfRendererOGL4")
+# OpenGL renderer will be replaced by Vulkan renderer
+# ADD_SUBDIRECTORY("nfRendererOGL4")
