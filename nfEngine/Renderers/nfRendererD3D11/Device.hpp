@@ -30,24 +30,24 @@ public:
     Device();
     ~Device();
 
-    void* GetHandle() const;
+    void* GetHandle() const override;
     ID3D11Device* Get() const;
-    bool GetDeviceInfo(DeviceInfo& info);
+    bool GetDeviceInfo(DeviceInfo& info) override;
 
     /// Resources creation functions
 
-    IVertexLayout* CreateVertexLayout(const VertexLayoutDesc& desc);
-    IBuffer* CreateBuffer(const BufferDesc& desc);
-    ITexture* CreateTexture(const TextureDesc& desc);
-    IBackbuffer* CreateBackbuffer(const BackbufferDesc& desc);
-    IRenderTarget* CreateRenderTarget(const RenderTargetDesc& desc);
-    IPipelineState* CreatePipelineState(const PipelineStateDesc& desc);
-    ISampler* CreateSampler(const SamplerDesc& desc);
-    IShader* CreateShader(const ShaderDesc& desc);
-    IShaderProgram* CreateShaderProgram(const ShaderProgramDesc& desc);
+    IVertexLayout* CreateVertexLayout(const VertexLayoutDesc& desc) override;
+    IBuffer* CreateBuffer(const BufferDesc& desc) override;
+    ITexture* CreateTexture(const TextureDesc& desc) override;
+    IBackbuffer* CreateBackbuffer(const BackbufferDesc& desc) override;
+    IRenderTarget* CreateRenderTarget(const RenderTargetDesc& desc) override;
+    IPipelineState* CreatePipelineState(const PipelineStateDesc& desc) override;
+    ISampler* CreateSampler(const SamplerDesc& desc) override;
+    IShader* CreateShader(const ShaderDesc& desc) override;
+    IShaderProgram* CreateShaderProgram(const ShaderProgramDesc& desc) override;
 
-    ICommandBuffer* GetDefaultCommandBuffer();
-    ICommandBuffer* CreateCommandBuffer();
+    ICommandBuffer* GetDefaultCommandBuffer() override;
+    ICommandBuffer* CreateCommandBuffer() override;
 };
 
 } // namespace Renderer

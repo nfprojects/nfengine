@@ -89,23 +89,5 @@ bool Buffer::Init(const BufferDesc& desc)
     return true;
 }
 
-void Buffer::Write(size_t offset, size_t size, const void* data)
-{
-    UNUSED(offset);
-    UNUSED(size);
-    UNUSED(data);
-
-    // TODO
-}
-
-void Buffer::Read(size_t offset, size_t size, void* data)
-{
-    UNUSED(offset);
-    UNUSED(size);
-    UNUSED(data);
-
-    // TODO
-}
-
 } // namespace Renderer
 } // namespace NFE

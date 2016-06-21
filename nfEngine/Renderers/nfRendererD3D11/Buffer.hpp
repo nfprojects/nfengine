@@ -24,8 +24,6 @@ class Buffer : public IBuffer
 public:
     Buffer();
     bool Init(const BufferDesc& desc);
-    void Write(size_t offset, size_t size, const void* data);
-    void Read(size_t offset, size_t size, void* data);
 };
 
 } // namespace Renderer

@@ -29,8 +29,8 @@ class Backbuffer : public IBackbuffer, public Texture
 
 public:
     ~Backbuffer();
-    bool Resize(int newWidth, int newHeight);
-    bool Present();
+    bool Resize(int newWidth, int newHeight) override;
+    bool Present() override;
     bool Init(const BackbufferDesc& desc);
 };
 

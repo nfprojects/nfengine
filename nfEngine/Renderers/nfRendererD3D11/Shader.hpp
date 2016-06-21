@@ -36,8 +36,8 @@ public:
     void* GetShaderObject() const;
     ID3DBlob* GetBytecode() const;
 
-    bool GetIODesc(ShaderIODesc& result);
-    bool Disassemble(bool html, std::string& output);
+    bool GetIODesc(ShaderIODesc& result) override;
+    bool Disassemble(bool html, std::string& output) override;
 };
 
 class ShaderProgram : public IShaderProgram

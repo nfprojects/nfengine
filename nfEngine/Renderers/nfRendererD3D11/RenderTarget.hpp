@@ -25,8 +25,8 @@ class RenderTarget : public IRenderTarget
 
 public:
     RenderTarget();
-    void GetDimensions(int& width, int& height);
-    bool Init(const RenderTargetDesc& desc);
+    void GetDimensions(int& width, int& height) override;
+    bool Init(const RenderTargetDesc& desc) override;
 };
 
 } // namespace Renderer
