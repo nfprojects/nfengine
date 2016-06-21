@@ -28,7 +28,7 @@ mklink /J Data "path-to-nfEngineTestData"
 Building the project - Linux
 ----------------------------
 
-Currently, buildable parts of nfEngine are: nfCommon, nfCommonTest, nfCommonPerfTest, nfRendererOGL4 and nfRendererDemo. Requirements:
+Currently, buildable parts of nfEngine are: nfCommon, nfCommonTest, nfCommonPerfTest and nfRendererDemo. Requirements:
 
 1. Installed a C++11-compatible compiler (right now the only compiler tested to work is GCC 4.7 and higher versions).
 2. Installed CMake 2.6 or higher.
