@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_c2783092",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/CommandBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:13:52Z",
+      "side": 1,
+      "message": "No, CommandBuffer reset is required after it has been finished, submited to GPU and you wan to use it again. The usage looks like this:\n1. Reset()\n2. Draw stuff\n3. Finish()\n4. Send to GPU (IDevice method)\n5. Go to 1 (optional)",
+      "parentUuid": "baa041b7_f681ddc4",
+      "range": {
+        "startLine": 47,
+        "startChar": 4,
+        "endLine": 50,
+        "endChar": 18
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_f6cf9d27",
         "filename": "nfEngine/Renderers/nfRendererD3D11/CommandBuffer.cpp",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2016-06-12T18:47:28Z",
       "side": 1,
       "message": "If you need to use \u0027new\u0027 here, return unique_ptr, instead of hoping that everytime Finish() is called You will remember to \u0027delete\u0027 it.",
+      "range": {
+        "startLine": 436,
+        "startChar": 0,
+        "endLine": 463,
+        "endChar": 1
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_429300a4",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/CommandBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:13:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_f6cf9d27",
       "range": {
         "startLine": 436,
         "startChar": 0,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_e29a14c5",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:13:52Z",
+      "side": 1,
+      "message": "Good point, but it\u0027s not in the scope of this commit.",
+      "parentUuid": "baa041b7_b6da35e8",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 1
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_96d731bf",
         "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
         "patchSetId": 3
@@ -82,6 +154,30 @@
       "writtenOn": "2016-06-12T18:47:28Z",
       "side": 1,
       "message": "return unique_ptr",
+      "range": {
+        "startLine": 147,
+        "startChar": 4,
+        "endLine": 147,
+        "endChar": 50
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c29f10b3",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:13:52Z",
+      "side": 1,
+      "message": "As above",
+      "parentUuid": "baa041b7_96d731bf",
       "range": {
         "startLine": 147,
         "startChar": 4,
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_a2a40c08",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:13:52Z",
+      "side": 1,
+      "message": "As above",
+      "parentUuid": "baa041b7_76e4adab",
+      "range": {
+        "startLine": 150,
+        "startChar": 0,
+        "endLine": 167,
+        "endChar": 1
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_d686d9da",
         "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
         "patchSetId": 3
@@ -128,6 +248,30 @@
       "writtenOn": "2016-06-12T18:47:28Z",
       "side": 1,
       "message": "why C-style cast?",
+      "range": {
+        "startLine": 192,
+        "startChar": 17,
+        "endLine": 192,
+        "endChar": 36
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_028df87a",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:13:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_d686d9da",
       "range": {
         "startLine": 192,
         "startChar": 17,
@@ -163,6 +307,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_e2e8d418",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:13:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_96697128",
+      "range": {
+        "startLine": 214,
+        "startChar": 4,
+        "endLine": 216,
+        "endChar": 49
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_7676ed07",
         "filename": "nfEngine/Renderers/nfRendererD3D11/Texture.hpp",
         "patchSetId": 3
@@ -174,6 +342,30 @@
       "writtenOn": "2016-06-12T18:47:28Z",
       "side": 1,
       "message": "I know it wasn\u0027t changed here...but why is it \u0027type\u0027 instead of \u0027mType\u0027?",
+      "range": {
+        "startLine": 22,
+        "startChar": 4,
+        "endLine": 22,
+        "endChar": 21
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c2edd026",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Texture.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:13:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_7676ed07",
       "range": {
         "startLine": 22,
         "startChar": 4,
@@ -209,6 +401,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_a2f2cc04",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:13:52Z",
+      "side": 1,
+      "message": "Done. I have no idea...",
+      "parentUuid": "baa041b7_5673e915",
+      "range": {
+        "startLine": 209,
+        "startChar": 8,
+        "endLine": 222,
+        "endChar": 9
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_365f4577",
         "filename": "nfEngine/nfCore/Renderer/RendererContext.cpp",
         "patchSetId": 3
@@ -220,6 +436,30 @@
       "writtenOn": "2016-06-12T18:47:28Z",
       "side": 1,
       "message": "remove first line and move second to the initalization list",
+      "range": {
+        "startLine": 20,
+        "startChar": 4,
+        "endLine": 21,
+        "endChar": 70
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_82a908e2",
+        "filename": "nfEngine/nfCore/Renderer/RendererContext.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:13:52Z",
+      "side": 1,
+      "message": "I wanted to avoid combo like \"Engine::GetInstance()-\u003eGetRenderer()-\u003eGetDevice()-\u003eCreateCommandBuffer()\"\n:)",
+      "parentUuid": "baa041b7_365f4577",
       "range": {
         "startLine": 20,
         "startChar": 4,
@@ -255,6 +495,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_82f7c8f4",
+        "filename": "nfEngine/nfCore/Renderer/View.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:13:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_16644147",
+      "range": {
+        "startLine": 135,
+        "startChar": 4,
+        "endLine": 139,
+        "endChar": 41
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_f658bd8c",
         "filename": "nfEngine/nfRendererDemo/Scenes/Basic.cpp",
         "patchSetId": 3
@@ -278,6 +542,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_e281f44e",
+        "filename": "nfEngine/nfRendererDemo/Scenes/Basic.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 328,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:13:52Z",
+      "side": 1,
+      "message": "Some of the initialization was required only once (setting viewport, render target, textures, etc.) so it wasn\u0027t done every frame. Now, in D3D12 we can\u0027t do that, because when CommandBuffer is reset, state is lost and we need to setup everything again.",
+      "parentUuid": "baa041b7_f658bd8c",
+      "range": {
+        "startLine": 325,
+        "startChar": 0,
+        "endLine": 328,
+        "endChar": 1
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_d65db97a",
         "filename": "nfEngine/nfRendererDemo/Scenes/DepthStencil.cpp",
         "patchSetId": 3
@@ -289,6 +577,30 @@
       "writtenOn": "2016-06-12T18:47:28Z",
       "side": 1,
       "message": "Same as in Basic.cpp",
+      "range": {
+        "startLine": 266,
+        "startChar": 1,
+        "endLine": 269,
+        "endChar": 16
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_22e7dc41",
+        "filename": "nfEngine/nfRendererDemo/Scenes/DepthStencil.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:13:52Z",
+      "side": 1,
+      "message": "Here I\u0027ll leave as it is. The only thing we do after the scene is switched is to reset the angle so it begins the same every time",
+      "parentUuid": "baa041b7_d65db97a",
       "range": {
         "startLine": 266,
         "startChar": 1,
@@ -347,6 +659,54 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_42c1c07f",
+        "filename": "nfEngine/nfRendererDemo/Scenes/DepthStencil.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:13:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_96505160",
+      "range": {
+        "startLine": 288,
+        "startChar": 65,
+        "endLine": 288,
+        "endChar": 72
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_62dde46f",
+        "filename": "nfEngine/nfRendererDemo/Scenes/DepthStencil.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:13:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_b653556c",
+      "range": {
+        "startLine": 288,
+        "startChar": 38,
+        "endLine": 288,
+        "endChar": 45
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_764dcdc3",
         "filename": "nfEngine/nfRendererDemo/Scenes/RenderTargets.cpp",
         "patchSetId": 3
@@ -358,6 +718,30 @@
       "writtenOn": "2016-06-12T18:47:28Z",
       "side": 1,
       "message": "as in Basic.cpp",
+      "range": {
+        "startLine": 336,
+        "startChar": 0,
+        "endLine": 338,
+        "endChar": 16
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_02e4d838",
+        "filename": "nfEngine/nfRendererDemo/Scenes/RenderTargets.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:13:52Z",
+      "side": 1,
+      "message": "as in DepthStencil.cpp",
+      "parentUuid": "baa041b7_764dcdc3",
       "range": {
         "startLine": 336,
         "startChar": 0,
@@ -416,6 +800,54 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_c2d4b048",
+        "filename": "nfEngine/nfRendererDemo/Scenes/VertexBuffers.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:13:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_36c62517",
+      "range": {
+        "startLine": 271,
+        "startChar": 4,
+        "endLine": 271,
+        "endChar": 13
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a2c9acae",
+        "filename": "nfEngine/nfRendererDemo/Scenes/VertexBuffers.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:13:52Z",
+      "side": 1,
+      "message": "as in DepthStencil.cpp",
+      "parentUuid": "baa041b7_564ac9ad",
+      "range": {
+        "startLine": 265,
+        "startChar": 0,
+        "endLine": 271,
+        "endChar": 13
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_16cb2120",
         "filename": "nfEngine/nfRendererDemo/Scenes/VertexBuffers.cpp",
         "patchSetId": 3
@@ -439,6 +871,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_82cea8b2",
+        "filename": "nfEngine/nfRendererDemo/Scenes/VertexBuffers.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:13:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_16cb2120",
+      "range": {
+        "startLine": 286,
+        "startChar": 12,
+        "endLine": 287,
+        "endChar": 36
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_d6d499be",
         "filename": "nfEngine/nfRendererTest/RendererTest.cpp",
         "patchSetId": 3
@@ -450,6 +906,30 @@
       "writtenOn": "2016-06-12T18:47:28Z",
       "side": 1,
       "message": "after changing CommandBuffer::Finish, you can put \u0027mCommandBuffer-\u003eFinish().get() in the following call to Execute.\nThen You can also loose the scope, as it won\u0027t do anything.",
+      "range": {
+        "startLine": 77,
+        "startChar": 8,
+        "endLine": 77,
+        "endChar": 76
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_62c4c491",
+        "filename": "nfEngine/nfRendererTest/RendererTest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-21T20:13:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_d6d499be",
       "range": {
         "startLine": 77,
         "startChar": 8,
