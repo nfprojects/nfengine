@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_7d87c5d7",
+        "filename": "nfEngine/nfCommon/Thread.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-22T08:08:10Z",
+      "side": 1,
+      "message": "Move definitions (with assignment) to cpp. Here should be only declarations (extern NFE_TLS ...)",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 81
+      },
+      "revId": "9cad443b9bc9812ccffa76ba660b32bf1473b1a4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_dd7811fb",
+        "filename": "nfEngine/nfCommon/nfCommon.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-22T08:08:10Z",
+      "side": 1,
+      "message": "not required. We may need non-const TLS variables",
+      "range": {
+        "startLine": 110,
+        "startChar": 29,
+        "endLine": 110,
+        "endChar": 34
+      },
+      "revId": "9cad443b9bc9812ccffa76ba660b32bf1473b1a4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_dd5ff173",
+        "filename": "nfEngine/nfCommonTest/ThreadTest.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-22T08:08:10Z",
+      "side": 1,
+      "message": "I would write seaparte test that verifies IDs, this has nothing to do with SetPriority",
+      "revId": "9cad443b9bc9812ccffa76ba660b32bf1473b1a4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_fd73d513",
+        "filename": "nfEngine/nfCommonTest/ThreadTest.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-22T08:08:10Z",
+      "side": 1,
+      "message": "Data race. You modify the same vector on multiple threads without synchronization. Maybe just collect all IDs and veryfy if there is no duplicates in main test function?",
+      "revId": "9cad443b9bc9812ccffa76ba660b32bf1473b1a4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
