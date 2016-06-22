@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_03461abf",
+        "filename": "nfEngine/Renderers/RendererInterface/CommandBuffer.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-22T14:25:52Z",
+      "side": 1,
+      "message": "let\u0027s be honest - nullptr",
+      "range": {
+        "startLine": 144,
+        "startChar": 37,
+        "endLine": 144,
+        "endChar": 41
+      },
+      "revId": "001feb067338306dffbbede690d1378e499f5edf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_83b46ad1",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/CommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 462,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-22T14:25:52Z",
+      "side": 1,
+      "message": "use std::make_unique",
+      "range": {
+        "startLine": 462,
+        "startChar": 11,
+        "endLine": 462,
+        "endChar": 46
+      },
+      "revId": "001feb067338306dffbbede690d1378e499f5edf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a3e64ee6",
+        "filename": "nfEngine/nfCore/Renderer/View.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-22T14:25:52Z",
+      "side": 1,
+      "message": "is this supposed to be \"true\" by any means?",
+      "range": {
+        "startLine": 137,
+        "startChar": 13,
+        "endLine": 137,
+        "endChar": 17
+      },
+      "revId": "001feb067338306dffbbede690d1378e499f5edf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c37dd2e8",
+        "filename": "nfEngine/nfCore/Systems/RendererSystem.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-22T14:25:52Z",
+      "side": 1,
+      "message": "close it inside std::move",
+      "range": {
+        "startLine": 177,
+        "startChar": 24,
+        "endLine": 177,
+        "endChar": 59
+      },
+      "revId": "001feb067338306dffbbede690d1378e499f5edf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8310eaa9",
+        "filename": "nfEngine/nfCore/Systems/RendererSystem.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-22T14:25:52Z",
+      "side": 1,
+      "message": "I think this may not compile with gcc/clang - u tried?\nOr is it used on windows only?",
+      "range": {
+        "startLine": 270,
+        "startChar": 4,
+        "endLine": 270,
+        "endChar": 90
+      },
+      "revId": "001feb067338306dffbbede690d1378e499f5edf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
