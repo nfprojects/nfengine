@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_2890dd94",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-06-22T19:21:19Z",
+      "side": 0,
+      "message": "Please do not remove the path. Comment it, it will be easier to revert in the future this way.",
+      "revId": "b439a16661d06690ca73952cc7be3e77eb274375",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b599e121",
+        "filename": "nfEngine/nfRendererDemo/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-06-22T19:21:19Z",
+      "side": 0,
+      "message": "Same here, I would leave at least a comment about OGL4 being removed from compilation",
+      "revId": "b439a16661d06690ca73952cc7be3e77eb274375",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_959edd05",
+        "filename": "nfEngine/nfRendererTest/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-06-22T19:21:19Z",
+      "side": 0,
+      "message": "As in previous files",
+      "revId": "b439a16661d06690ca73952cc7be3e77eb274375",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
