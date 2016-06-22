@@ -472,6 +472,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_c3e152d2",
+        "filename": "nfEngine/nfCore/Renderer/RendererContext.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-22T14:25:52Z",
+      "side": 1,
+      "message": "ok",
+      "parentUuid": "baa041b7_82a908e2",
+      "range": {
+        "startLine": 20,
+        "startChar": 4,
+        "endLine": 21,
+        "endChar": 70
+      },
+      "revId": "f8c9a46fbeff89c35099bbe6538515af414e646d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_16644147",
         "filename": "nfEngine/nfCore/Renderer/View.hpp",
         "patchSetId": 3
