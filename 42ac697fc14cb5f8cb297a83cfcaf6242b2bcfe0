@@ -1,0 +1,205 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_a3b3ee09",
+        "filename": "nfEngine/nfCommon/Logger.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-22T13:48:22Z",
+      "side": 1,
+      "message": "rm",
+      "revId": "42ac697fc14cb5f8cb297a83cfcaf6242b2bcfe0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a3aace83",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-22T13:48:22Z",
+      "side": 1,
+      "message": "add final",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 59
+      },
+      "revId": "42ac697fc14cb5f8cb297a83cfcaf6242b2bcfe0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_23f11ece",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-22T13:48:22Z",
+      "side": 1,
+      "message": "add override",
+      "range": {
+        "startLine": 27,
+        "startChar": 4,
+        "endLine": 27,
+        "endChar": 17
+      },
+      "revId": "42ac697fc14cb5f8cb297a83cfcaf6242b2bcfe0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_03ee1aec",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendHTML.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-22T13:48:22Z",
+      "side": 1,
+      "message": "add override",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 28,
+        "endChar": 95
+      },
+      "revId": "42ac697fc14cb5f8cb297a83cfcaf6242b2bcfe0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_83afca93",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendTxt.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-22T13:48:22Z",
+      "side": 1,
+      "message": "add final",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 58
+      },
+      "revId": "42ac697fc14cb5f8cb297a83cfcaf6242b2bcfe0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_e3b9f6ed",
+        "filename": "nfEngine/nfCommon/LoggerBackends/BackendTxt.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-22T13:48:22Z",
+      "side": 1,
+      "message": "add override",
+      "range": {
+        "startLine": 26,
+        "startChar": 4,
+        "endLine": 27,
+        "endChar": 95
+      },
+      "revId": "42ac697fc14cb5f8cb297a83cfcaf6242b2bcfe0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_e3a0d6a7",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-22T13:48:22Z",
+      "side": 1,
+      "message": "add final",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 40
+      },
+      "revId": "42ac697fc14cb5f8cb297a83cfcaf6242b2bcfe0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_23c8fe73",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-22T13:48:22Z",
+      "side": 1,
+      "message": "add override",
+      "range": {
+        "startLine": 38,
+        "startChar": 4,
+        "endLine": 38,
+        "endChar": 16
+      },
+      "revId": "42ac697fc14cb5f8cb297a83cfcaf6242b2bcfe0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_03c5fa59",
+        "filename": "nfEngine/nfCommonTest/LoggerTest.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-22T13:48:22Z",
+      "side": 1,
+      "message": "add override",
+      "range": {
+        "startLine": 43,
+        "startChar": 4,
+        "endLine": 43,
+        "endChar": 94
+      },
+      "revId": "42ac697fc14cb5f8cb297a83cfcaf6242b2bcfe0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
