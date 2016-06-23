@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_eb4aecab",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/CommandBuffer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 462,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-23T08:40:40Z",
+      "side": 1,
+      "message": "make_unique is used in order to NOT use \u0027new\u0027 specifier.\nYou could make it like this:\nauto list \u003d std::make_unique\u003cCommandList\u003e();\nDerived unique_ptr is implicitly convertible, so there should be no errors, while returning.\n\nUnfortunately std::nothrow got no way to be used with std::make_unique (we can ofc make our own version of std::make_unique, but it\u0027s not a solution.\n\nJust go with this:\nstd::unique_ptr\u003cICommandList\u003e list(new (std::nothrow) CommandList);\nand just:\nreturn list;\neverything else should work.",
+      "range": {
+        "startLine": 453,
+        "startChar": 4,
+        "endLine": 462,
+        "endChar": 47
+      },
+      "revId": "de5f3a4c2cea929b52f130d8e72510f5c59e7a82",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
