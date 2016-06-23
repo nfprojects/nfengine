@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_bfb53ad1",
+        "filename": "nfEngine/nfCore/Utils/ProfilerNodeStats.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-23T18:30:06Z",
+      "side": 1,
+      "message": "Do we really need that?",
+      "range": {
+        "startLine": 23,
+        "startChar": 23,
+        "endLine": 23,
+        "endChar": 33
+      },
+      "revId": "658a2095ada8517d7d99355293c7b19ccdefacac",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_9fba76bf",
+        "filename": "nfEngine/nfCore/Utils/ProfilerNodeStats.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-23T18:30:06Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 26,
+        "startChar": 22,
+        "endLine": 26,
+        "endChar": 31
+      },
+      "revId": "658a2095ada8517d7d99355293c7b19ccdefacac",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
