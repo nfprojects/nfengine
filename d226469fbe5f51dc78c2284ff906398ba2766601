@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_3addb870",
+        "filename": "nfEngine/nfCore/Utils/Profiler.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-06-23T23:01:34Z",
+      "side": 1,
+      "message": "Come to think of it, shouldn\u0027t each thread have a separate Timer? What do you think?",
+      "revId": "d226469fbe5f51dc78c2284ff906398ba2766601",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
