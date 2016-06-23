@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_fface28d",
+        "filename": "nfEngine/nfCore/Utils/Profiler.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-23T18:28:19Z",
+      "side": 1,
+      "message": "Mayby separate these in another way: inclusive and exclusive (like in VS profiler)? Because now we need to sum children stans with statsBuffer to get inclusive node stats",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 48
+      },
+      "revId": "0f5b91d8dd1bd6617aeeb0e6814c4660abf4d234",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
