@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_3fca4a50",
+        "filename": "nfEngine/nfCore/Utils/ProfilerNodes.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-23T18:34:39Z",
+      "side": 1,
+      "message": "This should be moved to RendererSystem. As the number of profiler nodes increases, every change in this file will force all dependent source files to recompile",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 55
+      },
+      "revId": "23d8ed66053a6586b2c4fc9cdc7637437c1281bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_dfc0fe2c",
+        "filename": "nfEngineDemo/Test.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-23T18:34:39Z",
+      "side": 1,
+      "message": "It would be nice to change units (ns, us, ms, s) basing on the magnitude",
+      "range": {
+        "startLine": 39,
+        "startChar": 68,
+        "endLine": 39,
+        "endChar": 87
+      },
+      "revId": "23d8ed66053a6586b2c4fc9cdc7637437c1281bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
