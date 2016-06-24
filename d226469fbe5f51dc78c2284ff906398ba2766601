@@ -16,6 +16,116 @@
       "revId": "d226469fbe5f51dc78c2284ff906398ba2766601",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_0183a8cd",
+        "filename": "nfEngine/nfCore/Utils/Profiler.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-24T16:41:51Z",
+      "side": 1,
+      "message": "In the current desing it must... The timer should be part of the ProfilerScope, not the node... How this passed the review... :)",
+      "parentUuid": "baa041b7_3addb870",
+      "revId": "d226469fbe5f51dc78c2284ff906398ba2766601",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8120d8f8",
+        "filename": "nfEngine/nfCore/Utils/Profiler.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-24T16:41:51Z",
+      "side": 1,
+      "message": "Use atomic operations instead of mutex, because it\u0027s slower. Ideally, we should use separate counters for each thread, so wouldn\u0027t need any synchronization (except summing everyting together at the end).",
+      "range": {
+        "startLine": 45,
+        "startChar": 4,
+        "endLine": 45,
+        "endChar": 32
+      },
+      "revId": "d226469fbe5f51dc78c2284ff906398ba2766601",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8177b801",
+        "filename": "nfEngine/nfCore/Utils/ProfilerNodeStats.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-24T16:41:51Z",
+      "side": 1,
+      "message": "As said before, try to make these atomic and all the operations thread safe withount need for external synchronization",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 78
+      },
+      "revId": "d226469fbe5f51dc78c2284ff906398ba2766601",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_41609035",
+        "filename": "nfEngine/nfCoreTest/Profiler.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-24T16:41:51Z",
+      "side": 1,
+      "message": "It\u0027s nothing. I suggest 100k or more",
+      "range": {
+        "startLine": 26,
+        "startChar": 47,
+        "endLine": 26,
+        "endChar": 51
+      },
+      "revId": "d226469fbe5f51dc78c2284ff906398ba2766601",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_21634c43",
+        "filename": "nfEngine/nfCoreTest/Profiler.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-24T16:41:51Z",
+      "side": 1,
+      "message": "Spawn as many threads, as there is logical cores in the system",
+      "range": {
+        "startLine": 158,
+        "startChar": 0,
+        "endLine": 166,
+        "endChar": 14
+      },
+      "revId": "d226469fbe5f51dc78c2284ff906398ba2766601",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
