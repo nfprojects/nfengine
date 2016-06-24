@@ -22,6 +22,30 @@
       "revId": "de5f3a4c2cea929b52f130d8e72510f5c59e7a82",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_81fc583f",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/CommandBuffer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 462,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-24T16:52:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_eb4aecab",
+      "range": {
+        "startLine": 453,
+        "startChar": 4,
+        "endLine": 462,
+        "endChar": 47
+      },
+      "revId": "de5f3a4c2cea929b52f130d8e72510f5c59e7a82",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
