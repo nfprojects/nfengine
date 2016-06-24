@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_a13abc32",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-24T16:27:39Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "baa041b7_2890dd94",
+      "revId": "b439a16661d06690ca73952cc7be3e77eb274375",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_b599e121",
         "filename": "nfEngine/nfRendererDemo/CMakeLists.txt",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_8149f8d2",
+        "filename": "nfEngine/nfRendererDemo/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-24T16:27:39Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "baa041b7_b599e121",
+      "revId": "b439a16661d06690ca73952cc7be3e77eb274375",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_959edd05",
         "filename": "nfEngine/nfRendererTest/CMakeLists.txt",
         "patchSetId": 1
@@ -47,6 +83,24 @@
       "writtenOn": "2016-06-22T19:21:19Z",
       "side": 0,
       "message": "As in previous files",
+      "revId": "b439a16661d06690ca73952cc7be3e77eb274375",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_6144b4b6",
+        "filename": "nfEngine/nfRendererTest/CMakeLists.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-24T16:27:39Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "baa041b7_959edd05",
       "revId": "b439a16661d06690ca73952cc7be3e77eb274375",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
