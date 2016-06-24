@@ -1,0 +1,101 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_c1d140fd",
+        "filename": "nfEngine/nfCommon/Thread.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-24T16:08:09Z",
+      "side": 1,
+      "message": "Dis is really needed?\n#komsoscpphype",
+      "range": {
+        "startLine": 51,
+        "startChar": 62,
+        "endLine": 51,
+        "endChar": 70
+      },
+      "revId": "1bbc8922d0609386ef423c383c6a60289b150c96",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_81db381b",
+        "filename": "nfEngine/nfCommon/Thread.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-24T16:08:09Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 56,
+        "startChar": 64,
+        "endLine": 56,
+        "endChar": 72
+      },
+      "revId": "1bbc8922d0609386ef423c383c6a60289b150c96",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a1c51c3e",
+        "filename": "nfEngine/nfCommonTest/ThreadTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-24T16:08:09Z",
+      "side": 1,
+      "message": "What\u0027s the purpose of this function?",
+      "revId": "1bbc8922d0609386ef423c383c6a60289b150c96",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_e1b204e5",
+        "filename": "nfEngine/nfCommonTest/ThreadTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-24T16:08:09Z",
+      "side": 1,
+      "message": "This way the threads won\u0027t run in parallel. They should, because then we are sure they will get different IDs",
+      "revId": "1bbc8922d0609386ef423c383c6a60289b150c96",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_e1e9e4b8",
+        "filename": "nfEngine/nfCommonTest/ThreadTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-24T16:08:09Z",
+      "side": 1,
+      "message": "This is not how you wait for a thread (besides you just used join):\n1. There is data race, because std containers are not thread safe. What\u0027s more - the compiler can optimize this function, so it will run forever.\n2. Busy waiting is slow.",
+      "revId": "1bbc8922d0609386ef423c383c6a60289b150c96",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
