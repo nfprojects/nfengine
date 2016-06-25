@@ -233,6 +233,7 @@ popd</Command>
     <ClInclude Include="LoggerBackends\BackendTxt.hpp" />
     <ClInclude Include="LoggerBackends\BackendXML.hpp" />
     <ClInclude Include="LoggerBackends\Win\BackendWindowsDebugger.hpp" />
+    <ClInclude Include="LogGrouper.hpp" />
     <ClInclude Include="Math\Box.hpp" />
     <ClInclude Include="Math\FPU\Matrix.hpp" />
     <ClInclude Include="Math\FPU\RayGeometry.hpp" />
@@ -353,6 +354,7 @@ popd</Command>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="LogGrouper.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Math\Box.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>

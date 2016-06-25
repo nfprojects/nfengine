@@ -175,6 +175,16 @@ public:
      * Translate log type to string.
      */
     static const char* LogTypeToString(LogType logType) noexcept;
+
+    /**
+     * Check if Logger is fully initialized.
+     */
+    static bool IsInitialized();
+
+    /**
+     * Get current timer status.
+     */
+    const Timer& GetTimer() const;
 };
 
 } // namespace Common
