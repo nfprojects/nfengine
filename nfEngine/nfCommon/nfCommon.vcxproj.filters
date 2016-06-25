@@ -239,6 +239,9 @@
     <ClInclude Include="LoggerBackends\BackendCommon.hpp">
       <Filter>Source Files\LoggerBackends</Filter>
     </ClInclude>
+    <ClInclude Include="LogGrouper.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -402,6 +405,9 @@
     </ClCompile>
     <ClCompile Include="LoggerBackends\BackendXML.cpp">
       <Filter>Source Files\LoggerBackends</Filter>
+    </ClCompile>
+    <ClCompile Include="LogGrouper.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
