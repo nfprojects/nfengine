@@ -260,5 +260,15 @@ const char* Logger::LogTypeToString(LogType logType) noexcept
     return "UNKNOWN";
 }
 
+bool Logger::IsInitialized()
+{
+    return Logger::GetInstance()->mInitialized == Logger::InitStage::Initialized;
+}
+
+const Timer& Logger::GetTimer() const
+{
+    return mTimer;
+}
+
 } // namespace Common
 } // namespace NFE

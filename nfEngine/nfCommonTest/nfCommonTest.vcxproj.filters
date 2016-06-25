@@ -31,6 +31,7 @@
     <ClCompile Include="AlignedTest.cpp" />
     <ClCompile Include="BVHTest.cpp" />
     <ClCompile Include="EnumIteratorTest.cpp" />
+    <ClCompile Include="LogGrouperTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
