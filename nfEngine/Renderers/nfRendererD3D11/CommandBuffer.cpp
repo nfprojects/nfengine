@@ -32,8 +32,7 @@ CommandBuffer::CommandBuffer(ID3D11DeviceContext* deviceContext)
     , mReset(false)
 {
     HRESULT hr;
-    hr = deviceContext->QueryInterface(__uuidof(ID3DUserDefinedAnnotation),
-                                       reinterpret_cast<void**>(&mUserDefinedAnnotation));
+    hr = deviceContext->QueryInterface(IID_PPV_ARGS(&mUserDefinedAnnotation));
     if (FAILED(hr))
         mUserDefinedAnnotation.reset();
 }

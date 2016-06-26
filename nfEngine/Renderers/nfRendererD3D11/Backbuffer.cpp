@@ -22,7 +22,7 @@ bool Backbuffer::GetBackbufferTexture()
     HRESULT hr;
 
     // get the address of the back buffer
-    hr = D3D_CALL_CHECK(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&mTexture2D));
+    hr = D3D_CALL_CHECK(mSwapChain->GetBuffer(0, IID_PPV_ARGS(&mTexture2D)));
     if (FAILED(hr))
         return false;
 
