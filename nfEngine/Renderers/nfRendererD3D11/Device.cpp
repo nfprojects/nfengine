@@ -55,16 +55,36 @@ Device::Device()
                                           D3D11_SDK_VERSION, &mDevice, &mFeatureLevel,
                                           &mImmediateContext));
 
+#if defined(_DEBUG)
+    if (SUCCEEDED(mDevice->QueryInterface(IID_PPV_ARGS(&mInfoQueue))))
+    {
+        D3D11_MESSAGE_ID messagesToHide[] =
+        {
+            D3D11_MESSAGE_ID_SETPRIVATEDATA_CHANGINGPARAMS,
+        };
+
+        D3D11_INFO_QUEUE_FILTER filter;
+        memset(&filter, 0, sizeof(filter));
+        filter.DenyList.NumIDs = _countof(messagesToHide);
+        filter.DenyList.pIDList = messagesToHide;
+        mInfoQueue->AddStorageFilterEntries(&filter);
+
+        mInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, TRUE);
+        mInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, TRUE);
+        mInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_WARNING, TRUE);
+    }
+#endif
+
     if (FAILED(hr))
         throw std::exception("D3D11CreateDevice() failed");
 
     /// get DXGI factory for created Direct3D device
-    hr = D3D_CALL_CHECK(mDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&mDXGIDevice));
+    hr = D3D_CALL_CHECK(mDevice->QueryInterface(IID_PPV_ARGS(&mDXGIDevice)));
     if (SUCCEEDED(hr) && mDXGIDevice.get() != nullptr)
     {
-        hr = D3D_CALL_CHECK(mDXGIDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&mDXGIAdapter));
+        hr = D3D_CALL_CHECK(mDXGIDevice->GetParent(IID_PPV_ARGS(&mDXGIAdapter)));
         if (SUCCEEDED(hr) && mDXGIAdapter.get() != nullptr)
-            D3D_CALL_CHECK(mDXGIAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&mDXGIFactory));
+            D3D_CALL_CHECK(mDXGIAdapter->GetParent(IID_PPV_ARGS(&mDXGIFactory)));
     }
 }
 
@@ -73,13 +93,16 @@ Device::~Device()
 #ifdef D3D_DEBUGGING
     D3DPtr<ID3D11Debug> mDebug;
     /// get D3D debug layer interface
-    D3D_CALL_CHECK(mDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&mDebug));
+    D3D_CALL_CHECK(mDevice->QueryInterface(IID_PPV_ARGS(&mDebug)));
 
     if (mDebug.get() != nullptr)
     {
         // flush the pipeline
         mImmediateContext->ClearState();
         mImmediateContext->Flush();
+
+        mInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_WARNING, FALSE);
+        mInfoQueue.reset();
 
         mDXGIFactory.reset();
         mDXGIAdapter.reset();
