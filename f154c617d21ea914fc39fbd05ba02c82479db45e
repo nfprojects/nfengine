@@ -1,0 +1,101 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_32ca781b",
+        "filename": "nfEngine/Renderers/RendererInterface/Texture.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-26T23:32:29Z",
+      "side": 1,
+      "message": "Unused",
+      "revId": "f154c617d21ea914fc39fbd05ba02c82479db45e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_12d1b4cd",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/CommandBuffer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-26T23:32:29Z",
+      "side": 1,
+      "message": "magic",
+      "range": {
+        "startLine": 130,
+        "startChar": 45,
+        "endLine": 130,
+        "endChar": 51
+      },
+      "revId": "f154c617d21ea914fc39fbd05ba02c82479db45e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_f2d3f0d3",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/CommandBuffer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 420,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-26T23:32:29Z",
+      "side": 1,
+      "message": "magic",
+      "range": {
+        "startLine": 420,
+        "startChar": 49,
+        "endLine": 420,
+        "endChar": 55
+      },
+      "revId": "f154c617d21ea914fc39fbd05ba02c82479db45e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b2d688c1",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/PCH.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-26T23:32:29Z",
+      "side": 1,
+      "message": "why?",
+      "revId": "f154c617d21ea914fc39fbd05ba02c82479db45e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_d2db4cec",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/ShaderProgram.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-26T23:32:29Z",
+      "side": 1,
+      "message": "code repetition",
+      "revId": "f154c617d21ea914fc39fbd05ba02c82479db45e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
