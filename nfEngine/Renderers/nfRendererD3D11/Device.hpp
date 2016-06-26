@@ -26,6 +26,10 @@ class Device : public IDevice
     D3DPtr<IDXGIAdapter> mDXGIAdapter;
     D3D_FEATURE_LEVEL mFeatureLevel;
 
+#ifdef _DEBUG
+    D3DPtr<ID3D11InfoQueue> mInfoQueue;
+#endif // _DEBUG
+
 public:
     Device();
     ~Device();
