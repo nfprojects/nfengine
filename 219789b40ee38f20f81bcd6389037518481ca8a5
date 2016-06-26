@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_1209b42c",
+        "filename": "nfEngine/nfCommon/LogGrouper.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-26T11:57:27Z",
+      "side": 1,
+      "message": "double time;\nLogType type;\nint line;\n\nAlways move bigger types at the top: http://stackoverflow.com/questions/119123/why-isnt-sizeof-for-a-struct-equal-to-the-sum-of-sizeof-of-each-member",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 17
+      },
+      "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_f20bf022",
+        "filename": "nfEngine/nfCommon/LogGrouper.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-26T11:57:27Z",
+      "side": 1,
+      "message": "Maybe create some static-size buffer instead and put everything there to avoid memory allocations. Memory allocation would be required if the buffer is too small, just like in Logger::Log",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 33
+      },
+      "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_52ff3c01",
+        "filename": "nfEngine/nfCommon/LogGrouper.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-26T11:57:27Z",
+      "side": 1,
+      "message": "maybe line number too?",
+      "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3202780a",
+        "filename": "nfEngine/nfCommon/LogGrouper.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-26T11:57:27Z",
+      "side": 1,
+      "message": "Make \"int line, const char* str\", as above",
+      "range": {
+        "startLine": 35,
+        "startChar": 27,
+        "endLine": 35,
+        "endChar": 52
+      },
+      "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
