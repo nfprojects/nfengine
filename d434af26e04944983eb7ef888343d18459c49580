@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_271b5c82",
+        "filename": "nfEngine/nfRendererDemo/CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-26T11:32:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_07fe186b",
+      "range": {
+        "startLine": 30,
+        "startChar": 2,
+        "endLine": 30,
+        "endChar": 15
+      },
+      "revId": "d434af26e04944983eb7ef888343d18459c49580",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_e700d468",
         "filename": "nfEngine/nfRendererTest/CMakeLists.txt",
         "patchSetId": 5
@@ -36,6 +60,30 @@
       "writtenOn": "2016-06-26T00:55:26Z",
       "side": 1,
       "message": "nfRendererOGL4",
+      "range": {
+        "startLine": 29,
+        "startChar": 2,
+        "endLine": 29,
+        "endChar": 15
+      },
+      "revId": "d434af26e04944983eb7ef888343d18459c49580",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_07129862",
+        "filename": "nfEngine/nfRendererTest/CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-26T11:32:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_e700d468",
       "range": {
         "startLine": 29,
         "startChar": 2,
