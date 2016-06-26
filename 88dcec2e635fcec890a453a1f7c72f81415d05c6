@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_87db481b",
+        "filename": "nfEngine/nfCommon/LogGrouper.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-26T00:50:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_e784540c",
+      "range": {
+        "startLine": 84,
+        "startChar": 14,
+        "endLine": 84,
+        "endChar": 17
+      },
+      "revId": "88dcec2e635fcec890a453a1f7c72f81415d05c6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_4788a022",
         "filename": "nfEngine/nfCommon/LogGrouper.hpp",
         "patchSetId": 1
@@ -36,6 +60,24 @@
       "writtenOn": "2016-06-25T19:03:06Z",
       "side": 1,
       "message": "How are we supposed to used this class if all the methods are private?",
+      "revId": "88dcec2e635fcec890a453a1f7c72f81415d05c6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_67d604f3",
+        "filename": "nfEngine/nfCommon/LogGrouper.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-26T00:50:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_4788a022",
       "revId": "88dcec2e635fcec890a453a1f7c72f81415d05c6",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
