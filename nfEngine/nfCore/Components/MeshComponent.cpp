@@ -39,13 +39,6 @@ void MeshComponent::CalcAABB(const Math::Matrix& transform)
     }
 }
 
-MeshComponent::MeshComponent(const MeshComponent& other)
-{
-    mMesh = other.mMesh;
-    if (mMesh != nullptr)
-        mMesh->AddRef();
-}
-
 bool MeshComponent::SetMeshResource(Mesh* resource)
 {
     // no change

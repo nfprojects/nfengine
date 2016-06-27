@@ -61,7 +61,6 @@ class CORE_API BodyComponent
 public:
     BodyComponent();
     ~BodyComponent();
-    BodyComponent(const BodyComponent& other);
 
     void Invalidate();
 
