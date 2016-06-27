@@ -4,7 +4,7 @@
  * @brief  Thread class definition.
  */
 
-#include "PCH.hpp"
+#include "../PCH.hpp"
 #include "../Thread.hpp"
 #include "../Logger.hpp"
 #include <pthread.h>
