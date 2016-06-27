@@ -158,9 +158,9 @@ bool Multishader::LoadSubshader(int* macroValues)
     macros.reserve(mMacros.size());
     valuesStrings.reserve(mMacros.size());
 
-    std::string rendererName = "D3D11"; // TODO: move to IDevice or HighLevelRenderer
+    std::string shaderLanguage = "HLSL5"; // TODO: move to IDevice or HighLevelRenderer
     std::string shaderExt = ".hlsl"; // TODO: move to IDevice or HighLevelRenderer
-    std::string shaderPath = gShadersRoot + rendererName + '/' + mName + shaderExt;
+    std::string shaderPath = gShadersRoot + shaderLanguage + '/' + mName + shaderExt;
 
     for (size_t i = 0; i < mMacros.size(); ++i)
     {
