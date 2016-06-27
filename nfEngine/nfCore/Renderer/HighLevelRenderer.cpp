@@ -175,7 +175,7 @@ RenderContext* HighLevelRenderer::GetDeferredContext(size_t id) const
 std::string HighLevelRenderer::GetShadersPath() const
 {
     // TODO: It's temporary. Shader location must be dependent on low-level renderer.
-    return "nfEngine/Shaders/D3D11/";
+    return "nfEngine/Shaders/HLSL5/";
 }
 
 } // namespace Renderer
