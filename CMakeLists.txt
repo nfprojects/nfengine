@@ -43,6 +43,7 @@ SET(NFCOMMONPERFTEST_DIRECTORY ${NFE_ROOT_DIRECTORY}/nfEngine/nfCommonPerfTest)
 SET(RENDERERS_DIRECTORY ${NFE_ROOT_DIRECTORY}/nfEngine/Renderers)
 # OGL4 renderer disabled temporarily
 # SET(NFRENDEREROGL4_DIRECTORY ${RENDERERS_DIRECTORY}/nfRendererOGL4)
+SET(NFRENDERERVK_DIRECTORY ${RENDERERS_DIRECTORY}/nfRendererVk)
 
 # TODO: available SIMD instructions should be detected automatically
 SET(CMAKE_BUILD_USE_SSE "TRUE")
