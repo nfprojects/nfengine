@@ -37,15 +37,15 @@ int main(int argc, char* argv[])
     {
         // we use D3D11 renderer
         gBackend = D3D11_BACKEND;
-        gShaderPathPrefix = D3D11_SHADER_PATH_PREFIX;
-        gShaderPathExt = D3D11_SHADER_EXTENSION;
+        gShaderPathPrefix = HLSL5_SHADER_PATH_PREFIX;
+        gShaderPathExt = HLSL5_SHADER_EXTENSION;
     }
     else if (OGL4_BACKEND.compare(selectedBackend) == 0)
     {
         // we use OGL4 renderer
         gBackend = OGL4_BACKEND;
-        gShaderPathPrefix = OGL4_SHADER_PATH_PREFIX;
-        gShaderPathExt = OGL4_SHADER_EXTENSION;
+        gShaderPathPrefix = GLSL_SHADER_PATH_PREFIX;
+        gShaderPathExt = GLSL_SHADER_EXTENSION;
     }
     else
     {
