@@ -1,0 +1,24 @@
+# @file
+# @author LKostyra (costyrra.xl@gmail.com)
+# @brief  CMake for nfRendererVk
+
+MESSAGE("Generating Makefile for nfRendererVk")
+
+FILE(GLOB NFRENDERERVK_SOURCES        *.cpp)
+FILE(GLOB NFRENDERERVK_HEADERS        *.hpp)
+FILE(GLOB NFRENDERERVK_LINUX_SOURCES  Linux/*.cpp)
+FILE(GLOB NFRENDERERVK_LINUX_HEADERS  Linux/*.hpp)
+
+# Windows DllMain definition, unneeded in other platforms
+IF(NOT WIN32)
+    LIST(REMOVE_ITEM NFRENDERERVK_SOURCES "${NFRENDERERVK_DIRECTORY}/Main.cpp")
+ENDIF(NOT WIN32)
+
+INCLUDE_DIRECTORIES(${NFE_ROOT_DIRECTORY}/nfEngineDeps/ ${NFCOMMON_DIRECTORY})
+
+ADD_LIBRARY(nfRendererVk SHARED
+            ${NFRENDERERVK_SOURCES} ${NFRENDERERVK_HEADERS}
+            ${NFRENDERERVK_LINUX_SOURCES} ${NFRENDERERVK_LINUX_HEADERS})
+
+ADD_CUSTOM_COMMAND(TARGET nfRendererVk POST_BUILD COMMAND
+                   ${CMAKE_COMMAND} -E copy $<TARGET_FILE:nfRendererVk> ${NFE_OUTPUT_DIRECTORY}/${targetfile})
