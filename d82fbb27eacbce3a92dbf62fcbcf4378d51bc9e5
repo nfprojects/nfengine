@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_b8d8a680",
+        "filename": "nfEngine/nfCommon/Thread.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-27T16:59:09Z",
+      "side": 1,
+      "message": "gThreadId",
+      "range": {
+        "startLine": 38,
+        "startChar": 39,
+        "endLine": 38,
+        "endChar": 47
+      },
+      "revId": "d82fbb27eacbce3a92dbf62fcbcf4378d51bc9e5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_98e72240",
+        "filename": "nfEngine/nfCommon/Thread.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-27T16:59:09Z",
+      "side": 1,
+      "message": "gThreadDebugName",
+      "range": {
+        "startLine": 41,
+        "startChar": 38,
+        "endLine": 41,
+        "endChar": 53
+      },
+      "revId": "d82fbb27eacbce3a92dbf62fcbcf4378d51bc9e5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_58e99a19",
+        "filename": "nfEngine/nfCommon/Thread.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-27T16:59:09Z",
+      "side": 1,
+      "message": "this \"const\" may be superfluous",
+      "range": {
+        "startLine": 51,
+        "startChar": 22,
+        "endLine": 51,
+        "endChar": 27
+      },
+      "revId": "d82fbb27eacbce3a92dbf62fcbcf4378d51bc9e5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_78b9fe14",
+        "filename": "nfEngine/nfCommon/Win/Thread.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-27T16:59:09Z",
+      "side": 1,
+      "message": "I\u0027ve just realized that I don\u0027t get what\u0027s the purpose of this variable. Can\u0027t be just use the integer above?",
+      "range": {
+        "startLine": 16,
+        "startChar": 31,
+        "endLine": 16,
+        "endChar": 46
+      },
+      "revId": "d82fbb27eacbce3a92dbf62fcbcf4378d51bc9e5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
