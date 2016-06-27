@@ -136,6 +136,8 @@ bool Window::Open()
 
     ::XSetWindowAttributes xSetWAttrib;
 
+    // TODO disabled temporarily, required by OpenGL renderer
+#if 0
     // Visual should be chosen with proper FB Config
     static int fbAttribs[] =
     {
@@ -186,15 +188,17 @@ bool Window::Open()
     XFree(fbc);
 
     XVisualInfo* visual = glXGetVisualFromFBConfig(mDisplay, bestFB);
-    ::Colormap colormap = XCreateColormap(mDisplay, mRoot, visual->visual, AllocNone);
+#endif
+    ::Visual* visual = DefaultVisual(mDisplay, XDefaultScreen(mDisplay));
+    ::Colormap colormap = XCreateColormap(mDisplay, mRoot, visual, AllocNone);
     xSetWAttrib.colormap = colormap;
     xSetWAttrib.event_mask = Button1MotionMask | Button2MotionMask | ButtonPressMask |
                              ButtonReleaseMask | ExposureMask | FocusChangeMask | KeyPressMask |
                              KeyReleaseMask | PointerMotionMask | StructureNotifyMask;
 
     XSetErrorHandler(ErrorHandler);
-    mWindow = XCreateWindow(mDisplay, mRoot, 0, 0, mWidth, mHeight, 1, visual->depth,
-                            InputOutput, visual->visual, CWColormap | CWEventMask, &xSetWAttrib);
+    mWindow = XCreateWindow(mDisplay, mRoot, 0, 0, mWidth, mHeight, 1, CopyFromParent,
+                            InputOutput, visual, CWColormap | CWEventMask, &xSetWAttrib);
     XFree(visual);
     if (Window::mWindowError)
     {
