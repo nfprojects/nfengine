@@ -29,7 +29,7 @@ SET_TARGET_PROPERTIES(nfRendererDemo PROPERTIES
 
 # nfRendererOGL4 dependency removed temporarily
 ADD_DEPENDENCIES(nfRendererDemo nfCommon)
-TARGET_LINK_LIBRARIES(nfRendererDemo nfCommon squish jpeg png
+TARGET_LINK_LIBRARIES(nfRendererDemo nfCommon squish jpeg png vulkan
                       ${NFRENDERERDEMO_DEPS_LIBRARIES})
 ADD_CUSTOM_COMMAND(TARGET nfRendererDemo POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:nfRendererDemo>
