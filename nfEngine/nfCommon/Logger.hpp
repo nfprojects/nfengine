@@ -13,6 +13,7 @@
 #include <memory>
 #include <atomic>
 #include <mutex>
+#include <vector>
 
 
 namespace NFE {
