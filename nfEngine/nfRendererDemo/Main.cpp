@@ -325,6 +325,12 @@ int main(int argc, char* argv[])
         gShaderPathPrefix = GLSL_SHADER_PATH_PREFIX;
         gShaderPathExt = GLSL_SHADER_EXTENSION;
     }
+    else if (VK_BACKEND.compare(argv[1]) == 0)
+    {
+        rend = VK_BACKEND;
+        gShaderPathPrefix = GLSL_SHADER_PATH_PREFIX;
+        gShaderPathPrefix = GLSL_SHADER_EXTENSION;
+    }
     else
     {
         std::cerr << "Incorrect backend provided" << std::endl;
