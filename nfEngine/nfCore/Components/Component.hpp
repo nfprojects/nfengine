@@ -59,7 +59,12 @@ public:
 template<typename T>
 class ComponentBase : public Component
 {
+    ComponentBase(const ComponentBase&) = delete;
+    ComponentBase& operator=(const ComponentBase&) = delete;
+
 public:
+    ComponentBase() { }
+
     virtual ~ComponentBase() {}
 
     /**

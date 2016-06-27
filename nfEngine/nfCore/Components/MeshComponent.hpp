@@ -38,7 +38,6 @@ class CORE_API MeshComponent
 public:
     MeshComponent();
     ~MeshComponent();
-    MeshComponent(const MeshComponent& other);
 
     /**
      * Set mesh resource by pointer.

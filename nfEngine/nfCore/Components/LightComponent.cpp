@@ -35,34 +35,6 @@ LightComponent::~LightComponent()
     Release();
 }
 
-LightComponent::LightComponent(const LightComponent& other)
-{
-    mLightType = other.mLightType;
-    mColor = other.mColor;
-
-    switch (mLightType)
-    {
-    case LightType::Omni:
-        mOmniLight = other.mOmniLight;
-        break;
-    case LightType::Spot:
-        mSpotLight = other.mSpotLight;
-        break;
-    case LightType::Dir:
-        mDirLight = other.mDirLight;
-        break;
-    default:
-        LOG_ERROR("Invalid light type");
-    }
-
-    if (other.HasShadowMap())
-        SetShadowMap(other.mShadowMap->GetSize());
-
-    mLightMap = other.mLightMap;
-    if (mLightMap)
-        mLightMap->AddRef();
-}
-
 void LightComponent::SetColor(const Float3& color)
 {
     mColor = color;

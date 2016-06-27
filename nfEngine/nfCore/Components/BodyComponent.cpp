@@ -57,21 +57,6 @@ BodyComponent::~BodyComponent()
     }
 }
 
-BodyComponent::BodyComponent(const BodyComponent& other)
-{
-    mVelocity = other.mVelocity;
-    mAngularVelocity = other.mAngularVelocity;
-    mMass = other.mMass;
-    mFlags = 0;
-    mCollisionShape = other.mCollisionShape;
-
-    if (mCollisionShape != nullptr)
-    {
-        mCollisionShape->AddRef();
-        mFlags |= BODY_COMPONENT_FLAG_INIT;
-    }
-}
-
 void BodyComponent::EnablePhysics(CollisionShape* shape)
 {
     if (mRigidBody)

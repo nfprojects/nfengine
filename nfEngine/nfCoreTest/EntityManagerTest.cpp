@@ -82,7 +82,7 @@ TEST_F(EntityManagerTest, EntityComponents)
         EntityID entity = em.CreateEntity();
         entitiesA.insert(entity);
         entitiesAC.insert(entity);
-        ASSERT_TRUE(em.AddComponent(entity, TransformComponent()));
+        ASSERT_NE(nullptr, em.AddComponent<TransformComponent>(entity));
     }
 
     // attach TransformComponent and BodyComponent to components in group A
@@ -91,7 +91,7 @@ TEST_F(EntityManagerTest, EntityComponents)
         EntityID entity = em.CreateEntity();
         entitiesB.insert(entity);
         entitiesBC.insert(entity);
-        ASSERT_TRUE(em.AddComponent(entity, MeshComponent()));
+        ASSERT_NE(nullptr, em.AddComponent<MeshComponent>(entity));
     }
 
     // attach BodyComponent to components in group A
@@ -101,8 +101,8 @@ TEST_F(EntityManagerTest, EntityComponents)
         entitiesC.insert(entity);
         entitiesAC.insert(entity);
         entitiesBC.insert(entity);
-        ASSERT_TRUE(em.AddComponent(entity, TransformComponent()));
-        ASSERT_TRUE(em.AddComponent(entity, MeshComponent()));
+        ASSERT_NE(nullptr, em.AddComponent<TransformComponent>(entity));
+        ASSERT_NE(nullptr, em.AddComponent<MeshComponent>(entity));
     }
 
     int transformComponentId = TransformComponent::GetID();
@@ -187,11 +187,11 @@ TEST_F(EntityManagerTest, EntityChildren)
 
     /// create 3 entities
     EntityID entityA = em->CreateEntity();
-    ASSERT_TRUE(em->AddComponent(entityA, TransformComponent()));
+    ASSERT_NE(nullptr, em->AddComponent<TransformComponent>(entityA));
     EntityID entityB = em->CreateEntity();
-    ASSERT_TRUE(em->AddComponent(entityB, TransformComponent()));
+    ASSERT_NE(nullptr, em->AddComponent<TransformComponent>(entityB));
     EntityID entityC = em->CreateEntity();
-    ASSERT_TRUE(em->AddComponent(entityC, TransformComponent()));
+    ASSERT_NE(nullptr, em->AddComponent<TransformComponent>(entityC));
 
     /// can't set parent to self
     ASSERT_FALSE(ts->SetParent(entityA, entityA));
