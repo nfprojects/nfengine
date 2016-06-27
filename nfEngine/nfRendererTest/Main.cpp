@@ -44,8 +44,8 @@ int main(int argc, char* argv[])
     {
         // we use OGL4 renderer
         gBackend = OGL4_BACKEND;
-        gShaderPathPrefix = OGL4_SHADER_PATH_PREFIX;
-        gShaderPathExt = OGL4_SHADER_EXTENSION;
+        gShaderPathPrefix = GLSL_SHADER_PATH_PREFIX;
+        gShaderPathExt = GLSL_SHADER_EXTENSION;
     }
     else
     {
