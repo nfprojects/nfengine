@@ -316,8 +316,8 @@ int main(int argc, char* argv[])
     else if (OGL4_BACKEND.compare(argv[1]) == 0)
     {
         rend = OGL4_BACKEND;
-        gShaderPathPrefix = OGL4_SHADER_PATH_PREFIX;
-        gShaderPathExt = OGL4_SHADER_EXTENSION;
+        gShaderPathPrefix = GLSL_SHADER_PATH_PREFIX;
+        gShaderPathExt = GLSL_SHADER_EXTENSION;
     }
     else if (D3D12_BACKEND.compare(argv[1]) == 0)
     {
