@@ -102,7 +102,6 @@ class CORE_API LightComponent
 public:
     LightComponent();
     ~LightComponent();
-    LightComponent(const LightComponent& other);
 
     void SetColor(const Math::Float3& color);
     void SetOmniLight(const OmniLightDesc* pDesc);

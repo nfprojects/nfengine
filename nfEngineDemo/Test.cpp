@@ -213,9 +213,8 @@ public:
         InitCameraOrientation();
         cameraEntity = entityManager->CreateEntity();
 
-        TransformComponent transform;
+        TransformComponent& transform = entityManager->AddComponent<TransformComponent>(cameraEntity);
         transform.SetPosition(Vector(0.0f, 1.6f, -2.0f, 0.0f));
-        entityManager->AddComponent(cameraEntity, transform);
 
         UpdateCamera();
         Perspective perspective;
@@ -223,12 +222,10 @@ public:
         perspective.nearDist = 0.01f;
         perspective.farDist = 1000.0f;
         perspective.aspectRatio = GetAspectRatio();
-        CameraComponent camera;
+        CameraComponent& camera = entityManager->AddComponent<CameraComponent>(cameraEntity);
         camera.SetPerspective(&perspective);
-        entityManager->AddComponent(cameraEntity, camera);
 
-        BodyComponent body;
-        entityManager->AddComponent(cameraEntity, body);
+        entityManager->AddComponent<BodyComponent>(cameraEntity);
 
         if (!view)
         {
@@ -258,9 +255,8 @@ public:
     {
         secondaryCameraEntity = entityManager->CreateEntity();
 
-        TransformComponent transform;
+        TransformComponent& transform = entityManager->AddComponent<TransformComponent>(secondaryCameraEntity);
         transform.SetPosition(Vector(0.0f, 1.6f, -2.0f, 0.0f));
-        entityManager->AddComponent(secondaryCameraEntity, transform);
 
         UpdateCamera();
         Perspective perspective;
@@ -269,9 +265,8 @@ public:
         perspective.farDist = 1000.0f;
         perspective.aspectRatio = static_cast<float>(SECONDARY_VIEW_WIDTH) /
                                   static_cast<float>(SECONDARY_VIEW_HEIGHT);
-        CameraComponent camera;
+        CameraComponent& camera = entityManager->AddComponent<CameraComponent>(secondaryCameraEntity);
         camera.SetPerspective(&perspective);
-        entityManager->AddComponent(secondaryCameraEntity, camera);
     }
 
 #define CAMERA_ROTATION_SMOOTHING 0.05f
@@ -347,12 +342,11 @@ public:
             gSelectedEntity = lightEntity;
             gEntityManager = entityManager;
 
-            TransformComponent transform;
+            TransformComponent& transform = entityManager->AddComponent<TransformComponent>(lightEntity);
             transform.SetOrientation(cameraTransform->GetOrientation());
             transform.SetPosition(cameraTransform->GetPosition());
-            entityManager->AddComponent(lightEntity, transform);
 
-            LightComponent light;
+            LightComponent& light = entityManager->AddComponent<LightComponent>(lightEntity);
             SpotLightDesc lightDesc;
             lightDesc.nearDist = 0.1f;
             lightDesc.farDist = 500.0f;
@@ -362,7 +356,6 @@ public:
             light.SetColor(Float3(30.0f, 15.0f, 5.0f));
             light.SetLightMap("flashlight.jpg");
             light.SetShadowMap(1024);
-            entityManager->AddComponent(lightEntity, light);
         }
 
         //place omni light
@@ -377,15 +370,13 @@ public:
             gSelectedEntity = lightEntity;
             gEntityManager = entityManager;
 
-            TransformComponent transform;
+            TransformComponent& transform = entityManager->AddComponent<TransformComponent>(lightEntity);
             transform.SetPosition(cameraTransform->GetPosition());
-            entityManager->AddComponent(lightEntity, transform);
 
-            LightComponent light;
+            LightComponent& light = entityManager->AddComponent<LightComponent>(lightEntity);
             light.SetOmniLight(&lightDesc);
             light.SetColor(Float3(25.0f, 25.0f, 25.0f));
             light.SetShadowMap(512);
-            entityManager->AddComponent(lightEntity, light);
         }
 
         if (key == Common::KeyCode::V)
@@ -432,38 +423,33 @@ public:
         {
             EntityID cube = entityManager->CreateEntity();
 
-            TransformComponent transform;
+            TransformComponent& transform = entityManager->AddComponent<TransformComponent>(cube);
             transform.SetPosition(cameraTransform->GetPosition() + camOrient.z);
-            entityManager->AddComponent(cube, transform);
 
-            MeshComponent mesh;
+            MeshComponent& mesh = entityManager->AddComponent<MeshComponent>(cube);
             mesh.SetMeshResource("cube.nfm");
-            entityManager->AddComponent(cube, mesh);
 
-            BodyComponent body;
+            BodyComponent& body = entityManager->AddComponent<BodyComponent>(cube);
             body.SetMass(10.0f);
             body.SetVelocity(0.1f * camOrient.z);
             body.EnablePhysics(ENGINE_GET_COLLISION_SHAPE("shape_box"));
-            entityManager->AddComponent(cube, body);
 
             {
                 EntityID child = entityManager->CreateEntity();
                 gSelectedEntity = cube;
                 gEntityManager = entityManager;
 
-                TransformComponent transform;
+                TransformComponent& transform = entityManager->AddComponent<TransformComponent>(child);
                 transform.SetLocalPosition(Vector(0.0f, 1.0f, 0.0f));
-                entityManager->AddComponent(child, transform);
 
                 OmniLightDesc lightDesc;
                 lightDesc.radius = 4.0f;
                 lightDesc.shadowFadeStart = 20.0;
                 lightDesc.maxShadowDistance = 30.0;
-                LightComponent light;
+                LightComponent& light = entityManager->AddComponent<LightComponent>(child);
                 light.SetOmniLight(&lightDesc);
                 light.SetColor(Float3(0.5f, 0.5f, 3.0f));
                 light.SetShadowMap(0);
-                entityManager->AddComponent(child, light);
 
                 scene->GetTransformSystem()->SetParent(child, cube);
             }
@@ -475,19 +461,16 @@ public:
             gSelectedEntity = barrel;
             gEntityManager = entityManager;
 
-            TransformComponent transform;
+            TransformComponent& transform = entityManager->AddComponent<TransformComponent>(barrel);
             transform.SetPosition(cameraTransform->GetPosition() + camOrient.z);
-            entityManager->AddComponent(barrel, transform);
 
-            MeshComponent mesh;
+            MeshComponent& mesh = entityManager->AddComponent<MeshComponent>(barrel);
             mesh.SetMeshResource("barrel.nfm");
-            entityManager->AddComponent(barrel, mesh);
 
-            BodyComponent body;
+            BodyComponent& body = entityManager->AddComponent<BodyComponent>(barrel);
             body.SetMass(20.0f);
             body.SetVelocity(30.0f * camOrient.z);
             body.EnablePhysics(ENGINE_GET_COLLISION_SHAPE("shape_barrel"));
-            entityManager->AddComponent(barrel, body);
         }
     }
 

@@ -41,9 +41,8 @@ void CreateSceneMinecraft(SceneManager* scene)
         orient.z = Vector(-1.5f, -1.0f, 0.5f, 0.0f);
         orient.y = Vector(0.0f, 1.0f, 0.0f, 0.0f);
 
-        TransformComponent transform;
+        TransformComponent& transform = entityManager->AddComponent<TransformComponent>(dirLight);
         transform.SetOrientation(orient);
-        entityManager->AddComponent(dirLight, transform);
 
         // TODO: directional lights are not yet supported
         /*
@@ -63,13 +62,11 @@ void CreateSceneMinecraft(SceneManager* scene)
     // MINECRAFT
     EntityID map = entityManager->CreateEntity();
     {
-        TransformComponent transform;
+        TransformComponent& transform = entityManager->AddComponent<TransformComponent>(map);
         transform.SetPosition(Vector(0.0f, -70.0f, 0.0f));
-        entityManager->AddComponent(map, transform);
 
-        MeshComponent mesh;
+        MeshComponent& mesh = entityManager->AddComponent<MeshComponent>(map);
         mesh.SetMeshResource("minecraft.nfm");
-        entityManager->AddComponent(map, mesh);
     }
 }
 
@@ -85,27 +82,23 @@ void CreateSceneSponza(SceneManager* scene)
 
     EntityID sponza = entityManager->CreateEntity();
     {
-        TransformComponent transform;
-        entityManager->AddComponent(sponza, transform);
+        entityManager->AddComponent<TransformComponent>(sponza);
 
-        MeshComponent mesh;
+        MeshComponent& mesh = entityManager->AddComponent<MeshComponent>(sponza);
         mesh.SetMeshResource("sponza.nfm");
-        entityManager->AddComponent(sponza, mesh);
 
         CollisionShape* sponzaShape = ENGINE_GET_COLLISION_SHAPE("sponza_collision_shape.nfcs");
-        BodyComponent body;
+        BodyComponent& body = entityManager->AddComponent<BodyComponent>(sponza);
         body.EnablePhysics(sponzaShape);
         body.SetMass(0.0);
-        entityManager->AddComponent(sponza, body);
     }
 
     EntityID lightEntity = entityManager->CreateEntity();
     {
-        TransformComponent transform;
+        TransformComponent& transform = entityManager->AddComponent<TransformComponent>(lightEntity);
         transform.SetPosition(Vector(0.0f, 3.5f, 0.0f));
-        entityManager->AddComponent(lightEntity, transform);
 
-        LightComponent light;
+        LightComponent& light = entityManager->AddComponent<LightComponent>(lightEntity);
         OmniLightDesc omni;
         omni.shadowFadeStart = 12.0f;
         omni.maxShadowDistance = 120.0f;
@@ -113,7 +106,6 @@ void CreateSceneSponza(SceneManager* scene)
         light.SetOmniLight(&omni);
         light.SetColor(Float3(8.0f, 8.0f, 8.0f));
         light.SetShadowMap(512);
-        entityManager->AddComponent(lightEntity, light);
     }
 }
 
@@ -139,62 +131,52 @@ void CreateChamberArray(SceneManager* scene,
 
             EntityID chamber = entityManager->CreateEntity();
             {
-                TransformComponent transform;
+                TransformComponent& transform = entityManager->AddComponent<TransformComponent>(chamber);
                 transform.SetPosition(offset);
-                entityManager->AddComponent(chamber, transform);
 
-                MeshComponent mesh;
+                MeshComponent& mesh = entityManager->AddComponent<MeshComponent>(chamber);
                 mesh.SetMeshResource("chamber.nfm");
-                entityManager->AddComponent(chamber, mesh);
 
-                BodyComponent body;
+                BodyComponent& body = entityManager->AddComponent<BodyComponent>(chamber);
                 body.EnablePhysics(ENGINE_GET_COLLISION_SHAPE("chamber_collision_shape.nfcs"));
-                entityManager->AddComponent(chamber, body);
             }
 
             OmniLightDesc omni;
             omni.shadowFadeStart = 80.0f;
             omni.maxShadowDistance = 120.0f;
             omni.radius = 8.0f;
-            LightComponent light;
-            light.SetOmniLight(&omni);
-            light.SetColor(Float3(12.0f, 12.0f, 12.0f));
-            light.SetShadowMap(32);
 
             EntityID mainLight = entityManager->CreateEntity();
             {
-                TransformComponent transform;
+                TransformComponent& transform = entityManager->AddComponent<TransformComponent>(mainLight);
                 transform.SetPosition(offset + Vector(0.0f, 3.5f, 0.0f));
-                entityManager->AddComponent(mainLight, transform);
-                entityManager->AddComponent(mainLight, light);
+
+                LightComponent& light = entityManager->AddComponent<LightComponent>(mainLight);
+                light.SetOmniLight(&omni);
+                light.SetColor(Float3(12.0f, 12.0f, 12.0f));
+                light.SetShadowMap(64);
             }
 
             EntityID lightA = entityManager->CreateEntity();
             {
-                TransformComponent transform;
+                TransformComponent& transform = entityManager->AddComponent<TransformComponent>(lightA);
                 transform.SetPosition(offset + Vector(6.0f, 1.8f, 0.0f));
-                entityManager->AddComponent(lightA, transform);
 
+                LightComponent& light = entityManager->AddComponent<LightComponent>(lightA);
                 omni.radius = 3.0f;
-                LightComponent light;
                 light.SetOmniLight(&omni);
                 light.SetColor(Float3(1.0f, 0.2f, 0.1f));
-                light.SetShadowMap(0);
-                entityManager->AddComponent(lightA, light);
             }
 
             EntityID lightB = entityManager->CreateEntity();
             {
-                TransformComponent transform;
+                TransformComponent& transform = entityManager->AddComponent<TransformComponent>(lightB);
                 transform.SetPosition(offset + Vector(0.0f, 1.8f, 6.0f));
-                entityManager->AddComponent(lightB, transform);
 
+                LightComponent& light = entityManager->AddComponent<LightComponent>(lightB);
                 omni.radius = 3.0f;
-                LightComponent light;
                 light.SetOmniLight(&omni);
                 light.SetColor(Float3(1.0f, 0.2f, 0.1f));
-                light.SetShadowMap(0);
-                entityManager->AddComponent(lightB, light);
             }
 
             for (int i = -boxesX; i <= boxesX; i++)
@@ -205,20 +187,17 @@ void CreateChamberArray(SceneManager* scene,
                     {
                         EntityID cube = entityManager->CreateEntity();
 
-                        TransformComponent transform;
+                        TransformComponent& transform = entityManager->AddComponent<TransformComponent>(cube);
                         transform.SetPosition(offset + Vector(0.0f, 0.25f, 0.0f) +
                                               0.6f * Vector(static_cast<float>(i),
                                                             static_cast<float>(j),
                                                             static_cast<float>(k)));
-                        entityManager->AddComponent(cube, transform);
 
-                        MeshComponent mesh;
+                        MeshComponent& mesh = entityManager->AddComponent<MeshComponent>(cube);
                         mesh.SetMeshResource("cube.nfm");
-                        entityManager->AddComponent(cube, mesh);
 
-                        BodyComponent body;
+                        BodyComponent& body = entityManager->AddComponent<BodyComponent>(cube);
                         body.EnablePhysics(ENGINE_GET_COLLISION_SHAPE("shape_box"));
-                        entityManager->AddComponent(cube, body);
                     }
                 }
             }
