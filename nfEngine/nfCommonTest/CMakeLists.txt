@@ -13,7 +13,7 @@ PKG_CHECK_MODULES(NFCOMMONTEST_DEPS REQUIRED
 
 # setup directories
 INCLUDE_DIRECTORIES(${NFE_ROOT_DIRECTORY}/nfEngineDeps/
-                    ${NFE_ROOT_DIRECTORY}/nfEngine/
+                    ${NFENGINE_DIRECTORY}
                     ${NFE_ROOT_DIRECTORY}/nfEngineDeps/gtest/include
                     ${NFECOMMONTEST_DEPS_INCLUDE_DIRS})
 LINK_DIRECTORIES(${NFEDEPS_LIB_DIRECTORY}
