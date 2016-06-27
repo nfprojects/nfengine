@@ -52,11 +52,10 @@ public:
     /**
      * Add a component to an entity.
      * @param entity    Entity ID
-     * @param component Component data
-     * @return True on success
+     * @return New component reference
      */
     template <typename CompType>
-    bool AddComponent(EntityID entity, const CompType& component);
+    CompType* AddComponent(EntityID entity);
 
     /**
      * Remove a component from an entity immediately.
@@ -97,7 +96,7 @@ public:
 
 
 template <typename CompType>
-bool EntityManager::AddComponent(EntityID entity, const CompType& component)
+CompType* EntityManager::AddComponent(EntityID entity)
 {
     int compId = CompType::GetID();
     assert(compId >= 0);
@@ -110,10 +109,10 @@ bool EntityManager::AddComponent(EntityID entity, const CompType& component)
     if (!newComponent)
         RemoveComponent<CompType>(entity);
 
-    CompType* ptr = new CompType(component); // TODO: temporary
+    CompType* ptr = new CompType; // TODO: temporary
     componentsMap[entity] = ptr;
 
-    return newComponent;
+    return ptr;
 }
 
 template <typename CompType>
