@@ -15,7 +15,7 @@ PKG_CHECK_MODULES(NFRENDERERDEMO_DEPS REQUIRED
 
 # setup directories
 INCLUDE_DIRECTORIES(${NFE_ROOT_DIRECTORY}/nfEngineDeps/
-                    ${NFE_ROOT_DIRECTORY}/nfEngine/
+                    ${NFENGINE_DIRECTORY}
                     ${NFRENDERERDEPS_DEPS_INCLUDE_DIRS})
 LINK_DIRECTORIES(${NFEDEPS_LIB_DIRECTORY}
                  ${NFE_OUTPUT_DIRECTORY})
@@ -28,7 +28,7 @@ SET_TARGET_PROPERTIES(nfRendererDemo PROPERTIES
 
 # nfRendererOGL4 dependency removed temporarily
 ADD_DEPENDENCIES(nfRendererDemo nfCommon)
-TARGET_LINK_LIBRARIES(nfRendererDemo nfCommon squish jpeg png
+TARGET_LINK_LIBRARIES(nfRendererDemo nfCommon squish jpeg png vulkan
                       ${NFRENDERERDEMO_DEPS_LIBRARIES})
 ADD_CUSTOM_COMMAND(TARGET nfRendererDemo POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:nfRendererDemo>
