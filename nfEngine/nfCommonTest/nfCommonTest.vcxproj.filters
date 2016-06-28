@@ -33,6 +33,7 @@
     <ClCompile Include="EnumIteratorTest.cpp" />
     <ClCompile Include="LogGrouperTest.cpp" />
     <ClCompile Include="ThreadTest.cpp" />
+    <ClCompile Include="FileAsyncTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
