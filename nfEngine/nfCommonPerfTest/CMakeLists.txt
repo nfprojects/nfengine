@@ -23,8 +23,8 @@ LINK_DIRECTORIES(${NFEDEPS_LIB_DIRECTORY}
 ADD_EXECUTABLE(nfCommonPerfTest
                ${NFCOMMONPERFTEST_SOURCES} ${NFCOMMONPERFTEST_HEADERS})
 SET_TARGET_PROPERTIES(nfCommonPerfTest PROPERTIES
-                      COMPILE_FLAGS "-pthread"
-                      LINK_FLAGS "-pthread")
+                      COMPILE_FLAGS "-pthread -lrt"
+                      LINK_FLAGS "-pthread -lrt")
 ADD_DEPENDENCIES(nfCommonPerfTest nfCommon)
 TARGET_LINK_LIBRARIES(nfCommonPerfTest nfCommon gtest squish jpeg png ${NFCOMMONPERFTEST_DEPS_LIBRARIES})
 ADD_CUSTOM_COMMAND(TARGET nfCommonPerfTest POST_BUILD COMMAND
