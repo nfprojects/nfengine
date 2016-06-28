@@ -92,7 +92,7 @@ bool File::Open(const std::string& path, AccessMode access, bool overwrite)
 
 void File::Close()
 {
-    if (!IsOpened())
+    if (IsOpened())
     {
         ::CloseHandle(mFile);
         mFile = INVALID_HANDLE_VALUE;
