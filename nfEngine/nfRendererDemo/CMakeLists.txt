@@ -24,8 +24,8 @@ LINK_DIRECTORIES(${NFEDEPS_LIB_DIRECTORY}
 ADD_EXECUTABLE(nfRendererDemo ${NFRENDERERDEMO_SOURCES} ${NFRENDERERDEMO_HEADERS}
                               ${NFRENDERERDEMO_SCENE_SOURCES} ${NFRENDERERDEMO_SCENE_HEADERS})
 SET_TARGET_PROPERTIES(nfRendererDemo PROPERTIES
-                      COMPILE_FLAGS "-pthread"
-                      LINK_FLAGS "-pthread")
+                      COMPILE_FLAGS "-pthread -lrt"
+                      LINK_FLAGS "-pthread -lrt")
 
 # nfRendererOGL4 dependency removed temporarily
 ADD_DEPENDENCIES(nfRendererDemo nfCommon)
