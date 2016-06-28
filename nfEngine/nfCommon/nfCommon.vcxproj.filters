@@ -248,6 +248,9 @@
     <ClInclude Include="LogScope.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FileAsync.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -416,6 +419,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Win\Thread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FileAsync.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Win\FileAsyncPlatform.cpp">
       <Filter>Source Files\Win</Filter>
     </ClCompile>
     <ClCompile Include="LogScope.cpp">
