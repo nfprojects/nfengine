@@ -16,5 +16,6 @@ namespace NFE {
  *  Temporary - This must be changed!!!
  */
 extern const std::string g_DataPath;
+extern const std::string g_CookedDataPath;
 
 } // namespace NFE
