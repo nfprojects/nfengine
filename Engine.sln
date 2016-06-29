@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nfEngine", "nfEngine", "{A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}"
 EndProject
@@ -11,6 +11,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfCore", "nfEngine\nfCore\n
 	ProjectSection(ProjectDependencies) = postProject
 		{EC1CAD07-6B42-4CBC-AC3B-00F0C39ACE44} = {EC1CAD07-6B42-4CBC-AC3B-00F0C39ACE44}
 		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
+		{39346F9B-F1D6-41A9-A539-91D0448C491C} = {39346F9B-F1D6-41A9-A539-91D0448C491C}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfCoreTest", "nfEngine\nfCoreTest\nfCoreTest.vcxproj", "{9D73EADD-ABBA-4FAC-8294-3682A9776A94}"
@@ -27,7 +28,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfEngineDemo", "nfEngineDem
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{B98E24A1-E8D8-4F16-A426-6CA8F660BD6F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FastMeshConverter", "nfEngine\Tools\FastMeshConverter\FastMeshConverter.vcxproj", "{453F745C-8C3A-49ED-A407-2A36242F9AC0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ResourceManager", "nfEngine\Tools\ResourceManager\ResourceManager.vcxproj", "{453F745C-8C3A-49ED-A407-2A36242F9AC0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
+		{39346F9B-F1D6-41A9-A539-91D0448C491C} = {39346F9B-F1D6-41A9-A539-91D0448C491C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfCommonTest", "nfEngine\nfCommonTest\nfCommonTest.vcxproj", "{1EEE1F90-5261-43E9-A133-FFBCD7DA4077}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -128,6 +133,18 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfRendererD3D12", "nfEngine
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfRendererVk", "nfEngine\Renderers\nfRendererVk\nfRendererVk.vcxproj", "{1A1154B8-E09A-472F-A0F0-20F530741587}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{6856CF55-2FD0-43D6-8807-37602B9AA1CD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resource", "Resource", "{DFBF07C8-3B3A-4097-ABBB-802A258F07AB}"
+	ProjectSection(SolutionItems) = preProject
+		nfEngine\Common\Resource\Mesh.hpp = nfEngine\Common\Resource\Mesh.hpp
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfResources", "nfEngine\nfResources\nfResources.vcxproj", "{39346F9B-F1D6-41A9-A539-91D0448C491C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
 	EndProjectSection
@@ -322,6 +339,18 @@ Global
 		{1A1154B8-E09A-472F-A0F0-20F530741587}.Release|Win32.Build.0 = Release|Win32
 		{1A1154B8-E09A-472F-A0F0-20F530741587}.Release|x64.ActiveCfg = Release|x64
 		{1A1154B8-E09A-472F-A0F0-20F530741587}.Release|x64.Build.0 = Release|x64
+		{39346F9B-F1D6-41A9-A539-91D0448C491C}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{39346F9B-F1D6-41A9-A539-91D0448C491C}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{39346F9B-F1D6-41A9-A539-91D0448C491C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{39346F9B-F1D6-41A9-A539-91D0448C491C}.Debug|Win32.Build.0 = Debug|Win32
+		{39346F9B-F1D6-41A9-A539-91D0448C491C}.Debug|x64.ActiveCfg = Debug|x64
+		{39346F9B-F1D6-41A9-A539-91D0448C491C}.Debug|x64.Build.0 = Debug|x64
+		{39346F9B-F1D6-41A9-A539-91D0448C491C}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{39346F9B-F1D6-41A9-A539-91D0448C491C}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{39346F9B-F1D6-41A9-A539-91D0448C491C}.Release|Win32.ActiveCfg = Release|Win32
+		{39346F9B-F1D6-41A9-A539-91D0448C491C}.Release|Win32.Build.0 = Release|Win32
+		{39346F9B-F1D6-41A9-A539-91D0448C491C}.Release|x64.ActiveCfg = Release|x64
+		{39346F9B-F1D6-41A9-A539-91D0448C491C}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -347,5 +376,8 @@ Global
 		{A9D64D99-8D32-4B24-A601-2F8FFF1FC079} = {B19B4C10-EB4D-4782-8933-120A35AC259D}
 		{49AB8AC7-1834-4AF8-9792-59313C71C7E0} = {265F0BFF-E485-46E3-9213-D339828982B3}
 		{1A1154B8-E09A-472F-A0F0-20F530741587} = {265F0BFF-E485-46E3-9213-D339828982B3}
+		{6856CF55-2FD0-43D6-8807-37602B9AA1CD} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
+		{DFBF07C8-3B3A-4097-ABBB-802A258F07AB} = {6856CF55-2FD0-43D6-8807-37602B9AA1CD}
+		{39346F9B-F1D6-41A9-A539-91D0448C491C} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
 	EndGlobalSection
 EndGlobal

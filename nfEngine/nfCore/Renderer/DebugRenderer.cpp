@@ -452,13 +452,12 @@ void DebugRenderer::DrawMesh(RenderContext* context, const Resource::Mesh* mesh,
                                         sizeof(DebugPerMeshCBuffer),
                                         &perMeshCBuffer);
 
-    int strides[] = { sizeof(MeshVertex) };
+    int strides[] = { sizeof(Resource::MeshVertex) };
     int offsets[] = { 0 };
     context->commandBuffer->SetVertexBuffers(1, &vb, strides, offsets);
     context->commandBuffer->SetIndexBuffer(ib, IndexBufferFormat::Uint32);
-    for (uint32 i = 0; i < mesh->mSubMeshesCount; ++i)
+    for (const auto& subMesh : mesh->mSubMeshes)
     {
-        const Resource::SubMesh& subMesh = mesh->mSubMeshes[i];
         SetMeshMaterial(context, subMesh.material);
         context->commandBuffer->DrawIndexed(3 * subMesh.trianglesCount, 1, subMesh.indexOffset);
     }
