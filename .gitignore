@@ -22,8 +22,9 @@ Makefile
 *.a
 *.so
 
-# External files updated through GDrive
+# Non-versioned test resource files
 /nfEngineDemo/Data
+/nfEngineDemo/CookedData
 
 # Shader compilation results
 /ShaderCache

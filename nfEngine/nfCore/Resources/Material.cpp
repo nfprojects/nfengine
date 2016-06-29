@@ -79,7 +79,7 @@ bool Material::OnLoad()
     LOG_INFO("Loading material '%s'...", mName);
 
     //get relative path
-    std::string path = g_DataPath + "Materials/" + mName + ".json";
+    std::string path = g_CookedDataPath + "Materials/" + mName + ".json";
 
     // TODO: support for file in memory
     FILE* pFile = fopen(path.c_str(), "r");

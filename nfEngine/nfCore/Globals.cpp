@@ -14,5 +14,6 @@ using namespace Renderer;
 using namespace Resource;
 
 const std::string g_DataPath = "nfEngineDemo/Data/";
+const std::string g_CookedDataPath = "nfEngineDemo/CookedData/";
 
 } // namespace NFE
