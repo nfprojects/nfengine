@@ -63,6 +63,9 @@ ENDIF(DEFINED CMAKE_BUILD_USE_SSE4)
 # Enable all warnings and make them errors
 ADD_DEFINITIONS("-Wall -Wpedantic -Wextra -Wno-sign-compare -Werror")
 
+# Warnings exceptions
+ADD_DEFINITIONS("-Wno-multichar")
+
 ADD_DEFINITIONS(-DNFE_ROOT_DIRECTORY="${NFE_ROOT_DIRECTORY}/")
 ADD_DEFINITIONS(-DNFE_COMPILER="${CMAKE_CXX_COMPILER_ID}")
 ADD_DEFINITIONS(-DNFE_OS="${CMAKE_SYSTEM}")
