@@ -27,7 +27,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfEngineDemo", "nfEngineDem
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{B98E24A1-E8D8-4F16-A426-6CA8F660BD6F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FastMeshConverter", "nfEngine\Tools\FastMeshConverter\FastMeshConverter.vcxproj", "{453F745C-8C3A-49ED-A407-2A36242F9AC0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ResourceManager", "nfEngine\Tools\ResourceManager\ResourceManager.vcxproj", "{453F745C-8C3A-49ED-A407-2A36242F9AC0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfCommonTest", "nfEngine\nfCommonTest\nfCommonTest.vcxproj", "{1EEE1F90-5261-43E9-A133-FFBCD7DA4077}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -115,6 +118,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "D3D11", "D3D11", "{A9D64D99
 		nfEngine\Shaders\D3D11\SpotLightPS.hlsl = nfEngine\Shaders\D3D11\SpotLightPS.hlsl
 		nfEngine\Shaders\D3D11\SpotLightVS.hlsl = nfEngine\Shaders\D3D11\SpotLightVS.hlsl
 		nfEngine\Shaders\D3D11\TonemappingPS.hlsl = nfEngine\Shaders\D3D11\TonemappingPS.hlsl
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{6856CF55-2FD0-43D6-8807-37602B9AA1CD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resource", "Resource", "{DFBF07C8-3B3A-4097-ABBB-802A258F07AB}"
+	ProjectSection(SolutionItems) = preProject
+		nfEngine\Common\Resource\Mesh.hpp = nfEngine\Common\Resource\Mesh.hpp
 	EndProjectSection
 EndProject
 Global
@@ -306,5 +316,7 @@ Global
 		{7D5F8B13-8926-4553-87A0-2FD31038EE0B} = {265F0BFF-E485-46E3-9213-D339828982B3}
 		{B19B4C10-EB4D-4782-8933-120A35AC259D} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
 		{A9D64D99-8D32-4B24-A601-2F8FFF1FC079} = {B19B4C10-EB4D-4782-8933-120A35AC259D}
+		{6856CF55-2FD0-43D6-8807-37602B9AA1CD} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
+		{DFBF07C8-3B3A-4097-ABBB-802A258F07AB} = {6856CF55-2FD0-43D6-8807-37602B9AA1CD}
 	EndGlobalSection
 EndGlobal

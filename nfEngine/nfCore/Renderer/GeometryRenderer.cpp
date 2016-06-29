@@ -364,7 +364,7 @@ void GeometryRenderer::Draw(RenderContext* context, const RenderCommandBuffer& b
             currVB = command.pVB;
 
             IBuffer* buffers[] = { currVB, mInstancesVertexBuffer.get() };
-            int strides[] = { sizeof(MeshVertex), sizeof(InstanceData) };
+            int strides[] = { sizeof(Resource::MeshVertex), sizeof(InstanceData) };
             int offsets[] = { 0, 0 };
             context->commandBuffer->SetVertexBuffers(2, buffers, strides, offsets);
             context->commandBuffer->SetIndexBuffer(currIB, IndexBufferFormat::Uint32);
