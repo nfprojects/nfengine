@@ -35,6 +35,11 @@ public:
     static std::string GetParentDir(const std::string& path);
 
     /**
+     * Extract extension from path (without dot).
+     */
+    static std::string ExtractExtension(const std::string& path);
+
+    /**
      * Get location of the executable.
      */
     static std::string GetExecutablePath();
@@ -58,6 +63,11 @@ public:
      * Create a directory.
      */
     static bool CreateDir(const std::string& path);
+
+    /**
+     * Create a directory. Won't generate error if the directory already exists.
+     */
+    static bool CreateDirIfNotExist(const std::string& path);
 
     /**
      * Remove a file or a directory.
