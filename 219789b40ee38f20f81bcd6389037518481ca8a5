@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_fed28f33",
+        "filename": "nfEngine/nfCommon/LogGrouper.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-29T07:21:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_1209b42c",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 17
+      },
+      "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_f20bf022",
         "filename": "nfEngine/nfCommon/LogGrouper.hpp",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2016-06-26T11:57:27Z",
       "side": 1,
       "message": "Maybe create some static-size buffer instead and put everything there to avoid memory allocations. Memory allocation would be required if the buffer is too small, just like in Logger::Log",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 33
+      },
+      "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_1e1bf3cb",
+        "filename": "nfEngine/nfCommon/LogGrouper.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-29T07:21:01Z",
+      "side": 1,
+      "message": "In logger log we create a buffer with magic number - 1024 chars, but here what would be the proper initial size of a buffer?\n\nI can even make it a static sized buffer (std::array) and ask for a size in CREATE macro...but that would be lame, to change it every time we add a log...",
+      "parentUuid": "baa041b7_f20bf022",
       "range": {
         "startLine": 27,
         "startChar": 0,
@@ -65,6 +113,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_bedc0747",
+        "filename": "nfEngine/nfCommon/LogGrouper.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-29T07:21:01Z",
+      "side": 1,
+      "message": "Right now line number is in every log call, so it makes it easier to locate the log even in very big scopes/groups.\n\nDo You want line number to be the same for whole log group?",
+      "parentUuid": "baa041b7_52ff3c01",
+      "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_3202780a",
         "filename": "nfEngine/nfCommon/LogGrouper.hpp",
         "patchSetId": 2
@@ -76,6 +142,30 @@
       "writtenOn": "2016-06-26T11:57:27Z",
       "side": 1,
       "message": "Make \"int line, const char* str\", as above",
+      "range": {
+        "startLine": 35,
+        "startChar": 27,
+        "endLine": 35,
+        "endChar": 52
+      },
+      "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ded58b1b",
+        "filename": "nfEngine/nfCommon/LogGrouper.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-29T07:21:01Z",
+      "side": 1,
+      "message": "Nope, it wouldn\u0027t work. Check for yourself",
+      "parentUuid": "baa041b7_3202780a",
       "range": {
         "startLine": 35,
         "startChar": 27,
