@@ -452,7 +452,7 @@ void DebugRenderer::DrawMesh(RenderContext* context, const Resource::Mesh* mesh,
                                         sizeof(DebugPerMeshCBuffer),
                                         &perMeshCBuffer);
 
-    int strides[] = { sizeof(MeshVertex) };
+    int strides[] = { sizeof(Resource::MeshVertex) };
     int offsets[] = { 0 };
     context->commandBuffer->SetVertexBuffers(1, &vb, strides, offsets);
     context->commandBuffer->SetIndexBuffer(ib, IndexBufferFormat::Uint32);
