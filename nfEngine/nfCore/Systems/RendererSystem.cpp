@@ -231,12 +231,12 @@ void RendererSystem::RenderGeometry(RenderContext* ctx, const Math::Frustum& vie
         command.distance = VectorLength3(cameraTransform->GetPosition() -
                                          transform->GetPosition()).f[0];
 
-        for (uint32 j = 0; j < meshResource->mSubMeshesCount; j++)
+        for (const auto& subMesh : meshResource->mSubMeshes)
         {
             // TODO: submesh frustum culling
-            command.indexCount = 3 * meshResource->mSubMeshes[j].trianglesCount;
-            command.startIndex = meshResource->mSubMeshes[j].indexOffset;
-            command.material = meshResource->mSubMeshes[j].material->GetRendererData();
+            command.indexCount = 3 * subMesh.trianglesCount;
+            command.startIndex = subMesh.indexOffset;
+            command.material = subMesh.material->GetRendererData();
             commandBuffer.PushBack(command);
         }
     }
