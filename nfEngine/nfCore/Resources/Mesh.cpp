@@ -105,7 +105,7 @@ bool Mesh::OnLoad()
     {
     */
     //realtive file path
-    std::string path = g_DataPath + "Meshes/" + mName;
+    std::string path = g_CookedDataPath + "Meshes/" + mName;
 
     //open file
     FILE* pFile = 0;
