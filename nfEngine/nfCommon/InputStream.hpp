@@ -59,11 +59,10 @@ class NFCOMMON_API FileInputStream : public InputStream
     NFE_MAKE_NONMOVEABLE(FileInputStream)
 
 private:
-    File mFile;
+    File& mFile;
 
 public:
-    FileInputStream(const char* path);
-    ~FileInputStream();
+    NFE_INLINE FileInputStream(File& file) : mFile(file) { }
 
     uint64 GetSize() override;
     bool Seek(uint64 position) override;

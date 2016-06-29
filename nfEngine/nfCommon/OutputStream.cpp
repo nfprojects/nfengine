@@ -17,11 +17,6 @@ namespace Common {
 // FileOutputStream
 // ===============================================================
 
-FileOutputStream::FileOutputStream(const char* fileName)
-{
-    mFile.Open(fileName, AccessMode::Write, true);
-}
-
 size_t FileOutputStream::Write(const void* buffer, size_t num)
 {
     return mFile.Write(buffer, num);

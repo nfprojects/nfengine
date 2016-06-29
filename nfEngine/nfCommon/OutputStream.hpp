@@ -47,10 +47,10 @@ class NFCOMMON_API FileOutputStream : public OutputStream
     NFE_MAKE_NONMOVEABLE(FileOutputStream)
 
 private:
-    File mFile;
+    File& mFile;
 
 public:
-    FileOutputStream(const char* pFileName);
+    NFE_INLINE FileOutputStream(File& file) : mFile(file) { }
 
     size_t Write(const void* buffer, size_t num) override;
 };

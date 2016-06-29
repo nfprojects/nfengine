@@ -16,5 +16,18 @@ std::string FileSystem::GetParentDir(const std::string& path)
     return path.substr(0, found);
 }
 
+std::string FileSystem::ExtractExtension(const std::string& path)
+{
+    return path.substr(path.find_last_of('.') + 1);
+}
+
+bool FileSystem::CreateDirIfNotExist(const std::string& path)
+{
+    if (FileSystem::GetPathType(path) != PathType::Directory)
+        return FileSystem::CreateDir(path);
+    return true;
+}
+
+
 } // namespace Common
 } // namespace NFE

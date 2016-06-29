@@ -159,16 +159,21 @@ bool Texture::OnLoad()
         //get relative path
         std::string path = g_DataPath + "Textures/" + mName;
 
-        Common::Image image;
-        Common::InputStream* pInputStream = new Common::FileInputStream(path.c_str());
-
-        if (!image.Load(pInputStream))
+        Common::File file;
+        if (!file.Open(path, Common::AccessMode::Read))
         {
-            delete pInputStream;
+            LOG_ERROR("Could not open texture '%s'!", path.c_str());
+            return false;
+        }
+
+        Common::Image image;
+        Common::FileInputStream stream(file);
+
+        if (!image.Load(&stream))
+        {
             LOG_ERROR("Failed to open '%s'.", mName);
             return false;
         }
-        delete pInputStream;
         LOG_SUCCESS("File '%s' loaded.", mName);
 
 

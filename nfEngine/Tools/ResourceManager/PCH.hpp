@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <algorithm>
+#include <vector>
 
-#define NOMINMAX
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
+#include "model_obj/model_obj.h"

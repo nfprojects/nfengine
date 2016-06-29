@@ -18,16 +18,6 @@ namespace Common {
 // FileInputStream
 //-----------------------------------------------------------
 
-FileInputStream::FileInputStream(const char* pPath)
-{
-    mFile.Open(pPath, AccessMode::Read, false);
-}
-
-FileInputStream::~FileInputStream()
-{
-    mFile.Close();
-}
-
 uint64 FileInputStream::GetSize()
 {
     return mFile.GetSize();
