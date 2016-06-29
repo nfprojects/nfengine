@@ -132,6 +132,26 @@ NFE_INLINE float Quantize(float x, float step)
 }
 
 /**
+ * Check if a given number is NaN (not a number), according to IEEE 754 standard.
+ */
+NFE_INLINE bool IsNaN(float a)
+{
+    FloatInt num;
+    num.f = a;
+    return ((num.u & 0x7F800000) == 0x7F800000) && ((num.u & 0x7FFFFF) != 0);
+}
+
+/**
+ * Check if a given number is infinity (positive or negative), according to IEEE 754 standard.
+ */
+NFE_INLINE bool IsInfinity(float a)
+{
+    FloatInt num;
+    num.f = a;
+    return (num.u & 0x7FFFFFFF) == 0x7F800000;
+}
+
+/**
  * Wang hash.
  */
 NFE_INLINE unsigned int Hash(unsigned int x)
