@@ -187,6 +187,30 @@
       "revId": "d82fbb27eacbce3a92dbf62fcbcf4378d51bc9e5",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_31b6e5dc",
+        "filename": "nfEngine/nfCommon/Win/Thread.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-29T17:33:06Z",
+      "side": 1,
+      "message": "So remove it",
+      "parentUuid": "baa041b7_5ef4dbcd",
+      "range": {
+        "startLine": 16,
+        "startChar": 31,
+        "endLine": 16,
+        "endChar": 46
+      },
+      "revId": "d82fbb27eacbce3a92dbf62fcbcf4378d51bc9e5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
