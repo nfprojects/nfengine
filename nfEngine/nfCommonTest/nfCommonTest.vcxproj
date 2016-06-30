@@ -193,6 +193,7 @@
     <ClCompile Include="Constants.cpp" />
     <ClCompile Include="DirectoryWatchTest.cpp" />
     <ClCompile Include="EnumIteratorTest.cpp" />
+    <ClCompile Include="FileBufferedTest.cpp" />
     <ClCompile Include="FileSystemTest.cpp" />
     <ClCompile Include="FileTest.cpp" />
     <ClCompile Include="ImageTest.cpp" />
