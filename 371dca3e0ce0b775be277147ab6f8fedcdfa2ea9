@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_16ff4f02",
+        "filename": "nfEngine/nfCommon/Linux/Thread.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-30T21:43:49Z",
+      "side": 1,
+      "message": "oh wow...how did I not noticed it xd",
+      "parentUuid": "baa041b7_3bec7ef2",
+      "range": {
+        "startLine": 23,
+        "startChar": 22,
+        "endLine": 23,
+        "endChar": 36
+      },
+      "revId": "371dca3e0ce0b775be277147ab6f8fedcdfa2ea9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_1bbadae1",
         "filename": "nfEngine/nfCommon/Linux/Thread.cpp",
         "patchSetId": 7
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_f6018b05",
+        "filename": "nfEngine/nfCommon/Linux/Thread.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-30T21:43:49Z",
+      "side": 1,
+      "message": "sure, and tabs",
+      "parentUuid": "baa041b7_1bbadae1",
+      "range": {
+        "startLine": 29,
+        "startChar": 3,
+        "endLine": 29,
+        "endChar": 5
+      },
+      "revId": "371dca3e0ce0b775be277147ab6f8fedcdfa2ea9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_9bceea81",
         "filename": "nfEngine/nfCommonTest/ThreadTest.cpp",
         "patchSetId": 7
@@ -59,6 +107,24 @@
       "writtenOn": "2016-06-30T18:01:58Z",
       "side": 1,
       "message": "Add SetCurrentThreadName test.",
+      "revId": "371dca3e0ce0b775be277147ab6f8fedcdfa2ea9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_d608c72a",
+        "filename": "nfEngine/nfCommonTest/ThreadTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-06-30T21:43:49Z",
+      "side": 1,
+      "message": "and how exactly would that test work in your opinion? Just run the method and see if it returns true?",
+      "parentUuid": "baa041b7_9bceea81",
       "revId": "371dca3e0ce0b775be277147ab6f8fedcdfa2ea9",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
