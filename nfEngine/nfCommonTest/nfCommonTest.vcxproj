@@ -199,6 +199,7 @@
     <ClCompile Include="LatchTest.cpp" />
     <ClCompile Include="LibraryTest.cpp" />
     <ClCompile Include="LoggerTest.cpp" />
+    <ClCompile Include="LogScopeTest.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MathGeometryTest.cpp" />
     <ClCompile Include="MathMatrixTest.cpp" />
