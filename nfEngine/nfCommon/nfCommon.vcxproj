@@ -231,6 +231,7 @@ popd</Command>
     <ClInclude Include="LoggerBackends\BackendHTML.hpp" />
     <ClInclude Include="LoggerBackends\BackendTxt.hpp" />
     <ClInclude Include="LoggerBackends\Win\BackendWindowsDebugger.hpp" />
+    <ClInclude Include="LogScope.hpp" />
     <ClInclude Include="Math\Box.hpp" />
     <ClInclude Include="Math\FPU\Matrix.hpp" />
     <ClInclude Include="Math\FPU\RayGeometry.hpp" />
