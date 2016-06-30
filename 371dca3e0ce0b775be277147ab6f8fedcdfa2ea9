@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_3bec7ef2",
+        "filename": "nfEngine/nfCommon/Linux/Thread.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-30T18:01:58Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 23,
+        "startChar": 22,
+        "endLine": 23,
+        "endChar": 36
+      },
+      "revId": "371dca3e0ce0b775be277147ab6f8fedcdfa2ea9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_1bbadae1",
+        "filename": "nfEngine/nfCommon/Linux/Thread.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-30T18:01:58Z",
+      "side": 1,
+      "message": "space",
+      "range": {
+        "startLine": 29,
+        "startChar": 3,
+        "endLine": 29,
+        "endChar": 5
+      },
+      "revId": "371dca3e0ce0b775be277147ab6f8fedcdfa2ea9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_9bceea81",
+        "filename": "nfEngine/nfCommonTest/ThreadTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-30T18:01:58Z",
+      "side": 1,
+      "message": "Add SetCurrentThreadName test.",
+      "revId": "371dca3e0ce0b775be277147ab6f8fedcdfa2ea9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
