@@ -260,6 +260,9 @@
     <ClInclude Include="FileAsync.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FileBuffered.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -441,6 +444,9 @@
     </ClCompile>
     <ClCompile Include="Memory\DefaultAllocator.cpp">
       <Filter>Source Files\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="FileBuffered.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

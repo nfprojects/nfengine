@@ -35,6 +35,7 @@
     <ClCompile Include="ThreadTest.cpp" />
     <ClCompile Include="LogScopeTest.cpp" />
     <ClCompile Include="FileAsyncTest.cpp" />
+    <ClCompile Include="FileBufferedTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />

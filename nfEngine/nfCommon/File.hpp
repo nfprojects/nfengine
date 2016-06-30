@@ -64,7 +64,7 @@ public:
     /**
      * Check if a file is opened.
      */
-    bool IsOpened() const;
+    bool virtual IsOpened() const;
 
     /**
      * Open a file.
@@ -73,12 +73,12 @@ public:
      * @param access File access mode.
      * @param overwrite Overwrite a file if it already exists.
      */
-    bool Open(const std::string& path, AccessMode access, bool overwrite = false);
+    bool virtual Open(const std::string& path, AccessMode access, bool overwrite = false);
 
     /**
      * Close opened file.
      */
-    void Close();
+    void virtual Close();
 
     /**
      * Reads @p size bytes from a file.
@@ -86,7 +86,7 @@ public:
      * @param size
      * @return Number of read bytes
      */
-    size_t Read(void* data, size_t size);
+    size_t virtual Read(void* data, size_t size);
 
     /**
      * Write @p size bytes to a file.
@@ -94,13 +94,13 @@ public:
      * @param size
      * @return Number of written bytes
      */
-    size_t Write(const void* data, size_t size);
+    size_t virtual Write(const void* data, size_t size);
 
     /**
      * Get total file size in bytes.
      * @return Non-negative value on success.
      */
-    int64 GetSize() const;
+    int64 virtual GetSize() const;
 
     /**
      * Change file cursor to a new location.
@@ -108,18 +108,18 @@ public:
      * @param mode Seeking mode
      * @see SeekMode
      */
-    bool Seek(int64 pos, SeekMode mode);
+    bool virtual Seek(int64 pos, SeekMode mode);
 
     /**
      * Get current file cursor position.
      * @return Non-negative value on success.
      */
-    int64 GetPos() const;
+    int64 virtual GetPos() const;
 
     /**
      * Get mode, that file is opened in.
      */
-    AccessMode GetFileMode() const;
+    AccessMode virtual GetFileMode() const;
 };
 
 } // namespace Common
