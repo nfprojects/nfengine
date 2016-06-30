@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_36b49333",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-30T23:25:26Z",
+      "side": 1,
+      "message": "Run what?",
+      "revId": "04a577fc49409ba53773b41852f2193bcba6a19f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_d67b277a",
+        "filename": "nfEngine/nfCommon/FileAsync.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-30T23:25:26Z",
+      "side": 1,
+      "message": "1. Typedef.\n2. We must identify reads and writes somehow. Either by file, offset and size or some some cookie generated and returned by Write and Read",
+      "revId": "04a577fc49409ba53773b41852f2193bcba6a19f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b67e6368",
+        "filename": "nfEngine/nfCommon/FileAsync.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-30T23:25:26Z",
+      "side": 1,
+      "message": "Enqueue read operation",
+      "revId": "04a577fc49409ba53773b41852f2193bcba6a19f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_9696bf92",
+        "filename": "nfEngine/nfCommon/FileAsync.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-30T23:25:26Z",
+      "side": 1,
+      "message": "Enqueue write operation",
+      "revId": "04a577fc49409ba53773b41852f2193bcba6a19f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_1682af52",
+        "filename": "nfEngine/nfCommon/FileAsync.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-30T23:25:26Z",
+      "side": 1,
+      "message": "rm",
+      "revId": "04a577fc49409ba53773b41852f2193bcba6a19f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_f684eb5d",
+        "filename": "nfEngine/nfCommon/FileAsync.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-06-30T23:25:26Z",
+      "side": 1,
+      "message": "rm",
+      "revId": "04a577fc49409ba53773b41852f2193bcba6a19f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
