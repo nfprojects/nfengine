@@ -232,7 +232,7 @@
     </ClInclude>
     <ClInclude Include="EnumIterator.hpp">
       <Filter>Header Files</Filter>
-     </ClInclude>
+    </ClInclude>
     <ClInclude Include="LoggerBackends\BackendXML.hpp">
       <Filter>Source Files\LoggerBackends</Filter>
     </ClInclude>
@@ -240,6 +240,9 @@
       <Filter>Source Files\LoggerBackends</Filter>
     </ClInclude>
     <ClInclude Include="LogGrouper.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LogScope.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -407,6 +410,9 @@
       <Filter>Source Files\LoggerBackends</Filter>
     </ClCompile>
     <ClCompile Include="LogGrouper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LogScope.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

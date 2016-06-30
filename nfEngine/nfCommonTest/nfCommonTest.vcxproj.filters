@@ -32,6 +32,7 @@
     <ClCompile Include="BVHTest.cpp" />
     <ClCompile Include="EnumIteratorTest.cpp" />
     <ClCompile Include="LogGrouperTest.cpp" />
+    <ClCompile Include="LogScopeTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
