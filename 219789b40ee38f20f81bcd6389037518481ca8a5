@@ -175,6 +175,75 @@
       "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_f6650b1d",
+        "filename": "nfEngine/nfCommonTest/LogGrouperTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-01T08:26:36Z",
+      "side": 1,
+      "message": "whoopsie",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 3,
+        "endChar": 40
+      },
+      "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7659fb5a",
+        "filename": "nfEngine/nfCommonTest/LogGrouperTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-01T08:26:36Z",
+      "side": 1,
+      "message": "add TestBackend* as a class field - fill it and check for nullptr in SetUp(), use it in methods",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 73,
+        "endChar": 2
+      },
+      "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_56583756",
+        "filename": "nfEngine/nfCommonTest/LogGrouperTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-01T08:26:36Z",
+      "side": 1,
+      "message": "redundant",
+      "range": {
+        "startLine": 129,
+        "startChar": 2,
+        "endLine": 129,
+        "endChar": 31
+      },
+      "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
