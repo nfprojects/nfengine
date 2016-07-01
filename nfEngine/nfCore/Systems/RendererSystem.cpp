@@ -432,7 +432,8 @@ void RendererSystem::Render(const Common::TaskContext& context, RenderingData& r
     FindVisibleLights(camera->mFrustum, renderingData);
 
     renderingData.shadowPassTask = threadPool->CreateTask(
-        std::bind(&RendererSystem::RenderShadowMaps, this, _1, std::ref(renderingData)));
+        std::bind(&RendererSystem::RenderShadowMaps, this, _1, std::ref(renderingData)),
+        1, NFE_INVALID_TASK_ID, NFE_INVALID_TASK_ID, true);
 
     auto drawGeometryBufferFunc = [this](const Common::TaskContext& context, RenderingData& data)
     {
@@ -450,17 +451,20 @@ void RendererSystem::Render(const Common::TaskContext& context, RenderingData& r
 
     // enqueue geometry pass task
     renderingData.geometryPassTask = threadPool->CreateTask(
-        std::bind(drawGeometryBufferFunc, _1, std::ref(renderingData)));
+        std::bind(drawGeometryBufferFunc, _1, std::ref(renderingData)),
+        1, NFE_INVALID_TASK_ID, NFE_INVALID_TASK_ID, true);
 
     // enqueue light pass task
     renderingData.lightsPassTask = threadPool->CreateTask(
-        std::bind(&RendererSystem::RenderLights, this, _1, std::ref(renderingData)));
+        std::bind(&RendererSystem::RenderLights, this, _1, std::ref(renderingData)),
+        1, NFE_INVALID_TASK_ID, NFE_INVALID_TASK_ID, true);
 
     // enqueue debug layer pass task
     if (gDrawDebugEnable.Get())
     {
         renderingData.debugLayerTask = threadPool->CreateTask(
-            std::bind(&RendererSystem::RenderDebugLayer, this, _1, std::ref(renderingData)));
+            std::bind(&RendererSystem::RenderDebugLayer, this, _1, std::ref(renderingData)),
+            1, NFE_INVALID_TASK_ID, NFE_INVALID_TASK_ID, true);
     }
 }
 

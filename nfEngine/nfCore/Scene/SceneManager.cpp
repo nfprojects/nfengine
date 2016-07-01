@@ -75,7 +75,8 @@ void SceneManager::Render(RenderingData& renderingData)
                                          std::ref(renderingData)),
                                1,                   // instances number
                                NFE_INVALID_TASK_ID, // no parent
-                               mRendererUpdateTask);
+                               mRendererUpdateTask,
+                               true);
 }
 
 } // namespace Scene
