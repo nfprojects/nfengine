@@ -225,7 +225,7 @@ bool Engine::Advance(View** views, size_t viewsNum,
         view->Present();
     }
 
-    mMainThreadPool.WaitForAllTasks();
+    // TODO wait for all tasks
 
     return scenesUpdatedSuccessfully && scenesRenderedSuccessfully;
 }

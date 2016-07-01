@@ -26,7 +26,9 @@ namespace Common {
  */
 typedef uint32 TaskID;
 
-#define NFE_INVALID_TASK_ID (static_cast<NFE::Common::TaskID>(-1))
+#define NFE_THREADPOOL_PRIORITY_BITS    2
+#define NFE_THREADPOOL_PRIORITIES       (1 << NFE_THREADPOOL_PRIORITY_BITS)
+#define NFE_INVALID_TASK_ID (static_cast<::NFE::Common::TaskID>(-1))
 
 class ThreadPool;
 
@@ -45,33 +47,74 @@ struct TaskContext
 typedef std::function<void(const TaskContext& context)> TaskFunction;
 
 /**
+* Structure describing task, used during Task creation.
+*/
+struct TaskDesc
+{
+    TaskFunction function;
+    uint32 instancesNum;
+    TaskID parent;
+    TaskID dependency;
+    uint8 priority;
+    bool waitable;
+
+    TaskDesc()
+        : instancesNum(1)
+        , parent(NFE_INVALID_TASK_ID)
+        , dependency(NFE_INVALID_TASK_ID)
+        , priority(0)
+        , waitable(false)
+    {}
+};
+
+
+/**
  * @class Task
  * @brief Internal task structure.
  * @remarks Only @p ThreadPool class can access it.
  */
 class Task final
 {
+public:
+
+    enum class State : uint8
+    {
+        Invalid,
+        Created,
+        Queued,
+        Finished,
+    };
+
     friend class ThreadPool;
 
     TaskFunction mCallback;  //< task routine
+    std::atomic<State> mState;
 
     /**
      * Number of tasks and sub-tasks left to complete.
      * If reaches 0, then whole task is finished.
      */
     std::atomic<uint32> mTasksLeft;
-    TaskID mParent;
 
     /// Instances counters:
     uint32 mInstancesNum;                //< total number of the task instances
     uint32 mNextInstance;                //< next instance ID to execute
     std::atomic<uint32> mInstancesLeft;  //< number of instances left to complete
 
+    union
+    {
+        TaskID mParent;
+        TaskID mNextFree;   //< free tasks list
+    };
+
     /// Dependency pointers:
     TaskID mDependency;  //< dependency tasks ID
     TaskID mHead;        //< the first task that is dependent on this task
     TaskID mTail;        //< the last task that is dependent on this task
     TaskID mSibling;     //< the next task that is dependent on the same "mDependency" task
+
+    uint8 mPriority : NFE_THREADPOOL_PRIORITY_BITS;
+    bool mWaitable  : 1;
 
     // TODO: alignment
 
@@ -119,7 +162,9 @@ class NFCOMMON_API ThreadPool final
 
     /// Tasks queue variables:
     size_t mMaxTasks;
-    std::queue<TaskID> mTasksQueue;        //< queue for tasks with "Queued" state
+
+    // queues for tasks with "Queued" state
+    std::queue<TaskID> mTasksQueues[NFE_THREADPOOL_PRIORITIES];
     std::mutex mTasksQueueMutex;           //< lock for "mTasksQueue" access
     std::condition_variable mTaskQueueCV;  //< CV for notifying about a new task in the queue
 
@@ -127,13 +172,17 @@ class NFCOMMON_API ThreadPool final
     std::condition_variable mFinishedTasksCV;
 
     /// Tasks allocator variables:
-    std::atomic<uint32> mTasksNum;
     std::unique_ptr<Task[]> mTasks;
+    //std::atomic<unsigned int> mTasksNum;
+    std::mutex mTaskListMutex;
+    TaskID mFirstFreeTask;
 
     void SchedulerCallback(WorkerThread* thread);
 
-    void FinishTask(Task* task);
-    void EnqueueTask(TaskID taskID);
+    TaskID AllocateTask();
+    void FreeTask(TaskID taskID);
+    void FinishTask(TaskID taskID);
+    void EnqueueTaskInternal(TaskID taskID);
 
     // create "num" additional worker threads
     void SpawnWorkerThreads(size_t num);
@@ -154,19 +203,17 @@ public:
     size_t GetThreadsNumber() const;
 
     /**
-     * Create a new task and enqueue it if dependency is resolved.
-     *
-     * @param function     Task routine.
-     * @param instancesNum Number of the task instances.
-     * @param parentID     Parent task ID.
-     * @param dependencyID Dependency task ID.
-     *
+     * Create a new task without enqueueing it.
+     * @param desc     Task descriptor.
      * @remarks This function is thread-safe.
      */
-    TaskID CreateTask(const TaskFunction& function,
-                      size_t instancesNum = 1,
-                      TaskID parentID = NFE_INVALID_TASK_ID,
-                      TaskID dependencyID = NFE_INVALID_TASK_ID);
+    TaskID CreateTask(const TaskDesc& desc);
+
+    /**
+     * Enqueue a task (if dependency is resolved).
+     * @remarks This function is thread-safe.
+     */
+    void EnqueueTask(TaskID taskID);
 
     /**
      * Check if a task is completed.
@@ -174,12 +221,12 @@ public:
     bool IsTaskFinished(TaskID taskID) const;
 
     /**
-     * Waits for a task to finish.
+     * Waits for a task to finish. Can be called only for waitable tasks.
      */
     void WaitForTask(TaskID taskID);
 
     /**
-     * Waits for multiple tasks to finish.
+     * Waits for multiple tasks to finish. Can be called only for waitable tasks.
      *
      * @param tasks    List of tasks to wait for.
      * @param tasksNum Number of tasks in @p tasks array.
@@ -187,9 +234,17 @@ public:
     void WaitForTasks(TaskID* tasks, size_t tasksNum);
 
     /**
-     * Waits for all tasks in the pool to finish and reset tasks counter.
+     * Create a new task and enqueue it if dependency is resolved.
+     * @param desc     Task descriptor.
+     * @remarks This function is thread-safe.
      */
-    void WaitForAllTasks();
+    NFE_INLINE TaskID CreateAndEnqueueTask(const TaskDesc& desc)
+    {
+        TaskID taskID = CreateTask(desc);
+        if (taskID != NFE_INVALID_TASK_ID)
+            EnqueueTask(taskID);
+        return taskID;
+    }
 };
 
 } // namespace Common
