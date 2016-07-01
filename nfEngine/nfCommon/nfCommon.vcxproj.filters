@@ -486,6 +486,9 @@
     <ClInclude Include="Memory\MemoryHelpers.hpp">
       <Filter>Memory</Filter>
     </ClInclude>
+    <ClInclude Include="Utils\ThreadPoolTask.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -622,6 +625,9 @@
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Utils\MD5.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\ThreadPoolTask.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Utils\ThreadPool.cpp">

@@ -164,6 +164,7 @@
     <ClInclude Include="Utils\OutputStream.hpp" />
     <ClInclude Include="Utils\ScopedLock.hpp" />
     <ClInclude Include="Utils\ThreadPool.hpp" />
+    <ClInclude Include="Utils\ThreadPoolTask.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Config\Config.cpp" />
@@ -251,6 +252,7 @@
     <ClCompile Include="Utils\MD5.cpp" />
     <ClCompile Include="Utils\OutputStream.cpp" />
     <ClCompile Include="Utils\ThreadPool.cpp" />
+    <ClCompile Include="Utils\ThreadPoolTask.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}</ProjectGuid>
