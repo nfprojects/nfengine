@@ -197,7 +197,7 @@ void CreateChamberArray(SceneManager* scene,
                         mesh->SetMeshResource("cube.nfm");
 
                         BodyComponent* body = entityManager->AddComponent<BodyComponent>(cube);
-                        body->EnablePhysics(ENGINE_GET_COLLISION_SHAPE("shape_box"));
+                        body->EnablePhysics(ENGINE_GET_COLLISION_SHAPE("box.nfcs"));
                     }
                 }
             }

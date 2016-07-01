@@ -15,12 +15,18 @@
     <ClInclude Include="MeshFile.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CollisionShapeFile.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MeshFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionShapeFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

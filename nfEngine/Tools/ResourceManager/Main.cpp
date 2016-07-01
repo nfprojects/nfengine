@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 
 #include "MeshImporter.hpp"
+#include "CollisionShapeImporter.hpp"
 
 #include "../../nfCommon/Logger.hpp"
 #include "../../nfCommon/FileSystem.hpp"
@@ -21,6 +22,7 @@ const std::string DEFAULT_TARGET_DIR = "nfEngineDemo/CookedData";
 
 const std::string MESHES_DIR = "Meshes";
 const std::string MATERIALS_DIR = "Materials";
+const std::string COLLISION_SHAPES_DIR = "CollisionShapes";
 
 bool IterateCallback(const std::string& sourcePath, bool isDirectory)
 {
@@ -32,6 +34,7 @@ bool IterateCallback(const std::string& sourcePath, bool isDirectory)
     const std::string extension = FileSystem::ExtractExtension(relPath);
 
     if (subDir == MESHES_DIR)
+    {
         if (extension == "obj")
         {
             LOG_INFO("Found mesh file: %s", relPath.c_str());
@@ -42,6 +45,33 @@ bool IterateCallback(const std::string& sourcePath, bool isDirectory)
             Resource::MeshImporter importer;
             importer.ImportOBJ(sourcePath, targetPath);
         }
+    }
+    else if (subDir == COLLISION_SHAPES_DIR)
+    {
+        if (extension == "obj")
+        {
+            LOG_INFO("Found mesh file: %s", relPath.c_str());
+
+            std::string targetPath = DEFAULT_TARGET_DIR + '/' + relPath;
+            targetPath = targetPath.substr(0, targetPath.length() - 4) + ".nfcs";
+
+            Resource::CollisionShapeImporter importer;
+            importer.ImportOBJ(sourcePath, targetPath);
+        }
+        else if (extension == "cfg")
+        {
+            LOG_INFO("Found collision shape file: %s", relPath.c_str());
+
+            std::string targetPath = DEFAULT_TARGET_DIR + '/' + relPath;
+            targetPath = targetPath.substr(0, targetPath.length() - 4) + ".nfcs";
+
+            Resource::CollisionShapeImporter importer;
+            if (importer.ImportCFG(sourcePath, targetPath))
+            {
+                LOG_SUCCESS("Collision shape %s converted successfully", relPath.c_str());
+            }
+        }
+    }
 
     // TODO handle other resource types
 
@@ -73,6 +103,7 @@ int main(int argc, char* argv[])
 
     FileSystem::CreateDirIfNotExist(DEFAULT_TARGET_DIR + '/' + MESHES_DIR);
     FileSystem::CreateDirIfNotExist(DEFAULT_TARGET_DIR + '/' + MATERIALS_DIR);
+    FileSystem::CreateDirIfNotExist(DEFAULT_TARGET_DIR + '/' + COLLISION_SHAPES_DIR);
 
     // scan source directory
     if (!FileSystem::Iterate(DEFAULT_SOURCE_DIR, IterateCallback))

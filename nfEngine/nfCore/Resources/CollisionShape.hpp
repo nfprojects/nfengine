@@ -12,17 +12,25 @@
 #include "nfCommon/Math/Matrix.hpp"
 
 
-//predeclarations
+// predeclarations
 class btCollisionShape;
 class btCompoundShape;
+class btTriangleMesh;
 
 namespace NFE {
+
+// predeclarations
+namespace Common {
+class FileInputStream;
+}
+
 namespace Resource {
 
 NFE_ALIGN16
 struct CompoundShapeChild
 {
-    btCollisionShape* pShape;
+    std::unique_ptr<btCollisionShape> shape;
+    std::unique_ptr<btTriangleMesh> mesh;
     Math::Matrix matrix;
 };
 
@@ -33,7 +41,7 @@ class CORE_API CollisionShape : public ResourceBase
 
 private:
     std::vector<CompoundShapeChild> mChildren;
-    btCollisionShape* mShape;
+    std::unique_ptr<btCollisionShape> mShape;
     Math::Vector mLocalInertia;
 
     void Release();
@@ -42,14 +50,10 @@ public:
     CollisionShape();
     virtual ~CollisionShape();
 
-    static CollisionShape* Allocate();
-    static void Free(CollisionShape* ptr);
-
     bool OnLoad();
     void OnUnload();
 
-    // TODO: this function should operate on Common::InputStream
-    bool LoadFromFile(const char* pPath);
+    bool LoadFromFile(Common::FileInputStream& stream);
 
     // Add box shape
     bool AddBox(const Math::Vector& halfSize, const Math::Matrix& matrix);

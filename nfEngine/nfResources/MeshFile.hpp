@@ -9,6 +9,7 @@
 #include "nfCommon/Math/Math.hpp"
 #include "nfCommon/InputStream.hpp"
 #include "nfCommon/OutputStream.hpp"
+#include "nfCommon/Math/Vector.hpp"
 
 #include <vector>
 
