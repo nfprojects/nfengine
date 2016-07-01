@@ -8,7 +8,7 @@
 
 #include "../Core.hpp"
 #include "../nfCommon/Aligned.hpp"
-#include "../nfCommon/ThreadPool.hpp"
+#include "../nfCommon/FrameThreadPool.hpp"
 #include "../nfCommon/Math/Frustum.hpp"
 #include "../Renderer/RendererResources.hpp"
 #include "../Renderers/RendererInterface/CommandBuffer.hpp"

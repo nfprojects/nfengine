@@ -10,7 +10,7 @@
 #include "Resources/ResourcesManager.hpp"
 #include "Scene/SceneManager.hpp"
 #include "Renderer/HighLevelRenderer.hpp"
-#include "../nfCommon/ThreadPool.hpp"
+#include "../nfCommon/FrameThreadPool.hpp"
 
 namespace NFE {
 
@@ -29,7 +29,7 @@ class CORE_API Engine
      */
     std::mutex mRenderingMutex;
 
-    Common::ThreadPool mMainThreadPool;
+    Common::FrameThreadPool mMainThreadPool;
     Resource::ResManager mResManager;
     std::unique_ptr<Renderer::HighLevelRenderer> mRenderer;
     std::set<Scene::SceneManager*> mScenes;
@@ -85,7 +85,7 @@ public:
      * @note The threadpool is used by the engine subsystems.
      * @return NULL on failure.
      */
-    NFE_INLINE Common::ThreadPool* GetThreadPool()
+    NFE_INLINE Common::FrameThreadPool* GetThreadPool()
     {
         return &mMainThreadPool;
     }

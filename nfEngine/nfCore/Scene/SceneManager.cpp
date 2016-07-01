@@ -47,7 +47,7 @@ void SceneManager::GetEnvironment(EnviromentDesc* desc) const
 void SceneManager::Update(float deltaTime)
 {
     using namespace std::placeholders;
-    Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
+    Common::FrameThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
 
     mPhysicsSystem->Update(deltaTime);
     mTransformSystem->Update();
@@ -63,7 +63,7 @@ void SceneManager::Update(float deltaTime)
 void SceneManager::Render(RenderingData& renderingData)
 {
     using namespace std::placeholders;
-    Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
+    Common::FrameThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
 
     renderingData.sceneRenderTask =
         threadPool->CreateTask(std::bind(&RendererSystem::Render,

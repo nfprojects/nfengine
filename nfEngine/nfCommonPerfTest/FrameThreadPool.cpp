@@ -1,18 +1,18 @@
 /**
  * @file
  * @author Witek902 (witek902@gmail.com)
- * @brief  Performance tests for ThreadPool class.
+ * @brief  Performance tests for FrameThreadPool class.
  */
 
 #include "PCH.hpp"
-#include "../nfCommon/ThreadPool.hpp"
+#include "../nfCommon/FrameThreadPool.hpp"
 #include "../nfCommon/Timer.hpp"
 #include "../nfCommon/Latch.hpp"
 
 
 using namespace NFE::Common;
 
-TEST(ThreadPool, SpawnTasks)
+TEST(FrameThreadPool, SpawnTasks)
 {
     Timer timer;
 
@@ -21,7 +21,7 @@ TEST(ThreadPool, SpawnTasks)
     for (int numTasks = 2; numTasks < 100000; numTasks *= 2)
     {
         Latch latch;
-        ThreadPool tp;
+        FrameThreadPool tp;
         std::vector<TaskID> tasks;
         tasks.reserve(numTasks);
 
@@ -56,7 +56,7 @@ TEST(ThreadPool, SpawnTasks)
     }
 }
 
-TEST(ThreadPool, Instances)
+TEST(FrameThreadPool, Instances)
 {
     Timer timer;
 
@@ -65,7 +65,7 @@ TEST(ThreadPool, Instances)
     for (int numTasks = 2; numTasks < 1000000; numTasks *= 2)
     {
         Latch latch;
-        ThreadPool tp;
+        FrameThreadPool tp;
 
         TaskFunction lockTask = [&](const TaskContext& /* context */)
         {
@@ -91,7 +91,7 @@ TEST(ThreadPool, Instances)
     }
 }
 
-TEST(ThreadPool, Dependencies)
+TEST(FrameThreadPool, Dependencies)
 {
     Timer timer;
 
@@ -100,7 +100,7 @@ TEST(ThreadPool, Dependencies)
     for (int numTasks = 2; numTasks < 100000; numTasks *= 2)
     {
         Latch latch;
-        ThreadPool tp;
+        FrameThreadPool tp;
         std::vector<TaskID> tasks;
         tasks.reserve(numTasks);
 

@@ -1,31 +1,31 @@
 /**
-* @brief Simple unit tests for ThreadPool class.
+* @brief Simple unit tests for FrameThreadPool class.
 */
 
 #include "PCH.hpp"
-#include "../nfCommon/ThreadPool.hpp"
+#include "../nfCommon/FrameThreadPool.hpp"
 #include "../nfCommon/Latch.hpp"
 
 
 using namespace NFE::Common;
 
-TEST(ThreadPoolSimple, ConstructorDestructor)
+TEST(FrameThreadPoolSimple, ConstructorDestructor)
 {
-    ASSERT_NO_THROW(ThreadPool tp);
+    ASSERT_NO_THROW(FrameThreadPool tp);
 }
 
 // Spawn an empty task, no waiting.
-TEST(ThreadPoolSimple, EmptyTask)
+TEST(FrameThreadPoolSimple, EmptyTask)
 {
-    ThreadPool tp;
+    FrameThreadPool tp;
     auto emptyTaskFunc = [](const TaskContext& /* context */) {};
     ASSERT_NO_THROW(tp.CreateTask(emptyTaskFunc, 1));
 }
 
 // Destroy a pool while executing a task
-TEST(ThreadPoolSimple, DestroyWhileExecuting)
+TEST(FrameThreadPoolSimple, DestroyWhileExecuting)
 {
-    std::unique_ptr<ThreadPool> tp(new ThreadPool);
+    std::unique_ptr<FrameThreadPool> tp(new FrameThreadPool);
     auto taskFunc = [](const TaskContext& /* context */)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
@@ -38,9 +38,9 @@ TEST(ThreadPoolSimple, DestroyWhileExecuting)
 }
 
 // Spawn small and long task, wait in various orders.
-TEST(ThreadPoolSimple, Wait)
+TEST(FrameThreadPoolSimple, Wait)
 {
-    ThreadPool tp;
+    FrameThreadPool tp;
     TaskFunction smallTaskFunc = [](const TaskContext& /* context */)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -69,9 +69,9 @@ TEST(ThreadPoolSimple, Wait)
 }
 
 // Spawn a task inside another
-TEST(ThreadPoolSimple, EnqueueInsideTask)
+TEST(FrameThreadPoolSimple, EnqueueInsideTask)
 {
-    ThreadPool tp;
+    FrameThreadPool tp;
     TaskID task;
 
     for (int i = 0; i < 10000; ++i)
@@ -102,9 +102,9 @@ TEST(ThreadPoolSimple, EnqueueInsideTask)
 }
 
 // Verify thread id passed in task callback parameters
-TEST(ThreadPoolSimple, ThreadId)
+TEST(FrameThreadPoolSimple, ThreadId)
 {
-    ThreadPool tp;
+    FrameThreadPool tp;
     TaskID task;
     size_t workerThreads = tp.GetThreadsNumber();
     std::atomic<size_t> done(0);
@@ -136,12 +136,12 @@ TEST(ThreadPoolSimple, ThreadId)
 }
 
 // Spawn 1000 tasks.
-TEST(ThreadPoolSimple, ThousandTasks)
+TEST(FrameThreadPoolSimple, ThousandTasks)
 {
     const int numTasks = 1000;
     std::atomic<int> counter(0);
     {
-        ThreadPool tp;
+        FrameThreadPool tp;
         std::vector<TaskID> tasks;
         auto emptyTaskFunc = [&counter](const TaskContext& /* context */) { counter++; };
 
@@ -160,10 +160,10 @@ TEST(ThreadPoolSimple, ThousandTasks)
 }
 
 // Spawn maximum number of tasks, wait for all and repeat.
-TEST(ThreadPoolSimple, WaitForAllTasks)
+TEST(FrameThreadPoolSimple, WaitForAllTasks)
 {
     const int numTasks = 1024;
-    ThreadPool tp(numTasks);
+    FrameThreadPool tp(numTasks);
 
     std::atomic<int> counter;
     auto emptyTaskFunc = [&counter](const TaskContext& /* context */) { counter++; };
@@ -180,12 +180,12 @@ TEST(ThreadPoolSimple, WaitForAllTasks)
 }
 
 // Spawn 1000 tasks.
-TEST(ThreadPoolSimple, WaitForThousandTasks)
+TEST(FrameThreadPoolSimple, WaitForThousandTasks)
 {
     const int numTasks = 1000;
     std::atomic<int> counter(0);
     {
-        ThreadPool tp;
+        FrameThreadPool tp;
         std::vector<TaskID> tasks;
         auto emptyTaskFunc = [&counter](const TaskContext& /* context */) { counter++; };
 
@@ -202,7 +202,7 @@ TEST(ThreadPoolSimple, WaitForThousandTasks)
     EXPECT_EQ(numTasks, counter);
 }
 
-TEST(ThreadPoolSimple, InstancesSimple)
+TEST(FrameThreadPoolSimple, InstancesSimple)
 {
     const size_t instancesNum = 10000;
     std::unique_ptr<std::atomic<size_t>[]> counters(new std::atomic<size_t>[instancesNum]);
@@ -216,7 +216,7 @@ TEST(ThreadPoolSimple, InstancesSimple)
     for (size_t i = 0; i < instancesNum; ++i)
         counters[i] = 0;
 
-    ThreadPool tp;
+    FrameThreadPool tp;
     TaskID task;
     ASSERT_NE(NFE_INVALID_TASK_ID, task = tp.CreateTask(func, instancesNum));
     tp.WaitForTask(task);
@@ -226,7 +226,7 @@ TEST(ThreadPoolSimple, InstancesSimple)
 }
 
 // Spawn tasks with various instances numbers.
-TEST(ThreadPoolSimple, Instances)
+TEST(FrameThreadPoolSimple, Instances)
 {
     const int tasksNum = 8;
     size_t instancesPerTask[] = { 1, 5, 10, 50, 100, 500, 1000, 5000 };
@@ -237,7 +237,7 @@ TEST(ThreadPoolSimple, Instances)
         counters[task]++;
     };
 
-    ThreadPool tp;
+    FrameThreadPool tp;
     std::vector<TaskID> tasks;
 
     for (int i = 0; i < tasksNum; ++i)
@@ -262,7 +262,7 @@ TEST(ThreadPoolSimple, Instances)
 }
 
 // create a task dependent on task in progress
-TEST(ThreadPoolSimple, DependencyInProgress)
+TEST(FrameThreadPoolSimple, DependencyInProgress)
 {
     const int numInstances = 10;
 
@@ -278,7 +278,7 @@ TEST(ThreadPoolSimple, DependencyInProgress)
         EXPECT_EQ(numInstances, counter);
     };
 
-    ThreadPool tp;
+    FrameThreadPool tp;
     TaskID task0 = 0, task1 = 0;
     ASSERT_NE(NFE_INVALID_TASK_ID, task0 = tp.CreateTask(funcA, numInstances));
     ASSERT_NE(NFE_INVALID_TASK_ID, task1 = tp.CreateTask(funcB, numInstances, NFE_INVALID_TASK_ID,
@@ -287,9 +287,9 @@ TEST(ThreadPoolSimple, DependencyInProgress)
 }
 
 // create a task dependent on finished
-TEST(ThreadPoolSimple, DependencyFinished)
+TEST(FrameThreadPoolSimple, DependencyFinished)
 {
-    ThreadPool tp;
+    FrameThreadPool tp;
     TaskID task0, task1;
     auto func = [](const TaskContext& /* context */) {};
 
@@ -302,7 +302,7 @@ TEST(ThreadPoolSimple, DependencyFinished)
 
 // Create long dependency chain: A -> B -> C -> D ...
 // Verify execution order.
-TEST(ThreadPoolSimple, DependencyChain)
+TEST(FrameThreadPoolSimple, DependencyChain)
 {
     const int chainLen = 4000; // chain length
     const int instancesPerTask = 1;
@@ -322,7 +322,7 @@ TEST(ThreadPoolSimple, DependencyChain)
         counters[task]++;
     };
 
-    ThreadPool tp;
+    FrameThreadPool tp;
     for (int i = 0; i < chainLen; ++i)
         counters[i] = 0;
 
@@ -346,11 +346,11 @@ TEST(ThreadPoolSimple, DependencyChain)
 }
 
 // Spawn a task inside another recursively
-TEST(ThreadPoolSimple, EnqueueInsideTaskRecursive)
+TEST(FrameThreadPoolSimple, EnqueueInsideTaskRecursive)
 {
     const int numTasks = 10000;
 
-    ThreadPool tp;
+    FrameThreadPool tp;
     std::atomic<int> count(0);
     Latch latch; // last task enqueued latch
 
@@ -372,12 +372,12 @@ TEST(ThreadPoolSimple, EnqueueInsideTaskRecursive)
 }
 
 // Spawn a child task inside another recursively
-TEST(ThreadPoolSimple, EnqueueChildren)
+TEST(FrameThreadPoolSimple, EnqueueChildren)
 {
     using namespace std::placeholders;
     const int children = 50000;
 
-    ThreadPool tp;
+    FrameThreadPool tp;
     std::atomic<int> count(0);
 
     auto childTaskFunc = [&](const TaskContext& /* context */)
@@ -403,13 +403,13 @@ TEST(ThreadPoolSimple, EnqueueChildren)
 }
 
 // Spawn 2 child tasks inside another recursively (binary-tree-like structure is created)
-TEST(ThreadPoolSimple, EnqueueChildRecursive)
+TEST(FrameThreadPoolSimple, EnqueueChildRecursive)
 {
     using namespace std::placeholders;
     const int maxDepth = 14;
     const int children = 2;
 
-    ThreadPool tp;
+    FrameThreadPool tp;
     std::atomic<int> count(0);
 
     std::function<void(const TaskContext&, int)> taskFunc =

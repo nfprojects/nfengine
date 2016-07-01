@@ -86,7 +86,7 @@
     <ClInclude Include="Math\Math.hpp">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="ThreadPool.hpp">
+    <ClInclude Include="FrameThreadPool.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Timer.hpp">
@@ -256,7 +256,7 @@
     <ClCompile Include="Math\Random.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="ThreadPool.cpp">
+    <ClCompile Include="FrameThreadPool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Logger.cpp">

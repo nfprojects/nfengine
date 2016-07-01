@@ -8,7 +8,7 @@
 
 #include "../Core.hpp"
 #include "../nfCommon/Aligned.hpp"
-#include "../nfCommon/ThreadPool.hpp"
+#include "../nfCommon/FrameThreadPool.hpp"
 
 namespace NFE {
 namespace Scene {

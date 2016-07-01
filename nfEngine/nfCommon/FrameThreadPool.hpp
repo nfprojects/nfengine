@@ -1,7 +1,7 @@
 /**
  * @file
  * @author Witek902 (witek902@gmail.com)
- * @brief  Thread pool classes declarations.
+ * @brief  Frame thread pool classes declarations.
  */
 
 #pragma once
@@ -17,17 +17,17 @@ namespace NFE {
 namespace Common {
 
 /**
- * Thread pool task unique identifier.
+ * Frame thread pool task unique identifier.
  */
 typedef uint32 TaskID;
 
 #define NFE_INVALID_TASK_ID (static_cast<NFE::Common::TaskID>(-1))
 
-class ThreadPool;
+class FrameThreadPool;
 
 struct TaskContext
 {
-    ThreadPool* pool;
+    FrameThreadPool* pool;
     size_t instanceId;
     size_t threadId;
     TaskID taskId;
@@ -42,11 +42,11 @@ typedef std::function<void(const TaskContext& context)> TaskFunction;
 /**
  * @class Task
  * @brief Internal task structure.
- * @remarks Only @p ThreadPool class can access it.
+ * @remarks Only @p FrameThreadPool class can access it.
  */
 class Task final
 {
-    friend class ThreadPool;
+    friend class FrameThreadPool;
 
     TaskFunction mCallback;  //< task routine
 
@@ -81,7 +81,7 @@ public:
  */
 class WorkerThread
 {
-    friend class ThreadPool;
+    friend class FrameThreadPool;
 
     std::thread mThread;
     bool mStarted; //< if set to false, exit the thread
@@ -91,7 +91,7 @@ class WorkerThread
     char mPad[64];
 
 public:
-    WorkerThread(ThreadPool* pool, size_t id);
+    WorkerThread(FrameThreadPool* pool, size_t id);
     ~WorkerThread();
 };
 
@@ -99,10 +99,10 @@ typedef std::shared_ptr<WorkerThread> WorkerThreadPtr;
 
 
 /**
- * @class ThreadPool
+ * @class FrameThreadPool
  * @brief Class enabling parallel tasks (user provided functions) execution.
  */
-class NFCOMMON_API ThreadPool final
+class NFCOMMON_API FrameThreadPool final
 {
     friend class WorkerThread;
 
@@ -140,8 +140,8 @@ class NFCOMMON_API ThreadPool final
     void WorkerThreadCallback();
 
 public:
-    ThreadPool(size_t maxTasks = (1 << 16) + 1, size_t threadsNum = 0);
-    ~ThreadPool();
+    FrameThreadPool(size_t maxTasks = (1 << 16) + 1, size_t threadsNum = 0);
+    ~FrameThreadPool();
 
     /**
      * Get number of worker threads in the pool.

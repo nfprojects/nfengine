@@ -11,7 +11,7 @@
 #include "HighLevelRenderer.hpp"
 #include "View.hpp"
 #include "Engine.hpp"
-#include "../../nfCommon/ThreadPool.hpp"
+#include "../../nfCommon/FrameThreadPool.hpp"
 #include "../../nfCommon/Logger.hpp"
 
 #include "GuiRenderer.hpp"
@@ -73,7 +73,7 @@ bool HighLevelRenderer::Init(const std::string& preferredRendererName)
         LOG_INFO("GPU features: %s", features.c_str());
     }
 
-    Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
+    Common::FrameThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
 
     /// create immediate and deferred rendering contexts
     mImmediateContext.reset(new RenderContext(mRenderingDevice->GetDefaultCommandBuffer()));

@@ -55,7 +55,7 @@ void RenderingData::ExecuteCommandLists() const
 {
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
     RenderContext* immCtx = renderer->GetImmediateContext();
-    Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
+    Common::FrameThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
 
     // wait for the main renderer task - it spawns the rest of tasks used here...
     if (sceneRenderTask != NFE_INVALID_TASK_ID)
@@ -342,7 +342,7 @@ void RendererSystem::RenderOmniShadowMap(const Common::TaskContext& context,
 
 void RendererSystem::RenderShadowMaps(const Common::TaskContext& context, RenderingData& data)
 {
-    Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
+    Common::FrameThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
 
     for (const uint32 i : data.visibleSpotLights)
     {
@@ -390,7 +390,7 @@ void RendererSystem::Render(const Common::TaskContext& context, RenderingData& r
     using namespace std::placeholders;
 
     EntityManager* entityManager = mScene->GetEntityManager();
-    Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
+    Common::FrameThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
 
     /// extract viewing camera information
     EntityID cameraEntity = renderingData.view->GetCameraEntity();

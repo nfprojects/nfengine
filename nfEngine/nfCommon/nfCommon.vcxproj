@@ -263,7 +263,7 @@ popd</Command>
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="SystemInfo.hpp" />
     <ClInclude Include="SystemInfoConstants.hpp" />
-    <ClInclude Include="ThreadPool.hpp" />
+    <ClInclude Include="FrameThreadPool.hpp" />
     <ClInclude Include="Timer.hpp" />
     <ClInclude Include="Window.hpp" />
     <ClInclude Include="Win\Common.hpp" />
@@ -462,7 +462,7 @@ popd</Command>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="ThreadPool.cpp" />
+    <ClCompile Include="FrameThreadPool.cpp" />
     <ClCompile Include="Win\Common.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>

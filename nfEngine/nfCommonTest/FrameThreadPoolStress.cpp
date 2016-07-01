@@ -1,15 +1,15 @@
 /**
-* @brief Stress tests for ThreadPool class.
+* @brief Stress tests for FrameThreadPool class.
 */
 
 #include "PCH.hpp"
-#include "../nfCommon/ThreadPool.hpp"
+#include "../nfCommon/FrameThreadPool.hpp"
 
 
 using namespace NFE::Common;
 
 // Spawn lots of tasks with single dependencies.
-TEST(ThreadPoolStress, SingleDependency)
+TEST(FrameThreadPoolStress, SingleDependency)
 {
     const size_t numTasks = 1 << 16;
 
@@ -29,7 +29,7 @@ TEST(ThreadPoolStress, SingleDependency)
         }
     };
 
-    ThreadPool tp;
+    FrameThreadPool tp;
     std::vector<TaskID> taskIds;
     std::vector<TaskInfo> tasks;
     tasks.reserve(numTasks);

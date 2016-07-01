@@ -1,11 +1,11 @@
 /**
  * @file
  * @author Witek902 (witek902@gmail.com)
- * @brief  Thread pool classes declarations.
+ * @brief  Frame thread pool classes declarations.
  */
 
 #include "PCH.hpp"
-#include "ThreadPool.hpp"
+#include "FrameThreadPool.hpp"
 #include "Logger.hpp"
 
 namespace NFE {
@@ -30,11 +30,11 @@ void Task::Reset()
 }
 
 
-WorkerThread::WorkerThread(ThreadPool* pool, size_t id)
+WorkerThread::WorkerThread(FrameThreadPool* pool, size_t id)
 {
     mStarted = true;
     this->mId = id;
-    mThread = std::thread(&ThreadPool::SchedulerCallback, pool, this);
+    mThread = std::thread(&FrameThreadPool::SchedulerCallback, pool, this);
 }
 
 WorkerThread::~WorkerThread()
@@ -43,7 +43,7 @@ WorkerThread::~WorkerThread()
 }
 
 
-ThreadPool::ThreadPool(size_t maxTasks, size_t threadsNum)
+FrameThreadPool::FrameThreadPool(size_t maxTasks, size_t threadsNum)
     : mLastThreadId(0)
     , mMaxTasks(maxTasks)
     , mTasksNum(0)
@@ -57,7 +57,7 @@ ThreadPool::ThreadPool(size_t maxTasks, size_t threadsNum)
         SpawnWorkerThreads(std::thread::hardware_concurrency());
 }
 
-ThreadPool::~ThreadPool()
+FrameThreadPool::~FrameThreadPool()
 {
     {
         Lock lock(mTasksQueueMutex);
@@ -72,7 +72,7 @@ ThreadPool::~ThreadPool()
     mThreads.clear();
 }
 
-void ThreadPool::SpawnWorkerThreads(size_t num)
+void FrameThreadPool::SpawnWorkerThreads(size_t num)
 {
     for (size_t i = 0; i < num; ++i)
     {
@@ -80,18 +80,18 @@ void ThreadPool::SpawnWorkerThreads(size_t num)
     }
 }
 
-void ThreadPool::TriggerWorkerStop(WorkerThreadPtr workerThread)
+void FrameThreadPool::TriggerWorkerStop(WorkerThreadPtr workerThread)
 {
     workerThread->mStarted = false;
     mTaskQueueCV.notify_all();
 }
 
-size_t ThreadPool::GetThreadsNumber() const
+size_t FrameThreadPool::GetThreadsNumber() const
 {
     return mThreads.size();
 }
 
-void ThreadPool::SchedulerCallback(WorkerThread* thread)
+void FrameThreadPool::SchedulerCallback(WorkerThread* thread)
 {
     Task* task = nullptr;
     TaskContext context;
@@ -127,7 +127,7 @@ void ThreadPool::SchedulerCallback(WorkerThread* thread)
     }
 }
 
-void ThreadPool::FinishTask(Task* task)
+void FrameThreadPool::FinishTask(Task* task)
 {
     if (--task->mTasksLeft > 0)
         return;
@@ -151,14 +151,14 @@ void ThreadPool::FinishTask(Task* task)
     }
 }
 
-void ThreadPool::EnqueueTask(TaskID taskID)
+void FrameThreadPool::EnqueueTask(TaskID taskID)
 {
     Lock lock(mTasksQueueMutex);
     mTasksQueue.push(taskID);
     mTaskQueueCV.notify_all();
 }
 
-TaskID ThreadPool::CreateTask(const TaskFunction& function, size_t instancesNum,
+TaskID FrameThreadPool::CreateTask(const TaskFunction& function, size_t instancesNum,
                               TaskID parentID, TaskID dependencyID)
 {
     if (instancesNum == 0)
@@ -207,12 +207,12 @@ TaskID ThreadPool::CreateTask(const TaskFunction& function, size_t instancesNum,
     return taskID;
 }
 
-bool ThreadPool::IsTaskFinished(TaskID taskID) const
+bool FrameThreadPool::IsTaskFinished(TaskID taskID) const
 {
     return mTasks[taskID].mTasksLeft == 0;
 }
 
-void ThreadPool::WaitForTask(TaskID taskID)
+void FrameThreadPool::WaitForTask(TaskID taskID)
 {
     if (mTasks[taskID].mTasksLeft == 0)
         return;
@@ -222,7 +222,7 @@ void ThreadPool::WaitForTask(TaskID taskID)
         mFinishedTasksCV.wait(lock);
 }
 
-void ThreadPool::WaitForTasks(TaskID* tasks, size_t tasksNum)
+void FrameThreadPool::WaitForTasks(TaskID* tasks, size_t tasksNum)
 {
     for (size_t i = 0; i < tasksNum; ++i)
     {
@@ -235,7 +235,7 @@ void ThreadPool::WaitForTasks(TaskID* tasks, size_t tasksNum)
     }
 }
 
-void ThreadPool::WaitForAllTasks()
+void FrameThreadPool::WaitForAllTasks()
 {
     for (uint32 i = 0; i < mTasksNum; ++i)
     {

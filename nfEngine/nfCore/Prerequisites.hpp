@@ -13,7 +13,7 @@ namespace NFE {
 
     namespace Common {
         class Window;
-        class ThreadPool;
+        class FrameThreadPool;
         enum class ImageFormat;
         class Image;
         class InputStream;
