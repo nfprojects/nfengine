@@ -11,9 +11,7 @@
 
 #include "nfCommon/Logger.hpp"
 #include "nfCommon/Timer.hpp"
-
-#include "btBulletCollisionCommon.h"
-
+#include "nfCommon/Memory/DefaultAllocator.hpp"
 
 namespace NFE {
 namespace Resource {
@@ -42,20 +40,8 @@ struct TriMeshTriangle
 };
 
 
-
-CollisionShape* CollisionShape::Allocate()
-{
-    return new CollisionShape;
-}
-
-void CollisionShape::Free(CollisionShape* ptr)
-{
-    delete ptr;
-}
-
 CollisionShape::CollisionShape()
 {
-    mShape = 0;
     mLocalInertia = Vector();
 }
 
@@ -69,34 +55,15 @@ void CollisionShape::Release()
     std::recursive_mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
     std::unique_lock<std::recursive_mutex> lock(renderingMutex);
 
-    if (mChildren.size() > 1)
-    {
-        if (mShape)
-        {
-            delete mShape;
-            mShape = 0;
-        }
-
-        for (size_t i = 0; i < mChildren.size(); i++)
-            delete mChildren[i].pShape;
-    }
-    else if (mChildren.size() == 1)
-    {
-        if (mShape)
-        {
-            delete mShape;
-            mShape = 0;
-        }
-    }
-
+    mShape.reset();
     mChildren.clear();
 }
 
 bool CollisionShape::LoadFromFile(const char* pPath)
 {
     //open file
-    FILE* pFile = 0;
-    if (fopen_s(&pFile, pPath, "rb") != 0)
+    FILE* file = 0;
+    if (fopen_s(&file, pPath, "rb") != 0)
     {
         //error, could not open file
         LOG_ERROR("Failed to load '%s'.", mName);
@@ -104,50 +71,47 @@ bool CollisionShape::LoadFromFile(const char* pPath)
     }
 
     //iterate throug all shapes
-    while (!feof(pFile))
+    while (!feof(file))
     {
         ShapeHeader header;
-        if (fread(&header, sizeof(header), 1, pFile) == 0)
+        if (fread(&header, sizeof(header), 1, file) == 0)
             continue;
 
         if (header.type == SHAPE_TYPE_TRI_MESH)
         {
             ShapeTraingleMesh triMeshInfo;
-            fread(&triMeshInfo, sizeof(triMeshInfo), 1, pFile);
+            fread(&triMeshInfo, sizeof(triMeshInfo), 1, file);
 
+            float* vertices = reinterpret_cast<float*>(
+                NFE_MALLOC(sizeof(float) * 3 * triMeshInfo.verticesCount, 16));
+            TriMeshTriangle* triangles = reinterpret_cast<TriMeshTriangle*>(
+                NFE_MALLOC(sizeof(TriMeshTriangle) * triMeshInfo.trianglesCount, 16));
 
+            fread(vertices, sizeof(float) * 3 * triMeshInfo.verticesCount, 1, file);
+            fread(triangles, sizeof(TriMeshTriangle) * triMeshInfo.trianglesCount, 1, file);
 
-            float* pVertices = (float*)_aligned_malloc(sizeof(float) * 3 * triMeshInfo.verticesCount, 16);
-            TriMeshTriangle* pTriangles = (TriMeshTriangle*)_aligned_malloc(sizeof(
-                                              TriMeshTriangle) * triMeshInfo.trianglesCount, 16);
-            fread(pVertices, sizeof(float) * 3 * triMeshInfo.verticesCount, 1, pFile);
-            fread(pTriangles, sizeof(TriMeshTriangle) * triMeshInfo.trianglesCount, 1, pFile);
-
-            btTriangleMesh* pMesh = new btTriangleMesh();
+            std::unique_ptr<btTriangleMesh> mesh(new btTriangleMesh());
             btVector3 v1, v2, v3;
 
             for (UINT i = 0; i < triMeshInfo.trianglesCount; i++)
             {
-                v1 = btVector3(pVertices[3 * pTriangles[i].indices[0]], pVertices[3 * pTriangles[i].indices[0] + 1],
-                               pVertices[3 * pTriangles[i].indices[0] + 2]);
-                v2 = btVector3(pVertices[3 * pTriangles[i].indices[1]], pVertices[3 * pTriangles[i].indices[1] + 1],
-                               pVertices[3 * pTriangles[i].indices[1] + 2]);
-                v3 = btVector3(pVertices[3 * pTriangles[i].indices[2]], pVertices[3 * pTriangles[i].indices[2] + 1],
-                               pVertices[3 * pTriangles[i].indices[2] + 2]);
-                pMesh->addTriangle(v1, v2, v3);
+                v1 = btVector3(vertices[3 * triangles[i].indices[0]], vertices[3 * triangles[i].indices[0] + 1],
+                               vertices[3 * triangles[i].indices[0] + 2]);
+                v2 = btVector3(vertices[3 * triangles[i].indices[1]], vertices[3 * triangles[i].indices[1] + 1],
+                               vertices[3 * triangles[i].indices[1] + 2]);
+                v3 = btVector3(vertices[3 * triangles[i].indices[2]], vertices[3 * triangles[i].indices[2] + 1],
+                               vertices[3 * triangles[i].indices[2] + 2]);
+                mesh->addTriangle(v1, v2, v3);
             }
 
+            NFE_FREE(triangles);
+            NFE_FREE(vertices);
 
-            _aligned_free(pTriangles);
-            _aligned_free(pVertices);
-
-
-            CompoundShapeChild shape =
-            {
-                new btBvhTriangleMeshShape(pMesh, true),
-                Matrix()
-            };
-            mChildren.push_back(shape);
+            CompoundShapeChild shape;
+            shape.shape.reset(new btBvhTriangleMeshShape(mesh.get(), true));
+            shape.matrix = Matrix();
+            shape.mesh = std::move(mesh);
+            mChildren.push_back(std::move(shape));
         }
         else
         {
@@ -156,7 +120,7 @@ bool CollisionShape::LoadFromFile(const char* pPath)
         }
     }
 
-    fclose(pFile);
+    fclose(file);
     return true;
 }
 
@@ -174,9 +138,9 @@ btTransform Matrix2BulletTransform(const Matrix& matrix)
 bool CollisionShape::AddBox(const Vector& halfSize, const Matrix& matrix)
 {
     CompoundShapeChild shape;
-    shape.pShape = new btBoxShape(btVector3(halfSize.f[0], halfSize.f[1], halfSize.f[2])),
+    shape.shape.reset(new btBoxShape(btVector3(halfSize.f[0], halfSize.f[1], halfSize.f[2])));
     shape.matrix = matrix;
-    mChildren.push_back(shape);
+    mChildren.push_back(std::move(shape));
 
     return true;
 }
@@ -184,22 +148,12 @@ bool CollisionShape::AddBox(const Vector& halfSize, const Matrix& matrix)
 bool CollisionShape::AddCylinder(float h, float r)
 {
     CompoundShapeChild shape;
-    shape.pShape = new btCylinderShape(btVector3(r, h * 0.5f, r));
+    shape.shape.reset(new btCylinderShape(btVector3(r, h * 0.5f, r)));
     shape.matrix = Matrix();
-    mChildren.push_back(shape);
+    mChildren.push_back(std::move(shape));
 
     return true;
 }
-
-/*
-void CollisionShape::CreateTriMesh()
-{
-    btTriangleMesh* pMesh = new btTriangleMesh();
-    pMesh->Add
-
-    mShape = new btBvhTriangleMeshShape(pMesh, true);
-}
-*/
 
 bool CollisionShape::OnLoad()
 {
@@ -228,21 +182,21 @@ bool CollisionShape::OnLoad()
     {
         if (mChildren.size() > 1) // compund shape
         {
-            btCompoundShape* pCompound = new btCompoundShape(true);
-            if (pCompound == NULL) //check allocation
+            btCompoundShape* compound = new btCompoundShape(true);
+            if (!compound) //check allocation
             {
                 LOG_ERROR("Memory allocation error ocurred during loading collision shape resource '%s'.", mName);
                 return false;
             }
 
             for (size_t i = 0; i < mChildren.size(); i++)
-                pCompound->addChildShape(Matrix2BulletTransform(mChildren[i].matrix), mChildren[i].pShape);
+                compound->addChildShape(Matrix2BulletTransform(mChildren[i].matrix), mChildren[i].shape.get());
 
-            mShape = pCompound;
+            mShape.reset(compound);
         }
         else if (mChildren.size() == 1) //single shape
         {
-            mShape = mChildren[0].pShape;
+            mShape = std::move(mChildren[0].shape);
         }
         else
         {

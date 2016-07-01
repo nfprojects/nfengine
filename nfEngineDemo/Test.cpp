@@ -530,47 +530,6 @@ CustomWindow* AddWindow(CustomWindow* parent)
     return windowPtr;
 }
 
-// temporary
-bool OnLoadCustomShapeResource(ResourceBase* res, void* data)
-{
-    CollisionShape* shape = (CollisionShape*)res;
-
-    if (strcmp(shape->GetName(), "shape_floor") == 0)
-    {
-        shape->AddBox(Vector(100.0f, 10.0f, 100.0f), Matrix());
-    }
-    else if (strcmp(shape->GetName(), "shape_box") == 0)
-    {
-        shape->AddBox(Vector(0.25f, 0.25f, 0.25f), Matrix());
-    }
-    else if (strcmp(shape->GetName(), "shape_frame") == 0)
-    {
-        // Z axis
-        shape->AddBox(Vector(0.025f, 0.025f, 0.45f), MatrixTranslation3(Vector(-0.475f, -0.475f, 0.0f)));
-        shape->AddBox(Vector(0.025f, 0.025f, 0.45f), MatrixTranslation3(Vector(-0.475f, 0.475f, 0.0f)));
-        shape->AddBox(Vector(0.025f, 0.025f, 0.45f), MatrixTranslation3(Vector(0.475f, -0.475f, 0.0f)));
-        shape->AddBox(Vector(0.025f, 0.025f, 0.45f), MatrixTranslation3(Vector(0.475f, 0.475f, 0.0f)));
-
-        // Y axis
-        shape->AddBox(Vector(0.025f, 0.5f, 0.025f), MatrixTranslation3(Vector(-0.475f, 0.0f, -0.475f)));
-        shape->AddBox(Vector(0.025f, 0.5f, 0.025f), MatrixTranslation3(Vector(-0.475f, 0.0f, 0.475f)));
-        shape->AddBox(Vector(0.025f, 0.5f, 0.025f), MatrixTranslation3(Vector(0.475f, 0.0f, -0.475f)));
-        shape->AddBox(Vector(0.025f, 0.5f, 0.025f), MatrixTranslation3(Vector(0.475f, 0.0f, 0.475f)));
-
-        // X axis
-        shape->AddBox(Vector(0.5f, 0.025f, 0.025f), MatrixTranslation3(Vector(0.0f, -0.475f, -0.475f)));
-        shape->AddBox(Vector(0.5f, 0.025f, 0.025f), MatrixTranslation3(Vector(0.0f, -0.475f, 0.475f)));
-        shape->AddBox(Vector(0.5f, 0.025f, 0.025f), MatrixTranslation3(Vector(0.0f, 0.475f, -0.475f)));
-        shape->AddBox(Vector(0.5f, 0.025f, 0.025f), MatrixTranslation3(Vector(0.0f, 0.475f, 0.475f)));
-    }
-    else if (strcmp(shape->GetName(), "shape_barrel") == 0)
-    {
-        shape->AddCylinder(1.31f, 0.421f);
-    }
-
-    return true;
-}
-
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
     std::string execPath = Common::FileSystem::GetExecutablePath();
@@ -585,23 +544,15 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     gFont.reset(new Font);
     gFont->Init("nfEngineDemo/Data/Fonts/Inconsolata.otf", 11);
 
-    CollisionShape* floorShape = ENGINE_GET_COLLISION_SHAPE("shape_floor");
-    floorShape->SetCallbacks(OnLoadCustomShapeResource, NULL);
-    floorShape->Load();
-    floorShape->AddRef();
-
-    CollisionShape* frameShape = ENGINE_GET_COLLISION_SHAPE("shape_frame");
-    frameShape->SetCallbacks(OnLoadCustomShapeResource, NULL);
+    CollisionShape* frameShape = ENGINE_GET_COLLISION_SHAPE("shape_frame.nfcs");
     frameShape->Load();
     frameShape->AddRef();
 
-    CollisionShape* boxShape = ENGINE_GET_COLLISION_SHAPE("shape_box");
-    boxShape->SetCallbacks(OnLoadCustomShapeResource, NULL);
+    CollisionShape* boxShape = ENGINE_GET_COLLISION_SHAPE("shape_box.nfcs");
     boxShape->Load();
     boxShape->AddRef();
 
-    CollisionShape* barrelShape = ENGINE_GET_COLLISION_SHAPE("shape_barrel");
-    barrelShape->SetCallbacks(OnLoadCustomShapeResource, NULL);
+    CollisionShape* barrelShape = ENGINE_GET_COLLISION_SHAPE("shape_barrel.nfcs");
     barrelShape->Load();
     barrelShape->AddRef();
 

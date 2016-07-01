@@ -29,43 +29,6 @@ namespace NFE {
 namespace Math {
 
 /**
- * Structure for efficient 2D vector storing.
- */
-struct Float2
-{
-    float x, y;
-
-    Float2() : x(0.0f), y(0.0f) {};
-    Float2(float x_, float y_) : x(x_), y(y_) {};
-    Float2(float* pArr) : x(pArr[0]), y(pArr[1]) {};
-};
-
-/**
- * Structure for efficient 3D vector storing.
- */
-struct Float3
-{
-    float x, y, z;
-
-    Float3() : x(0.0f), y(0.0f), z(0.0f) {};
-    Float3(float x_, float y_, float z_) : x(x_), y(y_), z(z_) {};
-    Float3(float* pArr) : x(pArr[0]), y(pArr[1]), z(pArr[2]) {};
-};
-
-/**
- * Structure for efficient 4D vector storing - unaligned version of Vector class.
- */
-struct Float4
-{
-    float x, y, z, w;
-
-    Float4() : x(0.0f), y(0.0f), z(0.0f), w(0.0f) {};
-    Float4(float x_, float y_, float z_, float w_) : x(x_), y(y_), z(z_), w(w_) {};
-    Float4(float* pArr) : x(pArr[0]), y(pArr[1]), z(pArr[2]), w(pArr[3]) {};
-};
-
-
-/**
  * Rectangle template.
  */
 template<typename T>

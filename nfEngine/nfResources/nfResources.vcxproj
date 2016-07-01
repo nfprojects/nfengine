@@ -177,10 +177,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CollisionShapeFile.hpp" />
     <ClInclude Include="MeshFile.hpp" />
     <ClInclude Include="PCH.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CollisionShapeFile.cpp" />
     <ClCompile Include="MeshFile.cpp" />
     <ClCompile Include="PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
