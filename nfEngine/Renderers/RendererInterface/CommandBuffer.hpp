@@ -16,7 +16,7 @@
 #include "ResourceBinding.hpp"
 
 #include "nfCommon/nfCommon.hpp"
-#include "nfCommon/Math/Math.hpp"
+#include "nfCommon/Math/Vector.hpp"
 
 #include <memory>
 

@@ -103,6 +103,9 @@ public:
     NFE_INLINE bool IsObject() const { return type == Type::Object; }
     NFE_INLINE bool IsArray() const { return type == Type::Array; }
 
+    template <typename T>
+    NFE_INLINE bool Is() const;
+
     /// Getters
     NFE_INLINE bool GetBool() const { return boolData; }
     NFE_INLINE int GetInt() const { return intData; }
@@ -110,7 +113,22 @@ public:
     NFE_INLINE const char* GetString() const { return stringData; }
     NFE_INLINE ConfigObjectNodePtr GetObj() const { return object; }
     NFE_INLINE ConfigArrayNodePtr GetArray() const { return array; }
+
+    template <typename T>
+    NFE_INLINE T Get() const;
 };
+
+// ConfigValue::Is<T>() template specializations
+template<> bool ConfigValue::Is<int>() const { return type == Type::Int; }
+template<> bool ConfigValue::Is<bool>() const { return type == Type::Bool; }
+template<> bool ConfigValue::Is<float>() const { return type == Type::Float; }
+template<> bool ConfigValue::Is<const char*>() const { return type == Type::String; }
+
+// ConfigValue::Get<T>() template specializations
+template<> int ConfigValue::Get<int>() const { return intData; }
+template<> bool ConfigValue::Get<bool>() const { return boolData; }
+template<> float ConfigValue::Get<float>() const { return floatData; }
+template<> const char* ConfigValue::Get<const char*>() const { return stringData; }
 
 /**
  * Config array node. Used for fast insertions and iterations.
@@ -140,6 +158,8 @@ struct ConfigObjectNode
  */
 class NFCOMMON_API Config
 {
+    NFE_MAKE_NONCOPYABLE(Config);
+
     std::unique_ptr<char[]> mStringCopy;
 
     ConfigObjectNodePtr mRootNode;
@@ -162,9 +182,6 @@ class NFCOMMON_API Config
     /// Generator methods (config to string conversion):
     void ValueToString(std::stringstream& out, ConfigValuePtr valuePtr, int indent) const;
     void ObjectToString(std::stringstream& out, ConfigObjectNodePtr objectPtr, int indent) const;
-
-    Config(const Config&) = delete;
-    Config& operator= (const Config&) = delete;
 
 public:
     // callback functions called when walking a config object and array
@@ -231,6 +248,15 @@ public:
     void IterateArray(const ArrayIterator& callback, ConfigArrayNodePtr node) const;
 
     /**
+     * Iterate through a config array of a given type and size.
+     * @param callback Callback function to be called for each array value.
+     * @param node     Starting node.
+     * @return         True on success.
+     */
+    template <typename T>
+    bool IterateArray(T* array, size_t numElements, ConfigArrayNodePtr node) const;
+
+    /**
      * Add a value to a config object.
      * @param configObject Reference to helper ConfigObject object.
      * @param key          Key string.
@@ -288,6 +314,48 @@ public:
      */
     ConfigGenericValue operator[](int index) const;
 };
+
+
+template <typename T>
+bool Config::IterateArray(T* array, size_t numElements, ConfigArrayNodePtr node) const
+{
+    bool error = false;
+    size_t counter = 0;
+
+    auto arrayIterator = [&](int index, const ConfigValue& value)
+    {
+        if (index >= numElements)
+        {
+            LOG_ERROR("%zu array elements expected", numElements);
+            error = true;
+            return false;
+        }
+
+        if (!value.Is<T>())
+        {
+            LOG_ERROR("Invalid array element type");
+            error = true;
+            return false;
+        }
+
+        array[index] = value.Get<T>();
+        counter++;
+        return true;
+    };
+
+    IterateArray(arrayIterator, node);
+
+    if (error)
+        return false;
+
+    if (counter != numElements)
+    {
+        LOG_ERROR("Invalid array size - %zu elements expected, %zu parsed", numElements, counter);
+        return false;
+    }
+
+    return true;
+}
 
 
 } // namespace Common

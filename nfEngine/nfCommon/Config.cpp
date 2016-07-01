@@ -131,7 +131,7 @@ bool Config::ParseValue(ConfigTokenizer& tokenizer, const Token& token, ConfigVa
         }
         else
         {
-            LOG_ERROR("Unexpected symbol");
+            LOG_ERROR("Unexpected symbol: '%c' (%d)", token.symbol, static_cast<int>(token.symbol));
             return false;
         }
         break;

@@ -8,6 +8,7 @@
 
 #include "../nfCommon.hpp"
 #include "Math.hpp"
+#include "Vector.hpp"
 
 namespace NFE {
 namespace Math {

@@ -13,6 +13,9 @@ namespace Math {
 
 struct Vectorf;
 struct Vectori;
+struct Float2;
+struct Float3;
+struct Float4;
 
 /**
  * 4 element vector of floats.
@@ -203,10 +206,73 @@ struct NFE_ALIGN16 Vectori
 #endif
 };
 
+/**
+ * Structure for efficient 2D vector storing.
+ */
+struct Float2
+{
+    float x, y;
+
+    Float2() : x(0.0f), y(0.0f) {}
+    Float2(float x_, float y_) : x(x_), y(y_) {}
+    Float2(float* data) : x(data[0]), y(data[1]) {}
+    explicit Float2(const Vector& vec) : x(vec[0]), y(vec[1]) {}
+
+    NFE_INLINE Float2 operator=(const Vector& vec)
+    {
+        x = vec[0];
+        y = vec[1];
+        return *this;
+    }
+};
+
+/**
+ * Structure for efficient 3D vector storing.
+ */
+struct Float3
+{
+    float x, y, z;
+
+    Float3() : x(0.0f), y(0.0f), z(0.0f) {}
+    Float3(float x_, float y_, float z_) : x(x_), y(y_), z(z_) {}
+    Float3(float* data) : x(data[0]), y(data[1]), z(data[2]) {}
+    explicit Float3(const Vector& vec) : x(vec[0]), y(vec[1]), z(vec[2]) {}
+
+    NFE_INLINE Float3 operator=(const Vector& vec)
+    {
+        x = vec[0];
+        y = vec[1];
+        z = vec[2];
+        return *this;
+    }
+};
+
+/**
+ * Structure for efficient 4D vector storing - unaligned version of Vector class.
+ */
+struct Float4
+{
+    float x, y, z, w;
+
+    Float4() : x(0.0f), y(0.0f), z(0.0f), w(0.0f) {}
+    Float4(float x_, float y_, float z_, float w_) : x(x_), y(y_), z(z_), w(w_) {}
+    Float4(float* data) : x(data[0]), y(data[1]), z(data[2]), w(data[3]) {}
+    explicit Float4(const Vector& vec) : x(vec[0]), y(vec[1]), z(vec[2]), w(vec[3]) {}
+
+    NFE_INLINE Float4& operator=(const Vector& vec)
+    {
+        x = vec[0];
+        y = vec[1];
+        z = vec[2];
+        w = vec[3];
+        return *this;
+    }
+};
+
+
 //
 // Constants definitions
 //
-
 
 const Vectorf VECTOR_EPSILON = {{{NFE_MATH_EPSILON, NFE_MATH_EPSILON,
                              NFE_MATH_EPSILON, NFE_MATH_EPSILON}}};

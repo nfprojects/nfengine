@@ -118,7 +118,7 @@ void PhysicsSystem::Update(float dt)
             btCollisionShape* shape = &mEmptyCollisionShape;
             if (body->mCollisionShape != nullptr)
                 if (body->mCollisionShape->mShape != nullptr)
-                    shape = body->mCollisionShape->mShape;
+                    shape = body->mCollisionShape->mShape.get();
 
             btTransform bodyTransform;
             bodyTransform.setFromOpenGLMatrix(transform->GetMatrix().f);
