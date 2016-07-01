@@ -38,7 +38,7 @@ TEST(ThreadPool, SpawnTasks)
         // eneuque time measure
         timer.Start();
         for (int i = 0; i < numTasks; ++i)
-            tasks.push_back(tp.CreateTask(taskFunc));
+            tasks.push_back(tp.CreateTask(taskFunc, 1, NFE_INVALID_TASK_ID, NFE_INVALID_TASK_ID, true));
         double enqueueTime = 1000.0 * timer.Stop();
 
         // unlock worker threads
@@ -76,7 +76,7 @@ TEST(ThreadPool, Instances)
 
         // block worker threads
         tp.CreateTask(lockTask, tp.GetThreadsNumber());
-        TaskID task = tp.CreateTask(taskFunc, numTasks);
+        TaskID task = tp.CreateTask(taskFunc, numTasks, NFE_INVALID_TASK_ID, NFE_INVALID_TASK_ID, true);
 
         // unlock worker threads
         timer.Start();
@@ -113,7 +113,7 @@ TEST(ThreadPool, Dependencies)
 
         // blocking task
         TaskID dependencyTask = tp.CreateTask(lockTask);
-        TaskID grouppingTask = tp.CreateTask(taskFunc, 1, NFE_INVALID_TASK_ID, dependencyTask);
+        TaskID grouppingTask = tp.CreateTask(taskFunc, 1, NFE_INVALID_TASK_ID, dependencyTask, true);
 
         // eneuque time measure
         timer.Start();

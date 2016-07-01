@@ -53,17 +53,17 @@ TEST(ThreadPoolSimple, Wait)
     TaskID taskA, taskB, taskC, taskD;
 
     // wait for already executed
-    ASSERT_NE(NFE_INVALID_TASK_ID, taskA = tp.CreateTask(smallTaskFunc, 1));
+    ASSERT_NE(NFE_INVALID_TASK_ID, taskA = tp.CreateTask(smallTaskFunc, 1, NFE_INVALID_TASK_ID, NFE_INVALID_TASK_ID, true));
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
     tp.WaitForTask(taskA);
 
     // wait for being executed
-    ASSERT_NE(NFE_INVALID_TASK_ID, taskB = tp.CreateTask(longTaskFunc, 10));
+    ASSERT_NE(NFE_INVALID_TASK_ID, taskB = tp.CreateTask(longTaskFunc, 10, NFE_INVALID_TASK_ID, NFE_INVALID_TASK_ID, true));
     tp.WaitForTask(taskB);
 
     // wait for queued
-    ASSERT_NE(NFE_INVALID_TASK_ID, taskC = tp.CreateTask(longTaskFunc, 10));
-    ASSERT_NE(NFE_INVALID_TASK_ID, taskD = tp.CreateTask(longTaskFunc, 10));
+    ASSERT_NE(NFE_INVALID_TASK_ID, taskC = tp.CreateTask(longTaskFunc, 10, NFE_INVALID_TASK_ID, NFE_INVALID_TASK_ID, true));
+    ASSERT_NE(NFE_INVALID_TASK_ID, taskD = tp.CreateTask(longTaskFunc, 10, NFE_INVALID_TASK_ID, NFE_INVALID_TASK_ID, true));
     tp.WaitForTask(taskD);
     tp.WaitForTask(taskC);
 }
@@ -91,7 +91,7 @@ TEST(ThreadPoolSimple, EnqueueInsideTask)
             EXPECT_EQ(0, context.instanceId);
             condition = 1;
             ASSERT_NO_THROW(task = tp.CreateTask(taskFuncB, 1, NFE_INVALID_TASK_ID,
-                                                  context.taskId));
+                                                  context.taskId, true));
         };
 
         ASSERT_NO_THROW(tp.CreateTask(taskFuncA, 1));
@@ -123,7 +123,7 @@ TEST(ThreadPoolSimple, ThreadId)
         latch.Wait();
     };
 
-    ASSERT_NE(NFE_INVALID_TASK_ID, task = tp.CreateTask(taskFunc, workerThreads));
+    ASSERT_NE(NFE_INVALID_TASK_ID, task = tp.CreateTask(taskFunc, workerThreads, NFE_INVALID_TASK_ID, NFE_INVALID_TASK_ID, true));
     while (done < workerThreads)
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     latch.Set();
@@ -148,7 +148,7 @@ TEST(ThreadPoolSimple, ThousandTasks)
         for (int i = 0; i < numTasks; ++i)
         {
             TaskID taskID;
-            ASSERT_NE(NFE_INVALID_TASK_ID, taskID = tp.CreateTask(emptyTaskFunc));
+            ASSERT_NE(NFE_INVALID_TASK_ID, taskID = tp.CreateTask(emptyTaskFunc, 1, NFE_INVALID_TASK_ID, NFE_INVALID_TASK_ID, true));
             tasks.push_back(taskID);
         }
 
@@ -157,26 +157,6 @@ TEST(ThreadPoolSimple, ThousandTasks)
     }
 
     EXPECT_EQ(numTasks, counter);
-}
-
-// Spawn maximum number of tasks, wait for all and repeat.
-TEST(ThreadPoolSimple, WaitForAllTasks)
-{
-    const int numTasks = 1024;
-    ThreadPool tp(numTasks);
-
-    std::atomic<int> counter;
-    auto emptyTaskFunc = [&counter](const TaskContext& /* context */) { counter++; };
-
-    for (int j = 0; j < 10; j++)
-    {
-        counter = 0;
-        for (int i = 0; i < numTasks; ++i)
-            ASSERT_NE(NFE_INVALID_TASK_ID, tp.CreateTask(emptyTaskFunc));
-
-        tp.WaitForAllTasks();
-        EXPECT_EQ(numTasks, counter);
-    }
 }
 
 // Spawn 1000 tasks.
@@ -192,7 +172,7 @@ TEST(ThreadPoolSimple, WaitForThousandTasks)
         for (int i = 0; i < numTasks; ++i)
         {
             TaskID taskID;
-            ASSERT_NE(NFE_INVALID_TASK_ID, taskID = tp.CreateTask(emptyTaskFunc));
+            ASSERT_NE(NFE_INVALID_TASK_ID, taskID = tp.CreateTask(emptyTaskFunc, 1, NFE_INVALID_TASK_ID, NFE_INVALID_TASK_ID, true));
             tasks.push_back(taskID);
         }
 
@@ -218,7 +198,7 @@ TEST(ThreadPoolSimple, InstancesSimple)
 
     ThreadPool tp;
     TaskID task;
-    ASSERT_NE(NFE_INVALID_TASK_ID, task = tp.CreateTask(func, instancesNum));
+    ASSERT_NE(NFE_INVALID_TASK_ID, task = tp.CreateTask(func, instancesNum, NFE_INVALID_TASK_ID, NFE_INVALID_TASK_ID, true));
     tp.WaitForTask(task);
 
     for (size_t i = 0; i < instancesNum; ++i)
@@ -249,7 +229,7 @@ TEST(ThreadPoolSimple, Instances)
         using namespace std::placeholders;
         TaskID task;
         ASSERT_NE(NFE_INVALID_TASK_ID, task = tp.CreateTask(std::bind(func, _1, i),
-                                                            instancesPerTask[i]));
+                                                            instancesPerTask[i], NFE_INVALID_TASK_ID, NFE_INVALID_TASK_ID, true));
         tasks.push_back(task);
     }
 
@@ -280,10 +260,11 @@ TEST(ThreadPoolSimple, DependencyInProgress)
 
     ThreadPool tp;
     TaskID task0 = 0, task1 = 0;
-    ASSERT_NE(NFE_INVALID_TASK_ID, task0 = tp.CreateTask(funcA, numInstances));
+    ASSERT_NE(NFE_INVALID_TASK_ID, task0 = tp.CreateTask(funcA, numInstances, NFE_INVALID_TASK_ID, NFE_INVALID_TASK_ID, true));
     ASSERT_NE(NFE_INVALID_TASK_ID, task1 = tp.CreateTask(funcB, numInstances, NFE_INVALID_TASK_ID,
-                                                         task0));
+                                                         task0, true));
     tp.WaitForTask(task1);
+    tp.WaitForTask(task0);
 }
 
 // create a task dependent on finished
@@ -291,12 +272,16 @@ TEST(ThreadPoolSimple, DependencyFinished)
 {
     ThreadPool tp;
     TaskID task0, task1;
-    auto func = [](const TaskContext& /* context */) {};
+    Latch latch;
 
-    ASSERT_NE(NFE_INVALID_TASK_ID, task0 = tp.CreateTask(func, 1));
+    auto func0 = [&] (const TaskContext& /* context */) { latch.Set();  };
+    ASSERT_NE(NFE_INVALID_TASK_ID, task0 = tp.CreateTask(func0, 1, NFE_INVALID_TASK_ID, NFE_INVALID_TASK_ID, true));
+    latch.Wait();
+
+    auto func1 = [&] (const TaskContext& /* context */) { };
+    ASSERT_NE(NFE_INVALID_TASK_ID, task1 = tp.CreateTask(func1, 1, NFE_INVALID_TASK_ID, task0, true));
+
     tp.WaitForTask(task0);
-
-    ASSERT_NE(NFE_INVALID_TASK_ID, task1 = tp.CreateTask(func, 1, NFE_INVALID_TASK_ID, task0));
     tp.WaitForTask(task1);
 }
 
@@ -307,12 +292,13 @@ TEST(ThreadPoolSimple, DependencyChain)
     const int chainLen = 4000; // chain length
     const int instancesPerTask = 1;
 
+    Latch latch;
     std::atomic<size_t> counters[chainLen];
 
     auto func = [&](const TaskContext& /* context */, int task)
     {
         if (task == 0)
-            std::this_thread::sleep_for(std::chrono::milliseconds(40));
+            latch.Wait();
         else
         {
             size_t counter = counters[task - 1];
@@ -334,8 +320,10 @@ TEST(ThreadPoolSimple, DependencyChain)
     {
         ASSERT_NE(NFE_INVALID_TASK_ID, prevTask = tp.CreateTask(std::bind(func, _1, i),
                                                                 instancesPerTask,
-                                                                NFE_INVALID_TASK_ID, prevTask));
+                                                                NFE_INVALID_TASK_ID, prevTask, true));
     }
+
+    latch.Set();
     tp.WaitForTask(prevTask);
 
     // verify counters
@@ -395,7 +383,7 @@ TEST(ThreadPoolSimple, EnqueueChildren)
     };
 
     // spawn root task
-    TaskID parentTask = tp.CreateTask(parentTaskFunc);
+    TaskID parentTask = tp.CreateTask(parentTaskFunc, 1, NFE_INVALID_TASK_ID, NFE_INVALID_TASK_ID, true);
     ASSERT_NE(NFE_INVALID_TASK_ID, parentTask);
 
     tp.WaitForTask(parentTask);
@@ -427,7 +415,7 @@ TEST(ThreadPoolSimple, EnqueueChildRecursive)
     };
 
     // spawn root task
-    TaskID rootTask = tp.CreateTask(std::bind(taskFunc, _1, 0));
+    TaskID rootTask = tp.CreateTask(std::bind(taskFunc, _1, 0), 1, NFE_INVALID_TASK_ID, NFE_INVALID_TASK_ID, true);
     ASSERT_NE(NFE_INVALID_TASK_ID, rootTask);
 
     tp.WaitForTask(rootTask);

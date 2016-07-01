@@ -21,6 +21,7 @@ namespace Common {
  */
 typedef uint32 TaskID;
 
+#define NFE_THREADPOOL_PRIORITIES 3
 #define NFE_INVALID_TASK_ID (static_cast<NFE::Common::TaskID>(-1))
 
 class ThreadPool;
@@ -39,6 +40,16 @@ struct TaskContext
  */
 typedef std::function<void(const TaskContext& context)> TaskFunction;
 
+struct TaskDesc
+{
+    const TaskFunction& function;
+    size_t instancesNum;
+    TaskID parentID;
+    TaskID dependencyID;
+    bool waitable;
+    unsigned char priority;
+};
+
 /**
  * @class Task
  * @brief Internal task structure.
@@ -46,16 +57,35 @@ typedef std::function<void(const TaskContext& context)> TaskFunction;
  */
 class Task final
 {
+public:
+
+    enum class State : unsigned char
+    {
+        Invalid,
+        Created,
+        Queued,
+        Finished,
+    };
+
     friend class ThreadPool;
 
     TaskFunction mCallback;  //< task routine
+
+    union
+    {
+        TaskID mParent;
+        TaskID mNextFree;   //< free tasks list
+    };
+
+    std::atomic<State> mState;
+    unsigned char mPriority;
+    bool mWaitable;
 
     /**
      * Number of tasks and sub-tasks left to complete.
      * If reaches 0, then whole task is finished.
      */
     std::atomic<uint32> mTasksLeft;
-    TaskID mParent;
 
     /// Instances counters:
     uint32 mInstancesNum;                //< total number of the task instances
@@ -114,7 +144,9 @@ class NFCOMMON_API ThreadPool final
 
     /// Tasks queue variables:
     size_t mMaxTasks;
-    std::queue<TaskID> mTasksQueue;        //< queue for tasks with "Queued" state
+
+    // queues for tasks with "Queued" state
+    std::queue<TaskID> mTasksQueues[NFE_THREADPOOL_PRIORITIES];
     std::mutex mTasksQueueMutex;           //< lock for "mTasksQueue" access
     std::condition_variable mTaskQueueCV;  //< CV for notifying about a new task in the queue
 
@@ -122,12 +154,16 @@ class NFCOMMON_API ThreadPool final
     std::condition_variable mFinishedTasksCV;
 
     /// Tasks allocator variables:
-    std::atomic<uint32> mTasksNum;
     std::unique_ptr<Task[]> mTasks;
+    //std::atomic<unsigned int> mTasksNum;
+    std::mutex mTaskListMutex;
+    TaskID mFirstFreeTask;
 
     void SchedulerCallback(WorkerThread* thread);
 
-    void FinishTask(Task* task);
+    TaskID AllocateTask();
+    void FreeTask(TaskID taskID);
+    void FinishTask(TaskID taskID);
     void EnqueueTask(TaskID taskID);
 
     // create "num" additional worker threads
@@ -161,7 +197,9 @@ public:
     TaskID CreateTask(const TaskFunction& function,
                       size_t instancesNum = 1,
                       TaskID parentID = NFE_INVALID_TASK_ID,
-                      TaskID dependencyID = NFE_INVALID_TASK_ID);
+                      TaskID dependencyID = NFE_INVALID_TASK_ID,
+                      bool waitable = false,
+                      unsigned char priority = 0);
 
     /**
      * Check if a task is completed.
@@ -180,11 +218,6 @@ public:
      * @param tasksNum Number of tasks in @p tasks array.
      */
     void WaitForTasks(TaskID* tasks, size_t tasksNum);
-
-    /**
-     * Waits for all tasks in the pool to finish and reset tasks counter.
-     */
-    void WaitForAllTasks();
 };
 
 } // namespace Common
