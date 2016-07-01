@@ -140,7 +140,7 @@
     <ClInclude Include="Utils\ThreadPool.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\AsyncThreadPool.hpp">
+    <ClInclude Include="Utils\ThreadPoolTask.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="FileSystem\DirectoryWatch.hpp">
@@ -603,6 +603,8 @@
     <ClInclude Include="Utils\Entropy.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Utils\TaskBuilder.hpp" />
+    <ClInclude Include="Utils\Waitable.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -675,10 +677,10 @@
     <ClCompile Include="Utils\MD5.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\ThreadPool.cpp">
+    <ClCompile Include="Utils\ThreadPoolTask.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\AsyncThreadPool.cpp">
+    <ClCompile Include="Utils\ThreadPool.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="FileSystem\FileAsync.cpp">
@@ -838,6 +840,8 @@
     <ClCompile Include="Math\Packed.cpp">
       <Filter>Math</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\TaskBuilder.cpp" />
+    <ClCompile Include="Utils\Waitable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Math\Math.natvis">

@@ -8,8 +8,6 @@
 
 #include "Scene.hpp"
 
-#include "nfCommon/Utils/ThreadPool.hpp"
-
 
 class MultithreadedScene : public Scene
 {
@@ -43,8 +41,6 @@ class MultithreadedScene : public Scene
 
     // cbuffer mode
     NFE::Renderer::BufferMode mCBufferMode;
-
-    NFE::Common::ThreadPool mThreadPool;
 
     // Releases only subscene-related resources. Backbuffer, RT and BlendState stay intact.
     void ReleaseSubsceneResources() override;

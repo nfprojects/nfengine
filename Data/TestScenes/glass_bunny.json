@@ -5,11 +5,8 @@
             "name": "ground",
             "bsdf": "diffuse",
             "baseColor": [0.9, 0.9, 0.9],
-            "baseColorTexture": "TEXTURES/Poliigon/Tiles05/6K/Tiles05_COL_VAR1_6K.bmp",
             "metalness": 0.0,
-            "roughness": 0.5,
-            "roughnessTexture": "TEXTURES/Poliigon/Tiles05/6K/Tiles05_ROUGHNESS_6K.bmp",
-            "normalMap": "TEXTURES/Poliigon/Tiles05/6K/Tiles05_NRM_6K.DDS"
+            "roughness": 0.5
         },
 
         {
@@ -67,8 +64,7 @@
     [
         {
             "type": "background",
-            "color": [2.0, 2.0, 2.0],
-            "texture" : "TEXTURES/ENV/NorwayForest_8K.exr"
+            "color": [2.0, 2.0, 2.0]
         }
     ],
     "camera":

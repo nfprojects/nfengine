@@ -33,10 +33,7 @@ public:
     virtual const char* GetName() const override;
     virtual RendererContextPtr CreateContext() const;
 
-    virtual void PreRender(uint32 passNumber, const Film& film) override;
-    virtual void PreRender(uint32 passNumber, RenderingContext& ctx) override;
-    virtual void PreRenderGlobal(RenderingContext& ctx) override;
-    virtual void PreRenderGlobal() override;
+    virtual void PreRender(Common::TaskBuilder& builder, const RenderParam& renderParams, Common::ArrayView<RenderingContext> contexts) override;
     virtual const RayColor RenderPixel(const Math::Ray& ray, const RenderParam& param, RenderingContext& ctx) const override;
 
     // for debugging
@@ -161,6 +158,9 @@ private:
 
     // list of all recorded light photons
     Common::DynArray<Photon> mPhotons;
+
+    // summed counts of photons from each thread context
+    Common::DynArray<uint32> mPhotonCountPrefixSum;
 };
 
 } // namespace RT

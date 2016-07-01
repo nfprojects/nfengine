@@ -411,11 +411,6 @@ bool DemoWindow::RenderUI_Settings_Rendering()
 {
     bool resetFrame = false;
 
-    {
-        uint32 maxThreads = std::thread::hardware_concurrency();
-        ImGui::SliderInt("Threads", (int*)& mRenderingParams.numThreads, 1, 2 * maxThreads);
-    }
-
     // renderer selection
     {
         // TODO use reflection

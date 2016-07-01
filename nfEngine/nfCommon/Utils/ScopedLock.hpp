@@ -20,8 +20,8 @@ template<typename LockType>
 class ExclusiveLockPolicy
 {
 public:
-    NFE_INLINE static void Acquire(LockType& lock) { lock.AcquireExclusive(); }
-    NFE_INLINE static void Release(LockType& lock) { lock.ReleaseExclusive(); }
+    NFE_FORCE_INLINE static void Acquire(LockType& lock) { lock.AcquireExclusive(); }
+    NFE_FORCE_INLINE static void Release(LockType& lock) { lock.ReleaseExclusive(); }
 };
 
 
@@ -32,8 +32,8 @@ template<typename LockType>
 class SharedLockPolicy
 {
 public:
-    NFE_INLINE static void Acquire(LockType& lock) { lock.AcquireShared(); }
-    NFE_INLINE static void Release(LockType& lock) { lock.ReleaseShared(); }
+    NFE_FORCE_INLINE static void Acquire(LockType& lock) { lock.AcquireShared(); }
+    NFE_FORCE_INLINE static void Release(LockType& lock) { lock.ReleaseShared(); }
 };
 
 
@@ -46,7 +46,7 @@ template <typename LockType, typename LockingPolicy>
 class ScopedLock final
 {
 public:
-    NFE_INLINE ScopedLock(LockType& lock, bool createLocked = true)
+    NFE_FORCE_INLINE ScopedLock(LockType& lock, bool createLocked = true)
         : mLock(lock)
         , mIsLocked(createLocked)
     {
@@ -56,7 +56,7 @@ public:
         }
     }
 
-    NFE_INLINE ~ScopedLock()
+    NFE_FORCE_INLINE ~ScopedLock()
     {
         if (mIsLocked)
         {
@@ -64,7 +64,7 @@ public:
         }
     }
 
-    NFE_INLINE void Lock()
+    NFE_FORCE_INLINE void Lock()
     {
         if (!mIsLocked)
         {
@@ -73,7 +73,7 @@ public:
         }
     }
 
-    NFE_INLINE void Unlock()
+    NFE_FORCE_INLINE void Unlock()
     {
         if (mIsLocked)
         {
@@ -82,12 +82,12 @@ public:
         }
     }
 
-    NFE_INLINE constexpr bool IsLocked() const
+    NFE_FORCE_INLINE constexpr bool IsLocked() const
     {
         return mIsLocked;
     }
 
-    NFE_INLINE LockType& GetLockObject() const
+    NFE_FORCE_INLINE LockType& GetLockObject() const
     {
         return mLock;
     }

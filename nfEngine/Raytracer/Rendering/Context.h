@@ -50,8 +50,6 @@ struct SamplingParams
 
 struct RenderingParams
 {
-    uint32 numThreads = 0;
-
     SamplingParams samplingParams;
 
     // Antialiasing factor

@@ -4,9 +4,58 @@
 
 #include "PCH.hpp"
 #include "nfCommon/Utils/ThreadPool.hpp"
+#include "nfCommon/Utils/Latch.hpp"
 
 
+using namespace NFE;
 using namespace NFE::Common;
+
+/*
+
+TEST(ThreadPoolStress, LotsOfTasks)
+{
+    const int numTasks = 50000;
+    std::atomic<int> counter(0);
+    std::vector<std::atomic<bool>> status(numTasks);
+    Latch latch;
+
+    {
+        ThreadPool tp;
+        std::vector<TaskID> tasks;
+        auto emptyTaskFunc = [&] (int id)
+        {
+            status[id] = true;
+            counter++;
+
+            if (counter < 8)
+                std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            if (counter == numTasks)
+                latch.Set();
+        };
+
+        for (int i = 0; i < numTasks; ++i)
+        {
+            status[i] = false;
+
+            TaskID taskID;
+            do
+            {
+                TaskDesc desc;
+                desc.function = [&emptyTaskFunc, i](const TaskContext&) { emptyTaskFunc(i); };
+                taskID = tp.CreateAndDispatchTask(desc);
+            } while (taskID == NFE_INVALID_TASK_ID);
+
+            tasks.push_back(taskID);
+        }
+
+        latch.Wait();
+    }
+
+    for (int i = 0; i < numTasks; ++i)
+        EXPECT_TRUE(status[i]) << "i=" << i;
+
+    EXPECT_EQ(numTasks, counter);
+}
 
 // Spawn lots of tasks with single dependencies.
 TEST(ThreadPoolStress, SingleDependency)
@@ -16,25 +65,26 @@ TEST(ThreadPoolStress, SingleDependency)
     struct TaskInfo
     {
         TaskID dependency;
-        size_t instanceNum;
         std::atomic<bool> done;
 
-        TaskInfo() : dependency(NFE_INVALID_TASK_ID) , instanceNum(0), done(false) { }
+        TaskInfo() : dependency(NFE_INVALID_TASK_ID), done(false) { }
 
         TaskInfo(const TaskInfo& other)
         {
             dependency = other.dependency;
-            instanceNum = other.instanceNum;
             done = other.done.load();
         }
     };
 
-    ThreadPool tp;
+    ThreadPool::Setup setup;
+    setup.numInitialTasks = (1 << 17) + 1;
+
+    ThreadPool tp(setup);
     std::vector<TaskID> taskIds;
     std::vector<TaskInfo> tasks;
     tasks.reserve(numTasks);
 
-    auto func = [&](size_t id)
+    auto func = [&](const TaskContext&, size_t id)
     {
         TaskInfo& taskInfo = tasks[id];
 
@@ -64,10 +114,18 @@ TEST(ThreadPoolStress, SingleDependency)
             task.dependency = NFE_INVALID_TASK_ID;
 
         tasks.push_back(task);
-        taskId = tp.CreateTask([func, i](const TaskContext&) { func(i); }, NFE_INVALID_TASK_ID, task.dependency);
+
+        TaskDesc desc;
+        desc.function = [&func, i](const TaskContext& context) { func(context, i); };
+        desc.dependency = task.dependency;
+        desc.waitable = true;
+        taskId = tp.CreateAndEnqueueTask(desc);
         ASSERT_EQ(i, taskId);
         taskIds.push_back(taskId);
     }
 
-    tp.WaitForTasks(taskIds.data(), taskIds.size());
+    // TODO
+    // tp.WaitForTasks(taskIds.data(), taskIds.size());
 }
+
+*/

@@ -4,248 +4,192 @@
 
 #include "PCH.hpp"
 #include "nfCommon/Utils/ThreadPool.hpp"
+#include "nfCommon/Utils/ThreadPoolTask.hpp"
 #include "nfCommon/Utils/Latch.hpp"
+#include "nfCommon/Utils/Waitable.hpp"
 
 using namespace NFE;
 using namespace NFE::Common;
 
-TEST(ThreadPoolSimple, ConstructorDestructor)
+TEST(ThreadPoolSimple, EmptyTask_NoWaiting)
 {
-    ThreadPool tp;
+    TaskDesc desc;
+    desc.function = [](const TaskContext&) {};
+
+    ThreadPool::GetInstance().CreateAndDispatchTask(desc);
+
+    // Note:
+    // We can't do any assumptions about the task here.
+    // It could be even not executed at all.
 }
 
-// Spawn an empty task, no waiting.
-TEST(ThreadPoolSimple, EmptyTask)
+TEST(ThreadPoolSimple, EmptyTasks_NoWaiting)
 {
-    ThreadPool tp;
-    auto emptyTaskFunc = [](const TaskContext& /* context */) {};
-    tp.CreateTask(emptyTaskFunc);
-}
+    TaskDesc desc;
+    desc.function = [] (const TaskContext&) {};
 
-// Destroy a pool while executing a task
-TEST(ThreadPoolSimple, DestroyWhileExecuting)
-{
-    std::unique_ptr<ThreadPool> tp(new ThreadPool);
-    auto taskFunc = [](const TaskContext& /* context */)
+    for (uint32 i = 0; i < 1000; ++i)
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    };
-
-    TaskID task = 0;
-    ASSERT_NE(NFE_INVALID_TASK_ID, task = tp->CreateTask(taskFunc));
-    ASSERT_NE(NFE_INVALID_TASK_ID, tp->CreateTask(taskFunc, NFE_INVALID_TASK_ID, task));
-    tp.reset();
-}
-
-// Spawn small and long task, wait in various orders.
-TEST(ThreadPoolSimple, Wait)
-{
-    ThreadPool tp;
-    TaskFunction smallTaskFunc = [](const TaskContext& /* context */)
-    {
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    };
-    TaskFunction longTaskFunc = [](const TaskContext& /* context */)
-    {
-        std::this_thread::sleep_for(std::chrono::milliseconds(20));
-    };
-
-    TaskID taskA, taskB, taskC, taskD;
-
-    // wait for already executed
-    ASSERT_NE(NFE_INVALID_TASK_ID, taskA = tp.CreateTask(smallTaskFunc));
-    std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    tp.WaitForTask(taskA);
-
-    // wait for being executed
-    ASSERT_NE(NFE_INVALID_TASK_ID, taskB = tp.CreateTask(longTaskFunc));
-    tp.WaitForTask(taskB);
-
-    // wait for queued
-    ASSERT_NE(NFE_INVALID_TASK_ID, taskC = tp.CreateTask(longTaskFunc));
-    ASSERT_NE(NFE_INVALID_TASK_ID, taskD = tp.CreateTask(longTaskFunc));
-    tp.WaitForTask(taskD);
-    tp.WaitForTask(taskC);
-}
-
-// Spawn a task inside another
-TEST(ThreadPoolSimple, EnqueueInsideTask)
-{
-    ThreadPool tp;
-    TaskID task;
-
-    for (int i = 0; i < 10000; ++i)
-    {
-        std::atomic<int> condition(0);
-        Latch latch;
-
-        TaskFunction taskFuncB = [&](const TaskContext&)
-        {
-            EXPECT_EQ(1, condition);
-            latch.Set();
-        };
-
-        TaskFunction taskFuncA = [&](const TaskContext& context)
-        {
-            condition = 1;
-            task = tp.CreateTask(taskFuncB, NFE_INVALID_TASK_ID, context.taskId);
-            ASSERT_NE(NFE_INVALID_TASK_ID, task);
-        };
-
-        tp.CreateTask(taskFuncA);
-
-        latch.Wait();
-        tp.WaitForTask(task);
+        ThreadPool::GetInstance().CreateAndDispatchTask(desc);
     }
+
+    // Note:
+    // We can't do any assumptions about the task here.
+    // It could be even not executed at all.
 }
 
-// Verify thread id passed in task callback parameters
-TEST(ThreadPoolSimple, ThreadId)
+TEST(ThreadPoolSimple, EmptyWaitableTask_Waiting)
 {
-    ThreadPool tp;
-    uint32 workerThreads = tp.GetThreadsNumber();
-    DynArray<TaskID> tasks;
-    std::atomic<size_t> done(0);
-    std::unique_ptr<std::atomic<int>[]> counters(new std::atomic<int>[workerThreads]);
+    std::atomic<uint32> counter(0);
+
     Latch latch;
 
-    for (uint32 i = 0; i < workerThreads; ++i)
-        counters[i] = 0;
+    Waitable waitable;
+    ASSERT_FALSE(waitable.IsFinished());
 
-    TaskFunction taskFunc = [&](const TaskContext& context)
+    TaskDesc desc;
+    desc.function = [&latch, &counter](const TaskContext&)
     {
-        ASSERT_TRUE(context.threadId < workerThreads) << "Unexpected thread id: " << context.threadId;
-        counters[context.threadId]++;
-        done++;
         latch.Wait();
+        counter++;
     };
+    desc.waitable = &waitable;
 
-    // spawn tasks
-    for (uint32 i = 0; i < workerThreads; ++i)
-    {
-        TaskID task = tp.CreateTask(taskFunc);
-        ASSERT_NE(NFE_INVALID_TASK_ID, task);
-        tasks.PushBack(task);
-    }
+    ThreadPool::GetInstance().CreateAndDispatchTask(desc);
 
-    // wait until all the tasks are being executed
-    while (done < workerThreads)
-    {
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
+    // the task is blocked, it couldn't get finished
+    ASSERT_FALSE(waitable.IsFinished());
+
+    // unblock and wait
     latch.Set();
+    waitable.Wait();
+    ASSERT_TRUE(waitable.IsFinished());
 
-    for (uint32 i = 0; i < workerThreads; ++i)
-    {
-        tp.WaitForTask(tasks[i]);
-    }
+    // waiting for the task for the second time should do nothing
+    waitable.Wait();
+    ASSERT_TRUE(waitable.IsFinished());
 
-    for (uint32 i = 0; i < workerThreads; ++i)
+    // make sure the task was executed only once
+    ASSERT_EQ(1u, counter.load());
+}
+
+TEST(ThreadPoolSimple, SimpleDependency)
+{
+    const uint32 numIterations = 1000;
+
+    for (uint32 i = 0; i < numIterations; ++i)
     {
-        EXPECT_EQ(1, counters[i]);
+        Waitable waitable;
+
+        std::atomic<uint32> counterA(0);
+        std::atomic<uint32> counterB(0);
+        std::atomic<bool> dispatchedA(false);
+        std::atomic<bool> dispatchedB(false);
+
+        TaskID taskA, taskB;
+
+        {
+            TaskDesc desc;
+            desc.debugName = "A";
+            desc.function = [&] (const TaskContext&)
+            {
+                ASSERT_TRUE(dispatchedA.load());
+                ASSERT_EQ(0u, counterA.load());
+                ASSERT_EQ(0u, counterB.load());
+                counterA++;
+            };
+            taskA = ThreadPool::GetInstance().CreateTask(desc);
+        }
+
+        {
+            TaskDesc desc;
+            desc.debugName = "B";
+            desc.function = [&] (const TaskContext&)
+            {
+                ASSERT_TRUE(dispatchedB.load());
+                ASSERT_EQ(1u, counterA.load());
+                ASSERT_EQ(0u, counterB.load());
+                counterB++;
+            };
+            desc.dependency = taskA;
+            desc.waitable = &waitable;
+            taskB = ThreadPool::GetInstance().CreateTask(desc);
+        }
+
+        //std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+        dispatchedA = true;
+        ThreadPool::GetInstance().DispatchTask(taskA);
+
+        //std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+        dispatchedB = true;
+        ThreadPool::GetInstance().DispatchTask(taskB);
+
+        // unblock and wait
+        waitable.Wait();
+        ASSERT_TRUE(waitable.IsFinished());
+
+        ASSERT_EQ(1u, counterA.load());
+        ASSERT_EQ(1u, counterB.load());
     }
 }
 
 // Spawn 1000 tasks.
 TEST(ThreadPoolSimple, ThousandTasks)
 {
-    const int numTasks = 1000;
-    std::atomic<int> counter(0);
+    const uint32 numTasks = 1000;
+    std::atomic<uint32> counter(0);
     {
-        ThreadPool tp;
-        std::vector<TaskID> tasks;
-        auto emptyTaskFunc = [&counter](const TaskContext& /* context */) { counter++; };
+        std::vector<Waitable> waitables{ numTasks };
 
-        for (int i = 0; i < numTasks; ++i)
+        auto emptyTaskFunc = [&counter](const TaskContext&) { counter++; };
+
+        for (uint32 i = 0; i < numTasks; ++i)
         {
-            TaskID taskID;
-            ASSERT_NE(NFE_INVALID_TASK_ID, taskID = tp.CreateTask(emptyTaskFunc));
-            tasks.push_back(taskID);
+            TaskDesc desc;
+            desc.function = emptyTaskFunc;
+            desc.waitable = &waitables[i];
+            ThreadPool::GetInstance().CreateAndDispatchTask(desc);
         }
 
-        for (int i = 0; i < numTasks; ++i)
-            tp.WaitForTask(tasks[i]);
+        for (uint32 i = 0; i < numTasks; ++i)
+        {
+            waitables[i].Wait();
+        }
     }
 
     EXPECT_EQ(numTasks, counter);
 }
 
-// Spawn maximum number of tasks, wait for all and repeat.
-TEST(ThreadPoolSimple, WaitForAllTasks)
-{
-    const int numTasks = 1024;
-    ThreadPool tp(numTasks);
-
-    std::atomic<int> counter;
-    auto emptyTaskFunc = [&counter](const TaskContext& /* context */) { counter++; };
-
-    for (int j = 0; j < 10; j++)
-    {
-        counter = 0;
-        for (int i = 0; i < numTasks; ++i)
-            ASSERT_NE(NFE_INVALID_TASK_ID, tp.CreateTask(emptyTaskFunc));
-
-        tp.WaitForAllTasks();
-        EXPECT_EQ(numTasks, counter);
-    }
-}
-
-// Spawn 1000 tasks.
-TEST(ThreadPoolSimple, WaitForThousandTasks)
+// Spawn 1000 child tasks
+TEST(ThreadPoolSimple, ChildTasks)
 {
     const int numTasks = 1000;
     std::atomic<int> counter(0);
     {
-        ThreadPool tp;
-        std::vector<TaskID> tasks;
-        auto emptyTaskFunc = [&counter](const TaskContext& /* context */) { counter++; };
+        auto emptyTaskFunc = [&counter](const TaskContext&) { counter++; };
+
+        Waitable waitable;
+
+        TaskDesc rootTaskDesc;
+        rootTaskDesc.waitable = &waitable;
+        TaskID rootTask = ThreadPool::GetInstance().CreateTask(rootTaskDesc);
 
         for (int i = 0; i < numTasks; ++i)
         {
-            TaskID taskID;
-            ASSERT_NE(NFE_INVALID_TASK_ID, taskID = tp.CreateTask(emptyTaskFunc));
-            tasks.push_back(taskID);
+            TaskDesc desc;
+            desc.function = emptyTaskFunc;
+            desc.parent = rootTask;
+            ThreadPool::GetInstance().CreateAndDispatchTask(desc);
         }
+        
+        ThreadPool::GetInstance().DispatchTask(rootTask);
 
-        tp.WaitForTasks(tasks.data(), tasks.size());
+        waitable.Wait();
     }
 
     EXPECT_EQ(numTasks, counter);
-}
-
-// create a task dependent on task in progress
-TEST(ThreadPoolSimple, DependencyInProgress)
-{
-    std::atomic<int> counter(0);
-    auto funcA = [&counter](const TaskContext& /* context */)
-    {
-        counter++;
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    };
-
-    auto funcB = [&](const TaskContext& /* context */)
-    {
-    };
-
-    ThreadPool tp;
-    TaskID task0 = 0, task1 = 0;
-    ASSERT_NE(NFE_INVALID_TASK_ID, task0 = tp.CreateTask(funcA));
-    ASSERT_NE(NFE_INVALID_TASK_ID, task1 = tp.CreateTask(funcB, NFE_INVALID_TASK_ID, task0));
-    tp.WaitForTask(task1);
-}
-
-// create a task dependent on finished
-TEST(ThreadPoolSimple, DependencyFinished)
-{
-    ThreadPool tp;
-    TaskID task0, task1;
-    auto func = [](const TaskContext& /* context */) {};
-
-    ASSERT_NE(NFE_INVALID_TASK_ID, task0 = tp.CreateTask(func));
-    tp.WaitForTask(task0);
-
-    ASSERT_NE(NFE_INVALID_TASK_ID, task1 = tp.CreateTask(func, NFE_INVALID_TASK_ID, task0));
-    tp.WaitForTask(task1);
 }
 
 // Create long dependency chain: A -> B -> C -> D ...
@@ -254,124 +198,122 @@ TEST(ThreadPoolSimple, DependencyChain)
 {
     const int chainLen = 4000; // chain length
 
-    std::atomic<size_t> counters[chainLen];
+    Latch latch;
+    std::atomic<uint32> counters[chainLen];
 
-    auto func = [&](const TaskContext& /* context */, int task)
+    auto func = [&](int task)
     {
         if (task == 0)
-            std::this_thread::sleep_for(std::chrono::milliseconds(40));
+        {
+            latch.Wait();
+        }
         else
         {
-            size_t counter = counters[task - 1];
-            EXPECT_EQ(1u, counter) << "Task #" << task;
+            // verify previous task was finished
+            EXPECT_EQ(1u, counters[task - 1]) << "Task #" << task;
         }
 
         counters[task]++;
     };
 
-    ThreadPool tp;
     for (int i = 0; i < chainLen; ++i)
         counters[i] = 0;
 
-    using namespace std::placeholders;
-    TaskID prevTask = 0;
-    ASSERT_NE(NFE_INVALID_TASK_ID, prevTask = tp.CreateTask(std::bind(func, _1, 0)));
+    Waitable waitable;
+
+    TaskDesc desc;
+    desc.function = [&func](const TaskContext&) { func(0); };
+    TaskID firstTask = ThreadPool::GetInstance().CreateTask(desc);
+    TaskID prevTask = firstTask;
     for (int i = 1; i < chainLen; ++i)
     {
-        ASSERT_NE(NFE_INVALID_TASK_ID, prevTask = tp.CreateTask(std::bind(func, _1, i), NFE_INVALID_TASK_ID, prevTask));
+        desc.function = [&func, i](const TaskContext&) { func(i); };
+        desc.dependency = prevTask;
+        desc.waitable = (i == chainLen - 1) ? &waitable : nullptr;
+        prevTask = ThreadPool::GetInstance().CreateTask(desc);
+        ThreadPool::GetInstance().DispatchTask(prevTask);
     }
-    tp.WaitForTask(prevTask);
+    ThreadPool::GetInstance().DispatchTask(firstTask);
 
-    // verify counters
+    // verify counters (nothing should be executed yet)
+    for (int i = 0; i < chainLen; ++i)
+    {
+        EXPECT_EQ(0u, counters[i]) << "Task #" << i;
+    }
+
+    latch.Set();
+    waitable.Wait();
+
+    // verify counters (everything should be finished)
     for (int i = 0; i < chainLen; ++i)
     {
         EXPECT_EQ(1u, counters[i]) << "Task #" << i;
     }
 }
 
-// Spawn a task inside another recursively
+// Spawn a child task inside another recursively
 TEST(ThreadPoolSimple, EnqueueInsideTaskRecursive)
 {
-    const int numTasks = 10000;
+    const int numTasks = 4000;
 
-    ThreadPool tp;
-    std::atomic<int> count(0);
-    Latch latch; // last task enqueued latch
+    std::atomic<int32> count(0);
 
-    TaskFunction taskFunc = [&](const TaskContext&)
+    TaskFunction taskFunc = [&](const TaskContext& context)
     {
         if (++count < numTasks)
-            ASSERT_NE(NFE_INVALID_TASK_ID, tp.CreateTask(taskFunc));
-        else
-            latch.Set();
-    };
-
-    /// spawn first task
-    ASSERT_NE(NFE_INVALID_TASK_ID, tp.CreateTask(taskFunc));
-
-    latch.Wait();
-    ASSERT_EQ(numTasks, count);
-}
-
-// Spawn a child task inside another recursively
-TEST(ThreadPoolSimple, EnqueueChildren)
-{
-    using namespace std::placeholders;
-    const int children = 50000;
-
-    ThreadPool tp;
-    std::atomic<int> count(0);
-
-    auto childTaskFunc = [&](const TaskContext& /* context */)
-    {
-        count++;
-    };
-
-    auto parentTaskFunc = [&](const TaskContext& context)
-    {
-        for (int i = 0; i < children; ++i)
         {
-            TaskID child = tp.CreateTask(childTaskFunc, context.taskId);
-            ASSERT_NE(NFE_INVALID_TASK_ID, child);
+            TaskDesc desc;
+            desc.function = taskFunc;
+            desc.parent = context.taskId;
+            ThreadPool::GetInstance().CreateAndDispatchTask(desc);
         }
     };
 
-    // spawn root task
-    TaskID parentTask = tp.CreateTask(parentTaskFunc);
-    ASSERT_NE(NFE_INVALID_TASK_ID, parentTask);
+    Waitable waitable;
 
-    tp.WaitForTask(parentTask);
-    EXPECT_EQ(children, count.load());
+    /// spawn first task
+    TaskDesc desc;
+    desc.function = taskFunc;
+    desc.waitable = &waitable;
+    ThreadPool::GetInstance().CreateAndDispatchTask(desc);
+
+    waitable.Wait();
+    ASSERT_EQ(numTasks, count);
 }
 
 // Spawn 2 child tasks inside another recursively (binary-tree-like structure is created)
 TEST(ThreadPoolSimple, EnqueueChildRecursive)
 {
     using namespace std::placeholders;
-    const int maxDepth = 14;
-    const int children = 2;
+    const uint32 maxDepth = 14;
+    const uint32 children = 2;
 
-    ThreadPool tp;
-    std::atomic<int> count(0);
+    std::atomic<uint32> count = 0u;
 
-    std::function<void(const TaskContext&, int)> taskFunc =
-    [&](const TaskContext& context, int depth)
+    std::function<void(const TaskContext&, uint32)> func;
+    func = [&](const TaskContext& context, uint32 depth)
     {
         count++;
         if (depth >= maxDepth)
             return;
 
-        for (int i = 0; i < children; ++i)
+        for (uint32 i = 0; i < children; ++i)
         {
-            TaskID child = tp.CreateTask(std::bind(taskFunc, _1, depth + 1), context.taskId);
-            ASSERT_NE(NFE_INVALID_TASK_ID, child);
+            TaskDesc desc;
+            desc.function = [&func, depth](const TaskContext& context) { func(context, depth + 1); };
+            desc.parent = context.taskId;
+            ThreadPool::GetInstance().CreateAndDispatchTask(desc);
         }
     };
 
-    // spawn root task
-    TaskID rootTask = tp.CreateTask(std::bind(taskFunc, _1, 0));
-    ASSERT_NE(NFE_INVALID_TASK_ID, rootTask);
+    Waitable waitable;
 
-    tp.WaitForTask(rootTask);
-    EXPECT_EQ((1 << (maxDepth + 1)) - 1, count.load());
+    // spawn root task
+    TaskDesc desc;
+    desc.function = [&func](const TaskContext& context) { func(context, 0); };
+    desc.waitable = &waitable;
+    ThreadPool::GetInstance().CreateAndDispatchTask(desc);
+
+    waitable.Wait();
+    EXPECT_EQ((1u << (maxDepth + 1)) - 1u, count.load());
 }

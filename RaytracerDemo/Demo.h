@@ -16,8 +16,6 @@ struct Options
     uint32 windowHeight = 720;
     Common::String dataPath;
 
-    uint32 numThreads = 0;
-
     bool enablePacketTracing = false;
     Common::String rendererName = "Path Tracer";
 

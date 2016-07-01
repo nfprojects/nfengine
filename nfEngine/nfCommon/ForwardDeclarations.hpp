@@ -74,6 +74,8 @@ class ThreadPool;
 struct TaskContext;
 using TaskID = uint32;
 class Latch;
+class Waitable;
+class TaskBuilder;
 
 // System
 enum class KeyCode : unsigned int;

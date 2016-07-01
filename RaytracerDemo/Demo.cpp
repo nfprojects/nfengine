@@ -69,7 +69,6 @@ bool DemoWindow::Initialize()
     InitializeUI();
 
     mRendererName = gOptions.rendererName;
-    mRenderingParams.numThreads = std::thread::hardware_concurrency();
     mRenderingParams.traversalMode = gOptions.enablePacketTracing ? TraversalMode::Packet : TraversalMode::Single;
 
     mViewport = MakeUniquePtr<Viewport>();
@@ -440,7 +439,6 @@ bool DemoWindow::Loop()
 
         //// render
         localTimer.Start();
-        // display pixels in the window
         mViewport->Render(mCamera);
         mRenderDeltaTime = localTimer.Stop();
 

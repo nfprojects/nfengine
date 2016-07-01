@@ -74,7 +74,6 @@
     <ClInclude Include="Utils\Memory.h" />
     <ClInclude Include="Utils\Texture.h" />
     <ClInclude Include="Utils\TextureEvaluator.h" />
-    <ClInclude Include="Utils\ThreadPool.h" />
     <ClInclude Include="Utils\KdTree.h" />
     <ClInclude Include="Shapes\RectShape.h" />
     <ClInclude Include="Traversal\Intersection.h" />
@@ -149,7 +148,6 @@
     <ClCompile Include="Utils\BitmapEXR.cpp" />
     <ClCompile Include="Utils\BlockCompression.cpp" />
     <ClCompile Include="Utils\Memory.cpp" />
-    <ClCompile Include="Utils\ThreadPool.cpp" />
     <ClCompile Include="Utils\KdTree.cpp" />
     <ClCompile Include="Shapes\RectShape.cpp" />
     <ClCompile Include="Shapes\MeshShape.cpp" />

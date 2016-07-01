@@ -12,6 +12,7 @@
 #include "Sampling/GenericSampler.h"
 #include "Utils/Profiler.h"
 #include "../../nfCommon/Memory/MemoryHelpers.hpp"
+#include "../../nfCommon/Utils/TaskBuilder.hpp"
 
 namespace NFE {
 namespace RT {
@@ -82,6 +83,7 @@ RendererContextPtr VertexConnectionAndMerging::CreateContext() const
     return MakeUniquePtr<VertexConnectionAndMergingContext>();
 }
 
+/*
 void VertexConnectionAndMerging::PreRender(uint32 passNumber, const Film& film)
 {
     NFE_ASSERT(mInitialMergingRadius >= mMinMergingRadius);
@@ -169,6 +171,104 @@ void VertexConnectionAndMerging::PreRenderGlobal()
         mHashGrid.Build(mPhotons, mMergingRadiusVM);
 #endif // NFE_VCM_USE_KD_TREE
     }
+}
+*/
+
+void VertexConnectionAndMerging::PreRender(Common::TaskBuilder& builder, const RenderParam& renderParams, Common::ArrayView<RenderingContext> contexts)
+{
+    NFE_ASSERT(mInitialMergingRadius >= mMinMergingRadius);
+    NFE_ASSERT(mMergingRadiusMultiplier > 0.0f);
+    NFE_ASSERT(mMergingRadiusMultiplier <= 1.0f);
+    NFE_ASSERT(mMaxPathLength > 0);
+
+    mLightPathsCount = renderParams.film.GetHeight() * renderParams.film.GetWidth();
+
+    if (renderParams.iteration == 0)
+    {
+        mMergingRadiusVC = mInitialMergingRadius;
+        mMergingRadiusVM = mInitialMergingRadius;
+    }
+    else
+    {
+        // merging radius for vertex merging is delayed by 1 frame
+        mMergingRadiusVM = mMergingRadiusVC;
+
+        mMergingRadiusVC *= mMergingRadiusMultiplier;
+        mMergingRadiusVC = Max(mMergingRadiusVC, mMinMergingRadius);
+    }
+
+    // Factor used to normalize vertex merging contribution.
+    // We divide the summed up energy by disk radius and number of light paths
+    mVertexMergingNormalizationFactor = 1.0f / (Sqr(mMergingRadiusVM) * NFE_MATH_PI * mLightPathsCount);
+
+    // compute MIS weights for vertex connection
+    {
+        const float etaVCM = NFE_MATH_PI * Sqr(mMergingRadiusVC) * mLightPathsCount;
+        // Note: we don't use merging in the first iteration
+        mMisVertexMergingWeightFactorVC = (mUseVertexMerging && renderParams.iteration > 0) ? Mis(etaVCM) : 0.0f;
+        mMisVertexConnectionWeightFactorVC = mUseVertexConnection ? Mis(1.f / etaVCM) : 0.0f;
+    }
+
+    // set MIS weights for vertex merging (delayed by 1 iteration)
+    {
+        const float etaVCM = NFE_MATH_PI * Sqr(mMergingRadiusVM) * mLightPathsCount;
+        mMisVertexMergingWeightFactorVM = mUseVertexMerging ? Mis(etaVCM) : 0.0f;
+        mMisVertexConnectionWeightFactorVM = mUseVertexConnection ? Mis(1.f / etaVCM) : 0.0f;
+    }
+
+    // photon lists handling
+    if (mUseVertexMerging)
+    {
+        mPhotonCountPrefixSum.Resize(contexts.Size());
+        mPhotonCountPrefixSum[0] = 0;
+
+        for (uint32 i = 0; i < contexts.Size(); ++i)
+        {
+            RenderingContext& ctx = contexts[i];
+            VertexConnectionAndMergingContext& rendererContext = *static_cast<VertexConnectionAndMergingContext*>(ctx.rendererContext.Get());
+
+            if (renderParams.iteration == 0)
+            {
+                rendererContext.photons.Clear();
+            }
+
+            // compute prefix sum
+            if (i == 0)
+            {
+                mPhotonCountPrefixSum[i] = rendererContext.photons.Size();
+            }
+            else
+            {
+                mPhotonCountPrefixSum[i] = mPhotonCountPrefixSum[i - 1] + rendererContext.photons.Size();
+            }
+        }
+
+        // prepare for merge
+        mPhotons.Resize_SkipConstructor(mPhotonCountPrefixSum.Back());
+
+        // merge photon lists from all thread contexts
+        builder.ParallelFor("VCM/CopyPhotons", contexts.Size(), [this, contexts] (const TaskContext&, uint32 index)
+        {
+            RenderingContext& ctx = const_cast<RenderingContext&>(contexts[index]);
+            VertexConnectionAndMergingContext& rendererContext = *static_cast<VertexConnectionAndMergingContext*>(ctx.rendererContext.Get());
+
+            const uint32 numPhotonsToAdd = rendererContext.photons.Size();
+            const uint32 offset = mPhotonCountPrefixSum[index] - numPhotonsToAdd;
+            memcpy(mPhotons.Data() + offset, rendererContext.photons.Data(), numPhotonsToAdd * sizeof(Photon));
+
+            rendererContext.photons.Clear();
+        });
+
+        // build acceleration structure of all photons vertices
+        builder.Task("VCM/BuildAccelerationStructure", [this] (const TaskContext&)
+        {
+#ifdef NFE_VCM_USE_KD_TREE
+            mKdTree.Build(mPhotons);
+#else
+            mHashGrid.Build(mPhotons, mMergingRadiusVM);
+#endif // NFE_VCM_USE_KD_TREE
+    });
+}
 }
 
 const RayColor VertexConnectionAndMerging::RenderPixel(const Math::Ray& ray, const RenderParam& param, RenderingContext& ctx) const

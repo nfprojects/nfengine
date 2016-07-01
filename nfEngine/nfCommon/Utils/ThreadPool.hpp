@@ -7,103 +7,64 @@
 #pragma once
 
 #include "../nfCommon.hpp"
+#include "ThreadPoolTask.hpp"
 #include "../System/ConditionVariable.hpp"
 #include "../Containers/UniquePtr.hpp"
 #include "../Containers/DynArray.hpp"
 #include "../Containers/Deque.hpp"
 
 #include <inttypes.h>
-#include <functional>
-#include <atomic>
 #include <thread>
 
 
 namespace NFE {
 namespace Common {
 
-/**
- * Thread pool task unique identifier.
- */
-using TaskID = uint32;
 
-#define NFE_INVALID_TASK_ID (static_cast<NFE::Common::TaskID>(-1))
-
-class ThreadPool;
-
-struct TaskContext
+// Structure describing task, used during Task creation.
+struct TaskDesc
 {
-    ThreadPool* pool;
-    size_t threadId;
-    TaskID taskId;
+    TaskFunction function;
+
+    // waitable object (optional)
+    Waitable* waitable = nullptr;
+
+    // parent task to append to (optional)
+    TaskID parent = InvalidTaskID;
+
+    // dependency task (optional)
+    TaskID dependency = InvalidTaskID;
+
+    // Specifies target queue
+    // Task with higher priority are always popped from the queues first.
+    // Valid range is 0...(ThreadPool::NumPriorities-1)
+    uint8 priority = 1;
+
+    const char* debugName = nullptr;
+
+    // TODO limiting number of parallel running tasks of certain type
+    // (eg. long-running resource loading tasks)
+
+    NFE_INLINE TaskDesc() = default;
+    NFE_INLINE TaskDesc(const TaskFunction& func) : function(func) { }
 };
 
-/**
- * Function object representing a task.
- * @param thread   Thread id
- */
-typedef std::function<void(const TaskContext& context)> TaskFunction;
-
-/**
- * @class Task
- * @brief Internal task structure.
- * @remarks Only @p ThreadPool class can access it.
- */
-class Task final
-{
-    friend class ThreadPool;
-
-public:
-    enum class State : uint8
-    {
-        Created = 0,
-        Scheduled,
-        Enqueued,
-        Finished,
-    };
-
-    Task();
-    void Reset();
-
-private:
-
-    TaskFunction mCallback;  //< task routine
-
-    /**
-     * Number of tasks and sub-tasks left to complete.
-     * If reaches 0, then whole task is finished.
-     */
-    std::atomic<uint32> mTasksLeft;
-    TaskID mParent;
-
-    /// Dependency pointers:
-    TaskID mDependency;  //< dependency tasks ID
-    TaskID mHead;        //< the first task that is dependent on this task
-    TaskID mTail;        //< the last task that is dependent on this task
-    TaskID mSibling;     //< the next task that is dependent on the same "mDependency" task
-};
-
-/**
- * @class WorkerThread
- * @brief Executor thread
- */
+// Thread pool's worker thread
 class WorkerThread
 {
     friend class ThreadPool;
 
-    std::thread mThread;
-    bool mStarted; //< if set to false, exit the thread
-    size_t mId;    //< thread number
+    NFE_MAKE_NONCOPYABLE(WorkerThread);
 
-    // force the class objects to occupy different cache lines
-    char mPad[64];
+    std::thread mThread;
+    uint32 mId;                     // thread number
+    std::atomic<bool> mStarted;     // if set to false, exit the thread
 
 public:
-    WorkerThread(ThreadPool* pool, size_t id);
+    WorkerThread(ThreadPool* pool, uint32 id);
     ~WorkerThread();
-
-private:
-    WorkerThread(const WorkerThread&) = delete;
-    WorkerThread& operator = (const WorkerThread&) = delete;
+    WorkerThread(WorkerThread&&) = default;
+    WorkerThread& operator = (WorkerThread&&) = default;
 };
 
 using WorkerThreadPtr = UniquePtr<WorkerThread>;
@@ -111,87 +72,67 @@ using WorkerThreadPtr = UniquePtr<WorkerThread>;
 
 /**
  * @class ThreadPool
- * @brief Class enabling parallel tasks (user provided functions) execution.
+ * @brief Class enabling parallel tasks execution.
  */
 class NFCOMMON_API ThreadPool final
 {
     friend class WorkerThread;
 
-    /// Worker threads varibles:
-    size_t mLastThreadId;
-    DynArray<WorkerThreadPtr> mThreads;
+    NFE_MAKE_NONCOPYABLE(ThreadPool);
 
-    /// Tasks queue variables:
-    size_t mMaxTasks;
-    Deque<TaskID> mTasksQueue;        //< queue for tasks with "Queued" state
-    Mutex mTasksQueueMutex;                 //< lock for "mTasksQueue" access
-    ConditionVariable mTaskQueueCV;         //< CV for notifying about a new task in the queue
+public:
 
-    Mutex mFinishedTasksMutex;
-    ConditionVariable mFinishedTasksCV;
+    static constexpr uint32 TasksCapacity = 1024 * 128;
+    static constexpr uint32 NumPriorities = 3;
 
-    /// Tasks allocator variables:
-    std::atomic<uint32> mTasksNum;
-    UniquePtr<Task[]> mTasks;
+    ThreadPool();
+    ~ThreadPool();
+
+    static ThreadPool& GetInstance();
+
+    // Get number of worker threads in the pool.
+    NFE_FORCE_INLINE uint32 GetNumThreads() const { return mThreads.Size(); }
+
+    // Create a new task.
+    // The task will not be queued immidiately - it has to be queued manually via DispatchTask call
+    // NOTE This function is thread-safe.
+    TaskID CreateTask(const TaskDesc& desc);
+
+    // Dispatch a created task for being executed.
+    // NOTE: Using the task ID after dispatching the task is undefined behaviour.
+    void DispatchTask(const TaskID taskID);
+
+    NFE_INLINE void CreateAndDispatchTask(const TaskDesc& desc)
+    {
+        DispatchTask(CreateTask(desc));
+    }
+
+private:
 
     void SchedulerCallback(WorkerThread* thread);
 
-    void FinishTask(Task* task);
-    void EnqueueTask(TaskID taskID);
+    TaskID AllocateTask_NoLock();
+    void FreeTask_NoLock(TaskID taskID);
+    void FinishTask(TaskID taskID);
+    void EnqueueTaskInternal_NoLock(TaskID taskID);
+    void OnTaskDependencyFullfilled_NoLock(TaskID taskID);
 
     // create "num" additional worker threads
-    void SpawnWorkerThreads(size_t num);
+    void SpawnWorkerThreads(uint32 num);
 
-    // tell a worker thread to stop it's work
-    void TriggerWorkerStop(WorkerThreadPtr workerThread);
+    bool ResizeTasksTable(uint32 newSize);
 
-    // worker thread routine
-    void WorkerThreadCallback();
+    // Worker threads variables:
+    DynArray<WorkerThreadPtr> mThreads;
 
-public:
-    ThreadPool(size_t maxTasks = (1 << 16) + 1, size_t threadsNum = 0);
-    ~ThreadPool();
+    // queues for tasks with "Queued" state
+    Deque<TaskID> mTasksQueues[NumPriorities];
+    Mutex mTasksQueueMutex;                 //< lock for "mTasksQueue" access
+    ConditionVariable mTaskQueueCV;         //< CV for notifying about a new task in the queue
 
-    /**
-     * Get number of worker threads in the pool.
-     */
-    uint32 GetThreadsNumber() const;
-
-    /**
-     * Create a new task and enqueue it if dependency is resolved.
-     *
-     * @param function     Task routine.
-     * @param parentID     Parent task ID.
-     * @param dependencyID Dependency task ID.
-     *
-     * @remarks This function is thread-safe.
-     */
-    TaskID CreateTask(const TaskFunction& function,
-                      TaskID parentID = NFE_INVALID_TASK_ID,
-                      TaskID dependencyID = NFE_INVALID_TASK_ID);
-
-    /**
-     * Check if a task is completed.
-     */
-    bool IsTaskFinished(TaskID taskID) const;
-
-    /**
-     * Waits for a task to finish.
-     */
-    void WaitForTask(TaskID taskID);
-
-    /**
-     * Waits for multiple tasks to finish.
-     *
-     * @param tasks    List of tasks to wait for.
-     * @param tasksNum Number of tasks in @p tasks array.
-     */
-    void WaitForTasks(TaskID* tasks, size_t tasksNum);
-
-    /**
-     * Waits for all tasks in the pool to finish and reset tasks counter.
-     */
-    void WaitForAllTasks();
+    Mutex mTaskListMutex;
+    DynArray<Task> mTasks; // TODO growable fixed-size allocator
+    TaskID mFirstFreeTask;
 };
 
 } // namespace Common

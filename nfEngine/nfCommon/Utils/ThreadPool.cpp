@@ -1,36 +1,21 @@
 /**
  * @file
- * @author Witek902 (witek902@gmail.com)
+ * @author Witek902
  * @brief  Thread pool classes declarations.
  */
 
 #include "PCH.hpp"
 #include "ThreadPool.hpp"
+#include "Waitable.hpp"
 
 
 namespace NFE {
 namespace Common {
 
-Task::Task()
+WorkerThread::WorkerThread(ThreadPool* pool, uint32 id)
+    : mId(id)
+    , mStarted(true)
 {
-    Reset();
-}
-
-void Task::Reset()
-{
-    mTasksLeft = 0;
-    mParent = NFE_INVALID_TASK_ID;
-    mDependency = NFE_INVALID_TASK_ID;
-    mHead = NFE_INVALID_TASK_ID;
-    mTail = NFE_INVALID_TASK_ID;
-    mSibling = NFE_INVALID_TASK_ID;
-}
-
-
-WorkerThread::WorkerThread(ThreadPool* pool, size_t id)
-{
-    mStarted = true;
-    this->mId = id;
     mThread = std::thread(&ThreadPool::SchedulerCallback, pool, this);
 }
 
@@ -39,28 +24,32 @@ WorkerThread::~WorkerThread()
     mThread.join();
 }
 
+//////////////////////////////////////////////////////////////////////////
 
-ThreadPool::ThreadPool(size_t maxTasks, size_t threadsNum)
-    : mLastThreadId(0)
-    , mMaxTasks(maxTasks)
-    , mTasksNum(0)
+static ThreadPool gThreadPool;
+
+ThreadPool& ThreadPool::GetInstance()
 {
-    // allocate tasks buffer
-    mTasks.Reset(new Task [mMaxTasks]);
+    return gThreadPool;
+}
 
-    if (threadsNum > 0)
-        SpawnWorkerThreads(threadsNum);
-    else
-        SpawnWorkerThreads(std::thread::hardware_concurrency());
+ThreadPool::ThreadPool()
+    : mFirstFreeTask(InvalidTaskID)
+{
+    // TODO make it configurable
+    ResizeTasksTable(TasksCapacity);
+    SpawnWorkerThreads(std::thread::hardware_concurrency());
 }
 
 ThreadPool::~ThreadPool()
 {
     {
-        ScopedExclusiveLock<Mutex> lock(mTasksQueueMutex);
+        NFE_SCOPED_LOCK(mTasksQueueMutex);
 
-        for (const auto& thread : mThreads)
+        for (const WorkerThreadPtr& thread : mThreads)
+        {
             thread->mStarted = false;
+        }
 
         mTaskQueueCV.SignalAll();
     }
@@ -69,175 +58,323 @@ ThreadPool::~ThreadPool()
     mThreads.Clear();
 }
 
-void ThreadPool::SpawnWorkerThreads(size_t num)
+bool ThreadPool::ResizeTasksTable(uint32 newSize)
 {
-    for (size_t i = 0; i < num; ++i)
+    const uint32 oldSize = mTasks.Size();
+    newSize = Math::Max(1u, newSize);
+
+    if (oldSize < newSize)
     {
-        mThreads.PushBack(MakeUniquePtr<WorkerThread>(this, mLastThreadId++));
+        if (!mTasks.Reserve(newSize))
+        {
+            NFE_LOG_ERROR("Failed to reserve space for threadpool's tasks buffer");
+            return false;
+        }
+
+        uint32 lastFreeTask = mFirstFreeTask;
+        for (uint32 i = oldSize; i < newSize; ++i)
+        {
+            Task newTask;
+            newTask.mNextFree = lastFreeTask;
+            lastFreeTask = i;
+
+            mTasks.PushBack(std::move(newTask));
+        }
+        mFirstFreeTask = lastFreeTask;
     }
+
+    return true;
 }
 
-void ThreadPool::TriggerWorkerStop(WorkerThreadPtr workerThread)
+void ThreadPool::SpawnWorkerThreads(uint32 num)
 {
-    workerThread->mStarted = false;
-    mTaskQueueCV.SignalAll();
-}
-
-uint32 ThreadPool::GetThreadsNumber() const
-{
-    return mThreads.Size();
+    for (uint32 i = 0; i < num; ++i)
+    {
+        mThreads.PushBack(MakeUniquePtr<WorkerThread>(this, i));
+    }
 }
 
 void ThreadPool::SchedulerCallback(WorkerThread* thread)
 {
-    Task* task = nullptr;
     TaskContext context;
-    context.threadId = thread->mId;
     context.pool = this;
+    context.threadId = thread->mId;
 
     for (;;)
     {
+        Task* task = nullptr;
         {
             ScopedExclusiveLock<Mutex> lock(mTasksQueueMutex);
 
+            Deque<TaskID>* queue = nullptr;
+
             // wait for new task
-            while (thread->mStarted && mTasksQueue.Empty())
+            while (thread->mStarted)
+            {
+                // find queue with pending tasks
+                queue = nullptr;
+                for (uint32 i = 0; i < NumPriorities; ++i)
+                {
+                    if (!mTasksQueues[i].Empty())
+                    {
+                        queue = &mTasksQueues[i];
+                        break;
+                    }
+                }
+
+                if (queue != nullptr)
+                {
+                    break;
+                }
+
                 mTaskQueueCV.Wait(lock);
+            }
 
             if (!thread->mStarted)
-                return;
+            {
+                break;
+            }
 
             // pop a task from the queue
-            context.taskId = mTasksQueue.Front();
+            context.taskId = queue->Front();
             task = &mTasks[context.taskId];
-            mTasksQueue.PopFront();
+            queue->PopFront();
         }
 
-        // execute
-        task->mCallback(context);
+        if (task->mCallback)
+        {
+            // Queued -> Executing
+            {
+                const Task::State oldState = task->mState.exchange(Task::State::Executing);
+                NFE_ASSERT(Task::State::Queued == oldState, "Task is expected to be in 'Queued' state");
+            }
 
-        // notify dependencies
-        FinishTask(task);
+            // execute
+            task->mCallback(context);
+
+            // Executing -> Finished
+            {
+                const Task::State oldState = task->mState.exchange(Task::State::Finished);
+                NFE_ASSERT(Task::State::Executing == oldState, "Task is expected to be in 'Executing' state");
+            }
+        }
+        else
+        {
+            // Queued -> Finished
+
+            const Task::State oldState = task->mState.exchange(Task::State::Finished);
+            NFE_ASSERT(Task::State::Queued == oldState, "Task is expected to be in 'Queued' state");
+        }
+
+        FinishTask(context.taskId);
     }
 }
 
-void ThreadPool::FinishTask(Task* task)
+void ThreadPool::FinishTask(TaskID taskID)
 {
-    if (--task->mTasksLeft > 0)
-        return;
+    TaskID taskToFinish = taskID;
 
+    // Note: loop instead of recursion to avoid stack overflow in case of long dependency chains
+    while (taskToFinish != InvalidTaskID)
     {
-        // TODO: get rid of this lock
-        ScopedExclusiveLock<Mutex> lock(mFinishedTasksMutex);
-        mFinishedTasksCV.SignalAll();
+        TaskID parentTask;
+        Waitable* waitable = nullptr;
+
+        {
+            NFE_SCOPED_LOCK(mTaskListMutex); // TODO lockless
+
+            Task& task = mTasks[taskToFinish];
+
+            parentTask = task.mParent;
+            waitable = task.mWaitable;
+
+            const int32 tasksLeft = --task.mTasksLeft;
+            NFE_ASSERT(tasksLeft >= 0, "Tasks counter underflow");
+            if (tasksLeft > 0)
+            {
+                return;
+            }
+
+            // notify about fullfilling the dependency
+            {
+                TaskID siblingID = task.mHead;
+                while (siblingID != InvalidTaskID)
+                {
+                    OnTaskDependencyFullfilled_NoLock(siblingID);
+                    siblingID = mTasks[siblingID].mSibling;
+                }
+            }
+
+            FreeTask_NoLock(taskToFinish);
+        }
+
+        // notify waitable object
+        if (waitable)
+        {
+            waitable->OnFinished();
+        }
+
+        // update parent (without recursion)
+        taskToFinish = parentTask;
     }
+}
 
-    // update parent
-    if (task->mParent != NFE_INVALID_TASK_ID)
-        FinishTask(&mTasks[task->mParent]);
+void ThreadPool::EnqueueTaskInternal_NoLock(TaskID taskID)
+{
+    Task& task = mTasks[taskID];
 
-    // enqueue dependent tasks
-    TaskID siblingID = task->mHead;
-    while (siblingID != NFE_INVALID_TASK_ID)
+    const Task::State oldState = task.mState.exchange(Task::State::Queued);
+    NFE_ASSERT(Task::State::Created == oldState, "Task is expected to be in 'Created' state");
+    NFE_ASSERT((Task::Flag_IsDispatched | Task::Flag_DependencyFullfilled) == task.mDependencyState, "Invalid dependency state");
+
+    // push to queue
     {
-        EnqueueTask(siblingID);
-        siblingID = mTasks[siblingID].mSibling;
+        ScopedExclusiveLock<Mutex> lock(mTasksQueueMutex);
+        mTasksQueues[task.mPriority].PushBack(taskID);
+        mTaskQueueCV.SignalAll();
     }
 }
 
-void ThreadPool::EnqueueTask(TaskID taskID)
+void ThreadPool::FreeTask_NoLock(TaskID taskID)
 {
-    ScopedExclusiveLock<Mutex> lock(mTasksQueueMutex);
-    mTasksQueue.PushBack(taskID);
-    mTaskQueueCV.SignalAll();
+    NFE_ASSERT(taskID < mTasks.Size(), "Invalid task ID");
+
+    Task& task = mTasks[taskID];
+
+    const Task::State oldState = task.mState.exchange(Task::State::Invalid);
+    NFE_ASSERT(Task::State::Finished == oldState, "Task is expected to be in 'Finished' state");
+
+    task.mNextFree = mFirstFreeTask;
+    mFirstFreeTask = taskID;
 }
 
-TaskID ThreadPool::CreateTask(const TaskFunction& function, TaskID parentID, TaskID dependencyID)
+TaskID ThreadPool::AllocateTask_NoLock()
 {
-    TaskID taskID = mTasksNum++;
-    if (taskID >= mMaxTasks)
-        return NFE_INVALID_TASK_ID;
+    if (mFirstFreeTask == InvalidTaskID)
+    {
+        return InvalidTaskID;
+    }
+
+    Task& task = mTasks[mFirstFreeTask];
+
+    const Task::State oldState = task.mState.exchange(Task::State::Queued);
+    NFE_ASSERT(Task::State::Invalid == oldState, "Task is expected to be in 'Invalid' state");
+
+    TaskID newNextFree = task.mNextFree;
+    TaskID taskID = mFirstFreeTask;
+    mFirstFreeTask = newNextFree;
+    return taskID;
+}
+
+TaskID ThreadPool::CreateTask(const TaskDesc& desc)
+{
+    NFE_ASSERT(desc.priority < NumPriorities, "Invalid priority");
+
+    // TODO lockless
+    NFE_SCOPED_LOCK(mTaskListMutex);
+
+    TaskID taskID = AllocateTask_NoLock();
+    NFE_ASSERT(taskID != InvalidTaskID, "Failed to allocate task - is threadpool full?");
+
+    if (taskID == InvalidTaskID)
+    {
+        return InvalidTaskID;
+    }
 
     Task& task = mTasks[taskID];
     task.Reset();
+    task.mDependencyState = 0;
+    task.mPriority = desc.priority;
     task.mTasksLeft = 1;
-    task.mCallback = function;
-    task.mParent = parentID;
-    task.mDependency = dependencyID;
-    task.mHead = NFE_INVALID_TASK_ID;
+    task.mCallback = desc.function;
+    task.mParent = desc.parent;
+    task.mDependency = desc.dependency;
+    task.mWaitable = desc.waitable;
+    task.mHead = InvalidTaskID;
+    task.mState = Task::State::Created;
+    task.mDebugName = desc.debugName;
 
-    if (parentID != NFE_INVALID_TASK_ID)
-        mTasks[parentID].mTasksLeft++;
+    if (desc.parent != InvalidTaskID)
+    {
+        mTasks[desc.parent].mTasksLeft++;
+    }
 
-    bool canEnqueue = true;
-    if (dependencyID != NFE_INVALID_TASK_ID)
+    TaskID dependencyID = mTasks[taskID].mDependency;
+
+    bool dependencyFullfilled = true;
+    if (dependencyID != InvalidTaskID)
     {
         Task& dependency = mTasks[dependencyID];
 
-        ScopedExclusiveLock<Mutex> lock(mFinishedTasksMutex); // TODO: how to get rid of it?
+        NFE_ASSERT(Task::State::Invalid != dependency.mState, "Invalid state of dependency task");
+
+        //NFE_SCOPED_LOCK(mFinishedTasksMutex); // TODO: how to get rid of it?
         if (dependency.mTasksLeft > 0)
         {
             // update dependency list
-            if (dependency.mTail != NFE_INVALID_TASK_ID)
+            if (dependency.mTail != InvalidTaskID)
+            {
                 mTasks[dependency.mTail].mSibling = taskID;
+            }
             else
+            {
                 dependency.mHead = taskID;
+            }
 
-            task.mDependency = dependencyID;
             dependency.mTail = taskID;
-
-            canEnqueue = false;
+            dependencyFullfilled = false;
         }
     }
 
-    if (canEnqueue)
-        EnqueueTask(taskID);
+    if (dependencyFullfilled)
+    {
+        task.mDependencyState = Task::Flag_DependencyFullfilled;
+    }
 
     return taskID;
 }
 
-bool ThreadPool::IsTaskFinished(TaskID taskID) const
+void ThreadPool::DispatchTask(TaskID taskID)
 {
-    return mTasks[taskID].mTasksLeft == 0;
-}
+    NFE_ASSERT(taskID != InvalidTaskID, "Invalid task");
 
-void ThreadPool::WaitForTask(TaskID taskID)
-{
-    if (mTasks[taskID].mTasksLeft == 0)
-        return;
+    // TODO lockless
+    NFE_SCOPED_LOCK(mTaskListMutex);
 
-    ScopedExclusiveLock<Mutex> lock(mFinishedTasksMutex);
-    while (mTasks[taskID].mTasksLeft > 0)
-        mFinishedTasksCV.Wait(lock);
-}
+    Task& task = mTasks[taskID];
 
-void ThreadPool::WaitForTasks(TaskID* tasks, size_t tasksNum)
-{
-    for (size_t i = 0; i < tasksNum; ++i)
+    NFE_ASSERT(Task::State::Created == task.mState, "Task is expected to be in 'Created' state");
+
+    const uint8 oldDependencyState = task.mDependencyState.fetch_or(Task::Flag_IsDispatched);
+
+    NFE_ASSERT((oldDependencyState & Task::Flag_IsDispatched) == 0, "Task already dispatched");
+
+    // can enqueue only if not dispatched yet, but dependency was fullfilled
+    if (Task::Flag_DependencyFullfilled == oldDependencyState)
     {
-        if (mTasks[tasks[i]].mTasksLeft == 0)
-            continue;
-
-        ScopedExclusiveLock<Mutex> lock(mFinishedTasksMutex);
-        while (mTasks[tasks[i]].mTasksLeft > 0)
-            mFinishedTasksCV.Wait(lock);
+        EnqueueTaskInternal_NoLock(taskID);
     }
 }
 
-void ThreadPool::WaitForAllTasks()
+void ThreadPool::OnTaskDependencyFullfilled_NoLock(TaskID taskID)
 {
-    for (uint32 i = 0; i < mTasksNum; ++i)
+    NFE_ASSERT(taskID != InvalidTaskID, "Invalid task");
+
+    Task& task = mTasks[taskID];
+
+    NFE_ASSERT(Task::State::Created == task.mState, "Task is expected to be in 'Created' state");
+
+    const uint8 oldDependencyState = task.mDependencyState.fetch_or(Task::Flag_DependencyFullfilled);
+
+    NFE_ASSERT((oldDependencyState & Task::Flag_DependencyFullfilled) == 0, "Task should not have dependency fullfilled");
+
+    // can enqueue only if was dispatched
+    if (Task::Flag_IsDispatched == oldDependencyState)
     {
-        if (mTasks[i].mTasksLeft == 0)
-            continue;
-
-        ScopedExclusiveLock<Mutex> lock(mFinishedTasksMutex);
-        while (mTasks[i].mTasksLeft > 0)
-            mFinishedTasksCV.Wait(lock);
+        EnqueueTaskInternal_NoLock(taskID);
     }
-
-    mTasksNum = 0;
 }
+
 
 } // namespace Common
 } // namespace NFE

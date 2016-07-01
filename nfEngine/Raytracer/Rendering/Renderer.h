@@ -7,6 +7,7 @@
 #include "../../nfCommon/Math/Ray.hpp"
 #include "../../nfCommon/Containers/SharedPtr.hpp"
 #include "../../nfCommon/Containers/StringView.hpp"
+#include "../../nfCommon/Containers/ArrayView.hpp"
 #include "../../nfCommon/Memory/Aligned.hpp"
 
 namespace NFE {
@@ -19,7 +20,6 @@ public:
     struct RenderParam
     {
         uint32 iteration;
-        uint32 pixelIndex;
         const Camera& camera;
         Film& film;
     };
@@ -36,18 +36,9 @@ public:
     // create per-thread context
     virtual RendererContextPtr CreateContext() const;
 
-    // TODO clean this up...
-    // idea: each renderer should report what passes it requires, etc.
-
-    // optional rendering pre-pass, called once per frame
-    virtual void PreRender(uint32 passNumber, const Film& film);
-
-    // optional rendering pre-pass, called once per frame for every thread
-    virtual void PreRender(uint32 passNumber, RenderingContext& ctx);
-
-    // optional rendering pre-pass, called once (single threaded)
-    virtual void PreRenderGlobal(RenderingContext& ctx);
-    virtual void PreRenderGlobal();
+    // optional rendering pre-pass, called once before all RenderPixel
+    // can build custom tasks graph for internal state update
+    virtual void PreRender(Common::TaskBuilder& builder, const RenderParam& renderParams, Common::ArrayView<RenderingContext> contexts);
 
     // called for every pixel on screen during rendering
     // Note: this will be called from multiple threads, each thread provides own RenderingContext

@@ -5,14 +5,15 @@
 #include "Context.h"
 #include "Counters.h"
 #include "PostProcess.h"
+#include "Renderer.h"
 #include "../Sampling/HaltonSampler.h"
 #include "../Sampling/GenericSampler.h"
 #include "../Utils/Bitmap.h"
-#include "../Utils/ThreadPool.h"
 #include "../Utils/Memory.h"
 #include "../../nfCommon/Math/Random.hpp"
 #include "../../nfCommon/Math/Rectangle.hpp"
 #include "../../nfCommon/Memory/Aligned.hpp"
+#include "../../nfCommon/Utils/TaskBuilder.hpp"
 
 namespace NFE {
 namespace RT {
@@ -66,7 +67,7 @@ private:
     struct TileRenderingContext
     {
         const IRenderer& renderer;
-        const Camera& camera;
+        IRenderer::RenderParam renderParam;
         const Math::Vector4 sampleOffset;
     };
 
@@ -94,12 +95,10 @@ private:
     // raytrace single image tile (will be called from multiple threads)
     void RenderTile(const TileRenderingContext& tileContext, RenderingContext& renderingContext, const Block& tile);
 
-    void PerformPostProcess();
+    void PerformPostProcess(Common::TaskBuilder& taskBuilder);
 
     // generate "front buffer" image from "sum" image
     void PostProcessTile(const Block& tile, uint32 threadID);
-
-    ThreadPool mThreadPool;
 
     RendererPtr mRenderer;
 

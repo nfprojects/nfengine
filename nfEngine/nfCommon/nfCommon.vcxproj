@@ -192,7 +192,6 @@
     <ClInclude Include="System\Win\Console.hpp" />
     <ClInclude Include="System\Win\MutexImpl.hpp" />
     <ClInclude Include="System\Win\RWLockImpl.hpp" />
-    <ClInclude Include="Utils\AsyncThreadPool.hpp" />
     <ClInclude Include="Utils\BitUtils.hpp" />
     <ClInclude Include="Utils\BitUtilsImplWindowsAVX.hpp" />
     <ClInclude Include="Utils\BitUtilsImplCommon.hpp" />
@@ -206,7 +205,10 @@
     <ClInclude Include="Utils\OutputStream.hpp" />
     <ClInclude Include="Utils\ScopedLock.hpp" />
     <ClInclude Include="Utils\StringUtils.hpp" />
+    <ClInclude Include="Utils\TaskBuilder.hpp" />
     <ClInclude Include="Utils\ThreadPool.hpp" />
+    <ClInclude Include="Utils\ThreadPoolTask.hpp" />
+    <ClInclude Include="Utils\Waitable.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Config\Config.cpp" />
@@ -284,7 +286,6 @@
     <ClCompile Include="System\Win\Thread.cpp" />
     <ClCompile Include="System\Win\Timer.cpp" />
     <ClCompile Include="System\Win\Window.cpp" />
-    <ClCompile Include="Utils\AsyncThreadPool.cpp" />
     <ClCompile Include="Utils\BVH.cpp" />
     <ClCompile Include="Utils\Entropy.cpp" />
     <ClCompile Include="Utils\InputStream.cpp" />
@@ -292,7 +293,10 @@
     <ClCompile Include="Utils\MD5.cpp" />
     <ClCompile Include="Utils\OutputStream.cpp" />
     <ClCompile Include="Utils\StringUtils.cpp" />
+    <ClCompile Include="Utils\TaskBuilder.cpp" />
     <ClCompile Include="Utils\ThreadPool.cpp" />
+    <ClCompile Include="Utils\ThreadPoolTask.cpp" />
+    <ClCompile Include="Utils\Waitable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Math\Math.natvis" />

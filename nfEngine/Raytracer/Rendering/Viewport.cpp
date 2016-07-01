@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "RendererContext.h"
 #include "Scene/Camera.h"
+#include "Textures/Texture.h"
 #include "Color/LdrColor.h"
 #include "Color/ColorHelpers.h"
 #include "../nfCommon/System/Timer.hpp"
@@ -11,6 +12,8 @@
 #include "../nfCommon/Math/Vector4Load.hpp"
 #include "../nfCommon/Math/Transcendental.hpp"
 #include "../nfCommon/Logger/Logger.hpp"
+#include "../nfCommon/Utils/ThreadPool.hpp"
+#include "../nfCommon/Utils/Waitable.hpp"
 
 namespace NFE {
 namespace RT {
@@ -38,7 +41,7 @@ Viewport::~Viewport() = default;
 
 void Viewport::InitThreadData()
 {
-    const uint32 numThreads = mThreadPool.GetNumThreads();
+    const uint32 numThreads = ThreadPool::GetInstance().GetNumThreads();
 
     mThreadData.Resize(numThreads);
 
@@ -162,12 +165,6 @@ bool Viewport::SetRenderingParams(const RenderingParams& params)
     NFE_ASSERT(params.antiAliasingSpread >= 0.0f);
     NFE_ASSERT(params.motionBlurStrength >= 0.0f && params.motionBlurStrength <= 1.0f);
 
-    if (mParams.numThreads != params.numThreads)
-    {
-        mThreadPool.SetNumThreads(params.numThreads);
-        InitThreadData();
-    }
-
     mParams = params;
 
     return true;
@@ -214,64 +211,61 @@ bool Viewport::Render(const Camera& camera)
         seed[i] = mHaltonSequence.GetInt(i);
     }
 
-    for (uint32 i = 0; i < mThreadData.Size(); ++i)
+    Film film(mSum, mProgress.passesFinished % 2 == 0 ? &mSecondarySum : nullptr);
+    const IRenderer::RenderParam renderParam = { mProgress.passesFinished, camera, film };
+
+    Waitable waitable;
     {
-        RenderingContext& ctx = mThreadData[i];
-        ctx.counters.Reset();
-        ctx.params = &mParams;
-        ctx.camera = &camera;
+        TaskBuilder taskBuilder(waitable);
+
+        for (uint32 i = 0; i < mThreadData.Size(); ++i)
+        {
+            RenderingContext& ctx = mThreadData[i];
+            ctx.counters.Reset();
+            ctx.params = &mParams;
+            ctx.camera = &camera;
 #ifndef NFE_CONFIGURATION_FINAL
-        ctx.pixelBreakpoint = mPendingPixelBreakpoint;
+            ctx.pixelBreakpoint = mPendingPixelBreakpoint;
 #endif // NFE_CONFIGURATION_FINAL
 
-        ctx.sampler.ResetFrame(seed, ctx.params->samplingParams.useBlueNoiseDithering);
-
-        mRenderer->PreRender(mProgress.passesFinished, ctx);
-    }
+            ctx.sampler.ResetFrame(seed, ctx.params->samplingParams.useBlueNoiseDithering);
+        }
 
 #ifndef NFE_CONFIGURATION_FINAL
-    mPendingPixelBreakpoint.x = UINT32_MAX;
-    mPendingPixelBreakpoint.y = UINT32_MAX;
+        mPendingPixelBreakpoint.x = UINT32_MAX;
+        mPendingPixelBreakpoint.y = UINT32_MAX;
 #endif // NFE_CONFIGURATION_FINAL
 
-    if (mRenderingTiles.Empty() || mProgress.passesFinished == 0)
-    {
-        GenerateRenderingTiles();
-    }
-
-    // render
-    {
-        // randomize pixel offset
-        const Vector4 u = SamplingHelpers::GetFloatNormal2(mRandomGenerator.GetFloat2());
-
-        const TileRenderingContext tileContext =
+        if (mRenderingTiles.Empty() || mProgress.passesFinished == 0)
         {
-            *mRenderer,
-            camera,
-            u * mThreadData[0].params->antiAliasingSpread
-        };
-
-        {
-            const Film film(mSum, mProgress.passesFinished % 2 == 0 ? &mSecondarySum : nullptr);
-            mRenderer->PreRender(mProgress.passesFinished, film);
+            GenerateRenderingTiles();
         }
 
-        const auto renderCallback = [&](uint32 id, uint32 threadID)
+        // randomize pixel offset (antialiasing)
+        const Vector4 pixelOffset = SamplingHelpers::GetFloatNormal2(mRandomGenerator.GetFloat2());
+
+        // pre-rendering pass
+        mRenderer->PreRender(taskBuilder, renderParam, mThreadData);
+
+        taskBuilder.Fence();
+
+        // render tiles
+        taskBuilder.ParallelFor("Render", mRenderingTiles.Size(), [pixelOffset, this, &renderParam] (const TaskContext& context, uint32 index)
         {
-            RenderTile(tileContext, mThreadData[threadID], mRenderingTiles[id]);
-        };
+            const TileRenderingContext tileContext =
+            {
+                *mRenderer,
+                renderParam,
+                pixelOffset* mThreadData[0].params->antiAliasingSpread
+            };
+            RenderTile(tileContext, mThreadData[context.threadId], mRenderingTiles[index]);
+        });
 
-        for (RenderingContext& ctx : mThreadData)
-        {
-            mRenderer->PreRenderGlobal(ctx);
-        }
+        taskBuilder.Fence();
 
-        mRenderer->PreRenderGlobal();
-
-        mThreadPool.RunParallelTask(renderCallback, mRenderingTiles.Size());
+        PerformPostProcess(taskBuilder);
     }
-
-    PerformPostProcess();
+    waitable.Wait();
 
     mProgress.passesFinished++;
 
@@ -310,8 +304,6 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
     const Vector4 filmSize = Vector4::FromIntegers(GetWidth(), GetHeight(), 1, 1);
     const Vector4 invSize = VECTOR_ONE2 / filmSize;
 
-    Film film(mSum, mProgress.passesFinished % 2 == 0 ? &mSecondarySum : nullptr);
-
     if (ctx.params->traversalMode == TraversalMode::Single)
     {
         for (uint32 y = tile.minY; y < tile.maxY; ++y)
@@ -327,7 +319,6 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
                 }
 #endif // NFE_CONFIGURATION_FINAL
 
-                const uint32 pixelIndex = y * GetHeight() + x;
                 const Vector4 coords = (Vector4::FromIntegers(x, realY, 0, 0) + tileContext.sampleOffset) * invSize;
 
                 ctx.sampler.ResetPixel(x, y);
@@ -337,15 +328,14 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
 #endif // NFE_ENABLE_SPECTRAL_RENDERING
 
                 // generate primary ray
-                const Ray ray = tileContext.camera.GenerateRay(coords, ctx);
-                const IRenderer::RenderParam renderParam = { mProgress.passesFinished, pixelIndex, tileContext.camera, film };
+                const Ray ray = tileContext.renderParam.camera.GenerateRay(coords, ctx);
 
                 if (ctx.params->visualizeTimePerPixel)
                 {
                     timer.Start();
                 }
 
-                RayColor color = tileContext.renderer.RenderPixel(ray, renderParam, ctx);
+                RayColor color = tileContext.renderer.RenderPixel(ray, tileContext.renderParam, ctx);
                 NFE_ASSERT(color.IsValid());
 
                 if (ctx.params->visualizeTimePerPixel)
@@ -361,7 +351,7 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
                 NFE_ASSERT((sampleColor >= Vector4::Zero()).All());
 #endif // NFE_ENABLE_SPECTRAL_RENDERING
 
-                film.AccumulateColor(x, y, sampleColor);
+                tileContext.renderParam.film.AccumulateColor(x, y, sampleColor);
             }
         }
     }
@@ -426,20 +416,20 @@ void Viewport::RenderTile(const TileRenderingContext& tileContext, RenderingCont
                     { x + 0, y + 1 }, { x + 1, y + 1 }, { x + 2, y + 1 }, { x + 3, y + 1 },
                 };
 
-                const Ray_Simd8 simdRay = tileContext.camera.GenerateRay_Simd8(coords, ctx);
+                const Ray_Simd8 simdRay = tileContext.renderParam.camera.GenerateRay_Simd8(coords, ctx);
                 primaryPacket.PushRays(simdRay, Vector3x8(1.0f), locations);
             }
         }
 
         ctx.localCounters.Reset();
-        tileContext.renderer.Raytrace_Packet(primaryPacket, tileContext.camera, film, ctx);
+        tileContext.renderer.Raytrace_Packet(primaryPacket, tileContext.renderParam.camera, tileContext.renderParam.film, ctx);
         ctx.counters.Append(ctx.localCounters);
     }
 
     ctx.counters.numPrimaryRays += (uint64)(tile.maxY - tile.minY) * (uint64)(tile.maxX - tile.minX);
 }
 
-void Viewport::PerformPostProcess()
+void Viewport::PerformPostProcess(TaskBuilder& taskBuilder)
 {
     if (!mBlurredImages.Empty() && mPostprocessParams.params.bloomFactor > 0.0f)
     {
@@ -466,20 +456,20 @@ void Viewport::PerformPostProcess()
     {
         // post processing params has changed, perfrom full image update
 
-        const uint32 numTiles = mThreadPool.GetNumThreads();
+        const uint32 numTiles = ThreadPool::GetInstance().GetNumThreads();
 
-        const auto taskCallback = [this, numTiles](uint32 id, uint32 threadID)
+        const auto taskCallback = [this, numTiles] (const TaskContext& context, uint32 index)
         {
             Block block;
-            block.minY = GetHeight() * id / numTiles;
-            block.maxY = GetHeight() * (id + 1) / numTiles;
+            block.minY = GetHeight() * index / numTiles;
+            block.maxY = GetHeight() * (index + 1) / numTiles;
             block.minX = 0;
             block.maxX = GetWidth();
 
-            PostProcessTile(block, threadID);
+            PostProcessTile(block, context.threadId);
         };
 
-        mThreadPool.RunParallelTask(taskCallback, numTiles);
+        taskBuilder.ParallelFor("PostProcess_Full", numTiles, taskCallback);
 
         mPostprocessParams.fullUpdateRequired = false;
     }
@@ -489,12 +479,12 @@ void Viewport::PerformPostProcess()
 
         if (!mRenderingTiles.Empty())
         {
-            const auto taskCallback = [this](uint32 id, uint32 threadID)
+            const auto taskCallback = [this] (const TaskContext& context, uint32 index)
             {
-                PostProcessTile(mRenderingTiles[id], threadID);
+                PostProcessTile(mRenderingTiles[index], context.threadId);
             };
 
-            mThreadPool.RunParallelTask(taskCallback, mRenderingTiles.Size());
+            taskBuilder.ParallelFor("PostProcess", mRenderingTiles.Size(), taskCallback);
         }
     }
 }

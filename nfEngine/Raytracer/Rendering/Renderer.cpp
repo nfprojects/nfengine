@@ -23,26 +23,16 @@ RendererContextPtr IRenderer::CreateContext() const
     return nullptr;
 }
 
-void IRenderer::PreRender(uint32, const Film&)
+void IRenderer::PreRender(Common::TaskBuilder& builder, const RenderParam& renderParams, Common::ArrayView<RenderingContext> contexts)
 {
-}
-
-void IRenderer::PreRender(uint32, RenderingContext&)
-{
-}
-
-void IRenderer::PreRenderGlobal(RenderingContext&)
-{
-}
-
-void IRenderer::PreRenderGlobal()
-{
+    NFE_UNUSED(builder);
+    NFE_UNUSED(renderParams);
+    NFE_UNUSED(contexts);
 }
 
 void IRenderer::Raytrace_Packet(RayPacket&, const Camera&, Film&, RenderingContext&) const
 {
 }
-
 
 // TODO use reflection
 RendererPtr CreateRenderer(const StringView name, const Scene& scene)

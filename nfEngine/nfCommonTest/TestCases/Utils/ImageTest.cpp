@@ -287,11 +287,6 @@ protected:
                                     testTexelUCh[m] - texelUCh[m] :
                                     texelUCh[m] - testTexelUCh[m]);
 
-                    if (diff > COMPRESSION_ARTEFACT_TRESHOLD)
-                    {
-                        NFE_BREAK();
-                    }
-
                     ASSERT_LE(diff, COMPRESSION_ARTEFACT_TRESHOLD);
                 }
             }

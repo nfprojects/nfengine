@@ -17,6 +17,5 @@
 #include <memory>
 #include <initializer_list>
 #include <functional>
-#include <thread>
 #include <sstream>
 #include <algorithm>

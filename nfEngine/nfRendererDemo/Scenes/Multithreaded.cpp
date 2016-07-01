@@ -13,13 +13,16 @@
 #include "nfCommon/Math/Matrix4.hpp"
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/System/Assertion.hpp"
+#include "nfCommon/Utils/ThreadPool.hpp"
+#include "nfCommon/Utils/Waitable.hpp"
+#include "nfCommon/Utils/TaskBuilder.hpp"
 
-#include <vector>
 #include <functional>
 
 
 using namespace NFE;
 using namespace NFE::Math;
+using namespace NFE::Common;
 using namespace NFE::Renderer;
 
 namespace {
@@ -35,10 +38,10 @@ struct VertexCBuffer
 
 bool MultithreadedScene::CreateCommandRecorders()
 {
-    size_t num = mThreadPool.GetThreadsNumber();
+    uint32 num = ThreadPool::GetInstance().GetNumThreads();
     mCommandRecorders.resize(num);
 
-    for (size_t i = 0; i < num; ++i)
+    for (uint32 i = 0; i < num; ++i)
     {
         mCommandRecorders[i] = mRendererDevice->CreateCommandRecorder();
         if (!mCommandRecorders[i])
@@ -250,7 +253,7 @@ bool MultithreadedScene::CreateSubSceneNormal(BufferMode cbufferMode, int gridSi
 MultithreadedScene::MultithreadedScene()
     : Scene("Multithreaded")
 {
-    mCollectedCommandLists.resize(mThreadPool.GetThreadsNumber());
+    mCollectedCommandLists.resize(ThreadPool::GetInstance().GetNumThreads());
 
     RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneEmpty, this), "Empty");
 
@@ -383,18 +386,23 @@ void MultithreadedScene::Draw(float dt)
         mRendererDevice->Execute(clearCommandList);
     }
 
-    for (int i = 0; i < mGridSize; ++i)
+    Waitable waitable;
     {
-        for (int j = 0; j < mGridSize; ++j)
+        TaskBuilder builder(waitable);
+        for (int i = 0; i < mGridSize; ++i)
         {
-            using namespace std::placeholders;
-            mThreadPool.CreateTask(std::bind(&MultithreadedScene::DrawTask, this, _1, i, j));
+            for (int j = 0; j < mGridSize; ++j)
+            {
+                builder.Task("Draw", [this, i, j] (const TaskContext& ctx)
+                {
+                    DrawTask(ctx, i, j);
+                });
+            }
         }
     }
+    waitable.Wait();
 
     // TODO execute some more command lists while recording
-
-    mThreadPool.WaitForAllTasks();
 
     // copy to back buffer
     {
