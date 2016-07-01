@@ -167,6 +167,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CollisionShapeConverter.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MeshConverter.cpp" />
     <ClCompile Include="PCH.cpp">
@@ -177,6 +178,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CollisionShapeConverter.hpp" />
     <ClInclude Include="MeshConverter.hpp" />
     <ClInclude Include="PCH.hpp" />
   </ItemGroup>

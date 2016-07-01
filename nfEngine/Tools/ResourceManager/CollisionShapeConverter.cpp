@@ -1,51 +1,44 @@
-#include "PCH.h"
-#include "..\\Common\model_obj.h"
+/**
+ * @file
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Collision shape converter implementation
+ */
 
-#define SHAPE_TYPE_TRI_MESH (1)
+#include "PCH.hpp"
+#include "MeshConverter.hpp"
 
-struct ShapeHeader
+#include "nfCommon/Logger.hpp"
+#include "nfCommon/FileSystem.hpp"
+
+#include "model_obj/model_obj.h"
+
+namespace NFE {
+
+using namespace Math;
+
+namespace {
+
+// replace backslashes with forward slashes
+inline std::string FixTexturePath(std::string str)
 {
-    UINT type;
-    float translation[3];
-    float orientation[3][3];
+    std::replace(str.begin(), str.end(), '\\', '/');
+    return str;
+}
 
-    ShapeHeader()
-    {
-        type = 0;
-        translation[0] = translation[1] = translation[2] = 0.0f;
-
-        orientation[0][0] = 1.0f;
-        orientation[0][1] = 0.0f;
-        orientation[0][2] = 0.0f;
-        orientation[1][0] = 0.0f;
-        orientation[1][1] = 1.0f;
-        orientation[1][2] = 0.0f;
-        orientation[2][0] = 0.0f;
-        orientation[2][1] = 0.0f;
-        orientation[2][2] = 1.0f;
-    }
-};
-
-struct ShapeTraingleMesh
+char FloatToChar(float x)
 {
-    UINT verticesCount;
-    UINT trianglesCount;
-};
+    x *= 127.0f;
+    x += 0.5f;
 
-struct TriMeshVertex
-{
-    float posX;
-    float posY;
-    float posZ;
-};
+    if (x <= -128.0f) return -128;
+    if (x >= 127.0f) return 127;
 
-struct TriMeshTriangle
-{
-    UINT indices[3];
-    UINT materialID;    // unused
-};
+    return (char)x;
+}
 
-// convert *.obj to *.nfcm
+} // namespace
+
+  // convert *.obj to *.nfcm
 void ConvertFileName(const char* pInput, char* pOutput)
 {
     strcpy(pOutput, pInput);
@@ -114,7 +107,7 @@ bool Convert(const char* pFilePath)
         tri.materialID = 0;
         for (int j = 0; j < srcMesh.triangleCount; j++)
         {
-            tri.indices[0] = pModelIndicies[srcMesh.startIndex + 3 * j    ];
+            tri.indices[0] = pModelIndicies[srcMesh.startIndex + 3 * j];
             tri.indices[1] = pModelIndicies[srcMesh.startIndex + 3 * j + 1];
             tri.indices[2] = pModelIndicies[srcMesh.startIndex + 3 * j + 2];
 
@@ -142,3 +135,5 @@ int main(int argc, char* argv[])
     system("pause");
     return 0;
 }
+
+} // namespace NFE

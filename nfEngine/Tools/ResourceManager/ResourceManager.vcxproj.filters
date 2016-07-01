@@ -20,12 +20,18 @@
     <ClCompile Include="MeshConverter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CollisionShapeConverter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MeshConverter.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionShapeConverter.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
