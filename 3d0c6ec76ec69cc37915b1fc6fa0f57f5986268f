@@ -71,6 +71,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_a166a727",
+        "filename": "nfEngine/nfCommon/Memory/GenericAllocator.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "Added to TODO at the top. On Free() we don\u0027t know allocation size, so it must be stored somewhere",
+      "parentUuid": "baa041b7_9df66d5b",
+      "range": {
+        "startLine": 44,
+        "startChar": 8,
+        "endLine": 44,
+        "endChar": 35
+      },
+      "revId": "3d0c6ec76ec69cc37915b1fc6fa0f57f5986268f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_dd6bd51c",
         "filename": "nfEngine/nfCommon/Memory/GenericAllocator.cpp",
         "patchSetId": 4
@@ -82,6 +106,30 @@
       "writtenOn": "2016-05-27T12:57:31Z",
       "side": 1,
       "message": "already",
+      "range": {
+        "startLine": 70,
+        "startChar": 38,
+        "endLine": 70,
+        "endChar": 44
+      },
+      "revId": "3d0c6ec76ec69cc37915b1fc6fa0f57f5986268f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_217bb7c2",
+        "filename": "nfEngine/nfCommon/Memory/GenericAllocator.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_dd6bd51c",
       "range": {
         "startLine": 70,
         "startChar": 38,
@@ -117,6 +165,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_416fdbfb",
+        "filename": "nfEngine/nfCommon/Memory/GenericAllocator.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "Indeed, unordered_map is a good choice here.\nI\u0027m using find() and erase(iter), because it\u0027s a little bit faster. If you do erase(ptr), find() is called internally",
+      "parentUuid": "baa041b7_3d59a18e",
+      "range": {
+        "startLine": 66,
+        "startChar": 8,
+        "endLine": 72,
+        "endChar": 42
+      },
+      "revId": "3d0c6ec76ec69cc37915b1fc6fa0f57f5986268f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_1dd37dd6",
         "filename": "nfEngine/nfCommon/Memory/GenericAllocator.cpp",
         "patchSetId": 4
@@ -128,6 +200,30 @@
       "writtenOn": "2016-05-27T12:57:31Z",
       "side": 1,
       "message": "Can\u0027t we assign nullptr to the ptr variable here?\nThis way we would get pointer freed and with a proper \"clean\" value.",
+      "range": {
+        "startLine": 84,
+        "startChar": 0,
+        "endLine": 84,
+        "endChar": 1
+      },
+      "revId": "3d0c6ec76ec69cc37915b1fc6fa0f57f5986268f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_616c1f08",
+        "filename": "nfEngine/nfCommon/Memory/GenericAllocator.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "What? By assigning a NULL to a pointer you won\u0027t free occupied memory",
+      "parentUuid": "baa041b7_1dd37dd6",
       "range": {
         "startLine": 84,
         "startChar": 0,
