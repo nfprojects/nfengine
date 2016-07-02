@@ -8,7 +8,7 @@
 
 #include "../Core.hpp"
 #include "Resource.hpp"
-#include "../nfCommon/AsyncThreadPool.hpp"
+#include "nfCommon/AsyncThreadPool.hpp"
 
 namespace NFE {
 namespace Resource {

@@ -1,5 +1,5 @@
 #include "PCH.hpp"
-#include "../nfCommon/Window.hpp"
+#include "nfCommon/Window.hpp"
 
 namespace {
 

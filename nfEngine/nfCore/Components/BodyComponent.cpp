@@ -8,8 +8,12 @@
 #include "BodyComponent.hpp"
 #include "Resources/ResourcesManager.hpp"
 #include "Resources/CollisionShape.hpp"
-#include "../nfCommon/InputStream.hpp"
-#include "../nfCommon/OutputStream.hpp"
+
+#include "nfCommon/InputStream.hpp"
+#include "nfCommon/OutputStream.hpp"
+
+#include "btBulletDynamicsCommon.h"
+
 
 namespace NFE {
 namespace Scene {

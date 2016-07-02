@@ -21,13 +21,15 @@
 #include <crtdbg.h>
 #endif // defined(WIN32) && defined(_DEBUG)
 
-//WinAPI
+// WinAPI
+#if defined(WIN32)
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
-#include <WindowsX.h>
+#endif // defined(WIN32)
 
 // C lib
+#include <assert.h>
 #include <wchar.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,21 +47,23 @@
 #include <set>
 #include <queue>
 #include <memory>
+#include <functional>
 #include <sstream>
 #include <tuple>
+#include <mutex>
+#include <atomic>
+#include <condition_variable>
 
-//Bullet physics Engine
+// Bullet physics Engine
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
 
-//FreeType library
+// FreeType library
 #include "ft2build.h"
 #include "freetype/freetype.h"
 #include "freetype/ftglyph.h"
-#include "freetype/ftoutln.h"
-#include "freetype/fttrigon.h"
 
-/// RapidXML library
+// RapidXML library
 #include "rapidxml.hpp"
 #include "rapidxml_iterators.hpp"
 #include "rapidxml_print.hpp"
@@ -67,4 +71,6 @@
 #ifdef GetWindowFont
 #undef GetWindowFont  // ImGui workaround - GetWindowFont is both WinAPI macro and ImGui function
 #endif
+
+// ImGui
 #include "imgui.h"

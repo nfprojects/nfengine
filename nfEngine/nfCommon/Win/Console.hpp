@@ -8,6 +8,9 @@
 
 #include "../nfCommon.hpp"
 
+#include <type_traits>
+
+
 namespace NFE {
 namespace Common {
 

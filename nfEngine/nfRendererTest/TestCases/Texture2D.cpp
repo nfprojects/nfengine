@@ -1,6 +1,6 @@
 #include "../PCH.hpp"
 #include "../RendererTest.hpp"
-#include "../../nfCommon/Math/Math.hpp"
+#include "nfCommon/Math/Math.hpp"
 
 class Texture2D : public RendererTest
 {

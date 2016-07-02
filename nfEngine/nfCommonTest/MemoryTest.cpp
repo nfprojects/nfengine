@@ -1,5 +1,8 @@
 #include "PCH.hpp"
-#include "../nfCommon/Memory.hpp"
+#include "nfCommon/Memory.hpp"
+
+#include <memory>
+
 
 using namespace NFE::Common;
 

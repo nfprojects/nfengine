@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Renderers/RendererInterface/Device.hpp"
-#include "../nfCommon/Library.hpp"
+#include "nfCommon/Library.hpp"
 
 using namespace NFE;
 using namespace NFE::Renderer;

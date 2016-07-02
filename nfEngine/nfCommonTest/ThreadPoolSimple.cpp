@@ -3,8 +3,8 @@
 */
 
 #include "PCH.hpp"
-#include "../nfCommon/ThreadPool.hpp"
-#include "../nfCommon/Latch.hpp"
+#include "nfCommon/ThreadPool.hpp"
+#include "nfCommon/Latch.hpp"
 
 
 using namespace NFE::Common;

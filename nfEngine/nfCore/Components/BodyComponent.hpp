@@ -9,7 +9,7 @@
 #include "../Core.hpp"
 #include "Component.hpp"
 #include "../Resources/CollisionShape.hpp"
-#include "../nfCommon/Aligned.hpp"
+#include "nfCommon/Aligned.hpp"
 
 class btDefaultMotionState;
 class btRigidBody;

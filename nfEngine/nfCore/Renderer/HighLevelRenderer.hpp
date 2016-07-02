@@ -9,7 +9,7 @@
 #include "RendererResources.hpp"
 #include "RendererContext.hpp"
 
-#include "../nfCommon/Library.hpp"
+#include "nfCommon/Library.hpp"
 #include "../Renderers/RendererInterface/Device.hpp"
 
 namespace NFE {

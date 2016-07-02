@@ -9,6 +9,8 @@
 #include "ConfigTokenizer.hpp"
 #include "Logger.hpp"
 
+#include <sstream>
+
 namespace NFE {
 namespace Common {
 

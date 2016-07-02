@@ -20,21 +20,6 @@
 #endif
 
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <queue>
-#include <memory>
-#include <map>
-#include <atomic>
-#include <fstream>
-#include <iomanip>
-#include <mutex>
-#include <thread>
-#include <cstring>
-#include <cassert>
-
-
 // DLL import / export macro
 #ifdef WIN32
 #ifdef NFCOMMON_EXPORTS

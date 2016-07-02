@@ -8,6 +8,9 @@
 
 #include "nfCommon.hpp"
 
+#include <cstddef>
+
+
 namespace NFE {
 namespace Common {
 

@@ -16,9 +16,9 @@
 // TODO This block below is probably not needed in PCH.hpp and should be included by every file
 //      made by Windows platform.
 #if defined(WIN32)
+#define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
-#include <Windowsx.h>
 #endif // defined(WIN32)
 
 #if defined(__LINUX__) | defined(__linux__)
@@ -32,10 +32,16 @@
 /// C lib
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
+#include <string.h>
 
 /// STL
 #include <vector>
-#include <locale>
+#include <map>
 #include <stack>
 #include <string>
 #include <sstream>
+#include <atomic>
+#include <mutex>
+#include <functional>
+#include <thread>

@@ -8,8 +8,8 @@
 
 #include "../Core.hpp"
 #include "Component.hpp"
-#include "../nfCommon/Aligned.hpp"
-#include "../nfCommon/Math/Frustum.hpp"
+#include "nfCommon/Aligned.hpp"
+#include "nfCommon/Math/Frustum.hpp"
 
 namespace NFE {
 namespace Scene {

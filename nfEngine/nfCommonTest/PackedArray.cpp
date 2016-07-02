@@ -1,7 +1,7 @@
 #include "PCH.hpp"
-#include "../nfCommon/PackedArray.hpp"
-#include "../nfCommon/Math/Math.hpp"
-#include "../nfCommon/Math/Random.hpp"
+#include "nfCommon/PackedArray.hpp"
+#include "nfCommon/Math/Math.hpp"
+#include "nfCommon/Math/Random.hpp"
 
 using namespace NFE::Common;
 using namespace NFE::Math;

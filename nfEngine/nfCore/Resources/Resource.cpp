@@ -9,8 +9,8 @@
 #include "Resource.hpp"
 #include "ResourcesManager.hpp"
 
-#include "../nfCommon/Memory.hpp"
-#include "../nfCommon/Logger.hpp"
+#include "nfCommon/Memory.hpp"
+#include "nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Resource {

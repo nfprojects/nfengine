@@ -5,7 +5,10 @@
  */
 
 #include "PCH.hpp"
-#include "../nfCommon/Aligned.hpp"
+#include "nfCommon/Aligned.hpp"
+
+#include <memory>
+
 
 using namespace NFE::Common;
 

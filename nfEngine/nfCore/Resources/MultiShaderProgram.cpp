@@ -8,9 +8,9 @@
 
 #include "PCH.hpp"
 #include "MultiShaderProgram.hpp"
-#include "../nfCommon/Logger.hpp"
-#include "../nfCommon/File.hpp"
-#include "../nfCommon/Config.hpp"
+#include "nfCommon/Logger.hpp"
+#include "nfCommon/File.hpp"
+#include "nfCommon/Config.hpp"
 
 namespace NFE {
 namespace Resource {

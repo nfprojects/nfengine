@@ -9,6 +9,9 @@
 #include "../Core.hpp"
 #include "Resource.hpp"
 
+#include "nfCommon/Math/Matrix.hpp"
+
+
 //predeclarations
 class btCollisionShape;
 class btCompoundShape;

@@ -8,8 +8,8 @@
 
 #include "../Core.hpp"
 #include "Resource.hpp"
-#include "../nfCommon/InputStream.hpp"
-#include "../Renderers/RendererInterface/Device.hpp"
+#include "nfCommon/InputStream.hpp"
+#include "Renderers/RendererInterface/Device.hpp"
 
 namespace NFE {
 namespace Resource {

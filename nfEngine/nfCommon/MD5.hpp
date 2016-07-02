@@ -8,6 +8,9 @@
 
 #include "nfCommon.hpp"
 
+#include <vector>
+
+
 // basic MD5 bitwise operations
 #define MD5_F(x, y, z) (((x) & (y)) | ((~x) & (z)))
 #define MD5_G(x, y, z) (((x) & (z)) | ((y) & (~z)))

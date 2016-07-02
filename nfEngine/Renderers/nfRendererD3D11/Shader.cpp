@@ -7,8 +7,10 @@
 #include "PCH.hpp"
 #include "Shader.hpp"
 #include "RendererD3D11.hpp"
-#include "../../nfCommon/Logger.hpp"
-#include "../../nfCommon/File.hpp"
+
+#include "nfCommon/Logger.hpp"
+#include "nfCommon/File.hpp"
+
 
 namespace NFE {
 namespace Renderer {

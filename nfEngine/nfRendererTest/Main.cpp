@@ -1,6 +1,6 @@
 #include "PCH.hpp"
 #include "Backends.hpp"
-#include "../nfCommon/FileSystem.hpp"
+#include "nfCommon/FileSystem.hpp"
 
 const std::string BACKEND_ARG_NAME = "--renderer";
 

@@ -11,6 +11,10 @@
 #include "Math/Geometry.hpp"
 #include "Aligned.hpp"
 
+#include <vector>
+#include <functional>
+
+
 #define NFE_BVH_STACK_SIZE 128
 #define NFE_BVH_NULL_NODE 0xFFFFFFFF
 

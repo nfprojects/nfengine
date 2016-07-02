@@ -9,6 +9,12 @@
 #include "../Core.hpp"
 #include "../Components/Component.hpp"
 
+#include <functional>
+#include <set>
+#include <map>
+#include <assert.h>
+
+
 namespace NFE {
 namespace Scene {
 

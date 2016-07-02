@@ -14,11 +14,11 @@
 #include "Renderer/View.hpp"
 #include "Renderer/Font.hpp"
 
-#include "../nfCommon/Memory.hpp"
-#include "../nfCommon/Window.hpp"
-#include "../nfCommon/Timer.hpp"
-#include "../nfCommon/Logger.hpp"
-#include "../nfCommon/SystemInfo.hpp"
+#include "nfCommon/Memory.hpp"
+#include "nfCommon/Window.hpp"
+#include "nfCommon/Timer.hpp"
+#include "nfCommon/Logger.hpp"
+#include "nfCommon/SystemInfo.hpp"
 
 namespace NFE {
 

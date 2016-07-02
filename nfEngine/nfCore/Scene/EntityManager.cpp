@@ -7,12 +7,10 @@
 
 #include "PCH.hpp"
 #include "EntityManager.hpp"
-#include "../nfCommon/Logger.hpp"
+#include "nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Scene {
-
-using namespace Math;
 
 EntityID gInvalidEntityID = 0;
 EntityID EntityManager::gLastEntityId = gInvalidEntityID;

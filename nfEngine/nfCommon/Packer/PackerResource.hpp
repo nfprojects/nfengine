@@ -9,6 +9,9 @@
 #include "PackerDefines.hpp"
 #include "../MD5.hpp"
 
+#include <memory>
+
+
 namespace NFE {
 namespace Common {
 

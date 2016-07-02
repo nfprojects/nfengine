@@ -11,6 +11,8 @@
 #include "Mipmap.hpp"
 #include "../InputStream.hpp"
 
+#include <vector>
+
 namespace NFE {
 namespace Common {
 

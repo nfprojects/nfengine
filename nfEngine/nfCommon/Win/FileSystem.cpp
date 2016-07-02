@@ -9,6 +9,8 @@
 #include "../Logger.hpp"
 #include "Common.hpp"
 
+#include <stack>
+
 namespace NFE {
 namespace Common {
 

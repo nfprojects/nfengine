@@ -14,9 +14,12 @@
 #include "Resources/ResourcesManager.hpp"
 #include "Resources/Texture.hpp"
 
-#include "Window.hpp"
-#include "Logger.hpp"
-#include "KeyCodes.hpp"
+#include "nfCommon/Window.hpp"
+#include "nfCommon/Logger.hpp"
+#include "nfCommon/KeyCodes.hpp"
+
+#include "imgui.h"
+
 
 namespace NFE {
 namespace Renderer {

@@ -9,6 +9,9 @@
 #include "../Logger.hpp"
 #include "Common.hpp"
 
+#include <assert.h>
+
+
 namespace NFE {
 namespace Common {
 

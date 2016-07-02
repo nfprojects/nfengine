@@ -14,12 +14,12 @@
 #include "Scenes/RenderTargets.hpp"
 
 #include "../Renderers/RendererInterface/Device.hpp"
-#include "../nfCommon/Library.hpp"
-#include "../nfCommon/FileSystem.hpp"
-#include "../nfCommon/Window.hpp"
-#include "../nfCommon/Timer.hpp"
-#include "../nfCommon/KeyCodes.hpp"
-#include "../nfCommon/Logger.hpp"
+#include "nfCommon/Library.hpp"
+#include "nfCommon/FileSystem.hpp"
+#include "nfCommon/Window.hpp"
+#include "nfCommon/Timer.hpp"
+#include "nfCommon/KeyCodes.hpp"
+#include "nfCommon/Logger.hpp"
 
 #include <algorithm>
 

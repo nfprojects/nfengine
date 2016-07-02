@@ -5,8 +5,8 @@
  */
 
 #include "PCH.hpp"
-#include "../nfCommon/Config.hpp"
-#include "../nfCommon/ConfigDataTranslator.hpp"
+#include "nfCommon/Config.hpp"
+#include "nfCommon/ConfigDataTranslator.hpp"
 
 using namespace NFE::Common;
 

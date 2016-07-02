@@ -7,7 +7,10 @@
 #include "PCH.hpp"
 #include "SystemInfo.hpp"
 #include "SystemInfoConstants.hpp"
+
 #include <sstream>
+#include <iomanip>
+
 
 namespace NFE {
 namespace Common {

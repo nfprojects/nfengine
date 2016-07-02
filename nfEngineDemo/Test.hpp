@@ -14,11 +14,11 @@
 #include "../nfEngine/nfCore/Components/CameraComponent.hpp"
 #include "../nfEngine/nfCore/Components/MeshComponent.hpp"
 
-#include "../nfCommon/Math/Random.hpp"
-#include "../nfCommon/InputStream.hpp"
-#include "../nfCommon/OutputStream.hpp"
-#include "../nfCommon/Timer.hpp"
-#include "../nfCommon/Logger.hpp"
+#include "nfCommon/Math/Random.hpp"
+#include "nfCommon/InputStream.hpp"
+#include "nfCommon/OutputStream.hpp"
+#include "nfCommon/Timer.hpp"
+#include "nfCommon/Logger.hpp"
 
 /*
     This function creates an example mesh.

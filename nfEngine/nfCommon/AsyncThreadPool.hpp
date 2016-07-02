@@ -11,6 +11,10 @@
 #include <condition_variable>
 #include <functional>
 #include <inttypes.h>
+#include <thread>
+#include <atomic>
+#include <queue>
+#include <map>
 
 namespace NFE {
 namespace Common {
