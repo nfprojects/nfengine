@@ -17,8 +17,12 @@
 
 #include <set>
 #include <map>
+#include <unordered_map>
 #include <vector>
 #include <algorithm>
+#include <memory>
+#include <mutex>
+#include <atomic>
 
 #include "gtest/gtest.h"
 

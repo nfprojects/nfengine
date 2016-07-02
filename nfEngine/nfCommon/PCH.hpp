@@ -38,6 +38,7 @@
 /// STL
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <stack>
 #include <string>
 #include <sstream>
@@ -45,3 +46,4 @@
 #include <mutex>
 #include <functional>
 #include <thread>
+#include <limits>
