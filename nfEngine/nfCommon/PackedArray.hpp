@@ -5,6 +5,9 @@
  */
 
 #include "nfCommon.hpp"
+#include "Memory/DefaultAllocator.hpp"
+#include "Math/Math.hpp"
+
 #include <limits>
 #include <algorithm>
 #include <functional>
@@ -25,11 +28,12 @@ namespace Common {
  * indices list memory footprint and gain additional performance (at the expense of lower
  * capacity).
  */
-template<typename ObjType, typename IDType = unsigned int>
+template<typename ObjType, typename IDType = unsigned int, size_t Alignment = 1>
 class PackedArray
 {
     static_assert(std::numeric_limits<IDType>::is_integer, "IDType must be integer type");
     static_assert(!std::numeric_limits<IDType>::is_signed, "IDType must be unsigned type");
+    static_assert(Math::PowerOfTwo(Alignment), "'Alignment' template parameter must be a power of two.");
 
     // doubly link list node
     struct ListNode
@@ -119,8 +123,8 @@ public:
 // PackedArray method definitions =================================================================
 //
 
-template<typename ObjType, typename IDType>
-PackedArray<ObjType, IDType>::PackedArray(size_t initialSize)
+template<typename ObjType, typename IDType, size_t Alignment>
+PackedArray<ObjType, IDType, Alignment>::PackedArray(size_t initialSize)
 {
     mSize = 0;
     mUsed = 0;
@@ -133,32 +137,46 @@ PackedArray<ObjType, IDType>::PackedArray(size_t initialSize)
     Resize(initialSize);
 }
 
-template<typename ObjType, typename IDType>
-PackedArray<ObjType, IDType>::~PackedArray()
+template<typename ObjType, typename IDType, size_t Alignment>
+PackedArray<ObjType, IDType, Alignment>::~PackedArray()
 {
     if (mNodes)
-        free(mNodes);
+        NFE_FREE(mNodes);
     if (mObjects)
-        free(mObjects);
+        NFE_FREE(mObjects);
+    if (mIDs)
+        NFE_FREE(mIDs);
 }
 
-template<typename ObjType, typename IDType>
-bool PackedArray<ObjType, IDType>::Resize(size_t newSize)
+template<typename ObjType, typename IDType, size_t Alignment>
+bool PackedArray<ObjType, IDType, Alignment>::Resize(size_t newSize)
 {
     assert(newSize >= 4);
     assert(newSize <= MaxSize());
 
-    // TODO: support aligned allocation
-    ObjType* newObjects = static_cast<ObjType*>(realloc(mObjects, sizeof(ObjType) * newSize));
-    ListNode* newNodes = static_cast<ListNode*>(realloc(mNodes, sizeof(ListNode) * newSize));
-    IDType* newIDs = static_cast<IDType*>(realloc(mIDs, sizeof(IDType) * newSize));
+    ObjType* newObjects = static_cast<ObjType*>(NFE_MALLOC(sizeof(ObjType) * newSize, Alignment));
+    ListNode* newNodes = static_cast<ListNode*>(NFE_MALLOC(sizeof(ListNode) * newSize, Alignment));
+    IDType* newIDs = static_cast<IDType*>(NFE_MALLOC(sizeof(IDType) * newSize, Alignment));
 
     // allocation failed
     if (newNodes == nullptr || newObjects == nullptr || newIDs == nullptr)
+    {
+        NFE_FREE(newObjects);
+        NFE_FREE(newNodes);
+        NFE_FREE(newIDs);
         return false;
+    }
 
-    mNodes = newNodes;
+    memcpy(newObjects, mObjects, sizeof(ObjType) * mSize);
+    memcpy(newNodes, mNodes, sizeof(ListNode) * mSize);
+    memcpy(newIDs, mIDs, sizeof(IDType) * mSize);
+
+    NFE_FREE(mObjects);
+    NFE_FREE(mNodes);
+    NFE_FREE(mIDs);
+
     mObjects = newObjects;
+    mNodes = newNodes;
     mIDs = newIDs;
 
     // build list of free object slots
@@ -189,8 +207,8 @@ bool PackedArray<ObjType, IDType>::Resize(size_t newSize)
     return true;
 }
 
-template<typename ObjType, typename IDType>
-IDType PackedArray<ObjType, IDType>::Add(const ObjType& obj)
+template<typename ObjType, typename IDType, size_t Alignment>
+IDType PackedArray<ObjType, IDType, Alignment>::Add(const ObjType& obj)
 {
     if (mUsed == MaxSize())
         return InvalidIndex;
@@ -225,16 +243,16 @@ IDType PackedArray<ObjType, IDType>::Add(const ObjType& obj)
     return index;
 }
 
-template<typename ObjType, typename IDType>
-bool PackedArray<ObjType, IDType>::Has(IDType index)
+template<typename ObjType, typename IDType, size_t Alignment>
+bool PackedArray<ObjType, IDType, Alignment>::Has(IDType index)
 {
     return
         (index >= 0) && (index < mSize) &&  // check if index is in range of index table
         (mIDs[index] < mUsed);  // check if index points to object in range of objects table
 }
 
-template<typename ObjType, typename IDType>
-void PackedArray<ObjType, IDType>::Remove(IDType index)
+template<typename ObjType, typename IDType, size_t Alignment>
+void PackedArray<ObjType, IDType, Alignment>::Remove(IDType index)
 {
     assert(Has(index));
 
@@ -278,41 +296,41 @@ void PackedArray<ObjType, IDType>::Remove(IDType index)
     assert(mTakenHead != mFreeHead);
 }
 
-template<typename ObjType, typename IDType>
-ObjType& PackedArray<ObjType, IDType>::operator[](IDType index)
+template<typename ObjType, typename IDType, size_t Alignment>
+ObjType& PackedArray<ObjType, IDType, Alignment>::operator[](IDType index)
 {
     assert(Has(index));
     return mObjects[mIDs[index]];
 }
 
-template<typename ObjType, typename IDType>
-const ObjType& PackedArray<ObjType, IDType>::operator[](IDType index) const
+template<typename ObjType, typename IDType, size_t Alignment>
+const ObjType& PackedArray<ObjType, IDType, Alignment>::operator[](IDType index) const
 {
     assert(Has(index));
     return mObjects[mIDs[index]];
 }
 
-template<typename ObjType, typename IDType>
-void PackedArray<ObjType, IDType>::Iterate(const IteratorCallback& func) const
+template<typename ObjType, typename IDType, size_t Alignment>
+void PackedArray<ObjType, IDType, Alignment>::Iterate(const IteratorCallback& func) const
 {
     for (size_t i = 0; i < mUsed; ++i)
         func(mObjects[i]);
 }
 
-template<typename ObjType, typename IDType>
-size_t PackedArray<ObjType, IDType>::Size() const
+template<typename ObjType, typename IDType, size_t Alignment>
+size_t PackedArray<ObjType, IDType, Alignment>::Size() const
 {
     return mUsed;
 }
 
-template<typename ObjType, typename IDType>
-size_t PackedArray<ObjType, IDType>::MaxSize()
+template<typename ObjType, typename IDType, size_t Alignment>
+size_t PackedArray<ObjType, IDType, Alignment>::MaxSize()
 {
     return static_cast<IDType>(-1);
 }
 
-template<typename ObjType, typename IDType>
-void PackedArray<ObjType, IDType>::DebugPrint()
+template<typename ObjType, typename IDType, size_t Alignment>
+void PackedArray<ObjType, IDType, Alignment>::DebugPrint()
 {
     std::cout << "Usage: " << mUsed << "/" << mSize << std::endl;
     std::cout << "NextFree: " << mFreeHead << std::endl;
