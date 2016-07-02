@@ -10,9 +10,8 @@ TEST(SystemInfoTest, CpuInfoTest)
     ASSERT_GE(sysInfoPtr.GetCPUCoreNo(), 1);
     ASSERT_GT(sysInfoPtr.GetPageSize(), 100);
     ASSERT_GE(sysInfoPtr.GetCacheLineSize(), 32);
-    ASSERT_GT(sysInfoPtr.GetCPUSpeedMHz(), 100);
-
 }
+
 TEST(SystemInfoTest, MemoryInfoTest)
 {
     SystemInfo& sysInfoPtr = SystemInfo::Instance();
@@ -24,6 +23,7 @@ TEST(SystemInfoTest, MemoryInfoTest)
     ASSERT_LT(sysInfoPtr.GetMemFreeSwapKb(), 1000000000);
     ASSERT_GT(sysInfoPtr.GetFreeMemoryKb(), 0);
 }
+
 TEST(SystemInfoTest, InfoStringTest)
 {
     SystemInfo& sysInfoPtr = SystemInfo::Instance();
@@ -31,6 +31,7 @@ TEST(SystemInfoTest, InfoStringTest)
     std::cout << sysInfoStr;
     ASSERT_FALSE(sysInfoStr.empty());
 }
+
 TEST(SystemInfoTest, FeatureSupportTest)
 {
     SystemInfo& sysInfoPtr = SystemInfo::Instance();
