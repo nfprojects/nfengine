@@ -8,10 +8,14 @@
 
 #include "nfCommon.hpp"
 
-#include <condition_variable>
-#include <set>
-#include <functional>
 #include <inttypes.h>
+#include <set>
+#include <queue>
+#include <functional>
+#include <condition_variable>
+#include <atomic>
+#include <mutex>
+
 
 namespace NFE {
 namespace Common {

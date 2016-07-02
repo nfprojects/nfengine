@@ -9,10 +9,9 @@
 #include "../RendererInterface/Device.hpp"
 #include "Common.hpp"
 
+
 namespace NFE {
 namespace Renderer {
-
-class CommandBuffer;
 
 class Device : public IDevice
 {

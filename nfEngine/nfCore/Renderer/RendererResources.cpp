@@ -9,7 +9,7 @@
 #include "HighLevelRenderer.hpp"
 #include "Engine.hpp"
 #include "../Renderers/RendererInterface/Device.hpp"
-#include "../nfCommon/Logger.hpp"
+#include "nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Renderer {

@@ -11,7 +11,7 @@
 #include "DebugRendererContext.hpp"
 #include "GeometryRendererContext.hpp"
 #include "GuiRendererContext.hpp"
-#include "../nfCommon/Math/Random.hpp"
+#include "nfCommon/Math/Random.hpp"
 
 namespace NFE {
 namespace Renderer {

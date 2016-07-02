@@ -7,6 +7,9 @@
 #include "PCH.hpp"
 #include "Buffer.hpp"
 
+#include <stdlib.h>
+#include <string.h>
+
 namespace NFE {
 namespace Common {
 

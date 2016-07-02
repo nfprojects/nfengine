@@ -1,10 +1,10 @@
 #include "PCH.hpp"
-#include "../nfCommon/Math/Geometry.hpp"
-#include "../nfCommon/Math/Box.hpp"
-#include "../nfCommon/Math/Frustum.hpp"
-#include "../nfCommon/Math/Sphere.hpp"
-#include "../nfCommon/Math/Triangle.hpp"
-#include "../nfCommon/Math/Random.hpp"
+#include "nfCommon/Math/Geometry.hpp"
+#include "nfCommon/Math/Box.hpp"
+#include "nfCommon/Math/Frustum.hpp"
+#include "nfCommon/Math/Sphere.hpp"
+#include "nfCommon/Math/Triangle.hpp"
+#include "nfCommon/Math/Random.hpp"
 
 using namespace NFE::Math;
 

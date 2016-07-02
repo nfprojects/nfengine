@@ -7,6 +7,11 @@
 #pragma once
 #include "nfCommon.hpp"
 
+#include <memory>
+#include <functional>
+#include <vector>
+
+
 namespace NFE {
 namespace Common {
 

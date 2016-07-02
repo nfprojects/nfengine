@@ -11,9 +11,9 @@
 #include "Renderer/HighLevelRenderer.hpp"
 #include "ResourcesManager.hpp"
 
-#include "../nfCommon/Logger.hpp"
-#include "../nfCommon/InputStream.hpp"
-#include "../nfCommon/Image/Image.hpp"
+#include "nfCommon/Logger.hpp"
+#include "nfCommon/InputStream.hpp"
+#include "nfCommon/Image/Image.hpp"
 
 namespace NFE {
 namespace Resource {

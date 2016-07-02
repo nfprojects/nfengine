@@ -7,8 +7,8 @@
 #pragma once
 
 #include "../Core.hpp"
-#include "../nfCommon/Aligned.hpp"
-#include "../nfCommon/AsyncThreadPool.hpp"
+#include "nfCommon/Aligned.hpp"
+#include "nfCommon/AsyncThreadPool.hpp"
 
 namespace NFE {
 namespace Resource {

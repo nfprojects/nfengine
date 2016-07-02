@@ -7,8 +7,12 @@
 #pragma once
 
 #include "../Core.hpp"
-#include "../nfCommon/Aligned.hpp"
-#include "../nfCommon/ThreadPool.hpp"
+#include "nfCommon/Aligned.hpp"
+#include "nfCommon/ThreadPool.hpp"
+
+#include "btBulletCollisionCommon.h"
+#include "btBulletDynamicsCommon.h"
+
 
 namespace NFE {
 namespace Scene {

@@ -1,7 +1,10 @@
 #include "PCH.hpp"
-#include "../nfCommon/InputStream.hpp"
+#include "nfCommon/InputStream.hpp"
 
 #include "Constants.hpp"
+
+#include <memory>
+
 
 using namespace NFE::Common;
 

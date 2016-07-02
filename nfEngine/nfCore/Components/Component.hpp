@@ -8,6 +8,9 @@
 
 #include "../Core.hpp"
 
+#include <vector>
+
+
 namespace NFE {
 namespace Scene {
 

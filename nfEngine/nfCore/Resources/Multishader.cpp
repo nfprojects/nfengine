@@ -8,8 +8,8 @@
 
 #include "PCH.hpp"
 #include "Multishader.hpp"
-#include "../nfCommon/Logger.hpp"
-#include "../nfCommon/File.hpp"
+#include "nfCommon/Logger.hpp"
+#include "nfCommon/File.hpp"
 #include "../rapidjson/include/rapidjson/document.h"
 #include "../rapidjson/include/rapidjson/filestream.h"
 

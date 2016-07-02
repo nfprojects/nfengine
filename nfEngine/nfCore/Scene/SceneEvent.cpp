@@ -6,7 +6,7 @@
 
 #include "PCH.hpp"
 #include "SceneEvent.hpp"
-#include "../nfCommon/Logger.hpp"
+#include "nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Scene {

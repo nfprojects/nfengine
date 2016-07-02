@@ -9,6 +9,8 @@
 #include "nfCommon.hpp"
 
 #if defined(WIN32)
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 #include <Windows.h>
 #elif defined(__LINUX__) | defined(__linux__)
 #include <time.h>

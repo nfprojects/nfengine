@@ -9,7 +9,12 @@
 #include "PCH.hpp"
 #include "Font.hpp"
 #include "Engine.hpp"
-#include "../../nfCommon/Logger.hpp"
+#include "nfCommon/Logger.hpp"
+
+#include "ft2build.h"
+#include "freetype/freetype.h"
+#include "freetype/ftglyph.h"
+
 
 namespace NFE {
 namespace Renderer {

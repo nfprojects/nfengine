@@ -3,10 +3,10 @@
 #include "Editor.hpp"
 #include "Scenes.hpp"
 
-#include "../nfCommon/Window.hpp"
-#include "../nfCommon/Logger.hpp"
-#include "../nfCommon/FileSystem.hpp"
-#include "../nfCommon/KeyCodes.hpp"
+#include "nfCommon/Window.hpp"
+#include "nfCommon/Logger.hpp"
+#include "nfCommon/FileSystem.hpp"
+#include "nfCommon/KeyCodes.hpp"
 
 using namespace NFE;
 using namespace NFE::Renderer;

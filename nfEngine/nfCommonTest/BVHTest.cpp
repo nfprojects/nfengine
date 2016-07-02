@@ -6,11 +6,11 @@
 
 #include "PCH.hpp"
 
-#include "../nfCommon/BVH.hpp"
-#include "../nfCommon/Math/Random.hpp"
-#include "../nfCommon/Math/Vector.hpp"
-#include "../nfCommon/Math/Geometry.hpp"
-#include "../nfCommon/Logger.hpp"
+#include "nfCommon/BVH.hpp"
+#include "nfCommon/Math/Random.hpp"
+#include "nfCommon/Math/Vector.hpp"
+#include "nfCommon/Math/Geometry.hpp"
+#include "nfCommon/Logger.hpp"
 
 
 using namespace NFE::Common;

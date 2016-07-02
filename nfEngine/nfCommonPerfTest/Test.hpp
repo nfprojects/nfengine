@@ -7,7 +7,10 @@
 #pragma once
 
 #include <string>
-#include "../nfCommon/Logger.hpp"
+#include "nfCommon/Logger.hpp"
+
+#include <fstream>
+
 
 static const char* LOGS_DIR = "./Logs/PerfTests/";
 

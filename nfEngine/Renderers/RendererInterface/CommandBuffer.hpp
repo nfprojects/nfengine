@@ -14,6 +14,9 @@
 #include "Backbuffer.hpp"
 #include "RenderTarget.hpp"
 
+#include <memory>
+
+
 namespace NFE {
 namespace Renderer {
 

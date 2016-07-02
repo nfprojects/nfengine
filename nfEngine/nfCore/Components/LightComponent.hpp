@@ -9,7 +9,9 @@
 #include "../Core.hpp"
 #include "Component.hpp"
 #include "../Resources/Texture.hpp"
-#include "../nfCommon/Aligned.hpp"
+#include "nfCommon/Aligned.hpp"
+#include "nfCommon/Math/Vector.hpp"
+
 
 namespace NFE {
 namespace Scene {

@@ -1,5 +1,5 @@
 #include "PCH.hpp"
-#include "../nfCommon/FileSystem.hpp"
+#include "nfCommon/FileSystem.hpp"
 
 int main(int argc, char* argv[])
 {

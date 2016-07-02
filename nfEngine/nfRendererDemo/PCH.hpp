@@ -13,5 +13,8 @@
 #include <crtdbg.h>
 #endif // defined(WIN32) && defined(_DEBUG)
 
+#include <iostream>
 #include <memory>
 #include <fstream>
+#include <vector>
+#include <string>

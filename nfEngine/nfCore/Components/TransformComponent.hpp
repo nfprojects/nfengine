@@ -8,8 +8,11 @@
 
 #include "../Core.hpp"
 #include "Component.hpp"
-#include "../nfCommon/Aligned.hpp"
-#include "../nfCommon/Math/Quaternion.hpp"
+#include "nfCommon/Aligned.hpp"
+#include "nfCommon/Math/Quaternion.hpp"
+
+#include <set>
+
 
 namespace NFE {
 namespace Scene {

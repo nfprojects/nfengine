@@ -11,8 +11,8 @@
 #include "HighLevelRenderer.hpp"
 #include "View.hpp"
 #include "Engine.hpp"
-#include "../../nfCommon/ThreadPool.hpp"
-#include "../../nfCommon/Logger.hpp"
+#include "nfCommon/ThreadPool.hpp"
+#include "nfCommon/Logger.hpp"
 
 #include "GuiRenderer.hpp"
 #include "DebugRenderer.hpp"

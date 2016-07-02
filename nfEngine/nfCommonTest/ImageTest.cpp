@@ -1,7 +1,10 @@
 #include "PCH.hpp"
-#include "../nfCommon/Image/Image.hpp"
-#include "../nfCommon/InputStream.hpp"
+#include "nfCommon/Image/Image.hpp"
+#include "nfCommon/InputStream.hpp"
 #include "Constants.hpp"
+
+#include <memory>
+
 
 /**
  * As stated by VC++ compiler dev here:

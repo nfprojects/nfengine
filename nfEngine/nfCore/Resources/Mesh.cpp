@@ -12,7 +12,7 @@
 #include "ResourcesManager.hpp"
 #include "Engine.hpp"
 
-#include "../nfCommon/Logger.hpp"
+#include "nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Resource {

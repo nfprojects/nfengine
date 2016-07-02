@@ -3,7 +3,7 @@
 */
 
 #include "PCH.hpp"
-#include "../nfCommon/ThreadPool.hpp"
+#include "nfCommon/ThreadPool.hpp"
 
 
 using namespace NFE::Common;

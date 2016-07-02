@@ -1,5 +1,5 @@
 #include "PCH.hpp"
-#include "../nfCommon/Math/Vector.hpp"
+#include "nfCommon/Math/Vector.hpp"
 
 using namespace NFE::Math;
 

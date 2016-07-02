@@ -11,7 +11,7 @@
 #include "Components/TransformComponent.hpp"
 #include "Components/BodyComponent.hpp"
 
-#include "../nfCommon/Timer.hpp"
+#include "nfCommon/Timer.hpp"
 
 namespace NFE {
 namespace Scene {

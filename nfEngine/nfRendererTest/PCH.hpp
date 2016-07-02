@@ -8,5 +8,7 @@
 #endif // defined(WIN32) && defined(_DEBUG)
 
 #include <memory>
+#include <vector>
+#include <string>
 
 #include "gtest/gtest.h"

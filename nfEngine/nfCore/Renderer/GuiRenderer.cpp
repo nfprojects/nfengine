@@ -9,6 +9,9 @@
 #include "PCH.hpp"
 #include "GuiRenderer.hpp"
 
+#include "imgui.h"
+
+
 namespace NFE {
 namespace Renderer {
 

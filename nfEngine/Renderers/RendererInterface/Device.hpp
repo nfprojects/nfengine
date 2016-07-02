@@ -12,6 +12,9 @@
 
 #include "CommandBuffer.hpp"
 
+#include <vector>
+
+
 #define RENDERER_INIT_FUNC "Init"
 #define RENDERER_RELEASE_FUNC "Release"
 

@@ -8,8 +8,12 @@
 #include "CollisionShape.hpp"
 #include "Globals.hpp"
 #include "Engine.hpp"
-#include "../nfCommon/Logger.hpp"
-#include "../nfCommon/Timer.hpp"
+
+#include "nfCommon/Logger.hpp"
+#include "nfCommon/Timer.hpp"
+
+#include "btBulletCollisionCommon.h"
+
 
 namespace NFE {
 namespace Resource {

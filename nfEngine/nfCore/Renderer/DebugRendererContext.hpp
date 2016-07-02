@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../../nfCommon/Math/Math.hpp"
+#include "nfCommon/Math/Math.hpp"
 
 namespace NFE {
 namespace Renderer {

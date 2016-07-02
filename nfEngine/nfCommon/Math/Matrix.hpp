@@ -9,6 +9,8 @@
 #include "Math.hpp"
 #include "Vector.hpp"
 
+#include <initializer_list>
+
 namespace NFE {
 namespace Math {
 

@@ -9,6 +9,9 @@
 #include "Core.hpp"
 #include "Prerequisites.hpp"
 
+#include <string>
+
+
 namespace NFE {
 
 /**

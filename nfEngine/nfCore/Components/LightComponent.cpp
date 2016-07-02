@@ -9,9 +9,9 @@
 #include "Resources/ResourcesManager.hpp"
 #include "Engine.hpp"
 
-#include "../nfCommon/InputStream.hpp"
-#include "../nfCommon/OutputStream.hpp"
-#include "../nfCommon/Logger.hpp"
+#include "nfCommon/InputStream.hpp"
+#include "nfCommon/OutputStream.hpp"
+#include "nfCommon/Logger.hpp"
 
 namespace NFE {
 namespace Scene {

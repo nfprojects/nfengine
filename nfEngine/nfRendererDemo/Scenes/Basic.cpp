@@ -9,8 +9,8 @@
 #include "Basic.hpp"
 #include "../Common.hpp"
 
-#include "../nfCommon/Math/Math.hpp"
-#include "../nfCommon/Math/Matrix.hpp"
+#include "nfCommon/Math/Math.hpp"
+#include "nfCommon/Math/Matrix.hpp"
 
 #include <vector>
 #include <functional>

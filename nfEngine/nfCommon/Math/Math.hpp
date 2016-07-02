@@ -127,7 +127,7 @@ NFE_INLINE T Lerp(const T a, const T b, const T w)
 NFE_INLINE float Quantize(float x, float step)
 {
     float tmp = x / step;
-    tmp = floor(tmp);
+    tmp = floorf(tmp);
     return tmp * step;
 }
 

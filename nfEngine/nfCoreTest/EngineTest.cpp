@@ -1,11 +1,11 @@
 #include "PCH.hpp"
-#include "Engine.hpp"
-#include "Renderer/HighLevelRenderer.hpp"
+#include "nfCore/Engine.hpp"
+#include "nfCore/Renderer/HighLevelRenderer.hpp"
+#include "nfCore/Components/TransformComponent.hpp"
+#include "nfCore/Components/MeshComponent.hpp"
+#include "nfCore/Components/BodyComponent.hpp"
+#include "nfCore/Components/LightComponent.hpp"
 
-#include "Components/TransformComponent.hpp"
-#include "Components/MeshComponent.hpp"
-#include "Components/BodyComponent.hpp"
-#include "Components/LightComponent.hpp"
 
 using namespace NFE;
 using namespace NFE::Renderer;

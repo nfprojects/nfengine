@@ -8,7 +8,11 @@
 
 #include "../Core.hpp"
 
-#include "Timer.hpp"
+#include "nfCommon/Timer.hpp"
+
+#include <memory>
+#include <vector>
+
 
 namespace NFE {
 namespace Util {

@@ -6,8 +6,8 @@
 
 #include "PCH.hpp"
 #include "ResourcesManager.hpp"
-#include "../nfCommon/Memory.hpp"
-#include "../nfCommon/Logger.hpp"
+#include "nfCommon/Memory.hpp"
+#include "nfCommon/Logger.hpp"
 
 // TODO: remove these dependencies - adding a new resource type shouldn't force programmer to modify this file...
 #include "Multishader.hpp"

@@ -8,7 +8,7 @@
 
 #include "../Core.hpp"
 #include "EntityManager.hpp"
-#include "../nfCommon/Aligned.hpp"
+#include "nfCommon/Aligned.hpp"
 
 namespace NFE {
 namespace Scene {

@@ -5,7 +5,7 @@
  */
 
 #include "PCH.hpp"
-#include "../nfCommon/Timer.hpp"
+#include "nfCommon/Timer.hpp"
 #include "Test.hpp"
 
 

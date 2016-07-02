@@ -9,8 +9,8 @@
 #include "VertexBuffers.hpp"
 #include "../Common.hpp"
 
-#include "../nfCommon/Math/Vector.hpp"
-#include "../nfCommon/Math/Random.hpp"
+#include "nfCommon/Math/Vector.hpp"
+#include "nfCommon/Math/Random.hpp"
 
 #include <vector>
 #include <functional>

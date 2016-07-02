@@ -1,5 +1,5 @@
 #include "PCH.hpp"
-#include "../nfCommon/Math/Matrix.hpp"
+#include "nfCommon/Math/Matrix.hpp"
 
 using namespace NFE::Math;
 

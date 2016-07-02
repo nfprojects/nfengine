@@ -7,13 +7,13 @@
 #pragma once
 
 #include "../RendererInterface/CommandBuffer.hpp"
-#include "PipelineState.hpp"
 #include "Common.hpp"
 
 namespace NFE {
 namespace Renderer {
 
 class RenderTarget;
+class PipelineState;
 
 class CommandList : public ICommandList
 {
