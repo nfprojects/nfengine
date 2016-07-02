@@ -86,17 +86,6 @@ void SystemInfo::InitCPUInfoCommon()
     // Get cache line size
     Cpuid(CPUInfo, CPU_CACHE_LINE_SIZE);
     mCacheLineSize = CPUInfo[2] & 0xFF;
-
-    // Check CPU frequency
-    Timer timer;
-    double timerResult = 0;
-    timer.Start();
-    uint64_t cyclesNo = Rdtsc();
-    do
-    {
-        timerResult = timer.Stop();
-    } while (timerResult < 1);
-    mCPUSpeedMHz = (Rdtsc() - cyclesNo) / 1000000;
 }
 
 void SystemInfo::InitCompilerInfo()
@@ -208,7 +197,6 @@ std::string SystemInfo::ConstructAllInfoString()
 
     outputStr.append("..::CPU::..\n");
     outputStr.append(cpuInfoPrinter(1, "Brand", mCPUBrand, ""));
-    outputStr.append(cpuInfoPrinter(1, "Frequency", std::to_string(mCPUSpeedMHz), "MHz"));
     outputStr.append(cpuInfoPrinter(1, "CPU cores no.", std::to_string(mCPUCoreNo), ""));
     outputStr.append(cpuInfoPrinter(1, "Page size", std::to_string(mPageSize), "B"));
     outputStr.append(cpuInfoPrinter(1, "Cache line size", std::to_string(mCacheLineSize), "B"));
@@ -275,11 +263,6 @@ uint64_t SystemInfo::GetPageSize() const
 uint64_t SystemInfo::GetCacheLineSize() const
 {
     return mCacheLineSize;
-}
-
-uint64_t SystemInfo::GetCPUSpeedMHz() const
-{
-    return mCPUSpeedMHz;
 }
 
 uint64_t SystemInfo::GetMemTotalPhysKb() const

@@ -46,7 +46,6 @@ private:
     uint64_t mCPUCoreNo;
     uint64_t mPageSize;
     uint64_t mCacheLineSize;
-    uint64_t mCPUSpeedMHz;
     uint64_t mMemTotalPhysKb;
     uint64_t mMemFreePhysKb;
     uint64_t mMemTotalSwapKb;
@@ -115,7 +114,6 @@ public:
     uint64_t GetCPUCoreNo() const;
     uint64_t GetPageSize() const;
     uint64_t GetCacheLineSize() const;
-    uint64_t GetCPUSpeedMHz() const;
     uint64_t GetMemTotalPhysKb() const;
     uint64_t GetMemTotalVirtKb() const;
     uint64_t GetMemTotalSwapKb() const;

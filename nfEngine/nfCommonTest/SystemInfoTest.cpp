@@ -10,7 +10,6 @@ TEST(SystemInfoTest, CpuInfoTest)
     ASSERT_GE(sysInfoPtr.GetCPUCoreNo(), 1);
     ASSERT_GT(sysInfoPtr.GetPageSize(), 100);
     ASSERT_GE(sysInfoPtr.GetCacheLineSize(), 32);
-    ASSERT_GT(sysInfoPtr.GetCPUSpeedMHz(), 100);
 
 }
 TEST(SystemInfoTest, MemoryInfoTest)
