@@ -437,6 +437,7 @@
     <ClInclude Include="Scene\EntityManager.hpp" />
     <ClInclude Include="Scene\SceneEvent.hpp" />
     <ClInclude Include="Scene\SceneManager.hpp" />
+    <ClInclude Include="ShaderCommon.hpp" />
     <ClInclude Include="Systems\PhysicsSystem.hpp" />
     <ClInclude Include="Systems\RendererSystem.hpp" />
     <ClInclude Include="Systems\TransformSystem.hpp" />

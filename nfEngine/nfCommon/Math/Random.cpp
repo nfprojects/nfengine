@@ -8,6 +8,9 @@
 #include "Math.hpp"
 #include "Random.hpp"
 
+#include <time.h>
+
+
 namespace NFE {
 namespace Math {
 

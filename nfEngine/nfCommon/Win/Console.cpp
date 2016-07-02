@@ -6,8 +6,13 @@
 
 #include "../PCH.hpp"
 #include "Console.hpp"
+
 #include <iostream>
 #include <stdarg.h>
+
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <Windows.h>
 
 namespace NFE {
 namespace Common {

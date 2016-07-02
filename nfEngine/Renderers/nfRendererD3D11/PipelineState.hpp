@@ -8,10 +8,12 @@
 
 #include "../RendererInterface/PipelineState.hpp"
 #include "Common.hpp"
-#include "VertexLayout.hpp"
+
 
 namespace NFE {
 namespace Renderer {
+
+class VertexLayout;
 
 class PipelineState : public IPipelineState
 {

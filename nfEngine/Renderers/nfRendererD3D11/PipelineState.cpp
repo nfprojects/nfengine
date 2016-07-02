@@ -5,10 +5,13 @@
  */
 
 #include "PCH.hpp"
-#include "../nfCommon/Logger.hpp"
 #include "PipelineState.hpp"
 #include "RendererD3D11.hpp"
 #include "Translations.hpp"
+#include "VertexLayout.hpp"
+
+#include "nfCommon/Logger.hpp"
+
 
 namespace NFE {
 namespace Renderer {

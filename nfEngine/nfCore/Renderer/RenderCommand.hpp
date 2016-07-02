@@ -9,6 +9,8 @@
 #include "../Core.hpp"
 #include "../nfCommon/Aligned.hpp"
 #include "../Renderers/RendererInterface/Buffer.hpp"
+#include "../nfCommon/Math/Vector.hpp"
+#include "../nfCommon/Math/Matrix.hpp"
 
 namespace NFE {
 namespace Renderer {

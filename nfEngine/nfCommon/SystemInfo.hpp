@@ -9,6 +9,8 @@
 #include "nfCommon.hpp"
 #include "Timer.hpp"
 
+#include <map>
+
 #if defined(__LINUX__) | defined(__linux__)
 #include "sys/sysinfo.h"
 #include <cpuid.h>

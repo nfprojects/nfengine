@@ -7,6 +7,9 @@
 #include "../PCH.hpp"
 #include "../nfCommon.hpp"
 
+#include <string>
+
+
 namespace NFE {
 namespace Common {
 

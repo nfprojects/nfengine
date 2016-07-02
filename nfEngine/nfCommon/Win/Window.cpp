@@ -5,8 +5,11 @@
  */
 
 #include "../PCH.hpp"
-#include "Common.hpp"
 #include "../Window.hpp"
+#include "Common.hpp"
+
+#include <Windowsx.h>
+
 
 namespace NFE {
 namespace Common {

@@ -19,8 +19,10 @@
 #include "PipelineState.hpp"
 #include "Sampler.hpp"
 #include "Translations.hpp"
-#include "../../nfCommon/Logger.hpp"
-#include "../../nfCommon/Win/Common.hpp"  // required for ID3DUserDefinedAnnotation
+
+#include "nfCommon/Logger.hpp"
+#include "nfCommon/Win/Common.hpp"  // required for ID3DUserDefinedAnnotation
+
 
 namespace NFE {
 namespace Renderer {

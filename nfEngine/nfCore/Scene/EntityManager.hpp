@@ -9,6 +9,9 @@
 #include "../Core.hpp"
 #include "../Components/Component.hpp"
 
+#include <functional>
+
+
 namespace NFE {
 namespace Scene {
 

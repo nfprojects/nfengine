@@ -8,7 +8,9 @@
 #include "Texture.hpp"
 #include "RendererD3D11.hpp"
 #include "Translations.hpp"
-#include "../../nfCommon/Logger.hpp"
+
+#include "nfCommon/Logger.hpp"
+
 
 namespace NFE {
 namespace Renderer {

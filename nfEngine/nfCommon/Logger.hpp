@@ -8,7 +8,12 @@
 
 #include "nfCommon.hpp"
 #include "Timer.hpp"
+
 #include <unordered_map>
+#include <memory>
+#include <atomic>
+#include <mutex>
+
 
 namespace NFE {
 namespace Common {

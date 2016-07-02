@@ -6,12 +6,17 @@
 
 #pragma once
 
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <Windows.h>
+#endif // WIN32
+
+
 namespace NFE {
 namespace Common {
 
 #ifdef WIN32
-
-#include <Windows.h>
 
 /**
  * KeyCode enum for Windows. Based on official MSDN reference:

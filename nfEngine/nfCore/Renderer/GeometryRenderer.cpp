@@ -11,6 +11,7 @@
 #include "HighLevelRenderer.hpp"
 #include "Resources/Material.hpp"
 #include "Resources/Mesh.hpp"
+#include "ShaderCommon.hpp"
 #include "../../nfCommon/Logger.hpp"
 
 namespace NFE {

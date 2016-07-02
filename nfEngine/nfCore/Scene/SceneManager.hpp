@@ -9,7 +9,10 @@
 #include "../Core.hpp"
 #include "SceneEvent.hpp"
 #include "EntityManager.hpp"
+
 #include "../nfCommon/ThreadPool.hpp"
+#include "../nfCommon/Math/Vector.hpp"
+
 
 namespace NFE {
 namespace Scene {

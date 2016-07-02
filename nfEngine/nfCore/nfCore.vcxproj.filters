@@ -266,5 +266,8 @@
     <ClInclude Include="Utils\Profiler.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderCommon.hpp">
+      <Filter>Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

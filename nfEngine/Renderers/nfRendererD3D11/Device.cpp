@@ -16,8 +16,10 @@
 #include "RenderTarget.hpp"
 #include "PipelineState.hpp"
 #include "Sampler.hpp"
-#include "../../nfCommon/Win/Common.hpp"
-#include "../../nfCommon/Logger.hpp"
+
+#include "nfCommon/Win/Common.hpp"
+#include "nfCommon/Logger.hpp"
+
 
 namespace NFE {
 namespace Renderer {
