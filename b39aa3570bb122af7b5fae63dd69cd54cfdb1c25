@@ -25,6 +25,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_a844bf73",
+        "filename": "nfEngine/nfCommon/Aligned.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_b90a4f24",
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_591b4381",
         "filename": "nfEngine/nfCommon/Aligned.hpp",
         "patchSetId": 8
@@ -36,6 +54,30 @@
       "writtenOn": "2016-06-03T09:37:30Z",
       "side": 1,
       "message": "why do You static cast to T*, when p is already T*? Moreover there probably will be implicit cast to void* anyway",
+      "range": {
+        "startLine": 100,
+        "startChar": 8,
+        "endLine": 100,
+        "endChar": 44
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_63149843",
+        "filename": "nfEngine/nfCommon/Aligned.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_591b4381",
       "range": {
         "startLine": 100,
         "startChar": 8,
@@ -71,6 +113,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_8847bb76",
+        "filename": "nfEngine/nfCommon/Buffer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "Done. Everything done only in assignment operator now",
+      "parentUuid": "baa041b7_eb07de15",
+      "range": {
+        "startLine": 22,
+        "startChar": 4,
+        "endLine": 29,
+        "endChar": 22
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_8b3852d4",
         "filename": "nfEngine/nfCommon/Buffer.cpp",
         "patchSetId": 8
@@ -82,6 +148,30 @@
       "writtenOn": "2016-06-03T09:37:30Z",
       "side": 1,
       "message": "can\u0027t You do this(src)?\nWriting the same code twice makes more places prone to an error. Either use copy constructor here or use assignment operator over there.\n\nI don\u0027t understand also why here we got this if at the beginning and in copy constructor we dont?",
+      "range": {
+        "startLine": 49,
+        "startChar": 8,
+        "endLine": 56,
+        "endChar": 26
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_485ad351",
+        "filename": "nfEngine/nfCommon/Buffer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "As above",
+      "parentUuid": "baa041b7_8b3852d4",
       "range": {
         "startLine": 49,
         "startChar": 8,
@@ -117,6 +207,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_2859cf5a",
+        "filename": "nfEngine/nfCommon/Buffer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_ab3d56c5",
+      "range": {
+        "startLine": 70,
+        "startChar": 4,
+        "endLine": 77,
+        "endChar": 17
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_39507f31",
         "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
         "patchSetId": 8
@@ -128,6 +242,30 @@
       "writtenOn": "2016-06-03T09:37:30Z",
       "side": 1,
       "message": "I know that both mallocs verify given alignment and got 2-3 error values that tells us what to do.\nThough should we really not check values, due to an overhead (quite big if i may say so - modulo probably for unix version and some bitwise operation for both) and just let it throw error?\n\nI can see, that You don\u0027t check any of the alignment\u0027s requirements, yet You cancel out the case when posix_memalign gets 0 - cause it would need a free() afterwards.",
+      "range": {
+        "startLine": 35,
+        "startChar": 6,
+        "endLine": 35,
+        "endChar": 30
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_03194c79",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "Yes, I wanted to reduce the checks overhead",
+      "parentUuid": "baa041b7_39507f31",
       "range": {
         "startLine": 35,
         "startChar": 6,
@@ -163,6 +301,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_082bab95",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "1. I can\u0027t use static_cast - \"alignment\" is not a constant. I think additional check is a waste of time, because _aligned_malloc will then fail and an appropriate message will be logged.\n2. Done.",
+      "parentUuid": "baa041b7_f9b7b782",
+      "range": {
+        "startLine": 40,
+        "startChar": 4,
+        "endLine": 40,
+        "endChar": 43
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_3ed98557",
         "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
         "patchSetId": 8
@@ -174,6 +336,30 @@
       "writtenOn": "2016-06-03T09:37:30Z",
       "side": 1,
       "message": "put space before for readability",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 45
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_e8188786",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_3ed98557",
       "range": {
         "startLine": 41,
         "startChar": 0,
@@ -209,6 +395,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_c81b837f",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "1. 2. This is ensured by the line above.\n3. I don\u0027t understand. What unique ptr? It\u0027s C function call.",
+      "parentUuid": "baa041b7_99a9cb26",
+      "range": {
+        "startLine": 43,
+        "startChar": 4,
+        "endLine": 43,
+        "endChar": 52
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_fe279d60",
         "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
         "patchSetId": 8
@@ -220,6 +430,30 @@
       "writtenOn": "2016-06-03T09:37:30Z",
       "side": 1,
       "message": "As I can see, all locks in these methods are mostly \"scoped\". Wouldn\u0027t it be better to use lock_guards, that have smaller overhead?",
+      "range": {
+        "startLine": 56,
+        "startChar": 8,
+        "endLine": 56,
+        "endChar": 50
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a8127f60",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_fe279d60",
       "range": {
         "startLine": 56,
         "startChar": 8,
@@ -255,6 +489,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_88157b4a",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_f945776e",
+      "range": {
+        "startLine": 66,
+        "startChar": 8,
+        "endLine": 67,
+        "endChar": 59
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_de23b954",
         "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
         "patchSetId": 8
@@ -266,6 +524,30 @@
       "writtenOn": "2016-06-03T09:37:30Z",
       "side": 1,
       "message": "as above",
+      "range": {
+        "startLine": 79,
+        "startChar": 8,
+        "endLine": 79,
+        "endChar": 50
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_680d973d",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_de23b954",
       "range": {
         "startLine": 79,
         "startChar": 8,
@@ -301,6 +583,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_4808932d",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "Yes, if a free is called twice on a freed block it means that somebody fucked up the code and it must be fixed",
+      "parentUuid": "baa041b7_79528736",
+      "range": {
+        "startLine": 83,
+        "startChar": 12,
+        "endLine": 83,
+        "endChar": 67
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_bee59509",
         "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
         "patchSetId": 8
@@ -312,6 +618,30 @@
       "writtenOn": "2016-06-03T09:37:30Z",
       "side": 1,
       "message": "space above for more readability",
+      "range": {
+        "startLine": 94,
+        "startChar": 0,
+        "endLine": 94,
+        "endChar": 45
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_28078f1d",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_bee59509",
       "range": {
         "startLine": 94,
         "startChar": 0,
@@ -347,6 +677,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_08028b0b",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "What we will get by overwriting local variable at the end of a function with a new value? It\u0027s up to the DefaultAllocator class user to clean up the pointers after releasing memory",
+      "parentUuid": "baa041b7_7eeb8ddc",
+      "range": {
+        "startLine": 92,
+        "startChar": 0,
+        "endLine": 95,
+        "endChar": 14
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_7e14ade7",
         "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
         "patchSetId": 8
@@ -358,6 +712,30 @@
       "writtenOn": "2016-06-03T09:37:30Z",
       "side": 1,
       "message": "Can\u0027t You make this method actually do something when in Release ?\n\nWouldn\u0027t it be better to put #ifdefs around this methods call in destructor?",
+      "range": {
+        "startLine": 101,
+        "startChar": 0,
+        "endLine": 108,
+        "endChar": 16
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a309802e",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "Done. I can write only number of allocated blocks in Relase (right now)",
+      "parentUuid": "baa041b7_7e14ade7",
       "range": {
         "startLine": 101,
         "startChar": 0,
@@ -393,6 +771,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_c834a3fc",
+        "filename": "nfEngine/nfCommon/Memory/DefaultAllocator.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "1. No.\n2. It\u0027s not required that much for now and I\u0027m not sure if other memory allocators implemented in the future will support that, so I decided not to add it",
+      "parentUuid": "baa041b7_1e0ec1e4",
+      "range": {
+        "startLine": 43,
+        "startChar": 4,
+        "endLine": 49,
+        "endChar": 36
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_cee8a8b5",
         "filename": "nfEngine/nfCommon/PackedArray.hpp",
         "patchSetId": 8
@@ -410,6 +812,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_830c3c3c",
+        "filename": "nfEngine/nfCommon/PackedArray.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_cee8a8b5",
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_8ef6208d",
         "filename": "nfEngine/nfCommonTest/PackedArray.cpp",
         "patchSetId": 8
@@ -421,6 +841,30 @@
       "writtenOn": "2016-06-03T09:37:30Z",
       "side": 1,
       "message": "Maybe add some text, so the value does not look unintuitive while testing.",
+      "range": {
+        "startLine": 26,
+        "startChar": 42,
+        "endLine": 26,
+        "endChar": 47
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_e32668b9",
+        "filename": "nfEngine/nfCommonTest/PackedArray.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_8ef6208d",
       "range": {
         "startLine": 26,
         "startChar": 42,
@@ -456,6 +900,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_c329248b",
+        "filename": "nfEngine/nfCore/Renderer/RenderCommand.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_8e3d002d",
+      "range": {
+        "startLine": 166,
+        "startChar": 21,
+        "endLine": 166,
+        "endChar": 27
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_ae29e4e7",
         "filename": "nfEngine/nfCore/Renderer/View.cpp",
         "patchSetId": 8
@@ -479,6 +947,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_a320609c",
+        "filename": "nfEngine/nfCore/Renderer/View.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "1. because we must change the state so we don\u0027t remove the one that is in use\n2. because it was a memleak :)",
+      "parentUuid": "baa041b7_ae29e4e7",
+      "range": {
+        "startLine": 41,
+        "startChar": 8,
+        "endLine": 43,
+        "endChar": 30
+      },
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_6e1f5cb7",
         "filename": "nfEngine/nfCore/Resources/CollisionShape.hpp",
         "patchSetId": 8
@@ -490,6 +982,24 @@
       "writtenOn": "2016-06-03T09:37:30Z",
       "side": 1,
       "message": "How are new class field and changes in this class related to DefaultAllocator? Another commit?",
+      "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_03302ce7",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-02T22:41:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_6e1f5cb7",
       "revId": "b39aa3570bb122af7b5fae63dd69cd54cfdb1c25",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
