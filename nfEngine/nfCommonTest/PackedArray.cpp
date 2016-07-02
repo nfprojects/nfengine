@@ -23,7 +23,7 @@ TEST(PackedArray, AddUnsignedChar)
     for (int i = 0; i < maxObj; ++i)
     {
         unsigned char idx = array.Add(i);
-        ASSERT_NE(array.InvalidIndex, idx);
+        ASSERT_NE(array.InvalidIndex, idx) << "i=" << i;
     }
     ASSERT_EQ(maxObj, array.Size());
 
@@ -43,7 +43,7 @@ TEST(PackedArray, AddUnsignedShort)
     for (int i = 0; i < maxObj; ++i)
     {
         unsigned short idx = array.Add(i);
-        ASSERT_NE(array.InvalidIndex, idx);
+        ASSERT_NE(array.InvalidIndex, idx) << "i=" << i;
     }
     ASSERT_EQ(maxObj, array.Size());
 
@@ -63,14 +63,14 @@ TEST(PackedArray, AddAndRemoveAscending)
     for (int i = 0; i < MAX_OBJECTS; ++i)
     {
         unsigned int idx = array.Add(1000 * i);
-        ASSERT_NE(array.InvalidIndex, idx);
+        ASSERT_NE(array.InvalidIndex, idx) << "i=" << i;
     }
     ASSERT_EQ(MAX_OBJECTS, array.Size());
 
     for (int i = 0; i < MAX_OBJECTS; ++i)
     {
         unsigned int idx = static_cast<unsigned int>(i);
-        ASSERT_TRUE(array.Has(idx));
+        ASSERT_TRUE(array.Has(idx)) << "i=" << i;
         array.Remove(idx);
     }
     ASSERT_EQ(0, array.Size());
@@ -78,7 +78,7 @@ TEST(PackedArray, AddAndRemoveAscending)
     for (int i = 0; i < MAX_OBJECTS; ++i)
     {
         unsigned int idx = static_cast<unsigned int>(i);
-        ASSERT_FALSE(array.Has(idx));
+        ASSERT_FALSE(array.Has(idx)) << "i=" << i;
     }
 }
 
@@ -89,14 +89,14 @@ TEST(PackedArray, AddAndRemoveDescending)
     for (int i = 0; i < MAX_OBJECTS; ++i)
     {
         unsigned int idx = array.Add(1000 * i);
-        ASSERT_NE(array.InvalidIndex, idx);
+        ASSERT_NE(array.InvalidIndex, idx) << "i=" << i;
     }
     ASSERT_EQ(MAX_OBJECTS, array.Size());
 
     for (int i = MAX_OBJECTS - 1; i >= 0; --i)
     {
         unsigned int idx = static_cast<unsigned int>(i);
-        ASSERT_TRUE(array.Has(idx));
+        ASSERT_TRUE(array.Has(idx)) << "i=" << i;
         array.Remove(idx);
     }
     ASSERT_EQ(0, array.Size());
@@ -104,7 +104,7 @@ TEST(PackedArray, AddAndRemoveDescending)
     for (int i = 0; i < MAX_OBJECTS; ++i)
     {
         unsigned int idx = static_cast<unsigned int>(i);
-        ASSERT_FALSE(array.Has(idx));
+        ASSERT_FALSE(array.Has(idx)) << "i=" << i;
     }
 }
 
@@ -124,7 +124,7 @@ TEST(PackedArray, AddAndRemoveRandom)
     {
         int value = random.GetInt();
         unsigned int idx = array.Add(value);
-        ASSERT_NE(array.InvalidIndex, idx);
+        ASSERT_NE(array.InvalidIndex, idx) << "i=" << i;
         map[idx] = value;
     }
     ASSERT_EQ(maxObj, array.Size());
@@ -139,11 +139,11 @@ TEST(PackedArray, AddAndRemoveRandom)
                 idx = random.GetInt() % maxObj;
             } while (map.count(idx) == 0);
 
-            ASSERT_TRUE(array.Has(idx));
+            ASSERT_TRUE(array.Has(idx)) << "i=" << i << ", j=" << j;
             array.Remove(idx);
             map.erase(idx);
         }
-        ASSERT_EQ(maxObj - batchSize, array.Size());
+        ASSERT_EQ(maxObj - batchSize, array.Size()) << "i=" << i;
 
 
         // add new objects
@@ -151,11 +151,11 @@ TEST(PackedArray, AddAndRemoveRandom)
         {
             int value = random.GetInt();
             unsigned int idx = array.Add(value);
-            ASSERT_NE(array.InvalidIndex, idx);
-            ASSERT_EQ(0, map.count(idx)); // check if we get not duplicated index
+            ASSERT_NE(array.InvalidIndex, idx) << "i=" << i;
+            ASSERT_EQ(0, map.count(idx)) << "i=" << i; // check if we get not duplicated index
             map[idx] = value;
         }
-        ASSERT_EQ(maxObj, array.Size());
+        ASSERT_EQ(maxObj, array.Size()) << "i=" << i;
 
 
         // verify
@@ -163,7 +163,7 @@ TEST(PackedArray, AddAndRemoveRandom)
         {
             unsigned int idx = it.first;
             int value = it.second;
-            ASSERT_EQ(value, array[idx]);
+            ASSERT_EQ(value, array[idx]) << "i=" << i;
         }
     }
 }

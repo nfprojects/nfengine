@@ -254,6 +254,7 @@ popd</Command>
     <ClInclude Include="Math\Vector.hpp" />
     <ClInclude Include="MD5.hpp" />
     <ClInclude Include="Memory.hpp" />
+    <ClInclude Include="Memory\DefaultAllocator.hpp" />
     <ClInclude Include="nfCommon.hpp" />
     <ClInclude Include="OutputStream.hpp" />
     <ClInclude Include="PackedArray.hpp" />
@@ -432,6 +433,12 @@ popd</Command>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="MD5.cpp" />
+    <ClCompile Include="Memory\DefaultAllocator.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="OutputStream.cpp" />
     <ClCompile Include="Packer\PackerDefines.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
