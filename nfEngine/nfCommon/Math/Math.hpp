@@ -164,6 +164,15 @@ NFE_INLINE unsigned int Hash(unsigned int x)
 }
 
 /**
+ * Check if a number is power of two.
+ */
+template<typename T>
+NFE_INLINE constexpr bool PowerOfTwo(const T x)
+{
+    return x && !(x & (x - 1));
+}
+
+/**
  * Solve a system of linear equations with 3 variables.
  *
  * @param M     Coefficients matrix.

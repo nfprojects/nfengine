@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "Buffer.hpp"
+#include "Memory/DefaultAllocator.hpp"
 
 #include <stdlib.h>
 #include <string.h>
@@ -21,21 +22,7 @@ Buffer::Buffer()
 
 Buffer::Buffer(const Buffer& src)
 {
-    mSize = src.mSize;
-    if (mSize)
-    {
-        void* newData = realloc(mData, mSize);
-        if (newData == nullptr)
-        {
-            Release();
-            return;
-        }
-
-        mData = newData;
-        memcpy(mData, src.mData, mSize);
-    }
-    else
-        Release();
+    *this = src;
 }
 
 Buffer::Buffer(Buffer&& other)
@@ -55,18 +42,17 @@ Buffer& Buffer::operator=(const Buffer& src)
 {
     if (this != &src)
     {
-        mSize = src.mSize;
-        if (mSize)
+        Release();
+
+        if (src.mSize)
         {
-            void* newData = realloc(mData, mSize);
-            if (newData)
-            {
-                mData = newData;
-                memcpy(mData, src.mData, mSize);
-            }
-            else
-                Release();
+            mData = NFE_MALLOC(src.mSize, 1);
+            if (!mData)
+                return *this;
+            memcpy(mData, src.mData, src.mSize);
         }
+
+        mSize = src.mSize;
     }
 
     return *this;
@@ -75,21 +61,22 @@ Buffer& Buffer::operator=(const Buffer& src)
 void Buffer::Create(size_t size)
 {
     mSize = size;
-    mData = malloc(size);
+    mData = NFE_MALLOC(size, 1);
 }
 
-void Buffer::Load(const void* pData, size_t size)
+void Buffer::Load(const void* data, size_t size)
 {
-    mSize = size;
-    void* newData = realloc(mData, size);
+    Release();
 
-    if (newData)
+    if (size > 0)
     {
-        mData = newData;
-        memcpy(mData, pData, size);
+        mData = NFE_MALLOC(size, 1);
+        if (!mData)
+            return;
+
+        memcpy(mData, data, size);
+        mSize = size;
     }
-    else
-        Release();
 }
 
 void Buffer::Release()
@@ -97,7 +84,7 @@ void Buffer::Release()
     mSize = 0;
     if (nullptr != mData)
     {
-        free(mData);
+        NFE_FREE(mData);
         mData = nullptr;
     }
 }
