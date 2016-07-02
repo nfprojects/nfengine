@@ -7,6 +7,7 @@
 #pragma once
 
 #include "nfCommon.hpp"
+#include "Memory/DefaultAllocator.hpp"
 
 #include <cstddef>
 
@@ -29,35 +30,20 @@ template <size_t Alignment = 16>
 class Aligned
 {
 public:
+    static_assert((Alignment > 1) & !(Alignment & (Alignment - 1)),
+                  "'Alignment' template parameter must be a power of two.");
+
     virtual ~Aligned() { }
 
-#if defined(WIN32)
     void* operator new(size_t size)
     {
-        return _aligned_malloc(size, Alignment);
+        return NFE_MALLOC(size, Alignment);
     }
 
     void operator delete(void* ptr)
     {
-        _aligned_free(ptr);
+        NFE_FREE(ptr);
     }
-#elif defined(__LINUX__) | defined(__linux__)
-    void* operator new(size_t size)
-    {
-        void* ptr;
-        if (posix_memalign(&ptr, Alignment, size) == 0)
-            return ptr;
-
-        throw std::bad_alloc();
-    }
-
-    void operator delete(void* ptr)
-    {
-        free(ptr);
-    }
-#else
-#error "Target system not supported!"
-#endif // defined(WIN32)
 
     // placement new
     void* operator new(size_t size, void* ptr)
@@ -117,8 +103,7 @@ public:
 
     void construct(T* const p, const T& t) const
     {
-        void* const pv = static_cast<void*>(p);
-        new (pv) T(t);
+        new (p) T(t);
     }
 
     void destroy(T* const p) const
@@ -159,13 +144,8 @@ public:
             throw std::length_error("AlignedAllocator<T>::allocate() - Integer overflow.");
 
         // Mallocator wraps malloc().
-#if defined(WIN32)
-        void* const pv = _aligned_malloc(n * sizeof(T), Alignment);
-#elif defined(__LINUX__) | defined(__linux__)
-        void* pv;
-        if (posix_memalign(&pv, Alignment, n * sizeof(T)) != 0)
-            return nullptr;
-#endif
+        void* const pv = NFE_MALLOC(n * sizeof(T), Alignment);
+
         // Allocators should throw std::bad_alloc in the case of memory allocation failure.
         if (nullptr == pv)
             throw std::bad_alloc();
@@ -175,11 +155,7 @@ public:
 
     void deallocate(T* const p, const size_t) const
     {
-#if defined(WIN32)
-        _aligned_free(p);
-#elif defined(__LINUX__) | defined(__linux__)
-        free(p);
-#endif
+        NFE_FREE(p);
     }
 
     // The following will be the same for all allocators that ignore hints.

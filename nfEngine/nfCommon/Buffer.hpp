@@ -38,7 +38,7 @@ public:
      * @param pData Source pointer
      * @param size Number of bytes to allocate and copy
      */
-    void Load(const void* pData, size_t size);
+    void Load(const void* data, size_t size);
 
     /**
      * Free memory
