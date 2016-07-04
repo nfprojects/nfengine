@@ -1,0 +1,199 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_43abd4d6",
+        "filename": "nfEngine/Renderers/RendererInterface/ResourceBinding.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-07-04T08:58:24Z",
+      "side": 1,
+      "message": "I think there is no need for us to keep this constructor - you can just default everything you need in the one below. Of course, unless you plan to implement a different construction behavior in here, however in case of these structs I think we can safely unify them.",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 7
+      },
+      "revId": "f3db48f0cb4e7abc82f98368c7c878c980b5700a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_23ba1024",
+        "filename": "nfEngine/Renderers/RendererInterface/ResourceBinding.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-07-04T08:58:24Z",
+      "side": 1,
+      "message": "As above",
+      "range": {
+        "startLine": 44,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 7
+      },
+      "revId": "f3db48f0cb4e7abc82f98368c7c878c980b5700a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_03b5cc2f",
+        "filename": "nfEngine/Renderers/RendererInterface/ResourceBinding.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-07-04T08:58:24Z",
+      "side": 1,
+      "message": "As above",
+      "range": {
+        "startLine": 80,
+        "startChar": 0,
+        "endLine": 83,
+        "endChar": 7
+      },
+      "revId": "f3db48f0cb4e7abc82f98368c7c878c980b5700a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_e382e851",
+        "filename": "nfEngine/Renderers/RendererInterface/Types.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-07-04T08:58:24Z",
+      "side": 1,
+      "message": "Since we\u0027re already here, I think \"Count\" would be more fitting name.",
+      "range": {
+        "startLine": 103,
+        "startChar": 4,
+        "endLine": 103,
+        "endChar": 10
+      },
+      "revId": "f3db48f0cb4e7abc82f98368c7c878c980b5700a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2391f099",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/ShaderProgram.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-07-04T08:58:24Z",
+      "side": 1,
+      "message": "built :)",
+      "range": {
+        "startLine": 31,
+        "startChar": 34,
+        "endLine": 31,
+        "endChar": 39
+      },
+      "revId": "f3db48f0cb4e7abc82f98368c7c878c980b5700a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_03026c0b",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/ShaderProgram.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-07-04T08:58:24Z",
+      "side": 1,
+      "message": "Why not make this a part of a loop below?",
+      "range": {
+        "startLine": 38,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 5
+      },
+      "revId": "f3db48f0cb4e7abc82f98368c7c878c980b5700a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2e6d5798",
+        "filename": "nfEngine/nfRendererDemo/Scenes/Basic.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 424,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-07-04T08:58:24Z",
+      "side": 1,
+      "message": "Are you 100% sure this condition is correct?",
+      "range": {
+        "startLine": 424,
+        "startChar": 8,
+        "endLine": 424,
+        "endChar": 22
+      },
+      "revId": "f3db48f0cb4e7abc82f98368c7c878c980b5700a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ae0f27e0",
+        "filename": "nfEngine/nfRendererTest/TestCases/ResourceBinding.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-07-04T08:58:24Z",
+      "side": 1,
+      "message": "IMO the tests should be more granular:\n* Empty binding in a single test case\n* Simple bindings in a single test case\n* Compound binding in a separate test case\n* Incorrect/invalid bindings in separate test cases",
+      "revId": "f3db48f0cb4e7abc82f98368c7c878c980b5700a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8e122308",
+        "filename": "nfEngine/nfRendererTest/TestCases/ResourceBinding.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-07-04T08:58:24Z",
+      "side": 1,
+      "message": "As above, this test should be split into separate tests as well.",
+      "revId": "f3db48f0cb4e7abc82f98368c7c878c980b5700a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
