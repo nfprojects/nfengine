@@ -1,0 +1,418 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_6e559f4e",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-04T11:33:25Z",
+      "side": 1,
+      "message": "ShapeTriangleMesh...plz don\u0027t leave it here - I don\u0027t want NFE to look like stereotypical project from India...",
+      "range": {
+        "startLine": 30,
+        "startChar": 6,
+        "endLine": 30,
+        "endChar": 24
+      },
+      "revId": "f511457d7220653171ecf810745d8d2787840d04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ceca6b1a",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-04T11:33:25Z",
+      "side": 1,
+      "message": "Why are we not using NFE::Common::File in here?",
+      "range": {
+        "startLine": 64,
+        "startChar": 4,
+        "endLine": 66,
+        "endChar": 41
+      },
+      "revId": "f511457d7220653171ecf810745d8d2787840d04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_6e78ffc4",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-04T11:33:25Z",
+      "side": 1,
+      "message": "space",
+      "range": {
+        "startLine": 73,
+        "startChar": 5,
+        "endLine": 73,
+        "endChar": 7
+      },
+      "revId": "f511457d7220653171ecf810745d8d2787840d04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_4e69bb24",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-04T11:33:25Z",
+      "side": 1,
+      "message": "through",
+      "range": {
+        "startLine": 73,
+        "startChar": 14,
+        "endLine": 73,
+        "endChar": 20
+      },
+      "revId": "f511457d7220653171ecf810745d8d2787840d04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_0e73b316",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-04T11:33:25Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 82,
+        "startChar": 12,
+        "endLine": 82,
+        "endChar": 29
+      },
+      "revId": "f511457d7220653171ecf810745d8d2787840d04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_4e509b5e",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-04T11:33:25Z",
+      "side": 1,
+      "message": "\u003d std::make_unique\u003cbtTriangleMesh\u003e();",
+      "range": {
+        "startLine": 93,
+        "startChar": 48,
+        "endLine": 93,
+        "endChar": 70
+      },
+      "revId": "f511457d7220653171ecf810745d8d2787840d04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ce66eb28",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-04T11:33:25Z",
+      "side": 1,
+      "message": "Can be:\n` \u003d std::make_unique\u003cbtBvhTriangleMeshShape\u003e(mesh.get(), true);`",
+      "range": {
+        "startLine": 111,
+        "startChar": 23,
+        "endLine": 111,
+        "endChar": 76
+      },
+      "revId": "f511457d7220653171ecf810745d8d2787840d04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_0e4a93ac",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-04T11:33:25Z",
+      "side": 1,
+      "message": "How will this work? O.o There is no %s parameter in the format string.",
+      "range": {
+        "startLine": 118,
+        "startChar": 12,
+        "endLine": 118,
+        "endChar": 52
+      },
+      "revId": "f511457d7220653171ecf810745d8d2787840d04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_eeee4f8a",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-04T11:33:25Z",
+      "side": 1,
+      "message": "This should work well:\n` \u003d std::make_unique\u003cbtBoxShape\u003e(btVector3(halfSize.f[0], halfSize.f[1], halfSize.f[2]));`",
+      "range": {
+        "startLine": 141,
+        "startChar": 15,
+        "endLine": 141,
+        "endChar": 94
+      },
+      "revId": "f511457d7220653171ecf810745d8d2787840d04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_4ed77bbf",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-04T11:33:25Z",
+      "side": 1,
+      "message": "as above:\n` \u003d std::make_unique\u003cbtCylinderShape\u003e(btVector3(r, h* 0.5f, r));`",
+      "range": {
+        "startLine": 151,
+        "startChar": 15,
+        "endLine": 151,
+        "endChar": 70
+      },
+      "revId": "f511457d7220653171ecf810745d8d2787840d04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8e70e3dd",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-04T11:33:25Z",
+      "side": 1,
+      "message": "add space",
+      "range": {
+        "startLine": 170,
+        "startChar": 9,
+        "endLine": 170,
+        "endChar": 11
+      },
+      "revId": "f511457d7220653171ecf810745d8d2787840d04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_cef14b6c",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-04T11:33:25Z",
+      "side": 1,
+      "message": "compound shape",
+      "range": {
+        "startLine": 183,
+        "startChar": 37,
+        "endLine": 183,
+        "endChar": 50
+      },
+      "revId": "f511457d7220653171ecf810745d8d2787840d04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_4efe5b39",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-04T11:33:25Z",
+      "side": 1,
+      "message": "`mShape \u003d std::make_unique\u003cbtCompoundShape\u003e(true);`\nor\n`mShape.reset(new (std::nothrow) btCompoundShape(true));`",
+      "range": {
+        "startLine": 185,
+        "startChar": 12,
+        "endLine": 185,
+        "endChar": 66
+      },
+      "revId": "f511457d7220653171ecf810745d8d2787840d04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_0ef85348",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-04T11:33:25Z",
+      "side": 1,
+      "message": "then:\n`if (!mShape)`",
+      "range": {
+        "startLine": 186,
+        "startChar": 12,
+        "endLine": 186,
+        "endChar": 26
+      },
+      "revId": "f511457d7220653171ecf810745d8d2787840d04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_eebc0f6e",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-04T11:33:25Z",
+      "side": 1,
+      "message": "You can use range-based for in here:\n`for (const auto i\u0026 : mChildren)\n    mShape-\u003eaddChildShape(Matrix2BulletTransform(i.matrix), i.shape.get());`",
+      "range": {
+        "startLine": 192,
+        "startChar": 12,
+        "endLine": 192,
+        "endChar": 57
+      },
+      "revId": "f511457d7220653171ecf810745d8d2787840d04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2eab171f",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-04T11:33:25Z",
+      "side": 1,
+      "message": "then rm this",
+      "range": {
+        "startLine": 195,
+        "startChar": 10,
+        "endLine": 195,
+        "endChar": 35
+      },
+      "revId": "f511457d7220653171ecf810745d8d2787840d04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ee4acf82",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-04T11:33:25Z",
+      "side": 1,
+      "message": "add space",
+      "range": {
+        "startLine": 197,
+        "startChar": 41,
+        "endLine": 197,
+        "endChar": 43
+      },
+      "revId": "f511457d7220653171ecf810745d8d2787840d04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2e82f794",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-04T11:33:25Z",
+      "side": 1,
+      "message": "add space",
+      "range": {
+        "startLine": 213,
+        "startChar": 13,
+        "endLine": 213,
+        "endChar": 15
+      },
+      "revId": "f511457d7220653171ecf810745d8d2787840d04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
