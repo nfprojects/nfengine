@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_db722811",
+        "filename": "nfEngine/Tools/ResourceManager/Main.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_09b5ed2f",
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_e982c951",
         "filename": "nfEngine/Tools/ResourceManager/Main.cpp",
         "patchSetId": 3
@@ -30,6 +48,30 @@
       "writtenOn": "2016-07-04T12:21:25Z",
       "side": 1,
       "message": "Why are these in here as temporaries, if they\u0027re in globals?",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 65
+      },
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_bb608436",
+        "filename": "nfEngine/Tools/ResourceManager/Main.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "What do you suggest?",
+      "parentUuid": "baa041b7_e982c951",
       "range": {
         "startLine": 17,
         "startChar": 0,
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_9b638041",
+        "filename": "nfEngine/Tools/ResourceManager/Main.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "No, why? std::string::operator\u003d\u003d is a valid compare operator",
+      "parentUuid": "baa041b7_6997d990",
+      "range": {
+        "startLine": 33,
+        "startChar": 8,
+        "endLine": 33,
+        "endChar": 28
+      },
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_c9026509",
         "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
         "patchSetId": 3
@@ -82,6 +148,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_bbc76411",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_c9026509",
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_c950250d",
         "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
         "patchSetId": 3
@@ -93,6 +177,30 @@
       "writtenOn": "2016-07-04T12:21:25Z",
       "side": 1,
       "message": "as below (max version)",
+      "range": {
+        "startLine": 30,
+        "startChar": 9,
+        "endLine": 30,
+        "endChar": 16
+      },
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_9b98201d",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_c950250d",
       "range": {
         "startLine": 30,
         "startChar": 9,
@@ -128,6 +236,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_bb9524e5",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_09304de7",
+      "range": {
+        "startLine": 33,
+        "startChar": 13,
+        "endLine": 33,
+        "endChar": 34
+      },
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_e94d2973",
         "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
         "patchSetId": 3
@@ -139,6 +271,30 @@
       "writtenOn": "2016-07-04T12:21:25Z",
       "side": 1,
       "message": "as above but with max/MAX",
+      "range": {
+        "startLine": 34,
+        "startChar": 13,
+        "endLine": 34,
+        "endChar": 32
+      },
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_dbf7c857",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_e94d2973",
       "range": {
         "startLine": 34,
         "startChar": 13,
@@ -174,6 +330,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_9bca6019",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_e92649b9",
+      "range": {
+        "startLine": 36,
+        "startChar": 11,
+        "endLine": 36,
+        "endChar": 17
+      },
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_a9572101",
         "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
         "patchSetId": 3
@@ -185,6 +365,30 @@
       "writtenOn": "2016-07-04T12:21:25Z",
       "side": 1,
       "message": "Vertices",
+      "range": {
+        "startLine": 58,
+        "startChar": 12,
+        "endLine": 58,
+        "endChar": 20
+      },
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7bd1dccc",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_a9572101",
       "range": {
         "startLine": 58,
         "startChar": 12,
@@ -220,6 +424,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_5bd4d8bb",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_895a1d29",
+      "range": {
+        "startLine": 68,
+        "startChar": 12,
+        "endLine": 68,
+        "endChar": 21
+      },
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_294c316f",
         "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
         "patchSetId": 3
@@ -231,6 +459,30 @@
       "writtenOn": "2016-07-04T12:21:25Z",
       "side": 1,
       "message": "add space",
+      "range": {
+        "startLine": 72,
+        "startChar": 9,
+        "endLine": 72,
+        "endChar": 11
+      },
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_1bd770c0",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_294c316f",
       "range": {
         "startLine": 72,
         "startChar": 9,
@@ -266,6 +518,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_3bdc74e3",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_e974099d",
+      "range": {
+        "startLine": 77,
+        "startChar": 9,
+        "endLine": 77,
+        "endChar": 11
+      },
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_8971fdaa",
         "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
         "patchSetId": 3
@@ -277,6 +553,30 @@
       "writtenOn": "2016-07-04T12:21:25Z",
       "side": 1,
       "message": "this is magic number again - got with SCHAR_MAX or numeric_limits\u003csigned char\u003e::max()",
+      "range": {
+        "startLine": 86,
+        "startChar": 37,
+        "endLine": 86,
+        "endChar": 40
+      },
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_dbe0e898",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_8971fdaa",
       "range": {
         "startLine": 86,
         "startChar": 37,
@@ -312,6 +612,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_fbe5eca7",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_696919be",
+      "range": {
+        "startLine": 100,
+        "startChar": 38,
+        "endLine": 100,
+        "endChar": 42
+      },
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_e99be9c7",
         "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
         "patchSetId": 3
@@ -323,6 +647,30 @@
       "writtenOn": "2016-07-04T12:21:25Z",
       "side": 1,
       "message": "using even NFE::Common::File would make it more readable",
+      "range": {
+        "startLine": 145,
+        "startChar": 4,
+        "endLine": 151,
+        "endChar": 5
+      },
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_5bebb878",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_e99be9c7",
       "range": {
         "startLine": 145,
         "startChar": 4,
@@ -358,6 +706,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_3b035444",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_89a8dddc",
+      "range": {
+        "startLine": 183,
+        "startChar": 8,
+        "endLine": 183,
+        "endChar": 61
+      },
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_ee188f86",
         "filename": "nfEngine/Tools/ResourceManager/MeshConverter.hpp",
         "patchSetId": 3
@@ -369,6 +741,30 @@
       "writtenOn": "2016-07-04T12:21:25Z",
       "side": 1,
       "message": "indent",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 2
+      },
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7b5afc84",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_ee188f86",
       "range": {
         "startLine": 2,
         "startChar": 0,
@@ -398,6 +794,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_5b5df877",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_ce1b8b7f",
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_e9ff69ff",
         "filename": "nfEngine/Tools/ResourceManager/MeshConverter.hpp",
         "patchSetId": 3
@@ -409,6 +823,30 @@
       "writtenOn": "2016-07-04T12:21:25Z",
       "side": 1,
       "message": "using Vertex \u003d struct",
+      "range": {
+        "startLine": 36,
+        "startChar": 4,
+        "endLine": 36,
+        "endChar": 17
+      },
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3b55944f",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "What gives us this syntax here? It will only make code look odd.",
+      "parentUuid": "baa041b7_e9ff69ff",
       "range": {
         "startLine": 36,
         "startChar": 4,
@@ -444,6 +882,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_1b50905d",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_6e0d9f3d",
+      "range": {
+        "startLine": 44,
+        "startChar": 7,
+        "endLine": 44,
+        "endChar": 13
+      },
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_0e02930b",
         "filename": "nfEngine/Tools/ResourceManager/MeshConverter.hpp",
         "patchSetId": 3
@@ -455,6 +917,30 @@
       "writtenOn": "2016-07-04T12:21:25Z",
       "side": 1,
       "message": "using SubMesh \u003d struct",
+      "range": {
+        "startLine": 45,
+        "startChar": 4,
+        "endLine": 45,
+        "endChar": 18
+      },
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_fb4e0cc0",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "As above",
+      "parentUuid": "baa041b7_0e02930b",
       "range": {
         "startLine": 45,
         "startChar": 4,
@@ -490,6 +976,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_db4908b9",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "As above",
+      "parentUuid": "baa041b7_2e07971d",
+      "range": {
+        "startLine": 55,
+        "startChar": 4,
+        "endLine": 55,
+        "endChar": 19
+      },
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_29baf123",
         "filename": "nfEngine/nfCommon/Math/Math.hpp",
         "patchSetId": 3
@@ -501,6 +1011,30 @@
       "writtenOn": "2016-07-04T12:21:25Z",
       "side": 1,
       "message": "Can\u0027t we use std::isnan and std::ininf? Or are yours just faster/better?",
+      "range": {
+        "startLine": 135,
+        "startChar": 0,
+        "endLine": 152,
+        "endChar": 1
+      },
+      "revId": "ae574062a6210c325d1f66ee09520c2aece328f5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_1bfe5038",
+        "filename": "nfEngine/nfCommon/Math/Math.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T19:38:34Z",
+      "side": 1,
+      "message": "Yes, it,s faster :)\n\nThe IsNaN compiles to this:\n\n movss       xmm1,dword ptr [r8+10h]  \n movss       dword ptr [rsp+30h],xmm1  \n mov         eax,dword ptr [rsp+30h]  \n mov         ecx,eax  \n and         ecx,7F800000h  \n cmp         ecx,7F800000h  \n jne         NFE::MeshFile::LoadFromObj+20Ch (07FF738DC305Ch)  \n test        eax,7FFFFFh  \n\n\nwhile std::isnan is implemented like this:\n\n movzx       edx,word ptr [rcx+2]  \n mov         eax,7F80h  \n and         dx,ax  \n cmp         dx,ax  \n jne         00007FF94DF86399  \n test        byte ptr [rcx+2],7Fh  \n jne         00007FF94DF86393  \n xor         eax,eax  \n cmp         word ptr [rcx],ax  \n mov         eax,1  \n je          00007FF94DF863B5  \n mov         eax,2  \n ret  \n movzx       eax,word ptr [rcx+2]  \n test        eax,0FFFF7FFFh  \n jne         00007FF94DF863AB  \n xor         eax,eax  \n cmp         word ptr [rcx],ax  \n je          00007FF94DF863B5  \n neg         dx  \n sbb         eax,eax  \n neg         eax  \n add         eax,0FFFFFFFEh  \n\nand requires additional \"call\" instruction :)",
+      "parentUuid": "baa041b7_29baf123",
       "range": {
         "startLine": 135,
         "startChar": 0,
