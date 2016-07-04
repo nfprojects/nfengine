@@ -233,6 +233,30 @@
       "revId": "3d0c6ec76ec69cc37915b1fc6fa0f57f5986268f",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a9e721e3",
+        "filename": "nfEngine/nfCommon/Memory/GenericAllocator.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-04T13:44:06Z",
+      "side": 1,
+      "message": "What I meant is:\n1. User uses Free() on a pointer X\n2. Free() frees the X\n3. What is stored in X? Old address or nullptr?",
+      "parentUuid": "baa041b7_616c1f08",
+      "range": {
+        "startLine": 84,
+        "startChar": 0,
+        "endLine": 84,
+        "endChar": 1
+      },
+      "revId": "3d0c6ec76ec69cc37915b1fc6fa0f57f5986268f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
