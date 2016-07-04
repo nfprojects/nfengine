@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "baa041b7_ee2c0f4c",
+        "filename": "nfEngine/nfCommon/Win/FileAsync.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-04T09:09:39Z",
+      "side": 1,
+      "message": "From msdn: \"The OVERLAPPED data structure must remain valid for the duration of the read operation. It should not be a variable that can go out of scope while the read operation is pending completion.\"",
+      "revId": "e6e41efc6ae0dbb9db9cbcc51916a68e7daa3258",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_43d754bf",
         "filename": "nfEngine/nfCommonTest/FileAsyncTest.cpp",
         "patchSetId": 4
