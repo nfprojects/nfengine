@@ -18,10 +18,10 @@ namespace Common
     } while (0)
 
 // Function to create continuous bitmask of given length
-uint32 NFE_INLINE CreateBitMask(uchar length)
+uint32 NFE_INLINE CreateBitMask(uint8 length)
 {
     uint32 mask = 0;
-    for (uchar i = 0; i < length; i++)
+    for (uint8 i = 0; i < length; i++)
         mask = (mask << 1) | 0x1;
     return mask;
 }
@@ -29,10 +29,10 @@ uint32 NFE_INLINE CreateBitMask(uchar length)
 /* Function used to count trailing zeros.
  * Taken from (https://graphics.stanford.edu/~seander/bithacks.html#ZerosOnRightParallel)
  */
-uchar NFE_INLINE CountTrailingZeros(uint32 bytes)
+uint8 NFE_INLINE CountTrailingZeros(uint32 bytes)
 {
     uint32 v = bytes; // 32-bit word input to count zero bits on right
-    uchar c = 32;     // c will be the number of zero bits on the right
+    uint8 c = 32;     // c will be the number of zero bits on the right
 
     v &= -static_cast<int32>(v);
     if (v) c--;

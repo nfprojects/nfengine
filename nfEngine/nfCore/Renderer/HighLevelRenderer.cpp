@@ -132,7 +132,7 @@ void HighLevelRenderer::CreateCommonResources()
     mDefaultSampler.reset(mRenderingDevice->CreateSampler(samplerDesc));
 
     TextureDataDesc texDataDesc;
-    texDataDesc.lineSize = texDataDesc.sliceSize = 4 * sizeof(uchar);
+    texDataDesc.lineSize = texDataDesc.sliceSize = 4 * sizeof(uint8);
     TextureDesc texDesc;
     texDesc.type = TextureType::Texture2D;
     texDesc.access = BufferAccess::GPU_ReadOnly;
@@ -145,18 +145,18 @@ void HighLevelRenderer::CreateCommonResources()
 
     /// default textures (used when no texture is bound to a material)
 
-    uchar diffuseColor[] = { 255, 255, 255, 255 };
+    uint8 diffuseColor[] = { 255, 255, 255, 255 };
     texDataDesc.data = diffuseColor;
     texDesc.debugName = "DefaultDiffuseTexture";
     mDefaultDiffuseTexture.reset(mRenderingDevice->CreateTexture(texDesc));
 
-    uchar normalColor[] = { 127, 127, 255, 255 };
+    uint8 normalColor[] = { 127, 127, 255, 255 };
     texDataDesc.data = normalColor;
     texDesc.debugName = "DefaultNormalTexture";
     mDefaultNormalTexture.reset(mRenderingDevice->CreateTexture(texDesc));
 
     // TODO: this should be configurable
-    uchar specularColor[] = { 25, 25, 25, 255 };
+    uint8 specularColor[] = { 25, 25, 25, 255 };
     texDataDesc.data = specularColor;
     texDesc.debugName = "DefaultSpecularTexture";
     mDefaultSpecularTexture.reset(mRenderingDevice->CreateTexture(texDesc));

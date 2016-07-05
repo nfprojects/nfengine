@@ -64,6 +64,25 @@ struct Float4
     Float4(float* pArr) : x(pArr[0]), y(pArr[1]), z(pArr[2]), w(pArr[3]) {};
 };
 
+
+/**
+ * Rectangle template.
+ */
+template<typename T>
+struct Rect
+{
+    T Xmin, Xmax, Ymin, Ymax;
+
+    Rect() : Xmin(0), Xmax(0), Ymin(0), Ymax(0) { }
+
+    Rect(T Xmin_, T Ymin_, T Xmax_, T Ymax_)
+        : Xmin(Xmin_), Xmax(Xmax_), Ymin(Ymin_), Ymax(Ymax_) { }
+};
+
+typedef Rect<int> Recti;
+typedef Rect<float> Rectf;
+
+
 /**
  * Union providing easy "float" bit manipulations.
  */
@@ -79,7 +98,7 @@ union FloatInt
 union DoubleInt
 {
     double f;
-    NFE::Common::uint64 u;
+    uint64 u;
 };
 
 /**

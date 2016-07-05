@@ -114,7 +114,7 @@ public:
 
     /**
      * @brief Link the view to a window
-     * @return Result::OK on success
+     * @return true on success
      */
     bool SetWindow(Common::Window* window);
 

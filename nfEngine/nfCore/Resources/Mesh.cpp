@@ -39,37 +39,37 @@ Mesh::~Mesh()
     Release();
 }
 
-Result Mesh::AllocateVerticies(uint32 count)
+bool Mesh::AllocateVerticies(uint32 count)
 {
     MeshVertex* newVertices = (MeshVertex*)realloc(mVerticies, sizeof(MeshVertex) * count);
     if (newVertices == nullptr)
-        return Result::AllocationError;
+        return false;
 
     mVerticies = newVertices;
     mVeriticesCount = count;
-    return Result::OK;
+    return true;
 }
 
-Result Mesh::AllocateIndices(uint32 count)
+bool Mesh::AllocateIndices(uint32 count)
 {
     uint32* newIndices = (uint32*)realloc(mIndices, sizeof(uint32) * count);
     if (newIndices == 0)
-        return Result::AllocationError;
+        return false;
 
     mIndices = newIndices;
     mIndicesCount = count;
-    return Result::OK;
+    return true;
 }
 
-Result Mesh::AllocateSubmeshes(uint32 count)
+bool Mesh::AllocateSubmeshes(uint32 count)
 {
     SubMesh* newSubMeshes = (SubMesh*)realloc(mSubMeshes, sizeof(SubMesh) * count);
     if (newSubMeshes == nullptr)
-        return Result::AllocationError;
+        return false;
 
     mSubMeshes = newSubMeshes;
     mSubMeshesCount = count;
-    return Result::OK;
+    return true;
 }
 
 bool Mesh::OnLoad()

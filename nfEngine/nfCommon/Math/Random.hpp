@@ -18,7 +18,7 @@ namespace Math {
 class NFCOMMON_API Random
 {
 private:
-    NFE::Common::uint64 mSeed;
+    uint64 mSeed;
 
     // XOR-shift algorithm
     NFE_INLINE void Shuffle()
@@ -30,9 +30,9 @@ private:
 
 public:
     Random();
-    Random(NFE::Common::int64 seed);
+    Random(uint64 seed);
 
-    NFE::Common::uint64 GetLong();
+    uint64 GetLong();
     unsigned int GetInt();
 
     //Generate random float with uniform distribution from range (0.0f, 1.0f]

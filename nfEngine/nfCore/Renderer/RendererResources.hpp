@@ -89,11 +89,11 @@ class ShadowMap
     friend class LightsRenderer;
 
 public:
-    const static uchar MAX_CASCADE_SPLITS = 8;
+    const static uint8 MAX_CASCADE_SPLITS = 8;
     const static uint16 MIN_SHADOWMAP_SIZE = 16;
     const static uint16 MAX_SHADOWMAP_SIZE = 4096;
 
-    enum class Type : uchar
+    enum class Type : uint8
     {
         None = 0,
         Flat,       // spot light
@@ -117,7 +117,7 @@ private:
 
     uint16 mSize;
     Type mType;
-    uchar mSplits;
+    uint8 mSplits;
 };
 
 class GeometryBuffer

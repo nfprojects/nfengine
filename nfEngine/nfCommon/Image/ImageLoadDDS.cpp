@@ -33,10 +33,10 @@
 #define ID_DXT5   0x35545844
 
 #ifndef MAKEFOURCC
-#define MAKEFOURCC(ch0, ch1, ch2, ch3) ((uint32)(uchar)(ch0)        | \
-                                       ((uint32)(uchar)(ch1) << 8)  | \
-                                       ((uint32)(uchar)(ch2) << 16) | \
-                                       ((uint32)(uchar)(ch3) << 24))
+#define MAKEFOURCC(ch0, ch1, ch2, ch3) ((uint32)(uint8)(ch0)        | \
+                                       ((uint32)(uint8)(ch1) << 8)  | \
+                                       ((uint32)(uint8)(ch2) << 16) | \
+                                       ((uint32)(uint8)(ch3) << 24))
 #endif /* defined(MAKEFOURCC) */
 
 #define ISBITMASK(r, g, b, a) (ddpf.dwRBitMask == r &&   \
@@ -244,7 +244,7 @@ bool Image::LoadDDS(InputStream* stream)
 
 
         size_t dataSize = ((width + 3) / 4) * ((height + 3) / 4) * 16 * BitsPerPixel(mFormat) / 8;
-        std::unique_ptr<uchar[]> mipmapData(new (std::nothrow) uchar[dataSize]);
+        std::unique_ptr<uint8[]> mipmapData(new (std::nothrow) uint8[dataSize]);
         if (!mipmapData.get())
         {
             LOG_ERROR("Allocating memory for loading DDS image failed.");

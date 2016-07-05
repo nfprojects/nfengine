@@ -15,6 +15,7 @@
 #pragma warning( disable : 4592)
 #endif // defined(WIN32)
 
+using namespace NFE;
 using namespace NFE::Common;
 
 namespace {
@@ -159,7 +160,7 @@ protected:
             const int testSquareLineSize = width;
             const int testSquareHalfLineSize = testSquareLineSize / 2;
 
-            uchar testSquare[testSquareSize];
+            uint8 testSquare[testSquareSize];
 
 
             for (int i = 0; i < height / 2; i++)
@@ -208,7 +209,7 @@ protected:
             const int testSquareLineSize = width * 3;
             const int testSquareHalfLineSize = testSquareLineSize / 2;
 
-            uchar testSquare[testSquareSize];
+            uint8 testSquare[testSquareSize];
 
             // Building array, that image should be read as. It's different depending on the pixel format.
             for (int i = 0; i < height / 2; i++)
@@ -273,10 +274,10 @@ protected:
                 texel *= 255.0f;
                 testTexel *= 255.0f;
 
-                uchar texelUCh[4];
-                uchar testTexelUCh[4];
+                uint8 texelUCh[4];
+                uint8 testTexelUCh[4];
 
-                // Store vector in uchar table and remove compression errors
+                // Store vector in uint8 table and remove compression errors
                 VectorStoreUChar4(texel, texelUCh);
                 VectorStoreUChar4(testTexel, testTexelUCh);
 
@@ -286,7 +287,7 @@ protected:
                 // Compare single texel of loaded image and sample image
                 for (int m = 0; m < singleTexelSize; m++)
                 {
-                    uchar diff = (testTexelUCh[m] > texelUCh[m] ?
+                    uint8 diff = (testTexelUCh[m] > texelUCh[m] ?
                                     testTexelUCh[m] - texelUCh[m] :
                                     texelUCh[m] - testTexelUCh[m]);
                     ASSERT_LE(diff, COMPRESSION_ARTEFACT_TRESHOLD);
@@ -323,8 +324,8 @@ TEST_F(ImageTest, CopyConstructor)
     EXPECT_NE(mImage->GetWidth(), imageEmpty.GetWidth());
 
     Image imageCopy(*mImage.get());
-    const uchar* mImageData = static_cast<const uchar*>(mImage->GetData());
-    const uchar* imageCopyData = static_cast<const uchar*>(imageCopy.GetData());
+    const uint8* mImageData = static_cast<const uint8*>(mImage->GetData());
+    const uint8* imageCopyData = static_cast<const uint8*>(imageCopy.GetData());
 
     // After copying Image object, both objects should return the same data
     ASSERT_EQ(mImage->GetMipmapsNum(), imageCopy.GetMipmapsNum());
@@ -354,7 +355,7 @@ TEST_F(ImageTest, SetData)
     // Setting data and checking all set information
     EXPECT_TRUE(mImage->SetData(TEST_DATA, TEST_DATA_WIDTH,
                                 TEST_DATA_HEIGHT, TEST_DATA_FORMAT));
-    const uchar* mImageData = static_cast<const uchar*>(mImage->GetData());
+    const uint8* mImageData = static_cast<const uint8*>(mImage->GetData());
 
     ASSERT_EQ(1, mImage->GetMipmapsNum());
     ASSERT_EQ(0, memcmp(mImageData, TEST_DATA, TEST_DATA_SIZE));
@@ -382,9 +383,9 @@ TEST_F(ImageTest, Grayscale)
             Color texel = mImage->GetMipmap()->GetTexel(j, i, TEST_DATA_FORMAT);
             texel *= 255.0f;
 
-            uchar texelUCh[4];
-            uchar testTexelUCh[4];
-            // Store vector in uchar table
+            uint8 texelUCh[4];
+            uint8 testTexelUCh[4];
+            // Store vector in uint8 table
             VectorStoreUChar4(texel, texelUCh);
 
             if (i < 2)
@@ -408,7 +409,7 @@ TEST_F(ImageTest, Grayscale)
             SCOPED_TRACE("X: " + std::to_string(j) + " Y: " + std::to_string(i));
 
             // Compare single texel of loaded image and sample image
-            ASSERT_EQ(0, memcmp(testTexelUCh, texelUCh, singleTexelSize * sizeof(uchar)));
+            ASSERT_EQ(0, memcmp(testTexelUCh, texelUCh, singleTexelSize * sizeof(uint8)));
         }
     }
 }

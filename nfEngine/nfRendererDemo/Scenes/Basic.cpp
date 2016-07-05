@@ -15,8 +15,9 @@
 #include <vector>
 #include <functional>
 
+
+using namespace NFE;
 using namespace NFE::Math;
-using namespace NFE::Common;
 using namespace NFE::Renderer;
 
 namespace {

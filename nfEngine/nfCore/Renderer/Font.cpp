@@ -166,7 +166,7 @@ bool Font::Init(const char* file, int size)
     debugName = std::string("Font::mTexture name=") + file + ", size=" + std::to_string(size);
 
     TextureDataDesc texDataDesc;
-    texDataDesc.lineSize = texDataDesc.sliceSize = mTexWidth * sizeof(uchar);
+    texDataDesc.lineSize = texDataDesc.sliceSize = mTexWidth * sizeof(uint8);
     texDataDesc.data = texData.get();
 
     TextureDesc texDesc;

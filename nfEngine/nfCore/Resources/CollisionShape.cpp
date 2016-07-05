@@ -92,7 +92,7 @@ void CollisionShape::Release()
     mChildren.clear();
 }
 
-Result CollisionShape::LoadFromFile(const char* pPath)
+bool CollisionShape::LoadFromFile(const char* pPath)
 {
     //open file
     FILE* pFile = 0;
@@ -100,7 +100,7 @@ Result CollisionShape::LoadFromFile(const char* pPath)
     {
         //error, could not open file
         LOG_ERROR("Failed to load '%s'.", mName);
-        return Result::FileOpenError;
+        return false;
     }
 
     //iterate throug all shapes
@@ -152,12 +152,12 @@ Result CollisionShape::LoadFromFile(const char* pPath)
         else
         {
             LOG_ERROR("Unknown shape type.", mName);
-            return Result::Error;
+            return false;
         }
     }
 
     fclose(pFile);
-    return Result::OK;
+    return true;
 }
 
 btTransform Matrix2BulletTransform(const Matrix& matrix)
@@ -171,24 +171,24 @@ btTransform Matrix2BulletTransform(const Matrix& matrix)
     return transform;
 }
 
-Result CollisionShape::AddBox(const Vector& halfSize, const Matrix& matrix)
+bool CollisionShape::AddBox(const Vector& halfSize, const Matrix& matrix)
 {
     CompoundShapeChild shape;
     shape.pShape = new btBoxShape(btVector3(halfSize.f[0], halfSize.f[1], halfSize.f[2])),
     shape.matrix = matrix;
     mChildren.push_back(shape);
 
-    return Result::OK;
+    return true;
 }
 
-Result CollisionShape::AddCylinder(float h, float r)
+bool CollisionShape::AddCylinder(float h, float r)
 {
     CompoundShapeChild shape;
     shape.pShape = new btCylinderShape(btVector3(r, h * 0.5f, r));
     shape.matrix = Matrix();
     mChildren.push_back(shape);
 
-    return Result::OK;
+    return true;
 }
 
 /*
@@ -209,7 +209,7 @@ bool CollisionShape::OnLoad()
     Common::Timer timer;
     timer.Start();
 
-    Result ret;
+    bool ret;
 
     if (mOnLoad == NULL)
     {
@@ -220,11 +220,11 @@ bool CollisionShape::OnLoad()
     else
     {
         // run user callback
-        ret = mOnLoad(this, mUserPtr) ? Result::OK : Result::Error;
+        ret = mOnLoad(this, mUserPtr);
     }
 
     // run custom routine
-    if (ret == Result::OK)
+    if (ret)
     {
         if (mChildren.size() > 1) // compund shape
         {
@@ -247,7 +247,7 @@ bool CollisionShape::OnLoad()
         else
         {
             LOG_WARNING("Collision shape '%s' is empty.", mName);
-            return true;
+            return false;
         }
 
         if (mShape->isNonMoving())

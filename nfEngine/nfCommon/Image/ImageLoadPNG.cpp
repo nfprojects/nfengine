@@ -46,7 +46,7 @@ void userReadData(png_structp pngPtr, png_bytep data, png_size_t length)
 bool Image::LoadPNG(InputStream* stream)
 {
     // read png signature
-    uchar signature[PNGSIGSIZE];
+    uint8 signature[PNGSIGSIZE];
     if (stream->Read(PNGSIGSIZE, signature) != PNGSIGSIZE)
     {
         LOG_ERROR("Reading PNG signature failed.");
@@ -177,7 +177,7 @@ bool Image::LoadPNG(InputStream* stream)
 
     size_t dataSize = imgWidth * imgHeight * bitdepth * channels / 8;
     std::unique_ptr<png_bytep[]> rowPtrs(new (std::nothrow) png_bytep[imgHeight]);
-    std::unique_ptr<uchar[]> dataPtr(new (std::nothrow) uchar[dataSize]);
+    std::unique_ptr<uint8[]> dataPtr(new (std::nothrow) uint8[dataSize]);
 
     if (!rowPtrs.get() || !dataPtr.get())
     {
@@ -194,7 +194,7 @@ bool Image::LoadPNG(InputStream* stream)
     for (png_uint_32 i = 0; i < imgHeight; i++)
     {
         png_uint_32 q = i * stride;
-        rowPtrs[i] = static_cast<png_bytep>(static_cast<uchar*>(dataPtr.get()) + q);
+        rowPtrs[i] = static_cast<png_bytep>(static_cast<uint8*>(dataPtr.get()) + q);
     }
 
     // Read the imagedata and write it to the adresses pointed to

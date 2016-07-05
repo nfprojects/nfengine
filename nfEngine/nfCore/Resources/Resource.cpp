@@ -45,12 +45,12 @@ void* ResourceBase::GetUserPointer() const
     return mUserPtr;
 }
 
-Result ResourceBase::SetCallbacks(OnLoadCallback onLoadCallback,
-                                  OnUnloadCallback onUnloadCallback)
+bool ResourceBase::SetCallbacks(OnLoadCallback onLoadCallback,
+                                OnUnloadCallback onUnloadCallback)
 {
     mOnLoad = onLoadCallback;
     mOnUnload = onUnloadCallback;
-    return Result::OK;
+    return true;
 }
 
 bool ResourceBase::Rename(const char* pNewName)

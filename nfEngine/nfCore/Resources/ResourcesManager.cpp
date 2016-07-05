@@ -163,14 +163,14 @@ bool ResManager::DeleteResource(const char* name)
     return true;
 }
 
-Result ResManager::AddCustomResource(ResourceBase* resource, const char* name)
+bool ResManager::AddCustomResource(ResourceBase* resource, const char* name)
 {
     using namespace Util;
 
     if (!Common::MemoryCheck(resource))
     {
         LOG_ERROR("Memory pointed by resource pointer is corrupted.");
-        return Result::CorruptedPointer;
+        return false;
     }
 
     std::unique_lock<std::mutex> ulock(mResListMutex);
@@ -181,7 +181,7 @@ Result ResManager::AddCustomResource(ResourceBase* resource, const char* name)
     {
         ulock.unlock();
         LOG_ERROR("Resource with name '%s' already exists.", pNameToCheck);
-        return Result::Error;
+        return false;
     }
 
     if (name != nullptr)
@@ -196,7 +196,7 @@ Result ResManager::AddCustomResource(ResourceBase* resource, const char* name)
     resPair.second = resource;
     mResources.insert(resPair);
 
-    return Result::OK;
+    return true;
 }
 
 void ResManager::LoadResource(ResourceBase* resource)

@@ -71,9 +71,23 @@
 #define NFE_PREFETCH(addr) __builtin_prefetch(addr, 0, 3) // prefetch for read to all cache levels
 #endif // WIN32
 
+// macro for disabling "unsused parameter"
+#ifndef UNUSED
+#define UNUSED(x) (void)(x)
+#endif // UNUSED
+
+// debug assert
+// TODO: reimplement
+#ifndef NFE_ASSERT
+#ifdef _DEBUG
+#define NFE_ASSERT(e, s) { if ((e)==0) {OutputDebugString(s); DebugBreak();}}
+#else
+#define NFE_ASSERT(e, s)
+#endif
+#endif
+
 
 namespace NFE {
-namespace Common {
 
 // Linux datatypes workaround
 #if defined(__LINUX__) | defined(__linux__)
@@ -87,10 +101,10 @@ typedef unsigned __int64 __uint64;
 typedef __uint64 uint64;
 typedef __int64 int64;
 typedef unsigned int uint32;
-typedef int int32;
+typedef signed int int32;
 typedef unsigned short uint16;
-typedef short int16;
-typedef unsigned char uchar;
+typedef signed short int16;
+typedef unsigned char uint8;
+typedef signed char int8;
 
-} // namespace Common
 } // namespace NFE

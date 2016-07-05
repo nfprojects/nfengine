@@ -13,6 +13,7 @@
 #include "nfCommon/Logger.hpp"
 
 
+using namespace NFE;
 using namespace NFE::Common;
 using namespace NFE::Math;
 

@@ -295,7 +295,7 @@ bool View::InitImGui()
     io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
 
     TextureDataDesc texDataDesc;
-    texDataDesc.lineSize = texDataDesc.sliceSize = width * 4 * sizeof(uchar);
+    texDataDesc.lineSize = texDataDesc.sliceSize = width * 4 * sizeof(uint8);
     texDataDesc.data = pixels;
 
     TextureDesc texDesc;

@@ -139,7 +139,7 @@ Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
         case ImageFormat::A_UByte:
         {
             // TODO use function similar to VectorLoadUChar4
-            uchar* data = static_cast<uchar*>(mData.GetData());
+            uint8* data = static_cast<uint8*>(mData.GetData());
             Float4 colors;
             colors.x = 1.0f;
             colors.y = 1.0f;
@@ -151,7 +151,7 @@ Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
         case ImageFormat::R_UByte:
         {
             // TODO use function similar to VectorLoadUChar4
-            uchar* data = static_cast<uchar*>(mData.GetData());
+            uint8* data = static_cast<uint8*>(mData.GetData());
             Float4 colors;
             colors.x = static_cast<float>(data[(y * mWidth + x)]) / 255.0f;
             colors.y = 0.0f;
@@ -163,7 +163,7 @@ Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
         case ImageFormat::RGB_UByte:
         {
             // TODO use function similar to VectorLoadUChar4
-            uchar* data = static_cast<uchar*>(mData.GetData());
+            uint8* data = static_cast<uint8*>(mData.GetData());
             Float4 colors;
             colors.x = static_cast<float>(data[3 * (y * mWidth + x)]    ) / 255.0f;
             colors.y = static_cast<float>(data[3 * (y * mWidth + x) + 1]) / 255.0f;
@@ -174,7 +174,7 @@ Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
 
         case ImageFormat::RGBA_UByte:
         {
-            uchar* data = static_cast<uchar*>(mData.GetData());
+            uint8* data = static_cast<uint8*>(mData.GetData());
             data += 4 * (y * mWidth + x);
             return VectorLoadUChar4(data) * VECTOR_INV_255;
         }
@@ -208,32 +208,32 @@ void Mipmap::SetTexel(const Color& v, uint32 x, uint32 y, ImageFormat fmt)
         case ImageFormat::A_UByte:
         {
             // TODO use function similar to VectorStoreUChar4
-            uchar* data = static_cast<uchar*>(mData.GetData());
-            data[y * mWidth + x] = static_cast<uchar>(v.f[3] * 255.0f);
+            uint8* data = static_cast<uint8*>(mData.GetData());
+            data[y * mWidth + x] = static_cast<uint8>(v.f[3] * 255.0f);
             break;
         }
 
         case ImageFormat::R_UByte:
         {
             // TODO use function similar to VectorStoreUChar4
-            uchar* data = static_cast<uchar*>(mData.GetData());
-            data[y * mWidth + x] = static_cast<uchar>(v.f[0] * 255.0f);
+            uint8* data = static_cast<uint8*>(mData.GetData());
+            data[y * mWidth + x] = static_cast<uint8>(v.f[0] * 255.0f);
             break;
         }
 
         case ImageFormat::RGB_UByte:
         {
             // TODO use function similar to VectorStoreUChar4
-            uchar* data = static_cast<uchar*>(mData.GetData());
-            data[3 * (y * mWidth + x)    ] = static_cast<uchar>(v.f[0] * 255.0f);
-            data[3 * (y * mWidth + x) + 1] = static_cast<uchar>(v.f[1] * 255.0f);
-            data[3 * (y * mWidth + x) + 2] = static_cast<uchar>(v.f[2] * 255.0f);
+            uint8* data = static_cast<uint8*>(mData.GetData());
+            data[3 * (y * mWidth + x)    ] = static_cast<uint8>(v.f[0] * 255.0f);
+            data[3 * (y * mWidth + x) + 1] = static_cast<uint8>(v.f[1] * 255.0f);
+            data[3 * (y * mWidth + x) + 2] = static_cast<uint8>(v.f[2] * 255.0f);
             break;
         }
 
         case ImageFormat::RGBA_UByte:
         {
-            uchar* data = static_cast<uchar*>(mData.GetData());
+            uint8* data = static_cast<uint8*>(mData.GetData());
             data += 4 * (y * mWidth + x);
             VectorStoreUChar4(v * 255.0f, data);
             break;

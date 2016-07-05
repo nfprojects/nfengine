@@ -6,11 +6,14 @@
 
 #include "PCH.hpp"
 
+#include "nfCommon/nfCommon.hpp"
 #include "nfCommon/BVH.hpp"
 #include "nfCommon/Timer.hpp"
 #include "nfCommon/Math/Random.hpp"
 #include "nfCommon/Math/Vector.hpp"
 
+
+using namespace NFE;
 using namespace NFE::Common;
 using namespace NFE::Math;
 

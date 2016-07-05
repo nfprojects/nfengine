@@ -6,6 +6,8 @@
 
 #include "Test.hpp"
 
+
+using namespace NFE;
 using namespace NFE::Common;
 
 namespace {

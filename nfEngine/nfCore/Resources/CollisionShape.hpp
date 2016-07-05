@@ -49,13 +49,13 @@ public:
     void OnUnload();
 
     // TODO: this function should operate on Common::InputStream
-    Result LoadFromFile(const char* pPath);
+    bool LoadFromFile(const char* pPath);
 
     // Add box shape
-    Result AddBox(const Math::Vector& halfSize, const Math::Matrix& matrix);
+    bool AddBox(const Math::Vector& halfSize, const Math::Matrix& matrix);
 
     // Add cylinder shape
-    Result AddCylinder(float h, float r);
+    bool AddCylinder(float h, float r);
 };
 
 } // namespace Resource

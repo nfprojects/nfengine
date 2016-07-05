@@ -16,14 +16,14 @@ namespace Math {
 
 Random::Random()
 {
-    mSeed = static_cast<NFE::Common::uint64>(time(0));
+    mSeed = static_cast<uint64>(time(0));
 }
 
-Random::Random(NFE::Common::int64 seed)
+Random::Random(uint64 seed)
 {
     if (seed == 0)
     {
-        mSeed = static_cast<NFE::Common::uint64>(time(0));
+        mSeed = static_cast<uint64>(time(0));
     }
     else
     {
@@ -31,7 +31,7 @@ Random::Random(NFE::Common::int64 seed)
     }
 }
 
-NFE::Common::uint64 Random::GetLong()
+uint64 Random::GetLong()
 {
     Shuffle();
     return mSeed;

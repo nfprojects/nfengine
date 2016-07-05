@@ -4,6 +4,7 @@
 #include <fstream>
 
 
+using namespace NFE;
 using namespace NFE::Common;
 
 const std::string testPackFilePath = "testfile.nfp";

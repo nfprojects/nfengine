@@ -68,18 +68,18 @@ struct BitmapV5Header
 
 struct RGBQuad
 {
-    uchar rgbBlue;
-    uchar rgbGreen;
-    uchar rgbRed;
-    uchar rgbReserved;
+    uint8 rgbBlue;
+    uint8 rgbGreen;
+    uint8 rgbRed;
+    uint8 rgbReserved;
 };
 
 bool GetColorPalette(InputStream* stream, std::vector<RGBQuad>& palette);
 bool ReadPixelsWithPalette(InputStream* stream, size_t offset, uint32 width,
-                           uint32 height, uchar bitsPerPixel,
+                           uint32 height, uint8 bitsPerPixel,
                            std::vector<Mipmap> &dest, std::vector<RGBQuad> &palette);
 bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
-                uchar bitsPerPixel, std::vector<Mipmap> &dest, uint32* colorMask);
+                uint8 bitsPerPixel, std::vector<Mipmap> &dest, uint32* colorMask);
 
 bool Image::LoadBMP(InputStream* stream)
 {
@@ -113,7 +113,7 @@ bool Image::LoadBMP(InputStream* stream)
     // Read info header
     stream->Read(sizeof(BitmapV5Header), &infoHeader);
 
-    uchar bitsPerPixel = static_cast<uchar>(infoHeader.bitCount);
+    uint8 bitsPerPixel = static_cast<uint8>(infoHeader.bitCount);
     bool paletteUsed = bitsPerPixel <= 8;
 
     // Check if BMP contains palette
@@ -183,9 +183,9 @@ bool GetColorPalette(InputStream* stream, std::vector<RGBQuad>& palette)
 
 // Function to read pixels for BMPs with >8bpp
 bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
-                uchar bitsPerPixel, std::vector<Mipmap> &dest, uint32* colorMask)
+                uint8 bitsPerPixel, std::vector<Mipmap> &dest, uint32* colorMask)
 {
-    uchar colorSize = bitsPerPixel / 8;
+    uint8 colorSize = bitsPerPixel / 8;
     size_t dataSize = width * height * 4;
 
     uint32 lineSize = width * colorSize;
@@ -193,7 +193,7 @@ bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
     while (lineSizeActual % 4)
         lineSizeActual++;
 
-    std::unique_ptr<uchar[]> imageData(new (std::nothrow) uchar[dataSize]);
+    std::unique_ptr<uint8[]> imageData(new (std::nothrow) uint8[dataSize]);
 
     if (!imageData.get())
     {
@@ -205,7 +205,7 @@ bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
     // Either way, that enforces me to make it a separate case
     if (bitsPerPixel == 24)
     {
-        std::unique_ptr<uchar[]> colorData(new (std::nothrow) uchar[lineSize]);
+        std::unique_ptr<uint8[]> colorData(new (std::nothrow) uint8[lineSize]);
 
         for (int y = static_cast<int>(height - 1); y >= 0; y--)
         {
@@ -232,7 +232,7 @@ bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
     else
     {
         std::unique_ptr<uint32[]> colorData(new (std::nothrow) uint32[lineSize]);
-        uchar colorsPer4Bytes = 4 / colorSize;
+        uint8 colorsPer4Bytes = 4 / colorSize;
         uint32 colorsMask = CreateBitMask(bitsPerPixel);
 
         for (int y = static_cast<int>(height - 1); y >= 0; y--)
@@ -255,10 +255,10 @@ bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
                     uint32 colorData32 = ((colorData[byteIndex] >> (j * bitsPerPixel)) & colorsMask);
 
                     // Get RGBA values from read bytes
-                    for (uchar i = 0; i < 4; i++)
+                    for (uint8 i = 0; i < 4; i++)
                     {
                         // Count trailing zeros for current colorMask
-                        uchar maskOffset = CountTrailingZeros(colorMask[i]);
+                        uint8 maskOffset = CountTrailingZeros(colorMask[i]);
 
                         // Get color value (it may be 5, 6 or 8 bits)
                         uint32 singleColor = (colorData32 & colorMask[i]) >> maskOffset;
@@ -271,7 +271,7 @@ bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
                         }
 
                         // Store color data
-                        uchar singleColor8b = static_cast<uchar>(singleColor);
+                        uint8 singleColor8b = static_cast<uint8>(singleColor);
                         imageData.get()[4 * (y * width + x + j) + i] = singleColor8b;
                     }
 
@@ -291,12 +291,12 @@ bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
 
 // Function to read pixels for BMPs with <=8bpp (these contain color palette)
 bool ReadPixelsWithPalette(InputStream* stream, size_t offset, uint32 width,
-                            uint32 height, uchar bitsPerPixel, std::vector<Mipmap> &dest,
+                            uint32 height, uint8 bitsPerPixel, std::vector<Mipmap> &dest,
                             std::vector<RGBQuad> &palette)
 {
     size_t dataSize = width * height * 4;
-    uchar colorsPerByte = 8 / bitsPerPixel;
-    uchar bitMask = static_cast<uchar>(CreateBitMask(bitsPerPixel));
+    uint8 colorsPerByte = 8 / bitsPerPixel;
+    uint8 bitMask = static_cast<uint8>(CreateBitMask(bitsPerPixel));
 
     // lineSize is a size of all non-empty bytes in line
     uint32 lineSize = (width + (width % colorsPerByte)) / colorsPerByte;
@@ -304,8 +304,8 @@ bool ReadPixelsWithPalette(InputStream* stream, size_t offset, uint32 width,
     while (lineSizeActual % 4)
         lineSizeActual++;
 
-    std::unique_ptr<uchar[]> imageData(new (std::nothrow) uchar[dataSize]);
-    std::unique_ptr<uchar[]> colorData(new (std::nothrow) uchar[lineSize]);
+    std::unique_ptr<uint8[]> imageData(new (std::nothrow) uint8[dataSize]);
+    std::unique_ptr<uint8[]> colorData(new (std::nothrow) uint8[lineSize]);
 
     if (!imageData.get())
     {
@@ -329,7 +329,7 @@ bool ReadPixelsWithPalette(InputStream* stream, size_t offset, uint32 width,
         {
             int byteIndex = x / colorsPerByte;
             int imageDataIndex = 4 * (y * width + x);
-            uchar bitShift = bitsPerPixel * (x % colorsPerByte);
+            uint8 bitShift = bitsPerPixel * (x % colorsPerByte);
 
             int paletteIndex = (colorData[byteIndex] >> bitShift) & bitMask;
 

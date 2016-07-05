@@ -34,12 +34,12 @@ public:
     /**
      * Load the texture from a stream (supported formats: BMP, JPEG and PNG).
      */
-    Result CreateFromStream(Common::InputStream* pStream);
+    bool CreateFromStream(Common::InputStream* pStream);
 
     /**
      * Create the texture from a custom memory buffer.
      */
-    Result CreateFromImage(const Common::Image& image);
+    bool CreateFromImage(const Common::Image& image);
 
     /**
      * Create renderable texture, for example to show monitor screen with a view from a camera.

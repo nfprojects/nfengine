@@ -81,9 +81,9 @@ private:
 
 protected:
     /// when creating custom mesh, use this functions:
-    Result AllocateVerticies(uint32 count);
-    Result AllocateIndices(uint32 count);
-    Result AllocateSubmeshes(uint32 count);
+    bool AllocateVerticies(uint32 count);
+    bool AllocateIndices(uint32 count);
+    bool AllocateSubmeshes(uint32 count);
 
 public:
     Mesh();

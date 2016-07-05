@@ -169,16 +169,16 @@ bool Image::DecompressDDS()
 
     // Calculate array sizes and allocate the memory
     const int size = static_cast<int>(mWidth * mHeight
-                                        * BitsPerPixel(gDDSSrcFormat) / sizeof(uchar));
+                                        * BitsPerPixel(gDDSSrcFormat) / sizeof(uint8));
 
-    std::unique_ptr<uchar[]> pixels(new (std::nothrow) uchar[size]);
+    std::unique_ptr<uint8[]> pixels(new (std::nothrow) uint8[size]);
     if (!pixels.get())
     {
         LOG_ERROR("Allocating memory for DDS decompression failed.");
         return false;
     }
 
-    const uchar* block = static_cast<const uchar*>(GetData());
+    const uint8* block = static_cast<const uint8*>(GetData());
 
     // Decompress the first mipmap
     squish::DecompressImage(pixels.get(), mWidth, mHeight, block, compressionFlag);
@@ -225,8 +225,8 @@ bool Image::CompressDDS(ImageFormat destFormat)
     uint32 height = mip->GetHeight();
     size_t size = width * height * bitsPerPixel;
 
-    const uchar* pixels = static_cast<const uchar*>(mip->GetData());
-    std::unique_ptr<uchar[]> block(new (std::nothrow) uchar[size / sizeof(uchar)]);
+    const uint8* pixels = static_cast<const uint8*>(mip->GetData());
+    std::unique_ptr<uint8[]> block(new (std::nothrow) uint8[size / sizeof(uint8)]);
     if (!block.get())
     {
         LOG_ERROR("Allocating memory for DDS compression failed.");
@@ -248,8 +248,8 @@ bool Image::CompressDDS(ImageFormat destFormat)
             break;
         size = width * height * bitsPerPixel;
 
-        pixels = static_cast<const uchar*>(mip->GetData());
-        block.reset(new (std::nothrow) uchar[size / sizeof(uchar)]);
+        pixels = static_cast<const uint8*>(mip->GetData());
+        block.reset(new (std::nothrow) uint8[size / sizeof(uint8)]);
         if (!block.get())
         {
             LOG_ERROR("Compressing mipmap of level %d failed.", i);
@@ -367,7 +367,7 @@ bool Image::GenerateMipmapsActual(MipmapFilter filterType, uint32 num)
         size_t dataSize = nextMipWidth * nextMipHeight * BitsPerPixel(mFormat);
 
         // Make empty data for the new mipmap so it allocates the space needed
-        std::unique_ptr<uchar[]> data(new (std::nothrow) uchar[dataSize / sizeof(uchar)]);
+        std::unique_ptr<uint8[]> data(new (std::nothrow) uint8[dataSize / sizeof(uint8)]);
         if (!data.get())
         {
             LOG_ERROR("Allocating memory for mipmap generation failed.");

@@ -2,6 +2,8 @@
 #include "nfCommon/FileSystem.hpp"
 #include "nfCommon/File.hpp"
 
+
+using namespace NFE;
 using namespace NFE::Common;
 
 TEST(FileTest, Simple)

@@ -53,7 +53,7 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
             Release();
             return false;
         }
-        mSplits = static_cast<uchar>(splits);
+        mSplits = static_cast<uint8>(splits);
         break;
     default:
         LOG_ERROR("Invalid shadow type");

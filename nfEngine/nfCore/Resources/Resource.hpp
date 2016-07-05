@@ -86,8 +86,8 @@ public:
     void SetUserPointer(void* pPtr);
     void* GetUserPointer() const;
 
-    Result SetCallbacks(OnLoadCallback onLoadCallback = nullptr,
-                        OnUnloadCallback onUnloadCallback = nullptr);
+    bool SetCallbacks(OnLoadCallback onLoadCallback = nullptr,
+                      OnUnloadCallback onUnloadCallback = nullptr);
 
     const char* GetName() const;
     ResourceState GetState() const;

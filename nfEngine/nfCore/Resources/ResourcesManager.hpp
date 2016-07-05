@@ -66,7 +66,7 @@ public:
     /**
      * Insert a resource object created by the user.
      */
-    Result AddCustomResource(ResourceBase* resource, const char* name);
+    bool AddCustomResource(ResourceBase* resource, const char* name);
 
     /**
      * Delete a resource from map (if the resource has no references).

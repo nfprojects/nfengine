@@ -197,7 +197,7 @@ bool Texture::OnLoad()
             //oepn from file
             strcpy(path, "..\\Data\\Textures\\");
             strcat(path, mName);
-            if (image.LoadFromFile(path) != Result::OK)
+            if (image.LoadFromFile(path) != true)
             {
                 LOG_ERROR("Failed to open '%s'.", mName);
                 return false;
@@ -206,7 +206,7 @@ bool Texture::OnLoad()
         }
         else
         {
-            if (image.LoadFromBuffer(buffer.GetData(), buffer.GetSize()) != Result::OK)
+            if (image.LoadFromBuffer(buffer.GetData(), buffer.GetSize()) != true)
             {
                 LOG_ERROR("Failed to open '%s'.", mName);
                 return false;
@@ -215,7 +215,7 @@ bool Texture::OnLoad()
         }
         */
 
-        if (CreateFromImage(image) != Result::OK)
+        if (CreateFromImage(image) != true)
             return false;
 
         LOG_SUCCESS("Texture '%s' loaded in %.3f sec. Dim: %ix%i, format: %s.",
@@ -236,14 +236,14 @@ void Texture::OnUnload()
 
 
 
-//Load the texture from a stream (supported formats: BMP, JPEG and PNG).
-Result Texture::CreateFromStream(Common::InputStream* pStream)
+// Load the texture from a stream (supported formats: BMP, JPEG and PNG).
+bool Texture::CreateFromStream(Common::InputStream* pStream)
 {
-    return Result::OK;
+    return true;
 }
 
-//Create the texture from a custom memory buffer.
-Result Texture::CreateFromImage(const Common::Image& image)
+// Create the texture from a custom memory buffer.
+bool Texture::CreateFromImage(const Common::Image& image)
 {
     Release();
 
@@ -257,10 +257,10 @@ Result Texture::CreateFromImage(const Common::Image& image)
     if (!mTex)
     {
         LOG_ERROR("Failed to create renderer's texture for '%s'.", mName);
-        return Result::Error;
+        return false;
     }
 
-    return Result::OK;
+    return true;
 }
 
 

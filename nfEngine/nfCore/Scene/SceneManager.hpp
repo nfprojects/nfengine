@@ -17,7 +17,8 @@
 namespace NFE {
 namespace Scene {
 
-NFE_ALIGNED_CLASS(class CORE_API EnviromentDesc)
+NFE_ALIGN16
+class CORE_API EnviromentDesc : public Common::Aligned<16>
 {
 public:
     Math::Vector ambientLight;
@@ -33,7 +34,8 @@ public:
 /**
  * Scene manager.
  */
-NFE_ALIGNED_CLASS(class CORE_API SceneManager)
+NFE_ALIGN16
+class CORE_API SceneManager : public Common::Aligned<16>
 {
 private:
     EntityManager mEntityManager;
