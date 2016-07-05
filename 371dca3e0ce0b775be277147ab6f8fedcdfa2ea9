@@ -128,6 +128,24 @@
       "revId": "371dca3e0ce0b775be277147ab6f8fedcdfa2ea9",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8ab448f2",
+        "filename": "nfEngine/nfCommonTest/ThreadTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T18:10:54Z",
+      "side": 1,
+      "message": "Yes, for now it will be OK. You can check if it works in VS (by inserting breakpoint inside thread callback)",
+      "parentUuid": "baa041b7_d608c72a",
+      "revId": "371dca3e0ce0b775be277147ab6f8fedcdfa2ea9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
