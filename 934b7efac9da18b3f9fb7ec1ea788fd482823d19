@@ -1,0 +1,312 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_bedd1216",
+        "filename": "nfEngine/nfCommon/FileAsync.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T06:16:52Z",
+      "side": 1,
+      "message": "i think you don\u0027t use it",
+      "revId": "934b7efac9da18b3f9fb7ec1ea788fd482823d19",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_debfb6a8",
+        "filename": "nfEngine/nfCommon/FileAsync.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T06:16:52Z",
+      "side": 1,
+      "message": "Add before this include (as in other places in the engine):\n\n#define WIN32_LEAN_AND_MEAN\n#define NOMINMAX",
+      "revId": "934b7efac9da18b3f9fb7ec1ea788fd482823d19",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3ed22201",
+        "filename": "nfEngine/nfCommon/Linux/FileAsync.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T06:16:52Z",
+      "side": 1,
+      "message": "What about IO cancel?",
+      "revId": "934b7efac9da18b3f9fb7ec1ea788fd482823d19",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7efe6a6c",
+        "filename": "nfEngine/nfCommon/Linux/FileAsync.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T06:16:52Z",
+      "side": 1,
+      "message": "IMO you should allocate both \"info\" and \"aiocbPtr\" in one go, with NFE_MALLOC. rebase?",
+      "revId": "934b7efac9da18b3f9fb7ec1ea788fd482823d19",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_9ee00ece",
+        "filename": "nfEngine/nfCommon/Linux/FileAsync.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T06:16:52Z",
+      "side": 1,
+      "message": "As said on Slack, this is bad IMO, because the callback may not get called (e.g. when IO operation is canceled). IMO you should put these structures to some container (hold as FileAsync member) so it gets automatically freed in the destructor (you should destroy it after handling as well ofc)",
+      "range": {
+        "startLine": 145,
+        "startChar": 0,
+        "endLine": 148,
+        "endChar": 28
+      },
+      "revId": "934b7efac9da18b3f9fb7ec1ea788fd482823d19",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7ee78ae4",
+        "filename": "nfEngine/nfCommon/Linux/FileAsync.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T06:16:52Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 182,
+        "startChar": 0,
+        "endLine": 185,
+        "endChar": 28
+      },
+      "revId": "934b7efac9da18b3f9fb7ec1ea788fd482823d19",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_5eea86ad",
+        "filename": "nfEngine/nfCommon/Linux/FileAsync.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T06:16:52Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 223,
+        "startChar": 0,
+        "endLine": 226,
+        "endChar": 24
+      },
+      "revId": "934b7efac9da18b3f9fb7ec1ea788fd482823d19",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_1ecd1e5d",
+        "filename": "nfEngine/nfCommon/Win/FileAsync.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T06:16:52Z",
+      "side": 1,
+      "message": "what about IO cancel?",
+      "revId": "934b7efac9da18b3f9fb7ec1ea788fd482823d19",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_fedb9a19",
+        "filename": "nfEngine/nfCommon/Win/FileAsync.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T06:16:52Z",
+      "side": 1,
+      "message": "as in Linux",
+      "range": {
+        "startLine": 146,
+        "startChar": 0,
+        "endLine": 149,
+        "endChar": 30
+      },
+      "revId": "934b7efac9da18b3f9fb7ec1ea788fd482823d19",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_9e07ee80",
+        "filename": "nfEngine/nfCommon/Win/FileAsync.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T06:16:52Z",
+      "side": 1,
+      "message": "IMO you should allocate both \"overlapped\" and \"info\" in one go, with NFE_MALLOC. rebase?",
+      "revId": "934b7efac9da18b3f9fb7ec1ea788fd482823d19",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ded696f0",
+        "filename": "nfEngine/nfCommon/Win/FileAsync.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T06:16:52Z",
+      "side": 1,
+      "message": "as in Linux",
+      "range": {
+        "startLine": 185,
+        "startChar": 0,
+        "endLine": 188,
+        "endChar": 30
+      },
+      "revId": "934b7efac9da18b3f9fb7ec1ea788fd482823d19",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_be04f27d",
+        "filename": "nfEngine/nfCommon/Win/FileAsync.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T06:16:52Z",
+      "side": 1,
+      "message": "as in Linux",
+      "range": {
+        "startLine": 231,
+        "startChar": 0,
+        "endLine": 234,
+        "endChar": 20
+      },
+      "revId": "934b7efac9da18b3f9fb7ec1ea788fd482823d19",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_be2bd2ea",
+        "filename": "nfEngine/nfCommonTest/FileAsyncTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T06:16:52Z",
+      "side": 1,
+      "message": "make anon namesapce",
+      "revId": "934b7efac9da18b3f9fb7ec1ea788fd482823d19",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7e354a44",
+        "filename": "nfEngine/nfCommonTest/FileAsyncTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T06:16:52Z",
+      "side": 1,
+      "message": "\"bufferSize\" in multiplies of sizeof(int). this is confising. I would use chars, so bufferSize is in bytes, not 4bytes",
+      "revId": "934b7efac9da18b3f9fb7ec1ea788fd482823d19",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_9e2ecef8",
+        "filename": "nfEngine/nfCommonTest/FileAsyncTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T06:16:52Z",
+      "side": 1,
+      "message": "Use Random class",
+      "revId": "934b7efac9da18b3f9fb7ec1ea788fd482823d19",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_deed76b8",
+        "filename": "nfEngine/nfCommonTest/FileAsyncTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T06:16:52Z",
+      "side": 1,
+      "message": "Now, if all reads will fail for smoe reason this loop will wait 10 * 100 seconds. Either decrease timeout or use 1 common latch launched when counter gets to \"operationsUpperLimit\"",
+      "revId": "934b7efac9da18b3f9fb7ec1ea788fd482823d19",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
