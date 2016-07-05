@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_6aea24ae",
+        "filename": "nfEngine/Tools/ResourceManager/Main.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T19:24:27Z",
+      "side": 1,
+      "message": "No, we can\u0027t - this tool does not now that nfCore exists. As I\u0027ve written - this is temporary. Resource paths will be configurable somehow - they can\u0027t be hardcoded both in nfCore and here.",
+      "parentUuid": "baa041b7_141cdd11",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 65
+      },
+      "revId": "8136cf2f7533e92170e666db577bc70dc4ccefd0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_d4fe75ad",
         "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
         "patchSetId": 5
@@ -36,6 +60,30 @@
       "writtenOn": "2016-07-05T11:48:36Z",
       "side": 1,
       "message": "This method is supposed to return char, whereas char may be signed or unsigned by default. Quite often it is unsigned and so You need to make proper changes here. You have 3 options:\n1. return char and change SCHAR_MIN/MAX to CHAR_MIN/MAX and hope for the expected type of char\n2. return signed char\n3. return uchar and change all SCHAR_MAX to UCHAR_MAX and SCHAR_MIN to 0",
+      "range": {
+        "startLine": 38,
+        "startChar": 4,
+        "endLine": 38,
+        "endChar": 32
+      },
+      "revId": "8136cf2f7533e92170e666db577bc70dc4ccefd0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ea4994b8",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T19:24:27Z",
+      "side": 1,
+      "message": "I choose option 4: use int8",
+      "parentUuid": "baa041b7_d4fe75ad",
       "range": {
         "startLine": 38,
         "startChar": 4,
