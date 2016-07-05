@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "baa041b7_eabf54a8",
+        "filename": "nfEngine/nfCommon/LogGrouper.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T18:40:18Z",
+      "side": 1,
+      "message": "Why not i.file? why you assume that all logs will come from the same source file. I would remove \"mFile\" completely and add \"file\" to LogStruct",
+      "range": {
+        "startLine": 126,
+        "startChar": 37,
+        "endLine": 126,
+        "endChar": 42
+      },
+      "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_1209b42c",
         "filename": "nfEngine/nfCommon/LogGrouper.hpp",
         "patchSetId": 2
@@ -96,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_0af278d2",
+        "filename": "nfEngine/nfCommon/LogGrouper.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T18:40:18Z",
+      "side": 1,
+      "message": "it can be for example 4KB, whatever.",
+      "parentUuid": "baa041b7_1e1bf3cb",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 33
+      },
+      "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_52ff3c01",
         "filename": "nfEngine/nfCommon/LogGrouper.hpp",
         "patchSetId": 2
@@ -125,6 +172,24 @@
       "side": 1,
       "message": "Right now line number is in every log call, so it makes it easier to locate the log even in very big scopes/groups.\n\nDo You want line number to be the same for whole log group?",
       "parentUuid": "baa041b7_52ff3c01",
+      "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2ac65c49",
+        "filename": "nfEngine/nfCommon/LogGrouper.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T18:40:18Z",
+      "side": 1,
+      "message": "See last comment in cpp",
+      "parentUuid": "baa041b7_bedc0747",
       "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -166,6 +231,30 @@
       "side": 1,
       "message": "Nope, it wouldn\u0027t work. Check for yourself",
       "parentUuid": "baa041b7_3202780a",
+      "range": {
+        "startLine": 35,
+        "startChar": 27,
+        "endLine": 35,
+        "endChar": 52
+      },
+      "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_6ab344ea",
+        "filename": "nfEngine/nfCommon/LogGrouper.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T18:40:18Z",
+      "side": 1,
+      "message": "yeah, I know it now",
+      "parentUuid": "baa041b7_ded58b1b",
       "range": {
         "startLine": 35,
         "startChar": 27,
