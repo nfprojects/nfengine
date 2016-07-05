@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_141cdd11",
+        "filename": "nfEngine/Tools/ResourceManager/Main.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-05T11:48:36Z",
+      "side": 1,
+      "message": "Can we include Global.hpp header from nfCore?\n(or is it rly wrong thing to do?)",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 65
+      },
+      "revId": "8136cf2f7533e92170e666db577bc70dc4ccefd0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_d4fe75ad",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-05T11:48:36Z",
+      "side": 1,
+      "message": "This method is supposed to return char, whereas char may be signed or unsigned by default. Quite often it is unsigned and so You need to make proper changes here. You have 3 options:\n1. return char and change SCHAR_MIN/MAX to CHAR_MIN/MAX and hope for the expected type of char\n2. return signed char\n3. return uchar and change all SCHAR_MAX to UCHAR_MAX and SCHAR_MIN to 0",
+      "range": {
+        "startLine": 38,
+        "startChar": 4,
+        "endLine": 38,
+        "endChar": 32
+      },
+      "revId": "8136cf2f7533e92170e666db577bc70dc4ccefd0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
