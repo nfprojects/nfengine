@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_0a1b981c",
+        "filename": "nfEngine/nfCore/Renderer/GeometryRenderer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T18:08:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_9e4dae9b",
+      "range": {
+        "startLine": 159,
+        "startChar": 8,
+        "endLine": 159,
+        "endChar": 27
+      },
+      "revId": "f9211ead49c5807db485e6500f4cfadaf8489f6a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_7e442a73",
         "filename": "nfEngine/nfCore/Renderer/LightsRenderer.cpp",
         "patchSetId": 8
@@ -36,6 +60,30 @@
       "writtenOn": "2016-07-05T12:05:10Z",
       "side": 1,
       "message": "I think that Tex2Slot should be checked as well",
+      "range": {
+        "startLine": 258,
+        "startChar": 14,
+        "endLine": 258,
+        "endChar": 29
+      },
+      "revId": "f9211ead49c5807db485e6500f4cfadaf8489f6a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ea1514e5",
+        "filename": "nfEngine/nfCore/Renderer/LightsRenderer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T18:08:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_7e442a73",
       "range": {
         "startLine": 258,
         "startChar": 14,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_cad37037",
+        "filename": "nfEngine/nfCore/Renderer/LightsRenderer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T18:08:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_5e472677",
+      "range": {
+        "startLine": 267,
+        "startChar": 36,
+        "endLine": 267,
+        "endChar": 45
+      },
+      "revId": "f9211ead49c5807db485e6500f4cfadaf8489f6a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_3e5fc242",
         "filename": "nfEngine/nfCore/Renderer/LightsRenderer.cpp",
         "patchSetId": 8
@@ -82,6 +154,30 @@
       "writtenOn": "2016-07-05T12:05:10Z",
       "side": 1,
       "message": "As above",
+      "range": {
+        "startLine": 274,
+        "startChar": 35,
+        "endLine": 274,
+        "endChar": 44
+      },
+      "revId": "f9211ead49c5807db485e6500f4cfadaf8489f6a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_aad6ec24",
+        "filename": "nfEngine/nfCore/Renderer/LightsRenderer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 274,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-05T18:08:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_3e5fc242",
       "range": {
         "startLine": 274,
         "startChar": 35,
