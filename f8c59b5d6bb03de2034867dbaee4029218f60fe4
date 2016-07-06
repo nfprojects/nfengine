@@ -1,0 +1,255 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_298ae7bf",
+        "filename": "nfEngine/nfCommon/FileAsync.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-06T17:51:07Z",
+      "side": 1,
+      "message": "1. Why not std::function\n2. There must be some context passed to this function: what file we are reading/writing from (FileAsync*), how many bytes was read/written, if the operation succeeded, what type of operation was that.",
+      "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_0985e3ab",
+        "filename": "nfEngine/nfCommon/FileAsync.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-06T17:51:07Z",
+      "side": 1,
+      "message": "IMO there is no point in splitting this into two callbacks.",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 32
+      },
+      "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_296e672f",
+        "filename": "nfEngine/nfCommon/Linux/FileAsync.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-06T17:51:07Z",
+      "side": 1,
+      "message": "...",
+      "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_49ebeb78",
+        "filename": "nfEngine/nfCommon/Linux/FileAsync.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-06T17:51:07Z",
+      "side": 1,
+      "message": "as in Win version",
+      "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_29030744",
+        "filename": "nfEngine/nfCommon/Linux/FileAsync.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-06T17:51:07Z",
+      "side": 1,
+      "message": "as in Win version",
+      "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_49d40bbc",
+        "filename": "nfEngine/nfCommon/Win/FileAsync.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-06T17:51:07Z",
+      "side": 1,
+      "message": "This won\u0027t work...\n\nFrom msdn: \"If there are any pending I/O operations in progress for the specified file handle, the CancelIoEx function marks them for cancellation. Most types of operations can be canceled immediately; other operations can continue toward completion before they are actually canceled and the caller is notified. The CancelIoEx function does not wait for all canceled operations to complete.\"",
+      "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a9603736",
+        "filename": "nfEngine/nfCommon/Win/FileAsync.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-06T17:51:07Z",
+      "side": 1,
+      "message": "move to common source file to not duplicate code",
+      "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_495d2b78",
+        "filename": "nfEngine/nfCommon/Win/FileAsync.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-06T17:51:07Z",
+      "side": 1,
+      "message": "I would first check if the pointer is in the set and remove then, if not - assert",
+      "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c9493bb9",
+        "filename": "nfEngine/nfCommon/Win/FileAsync.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-06T17:51:07Z",
+      "side": 1,
+      "message": "move to common source file to not duplicate code",
+      "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_0950435d",
+        "filename": "nfEngine/nfCommon/Win/FileAsync.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-06T17:51:07Z",
+      "side": 1,
+      "message": "I would use them, because they tell if the operation succeeded...",
+      "range": {
+        "startLine": 247,
+        "startChar": 0,
+        "endLine": 249,
+        "endChar": 36
+      },
+      "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_09fe0338",
+        "filename": "nfEngine/nfCommonTest/FileAsyncTest.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-06T17:51:07Z",
+      "side": 1,
+      "message": "\"../\" not required after rebasing",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 38
+      },
+      "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c9f7fb57",
+        "filename": "nfEngine/nfCommonTest/FileAsyncTest.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-06T17:51:07Z",
+      "side": 1,
+      "message": "mRand.GetUint()",
+      "range": {
+        "startLine": 48,
+        "startChar": 33,
+        "endLine": 48,
+        "endChar": 76
+      },
+      "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_699fcf03",
+        "filename": "nfEngine/nfCommonTest/FileAsyncTest.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-06T17:51:07Z",
+      "side": 1,
+      "message": "You can merge this with line 56 like this:\n\n    if (readOperationsCounter.fetch_add(1) \u003d\u003d operationsUpperLimit - 1)\n        operationsLatch-\u003eSet();",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 60,
+        "endChar": 31
+      },
+      "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
