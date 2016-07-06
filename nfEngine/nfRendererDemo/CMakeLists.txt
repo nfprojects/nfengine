@@ -11,8 +11,7 @@ FILE(GLOB NFRENDERERDEMO_SCENE_HEADERS Scenes/*.hpp)
 
 # Search for dependencies
 PKG_CHECK_MODULES(NFRENDERERDEMO_DEPS REQUIRED
-                  x11
-                  gl)
+                  x11)
 
 # setup directories
 INCLUDE_DIRECTORIES(${NFE_ROOT_DIRECTORY}/nfEngineDeps/

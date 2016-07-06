@@ -9,8 +9,11 @@
 #include "../Window.hpp"
 #include "../Logger.hpp"
 
+#if 0
 #include <GL/glx.h>
+#endif
 
+#include <X11/Xutil.h>
 
 namespace NFE {
 namespace Common {
@@ -136,6 +139,8 @@ bool Window::Open()
 
     ::XSetWindowAttributes xSetWAttrib;
 
+    // TODO disabled until OpenGL renderer will resurrect from the dead
+#if 0
     // Visual should be chosen with proper FB Config
     static int fbAttribs[] =
     {
@@ -186,15 +191,26 @@ bool Window::Open()
     XFree(fbc);
 
     XVisualInfo* visual = glXGetVisualFromFBConfig(mDisplay, bestFB);
-    ::Colormap colormap = XCreateColormap(mDisplay, mRoot, visual->visual, AllocNone);
+#endif
+/*
+    XVisualInfo* visual = nullptr;
+    XMatchVisualInfo(mDisplay, 0, 24, 0, visual);
+    if (!visual)
+    {
+        LOG_ERROR("Failed to match visual info");
+        return false;
+    }*/
+
+    ::Visual* visual = XDefaultVisual(mDisplay, 1);
+    ::Colormap colormap = XCreateColormap(mDisplay, mRoot, visual, AllocNone);
     xSetWAttrib.colormap = colormap;
     xSetWAttrib.event_mask = Button1MotionMask | Button2MotionMask | ButtonPressMask |
                              ButtonReleaseMask | ExposureMask | FocusChangeMask | KeyPressMask |
                              KeyReleaseMask | PointerMotionMask | StructureNotifyMask;
 
     XSetErrorHandler(ErrorHandler);
-    mWindow = XCreateWindow(mDisplay, mRoot, 0, 0, mWidth, mHeight, 1, visual->depth,
-                            InputOutput, visual->visual, CWColormap | CWEventMask, &xSetWAttrib);
+    mWindow = XCreateWindow(mDisplay, mRoot, 0, 0, mWidth, mHeight, 1, CopyFromParent,
+                            InputOutput, visual, CWColormap | CWEventMask, &xSetWAttrib);
     XFree(visual);
     if (Window::mWindowError)
     {
