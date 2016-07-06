@@ -9,8 +9,7 @@ FILE(GLOB NFCOMMONTEST_HEADERS *.hpp)
 
 # Search for dependencies
 PKG_CHECK_MODULES(NFCOMMONTEST_DEPS REQUIRED
-                  x11
-                  gl) # needed by nfCommon Window
+                  x11)
 
 # setup directories
 INCLUDE_DIRECTORIES(${NFE_ROOT_DIRECTORY}/nfEngineDeps/
