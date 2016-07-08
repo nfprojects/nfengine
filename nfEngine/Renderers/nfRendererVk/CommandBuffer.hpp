@@ -8,6 +8,8 @@
 
 #include "../RendererInterface/CommandBuffer.hpp"
 
+#include "Defines.hpp"
+
 namespace NFE {
 namespace Renderer {
 
@@ -15,9 +17,13 @@ class CommandBuffer : public ICommandBuffer
 {
     friend class Device;
 
+    VkCommandBuffer mVkCommandBuffer;
+
 public:
     CommandBuffer();
     ~CommandBuffer();
+
+    bool Init();
 
     /// Resources setup methods
     void Reset();

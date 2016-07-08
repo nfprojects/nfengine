@@ -23,6 +23,17 @@ CommandBuffer::~CommandBuffer()
 {
 }
 
+bool Init(VkCommandPool commandPool, VkCommandBufferLevel level)
+{
+    VkCommandBufferAllocateInfo allocInfo = {};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.commandPool = commandPool;
+    allocInfo.level = level;
+    allocInfo.commandBufferCount = 1;
+    vkAllocateCommandBuffers(gDevice->GetDevice(), &allocInfo, &mVkCommandBuffers);
+    return false;
+}
+
 void CommandBuffer::Reset()
 {
 }

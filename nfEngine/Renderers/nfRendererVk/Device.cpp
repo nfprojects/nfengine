@@ -11,6 +11,8 @@
 
 // modules
 #include "Translations.hpp"
+#include "Backbuffer.hpp"
+#include "RenderTarget.hpp"
 
 namespace {
 
@@ -172,6 +174,21 @@ bool Device::Init()
     return true;
 }
 
+const VkInstance& Device::GetInstance() const
+{
+    return mVkInstance.Get();
+}
+
+const VkDevice& Device::GetDevice() const
+{
+    return mVkDevice;
+}
+
+const VkPhysicalDevice& Device::GetPhysicalDevice() const
+{
+    return mVkPhysicalDevice;
+}
+
 void* Device::GetHandle() const
 {
     return nullptr;
@@ -198,14 +215,12 @@ ITexture* Device::CreateTexture(const TextureDesc& desc)
 
 IBackbuffer* Device::CreateBackbuffer(const BackbufferDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<Backbuffer, BackbufferDesc>(desc);
 }
 
 IRenderTarget* Device::CreateRenderTarget(const RenderTargetDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<RenderTarget, RenderTargetDesc>(desc);
 }
 
 IPipelineState* Device::CreatePipelineState(const PipelineStateDesc& desc)
@@ -252,7 +267,17 @@ IResourceBindingInstance* Device::CreateResourceBindingInstance(IResourceBinding
 
 ICommandBuffer* Device::CreateCommandBuffer()
 {
-    return nullptr;
+    CommandBuffer* cb = new (std::nothrow) CommandBuffer;
+    if (cb == nullptr)
+        return nullptr;
+
+    if (!cb->Init())
+    {
+        delete cb;
+        return nullptr;
+    }
+
+    return cb;
 }
 
 bool Device::GetDeviceInfo(DeviceInfo& info)
