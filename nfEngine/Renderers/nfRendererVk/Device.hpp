@@ -20,9 +20,12 @@ namespace Renderer {
 class Device : public IDevice
 {
 private:
-    Instance mVkInstance;
-    VkDevice mVkDevice;
-    VkPhysicalDevice mVkPhysicalDevice;
+    Instance mInstance;
+    VkPhysicalDevice mPhysicalDevice;
+    VkDevice mDevice;
+    VkCommandPool mCommandPool;
+    uint32 mGraphicsQueueIndex;
+    VkQueue mGraphicsQueue;
 
     VkPhysicalDevice SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices);
 
@@ -31,6 +34,10 @@ public:
     ~Device();
 
     bool Init();
+    const VkInstance& GetInstance() const;
+    const VkDevice& GetDevice() const;
+    const VkPhysicalDevice& GetPhysicalDevice() const;
+    const VkCommandPool& GetCommandPool() const;
 
     // overrides
     void* GetHandle() const override;

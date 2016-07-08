@@ -7,8 +7,11 @@
 #include "PCH.hpp"
 
 #include "Defines.hpp"
-
+#include "Device.hpp"
+#include "Translations.hpp"
 #include "CommandBuffer.hpp"
+
+#include <string.h>
 
 
 namespace NFE {
@@ -16,15 +19,39 @@ namespace Renderer {
 
 
 CommandBuffer::CommandBuffer()
+    : mCommandBuffer(VK_NULL_HANDLE)
 {
 }
 
 CommandBuffer::~CommandBuffer()
 {
+    if (mCommandBuffer)
+        vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(),
+                                               1, &mCommandBuffer);
+}
+
+bool CommandBuffer::Init()
+{
+    VkCommandBufferAllocateInfo allocInfo = {};
+    VK_ZERO_MEMORY(allocInfo);
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.commandPool = gDevice->GetCommandPool();
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandBufferCount = 1;
+    VkResult result = vkAllocateCommandBuffers(gDevice->GetDevice(), &allocInfo, &mCommandBuffer);
+    CHECK_VKRESULT(result, "Failed to allocate a command buffer");
+
+    VK_ZERO_MEMORY(mCommandBufferBeginInfo);
+    mCommandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    mCommandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+    LOG_INFO("Command Buffer initialized successfully.");
+    return true;
 }
 
 void CommandBuffer::Reset()
 {
+    vkBeginCommandBuffer(mCommandBuffer, &mCommandBufferBeginInfo);
 }
 
 void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets)
@@ -75,20 +102,25 @@ void CommandBuffer::SetStencilRef(unsigned char ref)
 void CommandBuffer::SetViewport(float left, float width, float top, float height,
                                 float minDepth, float maxDepth)
 {
-    UNUSED(left);
-    UNUSED(width);
-    UNUSED(top);
-    UNUSED(height);
-    UNUSED(minDepth);
-    UNUSED(maxDepth);
+    VkViewport viewport;
+    memset(&viewport, 0, sizeof(viewport));
+    viewport.x = left;
+    viewport.y = top;
+    viewport.width = width;
+    viewport.height = height;
+    viewport.minDepth = minDepth;
+    viewport.maxDepth = maxDepth;
+    vkCmdSetViewport(mCommandBuffer, 0, 1, &viewport);
 }
 
 void CommandBuffer::SetScissors(int left, int top, int right, int bottom)
 {
-    UNUSED(left);
-    UNUSED(top);
-    UNUSED(right);
-    UNUSED(bottom);
+    VkRect2D scissor;
+    scissor.offset.x = left;
+    scissor.offset.y = top;
+    scissor.extent.width = right - left;
+    scissor.extent.height = bottom - top;
+    vkCmdSetScissor(mCommandBuffer, 0, 1, &scissor);
 }
 
 void* CommandBuffer::MapBuffer(IBuffer* buffer, MapType type)
@@ -150,7 +182,23 @@ void CommandBuffer::DrawIndexed(int indexNum, int instancesNum,
 
 std::unique_ptr<ICommandList> CommandBuffer::Finish()
 {
-    return nullptr;
+    VkResult result = vkEndCommandBuffer(mCommandBuffer);
+    if (result != VK_SUCCESS)
+    {
+        LOG_ERROR("Error during Constant Buffer recording: %d (%s)",
+                  result, TranslateVkResultToString(result));
+        return nullptr;
+    }
+
+    std::unique_ptr<CommandList> list(new (std::nothrow) CommandList);
+    if (!list)
+    {
+        LOG_ERROR("Failed to allocate memory for command list");
+        return nullptr;
+    }
+
+    list->cmdBuffer = this;
+    return list;
 }
 
 void CommandBuffer::BeginDebugGroup(const char* text)
