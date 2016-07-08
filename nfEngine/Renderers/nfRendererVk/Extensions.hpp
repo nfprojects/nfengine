@@ -29,6 +29,9 @@ extern PFN_vkGetPhysicalDeviceQueueFamilyProperties vkGetPhysicalDeviceQueueFami
 extern PFN_vkCreateDevice vkCreateDevice;
 extern PFN_vkDestroyDevice vkDestroyDevice;
 extern PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr;
+extern PFN_vkDestroySurfaceKHR vkDestroySurfaceKHR;
+extern PFN_vkGetPhysicalDeviceSurfaceSupportKHR vkGetPhysicalDeviceSurfaceSupportKHR;
+extern PFN_vkGetPhysicalDeviceSurfaceFormatsKHR vkGetPhysicalDeviceSurfaceFormatsKHR;
 
 /**
  * Initializes Vulkan Instance extensions used by nfRendererVk.
@@ -40,6 +43,29 @@ bool nfvkInstanceExtensionsInit(VkInstance instance);
 
 
 // Device extensions
+
+// Command Pool
+extern PFN_vkCreateCommandPool vkCreateCommandPool;
+extern PFN_vkDestroyCommandPool vkDestroyCommandPool;
+
+// Command Buffers
+extern PFN_vkAllocateCommandBuffers vkAllocateCommandBuffers;
+extern PFN_vkBeginCommandBuffer vkBeginCommandBuffer;
+extern PFN_vkEndCommandBuffer vkEndCommandBuffer;
+extern PFN_vkFreeCommandBuffers vkFreeCommandBuffers;
+
+// Render Passes and Framebuffers
+extern PFN_vkCreateFramebuffer vkCreateFramebuffer;
+extern PFN_vkCreateRenderPass vkCreateRenderPass;
+extern PFN_vk
+extern PFN_vkDestroyFramebuffer vkDestroyFramebuffer;
+extern PFN_vkDestroyRenderPass vkDestroyRenderPass;
+
+// Commands
+extern PFN_vkCmdBeginRenderPass vkCmdBeginRenderPass;
+extern PFN_vkCmdEndRenderPass vkCmdEndRenderPass;
+extern PFN_vkCmdSetScissor vkCmdSetScissor;
+extern PFN_vkCmdSetViewport vkCmdSetViewport;
 
 /**
  * Initializes Vulkan Device extensions used by nfRendererVk.

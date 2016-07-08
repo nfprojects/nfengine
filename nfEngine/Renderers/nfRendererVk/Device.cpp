@@ -11,6 +11,8 @@
 
 // modules
 #include "Translations.hpp"
+#include "Backbuffer.hpp"
+#include "RenderTarget.hpp"
 
 namespace {
 
@@ -38,16 +40,20 @@ namespace Renderer {
 std::unique_ptr<Device> gDevice;
 
 Device::Device()
-    : mVkInstance()
-    , mVkDevice(VK_NULL_HANDLE)
-    , mVkPhysicalDevice(VK_NULL_HANDLE)
+    : mInstance()
+    , mPhysicalDevice(VK_NULL_HANDLE)
+    , mDevice(VK_NULL_HANDLE)
+    , mCommandPool(VK_NULL_HANDLE)
+    , mGraphicsQueueIndex(UINT32_MAX)
 {
 }
 
 Device::~Device()
 {
-    if (mVkDevice)
-        vkDestroyDevice(mVkDevice, nullptr);
+    if (mCommandPool != VK_NULL_HANDLE)
+        vkDestroyCommandPool(mDevice, mCommandPool, nullptr);
+    if (mDevice != VK_NULL_HANDLE)
+        vkDestroyDevice(mDevice, nullptr);
 }
 
 VkPhysicalDevice Device::SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices)
@@ -80,13 +86,13 @@ VkPhysicalDevice Device::SelectPhysicalDevice(const std::vector<VkPhysicalDevice
 
 bool Device::Init()
 {
-    if (!mVkInstance.Init(false))
+    if (!mInstance.Init(false))
     {
         LOG_ERROR("Vulkan instance failed to initialize");
         return false;
     }
 
-    const VkInstance& instance = mVkInstance.Get();
+    const VkInstance& instance = mInstance.Get();
 
     // acquire GPU count first
     unsigned int gpuCount = 0;
@@ -111,12 +117,12 @@ bool Device::Init()
         return false;
     }
 
-    mVkPhysicalDevice = SelectPhysicalDevice(devices);
+    mPhysicalDevice = SelectPhysicalDevice(devices);
 
     // Grab queue properties from our selected device
     uint32 graphicsQueue = 0;
     uint32 queueCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(mVkPhysicalDevice, &queueCount, nullptr);
+    vkGetPhysicalDeviceQueueFamilyProperties(mPhysicalDevice, &queueCount, nullptr);
     if (queueCount == 0)
     {
         LOG_ERROR("Physical device does not have any queue family properties.");
@@ -124,7 +130,7 @@ bool Device::Init()
     }
 
     std::vector<VkQueueFamilyProperties> queueProps(queueCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(mVkPhysicalDevice, &queueCount, queueProps.data());
+    vkGetPhysicalDeviceQueueFamilyProperties(mPhysicalDevice, &queueCount, queueProps.data());
 
     for (graphicsQueue = 0; graphicsQueue < queueCount; graphicsQueue++)
         if (queueProps[graphicsQueue].queueFlags & VK_QUEUE_GRAPHICS_BIT)
@@ -158,21 +164,54 @@ bool Device::Init()
     devInfo.enabledExtensionCount = 1;
     devInfo.ppEnabledExtensionNames = enabledExtensions;
 
-    result = vkCreateDevice(mVkPhysicalDevice, &devInfo, nullptr, &mVkDevice);
+    result = vkCreateDevice(mPhysicalDevice, &devInfo, nullptr, &mDevice);
     if (result != VK_SUCCESS)
     {
         LOG_ERROR("Failed to create Vulkan Device.");
         return false;
     }
 
-    if (!nfvkDeviceExtensionsInit(mVkDevice))
+    if (!nfvkDeviceExtensionsInit(mDevice))
     {
         LOG_ERROR("Failed to initialize Vulkan device extensions.");
         return false;
     }
 
+    
+    VkCommandPoolCreateInfo poolInfo;
+    memset(&poolInfo, 0, sizeof(poolInfo));
+    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolInfo.queueFamilyIndex = mGraphicsQueueIndex;
+    poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+    result = vkCreateCommandPool(mDevice, &poolInfo, nullptr, &mCommandPool);
+    if (result != VK_SUCCESS)
+    {
+        LOG_ERROR("Failed to create a graphics command pool");
+        return false;
+    }
+
     LOG_INFO("Vulkan device initialized successfully");
     return true;
+}
+
+const VkInstance& Device::GetInstance() const
+{
+    return mInstance.Get();
+}
+
+const VkDevice& Device::GetDevice() const
+{
+    return mDevice;
+}
+
+const VkPhysicalDevice& Device::GetPhysicalDevice() const
+{
+    return mPhysicalDevice;
+}
+
+const VkCommandPool& Device::GetCommandPool() const
+{
+    return mCommandPool;
 }
 
 void* Device::GetHandle() const
@@ -201,14 +240,12 @@ ITexture* Device::CreateTexture(const TextureDesc& desc)
 
 IBackbuffer* Device::CreateBackbuffer(const BackbufferDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<Backbuffer, BackbufferDesc>(desc);
 }
 
 IRenderTarget* Device::CreateRenderTarget(const RenderTargetDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<RenderTarget, RenderTargetDesc>(desc);
 }
 
 IPipelineState* Device::CreatePipelineState(const PipelineStateDesc& desc)
@@ -255,13 +292,23 @@ IResourceBindingInstance* Device::CreateResourceBindingInstance(IResourceBinding
 
 ICommandBuffer* Device::CreateCommandBuffer()
 {
-    return nullptr;
+    CommandBuffer* cb = new (std::nothrow) CommandBuffer;
+    if (cb == nullptr)
+        return nullptr;
+
+    if (!cb->Init())
+    {
+        delete cb;
+        return nullptr;
+    }
+
+    return cb;
 }
 
 bool Device::GetDeviceInfo(DeviceInfo& info)
 {
     VkPhysicalDeviceProperties devProps = {};
-    vkGetPhysicalDeviceProperties(mVkPhysicalDevice, &devProps);
+    vkGetPhysicalDeviceProperties(mPhysicalDevice, &devProps);
 
     info.description = devProps.deviceName;
     info.misc = "Vulkan API version: "
@@ -270,7 +317,7 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
               + std::to_string(VK_VERSION_PATCH(devProps.apiVersion));
 
     VkPhysicalDeviceFeatures devFeatures = {};
-    vkGetPhysicalDeviceFeatures(mVkPhysicalDevice, &devFeatures);
+    vkGetPhysicalDeviceFeatures(mPhysicalDevice, &devFeatures);
 
     // Description of below features is available on Vulkan registry:
     //   https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkGetPhysicalDeviceFeatures.html
