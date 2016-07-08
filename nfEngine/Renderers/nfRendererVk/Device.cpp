@@ -165,6 +165,12 @@ bool Device::Init()
         return false;
     }
 
+    if (!nfvkDeviceExtensionsInit(mVkDevice))
+    {
+        LOG_ERROR("Failed to initialize Vulkan device extensions.");
+        return false;
+    }
+
     LOG_INFO("Vulkan device initialized successfully");
     return true;
 }
