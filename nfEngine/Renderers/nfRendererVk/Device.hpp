@@ -20,9 +20,15 @@ namespace Renderer {
 class Device : public IDevice
 {
 private:
-    Instance mVkInstance;
-    VkDevice mVkDevice;
-    VkPhysicalDevice mVkPhysicalDevice;
+    Instance mInstance;
+    VkPhysicalDevice mPhysicalDevice;
+    VkDevice mDevice;
+    VkCommandPool mCommandPool;
+    uint32 mGraphicsQueueIndex;
+    VkQueue mGraphicsQueue;
+    VkSemaphore mRenderSemaphore;
+    VkSemaphore mPresentSemaphore;
+    VkSemaphore mPostPresentSemaphore;
 
     VkPhysicalDevice SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices);
 
@@ -31,6 +37,41 @@ public:
     ~Device();
 
     bool Init();
+
+    NFE_INLINE const VkInstance& GetInstance() const
+    {
+        return mInstance.Get();
+    }
+
+    NFE_INLINE const VkDevice& GetDevice() const
+    {
+        return mDevice;
+    }
+
+    NFE_INLINE const VkPhysicalDevice& GetPhysicalDevice() const
+    {
+        return mPhysicalDevice;
+    }
+
+    NFE_INLINE const VkCommandPool& GetCommandPool() const
+    {
+        return mCommandPool;
+    }
+
+    NFE_INLINE const VkSemaphore& GetRenderSemaphore() const
+    {
+        return mRenderSemaphore;
+    }
+
+    NFE_INLINE const VkSemaphore& GetPresentSemaphore() const
+    {
+        return mPresentSemaphore;
+    }
+
+    NFE_INLINE const VkSemaphore& GetPostPresentSemaphore() const
+    {
+        return mPostPresentSemaphore;
+    }
 
     // overrides
     void* GetHandle() const override;

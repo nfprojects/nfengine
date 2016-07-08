@@ -446,8 +446,6 @@ void BasicScene::Draw(float dt)
     if (mPipelineState)
         mCommandBuffer->SetPipelineState(mPipelineState.get());
 
-    mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
-
     if (mShaderProgram)
         mCommandBuffer->SetShaderProgram(mShaderProgram.get());
 
@@ -455,11 +453,6 @@ void BasicScene::Draw(float dt)
     mAngle += 2.0f * dt;
     if (mAngle > NFE_MATH_2PI)
         mAngle -= NFE_MATH_2PI;
-
-    if (mConstantBuffer)
-    {
-
-    }
 
     // clear target
     float color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
