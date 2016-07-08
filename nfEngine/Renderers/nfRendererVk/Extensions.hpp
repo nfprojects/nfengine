@@ -31,6 +31,8 @@ extern PFN_vkGetPhysicalDeviceQueueFamilyProperties vkGetPhysicalDeviceQueueFami
 extern PFN_vkCreateDevice vkCreateDevice;
 extern PFN_vkDestroyDevice vkDestroyDevice;
 extern PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr;
+extern PFN_vkDestroySurfaceKHR vkDestroySurfaceKHR;
+extern PFN_vkGetPhysicalDeviceSurfaceSupportKHR vkGetPhysicalDeviceSurfaceSupportKHR;
 
 /**
  * Initializes Vulkan Instance extensions used by nfRendererVk.
