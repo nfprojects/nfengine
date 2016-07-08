@@ -13,7 +13,6 @@
 #include "CommandBuffer.hpp"
 #include "Instance.hpp"
 
-#include "nfCommon/Library.hpp"
 
 namespace NFE {
 namespace Renderer {
