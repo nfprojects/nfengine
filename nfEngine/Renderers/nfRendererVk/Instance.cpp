@@ -6,30 +6,13 @@
 
 #include "PCH.hpp"
 #include "Instance.hpp"
+#include "GetProc.hpp"
 
 #include <memory.h>
 
-// TODO TEMPORARY
-#define VK_GET_FUNC(x) do { \
-    if (!mVulkanLib.GetSymbol(#x, x)) \
-        LOG_FATAL("Failed to acquire " #x); \
-} while(0)
-
-#define VK_GET_INSTANCEPROC(inst, x) do { \
-    (x = (PFN_##x)vkGetInstanceProcAddr(inst, #x)); \
-    if (!x) \
-        LOG_FATAL("Failed to get " #x " from instance"); \
-} while(0)
 
 namespace NFE {
 namespace Renderer {
-
-PFN_vkEnumeratePhysicalDevices vkEnumeratePhysicalDevices = VK_NULL_HANDLE;
-PFN_vkGetPhysicalDeviceProperties vkGetPhysicalDeviceProperties = VK_NULL_HANDLE;
-PFN_vkGetPhysicalDeviceFeatures vkGetPhysicalDeviceFeatures = VK_NULL_HANDLE;
-PFN_vkGetPhysicalDeviceQueueFamilyProperties vkGetPhysicalDeviceQueueFamilyProperties = VK_NULL_HANDLE;
-PFN_vkCreateDevice vkCreateDevice = VK_NULL_HANDLE;
-PFN_vkDestroyDevice vkDestroyDevice = VK_NULL_HANDLE;
 
 Instance::Instance()
     : mVulkanLib()
@@ -56,11 +39,14 @@ bool Instance::Init(bool validation)
 #error "Target platform not supported."
 #endif
     if (!mVulkanLib.IsOpened())
-        LOG_FATAL("Unable to open Vulkan library.");
+    {
+        LOG_ERROR("Unable to open Vulkan library.");
+        return false;
+    }
 
-    VK_GET_FUNC(vkCreateInstance);
-    VK_GET_FUNC(vkDestroyInstance);
-    VK_GET_FUNC(vkGetInstanceProcAddr);
+    VK_GET_LIBPROC(mVulkanLib, vkCreateInstance);
+    VK_GET_LIBPROC(mVulkanLib, vkDestroyInstance);
+    VK_GET_LIBPROC(mVulkanLib, vkGetInstanceProcAddr);
 
     VkApplicationInfo appInfo = {};
     memset(&appInfo, 0, sizeof(appInfo));
@@ -105,21 +91,16 @@ bool Instance::Init(bool validation)
 
     VkResult result = vkCreateInstance(&instInfo, nullptr, &mInstance);
     if (result != VK_SUCCESS)
-        LOG_FATAL("Failed to create Vulkan instance: %i", result);
+    {
+        LOG_ERROR("Failed to create Vulkan instance: %i", result);
+        return false;
+    }
 
-    // TODO move to Extensions per-instance module
-    VK_GET_INSTANCEPROC(mInstance, vkEnumeratePhysicalDevices);
-    VK_GET_INSTANCEPROC(mInstance, vkGetPhysicalDeviceProperties);
-    VK_GET_INSTANCEPROC(mInstance, vkGetPhysicalDeviceFeatures);
-    VK_GET_INSTANCEPROC(mInstance, vkGetPhysicalDeviceQueueFamilyProperties);
-    VK_GET_INSTANCEPROC(mInstance, vkCreateDevice);
-    VK_GET_INSTANCEPROC(mInstance, vkDestroyDevice);
-
-    /* debugging layer extensions
-     * VK_GET_FUNC(vkCreateDebugReportCallbackEXT);
-     * VK_GET_FUNC(vkDestroyDebugReportCallbackEXT);
-     * VK_GET_FUNC(vkDebugReportMessageEXT);
-     */
+    if (!nfvkInstanceExtensionsInit(mInstance))
+    {
+        LOG_ERROR("Failed to initialize Vulkan Instance extensions.");
+        return false;
+    }
 
     return true;
 }
