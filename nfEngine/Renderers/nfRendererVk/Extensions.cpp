@@ -25,6 +25,9 @@ PFN_vkGetPhysicalDeviceQueueFamilyProperties vkGetPhysicalDeviceQueueFamilyPrope
 PFN_vkCreateDevice vkCreateDevice = VK_NULL_HANDLE;
 PFN_vkDestroyDevice vkDestroyDevice = VK_NULL_HANDLE;
 PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr = VK_NULL_HANDLE;
+PFN_vkDestroySurfaceKHR vkDestroySurfaceKHR = VK_NULL_HANDLE;
+PFN_vkGetPhysicalDeviceSurfaceSupportKHR vkGetPhysicalDeviceSurfaceSupportKHR = VK_NULL_HANDLE;
+PFN_vkGetPhysicalDeviceSurfaceFormatsKHR vkGetPhysicalDeviceSurfaceFormatsKHR = VK_NULL_HANDLE;
 
 bool nfvkInstanceExtensionsInit(VkInstance instance)
 {
@@ -37,6 +40,9 @@ bool nfvkInstanceExtensionsInit(VkInstance instance)
     VK_GET_INSTANCEPROC(instance, vkCreateDevice);
     VK_GET_INSTANCEPROC(instance, vkDestroyDevice);
     VK_GET_INSTANCEPROC(instance, vkGetDeviceProcAddr);
+    VK_GET_INSTANCEPROC(instance, vkDestroySurfaceKHR);
+    VK_GET_INSTANCEPROC(instance, vkGetPhysicalDeviceSurfaceSupportKHR);
+    VK_GET_INSTANCEPROC(instance, vkGetPhysicalDeviceSurfaceFormatsKHR);
 
 #ifdef WIN32
     if (!nfvkWin32InstanceExtensionsInit(instance))
@@ -51,11 +57,30 @@ bool nfvkInstanceExtensionsInit(VkInstance instance)
     return allExtensionsAvailable;
 }
 
+
+// Command Pool
+PFN_vkCreateCommandPool vkCreateCommandPool = VK_NULL_HANDLE;
+PFN_vkDestroyCommandPool vkDestroyCommandPool = VK_NULL_HANDLE;
+
+// Command Buffer
+PFN_vkAllocateCommandBuffers vkAllocateCommandBuffers = VK_NULL_HANDLE;
+PFN_vkBeginCommandBuffer vkBeginCommandBuffer = VK_NULL_HANDLE;
+PFN_vkEndCommandBuffer vkEndCommandBuffer = VK_NULL_HANDLE;
+PFN_vkFreeCommandBuffers vkFreeCommandBuffers = VK_NULL_HANDLE;
+
 bool nfvkDeviceExtensionsInit(VkDevice device)
 {
     bool allExtensionsAvailable = true;
 
-    UNUSED(device);
+    // Command Pool
+    VK_GET_DEVICEPROC(device, vkCreateCommandPool);
+    VK_GET_DEVICEPROC(device, vkDestroyCommandPool);
+
+    // Command Buffer
+    VK_GET_DEVICEPROC(device, vkAllocateCommandBuffers);
+    VK_GET_DEVICEPROC(device, vkBeginCommandBuffer);
+    VK_GET_DEVICEPROC(device, vkEndCommandBuffer);
+    VK_GET_DEVICEPROC(device, vkFreeCommandBuffers);
 
     return allExtensionsAvailable;
 }

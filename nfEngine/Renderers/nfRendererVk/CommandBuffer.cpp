@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 
 #include "Defines.hpp"
+#include "Device.hpp"
 
 #include "CommandBuffer.hpp"
 
@@ -16,15 +17,42 @@ namespace Renderer {
 
 
 CommandBuffer::CommandBuffer()
+    : mCommandBuffer(VK_NULL_HANDLE)
 {
 }
 
 CommandBuffer::~CommandBuffer()
 {
+    if (mCommandBuffer)
+        vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(),
+                                               1, &mCommandBuffer);
+}
+
+bool CommandBuffer::Init()
+{
+    VkCommandBufferAllocateInfo allocInfo = {};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.commandPool = gDevice->GetCommandPool();
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandBufferCount = 1;
+    VkResult result = vkAllocateCommandBuffers(gDevice->GetDevice(), &allocInfo, &mCommandBuffer);
+    if (result != VK_SUCCESS)
+    {
+        LOG_ERROR("Failed to allocate a command buffer");
+        return false;
+    }
+
+    LOG_INFO("Command Buffer initialized successfully.");
+    return true;
 }
 
 void CommandBuffer::Reset()
 {
+    VkCommandBufferBeginInfo info;
+    memset(&info, 0, sizeof(info));
+    info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    info.flags = 
+    vkBeginCommandBuffer(mCommandBuffer, nullptr);
 }
 
 void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets)
@@ -152,7 +180,15 @@ void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesN
 
 std::unique_ptr<ICommandList> CommandBuffer::Finish()
 {
-    return nullptr;
+    std::unique_ptr<CommandList> list(new (std::nothrow) CommandList);
+    if (!list)
+    {
+        LOG_ERROR("Failed to allocate memory for command list");
+        return nullptr;
+    }
+
+    list->cmdBuffer = this;
+    return list;
 }
 
 void CommandBuffer::BeginDebugGroup(const char* text)
