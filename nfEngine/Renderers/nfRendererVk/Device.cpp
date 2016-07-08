@@ -172,6 +172,21 @@ bool Device::Init()
     return true;
 }
 
+const VkInstance& Device::GetInstance() const
+{
+    return mVkInstance.Get();
+}
+
+const VkDevice& Device::GetDevice() const
+{
+    return mVkDevice;
+}
+
+const VkPhysicalDevice& Device::GetPhysicalDevice() const
+{
+    return mVkPhysicalDevice;
+}
+
 void* Device::GetHandle() const
 {
     return nullptr;

@@ -31,6 +31,9 @@ public:
     ~Device();
 
     bool Init();
+    const VkInstance& GetInstance() const;
+    const VkDevice& GetDevice() const;
+    const VkPhysicalDevice& GetPhysicalDevice() const;
 
     // overrides
     void* GetHandle() const;
