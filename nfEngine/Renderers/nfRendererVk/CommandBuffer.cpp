@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 
 #include "Defines.hpp"
+#include "Device.hpp"
 
 #include "CommandBuffer.hpp"
 
@@ -16,11 +17,32 @@ namespace Renderer {
 
 
 CommandBuffer::CommandBuffer()
+    : mVkCommandBuffer(VK_NULL_HANDLE)
 {
 }
 
 CommandBuffer::~CommandBuffer()
 {
+    if (mVkCommandBuffer) vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(),
+                                               1, &mVkCommandBuffer);
+}
+
+bool CommandBuffer::Init()
+{
+    VkCommandBufferAllocateInfo allocInfo = {};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.commandPool = gDevice->GetCommandPool();
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandBufferCount = 1;
+    VkResult result = vkAllocateCommandBuffers(gDevice->GetDevice(), &allocInfo, &mVkCommandBuffer);
+    if (result != VK_SUCCESS)
+    {
+        LOG_ERROR("Failed to allocate a command buffer");
+        return false;
+    }
+
+    LOG_INFO("Command Buffer initialized successfully.");
+    return true;
 }
 
 void CommandBuffer::Reset()

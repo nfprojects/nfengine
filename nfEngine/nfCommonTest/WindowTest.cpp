@@ -25,6 +25,12 @@ TEST(WindowTest, Create)
 
     result = mWindow.GetHandle();
     ASSERT_NE(nullptr, result);
+
+    while (1) {
+        mWindow.ProcessMessages();
+        if (mWindow.IsClosed())
+            break;
+    }
 }
 
 TEST(WindowTest, MultiWindow)

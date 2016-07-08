@@ -11,6 +11,8 @@
 
 // modules
 #include "Translations.hpp"
+#include "Backbuffer.hpp"
+#include "RenderTarget.hpp"
 
 namespace {
 
@@ -39,15 +41,17 @@ std::unique_ptr<Device> gDevice;
 
 Device::Device()
     : mVkInstance()
-    , mVkDevice(VK_NULL_HANDLE)
     , mVkPhysicalDevice(VK_NULL_HANDLE)
+    , mVkDevice(VK_NULL_HANDLE)
+    , mVkCommandPool(VK_NULL_HANDLE)
+    , mGraphicsQueueIndex(UINT32_MAX)
 {
 }
 
 Device::~Device()
 {
-    if (mVkDevice)
-        vkDestroyDevice(mVkDevice, nullptr);
+    if (mVkCommandPool) vkDestroyCommandPool(mVkDevice, mVkCommandPool, nullptr);
+    if (mVkDevice) vkDestroyDevice(mVkDevice, nullptr);
 }
 
 VkPhysicalDevice Device::SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices)
@@ -171,8 +175,41 @@ bool Device::Init()
         return false;
     }
 
+    // GRAPHICS COMMAND POOL
+    VkCommandPoolCreateInfo poolInfo;
+    memset(&poolInfo, 0, sizeof(poolInfo));
+    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolInfo.queueFamilyIndex = mGraphicsQueueIndex;
+    poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+    result = vkCreateCommandPool(mVkDevice, &poolInfo, nullptr, &mVkCommandPool);
+    if (result != VK_SUCCESS)
+    {
+        LOG_ERROR("Failed to allocate a command pool");
+        return false;
+    }
+
     LOG_INFO("Vulkan device initialized successfully");
     return true;
+}
+
+const VkInstance& Device::GetInstance() const
+{
+    return mVkInstance.Get();
+}
+
+const VkDevice& Device::GetDevice() const
+{
+    return mVkDevice;
+}
+
+const VkPhysicalDevice& Device::GetPhysicalDevice() const
+{
+    return mVkPhysicalDevice;
+}
+
+const VkCommandPool& Device::GetCommandPool() const
+{
+    return mVkCommandPool;
 }
 
 void* Device::GetHandle() const
@@ -201,14 +238,12 @@ ITexture* Device::CreateTexture(const TextureDesc& desc)
 
 IBackbuffer* Device::CreateBackbuffer(const BackbufferDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<Backbuffer, BackbufferDesc>(desc);
 }
 
 IRenderTarget* Device::CreateRenderTarget(const RenderTargetDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<RenderTarget, RenderTargetDesc>(desc);
 }
 
 IPipelineState* Device::CreatePipelineState(const PipelineStateDesc& desc)
@@ -255,7 +290,17 @@ IResourceBindingInstance* Device::CreateResourceBindingInstance(IResourceBinding
 
 ICommandBuffer* Device::CreateCommandBuffer()
 {
-    return nullptr;
+    CommandBuffer* cb = new (std::nothrow) CommandBuffer;
+    if (cb == nullptr)
+        return nullptr;
+
+    if (!cb->Init())
+    {
+        delete cb;
+        return nullptr;
+    }
+
+    return cb;
 }
 
 bool Device::GetDeviceInfo(DeviceInfo& info)
