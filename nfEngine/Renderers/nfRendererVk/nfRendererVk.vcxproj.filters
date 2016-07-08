@@ -42,6 +42,15 @@
     <ClCompile Include="Extensions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RenderTarget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Win\Win32Backbuffer.cpp">
+      <Filter>Source Files\Win</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandBuffer.hpp">
@@ -73,6 +82,15 @@
     </ClInclude>
     <ClInclude Include="Win\Win32Extensions.hpp">
       <Filter>Header Files\Win</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTarget.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Backbuffer.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

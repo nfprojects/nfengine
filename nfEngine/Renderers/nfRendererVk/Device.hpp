@@ -17,6 +17,8 @@
 namespace NFE {
 namespace Renderer {
 
+extern std::unique_ptr<Device> gDevice;
+
 class Device : public IDevice
 {
 private:
@@ -31,6 +33,9 @@ public:
     ~Device();
 
     bool Init();
+    const VkInstance& GetInstance() const;
+    const VkDevice& GetDevice() const;
+    const VkPhysicalDevice& GetPhysicalDevice() const;
 
     // overrides
     void* GetHandle() const;
