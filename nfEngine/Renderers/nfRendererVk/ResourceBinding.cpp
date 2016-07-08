@@ -1,15 +1,11 @@
 /**
  * @file
- * @author  Witek902 (witek902@gmail.com)
- * @brief   D3D12 implementation of renderer's shader resource binding
+ * @author  LKostyra (costyrra.xl@gmail.com)
+ * @brief   Vulkan implementation of renderer's shader resource binding
  */
 
 #include "PCH.hpp"
 #include "ResourceBinding.hpp"
-#include "Texture.hpp"
-#include "Buffer.hpp"
-#include "Sampler.hpp"
-#include "nfCommon/Logger.hpp"
 
 
 namespace NFE {

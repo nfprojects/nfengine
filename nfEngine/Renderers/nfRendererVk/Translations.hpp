@@ -14,6 +14,8 @@ namespace NFE {
 namespace Renderer {
 
 const char* TranslateDeviceTypeToString(VkPhysicalDeviceType type);
+VkFormat TranslateElementFormatToVkFormat(ElementFormat format, int size);
+const char* TranslateVkResultToString(VkResult result);
 
 } // namespace Renderer
 } // namespace NFE
