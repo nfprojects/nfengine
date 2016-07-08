@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_0d4048a4",
+        "filename": "nfEngine/Renderers/nfRendererVk/Instance.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-07-08T08:08:17Z",
+      "side": 1,
+      "message": "This depends on the system (Linux has libvulkan.so, Windows has vulkan-1.dll)",
+      "range": {
+        "startLine": 50,
+        "startChar": 21,
+        "endLine": 50,
+        "endChar": 27
+      },
+      "revId": "6aad3c517e06c7405dc818f7346f192b59a5a421",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
