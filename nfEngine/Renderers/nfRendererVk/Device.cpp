@@ -11,6 +11,12 @@
 
 // modules
 #include "Translations.hpp"
+#include "Backbuffer.hpp"
+#include "RenderTarget.hpp"
+#include "Sampler.hpp"
+#include "Shader.hpp"
+#include "ShaderProgram.hpp"
+#include "ResourceBinding.hpp"
 
 namespace {
 
@@ -38,16 +44,27 @@ namespace Renderer {
 std::unique_ptr<Device> gDevice;
 
 Device::Device()
-    : mVkInstance()
-    , mVkDevice(VK_NULL_HANDLE)
-    , mVkPhysicalDevice(VK_NULL_HANDLE)
+    : mInstance()
+    , mPhysicalDevice(VK_NULL_HANDLE)
+    , mDevice(VK_NULL_HANDLE)
+    , mCommandPool(VK_NULL_HANDLE)
+    , mGraphicsQueueIndex(UINT32_MAX)
+    , mGraphicsQueue(VK_NULL_HANDLE)
+    , mRenderSemaphore(VK_NULL_HANDLE)
+    , mPresentSemaphore(VK_NULL_HANDLE)
 {
 }
 
 Device::~Device()
 {
-    if (mVkDevice)
-        vkDestroyDevice(mVkDevice, nullptr);
+    if (mPresentSemaphore != VK_NULL_HANDLE)
+        vkDestroySemaphore(mDevice, mPresentSemaphore, nullptr);
+    if (mRenderSemaphore != VK_NULL_HANDLE)
+        vkDestroySemaphore(mDevice, mRenderSemaphore, nullptr);
+    if (mCommandPool != VK_NULL_HANDLE)
+        vkDestroyCommandPool(mDevice, mCommandPool, nullptr);
+    if (mDevice != VK_NULL_HANDLE)
+        vkDestroyDevice(mDevice, nullptr);
 }
 
 VkPhysicalDevice Device::SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices)
@@ -80,22 +97,18 @@ VkPhysicalDevice Device::SelectPhysicalDevice(const std::vector<VkPhysicalDevice
 
 bool Device::Init()
 {
-    if (!mVkInstance.Init(false))
+    if (!mInstance.Init(false))
     {
         LOG_ERROR("Vulkan instance failed to initialize");
         return false;
     }
 
-    const VkInstance& instance = mVkInstance.Get();
+    const VkInstance& instance = mInstance.Get();
 
     // acquire GPU count first
     unsigned int gpuCount = 0;
     VkResult result = vkEnumeratePhysicalDevices(instance, &gpuCount, nullptr);
-    if (result != VK_SUCCESS)
-    {
-        LOG_ERROR("Unable to enumerate physical devices");
-        return false;
-    }
+    CHECK_VKRESULT(result, "Unable to enumerate physical devices");
     if (gpuCount == 0)
     {
         LOG_ERROR("0 physical devices available.");
@@ -111,12 +124,11 @@ bool Device::Init()
         return false;
     }
 
-    mVkPhysicalDevice = SelectPhysicalDevice(devices);
+    mPhysicalDevice = SelectPhysicalDevice(devices);
 
     // Grab queue properties from our selected device
-    uint32 graphicsQueue = 0;
     uint32 queueCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(mVkPhysicalDevice, &queueCount, nullptr);
+    vkGetPhysicalDeviceQueueFamilyProperties(mPhysicalDevice, &queueCount, nullptr);
     if (queueCount == 0)
     {
         LOG_ERROR("Physical device does not have any queue family properties.");
@@ -124,22 +136,23 @@ bool Device::Init()
     }
 
     std::vector<VkQueueFamilyProperties> queueProps(queueCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(mVkPhysicalDevice, &queueCount, queueProps.data());
+    vkGetPhysicalDeviceQueueFamilyProperties(mPhysicalDevice, &queueCount, queueProps.data());
 
-    for (graphicsQueue = 0; graphicsQueue < queueCount; graphicsQueue++)
-        if (queueProps[graphicsQueue].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+    for (mGraphicsQueueIndex = 0; mGraphicsQueueIndex < queueCount; mGraphicsQueueIndex++)
+        if (queueProps[mGraphicsQueueIndex].queueFlags & VK_QUEUE_GRAPHICS_BIT)
             break;
 
-    if (graphicsQueue == queueCount)
+    if (mGraphicsQueueIndex == queueCount)
     {
         LOG_ERROR("Selected physical device does not support graphics queue.");
         return false;
     }
 
     float queuePriorities[] = { 0.0f };
-    VkDeviceQueueCreateInfo queueInfo = {};
+    VkDeviceQueueCreateInfo queueInfo;
+    VK_ZERO_MEMORY(queueInfo);
     queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queueInfo.queueFamilyIndex = graphicsQueue;
+    queueInfo.queueFamilyIndex = mGraphicsQueueIndex;
     queueInfo.queueCount = 1;
     queueInfo.pQueuePriorities = queuePriorities;
 
@@ -149,7 +162,7 @@ bool Device::Init()
     };
 
     VkDeviceCreateInfo devInfo;
-    memset(&devInfo, 0, sizeof(devInfo));
+    VK_ZERO_MEMORY(devInfo);
     devInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
     devInfo.pNext = nullptr;
     devInfo.queueCreateInfoCount = 1;
@@ -158,18 +171,40 @@ bool Device::Init()
     devInfo.enabledExtensionCount = 1;
     devInfo.ppEnabledExtensionNames = enabledExtensions;
 
-    result = vkCreateDevice(mVkPhysicalDevice, &devInfo, nullptr, &mVkDevice);
+    result = vkCreateDevice(mPhysicalDevice, &devInfo, nullptr, &mDevice);
     if (result != VK_SUCCESS)
     {
         LOG_ERROR("Failed to create Vulkan Device.");
         return false;
     }
 
-    if (!nfvkDeviceExtensionsInit(mVkDevice))
+    if (!nfvkDeviceExtensionsInit(mDevice))
     {
         LOG_ERROR("Failed to initialize Vulkan device extensions.");
         return false;
     }
+
+    vkGetDeviceQueue(mDevice, mGraphicsQueueIndex, 0, &mGraphicsQueue);
+
+    VkCommandPoolCreateInfo poolInfo;
+    VK_ZERO_MEMORY(poolInfo);
+    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolInfo.queueFamilyIndex = mGraphicsQueueIndex;
+    poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+    result = vkCreateCommandPool(mDevice, &poolInfo, nullptr, &mCommandPool);
+    if (result != VK_SUCCESS)
+    {
+        LOG_ERROR("Failed to create a graphics command pool");
+        return false;
+    }
+
+    VkSemaphoreCreateInfo semInfo;
+    VK_ZERO_MEMORY(semInfo);
+    semInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+    result = vkCreateSemaphore(gDevice->GetDevice(), &semInfo, nullptr, &mRenderSemaphore);
+    CHECK_VKRESULT(result, "Failed to create rendering semaphore");
+    result = vkCreateSemaphore(gDevice->GetDevice(), &semInfo, nullptr, &mPresentSemaphore);
+    CHECK_VKRESULT(result, "Failed to create present semaphore");
 
     LOG_INFO("Vulkan device initialized successfully");
     return true;
@@ -179,7 +214,6 @@ void* Device::GetHandle() const
 {
     return nullptr;
 }
-
 
 IVertexLayout* Device::CreateVertexLayout(const VertexLayoutDesc& desc)
 {
@@ -201,14 +235,12 @@ ITexture* Device::CreateTexture(const TextureDesc& desc)
 
 IBackbuffer* Device::CreateBackbuffer(const BackbufferDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<Backbuffer, BackbufferDesc>(desc);
 }
 
 IRenderTarget* Device::CreateRenderTarget(const RenderTargetDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<RenderTarget, RenderTargetDesc>(desc);
 }
 
 IPipelineState* Device::CreatePipelineState(const PipelineStateDesc& desc)
@@ -219,49 +251,63 @@ IPipelineState* Device::CreatePipelineState(const PipelineStateDesc& desc)
 
 ISampler* Device::CreateSampler(const SamplerDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<Sampler, SamplerDesc>(desc);
 }
 
 IShader* Device::CreateShader(const ShaderDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<Shader, ShaderDesc>(desc);
 }
 
 IShaderProgram* Device::CreateShaderProgram(const ShaderProgramDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return new (std::nothrow) ShaderProgram(desc);
 }
 
 IResourceBindingSet* Device::CreateResourceBindingSet(const ResourceBindingSetDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<ResourceBindingSet, ResourceBindingSetDesc>(desc);
 }
 
 IResourceBindingLayout* Device::CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<ResourceBindingLayout, ResourceBindingLayoutDesc>(desc);
 }
 
 IResourceBindingInstance* Device::CreateResourceBindingInstance(IResourceBindingSet* set)
 {
-    UNUSED(set);
-    return nullptr;
+    ResourceBindingInstance* rbi = new (std::nothrow) ResourceBindingInstance();
+    if (rbi == nullptr)
+        return nullptr;
+
+    if (!rbi->Init(set))
+    {
+        delete rbi;
+        return nullptr;
+    }
+
+    return rbi;
 }
 
 ICommandBuffer* Device::CreateCommandBuffer()
 {
-    return nullptr;
+    CommandBuffer* cb = new (std::nothrow) CommandBuffer;
+    if (cb == nullptr)
+        return nullptr;
+
+    if (!cb->Init())
+    {
+        delete cb;
+        return nullptr;
+    }
+
+    return cb;
 }
 
 bool Device::GetDeviceInfo(DeviceInfo& info)
 {
     VkPhysicalDeviceProperties devProps = {};
-    vkGetPhysicalDeviceProperties(mVkPhysicalDevice, &devProps);
+    vkGetPhysicalDeviceProperties(mPhysicalDevice, &devProps);
 
     info.description = devProps.deviceName;
     info.misc = "Vulkan API version: "
@@ -270,7 +316,7 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
               + std::to_string(VK_VERSION_PATCH(devProps.apiVersion));
 
     VkPhysicalDeviceFeatures devFeatures = {};
-    vkGetPhysicalDeviceFeatures(mVkPhysicalDevice, &devFeatures);
+    vkGetPhysicalDeviceFeatures(mPhysicalDevice, &devFeatures);
 
     // Description of below features is available on Vulkan registry:
     //   https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkGetPhysicalDeviceFeatures.html
