@@ -21,8 +21,10 @@ class Device : public IDevice
 {
 private:
     Instance mVkInstance;
-    VkDevice mVkDevice;
     VkPhysicalDevice mVkPhysicalDevice;
+    VkDevice mVkDevice;
+    VkCommandPool mVkCommandPool;
+    uint32 mGraphicsQueueIndex;
 
     VkPhysicalDevice SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices);
 
@@ -31,6 +33,10 @@ public:
     ~Device();
 
     bool Init();
+    const VkInstance& GetInstance() const;
+    const VkDevice& GetDevice() const;
+    const VkPhysicalDevice& GetPhysicalDevice() const;
+    const VkCommandPool& GetCommandPool() const;
 
     // overrides
     void* GetHandle() const;
