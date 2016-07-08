@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Backbuffer.cpp" />
     <ClCompile Include="CommandBuffer.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Extensions.cpp" />
@@ -30,7 +31,15 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="RenderTarget.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Translations.cpp" />
+    <ClCompile Include="Win\Win32Backbuffer.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Win\Win32Extensions.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
@@ -39,6 +48,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Backbuffer.hpp" />
     <ClInclude Include="CommandBuffer.hpp" />
     <ClInclude Include="Defines.hpp" />
     <ClInclude Include="Device.hpp" />
@@ -46,6 +56,8 @@
     <ClInclude Include="GetProc.hpp" />
     <ClInclude Include="Instance.hpp" />
     <ClInclude Include="PCH.hpp" />
+    <ClInclude Include="RenderTarget.hpp" />
+    <ClInclude Include="Texture.hpp" />
     <ClInclude Include="Translations.hpp" />
     <ClInclude Include="Win\Win32Extensions.hpp" />
   </ItemGroup>

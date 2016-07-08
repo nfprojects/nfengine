@@ -60,3 +60,8 @@ do                                                                              
 
 #include "Extensions.hpp"
 #include "nfCommon/Logger.hpp"
+
+#ifndef LOG_VKRESULT
+#define LOG_VKRESULT(str, result) \
+    LOG_ERROR("%s: %d (%s)", str, result, TranslateVkResultToString(result))
+#endif // LOG_VKRESULT

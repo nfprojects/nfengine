@@ -25,6 +25,11 @@ PFN_vkGetPhysicalDeviceQueueFamilyProperties vkGetPhysicalDeviceQueueFamilyPrope
 PFN_vkCreateDevice vkCreateDevice = VK_NULL_HANDLE;
 PFN_vkDestroyDevice vkDestroyDevice = VK_NULL_HANDLE;
 PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr = VK_NULL_HANDLE;
+PFN_vkDestroySurfaceKHR vkDestroySurfaceKHR = VK_NULL_HANDLE;
+PFN_vkGetPhysicalDeviceSurfaceFormatsKHR vkGetPhysicalDeviceSurfaceFormatsKHR = VK_NULL_HANDLE;
+PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR vkGetPhysicalDeviceSurfaceCapabilitiesKHR = VK_NULL_HANDLE;
+PFN_vkGetPhysicalDeviceSurfacePresentModesKHR vkGetPhysicalDeviceSurfacePresentModesKHR = VK_NULL_HANDLE;
+PFN_vkGetPhysicalDeviceSurfaceSupportKHR vkGetPhysicalDeviceSurfaceSupportKHR = VK_NULL_HANDLE;
 
 bool nfvkInstanceExtensionsInit(VkInstance instance)
 {
@@ -37,6 +42,11 @@ bool nfvkInstanceExtensionsInit(VkInstance instance)
     VK_GET_INSTANCEPROC(instance, vkCreateDevice);
     VK_GET_INSTANCEPROC(instance, vkDestroyDevice);
     VK_GET_INSTANCEPROC(instance, vkGetDeviceProcAddr);
+    VK_GET_INSTANCEPROC(instance, vkDestroySurfaceKHR);
+    VK_GET_INSTANCEPROC(instance, vkGetPhysicalDeviceSurfaceFormatsKHR);
+    VK_GET_INSTANCEPROC(instance, vkGetPhysicalDeviceSurfaceCapabilitiesKHR);
+    VK_GET_INSTANCEPROC(instance, vkGetPhysicalDeviceSurfacePresentModesKHR);
+    VK_GET_INSTANCEPROC(instance, vkGetPhysicalDeviceSurfaceSupportKHR);
 
 #ifdef WIN32
     if (!nfvkWin32InstanceExtensionsInit(instance))
@@ -51,11 +61,62 @@ bool nfvkInstanceExtensionsInit(VkInstance instance)
     return allExtensionsAvailable;
 }
 
+
+// Command Pool
+PFN_vkCreateCommandPool vkCreateCommandPool = VK_NULL_HANDLE;
+PFN_vkDestroyCommandPool vkDestroyCommandPool = VK_NULL_HANDLE;
+
+// Command Buffer
+PFN_vkAllocateCommandBuffers vkAllocateCommandBuffers = VK_NULL_HANDLE;
+PFN_vkBeginCommandBuffer vkBeginCommandBuffer = VK_NULL_HANDLE;
+PFN_vkEndCommandBuffer vkEndCommandBuffer = VK_NULL_HANDLE;
+PFN_vkFreeCommandBuffers vkFreeCommandBuffers = VK_NULL_HANDLE;
+
+// Render Passes and Framebuffers
+PFN_vkCreateFramebuffer vkCreateFramebuffer = VK_NULL_HANDLE;
+PFN_vkCreateRenderPass vkCreateRenderPass = VK_NULL_HANDLE;
+PFN_vkDestroyFramebuffer vkDestroyFramebuffer = VK_NULL_HANDLE;
+PFN_vkDestroyRenderPass vkDestroyRenderPass = VK_NULL_HANDLE;
+
+// Commands
+PFN_vkCmdBeginRenderPass vkCmdBeginRenderPass = VK_NULL_HANDLE;
+PFN_vkCmdEndRenderPass vkCmdEndRenderPass = VK_NULL_HANDLE;
+PFN_vkCmdSetScissor vkCmdSetScissor = VK_NULL_HANDLE;
+PFN_vkCmdSetViewport vkCmdSetViewport = VK_NULL_HANDLE;
+
+// Swapchain
+PFN_vkCreateSwapchainKHR vkCreateSwapchainKHR = VK_NULL_HANDLE;
+PFN_vkDestroySwapchainKHR vkDestroySwapchainKHR = VK_NULL_HANDLE;
+
 bool nfvkDeviceExtensionsInit(VkDevice device)
 {
     bool allExtensionsAvailable = true;
 
-    UNUSED(device);
+    // Command Pool
+    VK_GET_DEVICEPROC(device, vkCreateCommandPool);
+    VK_GET_DEVICEPROC(device, vkDestroyCommandPool);
+
+    // Command Buffer
+    VK_GET_DEVICEPROC(device, vkAllocateCommandBuffers);
+    VK_GET_DEVICEPROC(device, vkBeginCommandBuffer);
+    VK_GET_DEVICEPROC(device, vkEndCommandBuffer);
+    VK_GET_DEVICEPROC(device, vkFreeCommandBuffers);
+
+    // Render Passes and Framebuffers
+    VK_GET_DEVICEPROC(device, vkCreateFramebuffer);
+    VK_GET_DEVICEPROC(device, vkCreateRenderPass);
+    VK_GET_DEVICEPROC(device, vkDestroyFramebuffer);
+    VK_GET_DEVICEPROC(device, vkDestroyRenderPass);
+
+    // Commands
+    VK_GET_DEVICEPROC(device, vkCmdBeginRenderPass);
+    VK_GET_DEVICEPROC(device, vkCmdEndRenderPass);
+    VK_GET_DEVICEPROC(device, vkCmdSetScissor);
+    VK_GET_DEVICEPROC(device, vkCmdSetViewport);
+
+    // Swapchain
+    VK_GET_DEVICEPROC(device, vkCreateSwapchainKHR);
+    VK_GET_DEVICEPROC(device, vkDestroySwapchainKHR);
 
     return allExtensionsAvailable;
 }
