@@ -446,8 +446,6 @@ void BasicScene::Draw(float dt)
     if (mPipelineState)
         mCommandBuffer->SetPipelineState(mPipelineState.get());
 
-    mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
-
     if (mShaderProgram)
         mCommandBuffer->SetShaderProgram(mShaderProgram.get());
 
@@ -456,14 +454,9 @@ void BasicScene::Draw(float dt)
     if (mAngle > NFE_MATH_2PI)
         mAngle -= NFE_MATH_2PI;
 
-    if (mConstantBuffer)
-    {
-
-    }
-
     // clear target
-    float color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-    mCommandBuffer->Clear(NFE_CLEAR_FLAG_TARGET, color);
+    float color[] = { 1.0f, 1.0f, 0.0f, 1.0f };
+     mCommandBuffer->Clear(NFE_CLEAR_FLAG_TARGET, color);
 
 
     const float scaleCoeff = 1.0f / static_cast<float>(mGridSize);

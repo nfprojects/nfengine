@@ -90,11 +90,7 @@ bool Instance::Init(bool validation)
     }
 
     VkResult result = vkCreateInstance(&instInfo, nullptr, &mInstance);
-    if (result != VK_SUCCESS)
-    {
-        LOG_ERROR("Failed to create Vulkan instance: %i", result);
-        return false;
-    }
+    CHECK_VKRESULT(result, "Failed to create Vulkan Instance");
 
     if (!nfvkInstanceExtensionsInit(mInstance))
     {
