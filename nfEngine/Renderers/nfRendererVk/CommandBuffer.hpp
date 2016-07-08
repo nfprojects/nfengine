@@ -8,16 +8,30 @@
 
 #include "../RendererInterface/CommandBuffer.hpp"
 
+#include "Defines.hpp"
+
 namespace NFE {
 namespace Renderer {
+
+class CommandBuffer;
+
+struct CommandList : public ICommandList
+{
+    CommandBuffer* cmdBuffer;
+};
 
 class CommandBuffer : public ICommandBuffer
 {
     friend class Device;
 
+    VkCommandBuffer mCommandBuffer;
+    VkCommandBufferBeginInfo mCommandBufferBeginInfo;
+
 public:
     CommandBuffer();
     ~CommandBuffer();
+
+    bool Init();
 
     /// Resources setup methods
     void Reset() override;

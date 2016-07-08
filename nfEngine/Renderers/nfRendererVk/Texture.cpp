@@ -1,0 +1,88 @@
+/**
+ * @file
+ * @author  LKostyra (costyrra.xl@gmail.com)
+ * @brief   Declaration of renderer's Texture object
+ */
+
+#include "PCH.hpp"
+
+#include "Defines.hpp"
+#include "Texture.hpp"
+#include "Translations.hpp"
+#include "Device.hpp"
+
+
+namespace NFE {
+namespace Renderer {
+
+Texture::Texture()
+    : mType(TextureType::Unknown)
+    , mWidth(0)
+    , mHeight(0)
+    , mFormat(VK_FORMAT_UNDEFINED)
+    , mBuffersNum(2)
+    , mCurrentBuffer(0)
+    , mFromSwapchain(false)
+{
+    for (mCurrentBuffer = 0; mCurrentBuffer < mBuffersNum; ++mCurrentBuffer)
+    {
+        mBuffers[mCurrentBuffer] = VK_NULL_HANDLE;
+        mBufferViews[mCurrentBuffer] = VK_NULL_HANDLE;
+    }
+}
+
+Texture::~Texture()
+{
+    for (mCurrentBuffer = 0; mCurrentBuffer < mBuffersNum; ++mCurrentBuffer)
+    {
+        if (!mFromSwapchain)
+        {
+            if (mBuffers[mCurrentBuffer] != VK_NULL_HANDLE)
+                vkDestroyImage(gDevice->GetDevice(), mBuffers[mCurrentBuffer], nullptr);
+        }
+
+        if (mBufferViews[mCurrentBuffer] != VK_NULL_HANDLE)
+            vkDestroyImageView(gDevice->GetDevice(), mBufferViews[mCurrentBuffer], nullptr);
+    }
+}
+
+bool Texture::InitTexture1D(const TextureDesc& desc)
+{
+    UNUSED(desc);
+    return false;
+}
+
+bool Texture::InitTexture2D(const TextureDesc& desc)
+{
+    UNUSED(desc);
+    return false;
+}
+
+bool Texture::InitTexture3D(const TextureDesc& desc)
+{
+    UNUSED(desc);
+    return false;
+}
+
+bool Texture::Init(const TextureDesc& desc)
+{
+    mType = desc.type;
+    mFormat = TranslateElementFormatToVkFormat(desc.format, desc.texelSize);
+
+    switch (mType)
+    {
+    case TextureType::Texture1D:
+        return InitTexture1D(desc);
+    case TextureType::Texture2D:
+        return InitTexture2D(desc);
+    case TextureType::Texture3D:
+        return InitTexture3D(desc);
+    default:
+        LOG_ERROR("Unsupported or incorrect texture type.");
+        return false;
+    }
+}
+
+} // namespace Renderer
+} // namespace NFE
+
