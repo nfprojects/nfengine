@@ -1,7 +1,7 @@
 /**
  * @file
  * @author  Witek902 (witek902@gmail.com)
- * @brief   D3D12 implementation of renderer's renderer's shader resource binding
+ * @brief   D3D12 implementation of renderer's shader resource binding
  */
 
 #include "PCH.hpp"

@@ -59,4 +59,20 @@ do                                                                              
 #endif // 0
 
 #include "Extensions.hpp"
+#include "Translations.hpp"
 #include "nfCommon/Logger.hpp"
+#include <string.h>
+
+#ifndef CHECK_VKRESULT
+#define CHECK_VKRESULT(result, errstr)                                              \
+    if (result != VK_SUCCESS)                                                       \
+    {                                                                               \
+        LOG_ERROR("%s: %d (%s)", errstr, result, TranslateVkResultToString(result));\
+        return false;                                                               \
+    }
+#endif // LOG_VKRESULT
+
+#ifndef VK_ZERO_MEMORY
+#define VK_ZERO_MEMORY(x) \
+    memset(&x, 0, sizeof(x))
+#endif // VK_ZERO_MEMORY

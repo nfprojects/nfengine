@@ -301,7 +301,7 @@ int main(int argc, char* argv[])
     std::string execDir = NFE::Common::FileSystem::GetParentDir(execPath);
     NFE::Common::FileSystem::ChangeDirectory(execDir + "/../../..");
 
-    /// select renderer to use - the default will be D3D11
+    /// select renderer to use
     std::string rend;
 
     if (argc < 2)
