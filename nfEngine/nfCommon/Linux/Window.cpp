@@ -13,7 +13,8 @@
 #include <GL/glx.h>
 #endif
 
-#include <X11/Xutil.h>
+#include <xcb/xcb.h>
+#include <X11/Xlib-xcb.h>
 
 namespace NFE {
 namespace Common {
@@ -32,12 +33,11 @@ Window::Window()
     mResizeCallbackUserData = nullptr;
     mTitle = "Window";
 
-    mDisplay = XOpenDisplay(nullptr);
-    if (mDisplay == nullptr)
+    mConnection = xcb_connect(nullptr, nullptr);
+    if (mConnection == nullptr)
         LOG_ERROR("Failed to connect to X server\n");
 
-    mRoot = DefaultRootWindow(mDisplay);
-    XSetScreenSaver(mDisplay, 0, 0, DontPreferBlanking, AllowExposures);
+    //XSetScreenSaver(mDisplay, 0, 0, DontPreferBlanking, AllowExposures);
 
     for (int i = 0; i < 3; i++)
         mMouseButtons[i] = false;
@@ -49,9 +49,9 @@ Window::Window()
 Window::~Window()
 {
     Close();
-    XSetScreenSaver(mDisplay, -1, 0, DontPreferBlanking, AllowExposures);
-    XDestroyWindow(mDisplay, mWindow);
-    XCloseDisplay(mDisplay);
+    //XSetScreenSaver(mDisplay, -1, 0, DontPreferBlanking, AllowExposures);
+    //XDestroyWindow(mDisplay, mWindow);
+    xcb_disconnect(mConnection);
 }
 
 void Window::SetSize(uint32 width, uint32 height)
@@ -126,9 +126,9 @@ void Window::SetInvisible(bool invisible)
     if (mWindow)
     {
         if (mInvisible)
-            XUnmapWindow(mDisplay, mWindow);
+            xcb_unmap_window(mConnection, mWindow);
         else
-            XMapWindow(mDisplay, mWindow);
+            xcb_map_window(mConnection, mWindow);
     }
 }
 
@@ -192,7 +192,7 @@ bool Window::Open()
 
     XVisualInfo* visual = glXGetVisualFromFBConfig(mDisplay, bestFB);
 #endif
-
+/*
     ::Visual* visual = XDefaultVisual(mDisplay, 0);
     ::Colormap colormap = XCreateColormap(mDisplay, mRoot, visual, AllocNone);
     xSetWAttrib.colormap = colormap;
@@ -213,10 +213,12 @@ bool Window::Open()
 
     XStoreName(mDisplay, mWindow, mTitle.c_str());
     ::Atom WmDelete = XInternAtom(mDisplay, "WM_DELETE_WINDOW", false);
-    XSetWMProtocols(mDisplay, mWindow, &WmDelete, 1);
+    XSetWMProtocols(mDisplay, mWindow, &WmDelete, 1);*/
+
+    mWindow = xcb_generate_id(mConnection);
 
     if (!mInvisible)
-        XMapWindow(mDisplay, mWindow);
+        xcb_map_window(mDisplay, mWindow);
 
     mClosed = false;
     return true;

@@ -37,9 +37,8 @@ private:
     int mTop;
     wchar_t mWndClass[48];
 #elif defined(__LINUX__) | defined(__linux__)
-    ::Display* mDisplay; // TODO make only one X connection for all Window instances
-    ::Window mWindow;
-    ::Window mRoot;
+    xcb_connection_t* mConnection;
+    xcb_window_t mWindow;
     static bool mWindowError;
     static int ErrorHandler(::Display* dpy, XErrorEvent *error);
 #else //...
