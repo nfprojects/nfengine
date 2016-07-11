@@ -13,7 +13,8 @@
 #include <GL/glx.h>
 #endif
 
-#include <X11/Xutil.h>
+#include <xcb/xcb.h>
+#include <X11/Xlib-xcb.h>
 
 namespace NFE {
 namespace Common {
@@ -32,12 +33,11 @@ Window::Window()
     mResizeCallbackUserData = nullptr;
     mTitle = "Window";
 
-    mDisplay = XOpenDisplay(nullptr);
-    if (mDisplay == nullptr)
+    mConnection = xcb_connect(nullptr, &mConnScreen);
+    if (mConnection == nullptr)
         LOG_ERROR("Failed to connect to X server\n");
 
-    mRoot = DefaultRootWindow(mDisplay);
-    XSetScreenSaver(mDisplay, 0, 0, DontPreferBlanking, AllowExposures);
+    //XSetScreenSaver(mDisplay, 0, 0, DontPreferBlanking, AllowExposures);
 
     for (int i = 0; i < 3; i++)
         mMouseButtons[i] = false;
@@ -49,9 +49,9 @@ Window::Window()
 Window::~Window()
 {
     Close();
-    XSetScreenSaver(mDisplay, -1, 0, DontPreferBlanking, AllowExposures);
-    XDestroyWindow(mDisplay, mWindow);
-    XCloseDisplay(mDisplay);
+    //XSetScreenSaver(mDisplay, -1, 0, DontPreferBlanking, AllowExposures);
+    //XDestroyWindow(mDisplay, mWindow);
+    xcb_disconnect(mConnection);
 }
 
 void Window::SetSize(uint32 width, uint32 height)
@@ -59,15 +59,18 @@ void Window::SetSize(uint32 width, uint32 height)
     mWidth = width;
     mHeight = height;
 
-    if (!mClosed)
-        XResizeWindow(mDisplay, mWindow, mWidth, mHeight);
+    if (!mClosed) {}
+        //XResizeWindow(mDisplay, mWindow, mWidth, mHeight);
 }
 
 void Window::SetTitle(const char* title)
 {
     mTitle = title;
     if (!mClosed)
-        XStoreName(mDisplay, mWindow, mTitle.c_str());
+    {
+        xcb_change_property(mConnection, XCB_PROP_MODE_REPLACE, mWindow, XCB_ATOM_WM_NAME,
+                            XCB_ATOM_STRING, 8, mTitle.size(), mTitle.c_str());
+    }
 }
 
 void Window::SetFullscreenMode(bool enabled)
@@ -76,7 +79,7 @@ void Window::SetFullscreenMode(bool enabled)
     {
         if (mFullscreen && !enabled)
         {
-            XEvent event;
+            /*XEvent event;
             ::Atom wmStateAtom = XInternAtom(mDisplay, "_NET_WM_STATE", False);
             ::Atom fullscreenAtom = XInternAtom(mDisplay, "_NET_WM_STATE_FULLSCREEN", False);
 
@@ -89,12 +92,12 @@ void Window::SetFullscreenMode(bool enabled)
             event.xclient.data.l[1] = fullscreenAtom;
             event.xclient.data.l[2] = 0;
 
-            XSendEvent(mDisplay, mRoot, False, SubstructureNotifyMask, &event);
+            XSendEvent(mDisplay, mRoot, False, SubstructureNotifyMask, &event);*/
         }
         else if (!mFullscreen && enabled)
         {
             // enter fullscreen
-            XEvent event;
+            /*XEvent event;
             ::Atom wmStateAtom = XInternAtom(mDisplay, "_NET_WM_STATE", False);
             ::Atom fullscreenAtom = XInternAtom(mDisplay, "_NET_WM_STATE_FULLSCREEN", False);
 
@@ -107,7 +110,7 @@ void Window::SetFullscreenMode(bool enabled)
             event.xclient.data.l[1] = fullscreenAtom;
             event.xclient.data.l[2] = 0;
 
-            XSendEvent(mDisplay, mRoot, False, SubstructureNotifyMask, &event);
+            XSendEvent(mDisplay, mRoot, False, SubstructureNotifyMask, &event);*/
         }
 
         mFullscreen = enabled;
@@ -126,9 +129,9 @@ void Window::SetInvisible(bool invisible)
     if (mWindow)
     {
         if (mInvisible)
-            XUnmapWindow(mDisplay, mWindow);
+            xcb_unmap_window(mConnection, mWindow);
         else
-            XMapWindow(mDisplay, mWindow);
+            xcb_map_window(mConnection, mWindow);
     }
 }
 
@@ -136,8 +139,6 @@ bool Window::Open()
 {
     if (!mClosed)
         return false;
-
-    ::XSetWindowAttributes xSetWAttrib;
 
     // TODO disabled until OpenGL renderer will resurrect from the dead
 #if 0
@@ -192,31 +193,71 @@ bool Window::Open()
 
     XVisualInfo* visual = glXGetVisualFromFBConfig(mDisplay, bestFB);
 #endif
-
+/*
     ::Visual* visual = XDefaultVisual(mDisplay, 0);
     ::Colormap colormap = XCreateColormap(mDisplay, mRoot, visual, AllocNone);
     xSetWAttrib.colormap = colormap;
-    xSetWAttrib.event_mask = Button1MotionMask | Button2MotionMask | ButtonPressMask |
-                             ButtonReleaseMask | ExposureMask | FocusChangeMask | KeyPressMask |
-                             KeyReleaseMask | PointerMotionMask | StructureNotifyMask;
-
-    XSetErrorHandler(ErrorHandler);
-    mWindow = XCreateWindow(mDisplay, mRoot, 0, 0, mWidth, mHeight, 1, CopyFromParent,
-                            InputOutput, CopyFromParent, CWColormap | CWEventMask, &xSetWAttrib);
 
     if (Window::mWindowError)
     {
         Window::mWindowError = false;
         return false;
     }
-    XSetErrorHandler(nullptr);
+    XSetErrorHandler(nullptr);*/
 
-    XStoreName(mDisplay, mWindow, mTitle.c_str());
-    ::Atom WmDelete = XInternAtom(mDisplay, "WM_DELETE_WINDOW", false);
-    XSetWMProtocols(mDisplay, mWindow, &WmDelete, 1);
+    // acquire current screen
+    const xcb_setup_t* xcbSetup;
+    xcb_screen_iterator_t xcbIt;
+
+    xcbSetup = xcb_get_setup(mConnection);
+    xcbIt = xcb_setup_roots_iterator(xcbSetup);
+    while (mConnScreen-- > 0)
+        xcb_screen_next(&xcbIt);
+    mScreen = xcbIt.data;
+
+    // generate our window ID
+    mWindow = xcb_generate_id(mConnection);
+    xcb_colormap_t colormap = xcb_generate_id(mConnection);
+    xcb_create_colormap(mConnection, XCB_COLORMAP_ALLOC_NONE, colormap, mWindow,
+                        mScreen->root_visual);
+
+    // set some settings (these match the old ones)
+    uint32 value_mask, value_list[32]; // value list
+    value_mask = XCB_CW_COLORMAP | XCB_CW_EVENT_MASK;
+    memset(value_list, 0, sizeof(uint32) * 32);
+    value_list[0] = colormap;
+    value_list[1] = XCB_EVENT_MASK_BUTTON_1_MOTION |
+                    XCB_EVENT_MASK_BUTTON_2_MOTION |
+                    XCB_EVENT_MASK_BUTTON_PRESS |
+                    XCB_EVENT_MASK_BUTTON_RELEASE |
+                    XCB_EVENT_MASK_EXPOSURE |
+                    XCB_EVENT_MASK_FOCUS_CHANGE |
+                    XCB_EVENT_MASK_KEY_PRESS |
+                    XCB_EVENT_MASK_KEY_RELEASE |
+                    XCB_EVENT_MASK_POINTER_MOTION |
+                    XCB_EVENT_MASK_STRUCTURE_NOTIFY;
+
+    xcb_create_window(mConnection, XCB_COPY_FROM_PARENT, mWindow, mScreen->root,
+                      0, 0, mWidth, mHeight, 1, XCB_WINDOW_CLASS_INPUT_OUTPUT,
+                      mScreen->root_visual, value_mask, value_list);
+
+    SetTitle(mTitle.c_str());
+
+    // pre-initialize delete atom to be later on notified about Window being destroyed
+    xcb_intern_atom_cookie_t deleteCookie = xcb_intern_atom(mConnection, 1, 16, "WM_DELETE_WINDOW");
+    mDeleteReply = xcb_intern_atom_reply(mConnection, deleteCookie, 0);
+
+    // get access to WM_PROTOCOLS atom
+    xcb_intern_atom_cookie_t wmProtCookie = xcb_intern_atom(mConnection, 1, 12, "WM_PROTOCOLS");
+    xcb_intern_atom_reply_t* wmProtReply = xcb_intern_atom_reply(mConnection, wmProtCookie, 0);
+
+    // notify X that we want to be part of WM_DELETE_WINDOW communication
+    xcb_change_property(mConnection, XCB_PROP_MODE_REPLACE, mWindow, (*wmProtReply).atom, 4, 32, 1,
+                        &(*mDeleteReply).atom);
+    free(wmProtReply);
 
     if (!mInvisible)
-        XMapWindow(mDisplay, mWindow);
+        xcb_map_window(mConnection, mWindow);
 
     mClosed = false;
     return true;
@@ -228,7 +269,7 @@ bool Window::Close()
         return false;
 
     if (!mInvisible)
-        XUnmapWindow(mDisplay, mWindow);
+        xcb_unmap_window(mConnection, mWindow);
 
     mClosed = true;
     return true;
@@ -236,8 +277,8 @@ bool Window::Close()
 
 void Window::MouseDown(uint32 button, int x, int y)
 {
-    XGrabPointer(mDisplay, mWindow, True, 0, GrabModeAsync,
-                GrabModeAsync, mWindow, None, CurrentTime);
+    //XGrabPointer(mDisplay, mWindow, True, 0, GrabModeAsync,
+    //            GrabModeAsync, mWindow, None, CurrentTime);
     mMouseButtons[button] = true;
     mMousePos[button] = x;
     mMousePos[button] = y;
@@ -255,7 +296,7 @@ void Window::MouseUp(uint32 button)
             ButtonsReleased = false;
 
     if (ButtonsReleased)
-        XUngrabPointer(mDisplay, CurrentTime);
+        //XUngrabPointer(mDisplay, CurrentTime);
 
     OnMouseUp(button);
 }
@@ -269,7 +310,8 @@ void Window::MouseMove(int x, int y)
 
 void Window::ProcessMessages()
 {
-    XFlush(mDisplay);
+    xcb_flush(mConnection);
+/*
     while (XEventsQueued(mDisplay, QueuedAlready))
     {
         XEvent event;
@@ -340,7 +382,7 @@ void Window::ProcessMessages()
                 break;
             }
         }
-    }
+    }*/
 }
 
 void Window::LostFocus()
@@ -360,10 +402,10 @@ bool Window::IsClosed() const
 
 bool Window::HasFocus() const
 {
-    int revert;
-    ::Window window;
-    XGetInputFocus(mDisplay, &window, &revert);
-    return mWindow == window;
+    //int revert;
+    //::Window window;
+    //XGetInputFocus(mDisplay, &window, &revert);
+    return /*mWindow == window*/ false;
 }
 
 void* Window::GetHandle() const
@@ -432,7 +474,7 @@ void Window::OnMouseUp(uint32 button)
 {
     (void)button;
 }
-
+/*
 int Window::ErrorHandler(::Display *dpy, XErrorEvent *error)
 {
     char errorCode[1024];
@@ -440,7 +482,7 @@ int Window::ErrorHandler(::Display *dpy, XErrorEvent *error)
     LOG_ERROR("_X Error of failed request: %s\n", errorCode);
     Window::mWindowError = true;
     return 0;
-}
+}*/
 
 } // namespace Common
 } // namespace NFE
