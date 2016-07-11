@@ -9,7 +9,7 @@ FILE(GLOB NFRENDERERTEST_HEADERS *.hpp)
 
 # Search for dependencies
 PKG_CHECK_MODULES(NFRENDERERTEST_DEPS REQUIRED
-                  x11)
+                  xcb)
 
 # setup directories
 INCLUDE_DIRECTORIES(${NFE_ROOT_DIRECTORY}/nfEngineDeps/
@@ -27,7 +27,7 @@ SET_TARGET_PROPERTIES(nfRendererTest PROPERTIES
 
 # nfRendererOGL4 dependency removed temporarily
 ADD_DEPENDENCIES(nfRendererTest nfCommon)
-TARGET_LINK_LIBRARIES(nfRendererTest nfCommon gtest png squish jpeg
+TARGET_LINK_LIBRARIES(nfRendererTest nfCommon gtest png squish jpeg dl
                       ${NFRENDERERTEST_DEPS_LIBRARIES})
 ADD_CUSTOM_COMMAND(TARGET nfRendererTest POST_BUILD COMMAND
                    ${CMAKE_COMMAND} -E copy $<TARGET_FILE:nfRendererTest> ${NFE_OUTPUT_DIRECTORY}/${targetfile})

@@ -7,6 +7,7 @@
 #include "../PCH.hpp"
 #include "../Window.hpp"
 #include "Common.hpp"
+#include "../Logger.hpp"
 
 #include <Windowsx.h>
 
@@ -57,39 +58,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 
 Window::Window()
+    : mHandle(0)
+    , mInstance(GetModuleHandle(0))
+    , mClosed(true)
+    , mWidth(200)
+    , mHeight(200)
+    , mLeft(10)
+    , mTop(10)
+    , mFullscreen(false)
+    , mInvisible(false)
+    , mResizeCallback(nullptr)
+    , mResizeCallbackUserData(nullptr)
+    , mTitle("Window")
+    , mMouseWheelDelta(0)
 {
-    mInstance = GetModuleHandle(0);
-    mHandle = 0;
-    mClosed = true;
-    mWidth = 200;
-    mHeight = 200;
-    mLeft = 10;
-    mTop = 10;
-    mFullscreen = false;
-    mInvisible = false;
-    mResizeCallback = nullptr;
-    mResizeCallbackUserData = nullptr;
-
-    mTitle = "Window";
-
-    swprintf_s(mWndClass, L"%ws_%p", L"nfEngine_WndClass", this);
-
-    WNDCLASSEX wcex;
-    wcex.cbSize        = sizeof(WNDCLASSEX);
-    wcex.style         = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc   = WndProc;
-    wcex.cbClsExtra    = 0;
-    wcex.cbWndExtra    = 0;
-    wcex.hInstance     = mInstance;
-    wcex.hIcon         = 0; //LoadIcon(hInstance, MAKEINTRESOURCE(IDI_GAME));
-    wcex.hIconSm       = 0; //LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-    wcex.hCursor       = LoadCursor(NULL, IDC_ARROW);
-    wcex.hbrBackground = 0; //(HBRUSH)GetStockObject(BLACK_BRUSH);
-    wcex.lpszMenuName  = 0;
-    wcex.lpszClassName = mWndClass;
-    RegisterClassEx(&wcex);
-
-    mMouseWheelDelta = 0;
     for (int i = 0; i < 3; i++)
         mMouseButtons[i] = false;
 
@@ -172,6 +154,32 @@ void Window::SetInvisible(bool invisible)
         else
             ShowWindow(mHandle, SW_HIDE);
     }
+}
+
+bool Window::Init()
+{
+    swprintf_s(mWndClass, L"%ws_%p", L"nfEngine_WndClass", this);
+
+    WNDCLASSEX wcex;
+    wcex.cbSize        = sizeof(WNDCLASSEX);
+    wcex.style         = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc   = WndProc;
+    wcex.cbClsExtra    = 0;
+    wcex.cbWndExtra    = 0;
+    wcex.hInstance     = mInstance;
+    wcex.hIcon         = 0; //LoadIcon(hInstance, MAKEINTRESOURCE(IDI_GAME));
+    wcex.hIconSm       = 0; //LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    wcex.hCursor       = LoadCursor(NULL, IDC_ARROW);
+    wcex.hbrBackground = 0; //(HBRUSH)GetStockObject(BLACK_BRUSH);
+    wcex.lpszMenuName  = 0;
+    wcex.lpszClassName = mWndClass;
+    if (!RegisterClassEx(&wcex))
+    {
+        LOG_ERROR("Failed to register Window");
+        return false;
+    }
+
+    return true;
 }
 
 bool Window::Open()
