@@ -1,6 +1,8 @@
 #include "PCH.hpp"
 #include "nfCommon/Window.hpp"
 
+#include <thread>
+
 namespace {
 
 const unsigned int WINDOW_COUNT = 5;
