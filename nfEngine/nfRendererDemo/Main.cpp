@@ -347,8 +347,19 @@ int main(int argc, char* argv[])
         preferredCard = atoi(argv[2]);
 
     DemoWindow window;
+    if (!window.Init())
+    {
+        std::cerr << "Failed to initialize Window" << std::endl;
+        return 4;
+    }
+
     window.SetSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    window.Open();
+
+    if (!window.Open())
+    {
+        std::cerr << "Failed to open Window" << std::endl;
+        return 5;
+    }
 
     if (!window.InitRenderer(rend, preferredCard))
     {
