@@ -10,7 +10,7 @@
 #include "KeyCodes.hpp"
 
 #if defined(__LINUX__) | defined(__linux__)
-#include <X11/Xlib.h>
+#include <xcb/xcb.h>
 #endif // defined(__LINUX__) | defined(__linux__)
 
 #include <string>
@@ -37,11 +37,13 @@ private:
     int mTop;
     wchar_t mWndClass[48];
 #elif defined(__LINUX__) | defined(__linux__)
-    ::Display* mDisplay; // TODO make only one X connection for all Window instances
-    ::Window mWindow;
-    ::Window mRoot;
+    xcb_connection_t* mConnection;
+    xcb_window_t mWindow;
+    xcb_screen_t* mScreen;
+    xcb_intern_atom_reply_t* mDeleteReply;
+    int mConnScreen;
     static bool mWindowError;
-    static int ErrorHandler(::Display* dpy, XErrorEvent *error);
+    //static int ErrorHandler(::Display* dpy, XErrorEvent *error);
 #else //...
 #error "Target not supported!" // TODO Consider supporting Wayland as well
 #endif // defined(WIN32)
