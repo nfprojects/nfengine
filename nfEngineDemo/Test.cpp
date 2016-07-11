@@ -519,6 +519,7 @@ public:
 CustomWindow* AddWindow(CustomWindow* parent)
 {
     std::unique_ptr<CustomWindow> window(new CustomWindow);
+    window->Init();
     window->SetSize(800, 600);
     window->SetTitle("NFEngine Demo");
     window->Open();

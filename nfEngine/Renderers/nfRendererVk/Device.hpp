@@ -59,7 +59,7 @@ public:
 
 extern std::unique_ptr<Device> gDevice;
 
-extern "C" RENDERER_API IDevice* Init();
+extern "C" RENDERER_API IDevice* Init(const DeviceInitParams* params);
 extern "C" RENDERER_API void Release();
 
 } // namespace Renderer
