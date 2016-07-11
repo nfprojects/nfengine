@@ -10,7 +10,7 @@
 #include "KeyCodes.hpp"
 
 #if defined(__LINUX__) | defined(__linux__)
-#include <X11/Xlib.h>
+#include <xcb/xcb.h>
 #endif // defined(__LINUX__) | defined(__linux__)
 
 #include <string>
@@ -33,16 +33,14 @@ private:
     static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
     HWND mHandle;
     HINSTANCE mInstance;
-    int mLeft;
-    int mTop;
     wchar_t mWndClass[48];
 #elif defined(__LINUX__) | defined(__linux__)
-    ::Display* mDisplay; // TODO make only one X connection for all Window instances
-    ::Window mWindow;
-    ::Window mRoot;
-    static bool mWindowError;
-    static int ErrorHandler(::Display* dpy, XErrorEvent *error);
-#else //...
+    xcb_connection_t* mConnection;
+    xcb_window_t mWindow;
+    xcb_screen_t* mScreen;
+    xcb_intern_atom_reply_t* mDeleteReply;
+    int mConnScreen;
+#else
 #error "Target not supported!" // TODO Consider supporting Wayland as well
 #endif // defined(WIN32)
 
@@ -51,6 +49,8 @@ private:
     bool mInvisible;
     uint32 mWidth;
     uint32 mHeight;
+    int mLeft;
+    int mTop;
     std::string mTitle;
 
     /// input recorded since last @p ProcessMessages() method call
@@ -76,6 +76,7 @@ public:
     Window();
     ~Window();
 
+    bool Init();
     bool Open();
     bool Close();
 

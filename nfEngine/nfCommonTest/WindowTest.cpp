@@ -1,6 +1,8 @@
 #include "PCH.hpp"
 #include "nfCommon/Window.hpp"
 
+#include <thread>
+
 namespace {
 
 const unsigned int WINDOW_COUNT = 5;
@@ -15,11 +17,9 @@ TEST(WindowTest, Create)
     result = mWindow.GetHandle();
     ASSERT_EQ(nullptr, result);
 
-    bool openResult = mWindow.Open();
-    ASSERT_TRUE(openResult);
-
-    openResult = mWindow.Open();
-    ASSERT_FALSE(openResult);
+    ASSERT_TRUE(mWindow.Init());
+    ASSERT_TRUE(mWindow.Open());
+    ASSERT_FALSE(mWindow.Open());
 
     result = mWindow.GetHandle();
     ASSERT_NE(nullptr, result);
@@ -33,8 +33,10 @@ TEST(WindowTest, MultiWindow)
     for (auto& window : mWindows)
         ASSERT_EQ(nullptr, window.GetHandle());
 
-    for (auto& window : mWindows)
+    for (auto& window : mWindows) {
+        ASSERT_TRUE(window.Init());
         ASSERT_TRUE(window.Open());
+    }
 
     for (auto& window : mWindows)
         ASSERT_NE(nullptr, window.GetHandle());
