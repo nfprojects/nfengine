@@ -16,20 +16,21 @@ namespace Common {
 #define INVALID_FD -1
 
 File::File()
+    : mFD(INVALID_FD)
+    , mMode (AccessMode::No)
 {
-    mFD = INVALID_FD;
 }
 
 File::File(const std::string& path, AccessMode mode, bool overwrite)
+    : mFD(INVALID_FD)
+    , mMode (AccessMode::No)
 {
-    mFD = INVALID_FD;
     Open(path, mode, overwrite);
 }
 
 File::File(File&& other)
 {
-    if (mFD != INVALID_FD)
-        ::close(mFD);
+    Close();
 
     mFD = other.mFD;
     other.mFD = INVALID_FD;
@@ -37,8 +38,7 @@ File::File(File&& other)
 
 File::~File()
 {
-    if (mFD != INVALID_FD)
-        ::close(mFD);
+    Close();
 }
 
 bool File::IsOpened() const
@@ -51,6 +51,7 @@ bool File::Open(const std::string& path, AccessMode access, bool overwrite)
 {
     Close();
 
+    mMode = access;
     int flags;
     switch (access)
     {
@@ -65,6 +66,7 @@ bool File::Open(const std::string& path, AccessMode access, bool overwrite)
             break;
         default:
             LOG_ERROR("Invalid file access mode");
+            mMode = AccessMode::No;
             return false;
     }
 
@@ -80,6 +82,7 @@ bool File::Open(const std::string& path, AccessMode access, bool overwrite)
     if (mFD == -1)
     {
         LOG_ERROR("Failed to open file '%s': %s", path.c_str(), strerror(errno));
+        mMode = AccessMode::No;
         return false;
     }
 
@@ -88,16 +91,17 @@ bool File::Open(const std::string& path, AccessMode access, bool overwrite)
 
 void File::Close()
 {
-    if (mFD != INVALID_FD)
+    if (IsOpened())
     {
         ::close(mFD);
         mFD = INVALID_FD;
+        mMode = AccessMode::No;
     }
 }
 
 size_t File::Read(void* data, size_t size)
 {
-    if (mFD == INVALID_FD)
+    if (!IsOpened() || (mMode != AccessMode::Read && mMode != AccessMode::ReadWrite))
         return 0;
 
     ssize_t bytesRead = ::read(mFD, data, size);
@@ -112,7 +116,7 @@ size_t File::Read(void* data, size_t size)
 
 size_t File::Write(const void* data, size_t size)
 {
-    if (mFD == INVALID_FD)
+    if (!IsOpened() || (mMode != AccessMode::Write && mMode != AccessMode::ReadWrite))
         return 0;
 
     ssize_t bytesWritten = ::write(mFD, data, size);
@@ -127,7 +131,7 @@ size_t File::Write(const void* data, size_t size)
 
 int64 File::GetSize() const
 {
-    if (mFD == INVALID_FD)
+    if (!IsOpened())
         return -1;
 
     struct stat buf;
@@ -137,7 +141,7 @@ int64 File::GetSize() const
 
 bool File::Seek(int64 pos, SeekMode mode)
 {
-    if (mFD == INVALID_FD)
+    if (!IsOpened())
         return false;
 
     int whence;
@@ -168,7 +172,7 @@ bool File::Seek(int64 pos, SeekMode mode)
 
 int64 File::GetPos() const
 {
-    if (mFD == INVALID_FD)
+    if (!IsOpened())
         return -1;
 
     off64_t off = ::lseek64(mFD, 0, SEEK_CUR);
@@ -179,6 +183,11 @@ int64 File::GetPos() const
     }
 
     return static_cast<int64>(off);
+}
+
+AccessMode File::GetFileMode() const
+{
+    return mMode;
 }
 
 } // namespace Common

@@ -13,20 +13,21 @@ namespace NFE {
 namespace Common {
 
 File::File()
+    : mFile(INVALID_HANDLE_VALUE)
+    , mMode (AccessMode::No)
 {
-    mFile = INVALID_HANDLE_VALUE;
 }
 
 File::File(const std::string& path, AccessMode mode, bool overwrite)
+    : mFile(INVALID_HANDLE_VALUE)
+    , mMode(AccessMode::No)
 {
-    mFile = INVALID_HANDLE_VALUE;
     Open(path, mode, overwrite);
 }
 
 File::File(File&& other)
 {
-    if (IsOpened())
-        ::CloseHandle(mFile);
+    Close();
 
     mFile = other.mFile;
     other.mFile = INVALID_HANDLE_VALUE;
@@ -34,8 +35,7 @@ File::File(File&& other)
 
 File::~File()
 {
-    if (IsOpened())
-        CloseHandle(mFile);
+    Close();
 }
 
 bool File::IsOpened() const
@@ -52,9 +52,10 @@ bool File::Open(const std::string& path, AccessMode access, bool overwrite)
     if (!UTF8ToUTF16(path, widePath))
     {
         mFile = INVALID_HANDLE_VALUE;
+        mMode = AccessMode::No;
         return false;
     }
-
+    mMode = access;
     DWORD desiredAccess;
     switch (access)
     {
@@ -69,6 +70,7 @@ bool File::Open(const std::string& path, AccessMode access, bool overwrite)
             break;
         default:
             LOG_ERROR("Invalid file access mode");
+            mMode = AccessMode::No;
             return false;
     }
 
@@ -84,6 +86,7 @@ bool File::Open(const std::string& path, AccessMode access, bool overwrite)
     if (mFile == INVALID_HANDLE_VALUE)
     {
         LOG_ERROR("Failed to open file '%s': %s", path.c_str(), GetLastErrorString().c_str());
+        mMode = AccessMode::No;
         return false;
     }
 
@@ -92,16 +95,17 @@ bool File::Open(const std::string& path, AccessMode access, bool overwrite)
 
 void File::Close()
 {
-    if (!IsOpened())
+    if (IsOpened())
     {
         ::CloseHandle(mFile);
         mFile = INVALID_HANDLE_VALUE;
+        mMode = AccessMode::No;
     }
 }
 
 size_t File::Read(void* data, size_t size)
 {
-    if (!IsOpened())
+    if (!IsOpened() || (mMode != AccessMode::Read && mMode != AccessMode::ReadWrite))
         return 0;
 
     DWORD toRead;
@@ -119,7 +123,7 @@ size_t File::Read(void* data, size_t size)
 
 size_t File::Write(const void* data, size_t size)
 {
-    if (!IsOpened())
+    if (!IsOpened() || (mMode != AccessMode::Write && mMode != AccessMode::ReadWrite))
         return 0;
 
     DWORD toWrite;
@@ -197,6 +201,11 @@ int64 File::GetPos() const
     }
 
     return static_cast<int64>(pos.QuadPart);
+}
+
+AccessMode File::GetFileMode() const
+{
+    return mMode;
 }
 
 } // namespace Common

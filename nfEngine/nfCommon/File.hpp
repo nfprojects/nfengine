@@ -53,6 +53,7 @@ private:
 #else
 #error "Target system not supported!"
 #endif
+    AccessMode mMode;
 
 public:
     File();
@@ -114,6 +115,11 @@ public:
      * @return Non-negative value on success.
      */
     int64 GetPos() const;
+
+    /**
+     * Get mode, that file is opened in.
+     */
+    AccessMode GetFileMode() const;
 };
 
 } // namespace Common
