@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_1f9bbf67",
+        "filename": "nfEngine/nfCommon/FileAsync.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-12T07:28:23Z",
+      "side": 1,
+      "message": "You tried compiling with this removed?",
+      "parentUuid": "baa041b7_8400a602",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 2
+      },
+      "revId": "6fa41d96249024d809b4a491aeeb417f20a885e4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_390fc33a",
         "filename": "nfEngine/nfCommon/FileAsync.hpp",
         "patchSetId": 7
@@ -36,6 +60,30 @@
       "writtenOn": "2016-07-11T18:09:10Z",
       "side": 1,
       "message": "missing params names/description",
+      "range": {
+        "startLine": 31,
+        "startChar": 44,
+        "endLine": 31,
+        "endChar": 75
+      },
+      "revId": "6fa41d96249024d809b4a491aeeb417f20a885e4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_bfaa936f",
+        "filename": "nfEngine/nfCommon/FileAsync.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-12T07:28:23Z",
+      "side": 1,
+      "message": "i didn\u0027t knew they were needed and it\u0027s private, but ok",
+      "parentUuid": "baa041b7_390fc33a",
       "range": {
         "startLine": 31,
         "startChar": 44,
@@ -65,6 +113,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_ffa49ba6",
+        "filename": "nfEngine/nfCommon/FileAsync.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-12T07:28:23Z",
+      "side": 1,
+      "message": "tru dat",
+      "parentUuid": "baa041b7_1914ff4a",
+      "revId": "6fa41d96249024d809b4a491aeeb417f20a885e4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_f90ddb3e",
         "filename": "nfEngine/nfCommon/FileAsync.hpp",
         "patchSetId": 7
@@ -76,6 +142,24 @@
       "writtenOn": "2016-07-11T18:09:10Z",
       "side": 1,
       "message": "Wait",
+      "revId": "6fa41d96249024d809b4a491aeeb417f20a885e4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3fad6384",
+        "filename": "nfEngine/nfCommon/FileAsync.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-12T07:28:23Z",
+      "side": 1,
+      "message": "Sorry, this will be removed before merge. It\u0027s a helper method, that iterates all OVERLAPPED structures in mSystemPtrs and waits for them to succeed (if they do, it will write the number of bytes processed)",
+      "parentUuid": "baa041b7_f90ddb3e",
       "revId": "6fa41d96249024d809b4a491aeeb417f20a885e4",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
