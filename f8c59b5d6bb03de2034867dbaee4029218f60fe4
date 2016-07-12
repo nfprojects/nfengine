@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_1ae87fe1",
+        "filename": "nfEngine/nfCommon/FileAsync.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-12T07:28:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_298ae7bf",
+      "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_0985e3ab",
         "filename": "nfEngine/nfCommon/FileAsync.hpp",
         "patchSetId": 6
@@ -30,6 +48,30 @@
       "writtenOn": "2016-07-06T17:51:07Z",
       "side": 1,
       "message": "IMO there is no point in splitting this into two callbacks.",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 32
+      },
+      "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3ae0e3f9",
+        "filename": "nfEngine/nfCommon/FileAsync.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-12T07:28:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_0985e3ab",
       "range": {
         "startLine": 45,
         "startChar": 0,
@@ -59,6 +101,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_5adde740",
+        "filename": "nfEngine/nfCommon/Linux/FileAsync.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-12T07:28:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_296e672f",
+      "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_49ebeb78",
         "filename": "nfEngine/nfCommon/Linux/FileAsync.cpp",
         "patchSetId": 6
@@ -76,6 +136,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_fae27b00",
+        "filename": "nfEngine/nfCommon/Linux/FileAsync.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-12T07:28:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_49ebeb78",
+      "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_29030744",
         "filename": "nfEngine/nfCommon/Linux/FileAsync.cpp",
         "patchSetId": 6
@@ -87,6 +165,24 @@
       "writtenOn": "2016-07-06T17:51:07Z",
       "side": 1,
       "message": "as in Win version",
+      "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_daf1f7ce",
+        "filename": "nfEngine/nfCommon/Linux/FileAsync.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-12T07:28:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_29030744",
       "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -127,6 +223,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_baecf3f3",
+        "filename": "nfEngine/nfCommon/Win/FileAsync.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-12T07:28:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_a9603736",
+      "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_495d2b78",
         "filename": "nfEngine/nfCommon/Win/FileAsync.cpp",
         "patchSetId": 6
@@ -138,6 +252,24 @@
       "writtenOn": "2016-07-06T17:51:07Z",
       "side": 1,
       "message": "I would first check if the pointer is in the set and remove then, if not - assert",
+      "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_9aba4fe0",
+        "filename": "nfEngine/nfCommon/Win/FileAsync.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-12T07:28:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_495d2b78",
       "revId": "f8c59b5d6bb03de2034867dbaee4029218f60fe4",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
