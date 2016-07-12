@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_2a46437b",
+        "filename": "nfEngine/nfCommon/Linux/File.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-12T10:16:47Z",
+      "side": 1,
+      "message": "mMode will have the value of access parameter. If it\u0027s pure garbage, then I prefer to hold \u0027AccessMode::No\u0027 which is our value for wrong access mode - it\u0027s more expected i guess.",
+      "parentUuid": "baa041b7_8ac8af23",
+      "revId": "58aa658ea8e2831e78d2a6bb81bde1e4890c7fae",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_ca4b57b0",
         "filename": "nfEngine/nfCommon/Win/File.cpp",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2016-07-12T10:07:11Z",
       "side": 1,
       "message": "Why do you need to reassign mMode here?",
+      "revId": "58aa658ea8e2831e78d2a6bb81bde1e4890c7fae",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_4a418762",
+        "filename": "nfEngine/nfCommon/Win/File.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-12T10:16:47Z",
+      "side": 1,
+      "message": "mMode will have the value of access parameter. If it\u0027s pure garbage, then I prefer to hold \u0027AccessMode::No\u0027 which is our value for wrong access mode - it\u0027s more expected i guess.",
+      "parentUuid": "baa041b7_ca4b57b0",
       "revId": "58aa658ea8e2831e78d2a6bb81bde1e4890c7fae",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
