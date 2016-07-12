@@ -13,24 +13,35 @@ TEST(FileTest, Simple)
     int data;
 
     {
+        File file;
+        ASSERT_FALSE(file.IsOpened());
+        ASSERT_EQ(AccessMode::No, file.GetFileMode());
+    }
+
+    {
         File file(filePath, AccessMode::ReadWrite);
-        ASSERT_EQ(true, file.IsOpened());
+        ASSERT_TRUE(file.IsOpened());
+        ASSERT_EQ(AccessMode::ReadWrite, file.GetFileMode());
 
         ASSERT_EQ(sizeof(testData), file.Write(&testData, sizeof(testData)));
         EXPECT_EQ(sizeof(testData), static_cast<size_t>(file.GetPos()));
 
-        ASSERT_EQ(true, file.Seek(0, SeekMode::Begin));
+        ASSERT_TRUE(file.Seek(0, SeekMode::Begin));
         EXPECT_EQ(0, file.GetPos());
 
         ASSERT_EQ(sizeof(testData), file.Read(&data, sizeof(testData)));
         EXPECT_EQ(testData, data);
 
-        ASSERT_EQ(true, file.Seek(0, SeekMode::End));
+        ASSERT_TRUE(file.Seek(0, SeekMode::End));
         EXPECT_EQ(4, file.GetPos());
+
+        file.Close();
+        ASSERT_FALSE(file.IsOpened());
+        ASSERT_EQ(AccessMode::No, file.GetFileMode());
     }
 
     // cleanup
-    EXPECT_EQ(true, FileSystem::Remove(filePath));
+    EXPECT_TRUE(FileSystem::Remove(filePath));
 }
 
 TEST(FileTest, OpenNotExisting)
@@ -39,6 +50,7 @@ TEST(FileTest, OpenNotExisting)
 
     File file(filePath, AccessMode::Read);
     EXPECT_FALSE(file.IsOpened());
+    ASSERT_EQ(AccessMode::No, file.GetFileMode());
     EXPECT_EQ(PathType::Invalid, FileSystem::GetPathType(filePath));
 
     // cleanup
@@ -53,14 +65,16 @@ TEST(FileTest, Overwrite)
 
     {
         File file(filePath, AccessMode::Write);
-        ASSERT_EQ(true, file.IsOpened());
+        ASSERT_TRUE(file.IsOpened());
+        ASSERT_EQ(AccessMode::Write, file.GetFileMode());
         ASSERT_EQ(sizeof(testData), file.Write(&testData, sizeof(testData)));
     }
 
     {
         // read without overwrite flag
         File file(filePath, AccessMode::Read);
-        ASSERT_EQ(true, file.IsOpened());
+        ASSERT_TRUE(file.IsOpened());
+        ASSERT_EQ(AccessMode::Read, file.GetFileMode());
         ASSERT_EQ(static_cast<int64>(sizeof(testData)), file.GetSize());
         ASSERT_EQ(sizeof(testData), file.Read(&data, sizeof(testData)));
         ASSERT_EQ(testData, data);
@@ -69,7 +83,8 @@ TEST(FileTest, Overwrite)
     {
         // read with overwrite flag - should make no difference
         File file(filePath, AccessMode::Read, true);
-        ASSERT_EQ(true, file.IsOpened());
+        ASSERT_TRUE(file.IsOpened());
+        ASSERT_EQ(AccessMode::Read, file.GetFileMode());
         ASSERT_EQ(static_cast<int64>(sizeof(testData)), file.GetSize());
         ASSERT_EQ(sizeof(testData), file.Read(&data, sizeof(testData)));
         ASSERT_EQ(testData, data);
@@ -78,14 +93,16 @@ TEST(FileTest, Overwrite)
     {
         // write without overwrite flag - file is not truncated
         File file(filePath, AccessMode::Write);
-        ASSERT_EQ(true, file.IsOpened());
+        ASSERT_TRUE(file.IsOpened());
+        ASSERT_EQ(AccessMode::Write, file.GetFileMode());
         ASSERT_EQ(static_cast<int64>(sizeof(testData)), file.GetSize());
     }
 
     {
         // read/write without overwrite flag - file is not truncated
         File file(filePath, AccessMode::ReadWrite);
-        ASSERT_EQ(true, file.IsOpened());
+        ASSERT_TRUE(file.IsOpened());
+        ASSERT_EQ(AccessMode::ReadWrite, file.GetFileMode());
         ASSERT_EQ(static_cast<int64>(sizeof(testData)), file.GetSize());
         ASSERT_EQ(sizeof(testData), file.Read(&data, sizeof(testData)));
         ASSERT_EQ(testData, data);
@@ -94,12 +111,13 @@ TEST(FileTest, Overwrite)
     {
         // write with overwrite flag - file is truncated
         File file(filePath, AccessMode::Write, true);
-        ASSERT_EQ(true, file.IsOpened());
+        ASSERT_TRUE(file.IsOpened());
+        ASSERT_EQ(AccessMode::Write, file.GetFileMode());
         ASSERT_EQ(0, file.GetSize());
     }
 
     // cleanup
-    EXPECT_EQ(true, FileSystem::Remove(filePath));
+    EXPECT_TRUE(FileSystem::Remove(filePath));
 }
 
 /*
@@ -116,21 +134,21 @@ TEST(FileTest, AccessShare)
     // create the test file first
     {
         File file(filePath, AccessMode::Write);
-        EXPECT_EQ(true, file.IsOpened());
+        EXPECT_TRUE(file.IsOpened());
     }
 
     {
         File fileA(filePath, AccessMode::Read);
-        ASSERT_EQ(true, fileA.IsOpened());
+        ASSERT_TRUE(fileA.IsOpened());
 
         File fileB(filePath, AccessMode::Write);
-        EXPECT_EQ(false, fileB.IsOpened());
+        EXPECT_FALSE(fileB.IsOpened());
 
         File fileC(filePath, AccessMode::Read);
-        EXPECT_EQ(true, fileC.IsOpened());
+        EXPECT_TRUE(fileC.IsOpened());
     }
 
     // cleanup
-    EXPECT_EQ(true, FileSystem::Remove(filePath));
+    EXPECT_TRUE(FileSystem::Remove(filePath));
 }
 #endif // WIN32
