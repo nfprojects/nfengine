@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_9c7a32f0",
+        "filename": "nfEngine/Renderers/nfRendererD3D12/Common.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-13T21:33:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_bc99767b",
+      "range": {
+        "startLine": 23,
+        "startChar": 9,
+        "endLine": 23,
+        "endChar": 35
+      },
+      "revId": "8c7cdfdabe3e1b6abb5620097054d8c07489f66c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_ca73574d",
         "filename": "nfEngine/Renderers/nfRendererD3D12/Common.hpp",
         "patchSetId": 8
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_1c4182a9",
+        "filename": "nfEngine/Renderers/nfRendererD3D12/Common.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-13T21:33:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_ca73574d",
+      "range": {
+        "startLine": 18,
+        "startChar": 3,
+        "endLine": 18,
+        "endChar": 11
+      },
+      "revId": "8c7cdfdabe3e1b6abb5620097054d8c07489f66c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_bcbe16ac",
         "filename": "nfEngine/Renderers/nfRendererD3D12/Texture.hpp",
         "patchSetId": 8
@@ -59,6 +107,30 @@
       "writtenOn": "2016-07-13T20:58:48Z",
       "side": 1,
       "message": "Out of curiosity - will there be a need for this? What uses are there for it?\n\nI\u0027m asking because OGL4/D3D11 handled perfectly fine without such enum class.",
+      "range": {
+        "startLine": 22,
+        "startChar": 4,
+        "endLine": 26,
+        "endChar": 6
+      },
+      "revId": "8c7cdfdabe3e1b6abb5620097054d8c07489f66c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_5c802abf",
+        "filename": "nfEngine/Renderers/nfRendererD3D12/Texture.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-13T21:33:42Z",
+      "side": 1,
+      "message": "Take a look at CommandBuffer::UnsetRenderTarget() method. We need to know what resource transition type will be required. In the future it may be implemented in other way...",
+      "parentUuid": "baa041b7_bcbe16ac",
       "range": {
         "startLine": 22,
         "startChar": 4,
