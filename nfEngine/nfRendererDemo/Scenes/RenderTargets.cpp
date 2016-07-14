@@ -84,6 +84,7 @@ bool RenderTargetsScene::CreateBasicResources()
 
     PipelineStateDesc pipelineStateDesc;
     pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
+    pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.depthState.depthCompareFunc = CompareFunc::Less;
     pipelineStateDesc.depthState.depthWriteEnable = true;
@@ -448,7 +449,7 @@ void RenderTargetsScene::Draw(float dt)
 
         float color[] = { 0.2f, 0.3f, 0.4f, 1.0f };
         mCommandBuffer->Clear(NFE_CLEAR_FLAG_DEPTH | NFE_CLEAR_FLAG_TARGET, color, 1.0f);
-        mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 2 * 6 * 3);
+        mCommandBuffer->DrawIndexed(2 * 6 * 3);
     }
 
     // begin rendering to the window
@@ -467,8 +468,7 @@ void RenderTargetsScene::Draw(float dt)
 
         mCommandBuffer->BindResources(1, mPSBindingInstancePrimary.get());
         mCommandBuffer->SetShaderProgram(mPrimaryTargetShaderProgram.get());
-        mCommandBuffer->DrawIndexed(PrimitiveType::Triangles,
-                                    2 * 3,      // 2 triangles
+        mCommandBuffer->DrawIndexed(2 * 3,      // 2 triangles
                                     -1,         // no instancing
                                     2 * 6 * 3); // omit cube vertices
     }
@@ -483,8 +483,7 @@ void RenderTargetsScene::Draw(float dt)
 
         mCommandBuffer->BindResources(1, mPSBindingInstanceDepth.get());
         mCommandBuffer->SetShaderProgram(mDepthShaderProgram.get());
-        mCommandBuffer->DrawIndexed(PrimitiveType::Triangles,
-                                    2 * 3,      // 2 triangles
+        mCommandBuffer->DrawIndexed(2 * 3,      // 2 triangles
                                     -1,         // no instancing
                                     2 * 6 * 3); // omit cube vertices
     }
@@ -499,8 +498,7 @@ void RenderTargetsScene::Draw(float dt)
 
         mCommandBuffer->BindResources(1, mPSBindingInstanceSecondary.get());
         mCommandBuffer->SetShaderProgram(mSecondTargetShaderProgram.get());
-        mCommandBuffer->DrawIndexed(PrimitiveType::Triangles,
-                                    2 * 3,      // 2 triangles
+        mCommandBuffer->DrawIndexed(2 * 3,      // 2 triangles
                                     -1,         // no instancing
                                     2 * 6 * 3); // omit cube vertices
     }

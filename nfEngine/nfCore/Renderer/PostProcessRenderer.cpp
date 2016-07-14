@@ -78,6 +78,7 @@ PostProcessRenderer::PostProcessRenderer()
     pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
     pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
     pipelineStateDesc.raterizerState.fillMode = FillMode::Solid;
+	pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.debugName = "PostProcessRenderer::mPipelineState";
     mPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
@@ -181,7 +182,7 @@ void PostProcessRenderer::ApplyTonemapping(RenderContext* context,
 
 
     // TODO: use compute shaders if supported
-    context->commandBuffer->Draw(PrimitiveType::Triangles, 2 * 3);  // draw 2 triangles
+    context->commandBuffer->Draw(2 * 3);  // draw 2 triangles
 
     // unbind source texture
     context->commandBuffer->BindResources(1, mNullTextureBindingInstance.get());

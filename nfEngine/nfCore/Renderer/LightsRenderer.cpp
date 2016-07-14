@@ -220,6 +220,7 @@ LightsRenderer::LightsRenderer()
     PipelineStateDesc pipelineStateDesc;
     pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
+	pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
 
     pipelineStateDesc.debugName = "LightsRenderer::mAmbientLightPipelineState";
     mAmbientLightPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
@@ -385,7 +386,7 @@ void LightsRenderer::DrawAmbientLight(RenderContext* context, const Vector& ambi
     context->commandBuffer->SetShaderProgram(mAmbientLightShaderProgram.GetShaderProgram(nullptr));
     context->commandBuffer->BindResources(0, mAmbientLightBindingInstance.get());
 
-    context->commandBuffer->DrawIndexed(PrimitiveType::Triangles, 6);
+    context->commandBuffer->DrawIndexed(6);
 }
 
 void LightsRenderer::DrawOmniLight(RenderContext* context, const Vector& pos, float radius,
@@ -415,8 +416,7 @@ void LightsRenderer::DrawOmniLight(RenderContext* context, const Vector& pos, fl
     context->commandBuffer->WriteBuffer(mOmniLightCBuffer.get(), 0, sizeof(OmniLightCBuffer),
                                         &cbuffer);
 
-    context->commandBuffer->DrawIndexed(PrimitiveType::Triangles,
-                                        20 * 3, // 20 triangles
+    context->commandBuffer->DrawIndexed(20 * 3, // 20 triangles
                                         -1,     // no instancing
                                         6,      // ignore first 6 indices
                                         4);     // ignore first 4 vertices
@@ -449,8 +449,7 @@ void LightsRenderer::DrawSpotLight(RenderContext* context, const SpotLightProper
     context->commandBuffer->WriteBuffer(mSpotLightCBuffer.get(), 0, sizeof(SpotLightProperties),
                                         &prop);
 
-    context->commandBuffer->DrawIndexed(PrimitiveType::Triangles,
-                                        2 * 6 * 3,  // 2 triangles per 6 sides
+    context->commandBuffer->DrawIndexed(2 * 6 * 3,  // 2 triangles per 6 sides
                                         -1,         // no instancing
                                         6 + 20 * 3, // ignore indices
                                         4 + 12);    // ignore vertices

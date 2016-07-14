@@ -464,7 +464,7 @@ void CommandBuffer::Clear(int flags, const float* color, float depthValue,
     }
 }
 
-void CommandBuffer::UpdateState(PrimitiveType primitiveType)
+void CommandBuffer::UpdateState()
 {
     if (mCurrentPipelineState != mPipelineState || mCurrentStencilRef != mStencilRef)
     {
@@ -480,20 +480,20 @@ void CommandBuffer::UpdateState(PrimitiveType primitiveType)
 
         mCurrentPipelineState = mPipelineState;
         mCurrentStencilRef = mStencilRef;
-    }
 
-    if (primitiveType != mCurrentPrimitiveType)
-    {
-        mCurrentPrimitiveType = primitiveType;
-        D3D11_PRIMITIVE_TOPOLOGY topology = TranslatePrimitiveType(primitiveType);
-        mContext->IASetPrimitiveTopology(topology);
-    };
+        if (mPipelineState->mPrimitiveType != mCurrentPrimitiveType)
+        {
+            mCurrentPrimitiveType = mPipelineState->mPrimitiveType;
+            D3D11_PRIMITIVE_TOPOLOGY topology = TranslatePrimitiveType(mCurrentPrimitiveType);
+            mContext->IASetPrimitiveTopology(topology);
+        }
+    }
 }
 
-void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
+void CommandBuffer::Draw(int vertexNum, int instancesNum, int vertexOffset,
                          int instanceOffset)
 {
-    UpdateState(type);
+    UpdateState();
 
     if (instancesNum >= 0)
         mContext->DrawInstanced(vertexNum, instancesNum, vertexOffset, instanceOffset);
@@ -501,10 +501,10 @@ void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, in
         mContext->Draw(vertexNum, vertexOffset);
 }
 
-void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesNum,
+void CommandBuffer::DrawIndexed(int indexNum, int instancesNum,
                                 int indexOffset, int vertexOffset, int instanceOffset)
 {
-    UpdateState(type);
+    UpdateState();
 
     if (instancesNum >= 0)
         mContext->DrawIndexedInstanced(indexNum, instancesNum, indexOffset, vertexOffset,

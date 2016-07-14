@@ -129,20 +129,18 @@ void CommandBuffer::Clear(int flags, const float* color, float depthValue,
 }
 
 
-void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
+void CommandBuffer::Draw(int vertexNum, int instancesNum, int vertexOffset,
                          int instanceOffset)
 {
-    UNUSED(type);
     UNUSED(vertexNum);
     UNUSED(instancesNum);
     UNUSED(vertexOffset);
     UNUSED(instanceOffset);
 }
 
-void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesNum,
+void CommandBuffer::DrawIndexed(int indexNum, int instancesNum,
                                 int indexOffset, int vertexOffset, int instanceOffset)
 {
-    UNUSED(type);
     UNUSED(indexNum);
     UNUSED(instancesNum);
     UNUSED(indexOffset);

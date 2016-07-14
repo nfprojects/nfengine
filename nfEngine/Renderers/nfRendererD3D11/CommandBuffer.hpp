@@ -29,8 +29,8 @@ class CommandBuffer : public ICommandBuffer
     bool mReset;
     unsigned char mStencilRef;
     unsigned char mCurrentStencilRef;
-    PrimitiveType mCurrentPrimitiveType;
     RenderTarget* mCurrentRenderTarget;
+    PrimitiveType mCurrentPrimitiveType;
     ResourceBindingLayout* mBindingLayout;
     PipelineState* mPipelineState;
     PipelineState* mCurrentPipelineState;
@@ -40,7 +40,7 @@ class CommandBuffer : public ICommandBuffer
     ShaderProgramDesc mBoundShaders;
 
     void UpdateSamplers();
-    void UpdateState(PrimitiveType primitiveType);
+    void UpdateState();
 
 public:
     CommandBuffer(ID3D11DeviceContext* deviceContext);
@@ -69,9 +69,9 @@ public:
     void CopyTexture(ITexture* src, ITexture* dest) override;
     void Clear(int flags, const float* color, float depthValue,
                unsigned char stencilValue) override;
-    void Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
+    void Draw(int vertexNum, int instancesNum, int vertexOffset,
               int instanceOffset) override;
-    void DrawIndexed(PrimitiveType type, int indexNum, int instancesNum, int indexOffset,
+    void DrawIndexed(int indexNum, int instancesNum, int indexOffset,
                      int vertexOffset, int instanceOffset) override;
     std::unique_ptr<ICommandList> Finish() override;
 
