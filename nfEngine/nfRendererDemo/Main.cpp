@@ -12,6 +12,7 @@
 #include "Scenes/DepthStencil.hpp"
 #include "Scenes/VertexBuffers.hpp"
 #include "Scenes/RenderTargets.hpp"
+#include "Scenes/Tessellation.hpp"
 
 #include "../Renderers/RendererInterface/Device.hpp"
 #include "nfCommon/Library.hpp"
@@ -109,6 +110,7 @@ public:
         // TODO: switching to arbitrary scene (e.g. ommiting a single scene should be
         //       possible, when a feature is not implemented in renderer
         mScenes.push_back(std::unique_ptr<Scene>(new BasicScene));
+        mScenes.push_back(std::unique_ptr<Scene>(new TessellationScene));
         mScenes.push_back(std::unique_ptr<Scene>(new DepthStencilScene));
         mScenes.push_back(std::unique_ptr<Scene>(new RenderTargetsScene));
         mScenes.push_back(std::unique_ptr<Scene>(new VertexBuffersScene));

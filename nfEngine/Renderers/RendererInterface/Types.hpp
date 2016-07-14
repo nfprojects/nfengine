@@ -239,7 +239,8 @@ enum class PrimitiveType
     Lines,
     LinesStrip,
     Triangles,
-    TrianglesStrip
+    TrianglesStrip,
+    Patch,          //< enables tessellation
 };
 
 /**

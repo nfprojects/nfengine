@@ -54,6 +54,9 @@
     <ClCompile Include="Scenes\RenderTargets.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Scenes\Tessellation.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp">
@@ -77,6 +80,9 @@
     <ClInclude Include="Scenes\RenderTargets.hpp">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="Scenes\Tessellation.hpp">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\D3D11\TestPS.hlsl">
@@ -95,6 +101,18 @@
       <Filter>Shaders\D3D11</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\D3D11\RenderTargetPS.hlsl">
+      <Filter>Shaders\D3D11</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\D3D11\TessellationDS.hlsl">
+      <Filter>Shaders\D3D11</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\D3D11\TessellationHS.hlsl">
+      <Filter>Shaders\D3D11</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\D3D11\TessellationPS.hlsl">
+      <Filter>Shaders\D3D11</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\D3D11\TessellationVS.hlsl">
       <Filter>Shaders\D3D11</Filter>
     </FxCompile>
   </ItemGroup>
