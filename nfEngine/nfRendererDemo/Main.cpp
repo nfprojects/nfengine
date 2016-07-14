@@ -12,6 +12,7 @@
 #include "Scenes/DepthStencil.hpp"
 #include "Scenes/VertexBuffers.hpp"
 #include "Scenes/RenderTargets.hpp"
+#include "Scenes/Tessellation.hpp"
 
 #include "../Renderers/RendererInterface/Device.hpp"
 #include "nfCommon/Library.hpp"
@@ -112,6 +113,7 @@ public:
         mScenes.push_back(std::unique_ptr<Scene>(new DepthStencilScene));
         mScenes.push_back(std::unique_ptr<Scene>(new RenderTargetsScene));
         mScenes.push_back(std::unique_ptr<Scene>(new VertexBuffersScene));
+        mScenes.push_back(std::unique_ptr<Scene>(new TessellationScene));
     }
 
     /**

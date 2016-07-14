@@ -30,13 +30,13 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{db123e41-284b-4ec3-93f7-29078415323c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders\D3D11">
+    <Filter Include="Shaders\HLSL5">
       <UniqueIdentifier>{3a5c52ac-cb93-4fc2-9c90-bc3b3f6d2c37}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\D3D11\Simple.hlsl">
-      <Filter>Shaders\D3D11</Filter>
+      <Filter>Shaders\HLSL5</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
