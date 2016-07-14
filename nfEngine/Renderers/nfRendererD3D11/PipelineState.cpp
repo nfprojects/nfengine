@@ -131,6 +131,8 @@ ID3D11DepthStencilState* CreateDepthState(const DepthStateDesc& desc)
 
 bool PipelineState::Init(const PipelineStateDesc& desc)
 {
+    mPrimitiveType = desc.primitiveType;
+
     mResBindingLayout = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout);
     if (!mResBindingLayout)
     {

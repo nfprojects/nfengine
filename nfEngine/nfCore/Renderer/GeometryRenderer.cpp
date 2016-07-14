@@ -136,6 +136,7 @@ GeometryRenderer::GeometryRenderer()
     pipelineStateDesc.depthState.depthWriteEnable = true;
     pipelineStateDesc.raterizerState.cullMode = CullMode::CW;
     pipelineStateDesc.raterizerState.fillMode = FillMode::Solid;
+	pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.debugName = "GeometryRenderer::mPipelineState";
     mPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
@@ -317,7 +318,7 @@ void GeometryRenderer::Draw(RenderContext* context, const RenderCommandBuffer& b
         {
             if (bufferedInstances > 0)
             {
-                context->commandBuffer->DrawIndexed(PrimitiveType::Triangles, currIndexCount,
+                context->commandBuffer->DrawIndexed(currIndexCount,
                                                     bufferedInstances, currStartIndex, 0,
                                                     startInstanceLocation);
                 startInstanceLocation += bufferedInstances;
@@ -376,7 +377,7 @@ void GeometryRenderer::Draw(RenderContext* context, const RenderCommandBuffer& b
     // flush the rest
     if (bufferedInstances > 0)
     {
-        context->commandBuffer->DrawIndexed(PrimitiveType::Triangles, currIndexCount,
+        context->commandBuffer->DrawIndexed(currIndexCount,
                                             bufferedInstances, currStartIndex, 0,
                                             startInstanceLocation);
     }

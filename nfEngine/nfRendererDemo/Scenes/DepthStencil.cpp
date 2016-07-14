@@ -123,6 +123,7 @@ bool DepthStencilScene::CreateBasicResources(bool withStencil)
 
     PipelineStateDesc psd;
     psd.raterizerState.cullMode = CullMode::Disabled;
+    psd.primitiveType = PrimitiveType::Triangles;
     psd.vertexLayout = mVertexLayout.get();
     psd.resBindingLayout = mResBindingLayout.get();
 
@@ -342,14 +343,14 @@ void DepthStencilScene::Draw(float dt)
         // Step 1: draw floor to stencil buffer
         mCommandBuffer->SetPipelineState(mMaskPipelineState.get());
         mCommandBuffer->SetStencilRef(0x01);
-        mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 2 * 3, -1, 2 * 6 * 3);
+        mCommandBuffer->DrawIndexed(2 * 3, -1, 2 * 6 * 3);
 
         float color[] = { 0.7f, 0.8f, 0.9f, 1.0f };
         mCommandBuffer->Clear(NFE_CLEAR_FLAG_TARGET, color);
 
         // Step 2: draw cube reflection
         mCommandBuffer->SetPipelineState(mReflectionPipelineState.get());
-        mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 2 * 6 * 3);
+        mCommandBuffer->DrawIndexed(2 * 6 * 3);
     }
     else
     {
@@ -366,11 +367,11 @@ void DepthStencilScene::Draw(float dt)
 
     // Step 3: draw floor
     mCommandBuffer->SetPipelineState(mFloorPipelineState.get());
-    mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 2 * 3, -1, 2 * 6 * 3);
+    mCommandBuffer->DrawIndexed(2 * 3, -1, 2 * 6 * 3);
 
     // Step 4: draw "normal" cube
     mCommandBuffer->SetPipelineState(mCubePipelineState.get());
-    mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 2 * 6 * 3);
+    mCommandBuffer->DrawIndexed(2 * 6 * 3);
 
     mRendererDevice->Execute(mCommandBuffer->Finish().get());
     mWindowBackbuffer->Present();
