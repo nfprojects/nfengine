@@ -484,7 +484,8 @@ void CommandBuffer::UpdateState()
         if (mPipelineState->mPrimitiveType != mCurrentPrimitiveType)
         {
             mCurrentPrimitiveType = mPipelineState->mPrimitiveType;
-            D3D11_PRIMITIVE_TOPOLOGY topology = TranslatePrimitiveType(mCurrentPrimitiveType);
+            D3D11_PRIMITIVE_TOPOLOGY topology = TranslatePrimitiveType(mCurrentPrimitiveType,
+                                                                       mPipelineState->mNumControlPoints);
             mContext->IASetPrimitiveTopology(topology);
         }
     }
