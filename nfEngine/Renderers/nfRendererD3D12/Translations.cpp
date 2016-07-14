@@ -265,7 +265,7 @@ D3D12_STENCIL_OP TranslateStencilOp(StencilOp op)
     return D3D12_STENCIL_OP_KEEP;
 }
 
-D3D12_PRIMITIVE_TOPOLOGY TranslatePrimitiveType(PrimitiveType type)
+D3D12_PRIMITIVE_TOPOLOGY TranslatePrimitiveType(PrimitiveType type, uint32 controlPoints)
 {
     switch (type)
     {
@@ -279,6 +279,11 @@ D3D12_PRIMITIVE_TOPOLOGY TranslatePrimitiveType(PrimitiveType type)
         return D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
     case PrimitiveType::TrianglesStrip:
         return D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
+    case PrimitiveType::Patch:
+        // hope that enum values are contiguous...
+        return static_cast<D3D12_PRIMITIVE_TOPOLOGY>(
+            static_cast<uint32>(D3D_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST) +
+            (controlPoints - 1));
     };
 
     return D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;

@@ -28,6 +28,7 @@ class PipelineState : public IPipelineState
     D3D12_BLEND_DESC mBlendDesc;
 
     PrimitiveType mPrimitiveType;
+    uint32 mNumControlPoints;
 
 public:
     bool Init(const PipelineStateDesc& desc);

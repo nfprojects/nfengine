@@ -88,19 +88,19 @@ bool Shader::Init(const ShaderDesc& desc)
     switch (mType)
     {
         case ShaderType::Vertex:
-            profileName = "vs_4_0";
+            profileName = "vs_5_0";
             break;
         case ShaderType::Geometry:
-            profileName = "gs_4_0";
+            profileName = "gs_5_0";
             break;
         case ShaderType::Hull:
-            profileName = "hs_4_0";
+            profileName = "hs_5_0";
             break;
         case ShaderType::Domain:
-            profileName = "ds_4_0";
+            profileName = "ds_5_0";
             break;
         case ShaderType::Pixel:
-            profileName = "ps_4_0";
+            profileName = "ps_5_0";
             break;
         default:
             LOG_ERROR("Invalid shader type");

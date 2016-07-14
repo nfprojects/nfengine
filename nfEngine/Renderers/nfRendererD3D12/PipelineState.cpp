@@ -97,6 +97,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     }
 
     mPrimitiveType = desc.primitiveType;
+    mNumControlPoints = desc.numControlPoints;
 
     // prepare D3D12 input layout
 
@@ -170,6 +171,24 @@ bool FullPipelineState::Init(const FullPipelineStateParts& parts)
     psd.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
     psd.CachedPSO.CachedBlobSizeInBytes = 0;
     psd.CachedPSO.pCachedBlob = nullptr;
+
+    switch (pipelineState->mPrimitiveType)
+    {
+    case PrimitiveType::Points:
+        psd.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
+        break;
+    case PrimitiveType::Lines:
+    case PrimitiveType::LinesStrip:
+        psd.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
+        break;
+    case PrimitiveType::Triangles:
+    case PrimitiveType::TrianglesStrip:
+        psd.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+        break;
+    case PrimitiveType::Patch:
+        psd.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+        break;
+    }
 
     HRESULT hr;
     hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateGraphicsPipelineState(&psd,

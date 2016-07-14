@@ -126,6 +126,7 @@ struct PipelineStateDesc
     BlendStateDesc blendState;
     DepthStateDesc depthState;
     PrimitiveType primitiveType;
+    uint32 numControlPoints; //< for tessellation
     IVertexLayout* vertexLayout;
     IResourceBindingLayout* resBindingLayout;
     const char* debugName;   //< optional debug name
@@ -135,6 +136,7 @@ struct PipelineStateDesc
         , blendState()
         , depthState()
         , primitiveType(PrimitiveType::Unknown)
+        , numControlPoints(0)
         , vertexLayout(nullptr)
         , resBindingLayout(nullptr)
         , debugName(nullptr)
