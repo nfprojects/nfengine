@@ -33,7 +33,6 @@ CommandBuffer::CommandBuffer(ID3D12Device* device)
     , mCurrPipelineState(nullptr)
     , mPipelineState(nullptr)
     , mCurrPrimitiveType(PrimitiveType::Unknown)
-    , mPrimitiveType(PrimitiveType::Unknown)
 {
     HRESULT hr;
 
@@ -75,7 +74,7 @@ void CommandBuffer::Reset()
     mShaderProgram = nullptr;
     mCurrPipelineState = nullptr;
     mPipelineState = nullptr;
-    mCurrPrimitiveType = mPrimitiveType = PrimitiveType::Unknown;
+    mCurrPrimitiveType = PrimitiveType::Unknown;
 }
 
 void CommandBuffer::SetViewport(float left, float width, float top, float height,
@@ -295,28 +294,26 @@ void CommandBuffer::UpdateStates()
 
         mCurrPipelineState = mPipelineState;
         mCurrShaderProgram = mShaderProgram;
-    }
 
-    if (mPrimitiveType != mCurrPrimitiveType)
-    {
-        mCurrPrimitiveType = mPrimitiveType;
-        D3D12_PRIMITIVE_TOPOLOGY topology = TranslatePrimitiveType(mPrimitiveType);
-        mCommandList->IASetPrimitiveTopology(topology);
-    };
+        if (mCurrPipelineState->mPrimitiveType != mCurrPrimitiveType)
+        {
+            mCurrPrimitiveType = mCurrPipelineState->mPrimitiveType;
+            D3D12_PRIMITIVE_TOPOLOGY topology = TranslatePrimitiveType(mCurrPrimitiveType);
+            mCommandList->IASetPrimitiveTopology(topology);
+        }
+    }
 }
 
-void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
+void CommandBuffer::Draw(int vertexNum, int instancesNum, int vertexOffset,
                          int instanceOffset)
 {
-    mPrimitiveType = type;
     UpdateStates();
     mCommandList->DrawInstanced(vertexNum, instancesNum, vertexOffset, instanceOffset);
 }
 
-void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesNum,
+void CommandBuffer::DrawIndexed(int indexNum, int instancesNum,
                                 int indexOffset, int vertexOffset, int instanceOffset)
 {
-    mPrimitiveType = type;
     UpdateStates();
     mCommandList->DrawIndexedInstanced(indexNum, instancesNum, indexOffset, vertexOffset,
                                        instanceOffset);

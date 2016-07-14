@@ -35,7 +35,6 @@ class CommandBuffer : public ICommandBuffer
     PipelineState* mPipelineState;
 
     PrimitiveType mCurrPrimitiveType;
-    PrimitiveType mPrimitiveType;
 
     void UpdateStates();
     void UnsetRenderTarget();
@@ -67,9 +66,9 @@ public:
     void CopyTexture(ITexture* src, ITexture* dest) override;
     void Clear(int flags, const float* color, float depthValue,
                unsigned char stencilValue) override;
-    void Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
+    void Draw(int vertexNum, int instancesNum, int vertexOffset,
               int instanceOffset) override;
-    void DrawIndexed(PrimitiveType type, int indexNum, int instancesNum, int indexOffset,
+    void DrawIndexed(int indexNum, int instancesNum, int indexOffset,
                      int vertexOffset, int instanceOffset) override;
 
     std::unique_ptr<ICommandList> Finish() override;

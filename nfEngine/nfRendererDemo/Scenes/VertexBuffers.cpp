@@ -171,6 +171,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer)
         return false;
 
     PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
     pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
@@ -310,9 +311,9 @@ void VertexBuffersScene::Draw(float dt)
 
     // draw
     if (mInstanceBuffer)
-        mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 6, gInstancesNumber);
+        mCommandBuffer->DrawIndexed(6, gInstancesNumber);
     else
-        mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 6);
+        mCommandBuffer->DrawIndexed(6);
 
     mRendererDevice->Execute(mCommandBuffer->Finish().get());
     mWindowBackbuffer->Present();

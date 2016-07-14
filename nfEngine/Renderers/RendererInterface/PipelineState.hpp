@@ -125,6 +125,7 @@ struct PipelineStateDesc
     RasterizerStateDesc raterizerState;
     BlendStateDesc blendState;
     DepthStateDesc depthState;
+    PrimitiveType primitiveType;
     IVertexLayout* vertexLayout;
     IResourceBindingLayout* resBindingLayout;
     const char* debugName;   //< optional debug name
@@ -133,6 +134,7 @@ struct PipelineStateDesc
         : raterizerState()
         , blendState()
         , depthState()
+        , primitiveType(PrimitiveType::Unknown)
         , vertexLayout(nullptr)
         , resBindingLayout(nullptr)
         , debugName(nullptr)
