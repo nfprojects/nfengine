@@ -143,11 +143,16 @@ DebugRenderer::DebugRenderer()
 
     PipelineStateDesc pipelineStateDesc;
     pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
+    pipelineStateDesc.primitiveType = PrimitiveType::Lines;
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
     pipelineStateDesc.raterizerState.fillMode = FillMode::Solid;
-    pipelineStateDesc.debugName = "DebugRenderer::mPipelineState";
-    mPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
+    pipelineStateDesc.debugName = "DebugRenderer::mLinesPipelineState";
+    mLinesPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
+
+    pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
+    pipelineStateDesc.debugName = "DebugRenderer::mTrianglesPipelineState";
+    mTrianglesPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
 
     pipelineStateDesc.vertexLayout = mMeshVertexLayout.get();
     pipelineStateDesc.debugName = "DebugRenderer::mMeshPipelineState";
@@ -219,7 +224,12 @@ void DebugRenderer::Flush(RenderContext* context)
 
         int macros[] = { 0, 0 }; // IS_MESH
         context->commandBuffer->SetShaderProgram(mShaderProgram.GetShaderProgram(macros));
-        context->commandBuffer->SetPipelineState(mPipelineState.get());
+
+        if (ctx.polyType == PrimitiveType::Lines)
+            context->commandBuffer->SetPipelineState(mLinesPipelineState.get());
+        else
+            context->commandBuffer->SetPipelineState(mTrianglesPipelineState.get());
+
         context->commandBuffer->BindResources(0, mVertexShaderBindingInstance.get());
 
         ctx.mode = DebugRendererMode::Simple;
@@ -233,8 +243,7 @@ void DebugRenderer::Flush(RenderContext* context)
                                         ctx.queuedIndicies * sizeof(DebugIndexType),
                                         ctx.indicies.get());
 
-    context->commandBuffer->DrawIndexed(PrimitiveType::Lines,
-                                        static_cast<int>(ctx.queuedIndicies));
+    context->commandBuffer->DrawIndexed(static_cast<int>(ctx.queuedIndicies));
 
     ctx.queuedVertices = 0;
     ctx.queuedIndicies = 0;
@@ -451,8 +460,7 @@ void DebugRenderer::DrawMesh(RenderContext* context, const Resource::Mesh* mesh,
     {
         const Resource::SubMesh& subMesh = mesh->mSubMeshes[i];
         SetMeshMaterial(context, subMesh.material);
-        context->commandBuffer->DrawIndexed(PrimitiveType::Triangles, 3 * subMesh.trianglesCount, 1,
-                                            subMesh.indexOffset);
+        context->commandBuffer->DrawIndexed(3 * subMesh.trianglesCount, 1, subMesh.indexOffset);
     }
 }
 

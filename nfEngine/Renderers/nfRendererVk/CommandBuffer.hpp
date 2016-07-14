@@ -39,10 +39,8 @@ public:
     bool WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data) override;
     void CopyTexture(ITexture* src, ITexture* dest) override;
     void Clear(int flags, const float* color, float depthValue, unsigned char stencilValue) override;
-    void Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
-              int instanceOffset) override;
-    void DrawIndexed(PrimitiveType type, int indexNum, int instancesNum, int indexOffset,
-                     int vertexOffset, int instanceOffset) override;
+    void Draw(int vertexNum, int instancesNum, int vertexOffset, int instanceOffset) override;
+    void DrawIndexed(int indexNum, int instancesNum, int indexOffset, int vertexOffset, int instanceOffset) override;
     std::unique_ptr<ICommandList> Finish() override;
 
     /// Debugging

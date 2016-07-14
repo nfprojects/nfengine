@@ -24,6 +24,7 @@ class PipelineState : public IPipelineState
     D3DPtr<ID3D11RasterizerState> mRS;
     D3DPtr<ID3D11BlendState> mBS;
     D3DPtr<ID3D11DepthStencilState> mDS;
+    PrimitiveType mPrimitiveType;
     VertexLayout* mVertexLayout;
     ResourceBindingLayout* mResBindingLayout;
 

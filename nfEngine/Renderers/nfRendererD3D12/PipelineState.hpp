@@ -27,6 +27,8 @@ class PipelineState : public IPipelineState
     D3D12_DEPTH_STENCIL_DESC mDepthStencilDesc;
     D3D12_BLEND_DESC mBlendDesc;
 
+    PrimitiveType mPrimitiveType;
+
 public:
     bool Init(const PipelineStateDesc& desc);
 };

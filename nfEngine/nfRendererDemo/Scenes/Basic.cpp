@@ -161,6 +161,7 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
     PipelineStateDesc pipelineStateDesc;
     pipelineStateDesc.blendState.independent = false;
     pipelineStateDesc.blendState.rtDescs[0].enable = true;
+    pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
     mPipelineState.reset(mRendererDevice->CreatePipelineState(pipelineStateDesc));
@@ -458,9 +459,9 @@ void BasicScene::Draw(float dt)
 
     // draw
     if (mIndexBuffer)
-        mCommandBuffer->DrawIndexed(PrimitiveType::Triangles, 9, 1);
+        mCommandBuffer->DrawIndexed(9, 1);
     else if (mVertexBuffer)
-        mCommandBuffer->Draw(PrimitiveType::Triangles, 6, 1);
+        mCommandBuffer->Draw(6, 1);
 
     mRendererDevice->Execute(mCommandBuffer->Finish().get());
     mWindowBackbuffer->Present();

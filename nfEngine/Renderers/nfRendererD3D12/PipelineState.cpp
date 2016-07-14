@@ -96,6 +96,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
         mBlendDesc.RenderTarget[i].LogicOpEnable = FALSE; // TODO add support
     }
 
+    mPrimitiveType = desc.primitiveType;
 
     // prepare D3D12 input layout
 

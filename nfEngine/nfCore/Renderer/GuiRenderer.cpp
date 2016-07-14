@@ -102,10 +102,12 @@ GuiRenderer::GuiRenderer()
     pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
     pipelineStateDesc.raterizerState.fillMode = FillMode::Solid;
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
+    pipelineStateDesc.primitiveType = PrimitiveType::Points;
     pipelineStateDesc.debugName = "GuiRenderer::mPipelineState";
     mPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
 
     pipelineStateDesc.raterizerState.scissorTest = true;
+    pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mImGuiVertexLayout.get();
     pipelineStateDesc.debugName = "GuiRenderer::mImGuiPipelineState";
     mImGuiPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
@@ -229,7 +231,7 @@ void GuiRenderer::FlushQueue(RenderContext* context)
             (ctx.quadData[i].alphaTexture != currAlphaTexture))
         {
             // flush quads
-            context->commandBuffer->Draw(PrimitiveType::Points, packetSize, -1, firstQuad);
+            context->commandBuffer->Draw(packetSize, -1, firstQuad);
             packetSize = 0;
             firstQuad = static_cast<int>(i);
 
@@ -249,7 +251,7 @@ void GuiRenderer::FlushQueue(RenderContext* context)
     }
 
     if (packetSize > 0)
-        context->commandBuffer->Draw(PrimitiveType::Points, packetSize, -1, firstQuad);
+        context->commandBuffer->Draw(packetSize, -1, firstQuad);
 
     ctx.queuedQuads = 0;
 }
@@ -462,8 +464,7 @@ bool GuiRenderer::DrawImGui(RenderContext* context, IResourceBindingInstance* im
                                                     static_cast<int>(command->ClipRect.y),
                                                     static_cast<int>(command->ClipRect.z),
                                                     static_cast<int>(command->ClipRect.w));
-                context->commandBuffer->DrawIndexed(PrimitiveType::Triangles,
-                                                    command->ElemCount,
+                context->commandBuffer->DrawIndexed(command->ElemCount,
                                                     -1,
                                                     indexOffset,
                                                     vertexOffset);
