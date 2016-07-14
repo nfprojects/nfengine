@@ -49,8 +49,8 @@ public:
     DepthStencilScene();
     ~DepthStencilScene();
 
-    bool OnInit(void* winHandle);
-    bool OnSwitchSubscene();
-    void Draw(float dt);
-    void Release();
+    bool OnInit(void* winHandle) override;
+    bool OnSwitchSubscene() override;
+    void Draw(float dt) override;
+    void Release() override;
 };

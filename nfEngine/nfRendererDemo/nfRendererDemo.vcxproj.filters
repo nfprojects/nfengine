@@ -16,17 +16,17 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{5c9993df-5de9-482b-bdc2-6b817b5a33bc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders\D3D11">
-      <UniqueIdentifier>{6d84e4d5-f34f-421c-b5da-75d6cfabde23}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders\OGL4">
-      <UniqueIdentifier>{a7253636-a188-4d4f-937b-a0d1ed2d7c09}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Scenes">
       <UniqueIdentifier>{f1dfaed2-e9f5-499f-bdb9-9afcb67d1ced}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Scenes">
       <UniqueIdentifier>{1f6f2919-84c8-4b3e-bd28-019d71c0066f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\HLSL5">
+      <UniqueIdentifier>{6d84e4d5-f34f-421c-b5da-75d6cfabde23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\GLSL">
+      <UniqueIdentifier>{a7253636-a188-4d4f-937b-a0d1ed2d7c09}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -54,6 +54,9 @@
     <ClCompile Include="Scenes\RenderTargets.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Scenes\Tessellation.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp">
@@ -77,45 +80,63 @@
     <ClInclude Include="Scenes\RenderTargets.hpp">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Shaders\D3D11\TestPS.hlsl">
-      <Filter>Shaders\D3D11</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\D3D11\TestVS.hlsl">
-      <Filter>Shaders\D3D11</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\D3D11\InstancingTestPS.hlsl">
-      <Filter>Shaders\D3D11</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\D3D11\InstancingTestVS.hlsl">
-      <Filter>Shaders\D3D11</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\D3D11\PostProcessPS.hlsl">
-      <Filter>Shaders\D3D11</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\D3D11\RenderTargetPS.hlsl">
-      <Filter>Shaders\D3D11</Filter>
-    </FxCompile>
+    <ClInclude Include="Scenes\Tessellation.hpp">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\OGL4\TestVS.glsl">
-      <Filter>Shaders\OGL4</Filter>
+      <Filter>Shaders\GLSL</Filter>
     </None>
     <None Include="Shaders\OGL4\TestPS.glsl">
-      <Filter>Shaders\OGL4</Filter>
+      <Filter>Shaders\GLSL</Filter>
     </None>
     <None Include="Shaders\OGL4\PostProcessPS.glsl">
-      <Filter>Shaders\OGL4</Filter>
+      <Filter>Shaders\GLSL</Filter>
     </None>
     <None Include="Shaders\OGL4\RenderTargetPS.glsl">
-      <Filter>Shaders\OGL4</Filter>
+      <Filter>Shaders\GLSL</Filter>
     </None>
     <None Include="Shaders\OGL4\InstancingTestPS.glsl">
-      <Filter>Shaders\OGL4</Filter>
+      <Filter>Shaders\GLSL</Filter>
     </None>
     <None Include="Shaders\OGL4\InstancingTestVS.glsl">
-      <Filter>Shaders\OGL4</Filter>
+      <Filter>Shaders\GLSL</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\HLSL5\InstancingTestVS.hlsl">
+      <Filter>Shaders\HLSL5</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\HLSL5\PostProcessPS.hlsl">
+      <Filter>Shaders\HLSL5</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\HLSL5\RenderTargetPS.hlsl">
+      <Filter>Shaders\HLSL5</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\HLSL5\TessellationCommon.hlsl">
+      <Filter>Shaders\HLSL5</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\HLSL5\TessellationDS.hlsl">
+      <Filter>Shaders\HLSL5</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\HLSL5\TessellationHS.hlsl">
+      <Filter>Shaders\HLSL5</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\HLSL5\TessellationPS.hlsl">
+      <Filter>Shaders\HLSL5</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\HLSL5\TessellationVS.hlsl">
+      <Filter>Shaders\HLSL5</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\HLSL5\TestPS.hlsl">
+      <Filter>Shaders\HLSL5</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\HLSL5\TestVS.hlsl">
+      <Filter>Shaders\HLSL5</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\HLSL5\InstancingTestPS.hlsl">
+      <Filter>Shaders\HLSL5</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

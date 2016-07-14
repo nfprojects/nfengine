@@ -47,7 +47,7 @@ public:
     VertexBuffersScene();
     ~VertexBuffersScene();
 
-    bool OnInit(void* winHandle);
-    void Draw(float dt);
-    void Release();
+    bool OnInit(void* winHandle) override;
+    void Draw(float dt) override;
+    void Release() override;
 };

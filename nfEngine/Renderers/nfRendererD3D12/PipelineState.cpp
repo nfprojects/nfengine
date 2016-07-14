@@ -97,6 +97,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     }
 
     mPrimitiveType = desc.primitiveType;
+    mNumControlPoints = desc.numControlPoints;
 
     // prepare D3D12 input layout
 
@@ -158,7 +159,7 @@ bool FullPipelineState::Init(const FullPipelineStateParts& parts)
     psd.InputLayout = pipelineState->mInputLayoutDesc;
     psd.SampleMask = UINT_MAX;
     psd.IBStripCutValue = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED;
-    psd.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE; // TODO
+    psd.PrimitiveTopologyType = TranslatePrimitiveTopologyType(pipelineState->mPrimitiveType);
     psd.NumRenderTargets = 1; // TODO
     psd.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM; // TODO
     for (int i = 1; i < 8; ++i)
