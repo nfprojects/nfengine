@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_f7e4b03c",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-15T10:45:44Z",
+      "side": 1,
+      "message": "Yea, I know that the proper way to terminate the thread in cpp is to return from function that runs there.\nI guess we can count references of this class (for \u003e0 create thread and when it hits 0 return from it) and that\u0027s it.",
+      "parentUuid": "baa041b7_4b7e1f1a",
+      "revId": "7e0bbc48f2e46d2bbd032f0a10d75b86372f6e2d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_eb705342",
         "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
         "patchSetId": 9
@@ -30,6 +48,24 @@
       "writtenOn": "2016-07-14T18:54:34Z",
       "side": 1,
       "message": "else { notify about error via FinishedOperationsHandler }",
+      "revId": "7e0bbc48f2e46d2bbd032f0a10d75b86372f6e2d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_77f0a0fd",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-15T10:45:44Z",
+      "side": 1,
+      "message": "Will be added",
+      "parentUuid": "baa041b7_eb705342",
       "revId": "7e0bbc48f2e46d2bbd032f0a10d75b86372f6e2d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_d78acc63",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 295,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-15T10:45:44Z",
+      "side": 1,
+      "message": "I thought that log message is selfexplanatory - this error states that read operation didn\u0027t get enqueued successfully, so FinishedOperationsHandler won\u0027t ever be called.\n\nIf job gets enqueued successfully, but error occurs during it - error will be logged in FinishedOperationsHandler.",
+      "parentUuid": "baa041b7_8b96673c",
+      "revId": "7e0bbc48f2e46d2bbd032f0a10d75b86372f6e2d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_6b9b2367",
         "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
         "patchSetId": 9
@@ -64,6 +118,24 @@
       "writtenOn": "2016-07-14T18:54:34Z",
       "side": 1,
       "message": "notify about error via FinishedOperationsHandler",
+      "revId": "7e0bbc48f2e46d2bbd032f0a10d75b86372f6e2d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b7eaa80d",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-15T10:45:44Z",
+      "side": 1,
+      "message": "as above",
+      "parentUuid": "baa041b7_6b9b2367",
       "revId": "7e0bbc48f2e46d2bbd032f0a10d75b86372f6e2d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
