@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_ec006603",
+        "filename": "nfEngine/nfCommon/LogGrouper.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-15T17:03:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_eabf54a8",
+      "range": {
+        "startLine": 126,
+        "startChar": 37,
+        "endLine": 126,
+        "endChar": 42
+      },
+      "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_1209b42c",
         "filename": "nfEngine/nfCommon/LogGrouper.hpp",
         "patchSetId": 2
@@ -60,6 +84,30 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "baa041b7_1209b42c",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 17
+      },
+      "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8c0b1a24",
+        "filename": "nfEngine/nfCommon/LogGrouper.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-15T17:03:32Z",
+      "side": 1,
+      "message": "I\u0027ve actually moved std::string to the top, cause sizeof(std::string) \u003d 40 (waaaat?) and sizeof(double) \u003d 8",
+      "parentUuid": "baa041b7_fed28f33",
       "range": {
         "startLine": 20,
         "startChar": 0,
@@ -143,6 +191,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_cc05a211",
+        "filename": "nfEngine/nfCommon/LogGrouper.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-15T17:03:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_0af278d2",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 33
+      },
+      "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_52ff3c01",
         "filename": "nfEngine/nfCommon/LogGrouper.hpp",
         "patchSetId": 2
@@ -190,6 +262,24 @@
       "side": 1,
       "message": "See last comment in cpp",
       "parentUuid": "baa041b7_bedc0747",
+      "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ac06de19",
+        "filename": "nfEngine/nfCommon/LogGrouper.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-15T17:03:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_2ac65c49",
       "revId": "219789b40ee38f20f81bcd6389037518481ca8a5",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
