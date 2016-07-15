@@ -1,0 +1,204 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_ff4fe631",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-15T21:28:55Z",
+      "side": 1,
+      "message": "Why did you remove the long-running thread? Creating it every async IO request will be extremally slow...",
+      "revId": "3f1cb989b060480331e527e5498a2560bfa97121",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_df38a2a2",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-15T21:28:55Z",
+      "side": 1,
+      "message": "This is not thread-safe",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 31
+      },
+      "revId": "3f1cb989b060480331e527e5498a2560bfa97121",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_df5f82e3",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-15T21:28:55Z",
+      "side": 1,
+      "message": "This is slow",
+      "revId": "3f1cb989b060480331e527e5498a2560bfa97121",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_bf3dde90",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-15T21:28:55Z",
+      "side": 1,
+      "message": "This is not thread-safe",
+      "range": {
+        "startLine": 64,
+        "startChar": 0,
+        "endLine": 66,
+        "endChar": 31
+      },
+      "revId": "3f1cb989b060480331e527e5498a2560bfa97121",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_bf64beb8",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-15T21:28:55Z",
+      "side": 1,
+      "message": "This is slow",
+      "revId": "3f1cb989b060480331e527e5498a2560bfa97121",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7f43d613",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-15T21:28:55Z",
+      "side": 1,
+      "message": "This is not thread-safe",
+      "range": {
+        "startLine": 80,
+        "startChar": 0,
+        "endLine": 82,
+        "endChar": 31
+      },
+      "revId": "3f1cb989b060480331e527e5498a2560bfa97121",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_9f557ac3",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-15T21:28:55Z",
+      "side": 1,
+      "message": "This is slow",
+      "revId": "3f1cb989b060480331e527e5498a2560bfa97121",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_5f4db23c",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-15T21:28:55Z",
+      "side": 1,
+      "message": "This is not thread-safe",
+      "range": {
+        "startLine": 103,
+        "startChar": 0,
+        "endLine": 106,
+        "endChar": 31
+      },
+      "revId": "3f1cb989b060480331e527e5498a2560bfa97121",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3f4aee26",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-15T21:28:55Z",
+      "side": 1,
+      "message": "I meant to call mCallback with proper error (e.g. with \"bytesProcessed\" equal to zero or introduce additonal status flag)",
+      "range": {
+        "startLine": 306,
+        "startChar": 10,
+        "endLine": 310,
+        "endChar": 47
+      },
+      "revId": "3f1cb989b060480331e527e5498a2560bfa97121",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_1f53aae3",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-15T21:28:55Z",
+      "side": 1,
+      "message": "This is not thread-safe",
+      "revId": "3f1cb989b060480331e527e5498a2560bfa97121",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
