@@ -9,6 +9,7 @@
 #include "../RendererInterface/Device.hpp"
 #include "Common.hpp"
 #include "PipelineState.hpp"
+#include "HeapAllocator.hpp"
 
 #include <map>
 
@@ -30,20 +31,17 @@ class Device : public IDevice
     D3DPtr<IDXGIAdapter> mPrimaryAdapter;
     D3DPtr<ID3D12Device> mDevice;
     D3DPtr<ID3D12CommandQueue> mCommandQueue;
-    D3DPtr<ID3D12DescriptorHeap> mRtvHeap;
-    D3DPtr<ID3D12DescriptorHeap> mCbvSrvUavHeap;
 
-    std::vector<bool> mCbvSrvUavHeapMap;
+    HeapAllocator mCbvSrvUavHeapAllocator;
+    HeapAllocator mRtvHeapAllocator;
+    HeapAllocator mDsvHeapAllocator;
 
     std::map<FullPipelineStateParts, D3DPtr<ID3D12PipelineState>> mPipelineStateMap;
-
-    UINT mCbvSrvUavDescSize;
-    UINT mRtvDescSize;
-    UINT mDsvDescSize;
 
 public:
     Device();
     ~Device();
+    bool Init();
 
     ID3D12Device* GetDevice() const;
     ID3D12CommandQueue* GetCommandQueue() const;
@@ -71,11 +69,6 @@ public:
     bool DownloadTexture(ITexture* tex, void* data, int mipmap, int layer) override;
 
     ID3D12PipelineState* GetFullPipelineState(const FullPipelineStateParts& parts);
-
-    void GetCbvSrvUavHeapInfo(UINT& descriptorSize, D3D12_CPU_DESCRIPTOR_HANDLE& ptr);
-    size_t AllocateCbvSrvUavHeap(size_t numDescriptors);
-    void FreeCbvSrvUavHeap(size_t offset, size_t numDescriptors);
-
     void OnShaderProgramDestroyed(IShaderProgram* program);
     void OnPipelineStateDestroyed(IPipelineState* pipelineState);
 
@@ -83,6 +76,21 @@ public:
      * Waits until all operations sent to the command queue has been completed.
      */
     bool WaitForGPU();
+
+    NFE_INLINE HeapAllocator& GetCbvSrvUavHeapAllocator()
+    {
+        return mCbvSrvUavHeapAllocator;
+    }
+
+    NFE_INLINE HeapAllocator& GetRtvHeapAllocator()
+    {
+        return mRtvHeapAllocator;
+    }
+
+    NFE_INLINE HeapAllocator& GetDsvHeapAllocator()
+    {
+        return mDsvHeapAllocator;
+    }
 };
 
 } // namespace Renderer

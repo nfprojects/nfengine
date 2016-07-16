@@ -187,7 +187,10 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
 ResourceBindingInstance::~ResourceBindingInstance()
 {
     if (mSet)
-        gDevice->FreeCbvSrvUavHeap(mDescriptorHeapOffset, mSet->mBindings.size());
+    {
+        HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
+        allocator.Free(mDescriptorHeapOffset, static_cast<uint32>(mSet->mBindings.size()));
+    }
 }
 
 bool ResourceBindingInstance::Init(IResourceBindingSet* bindingSet)
@@ -200,7 +203,8 @@ bool ResourceBindingInstance::Init(IResourceBindingSet* bindingSet)
     }
 
     // TODO ranges support
-    mDescriptorHeapOffset = gDevice->AllocateCbvSrvUavHeap(mSet->mBindings.size());
+    HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
+    mDescriptorHeapOffset = allocator.Allocate(static_cast<uint32>(mSet->mBindings.size()));
     return mDescriptorHeapOffset != -1;
 }
 
@@ -248,12 +252,9 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, ITexture* texture)
     // TODO multisampled and multilayered textures
     }
 
-    UINT descriptorSize;
-    D3D12_CPU_DESCRIPTOR_HANDLE heapPtr;
-    gDevice->GetCbvSrvUavHeapInfo(descriptorSize, heapPtr);
-
-    D3D12_CPU_DESCRIPTOR_HANDLE target;
-    target.ptr = heapPtr.ptr + descriptorSize * (mDescriptorHeapOffset + slot);
+    HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
+    D3D12_CPU_DESCRIPTOR_HANDLE target = allocator.GetCpuHandle();
+    target.ptr += allocator.GetDescriptorSize() * (mDescriptorHeapOffset + slot);
     gDevice->GetDevice()->CreateShaderResourceView(tex->mBuffers[0].get(), &srvDesc, target);
 
     return true;
@@ -275,12 +276,9 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, IBuffer* buffer)
     cbvDesc.BufferLocation = cbuffer->mResource->GetGPUVirtualAddress();
     cbvDesc.SizeInBytes = static_cast<UINT>(cbuffer->mSize);
 
-    UINT descriptorSize;
-    D3D12_CPU_DESCRIPTOR_HANDLE heapPtr;
-    gDevice->GetCbvSrvUavHeapInfo(descriptorSize, heapPtr);
-
-    D3D12_CPU_DESCRIPTOR_HANDLE target;
-    target.ptr = heapPtr.ptr + descriptorSize * (mDescriptorHeapOffset + slot);
+    HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
+    D3D12_CPU_DESCRIPTOR_HANDLE target = allocator.GetCpuHandle();
+    target.ptr += allocator.GetDescriptorSize() * (mDescriptorHeapOffset + slot);
     gDevice->GetDevice()->CreateConstantBufferView(&cbvDesc, target);
 
     return true;

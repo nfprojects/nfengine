@@ -72,7 +72,10 @@ void CommandBuffer::Reset()
     if (FAILED(hr))
         return;
 
-    ID3D12DescriptorHeap* heaps[] = { gDevice->mCbvSrvUavHeap.get() };
+    ID3D12DescriptorHeap* heaps[] =
+    {
+        gDevice->GetCbvSrvUavHeapAllocator().GetHeap(),
+    };
     mCommandList->SetDescriptorHeaps(1, heaps);
 
     mCurrRenderTarget = nullptr;
@@ -170,8 +173,9 @@ void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* binding
         mCurrBindingLayout = mBindingLayout;
     }
 
-    D3D12_GPU_DESCRIPTOR_HANDLE ptr = gDevice->mCbvSrvUavHeap->GetGPUDescriptorHandleForHeapStart();
-    ptr.ptr += instance->mDescriptorHeapOffset * gDevice->mCbvSrvUavDescSize;
+    HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
+    D3D12_GPU_DESCRIPTOR_HANDLE ptr = allocator.GetGpuHandle();
+    ptr.ptr += instance->mDescriptorHeapOffset * allocator.GetDescriptorSize();
     mCommandList->SetGraphicsRootDescriptorTable(static_cast<UINT>(slot), ptr);
 }
 
@@ -186,6 +190,7 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
 
     if (mCurrRenderTarget != nullptr)
     {
+        HeapAllocator& allocator = gDevice->GetRtvHeapAllocator();
         D3D12_CPU_DESCRIPTOR_HANDLE rtvs[MAX_RENDER_TARGETS];
 
         for (size_t i = 0; i < mCurrRenderTarget->mTextures.size(); ++i)
@@ -193,7 +198,8 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
             Texture* tex = mCurrRenderTarget->mTextures[i];
             int currBuffer = tex->mCurrentBuffer;
 
-            rtvs[i] = mCurrRenderTarget->mRTVs[currBuffer][i];
+            rtvs[i] = allocator.GetCpuHandle();
+            rtvs[i].ptr += mCurrRenderTarget->mRTVs[currBuffer][i] * allocator.GetDescriptorSize();
 
             if (tex->mResourceState != D3D12_RESOURCE_STATE_RENDER_TARGET)
             {
@@ -296,13 +302,16 @@ void CommandBuffer::Clear(int flags, const float* color, float depthValue,
 {
     if (mCurrRenderTarget != nullptr)
     {
+        HeapAllocator& allocator = gDevice->GetRtvHeapAllocator();
+
         for (size_t i = 0; i < mCurrRenderTarget->mTextures.size(); ++i)
         {
             Texture* tex = mCurrRenderTarget->mTextures[i];
             int currentBuffer = tex->mCurrentBuffer;
 
-            mCommandList->ClearRenderTargetView(mCurrRenderTarget->mRTVs[currentBuffer][i], color,
-                                                0, nullptr);
+            D3D12_CPU_DESCRIPTOR_HANDLE handle = allocator.GetCpuHandle();
+            handle.ptr += mCurrRenderTarget->mRTVs[currentBuffer][i] * allocator.GetDescriptorSize();
+            mCommandList->ClearRenderTargetView(handle, color, 0, nullptr);
         }
     }
 

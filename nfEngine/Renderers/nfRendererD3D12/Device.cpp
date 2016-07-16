@@ -26,9 +26,6 @@ namespace Renderer {
 
 namespace {
 
-// TODO dynamic heap expansion
-const UINT INITIAL_CBV_SRV_UAV_HEAP_SIZE = 1024;
-
 template<typename Type, typename Desc>
 Type* CreateGenericResource(const Desc& desc)
 {
@@ -48,6 +45,13 @@ Type* CreateGenericResource(const Desc& desc)
 } // namespace
 
 Device::Device()
+    : mCbvSrvUavHeapAllocator(HeapAllocator::Type::CbvSrvUav, 16)
+    , mRtvHeapAllocator(HeapAllocator::Type::Rtv, 2)
+    , mDsvHeapAllocator(HeapAllocator::Type::Dsv, 1)
+{
+}
+
+bool Device::Init()
 {
     HRESULT hr;
 
@@ -65,15 +69,15 @@ Device::Device()
 
     hr = D3D_CALL_CHECK(CreateDXGIFactory1(IID_PPV_ARGS(&mDXGIFactory)));
     if (FAILED(hr))
-        return;
+        return false;
 
     hr = D3D_CALL_CHECK(mDXGIFactory->EnumAdapters(0, &mPrimaryAdapter));
     if (FAILED(hr))
-        return;
+        return false;
 
     hr = D3D_CALL_CHECK(D3D12CreateDevice(nullptr, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&mDevice)));
     if (FAILED(hr))
-        return;
+        return false;
 
     D3D_FEATURE_LEVEL featureLevels[] =
     {
@@ -157,36 +161,27 @@ Device::Device()
     queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
     hr = D3D_CALL_CHECK(mDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&mCommandQueue)));
     if (FAILED(hr))
-        return;
+        return false;
 
-    // TODO: temporary
-    D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
-    rtvHeapDesc.NumDescriptors = 256;
-    rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-    rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-    hr = D3D_CALL_CHECK(mDevice->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&mRtvHeap)));
-    if (FAILED(hr))
-        return;
+    if (!mCbvSrvUavHeapAllocator.Init())
+    {
+        LOG_ERROR("Failed to initialize heap allocator for CBV, SRV and UAV");
+        return false;
+    }
 
-    D3D12_DESCRIPTOR_HEAP_DESC cbvSrvUavHeapDesc = {};
-    cbvSrvUavHeapDesc.NumDescriptors = INITIAL_CBV_SRV_UAV_HEAP_SIZE;
-    cbvSrvUavHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-    cbvSrvUavHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-    hr = D3D_CALL_CHECK(mDevice->CreateDescriptorHeap(&cbvSrvUavHeapDesc, IID_PPV_ARGS(&mCbvSrvUavHeap)));
-    if (FAILED(hr))
-        return;
+    if (!mRtvHeapAllocator.Init())
+    {
+        LOG_ERROR("Failed to initialize heap allocator for CBV, SRV and UAV");
+        return false;
+    }
 
-    mCbvSrvUavHeapMap.resize(INITIAL_CBV_SRV_UAV_HEAP_SIZE);
-    for (size_t i = 0; i < mCbvSrvUavHeapMap.size(); ++i)
-        mCbvSrvUavHeapMap[i] = false;
+    if (!mDsvHeapAllocator.Init())
+    {
+        LOG_ERROR("Failed to initialize heap allocator for CBV, SRV and UAV");
+        return false;
+    }
 
-    // obtain descriptor sizes
-    mCbvSrvUavDescSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-    LOG_DEBUG("CBV/SRV/UAV descriptor heap handle increment: %u", mCbvSrvUavDescSize);
-    mRtvDescSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-    LOG_DEBUG("RTV descriptor heap handle increment: %u", mRtvDescSize);
-    mDsvDescSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
-    LOG_DEBUG("DSV descriptor heap handle increment: %u", mDsvDescSize);
+    return true;
 }
 
 Device::~Device()
@@ -425,46 +420,6 @@ void Device::OnPipelineStateDestroyed(IPipelineState* pipelineState)
 
     for (const auto& parts : toRemove)
         mPipelineStateMap.erase(parts);
-}
-
-void Device::GetCbvSrvUavHeapInfo(UINT& descriptorSize, D3D12_CPU_DESCRIPTOR_HANDLE& ptr)
-{
-    descriptorSize = mCbvSrvUavDescSize;
-    ptr = mCbvSrvUavHeap->GetCPUDescriptorHandleForHeapStart();
-}
-
-size_t Device::AllocateCbvSrvUavHeap(size_t numDescriptors)
-{
-    size_t first = 0;
-    size_t count = 0;
-    for (size_t i = 0; i < mCbvSrvUavHeapMap.size(); ++i)
-    {
-        if (mCbvSrvUavHeapMap[i])
-        {
-            count = 0;
-            first = i + 1;
-            continue;
-        }
-
-        count++;
-        if (count >= numDescriptors)
-        {
-            for (size_t j = first; j < first + count; ++j)
-                mCbvSrvUavHeapMap[i] = true;
-            return first;
-        }
-    }
-
-    LOG_ERROR("Descriptor heap allocation failed");
-    return static_cast<size_t>(-1);
-}
-
-void Device::FreeCbvSrvUavHeap(size_t offset, size_t numDescriptors)
-{
-    assert(offset + numDescriptors < INITIAL_CBV_SRV_UAV_HEAP_SIZE);
-
-    for (size_t i = offset; i < offset + numDescriptors; ++i)
-        mCbvSrvUavHeapMap[i] = true;
 }
 
 bool Device::WaitForGPU()
