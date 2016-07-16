@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_bf503e33",
+        "filename": "nfEngine/nfCommon/LogScope.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-16T14:23:45Z",
+      "side": 1,
+      "message": "There should be a macro for capturing source file name and line - we don\u0027t know where in code the scope was called",
+      "revId": "94312cc9a27d6ff9a99eb982cc075b3e97dfccdf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7f46367c",
+        "filename": "nfEngine/nfCommonTest/LogScopeTest.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-16T14:23:45Z",
+      "side": 1,
+      "message": "Test case longer 4 times the actual code...",
+      "revId": "94312cc9a27d6ff9a99eb982cc075b3e97dfccdf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
