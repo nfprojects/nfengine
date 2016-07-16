@@ -1,0 +1,221 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_5f049248",
+        "filename": "nfEngine/Renderers/nfRendererVk/CommandBuffer.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-16T14:10:07Z",
+      "side": 1,
+      "message": "Vulkan",
+      "range": {
+        "startLine": 4,
+        "startChar": 27,
+        "endLine": 4,
+        "endChar": 35
+      },
+      "revId": "0b156a99a8f4d1a6177da744e21bded83a15fa38",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3f01ce38",
+        "filename": "nfEngine/Renderers/nfRendererVk/Defines.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-16T14:10:07Z",
+      "side": 1,
+      "message": "really?",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 55,
+        "endChar": 23
+      },
+      "revId": "0b156a99a8f4d1a6177da744e21bded83a15fa38",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_fff6c65b",
+        "filename": "nfEngine/Renderers/nfRendererVk/Defines.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-16T14:10:07Z",
+      "side": 1,
+      "message": "is this really needed here?",
+      "revId": "0b156a99a8f4d1a6177da744e21bded83a15fa38",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_5fb25295",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-16T14:10:07Z",
+      "side": 1,
+      "message": "set mVkDevice and mVkPhysicalDevice to null",
+      "revId": "0b156a99a8f4d1a6177da744e21bded83a15fa38",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7fa19645",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-16T14:10:07Z",
+      "side": 1,
+      "message": "not used",
+      "revId": "0b156a99a8f4d1a6177da744e21bded83a15fa38",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_dfbd4269",
+        "filename": "nfEngine/Renderers/nfRendererVk/Instance.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-16T14:10:07Z",
+      "side": 1,
+      "message": "LOG_ERROR, return false",
+      "range": {
+        "startLine": 59,
+        "startChar": 8,
+        "endLine": 59,
+        "endChar": 17
+      },
+      "revId": "0b156a99a8f4d1a6177da744e21bded83a15fa38",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_bfc27ee7",
+        "filename": "nfEngine/Renderers/nfRendererVk/Instance.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-16T14:10:07Z",
+      "side": 1,
+      "message": "LOG_ERROR, return false",
+      "range": {
+        "startLine": 108,
+        "startChar": 8,
+        "endLine": 108,
+        "endChar": 17
+      },
+      "revId": "0b156a99a8f4d1a6177da744e21bded83a15fa38",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_9fb33a9a",
+        "filename": "nfEngine/Renderers/nfRendererVk/Instance.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-16T14:10:07Z",
+      "side": 1,
+      "message": "this should be inlined",
+      "revId": "0b156a99a8f4d1a6177da744e21bded83a15fa38",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_1f916af1",
+        "filename": "nfEngine/Renderers/nfRendererVk/RendererVk.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-16T14:10:07Z",
+      "side": 1,
+      "message": "What\u0027s point of this source file?",
+      "revId": "0b156a99a8f4d1a6177da744e21bded83a15fa38",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ff8da6d3",
+        "filename": "nfEngine/Renderers/nfRendererVk/RendererVk.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-16T14:10:07Z",
+      "side": 1,
+      "message": "What\u0027s point of this header file?",
+      "revId": "0b156a99a8f4d1a6177da744e21bded83a15fa38",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_1fa84a1f",
+        "filename": "nfEngine/nfRendererDemo/Main.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-16T14:10:07Z",
+      "side": 1,
+      "message": "gShaderPathExt",
+      "range": {
+        "startLine": 332,
+        "startChar": 8,
+        "endLine": 332,
+        "endChar": 25
+      },
+      "revId": "0b156a99a8f4d1a6177da744e21bded83a15fa38",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
