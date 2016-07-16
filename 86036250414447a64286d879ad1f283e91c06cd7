@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_df642223",
+        "filename": "nfEngine/Renderers/nfRendererVk/Extensions.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-16T14:19:14Z",
+      "side": 1,
+      "message": "not used",
+      "revId": "86036250414447a64286d879ad1f283e91c06cd7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
