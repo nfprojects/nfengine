@@ -103,7 +103,22 @@ public:
     virtual bool DownloadTexture(ITexture* tex, void* data, int mipmap = 0, int layer = 0) = 0;
 };
 
-typedef IDevice* (*RendererInitFunc)();
+
+/**
+ * Structure containing rendering device initialization parameters.
+ */
+struct DeviceInitParams
+{
+    int preferedCardId;
+    const char* preferedCardName;
+
+    DeviceInitParams()
+        : preferedCardId(-1)
+        , preferedCardName(nullptr)
+    {}
+};
+
+typedef IDevice* (*RendererInitFunc)(const DeviceInitParams*);
 typedef void (*RendererReleaseFunc)();
 
 } // namespace Renderer
