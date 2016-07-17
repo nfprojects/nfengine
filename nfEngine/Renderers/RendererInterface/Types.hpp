@@ -130,6 +130,7 @@ enum class ElementFormat
  */
 enum class DepthBufferFormat
 {
+    Unknown,
     Depth16,          // 16-bit depth buffer
     Depth24_Stencil8, // 24-bit depth buffer + 8-bit stencil buffer
     Depth32,          // 32-bit depth buffer

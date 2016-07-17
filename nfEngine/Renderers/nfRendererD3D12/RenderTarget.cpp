@@ -17,6 +17,8 @@ namespace Renderer {
 RenderTarget::RenderTarget()
     : mWidth(0)
     , mHeight(0)
+    , mDSV(static_cast<uint32>(-1))
+    , mDepthTexture(nullptr)
 {
 }
 
@@ -29,6 +31,10 @@ RenderTarget::~RenderTarget()
         for (uint32 offset : mRTVs[i])
             allocator.Free(offset, 1);
     }
+
+    HeapAllocator& dsvAllocator = gDevice->GetDsvHeapAllocator();
+    if (mDSV != -1)
+        dsvAllocator.Free(mDSV, 1);
 
     gDevice->WaitForGPU();
 }
@@ -52,6 +58,56 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             return false;
         }
 
+        D3D12_RENDER_TARGET_VIEW_DESC rtvDesc;
+        rtvDesc.Format = tex->mSrvFormat;
+        switch (tex->mType)
+        {
+        case TextureType::Texture1D:
+            if (tex->mLayers > 1)
+            {
+                rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE1DARRAY;
+                rtvDesc.Texture1DArray.MipSlice = desc.targets[i].level;
+                rtvDesc.Texture1DArray.FirstArraySlice = desc.targets[i].layer;
+                rtvDesc.Texture1DArray.ArraySize = 1;
+                rtvDesc.Texture2DArray.PlaneSlice = 0;
+            }
+            else
+            {
+                rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE1D;
+                rtvDesc.Texture1D.MipSlice = desc.targets[i].level;
+            }
+            break;
+        case TextureType::Texture2D:
+        case TextureType::TextureCube:
+            if (tex->mLayers == 1)
+            {
+                rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+                rtvDesc.Texture2D.MipSlice = 0;
+                rtvDesc.Texture2D.PlaneSlice = 0;
+            }
+            else if (tex->mLayers > 1)
+            {
+                rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DARRAY;
+                rtvDesc.Texture2DArray.MipSlice = desc.targets[i].level;
+                rtvDesc.Texture2DArray.FirstArraySlice = desc.targets[i].layer;
+                rtvDesc.Texture2DArray.ArraySize = 1;
+                rtvDesc.Texture2DArray.PlaneSlice = 0;
+            }
+            else
+            {
+                LOG_ERROR("Unsupported texture type");
+                return false;
+            }
+
+            break;
+            // TODO TextureType::Texture3D
+            // TODO multisampled textures
+
+        default:
+            LOG_ERROR("Unsupported texture type for render target");
+            return false;
+        }
+
         // Create a RTV for each frame
         for (UINT n = 0; n < tex->mBuffersNum; n++)
         {
@@ -61,11 +117,55 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 
             D3D12_CPU_DESCRIPTOR_HANDLE handle = rtvAllocator.GetCpuHandle();
             handle.ptr += rtvAllocator.GetDescriptorSize() * offset;
-            gDevice->mDevice->CreateRenderTargetView(tex->mBuffers[n].get(), nullptr, handle);
+            gDevice->mDevice->CreateRenderTargetView(tex->mBuffers[n].get(), &rtvDesc, handle);
             mRTVs[n].push_back(offset);
         }
 
+        mWidth = tex->mWidth;
+        mHeight = tex->mHeight;
         mTextures.push_back(tex);
+    }
+
+    if (desc.depthBuffer)
+    {
+        HeapAllocator& allocator = gDevice->GetDsvHeapAllocator();
+
+        Texture* tex = dynamic_cast<Texture*>(desc.depthBuffer);
+        if (tex == nullptr)
+        {
+            LOG_ERROR("Invalid texture for depth buffer");
+            return false;
+        }
+
+        mDSV = allocator.Allocate(1);
+        if (mDSV == -1)
+            return false;
+
+        D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc;
+        dsvDesc.Format = tex->mDsvFormat;
+        dsvDesc.Flags = D3D12_DSV_FLAG_NONE;
+
+        switch (tex->mType)
+        {
+        case TextureType::Texture1D:
+            dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE1D;
+            dsvDesc.Texture1D.MipSlice = 0;
+            break;
+        case TextureType::Texture2D:
+            dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+            dsvDesc.Texture2D.MipSlice = 0;
+            break;
+        // TODO multisampled and multilayered textures
+        default:
+            LOG_ERROR("Feature not implemented");
+            return false;
+        }
+
+        D3D12_CPU_DESCRIPTOR_HANDLE handle = allocator.GetCpuHandle();
+        handle.ptr += allocator.GetDescriptorSize() * mDSV;
+        gDevice->mDevice->CreateDepthStencilView(tex->mBuffers[0].get(), &dsvDesc, handle);
+
+        mDepthTexture = tex;
     }
 
     return true;
