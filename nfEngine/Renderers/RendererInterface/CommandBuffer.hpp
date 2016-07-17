@@ -137,7 +137,7 @@ public:
      * @param vertexOffset   Vertex buffer offset (in elements).
      * @param instanceOffset Per-instance buffer offset (in elements).
      */
-    virtual void Draw(int vertexNum, int instancesNum = -1, int vertexOffset = 0, int instanceOffset = 0) = 0;
+    virtual void Draw(int vertexNum, int instancesNum = 1, int vertexOffset = 0, int instanceOffset = 0) = 0;
 
     /**
      * Draw geometry (with indexed verticies).
@@ -150,7 +150,7 @@ public:
      * @param instanceOffset Per-instance buffer offset (in elements).
      */
     virtual void DrawIndexed(int indexNum,
-                             int instancesNum = -1, int indexOffset = 0,
+                             int instancesNum = 1, int indexOffset = 0,
                              int vertexOffset = 0, int instanceOffset = 0) = 0;
 
     /**
