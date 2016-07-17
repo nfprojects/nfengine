@@ -349,8 +349,10 @@ bool Device::DownloadTexture(ITexture* tex, void* data, int mipmap, int layer)
     return false;
 }
 
-IDevice* Init()
+IDevice* Init(const DeviceInitParams* params)
 {
+    UNUSED(params);
+
     if (gDevice == nullptr)
     {
         gDevice.reset(new (std::nothrow) Device);

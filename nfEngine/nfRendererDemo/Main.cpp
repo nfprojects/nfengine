@@ -129,14 +129,15 @@ public:
     /**
      * Initializes NFE Renderer backend
      *
-     * @param renderer Name of renderer to use
+     * @param renderer          Name of renderer to use
+     * @param preferredCardId   ID of preferred video card
      * @return True on success, false otherwise
      *
      * The method opens Renderer library using NFE::Common::Library class, then extracts the init
      * function for renderer and creates NFE::Renderer::IDevice this way. Should be called only
      * once during Demo lifespan (switching renderers on-the-fly is not supported).
      */
-    bool InitRenderer(const std::string& renderer)
+    bool InitRenderer(const std::string& renderer, int preferredCardId)
     {
         if (!mRendererLib.Open(renderer))
             return false;
@@ -145,7 +146,9 @@ public:
         if (!mRendererLib.GetSymbol(RENDERER_INIT_FUNC, proc))
             return false;
 
-        mRendererDevice = proc();
+        DeviceInitParams params;
+        params.preferredCardId = preferredCardId;
+        mRendererDevice = proc(&params);
         if (mRendererDevice == nullptr)
             return false;
 
@@ -339,11 +342,15 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    int preferredCard = 0;
+    if (argc >= 3)
+        preferredCard = atoi(argv[2]);
+
     DemoWindow window;
     window.SetSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     window.Open();
 
-    if (!window.InitRenderer(rend))
+    if (!window.InitRenderer(rend, preferredCard))
     {
         std::cerr << "Renderer failed to initialize" << std::endl;
         return 2;

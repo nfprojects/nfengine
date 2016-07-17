@@ -40,7 +40,8 @@ HRESULT D3DError(HRESULT hr, const char* srcFile, int line);
 template<typename T>
 class D3DPtr
 {
-private:
+    static_assert(std::is_base_of<IUnknown, T>::value, "D3DPtr only accepts IUnknown-based types");
+
     T* pointer;
 
     D3DPtr(const D3DPtr&) = delete;
@@ -53,13 +54,13 @@ public:
 
     D3DPtr(T* ptr)
     {
-        static_assert(std::is_base_of<IUnknown, T>::value, "D3DPtr only accepts IUnknown-based types");
         pointer = ptr;
     }
 
     D3DPtr(D3DPtr<T>&& rhs)
     {
-        std::swap(pointer, rhs.pointer);
+        pointer = rhs.pointer;
+        rhs.pointer = nullptr;
     }
 
     ~D3DPtr()
