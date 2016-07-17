@@ -7,11 +7,13 @@
 #include "PCH.hpp"
 #include "Backends.hpp"
 
+int gPreferedCardId;
 std::string gBackend;
 std::string gShaderPathPrefix;
 std::string gShaderPathExt;
 
 const std::string D3D11_BACKEND("nfRendererD3D11");
+const std::string D3D12_BACKEND("nfRendererD3D12");
 const std::string OGL4_BACKEND("nfRendererOGL4");
 const std::string VK_BACKEND("nfRendererVk");
 

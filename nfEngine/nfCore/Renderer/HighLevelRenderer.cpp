@@ -51,7 +51,7 @@ bool HighLevelRenderer::Init(const std::string& preferredRendererName)
     if (!mLowLevelRendererLib.GetSymbol(RENDERER_INIT_FUNC, initFunc))
         return false;
 
-    mRenderingDevice = initFunc();
+    mRenderingDevice = initFunc(nullptr);
     if (mRenderingDevice == nullptr)
         return false;
 

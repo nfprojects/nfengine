@@ -27,8 +27,10 @@ class Device : public IDevice
 
     D3D_FEATURE_LEVEL mFeatureLevel;
 
+    std::vector<D3DPtr<IDXGIAdapter>> mAdapters;
+    int mAdapterInUse;
+
     D3DPtr<IDXGIFactory4> mDXGIFactory;
-    D3DPtr<IDXGIAdapter> mPrimaryAdapter;
     D3DPtr<ID3D12Device> mDevice;
     D3DPtr<ID3D12CommandQueue> mCommandQueue;
 
@@ -38,10 +40,12 @@ class Device : public IDevice
 
     std::map<FullPipelineStateParts, D3DPtr<ID3D12PipelineState>> mPipelineStateMap;
 
+    bool DetectVideoCards(int preferredId);
+
 public:
     Device();
     ~Device();
-    bool Init();
+    bool Init(const DeviceInitParams* params);
 
     ID3D12Device* GetDevice() const;
     ID3D12CommandQueue* GetCommandQueue() const;

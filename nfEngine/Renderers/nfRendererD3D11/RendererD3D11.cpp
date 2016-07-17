@@ -12,11 +12,13 @@ namespace Renderer {
 
 std::unique_ptr<Device> gDevice;
 
-IDevice* Init()
+IDevice* Init(const DeviceInitParams* params)
 {
     if (gDevice == nullptr)
     {
         gDevice.reset(new Device);
+        if (!gDevice->Init(params))
+            gDevice.reset();
     }
 
     return gDevice.get();
