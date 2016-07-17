@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_c26449ba",
+        "filename": "nfEngine/Renderers/nfRendererVk/Defines.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-07-17T08:18:50Z",
+      "side": 1,
+      "message": "Yes, really. Look at line 25.",
+      "parentUuid": "baa041b7_3f01ce38",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 55,
+        "endChar": 23
+      },
+      "revId": "0b156a99a8f4d1a6177da744e21bded83a15fa38",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_fff6c65b",
         "filename": "nfEngine/Renderers/nfRendererVk/Defines.hpp",
         "patchSetId": 11
@@ -59,6 +83,24 @@
       "writtenOn": "2016-07-16T14:10:07Z",
       "side": 1,
       "message": "is this really needed here?",
+      "revId": "0b156a99a8f4d1a6177da744e21bded83a15fa38",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a255c5c2",
+        "filename": "nfEngine/Renderers/nfRendererVk/Defines.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-07-17T08:18:50Z",
+      "side": 1,
+      "message": "It will be used in other patches. I prefer to have it seen globally in the project.",
+      "parentUuid": "baa041b7_fff6c65b",
       "revId": "0b156a99a8f4d1a6177da744e21bded83a15fa38",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
