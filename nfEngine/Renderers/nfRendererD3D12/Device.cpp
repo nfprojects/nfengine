@@ -50,9 +50,9 @@ Type* CreateGenericResource(const Desc& desc)
 } // namespace
 
 Device::Device()
-    : mCbvSrvUavHeapAllocator(HeapAllocator::Type::CbvSrvUav, 16)
-    , mRtvHeapAllocator(HeapAllocator::Type::Rtv, 2)
-    , mDsvHeapAllocator(HeapAllocator::Type::Dsv, 1)
+    : mCbvSrvUavHeapAllocator(HeapAllocator::Type::CbvSrvUav, 1024)
+    , mRtvHeapAllocator(HeapAllocator::Type::Rtv, 64)
+    , mDsvHeapAllocator(HeapAllocator::Type::Dsv, 16)
     , mAdapterInUse(-1)
     , mFenceValue(1)
 {
@@ -152,6 +152,9 @@ bool Device::Init(const DeviceInitParams* params)
         {
             // this warning makes debugging with VS Graphics Debugger impossible
             D3D12_MESSAGE_ID_MAP_INVALID_NULLRANGE,
+
+            // performance warning - let's ignore it for now
+            D3D12_MESSAGE_ID_CLEARRENDERTARGETVIEW_MISMATCHINGCLEARVALUE,
         };
 
         D3D12_INFO_QUEUE_FILTER filter;

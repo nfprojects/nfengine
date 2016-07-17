@@ -14,6 +14,7 @@ namespace NFE {
 namespace Renderer {
 
 DXGI_FORMAT TranslateElementFormat(ElementFormat format, int size);
+DXGI_FORMAT TranslateDepthFormat(DepthBufferFormat format);
 D3D12_COMPARISON_FUNC TranslateComparisonFunc(CompareFunc func);
 D3D12_STENCIL_OP TranslateStencilOp(StencilOp op);
 D3D12_BLEND TranslateBlendFunc(BlendFunc func);
@@ -24,6 +25,8 @@ D3D12_FILTER TranslateFilterType(TextureMinFilter minFilter, TextureMagFilter ma
                                  bool compare, bool anisotropic);
 D3D12_TEXTURE_ADDRESS_MODE TranslateTextureAddressMode(TextureWrapMode mode);
 bool TranslateShaderVisibility(ShaderType shaderType, D3D12_SHADER_VISIBILITY& visibility);
+bool TranslateDepthBufferTypes(DepthBufferFormat inFormat, DXGI_FORMAT& resFormat,
+                               DXGI_FORMAT& srvFormat, DXGI_FORMAT& dsvFormat);
 
 } // namespace Renderer
 } // namespace NFE

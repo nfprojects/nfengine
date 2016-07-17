@@ -28,7 +28,8 @@ class RenderTarget : public IRenderTarget
     std::vector<Texture*> mTextures;
     std::vector<uint32> mRTVs[2];
 
-    // TODO depth buffer
+    Texture* mDepthTexture;
+    uint32 mDSV;
 
 public:
     RenderTarget();

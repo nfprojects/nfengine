@@ -125,9 +125,15 @@ struct PipelineStateDesc
     RasterizerStateDesc raterizerState;
     BlendStateDesc blendState;
     DepthStateDesc depthState;
+
     PrimitiveType primitiveType;
     uint32 numControlPoints; //< for tessellation
     IVertexLayout* vertexLayout;
+
+    uint32 numRenderTargets;
+    TextureFormat rtFormats[MAX_RENDER_TARGETS];
+    DepthBufferFormat depthFormat;
+
     IResourceBindingLayout* resBindingLayout;
     const char* debugName;   //< optional debug name
 
@@ -138,6 +144,8 @@ struct PipelineStateDesc
         , primitiveType(PrimitiveType::Unknown)
         , numControlPoints(0)
         , vertexLayout(nullptr)
+        , numRenderTargets(1)
+        , depthFormat(DepthBufferFormat::Unknown)
         , resBindingLayout(nullptr)
         , debugName(nullptr)
     { }

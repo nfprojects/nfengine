@@ -44,7 +44,7 @@ DepthStencilScene::~DepthStencilScene()
     Release();
 }
 
-bool DepthStencilScene::CreateBasicResources(bool withStencil)
+bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
 {
     // create rendertarget that will render to the window's backbuffer
     RenderTargetElement rtTarget;
@@ -95,25 +95,21 @@ bool DepthStencilScene::CreateBasicResources(bool withStencil)
     if (cbufferSlot < 0)
         return false;
 
-    // create binding set for vertex shader bindings
-    ResourceBindingDesc vertexShaderBinding(ShaderResourceType::CBuffer, cbufferSlot);
-    mResBindingSet.reset(mRendererDevice->CreateResourceBindingSet(
-        ResourceBindingSetDesc(&vertexShaderBinding, 1, ShaderType::Vertex)));
-    if (!mResBindingSet)
-        return false;
-
     // create binding layout
-    IResourceBindingSet* bindingSet = mResBindingSet.get();
+    DynamicBufferBindingDesc cbufferDesc(ShaderType::Vertex, ShaderResourceType::CBuffer, 0);
     mResBindingLayout.reset(mRendererDevice->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(&bindingSet, 1)));
+        ResourceBindingLayoutDesc(nullptr, 0, &cbufferDesc, 1)));
     if (!mResBindingLayout)
         return false;
 
     DepthStateDesc depthStateDesc;
-    depthStateDesc.depthCompareFunc = CompareFunc::Less;
-    depthStateDesc.depthWriteEnable = true;
-    depthStateDesc.depthTestEnable = true;
-    depthStateDesc.stencilEnable = false;
+    if (withDepth)
+    {
+        depthStateDesc.depthCompareFunc = CompareFunc::Less;
+        depthStateDesc.depthWriteEnable = true;
+        depthStateDesc.depthTestEnable = true;
+        depthStateDesc.stencilEnable = false;
+    }
 
     BlendStateDesc blendStateDesc;
     blendStateDesc.independent = false;
@@ -127,8 +123,11 @@ bool DepthStencilScene::CreateBasicResources(bool withStencil)
     psd.vertexLayout = mVertexLayout.get();
     psd.resBindingLayout = mResBindingLayout.get();
 
-    if (withStencil)
+    if (withDepth && !withStencil)
+        psd.depthFormat = DepthBufferFormat::Depth16;
+    else if (withDepth)
     {
+        psd.depthFormat = DepthBufferFormat::Depth24_Stencil8;
         psd.depthState.depthWriteEnable = false;
         psd.depthState.depthTestEnable = false;
         psd.depthState.stencilOpPass = StencilOp::Replace;
@@ -225,13 +224,6 @@ bool DepthStencilScene::CreateBasicResources(bool withStencil)
     if (!mConstantBuffer)
         return false;
 
-    // create and fill binding set instance for cbuffer
-    mResBindingInstance.reset(mRendererDevice->CreateResourceBindingInstance(mResBindingSet.get()));
-    if (!mResBindingInstance)
-        return false;
-    if (!mResBindingInstance->WriteCBufferView(0, mConstantBuffer.get()))
-        return false;
-
     return true;
 }
 
@@ -256,7 +248,7 @@ bool DepthStencilScene::CreateDepthBuffer(bool withStencil)
 
 bool DepthStencilScene::CreateSubSceneNoDepthBuffer()
 {
-    return CreateBasicResources(false);
+    return CreateBasicResources(false, false);
 }
 
 bool DepthStencilScene::CreateSubSceneDepthBuffer()
@@ -264,7 +256,7 @@ bool DepthStencilScene::CreateSubSceneDepthBuffer()
     if (!CreateDepthBuffer(false))
         return false;
 
-    return CreateBasicResources(false);
+    return CreateBasicResources(true, false);
 }
 
 bool DepthStencilScene::CreateSubSceneDepthStencilBuffer()
@@ -272,7 +264,7 @@ bool DepthStencilScene::CreateSubSceneDepthStencilBuffer()
     if (!CreateDepthBuffer(true))
         return false;
 
-    return CreateBasicResources(true);
+    return CreateBasicResources(true, true);
 }
 
 bool DepthStencilScene::OnInit(void* winHandle)
@@ -316,9 +308,10 @@ void DepthStencilScene::Draw(float dt)
     mCommandBuffer->Reset();
     mCommandBuffer->SetViewport(0.0f, static_cast<float>(WINDOW_WIDTH), 0.0f,
                                 static_cast<float>(WINDOW_HEIGHT), 0.0f, 1.0f);
+    mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
     mCommandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
-    mCommandBuffer->BindResources(0, mResBindingInstance.get());
+    mCommandBuffer->BindDynamicBuffer(0, mConstantBuffer.get());
 
     int stride = 9 * sizeof(float);
     int offset = 0;
@@ -343,7 +336,7 @@ void DepthStencilScene::Draw(float dt)
         // Step 1: draw floor to stencil buffer
         mCommandBuffer->SetPipelineState(mMaskPipelineState.get());
         mCommandBuffer->SetStencilRef(0x01);
-        mCommandBuffer->DrawIndexed(2 * 3, -1, 2 * 6 * 3);
+        mCommandBuffer->DrawIndexed(2 * 3, 1, 2 * 6 * 3);
 
         float color[] = { 0.7f, 0.8f, 0.9f, 1.0f };
         mCommandBuffer->Clear(NFE_CLEAR_FLAG_TARGET, color);
@@ -367,7 +360,7 @@ void DepthStencilScene::Draw(float dt)
 
     // Step 3: draw floor
     mCommandBuffer->SetPipelineState(mFloorPipelineState.get());
-    mCommandBuffer->DrawIndexed(2 * 3, -1, 2 * 6 * 3);
+    mCommandBuffer->DrawIndexed(2 * 3, 1, 2 * 6 * 3);
 
     // Step 4: draw "normal" cube
     mCommandBuffer->SetPipelineState(mCubePipelineState.get());
@@ -392,10 +385,7 @@ void DepthStencilScene::ReleaseSubsceneResources()
     mReflectionPipelineState.reset();
     mFloorPipelineState.reset();
     mCubePipelineState.reset();
-
-    mResBindingInstance.reset();
     mResBindingLayout.reset();
-    mResBindingSet.reset();
 }
 
 void DepthStencilScene::Release()

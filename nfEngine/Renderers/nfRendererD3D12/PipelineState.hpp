@@ -28,6 +28,10 @@ class PipelineState : public IPipelineState
     PrimitiveType mPrimitiveType;
     uint32 mNumControlPoints;
 
+    uint32 mNumRenderTargets;
+    DXGI_FORMAT mRenderTargetFormats[MAX_RENDER_TARGETS];
+    DXGI_FORMAT mDepthStencilFormat;
+
 public:
     ~PipelineState();
     bool Init(const PipelineStateDesc& desc);
