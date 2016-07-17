@@ -266,8 +266,6 @@ bool VertexBuffersScene::OnInit(void* winHandle)
     if (!mWindowRenderTarget)
         return false;
 
-    mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
-
     return true;
 }
 
@@ -280,8 +278,10 @@ void VertexBuffersScene::Draw(float dt)
     mCommandBuffer->Reset();
     mCommandBuffer->SetViewport(0.0f, static_cast<float>(WINDOW_WIDTH), 0.0f,
                                 static_cast<float>(WINDOW_HEIGHT), 0.0f, 1.0f);
+    mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
 
+    // mCommandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
     mCommandBuffer->SetPipelineState(mPipelineState.get());
     mCommandBuffer->SetShaderProgram(mShaderProgram.get());
 
