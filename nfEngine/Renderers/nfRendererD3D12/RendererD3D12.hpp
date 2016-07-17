@@ -21,7 +21,7 @@ namespace Renderer {
 extern std::unique_ptr<Device> gDevice;
 
 // export Device creation function
-extern "C" RENDERER_API IDevice* Init();
+extern "C" RENDERER_API IDevice* Init(const DeviceInitParams* params);
 extern "C" RENDERER_API void Release();
 
 } // namespace Renderer
