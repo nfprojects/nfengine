@@ -239,6 +239,7 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, ITexture* texture)
     D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc;
     srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     srvDesc.Format = tex->mSrvFormat;
+
     switch (tex->mType)
     {
     case TextureType::Texture1D:

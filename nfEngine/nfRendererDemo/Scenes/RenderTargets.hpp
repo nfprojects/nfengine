@@ -37,6 +37,7 @@ class RenderTargetsScene : public Scene
 
     std::unique_ptr<NFE::Renderer::ISampler> mSampler;
     std::unique_ptr<NFE::Renderer::IPipelineState> mPipelineState;
+    std::unique_ptr<NFE::Renderer::IPipelineState> mPipelineStateMRT;
 
     std::unique_ptr<NFE::Renderer::IResourceBindingSet> mPSBindingSet;
     std::unique_ptr<NFE::Renderer::IResourceBindingLayout> mResBindingLayout;
@@ -48,7 +49,7 @@ class RenderTargetsScene : public Scene
 
     void ReleaseSubsceneResources();
 
-    bool CreateBasicResources();
+    bool CreateBasicResources(bool withDepthBuffer);
     bool CreateRenderTarget(bool withDepthBuffer = false,
                             bool multipleRT = false,
                             bool withMSAA = false);
