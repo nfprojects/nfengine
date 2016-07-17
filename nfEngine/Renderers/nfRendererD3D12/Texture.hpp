@@ -37,11 +37,13 @@ protected:
     Class mClass;
     TextureType mType;
     DXGI_FORMAT mSrvFormat;
+    DXGI_FORMAT mDsvFormat;
 
     uint32 mBuffersNum;
     uint32 mCurrentBuffer;
 
     D3D12_RESOURCE_STATES mResourceState;
+    D3D12_RESOURCE_STATES mTargetResourceState;
 
     bool UploadData(const TextureDesc& desc);
 

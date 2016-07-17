@@ -13,6 +13,24 @@
 namespace NFE {
 namespace Renderer {
 
+DXGI_FORMAT TranslateDepthFormat(DepthBufferFormat format)
+{
+    switch (format)
+    {
+    case DepthBufferFormat::Depth16:
+        return DXGI_FORMAT_D16_UNORM;
+        break;
+    case DepthBufferFormat::Depth24_Stencil8:
+        return DXGI_FORMAT_D24_UNORM_S8_UINT;
+        break;
+    case DepthBufferFormat::Depth32:
+        return DXGI_FORMAT_D32_FLOAT;
+        break;
+    }
+
+    return DXGI_FORMAT_UNKNOWN;
+}
+
 D3D12_COMPARISON_FUNC TranslateComparisonFunc(CompareFunc func)
 {
     switch (func)
@@ -269,6 +287,31 @@ bool TranslateShaderVisibility(ShaderType shaderType, D3D12_SHADER_VISIBILITY& v
         return true;
     case ShaderType::All:
         visibility = D3D12_SHADER_VISIBILITY_ALL;
+        return true;
+    }
+
+    return false;
+}
+
+bool TranslateDepthBufferTypes(DepthBufferFormat inFormat, DXGI_FORMAT& resFormat,
+                               DXGI_FORMAT& srvFormat, DXGI_FORMAT& dsvFormat)
+{
+    switch (inFormat)
+    {
+    case DepthBufferFormat::Depth16:
+        resFormat = DXGI_FORMAT_R16_TYPELESS;
+        srvFormat = DXGI_FORMAT_R16_UNORM;
+        dsvFormat = DXGI_FORMAT_D16_UNORM;
+        return true;
+    case DepthBufferFormat::Depth24_Stencil8:
+        resFormat = DXGI_FORMAT_R24G8_TYPELESS;
+        srvFormat = DXGI_FORMAT_R16_UNORM;
+        dsvFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+        return true;
+    case DepthBufferFormat::Depth32:
+        resFormat = DXGI_FORMAT_R32_TYPELESS;
+        srvFormat = DXGI_FORMAT_R32_FLOAT;
+        dsvFormat = DXGI_FORMAT_D32_FLOAT;
         return true;
     }
 

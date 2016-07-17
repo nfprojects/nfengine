@@ -125,22 +125,33 @@ struct PipelineStateDesc
     RasterizerStateDesc raterizerState;
     BlendStateDesc blendState;
     DepthStateDesc depthState;
+
     PrimitiveType primitiveType;
     uint32 numControlPoints; //< for tessellation
     IVertexLayout* vertexLayout;
+
+    uint32 numRenderTargets;
+    ElementFormat rtFormats[MAX_RENDER_TARGETS];
+    DepthBufferFormat depthFormat;
+
     IResourceBindingLayout* resBindingLayout;
     const char* debugName;   //< optional debug name
 
-    PipelineStateDesc()
+    NFE_INLINE PipelineStateDesc()
         : raterizerState()
         , blendState()
         , depthState()
         , primitiveType(PrimitiveType::Unknown)
         , numControlPoints(0)
         , vertexLayout(nullptr)
+        , numRenderTargets(1)
+        , depthFormat(DepthBufferFormat::Unknown)
         , resBindingLayout(nullptr)
         , debugName(nullptr)
-    { }
+    {
+        for (int i = 0; i < MAX_RENDER_TARGETS; ++i)
+            rtFormats[i] = ElementFormat::R8G8B8A8_U_Norm;
+    }
 };
 
 /**

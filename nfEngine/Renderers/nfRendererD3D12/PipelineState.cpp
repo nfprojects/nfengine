@@ -26,6 +26,27 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
 {
     // prepare D3D12 rasterizer state
 
+    mNumRenderTargets = desc.numRenderTargets;
+    if (desc.numRenderTargets > MAX_RENDER_TARGETS)
+    {
+        LOG_ERROR("Too many render targets: %u (max is %u)",
+                  desc.numRenderTargets, MAX_RENDER_TARGETS);
+        return false;
+    }
+
+    for (uint32 i = 0; i < mNumRenderTargets; ++i)
+    {
+        mRenderTargetFormats[i] = TranslateElementFormat(desc.rtFormats[i]);
+        if (mRenderTargetFormats[i] == DXGI_FORMAT_UNKNOWN)
+        {
+            LOG_ERROR("Invalid render target framt for i = %u", i);
+            return false;
+        }
+    }
+
+    mDepthStencilFormat = TranslateDepthFormat(desc.depthFormat);
+
+
     switch (desc.raterizerState.cullMode)
     {
     case CullMode::CW:
@@ -101,7 +122,13 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
         mBlendDesc.RenderTarget[i].BlendOp = TranslateBlendOp(rtDesc.colorOperator);
         mBlendDesc.RenderTarget[i].BlendOpAlpha = TranslateBlendOp(rtDesc.alphaOperator);
         mBlendDesc.RenderTarget[i].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-        mBlendDesc.RenderTarget[i].LogicOpEnable = FALSE; // TODO add support
+    }
+
+    // workaround for D3D runtime bug
+    for (int i = 0; i < 8; ++i)
+    {
+        mBlendDesc.RenderTarget[i].LogicOp = D3D12_LOGIC_OP_SET;
+        mBlendDesc.RenderTarget[i].LogicOpEnable = FALSE;
     }
 
     mPrimitiveType = desc.primitiveType;
@@ -141,6 +168,8 @@ ID3D12PipelineState* PipelineState::CreateFullPipelineState(const FullPipelineSt
     nullBytecode.pShaderBytecode = nullptr;
 
     D3D12_GRAPHICS_PIPELINE_STATE_DESC psd;
+    ZeroMemory(&psd, sizeof(psd));
+
     psd.pRootSignature = pipelineState->mBindingLayout->GetD3DRootSignature();
     psd.VS = mVS ? mVS->GetD3D12Bytecode() : nullBytecode;
     psd.HS = mHS ? mHS->GetD3D12Bytecode() : nullBytecode;
@@ -156,11 +185,14 @@ ID3D12PipelineState* PipelineState::CreateFullPipelineState(const FullPipelineSt
     psd.SampleMask = UINT_MAX;
     psd.IBStripCutValue = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED;
     psd.PrimitiveTopologyType = TranslatePrimitiveTopologyType(pipelineState->mPrimitiveType);
-    psd.NumRenderTargets = 1; // TODO
-    psd.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM; // TODO
-    for (int i = 1; i < 8; ++i)
+
+    psd.NumRenderTargets = pipelineState->mNumRenderTargets;
+    for (uint32 i = 0; i < pipelineState->mNumRenderTargets; ++i)
+        psd.RTVFormats[i] = pipelineState->mRenderTargetFormats[i];
+    for (uint32 i = pipelineState->mNumRenderTargets; i < MAX_RENDER_TARGETS; ++i)
         psd.RTVFormats[i] = DXGI_FORMAT_UNKNOWN;
-    psd.DSVFormat = DXGI_FORMAT_D32_FLOAT; // TODO
+    psd.DSVFormat = pipelineState->mDepthStencilFormat;
+
     psd.SampleDesc.Count = 1;
     psd.SampleDesc.Quality = 0;
     psd.NodeMask = 1;
