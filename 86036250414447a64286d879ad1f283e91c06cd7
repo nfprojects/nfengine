@@ -16,6 +16,24 @@
       "revId": "86036250414447a64286d879ad1f283e91c06cd7",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_5dc6da9a",
+        "filename": "nfEngine/Renderers/nfRendererVk/Extensions.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-07-17T20:30:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_df642223",
+      "revId": "86036250414447a64286d879ad1f283e91c06cd7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
