@@ -33,6 +33,8 @@ public:
     Device();
     ~Device();
 
+    bool Init(const DeviceInitParams* params);
+
     void* GetHandle() const override;
     ID3D11Device* Get() const;
     bool GetDeviceInfo(DeviceInfo& info) override;

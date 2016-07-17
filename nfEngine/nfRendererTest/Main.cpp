@@ -3,6 +3,7 @@
 #include "nfCommon/FileSystem.hpp"
 
 const std::string BACKEND_ARG_NAME = "--renderer";
+const std::string CARD_ID_ARG_NAME = "--card_id";
 
 int main(int argc, char* argv[])
 {
@@ -22,6 +23,11 @@ int main(int argc, char* argv[])
             selectedBackend = argv[i+1];
             break;
         }
+        else if ((CARD_ID_ARG_NAME.compare(argv[i]) == 0) && (i + 1 < argc))
+        {
+            gPreferedCardId = atoi(argv[i + 1]);
+            break;
+        }
     }
 
     // select renderer and set global variable for it
@@ -37,6 +43,13 @@ int main(int argc, char* argv[])
     {
         // we use D3D11 renderer
         gBackend = D3D11_BACKEND;
+        gShaderPathPrefix = HLSL5_SHADER_PATH_PREFIX;
+        gShaderPathExt = HLSL5_SHADER_EXTENSION;
+    }
+    else if (D3D12_BACKEND.compare(selectedBackend) == 0)
+    {
+        // we use D3D12 renderer
+        gBackend = D3D12_BACKEND;
         gShaderPathPrefix = HLSL5_SHADER_PATH_PREFIX;
         gShaderPathExt = HLSL5_SHADER_EXTENSION;
     }

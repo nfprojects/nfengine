@@ -15,7 +15,9 @@ void RendererTest::SetUpTestCase()
     ASSERT_TRUE(gRendererLib.GetSymbol(RENDERER_INIT_FUNC, proc));
     ASSERT_TRUE(proc != nullptr);
 
-    gRendererDevice = proc();
+    DeviceInitParams params;
+    params.preferredCardId = gPreferedCardId;
+    gRendererDevice = proc(&params);
     ASSERT_TRUE(gRendererDevice != nullptr);
 
     gTestShaderPath = gShaderPathPrefix + "Simple" + gShaderPathExt;
