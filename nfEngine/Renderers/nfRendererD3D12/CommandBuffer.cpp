@@ -264,7 +264,11 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
     if (mCurrRenderTarget != nullptr)
     {
         HeapAllocator& allocator = gDevice->GetRtvHeapAllocator();
+        HeapAllocator& dsvAllocator = gDevice->GetDsvHeapAllocator();
+
         D3D12_CPU_DESCRIPTOR_HANDLE rtvs[MAX_RENDER_TARGETS];
+        D3D12_CPU_DESCRIPTOR_HANDLE dsv;
+        bool setDsv = false;
 
         for (size_t i = 0; i < mCurrRenderTarget->mTextures.size(); ++i)
         {
@@ -290,8 +294,33 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
             }
         }
 
+        if (mCurrRenderTarget->mDSV != -1)
+        {
+            Texture* tex = mCurrRenderTarget->mDepthTexture;
+
+            // TODO sometimes we may need ony read access
+            if (tex->mResourceState != D3D12_RESOURCE_STATE_DEPTH_WRITE)
+            {
+                D3D12_RESOURCE_BARRIER rb;
+                ZeroMemory(&rb, sizeof(rb));
+                rb.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+                rb.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+                rb.Transition.pResource = tex->mBuffers[0].get();
+                rb.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+                rb.Transition.StateBefore = tex->mResourceState;
+                rb.Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+                mCommandList->ResourceBarrier(1, &rb);
+
+                tex->mResourceState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+            }
+
+            dsv = dsvAllocator.GetCpuHandle();
+            dsv.ptr += mCurrRenderTarget->mDSV * dsvAllocator.GetDescriptorSize();
+            setDsv = true;
+        }
+
         mCommandList->OMSetRenderTargets(static_cast<UINT>(mCurrRenderTarget->mTextures.size()),
-                                         rtvs, FALSE, nullptr);
+                                         rtvs, FALSE, setDsv ? &dsv : nullptr);
     }
 }
 
@@ -304,11 +333,9 @@ void CommandBuffer::UnsetRenderTarget()
             Texture* tex = mCurrRenderTarget->mTextures[i];
             int currBuffer = tex->mCurrentBuffer;
 
-            if (tex->mClass != Texture::Class::Backbuffer)
-                continue;
-
-            // make transition to "Present" state if the render target's texture is backbuffer
-            if (tex->mResourceState != D3D12_RESOURCE_STATE_PRESENT)
+            // make transition to target state
+            D3D12_RESOURCE_STATES targetState = tex->mTargetResourceState;
+            if (tex->mResourceState != targetState)
             {
                 D3D12_RESOURCE_BARRIER rb;
                 ZeroMemory(&rb, sizeof(rb));
@@ -317,10 +344,31 @@ void CommandBuffer::UnsetRenderTarget()
                 rb.Transition.pResource = tex->mBuffers[currBuffer].get();
                 rb.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
                 rb.Transition.StateBefore = tex->mResourceState;
-                rb.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+                rb.Transition.StateAfter = targetState;
                 mCommandList->ResourceBarrier(1, &rb);
 
-                tex->mResourceState = D3D12_RESOURCE_STATE_PRESENT;
+                tex->mResourceState = targetState;
+            }
+        }
+
+        // unset depth texture if used
+        if (mCurrRenderTarget->mDepthTexture != nullptr)
+        {
+            Texture* tex = mCurrRenderTarget->mDepthTexture;
+            D3D12_RESOURCE_STATES targetState = tex->mTargetResourceState;
+            if (tex->mResourceState != targetState)
+            {
+                D3D12_RESOURCE_BARRIER rb;
+                ZeroMemory(&rb, sizeof(rb));
+                rb.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+                rb.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+                rb.Transition.pResource = tex->mBuffers[0].get();
+                rb.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+                rb.Transition.StateBefore = tex->mResourceState;
+                rb.Transition.StateAfter = targetState;
+                mCommandList->ResourceBarrier(1, &rb);
+
+                tex->mResourceState = targetState;
             }
         }
     }
@@ -343,7 +391,7 @@ void CommandBuffer::SetPipelineState(IPipelineState* state)
 
 void CommandBuffer::SetStencilRef(unsigned char ref)
 {
-    UNUSED(ref);
+    mCommandList->OMSetStencilRef(ref);
 }
 
 
@@ -430,7 +478,10 @@ void CommandBuffer::CopyTexture(ITexture* src, ITexture* dest)
 void CommandBuffer::Clear(int flags, const float* color, float depthValue,
                           unsigned char stencilValue)
 {
-    if (mCurrRenderTarget != nullptr)
+    if (mCurrRenderTarget == nullptr)
+        return;
+
+    if (flags & NFE_CLEAR_FLAG_TARGET)
     {
         HeapAllocator& allocator = gDevice->GetRtvHeapAllocator();
 
@@ -445,16 +496,33 @@ void CommandBuffer::Clear(int flags, const float* color, float depthValue,
         }
     }
 
-    UNUSED(flags);
-    UNUSED(depthValue);
-    UNUSED(stencilValue);
+    if (flags & (NFE_CLEAR_FLAG_DEPTH | NFE_CLEAR_FLAG_STENCIL))
+    {
+        HeapAllocator& dsvAllocator = gDevice->GetDsvHeapAllocator();
+
+        if (mCurrRenderTarget->mDSV == -1)
+            return;
+
+        D3D12_CPU_DESCRIPTOR_HANDLE handle = dsvAllocator.GetCpuHandle();
+        handle.ptr += mCurrRenderTarget->mDSV * dsvAllocator.GetDescriptorSize();
+
+        D3D12_CLEAR_FLAGS clearFlags = static_cast<D3D12_CLEAR_FLAGS>(0);
+        if (flags & NFE_CLEAR_FLAG_DEPTH)
+            clearFlags |= D3D12_CLEAR_FLAG_DEPTH;
+        if (flags & NFE_CLEAR_FLAG_STENCIL)
+            clearFlags |= D3D12_CLEAR_FLAG_STENCIL;
+
+        mCommandList->ClearDepthStencilView(handle, clearFlags, depthValue, stencilValue, 0, NULL);
+    }
 }
 
 void CommandBuffer::UpdateStates()
 {
     if (mCurrPipelineState != mPipelineState || mCurrShaderProgram != mShaderProgram)
     {
-        if (mBindingLayout != mPipelineState->mBindingLayout)
+        if (mBindingLayout == nullptr)
+            mBindingLayout = mPipelineState->mBindingLayout;
+        else if (mBindingLayout != mPipelineState->mBindingLayout)
             LOG_ERROR("Resource binding layout mismatch");
 
         // set pipeline state

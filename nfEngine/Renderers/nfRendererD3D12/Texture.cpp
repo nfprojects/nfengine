@@ -175,8 +175,7 @@ bool Texture::UploadData(const TextureDesc& desc)
 
 bool Texture::Init(const TextureDesc& desc)
 {
-    if (desc.access == BufferAccess::GPU_ReadWrite ||
-        desc.access == BufferAccess::CPU_Read ||
+    if (desc.access == BufferAccess::CPU_Read ||
         desc.access == BufferAccess::CPU_Write)
     {
         LOG_ERROR("This access mode is not supported yet");
@@ -207,6 +206,33 @@ bool Texture::Init(const TextureDesc& desc)
     resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
     resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
+    // determine formats
+    mSrvFormat = DXGI_FORMAT_UNKNOWN;
+    mDsvFormat = DXGI_FORMAT_UNKNOWN;
+    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
+    {
+        if (!TranslateDepthBufferTypes(desc.depthBufferFormat,
+                                       resourceDesc.Format, mSrvFormat, mDsvFormat))
+        {
+            LOG_ERROR("Invalid depth buffer format");
+            return false;
+        }
+    }
+    else
+    {
+        resourceDesc.Format = TranslateElementFormat(desc.format, desc.texelSize);
+        mSrvFormat = resourceDesc.Format;
+        if (resourceDesc.Format == DXGI_FORMAT_UNKNOWN)
+        {
+            LOG_ERROR("Invalid texture format");
+            return false;
+        }
+    }
+
+    bool passClearValue = false;
+    D3D12_CLEAR_VALUE clearValue;
+    D3D12_RESOURCE_STATES initialState = D3D12_RESOURCE_STATE_GENERIC_READ;
+
     switch (desc.type)
     {
     case TextureType::Texture1D:
@@ -235,12 +261,55 @@ bool Texture::Init(const TextureDesc& desc)
         break;
     }
 
+    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
+    {
+        if (desc.access != BufferAccess::GPU_ReadWrite)
+        {
+            LOG_ERROR("Invalid resource access specified for depth buffer");
+            return false;
+        }
+
+        resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+
+        clearValue.Format = mDsvFormat;
+        clearValue.DepthStencil.Depth = 1.0f;
+        clearValue.DepthStencil.Stencil = 0;
+        passClearValue = true;
+
+        initialState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+    }
+
+    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_RENDERTARGET)
+    {
+        if (desc.access != BufferAccess::GPU_ReadWrite)
+        {
+            LOG_ERROR("Invalid resource access specified for rendertarget texture");
+            return false;
+        }
+
+        // tempshit
+        clearValue.Format = mSrvFormat;
+        clearValue.Color[0] = 0.2f;
+        clearValue.Color[1] = 0.3f;
+        clearValue.Color[2] = 0.4f;
+        clearValue.Color[3] = 1.0f;
+        passClearValue = true;
+
+        resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+    }
+
+
+    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER)
+        mTargetResourceState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+    else
+        mTargetResourceState = initialState;
+
     HRESULT hr;
     hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommittedResource(&heapProperties,
                                                                       D3D12_HEAP_FLAG_NONE,
                                                                       &resourceDesc,
-                                                                      D3D12_RESOURCE_STATE_GENERIC_READ,
-                                                                      nullptr,
+                                                                      initialState,
+                                                                      passClearValue ? &clearValue : nullptr,
                                                                       IID_PPV_ARGS(&mBuffers[0])));
     if (FAILED(hr))
         return false;
@@ -257,8 +326,7 @@ bool Texture::Init(const TextureDesc& desc)
     }
 
 
-    mSrvFormat = resourceDesc.Format;
-    mResourceState = D3D12_RESOURCE_STATE_COMMON;
+    mResourceState = initialState;
     mBuffersNum = 1;
     mCurrentBuffer = 0;
     mType = desc.type;

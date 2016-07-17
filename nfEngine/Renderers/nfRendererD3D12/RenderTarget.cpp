@@ -17,6 +17,8 @@ namespace Renderer {
 RenderTarget::RenderTarget()
     : mWidth(0)
     , mHeight(0)
+    , mDSV(static_cast<uint32>(-1))
+    , mDepthTexture(nullptr)
 {
 }
 
@@ -29,6 +31,10 @@ RenderTarget::~RenderTarget()
         for (uint32 offset : mRTVs[i])
             allocator.Free(offset, 1);
     }
+
+    HeapAllocator& dsvAllocator = gDevice->GetDsvHeapAllocator();
+    if (mDSV != -1)
+        dsvAllocator.Free(mDSV, 1);
 
     gDevice->WaitForGPU();
 }
@@ -66,6 +72,48 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         }
 
         mTextures.push_back(tex);
+    }
+
+    if (desc.depthBuffer)
+    {
+        HeapAllocator& allocator = gDevice->GetDsvHeapAllocator();
+
+        Texture* tex = dynamic_cast<Texture*>(desc.depthBuffer);
+        if (tex == nullptr)
+        {
+            LOG_ERROR("Invalid texture for depth buffer");
+            return false;
+        }
+
+        mDSV = allocator.Allocate(1);
+        if (mDSV == -1)
+            return false;
+
+        D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc;
+        dsvDesc.Format = tex->mDsvFormat;
+        dsvDesc.Flags = D3D12_DSV_FLAG_NONE;
+
+        switch (tex->mType)
+        {
+        case TextureType::Texture1D:
+            dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE1D;
+            dsvDesc.Texture1D.MipSlice = 0;
+            break;
+        case TextureType::Texture2D:
+            dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+            dsvDesc.Texture2D.MipSlice = 0;
+            break;
+        // TODO multisampled and multilayered textures
+        default:
+            LOG_ERROR("Feature not implemented");
+            return false;
+        }
+
+        D3D12_CPU_DESCRIPTOR_HANDLE handle = allocator.GetCpuHandle();
+        handle.ptr += allocator.GetDescriptorSize() * mDSV;
+        gDevice->mDevice->CreateDepthStencilView(tex->mBuffers[0].get(), &dsvDesc, handle);
+
+        mDepthTexture = tex;
     }
 
     return true;

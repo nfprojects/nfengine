@@ -31,12 +31,14 @@ protected:
     int mMipmapsNum;
     int mLayersNum;
     DXGI_FORMAT mSrvFormat;
+    DXGI_FORMAT mDsvFormat;
 
     UINT mBuffersNum;
     UINT mCurrentBuffer;
     D3DPtr<ID3D12Resource> mBuffers[2];
 
     D3D12_RESOURCE_STATES mResourceState;
+    D3D12_RESOURCE_STATES mTargetResourceState;
 
     bool UploadData(const TextureDesc& desc);
 

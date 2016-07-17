@@ -34,7 +34,7 @@ class DepthStencilScene: public Scene
 
     void ReleaseSubsceneResources();
 
-    bool CreateBasicResources(bool withStencil);
+    bool CreateBasicResources(bool withDepth, bool withStencil);
     bool CreateDepthBuffer(bool withStencil);
 
     /// Subscenes
