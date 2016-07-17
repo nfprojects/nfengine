@@ -48,10 +48,11 @@ Device::Device()
     : mCbvSrvUavHeapAllocator(HeapAllocator::Type::CbvSrvUav, 16)
     , mRtvHeapAllocator(HeapAllocator::Type::Rtv, 2)
     , mDsvHeapAllocator(HeapAllocator::Type::Dsv, 1)
+    , mAdapterInUse(-1)
 {
 }
 
-bool Device::Init()
+bool Device::Init(const DeviceInitParams* params)
 {
     HRESULT hr;
 
@@ -71,11 +72,15 @@ bool Device::Init()
     if (FAILED(hr))
         return false;
 
-    hr = D3D_CALL_CHECK(mDXGIFactory->EnumAdapters(0, &mPrimaryAdapter));
-    if (FAILED(hr))
+    int preferedCardId = params != nullptr ? params->preferedCardId : -1;
+    if (!DetectVideoCards(preferedCardId))
+    {
+        LOG_ERROR("Failed to detect video cards");
         return false;
+    }
 
-    hr = D3D_CALL_CHECK(D3D12CreateDevice(nullptr, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&mDevice)));
+    hr = D3D_CALL_CHECK(D3D12CreateDevice(mAdapters[mAdapterInUse].get(),
+                                          D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&mDevice)));
     if (FAILED(hr))
         return false;
 
@@ -263,14 +268,60 @@ IResourceBindingInstance* Device::CreateResourceBindingInstance(IResourceBinding
     return CreateGenericResource<ResourceBindingInstance, IResourceBindingSet*>(set);
 }
 
+bool Device::DetectVideoCards(int preferedId)
+{
+    for (uint32 i = 0; ; ++i)
+    {
+        IDXGIAdapter1* adapter;
+        HRESULT hr = mDXGIFactory->EnumAdapters1(i, &adapter);
+
+        if (hr == DXGI_ERROR_NOT_FOUND)
+            break;
+
+        if (FAILED(hr))
+        {
+            LOG_ERROR("EnumAdapters1 failed for id=%u", i);
+            continue;
+        }
+
+        DXGI_ADAPTER_DESC1 adapterDesc;
+        adapter->GetDesc1(&adapterDesc);
+
+        // get GPU description
+        std::wstring wideDesc = adapterDesc.Description;
+        std::string descString;
+        Common::UTF16ToUTF8(wideDesc, descString);
+
+        if (adapterDesc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
+            descString += " [software adapter]";
+        else if (mAdapterInUse < 0)
+            mAdapterInUse = i;
+
+        if (static_cast<uint32>(preferedId) == i)
+            mAdapterInUse = i;
+
+        LOG_INFO("Adapter found at slot %u: %s", i, descString.c_str());
+        mAdapters.push_back(std::move(adapter));
+    }
+
+    if (mAdapters.size() > 0)
+    {
+        if (mAdapterInUse < 0)
+            mAdapterInUse = 0;
+        return true;
+    }
+
+    return false;
+}
+
 bool Device::GetDeviceInfo(DeviceInfo& info)
 {
-    if (!mDevice.get() || !mPrimaryAdapter.get())
+    if (!mDevice.get())
         return false;
 
     HRESULT hr;
     DXGI_ADAPTER_DESC adapterDesc;
-    hr = D3D_CALL_CHECK(mPrimaryAdapter->GetDesc(&adapterDesc));
+    hr = D3D_CALL_CHECK(mAdapters[mAdapterInUse]->GetDesc(&adapterDesc));
     if (FAILED(hr))
         return false;
 
