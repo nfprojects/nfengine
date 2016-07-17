@@ -21,14 +21,15 @@ class RenderTarget : public IRenderTarget
 {
     friend class CommandBuffer;
 
-    int mWidth;
-    int mHeight;
-
     // TODO: temporary
     std::vector<Texture*> mTextures;
     std::vector<uint32> mRTVs[2];
 
-    // TODO depth buffer
+    Texture* mDepthTexture;
+    uint32 mDSV;
+
+    uint16 mWidth;
+    uint16 mHeight;
 
 public:
     RenderTarget();

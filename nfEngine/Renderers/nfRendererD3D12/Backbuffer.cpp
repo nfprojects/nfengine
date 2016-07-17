@@ -54,6 +54,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     mClass = Class::Backbuffer;
     mBuffersNum = NUM_BUFFERS;
     mResourceState = D3D12_RESOURCE_STATE_PRESENT;
+    mTargetResourceState = D3D12_RESOURCE_STATE_PRESENT;
 
     DXGI_SWAP_CHAIN_DESC1 scd = {};
     scd.BufferCount = mBuffersNum;

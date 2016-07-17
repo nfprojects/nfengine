@@ -67,10 +67,26 @@ enum class ElementFormat
 };
 
 /**
+ * Helper structure describing texture format.
+ * TODO consider replacing ElementFormat with this (this will easier map do DXGI_FORMAT).
+ */
+struct TextureFormat
+{
+    ElementFormat format;
+    int size;
+
+    TextureFormat()
+        : format(ElementFormat::Uint_8_norm)
+        , size(4)
+    { }
+};
+
+/**
  * Depth buffer format
  */
 enum class DepthBufferFormat
 {
+    Unknown,
     Depth16,          // 16-bit depth buffer
     Depth24_Stencil8, // 24-bit depth buffer + 8-bit stencil buffer
     Depth32,          // 32-bit depth buffer

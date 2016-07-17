@@ -49,7 +49,7 @@ RenderTargetsScene::~RenderTargetsScene()
     Release();
 }
 
-bool RenderTargetsScene::CreateBasicResources()
+bool RenderTargetsScene::CreateBasicResources(bool withDepthBuffer)
 {
     // create rendertarget that will render to the window's backbuffer
     RenderTargetElement rtTarget;
@@ -83,16 +83,25 @@ bool RenderTargetsScene::CreateBasicResources()
         return false;
 
     PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.depthFormat = DepthBufferFormat::Unknown;
     pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.depthState.depthCompareFunc = CompareFunc::Less;
-    pipelineStateDesc.depthState.depthWriteEnable = true;
-    pipelineStateDesc.depthState.depthTestEnable = true;
+    pipelineStateDesc.depthState.depthWriteEnable = false;
+    pipelineStateDesc.depthState.depthTestEnable = false;
     pipelineStateDesc.depthState.stencilEnable = false;
     pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
     mPipelineState.reset(mRendererDevice->CreatePipelineState(pipelineStateDesc));
     if (!mPipelineState)
+        return false;
+
+    pipelineStateDesc.depthFormat = withDepthBuffer ? DepthBufferFormat::Depth16 : DepthBufferFormat::Unknown;
+    pipelineStateDesc.numRenderTargets = 2;
+    pipelineStateDesc.depthState.depthWriteEnable = withDepthBuffer;
+    pipelineStateDesc.depthState.depthTestEnable = withDepthBuffer;
+    mPipelineStateMRT.reset(mRendererDevice->CreatePipelineState(pipelineStateDesc));
+    if (!mPipelineStateMRT)
         return false;
 
     // create vertex buffers
@@ -344,7 +353,7 @@ bool RenderTargetsScene::CreateSubSceneNoDepthBuffer()
 {
     if (!CreateShaders())
         return false;
-    if (!CreateBasicResources())
+    if (!CreateBasicResources(false))
         return false;
     return CreateRenderTarget();
 }
@@ -353,7 +362,7 @@ bool RenderTargetsScene::CreateSubSceneDepthBuffer()
 {
     if (!CreateShaders())
         return false;
-    if (!CreateBasicResources())
+    if (!CreateBasicResources(true))
         return false;
     return CreateRenderTarget(true);
 }
@@ -362,7 +371,7 @@ bool RenderTargetsScene::CreateSubSceneMRT()
 {
     if (!CreateShaders(true))
         return false;
-    if (!CreateBasicResources())
+    if (!CreateBasicResources(true))
         return false;
     return CreateRenderTarget(true, true);
 }
@@ -371,7 +380,7 @@ bool RenderTargetsScene::CreateSubSceneMRTandMSAA()
 {
     if (!CreateShaders(true, true))
         return false;
-    if (!CreateBasicResources())
+    if (!CreateBasicResources(true))
         return false;
     return CreateRenderTarget(true, true, true);
 }
@@ -418,8 +427,7 @@ void RenderTargetsScene::Draw(float dt)
     mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
     mCommandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
     mCommandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
-    mCommandBuffer->SetPipelineState(mPipelineState.get());
-
+    mCommandBuffer->SetPipelineState(mPipelineStateMRT.get());
 
     IBuffer* cb = mConstantBuffer.get();
     mCommandBuffer->BindDynamicBuffer(0, cb);
@@ -428,6 +436,7 @@ void RenderTargetsScene::Draw(float dt)
     {
         mCommandBuffer->SetViewport(0.0f, (float)(WINDOW_WIDTH / 2),
                                     0.0f, (float)(WINDOW_HEIGHT / 2), 0.0f, 1.0f);
+        mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 
         VertexCBuffer cbuffer;
         cbuffer.viewMatrix = modelMatrix * viewMatrix * projMatrix;
@@ -442,8 +451,12 @@ void RenderTargetsScene::Draw(float dt)
     }
 
     // begin rendering to the window
+    mCommandBuffer->SetPipelineState(mPipelineState.get());
+    mCommandBuffer->BindResources(0, mPSBindingInstancePrimary.get());
+    mCommandBuffer->SetShaderProgram(mPrimaryTargetShaderProgram.get());
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
+    mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     float color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
     mCommandBuffer->Clear(NFE_CLEAR_FLAG_TARGET, color, 1.0f);
@@ -455,10 +468,8 @@ void RenderTargetsScene::Draw(float dt)
                              MatrixTranslation3(Vector(-0.5f, 0.5f, 0.5f));
         mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
-        mCommandBuffer->BindResources(0, mPSBindingInstancePrimary.get());
-        mCommandBuffer->SetShaderProgram(mPrimaryTargetShaderProgram.get());
         mCommandBuffer->DrawIndexed(2 * 3,      // 2 triangles
-                                    -1,         // no instancing
+                                    1,          // no instancing
                                     2 * 6 * 3); // omit cube vertices
     }
 
@@ -473,7 +484,7 @@ void RenderTargetsScene::Draw(float dt)
         mCommandBuffer->BindResources(0, mPSBindingInstanceDepth.get());
         mCommandBuffer->SetShaderProgram(mDepthShaderProgram.get());
         mCommandBuffer->DrawIndexed(2 * 3,      // 2 triangles
-                                    -1,         // no instancing
+                                    1,          // no instancing
                                     2 * 6 * 3); // omit cube vertices
     }
 
@@ -488,7 +499,7 @@ void RenderTargetsScene::Draw(float dt)
         mCommandBuffer->BindResources(0, mPSBindingInstanceSecondary.get());
         mCommandBuffer->SetShaderProgram(mSecondTargetShaderProgram.get());
         mCommandBuffer->DrawIndexed(2 * 3,      // 2 triangles
-                                    -1,         // no instancing
+                                    1,          // no instancing
                                     2 * 6 * 3); // omit cube vertices
     }
 
@@ -522,6 +533,7 @@ void RenderTargetsScene::ReleaseSubsceneResources()
     mVertexLayout.reset();
     mSampler.reset();
     mPipelineState.reset();
+    mPipelineStateMRT.reset();
 
     mPSBindingInstancePrimary.reset();
     mPSBindingInstanceDepth.reset();
