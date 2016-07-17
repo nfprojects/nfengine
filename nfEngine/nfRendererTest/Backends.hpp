@@ -7,12 +7,14 @@
 #pragma once
 
 /// Shaders path prefix and extension, used to load appropriate shader source file
+extern int gPreferedCardId;
 extern std::string gBackend;
 extern std::string gShaderPathPrefix;
 extern std::string gShaderPathExt;
 
 /// Renderer backends
 extern const std::string D3D11_BACKEND;
+extern const std::string D3D12_BACKEND;
 extern const std::string OGL4_BACKEND;
 extern const std::string VK_BACKEND;
 

@@ -47,6 +47,13 @@ Type* CreateGenericResource(const Desc& desc)
 
 Device::Device()
 {
+}
+
+bool Device::Init(const DeviceInitParams* params)
+{
+    // TODO use params to select video adapter
+    UNUSED(params);
+
     HRESULT hr;
     UINT flags = 0;
 
@@ -79,16 +86,25 @@ Device::Device()
 #endif
 
     if (FAILED(hr))
-        throw std::exception("D3D11CreateDevice() failed");
+    {
+        LOG_ERROR("D3D11CreateDevice() failed");
+        return false;
+    }
 
     /// get DXGI factory for created Direct3D device
     hr = D3D_CALL_CHECK(mDevice->QueryInterface(IID_PPV_ARGS(&mDXGIDevice)));
-    if (SUCCEEDED(hr) && mDXGIDevice.get() != nullptr)
-    {
-        hr = D3D_CALL_CHECK(mDXGIDevice->GetParent(IID_PPV_ARGS(&mDXGIAdapter)));
-        if (SUCCEEDED(hr) && mDXGIAdapter.get() != nullptr)
-            D3D_CALL_CHECK(mDXGIAdapter->GetParent(IID_PPV_ARGS(&mDXGIFactory)));
-    }
+    if (FAILED(hr))
+        return false;
+
+    hr = D3D_CALL_CHECK(mDXGIDevice->GetParent(IID_PPV_ARGS(&mDXGIAdapter)));
+    if (FAILED(hr))
+        return false;
+
+    hr = D3D_CALL_CHECK(mDXGIAdapter->GetParent(IID_PPV_ARGS(&mDXGIFactory)));
+    if (FAILED(hr))
+        return false;
+
+    return true;
 }
 
 Device::~Device()
