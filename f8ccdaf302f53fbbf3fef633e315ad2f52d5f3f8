@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_73b66dfa",
+        "filename": "nfEngine/nfCommon/FileBuffered.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-18T12:33:07Z",
+      "side": 1,
+      "message": "True, it will be removed from constructors as well",
+      "parentUuid": "baa041b7_2a91bc52",
+      "range": {
+        "startLine": 54,
+        "startChar": 25,
+        "endLine": 54,
+        "endChar": 31
+      },
+      "revId": "f8ccdaf302f53fbbf3fef633e315ad2f52d5f3f8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_6a858405",
         "filename": "nfEngine/nfCommon/FileBuffered.cpp",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2016-07-05T18:36:20Z",
       "side": 1,
       "message": "Are you sure? You are calling read recursively. Shouldn\u0027t be mFile.Read?",
+      "range": {
+        "startLine": 90,
+        "startChar": 31,
+        "endLine": 90,
+        "endChar": 35
+      },
+      "revId": "f8ccdaf302f53fbbf3fef633e315ad2f52d5f3f8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b3887572",
+        "filename": "nfEngine/nfCommon/FileBuffered.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-18T12:33:07Z",
+      "side": 1,
+      "message": "No, it\u0027s called recursively and makes less code to write.\nAlso it makes sense - we read to fill up the buffer and then perform another read - Read function will either put it into buffer or read it whole from file. Thanks to this we don\u0027t worry about size etc of the \"rest of data to read\", it\u0027s done in Read method for us.",
+      "parentUuid": "baa041b7_6a858405",
       "range": {
         "startLine": 90,
         "startChar": 31,
@@ -65,6 +113,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_9379f184",
+        "filename": "nfEngine/nfCommon/FileBuffered.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-18T12:33:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_2a789c2a",
+      "revId": "f8ccdaf302f53fbbf3fef633e315ad2f52d5f3f8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_ca8ff021",
         "filename": "nfEngine/nfCommon/FileBuffered.cpp",
         "patchSetId": 2
@@ -76,6 +142,24 @@
       "writtenOn": "2016-07-05T18:36:20Z",
       "side": 1,
       "message": "as above",
+      "revId": "f8ccdaf302f53fbbf3fef633e315ad2f52d5f3f8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_737e6d6b",
+        "filename": "nfEngine/nfCommon/FileBuffered.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-18T12:33:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_ca8ff021",
       "revId": "f8ccdaf302f53fbbf3fef633e315ad2f52d5f3f8",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -105,6 +189,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_539809c0",
+        "filename": "nfEngine/nfCommon/FileBuffered.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-18T12:33:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_aa926c49",
+      "range": {
+        "startLine": 174,
+        "startChar": 44,
+        "endLine": 174,
+        "endChar": 48
+      },
+      "revId": "f8ccdaf302f53fbbf3fef633e315ad2f52d5f3f8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_0aaef884",
         "filename": "nfEngine/nfCommon/FileBuffered.cpp",
         "patchSetId": 2
@@ -122,6 +230,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_b3ef551d",
+        "filename": "nfEngine/nfCommon/FileBuffered.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-18T12:33:07Z",
+      "side": 1,
+      "message": "oh..true - when writing, there would be an erroneous result here.\n\nWhen reading we check where we are in file, then go one whole buffer back and then move to position in buffer - so it\u0027s \"virtual\" curson, not the \"physical\" one.\n\nFor writing it should show mFile.GetPos() + mBufferOccupied - I forgot about that",
+      "parentUuid": "baa041b7_0aaef884",
+      "revId": "f8ccdaf302f53fbbf3fef633e315ad2f52d5f3f8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_eaa87479",
         "filename": "nfEngine/nfCommon/FileBuffered.cpp",
         "patchSetId": 2
@@ -133,6 +259,30 @@
       "writtenOn": "2016-07-05T18:36:20Z",
       "side": 1,
       "message": "position \u003c FILE_BUFFERED_BUFFER_SIZE ?",
+      "range": {
+        "startLine": 259,
+        "startChar": 25,
+        "endLine": 259,
+        "endChar": 62
+      },
+      "revId": "f8ccdaf302f53fbbf3fef633e315ad2f52d5f3f8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_33dc6572",
+        "filename": "nfEngine/nfCommon/FileBuffered.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-18T12:33:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_eaa87479",
       "range": {
         "startLine": 259,
         "startChar": 25,
@@ -168,6 +318,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_73f54deb",
+        "filename": "nfEngine/nfCommon/FileBuffered.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-18T12:33:07Z",
+      "side": 1,
+      "message": "Much more readable imho and compiling will probably result in the same thing, but sure",
+      "parentUuid": "baa041b7_cab6d0db",
+      "range": {
+        "startLine": 260,
+        "startChar": 0,
+        "endLine": 262,
+        "endChar": 17
+      },
+      "revId": "f8ccdaf302f53fbbf3fef633e315ad2f52d5f3f8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_4acf607f",
         "filename": "nfEngine/nfCommon/FileBuffered.hpp",
         "patchSetId": 2
@@ -179,6 +353,30 @@
       "writtenOn": "2016-07-05T18:36:20Z",
       "side": 1,
       "message": "I\u0027ve just noticed it. You inherit from File and use File as a member, so there two files here... This is bad. Either use mFile and remove File inheritance, or just use members and methods from base class. IMO the first option is better, because it does not introduces virtual methods overhead",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 15
+      },
+      "revId": "f8ccdaf302f53fbbf3fef633e315ad2f52d5f3f8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_13e5e136",
+        "filename": "nfEngine/nfCommon/FileBuffered.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-18T12:33:07Z",
+      "side": 1,
+      "message": "Yea, inheritance is not used here - my bad",
+      "parentUuid": "baa041b7_4acf607f",
       "range": {
         "startLine": 16,
         "startChar": 0,
@@ -214,6 +412,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_f3e15d2b",
+        "filename": "nfEngine/nfCommon/FileBuffered.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-18T12:33:07Z",
+      "side": 1,
+      "message": "why not size_t?",
+      "parentUuid": "baa041b7_6aaea499",
+      "range": {
+        "startLine": 21,
+        "startChar": 4,
+        "endLine": 21,
+        "endChar": 10
+      },
+      "revId": "f8ccdaf302f53fbbf3fef633e315ad2f52d5f3f8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_ca881025",
         "filename": "nfEngine/nfCommon/FileBuffered.hpp",
         "patchSetId": 2
@@ -225,6 +447,30 @@
       "writtenOn": "2016-07-05T18:36:20Z",
       "side": 1,
       "message": "size_t",
+      "range": {
+        "startLine": 22,
+        "startChar": 4,
+        "endLine": 22,
+        "endChar": 10
+      },
+      "revId": "f8ccdaf302f53fbbf3fef633e315ad2f52d5f3f8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_d3d1b958",
+        "filename": "nfEngine/nfCommon/FileBuffered.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-18T12:33:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_ca881025",
       "range": {
         "startLine": 22,
         "startChar": 4,
@@ -254,6 +500,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_53d0091f",
+        "filename": "nfEngine/nfCommon/FileBuffered.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-18T12:33:07Z",
+      "side": 1,
+      "message": "I\u0027ve fought bravely with myself to NOT use std::vector or any other means of dynamic allocation here - mainly because size of the buffer doesn\u0027t change. I won\u0027t go back to dynamic allocation unless it poses some real problems, not \"oh wow, that sizeof surprises me\" \u003e.\u003e",
+      "parentUuid": "baa041b7_8aab2889",
+      "revId": "f8ccdaf302f53fbbf3fef633e315ad2f52d5f3f8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_1a91b199",
         "filename": "nfEngine/nfCommon/FileBuffered.hpp",
         "patchSetId": 2
@@ -265,6 +529,24 @@
       "writtenOn": "2016-07-05T18:36:20Z",
       "side": 1,
       "message": "override?",
+      "revId": "f8ccdaf302f53fbbf3fef633e315ad2f52d5f3f8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b3d6354d",
+        "filename": "nfEngine/nfCommon/FileBuffered.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-18T12:33:07Z",
+      "side": 1,
+      "message": "naah, will get rid of inheritance",
+      "parentUuid": "baa041b7_1a91b199",
       "revId": "f8ccdaf302f53fbbf3fef633e315ad2f52d5f3f8",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
