@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_4e2862e2",
+        "filename": "nfEngine/nfCommon/LogScope.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-18T18:14:57Z",
+      "side": 1,
+      "message": "1. variable name should be generated from \"scopeName\"\n2. semicolon at the end is not needed",
+      "revId": "57caedf55e1bb88d1870c69d6b56fbbffa480e4d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
