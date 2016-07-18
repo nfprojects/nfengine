@@ -20,35 +20,35 @@ public:
     ~CommandBuffer();
 
     /// Resources setup methods
-    void Reset();
-    void SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets);
-    void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format);
-    void BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance);
-    void SetResourceBindingLayout(IResourceBindingLayout* layout);
-    void SetRenderTarget(IRenderTarget* renderTarget);
-    void SetShaderProgram(IShaderProgram* shaderProgram);
-    void SetPipelineState(IPipelineState* state);
-    void SetStencilRef(unsigned char ref);
+    void Reset() override;
+    void SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets) override;
+    void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format) override;
+    void BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance) override;
+    void SetResourceBindingLayout(IResourceBindingLayout* layout) override;
+    void SetRenderTarget(IRenderTarget* renderTarget) override;
+    void SetShaderProgram(IShaderProgram* shaderProgram) override;
+    void SetPipelineState(IPipelineState* state) override;
+    void SetStencilRef(unsigned char ref) override;
     void SetViewport(float left, float width, float top, float height,
-                     float minDepth, float maxDepth);
-    void SetScissors(int left, int top, int right, int bottom);
+                     float minDepth, float maxDepth) override;
+    void SetScissors(int left, int top, int right, int bottom) override;
 
     /// Executives
-    void* MapBuffer(IBuffer* buffer, MapType type);
-    void UnmapBuffer(IBuffer* buffer);
-    bool WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data);
-    void CopyTexture(ITexture* src, ITexture* dest);
-    void Clear(int flags, const float* color, float depthValue, unsigned char stencilValue);
+    void* MapBuffer(IBuffer* buffer, MapType type) override;
+    void UnmapBuffer(IBuffer* buffer) override;
+    bool WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data) override;
+    void CopyTexture(ITexture* src, ITexture* dest) override;
+    void Clear(int flags, const float* color, float depthValue, unsigned char stencilValue) override;
     void Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
-              int instanceOffset);
+              int instanceOffset) override;
     void DrawIndexed(PrimitiveType type, int indexNum, int instancesNum, int indexOffset,
-                     int vertexOffset, int instanceOffset);
-    std::unique_ptr<ICommandList> Finish();
+                     int vertexOffset, int instanceOffset) override;
+    std::unique_ptr<ICommandList> Finish() override;
 
     /// Debugging
-    void BeginDebugGroup(const char* text);
-    void EndDebugGroup();
-    void InsertDebugMarker(const char* text);
+    void BeginDebugGroup(const char* text) override;
+    void EndDebugGroup() override;
+    void InsertDebugMarker(const char* text) override;
 };
 
 } // namespace Renderer

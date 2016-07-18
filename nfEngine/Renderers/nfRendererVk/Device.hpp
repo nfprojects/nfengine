@@ -33,26 +33,26 @@ public:
     bool Init();
 
     // overrides
-    void* GetHandle() const;
-    bool GetDeviceInfo(DeviceInfo& info);
+    void* GetHandle() const override;
+    bool GetDeviceInfo(DeviceInfo& info) override;
 
-    IVertexLayout* CreateVertexLayout(const VertexLayoutDesc& desc);
-    IBuffer* CreateBuffer(const BufferDesc& desc);
-    ITexture* CreateTexture(const TextureDesc& desc);
-    IBackbuffer* CreateBackbuffer(const BackbufferDesc& desc);
-    IRenderTarget* CreateRenderTarget(const RenderTargetDesc& desc);
-    IPipelineState* CreatePipelineState(const PipelineStateDesc& desc);
-    ISampler* CreateSampler(const SamplerDesc& desc);
-    IShader* CreateShader(const ShaderDesc& desc);
-    IShaderProgram* CreateShaderProgram(const ShaderProgramDesc& desc);
-    IResourceBindingSet* CreateResourceBindingSet(const ResourceBindingSetDesc& desc);
-    IResourceBindingLayout* CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc);
-    IResourceBindingInstance* CreateResourceBindingInstance(IResourceBindingSet* set);
+    IVertexLayout* CreateVertexLayout(const VertexLayoutDesc& desc) override;
+    IBuffer* CreateBuffer(const BufferDesc& desc) override;
+    ITexture* CreateTexture(const TextureDesc& desc) override;
+    IBackbuffer* CreateBackbuffer(const BackbufferDesc& desc) override;
+    IRenderTarget* CreateRenderTarget(const RenderTargetDesc& desc) override;
+    IPipelineState* CreatePipelineState(const PipelineStateDesc& desc) override;
+    ISampler* CreateSampler(const SamplerDesc& desc) override;
+    IShader* CreateShader(const ShaderDesc& desc) override;
+    IShaderProgram* CreateShaderProgram(const ShaderProgramDesc& desc) override;
+    IResourceBindingSet* CreateResourceBindingSet(const ResourceBindingSetDesc& desc) override;
+    IResourceBindingLayout* CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc) override;
+    IResourceBindingInstance* CreateResourceBindingInstance(IResourceBindingSet* set) override;
 
-    ICommandBuffer* CreateCommandBuffer();
-    bool Execute(ICommandList* commandList);
-    bool DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data);
-    bool DownloadTexture(ITexture* tex, void* data, int mipmap = 0, int layer = 0);
+    ICommandBuffer* CreateCommandBuffer() override;
+    bool Execute(ICommandList* commandList) override;
+    bool DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data) override;
+    bool DownloadTexture(ITexture* tex, void* data, int mipmap = 0, int layer = 0) override;
 };
 
 extern std::unique_ptr<Device> gDevice;
