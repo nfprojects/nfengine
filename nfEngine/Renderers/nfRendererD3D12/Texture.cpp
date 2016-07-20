@@ -24,6 +24,7 @@ Texture::Texture()
 
 Texture::~Texture()
 {
+    gDevice->WaitForGPU();
 }
 
 bool Texture::UploadData(const TextureDesc& desc)
