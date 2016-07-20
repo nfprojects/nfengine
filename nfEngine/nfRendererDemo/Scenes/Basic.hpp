@@ -42,6 +42,9 @@ class BasicScene: public Scene
     // Used for objects rotation in Constant Buffer scenes and onward
     float mAngle;
 
+    // how many instances will be drawn?
+    int mGridSize;
+
     // Releases only subscene-related resources. Backbuffer, RT and BlendState stay intact.
     void ReleaseSubsceneResources();
 
@@ -58,7 +61,7 @@ class BasicScene: public Scene
     bool CreateSubSceneVertexBuffer();
     bool CreateSubSceneIndexBuffer();
     bool CreateSubSceneConstantBuffer();
-    bool CreateSubSceneTexture();
+    bool CreateSubSceneTexture(int gridSize = 1);
 
 public:
     BasicScene();
