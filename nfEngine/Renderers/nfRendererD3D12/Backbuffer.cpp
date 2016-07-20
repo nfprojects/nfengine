@@ -18,6 +18,11 @@ Backbuffer::Backbuffer()
     , mVSync(false)
 { }
 
+Backbuffer::~Backbuffer()
+{
+    gDevice->WaitForGPU();
+}
+
 bool Backbuffer::Resize(int newWidth, int newHeight)
 {
     UNUSED(newWidth);
@@ -81,52 +86,17 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
         }
     }
 
-    // create fence for frame synchronization
-    hr = D3D_CALL_CHECK(gDevice->mDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mFence)));
-    if (FAILED(hr))
-        return false;
-    mFenceValue = 1;
-
-    // Create an event handle to use for frame synchronization.
-    mFenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-    if (mFenceEvent == nullptr)
-    {
-        LOG_ERROR("Failed to create fence event object");
-        return false;
-    }
-
     LOG_DEBUG("Swapchain created successfully.");
     return true;
 }
 
 bool Backbuffer::Present()
 {
-    HRESULT hr;
-
-    hr = D3D_CALL_CHECK(mSwapChain->Present(mVSync ? 1 : 0, 0));
+    HRESULT hr = D3D_CALL_CHECK(mSwapChain->Present(mVSync ? 1 : 0, 0));
     if (FAILED(hr))
         return false;
-
-    // TODO: this is not a good way for waiting for previous frame
-
-    // Signal and increment the fence value.
-    const UINT64 fence = mFenceValue;
-    hr = D3D_CALL_CHECK(gDevice->mCommandQueue->Signal(mFence.get(), fence));
-    if (FAILED(hr))
-        return false;
-    mFenceValue++;
-
-    // Wait until the previous frame is finished.
-    if (mFence->GetCompletedValue() < fence)
-    {
-        hr = D3D_CALL_CHECK(mFence->SetEventOnCompletion(fence, mFenceEvent));
-        if (FAILED(hr))
-            return false;
-        WaitForSingleObject(mFenceEvent, INFINITE);
-    }
 
     mCurrentBuffer = mSwapChain->GetCurrentBackBufferIndex();
-
     return true;
 }
 

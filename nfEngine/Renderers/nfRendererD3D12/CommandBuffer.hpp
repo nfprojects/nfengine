@@ -26,8 +26,16 @@ class CommandBuffer : public ICommandBuffer
 {
     friend class Device;
 
-    D3DPtr<ID3D12CommandAllocator> mCommandAllocator;
+    uint64 mFrameCounter;       // total frame counter
+    uint32 mFrameCount;         // number of queued frames
+    uint32 mFrameBufferIndex;   // current frame (command allocator index)
+    std::vector<D3DPtr<ID3D12CommandAllocator>> mCommandAllocators;
     D3DPtr<ID3D12GraphicsCommandList> mCommandList;
+
+    // synchronization objects
+    D3DPtr<ID3D12Fence> mFence;
+    HANDLE mFenceEvent;
+    std::vector<uint64> mFenceValues;
 
     RenderTarget* mCurrRenderTarget;
     ResourceBindingLayout* mBindingLayout;
@@ -42,9 +50,13 @@ class CommandBuffer : public ICommandBuffer
     void UpdateStates();
     void UnsetRenderTarget();
 
+    // called by Device, when command list was queued
+    bool MoveToNextFrame(ID3D12CommandQueue* commandQueue);
+
 public:
-    CommandBuffer(ID3D12Device* device);
+    CommandBuffer();
     ~CommandBuffer();
+    bool Init(ID3D12Device* device);
 
     /// Shader resources setup methods
 
