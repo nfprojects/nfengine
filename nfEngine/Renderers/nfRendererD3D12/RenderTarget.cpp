@@ -29,6 +29,8 @@ RenderTarget::~RenderTarget()
         for (uint32 offset : mRTVs[i])
             allocator.Free(offset, 1);
     }
+
+    gDevice->WaitForGPU();
 }
 
 void RenderTarget::GetDimensions(int& width, int& height)
