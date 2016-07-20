@@ -262,6 +262,8 @@ bool BasicScene::CreateSampler()
 // Empty window should be visible
 bool BasicScene::CreateSubSceneEmpty()
 {
+    mGridSize = 1;
+
     if (!CreateSampler())
         return false;
 
@@ -272,6 +274,8 @@ bool BasicScene::CreateSubSceneEmpty()
 // Two colored triangles should be visible
 bool BasicScene::CreateSubSceneVertexBuffer()
 {
+    mGridSize = 1;
+
     if (!CreateSampler())
         return false;
 
@@ -285,6 +289,8 @@ bool BasicScene::CreateSubSceneVertexBuffer()
 // A colored triangle and a colored square should be visible
 bool BasicScene::CreateSubSceneIndexBuffer()
 {
+    mGridSize = 1;
+
     if (!CreateSampler())
         return false;
 
@@ -301,6 +307,8 @@ bool BasicScene::CreateSubSceneIndexBuffer()
 // The triangle and the square should rotate
 bool BasicScene::CreateSubSceneConstantBuffer()
 {
+    mGridSize = 1;
+
     if (!CreateSampler())
         return false;
 
@@ -318,8 +326,10 @@ bool BasicScene::CreateSubSceneConstantBuffer()
 
 // Add texture support
 // The triangle should be rendered checked
-bool BasicScene::CreateSubSceneTexture()
+bool BasicScene::CreateSubSceneTexture(int gridSize)
 {
+    mGridSize = gridSize;
+
     if (!CreateSampler())
         return false;
 
@@ -338,7 +348,6 @@ bool BasicScene::CreateSubSceneTexture()
     return CreateTexture();
 }
 
-
 /////////////////////////////////////////////////
 /// BasicScene methods and virtuals overriden ///
 /////////////////////////////////////////////////
@@ -350,7 +359,9 @@ BasicScene::BasicScene()
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneVertexBuffer, this), "VertexBuffer");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneIndexBuffer, this), "IndexBuffer");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this), "ConstantBuffer");
-    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this), "Texture");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, 1), "Texture");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, 5), "CBufferStress5");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, 30), "CBufferStress30");
 }
 
 BasicScene::~BasicScene()
@@ -447,21 +458,39 @@ void BasicScene::Draw(float dt)
 
     if (mConstantBuffer)
     {
-        VertexCBuffer vertexCBufferData;
-        vertexCBufferData.viewMatrix = MatrixRotationNormal(Vector(0.0f, 0.0f, 1.0f), mAngle);
-        mCommandBuffer->WriteBuffer(mConstantBuffer.get(), 0, sizeof(VertexCBuffer),
-                                    &vertexCBufferData);
+
     }
 
     // clear target
     float color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
     mCommandBuffer->Clear(NFE_CLEAR_FLAG_TARGET, color);
 
-    // draw
-    if (mIndexBuffer)
-        mCommandBuffer->DrawIndexed(9, 1);
-    else if (mVertexBuffer)
-        mCommandBuffer->Draw(6, 1);
+
+    const float scaleCoeff = 1.0f / static_cast<float>(mGridSize);
+    for (int i = 0; i < mGridSize; ++i)
+    {
+        for (int j = 0; j < mGridSize; ++j)
+        {
+            float xOffset = 2.0f * (static_cast<float>(i) + 0.5f) * scaleCoeff - 1.0f;
+            float yOffset = 2.0f * (static_cast<float>(j) + 0.5f) * scaleCoeff - 1.0f;
+            const float angle = mAngle + 5.0f * i + 7.0f * j;
+
+            const Matrix rotMatrix = MatrixRotationNormal(Vector(0.0f, 0.0f, 1.0f), angle);
+            const Matrix translationMatrix = MatrixTranslation3(Vector(xOffset, yOffset, 0.0f));
+            const Matrix scaleMatrix = MatrixScaling(Vector(scaleCoeff, scaleCoeff, 0.0f));
+
+            VertexCBuffer vertexCBufferData;
+            vertexCBufferData.viewMatrix = scaleMatrix * rotMatrix * translationMatrix;
+            mCommandBuffer->WriteBuffer(mConstantBuffer.get(), 0, sizeof(VertexCBuffer),
+                                        &vertexCBufferData);
+
+            // draw
+            if (mIndexBuffer)
+                mCommandBuffer->DrawIndexed(9, 1);
+            else if (mVertexBuffer)
+                mCommandBuffer->Draw(6, 1);
+        }
+    }
 
     mRendererDevice->Execute(mCommandBuffer->Finish().get());
     mWindowBackbuffer->Present();
