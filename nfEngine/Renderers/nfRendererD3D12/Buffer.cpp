@@ -19,6 +19,11 @@ Buffer::Buffer()
 {
 }
 
+Buffer::~Buffer()
+{
+    gDevice->WaitForGPU();
+}
+
 bool Buffer::Init(const BufferDesc& desc)
 {
     if (desc.access == BufferAccess::GPU_ReadWrite || desc.access == BufferAccess::CPU_Read)

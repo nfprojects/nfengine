@@ -234,6 +234,12 @@ bool Device::Execute(ICommandList* commandList)
     return true;
 }
 
+bool Device::WaitForGPU()
+{
+    // not required
+    return true;
+}
+
 bool Device::DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data)
 {
     Buffer* buf = dynamic_cast<Buffer*>(buffer);

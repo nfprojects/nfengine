@@ -49,6 +49,7 @@ Device::Device()
     , mRtvHeapAllocator(HeapAllocator::Type::Rtv, 2)
     , mDsvHeapAllocator(HeapAllocator::Type::Dsv, 1)
     , mAdapterInUse(-1)
+    , mFenceValue(1)
 {
 }
 
@@ -168,6 +169,23 @@ bool Device::Init(const DeviceInitParams* params)
     if (FAILED(hr))
         return false;
 
+    // create fence for frame synchronization
+    hr = D3D_CALL_CHECK(gDevice->mDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mFence)));
+    if (FAILED(hr))
+    {
+        LOG_ERROR("Failed to create D3D12 fence object");
+        return false;
+    }
+
+    // Create an event handle to use for frame synchronization.
+    mFenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+    if (mFenceEvent == nullptr)
+    {
+        LOG_ERROR("Failed to create fence event object");
+        return false;
+    }
+
+
     if (!mCbvSrvUavHeapAllocator.Init())
     {
         LOG_ERROR("Failed to initialize heap allocator for CBV, SRV and UAV");
@@ -191,6 +209,7 @@ bool Device::Init(const DeviceInitParams* params)
 
 Device::~Device()
 {
+    ::CloseHandle(mFenceEvent);
 }
 
 ID3D12Device* Device::GetDevice() const
@@ -405,7 +424,14 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
 
 ICommandBuffer* Device::CreateCommandBuffer()
 {
-    return new CommandBuffer(mDevice.get());
+    CommandBuffer* commandBuffer = new CommandBuffer;
+    if (!commandBuffer->Init(mDevice.get()))
+    {
+        delete commandBuffer;
+        return nullptr;
+    }
+
+    return commandBuffer;
 }
 
 bool Device::Execute(ICommandList* commandList)
@@ -417,7 +443,7 @@ bool Device::Execute(ICommandList* commandList)
     ID3D12CommandList* commandLists[] = { list->commandBuffer->mCommandList.get() };
     gDevice->mCommandQueue->ExecuteCommandLists(1, commandLists);
 
-    return true;
+    return list->commandBuffer->MoveToNextFrame(gDevice->mCommandQueue.get());
 }
 
 bool Device::DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data)
@@ -456,6 +482,8 @@ void Device::OnShaderProgramDestroyed(IShaderProgram* program)
         if (std::get<1>(pair.first) == program)
             toRemove.push_back(pair.first);
 
+    WaitForGPU();
+
     for (const auto& parts : toRemove)
         mPipelineStateMap.erase(parts);
 }
@@ -469,42 +497,42 @@ void Device::OnPipelineStateDestroyed(IPipelineState* pipelineState)
         if (std::get<0>(pair.first) == pipelineState)
             toRemove.push_back(pair.first);
 
+    WaitForGPU();
+
     for (const auto& parts : toRemove)
         mPipelineStateMap.erase(parts);
 }
 
 bool Device::WaitForGPU()
 {
-    UINT64 fenceValue = 1;
-    D3DPtr<ID3D12Fence> fenceObject; // TODO this could be created once in the constructor
     HRESULT hr;
 
-    if (FAILED(D3D_CALL_CHECK(gDevice->mDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE,
-                                                            IID_PPV_ARGS(&fenceObject)))))
-        return false;
-
-    // Create an event handle to use for frame synchronization.
-    HANDLE fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-    if (fenceEvent == nullptr)
+    // Signal and increment the fence value
+    const uint64 prevFenceValue = mFenceValue++;
+    hr = D3D_CALL_CHECK(mCommandQueue->Signal(mFence.get(), prevFenceValue));
+    if (FAILED(hr))
     {
-        LOG_ERROR("Failed to create fence event object");
+        LOG_ERROR("Failed to enqueue fence value update");
         return false;
     }
 
-    // Signal and increment the fence value.
-    const UINT64 fence = fenceValue;
-    hr = D3D_CALL_CHECK(mCommandQueue->Signal(fenceObject.get(), fence));
-    if (FAILED(hr))
-        return false;
-    fenceValue++;
-
-    // Wait until the previous frame is finished.
-    if (fenceObject->GetCompletedValue() < fence)
+    if (mFence->GetCompletedValue() < prevFenceValue)
     {
-        hr = D3D_CALL_CHECK(fenceObject->SetEventOnCompletion(fence, fenceEvent));
+        LOG_DEBUG("Waiting for GPU...");
+
+        // Wait for the fence value to be updated
+        hr = D3D_CALL_CHECK(mFence->SetEventOnCompletion(prevFenceValue, mFenceEvent));
         if (FAILED(hr))
+        {
+            LOG_ERROR("Failed to set completion event for fence");
             return false;
-        WaitForSingleObject(fenceEvent, INFINITE);
+        }
+
+        if (WaitForSingleObject(mFenceEvent, INFINITE) != WAIT_OBJECT_0)
+        {
+            LOG_ERROR("WaitForSingleObject failed");
+            return false;
+        }
     }
 
     return true;
