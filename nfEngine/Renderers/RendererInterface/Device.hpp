@@ -79,6 +79,12 @@ public:
     virtual ICommandBuffer* CreateCommandBuffer() = 0;
 
     /**
+     * Waits until all operations sent to the command queue has been completed.
+     * @return True on success.
+     */
+    virtual bool WaitForGPU() = 0;
+
+    /**
      * Execute a command list.
      * @param commandList Command list to be executed.
      * @return True on success.
