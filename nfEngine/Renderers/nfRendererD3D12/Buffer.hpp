@@ -26,6 +26,7 @@ class Buffer : public IBuffer
 
 public:
     Buffer();
+    ~Buffer();
     bool Init(const BufferDesc& desc);
 };
 

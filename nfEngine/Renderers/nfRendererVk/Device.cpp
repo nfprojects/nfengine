@@ -331,6 +331,12 @@ bool Device::Execute(ICommandList* commandList)
     return false;
 }
 
+bool Device::WaitForGPU()
+{
+    // TODO
+    return false;
+}
+
 bool Device::DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data)
 {
     UNUSED(buffer);

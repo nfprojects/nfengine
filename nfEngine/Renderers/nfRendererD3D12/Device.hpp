@@ -12,6 +12,7 @@
 #include "HeapAllocator.hpp"
 
 #include <map>
+#include <atomic>
 
 
 namespace NFE {
@@ -33,6 +34,11 @@ class Device : public IDevice
     D3DPtr<IDXGIFactory4> mDXGIFactory;
     D3DPtr<ID3D12Device> mDevice;
     D3DPtr<ID3D12CommandQueue> mCommandQueue;
+
+    // synchronization objects
+    D3DPtr<ID3D12Fence> mFence;
+    std::atomic<uint64> mFenceValue;
+    HANDLE mFenceEvent;
 
     HeapAllocator mCbvSrvUavHeapAllocator;
     HeapAllocator mRtvHeapAllocator;
@@ -76,10 +82,7 @@ public:
     void OnShaderProgramDestroyed(IShaderProgram* program);
     void OnPipelineStateDestroyed(IPipelineState* pipelineState);
 
-    /**
-     * Waits until all operations sent to the command queue has been completed.
-     */
-    bool WaitForGPU();
+    bool WaitForGPU() override;
 
     NFE_INLINE HeapAllocator& GetCbvSrvUavHeapAllocator()
     {

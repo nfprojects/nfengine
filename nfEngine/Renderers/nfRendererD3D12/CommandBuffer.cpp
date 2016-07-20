@@ -27,7 +27,7 @@
 namespace NFE {
 namespace Renderer {
 
-CommandBuffer::CommandBuffer(ID3D12Device* device)
+CommandBuffer::CommandBuffer()
     : mCurrRenderTarget(nullptr)
     , mBindingLayout(nullptr)
     , mCurrBindingLayout(nullptr)
@@ -36,39 +36,86 @@ CommandBuffer::CommandBuffer(ID3D12Device* device)
     , mCurrPipelineState(nullptr)
     , mPipelineState(nullptr)
     , mCurrPrimitiveType(PrimitiveType::Unknown)
+    , mFrameCounter(0)
+    , mFrameCount(3) // TODO this must be configurable
+    , mFrameBufferIndex(0)
+{
+}
+
+bool CommandBuffer::Init(ID3D12Device* device)
 {
     HRESULT hr;
 
-    hr = D3D_CALL_CHECK(device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                       IID_PPV_ARGS(&mCommandAllocator)));
-    if (FAILED(hr))
-        return;
+    mFenceValues.resize(mFrameCount);
 
+    for (uint32 i = 0; i < mFrameCount; ++i)
+    {
+        D3DPtr<ID3D12CommandAllocator> commandAllocator;
+        hr = D3D_CALL_CHECK(device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
+                                                           IID_PPV_ARGS(&commandAllocator)));
+        if (FAILED(hr))
+        {
+            LOG_ERROR("Failed to create D3D12 command allocator for frame %u (out of %u)", i, mFrameCount);
+            return false;
+        }
+
+        mCommandAllocators.emplace_back(std::move(commandAllocator));
+        mFenceValues[i] = 0;
+    }
+
+
+    // create fence for frames synchronization
+    if (FAILED(D3D_CALL_CHECK(gDevice->mDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE,
+                                                            IID_PPV_ARGS(&mFence)))))
+    {
+        LOG_ERROR("Failed to create D3D12 fence object");
+        return false;
+    }
+
+    // create an event handle to use for frame synchronization
+    mFenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+    if (mFenceEvent == nullptr)
+    {
+        LOG_ERROR("Failed to create fence event object");
+        return false;
+    }
+
+
+    // create D3D command list
     hr = D3D_CALL_CHECK(device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                  mCommandAllocator.get(), nullptr,
+                                                  mCommandAllocators[mFrameBufferIndex].get(), nullptr,
                                                   IID_PPV_ARGS(&mCommandList)));
     if (FAILED(hr))
-        return;
+    {
+        LOG_ERROR("Failed to create D3D12 command list");
+        return false;
+    }
 
     // we don't want the command list to be in recording state
     hr = D3D_CALL_CHECK(mCommandList->Close());
     if (FAILED(hr))
-        return;
+    {
+        LOG_ERROR("Failed to close command list");
+        return false;
+    }
+
+    return true;
 }
 
 CommandBuffer::~CommandBuffer()
 {
+    ::CloseHandle(mFenceEvent);
 }
 
 void CommandBuffer::Reset()
 {
     HRESULT hr;
 
-    hr = D3D_CALL_CHECK(mCommandAllocator->Reset());
+    hr = D3D_CALL_CHECK(mCommandAllocators[mFrameBufferIndex]->Reset());
     if (FAILED(hr))
         return;
 
-    hr = D3D_CALL_CHECK(mCommandList->Reset(mCommandAllocator.get(), nullptr));
+    hr = D3D_CALL_CHECK(mCommandList->Reset(mCommandAllocators[mFrameBufferIndex].get(), nullptr));
     if (FAILED(hr))
         return;
 
@@ -383,6 +430,48 @@ std::unique_ptr<ICommandList> CommandBuffer::Finish()
 
     list->commandBuffer = this;
     return list;
+}
+
+bool CommandBuffer::MoveToNextFrame(ID3D12CommandQueue* commandQueue)
+{
+    uint64 currFenceValue = mFenceValues[mFrameBufferIndex];
+
+    HRESULT hr = D3D_CALL_CHECK(commandQueue->Signal(mFence.get(), currFenceValue));
+    if (FAILED(hr))
+    {
+        LOG_ERROR("Failed to enqueue fence value update");
+        return false;
+    }
+
+    // update frame index
+    mFrameBufferIndex++;
+    if (mFrameBufferIndex >= mFrameCount)
+        mFrameBufferIndex = 0;
+
+    // wait for frame
+    UINT64 completedValue = mFence->GetCompletedValue();
+    if (completedValue < mFenceValues[mFrameBufferIndex])
+    {
+        // TODO
+        // Count how many times we enter this scope per second.
+        // This means that we are render-bound.
+
+        hr = D3D_CALL_CHECK(mFence->SetEventOnCompletion(mFenceValues[mFrameBufferIndex], mFenceEvent));
+        if (FAILED(hr))
+        {
+            LOG_ERROR("Failed to set completion event for fence");
+            return false;
+        }
+
+        if (WaitForSingleObject(mFenceEvent, INFINITE) != WAIT_OBJECT_0)
+        {
+            LOG_ERROR("WaitForSingleObject failed");
+            return false;
+        }
+    }
+
+    mFenceValues[mFrameBufferIndex] = ++mFrameCounter;
+    return true;
 }
 
 void CommandBuffer::BeginDebugGroup(const char* text)
