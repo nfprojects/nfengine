@@ -56,6 +56,8 @@ public:
 
     ICommandBuffer* CreateCommandBuffer() override;
     bool Execute(ICommandList* commandList) override;
+    bool WaitForGPU() override;
+
     bool DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data) override;
     bool DownloadTexture(ITexture* tex, void* data, int mipmap, int layer) override;
 };

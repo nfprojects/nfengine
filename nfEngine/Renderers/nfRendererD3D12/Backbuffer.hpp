@@ -23,14 +23,11 @@ class Backbuffer : public IBackbuffer, public Texture
     HWND mWindow;
     bool mVSync;
 
-    D3DPtr<ID3D12Fence> mFence;
-    UINT64 mFenceValue;
-    HANDLE mFenceEvent;
-
     D3DPtr<IDXGISwapChain3> mSwapChain;
 
 public:
     Backbuffer();
+    ~Backbuffer();
     bool Resize(int newWidth, int newHeight);
     bool Present();
     bool Init(const BackbufferDesc& desc);
