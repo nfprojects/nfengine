@@ -31,6 +31,7 @@ class ResourceBindingLayout : public IResourceBindingLayout
     friend class CommandBuffer;
 
     std::vector<ResourceBindingSet*> mBindingSets;
+    std::vector<DynamicBufferBindingDesc> mDynamicBuffers;
 
 public:
     bool Init(const ResourceBindingLayoutDesc& desc) override;
