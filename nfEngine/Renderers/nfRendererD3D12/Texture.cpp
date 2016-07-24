@@ -155,7 +155,7 @@ bool Texture::UploadData(const TextureDesc& desc)
         resBarrier.Transition.pResource = mBuffers[0].get();
         resBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
         resBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-        resBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+        resBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_GENERIC_READ;
         commandList->ResourceBarrier(1, &resBarrier);
 
 
@@ -261,11 +261,15 @@ bool Texture::Init(const TextureDesc& desc)
         break;
     }
 
+    D3D12_RESOURCE_STATES initialState = D3D12_RESOURCE_STATE_GENERIC_READ;
+    if (desc.access == BufferAccess::GPU_ReadOnly && desc.dataDesc)
+        initialState = D3D12_RESOURCE_STATE_COPY_DEST;
+
     HRESULT hr;
     hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommittedResource(&heapProperties,
                                                                       D3D12_HEAP_FLAG_NONE,
                                                                       &resourceDesc,
-                                                                      D3D12_RESOURCE_STATE_GENERIC_READ,
+                                                                      initialState,
                                                                       nullptr,
                                                                       IID_PPV_ARGS(&mBuffers[0])));
     if (FAILED(hr))

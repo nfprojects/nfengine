@@ -28,9 +28,7 @@ class DepthStencilScene: public Scene
     std::unique_ptr<NFE::Renderer::IPipelineState> mFloorPipelineState;
     std::unique_ptr<NFE::Renderer::IPipelineState> mCubePipelineState;
 
-    std::unique_ptr<NFE::Renderer::IResourceBindingSet> mResBindingSet;
     std::unique_ptr<NFE::Renderer::IResourceBindingLayout> mResBindingLayout;
-    std::unique_ptr<NFE::Renderer::IResourceBindingInstance> mResBindingInstance;
 
     float mAngle;
 
