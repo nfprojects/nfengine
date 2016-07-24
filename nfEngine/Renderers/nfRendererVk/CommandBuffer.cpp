@@ -79,6 +79,12 @@ void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* binding
     UNUSED(bindingSetInstance);
 }
 
+void CommandBuffer::BindDynamicBuffer(size_t slot, IBuffer* buffer)
+{
+    UNUSED(slot);
+    UNUSED(buffer);
+}
+
 void CommandBuffer::SetResourceBindingLayout(IResourceBindingLayout* layout)
 {
     UNUSED(layout);

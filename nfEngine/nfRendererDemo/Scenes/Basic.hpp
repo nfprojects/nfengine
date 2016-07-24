@@ -33,7 +33,6 @@ class BasicScene: public Scene
     std::unique_ptr<NFE::Renderer::IResourceBindingSet> mVSBindingSet;
     std::unique_ptr<NFE::Renderer::IResourceBindingSet> mPSBindingSet;
     std::unique_ptr<NFE::Renderer::IResourceBindingLayout> mResBindingLayout;
-    std::unique_ptr<NFE::Renderer::IResourceBindingInstance> mVSBindingInstance;
     std::unique_ptr<NFE::Renderer::IResourceBindingInstance> mPSBindingInstance;
 
     int mTextureSlot;
