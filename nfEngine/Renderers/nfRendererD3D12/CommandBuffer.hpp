@@ -12,6 +12,9 @@
 #include "Shader.hpp"
 #include "PipelineState.hpp"
 #include "ResourceBinding.hpp"
+#include "RingBuffer.hpp"
+#include "Buffer.hpp"
+
 
 namespace NFE {
 namespace Renderer {
@@ -36,6 +39,10 @@ class CommandBuffer : public ICommandBuffer
     HANDLE mFenceEvent;
     std::vector<uint64> mFenceValues;
 
+    // ring buffer for dynamic buffers support
+    RingBuffer mRingBuffer;
+    Buffer* mBoundDynamicBuffers[NFE_RENDERER_MAX_DYNAMIC_BUFFERS];
+
     RenderTarget* mCurrRenderTarget;
     ResourceBindingLayout* mBindingLayout;
     ResourceBindingLayout* mCurrBindingLayout;
@@ -48,6 +55,7 @@ class CommandBuffer : public ICommandBuffer
 
     void UpdateStates();
     void UnsetRenderTarget();
+    void UpdateDynamicBuffers();
 
     // called by Device, when command list was queued
     bool MoveToNextFrame(ID3D12CommandQueue* commandQueue);
@@ -63,6 +71,7 @@ public:
     void SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets) override;
     void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format) override;
     void BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance) override;
+    void BindDynamicBuffer(size_t slot, IBuffer* buffer) override;
     void SetRenderTarget(IRenderTarget* renderTarget) override;
     void SetResourceBindingLayout(IResourceBindingLayout* layout) override;
     void SetShaderProgram(IShaderProgram* shaderProgram) override;
