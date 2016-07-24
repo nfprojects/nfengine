@@ -206,6 +206,64 @@ void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* binding
     }
 }
 
+void CommandBuffer::BindDynamicBuffer(size_t slot, IBuffer* buffer)
+{
+    if (!mBindingLayout)
+    {
+        LOG_ERROR("Binding layout is not set");
+        return;
+    }
+
+    if (slot >= mBindingLayout->mDynamicBuffers.size())
+    {
+        LOG_ERROR("Invalid dynamic buffer slot");
+        return;
+    }
+
+    Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer);
+    if (!bufferPtr)
+    {
+        LOG_ERROR("Invalid buffer");
+        return;
+    }
+
+    const ShaderType targetShader = mBindingLayout->mDynamicBuffers[slot].shaderVisibility;
+    UINT slotOffset = mBindingLayout->mDynamicBuffers[slot].slot & SHADER_RES_SLOT_MASK;
+
+    ID3D11Buffer* d3dBuffer = bufferPtr->mBuffer.get();
+
+    switch (targetShader)
+    {
+    case ShaderType::Vertex:
+        mContext->VSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
+        break;
+    case ShaderType::Domain:
+        mContext->DSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
+        break;
+    case ShaderType::Hull:
+        mContext->HSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
+        break;
+    case ShaderType::Geometry:
+        mContext->GSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
+        break;
+    case ShaderType::Pixel:
+        mContext->PSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
+        break;
+    case ShaderType::All:
+        if (mBoundShaders.vertexShader)
+            mContext->VSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
+        if (mBoundShaders.domainShader)
+            mContext->DSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
+        if (mBoundShaders.hullShader)
+            mContext->HSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
+        if (mBoundShaders.geometryShader)
+            mContext->GSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
+        if (mBoundShaders.pixelShader)
+            mContext->PSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
+        break;
+    }
+}
+
 void CommandBuffer::UpdateSamplers()
 {
     for (size_t j = 0; j < mBindingLayout->mBindingSets.size(); ++j)

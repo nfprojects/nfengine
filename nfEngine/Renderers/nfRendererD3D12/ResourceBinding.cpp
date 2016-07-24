@@ -10,10 +10,9 @@
 #include "Buffer.hpp"
 #include "Sampler.hpp"
 #include "Shader.hpp"
+#include "Translations.hpp"
 #include "RendererD3D12.hpp"
-
 #include "nfCommon/Logger.hpp"
-
 
 
 namespace NFE {
@@ -70,14 +69,14 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
 
     D3D12_ROOT_SIGNATURE_DESC rsd;
     rsd.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-    rsd.NumParameters = static_cast<UINT>(desc.numBindingSets);
     rsd.pParameters = rootParameters;
 
     mBindingSets.reserve(desc.numBindingSets);
 
+    uint32 rootParamIndex = 0;
     size_t samplerCounter = 0;
     size_t rangeCounter = 0;
-    for (size_t i = 0; i < desc.numBindingSets; ++i)
+    for (size_t i = 0; i < desc.numBindingSets; ++i, ++rootParamIndex)
     {
         ResourceBindingSet* bindingSet = dynamic_cast<ResourceBindingSet*>(desc.bindingSets[i]);
         if (bindingSet == nullptr)
@@ -88,30 +87,15 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         mBindingSets.push_back(bindingSet);
 
         // set up root signature's parameter
-        rootParameters[i].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE; // TODO temporary
-        rootParameters[i].DescriptorTable.NumDescriptorRanges =
+        rootParameters[rootParamIndex].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE; // TODO temporary
+        rootParameters[rootParamIndex].DescriptorTable.NumDescriptorRanges =
             static_cast<UINT>(bindingSet->mBindings.size());
-        rootParameters[i].DescriptorTable.pDescriptorRanges = &descriptorRanges[rangeCounter];
-        switch (bindingSet->mShaderVisibility)
+        rootParameters[rootParamIndex].DescriptorTable.pDescriptorRanges = &descriptorRanges[rangeCounter];
+
+        if (!TranslateShaderVisibility(bindingSet->mShaderVisibility, rootParameters[rootParamIndex].ShaderVisibility))
         {
-        case ShaderType::Vertex:
-            rootParameters[i].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-            break;
-        case ShaderType::Hull:
-            rootParameters[i].ShaderVisibility = D3D12_SHADER_VISIBILITY_HULL;
-            break;
-        case ShaderType::Domain:
-            rootParameters[i].ShaderVisibility = D3D12_SHADER_VISIBILITY_DOMAIN;
-            break;
-        case ShaderType::Geometry:
-            rootParameters[i].ShaderVisibility = D3D12_SHADER_VISIBILITY_GEOMETRY;
-            break;
-        case ShaderType::Pixel:
-            rootParameters[i].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-            break;
-        case ShaderType::All:
-            rootParameters[i].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-            break;
+            LOG_ERROR("Invalid shader visibility");
+            return false;
         }
 
         // iterate through descriptors within the set
@@ -162,11 +146,40 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
                 sampler->FillD3DStaticSampler(targetSampler);
                 targetSampler.ShaderRegister = bindingDesc.slot & SHADER_RES_SLOT_MASK;
                 targetSampler.RegisterSpace = 0;
-                targetSampler.ShaderVisibility = rootParameters[i].ShaderVisibility;
+                targetSampler.ShaderVisibility = rootParameters[rootParamIndex].ShaderVisibility;
             }
         }
     }
 
+    // initialize root parameters (root descriptors) for dynamic buffers bindings
+    for (size_t i = 0; i < desc.numDynamicBuffers; ++i, ++rootParamIndex)
+    {
+        const DynamicBufferBindingDesc& bindingDesc = desc.dynamicBuffers[i];
+        mDynamicBuffers.push_back(bindingDesc);
+
+        // set up root signature's parameter
+        switch (desc.dynamicBuffers[i].resourceType)
+        {
+        case ShaderResourceType::CBuffer:
+            rootParameters[rootParamIndex].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+            break;
+        // TODO: UAVs, raw buffers, etc.
+        default:
+            LOG_ERROR("Unsupported shader resource type in dynamic buffer slot %zu", i);
+            return false;
+        }
+
+        // TODO check if shader slots are not overlapping
+        rootParameters[rootParamIndex].Descriptor.RegisterSpace = 0;
+        rootParameters[rootParamIndex].Descriptor.ShaderRegister = bindingDesc.slot & SHADER_RES_SLOT_MASK;
+        if (!TranslateShaderVisibility(bindingDesc.shaderVisibility, rootParameters[rootParamIndex].ShaderVisibility))
+        {
+            LOG_ERROR("Invalid shader visibility");
+            return false;
+        }
+    }
+
+    rsd.NumParameters = rootParamIndex;
     rsd.NumStaticSamplers = static_cast<UINT>(samplerCounter);
     rsd.pStaticSamplers = staticSamplers;
 

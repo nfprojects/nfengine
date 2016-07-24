@@ -67,11 +67,33 @@ public:
     virtual bool Init(const ResourceBindingSetDesc& desc) = 0;
 };
 
+/**
+ * Buffers that will be updated frequently (e.g. constant buffers) must be
+ * bound via this structure.
+ */
+struct DynamicBufferBindingDesc
+{
+    ShaderType shaderVisibility;
+    ShaderResourceType resourceType;
+    unsigned int slot; //< shader program's resource slot
+
+    DynamicBufferBindingDesc(ShaderType shaderVisibility,
+                             ShaderResourceType resourceType,
+                             unsigned int slot)
+        : shaderVisibility(shaderVisibility)
+        , resourceType(resourceType)
+        , slot(slot)
+    {
+    }
+};
 
 struct ResourceBindingLayoutDesc
 {
     IResourceBindingSet** bindingSets;
     size_t numBindingSets;
+
+    DynamicBufferBindingDesc* dynamicBuffers;
+    size_t numDynamicBuffers;
 
     // TODO:
     // fast constants (Vulkan's Push Constants / D3D12 Root Constants)
@@ -80,11 +102,17 @@ struct ResourceBindingLayoutDesc
     ResourceBindingLayoutDesc()
         : bindingSets(nullptr)
         , numBindingSets(0)
+        , dynamicBuffers(nullptr)
+        , numDynamicBuffers(0)
     { }
 
-    ResourceBindingLayoutDesc(IResourceBindingSet** bindingSets, size_t numBindingSets)
+    ResourceBindingLayoutDesc(IResourceBindingSet** bindingSets, size_t numBindingSets,
+                              DynamicBufferBindingDesc* dynamicBuffers = nullptr,
+                              size_t numDynamicBuffers = 0)
         : bindingSets(bindingSets)
         , numBindingSets(numBindingSets)
+        , dynamicBuffers(dynamicBuffers)
+        , numDynamicBuffers(numDynamicBuffers)
     { }
 };
 

@@ -22,6 +22,9 @@
 #include "nfCommon/Logger.hpp"
 
 
+#if defined(_DEBUG)
+#define D3D_DEBUGGING
+#endif
 
 namespace NFE {
 namespace Renderer {
@@ -59,7 +62,7 @@ bool Device::Init(const DeviceInitParams* params)
 {
     HRESULT hr;
 
-#if defined(_DEBUG)
+#ifdef D3D_DEBUGGING
     // Enable the D3D12 debug layer
     {
         D3DPtr<ID3D12Debug> debugController;
@@ -141,7 +144,7 @@ bool Device::Init(const DeviceInitParams* params)
         mFeatureLevel = D3D_FEATURE_LEVEL_9_1;
     }
 
-#if defined(_DEBUG)
+#ifdef D3D_DEBUGGING
     D3DPtr<ID3D12InfoQueue> infoQueue;
     if (SUCCEEDED(mDevice->QueryInterface(IID_PPV_ARGS(&infoQueue))))
     {
