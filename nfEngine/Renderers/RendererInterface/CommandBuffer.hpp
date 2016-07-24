@@ -58,6 +58,12 @@ public:
      */
     virtual void BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance) = 0;
 
+    virtual void BindDynamicBuffer(size_t slot, IBuffer* buffer)
+    {
+        (void)slot;
+        (void)buffer;
+    }
+
     /**
      * Set new shaders resources binding layout.
      * @param layout Resource binding layout

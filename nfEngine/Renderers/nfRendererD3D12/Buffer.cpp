@@ -33,7 +33,16 @@ bool Buffer::Init(const BufferDesc& desc)
     }
 
     // buffer size is required to be 256-byte aligned
-    mSize = (desc.size + 255) & ~255;
+    mSize = desc.size;
+    mRealSize = (mSize + 255) & ~255;
+    mType = desc.type;
+    mAccess = desc.access;
+
+    if (desc.access == BufferAccess::CPU_Write)
+    {
+        // dynamic buffers are handled via ring buffer
+        return true;
+    }
 
     D3D12_HEAP_PROPERTIES heapProperties;
     heapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
@@ -45,7 +54,7 @@ bool Buffer::Init(const BufferDesc& desc)
     D3D12_RESOURCE_DESC resourceDesc;
     resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
     resourceDesc.Alignment = 0;
-    resourceDesc.Width = mSize;
+    resourceDesc.Width = mRealSize;
     resourceDesc.Height = 1;
     resourceDesc.DepthOrArraySize = 1;
     resourceDesc.MipLevels = 1;
@@ -84,8 +93,6 @@ bool Buffer::Init(const BufferDesc& desc)
             LOG_WARNING("Initial data for GPU read-only buffer was not provided.");
     }
 
-    mType = desc.type;
-    mAccess = desc.access;
     return true;
 }
 

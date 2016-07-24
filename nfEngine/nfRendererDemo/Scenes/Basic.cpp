@@ -69,14 +69,6 @@ bool BasicScene::CreateShaderProgram(bool useCBuffer, bool useTexture)
         if (mCBufferSlot < 0)
             return false;
 
-        // create binding set for vertex shader bindings
-        ResourceBindingDesc vertexShaderBinding(ShaderResourceType::CBuffer, mCBufferSlot);
-        mVSBindingSet.reset(mRendererDevice->CreateResourceBindingSet(
-            ResourceBindingSetDesc(&vertexShaderBinding, 1, ShaderType::Vertex)));
-        if (!mVSBindingSet)
-            return false;
-        bindingSets.push_back(mVSBindingSet.get());
-
         if (useTexture)
         {
             mTextureSlot = mShaderProgram->GetResourceSlotByName("gTexture");
@@ -95,9 +87,14 @@ bool BasicScene::CreateShaderProgram(bool useCBuffer, bool useTexture)
         }
     }
 
+    DynamicBufferBindingDesc dynBufferBindingDesc(ShaderType::Vertex,
+                                                  ShaderResourceType::CBuffer,
+                                                  mCBufferSlot);
+
     // create binding layout
     mResBindingLayout.reset(mRendererDevice->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(bindingSets.data(), bindingSets.size())));
+        ResourceBindingLayoutDesc(bindingSets.data(), bindingSets.size(),
+                                  &dynBufferBindingDesc, useCBuffer ? 1 : 0)));
     if (!mResBindingLayout)
         return false;
 
@@ -203,13 +200,6 @@ bool BasicScene::CreateConstantBuffer()
     vertexCBufferDesc.size = sizeof(VertexCBuffer);
     mConstantBuffer.reset(mRendererDevice->CreateBuffer(vertexCBufferDesc));
     if (!mConstantBuffer)
-        return false;
-
-    // create and fill binding set instance for cbuffer
-    mVSBindingInstance.reset(mRendererDevice->CreateResourceBindingInstance(mVSBindingSet.get()));
-    if (!mVSBindingInstance)
-        return false;
-    if (!mVSBindingInstance->WriteCBufferView(0, mConstantBuffer.get()))
         return false;
 
     return true;
@@ -383,7 +373,6 @@ void BasicScene::ReleaseSubsceneResources()
     mPipelineState.reset();
     mShaderProgram.reset();
 
-    mVSBindingInstance.reset();
     mPSBindingInstance.reset();
     mResBindingLayout.reset();
     mVSBindingSet.reset();
@@ -438,10 +427,10 @@ void BasicScene::Draw(float dt)
         mCommandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
 
     if (mConstantBuffer)
-        mCommandBuffer->BindResources(0, mVSBindingInstance.get());
+        mCommandBuffer->BindDynamicBuffer(0, mConstantBuffer.get());
 
     if (mTexture)
-        mCommandBuffer->BindResources(1, mPSBindingInstance.get());
+        mCommandBuffer->BindResources(0, mPSBindingInstance.get());
 
     if (mPipelineState)
         mCommandBuffer->SetPipelineState(mPipelineState.get());
