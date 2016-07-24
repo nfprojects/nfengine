@@ -38,10 +38,8 @@ class RenderTargetsScene : public Scene
     std::unique_ptr<NFE::Renderer::ISampler> mSampler;
     std::unique_ptr<NFE::Renderer::IPipelineState> mPipelineState;
 
-    std::unique_ptr<NFE::Renderer::IResourceBindingSet> mVSBindingSet;
     std::unique_ptr<NFE::Renderer::IResourceBindingSet> mPSBindingSet;
     std::unique_ptr<NFE::Renderer::IResourceBindingLayout> mResBindingLayout;
-    std::unique_ptr<NFE::Renderer::IResourceBindingInstance> mVSBindingInstance;
     std::unique_ptr<NFE::Renderer::IResourceBindingInstance> mPSBindingInstancePrimary;
     std::unique_ptr<NFE::Renderer::IResourceBindingInstance> mPSBindingInstanceDepth;
     std::unique_ptr<NFE::Renderer::IResourceBindingInstance> mPSBindingInstanceSecondary;

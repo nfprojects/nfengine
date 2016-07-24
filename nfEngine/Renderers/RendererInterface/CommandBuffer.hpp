@@ -59,6 +59,13 @@ public:
     virtual void BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance) = 0;
 
     /**
+     * Bind dynamic buffer to the pipeline.
+     * @param slot      Dynamic buffer slot in the current resource binding layout.
+     * @param buffer    Buffer to bind.
+     */
+    virtual void BindDynamicBuffer(size_t slot, IBuffer* buffer) = 0;
+
+    /**
      * Set new shaders resources binding layout.
      * @param layout Resource binding layout
      */

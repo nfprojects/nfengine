@@ -88,6 +88,9 @@ bool Buffer::Init(const BufferDesc& desc)
                             bufferName.c_str());
 #endif // D3D_DEBUGGING
 
+    mAccess = desc.access;
+    mType = desc.type;
+    mSize = desc.size;
     return true;
 }
 

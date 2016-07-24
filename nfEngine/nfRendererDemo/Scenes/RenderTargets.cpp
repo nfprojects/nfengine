@@ -156,13 +156,6 @@ bool RenderTargetsScene::CreateBasicResources()
     if (!mConstantBuffer)
         return false;
 
-    // create and fill binding set instance for cbuffer
-    mVSBindingInstance.reset(mRendererDevice->CreateResourceBindingInstance(mVSBindingSet.get()));
-    if (!mVSBindingInstance)
-        return false;
-    if (!mVSBindingInstance->WriteCBufferView(0, mConstantBuffer.get()))
-        return false;
-
     return true;
 }
 
@@ -325,12 +318,8 @@ bool RenderTargetsScene::CreateShaders(bool multipleRT, bool withMSAA)
     if (textureSlot < 0)
         return false;
 
-    // create binding set for vertex shader
-    ResourceBindingDesc vertexShaderBinding(ShaderResourceType::CBuffer, cbufferSlot);
-    mVSBindingSet.reset(mRendererDevice->CreateResourceBindingSet(
-        ResourceBindingSetDesc(&vertexShaderBinding, 1, ShaderType::Vertex)));
-    if (!mVSBindingSet)
-        return false;
+    // define cbuffer binding for VS
+    DynamicBufferBindingDesc cbufferDesc(ShaderType::Vertex, ShaderResourceType::CBuffer, cbufferSlot);
 
     // create binding set for pixel shader
     ResourceBindingDesc pixelShaderBinding(ShaderResourceType::Texture,
@@ -342,9 +331,9 @@ bool RenderTargetsScene::CreateShaders(bool multipleRT, bool withMSAA)
         return false;
 
     // create binding layout
-    IResourceBindingSet* bindingSets[] = { mVSBindingSet.get(), mPSBindingSet.get() };
+    IResourceBindingSet* bindingSets[] = { mPSBindingSet.get() };
     mResBindingLayout.reset(mRendererDevice->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(bindingSets, 2)));
+        ResourceBindingLayoutDesc(bindingSets, 1, &cbufferDesc, 1)));
     if (!mResBindingLayout)
         return false;
 
@@ -428,12 +417,12 @@ void RenderTargetsScene::Draw(float dt)
     IBuffer* vb = mVertexBuffer.get();
     mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
     mCommandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
-
+    mCommandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
     mCommandBuffer->SetPipelineState(mPipelineState.get());
 
 
     IBuffer* cb = mConstantBuffer.get();
-    mCommandBuffer->BindResources(0, mVSBindingInstance.get());
+    mCommandBuffer->BindDynamicBuffer(0, cb);
 
     // render cube to a texture
     {
@@ -466,7 +455,7 @@ void RenderTargetsScene::Draw(float dt)
                              MatrixTranslation3(Vector(-0.5f, 0.5f, 0.5f));
         mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
-        mCommandBuffer->BindResources(1, mPSBindingInstancePrimary.get());
+        mCommandBuffer->BindResources(0, mPSBindingInstancePrimary.get());
         mCommandBuffer->SetShaderProgram(mPrimaryTargetShaderProgram.get());
         mCommandBuffer->DrawIndexed(2 * 3,      // 2 triangles
                                     -1,         // no instancing
@@ -481,7 +470,7 @@ void RenderTargetsScene::Draw(float dt)
             MatrixTranslation3(Vector(0.5f, 0.5f, 0.5f));
         mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
-        mCommandBuffer->BindResources(1, mPSBindingInstanceDepth.get());
+        mCommandBuffer->BindResources(0, mPSBindingInstanceDepth.get());
         mCommandBuffer->SetShaderProgram(mDepthShaderProgram.get());
         mCommandBuffer->DrawIndexed(2 * 3,      // 2 triangles
                                     -1,         // no instancing
@@ -496,7 +485,7 @@ void RenderTargetsScene::Draw(float dt)
             MatrixTranslation3(Vector(-0.5f, -0.5f, 0.5f));
         mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
-        mCommandBuffer->BindResources(1, mPSBindingInstanceSecondary.get());
+        mCommandBuffer->BindResources(0, mPSBindingInstanceSecondary.get());
         mCommandBuffer->SetShaderProgram(mSecondTargetShaderProgram.get());
         mCommandBuffer->DrawIndexed(2 * 3,      // 2 triangles
                                     -1,         // no instancing
@@ -504,7 +493,7 @@ void RenderTargetsScene::Draw(float dt)
     }
 
     // unbind texture from pixel shader, because we will be rendering to it in the next frame
-    mCommandBuffer->BindResources(1, nullptr);
+    mCommandBuffer->BindResources(0, nullptr);
 
     mRendererDevice->Execute(mCommandBuffer->Finish().get());
 
@@ -537,9 +526,7 @@ void RenderTargetsScene::ReleaseSubsceneResources()
     mPSBindingInstancePrimary.reset();
     mPSBindingInstanceDepth.reset();
     mPSBindingInstanceSecondary.reset();
-    mVSBindingInstance.reset();
     mResBindingLayout.reset();
-    mVSBindingSet.reset();
     mPSBindingSet.reset();
 }
 

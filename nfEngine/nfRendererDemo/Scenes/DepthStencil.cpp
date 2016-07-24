@@ -95,17 +95,10 @@ bool DepthStencilScene::CreateBasicResources(bool withStencil)
     if (cbufferSlot < 0)
         return false;
 
-    // create binding set for vertex shader bindings
-    ResourceBindingDesc vertexShaderBinding(ShaderResourceType::CBuffer, cbufferSlot);
-    mResBindingSet.reset(mRendererDevice->CreateResourceBindingSet(
-        ResourceBindingSetDesc(&vertexShaderBinding, 1, ShaderType::Vertex)));
-    if (!mResBindingSet)
-        return false;
-
     // create binding layout
-    IResourceBindingSet* bindingSet = mResBindingSet.get();
+    DynamicBufferBindingDesc cbufferDesc(ShaderType::Vertex, ShaderResourceType::CBuffer, 0);
     mResBindingLayout.reset(mRendererDevice->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(&bindingSet, 1)));
+        ResourceBindingLayoutDesc(nullptr, 0, &cbufferDesc, 1)));
     if (!mResBindingLayout)
         return false;
 
@@ -225,13 +218,6 @@ bool DepthStencilScene::CreateBasicResources(bool withStencil)
     if (!mConstantBuffer)
         return false;
 
-    // create and fill binding set instance for cbuffer
-    mResBindingInstance.reset(mRendererDevice->CreateResourceBindingInstance(mResBindingSet.get()));
-    if (!mResBindingInstance)
-        return false;
-    if (!mResBindingInstance->WriteCBufferView(0, mConstantBuffer.get()))
-        return false;
-
     return true;
 }
 
@@ -318,7 +304,7 @@ void DepthStencilScene::Draw(float dt)
                                 static_cast<float>(WINDOW_HEIGHT), 0.0f, 1.0f);
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
     mCommandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
-    mCommandBuffer->BindResources(0, mResBindingInstance.get());
+    mCommandBuffer->BindDynamicBuffer(0, mConstantBuffer.get());
 
     int stride = 9 * sizeof(float);
     int offset = 0;
@@ -392,10 +378,7 @@ void DepthStencilScene::ReleaseSubsceneResources()
     mReflectionPipelineState.reset();
     mFloorPipelineState.reset();
     mCubePipelineState.reset();
-
-    mResBindingInstance.reset();
     mResBindingLayout.reset();
-    mResBindingSet.reset();
 }
 
 void DepthStencilScene::Release()
