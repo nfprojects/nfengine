@@ -18,6 +18,7 @@ class Buffer : public IBuffer
     friend class ResourceBindingInstance;
 
     size_t mSize;
+    size_t mRealSize;
     void* mData; // mapped data
     BufferType mType;
     BufferAccess mAccess;

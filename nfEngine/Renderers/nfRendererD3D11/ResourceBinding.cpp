@@ -106,6 +106,12 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         mBindingSets.push_back(bindingSet);
     }
 
+    for (size_t i = 0; i < desc.numDynamicBuffers; ++i)
+    {
+        // TODO check if shader slots are not overlapping
+        mDynamicBuffers.push_back(desc.dynamicBuffers[i]);
+    }
+
     return true;
 }
 
@@ -157,6 +163,15 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, IBuffer* buffer)
         LOG_ERROR("Invalid constant buffer");
         return false;
     }
+
+    if (buf->mType != BufferType::Constant)
+    {
+        LOG_ERROR("Not a constant buffer");
+        return false;
+    }
+
+    if (buf->mAccess == BufferAccess::CPU_Write)
+        LOG_WARNING("Placing dynamic cbuffers in descriptor set may not be supported by other renderer backends");
 
     mViews[slot] = buf->mBuffer.get();
     return true;

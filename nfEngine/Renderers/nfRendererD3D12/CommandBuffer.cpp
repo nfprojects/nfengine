@@ -100,6 +100,12 @@ bool CommandBuffer::Init(ID3D12Device* device)
         return false;
     }
 
+    if (!mRingBuffer.Init(1024 * 1024))
+    {
+        LOG_ERROR("Failed to initialize ring buffer");
+        return false;
+    }
+
     return true;
 }
 
@@ -134,6 +140,9 @@ void CommandBuffer::Reset()
     mCurrPipelineState = nullptr;
     mPipelineState = nullptr;
     mCurrPrimitiveType = PrimitiveType::Unknown;
+
+    for (int i = 0; i < NFE_RENDERER_MAX_DYNAMIC_BUFFERS; ++i)
+        mBoundDynamicBuffers[i] = nullptr;
 }
 
 void CommandBuffer::SetViewport(float left, float width, float top, float height,
@@ -178,6 +187,7 @@ void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* stri
     const int maxVertexBuffers = 4;
     D3D12_VERTEX_BUFFER_VIEW views[maxVertexBuffers];
 
+    // TODO handle dynamic vertex buffers via ring buffer
     for (int i = 0; i < num; ++i)
     {
         Buffer* buffer = dynamic_cast<Buffer*>(vertexBuffers[i]);
@@ -193,6 +203,7 @@ void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat forma
 {
     Buffer* buffer = dynamic_cast<Buffer*>(indexBuffer);
 
+    // TODO handle dynamic index buffers via ring buffer
     D3D12_INDEX_BUFFER_VIEW view;
     view.BufferLocation = buffer->mResource->GetGPUVirtualAddress();
     view.SizeInBytes = static_cast<UINT>(buffer->mSize);
@@ -221,10 +232,25 @@ void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* binding
         mCurrBindingLayout = mBindingLayout;
     }
 
+    NFE_ASSERT(slot < mCurrBindingLayout->mBindingSets.size(), "Binding set index out of bounds");
+
     HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
     D3D12_GPU_DESCRIPTOR_HANDLE ptr = allocator.GetGpuHandle();
     ptr.ptr += instance->mDescriptorHeapOffset * allocator.GetDescriptorSize();
     mCommandList->SetGraphicsRootDescriptorTable(static_cast<UINT>(slot), ptr);
+}
+
+void CommandBuffer::BindDynamicBuffer(size_t slot, IBuffer* buffer)
+{
+    NFE_ASSERT(slot < NFE_RENDERER_MAX_DYNAMIC_BUFFERS, "Invalid slot number");
+
+    if (mCurrBindingLayout != mBindingLayout)
+    {
+        mCommandList->SetGraphicsRootSignature(mBindingLayout->mRootSignature.get());
+        mCurrBindingLayout = mBindingLayout;
+    }
+
+    mBoundDynamicBuffers[slot] = dynamic_cast<Buffer*>(buffer);
 }
 
 void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
@@ -325,17 +351,82 @@ void CommandBuffer::SetStencilRef(unsigned char ref)
 bool CommandBuffer::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data)
 {
     Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer);
-    if (!bufferPtr || !bufferPtr->mData)
+    if (!bufferPtr)
     {
         LOG_ERROR("Invalid buffer");
         return false;
     }
 
-    if (offset + size > bufferPtr->mSize)
-        return false;
+    if (bufferPtr->mType != BufferType::Constant)
+    {
+        if (size > bufferPtr->mSize)
+        {
+            LOG_ERROR("Trying to perform write bigger than buffer size.");
+            return false;
+        }
 
-    char* target = reinterpret_cast<char*>(bufferPtr->mData);
-    memcpy(target + offset, data, size);
+        // TODO dynamic vertex and index buffers should be also handled via ring buffer
+
+        size_t alignedSize = (size + 255) & ~255;
+        size_t ringBufferOffset = mRingBuffer.Allocate(alignedSize);
+        NFE_ASSERT(ringBufferOffset != RingBuffer::INVALID_OFFSET, "Ring buffer allocation failed");
+
+        char* cpuPtr = reinterpret_cast<char*>(mRingBuffer.GetCpuAddress());
+        cpuPtr += ringBufferOffset;
+        memcpy(cpuPtr, data, size);
+
+        // TODO this might be not the most optimal way of updating constant buffers...
+        D3D12_RESOURCE_BARRIER rb;
+        ZeroMemory(&rb, sizeof(rb));
+        rb.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+        rb.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+        rb.Transition.pResource = bufferPtr->mResource.get();
+        rb.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+        if (bufferPtr->mType == BufferType::Index)
+            rb.Transition.StateBefore = D3D12_RESOURCE_STATE_INDEX_BUFFER;
+        else
+            rb.Transition.StateBefore = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
+        rb.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST;
+        mCommandList->ResourceBarrier(1, &rb);
+
+        mCommandList->CopyBufferRegion(bufferPtr->mResource.get(), static_cast<UINT64>(offset),
+                                       mRingBuffer.GetD3DResource(), static_cast<UINT64>(ringBufferOffset),
+                                       static_cast<UINT64>(size));
+
+        rb.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+        if (bufferPtr->mType == BufferType::Index)
+            rb.Transition.StateAfter = D3D12_RESOURCE_STATE_INDEX_BUFFER;
+        else
+            rb.Transition.StateAfter = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
+        mCommandList->ResourceBarrier(1, &rb);
+    }
+    else
+    {
+        // TODO temporary - offset and size support must be added
+        NFE_ASSERT(bufferPtr->mAccess == BufferAccess::CPU_Write, "Buffer is not CPU-writeable");
+        NFE_ASSERT(offset == 0, "Offset not supported");
+        NFE_ASSERT(size == bufferPtr->mSize, "Size must cover the whole buffer");
+
+        for (uint32 i = 0; i < NFE_RENDERER_MAX_DYNAMIC_BUFFERS; ++i)
+        {
+            if (mBoundDynamicBuffers[i] == buffer)
+            {
+                size_t ringBufferOffset = mRingBuffer.Allocate(bufferPtr->mRealSize);
+                NFE_ASSERT(ringBufferOffset != RingBuffer::INVALID_OFFSET, "Ring buffer allocation failed");
+
+                char* cpuPtr = reinterpret_cast<char*>(mRingBuffer.GetCpuAddress());
+                cpuPtr += ringBufferOffset;
+                memcpy(cpuPtr, data, size);
+
+                D3D12_GPU_VIRTUAL_ADDRESS gpuPtr = mRingBuffer.GetGpuAddress();
+                gpuPtr += ringBufferOffset;
+
+                UINT rootParamIndex = static_cast<UINT>(mBindingLayout->mBindingSets.size()) + i;
+                mCommandList->SetGraphicsRootConstantBufferView(rootParamIndex, gpuPtr);
+            }
+        }
+    }
+
     return true;
 }
 
@@ -436,6 +527,7 @@ std::unique_ptr<ICommandList> CommandBuffer::Finish()
 bool CommandBuffer::MoveToNextFrame(ID3D12CommandQueue* commandQueue)
 {
     uint64 currFenceValue = mFenceValues[mFrameBufferIndex];
+    mRingBuffer.FinishFrame(currFenceValue);
 
     HRESULT hr = D3D_CALL_CHECK(commandQueue->Signal(mFence.get(), currFenceValue));
     if (FAILED(hr))
@@ -471,7 +563,10 @@ bool CommandBuffer::MoveToNextFrame(ID3D12CommandQueue* commandQueue)
         }
     }
 
+    mRingBuffer.OnFrameCompleted(mFenceValues[mFrameBufferIndex]);
+
     mFenceValues[mFrameBufferIndex] = ++mFrameCounter;
+
     return true;
 }
 
