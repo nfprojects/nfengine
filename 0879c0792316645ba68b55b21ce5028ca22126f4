@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_741ab770",
+        "filename": "nfEngine/Renderers/nfRendererD3D12/Common.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-26T18:18:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_dbf416f2",
+      "range": {
+        "startLine": 9,
+        "startChar": 10,
+        "endLine": 9,
+        "endChar": 16
+      },
+      "revId": "0879c0792316645ba68b55b21ce5028ca22126f4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_9bdb2e7c",
         "filename": "nfEngine/Renderers/nfRendererD3D12/Device.cpp",
         "patchSetId": 10
@@ -36,6 +60,30 @@
       "writtenOn": "2016-07-26T10:13:39Z",
       "side": 1,
       "message": "RTV",
+      "range": {
+        "startLine": 174,
+        "startChar": 58,
+        "endLine": 174,
+        "endChar": 75
+      },
+      "revId": "0879c0792316645ba68b55b21ce5028ca22126f4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_34278fb7",
+        "filename": "nfEngine/Renderers/nfRendererD3D12/Device.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-26T18:18:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_9bdb2e7c",
       "range": {
         "startLine": 174,
         "startChar": 58,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_5417b344",
+        "filename": "nfEngine/Renderers/nfRendererD3D12/Device.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-26T18:18:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_7be4ea3a",
+      "range": {
+        "startLine": 180,
+        "startChar": 59,
+        "endLine": 180,
+        "endChar": 75
+      },
+      "revId": "0879c0792316645ba68b55b21ce5028ca22126f4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_fbc6ba9a",
         "filename": "nfEngine/Renderers/nfRendererD3D12/HeapAllocator.cpp",
         "patchSetId": 10
@@ -82,6 +154,24 @@
       "writtenOn": "2016-07-26T10:13:39Z",
       "side": 1,
       "message": "// namespace",
+      "revId": "0879c0792316645ba68b55b21ce5028ca22126f4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_142c8b97",
+        "filename": "nfEngine/Renderers/nfRendererD3D12/HeapAllocator.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-26T18:18:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_fbc6ba9a",
       "revId": "0879c0792316645ba68b55b21ce5028ca22126f4",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -105,6 +195,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_f41c8767",
+        "filename": "nfEngine/Renderers/nfRendererD3D12/HeapAllocator.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-26T18:18:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_3bd1c257",
+      "revId": "0879c0792316645ba68b55b21ce5028ca22126f4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_1b64beb6",
         "filename": "nfEngine/Renderers/nfRendererD3D12/RenderTarget.cpp",
         "patchSetId": 10
@@ -116,6 +224,30 @@
       "writtenOn": "2016-07-26T10:13:39Z",
       "side": 1,
       "message": "signed/unsigned mismatch, use UINT32_MAX",
+      "range": {
+        "startLine": 57,
+        "startChar": 26,
+        "endLine": 57,
+        "endChar": 28
+      },
+      "revId": "0879c0792316645ba68b55b21ce5028ca22126f4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b43b9fd0",
+        "filename": "nfEngine/Renderers/nfRendererD3D12/RenderTarget.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-26T18:18:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_1b64beb6",
       "range": {
         "startLine": 57,
         "startChar": 26,
