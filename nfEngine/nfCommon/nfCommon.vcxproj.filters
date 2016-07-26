@@ -260,6 +260,9 @@
     <ClInclude Include="FileAsync.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AsyncQueueManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -441,6 +444,9 @@
     </ClCompile>
     <ClCompile Include="Memory\DefaultAllocator.cpp">
       <Filter>Source Files\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Win\AsyncQueueManager.cpp">
+      <Filter>Source Files\Win</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
