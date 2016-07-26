@@ -46,7 +46,7 @@ public:
         dtHistory.resize(dtHistorySize);
     }
 
-    void OnDrawImGui(void* state)
+    void OnDrawImGui(void* state) override
     {
         ImGui::SetInternalState(state);
 
@@ -88,7 +88,7 @@ public:
         }
     }
 
-    void OnPostRender(RenderContext* ctx)
+    void OnPostRender(GuiRendererContext* ctx) override
     {
         uint32 viewWidth, viewHeight;
         this->GetSize(viewWidth, viewHeight);

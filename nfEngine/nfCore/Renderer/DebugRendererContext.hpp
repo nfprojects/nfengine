@@ -34,14 +34,28 @@ typedef uint16 DebugIndexType;
  */
 struct DebugRendererContext
 {
+    static const size_t gVertexBufferSize;
+    static const size_t gIndexBufferSize;
+
+    ICommandBuffer* commandBuffer;
+    size_t queuedVertices;
+    size_t queuedIndicies;
     DebugRendererMode mode;
     PrimitiveType polyType;
     std::unique_ptr<DebugVertex[]> vertices;
     std::unique_ptr<DebugIndexType[]> indicies;
-    size_t queuedVertices;
-    size_t queuedIndicies;
 
-    DebugRendererContext();
+    NFE_INLINE DebugRendererContext(ICommandBuffer* commandBuffer)
+        : commandBuffer(commandBuffer)
+        , queuedVertices(0)
+        , queuedIndicies(0)
+        , polyType(PrimitiveType::Lines)
+        , mode(DebugRendererMode::Unknown)
+    {
+        /// allocate buffers for verticies and indicies
+        vertices.reset(new DebugVertex[gVertexBufferSize]);
+        indicies.reset(new DebugIndexType[gIndexBufferSize]);
+    }
 };
 
 } // namespace Renderer

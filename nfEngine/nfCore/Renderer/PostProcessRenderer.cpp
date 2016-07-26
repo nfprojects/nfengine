@@ -12,6 +12,8 @@
 namespace NFE {
 namespace Renderer {
 
+using namespace Math;
+
 // renderer modules instance definition
 std::unique_ptr<PostProcessRenderer> PostProcessRenderer::mPtr;
 
@@ -61,16 +63,12 @@ PostProcessRenderer::PostProcessRenderer()
     bufferDesc.debugName = "PostProcessRenderer::mVertexBuffer";
     mVertexBuffer.reset(device->CreateBuffer(bufferDesc));
 
-    bufferDesc.mode = BufferMode::Dynamic;
+    bufferDesc.mode = BufferMode::Volatile;
     bufferDesc.type = BufferType::Constant;
     bufferDesc.initialData = nullptr;
     bufferDesc.size = sizeof(ToneMappingCBuffer);
     bufferDesc.debugName = "PostProcessRenderer::mTonemappingCBuffer";
     mTonemappingCBuffer.reset(device->CreateBuffer(bufferDesc));
-
-    mTonemappingBindingInstance.reset(device->CreateResourceBindingInstance(mParamsBindingSet.get()));
-    if (mTonemappingBindingInstance)
-        mTonemappingBindingInstance->WriteCBufferView(0, mTonemappingCBuffer.get());
 
     mNullTextureBindingInstance = CreateTextureBinding(mRenderer->GetDefaultDiffuseTexture());
 
@@ -81,6 +79,8 @@ PostProcessRenderer::PostProcessRenderer()
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.debugName = "PostProcessRenderer::mTonemappingPipelineState";
+    pipelineStateDesc.numRenderTargets = 1;
+    pipelineStateDesc.rtFormats[0] = ElementFormat::B8G8R8A8_U_Norm;
     mTonemappingPipelineState.Build(pipelineStateDesc);
 }
 
@@ -96,26 +96,20 @@ bool PostProcessRenderer::CreateResourceBindingLayouts()
     if (sourceTextureSlot < 0)
         return false;
 
+    VolatileCBufferBinding cbufferBindingDesc(ShaderType::Pixel, ShaderResourceType::CBuffer, paramsCBufferSlot);
+
     std::vector<IResourceBindingSet*> bindingSets;
-
-    ResourceBindingDesc binding0(ShaderResourceType::CBuffer, paramsCBufferSlot);
-    mParamsBindingSet.reset(device->CreateResourceBindingSet(
-        ResourceBindingSetDesc(&binding0, 1, ShaderType::Pixel)));
-    if (!mParamsBindingSet)
-        return false;
-    bindingSets.push_back(mParamsBindingSet.get());
-
-    ResourceBindingDesc binding1(ShaderResourceType::Texture, sourceTextureSlot,
+    ResourceBindingDesc binding(ShaderResourceType::Texture, sourceTextureSlot,
                                  mRenderer->GetDefaultSampler());
     mTexturesBindingSet.reset(device->CreateResourceBindingSet(
-        ResourceBindingSetDesc(&binding1, 1, ShaderType::Pixel)));
+        ResourceBindingSetDesc(&binding, 1, ShaderType::Pixel)));
     if (!mTexturesBindingSet)
         return false;
     bindingSets.push_back(mTexturesBindingSet.get());
 
     // create binding layout
     mResBindingLayout.reset(device->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(bindingSets.data(), bindingSets.size())));
+        ResourceBindingLayoutDesc(bindingSets.data(), bindingSets.size(), &cbufferBindingDesc, 1)));
     if (!mResBindingLayout)
         return false;
 
@@ -136,9 +130,11 @@ std::unique_ptr<IResourceBindingInstance> PostProcessRenderer::CreateTextureBind
     return bindingInstance;
 }
 
-void PostProcessRenderer::OnEnter(RenderContext* context)
+void PostProcessRenderer::OnEnter(PostProcessRendererContext* context)
 {
     context->commandBuffer->BeginDebugGroup("Post Process Renderer stage");
+
+    context->commandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
 
     IBuffer* veretexBuffers[] = { mVertexBuffer.get() };
     int strides[] = { sizeof(Float3) };
@@ -146,12 +142,12 @@ void PostProcessRenderer::OnEnter(RenderContext* context)
     context->commandBuffer->SetVertexBuffers(1, veretexBuffers, strides, offsets);
 }
 
-void PostProcessRenderer::OnLeave(RenderContext* context)
+void PostProcessRenderer::OnLeave(PostProcessRendererContext* context)
 {
     context->commandBuffer->EndDebugGroup();
 }
 
-void PostProcessRenderer::ApplyTonemapping(RenderContext* context,
+void PostProcessRenderer::ApplyTonemapping(PostProcessRendererContext* context,
                                            const ToneMappingParameters& params,
                                            IResourceBindingInstance* src, IRenderTarget* dest)
 {
@@ -160,6 +156,7 @@ void PostProcessRenderer::ApplyTonemapping(RenderContext* context,
     context->commandBuffer->SetViewport(0.0f, static_cast<float>(width),
                                         0.0f, static_cast<float>(height),
                                         0.0f, 1.0f);
+    context->commandBuffer->SetScissors(0, 0, width, height);
 
     context->commandBuffer->SetPipelineState(mTonemappingPipelineState.GetPipelineState());
 
@@ -171,19 +168,19 @@ void PostProcessRenderer::ApplyTonemapping(RenderContext* context,
                                 expf(params.exposureOffset));
     cbufferData.seed = Vector(context->random.GetFloat2());
 
-    context->commandBuffer->BindResources(0, mTonemappingBindingInstance.get());
+    context->commandBuffer->BindResources(0, src);
+    context->commandBuffer->BindVolatileCBuffer(0, mTonemappingCBuffer.get());
     context->commandBuffer->WriteBuffer(mTonemappingCBuffer.get(), 0,
                                         sizeof(cbufferData), &cbufferData);
 
     context->commandBuffer->SetRenderTarget(dest);
-    context->commandBuffer->BindResources(1, src);
 
 
     // TODO: use compute shaders if supported
     context->commandBuffer->Draw(2 * 3);  // draw 2 triangles
 
     // unbind source texture
-    context->commandBuffer->BindResources(1, mNullTextureBindingInstance.get());
+    context->commandBuffer->BindResources(0, mNullTextureBindingInstance.get());
 }
 
 } // namespace Renderer

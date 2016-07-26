@@ -7,7 +7,7 @@
 #pragma once
 
 #include "RendererModule.hpp"
-#include "HighLevelRenderer.hpp"
+#include "PostProcessRendererContext.hpp"
 #include "../Resources/MultiPipelineState.hpp"
 
 namespace NFE {
@@ -20,7 +20,7 @@ struct ToneMappingParameters
     float exposureOffset;
 };
 
-class PostProcessRenderer : public RendererModule<PostProcessRenderer>
+class PostProcessRenderer : public RendererModule<PostProcessRenderer, PostProcessRendererContext>
 {
     // TODO: these are common with lights renderer:
     std::unique_ptr<IVertexLayout> mVertexLayout;
@@ -29,18 +29,16 @@ class PostProcessRenderer : public RendererModule<PostProcessRenderer>
     Resource::MultiPipelineState mTonemappingPipelineState;
     std::unique_ptr<IBuffer> mTonemappingCBuffer;
 
-    std::unique_ptr<IResourceBindingSet> mParamsBindingSet;
     std::unique_ptr<IResourceBindingSet> mTexturesBindingSet;
     std::unique_ptr<IResourceBindingLayout> mResBindingLayout;
-    std::unique_ptr<IResourceBindingInstance> mTonemappingBindingInstance;
     std::unique_ptr<IResourceBindingInstance> mNullTextureBindingInstance;
 
     bool CreateResourceBindingLayouts();
 
 public:
     PostProcessRenderer();
-    void OnEnter(RenderContext* context);
-    void OnLeave(RenderContext* context);
+    void OnEnter(PostProcessRendererContext* context) override;
+    void OnLeave(PostProcessRendererContext* context) override;
 
     /**
      * Create shader resource binding for a texture that will be input for a postprocess
@@ -51,7 +49,7 @@ public:
     /**
      * Apply tonemapping, gamma correction and dithering (final post-process).
      */
-    void ApplyTonemapping(RenderContext* context, const ToneMappingParameters& params,
+    void ApplyTonemapping(PostProcessRendererContext* context, const ToneMappingParameters& params,
                           IResourceBindingInstance* src, IRenderTarget* dest);
 };
 

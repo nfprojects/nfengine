@@ -7,7 +7,7 @@
 #pragma once
 
 #include "../Core.hpp"
-#include "../Renderers/RendererInterface/Buffer.hpp"
+#include "Renderers/RendererInterface/Buffer.hpp"
 
 #include "nfCommon/Aligned.hpp"
 #include "nfCommon/Math/Vector.hpp"

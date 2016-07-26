@@ -53,6 +53,9 @@ struct GuiQuadVertex
  */
 struct GuiRendererContext
 {
+    static const size_t gQuadsBufferSize;
+
+    ICommandBuffer* commandBuffer;
     size_t queuedQuads;
     int vertexBufferSize;
     int indexBufferSize;
@@ -63,7 +66,15 @@ struct GuiRendererContext
     // geometry and color data (pushed directly to vertex buffer)
     std::unique_ptr<GuiQuadVertex[]> quadVertices;
 
-    GuiRendererContext();
+    NFE_INLINE GuiRendererContext(ICommandBuffer* commandBuffer)
+        : commandBuffer(commandBuffer)
+        , queuedQuads(0)
+        , vertexBufferSize(0)
+        , indexBufferSize(0)
+    {
+        quadData.reset(new GuiQuadData[gQuadsBufferSize]);
+        quadVertices.reset(new GuiQuadVertex[gQuadsBufferSize]);
+    }
 };
 
 } // namespace Renderer

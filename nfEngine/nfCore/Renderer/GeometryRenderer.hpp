@@ -7,7 +7,6 @@
 #pragma once
 
 #include "RendererModule.hpp"
-#include "HighLevelRenderer.hpp"
 #include "RenderCommand.hpp"
 #include "GeometryRendererContext.hpp"
 #include "RendererResources.hpp"
@@ -16,7 +15,7 @@
 namespace NFE {
 namespace Renderer {
 
-class GeometryRenderer : public RendererModule<GeometryRenderer>
+class GeometryRenderer : public RendererModule<GeometryRenderer, GeometryRendererContext>
 {
     Resource::MultiPipelineState mGeometryPassPipelineState;
     Resource::MultiPipelineState mShadowPipelineState;
@@ -27,13 +26,9 @@ class GeometryRenderer : public RendererModule<GeometryRenderer>
     std::unique_ptr<IBuffer> mGlobalCBuffer;
     std::unique_ptr<IBuffer> mShadowGlobalCBuffer;
 
-    std::unique_ptr<IResourceBindingSet> mGlobalBindingSet;
-    std::unique_ptr<IResourceBindingSet> mMatCBufferBindingSet;
     std::unique_ptr<IResourceBindingSet> mMatTexturesBindingSet;
     std::unique_ptr<IResourceBindingLayout> mResBindingLayout;
     std::unique_ptr<IResourceBindingInstance> mGlobalBindingInstance;
-    std::unique_ptr<IResourceBindingInstance> mShadowGlobalBindingInstance;
-    std::unique_ptr<IResourceBindingInstance> mMatCBufferBindingInstance;
     std::unique_ptr<IResourceBindingInstance> mDummyMaterialBindingInstance;
 
     uint32 mUseMotionBlurMacroId;
@@ -44,8 +39,8 @@ class GeometryRenderer : public RendererModule<GeometryRenderer>
 public:
     GeometryRenderer();
 
-    void OnEnter(RenderContext* context);
-    void OnLeave(RenderContext* context);
+    void OnEnter(GeometryRendererContext* context) override;
+    void OnLeave(GeometryRendererContext* context) override;
 
     NFE_INLINE IResourceBindingSet* GetMaterialTexturesBindingSet() const
     {
@@ -55,17 +50,17 @@ public:
     /**
      * Prepare for Geometry Buffer rendering.
      */
-    void SetUp(RenderContext* context, GeometryBuffer* geometryBuffer,
+    void SetUp(GeometryRendererContext* context, GeometryBuffer* geometryBuffer,
                const CameraRenderDesc* cameraDesc);
 
     /**
      * Prepare for Shadow Map rendering.
      */
-    void SetUpForShadowMap(RenderContext* context, ShadowMap* shadowMap,
+    void SetUpForShadowMap(GeometryRendererContext* context, ShadowMap* shadowMap,
                            const ShadowCameraRenderDesc* cameraDesc, uint32 faceID = 0);
 
-    void SetMaterial(RenderContext* context, const RendererMaterial* material);
-    void Draw(RenderContext* context, const RenderCommandBuffer& buffer);
+    void SetMaterial(GeometryRendererContext* context, const RendererMaterial* material);
+    void Draw(GeometryRendererContext* context, const RenderCommandBuffer& buffer);
 };
 
 } // namespace Renderer
