@@ -172,6 +172,9 @@ bool Engine::Advance(View** views, size_t viewsNum,
     std::vector<RenderingData, Common::AlignedAllocator<RenderingData, 16>> renderingData;
     renderingData.resize(viewsNum);
 
+    // prepare for rendering
+    mRenderer->ResetCommandBuffers();
+
     bool scenesRenderedSuccessfully = true;
     for (size_t i = 0; i < viewsNum; i++)
     {
@@ -196,30 +199,39 @@ bool Engine::Advance(View** views, size_t viewsNum,
         }
     }
 
+    // wait until all command buffers are filled
     for (size_t i = 0; i < viewsNum; i++)
     {
-        View* view = renderingData[i].view;
+        renderingData[i].WaitForRenderingTasks();
+    }
+
+    mRenderer->FinishAndExecuteCommandBuffers();
+
+    for (size_t i = 0; i < viewsNum; i++)
+    {
+        View* view = views[i];
         if (view == nullptr)
             continue;
 
-        renderingData[i].ExecuteCommandLists();
-
-        RenderContext* ctx = mRenderer->GetDefaultContext();
-        ctx->commandBuffer->Reset();
+        // TODO: post process and GUI renderer can be done on multiple threads
+        RenderContext* ctx = mRenderer->GetDeferredContext(0);
+        ctx->commandBufferOnScreen->Reset();
         view->Postprocess(ctx);
         view->UpdateGui();
 
         // GUI renderer pass
         {
-            GuiRenderer::Get()->Enter(ctx);
-            GuiRenderer::Get()->SetTarget(ctx, view->GetRenderTarget(true));
-            view->DrawGui(ctx);
-            GuiRenderer::Get()->BeginOrdinaryGuiRendering(ctx);
-            view->OnPostRender(ctx);
-            GuiRenderer::Get()->Leave(ctx);
+            GuiRendererContext* guiContext = ctx->guiContext.get();
+
+            GuiRenderer::Get()->OnEnter(guiContext);
+            GuiRenderer::Get()->SetTarget(guiContext, view->GetRenderTarget(true));
+            view->DrawGui(guiContext);
+            GuiRenderer::Get()->BeginOrdinaryGuiRendering(guiContext);
+            view->OnPostRender(guiContext);
+            GuiRenderer::Get()->OnLeave(guiContext);
         }
 
-        mRenderer->GetDevice()->Execute(ctx->commandBuffer->Finish().get());
+        mRenderer->GetDevice()->Execute(ctx->commandBufferOnScreen->Finish().get());
 
         // present frame in the display
         view->Present();

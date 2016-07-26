@@ -190,37 +190,12 @@ LightsRenderer::LightsRenderer()
 
     CreateResourceBindingLayouts();
 
-    // binding instances for cbuffers
-    {
-        mAmbientLightBindingInstance.reset(
-            device->CreateResourceBindingInstance(mGlobalBindingSet.get()));
-        if (mAmbientLightBindingInstance)
-        {
-            mAmbientLightBindingInstance->WriteCBufferView(0, mGlobalCBuffer.get());
-            mAmbientLightBindingInstance->WriteCBufferView(1, mAmbientLightCBuffer.get());
-        }
-
-        mOmniLightBindingInstance.reset(
-            device->CreateResourceBindingInstance(mGlobalBindingSet.get()));
-        if (mOmniLightBindingInstance)
-        {
-            mOmniLightBindingInstance->WriteCBufferView(0, mGlobalCBuffer.get());
-            mOmniLightBindingInstance->WriteCBufferView(1, mOmniLightCBuffer.get());
-        }
-
-        mSpotLightBindingInstance.reset(
-            device->CreateResourceBindingInstance(mGlobalBindingSet.get()));
-        if (mSpotLightBindingInstance)
-        {
-            mSpotLightBindingInstance->WriteCBufferView(0, mGlobalCBuffer.get());
-            mSpotLightBindingInstance->WriteCBufferView(1, mSpotLightCBuffer.get());
-        }
-    }
-
     PipelineStateDesc pipelineStateDesc;
     pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
+    pipelineStateDesc.rtFormats[0] = ElementFormat::R16G16B16A16_Float;
+    pipelineStateDesc.numRenderTargets = 1;
 
     pipelineStateDesc.debugName = "LightsRenderer::mAmbientLightPipelineState";
     mAmbientLightPipelineState.Build(pipelineStateDesc);
@@ -280,17 +255,6 @@ bool LightsRenderer::CreateResourceBindingLayouts()
         return false;
     }
 
-    // global binding set (cbuffers with camera and light properties)
-    ResourceBindingDesc globalBindings[2] =
-    {
-        ResourceBindingDesc(ShaderResourceType::CBuffer, globalCBufferSlot),
-        ResourceBindingDesc(ShaderResourceType::CBuffer, lightParamsSlot),
-    };
-    mGlobalBindingSet.reset(device->CreateResourceBindingSet(
-        ResourceBindingSetDesc(globalBindings, 2, ShaderType::All)));
-    if (!mGlobalBindingSet)
-        return false;
-
     // G-Buffer binding set
     ResourceBindingDesc gbufferBindings[4] =
     {
@@ -321,34 +285,39 @@ bool LightsRenderer::CreateResourceBindingLayouts()
     if (!mLightMapBindingSet)
         return false;
 
+    VolatileCBufferBinding cbufferBindingsDesc[2] =
+    {
+        VolatileCBufferBinding(ShaderType::All, ShaderResourceType::CBuffer, globalCBufferSlot),
+        VolatileCBufferBinding(ShaderType::All, ShaderResourceType::CBuffer, lightParamsSlot),
+    };
+
     // create binding layout
     IResourceBindingSet* sets[] =
     {
-        mGlobalBindingSet.get(),
         mGBufferBindingSet.get(),
         mShadowMapBindingSet.get(),
         mLightMapBindingSet.get()
     };
     mResBindingLayout.reset(device->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(sets, 4)));
+        ResourceBindingLayoutDesc(sets, 3, cbufferBindingsDesc, 2)));
     if (!mResBindingLayout)
         return false;
 
     return true;
 }
 
-void LightsRenderer::OnEnter(RenderContext* context)
+void LightsRenderer::OnEnter(LightsRendererContext* context)
 {
     context->commandBuffer->BeginDebugGroup("Lights Renderer stage");
     context->commandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
 }
 
-void LightsRenderer::OnLeave(RenderContext* context)
+void LightsRenderer::OnLeave(LightsRendererContext* context)
 {
     context->commandBuffer->EndDebugGroup();
 }
 
-void LightsRenderer::SetUp(RenderContext* context, IRenderTarget* target, GeometryBuffer *gbuffer,
+void LightsRenderer::SetUp(LightsRendererContext* context, IRenderTarget* target, GeometryBuffer *gbuffer,
                            const CameraRenderDesc* camera)
 {
     context->commandBuffer->SetRenderTarget(target);
@@ -358,7 +327,9 @@ void LightsRenderer::SetUp(RenderContext* context, IRenderTarget* target, Geomet
     context->commandBuffer->SetViewport(0.0f, static_cast<float>(width),
                                         0.0f, static_cast<float>(height),
                                         0.0f, 1.0f);
-    context->commandBuffer->BindResources(1, gbuffer->mBindingInstance.get());
+    context->commandBuffer->SetScissors(0, 0, width, height);
+    context->commandBuffer->BindResources(0, gbuffer->mBindingInstance.get());
+    context->commandBuffer->BindVolatileCBuffer(0, mGlobalCBuffer.get());
 
     IBuffer* buffers[] = { mVertexBuffer.get() };
     int strides[] = { sizeof(Float3) };
@@ -376,22 +347,23 @@ void LightsRenderer::SetUp(RenderContext* context, IRenderTarget* target, Geomet
                                         &cbuffer);
 }
 
-void LightsRenderer::DrawAmbientLight(RenderContext* context, const Vector& ambientLightColor,
+void LightsRenderer::DrawAmbientLight(LightsRendererContext* context, const Vector& ambientLightColor,
                                       const Vector& backgroundColor)
 {
+    context->commandBuffer->SetPipelineState(mAmbientLightPipelineState.GetPipelineState(nullptr));
+    context->commandBuffer->BindVolatileCBuffer(0, mGlobalCBuffer.get());
+    context->commandBuffer->BindVolatileCBuffer(1, mAmbientLightCBuffer.get());
+
     AmbientLightCBuffer cbuffer;
     VectorStore(ambientLightColor, &cbuffer.ambientLight);
     VectorStore(backgroundColor, &cbuffer.backgroundColor);
     context->commandBuffer->WriteBuffer(mAmbientLightCBuffer.get(), 0, sizeof(AmbientLightCBuffer),
                                         &cbuffer);
 
-    context->commandBuffer->SetPipelineState(mAmbientLightPipelineState.GetPipelineState(nullptr));
-    context->commandBuffer->BindResources(0, mAmbientLightBindingInstance.get());
-
     context->commandBuffer->DrawIndexed(6);
 }
 
-void LightsRenderer::DrawOmniLight(RenderContext* context, const Vector& pos, float radius,
+void LightsRenderer::DrawOmniLight(LightsRendererContext* context, const Vector& pos, float radius,
                                    const Vector& color, ShadowMap* shadowMap)
 {
     // TODO: use instancing to draw lights
@@ -408,22 +380,23 @@ void LightsRenderer::DrawOmniLight(RenderContext* context, const Vector& pos, fl
         macros[mOmniLightUseShadowMap] = 1;
         cbuffer.shadowMapProps = Vector(1.0f / shadowMap->GetSize());
 
-        context->commandBuffer->BindResources(2, shadowMap->mBindingInstance.get());
+        context->commandBuffer->BindResources(1, shadowMap->mBindingInstance.get());
     }
 
     context->commandBuffer->SetPipelineState(mOmniLightPipelineState.GetPipelineState(macros));
-    context->commandBuffer->BindResources(0, mOmniLightBindingInstance.get());
+    context->commandBuffer->BindVolatileCBuffer(0, mGlobalCBuffer.get());
+    context->commandBuffer->BindVolatileCBuffer(1, mOmniLightCBuffer.get());
 
     context->commandBuffer->WriteBuffer(mOmniLightCBuffer.get(), 0, sizeof(OmniLightCBuffer),
                                         &cbuffer);
 
     context->commandBuffer->DrawIndexed(20 * 3, // 20 triangles
-                                        -1,     // no instancing
+                                        1,      // no instancing
                                         6,      // ignore first 6 indices
                                         4);     // ignore first 4 vertices
 }
 
-void LightsRenderer::DrawSpotLight(RenderContext* context, const SpotLightProperties& prop,
+void LightsRenderer::DrawSpotLight(LightsRendererContext* context, const SpotLightProperties& prop,
                                    ShadowMap* shadowMap, IResourceBindingInstance* lightMap)
 {
     // TODO: use instancing to draw lights
@@ -434,33 +407,34 @@ void LightsRenderer::DrawSpotLight(RenderContext* context, const SpotLightProper
     if (lightMap != nullptr)
     {
         macros[mSpotLightUseLightMap] = 1;
-        context->commandBuffer->BindResources(3, lightMap);
+        context->commandBuffer->BindResources(2, lightMap);
     }
 
     if (shadowMap && shadowMap->mTexture)
     {
         macros[mSpotLightUseShadowMap] = 1;
-        context->commandBuffer->BindResources(2, shadowMap->mBindingInstance.get());
+        context->commandBuffer->BindResources(1, shadowMap->mBindingInstance.get());
     }
 
     context->commandBuffer->SetPipelineState(mSpotLightPipelineState.GetPipelineState(macros));
-    context->commandBuffer->BindResources(0, mSpotLightBindingInstance.get());
+    context->commandBuffer->BindVolatileCBuffer(0, mGlobalCBuffer.get());
+    context->commandBuffer->BindVolatileCBuffer(1, mSpotLightCBuffer.get());
 
     context->commandBuffer->WriteBuffer(mSpotLightCBuffer.get(), 0, sizeof(SpotLightProperties),
                                         &prop);
 
     context->commandBuffer->DrawIndexed(2 * 6 * 3,  // 2 triangles per 6 sides
-                                        -1,         // no instancing
+                                        1,          // no instancing
                                         6 + 20 * 3, // ignore indices
                                         4 + 12);    // ignore vertices
 }
 
-void LightsRenderer::DrawDirLight(RenderContext* context, const DirLightProperties& prop,
+void LightsRenderer::DrawDirLight(LightsRendererContext* context, const DirLightProperties& prop,
                                   ShadowMap* shadowMap)
 {
 }
 
-void LightsRenderer::DrawFog(RenderContext* context)
+void LightsRenderer::DrawFog(LightsRendererContext* context)
 {
 }
 

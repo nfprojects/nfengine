@@ -71,7 +71,7 @@ public:
     /**
      * @brief Virtual function called after 3D and post-process pass. Could be used to draw GUI, HUD, etc.
      */
-    virtual void OnPostRender(RenderContext* context);
+    virtual void OnPostRender(GuiRendererContext* context);
 
     /**
      * Virtual function called when a custom ImGui widgets can be drawn.
@@ -154,7 +154,7 @@ public:
 
     void UpdateGui();
 
-    void DrawGui(RenderContext* context);
+    void DrawGui(GuiRendererContext* context);
 
     /**
      * Draw ImGui window with the view properties.

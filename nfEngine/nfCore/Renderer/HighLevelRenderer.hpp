@@ -77,7 +77,11 @@ private:
 
     /// TODO: make sure there is no false sharing problem here
     std::unique_ptr<RenderContext[]> mDeferredContexts;
-    std::unique_ptr<RenderContext> mDefaultContext;
+
+    std::vector<std::unique_ptr<ICommandList>> mGeometryCLs;
+    std::vector<std::unique_ptr<ICommandList>> mShadowsCLs;
+    std::vector<std::unique_ptr<ICommandList>> mLightsCLs;
+    std::vector<std::unique_ptr<ICommandList>> mDebugCLs;
 
     RendererConfig mConfig;
 
@@ -106,12 +110,6 @@ public:
     IDevice* GetDevice();
 
     /**
-     * Get default rendering context.
-     * It will be used only by the main thread.
-     */
-    RenderContext* GetDefaultContext() const;
-
-    /**
      * Get deferred (secondary) rendering context.
      * Using a deferred context will buffer commands only.
      * One deferred context can be used only by one thread.
@@ -119,6 +117,16 @@ public:
      * @param id Deferred context ID.
      */
     RenderContext* GetDeferredContext(size_t id) const;
+
+    /**
+     * Prepare command buffers for recording.
+     */
+    void ResetCommandBuffers();
+
+    /**
+     * Execute recorded command buffers.
+     */
+    void FinishAndExecuteCommandBuffers();
 
     /**
      * Get shaders location.

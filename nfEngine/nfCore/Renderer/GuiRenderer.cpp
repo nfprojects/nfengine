@@ -29,18 +29,10 @@ struct GlobalCBuffer
     Matrix projMatrix;
 };
 
-size_t gQuadsBufferSize = 1024;
-
 } // namespace
 
-GuiRendererContext::GuiRendererContext()
-{
-    quadData.reset(new GuiQuadData[gQuadsBufferSize]);
-    quadVertices.reset(new GuiQuadVertex[gQuadsBufferSize]);
-    queuedQuads = 0;
-    vertexBufferSize = 0;
-    indexBufferSize = 0;
-}
+const size_t GuiRendererContext::gQuadsBufferSize = 1024;
+
 
 GuiRenderer::GuiRenderer()
 {
@@ -82,13 +74,9 @@ GuiRenderer::GuiRenderer()
     bufferDesc.debugName = "GuiRenderer::mConstantBuffer";
     mConstantBuffer.reset(device->CreateBuffer(bufferDesc));
 
-    mCBufferBindingInstance.reset(device->CreateResourceBindingInstance(mVSBindingSet.get()));
-    if (mCBufferBindingInstance)
-        mCBufferBindingInstance->WriteCBufferView(0, mConstantBuffer.get());
-
     // create dynamic vertex buffer
     bufferDesc.mode = BufferMode::Dynamic;
-    bufferDesc.size = gQuadsBufferSize * sizeof(GuiQuadVertex);
+    bufferDesc.size = GuiRendererContext::gQuadsBufferSize * sizeof(GuiQuadVertex);
     bufferDesc.type = BufferType::Vertex;
     bufferDesc.debugName = "GuiRenderer::mVertexBuffer";
     mVertexBuffer.reset(device->CreateBuffer(bufferDesc));
@@ -127,12 +115,7 @@ bool GuiRenderer::CreateResourceBindingLayouts()
 
     std::vector<IResourceBindingSet*> bindingSets;
 
-    ResourceBindingDesc vertexShaderBinding(ShaderResourceType::CBuffer, cbufferSlot);
-    mVSBindingSet.reset(device->CreateResourceBindingSet(
-        ResourceBindingSetDesc(&vertexShaderBinding, 1, ShaderType::Vertex)));
-    if (!mVSBindingSet)
-        return false;
-    bindingSets.push_back(mVSBindingSet.get());
+    VolatileCBufferBinding cbufferBindingDesc(ShaderType::All, ShaderResourceType::CBuffer, cbufferSlot);
 
     ResourceBindingDesc pixelShaderBinding(ShaderResourceType::Texture, textureSlot,
                                            mRenderer->GetDefaultSampler());
@@ -144,7 +127,7 @@ bool GuiRenderer::CreateResourceBindingLayouts()
 
     // create binding layout
     mResBindingLayout.reset(device->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(bindingSets.data(), bindingSets.size())));
+        ResourceBindingLayoutDesc(bindingSets.data(), bindingSets.size(), &cbufferBindingDesc, 1)));
     if (!mResBindingLayout)
         return false;
 
@@ -165,14 +148,12 @@ std::unique_ptr<IResourceBindingInstance> GuiRenderer::CreateTextureBinding(ITex
     return bindingInstance;
 }
 
-void GuiRenderer::OnEnter(RenderContext* context)
+void GuiRenderer::OnEnter(GuiRendererContext* context)
 {
-    context->debugContext.mode = DebugRendererMode::Unknown;
-
     context->commandBuffer->BeginDebugGroup("GUI Renderer stage");
 }
 
-void GuiRenderer::BeginOrdinaryGuiRendering(RenderContext* context)
+void GuiRenderer::BeginOrdinaryGuiRendering(GuiRendererContext* context)
 {
     IBuffer* vertexBuffers[] = { mVertexBuffer.get() };
     int strides[] = { sizeof(GuiQuadVertex) };
@@ -182,14 +163,14 @@ void GuiRenderer::BeginOrdinaryGuiRendering(RenderContext* context)
     context->commandBuffer->SetPipelineState(mPipelineState.GetPipelineState());
 }
 
-void GuiRenderer::OnLeave(RenderContext* context)
+void GuiRenderer::OnLeave(GuiRendererContext* context)
 {
     FlushQueue(context);
 
     context->commandBuffer->EndDebugGroup();
 }
 
-void GuiRenderer::SetTarget(RenderContext* context, IRenderTarget* target)
+void GuiRenderer::SetTarget(GuiRendererContext* context, IRenderTarget* target)
 {
     GlobalCBuffer cbuffer;
     int width, height;
@@ -197,6 +178,12 @@ void GuiRenderer::SetTarget(RenderContext* context, IRenderTarget* target)
     cbuffer.projMatrix = MatrixOrtho(0.0f, static_cast<float>(width),
                                      static_cast<float>(height), 0.0f,
                                      -1.0f, 1.0f);
+
+    // TODO remove
+    context->commandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
+    context->commandBuffer->BindVolatileCBuffer(0, mConstantBuffer.get());
+    //
+
     context->commandBuffer->WriteBuffer(mConstantBuffer.get(), 0, sizeof(GlobalCBuffer),
                                         &cbuffer);
 
@@ -204,19 +191,18 @@ void GuiRenderer::SetTarget(RenderContext* context, IRenderTarget* target)
     context->commandBuffer->SetViewport(0.0f, static_cast<float>(width),
                                         0.0f, static_cast<float>(height),
                                         0.0f, 1.0f);
+    context->commandBuffer->SetScissors(0, 0, width, height);
 }
 
-void GuiRenderer::FlushQueue(RenderContext* context)
+void GuiRenderer::FlushQueue(GuiRendererContext* context)
 {
-    GuiRendererContext& ctx = context->guiContext;
-
-    if (ctx.queuedQuads == 0)
+    if (context->queuedQuads == 0)
         return;
 
     // copy quads to vertex buffer
     context->commandBuffer->WriteBuffer(mVertexBuffer.get(), 0,
-                                        ctx.queuedQuads * sizeof(GuiQuadVertex),
-                                        ctx.quadVertices.get());
+                                        context->queuedQuads * sizeof(GuiQuadVertex),
+                                        context->quadVertices.get());
 
     int macros[1] = { 0 }; // use texture
     IResourceBindingInstance* currTextureBinding = nullptr;
@@ -225,22 +211,22 @@ void GuiRenderer::FlushQueue(RenderContext* context)
 
     int firstQuad = 0;
     int packetSize = 0;
-    for (size_t i = 0; i < ctx.queuedQuads; ++i)
+    for (size_t i = 0; i < context->queuedQuads; ++i)
     {
-        if ((ctx.quadData[i].textureBinding != currTextureBinding) ||
-            (ctx.quadData[i].alphaTexture != currAlphaTexture))
+        if ((context->quadData[i].textureBinding != currTextureBinding) ||
+            (context->quadData[i].alphaTexture != currAlphaTexture))
         {
             // flush quads
-            context->commandBuffer->Draw(packetSize, -1, firstQuad);
+            context->commandBuffer->Draw(packetSize, 1, firstQuad);
             packetSize = 0;
             firstQuad = static_cast<int>(i);
 
             // update texture & shader
-            currTextureBinding = ctx.quadData[i].textureBinding;
-            currAlphaTexture = ctx.quadData[i].alphaTexture;
+            currTextureBinding = context->quadData[i].textureBinding;
+            currAlphaTexture = context->quadData[i].alphaTexture;
             if (currTextureBinding)
             {
-                context->commandBuffer->BindResources(1, currTextureBinding);
+                context->commandBuffer->BindResources(0, currTextureBinding);
                 macros[0] = currAlphaTexture ? 2 : 1;
             }
             else
@@ -251,37 +237,35 @@ void GuiRenderer::FlushQueue(RenderContext* context)
     }
 
     if (packetSize > 0)
-        context->commandBuffer->Draw(packetSize, -1, firstQuad);
+        context->commandBuffer->Draw(packetSize, 1, firstQuad);
 
-    ctx.queuedQuads = 0;
+    context->queuedQuads = 0;
 }
 
-void GuiRenderer::PushQuad(RenderContext* context, const GuiQuadData& quad,
+void GuiRenderer::PushQuad(GuiRendererContext* context, const GuiQuadData& quad,
                            const GuiQuadVertex& quadVertex)
 {
-    GuiRendererContext& ctx = context->guiContext;
-
-    if (ctx.queuedQuads >= gQuadsBufferSize)
+    if (context->queuedQuads >= GuiRendererContext::gQuadsBufferSize)
         FlushQueue(context);
 
-    ctx.quadData[ctx.queuedQuads] = quad;
-    ctx.quadVertices[ctx.queuedQuads] = quadVertex;
-    ctx.queuedQuads++;
+    context->quadData[context->queuedQuads] = quad;
+    context->quadVertices[context->queuedQuads] = quadVertex;
+    context->queuedQuads++;
 }
 
-void GuiRenderer::DrawQuad(RenderContext* context, const Rectf& rect, uint32 color)
+void GuiRenderer::DrawQuad(GuiRendererContext* context, const Rectf& rect, uint32 color)
 {
     PushQuad(context, GuiQuadData(), GuiQuadVertex(rect, Rectf(), color));
 }
 
-void GuiRenderer::DrawTexturedQuad(RenderContext* context, const Rectf& rect,
+void GuiRenderer::DrawTexturedQuad(GuiRendererContext* context, const Rectf& rect,
                                    const Rectf& texCoords, IResourceBindingInstance* textureBinding,
                                    uint32 color, bool alpha)
 {
     PushQuad(context, GuiQuadData(textureBinding, alpha), GuiQuadVertex(rect, texCoords, color));
 }
 
-bool GuiRenderer::PrintText(RenderContext* context, Font* font, const char* text,
+bool GuiRenderer::PrintText(GuiRendererContext* context, Font* font, const char* text,
                             const Recti& rect, uint32 color,
                             VerticalAlignment vAlign, HorizontalAlignment hAlign)
 {
@@ -357,7 +341,7 @@ bool GuiRenderer::PrintText(RenderContext* context, Font* font, const char* text
     return true;
 }
 
-bool GuiRenderer::PrintTextWithBorder(RenderContext* context, Font* font, const char* text,
+bool GuiRenderer::PrintTextWithBorder(GuiRendererContext* context, Font* font, const char* text,
                                       const Recti& rect, uint32 color, uint32 borderColor,
                                       VerticalAlignment vAlign, HorizontalAlignment hAlign)
 {
@@ -380,59 +364,59 @@ bool GuiRenderer::PrintTextWithBorder(RenderContext* context, Font* font, const 
     return PrintText(context, font, text, rect, color, vAlign, hAlign);
 }
 
-bool GuiRenderer::DrawImGui(RenderContext* context, IResourceBindingInstance* imGuiTextureBinding)
+bool GuiRenderer::DrawImGui(GuiRendererContext* context, IResourceBindingInstance* imGuiTextureBinding)
 {
-    GuiRendererContext& ctx = context->guiContext;
-
     ImGui::Render();
     ImDrawData* drawData = ImGui::GetDrawData();
     if (!drawData)
         return false;
 
     // grow vertex buffer if too small
-    if (!mImGuiVertexBuffer || ctx.vertexBufferSize < drawData->TotalVtxCount)
+    if (!mImGuiVertexBuffer || context->vertexBufferSize < drawData->TotalVtxCount)
     {
-        ctx.vertexBufferSize = drawData->TotalVtxCount + VERTEX_BUFFER_HYSTERESIS;
+        context->vertexBufferSize = drawData->TotalVtxCount + VERTEX_BUFFER_HYSTERESIS;
 
         BufferDesc bufferDesc;
         bufferDesc.mode = BufferMode::Dynamic;
-        bufferDesc.size = ctx.vertexBufferSize * sizeof(ImDrawVert);
+        bufferDesc.size = context->vertexBufferSize * sizeof(ImDrawVert);
         bufferDesc.type = BufferType::Vertex;
         bufferDesc.debugName = "GuiRenderer::mImGuiVertexBuffer";
         mImGuiVertexBuffer.reset(mRenderer->GetDevice()->CreateBuffer(bufferDesc));
     }
 
     // grow index buffer if too small
-    if (!mImGuiIndexBuffer || ctx.indexBufferSize < drawData->TotalIdxCount)
+    if (!mImGuiIndexBuffer || context->indexBufferSize < drawData->TotalIdxCount)
     {
-        ctx.indexBufferSize = drawData->TotalIdxCount + INDEX_BUFFER_HYSTERESIS;
+        context->indexBufferSize = drawData->TotalIdxCount + INDEX_BUFFER_HYSTERESIS;
 
         BufferDesc bufferDesc;
         bufferDesc.mode = BufferMode::Dynamic;
-        bufferDesc.size = ctx.indexBufferSize * sizeof(ImDrawIdx);
+        bufferDesc.size = context->indexBufferSize * sizeof(ImDrawIdx);
         bufferDesc.type = BufferType::Index;
         bufferDesc.debugName = "GuiRenderer::mImGuiIndexBuffer";
         mImGuiIndexBuffer.reset(mRenderer->GetDevice()->CreateBuffer(bufferDesc));
     }
 
     // copy vertices and indicies to GPU
-
-    ImDrawVert* vertices = static_cast<ImDrawVert*>(
-        context->commandBuffer->MapBuffer(mImGuiVertexBuffer.get(), MapType::WriteOnly));
-    ImDrawIdx* indicies = static_cast<ImDrawIdx*>(
-        context->commandBuffer->MapBuffer(mImGuiIndexBuffer.get(), MapType::WriteOnly));
-
+    size_t vbOffset = 0;
+    size_t ibOffset = 0;
     for (int i = 0; i < drawData->CmdListsCount; ++i)
     {
         const ImDrawList* cmdList = drawData->CmdLists[i];
-        memcpy(vertices, &cmdList->VtxBuffer[0], cmdList->VtxBuffer.size() * sizeof(ImDrawVert));
-        memcpy(indicies, &cmdList->IdxBuffer[0], cmdList->IdxBuffer.size() * sizeof(ImDrawIdx));
-        vertices += cmdList->VtxBuffer.size();
-        indicies += cmdList->IdxBuffer.size();
-    }
 
-    context->commandBuffer->UnmapBuffer(mImGuiVertexBuffer.get());
-    context->commandBuffer->UnmapBuffer(mImGuiIndexBuffer.get());
+        context->commandBuffer->WriteBuffer(mImGuiVertexBuffer.get(),
+                                            vbOffset * sizeof(ImDrawVert),
+                                            cmdList->VtxBuffer.size() * sizeof(ImDrawVert),
+                                            &cmdList->VtxBuffer[0]);
+
+        context->commandBuffer->WriteBuffer(mImGuiIndexBuffer.get(),
+                                            ibOffset * sizeof(ImDrawIdx),
+                                            cmdList->IdxBuffer.size() * sizeof(ImDrawIdx),
+                                            &cmdList->IdxBuffer[0]);
+
+        vbOffset += cmdList->VtxBuffer.size();
+        ibOffset += cmdList->IdxBuffer.size();
+    }
 
     // setup pipeline
 
@@ -441,9 +425,10 @@ bool GuiRenderer::DrawImGui(RenderContext* context, IResourceBindingInstance* im
     int offsets[] = { 0 };
     context->commandBuffer->SetVertexBuffers(1, vertexBuffers, strides, offsets);
     context->commandBuffer->SetIndexBuffer(mImGuiIndexBuffer.get(), IndexBufferFormat::Uint16);
+    context->commandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
     context->commandBuffer->SetPipelineState(mImGuiPipelineState.GetPipelineState());
-    context->commandBuffer->BindResources(0, mCBufferBindingInstance.get());
-    context->commandBuffer->BindResources(1, imGuiTextureBinding);
+    context->commandBuffer->BindVolatileCBuffer(0, mConstantBuffer.get());
+    context->commandBuffer->BindResources(0, imGuiTextureBinding);
 
     int vertexOffset = 0, indexOffset = 0;
     for (int i = 0; i < drawData->CmdListsCount; ++i)
@@ -464,7 +449,7 @@ bool GuiRenderer::DrawImGui(RenderContext* context, IResourceBindingInstance* im
                                                     static_cast<int>(command->ClipRect.z),
                                                     static_cast<int>(command->ClipRect.w));
                 context->commandBuffer->DrawIndexed(command->ElemCount,
-                                                    -1,
+                                                    1,
                                                     indexOffset,
                                                     vertexOffset);
             }

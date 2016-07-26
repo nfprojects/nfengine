@@ -25,6 +25,21 @@
     <Filter Include="Utils">
       <UniqueIdentifier>{40738d35-8dbb-4074-bc98-84d31ffc6382}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Renderer\Debug">
+      <UniqueIdentifier>{9c414e4c-1656-4f0c-82e7-d33257871c07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\Lights">
+      <UniqueIdentifier>{58f8222d-f2e8-4b54-87cb-d697f8349267}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\PostProcess">
+      <UniqueIdentifier>{220fd366-57ad-43ca-b9e2-1e6540a3a03d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\Gui">
+      <UniqueIdentifier>{28d3ab9f-6b3b-46c9-b407-65e6fa56d611}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\Geometry">
+      <UniqueIdentifier>{84cf2ca8-6d90-470b-8366-e93886ee9bc1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -38,18 +53,6 @@
     </ClCompile>
     <ClCompile Include="Globals.cpp">
       <Filter>Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\DebugRenderer.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\GuiRenderer.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\LightsRenderer.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\PostProcessRenderer.cpp">
-      <Filter>Renderer</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\RenderCommand.cpp">
       <Filter>Renderer</Filter>
@@ -93,9 +96,6 @@
     <ClCompile Include="Systems\TransformSystem.cpp">
       <Filter>Systems</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\GeometryRenderer.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer\Font.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
@@ -135,6 +135,21 @@
     <ClCompile Include="Resources\MultiPipelineState.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer\DebugRenderer.cpp">
+      <Filter>Renderer\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\LightsRenderer.cpp">
+      <Filter>Renderer\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\PostProcessRenderer.cpp">
+      <Filter>Renderer\PostProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\GuiRenderer.cpp">
+      <Filter>Renderer\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\GeometryRenderer.cpp">
+      <Filter>Renderer\Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Prerequisites.hpp">
@@ -152,18 +167,6 @@
     <ClInclude Include="Globals.hpp">
       <Filter>Base</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\DebugRenderer.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\GuiRenderer.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\LightsRenderer.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\PostProcessRenderer.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="Renderer\RenderCommand.hpp">
       <Filter>Renderer</Filter>
     </ClInclude>
@@ -180,9 +183,6 @@
       <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\RendererModule.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\DebugRendererContext.hpp">
       <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Systems\PhysicsSystem.hpp">
@@ -211,15 +211,6 @@
     </ClInclude>
     <ClInclude Include="Systems\TransformSystem.hpp">
       <Filter>Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\GeometryRenderer.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\GeometryRendererContext.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\GuiRendererContext.hpp">
-      <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\Font.hpp">
       <Filter>Renderer</Filter>
@@ -262,6 +253,36 @@
     </ClInclude>
     <ClInclude Include="Resources\MultiPipelineState.hpp">
       <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\DebugRenderer.hpp">
+      <Filter>Renderer\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\DebugRendererContext.hpp">
+      <Filter>Renderer\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\LightsRendererContext.hpp">
+      <Filter>Renderer\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\LightsRenderer.hpp">
+      <Filter>Renderer\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\PostProcessRenderer.hpp">
+      <Filter>Renderer\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\PostProcessRendererContext.hpp">
+      <Filter>Renderer\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\GuiRenderer.hpp">
+      <Filter>Renderer\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\GuiRendererContext.hpp">
+      <Filter>Renderer\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\GeometryRenderer.hpp">
+      <Filter>Renderer\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\GeometryRendererContext.hpp">
+      <Filter>Renderer\Geometry</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

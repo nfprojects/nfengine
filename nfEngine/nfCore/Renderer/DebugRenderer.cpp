@@ -36,13 +36,6 @@ struct NFE_ALIGN16 DebugPerMeshCBuffer
 
 namespace {
 
-/*
- * Size of vertex and index buffer for accumulating geometry data from multiple
- * DebugRenderer::Draw...() calls.
- */
-const size_t gVertexBufferSize = 4096;
-const size_t gIndexBufferSize = 8192;
-
 // box frame indicies
 const DebugIndexType gBoxIndexBuffer[] =
 {
@@ -53,17 +46,13 @@ const DebugIndexType gBoxIndexBuffer[] =
 
 } // namespace
 
+  /*
+  * Size of vertex and index buffer for accumulating geometry data from multiple
+  * DebugRenderer::Draw...() calls.
+  */
+const size_t DebugRendererContext::gVertexBufferSize = 4096;
+const size_t DebugRendererContext::gIndexBufferSize = 8192;
 
-DebugRendererContext::DebugRendererContext()
-{
-    /// allocate buffers for verticies and indicies
-    vertices.reset(new DebugVertex[gVertexBufferSize]);
-    indicies.reset(new DebugIndexType[gIndexBufferSize]);
-    queuedVertices = 0;
-    queuedIndicies = 0;
-    polyType = PrimitiveType::Lines;
-    mode = DebugRendererMode::Unknown;
-}
 
 DebugRenderer::DebugRenderer()
 {
@@ -74,7 +63,7 @@ DebugRenderer::DebugRenderer()
 
     mLinesPipelineState.Load("Debug");
     mTrianglesPipelineState.Load("Debug");
-    mMeshPipelineState.Load("Debug");
+    mMeshPipelineState.Load("DebugMesh");
 
     // TODO
     mIsMeshMacroId = mLinesPipelineState.GetMacroByName("IS_MESH");
@@ -122,25 +111,16 @@ DebugRenderer::DebugRenderer()
     bufferDesc.debugName = "DebugRenderer::mPerMeshConstantBuffer";
     mPerMeshConstantBuffer.reset(device->CreateBuffer(bufferDesc));
 
-    mVertexShaderBindingInstance.reset(
-        device->CreateResourceBindingInstance(mVertexShaderBindingSet.get()));
-    if (mVertexShaderBindingInstance)
-    {
-        mVertexShaderBindingInstance->WriteCBufferView(0, mConstantBuffer.get());
-        mVertexShaderBindingInstance->WriteCBufferView(1, mPerMeshConstantBuffer.get());
-    }
-
-
     /// create vertex buffer
     bufferDesc.mode = BufferMode::Dynamic;
-    bufferDesc.size = gVertexBufferSize * sizeof(DebugVertex);
+    bufferDesc.size = DebugRendererContext::gVertexBufferSize * sizeof(DebugVertex);
     bufferDesc.type = BufferType::Vertex;
     bufferDesc.debugName = "DebugRenderer::mVertexBuffer";
     mVertexBuffer.reset(device->CreateBuffer(bufferDesc));
 
     /// create index buffer
     bufferDesc.mode = BufferMode::Dynamic;
-    bufferDesc.size = gIndexBufferSize * sizeof(DebugIndexType);
+    bufferDesc.size = DebugRendererContext::gIndexBufferSize * sizeof(DebugIndexType);
     bufferDesc.type = BufferType::Index;
     bufferDesc.debugName = "DebugRenderer::mIndexBuffer";
     mIndexBuffer.reset(device->CreateBuffer(bufferDesc));
@@ -177,48 +157,41 @@ bool DebugRenderer::CreateResourceBindingLayouts()
     if (perMeshCBufferSlot < 0)
         return false;
 
-    ResourceBindingDesc gbufferBindings[2] =
+    VolatileCBufferBinding cbufferBindingsDesc[2] =
     {
-        ResourceBindingDesc(ShaderResourceType::CBuffer, globalCBufferSlot),
-        ResourceBindingDesc(ShaderResourceType::CBuffer, perMeshCBufferSlot),
+        VolatileCBufferBinding(ShaderType::Vertex, ShaderResourceType::CBuffer, globalCBufferSlot),
+        VolatileCBufferBinding(ShaderType::Vertex, ShaderResourceType::CBuffer, perMeshCBufferSlot),
     };
-    mVertexShaderBindingSet.reset(device->CreateResourceBindingSet(
-        ResourceBindingSetDesc(gbufferBindings, 2, ShaderType::Vertex)));
-    if (!mVertexShaderBindingSet)
-        return false;
+
     // TODO: material binding set (textures)
 
     // create binding layout
-    IResourceBindingSet* sets[] = { mVertexShaderBindingSet.get() };
     mResBindingLayout.reset(device->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(sets, 1)));
+        ResourceBindingLayoutDesc(nullptr, 0, cbufferBindingsDesc, 2)));
     if (!mResBindingLayout)
         return false;
 
     return true;
 }
 
-void DebugRenderer::OnEnter(RenderContext* context)
+void DebugRenderer::OnEnter(DebugRendererContext* context)
 {
-    context->debugContext.mode = DebugRendererMode::Unknown;
-
+    context->mode = DebugRendererMode::Unknown;
     context->commandBuffer->BeginDebugGroup("Debug Renderer stage");
 }
 
-void DebugRenderer::OnLeave(RenderContext* context)
+void DebugRenderer::OnLeave(DebugRendererContext* context)
 {
     Flush(context);
     context->commandBuffer->EndDebugGroup();
 }
 
-void DebugRenderer::Flush(RenderContext* context)
+void DebugRenderer::Flush(DebugRendererContext* context)
 {
-    DebugRendererContext& ctx = context->debugContext;
-
-    if (ctx.queuedVertices == 0 && ctx.queuedIndicies == 0)
+    if (context->queuedVertices == 0 && context->queuedIndicies == 0)
         return;
 
-    if (ctx.mode != DebugRendererMode::Simple)
+    if (context->mode != DebugRendererMode::Simple)
     {
         int stride = sizeof(DebugVertex);
         int offset = 0;
@@ -228,31 +201,32 @@ void DebugRenderer::Flush(RenderContext* context)
 
         int macros[] = { 0, 0 }; // IS_MESH
 
-        if (ctx.polyType == PrimitiveType::Lines)
+        if (context->polyType == PrimitiveType::Lines)
             context->commandBuffer->SetPipelineState(mLinesPipelineState.GetPipelineState(macros));
         else
             context->commandBuffer->SetPipelineState(mTrianglesPipelineState.GetPipelineState(macros));
 
-        context->commandBuffer->BindResources(0, mVertexShaderBindingInstance.get());
+        context->commandBuffer->BindVolatileCBuffer(0, mConstantBuffer.get());
+        context->commandBuffer->BindVolatileCBuffer(1, mPerMeshConstantBuffer.get());
 
-        ctx.mode = DebugRendererMode::Simple;
+        context->mode = DebugRendererMode::Simple;
     }
 
     context->commandBuffer->WriteBuffer(mVertexBuffer.get(), 0,
-                                        ctx.queuedVertices * sizeof(DebugVertex),
-                                        ctx.vertices.get());
+                                        context->queuedVertices * sizeof(DebugVertex),
+                                        context->vertices.get());
 
     context->commandBuffer->WriteBuffer(mIndexBuffer.get(), 0,
-                                        ctx.queuedIndicies * sizeof(DebugIndexType),
-                                        ctx.indicies.get());
+                                        context->queuedIndicies * sizeof(DebugIndexType),
+                                        context->indicies.get());
 
-    context->commandBuffer->DrawIndexed(static_cast<int>(ctx.queuedIndicies));
+    context->commandBuffer->DrawIndexed(static_cast<int>(context->queuedIndicies));
 
-    ctx.queuedVertices = 0;
-    ctx.queuedIndicies = 0;
+    context->queuedVertices = 0;
+    context->queuedIndicies = 0;
 }
 
-void DebugRenderer::SetTarget(RenderContext *context, IRenderTarget* target)
+void DebugRenderer::SetTarget(DebugRendererContext *context, IRenderTarget* target)
 {
     if (target)
     {
@@ -263,10 +237,11 @@ void DebugRenderer::SetTarget(RenderContext *context, IRenderTarget* target)
         context->commandBuffer->SetViewport(0.0f, static_cast<float>(width),
                                             0.0f, static_cast<float>(height),
                                             0.0f, 1.0f);
+        context->commandBuffer->SetScissors(0, 0, width, height);
     }
 }
 
-void DebugRenderer::SetCamera(RenderContext *context, const Matrix& viewMatrix,
+void DebugRenderer::SetCamera(DebugRendererContext *context, const Matrix& viewMatrix,
                               const Matrix& projMatrix)
 {
     DebugCBuffer debugCBufferData;
@@ -276,75 +251,69 @@ void DebugRenderer::SetCamera(RenderContext *context, const Matrix& viewMatrix,
                                         &debugCBufferData);
 }
 
-void DebugRenderer::DrawLine(RenderContext *context, const Vector& A, const Vector& B,
+void DebugRenderer::DrawLine(DebugRendererContext *context, const Vector& A, const Vector& B,
                              const uint32 color)
 {
-    DebugRendererContext& ctx = context->debugContext;
-
     // check if the shape will fit into the buffers
-    if ((ctx.queuedVertices >= gVertexBufferSize - 2) ||
-        (ctx.queuedIndicies >= gIndexBufferSize - 2) ||
-        (ctx.polyType != PrimitiveType::Lines))
+    if ((context->queuedVertices >= DebugRendererContext::gVertexBufferSize - 2) ||
+        (context->queuedIndicies >= DebugRendererContext::gIndexBufferSize - 2) ||
+        (context->polyType != PrimitiveType::Lines))
     {
         Flush(context);
-        ctx.polyType = PrimitiveType::Lines;
+        context->polyType = PrimitiveType::Lines;
     }
 
     DebugVertex vert;
     vert.color = color;
 
     VectorStore(A, &vert.pos);
-    ctx.indicies[ctx.queuedIndicies++] = static_cast<DebugIndexType>(ctx.queuedVertices);
-    ctx.vertices[ctx.queuedVertices++] = vert;
+    context->indicies[context->queuedIndicies++] = static_cast<DebugIndexType>(context->queuedVertices);
+    context->vertices[context->queuedVertices++] = vert;
 
     VectorStore(B, &vert.pos);
-    ctx.indicies[ctx.queuedIndicies++] = static_cast<DebugIndexType>(ctx.queuedVertices);
-    ctx.vertices[ctx.queuedVertices++] = vert;
+    context->indicies[context->queuedIndicies++] = static_cast<DebugIndexType>(context->queuedVertices);
+    context->vertices[context->queuedVertices++] = vert;
 }
 
-void DebugRenderer::DrawLine(RenderContext *context, const Float3& A, const Float3& B,
+void DebugRenderer::DrawLine(DebugRendererContext *context, const Float3& A, const Float3& B,
                              const uint32 color)
 {
-    DebugRendererContext& ctx = context->debugContext;
-
     // check if the shape will fit into the buffers
-    if ((ctx.queuedVertices >= gVertexBufferSize - 2) ||
-        (ctx.queuedIndicies >= gIndexBufferSize - 2) ||
-        (ctx.polyType != PrimitiveType::Lines))
+    if ((context->queuedVertices >= DebugRendererContext::gVertexBufferSize - 2) ||
+        (context->queuedIndicies >= DebugRendererContext::gIndexBufferSize - 2) ||
+        (context->polyType != PrimitiveType::Lines))
     {
         Flush(context);
-        ctx.polyType = PrimitiveType::Lines;
+        context->polyType = PrimitiveType::Lines;
     }
 
     DebugVertex vert;
     vert.color = color;
 
     vert.pos = A;
-    ctx.indicies[ctx.queuedIndicies++] = static_cast<DebugIndexType>(ctx.queuedVertices);
-    ctx.vertices[ctx.queuedVertices++] = vert;
+    context->indicies[context->queuedIndicies++] = static_cast<DebugIndexType>(context->queuedVertices);
+    context->vertices[context->queuedVertices++] = vert;
 
     vert.pos = B;
-    ctx.indicies[ctx.queuedIndicies++] = static_cast<DebugIndexType>(ctx.queuedVertices);
-    ctx.vertices[ctx.queuedVertices++] = vert;
+    context->indicies[context->queuedIndicies++] = static_cast<DebugIndexType>(context->queuedVertices);
+    context->vertices[context->queuedVertices++] = vert;
 }
 
-void DebugRenderer::DrawBox(RenderContext *context, const Box& box, const uint32 color)
+void DebugRenderer::DrawBox(DebugRendererContext *context, const Box& box, const uint32 color)
 {
     const size_t vertexRequired = 8;
     const size_t indexRequired = 24;
 
-    DebugRendererContext& ctx = context->debugContext;
-
     // check if the shape will fit into the buffers
-    if ((ctx.queuedVertices >= gVertexBufferSize - vertexRequired) ||
-        (ctx.queuedIndicies >= gIndexBufferSize - indexRequired) ||
-        (ctx.polyType != PrimitiveType::Lines))
+    if ((context->queuedVertices >= DebugRendererContext::gVertexBufferSize - vertexRequired) ||
+        (context->queuedIndicies >= DebugRendererContext::gIndexBufferSize - indexRequired) ||
+        (context->polyType != PrimitiveType::Lines))
     {
         Flush(context);
-        ctx.polyType = PrimitiveType::Lines;
+        context->polyType = PrimitiveType::Lines;
     }
 
-    DebugVertex* boxVerticies = ctx.vertices.get() + ctx.queuedVertices;
+    DebugVertex* boxVerticies = context->vertices.get() + context->queuedVertices;
     for (size_t i = 0; i < vertexRequired; ++i)
     {
         Vector v = box.GetVertex(static_cast<int>(i));
@@ -352,36 +321,34 @@ void DebugRenderer::DrawBox(RenderContext *context, const Box& box, const uint32
         boxVerticies[i].color = color;
     }
 
-    DebugIndexType* boxIndicies = ctx.indicies.get() + ctx.queuedIndicies;
+    DebugIndexType* boxIndicies = context->indicies.get() + context->queuedIndicies;
     for (int i = 0; i < indexRequired; i++)
-        boxIndicies[i] = gBoxIndexBuffer[i] + static_cast<DebugIndexType>(ctx.queuedVertices);
+        boxIndicies[i] = gBoxIndexBuffer[i] + static_cast<DebugIndexType>(context->queuedVertices);
 
-    ctx.queuedVertices += vertexRequired;
-    ctx.queuedIndicies += indexRequired;
+    context->queuedVertices += vertexRequired;
+    context->queuedIndicies += indexRequired;
 }
 
-void DebugRenderer::DrawFilledBox(RenderContext *context, const Box& box, const uint32 color)
+void DebugRenderer::DrawFilledBox(DebugRendererContext *context, const Box& box, const uint32 color)
 {
     // TODO
 }
 
-void DebugRenderer::DrawFrustum(RenderContext *context, const Frustum& frustum, const uint32 color)
+void DebugRenderer::DrawFrustum(DebugRendererContext *context, const Frustum& frustum, const uint32 color)
 {
     const size_t vertexRequired = 8;
     const size_t indexRequired = 24;
 
-    DebugRendererContext& ctx = context->debugContext;
-
     // check if the shape will fit into the buffers
-    if ((ctx.queuedVertices >= gVertexBufferSize - vertexRequired) ||
-        (ctx.queuedIndicies >= gIndexBufferSize - indexRequired) ||
-        (ctx.polyType != PrimitiveType::Lines))
+    if ((context->queuedVertices >= DebugRendererContext::gVertexBufferSize - vertexRequired) ||
+        (context->queuedIndicies >= DebugRendererContext::gIndexBufferSize - indexRequired) ||
+        (context->polyType != PrimitiveType::Lines))
     {
         Flush(context);
-        ctx.polyType = PrimitiveType::Lines;
+        context->polyType = PrimitiveType::Lines;
     }
 
-    DebugVertex* boxVerticies = ctx.vertices.get() + ctx.queuedVertices;
+    DebugVertex* boxVerticies = context->vertices.get() + context->queuedVertices;
     for (size_t i = 0; i < vertexRequired; ++i)
     {
         Vector v = frustum.verticies[i];
@@ -389,15 +356,17 @@ void DebugRenderer::DrawFrustum(RenderContext *context, const Frustum& frustum, 
         boxVerticies[i].color = color;
     }
 
-    DebugIndexType* boxIndicies = ctx.indicies.get() + ctx.queuedIndicies;
+    DebugIndexType* boxIndicies = context->indicies.get() + context->queuedIndicies;
     for (int i = 0; i < indexRequired; i++)
-        boxIndicies[i] = gBoxIndexBuffer[i] + static_cast<DebugIndexType>(ctx.queuedVertices);
+    {
+        boxIndicies[i] = gBoxIndexBuffer[i] + static_cast<DebugIndexType>(context->queuedVertices);
+    }
 
-    ctx.queuedVertices += vertexRequired;
-    ctx.queuedIndicies += indexRequired;
+    context->queuedVertices += vertexRequired;
+    context->queuedIndicies += indexRequired;
 }
 
-void DebugRenderer::SetMeshMaterial(RenderContext* context, const Resource::Material* material)
+void DebugRenderer::SetMeshMaterial(DebugRendererContext* context, const Resource::Material* material)
 {
     // ITexture* tex = nullptr;
 
@@ -422,7 +391,7 @@ void DebugRenderer::SetMeshMaterial(RenderContext* context, const Resource::Mate
     //    context->commandBuffer->SetTextures(&tex, 1, ShaderType::Pixel);ale n
 }
 
-void DebugRenderer::DrawMesh(RenderContext* context, const Resource::Mesh* mesh,
+void DebugRenderer::DrawMesh(DebugRendererContext* context, const Resource::Mesh* mesh,
                              const Matrix& matrix)
 {
     if (mesh->GetState() != Resource::ResourceState::Loaded)
@@ -430,7 +399,6 @@ void DebugRenderer::DrawMesh(RenderContext* context, const Resource::Mesh* mesh,
 
     Flush(context);
 
-    DebugRendererContext& ctx = context->debugContext;
     IBuffer* vb = mesh->mVB.get();
     IBuffer* ib = mesh->mIB.get();
 
@@ -440,11 +408,11 @@ void DebugRenderer::DrawMesh(RenderContext* context, const Resource::Mesh* mesh,
         return;
     }
 
-    if (ctx.mode != DebugRendererMode::Meshes)
+    if (context->mode != DebugRendererMode::Meshes)
     {
-        context->commandBuffer->BindResources(0, mVertexShaderBindingInstance.get());
-        ctx.mode = DebugRendererMode::Meshes;
-        ctx.polyType = PrimitiveType::Unknown;
+        context->commandBuffer->BindVolatileCBuffer(0, mPerMeshConstantBuffer.get());
+        context->mode = DebugRendererMode::Meshes;
+        context->polyType = PrimitiveType::Unknown;
     }
 
     /// update model matrix

@@ -66,7 +66,7 @@ void View::Release()
     }
 }
 
-void View::OnPostRender(RenderContext* context)
+void View::OnPostRender(GuiRendererContext* context)
 {
     // no GUI by default
 }
@@ -227,11 +227,13 @@ void View::Postprocess(RenderContext* ctx)
         params.noiseFactor = postProcessParams.noiseFactor;
         params.exposureOffset = postProcessParams.exposureOffset;
 
-        PostProcessRenderer::Get()->Enter(ctx);
-        PostProcessRenderer::Get()->ApplyTonemapping(ctx, params,
+        PostProcessRendererContext* postProcessContext = ctx->postProcessContext.get();
+
+        PostProcessRenderer::Get()->OnEnter(postProcessContext);
+        PostProcessRenderer::Get()->ApplyTonemapping(postProcessContext, params,
                                                      mTemporaryBufferPostprocessBinding.get(),
                                                      mRenderTarget.get());
-        PostProcessRenderer::Get()->Leave(ctx);
+        PostProcessRenderer::Get()->OnLeave(postProcessContext);
     }
 }
 
@@ -440,7 +442,7 @@ void View::UpdateGui()
     OnDrawImGui(mImGuiState);
 }
 
-void View::DrawGui(RenderContext* context)
+void View::DrawGui(GuiRendererContext* context)
 {
     GuiRenderer::Get()->DrawImGui(context, mImGuiTextureBinding.get());
 }

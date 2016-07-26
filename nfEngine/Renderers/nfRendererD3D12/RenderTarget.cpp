@@ -15,10 +15,9 @@ namespace NFE {
 namespace Renderer {
 
 RenderTarget::RenderTarget()
-    : mWidth(0)
-    , mHeight(0)
-    , mDSV(static_cast<uint32>(-1))
+    : mDSV(static_cast<uint32>(-1))
     , mDepthTexture(nullptr)
+    , mDepthTextureSubresource(0)
 {
 }
 
@@ -41,8 +40,8 @@ RenderTarget::~RenderTarget()
 
 void RenderTarget::GetDimensions(int& width, int& height)
 {
-    width = mWidth;
-    height = mHeight;
+    width = mTargets[0].texture->GetWidth();
+    height = mTargets[0].texture->GetHeight();
 }
 
 bool RenderTarget::Init(const RenderTargetDesc& desc)
@@ -121,9 +120,10 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             mRTVs[n].push_back(offset);
         }
 
-        mWidth = tex->mWidth;
-        mHeight = tex->mHeight;
-        mTextures.push_back(tex);
+        Target targetInfo;
+        targetInfo.texture = tex;
+        targetInfo.subresource = desc.targets[i].level + desc.targets[i].layer * tex->GetMipmapsNum();
+        mTargets.push_back(targetInfo);
     }
 
     if (desc.depthBuffer)
@@ -166,6 +166,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         gDevice->mDevice->CreateDepthStencilView(tex->mBuffers[0].get(), &dsvDesc, handle);
 
         mDepthTexture = tex;
+        mDepthTextureSubresource = 0; // TODO: selectable mipmap and texture layer in the interface
     }
 
     return true;

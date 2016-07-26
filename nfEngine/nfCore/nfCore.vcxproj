@@ -423,7 +423,9 @@
     <ClInclude Include="Renderer\GuiRendererContext.hpp" />
     <ClInclude Include="Renderer\HighLevelRenderer.hpp" />
     <ClInclude Include="Renderer\LightsRenderer.hpp" />
+    <ClInclude Include="Renderer\LightsRendererContext.hpp" />
     <ClInclude Include="Renderer\PostProcessRenderer.hpp" />
+    <ClInclude Include="Renderer\PostProcessRendererContext.hpp" />
     <ClInclude Include="Renderer\RenderCommand.hpp" />
     <ClInclude Include="Renderer\RendererContext.hpp" />
     <ClInclude Include="Renderer\RendererModule.hpp" />

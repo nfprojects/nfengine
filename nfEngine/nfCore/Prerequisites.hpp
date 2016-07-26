@@ -68,11 +68,18 @@ namespace NFE {
         class GuiRenderer;
         class LightsRenderer;
         class PostProcessRenderer;
+
+        struct GeometryRendererContext;
+        struct LightsRendererContext;
+        struct PostProcessRendererContext;
+        struct GuiRendererContext;
+        struct DebugRendererContext;
+
         class RenderContext;
         class RenderTarget;
         class ShadowMap;
 
-/// Structures passed to renderer modules
+        /// Structures passed to renderer modules
         struct RendererMaterial;
         struct CameraRenderDesc;
         class View;
