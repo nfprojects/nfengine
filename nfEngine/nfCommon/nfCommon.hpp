@@ -83,7 +83,7 @@
 #ifdef _DEBUG
 #define NFE_ASSERT(e, s) { if ((e)==0) {OutputDebugStringA(s); DebugBreak();}}
 #else
-#define NFE_ASSERT(e, s)
+#define NFE_ASSERT(e, s) (void)(e)
 #endif
 #endif
 

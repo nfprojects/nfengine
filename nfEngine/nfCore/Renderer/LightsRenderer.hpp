@@ -7,7 +7,7 @@
 #pragma once
 
 #include "RendererModule.hpp"
-#include "HighLevelRenderer.hpp"
+#include "LightsRendererContext.hpp"
 #include "../Resources/MultiPipelineState.hpp"
 
 namespace NFE {
@@ -36,7 +36,7 @@ struct NFE_ALIGN16 SpotLightProperties
     Math::Vector shadowMapProps;
 };
 
-class LightsRenderer : public RendererModule<LightsRenderer>
+class LightsRenderer : public RendererModule<LightsRenderer, LightsRendererContext>
 {
     std::unique_ptr<IBuffer> mGlobalCBuffer;
     std::unique_ptr<ISampler> mShadowMapSampler;
@@ -45,7 +45,6 @@ class LightsRenderer : public RendererModule<LightsRenderer>
     std::unique_ptr<IBuffer> mIndexBuffer;
     std::unique_ptr<IVertexLayout> mVertexLayout;
 
-    std::unique_ptr<IResourceBindingSet> mGlobalBindingSet;
     std::unique_ptr<IResourceBindingSet> mGBufferBindingSet;
     std::unique_ptr<IResourceBindingSet> mShadowMapBindingSet;
     std::unique_ptr<IResourceBindingSet> mLightMapBindingSet;
@@ -53,18 +52,15 @@ class LightsRenderer : public RendererModule<LightsRenderer>
 
     Resource::MultiPipelineState mAmbientLightPipelineState;
     std::unique_ptr<IBuffer> mAmbientLightCBuffer;
-    std::unique_ptr<IResourceBindingInstance> mAmbientLightBindingInstance;
 
     int mOmniLightUseShadowMap;
     Resource::MultiPipelineState mOmniLightPipelineState;
     std::unique_ptr<IBuffer> mOmniLightCBuffer;
-    std::unique_ptr<IResourceBindingInstance> mOmniLightBindingInstance;
 
     int mSpotLightUseLightMap;
     int mSpotLightUseShadowMap;
     Resource::MultiPipelineState mSpotLightPipelineState;
     std::unique_ptr<IBuffer> mSpotLightCBuffer;
-    std::unique_ptr<IResourceBindingInstance> mSpotLightBindingInstance;
 
     bool CreateResourceBindingLayouts();
 
@@ -86,20 +82,20 @@ public:
         return mLightMapBindingSet;
     }
 
-    void OnEnter(RenderContext* context);
-    void OnLeave(RenderContext* context);
+    void OnEnter(LightsRendererContext* context);
+    void OnLeave(LightsRendererContext* context);
 
-    void SetUp(RenderContext* context, IRenderTarget* target, GeometryBuffer *gbuffer,
+    void SetUp(LightsRendererContext* context, IRenderTarget* target, GeometryBuffer *gbuffer,
                const CameraRenderDesc* camera);
-    void DrawAmbientLight(RenderContext* context, const Vector& ambientLightColor,
+    void DrawAmbientLight(LightsRendererContext* context, const Vector& ambientLightColor,
                           const Vector& backgroundColor);
-    void DrawOmniLight(RenderContext* context, const Vector& pos, float radius, const Vector& color,
+    void DrawOmniLight(LightsRendererContext* context, const Vector& pos, float radius, const Vector& color,
                        ShadowMap* shadowMap);
-    void DrawSpotLight(RenderContext* context, const SpotLightProperties& prop,
+    void DrawSpotLight(LightsRendererContext* context, const SpotLightProperties& prop,
                        ShadowMap* shadowMap, IResourceBindingInstance* pLightMap);
-    void DrawDirLight(RenderContext* context, const DirLightProperties& prop, ShadowMap* shadowMap);
+    void DrawDirLight(LightsRendererContext* context, const DirLightProperties& prop, ShadowMap* shadowMap);
 
-    void DrawFog(RenderContext* context);
+    void DrawFog(LightsRendererContext* context);
 };
 
 } // namespace Renderer

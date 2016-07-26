@@ -53,8 +53,8 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
 
     // set Texture properties
     mBuffersNum = NUM_BUFFERS;
-    mResourceState = D3D12_RESOURCE_STATE_PRESENT;
-    mTargetResourceState = D3D12_RESOURCE_STATE_PRESENT;
+    mSubresourceStates.push_back(D3D12_RESOURCE_STATE_PRESENT);
+    mTargetState = D3D12_RESOURCE_STATE_PRESENT;
 
     DXGI_SWAP_CHAIN_DESC1 scd = {};
     scd.BufferCount = mBuffersNum;

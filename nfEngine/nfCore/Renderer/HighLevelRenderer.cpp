@@ -64,8 +64,13 @@ bool HighLevelRenderer::Init(const std::string& preferredRendererName)
 
     Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
 
+    const size_t numThreads = threadPool->GetThreadsNumber();
+    mGeometryCLs.resize(numThreads);
+    mShadowsCLs.resize(numThreads);
+    mLightsCLs.resize(numThreads);
+    mDebugCLs.resize(numThreads);
+
     /// create default and deferred rendering contexts
-    mDefaultContext.reset(new RenderContext);
     mDeferredContexts.reset(new RenderContext[threadPool->GetThreadsNumber()]);
 
     // TODO: multithreaded modules initialization
@@ -98,7 +103,6 @@ void HighLevelRenderer::Release()
     mDefaultSpecularTexture.reset();
 
     mDeferredContexts.reset();
-    mDefaultContext.reset();
 
     if (mRenderingDevice != nullptr)
     {
@@ -150,11 +154,6 @@ void HighLevelRenderer::CreateCommonResources()
     mDefaultSpecularTexture.reset(mRenderingDevice->CreateTexture(texDesc));
 }
 
-RenderContext* HighLevelRenderer::GetDefaultContext() const
-{
-    return mDefaultContext.get();
-}
-
 RenderContext* HighLevelRenderer::GetDeferredContext(size_t id) const
 {
     return mDeferredContexts.get() + id;
@@ -164,6 +163,54 @@ std::string HighLevelRenderer::GetShadersPath() const
 {
     // TODO: It's temporary. Shader location must be dependent on low-level renderer.
     return "nfEngine/Shaders/HLSL5/";
+}
+
+void HighLevelRenderer::ResetCommandBuffers()
+{
+    Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
+
+    // TODO: this is temporary solution to make D3D12 work
+    // reset command buffers
+    for (size_t i = 0; i < threadPool->GetThreadsNumber(); ++i)
+    {
+        RenderContext* ctx = GetDeferredContext(i);
+
+        ctx->commandBufferShadows->Reset();
+        ctx->commandBufferGeometry->Reset();
+        ctx->commandBufferLights->Reset();
+        ctx->commandBufferDebug->Reset();
+    }
+}
+
+void HighLevelRenderer::FinishAndExecuteCommandBuffers()
+{
+    Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
+
+    // TODO: this is temporary solution to make D3D12 work
+
+    for (size_t i = 0; i < threadPool->GetThreadsNumber(); ++i)
+    {
+        RenderContext* ctx = GetDeferredContext(i);
+        mRenderingDevice->Execute(ctx->commandBufferShadows->Finish().get());
+    }
+
+    for (size_t i = 0; i < threadPool->GetThreadsNumber(); ++i)
+    {
+        RenderContext* ctx = GetDeferredContext(i);
+        mRenderingDevice->Execute(ctx->commandBufferGeometry->Finish().get());
+    }
+
+    for (size_t i = 0; i < threadPool->GetThreadsNumber(); ++i)
+    {
+        RenderContext* ctx = GetDeferredContext(i);
+        mRenderingDevice->Execute(ctx->commandBufferLights->Finish().get());
+    }
+
+    for (size_t i = 0; i < threadPool->GetThreadsNumber(); ++i)
+    {
+        RenderContext* ctx = GetDeferredContext(i);
+        mRenderingDevice->Execute(ctx->commandBufferDebug->Finish().get());
+    }
 }
 
 } // namespace Renderer

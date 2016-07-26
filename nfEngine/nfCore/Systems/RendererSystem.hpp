@@ -14,6 +14,11 @@
 #include "../Renderers/RendererInterface/CommandBuffer.hpp"
 
 namespace NFE {
+
+namespace Renderer {
+struct GeometryRendererContext; // forward declaration
+} // Renderer
+
 namespace Scene {
 
 /**
@@ -45,21 +50,13 @@ struct NFE_ALIGN16 RenderingData
     Common::TaskID sceneRenderTask;
 
     Common::TaskID shadowPassTask;
-    // list of shadow command lists for each thread
-    std::vector<std::vector<CommandListPtr>> shadowPassCLs;
-
     Common::TaskID geometryPassTask;
-    CommandListPtr geometryPassCL;
-
     Common::TaskID lightsPassTask;
-    CommandListPtr lightsPassCL;
-
     Common::TaskID debugLayerTask;
-    CommandListPtr debugLayerCL;
 
     RenderingData();
     RenderingData(const RenderingData& other);
-    void ExecuteCommandLists() const;
+    void WaitForRenderingTasks() const;
 };
 
 NFE_ALIGN16
@@ -109,7 +106,7 @@ class RendererSystem : public Common::Aligned<16>
      * @param cameraTransform Transform component of the viewing camera.
                               Used for distance calculation.
      */
-    void RenderGeometry(Renderer::RenderContext* ctx, const Math::Frustum& viewFrustum,
+    void RenderGeometry(Renderer::GeometryRendererContext* ctx, const Math::Frustum& viewFrustum,
                         const TransformComponent* cameraTransform) const;
 
     void FindVisibleMeshEntities(const Math::Frustum & frustum,

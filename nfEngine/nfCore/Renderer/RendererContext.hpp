@@ -6,33 +6,37 @@
 
 #pragma once
 
-#include "RenderCommand.hpp"
-#include "HighLevelRenderer.hpp"
-#include "DebugRendererContext.hpp"
-#include "GeometryRendererContext.hpp"
-#include "GuiRendererContext.hpp"
-#include "nfCommon/Math/Random.hpp"
+#include "Renderers/RendererInterface/CommandBuffer.hpp"
 
 namespace NFE {
 namespace Renderer {
 
+struct GeometryRendererContext;
+struct GeometryRendererContext;
+struct LightsRendererContext;
+struct PostProcessRendererContext;
+struct DebugRendererContext;
+struct GuiRendererContext;
+
 class RenderContext
 {
 public:
-    std::unique_ptr<ICommandBuffer> commandBuffer; // low-level API command buffer
-    Math::Random random;
+    // low-level API command buffers for each pass
+    // TODO: this can take too much driver and GPU memory...
+    std::unique_ptr<ICommandBuffer> commandBufferDebug;
+    std::unique_ptr<ICommandBuffer> commandBufferGeometry;
+    std::unique_ptr<ICommandBuffer> commandBufferShadows;
+    std::unique_ptr<ICommandBuffer> commandBufferLights;
+    std::unique_ptr<ICommandBuffer> commandBufferOnScreen;
+
+    std::unique_ptr<GeometryRendererContext> geometryContext;
+    std::unique_ptr<GeometryRendererContext> shadowsContext;
+    std::unique_ptr<LightsRendererContext> lightsContext;
+    std::unique_ptr<PostProcessRendererContext> postProcessContext;
+    std::unique_ptr<DebugRendererContext> debugContext;
+    std::unique_ptr<GuiRendererContext> guiContext;
 
     RenderContext();
-
-    /*
-        TODO:
-
-        Think of a way of adding new renderers' context data easly
-        (without including renderer's header in this file.
-     */
-    DebugRendererContext debugContext;
-    GBufferRendererContext geometryBufferContext;
-    GuiRendererContext guiContext;
 };
 
 } // namespace Renderer

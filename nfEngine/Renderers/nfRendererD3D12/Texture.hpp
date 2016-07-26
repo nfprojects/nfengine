@@ -36,8 +36,8 @@ protected:
     uint32 mBuffersNum;
     uint32 mCurrentBuffer;
 
-    D3D12_RESOURCE_STATES mResourceState;
-    D3D12_RESOURCE_STATES mTargetResourceState;
+    D3D12_RESOURCE_STATES mTargetState; // TODO
+    std::vector<D3D12_RESOURCE_STATES> mSubresourceStates;
 
     // upload initial data
     bool UploadData(const TextureDesc& desc);
@@ -73,19 +73,19 @@ public:
         return mMipmapsNum;
     }
 
-    NFE_INLINE D3D12_RESOURCE_STATES GetState() const
+    NFE_INLINE D3D12_RESOURCE_STATES GetState(uint32 subresource) const
     {
-        return mResourceState;
+        return mSubresourceStates[subresource];
     }
 
     NFE_INLINE D3D12_RESOURCE_STATES GetTargetState() const
     {
-        return mTargetResourceState;
+        return mTargetState;
     }
 
-    NFE_INLINE void SetState(D3D12_RESOURCE_STATES newState)
+    NFE_INLINE void SetState(uint32 subresource, D3D12_RESOURCE_STATES newState)
     {
-        mResourceState = newState;
+        mSubresourceStates[subresource] = newState;
     }
 
     uint32 GetCurrentBuffer() const

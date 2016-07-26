@@ -12,7 +12,7 @@
 namespace NFE {
 namespace Renderer {
 
-template<typename T>
+template<typename ModuleType, typename ContextType>
 class CORE_API RendererModule
 {
     NFE_MAKE_NONCOPYABLE(RendererModule)
@@ -22,11 +22,11 @@ class CORE_API RendererModule
 
 private:
     // instance pointer
-    static std::unique_ptr<T> mPtr;
+    static std::unique_ptr<ModuleType> mPtr;
 
     static void Init()
     {
-        mPtr.reset(new T);
+        mPtr.reset(new ModuleType);
     }
 
     static void Release()
@@ -35,17 +35,19 @@ private:
     }
 
 public:
-    void Enter(RenderContext *context)
+    virtual void OnEnter(ContextType* context)
     {
-        OnEnter(context);
+        // nothing to do by default
+        UNUSED(context);
     }
 
-    void Leave(RenderContext *context)
+    virtual void OnLeave(ContextType* context)
     {
-        OnLeave(context);
+        // nothing to do by default
+        UNUSED(context);
     }
 
-    NFE_INLINE static T* Get()
+    NFE_INLINE static ModuleType* Get()
     {
         return mPtr.get();
     }
@@ -58,16 +60,6 @@ protected:
     RendererModule()
     {
         mRenderer = Engine::GetInstance()->GetRenderer();
-    }
-
-    virtual void OnEnter(RenderContext *context)
-    {
-        // nothing to do by default
-    }
-
-    virtual void OnLeave(RenderContext *context)
-    {
-        // nothing to do by default
     }
 
     virtual ~RendererModule()

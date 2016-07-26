@@ -7,7 +7,6 @@
 #pragma once
 
 #include "RendererModule.hpp"
-#include "HighLevelRenderer.hpp"
 #include "../Resources/MultiPipelineState.hpp"
 #include "GuiRendererContext.hpp"
 #include "Font.hpp"
@@ -30,17 +29,15 @@ enum class HorizontalAlignment
     Justify
 };
 
-class CORE_API GuiRenderer : public RendererModule<GuiRenderer>
+class CORE_API GuiRenderer : public RendererModule<GuiRenderer, GuiRendererContext>
 {
     Resource::MultiPipelineState mPipelineState;
     std::unique_ptr<IBuffer> mVertexBuffer;
     std::unique_ptr<IVertexLayout> mVertexLayout;
     std::unique_ptr<IBuffer> mConstantBuffer;
 
-    std::unique_ptr<IResourceBindingSet> mVSBindingSet;
     std::unique_ptr<IResourceBindingSet> mPSBindingSet;
     std::unique_ptr<IResourceBindingLayout> mResBindingLayout;
-    std::unique_ptr<IResourceBindingInstance> mCBufferBindingInstance;
 
     /// ImGui resources
     Resource::MultiPipelineState mImGuiPipelineState;
@@ -49,8 +46,8 @@ class CORE_API GuiRenderer : public RendererModule<GuiRenderer>
     std::unique_ptr<IBuffer> mImGuiIndexBuffer;
 
     bool CreateResourceBindingLayouts();
-    void FlushQueue(RenderContext* context);
-    void PushQuad(RenderContext* context, const GuiQuadData& quad,
+    void FlushQueue(GuiRendererContext* context);
+    void PushQuad(GuiRendererContext* context, const GuiQuadData& quad,
                   const GuiQuadVertex& quadVertex);
 
 public:
@@ -58,24 +55,25 @@ public:
 
     std::unique_ptr<IResourceBindingInstance> CreateTextureBinding(ITexture* texture);
 
-    void OnEnter(RenderContext* context);
-    void OnLeave(RenderContext* context);
-    void SetTarget(RenderContext* context, IRenderTarget* target);
-    void BeginOrdinaryGuiRendering(RenderContext* context);
+    void OnEnter(GuiRendererContext* context) override;
+    void OnLeave(GuiRendererContext* context) override;
 
-    void DrawQuad(RenderContext* context, const Rectf& rect, uint32 color);
-    void DrawTexturedQuad(RenderContext* context, const Rectf& rect, const Rectf& texCoords,
+    void SetTarget(GuiRendererContext* context, IRenderTarget* target);
+    void BeginOrdinaryGuiRendering(GuiRendererContext* context);
+
+    void DrawQuad(GuiRendererContext* context, const Rectf& rect, uint32 color);
+    void DrawTexturedQuad(GuiRendererContext* context, const Rectf& rect, const Rectf& texCoords,
                           IResourceBindingInstance* textureBinding, uint32 color,
                           bool alpha = false);
-    bool PrintText(RenderContext* context, Font* font, const char* text,
+    bool PrintText(GuiRendererContext* context, Font* font, const char* text,
                    const Recti& rect, uint32 color,
                    VerticalAlignment vAlign = VerticalAlignment::Top,
                    HorizontalAlignment hAlign = HorizontalAlignment::Right);
-    bool PrintTextWithBorder(RenderContext* context, Font* font, const char* text,
+    bool PrintTextWithBorder(GuiRendererContext* context, Font* font, const char* text,
                              const Recti& rect, uint32 color, uint32 borderColor,
                              VerticalAlignment vAlign = VerticalAlignment::Top,
                              HorizontalAlignment hAlign = HorizontalAlignment::Right);
-    bool DrawImGui(RenderContext* context, IResourceBindingInstance* imGuiTextureBinding);
+    bool DrawImGui(GuiRendererContext* context, IResourceBindingInstance* imGuiTextureBinding);
 };
 
 } // namespace Renderer
