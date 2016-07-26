@@ -104,8 +104,8 @@ void CreateSceneSponza(SceneManager* scene)
         omni.maxShadowDistance = 120.0f;
         omni.radius = 90.0f;
         light->SetOmniLight(&omni);
-        light->SetColor(Float3(8.0f, 8.0f, 8.0f));
-        light->SetShadowMap(512);
+        light->SetColor(Float3(2.0f, 2.0f, 2.0f));
+        // light->SetShadowMap(1024);
     }
 }
 
@@ -154,7 +154,7 @@ void CreateChamberArray(SceneManager* scene,
                 LightComponent* light = entityManager->AddComponent<LightComponent>(mainLight);
                 light->SetOmniLight(&omni);
                 light->SetColor(Float3(12.0f, 12.0f, 12.0f));
-                light->SetShadowMap(64);
+                // light->SetShadowMap(64);
             }
 
             EntityID lightA = entityManager->CreateEntity();
