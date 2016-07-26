@@ -118,15 +118,6 @@ DebugRenderer::DebugRenderer()
     bufferDesc.debugName = "DebugRenderer::mPerMeshConstantBuffer";
     mPerMeshConstantBuffer.reset(device->CreateBuffer(bufferDesc));
 
-    mVertexShaderBindingInstance.reset(
-        device->CreateResourceBindingInstance(mVertexShaderBindingSet.get()));
-    if (mVertexShaderBindingInstance)
-    {
-        mVertexShaderBindingInstance->WriteCBufferView(0, mConstantBuffer.get());
-        mVertexShaderBindingInstance->WriteCBufferView(1, mPerMeshConstantBuffer.get());
-    }
-
-
     /// create vertex buffer
     bufferDesc.access = BufferAccess::CPU_Write;
     bufferDesc.size = gVertexBufferSize * sizeof(DebugVertex);
@@ -173,21 +164,17 @@ bool DebugRenderer::CreateResourceBindingLayouts()
     if (perMeshCBufferSlot < 0)
         return false;
 
-    ResourceBindingDesc gbufferBindings[2] =
+    DynamicBufferBindingDesc cbufferBindingsDesc[2] =
     {
-        ResourceBindingDesc(ShaderResourceType::CBuffer, globalCBufferSlot),
-        ResourceBindingDesc(ShaderResourceType::CBuffer, perMeshCBufferSlot),
+        DynamicBufferBindingDesc(ShaderType::Vertex, ShaderResourceType::CBuffer, globalCBufferSlot),
+        DynamicBufferBindingDesc(ShaderType::Vertex, ShaderResourceType::CBuffer, perMeshCBufferSlot),
     };
-    mVertexShaderBindingSet.reset(device->CreateResourceBindingSet(
-        ResourceBindingSetDesc(gbufferBindings, 2, ShaderType::Vertex)));
-    if (!mVertexShaderBindingSet)
-        return false;
+
     // TODO: material binding set (textures)
 
     // create binding layout
-    IResourceBindingSet* sets[] = { mVertexShaderBindingSet.get() };
     mResBindingLayout.reset(device->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(sets, 1)));
+        ResourceBindingLayoutDesc(nullptr, 0, cbufferBindingsDesc, 2)));
     if (!mResBindingLayout)
         return false;
 
@@ -230,7 +217,8 @@ void DebugRenderer::Flush(RenderContext* context)
         else
             context->commandBuffer->SetPipelineState(mTrianglesPipelineState.get());
 
-        context->commandBuffer->BindResources(0, mVertexShaderBindingInstance.get());
+        context->commandBuffer->BindDynamicBuffer(0, mConstantBuffer.get());
+        context->commandBuffer->BindDynamicBuffer(1, mPerMeshConstantBuffer.get());
 
         ctx.mode = DebugRendererMode::Simple;
     }
@@ -440,7 +428,7 @@ void DebugRenderer::DrawMesh(RenderContext* context, const Resource::Mesh* mesh,
     if (ctx.mode != DebugRendererMode::Meshes)
     {
         context->commandBuffer->SetPipelineState(mMeshPipelineState.get());
-        context->commandBuffer->BindResources(0, mVertexShaderBindingInstance.get());
+        context->commandBuffer->BindDynamicBuffer(0, mPerMeshConstantBuffer.get());
         ctx.mode = DebugRendererMode::Meshes;
         ctx.polyType = PrimitiveType::Unknown;
     }

@@ -98,27 +98,18 @@ GeometryRenderer::GeometryRenderer()
     bufferDesc.type = BufferType::Constant;
     bufferDesc.debugName = "GeometryRenderer::mMaterialCBuffer";
     mMaterialCBuffer.reset(device->CreateBuffer(bufferDesc));
-    mMatCBufferBindingInstance.reset(device->CreateResourceBindingInstance(mMatCBufferBindingSet.get()));
-    if (mMatCBufferBindingInstance)
-        mMatCBufferBindingInstance->WriteCBufferView(0, mMaterialCBuffer.get());
 
     bufferDesc.access = BufferAccess::CPU_Write;
     bufferDesc.size = sizeof(GlobalCBuffer);
     bufferDesc.type = BufferType::Constant;
     bufferDesc.debugName = "GeometryRenderer::mGlobalCBuffer";
     mGlobalCBuffer.reset(device->CreateBuffer(bufferDesc));
-    mGlobalBindingInstance.reset(device->CreateResourceBindingInstance(mGlobalBindingSet.get()));
-    if (mGlobalBindingInstance)
-        mGlobalBindingInstance->WriteCBufferView(0, mGlobalCBuffer.get());
 
     bufferDesc.access = BufferAccess::CPU_Write;
     bufferDesc.size = sizeof(ShadowCameraRenderDesc);
     bufferDesc.type = BufferType::Constant;
     bufferDesc.debugName = "GeometryRenderer::mShadowGlobalCBuffer";
     mShadowGlobalCBuffer.reset(device->CreateBuffer(bufferDesc));
-    mShadowGlobalBindingInstance.reset(device->CreateResourceBindingInstance(mGlobalBindingSet.get()));
-    if (mShadowGlobalBindingInstance)
-        mShadowGlobalBindingInstance->WriteCBufferView(0, mShadowGlobalCBuffer.get());
 
     // dummy material (with default textures) binding instance
     mDummyMaterialBindingInstance.reset(device->CreateResourceBindingInstance(mMatTexturesBindingSet.get()));
@@ -139,6 +130,16 @@ GeometryRenderer::GeometryRenderer()
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.debugName = "GeometryRenderer::mPipelineState";
+    pipelineStateDesc.depthFormat = DepthBufferFormat::Depth32;
+    pipelineStateDesc.rtFormats[0] = TextureFormat(ElementFormat::Float_32, 1);
+    mShadowPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
+
+    pipelineStateDesc.depthFormat = DepthBufferFormat::Depth32;
+    pipelineStateDesc.rtFormats[0] = TextureFormat(ElementFormat::Float_16, 4);
+    pipelineStateDesc.rtFormats[1] = TextureFormat(ElementFormat::Float_16, 4);
+    pipelineStateDesc.rtFormats[2] = TextureFormat(ElementFormat::Float_16, 4);
+    pipelineStateDesc.rtFormats[3] = TextureFormat(ElementFormat::Float_16, 2);
+    pipelineStateDesc.numRenderTargets = 4;
     mPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
 }
 
@@ -162,20 +163,6 @@ bool GeometryRenderer::CreateResourceBindingLayouts()
 
     std::vector<IResourceBindingSet*> bindingSets;
 
-    ResourceBindingDesc binding0(ShaderResourceType::CBuffer, globalCBufferSlot);
-    mGlobalBindingSet.reset(device->CreateResourceBindingSet(
-        ResourceBindingSetDesc(&binding0, 1, ShaderType::All)));
-    if (!mGlobalBindingSet)
-        return false;
-    bindingSets.push_back(mGlobalBindingSet.get());
-
-    ResourceBindingDesc binding1(ShaderResourceType::CBuffer, materialCBufferSlot);
-    mMatCBufferBindingSet.reset(device->CreateResourceBindingSet(
-        ResourceBindingSetDesc(&binding1, 1, ShaderType::Pixel)));
-    if (!mMatCBufferBindingSet)
-        return false;
-    bindingSets.push_back(mMatCBufferBindingSet.get());
-
     ResourceBindingDesc binding2[3] =
     {
         ResourceBindingDesc(ShaderResourceType::Texture,
@@ -194,9 +181,15 @@ bool GeometryRenderer::CreateResourceBindingLayouts()
         return false;
     bindingSets.push_back(mMatTexturesBindingSet.get());
 
+    DynamicBufferBindingDesc cbufferBindingsDesc[2] =
+    {
+        DynamicBufferBindingDesc(ShaderType::All, ShaderResourceType::CBuffer, globalCBufferSlot),
+        DynamicBufferBindingDesc(ShaderType::Pixel, ShaderResourceType::CBuffer, materialCBufferSlot),
+    };
+
     // create binding layout
     mResBindingLayout.reset(device->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(bindingSets.data(), bindingSets.size())));
+        ResourceBindingLayoutDesc(bindingSets.data(), bindingSets.size(), cbufferBindingsDesc, 2)));
     if (!mResBindingLayout)
         return false;
 
@@ -206,8 +199,6 @@ bool GeometryRenderer::CreateResourceBindingLayouts()
 void GeometryRenderer::OnEnter(RenderContext* context)
 {
     context->commandBuffer->BeginDebugGroup("Geometry Buffer Renderer stage");
-
-    context->commandBuffer->SetPipelineState(mPipelineState.get());
 }
 
 void GeometryRenderer::OnLeave(RenderContext* context)
@@ -220,10 +211,13 @@ void GeometryRenderer::SetUp(RenderContext* context, GeometryBuffer* geometryBuf
 {
     context->commandBuffer->InsertDebugMarker(__FUNCTION__);
 
+    context->commandBuffer->SetPipelineState(mPipelineState.get());
     context->commandBuffer->SetRenderTarget(geometryBuffer->mRenderTarget.get());
     context->commandBuffer->SetViewport(0.0f, static_cast<float>(geometryBuffer->mWidth),
                                         0.0f, static_cast<float>(geometryBuffer->mHeight),
                                         0.0f, 1.0f);
+    context->commandBuffer->SetScissors(0, 0, geometryBuffer->mWidth, geometryBuffer->mHeight);
+    context->commandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
 
     const float clearColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
     context->commandBuffer->Clear(NFE_CLEAR_FLAG_TARGET | NFE_CLEAR_FLAG_DEPTH, clearColor, 1.0f);
@@ -231,8 +225,8 @@ void GeometryRenderer::SetUp(RenderContext* context, GeometryBuffer* geometryBuf
     int macros[] = { 0 }; // USE_MOTION_BLUR
     context->commandBuffer->SetShaderProgram(mGeometryPassShaderProgram.GetShaderProgram(macros));
 
-    context->commandBuffer->BindResources(0, mGlobalBindingInstance.get());
-    context->commandBuffer->BindResources(1, mMatCBufferBindingInstance.get());
+    context->commandBuffer->BindDynamicBuffer(0, mGlobalCBuffer.get());
+    context->commandBuffer->BindDynamicBuffer(1, mMaterialCBuffer.get());
 
     GlobalCBuffer cbuffer;
     cbuffer.ProjMatrix = cameraDesc->projMatrix;
@@ -252,6 +246,7 @@ void GeometryRenderer::SetUpForShadowMap(RenderContext *context, ShadowMap* shad
 {
     context->commandBuffer->InsertDebugMarker(__FUNCTION__);
 
+    context->commandBuffer->SetPipelineState(mShadowPipelineState.get());
     context->commandBuffer->SetRenderTarget(shadowMap->mRenderTargets[faceID].get());
     context->commandBuffer->SetViewport(0.0f, static_cast<float>(shadowMap->mSize),
                                         0.0f, static_cast<float>(shadowMap->mSize),
@@ -266,7 +261,7 @@ void GeometryRenderer::SetUpForShadowMap(RenderContext *context, ShadowMap* shad
 
     context->commandBuffer->SetShaderProgram(mShadowShaderProgram.GetShaderProgram(macros));
 
-    context->commandBuffer->BindResources(0, mShadowGlobalBindingInstance.get());
+    context->commandBuffer->BindDynamicBuffer(0, mShadowGlobalCBuffer.get());
 
     context->commandBuffer->WriteBuffer(mShadowGlobalCBuffer.get(), 0,
                                         sizeof(ShadowCameraRenderDesc), cameraDesc);
@@ -278,7 +273,7 @@ void GeometryRenderer::SetMaterial(RenderContext* context, const RendererMateria
     if (material && material->layers[0].bindingInstance)
         bindingInstance = material->layers[0].bindingInstance.get();
 
-    context->commandBuffer->BindResources(2, bindingInstance);
+    context->commandBuffer->BindResources(0, bindingInstance);
 
     MaterialCBuffer cbuffer;
     cbuffer.diffuseColor = Vector(1.0f, 1.0f, 1.0f, 1.0f);

@@ -325,7 +325,8 @@ bool Texture::Init(const TextureDesc& desc)
             LOG_WARNING("No initial data for read-only texture provided");
     }
 
-
+    mWidth = desc.width;
+    mHeight = desc.height;
     mResourceState = initialState;
     mBuffersNum = 1;
     mCurrentBuffer = 0;

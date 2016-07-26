@@ -71,6 +71,8 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             mRTVs[n].push_back(offset);
         }
 
+        mWidth = tex->mWidth;
+        mHeight = tex->mHeight;
         mTextures.push_back(tex);
     }
 

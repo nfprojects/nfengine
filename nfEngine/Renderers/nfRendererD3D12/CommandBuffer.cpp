@@ -190,6 +190,7 @@ void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* stri
     for (int i = 0; i < num; ++i)
     {
         Buffer* buffer = dynamic_cast<Buffer*>(vertexBuffers[i]);
+
         views[i].BufferLocation = buffer->mResource->GetGPUVirtualAddress();
         views[i].SizeInBytes = static_cast<UINT>(buffer->mSize);
         views[i].StrideInBytes = strides[i];
@@ -413,7 +414,8 @@ bool CommandBuffer::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, con
             return false;
         }
 
-        size_t ringBufferOffset = mRingBuffer.Allocate(size);
+        size_t alignedSize = (size + 255) & ~255;
+        size_t ringBufferOffset = mRingBuffer.Allocate(alignedSize);
         NFE_ASSERT(ringBufferOffset != RingBuffer::INVALID_OFFSET, "Ring buffer allocation failed");
 
         char* cpuPtr = reinterpret_cast<char*>(mRingBuffer.GetCpuAddress());
@@ -427,16 +429,24 @@ bool CommandBuffer::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, con
         rb.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
         rb.Transition.pResource = bufferPtr->mResource.get();
         rb.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-        rb.Transition.StateBefore = D3D12_RESOURCE_STATE_GENERIC_READ;
+
+        if (bufferPtr->mType == BufferType::Index)
+            rb.Transition.StateBefore = D3D12_RESOURCE_STATE_INDEX_BUFFER;
+        else
+            rb.Transition.StateBefore = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
+
         rb.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST;
         mCommandList->ResourceBarrier(1, &rb);
 
         mCommandList->CopyBufferRegion(bufferPtr->mResource.get(), static_cast<UINT64>(offset),
                                        mRingBuffer.GetD3DResource(), static_cast<UINT64>(ringBufferOffset),
-        static_cast<UINT64>(size));
+                                       static_cast<UINT64>(size));
 
         rb.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-        rb.Transition.StateAfter = D3D12_RESOURCE_STATE_GENERIC_READ;
+        if (bufferPtr->mType == BufferType::Index)
+            rb.Transition.StateAfter = D3D12_RESOURCE_STATE_INDEX_BUFFER;
+        else
+            rb.Transition.StateAfter = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
         mCommandList->ResourceBarrier(1, &rb);
     }
     else
@@ -455,7 +465,7 @@ bool CommandBuffer::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, con
 
                 char* cpuPtr = reinterpret_cast<char*>(mRingBuffer.GetCpuAddress());
                 cpuPtr += ringBufferOffset;
-                memcpy(cpuPtr, data, bufferPtr->mSize);
+                memcpy(cpuPtr, data, size);
 
                 D3D12_GPU_VIRTUAL_ADDRESS gpuPtr = mRingBuffer.GetGpuAddress();
                 gpuPtr += ringBufferOffset;

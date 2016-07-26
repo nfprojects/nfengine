@@ -34,6 +34,8 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
 {
     HRESULT hr;
 
+    mWidth = desc.width;
+    mHeight = desc.height;
     mWindow = static_cast<HWND>(desc.windowHandle);
     mVSync = desc.vSync;
 

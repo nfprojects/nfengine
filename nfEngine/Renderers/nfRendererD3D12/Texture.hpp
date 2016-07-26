@@ -28,6 +28,8 @@ protected:
 
     Class mClass;
     TextureType mType;
+    int mWidth;
+    int mHeight;
     int mMipmapsNum;
     int mLayersNum;
     DXGI_FORMAT mSrvFormat;
