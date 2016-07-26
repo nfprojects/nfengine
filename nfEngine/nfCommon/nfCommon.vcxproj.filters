@@ -263,6 +263,12 @@
     <ClInclude Include="FileBuffered.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Win\AsyncQueueManager.hpp">
+      <Filter>Header Files\Win</Filter>
+    </ClInclude>
+    <ClInclude Include="AsyncQueueManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -447,6 +453,9 @@
     </ClCompile>
     <ClCompile Include="FileBuffered.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Win\AsyncQueueManager.cpp">
+      <Filter>Source Files\Win</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
