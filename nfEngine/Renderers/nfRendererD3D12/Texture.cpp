@@ -205,6 +205,7 @@ bool Texture::Init(const TextureDesc& desc)
     resourceDesc.SampleDesc.Quality = 0;
     resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
     resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+	resourceDesc.DepthOrArraySize = static_cast<UINT16>(desc.layers);
 
     // determine formats
     mSrvFormat = DXGI_FORMAT_UNKNOWN;
@@ -325,7 +326,9 @@ bool Texture::Init(const TextureDesc& desc)
             LOG_WARNING("No initial data for read-only texture provided");
     }
 
-
+	mLayers = desc.layers;
+    mWidth = desc.width;
+    mHeight = desc.height;
     mResourceState = initialState;
     mBuffersNum = 1;
     mCurrentBuffer = 0;

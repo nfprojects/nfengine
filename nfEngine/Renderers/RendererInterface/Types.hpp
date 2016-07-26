@@ -75,9 +75,9 @@ struct TextureFormat
     ElementFormat format;
     int size;
 
-    TextureFormat()
-        : format(ElementFormat::Uint_8_norm)
-        , size(4)
+    TextureFormat(ElementFormat elementFormat = ElementFormat::Uint_8_norm, int elementCount = 4)
+        : format(elementFormat)
+        , size(elementCount)
     { }
 };
 

@@ -154,7 +154,7 @@ bool Device::Init(const DeviceInitParams* params)
             D3D12_MESSAGE_ID_MAP_INVALID_NULLRANGE,
 
             // performance warning - let's ignore it for now
-            // D3D12_MESSAGE_ID_CLEARRENDERTARGETVIEW_MISMATCHINGCLEARVALUE,
+            D3D12_MESSAGE_ID_CLEARRENDERTARGETVIEW_MISMATCHINGCLEARVALUE,
         };
 
         D3D12_INFO_QUEUE_FILTER filter;

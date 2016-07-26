@@ -519,10 +519,10 @@ public:
 CustomWindow* AddWindow(CustomWindow* parent)
 {
     std::unique_ptr<CustomWindow> window(new CustomWindow);
-    window->SetSize(800, 600);
+    window->SetSize(1920, 1080);
     window->SetTitle("NFEngine Demo");
     window->Open();
-    window->SetUpScene(0, parent);
+    window->SetUpScene(2, parent);
 
     CustomWindow* windowPtr = window.get();
     gWindows.push_back(std::move(window));

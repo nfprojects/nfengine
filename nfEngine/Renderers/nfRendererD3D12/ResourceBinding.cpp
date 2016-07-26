@@ -128,7 +128,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
             descriptorRanges[rangeCounter].NumDescriptors = 1;  // TODO ranges
             descriptorRanges[rangeCounter].BaseShaderRegister = bindingDesc.slot & SHADER_RES_SLOT_MASK;
             descriptorRanges[rangeCounter].RegisterSpace = 0;
-            descriptorRanges[rangeCounter].OffsetInDescriptorsFromTableStart = 0;
+            descriptorRanges[rangeCounter].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
             rangeCounter++;
 
             // fill static samplers

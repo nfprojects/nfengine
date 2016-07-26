@@ -37,10 +37,8 @@ class DebugRenderer : public RendererModule<DebugRenderer>
     std::unique_ptr<IBuffer> mVertexBuffer;
     std::unique_ptr<IBuffer> mIndexBuffer;
 
-    std::unique_ptr<IResourceBindingSet> mVertexShaderBindingSet;
     // TODO: material data (textures)
     std::unique_ptr<IResourceBindingLayout> mResBindingLayout;
-    std::unique_ptr<IResourceBindingInstance> mVertexShaderBindingInstance;
 
     uint32 mIsMeshMacroId;
     uint32 mUseTextureMacroId;

@@ -34,8 +34,14 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
 {
     HRESULT hr;
 
+	mType = TextureType::Texture2D;
+	mWidth = desc.width;
+	mHeight = desc.height;
+	mSrvFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+	mLayers = 1;
     mWindow = static_cast<HWND>(desc.windowHandle);
     mVSync = desc.vSync;
+
 
     // set Texture properties
     mClass = Class::Backbuffer;

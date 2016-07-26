@@ -103,8 +103,8 @@ uint32 HeapAllocator::Allocate(uint32 numDescriptors)
         count++;
         if (count >= numDescriptors)
         {
-            for (size_t j = first; j < first + count; ++j)
-                mBitmap[i] = true;
+            for (size_t j = first; j < first + numDescriptors; ++j)
+                mBitmap[j] = true;
             return first;
         }
     }

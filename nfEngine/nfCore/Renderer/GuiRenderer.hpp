@@ -38,10 +38,8 @@ class CORE_API GuiRenderer : public RendererModule<GuiRenderer>
     std::unique_ptr<IBuffer> mConstantBuffer;
     std::unique_ptr<IPipelineState> mPipelineState;
 
-    std::unique_ptr<IResourceBindingSet> mVSBindingSet;
     std::unique_ptr<IResourceBindingSet> mPSBindingSet;
     std::unique_ptr<IResourceBindingLayout> mResBindingLayout;
-    std::unique_ptr<IResourceBindingInstance> mCBufferBindingInstance;
 
     /// ImGui resources
     std::unique_ptr<IPipelineState> mImGuiPipelineState;
