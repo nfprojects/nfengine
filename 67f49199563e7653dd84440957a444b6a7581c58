@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_5ba48649",
+        "filename": "nfEngine/Renderers/RendererInterface/Device.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-07-26T11:26:19Z",
+      "side": 1,
+      "message": "preferred",
+      "range": {
+        "startLine": 112,
+        "startChar": 8,
+        "endLine": 112,
+        "endChar": 22
+      },
+      "revId": "67f49199563e7653dd84440957a444b6a7581c58",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3b642220",
+        "filename": "nfEngine/Renderers/RendererInterface/Device.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-07-26T11:26:19Z",
+      "side": 1,
+      "message": "preferred",
+      "range": {
+        "startLine": 113,
+        "startChar": 16,
+        "endLine": 113,
+        "endChar": 32
+      },
+      "revId": "67f49199563e7653dd84440957a444b6a7581c58",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_fb9b5a15",
+        "filename": "nfEngine/Renderers/nfRendererD3D12/Device.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-07-26T11:26:19Z",
+      "side": 1,
+      "message": "preferred",
+      "range": {
+        "startLine": 75,
+        "startChar": 8,
+        "endLine": 75,
+        "endChar": 22
+      },
+      "revId": "67f49199563e7653dd84440957a444b6a7581c58",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_1b9b9e19",
+        "filename": "nfEngine/Renderers/nfRendererD3D12/Device.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-07-26T11:26:19Z",
+      "side": 1,
+      "message": "preferred",
+      "range": {
+        "startLine": 43,
+        "startChar": 30,
+        "endLine": 43,
+        "endChar": 40
+      },
+      "revId": "67f49199563e7653dd84440957a444b6a7581c58",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_5b8da6d1",
+        "filename": "nfEngine/nfRendererDemo/Main.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-07-26T11:26:19Z",
+      "side": 1,
+      "message": "preferred",
+      "range": {
+        "startLine": 133,
+        "startChar": 14,
+        "endLine": 133,
+        "endChar": 28
+      },
+      "revId": "67f49199563e7653dd84440957a444b6a7581c58",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3bbd4268",
+        "filename": "nfEngine/nfRendererDemo/Main.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-07-26T11:26:19Z",
+      "side": 1,
+      "message": "preferred",
+      "range": {
+        "startLine": 140,
+        "startChar": 55,
+        "endLine": 140,
+        "endChar": 69
+      },
+      "revId": "67f49199563e7653dd84440957a444b6a7581c58",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
