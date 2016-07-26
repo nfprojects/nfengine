@@ -8,6 +8,7 @@
 
 #include "../RendererInterface/RenderTarget.hpp"
 #include "Common.hpp"
+#include "Texture.hpp"
 
 #include <vector>
 
@@ -19,23 +20,70 @@ class Texture;
 
 class RenderTarget : public IRenderTarget
 {
-    friend class CommandBuffer;
+    struct Target
+    {
+        Texture* texture;
+        uint32 subresource;
+    };
 
     // TODO: temporary
-    std::vector<Texture*> mTextures;
+    std::vector<Target> mTargets;
     std::vector<uint32> mRTVs[2];
 
     Texture* mDepthTexture;
+    uint32 mDepthTextureSubresource;
     uint32 mDSV;
-
-    uint16 mWidth;
-    uint16 mHeight;
 
 public:
     RenderTarget();
     ~RenderTarget();
+
+    // IRenderTarget
     void GetDimensions(int& width, int& height);
     bool Init(const RenderTargetDesc& desc);
+
+
+    NFE_INLINE size_t GetNumTargets() const
+    {
+        return mTargets.size();
+    }
+
+    // get texture pointer for given target ID
+    NFE_INLINE Texture* GetTexture(size_t targetID) const
+    {
+        return mTargets[targetID].texture;
+    }
+
+    // get texture subresource index for given target ID
+    NFE_INLINE uint32 GetSubresourceID(size_t targetID) const
+    {
+        return mTargets[targetID].subresource;
+    }
+
+    // get RTV for given target ID
+    NFE_INLINE uint32 GetRTV(size_t targetID) const
+    {
+        Texture* tex = GetTexture(targetID);
+        return mRTVs[tex->GetCurrentBuffer()][targetID];
+    }
+
+    // get depth texture pointer
+    NFE_INLINE Texture* GetDepthTexture() const
+    {
+        return mDepthTexture;
+    }
+
+    // get depth texture subresource index
+    NFE_INLINE uint32 GetDepthTexSubresourceID() const
+    {
+        return mDepthTextureSubresource;
+    }
+
+    // get DSV
+    NFE_INLINE uint32 GetDSV() const
+    {
+        return mDSV;
+    }
 };
 
 } // namespace Renderer

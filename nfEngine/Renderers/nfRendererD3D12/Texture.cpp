@@ -17,7 +17,7 @@ namespace Renderer {
 Texture::Texture()
     : mBuffersNum(1)
     , mCurrentBuffer(0)
-    , mResourceState(D3D12_RESOURCE_STATE_COMMON)
+    , mTargetState(D3D12_RESOURCE_STATE_COMMON)
 {
 }
 
@@ -154,7 +154,7 @@ bool Texture::UploadData(const TextureDesc& desc)
         resBarrier.Transition.pResource = mBuffers[0].get();
         resBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
         resBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-        resBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_GENERIC_READ;
+        resBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
         commandList->ResourceBarrier(1, &resBarrier);
 
 
@@ -303,7 +303,7 @@ bool Texture::Init(const TextureDesc& desc)
         resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
         resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
-        mTargetResourceState = D3D12_RESOURCE_STATE_COPY_DEST;
+        mTargetState = D3D12_RESOURCE_STATE_COPY_DEST;
 
         hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommittedResource(&heapProperties,
                                                                           D3D12_HEAP_FLAG_NONE,
@@ -394,9 +394,9 @@ bool Texture::Init(const TextureDesc& desc)
 
 
         if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER)
-            mTargetResourceState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+            mTargetState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
         else
-            mTargetResourceState = initialState;
+            mTargetState = initialState;
 
         if (desc.mode == BufferMode::Static)
         {
@@ -416,7 +416,6 @@ bool Texture::Init(const TextureDesc& desc)
     }
 
 
-    mResourceState = initialState;
     mBuffersNum = 1;
     mCurrentBuffer = 0;
     mType = desc.type;
@@ -426,6 +425,10 @@ bool Texture::Init(const TextureDesc& desc)
     mLayers = static_cast<uint16>(desc.layers);
     mMipmapsNum = static_cast<uint16>(desc.mipmaps);
     mMode = desc.mode;
+
+    for (uint32 subresource = 0; subresource < desc.layers * desc.mipmaps; ++subresource)
+        mSubresourceStates.push_back(initialState);
+
     return true;
 }
 

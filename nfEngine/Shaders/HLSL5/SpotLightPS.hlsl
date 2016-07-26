@@ -20,14 +20,14 @@ float3 TransformLightCoords(float4 coord)
 
 struct PixelShaderOutput
 {
-    float depth : SV_Depth;
+    //float depth : SV_Depth;
     float4 color : SV_TARGET0;
 };
 
 PixelShaderOutput main(VertexShaderOutput input)
 {
     PixelShaderOutput output;
-    output.depth = input.viewPos.z;
+    //output.depth = input.viewPos.z;
 
     int3 texelCoords = int3((int2)input.pos.xy, 0);
     float4 color0 = gGBufferTex0.Load(texelCoords);    // normal

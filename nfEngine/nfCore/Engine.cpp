@@ -41,7 +41,7 @@ bool Engine::OnInit()
     // init renderer
     LOG_INFO("Initializing renderer...");
     mRenderer.reset(new Renderer::HighLevelRenderer());
-    if (!mRenderer->Init("nfRendererD3D11"))
+    if (!mRenderer->Init("nfRendererD3D12"))
     {
         mRenderer.reset();
         LOG_ERROR("Failed to initialize renderer. Drawing will not be supported");
