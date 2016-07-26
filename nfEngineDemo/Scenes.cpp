@@ -154,7 +154,7 @@ void CreateChamberArray(SceneManager* scene,
                 LightComponent* light = entityManager->AddComponent<LightComponent>(mainLight);
                 light->SetOmniLight(&omni);
                 light->SetColor(Float3(12.0f, 12.0f, 12.0f));
-                light->SetShadowMap(64);
+                // light->SetShadowMap(64);
             }
 
             EntityID lightA = entityManager->CreateEntity();

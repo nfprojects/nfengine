@@ -65,8 +65,12 @@ void RenderingData::ExecuteCommandLists() const
     {
         threadPool->WaitForTask(shadowPassTask);
         for (const auto& commandLists : shadowPassCLs)
+        {
             for (const auto& commandList : commandLists)
+            {
                 renderer->GetDevice()->Execute(commandList.get());
+            }
+        }
     }
 
     // execute collected geometry pass command list
@@ -467,10 +471,12 @@ void RendererSystem::Render(const Common::TaskContext& context, RenderingData& r
 
     // enqueue debug layer pass task
     // TODO: temporary - add "if" statement when renderer configuration is implemented
+    /*
     {
         renderingData.debugLayerTask = threadPool->CreateTask(
             std::bind(&RendererSystem::RenderDebugLayer, this, _1, std::ref(renderingData)));
     }
+    */
 }
 
 void RendererSystem::RenderDebugLayer(const Common::TaskContext& context, RenderingData& data) const

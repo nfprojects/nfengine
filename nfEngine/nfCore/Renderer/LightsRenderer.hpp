@@ -45,7 +45,6 @@ class LightsRenderer : public RendererModule<LightsRenderer>
     std::unique_ptr<IBuffer> mIndexBuffer;
     std::unique_ptr<IVertexLayout> mVertexLayout;
 
-    std::unique_ptr<IResourceBindingSet> mGlobalBindingSet;
     std::unique_ptr<IResourceBindingSet> mGBufferBindingSet;
     std::unique_ptr<IResourceBindingSet> mShadowMapBindingSet;
     std::unique_ptr<IResourceBindingSet> mLightMapBindingSet;
@@ -53,18 +52,15 @@ class LightsRenderer : public RendererModule<LightsRenderer>
 
     Resource::MultiPipelineState mAmbientLightPipelineState;
     std::unique_ptr<IBuffer> mAmbientLightCBuffer;
-    std::unique_ptr<IResourceBindingInstance> mAmbientLightBindingInstance;
 
     int mOmniLightUseShadowMap;
     Resource::MultiPipelineState mOmniLightPipelineState;
     std::unique_ptr<IBuffer> mOmniLightCBuffer;
-    std::unique_ptr<IResourceBindingInstance> mOmniLightBindingInstance;
 
     int mSpotLightUseLightMap;
     int mSpotLightUseShadowMap;
     Resource::MultiPipelineState mSpotLightPipelineState;
     std::unique_ptr<IBuffer> mSpotLightCBuffer;
-    std::unique_ptr<IResourceBindingInstance> mSpotLightBindingInstance;
 
     bool CreateResourceBindingLayouts();
 

@@ -29,10 +29,8 @@ class PostProcessRenderer : public RendererModule<PostProcessRenderer>
     Resource::MultiPipelineState mTonemappingPipelineState;
     std::unique_ptr<IBuffer> mTonemappingCBuffer;
 
-    std::unique_ptr<IResourceBindingSet> mParamsBindingSet;
     std::unique_ptr<IResourceBindingSet> mTexturesBindingSet;
     std::unique_ptr<IResourceBindingLayout> mResBindingLayout;
-    std::unique_ptr<IResourceBindingInstance> mTonemappingBindingInstance;
     std::unique_ptr<IResourceBindingInstance> mNullTextureBindingInstance;
 
     bool CreateResourceBindingLayouts();
