@@ -213,6 +213,7 @@ popd</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Aligned.hpp" />
+    <ClInclude Include="AsyncQueueManager.hpp" />
     <ClInclude Include="AsyncThreadPool.hpp" />
     <ClInclude Include="Bit.hpp" />
     <ClInclude Include="Buffer.hpp" />
@@ -285,6 +286,7 @@ popd</Command>
     <ClInclude Include="ThreadPool.hpp" />
     <ClInclude Include="Timer.hpp" />
     <ClInclude Include="Window.hpp" />
+    <ClInclude Include="Win\AsyncQueueManager.hpp" />
     <ClInclude Include="Win\Common.hpp" />
     <ClInclude Include="Win\Console.hpp" />
   </ItemGroup>
@@ -510,6 +512,12 @@ popd</Command>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="ThreadPool.cpp" />
+    <ClCompile Include="Win\AsyncQueueManager.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Win\Common.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
