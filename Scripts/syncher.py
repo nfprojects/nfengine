@@ -5,7 +5,7 @@
 ## @brief  Multiplatform ftp synchronization script
 
 
-import argparse, os, time, sys, posixpath, getpass
+import argparse, os, time, sys, posixpath, getpass, color
 from datetime import datetime
 from ftplib import FTP
 from shutil import rmtree
@@ -427,6 +427,81 @@ def UpdateMode():
             operationCounter += 1
     return
 
+def StatusMode():
+    # if there is no data at all, just run init mode instead
+    isDataExist = os.path.isdir(DATA_SUB_DIR)
+    if isDataExist is False:
+        print "Data folder doesn't exist. Please run the init mode"
+        exit()
+
+    # declare variables and enter Data directory
+    os.chdir(DATA_SUB_DIR)
+    dirsAdded = []
+    dirsDeleted = []
+    filesAdded = []
+    filesDeleted = []
+    filesModifiedLocal = []
+    filesModifiedRemote = []
+
+    # get files and dirs list
+    FileComparisionLists(dirsAdded, dirsDeleted, filesAdded, filesDeleted,
+                         filesModifiedLocal, filesModifiedRemote)
+
+    if (not dirsDeleted and
+       not filesDeleted and
+       not dirsAdded and
+       not filesAdded and
+       not filesModifiedLocal and
+       not filesModifiedRemote):
+        print 'NO DIFFERENCES'
+        return
+
+    # sort the lists
+    dirsDeleted.sort(key=lambda x: x.lower())
+    dirsAdded.sort(key=lambda x: x.lower())
+    filesDeleted.sort(key=lambda x: x.lower())
+    filesAdded.sort(key=lambda x: x.lower())
+    filesModifiedLocal.sort(key=lambda x: x.lower())
+    filesModifiedRemote.sort(key=lambda x: x.lower())
+
+    colorizer = color.Colorizer()
+
+    # print results
+    if dirsDeleted or filesDeleted:
+        colorizer.printMulti('  DELETED:\n', 'white', None, True)
+        if dirsDeleted:
+            print '\tDirs:'
+            for dir in dirsDeleted:
+                colorizer.printMulti('\t\t' + dir + '\n', 'red', None, True)
+        if filesDeleted:
+            print '\tFiles:'
+            for file in filesDeleted:
+                colorizer.printMulti('\t\t' + file + '\n', 'red', None, True)
+
+    if dirsAdded or filesAdded:
+        colorizer.printMulti('  ADDED:\n', 'white', None, True)
+        if dirsAdded:
+            print '\tDirs:'
+            for dir in dirsAdded:
+                colorizer.printMulti('\t\t' + dir + '\n', 'green', None, True)
+        if filesAdded:
+            print '\tFiles:'
+            for file in filesAdded:
+                colorizer.printMulti('\t\t' + file + '\n', 'green', None, True)
+
+    if filesModifiedLocal or filesModifiedRemote:
+        colorizer.printMulti('  CHANGED:\n', 'white', None, True)
+        if filesModifiedLocal:
+            print '\tLocal changes:'
+            for file in filesModifiedLocal:
+                colorizer.printMulti('\t\t' + file + '\n', 'yellow', None, True)
+        if filesModifiedRemote:
+            print '\tRemote changes:'
+            for file in filesModifiedRemote:
+                colorizer.printMulti('\t\t' + file + '\n', 'yellow', None, True)
+
+    return
+
 class MyParser(argparse.ArgumentParser):
     def error(self, message):
         sys.stderr.write('error: %s\n\n' % message)
@@ -439,10 +514,11 @@ def main(argv):
     argParser.description = 'nfProjects FTP server synchronization tool.'
     argParser.formatter_class = argparse.RawTextHelpFormatter
 
-    argParser.add_argument('mode', choices = ['init', 'push', 'update'],
+    argParser.add_argument('mode', choices = ['init', 'push', 'update', 'status'],
                             help = "'init'\tis used to initialize the Data folder\n"
                                 + "'push'\tpushes current data from the directory to the server\n"
-                                + "'update'\tdownloads data from server to repo, if needed")
+                                + "'update'\tdownloads data from server to repo, if needed\n"
+                                + "'status'\tprints differences between files on local disk & on the server")
 
     args = argParser.parse_args()
 
@@ -458,8 +534,10 @@ def main(argv):
         InitMode()
     elif args.mode == 'push':
         PushMode()
-    else:
+    elif args.mode == 'update':
         UpdateMode()
+    else:
+        StatusMode()
 
     print '## DONE ##'
     return
