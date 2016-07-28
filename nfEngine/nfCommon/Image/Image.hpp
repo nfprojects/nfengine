@@ -10,6 +10,7 @@
 #include "../nfCommon.hpp"
 #include "Mipmap.hpp"
 #include "../InputStream.hpp"
+#include "../OutputStream.hpp"
 
 #include <vector>
 
@@ -76,6 +77,13 @@ public:
      * @return true on success
      */
     bool Load(InputStream* stream);
+
+    /**
+     * Save image into a  JPEG data stream.
+     * @param stream A pointer to the output stream
+     * @return true on success
+     */
+    bool SaveJPG(OutputStream* stream);
 
     /**
      * Get width of the image (in pixels).
