@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_a2eeba1f",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-28T19:44:58Z",
+      "side": 1,
+      "message": "IMO there should be something like CheckIfPNG, CheckIfJPG, etc. I suggest introducing some \"ImageLoader\" abstract class (with BMP, JPG, etc. implementations) with methods Load() and CheckSignature()",
+      "range": {
+        "startLine": 92,
+        "startChar": 0,
+        "endLine": 98,
+        "endChar": 20
+      },
+      "revId": "a74d538db1014c416c5fd14acb7140836938e19d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2294ea88",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-28T19:44:58Z",
+      "side": 1,
+      "message": "magic",
+      "range": {
+        "startLine": 100,
+        "startChar": 21,
+        "endLine": 100,
+        "endChar": 31
+      },
+      "revId": "a74d538db1014c416c5fd14acb7140836938e19d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_028fa675",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-28T19:44:58Z",
+      "side": 1,
+      "message": "magic",
+      "range": {
+        "startLine": 103,
+        "startChar": 21,
+        "endLine": 103,
+        "endChar": 31
+      },
+      "revId": "a74d538db1014c416c5fd14acb7140836938e19d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_e2896270",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-28T19:44:58Z",
+      "side": 1,
+      "message": "magic",
+      "range": {
+        "startLine": 106,
+        "startChar": 34,
+        "endLine": 106,
+        "endChar": 42
+      },
+      "revId": "a74d538db1014c416c5fd14acb7140836938e19d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c2ebfe11",
+        "filename": "nfEngine/nfCommon/Image/Image.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-28T19:44:58Z",
+      "side": 1,
+      "message": "magic",
+      "range": {
+        "startLine": 109,
+        "startChar": 32,
+        "endLine": 109,
+        "endChar": 38
+      },
+      "revId": "a74d538db1014c416c5fd14acb7140836938e19d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
