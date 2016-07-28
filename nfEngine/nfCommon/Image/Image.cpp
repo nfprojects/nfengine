@@ -23,6 +23,8 @@ const NFE::Common::ImageFormat gDDSSrcFormat = NFE::Common::ImageFormat::RGBA_UB
 namespace NFE {
 namespace Common {
 
+Image::ImageTypeMap Image::mImageTypes;
+
 Image::Image()
     : mWidth(0)
     , mHeight(0)
@@ -61,6 +63,32 @@ void Image::Release()
     mFormat = ImageFormat::Unknown;
 }
 
+bool Image::RegisterImageType(const std::string& name, ImageTypePtr imageType) noexcept
+{
+    return mImageTypes.insert(std::make_pair(name, std::move(imageType))).second;
+}
+
+ImageType* Image::GetImageType(const std::string& name) noexcept
+{
+    ImageTypeMap::const_iterator imageType = mImageTypes.find(name);
+
+    if (imageType == mImageTypes.cend())
+        return nullptr;
+
+    return imageType->second.get();
+}
+
+StrVector Image::ListImageTypes()
+{
+    std::vector<std::string> vect;
+    vect.reserve(mImageTypes.size());
+
+    for (const auto& i : mImageTypes)
+        vect.push_back(i.first);
+
+    return vect;
+}
+
 bool Image::SetData(const void* data, uint32 width, uint32 height, ImageFormat format)
 {
     Release();
@@ -87,24 +115,13 @@ bool Image::Load(InputStream* stream)
 {
     Release();
 
-    stream->Seek(0);
-    if (LoadBMP(stream))
-        return true;
+    for (const auto &i : mImageTypes)
+    {
+        if (i.second->Check(stream))
+            return i.second->Load(this, stream);
+    }
 
-    stream->Seek(0);
-    if (LoadPNG(stream))
-        return true;
-
-    stream->Seek(0);
-    if (LoadDDS(stream))
-        return true;
-
-    stream->Seek(0);
-    if (LoadJPG(stream))
-        return true;
-
-    Release();
-    LOG_WARNING("Stream was not recognized as any of the usable file formats.");
+    LOG_ERROR("Stream was not recognized as any of the usable file formats.");
     return false;
 }
 

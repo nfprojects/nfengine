@@ -221,7 +221,12 @@ popd</Command>
     <ClInclude Include="File.hpp" />
     <ClInclude Include="FileSystem.hpp" />
     <ClInclude Include="Image\Image.hpp" />
+    <ClInclude Include="Image\ImageBMP.hpp" />
+    <ClInclude Include="Image\ImageDDS.hpp" />
     <ClInclude Include="Image\ImageFormat.hpp" />
+    <ClInclude Include="Image\ImageJPG.hpp" />
+    <ClInclude Include="Image\ImagePNG.hpp" />
+    <ClInclude Include="Image\ImageType.hpp" />
     <ClInclude Include="Image\Mipmap.hpp" />
     <ClInclude Include="InputStream.hpp" />
     <ClInclude Include="KeyCodes.hpp" />
@@ -292,25 +297,25 @@ popd</Command>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Image\ImageLoadBMP.cpp">
+    <ClCompile Include="Image\ImageBMP.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Image\ImageLoadDDS.cpp">
+    <ClCompile Include="Image\ImageDDS.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Image\ImageLoadJPG.cpp">
+    <ClCompile Include="Image\ImageJPG.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Image\ImageLoadPNG.cpp">
+    <ClCompile Include="Image\ImagePNG.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>

@@ -8,9 +8,13 @@
 #pragma once
 
 #include "../nfCommon.hpp"
-#include "Mipmap.hpp"
 #include "../InputStream.hpp"
+#include "Mipmap.hpp"
+#include "ImageFormat.hpp"
+#include "ImageType.hpp"
 
+#include <unordered_map>
+#include <memory>
 #include <vector>
 
 namespace NFE {
@@ -18,21 +22,29 @@ namespace Common {
 
 class NFCOMMON_API Image
 {
+    // Typedefs to make these types shorter and more readable
+    using ImageTypePtr = std::unique_ptr<ImageType>;
+    using ImageTypeMap = std::unordered_map<std::string, ImageTypePtr>;
+    using StrVector = std::vector<std::string>;
+
     std::vector<Mipmap> mMipmaps;
     int mWidth;
     int mHeight;
     ImageFormat mFormat;
 
+    static ImageTypeMap mImageTypes;
+    friend class ImageType;
+
     bool DecompressDDS();
     bool CompressDDS(ImageFormat destFormat);
     bool GenerateMipmapsActual(MipmapFilter filterType, uint32 num);
     bool ConvertActual(ImageFormat destFormat);
-
+    /*
     bool LoadBMP(InputStream* stream);
     bool LoadPNG(InputStream* stream);
     bool LoadJPG(InputStream* stream);
     bool LoadDDS(InputStream* stream);
-
+      */
 public:
     Image();
     Image(const Image& src);
@@ -40,6 +52,30 @@ public:
     Image& operator=(const Image& other) = delete;
     Image& operator=(Image&& other) = delete;
     ~Image();
+
+    /**
+     * Register image type to make it available for saving/loading.
+     *
+     * @param name      Image type name.
+     * @param imageType Image type object - must implement ImageType class.
+     *
+     * @return True, if new ImageType with @name was inserted. False if @name is already in use.
+     */
+    static bool RegisterImageType(const std::string& name, ImageTypePtr imageType) noexcept;
+
+    /**
+     * Get pointer to already registered ImageType.
+     *
+     * @param name     Image type name.
+     *
+     * @return Pointer to the ImageType if registered, otherwise nullptr.
+     */
+    static ImageType* GetImageType(const std::string& name) noexcept;
+
+    /**
+     * Get list of the registered ImageTypes.
+     */
+    static StrVector ListImageTypes();
 
     /**
      * Free the image from memory.
