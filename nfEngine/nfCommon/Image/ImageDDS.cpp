@@ -1,12 +1,12 @@
 /**
  * @file
- * @author Witek902 (witek902@gmail.com)
  * @author mkulagowski (mkkulagowski(at)gmail.com)
- * @brief  LoadDDS function definition from Image class.
+ * @brief  ImageDDS class definition.
  */
 
 
 #include "../PCH.hpp"
+#include "ImageDDS.hpp"
 #include "Image.hpp"
 #include "../Logger.hpp"
 
@@ -33,10 +33,10 @@
 #define ID_DXT5   0x35545844
 
 #ifndef MAKEFOURCC
-#define MAKEFOURCC(ch0, ch1, ch2, ch3) ((uint32)(uint8)(ch0)        | \
-                                       ((uint32)(uint8)(ch1) << 8)  | \
-                                       ((uint32)(uint8)(ch2) << 16) | \
-                                       ((uint32)(uint8)(ch3) << 24))
+#define MAKEFOURCC(ch0, ch1, ch2, ch3) ((NFE::uint32)(NFE::uint8)(ch0)        | \
+                                       ((NFE::uint32)(NFE::uint8)(ch1) << 8)  | \
+                                       ((NFE::uint32)(NFE::uint8)(ch2) << 16) | \
+                                       ((NFE::uint32)(NFE::uint8)(ch3) << 24))
 #endif /* defined(MAKEFOURCC) */
 
 #define ISBITMASK(r, g, b, a) (ddpf.dwRBitMask == r &&   \
@@ -44,8 +44,11 @@
                                ddpf.dwBBitMask == b &&   \
                                ddpf.dwAlphaBitMask == a)
 
+
 namespace NFE {
 namespace Common {
+
+namespace {
 
 struct DDS_PIXELFORMAT
 {
@@ -69,7 +72,7 @@ struct DDS_header
     unsigned int    dwPitchOrLinearSize;
     unsigned int    dwDepth;
     unsigned int    dwMipMapCount;
-    unsigned int    dwReserved1[ 11 ];
+    unsigned int    dwReserved1[11];
 
     //  DDPIXELFORMAT
     DDS_PIXELFORMAT sPixelFormat;
@@ -210,7 +213,27 @@ static ImageFormat DDSGetFormat(const DDS_PIXELFORMAT& ddpf)
     return ImageFormat::Unknown;
 }
 
-bool Image::LoadDDS(InputStream* stream)
+}
+
+// Register DDS image type
+bool gImageDDSRegistered = ImageType::RegisterImageType("DDS", std::make_unique<ImageDDS>());
+
+bool ImageDDS::Check(InputStream* stream)
+{
+    uint32 signature = 0;
+    stream->Seek(0);
+    if (sizeof(signature) < stream->Read(&signature, sizeof(signature)))
+    {
+        LOG_ERROR("Could not read signature from the stream.");
+        return false;
+    }
+
+    stream->Seek(0);
+
+    return signature == 0x20534444;
+}
+
+bool ImageDDS::Load(Image* img, InputStream* stream)
 {
     // read header
     DDS_header header;
@@ -221,21 +244,19 @@ bool Image::LoadDDS(InputStream* stream)
     if (header.dwMagic != DDS_MAGIC_NUMBER)
         return false;
 
-    mWidth = header.dwWidth;
-    mHeight = header.dwHeight;
-
+    int width = header.dwWidth;
+    int height = header.dwHeight;
+    int initWidth = header.dwWidth;
+    int initHeight = header.dwHeight;
     int numMipmaps = header.dwMipMapCount;
     if (numMipmaps < 1) numMipmaps = 1;
     if (numMipmaps > 32) return 1;
 
-
-    mFormat = DDSGetFormat(header.sPixelFormat);
-
-    if (mFormat == ImageFormat::Unknown)
+    ImageFormat format = DDSGetFormat(header.sPixelFormat);
+    if (format == ImageFormat::Unknown)
         return false;
 
-    int width = mWidth;
-    int height = mHeight;
+    std::vector<Mipmap> mipmaps;
     for (int i = 0; i < numMipmaps; i++)
     {
         //keep mipmap size > 0
@@ -243,12 +264,12 @@ bool Image::LoadDDS(InputStream* stream)
         if (height == 0) height = 1;
 
 
-        size_t dataSize = ((width + 3) / 4) * ((height + 3) / 4) * 16 * BitsPerPixel(mFormat) / 8;
+        size_t dataSize = ((width + 3) / 4) * ((height + 3) / 4) * 16 * BitsPerPixel(format) / 8;
         std::unique_ptr<uint8[]> mipmapData(new (std::nothrow) uint8[dataSize]);
         if (!mipmapData.get())
         {
             LOG_ERROR("Allocating memory for loading DDS image failed.");
-            Release();
+            img->Release();
             return false;
         }
 
@@ -258,14 +279,25 @@ bool Image::LoadDDS(InputStream* stream)
             return false;
         }
 
-        Mipmap mipmap(mipmapData.get(), width, height, dataSize);
+        mipmaps.emplace_back(mipmapData.get(), width, height, dataSize);
 
-        mMipmaps.push_back(mipmap);
         width /= 2;
         height /= 2;
     }
 
-    return true;
+    // Set basic vars like width, height format and first mipmap
+    bool result = img->SetData(mipmaps.begin()->GetData(), initWidth, initHeight, format);
+
+    // Fill in the remaining mipmaps if they exist
+    if (mipmaps.size() > 1)
+        GetMipmaps(img)->assign(mipmaps.begin(), mipmaps.end());
+
+    return result;
+}
+
+bool ImageDDS::Save(Image*, OutputStream*)
+{
+    return false;
 }
 
 } // namespace Common

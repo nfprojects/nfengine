@@ -8,13 +8,21 @@
 #pragma once
 
 #include "../nfCommon.hpp"
-#include "Mipmap.hpp"
 #include "../InputStream.hpp"
+#include "Mipmap.hpp"
+#include "ImageFormat.hpp"
+#include "ImageType.hpp"
 
+#include <unordered_map>
+#include <memory>
 #include <vector>
 
 namespace NFE {
 namespace Common {
+
+// Typedefs to make these types shorter and more readable
+//using ImageTypePtr = std::unique_ptr<ImageType>;
+//using ImageTypeMap = std::unordered_map<std::string, ImageTypePtr>;
 
 class NFCOMMON_API Image
 {
@@ -23,15 +31,13 @@ class NFCOMMON_API Image
     int mHeight;
     ImageFormat mFormat;
 
+    static ImageTypeMap& mImageTypes() noexcept;
+    friend class ImageType;
+
     bool DecompressDDS();
     bool CompressDDS(ImageFormat destFormat);
     bool GenerateMipmapsActual(MipmapFilter filterType, uint32 num);
     bool ConvertActual(ImageFormat destFormat);
-
-    bool LoadBMP(InputStream* stream);
-    bool LoadPNG(InputStream* stream);
-    bool LoadJPG(InputStream* stream);
-    bool LoadDDS(InputStream* stream);
 
 public:
     Image();

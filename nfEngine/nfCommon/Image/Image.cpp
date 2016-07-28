@@ -8,7 +8,6 @@
 #include "../PCH.hpp"
 #include "Image.hpp"
 #include "../Logger.hpp"
-#include "ImageFormat.hpp"
 #include "squish/src/squish.h"
 
 namespace {
@@ -43,6 +42,12 @@ Image::Image(const Image& other)
 Image::~Image()
 {
     Release();
+}
+
+ImageTypeMap& Image::mImageTypes() noexcept
+{
+    static ImageTypeMap mImageType;
+    return mImageType;
 }
 
 void Image::Release()
@@ -87,24 +92,13 @@ bool Image::Load(InputStream* stream)
 {
     Release();
 
-    stream->Seek(0);
-    if (LoadBMP(stream))
-        return true;
+    for (const auto &i : mImageTypes())
+    {
+        if (i.second->Check(stream))
+            return i.second->Load(this, stream);
+    }
 
-    stream->Seek(0);
-    if (LoadPNG(stream))
-        return true;
-
-    stream->Seek(0);
-    if (LoadDDS(stream))
-        return true;
-
-    stream->Seek(0);
-    if (LoadJPG(stream))
-        return true;
-
-    Release();
-    LOG_WARNING("Stream was not recognized as any of the usable file formats.");
+    LOG_ERROR("Stream was not recognized as any of the usable file formats.");
     return false;
 }
 

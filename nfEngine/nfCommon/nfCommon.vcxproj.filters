@@ -263,6 +263,21 @@
     <ClInclude Include="FileBuffered.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Image\ImageBMP.hpp">
+      <Filter>Source Files\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Image\ImageType.hpp">
+      <Filter>Source Files\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Image\ImageJPG.hpp">
+      <Filter>Source Files\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Image\ImagePNG.hpp">
+      <Filter>Source Files\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Image\ImageDDS.hpp">
+      <Filter>Source Files\Image</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -364,18 +379,6 @@
     <ClCompile Include="Image\Image.cpp">
       <Filter>Source Files\Image</Filter>
     </ClCompile>
-    <ClCompile Include="Image\ImageLoadBMP.cpp">
-      <Filter>Source Files\Image</Filter>
-    </ClCompile>
-    <ClCompile Include="Image\ImageLoadDDS.cpp">
-      <Filter>Source Files\Image</Filter>
-    </ClCompile>
-    <ClCompile Include="Image\ImageLoadJPG.cpp">
-      <Filter>Source Files\Image</Filter>
-    </ClCompile>
-    <ClCompile Include="Image\ImageLoadPNG.cpp">
-      <Filter>Source Files\Image</Filter>
-    </ClCompile>
     <ClCompile Include="Image\Mipmap.cpp">
       <Filter>Source Files\Image</Filter>
     </ClCompile>
@@ -447,6 +450,21 @@
     </ClCompile>
     <ClCompile Include="FileBuffered.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\ImageBMP.cpp">
+      <Filter>Source Files\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\ImageJPG.cpp">
+      <Filter>Source Files\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\ImagePNG.cpp">
+      <Filter>Source Files\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\ImageDDS.cpp">
+      <Filter>Source Files\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\ImageType.cpp">
+      <Filter>Source Files\Image</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
