@@ -1,25 +1,18 @@
 #include "PCH.hpp"
 #include "nfCommon/Image/Image.hpp"
 #include "nfCommon/InputStream.hpp"
+#include "nfCommon/FileSystem.hpp"
 #include "Constants.hpp"
 
 #include <memory>
 
-
-/**
- * As stated by VC++ compiler dev here:
- * http://stackoverflow.com/a/34027257
- * it's a warning that is safe to disable.
- */
-#if defined(WIN32)
-#pragma warning( disable : 4592)
-#endif // defined(WIN32)
 
 using namespace NFE;
 using namespace NFE::Common;
 
 namespace {
 const std::string TEST_IMAGES_PATH = "./nfEngine/TestResources/ImageSamples/";
+const std::string TEST_IMAGES_SAVEPATH = "./nfEngine/TestResources/ImageSamples/SaveTests/";
 const int TEXTURE_WIDTH = 16;
 const int TEXTURE_HEIGHT = 16;
 
@@ -91,6 +84,11 @@ protected:
     void SetUp()
     {
         EXPECT_NO_THROW(mImage.reset(new Image()));
+    }
+
+    static void SetUpTestCase()
+    {
+        FileSystem::CreateDirIfNotExist(TEST_IMAGES_SAVEPATH);
     }
 
     // Function to check Load() functionality
@@ -439,7 +437,7 @@ TEST_F(ImageTest, GenerateMipmaps)
     // Successfully loaded picture
     mImage->Release();
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_JPG).data()));
-    ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGBA_UByte));
+    ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGB_UByte));
     ASSERT_TRUE(mImage->GenerateMipmaps(MipmapFilter::Box, TEST_DATA_MAX_MIPMAP_NUM));
     ASSERT_EQ(TEST_DATA_MAX_MIPMAP_NUM + 1, mImage->GetMipmapsNum());
 }
@@ -465,7 +463,24 @@ TEST_F(ImageTest, LoadJPG)
 {
     FillTestImage(ImageFormat::RGB_UByte);
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_JPG).data()));
-    LoadCheck(ImageFormat::RGBA_UByte);
+    LoadCheck(ImageFormat::RGB_UByte);
+}
+
+TEST_F(ImageTest, SaveJPG)
+{
+    FillTestImage(ImageFormat::RGB_UByte);
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_JPG).data()));
+    LoadCheck(ImageFormat::RGB_UByte);
+
+    {
+        FileOutputStream outFile((TEST_IMAGES_SAVEPATH + TEXTURE_JPG + "_saved.jpg").data());
+        ASSERT_FALSE(ImageType::GetImageType("JPG")->Save(mImage.get(), &outFile));
+        ASSERT_TRUE(mImage->Convert(ImageFormat::RGBA_UByte));
+        ASSERT_TRUE(ImageType::GetImageType("JPG")->Save(mImage.get(), &outFile));
+    }
+
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_SAVEPATH + TEXTURE_JPG + "_saved.jpg").data()));
+    LoadCheck(ImageFormat::RGB_UByte);
 }
 
 TEST_F(ImageTest, LoadPNG)
@@ -669,12 +684,12 @@ TEST_F(ImageTest, ConvertDDS)
 TEST_F(ImageTest, ConvertErrors)
 {
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_JPG).data()));
-    ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGBA_UByte));
+    ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGB_UByte));
 
     // Conversion to unknown format
     ASSERT_FALSE(mImage->Convert(ImageFormat::Unknown));
 
     // Conversion with no data - nothing to convert
     mImage->Release();
-    ASSERT_FALSE(mImage->Convert(ImageFormat::RGBA_UByte));
+    ASSERT_FALSE(mImage->Convert(ImageFormat::RGB_UByte));
 }
