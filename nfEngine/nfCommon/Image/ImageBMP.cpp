@@ -6,12 +6,18 @@
  */
 
 #include "../PCH.hpp"
+#include "ImageBMP.hpp"
 #include "Image.hpp"
 #include "../Logger.hpp"
 #include "../Bit.hpp"
 
-namespace NFE {
-namespace Common {
+namespace {
+
+using uint8 = NFE::uint8;
+using uint16 = NFE::uint16;
+using uint32 = NFE::uint32;
+using InputStream = NFE::Common::InputStream;
+using Mipmap = NFE::Common::Mipmap;
 
 #pragma pack(push, 2)
 struct BitmapFileHeader
@@ -74,14 +80,204 @@ struct RGBQuad
     uint8 rgbReserved;
 };
 
-bool GetColorPalette(InputStream* stream, std::vector<RGBQuad>& palette);
-bool ReadPixelsWithPalette(InputStream* stream, size_t offset, uint32 width,
-                           uint32 height, uint8 bitsPerPixel,
-                           std::vector<Mipmap> &dest, std::vector<RGBQuad> &palette);
-bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
-                uint8 bitsPerPixel, std::vector<Mipmap> &dest, uint32* colorMask);
+// Function to load color palette
+bool GetColorPalette(InputStream* stream, std::vector<RGBQuad>& palette)
+{
+    size_t sizeToRead = sizeof(RGBQuad) * palette.size();
+    stream->Read(palette.data(), sizeToRead);
 
-bool Image::LoadBMP(InputStream* stream)
+    return true;
+}
+
+// Function to read pixels for BMPs with >8bpp
+bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
+                uint8 bitsPerPixel, std::vector<Mipmap>* dest, uint32* colorMask)
+{
+    uint8 colorSize = bitsPerPixel / 8;
+    size_t dataSize = width * height * 4;
+
+    uint32 lineSize = width * colorSize;
+    uint32 lineSizeActual = lineSize;
+    while (lineSizeActual % 4)
+        lineSizeActual++;
+
+    std::unique_ptr<uint8[]> imageData(new (std::nothrow) uint8[dataSize]);
+
+    if (!imageData.get())
+    {
+        LOG_ERROR("Allocating memory for loading BMP image failed.");
+        return false;
+    }
+
+    // 24bpp stores no color masks, maybe due to having only 1 possible bit alignment.
+    // Either way, that enforces me to make it a separate case
+    if (bitsPerPixel == 24)
+    {
+        std::unique_ptr<uint8[]> colorData(new (std::nothrow) uint8[lineSize]);
+
+        for (int y = static_cast<int>(height - 1); y >= 0; y--)
+        {
+            // Read single line
+            if (stream->Read(colorData.get(), lineSize) != lineSize)
+            {
+                LOG_ERROR("Pixels read wrong.");
+                return false;
+            }
+
+            for (int x = 0; x < static_cast<int>(width); x++)
+            {
+                // Store 3 colors - RGB
+                for (uint32 i = 0; i < 3; i++)
+                    imageData.get()[4 * (y * width + x) + i] = colorData[x * colorSize + (2 - i)];
+
+                // Store 255 for alpha channel
+                imageData.get()[4 * (y * width + x) + 3] = 255;
+            }
+            offset += lineSizeActual;
+            stream->Seek(offset);
+        }
+    }
+    else
+    {
+        std::unique_ptr<uint32[]> colorData(new (std::nothrow) uint32[lineSize]);
+        uint8 colorsPer4Bytes = 4 / colorSize;
+        uint32 colorsMask = NFE::Common::CreateBitMask(bitsPerPixel);
+
+        for (int y = static_cast<int>(height - 1); y >= 0; y--)
+        {
+            // Read single line
+            if(stream->Read(colorData.get(), lineSize) != lineSize)
+            {
+                LOG_ERROR("Pixels read wrong.");
+                return false;
+            }
+
+            for (uint32 x = 0; x < width; x += colorsPer4Bytes)
+            {
+                // Read 2 or 4 bytes, depending on 16 or 32 bpp
+                for (uint32 j = 0; j < colorsPer4Bytes; j++)
+                {
+                    uint32 byteIndex = x / colorsPer4Bytes;
+
+                    // Variable for storing single pixel data in 32bits format
+                    uint32 colorData32 = ((colorData[byteIndex] >> (j * bitsPerPixel)) & colorsMask);
+
+                    // Get RGBA values from read bytes
+                    for (uint8 i = 0; i < 4; i++)
+                    {
+                        // Count trailing zeros for current colorMask
+                        uint8 maskOffset = NFE::Common::CountTrailingZeros(colorMask[i]);
+
+                        // Get color value (it may be 5, 6 or 8 bits)
+                        uint32 singleColor = (colorData32 & colorMask[i]) >> maskOffset;
+
+                        // If color mask is not zero, then normalize value to 0-255 range
+                        if (colorMask[i])
+                        {
+                            singleColor *= 255;
+                            singleColor /= (colorMask[i] >> maskOffset);
+                        }
+
+                        // Store color data
+                        uint8 singleColor8b = static_cast<uint8>(singleColor);
+                        imageData.get()[4 * (y * width + x + j) + i] = singleColor8b;
+                    }
+
+                    // If there was no alpha mask (no alpha stored in file), store 255
+                    if (!colorMask[3])
+                        imageData.get()[4 * (y * width + x + j) + 3] = 255;
+                }
+            }
+            offset += lineSizeActual;
+            stream->Seek(offset);
+        }
+    }
+
+    dest->emplace_back(Mipmap(imageData.get(), width, height, dataSize));
+    return true;
+}
+
+// Function to read pixels for BMPs with <=8bpp (these contain color palette)
+bool ReadPixelsWithPalette(InputStream* stream, size_t offset, uint32 width,
+                           uint32 height, uint8 bitsPerPixel, std::vector<Mipmap>* dest,
+                           std::vector<RGBQuad> &palette)
+{
+    size_t dataSize = width * height * 4;
+    uint8 colorsPerByte = 8 / bitsPerPixel;
+    uint8 bitMask = static_cast<uint8>(NFE::Common::CreateBitMask(bitsPerPixel));
+
+    // lineSize is a size of all non-empty bytes in line
+    uint32 lineSize = (width + (width % colorsPerByte)) / colorsPerByte;
+    uint32 lineSizeActual = lineSize;
+    while (lineSizeActual % 4)
+        lineSizeActual++;
+
+    std::unique_ptr<uint8[]> imageData(new (std::nothrow) uint8[dataSize]);
+    std::unique_ptr<uint8[]> colorData(new (std::nothrow) uint8[lineSize]);
+
+    if (!imageData.get())
+    {
+        LOG_ERROR("Allocating memory for loading BMP image failed.");
+        return false;
+    }
+
+    // Number of bytes used to hold one line
+    //int bytesNumber = (width + (width % colorsPerByte)) / colorsPerByte;
+
+    for (int y = static_cast<int>(height - 1); y >= 0; y--)
+    {
+        // Read one byte of data
+        if (stream->Read(colorData.get(), lineSize) != lineSize)
+        {
+            LOG_ERROR("Pixels read wrong.");
+            return false;
+        }
+
+        for (uint32 x = 0; x < width; x++)
+        {
+            int byteIndex = x / colorsPerByte;
+            int imageDataIndex = 4 * (y * width + x);
+            uint8 bitShift = bitsPerPixel * (x % colorsPerByte);
+
+            int paletteIndex = (colorData[byteIndex] >> bitShift) & bitMask;
+
+            imageData.get()[imageDataIndex + 0] = palette[paletteIndex].rgbRed;
+            imageData.get()[imageDataIndex + 1] = palette[paletteIndex].rgbGreen;
+            imageData.get()[imageDataIndex + 2] = palette[paletteIndex].rgbBlue;
+            imageData.get()[imageDataIndex + 3] = 255;
+        }
+        offset += lineSizeActual;
+        stream->Seek(offset);
+    }
+
+    dest->emplace_back(Mipmap(imageData.get(), width, height, dataSize));
+    return true;
+}
+
+}
+
+namespace NFE {
+namespace Common {
+
+// Register BMP image type
+bool gImageBMPRegistered = Image::RegisterImageType("BMP", std::make_unique<ImageBMP>());
+
+bool ImageBMP::Check(InputStream* stream)
+{
+    uint16 signature = 0;
+    stream->Seek(0);
+    if (sizeof(signature) < stream->Read(&signature, sizeof(signature)))
+    {
+        LOG_ERROR("Could not read signature from the stream.");
+        return false;
+    }
+
+    stream->Seek(0);
+
+    return signature == 0x4D42;
+}
+
+bool ImageBMP::Load(Image* img, InputStream* stream)
 {
     BitmapFileHeader fileHeader;
     BitmapV5Header infoHeader;
@@ -143,207 +339,39 @@ bool Image::LoadBMP(InputStream* stream)
     stream->Seek(fileHeader.offBits);
     size_t offset = fileHeader.offBits;
 
-    mWidth = infoHeader.width;
-    mHeight = infoHeader.height;
+    SetWidth(img, infoHeader.width);
+    SetHeight(img, infoHeader.height);
 
     // Read pixels
     if (paletteUsed)
     {
-        if (!ReadPixelsWithPalette(stream, offset, mWidth, mHeight,
-                                    bitsPerPixel, mMipmaps, palette))
+        if (!ReadPixelsWithPalette(stream, offset, img->GetWidth(), img->GetHeight(),
+                                   bitsPerPixel, GetMipmaps(img), palette))
         {
             LOG_ERROR("Error while reading pixels");
-            Release();
+            img->Release();
             return false;
         }
     }
     else
     {
-        if (!ReadPixels(stream, offset, mWidth, mHeight,
-                        bitsPerPixel, mMipmaps, colorMask))
+        if (!ReadPixels(stream, offset, img->GetWidth(), img->GetHeight(),
+                        bitsPerPixel, GetMipmaps(img), colorMask))
         {
             LOG_ERROR("Error while reading pixels");
-            Release();
+            img->Release();
             return false;
         }
     }
 
-    mFormat = ImageFormat::RGBA_UByte;
+    SetFormat(img, ImageFormat::RGBA_UByte);
     return true;
 }
 
-// Function to load color palette
-bool GetColorPalette(InputStream* stream, std::vector<RGBQuad>& palette)
+bool ImageBMP::Save(Image*, OutputStream*)
 {
-    size_t sizeToRead = sizeof(RGBQuad) * palette.size();
-    stream->Read(palette.data(), sizeToRead);
-
-    return true;
+    return false;
 }
 
-// Function to read pixels for BMPs with >8bpp
-bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
-                uint8 bitsPerPixel, std::vector<Mipmap> &dest, uint32* colorMask)
-{
-    uint8 colorSize = bitsPerPixel / 8;
-    size_t dataSize = width * height * 4;
-
-    uint32 lineSize = width * colorSize;
-    uint32 lineSizeActual = lineSize;
-    while (lineSizeActual % 4)
-        lineSizeActual++;
-
-    std::unique_ptr<uint8[]> imageData(new (std::nothrow) uint8[dataSize]);
-
-    if (!imageData.get())
-    {
-        LOG_ERROR("Allocating memory for loading BMP image failed.");
-        return false;
-    }
-
-    // 24bpp stores no color masks, maybe due to having only 1 possible bit alignment.
-    // Either way, that enforces me to make it a separate case
-    if (bitsPerPixel == 24)
-    {
-        std::unique_ptr<uint8[]> colorData(new (std::nothrow) uint8[lineSize]);
-
-        for (int y = static_cast<int>(height - 1); y >= 0; y--)
-        {
-            // Read single line
-            if (stream->Read(colorData.get(), lineSize) != lineSize)
-            {
-                LOG_ERROR("Pixels read wrong.");
-                return false;
-            }
-
-            for (int x = 0; x < static_cast<int>(width); x++)
-            {
-                // Store 3 colors - RGB
-                for (uint32 i = 0; i < 3; i++)
-                    imageData.get()[4 * (y * width + x) + i] = colorData[x * colorSize + (2 - i)];
-
-                // Store 255 for alpha channel
-                imageData.get()[4 * (y * width + x) + 3] = 255;
-            }
-            offset += lineSizeActual;
-            stream->Seek(offset);
-        }
-    }
-    else
-    {
-        std::unique_ptr<uint32[]> colorData(new (std::nothrow) uint32[lineSize]);
-        uint8 colorsPer4Bytes = 4 / colorSize;
-        uint32 colorsMask = CreateBitMask(bitsPerPixel);
-
-        for (int y = static_cast<int>(height - 1); y >= 0; y--)
-        {
-            // Read single line
-            if(stream->Read(colorData.get(), lineSize) != lineSize)
-            {
-                LOG_ERROR("Pixels read wrong.");
-                return false;
-            }
-
-            for (uint32 x = 0; x < width; x += colorsPer4Bytes)
-            {
-                // Read 2 or 4 bytes, depending on 16 or 32 bpp
-                for (uint32 j = 0; j < colorsPer4Bytes; j++)
-                {
-                    uint32 byteIndex = x / colorsPer4Bytes;
-
-                    // Variable for storing single pixel data in 32bits format
-                    uint32 colorData32 = ((colorData[byteIndex] >> (j * bitsPerPixel)) & colorsMask);
-
-                    // Get RGBA values from read bytes
-                    for (uint8 i = 0; i < 4; i++)
-                    {
-                        // Count trailing zeros for current colorMask
-                        uint8 maskOffset = CountTrailingZeros(colorMask[i]);
-
-                        // Get color value (it may be 5, 6 or 8 bits)
-                        uint32 singleColor = (colorData32 & colorMask[i]) >> maskOffset;
-
-                        // If color mask is not zero, then normalize value to 0-255 range
-                        if (colorMask[i])
-                        {
-                            singleColor *= 255;
-                            singleColor /= (colorMask[i] >> maskOffset);
-                        }
-
-                        // Store color data
-                        uint8 singleColor8b = static_cast<uint8>(singleColor);
-                        imageData.get()[4 * (y * width + x + j) + i] = singleColor8b;
-                    }
-
-                    // If there was no alpha mask (no alpha stored in file), store 255
-                    if (!colorMask[3])
-                        imageData.get()[4 * (y * width + x + j) + 3] = 255;
-                }
-            }
-            offset += lineSizeActual;
-            stream->Seek(offset);
-        }
-    }
-
-    dest.emplace_back(Mipmap(imageData.get(), width, height, dataSize));
-    return true;
-}
-
-// Function to read pixels for BMPs with <=8bpp (these contain color palette)
-bool ReadPixelsWithPalette(InputStream* stream, size_t offset, uint32 width,
-                            uint32 height, uint8 bitsPerPixel, std::vector<Mipmap> &dest,
-                            std::vector<RGBQuad> &palette)
-{
-    size_t dataSize = width * height * 4;
-    uint8 colorsPerByte = 8 / bitsPerPixel;
-    uint8 bitMask = static_cast<uint8>(CreateBitMask(bitsPerPixel));
-
-    // lineSize is a size of all non-empty bytes in line
-    uint32 lineSize = (width + (width % colorsPerByte)) / colorsPerByte;
-    uint32 lineSizeActual = lineSize;
-    while (lineSizeActual % 4)
-        lineSizeActual++;
-
-    std::unique_ptr<uint8[]> imageData(new (std::nothrow) uint8[dataSize]);
-    std::unique_ptr<uint8[]> colorData(new (std::nothrow) uint8[lineSize]);
-
-    if (!imageData.get())
-    {
-        LOG_ERROR("Allocating memory for loading BMP image failed.");
-        return false;
-    }
-
-    // Number of bytes used to hold one line
-    //int bytesNumber = (width + (width % colorsPerByte)) / colorsPerByte;
-
-    for (int y = static_cast<int>(height - 1); y >= 0; y--)
-    {
-        // Read one byte of data
-        if (stream->Read(colorData.get(), lineSize) != lineSize)
-        {
-            LOG_ERROR("Pixels read wrong.");
-            return false;
-        }
-
-        for (uint32 x = 0; x < width; x++)
-        {
-            int byteIndex = x / colorsPerByte;
-            int imageDataIndex = 4 * (y * width + x);
-            uint8 bitShift = bitsPerPixel * (x % colorsPerByte);
-
-            int paletteIndex = (colorData[byteIndex] >> bitShift) & bitMask;
-
-            imageData.get()[imageDataIndex + 0] = palette[paletteIndex].rgbRed;
-            imageData.get()[imageDataIndex + 1] = palette[paletteIndex].rgbGreen;
-            imageData.get()[imageDataIndex + 2] = palette[paletteIndex].rgbBlue;
-            imageData.get()[imageDataIndex + 3] = 255;
-        }
-        offset += lineSizeActual;
-        stream->Seek(offset);
-    }
-
-    dest.emplace_back(Mipmap(imageData.get(), width, height, dataSize));
-    return true;
-}
 } // namespace Common
 } // namespace NFE
