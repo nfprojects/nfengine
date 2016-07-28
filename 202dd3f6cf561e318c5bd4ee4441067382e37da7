@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_02e68643",
+        "filename": "nfEngine/nfCommon/Image/Image.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-28T19:58:07Z",
+      "side": 1,
+      "message": "As in previous commit. Instead of multiplying SaveXXX() and LoadXXX() methods here, move that to some abstract ImageFormatHandler or something",
+      "revId": "202dd3f6cf561e318c5bd4ee4441067382e37da7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_e2e04228",
+        "filename": "nfEngine/nfCommon/Image/ImageJPG.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-28T19:58:07Z",
+      "side": 1,
+      "message": "you must check if format is correct - for example JPG won\u0027t support alpha channel or BCx images",
+      "revId": "202dd3f6cf561e318c5bd4ee4441067382e37da7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c2d2de5b",
+        "filename": "nfEngine/nfCommon/Image/ImageJPG.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-28T19:58:07Z",
+      "side": 1,
+      "message": "mipmap level should be selectable",
+      "range": {
+        "startLine": 88,
+        "startChar": 33,
+        "endLine": 88,
+        "endChar": 34
+      },
+      "revId": "202dd3f6cf561e318c5bd4ee4441067382e37da7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a2d59a43",
+        "filename": "nfEngine/nfCommon/Image/ImageJPG.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-28T19:58:07Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 89,
+        "startChar": 55,
+        "endLine": 89,
+        "endChar": 56
+      },
+      "revId": "202dd3f6cf561e318c5bd4ee4441067382e37da7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
