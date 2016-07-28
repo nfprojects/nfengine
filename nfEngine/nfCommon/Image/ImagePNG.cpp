@@ -1,11 +1,11 @@
 /**
  * @file
- * @author Witek902 (witek902@gmail.com)
  * @author mkulagowski (mkkulagowski(at)gmail.com)
- * @brief  LoadPNG function definition from Image class.
+ * @brief  ImagePNG class definition.
  */
 
 #include "../PCH.hpp"
+#include "ImagePNG.hpp"
 #include "Image.hpp"
 #include "libpng/png.h"
 #include "../Logger.hpp"
@@ -14,6 +14,8 @@
 
 namespace NFE {
 namespace Common {
+
+namespace {
 
 struct pngReadInfo
 {
@@ -43,7 +45,27 @@ void userReadData(png_structp pngPtr, png_bytep data, png_size_t length)
         info->offset += stream->Read(data, length);
 }
 
-bool Image::LoadPNG(InputStream* stream)
+}
+
+// Register PNG image type
+bool gImagePNGRegistered = ImageType::RegisterImageType("PNG", std::make_unique<ImagePNG>());
+
+bool ImagePNG::Check(InputStream* stream)
+{
+    uint32 signature = 0;
+    stream->Seek(0);
+    if (sizeof(signature) < stream->Read(&signature, sizeof(signature)))
+    {
+        LOG_ERROR("Could not read signature from the stream.");
+        return false;
+    }
+
+    stream->Seek(0);
+
+    return signature == 0x474E5089;
+}
+
+bool ImagePNG::Load(Image* img, InputStream* stream)
 {
     // read png signature
     uint8 signature[PNGSIGSIZE];
@@ -98,8 +120,6 @@ bool Image::LoadPNG(InputStream* stream)
 
     png_uint_32 imgWidth =  png_get_image_width(pngPtr, infoPtr);
     png_uint_32 imgHeight = png_get_image_height(pngPtr, infoPtr);
-    mWidth = imgWidth;
-    mHeight = imgHeight;
 
     png_uint_32 bitdepth   = png_get_bit_depth(pngPtr, infoPtr);
     png_uint_32 channels   = png_get_channels(pngPtr, infoPtr);
@@ -109,6 +129,7 @@ bool Image::LoadPNG(InputStream* stream)
     if (bitdepth > 8)
         png_set_scale_16(pngPtr);
 
+    ImageFormat format = ImageFormat::Unknown;
 
     switch (color_type)
     {
@@ -116,14 +137,14 @@ bool Image::LoadPNG(InputStream* stream)
             png_set_palette_to_rgb(pngPtr);
             channels = 3;
 
-            mFormat = ImageFormat::RGB_UByte; //can be tRNS
+            format = ImageFormat::RGB_UByte; //can be tRNS
 
             // if the image has a transperancy set, convert it to a full Alpha channel
             if (png_get_valid(pngPtr, infoPtr, PNG_INFO_tRNS))
             {
                 // if there is tRNS,
                 // then png_set_palette_to_rgb(pngPtr) should transform it to rgba
-                mFormat = ImageFormat::RGBA_UByte;
+                format = ImageFormat::RGBA_UByte;
                 channels = 4;
             }
             break;
@@ -134,41 +155,40 @@ bool Image::LoadPNG(InputStream* stream)
             if (png_get_valid(pngPtr, infoPtr, PNG_INFO_tRNS))
             {
                 png_set_gray_to_rgb(pngPtr);
-                mFormat = ImageFormat::RGBA_UByte;
+                format = ImageFormat::RGBA_UByte;
                 channels = 4;
             }
             else
             {
                 png_set_expand_gray_1_2_4_to_8(pngPtr);
-                mFormat = ImageFormat::A_UByte;
+                format = ImageFormat::A_UByte;
             }
             break;
 
         case PNG_COLOR_TYPE_RGB:
-            mFormat = ImageFormat::RGB_UByte; //can be tRNS
+            format = ImageFormat::RGB_UByte; //can be tRNS
 
             // if the image has a transperancy set, convert it to a full Alpha channel
             if (png_get_valid(pngPtr, infoPtr, PNG_INFO_tRNS))
             {
                 png_set_tRNS_to_alpha(pngPtr);
-                mFormat = ImageFormat::RGBA_UByte;
+                format = ImageFormat::RGBA_UByte;
                 channels = 4;
             }
             break;
 
         case PNG_COLOR_TYPE_RGBA:
-            mFormat = ImageFormat::RGBA_UByte;
+            format = ImageFormat::RGBA_UByte;
             break;
 
         case PNG_COLOR_TYPE_GA:
             // Change G->RGB or GA->RGBA
             png_set_gray_to_rgb(pngPtr);
             channels = 4;
-            mFormat = ImageFormat::RGBA_UByte;
+            format = ImageFormat::RGBA_UByte;
             break;
 
         default:
-            mFormat = ImageFormat::Unknown;
             LOG_ERROR("PNG color type %d not recognized.", color_type);
             return false;
     }
@@ -182,7 +202,7 @@ bool Image::LoadPNG(InputStream* stream)
     if (!rowPtrs.get() || !dataPtr.get())
     {
         LOG_ERROR("Allocating memory for loading PNG image failed.");
-        Release();
+        img->Release();
         return false;
     }
 
@@ -202,11 +222,15 @@ bool Image::LoadPNG(InputStream* stream)
     png_read_image(pngPtr, rowPtrs.get());
 
     // Create mipmap based on data read from PNG
-    Mipmap mipmap(dataPtr.get(), imgWidth, imgHeight, dataSize);
+    bool result = img->SetData(dataPtr.get(), imgWidth, imgHeight, format);
     png_destroy_read_struct(&pngPtr, &infoPtr, nullptr);
 
-    mMipmaps.push_back(std::move(mipmap));
-    return true;
+    return result;
+}
+
+bool ImagePNG::Save(Image*, OutputStream*)
+{
+    return false;
 }
 
 } // namespace Common
