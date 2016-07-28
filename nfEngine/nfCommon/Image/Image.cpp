@@ -87,24 +87,23 @@ bool Image::Load(InputStream* stream)
 {
     Release();
 
+    uint32 signature = 0;
+    stream->Read(sizeof(uint32), &signature);
     stream->Seek(0);
-    if (LoadBMP(stream))
-        return true;
 
-    stream->Seek(0);
-    if (LoadPNG(stream))
-        return true;
+    if (signature == 0x474E5089)
+        return LoadPNG(stream);
 
-    stream->Seek(0);
-    if (LoadDDS(stream))
-        return true;
+    if (signature == 0x20534444)
+        return LoadDDS(stream);
 
-    stream->Seek(0);
-    if (LoadJPG(stream))
-        return true;
+    if ((signature & 0xFFFFFF) == 0xFFD8FF)
+        return LoadJPG(stream);
 
-    Release();
-    LOG_WARNING("Stream was not recognized as any of the usable file formats.");
+    if ((signature & 0xFFFF) == 0x4D42)
+        return LoadBMP(stream);
+
+    LOG_ERROR("Stream was not recognized as any of the usable file formats.");
     return false;
 }
 
