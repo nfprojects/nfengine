@@ -20,9 +20,6 @@
 namespace NFE {
 namespace Common {
 
-// Typedefs to make these types shorter and more readable
-//using ImageTypePtr = std::unique_ptr<ImageType>;
-//using ImageTypeMap = std::unordered_map<std::string, ImageTypePtr>;
 
 class NFCOMMON_API Image
 {

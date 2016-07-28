@@ -36,6 +36,7 @@ Makefile
 
 # Other useless folders and file patterns
 /Logs
+/nfEngine/TestResources/ImageSamples/SaveTests
 *.opensdf
 *.opendb
 *.sdf
