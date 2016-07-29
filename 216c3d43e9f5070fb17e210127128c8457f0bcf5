@@ -1,0 +1,199 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_6570cb40",
+        "filename": "nfEngine/nfCommon/FileAsync.hpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-29T23:53:52Z",
+      "side": 1,
+      "message": "Fix comments in the whole file (missing space)",
+      "revId": "216c3d43e9f5070fb17e210127128c8457f0bcf5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_45902743",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-29T23:53:52Z",
+      "side": 1,
+      "message": "not needed if in annonymous namespace",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 6
+      },
+      "revId": "216c3d43e9f5070fb17e210127128c8457f0bcf5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_28cf2857",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-29T23:53:52Z",
+      "side": 1,
+      "message": "what\u0027s the point of moving static members in move constructor?",
+      "range": {
+        "startLine": 128,
+        "startChar": 0,
+        "endLine": 132,
+        "endChar": 22
+      },
+      "revId": "216c3d43e9f5070fb17e210127128c8457f0bcf5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_48d4acea",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-29T23:53:52Z",
+      "side": 1,
+      "message": "why not just:\n\nint enqueueResult \u003d ::io_submit(mCtx, 1, iocbPtr);",
+      "range": {
+        "startLine": 253,
+        "startChar": 0,
+        "endLine": 255,
+        "endChar": 50
+      },
+      "revId": "216c3d43e9f5070fb17e210127128c8457f0bcf5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a8e218d3",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-29T23:53:52Z",
+      "side": 1,
+      "message": "this may generate compilation warning. Use \"for (;;)\" instead",
+      "revId": "216c3d43e9f5070fb17e210127128c8457f0bcf5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_88e514dd",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-29T23:53:52Z",
+      "side": 1,
+      "message": "rm?",
+      "range": {
+        "startLine": 361,
+        "startChar": 0,
+        "endLine": 364,
+        "endChar": 76
+      },
+      "revId": "216c3d43e9f5070fb17e210127128c8457f0bcf5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_68e890b3",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 369,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-29T23:53:52Z",
+      "side": 1,
+      "message": "pollTimeout?",
+      "range": {
+        "startLine": 369,
+        "startChar": 29,
+        "endLine": 369,
+        "endChar": 35
+      },
+      "revId": "216c3d43e9f5070fb17e210127128c8457f0bcf5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_e8bdc0b1",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 392,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-29T23:53:52Z",
+      "side": 1,
+      "message": "reinterpret_cast",
+      "range": {
+        "startLine": 392,
+        "startChar": 34,
+        "endLine": 392,
+        "endChar": 41
+      },
+      "revId": "216c3d43e9f5070fb17e210127128c8457f0bcf5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c8df9c0b",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-29T23:53:52Z",
+      "side": 1,
+      "message": "is this needed?",
+      "range": {
+        "startLine": 395,
+        "startChar": 65,
+        "endLine": 395,
+        "endChar": 72
+      },
+      "revId": "216c3d43e9f5070fb17e210127128c8457f0bcf5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
