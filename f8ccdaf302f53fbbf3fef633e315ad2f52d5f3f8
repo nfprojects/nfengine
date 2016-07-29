@@ -436,6 +436,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_136a68ed",
+        "filename": "nfEngine/nfCommon/FileBuffered.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-29T23:45:05Z",
+      "side": 1,
+      "message": "Because we should handle files greater than 4GB",
+      "parentUuid": "baa041b7_f3e15d2b",
+      "range": {
+        "startLine": 21,
+        "startChar": 4,
+        "endLine": 21,
+        "endChar": 10
+      },
+      "revId": "f8ccdaf302f53fbbf3fef633e315ad2f52d5f3f8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_ca881025",
         "filename": "nfEngine/nfCommon/FileBuffered.hpp",
         "patchSetId": 2
