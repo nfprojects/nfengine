@@ -23,6 +23,12 @@ RenderTarget::RenderTarget()
 
 RenderTarget::~RenderTarget()
 {
+    for (auto& fb : mFramebuffers)
+        if (fb != VK_NULL_HANDLE)
+            vkDestroyFramebuffer(gDevice->GetDevice(), fb, nullptr);
+
+    if (mRenderPass != VK_NULL_HANDLE)
+        vkDestroyRenderPass(gDevice->GetDevice(), mRenderPass, nullptr);
 }
 
 void RenderTarget::GetDimensions(int& width, int& height)

@@ -29,6 +29,7 @@ private:
     VkSemaphore mRenderSemaphore;
     VkSemaphore mPresentSemaphore;
     VkSemaphore mPostPresentSemaphore;
+    bool mDebugEnable;
 
     VkPhysicalDevice SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices);
 

@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "Device.hpp"
+#include "Debugger.hpp"
 
 #include <memory.h>
 
@@ -52,6 +53,8 @@ Device::Device()
     , mGraphicsQueue(VK_NULL_HANDLE)
     , mRenderSemaphore(VK_NULL_HANDLE)
     , mPresentSemaphore(VK_NULL_HANDLE)
+    , mPostPresentSemaphore(VK_NULL_HANDLE)
+    , mDebugEnable(false)
 {
 }
 
@@ -67,6 +70,8 @@ Device::~Device()
         vkDestroyCommandPool(mDevice, mCommandPool, nullptr);
     if (mDevice != VK_NULL_HANDLE)
         vkDestroyDevice(mDevice, nullptr);
+
+    Debugger::Instance().Release();
 }
 
 VkPhysicalDevice Device::SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices)
@@ -99,7 +104,7 @@ VkPhysicalDevice Device::SelectPhysicalDevice(const std::vector<VkPhysicalDevice
 
 bool Device::Init()
 {
-    if (!mInstance.Init(false))
+    if (!mInstance.Init(mDebugEnable))
     {
         LOG_ERROR("Vulkan instance failed to initialize");
         return false;
@@ -164,9 +169,19 @@ bool Device::Init()
     queueInfo.queueCount = 1;
     queueInfo.pQueuePriorities = queuePriorities;
 
-    const char* enabledExtensions[] =
+    std::vector<const char*> enabledExtensions;
+    enabledExtensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+
+
+    if (mDebugEnable)
     {
-        VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+        // TODO right now Debug Markers are unsupported by drivers
+        //      Uncomment when driver support appears
+        //enabledExtensions.push_back(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
+    }
+
+    const char* enabledLayers[] = {
+        "VK_LAYER_LUNARG_standard_validation" // for debugging
     };
 
     VkDeviceCreateInfo devInfo;
@@ -176,14 +191,24 @@ bool Device::Init()
     devInfo.queueCreateInfoCount = 1;
     devInfo.pQueueCreateInfos = &queueInfo;
     devInfo.pEnabledFeatures = nullptr;
-    devInfo.enabledExtensionCount = 1;
-    devInfo.ppEnabledExtensionNames = enabledExtensions;
+    devInfo.enabledExtensionCount = static_cast<uint32>(enabledExtensions.size());
+    devInfo.ppEnabledExtensionNames = enabledExtensions.data();
+    if (mDebugEnable)
+    {
+        devInfo.enabledLayerCount = 1;
+        devInfo.ppEnabledLayerNames = enabledLayers;
+    }
 
     result = vkCreateDevice(mPhysicalDevice, &devInfo, nullptr, &mDevice);
-    if (result != VK_SUCCESS)
+    CHECK_VKRESULT(result, "Failed to create Vulkan device");
+
+    if (mDebugEnable)
     {
-        LOG_ERROR("Failed to create Vulkan Device.");
-        return false;
+        if (!Debugger::Instance().InitMarkers(mDevice))
+        {
+            LOG_ERROR("Vulkan debugging layer was requested, but is unavailable. Closing.");
+            return false;
+        }
     }
 
     if (!nfvkDeviceExtensionsInit(mDevice))
