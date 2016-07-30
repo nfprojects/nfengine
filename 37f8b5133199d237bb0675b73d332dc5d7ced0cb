@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_c30addd1",
+        "filename": "nfEngine/nfCore/Resources/Mesh.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-30T16:38:54Z",
+      "side": 1,
+      "message": "For now we can\u0027t. Changing rendering mutex is not in scope of this commit.",
+      "parentUuid": "baa041b7_d8c1c6e5",
+      "range": {
+        "startLine": 311,
+        "startChar": 4,
+        "endLine": 311,
+        "endChar": 24
+      },
+      "revId": "37f8b5133199d237bb0675b73d332dc5d7ced0cb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_f895aae3",
         "filename": "nfEngine/nfCore/Resources/Mesh.cpp",
         "patchSetId": 10
@@ -36,6 +60,30 @@
       "writtenOn": "2016-07-22T15:10:35Z",
       "side": 1,
       "message": "lock_guard should be faster here and You don\u0027t use unique_locks functionality here",
+      "range": {
+        "startLine": 312,
+        "startChar": 4,
+        "endLine": 312,
+        "endChar": 64
+      },
+      "revId": "37f8b5133199d237bb0675b73d332dc5d7ced0cb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a30d99e9",
+        "filename": "nfEngine/nfCore/Resources/Mesh.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-30T16:38:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_f895aae3",
       "range": {
         "startLine": 312,
         "startChar": 4,
