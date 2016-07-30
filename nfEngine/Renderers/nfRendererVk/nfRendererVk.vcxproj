@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Backbuffer.cpp" />
     <ClCompile Include="CommandBuffer.cpp" />
+    <ClCompile Include="Debugger.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Extensions.cpp" />
     <ClCompile Include="Instance.cpp" />
@@ -54,6 +55,7 @@
   <ItemGroup>
     <ClInclude Include="Backbuffer.hpp" />
     <ClInclude Include="CommandBuffer.hpp" />
+    <ClInclude Include="Debugger.hpp" />
     <ClInclude Include="Defines.hpp" />
     <ClInclude Include="Device.hpp" />
     <ClInclude Include="Extensions.hpp" />
