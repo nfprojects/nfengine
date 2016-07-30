@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_43f7edd2",
+        "filename": "nfEngine/Common/Resource/Mesh.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-30T17:01:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_3317bbef",
+      "range": {
+        "startLine": 28,
+        "startChar": 3,
+        "endLine": 28,
+        "endChar": 17
+      },
+      "revId": "431fa260bffa379d1eba20ac72ffd1b4d02a60c6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_13b83710",
         "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
         "patchSetId": 8
@@ -36,6 +60,30 @@
       "writtenOn": "2016-07-20T14:19:09Z",
       "side": 1,
       "message": "int8",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 4
+      },
+      "revId": "431fa260bffa379d1eba20ac72ffd1b4d02a60c6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_83273562",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-30T17:01:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_13b83710",
       "range": {
         "startLine": 31,
         "startChar": 0,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_63231157",
+        "filename": "nfEngine/Tools/ResourceManager/MeshConverter.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-30T17:01:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_134f1735",
+      "range": {
+        "startLine": 158,
+        "startChar": 27,
+        "endLine": 160,
+        "endChar": 49
+      },
+      "revId": "431fa260bffa379d1eba20ac72ffd1b4d02a60c6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_33ee9bed",
         "filename": "nfEngine/nfCore/Resources/Mesh.cpp",
         "patchSetId": 8
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_a324795f",
+        "filename": "nfEngine/nfCore/Resources/Mesh.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-30T17:01:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_33ee9bed",
+      "range": {
+        "startLine": 71,
+        "startChar": 24,
+        "endLine": 71,
+        "endChar": 31
+      },
+      "revId": "431fa260bffa379d1eba20ac72ffd1b4d02a60c6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_b3d98b58",
         "filename": "nfEngine/nfCore/Resources/Mesh.hpp",
         "patchSetId": 8
@@ -105,6 +201,30 @@
       "writtenOn": "2016-07-20T14:19:09Z",
       "side": 1,
       "message": "is this needed when u inherit after Aligned\u003cT\u003e class?",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 11
+      },
+      "revId": "431fa260bffa379d1eba20ac72ffd1b4d02a60c6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c331bda3",
+        "filename": "nfEngine/nfCore/Resources/Mesh.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-30T17:01:12Z",
+      "side": 1,
+      "message": "Yes, because Aligned\u003cT\u003e works only for heap allocations. For stack allocations \"NFE_ALIGN16\" is required.",
+      "parentUuid": "baa041b7_b3d98b58",
       "range": {
         "startLine": 41,
         "startChar": 0,
