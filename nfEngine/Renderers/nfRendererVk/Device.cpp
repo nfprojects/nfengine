@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "Device.hpp"
+#include "Debugger.hpp"
 
 #include <memory.h>
 
@@ -57,6 +58,8 @@ Device::Device()
 
 Device::~Device()
 {
+    Debugger::Instance().Release();
+
     if (mPresentSemaphore != VK_NULL_HANDLE)
         vkDestroySemaphore(mDevice, mPresentSemaphore, nullptr);
     if (mRenderSemaphore != VK_NULL_HANDLE)
@@ -162,10 +165,12 @@ bool Device::Init()
     queueInfo.queueCount = 1;
     queueInfo.pQueuePriorities = queuePriorities;
 
-    const char* enabledExtensions[] =
-    {
-        VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-    };
+    std::vector<const char*> enabledExtensions;
+    enabledExtensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+
+#ifdef _DEBUG
+  //  enabledExtensions.push_back(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
+#endif
 
     VkDeviceCreateInfo devInfo;
     VK_ZERO_MEMORY(devInfo);
@@ -174,21 +179,22 @@ bool Device::Init()
     devInfo.queueCreateInfoCount = 1;
     devInfo.pQueueCreateInfos = &queueInfo;
     devInfo.pEnabledFeatures = nullptr;
-    devInfo.enabledExtensionCount = 1;
-    devInfo.ppEnabledExtensionNames = enabledExtensions;
+    devInfo.enabledExtensionCount = static_cast<uint32>(enabledExtensions.size());
+    devInfo.ppEnabledExtensionNames = enabledExtensions.data();
 
     result = vkCreateDevice(mPhysicalDevice, &devInfo, nullptr, &mDevice);
-    if (result != VK_SUCCESS)
-    {
-        LOG_ERROR("Failed to create Vulkan Device.");
-        return false;
-    }
+    CHECK_VKRESULT(result, "Failed to create Vulkan device");
 
     if (!nfvkDeviceExtensionsInit(mDevice))
     {
         LOG_ERROR("Failed to initialize Vulkan device extensions.");
         return false;
     }
+
+#ifdef _DEBUG
+    if (!Debugger::Instance().Init(mInstance.Get(), mDevice))
+        LOG_WARNING("Vulkan Debugger failed to initialize. Debugging is unavailable.");
+#endif
 
     vkGetDeviceQueue(mDevice, mGraphicsQueueIndex, 0, &mGraphicsQueue);
 

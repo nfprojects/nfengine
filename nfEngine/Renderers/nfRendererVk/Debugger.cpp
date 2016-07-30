@@ -1,0 +1,107 @@
+/**
+ * @file
+ * @author  LKostyra (costyrra.xl@gmail.com)
+ * @brief   Definitions of Vulkan Debugger singleton
+ */
+
+#include "PCH.hpp"
+
+#include "Debugger.hpp"
+#include "GetProc.hpp"
+#include "nfCommon/Logger.hpp"
+
+namespace NFE {
+namespace Renderer {
+
+namespace {
+
+VkBool32 DebugReport(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType,
+                     uint64_t object, size_t location, int32_t messageCode, const char* pLayerPrefix,
+                     const char* pMessage, void* pUserData)
+{
+    UNUSED(objectType);
+    UNUSED(object);
+    UNUSED(location);
+    UNUSED(pLayerPrefix);
+    UNUSED(pUserData);
+
+    const char* format = "VK_REPORT (code %i): %s";
+
+    if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
+        LOG_ERROR(format, messageCode, pMessage);
+    if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
+        LOG_WARNING(format, messageCode, pMessage);
+    if (flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT)
+        LOG_INFO(format, messageCode, pMessage);
+    if (flags & VK_DEBUG_REPORT_DEBUG_BIT_EXT)
+        LOG_DEBUG(format, messageCode, pMessage);
+    if (flags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT)
+        LOG_WARNING("VK_PERF (code %i): %s", messageCode, pMessage);
+
+    // returning VK_TRUE here would cause Vulkan APIs to return VK_ERROR_VALIDATION_FAILED_EXT
+    // right now we don't want that, but for debugging purposes it can be changed.
+    return VK_FALSE;
+}
+
+} // namespace
+
+Debugger::Debugger()
+    : mDebugCallback(VK_NULL_HANDLE)
+    , mUseable(false)
+    , mVkInstance(VK_NULL_HANDLE)
+{
+}
+
+Debugger::~Debugger()
+{
+    Release();
+}
+
+Debugger& Debugger::Instance()
+{
+    static Debugger instance;
+    return instance;
+}
+
+bool Debugger::Init(VkInstance instance, VkDevice /*device*/)
+{
+    bool allExtensionsAvailable = true;
+
+    VK_GET_INSTANCEPROC(instance, vkCreateDebugReportCallbackEXT);
+    VK_GET_INSTANCEPROC(instance, vkDestroyDebugReportCallbackEXT);
+    VK_GET_INSTANCEPROC(instance, vkDebugReportMessageEXT);
+    /*
+    VK_GET_DEVICEPROC(device, vkCmdDebugMarkerBeginEXT);
+    VK_GET_DEVICEPROC(device, vkCmdDebugMarkerEndEXT);
+    VK_GET_DEVICEPROC(device, vkCmdDebugMarkerInsertEXT);
+    VK_GET_DEVICEPROC(device, vkDebugMarkerSetObjectNameEXT);
+    VK_GET_DEVICEPROC(device, vkDebugMarkerSetObjectTagEXT);
+    */
+    if (!allExtensionsAvailable)
+        return false;
+
+    mVkInstance = instance;
+
+    VkDebugReportCallbackCreateInfoEXT debugInfo;
+    VK_ZERO_MEMORY(debugInfo);
+    debugInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
+    debugInfo.pfnCallback = (PFN_vkDebugReportCallbackEXT)DebugReport;
+    debugInfo.flags = VK_DEBUG_REPORT_FLAG_BITS_MAX_ENUM_EXT;
+    VkResult result = vkCreateDebugReportCallbackEXT(mVkInstance, &debugInfo, nullptr, &mDebugCallback);
+    CHECK_VKRESULT(result, "Failed to allocate debug report callback");
+
+    mUseable = true;
+    LOG_DEBUG("Vulkan debugger initialized successfully");
+    return true;
+}
+
+void Debugger::Release()
+{
+    if (mDebugCallback != VK_NULL_HANDLE)
+        vkDestroyDebugReportCallbackEXT(mVkInstance, mDebugCallback, nullptr);
+
+    mUseable = false;
+}
+
+} // namespace Renderer
+} // namespace NFE
