@@ -31,10 +31,10 @@ public:
     /**
      * Initialize Vulkan instance for further use.
      *
-     * @param validation Set to true if debug validation layer should be enabled.
+     * @param enableDebug Set to true if debug validation layer should be enabled.
      * @return True on success
      */
-    bool Init(bool validation);
+    bool Init(bool enableDebug);
 
     /**
      * Acquire Vulkan instance.
