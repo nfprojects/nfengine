@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 #include "Instance.hpp"
 #include "GetProc.hpp"
+#include "Debugger.hpp"
 
 #include <memory.h>
 
@@ -25,7 +26,7 @@ Instance::~Instance()
     Release();
 }
 
-bool Instance::Init(bool validation)
+bool Instance::Init(bool enableDebug, VkDebugReportFlagBitsEXT flags)
 {
     if (mInstance)
         return true;
@@ -59,18 +60,19 @@ bool Instance::Init(bool validation)
     // TODO XLIB_SURFACE is still unavailable
     //      Use XCB surface instead for now
     // TODO extensions need to be in common with VkDevice
-    const char* enabledExtensions[] = {
-        VK_KHR_SURFACE_EXTENSION_NAME,
+    std::vector<const char*> enabledExtensions;
+    enabledExtensions.push_back(VK_KHR_SURFACE_EXTENSION_NAME);
 
-    #ifdef WIN32
-        VK_KHR_WIN32_SURFACE_EXTENSION_NAME,
-    #elif defined(__linux__) || defined(__LINUX__)
-        VK_KHR_XCB_SURFACE_EXTENSION_NAME,
-    #else
-    #error "Target platform not supported."
-    #endif
+#ifdef WIN32
+    enabledExtensions.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
+#elif defined(__linux__) || defined(__LINUX__)
+    enabledExtensions.push_back(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
+#else
+#error "Target platform not supported."
+#endif
 
-    };
+    if (enableDebug)
+        enabledExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
 
     const char* enabledLayers[] = {
         "VK_LAYER_LUNARG_standard_validation" // for debugging
@@ -81,9 +83,9 @@ bool Instance::Init(bool validation)
     instInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     instInfo.pNext = nullptr;
     instInfo.pApplicationInfo = &appInfo;
-    instInfo.enabledExtensionCount = 2;
-    instInfo.ppEnabledExtensionNames = enabledExtensions;
-    if (validation)
+    instInfo.enabledExtensionCount = static_cast<uint32>(enabledExtensions.size());
+    instInfo.ppEnabledExtensionNames = enabledExtensions.data();
+    if (enableDebug)
     {
         instInfo.enabledLayerCount = 1;
         instInfo.ppEnabledLayerNames = enabledLayers;
@@ -91,6 +93,15 @@ bool Instance::Init(bool validation)
 
     VkResult result = vkCreateInstance(&instInfo, nullptr, &mInstance);
     CHECK_VKRESULT(result, "Failed to create Vulkan Instance");
+
+    if (enableDebug)
+    {
+        if (!Debugger::Instance().InitReport(mInstance, flags))
+        {
+            LOG_ERROR("Vulkan debug reports failed to initialize.");
+            return false;
+        }
+    }
 
     if (!nfvkInstanceExtensionsInit(mInstance))
     {
