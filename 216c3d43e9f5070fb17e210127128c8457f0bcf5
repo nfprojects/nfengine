@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_a30a3977",
+        "filename": "nfEngine/nfCommon/FileAsync.hpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-31T12:17:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_6570cb40",
+      "revId": "216c3d43e9f5070fb17e210127128c8457f0bcf5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_45902743",
         "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
         "patchSetId": 13
@@ -30,6 +48,30 @@
       "writtenOn": "2016-07-29T23:53:52Z",
       "side": 1,
       "message": "not needed if in annonymous namespace",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 6
+      },
+      "revId": "216c3d43e9f5070fb17e210127128c8457f0bcf5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_830df590",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-31T12:17:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_45902743",
       "range": {
         "startLine": 28,
         "startChar": 0,
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_6329d1e5",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-31T12:17:17Z",
+      "side": 1,
+      "message": "My bad, it wasn\u0027t static at first",
+      "parentUuid": "baa041b7_28cf2857",
+      "range": {
+        "startLine": 128,
+        "startChar": 0,
+        "endLine": 132,
+        "endChar": 22
+      },
+      "revId": "216c3d43e9f5070fb17e210127128c8457f0bcf5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_48d4acea",
         "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
         "patchSetId": 13
@@ -76,6 +142,30 @@
       "writtenOn": "2016-07-29T23:53:52Z",
       "side": 1,
       "message": "why not just:\n\nint enqueueResult \u003d ::io_submit(mCtx, 1, iocbPtr);",
+      "range": {
+        "startLine": 253,
+        "startChar": 0,
+        "endLine": 255,
+        "endChar": 50
+      },
+      "revId": "216c3d43e9f5070fb17e210127128c8457f0bcf5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_43248d0b",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-31T12:17:17Z",
+      "side": 1,
+      "message": "Mainly because it doesn\u0027t compile.",
+      "parentUuid": "baa041b7_48d4acea",
       "range": {
         "startLine": 253,
         "startChar": 0,
@@ -105,6 +195,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_231f49b8",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-31T12:17:17Z",
+      "side": 1,
+      "message": "Yet it does not produce one...so why bother?",
+      "parentUuid": "baa041b7_a8e218d3",
+      "revId": "216c3d43e9f5070fb17e210127128c8457f0bcf5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_88e514dd",
         "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
         "patchSetId": 13
@@ -116,6 +224,30 @@
       "writtenOn": "2016-07-29T23:53:52Z",
       "side": 1,
       "message": "rm?",
+      "range": {
+        "startLine": 361,
+        "startChar": 0,
+        "endLine": 364,
+        "endChar": 76
+      },
+      "revId": "216c3d43e9f5070fb17e210127128c8457f0bcf5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_031a05c6",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-31T12:17:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_88e514dd",
       "range": {
         "startLine": 361,
         "startChar": 0,
@@ -151,6 +283,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_e37ba1f3",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 369,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-31T12:17:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_68e890b3",
+      "range": {
+        "startLine": 369,
+        "startChar": 29,
+        "endLine": 369,
+        "endChar": 35
+      },
+      "revId": "216c3d43e9f5070fb17e210127128c8457f0bcf5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_e8bdc0b1",
         "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
         "patchSetId": 13
@@ -174,6 +330,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_c37e5de3",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 392,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-31T12:17:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_e8bdc0b1",
+      "range": {
+        "startLine": 392,
+        "startChar": 34,
+        "endLine": 392,
+        "endChar": 41
+      },
+      "revId": "216c3d43e9f5070fb17e210127128c8457f0bcf5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_c8df9c0b",
         "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
         "patchSetId": 13
@@ -185,6 +365,30 @@
       "writtenOn": "2016-07-29T23:53:52Z",
       "side": 1,
       "message": "is this needed?",
+      "range": {
+        "startLine": 395,
+        "startChar": 65,
+        "endLine": 395,
+        "endChar": 72
+      },
+      "revId": "216c3d43e9f5070fb17e210127128c8457f0bcf5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a38119c5",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-07-31T12:17:17Z",
+      "side": 1,
+      "message": "yes, becase data is in u_int64_t format. Don\u0027t ask me why - linux...",
+      "parentUuid": "baa041b7_c8df9c0b",
       "range": {
         "startLine": 395,
         "startChar": 65,
