@@ -1,0 +1,147 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_03a44548",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-31T11:44:49Z",
+      "side": 1,
+      "message": "missing \"return\"? Maybe this should be moved to an \"Init\" method so we can check if the window class was initialized properly?",
+      "revId": "6d91fd1b4e2f9b53460d0f4eae3f46b5093a25c3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_83b73584",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-31T11:44:49Z",
+      "side": 1,
+      "message": "Fix or remove new lines at all. IMO in this situation leaving the line longer \u003e 100 chars looks much better.",
+      "revId": "6d91fd1b4e2f9b53460d0f4eae3f46b5093a25c3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_63b31199",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-31T11:44:49Z",
+      "side": 1,
+      "message": "reinterpret_cast?",
+      "range": {
+        "startLine": 153,
+        "startChar": 27,
+        "endLine": 153,
+        "endChar": 40
+      },
+      "revId": "6d91fd1b4e2f9b53460d0f4eae3f46b5093a25c3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_43aecd2e",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-31T11:44:49Z",
+      "side": 1,
+      "message": "reinterpret_cast?",
+      "range": {
+        "startLine": 170,
+        "startChar": 27,
+        "endLine": 170,
+        "endChar": 40
+      },
+      "revId": "6d91fd1b4e2f9b53460d0f4eae3f46b5093a25c3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_23a98924",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 365,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-31T11:44:49Z",
+      "side": 1,
+      "message": "comment",
+      "range": {
+        "startLine": 365,
+        "startChar": 39,
+        "endLine": 365,
+        "endChar": 44
+      },
+      "revId": "6d91fd1b4e2f9b53460d0f4eae3f46b5093a25c3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c3c1bde5",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 369,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-31T11:44:49Z",
+      "side": 1,
+      "message": "break;",
+      "revId": "6d91fd1b4e2f9b53460d0f4eae3f46b5093a25c3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a3b47981",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 451,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-07-31T11:44:49Z",
+      "side": 1,
+      "message": "useless",
+      "range": {
+        "startLine": 448,
+        "startChar": 0,
+        "endLine": 451,
+        "endChar": 13
+      },
+      "revId": "6d91fd1b4e2f9b53460d0f4eae3f46b5093a25c3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
