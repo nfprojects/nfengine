@@ -31,6 +31,7 @@
 #define NFCOMMON_API __attribute__((visibility("default")))
 #endif // WIN32
 
+
 // macro forcing a function to be inlined
 #if defined(__LINUX__) | defined(__linux__)
 #define NFE_INLINE inline __attribute__((always_inline))
@@ -38,12 +39,14 @@
 #define NFE_INLINE __forceinline
 #endif // defined(__LINUX__) | defined(__linux__)
 
+
 // macro forcing a function not to be inlined
 #ifdef WIN32
 #define NFE_NO_INLINE __declspec(noinline)
 #elif defined(__LINUX__) || defined(__linux__)
 #define NFE_NO_INLINE __attribute__((noinline))
 #endif // WIN32
+
 
 // 16-byte aligning macro for objects using SSE registers
 #if defined(WIN32)
@@ -54,11 +57,13 @@
 #error "Target system not supported!"
 #endif // defined(WIN32)
 
+
 // we assume that when using Windows we build for x86 CPU supporting SSE and SSE4
 #if defined(WIN32)
 #define NFE_USE_SSE
 #define NFE_USE_SSE4
 #endif // defined(WIN32)
+
 
 // macro for data prefetching from RAM to CPU cache.
 #ifdef WIN32
@@ -71,10 +76,6 @@
 #define NFE_PREFETCH(addr) __builtin_prefetch(addr, 0, 3) // prefetch for read to all cache levels
 #endif // WIN32
 
-// macro for disabling "unsused parameter"
-#ifndef UNUSED
-#define UNUSED(x) (void)(x)
-#endif // UNUSED
 
 // debug assert
 // TODO: reimplement
@@ -85,6 +86,24 @@
 #define NFE_ASSERT(e, s)
 #endif
 #endif
+
+
+// use this inside a class declaration to make it non-copyable
+#define NFE_MAKE_NONCOPYABLE(Type)              \
+    Type(const Type&) = delete;                 \
+    Type& operator=(const Type&) = delete;
+
+
+// use this inside a class declaration to make it non-moveable
+#define NFE_MAKE_NONMOVEABLE(Type)              \
+    Type(Type&&) = delete;                      \
+    Type& operator=(Type&&) = delete;
+
+
+// macro for disabling "unsused parameter"
+#ifndef UNUSED
+#define UNUSED(x) (void)(x)
+#endif // UNUSED
 
 
 namespace NFE {

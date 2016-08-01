@@ -12,10 +12,6 @@
 #define D3D_SAFE_RELEASE(x) { if (x) {(x)->Release(); (x)=0;} }
 #endif // D3D_SAFE_RELEASE
 
-#ifndef UNUSED
-#define UNUSED(x) (void)(x)
-#endif // UNUSED
-
 #ifdef _DEBUG
 // D3D debugging will be enabled only in "Debug" project's configuration
 #define D3D_DEBUGGING

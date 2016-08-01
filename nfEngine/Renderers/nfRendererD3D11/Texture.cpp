@@ -12,6 +12,7 @@
 #include "nfCommon/Logger.hpp"
 
 
+
 namespace NFE {
 namespace Renderer {
 

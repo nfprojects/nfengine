@@ -40,9 +40,13 @@ class CORE_API BodyComponent
     : public ComponentBase<BodyComponent>
     , public Common::Aligned<16>
 {
+    NFE_MAKE_NONCOPYABLE(BodyComponent)
+    NFE_MAKE_NONMOVEABLE(BodyComponent)
+
     friend class PhysicsSystem;
     friend class RendererSystem;
 
+private:
     Math::Vector mVelocity;
     Math::Vector mAngularVelocity;
 
@@ -53,10 +57,6 @@ class CORE_API BodyComponent
     Resource::CollisionShape* mCollisionShape;
     int mFlags;
     float mMass;
-
-    // disable unwanted methods
-    BodyComponent& operator=(BodyComponent&&) = delete;
-    BodyComponent& operator=(const BodyComponent&) = delete;
 
 public:
     BodyComponent();
