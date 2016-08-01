@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_9a8c33d8",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-01T17:48:38Z",
+      "side": 1,
+      "message": "Because somebody whose name starts with an M and surname with a W forgot to add this below there. As a result, there was no way to test Window on Linux, because nfRendererVk would have a missing \"Init\" function and RendererDemo would exit before even trying to do anything.",
+      "parentUuid": "baa041b7_5ad8eb52",
+      "revId": "b57191a3c71cc0139b063af70aa5f38e1837a19b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_74e9857e",
         "filename": "nfEngine/nfCommon/Linux/Window.cpp",
         "patchSetId": 10
@@ -30,6 +48,30 @@
       "writtenOn": "2016-08-01T14:52:55Z",
       "side": 1,
       "message": "You get that from documentation or valgrind?",
+      "range": {
+        "startLine": 288,
+        "startChar": 8,
+        "endLine": 288,
+        "endChar": 18
+      },
+      "revId": "b57191a3c71cc0139b063af70aa5f38e1837a19b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7a65ef1b",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-01T17:48:38Z",
+      "side": 1,
+      "message": "From documentation. It is needed, because XCB passes the error to user and then forgets about it completely, leaving the poor xcb_generic_error_t structure without any care or cleaning at all :(.\n\nLook at example codes, ex. ftp://www.x.org/pub/X11R7.7/doc/man/man3/xcb-requests.3.xhtml",
+      "parentUuid": "baa041b7_74e9857e",
       "range": {
         "startLine": 288,
         "startChar": 8,
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_fa0e9f39",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 304,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-01T17:48:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_f4f59550",
+      "range": {
+        "startLine": 304,
+        "startChar": 69,
+        "endLine": 304,
+        "endChar": 88
+      },
+      "revId": "b57191a3c71cc0139b063af70aa5f38e1837a19b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_b49a6d12",
         "filename": "nfEngine/nfCommon/Linux/Window.cpp",
         "patchSetId": 10
@@ -76,6 +142,30 @@
       "writtenOn": "2016-08-01T14:52:55Z",
       "side": 1,
       "message": "as above",
+      "range": {
+        "startLine": 305,
+        "startChar": 25,
+        "endLine": 305,
+        "endChar": 41
+      },
+      "revId": "b57191a3c71cc0139b063af70aa5f38e1837a19b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_da099b32",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-01T17:48:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_b49a6d12",
       "range": {
         "startLine": 305,
         "startChar": 25,
@@ -111,6 +201,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_9a51d332",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 371,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-01T17:48:38Z",
+      "side": 1,
+      "message": "Yes, I checked them. Client message indeed has the MSB set to true (which is btw. the seventh bit, not the third).\n\nI guess it might have something to do with a flag. I couldn\u0027t find put my finger on it, so I left it as everyone on Tronche and Freedesktop did it.",
+      "parentUuid": "baa041b7_ba6a577f",
+      "range": {
+        "startLine": 370,
+        "startChar": 8,
+        "endLine": 371,
+        "endChar": 66
+      },
+      "revId": "b57191a3c71cc0139b063af70aa5f38e1837a19b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_daf63bd6",
         "filename": "nfEngine/nfCommon/Linux/Window.cpp",
         "patchSetId": 10
@@ -122,6 +236,30 @@
       "writtenOn": "2016-08-01T14:52:55Z",
       "side": 1,
       "message": "Is this needed (and/or legit for xcb)?",
+      "range": {
+        "startLine": 411,
+        "startChar": 20,
+        "endLine": 411,
+        "endChar": 48
+      },
+      "revId": "b57191a3c71cc0139b063af70aa5f38e1837a19b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7a33af14",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 411,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-01T17:48:38Z",
+      "side": 1,
+      "message": "Actually I forgot to remove it.",
+      "parentUuid": "baa041b7_daf63bd6",
       "range": {
         "startLine": 411,
         "startChar": 20,
@@ -157,6 +295,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_9aff9301",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 417,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-01T17:48:38Z",
+      "side": 1,
+      "message": "The implementation is exactly the same.\n\nX11 only translates these event fields to a more user-friendly structure. The data accessed here is basically the same as it was in the past, however with different, more generic variable names surrounding it.",
+      "parentUuid": "baa041b7_ba0137b1",
+      "range": {
+        "startLine": 410,
+        "startChar": 16,
+        "endLine": 417,
+        "endChar": 22
+      },
+      "revId": "b57191a3c71cc0139b063af70aa5f38e1837a19b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_1a270364",
         "filename": "nfEngine/nfCommon/Linux/Window.cpp",
         "patchSetId": 10
@@ -180,6 +342,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_5d046513",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 422,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-01T17:48:38Z",
+      "side": 1,
+      "message": "Don\u0027t know. Ask yourself from the past :)",
+      "parentUuid": "baa041b7_1a270364",
+      "range": {
+        "startLine": 422,
+        "startChar": 30,
+        "endLine": 422,
+        "endChar": 44
+      },
+      "revId": "b57191a3c71cc0139b063af70aa5f38e1837a19b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_fa221f51",
         "filename": "nfEngine/nfCommon/Linux/Window.cpp",
         "patchSetId": 10
@@ -191,6 +377,30 @@
       "writtenOn": "2016-08-01T14:52:55Z",
       "side": 1,
       "message": "So You really need to free it after every poll?",
+      "range": {
+        "startLine": 448,
+        "startChar": 8,
+        "endLine": 448,
+        "endChar": 20
+      },
+      "revId": "b57191a3c71cc0139b063af70aa5f38e1837a19b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_9a7af3b8",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 448,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-01T17:48:38Z",
+      "side": 1,
+      "message": "Yes! Look at doc above.",
+      "parentUuid": "baa041b7_fa221f51",
       "range": {
         "startLine": 448,
         "startChar": 8,
