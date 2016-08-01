@@ -1,0 +1,205 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_5ad8eb52",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-08-01T14:52:55Z",
+      "side": 1,
+      "message": "Why is this change in this commit?",
+      "revId": "b57191a3c71cc0139b063af70aa5f38e1837a19b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_74e9857e",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-08-01T14:52:55Z",
+      "side": 1,
+      "message": "You get that from documentation or valgrind?",
+      "range": {
+        "startLine": 288,
+        "startChar": 8,
+        "endLine": 288,
+        "endChar": 18
+      },
+      "revId": "b57191a3c71cc0139b063af70aa5f38e1837a19b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_f4f59550",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 304,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-08-01T14:52:55Z",
+      "side": 1,
+      "message": "Why not wmProtReply-\u003eatom ?",
+      "range": {
+        "startLine": 304,
+        "startChar": 69,
+        "endLine": 304,
+        "endChar": 88
+      },
+      "revId": "b57191a3c71cc0139b063af70aa5f38e1837a19b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b49a6d12",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-08-01T14:52:55Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 305,
+        "startChar": 25,
+        "endLine": 305,
+        "endChar": 41
+      },
+      "revId": "b57191a3c71cc0139b063af70aa5f38e1837a19b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ba6a577f",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 371,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-08-01T14:52:55Z",
+      "side": 1,
+      "message": "Maybe response_type\u0027s are 3-bit long, but for XCB_CLIENT_MESSAGE there\u0027s additional bit set? You checked response_type\u0027s that u get?",
+      "range": {
+        "startLine": 370,
+        "startChar": 8,
+        "endLine": 371,
+        "endChar": 66
+      },
+      "revId": "b57191a3c71cc0139b063af70aa5f38e1837a19b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_daf63bd6",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 411,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-08-01T14:52:55Z",
+      "side": 1,
+      "message": "Is this needed (and/or legit for xcb)?",
+      "range": {
+        "startLine": 411,
+        "startChar": 20,
+        "endLine": 411,
+        "endChar": 48
+      },
+      "revId": "b57191a3c71cc0139b063af70aa5f38e1837a19b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ba0137b1",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 417,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-08-01T14:52:55Z",
+      "side": 1,
+      "message": "It was very specific, when I was implementing it on X11, is it really the same on XCB?",
+      "range": {
+        "startLine": 410,
+        "startChar": 16,
+        "endLine": 417,
+        "endChar": 22
+      },
+      "revId": "b57191a3c71cc0139b063af70aa5f38e1837a19b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_1a270364",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 422,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-08-01T14:52:55Z",
+      "side": 1,
+      "message": "also is this \u0027- 1\u0027 needed?",
+      "range": {
+        "startLine": 422,
+        "startChar": 30,
+        "endLine": 422,
+        "endChar": 44
+      },
+      "revId": "b57191a3c71cc0139b063af70aa5f38e1837a19b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_fa221f51",
+        "filename": "nfEngine/nfCommon/Linux/Window.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 448,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-08-01T14:52:55Z",
+      "side": 1,
+      "message": "So You really need to free it after every poll?",
+      "range": {
+        "startLine": 448,
+        "startChar": 8,
+        "endLine": 448,
+        "endChar": 20
+      },
+      "revId": "b57191a3c71cc0139b063af70aa5f38e1837a19b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
