@@ -6,8 +6,10 @@
  */
 
 #pragma once
+
 #include "nfCommon.hpp"
 #include "File.hpp"
+
 
 namespace NFE {
 namespace Common {
@@ -18,15 +20,15 @@ namespace Common {
 class NFCOMMON_API OutputStream
 {
 public:
-    virtual ~OutputStream();
+    virtual ~OutputStream() { }
 
     /**
      * Write data to the stream.
-     * @param pSrc Source data buffer.
+     * @param buffer Source data buffer.
      * @param num Number of bytes to be written.
      * @return Number of written bytes.
      */
-    virtual size_t Write(const void* pSrc, size_t num) = 0;
+    virtual size_t Write(const void* buffer, size_t num) = 0;
 
     /*
        TODO:
@@ -40,17 +42,16 @@ public:
  */
 class NFCOMMON_API FileOutputStream : public OutputStream
 {
-    File mFile;
+    NFE_MAKE_NONCOPYABLE(FileOutputStream)
+    NFE_MAKE_NONMOVEABLE(FileOutputStream)
 
-    /// disable copy methods
-    FileOutputStream(const FileOutputStream&);
-    FileOutputStream& operator= (const FileOutputStream&);
+private:
+    File mFile;
 
 public:
     FileOutputStream(const char* pFileName);
-    ~FileOutputStream();
 
-    size_t Write(const void* pSrc, size_t num);
+    size_t Write(const void* buffer, size_t num) override;
 };
 
 /**
@@ -58,6 +59,9 @@ public:
  */
 class NFCOMMON_API BufferOutputStream : public OutputStream
 {
+    NFE_MAKE_NONCOPYABLE(BufferOutputStream)
+    NFE_MAKE_NONMOVEABLE(BufferOutputStream)
+
 private:
     void* mData;
     size_t mBufferSize;
@@ -70,7 +74,7 @@ public:
     size_t GetSize() const;
     const void* GetData() const;
 
-    size_t Write(const void* pSrc, size_t num);
+    size_t Write(const void* buffer, size_t num) override;
 
     void Clear();
 };

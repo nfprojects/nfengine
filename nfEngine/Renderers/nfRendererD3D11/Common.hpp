@@ -6,13 +6,12 @@
 
 #pragma once
 
+#include "nfCommon/nfCommon.hpp"
+
+
 #ifndef D3D_SAFE_RELEASE
 #define D3D_SAFE_RELEASE(x) { if (x) {(x)->Release(); (x)=0;} }
 #endif // D3D_SAFE_RELEASE
-
-#ifndef UNUSED
-#define UNUSED(x) (void)(x)
-#endif // UNUSED
 
 #ifdef _DEBUG
 // D3D debugging will be enabled only in "Debug" project's configuration
@@ -36,14 +35,12 @@ HRESULT D3DError(HRESULT hr, const char* srcFile, int line);
 
 // helper class template for automatic releasing of Direct3D objects
 template<typename T>
-class D3DPtr
+class D3DPtr final
 {
+    NFE_MAKE_NONCOPYABLE(D3DPtr)
+
 private:
     T* pointer;
-
-    /// disable "copy" methods
-    D3DPtr(const D3DPtr&);
-    D3DPtr& operator=(const D3DPtr&);
 
 public:
     D3DPtr() : pointer(nullptr) {}

@@ -11,7 +11,9 @@
 #include "Sampler.hpp"
 #include "Shader.hpp"
 #include "RendererD3D12.hpp"
+
 #include "nfCommon/Logger.hpp"
+
 
 
 namespace NFE {

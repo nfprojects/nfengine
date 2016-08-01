@@ -29,7 +29,7 @@ TEST_F(BufferInputStreamTest, NullBufferTest)
     // Size should be as in constructor, methods should all fail
     ASSERT_EQ(stream.GetSize(), TEXTSIZE);
     ASSERT_EQ(stream.Seek(1), false);
-    ASSERT_EQ(stream.Read(1, nullptr), 0);
+    ASSERT_EQ(stream.Read(nullptr, 1), 0);
 }
 
 TEST_F(BufferInputStreamTest, StringBufferTest)
@@ -38,7 +38,7 @@ TEST_F(BufferInputStreamTest, StringBufferTest)
     BufferInputStream stream(TEXT.data(), TEXTSIZE);
 
     // Write stream to our buffer and compare it with TEXT
-    ASSERT_EQ(stream.Read(TEXTSIZE, mBuffer.get()), TEXTSIZE);
+    ASSERT_EQ(stream.Read(mBuffer.get(), TEXTSIZE), TEXTSIZE);
     ASSERT_EQ(memcmp(mBuffer.get(), TEXT.data(), TEXTSIZE), 0);
 }
 
@@ -51,7 +51,7 @@ TEST_F(BufferInputStreamTest, StringBufferSeekTest)
     size_t halfSize = TEXTSIZE / 2;
     bool seekResult = stream.Seek(halfSize);
     ASSERT_EQ(seekResult, true);
-    size_t readResult = stream.Read(halfSize, mBuffer.get());
+    size_t readResult = stream.Read(mBuffer.get(), halfSize);
     ASSERT_EQ(readResult, halfSize);
     ASSERT_EQ(memcmp(mBuffer.get(), TEXT.data() + halfSize, halfSize), 0);
 }

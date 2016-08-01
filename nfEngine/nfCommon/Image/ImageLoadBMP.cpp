@@ -95,7 +95,7 @@ bool Image::LoadBMP(InputStream* stream)
     }
 
     // Read file header
-    stream->Read(sizeof(BitmapFileHeader), &fileHeader);
+    stream->Read(&fileHeader, sizeof(BitmapFileHeader));
 
     // Check for signature mismatch
     if (fileHeader.type != 0x4D42)
@@ -111,7 +111,7 @@ bool Image::LoadBMP(InputStream* stream)
     }
 
     // Read info header
-    stream->Read(sizeof(BitmapV5Header), &infoHeader);
+    stream->Read(&infoHeader, sizeof(BitmapV5Header));
 
     uint8 bitsPerPixel = static_cast<uint8>(infoHeader.bitCount);
     bool paletteUsed = bitsPerPixel <= 8;
@@ -176,7 +176,7 @@ bool Image::LoadBMP(InputStream* stream)
 bool GetColorPalette(InputStream* stream, std::vector<RGBQuad>& palette)
 {
     size_t sizeToRead = sizeof(RGBQuad) * palette.size();
-    stream->Read(sizeToRead, palette.data());
+    stream->Read(palette.data(), sizeToRead);
 
     return true;
 }
@@ -210,7 +210,7 @@ bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
         for (int y = static_cast<int>(height - 1); y >= 0; y--)
         {
             // Read single line
-            if (stream->Read(lineSize, colorData.get()) != lineSize)
+            if (stream->Read(colorData.get(), lineSize) != lineSize)
             {
                 LOG_ERROR("Pixels read wrong.");
                 return false;
@@ -238,7 +238,7 @@ bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
         for (int y = static_cast<int>(height - 1); y >= 0; y--)
         {
             // Read single line
-            if(stream->Read(lineSize, colorData.get()) != lineSize)
+            if(stream->Read(colorData.get(), lineSize) != lineSize)
             {
                 LOG_ERROR("Pixels read wrong.");
                 return false;
@@ -319,7 +319,7 @@ bool ReadPixelsWithPalette(InputStream* stream, size_t offset, uint32 width,
     for (int y = static_cast<int>(height - 1); y >= 0; y--)
     {
         // Read one byte of data
-        if (stream->Read(lineSize, colorData.get()) != lineSize)
+        if (stream->Read(colorData.get(), lineSize) != lineSize)
         {
             LOG_ERROR("Pixels read wrong.");
             return false;
