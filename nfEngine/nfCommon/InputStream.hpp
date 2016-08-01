@@ -6,7 +6,9 @@
  */
 
 #pragma once
+
 #include "nfCommon.hpp"
+#include "Language.hpp"
 #include "File.hpp"
 
 namespace NFE {
@@ -18,7 +20,7 @@ namespace Common {
 class NFCOMMON_API InputStream
 {
 public:
-    virtual ~InputStream();
+    virtual ~InputStream() { }
 
     /**
      * Get stream size.
@@ -34,11 +36,11 @@ public:
 
     /**
      * Fetch bytes and store in external buffer.
+     * @param buffer Destination buffer.
      * @param num Number of bytes to be read.
-     * @param pDest Destination buffer.
      * @return Number of bytes read.
      */
-    virtual size_t Read(size_t num, void* pDest) = 0;
+    virtual size_t Read(void* buffer, size_t num) = 0;
 
     /*
        TODO:
@@ -53,19 +55,19 @@ public:
  */
 class NFCOMMON_API FileInputStream : public InputStream
 {
+    NFE_MAKE_NONCOPYABLE(FileInputStream)
+    NFE_MAKE_NONMOVEABLE(FileInputStream)
+
+private:
     File mFile;
 
-    /// disable copy methods
-    FileInputStream(const FileInputStream&);
-    FileInputStream& operator= (const FileInputStream&);
-
 public:
-    FileInputStream(const char* pPath);
+    FileInputStream(const char* path);
     ~FileInputStream();
 
-    uint64 GetSize();
-    bool Seek(uint64 position);
-    size_t Read(size_t num, void* pDest);
+    uint64 GetSize() override;
+    bool Seek(uint64 position) override;
+    size_t Read(void* buffer, size_t num) override;
 };
 
 /**
@@ -73,21 +75,20 @@ public:
  */
 class NFCOMMON_API BufferInputStream : public InputStream
 {
+    NFE_MAKE_NONCOPYABLE(BufferInputStream)
+    NFE_MAKE_NONMOVEABLE(BufferInputStream)
+
+private:
     const void* mData;
     uint64 mSize;
     uint64 mPos;
 
-    /// disable copy methods
-    BufferInputStream(const BufferInputStream&);
-    BufferInputStream& operator= (const BufferInputStream&);
-
 public:
-    BufferInputStream(const void* pData, size_t dataSize);
-    ~BufferInputStream();
+    BufferInputStream(const void* data, size_t dataSize);
 
-    uint64 GetSize();
-    bool Seek(uint64 position);
-    size_t Read(size_t num, void* pDest);
+    uint64 GetSize() override;
+    bool Seek(uint64 position) override;
+    size_t Read(void* buffer, size_t num) override;
 };
 
 } // namespace Common

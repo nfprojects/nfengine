@@ -31,12 +31,11 @@ public:
 // TODO: provide more functions
 class CORE_API ResManager final
 {
+    NFE_MAKE_NONCOPYABLE(ResManager)
+    NFE_MAKE_NONMOVEABLE(ResManager)
+
     friend class ResourceBase;
     friend class Engine;
-
-    //disable these:
-    ResManager(const ResManager&);
-    ResManager& operator= (const ResManager&);
 
     std::unique_ptr<Common::AsyncThreadPool> mThreadPool;
 

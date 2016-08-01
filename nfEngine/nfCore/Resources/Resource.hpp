@@ -7,8 +7,11 @@
 #pragma once
 
 #include "../Core.hpp"
+
 #include "nfCommon/Aligned.hpp"
 #include "nfCommon/AsyncThreadPool.hpp"
+#include "nfCommon/Language.hpp"
+
 
 namespace NFE {
 namespace Resource {
@@ -54,21 +57,20 @@ typedef std::function<void()> ResourcePostLoadCallback;
  * @details Abstract resource class. It's main role is reference counter tracking and
             loading/unloading data when needed.
 */
-class CORE_API ResourceBase : public Common::Aligned<16>
+class CORE_API ResourceBase
+    : public Common::Aligned<16>
 {
+    NFE_MAKE_NONCOPYABLE(ResourceBase)
+    NFE_MAKE_NONMOVEABLE(ResourceBase)
+
     friend class ResManager;
     friend void ResourceLoadingCallback(void*, int, int);
     friend void ResourceUnloadingCallback(void*, int, int);
     friend void ResourceReloadCallback(void*, int, int);
 
-    /// disable unwanted methods
-    ResourceBase(const ResourceBase&);
-    ResourceBase& operator= (const ResourceBase&);
-
     // TODO: temporary hack
     std::mutex mCallbacksMutex;
     std::vector<ResourcePostLoadCallback> mPostLoadCallbacks;
-
 
 protected:
     bool mCustom;                          // custom mesh won't be loaded from a file

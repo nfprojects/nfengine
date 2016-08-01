@@ -11,6 +11,9 @@
 #include "../Renderer/HighLevelRenderer.hpp"
 #include "../Renderer/RenderCommand.hpp"
 
+#include "nfCommon/Language.hpp"
+
+
 namespace NFE {
 namespace Resource {
 
@@ -35,10 +38,6 @@ class Multishader : public ResourceBase
 
     std::vector<std::unique_ptr<Renderer::IShader>> mSubShaders;
     Renderer::ShaderType mType;
-
-    /// disable unwanted methods
-    Multishader(const Multishader&) = delete;
-    Multishader& operator=(const Multishader&) = delete;
 
     bool LoadSubshader(int* macroValues);
 

@@ -40,14 +40,14 @@ void userReadData(png_structp pngPtr, png_bytep data, png_size_t length)
     InputStream* stream = static_cast<InputStream*>(infoData);
 
     if (stream)
-        info->offset += stream->Read(length, data);
+        info->offset += stream->Read(data, length);
 }
 
 bool Image::LoadPNG(InputStream* stream)
 {
     // read png signature
     uint8 signature[PNGSIGSIZE];
-    if (stream->Read(PNGSIGSIZE, signature) != PNGSIGSIZE)
+    if (stream->Read(signature, PNGSIGSIZE) != PNGSIGSIZE)
     {
         LOG_ERROR("Reading PNG signature failed.");
         return false;

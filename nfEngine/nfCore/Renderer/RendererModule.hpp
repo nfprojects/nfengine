@@ -15,7 +15,9 @@ namespace Renderer {
 template<typename T>
 class CORE_API RendererModule
 {
-private:
+    NFE_MAKE_NONCOPYABLE(RendererModule)
+    NFE_MAKE_NONMOVEABLE(RendererModule)
+
     friend class HighLevelRenderer;
 
     // instance pointer
@@ -30,12 +32,6 @@ private:
     {
         mPtr.reset();
     }
-
-    /// disable other constructors and assignment operators
-    RendererModule(const RendererModule&) = delete;
-    RendererModule(RendererModule&&) = delete;
-    RendererModule& operator=(const RendererModule&) = delete;
-    RendererModule& operator=(RendererModule&&) = delete;
 
 public:
     void Enter(RenderContext *context)

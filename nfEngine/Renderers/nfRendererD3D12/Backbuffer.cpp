@@ -8,6 +8,7 @@
 #include "Backbuffer.hpp"
 #include "RendererD3D12.hpp"
 #include "nfCommon/Logger.hpp"
+#include "nfCommon/Language.hpp"
 
 
 namespace NFE {

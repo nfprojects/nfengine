@@ -257,6 +257,9 @@
     <ClInclude Include="Memory\DefaultAllocator.hpp">
       <Filter>Header Files\Memory</Filter>
     </ClInclude>
+    <ClInclude Include="Language.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">

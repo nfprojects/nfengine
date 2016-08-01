@@ -11,6 +11,7 @@
 
 #include "nfCommon/Math/Math.hpp"
 #include "nfCommon/Math/Matrix.hpp"
+#include "nfCommon/Language.hpp"
 
 #include <vector>
 #include <functional>

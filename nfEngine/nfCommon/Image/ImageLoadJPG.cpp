@@ -27,7 +27,7 @@ public:
 
     int read(jpgd::uint8* pBuf, int max_bytes_to_read, bool* pEOF_flag)
     {
-        size_t bytesRead = mStream->Read(max_bytes_to_read, pBuf);
+        size_t bytesRead = mStream->Read(pBuf, max_bytes_to_read);
         if (bytesRead == 0)
             *pEOF_flag = true;
 

@@ -71,11 +71,6 @@
 #define NFE_PREFETCH(addr) __builtin_prefetch(addr, 0, 3) // prefetch for read to all cache levels
 #endif // WIN32
 
-// macro for disabling "unsused parameter"
-#ifndef UNUSED
-#define UNUSED(x) (void)(x)
-#endif // UNUSED
-
 // debug assert
 // TODO: reimplement
 #ifndef NFE_ASSERT
