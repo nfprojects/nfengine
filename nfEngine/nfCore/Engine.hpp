@@ -21,8 +21,12 @@ struct UpdateRequest
 };
 
 
-class CORE_API Engine
+class CORE_API Engine final
 {
+    NFE_MAKE_NONCOPYABLE(Engine)
+    NFE_MAKE_NONMOVEABLE(Engine)
+
+private:
     /**
      * Mutex used to synchronize scene rendering and resources allocations.
      * Resources must be released outside rendering stage.
@@ -37,12 +41,6 @@ class CORE_API Engine
     bool OnInit();
     void OnRelease();
     Engine();
-
-    /// disable all other constructors and assignment operators
-    Engine(const Engine&) = delete;
-    Engine(Engine&&) = delete;
-    Engine& operator=(const Engine&) = delete;
-    Engine& operator=(Engine&&) = delete;
 
 public:
     /**

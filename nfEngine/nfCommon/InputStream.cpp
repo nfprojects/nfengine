@@ -7,14 +7,12 @@
 
 #include "PCH.hpp"
 #include "InputStream.hpp"
+#include "Memory.hpp"
+#include "Logger.hpp"
+
 
 namespace NFE {
 namespace Common {
-
-InputStream::~InputStream()
-{
-}
-
 
 //-----------------------------------------------------------
 // FileInputStream
@@ -35,16 +33,14 @@ uint64 FileInputStream::GetSize()
     return mFile.GetSize();
 }
 
-// Jump to specific position in stream.
 bool FileInputStream::Seek(uint64 position)
 {
     return mFile.Seek(position, SeekMode::Begin);
 }
 
-// Fetch 'num' bytes and write to pDest. Returns number of bytes read.
-size_t FileInputStream::Read(size_t num, void* pDest)
+size_t FileInputStream::Read(void* buffer, size_t num)
 {
-    return mFile.Read(pDest, num);
+    return mFile.Read(buffer, num);
 }
 
 
@@ -52,39 +48,25 @@ size_t FileInputStream::Read(size_t num, void* pDest)
 // BufferInputStream
 //-----------------------------------------------------------
 
-BufferInputStream::BufferInputStream(const void* pData, size_t dataSize)
+BufferInputStream::BufferInputStream(const void* data, size_t dataSize)
 {
-    // TODO
-    /*
-    if (XMemoryCheck(pData, dataSize) & X_ACCESS_READ)
+    if (!MemoryCheck(data, dataSize))
     {
-        mpData = pData;
-        mSize = dataSize;
-    }
-    else
-    {
-        mpData = 0;
+        LOG_ERROR("Provided buffer can't be read");
+        mData = nullptr;
         mSize = 0;
     }
-    */
 
-    mData = pData;
+    mData = data;
     mSize = dataSize;
     mPos = 0;
 }
 
-BufferInputStream::~BufferInputStream()
-{
-    //nothing to free
-}
-
-// Get stream size (in bytes).
 uint64 BufferInputStream::GetSize()
 {
     return mSize;
 }
 
-// Jump to specific position in stream.
 bool BufferInputStream::Seek(uint64 position)
 {
     if (!mData)
@@ -99,22 +81,21 @@ bool BufferInputStream::Seek(uint64 position)
     return false;
 }
 
-// Fetch 'bum' bytes and write to pDest. Returns number of bytes read.
-size_t BufferInputStream::Read(size_t num, void* pDest)
+size_t BufferInputStream::Read(void* buffer, size_t num)
 {
     if (!mData)
         return 0;
 
     if (mPos + num > mSize)
     {
-        size_t maxReadable = (size_t)(mSize - mPos);
-        memcpy(pDest, ((const char*)mData) + mPos, maxReadable);
+        size_t maxReadable = static_cast<size_t>(mSize - mPos);
+        memcpy(buffer, reinterpret_cast<const char*>(mData) + mPos, maxReadable);
         mPos = mSize;
         return maxReadable;
     }
     else
     {
-        memcpy(pDest, ((const char*)mData) + mPos, num);
+        memcpy(buffer, reinterpret_cast<const char*>(mData) + mPos, num);
         mPos += num;
         return num;
     }
