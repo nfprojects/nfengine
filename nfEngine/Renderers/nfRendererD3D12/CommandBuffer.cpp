@@ -24,6 +24,7 @@
 #include "nfCommon/Win/Common.hpp"  // required for ID3DUserDefinedAnnotation
 
 
+
 namespace NFE {
 namespace Renderer {
 
