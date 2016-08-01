@@ -17,7 +17,7 @@ namespace NFE {
 namespace Resource {
 
 // TODO this class should inherit from ResourceBase
-class MultiShaderProgram
+class MultiShaderProgram : public NonCopyable
 {
     std::string mName;
 
@@ -37,10 +37,6 @@ class MultiShaderProgram
     std::vector<int> mShaderMacroMapping[NFE_SHADER_TYPES_NUM];
 
     std::vector<std::unique_ptr<Renderer::IShaderProgram>> mSubPrograms;
-
-    /// disable unwanted methods
-    MultiShaderProgram(const MultiShaderProgram&) = delete;
-    MultiShaderProgram& operator=(const MultiShaderProgram&) = delete;
 
     bool GenerateShaderPrograms();
     bool LoadSubShaderProgram(int* macroValues);

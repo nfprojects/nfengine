@@ -22,6 +22,7 @@
 #include "ResourceBinding.hpp"
 #include "nfCommon/Logger.hpp"
 #include "nfCommon/Win/Common.hpp"  // required for ID3DUserDefinedAnnotation
+#include "nfCommon/Language.hpp"
 
 
 namespace NFE {

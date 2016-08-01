@@ -10,6 +10,7 @@
 #include "Translations.hpp"
 
 #include "nfCommon/Logger.hpp"
+#include "nfCommon/Language.hpp"
 
 
 namespace NFE {

@@ -13,7 +13,7 @@ namespace NFE {
 namespace Renderer {
 
 template<typename T>
-class CORE_API RendererModule
+class CORE_API RendererModule : public NonCopyable
 {
 private:
     friend class HighLevelRenderer;
@@ -30,12 +30,6 @@ private:
     {
         mPtr.reset();
     }
-
-    /// disable other constructors and assignment operators
-    RendererModule(const RendererModule&) = delete;
-    RendererModule(RendererModule&&) = delete;
-    RendererModule& operator=(const RendererModule&) = delete;
-    RendererModule& operator=(RendererModule&&) = delete;
 
 public:
     void Enter(RenderContext *context)

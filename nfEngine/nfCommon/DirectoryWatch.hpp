@@ -6,6 +6,7 @@
 
 #pragma once
 #include "nfCommon.hpp"
+#include "Language.hpp"
 
 #if defined(WIN32)
 #define WIN32_LEAN_AND_MEAN
@@ -52,7 +53,7 @@ struct WatchRequest
 /**
  * Class which allows user to watch directories for changes.
  */
-class NFCOMMON_API DirectoryWatch
+class NFCOMMON_API DirectoryWatch : public NonCopyable
 {
 private:
 #if defined(WIN32)
@@ -141,12 +142,6 @@ public:
 private:
     std::atomic<bool> mRunning; //< is directory watch running?
     WatchCallback mCallback;
-
-    /// disable these methods
-    DirectoryWatch(const DirectoryWatch&) = delete;
-    DirectoryWatch(DirectoryWatch&&) = delete;
-    DirectoryWatch& operator=(const DirectoryWatch&) = delete;
-    DirectoryWatch& operator=(DirectoryWatch&&) = delete;
 };
 
 

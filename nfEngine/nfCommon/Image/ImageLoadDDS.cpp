@@ -214,7 +214,7 @@ bool Image::LoadDDS(InputStream* stream)
 {
     // read header
     DDS_header header;
-    if (stream->Read(sizeof(header), &header) != sizeof(header))
+    if (stream->Read(&header, sizeof(header)) != sizeof(header))
         return false;
 
     //check magic number
@@ -252,7 +252,7 @@ bool Image::LoadDDS(InputStream* stream)
             return false;
         }
 
-        if (stream->Read(dataSize, mipmapData.get()) != dataSize)
+        if (stream->Read(mipmapData.get(), dataSize) != dataSize)
         {
             LOG_ERROR("Reading mipmap data failed.");
             return false;

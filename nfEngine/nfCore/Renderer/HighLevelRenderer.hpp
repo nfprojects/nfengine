@@ -8,9 +8,11 @@
 
 #include "RendererResources.hpp"
 #include "RendererContext.hpp"
-
-#include "nfCommon/Library.hpp"
 #include "../Renderers/RendererInterface/Device.hpp"
+
+#include "nfCommon/Language.hpp"
+#include "nfCommon/Library.hpp"
+
 
 namespace NFE {
 namespace Renderer {
@@ -55,7 +57,7 @@ struct RendererConfig
     RendererConfig();
 };
 
-class HighLevelRenderer final
+class HighLevelRenderer final : public NonCopyable
 {
 private:
     Common::Library mLowLevelRendererLib;
@@ -76,12 +78,6 @@ private:
     std::unique_ptr<RenderContext> mDefaultContext;
 
     RendererConfig mConfig;
-
-    /// disable unwanted methods
-    HighLevelRenderer(const HighLevelRenderer&) = delete;
-    HighLevelRenderer(HighLevelRenderer&&) = delete;
-    HighLevelRenderer& operator=(const HighLevelRenderer&) = delete;
-    HighLevelRenderer& operator=(HighLevelRenderer&&) = delete;
 
     void CreateCommonResources();
 

@@ -39,6 +39,7 @@ NFE_ALIGN16
 class CORE_API BodyComponent
     : public ComponentBase<BodyComponent>
     , public Common::Aligned<16>
+    , public NonCopyable
 {
     friend class PhysicsSystem;
     friend class RendererSystem;
@@ -53,10 +54,6 @@ class CORE_API BodyComponent
     Resource::CollisionShape* mCollisionShape;
     int mFlags;
     float mMass;
-
-    // disable unwanted methods
-    BodyComponent& operator=(BodyComponent&&) = delete;
-    BodyComponent& operator=(const BodyComponent&) = delete;
 
 public:
     BodyComponent();

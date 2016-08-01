@@ -9,32 +9,22 @@
 #include "OutputStream.hpp"
 #include "Memory/DefaultAllocator.hpp"
 
+
 namespace NFE {
 namespace Common {
-
-OutputStream::~OutputStream()
-{
-}
-
 
 // ===============================================================
 // FileOutputStream
 // ===============================================================
 
-FileOutputStream::FileOutputStream(const char* pFileName)
+FileOutputStream::FileOutputStream(const char* fileName)
 {
-    mFile.Open(pFileName, AccessMode::Write, true);
+    mFile.Open(fileName, AccessMode::Write, true);
 }
 
-FileOutputStream::~FileOutputStream()
+size_t FileOutputStream::Write(const void* buffer, size_t num)
 {
-    mFile.Close();
-}
-
-// Write 'num' bytes read from pSrc. Returns number of written bytes.
-size_t FileOutputStream::Write(const void* pSrc, size_t num)
-{
-    return mFile.Write(pSrc, num);
+    return mFile.Write(buffer, num);
 }
 
 
@@ -46,7 +36,7 @@ BufferOutputStream::BufferOutputStream()
 {
     mBufferSize = 0;
     mUsed = 0;
-    mData = 0;
+    mData = nullptr;
 }
 
 BufferOutputStream::~BufferOutputStream()
@@ -76,8 +66,7 @@ size_t BufferOutputStream::GetSize() const
     return mUsed;
 }
 
-// Write 'num' bytes read from pSrc. Returns number of written bytes.
-size_t BufferOutputStream::Write(const void* pSrc, size_t num)
+size_t BufferOutputStream::Write(const void* buffer, size_t num)
 {
     if (!mData)
     {
@@ -111,7 +100,7 @@ size_t BufferOutputStream::Write(const void* pSrc, size_t num)
         }
     }
 
-    memcpy((char*)mData + mUsed, pSrc, num);
+    memcpy(reinterpret_cast<char*>(mData) + mUsed, buffer, num);
     mUsed += num;
     return num;
 }

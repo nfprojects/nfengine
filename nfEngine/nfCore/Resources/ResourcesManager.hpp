@@ -29,14 +29,10 @@ public:
  * Resources manager.
  */
 // TODO: provide more functions
-class CORE_API ResManager final
+class CORE_API ResManager final : public NonCopyable
 {
     friend class ResourceBase;
     friend class Engine;
-
-    //disable these:
-    ResManager(const ResManager&);
-    ResManager& operator= (const ResManager&);
 
     std::unique_ptr<Common::AsyncThreadPool> mThreadPool;
 

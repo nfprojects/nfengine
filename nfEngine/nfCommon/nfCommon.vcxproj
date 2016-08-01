@@ -225,6 +225,7 @@ popd</Command>
     <ClInclude Include="Image\Mipmap.hpp" />
     <ClInclude Include="InputStream.hpp" />
     <ClInclude Include="KeyCodes.hpp" />
+    <ClInclude Include="Language.hpp" />
     <ClInclude Include="Library.hpp" />
     <ClInclude Include="Logger.hpp" />
     <ClInclude Include="LoggerBackends\BackendCommon.hpp" />
