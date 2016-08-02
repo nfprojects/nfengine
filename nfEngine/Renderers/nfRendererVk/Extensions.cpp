@@ -113,6 +113,18 @@ PFN_vkCreateSemaphore vkCreateSemaphore = VK_NULL_HANDLE;
 PFN_vkDestroyFence vkDestroyFence = VK_NULL_HANDLE;
 PFN_vkDestroySemaphore vkDestroySemaphore = VK_NULL_HANDLE;
 
+// Shaders
+PFN_vkCreateShaderModule vkCreateShaderModule = VK_NULL_HANDLE;
+PFN_vkDestroyShaderModule vkDestroyShaderModule = VK_NULL_HANDLE;
+
+// Pipelines
+PFN_vkCreateGraphicsPipelines vkCreateGraphicsPipelines = VK_NULL_HANDLE;
+PFN_vkCreatePipelineCache vkCreatePipelineCache = VK_NULL_HANDLE;
+PFN_vkCreatePipelineLayout vkCreatePipelineLayout = VK_NULL_HANDLE;
+PFN_vkDestroyPipeline vkDestroyPipeline = VK_NULL_HANDLE;
+PFN_vkDestroyPipelineCache vkDestroyPipelineCache = VK_NULL_HANDLE;
+PFN_vkDestroyPipelineLayout vkDestroyPipelineLayout = VK_NULL_HANDLE;
+
 bool nfvkDeviceExtensionsInit(VkDevice device)
 {
     bool allExtensionsAvailable = true;
@@ -167,6 +179,18 @@ bool nfvkDeviceExtensionsInit(VkDevice device)
     VK_GET_DEVICEPROC(device, vkCreateSemaphore);
     VK_GET_DEVICEPROC(device, vkDestroyFence);
     VK_GET_DEVICEPROC(device, vkDestroySemaphore);
+
+    // Shaders
+    VK_GET_DEVICEPROC(device, vkCreateShaderModule);
+    VK_GET_DEVICEPROC(device, vkDestroyShaderModule);
+
+    // Pipelines
+    VK_GET_DEVICEPROC(device, vkCreateGraphicsPipelines);
+    VK_GET_DEVICEPROC(device, vkCreatePipelineCache);
+    VK_GET_DEVICEPROC(device, vkCreatePipelineLayout);
+    VK_GET_DEVICEPROC(device, vkDestroyPipeline);
+    VK_GET_DEVICEPROC(device, vkDestroyPipelineCache);
+    VK_GET_DEVICEPROC(device, vkDestroyPipelineLayout);
 
     return allExtensionsAvailable;
 }

@@ -8,6 +8,7 @@
 
 #include "../RendererInterface/ResourceBinding.hpp"
 #include "Defines.hpp"
+#include "PipelineState.hpp"
 
 #include <vector>
 
@@ -30,6 +31,9 @@ public:
 class ResourceBindingLayout : public IResourceBindingLayout
 {
     friend class CommandBuffer;
+    friend class PipelineState;
+
+    VkPipelineLayout mPipelineLayout;
 
 public:
     bool Init(const ResourceBindingLayoutDesc& desc) override;

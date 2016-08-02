@@ -10,6 +10,8 @@
 
 #include "Defines.hpp"
 #include "RenderTarget.hpp"
+#include "ShaderProgram.hpp"
+#include "PipelineState.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -28,6 +30,8 @@ class CommandBuffer : public ICommandBuffer
     VkCommandBuffer mCommandBuffer;
     VkCommandBufferBeginInfo mCommandBufferBeginInfo;
     RenderTarget* mRenderTarget;
+    ShaderProgram* mShaderProgram;
+    PipelineState* mPipelineState;
 
 public:
     CommandBuffer();

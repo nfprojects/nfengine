@@ -29,6 +29,7 @@ private:
     VkSemaphore mRenderSemaphore;
     VkSemaphore mPresentSemaphore;
     VkSemaphore mPostPresentSemaphore;
+    VkPipelineCache mPipelineCache;
     bool mDebugEnable;
     VkDebugReportFlagsEXT mDebugFlags;
 
@@ -73,6 +74,11 @@ public:
     NFE_INLINE const VkSemaphore& GetPostPresentSemaphore() const
     {
         return mPostPresentSemaphore;
+    }
+
+    NFE_INLINE const VkPipelineCache& GetPipelineCache() const
+    {
+        return mPipelineCache;
     }
 
     // overrides

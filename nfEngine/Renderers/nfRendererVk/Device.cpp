@@ -53,8 +53,9 @@ Device::Device()
     , mGraphicsQueue(VK_NULL_HANDLE)
     , mRenderSemaphore(VK_NULL_HANDLE)
     , mPresentSemaphore(VK_NULL_HANDLE)
-    , mDebugEnable(false)
-    , mDebugFlags(VK_DEBUG_REPORT_FLAG_BITS_MAX_ENUM_EXT)
+    , mPipelineCache(VK_NULL_HANDLE)
+    , mDebugEnable(true)
+    , mDebugFlags(VK_DEBUG_REPORT_ERROR_BIT_EXT)
 {
 }
 
@@ -62,6 +63,8 @@ Device::~Device()
 {
     Debugger::Instance().Release();
 
+    if (mPipelineCache != VK_NULL_HANDLE)
+        vkDestroyPipelineCache(mDevice, mPipelineCache, nullptr);
     if (mPostPresentSemaphore != VK_NULL_HANDLE)
         vkDestroySemaphore(mDevice, mPostPresentSemaphore, nullptr);
     if (mPresentSemaphore != VK_NULL_HANDLE)
@@ -234,12 +237,17 @@ bool Device::Init()
     VkSemaphoreCreateInfo semInfo;
     VK_ZERO_MEMORY(semInfo);
     semInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-    result = vkCreateSemaphore(gDevice->GetDevice(), &semInfo, nullptr, &mRenderSemaphore);
+    result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mRenderSemaphore);
     CHECK_VKRESULT(result, "Failed to create rendering semaphore");
-    result = vkCreateSemaphore(gDevice->GetDevice(), &semInfo, nullptr, &mPresentSemaphore);
+    result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mPresentSemaphore);
     CHECK_VKRESULT(result, "Failed to create present semaphore");
-    result = vkCreateSemaphore(gDevice->GetDevice(), &semInfo, nullptr, &mPostPresentSemaphore);
+    result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mPostPresentSemaphore);
     CHECK_VKRESULT(result, "Failed to create post present semaphore");
+
+    VkPipelineCacheCreateInfo pipeCacheInfo;
+    VK_ZERO_MEMORY(pipeCacheInfo);
+    pipeCacheInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
+    result = vkCreatePipelineCache(mDevice, &pipeCacheInfo, nullptr, &mPipelineCache);
 
     LOG_INFO("Vulkan device initialized successfully");
     return true;
@@ -280,8 +288,7 @@ IRenderTarget* Device::CreateRenderTarget(const RenderTargetDesc& desc)
 
 IPipelineState* Device::CreatePipelineState(const PipelineStateDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<PipelineState, PipelineStateDesc>(desc);
 }
 
 ISampler* Device::CreateSampler(const SamplerDesc& desc)
@@ -477,11 +484,15 @@ IDevice* Init(const DeviceInitParams* params)
         }
     }
 
+    // initialize glslang library for shader processing
+    glslang::InitializeProcess();
+
     return gDevice.get();
 }
 
 void Release()
 {
+    glslang::FinalizeProcess();
     gDevice.reset();
 }
 

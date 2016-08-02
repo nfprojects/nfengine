@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "ResourceBinding.hpp"
+#include "Device.hpp"
 
 
 namespace NFE {
@@ -20,6 +21,16 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
 bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
 {
     UNUSED(desc);
+
+    // TODO
+    VkPipelineLayoutCreateInfo plInfo;
+    VK_ZERO_MEMORY(plInfo);
+    plInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    plInfo.setLayoutCount = 0;
+    plInfo.pushConstantRangeCount = 0;
+    VkResult result = vkCreatePipelineLayout(gDevice->GetDevice(), &plInfo, nullptr, &mPipelineLayout);
+    CHECK_VKRESULT(result, "Failed to create pipeline layout");
+
     return true;
 }
 

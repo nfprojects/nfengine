@@ -97,6 +97,18 @@ extern PFN_vkCreateSemaphore vkCreateSemaphore;
 extern PFN_vkDestroyFence vkDestroyFence;
 extern PFN_vkDestroySemaphore vkDestroySemaphore;
 
+// Shaders
+extern PFN_vkCreateShaderModule vkCreateShaderModule;
+extern PFN_vkDestroyShaderModule vkDestroyShaderModule;
+
+// Pipeline
+extern PFN_vkCreateGraphicsPipelines vkCreateGraphicsPipelines;
+extern PFN_vkCreatePipelineCache vkCreatePipelineCache;
+extern PFN_vkCreatePipelineLayout vkCreatePipelineLayout;
+extern PFN_vkDestroyPipeline vkDestroyPipeline;
+extern PFN_vkDestroyPipelineCache vkDestroyPipelineCache;
+extern PFN_vkDestroyPipelineLayout vkDestroyPipelineLayout;
+
 /**
  * Initializes Vulkan Device extensions used by nfRendererVk.
  *
