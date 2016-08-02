@@ -22,6 +22,7 @@ class Device : public IDevice
 private:
     Instance mInstance;
     VkPhysicalDevice mPhysicalDevice;
+    VkPhysicalDeviceMemoryProperties mMemoryProperties;
     VkDevice mDevice;
     VkCommandPool mCommandPool;
     uint32 mGraphicsQueueIndex;
@@ -29,7 +30,10 @@ private:
     VkSemaphore mRenderSemaphore;
     VkSemaphore mPresentSemaphore;
     VkSemaphore mPostPresentSemaphore;
+    VkPipelineCache mPipelineCache;
     bool mDebugEnable;
+
+    std::map<FullPipelineStateParts, VkPipeline> mPipelineStateMap;
 
     VkPhysicalDevice SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices);
 
@@ -73,6 +77,24 @@ public:
     {
         return mPostPresentSemaphore;
     }
+
+    NFE_INLINE const VkPipelineCache& GetPipelineCache() const
+    {
+        return mPipelineCache;
+    }
+
+    NFE_INLINE const VkQueue& GetQueue() const
+    {
+        return mGraphicsQueue;
+    }
+
+    NFE_INLINE const uint32& GetQueueIndex() const
+    {
+        return mGraphicsQueueIndex;
+    }
+
+    uint32 GetMemoryTypeIndex(uint32 typeBits, VkFlags properties);
+    VkPipeline GetFullPipelineState(const FullPipelineStateParts& parts);
 
     // overrides
     void* GetHandle() const override;

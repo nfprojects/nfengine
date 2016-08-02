@@ -142,6 +142,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfResources", "nfEngine\nfR
 		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "D3DCommon", "D3DCommon", "{8720D62A-B414-41F5-A793-D2B19D8FF955}"
+	ProjectSection(SolutionItems) = preProject
+		nfEngine\Renderers\D3DCommon\Format.hpp = nfEngine\Renderers\D3DCommon\Format.hpp
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -370,5 +375,6 @@ Global
 		{49AB8AC7-1834-4AF8-9792-59313C71C7E0} = {265F0BFF-E485-46E3-9213-D339828982B3}
 		{1A1154B8-E09A-472F-A0F0-20F530741587} = {265F0BFF-E485-46E3-9213-D339828982B3}
 		{39346F9B-F1D6-41A9-A539-91D0448C491C} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
+		{8720D62A-B414-41F5-A793-D2B19D8FF955} = {265F0BFF-E485-46E3-9213-D339828982B3}
 	EndGlobalSection
 EndGlobal

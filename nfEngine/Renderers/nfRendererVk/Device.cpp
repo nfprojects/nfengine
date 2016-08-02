@@ -8,8 +8,6 @@
 #include "Device.hpp"
 #include "Debugger.hpp"
 
-#include <memory.h>
-
 // modules
 #include "Translations.hpp"
 #include "Backbuffer.hpp"
@@ -18,6 +16,9 @@
 #include "Shader.hpp"
 #include "ShaderProgram.hpp"
 #include "ResourceBinding.hpp"
+#include "Buffer.hpp"
+#include "VertexLayout.hpp"
+#include "PipelineState.hpp"
 
 namespace {
 
@@ -54,12 +55,21 @@ Device::Device()
     , mRenderSemaphore(VK_NULL_HANDLE)
     , mPresentSemaphore(VK_NULL_HANDLE)
     , mPostPresentSemaphore(VK_NULL_HANDLE)
+    , mPipelineCache(VK_NULL_HANDLE)
     , mDebugEnable(false)
 {
 }
 
 Device::~Device()
 {
+    for (auto& pipeline : mPipelineStateMap)
+    {
+        if (pipeline.second != VK_NULL_HANDLE)
+            vkDestroyPipeline(mDevice, pipeline.second, nullptr);
+    }
+
+    if (mPipelineCache != VK_NULL_HANDLE)
+        vkDestroyPipelineCache(mDevice, mPipelineCache, nullptr);
     if (mPostPresentSemaphore != VK_NULL_HANDLE)
         vkDestroySemaphore(mDevice, mPostPresentSemaphore, nullptr);
     if (mPresentSemaphore != VK_NULL_HANDLE)
@@ -94,6 +104,7 @@ VkPhysicalDevice Device::SelectPhysicalDevice(const std::vector<VkPhysicalDevice
         LOG_DEBUG("  Driver ver: %u.%u.%u", VK_VERSION_MAJOR(devProps.driverVersion),
                                             VK_VERSION_MINOR(devProps.driverVersion),
                                             VK_VERSION_PATCH(devProps.driverVersion));
+        LOG_DEBUG("  VP Bounds:  %f-%f", devProps.limits.viewportBoundsRange[0], devProps.limits.viewportBoundsRange[1]);
     }
 
     // TODO so far we select the first device available. Here might be a good place to:
@@ -132,6 +143,8 @@ bool Device::Init()
     }
 
     mPhysicalDevice = SelectPhysicalDevice(devices);
+
+    vkGetPhysicalDeviceMemoryProperties(mPhysicalDevice, &mMemoryProperties);
 
     // Grab queue properties from our selected device
     uint32 queueCount = 0;
@@ -234,15 +247,52 @@ bool Device::Init()
     VkSemaphoreCreateInfo semInfo;
     VK_ZERO_MEMORY(semInfo);
     semInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-    result = vkCreateSemaphore(gDevice->GetDevice(), &semInfo, nullptr, &mRenderSemaphore);
+    result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mRenderSemaphore);
     CHECK_VKRESULT(result, "Failed to create rendering semaphore");
-    result = vkCreateSemaphore(gDevice->GetDevice(), &semInfo, nullptr, &mPresentSemaphore);
+    result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mPresentSemaphore);
     CHECK_VKRESULT(result, "Failed to create present semaphore");
-    result = vkCreateSemaphore(gDevice->GetDevice(), &semInfo, nullptr, &mPostPresentSemaphore);
+    result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mPostPresentSemaphore);
     CHECK_VKRESULT(result, "Failed to create post present semaphore");
+
+    VkPipelineCacheCreateInfo pipeCacheInfo;
+    VK_ZERO_MEMORY(pipeCacheInfo);
+    pipeCacheInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
+    result = vkCreatePipelineCache(mDevice, &pipeCacheInfo, nullptr, &mPipelineCache);
 
     LOG_INFO("Vulkan device initialized successfully");
     return true;
+}
+
+uint32 Device::GetMemoryTypeIndex(uint32 typeBits, VkFlags properties)
+{
+    for (uint32 i = 0; i < mMemoryProperties.memoryTypeCount; ++i)
+    {
+        if (typeBits & 1)
+            if (mMemoryProperties.memoryTypes[i].propertyFlags & properties)
+                return i;
+
+        typeBits >>= 1;
+    }
+
+    return UINT32_MAX;
+}
+
+VkPipeline Device::GetFullPipelineState(const FullPipelineStateParts& parts)
+{
+    const auto& it = mPipelineStateMap.find(parts);
+    VkPipeline fullState;
+    if (it == mPipelineStateMap.end())
+    {
+        fullState = PipelineState::CreateFullPipelineState(parts);
+        if (fullState == VK_NULL_HANDLE)
+            LOG_ERROR("Failed to create full pipeline state from parts");
+
+        mPipelineStateMap[parts] = fullState;
+    }
+    else
+        fullState = it->second;
+
+    return fullState;
 }
 
 void* Device::GetHandle() const
@@ -252,14 +302,12 @@ void* Device::GetHandle() const
 
 IVertexLayout* Device::CreateVertexLayout(const VertexLayoutDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<VertexLayout, VertexLayoutDesc>(desc);
 }
 
 IBuffer* Device::CreateBuffer(const BufferDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<Buffer, BufferDesc>(desc);
 }
 
 ITexture* Device::CreateTexture(const TextureDesc& desc)
@@ -280,8 +328,7 @@ IRenderTarget* Device::CreateRenderTarget(const RenderTargetDesc& desc)
 
 IPipelineState* Device::CreatePipelineState(const PipelineStateDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<PipelineState, PipelineStateDesc>(desc);
 }
 
 ISampler* Device::CreateSampler(const SamplerDesc& desc)
@@ -418,7 +465,7 @@ bool Device::Execute(ICommandList* commandList)
     WaitForGPU();
 
     // perform waiting for wait semaphores at the beginning of our pipeline
-    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 
     VkSubmitInfo submitInfo;
     VK_ZERO_MEMORY(submitInfo);
@@ -477,11 +524,18 @@ IDevice* Init(const DeviceInitParams* params)
         }
     }
 
+    // initialize glslang library for shader processing
+    // TODO right now glslang leaks lots of memory (one leak per TShader object,
+    //      and one per glslang's Instance).
+    //      Bump glslang version, fix it by yourself, or use other library for GLSL/HLSL->SPV.
+    glslang::InitializeProcess();
+
     return gDevice.get();
 }
 
 void Release()
 {
+    glslang::FinalizeProcess();
     gDevice.reset();
 }
 
