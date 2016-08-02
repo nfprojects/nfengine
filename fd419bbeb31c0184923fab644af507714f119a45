@@ -114,6 +114,30 @@
       "revId": "fd419bbeb31c0184923fab644af507714f119a45",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2342a20f",
+        "filename": "nfEngine/nfCommon/Win/Window.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-02T10:34:42Z",
+      "side": 1,
+      "message": "Since this register method uses the structure just above it, I would treat them as one block - first filling the structure, then using it in its only place, which is the RegisterClassEx function. I think it should stay together.",
+      "parentUuid": "baa041b7_40db5c4f",
+      "range": {
+        "startLine": 176,
+        "startChar": 4,
+        "endLine": 176,
+        "endChar": 32
+      },
+      "revId": "fd419bbeb31c0184923fab644af507714f119a45",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
