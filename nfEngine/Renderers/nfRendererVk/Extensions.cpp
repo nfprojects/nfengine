@@ -21,6 +21,7 @@ PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = VK_NULL_HANDLE;
 PFN_vkEnumeratePhysicalDevices vkEnumeratePhysicalDevices = VK_NULL_HANDLE;
 PFN_vkGetPhysicalDeviceProperties vkGetPhysicalDeviceProperties = VK_NULL_HANDLE;
 PFN_vkGetPhysicalDeviceFeatures vkGetPhysicalDeviceFeatures = VK_NULL_HANDLE;
+PFN_vkGetPhysicalDeviceMemoryProperties vkGetPhysicalDeviceMemoryProperties = VK_NULL_HANDLE;
 PFN_vkGetPhysicalDeviceQueueFamilyProperties vkGetPhysicalDeviceQueueFamilyProperties = VK_NULL_HANDLE;
 PFN_vkCreateDevice vkCreateDevice = VK_NULL_HANDLE;
 PFN_vkDestroyDevice vkDestroyDevice = VK_NULL_HANDLE;
@@ -38,6 +39,7 @@ bool nfvkInstanceExtensionsInit(VkInstance instance)
     VK_GET_INSTANCEPROC(instance, vkEnumeratePhysicalDevices);
     VK_GET_INSTANCEPROC(instance, vkGetPhysicalDeviceProperties);
     VK_GET_INSTANCEPROC(instance, vkGetPhysicalDeviceFeatures);
+    VK_GET_INSTANCEPROC(instance, vkGetPhysicalDeviceMemoryProperties);
     VK_GET_INSTANCEPROC(instance, vkGetPhysicalDeviceQueueFamilyProperties);
     VK_GET_INSTANCEPROC(instance, vkCreateDevice);
     VK_GET_INSTANCEPROC(instance, vkDestroyDevice);
@@ -81,8 +83,15 @@ PFN_vkCreateRenderPass vkCreateRenderPass = VK_NULL_HANDLE;
 PFN_vkDestroyFramebuffer vkDestroyFramebuffer = VK_NULL_HANDLE;
 PFN_vkDestroyRenderPass vkDestroyRenderPass = VK_NULL_HANDLE;
 
-// Other ommands
+// Other commands
+PFN_vkCmdBindDescriptorSets vkCmdBindDescriptorSets = VK_NULL_HANDLE;
+PFN_vkCmdBindIndexBuffer vkCmdBindIndexBuffer = VK_NULL_HANDLE;
+PFN_vkCmdBindPipeline vkCmdBindPipeline = VK_NULL_HANDLE;
+PFN_vkCmdBindVertexBuffers vkCmdBindVertexBuffers = VK_NULL_HANDLE;
 PFN_vkCmdClearAttachments vkCmdClearAttachments = VK_NULL_HANDLE;
+PFN_vkCmdCopyBuffer vkCmdCopyBuffer = VK_NULL_HANDLE;
+PFN_vkCmdDraw vkCmdDraw = VK_NULL_HANDLE;
+PFN_vkCmdDrawIndexed vkCmdDrawIndexed = VK_NULL_HANDLE;
 PFN_vkCmdSetScissor vkCmdSetScissor = VK_NULL_HANDLE;
 PFN_vkCmdSetViewport vkCmdSetViewport = VK_NULL_HANDLE;
 
@@ -98,13 +107,19 @@ PFN_vkQueuePresentKHR vkQueuePresentKHR = VK_NULL_HANDLE;
 PFN_vkQueueSubmit vkQueueSubmit = VK_NULL_HANDLE;
 PFN_vkQueueWaitIdle vkQueueWaitIdle = VK_NULL_HANDLE;
 
-// Buffers and Images
+// Memory
+PFN_vkAllocateMemory vkAllocateMemory = VK_NULL_HANDLE;
+PFN_vkBindBufferMemory vkBindBufferMemory = VK_NULL_HANDLE;
 PFN_vkCreateBuffer vkCreateBuffer = VK_NULL_HANDLE;
 PFN_vkCreateImage vkCreateImage = VK_NULL_HANDLE;
 PFN_vkCreateImageView vkCreateImageView = VK_NULL_HANDLE;
 PFN_vkDestroyBuffer vkDestroyBuffer = VK_NULL_HANDLE;
 PFN_vkDestroyImage vkDestroyImage = VK_NULL_HANDLE;
 PFN_vkDestroyImageView vkDestroyImageView = VK_NULL_HANDLE;
+PFN_vkFreeMemory vkFreeMemory = VK_NULL_HANDLE;
+PFN_vkGetBufferMemoryRequirements vkGetBufferMemoryRequirements = VK_NULL_HANDLE;
+PFN_vkMapMemory vkMapMemory = VK_NULL_HANDLE;
+PFN_vkUnmapMemory vkUnmapMemory = VK_NULL_HANDLE;
 
 // Synchronization
 PFN_vkCmdPipelineBarrier vkCmdPipelineBarrier = VK_NULL_HANDLE;
@@ -112,6 +127,18 @@ PFN_vkCreateFence vkCreateFence = VK_NULL_HANDLE;
 PFN_vkCreateSemaphore vkCreateSemaphore = VK_NULL_HANDLE;
 PFN_vkDestroyFence vkDestroyFence = VK_NULL_HANDLE;
 PFN_vkDestroySemaphore vkDestroySemaphore = VK_NULL_HANDLE;
+
+// Shaders
+PFN_vkCreateShaderModule vkCreateShaderModule = VK_NULL_HANDLE;
+PFN_vkDestroyShaderModule vkDestroyShaderModule = VK_NULL_HANDLE;
+
+// Pipelines
+PFN_vkCreateGraphicsPipelines vkCreateGraphicsPipelines = VK_NULL_HANDLE;
+PFN_vkCreatePipelineCache vkCreatePipelineCache = VK_NULL_HANDLE;
+PFN_vkCreatePipelineLayout vkCreatePipelineLayout = VK_NULL_HANDLE;
+PFN_vkDestroyPipeline vkDestroyPipeline = VK_NULL_HANDLE;
+PFN_vkDestroyPipelineCache vkDestroyPipelineCache = VK_NULL_HANDLE;
+PFN_vkDestroyPipelineLayout vkDestroyPipelineLayout = VK_NULL_HANDLE;
 
 bool nfvkDeviceExtensionsInit(VkDevice device)
 {
@@ -137,7 +164,14 @@ bool nfvkDeviceExtensionsInit(VkDevice device)
     VK_GET_DEVICEPROC(device, vkDestroyRenderPass);
 
     // Other Commands
+    VK_GET_DEVICEPROC(device, vkCmdBindDescriptorSets);
+    VK_GET_DEVICEPROC(device, vkCmdBindIndexBuffer);
+    VK_GET_DEVICEPROC(device, vkCmdBindPipeline);
+    VK_GET_DEVICEPROC(device, vkCmdBindVertexBuffers);
     VK_GET_DEVICEPROC(device, vkCmdClearAttachments);
+    VK_GET_DEVICEPROC(device, vkCmdCopyBuffer);
+    VK_GET_DEVICEPROC(device, vkCmdDraw);
+    VK_GET_DEVICEPROC(device, vkCmdDrawIndexed);
     VK_GET_DEVICEPROC(device, vkCmdSetScissor);
     VK_GET_DEVICEPROC(device, vkCmdSetViewport);
 
@@ -153,13 +187,19 @@ bool nfvkDeviceExtensionsInit(VkDevice device)
     VK_GET_DEVICEPROC(device, vkQueueSubmit);
     VK_GET_DEVICEPROC(device, vkQueueWaitIdle);
 
-    // Buffers and Images
+    // Memory
+    VK_GET_DEVICEPROC(device, vkAllocateMemory);
+    VK_GET_DEVICEPROC(device, vkBindBufferMemory);
     VK_GET_DEVICEPROC(device, vkCreateBuffer);
     VK_GET_DEVICEPROC(device, vkCreateImage);
     VK_GET_DEVICEPROC(device, vkCreateImageView);
     VK_GET_DEVICEPROC(device, vkDestroyBuffer);
     VK_GET_DEVICEPROC(device, vkDestroyImage);
     VK_GET_DEVICEPROC(device, vkDestroyImageView);
+    VK_GET_DEVICEPROC(device, vkFreeMemory);
+    VK_GET_DEVICEPROC(device, vkGetBufferMemoryRequirements);
+    VK_GET_DEVICEPROC(device, vkMapMemory);
+    VK_GET_DEVICEPROC(device, vkUnmapMemory);
 
     // Synchronization
     VK_GET_DEVICEPROC(device, vkCmdPipelineBarrier);
@@ -167,6 +207,18 @@ bool nfvkDeviceExtensionsInit(VkDevice device)
     VK_GET_DEVICEPROC(device, vkCreateSemaphore);
     VK_GET_DEVICEPROC(device, vkDestroyFence);
     VK_GET_DEVICEPROC(device, vkDestroySemaphore);
+
+    // Shaders
+    VK_GET_DEVICEPROC(device, vkCreateShaderModule);
+    VK_GET_DEVICEPROC(device, vkDestroyShaderModule);
+
+    // Pipelines
+    VK_GET_DEVICEPROC(device, vkCreateGraphicsPipelines);
+    VK_GET_DEVICEPROC(device, vkCreatePipelineCache);
+    VK_GET_DEVICEPROC(device, vkCreatePipelineLayout);
+    VK_GET_DEVICEPROC(device, vkDestroyPipeline);
+    VK_GET_DEVICEPROC(device, vkDestroyPipelineCache);
+    VK_GET_DEVICEPROC(device, vkDestroyPipelineLayout);
 
     return allExtensionsAvailable;
 }
