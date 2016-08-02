@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_49d5c740",
+        "filename": "nfEngine/nfCommon/Win/Window.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-02T20:10:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_a0134800",
+      "range": {
+        "startLine": 62,
+        "startChar": 4,
+        "endLine": 62,
+        "endChar": 35
+      },
+      "revId": "fd419bbeb31c0184923fab644af507714f119a45",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_80d5e41c",
         "filename": "nfEngine/nfCommon/Win/Window.cpp",
         "patchSetId": 11
@@ -71,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_29c843a7",
+        "filename": "nfEngine/nfCommon/Win/Window.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-02T20:10:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_80d5e41c",
+      "range": {
+        "startLine": 170,
+        "startChar": 29,
+        "endLine": 170,
+        "endChar": 31
+      },
+      "revId": "fd419bbeb31c0184923fab644af507714f119a45",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_60d8a053",
         "filename": "nfEngine/nfCommon/Win/Window.cpp",
         "patchSetId": 11
@@ -82,6 +130,30 @@
       "writtenOn": "2016-08-02T07:52:29Z",
       "side": 1,
       "message": "add space",
+      "range": {
+        "startLine": 171,
+        "startChar": 29,
+        "endLine": 171,
+        "endChar": 32
+      },
+      "revId": "fd419bbeb31c0184923fab644af507714f119a45",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_09cb3fa5",
+        "filename": "nfEngine/nfCommon/Win/Window.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-02T20:10:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_60d8a053",
       "range": {
         "startLine": 171,
         "startChar": 29,
