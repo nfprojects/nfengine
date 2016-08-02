@@ -422,7 +422,7 @@ void BasicScene::Draw(float dt)
         mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
     }
 
-    if (mPipelineState)
+    if (mResBindingLayout)
         mCommandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
 
     if (mConstantBuffer)

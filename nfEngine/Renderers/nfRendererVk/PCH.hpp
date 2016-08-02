@@ -19,5 +19,11 @@
 #endif
 
 #include <vulkan/vulkan.h>
+#include <glslang/glslang/Public/ShaderLang.h>
+
+#include <string.h>
 #include <memory>
 #include <set>
+#include <map>
+#include <tuple>
+#include <sstream>

@@ -11,6 +11,13 @@
 #include <string.h>
 
 
+namespace {
+
+// TODO make this customizable from the outside
+const VkFormat VK_PREFERRED_FORMAT = VK_FORMAT_R8G8B8A8_UNORM;
+
+} // namespace
+
 namespace NFE {
 namespace Renderer {
 
@@ -19,6 +26,7 @@ Backbuffer::Backbuffer()
     , mColorSpace(VK_COLORSPACE_SRGB_NONLINEAR_KHR)
     , mPresentQueueIndex(UINT32_MAX)
     , mPresentQueue(VK_NULL_HANDLE)
+    , mSwapchain(VK_NULL_HANDLE)
     , mPresentCommandPool(VK_NULL_HANDLE)
 {
 }
@@ -95,14 +103,31 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     result = vkGetPhysicalDeviceSurfaceFormatsKHR(gDevice->GetPhysicalDevice(), mSurface,
                                                   &formatCount, formats.data());
     CHECK_VKRESULT(result, "Unable to retrieve surface formats");
-
-    // One entry with VK_FORMAT_UNDEFINED means no preferred formats - select BGRA_UNORM as default
+    uint32 formatIndex = 0;
+    // One entry with VK_FORMAT_UNDEFINED means no preferred formats - select our preference
     if ((formatCount == 1) && (formats[0].format == VK_FORMAT_UNDEFINED))
-        mFormat = VK_FORMAT_B8G8R8A8_UNORM;
+        mFormat = VK_PREFERRED_FORMAT;
     else
-        mFormat = formats[0].format;
+    {
+        // Try to find a preferred format from possible surface formats
+        for (formatIndex = 0; formatIndex < formatCount; formatIndex++)
+        {
+            if (formats[formatIndex].format == VK_PREFERRED_FORMAT)
+            {
+                mFormat = formats[formatIndex].format;
+                break;
+            }
+        }
 
-    mColorSpace = formats[0].colorSpace;
+        // Go back to first possible selected if our preffered format is not found
+        if (formatIndex == formatCount)
+        {
+            formatIndex = 0;
+            mFormat = formats[formatIndex].format;
+        }
+    }
+
+    mColorSpace = formats[formatIndex].colorSpace;
 
     // Gather possible present mdoes
     uint32 presentModeCount = UINT32_MAX;
@@ -157,7 +182,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     swapInfo.imageExtent.width = desc.width;
     swapInfo.imageExtent.height = desc.height;
     swapInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-    swapInfo.preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+    swapInfo.preTransform = surfCaps.currentTransform;
     swapInfo.imageArrayLayers = 1;
     swapInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
     swapInfo.presentMode = swapPresentMode;
@@ -271,7 +296,9 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
 
     const VkSemaphore& presentSem = gDevice->GetPresentSemaphore();
     const VkSemaphore& postPresentSem = gDevice->GetPostPresentSemaphore();
-    vkAcquireNextImageKHR(gDevice->GetDevice(), mSwapchain, UINT64_MAX, presentSem, VK_NULL_HANDLE, &mCurrentBuffer);
+    // TODO handle VK_ERROR_OUT_OF_DATE (happens ex. during resize)
+    result = vkAcquireNextImageKHR(gDevice->GetDevice(), mSwapchain, UINT64_MAX, presentSem, VK_NULL_HANDLE, &mCurrentBuffer);
+    CHECK_VKRESULT(result, "Failed to acquire next image");
 
     // Submit a pipeline barrier call to ensure our buffer is a color attachment
     VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
@@ -326,11 +353,12 @@ bool Backbuffer::Present()
     // Acquire next image for future use.
     // In case there are no free buffers to use, mPresentSemaphore will lock further execution and
     // the function will signal it - this way we know when to safely start executing render queue.
-    vkAcquireNextImageKHR(gDevice->GetDevice(), mSwapchain, UINT64_MAX,
-                          presentSem, VK_NULL_HANDLE, &mCurrentBuffer);
+    result = vkAcquireNextImageKHR(gDevice->GetDevice(), mSwapchain, UINT64_MAX,
+                                   presentSem, VK_NULL_HANDLE, &mCurrentBuffer);
+    CHECK_VKRESULT(result, "Failed to acquire next image from Vulkan Surface");
 
     // Submit a pipeline barrier call to ensure our buffer is now back to be a color attachment
-    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
     VkSubmitInfo submitInfo;
     VK_ZERO_MEMORY(submitInfo);
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
