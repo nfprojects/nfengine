@@ -21,7 +21,7 @@ cbuffer TestCBuffer : register(c0)
 
 VertexShaderOutput main(VertexShaderInput In)
 {
-    VertexShaderOutput Out = (VertexShaderOutput)0;
+    VertexShaderOutput Out;
     Out.Pos = float4(In.Pos, 1.0f);
 
 #if (USE_CBUFFER > 0)
