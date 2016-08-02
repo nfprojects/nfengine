@@ -11,6 +11,7 @@
 #include "Translations.hpp"
 #include "CommandBuffer.hpp"
 #include "RenderTarget.hpp"
+#include "Buffer.hpp"
 
 #include <string.h>
 
@@ -18,6 +19,12 @@
 namespace NFE {
 namespace Renderer {
 
+
+void CommandBuffer::UpdateStates()
+{
+    const FullPipelineStateParts parts(mPipelineState, mShaderProgram);
+
+}
 
 CommandBuffer::CommandBuffer()
     : mCommandBuffer(VK_NULL_HANDLE)
@@ -61,10 +68,27 @@ void CommandBuffer::Reset()
 
 void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets)
 {
-    UNUSED(num);
-    UNUSED(vertexBuffers);
     UNUSED(strides);
-    UNUSED(offsets);
+
+    const int maxBuffers = 4;
+    VkBuffer buffers[maxBuffers];
+    VkDeviceSize offs[maxBuffers];
+
+    for (int i = 0; i < num; ++i)
+    {
+        Buffer* buf = dynamic_cast<Buffer*>(vertexBuffers[i]);
+        if (!buf)
+        {
+            LOG_ERROR("Incorrect buffer provided at slot %d", i);
+            return;
+        }
+
+        buffers[i] = buf->mBuffer;
+        offs[i] = static_cast<VkDeviceSize>(offsets[i]);
+    }
+
+    // TODO assumes start slot 0
+    vkCmdBindVertexBuffers(mCommandBuffer, 0, num, buffers, offs);
 }
 
 void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format)
@@ -122,12 +146,28 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
 
 void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
 {
-    UNUSED(shaderProgram);
+    ShaderProgram* sp = dynamic_cast<ShaderProgram*>(shaderProgram);
+    if (sp == nullptr)
+    {
+        LOG_ERROR("Incorrect pipeline state provided");
+        return;
+    }
+
+    mShaderProgram = sp;
+    mUpdatePipeline = true;
 }
 
 void CommandBuffer::SetPipelineState(IPipelineState* state)
 {
-    UNUSED(state);
+    PipelineState* ps = dynamic_cast<PipelineState*>(state);
+    if (ps == nullptr)
+    {
+        LOG_ERROR("Incorrect pipeline state provided");
+        return;
+    }
+
+    mPipelineState = ps;
+    mUpdatePipeline = true;
 }
 
 void CommandBuffer::SetStencilRef(unsigned char ref)

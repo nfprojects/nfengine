@@ -24,6 +24,7 @@ extern PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr;
 // Instance extensions
 extern PFN_vkEnumeratePhysicalDevices vkEnumeratePhysicalDevices;
 extern PFN_vkGetPhysicalDeviceProperties vkGetPhysicalDeviceProperties;
+extern PFN_vkGetPhysicalDeviceMemoryProperties vkGetPhysicalDeviceMemoryProperties;
 extern PFN_vkGetPhysicalDeviceFeatures vkGetPhysicalDeviceFeatures;
 extern PFN_vkGetPhysicalDeviceQueueFamilyProperties vkGetPhysicalDeviceQueueFamilyProperties;
 extern PFN_vkCreateDevice vkCreateDevice;
@@ -66,7 +67,9 @@ extern PFN_vkDestroyFramebuffer vkDestroyFramebuffer;
 extern PFN_vkDestroyRenderPass vkDestroyRenderPass;
 
 // Other Commands
+extern PFN_vkCmdBindVertexBuffers vkCmdBindVertexBuffers;
 extern PFN_vkCmdClearAttachments vkCmdClearAttachments;
+extern PFN_vkCmdCopyBuffer vkCmdCopyBuffer;
 extern PFN_vkCmdSetScissor vkCmdSetScissor;
 extern PFN_vkCmdSetViewport vkCmdSetViewport;
 
@@ -82,13 +85,19 @@ extern PFN_vkQueuePresentKHR vkQueuePresentKHR;
 extern PFN_vkQueueSubmit vkQueueSubmit;
 extern PFN_vkQueueWaitIdle vkQueueWaitIdle;
 
-// Buffers and Images
+// Memory
+extern PFN_vkAllocateMemory vkAllocateMemory;
+extern PFN_vkBindBufferMemory vkBindBufferMemory;
 extern PFN_vkCreateBuffer vkCreateBuffer;
 extern PFN_vkCreateImage vkCreateImage;
 extern PFN_vkCreateImageView vkCreateImageView;
 extern PFN_vkDestroyBuffer vkDestroyBuffer;
 extern PFN_vkDestroyImage vkDestroyImage;
 extern PFN_vkDestroyImageView vkDestroyImageView;
+extern PFN_vkFreeMemory vkFreeMemory;
+extern PFN_vkGetBufferMemoryRequirements vkGetBufferMemoryRequirements;
+extern PFN_vkMapMemory vkMapMemory;
+extern PFN_vkUnmapMemory vkUnmapMemory;
 
 // Synchronization
 extern PFN_vkCmdPipelineBarrier vkCmdPipelineBarrier;
@@ -96,6 +105,18 @@ extern PFN_vkCreateFence vkCreateFence;
 extern PFN_vkCreateSemaphore vkCreateSemaphore;
 extern PFN_vkDestroyFence vkDestroyFence;
 extern PFN_vkDestroySemaphore vkDestroySemaphore;
+
+// Shaders
+extern PFN_vkCreateShaderModule vkCreateShaderModule;
+extern PFN_vkDestroyShaderModule vkDestroyShaderModule;
+
+// Pipeline
+extern PFN_vkCreateGraphicsPipelines vkCreateGraphicsPipelines;
+extern PFN_vkCreatePipelineCache vkCreatePipelineCache;
+extern PFN_vkCreatePipelineLayout vkCreatePipelineLayout;
+extern PFN_vkDestroyPipeline vkDestroyPipeline;
+extern PFN_vkDestroyPipelineCache vkDestroyPipelineCache;
+extern PFN_vkDestroyPipelineLayout vkDestroyPipelineLayout;
 
 /**
  * Initializes Vulkan Device extensions used by nfRendererVk.
