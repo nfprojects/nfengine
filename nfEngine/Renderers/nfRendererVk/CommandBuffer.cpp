@@ -11,6 +11,7 @@
 #include "Translations.hpp"
 #include "CommandBuffer.hpp"
 #include "RenderTarget.hpp"
+#include "Buffer.hpp"
 
 #include <string.h>
 
@@ -61,10 +62,27 @@ void CommandBuffer::Reset()
 
 void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets)
 {
-    UNUSED(num);
-    UNUSED(vertexBuffers);
     UNUSED(strides);
-    UNUSED(offsets);
+
+    const int maxBuffers = 4;
+    VkBuffer buffers[maxBuffers];
+    VkDeviceSize offs[maxBuffers];
+
+    for (int i = 0; i < num; ++i)
+    {
+        Buffer* buf = dynamic_cast<Buffer*>(vertexBuffers[i]);
+        if (!buf)
+        {
+            LOG_ERROR("Incorrect buffer provided at slot %d", i);
+            return;
+        }
+
+        buffers[i] = buf->mBuffer;
+        offs[i] = static_cast<VkDeviceSize>(offsets[i]);
+    }
+
+    // TODO assumes start slot 0
+    vkCmdBindVertexBuffers(mCommandBuffer, 0, num, buffers, offs);
 }
 
 void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format)

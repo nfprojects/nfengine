@@ -22,6 +22,7 @@ class Device : public IDevice
 private:
     Instance mInstance;
     VkPhysicalDevice mPhysicalDevice;
+    VkPhysicalDeviceMemoryProperties mMemoryProperties;
     VkDevice mDevice;
     VkCommandPool mCommandPool;
     uint32 mGraphicsQueueIndex;
@@ -29,6 +30,7 @@ private:
     VkSemaphore mRenderSemaphore;
     VkSemaphore mPresentSemaphore;
     VkSemaphore mPostPresentSemaphore;
+    VkPipelineCache mPipelineCache;
     bool mDebugEnable;
     VkDebugReportFlagsEXT mDebugFlags;
 
@@ -74,6 +76,23 @@ public:
     {
         return mPostPresentSemaphore;
     }
+
+    NFE_INLINE const VkPipelineCache& GetPipelineCache() const
+    {
+        return mPipelineCache;
+    }
+
+    NFE_INLINE const VkQueue& GetQueue() const
+    {
+        return mGraphicsQueue;
+    }
+
+    NFE_INLINE const uint32& GetQueueIndex() const
+    {
+        return mGraphicsQueueIndex;
+    }
+
+    uint32 GetMemoryTypeIndex(uint32 typeBits, VkFlags properties);
 
     // overrides
     void* GetHandle() const override;

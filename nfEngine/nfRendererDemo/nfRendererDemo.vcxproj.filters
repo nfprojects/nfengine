@@ -85,26 +85,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\OGL4\TestVS.glsl">
-      <Filter>Shaders\GLSL</Filter>
-    </None>
-    <None Include="Shaders\OGL4\TestPS.glsl">
-      <Filter>Shaders\GLSL</Filter>
-    </None>
-    <None Include="Shaders\OGL4\PostProcessPS.glsl">
-      <Filter>Shaders\GLSL</Filter>
-    </None>
-    <None Include="Shaders\OGL4\RenderTargetPS.glsl">
-      <Filter>Shaders\GLSL</Filter>
-    </None>
-    <None Include="Shaders\OGL4\InstancingTestPS.glsl">
-      <Filter>Shaders\GLSL</Filter>
-    </None>
-    <None Include="Shaders\OGL4\InstancingTestVS.glsl">
-      <Filter>Shaders\GLSL</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <FxCompile Include="Shaders\HLSL5\InstancingTestVS.hlsl">
       <Filter>Shaders\HLSL5</Filter>
     </FxCompile>
@@ -138,5 +118,25 @@
     <FxCompile Include="Shaders\HLSL5\InstancingTestPS.hlsl">
       <Filter>Shaders\HLSL5</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\GLSL\InstancingTestPS.glsl">
+      <Filter>Shaders\GLSL</Filter>
+    </None>
+    <None Include="Shaders\GLSL\InstancingTestVS.glsl">
+      <Filter>Shaders\GLSL</Filter>
+    </None>
+    <None Include="Shaders\GLSL\PostProcessPS.glsl">
+      <Filter>Shaders\GLSL</Filter>
+    </None>
+    <None Include="Shaders\GLSL\RenderTargetPS.glsl">
+      <Filter>Shaders\GLSL</Filter>
+    </None>
+    <None Include="Shaders\GLSL\TestPS.glsl">
+      <Filter>Shaders\GLSL</Filter>
+    </None>
+    <None Include="Shaders\GLSL\TestVS.glsl">
+      <Filter>Shaders\GLSL</Filter>
+    </None>
   </ItemGroup>
 </Project>
