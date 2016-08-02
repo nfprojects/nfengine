@@ -23,7 +23,7 @@ class RenderTarget : public IRenderTarget
     uint32 mAttachmentCount;
 
     VkRenderPass mRenderPass;
-    Texture* mTex;
+    std::vector<Texture*> mTex;
     Texture* mDepthTex;
 
     std::vector<VkFramebuffer> mFramebuffers;

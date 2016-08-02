@@ -2,13 +2,13 @@
 layout (binding = 0) uniform sampler2D gTextureSampler;
 #endif
 
-in VertexShaderOutput
+layout (location = 0) in VertexShaderOutput
 {
     vec2 TexCoord;
     vec4 Color;
 } Input;
 
-out vec4 color;
+layout (location = 0) out vec4 color;
 
 void main()
 {

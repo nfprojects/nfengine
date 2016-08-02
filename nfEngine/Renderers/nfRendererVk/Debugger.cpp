@@ -41,7 +41,10 @@ VkBool32 DebugReport(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT obj
 
     // returning VK_TRUE here would cause Vulkan APIs to return VK_ERROR_VALIDATION_FAILED_EXT
     // right now we don't want that, but for debugging purposes it can be changed.
-    return VK_FALSE;
+    if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
+        return VK_TRUE;
+    else
+        return VK_FALSE;
 }
 
 } // namespace

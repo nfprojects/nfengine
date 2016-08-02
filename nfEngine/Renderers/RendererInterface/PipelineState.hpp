@@ -150,7 +150,7 @@ struct PipelineStateDesc
         , debugName(nullptr)
     {
         for (int i = 0; i < MAX_RENDER_TARGETS; ++i)
-            rtFormats[i] = ElementFormat::R8G8B8A8_U_Norm;
+            rtFormats[i] = ElementFormat::B8G8R8A8_U_Norm;
     }
 };
 
