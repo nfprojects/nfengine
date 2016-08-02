@@ -20,7 +20,10 @@
 // macro for unused parameters to supress warnings
 #define UNUSED(x) (void)(x)
 
-#include "vulkan/vulkan.h"
+#include <vulkan/vulkan.h>
+
+#include <glslang/glslang/Public/ShaderLang.h>
+#include <string.h>
 
 // LKTODO below code needs recreation in Vulkan (it will probably be veeeery useful...)
 #if 0
@@ -58,10 +61,11 @@ do                                                                              
 
 #endif // 0
 
+#include "nfCommon/nfCommon.hpp"
+#include "nfCommon/Logger.hpp"
+
 #include "Extensions.hpp"
 #include "Translations.hpp"
-#include "nfCommon/Logger.hpp"
-#include <string.h>
 
 #ifndef CHECK_VKRESULT
 #define CHECK_VKRESULT(result, errstr)                                              \
