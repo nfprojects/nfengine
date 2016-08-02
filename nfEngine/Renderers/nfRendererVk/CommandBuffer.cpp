@@ -11,6 +11,8 @@
 #include "Translations.hpp"
 #include "CommandBuffer.hpp"
 #include "RenderTarget.hpp"
+#include "Buffer.hpp"
+#include "ResourceBinding.hpp"
 
 #include <string.h>
 
@@ -18,6 +20,16 @@
 namespace NFE {
 namespace Renderer {
 
+
+void CommandBuffer::UpdateStates()
+{
+    if (!mUpdatePipeline)
+        return;
+
+    const FullPipelineStateParts parts(mPipelineState, mShaderProgram);
+    vkCmdBindPipeline(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, gDevice->GetFullPipelineState(parts));
+    mUpdatePipeline = false;
+}
 
 CommandBuffer::CommandBuffer()
     : mCommandBuffer(VK_NULL_HANDLE)
@@ -53,18 +65,33 @@ bool CommandBuffer::Init()
 
 void CommandBuffer::Reset()
 {
-    gDevice->WaitForGPU();
     mRenderTarget = nullptr;
-    vkResetCommandBuffer(mCommandBuffer, 0);
     vkBeginCommandBuffer(mCommandBuffer, &mCommandBufferBeginInfo);
 }
 
 void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets)
 {
-    UNUSED(num);
-    UNUSED(vertexBuffers);
     UNUSED(strides);
-    UNUSED(offsets);
+
+    const int maxBuffers = 4;
+    VkBuffer buffers[maxBuffers];
+    VkDeviceSize offs[maxBuffers];
+
+    for (int i = 0; i < num; ++i)
+    {
+        Buffer* buf = dynamic_cast<Buffer*>(vertexBuffers[i]);
+        if (!buf)
+        {
+            LOG_ERROR("Incorrect buffer provided at slot %d", i);
+            return;
+        }
+
+        buffers[i] = buf->mBuffer;
+        offs[i] = static_cast<VkDeviceSize>(offsets[i]);
+    }
+
+    // TODO assumes start slot 0
+    vkCmdBindVertexBuffers(mCommandBuffer, 0, num, buffers, offs);
 }
 
 void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format)
@@ -87,7 +114,9 @@ void CommandBuffer::BindDynamicBuffer(size_t slot, IBuffer* buffer)
 
 void CommandBuffer::SetResourceBindingLayout(IResourceBindingLayout* layout)
 {
-    UNUSED(layout);
+    mResourceBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout);
+    if (!mResourceBindingLayout)
+        LOG_ERROR("Incorrect binding layout provided");
 }
 
 void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
@@ -105,10 +134,6 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
         return;
     }
 
-    if (!mRenderTarget) {
-        return;
-    }
-
     VkRenderPassBeginInfo rpBeginInfo;
     VK_ZERO_MEMORY(rpBeginInfo);
     rpBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -122,12 +147,28 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
 
 void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
 {
-    UNUSED(shaderProgram);
+    ShaderProgram* sp = dynamic_cast<ShaderProgram*>(shaderProgram);
+    if (sp == nullptr)
+    {
+        LOG_ERROR("Incorrect pipeline state provided");
+        return;
+    }
+
+    mShaderProgram = sp;
+    mUpdatePipeline = true;
 }
 
 void CommandBuffer::SetPipelineState(IPipelineState* state)
 {
-    UNUSED(state);
+    PipelineState* ps = dynamic_cast<PipelineState*>(state);
+    if (ps == nullptr)
+    {
+        LOG_ERROR("Incorrect pipeline state provided");
+        return;
+    }
+
+    mPipelineState = ps;
+    mUpdatePipeline = true;
 }
 
 void CommandBuffer::SetStencilRef(unsigned char ref)
@@ -139,7 +180,6 @@ void CommandBuffer::SetViewport(float left, float width, float top, float height
                                 float minDepth, float maxDepth)
 {
     VkViewport viewport;
-    memset(&viewport, 0, sizeof(viewport));
     viewport.x = left;
     viewport.y = top;
     viewport.width = width;
@@ -249,10 +289,8 @@ void CommandBuffer::Clear(int flags, uint32 numTargets, const uint32* slots,
 void CommandBuffer::Draw(int vertexNum, int instancesNum, int vertexOffset,
                          int instanceOffset)
 {
-    UNUSED(vertexNum);
-    UNUSED(instancesNum);
-    UNUSED(vertexOffset);
-    UNUSED(instanceOffset);
+    UpdateStates();
+    vkCmdDraw(mCommandBuffer, vertexNum, instancesNum, vertexOffset, instanceOffset);
 }
 
 void CommandBuffer::DrawIndexed(int indexNum, int instancesNum,
@@ -286,7 +324,7 @@ std::unique_ptr<ICommandList> CommandBuffer::Finish()
         prePresentBarrier.subresourceRange.levelCount = 1;
         prePresentBarrier.subresourceRange.baseArrayLayer = 0;
         prePresentBarrier.subresourceRange.layerCount = 1;
-        prePresentBarrier.image = mRenderTarget->mTex->mBuffers[mRenderTarget->mTex->mCurrentBuffer];
+        prePresentBarrier.image = mRenderTarget->mTex[0]->mBuffers[mRenderTarget->mTex[0]->mCurrentBuffer];
         vkCmdPipelineBarrier(mCommandBuffer, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
                              VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0,
                              0, nullptr, 0, nullptr, 1, &prePresentBarrier);

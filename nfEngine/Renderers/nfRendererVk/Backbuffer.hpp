@@ -4,6 +4,8 @@
  * @brief   Declaration of renderer's backbuffer
  */
 
+#pragma once
+
 #include "../RendererInterface/Backbuffer.hpp"
 #include "Texture.hpp"
 

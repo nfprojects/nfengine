@@ -4,19 +4,24 @@
  * @brief   Vulkan ShaderProgram declarations
  */
 
+#pragma once
+
 #include "../RendererInterface/Shader.hpp"
 #include "Defines.hpp"
+
 
 namespace NFE {
 namespace Renderer {
 
 class ShaderProgram : public IShaderProgram
 {
-    ShaderProgramDesc mDesc;
+    typedef std::vector<VkPipelineShaderStageCreateInfo> PipelineShaderStages;
+    PipelineShaderStages mShaderStages;
 
 public:
     ShaderProgram(const ShaderProgramDesc& desc);
-    const ShaderProgramDesc& GetDesc() const;
+
+    const PipelineShaderStages& GetShaderStages() const;
     int GetResourceSlotByName(const char* name) override;
 };
 

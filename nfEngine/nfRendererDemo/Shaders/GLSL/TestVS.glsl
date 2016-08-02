@@ -12,7 +12,7 @@ out gl_PerVertex
     vec4 gl_Position;
 };
 
-out VertexShaderOutput
+layout (location = 0) out VertexShaderOutput
 {
     vec2 TexCoord;
     vec4 Color;
@@ -22,6 +22,7 @@ out VertexShaderOutput
 void main()
 {
     gl_Position = vec4(InPos, 1.0);
+    gl_Position.y = -gl_Position.y;
 
 #if USE_CBUFFER == 1
     gl_Position = gl_Position * viewMatrix;

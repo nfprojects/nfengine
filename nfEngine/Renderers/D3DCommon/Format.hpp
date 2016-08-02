@@ -52,8 +52,8 @@ DXGI_FORMAT TranslateElementFormat(ElementFormat format)
     case ElementFormat::R8G8B8A8_U_Norm:        return DXGI_FORMAT_R8G8B8A8_UNORM;
     case ElementFormat::R8G8B8A8_U_Norm_sRGB:   return DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
     case ElementFormat::R8G8B8A8_S_Norm:        return DXGI_FORMAT_R8G8B8A8_SNORM;
-    case ElementFormat::B8G8R8A8_U_Norm:        return DXGI_FORMAT_R32G32_UINT;
-    case ElementFormat::B8G8R8A8_U_Norm_sRGB:   return DXGI_FORMAT_R32G32_UINT;
+    case ElementFormat::B8G8R8A8_U_Norm:        return DXGI_FORMAT_B8G8R8A8_UNORM;
+    case ElementFormat::B8G8R8A8_U_Norm_sRGB:   return DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
 
     case ElementFormat::R16G16B16A16_U_Int:     return DXGI_FORMAT_R16G16B16A16_UINT;
     case ElementFormat::R16G16B16A16_S_Int:     return DXGI_FORMAT_R16G16B16A16_SINT;
