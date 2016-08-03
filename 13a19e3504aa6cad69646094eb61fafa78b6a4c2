@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_74973eec",
+        "filename": "nfEngine/nfCommon/Window.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-03T21:34:46Z",
+      "side": 1,
+      "message": "maybe add short description what each function does",
+      "range": {
+        "startLine": 79,
+        "startChar": 0,
+        "endLine": 81,
+        "endChar": 17
+      },
+      "revId": "13a19e3504aa6cad69646094eb61fafa78b6a4c2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
