@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_907be7f4",
+        "filename": "nfEngine/nfCommon/InputStream.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-04T18:19:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_95a3d9b1",
+      "revId": "15edfae1544b319b6f5af28cff72d516c1863bd8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_75a615c2",
         "filename": "nfEngine/nfCommon/InputStream.hpp",
         "patchSetId": 12
@@ -30,6 +48,24 @@
       "writtenOn": "2016-08-04T14:27:17Z",
       "side": 1,
       "message": "Why did You change it?",
+      "revId": "15edfae1544b319b6f5af28cff72d516c1863bd8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b0194bd3",
+        "filename": "nfEngine/nfCommon/InputStream.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-04T18:19:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_75a615c2",
       "revId": "15edfae1544b319b6f5af28cff72d516c1863bd8",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_5081dfc1",
+        "filename": "nfEngine/nfCommon/OutputStream.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-04T18:19:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_35ac0d9e",
+      "revId": "15edfae1544b319b6f5af28cff72d516c1863bd8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_55a9d18e",
         "filename": "nfEngine/nfCommon/OutputStream.hpp",
         "patchSetId": 12
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_707e23e5",
+        "filename": "nfEngine/nfCommon/OutputStream.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-04T18:19:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_55a9d18e",
+      "revId": "15edfae1544b319b6f5af28cff72d516c1863bd8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_95919949",
         "filename": "nfEngine/nfCore/Resources/Texture.cpp",
         "patchSetId": 12
@@ -81,6 +153,30 @@
       "writtenOn": "2016-08-04T14:27:17Z",
       "side": 1,
       "message": "You could just change basic ptr to unique_ptr and add std::nothrow - then check for nullptr.",
+      "range": {
+        "startLine": 162,
+        "startChar": 8,
+        "endLine": 170,
+        "endChar": 45
+      },
+      "revId": "15edfae1544b319b6f5af28cff72d516c1863bd8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b0702b09",
+        "filename": "nfEngine/nfCore/Resources/Texture.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-04T18:19:21Z",
+      "side": 1,
+      "message": "I don\u0027t get it. Where do you see pointers here?",
+      "parentUuid": "baa041b7_95919949",
       "range": {
         "startLine": 162,
         "startChar": 8,
@@ -116,6 +212,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_f06a3319",
+        "filename": "nfEngine/nfResources/MeshFile.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-04T18:19:21Z",
+      "side": 1,
+      "message": "It won\u0027t work that... I would must write \"std::vector\u003cResource::MeshVertex\u003e::value_type\", which has no sense",
+      "parentUuid": "baa041b7_b5bdbdb2",
+      "range": {
+        "startLine": 42,
+        "startChar": 55,
+        "endLine": 44,
+        "endChar": 77
+      },
+      "revId": "15edfae1544b319b6f5af28cff72d516c1863bd8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_55e551d9",
         "filename": "nfEngine/nfResources/MeshFile.cpp",
         "patchSetId": 12
@@ -127,6 +247,30 @@
       "writtenOn": "2016-08-04T14:27:17Z",
       "side": 1,
       "message": "as above",
+      "range": {
+        "startLine": 81,
+        "startChar": 46,
+        "endLine": 85,
+        "endChar": 60
+      },
+      "revId": "15edfae1544b319b6f5af28cff72d516c1863bd8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_d075eff9",
+        "filename": "nfEngine/nfResources/MeshFile.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-04T18:19:21Z",
+      "side": 1,
+      "message": "as above",
+      "parentUuid": "baa041b7_55e551d9",
       "range": {
         "startLine": 81,
         "startChar": 46,
