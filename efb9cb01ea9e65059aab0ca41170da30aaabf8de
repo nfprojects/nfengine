@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_2f6cc3ce",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-08-04T12:08:32Z",
+      "side": 1,
+      "message": "Please change it, as \"nfCommon\" states that it\u0027s a change only in nfCommon",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 17
+      },
+      "revId": "efb9cb01ea9e65059aab0ca41170da30aaabf8de",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_40e59cd9",
+        "filename": "nfEngine/nfCommon/InputStream.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-08-04T12:08:32Z",
+      "side": 1,
+      "message": "shouldn\u0027t there be a ;?",
+      "range": {
+        "startLine": 23,
+        "startChar": 4,
+        "endLine": 23,
+        "endChar": 30
+      },
+      "revId": "efb9cb01ea9e65059aab0ca41170da30aaabf8de",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_0042f4ad",
+        "filename": "nfEngine/nfCommon/OutputStream.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-08-04T12:08:32Z",
+      "side": 1,
+      "message": "move to initializer list",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 20
+      },
+      "revId": "efb9cb01ea9e65059aab0ca41170da30aaabf8de",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
