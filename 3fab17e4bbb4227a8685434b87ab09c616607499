@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_b0eb8ba3",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Common.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-04T18:19:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_3ae99c7f",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 7
+      },
+      "revId": "3fab17e4bbb4227a8685434b87ab09c616607499",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_7af3a473",
         "filename": "nfEngine/nfCommon/Language.hpp",
         "patchSetId": 2
@@ -42,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_70306356",
+        "filename": "nfEngine/nfCommon/Language.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-04T18:19:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_7af3a473",
+      "revId": "3fab17e4bbb4227a8685434b87ab09c616607499",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_badeccd7",
         "filename": "nfEngine/nfCommon/Language.hpp",
         "patchSetId": 2
@@ -53,6 +95,30 @@
       "writtenOn": "2016-08-04T12:08:32Z",
       "side": 1,
       "message": "Why is this private? Imho deleting a constructor is not something that needs hiding.",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 8
+      },
+      "revId": "3fab17e4bbb4227a8685434b87ab09c616607499",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_50331f62",
+        "filename": "nfEngine/nfCommon/Language.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-04T18:19:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_badeccd7",
       "range": {
         "startLine": 14,
         "startChar": 0,
@@ -88,6 +154,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_30365b51",
+        "filename": "nfEngine/nfCommon/Language.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-04T18:19:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_dae3d0a2",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 10
+      },
+      "revId": "3fab17e4bbb4227a8685434b87ab09c616607499",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_baf5ac51",
         "filename": "nfEngine/nfCore/Components/BodyComponent.hpp",
         "patchSetId": 2
@@ -99,6 +189,30 @@
       "writtenOn": "2016-08-04T12:08:32Z",
       "side": 1,
       "message": "add \u0027private:\u0027 below, so changing macros insides won\u0027t affect the code",
+      "range": {
+        "startLine": 43,
+        "startChar": 4,
+        "endLine": 44,
+        "endChar": 39
+      },
+      "revId": "3fab17e4bbb4227a8685434b87ab09c616607499",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_f03c7330",
+        "filename": "nfEngine/nfCore/Components/BodyComponent.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-04T18:19:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_baf5ac51",
       "range": {
         "startLine": 43,
         "startChar": 4,
@@ -134,6 +248,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_d0472fba",
+        "filename": "nfEngine/nfCore/Engine.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-04T18:19:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_9a9788eb",
+      "range": {
+        "startLine": 26,
+        "startChar": 4,
+        "endLine": 27,
+        "endChar": 32
+      },
+      "revId": "3fab17e4bbb4227a8685434b87ab09c616607499",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_7a9a8415",
         "filename": "nfEngine/nfCore/Renderer/RendererModule.hpp",
         "patchSetId": 2
@@ -145,6 +283,30 @@
       "writtenOn": "2016-08-04T12:08:32Z",
       "side": 1,
       "message": "add \u0027private:\u0027 below",
+      "range": {
+        "startLine": 18,
+        "startChar": 4,
+        "endLine": 19,
+        "endChar": 40
+      },
+      "revId": "3fab17e4bbb4227a8685434b87ab09c616607499",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b0426ba9",
+        "filename": "nfEngine/nfCore/Renderer/RendererModule.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-04T18:19:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_7a9a8415",
       "range": {
         "startLine": 18,
         "startChar": 4,
@@ -180,6 +342,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_701743a3",
+        "filename": "nfEngine/nfCore/Resources/MultiShaderProgram.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-04T18:19:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_5a9d8008",
+      "range": {
+        "startLine": 22,
+        "startChar": 4,
+        "endLine": 23,
+        "endChar": 44
+      },
+      "revId": "3fab17e4bbb4227a8685434b87ab09c616607499",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_3aa07c41",
         "filename": "nfEngine/nfCore/Resources/Resource.hpp",
         "patchSetId": 2
@@ -191,6 +377,30 @@
       "writtenOn": "2016-08-04T12:08:32Z",
       "side": 1,
       "message": "add \u0027private:\u0027 below",
+      "range": {
+        "startLine": 63,
+        "startChar": 4,
+        "endLine": 64,
+        "endChar": 38
+      },
+      "revId": "3fab17e4bbb4227a8685434b87ab09c616607499",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_500aff79",
+        "filename": "nfEngine/nfCore/Resources/Resource.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-04T18:19:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_3aa07c41",
       "range": {
         "startLine": 63,
         "startChar": 4,
