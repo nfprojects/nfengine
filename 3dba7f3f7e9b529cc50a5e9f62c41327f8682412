@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_a6a6b5a8",
+        "filename": "nfEngine/Tools/ResourceManager/MeshImporter.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-08-05T09:30:07Z",
+      "side": 1,
+      "message": "this also shouldnt be uint32, but mIndices[0]",
+      "range": {
+        "startLine": 118,
+        "startChar": 74,
+        "endLine": 118,
+        "endChar": 80
+      },
+      "revId": "3dba7f3f7e9b529cc50a5e9f62c41327f8682412",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
