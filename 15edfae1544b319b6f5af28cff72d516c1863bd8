@@ -236,6 +236,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_a66fd55e",
+        "filename": "nfEngine/nfResources/MeshFile.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-08-05T09:30:07Z",
+      "side": 1,
+      "message": "then please just change it to mVertices[0] etc - even if the vector is empty it won\u0027t throw an error as it only deduces type (without evaluating var)",
+      "parentUuid": "baa041b7_f06a3319",
+      "range": {
+        "startLine": 42,
+        "startChar": 55,
+        "endLine": 44,
+        "endChar": 77
+      },
+      "revId": "15edfae1544b319b6f5af28cff72d516c1863bd8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_55e551d9",
         "filename": "nfEngine/nfResources/MeshFile.cpp",
         "patchSetId": 12
@@ -271,6 +295,30 @@
       "side": 1,
       "message": "as above",
       "parentUuid": "baa041b7_55e551d9",
+      "range": {
+        "startLine": 81,
+        "startChar": 46,
+        "endLine": 85,
+        "endChar": 60
+      },
+      "revId": "15edfae1544b319b6f5af28cff72d516c1863bd8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_66942d36",
+        "filename": "nfEngine/nfResources/MeshFile.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-08-05T09:30:07Z",
+      "side": 1,
+      "message": "as above",
+      "parentUuid": "baa041b7_d075eff9",
       "range": {
         "startLine": 81,
         "startChar": 46,
