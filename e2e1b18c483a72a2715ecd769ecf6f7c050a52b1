@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_8dc2ad32",
+        "filename": "nfEngine/Data/nfEngineLogs.css",
+        "patchSetId": 8
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-06T11:24:20Z",
+      "side": 1,
+      "message": ".1",
+      "range": {
+        "startLine": 127,
+        "startChar": 12,
+        "endLine": 127,
+        "endChar": 17
+      },
+      "revId": "e2e1b18c483a72a2715ecd769ecf6f7c050a52b1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
