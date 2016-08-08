@@ -143,9 +143,8 @@ void LogGrouper::InsertLog(LogStruct log)
     {
         mCurrentSize *= 2;
         LogStruct* newArray = new LogStruct[mCurrentSize];
-        memcpy(newArray, mLogs, sizeof(LogStruct) * mLogCounter);
-        delete[] mLogs;
-        mLogs = newArray;
+        memcpy(newArray, mLogs.get(), sizeof(LogStruct) * mLogCounter);
+        mLogs.reset(newArray);
     }
 
     mLogs[mLogCounter - 1] = log;
