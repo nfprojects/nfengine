@@ -5,7 +5,7 @@
 ## @brief  Multiplatform testing script
 
 
-import subprocess, shlex, time, xmlParser, os, sys, argparse, time
+import subprocess, shlex, time, xmlParser, os, sys, argparse
 
 
 def gatherFailed(path, name, failLinks):
@@ -47,12 +47,7 @@ def findTestsIntoPaths(path, testlist, isPath):
                         if str(dir2).lower() in ['release', 'debug']:
                             for root3, dirs3, files3 in os.walk(root2 + '/' + dir2):
                                 for file3 in files3:
-                                    if sys.platform == "win32":
-                                        # Don't ask me, Windows has its needs...
-                                        f = str(file3).lower()
-                                    else:
-                                        f = str(file3)
-                                    if f in testlist:
+                                    if str(file3).lower() in testlist:
                                         pathlist.append(os.path.normpath(root3 + '/' + file3))
     return pathlist
 
@@ -132,6 +127,9 @@ def main(argv):
         if sys.platform == "win32":
             testList = [test.lower() if test.endswith('.exe') else test.lower() + '.exe'
                         for test in testList]
+        else:
+            testList = [test.lower() for test in testList]
+
         # running search to fill pathList
         isPath = args.path is not None
         pathList = findTestsIntoPaths(findPath, testList, isPath)
