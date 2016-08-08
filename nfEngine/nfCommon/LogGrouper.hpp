@@ -10,6 +10,7 @@
 #include "Timer.hpp"
 #include "Logger.hpp"
 
+
 namespace NFE{
 namespace Common{
 
@@ -24,7 +25,7 @@ class NFCOMMON_API LogGrouper
         LogType type;
     };
 
-    LogStruct* mLogs;
+    std::unique_ptr<LogStruct[]> mLogs;
     static const size_t mInitialSize;
     size_t mCurrentSize;
     size_t mLogCounter;
