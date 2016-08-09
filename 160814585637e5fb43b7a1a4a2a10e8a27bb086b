@@ -22,6 +22,30 @@
       "revId": "160814585637e5fb43b7a1a4a2a10e8a27bb086b",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7fc6e468",
+        "filename": "nfEngine/Renderers/nfRendererD3D12/RingBuffer.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-09T18:39:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_53d56219",
+      "range": {
+        "startLine": 9,
+        "startChar": 31,
+        "endLine": 9,
+        "endChar": 41
+      },
+      "revId": "160814585637e5fb43b7a1a4a2a10e8a27bb086b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
