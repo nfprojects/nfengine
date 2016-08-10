@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_56f0a690",
+        "filename": "Scripts/syncher.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 435,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-10T18:59:18Z",
+      "side": 1,
+      "message": "If status only \"prints differences between files on local disk \u0026 on the server\", then it should not init directory automatically. Display an error \"execute \u0027init\u0027 first\" or sth",
+      "range": {
+        "startLine": 434,
+        "startChar": 0,
+        "endLine": 435,
+        "endChar": 18
+      },
+      "revId": "d184015c1328a519e6f77ae0145a4468ae4992fe",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
