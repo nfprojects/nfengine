@@ -13,8 +13,6 @@
 #include <crtdbg.h>
 #endif // defined(WIN32) && defined(_DEBUG)
 
-// TODO This block below is probably not needed in PCH.hpp and should be included by every file
-//      made by Windows platform.
 #if defined(WIN32)
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
@@ -34,16 +32,31 @@
 #include <time.h>
 #include <math.h>
 #include <string.h>
+#include <inttypes.h>
+#include <stdarg.h>
 
 /// STL
 #include <vector>
 #include <map>
+#include <set>
 #include <unordered_map>
+#include <unordered_set>
 #include <stack>
+#include <queue>
 #include <string>
+#include <array>
+
 #include <sstream>
+#include <iostream>
+#include <iomanip>
+
 #include <atomic>
 #include <mutex>
-#include <functional>
+#include <condition_variable>
 #include <thread>
+
+#include <chrono>
+#include <memory>
+#include <functional>
 #include <limits>
+#include <type_traits>
