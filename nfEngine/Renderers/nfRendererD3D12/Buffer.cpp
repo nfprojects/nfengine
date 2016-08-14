@@ -145,6 +145,12 @@ bool Buffer::Init(const BufferDesc& desc)
         return false;
     }
 
+    if (desc.size == 0)
+    {
+        LOG_ERROR("Can not create zero-sized buffer");
+        return false;
+    }
+
     // buffer size is required to be 256-byte aligned
     mSize = static_cast<uint32>(desc.size);
     mType = desc.type;

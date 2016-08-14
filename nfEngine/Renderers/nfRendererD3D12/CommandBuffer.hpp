@@ -56,6 +56,9 @@ class CommandBuffer : public ICommandBuffer
     Buffer* mBoundVertexBuffers[NFE_RENDERER_MAX_VERTEX_BUFFERS];
     uint32 mNumBoundVertexBuffers;
 
+    // is in reset state?
+    bool mReset;
+
     void UpdateStates();
     void UnsetRenderTarget();
 

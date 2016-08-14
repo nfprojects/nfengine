@@ -52,7 +52,6 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     mVSync = desc.vSync;
 
     // set Texture properties
-    mClass = Class::Backbuffer;
     mBuffersNum = NUM_BUFFERS;
     mResourceState = D3D12_RESOURCE_STATE_PRESENT;
     mTargetResourceState = D3D12_RESOURCE_STATE_PRESENT;
