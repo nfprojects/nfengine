@@ -20,6 +20,18 @@ Buffer::Buffer()
 
 bool Buffer::Init(const BufferDesc& desc)
 {
+    if (desc.size == 0)
+    {
+        LOG_ERROR("Trying to create empty buffer");
+        return false;
+    }
+
+    if (desc.type == BufferType::Constant && desc.size > D3D11_REQ_CONSTANT_BUFFER_ELEMENT_COUNT)
+    {
+        LOG_ERROR("Constant buffer too big");
+        return false;
+    }
+
     D3D11_BUFFER_DESC bufferDesc;
     bufferDesc.ByteWidth = static_cast<UINT>(desc.size);
     bufferDesc.CPUAccessFlags = 0;
@@ -37,6 +49,7 @@ bool Buffer::Init(const BufferDesc& desc)
         case BufferType::Constant:
             bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
             break;
+        // TODO: more types
         default:
             LOG_ERROR("Invalid buffer type");
             return false;
@@ -63,6 +76,15 @@ bool Buffer::Init(const BufferDesc& desc)
             return false;
     }
 
+    if (desc.access == BufferAccess::CPU_Read)
+    {
+        if (desc.type == BufferType::Constant || desc.type == BufferType::Index || desc.type == BufferType::Vertex)
+        {
+            LOG_ERROR("This buffer type can not be CPU-readable");
+            return false;
+        }
+    }
+
     HRESULT hr;
     if (desc.initialData)
     {
@@ -73,7 +95,15 @@ bool Buffer::Init(const BufferDesc& desc)
         hr = D3D_CALL_CHECK(gDevice->Get()->CreateBuffer(&bufferDesc, &initialData, &mBuffer));
     }
     else
+    {
+        if (desc.access == BufferAccess::GPU_ReadOnly)
+        {
+            LOG_ERROR("Initial data must be provided for GPU read-only buffer");
+            return false;
+        }
+
         hr = D3D_CALL_CHECK(gDevice->Get()->CreateBuffer(&bufferDesc, NULL, &mBuffer));
+    }
 
     if (FAILED(hr))
         return false;
