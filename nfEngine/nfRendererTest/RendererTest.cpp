@@ -5,7 +5,6 @@
 /// static members definitions
 Common::Library RendererTest::gRendererLib;
 IDevice* RendererTest::gRendererDevice = nullptr;
-std::string RendererTest::gTestShaderPath;
 
 void RendererTest::SetUpTestCase()
 {
@@ -20,8 +19,6 @@ void RendererTest::SetUpTestCase()
     params.debugLevel = gDebugLevel;
     gRendererDevice = proc(&params);
     ASSERT_TRUE(gRendererDevice != nullptr);
-
-    gTestShaderPath = gShaderPathPrefix + "Simple" + gShaderPathExt;
 }
 
 void RendererTest::TearDownTestCase()
@@ -36,50 +33,4 @@ void RendererTest::TearDownTestCase()
     }
 
     gRendererLib.Close();
-}
-
-void RendererTest::BeginTestFrame(int width, int height, ElementFormat format)
-{
-    mCommandBuffer.reset(gRendererDevice->CreateCommandBuffer());
-    ASSERT_FALSE(!mCommandBuffer);
-
-    mCommandBuffer->Reset();
-
-    TextureDesc texDesc;
-    texDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
-    texDesc.mode = BufferMode::GPUOnly;
-    texDesc.format = format;
-    texDesc.width = width;
-    texDesc.height = height;
-    mTestTexture.reset(gRendererDevice->CreateTexture(texDesc));
-    ASSERT_FALSE(!mTestTexture);
-
-    RenderTargetElement rtTarget;
-    rtTarget.texture = mTestTexture.get();
-    RenderTargetDesc rtDesc;
-    rtDesc.numTargets = 1;
-    rtDesc.targets = &rtTarget;
-    mTestRenderTarget.reset(gRendererDevice->CreateRenderTarget(rtDesc));
-    ASSERT_FALSE(!mTestRenderTarget);
-
-    texDesc.binding = 0;
-    texDesc.mode = BufferMode::Readback;
-    mTestTextureRead.reset(gRendererDevice->CreateTexture(texDesc));
-    ASSERT_FALSE(!mTestTextureRead);
-
-    mCommandBuffer->SetRenderTarget(mTestRenderTarget.get());
-}
-
-void RendererTest::EndTestFrame(void* data)
-{
-    mCommandBuffer->SetRenderTarget(nullptr);
-    mCommandBuffer->CopyTexture(mTestTexture.get(), mTestTextureRead.get());
-
-    gRendererDevice->Execute(mCommandBuffer->Finish().get());
-
-    ASSERT_TRUE(gRendererDevice->DownloadTexture(mTestTextureRead.get(), data));
-
-    mTestRenderTarget.reset();
-    mTestTexture.reset();
-    mTestTextureRead.reset();
 }
