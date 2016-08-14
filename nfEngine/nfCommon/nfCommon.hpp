@@ -126,4 +126,12 @@ typedef signed short int16;
 typedef unsigned char uint8;
 typedef signed char int8;
 
+
+// return size of an array
+template<class T, size_t N>
+size_t ArraySize(const T(&)[N])
+{
+    return N;
+}
+
 } // namespace NFE

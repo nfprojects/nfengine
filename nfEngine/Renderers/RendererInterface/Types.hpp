@@ -123,6 +123,8 @@ enum class ElementFormat
     BC6H_S_Float,       //< aka. BPTC;  signed, floating-point RGB values; 16 bytes per 4x4 block
     BC7_U_Norm,         //< aka. BPTC;  unsigned, normalized RGB/RGBA values; 16 bytes per 4x4 block
     BC7_U_Norm_sRGB,    //< aka. BPTC;  unsigned, normalized RGB/RGBA values; 16 bytes per 4x4 block
+
+    Max
 };
 
 /**
