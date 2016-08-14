@@ -122,6 +122,8 @@ enum class ElementFormat
     BC6H_S_Float,       //< aka. BPTC;  signed, floating-point RGB values; 16 bytes per 4x4 block
     BC7_U_Norm,         //< aka. BPTC;  unsigned, normalized RGB/RGBA values; 16 bytes per 4x4 block
     BC7_U_Norm_sRGB,    //< aka. BPTC;  unsigned, normalized RGB/RGBA values; 16 bytes per 4x4 block
+
+    Max
 };
 
 /**
@@ -517,6 +519,73 @@ NFE_INLINE uint32 GetElementFormatSize(ElementFormat format)
     }
 
     return 0;
+}
+
+NFE_INLINE const char* GetElementFormatName(ElementFormat format)
+{
+    switch (format)
+    {
+    case ElementFormat::R32G32B32A32_Float:     return "R32G32B32A32_Float";
+    case ElementFormat::R32G32B32A32_U_Int:     return "R32G32B32A32_U_Int";
+    case ElementFormat::R32G32B32A32_S_Int:     return "R32G32B32A32_S_Int";
+    case ElementFormat::R32G32_Float:           return "R32G32_Float";
+    case ElementFormat::R32G32_U_Int:           return "R32G32_U_Int";
+    case ElementFormat::R32G32_S_Int:           return "R32G32_S_Int";
+    case ElementFormat::R32_Float:              return "R32_Float";
+    case ElementFormat::R32_U_Int:              return "R32_U_Int";
+    case ElementFormat::R32_S_Int:              return "R32_S_Int";
+    case ElementFormat::R16G16B16A16_Float:     return "R16G16B16A16_Float";
+    case ElementFormat::R16G16B16A16_S_Int:     return "R16G16B16A16_S_Int";
+    case ElementFormat::R16G16B16A16_S_Norm:    return "R16G16B16A16_S_Norm";
+    case ElementFormat::R16G16B16A16_U_Int:     return "R16G16B16A16_U_Int";
+    case ElementFormat::R16G16B16A16_U_Norm:    return "R16G16B16A16_U_Norm";
+    case ElementFormat::R16G16_Float:           return "R16G16_Float";
+    case ElementFormat::R16G16_S_Int:           return "R16G16_S_Int";
+    case ElementFormat::R16G16_S_Norm:          return "R16G16_S_Norm";
+    case ElementFormat::R16G16_U_Int:           return "R16G16_U_Int";
+    case ElementFormat::R16G16_U_Norm:          return "R16G16_U_Norm";
+    case ElementFormat::R16_Float:              return "R16_Float";
+    case ElementFormat::R16_S_Int:              return "R16_S_Int";
+    case ElementFormat::R16_S_Norm:             return "R16_S_Norm";
+    case ElementFormat::R16_U_Int:              return "R16_U_Int";
+    case ElementFormat::R16_U_Norm:             return "R16_U_Norm";
+    case ElementFormat::R8G8B8A8_S_Int:         return "R8G8B8A8_S_Int";
+    case ElementFormat::R8G8B8A8_U_Int:         return "R8G8B8A8_U_Int";
+    case ElementFormat::R8G8B8A8_S_Norm:        return "R8G8B8A8_S_Norm";
+    case ElementFormat::R8G8B8A8_U_Norm:        return "R8G8B8A8_U_Norm";
+    case ElementFormat::B8G8R8A8_U_Norm:        return "B8G8R8A8_U_Norm";
+    case ElementFormat::R8G8_S_Int:             return "R8G8_S_Int";
+    case ElementFormat::R8G8_U_Int:             return "R8G8_U_Int";
+    case ElementFormat::R8G8_S_Norm:            return "R8G8_S_Norm";
+    case ElementFormat::R8G8_U_Norm:            return "R8G8_U_Norm";
+    case ElementFormat::R8_S_Int:               return "R8_S_Int";
+    case ElementFormat::R8_U_Int:               return "R8_U_Int";
+    case ElementFormat::R8_S_Norm:              return "R8_S_Norm";
+    case ElementFormat::R8_U_Norm:              return "R8_U_Norm";
+    case ElementFormat::B5G6R5_U_norm:          return "B5G6R5_U_norm";
+    case ElementFormat::B5G5R5A1_U_Norm:        return "B5G5R5A1_U_Norm";
+    case ElementFormat::B4G4R4A4_U_Norm:        return "B4G4R4A4_U_Norm";
+    case ElementFormat::R11G11B10_Float:        return "R11G11B10_Float";
+    case ElementFormat::R10G10B10A2_U_Norm:     return "R10G10B10A2_U_Norm";
+    case ElementFormat::R10G10B10A2_U_Int:      return "R10G10B10A2_U_Int";
+    case ElementFormat::R9G9B9E5_Float:         return "R9G9B9E5_Float";
+    case ElementFormat::BC1_U_Norm:             return "BC1_U_Norm";
+    case ElementFormat::BC1_U_Norm_sRGB:        return "BC1_U_Norm_sRGB";
+    case ElementFormat::BC4_U_Norm:             return "BC4_U_Norm";
+    case ElementFormat::BC4_S_Norm:             return "BC4_S_Norm";
+    case ElementFormat::BC2_U_Norm:             return "BC2_U_Norm";
+    case ElementFormat::BC2_U_Norm_sRGB:        return "BC2_U_Norm_sRGB";
+    case ElementFormat::BC3_U_Norm:             return "BC3_U_Norm";
+    case ElementFormat::BC3_U_Norm_sRGB:        return "BC3_U_Norm_sRGB";
+    case ElementFormat::BC5_U_Norm:             return "BC5_U_Norm";
+    case ElementFormat::BC5_S_Norm:             return "BC5_S_Norm";
+    case ElementFormat::BC6H_U_Float:           return "BC6H_U_Float";
+    case ElementFormat::BC6H_S_Float:           return "BC6H_S_Float";
+    case ElementFormat::BC7_U_Norm:             return "BC7_U_Norm";
+    case ElementFormat::BC7_U_Norm_sRGB:        return "BC7_U_Norm_sRGB";
+    }
+
+    return "<unknown>";
 }
 
 } // namespace Renderer

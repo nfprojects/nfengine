@@ -6,29 +6,6 @@ class Texture2D : public RendererTest
 {
 };
 
-TEST_F(Texture2D, Clear)
-{
-    const Math::Float4 color(0.1f, 0.2f, 0.3f, 0.4f);
-    float pixels[16][16][4];
-
-    BeginTestFrame(16, 16, ElementFormat::R32G32B32A32_Float);
-
-    mCommandBuffer->SetViewport(0.0f, 16.0f, 0.0f, 16.0f, 0.0f, 1.0f);
-    mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
-
-    EndTestFrame(pixels);
-
-    for (int i = 0; i < 16; ++i)
-        for (int j = 0; j < 16; ++j)
-        {
-            SCOPED_TRACE("i = " + std::to_string(i) + ", = " + std::to_string(j));
-            EXPECT_NEAR(color.x, pixels[i][j][0], NFE_MATH_EPSILON);
-            EXPECT_NEAR(color.y, pixels[i][j][1], NFE_MATH_EPSILON);
-            EXPECT_NEAR(color.z, pixels[i][j][2], NFE_MATH_EPSILON);
-            EXPECT_NEAR(color.w, pixels[i][j][3], NFE_MATH_EPSILON);
-        }
-}
-
 TEST_F(Texture2D, Creation)
 {
     std::unique_ptr<ITexture> texture;
