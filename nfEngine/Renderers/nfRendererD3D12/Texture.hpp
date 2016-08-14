@@ -14,28 +14,22 @@ namespace Renderer {
 
 class Texture : virtual public ITexture
 {
-    friend class CommandBuffer;
     friend class RenderTarget;
     friend class ResourceBindingInstance;
 
 protected:
 
-    enum class Class : uint8
-    {
-        Regular,
-        Backbuffer
-    };
-
     // TODO this array is needed only for backbuffers
     D3DPtr<ID3D12Resource> mBuffers[2];
 
+    uint32 mRowPitch;
     uint16 mWidth;
     uint16 mLayers;
     uint16 mHeight;
     uint16 mMipmapsNum;
-    uint16 mLayersNum;
-    Class mClass;
     TextureType mType;
+    BufferMode mMode;
+    ElementFormat mFormat;
     DXGI_FORMAT mSrvFormat;
     DXGI_FORMAT mDsvFormat;
 
@@ -45,12 +39,86 @@ protected:
     D3D12_RESOURCE_STATES mResourceState;
     D3D12_RESOURCE_STATES mTargetResourceState;
 
+    // upload initial data
     bool UploadData(const TextureDesc& desc);
 
 public:
     Texture();
     virtual ~Texture();
     bool Init(const TextureDesc& desc);
+
+    // get row size (in bytes, for Readback textures only)
+    NFE_INLINE uint32 GetRowPitch() const
+    {
+        return mRowPitch;
+    }
+
+    NFE_INLINE uint16 GetWidth() const
+    {
+        return mWidth;
+    }
+
+    NFE_INLINE uint16 GetHeight() const
+    {
+        return mHeight;
+    }
+
+    NFE_INLINE uint16 GetLayersNum() const
+    {
+        return mLayers;
+    }
+
+    NFE_INLINE uint16 GetMipmapsNum() const
+    {
+        return mMipmapsNum;
+    }
+
+    NFE_INLINE D3D12_RESOURCE_STATES GetState() const
+    {
+        return mResourceState;
+    }
+
+    NFE_INLINE D3D12_RESOURCE_STATES GetTargetState() const
+    {
+        return mTargetResourceState;
+    }
+
+    NFE_INLINE void SetState(D3D12_RESOURCE_STATES newState)
+    {
+        mResourceState = newState;
+    }
+
+    uint32 GetCurrentBuffer() const
+    {
+        return mCurrentBuffer;
+    }
+
+    NFE_INLINE ID3D12Resource* GetResource() const
+    {
+        if (mBuffersNum == 1)
+        {
+            return mBuffers[0].get();
+        }
+        else
+        {
+            return mBuffers[mCurrentBuffer].get();
+        }
+    }
+
+    NFE_INLINE bool IsBackbuffer() const
+    {
+        return mBuffersNum > 1;
+    }
+
+    NFE_INLINE BufferMode GetMode() const
+    {
+        return mMode;
+    }
+
+    NFE_INLINE ElementFormat GetFormat() const
+    {
+        return mFormat;
+    }
 };
 
 } // namespace Renderer
