@@ -33,6 +33,10 @@ struct ShaderMacro
 {
     const char* name;
     const char* value;
+
+    ShaderMacro(const char* name = nullptr, const char* value = nullptr)
+        : name(name), value(value)
+    { }
 };
 
 /**
