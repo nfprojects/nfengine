@@ -17,6 +17,12 @@
     <ClCompile Include="TestCases\ResourceBinding.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\Draw.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Buffer.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
@@ -35,7 +41,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shaders\D3D11\Simple.hlsl">
+    <FxCompile Include="Shaders\HLSL5\Simple.hlsl">
+      <Filter>Shaders\HLSL5</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\HLSL5\SimpleDrawPS.hlsl">
+      <Filter>Shaders\HLSL5</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\HLSL5\SimpleDrawVS.hlsl">
       <Filter>Shaders\HLSL5</Filter>
     </FxCompile>
   </ItemGroup>

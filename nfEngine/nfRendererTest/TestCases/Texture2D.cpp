@@ -6,6 +6,8 @@ class Texture2D : public RendererTest
 {
 };
 
+const int VIEWPORT_SIZE = 16;
+
 TEST_F(Texture2D, Clear)
 {
     const float color[] = { 0.1f, 0.2f, 0.3f, 0.4f };
@@ -13,13 +15,12 @@ TEST_F(Texture2D, Clear)
 
     BeginTestFrame(16, 16, ElementFormat::Float_32, 4);
 
-    mCommandBuffer->SetViewport(0.0f, 16.0f, 0.0f, 16.0f, 0.0f, 1.0f);
     mCommandBuffer->Clear(NFE_CLEAR_FLAG_TARGET, color);
 
     EndTestFrame(pixels);
 
-    for (int i = 0; i < 16; ++i)
-        for (int j = 0; j < 16; ++j)
+    for (int i = 0; i < VIEWPORT_SIZE; ++i)
+        for (int j = 0; j < VIEWPORT_SIZE; ++j)
         {
             SCOPED_TRACE("i = " + std::to_string(i) + ", = " + std::to_string(j));
             EXPECT_NEAR(color[0], pixels[i][j][0], NFE_MATH_EPSILON);

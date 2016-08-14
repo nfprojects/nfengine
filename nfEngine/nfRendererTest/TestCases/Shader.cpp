@@ -10,8 +10,10 @@ TEST_F(ShaderTest, Disassemble)
 {
     const size_t resourceBindings = 3;
 
+    const std::string shaderPath = gShaderPathPrefix + "Simple" + gShaderPathExt;
+
     ShaderDesc desc;
-    desc.path = gTestShaderPath.c_str();
+    desc.path = shaderPath.c_str();
     desc.type = ShaderType::Vertex;
 
     /// compile shader

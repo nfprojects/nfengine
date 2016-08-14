@@ -5,7 +5,6 @@
 /// static members definitions
 Common::Library RendererTest::gRendererLib;
 IDevice* RendererTest::gRendererDevice = nullptr;
-std::string RendererTest::gTestShaderPath;
 
 void RendererTest::SetUpTestCase()
 {
@@ -19,8 +18,6 @@ void RendererTest::SetUpTestCase()
     params.preferredCardId = gPreferedCardId;
     gRendererDevice = proc(&params);
     ASSERT_TRUE(gRendererDevice != nullptr);
-
-    gTestShaderPath = gShaderPathPrefix + "Simple" + gShaderPathExt;
 }
 
 void RendererTest::TearDownTestCase()
@@ -68,6 +65,10 @@ void RendererTest::BeginTestFrame(int width, int height, ElementFormat format, i
     ASSERT_FALSE(!mTestTextureRead);
 
     mCommandBuffer->SetRenderTarget(mTestRenderTarget.get());
+
+    mCommandBuffer->SetScissors(0, 0, width, height);
+    mCommandBuffer->SetViewport(0.0f, static_cast<float>(width),
+                                0.0f, static_cast<float>(height), 0.0f, 1.0f);
 }
 
 void RendererTest::EndTestFrame(void* data)
@@ -76,6 +77,7 @@ void RendererTest::EndTestFrame(void* data)
     mCommandBuffer->CopyTexture(mTestTexture.get(), mTestTextureRead.get());
 
     gRendererDevice->Execute(mCommandBuffer->Finish().get());
+    gRendererDevice->WaitForGPU();
 
     ASSERT_TRUE(gRendererDevice->DownloadTexture(mTestTextureRead.get(), data));
 

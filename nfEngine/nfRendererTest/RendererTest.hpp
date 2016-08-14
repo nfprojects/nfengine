@@ -42,5 +42,4 @@ protected:
 
     static Common::Library gRendererLib;
     static IDevice* gRendererDevice;
-    static std::string gTestShaderPath;
 };
