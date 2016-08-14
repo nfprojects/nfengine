@@ -1,0 +1,76 @@
+#include "PCH.hpp"
+#include "Backends.hpp"
+#include "DrawTest.hpp"
+
+
+void DrawTest::BeginTestFrame(uint32 width, uint32 height, size_t numTargets, ElementFormat* formats)
+{
+    mTestTextureWidth = width;
+    mTestTextureHeight = height;
+
+    mTargetTextures.clear();
+
+    mCommandBuffer.reset(gRendererDevice->CreateCommandBuffer());
+    ASSERT_FALSE(!mCommandBuffer);
+
+    for (size_t i = 0; i < numTargets; ++i)
+    {
+        TargetTexture targetTexture;
+        targetTexture.format = formats[i];
+        targetTexture.textureSize = width * height * GetElementFormatSize(formats[i]);
+
+        TextureDesc texDesc;
+        texDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
+        texDesc.access = BufferAccess::GPU_ReadWrite;
+        texDesc.format = formats[i];
+        texDesc.width = width;
+        texDesc.height = height;
+        targetTexture.texture.reset(gRendererDevice->CreateTexture(texDesc));
+        ASSERT_FALSE(!targetTexture.texture);
+
+        RenderTargetElement rtTarget;
+        rtTarget.texture = targetTexture.texture.get();
+        RenderTargetDesc rtDesc;
+        rtDesc.numTargets = 1;
+        rtDesc.targets = &rtTarget;
+        mTestRenderTarget.reset(gRendererDevice->CreateRenderTarget(rtDesc));
+        ASSERT_FALSE(!mTestRenderTarget);
+
+        texDesc.binding = 0;
+        texDesc.access = BufferAccess::CPU_Read;
+        targetTexture.readbackTexture.reset(gRendererDevice->CreateTexture(texDesc));
+        ASSERT_FALSE(!targetTexture.readbackTexture);
+
+        mTargetTextures.emplace_back(std::move(targetTexture));
+    }
+
+    mCommandBuffer->Reset();
+    mCommandBuffer->SetRenderTarget(mTestRenderTarget.get());
+    mCommandBuffer->SetScissors(0, 0, width, height);
+    mCommandBuffer->SetViewport(0.0f, static_cast<float>(width),
+                                0.0f, static_cast<float>(height), 0.0f, 1.0f);
+}
+
+void DrawTest::EndTestFrame()
+{
+    mCommandBuffer->SetRenderTarget(nullptr);
+
+    // copy texture to readback texture
+    for (size_t i = 0; i < mTargetTextures.size(); ++i)
+    {
+        mCommandBuffer->CopyTexture(mTargetTextures[i].texture.get(),
+                                    mTargetTextures[i].readbackTexture.get());
+    }
+
+    gRendererDevice->Execute(mCommandBuffer->Finish().get());
+    gRendererDevice->WaitForGPU();
+
+    // download pixel data from readback texture
+    for (size_t i = 0; i < mTargetTextures.size(); ++i)
+    {
+        TargetTexture& target = mTargetTextures[i];
+        target.pixelData.reset(new char[target.textureSize]);
+        ASSERT_TRUE(gRendererDevice->DownloadTexture(target.readbackTexture.get(),
+                                                     target.pixelData.get()));
+    }
+}
