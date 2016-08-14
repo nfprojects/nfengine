@@ -38,6 +38,7 @@ CommandBuffer::CommandBuffer()
     , mFrameCount(3) // TODO this must be configurable
     , mFrameBufferIndex(0)
     , mNumBoundVertexBuffers(0)
+    , mReset(false)
 {
     for (int i = 0; i < NFE_RENDERER_MAX_VOLATILE_CBUFFERS; ++i)
         mBoundVolatileCBuffers[i] = nullptr;
@@ -120,6 +121,12 @@ CommandBuffer::~CommandBuffer()
 
 void CommandBuffer::Reset()
 {
+    if (mReset)
+    {
+        LOG_WARNING("Redundant command buffer reset");
+        return;
+    }
+
     HRESULT hr;
 
     hr = D3D_CALL_CHECK(mCommandAllocators[mFrameBufferIndex]->Reset());
@@ -149,6 +156,8 @@ void CommandBuffer::Reset()
     mNumBoundVertexBuffers = 0;
     for (int i = 0; i < NFE_RENDERER_MAX_VERTEX_BUFFERS; ++i)
         mBoundVertexBuffers[i] = nullptr;
+
+    mReset = true;
 }
 
 void CommandBuffer::SetViewport(float left, float width, float top, float height,
@@ -297,24 +306,24 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
         for (size_t i = 0; i < mCurrRenderTarget->mTextures.size(); ++i)
         {
             Texture* tex = mCurrRenderTarget->mTextures[i];
-            int currBuffer = tex->mCurrentBuffer;
+            uint32 currBuffer = tex->GetCurrentBuffer();
 
             rtvs[i] = allocator.GetCpuHandle();
             rtvs[i].ptr += mCurrRenderTarget->mRTVs[currBuffer][i] * allocator.GetDescriptorSize();
 
-            if (tex->mResourceState != D3D12_RESOURCE_STATE_RENDER_TARGET)
+            if (tex->GetState() != D3D12_RESOURCE_STATE_RENDER_TARGET)
             {
                 D3D12_RESOURCE_BARRIER rb;
                 ZeroMemory(&rb, sizeof(rb));
                 rb.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
                 rb.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-                rb.Transition.pResource = tex->mBuffers[currBuffer].get();
+                rb.Transition.pResource = tex->GetResource();
                 rb.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-                rb.Transition.StateBefore = tex->mResourceState;
+                rb.Transition.StateBefore = tex->GetState();
                 rb.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
                 mCommandList->ResourceBarrier(1, &rb);
 
-                tex->mResourceState = D3D12_RESOURCE_STATE_RENDER_TARGET;
+                tex->SetState(D3D12_RESOURCE_STATE_RENDER_TARGET);
             }
         }
 
@@ -323,19 +332,19 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
             Texture* tex = mCurrRenderTarget->mDepthTexture;
 
             // TODO sometimes we may need ony read access
-            if (tex->mResourceState != D3D12_RESOURCE_STATE_DEPTH_WRITE)
+            if (tex->GetState() != D3D12_RESOURCE_STATE_DEPTH_WRITE)
             {
                 D3D12_RESOURCE_BARRIER rb;
                 ZeroMemory(&rb, sizeof(rb));
                 rb.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
                 rb.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-                rb.Transition.pResource = tex->mBuffers[0].get();
+                rb.Transition.pResource = tex->GetResource();
                 rb.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-                rb.Transition.StateBefore = tex->mResourceState;
+                rb.Transition.StateBefore = tex->GetState();
                 rb.Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_WRITE;
                 mCommandList->ResourceBarrier(1, &rb);
 
-                tex->mResourceState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+                tex->SetState(D3D12_RESOURCE_STATE_DEPTH_WRITE);
             }
 
             dsv = dsvAllocator.GetCpuHandle();
@@ -355,23 +364,25 @@ void CommandBuffer::UnsetRenderTarget()
         for (size_t i = 0; i < mCurrRenderTarget->mTextures.size(); ++i)
         {
             Texture* tex = mCurrRenderTarget->mTextures[i];
-            int currBuffer = tex->mCurrentBuffer;
+            if (!tex->IsBackbuffer())
+                continue;
 
-            // make transition to target state
-            D3D12_RESOURCE_STATES targetState = tex->mTargetResourceState;
-            if (tex->mResourceState != targetState)
+            D3D12_RESOURCE_STATES targetState = D3D12_RESOURCE_STATE_PRESENT;
+
+            // make transition to "Present" state if the render target's texture is backbuffer
+            if (tex->GetState() != targetState)
             {
                 D3D12_RESOURCE_BARRIER rb;
                 ZeroMemory(&rb, sizeof(rb));
                 rb.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
                 rb.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-                rb.Transition.pResource = tex->mBuffers[currBuffer].get();
+                rb.Transition.pResource = tex->GetResource();
                 rb.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-                rb.Transition.StateBefore = tex->mResourceState;
+                rb.Transition.StateBefore = tex->GetState();
                 rb.Transition.StateAfter = targetState;
                 mCommandList->ResourceBarrier(1, &rb);
 
-                tex->mResourceState = targetState;
+                tex->SetState(targetState);
             }
         }
 
@@ -379,20 +390,20 @@ void CommandBuffer::UnsetRenderTarget()
         if (mCurrRenderTarget->mDepthTexture != nullptr)
         {
             Texture* tex = mCurrRenderTarget->mDepthTexture;
-            D3D12_RESOURCE_STATES targetState = tex->mTargetResourceState;
-            if (tex->mResourceState != targetState)
+            D3D12_RESOURCE_STATES targetState = tex->GetTargetState();
+            if (tex->GetState() != targetState)
             {
                 D3D12_RESOURCE_BARRIER rb;
                 ZeroMemory(&rb, sizeof(rb));
                 rb.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
                 rb.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-                rb.Transition.pResource = tex->mBuffers[0].get();
+                rb.Transition.pResource = tex->GetResource();
                 rb.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-                rb.Transition.StateBefore = tex->mResourceState;
+                rb.Transition.StateBefore = tex->GetState();
                 rb.Transition.StateAfter = targetState;
                 mCommandList->ResourceBarrier(1, &rb);
 
-                tex->mResourceState = targetState;
+                tex->SetState(targetState);
             }
         }
     }
@@ -526,8 +537,109 @@ bool CommandBuffer::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, con
 
 void CommandBuffer::CopyTexture(ITexture* src, ITexture* dest)
 {
-    UNUSED(src);
-    UNUSED(dest);
+    Texture* srcTex = dynamic_cast<Texture*>(src);
+    if (srcTex == nullptr)
+    {
+        LOG_ERROR("Invalid 'src' pointer");
+        return;
+    }
+
+    if (srcTex->GetMode() == BufferMode::Readback || srcTex->GetMode() == BufferMode::Volatile)
+    {
+        LOG_ERROR("Can't copy from this texture");
+        return;
+    }
+
+    Texture* destTex = dynamic_cast<Texture*>(dest);
+    if (destTex == nullptr)
+    {
+        LOG_ERROR("Invalid 'dest' pointer");
+        return;
+    }
+
+    if (destTex->GetMode() == BufferMode::Static || destTex->GetMode() == BufferMode::Volatile)
+    {
+        LOG_ERROR("Can't copy to this texture");
+        return;
+    }
+
+    const D3D12_RESOURCE_STATES prevSrcTextureState = srcTex->GetState();
+    const D3D12_RESOURCE_STATES prevDestTextureState = destTex->GetState();
+
+    D3D12_RESOURCE_BARRIER rb;
+    ZeroMemory(&rb, sizeof(rb));
+    rb.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    rb.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+    rb.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+
+    // transit source texture to "copy source" state
+    if (prevSrcTextureState != D3D12_RESOURCE_STATE_COPY_SOURCE)
+    {
+        rb.Transition.pResource = srcTex->GetResource();
+        rb.Transition.StateBefore = prevSrcTextureState;
+        rb.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE;
+        mCommandList->ResourceBarrier(1, &rb);
+
+        srcTex->SetState(D3D12_RESOURCE_STATE_COPY_SOURCE);
+    }
+
+    // transit destination texture to "copy destination" state
+    if (prevDestTextureState != D3D12_RESOURCE_STATE_COPY_DEST)
+    {
+        rb.Transition.pResource = destTex->GetResource();
+        rb.Transition.StateBefore = prevDestTextureState;
+        rb.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST;
+        mCommandList->ResourceBarrier(1, &rb);
+
+        srcTex->SetState(D3D12_RESOURCE_STATE_COPY_DEST);
+    }
+
+    // perform copy
+    if (destTex->GetMode() == BufferMode::Readback)
+    {
+        D3D12_TEXTURE_COPY_LOCATION sourceLoc;
+        sourceLoc.pResource = srcTex->GetResource();
+        sourceLoc.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+        sourceLoc.SubresourceIndex = 0;
+
+        D3D12_TEXTURE_COPY_LOCATION destLoc;
+        destLoc.pResource = destTex->GetResource();
+        destLoc.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+
+        // get texture memory footprint information
+        D3D12_RESOURCE_DESC srcResourceDesc = srcTex->GetResource()->GetDesc();
+        gDevice->GetDevice()->GetCopyableFootprints(&srcResourceDesc, 0, 1, 0, &destLoc.PlacedFootprint, nullptr, nullptr, nullptr);
+
+        // copy texture to buffer
+        mCommandList->CopyTextureRegion(&destLoc, 0, 0, 0, &sourceLoc, nullptr);
+    }
+    else
+    {
+        // copy texture to texture
+        mCommandList->CopyResource(destTex->GetResource(), srcTex->GetResource());
+    }
+
+    // transit source texture to previous state
+    if (prevSrcTextureState != D3D12_RESOURCE_STATE_COPY_SOURCE)
+    {
+        rb.Transition.pResource = srcTex->GetResource();
+        rb.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE;
+        rb.Transition.StateAfter = prevSrcTextureState;
+        mCommandList->ResourceBarrier(1, &rb);
+
+        srcTex->SetState(prevSrcTextureState);
+    }
+
+    // transit destination texture to previous state
+    if (prevDestTextureState != D3D12_RESOURCE_STATE_COPY_DEST)
+    {
+        rb.Transition.pResource = destTex->GetResource();
+        rb.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+        rb.Transition.StateAfter = prevDestTextureState;
+        mCommandList->ResourceBarrier(1, &rb);
+
+        srcTex->SetState(prevDestTextureState);
+    }
 }
 
 void CommandBuffer::Clear(int flags, uint32 numTargets, const uint32* slots,
@@ -554,8 +666,8 @@ void CommandBuffer::Clear(int flags, uint32 numTargets, const uint32* slots,
                 slot = slots[i];
             }
 
-            Texture* tex = mCurrRenderTarget->mTextures[slot];
-            int currentBuffer = tex->mCurrentBuffer;
+            Texture* tex = mCurrRenderTarget->mTextures[i];
+            uint32 currentBuffer = tex->GetCurrentBuffer();
 
             D3D12_CPU_DESCRIPTOR_HANDLE handle = allocator.GetCpuHandle();
             handle.ptr += mCurrRenderTarget->mRTVs[currentBuffer][slot] * allocator.GetDescriptorSize();
@@ -630,6 +742,14 @@ void CommandBuffer::DrawIndexed(int indexNum, int instancesNum,
 
 std::unique_ptr<ICommandList> CommandBuffer::Finish()
 {
+    if (!mReset)
+    {
+        LOG_ERROR("Command buffer is not in recording state");
+        return nullptr;
+    }
+
+    mReset = false;
+
     UnsetRenderTarget();
 
     D3D_CALL_CHECK(mCommandList->Close());

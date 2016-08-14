@@ -507,11 +507,37 @@ bool Device::DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* d
 
 bool Device::DownloadTexture(ITexture* tex, void* data, int mipmap, int layer)
 {
-    UNUSED(tex);
-    UNUSED(data);
     UNUSED(mipmap);
     UNUSED(layer);
-    return false;
+
+    Texture* texture = dynamic_cast<Texture*>(tex);
+    if (!texture)
+    {
+        LOG_ERROR("Invalid texture pointer");
+        return false;
+    }
+
+    WaitForGPU();
+
+    char* mappedData;
+    HRESULT hr = texture->GetResource()->Map(0, NULL, reinterpret_cast<void**>(&mappedData));
+    if (FAILED(hr))
+    {
+        return 0;
+    }
+
+    size_t rowSize = static_cast<size_t>(GetElementFormatSize(texture->GetFormat())) * static_cast<size_t>(texture->GetWidth());
+    size_t rowPitch = texture->GetRowPitch();
+    for (uint16 i = 0; i < texture->GetHeight(); ++i)
+    {
+        char* targetRow = reinterpret_cast<char*>(data) + rowSize * i;
+        const char* sourceRow = reinterpret_cast<const char*>(mappedData) + rowPitch * i;
+        memcpy(targetRow, sourceRow, rowSize);
+    }
+
+    texture->GetResource()->Unmap(0, NULL);
+
+    return true;
 }
 
 bool Device::WaitForGPU()
