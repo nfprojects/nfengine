@@ -35,13 +35,16 @@ CommandBuffer::CommandBuffer(ID3D11DeviceContext* deviceContext)
     , mPipelineState(nullptr)
     , mCurrentPipelineState(nullptr)
     , mReset(false)
+    , mBoundVertexShader(nullptr)
+    , mBoundHullShader(nullptr)
+    , mBoundDomainShader(nullptr)
+    , mBoundGeometryShader(nullptr)
+    , mBoundPixelShader(nullptr)
 {
     HRESULT hr;
     hr = deviceContext->QueryInterface(IID_PPV_ARGS(&mUserDefinedAnnotation));
     if (FAILED(hr))
         mUserDefinedAnnotation.reset();
-
-    Reset();
 }
 
 CommandBuffer::~CommandBuffer()
