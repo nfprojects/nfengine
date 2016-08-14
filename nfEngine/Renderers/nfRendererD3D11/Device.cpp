@@ -321,10 +321,15 @@ bool Device::DownloadTexture(ITexture* tex, void* data, int mipmap, int layer)
     if (FAILED(hr))
         return false;
 
-    size_t dataSize = static_cast<size_t>(texture->mWidth) *
-                      static_cast<size_t>(texture->mHeight) *
-                      static_cast<size_t>(GetElementFormatSize(texture->mFormat));
-    memcpy(data, mapped.pData, dataSize);
+    size_t rowSize = static_cast<size_t>(texture->mWidth) *
+                     static_cast<size_t>(GetElementFormatSize(texture->mFormat));
+
+    for (int i = 0; i < texture->mHeight; ++i)
+    {
+        char* targetRow = reinterpret_cast<char*>(data) + rowSize * i;
+        const char* sourceRow = reinterpret_cast<const char*>(mapped.pData) + mapped.RowPitch * i;
+        memcpy(targetRow, sourceRow, rowSize);
+    }
 
     mImmediateContext->Unmap(res, subresource);
     return true;
