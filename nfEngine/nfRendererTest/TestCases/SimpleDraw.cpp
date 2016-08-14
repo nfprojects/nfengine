@@ -159,6 +159,8 @@ TEST_F(SimpleDrawTest, Culling)
         pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
         pipelineStateDesc.vertexLayout = mVertexLayout.get();
         pipelineStateDesc.resBindingLayout = resBindingLayout.get();
+        pipelineStateDesc.numRenderTargets = 1;
+        pipelineStateDesc.rtFormats[0] = ElementFormat::R32G32B32A32_Float;
         pipelineState.reset(gRendererDevice->CreatePipelineState(pipelineStateDesc));
         ASSERT_NE(nullptr, pipelineState.get());
 
@@ -485,9 +487,13 @@ TEST_F(SimpleDrawTest, StaticCBuffer)
     ASSERT_NE(nullptr, resBindingLayout.get());
 
     PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.vertexShader = mVertexShader.get();
+    pipelineStateDesc.pixelShader = mPixelShader.get();
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.resBindingLayout = resBindingLayout.get();
+    pipelineStateDesc.numRenderTargets = 1;
+    pipelineStateDesc.rtFormats[0] = ElementFormat::R32G32B32A32_Float;
     pipelineState.reset(gRendererDevice->CreatePipelineState(pipelineStateDesc));
     ASSERT_NE(nullptr, pipelineState.get());
 
