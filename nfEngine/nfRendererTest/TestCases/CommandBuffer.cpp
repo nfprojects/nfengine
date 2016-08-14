@@ -26,8 +26,7 @@ TEST_F(CommandList, ResetAndFinish)
     std::unique_ptr<ICommandList> commandList(commandBuffer->Finish());
     ASSERT_NE(nullptr, commandList.get());
 
-    for (int i = 0; i < 100; ++i)
-        EXPECT_TRUE(gRendererDevice->Execute(commandList.get())) << "i = " << i;
+    EXPECT_TRUE(gRendererDevice->Execute(commandList.get()));
 
     // try to finish again - should fail, because command buffer must be reset
     std::unique_ptr<ICommandList> commandList2(commandBuffer->Finish());

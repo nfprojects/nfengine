@@ -15,8 +15,7 @@ namespace NFE {
 namespace Renderer {
 
 Texture::Texture()
-    : mBuffersNum(0)
-    , mClass(Class::Regular)
+    : mBuffersNum(1)
     , mCurrentBuffer(0)
     , mResourceState(D3D12_RESOURCE_STATE_COMMON)
 {
@@ -175,9 +174,9 @@ bool Texture::UploadData(const TextureDesc& desc)
 
 bool Texture::Init(const TextureDesc& desc)
 {
-    if (desc.mode == BufferMode::Readback ||
-        desc.mode == BufferMode::Dynamic ||
-        desc.mode == BufferMode::Volatile)
+    HRESULT hr;
+
+    if (desc.mode == BufferMode::Dynamic || desc.mode == BufferMode::Volatile)
     {
         LOG_ERROR("Selected buffer mode is not supported yet");
         return false;
@@ -196,7 +195,7 @@ bool Texture::Init(const TextureDesc& desc)
     }
 
     if ((desc.type != TextureType::Texture1D) &&
-        ( desc.height < 1 || desc.height >= std::numeric_limits<uint16>::max()))
+        (desc.height < 1 || desc.height >= std::numeric_limits<uint16>::max()))
     {
         LOG_ERROR("Invalid texture height");
         return false;
@@ -221,10 +220,11 @@ bool Texture::Init(const TextureDesc& desc)
         return false;
     }
 
+
     // Create texture resource on the default heap
 
     D3D12_HEAP_PROPERTIES heapProperties;
-    heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
+    heapProperties.Type = (desc.mode == BufferMode::Readback) ? D3D12_HEAP_TYPE_READBACK : D3D12_HEAP_TYPE_DEFAULT;
     heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
     heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
     heapProperties.CreationNodeMask = 1;
@@ -241,33 +241,12 @@ bool Texture::Init(const TextureDesc& desc)
     resourceDesc.Width = desc.width;
     resourceDesc.DepthOrArraySize = static_cast<UINT16>(desc.layers);
 
-    // determine formats
-    mSrvFormat = DXGI_FORMAT_UNKNOWN;
-    mDsvFormat = DXGI_FORMAT_UNKNOWN;
-    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
-    {
-        if (!TranslateDepthBufferTypes(desc.depthBufferFormat,
-                                       resourceDesc.Format, mSrvFormat, mDsvFormat))
-        {
-            LOG_ERROR("Invalid depth buffer format");
-            return false;
-        }
-    }
-    else
-    {
-        resourceDesc.Format = TranslateElementFormat(desc.format);
-        mSrvFormat = resourceDesc.Format;
-        if (resourceDesc.Format == DXGI_FORMAT_UNKNOWN)
-        {
-            LOG_ERROR("Invalid texture format");
-            return false;
-        }
-    }
-
     bool passClearValue = false;
     D3D12_CLEAR_VALUE clearValue;
     D3D12_RESOURCE_STATES initialState = D3D12_RESOURCE_STATE_GENERIC_READ;
-    if (desc.mode == BufferMode::Static && desc.dataDesc)
+
+    // for Static and Readback textures, the first operation performed will be copy to this texture
+    if ((desc.mode == BufferMode::Static && desc.dataDesc) || (desc.mode == BufferMode::Readback))
         initialState = D3D12_RESOURCE_STATE_COPY_DEST;
 
     switch (desc.type)
@@ -287,71 +266,148 @@ bool Texture::Init(const TextureDesc& desc)
     case TextureType::Texture3D:
         resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE3D;
         resourceDesc.Height = desc.height;
+        resourceDesc.DepthOrArraySize = static_cast<UINT16>(desc.depth);
         break;
     }
 
-    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
+    // if the texture is CPU-readonly we must create readback buffer resource instead of texture resource
+    if (desc.mode == BufferMode::Readback)
     {
-        if (desc.mode != BufferMode::GPUOnly)
+        if (desc.binding != 0)
         {
-            LOG_ERROR("Invalid resource access specified for depth buffer");
+            LOG_ERROR("Readback texture can not be bound to any pipeline stage");
             return false;
         }
 
-        resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
-
-        clearValue.Format = mDsvFormat;
-        clearValue.DepthStencil.Depth = 1.0f;
-        clearValue.DepthStencil.Stencil = 0;
-        passClearValue = true;
-
-        initialState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
-    }
-
-    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_RENDERTARGET)
-    {
-        if (desc.mode != BufferMode::GPUOnly)
+        if (desc.mipmaps != 1 && desc.layers != 1)
         {
-            LOG_ERROR("Invalid resource access specified for rendertarget texture");
+            LOG_ERROR("Readback texture can contain only one layer and one mipmap");
             return false;
         }
 
-        // tempshit
-        clearValue.Format = mSrvFormat;
-        clearValue.Color[0] = 0.2f;
-        clearValue.Color[1] = 0.3f;
-        clearValue.Color[2] = 0.4f;
-        clearValue.Color[3] = 1.0f;
-        passClearValue = true;
+        UINT64 requiredSize = 0;
+        D3D12_PLACED_SUBRESOURCE_FOOTPRINT layout;
+        gDevice->GetDevice()->GetCopyableFootprints(&resourceDesc, 0, 1, 0, &layout, nullptr, nullptr, &requiredSize);
+        mRowPitch = static_cast<uint32>(layout.Footprint.RowPitch);
 
-        resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+        // now fill with buffer description
+        resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+        resourceDesc.Alignment = 0;
+        resourceDesc.Width = requiredSize;
+        resourceDesc.Height = 1;
+        resourceDesc.DepthOrArraySize = 1;
+        resourceDesc.MipLevels = 1;
+        resourceDesc.Format = DXGI_FORMAT_UNKNOWN;
+        resourceDesc.SampleDesc.Count = 1;
+        resourceDesc.SampleDesc.Quality = 0;
+        resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+        resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+        mTargetResourceState = D3D12_RESOURCE_STATE_COPY_DEST;
+
+        hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommittedResource(&heapProperties,
+                                                                          D3D12_HEAP_FLAG_NONE,
+                                                                          &resourceDesc,
+                                                                          initialState,
+                                                                          nullptr,
+                                                                          IID_PPV_ARGS(&mBuffers[0])));
+        if (FAILED(hr))
+        {
+            LOG_ERROR("Failed to create readback buffer");
+            return false;
+        }
     }
-
-
-    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER)
-        mTargetResourceState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
     else
-        mTargetResourceState = initialState;
-
-    HRESULT hr;
-    hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommittedResource(&heapProperties,
-                                                                      D3D12_HEAP_FLAG_NONE,
-                                                                      &resourceDesc,
-                                                                      initialState,
-                                                                      passClearValue ? &clearValue : nullptr,
-                                                                      IID_PPV_ARGS(&mBuffers[0])));
-    if (FAILED(hr))
-        return false;
-
-    if (desc.mode == BufferMode::Static)
     {
-        if (desc.dataDesc)
+        // determine formats and clear value
+        mSrvFormat = TranslateElementFormat(desc.format);
+        mDsvFormat = DXGI_FORMAT_UNKNOWN;
+
+        if (desc.binding & NFE_RENDERER_TEXTURE_BIND_RENDERTARGET)
         {
-            if (!UploadData(desc))
+            if (desc.mode != BufferMode::GPUOnly)
+            {
+                LOG_ERROR("Invalid resource access specified for rendertarget texture");
                 return false;
+            }
+
+            clearValue.Format = mSrvFormat;
+            clearValue.Color[0] = 0.0f;
+            clearValue.Color[1] = 0.0f;
+            clearValue.Color[2] = 0.0f;
+            clearValue.Color[3] = 1.0f;
+            passClearValue = true;
+
+            resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+        }
+        else if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
+        {
+            if (desc.mode != BufferMode::GPUOnly)
+            {
+                LOG_ERROR("Invalid resource access specified for depth buffer");
+                return false;
+            }
+
+            if (!TranslateDepthBufferTypes(desc.depthBufferFormat,
+                                           resourceDesc.Format, mSrvFormat, mDsvFormat))
+            {
+                LOG_ERROR("Invalid depth buffer format");
+                return false;
+            }
+
+            // texture won't be bound as shader resource
+            if ((desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER) == 0)
+            {
+                resourceDesc.Flags |= D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE;
+            }
+
+            resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+
+            clearValue.Format = mDsvFormat;
+            clearValue.DepthStencil.Depth = 1.0f;
+            clearValue.DepthStencil.Stencil = 0;
+            passClearValue = true;
+
+            initialState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
         }
         else
-            LOG_WARNING("No initial data for read-only texture provided");
+        {
+            resourceDesc.Format = TranslateElementFormat(desc.format);
+            mSrvFormat = resourceDesc.Format;
+            if (resourceDesc.Format == DXGI_FORMAT_UNKNOWN)
+            {
+                LOG_ERROR("Invalid texture format");
+                return false;
+            }
+        }
+
+        // create the texture resource
+        hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE,
+                                                                          &resourceDesc, initialState,
+                                                                          passClearValue ? &clearValue : nullptr,
+                                                                          IID_PPV_ARGS(&mBuffers[0])));
+        if (FAILED(hr))
+        {
+            LOG_ERROR("Failed to create texture resource");
+            return false;
+        }
+
+
+        if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER)
+            mTargetResourceState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+        else
+            mTargetResourceState = initialState;
+
+        if (desc.mode == BufferMode::Static)
+        {
+            if (desc.dataDesc)
+            {
+                if (!UploadData(desc))
+                    return false;
+            }
+            else
+                LOG_WARNING("No initial data for read-only texture provided");
+        }
     }
 
     if (desc.debugName && !SetDebugName(mBuffers[0].get(), desc.debugName))
@@ -364,10 +420,12 @@ bool Texture::Init(const TextureDesc& desc)
     mBuffersNum = 1;
     mCurrentBuffer = 0;
     mType = desc.type;
+    mFormat = desc.format;
     mWidth = static_cast<uint16>(desc.width);
     mHeight = static_cast<uint16>(desc.height);
     mLayers = static_cast<uint16>(desc.layers);
     mMipmapsNum = static_cast<uint16>(desc.mipmaps);
+    mMode = desc.mode;
     return true;
 }
 
