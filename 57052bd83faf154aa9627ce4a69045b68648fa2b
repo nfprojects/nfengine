@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_33e52937",
+        "filename": "nfEngine/Renderers/RendererInterface/PipelineState.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-15T15:55:09Z",
+      "side": 1,
+      "message": "I have a small suggestion here.\n\nFor Vulkan, only formats are not enough. When a new Pipeline State is created, Vulkan needs to access a render pass object, which is a part of RenderTarget class right now. Maybe we could aggregate here not only render target formats, but entire render targets?",
+      "revId": "57052bd83faf154aa9627ce4a69045b68648fa2b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_13e0e524",
+        "filename": "nfEngine/Renderers/RendererInterface/PipelineState.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-15T15:55:09Z",
+      "side": 1,
+      "message": "What if rtFormats array won\u0027t be filled, despite numRenderTargets being 1 by default?",
+      "revId": "57052bd83faf154aa9627ce4a69045b68648fa2b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
