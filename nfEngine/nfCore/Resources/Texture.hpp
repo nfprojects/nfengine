@@ -50,7 +50,7 @@ public:
      * @return True on success
      */
     bool CreateAsRenderTarget(uint32 width, uint32 height, Renderer::ElementFormat format =
-                              Renderer::ElementFormat::Uint_8_norm);
+                              Renderer::ElementFormat::R8G8B8A8_U_Norm);
 
     /**
      * Get low-level renderer texture.

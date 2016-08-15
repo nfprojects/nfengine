@@ -140,8 +140,7 @@ void HighLevelRenderer::CreateCommonResources()
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER;
     texDesc.mipmaps = 1;
     texDesc.dataDesc = &texDataDesc;
-    texDesc.format = ElementFormat::Uint_8_norm;
-    texDesc.texelSize = 4;
+    texDesc.format = ElementFormat::R8G8B8A8_U_Norm;
 
     /// default textures (used when no texture is bound to a material)
 

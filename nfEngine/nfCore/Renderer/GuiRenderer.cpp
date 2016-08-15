@@ -54,9 +54,9 @@ GuiRenderer::GuiRenderer()
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
     {
-        { ElementFormat::Float_32,    4, 0,  0, false, 0 }, // rectangle
-        { ElementFormat::Float_32,    4, 16, 0, false, 0 }, // tex-coords
-        { ElementFormat::Uint_8_norm, 4, 32, 0, false, 0 }, // color
+        { ElementFormat::R32G32B32A32_Float,    0,  0, false, 0 }, // rectangle
+        { ElementFormat::R32G32B32A32_Float,    16, 0, false, 0 }, // tex-coords
+        { ElementFormat::R8G8B8A8_U_Norm,       32, 0, false, 0 }, // color
     };
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;
@@ -66,9 +66,9 @@ GuiRenderer::GuiRenderer()
 
     VertexLayoutElement imGuiVertexLayoutElements[] =
     {
-        { ElementFormat::Float_32,    2, 0,  0, false, 0 }, // pos
-        { ElementFormat::Float_32,    2, 8,  0, false, 0 }, // texture coord
-        { ElementFormat::Uint_8_norm, 4, 16, 0, false, 0 }, // color
+        { ElementFormat::R32G32_Float,      0,  0, false, 0 }, // pos
+        { ElementFormat::R32G32_Float,      8,  0, false, 0 }, // texture coord
+        { ElementFormat::R8G8B8A8_U_Norm,   16, 0, false, 0 }, // color
     };
     vertexLayoutDesc.elements = imGuiVertexLayoutElements;
     vertexLayoutDesc.numElements = 3;

@@ -143,9 +143,9 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
 
     VertexLayoutElement vertexLayoutElements[] =
     {
-        { ElementFormat::Float_32, 3,  0, 0, false, 0 }, // position
-        { ElementFormat::Float_32, 2, 12, 0, false, 0 }, // tex-coords
-        { ElementFormat::Float_32, 4, 20, 0, false, 0 }, // color
+        { ElementFormat::R32G32B32_Float,       0, 0, false, 0 }, // position
+        { ElementFormat::R32G32_Float,          12, 0, false, 0 }, // tex-coords
+        { ElementFormat::R32G32B32A32_Float,    20, 0, false, 0 }, // color
     };
 
     VertexLayoutDesc vertexLayoutDesc;
@@ -215,8 +215,7 @@ bool BasicScene::CreateTexture()
 
     TextureDesc textureDesc;
     textureDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER;
-    textureDesc.format = ElementFormat::Uint_8_norm;
-    textureDesc.texelSize = 4;
+    textureDesc.format = ElementFormat::R8G8B8A8_U_Norm;
     textureDesc.width = 2;
     textureDesc.height = 2;
     textureDesc.mipmaps = 1;
@@ -444,9 +443,8 @@ void BasicScene::Draw(float dt)
         mAngle -= NFE_MATH_2PI;
 
     // clear target
-    float color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-    mCommandBuffer->Clear(NFE_CLEAR_FLAG_TARGET, color);
-
+    const Float4 color(0.0f, 0.0f, 0.0f, 1.0f);
+    mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
 
     const float scaleCoeff = 1.0f / static_cast<float>(mGridSize);
     for (int i = 0; i < mGridSize; ++i)

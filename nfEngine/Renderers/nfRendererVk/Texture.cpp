@@ -59,7 +59,7 @@ bool Texture::InitTexture3D(const TextureDesc& desc)
 bool Texture::Init(const TextureDesc& desc)
 {
     mType = desc.type;
-    mFormat = TranslateElementFormatToVkFormat(desc.format, desc.texelSize);
+    mFormat = TranslateElementFormatToVkFormat(desc.format);
 
     switch (mType)
     {

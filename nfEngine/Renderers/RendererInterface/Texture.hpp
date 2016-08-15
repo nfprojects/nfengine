@@ -41,14 +41,13 @@ struct TextureDesc
     ElementFormat format;
     BufferAccess access;
     DepthBufferFormat depthBufferFormat; //< set when texture is used as depth buffer
-    int texelSize;  //< number of color channels per texel
-    int binding;    //< texture binding mode
-    int width;      //< texture width in texels
-    int height;     //< texture height in texels, used only for 2D and 3D textures
-    int depth;      //< texture depth in texels, used only for 3D textures
-    int layers;     //< number of texture layers, used only for 1D and 2D textures
-    int samplesNum; //< when bigger than 1, the texture is multisampled
-    int mipmaps;    //< number of mipmap levels
+    int binding;        //< texture binding mode
+    uint32 width;       //< texture width in texels
+    uint32 height;      //< texture height in texels, used only for 2D and 3D textures
+    uint32 depth;       //< texture depth in texels, used only for 3D textures
+    uint32 layers;      //< number of texture layers, used only for 1D and 2D textures
+    uint32 samplesNum;  //< when bigger than 1, the texture is multisampled
+    uint32 mipmaps;     //< number of mipmap levels
 
     /**
      * Array of structures describing initial texture data for each mipmap level.
@@ -60,10 +59,9 @@ struct TextureDesc
 
     TextureDesc()
         : type(TextureType::Texture2D)
-        , format(ElementFormat::Int_8)
+        , format(ElementFormat::R8G8B8A8_U_Norm)
         , access(BufferAccess::GPU_ReadOnly)
         , depthBufferFormat(DepthBufferFormat::Depth16)
-        , texelSize(1)
         , binding(0)
         , width(1)
         , height(1)

@@ -25,12 +25,12 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
     D3D11_INPUT_ELEMENT_DESC elementDescs[16];
 
     vertexShaderCode = "struct VertexShaderInput { ";
-    for (int i = 0; i < desc.numElements; ++i)
+    for (uint32 i = 0; i < desc.numElements; ++i)
     {
         D3D11_INPUT_ELEMENT_DESC& el = elementDescs[i];
         el.SemanticName = (i == 0) ? "POSITION" : "TEXCOORD";
         el.SemanticIndex = (i == 0) ? 0 : (i - 1);
-        el.Format = TranslateElementFormat(desc.elements[i].format, desc.elements[i].size);
+        el.Format = TranslateElementFormat(desc.elements[i].format);
         el.InputSlot = desc.elements[i].vertexBufferId;
         el.AlignedByteOffset = desc.elements[i].offset;
         el.InputSlotClass = desc.elements[i].perInstance ?
@@ -38,11 +38,12 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
         el.InstanceDataStepRate = desc.elements[i].perInstance ?
                                   desc.elements[i].instanceDataStep : 0;
 
+        uint32 channels = GetElementFormatChannels(desc.elements[i].format);
+
         if (i == 0)
-            vertexShaderCode += "float" + std::to_string(desc.elements[i].size) +
-                                " pos : POSITION; ";
+            vertexShaderCode += "float" + std::to_string(channels) + " pos : POSITION; ";
         else
-            vertexShaderCode += "float" + std::to_string(desc.elements[i].size) +
+            vertexShaderCode += "float" + std::to_string(channels) +
                                 " param" + std::to_string(i - 1) + " : TEXCOORD" +
                                 std::to_string(i - 1) + "; ";
     }

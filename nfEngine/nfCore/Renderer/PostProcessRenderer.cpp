@@ -33,7 +33,7 @@ PostProcessRenderer::PostProcessRenderer()
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
     {
-        { ElementFormat::Float_32, 3, 0, 0, false, 0 }, // position
+        { ElementFormat::R32G32B32_Float, 0, 0, false, 0 }, // position
     };
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;

@@ -16,6 +16,7 @@
 #include "RenderTarget.hpp"
 #include "PipelineState.hpp"
 #include "Sampler.hpp"
+#include "Translations.hpp"
 
 #include "ResourceBinding.hpp"
 #include "nfCommon/Win/Common.hpp"
@@ -277,7 +278,7 @@ bool Device::DownloadTexture(ITexture* tex, void* data, int mipmap, int layer)
 
     size_t dataSize = static_cast<size_t>(texture->mWidth) *
                       static_cast<size_t>(texture->mHeight) *
-                      static_cast<size_t>(texture->mTexelSize);
+                      static_cast<size_t>(GetElementFormatSize(texture->mFormat));
     memcpy(data, mapped.pData, dataSize);
 
     mImmediateContext->Unmap(res, subresource);

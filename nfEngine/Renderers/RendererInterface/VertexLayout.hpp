@@ -16,12 +16,11 @@ namespace Renderer {
  */
 struct VertexLayoutElement
 {
-    ElementFormat format; //< element format
-    int size;             //< element size
-    int offset;           //< element offset in bytes
-    int vertexBufferId;   //< source vertex buffer slot
-    bool perInstance;     //< is the vertex element constant for entire instance?
-    int instanceDataStep; //< number of instances to be drawn with one perInstance data
+    ElementFormat format;       //< element format
+    uint32 offset;              //< element offset in bytes
+    uint32 vertexBufferId;      //< source vertex buffer slot
+    bool perInstance;           //< is the vertex element constant for entire instance?
+    uint32 instanceDataStep;    //< number of instances to be drawn with one perInstance data
 };
 
 /**
@@ -30,7 +29,7 @@ struct VertexLayoutElement
 struct VertexLayoutDesc
 {
     VertexLayoutElement* elements;
-    int numElements;
+    uint32 numElements;
     const char* debugName; //< optional debug name
 
     VertexLayoutDesc()

@@ -45,48 +45,39 @@ Renderer::ITexture* CreateRendererTextureFromImage(const Common::Image& image,
     {
     case Common::ImageFormat::A_UByte:
     case Common::ImageFormat::R_UByte:
-        texDesc.format = ElementFormat::Uint_8_norm;
-        texDesc.texelSize = 1;
+        texDesc.format = ElementFormat::R8_U_Norm;
         break;
     case Common::ImageFormat::RGBA_UByte:
-        texDesc.format = ElementFormat::Uint_8_norm;
-        texDesc.texelSize = 4;
+        texDesc.format = ElementFormat::R8G8B8A8_U_Norm;
         break;
     case Common::ImageFormat::RGBA_Float:
-        texDesc.format = ElementFormat::Float_32;
-        texDesc.texelSize = 4;
+        texDesc.format = ElementFormat::R32G32B32A32_Float;
         break;
     case Common::ImageFormat::R_Float:
-        texDesc.format = ElementFormat::Float_32;
-        texDesc.texelSize = 1;
+        texDesc.format = ElementFormat::R32_Float;
         break;
     case Common::ImageFormat::BC1:
-        texDesc.format = ElementFormat::BC1;
-        texDesc.texelSize = 1;
+        texDesc.format = ElementFormat::BC1_U_Norm;
         bcNumBytesPerBlock = 8;
         bc = true;
         break;
     case Common::ImageFormat::BC2:
-        texDesc.format = ElementFormat::BC2;
-        texDesc.texelSize = 1;
+        texDesc.format = ElementFormat::BC2_U_Norm;
         bcNumBytesPerBlock = 16;
         bc = true;
         break;
     case Common::ImageFormat::BC3:
-        texDesc.format = ElementFormat::BC3;
-        texDesc.texelSize = 1;
+        texDesc.format = ElementFormat::BC3_U_Norm;
         bcNumBytesPerBlock = 16;
         bc = true;
         break;
     case Common::ImageFormat::BC4:
-        texDesc.format = ElementFormat::BC4;
-        texDesc.texelSize = 1;
+        texDesc.format = ElementFormat::BC4_U_Norm;
         bcNumBytesPerBlock = 8;
         bc = true;
         break;
     case Common::ImageFormat::BC5:
-        texDesc.format = ElementFormat::BC5;
-        texDesc.texelSize = 1;
+        texDesc.format = ElementFormat::BC5_U_Norm;
         bcNumBytesPerBlock = 16;
         bc = true;
         break;
@@ -277,7 +268,6 @@ bool Texture::CreateAsRenderTarget(uint32 width, uint32 height, Renderer::Elemen
     texDesc.mipmaps = 1;
     texDesc.debugName = "Texture::mTex (render target)";
     texDesc.format = format;
-    texDesc.texelSize = 4;
 
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
     mTex.reset(renderer->GetDevice()->CreateTexture(texDesc));

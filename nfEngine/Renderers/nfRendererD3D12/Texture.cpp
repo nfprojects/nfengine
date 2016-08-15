@@ -108,7 +108,7 @@ bool Texture::UploadData(const TextureDesc& desc)
             return 0;
         }
 
-        for (int i = 0; i < desc.mipmaps; ++i)
+        for (uint32 i = 0; i < desc.mipmaps; ++i)
         {
             D3D12_MEMCPY_DEST memcpyDest;
             memcpyDest.pData = data + layouts[i].Offset;
@@ -133,7 +133,7 @@ bool Texture::UploadData(const TextureDesc& desc)
         uploadBuffer->Unmap(0, NULL);
 
         // Copy data from upload buffer to the texture
-        for (int i = 0; i < desc.mipmaps; ++i)
+        for (uint32 i = 0; i < desc.mipmaps; ++i)
         {
             D3D12_TEXTURE_COPY_LOCATION src;
             src.pResource = uploadBuffer.get();
@@ -233,7 +233,7 @@ bool Texture::Init(const TextureDesc& desc)
     D3D12_RESOURCE_DESC resourceDesc;
     resourceDesc.Alignment = 0;
     resourceDesc.MipLevels = static_cast<UINT16>(desc.mipmaps);
-    resourceDesc.Format = TranslateElementFormat(desc.format, desc.texelSize);
+    resourceDesc.Format = TranslateElementFormat(desc.format);
     resourceDesc.SampleDesc.Count = 1;
     resourceDesc.SampleDesc.Quality = 0;
     resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
