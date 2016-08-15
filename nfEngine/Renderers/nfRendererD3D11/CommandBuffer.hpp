@@ -68,8 +68,8 @@ public:
     void UnmapBuffer(IBuffer* buffer) override;
     bool WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data) override;
     void CopyTexture(ITexture* src, ITexture* dest) override;
-    void Clear(int flags, const float* color, float depthValue,
-               unsigned char stencilValue) override;
+    void Clear(int flags, uint32 numTargets, const uint32* slots, const Math::Float4* colors,
+               float depthValue, uint8 stencilValue) override;
     void Draw(int vertexNum, int instancesNum, int vertexOffset,
               int instanceOffset) override;
     void DrawIndexed(int indexNum, int instancesNum, int indexOffset,

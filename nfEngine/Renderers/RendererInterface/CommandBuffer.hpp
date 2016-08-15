@@ -15,6 +15,9 @@
 #include "RenderTarget.hpp"
 #include "ResourceBinding.hpp"
 
+#include "nfCommon/nfCommon.hpp"
+#include "nfCommon/Math/Math.hpp"
+
 #include <memory>
 
 
@@ -26,6 +29,15 @@ class ICommandList
 public:
     virtual ~ICommandList() {}
 };
+
+
+enum ClearFlags
+{
+    ClearFlagsColor     = (1 << 0),
+    ClearFlagsDepth     = (1 << 1),
+    ClearFlagsStencil   = (1 << 2),
+};
+
 
 /**
  * Interface allowing to control rendering pipeline state and executing rendering commands.
@@ -120,13 +132,15 @@ public:
 
     /**
      * Clear bound render targets with a color.
-     * @param color        New render targets value - 4 element array of floats (RGBA).
-     * @param depthValue   New depth value (should be between 0.0f and 1.0f).
-     * @param stencilValue New stencil value.
+     * @param flags         Bitfield specifying if depth and stencil are also cleared.
+     * @param numTargets    Number of render target textures to be cleard.
+     * @param slots         Render target textures slots.
+     * @param colors        New color values for each texture - 4 element array of floats (RGBA).
+     * @param depthValue    New depth value (should be between 0.0f and 1.0f).
+     * @param stencilValue  New stencil value.
      */
-    // TODO: MRT support.
-    virtual void Clear(int flags, const float* color, float depthValue = 0.0f,
-                       unsigned char stencilValue = 0) = 0;
+    virtual void Clear(int flags, uint32 numTargets, const uint32* slots, const Math::Float4* colors,
+                       float depthValue = 0.0f, uint8 stencilValue = 0) = 0;
 
     /**
      * Draw geometry.
@@ -137,7 +151,7 @@ public:
      * @param vertexOffset   Vertex buffer offset (in elements).
      * @param instanceOffset Per-instance buffer offset (in elements).
      */
-    virtual void Draw(int vertexNum, int instancesNum = -1, int vertexOffset = 0, int instanceOffset = 0) = 0;
+    virtual void Draw(int vertexNum, int instancesNum = 1, int vertexOffset = 0, int instanceOffset = 0) = 0;
 
     /**
      * Draw geometry (with indexed verticies).
@@ -150,7 +164,7 @@ public:
      * @param instanceOffset Per-instance buffer offset (in elements).
      */
     virtual void DrawIndexed(int indexNum,
-                             int instancesNum = -1, int indexOffset = 0,
+                             int instancesNum = 1, int indexOffset = 0,
                              int vertexOffset = 0, int instanceOffset = 0) = 0;
 
     /**

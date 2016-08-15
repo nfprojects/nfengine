@@ -21,12 +21,12 @@ class Texture : virtual public ITexture
 
 protected:
     TextureType mType;
+    ElementFormat mFormat;
     int mWidth;
     int mHeight;
     int mLayers;
     int mMipmaps;
     int mSamples;
-    int mTexelSize; //< texel size in bytes
     D3DPtr<ID3D11ShaderResourceView> mSRV;
     D3DPtr<ID3D11DepthStencilView> mDSV;
 

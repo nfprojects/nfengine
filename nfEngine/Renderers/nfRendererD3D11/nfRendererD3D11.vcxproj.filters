@@ -109,5 +109,8 @@
     <ClInclude Include="ResourceBinding.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\D3DCommon\Format.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

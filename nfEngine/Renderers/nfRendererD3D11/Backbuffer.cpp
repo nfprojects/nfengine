@@ -77,7 +77,6 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     mVSync = desc.vSync;
     mLayers = 1;
     mSamples = 1;
-    mTexelSize = 4;
 
     if (desc.debugName)
         mDebugName = desc.debugName;

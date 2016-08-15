@@ -149,8 +149,7 @@ bool View::InitTemporaryRenderTarget(uint32 width, uint32 height)
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER | NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
     texDesc.mipmaps = 1;
     texDesc.debugName = "View::mTemporaryBuffer";
-    texDesc.format = ElementFormat::Float_16; // TODO: support for other formats
-    texDesc.texelSize = 4;
+    texDesc.format = ElementFormat::R16G16B16A16_Float; // TODO: support for other formats
 
     mTemporaryBuffer.reset(renderer->GetDevice()->CreateTexture(texDesc));
     if (!mTemporaryBuffer)
@@ -269,7 +268,7 @@ Texture* View::SetOffScreen(uint32 width, uint32 height, const char* textureName
     mTexture->Load();
     mTexture->AddRef(this);
 
-    if (!mTexture->CreateAsRenderTarget(width, height, Renderer::ElementFormat::Uint_8_norm))
+    if (!mTexture->CreateAsRenderTarget(width, height, Renderer::ElementFormat::R8G8B8A8_U_Norm))
     {
         Release();
         return nullptr;
@@ -321,8 +320,7 @@ bool View::InitImGui()
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER;
     texDesc.mipmaps = 1;
     texDesc.dataDesc = &texDataDesc;
-    texDesc.format = ElementFormat::Uint_8_norm;
-    texDesc.texelSize = 4;
+    texDesc.format = ElementFormat::R8G8B8A8_U_Norm;
     texDesc.debugName = "GuiRenderer::mImGuiTexture";
 
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();

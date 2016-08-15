@@ -83,7 +83,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
     }
     else
     {
-        resourceFormat = TranslateElementFormat(desc.format, desc.texelSize);
+        resourceFormat = TranslateElementFormat(desc.format);
         srvFormat = resourceFormat;
         if (resourceFormat == DXGI_FORMAT_UNKNOWN)
         {
@@ -137,7 +137,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
     if (desc.dataDesc)
     {
         D3D11_SUBRESOURCE_DATA initialData[MAX_MIPMAP_LEVELS];
-        for (int i = 0; i < desc.mipmaps; ++i)
+        for (uint32 i = 0; i < desc.mipmaps; ++i)
         {
             initialData[i].pSysMem = desc.dataDesc[i].data;
             initialData[i].SysMemPitch = static_cast<UINT>(desc.dataDesc[i].lineSize);
@@ -245,7 +245,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
     mLayers = desc.layers;
     mMipmaps = desc.mipmaps;
     mSamples = desc.samplesNum;
-    mTexelSize = GetElementFormatSize(desc.format) * desc.texelSize;
+    mFormat = desc.format;
     mType = TextureType::Texture2D;
     return true;
 }

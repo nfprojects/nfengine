@@ -81,9 +81,9 @@ DebugRenderer::DebugRenderer()
     /// create vertex layout
     VertexLayoutElement vertexLayoutElements[] =
     {
-        { ElementFormat::Float_32,    3, 0,  0, false, 0 }, // position
-        { ElementFormat::Uint_8_norm, 4, 12, 0, false, 0 }, // color
-        { ElementFormat::Float_32,    2, 16, 0, false, 0 }, // tex-coords
+        { ElementFormat::R32G32B32_Float,   0,  0, false, 0 }, // position
+        { ElementFormat::R8G8B8A8_U_Norm,   12, 0, false, 0 }, // color
+        { ElementFormat::R32G32_Float,      16, 0, false, 0 }, // tex-coords
     };
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;
@@ -94,10 +94,10 @@ DebugRenderer::DebugRenderer()
     /// create vertex layout for meshes
     VertexLayoutElement meshVertexLayoutElements[] =
     {
-        { ElementFormat::Float_32,   3, 0,  0, false, 0 }, // position
-        { ElementFormat::Float_32,   2, 12, 0, false, 0 }, // tex-coords
-        { ElementFormat::Int_8_norm, 4, 20, 0, false, 0 }, // normal
-        { ElementFormat::Int_8_norm, 4, 24, 0, false, 0 }, // tangent
+        { ElementFormat::R32G32B32_Float,   0,  0, false, 0 }, // position
+        { ElementFormat::R32G32_Float,      12, 0, false, 0 }, // tex-coords
+        { ElementFormat::R8G8B8A8_S_Norm,   20, 0, false, 0 }, // normal
+        { ElementFormat::R8G8B8A8_S_Norm,   24, 0, false, 0 }, // tangent
     };
     VertexLayoutDesc meshVertexLayoutDesc;
     meshVertexLayoutDesc.elements = meshVertexLayoutElements;

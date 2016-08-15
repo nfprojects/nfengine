@@ -136,10 +136,10 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer)
 
         VertexLayoutElement vertexLayoutElements[] =
         {
-            { ElementFormat::Float_32, 3, 0,  0, false, 0 }, // position
-            { ElementFormat::Float_32, 4, 0,  1, false, 0 }, // color
-            { ElementFormat::Float_32, 3, 0,  2, true,  1 }, // position offset
-            { ElementFormat::Float_32, 4, 12, 2, true,  1 }, // color scale
+            { ElementFormat::R32G32B32_Float,       0,  0, false, 0 }, // position
+            { ElementFormat::R32G32B32A32_Float,    0,  1, false, 0 }, // color
+            { ElementFormat::R32G32B32_Float,       0,  2, true,  1 }, // position offset
+            { ElementFormat::R32G32B32A32_Float,    12, 2, true,  1 }, // color scale
         };
 
         VertexLayoutDesc vertexLayoutDesc;
@@ -151,8 +151,8 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer)
     {
         VertexLayoutElement vertexLayoutElements[] =
         {
-            { ElementFormat::Float_32, 3, 0, 0, false, 0 }, // position
-            { ElementFormat::Float_32, 4, 0, 1, false, 0 }, // color
+            { ElementFormat::R32G32B32_Float,       0, 0, false, 0 }, // position
+            { ElementFormat::R32G32B32A32_Float,    0, 1, false, 0 }, // color
         };
 
         VertexLayoutDesc vertexLayoutDesc;
@@ -306,8 +306,8 @@ void VertexBuffersScene::Draw(float dt)
 
 
     // clear target
-    float color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-    mCommandBuffer->Clear(NFE_CLEAR_FLAG_TARGET, color);
+    const Float4 color(0.0f, 0.0f, 0.0f, 1.0f);
+    mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
 
     // draw
     if (mInstanceBuffer)

@@ -493,18 +493,33 @@ void CommandBuffer::CopyTexture(ITexture* src, ITexture* dest)
                            reinterpret_cast<ID3D11Resource*>(srcTex->mTextureGeneric));
 }
 
-void CommandBuffer::Clear(int flags, const float* color, float depthValue,
-                          unsigned char stencilValue)
+void CommandBuffer::Clear(int flags, uint32 numTargets, const uint32* slots,
+                          const Math::Float4* colors, float depthValue, uint8 stencilValue)
 {
-    // TODO: what about cleaning individual RTs with different colors?
-
     if (mCurrentRenderTarget)
     {
-        if (flags & NFE_CLEAR_FLAG_TARGET)
-            for (size_t i = 0; i < mCurrentRenderTarget->mRTVs.size(); ++i)
-                mContext->ClearRenderTargetView(mCurrentRenderTarget->mRTVs[i].get(), color);
+        if (flags & ClearFlagsColor)
+        {
+            for (uint32 i = 0; i < numTargets; ++i)
+            {
+                uint32 slot = i;
+                if (slots)
+                {
+                    if (slots[i] >= mCurrentRenderTarget->mRTVs.size())
+                    {
+                        LOG_ERROR("Invalid render target texture slot = %u", slots[i]);
+                        return;
+                    }
 
-        if (flags & (NFE_CLEAR_FLAG_DEPTH | NFE_CLEAR_FLAG_STENCIL))
+                    slot = slots[i];
+                }
+
+                mContext->ClearRenderTargetView(mCurrentRenderTarget->mRTVs[slot].get(),
+                                                reinterpret_cast<const float*>(&colors[i]));
+            }
+        }
+
+        if (flags & (ClearFlagsDepth | ClearFlagsStencil))
         {
             ID3D11DepthStencilView* dsv;
             if (mCurrentRenderTarget->mDepthBuffer)
@@ -514,8 +529,8 @@ void CommandBuffer::Clear(int flags, const float* color, float depthValue,
                     return;
 
                 UINT d3dFlags = 0;
-                if (flags & NFE_CLEAR_FLAG_DEPTH)   d3dFlags = D3D11_CLEAR_DEPTH;
-                if (flags & NFE_CLEAR_FLAG_STENCIL) d3dFlags |= D3D11_CLEAR_STENCIL;
+                if (flags & ClearFlagsDepth)      d3dFlags = D3D11_CLEAR_DEPTH;
+                if (flags & ClearFlagsStencil)    d3dFlags |= D3D11_CLEAR_STENCIL;
                 mContext->ClearDepthStencilView(dsv, d3dFlags, depthValue, stencilValue);
             }
         }

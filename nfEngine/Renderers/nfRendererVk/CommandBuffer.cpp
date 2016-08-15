@@ -187,42 +187,53 @@ void CommandBuffer::CopyTexture(ITexture* src, ITexture* dest)
     UNUSED(dest);
 }
 
-void CommandBuffer::Clear(int flags, const float* color, float depthValue,
-                          unsigned char stencilValue)
+void CommandBuffer::Clear(int flags, uint32 numTargets, const uint32* slots,
+                          const Math::Float4* colors, float depthValue, uint8 stencilValue)
 {
     if (!mRenderTarget)
         return;
 
-    std::vector<VkClearAttachment> clearAtts;
+    VkClearAttachment clearAtts[MAX_RENDER_TARGETS + 2];
+    uint32 clearAttsNum = 0;
 
-    if (flags & NFE_CLEAR_FLAG_TARGET)
+    if (flags & ClearFlagsColor)
     {
-        clearAtts.resize(mRenderTarget->mAttachmentCount);
-        for (uint32 i = 0; i < mRenderTarget->mAttachmentCount; ++i)
+        for (uint32 i = 0; i < numTargets; ++i)
         {
+            uint32 slot = i;
+            if (slots)
+            {
+                if (slots[i] >= mRenderTarget->mAttachmentCount)
+                {
+                    LOG_ERROR("Invalid render target texture slot = %u", slots[i]);
+                    return;
+                }
+
+                slot = slots[i];
+            }
+
             clearAtts[i].aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-            clearAtts[i].colorAttachment = i;
-            clearAtts[i].clearValue.color.float32[0] = color[0];
-            clearAtts[i].clearValue.color.float32[1] = color[1];
-            clearAtts[i].clearValue.color.float32[2] = color[2];
-            clearAtts[i].clearValue.color.float32[3] = color[3];
+            clearAtts[i].colorAttachment = slot;
+            clearAtts[i].clearValue.color.float32[0] = colors[i].x;
+            clearAtts[i].clearValue.color.float32[1] = colors[i].y;
+            clearAtts[i].clearValue.color.float32[2] = colors[i].z;
+            clearAtts[i].clearValue.color.float32[3] = colors[i].w;
+            clearAttsNum++;
         }
     }
 
-    if (flags & NFE_CLEAR_FLAG_DEPTH)
+    if (flags & ClearFlagsDepth)
     {
-        VkClearAttachment depth;
-        depth.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-        depth.clearValue.depthStencil.depth = depthValue;
-        clearAtts.push_back(depth);
+        clearAtts[clearAttsNum].aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+        clearAtts[clearAttsNum].clearValue.depthStencil.depth = depthValue;
+        clearAttsNum++;
     }
 
-    if (flags & NFE_CLEAR_FLAG_STENCIL)
+    if (flags & ClearFlagsStencil)
     {
-        VkClearAttachment stencil;
-        stencil.aspectMask = VK_IMAGE_ASPECT_STENCIL_BIT;
-        stencil.clearValue.depthStencil.stencil = stencilValue;
-        clearAtts.push_back(stencil);
+        clearAtts[clearAttsNum].aspectMask = VK_IMAGE_ASPECT_STENCIL_BIT;
+        clearAtts[clearAttsNum].clearValue.depthStencil.stencil = stencilValue;
+        clearAttsNum++;
     }
 
     VkClearRect rect;
@@ -231,8 +242,7 @@ void CommandBuffer::Clear(int flags, const float* color, float depthValue,
                          static_cast<uint32>(mRenderTarget->mHeight) };
     rect.baseArrayLayer = 0;
     rect.layerCount = 1;
-    vkCmdClearAttachments(mCommandBuffer, static_cast<uint32>(clearAtts.size()), clearAtts.data(),
-                          1, &rect);
+    vkCmdClearAttachments(mCommandBuffer, clearAttsNum, clearAtts, 1, &rect);
 }
 
 

@@ -88,8 +88,7 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
     texDesc.layers = mSplits;
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER | NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
     texDesc.mipmaps = 1;
-    texDesc.format = ElementFormat::Float_32;
-    texDesc.texelSize = 1;
+    texDesc.format = ElementFormat::R32_Float;
     texDesc.debugName = "ShadowMap::mTexture";
 
     mTexture.reset(renderer->GetDevice()->CreateTexture(texDesc));
@@ -209,12 +208,11 @@ bool GeometryBuffer::Resize(int width, int height)
     /// TODO: this could be extended in the future
     ElementFormat elementFormats[] =
     {
-        ElementFormat::Float_16,
-        ElementFormat::Float_16,
-        ElementFormat::Float_16,
-        ElementFormat::Float_16,
+        ElementFormat::R16G16B16A16_Float,
+        ElementFormat::R16G16B16A16_Float,
+        ElementFormat::R16G16B16A16_Float,
+        ElementFormat::R16G16_Float,
     };
-    int elementSizes[] = { 4, 4, 4, 2 };
 
 
     mBindingInstance.reset(renderer->GetDevice()->CreateResourceBindingInstance(
@@ -235,7 +233,6 @@ bool GeometryBuffer::Resize(int width, int height)
     for (int i = 0; i < gLayers; ++i)
     {
         texDesc.format = elementFormats[i];
-        texDesc.texelSize = elementSizes[i];
         mTextures[i].reset(renderer->GetDevice()->CreateTexture(texDesc));
         if (!mTextures[i])
         {

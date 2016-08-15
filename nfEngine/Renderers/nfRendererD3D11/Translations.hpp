@@ -9,11 +9,11 @@
 #include "../RendererInterface/Types.hpp"
 #include "nfCommon/nfCommon.hpp"
 
+
 namespace NFE {
 namespace Renderer {
 
-int GetElementFormatSize(ElementFormat format);
-DXGI_FORMAT TranslateElementFormat(ElementFormat format, int size);
+DXGI_FORMAT TranslateElementFormat(ElementFormat format);
 D3D11_PRIMITIVE_TOPOLOGY TranslatePrimitiveType(PrimitiveType type, uint32 controlPoints = 0);
 D3D11_COMPARISON_FUNC TranslateComparisonFunc(CompareFunc func);
 D3D11_TEXTURE_ADDRESS_MODE TranslateTextureWrapMode(TextureWrapMode mode);

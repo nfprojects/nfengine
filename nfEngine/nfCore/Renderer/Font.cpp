@@ -179,8 +179,7 @@ bool Font::Init(const char* file, int size)
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER;
     texDesc.mipmaps = 1;
     texDesc.dataDesc = &texDataDesc;
-    texDesc.format = ElementFormat::Uint_8_norm;
-    texDesc.texelSize = 1;
+    texDesc.format = ElementFormat::R8_U_Norm;
     texDesc.debugName = debugName.c_str();
 
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();

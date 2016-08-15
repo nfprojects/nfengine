@@ -99,7 +99,7 @@ bool TessellationScene::CreateVertexBuffer()
 
     VertexLayoutElement vertexLayoutElements[] =
     {
-        { ElementFormat::Float_32, 3,  0, 0, false, 0 }, // position
+        { ElementFormat::R32G32B32_Float, 0, 0, false, 0 }, // position
     };
 
     VertexLayoutDesc vertexLayoutDesc;
@@ -225,8 +225,8 @@ void TessellationScene::Draw(float dt)
         mCommandBuffer->SetShaderProgram(mShaderProgram.get());
 
     // clear target
-    float color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-    mCommandBuffer->Clear(NFE_CLEAR_FLAG_TARGET, color);
+    const Float4 color(0.0f, 0.0f, 0.0f, 1.0f);
+    mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
 
     // draw
     mCommandBuffer->Draw(4, 1);

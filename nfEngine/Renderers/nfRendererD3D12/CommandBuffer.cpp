@@ -435,21 +435,36 @@ void CommandBuffer::CopyTexture(ITexture* src, ITexture* dest)
     UNUSED(dest);
 }
 
-void CommandBuffer::Clear(int flags, const float* color, float depthValue,
-                          unsigned char stencilValue)
+void CommandBuffer::Clear(int flags, uint32 numTargets, const uint32* slots,
+                          const Math::Float4* colors, float depthValue, uint8 stencilValue)
 {
     if (mCurrRenderTarget != nullptr)
     {
-        HeapAllocator& allocator = gDevice->GetRtvHeapAllocator();
-
-        for (size_t i = 0; i < mCurrRenderTarget->mTextures.size(); ++i)
+        if (flags & ClearFlagsColor)
         {
-            Texture* tex = mCurrRenderTarget->mTextures[i];
-            int currentBuffer = tex->mCurrentBuffer;
+            HeapAllocator& allocator = gDevice->GetRtvHeapAllocator();
+            for (uint32 i = 0; i < numTargets; ++i)
+            {
+                uint32 slot = i;
 
-            D3D12_CPU_DESCRIPTOR_HANDLE handle = allocator.GetCpuHandle();
-            handle.ptr += mCurrRenderTarget->mRTVs[currentBuffer][i] * allocator.GetDescriptorSize();
-            mCommandList->ClearRenderTargetView(handle, color, 0, nullptr);
+                if (slots)
+                {
+                    if (slots[i] >= mCurrRenderTarget->mRTVs[0].size())
+                    {
+                        LOG_ERROR("Invalid render target texture slot = %u", slots[i]);
+                        return;
+                    }
+
+                    slot = slots[i];
+                }
+
+                Texture* tex = mCurrRenderTarget->mTextures[slot];
+                int currentBuffer = tex->mCurrentBuffer;
+
+                D3D12_CPU_DESCRIPTOR_HANDLE handle = allocator.GetCpuHandle();
+                handle.ptr += mCurrRenderTarget->mRTVs[currentBuffer][slot] * allocator.GetDescriptorSize();
+                mCommandList->ClearRenderTargetView(handle, reinterpret_cast<const float*>(&colors[i]), 0, nullptr);
+            }
         }
     }
 

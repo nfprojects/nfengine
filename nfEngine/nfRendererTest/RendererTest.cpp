@@ -37,7 +37,7 @@ void RendererTest::TearDownTestCase()
     gRendererLib.Close();
 }
 
-void RendererTest::BeginTestFrame(int width, int height, ElementFormat format, int texelSize)
+void RendererTest::BeginTestFrame(int width, int height, ElementFormat format)
 {
     mCommandBuffer.reset(gRendererDevice->CreateCommandBuffer());
     ASSERT_FALSE(!mCommandBuffer);
@@ -48,7 +48,6 @@ void RendererTest::BeginTestFrame(int width, int height, ElementFormat format, i
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
     texDesc.access = BufferAccess::GPU_ReadWrite;
     texDesc.format = format;
-    texDesc.texelSize = texelSize;
     texDesc.width = width;
     texDesc.height = height;
     mTestTexture.reset(gRendererDevice->CreateTexture(texDesc));

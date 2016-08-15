@@ -7,201 +7,10 @@
 #include "PCH.hpp"
 #include "Translations.hpp"
 
+#include "../D3DCommon/Format.hpp"
+
 namespace NFE {
 namespace Renderer {
-
-int GetElementFormatSize(ElementFormat format)
-{
-    switch (format)
-    {
-        case ElementFormat::Float_32:
-        case ElementFormat::Int_32:
-        case ElementFormat::Uint_32:
-            return 4;
-        case ElementFormat::Float_16:
-        case ElementFormat::Int_16:
-        case ElementFormat::Uint_16:
-        case ElementFormat::Int_16_norm:
-        case ElementFormat::Uint_16_norm:
-            return 2;
-        case ElementFormat::Int_8:
-        case ElementFormat::Uint_8:
-        case ElementFormat::Int_8_norm:
-        case ElementFormat::Uint_8_norm:
-            return 1;
-
-        /// for Block Compressed formats "element" means 4x4 pixels block
-        case ElementFormat::BC1:
-        case ElementFormat::BC4:
-        case ElementFormat::BC4_signed:
-            return 8;
-        case ElementFormat::BC2:
-        case ElementFormat::BC3:
-        case ElementFormat::BC5:
-        case ElementFormat::BC5_signed:
-        case ElementFormat::BC6H:
-        case ElementFormat::BC6H_signed:
-        case ElementFormat::BC7:
-            return 16;
-    };
-
-    return 0;
-}
-
-DXGI_FORMAT TranslateElementFormat(ElementFormat format, int size)
-{
-    switch (format)
-    {
-        case ElementFormat::Float_32:
-            switch (size)
-            {
-                case 1:
-                    return DXGI_FORMAT_R32_FLOAT;
-                case 2:
-                    return DXGI_FORMAT_R32G32_FLOAT;
-                case 3:
-                    return DXGI_FORMAT_R32G32B32_FLOAT;
-                case 4:
-                    return DXGI_FORMAT_R32G32B32A32_FLOAT;
-            };
-        case ElementFormat::Int_32:
-            switch (size)
-            {
-                case 1:
-                    return DXGI_FORMAT_R32_SINT;
-                case 2:
-                    return DXGI_FORMAT_R32G32_SINT;
-                case 3:
-                    return DXGI_FORMAT_R32G32B32_SINT;
-                case 4:
-                    return DXGI_FORMAT_R32G32B32A32_SINT;
-            };
-        case ElementFormat::Uint_32:
-            switch (size)
-            {
-                case 1:
-                    return DXGI_FORMAT_R32_UINT;
-                case 2:
-                    return DXGI_FORMAT_R32G32_UINT;
-                case 3:
-                    return DXGI_FORMAT_R32G32B32_UINT;
-                case 4:
-                    return DXGI_FORMAT_R32G32B32A32_UINT;
-            };
-        case ElementFormat::Float_16:
-            switch (size)
-            {
-                case 1:
-                    return DXGI_FORMAT_R16_FLOAT;
-                case 2:
-                    return DXGI_FORMAT_R16G16_FLOAT;
-                case 4:
-                    return DXGI_FORMAT_R16G16B16A16_FLOAT;
-            };
-        case ElementFormat::Int_16:
-            switch (size)
-            {
-                case 1:
-                    return DXGI_FORMAT_R16_SINT;
-                case 2:
-                    return DXGI_FORMAT_R16G16_SINT;
-                case 4:
-                    return DXGI_FORMAT_R16G16B16A16_SINT;
-            };
-        case ElementFormat::Uint_16:
-            switch (size)
-            {
-                case 1:
-                    return DXGI_FORMAT_R16_UINT;
-                case 2:
-                    return DXGI_FORMAT_R16G16_UINT;
-                case 4:
-                    return DXGI_FORMAT_R16G16B16A16_UINT;
-            };
-        case ElementFormat::Int_16_norm:
-            switch (size)
-            {
-                case 1:
-                    return DXGI_FORMAT_R16_SNORM;
-                case 2:
-                    return DXGI_FORMAT_R16G16_SNORM;
-                case 4:
-                    return DXGI_FORMAT_R16G16B16A16_SNORM;
-            };
-        case ElementFormat::Uint_16_norm:
-            switch (size)
-            {
-                case 1:
-                    return DXGI_FORMAT_R16_UNORM;
-                case 2:
-                    return DXGI_FORMAT_R16G16_UNORM;
-                case 4:
-                    return DXGI_FORMAT_R16G16B16A16_UNORM;
-            };
-        case ElementFormat::Int_8:
-            switch (size)
-            {
-                case 1:
-                    return DXGI_FORMAT_R8_SINT;
-                case 2:
-                    return DXGI_FORMAT_R8G8_SINT;
-                case 4:
-                    return DXGI_FORMAT_R8G8B8A8_SINT;
-            };
-        case ElementFormat::Uint_8:
-            switch (size)
-            {
-                case 1:
-                    return DXGI_FORMAT_R8_UINT;
-                case 2:
-                    return DXGI_FORMAT_R8G8_UINT;
-                case 4:
-                    return DXGI_FORMAT_R8G8B8A8_UINT;
-            };
-        case ElementFormat::Int_8_norm:
-            switch (size)
-            {
-                case 1:
-                    return DXGI_FORMAT_R8_SNORM;
-                case 2:
-                    return DXGI_FORMAT_R8G8_SNORM;
-                case 4:
-                    return DXGI_FORMAT_R8G8B8A8_SNORM;
-            };
-        case ElementFormat::Uint_8_norm:
-            switch (size)
-            {
-                case 1:
-                    return DXGI_FORMAT_R8_UNORM;
-                case 2:
-                    return DXGI_FORMAT_R8G8_UNORM;
-                case 4:
-                    return DXGI_FORMAT_R8G8B8A8_UNORM;
-            };
-        case ElementFormat::BC1:
-            return DXGI_FORMAT_BC1_UNORM;
-        case ElementFormat::BC2:
-            return DXGI_FORMAT_BC2_UNORM;
-        case ElementFormat::BC3:
-            return DXGI_FORMAT_BC3_UNORM;
-        case ElementFormat::BC4:
-            return DXGI_FORMAT_BC4_UNORM;
-        case ElementFormat::BC4_signed:
-            return DXGI_FORMAT_BC4_SNORM;
-        case ElementFormat::BC5:
-            return DXGI_FORMAT_BC5_UNORM;
-        case ElementFormat::BC5_signed:
-            return DXGI_FORMAT_BC5_SNORM;
-        case ElementFormat::BC6H:
-            return DXGI_FORMAT_BC6H_UF16;
-        case ElementFormat::BC6H_signed:
-            return DXGI_FORMAT_BC6H_SF16;
-        case ElementFormat::BC7:
-            return DXGI_FORMAT_BC7_UNORM;
-    };
-
-    return DXGI_FORMAT_UNKNOWN;
-}
 
 D3D11_PRIMITIVE_TOPOLOGY TranslatePrimitiveType(PrimitiveType type, uint32 controlPoints)
 {
@@ -222,7 +31,7 @@ D3D11_PRIMITIVE_TOPOLOGY TranslatePrimitiveType(PrimitiveType type, uint32 contr
             return static_cast<D3D11_PRIMITIVE_TOPOLOGY>(
                 static_cast<uint32>(D3D11_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST) +
                 (controlPoints - 1));
-    };
+    }
 
     return D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED;
 }
@@ -247,7 +56,7 @@ D3D11_COMPARISON_FUNC TranslateComparisonFunc(CompareFunc func)
             return D3D11_COMPARISON_NOT_EQUAL;
         case CompareFunc::Pass:
             return D3D11_COMPARISON_ALWAYS;
-    };
+    }
 
     return D3D11_COMPARISON_NEVER;
 }
@@ -264,7 +73,7 @@ D3D11_TEXTURE_ADDRESS_MODE TranslateTextureWrapMode(TextureWrapMode mode)
         return D3D11_TEXTURE_ADDRESS_MIRROR;
     case TextureWrapMode::Border:
         return D3D11_TEXTURE_ADDRESS_BORDER;
-    };
+    }
 
     return D3D11_TEXTURE_ADDRESS_WRAP;
 }
@@ -395,7 +204,7 @@ D3D11_BLEND TranslateBlendFunc(BlendFunc func)
         return D3D11_BLEND_INV_SRC_ALPHA;
     case BlendFunc::OneMinusDestAlpha:
         return D3D11_BLEND_INV_DEST_ALPHA;
-    };
+    }
 
     return D3D11_BLEND_ZERO;
 }
@@ -414,7 +223,7 @@ D3D11_BLEND_OP TranslateBlendOp(BlendOp op)
         return D3D11_BLEND_OP_MIN;
     case BlendOp::Max:
         return D3D11_BLEND_OP_MAX;
-    };
+    }
 
     return D3D11_BLEND_OP_ADD;
 }
@@ -439,7 +248,7 @@ D3D11_STENCIL_OP TranslateStencilOp(StencilOp op)
         return D3D11_STENCIL_OP_DECR;
     case StencilOp::Invert:
         return D3D11_STENCIL_OP_INVERT;
-    };
+    }
 
     return D3D11_STENCIL_OP_KEEP;
 }

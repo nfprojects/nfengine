@@ -68,16 +68,16 @@ GeometryRenderer::GeometryRenderer()
     VertexLayoutElement vertexLayoutElements[] =
     {
         /// per-vertex data:
-        { ElementFormat::Float_32,   3,  0, 0, false, 0 }, // position
-        { ElementFormat::Float_32,   2, 12, 0, false, 0 }, // tex-coords
-        { ElementFormat::Int_8_norm, 4, 20, 0, false, 0 }, // normal
-        { ElementFormat::Int_8_norm, 4, 24, 0, false, 0 }, // tangent
+        { ElementFormat::R32G32B32_Float,   0,  0, false, 0 }, // position
+        { ElementFormat::R32G32_Float,      12, 0, false, 0 }, // tex-coords
+        { ElementFormat::R8G8B8A8_S_Norm,   20, 0, false, 0 }, // normal
+        { ElementFormat::R8G8B8A8_S_Norm,   24, 0, false, 0 }, // tangent
         // per-instance data:
-        { ElementFormat::Float_32, 4,  0, 1, true, 1 },
-        { ElementFormat::Float_32, 4, 16, 1, true, 1 },
-        { ElementFormat::Float_32, 4, 32, 1, true, 1 },
-        { ElementFormat::Float_32, 4, 48, 1, true, 1 },
-        { ElementFormat::Float_32, 4, 64, 1, true, 1 },
+        { ElementFormat::R32G32B32A32_Float,  0, 1, true, 1 },
+        { ElementFormat::R32G32B32A32_Float, 16, 1, true, 1 },
+        { ElementFormat::R32G32B32A32_Float, 32, 1, true, 1 },
+        { ElementFormat::R32G32B32A32_Float, 48, 1, true, 1 },
+        { ElementFormat::R32G32B32A32_Float, 64, 1, true, 1 },
     };
 
     VertexLayoutDesc meshVertexLayoutDesc;
@@ -225,8 +225,7 @@ void GeometryRenderer::SetUp(RenderContext* context, GeometryBuffer* geometryBuf
                                         0.0f, static_cast<float>(geometryBuffer->mHeight),
                                         0.0f, 1.0f);
 
-    const float clearColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-    context->commandBuffer->Clear(NFE_CLEAR_FLAG_TARGET | NFE_CLEAR_FLAG_DEPTH, clearColor, 1.0f);
+    context->commandBuffer->Clear(ClearFlagsDepth, 0, nullptr, nullptr, 1.0f);
 
     int macros[] = { 0 }; // USE_MOTION_BLUR
     context->commandBuffer->SetShaderProgram(mGeometryPassShaderProgram.GetShaderProgram(macros));
@@ -257,8 +256,8 @@ void GeometryRenderer::SetUpForShadowMap(RenderContext *context, ShadowMap* shad
                                         0.0f, static_cast<float>(shadowMap->mSize),
                                         0.0f, 1.0f);
 
-    const float clearColor[] = { 1.0f, 0.0f, 0.0f, 0.0f };
-    context->commandBuffer->Clear(NFE_CLEAR_FLAG_TARGET | NFE_CLEAR_FLAG_DEPTH, clearColor, 1.0f);
+    const Float4 clearColor(1.0f, 0.0f, 0.0f, 0.0f);
+    context->commandBuffer->Clear(ClearFlagsColor | ClearFlagsDepth, 1, nullptr, &clearColor, 1.0f);
 
     int macros[] = { 0 };
     if (shadowMap->mType == ShadowMap::Type::Cube)

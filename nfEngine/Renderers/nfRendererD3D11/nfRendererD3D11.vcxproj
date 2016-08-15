@@ -228,6 +228,7 @@
     <ClCompile Include="VertexLayout.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\D3DCommon\Format.hpp" />
     <ClInclude Include="Backbuffer.hpp" />
     <ClInclude Include="Buffer.hpp" />
     <ClInclude Include="CommandBuffer.hpp" />

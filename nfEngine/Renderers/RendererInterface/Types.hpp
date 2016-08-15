@@ -6,6 +6,9 @@
 
 #pragma once
 
+#include "nfCommon/nfCommon.hpp"
+
+
 namespace NFE {
 namespace Renderer {
 
@@ -26,10 +29,6 @@ class IVertexLayout;
 #define MAX_RENDER_TARGETS 8
 #define MAX_MIPMAP_LEVELS 16
 
-/// Clear flags passed to ICommandBuffer::Clear()
-#define NFE_CLEAR_FLAG_TARGET  (1<<0)
-#define NFE_CLEAR_FLAG_DEPTH   (1<<1)
-#define NFE_CLEAR_FLAG_STENCIL (1<<2)
 
 /**
  * GPU resources data format.
@@ -38,32 +37,92 @@ enum class ElementFormat
 {
     Unknown,
 
-    Float_32,     //< 32-bit floating-point values
-    Int_32,       //< 32-bit signed integer values
-    Uint_32,      //< 32-bit unsigned integer values
+    /// single 8-bit values
+    R8_U_Int,
+    R8_S_Int,
+    R8_U_Norm,
+    R8_S_Norm,
 
-    Float_16,     //< 16-bit floating-point values
-    Int_16,       //< 16-bit signed integer values
-    Uint_16,      //< 16-bit unsigned integer values
-    Int_16_norm,  //< 16-bit signed integer values scaled to [-1.0, 1.0] range
-    Uint_16_norm, //< 16-bit unsigned integer values scaled to [0.0, 1.0] range
+    /// single 16-bit values
+    R16_U_Int,
+    R16_S_Int,
+    R16_U_Norm,
+    R16_S_Norm,
+    R16_Float,
 
-    Int_8,        //< 8-bit signed integer values
-    Uint_8,       //< 8-bit unsigned integer values
-    Int_8_norm,   //< 8-bit signed integer values scaled to [-1.0, 1.0] range
-    Uint_8_norm,  //< 8-bit unsigned integer values scaled to [0.0, 1.0] range
+    /// single 32-bit values
+    R32_U_Int,
+    R32_S_Int,
+    R32_Float,
+
+    /// double 8-bit values
+    R8G8_U_Int,
+    R8G8_S_Int,
+    R8G8_U_Norm,
+    R8G8_S_Norm,
+
+    /// double 16-bit values
+    R16G16_U_Int,
+    R16G16_S_Int,
+    R16G16_U_Norm,
+    R16G16_S_Norm,
+    R16G16_Float,
+
+    /// double 32-bit values
+    R32G32_U_Int,
+    R32G32_S_Int,
+    R32G32_Float,
+
+    /// tripple 32-bit values
+    R32G32B32_U_Int,
+    R32G32B32_S_Int,
+    R32G32B32_Float,
+
+    /// quadruple 8-bit values
+    R8G8B8A8_U_Int,
+    R8G8B8A8_S_Int,
+    R8G8B8A8_U_Norm,
+    R8G8B8A8_U_Norm_sRGB,
+    R8G8B8A8_S_Norm,
+    B8G8R8A8_U_Norm,
+    B8G8R8A8_U_Norm_sRGB,
+
+    /// quadruple 16-bit values
+    R16G16B16A16_U_Int,
+    R16G16B16A16_S_Int,
+    R16G16B16A16_U_Norm,
+    R16G16B16A16_S_Norm,
+    R16G16B16A16_Float,
+
+    /// quadruple 32-bit values
+    R32G32B32A32_U_Int,
+    R32G32B32A32_S_Int,
+    R32G32B32A32_Float,
+
+    /// packed types
+    B5G6R5_U_norm,
+    B5G5R5A1_U_Norm,
+    B4G4R4A4_U_Norm,
+    R11G11B10_Float,
+    R10G10B10A2_U_Norm,
+    R10G10B10A2_U_Int,
+    R9G9B9E5_Float,     // shared exponent RGB values
 
     /// Block Compressed formats
-    BC1,          //< aka. DXT1;  unsigned, normalized RGB values; 8 bytes per 4x4 block
-    BC2,          //< aka. DXT3;  unsigned, normalized RGBA values; 16 bytes per 4x4 block
-    BC3,          //< aka. DXT5;  unsigned, normalized RGBA values; 16 bytes per 4x4 block
-    BC4,          //< aka. RGTC1; unsigned, normalized Red values; 8 bytes per 4x4 block
-    BC4_signed,   //< aka. RGTC1; signed, normalized Red values; 8 bytes per 4x4 block
-    BC5,          //< aka. RGTC2; unsigned, normalized Red and Green values; 16 bytes per 4x4 block
-    BC5_signed,   //< aka. RGTC2; signed, normalized Red and Green values; 16 bytes per 4x4 block
-    BC6H,         //< aka. BPTC;  unsigned, floating-point RGB values; 16 bytes per 4x4 block
-    BC6H_signed,  //< aka. BPTC;  signed, floating-point RGB values; 16 bytes per 4x4 block
-    BC7,          //< aka. BPTC;  unsigned, normalized RGB/RGBA values; 16 bytes per 4x4 block
+    BC1_U_Norm,         //< aka. DXT1; 8 bytes per 4x4 block
+    BC1_U_Norm_sRGB,    //< aka. DXT1; 8 bytes per 4x4 block
+    BC2_U_Norm,         //< aka. DXT3; 16 bytes per 4x4 block
+    BC2_U_Norm_sRGB,    //< aka. DXT3; 16 bytes per 4x4 block
+    BC3_U_Norm,         //< aka. DXT5; 16 bytes per 4x4 block
+    BC3_U_Norm_sRGB,    //< aka. DXT5; 16 bytes per 4x4 block
+    BC4_U_Norm,         //< aka. RGTC1; 8 bytes per 4x4 block
+    BC4_S_Norm,         //< aka. RGTC1; 8 bytes per 4x4 block
+    BC5_U_Norm,         //< aka. RGTC2; unsigned normalized Red and Green values; 16 bytes per 4x4 block
+    BC5_S_Norm,         //< aka. RGTC2; signed normalized Red and Green values; 16 bytes per 4x4 block
+    BC6H_U_Float,       //< aka. BPTC;  unsigned, floating-point RGB values; 16 bytes per 4x4 block
+    BC6H_S_Float,       //< aka. BPTC;  signed, floating-point RGB values; 16 bytes per 4x4 block
+    BC7_U_Norm,         //< aka. BPTC;  unsigned, normalized RGB/RGBA values; 16 bytes per 4x4 block
+    BC7_U_Norm_sRGB,    //< aka. BPTC;  unsigned, normalized RGB/RGBA values; 16 bytes per 4x4 block
 };
 
 /**
@@ -109,8 +168,6 @@ enum class ShaderType
  */
 enum class BufferAccess
 {
-    // TODO: this was taken form D3D11. Accesses may differ in OpenGL
-
     /**
      * Read-only resource, for example a static mesh or texture.
      * The resource content must be specified during creation.
@@ -273,6 +330,186 @@ enum class TextureMagFilter
     Nearest,
     Linear
 };
+
+
+/**
+ * Get format pixel channels.
+ */
+NFE_INLINE uint32 GetElementFormatChannels(ElementFormat format)
+{
+    switch (format)
+    {
+    case ElementFormat::R8_U_Int:
+    case ElementFormat::R8_S_Int:
+    case ElementFormat::R8_U_Norm:
+    case ElementFormat::R8_S_Norm:
+    case ElementFormat::R16_U_Int:
+    case ElementFormat::R16_S_Int:
+    case ElementFormat::R16_U_Norm:
+    case ElementFormat::R16_S_Norm:
+    case ElementFormat::R16_Float:
+    case ElementFormat::R32_U_Int:
+    case ElementFormat::R32_S_Int:
+    case ElementFormat::R32_Float:
+        return 1;
+
+    case ElementFormat::R8G8_U_Int:
+    case ElementFormat::R8G8_S_Int:
+    case ElementFormat::R8G8_U_Norm:
+    case ElementFormat::R8G8_S_Norm:
+    case ElementFormat::R16G16_U_Int:
+    case ElementFormat::R16G16_S_Int:
+    case ElementFormat::R16G16_U_Norm:
+    case ElementFormat::R16G16_S_Norm:
+    case ElementFormat::R16G16_Float:
+    case ElementFormat::R32G32_U_Int:
+    case ElementFormat::R32G32_S_Int:
+    case ElementFormat::R32G32_Float:
+        return 2;
+
+    case ElementFormat::R32G32B32_U_Int:
+    case ElementFormat::R32G32B32_S_Int:
+    case ElementFormat::R32G32B32_Float:
+    case ElementFormat::B5G6R5_U_norm:
+    case ElementFormat::R11G11B10_Float:
+    case ElementFormat::R9G9B9E5_Float:
+        return 3;
+
+    case ElementFormat::R8G8B8A8_U_Int:
+    case ElementFormat::R8G8B8A8_S_Int:
+    case ElementFormat::R8G8B8A8_U_Norm:
+    case ElementFormat::R8G8B8A8_U_Norm_sRGB:
+    case ElementFormat::R8G8B8A8_S_Norm:
+    case ElementFormat::B8G8R8A8_U_Norm:
+    case ElementFormat::B8G8R8A8_U_Norm_sRGB:
+    case ElementFormat::R16G16B16A16_U_Int:
+    case ElementFormat::R16G16B16A16_S_Int:
+    case ElementFormat::R16G16B16A16_U_Norm:
+    case ElementFormat::R16G16B16A16_S_Norm:
+    case ElementFormat::R16G16B16A16_Float:
+    case ElementFormat::R32G32B32A32_U_Int:
+    case ElementFormat::R32G32B32A32_S_Int:
+    case ElementFormat::R32G32B32A32_Float:
+    case ElementFormat::B5G5R5A1_U_Norm:
+    case ElementFormat::B4G4R4A4_U_Norm:
+    case ElementFormat::R10G10B10A2_U_Norm:
+    case ElementFormat::R10G10B10A2_U_Int:
+        return 4;
+
+    case ElementFormat::BC1_U_Norm:
+    case ElementFormat::BC1_U_Norm_sRGB:
+    case ElementFormat::BC2_U_Norm:
+    case ElementFormat::BC2_U_Norm_sRGB:
+    case ElementFormat::BC3_U_Norm:
+    case ElementFormat::BC3_U_Norm_sRGB:
+        return 4;
+
+    case ElementFormat::BC4_U_Norm:
+    case ElementFormat::BC4_S_Norm:
+        return 1;
+
+    case ElementFormat::BC5_U_Norm:
+    case ElementFormat::BC5_S_Norm:
+        return 2;
+
+    case ElementFormat::BC6H_U_Float:
+    case ElementFormat::BC6H_S_Float:
+    case ElementFormat::BC7_U_Norm:
+    case ElementFormat::BC7_U_Norm_sRGB:
+        return 3;
+    }
+
+    return 0;
+}
+
+/**
+ * Get bytes per element.
+ */
+NFE_INLINE uint32 GetElementFormatSize(ElementFormat format)
+{
+    switch (format)
+    {
+    case ElementFormat::R8_U_Int:
+    case ElementFormat::R8_S_Int:
+    case ElementFormat::R8_U_Norm:
+    case ElementFormat::R8_S_Norm:
+        return 1;
+    case ElementFormat::R16_U_Int:
+    case ElementFormat::R16_S_Int:
+    case ElementFormat::R16_U_Norm:
+    case ElementFormat::R16_S_Norm:
+    case ElementFormat::R16_Float:
+        return 2;
+    case ElementFormat::R32_U_Int:
+    case ElementFormat::R32_S_Int:
+    case ElementFormat::R32_Float:
+        return 4;
+    case ElementFormat::R8G8_U_Int:
+    case ElementFormat::R8G8_S_Int:
+    case ElementFormat::R8G8_U_Norm:
+    case ElementFormat::R8G8_S_Norm:
+        return 2 * 1;
+    case ElementFormat::R16G16_U_Int:
+    case ElementFormat::R16G16_S_Int:
+    case ElementFormat::R16G16_U_Norm:
+    case ElementFormat::R16G16_S_Norm:
+    case ElementFormat::R16G16_Float:
+        return 2 * 2;
+    case ElementFormat::R32G32_U_Int:
+    case ElementFormat::R32G32_S_Int:
+    case ElementFormat::R32G32_Float:
+        return 2 * 4;
+    case ElementFormat::R32G32B32_U_Int:
+    case ElementFormat::R32G32B32_S_Int:
+    case ElementFormat::R32G32B32_Float:
+        return 3 * 4;
+    case ElementFormat::R8G8B8A8_U_Int:
+    case ElementFormat::R8G8B8A8_S_Int:
+    case ElementFormat::R8G8B8A8_U_Norm:
+    case ElementFormat::R8G8B8A8_U_Norm_sRGB:
+    case ElementFormat::R8G8B8A8_S_Norm:
+    case ElementFormat::B8G8R8A8_U_Norm:
+    case ElementFormat::B8G8R8A8_U_Norm_sRGB:
+        return 4 * 1;
+    case ElementFormat::R16G16B16A16_U_Int:
+    case ElementFormat::R16G16B16A16_S_Int:
+    case ElementFormat::R16G16B16A16_U_Norm:
+    case ElementFormat::R16G16B16A16_S_Norm:
+    case ElementFormat::R16G16B16A16_Float:
+        return 4 * 2;
+    case ElementFormat::R32G32B32A32_U_Int:
+    case ElementFormat::R32G32B32A32_S_Int:
+    case ElementFormat::R32G32B32A32_Float:
+        return 4 * 4;
+    case ElementFormat::B5G6R5_U_norm:
+    case ElementFormat::B5G5R5A1_U_Norm:
+    case ElementFormat::B4G4R4A4_U_Norm:
+        return 2;
+    case ElementFormat::R11G11B10_Float:
+    case ElementFormat::R10G10B10A2_U_Norm:
+    case ElementFormat::R10G10B10A2_U_Int:
+    case ElementFormat::R9G9B9E5_Float:
+        return 4;
+    case ElementFormat::BC1_U_Norm:
+    case ElementFormat::BC1_U_Norm_sRGB:
+    case ElementFormat::BC4_U_Norm:
+    case ElementFormat::BC4_S_Norm:
+        return 8;
+    case ElementFormat::BC2_U_Norm:
+    case ElementFormat::BC2_U_Norm_sRGB:
+    case ElementFormat::BC3_U_Norm:
+    case ElementFormat::BC3_U_Norm_sRGB:
+    case ElementFormat::BC5_U_Norm:
+    case ElementFormat::BC5_S_Norm:
+    case ElementFormat::BC6H_U_Float:
+    case ElementFormat::BC6H_S_Float:
+    case ElementFormat::BC7_U_Norm:
+    case ElementFormat::BC7_U_Norm_sRGB:
+        return 16;
+    }
+
+    return 0;
+}
 
 } // namespace Renderer
 } // namespace NFE

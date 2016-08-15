@@ -70,9 +70,9 @@ bool RenderTargetsScene::CreateBasicResources()
 
     VertexLayoutElement vertexLayoutElements[] =
     {
-        { ElementFormat::Float_32, 3,  0, 0, false, 0 }, // position
-        { ElementFormat::Float_32, 2, 12, 0, false, 0 }, // tex-coords
-        { ElementFormat::Float_32, 4, 20, 0, false, 0 }, // color
+        { ElementFormat::R32G32B32_Float,       0, 0, false, 0 }, // position
+        { ElementFormat::R32G32_Float,          12, 0, false, 0 }, // tex-coords
+        { ElementFormat::R32G32B32A32_Float,    20, 0, false, 0 }, // color
     };
 
     VertexLayoutDesc vertexLayoutDesc;
@@ -170,8 +170,7 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
     texDesc.samplesNum = withMSAA ? MULTISAMPLE_SAMPLES : 1;
 
     // render target texture
-    texDesc.format = ElementFormat::Uint_8_norm;
-    texDesc.texelSize = 4;
+    texDesc.format = ElementFormat::R8G8B8A8_U_Norm;
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET | NFE_RENDERER_TEXTURE_BIND_SHADER;
     texDesc.debugName = "RenderTargetsScene::mRenderTargetTexture[0]";
     mRenderTargetTextures[0].reset(mRendererDevice->CreateTexture(texDesc));
@@ -436,8 +435,14 @@ void RenderTargetsScene::Draw(float dt)
         mCommandBuffer->SetRenderTarget(mRenderTarget.get());
         mCommandBuffer->SetShaderProgram(mRTShaderProgram.get());
 
-        float color[] = { 0.2f, 0.3f, 0.4f, 1.0f };
-        mCommandBuffer->Clear(NFE_CLEAR_FLAG_DEPTH | NFE_CLEAR_FLAG_TARGET, color, 1.0f);
+        const Float4 colors[] =
+        {
+            Float4(0.2f, 0.3f, 0.4f, 1.0f),
+            Float4(0.8f, 0.8f, 0.8f, 1.0f),
+        };
+        mCommandBuffer->Clear(ClearFlagsColor | ClearFlagsDepth, GetCurrentSubSceneNumber() > 1 ? 2 : 1,
+                              nullptr, colors, 1.0f);
+
         mCommandBuffer->DrawIndexed(2 * 6 * 3);
     }
 
@@ -445,8 +450,8 @@ void RenderTargetsScene::Draw(float dt)
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
 
-    float color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-    mCommandBuffer->Clear(NFE_CLEAR_FLAG_TARGET, color, 1.0f);
+    const Float4 color(0.0f, 0.0f, 0.0f, 1.0f);
+    mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
 
     // show primary render target texture with simple effect (blur)
     {

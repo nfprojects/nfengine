@@ -30,7 +30,7 @@ protected:
      * @param format, texelSize Texture format
      * @see EndFrame
      */
-    void BeginTestFrame(int width, int height, ElementFormat format, int texelSize);
+    void BeginTestFrame(int width, int height, ElementFormat format);
 
     /**
      * Finish rendering into test render target texture and return rendered pixels buffer.

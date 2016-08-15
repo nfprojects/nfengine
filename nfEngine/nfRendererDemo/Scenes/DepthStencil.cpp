@@ -60,9 +60,9 @@ bool DepthStencilScene::CreateBasicResources(bool withStencil)
 
     VertexLayoutElement vertexLayoutElements[] =
     {
-        { ElementFormat::Float_32, 3,  0, 0, false, 0 }, // position
-        { ElementFormat::Float_32, 2, 12, 0, false, 0 }, // tex-coords
-        { ElementFormat::Float_32, 4, 20, 0, false, 0 }, // color
+        { ElementFormat::R32G32B32_Float,       0, 0, false, 0 }, // position
+        { ElementFormat::R32G32_Float,          12, 0, false, 0 }, // tex-coords
+        { ElementFormat::R32G32B32A32_Float,    20, 0, false, 0 }, // color
     };
 
     VertexLayoutDesc vertexLayoutDesc;
@@ -319,8 +319,7 @@ void DepthStencilScene::Draw(float dt)
     if (GetCurrentSubSceneNumber() >= 2)
     {
         // clear depth-stencil buffer
-        mCommandBuffer->Clear(NFE_CLEAR_FLAG_DEPTH | NFE_CLEAR_FLAG_STENCIL,
-                              nullptr, 1.0f, 0);
+        mCommandBuffer->Clear(ClearFlagsDepth | ClearFlagsStencil, 0, nullptr, nullptr, 1.0f, 0);
 
         // set reflected matrix
         cbuffer.viewMatrix = modelMatrix * reflectionMatrix * viewMatrix * projMatrix;
@@ -331,8 +330,8 @@ void DepthStencilScene::Draw(float dt)
         mCommandBuffer->SetStencilRef(0x01);
         mCommandBuffer->DrawIndexed(2 * 3, -1, 2 * 6 * 3);
 
-        float color[] = { 0.7f, 0.8f, 0.9f, 1.0f };
-        mCommandBuffer->Clear(NFE_CLEAR_FLAG_TARGET, color);
+        const Float4 color(0.7f, 0.8f, 0.9f, 1.0f);
+        mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
 
         // Step 2: draw cube reflection
         mCommandBuffer->SetPipelineState(mReflectionPipelineState.get());
@@ -341,10 +340,10 @@ void DepthStencilScene::Draw(float dt)
     else
     {
         // clear depth buffer
-        mCommandBuffer->Clear(NFE_CLEAR_FLAG_DEPTH, nullptr, 1.0f);
+        mCommandBuffer->Clear(ClearFlagsDepth, 0, nullptr, nullptr, 1.0f);
 
-        float color[] = { 0.7f, 0.8f, 0.9f, 1.0f };
-        mCommandBuffer->Clear(NFE_CLEAR_FLAG_TARGET, color);
+        const Float4 color(0.7f, 0.8f, 0.9f, 1.0f);
+        mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
     }
 
     // set "normal" matrix
