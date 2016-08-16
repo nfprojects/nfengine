@@ -18,7 +18,6 @@ namespace {
 namespace NFE {
 namespace Common {
 
-HANDLE FileAsync::mCallbackThread = ::CreateThread(0, 0, CallbackDispatcher, nullptr, 0, 0);
 
 // This structure is declared in source file because of platform specific data
 struct FileAsync::AsyncDataStruct
@@ -67,6 +66,11 @@ FileAsync::FileAsync(FileAsync&& other)
 FileAsync::~FileAsync()
 {
     Close();
+}
+
+bool FileAsync::Init()
+{
+    return true;
 }
 
 bool FileAsync::IsOpened() const
@@ -190,9 +194,9 @@ bool FileAsync::Read(void* data, size_t size, uint64 offset, void* dataPtr)
         allocStruct->bytesToProcess = static_cast<DWORD>(size);
 
     // Enqueue ReadFileEx call in our callback thread
-    if (0 == ::QueueUserAPC(&ReadProc, mCallbackThread, reinterpret_cast<ULONG_PTR>(allocStruct)))
+    if (!AsyncQueueManager::GetInstance().EnqueueJob(&ReadProc, allocStruct))
     {
-        LOG_ERROR("QueueUserAPC() failed for read operation: %s", GetLastErrorString().c_str());
+        LOG_ERROR("Failed to enqueue read job in AsyncQueueManager: %s", GetLastErrorString().c_str());
         SafeErasePtr(allocStruct);
         return false;
     }
@@ -229,9 +233,9 @@ bool FileAsync::Write(void* data, size_t size, uint64 offset, void* dataPtr)
         allocStruct->bytesToProcess = static_cast<DWORD>(size);
 
     // Enqueue WriteFileEx call in our callback thread
-    if (0 == ::QueueUserAPC(&WriteProc, mCallbackThread, reinterpret_cast<ULONG_PTR>(allocStruct)))
+    if (!AsyncQueueManager::GetInstance().EnqueueJob(&WriteProc, allocStruct))
     {
-        LOG_ERROR("QueueUserAPC() failed for write operation: %s", GetLastErrorString().c_str());
+        LOG_ERROR("Failed to enqueue write job in AsyncQueueManager: %s", GetLastErrorString().c_str());
         SafeErasePtr(allocStruct);
         return false;
     }
@@ -277,17 +281,6 @@ void FileAsync::FinishedOperationsHandler(DWORD dwErrorCode, DWORD dwNumberOfByt
     instance->SafeErasePtr(allocStruct);
 }
 
-DWORD FileAsync::CallbackDispatcher(LPVOID param)
-{
-    UNUSED(param);
-
-    // Drift in the abyss of idleness waiting for the moment to become useful
-    while (true)
-        ::SleepEx(INFINITE, true);
-
-    return 0;
-}
-
 void FileAsync::ReadProc(ULONG_PTR arg)
 {
     using OverlappedCmpRtn = LPOVERLAPPED_COMPLETION_ROUTINE;
@@ -299,7 +292,7 @@ void FileAsync::ReadProc(ULONG_PTR arg)
                           &allocStruct->overlapped,
                           reinterpret_cast<OverlappedCmpRtn>(&FileAsync::FinishedOperationsHandler)))
     {
-        LOG_ERROR("FileAsync failed to enqueue read operation: %s", GetLastErrorString().c_str());
+        LOG_ERROR("FileAsync::ReadProc failed to enqueue read operation: %s", GetLastErrorString().c_str());
         allocStruct->instancePtr->SafeErasePtr(allocStruct);
     }
 }
@@ -315,7 +308,7 @@ void FileAsync::WriteProc(ULONG_PTR arg)
                           &allocStruct->overlapped,
                           reinterpret_cast<OverlappedCmpRtn>(&FileAsync::FinishedOperationsHandler)))
     {
-        LOG_ERROR("FileAsync failed to enqueue write operation: %s", GetLastErrorString().c_str());
+        LOG_ERROR("FileAsync::WriteProc failed to enqueue write operation: %s", GetLastErrorString().c_str());
         allocStruct->instancePtr->SafeErasePtr(allocStruct);
     }
 }
