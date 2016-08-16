@@ -13,6 +13,8 @@
 #include <Windows.h>
 
 #elif defined(__LINUX__) | defined(__linux__)
+#include <linux/aio_abi.h>  /* for AIO types and constants */
+#include <poll.h>
 #include <functional>
 #include <thread>
 #include <unordered_map>
@@ -36,8 +38,8 @@ public:
      */
     static AsyncQueueManager& GetInstance();
 
-    AsyncQueueManager(const AsyncQueueManager&) = delete;
-    AsyncQueueManager(AsyncQueueManager&&) = delete;
+    NFE_MAKE_NONMOVEABLE(AsyncQueueManager)
+    NFE_MAKE_NONCOPYABLE(AsyncQueueManager)
 
 #if defined(WIN32)
 private:
@@ -55,13 +57,14 @@ public:
      * @param callback Funtion to be called upon end of jobs execution
      * @param data     Pointer to the user-defined data that will be passed to the callback function.
      */
-    bool EnqueueJob(JobProcedure& callback, void* data);
+    bool EnqueueJob(JobProcedure callback, void* data);
 
 #elif defined(__LINUX__) | defined(__linux__)
 private:
-    using JobProcedure = std::function<void(void*)>;
+    using JobProcedure = std::function<void(int eventsNo, int eventFD)>;
     std::thread mQueueThread;
-    int mEventPollFD;
+    aio_context_t mCtx;
+    std::vector<::pollfd> mDescriptors;
     std::unordered_map<int, JobProcedure> mFdMap;
 
     static void JobQueue();
@@ -77,12 +80,14 @@ public:
      *
      * @remarks Calling this method second time with the same @FD will cease watching given descriptor.
      */
-    bool EnqueueJob(JobProcedure& callback, int FD, void* data);
+    bool EnqueueJob(JobProcedure callback, int FD, void* data);
+    bool DequeueJob(int FD, void* data);
 
     /**
      * Get queue thread to enqueue asynchronous jobs on.
      */
-    const std::thread& GetQueueThread() const;
+    //const std::thread& GetQueueThread() const;
+    aio_context_t GetQueueContext() const;
 #endif
 };
 
