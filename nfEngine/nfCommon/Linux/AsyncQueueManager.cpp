@@ -16,15 +16,6 @@
 #define NUM_EVENTS 128
 
 namespace {
-#ifndef __NR_eventfd
-#if defined(__x86_64__)
-#define __NR_eventfd 284
-#elif defined(__i386__)
-#define __NR_eventfd 323
-#else
-#error Cannot detect your OS architecture!
-#endif
-#endif
 
 NFE_INLINE long io_setup(unsigned nr_reqs, aio_context_t *ctx)
 {
@@ -62,8 +53,11 @@ AsyncQueueManager::~AsyncQueueManager()
     }
 
     // Clear events map
-    mFdMap.clear();
-    mDescriptors.clear();
+    {
+        std::lock_guard<std::mutex> guard(mMapLock);
+        mFdMap.clear();
+        mDescriptors.clear();
+    }
 
     // Close context
     if (mCtx)
@@ -121,10 +115,23 @@ bool AsyncQueueManager::EnqueueJob(JobProcedure callback, int eventFD)
         return false;
     }
 
-    if (!mFdMap.count(eventFD)) // count() can return either 1 or 0
-        mDescriptors.push_back({eventFD, POLLIN, 0});
+    { // Just to enclose lock_guard
+        std::lock_guard<std::mutex> guard(mMapLock);
+        bool addToVector = true;
+        for (const auto &i : mDescriptors)
+        {
+            if (i.fd == eventFD)
+                addToVector = false;
+        }
 
-    mFdMap[eventFD] = callback;
+        if (addToVector)
+            mDescriptors.push_back({eventFD, POLLIN, 0});
+
+        mFdMap[eventFD] = callback;
+    }
+
+    if (!callback)
+        LOG_WARNING("Callback added for FD=%i is uncallable.");
 
     // We shoot mQuitEvent in order to poll for new jobs as well
     u_int64_t data = 0xFF;
@@ -141,12 +148,14 @@ bool AsyncQueueManager::DequeueJob(int eventFD)
         return false;
     }
 
-    if (mFdMap.erase(eventFD)) // erase(key) can return either 1 or 0
-    {
-        for (int i = 0; i < mDescriptors.size(); i++)
-            if (mDescriptors[i].fd == eventFD)
+    { // Just to enclose lock_guard
+        std::lock_guard<std::mutex> guard(mMapLock);
+        mFdMap.erase(eventFD);
+
+        for (auto &i : mDescriptors)
+            if (i.fd == eventFD)
             {
-                mDescriptors.erase(mDescriptors.begin() + i);
+                mDescriptors.erase(i);
                 break;
             }
     }
@@ -155,13 +164,12 @@ bool AsyncQueueManager::DequeueJob(int eventFD)
     u_int64_t data = 0xFF;
     ::write(mQuitEvent, &data, sizeof(data));
 
-
-
     return true;
 }
 
 void AsyncQueueManager::JobQueue()
 {
+    const int pollTimeout = 1000;
     int waitingEvents = 0;
     AsyncQueueManager* instance = &AsyncQueueManager::GetInstance();
 
@@ -171,7 +179,8 @@ void AsyncQueueManager::JobQueue()
             i.revents = 0;
 
         // Poll to check if there are any events we may be interested in
-        waitingEvents = ::poll(instance->mDescriptors.data(), instance->mDescriptors.size(), -1);
+        waitingEvents = ::poll(instance->mDescriptors.data(), instance->mDescriptors.size(), pollTimeout);
+
         if (waitingEvents < 0) // Error
         {
             LOG_ERROR("poll() for AsyncQueueManager failed: %s", strerror(errno));
@@ -183,15 +192,24 @@ void AsyncQueueManager::JobQueue()
         for (const auto&i : instance->mDescriptors)
             if (i.revents & POLLIN)
             {
+
                 if (i.fd == instance->mQuitEvent)
                 {
                     u_int64_t eval;
-                    printf("Caught mQuitEvent!\n");
                     ::read(i.fd, &eval, sizeof(eval));
                     break;
                 }
-                JobProcedure jobFunc = instance->mFdMap[i.fd];
-                jobFunc(waitingEvents, i.fd);
+                else if (instance->mFdMap.count(i.fd) > 0)
+                {
+
+                    std::unique_lock<std::mutex> guard(instance->mMapLock, std::defer_lock);
+                    auto jobFunc = instance->mFdMap[i.fd];
+                    guard.unlock();
+
+
+                    if (jobFunc)
+                        jobFunc(waitingEvents, i.fd);
+                }
             }
     }
 }
