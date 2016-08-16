@@ -26,6 +26,7 @@ private:
     std::atomic_bool mIsDestroyed;
     std::atomic_bool mIsInitialized;
     std::mutex mInitLock;
+    std::mutex mMapLock;
     ::aio_context_t mCtx;
     std::vector<::pollfd> mDescriptors;
     std::unordered_map<int, JobProcedure> mFdMap;
