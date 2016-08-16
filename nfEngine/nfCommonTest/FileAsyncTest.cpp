@@ -111,32 +111,37 @@ TEST_F(FileAsyncTest, Constructors)
 
 TEST_F(FileAsyncTest, Read)
 {
+printf("test1\n");
     NFE::uint8 bufferActual[bufferSize];
     for (int i = 0; i < bufferSize; i++)
         bufferActual[i] = 0;
-
+printf("test2\n");
     // Save values buffer to the file
     File testFile(mPath, AccessMode::Write, true);
+printf("test3\n");
     ASSERT_TRUE(testFile.IsOpened());
     ASSERT_EQ(bufferSize, testFile.Write(mBufferExpected, bufferSize));
     testFile.Close();
-
+printf("test4\n");
     FileAsync testAsyncFile(mPath, AccessMode::Read, TestCallback);
+    ASSERT_TRUE(testAsyncFile.Init());
     ASSERT_TRUE(testAsyncFile.IsOpened());
 
     // Reset latch ptr
     Latch readLatch;
     operationsLatch = &readLatch;
-
+printf("test5\n");
     // Enqueue read jobs
     size_t readSize = bufferSize / operationsUpperLimit;
     for (int i = 0; i < operationsUpperLimit; i++)
     {
+printf("test5.1 - %i\n", i);
         NFE::uint64 shift = i * readSize;
         ASSERT_TRUE(testAsyncFile.Read(bufferActual + shift, readSize, shift,
                                        reinterpret_cast<void*>(&shiftArray[i])));
+printf("test5.2 - %i\n", i);
     }
-
+printf("test6\n");
     // Make sure all threads finish (before timeout)
     ASSERT_TRUE(operationsLatch->Wait(timeLimitMiliseconds)) << "Expected ops["
         << static_cast<int>(operationsUpperLimit) << "]: " << expectedOperations << std::endl << "Actual ops["
@@ -154,21 +159,24 @@ TEST_F(FileAsyncTest, Read)
     // Close must be performed after all operations has been done.
     // Otherwise they'll be canceled.
     testAsyncFile.Close();
+printf("test7\n");
 }
 
 TEST_F(FileAsyncTest, Write)
 {
+printf("test1\n");
     NFE::uint8 bufferActual[bufferSize];
     for (int i = 0; i < bufferSize; i++)
         bufferActual[i] = 0;
 
     FileAsync testAsyncFile(mPath, AccessMode::Write, TestCallback, true);
+    ASSERT_TRUE(testAsyncFile.Init());
     ASSERT_TRUE(testAsyncFile.IsOpened());
 
     // Reset latch ptr
     Latch writeLatch;
     operationsLatch = &writeLatch;
-
+printf("test2\n");
     // Enqueue write jobs
     size_t writeSize = bufferSize / operationsUpperLimit;
     for (int i = 0; i < operationsUpperLimit; i++)
@@ -177,7 +185,7 @@ TEST_F(FileAsyncTest, Write)
         testAsyncFile.Write(mBufferExpected + shift, writeSize, shift,
                             reinterpret_cast<void*>(&shiftArray[i]));
     }
-
+printf("test3\n");
     // Make sure all threads finish (before timeout)
     ASSERT_TRUE(operationsLatch->Wait(timeLimitMiliseconds)) << "Expected ops["
         << static_cast<int>(operationsUpperLimit) << "]: " << expectedOperations << std::endl << "Actual ops["
@@ -200,6 +208,7 @@ TEST_F(FileAsyncTest, Write)
 
     // Check that data has been written successfully
     ASSERT_EQ(0, memcmp(mBufferExpected, bufferActual, bufferSize));
+printf("test4\n");
 }
 
 TEST_F(FileAsyncTest, OpenClose)
@@ -225,6 +234,7 @@ TEST_F(FileAsyncTest, OperationsOnClosed)
 {
     // Make sure file is opened after constructor
     FileAsync testAsyncFile(mPath, AccessMode::ReadWrite, TestCallback, true);
+    ASSERT_TRUE(testAsyncFile.Init());
     ASSERT_TRUE(testAsyncFile.IsOpened());
 
     // Make sure file is closed after Close() method
@@ -243,6 +253,7 @@ TEST_F(FileAsyncTest, InvalidOperations)
 
     // Open file for writing, then try to read
     FileAsync testAsyncFile(mPath, AccessMode::Write, TestCallback, true);
+    ASSERT_TRUE(testAsyncFile.Init());
     ASSERT_TRUE(testAsyncFile.IsOpened());
 
     ASSERT_FALSE(testAsyncFile.Read(buffer, bufferSize, 0, nullptr));
@@ -251,6 +262,7 @@ TEST_F(FileAsyncTest, InvalidOperations)
 
     // Reopen file for reading, then try to write
     testAsyncFile.Open(mPath, AccessMode::Read, true);
+    ASSERT_TRUE(testAsyncFile.Init());
     ASSERT_TRUE(testAsyncFile.IsOpened());
 
     ASSERT_FALSE(testAsyncFile.Write(buffer, bufferSize, 0, nullptr));

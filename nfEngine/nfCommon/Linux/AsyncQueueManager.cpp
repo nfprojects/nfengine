@@ -52,6 +52,7 @@ AsyncQueueManager::AsyncQueueManager()
 
 AsyncQueueManager::~AsyncQueueManager()
 {
+printf("calling destructor!!!!11\n");
     // Set destroy flag and shoot event, then wait for queue thread to decay
     if (mQueueThread.joinable())
     {
@@ -75,12 +76,18 @@ AsyncQueueManager::~AsyncQueueManager()
 
 AsyncQueueManager& AsyncQueueManager::GetInstance()
 {
+printf("GetInstance()\n");
     static AsyncQueueManager instance;
     if (!instance.mIsInitialized)
     {
+printf("isInit before lock\n");
         std::lock_guard<std::mutex> lock(instance.mInitLock);
+printf("isInit after lock, init = %i\n", instance.mIsInitialized.load());
         if (!instance.mIsInitialized)
+{
             instance.mIsInitialized = instance.Init();
+printf("isInit run Init()=%i\n", instance.mIsInitialized.load());
+}
     }
 
     return instance;
@@ -88,6 +95,7 @@ AsyncQueueManager& AsyncQueueManager::GetInstance()
 
 bool AsyncQueueManager::Init()
 {
+printf("Init 0/1\n");
     if (::io_setup(NUM_EVENTS, &mCtx) < 0)
     {
         LOG_ERROR("io_setup() failed for AsyncQueueManager[%u]: %s", errno, strerror(errno));
@@ -109,7 +117,7 @@ bool AsyncQueueManager::Init()
         LOG_ERROR("std::thread() failed for AsyncQueueManager");
         return false;
     }
-
+printf("Init 1/1\n");
     return true;
 }
 
@@ -128,8 +136,8 @@ bool AsyncQueueManager::EnqueueJob(JobProcedure callback, int eventFD)
 
     // We shoot mQuitEvent in order to poll for new jobs as well
     u_int64_t data = 0xFF;
-    //printf("EJ: writing data with size=%zu\n", sizeof(data));
-    /*printf("EJ: written=%zu\n", */::write(mQuitEvent, &data, sizeof(data));//);
+    printf("EJ: writing data with size=%zu\n", sizeof(data));
+    printf("EJ: written=%zu\n", ::write(mQuitEvent, &data, sizeof(data)));
 
     return true;
 }
@@ -154,7 +162,8 @@ bool AsyncQueueManager::DequeueJob(int eventFD)
 
 // We shoot mQuitEvent in order to stop polling for deleted jobs
     u_int64_t data = 0xFF;
-    ::write(mQuitEvent, &data, sizeof(data));
+    printf("DJ: writing data with size=%zu\n", sizeof(data));
+    printf("DJ: written=%zu\n", ::write(mQuitEvent, &data, sizeof(data)));
 
 
 
@@ -172,7 +181,7 @@ void AsyncQueueManager::JobQueue()
             i.revents = 0;
 
         // Poll to check if there are any events we may be interested in
-        waitingEvents = ::poll(instance->mDescriptors.data(), instance->mDescriptors.size(), -1);
+        waitingEvents = ::poll(instance->mDescriptors.data(), instance->mDescriptors.size(), 500);
         if (waitingEvents < 0) // Error
         {
             LOG_ERROR("poll() for AsyncQueueManager failed: %s", strerror(errno));
@@ -184,15 +193,18 @@ void AsyncQueueManager::JobQueue()
         for (const auto&i : instance->mDescriptors)
             if (i.revents & POLLIN)
             {
+printf("revents loop 0\n");
                 if (i.fd == instance->mQuitEvent)
                 {
                     u_int64_t eval;
-                    printf("Caught mQuitEvent!\n");
+                    printf("Caught mQuitEvent1!\n");
                     ::read(i.fd, &eval, sizeof(eval));
                     break;
                 }
+printf("Job procedure called2!\n");
                 JobProcedure jobFunc = instance->mFdMap[i.fd];
-                jobFunc(waitingEvents, i.fd);
+                if (jobFunc)
+                    jobFunc(waitingEvents, i.fd);
             }
     }
 }
