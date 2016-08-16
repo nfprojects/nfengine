@@ -122,6 +122,7 @@ TEST_F(FileAsyncTest, Read)
     testFile.Close();
 
     FileAsync testAsyncFile(mPath, AccessMode::Read, TestCallback);
+    ASSERT_TRUE(testAsyncFile.Init());
     ASSERT_TRUE(testAsyncFile.IsOpened());
 
     // Reset latch ptr
@@ -163,6 +164,7 @@ TEST_F(FileAsyncTest, Write)
         bufferActual[i] = 0;
 
     FileAsync testAsyncFile(mPath, AccessMode::Write, TestCallback, true);
+    ASSERT_TRUE(testAsyncFile.Init());
     ASSERT_TRUE(testAsyncFile.IsOpened());
 
     // Reset latch ptr
@@ -225,6 +227,7 @@ TEST_F(FileAsyncTest, OperationsOnClosed)
 {
     // Make sure file is opened after constructor
     FileAsync testAsyncFile(mPath, AccessMode::ReadWrite, TestCallback, true);
+    ASSERT_TRUE(testAsyncFile.Init());
     ASSERT_TRUE(testAsyncFile.IsOpened());
 
     // Make sure file is closed after Close() method
@@ -243,6 +246,7 @@ TEST_F(FileAsyncTest, InvalidOperations)
 
     // Open file for writing, then try to read
     FileAsync testAsyncFile(mPath, AccessMode::Write, TestCallback, true);
+    ASSERT_TRUE(testAsyncFile.Init());
     ASSERT_TRUE(testAsyncFile.IsOpened());
 
     ASSERT_FALSE(testAsyncFile.Read(buffer, bufferSize, 0, nullptr));
@@ -251,6 +255,7 @@ TEST_F(FileAsyncTest, InvalidOperations)
 
     // Reopen file for reading, then try to write
     testAsyncFile.Open(mPath, AccessMode::Read, true);
+    ASSERT_TRUE(testAsyncFile.Init());
     ASSERT_TRUE(testAsyncFile.IsOpened());
 
     ASSERT_FALSE(testAsyncFile.Write(buffer, bufferSize, 0, nullptr));

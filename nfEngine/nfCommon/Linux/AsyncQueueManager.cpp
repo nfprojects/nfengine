@@ -162,6 +162,7 @@ bool AsyncQueueManager::DequeueJob(int eventFD)
 
 void AsyncQueueManager::JobQueue()
 {
+    const int pollTimeout = 100;
     int waitingEvents = 0;
     AsyncQueueManager* instance = &AsyncQueueManager::GetInstance();
 
@@ -171,7 +172,7 @@ void AsyncQueueManager::JobQueue()
             i.revents = 0;
 
         // Poll to check if there are any events we may be interested in
-        waitingEvents = ::poll(instance->mDescriptors.data(), instance->mDescriptors.size(), -1);
+        waitingEvents = ::poll(instance->mDescriptors.data(), instance->mDescriptors.size(), pollTimeout);
         if (waitingEvents < 0) // Error
         {
             LOG_ERROR("poll() for AsyncQueueManager failed: %s", strerror(errno));
@@ -186,12 +187,13 @@ void AsyncQueueManager::JobQueue()
                 if (i.fd == instance->mQuitEvent)
                 {
                     u_int64_t eval;
-                    printf("Caught mQuitEvent!\n");
                     ::read(i.fd, &eval, sizeof(eval));
                     break;
                 }
+
                 JobProcedure jobFunc = instance->mFdMap[i.fd];
-                jobFunc(waitingEvents, i.fd);
+                if (jobFunc)
+                    jobFunc(waitingEvents, i.fd);
             }
     }
 }

@@ -37,7 +37,7 @@ bool FileAsync::SafeErasePtr(AsyncDataStruct* ptrToErase)
     bool eraseResult = 1 == mSystemPtrs.erase(ptrToErase);
     if (ptrToErase)
         delete ptrToErase;
-    return  eraseResult;
+    return eraseResult;
 }
 
 bool FileAsync::SafeInsertPtr(AsyncDataStruct* ptrToInsert)
