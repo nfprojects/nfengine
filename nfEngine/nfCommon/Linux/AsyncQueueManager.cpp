@@ -8,9 +8,45 @@
 #include "../AsyncQueueManager.hpp"
 #include "../Logger.hpp"
 
-#include <sys/epoll.h>
+#include <unistd.h>
+#include <sys/syscall.h>
+#include <algorithm>
 
 #define NUM_EVENTS 128
+
+namespace {
+#ifndef __NR_eventfd
+#if defined(__x86_64__)
+#define __NR_eventfd 284
+#elif defined(__i386__)
+#define __NR_eventfd 323
+#else
+#error Cannot detect your OS architecture!
+#endif
+#endif
+
+NFE_INLINE long io_setup(unsigned nr_reqs, aio_context_t *ctx)
+{
+    return syscall(__NR_io_setup, nr_reqs, ctx);
+}
+
+NFE_INLINE int io_destroy(aio_context_t ctx)
+{
+    return syscall(__NR_io_destroy, ctx);
+}
+
+bool setupIo(::aio_context_t& ctx)
+{
+    auto res = ::io_setup(NUM_EVENTS, &ctx);
+    if (res < 0)
+    {
+        LOG_ERROR("FileAsync failed to setup aio_context[%u]: %s", errno, strerror(errno));
+        return false;
+    }
+    return true;
+}
+
+} // namespace
 
 
 namespace NFE {
@@ -19,8 +55,8 @@ namespace Common {
 AsyncQueueManager::AsyncQueueManager()
     : mIsDestroyed(false)
 {
+    ::setupIo(mCtx);
     mQueueThread = std::thread(AsyncQueueManager::JobQueue);
-    mEventPollFD = epoll_create1(0);
 }
 
 AsyncQueueManager::~AsyncQueueManager()
@@ -29,15 +65,12 @@ AsyncQueueManager::~AsyncQueueManager()
     mIsDestroyed = true;
     mQueueThread.join();
 
-    // Delete all epoll events
-    for (const auto &i : mFdMap)
-        ::epoll_ctl(mEventPollFD, EPOLL_CTL_DEL, i.first, nullptr);
-
     // Clear events map
     mFdMap.clear();
+    mDescriptors.clear();
 
-    // CLose epoll descriptor
-    ::close(mEventPollFD);
+    // Close context
+    ::io_destroy(mCtx);
 }
 
 AsyncQueueManager& AsyncQueueManager::GetInstance()
@@ -46,76 +79,62 @@ AsyncQueueManager& AsyncQueueManager::GetInstance()
     return instance;
 }
 
-bool AsyncQueueManager::EnqueueJob(JobProcedure& callback, int FD, void* data)
+bool AsyncQueueManager::EnqueueJob(JobProcedure callback, int eventFD)
 {
-    struct ::epoll_event event;
-    event.events = ::EPOLLIN;
-    event.data.fd = FD;
-    event.data.ptr = data;
-    int epollAction = EPOLL_CTL_ADD;
+    if (!mFdMap.count(eventFD)) // count() can return either 1 or 0
+        mDescriptors.push_back({eventFD, POLLIN, 0});
 
-    // If given FD is already watched, it will be removed
-    if (mFdMap.find(FD) != mFdMap.end())
-        epollAction = EPOLL_CTL_DEL;
+    mFdMap[eventFD] = callback;
+    return true;
+}
 
-    // Call epoll_ctl to add/remove descriptor
-    if (0 != ::epoll_ctl(mEventPollFD, epollAction, FD, &event))
+bool AsyncQueueManager::DequeueJob(int eventFD)
+{
+    if (mFdMap.erase(eventFD)) // erase(key) can return either 1 or 0
     {
-        LOG_ERROR("epoll_ctl() failed for AsyncQueueManager: %s", strerror(errno));
-        return false;
+        for (int i = 0; i < mDescriptors.size(); i++)
+            if (mDescriptors[i].fd == eventFD)
+            {
+                mDescriptors.erase(mDescriptors.begin() + i);
+                break;
+            }
     }
-
-    // If given FD was removed, remove it from mFdMap as well
-    if (auto it = mFdMap.find(FD) != mFdMap.end())
-        mFdMap.erase(it);
-    else // Else add it to the mFdMap
-        mFdMap[FD] = callback;
-
     return true;
 }
 
 void AsyncQueueManager::JobQueue()
 {
-    const int pollTimeout = 500;  // epoll_wait() timeout in milliseconds
-    ::epoll_event eventsPollBuffer[NUM_EVENTS];
+    const int pollTimeout = 500;  // poll() timeout in milliseconds
     int waitingEvents = 0;
     AsyncQueueManager* instance = &AsyncQueueManager::GetInstance();
 
     while (!instance->mIsDestroyed)
     {
+        for (auto &i : instance->mDescriptors)
+            i.revents = 0;
+
         // Poll to check if there are any events we may be interested in
-        waitingEvents = ::epoll_wait(instance->mEventPollFD, eventsPollBuffer, NUM_EVENTS, pollTimeout);
+        waitingEvents = ::poll(instance->mDescriptors.data(), instance->mDescriptors.size(), pollTimeout);
         if (waitingEvents < 0) // Error
         {
-            LOG_ERROR("epoll_wait() for AsyncQueueManager failed: %s", strerror(errno));
+            LOG_ERROR("poll() for AsyncQueueManager failed: %s", strerror(errno));
             break;
         }
         else if (waitingEvents == 0) // Timeout
             continue;
 
-        // If waitingEvents > 0, we should get completed events from completion queue
-        for (const auto& i : eventsPollBuffer)
-        {
-            // Check if the event has the right type
-            if (i.events & EPOLLIN)
+        for (const auto&i : instance->mDescriptors)
+            if (i.revents & POLLIN)
             {
-                // Check if it's one of the events, we look for
-                auto it = instance->mFdMap.find(i.data.fd);
-
-                // If so, call it's callback to further process events
-                if (it != instance->mFdMap.end())
-                {
-                    JobProcedure jobFunc = it->second;
-                    jobFunc(i.data.ptr);
-                }
+                JobProcedure jobFunc = instance->mFdMap[i.fd];
+                jobFunc(waitingEvents, i.fd);
             }
-        }
     }
 }
 
-const std::thread& AsyncQueueManager::GetQueueThread()
+aio_context_t AsyncQueueManager::GetQueueContext() const
 {
-    return mQueueThread;
+    return mCtx;
 }
 
 } // namespace Common
