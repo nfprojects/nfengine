@@ -65,6 +65,7 @@ ADD_DEFINITIONS("-Wall -Wpedantic -Wextra -Wno-sign-compare -Werror")
 
 # Warnings exceptions
 ADD_DEFINITIONS("-Wno-multichar")
+ADD_DEFINITIONS("-Wno-switch")
 
 ADD_DEFINITIONS(-DNFE_ROOT_DIRECTORY="${NFE_ROOT_DIRECTORY}/")
 ADD_DEFINITIONS(-DNFE_COMPILER="${CMAKE_CXX_COMPILER_ID}")
