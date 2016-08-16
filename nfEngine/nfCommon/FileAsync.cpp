@@ -34,10 +34,12 @@ struct FileAsync::AsyncDataStruct
 bool FileAsync::SafeErasePtr(AsyncDataStruct* ptrToErase)
 {
     std::lock_guard<std::mutex> guard(mSetAccessMutex);
+
     bool eraseResult = 1 == mSystemPtrs.erase(ptrToErase);
-    if (ptrToErase)
+    if (eraseResult)
         delete ptrToErase;
-    return  eraseResult;
+
+    return eraseResult;
 }
 
 bool FileAsync::SafeInsertPtr(AsyncDataStruct* ptrToInsert)
