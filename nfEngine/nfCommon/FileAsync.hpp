@@ -7,6 +7,7 @@
 #pragma once
 #include "nfCommon.hpp"
 #include "File.hpp"
+#include "AsyncQueueManager.hpp"
 #include <unordered_set>
 #include <functional>
 #include <mutex>
@@ -23,10 +24,8 @@
 #include <linux/aio_abi.h>  /* for AIO types and constants */
 #endif // defined(WIN32)
 
-namespace NFE
-{
-namespace Common
-{
+namespace NFE {
+namespace Common {
 
 /**
  * Class allowing access to a binary file in a buffered manner.
@@ -41,31 +40,27 @@ private:
 
 #if defined(WIN32)
     HANDLE mFile;
-    static HANDLE mCallbackThread; //< Remote thread used for APC callbacks
 
     // Handler for finished read/write calls
     static void CALLBACK FinishedOperationsHandler(DWORD dwErrorCode, DWORD dwNumberOfBytesTransfered,
                                                    LPOVERLAPPED lpOverlapped);
 
-    // Idle thread that is used purely to call callback functions
-    static DWORD CALLBACK CallbackDispatcher(LPVOID param);
-
-    // Simple ReadFileEx caller, so it can be delegated to mCallbackThread
+    // Simple ReadFileEx caller, so it can be delegated to AsyncQueueManager
     static void CALLBACK ReadProc(ULONG_PTR arg);
 
-    // Simple WriteFileEx caller, so it can be delegated to mCallbackThread
+    // Simple WriteFileEx caller, so it can be delegated to AsyncQueueManager
     static void CALLBACK WriteProc(ULONG_PTR arg);
 
 #elif defined(__LINUX__) | defined(__linux__)
     int mFD;
-    static int mEventFD;
-    static aio_context_t mCtx;
-    static std::thread mCallbackThread;
-    static bool mQuitThreadFlag;
+    //static int mEventFD;
+    aio_context_t mCtx;
+    //static std::thread mCallbackThread;
+    //static bool mQuitThreadFlag;
 
     // Handler for finished read/write calls
     static void FinishedOperationsHandler(int64_t result, void* allocStructData);
-    static void CallbackDispatcher();
+    static void JobDispatcher(void* dummyPtr);
 #else
 #error "Target system not supported!"
 #endif // defined(WIN32)
@@ -81,10 +76,11 @@ private:
 public:
     FileAsync();
     explicit FileAsync(CallbackFuncRef callback);
-    FileAsync(const std::string& path, AccessMode mode, CallbackFuncRef callback,
-              bool overwrite = false);
+    FileAsync(const std::string& path, AccessMode mode, CallbackFuncRef callback, bool overwrite = false);
     FileAsync(FileAsync&& other);
-    FileAsync(const FileAsync& other) = delete;
+
+    NFE_MAKE_NONCOPYABLE(FileAsync)
+
     ~FileAsync();
 
     /**

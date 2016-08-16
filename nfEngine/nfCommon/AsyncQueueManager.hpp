@@ -36,8 +36,8 @@ public:
      */
     static AsyncQueueManager& GetInstance();
 
-    AsyncQueueManager(const AsyncQueueManager&) = delete;
-    AsyncQueueManager(AsyncQueueManager&&) = delete;
+    NFE_MAKE_NONMOVEABLE(AsyncQueueManager)
+    NFE_MAKE_NONCOPYABLE(AsyncQueueManager)
 
 #if defined(WIN32)
 private:
@@ -55,7 +55,7 @@ public:
      * @param callback Funtion to be called upon end of jobs execution
      * @param data     Pointer to the user-defined data that will be passed to the callback function.
      */
-    bool EnqueueJob(JobProcedure& callback, void* data);
+    bool EnqueueJob(JobProcedure callback, void* data);
 
 #elif defined(__LINUX__) | defined(__linux__)
 private:

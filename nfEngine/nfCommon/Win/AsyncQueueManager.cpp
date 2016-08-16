@@ -33,7 +33,7 @@ AsyncQueueManager& AsyncQueueManager::GetInstance()
     return instance;
 }
 
-bool AsyncQueueManager::EnqueueJob(JobProcedure& callback, void* data)
+bool AsyncQueueManager::EnqueueJob(JobProcedure callback, void* data)
 {
     if (0 == ::QueueUserAPC(callback, mQueueThread, reinterpret_cast<ULONG_PTR>(data)))
     {

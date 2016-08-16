@@ -67,10 +67,10 @@ bool setupIo(::aio_context_t& ctx)
 namespace NFE {
 namespace Common {
 
-int FileAsync::mEventFD = ::eventfd(0);
-::aio_context_t FileAsync::mCtx = 0;
-std::thread FileAsync::mCallbackThread;
-bool FileAsync::mQuitThreadFlag = false;
+//int FileAsync::mEventFD = ::eventfd(0);
+//::aio_context_t FileAsync::mCtx = 0;
+//std::thread FileAsync::mCallbackThread;
+//bool FileAsync::mQuitThreadFlag = false;
 
 // This structure is declared in source file because of platform specific data
 struct FileAsync::AsyncDataStruct
@@ -92,17 +92,16 @@ FileAsync::FileAsync(CallbackFuncRef callbackFunc)
     , mCallback(callbackFunc)
 {
 
-    if(!mCallbackThread.joinable())
-    {
-        mQuitThreadFlag = false;
-        mCallbackThread = std::thread(&FileAsync::CallbackDispatcher);
-    }
+  //  if(!mCallbackThread.joinable())
+   // {
+   //     mQuitThreadFlag = false;
+   //     mCallbackThread = std::thread(&FileAsync::CallbackDispatcher);
+  //  }
 
-    if (!mEventFD)
-        mEventFD = ::eventfd(0);
+ //   if (!mEventFD)
+  //      mEventFD = ::eventfd(0);
 
-    if (!mCtx)
-        setupIo(mCtx);
+    setupIo(mCtx);
 }
 
 FileAsync::FileAsync(const std::string& path, AccessMode mode, CallbackFuncRef callbackFunc,
@@ -111,17 +110,16 @@ FileAsync::FileAsync(const std::string& path, AccessMode mode, CallbackFuncRef c
     , mMode(AccessMode::No)
     , mCallback(callbackFunc)
 {
-    if(!mCallbackThread.joinable())
-    {
-        mQuitThreadFlag = false;
-        mCallbackThread = std::thread(&FileAsync::CallbackDispatcher);
-    }
+  //  if(!mCallbackThread.joinable())
+  //  {
+  //      mQuitThreadFlag = false;
+  //      mCallbackThread = std::thread(&FileAsync::CallbackDispatcher);
+  //  }
 
-    if (!mEventFD)
-        mEventFD = ::eventfd(0);
+   // if (!mEventFD)
+   //     mEventFD = ::eventfd(0);
 
-    if (!mCtx)
-        setupIo(mCtx);
+    setupIo(mCtx);
 
     Open(path, mode, overwrite);
 }
@@ -132,15 +130,17 @@ FileAsync::FileAsync(FileAsync&& other)
 
     mFD = other.mFD;
     mMode = other.mMode;
+    mCtx = other.mCtx;
 
     other.mFD = INVALID_FD;
     other.mMode = AccessMode::No;
+    other.mCtx = 0;
 }
 
 FileAsync::~FileAsync()
 {
-    mQuitThreadFlag = true;
-    mCallbackThread.join();
+   // mQuitThreadFlag = true;
+ //   mCallbackThread.join();
     Close();
 }
 
@@ -188,6 +188,13 @@ bool FileAsync::Open(const std::string& path, AccessMode access, bool overwrite)
         return false;
     }
 
+    if (!AsyncQueueManager::GetInstance().EnqueueJob(&JobDispatcher, mFD, nullptr)
+    {
+        LOG_ERROR("Failed to add file '%s' to AsyncQueueManager queue: %s", path.c_str(), strerror(errno));
+        Close();
+        return false;
+    }
+    
     return true;
 }
 
@@ -245,7 +252,7 @@ bool FileAsync::Read(void* data, size_t size, uint64 offset, void* dataPtr)
     iocbPtr->aio_nbytes = size;
     iocbPtr->aio_offset = offset;
     iocbPtr->aio_flags = IOCB_FLAG_RESFD;
-    iocbPtr->aio_resfd = mEventFD;
+    //iocbPtr->aio_resfd = mEventFD;
     iocbPtr->aio_data = reinterpret_cast<uint64_t>(allocStruct);
 
     if (!SafeInsertPtr(allocStruct))
@@ -289,7 +296,7 @@ bool FileAsync::Write(void* data, size_t size, uint64 offset, void* dataPtr)
     iocbPtr->aio_nbytes = size;
     iocbPtr->aio_offset = offset;
     iocbPtr->aio_flags = IOCB_FLAG_RESFD;
-    iocbPtr->aio_resfd = mEventFD;
+    //iocbPtr->aio_resfd = mEventFD;
     iocbPtr->aio_data = reinterpret_cast<uint64_t>(allocStruct);
 
     if (!SafeInsertPtr(allocStruct))
@@ -346,61 +353,48 @@ void FileAsync::FinishedOperationsHandler(int64_t result, void* allocStructData)
     instance->SafeErasePtr(allocStruct);
 }
 
-void FileAsync::CallbackDispatcher()
+void FileAsync::JobDispatcher(void* dummyPtr)
 {
-    const int pollTimeout = 500; // in milliseconds
+    UNUSED(dummyPtr);
     ::io_event eventsPollBuffer[NUM_EVENTS];
-    ::pollfd pollDescriptor;
-    int waitingEvents = 0, readEvents = 0;
+    int waitingEvents = 1, readEvents = 0;
     ::timespec eventsTime;
     eventsTime.tv_sec = 0;
-    eventsTime.tv_nsec = pollTimeout * 1000; // in nanoseconds
+    eventsTime.tv_nsec = 5000; // in nanoseconds
 
-    while (!FileAsync::mQuitThreadFlag)
+    // Read events
+    if (mCtx)
+        readEvents = ::io_getevents(mCtx, 1, waitingEvents, eventsPollBuffer, &eventsTime);
+    else
+        break;
+
+    if (readEvents < 0)
     {
-        pollDescriptor = {mEventFD, POLLIN, 0};
-        waitingEvents = ::poll(&pollDescriptor, 1, pollTimeout);
-        if (waitingEvents < 0)
-        {
-            LOG_ERROR("poll() for FileAsync failed: %s", strerror(errno));
-            break;
-        }
-        else if (waitingEvents == 0) // Timeout
-            continue;
-
-        // Read events
         if (mCtx)
-            readEvents = ::io_getevents(mCtx, 1, waitingEvents, eventsPollBuffer, &eventsTime);
-        else
-            break;
-
-        if (readEvents < 0)
-        {
-            if (mCtx)
-                LOG_ERROR("io_getevents() for FileAsync failed: %s", strerror(errno));
-            break;
-        }
-        else if (readEvents == 0)
-        {
-            // This should not happen
-            u_int64_t eval = 0;
-            LOG_WARNING("io_getevents() for FileAsync returned 0");
-            ::read(mEventFD, &eval, sizeof(eval));
-            continue;
-        }
-
-        // Process events from the received buffer
-        ::io_event* loopLimit = eventsPollBuffer + (readEvents * sizeof(::io_event));
-        size_t loopStep = sizeof(::io_event);
-
-        for (::io_event* event = eventsPollBuffer; event < loopLimit; event += loopStep)
-        {
-            ::iocb* ioPtr = reinterpret_cast<::iocb*>(event->obj);
-            if (ioPtr)
-                if (ioPtr->aio_lio_opcode == IOCB_CMD_PWRITE || ioPtr->aio_lio_opcode == IOCB_CMD_PREAD)
-                    FileAsync::FinishedOperationsHandler(event->res, reinterpret_cast<void*>(event->data));
-        }
+            LOG_ERROR("io_getevents() for FileAsync failed: %s", strerror(errno));
+        break;
     }
+    else if (readEvents == 0)
+    {
+        // This should not happen
+        u_int64_t eval = 0;
+        LOG_WARNING("io_getevents() for FileAsync returned 0");
+        //::read(mEventFD, &eval, sizeof(eval));
+        continue;
+    }
+
+    // Process events from the received buffer
+    ::io_event* loopLimit = eventsPollBuffer + (readEvents * sizeof(::io_event));
+    size_t loopStep = sizeof(::io_event);
+
+    for (::io_event* event = eventsPollBuffer; event < loopLimit; event += loopStep)
+    {
+        ::iocb* ioPtr = reinterpret_cast<::iocb*>(event->obj);
+        if (ioPtr)
+            if (ioPtr->aio_lio_opcode == IOCB_CMD_PWRITE || ioPtr->aio_lio_opcode == IOCB_CMD_PREAD)
+                FileAsync::FinishedOperationsHandler(event->res, reinterpret_cast<void*>(event->data));
+    }
+    
 }
 
 } // namespace Common
