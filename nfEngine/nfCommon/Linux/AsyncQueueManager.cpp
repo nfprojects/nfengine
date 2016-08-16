@@ -96,7 +96,7 @@ bool AsyncQueueManager::Init()
     mDescriptors.push_back({mQuitEvent, POLLIN, 0});
 
     mQueueThread = std::thread(AsyncQueueManager::JobQueue);
-    if (!mQueueThread.joinable()
+    if (!mQueueThread.joinable())
     {
         LOG_ERROR("std::thread() failed for AsyncQueueManager");
         return false;
@@ -139,7 +139,7 @@ void AsyncQueueManager::JobQueue()
             i.revents = 0;
 
         // Poll to check if there are any events we may be interested in
-        waitingEvents = ::poll(instance->mDescriptors.data(), instance->mDescriptors.size(), -1);
+        waitingEvents = ::poll(instance->mDescriptors.data(), instance->mDescriptors.size(), 500);
         if (waitingEvents < 0) // Error
         {
             LOG_ERROR("poll() for AsyncQueueManager failed: %s", strerror(errno));
@@ -151,8 +151,11 @@ void AsyncQueueManager::JobQueue()
         for (const auto&i : instance->mDescriptors)
             if (i.revents & POLLIN)
             {
-                JobProcedure jobFunc = instance->mFdMap[i.fd];
-                jobFunc(waitingEvents, i.fd);
+                if (i.fd != instance->mQuitEvent)
+                {
+                    JobProcedure jobFunc = instance->mFdMap[i.fd];
+                    jobFunc(waitingEvents, i.fd);
+                }
             }
     }
 }
