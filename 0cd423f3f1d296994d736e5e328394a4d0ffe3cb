@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_67dd2bdf",
+        "filename": "nfEngine/Renderers/RendererInterface/CommandBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-16T08:00:24Z",
+      "side": 1,
+      "message": "cleared",
+      "range": {
+        "startLine": 136,
+        "startChar": 67,
+        "endLine": 136,
+        "endChar": 73
+      },
+      "revId": "0cd423f3f1d296994d736e5e328394a4d0ffe3cb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
