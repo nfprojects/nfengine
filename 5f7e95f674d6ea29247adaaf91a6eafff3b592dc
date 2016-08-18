@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_e73ed18a",
+        "filename": "nfEngine/nfCommon/AsyncQueueManager.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-18T18:17:32Z",
+      "side": 1,
+      "message": "private, std::atomic\u003cbool\u003e",
+      "revId": "5f7e95f674d6ea29247adaaf91a6eafff3b592dc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c743cd12",
+        "filename": "nfEngine/nfCommon/AsyncQueueManager.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-18T18:17:32Z",
+      "side": 1,
+      "message": "NFE_MAKE_NON_COPYABLE, NFE_MAKE_NON_MOVABLE",
+      "revId": "5f7e95f674d6ea29247adaaf91a6eafff3b592dc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a749e934",
+        "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-18T18:17:32Z",
+      "side": 1,
+      "message": "epoll_create1 can fail (return -1)",
+      "revId": "5f7e95f674d6ea29247adaaf91a6eafff3b592dc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8746e51f",
+        "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-18T18:17:32Z",
+      "side": 1,
+      "message": "It\u0027s quit big. Maybe 100?",
+      "revId": "5f7e95f674d6ea29247adaaf91a6eafff3b592dc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_4750ddd4",
+        "filename": "nfEngine/nfCommon/Win/AsyncQueueManager.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-18T18:17:32Z",
+      "side": 1,
+      "message": "check if not failed",
+      "revId": "5f7e95f674d6ea29247adaaf91a6eafff3b592dc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_275cb9ef",
+        "filename": "nfEngine/nfCommon/Win/AsyncQueueManager.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-18T18:17:32Z",
+      "side": 1,
+      "message": "check if not failed",
+      "revId": "5f7e95f674d6ea29247adaaf91a6eafff3b592dc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
