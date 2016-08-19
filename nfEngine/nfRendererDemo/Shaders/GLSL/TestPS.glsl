@@ -1,5 +1,5 @@
 #if USE_TEXTURE == 1
-layout (binding = 0) uniform sampler2D gTextureSampler;
+layout (set=0, binding = 0) uniform sampler2D gTextureSampler;
 #endif
 
 layout (location = 0) in VertexShaderOutput
