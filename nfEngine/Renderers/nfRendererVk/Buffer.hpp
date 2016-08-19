@@ -21,6 +21,7 @@ class Buffer : public IBuffer
 
     VkBuffer mBuffer;
     VkDeviceMemory mBufferMemory;
+    VkDeviceSize mBufferSize;
 
 public:
     Buffer();
