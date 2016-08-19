@@ -36,6 +36,7 @@
     <ClCompile Include="PipelineState.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="ResourceBinding.cpp" />
+    <ClCompile Include="RingBuffer.cpp" />
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -73,6 +74,7 @@
     <ClInclude Include="PipelineState.hpp" />
     <ClInclude Include="RenderTarget.hpp" />
     <ClInclude Include="ResourceBinding.hpp" />
+    <ClInclude Include="RingBuffer.hpp" />
     <ClInclude Include="Sampler.hpp" />
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="Texture.hpp" />
