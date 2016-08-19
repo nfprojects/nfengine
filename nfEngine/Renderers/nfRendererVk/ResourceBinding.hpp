@@ -19,6 +19,7 @@ namespace Renderer {
 class ResourceBindingSet : public IResourceBindingSet
 {
     friend class ResourceBindingInstance;
+    friend class ResourceBindingLayout;
     friend class CommandBuffer;
 
     std::vector<ResourceBindingDesc> mBindings;
@@ -34,6 +35,7 @@ class ResourceBindingLayout : public IResourceBindingLayout
     friend class PipelineState;
 
     VkPipelineLayout mPipelineLayout;
+    VkDescriptorSetLayout mDescriptorLayout;
 
 public:
     ResourceBindingLayout();
