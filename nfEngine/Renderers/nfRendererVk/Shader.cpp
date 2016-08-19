@@ -14,8 +14,11 @@
 #include <glslang/SPIRV/GlslangToSpv.h>
 #include <glslang/SPIRV/disassemble.h>
 
+
 namespace NFE {
 namespace Renderer {
+
+EShMessages gShaderMessages = static_cast<EShMessages>(EShMsgDefault);
 
 namespace {
 
@@ -129,20 +132,15 @@ const std::string SHADER_HEADER_TAIL = "\0";
 
 
 Shader::Shader()
-    : mType(ShaderType::Unknown)
-    , mShader(VK_NULL_HANDLE)
-{}
+{
+}
 
 Shader::~Shader()
 {
-    if (mShader != VK_NULL_HANDLE)
-        vkDestroyShaderModule(gDevice->GetDevice(), mShader, nullptr);
 }
 
 bool Shader::Init(const ShaderDesc& desc)
 {
-    mType = desc.type;
-
     std::vector<char> str;
     size_t shaderSize = 0;
     const char* code = nullptr;
@@ -214,41 +212,31 @@ bool Shader::Init(const ShaderDesc& desc)
 
     // TODO we might want to enable includes, so this includer is useless for later on
     glslang::TShader::ForbidInclude includer;
-    EShMessages msg = static_cast<EShMessages>(EShMsgDefault);
-    if (!mShaderGlslang->parse(&DEFAULT_RESOURCE, DEFAULT_VERSION, ENoProfile, false, false, msg, includer))
+    if (!mShaderGlslang->parse(&DEFAULT_RESOURCE, DEFAULT_VERSION, ENoProfile, false, false,
+                               gShaderMessages, includer))
     {
         LOG_ERROR("Failed to parse shader file %s:\n%s", desc.path, mShaderGlslang->getInfoLog());
         return false;
     }
 
-    // create temporary TProgram to extract an intermediate SPIR-V
-    mProgramGlslang.reset(new (std::nothrow) glslang::TProgram());
-    mProgramGlslang->addShader(mShaderGlslang.get());
-    if (!mProgramGlslang->link(msg))
+    // Just for disassembly, generate spv code for this one shader
+    std::unique_ptr<glslang::TProgram> program(new (std::nothrow) glslang::TProgram());
+    program->addShader(mShaderGlslang.get());
+    if (!program->link(gShaderMessages))
     {
-        LOG_ERROR("Failed to pre-link shader stage:\n%s", mProgramGlslang->getInfoLog());
+        LOG_ERROR("Failed to pre-link shader stage:\n%s", program->getInfoLog());
         return false;
     }
 
-    glslang::TIntermediate* progInt = mProgramGlslang->getIntermediate(lang);
+    glslang::TIntermediate* progInt = program->getIntermediate(lang);
     if (!progInt)
     {
         LOG_ERROR("Unable to extract shader intermediate");
         return false;
     }
 
-    std::string errorMessages;
     spv::SpvBuildLogger spvLogger;
     glslang::GlslangToSpv(*progInt, mShaderSpv, &spvLogger);
-
-    // now we have spirv representation of shader, provide it to Vulkan
-    VkShaderModuleCreateInfo shaderInfo;
-    VK_ZERO_MEMORY(shaderInfo);
-    shaderInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-    shaderInfo.codeSize = mShaderSpv.size() * sizeof(uint32);
-    shaderInfo.pCode = mShaderSpv.data();
-    VkResult result = vkCreateShaderModule(gDevice->GetDevice(), &shaderInfo, nullptr, &mShader);
-    CHECK_VKRESULT(result, "Failed to create Shader module");
 
     LOG_SUCCESS("Shader '%s' compiled successfully", desc.path);
     return true;

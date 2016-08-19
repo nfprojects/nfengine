@@ -5,7 +5,7 @@ layout (location=2) in vec4 InColor;
 layout (row_major, binding=0) uniform TestCBuffer
 {
     mat4 viewMatrix;
-};
+} cbuffer;
 
 out gl_PerVertex
 {
@@ -28,7 +28,7 @@ void main()
 #endif
 
 #if USE_CBUFFER == 1
-    gl_Position = gl_Position * viewMatrix;
+    gl_Position = gl_Position * cbuffer.viewMatrix;
 #endif
 
     Output.TexCoord = InTexCoord;

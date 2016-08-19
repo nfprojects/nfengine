@@ -12,16 +12,15 @@
 namespace NFE {
 namespace Renderer {
 
+extern EShMessages gShaderMessages;
+
 class Shader : public IShader
 {
     friend class CommandBuffer;
     friend class ShaderProgram;
 
-    ShaderType mType;
     std::unique_ptr<glslang::TShader> mShaderGlslang;
-    std::unique_ptr<glslang::TProgram> mProgramGlslang;
     std::vector<uint32> mShaderSpv;
-    VkShaderModule mShader;
 
     bool GetIODesc();
 

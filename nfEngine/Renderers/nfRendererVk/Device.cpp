@@ -343,7 +343,7 @@ IShader* Device::CreateShader(const ShaderDesc& desc)
 
 IShaderProgram* Device::CreateShaderProgram(const ShaderProgramDesc& desc)
 {
-    return new (std::nothrow) ShaderProgram(desc);
+    return GenericCreateResource<ShaderProgram, ShaderProgramDesc>(desc);
 }
 
 IResourceBindingSet* Device::CreateResourceBindingSet(const ResourceBindingSetDesc& desc)
