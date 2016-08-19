@@ -56,7 +56,7 @@ Device::Device()
     , mPresentSemaphore(VK_NULL_HANDLE)
     , mPostPresentSemaphore(VK_NULL_HANDLE)
     , mPipelineCache(VK_NULL_HANDLE)
-    , mDebugEnable(false)
+    , mDebugEnable(true)
 {
 }
 
@@ -343,7 +343,7 @@ IShader* Device::CreateShader(const ShaderDesc& desc)
 
 IShaderProgram* Device::CreateShaderProgram(const ShaderProgramDesc& desc)
 {
-    return new (std::nothrow) ShaderProgram(desc);
+    return GenericCreateResource<ShaderProgram, ShaderProgramDesc>(desc);
 }
 
 IResourceBindingSet* Device::CreateResourceBindingSet(const ResourceBindingSetDesc& desc)
