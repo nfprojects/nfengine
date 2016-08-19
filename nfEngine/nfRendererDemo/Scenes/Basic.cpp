@@ -164,6 +164,7 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
     PipelineStateDesc pipelineStateDesc;
     pipelineStateDesc.vertexShader = mVertexShader.get();
     pipelineStateDesc.pixelShader = mPixelShader.get();
+    //pipelineStateDesc.rtFormats[0] = ElementFormat::B8G8R8A8_U_Norm_sRGB; // LKTODO LINUX TEMP
     pipelineStateDesc.blendState.independent = false;
     pipelineStateDesc.blendState.rtDescs[0].enable = true;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
@@ -322,6 +323,7 @@ bool BasicScene::CreateSubSceneIndexBuffer()
 // The triangle and the square should rotate
 bool BasicScene::CreateSubSceneConstantBuffer(BufferMode cbufferMode)
 {
+
     mGridSize = 1;
 
     if (!CreateSampler())
@@ -374,11 +376,11 @@ BasicScene::BasicScene()
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneVertexBuffer, this), "VertexBuffer");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneIndexBuffer, this), "IndexBuffer");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, BufferMode::Static), "ConstantBuffer (Static)");
-    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, BufferMode::Dynamic), "ConstantBuffer (Dynamic)");
+    /*RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, BufferMode::Dynamic), "ConstantBuffer (Dynamic)");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, BufferMode::Volatile), "ConstantBuffer (Volatile)");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, 1), "Texture");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, 5), "CBufferStress5");
-    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, 30), "CBufferStress30");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, 30), "CBufferStress30");*/
 }
 
 BasicScene::~BasicScene()
