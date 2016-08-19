@@ -164,6 +164,7 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
     PipelineStateDesc pipelineStateDesc;
     pipelineStateDesc.vertexShader = mVertexShader.get();
     pipelineStateDesc.pixelShader = mPixelShader.get();
+    //pipelineStateDesc.rtFormats[0] = ElementFormat::B8G8R8A8_U_Norm_sRGB; // LKTODO LINUX TEMP
     pipelineStateDesc.blendState.independent = false;
     pipelineStateDesc.blendState.rtDescs[0].enable = true;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
@@ -322,6 +323,7 @@ bool BasicScene::CreateSubSceneIndexBuffer()
 // The triangle and the square should rotate
 bool BasicScene::CreateSubSceneConstantBuffer(BufferMode cbufferMode)
 {
+
     mGridSize = 1;
 
     if (!CreateSampler())
@@ -433,7 +435,7 @@ bool BasicScene::OnInit(void* winHandle)
 
 void BasicScene::Draw(float dt)
 {
-    // reset bound resources and set them once again
+    // reset bound resources and set them once again    
     mCommandBuffer->Reset();
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
     mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);

@@ -93,12 +93,13 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 
         depthRef.attachment = curAtt;
         depthRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+        curAtt++;
     }
 
     VkSubpassDescription subpass;
     VK_ZERO_MEMORY(subpass);
     subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-    subpass.colorAttachmentCount = curAtt;
+    subpass.colorAttachmentCount = desc.numTargets;
     subpass.pColorAttachments = colorRefs;
     if (desc.depthBuffer)
         subpass.pDepthStencilAttachment = &depthRef;
