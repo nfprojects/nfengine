@@ -237,6 +237,12 @@ bool Shader::Init(const ShaderDesc& desc)
         return false;
     }
 
+    if (!mProgramGlslang->buildReflection())
+    {
+        LOG_ERROR("Failed to build shader's reflection");
+        return false;
+    }
+
     std::string errorMessages;
     spv::SpvBuildLogger spvLogger;
     glslang::GlslangToSpv(*progInt, mShaderSpv, &spvLogger);
@@ -278,8 +284,7 @@ bool Shader::GetIODesc()
 
 int Shader::GetResourceSlotByName(const char* name)
 {
-    UNUSED(name);
-    return -1;
+    return mProgramGlslang->getUniformIndex(name);
 }
 
 } // namespace Renderer
