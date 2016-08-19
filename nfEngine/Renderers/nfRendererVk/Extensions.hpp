@@ -123,6 +123,14 @@ extern PFN_vkDestroyPipeline vkDestroyPipeline;
 extern PFN_vkDestroyPipelineCache vkDestroyPipelineCache;
 extern PFN_vkDestroyPipelineLayout vkDestroyPipelineLayout;
 
+// Samplers
+extern PFN_vkCreateSampler vkCreateSampler;
+extern PFN_vkDestroySampler vkDestroySampler;
+
+// Descriptors
+extern PFN_vkCreateDescriptorSetLayout vkCreateDescriptorSetLayout;
+extern PFN_vkDestroyDescriptorSetLayout vkDestroyDescriptorSetLayout;
+
 /**
  * Initializes Vulkan Device extensions used by nfRendererVk.
  *
