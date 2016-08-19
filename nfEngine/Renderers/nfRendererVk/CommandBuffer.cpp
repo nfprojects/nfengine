@@ -97,8 +97,16 @@ void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat forma
 
 void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance)
 {
-    UNUSED(slot);
-    UNUSED(bindingSetInstance);
+    ResourceBindingInstance* rbi = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance);
+    if (rbi == nullptr)
+    {
+        LOG_ERROR("Incorrect resource binding instance provided");
+        return;
+    }
+
+    vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                            mResourceBindingLayout->mPipelineLayout, slot, 1,
+                            &rbi->mSet->mDescriptorSet, 0, 0);
 }
 
 void CommandBuffer::BindVolatileCBuffer(size_t slot, IBuffer* buffer)
