@@ -19,10 +19,12 @@ namespace Renderer {
 class ResourceBindingSet : public IResourceBindingSet
 {
     friend class ResourceBindingInstance;
+    friend class ResourceBindingLayout;
     friend class CommandBuffer;
 
     std::vector<ResourceBindingDesc> mBindings;
     ShaderType mShaderVisibility;
+    VkDescriptorSet mDescriptorSet;
 
 public:
     bool Init(const ResourceBindingSetDesc& desc) override;
@@ -34,6 +36,8 @@ class ResourceBindingLayout : public IResourceBindingLayout
     friend class PipelineState;
 
     VkPipelineLayout mPipelineLayout;
+    VkDescriptorSetLayout mDescriptorLayout;
+    VkDescriptorPool mDescriptorPool;
 
 public:
     ResourceBindingLayout();
@@ -45,6 +49,8 @@ public:
 class ResourceBindingInstance : public IResourceBindingInstance
 {
     friend class CommandBuffer;
+
+    ResourceBindingSet* mSet;
 
 public:
     bool Init(IResourceBindingSet* bindingSet) override;
