@@ -164,6 +164,7 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
     PipelineStateDesc pipelineStateDesc;
     pipelineStateDesc.vertexShader = mVertexShader.get();
     pipelineStateDesc.pixelShader = mPixelShader.get();
+    pipelineStateDesc.rtFormats[0] = ElementFormat::B8G8R8A8_U_Norm_sRGB; // LKTODO LINUX TEMP
     pipelineStateDesc.blendState.independent = false;
     pipelineStateDesc.blendState.rtDescs[0].enable = true;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
@@ -322,6 +323,7 @@ bool BasicScene::CreateSubSceneIndexBuffer()
 // The triangle and the square should rotate
 bool BasicScene::CreateSubSceneConstantBuffer(BufferMode cbufferMode)
 {
+
     mGridSize = 1;
 
     if (!CreateSampler())
@@ -374,11 +376,11 @@ BasicScene::BasicScene()
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneVertexBuffer, this), "VertexBuffer");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneIndexBuffer, this), "IndexBuffer");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, BufferMode::Static), "ConstantBuffer (Static)");
-    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, BufferMode::Dynamic), "ConstantBuffer (Dynamic)");
+    /*RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, BufferMode::Dynamic), "ConstantBuffer (Dynamic)");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, BufferMode::Volatile), "ConstantBuffer (Volatile)");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, 1), "Texture");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, 5), "CBufferStress5");
-    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, 30), "CBufferStress30");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, 30), "CBufferStress30");*/
 }
 
 BasicScene::~BasicScene()
@@ -433,7 +435,7 @@ bool BasicScene::OnInit(void* winHandle)
 
 void BasicScene::Draw(float dt)
 {
-    // reset bound resources and set them once again
+    // reset bound resources and set them once again    
     mCommandBuffer->Reset();
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
     mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -473,7 +475,7 @@ void BasicScene::Draw(float dt)
         mAngle -= NFE_MATH_2PI;
 
     // clear target
-    const Float4 color(0.0f, 0.0f, 0.0f, 1.0f);
+    const Float4 color(0.3f, 0.3f, 0.3f, 1.0f);
     mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
 
     const float scaleCoeff = 1.0f / static_cast<float>(mGridSize);

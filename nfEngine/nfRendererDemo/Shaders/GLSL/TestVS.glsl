@@ -2,10 +2,10 @@ layout (location=0) in vec3 InPos;
 layout (location=1) in vec2 InTexCoord;
 layout (location=2) in vec4 InColor;
 
-layout (row_major, binding=0) uniform TestCBuffer
+layout (row_major, set=0, binding=0) uniform TestCBuffer
 {
     mat4 viewMatrix;
-};
+} cbuffer;
 
 out gl_PerVertex
 {
@@ -28,9 +28,15 @@ void main()
 #endif
 
 #if USE_CBUFFER == 1
-    gl_Position = gl_Position * viewMatrix;
+    //gl_Position = gl_Position * cbuffer.viewMatrix;
 #endif
 
     Output.TexCoord = InTexCoord;
+
+#if USE_CBUFFER == 1
+    Output.Color = cbuffer.viewMatrix[0];
+    Output.Color[3] = 1.0f;
+#else
     Output.Color = InColor;
+#endif
 }
