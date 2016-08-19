@@ -17,10 +17,14 @@ class ShaderProgram : public IShaderProgram
 {
     typedef std::vector<VkPipelineShaderStageCreateInfo> PipelineShaderStages;
     PipelineShaderStages mShaderStages;
+    std::unique_ptr<glslang::TProgram> mProgramGlslang;
+
+    bool CreateShaderModule(const EShLanguage stage, VkShaderModule& outShader);
 
 public:
-    ShaderProgram(const ShaderProgramDesc& desc);
+    ShaderProgram();
 
+    bool Init(const ShaderProgramDesc& desc);
     const PipelineShaderStages& GetShaderStages() const;
     int GetResourceSlotByName(const char* name) override;
 };

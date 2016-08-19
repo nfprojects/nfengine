@@ -7,6 +7,7 @@
 #pragma once
 
 #include "../RendererInterface/Types.hpp"
+#include "../RendererInterface/ResourceBinding.hpp"
 
 #include "Defines.hpp"
 
@@ -24,11 +25,18 @@ VkBufferUsageFlags TranslateBufferTypeToVkBufferUsage(BufferType type);
 VkCompareOp TranslateCompareFuncToVkCompareOp(CompareFunc func);
 VkCullModeFlags TranslateCullModeToVkCullMode(CullMode mode);
 VkFormat TranslateDepthFormatToVkFormat(DepthBufferFormat format);
+VkDescriptorType TranslateDynamicResourceTypeToVkDescriptorType(ShaderResourceType type);
 VkFormat TranslateElementFormatToVkFormat(ElementFormat format);
 VkPolygonMode TranslateFillModeToVkPolygonMode(FillMode mode);
 VkIndexType TranslateIndexBufferFormatToVkIndexType(IndexBufferFormat format);
+VkFilter TranslateMagFilterToVkFilter(TextureMagFilter filter);
+VkFilter TranslateMinFilterToVkFilter(TextureMinFilter filter);
+VkSamplerMipmapMode TranslateMinFilterToVkSamplerMipmapMode(TextureMinFilter filter);
 VkPrimitiveTopology TranslatePrimitiveTypeToVkTopology(PrimitiveType type);
+VkDescriptorType TranslateShaderResourceTypeToVkDescriptorType(ShaderResourceType type);
+VkShaderStageFlags TranslateShaderTypeToVkShaderStageFlags(ShaderType type);
 VkStencilOp TranslateStencilOpToVkStencilOp(StencilOp op);
+VkSamplerAddressMode TranslateWrapModeToVkSamplerAddressMode(TextureWrapMode mode);
 
 } // namespace Renderer
 } // namespace NFE
