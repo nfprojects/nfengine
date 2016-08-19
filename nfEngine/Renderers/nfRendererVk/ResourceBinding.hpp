@@ -11,6 +11,7 @@
 #include "PipelineState.hpp"
 
 #include <vector>
+#include <map>
 
 
 namespace NFE {
@@ -19,12 +20,17 @@ namespace Renderer {
 class ResourceBindingSet : public IResourceBindingSet
 {
     friend class ResourceBindingInstance;
+    friend class ResourceBindingLayout;
     friend class CommandBuffer;
 
-    std::vector<ResourceBindingDesc> mBindings;
-    ShaderType mShaderVisibility;
+    VkDescriptorSet mDescriptorSet;
+    VkDescriptorSetLayout mDescriptorLayout;
+    std::map<VkDescriptorType, uint32> mDescriptorCounter;
 
 public:
+    ResourceBindingSet();
+    ~ResourceBindingSet();
+
     bool Init(const ResourceBindingSetDesc& desc) override;
 };
 
@@ -34,6 +40,7 @@ class ResourceBindingLayout : public IResourceBindingLayout
     friend class PipelineState;
 
     VkPipelineLayout mPipelineLayout;
+    VkDescriptorPool mDescriptorPool;
 
 public:
     ResourceBindingLayout();
@@ -45,6 +52,8 @@ public:
 class ResourceBindingInstance : public IResourceBindingInstance
 {
     friend class CommandBuffer;
+
+    ResourceBindingSet* mSet;
 
 public:
     bool Init(IResourceBindingSet* bindingSet) override;

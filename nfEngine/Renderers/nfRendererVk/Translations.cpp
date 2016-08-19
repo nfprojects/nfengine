@@ -137,6 +137,15 @@ VkFormat TranslateDepthFormatToVkFormat(DepthBufferFormat format)
     }
 }
 
+VkDescriptorType TranslateDynamicResourceTypeToVkDescriptorType(ShaderResourceType type)
+{
+    switch (type)
+    {
+    case ShaderResourceType::CBuffer: return VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+    default: return VK_DESCRIPTOR_TYPE_MAX_ENUM;
+    }
+}
+
 VkFormat TranslateElementFormatToVkFormat(ElementFormat format)
 {
     switch (format)
@@ -240,6 +249,44 @@ VkIndexType TranslateIndexBufferFormatToVkIndexType(IndexBufferFormat format)
     }
 }
 
+VkFilter TranslateMagFilterToVkFilter(TextureMagFilter filter)
+{
+    switch (filter)
+    {
+    case TextureMagFilter::Linear: return VK_FILTER_LINEAR;
+    case TextureMagFilter::Nearest: return VK_FILTER_NEAREST;
+    default: return VK_FILTER_MAX_ENUM;
+    }
+}
+
+VkFilter TranslateMinFilterToVkFilter(TextureMinFilter filter)
+{
+    switch (filter)
+    {
+    case TextureMinFilter::LinearMipmapLinear:
+    case TextureMinFilter::LinearMipmapNearest:
+        return VK_FILTER_LINEAR;
+    case TextureMinFilter::NearestMipmapLinear:
+    case TextureMinFilter::NearestMipmapNearest:
+        return VK_FILTER_NEAREST;
+    default: return VK_FILTER_MAX_ENUM;
+    }
+}
+
+VkSamplerMipmapMode TranslateMinFilterToVkSamplerMipmapMode(TextureMinFilter filter)
+{
+    switch (filter)
+    {
+    case TextureMinFilter::LinearMipmapLinear:
+    case TextureMinFilter::NearestMipmapLinear:
+        return VK_SAMPLER_MIPMAP_MODE_LINEAR;
+    case TextureMinFilter::LinearMipmapNearest:
+    case TextureMinFilter::NearestMipmapNearest:
+        return VK_SAMPLER_MIPMAP_MODE_NEAREST;
+    default: return VK_SAMPLER_MIPMAP_MODE_MAX_ENUM;
+    }
+}
+
 VkPrimitiveTopology TranslatePrimitiveTypeToVkTopology(PrimitiveType type)
 {
     switch (type)
@@ -254,9 +301,20 @@ VkPrimitiveTopology TranslatePrimitiveTypeToVkTopology(PrimitiveType type)
     }
 }
 
+VkDescriptorType TranslateShaderResourceTypeToVkDescriptorType(ShaderResourceType type)
+{
+    switch (type)
+    {
+    case ShaderResourceType::CBuffer: return VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    case ShaderResourceType::Texture: return VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+    case ShaderResourceType::Sampler: return VK_DESCRIPTOR_TYPE_SAMPLER;
+    default: return VK_DESCRIPTOR_TYPE_MAX_ENUM;
+    }
+}
+
 VkShaderStageFlagBits TranslateShaderTypeToVkShaderStage(ShaderType type)
 {
-    switch(type)
+    switch (type)
     {
     case ShaderType::Vertex: return VK_SHADER_STAGE_VERTEX_BIT;
     case ShaderType::Hull: return VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
@@ -281,6 +339,18 @@ VkStencilOp TranslateStencilOpToVkStencilOp(StencilOp op)
     case StencilOp::DecrementWrap: return VK_STENCIL_OP_DECREMENT_AND_WRAP;
     case StencilOp::Invert: return VK_STENCIL_OP_INVERT;
     default: return VK_STENCIL_OP_MAX_ENUM;
+    }
+}
+
+VkSamplerAddressMode TranslateWrapModeToVkSamplerAddressMode(TextureWrapMode mode)
+{
+    switch (mode)
+    {
+    case TextureWrapMode::Border: return VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
+    case TextureWrapMode::Clamp: return VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    case TextureWrapMode::Mirror: return VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
+    case TextureWrapMode::Repeat: return VK_SAMPLER_ADDRESS_MODE_REPEAT;
+    default: return VK_SAMPLER_ADDRESS_MODE_MAX_ENUM;
     }
 }
 
