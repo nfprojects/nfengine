@@ -23,6 +23,7 @@
 #include "nfCommon/Logger.hpp"
 
 #include <algorithm>
+#include <thread>
 
 using namespace NFE::Renderer;
 
@@ -211,6 +212,7 @@ public:
 
         while (!IsClosed())
         {
+            std::this_thread::sleep_for(std::chrono::seconds(5));
             float dt = static_cast<float>(timer.Stop());
             timer.Start();
 
