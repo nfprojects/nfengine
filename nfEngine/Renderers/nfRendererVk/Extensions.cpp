@@ -140,6 +140,20 @@ PFN_vkDestroyPipeline vkDestroyPipeline = VK_NULL_HANDLE;
 PFN_vkDestroyPipelineCache vkDestroyPipelineCache = VK_NULL_HANDLE;
 PFN_vkDestroyPipelineLayout vkDestroyPipelineLayout = VK_NULL_HANDLE;
 
+// Samplers
+PFN_vkCreateSampler vkCreateSampler = VK_NULL_HANDLE;
+PFN_vkDestroySampler vkDestroySampler = VK_NULL_HANDLE;
+
+// Descriptors
+PFN_vkAllocateDescriptorSets vkAllocateDescriptorSets = VK_NULL_HANDLE;
+PFN_vkCreateDescriptorPool vkCreateDescriptorPool = VK_NULL_HANDLE;
+PFN_vkCreateDescriptorSetLayout vkCreateDescriptorSetLayout = VK_NULL_HANDLE;
+PFN_vkDestroyDescriptorPool vkDestroyDescriptorPool = VK_NULL_HANDLE;
+PFN_vkDestroyDescriptorSetLayout vkDestroyDescriptorSetLayout = VK_NULL_HANDLE;
+PFN_vkResetDescriptorPool vkResetDescriptorPool = VK_NULL_HANDLE;
+PFN_vkUpdateDescriptorSets vkUpdateDescriptorSets = VK_NULL_HANDLE;
+
+
 bool nfvkDeviceExtensionsInit(VkDevice device)
 {
     bool allExtensionsAvailable = true;
@@ -219,6 +233,19 @@ bool nfvkDeviceExtensionsInit(VkDevice device)
     VK_GET_DEVICEPROC(device, vkDestroyPipeline);
     VK_GET_DEVICEPROC(device, vkDestroyPipelineCache);
     VK_GET_DEVICEPROC(device, vkDestroyPipelineLayout);
+
+    // Samplers
+    VK_GET_DEVICEPROC(device, vkCreateSampler);
+    VK_GET_DEVICEPROC(device, vkDestroySampler);
+
+    // Descriptors
+    VK_GET_DEVICEPROC(device, vkAllocateDescriptorSets);
+    VK_GET_DEVICEPROC(device, vkCreateDescriptorPool);
+    VK_GET_DEVICEPROC(device, vkCreateDescriptorSetLayout);
+    VK_GET_DEVICEPROC(device, vkDestroyDescriptorPool);
+    VK_GET_DEVICEPROC(device, vkDestroyDescriptorSetLayout);
+    VK_GET_DEVICEPROC(device, vkResetDescriptorPool);
+    VK_GET_DEVICEPROC(device, vkUpdateDescriptorSets);
 
     return allExtensionsAvailable;
 }
