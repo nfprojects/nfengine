@@ -211,7 +211,7 @@ void Logger::Log(LogType type, const char* srcFile, int line, const char* str, .
     for (const auto& backend : mBackends())
     {
         if (backend.second->IsEnabled())
-            backend.second->Log(type, srcFile, line, formattedStr, logTime);
+            backend.second->Log(type, srcFile + GetPathPrefixLen(), line, formattedStr, logTime);
     }
 
     // If it's a fatal log, exit the engine

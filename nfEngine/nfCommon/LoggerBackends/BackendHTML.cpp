@@ -129,10 +129,8 @@ void LoggerBackendHTML::Log(LogType type, const char* srcFile, int line, const c
     // string format for source file and line number information
     const char* format = R"(%s<td class="time">[%.4f]</td><td class="message">%s%s<a href="file:///%s">%s</a>:%i%s)";
 
-
-    size_t pathOffset = Logger::GetInstance()->GetPathPrefixLen();
     int len = snprintf(mBuffer.data(), mBuffer.size(), format,
-                       str0, timeElapsed, str, str1, srcFile, srcFile + pathOffset, line, str2);
+                       str0, timeElapsed, str, str1, srcFile, srcFile, line, str2);
     if (len < 0)
     {
         LOG_ERROR("snprintf() failed");
@@ -146,7 +144,7 @@ void LoggerBackendHTML::Log(LogType type, const char* srcFile, int line, const c
             mBuffer.resize(2 * mBuffer.size());
 
         snprintf(mBuffer.data(), mBuffer.size(), format,
-                 str0, timeElapsed, str, str1, srcFile, srcFile + pathOffset, line, str2);
+                 str0, timeElapsed, str, str1, srcFile, srcFile, line, str2);
     }
 
     mFile.Write(mBuffer.data(), outputStrSize);
