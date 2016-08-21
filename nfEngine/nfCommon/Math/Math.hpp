@@ -84,21 +84,23 @@ typedef Rect<float> Rectf;
 
 
 /**
- * Union providing easy "float" bit manipulations.
+ * Union providing easy manipulations on 32-bit values;
  */
-union FloatInt
+union Bits32
 {
     float f;
-    unsigned int u;
+    uint32 ui;
+    int32 si;
 };
 
 /**
- * Union providing easy "double" bit manipulations.
+ * Union providing easy manipulations on 64-bit values;
  */
-union DoubleInt
+union Bits64
 {
     double f;
-    uint64 u;
+    uint64 ui;
+    int64 si;
 };
 
 /**
@@ -120,15 +122,41 @@ NFE_INLINE T Max(const T a, const T b)
 }
 
 /**
+ * Absolute value.
+ */
+template<typename T>
+NFE_INLINE T Abs(const T x)
+{
+    if (x < static_cast<T>(0))
+        return -x;
+
+    return x;
+}
+
+/**
  * Returns x with sign of y
  */
 NFE_INLINE float CopySignF(const float x, const float y)
 {
-    FloatInt xInt, yInt;
+    Bits32 xInt, yInt;
     xInt.f = x;
     yInt.f = y;
-    xInt.u = (0x7fffffff & xInt.u) | (0x80000000 & yInt.u);
+    xInt.ui = (0x7fffffff & xInt.ui) | (0x80000000 & yInt.ui);
     return xInt.f;
+}
+
+/**
+ * Clamp to range.
+ */
+template<typename T>
+NFE_INLINE T Clamp(const T x, const T min, const T max)
+{
+    if (x > max)
+        return max;
+    else if (x < min)
+        return min;
+    else
+        return x;
 }
 
 /**
@@ -155,9 +183,9 @@ NFE_INLINE float Quantize(float x, float step)
  */
 NFE_INLINE bool IsNaN(float a)
 {
-    FloatInt num;
+    Bits32 num;
     num.f = a;
-    return ((num.u & 0x7F800000) == 0x7F800000) && ((num.u & 0x7FFFFF) != 0);
+    return ((num.ui & 0x7F800000) == 0x7F800000) && ((num.ui & 0x7FFFFF) != 0);
 }
 
 /**
@@ -165,9 +193,9 @@ NFE_INLINE bool IsNaN(float a)
  */
 NFE_INLINE bool IsInfinity(float a)
 {
-    FloatInt num;
+    Bits32 num;
     num.f = a;
-    return (num.u & 0x7FFFFFFF) == 0x7F800000;
+    return (num.ui & 0x7FFFFFFF) == 0x7F800000;
 }
 
 /**

@@ -217,6 +217,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MathGeometryTest.cpp" />
     <ClCompile Include="MathMatrixTest.cpp" />
+    <ClCompile Include="MathTest.cpp" />
     <ClCompile Include="MathVectorTest.cpp" />
     <ClCompile Include="MD5Test.cpp" />
     <ClCompile Include="MemoryTest.cpp" />
