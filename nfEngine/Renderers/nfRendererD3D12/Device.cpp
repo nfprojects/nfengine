@@ -22,10 +22,6 @@
 #include "nfCommon/Logger.hpp"
 
 
-#if defined(_DEBUG)
-#define D3D_DEBUGGING
-#endif
-
 namespace NFE {
 namespace Renderer {
 
@@ -55,6 +51,7 @@ Device::Device()
     , mDsvHeapAllocator(HeapAllocator::Type::Dsv, 16)
     , mAdapterInUse(-1)
     , mFenceValue(1)
+    , mDebugLayerEnabled(false)
 {
 }
 
@@ -62,8 +59,8 @@ bool Device::Init(const DeviceInitParams* params)
 {
     HRESULT hr;
 
-#ifdef D3D_DEBUGGING
     // Enable the D3D12 debug layer
+    if (params->debugLayer)
     {
         D3DPtr<ID3D12Debug> debugController;
         if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
@@ -72,7 +69,6 @@ bool Device::Init(const DeviceInitParams* params)
             debugController->EnableDebugLayer();
         }
     }
-#endif
 
     hr = D3D_CALL_CHECK(CreateDXGIFactory1(IID_PPV_ARGS(&mDXGIFactory)));
     if (FAILED(hr))
@@ -140,34 +136,53 @@ bool Device::Init(const DeviceInitParams* params)
     }
     else
     {
-        LOG_ERROR("Failed to obtained Direct3D feature level");
+        LOG_ERROR("Failed to obtain Direct3D feature level");
         mFeatureLevel = D3D_FEATURE_LEVEL_9_1;
     }
 
-#ifdef D3D_DEBUGGING
-    D3DPtr<ID3D12InfoQueue> infoQueue;
-    if (SUCCEEDED(mDevice->QueryInterface(IID_PPV_ARGS(&infoQueue))))
+    // print device info
     {
-        D3D12_MESSAGE_ID messagesToHide[] =
+        DeviceInfo deviceInfo;
+        LOG_INFO("GPU name: %s", deviceInfo.description.c_str());
+        LOG_INFO("GPU info: %s", deviceInfo.misc.c_str());
+
+        std::string features;
+        for (size_t i = 0; i < deviceInfo.features.size(); ++i)
         {
-            // this warning makes debugging with VS Graphics Debugger impossible
-            D3D12_MESSAGE_ID_MAP_INVALID_NULLRANGE,
-
-            // performance warning - let's ignore it for now
-            D3D12_MESSAGE_ID_CLEARRENDERTARGETVIEW_MISMATCHINGCLEARVALUE,
-        };
-
-        D3D12_INFO_QUEUE_FILTER filter;
-        memset(&filter, 0, sizeof(filter));
-        filter.DenyList.NumIDs = _countof(messagesToHide);
-        filter.DenyList.pIDList = messagesToHide;
-        infoQueue->AddStorageFilterEntries(&filter);
-
-        infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
-        infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
-        infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE);
+            if (i > 0)
+                features += ", ";
+            features += deviceInfo.features[i];
+        }
+        LOG_INFO("GPU features: %s", features.c_str());
     }
-#endif
+
+    if (params->debugLayer)
+    {
+        mDebugLayerEnabled = true;
+
+        D3DPtr<ID3D12InfoQueue> infoQueue;
+        if (SUCCEEDED(mDevice->QueryInterface(IID_PPV_ARGS(&infoQueue))))
+        {
+            D3D12_MESSAGE_ID messagesToHide[] =
+            {
+                // this warning makes debugging with VS Graphics Debugger impossible
+                D3D12_MESSAGE_ID_MAP_INVALID_NULLRANGE,
+
+                // performance warning - let's ignore it for now
+                D3D12_MESSAGE_ID_CLEARRENDERTARGETVIEW_MISMATCHINGCLEARVALUE,
+            };
+
+            D3D12_INFO_QUEUE_FILTER filter;
+            memset(&filter, 0, sizeof(filter));
+            filter.DenyList.NumIDs = _countof(messagesToHide);
+            filter.DenyList.pIDList = messagesToHide;
+            infoQueue->AddStorageFilterEntries(&filter);
+
+            infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
+            infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
+            infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE);
+        }
+    }
 
     /// create command queue
     D3D12_COMMAND_QUEUE_DESC queueDesc = {};
@@ -217,6 +232,12 @@ bool Device::Init(const DeviceInitParams* params)
 
 Device::~Device()
 {
+    WaitForGPU();
+
+    mDXGIFactory.reset();
+    mAdapters.clear();
+    mDevice.reset();
+
     ::CloseHandle(mFenceEvent);
 }
 

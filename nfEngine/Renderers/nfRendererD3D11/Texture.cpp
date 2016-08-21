@@ -162,15 +162,18 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
         return false;
 
 
-#ifdef D3D_DEBUGGING
-    /// set debug name
-    std::string textureName = "NFE::Renderer::Texture \"";
-    if (desc.debugName)
-        textureName += desc.debugName;
-    textureName += '"';
-    mTexture2D->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(textureName.length()),
-                               textureName.c_str());
-#endif // D3D_DEBUGGING
+    std::string textureName;
+    if (gDevice->IsDebugLayerEnabled() && desc.debugName)
+    {
+        /// set debug name
+        textureName = "NFE::Renderer::Texture \"";
+        if (desc.debugName)
+            textureName += desc.debugName;
+        textureName += '"';
+        D3D_CALL_CHECK(mTexture2D->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(textureName.length()),
+                                                  textureName.c_str()));
+    }
+
 
 
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER)
@@ -203,11 +206,12 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
             return false;
         }
 
-#ifdef D3D_DEBUGGING
-        // set debug name
-        mSRV->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(textureName.length()),
-                             textureName.c_str());
-#endif // D3D_DEBUGGING
+        if (gDevice->IsDebugLayerEnabled() && desc.debugName)
+        {
+            // set debug name
+            D3D_CALL_CHECK(mSRV->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(textureName.length()),
+                                                textureName.c_str()));
+        }
     }
 
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
@@ -233,11 +237,12 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
             return false;
         }
 
-#ifdef D3D_DEBUGGING
-        // set debug name
-        mDSV->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(textureName.length()),
-                             textureName.c_str());
-#endif // D3D_DEBUGGING
+        if (gDevice->IsDebugLayerEnabled() && desc.debugName)
+        {
+            // set debug name
+            D3D_CALL_CHECK(mDSV->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(textureName.length()),
+                                                textureName.c_str()));
+        }
     }
 
     mWidth = desc.width;

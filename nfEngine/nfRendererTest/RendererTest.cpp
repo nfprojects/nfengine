@@ -17,6 +17,7 @@ void RendererTest::SetUpTestCase()
 
     DeviceInitParams params;
     params.preferredCardId = gPreferedCardId;
+    params.debugLayer = gUseDebugLayer;
     gRendererDevice = proc(&params);
     ASSERT_TRUE(gRendererDevice != nullptr);
 

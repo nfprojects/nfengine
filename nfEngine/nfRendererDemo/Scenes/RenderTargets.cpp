@@ -453,6 +453,9 @@ void RenderTargetsScene::Draw(float dt)
                               nullptr, colors, 1.0f);
 
         mCommandBuffer->DrawIndexed(2 * 6 * 3);
+
+        // unbind render target
+        mCommandBuffer->SetRenderTarget(nullptr);
     }
 
     // begin rendering to the window

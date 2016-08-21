@@ -6,7 +6,8 @@
 
 #pragma once
 
-/// Shaders path prefix and extension, used to load appropriate shader source file
+/// renderer configuration
+extern bool gUseDebugLayer;
 extern int gPreferedCardId;
 extern std::string gBackend;
 extern std::string gShaderPathPrefix;
