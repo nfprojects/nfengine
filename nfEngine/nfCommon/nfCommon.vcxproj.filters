@@ -278,6 +278,9 @@
     <ClInclude Include="Image\ImageDDS.hpp">
       <Filter>Source Files\Image</Filter>
     </ClInclude>
+    <ClInclude Include="Math\Conversions.hpp">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -465,6 +468,9 @@
     </ClCompile>
     <ClCompile Include="Image\ImageType.cpp">
       <Filter>Source Files\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Conversions.cpp">
+      <Filter>Source Files\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

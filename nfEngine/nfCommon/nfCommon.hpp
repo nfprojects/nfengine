@@ -126,4 +126,25 @@ typedef signed short int16;
 typedef unsigned char uint8;
 typedef signed char int8;
 
+
+// verify types sizes
+static_assert(sizeof(uint8) == 1, "'uint8' type must have 1 byte");
+static_assert(sizeof(int8) == 1, "'int8' type must have 1 byte");
+static_assert(sizeof(uint16) == 2, "'uint16' type must have 2 bytes");
+static_assert(sizeof(int16) == 2, "'int16' type must have 2 bytes");
+static_assert(sizeof(float) == 4, "'float' type must have 4 bytes");
+static_assert(sizeof(uint32) == 4, "'uint32' type must have 4 bytes");
+static_assert(sizeof(int32) == 4, "'int32' type must have 4 bytes");
+static_assert(sizeof(double) == 8, "'double' type must have 8 bytes");
+static_assert(sizeof(uint64) == 8, "'uint64' type must have 8 bytes");
+static_assert(sizeof(int64) == 8, "'int64' type must have 8 bytes");
+
+
+// return size of an array
+template<class T, size_t N>
+size_t ArraySize(const T(&)[N])
+{
+    return N;
+}
+
 } // namespace NFE
