@@ -1,6 +1,8 @@
 #include "PCH.hpp"
 #include "Backends.hpp"
 #include "nfCommon/FileSystem.hpp"
+#include "nfCommon/Logger.hpp"
+
 
 const std::string BACKEND_ARG_NAME = "--renderer";
 const std::string CARD_ID_ARG_NAME = "--card_id";
@@ -13,57 +15,88 @@ int main(int argc, char* argv[])
     std::string execDir = NFE::Common::FileSystem::GetParentDir(execPath);
     NFE::Common::FileSystem::ChangeDirectory(execDir + "/../../..");
 
-    // find a backend argument - GTest arguments might confuse our simple arg check
-    // which was used in nfRendererDemo
-    std::string selectedBackend;
-    for (int i = 0; i < argc; ++i)
+    gPreferedCardId = -1;
+    gDebugLevel = 0;
+#ifdef _DEBUG
+    gDebugLevel = 1;
+#endif
+
+    // TODO use some helper class instead of manual checks
+    for (int i = 1; i < argc; ++i)
     {
-        if ((BACKEND_ARG_NAME.compare(argv[i]) == 0) && (i + 1 < argc))
+        if (strcmp(argv[i], "--renderer") == 0 || strcmp(argv[i], "-r") == 0)
         {
-            selectedBackend = argv[i+1];
-            break;
+            if (i + 1 < argc)
+            {
+                gBackend = argv[++i];
+            }
+            else
+            {
+                LOG_ERROR("Missing command line parameter");
+                return 1;
+            }
         }
-        else if ((CARD_ID_ARG_NAME.compare(argv[i]) == 0) && (i + 1 < argc))
+        else if (strcmp(argv[i], "--card") == 0 || strcmp(argv[i], "-c") == 0)
         {
-            gPreferedCardId = atoi(argv[i + 1]);
-            break;
+            if (i + 1 < argc)
+            {
+                gPreferedCardId = atoi(argv[++i]);
+            }
+            else
+            {
+                LOG_ERROR("Missing command line parameter");
+                return 1;
+            }
+        }
+        else if (strcmp(argv[i], "--debug") == 0 || strcmp(argv[i], "-d") == 0)
+        {
+            if (i + 1 < argc)
+            {
+                gDebugLevel = atoi(argv[++i]);
+            }
+            else
+            {
+                LOG_ERROR("Missing command line parameter");
+                return 1;
+            }
+        }
+        else
+        {
+            LOG_ERROR("Unknown command line parameter: %s", argv[i]);
+            return 1;
         }
     }
 
-    // select renderer and set global variable for it
-    if (selectedBackend.empty())
+    if (gBackend.empty())
     {
-        // no backend argument, use default
-        std::vector<std::string> defBackend = GetDefaultBackend();
+        const std::vector<std::string>& defBackend = GetDefaultBackend();
         gBackend = defBackend[0];
         gShaderPathPrefix = defBackend[1];
         gShaderPathExt = defBackend[2];
     }
-    else if (D3D11_BACKEND.compare(selectedBackend) == 0)
+    else if (D3D11_BACKEND == gBackend)
     {
-        // we use D3D11 renderer
-        gBackend = D3D11_BACKEND;
         gShaderPathPrefix = HLSL5_SHADER_PATH_PREFIX;
         gShaderPathExt = HLSL5_SHADER_EXTENSION;
     }
-    else if (D3D12_BACKEND.compare(selectedBackend) == 0)
+    else if (D3D12_BACKEND == gBackend)
     {
-        // we use D3D12 renderer
-        gBackend = D3D12_BACKEND;
         gShaderPathPrefix = HLSL5_SHADER_PATH_PREFIX;
         gShaderPathExt = HLSL5_SHADER_EXTENSION;
     }
-    else if (OGL4_BACKEND.compare(selectedBackend) == 0)
+    else if (OGL4_BACKEND == gBackend)
     {
-        // we use OGL4 renderer
-        gBackend = OGL4_BACKEND;
+        gShaderPathPrefix = GLSL_SHADER_PATH_PREFIX;
+        gShaderPathExt = GLSL_SHADER_EXTENSION;
+    }
+    else if (VK_BACKEND == gBackend)
+    {
         gShaderPathPrefix = GLSL_SHADER_PATH_PREFIX;
         gShaderPathExt = GLSL_SHADER_EXTENSION;
     }
     else
     {
-        // we want to use something else, which probably isn't supported yet
-        std::cerr << "Incorrect backend provided" << std::endl;
+        LOG_ERROR("Incorrect backend provided");
         return 1;
     }
 

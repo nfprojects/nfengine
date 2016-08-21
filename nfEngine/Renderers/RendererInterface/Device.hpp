@@ -115,12 +115,14 @@ public:
  */
 struct DeviceInitParams
 {
-    int preferredCardId;
     const char* preferredCardName;
+    int preferredCardId;
+    int debugLevel;
 
     DeviceInitParams()
-        : preferredCardId(-1)
-        , preferredCardName(nullptr)
+        : preferredCardName(nullptr)
+        , preferredCardId(-1)
+        , debugLevel(false)
     {}
 };
 

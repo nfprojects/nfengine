@@ -46,6 +46,8 @@ class Device : public IDevice
 
     std::map<FullPipelineStateParts, D3DPtr<ID3D12PipelineState>> mPipelineStateMap;
 
+    bool mDebugLayerEnabled;
+
     bool DetectVideoCards(int preferredId);
 
 public:
@@ -97,6 +99,11 @@ public:
     NFE_INLINE HeapAllocator& GetDsvHeapAllocator()
     {
         return mDsvHeapAllocator;
+    }
+
+    NFE_INLINE bool IsDebugLayerEnabled()
+    {
+        return mDebugLayerEnabled;
     }
 };
 

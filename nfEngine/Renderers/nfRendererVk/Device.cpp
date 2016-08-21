@@ -54,7 +54,6 @@ Device::Device()
     , mRenderSemaphore(VK_NULL_HANDLE)
     , mPresentSemaphore(VK_NULL_HANDLE)
     , mPostPresentSemaphore(VK_NULL_HANDLE)
-    , mDebugEnable(false)
 {
 }
 
@@ -74,8 +73,11 @@ Device::~Device()
     Debugger::Instance().Release();
 }
 
-VkPhysicalDevice Device::SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices)
+VkPhysicalDevice Device::SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices, int preferredId)
 {
+    if (preferredId < 0)
+        preferredId = 0;
+
     VkPhysicalDeviceProperties devProps;
 
     // Debugging-related device description printing
@@ -96,15 +98,16 @@ VkPhysicalDevice Device::SelectPhysicalDevice(const std::vector<VkPhysicalDevice
                                             VK_VERSION_PATCH(devProps.driverVersion));
     }
 
-    // TODO so far we select the first device available. Here might be a good place to:
-    //   * Select more devices
-    //   * Create some rules to determine the best device
-    return devices[0];
+    return devices[preferredId];
 }
 
-bool Device::Init()
+bool Device::Init(const DeviceInitParams* params)
 {
-    if (!mInstance.Init(mDebugEnable))
+    DeviceInitParams defaultParams;
+    if (!params)
+        params = &defaultParams;
+
+    if (!mInstance.Init(params->debugLevel > 0))
     {
         LOG_ERROR("Vulkan instance failed to initialize");
         return false;
@@ -131,7 +134,7 @@ bool Device::Init()
         return false;
     }
 
-    mPhysicalDevice = SelectPhysicalDevice(devices);
+    mPhysicalDevice = SelectPhysicalDevice(devices, params->preferredCardId);
 
     // Grab queue properties from our selected device
     uint32 queueCount = 0;
@@ -173,7 +176,7 @@ bool Device::Init()
     enabledExtensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 
 
-    if (mDebugEnable)
+    if (params->debugLevel > 0)
     {
         // TODO right now Debug Markers are unsupported by drivers
         //      Uncomment when driver support appears
@@ -193,7 +196,7 @@ bool Device::Init()
     devInfo.pEnabledFeatures = nullptr;
     devInfo.enabledExtensionCount = static_cast<uint32>(enabledExtensions.size());
     devInfo.ppEnabledExtensionNames = enabledExtensions.data();
-    if (mDebugEnable)
+    if (params->debugLevel > 0)
     {
         devInfo.enabledLayerCount = 1;
         devInfo.ppEnabledLayerNames = enabledLayers;
@@ -202,7 +205,7 @@ bool Device::Init()
     result = vkCreateDevice(mPhysicalDevice, &devInfo, nullptr, &mDevice);
     CHECK_VKRESULT(result, "Failed to create Vulkan device");
 
-    if (mDebugEnable)
+    if (params->debugLevel > 0)
     {
         if (!Debugger::Instance().InitMarkers(mDevice))
         {
@@ -465,12 +468,10 @@ bool Device::DownloadTexture(ITexture* tex, void* data, int mipmap, int layer)
 
 IDevice* Init(const DeviceInitParams* params)
 {
-    UNUSED(params);
-
     if (gDevice == nullptr)
     {
         gDevice.reset(new (std::nothrow) Device);
-        if (!gDevice->Init())
+        if (!gDevice->Init(params))
         {
             gDevice.reset();
             return nullptr;

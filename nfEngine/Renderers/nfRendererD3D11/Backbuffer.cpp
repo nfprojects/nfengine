@@ -28,11 +28,12 @@ bool Backbuffer::GetBackbufferTexture()
     if (FAILED(hr))
         return false;
 
-#ifdef D3D_DEBUGGING
-    std::string textureName = "NFE::Renderer::Backbuffer \"" + mDebugName + '"';
-    mSwapChain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(textureName.length()),
-                               textureName.c_str());
-#endif
+    if (gDevice->IsDebugLayerEnabled())
+    {
+        std::string textureName = "NFE::Renderer::Backbuffer \"" + mDebugName + '"';
+        D3D_CALL_CHECK(mSwapChain->SetPrivateData(WKPDID_D3DDebugObjectName,
+                                                  static_cast<UINT>(textureName.length()), textureName.c_str()));
+    }
 
     return true;
 }
@@ -103,11 +104,12 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     if (FAILED(hr))
         return false;
 
-#ifdef D3D_DEBUGGING
-    std::string swapChainName = "NFE::Renderer::Backbuffer \"" + mDebugName + '"';
-    mSwapChain->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(swapChainName.length()),
-                               swapChainName.c_str());
-#endif
+    if (gDevice->IsDebugLayerEnabled())
+    {
+        std::string swapChainName = "NFE::Renderer::Backbuffer \"" + mDebugName + '"';
+        D3D_CALL_CHECK(mSwapChain->SetPrivateData(WKPDID_D3DDebugObjectName,
+                                                  static_cast<UINT>(swapChainName.length()), swapChainName.c_str()));
+    }
 
     return GetBackbufferTexture();
 }

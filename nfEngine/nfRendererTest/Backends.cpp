@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 #include "Backends.hpp"
 
+int gDebugLevel;
 int gPreferedCardId;
 std::string gBackend;
 std::string gShaderPathPrefix;
