@@ -78,15 +78,16 @@ bool Buffer::Init(const BufferDesc& desc)
     if (FAILED(hr))
         return false;
 
-#ifdef D3D_DEBUGGING
-    /// set debug name
-    std::string bufferName = "NFE::Renderer::Buffer \"";
-    if (desc.debugName)
-        bufferName += desc.debugName;
-    bufferName += '"';
-    mBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(bufferName.length()),
-                            bufferName.c_str());
-#endif // D3D_DEBUGGING
+    if (gDevice->IsDebugLayerEnabled())
+    {
+        /// set debug name
+        std::string bufferName = "NFE::Renderer::Buffer \"";
+        if (desc.debugName)
+            bufferName += desc.debugName;
+        bufferName += '"';
+        D3D_CALL_CHECK(mBuffer->SetPrivateData(WKPDID_D3DDebugObjectName,
+                                               static_cast<UINT>(bufferName.length()), bufferName.c_str()));
+    }
 
     mAccess = desc.access;
     mType = desc.type;

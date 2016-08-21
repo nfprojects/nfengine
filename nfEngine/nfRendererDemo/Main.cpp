@@ -137,7 +137,7 @@ public:
      * function for renderer and creates NFE::Renderer::IDevice this way. Should be called only
      * once during Demo lifespan (switching renderers on-the-fly is not supported).
      */
-    bool InitRenderer(const std::string& renderer, int preferredCardId)
+    bool InitRenderer(const std::string& renderer, int preferredCardId, int debugLevel)
     {
         if (!mRendererLib.Open(renderer))
             return false;
@@ -148,29 +148,9 @@ public:
 
         DeviceInitParams params;
         params.preferredCardId = preferredCardId;
+        params.debugLevel = debugLevel;
         mRendererDevice = proc(&params);
-        if (mRendererDevice == nullptr)
-            return false;
-
-        DeviceInfo deviceInfo;
-        if (!mRendererDevice->GetDeviceInfo(deviceInfo))
-            LOG_ERROR("Failed to get rendering device information");
-        else
-        {
-            LOG_INFO("GPU name: %s", deviceInfo.description.c_str());
-            LOG_INFO("GPU info: %s", deviceInfo.misc.c_str());
-
-            std::string features;
-            for (size_t i = 0; i < deviceInfo.features.size(); ++i)
-            {
-                if (i > 0)
-                    features += ", ";
-                features += deviceInfo.features[i];
-            }
-            LOG_INFO("GPU features: %s", features.c_str());
-        }
-
-        return true;
+        return (mRendererDevice != nullptr);
     }
 
     /**
@@ -301,55 +281,96 @@ int main(int argc, char* argv[])
     std::string execDir = NFE::Common::FileSystem::GetParentDir(execPath);
     NFE::Common::FileSystem::ChangeDirectory(execDir + "/../../..");
 
-    /// select renderer to use
-    std::string rend;
+    std::string selectedBackend;
+    int selectedCard = -1;
+    int debugLevel = 0;
+#ifdef _DEBUG
+    debugLevel = 1;
+#endif
 
-    if (argc < 2)
+    // TODO use some helper class instead of manual checks
+    for (int i = 1; i < argc; ++i)
     {
-        std::vector<std::string> defBackend = GetDefaultBackend();
-        rend = defBackend[0];
+        if (strcmp(argv[i], "--renderer") == 0 || strcmp(argv[i], "-r") == 0)
+        {
+            if (i + 1 < argc)
+            {
+                selectedBackend = argv[++i];
+            }
+            else
+            {
+                LOG_ERROR("Missing command line parameter");
+                return 1;
+            }
+        }
+        else if (strcmp(argv[i], "--card") == 0 || strcmp(argv[i], "-c") == 0)
+        {
+            if (i + 1 < argc)
+            {
+                selectedCard = atoi(argv[++i]);
+            }
+            else
+            {
+                LOG_ERROR("Missing command line parameter");
+                return 1;
+            }
+        }
+        else if (strcmp(argv[i], "--debug") == 0 || strcmp(argv[i], "-d") == 0)
+        {
+            if (i + 1 < argc)
+            {
+                debugLevel = atoi(argv[++i]);
+            }
+            else
+            {
+                LOG_ERROR("Missing command line parameter");
+                return 1;
+            }
+        }
+        else
+        {
+            LOG_ERROR("Unknown command line parameter: %s", argv[i]);
+            return 1;
+        }
+    }
+
+    if (selectedBackend.empty())
+    {
+        const std::vector<std::string>& defBackend = GetDefaultBackend();
+        selectedBackend = defBackend[0];
         gShaderPathPrefix = defBackend[1];
         gShaderPathExt = defBackend[2];
     }
-    else if (D3D11_BACKEND.compare(argv[1]) == 0)
+    else if (D3D11_BACKEND == selectedBackend)
     {
-        // we use D3D11 renderer
-        rend = D3D11_BACKEND;
         gShaderPathPrefix = HLSL5_SHADER_PATH_PREFIX;
         gShaderPathExt = HLSL5_SHADER_EXTENSION;
     }
-    else if (D3D12_BACKEND.compare(argv[1]) == 0)
+    else if (D3D12_BACKEND == selectedBackend)
     {
-        rend = D3D12_BACKEND;
         gShaderPathPrefix = HLSL5_SHADER_PATH_PREFIX;
         gShaderPathExt = HLSL5_SHADER_EXTENSION;
     }
-    else if (OGL4_BACKEND.compare(argv[1]) == 0)
+    else if (OGL4_BACKEND == selectedBackend)
     {
-        rend = OGL4_BACKEND;
         gShaderPathPrefix = GLSL_SHADER_PATH_PREFIX;
         gShaderPathExt = GLSL_SHADER_EXTENSION;
     }
-    else if (VK_BACKEND.compare(argv[1]) == 0)
+    else if (VK_BACKEND == selectedBackend)
     {
-        rend = VK_BACKEND;
         gShaderPathPrefix = GLSL_SHADER_PATH_PREFIX;
         gShaderPathExt = GLSL_SHADER_EXTENSION;
     }
     else
     {
-        std::cerr << "Incorrect backend provided" << std::endl;
+        LOG_ERROR("Incorrect backend provided");
         return 1;
     }
-
-    int preferredCard = 0;
-    if (argc >= 3)
-        preferredCard = atoi(argv[2]);
 
     DemoWindow window;
     if (!window.Init())
     {
-        std::cerr << "Failed to initialize Window" << std::endl;
+        LOG_ERROR("Failed to initialize Window");
         return 4;
     }
 
@@ -357,20 +378,20 @@ int main(int argc, char* argv[])
 
     if (!window.Open())
     {
-        std::cerr << "Failed to open Window" << std::endl;
+        LOG_ERROR("Failed to open Window");
         return 5;
     }
 
-    if (!window.InitRenderer(rend, preferredCard))
+    if (!window.InitRenderer(selectedBackend, selectedCard, debugLevel))
     {
-        std::cerr << "Renderer failed to initialize" << std::endl;
+        LOG_ERROR("Renderer failed to initialize");
         return 2;
     }
 
     /// Initial scene to begin with
     if (!window.InitScene(0))
     {
-        std::cerr << "Scene failed to initialize" << std::endl;
+        LOG_ERROR("Scene failed to initialize");
         return 3;
     }
 

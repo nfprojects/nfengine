@@ -48,92 +48,137 @@ Type* CreateGenericResource(const Desc& desc)
 } // namespace
 
 Device::Device()
+    : mAdapterInUse(-1)
+    , mDebugLayerEnabled(false)
 {
 }
 
 bool Device::Init(const DeviceInitParams* params)
 {
-    // TODO use params to select video adapter
-    UNUSED(params);
+    DeviceInitParams defaultParams;
+    if (!params)
+        params = &defaultParams;
 
     HRESULT hr;
     UINT flags = 0;
 
-#ifdef D3D_DEBUGGING
-    flags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif // D3D_DEBUGGING
+    hr = D3D_CALL_CHECK(CreateDXGIFactory(IID_PPV_ARGS(&mDXGIFactory)));
+    if (FAILED(hr))
+        return false;
 
-    hr = D3D_CALL_CHECK(D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, flags, NULL, 0,
-                                          D3D11_SDK_VERSION, &mDevice, &mFeatureLevel,
-                                          &mImmediateContext));
-
-#if defined(_DEBUG)
-    if (SUCCEEDED(mDevice->QueryInterface(IID_PPV_ARGS(&mInfoQueue))))
+    int preferredCardId = params != nullptr ? params->preferredCardId : -1;
+    if (!DetectVideoCards(preferredCardId))
     {
-        D3D11_MESSAGE_ID messagesToHide[] =
-        {
-            D3D11_MESSAGE_ID_SETPRIVATEDATA_CHANGINGPARAMS,
-        };
-
-        D3D11_INFO_QUEUE_FILTER filter;
-        memset(&filter, 0, sizeof(filter));
-        filter.DenyList.NumIDs = _countof(messagesToHide);
-        filter.DenyList.pIDList = messagesToHide;
-        mInfoQueue->AddStorageFilterEntries(&filter);
-
-        mInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, TRUE);
-        mInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, TRUE);
-        mInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_WARNING, TRUE);
+        LOG_ERROR("Failed to detect video cards");
+        return false;
     }
-#endif
 
+    if (params->debugLevel > 0)
+        flags |= D3D11_CREATE_DEVICE_DEBUG;
+
+    hr = D3D_CALL_CHECK(D3D11CreateDevice(mAdapters[mAdapterInUse].get(), D3D_DRIVER_TYPE_UNKNOWN,
+                                          NULL, flags, NULL, 0, D3D11_SDK_VERSION,
+                                          &mDevice, &mFeatureLevel, &mImmediateContext));
     if (FAILED(hr))
     {
         LOG_ERROR("D3D11CreateDevice() failed");
         return false;
     }
 
-    /// get DXGI factory for created Direct3D device
-    hr = D3D_CALL_CHECK(mDevice->QueryInterface(IID_PPV_ARGS(&mDXGIDevice)));
-    if (FAILED(hr))
-        return false;
+    const char* featureLevelStr = "unknown";
+    switch (mFeatureLevel)
+    {
+    case D3D_FEATURE_LEVEL_9_1:
+        featureLevelStr = "9_1";
+        break;
+    case D3D_FEATURE_LEVEL_9_2:
+        featureLevelStr = "9_2";
+        break;
+    case D3D_FEATURE_LEVEL_9_3:
+        featureLevelStr = "9_3";
+        break;
+    case D3D_FEATURE_LEVEL_10_0:
+        featureLevelStr = "10_0";
+        break;
+    case D3D_FEATURE_LEVEL_10_1:
+        featureLevelStr = "10_1";
+        break;
+    case D3D_FEATURE_LEVEL_11_0:
+        featureLevelStr = "11_0";
+        break;
+    case D3D_FEATURE_LEVEL_11_1:
+        featureLevelStr = "11_1";
+        break;
+    }
+    LOG_INFO("Direct3D 11 device created with %s feature level", featureLevelStr);
 
-    hr = D3D_CALL_CHECK(mDXGIDevice->GetParent(IID_PPV_ARGS(&mDXGIAdapter)));
-    if (FAILED(hr))
-        return false;
+    if (params->debugLevel > 0)
+    {
+        mDebugLayerEnabled = true;
+        if (SUCCEEDED(mDevice->QueryInterface(IID_PPV_ARGS(&mInfoQueue))))
+        {
+            D3D11_MESSAGE_ID messagesToHide[] =
+            {
+                D3D11_MESSAGE_ID_SETPRIVATEDATA_CHANGINGPARAMS,
+            };
 
-    hr = D3D_CALL_CHECK(mDXGIAdapter->GetParent(IID_PPV_ARGS(&mDXGIFactory)));
-    if (FAILED(hr))
-        return false;
+            D3D11_INFO_QUEUE_FILTER filter;
+            memset(&filter, 0, sizeof(filter));
+            filter.DenyList.NumIDs = _countof(messagesToHide);
+            filter.DenyList.pIDList = messagesToHide;
+            mInfoQueue->AddStorageFilterEntries(&filter);
+
+            mInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, TRUE);
+            mInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, TRUE);
+            mInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_WARNING, TRUE);
+        }
+    }
+
+    // print device info
+    // TODO: move to separate file (common for all renderers)
+    DeviceInfo deviceInfo;
+    if (GetDeviceInfo(deviceInfo))
+    {
+        LOG_INFO("GPU name: %s", deviceInfo.description.c_str());
+        LOG_INFO("GPU info: %s", deviceInfo.misc.c_str());
+
+        std::string features;
+        for (size_t i = 0; i < deviceInfo.features.size(); ++i)
+        {
+            if (i > 0)
+                features += ", ";
+            features += deviceInfo.features[i];
+        }
+        LOG_INFO("GPU features: %s", features.c_str());
+    }
 
     return true;
 }
 
 Device::~Device()
 {
-#ifdef D3D_DEBUGGING
-    D3DPtr<ID3D11Debug> mDebug;
-    /// get D3D debug layer interface
-    D3D_CALL_CHECK(mDevice->QueryInterface(IID_PPV_ARGS(&mDebug)));
-
-    if (mDebug.get() != nullptr)
+    if (IsDebugLayerEnabled())
     {
-        // flush the pipeline
-        mImmediateContext->ClearState();
-        mImmediateContext->Flush();
+        D3DPtr<ID3D11Debug> mDebug;
+        D3D_CALL_CHECK(mDevice->QueryInterface(IID_PPV_ARGS(&mDebug)));
 
-        mInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_WARNING, FALSE);
-        mInfoQueue.reset();
+        if (mDebug.get() != nullptr)
+        {
+            // flush the pipeline
+            mImmediateContext->ClearState();
+            mImmediateContext->Flush();
 
-        mDXGIFactory.reset();
-        mDXGIAdapter.reset();
-        mDXGIDevice.reset();
-        mImmediateContext.reset();
-        mDevice.reset();
+            mInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_WARNING, FALSE);
+            mInfoQueue.reset();
 
-        mDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+            mDXGIFactory.reset();
+            mAdapters.clear();
+            mImmediateContext.reset();
+            mDevice.reset();
+
+            mDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+        }
     }
-#endif // D3D_DEBUGGING
 }
 
 void* Device::GetHandle() const
@@ -285,14 +330,56 @@ bool Device::DownloadTexture(ITexture* tex, void* data, int mipmap, int layer)
     return true;
 }
 
+
+bool Device::DetectVideoCards(int preferredId)
+{
+    for (uint32 i = 0; ; ++i)
+    {
+        IDXGIAdapter* adapter;
+        HRESULT hr = mDXGIFactory->EnumAdapters(i, &adapter);
+
+        if (hr == DXGI_ERROR_NOT_FOUND)
+            break;
+
+        if (FAILED(hr))
+        {
+            LOG_ERROR("EnumAdapters1 failed for id=%u", i);
+            continue;
+        }
+
+        DXGI_ADAPTER_DESC adapterDesc;
+        adapter->GetDesc(&adapterDesc);
+
+        // get GPU description
+        std::wstring wideDesc = adapterDesc.Description;
+        std::string descString;
+        Common::UTF16ToUTF8(wideDesc, descString);
+
+        if (static_cast<uint32>(preferredId) == i)
+            mAdapterInUse = i;
+
+        LOG_INFO("Adapter found at slot %u: %s", i, descString.c_str());
+        mAdapters.push_back(std::move(adapter));
+    }
+
+    if (mAdapters.size() > 0)
+    {
+        if (mAdapterInUse < 0)
+            mAdapterInUse = 0;
+        return true;
+    }
+
+    return false;
+}
+
 bool Device::GetDeviceInfo(DeviceInfo& info)
 {
-    if (!mDXGIAdapter.get() || !mDevice.get())
+    if (!mDevice.get())
         return false;
 
     HRESULT hr;
     DXGI_ADAPTER_DESC adapterDesc;
-    mDXGIAdapter->GetDesc(&adapterDesc);
+    mAdapters[mAdapterInUse]->GetDesc(&adapterDesc);
 
     // get GPU description
     std::wstring wideDesc = adapterDesc.Description;

@@ -42,16 +42,16 @@ bool Sampler::Init(const SamplerDesc& desc)
     if (FAILED(hr))
         return false;
 
-#ifdef D3D_DEBUGGING
-    /// set debug name
-    std::string bufferName = "NFE::Renderer::Sampler \"";
-    if (desc.debugName)
-        bufferName += desc.debugName;
-    bufferName += '"';
-    mSamplerState->SetPrivateData(WKPDID_D3DDebugObjectName,
-                                  static_cast<UINT>(bufferName.length()),
-                                  bufferName.c_str());
-#endif // D3D_DEBUGGING
+    if (gDevice->IsDebugLayerEnabled() && desc.debugName)
+    {
+        /// set debug name
+        std::string bufferName = "NFE::Renderer::Sampler \"";
+        if (desc.debugName)
+            bufferName += desc.debugName;
+        bufferName += '"';
+        D3D_CALL_CHECK(mSamplerState->SetPrivateData(WKPDID_D3DDebugObjectName,
+                                                     static_cast<UINT>(bufferName.length()), bufferName.c_str()));
+    }
 
     return true;
 }

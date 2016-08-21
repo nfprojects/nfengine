@@ -51,27 +51,16 @@ bool HighLevelRenderer::Init(const std::string& preferredRendererName)
     if (!mLowLevelRendererLib.GetSymbol(RENDERER_INIT_FUNC, initFunc))
         return false;
 
-    mRenderingDevice = initFunc(nullptr);
+    // TODO read this parameters from config
+    DeviceInitParams params;
+    params.preferredCardId = -1;
+#ifdef  _DEBUG
+    params.debugLevel = 1;
+#endif //  _DEBUG
+
+    mRenderingDevice = initFunc(&params);
     if (mRenderingDevice == nullptr)
         return false;
-
-    DeviceInfo deviceInfo;
-    if (!mRenderingDevice->GetDeviceInfo(deviceInfo))
-        LOG_ERROR("Failed to get rendering device information");
-    else
-    {
-        LOG_INFO("GPU name: %s", deviceInfo.description.c_str());
-        LOG_INFO("GPU info: %s", deviceInfo.misc.c_str());
-
-        std::string features;
-        for (size_t i = 0; i < deviceInfo.features.size(); ++i)
-        {
-            if (i > 0)
-                features += ", ";
-            features += deviceInfo.features[i];
-        }
-        LOG_INFO("GPU features: %s", features.c_str());
-    }
 
     Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
 

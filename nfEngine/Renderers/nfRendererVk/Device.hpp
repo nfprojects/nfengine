@@ -35,13 +35,13 @@ private:
 
     std::map<FullPipelineStateParts, VkPipeline> mPipelineStateMap;
 
-    VkPhysicalDevice SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices);
+    VkPhysicalDevice SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices, int preferredId);
 
 public:
     Device();
     ~Device();
 
-    bool Init();
+    bool Init(const DeviceInitParams* params);
 
     NFE_INLINE const VkInstance& GetInstance() const
     {

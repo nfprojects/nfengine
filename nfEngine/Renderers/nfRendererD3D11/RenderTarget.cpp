@@ -130,15 +130,16 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             return false;
         }
 
-#ifdef D3D_DEBUGGING
-        /// set debug name
-        std::string bufferName = "NFE::Renderer::RenderTarget \"";
-        if (desc.debugName)
-            bufferName += desc.debugName;
-        bufferName += '"';
-        rtv->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(bufferName.length()),
-                            bufferName.c_str());
-#endif // D3D_DEBUGGING
+        if (gDevice->IsDebugLayerEnabled() && desc.debugName)
+        {
+            /// set debug name
+            std::string bufferName = "NFE::Renderer::RenderTarget \"";
+            if (desc.debugName)
+                bufferName += desc.debugName;
+            bufferName += '"';
+            D3D_CALL_CHECK(rtv->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(bufferName.length()),
+                                               bufferName.c_str()));
+        }
 
         mRTVs.emplace_back(rtv);
     }

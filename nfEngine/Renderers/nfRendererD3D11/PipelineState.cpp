@@ -161,23 +161,21 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     }
 
     // set debug name
-#ifdef D3D_DEBUGGING
-    if (desc.debugName)
+    if (gDevice->IsDebugLayerEnabled() && desc.debugName)
     {
         const size_t MAX_DEBUG_NAME_LEN = 128;
         char buffer[MAX_DEBUG_NAME_LEN];
         int len;
 
         len = snprintf(buffer, MAX_DEBUG_NAME_LEN, "RasterizerState '%s'", desc.debugName);
-        mRS->SetPrivateData(WKPDID_D3DDebugObjectName, len, buffer);
+        D3D_CALL_CHECK(mRS->SetPrivateData(WKPDID_D3DDebugObjectName, len, buffer));
 
         len = snprintf(buffer, MAX_DEBUG_NAME_LEN, "BlendState '%s'", desc.debugName);
-        mBS->SetPrivateData(WKPDID_D3DDebugObjectName, len, buffer);
+        D3D_CALL_CHECK(mBS->SetPrivateData(WKPDID_D3DDebugObjectName, len, buffer));
 
         len = snprintf(buffer, MAX_DEBUG_NAME_LEN, "DepthState '%s'", desc.debugName);
-        mDS->SetPrivateData(WKPDID_D3DDebugObjectName, len, buffer);
+        D3D_CALL_CHECK(mDS->SetPrivateData(WKPDID_D3DDebugObjectName, len, buffer));
     }
-#endif // D3D_DEBUGGING
 
     return true;
 }
