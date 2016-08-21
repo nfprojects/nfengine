@@ -175,37 +175,38 @@ bool Shader::Init(const ShaderDesc& desc)
     }
 
 
-#ifdef D3D_DEBUGGING
-    /// set debug name
-    std::string shaderName = "NFE::Renderer::Shader \"";
-    if (desc.path)
-        shaderName += desc.path;
-    shaderName += '"';
-
-    switch (mType)
+    if (gDevice->IsDebugLayerEnabled())
     {
-    case ShaderType::Vertex:
-        mVS->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(shaderName.length()),
-                            shaderName.c_str());
-        break;
-    case ShaderType::Geometry:
-        mGS->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(shaderName.length()),
-                            shaderName.c_str());
-        break;
-    case ShaderType::Hull:
-        mHS->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(shaderName.length()),
-                            shaderName.c_str());
-        break;
-    case ShaderType::Domain:
-        mDS->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(shaderName.length()),
-                            shaderName.c_str());
-        break;
-    case ShaderType::Pixel:
-        mPS->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(shaderName.length()),
-                            shaderName.c_str());
-        break;
+        /// set debug name
+        std::string shaderName = "NFE::Renderer::Shader \"";
+        if (desc.path)
+            shaderName += desc.path;
+        shaderName += '"';
+
+        switch (mType)
+        {
+        case ShaderType::Vertex:
+            D3D_CALL_CHECK(mVS->SetPrivateData(WKPDID_D3DDebugObjectName,
+                                               static_cast<UINT>(shaderName.length()), shaderName.c_str()));
+            break;
+        case ShaderType::Geometry:
+            D3D_CALL_CHECK(mGS->SetPrivateData(WKPDID_D3DDebugObjectName,
+                                               static_cast<UINT>(shaderName.length()), shaderName.c_str()));
+            break;
+        case ShaderType::Hull:
+            D3D_CALL_CHECK(mHS->SetPrivateData(WKPDID_D3DDebugObjectName,
+                                               static_cast<UINT>(shaderName.length()), shaderName.c_str()));
+            break;
+        case ShaderType::Domain:
+            D3D_CALL_CHECK(mDS->SetPrivateData(WKPDID_D3DDebugObjectName,
+                                               static_cast<UINT>(shaderName.length()), shaderName.c_str()));
+            break;
+        case ShaderType::Pixel:
+            D3D_CALL_CHECK(mPS->SetPrivateData(WKPDID_D3DDebugObjectName,
+                                               static_cast<UINT>(shaderName.length()), shaderName.c_str()));
+            break;
+        }
     }
-#endif // D3D_DEBUGGING
 
 
     if (FAILED(hr))

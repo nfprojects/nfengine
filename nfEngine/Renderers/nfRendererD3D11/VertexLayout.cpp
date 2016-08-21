@@ -34,9 +34,9 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
         el.InputSlot = desc.elements[i].vertexBufferId;
         el.AlignedByteOffset = desc.elements[i].offset;
         el.InputSlotClass = desc.elements[i].perInstance ?
-                            D3D11_INPUT_PER_INSTANCE_DATA : D3D11_INPUT_PER_VERTEX_DATA;
+            D3D11_INPUT_PER_INSTANCE_DATA : D3D11_INPUT_PER_VERTEX_DATA;
         el.InstanceDataStepRate = desc.elements[i].perInstance ?
-                                  desc.elements[i].instanceDataStep : 0;
+            desc.elements[i].instanceDataStep : 0;
 
         uint32 channels = GetElementFormatChannels(desc.elements[i].format);
 
@@ -44,12 +44,12 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
             vertexShaderCode += "float" + std::to_string(channels) + " pos : POSITION; ";
         else
             vertexShaderCode += "float" + std::to_string(channels) +
-                                " param" + std::to_string(i - 1) + " : TEXCOORD" +
-                                std::to_string(i - 1) + "; ";
+            " param" + std::to_string(i - 1) + " : TEXCOORD" +
+            std::to_string(i - 1) + "; ";
     }
 
     vertexShaderCode += "}; float4 main(VertexShaderInput input) : SV_POSITION "
-                        "{ return input.pos.xxxx; }";
+        "{ return input.pos.xxxx; }";
 
     /// compile dummy vertex shader
     D3DPtr<ID3DBlob> errorsBuffer;
@@ -74,15 +74,16 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
     if (FAILED(hr))
         return false;
 
-#ifdef D3D_DEBUGGING
-    /// set debug name
-    std::string bufferName = "NFE::Renderer::VertexLayout \"";
-    if (desc.debugName)
-        bufferName += desc.debugName;
-    bufferName += '"';
-    mIL->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(bufferName.length()),
-                        bufferName.c_str());
-#endif // D3D_DEBUGGING
+    if (gDevice->IsDebugLayerEnabled() && desc.debugName)
+    {
+        /// set debug name
+        std::string bufferName = "NFE::Renderer::VertexLayout \"";
+        if (desc.debugName)
+            bufferName += desc.debugName;
+        bufferName += '"';
+        D3D_CALL_CHECK(mIL->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(bufferName.length()),
+                                           bufferName.c_str()));
+}
 
     return true;
 }

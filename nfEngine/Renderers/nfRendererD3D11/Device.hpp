@@ -20,14 +20,16 @@ class Device : public IDevice
 
     D3DPtr<ID3D11Device> mDevice;
     D3DPtr<ID3D11DeviceContext> mImmediateContext;
-    D3DPtr<IDXGIDevice> mDXGIDevice;
     D3DPtr<IDXGIFactory> mDXGIFactory;
-    D3DPtr<IDXGIAdapter> mDXGIAdapter;
-    D3D_FEATURE_LEVEL mFeatureLevel;
-
-#ifdef _DEBUG
     D3DPtr<ID3D11InfoQueue> mInfoQueue;
-#endif // _DEBUG
+
+    std::vector<D3DPtr<IDXGIAdapter>> mAdapters;
+    int mAdapterInUse;
+
+    D3D_FEATURE_LEVEL mFeatureLevel;
+    bool mDebugLayerEnabled;
+
+    bool DetectVideoCards(int preferredId);
 
 public:
     Device();
@@ -60,6 +62,11 @@ public:
 
     bool DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data) override;
     bool DownloadTexture(ITexture* tex, void* data, int mipmap, int layer) override;
+
+    NFE_INLINE bool IsDebugLayerEnabled()
+    {
+        return mDebugLayerEnabled;
+    }
 };
 
 } // namespace Renderer
