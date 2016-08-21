@@ -33,7 +33,7 @@ public:
     Random(uint64 seed);
 
     uint64 GetLong();
-    unsigned int GetInt();
+    int GetInt();
 
     //Generate random float with uniform distribution from range (0.0f, 1.0f]
     float GetFloat();
