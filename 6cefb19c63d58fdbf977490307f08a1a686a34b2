@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_1b022c0a",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 327,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-21T11:49:34Z",
+      "side": 1,
+      "message": "I thought that this whole function will be removed and handling APC will be done in AsyncQueueManage. What happens here?",
+      "revId": "6cefb19c63d58fdbf977490307f08a1a686a34b2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_4001e305",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-21T11:49:34Z",
+      "side": 1,
+      "message": "Fix message",
+      "revId": "6cefb19c63d58fdbf977490307f08a1a686a34b2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3bfdf008",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-21T11:49:34Z",
+      "side": 1,
+      "message": "Fix message",
+      "revId": "6cefb19c63d58fdbf977490307f08a1a686a34b2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
