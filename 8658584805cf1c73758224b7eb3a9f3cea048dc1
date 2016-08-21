@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_9b0e3c31",
+        "filename": "nfEngine/nfCommon/AsyncQueueManager.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-21T11:52:38Z",
+      "side": 1,
+      "message": "If Linux implementation will be so much different than Windows, I would move it to separate files (\"Linux/AsyncQueueManager.hpp\" and \"Win/AsyncQueueManager.hpp\"). There is no point keeping that in common header if there are different methods and  they accept different arguments...",
+      "range": {
+        "startLine": 63,
+        "startChar": 0,
+        "endLine": 98,
+        "endChar": 6
+      },
+      "revId": "8658584805cf1c73758224b7eb3a9f3cea048dc1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
