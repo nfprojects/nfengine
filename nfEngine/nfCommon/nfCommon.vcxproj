@@ -243,6 +243,7 @@ popd</Command>
     <ClInclude Include="LogGrouper.hpp" />
     <ClInclude Include="LogScope.hpp" />
     <ClInclude Include="Math\Box.hpp" />
+    <ClInclude Include="Math\Conversions.hpp" />
     <ClInclude Include="Math\FPU\Matrix.hpp" />
     <ClInclude Include="Math\FPU\RayGeometry.hpp" />
     <ClInclude Include="Math\FPU\Vector.hpp" />
@@ -370,6 +371,12 @@ popd</Command>
     <ClCompile Include="LogScope.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Math\Box.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Math\Conversions.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
