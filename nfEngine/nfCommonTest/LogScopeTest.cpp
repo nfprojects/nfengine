@@ -7,12 +7,12 @@
 #include "PCH.hpp"
 #include "nfCommon/LogScope.hpp"
 #include "nfCommon/Logger.hpp"
+#include <sstream>
 
 using namespace NFE::Common;
 
-const char* scopeTextSimple = "Entering scope %s.";
-const char* scopeText = "Entering scope %s in %s@%i.";
-const char* scopeExitText = "Exiting scope %s.";
+const char* scopeText = "Entering scope ";
+const char* scopeExitText = "Exiting scope ";
 
 /**
 * Test backend for testing LoggerBackend class
@@ -90,23 +90,26 @@ TEST_F(LogScopeTest, EmptyConstructor)
     };
 
     const char* scopeName = "Scope";
-    char outputLog[100];
+    std::stringstream outputLog;
     {
         ASSERT_FALSE(wasLogged());
 
         LogScope scope;
         ASSERT_TRUE(wasLogged());
 
-        sprintf(outputLog, scopeTextSimple, scopeName);
-        ASSERT_EQ(0, mBackend->mLastLogInfo.lastMsg.compare(outputLog));
+        outputLog << scopeText << scopeName << ".";
+        ASSERT_EQ(0, mBackend->mLastLogInfo.lastMsg.compare(outputLog.str()))
+                << "Output log was: " << outputLog.str();
         mBackend->Reset();
+        outputLog.str("");
 
         ASSERT_FALSE(wasLogged());
     }
     ASSERT_TRUE(wasLogged());
 
-    sprintf(outputLog, scopeExitText, scopeName);
-    ASSERT_EQ(0, mBackend->mLastLogInfo.lastMsg.compare(outputLog));
+    outputLog << scopeExitText << scopeName << ".";
+    ASSERT_EQ(0, mBackend->mLastLogInfo.lastMsg.compare(outputLog.str()))
+            << "Output log was: " << outputLog.str();
     mBackend->Reset();
 }
 
@@ -122,7 +125,7 @@ TEST_F(LogScopeTest, SimpleConstructor)
     };
 
     const char* scopeName = "Awesome Scope";
-    char outputLog[100];
+    std::stringstream outputLog;
 
     {
         ASSERT_FALSE(wasLogged());
@@ -130,16 +133,19 @@ TEST_F(LogScopeTest, SimpleConstructor)
         LogScope scope(scopeName);
         ASSERT_TRUE(wasLogged());
 
-        sprintf(outputLog, scopeTextSimple, scopeName);
-        ASSERT_EQ(0, mBackend->mLastLogInfo.lastMsg.compare(outputLog));
+        outputLog << scopeText << scopeName << ".";
+        ASSERT_EQ(0, mBackend->mLastLogInfo.lastMsg.compare(outputLog.str()))
+                << "Output log was: " << outputLog.str();
         mBackend->Reset();
+        outputLog.str("");
 
         ASSERT_FALSE(wasLogged());
     }
     ASSERT_TRUE(wasLogged());
 
-    sprintf(outputLog, scopeExitText, scopeName);
-    ASSERT_EQ(0, mBackend->mLastLogInfo.lastMsg.compare(outputLog));
+    outputLog << scopeExitText << scopeName << ".";
+    ASSERT_EQ(0, mBackend->mLastLogInfo.lastMsg.compare(outputLog.str()))
+            << "Output log was: " << outputLog.str();
     mBackend->Reset();
 }
 
@@ -155,7 +161,7 @@ TEST_F(LogScopeTest, MacroConstructor)
     };
 
     const char* scopeName = "AwesomeScope";
-    char outputLog[100];
+    std::stringstream outputLog;
 
     {
         ASSERT_FALSE(wasLogged());
@@ -163,15 +169,18 @@ TEST_F(LogScopeTest, MacroConstructor)
         LOG_SCOPE(AwesomeScope);
         ASSERT_TRUE(wasLogged());
 
-        sprintf(outputLog, scopeText, scopeName, __FILE__, __LINE__ - 3);
-        ASSERT_EQ(0, mBackend->mLastLogInfo.lastMsg.compare(outputLog));
+        outputLog << scopeText << scopeName << " in " <<  __FILE__ << "@" << (__LINE__ - 3) << ".";
+        ASSERT_EQ(0, mBackend->mLastLogInfo.lastMsg.compare(outputLog.str()))
+                << "Output log was: " << outputLog.str();
         mBackend->Reset();
+        outputLog.str("");
 
         ASSERT_FALSE(wasLogged());
     }
     ASSERT_TRUE(wasLogged());
 
-    sprintf(outputLog, scopeExitText, scopeName);
-    ASSERT_EQ(0, mBackend->mLastLogInfo.lastMsg.compare(outputLog));
+    outputLog << scopeExitText << scopeName << ".";
+    ASSERT_EQ(0, mBackend->mLastLogInfo.lastMsg.compare(outputLog.str()))
+            << "Output log was: " << outputLog.str();
     mBackend->Reset();
 }
