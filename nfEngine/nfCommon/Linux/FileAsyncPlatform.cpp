@@ -385,7 +385,9 @@ void FileAsync::CallbackDispatcher()
             // This should not happen
             u_int64_t eval = 0;
             LOG_WARNING("io_getevents() for FileAsync returned 0");
-            ::read(mEventFD, &eval, sizeof(eval));
+            ssize_t readSize = ::read(mEventFD, &eval, sizeof(eval));
+            if (readSize < 0)
+                LOG_WARNING("Failed to read eval variable: %d", errno);
             continue;
         }
 
