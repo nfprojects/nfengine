@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_a69e8052",
+        "filename": "nfEngine/Renderers/RendererInterface/Device.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-23T18:52:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_d5000c38",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_f5b8b077",
         "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
         "patchSetId": 2
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_66a87878",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-23T18:52:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_f5b8b077",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_35bf3862",
         "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
         "patchSetId": 2
@@ -47,6 +83,24 @@
       "writtenOn": "2016-08-23T07:31:31Z",
       "side": 1,
       "message": "What if params is nullptr here?\n\nI have a small suggestion, look above.",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_46b454d3",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-23T18:52:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_35bf3862",
       "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -76,6 +130,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_26b950cc",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-23T18:52:40Z",
+      "side": 1,
+      "message": "We have 3 backends and 3 projcts using renderer at the moment (nfCore, nfRenderTest and nfRendererDemo). So it makes no difference, where it gets printed. IMO this message should be always printed by renderer, just as a diagnostic info.",
+      "parentUuid": "baa041b7_f546707a",
+      "range": {
+        "startLine": 136,
+        "startChar": 0,
+        "endLine": 151,
+        "endChar": 5
+      },
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_75a5c045",
         "filename": "nfEngine/Renderers/nfRendererD3D12/Device.cpp",
         "patchSetId": 2
@@ -87,6 +165,24 @@
       "writtenOn": "2016-08-23T07:31:31Z",
       "side": 1,
       "message": "Same as in D3D11 - nullptr params equals crash",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_06ae4c81",
+        "filename": "nfEngine/Renderers/nfRendererD3D12/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-23T18:52:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_75a5c045",
       "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -127,6 +223,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_e6b248e5",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-23T18:52:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_3566182a",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_156b14f3",
         "filename": "nfEngine/Renderers/nfRendererVk/Device.cpp",
         "patchSetId": 2
@@ -138,6 +252,24 @@
       "writtenOn": "2016-08-23T07:31:31Z",
       "side": 1,
       "message": "As above",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c6c86459",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-23T18:52:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_156b14f3",
       "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -161,6 +293,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_a6c5603e",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-23T18:52:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_b57228e2",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_957f24ab",
         "filename": "nfEngine/Renderers/nfRendererVk/Device.cpp",
         "patchSetId": 2
@@ -172,6 +322,24 @@
       "writtenOn": "2016-08-23T07:31:31Z",
       "side": 1,
       "message": "As above",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_86c25c33",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-23T18:52:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_957f24ab",
       "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -195,6 +363,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_66bf58ab",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-23T18:52:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_757ca0b5",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_952de4aa",
         "filename": "nfEngine/nfRendererDemo/Main.cpp",
         "patchSetId": 2
@@ -212,6 +398,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_46db3422",
+        "filename": "nfEngine/nfRendererDemo/Main.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 291,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-23T18:52:40Z",
+      "side": 1,
+      "message": "I wrote about it on Slack a long time ago :)",
+      "parentUuid": "baa041b7_952de4aa",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_752a6092",
         "filename": "nfEngine/nfRendererTest/Main.cpp",
         "patchSetId": 2
@@ -223,6 +427,24 @@
       "writtenOn": "2016-08-23T07:31:31Z",
       "side": 1,
       "message": "Same as in nfRendererDemo - nice and neat ArgParser class would come in handy.",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_06e52cdb",
+        "filename": "nfEngine/nfRendererTest/Main.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-23T18:52:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_752a6092",
       "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
