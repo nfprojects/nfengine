@@ -60,6 +60,12 @@ bool Buffer::UploadData(const BufferDesc& desc)
                                                                       D3D12_RESOURCE_STATE_GENERIC_READ,
                                                                       nullptr,
                                                                       IID_PPV_ARGS(&uploadBuffer)));
+
+    if (desc.debugName && !SetDebugName(uploadBuffer.get(), desc.debugName + std::string("_UPLOAD")))
+    {
+        LOG_WARNING("Failed to set debug name");
+    }
+
     if (FAILED(hr))
         return false;
 
@@ -181,6 +187,11 @@ bool Buffer::Init(const BufferDesc& desc)
                                                                       IID_PPV_ARGS(&mResource)));
     if (FAILED(hr))
         return false;
+
+    if (desc.debugName && !SetDebugName(mResource.get(), desc.debugName))
+    {
+        LOG_WARNING("Failed to set debug name");
+    }
 
     // write initial data if provided
     if (desc.initialData)

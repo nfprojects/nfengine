@@ -95,6 +95,8 @@ struct ResourceBindingLayoutDesc
     VolatileCBufferBinding* volatileCBuffers;
     size_t numVolatileCBuffers;
 
+    const char* debugName;
+
     // TODO:
     // fast constants (Vulkan's Push Constants / D3D12 Root Constants)
     // immutable / static samplers
@@ -104,15 +106,17 @@ struct ResourceBindingLayoutDesc
         , numBindingSets(0)
         , volatileCBuffers(nullptr)
         , numVolatileCBuffers(0)
+        , debugName(nullptr)
     { }
 
     ResourceBindingLayoutDesc(IResourceBindingSet** bindingSets, size_t numBindingSets,
                               VolatileCBufferBinding* volatileCBuffers = nullptr,
-                              size_t numVolatileCBuffers = 0)
+                              size_t numVolatileCBuffers = 0, const char* debugName = nullptr)
         : bindingSets(bindingSets)
         , numBindingSets(numBindingSets)
         , volatileCBuffers(volatileCBuffers)
         , numVolatileCBuffers(numVolatileCBuffers)
+        , debugName(debugName)
     { }
 };
 
