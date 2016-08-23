@@ -1,0 +1,231 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_d5000c38",
+        "filename": "nfEngine/Renderers/RendererInterface/Device.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-23T07:31:31Z",
+      "side": 1,
+      "message": "Vulkan has multiple debug levels available (from logging errors only to producing an entire report every frame). I don\u0027t know how it works in D3D, but maybe it would be a good idea to add \"debugMessageLevel\" option or something? It then would be translated to D3D/Vk specific constants when debug layer is to be initialized.",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_f5b8b077",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-23T07:31:31Z",
+      "side": 1,
+      "message": "1. Remove\n2. There are some cases where params can be nullptr, and you didn\u0027t cover it with if (params !\u003d nullptr) condition. As a result, renderer will crash. How about doing a following maneuver here:\n\n    DeviceInitParams p;\n    if (params)\n        p \u003d *params;\n\nAnd use p.preferredCardId, p.debugLayer etc throughout the function. This way we will be sure p is actually a valid object, and we won\u0027t have to check if params is null every once in a while. If there is no params pointer, the default values assigned by DeviceInitParams ctor will solve the problem for us.",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_35bf3862",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-23T07:31:31Z",
+      "side": 1,
+      "message": "What if params is nullptr here?\n\nI have a small suggestion, look above.",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_f546707a",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-23T07:31:31Z",
+      "side": 1,
+      "message": "I think printing device info was in a good place before - in nfRendererDemo. Now we would have to implement such behavior in each seperate backend (as an example - you forgot to paste this code in nfRendererVk).\n\nI suggest reverting this code back where it were. If you really want to keep this code within renderers (which I think there is no reason for it), make a renderers-wide common function PrintDeviceInfos or sth.",
+      "range": {
+        "startLine": 136,
+        "startChar": 0,
+        "endLine": 151,
+        "endChar": 5
+      },
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_75a5c045",
+        "filename": "nfEngine/Renderers/nfRendererD3D12/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-23T07:31:31Z",
+      "side": 1,
+      "message": "Same as in D3D11 - nullptr params equals crash",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_55619c10",
+        "filename": "nfEngine/Renderers/nfRendererD3D12/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-23T07:31:31Z",
+      "side": 1,
+      "message": "As above.",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3566182a",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-23T07:31:31Z",
+      "side": 1,
+      "message": "Same as in D3D11 - nullptr params equals crash",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_156b14f3",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-23T07:31:31Z",
+      "side": 1,
+      "message": "As above",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b57228e2",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-23T07:31:31Z",
+      "side": 1,
+      "message": "As above",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_957f24ab",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-23T07:31:31Z",
+      "side": 1,
+      "message": "As above",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_757ca0b5",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-23T07:31:31Z",
+      "side": 1,
+      "message": "As above",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_952de4aa",
+        "filename": "nfEngine/nfRendererDemo/Main.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 291,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-23T07:31:31Z",
+      "side": 1,
+      "message": "This gives me an idea - a nice ArgParser class in nfCommon would come in handy. This is not the only place when we need to parse the arguments like that. What do you think?\n\nLeave a TODO if you agree.",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_752a6092",
+        "filename": "nfEngine/nfRendererTest/Main.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-23T07:31:31Z",
+      "side": 1,
+      "message": "Same as in nfRendererDemo - nice and neat ArgParser class would come in handy.",
+      "revId": "e89a23d928f227f44d9932a98885d58fb4ac939d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
