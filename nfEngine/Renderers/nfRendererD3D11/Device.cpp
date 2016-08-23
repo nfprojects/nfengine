@@ -158,10 +158,10 @@ Device::~Device()
 {
     if (IsDebugLayerEnabled())
     {
-        D3DPtr<ID3D11Debug> mDebug;
-        D3D_CALL_CHECK(mDevice->QueryInterface(IID_PPV_ARGS(&mDebug)));
+        D3DPtr<ID3D11Debug> debugInterface;
+        D3D_CALL_CHECK(mDevice->QueryInterface(IID_PPV_ARGS(&debugInterface)));
 
-        if (mDebug.get() != nullptr)
+        if (debugInterface)
         {
             // flush the pipeline
             mImmediateContext->ClearState();
@@ -175,7 +175,7 @@ Device::~Device()
             mImmediateContext.reset();
             mDevice.reset();
 
-            mDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+            debugInterface->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
         }
     }
 }

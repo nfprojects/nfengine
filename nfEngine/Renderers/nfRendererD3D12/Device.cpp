@@ -144,6 +144,15 @@ bool Device::Init(const DeviceInitParams* params)
         mFeatureLevel = D3D_FEATURE_LEVEL_9_1;
     }
 
+    if (params->debugLevel > 0)
+    {
+        hr = D3D_CALL_CHECK(mDevice->QueryInterface(IID_PPV_ARGS(&mDebugDevice)));
+        if (FAILED(hr))
+        {
+            LOG_ERROR("D3D12 device debugging won't be supported");
+        }
+    }
+
     // print device info
     {
         DeviceInfo deviceInfo;
@@ -163,9 +172,7 @@ bool Device::Init(const DeviceInitParams* params)
     if (params->debugLevel > 0)
     {
         mDebugLayerEnabled = true;
-
-        D3DPtr<ID3D12InfoQueue> infoQueue;
-        if (SUCCEEDED(mDevice->QueryInterface(IID_PPV_ARGS(&infoQueue))))
+        if (SUCCEEDED(mDevice->QueryInterface(IID_PPV_ARGS(&mInfoQueue))))
         {
             D3D12_MESSAGE_ID messagesToHide[] =
             {
@@ -180,11 +187,11 @@ bool Device::Init(const DeviceInitParams* params)
             memset(&filter, 0, sizeof(filter));
             filter.DenyList.NumIDs = _countof(messagesToHide);
             filter.DenyList.pIDList = messagesToHide;
-            infoQueue->AddStorageFilterEntries(&filter);
+            mInfoQueue->AddStorageFilterEntries(&filter);
 
-            infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
-            infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
-            infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE);
+            mInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
+            mInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
+            mInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE);
         }
     }
 
@@ -238,11 +245,25 @@ Device::~Device()
 {
     WaitForGPU();
 
+    mCbvSrvUavHeapAllocator.Release();
+    mRtvHeapAllocator.Release();
+    mDsvHeapAllocator.Release();
+
     mDXGIFactory.reset();
     mAdapters.clear();
+    mCommandQueue.reset();
+    mFence.reset();
     mDevice.reset();
 
     ::CloseHandle(mFenceEvent);
+
+    if (mDebugDevice)
+    {
+        mInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, FALSE);
+        mInfoQueue.reset();
+
+        mDebugDevice->ReportLiveDeviceObjects(D3D12_RLDO_DETAIL | D3D12_RLDO_IGNORE_INTERNAL);
+    }
 }
 
 ID3D12Device* Device::GetDevice() const

@@ -353,6 +353,11 @@ bool Texture::Init(const TextureDesc& desc)
             LOG_WARNING("No initial data for read-only texture provided");
     }
 
+    if (desc.debugName && !SetDebugName(mBuffers[0].get(), desc.debugName))
+    {
+        LOG_WARNING("Failed to set debug name");
+    }
+
 
     mResourceState = initialState;
     mBuffersNum = 1;

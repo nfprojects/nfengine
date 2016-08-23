@@ -19,6 +19,7 @@ class PipelineState : public IPipelineState
 {
     friend class CommandBuffer;
 
+    std::string mDebugName;
     ResourceBindingLayout* mBindingLayout;
     D3D12_INPUT_LAYOUT_DESC mInputLayoutDesc;
     D3D12_RASTERIZER_DESC mRasterizerDesc;

@@ -148,6 +148,8 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     }
     mBindingLayout = resBindingLayout;
 
+    if (desc.debugName)
+        mDebugName = desc.debugName;
     return true;
 }
 
@@ -204,6 +206,12 @@ ID3D12PipelineState* PipelineState::CreateFullPipelineState(const FullPipelineSt
     HRESULT hr;
     hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateGraphicsPipelineState(&psd,
                                                                           IID_PPV_ARGS(&result)));
+
+    if (!SetDebugName(result, pipelineState->mDebugName))
+    {
+        LOG_WARNING("Failed to set debug name");
+    }
+
     return result;
 }
 
