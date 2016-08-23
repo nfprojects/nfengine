@@ -65,6 +65,11 @@ bool RingBuffer::Init(size_t size)
     if (FAILED(hr))
         return false;
 
+    if (!SetDebugName(mBuffer.get(), "RingBuffer"))
+    {
+        LOG_WARNING("Failed to set debug name");
+    }
+
     D3D12_RANGE range;
     range.Begin = 0;
     range.End = 0;

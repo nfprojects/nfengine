@@ -43,10 +43,19 @@ HeapAllocator::HeapAllocator(Type type, uint32 initialSize)
 
 HeapAllocator::~HeapAllocator()
 {
+    Release();
+}
+
+void HeapAllocator::Release()
+{
+    mHeap.reset();
+
     uint32 allocatedDescriptors = 0;
     for (bool state : mBitmap)
         if (state)
             allocatedDescriptors++;
+
+    mBitmap.clear();
 
     if (allocatedDescriptors > 0)
         LOG_WARNING("There are still %u descriptors allocated in %s heap",
@@ -77,6 +86,11 @@ bool HeapAllocator::Init()
     if (FAILED(hr))
         return false;
 
+    if (!SetDebugName(mHeap.get(), GetHeapName(mType)))
+    {
+        LOG_WARNING("Failed to set debug name");
+    }
+
     mCpuHandle = mHeap->GetCPUDescriptorHandleForHeapStart();
     mGpuHandle = mHeap->GetGPUDescriptorHandleForHeapStart();
     mDescriptorSize = gDevice->GetDevice()->GetDescriptorHandleIncrementSize(heapDesc.Type);
@@ -84,6 +98,8 @@ bool HeapAllocator::Init()
 
     return true;
 }
+
+
 
 uint32 HeapAllocator::Allocate(uint32 numDescriptors)
 {

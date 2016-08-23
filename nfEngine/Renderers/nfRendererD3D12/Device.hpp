@@ -34,6 +34,8 @@ class Device : public IDevice
     D3DPtr<IDXGIFactory4> mDXGIFactory;
     D3DPtr<ID3D12Device> mDevice;
     D3DPtr<ID3D12CommandQueue> mCommandQueue;
+    D3DPtr<ID3D12DebugDevice> mDebugDevice;
+    D3DPtr<ID3D12InfoQueue> mInfoQueue;
 
     // synchronization objects
     D3DPtr<ID3D12Fence> mFence;
