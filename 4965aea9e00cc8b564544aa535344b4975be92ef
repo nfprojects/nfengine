@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_00507b09",
+        "filename": "nfEngine/Renderers/nfRendererVk/PipelineState.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-23T21:50:35Z",
+      "side": 1,
+      "message": "lol",
+      "range": {
+        "startLine": 142,
+        "startChar": 17,
+        "endLine": 142,
+        "endChar": 19
+      },
+      "revId": "4965aea9e00cc8b564544aa535344b4975be92ef",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
