@@ -41,6 +41,7 @@ public:
     ~HeapAllocator();
 
     bool Init();
+    void Release();
 
     uint32 Allocate(uint32 numDescriptors);
 
