@@ -111,7 +111,6 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     inputLayoutDesc.pInputElementDescs = vertexLayout->mElements.data();
 
 
-
     Shader* mVS = dynamic_cast<Shader*>(desc.vertexShader);
     Shader* mHS = dynamic_cast<Shader*>(desc.hullShader);
     Shader* mDS = dynamic_cast<Shader*>(desc.domainShader);
@@ -175,6 +174,11 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
 
     mBindingLayout = resBindingLayout;
     mPrimitiveTopology = TranslatePrimitiveType(desc.primitiveType, desc.numControlPoints);
+
+    if (desc.debugName && !SetDebugName(mPipelineState.get(), desc.debugName))
+    {
+        LOG_WARNING("Failed to set debug name");
+    }
 
     return true;
 }

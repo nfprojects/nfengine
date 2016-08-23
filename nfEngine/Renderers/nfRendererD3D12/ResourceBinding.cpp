@@ -196,6 +196,11 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         0, rootSignature->GetBufferPointer(), rootSignature->GetBufferSize(),
         IID_PPV_ARGS(&mRootSignature)));
 
+    if (desc.debugName && !SetDebugName(mRootSignature.get(), desc.debugName))
+    {
+        LOG_WARNING("Failed to set debug name");
+    }
+
     return true;
 }
 

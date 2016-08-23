@@ -389,7 +389,6 @@ BasicScene::~BasicScene()
 void BasicScene::ReleaseSubsceneResources()
 {
     // clear resources
-    mTexture.reset();
     mSampler.reset();
     mConstantBuffer.reset();
     mIndexBuffer.reset();
