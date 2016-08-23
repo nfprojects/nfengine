@@ -75,6 +75,11 @@ bool Buffer::Init(const BufferDesc& desc)
     if (FAILED(hr))
         return false;
 
+    if (desc.debugName && !SetDebugName(mResource.get(), desc.debugName))
+    {
+        LOG_WARNING("Failed to set debug name");
+    }
+
     // TODO
     if (desc.access == BufferAccess::CPU_Write)
         return true;

@@ -95,6 +95,8 @@ struct ResourceBindingLayoutDesc
     DynamicBufferBindingDesc* dynamicBuffers;
     size_t numDynamicBuffers;
 
+    const char* debugName;
+
     // TODO:
     // fast constants (Vulkan's Push Constants / D3D12 Root Constants)
     // immutable / static samplers
@@ -104,15 +106,17 @@ struct ResourceBindingLayoutDesc
         , numBindingSets(0)
         , dynamicBuffers(nullptr)
         , numDynamicBuffers(0)
+        , debugName(nullptr)
     { }
 
     ResourceBindingLayoutDesc(IResourceBindingSet** bindingSets, size_t numBindingSets,
                               DynamicBufferBindingDesc* dynamicBuffers = nullptr,
-                              size_t numDynamicBuffers = 0)
+                              size_t numDynamicBuffers = 0, const char* debugName = nullptr)
         : bindingSets(bindingSets)
         , numBindingSets(numBindingSets)
         , dynamicBuffers(dynamicBuffers)
         , numDynamicBuffers(numDynamicBuffers)
+        , debugName(debugName)
     { }
 };
 
