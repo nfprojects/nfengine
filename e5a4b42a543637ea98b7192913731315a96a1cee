@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_66d638f3",
+        "filename": "nfEngine/nfCommon/Math/Conversions.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-23T18:52:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_f822e7a2",
+      "range": {
+        "startLine": 90,
+        "startChar": 0,
+        "endLine": 93,
+        "endChar": 20
+      },
+      "revId": "e5a4b42a543637ea98b7192913731315a96a1cee",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_181eab5f",
         "filename": "nfEngine/nfCommon/Math/Conversions.cpp",
         "patchSetId": 1
@@ -71,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_26071083",
+        "filename": "nfEngine/nfCommon/Math/Conversions.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-23T18:52:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_b80e9f30",
+      "range": {
+        "startLine": 95,
+        "startChar": 17,
+        "endLine": 95,
+        "endChar": 45
+      },
+      "revId": "e5a4b42a543637ea98b7192913731315a96a1cee",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_9832bbf1",
         "filename": "nfEngine/nfCommon/Math/Conversions.cpp",
         "patchSetId": 1
@@ -82,6 +130,30 @@
       "writtenOn": "2016-08-23T07:45:23Z",
       "side": 1,
       "message": "Now I do not understand what is going on here. Are you trying to implement rounding? Because it won\u0027t work - X is multiplied by 127.0f.\n\nWhat is this for?",
+      "range": {
+        "startLine": 96,
+        "startChar": 0,
+        "endLine": 99,
+        "endChar": 18
+      },
+      "revId": "e5a4b42a543637ea98b7192913731315a96a1cee",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c6f62490",
+        "filename": "nfEngine/nfCommon/Math/Conversions.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-23T18:52:43Z",
+      "side": 1,
+      "message": "I wrote it to be compatible with D3D format conversions (and Vulkan too). Take a look at: https://msdn.microsoft.com/en-us/library/windows/desktop/dd607323(v\u003dvs.85).aspx\nWe want rounding to the nearest integers (e.g. 0.999f should be mapped to 1, -0.999f to -1, 0.001f to 0, -0.001f also to 0, etc.). That\u0027s why we need to add 0.5f, so after truncation (casting) we get valid rounding. For negatives we need to subtract 0.5f, because truncation rounds numbers towards zero, not towards -INF.",
+      "parentUuid": "baa041b7_9832bbf1",
       "range": {
         "startLine": 96,
         "startChar": 0,
@@ -117,6 +189,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_a6f3209f",
+        "filename": "nfEngine/nfCommon/Math/Conversions.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-23T18:52:43Z",
+      "side": 1,
+      "message": "As above",
+      "parentUuid": "baa041b7_782ff788",
+      "range": {
+        "startLine": 121,
+        "startChar": 0,
+        "endLine": 132,
+        "endChar": 33
+      },
+      "revId": "e5a4b42a543637ea98b7192913731315a96a1cee",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_b507c81c",
         "filename": "nfEngine/nfCommon/Math/Conversions.hpp",
         "patchSetId": 1
@@ -128,6 +224,30 @@
       "writtenOn": "2016-08-23T07:45:23Z",
       "side": 1,
       "message": "I\u0027m thinking about naming convention here.\n\nWriting just \"ToHalfFloat\" would be quicker and neater. Repeating \"Convert\" each line doesn\u0027t make sense, and argument type does not matter much - it will be distinguished by compiler with function overloading if we would like to convert other types ToHalfFloat, ToInt8 or else.\n\nWhat do you think?",
+      "range": {
+        "startLine": 18,
+        "startChar": 23,
+        "endLine": 18,
+        "endChar": 46
+      },
+      "revId": "e5a4b42a543637ea98b7192913731315a96a1cee",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a6cc4062",
+        "filename": "nfEngine/nfCommon/Math/Conversions.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-08-23T18:52:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_b507c81c",
       "range": {
         "startLine": 18,
         "startChar": 23,
