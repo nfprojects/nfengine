@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_67463251",
+        "filename": "nfEngine/Renderers/nfRendererVk/Backbuffer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-24T12:26:09Z",
+      "side": 1,
+      "message": "True, removed.",
+      "parentUuid": "baa041b7_e1f592ed",
+      "range": {
+        "startLine": 175,
+        "startChar": 0,
+        "endLine": 180,
+        "endChar": 46
+      },
+      "revId": "23c31ebd45e4f5761884952f0c70e277ba107401",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_a1d8aa80",
         "filename": "nfEngine/Renderers/nfRendererVk/Buffer.hpp",
         "patchSetId": 8
@@ -36,6 +60,30 @@
       "writtenOn": "2016-08-23T21:50:35Z",
       "side": 1,
       "message": "IMO this is only required during initialization, so it\u0027s useless to put it here",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 40
+      },
+      "revId": "23c31ebd45e4f5761884952f0c70e277ba107401",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c7661eee",
+        "filename": "nfEngine/Renderers/nfRendererVk/Buffer.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-24T12:26:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_a1d8aa80",
       "range": {
         "startLine": 22,
         "startChar": 0,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_675d1215",
+        "filename": "nfEngine/Renderers/nfRendererVk/Defines.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-24T12:26:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_81e5a639",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 19
+      },
+      "revId": "23c31ebd45e4f5761884952f0c70e277ba107401",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_61e2a231",
         "filename": "nfEngine/Renderers/nfRendererVk/Device.hpp",
         "patchSetId": 8
@@ -88,6 +160,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_4799eecf",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-24T12:26:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_61e2a231",
+      "revId": "23c31ebd45e4f5761884952f0c70e277ba107401",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_41ce7eb8",
         "filename": "nfEngine/Renderers/nfRendererVk/PipelineState.hpp",
         "patchSetId": 8
@@ -99,6 +189,30 @@
       "writtenOn": "2016-08-23T21:50:35Z",
       "side": 1,
       "message": "put in PCH",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 16
+      },
+      "revId": "23c31ebd45e4f5761884952f0c70e277ba107401",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_279eeab8",
+        "filename": "nfEngine/Renderers/nfRendererVk/PipelineState.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-24T12:26:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_41ce7eb8",
       "range": {
         "startLine": 13,
         "startChar": 0,
@@ -134,6 +248,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_07a3e601",
+        "filename": "nfEngine/Renderers/nfRendererVk/RenderTarget.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-24T12:26:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_21d37a61",
+      "range": {
+        "startLine": 119,
+        "startChar": 0,
+        "endLine": 119,
+        "endChar": 24
+      },
+      "revId": "23c31ebd45e4f5761884952f0c70e277ba107401",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_01c876a7",
         "filename": "nfEngine/Renderers/nfRendererVk/Shader.cpp",
         "patchSetId": 8
@@ -145,6 +283,30 @@
       "writtenOn": "2016-08-23T21:50:35Z",
       "side": 1,
       "message": "put in PCH",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 18
+      },
+      "revId": "23c31ebd45e4f5761884952f0c70e277ba107401",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c7adfeeb",
+        "filename": "nfEngine/Renderers/nfRendererVk/Shader.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-24T12:26:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_01c876a7",
       "range": {
         "startLine": 14,
         "startChar": 0,
@@ -180,6 +342,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_e7a7e209",
+        "filename": "nfEngine/Renderers/nfRendererVk/Shader.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-24T12:26:09Z",
+      "side": 1,
+      "message": "Right now no, however I\u0027ve already corrected it during Resources binding stage (I had to change 50% of Shader and ShaderProgram modules). So I think it would be best to leave this here for now, as it will get resolved in next commit.",
+      "parentUuid": "baa041b7_61b98215",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 55
+      },
+      "revId": "23c31ebd45e4f5761884952f0c70e277ba107401",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_01f19601",
         "filename": "nfEngine/nfRendererDemo/Shaders/GLSL/TestVS.glsl",
         "patchSetId": 8
@@ -191,6 +377,24 @@
       "writtenOn": "2016-08-23T21:50:35Z",
       "side": 1,
       "message": "maybe #ifdef VULKAN?",
+      "revId": "23c31ebd45e4f5761884952f0c70e277ba107401",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a7aafad0",
+        "filename": "nfEngine/nfRendererDemo/Shaders/GLSL/TestVS.glsl",
+        "patchSetId": 8
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-08-24T12:26:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_01f19601",
       "revId": "23c31ebd45e4f5761884952f0c70e277ba107401",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
