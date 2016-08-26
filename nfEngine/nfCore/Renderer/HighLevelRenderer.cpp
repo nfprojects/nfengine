@@ -11,6 +11,7 @@
 #include "HighLevelRenderer.hpp"
 #include "View.hpp"
 #include "Engine.hpp"
+#include "Utils/ConfigVariable.hpp"
 #include "nfCommon/ThreadPool.hpp"
 #include "nfCommon/Logger.hpp"
 
@@ -21,6 +22,11 @@
 #include "PostProcessRenderer.hpp"
 
 namespace NFE {
+
+ConfigVariable<const char*> gRendererBackendName("renderer/backend/name", "nfRendererD3D11");
+ConfigVariable<int> gRendererPreferredCard("renderer/backend/card", -1);
+ConfigVariable<int> gRendererDebugLevel("renderer/backend/debugLevel", 0);
+
 namespace Renderer {
 
 RendererConfig::RendererConfig()
@@ -42,9 +48,9 @@ IDevice* HighLevelRenderer::GetDevice()
     return mRenderingDevice;
 }
 
-bool HighLevelRenderer::Init(const std::string& preferredRendererName)
+bool HighLevelRenderer::Init()
 {
-    if (!mLowLevelRendererLib.Open(preferredRendererName))
+    if (!mLowLevelRendererLib.Open(gRendererBackendName.Get()))
         return false;
 
     RendererInitFunc initFunc;
@@ -53,9 +59,11 @@ bool HighLevelRenderer::Init(const std::string& preferredRendererName)
 
     // TODO read this parameters from config
     DeviceInitParams params;
-    params.preferredCardId = -1;
+    params.preferredCardId = gRendererPreferredCard.Get();
 #ifdef  _DEBUG
     params.debugLevel = 1;
+#else
+    params.debugLevel = gRendererDebugLevel.Get();
 #endif //  _DEBUG
 
     mRenderingDevice = initFunc(&params);

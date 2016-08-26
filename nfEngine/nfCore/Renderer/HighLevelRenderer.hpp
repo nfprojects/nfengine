@@ -103,7 +103,7 @@ public:
      * @param preferredRendererName Low-level renderer name
      * @return 0 on success.
      */
-    bool Init(const std::string& preferredRendererName);
+    bool Init();
     void Release();
     void ReleaseModules();
 

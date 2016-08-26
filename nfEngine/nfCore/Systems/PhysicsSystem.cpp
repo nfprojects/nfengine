@@ -10,10 +10,18 @@
 #include "Scene/EntityManager.hpp"
 #include "Components/TransformComponent.hpp"
 #include "Components/BodyComponent.hpp"
+#include "Utils/ConfigVariable.hpp"
 
 #include "nfCommon/Timer.hpp"
 
 namespace NFE {
+
+
+ConfigVariable<float> gFixedTimeStep("physics/fixedTimeStep", 1.0f / 60.0f);
+ConfigVariable<int> gMaxSubSteps("physics/maxSubSteps", 50);
+ConfigVariable<bool> gEnableCCD("physics/ccd", true);
+
+
 namespace Scene {
 
 using namespace Math;
@@ -48,14 +56,14 @@ PhysicsSystem::PhysicsSystem(SceneManager* scene)
     mDynamicsWorld.reset(new btDiscreteDynamicsWorld(mDispatcher.get(), mBroadphase.get(),
                                                      mSolver.get(), mCollsionConfig.get()));
 
-    mDynamicsWorld->getDispatchInfo().m_useContinuous = true;
+    mDynamicsWorld->getDispatchInfo().m_useContinuous = gEnableCCD.Get();
     mDynamicsWorld->getSolverInfo().m_solverMode |= SOLVER_SIMD | SOLVER_USE_WARMSTARTING;
     mDynamicsWorld->setGravity(btVector3(0.0f, -9.81f, 0.0f));
 }
 
 void PhysicsSystem::UpdatePhysics(float dt)
 {
-    mDynamicsWorld->stepSimulation(dt, 40, 1.0f / 90.0f);
+    mDynamicsWorld->stepSimulation(dt, gMaxSubSteps.Get(), gFixedTimeStep.Get());
 }
 
 void PhysicsSystem::ProcessContacts()

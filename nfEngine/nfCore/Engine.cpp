@@ -14,6 +14,8 @@
 #include "Renderer/View.hpp"
 #include "Renderer/Font.hpp"
 
+#include "Utils/ConfigVariable.hpp"
+
 #include "nfCommon/Memory.hpp"
 #include "nfCommon/Window.hpp"
 #include "nfCommon/Timer.hpp"
@@ -41,7 +43,7 @@ bool Engine::OnInit()
     // init renderer
     LOG_INFO("Initializing renderer...");
     mRenderer.reset(new Renderer::HighLevelRenderer());
-    if (!mRenderer->Init("nfRendererD3D11"))
+    if (!mRenderer->Init())
     {
         mRenderer.reset();
         LOG_ERROR("Failed to initialize renderer. Drawing will not be supported");
@@ -108,6 +110,8 @@ Engine* Engine::GetInstance()
 {
     if (gEngineInstance)
         return gEngineInstance.get();
+
+    ConfigManager::GetInstance().Initialize();
 
     gEngineInstance.reset(new (std::nothrow) Engine);
     if (!gEngineInstance)
