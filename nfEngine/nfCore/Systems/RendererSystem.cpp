@@ -10,6 +10,7 @@
 #include "Scene/EntityManager.hpp"
 #include "Engine.hpp"
 #include "Resources/Material.hpp"
+#include "Utils/ConfigVariable.hpp"
 
 #include "Renderer/HighLevelRenderer.hpp"
 #include "Renderer/LightsRenderer.hpp"
@@ -30,6 +31,14 @@
 #include "nfCommon/Math/Sphere.hpp"
 
 namespace NFE {
+
+// debug drawing config vars
+namespace {
+ConfigVariable<bool> gDrawDebugEnable("renderer/debug/enable", true);
+ConfigVariable<bool> gDrawDebugLights("renderer/debug/lights", false);
+ConfigVariable<bool> gDrawDebugMeshes("renderer/debug/meshes", false);
+} // namespace
+
 namespace Scene {
 
 using namespace Math;
@@ -466,7 +475,7 @@ void RendererSystem::Render(const Common::TaskContext& context, RenderingData& r
         std::bind(&RendererSystem::RenderLights, this, _1, std::ref(renderingData)));
 
     // enqueue debug layer pass task
-    // TODO: temporary - add "if" statement when renderer configuration is implemented
+    if (gDrawDebugEnable.Get())
     {
         renderingData.debugLayerTask = threadPool->CreateTask(
             std::bind(&RendererSystem::RenderDebugLayer, this, _1, std::ref(renderingData)));
@@ -512,15 +521,13 @@ void RendererSystem::RenderDebugLayer(const Common::TaskContext& context, Render
     }
 
     // draw light shapes
-    // TODO: temporary - fix "if" statement when renderer configuration is implemented
-    if (false)
+    if (gDrawDebugLights.Get())
     {
         RenderLightsDebug(data, renderCtx);
     }
 
     // draw meshes AABBs
-    // TODO: temporary - fix "if" statement when renderer configuration is implemented
-    if (false)
+    if (gDrawDebugMeshes.Get())
     {
         for (auto meshTuple : mMeshes)
         {

@@ -135,6 +135,12 @@
     <ClCompile Include="Resources\MultiPipelineState.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\ConfigVariable.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\ConfigManager.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Prerequisites.hpp">
@@ -262,6 +268,12 @@
     </ClInclude>
     <ClInclude Include="Resources\MultiPipelineState.hpp">
       <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\ConfigVariable.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\ConfigManager.hpp">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
