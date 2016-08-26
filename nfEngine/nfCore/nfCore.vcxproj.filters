@@ -150,6 +150,12 @@
     <ClCompile Include="Renderer\GeometryRenderer.cpp">
       <Filter>Renderer\Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\ConfigVariable.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\ConfigManager.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Prerequisites.hpp">
@@ -283,6 +289,12 @@
     </ClInclude>
     <ClInclude Include="Renderer\GeometryRendererContext.hpp">
       <Filter>Renderer\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\ConfigVariable.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\ConfigManager.hpp">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
