@@ -14,6 +14,8 @@
 #include "Renderer/View.hpp"
 #include "Renderer/Font.hpp"
 
+#include "Utils/ConfigVariable.hpp"
+
 #include "nfCommon/Memory.hpp"
 #include "nfCommon/Window.hpp"
 #include "nfCommon/Timer.hpp"
@@ -108,6 +110,8 @@ Engine* Engine::GetInstance()
 {
     if (gEngineInstance)
         return gEngineInstance.get();
+  
+    ConfigManager::GetInstance().Initialize();
 
     gEngineInstance.reset(new (std::nothrow) Engine);
     if (!gEngineInstance)
