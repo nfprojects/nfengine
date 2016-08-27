@@ -413,7 +413,7 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
             if (result > 0)
             {
                 buffer[result] = '\0';
-                window->mCharacters.append(buffer);
+                window->OnCharTyped(buffer);
             }
 
             return 0;
@@ -466,8 +466,6 @@ bool Window::GetFullscreenMode() const
 
 void Window::ProcessMessages()
 {
-    mCharacters.clear();
-
     MSG msg;
     while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
     {
@@ -495,38 +493,43 @@ void Window::OnClose()
 
 void Window::OnResize(uint32 width, uint32 height)
 {
-    (void)width;
-    (void)height;
+    UNUSED(width);
+    UNUSED(height);
 }
 
 void Window::OnKeyPress(KeyCode key)
 {
-    (void)key;
+    UNUSED(key);
+}
+
+void Window::OnCharTyped(const char* charUTF8)
+{
+    UNUSED(charUTF8);
 }
 
 void Window::OnScroll(int delta)
 {
-    (void)delta;
+    UNUSED(delta);
 }
 
 void Window::OnMouseDown(uint32 button, int x, int y)
 {
-    (void)button;
-    (void)x;
-    (void)y;
+    UNUSED(button);
+    UNUSED(x);
+    UNUSED(y);
 }
 
 void Window::OnMouseMove(int x, int y, int deltaX, int deltaY)
 {
-    (void)x;
-    (void)y;
-    (void)deltaX;
-    (void)deltaY;
+    UNUSED(x);
+    UNUSED(y);
+    UNUSED(deltaX);
+    UNUSED(deltaY);
 }
 
 void Window::OnMouseUp(uint32 button)
 {
-    (void)button;
+    UNUSED(button);
 }
 
 } // namespace Common

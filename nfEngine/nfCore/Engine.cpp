@@ -221,7 +221,6 @@ bool Engine::Advance(View** views, size_t viewsNum,
         RenderContext* ctx = mRenderer->GetDeferredContext(0);
         ctx->commandBufferOnScreen->Reset();
         view->Postprocess(ctx);
-        view->UpdateGui();
 
         // GUI renderer pass
         {
@@ -229,7 +228,7 @@ bool Engine::Advance(View** views, size_t viewsNum,
 
             GuiRenderer::Get()->OnEnter(guiContext);
             GuiRenderer::Get()->SetTarget(guiContext, view->GetRenderTarget(true));
-            view->DrawGui(guiContext);
+            view->DrawGui(ctx);
             GuiRenderer::Get()->BeginOrdinaryGuiRendering(guiContext);
             view->OnPostRender(guiContext);
             GuiRenderer::Get()->OnLeave(guiContext);

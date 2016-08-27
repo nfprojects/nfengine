@@ -9,7 +9,9 @@
 #include "../Core.hpp"
 #include "HighLevelRenderer.hpp"
 #include "RendererResources.hpp"
+#include "ImGuiWrapper.hpp"
 #include "../Scene/EntityManager.hpp"
+#include "../Utils/SimpleInput.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -29,7 +31,7 @@ struct PostProcessParameters
     {}
 };
 
-class CORE_API View
+class CORE_API View : public Utils::SimpleInputListener
 {
     // not NULL when rendering to a off-screen render target
     Resource::Texture* mTexture;
@@ -51,13 +53,11 @@ class CORE_API View
     Scene::SceneManager* mScene;
     Scene::EntityID mCameraEntity;
 
-    // ImGui internal state
-    void* mDefaultImGuiState;
-    void* mImGuiState;
-    std::unique_ptr<ITexture> mImGuiTexture;
-    std::unique_ptr<IResourceBindingInstance> mImGuiTextureBinding; // For GUI Renderer
+    std::unique_ptr<ImGuiWrapper> mImGuiWrapper;
 
-    bool InitImGui();
+    // input listeners attached to this view (e.g. ImGui, debug console, etc.)
+    std::vector<Utils::SimpleInputListener*> mInputListeners;
+
     bool InitTemporaryRenderTarget(uint32 width, uint32 height);
     bool InitRenderTarget(ITexture* texture, uint32 width, uint32 height);
     static void OnWindowResize(void* userData);
@@ -65,7 +65,7 @@ class CORE_API View
 public:
     PostProcessParameters postProcessParams;
 
-    View();
+    View(bool useImGui = false);
     virtual ~View();
 
     /**
@@ -80,6 +80,17 @@ public:
                     (which is hold in global variable).
      */
     virtual void OnDrawImGui(void* state);
+
+    void RegisterInputListener(Utils::SimpleInputListener* listener);
+    void UnregisterInputListener(Utils::SimpleInputListener* listener);
+
+    // SimpleInputListener
+    bool OnKeyPressed(const Utils::KeyPressedEvent& event) override;
+    bool OnMouseDown(const Utils::MouseButtonEvent& event) override;
+    bool OnMouseUp(const Utils::MouseButtonEvent& event) override;
+    bool OnMouseMove(const Utils::MouseMoveEvent& event) override;
+    bool OnMouseScroll(int delta) override;
+    bool OnCharTyped(const char* charUTF8) override;
 
     bool SetCamera(Scene::SceneManager* scene, Scene::EntityID cameraEntity);
 
@@ -152,15 +163,15 @@ public:
      */
     void GetSize(uint32& width, uint32& height);
 
-    void UpdateGui();
-
-    void DrawGui(GuiRendererContext* context);
+    /**
+     * Draw GUI overlay.
+     */
+    void DrawGui(RenderContext* context);
 
     /**
      * Draw ImGui window with the view properties.
      */
     void DrawViewPropertiesGui();
-
 };
 
 } // namespace Renderer
