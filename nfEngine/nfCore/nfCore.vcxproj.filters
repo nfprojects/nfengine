@@ -144,6 +144,9 @@
     <ClCompile Include="Utils\ConfigManager.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer\ImGuiWrapper.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Prerequisites.hpp">
@@ -280,6 +283,12 @@
     </ClInclude>
     <ClInclude Include="Utils\ConfigManager.hpp">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\SimpleInput.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\ImGuiWrapper.hpp">
+      <Filter>Renderer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
