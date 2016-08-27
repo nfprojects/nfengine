@@ -211,7 +211,6 @@ bool Engine::Advance(View** views, size_t viewsNum,
         RenderContext* ctx = mRenderer->GetDefaultContext();
         ctx->commandBuffer->Reset();
         view->Postprocess(ctx);
-        view->UpdateGui();
 
         // GUI renderer pass
         {

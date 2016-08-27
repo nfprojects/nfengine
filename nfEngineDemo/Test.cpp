@@ -73,6 +73,9 @@ public:
         {
             if (ImGui::Begin("Profiler", nullptr, ImVec2(340, 300), 0.8f))
             {
+                static char buffer[128];
+                ImGui::InputText("test", buffer, 128);
+
                 ImGui::Text("Delta time: %.2fms", 1000.0f * gDeltaTime);
                 ImGui::Text("FPS: %.1f", 1.0f / gDeltaTime);
                 ImGui::Separator();
@@ -324,8 +327,18 @@ public:
         cameraBody->SetVelocity(VectorLerp(prevVelocity, destVelocity, factor));
     }
 
-    void OnKeyPress(Common::KeyCode key)
+    void OnKeyPress(Common::KeyCode key) override
     {
+        // create input event structure for the engine
+        Utils::KeyPressedEvent event;
+        event.key = key;
+        event.isAltPressed = IsKeyPressed(Common::KeyCode::AltLeft);
+        event.isCtrlPressed = IsKeyPressed(Common::KeyCode::ControlLeft);
+        event.isShiftPressed = IsKeyPressed(Common::KeyCode::ShiftLeft);
+
+        if (view && view->OnKeyPressed(event))
+            return; // key press event was consumed by the engine
+
         if (key == Common::KeyCode::F1)
         {
             BOOL fullscreen = GetFullscreenMode();
@@ -403,13 +416,22 @@ public:
             SetUpScene(static_cast<unsigned int>(key) -
                        static_cast<unsigned int>(Common::KeyCode::Num0));
 
-        // spaw a new window
+        // spawn a new window
         if (key == Common::KeyCode::N)
             AddWindow(this);
     }
 
-    void OnMouseDown(UINT button, int x, int y)
+    void OnMouseDown(UINT button, int x, int y) override
     {
+        // create input event structure for the engine
+        Utils::MouseButtonEvent event;
+        event.mouseButton = button;
+        event.x = x;
+        event.y = y;
+
+        if (view && view->OnMouseDown(event))
+            return; // mouse event was consumed by the engine
+
         if (button == 0)
             cameraControl = true;
 
@@ -474,8 +496,16 @@ public:
         }
     }
 
-    void OnMouseMove(int x, int y, int deltaX, int deltaY)
+    void OnMouseMove(int x, int y, int deltaX, int deltaY) override
     {
+        // create input event structure for the engine
+        Utils::MouseMoveEvent event;
+        event.x = x;
+        event.y = y;
+
+        if (view && view->OnMouseMove(event))
+            return; // mouse event was consumed by the engine
+
         if (cameraControl)
         {
             float fDeltaX = static_cast<float>(deltaX) * 0.005f;
@@ -490,10 +520,30 @@ public:
         }
     }
 
-    void OnMouseUp(UINT button)
+    void OnMouseUp(UINT button) override
     {
+        // create input event structure for the engine
+        Utils::MouseButtonEvent event;
+        event.mouseButton = button;
+        GetMousePosition(event.x, event.y);
+
+        if (view && view->OnMouseUp(event))
+            return; // mouse event was consumed by the engine
+
         if (button == 0)
             cameraControl = false;
+    }
+
+    void OnScroll(int delta) override
+    {
+        if (view && view->OnMouseScroll(delta))
+            return; // mouse event was consumed by the engine
+    }
+
+    void OnCharTyped(const char* charUTF8) override
+    {
+        if (view && view->OnCharTyped(charUTF8))
+            return; // mouse event was consumed by the engine
     }
 
     // window resized

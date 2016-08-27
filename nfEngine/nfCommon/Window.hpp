@@ -57,7 +57,6 @@ private:
     bool mMouseButtons[3];
     int mMousePos[2];
     int mMouseWheelDelta;
-    std::string mCharacters;
     bool mKeys[NFE_WINDOW_KEYS_NUM];
 
     // used by renderer
@@ -158,14 +157,6 @@ public:
     }
 
     /**
-     * Get typed UTF-8 characters typed since last @p ProcessMessages() method call.
-     */
-    NFE_INLINE const char* GetInputCharacters() const
-    {
-        return mCharacters.c_str();
-    }
-
-    /**
      * Set window's new size
      */
     void SetSize(uint32 width, uint32 height);
@@ -210,10 +201,11 @@ public:
      */
     bool HasFocus() const;
 
-    // callbacks, overriden by inheritance
+    // callbacks, overridden by inheritance
     virtual void OnClose();
     virtual void OnResize(uint32 width, uint32 height);
     virtual void OnKeyPress(KeyCode key);
+    virtual void OnCharTyped(const char* charUTF8);
     virtual void OnScroll(int delta);
     virtual void OnMouseDown(uint32 button, int x, int y);
     virtual void OnMouseMove(int x, int y, int deltaX, int deltaY);
