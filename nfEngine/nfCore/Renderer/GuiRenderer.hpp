@@ -59,12 +59,10 @@ public:
     void OnEnter(GuiRendererContext* context) override;
     void OnLeave(GuiRendererContext* context) override;
 
-    void SetTarget(GuiRendererContext* context, const RenderTargetPtr& target);
-    void BeginOrdinaryGuiRendering(GuiRendererContext* context);
-
+    void DrawQuad(GuiRendererContext* context, const Recti& rect, uint32 color);
     void DrawQuad(GuiRendererContext* context, const Rectf& rect, uint32 color);
     void DrawTexturedQuad(GuiRendererContext* context, const Rectf& rect, const Rectf& texCoords,
-                          ResourceBindingInstancePtr textureBinding, uint32 color,
+                          ResourceBindingInstancePtr* textureBinding, uint32 color,
                           bool alpha = false);
     bool PrintText(GuiRendererContext* context, Font* font, const char* text,
                    const Recti& rect, uint32 color,

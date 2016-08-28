@@ -253,6 +253,13 @@ void GuiRenderer::PushQuad(GuiRendererContext* context, const GuiQuadData& quad,
     context->queuedQuads++;
 }
 
+void GuiRenderer::DrawQuad(GuiRendererContext* context, const Recti& rect, uint32 color)
+{
+    Rectf floatRect(static_cast<float>(rect.Xmin), static_cast<float>(rect.Ymin),
+                    static_cast<float>(rect.Xmax), static_cast<float>(rect.Ymax));
+    PushQuad(context, GuiQuadData(), GuiQuadVertex(floatRect, Rectf(), color));
+}
+
 void GuiRenderer::DrawQuad(GuiRendererContext* context, const Rectf& rect, uint32 color)
 {
     PushQuad(context, GuiQuadData(), GuiQuadVertex(rect, Rectf(), color));

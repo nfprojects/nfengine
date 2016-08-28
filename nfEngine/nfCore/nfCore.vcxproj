@@ -338,6 +338,12 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Utils\DebugConsole.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Utils\Profiler.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -403,6 +409,7 @@
     <ClInclude Include="ShaderCommon.hpp" />
     <ClInclude Include="Utils\ConfigManager.hpp" />
     <ClInclude Include="Utils\ConfigVariable.hpp" />
+    <ClInclude Include="Utils\DebugConsole.hpp" />
     <ClInclude Include="Utils\Profiler.hpp" />
     <ClInclude Include="Utils\SimpleInput.hpp" />
   </ItemGroup>

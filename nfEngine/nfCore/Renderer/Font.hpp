@@ -52,7 +52,7 @@ public:
     /**
      * Calculate text width and lines number.
      */
-    bool GetTextSize(const char* text, int& width, int& lines) const;
+    bool GetTextSize(const char* text, int& width, int& lines, size_t numChars = SIZE_MAX) const;
 
     static bool InitFreeType();
 

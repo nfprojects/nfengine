@@ -210,6 +210,9 @@
     <ClCompile Include="Scene\Components\ComponentTrigger.cpp">
       <Filter>Scene\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\DebugConsole.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.hpp">
@@ -403,6 +406,9 @@
     </ClInclude>
     <ClInclude Include="Scene\Components\ComponentTrigger.hpp">
       <Filter>Scene\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\DebugConsole.hpp">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

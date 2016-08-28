@@ -12,6 +12,7 @@
 
 #include "Engine.hpp"
 #include "Utils/ConfigVariable.hpp"
+#include "Utils/DebugConsole.hpp"
 #include "Resources/ResourcesManager.hpp"
 #include "Resources/Texture.hpp"
 
@@ -32,11 +33,17 @@ ConfigVariable<bool> gUseImGui("core/useImGui", true);
 
 namespace Renderer {
 
-View::View(bool useImGui)
+View::View(bool useImGui, bool enableConsole)
+    : mScene(nullptr)
+    , mTexture(nullptr)
+    , mWindow(nullptr)
+    , mCameraEntity(0)
 {
-    mTexture = nullptr;
-    mWindow = nullptr;
-    mCameraEntity = nullptr;
+    if (enableConsole)
+    {
+        mDebugConsole.reset(new Utils::DebugConsole);
+        RegisterInputListener(mDebugConsole.get());
+    }
 
     if (useImGui && gUseImGui.Get())
     {
@@ -47,6 +54,11 @@ View::View(bool useImGui)
 
 View::~View()
 {
+    if (mDebugConsole)
+    {
+        UnregisterInputListener(mDebugConsole.get());
+    }
+
     if (mImGuiWrapper)
     {
         UnregisterInputListener(mImGuiWrapper.get());
@@ -369,6 +381,12 @@ void View::DrawGui(RenderContext* context)
         mImGuiWrapper->BeginDrawing(mWindow);
         OnDrawImGui(mImGuiWrapper->GetImGuiInternalState());
         mImGuiWrapper->FinishDrawing(context);
+    }
+
+    if (mDebugConsole)
+    {
+        GuiRenderer::Get()->BeginOrdinaryGuiRendering(context);
+        mDebugConsole->Render(mWindow, context);
     }
 }
 
