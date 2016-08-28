@@ -36,6 +36,7 @@ class CORE_API GuiRenderer : public RendererModule<GuiRenderer, GuiRendererConte
     std::unique_ptr<IVertexLayout> mVertexLayout;
     std::unique_ptr<IBuffer> mConstantBuffer;
 
+    std::unique_ptr<IResourceBindingSet> mCBufferBindingSet;
     std::unique_ptr<IResourceBindingSet> mPSBindingSet;
     std::unique_ptr<IResourceBindingLayout> mResBindingLayout;
 
