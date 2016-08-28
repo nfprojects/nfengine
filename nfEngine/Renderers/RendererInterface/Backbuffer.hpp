@@ -22,6 +22,7 @@ struct BackbufferDesc
     int height;
     bool vSync;
     const char* debugName; //< optional debug name
+    ElementFormat format;
     // TODO: options such as: UAV usage, mulitsampling, texture format, etc.
     // TODO: buffers number (double buffering, tripple buffering, etc.)
 
@@ -31,6 +32,7 @@ struct BackbufferDesc
         , height(0)
         , vSync(false)
         , debugName(nullptr)
+        , format(ElementFormat::R8G8B8A8_U_Norm)
     {
     }
 };

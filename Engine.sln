@@ -99,34 +99,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfRendererOGL4", "nfEngine\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shaders", "Shaders", "{B19B4C10-EB4D-4782-8933-120A35AC259D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "D3D11", "D3D11", "{A9D64D99-8D32-4B24-A601-2F8FFF1FC079}"
-	ProjectSection(SolutionItems) = preProject
-		nfEngine\Shaders\D3D11\AmbientLightPS.hlsl = nfEngine\Shaders\D3D11\AmbientLightPS.hlsl
-		nfEngine\Shaders\D3D11\Common.hlsl = nfEngine\Shaders\D3D11\Common.hlsl
-		nfEngine\Shaders\D3D11\DebugPS.hlsl = nfEngine\Shaders\D3D11\DebugPS.hlsl
-		nfEngine\Shaders\D3D11\DebugVS.hlsl = nfEngine\Shaders\D3D11\DebugVS.hlsl
-		nfEngine\Shaders\D3D11\FullScreenQuadVS.hlsl = nfEngine\Shaders\D3D11\FullScreenQuadVS.hlsl
-		nfEngine\Shaders\D3D11\GeometryPassPS.hlsl = nfEngine\Shaders\D3D11\GeometryPassPS.hlsl
-		nfEngine\Shaders\D3D11\GeometryPassVS.hlsl = nfEngine\Shaders\D3D11\GeometryPassVS.hlsl
-		nfEngine\Shaders\D3D11\GuiCommon.hlsl = nfEngine\Shaders\D3D11\GuiCommon.hlsl
-		nfEngine\Shaders\D3D11\GuiGS.hlsl = nfEngine\Shaders\D3D11\GuiGS.hlsl
-		nfEngine\Shaders\D3D11\GuiPS.hlsl = nfEngine\Shaders\D3D11\GuiPS.hlsl
-		nfEngine\Shaders\D3D11\GuiVS.hlsl = nfEngine\Shaders\D3D11\GuiVS.hlsl
-		nfEngine\Shaders\D3D11\ImGuiPS.hlsl = nfEngine\Shaders\D3D11\ImGuiPS.hlsl
-		nfEngine\Shaders\D3D11\ImGuiVS.hlsl = nfEngine\Shaders\D3D11\ImGuiVS.hlsl
-		nfEngine\Shaders\D3D11\LightCommon.hlsl = nfEngine\Shaders\D3D11\LightCommon.hlsl
-		nfEngine\Shaders\D3D11\OmniLightCommon.hlsl = nfEngine\Shaders\D3D11\OmniLightCommon.hlsl
-		nfEngine\Shaders\D3D11\OmniLightPS.hlsl = nfEngine\Shaders\D3D11\OmniLightPS.hlsl
-		nfEngine\Shaders\D3D11\OmniLightVS.hlsl = nfEngine\Shaders\D3D11\OmniLightVS.hlsl
-		nfEngine\Shaders\D3D11\ShadowCommon.hlsl = nfEngine\Shaders\D3D11\ShadowCommon.hlsl
-		nfEngine\Shaders\D3D11\ShadowPS.hlsl = nfEngine\Shaders\D3D11\ShadowPS.hlsl
-		nfEngine\Shaders\D3D11\ShadowVS.hlsl = nfEngine\Shaders\D3D11\ShadowVS.hlsl
-		nfEngine\Shaders\D3D11\SpotLightCommon.hlsl = nfEngine\Shaders\D3D11\SpotLightCommon.hlsl
-		nfEngine\Shaders\D3D11\SpotLightPS.hlsl = nfEngine\Shaders\D3D11\SpotLightPS.hlsl
-		nfEngine\Shaders\D3D11\SpotLightVS.hlsl = nfEngine\Shaders\D3D11\SpotLightVS.hlsl
-		nfEngine\Shaders\D3D11\TonemappingPS.hlsl = nfEngine\Shaders\D3D11\TonemappingPS.hlsl
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfRendererD3D12", "nfEngine\Renderers\nfRendererD3D12\nfRendererD3D12.vcxproj", "{49AB8AC7-1834-4AF8-9792-59313C71C7E0}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
@@ -140,6 +112,34 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfResources", "nfEngine\nfResources\nfResources.vcxproj", "{39346F9B-F1D6-41A9-A539-91D0448C491C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HLSL5", "HLSL5", "{EA1DDF9B-476B-4D52-BBF0-A673D7CD84C5}"
+	ProjectSection(SolutionItems) = preProject
+		nfEngine\Shaders\HLSL5\AmbientLightPS.hlsl = nfEngine\Shaders\HLSL5\AmbientLightPS.hlsl
+		nfEngine\Shaders\HLSL5\Common.hlsl = nfEngine\Shaders\HLSL5\Common.hlsl
+		nfEngine\Shaders\HLSL5\DebugPS.hlsl = nfEngine\Shaders\HLSL5\DebugPS.hlsl
+		nfEngine\Shaders\HLSL5\DebugVS.hlsl = nfEngine\Shaders\HLSL5\DebugVS.hlsl
+		nfEngine\Shaders\HLSL5\FullScreenQuadVS.hlsl = nfEngine\Shaders\HLSL5\FullScreenQuadVS.hlsl
+		nfEngine\Shaders\HLSL5\GeometryPassPS.hlsl = nfEngine\Shaders\HLSL5\GeometryPassPS.hlsl
+		nfEngine\Shaders\HLSL5\GeometryPassVS.hlsl = nfEngine\Shaders\HLSL5\GeometryPassVS.hlsl
+		nfEngine\Shaders\HLSL5\GuiCommon.hlsl = nfEngine\Shaders\HLSL5\GuiCommon.hlsl
+		nfEngine\Shaders\HLSL5\GuiGS.hlsl = nfEngine\Shaders\HLSL5\GuiGS.hlsl
+		nfEngine\Shaders\HLSL5\GuiPS.hlsl = nfEngine\Shaders\HLSL5\GuiPS.hlsl
+		nfEngine\Shaders\HLSL5\GuiVS.hlsl = nfEngine\Shaders\HLSL5\GuiVS.hlsl
+		nfEngine\Shaders\HLSL5\ImGuiPS.hlsl = nfEngine\Shaders\HLSL5\ImGuiPS.hlsl
+		nfEngine\Shaders\HLSL5\ImGuiVS.hlsl = nfEngine\Shaders\HLSL5\ImGuiVS.hlsl
+		nfEngine\Shaders\HLSL5\LightCommon.hlsl = nfEngine\Shaders\HLSL5\LightCommon.hlsl
+		nfEngine\Shaders\HLSL5\OmniLightCommon.hlsl = nfEngine\Shaders\HLSL5\OmniLightCommon.hlsl
+		nfEngine\Shaders\HLSL5\OmniLightPS.hlsl = nfEngine\Shaders\HLSL5\OmniLightPS.hlsl
+		nfEngine\Shaders\HLSL5\OmniLightVS.hlsl = nfEngine\Shaders\HLSL5\OmniLightVS.hlsl
+		nfEngine\Shaders\HLSL5\ShadowCommon.hlsl = nfEngine\Shaders\HLSL5\ShadowCommon.hlsl
+		nfEngine\Shaders\HLSL5\ShadowPS.hlsl = nfEngine\Shaders\HLSL5\ShadowPS.hlsl
+		nfEngine\Shaders\HLSL5\ShadowVS.hlsl = nfEngine\Shaders\HLSL5\ShadowVS.hlsl
+		nfEngine\Shaders\HLSL5\SpotLightCommon.hlsl = nfEngine\Shaders\HLSL5\SpotLightCommon.hlsl
+		nfEngine\Shaders\HLSL5\SpotLightPS.hlsl = nfEngine\Shaders\HLSL5\SpotLightPS.hlsl
+		nfEngine\Shaders\HLSL5\SpotLightVS.hlsl = nfEngine\Shaders\HLSL5\SpotLightVS.hlsl
+		nfEngine\Shaders\HLSL5\TonemappingPS.hlsl = nfEngine\Shaders\HLSL5\TonemappingPS.hlsl
 	EndProjectSection
 EndProject
 Global
@@ -366,9 +366,9 @@ Global
 		{1E546F4B-8BA9-4FA1-8386-BCCB82CB5149} = {636A4AB9-16CA-40B7-AAC7-750D8499B3C8}
 		{7D5F8B13-8926-4553-87A0-2FD31038EE0B} = {265F0BFF-E485-46E3-9213-D339828982B3}
 		{B19B4C10-EB4D-4782-8933-120A35AC259D} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
-		{A9D64D99-8D32-4B24-A601-2F8FFF1FC079} = {B19B4C10-EB4D-4782-8933-120A35AC259D}
 		{49AB8AC7-1834-4AF8-9792-59313C71C7E0} = {265F0BFF-E485-46E3-9213-D339828982B3}
 		{1A1154B8-E09A-472F-A0F0-20F530741587} = {265F0BFF-E485-46E3-9213-D339828982B3}
 		{39346F9B-F1D6-41A9-A539-91D0448C491C} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
+		{EA1DDF9B-476B-4D52-BBF0-A673D7CD84C5} = {B19B4C10-EB4D-4782-8933-120A35AC259D}
 	EndGlobalSection
 EndGlobal

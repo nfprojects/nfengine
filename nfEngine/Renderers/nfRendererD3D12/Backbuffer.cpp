@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 #include "Backbuffer.hpp"
 #include "RendererD3D12.hpp"
+#include "Translations.hpp"
 #include "nfCommon/Logger.hpp"
 
 
@@ -46,7 +47,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     mType = TextureType::Texture2D;
     mWidth = static_cast<uint16>(desc.width);
     mHeight = static_cast<uint16>(desc.height);
-    mSrvFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+    mSrvFormat = TranslateElementFormat(desc.format);
     mLayers = 1;
     mWindow = static_cast<HWND>(desc.windowHandle);
     mVSync = desc.vSync;
@@ -61,7 +62,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     scd.BufferCount = mBuffersNum;
     scd.Width = desc.width;
     scd.Height = desc.height;
-    scd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    scd.Format = mSrvFormat;
     scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     scd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
     scd.SampleDesc.Count = 1;

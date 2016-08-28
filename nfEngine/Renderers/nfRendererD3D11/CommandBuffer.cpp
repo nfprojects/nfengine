@@ -154,16 +154,11 @@ void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* binding
                 mContext->PSSetConstantBuffers(slotOffset, 1, &buffer);
                 break;
             case ShaderType::All:
-                if (mBoundShaders.vertexShader)
-                    mContext->VSSetConstantBuffers(slotOffset, 1, &buffer);
-                if (mBoundShaders.domainShader)
-                    mContext->DSSetConstantBuffers(slotOffset, 1, &buffer);
-                if (mBoundShaders.hullShader)
-                    mContext->HSSetConstantBuffers(slotOffset, 1, &buffer);
-                if (mBoundShaders.geometryShader)
-                    mContext->GSSetConstantBuffers(slotOffset, 1, &buffer);
-                if (mBoundShaders.pixelShader)
-                    mContext->PSSetConstantBuffers(slotOffset, 1, &buffer);
+                mContext->VSSetConstantBuffers(slotOffset, 1, &buffer);
+                mContext->DSSetConstantBuffers(slotOffset, 1, &buffer);
+                mContext->HSSetConstantBuffers(slotOffset, 1, &buffer);
+                mContext->GSSetConstantBuffers(slotOffset, 1, &buffer);
+                mContext->PSSetConstantBuffers(slotOffset, 1, &buffer);
                 break;
             }
         }
@@ -190,16 +185,11 @@ void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* binding
                 mContext->PSSetShaderResources(slotOffset, 1, &srv);
                 break;
             case ShaderType::All:
-                if (mBoundShaders.vertexShader)
-                    mContext->VSSetShaderResources(slotOffset, 1, &srv);
-                if (mBoundShaders.domainShader)
-                    mContext->DSSetShaderResources(slotOffset, 1, &srv);
-                if (mBoundShaders.hullShader)
-                    mContext->HSSetShaderResources(slotOffset, 1, &srv);
-                if (mBoundShaders.geometryShader)
-                    mContext->GSSetShaderResources(slotOffset, 1, &srv);
-                if (mBoundShaders.pixelShader)
-                    mContext->PSSetShaderResources(slotOffset, 1, &srv);
+                mContext->VSSetShaderResources(slotOffset, 1, &srv);
+                mContext->DSSetShaderResources(slotOffset, 1, &srv);
+                mContext->HSSetShaderResources(slotOffset, 1, &srv);
+                mContext->GSSetShaderResources(slotOffset, 1, &srv);
+                mContext->PSSetShaderResources(slotOffset, 1, &srv);
                 break;
             };
         }
@@ -250,16 +240,11 @@ void CommandBuffer::BindDynamicBuffer(size_t slot, IBuffer* buffer)
         mContext->PSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
         break;
     case ShaderType::All:
-        if (mBoundShaders.vertexShader)
-            mContext->VSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
-        if (mBoundShaders.domainShader)
-            mContext->DSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
-        if (mBoundShaders.hullShader)
-            mContext->HSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
-        if (mBoundShaders.geometryShader)
-            mContext->GSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
-        if (mBoundShaders.pixelShader)
-            mContext->PSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
+        mContext->VSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
+        mContext->DSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
+        mContext->HSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
+        mContext->GSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
+        mContext->PSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
         break;
     }
 }
@@ -302,16 +287,11 @@ void CommandBuffer::UpdateSamplers()
                 mContext->PSSetSamplers(slotOffset, 1, &samplerState);
                 break;
             case ShaderType::All:
-                if (mBoundShaders.vertexShader)
-                    mContext->VSSetSamplers(slotOffset, 1, &samplerState);
-                if (mBoundShaders.domainShader)
-                    mContext->DSSetSamplers(slotOffset, 1, &samplerState);
-                if (mBoundShaders.hullShader)
-                    mContext->HSSetSamplers(slotOffset, 1, &samplerState);
-                if (mBoundShaders.geometryShader)
-                    mContext->GSSetSamplers(slotOffset, 1, &samplerState);
-                if (mBoundShaders.pixelShader)
-                    mContext->PSSetSamplers(slotOffset, 1, &samplerState);
+                mContext->VSSetSamplers(slotOffset, 1, &samplerState);
+                mContext->DSSetSamplers(slotOffset, 1, &samplerState);
+                mContext->HSSetSamplers(slotOffset, 1, &samplerState);
+                mContext->GSSetSamplers(slotOffset, 1, &samplerState);
+                mContext->PSSetSamplers(slotOffset, 1, &samplerState);
                 break;
             };
         }

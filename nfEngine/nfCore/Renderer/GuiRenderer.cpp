@@ -82,7 +82,7 @@ GuiRenderer::GuiRenderer()
     bufferDesc.debugName = "GuiRenderer::mConstantBuffer";
     mConstantBuffer.reset(device->CreateBuffer(bufferDesc));
 
-    mCBufferBindingInstance.reset(device->CreateResourceBindingInstance(mVSBindingSet.get()));
+    mCBufferBindingInstance.reset(device->CreateResourceBindingInstance(mCBufferBindingSet.get()));
     if (mCBufferBindingInstance)
         mCBufferBindingInstance->WriteCBufferView(0, mConstantBuffer.get());
 
@@ -127,12 +127,12 @@ bool GuiRenderer::CreateResourceBindingLayouts()
 
     std::vector<IResourceBindingSet*> bindingSets;
 
-    ResourceBindingDesc vertexShaderBinding(ShaderResourceType::CBuffer, cbufferSlot);
-    mVSBindingSet.reset(device->CreateResourceBindingSet(
-        ResourceBindingSetDesc(&vertexShaderBinding, 1, ShaderType::Vertex)));
-    if (!mVSBindingSet)
+    ResourceBindingDesc cbufferBinding(ShaderResourceType::CBuffer, cbufferSlot);
+    mCBufferBindingSet.reset(device->CreateResourceBindingSet(
+        ResourceBindingSetDesc(&cbufferBinding, 1, ShaderType::All)));
+    if (!mCBufferBindingSet)
         return false;
-    bindingSets.push_back(mVSBindingSet.get());
+    bindingSets.push_back(mCBufferBindingSet.get());
 
     ResourceBindingDesc pixelShaderBinding(ShaderResourceType::Texture, textureSlot,
                                            mRenderer->GetDefaultSampler());
@@ -180,6 +180,7 @@ void GuiRenderer::BeginOrdinaryGuiRendering(RenderContext* context)
     context->commandBuffer->SetVertexBuffers(1, vertexBuffers, strides, offsets);
 
     context->commandBuffer->SetPipelineState(mPipelineState.get());
+    context->commandBuffer->BindResources(0, mCBufferBindingInstance.get());
 }
 
 void GuiRenderer::OnLeave(RenderContext* context)
@@ -231,7 +232,7 @@ void GuiRenderer::FlushQueue(RenderContext* context)
             (ctx.quadData[i].alphaTexture != currAlphaTexture))
         {
             // flush quads
-            context->commandBuffer->Draw(packetSize, -1, firstQuad);
+            context->commandBuffer->Draw(packetSize, 1, firstQuad);
             packetSize = 0;
             firstQuad = static_cast<int>(i);
 
@@ -251,7 +252,7 @@ void GuiRenderer::FlushQueue(RenderContext* context)
     }
 
     if (packetSize > 0)
-        context->commandBuffer->Draw(packetSize, -1, firstQuad);
+        context->commandBuffer->Draw(packetSize, 1, firstQuad);
 
     ctx.queuedQuads = 0;
 }
