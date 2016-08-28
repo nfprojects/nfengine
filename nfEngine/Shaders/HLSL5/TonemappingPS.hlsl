@@ -28,10 +28,6 @@ float4 main(float4 pos : SV_POSITION) : SV_TARGET0
     float exposure = gParams.z; // TODO: auto-exposure
     float3 result = float3(1.0f, 1.0f, 1.0f) - exp(-color * exposure);
 
-    // apply gamma correction
-    // TODO: custom gamma power or use SRGB format for output texture
-    result = sqrt(result);
-
     // dithering via adding noise
     float noiseFactor = gParams.y;
     result += (rand(texelCoordsF + gSeed.xy).xxx - 0.5f) * noiseFactor;

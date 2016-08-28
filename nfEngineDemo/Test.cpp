@@ -101,7 +101,7 @@ public:
         sprintf(text, "dt = %.2fms", 1000.0f * avgDeltaTime);
         GuiRenderer::Get()->PrintTextWithBorder(ctx, gFont.get(), text,
                                                 Recti(8, 20, viewWidth, viewHeight - 8),
-                                                0xFFFFFFFF, 0x40000000,
+                                                0xFFFFFFFF, 0xFF000000,
                                                 VerticalAlignment::Bottom);
 
         if (!drawSecondaryView)
