@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 #include "Backbuffer.hpp"
 #include "RendererD3D11.hpp"
+#include "Translations.hpp"
 
 #include "nfCommon/Logger.hpp"
 
@@ -92,7 +93,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     scd.BufferCount = 1;
     scd.BufferDesc.Width = mWidth;
     scd.BufferDesc.Height = mHeight;
-    scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    scd.BufferDesc.Format = TranslateElementFormat(desc.format);
     scd.BufferUsage = usageFlags;
     scd.OutputWindow = mWindow;
     scd.SampleDesc.Count = 1;

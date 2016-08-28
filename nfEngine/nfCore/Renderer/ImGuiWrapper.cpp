@@ -187,6 +187,14 @@ bool ImGuiWrapper::InitImGui()
     style.Colors[ImGuiCol_ButtonActive]         = ImVec4(0.3f, 0.3f, 0.3f, 1.0f);
     style.Colors[ImGuiCol_ButtonHovered]        = ImVec4(0.7f, 0.7f, 0.7f, 1.0f);
 
+    // convert to linear color space
+    for (int i = 0; i < ImGuiCol_COUNT; ++i)
+    {
+        style.Colors[i].x = powf(style.Colors[i].x, 2.2f);
+        style.Colors[i].y = powf(style.Colors[i].y, 2.2f);
+        style.Colors[i].z = powf(style.Colors[i].z, 2.2f);
+    }
+
     /**
      * Keyboard mapping.
      */

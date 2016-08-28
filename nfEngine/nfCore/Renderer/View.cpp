@@ -165,6 +165,7 @@ bool View::SetWindow(Common::Window* window)
     bbDesc.height = height;
     bbDesc.windowHandle = static_cast<void*>(window->GetHandle());
     bbDesc.vSync = false;
+    bbDesc.format = ElementFormat::R8G8B8A8_U_Norm_sRGB;
     mWindowBackbuffer.reset(renderer->GetDevice()->CreateBackbuffer(bbDesc));
     if (mWindowBackbuffer == nullptr)
     {
