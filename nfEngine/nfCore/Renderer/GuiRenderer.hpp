@@ -38,7 +38,7 @@ class CORE_API GuiRenderer : public RendererModule<GuiRenderer>
     std::unique_ptr<IBuffer> mConstantBuffer;
     std::unique_ptr<IPipelineState> mPipelineState;
 
-    std::unique_ptr<IResourceBindingSet> mVSBindingSet;
+    std::unique_ptr<IResourceBindingSet> mCBufferBindingSet;
     std::unique_ptr<IResourceBindingSet> mPSBindingSet;
     std::unique_ptr<IResourceBindingLayout> mResBindingLayout;
     std::unique_ptr<IResourceBindingInstance> mCBufferBindingInstance;
@@ -65,6 +65,7 @@ public:
     void SetTarget(RenderContext* context, IRenderTarget* target);
     void BeginOrdinaryGuiRendering(RenderContext* context);
 
+    void DrawQuad(RenderContext* context, const Recti& rect, uint32 color);
     void DrawQuad(RenderContext* context, const Rectf& rect, uint32 color);
     void DrawTexturedQuad(RenderContext* context, const Rectf& rect, const Rectf& texCoords,
                           IResourceBindingInstance* textureBinding, uint32 color,

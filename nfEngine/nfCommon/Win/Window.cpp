@@ -404,6 +404,10 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 
         case WM_CHAR:
         {
+            // ignore special characters
+            if (wParam < 0x20)
+                break;
+
             wchar_t input[] = { static_cast<wchar_t>(wParam), 0 };
             const int bufferSize = 8;
             char buffer[bufferSize];

@@ -147,6 +147,9 @@
     <ClCompile Include="Renderer\ImGuiWrapper.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\DebugConsole.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Prerequisites.hpp">
@@ -289,6 +292,9 @@
     </ClInclude>
     <ClInclude Include="Renderer\ImGuiWrapper.hpp">
       <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\DebugConsole.hpp">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

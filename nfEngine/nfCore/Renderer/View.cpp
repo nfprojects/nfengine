@@ -12,6 +12,7 @@
 
 #include "Engine.hpp"
 #include "Utils/ConfigVariable.hpp"
+#include "Utils/DebugConsole.hpp"
 #include "Resources/ResourcesManager.hpp"
 #include "Resources/Texture.hpp"
 
@@ -38,6 +39,9 @@ View::View()
     mWindow = nullptr;
     mCameraEntity = 0;
 
+    mDebugConsole.reset(new Utils::DebugConsole);
+    RegisterInputListener(mDebugConsole.get());
+
     if (gUseImGui.Get())
     {
         mImGuiWrapper.reset(new ImGuiWrapper);
@@ -47,6 +51,8 @@ View::View()
 
 View::~View()
 {
+    UnregisterInputListener(mDebugConsole.get());
+
     if (mImGuiWrapper)
     {
         UnregisterInputListener(mImGuiWrapper.get());
@@ -366,6 +372,12 @@ void View::DrawGui(RenderContext* context)
         mImGuiWrapper->BeginDrawing(mWindow);
         OnDrawImGui(mImGuiWrapper->GetImGuiInternalState());
         mImGuiWrapper->FinishDrawing(context);
+    }
+
+    if (mDebugConsole)
+    {
+        GuiRenderer::Get()->BeginOrdinaryGuiRendering(context);
+        mDebugConsole->Render(mWindow, context);
     }
 }
 

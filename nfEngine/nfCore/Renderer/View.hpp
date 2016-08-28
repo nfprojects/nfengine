@@ -14,6 +14,13 @@
 #include "../Utils/SimpleInput.hpp"
 
 namespace NFE {
+
+// predeclarations
+namespace Utils
+{
+class DebugConsole;
+}
+
 namespace Renderer {
 
 struct PostProcessParameters
@@ -54,6 +61,7 @@ class CORE_API View : public Utils::SimpleInputListener
     Scene::EntityID mCameraEntity;
 
     std::unique_ptr<ImGuiWrapper> mImGuiWrapper;
+    std::unique_ptr<Utils::DebugConsole> mDebugConsole;
 
     // input listeners attached to this view (e.g. ImGui, debug console, etc.)
     std::vector<Utils::SimpleInputListener*> mInputListeners;

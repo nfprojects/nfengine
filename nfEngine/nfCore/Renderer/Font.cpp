@@ -45,11 +45,11 @@ Font::Font()
     : mSize(0)
 {}
 
-bool Font::GetTextSize(const char* text, int& width, int& lines) const
+bool Font::GetTextSize(const char* text, int& width, int& lines, uint32 numChars) const
 {
     int maxOffsetX = 0, offsetX = 0;
     lines = 1;
-    for (int i = 0; text[i]; ++i)
+    for (uint32 i = 0; i < numChars && text[i]; ++i)
     {
         // TODO: UTF-8 support
         size_t charId = static_cast<unsigned char>(text[i]);

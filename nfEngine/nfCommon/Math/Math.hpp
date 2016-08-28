@@ -77,6 +77,14 @@ struct Rect
 
     Rect(T Xmin_, T Ymin_, T Xmax_, T Ymax_)
         : Xmin(Xmin_), Xmax(Xmax_), Ymin(Ymin_), Ymax(Ymax_) { }
+
+    NFE_INLINE void Reduce(T x)
+    {
+        Xmin += x;
+        Ymin += x;
+        Xmax -= x;
+        Ymax -= x;
+    }
 };
 
 typedef Rect<int> Recti;
