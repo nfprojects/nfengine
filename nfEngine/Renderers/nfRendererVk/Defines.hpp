@@ -17,45 +17,6 @@
 #define RENDERER_API __attribute__((visibility("default")))
 #endif // WIN32
 
-// macro for unused parameters to supress warnings
-#define UNUSED(x) (void)(x)
-
-// LKTODO below code needs recreation in Vulkan (it will probably be veeeery useful...)
-#if 0
-
-#ifdef _DEBUG
-
-#include <GL/glu.h> // only for gluErrorString()
-
-/**
- * Macro for error checking in OpenGL.
- *
- * Ideally release code should not contain this macro (it is for debug purposes only).
- */
-#ifndef GL_GET_ERRORS
-#define GL_GET_ERRORS()                                                         \
-do                                                                              \
-{                                                                               \
-    GLenum err;                                                                 \
-    while ((err = glGetError()) != GL_NO_ERROR)                                 \
-    {                                                                           \
-        const char* str = reinterpret_cast<const char*>(gluErrorString(err));   \
-        LOG_ERROR("OpenGL error %d: ", err, str);                               \
-    }                                                                           \
-    LOG_DEBUG("==== OpenGL Error queue empty ====");                            \
-} while(0)
-#endif // GL_GET_ERRORS
-
-#else // _DEBUG
-
-#ifndef GL_GET_ERRORS
-#define GL_GET_ERRORS()
-#endif // GL_GET_ERRORS
-
-#endif // _DEBUG
-
-#endif // 0
-
 #include "nfCommon/nfCommon.hpp"
 #include "nfCommon/Logger.hpp"
 
