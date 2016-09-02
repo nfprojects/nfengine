@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_c9ce10b7",
+        "filename": "nfEngine/Renderers/RendererInterface/Device.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-02T19:23:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_23236da9",
+      "range": {
+        "startLine": 125,
+        "startChar": 21,
+        "endLine": 125,
+        "endChar": 26
+      },
+      "revId": "7459497e071ed5baae0fc6793ba41c3684d8e83a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_431e7160",
         "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2016-08-29T17:47:50Z",
       "side": 1,
       "message": "So what about this PrintDeviceInfo function, common to all renderers? :)",
+      "range": {
+        "startLine": 137,
+        "startChar": 0,
+        "endLine": 152,
+        "endChar": 5
+      },
+      "revId": "7459497e071ed5baae0fc6793ba41c3684d8e83a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2947bc1e",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Device.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-02T19:23:19Z",
+      "side": 1,
+      "message": "comment added, will be done in another commit",
+      "parentUuid": "baa041b7_431e7160",
       "range": {
         "startLine": 137,
         "startChar": 0,
