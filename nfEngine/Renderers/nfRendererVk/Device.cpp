@@ -103,6 +103,12 @@ VkPhysicalDevice Device::SelectPhysicalDevice(const std::vector<VkPhysicalDevice
         LOG_DEBUG("  VP Bounds:  %f-%f", devProps.limits.viewportBoundsRange[0], devProps.limits.viewportBoundsRange[1]);
     }
 
+    if (static_cast<size_t>(preferredId) >= devices.size())
+    {
+        LOG_ERROR("Preferred device ID #%i is not available", preferredId);
+        return VK_NULL_HANDLE;
+    }
+
     return devices[preferredId];
 }
 
@@ -140,6 +146,11 @@ bool Device::Init(const DeviceInitParams* params)
     }
 
     mPhysicalDevice = SelectPhysicalDevice(devices, params->preferredCardId);
+    if (mPhysicalDevice == VK_NULL_HANDLE)
+    {
+        LOG_ERROR("Unable to select a physical device");
+        return false;
+    }
 
     vkGetPhysicalDeviceMemoryProperties(mPhysicalDevice, &mMemoryProperties);
 
