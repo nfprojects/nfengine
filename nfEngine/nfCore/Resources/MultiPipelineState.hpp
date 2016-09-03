@@ -1,7 +1,7 @@
 /**
  * @file
  * @author  Witek902 (witek902@gmail.com)
- * @brief   Declarations of MultiShaderProgram utility
+ * @brief   Declarations of MultiPipelineState utility
  */
 
 #pragma once
@@ -17,12 +17,21 @@ namespace NFE {
 namespace Resource {
 
 // TODO this class should inherit from ResourceBase
-class MultiShaderProgram
+class MultiPipelineState
 {
-    NFE_MAKE_NONCOPYABLE(MultiShaderProgram)
-    NFE_MAKE_NONMOVEABLE(MultiShaderProgram)
+    NFE_MAKE_NONCOPYABLE(MultiPipelineState)
+    NFE_MAKE_NONMOVEABLE(MultiPipelineState)
 
 private:
+    struct ShaderSet
+    {
+        Renderer::IShader* shaders[NFE_SHADER_TYPES_NUM];
+
+        NFE_INLINE ShaderSet()
+            : shaders{nullptr, nullptr, nullptr, nullptr, nullptr}
+        { }
+    };
+
     std::string mName;
 
     typedef std::unique_ptr<Multishader, void(*)(Multishader*)> ShaderResourcePtr;
@@ -34,27 +43,28 @@ private:
 
     /**
      * Macro mapping table.
-     * Maps the shader program macro IDs to each shader macro's ID.
+     * Maps the pipeline state's macro IDs to each shader macro's ID.
      * Some of the values can be -1, which means that the shader does not use shader macro
-     * from the shader program.
+     * from the pipeline state.
      */
     std::vector<int> mShaderMacroMapping[NFE_SHADER_TYPES_NUM];
 
-    std::vector<std::unique_ptr<Renderer::IShaderProgram>> mSubPrograms;
+    std::vector<std::unique_ptr<Renderer::IPipelineState>> mSubPipelineStates;
+    std::vector<ShaderSet> mShaderSets;
 
-    bool GenerateShaderPrograms();
-    bool LoadSubShaderProgram(int* macroValues);
+    void GenerateShaderSets();
+    void LoadShaderSet(int* macroValues);
 
 public:
-    MultiShaderProgram();
+    MultiPipelineState();
 
     /**
-     * Get number of macros used in the multi shader program.
+     * Get number of macros used in this multi pipeline state.
      */
     size_t GetMacrosNumber() const;
 
     /**
-     * Get shader program macro definition by name.
+     * Get macro ID by name.
      *
      * @param name Macro definition name
      * @return Macro definition handle or negative value if not found.
@@ -62,35 +72,42 @@ public:
     int GetMacroByName(const char* name) const;
 
     /**
-     * Get sub shader program defined by a list of macro values.
+     * Get sub pipeline state defined by a list of macro values.
      *
      * @param values Array of macro values. The array size must be equal to number of macros
      *               in the multishader obtained with @p GetMacrosNumber() method or set to
      *               NULL to use default macro values.
      * @param type   Shader type.
-     * @return IShaderProgram interface pointer.
+     * @return IPipelineState interface pointer.
      */
-    Renderer::IShaderProgram* GetShaderProgram(int* values = nullptr) const;
+    Renderer::IPipelineState* GetPipelineState(int* values = nullptr) const;
 
     /**
      * Get sub shader defined by a list of macro values and shader type.
      *
      * @param type   Shader type.
      * @param values Array of macro values. The array size must be equal to number of macros
-     *               in the multishader program obtained with @p GetMacrosNumber() method
+     *               in the multi pipeline state obtained with @p GetMacrosNumber() method
      *               or set to NULL to use default macro values.
      * @return IShader interface pointer.
      */
     Renderer::IShader* GetShader(Renderer::ShaderType type, int* values = nullptr) const;
 
     /**
-     * Load multishader from config file.
+     * Load multishader from config file. This operation only parses config file and
+     * loads shaders. No pipeline state object creation is performed.
      * @return True on success.
      */
     bool Load(const char* name);
 
     /**
-     * Get low-level renderer's shader program slot ID by name.
+     * Build pipeline state objects ste.
+     * @return True on success.
+     */
+    bool Build(const Renderer::PipelineStateDesc& desc);
+
+    /**
+     * Get low-level renderer's shader slot ID by name.
      *
      * @return Negative value on error.
      */

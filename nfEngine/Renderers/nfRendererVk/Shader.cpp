@@ -250,6 +250,12 @@ bool Shader::Init(const ShaderDesc& desc)
     VkResult result = vkCreateShaderModule(gDevice->GetDevice(), &shaderInfo, nullptr, &mShader);
     CHECK_VKRESULT(result, "Failed to create Shader module");
 
+    VK_ZERO_MEMORY(mStageInfo);
+    mStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    mStageInfo.stage = TranslateShaderTypeToVkShaderStage(desc.type);
+    mStageInfo.module = mShader;
+    mStageInfo.pName = "main";
+
     LOG_SUCCESS("Shader '%s' compiled successfully", desc.path);
     return true;
 }
@@ -268,6 +274,12 @@ bool Shader::GetIODesc()
 {
     // TODO
     return false;
+}
+
+int Shader::GetResourceSlotByName(const char* name)
+{
+    UNUSED(name);
+    return -1;
 }
 
 } // namespace Renderer

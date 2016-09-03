@@ -71,52 +71,9 @@ public:
      * @param output[out] Output string.
      */
     virtual bool Disassemble(bool html, std::string& output) = 0;
-};
-
-/**
- * Shader program description.
- */
-struct ShaderProgramDesc
-{
-    IShader* vertexShader;
-    IShader* hullShader;
-    IShader* domainShader;
-    IShader* geometryShader;
-    IShader* pixelShader;
-
-    ShaderProgramDesc()
-        : vertexShader(nullptr)
-        , hullShader(nullptr)
-        , domainShader(nullptr)
-        , geometryShader(nullptr)
-        , pixelShader(nullptr)
-    {
-    }
-
-    NFE_INLINE IShader* GetShaderByType(ShaderType type) const
-    {
-        switch (type)
-        {
-        case ShaderType::Vertex:   return vertexShader;
-        case ShaderType::Hull:     return hullShader;
-        case ShaderType::Domain:   return domainShader;
-        case ShaderType::Geometry: return geometryShader;
-        case ShaderType::Pixel:    return pixelShader;
-        default:                   return nullptr;
-        }
-    }
-};
-
-/**
- * Shader program - collection of linked shaders.
- */
-class IShaderProgram
-{
-public:
-    virtual ~IShaderProgram() {}
 
     /**
-     * Get shader program resource (texture, cbuffer, etc.) slot ID by name.
+     * Get shader resource (texture, buffer, etc.) slot ID by name.
      * @return Negative value if resource is not found.
      */
     virtual int GetResourceSlotByName(const char* name) = 0;

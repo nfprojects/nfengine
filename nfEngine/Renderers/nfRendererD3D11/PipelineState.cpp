@@ -9,6 +9,7 @@
 #include "RendererD3D11.hpp"
 #include "Translations.hpp"
 #include "VertexLayout.hpp"
+#include "Shader.hpp"
 
 #include "nfCommon/Logger.hpp"
 
@@ -129,6 +130,15 @@ ID3D11DepthStencilState* CreateDepthState(const DepthStateDesc& desc)
 } // namespace
 
 
+PipelineState::PipelineState()
+    : mVertexShader(nullptr)
+    , mGeometryShader(nullptr)
+    , mHullShader(nullptr)
+    , mDomainShader(nullptr)
+    , mPixelShader(nullptr)
+{
+}
+
 bool PipelineState::Init(const PipelineStateDesc& desc)
 {
     mPrimitiveType = desc.primitiveType;
@@ -175,6 +185,24 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
 
         len = snprintf(buffer, MAX_DEBUG_NAME_LEN, "DepthState '%s'", desc.debugName);
         D3D_CALL_CHECK(mDS->SetPrivateData(WKPDID_D3DDebugObjectName, len, buffer));
+    }
+
+    Shader* vertexShader = dynamic_cast<Shader*>(desc.vertexShader);
+    Shader* geometryShader = dynamic_cast<Shader*>(desc.geometryShader);
+    Shader* hullShader = dynamic_cast<Shader*>(desc.hullShader);
+    Shader* domainShader = dynamic_cast<Shader*>(desc.domainShader);
+    Shader* pixelShader = dynamic_cast<Shader*>(desc.pixelShader);
+
+    if (vertexShader)   mVertexShader = static_cast<ID3D11VertexShader*>(vertexShader->GetShaderObject());
+    if (geometryShader) mGeometryShader = static_cast<ID3D11GeometryShader*>(geometryShader->GetShaderObject());
+    if (hullShader)     mHullShader = static_cast<ID3D11HullShader*>(hullShader->GetShaderObject());
+    if (domainShader)   mDomainShader = static_cast<ID3D11DomainShader*>(domainShader->GetShaderObject());
+    if (pixelShader)    mPixelShader = static_cast<ID3D11PixelShader*>(pixelShader->GetShaderObject());
+
+    if (!mVertexShader)
+    {
+        LOG_ERROR("Vertex shader must be provided when creating pipeline state object");
+        return false;
     }
 
     return true;

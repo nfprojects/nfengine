@@ -14,7 +14,6 @@
 #include "RenderTarget.hpp"
 #include "Sampler.hpp"
 #include "Shader.hpp"
-#include "ShaderProgram.hpp"
 #include "ResourceBinding.hpp"
 #include "Buffer.hpp"
 #include "VertexLayout.hpp"
@@ -62,12 +61,6 @@ Device::Device()
 
 Device::~Device()
 {
-    for (auto& pipeline : mPipelineStateMap)
-    {
-        if (pipeline.second != VK_NULL_HANDLE)
-            vkDestroyPipeline(mDevice, pipeline.second, nullptr);
-    }
-
     if (mPipelineCache != VK_NULL_HANDLE)
         vkDestroyPipelineCache(mDevice, mPipelineCache, nullptr);
     if (mPostPresentSemaphore != VK_NULL_HANDLE)
@@ -281,24 +274,6 @@ uint32 Device::GetMemoryTypeIndex(uint32 typeBits, VkFlags properties)
     return UINT32_MAX;
 }
 
-VkPipeline Device::GetFullPipelineState(const FullPipelineStateParts& parts)
-{
-    const auto& it = mPipelineStateMap.find(parts);
-    VkPipeline fullState;
-    if (it == mPipelineStateMap.end())
-    {
-        fullState = PipelineState::CreateFullPipelineState(parts);
-        if (fullState == VK_NULL_HANDLE)
-            LOG_ERROR("Failed to create full pipeline state from parts");
-
-        mPipelineStateMap[parts] = fullState;
-    }
-    else
-        fullState = it->second;
-
-    return fullState;
-}
-
 void* Device::GetHandle() const
 {
     return nullptr;
@@ -343,11 +318,6 @@ ISampler* Device::CreateSampler(const SamplerDesc& desc)
 IShader* Device::CreateShader(const ShaderDesc& desc)
 {
     return GenericCreateResource<Shader, ShaderDesc>(desc);
-}
-
-IShaderProgram* Device::CreateShaderProgram(const ShaderProgramDesc& desc)
-{
-    return new (std::nothrow) ShaderProgram(desc);
 }
 
 IResourceBindingSet* Device::CreateResourceBindingSet(const ResourceBindingSetDesc& desc)

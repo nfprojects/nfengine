@@ -28,6 +28,7 @@ VkFormat TranslateElementFormatToVkFormat(ElementFormat format);
 VkPolygonMode TranslateFillModeToVkPolygonMode(FillMode mode);
 VkIndexType TranslateIndexBufferFormatToVkIndexType(IndexBufferFormat format);
 VkPrimitiveTopology TranslatePrimitiveTypeToVkTopology(PrimitiveType type);
+VkShaderStageFlagBits TranslateShaderTypeToVkShaderStage(ShaderType type);
 VkStencilOp TranslateStencilOpToVkStencilOp(StencilOp op);
 
 } // namespace Renderer

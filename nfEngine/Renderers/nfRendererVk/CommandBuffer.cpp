@@ -20,17 +20,6 @@
 namespace NFE {
 namespace Renderer {
 
-
-void CommandBuffer::UpdateStates()
-{
-    if (!mUpdatePipeline)
-        return;
-
-    const FullPipelineStateParts parts(mPipelineState, mShaderProgram);
-    vkCmdBindPipeline(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, gDevice->GetFullPipelineState(parts));
-    mUpdatePipeline = false;
-}
-
 CommandBuffer::CommandBuffer()
     : mCommandBuffer(VK_NULL_HANDLE)
     , mRenderTarget(nullptr)
@@ -151,19 +140,6 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
     vkCmdBeginRenderPass(mCommandBuffer, &rpBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 }
 
-void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
-{
-    ShaderProgram* sp = dynamic_cast<ShaderProgram*>(shaderProgram);
-    if (sp == nullptr)
-    {
-        LOG_ERROR("Incorrect pipeline state provided");
-        return;
-    }
-
-    mShaderProgram = sp;
-    mUpdatePipeline = true;
-}
-
 void CommandBuffer::SetPipelineState(IPipelineState* state)
 {
     PipelineState* ps = dynamic_cast<PipelineState*>(state);
@@ -173,8 +149,8 @@ void CommandBuffer::SetPipelineState(IPipelineState* state)
         return;
     }
 
-    mPipelineState = ps;
-    mUpdatePipeline = true;
+    // TODO support compute bind point
+    vkCmdBindPipeline(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, ps->mPipeline);
 }
 
 void CommandBuffer::SetStencilRef(unsigned char ref)
@@ -295,14 +271,12 @@ void CommandBuffer::Clear(int flags, uint32 numTargets, const uint32* slots,
 void CommandBuffer::Draw(int vertexNum, int instancesNum, int vertexOffset,
                          int instanceOffset)
 {
-    UpdateStates();
     vkCmdDraw(mCommandBuffer, vertexNum, instancesNum, vertexOffset, instanceOffset);
 }
 
 void CommandBuffer::DrawIndexed(int indexNum, int instancesNum,
                                 int indexOffset, int vertexOffset, int instanceOffset)
 {
-    UpdateStates();
     vkCmdDrawIndexed(mCommandBuffer, indexNum, instancesNum, indexOffset, vertexOffset, instanceOffset);
 }
 

@@ -6,30 +6,30 @@
 
 #include "PCH.hpp"
 #include "PipelineState.hpp"
-#include "ShaderProgram.hpp"
 #include "VertexLayout.hpp"
 #include "Device.hpp"
+#include "Shader.hpp"
 
 
 namespace NFE {
 namespace Renderer {
 
+PipelineState::PipelineState()
+    : mPipeline(VK_NULL_HANDLE)
+{
+}
+
 PipelineState::~PipelineState()
 {
+    if (mPipeline != VK_NULL_HANDLE)
+        vkDestroyPipeline(gDevice->GetDevice(), mPipeline, nullptr);
 }
 
 bool PipelineState::Init(const PipelineStateDesc& desc)
 {
     mDesc = desc;
-    return true;
-}
 
-VkPipeline PipelineState::CreateFullPipelineState(const FullPipelineStateParts& parts)
-{
-    PipelineState* ps = dynamic_cast<PipelineState*>(std::get<0>(parts));
-    ShaderProgram* sp = dynamic_cast<ShaderProgram*>(std::get<1>(parts));
-
-    VertexLayout* vl = dynamic_cast<VertexLayout*>(ps->mDesc.vertexLayout);
+    VertexLayout* vl = dynamic_cast<VertexLayout*>(desc.vertexLayout);
     VkPipelineVertexInputStateCreateInfo pvisInfo;
     VK_ZERO_MEMORY(pvisInfo);
     pvisInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -41,13 +41,13 @@ VkPipeline PipelineState::CreateFullPipelineState(const FullPipelineStateParts& 
     VkPipelineInputAssemblyStateCreateInfo piasInfo;
     VK_ZERO_MEMORY(piasInfo);
     piasInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-    piasInfo.topology = TranslatePrimitiveTypeToVkTopology(ps->mDesc.primitiveType);
+    piasInfo.topology = TranslatePrimitiveTypeToVkTopology(desc.primitiveType);
     piasInfo.primitiveRestartEnable = VK_FALSE; // TODO?
 
     VkPipelineTessellationStateCreateInfo ptsInfo;
     VK_ZERO_MEMORY(ptsInfo);
     ptsInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO;
-    ptsInfo.patchControlPoints = ps->mDesc.numControlPoints;
+    ptsInfo.patchControlPoints = desc.numControlPoints;
 
     VkPipelineViewportStateCreateInfo pvsInfo;
     VK_ZERO_MEMORY(pvsInfo);
@@ -61,8 +61,8 @@ VkPipeline PipelineState::CreateFullPipelineState(const FullPipelineStateParts& 
     prsInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
     prsInfo.depthClampEnable = VK_FALSE; //?
     prsInfo.rasterizerDiscardEnable = VK_FALSE;
-    prsInfo.polygonMode = TranslateFillModeToVkPolygonMode(ps->mDesc.raterizerState.fillMode);
-    prsInfo.cullMode = TranslateCullModeToVkCullMode(ps->mDesc.raterizerState.cullMode);
+    prsInfo.polygonMode = TranslateFillModeToVkPolygonMode(desc.raterizerState.fillMode);
+    prsInfo.cullMode = TranslateCullModeToVkCullMode(desc.raterizerState.cullMode);
     prsInfo.frontFace = VK_FRONT_FACE_CLOCKWISE; // to match cull mode in Translations
     prsInfo.depthBiasEnable = VK_FALSE;
     prsInfo.depthBiasConstantFactor = 0.0f;
@@ -77,25 +77,25 @@ VkPipeline PipelineState::CreateFullPipelineState(const FullPipelineStateParts& 
     pmsInfo.sampleShadingEnable = VK_FALSE;
     pmsInfo.minSampleShading = 0.0f;
     pmsInfo.pSampleMask = nullptr;
-    pmsInfo.alphaToCoverageEnable = ps->mDesc.blendState.alphaToCoverage;
+    pmsInfo.alphaToCoverageEnable = desc.blendState.alphaToCoverage;
     pmsInfo.alphaToOneEnable = VK_FALSE;
 
     VkPipelineDepthStencilStateCreateInfo pdssInfo;
     VK_ZERO_MEMORY(pdssInfo);
     pdssInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-    pdssInfo.depthTestEnable = ps->mDesc.depthState.depthTestEnable;
-    pdssInfo.depthWriteEnable = ps->mDesc.depthState.depthWriteEnable;
-    pdssInfo.depthCompareOp = TranslateCompareFuncToVkCompareOp(ps->mDesc.depthState.depthCompareFunc);
+    pdssInfo.depthTestEnable = desc.depthState.depthTestEnable;
+    pdssInfo.depthWriteEnable = desc.depthState.depthWriteEnable;
+    pdssInfo.depthCompareOp = TranslateCompareFuncToVkCompareOp(desc.depthState.depthCompareFunc);
     pdssInfo.depthBoundsTestEnable = VK_FALSE;
-    pdssInfo.stencilTestEnable = ps->mDesc.depthState.stencilEnable;
+    pdssInfo.stencilTestEnable = desc.depthState.stencilEnable;
     VkStencilOpState stencilOps;
     VK_ZERO_MEMORY(stencilOps);
-    stencilOps.failOp = TranslateStencilOpToVkStencilOp(ps->mDesc.depthState.stencilOpFail);
-    stencilOps.passOp = TranslateStencilOpToVkStencilOp(ps->mDesc.depthState.stencilOpPass);
-    stencilOps.depthFailOp = TranslateStencilOpToVkStencilOp(ps->mDesc.depthState.stencilOpDepthFail);
-    stencilOps.compareOp = TranslateCompareFuncToVkCompareOp(ps->mDesc.depthState.stencilFunc);
-    stencilOps.compareMask = ps->mDesc.depthState.stencilMask;
-    stencilOps.writeMask = ps->mDesc.depthState.stencilMask;
+    stencilOps.failOp = TranslateStencilOpToVkStencilOp(desc.depthState.stencilOpFail);
+    stencilOps.passOp = TranslateStencilOpToVkStencilOp(desc.depthState.stencilOpPass);
+    stencilOps.depthFailOp = TranslateStencilOpToVkStencilOp(desc.depthState.stencilOpDepthFail);
+    stencilOps.compareOp = TranslateCompareFuncToVkCompareOp(desc.depthState.stencilFunc);
+    stencilOps.compareMask = desc.depthState.stencilMask;
+    stencilOps.writeMask = desc.depthState.stencilMask;
     stencilOps.reference = 0; // stencilOps.reference will be changed dynamically
     pdssInfo.front = pdssInfo.back = stencilOps;
     pdssInfo.minDepthBounds = pdssInfo.maxDepthBounds = 0.0f;
@@ -108,17 +108,17 @@ VkPipeline PipelineState::CreateFullPipelineState(const FullPipelineStateParts& 
     VkPipelineColorBlendAttachmentState states[MAX_RENDER_TARGETS];
     
     uint32 ind, i;
-    for (i = 0; i < ps->mDesc.numRenderTargets; ++i)
+    for (i = 0; i < desc.numRenderTargets; ++i)
     {
         VK_ZERO_MEMORY(states[i]);
-        ind = ps->mDesc.blendState.independent ? i : 0;
-        states[i].blendEnable = ps->mDesc.blendState.rtDescs[ind].enable;
-        states[i].srcColorBlendFactor = TranslateBlendFuncToVkBlendFactor(ps->mDesc.blendState.rtDescs[ind].srcColorFunc);
-        states[i].dstColorBlendFactor = TranslateBlendFuncToVkBlendFactor(ps->mDesc.blendState.rtDescs[ind].destColorFunc);
-        states[i].colorBlendOp = TranslateBlendOpToVkBlendOp(ps->mDesc.blendState.rtDescs[ind].colorOperator);
-        states[i].srcAlphaBlendFactor = TranslateBlendFuncToVkBlendFactor(ps->mDesc.blendState.rtDescs[ind].srcAlphaFunc);
-        states[i].dstAlphaBlendFactor = TranslateBlendFuncToVkBlendFactor(ps->mDesc.blendState.rtDescs[ind].destAlphaFunc);
-        states[i].colorBlendOp = TranslateBlendOpToVkBlendOp(ps->mDesc.blendState.rtDescs[ind].alphaOperator);
+        ind = desc.blendState.independent ? i : 0;
+        states[i].blendEnable = desc.blendState.rtDescs[ind].enable;
+        states[i].srcColorBlendFactor = TranslateBlendFuncToVkBlendFactor(desc.blendState.rtDescs[ind].srcColorFunc);
+        states[i].dstColorBlendFactor = TranslateBlendFuncToVkBlendFactor(desc.blendState.rtDescs[ind].destColorFunc);
+        states[i].colorBlendOp = TranslateBlendOpToVkBlendOp(desc.blendState.rtDescs[ind].colorOperator);
+        states[i].srcAlphaBlendFactor = TranslateBlendFuncToVkBlendFactor(desc.blendState.rtDescs[ind].srcAlphaFunc);
+        states[i].dstAlphaBlendFactor = TranslateBlendFuncToVkBlendFactor(desc.blendState.rtDescs[ind].destAlphaFunc);
+        states[i].colorBlendOp = TranslateBlendOpToVkBlendOp(desc.blendState.rtDescs[ind].alphaOperator);
         states[i].colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     }
 
@@ -144,10 +144,10 @@ VkPipeline PipelineState::CreateFullPipelineState(const FullPipelineStateParts& 
     uint32 curAtt = 0;
     VkAttachmentReference colorRefs[MAX_RENDER_TARGETS];
 
-    for (i = 0; i < ps->mDesc.numRenderTargets; ++i)
+    for (i = 0; i < desc.numRenderTargets; ++i)
     {
         VK_ZERO_MEMORY(atts[curAtt]);
-        atts[curAtt].format = TranslateElementFormatToVkFormat(ps->mDesc.rtFormats[i]);
+        atts[curAtt].format = TranslateElementFormatToVkFormat(desc.rtFormats[i]);
         atts[curAtt].samples = VK_SAMPLE_COUNT_1_BIT;
         // we do not care about auto-clearing - this should be triggered by CommandBuffer::Clear()
         atts[curAtt].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -164,10 +164,10 @@ VkPipeline PipelineState::CreateFullPipelineState(const FullPipelineStateParts& 
     }
 
     VkAttachmentReference depthRef;
-    if (ps->mDesc.depthState.depthTestEnable)
+    if (desc.depthState.depthTestEnable)
     {
         VK_ZERO_MEMORY(atts[curAtt]);
-        atts[curAtt].format = TranslateDepthFormatToVkFormat(ps->mDesc.depthFormat);
+        atts[curAtt].format = TranslateDepthFormatToVkFormat(desc.depthFormat);
         atts[curAtt].samples = VK_SAMPLE_COUNT_1_BIT;
         atts[curAtt].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
         atts[curAtt].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
@@ -183,9 +183,9 @@ VkPipeline PipelineState::CreateFullPipelineState(const FullPipelineStateParts& 
     VkSubpassDescription subpass;
     VK_ZERO_MEMORY(subpass);
     subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-    subpass.colorAttachmentCount = ps->mDesc.numRenderTargets;
+    subpass.colorAttachmentCount = desc.numRenderTargets;
     subpass.pColorAttachments = colorRefs;
-    if (ps->mDesc.depthState.depthTestEnable)
+    if (desc.depthState.depthTestEnable)
         subpass.pDepthStencilAttachment = &depthRef;
 
     VkRenderPassCreateInfo rpInfo;
@@ -198,22 +198,50 @@ VkPipeline PipelineState::CreateFullPipelineState(const FullPipelineStateParts& 
 
     VkRenderPass tempRenderPass = VK_NULL_HANDLE;
     VkResult result = vkCreateRenderPass(gDevice->GetDevice(), &rpInfo, nullptr, &tempRenderPass);
-    if (result != VK_SUCCESS)
-    {
-        LOG_ERROR("Failed to create a temporary Render Pass for Pipeline State: %d (%s)",
-                  result, TranslateVkResultToString(result));
-        return VK_NULL_HANDLE;
-    }
+    CHECK_VKRESULT(result, "Failed to create a temporary Render Pass for Pipeline State");
     // ----------8<---------- CUT END
 
-    ResourceBindingLayout* rbl = dynamic_cast<ResourceBindingLayout*>(ps->mDesc.resBindingLayout);
+    ResourceBindingLayout* rbl = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout);
 
-    VkPipeline pipeline;
+    VkPipelineShaderStageCreateInfo stages[5];
+    uint32 stageCount = 0;
+
+    if (mDesc.vertexShader)
+    {
+        Shader* s = dynamic_cast<Shader*>(mDesc.vertexShader);
+        stages[stageCount] = s->mStageInfo;
+        stageCount++;
+    }
+    if (mDesc.hullShader)
+    {
+        Shader* s = dynamic_cast<Shader*>(mDesc.hullShader);
+        stages[stageCount] = s->mStageInfo;
+        stageCount++;
+    }
+    if (mDesc.domainShader)
+    {
+        Shader* s = dynamic_cast<Shader*>(mDesc.domainShader);
+        stages[stageCount] = s->mStageInfo;
+        stageCount++;
+    }
+    if (mDesc.geometryShader)
+    {
+        Shader* s = dynamic_cast<Shader*>(mDesc.geometryShader);
+        stages[stageCount] = s->mStageInfo;
+        stageCount++;
+    }
+    if (mDesc.pixelShader)
+    {
+        Shader* s = dynamic_cast<Shader*>(mDesc.pixelShader);
+        stages[stageCount] = s->mStageInfo;
+        stageCount++;
+    }
+
     VkGraphicsPipelineCreateInfo pipeInfo;
     VK_ZERO_MEMORY(pipeInfo);
     pipeInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-    pipeInfo.stageCount = static_cast<uint32>(sp->GetShaderStages().size());
-    pipeInfo.pStages = sp->GetShaderStages().data();
+    pipeInfo.stageCount = stageCount;
+    pipeInfo.pStages = stages;
     pipeInfo.pVertexInputState = &pvisInfo;
     pipeInfo.pInputAssemblyState = &piasInfo;
     pipeInfo.pTessellationState = &ptsInfo;
@@ -227,16 +255,12 @@ VkPipeline PipelineState::CreateFullPipelineState(const FullPipelineStateParts& 
     pipeInfo.layout = rbl->mPipelineLayout;
     pipeInfo.subpass = 0;
     result = vkCreateGraphicsPipelines(gDevice->GetDevice(), VK_NULL_HANDLE, 1, &pipeInfo,
-                                       nullptr, &pipeline);
-    if (result != VK_SUCCESS)
-    {
-        LOG_ERROR("Failed to create Graphics Pipeline: %d (%s)", result, TranslateVkResultToString(result));
-        return VK_NULL_HANDLE;
-    }
+                                       nullptr, &mPipeline);
+    CHECK_VKRESULT(result, "Failed to create Graphics Pipeline");
 
     vkDestroyRenderPass(gDevice->GetDevice(), tempRenderPass, nullptr);
 
-    return pipeline;
+    return true;
 }
 
 } // namespace Renderer

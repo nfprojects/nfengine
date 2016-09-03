@@ -40,6 +40,8 @@ CommandBuffer::CommandBuffer(ID3D11DeviceContext* deviceContext)
     hr = deviceContext->QueryInterface(IID_PPV_ARGS(&mUserDefinedAnnotation));
     if (FAILED(hr))
         mUserDefinedAnnotation.reset();
+
+    Reset();
 }
 
 CommandBuffer::~CommandBuffer()
@@ -58,7 +60,12 @@ void CommandBuffer::Reset()
     mBindingLayout = nullptr;
     mPipelineState = nullptr;
     mCurrentPipelineState = nullptr;
-    mBoundShaders = ShaderProgramDesc();
+
+    mBoundVertexShader = nullptr;
+    mBoundHullShader = nullptr;
+    mBoundDomainShader = nullptr;
+    mBoundGeometryShader = nullptr;
+    mBoundPixelShader = nullptr;
 
     mContext->ClearState();
 }
@@ -129,7 +136,7 @@ void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* binding
     for (size_t i = 0; i < bindingSet->mBindings.size(); ++i)
     {
         const ResourceBindingDesc& bindingDesc = bindingSet->mBindings[i];
-        UINT slotOffset = bindingDesc.slot & SHADER_RES_SLOT_MASK;
+        UINT slotOffset = bindingDesc.slot;
 
         if (bindingDesc.resourceType == ShaderResourceType::CBuffer)
         {
@@ -154,16 +161,11 @@ void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* binding
                 mContext->PSSetConstantBuffers(slotOffset, 1, &buffer);
                 break;
             case ShaderType::All:
-                if (mBoundShaders.vertexShader)
-                    mContext->VSSetConstantBuffers(slotOffset, 1, &buffer);
-                if (mBoundShaders.domainShader)
-                    mContext->DSSetConstantBuffers(slotOffset, 1, &buffer);
-                if (mBoundShaders.hullShader)
-                    mContext->HSSetConstantBuffers(slotOffset, 1, &buffer);
-                if (mBoundShaders.geometryShader)
-                    mContext->GSSetConstantBuffers(slotOffset, 1, &buffer);
-                if (mBoundShaders.pixelShader)
-                    mContext->PSSetConstantBuffers(slotOffset, 1, &buffer);
+                mContext->VSSetConstantBuffers(slotOffset, 1, &buffer);
+                mContext->DSSetConstantBuffers(slotOffset, 1, &buffer);
+                mContext->HSSetConstantBuffers(slotOffset, 1, &buffer);
+                mContext->GSSetConstantBuffers(slotOffset, 1, &buffer);
+                mContext->PSSetConstantBuffers(slotOffset, 1, &buffer);
                 break;
             }
         }
@@ -190,16 +192,11 @@ void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* binding
                 mContext->PSSetShaderResources(slotOffset, 1, &srv);
                 break;
             case ShaderType::All:
-                if (mBoundShaders.vertexShader)
-                    mContext->VSSetShaderResources(slotOffset, 1, &srv);
-                if (mBoundShaders.domainShader)
-                    mContext->DSSetShaderResources(slotOffset, 1, &srv);
-                if (mBoundShaders.hullShader)
-                    mContext->HSSetShaderResources(slotOffset, 1, &srv);
-                if (mBoundShaders.geometryShader)
-                    mContext->GSSetShaderResources(slotOffset, 1, &srv);
-                if (mBoundShaders.pixelShader)
-                    mContext->PSSetShaderResources(slotOffset, 1, &srv);
+                mContext->VSSetShaderResources(slotOffset, 1, &srv);
+                mContext->DSSetShaderResources(slotOffset, 1, &srv);
+                mContext->HSSetShaderResources(slotOffset, 1, &srv);
+                mContext->GSSetShaderResources(slotOffset, 1, &srv);
+                mContext->PSSetShaderResources(slotOffset, 1, &srv);
                 break;
             };
         }
@@ -228,7 +225,7 @@ void CommandBuffer::BindDynamicBuffer(size_t slot, IBuffer* buffer)
     }
 
     const ShaderType targetShader = mBindingLayout->mDynamicBuffers[slot].shaderVisibility;
-    UINT slotOffset = mBindingLayout->mDynamicBuffers[slot].slot & SHADER_RES_SLOT_MASK;
+    UINT slotOffset = mBindingLayout->mDynamicBuffers[slot].slot;
 
     ID3D11Buffer* d3dBuffer = bufferPtr->mBuffer.get();
 
@@ -250,16 +247,11 @@ void CommandBuffer::BindDynamicBuffer(size_t slot, IBuffer* buffer)
         mContext->PSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
         break;
     case ShaderType::All:
-        if (mBoundShaders.vertexShader)
-            mContext->VSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
-        if (mBoundShaders.domainShader)
-            mContext->DSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
-        if (mBoundShaders.hullShader)
-            mContext->HSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
-        if (mBoundShaders.geometryShader)
-            mContext->GSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
-        if (mBoundShaders.pixelShader)
-            mContext->PSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
+        mContext->VSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
+        mContext->DSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
+        mContext->HSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
+        mContext->GSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
+        mContext->PSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
         break;
     }
 }
@@ -273,7 +265,7 @@ void CommandBuffer::UpdateSamplers()
         for (size_t i = 0; i < bindingSet->mBindings.size(); ++i)
         {
             const ResourceBindingDesc& bindingDesc = bindingSet->mBindings[i];
-            UINT slotOffset = bindingDesc.slot & SHADER_RES_SLOT_MASK;
+            UINT slotOffset = bindingDesc.slot;
 
             if (bindingDesc.resourceType != ShaderResourceType::Texture)
                 continue;
@@ -302,16 +294,11 @@ void CommandBuffer::UpdateSamplers()
                 mContext->PSSetSamplers(slotOffset, 1, &samplerState);
                 break;
             case ShaderType::All:
-                if (mBoundShaders.vertexShader)
-                    mContext->VSSetSamplers(slotOffset, 1, &samplerState);
-                if (mBoundShaders.domainShader)
-                    mContext->DSSetSamplers(slotOffset, 1, &samplerState);
-                if (mBoundShaders.hullShader)
-                    mContext->HSSetSamplers(slotOffset, 1, &samplerState);
-                if (mBoundShaders.geometryShader)
-                    mContext->GSSetSamplers(slotOffset, 1, &samplerState);
-                if (mBoundShaders.pixelShader)
-                    mContext->PSSetSamplers(slotOffset, 1, &samplerState);
+                mContext->VSSetSamplers(slotOffset, 1, &samplerState);
+                mContext->DSSetSamplers(slotOffset, 1, &samplerState);
+                mContext->HSSetSamplers(slotOffset, 1, &samplerState);
+                mContext->GSSetSamplers(slotOffset, 1, &samplerState);
+                mContext->PSSetSamplers(slotOffset, 1, &samplerState);
                 break;
             };
         }
@@ -349,46 +336,6 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
     mCurrentRenderTarget = rt;
 }
 
-void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
-{
-    const ShaderProgramDesc& newProg = dynamic_cast<ShaderProgram*>(shaderProgram)->GetDesc();
-
-    if (newProg.vertexShader != mBoundShaders.vertexShader)
-    {
-        Shader* shader = dynamic_cast<Shader*>(newProg.vertexShader);
-        mContext->VSSetShader(shader->mVS, nullptr, 0);
-        mBoundShaders.vertexShader = newProg.vertexShader;
-    }
-
-    if (newProg.geometryShader != mBoundShaders.geometryShader)
-    {
-        Shader* shader = dynamic_cast<Shader*>(newProg.geometryShader);
-        mContext->GSSetShader(shader->mGS, nullptr, 0);
-        mBoundShaders.geometryShader = newProg.geometryShader;
-    }
-
-    if (newProg.hullShader != mBoundShaders.hullShader)
-    {
-        Shader* shader = dynamic_cast<Shader*>(newProg.hullShader);
-        mContext->HSSetShader(shader->mHS, nullptr, 0);
-        mBoundShaders.hullShader = newProg.hullShader;
-    }
-
-    if (newProg.domainShader != mBoundShaders.domainShader)
-    {
-        Shader* shader = dynamic_cast<Shader*>(newProg.domainShader);
-        mContext->DSSetShader(shader->mDS, nullptr, 0);
-        mBoundShaders.domainShader = newProg.domainShader;
-    }
-
-    if (newProg.pixelShader != mBoundShaders.pixelShader)
-    {
-        Shader* shader = dynamic_cast<Shader*>(newProg.pixelShader);
-        mContext->PSSetShader(shader->mPS, nullptr, 0);
-        mBoundShaders.pixelShader = newProg.pixelShader;
-    }
-}
-
 void CommandBuffer::SetResourceBindingLayout(IResourceBindingLayout* layout)
 {
     mBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout);
@@ -397,7 +344,39 @@ void CommandBuffer::SetResourceBindingLayout(IResourceBindingLayout* layout)
 void CommandBuffer::SetPipelineState(IPipelineState* state)
 {
     mPipelineState = dynamic_cast<PipelineState*>(state);
+    NFE_ASSERT(mPipelineState != nullptr, "Invalid pipeline state");
+
     mBindingLayout = mPipelineState->mResBindingLayout;
+
+    if (mPipelineState->mVertexShader != mBoundVertexShader)
+    {
+        mContext->VSSetShader(mPipelineState->mVertexShader, nullptr, 0);
+        mBoundVertexShader = mPipelineState->mVertexShader;
+    }
+
+    if (mPipelineState->mGeometryShader != mBoundGeometryShader)
+    {
+        mContext->GSSetShader(mPipelineState->mGeometryShader, nullptr, 0);
+        mBoundGeometryShader = mPipelineState->mGeometryShader;
+    }
+
+    if (mPipelineState->mHullShader != mBoundHullShader)
+    {
+        mContext->HSSetShader(mPipelineState->mHullShader, nullptr, 0);
+        mBoundHullShader = mPipelineState->mHullShader;
+    }
+
+    if (mPipelineState->mDomainShader != mBoundDomainShader)
+    {
+        mContext->DSSetShader(mPipelineState->mDomainShader, nullptr, 0);
+        mBoundDomainShader = mPipelineState->mDomainShader;
+    }
+
+    if (mPipelineState->mPixelShader != mBoundPixelShader)
+    {
+        mContext->PSSetShader(mPipelineState->mPixelShader, nullptr, 0);
+        mBoundPixelShader = mPipelineState->mPixelShader;
+    }
 }
 
 void CommandBuffer::SetStencilRef(unsigned char ref)

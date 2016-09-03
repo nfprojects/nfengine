@@ -318,5 +318,33 @@ bool TranslateDepthBufferTypes(DepthBufferFormat inFormat, DXGI_FORMAT& resForma
     return false;
 }
 
+D3D12_CULL_MODE TranslateCullMode(CullMode cullMode)
+{
+    switch (cullMode)
+    {
+    case CullMode::CW:
+        return D3D12_CULL_MODE_BACK;
+    case CullMode::CCW:
+        return D3D12_CULL_MODE_FRONT;
+    case CullMode::Disabled:
+        return D3D12_CULL_MODE_NONE;
+    default:
+        return D3D12_CULL_MODE_NONE;
+    };
+}
+
+D3D12_FILL_MODE TranslateFillMode(FillMode fillMode)
+{
+    switch (fillMode)
+    {
+    case FillMode::Solid:
+        return D3D12_FILL_MODE_SOLID;
+    case FillMode::Wireframe:
+        return D3D12_FILL_MODE_WIREFRAME;
+    default:
+        return D3D12_FILL_MODE_SOLID;
+    };
+}
+
 } // namespace Renderer
 } // namespace NFE

@@ -84,7 +84,6 @@ public:
     virtual void SetResourceBindingLayout(IResourceBindingLayout* layout) = 0;
 
     virtual void SetRenderTarget(IRenderTarget* renderTarget) = 0;
-    virtual void SetShaderProgram(IShaderProgram* shaderProgram) = 0;
     virtual void SetPipelineState(IPipelineState* state) = 0;
     virtual void SetStencilRef(unsigned char ref) = 0;
     virtual void SetViewport(float left, float width, float top, float height,

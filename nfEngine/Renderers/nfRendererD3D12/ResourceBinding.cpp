@@ -126,7 +126,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
             }
             descriptorRanges[rangeCounter].RangeType = rangeType;
             descriptorRanges[rangeCounter].NumDescriptors = 1;  // TODO ranges
-            descriptorRanges[rangeCounter].BaseShaderRegister = bindingDesc.slot & SHADER_RES_SLOT_MASK;
+            descriptorRanges[rangeCounter].BaseShaderRegister = bindingDesc.slot;
             descriptorRanges[rangeCounter].RegisterSpace = 0;
             descriptorRanges[rangeCounter].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
             rangeCounter++;
@@ -144,7 +144,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
 
                 D3D12_STATIC_SAMPLER_DESC& targetSampler = staticSamplers[samplerCounter++];
                 sampler->FillD3DStaticSampler(targetSampler);
-                targetSampler.ShaderRegister = bindingDesc.slot & SHADER_RES_SLOT_MASK;
+                targetSampler.ShaderRegister = bindingDesc.slot;
                 targetSampler.RegisterSpace = 0;
                 targetSampler.ShaderVisibility = rootParameters[rootParamIndex].ShaderVisibility;
             }
@@ -171,7 +171,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
 
         // TODO check if shader slots are not overlapping
         rootParameters[rootParamIndex].Descriptor.RegisterSpace = 0;
-        rootParameters[rootParamIndex].Descriptor.ShaderRegister = bindingDesc.slot & SHADER_RES_SLOT_MASK;
+        rootParameters[rootParamIndex].Descriptor.ShaderRegister = bindingDesc.slot;
         if (!TranslateShaderVisibility(bindingDesc.shaderVisibility, rootParameters[rootParamIndex].ShaderVisibility))
         {
             LOG_ERROR("Invalid shader visibility");

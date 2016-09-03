@@ -254,6 +254,20 @@ VkPrimitiveTopology TranslatePrimitiveTypeToVkTopology(PrimitiveType type)
     }
 }
 
+VkShaderStageFlagBits TranslateShaderTypeToVkShaderStage(ShaderType type)
+{
+    switch(type)
+    {
+    case ShaderType::Vertex: return VK_SHADER_STAGE_VERTEX_BIT;
+    case ShaderType::Hull: return VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
+    case ShaderType::Domain: return VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
+    case ShaderType::Geometry: return VK_SHADER_STAGE_GEOMETRY_BIT;
+    case ShaderType::Pixel: return VK_SHADER_STAGE_FRAGMENT_BIT;
+    case ShaderType::All: return VK_SHADER_STAGE_ALL_GRAPHICS;
+    default: return static_cast<VkShaderStageFlagBits>(0);
+    }
+}
+
 VkStencilOp TranslateStencilOpToVkStencilOp(StencilOp op)
 {
     switch (op)
