@@ -320,7 +320,7 @@ bool RenderTargetsScene::CreateShaders(bool multipleRT, bool withMSAA)
         return false;
 
     // define cbuffer binding for VS
-    DynamicBufferBindingDesc cbufferDesc(ShaderType::Vertex, ShaderResourceType::CBuffer, cbufferSlot);
+    VolatileCBufferBinding cbufferDesc(ShaderType::Vertex, ShaderResourceType::CBuffer, cbufferSlot);
 
     // create binding set for pixel shader
     ResourceBindingDesc pixelShaderBinding(ShaderResourceType::Texture,
@@ -421,7 +421,7 @@ void RenderTargetsScene::Draw(float dt)
     mCommandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
 
     IBuffer* cb = mConstantBuffer.get();
-    mCommandBuffer->BindDynamicBuffer(0, cb);
+    mCommandBuffer->BindVolatileCBuffer(0, cb);
 
     // render cube to a texture
     {

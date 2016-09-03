@@ -32,6 +32,7 @@ class BasicScene: public Scene
     std::unique_ptr<NFE::Renderer::IResourceBindingSet> mVSBindingSet;
     std::unique_ptr<NFE::Renderer::IResourceBindingSet> mPSBindingSet;
     std::unique_ptr<NFE::Renderer::IResourceBindingLayout> mResBindingLayout;
+    std::unique_ptr<NFE::Renderer::IResourceBindingInstance> mVSBindingInstance;
     std::unique_ptr<NFE::Renderer::IResourceBindingInstance> mPSBindingInstance;
 
     int mTextureSlot;
@@ -43,14 +44,17 @@ class BasicScene: public Scene
     // how many instances will be drawn?
     int mGridSize;
 
+    // cbuffer mode
+    NFE::Renderer::BufferMode mCBufferMode;
+
     // Releases only subscene-related resources. Backbuffer, RT and BlendState stay intact.
     void ReleaseSubsceneResources();
 
     // Resource creators for subscenes
-    bool CreateShaders(bool useCBuffer, bool useTexture);
+    bool CreateShaders(bool useCBuffer, bool useTexture, NFE::Renderer::BufferMode cbufferMode);
     bool CreateVertexBuffer(bool withExtraVert);
     bool CreateIndexBuffer();
-    bool CreateConstantBuffer();
+    bool CreateConstantBuffer(NFE::Renderer::BufferMode cbufferMode);
     bool CreateTexture();
     bool CreateSampler();
 
@@ -58,7 +62,7 @@ class BasicScene: public Scene
     bool CreateSubSceneEmpty();
     bool CreateSubSceneVertexBuffer();
     bool CreateSubSceneIndexBuffer();
-    bool CreateSubSceneConstantBuffer();
+    bool CreateSubSceneConstantBuffer(NFE::Renderer::BufferMode cbufferMode);
     bool CreateSubSceneTexture(int gridSize = 1);
 
 public:

@@ -11,8 +11,8 @@
 
 #include <vector>
 
-
-#define NFE_RENDERER_MAX_DYNAMIC_BUFFERS 4
+// max supported number of volatile constant buffers
+#define NFE_RENDERER_MAX_VOLATILE_CBUFFERS 4
 
 namespace NFE {
 namespace Renderer {
@@ -37,7 +37,7 @@ class ResourceBindingLayout : public IResourceBindingLayout
 
     D3DPtr<ID3D12RootSignature> mRootSignature;
     std::vector<ResourceBindingSet*> mBindingSets;
-    std::vector<DynamicBufferBindingDesc> mDynamicBuffers;
+    std::vector<VolatileCBufferBinding> mDynamicBuffers;
 
 public:
     bool Init(const ResourceBindingLayoutDesc& desc) override;

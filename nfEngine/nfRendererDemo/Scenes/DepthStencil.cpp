@@ -89,7 +89,7 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
         return false;
 
     // create binding layout
-    DynamicBufferBindingDesc cbufferDesc(ShaderType::Vertex, ShaderResourceType::CBuffer, 0);
+    VolatileCBufferBinding cbufferDesc(ShaderType::Vertex, ShaderResourceType::CBuffer, 0);
     mResBindingLayout.reset(mRendererDevice->CreateResourceBindingLayout(
         ResourceBindingLayoutDesc(nullptr, 0, &cbufferDesc, 1)));
     if (!mResBindingLayout)
@@ -306,7 +306,7 @@ void DepthStencilScene::Draw(float dt)
     mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
     mCommandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
-    mCommandBuffer->BindDynamicBuffer(0, mConstantBuffer.get());
+    mCommandBuffer->BindVolatileCBuffer(0, mConstantBuffer.get());
 
     int stride = 9 * sizeof(float);
     int offset = 0;
