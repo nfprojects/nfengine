@@ -25,19 +25,18 @@ class RenderTargetsScene : public Scene
     std::unique_ptr<NFE::Renderer::IShader> mDepthPixelShader;
     std::unique_ptr<NFE::Renderer::IShader> mSecondTargetPixelShader;
 
-    std::unique_ptr<NFE::Renderer::IShaderProgram> mRTShaderProgram;
-    std::unique_ptr<NFE::Renderer::IShaderProgram> mPrimaryTargetShaderProgram;
-    std::unique_ptr<NFE::Renderer::IShaderProgram> mDepthShaderProgram;
-    std::unique_ptr<NFE::Renderer::IShaderProgram> mSecondTargetShaderProgram;
-
     std::unique_ptr<NFE::Renderer::IBuffer> mConstantBuffer;
     std::unique_ptr<NFE::Renderer::IBuffer> mVertexBuffer;
     std::unique_ptr<NFE::Renderer::IBuffer> mIndexBuffer;
     std::unique_ptr<NFE::Renderer::IVertexLayout> mVertexLayout;
 
     std::unique_ptr<NFE::Renderer::ISampler> mSampler;
-    std::unique_ptr<NFE::Renderer::IPipelineState> mPipelineState;
-    std::unique_ptr<NFE::Renderer::IPipelineState> mPipelineStateMRT;
+    //std::unique_ptr<NFE::Renderer::IPipelineState> mPipelineState;
+    //std::unique_ptr<NFE::Renderer::IPipelineState> mPipelineStateMRT;
+    std::unique_ptr<NFE::Renderer::IPipelineState> mRTShaderProgram;
+    std::unique_ptr<NFE::Renderer::IPipelineState> mPrimaryTargetPipelineState;
+    std::unique_ptr<NFE::Renderer::IPipelineState> mDepthPipelineState;
+    std::unique_ptr<NFE::Renderer::IPipelineState> mSecondTargetPipelineState;
 
     std::unique_ptr<NFE::Renderer::IResourceBindingSet> mPSBindingSet;
     std::unique_ptr<NFE::Renderer::IResourceBindingLayout> mResBindingLayout;

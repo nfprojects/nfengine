@@ -22,7 +22,6 @@ class BasicScene: public Scene
     std::unique_ptr<NFE::Renderer::IPipelineState> mPipelineState;
     std::unique_ptr<NFE::Renderer::IShader> mVertexShader;
     std::unique_ptr<NFE::Renderer::IShader> mPixelShader;
-    std::unique_ptr<NFE::Renderer::IShaderProgram> mShaderProgram;
     std::unique_ptr<NFE::Renderer::IBuffer> mVertexBuffer;
     std::unique_ptr<NFE::Renderer::IVertexLayout> mVertexLayout;
     std::unique_ptr<NFE::Renderer::IBuffer> mIndexBuffer;

@@ -10,7 +10,7 @@
 #include "RendererModule.hpp"
 #include "HighLevelRenderer.hpp"
 #include "DebugRendererContext.hpp"
-#include "../Resources/MultiShaderProgram.hpp"
+#include "../Resources/MultiPipelineState.hpp"
 #include "nfCommon/Math/Box.hpp"
 #include "nfCommon/Math/Frustum.hpp"
 
@@ -25,12 +25,11 @@ using namespace Math;
  */
 class DebugRenderer : public RendererModule<DebugRenderer>
 {
-    Resource::MultiShaderProgram mShaderProgram;
     std::unique_ptr<IVertexLayout> mVertexLayout;
     std::unique_ptr<IVertexLayout> mMeshVertexLayout;
-    std::unique_ptr<IPipelineState> mLinesPipelineState;
-    std::unique_ptr<IPipelineState> mTrianglesPipelineState;
-    std::unique_ptr<IPipelineState> mMeshPipelineState;
+    Resource::MultiPipelineState mLinesPipelineState;
+    Resource::MultiPipelineState mTrianglesPipelineState;
+    Resource::MultiPipelineState mMeshPipelineState;
 
     std::unique_ptr<IBuffer> mConstantBuffer;
     std::unique_ptr<IBuffer> mPerMeshConstantBuffer;

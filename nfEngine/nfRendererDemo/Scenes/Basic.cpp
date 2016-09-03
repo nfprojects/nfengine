@@ -53,25 +53,18 @@ bool BasicScene::CreateShaderProgram(bool useCBuffer, bool useTexture)
     if (!mPixelShader)
         return false;
 
-    ShaderProgramDesc shaderProgramDesc;
-    shaderProgramDesc.vertexShader = mVertexShader.get();
-    shaderProgramDesc.pixelShader = mPixelShader.get();
-    mShaderProgram.reset(mRendererDevice->CreateShaderProgram(shaderProgramDesc));
-    if (!mShaderProgram)
-        return false;
-
     std::vector<IResourceBindingSet*> bindingSets;
 
     // create binding set
     if (useCBuffer)
     {
-        mCBufferSlot = mShaderProgram->GetResourceSlotByName("TestCBuffer");
+        mCBufferSlot = mVertexShader->GetResourceSlotByName("TestCBuffer");
         if (mCBufferSlot < 0)
             return false;
 
         if (useTexture)
         {
-            mTextureSlot = mShaderProgram->GetResourceSlotByName("gTexture");
+            mTextureSlot = mPixelShader->GetResourceSlotByName("gTexture");
             if (mTextureSlot < 0)
                 return false;
 
@@ -156,6 +149,8 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
         return false;
 
     PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.vertexShader = mVertexShader.get();
+    pipelineStateDesc.pixelShader = mPixelShader.get();
     pipelineStateDesc.blendState.independent = false;
     pipelineStateDesc.blendState.rtDescs[0].enable = true;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
@@ -370,7 +365,6 @@ void BasicScene::ReleaseSubsceneResources()
     mPixelShader.reset();
     mVertexShader.reset();
     mPipelineState.reset();
-    mShaderProgram.reset();
 
     mPSBindingInstance.reset();
     mResBindingLayout.reset();
@@ -433,9 +427,6 @@ void BasicScene::Draw(float dt)
 
     if (mPipelineState)
         mCommandBuffer->SetPipelineState(mPipelineState.get());
-
-    if (mShaderProgram)
-        mCommandBuffer->SetShaderProgram(mShaderProgram.get());
 
     // apply rotation
     mAngle += 2.0f * dt;

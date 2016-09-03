@@ -1,13 +1,13 @@
 /**
  * @file
  * @author  Witek902 (witek902@gmail.com)
- * @brief   Definitions of MultiShaderProgram utility
+ * @brief   Definitions of MultiPipelineState utility
  */
 
 #pragma once
 
 #include "PCH.hpp"
-#include "MultiShaderProgram.hpp"
+#include "MultiPipelineState.hpp"
 #include "nfCommon/Logger.hpp"
 #include "nfCommon/File.hpp"
 #include "nfCommon/Config.hpp"
@@ -41,7 +41,7 @@ void ShaderResourceDeleter(Multishader* multishader)
 using namespace Renderer;
 
 
-MultiShaderProgram::MultiShaderProgram()
+MultiPipelineState::MultiPipelineState()
     : mShaderResources
         {
             ShaderResourcePtr(nullptr, ShaderResourceDeleter),
@@ -53,7 +53,7 @@ MultiShaderProgram::MultiShaderProgram()
 {
 }
 
-bool MultiShaderProgram::Load(const char* name)
+bool MultiPipelineState::Load(const char* name)
 {
     mName = name;
 
@@ -132,10 +132,11 @@ bool MultiShaderProgram::Load(const char* name)
         }
     }
 
-    return GenerateShaderPrograms();
+    GenerateShaderSets();
+    return true;
 }
 
-bool MultiShaderProgram::GenerateShaderPrograms()
+void MultiPipelineState::GenerateShaderSets()
 {
     ResManager* rm = Engine::GetInstance()->GetResManager();
 
@@ -153,7 +154,6 @@ bool MultiShaderProgram::GenerateShaderPrograms()
         }
     }
 
-    bool loadedSuccessfully = false;
     if (mMacros.size() > 0)
     {
         std::unique_ptr<int[]> macroValues(new int[mMacros.size()]);
@@ -169,7 +169,7 @@ bool MultiShaderProgram::GenerateShaderPrograms()
         // generate and load all shader program combinations
         for (size_t i = 0; i < totalCombinations; ++i)
         {
-            loadedSuccessfully &= LoadSubShaderProgram(macroValues.get());
+            LoadShaderSet(macroValues.get());
 
             macroValues[0]++;
             for (size_t j = 0; j < mMacros.size() - 1; ++j)
@@ -184,16 +184,13 @@ bool MultiShaderProgram::GenerateShaderPrograms()
     }
     else
     {
-        loadedSuccessfully = LoadSubShaderProgram(nullptr);
+        LoadShaderSet(nullptr);
     }
-
-    return loadedSuccessfully;
 }
 
-bool MultiShaderProgram::LoadSubShaderProgram(int* macroValues)
+void MultiPipelineState::LoadShaderSet(int* macroValues)
 {
-    ShaderProgramDesc desc;
-
+    ShaderSet shaderSet;
     for (size_t i = 0; i < NFE_SHADER_TYPES_NUM; ++i)
     {
         if (!mShaderResources[i])
@@ -213,36 +210,55 @@ bool MultiShaderProgram::LoadSubShaderProgram(int* macroValues)
         switch (type)
         {
         case ShaderType::Vertex:
-            desc.vertexShader = shader;
+            shaderSet.shaders[0] = shader;
             break;
         case ShaderType::Hull:
-            desc.hullShader = shader;
+            shaderSet.shaders[1] = shader;
             break;
         case ShaderType::Domain:
-            desc.domainShader = shader;
+            shaderSet.shaders[2] = shader;
             break;
         case ShaderType::Geometry:
-            desc.geometryShader = shader;
+            shaderSet.shaders[3] = shader;
             break;
         case ShaderType::Pixel:
-            desc.pixelShader = shader;
+            shaderSet.shaders[4] = shader;
             break;
         }
     }
 
-    HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
-    std::unique_ptr<IShaderProgram> shaderProgram(renderer->GetDevice()->CreateShaderProgram(desc));
-    mSubPrograms.push_back(std::move(shaderProgram));
-
-    return shaderProgram.get() != nullptr;
+    mShaderSets.push_back(shaderSet);
 }
 
-size_t MultiShaderProgram::GetMacrosNumber() const
+bool MultiPipelineState::Build(const Renderer::PipelineStateDesc& desc)
+{
+    for (size_t i = 0; i < mShaderSets.size(); ++i)
+    {
+        PipelineStateDesc psoDesc = desc;
+        psoDesc.vertexShader = mShaderSets[i].shaders[0];
+        psoDesc.hullShader = mShaderSets[i].shaders[1];
+        psoDesc.domainShader = mShaderSets[i].shaders[2];
+        psoDesc.geometryShader = mShaderSets[i].shaders[3];
+        psoDesc.pixelShader = mShaderSets[i].shaders[4];
+
+        HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
+        std::unique_ptr<IPipelineState> shaderProgram(renderer->GetDevice()->CreatePipelineState(psoDesc));
+
+        if (!shaderProgram)
+            return false;
+
+        mSubPipelineStates.push_back(std::move(shaderProgram));
+    }
+
+    return true;
+}
+
+size_t MultiPipelineState::GetMacrosNumber() const
 {
     return mMacros.size();
 }
 
-int MultiShaderProgram::GetMacroByName(const char* name) const
+int MultiPipelineState::GetMacroByName(const char* name) const
 {
     for (size_t i = 0; i < mMacros.size(); ++i)
     {
@@ -253,7 +269,7 @@ int MultiShaderProgram::GetMacroByName(const char* name) const
     return -1;
 }
 
-IShaderProgram* MultiShaderProgram::GetShaderProgram(int* macroValues) const
+IPipelineState* MultiPipelineState::GetPipelineState(int* macroValues) const
 {
     int subshaderId = 0;
     int multiplier = 1;
@@ -273,10 +289,10 @@ IShaderProgram* MultiShaderProgram::GetShaderProgram(int* macroValues) const
         multiplier *= (macro.maxValue - macro.minValue + 1);
     }
 
-    return mSubPrograms[subshaderId].get();
+    return mSubPipelineStates[subshaderId].get();
 }
 
-IShader* MultiShaderProgram::GetShader(Renderer::ShaderType type, int* values) const
+IShader* MultiPipelineState::GetShader(Renderer::ShaderType type, int* values) const
 {
     int typeId = static_cast<int>(type);
     int macroValues[16] = { 0 };
@@ -291,22 +307,32 @@ IShader* MultiShaderProgram::GetShader(Renderer::ShaderType type, int* values) c
     return mShaderResources[typeId]->GetShader(macroValues);
 }
 
-int MultiShaderProgram::GetResourceSlotByName(const char* slotName)
+int MultiPipelineState::GetResourceSlotByName(const char* slotName)
 {
     int slot = -1;
 
     // resource slot ID must be the same for all sub programs
-    for (const auto& subProgram : mSubPrograms)
+    for (const auto& shaderSet : mShaderSets)
     {
-        int currSlot = subProgram->GetResourceSlotByName(slotName);
-
-        if (slot < 0 && currSlot >= 0)
-            slot = currSlot;
-        else if (slot >= 0 && currSlot != slot)
+        for (int i = 0; i < 5; ++i)
         {
-            LOG_ERROR("Resource slot ID for slot name '%s' is mismatched in multi shader program '%s'",
-                      slotName, mName.c_str());
-            continue;
+            if (!shaderSet.shaders[i])
+                continue;
+
+            int currSlot = shaderSet.shaders[i]->GetResourceSlotByName(slotName);
+
+            // name not present in this shader
+            if (currSlot < 0)
+                continue;
+
+            if (slot < 0)
+                slot = currSlot;
+            if (currSlot != slot)
+            {
+                LOG_ERROR("Resource slot ID for slot name '%s' is mismatched in multi shader program '%s'",
+                          slotName, mName.c_str());
+                continue;
+            }
         }
     }
 

@@ -23,7 +23,6 @@ class ICommandBuffer;
 class IPipelineState;
 class IRenderTarget;
 class IShader;
-class IShaderProgram;
 class IVertexLayout;
 
 #define MAX_RENDER_TARGETS 8

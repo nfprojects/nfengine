@@ -13,30 +13,31 @@
 namespace NFE {
 namespace Renderer {
 
-typedef std::tuple<IPipelineState*, IShaderProgram*> FullPipelineStateParts;
-
 class PipelineState : public IPipelineState
 {
-    friend class CommandBuffer;
-
+    D3DPtr<ID3D12PipelineState> mPipelineState;
     ResourceBindingLayout* mBindingLayout;
-    D3D12_INPUT_LAYOUT_DESC mInputLayoutDesc;
-    D3D12_RASTERIZER_DESC mRasterizerDesc;
-    D3D12_DEPTH_STENCIL_DESC mDepthStencilDesc;
-    D3D12_BLEND_DESC mBlendDesc;
-
-    PrimitiveType mPrimitiveType;
-    uint32 mNumControlPoints;
-
-    uint32 mNumRenderTargets;
-    DXGI_FORMAT mRenderTargetFormats[MAX_RENDER_TARGETS];
-    DXGI_FORMAT mDepthStencilFormat;
+    D3D12_PRIMITIVE_TOPOLOGY mPrimitiveTopology;
 
 public:
-    ~PipelineState();
+    PipelineState();
+
     bool Init(const PipelineStateDesc& desc);
 
-    static ID3D12PipelineState* CreateFullPipelineState(const FullPipelineStateParts& parts);
+    NFE_INLINE ID3D12PipelineState* GetPSO() const
+    {
+        return mPipelineState.get();
+    }
+
+    NFE_INLINE ResourceBindingLayout* GetResBindingLayout() const
+    {
+        return mBindingLayout;
+    }
+
+    NFE_INLINE D3D12_PRIMITIVE_TOPOLOGY GetPrimitiveTopology() const
+    {
+        return mPrimitiveTopology;
+    }
 };
 
 } // namespace Renderer

@@ -8,7 +8,7 @@
 
 #include "RendererModule.hpp"
 #include "HighLevelRenderer.hpp"
-#include "../Resources/MultiShaderProgram.hpp"
+#include "../Resources/MultiPipelineState.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -26,7 +26,7 @@ class PostProcessRenderer : public RendererModule<PostProcessRenderer>
     std::unique_ptr<IVertexLayout> mVertexLayout;
     std::unique_ptr<IBuffer> mVertexBuffer;
 
-    Resource::MultiShaderProgram mTonemappingShaderProgram;
+    Resource::MultiPipelineState mTonemappingPipelineState;
     std::unique_ptr<IBuffer> mTonemappingCBuffer;
 
     std::unique_ptr<IResourceBindingSet> mParamsBindingSet;
@@ -34,8 +34,6 @@ class PostProcessRenderer : public RendererModule<PostProcessRenderer>
     std::unique_ptr<IResourceBindingLayout> mResBindingLayout;
     std::unique_ptr<IResourceBindingInstance> mTonemappingBindingInstance;
     std::unique_ptr<IResourceBindingInstance> mNullTextureBindingInstance;
-
-    std::unique_ptr<IPipelineState> mPipelineState;
 
     bool CreateResourceBindingLayouts();
 

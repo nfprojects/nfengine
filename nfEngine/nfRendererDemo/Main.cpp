@@ -111,9 +111,11 @@ public:
         //       possible, when a feature is not implemented in renderer
         mScenes.push_back(std::unique_ptr<Scene>(new BasicScene));
         mScenes.push_back(std::unique_ptr<Scene>(new DepthStencilScene));
+        /*
         mScenes.push_back(std::unique_ptr<Scene>(new RenderTargetsScene));
         mScenes.push_back(std::unique_ptr<Scene>(new VertexBuffersScene));
         mScenes.push_back(std::unique_ptr<Scene>(new TessellationScene));
+        */
     }
 
     /**

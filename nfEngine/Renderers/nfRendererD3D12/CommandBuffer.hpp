@@ -47,12 +47,10 @@ class CommandBuffer : public ICommandBuffer
     RenderTarget* mCurrRenderTarget;
     ResourceBindingLayout* mBindingLayout;
     ResourceBindingLayout* mCurrBindingLayout;
-    ShaderProgram* mCurrShaderProgram;
-    ShaderProgram* mShaderProgram;
     PipelineState* mCurrPipelineState;
     PipelineState* mPipelineState;
 
-    PrimitiveType mCurrPrimitiveType;
+    D3D12_PRIMITIVE_TOPOLOGY mCurrPrimitiveTopology;
 
     void UpdateStates();
     void UnsetRenderTarget();
@@ -75,7 +73,6 @@ public:
     void BindDynamicBuffer(size_t slot, IBuffer* buffer) override;
     void SetRenderTarget(IRenderTarget* renderTarget) override;
     void SetResourceBindingLayout(IResourceBindingLayout* layout) override;
-    void SetShaderProgram(IShaderProgram* shaderProgram) override;
     void SetPipelineState(IPipelineState* state) override;
     void SetStencilRef(unsigned char ref) override;
     void SetViewport(float left, float width, float top, float height,

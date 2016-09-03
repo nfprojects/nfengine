@@ -66,7 +66,6 @@ public:
     virtual IPipelineState* CreatePipelineState(const PipelineStateDesc& desc) = 0;
     virtual ISampler* CreateSampler(const SamplerDesc& desc) = 0;
     virtual IShader* CreateShader(const ShaderDesc& desc) = 0;
-    virtual IShaderProgram* CreateShaderProgram(const ShaderProgramDesc& desc) = 0;
     virtual IResourceBindingSet* CreateResourceBindingSet(const ResourceBindingSetDesc& desc) = 0;
     virtual IResourceBindingLayout* CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc) = 0;
     virtual IResourceBindingInstance* CreateResourceBindingInstance(IResourceBindingSet* set) = 0;

@@ -50,14 +50,14 @@ LightsRenderer::LightsRenderer()
 
     IDevice* device = mRenderer->GetDevice();
 
-    mAmbientLightShaderProgram.Load("AmbientLight");
+    mAmbientLightPipelineState.Load("AmbientLight");
 
-    mOmniLightShaderProgram.Load("OmniLight");
-    mOmniLightUseShadowMap = mOmniLightShaderProgram.GetMacroByName("USE_SHADOW_MAP");
+    mOmniLightPipelineState.Load("OmniLight");
+    mOmniLightUseShadowMap = mOmniLightPipelineState.GetMacroByName("USE_SHADOW_MAP");
 
-    mSpotLightShaderProgram.Load("SpotLight");
-    mSpotLightUseLightMap = mSpotLightShaderProgram.GetMacroByName("USE_LIGHT_MAP");
-    mSpotLightUseShadowMap = mSpotLightShaderProgram.GetMacroByName("USE_SHADOW_MAP");
+    mSpotLightPipelineState.Load("SpotLight");
+    mSpotLightUseLightMap = mSpotLightPipelineState.GetMacroByName("USE_LIGHT_MAP");
+    mSpotLightUseShadowMap = mSpotLightPipelineState.GetMacroByName("USE_SHADOW_MAP");
 
 
     /// create vertex layout
@@ -223,7 +223,7 @@ LightsRenderer::LightsRenderer()
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
 
     pipelineStateDesc.debugName = "LightsRenderer::mAmbientLightPipelineState";
-    mAmbientLightPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
+    mAmbientLightPipelineState.Build(pipelineStateDesc);
 
     // blend state that enables additive alpha-blending
     pipelineStateDesc.blendState.rtDescs[0].enable = true;
@@ -233,16 +233,20 @@ LightsRenderer::LightsRenderer()
     pipelineStateDesc.depthState.depthWriteEnable = false;
     // rasterizer state for light volumes rendering
     pipelineStateDesc.raterizerState.cullMode = CullMode::CCW;
-    pipelineStateDesc.debugName = "LightsRenderer::mLightVolumePipelineState";
-    mLightVolumePipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
+
+    pipelineStateDesc.debugName = "LightsRenderer::mOmniLightPipelineState";
+    mOmniLightPipelineState.Build(pipelineStateDesc);
+
+    pipelineStateDesc.debugName = "LightsRenderer::mSpotLightPipelineState";
+    mSpotLightPipelineState.Build(pipelineStateDesc);
 }
 
 bool LightsRenderer::CreateResourceBindingLayouts()
 {
     IDevice* device = mRenderer->GetDevice();
 
-    int globalCBufferSlot = mOmniLightShaderProgram.GetResourceSlotByName("Global");
-    int lightParamsSlot = mOmniLightShaderProgram.GetResourceSlotByName("OmniLightProps");
+    int globalCBufferSlot = mOmniLightPipelineState.GetResourceSlotByName("Global");
+    int lightParamsSlot = mOmniLightPipelineState.GetResourceSlotByName("OmniLightProps");
     // TODO: verify other light types
     if (globalCBufferSlot < 0 || lightParamsSlot < 0)
     {
@@ -250,11 +254,11 @@ bool LightsRenderer::CreateResourceBindingLayouts()
         return false;
     }
 
-    int depthTexSlot = mOmniLightShaderProgram.GetResourceSlotByName("gDepthTex");
-    int gbufferTex0Slot = mOmniLightShaderProgram.GetResourceSlotByName("gGBufferTex0");
-    int gbufferTex1Slot = mOmniLightShaderProgram.GetResourceSlotByName("gGBufferTex1");
-    int gbufferTex2Slot = mAmbientLightShaderProgram.GetResourceSlotByName("gGBufferTex2"); // TODO
-    // int gbufferTex3Slot = mOmniLightShaderProgram.GetResourceSlotByName("gGBufferTex3");
+    int depthTexSlot = mOmniLightPipelineState.GetResourceSlotByName("gDepthTex");
+    int gbufferTex0Slot = mOmniLightPipelineState.GetResourceSlotByName("gGBufferTex0");
+    int gbufferTex1Slot = mOmniLightPipelineState.GetResourceSlotByName("gGBufferTex1");
+    int gbufferTex2Slot = mAmbientLightPipelineState.GetResourceSlotByName("gGBufferTex2"); // TODO
+    // int gbufferTex3Slot = mOmniLightPipelineState.GetResourceSlotByName("gGBufferTex3");
     if (depthTexSlot < 0 || gbufferTex0Slot < 0 || gbufferTex1Slot < 0
         /* || gbufferTex2Slot < 0 || gbufferTex3Slot < 0 */ )
     {
@@ -262,14 +266,14 @@ bool LightsRenderer::CreateResourceBindingLayouts()
         return false;
     }
 
-    int shadowMapSlot = mOmniLightShaderProgram.GetResourceSlotByName("gShadowMap");
+    int shadowMapSlot = mOmniLightPipelineState.GetResourceSlotByName("gShadowMap");
     if (shadowMapSlot < 0)
     {
         LOG_ERROR("Invalid shadowMapSlot slot");
         return false;
     }
 
-    int lightMapSlot = mSpotLightShaderProgram.GetResourceSlotByName("gLightMap");
+    int lightMapSlot = mSpotLightPipelineState.GetResourceSlotByName("gLightMap");
     if (lightMapSlot < 0)
     {
         LOG_ERROR("Invalid lightMapSlot slot");
@@ -375,15 +379,13 @@ void LightsRenderer::SetUp(RenderContext* context, IRenderTarget* target, Geomet
 void LightsRenderer::DrawAmbientLight(RenderContext* context, const Vector& ambientLightColor,
                                       const Vector& backgroundColor)
 {
-    context->commandBuffer->SetPipelineState(mAmbientLightPipelineState.get());
-
     AmbientLightCBuffer cbuffer;
     VectorStore(ambientLightColor, &cbuffer.ambientLight);
     VectorStore(backgroundColor, &cbuffer.backgroundColor);
     context->commandBuffer->WriteBuffer(mAmbientLightCBuffer.get(), 0, sizeof(AmbientLightCBuffer),
                                         &cbuffer);
 
-    context->commandBuffer->SetShaderProgram(mAmbientLightShaderProgram.GetShaderProgram(nullptr));
+    context->commandBuffer->SetPipelineState(mAmbientLightPipelineState.GetPipelineState(nullptr));
     context->commandBuffer->BindResources(0, mAmbientLightBindingInstance.get());
 
     context->commandBuffer->DrawIndexed(6);
@@ -409,8 +411,7 @@ void LightsRenderer::DrawOmniLight(RenderContext* context, const Vector& pos, fl
         context->commandBuffer->BindResources(2, shadowMap->mBindingInstance.get());
     }
 
-    context->commandBuffer->SetPipelineState(mLightVolumePipelineState.get());
-    context->commandBuffer->SetShaderProgram(mOmniLightShaderProgram.GetShaderProgram(macros));
+    context->commandBuffer->SetPipelineState(mOmniLightPipelineState.GetPipelineState(macros));
     context->commandBuffer->BindResources(0, mOmniLightBindingInstance.get());
 
     context->commandBuffer->WriteBuffer(mOmniLightCBuffer.get(), 0, sizeof(OmniLightCBuffer),
@@ -442,8 +443,7 @@ void LightsRenderer::DrawSpotLight(RenderContext* context, const SpotLightProper
         context->commandBuffer->BindResources(2, shadowMap->mBindingInstance.get());
     }
 
-    context->commandBuffer->SetPipelineState(mLightVolumePipelineState.get());
-    context->commandBuffer->SetShaderProgram(mSpotLightShaderProgram.GetShaderProgram(macros));
+    context->commandBuffer->SetPipelineState(mSpotLightPipelineState.GetPipelineState(macros));
     context->commandBuffer->BindResources(0, mSpotLightBindingInstance.get());
 
     context->commandBuffer->WriteBuffer(mSpotLightCBuffer.get(), 0, sizeof(SpotLightProperties),
