@@ -14,21 +14,40 @@ namespace Renderer {
 
 class Buffer : public IBuffer
 {
-    friend class CommandBuffer;
-    friend class ResourceBindingInstance;
-
-    size_t mSize;
-    size_t mRealSize;
-    void* mData; // mapped data
+    D3DPtr<ID3D12Resource> mResource;
+    uint32 mSize;
     BufferType mType;
     BufferMode mMode;
 
-    D3DPtr<ID3D12Resource> mResource;
+    // Upload data (used for Static buffers only)
+    bool UploadData(const BufferDesc& desc);
 
 public:
     Buffer();
     ~Buffer();
+
     bool Init(const BufferDesc& desc);
+
+    NFE_INLINE ID3D12Resource* GetResource() const
+    {
+        return mResource.get();
+    }
+
+    NFE_INLINE uint32 GetSize() const
+    {
+        return mSize;
+    }
+
+    // get allocated memory size
+    NFE_INLINE uint32 GetRealSize() const
+    {
+        return (mSize + 255) & ~255;
+    }
+
+    NFE_INLINE BufferMode GetMode() const
+    {
+        return mMode;
+    }
 };
 
 } // namespace Renderer
