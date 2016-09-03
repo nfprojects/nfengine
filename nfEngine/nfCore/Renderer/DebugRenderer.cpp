@@ -106,13 +106,13 @@ DebugRenderer::DebugRenderer()
     mMeshVertexLayout.reset(device->CreateVertexLayout(meshVertexLayoutDesc));
 
     /// create constant buffer
-    bufferDesc.access = BufferAccess::CPU_Write;
+    bufferDesc.mode = BufferMode::Dynamic;
     bufferDesc.size = sizeof(DebugCBuffer);
     bufferDesc.type = BufferType::Constant;
     bufferDesc.debugName = "DebugRenderer::mConstantBuffer";
     mConstantBuffer.reset(device->CreateBuffer(bufferDesc));
 
-    bufferDesc.access = BufferAccess::CPU_Write;
+    bufferDesc.mode = BufferMode::Volatile;
     bufferDesc.size = sizeof(DebugPerMeshCBuffer);
     bufferDesc.type = BufferType::Constant;
     bufferDesc.debugName = "DebugRenderer::mPerMeshConstantBuffer";
@@ -128,14 +128,14 @@ DebugRenderer::DebugRenderer()
 
 
     /// create vertex buffer
-    bufferDesc.access = BufferAccess::CPU_Write;
+    bufferDesc.mode = BufferMode::Dynamic;
     bufferDesc.size = gVertexBufferSize * sizeof(DebugVertex);
     bufferDesc.type = BufferType::Vertex;
     bufferDesc.debugName = "DebugRenderer::mVertexBuffer";
     mVertexBuffer.reset(device->CreateBuffer(bufferDesc));
 
     /// create index buffer
-    bufferDesc.access = BufferAccess::CPU_Write;
+    bufferDesc.mode = BufferMode::Dynamic;
     bufferDesc.size = gIndexBufferSize * sizeof(DebugIndexType);
     bufferDesc.type = BufferType::Index;
     bufferDesc.debugName = "DebugRenderer::mIndexBuffer";

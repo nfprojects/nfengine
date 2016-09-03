@@ -201,7 +201,7 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
 
     BufferDesc bufferDesc;
     bufferDesc.type = BufferType::Vertex;
-    bufferDesc.access = BufferAccess::GPU_ReadOnly;
+    bufferDesc.mode = BufferMode::Static;
     bufferDesc.size = sizeof(vbData);
     bufferDesc.initialData = vbData;
     mVertexBuffer.reset(mRendererDevice->CreateBuffer(bufferDesc));
@@ -209,7 +209,7 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
         return false;
 
     bufferDesc.type = BufferType::Index;
-    bufferDesc.access = BufferAccess::GPU_ReadOnly;
+    bufferDesc.mode = BufferMode::Static;
     bufferDesc.size = sizeof(ibData);
     bufferDesc.initialData = ibData;
     mIndexBuffer.reset(mRendererDevice->CreateBuffer(bufferDesc));
@@ -217,7 +217,7 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
         return false;
 
     bufferDesc.type = BufferType::Constant;
-    bufferDesc.access = BufferAccess::CPU_Write;
+    bufferDesc.mode = BufferMode::Volatile;
     bufferDesc.size = sizeof(VertexCBuffer);
     bufferDesc.initialData = nullptr;
     mConstantBuffer.reset(mRendererDevice->CreateBuffer(bufferDesc));
@@ -231,7 +231,7 @@ bool DepthStencilScene::CreateDepthBuffer(bool withStencil)
 {
     TextureDesc depthBufferDesc;
     depthBufferDesc.type = TextureType::Texture2D;
-    depthBufferDesc.access = BufferAccess::GPU_ReadWrite;
+    depthBufferDesc.mode = BufferMode::GPUOnly;
     depthBufferDesc.width = static_cast<uint16>(WINDOW_WIDTH);
     depthBufferDesc.height = static_cast<uint16>(WINDOW_HEIGHT);
     depthBufferDesc.binding = NFE_RENDERER_TEXTURE_BIND_DEPTH;

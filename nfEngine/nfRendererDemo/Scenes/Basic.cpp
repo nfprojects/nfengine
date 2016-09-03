@@ -134,7 +134,7 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
 
     BufferDesc vbDesc;
     vbDesc.type = BufferType::Vertex;
-    vbDesc.access = BufferAccess::GPU_ReadOnly;
+    vbDesc.mode = BufferMode::Static;
     vbDesc.size = withExtraVert ? sizeof(vbDataExtra) : sizeof(vbData);
     vbDesc.initialData = withExtraVert ? vbDataExtra : vbData;
     mVertexBuffer.reset(mRendererDevice->CreateBuffer(vbDesc));
@@ -180,7 +180,7 @@ bool BasicScene::CreateIndexBuffer()
 
     BufferDesc ibDesc;
     ibDesc.type = BufferType::Index;
-    ibDesc.access = BufferAccess::GPU_ReadOnly;
+    ibDesc.mode = BufferMode::Static;
     ibDesc.size = sizeof(ibData);
     ibDesc.initialData = ibData;
     mIndexBuffer.reset(mRendererDevice->CreateBuffer(ibDesc));
@@ -196,7 +196,7 @@ bool BasicScene::CreateConstantBuffer()
 
     BufferDesc vertexCBufferDesc;
     vertexCBufferDesc.type = BufferType::Constant;
-    vertexCBufferDesc.access = BufferAccess::CPU_Write;
+    vertexCBufferDesc.mode = BufferMode::Volatile;
     vertexCBufferDesc.size = sizeof(VertexCBuffer);
     mConstantBuffer.reset(mRendererDevice->CreateBuffer(vertexCBufferDesc));
     if (!mConstantBuffer)

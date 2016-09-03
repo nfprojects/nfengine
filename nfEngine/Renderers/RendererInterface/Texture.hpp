@@ -39,7 +39,7 @@ struct TextureDesc
 {
     TextureType type;
     ElementFormat format;
-    BufferAccess access;
+    BufferMode mode;
     DepthBufferFormat depthBufferFormat; //< set when texture is used as depth buffer
     int binding;        //< texture binding mode
     uint32 width;       //< texture width in texels
@@ -60,7 +60,7 @@ struct TextureDesc
     TextureDesc()
         : type(TextureType::Texture2D)
         , format(ElementFormat::R8G8B8A8_U_Norm)
-        , access(BufferAccess::GPU_ReadOnly)
+        , mode(BufferMode::Static)
         , depthBufferFormat(DepthBufferFormat::Depth16)
         , binding(0)
         , width(1)

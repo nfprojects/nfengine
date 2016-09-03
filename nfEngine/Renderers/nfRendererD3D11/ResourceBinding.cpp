@@ -170,7 +170,7 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, IBuffer* buffer)
         return false;
     }
 
-    if (buf->mAccess == BufferAccess::CPU_Write)
+    if (buf->mMode == BufferMode::Dynamic || buf->mMode == BufferMode::Volatile)
         LOG_WARNING("Placing dynamic cbuffers in descriptor set may not be supported by other renderer backends");
 
     mViews[slot] = buf->mBuffer.get();

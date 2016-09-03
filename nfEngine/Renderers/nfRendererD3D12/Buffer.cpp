@@ -26,7 +26,7 @@ Buffer::~Buffer()
 
 bool Buffer::Init(const BufferDesc& desc)
 {
-    if (desc.access == BufferAccess::GPU_ReadWrite || desc.access == BufferAccess::CPU_Read)
+    if (desc.mode == BufferMode::GPUOnly || desc.mode == BufferMode::Readback)
     {
         LOG_ERROR("This access mode is not supported yet.");
         return false;
@@ -36,17 +36,17 @@ bool Buffer::Init(const BufferDesc& desc)
     mSize = desc.size;
     mRealSize = (mSize + 255) & ~255;
     mType = desc.type;
-    mAccess = desc.access;
+    mMode = desc.mode;
 
     // TODO
-    if (desc.access == BufferAccess::CPU_Write && desc.type == BufferType::Constant)
+    if (desc.mode == BufferMode::Volatile && desc.type == BufferType::Constant)
     {
         // dynamic cbuffers are handled via ring buffer
         return true;
     }
 
     D3D12_HEAP_PROPERTIES heapProperties;
-    heapProperties.Type = desc.access == BufferAccess::CPU_Write ? D3D12_HEAP_TYPE_DEFAULT : D3D12_HEAP_TYPE_UPLOAD; // TODO
+    heapProperties.Type = desc.mode == BufferMode::Dynamic ? D3D12_HEAP_TYPE_DEFAULT : D3D12_HEAP_TYPE_UPLOAD; // TODO
     heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
     heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
     heapProperties.CreationNodeMask = 1;
@@ -76,7 +76,7 @@ bool Buffer::Init(const BufferDesc& desc)
         return false;
 
     // TODO
-    if (desc.access == BufferAccess::CPU_Write)
+    if (desc.mode == BufferMode::Dynamic)
         return true;
 
     D3D12_RANGE range;
@@ -89,7 +89,7 @@ bool Buffer::Init(const BufferDesc& desc)
     if (desc.initialData)
         memcpy(mData, desc.initialData, desc.size);
 
-    if (desc.access == BufferAccess::GPU_ReadOnly)
+    if (desc.mode == BufferMode::Static)
     {
         mResource->Unmap(0, nullptr);
         mData = nullptr;

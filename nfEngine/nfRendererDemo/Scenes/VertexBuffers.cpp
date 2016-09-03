@@ -61,7 +61,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer)
     /// create vertex buffers
     BufferDesc vbDesc;
     vbDesc.type = BufferType::Vertex;
-    vbDesc.access = BufferAccess::GPU_ReadOnly;
+    vbDesc.mode = BufferMode::Static;
 
 
     float vbPositionData[] =
@@ -105,7 +105,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer)
 
     BufferDesc ibDesc;
     ibDesc.type = BufferType::Index;
-    ibDesc.access = BufferAccess::GPU_ReadOnly;
+    ibDesc.mode = BufferMode::Static;
     ibDesc.size = sizeof(ibData);
     ibDesc.initialData = ibData;
     mIndexBuffer.reset(mRendererDevice->CreateBuffer(ibDesc));

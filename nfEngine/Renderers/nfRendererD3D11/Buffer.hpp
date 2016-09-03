@@ -20,7 +20,7 @@ class Buffer : public IBuffer
 
     size_t mSize;
     BufferType mType;
-    BufferAccess mAccess;
+    BufferMode mMode;
     D3DPtr<ID3D11Buffer> mBuffer;
 
 public:

@@ -141,14 +141,14 @@ LightsRenderer::LightsRenderer()
     };
 
     BufferDesc bufferDesc;
-    bufferDesc.access = BufferAccess::GPU_ReadOnly;
+    bufferDesc.mode = BufferMode::Static;
     bufferDesc.size = sizeof(vertices);
     bufferDesc.type = BufferType::Vertex;
     bufferDesc.initialData = vertices;
     bufferDesc.debugName = "LightsRenderer::mVertexBuffer";
     mVertexBuffer.reset(device->CreateBuffer(bufferDesc));
 
-    bufferDesc.access = BufferAccess::GPU_ReadOnly;
+    bufferDesc.mode = BufferMode::Static;
     bufferDesc.size = sizeof(indices);
     bufferDesc.type = BufferType::Index;
     bufferDesc.initialData = indices;
@@ -157,7 +157,7 @@ LightsRenderer::LightsRenderer()
 
     // constant buffers
     {
-        bufferDesc.access = BufferAccess::CPU_Write;
+        bufferDesc.mode = BufferMode::Volatile;
         bufferDesc.type = BufferType::Constant;
         bufferDesc.initialData = nullptr;
 

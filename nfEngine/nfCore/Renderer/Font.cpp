@@ -173,7 +173,7 @@ bool Font::Init(const char* file, int size)
 
     TextureDesc texDesc;
     texDesc.type = TextureType::Texture2D;
-    texDesc.access = BufferAccess::GPU_ReadOnly;
+    texDesc.mode = BufferMode::Static;
     texDesc.width = mTexWidth;
     texDesc.height = mTexHeight;
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER;

@@ -124,7 +124,7 @@ void HighLevelRenderer::CreateCommonResources()
     texDataDesc.lineSize = texDataDesc.sliceSize = 4 * sizeof(uint8);
     TextureDesc texDesc;
     texDesc.type = TextureType::Texture2D;
-    texDesc.access = BufferAccess::GPU_ReadOnly;
+    texDesc.mode = BufferMode::Static;
     texDesc.width = texDesc.height = 1;
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER;
     texDesc.mipmaps = 1;

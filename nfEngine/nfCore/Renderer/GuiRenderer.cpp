@@ -76,7 +76,7 @@ GuiRenderer::GuiRenderer()
     mImGuiVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
 
     BufferDesc bufferDesc;
-    bufferDesc.access = BufferAccess::CPU_Write;
+    bufferDesc.mode = BufferMode::Volatile;
     bufferDesc.size = sizeof(GlobalCBuffer);
     bufferDesc.type = BufferType::Constant;
     bufferDesc.debugName = "GuiRenderer::mConstantBuffer";
@@ -87,7 +87,7 @@ GuiRenderer::GuiRenderer()
         mCBufferBindingInstance->WriteCBufferView(0, mConstantBuffer.get());
 
     // create dynamic vertex buffer
-    bufferDesc.access = BufferAccess::CPU_Write;
+    bufferDesc.mode = BufferMode::Dynamic;
     bufferDesc.size = gQuadsBufferSize * sizeof(GuiQuadVertex);
     bufferDesc.type = BufferType::Vertex;
     bufferDesc.debugName = "GuiRenderer::mVertexBuffer";
@@ -395,7 +395,7 @@ bool GuiRenderer::DrawImGui(RenderContext* context, IResourceBindingInstance* im
         ctx.vertexBufferSize = drawData->TotalVtxCount + VERTEX_BUFFER_HYSTERESIS;
 
         BufferDesc bufferDesc;
-        bufferDesc.access = BufferAccess::CPU_Write;
+        bufferDesc.mode = BufferMode::Dynamic;
         bufferDesc.size = ctx.vertexBufferSize * sizeof(ImDrawVert);
         bufferDesc.type = BufferType::Vertex;
         bufferDesc.debugName = "GuiRenderer::mImGuiVertexBuffer";
@@ -408,7 +408,7 @@ bool GuiRenderer::DrawImGui(RenderContext* context, IResourceBindingInstance* im
         ctx.indexBufferSize = drawData->TotalIdxCount + INDEX_BUFFER_HYSTERESIS;
 
         BufferDesc bufferDesc;
-        bufferDesc.access = BufferAccess::CPU_Write;
+        bufferDesc.mode = BufferMode::Dynamic;
         bufferDesc.size = ctx.indexBufferSize * sizeof(ImDrawIdx);
         bufferDesc.type = BufferType::Index;
         bufferDesc.debugName = "GuiRenderer::mImGuiIndexBuffer";

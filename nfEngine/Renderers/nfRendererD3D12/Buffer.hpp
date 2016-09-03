@@ -21,7 +21,7 @@ class Buffer : public IBuffer
     size_t mRealSize;
     void* mData; // mapped data
     BufferType mType;
-    BufferAccess mAccess;
+    BufferMode mMode;
 
     D3DPtr<ID3D12Resource> mResource;
 

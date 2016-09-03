@@ -165,34 +165,42 @@ enum class ShaderType
 };
 
 /**
- * GPU buffer access modes.
+ * GPU buffer modes.
  */
-enum class BufferAccess
+enum class BufferMode
 {
     /**
      * Read-only resource, for example a static mesh or texture.
      * The resource content must be specified during creation.
      */
-    GPU_ReadOnly,
-
-    /**
-     * Read-write resource, for example a texture used as a render target.
-     * The content can't be accessed by the CPU.
-     */
-    GPU_ReadWrite,
+    Static,
 
     /**
      * Read-only resource, for example a constant buffer.
      * The content can be written by the CPU.
      */
-    CPU_Write,
+    Dynamic,
+
+    /**
+     * Frequently written-to read-only resource.
+     * The content can be written by the CPU. Assumes the data will be refreshed at least every frame.
+     * This mode uses no actual Resource/Buffer allocation. Instead, internal Ring Buffer is used
+     * to write data.
+     */
+    Volatile,
+
+    /**
+     * Read-write resource, for example a texture used as a render target.
+     * The content can't be accessed by the CPU.
+     */
+    GPUOnly,
 
     /**
      * Readback resource, for example a screenshot texture.
      * The content can't be accessed directly by the CPU (only via Copy operations).
      * The data can be read by the CPU.
      */
-    CPU_Read
+    Readback
 };
 
 /**

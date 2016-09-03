@@ -54,14 +54,14 @@ PostProcessRenderer::PostProcessRenderer()
     };
 
     BufferDesc bufferDesc;
-    bufferDesc.access = BufferAccess::GPU_ReadOnly;
+    bufferDesc.mode = BufferMode::Static;
     bufferDesc.size = sizeof(vertices);
     bufferDesc.type = BufferType::Vertex;
     bufferDesc.initialData = vertices;
     bufferDesc.debugName = "PostProcessRenderer::mVertexBuffer";
     mVertexBuffer.reset(device->CreateBuffer(bufferDesc));
 
-    bufferDesc.access = BufferAccess::CPU_Write;
+    bufferDesc.mode = BufferMode::Dynamic;
     bufferDesc.type = BufferType::Constant;
     bufferDesc.initialData = nullptr;
     bufferDesc.size = sizeof(ToneMappingCBuffer);

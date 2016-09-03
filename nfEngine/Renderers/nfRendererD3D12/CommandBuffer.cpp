@@ -451,7 +451,7 @@ bool CommandBuffer::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, con
     else
     {
         // TODO temporary - offset and size support must be added
-        NFE_ASSERT(bufferPtr->mAccess == BufferAccess::CPU_Write, "Buffer is not CPU-writeable");
+        NFE_ASSERT(bufferPtr->mMode == BufferMode::Volatile, "Buffer is not Volatile");
         NFE_ASSERT(offset == 0, "Offset not supported");
         NFE_ASSERT(size == bufferPtr->mSize, "Size must cover the whole buffer");
 

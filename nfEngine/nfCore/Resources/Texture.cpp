@@ -32,7 +32,7 @@ Renderer::ITexture* CreateRendererTextureFromImage(const Common::Image& image,
 
     TextureDesc texDesc;
     texDesc.type = TextureType::Texture2D;
-    texDesc.access = BufferAccess::GPU_ReadOnly;
+    texDesc.mode = BufferMode::Static;
     texDesc.width = image.GetWidth();
     texDesc.height = image.GetHeight();
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER;
@@ -261,7 +261,7 @@ bool Texture::CreateAsRenderTarget(uint32 width, uint32 height, Renderer::Elemen
 
     TextureDesc texDesc;
     texDesc.type = TextureType::Texture2D;
-    texDesc.access = BufferAccess::GPU_ReadWrite;
+    texDesc.mode = BufferMode::GPUOnly;
     texDesc.width = width;
     texDesc.height = height;
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER | NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;

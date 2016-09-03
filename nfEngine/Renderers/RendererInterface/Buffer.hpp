@@ -17,14 +17,14 @@ namespace Renderer {
 struct BufferDesc
 {
     BufferType type;
-    BufferAccess access;
+    BufferMode mode;
     const void* initialData;
     size_t size;
     const char* debugName;   //< optional debug name
 
     BufferDesc()
         : type(BufferType::Vertex)
-        , access(BufferAccess::GPU_ReadOnly)
+        , mode(BufferMode::Static)
         , initialData(nullptr)
         , size(0)
         , debugName(nullptr)

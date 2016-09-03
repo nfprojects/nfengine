@@ -42,19 +42,20 @@ bool Buffer::Init(const BufferDesc& desc)
             return false;
     }
 
-    switch (desc.access)
+    switch (desc.mode)
     {
-        case BufferAccess::GPU_ReadOnly:
+        case BufferMode::Static:
             bufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
             break;
-        case BufferAccess::GPU_ReadWrite:
+        case BufferMode::GPUOnly:
             bufferDesc.Usage = D3D11_USAGE_DEFAULT;
             break;
-        case BufferAccess::CPU_Write:
+        case BufferMode::Dynamic:
+        case BufferMode::Volatile:
             bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
             bufferDesc.CPUAccessFlags |= D3D11_CPU_ACCESS_WRITE;
             break;
-        case BufferAccess::CPU_Read:
+        case BufferMode::Readback:
             bufferDesc.Usage = D3D11_USAGE_STAGING;
             bufferDesc.CPUAccessFlags |= D3D11_CPU_ACCESS_READ;
             break;
@@ -89,7 +90,7 @@ bool Buffer::Init(const BufferDesc& desc)
                                                static_cast<UINT>(bufferName.length()), bufferName.c_str()));
     }
 
-    mAccess = desc.access;
+    mMode = desc.mode;
     mType = desc.type;
     mSize = desc.size;
     return true;

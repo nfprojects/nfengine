@@ -47,7 +47,7 @@ void RendererTest::BeginTestFrame(int width, int height, ElementFormat format)
 
     TextureDesc texDesc;
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
-    texDesc.access = BufferAccess::GPU_ReadWrite;
+    texDesc.mode = BufferMode::GPUOnly;
     texDesc.format = format;
     texDesc.width = width;
     texDesc.height = height;
@@ -63,7 +63,7 @@ void RendererTest::BeginTestFrame(int width, int height, ElementFormat format)
     ASSERT_FALSE(!mTestRenderTarget);
 
     texDesc.binding = 0;
-    texDesc.access = BufferAccess::CPU_Read;
+    texDesc.mode = BufferMode::Readback;
     mTestTextureRead.reset(gRendererDevice->CreateTexture(texDesc));
     ASSERT_FALSE(!mTestTextureRead);
 

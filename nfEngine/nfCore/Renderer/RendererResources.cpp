@@ -67,7 +67,7 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
 
     TextureDesc depthBufferDesc;
     depthBufferDesc.type = TextureType::Texture2D;
-    depthBufferDesc.access = BufferAccess::GPU_ReadWrite;
+    depthBufferDesc.mode = BufferMode::GPUOnly;
     depthBufferDesc.width = depthBufferDesc.height = size;
     depthBufferDesc.binding = NFE_RENDERER_TEXTURE_BIND_DEPTH;
     depthBufferDesc.mipmaps = 1;
@@ -83,7 +83,7 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
 
     TextureDesc texDesc;
     texDesc.type = (type == Type::Cube) ? TextureType::TextureCube : TextureType::Texture2D;
-    texDesc.access = BufferAccess::GPU_ReadWrite;
+    texDesc.mode = BufferMode::GPUOnly;
     texDesc.width = texDesc.height = size;
     texDesc.layers = mSplits;
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER | NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
@@ -182,7 +182,7 @@ bool GeometryBuffer::Resize(int width, int height)
 
     TextureDesc depthBufferDesc;
     depthBufferDesc.type = TextureType::Texture2D;
-    depthBufferDesc.access = BufferAccess::GPU_ReadWrite;
+    depthBufferDesc.mode = BufferMode::GPUOnly;
     depthBufferDesc.width = width;
     depthBufferDesc.height = height;
     depthBufferDesc.binding = NFE_RENDERER_TEXTURE_BIND_DEPTH | NFE_RENDERER_TEXTURE_BIND_SHADER;
@@ -199,7 +199,7 @@ bool GeometryBuffer::Resize(int width, int height)
     RenderTargetElement rtTargets[gLayers];
     TextureDesc texDesc;
     texDesc.type = TextureType::Texture2D;
-    texDesc.access = BufferAccess::GPU_ReadWrite;
+    texDesc.mode = BufferMode::GPUOnly;
     texDesc.width = width;
     texDesc.height = height;
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER | NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;

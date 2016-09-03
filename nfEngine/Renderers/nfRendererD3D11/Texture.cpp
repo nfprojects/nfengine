@@ -106,19 +106,20 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
     td.SampleDesc.Count = desc.samplesNum;
     td.SampleDesc.Quality = 0;
 
-    switch (desc.access)
+    switch (desc.mode)
     {
-        case BufferAccess::CPU_Read:
+        case BufferMode::Readback:
             td.Usage = D3D11_USAGE_STAGING;
             td.CPUAccessFlags |= D3D11_CPU_ACCESS_READ;
             break;
-        case BufferAccess::CPU_Write:
+        case BufferMode::Dynamic:
+        case BufferMode::Volatile:
             td.Usage = D3D11_USAGE_DYNAMIC;
             break;
-        case BufferAccess::GPU_ReadOnly:
+        case BufferMode::Static:
             td.Usage = D3D11_USAGE_IMMUTABLE;
             break;
-        case BufferAccess::GPU_ReadWrite:
+        case BufferMode::GPUOnly:
             td.Usage = D3D11_USAGE_DEFAULT;
             break;
         default:
@@ -148,7 +149,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
     }
     else
     {
-        if (desc.access == BufferAccess::GPU_ReadOnly)
+        if (desc.mode == BufferMode::Static)
         {
             LOG_ERROR("GPU read-only textures must be created with initial data provided");
             return false;

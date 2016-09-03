@@ -142,7 +142,7 @@ bool RenderTargetsScene::CreateBasicResources(bool withDepthBuffer)
 
     BufferDesc bufferDesc;
     bufferDesc.type = BufferType::Vertex;
-    bufferDesc.access = BufferAccess::GPU_ReadOnly;
+    bufferDesc.mode = BufferMode::Static;
     bufferDesc.size = sizeof(vbData);
     bufferDesc.initialData = vbData;
     mVertexBuffer.reset(mRendererDevice->CreateBuffer(bufferDesc));
@@ -150,7 +150,7 @@ bool RenderTargetsScene::CreateBasicResources(bool withDepthBuffer)
         return false;
 
     bufferDesc.type = BufferType::Index;
-    bufferDesc.access = BufferAccess::GPU_ReadOnly;
+    bufferDesc.mode = BufferMode::Static;
     bufferDesc.size = sizeof(ibData);
     bufferDesc.initialData = ibData;
     mIndexBuffer.reset(mRendererDevice->CreateBuffer(bufferDesc));
@@ -158,7 +158,7 @@ bool RenderTargetsScene::CreateBasicResources(bool withDepthBuffer)
         return false;
 
     bufferDesc.type = BufferType::Constant;
-    bufferDesc.access = BufferAccess::CPU_Write;
+    bufferDesc.mode = BufferMode::Volatile;
     bufferDesc.size = sizeof(VertexCBuffer);
     bufferDesc.initialData = nullptr;
     mConstantBuffer.reset(mRendererDevice->CreateBuffer(bufferDesc));
@@ -172,14 +172,14 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
 {
     TextureDesc texDesc;
     texDesc.type = TextureType::Texture2D;
-    texDesc.access = BufferAccess::GPU_ReadWrite;
+    texDesc.mode = BufferMode::GPUOnly;
     texDesc.width = static_cast<uint16>(WINDOW_WIDTH / 2);
     texDesc.height = static_cast<uint16>(WINDOW_HEIGHT / 2);
     texDesc.mipmaps = 1;
     texDesc.samplesNum = withMSAA ? MULTISAMPLE_SAMPLES : 1;
 
     // render target texture
-    texDesc.format = ElementFormat::R8G8B8A8_U_Norm;
+    texDesc.format = ElementFormat::B8G8R8A8_U_Norm;
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET | NFE_RENDERER_TEXTURE_BIND_SHADER;
     texDesc.debugName = "RenderTargetsScene::mRenderTargetTexture[0]";
     mRenderTargetTextures[0].reset(mRendererDevice->CreateTexture(texDesc));

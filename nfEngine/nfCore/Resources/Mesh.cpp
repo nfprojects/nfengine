@@ -62,7 +62,7 @@ bool Mesh::OnLoad()
 
     /// create renderer's vertex buffer
     BufferDesc bufferDesc;
-    bufferDesc.access = BufferAccess::GPU_ReadOnly;
+    bufferDesc.mode = BufferMode::Static;
     bufferDesc.type = BufferType::Vertex;
     bufferDesc.size = meshFile.GetVertices().size() * sizeof(MeshVertex);
     bufferDesc.initialData = meshFile.GetVertices().data();

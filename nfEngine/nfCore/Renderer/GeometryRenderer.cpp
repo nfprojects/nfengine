@@ -87,13 +87,13 @@ GeometryRenderer::GeometryRenderer()
     mVertexLayout.reset(device->CreateVertexLayout(meshVertexLayoutDesc));
 
     // create vertex buffer for per-instance data
-    bufferDesc.access = BufferAccess::CPU_Write;
+    bufferDesc.mode = BufferMode::Dynamic;
     bufferDesc.size = gMaxBufferedInstances * sizeof(InstanceData);
     bufferDesc.type = BufferType::Vertex;
     bufferDesc.debugName = "GeometryRenderer::mInstancesVertexBuffer";
     mInstancesVertexBuffer.reset(device->CreateBuffer(bufferDesc));
 
-    bufferDesc.access = BufferAccess::CPU_Write;
+    bufferDesc.mode = BufferMode::Dynamic;
     bufferDesc.size = sizeof(MaterialCBuffer);
     bufferDesc.type = BufferType::Constant;
     bufferDesc.debugName = "GeometryRenderer::mMaterialCBuffer";
@@ -102,7 +102,7 @@ GeometryRenderer::GeometryRenderer()
     if (mMatCBufferBindingInstance)
         mMatCBufferBindingInstance->WriteCBufferView(0, mMaterialCBuffer.get());
 
-    bufferDesc.access = BufferAccess::CPU_Write;
+    bufferDesc.mode = BufferMode::Dynamic;
     bufferDesc.size = sizeof(GlobalCBuffer);
     bufferDesc.type = BufferType::Constant;
     bufferDesc.debugName = "GeometryRenderer::mGlobalCBuffer";
@@ -111,7 +111,7 @@ GeometryRenderer::GeometryRenderer()
     if (mGlobalBindingInstance)
         mGlobalBindingInstance->WriteCBufferView(0, mGlobalCBuffer.get());
 
-    bufferDesc.access = BufferAccess::CPU_Write;
+    bufferDesc.mode = BufferMode::Dynamic;
     bufferDesc.size = sizeof(ShadowCameraRenderDesc);
     bufferDesc.type = BufferType::Constant;
     bufferDesc.debugName = "GeometryRenderer::mShadowGlobalCBuffer";

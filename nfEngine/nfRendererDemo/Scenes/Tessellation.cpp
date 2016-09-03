@@ -90,7 +90,7 @@ bool TessellationScene::CreateVertexBuffer()
 
     BufferDesc vbDesc;
     vbDesc.type = BufferType::Vertex;
-    vbDesc.access = BufferAccess::GPU_ReadOnly;
+    vbDesc.mode = BufferMode::Static;
     vbDesc.size = sizeof(vbData);
     vbDesc.initialData = vbData;
     mVertexBuffer.reset(mRendererDevice->CreateBuffer(vbDesc));

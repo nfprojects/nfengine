@@ -143,7 +143,7 @@ bool View::InitTemporaryRenderTarget(uint32 width, uint32 height)
 
     TextureDesc texDesc;
     texDesc.type = TextureType::Texture2D;
-    texDesc.access = BufferAccess::GPU_ReadWrite;
+    texDesc.mode = BufferMode::GPUOnly;
     texDesc.width = width;
     texDesc.height = height;
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER | NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
@@ -314,7 +314,7 @@ bool View::InitImGui()
 
     TextureDesc texDesc;
     texDesc.type = TextureType::Texture2D;
-    texDesc.access = BufferAccess::GPU_ReadOnly;
+    texDesc.mode = BufferMode::Static;
     texDesc.width = width;
     texDesc.height = height;
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER;

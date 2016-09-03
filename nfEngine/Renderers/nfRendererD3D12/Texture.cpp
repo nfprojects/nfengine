@@ -175,10 +175,11 @@ bool Texture::UploadData(const TextureDesc& desc)
 
 bool Texture::Init(const TextureDesc& desc)
 {
-    if (desc.access == BufferAccess::CPU_Read ||
-        desc.access == BufferAccess::CPU_Write)
+    if (desc.mode == BufferMode::Readback ||
+        desc.mode == BufferMode::Dynamic ||
+        desc.mode == BufferMode::Volatile)
     {
-        LOG_ERROR("This access mode is not supported yet");
+        LOG_ERROR("Selected buffer mode is not supported yet");
         return false;
     }
 
@@ -266,7 +267,7 @@ bool Texture::Init(const TextureDesc& desc)
     bool passClearValue = false;
     D3D12_CLEAR_VALUE clearValue;
     D3D12_RESOURCE_STATES initialState = D3D12_RESOURCE_STATE_GENERIC_READ;
-    if (desc.access == BufferAccess::GPU_ReadOnly && desc.dataDesc)
+    if (desc.mode == BufferMode::Static && desc.dataDesc)
         initialState = D3D12_RESOURCE_STATE_COPY_DEST;
 
     switch (desc.type)
@@ -291,7 +292,7 @@ bool Texture::Init(const TextureDesc& desc)
 
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
     {
-        if (desc.access != BufferAccess::GPU_ReadWrite)
+        if (desc.mode != BufferMode::GPUOnly)
         {
             LOG_ERROR("Invalid resource access specified for depth buffer");
             return false;
@@ -309,7 +310,7 @@ bool Texture::Init(const TextureDesc& desc)
 
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_RENDERTARGET)
     {
-        if (desc.access != BufferAccess::GPU_ReadWrite)
+        if (desc.mode != BufferMode::GPUOnly)
         {
             LOG_ERROR("Invalid resource access specified for rendertarget texture");
             return false;
@@ -342,7 +343,7 @@ bool Texture::Init(const TextureDesc& desc)
     if (FAILED(hr))
         return false;
 
-    if (desc.access == BufferAccess::GPU_ReadOnly)
+    if (desc.mode == BufferMode::Static)
     {
         if (desc.dataDesc)
         {
