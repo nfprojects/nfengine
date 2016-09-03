@@ -71,13 +71,13 @@ public:
  * Buffers that will be updated frequently (e.g. constant buffers) must be
  * bound via this structure.
  */
-struct DynamicBufferBindingDesc
+struct VolatileCBufferBinding
 {
     ShaderType shaderVisibility;
     ShaderResourceType resourceType;
     unsigned int slot; //< shader's resource slot
 
-    DynamicBufferBindingDesc(ShaderType shaderVisibility,
+    VolatileCBufferBinding(ShaderType shaderVisibility,
                              ShaderResourceType resourceType,
                              unsigned int slot)
         : shaderVisibility(shaderVisibility)
@@ -92,8 +92,8 @@ struct ResourceBindingLayoutDesc
     IResourceBindingSet** bindingSets;
     size_t numBindingSets;
 
-    DynamicBufferBindingDesc* dynamicBuffers;
-    size_t numDynamicBuffers;
+    VolatileCBufferBinding* volatileCBuffers;
+    size_t numVolatileCBuffers;
 
     // TODO:
     // fast constants (Vulkan's Push Constants / D3D12 Root Constants)
@@ -102,17 +102,17 @@ struct ResourceBindingLayoutDesc
     ResourceBindingLayoutDesc()
         : bindingSets(nullptr)
         , numBindingSets(0)
-        , dynamicBuffers(nullptr)
-        , numDynamicBuffers(0)
+        , volatileCBuffers(nullptr)
+        , numVolatileCBuffers(0)
     { }
 
     ResourceBindingLayoutDesc(IResourceBindingSet** bindingSets, size_t numBindingSets,
-                              DynamicBufferBindingDesc* dynamicBuffers = nullptr,
-                              size_t numDynamicBuffers = 0)
+                              VolatileCBufferBinding* volatileCBuffers = nullptr,
+                              size_t numVolatileCBuffers = 0)
         : bindingSets(bindingSets)
         , numBindingSets(numBindingSets)
-        , dynamicBuffers(dynamicBuffers)
-        , numDynamicBuffers(numDynamicBuffers)
+        , volatileCBuffers(volatileCBuffers)
+        , numVolatileCBuffers(numVolatileCBuffers)
     { }
 };
 

@@ -21,6 +21,8 @@
 #include <memory>
 
 
+#define NFE_RENDERER_MAX_VERTEX_BUFFERS 4
+
 namespace NFE {
 namespace Renderer {
 
@@ -75,7 +77,7 @@ public:
      * @param slot      Dynamic buffer slot in the current resource binding layout.
      * @param buffer    Buffer to bind.
      */
-    virtual void BindDynamicBuffer(size_t slot, IBuffer* buffer) = 0;
+    virtual void BindVolatileCBuffer(size_t slot, IBuffer* buffer) = 0;
 
     /**
      * Set new shaders resources binding layout.

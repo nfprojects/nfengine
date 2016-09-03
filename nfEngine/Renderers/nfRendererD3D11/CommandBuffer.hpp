@@ -57,7 +57,7 @@ public:
     void SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets) override;
     void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format) override;
     void BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance) override;
-    void BindDynamicBuffer(size_t slot, IBuffer* buffer) override;
+    void BindVolatileCBuffer(size_t slot, IBuffer* buffer) override;
     void SetResourceBindingLayout(IResourceBindingLayout* layout) override;
     void SetRenderTarget(IRenderTarget* renderTarget) override;
     void SetPipelineState(IPipelineState* state) override;
