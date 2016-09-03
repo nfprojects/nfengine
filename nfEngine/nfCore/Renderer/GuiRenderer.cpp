@@ -46,8 +46,8 @@ GuiRenderer::GuiRenderer()
 {
     IDevice* device = mRenderer->GetDevice();
 
-    mShaderProgram.Load("Gui");
-    mImGuiShaderProgram.Load("ImGui");
+    mPipelineState.Load("Gui");
+    mImGuiPipelineState.Load("ImGui");
 
     CreateResourceBindingLayouts();
 
@@ -104,24 +104,24 @@ GuiRenderer::GuiRenderer()
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.primitiveType = PrimitiveType::Points;
     pipelineStateDesc.debugName = "GuiRenderer::mPipelineState";
-    mPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
+    mPipelineState.Build(pipelineStateDesc);
 
     pipelineStateDesc.raterizerState.scissorTest = true;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mImGuiVertexLayout.get();
     pipelineStateDesc.debugName = "GuiRenderer::mImGuiPipelineState";
-    mImGuiPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
+    mImGuiPipelineState.Build(pipelineStateDesc);
 }
 
 bool GuiRenderer::CreateResourceBindingLayouts()
 {
     IDevice* device = mRenderer->GetDevice();
 
-    int cbufferSlot = mImGuiShaderProgram.GetResourceSlotByName("VertexCBuffer");
+    int cbufferSlot = mImGuiPipelineState.GetResourceSlotByName("VertexCBuffer");
     if (cbufferSlot < 0)
         return false;
 
-    int textureSlot = mImGuiShaderProgram.GetResourceSlotByName("gTexture");
+    int textureSlot = mImGuiPipelineState.GetResourceSlotByName("gTexture");
     if (textureSlot < 0)
         return false;
 
@@ -179,7 +179,7 @@ void GuiRenderer::BeginOrdinaryGuiRendering(RenderContext* context)
     int offsets[] = { 0 };
     context->commandBuffer->SetVertexBuffers(1, vertexBuffers, strides, offsets);
 
-    context->commandBuffer->SetPipelineState(mPipelineState.get());
+    context->commandBuffer->SetPipelineState(mPipelineState.GetPipelineState());
 }
 
 void GuiRenderer::OnLeave(RenderContext* context)
@@ -221,7 +221,7 @@ void GuiRenderer::FlushQueue(RenderContext* context)
     int macros[1] = { 0 }; // use texture
     IResourceBindingInstance* currTextureBinding = nullptr;
     bool currAlphaTexture = false;
-    context->commandBuffer->SetShaderProgram(mShaderProgram.GetShaderProgram());
+    context->commandBuffer->SetPipelineState(mPipelineState.GetPipelineState());
 
     int firstQuad = 0;
     int packetSize = 0;
@@ -245,7 +245,7 @@ void GuiRenderer::FlushQueue(RenderContext* context)
             }
             else
                 macros[0] = 0;
-            context->commandBuffer->SetShaderProgram(mShaderProgram.GetShaderProgram(macros));
+            context->commandBuffer->SetPipelineState(mPipelineState.GetPipelineState(macros));
         }
         packetSize++;
     }
@@ -441,8 +441,7 @@ bool GuiRenderer::DrawImGui(RenderContext* context, IResourceBindingInstance* im
     int offsets[] = { 0 };
     context->commandBuffer->SetVertexBuffers(1, vertexBuffers, strides, offsets);
     context->commandBuffer->SetIndexBuffer(mImGuiIndexBuffer.get(), IndexBufferFormat::Uint16);
-    context->commandBuffer->SetShaderProgram(mImGuiShaderProgram.GetShaderProgram());
-    context->commandBuffer->SetPipelineState(mImGuiPipelineState.get());
+    context->commandBuffer->SetPipelineState(mImGuiPipelineState.GetPipelineState());
     context->commandBuffer->BindResources(0, mCBufferBindingInstance.get());
     context->commandBuffer->BindResources(1, imGuiTextureBinding);
 

@@ -44,8 +44,6 @@ class Device : public IDevice
     HeapAllocator mRtvHeapAllocator;
     HeapAllocator mDsvHeapAllocator;
 
-    std::map<FullPipelineStateParts, D3DPtr<ID3D12PipelineState>> mPipelineStateMap;
-
     bool mDebugLayerEnabled;
 
     bool DetectVideoCards(int preferredId);
@@ -70,7 +68,6 @@ public:
     IPipelineState* CreatePipelineState(const PipelineStateDesc& desc) override;
     ISampler* CreateSampler(const SamplerDesc& desc) override;
     IShader* CreateShader(const ShaderDesc& desc) override;
-    IShaderProgram* CreateShaderProgram(const ShaderProgramDesc& desc) override;
     IResourceBindingSet* CreateResourceBindingSet(const ResourceBindingSetDesc& desc) override;
     IResourceBindingLayout* CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc) override;
     IResourceBindingInstance* CreateResourceBindingInstance(IResourceBindingSet* set) override;
@@ -79,10 +76,6 @@ public:
     bool Execute(ICommandList* commandList) override;
     bool DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data) override;
     bool DownloadTexture(ITexture* tex, void* data, int mipmap, int layer) override;
-
-    ID3D12PipelineState* GetFullPipelineState(const FullPipelineStateParts& parts);
-    void OnShaderProgramDestroyed(IShaderProgram* program);
-    void OnPipelineStateDestroyed(IPipelineState* pipelineState);
 
     bool WaitForGPU() override;
 

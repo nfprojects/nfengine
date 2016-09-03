@@ -248,5 +248,17 @@ bool Shader::GetIODesc()
     return true;
 }
 
+int Shader::GetResourceSlotByName(const char* name)
+{
+    auto iter = mResBindings.find(name);
+    if (iter != mResBindings.end())
+    {
+        // TODO: verify resource type
+        return iter->second.slot;
+    }
+
+    return -1;
+}
+
 } // namespace Renderer
 } // namespace NFE

@@ -122,6 +122,12 @@ struct DepthStateDesc
  */
 struct PipelineStateDesc
 {
+    IShader* vertexShader;
+    IShader* hullShader;
+    IShader* domainShader;
+    IShader* geometryShader;
+    IShader* pixelShader;
+
     RasterizerStateDesc raterizerState;
     BlendStateDesc blendState;
     DepthStateDesc depthState;
@@ -138,7 +144,12 @@ struct PipelineStateDesc
     const char* debugName;   //< optional debug name
 
     NFE_INLINE PipelineStateDesc()
-        : raterizerState()
+        : vertexShader(nullptr)
+        , hullShader(nullptr)
+        , domainShader(nullptr)
+        , geometryShader(nullptr)
+        , pixelShader(nullptr)
+        , raterizerState()
         , blendState()
         , depthState()
         , primitiveType(PrimitiveType::Unknown)

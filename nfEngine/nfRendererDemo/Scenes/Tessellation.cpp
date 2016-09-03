@@ -37,7 +37,7 @@ struct PixelCBuffer
 
 /// Helper creators for the Scene
 
-bool TessellationScene::CreateShaderProgram()
+bool TessellationScene::LoadShaders()
 {
     std::string vsPath = gShaderPathPrefix + "TessellationVS" + gShaderPathExt;
     mVertexShader.reset(CompileShader(vsPath.c_str(), ShaderType::Vertex, nullptr, 0));
@@ -57,15 +57,6 @@ bool TessellationScene::CreateShaderProgram()
     std::string psPath = gShaderPathPrefix + "TessellationPS" + gShaderPathExt;
     mPixelShader.reset(CompileShader(psPath.c_str(), ShaderType::Pixel, nullptr, 0));
     if (!mPixelShader)
-        return false;
-
-    ShaderProgramDesc shaderProgramDesc;
-    shaderProgramDesc.vertexShader = mVertexShader.get();
-    shaderProgramDesc.pixelShader = mPixelShader.get();
-    shaderProgramDesc.hullShader = mHullShader.get();
-    shaderProgramDesc.domainShader = mDomainShader.get();
-    mShaderProgram.reset(mRendererDevice->CreateShaderProgram(shaderProgramDesc));
-    if (!mShaderProgram)
         return false;
 
     // create binding layout
@@ -110,6 +101,10 @@ bool TessellationScene::CreateVertexBuffer()
         return false;
 
     PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.vertexShader = mVertexShader.get();
+    pipelineStateDesc.pixelShader = mPixelShader.get();
+    pipelineStateDesc.hullShader = mHullShader.get();
+    pipelineStateDesc.domainShader = mDomainShader.get();
     pipelineStateDesc.blendState.independent = false;
     pipelineStateDesc.blendState.rtDescs[0].enable = true;
     pipelineStateDesc.primitiveType = PrimitiveType::Patch;
@@ -131,7 +126,7 @@ bool TessellationScene::CreateVertexBuffer()
 // Empty window should be visible
 bool TessellationScene::CreateSubSceneBezierLine()
 {
-    if (!CreateShaderProgram())
+    if (!LoadShaders())
         return false;
 
     return CreateVertexBuffer();
@@ -165,7 +160,6 @@ void TessellationScene::ReleaseSubsceneResources()
     mVertexShader.reset();
 
     mPipelineState.reset();
-    mShaderProgram.reset();
     mResBindingLayout.reset();
 }
 
@@ -220,9 +214,6 @@ void TessellationScene::Draw(float dt)
         mCommandBuffer->SetPipelineState(mPipelineState.get());
 
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
-
-    if (mShaderProgram)
-        mCommandBuffer->SetShaderProgram(mShaderProgram.get());
 
     // clear target
     const Float4 color(0.0f, 0.0f, 0.0f, 1.0f);

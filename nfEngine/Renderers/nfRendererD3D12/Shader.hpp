@@ -21,7 +21,6 @@ class Shader : public IShader
         ResBinding() : type(ShaderResourceType::Unknown), slot(0) { }
     };
 
-    friend class ShaderProgram;
     friend class CommandBuffer;
 
     ShaderType mType;
@@ -36,24 +35,9 @@ public:
     ID3DBlob* GetBytecode() const;
     D3D12_SHADER_BYTECODE GetD3D12Bytecode() const;
 
-    bool Disassemble(bool html, std::string& output);
-};
-
-class ShaderProgram : public IShaderProgram
-{
-    ShaderProgramDesc mDesc;
-
-public:
-    ShaderProgram(const ShaderProgramDesc& desc);
-    ~ShaderProgram();
-
-    const ShaderProgramDesc& GetDesc() const;
+    bool Disassemble(bool html, std::string& output) override;
     int GetResourceSlotByName(const char* name) override;
 };
-
-extern const int SHADER_TYPE_BIT_OFFSET;
-extern const int SHADER_RES_TYPE_BIT_OFFSET;
-extern const int SHADER_RES_SLOT_MASK;
 
 } // namespace Renderer
 } // namespace NFE

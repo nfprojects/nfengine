@@ -72,9 +72,13 @@ DebugRenderer::DebugRenderer()
     BufferDesc bufferDesc;
     ShaderDesc shaderDesc;
 
-    mShaderProgram.Load("Debug");
-    mIsMeshMacroId = mShaderProgram.GetMacroByName("IS_MESH");
-    mUseTextureMacroId = mShaderProgram.GetMacroByName("USE_TEXTURE");
+    mLinesPipelineState.Load("Debug");
+    mTrianglesPipelineState.Load("Debug");
+    mMeshPipelineState.Load("Debug");
+
+    // TODO
+    mIsMeshMacroId = mLinesPipelineState.GetMacroByName("IS_MESH");
+    mUseTextureMacroId = mLinesPipelineState.GetMacroByName("USE_TEXTURE");
 
     CreateResourceBindingLayouts();
 
@@ -148,15 +152,15 @@ DebugRenderer::DebugRenderer()
     pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
     pipelineStateDesc.raterizerState.fillMode = FillMode::Solid;
     pipelineStateDesc.debugName = "DebugRenderer::mLinesPipelineState";
-    mLinesPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
+    mLinesPipelineState.Build(pipelineStateDesc);
 
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.debugName = "DebugRenderer::mTrianglesPipelineState";
-    mTrianglesPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
+    mTrianglesPipelineState.Build(pipelineStateDesc);
 
     pipelineStateDesc.vertexLayout = mMeshVertexLayout.get();
     pipelineStateDesc.debugName = "DebugRenderer::mMeshPipelineState";
-    mMeshPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
+    mMeshPipelineState.Build(pipelineStateDesc);
 
     // TODO: depth state
 }
@@ -165,11 +169,11 @@ bool DebugRenderer::CreateResourceBindingLayouts()
 {
     IDevice* device = mRenderer->GetDevice();
 
-    int globalCBufferSlot = mShaderProgram.GetResourceSlotByName("Global");
+    int globalCBufferSlot = mMeshPipelineState.GetResourceSlotByName("Global");
     if (globalCBufferSlot < 0)
         return false;
 
-    int perMeshCBufferSlot = mShaderProgram.GetResourceSlotByName("PerMesh");
+    int perMeshCBufferSlot = mMeshPipelineState.GetResourceSlotByName("PerMesh");
     if (perMeshCBufferSlot < 0)
         return false;
 
@@ -223,12 +227,11 @@ void DebugRenderer::Flush(RenderContext* context)
         context->commandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
 
         int macros[] = { 0, 0 }; // IS_MESH
-        context->commandBuffer->SetShaderProgram(mShaderProgram.GetShaderProgram(macros));
 
         if (ctx.polyType == PrimitiveType::Lines)
-            context->commandBuffer->SetPipelineState(mLinesPipelineState.get());
+            context->commandBuffer->SetPipelineState(mLinesPipelineState.GetPipelineState(macros));
         else
-            context->commandBuffer->SetPipelineState(mTrianglesPipelineState.get());
+            context->commandBuffer->SetPipelineState(mTrianglesPipelineState.GetPipelineState(macros));
 
         context->commandBuffer->BindResources(0, mVertexShaderBindingInstance.get());
 
@@ -412,11 +415,11 @@ void DebugRenderer::SetMeshMaterial(RenderContext* context, const Resource::Mate
     macros[mUseTextureMacroId] = 0;
     // macros[mUseTextureMacroId] = tex != nullptr ? 1 : 0;
 
-    context->commandBuffer->SetShaderProgram(mShaderProgram.GetShaderProgram(macros));
+    context->commandBuffer->SetPipelineState(mMeshPipelineState.GetPipelineState(macros));
 
     // FIXME
     // if (tex)
-    //    context->commandBuffer->SetTextures(&tex, 1, ShaderType::Pixel);
+    //    context->commandBuffer->SetTextures(&tex, 1, ShaderType::Pixel);ale n
 }
 
 void DebugRenderer::DrawMesh(RenderContext* context, const Resource::Mesh* mesh,
@@ -439,7 +442,6 @@ void DebugRenderer::DrawMesh(RenderContext* context, const Resource::Mesh* mesh,
 
     if (ctx.mode != DebugRendererMode::Meshes)
     {
-        context->commandBuffer->SetPipelineState(mMeshPipelineState.get());
         context->commandBuffer->BindResources(0, mVertexShaderBindingInstance.get());
         ctx.mode = DebugRendererMode::Meshes;
         ctx.polyType = PrimitiveType::Unknown;

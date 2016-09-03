@@ -31,11 +31,9 @@ CommandBuffer::CommandBuffer()
     : mCurrRenderTarget(nullptr)
     , mBindingLayout(nullptr)
     , mCurrBindingLayout(nullptr)
-    , mCurrShaderProgram(nullptr)
-    , mShaderProgram(nullptr)
     , mCurrPipelineState(nullptr)
     , mPipelineState(nullptr)
-    , mCurrPrimitiveType(PrimitiveType::Unknown)
+    , mCurrPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_UNDEFINED)
     , mFrameCounter(0)
     , mFrameCount(3) // TODO this must be configurable
     , mFrameBufferIndex(0)
@@ -135,11 +133,9 @@ void CommandBuffer::Reset()
     mCurrRenderTarget = nullptr;
     mBindingLayout = nullptr;
     mCurrBindingLayout = nullptr;
-    mCurrShaderProgram = nullptr;
-    mShaderProgram = nullptr;
     mCurrPipelineState = nullptr;
     mPipelineState = nullptr;
-    mCurrPrimitiveType = PrimitiveType::Unknown;
+    mCurrPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
 
     for (int i = 0; i < NFE_RENDERER_MAX_DYNAMIC_BUFFERS; ++i)
         mBoundDynamicBuffers[i] = nullptr;
@@ -375,11 +371,6 @@ void CommandBuffer::UnsetRenderTarget()
     }
 }
 
-void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
-{
-    mShaderProgram = dynamic_cast<ShaderProgram*>(shaderProgram);
-}
-
 void CommandBuffer::SetResourceBindingLayout(IResourceBindingLayout* layout)
 {
     mBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout);
@@ -539,19 +530,16 @@ void CommandBuffer::Clear(int flags, uint32 numTargets, const uint32* slots,
 
 void CommandBuffer::UpdateStates()
 {
-    if (mCurrPipelineState != mPipelineState || mCurrShaderProgram != mShaderProgram)
+    if (mCurrPipelineState != mPipelineState)
     {
         if (mBindingLayout == nullptr)
-            mBindingLayout = mPipelineState->mBindingLayout;
-        else if (mBindingLayout != mPipelineState->mBindingLayout)
+            mBindingLayout = mPipelineState->GetResBindingLayout();
+        else if (mBindingLayout != mPipelineState->GetResBindingLayout())
             LOG_ERROR("Resource binding layout mismatch");
 
         // set pipeline state
-        const FullPipelineStateParts parts(mPipelineState, mShaderProgram);
-        ID3D12PipelineState* state = gDevice->GetFullPipelineState(parts);
-        mCommandList->SetPipelineState(state);
+        mCommandList->SetPipelineState(mPipelineState->GetPSO());
         mCurrPipelineState = mPipelineState;
-        mCurrShaderProgram = mShaderProgram;
 
         // set root signature
         if (mCurrBindingLayout != mBindingLayout)
@@ -561,12 +549,11 @@ void CommandBuffer::UpdateStates()
         }
 
         // set primitive type
-        if (mCurrPipelineState->mPrimitiveType != mCurrPrimitiveType)
+        D3D_PRIMITIVE_TOPOLOGY newTopology = mPipelineState->GetPrimitiveTopology();
+        if (newTopology != mCurrPrimitiveTopology)
         {
-            mCurrPrimitiveType = mCurrPipelineState->mPrimitiveType;
-            D3D12_PRIMITIVE_TOPOLOGY topology = TranslatePrimitiveType(mCurrPrimitiveType,
-                                                                       mCurrPipelineState->mNumControlPoints);
-            mCommandList->IASetPrimitiveTopology(topology);
+            mCurrPrimitiveTopology = newTopology;
+            mCommandList->IASetPrimitiveTopology(newTopology);
         }
     }
 }

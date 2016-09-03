@@ -350,7 +350,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Resources\Multishader.cpp" />
-    <ClCompile Include="Resources\MultiShaderProgram.cpp" />
+    <ClCompile Include="Resources\MultiPipelineState.cpp" />
     <ClCompile Include="Resources\Resource.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
@@ -434,7 +434,7 @@
     <ClInclude Include="Resources\Material.hpp" />
     <ClInclude Include="Resources\Mesh.hpp" />
     <ClInclude Include="Resources\Multishader.hpp" />
-    <ClInclude Include="Resources\MultiShaderProgram.hpp" />
+    <ClInclude Include="Resources\MultiPipelineState.hpp" />
     <ClInclude Include="Resources\Resource.hpp" />
     <ClInclude Include="Resources\ResourcesManager.hpp" />
     <ClInclude Include="Resources\SoundSample.hpp" />

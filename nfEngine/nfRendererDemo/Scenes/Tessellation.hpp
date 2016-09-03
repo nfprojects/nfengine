@@ -20,7 +20,6 @@ class TessellationScene : public Scene
     std::unique_ptr<NFE::Renderer::IShader> mDomainShader;
     std::unique_ptr<NFE::Renderer::IShader> mPixelShader;
 
-    std::unique_ptr<NFE::Renderer::IShaderProgram> mShaderProgram;
     std::unique_ptr<NFE::Renderer::IBuffer> mVertexBuffer;
     std::unique_ptr<NFE::Renderer::IVertexLayout> mVertexLayout;
     std::unique_ptr<NFE::Renderer::IResourceBindingLayout> mResBindingLayout;
@@ -29,7 +28,7 @@ class TessellationScene : public Scene
     void ReleaseSubsceneResources();
 
     // Resource creators for subscenes
-    bool CreateShaderProgram();
+    bool LoadShaders();
     bool CreateVertexBuffer();
 
     // Subscenes

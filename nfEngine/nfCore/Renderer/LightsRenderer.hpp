@@ -8,7 +8,7 @@
 
 #include "RendererModule.hpp"
 #include "HighLevelRenderer.hpp"
-#include "../Resources/MultiShaderProgram.hpp"
+#include "../Resources/MultiPipelineState.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -39,8 +39,6 @@ struct NFE_ALIGN16 SpotLightProperties
 class LightsRenderer : public RendererModule<LightsRenderer>
 {
     std::unique_ptr<IBuffer> mGlobalCBuffer;
-    std::unique_ptr<IPipelineState> mAmbientLightPipelineState;
-    std::unique_ptr<IPipelineState> mLightVolumePipelineState;
     std::unique_ptr<ISampler> mShadowMapSampler;
 
     std::unique_ptr<IBuffer> mVertexBuffer;
@@ -53,18 +51,18 @@ class LightsRenderer : public RendererModule<LightsRenderer>
     std::unique_ptr<IResourceBindingSet> mLightMapBindingSet;
     std::unique_ptr<IResourceBindingLayout> mResBindingLayout;
 
-    Resource::MultiShaderProgram mAmbientLightShaderProgram;
+    Resource::MultiPipelineState mAmbientLightPipelineState;
     std::unique_ptr<IBuffer> mAmbientLightCBuffer;
     std::unique_ptr<IResourceBindingInstance> mAmbientLightBindingInstance;
 
     int mOmniLightUseShadowMap;
-    Resource::MultiShaderProgram mOmniLightShaderProgram;
+    Resource::MultiPipelineState mOmniLightPipelineState;
     std::unique_ptr<IBuffer> mOmniLightCBuffer;
     std::unique_ptr<IResourceBindingInstance> mOmniLightBindingInstance;
 
     int mSpotLightUseLightMap;
     int mSpotLightUseShadowMap;
-    Resource::MultiShaderProgram mSpotLightShaderProgram;
+    Resource::MultiPipelineState mSpotLightPipelineState;
     std::unique_ptr<IBuffer> mSpotLightCBuffer;
     std::unique_ptr<IResourceBindingInstance> mSpotLightBindingInstance;
 

@@ -8,7 +8,7 @@
 
 #include "RendererModule.hpp"
 #include "HighLevelRenderer.hpp"
-#include "../Resources/MultiShaderProgram.hpp"
+#include "../Resources/MultiPipelineState.hpp"
 #include "GuiRendererContext.hpp"
 #include "Font.hpp"
 
@@ -32,11 +32,10 @@ enum class HorizontalAlignment
 
 class CORE_API GuiRenderer : public RendererModule<GuiRenderer>
 {
-    Resource::MultiShaderProgram mShaderProgram;
+    Resource::MultiPipelineState mPipelineState;
     std::unique_ptr<IBuffer> mVertexBuffer;
     std::unique_ptr<IVertexLayout> mVertexLayout;
     std::unique_ptr<IBuffer> mConstantBuffer;
-    std::unique_ptr<IPipelineState> mPipelineState;
 
     std::unique_ptr<IResourceBindingSet> mVSBindingSet;
     std::unique_ptr<IResourceBindingSet> mPSBindingSet;
@@ -44,8 +43,7 @@ class CORE_API GuiRenderer : public RendererModule<GuiRenderer>
     std::unique_ptr<IResourceBindingInstance> mCBufferBindingInstance;
 
     /// ImGui resources
-    std::unique_ptr<IPipelineState> mImGuiPipelineState;
-    Resource::MultiShaderProgram mImGuiShaderProgram;
+    Resource::MultiPipelineState mImGuiPipelineState;
     std::unique_ptr<IVertexLayout> mImGuiVertexLayout;
     std::unique_ptr<IBuffer> mImGuiVertexBuffer;
     std::unique_ptr<IBuffer> mImGuiIndexBuffer;

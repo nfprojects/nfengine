@@ -26,7 +26,7 @@ PostProcessRenderer::PostProcessRenderer()
 {
     IDevice* device = mRenderer->GetDevice();
 
-    mTonemappingShaderProgram.Load("Tonemapping");
+    mTonemappingPipelineState.Load("Tonemapping");
 
     CreateResourceBindingLayouts();
 
@@ -80,19 +80,19 @@ PostProcessRenderer::PostProcessRenderer()
     pipelineStateDesc.raterizerState.fillMode = FillMode::Solid;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
-    pipelineStateDesc.debugName = "PostProcessRenderer::mPipelineState";
-    mPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
+    pipelineStateDesc.debugName = "PostProcessRenderer::mTonemappingPipelineState";
+    mTonemappingPipelineState.Build(pipelineStateDesc);
 }
 
 bool PostProcessRenderer::CreateResourceBindingLayouts()
 {
     IDevice* device = mRenderer->GetDevice();
 
-    int paramsCBufferSlot = mTonemappingShaderProgram.GetResourceSlotByName("Params");
+    int paramsCBufferSlot = mTonemappingPipelineState.GetResourceSlotByName("Params");
     if (paramsCBufferSlot < 0)
         return false;
 
-    int sourceTextureSlot = mTonemappingShaderProgram.GetResourceSlotByName("gSourceTexture");
+    int sourceTextureSlot = mTonemappingPipelineState.GetResourceSlotByName("gSourceTexture");
     if (sourceTextureSlot < 0)
         return false;
 
@@ -140,8 +140,6 @@ void PostProcessRenderer::OnEnter(RenderContext* context)
 {
     context->commandBuffer->BeginDebugGroup("Post Process Renderer stage");
 
-    context->commandBuffer->SetPipelineState(mPipelineState.get());
-
     IBuffer* veretexBuffers[] = { mVertexBuffer.get() };
     int strides[] = { sizeof(Float3) };
     int offsets[] = { 0 };
@@ -163,7 +161,7 @@ void PostProcessRenderer::ApplyTonemapping(RenderContext* context,
                                         0.0f, static_cast<float>(height),
                                         0.0f, 1.0f);
 
-    context->commandBuffer->SetShaderProgram(mTonemappingShaderProgram.GetShaderProgram());
+    context->commandBuffer->SetPipelineState(mTonemappingPipelineState.GetPipelineState());
 
     ToneMappingCBuffer cbufferData;
     cbufferData.bufferInvRes = Vector(1.0f / static_cast<float>(width),

@@ -17,16 +17,15 @@
 namespace NFE {
 namespace Renderer {
 
-PipelineState::~PipelineState()
+PipelineState::PipelineState()
+    : mBindingLayout(nullptr)
 {
-    gDevice->OnPipelineStateDestroyed(this);
 }
 
 bool PipelineState::Init(const PipelineStateDesc& desc)
 {
-    // prepare D3D12 rasterizer state
+    // validate
 
-    mNumRenderTargets = desc.numRenderTargets;
     if (desc.numRenderTargets > MAX_RENDER_TARGETS)
     {
         LOG_ERROR("Too many render targets: %u (max is %u)",
@@ -34,64 +33,36 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
         return false;
     }
 
-    for (uint32 i = 0; i < mNumRenderTargets; ++i)
+    ResourceBindingLayout* resBindingLayout = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout);
+    if (!resBindingLayout)
     {
-        mRenderTargetFormats[i] = TranslateElementFormat(desc.rtFormats[i]);
-        if (mRenderTargetFormats[i] == DXGI_FORMAT_UNKNOWN)
-        {
-            LOG_ERROR("Invalid render target framt for i = %u", i);
-            return false;
-        }
+        LOG_ERROR("Invalid resource binding layout");
+        return false;
     }
 
-    mDepthStencilFormat = TranslateDepthFormat(desc.depthFormat);
 
+    // prepare D3D12 rasterizer state
+    D3D12_RASTERIZER_DESC rasterizerDesc;
+    rasterizerDesc.CullMode = TranslateCullMode(desc.raterizerState.cullMode);
+    rasterizerDesc.FillMode = TranslateFillMode(desc.raterizerState.fillMode);
+    rasterizerDesc.FrontCounterClockwise = TRUE;
+    rasterizerDesc.DepthBias = FALSE;
+    rasterizerDesc.DepthBiasClamp = 0.0f;
+    rasterizerDesc.SlopeScaledDepthBias = 0.0f;
+    rasterizerDesc.DepthClipEnable = TRUE;
+    rasterizerDesc.MultisampleEnable = FALSE;
+    rasterizerDesc.AntialiasedLineEnable = FALSE;
+    rasterizerDesc.ForcedSampleCount = 0;
+    rasterizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
 
-    switch (desc.raterizerState.cullMode)
-    {
-    case CullMode::CW:
-        mRasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
-        break;
-    case CullMode::CCW:
-        mRasterizerDesc.CullMode = D3D12_CULL_MODE_FRONT;
-        break;
-    case CullMode::Disabled:
-        mRasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
-        break;
-    default:
-        return false;
-    };
-
-    switch (desc.raterizerState.fillMode)
-    {
-    case FillMode::Solid:
-        mRasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
-        break;
-    case FillMode::Wireframe:
-        mRasterizerDesc.FillMode = D3D12_FILL_MODE_WIREFRAME;
-        break;
-    default:
-        return false;
-    };
-
-    mRasterizerDesc.FrontCounterClockwise = TRUE;
-    mRasterizerDesc.DepthBias = FALSE;
-    mRasterizerDesc.DepthBiasClamp = 0.0f;
-    mRasterizerDesc.SlopeScaledDepthBias = 0.0f;
-    mRasterizerDesc.DepthClipEnable = TRUE;
-    mRasterizerDesc.MultisampleEnable = FALSE;
-    mRasterizerDesc.AntialiasedLineEnable = FALSE;
-    mRasterizerDesc.ForcedSampleCount = 0;
-    mRasterizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
 
     // prepare D3D12 depth stencil state
 
-    mDepthStencilDesc.DepthEnable = desc.depthState.depthTestEnable;
-    mDepthStencilDesc.DepthWriteMask = desc.depthState.depthWriteEnable ?
+    D3D12_DEPTH_STENCIL_DESC depthStencilDesc;
+    depthStencilDesc.DepthEnable = desc.depthState.depthTestEnable;
+    depthStencilDesc.DepthWriteMask = desc.depthState.depthWriteEnable ?
         D3D12_DEPTH_WRITE_MASK_ALL : D3D12_DEPTH_WRITE_MASK_ZERO;
-    mDepthStencilDesc.DepthFunc = TranslateComparisonFunc(desc.depthState.depthCompareFunc);
-
-    // TODO: stencil buffer support
+    depthStencilDesc.DepthFunc = TranslateComparisonFunc(desc.depthState.depthCompareFunc);
     const D3D12_DEPTH_STENCILOP_DESC stencilOpDesc =
     {
         TranslateStencilOp(desc.depthState.stencilOpFail),
@@ -99,63 +70,47 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
         TranslateStencilOp(desc.depthState.stencilOpPass),
         TranslateComparisonFunc(desc.depthState.stencilFunc),
     };
-    mDepthStencilDesc.FrontFace = mDepthStencilDesc.BackFace = stencilOpDesc;
-    mDepthStencilDesc.StencilEnable = desc.depthState.stencilEnable;
-    mDepthStencilDesc.StencilReadMask = desc.depthState.stencilMask;
-    mDepthStencilDesc.StencilWriteMask = desc.depthState.stencilMask;
+    depthStencilDesc.FrontFace = depthStencilDesc.BackFace = stencilOpDesc;
+    depthStencilDesc.StencilEnable = desc.depthState.stencilEnable;
+    depthStencilDesc.StencilReadMask = desc.depthState.stencilMask;
+    depthStencilDesc.StencilWriteMask = desc.depthState.stencilMask;
 
 
     // prepare D3D12 blend state
 
-    mBlendDesc.AlphaToCoverageEnable = desc.blendState.alphaToCoverage;
-    mBlendDesc.IndependentBlendEnable = desc.blendState.independent;
+    D3D12_BLEND_DESC blendDesc;
 
+    blendDesc.AlphaToCoverageEnable = desc.blendState.alphaToCoverage;
+    blendDesc.IndependentBlendEnable = desc.blendState.independent;
     int iterations = desc.blendState.independent ? MAX_RENDER_TARGETS : 1;
     for (int i = 0; i < iterations; ++i)
     {
         const RenderTargetBlendStateDesc& rtDesc = desc.blendState.rtDescs[i];
-        mBlendDesc.RenderTarget[i].BlendEnable = rtDesc.enable;
-        mBlendDesc.RenderTarget[i].SrcBlend = TranslateBlendFunc(rtDesc.srcColorFunc);
-        mBlendDesc.RenderTarget[i].DestBlend = TranslateBlendFunc(rtDesc.destColorFunc);
-        mBlendDesc.RenderTarget[i].SrcBlendAlpha = TranslateBlendFunc(rtDesc.srcAlphaFunc);
-        mBlendDesc.RenderTarget[i].DestBlendAlpha = TranslateBlendFunc(rtDesc.destAlphaFunc);
-        mBlendDesc.RenderTarget[i].BlendOp = TranslateBlendOp(rtDesc.colorOperator);
-        mBlendDesc.RenderTarget[i].BlendOpAlpha = TranslateBlendOp(rtDesc.alphaOperator);
-        mBlendDesc.RenderTarget[i].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+        blendDesc.RenderTarget[i].BlendEnable = rtDesc.enable;
+        blendDesc.RenderTarget[i].SrcBlend = TranslateBlendFunc(rtDesc.srcColorFunc);
+        blendDesc.RenderTarget[i].DestBlend = TranslateBlendFunc(rtDesc.destColorFunc);
+        blendDesc.RenderTarget[i].SrcBlendAlpha = TranslateBlendFunc(rtDesc.srcAlphaFunc);
+        blendDesc.RenderTarget[i].DestBlendAlpha = TranslateBlendFunc(rtDesc.destAlphaFunc);
+        blendDesc.RenderTarget[i].BlendOp = TranslateBlendOp(rtDesc.colorOperator);
+        blendDesc.RenderTarget[i].BlendOpAlpha = TranslateBlendOp(rtDesc.alphaOperator);
+        blendDesc.RenderTarget[i].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
     }
 
     // workaround for D3D runtime bug
     for (int i = 0; i < 8; ++i)
     {
-        mBlendDesc.RenderTarget[i].LogicOp = D3D12_LOGIC_OP_SET;
-        mBlendDesc.RenderTarget[i].LogicOpEnable = FALSE;
+        blendDesc.RenderTarget[i].LogicOp = D3D12_LOGIC_OP_SET;
+        blendDesc.RenderTarget[i].LogicOpEnable = FALSE;
     }
-
-    mPrimitiveType = desc.primitiveType;
-    mNumControlPoints = desc.numControlPoints;
 
     // prepare D3D12 input layout
 
+    D3D12_INPUT_LAYOUT_DESC inputLayoutDesc;
     VertexLayout* vertexLayout = dynamic_cast<VertexLayout*>(desc.vertexLayout);
-    mInputLayoutDesc.NumElements = static_cast<UINT>(vertexLayout->mElements.size());
-    mInputLayoutDesc.pInputElementDescs = vertexLayout->mElements.data();
+    inputLayoutDesc.NumElements = static_cast<UINT>(vertexLayout->mElements.size());
+    inputLayoutDesc.pInputElementDescs = vertexLayout->mElements.data();
 
-    ResourceBindingLayout* resBindingLayout = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout);
-    if (!resBindingLayout)
-    {
-        LOG_ERROR("Invalid resource binding layout");
-        return false;
-    }
-    mBindingLayout = resBindingLayout;
 
-    return true;
-}
-
-ID3D12PipelineState* PipelineState::CreateFullPipelineState(const FullPipelineStateParts& parts)
-{
-    PipelineState* pipelineState = dynamic_cast<PipelineState*>(std::get<0>(parts));
-    ShaderProgram* shaderProgram = dynamic_cast<ShaderProgram*>(std::get<1>(parts));
-    const ShaderProgramDesc& desc = shaderProgram->GetDesc();
 
     Shader* mVS = dynamic_cast<Shader*>(desc.vertexShader);
     Shader* mHS = dynamic_cast<Shader*>(desc.hullShader);
@@ -170,7 +125,7 @@ ID3D12PipelineState* PipelineState::CreateFullPipelineState(const FullPipelineSt
     D3D12_GRAPHICS_PIPELINE_STATE_DESC psd;
     ZeroMemory(&psd, sizeof(psd));
 
-    psd.pRootSignature = pipelineState->mBindingLayout->GetD3DRootSignature();
+    psd.pRootSignature = resBindingLayout->GetD3DRootSignature();
     psd.VS = mVS ? mVS->GetD3D12Bytecode() : nullBytecode;
     psd.HS = mHS ? mHS->GetD3D12Bytecode() : nullBytecode;
     psd.DS = mDS ? mDS->GetD3D12Bytecode() : nullBytecode;
@@ -178,20 +133,28 @@ ID3D12PipelineState* PipelineState::CreateFullPipelineState(const FullPipelineSt
     psd.PS = mPS ? mPS->GetD3D12Bytecode() : nullBytecode;
     psd.StreamOutput.NumEntries = 0;
     psd.StreamOutput.NumStrides = 0;
-    psd.BlendState = pipelineState->mBlendDesc;
-    psd.RasterizerState = pipelineState->mRasterizerDesc;
-    psd.DepthStencilState = pipelineState->mDepthStencilDesc;
-    psd.InputLayout = pipelineState->mInputLayoutDesc;
+    psd.BlendState = blendDesc;
+    psd.RasterizerState = rasterizerDesc;
+    psd.DepthStencilState = depthStencilDesc;
+    psd.InputLayout = inputLayoutDesc;
     psd.SampleMask = UINT_MAX;
     psd.IBStripCutValue = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED;
-    psd.PrimitiveTopologyType = TranslatePrimitiveTopologyType(pipelineState->mPrimitiveType);
+    psd.PrimitiveTopologyType = TranslatePrimitiveTopologyType(desc.primitiveType);
 
-    psd.NumRenderTargets = pipelineState->mNumRenderTargets;
-    for (uint32 i = 0; i < pipelineState->mNumRenderTargets; ++i)
-        psd.RTVFormats[i] = pipelineState->mRenderTargetFormats[i];
-    for (uint32 i = pipelineState->mNumRenderTargets; i < MAX_RENDER_TARGETS; ++i)
+    psd.NumRenderTargets = desc.numRenderTargets;
+    for (uint32 i = 0; i < desc.numRenderTargets; ++i)
+    {
+        psd.RTVFormats[i] = TranslateElementFormat(desc.rtFormats[i]);
+        if (psd.RTVFormats[i] == DXGI_FORMAT_UNKNOWN)
+        {
+            LOG_ERROR("Invalid render target framt for i = %u", i);
+            return false;
+        }
+    }
+
+    for (uint32 i = desc.numRenderTargets; i < MAX_RENDER_TARGETS; ++i)
         psd.RTVFormats[i] = DXGI_FORMAT_UNKNOWN;
-    psd.DSVFormat = pipelineState->mDepthStencilFormat;
+    psd.DSVFormat = TranslateDepthFormat(desc.depthFormat);
 
     psd.SampleDesc.Count = 1;
     psd.SampleDesc.Quality = 0;
@@ -200,11 +163,20 @@ ID3D12PipelineState* PipelineState::CreateFullPipelineState(const FullPipelineSt
     psd.CachedPSO.CachedBlobSizeInBytes = 0;
     psd.CachedPSO.pCachedBlob = nullptr;
 
-    ID3D12PipelineState* result = nullptr;
+
     HRESULT hr;
     hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateGraphicsPipelineState(&psd,
-                                                                          IID_PPV_ARGS(&result)));
-    return result;
+                                                                          IID_PPV_ARGS(&mPipelineState)));
+    if (FAILED(hr))
+    {
+        LOG_ERROR("Failed to create pipeline state object");
+        return false;
+    }
+
+    mBindingLayout = resBindingLayout;
+    mPrimitiveTopology = TranslatePrimitiveType(desc.primitiveType, desc.numControlPoints);
+
+    return true;
 }
 
 } // namespace Renderer

@@ -18,7 +18,7 @@ namespace Renderer {
 bool ResourceBindingSet::IsBindingOverlapping(const ResourceBindingDesc& bindingDesc) const
 {
     for (const auto& desc : mBindings)
-        if (desc.slot == bindingDesc.slot)
+        if (desc.slot == bindingDesc.slot && desc.resourceType == bindingDesc.resourceType)
             return true;
     return false;
 }
