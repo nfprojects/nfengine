@@ -152,13 +152,13 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     }
 
     // initialize root parameters (root descriptors) for dynamic buffers bindings
-    for (size_t i = 0; i < desc.numDynamicBuffers; ++i, ++rootParamIndex)
+    for (size_t i = 0; i < desc.numVolatileCBuffers; ++i, ++rootParamIndex)
     {
-        const DynamicBufferBindingDesc& bindingDesc = desc.dynamicBuffers[i];
+        const VolatileCBufferBinding& bindingDesc = desc.volatileCBuffers[i];
         mDynamicBuffers.push_back(bindingDesc);
 
         // set up root signature's parameter
-        switch (desc.dynamicBuffers[i].resourceType)
+        switch (desc.volatileCBuffers[i].resourceType)
         {
         case ShaderResourceType::CBuffer:
             rootParameters[rootParamIndex].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
@@ -278,19 +278,16 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, ITexture* texture)
 
 bool ResourceBindingInstance::WriteCBufferView(size_t slot, IBuffer* buffer)
 {
-    UNUSED(slot);
-    UNUSED(buffer);
-
     Buffer* cbuffer = dynamic_cast<Buffer*>(buffer);
-    if (!buffer || !cbuffer->mResource)
+    if (!buffer || !cbuffer->GetResource())
     {
         LOG_ERROR("Invalid buffer");
         return false;
     }
 
     D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-    cbvDesc.BufferLocation = cbuffer->mResource->GetGPUVirtualAddress();
-    cbvDesc.SizeInBytes = static_cast<UINT>(cbuffer->mSize);
+    cbvDesc.BufferLocation = cbuffer->GetResource()->GetGPUVirtualAddress();
+    cbvDesc.SizeInBytes = cbuffer->GetRealSize();
 
     HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
     D3D12_CPU_DESCRIPTOR_HANDLE target = allocator.GetCpuHandle();

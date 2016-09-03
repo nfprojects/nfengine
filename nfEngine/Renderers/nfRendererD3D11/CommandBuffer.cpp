@@ -203,7 +203,7 @@ void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* binding
     }
 }
 
-void CommandBuffer::BindDynamicBuffer(size_t slot, IBuffer* buffer)
+void CommandBuffer::BindVolatileCBuffer(size_t slot, IBuffer* buffer)
 {
     if (!mBindingLayout)
     {
@@ -211,7 +211,7 @@ void CommandBuffer::BindDynamicBuffer(size_t slot, IBuffer* buffer)
         return;
     }
 
-    if (slot >= mBindingLayout->mDynamicBuffers.size())
+    if (slot >= mBindingLayout->mVolatileCBuffers.size())
     {
         LOG_ERROR("Invalid dynamic buffer slot");
         return;
@@ -224,8 +224,8 @@ void CommandBuffer::BindDynamicBuffer(size_t slot, IBuffer* buffer)
         return;
     }
 
-    const ShaderType targetShader = mBindingLayout->mDynamicBuffers[slot].shaderVisibility;
-    UINT slotOffset = mBindingLayout->mDynamicBuffers[slot].slot;
+    const ShaderType targetShader = mBindingLayout->mVolatileCBuffers[slot].shaderVisibility;
+    UINT slotOffset = mBindingLayout->mVolatileCBuffers[slot].slot;
 
     ID3D11Buffer* d3dBuffer = bufferPtr->mBuffer.get();
 

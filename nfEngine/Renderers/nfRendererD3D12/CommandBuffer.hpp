@@ -42,7 +42,7 @@ class CommandBuffer : public ICommandBuffer
 
     // ring buffer for dynamic buffers support
     RingBuffer mRingBuffer;
-    Buffer* mBoundDynamicBuffers[NFE_RENDERER_MAX_DYNAMIC_BUFFERS];
+    Buffer* mBoundVolatileCBuffers[NFE_RENDERER_MAX_VOLATILE_CBUFFERS];
 
     RenderTarget* mCurrRenderTarget;
     ResourceBindingLayout* mBindingLayout;
@@ -52,12 +52,18 @@ class CommandBuffer : public ICommandBuffer
 
     D3D12_PRIMITIVE_TOPOLOGY mCurrPrimitiveTopology;
 
+    D3D12_VERTEX_BUFFER_VIEW mCurrVertexBufferViews[NFE_RENDERER_MAX_VERTEX_BUFFERS];
+    Buffer* mBoundVertexBuffers[NFE_RENDERER_MAX_VERTEX_BUFFERS];
+    uint32 mNumBoundVertexBuffers;
+
     void UpdateStates();
     void UnsetRenderTarget();
-    void UpdateDynamicBuffers();
 
     // called by Device, when command list was queued
     bool MoveToNextFrame(ID3D12CommandQueue* commandQueue);
+
+    void WriteDynamicBuffer(Buffer* buffer, size_t offset, size_t size, const void* data);
+    void WriteVolatileBuffer(Buffer* buffer, const void* data);
 
 public:
     CommandBuffer();
@@ -70,7 +76,7 @@ public:
     void SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets) override;
     void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format) override;
     void BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance) override;
-    void BindDynamicBuffer(size_t slot, IBuffer* buffer) override;
+    void BindVolatileCBuffer(size_t slot, IBuffer* buffer) override;
     void SetRenderTarget(IRenderTarget* renderTarget) override;
     void SetResourceBindingLayout(IResourceBindingLayout* layout) override;
     void SetPipelineState(IPipelineState* state) override;

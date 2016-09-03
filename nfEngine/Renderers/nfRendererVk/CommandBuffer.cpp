@@ -101,7 +101,7 @@ void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* binding
     UNUSED(bindingSetInstance);
 }
 
-void CommandBuffer::BindDynamicBuffer(size_t slot, IBuffer* buffer)
+void CommandBuffer::BindVolatileCBuffer(size_t slot, IBuffer* buffer)
 {
     UNUSED(slot);
     UNUSED(buffer);
