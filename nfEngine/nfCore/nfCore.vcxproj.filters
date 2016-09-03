@@ -132,11 +132,11 @@
     <ClCompile Include="Resources\Multishader.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
-    <ClCompile Include="Resources\MultiShaderProgram.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
     <ClCompile Include="Utils\Profiler.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\MultiPipelineState.cpp">
+      <Filter>Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -260,14 +260,14 @@
     <ClInclude Include="Resources\Multishader.hpp">
       <Filter>Resources</Filter>
     </ClInclude>
-    <ClInclude Include="Resources\MultiShaderProgram.hpp">
-      <Filter>Resources</Filter>
-    </ClInclude>
     <ClInclude Include="Utils\Profiler.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="ShaderCommon.hpp">
       <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\MultiPipelineState.hpp">
+      <Filter>Resources</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

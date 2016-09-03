@@ -21,6 +21,12 @@ class PipelineState : public IPipelineState
 {
     friend class CommandBuffer;
 
+    ID3D11VertexShader* mVertexShader;
+    ID3D11GeometryShader* mGeometryShader;
+    ID3D11HullShader* mHullShader;
+    ID3D11DomainShader* mDomainShader;
+    ID3D11PixelShader* mPixelShader;
+
     D3DPtr<ID3D11RasterizerState> mRS;
     D3DPtr<ID3D11BlendState> mBS;
     D3DPtr<ID3D11DepthStencilState> mDS;
@@ -30,6 +36,7 @@ class PipelineState : public IPipelineState
     ResourceBindingLayout* mResBindingLayout;
 
 public:
+    PipelineState();
     bool Init(const PipelineStateDesc& desc);
 };
 

@@ -301,11 +301,6 @@ IShader* Device::CreateShader(const ShaderDesc& desc)
     return CreateGenericResource<Shader, ShaderDesc>(desc);
 }
 
-IShaderProgram* Device::CreateShaderProgram(const ShaderProgramDesc& desc)
-{
-    return new (std::nothrow) ShaderProgram(desc);
-}
-
 IResourceBindingSet* Device::CreateResourceBindingSet(const ResourceBindingSetDesc& desc)
 {
     return CreateGenericResource<ResourceBindingSet, ResourceBindingSetDesc>(desc);
@@ -496,45 +491,6 @@ bool Device::DownloadTexture(ITexture* tex, void* data, int mipmap, int layer)
     UNUSED(mipmap);
     UNUSED(layer);
     return false;
-}
-
-ID3D12PipelineState* Device::GetFullPipelineState(const FullPipelineStateParts& parts)
-{
-    D3DPtr<ID3D12PipelineState>& fullState = mPipelineStateMap[parts];
-    if (!fullState)
-        fullState = PipelineState::CreateFullPipelineState(parts);
-
-    return fullState.get();
-}
-
-void Device::OnShaderProgramDestroyed(IShaderProgram* program)
-{
-    // TODO this is extremely slow
-
-    std::vector<FullPipelineStateParts> toRemove;
-    for (const auto& pair : mPipelineStateMap)
-        if (std::get<1>(pair.first) == program)
-            toRemove.push_back(pair.first);
-
-    WaitForGPU();
-
-    for (const auto& parts : toRemove)
-        mPipelineStateMap.erase(parts);
-}
-
-void Device::OnPipelineStateDestroyed(IPipelineState* pipelineState)
-{
-    // TODO this is extremely slow
-
-    std::vector<FullPipelineStateParts> toRemove;
-    for (const auto& pair : mPipelineStateMap)
-        if (std::get<0>(pair.first) == pipelineState)
-            toRemove.push_back(pair.first);
-
-    WaitForGPU();
-
-    for (const auto& parts : toRemove)
-        mPipelineStateMap.erase(parts);
 }
 
 bool Device::WaitForGPU()

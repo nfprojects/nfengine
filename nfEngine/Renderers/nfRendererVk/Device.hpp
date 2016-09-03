@@ -33,8 +33,6 @@ private:
     VkPipelineCache mPipelineCache;
     bool mDebugEnable;
 
-    std::map<FullPipelineStateParts, VkPipeline> mPipelineStateMap;
-
     VkPhysicalDevice SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices, int preferredId);
 
 public:
@@ -94,7 +92,6 @@ public:
     }
 
     uint32 GetMemoryTypeIndex(uint32 typeBits, VkFlags properties);
-    VkPipeline GetFullPipelineState(const FullPipelineStateParts& parts);
 
     // overrides
     void* GetHandle() const override;
@@ -108,7 +105,6 @@ public:
     IPipelineState* CreatePipelineState(const PipelineStateDesc& desc) override;
     ISampler* CreateSampler(const SamplerDesc& desc) override;
     IShader* CreateShader(const ShaderDesc& desc) override;
-    IShaderProgram* CreateShaderProgram(const ShaderProgramDesc& desc) override;
     IResourceBindingSet* CreateResourceBindingSet(const ResourceBindingSetDesc& desc) override;
     IResourceBindingLayout* CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc) override;
     IResourceBindingInstance* CreateResourceBindingInstance(IResourceBindingSet* set) override;

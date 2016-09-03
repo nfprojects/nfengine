@@ -84,14 +84,7 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
     if (!mPixelShader)
         return false;
 
-    ShaderProgramDesc shaderProgramDesc;
-    shaderProgramDesc.vertexShader = mVertexShader.get();
-    shaderProgramDesc.pixelShader = mPixelShader.get();
-    mShaderProgram.reset(mRendererDevice->CreateShaderProgram(shaderProgramDesc));
-    if (!mShaderProgram)
-        return false;
-
-    int cbufferSlot = mShaderProgram->GetResourceSlotByName("TestCBuffer");
+    int cbufferSlot = mVertexShader->GetResourceSlotByName("TestCBuffer");
     if (cbufferSlot < 0)
         return false;
 
@@ -118,6 +111,8 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
     blendStateDesc.rtDescs[0].destColorFunc = BlendFunc::OneMinusSrcAlpha;
 
     PipelineStateDesc psd;
+    psd.vertexShader = mVertexShader.get();
+    psd.pixelShader = mPixelShader.get();
     psd.raterizerState.cullMode = CullMode::Disabled;
     psd.primitiveType = PrimitiveType::Triangles;
     psd.vertexLayout = mVertexLayout.get();
@@ -318,7 +313,6 @@ void DepthStencilScene::Draw(float dt)
     IBuffer* vb = mVertexBuffer.get();
     mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
     mCommandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
-    mCommandBuffer->SetShaderProgram(mShaderProgram.get());
 
     IBuffer* cb = mConstantBuffer.get();
     VertexCBuffer cbuffer;
@@ -379,7 +373,6 @@ void DepthStencilScene::ReleaseSubsceneResources()
     mVertexBuffer.reset();
     mIndexBuffer.reset();
     mVertexLayout.reset();
-    mShaderProgram.reset();
     mMaskPipelineState.reset();
     mReflectionPipelineState.reset();
     mFloorPipelineState.reset();

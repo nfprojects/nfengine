@@ -13,6 +13,7 @@
 namespace NFE {
 namespace Renderer {
 
+class Shader;
 class RenderTarget;
 class PipelineState;
 
@@ -37,7 +38,11 @@ class CommandBuffer : public ICommandBuffer
     D3DPtr<ID3D11DeviceContext> mContext;
     D3DPtr<ID3DUserDefinedAnnotation> mUserDefinedAnnotation;
 
-    ShaderProgramDesc mBoundShaders;
+    ID3D11VertexShader* mBoundVertexShader;
+    ID3D11HullShader* mBoundHullShader;
+    ID3D11DomainShader* mBoundDomainShader;
+    ID3D11GeometryShader* mBoundGeometryShader;
+    ID3D11PixelShader* mBoundPixelShader;
 
     void UpdateSamplers();
     void UpdateState();
@@ -55,7 +60,6 @@ public:
     void BindDynamicBuffer(size_t slot, IBuffer* buffer) override;
     void SetResourceBindingLayout(IResourceBindingLayout* layout) override;
     void SetRenderTarget(IRenderTarget* renderTarget) override;
-    void SetShaderProgram(IShaderProgram* shaderProgram) override;
     void SetPipelineState(IPipelineState* state) override;
     void SetStencilRef(unsigned char ref) override;
     void SetViewport(float left, float width, float top, float height,

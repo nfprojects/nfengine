@@ -11,18 +11,17 @@
 #include "RenderCommand.hpp"
 #include "GeometryRendererContext.hpp"
 #include "RendererResources.hpp"
-#include "../Resources/MultiShaderProgram.hpp"
+#include "../Resources/MultiPipelineState.hpp"
 
 namespace NFE {
 namespace Renderer {
 
 class GeometryRenderer : public RendererModule<GeometryRenderer>
 {
-    Resource::MultiShaderProgram mGeometryPassShaderProgram;
-    Resource::MultiShaderProgram mShadowShaderProgram;
+    Resource::MultiPipelineState mGeometryPassPipelineState;
+    Resource::MultiPipelineState mShadowPipelineState;
 
     std::unique_ptr<IVertexLayout> mVertexLayout;
-    std::unique_ptr<IPipelineState> mPipelineState;
     std::unique_ptr<IBuffer> mInstancesVertexBuffer;
     std::unique_ptr<IBuffer> mMaterialCBuffer;
     std::unique_ptr<IBuffer> mGlobalCBuffer;

@@ -10,7 +10,6 @@
 
 #include "Defines.hpp"
 #include "RenderTarget.hpp"
-#include "ShaderProgram.hpp"
 #include "PipelineState.hpp"
 
 namespace NFE {
@@ -30,12 +29,7 @@ class CommandBuffer : public ICommandBuffer
     VkCommandBuffer mCommandBuffer;
     VkCommandBufferBeginInfo mCommandBufferBeginInfo;
     RenderTarget* mRenderTarget;
-    ShaderProgram* mShaderProgram;
-    PipelineState* mPipelineState;
     ResourceBindingLayout* mResourceBindingLayout;
-    bool mUpdatePipeline;
-
-    void UpdateStates();
 
 public:
     CommandBuffer();
@@ -51,7 +45,6 @@ public:
     void BindDynamicBuffer(size_t slot, IBuffer* buffer) override;
     void SetResourceBindingLayout(IResourceBindingLayout* layout) override;
     void SetRenderTarget(IRenderTarget* renderTarget) override;
-    void SetShaderProgram(IShaderProgram* shaderProgram) override;
     void SetPipelineState(IPipelineState* state) override;
     void SetStencilRef(unsigned char ref) override;
     void SetViewport(float left, float width, float top, float height,

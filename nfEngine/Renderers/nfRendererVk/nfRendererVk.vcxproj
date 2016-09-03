@@ -38,7 +38,6 @@
     <ClCompile Include="ResourceBinding.cpp" />
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Translations.cpp">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
@@ -76,7 +75,6 @@
     <ClInclude Include="ResourceBinding.hpp" />
     <ClInclude Include="Sampler.hpp" />
     <ClInclude Include="Shader.hpp" />
-    <ClInclude Include="ShaderProgram.hpp" />
     <ClInclude Include="Texture.hpp" />
     <ClInclude Include="Translations.hpp" />
     <ClInclude Include="VertexLayout.hpp" />

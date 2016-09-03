@@ -56,11 +56,11 @@ GeometryRenderer::GeometryRenderer()
 
     BufferDesc bufferDesc;
 
-    mGeometryPassShaderProgram.Load("GeometryPass");
-    mShadowShaderProgram.Load("Shadow");
+    mGeometryPassPipelineState.Load("GeometryPass");
+    mShadowPipelineState.Load("Shadow");
 
-    mUseMotionBlurMacroId = mGeometryPassShaderProgram.GetMacroByName("USE_MOTION_BLUR");
-    mCubeShadowMapMacroId = mShadowShaderProgram.GetMacroByName("CUBE_SHADOW_MAP");
+    mUseMotionBlurMacroId = mGeometryPassPipelineState.GetMacroByName("USE_MOTION_BLUR");
+    mCubeShadowMapMacroId = mShadowPipelineState.GetMacroByName("CUBE_SHADOW_MAP");
 
     CreateResourceBindingLayouts();
 
@@ -138,25 +138,29 @@ GeometryRenderer::GeometryRenderer()
     pipelineStateDesc.raterizerState.fillMode = FillMode::Solid;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
-    pipelineStateDesc.debugName = "GeometryRenderer::mPipelineState";
-    mPipelineState.reset(device->CreatePipelineState(pipelineStateDesc));
+
+    pipelineStateDesc.debugName = "GeometryRenderer::mGeometryPassPipelineState";
+    mGeometryPassPipelineState.Build(pipelineStateDesc);
+
+    pipelineStateDesc.debugName = "GeometryRenderer::mShadowPipelineState";
+    mShadowPipelineState.Build(pipelineStateDesc);
 }
 
 bool GeometryRenderer::CreateResourceBindingLayouts()
 {
     IDevice* device = mRenderer->GetDevice();
 
-    int globalCBufferSlot = mGeometryPassShaderProgram.GetResourceSlotByName("Global");
+    int globalCBufferSlot = mGeometryPassPipelineState.GetResourceSlotByName("Global");
     if (globalCBufferSlot < 0)
         return false;
 
-    int materialCBufferSlot = mGeometryPassShaderProgram.GetResourceSlotByName("Material");
+    int materialCBufferSlot = mGeometryPassPipelineState.GetResourceSlotByName("Material");
     if (materialCBufferSlot < 0)
         return false;
 
-    int diffuseTextureSlot  = mGeometryPassShaderProgram.GetResourceSlotByName("gDiffuseTexture");
-    int normalTextureSlot   = mGeometryPassShaderProgram.GetResourceSlotByName("gNormalTexture");
-    int specularTextureSlot = mGeometryPassShaderProgram.GetResourceSlotByName("gSpecularTexture");
+    int diffuseTextureSlot  = mGeometryPassPipelineState.GetResourceSlotByName("gDiffuseTexture");
+    int normalTextureSlot   = mGeometryPassPipelineState.GetResourceSlotByName("gNormalTexture");
+    int specularTextureSlot = mGeometryPassPipelineState.GetResourceSlotByName("gSpecularTexture");
     if (materialCBufferSlot < 0 || normalTextureSlot < 0 || specularTextureSlot < 0)
         return false;
 
@@ -206,8 +210,6 @@ bool GeometryRenderer::CreateResourceBindingLayouts()
 void GeometryRenderer::OnEnter(RenderContext* context)
 {
     context->commandBuffer->BeginDebugGroup("Geometry Buffer Renderer stage");
-
-    context->commandBuffer->SetPipelineState(mPipelineState.get());
 }
 
 void GeometryRenderer::OnLeave(RenderContext* context)
@@ -228,7 +230,7 @@ void GeometryRenderer::SetUp(RenderContext* context, GeometryBuffer* geometryBuf
     context->commandBuffer->Clear(ClearFlagsDepth, 0, nullptr, nullptr, 1.0f);
 
     int macros[] = { 0 }; // USE_MOTION_BLUR
-    context->commandBuffer->SetShaderProgram(mGeometryPassShaderProgram.GetShaderProgram(macros));
+    context->commandBuffer->SetPipelineState(mGeometryPassPipelineState.GetPipelineState(macros));
 
     context->commandBuffer->BindResources(0, mGlobalBindingInstance.get());
     context->commandBuffer->BindResources(1, mMatCBufferBindingInstance.get());
@@ -263,7 +265,7 @@ void GeometryRenderer::SetUpForShadowMap(RenderContext *context, ShadowMap* shad
     if (shadowMap->mType == ShadowMap::Type::Cube)
         macros[0] = 1;
 
-    context->commandBuffer->SetShaderProgram(mShadowShaderProgram.GetShaderProgram(macros));
+    context->commandBuffer->SetPipelineState(mShadowPipelineState.GetPipelineState(macros));
 
     context->commandBuffer->BindResources(0, mShadowGlobalBindingInstance.get());
 

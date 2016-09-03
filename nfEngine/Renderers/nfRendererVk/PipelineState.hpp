@@ -14,8 +14,6 @@
 namespace NFE {
 namespace Renderer {
 
-typedef std::tuple<IPipelineState*, IShaderProgram*> FullPipelineStateParts;
-
 class PipelineState : public IPipelineState
 {
     friend class CommandBuffer;
@@ -24,10 +22,9 @@ class PipelineState : public IPipelineState
     VkPipeline mPipeline;
 
 public:
+    PipelineState();
     ~PipelineState();
     bool Init(const PipelineStateDesc& desc);
-
-    static VkPipeline CreateFullPipelineState(const FullPipelineStateParts& parts);
 };
 
 } // namespace Renderer

@@ -21,7 +21,6 @@ class VertexBuffersScene : public Scene
 
     std::unique_ptr<NFE::Renderer::IShader> mVertexShader;
     std::unique_ptr<NFE::Renderer::IShader> mPixelShader;
-    std::unique_ptr<NFE::Renderer::IShaderProgram> mShaderProgram;
 
     std::unique_ptr<NFE::Renderer::IBuffer> mPositionsVertexBuffer;
     std::unique_ptr<NFE::Renderer::IBuffer> mColorVertexBuffer;
@@ -36,7 +35,7 @@ class VertexBuffersScene : public Scene
     void ReleaseSubsceneResources();
 
     // Resource creators for subscenes
-    bool CreateShaderProgram(bool useInstancing);
+    bool LoadShaders(bool useInstancing);
     bool CreateBuffers(bool withInstanceBuffer);
 
     // Subscenes

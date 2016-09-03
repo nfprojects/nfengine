@@ -21,7 +21,6 @@ class DepthStencilScene: public Scene
     std::unique_ptr<NFE::Renderer::IBuffer> mVertexBuffer;
     std::unique_ptr<NFE::Renderer::IBuffer> mIndexBuffer;
     std::unique_ptr<NFE::Renderer::IVertexLayout> mVertexLayout;
-    std::unique_ptr<NFE::Renderer::IShaderProgram> mShaderProgram;
 
     std::unique_ptr<NFE::Renderer::IPipelineState> mMaskPipelineState;
     std::unique_ptr<NFE::Renderer::IPipelineState> mReflectionPipelineState;

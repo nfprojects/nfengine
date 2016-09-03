@@ -16,7 +16,7 @@ namespace Renderer {
 struct ResourceBindingDesc
 {
     ShaderResourceType resourceType;
-    unsigned int slot; //< shader program's resource slot
+    unsigned int slot; //< shader's resource slot
     // TODO support for ranges of bindings
 
     ISampler* staticSampler; //< optional static sampler (for textures only)
@@ -75,7 +75,7 @@ struct DynamicBufferBindingDesc
 {
     ShaderType shaderVisibility;
     ShaderResourceType resourceType;
-    unsigned int slot; //< shader program's resource slot
+    unsigned int slot; //< shader's resource slot
 
     DynamicBufferBindingDesc(ShaderType shaderVisibility,
                              ShaderResourceType resourceType,

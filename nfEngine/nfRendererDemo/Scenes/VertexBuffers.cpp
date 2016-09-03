@@ -33,7 +33,7 @@ int gInstancesNumber = 200;
 } // namespace
 
 
-bool VertexBuffersScene::CreateShaderProgram(bool useInstancing)
+bool VertexBuffersScene::LoadShaders(bool useInstancing)
 {
     ShaderMacro vsMacro[] = { { "USE_INSTANCING", useInstancing ? "1" : "0" } };
     std::string vsPath = gShaderPathPrefix + "InstancingTestVS" + gShaderPathExt;
@@ -44,13 +44,6 @@ bool VertexBuffersScene::CreateShaderProgram(bool useInstancing)
     std::string psPath = gShaderPathPrefix + "InstancingTestPS" + gShaderPathExt;
     mPixelShader.reset(CompileShader(psPath.c_str(), ShaderType::Pixel, nullptr, 0));
     if (!mPixelShader)
-        return false;
-
-    ShaderProgramDesc shaderProgramDesc;
-    shaderProgramDesc.vertexShader = mVertexShader.get();
-    shaderProgramDesc.pixelShader = mPixelShader.get();
-    mShaderProgram.reset(mRendererDevice->CreateShaderProgram(shaderProgramDesc));
-    if (!mShaderProgram)
         return false;
 
     return true;
@@ -171,6 +164,8 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer)
         return false;
 
     PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.vertexShader = mVertexShader.get();
+    pipelineStateDesc.pixelShader = mPixelShader.get();
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
@@ -188,7 +183,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer)
 
 bool VertexBuffersScene::CreateSubSceneSimple()
 {
-    if (!CreateShaderProgram(false))
+    if (!LoadShaders(false))
         return false;
 
     if (!CreateBuffers(false))
@@ -199,7 +194,7 @@ bool VertexBuffersScene::CreateSubSceneSimple()
 
 bool VertexBuffersScene::CreateSubSceneInstancing()
 {
-    if (!CreateShaderProgram(true))
+    if (!LoadShaders(true))
         return false;
 
     if (!CreateBuffers(true))
@@ -240,7 +235,6 @@ void VertexBuffersScene::ReleaseSubsceneResources()
 
     mPixelShader.reset();
     mVertexShader.reset();
-    mShaderProgram.reset();
     mResBindingLayout.reset();
 }
 
@@ -283,7 +277,6 @@ void VertexBuffersScene::Draw(float dt)
 
     // mCommandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
     mCommandBuffer->SetPipelineState(mPipelineState.get());
-    mCommandBuffer->SetShaderProgram(mShaderProgram.get());
 
     mCommandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
 

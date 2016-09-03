@@ -36,7 +36,7 @@ struct PixelCBuffer
 
 /// Helper creators for the Scene
 
-bool BasicScene::CreateShaderProgram(bool useCBuffer, bool useTexture)
+bool BasicScene::CreateShaders(bool useCBuffer, bool useTexture)
 {
     mTextureSlot = -1;
     mCBufferSlot = -1;
@@ -53,25 +53,18 @@ bool BasicScene::CreateShaderProgram(bool useCBuffer, bool useTexture)
     if (!mPixelShader)
         return false;
 
-    ShaderProgramDesc shaderProgramDesc;
-    shaderProgramDesc.vertexShader = mVertexShader.get();
-    shaderProgramDesc.pixelShader = mPixelShader.get();
-    mShaderProgram.reset(mRendererDevice->CreateShaderProgram(shaderProgramDesc));
-    if (!mShaderProgram)
-        return false;
-
     std::vector<IResourceBindingSet*> bindingSets;
 
     // create binding set
     if (useCBuffer)
     {
-        mCBufferSlot = mShaderProgram->GetResourceSlotByName("TestCBuffer");
+        mCBufferSlot = mVertexShader->GetResourceSlotByName("TestCBuffer");
         if (mCBufferSlot < 0)
             return false;
 
         if (useTexture)
         {
-            mTextureSlot = mShaderProgram->GetResourceSlotByName("gTexture");
+            mTextureSlot = mPixelShader->GetResourceSlotByName("gTexture");
             if (mTextureSlot < 0)
                 return false;
 
@@ -156,6 +149,8 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
         return false;
 
     PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.vertexShader = mVertexShader.get();
+    pipelineStateDesc.pixelShader = mPixelShader.get();
     pipelineStateDesc.blendState.independent = false;
     pipelineStateDesc.blendState.rtDescs[0].enable = true;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
@@ -256,7 +251,7 @@ bool BasicScene::CreateSubSceneEmpty()
     if (!CreateSampler())
         return false;
 
-    return CreateShaderProgram(false, false);
+    return CreateShaders(false, false);
 }
 
 // Adds vertex buffer creation
@@ -268,7 +263,7 @@ bool BasicScene::CreateSubSceneVertexBuffer()
     if (!CreateSampler())
         return false;
 
-    if (!CreateShaderProgram(false, false))
+    if (!CreateShaders(false, false))
         return false;
 
     return CreateVertexBuffer(false);
@@ -283,7 +278,7 @@ bool BasicScene::CreateSubSceneIndexBuffer()
     if (!CreateSampler())
         return false;
 
-    if (!CreateShaderProgram(false, false))
+    if (!CreateShaders(false, false))
         return false;
 
     if (!CreateVertexBuffer(true))
@@ -301,7 +296,7 @@ bool BasicScene::CreateSubSceneConstantBuffer()
     if (!CreateSampler())
         return false;
 
-    if (!CreateShaderProgram(true, false))
+    if (!CreateShaders(true, false))
         return false;
 
     if (!CreateVertexBuffer(true))
@@ -322,7 +317,7 @@ bool BasicScene::CreateSubSceneTexture(int gridSize)
     if (!CreateSampler())
         return false;
 
-    if (!CreateShaderProgram(true, true))
+    if (!CreateShaders(true, true))
         return false;
 
     if (!CreateVertexBuffer(true))
@@ -370,7 +365,6 @@ void BasicScene::ReleaseSubsceneResources()
     mPixelShader.reset();
     mVertexShader.reset();
     mPipelineState.reset();
-    mShaderProgram.reset();
 
     mPSBindingInstance.reset();
     mResBindingLayout.reset();
@@ -433,9 +427,6 @@ void BasicScene::Draw(float dt)
 
     if (mPipelineState)
         mCommandBuffer->SetPipelineState(mPipelineState.get());
-
-    if (mShaderProgram)
-        mCommandBuffer->SetShaderProgram(mShaderProgram.get());
 
     // apply rotation
     mAngle += 2.0f * dt;
