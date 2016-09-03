@@ -282,15 +282,15 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, IBuffer* buffer)
     UNUSED(buffer);
 
     Buffer* cbuffer = dynamic_cast<Buffer*>(buffer);
-    if (!buffer || !cbuffer->mResource)
+    if (!buffer || !cbuffer->GetResource())
     {
         LOG_ERROR("Invalid buffer");
         return false;
     }
 
     D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-    cbvDesc.BufferLocation = cbuffer->mResource->GetGPUVirtualAddress();
-    cbvDesc.SizeInBytes = static_cast<UINT>(cbuffer->mSize);
+    cbvDesc.BufferLocation = cbuffer->GetResource()->GetGPUVirtualAddress();
+    cbvDesc.SizeInBytes = cbuffer->GetSize();
 
     HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
     D3D12_CPU_DESCRIPTOR_HANDLE target = allocator.GetCpuHandle();

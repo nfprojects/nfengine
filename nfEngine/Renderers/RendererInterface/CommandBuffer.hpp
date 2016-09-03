@@ -21,6 +21,8 @@
 #include <memory>
 
 
+#define NFE_RENDERER_MAX_VERTEX_BUFFERS 4
+
 namespace NFE {
 namespace Renderer {
 

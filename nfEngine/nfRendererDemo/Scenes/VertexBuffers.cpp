@@ -9,7 +9,6 @@
 #include "VertexBuffers.hpp"
 #include "../Common.hpp"
 
-#include "nfCommon/Math/Vector.hpp"
 #include "nfCommon/Math/Random.hpp"
 
 #include <vector>
@@ -21,12 +20,6 @@ using namespace NFE::Math;
 using namespace NFE::Renderer;
 
 namespace {
-
-struct InstanceData
-{
-    Float3 pos;
-    Float4 color;
-};
 
 int gInstancesNumber = 200;
 
@@ -49,7 +42,7 @@ bool VertexBuffersScene::LoadShaders(bool useInstancing)
     return true;
 }
 
-bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer)
+bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, BufferMode vertexBufferMode)
 {
     /// create vertex buffers
     BufferDesc vbDesc;
@@ -110,18 +103,25 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer)
     if (withInstanceBuffer)
     {
         Random random;
-        std::unique_ptr<InstanceData[]> vbInstanceData(new InstanceData[gInstancesNumber]);
+
+        mInstancesData.resize(gInstancesNumber);
+        mVelocities.resize(gInstancesNumber);
 
         for (int i = 0; i < gInstancesNumber; ++i)
         {
-            vbInstanceData[i].pos.x = random.GetFloatBipolar();
-            vbInstanceData[i].pos.y = random.GetFloatBipolar();
-            vbInstanceData[i].pos.z = random.GetFloatBipolar();
-            vbInstanceData[i].color = random.GetFloat4();
+            mInstancesData[i].pos.x = random.GetFloatBipolar();
+            mInstancesData[i].pos.y = random.GetFloatBipolar();
+            mInstancesData[i].pos.z = random.GetFloatBipolar();
+            mInstancesData[i].color = random.GetFloat4();
+
+            mVelocities[i].x = random.GetFloatBipolar();
+            mVelocities[i].y = random.GetFloatBipolar();
         }
 
+        mVertexBufferMode = vertexBufferMode;
+        vbDesc.mode = vertexBufferMode;
         vbDesc.size = sizeof(InstanceData) * gInstancesNumber;
-        vbDesc.initialData = vbInstanceData.get();
+        vbDesc.initialData = mInstancesData.data();
         mInstanceBuffer.reset(mRendererDevice->CreateBuffer(vbDesc));
         if (!mInstanceBuffer)
             return false;
@@ -186,18 +186,18 @@ bool VertexBuffersScene::CreateSubSceneSimple()
     if (!LoadShaders(false))
         return false;
 
-    if (!CreateBuffers(false))
+    if (!CreateBuffers(false, BufferMode::Static))
         return false;
 
     return true;
 }
 
-bool VertexBuffersScene::CreateSubSceneInstancing()
+bool VertexBuffersScene::CreateSubSceneInstancing(BufferMode vertexBufferMode)
 {
     if (!LoadShaders(true))
         return false;
 
-    if (!CreateBuffers(true))
+    if (!CreateBuffers(true, vertexBufferMode))
         return false;
 
     return true;
@@ -211,10 +211,13 @@ VertexBuffersScene::VertexBuffersScene()
     : Scene("VertexBuffers")
 {
     RegisterSubScene(std::bind(&VertexBuffersScene::CreateSubSceneSimple, this),
-                     "Simple (2 vertex buffers)");
-    RegisterSubScene(std::bind(&VertexBuffersScene::CreateSubSceneInstancing, this),
-                     "Instancing (3 vertex buffers)");
-    // TODO: dynamic vertex buffer
+                     "Simple: Static vertex buffer (2 vertex buffers)");
+    RegisterSubScene(std::bind(&VertexBuffersScene::CreateSubSceneInstancing, this, BufferMode::Static),
+                     "Instancing: Static vertex buffer (3 vertex buffers)");
+    RegisterSubScene(std::bind(&VertexBuffersScene::CreateSubSceneInstancing, this, BufferMode::Dynamic),
+                     "Instancing: Dynamic vertex buffer (3 vertex buffers)");
+    RegisterSubScene(std::bind(&VertexBuffersScene::CreateSubSceneInstancing, this, BufferMode::Volatile),
+                     "Instancing: Volatile vertex buffer (3 vertex buffers)");
 }
 
 VertexBuffersScene::~VertexBuffersScene()
@@ -275,7 +278,6 @@ void VertexBuffersScene::Draw(float dt)
     mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
 
-    // mCommandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
     mCommandBuffer->SetPipelineState(mPipelineState.get());
 
     mCommandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
@@ -288,6 +290,25 @@ void VertexBuffersScene::Draw(float dt)
         int strides[] = { 3 * sizeof(float), 4 * sizeof(float), sizeof(InstanceData) };
         int offsets[] = { 0, 0, 0 };
         mCommandBuffer->SetVertexBuffers(3, vertexBuffers, strides, offsets);
+
+        // update dynamic/volatile buffer
+        if (mVertexBufferMode == BufferMode::Dynamic || mVertexBufferMode == BufferMode::Volatile)
+        {
+            for (int i = 0; i < gInstancesNumber; ++i)
+            {
+                const float velocity = 0.3f;
+                mInstancesData[i].pos.x += (velocity * dt) * mVelocities[i].x;
+                mInstancesData[i].pos.y += (velocity * dt) * mVelocities[i].y;
+
+                if (mInstancesData[i].pos.x > 1.0f || mInstancesData[i].pos.x < -1.0f)
+                    mVelocities[i].x = -mVelocities[i].x;
+
+                if (mInstancesData[i].pos.y > 1.0f || mInstancesData[i].pos.y < -1.0f)
+                    mVelocities[i].y = -mVelocities[i].y;
+            }
+
+            mCommandBuffer->WriteBuffer(mInstanceBuffer.get(), 0, sizeof(InstanceData) * gInstancesNumber, mInstancesData.data());
+        }
     }
     else
     {
