@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_a4cad118",
+        "filename": "nfEngine/Renderers/nfRendererVk/PipelineState.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-09-04T11:58:09Z",
+      "side": 1,
+      "message": "remove",
+      "revId": "a4370c4f63843f9ce4b651f24169b8359895ff66",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
