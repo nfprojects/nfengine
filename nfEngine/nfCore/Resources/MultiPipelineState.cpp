@@ -83,7 +83,7 @@ bool MultiPipelineState::Load(const char* name)
     ConfigGenericValue root(&config);
 
     // read shader names
-    for (int i = 0; i < NFE_SHADER_TYPES_NUM; ++i)
+    for (int i = 0; i < NFE_GRAPHICS_SHADER_TYPES_NUM; ++i)
     {
         ConfigGenericValue node = root[gShaderNameStrings[i]];
         if (node.IsString())
@@ -141,7 +141,7 @@ void MultiPipelineState::GenerateShaderSets()
     ResManager* rm = Engine::GetInstance()->GetResManager();
 
     // wait for shader resources and build macro mapping table
-    for (size_t i = 0; i < NFE_SHADER_TYPES_NUM; ++i)
+    for (size_t i = 0; i < NFE_GRAPHICS_SHADER_TYPES_NUM; ++i)
     {
         Multishader* shader = mShaderResources[i].get();
         if (shader)
@@ -191,7 +191,7 @@ void MultiPipelineState::GenerateShaderSets()
 void MultiPipelineState::LoadShaderSet(int* macroValues)
 {
     ShaderSet shaderSet;
-    for (size_t i = 0; i < NFE_SHADER_TYPES_NUM; ++i)
+    for (size_t i = 0; i < NFE_GRAPHICS_SHADER_TYPES_NUM; ++i)
     {
         if (!mShaderResources[i])
             continue;

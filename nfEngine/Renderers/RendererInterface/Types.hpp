@@ -21,6 +21,7 @@ class IResourceBindingLayout;
 class ICommandList;
 class ICommandBuffer;
 class IPipelineState;
+class IComputePipelineState;
 class IRenderTarget;
 class IShader;
 class IVertexLayout;
@@ -28,6 +29,9 @@ class IVertexLayout;
 #define MAX_RENDER_TARGETS 8
 #define MAX_MIPMAP_LEVELS 16
 
+
+// number of "graphics" shader types
+#define NFE_GRAPHICS_SHADER_TYPES_NUM 5
 
 /**
  * GPU resources data format.
@@ -161,8 +165,8 @@ enum class ShaderType
     Domain,     //< aka. "tessellation eveluation"
     Geometry,
     Pixel,      //< aka. "fragment"
-    Number,     //< number of shader types
-    All = Number
+    Compute,
+    All
 };
 
 /**

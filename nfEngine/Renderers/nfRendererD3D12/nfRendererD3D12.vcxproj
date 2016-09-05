@@ -203,6 +203,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Backbuffer.cpp" />
+    <ClCompile Include="ComputePipelineState.cpp" />
     <ClCompile Include="HeapAllocator.cpp" />
     <ClCompile Include="PipelineState.cpp" />
     <ClCompile Include="Buffer.cpp" />
@@ -244,6 +245,7 @@
     <ClInclude Include="Buffer.hpp" />
     <ClInclude Include="CommandBuffer.hpp" />
     <ClInclude Include="Common.hpp" />
+    <ClInclude Include="ComputePipelineState.hpp" />
     <ClInclude Include="Device.hpp" />
     <ClInclude Include="HeapAllocator.hpp" />
     <ClInclude Include="PipelineState.hpp" />

@@ -569,6 +569,35 @@ void CommandBuffer::DrawIndexed(int indexNum, int instancesNum,
         mContext->DrawIndexed(indexNum, indexOffset, vertexOffset);
 }
 
+void CommandBuffer::BindComputeResources(size_t slot, IResourceBindingInstance* bindingSetInstance)
+{
+    UNUSED(slot);
+    UNUSED(bindingSetInstance);
+}
+
+void CommandBuffer::BindComputeVolatileCBuffer(size_t slot, IBuffer* buffer)
+{
+    UNUSED(slot);
+    UNUSED(buffer);
+}
+
+void CommandBuffer::SetComputeResourceBindingLayout(IResourceBindingLayout* layout)
+{
+    UNUSED(layout);
+}
+
+void CommandBuffer::SetComputePipelineState(IComputePipelineState* state)
+{
+    UNUSED(state);
+}
+
+void CommandBuffer::Dispatch(uint32 x, uint32 y, uint32 z)
+{
+    UNUSED(x);
+    UNUSED(y);
+    UNUSED(z);
+}
+
 std::unique_ptr<ICommandList> CommandBuffer::Finish()
 {
     if (!mReset)
