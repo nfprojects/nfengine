@@ -8,14 +8,18 @@
 
 #include "../RendererInterface/CommandBuffer.hpp"
 #include "Common.hpp"
-#include "ResourceBinding.hpp"
+
 
 namespace NFE {
 namespace Renderer {
 
+// predeclarations
 class Shader;
 class RenderTarget;
 class PipelineState;
+class ComputePipelineState;
+class ResourceBindingLayout;
+
 
 class CommandList : public ICommandList
 {
@@ -28,6 +32,10 @@ class CommandBuffer : public ICommandBuffer
     friend class Device;
 
     bool mReset;
+    D3DPtr<ID3D11DeviceContext> mContext;
+    D3DPtr<ID3DUserDefinedAnnotation> mUserDefinedAnnotation;
+
+    // graphics pipeline
     unsigned char mStencilRef;
     unsigned char mCurrentStencilRef;
     RenderTarget* mCurrentRenderTarget;
@@ -35,14 +43,16 @@ class CommandBuffer : public ICommandBuffer
     ResourceBindingLayout* mBindingLayout;
     PipelineState* mPipelineState;
     PipelineState* mCurrentPipelineState;
-    D3DPtr<ID3D11DeviceContext> mContext;
-    D3DPtr<ID3DUserDefinedAnnotation> mUserDefinedAnnotation;
-
     ID3D11VertexShader* mBoundVertexShader;
     ID3D11HullShader* mBoundHullShader;
     ID3D11DomainShader* mBoundDomainShader;
     ID3D11GeometryShader* mBoundGeometryShader;
     ID3D11PixelShader* mBoundPixelShader;
+
+    // compute pipeline
+    ResourceBindingLayout* mComputeBindingLayout;
+    ComputePipelineState* mComputePipelineState;
+    ID3D11ComputeShader* mBoundComputeShader;
 
     void UpdateSamplers();
     void UpdateState();

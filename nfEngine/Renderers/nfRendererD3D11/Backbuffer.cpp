@@ -40,8 +40,8 @@ bool Backbuffer::GetBackbufferTexture()
 
 bool Backbuffer::Resize(int newWidth, int newHeight)
 {
-    mWidth = newWidth;
-    mHeight = newHeight;
+    mWidth = static_cast<uint16>(newWidth);
+    mHeight = static_cast<uint16>(newHeight);
 
     if (mWidth == 0 || mHeight == 0)
         return false;
@@ -53,7 +53,7 @@ bool Backbuffer::Resize(int newWidth, int newHeight)
         return false;
 
     // Release all outstanding references to the swap chain's buffers.
-    mSRV.reset();
+    // mSRV.reset();
     D3D_SAFE_RELEASE(mTexture2D);
 
     // Preserve the existing buffer count and format.
@@ -73,8 +73,8 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
 
     mType = TextureType::Texture2D;
     mWindow = static_cast<HWND>(desc.windowHandle);
-    mWidth = desc.width;
-    mHeight = desc.height;
+    mWidth = static_cast<uint16>(desc.width);
+    mHeight = static_cast<uint16>(desc.height);
     mVSync = desc.vSync;
     mLayers = 1;
     mSamples = 1;

@@ -13,6 +13,7 @@
 #include "Scenes/VertexBuffers.hpp"
 #include "Scenes/RenderTargets.hpp"
 #include "Scenes/Tessellation.hpp"
+#include "Scenes/Compute.hpp"
 
 #include "../Renderers/RendererInterface/Device.hpp"
 #include "nfCommon/Library.hpp"
@@ -114,6 +115,7 @@ public:
         mScenes.push_back(std::unique_ptr<Scene>(new RenderTargetsScene));
         mScenes.push_back(std::unique_ptr<Scene>(new VertexBuffersScene));
         mScenes.push_back(std::unique_ptr<Scene>(new TessellationScene));
+        mScenes.push_back(std::unique_ptr<Scene>(new ComputeScene));
     }
 
     /**

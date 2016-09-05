@@ -62,7 +62,8 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
 
     if (desc.binding & ~(NFE_RENDERER_TEXTURE_BIND_SHADER |
                          NFE_RENDERER_TEXTURE_BIND_RENDERTARGET |
-                         NFE_RENDERER_TEXTURE_BIND_DEPTH))
+                         NFE_RENDERER_TEXTURE_BIND_DEPTH |
+                         NFE_RENDERER_TEXTURE_BIND_SHADER_WRITABLE))
     {
         LOG_ERROR("Invalid texture binding flags");
         return false;
@@ -70,12 +71,12 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
 
 
     DXGI_FORMAT resourceFormat = DXGI_FORMAT_UNKNOWN;
-    DXGI_FORMAT srvFormat = DXGI_FORMAT_UNKNOWN;
+    mSrvFormat = DXGI_FORMAT_UNKNOWN;
     DXGI_FORMAT dsvFormat = DXGI_FORMAT_UNKNOWN;
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
     {
         if (!TranslateDepthBufferTypes(desc.depthBufferFormat,
-                                       resourceFormat, srvFormat, dsvFormat))
+                                       resourceFormat, mSrvFormat, dsvFormat))
         {
             LOG_ERROR("Invalid depth buffer format");
             return false;
@@ -84,7 +85,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
     else
     {
         resourceFormat = TranslateElementFormat(desc.format);
-        srvFormat = resourceFormat;
+        mSrvFormat = resourceFormat;
         if (resourceFormat == DXGI_FORMAT_UNKNOWN)
         {
             LOG_ERROR("Invalid texture format");
@@ -133,7 +134,8 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
         td.BindFlags |= D3D11_BIND_RENDER_TARGET;
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
         td.BindFlags |= D3D11_BIND_DEPTH_STENCIL;
-    // TODO: UAV support
+    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER_WRITABLE)
+        td.BindFlags |= D3D11_BIND_UNORDERED_ACCESS;
 
     if (desc.dataDesc)
     {
@@ -175,46 +177,6 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
                                                   textureName.c_str()));
     }
 
-
-
-    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER)
-    {
-        D3D11_SHADER_RESOURCE_VIEW_DESC srvd;
-        ZeroMemory(&srvd, sizeof(srvd));
-        srvd.Format = srvFormat;
-
-        if (desc.type == TextureType::TextureCube)
-        {
-            srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
-            srvd.TextureCube.MipLevels = desc.mipmaps;
-            srvd.TextureCube.MostDetailedMip = 0;
-        }
-        else if (desc.samplesNum > 1)
-        {
-            srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DMS;
-        }
-        else
-        {
-            srvd.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-            srvd.Texture2D.MipLevels = desc.mipmaps;
-            srvd.Texture2D.MostDetailedMip = 0;
-        }
-
-        hr = D3D_CALL_CHECK(gDevice->Get()->CreateShaderResourceView(mTexture2D, &srvd, &mSRV));
-        if (FAILED(hr))
-        {
-            D3D_SAFE_RELEASE(mTexture2D);
-            return false;
-        }
-
-        if (gDevice->IsDebugLayerEnabled() && desc.debugName)
-        {
-            // set debug name
-            D3D_CALL_CHECK(mSRV->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(textureName.length()),
-                                                textureName.c_str()));
-        }
-    }
-
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
     {
         D3D11_DEPTH_STENCIL_VIEW_DESC dsvd;
@@ -233,7 +195,6 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
         hr = D3D_CALL_CHECK(gDevice->Get()->CreateDepthStencilView(mTexture2D, &dsvd, &mDSV));
         if (FAILED(hr))
         {
-            mSRV.reset();
             D3D_SAFE_RELEASE(mTexture2D);
             return false;
         }
@@ -246,13 +207,13 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
         }
     }
 
-    mWidth = desc.width;
-    mHeight = desc.height;
-    mLayers = desc.layers;
-    mMipmaps = desc.mipmaps;
-    mSamples = desc.samplesNum;
+    mWidth = static_cast<uint16>(desc.width);
+    mHeight = static_cast<uint16>(desc.height);
+    mLayers = static_cast<uint16>(desc.layers);
+    mMipmaps = static_cast<uint16>(desc.mipmaps);
+    mSamples = static_cast<uint16>(desc.samplesNum);
     mFormat = desc.format;
-    mType = TextureType::Texture2D;
+    mType = desc.type;
     return true;
 }
 
