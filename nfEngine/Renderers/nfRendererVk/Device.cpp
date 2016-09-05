@@ -18,6 +18,8 @@
 #include "Buffer.hpp"
 #include "VertexLayout.hpp"
 #include "PipelineState.hpp"
+#include "ComputePipelineState.hpp"
+
 
 namespace {
 
@@ -319,6 +321,11 @@ IRenderTarget* Device::CreateRenderTarget(const RenderTargetDesc& desc)
 IPipelineState* Device::CreatePipelineState(const PipelineStateDesc& desc)
 {
     return GenericCreateResource<PipelineState, PipelineStateDesc>(desc);
+}
+
+IComputePipelineState* Device::CreateComputePipelineState(const ComputePipelineStateDesc& desc)
+{
+    return GenericCreateResource<ComputePipelineState, ComputePipelineStateDesc>(desc);
 }
 
 ISampler* Device::CreateSampler(const SamplerDesc& desc)

@@ -12,6 +12,7 @@
 #include "RenderTarget.hpp"
 #include "PipelineState.hpp"
 
+
 namespace NFE {
 namespace Renderer {
 
@@ -37,8 +38,15 @@ public:
 
     bool Init();
 
-    /// Resources setup methods
+    /// Common methods
     void Reset() override;
+    void* MapBuffer(IBuffer* buffer, MapType type) override;
+    void UnmapBuffer(IBuffer* buffer) override;
+    bool WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data) override;
+    void CopyTexture(ITexture* src, ITexture* dest) override;
+    std::unique_ptr<ICommandList> Finish() override;
+
+    /// Graphics pipeline methods
     void SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets) override;
     void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format) override;
     void BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance) override;
@@ -50,17 +58,17 @@ public:
     void SetViewport(float left, float width, float top, float height,
                      float minDepth, float maxDepth) override;
     void SetScissors(int left, int top, int right, int bottom) override;
-
-    /// Executives
-    void* MapBuffer(IBuffer* buffer, MapType type) override;
-    void UnmapBuffer(IBuffer* buffer) override;
-    bool WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data) override;
-    void CopyTexture(ITexture* src, ITexture* dest) override;
     void Clear(int flags, uint32 numTargets, const uint32* slots, const Math::Float4* colors,
                float depthValue, uint8 stencilValue) override;
     void Draw(int vertexNum, int instancesNum, int vertexOffset, int instanceOffset) override;
     void DrawIndexed(int indexNum, int instancesNum, int indexOffset, int vertexOffset, int instanceOffset) override;
-    std::unique_ptr<ICommandList> Finish() override;
+
+    /// Compute pipeline methods
+    void BindComputeResources(size_t slot, IResourceBindingInstance* bindingSetInstance) override;
+    void BindComputeVolatileCBuffer(size_t slot, IBuffer* buffer) override;
+    void SetComputeResourceBindingLayout(IResourceBindingLayout* layout) override;
+    void SetComputePipelineState(IComputePipelineState* state) override;
+    void Dispatch(uint32 x, uint32 y, uint32 z) override;
 
     /// Debugging
     void BeginDebugGroup(const char* text) override;

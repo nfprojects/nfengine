@@ -20,10 +20,24 @@ namespace Renderer {
 enum class ShaderResourceType
 {
     Unknown = -1,
+
+    // read only structure
     CBuffer = 0,
+
+    // read only texture
     Texture,
+
+    // separate sampler (may be not supported by all backends)
     Sampler,
-    // TODO: UAVs, etc.
+
+    // read-only array of structures
+    StructuredBuffer,
+
+    // writable texture (read is also supported, but only without sampling)
+    WritableTexture,
+
+    // same as StructuredBuffer, but supports write operation also
+    WritableStructuredBuffer,
 };
 
 /**

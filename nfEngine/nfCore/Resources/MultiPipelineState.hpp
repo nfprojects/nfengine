@@ -11,8 +11,6 @@
 #include "../Renderer/RenderCommand.hpp"
 #include "Multishader.hpp"
 
-#define NFE_SHADER_TYPES_NUM static_cast<size_t>(Renderer::ShaderType::Number)
-
 namespace NFE {
 namespace Resource {
 
@@ -25,7 +23,7 @@ class MultiPipelineState
 private:
     struct ShaderSet
     {
-        Renderer::IShader* shaders[NFE_SHADER_TYPES_NUM];
+        Renderer::IShader* shaders[NFE_GRAPHICS_SHADER_TYPES_NUM];
 
         NFE_INLINE ShaderSet()
             : shaders{nullptr, nullptr, nullptr, nullptr, nullptr}
@@ -35,7 +33,7 @@ private:
     std::string mName;
 
     typedef std::unique_ptr<Multishader, void(*)(Multishader*)> ShaderResourcePtr;
-    ShaderResourcePtr mShaderResources[NFE_SHADER_TYPES_NUM];
+    ShaderResourcePtr mShaderResources[NFE_GRAPHICS_SHADER_TYPES_NUM];
 
     std::vector<MultishaderMacro> mMacros;
     /// don't keep names along with ranges - it's bad for cache
@@ -47,7 +45,7 @@ private:
      * Some of the values can be -1, which means that the shader does not use shader macro
      * from the pipeline state.
      */
-    std::vector<int> mShaderMacroMapping[NFE_SHADER_TYPES_NUM];
+    std::vector<int> mShaderMacroMapping[NFE_GRAPHICS_SHADER_TYPES_NUM];
 
     std::vector<std::unique_ptr<Renderer::IPipelineState>> mSubPipelineStates;
     std::vector<ShaderSet> mShaderSets;
