@@ -7,6 +7,7 @@
 #pragma once
 
 #include "PipelineState.hpp"
+#include "ComputePipelineState.hpp"
 #include "VertexLayout.hpp"
 #include "Buffer.hpp"
 #include "Shader.hpp"
@@ -50,7 +51,7 @@ public:
     virtual ~ICommandBuffer() {}
 
     /**
-     * CommandBufferResources Shader resources setup methods
+     * CommandBufferCommon      Common methods.
      * @{
      */
 
@@ -60,45 +61,16 @@ public:
      */
     virtual void Reset() = 0;
 
-    virtual void SetVertexBuffers(int num, IBuffer** vertexBuffers,
-                                  int* strides, int* offsets) = 0;
-    virtual void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format) = 0;
-
     /**
-     * Bind shader resources via setting a binding set instance.
-     * @param slot               Target binding set slot within current binding layout.
-     * @param bindingSetInstance Binding set instance to be bound to the pipeline or NULL
-     *                           to clear all bound resources for this set.
+     * Store all executed commands to a command list and turn the command buffer into
+     * non-recording state.
+     * @note Command buffer must be in recording state for the method to succeed.
+     * @see @p Reset()
+     * @return Saved command list or nullptr on an error.
      */
-    virtual void BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance) = 0;
+    virtual std::unique_ptr<ICommandList> Finish() = 0;
 
-    /**
-     * Bind dynamic buffer to the pipeline.
-     * @param slot      Dynamic buffer slot in the current resource binding layout.
-     * @param buffer    Buffer to bind.
-     */
-    virtual void BindVolatileCBuffer(size_t slot, IBuffer* buffer) = 0;
-
-    /**
-     * Set new shaders resources binding layout.
-     * @param layout Resource binding layout
-     */
-    virtual void SetResourceBindingLayout(IResourceBindingLayout* layout) = 0;
-
-    virtual void SetRenderTarget(IRenderTarget* renderTarget) = 0;
-    virtual void SetPipelineState(IPipelineState* state) = 0;
-    virtual void SetStencilRef(unsigned char ref) = 0;
-    virtual void SetViewport(float left, float width, float top, float height,
-                             float minDepth, float maxDepth) = 0;
-    virtual void SetScissors(int left, int top, int right, int bottom) = 0;
-    /**@}*/
-
-    /**
-     * CommandBufferExe Executive methods
-     * @{
-     */
-
-    /**
+        /**
      * Map buffer content into process virtual memory.
      * @param buffer Target buffer.
      * @param type   Mapping type.
@@ -130,6 +102,58 @@ public:
      * @param dest Destination texture object.
      */
     virtual void CopyTexture(ITexture* src, ITexture* dest) = 0;
+
+    /**@}*/
+
+
+
+    /**
+     * CommandBufferGraphics    Graphics pipeline methods.
+     * @{
+     */
+
+    virtual void SetVertexBuffers(int num, IBuffer** vertexBuffers,
+                                  int* strides, int* offsets) = 0;
+    virtual void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format) = 0;
+
+    /**
+     * Bind shader resources via setting a binding set instance.
+     * @param slot               Target binding set slot within current binding layout.
+     * @param bindingSetInstance Binding set instance to be bound to the pipeline or NULL
+     *                           to clear all bound resources for this set.
+     */
+    virtual void BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance) = 0;
+
+    /**
+     * Bind dynamic buffer to the graphics pipeline.
+     * @param slot      Dynamic buffer slot in the current resource binding layout.
+     * @param buffer    Buffer to bind.
+     */
+    virtual void BindVolatileCBuffer(size_t slot, IBuffer* buffer) = 0;
+
+    /**
+     * Set new shaders resources binding layout for graphics pipeline.
+     * @param layout Resource binding layout
+     */
+    virtual void SetResourceBindingLayout(IResourceBindingLayout* layout) = 0;
+
+    /**
+     * Bind render target object.
+     * Pass nullptr to unbind current render target.
+     */
+    virtual void SetRenderTarget(IRenderTarget* renderTarget) = 0;
+
+    /**
+     * Set graphics pipeline state.
+     * @remarks     When draw call is executed, a matching Resource Binding Layout must be set.
+     * @param state New graphics pipeline state.
+     */
+    virtual void SetPipelineState(IPipelineState* state) = 0;
+
+    virtual void SetStencilRef(unsigned char ref) = 0;
+    virtual void SetViewport(float left, float width, float top, float height,
+                             float minDepth, float maxDepth) = 0;
+    virtual void SetScissors(int left, int top, int right, int bottom) = 0;
 
     /**
      * Clear bound render targets with a color.
@@ -168,20 +192,57 @@ public:
                              int instancesNum = 1, int indexOffset = 0,
                              int vertexOffset = 0, int instanceOffset = 0) = 0;
 
+    /**@}*/
+
+
+
     /**
-     * Store all executed commands to a command list and turn the command buffer into
-     * non-recording state.
-     * @note Command buffer must be in recording state for the method to succeed.
-     * @see @p Reset()
-     * @return Saved command list or nullptr on an error.
+     * CommandBufferCompute     Compute pipeline methods.
+     * @{
      */
-    virtual std::unique_ptr<ICommandList> Finish() = 0;
+
+    /**
+     * Bind compute shader resources via setting a binding set instance.
+     * @param slot               Target binding set slot within current binding layout.
+     * @param bindingSetInstance Binding set instance to be bound to the pipeline or NULL
+     *                           to clear all bound resources for this set.
+     */
+    virtual void BindComputeResources(size_t slot, IResourceBindingInstance* bindingSetInstance) = 0;
+
+    /**
+     * Bind dynamic buffer to the compute pipeline.
+     * @param slot      Dynamic buffer slot in the current resource binding layout.
+     * @param buffer    Buffer to bind.
+     */
+    virtual void BindComputeVolatileCBuffer(size_t slot, IBuffer* buffer) = 0;
+
+    /**
+     * Set new shaders resources binding layout for compute pipeline.
+     * @param layout Resource binding layout
+     */
+    virtual void SetComputeResourceBindingLayout(IResourceBindingLayout* layout) = 0;
+
+    /**
+     * Set compute pipeline state.
+     * @remarks     When Dispatch() is executed, a matching compute Resource Binding Layout must be set.
+     * @param state New compute pipeline state.
+     */
+    virtual void SetComputePipelineState(IComputePipelineState* state) = 0;
+
+    /**
+     * Execute compute shader.
+     *
+     * @note            Compute pipeline must be set up.
+     * @param x,y,z     Size of workgroups matrix.
+     */
+    virtual void Dispatch(uint32 x = 1, uint32 y = 1, uint32 z = 1) = 0;
 
     /**@}*/
 
 
+
     /**
-     * CommandBufferDebug Debugging methods
+     * CommandBufferDebug   Debugging methods
      * @{
      */
 

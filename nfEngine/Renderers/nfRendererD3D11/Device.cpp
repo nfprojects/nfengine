@@ -15,6 +15,7 @@
 #include "Backbuffer.hpp"
 #include "RenderTarget.hpp"
 #include "PipelineState.hpp"
+#include "ComputePipelineState.hpp"
 #include "Sampler.hpp"
 #include "Translations.hpp"
 
@@ -219,6 +220,11 @@ IRenderTarget* Device::CreateRenderTarget(const RenderTargetDesc& desc)
 IPipelineState* Device::CreatePipelineState(const PipelineStateDesc& desc)
 {
     return CreateGenericResource<PipelineState, PipelineStateDesc>(desc);
+}
+
+IComputePipelineState* Device::CreateComputePipelineState(const ComputePipelineStateDesc& desc)
+{
+    return CreateGenericResource<ComputePipelineState, ComputePipelineStateDesc>(desc);
 }
 
 ISampler* Device::CreateSampler(const SamplerDesc& desc)
