@@ -95,6 +95,13 @@ public:
         pointer = newPtr;
     }
 
+    T* release()
+    {
+        T* ptr = pointer;
+        pointer = 0;
+        return ptr;
+    }
+
     operator bool() const
     {
         return pointer != nullptr;
