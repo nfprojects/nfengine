@@ -35,7 +35,9 @@ class Shader : public IShader
         ID3D11HullShader* mHS;
         ID3D11DomainShader* mDS;
         ID3D11PixelShader* mPS;
-        void* mGeneric;
+        ID3D11ComputeShader* mCS;
+
+        ID3D11DeviceChild* mGeneric;
     };
 
     bool GetIODesc();

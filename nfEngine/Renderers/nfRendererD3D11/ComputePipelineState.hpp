@@ -21,6 +21,16 @@ class ComputePipelineState : public IComputePipelineState
 public:
     ComputePipelineState();
     bool Init(const ComputePipelineStateDesc& desc);
+
+    NFE_INLINE ID3D11ComputeShader* GetShader() const
+    {
+        return mComputeShader;
+    }
+
+    NFE_INLINE ResourceBindingLayout* GetResBindingLayout() const
+    {
+        return mResBindingLayout;
+    }
 };
 
 } // namespace Renderer

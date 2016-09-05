@@ -22,6 +22,9 @@ namespace Renderer {
 // allow binding a texture as a depth buffer
 #define NFE_RENDERER_TEXTURE_BIND_DEPTH (1 << 2)
 
+// allow binding a texture as a writable shader resource
+#define NFE_RENDERER_TEXTURE_BIND_SHADER_WRITABLE (1 << 3)
+
 /**
  * Initial texture data descriptor.
  */

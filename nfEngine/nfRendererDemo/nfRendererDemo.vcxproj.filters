@@ -57,6 +57,9 @@
     <ClCompile Include="Scenes\Tessellation.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Scenes\Compute.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp">
@@ -81,6 +84,9 @@
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Scenes\Tessellation.hpp">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\Compute.hpp">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
@@ -116,6 +122,9 @@
       <Filter>Shaders\HLSL5</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\HLSL5\InstancingTestPS.hlsl">
+      <Filter>Shaders\HLSL5</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\HLSL5\TestCS.hlsl">
       <Filter>Shaders\HLSL5</Filter>
     </FxCompile>
   </ItemGroup>

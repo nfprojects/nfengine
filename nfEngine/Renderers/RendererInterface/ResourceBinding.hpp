@@ -159,7 +159,13 @@ public:
      */
     virtual bool WriteCBufferView(size_t slot, IBuffer* buffer) = 0;
 
-    // TODO: unorderer access view, buffers and others
+    /**
+     * Create a writable texture view in the binding instance.
+     * @param slot     Target slot within the binding set.
+     * @param texture  Shader-writable texture resource.
+     * @return True on success.
+     */
+    virtual bool WriteWritableTextureView(size_t slot, ITexture* texture) = 0;
 };
 
 } // namespace Renderer
