@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_4b156d47",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 327,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-05T22:33:18Z",
+      "side": 1,
+      "message": "This fuction is run every time, APC founds events related to current FileAsyncs eventId. It reads events in a proper way, filters them and calls FinishedJobHandler.\n\nIt\u0027s different from the last version - now polling events is moved to APC and this method is used only to read previously found events.",
+      "parentUuid": "baa041b7_1b022c0a",
+      "revId": "6cefb19c63d58fdbf977490307f08a1a686a34b2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_4001e305",
         "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
         "patchSetId": 3
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_184f9d6b",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-05T22:33:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_4001e305",
+      "revId": "6cefb19c63d58fdbf977490307f08a1a686a34b2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_3bfdf008",
         "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
         "patchSetId": 3
@@ -47,6 +83,24 @@
       "writtenOn": "2016-08-21T11:49:34Z",
       "side": 1,
       "message": "Fix message",
+      "revId": "6cefb19c63d58fdbf977490307f08a1a686a34b2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_f85519fa",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-05T22:33:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_3bfdf008",
       "revId": "6cefb19c63d58fdbf977490307f08a1a686a34b2",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
