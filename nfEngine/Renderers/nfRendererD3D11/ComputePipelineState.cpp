@@ -23,8 +23,25 @@ ComputePipelineState::ComputePipelineState()
 
 bool ComputePipelineState::Init(const ComputePipelineStateDesc& desc)
 {
-    UNUSED(desc);
-    return false;
+    mResBindingLayout = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout);
+    if (!mResBindingLayout)
+    {
+        LOG_ERROR("Invalid shader resource binding layout");
+        return false;
+    }
+
+    Shader* computeShader = dynamic_cast<Shader*>(desc.computeShader);
+
+    if (computeShader)
+        mComputeShader = static_cast<ID3D11ComputeShader*>(computeShader->GetShaderObject());
+
+    if (!mComputeShader)
+    {
+        LOG_ERROR("Compute shader must be provided when creating compute pipeline state object");
+        return false;
+    }
+
+    return true;
 }
 
 } // namespace Renderer

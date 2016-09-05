@@ -42,12 +42,14 @@ class ResourceBindingInstance : public IResourceBindingInstance
     friend class CommandBuffer;
 
     ResourceBindingSet* mBindingSet;
-    std::vector<IUnknown*> mViews;
+    std::vector<D3DPtr<ID3D11View>> mViews;
+    std::vector<ID3D11Buffer*> mCBuffers;
 
 public:
     bool Init(IResourceBindingSet* bindingSet) override;
     bool WriteTextureView(size_t slot, ITexture* texture) override;
     bool WriteCBufferView(size_t slot, IBuffer* buffer) override;
+    bool WriteWritableTextureView(size_t slot, ITexture* texture) override;
 };
 
 } // namespace Renderer
