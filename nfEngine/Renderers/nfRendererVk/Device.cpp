@@ -321,6 +321,11 @@ IPipelineState* Device::CreatePipelineState(const PipelineStateDesc& desc)
     return GenericCreateResource<PipelineState, PipelineStateDesc>(desc);
 }
 
+IComputePipelineState* Device::CreateComputePipelineState(const ComputePipelineStateDesc& desc)
+{
+    return GenericCreateResource<ComputePipelineState, ComputePipelineStateDesc>(desc);
+}
+
 ISampler* Device::CreateSampler(const SamplerDesc& desc)
 {
     return GenericCreateResource<Sampler, SamplerDesc>(desc);

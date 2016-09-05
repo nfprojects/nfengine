@@ -22,6 +22,7 @@
     <ClCompile Include="Backbuffer.cpp" />
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="CommandBuffer.cpp" />
+    <ClCompile Include="ComputePipelineState.cpp" />
     <ClCompile Include="Debugger.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Extensions.cpp" />
@@ -63,6 +64,7 @@
     <ClInclude Include="Backbuffer.hpp" />
     <ClInclude Include="Buffer.hpp" />
     <ClInclude Include="CommandBuffer.hpp" />
+    <ClInclude Include="ComputePipelineState.hpp" />
     <ClInclude Include="Debugger.hpp" />
     <ClInclude Include="Defines.hpp" />
     <ClInclude Include="Device.hpp" />

@@ -64,6 +64,7 @@ public:
     virtual IBackbuffer* CreateBackbuffer(const BackbufferDesc& desc) = 0;
     virtual IRenderTarget* CreateRenderTarget(const RenderTargetDesc& desc) = 0;
     virtual IPipelineState* CreatePipelineState(const PipelineStateDesc& desc) = 0;
+    virtual IComputePipelineState* CreateComputePipelineState(const ComputePipelineStateDesc& desc) = 0;
     virtual ISampler* CreateSampler(const SamplerDesc& desc) = 0;
     virtual IShader* CreateShader(const ShaderDesc& desc) = 0;
     virtual IResourceBindingSet* CreateResourceBindingSet(const ResourceBindingSetDesc& desc) = 0;
