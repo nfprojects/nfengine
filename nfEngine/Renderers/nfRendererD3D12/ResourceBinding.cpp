@@ -302,5 +302,12 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, IBuffer* buffer)
     return true;
 }
 
+bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, ITexture* texture)
+{
+    UNUSED(slot);
+    UNUSED(texture);
+    return false;
+}
+
 } // namespace Renderer
 } // namespace NFE
