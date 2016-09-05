@@ -29,6 +29,7 @@ protected:
     int mSamples;
     D3DPtr<ID3D11ShaderResourceView> mSRV;
     D3DPtr<ID3D11DepthStencilView> mDSV;
+    D3DPtr<ID3D11UnorderedAccessView> mUAV;
 
     union
     {

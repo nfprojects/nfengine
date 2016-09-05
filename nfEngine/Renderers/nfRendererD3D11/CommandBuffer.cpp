@@ -16,7 +16,9 @@
 #include "Texture.hpp"
 #include "Shader.hpp"
 #include "RenderTarget.hpp"
+#include "ResourceBinding.hpp"
 #include "PipelineState.hpp"
+#include "ComputePipelineState.hpp"
 #include "Sampler.hpp"
 #include "Translations.hpp"
 
@@ -40,6 +42,9 @@ CommandBuffer::CommandBuffer(ID3D11DeviceContext* deviceContext)
     , mBoundDomainShader(nullptr)
     , mBoundGeometryShader(nullptr)
     , mBoundPixelShader(nullptr)
+    , mBoundComputeShader(nullptr)
+    , mComputeBindingLayout(nullptr)
+    , mComputePipelineState(nullptr)
 {
     HRESULT hr;
     hr = deviceContext->QueryInterface(IID_PPV_ARGS(&mUserDefinedAnnotation));
@@ -63,12 +68,15 @@ void CommandBuffer::Reset()
     mBindingLayout = nullptr;
     mPipelineState = nullptr;
     mCurrentPipelineState = nullptr;
+    mComputeBindingLayout = nullptr;
+    mComputePipelineState = nullptr;
 
     mBoundVertexShader = nullptr;
     mBoundHullShader = nullptr;
     mBoundDomainShader = nullptr;
     mBoundGeometryShader = nullptr;
     mBoundPixelShader = nullptr;
+    mBoundComputeShader = nullptr;
 
     mContext->ClearState();
 }
@@ -571,31 +579,105 @@ void CommandBuffer::DrawIndexed(int indexNum, int instancesNum,
 
 void CommandBuffer::BindComputeResources(size_t slot, IResourceBindingInstance* bindingSetInstance)
 {
-    UNUSED(slot);
-    UNUSED(bindingSetInstance);
+    if (!mComputeBindingLayout)
+    {
+        LOG_ERROR("Binding layout is not set");
+        return;
+    }
+
+    const ResourceBindingInstance* instance = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance);
+    if (slot >= mComputeBindingLayout->mBindingSets.size())
+    {
+        LOG_ERROR("Invalid binding set slot");
+        return;
+    }
+
+    const ResourceBindingSet* bindingSet = mComputeBindingLayout->mBindingSets[slot];
+    for (size_t i = 0; i < bindingSet->mBindings.size(); ++i)
+    {
+        const ResourceBindingDesc& bindingDesc = bindingSet->mBindings[i];
+        UINT slotOffset = bindingDesc.slot;
+
+        switch (bindingDesc.resourceType)
+        {
+            case ShaderResourceType::CBuffer:
+            {
+                ID3D11Buffer* buffer = instance ? static_cast<ID3D11Buffer*>(instance->mViews[i]) : nullptr;
+                mContext->CSSetConstantBuffers(slotOffset, 1, &buffer);
+                break;
+            }
+
+            case ShaderResourceType::Texture:
+            {
+                ID3D11ShaderResourceView* srv =
+                    instance ? static_cast<ID3D11ShaderResourceView*>(instance->mViews[i]) : nullptr;
+                mContext->CSSetShaderResources(slotOffset, 1, &srv);
+                break;
+            }
+
+            case ShaderResourceType::WritableTexture:
+            {
+                ID3D11UnorderedAccessView* uav =
+                    instance ? static_cast<ID3D11UnorderedAccessView*>(instance->mViews[i]) : nullptr;
+                mContext->CSSetUnorderedAccessViews(slotOffset, 1, &uav, nullptr);
+                break;
+            }
+        }
+    }
 }
 
 void CommandBuffer::BindComputeVolatileCBuffer(size_t slot, IBuffer* buffer)
 {
-    UNUSED(slot);
-    UNUSED(buffer);
+    if (!mComputeBindingLayout)
+    {
+        LOG_ERROR("Binding layout is not set");
+        return;
+    }
+
+    if (slot >= mComputeBindingLayout->mVolatileCBuffers.size())
+    {
+        LOG_ERROR("Invalid dynamic buffer slot");
+        return;
+    }
+
+    Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer);
+    if (!bufferPtr)
+    {
+        LOG_ERROR("Invalid buffer");
+        return;
+    }
+
+    UINT slotOffset = mComputeBindingLayout->mVolatileCBuffers[slot].slot;
+    ID3D11Buffer* d3dBuffer = bufferPtr->mBuffer.get();
+    mContext->CSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
 }
 
 void CommandBuffer::SetComputeResourceBindingLayout(IResourceBindingLayout* layout)
 {
-    UNUSED(layout);
+    mComputeBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout);
 }
 
 void CommandBuffer::SetComputePipelineState(IComputePipelineState* state)
 {
-    UNUSED(state);
+    mComputePipelineState = dynamic_cast<ComputePipelineState*>(state);
+    NFE_ASSERT(mComputePipelineState != nullptr, "Invalid compute pipeline state");
+
+    if (mComputePipelineState->GetShader() != mBoundComputeShader)
+    {
+        mBoundComputeShader = mComputePipelineState->GetShader();
+        mContext->CSSetShader(mBoundComputeShader, nullptr, 0);
+    }
 }
 
 void CommandBuffer::Dispatch(uint32 x, uint32 y, uint32 z)
 {
-    UNUSED(x);
-    UNUSED(y);
-    UNUSED(z);
+    if (mComputeBindingLayout != mComputePipelineState->GetResBindingLayout())
+    {
+        LOG_ERROR("Binding layout mismatch");
+        return;
+    }
+
+    mContext->Dispatch(x, y, z);
 }
 
 std::unique_ptr<ICommandList> CommandBuffer::Finish()

@@ -47,6 +47,7 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
         desc.shaderVisibility != ShaderType::Domain &&
         desc.shaderVisibility != ShaderType::Geometry &&
         desc.shaderVisibility != ShaderType::Pixel &&
+        desc.shaderVisibility != ShaderType::Compute &&
         desc.shaderVisibility != ShaderType::All)
     {
         LOG_ERROR("Invalid shader visibility");
@@ -61,7 +62,10 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
         const ResourceBindingDesc& bindingDesc = desc.resourceBindings[i];
 
         if (bindingDesc.resourceType != ShaderResourceType::CBuffer &&
-            bindingDesc.resourceType != ShaderResourceType::Texture)
+            bindingDesc.resourceType != ShaderResourceType::Texture &&
+            bindingDesc.resourceType != ShaderResourceType::StructuredBuffer &&
+            bindingDesc.resourceType != ShaderResourceType::WritableTexture &&
+            bindingDesc.resourceType != ShaderResourceType::WritableStructuredBuffer)
         {
             LOG_ERROR("Invalid shader resource type at binding %i", i);
             return false;
@@ -171,6 +175,26 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, IBuffer* buffer)
     }
 
     mViews[slot] = buf->mBuffer.get();
+    return true;
+}
+
+bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, ITexture* texture)
+{
+    if (slot >= mBindingSet->mBindings.size())
+    {
+        LOG_ERROR("Invalid binding set slot %zu (there are %zu slots)",
+                  slot, mBindingSet->mBindings.size());
+        return false;
+    }
+
+    Texture* tex = dynamic_cast<Texture*>(texture);
+    if (!tex || !tex->mUAV)
+    {
+        LOG_ERROR("Invalid texture");
+        return false;
+    }
+
+    mViews[slot] = tex->mUAV.get();
     return true;
 }
 

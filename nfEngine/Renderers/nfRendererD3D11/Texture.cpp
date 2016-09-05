@@ -62,7 +62,8 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
 
     if (desc.binding & ~(NFE_RENDERER_TEXTURE_BIND_SHADER |
                          NFE_RENDERER_TEXTURE_BIND_RENDERTARGET |
-                         NFE_RENDERER_TEXTURE_BIND_DEPTH))
+                         NFE_RENDERER_TEXTURE_BIND_DEPTH |
+                         NFE_RENDERER_TEXTURE_BIND_SHADER_WRITABLE))
     {
         LOG_ERROR("Invalid texture binding flags");
         return false;
@@ -133,7 +134,8 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
         td.BindFlags |= D3D11_BIND_RENDER_TARGET;
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
         td.BindFlags |= D3D11_BIND_DEPTH_STENCIL;
-    // TODO: UAV support
+    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER_WRITABLE)
+        td.BindFlags |= D3D11_BIND_UNORDERED_ACCESS;
 
     if (desc.dataDesc)
     {
@@ -243,6 +245,32 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
             // set debug name
             D3D_CALL_CHECK(mDSV->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(textureName.length()),
                                                 textureName.c_str()));
+        }
+    }
+
+    // TODO: move to resource binding
+    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER_WRITABLE)
+    {
+        D3D11_UNORDERED_ACCESS_VIEW_DESC uavd;
+        ZeroMemory(&uavd, sizeof(uavd));
+        uavd.Format = srvFormat;
+        uavd.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+
+        // TODO: UAV for cube textures
+        // TODO: support for texture arrays
+
+        hr = D3D_CALL_CHECK(gDevice->Get()->CreateUnorderedAccessView(mTexture2D, &uavd, &mUAV));
+        if (FAILED(hr))
+        {
+            D3D_SAFE_RELEASE(mTexture2D);
+            return false;
+        }
+
+        if (gDevice->IsDebugLayerEnabled() && desc.debugName)
+        {
+            // set debug name
+            D3D_CALL_CHECK(mUAV->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(textureName.length()),
+                textureName.c_str()));
         }
     }
 

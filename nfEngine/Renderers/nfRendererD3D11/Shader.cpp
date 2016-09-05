@@ -23,24 +23,7 @@ Shader::Shader()
 
 Shader::~Shader()
 {
-    switch (mType)
-    {
-        case ShaderType::Vertex:
-            D3D_SAFE_RELEASE(mVS);
-            break;
-        case ShaderType::Geometry:
-            D3D_SAFE_RELEASE(mGS);
-            break;
-        case ShaderType::Hull:
-            D3D_SAFE_RELEASE(mHS);
-            break;
-        case ShaderType::Domain:
-            D3D_SAFE_RELEASE(mDS);
-            break;
-        case ShaderType::Pixel:
-            D3D_SAFE_RELEASE(mPS);
-            break;
-    }
+    D3D_SAFE_RELEASE(mGeneric);
 }
 
 bool Shader::Init(const ShaderDesc& desc)
@@ -102,6 +85,9 @@ bool Shader::Init(const ShaderDesc& desc)
         case ShaderType::Pixel:
             profileName = "ps_5_0";
             break;
+        case ShaderType::Compute:
+            profileName = "cs_5_0";
+            break;
         default:
             LOG_ERROR("Invalid shader type");
             return false;
@@ -148,29 +134,22 @@ bool Shader::Init(const ShaderDesc& desc)
     switch (mType)
     {
         case ShaderType::Vertex:
-            hr = D3D_CALL_CHECK(gDevice->Get()->CreateVertexShader(mBytecode->GetBufferPointer(),
-                                                                   mBytecode->GetBufferSize(),
-                                                                   NULL, &mVS));
+            hr = D3D_CALL_CHECK(gDevice->Get()->CreateVertexShader(mBytecode->GetBufferPointer(), mBytecode->GetBufferSize(), NULL, &mVS));
             break;
         case ShaderType::Geometry:
-            hr = D3D_CALL_CHECK(gDevice->Get()->CreateGeometryShader(mBytecode->GetBufferPointer(),
-                                                                     mBytecode->GetBufferSize(),
-                                                                     NULL, &mGS));
+            hr = D3D_CALL_CHECK(gDevice->Get()->CreateGeometryShader(mBytecode->GetBufferPointer(), mBytecode->GetBufferSize(), NULL, &mGS));
             break;
         case ShaderType::Hull:
-            hr = D3D_CALL_CHECK(gDevice->Get()->CreateHullShader(mBytecode->GetBufferPointer(),
-                                                                 mBytecode->GetBufferSize(),
-                                                                 NULL, &mHS));
+            hr = D3D_CALL_CHECK(gDevice->Get()->CreateHullShader(mBytecode->GetBufferPointer(), mBytecode->GetBufferSize(), NULL, &mHS));
             break;
         case ShaderType::Domain:
-            hr = D3D_CALL_CHECK(gDevice->Get()->CreateDomainShader(mBytecode->GetBufferPointer(),
-                                                                   mBytecode->GetBufferSize(),
-                                                                   NULL, &mDS));
+            hr = D3D_CALL_CHECK(gDevice->Get()->CreateDomainShader(mBytecode->GetBufferPointer(), mBytecode->GetBufferSize(), NULL, &mDS));
             break;
         case ShaderType::Pixel:
-            hr = D3D_CALL_CHECK(gDevice->Get()->CreatePixelShader(mBytecode->GetBufferPointer(),
-                                                                  mBytecode->GetBufferSize(),
-                                                                  NULL, &mPS));
+            hr = D3D_CALL_CHECK(gDevice->Get()->CreatePixelShader(mBytecode->GetBufferPointer(), mBytecode->GetBufferSize(), NULL, &mPS));
+            break;
+        case ShaderType::Compute:
+            hr = D3D_CALL_CHECK(gDevice->Get()->CreateComputeShader(mBytecode->GetBufferPointer(), mBytecode->GetBufferSize(), NULL, &mCS));
             break;
     }
 
@@ -203,6 +182,10 @@ bool Shader::Init(const ShaderDesc& desc)
             break;
         case ShaderType::Pixel:
             D3D_CALL_CHECK(mPS->SetPrivateData(WKPDID_D3DDebugObjectName,
+                                               static_cast<UINT>(shaderName.length()), shaderName.c_str()));
+            break;
+        case ShaderType::Compute:
+            D3D_CALL_CHECK(mCS->SetPrivateData(WKPDID_D3DDebugObjectName,
                                                static_cast<UINT>(shaderName.length()), shaderName.c_str()));
             break;
         }
@@ -306,6 +289,15 @@ bool Shader::GetIODesc()
             break;
         case D3D_SIT_SAMPLER:
             bindingDesc.type = ShaderResourceType::Sampler;
+            break;
+        case D3D_SIT_STRUCTURED:
+            bindingDesc.type = ShaderResourceType::StructuredBuffer;
+            break;
+        case D3D_SIT_UAV_RWSTRUCTURED:
+            bindingDesc.type = ShaderResourceType::WritableStructuredBuffer;
+            break;
+        case D3D_SIT_UAV_RWTYPED:
+            bindingDesc.type = ShaderResourceType::WritableTexture;
             break;
         default:
             LOG_WARNING("Unsupported shader resource type (%d) at slot %d (name: '%s')",
