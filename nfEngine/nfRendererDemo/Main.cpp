@@ -23,6 +23,7 @@
 #include "nfCommon/Logger.hpp"
 
 #include <algorithm>
+#include <string.h>
 
 using namespace NFE::Renderer;
 
