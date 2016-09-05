@@ -20,23 +20,28 @@ class Texture : virtual public ITexture
     friend class ResourceBindingInstance;
 
 protected:
-    TextureType mType;
-    ElementFormat mFormat;
-    int mWidth;
-    int mHeight;
-    int mLayers;
-    int mMipmaps;
-    int mSamples;
-    D3DPtr<ID3D11ShaderResourceView> mSRV;
-    D3DPtr<ID3D11DepthStencilView> mDSV;
 
     union
     {
         ID3D11Texture1D* mTexture1D;
         ID3D11Texture2D* mTexture2D;
         ID3D11Texture3D* mTexture3D;
-        void* mTextureGeneric;
+
+        ID3D11Resource* mTextureGeneric;
     };
+
+    D3DPtr<ID3D11DepthStencilView> mDSV;
+
+    TextureType mType;
+    ElementFormat mFormat;
+    uint16 mWidth;
+    uint16 mLayers;
+    uint16 mHeight;
+    uint16 mMipmaps;
+    uint16 mSamples;
+
+    DXGI_FORMAT mSrvFormat;
+
 
     bool InitTexture1D(const TextureDesc& desc);
     bool InitTexture2D(const TextureDesc& desc);
