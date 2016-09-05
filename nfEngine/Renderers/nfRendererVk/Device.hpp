@@ -103,6 +103,7 @@ public:
     IBackbuffer* CreateBackbuffer(const BackbufferDesc& desc) override;
     IRenderTarget* CreateRenderTarget(const RenderTargetDesc& desc) override;
     IPipelineState* CreatePipelineState(const PipelineStateDesc& desc) override;
+    IComputePipelineState* CreateComputePipelineState(const ComputePipelineStateDesc& desc) override;
     ISampler* CreateSampler(const SamplerDesc& desc) override;
     IShader* CreateShader(const ShaderDesc& desc) override;
     IResourceBindingSet* CreateResourceBindingSet(const ResourceBindingSetDesc& desc) override;
