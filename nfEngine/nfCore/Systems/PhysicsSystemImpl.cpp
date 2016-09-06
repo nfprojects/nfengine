@@ -5,11 +5,8 @@
  */
 
 #include "PCH.hpp"
-#include "PhysicsSystem.hpp"
+#include "PhysicsSystemImpl.hpp"
 #include "Engine.hpp"
-#include "Scene/EntityManager.hpp"
-#include "Components/TransformComponent.hpp"
-#include "Components/BodyComponent.hpp"
 #include "Utils/ConfigVariable.hpp"
 
 #include "nfCommon/Timer.hpp"
@@ -47,14 +44,13 @@ btVector3 Vector2bt(const Vector& v)
 } // namespace
 
 PhysicsSystem::PhysicsSystem(SceneManager* scene)
-    : mScene(scene)
+    : IPhysicsSystem(scene)
 {
     mBroadphase.reset(new btDbvtBroadphase());
     mCollsionConfig.reset(new btDefaultCollisionConfiguration());
     mDispatcher.reset(new btCollisionDispatcher(mCollsionConfig.get()));
     mSolver.reset(new btSequentialImpulseConstraintSolver);
-    mDynamicsWorld.reset(new btDiscreteDynamicsWorld(mDispatcher.get(), mBroadphase.get(),
-                                                     mSolver.get(), mCollsionConfig.get()));
+    mDynamicsWorld.reset(new btDiscreteDynamicsWorld(mDispatcher.get(), mBroadphase.get(), mSolver.get(), mCollsionConfig.get()));
 
     mDynamicsWorld->getDispatchInfo().m_useContinuous = gEnableCCD.Get();
     mDynamicsWorld->getSolverInfo().m_solverMode |= SOLVER_SIMD | SOLVER_USE_WARMSTARTING;
@@ -66,41 +62,35 @@ void PhysicsSystem::UpdatePhysics(float dt)
     mDynamicsWorld->stepSimulation(dt, gMaxSubSteps.Get(), gFixedTimeStep.Get());
 }
 
-void PhysicsSystem::ProcessContacts()
+PhysicsProxyID PhysicsSystem::CreateBodyProxy(const PhysicsBodyProxyInfo& info)
 {
-    // TODO: finish when event system is implemented
-    /*
-    EventBodyCollide event;
+    PhysicsBodyProxy proxy;
+    proxy.info = info;
+    // TODO create Bullet's objects
 
-    // process contacts
-    int numManifolds = mDispatcher->getNumManifolds();
-    for (int i = 0; i < numManifolds; i++)
-    {
-        btPersistentManifold* contactManifold = mDispatcher->getManifoldByIndexInternal(i);
-        const btCollisionObject* obA = contactManifold->getBody0();
-        const btCollisionObject* obB = contactManifold->getBody1();
+    return mBodyProxies.Add(std::move(proxy));
+}
 
-        // extract body objects
-        event.bodyA = (BodyComponent*)obA->getUserPointer();
-        event.bodyB = (BodyComponent*)obB->getUserPointer();
+bool PhysicsSystem::UpdateBodyProxy(const PhysicsProxyID proxyID, const PhysicsBodyProxyInfo& info)
+{
+    NFE_ASSERT(mBodyProxies.Has(proxyID), "Invalid physics proxy ID");
 
-        int numContacts = contactManifold->getNumContacts();
-        for (int j = 0; j < numContacts; j++)
-        {
-            btManifoldPoint& pt = contactManifold->getContactPoint(j);
-            if (pt.getDistance() < 0.0f)
-            {
-                const btVector3& ptA = pt.getPositionWorldOnA();
-                const btVector3& ptB = pt.getPositionWorldOnB();
-                const btVector3& normalOnB = pt.m_normalWorldOnB;
-            }
-        }
-    }
-    */
+    mBodyProxies[proxyID].info = info;
+    // TODO apply changes
+
+    return true;
+}
+
+void PhysicsSystem::DeleteBodyProxy(const PhysicsProxyID proxyID)
+{
+    NFE_ASSERT(mBodyProxies.Has(proxyID), "Invalid physics proxy ID");
+
+    mBodyProxies.Remove(proxyID);
 }
 
 void PhysicsSystem::Update(float dt)
 {
+    /*
     // TODO: multithreading
     UpdatePhysics(dt);
 
@@ -200,9 +190,9 @@ void PhysicsSystem::Update(float dt)
         }
     };
 
-    mScene->GetEntityManager()->ForEach<TransformComponent, BodyComponent>(iterFunc);
-
-    ProcessContacts();
+    // TODO: use listener instead
+    mScene->GetEntityManager()->ForEach_DEPRECATED<TransformComponent, BodyComponent>(iterFunc);
+    */
 }
 
 } // namespace Scene

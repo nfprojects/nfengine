@@ -40,6 +40,12 @@
     <Filter Include="Renderer\Geometry">
       <UniqueIdentifier>{84cf2ca8-6d90-470b-8366-e93886ee9bc1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{0cff49de-7eaf-4b44-a05c-bb6f1d68fb38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\GameObject">
+      <UniqueIdentifier>{a1b0dba6-5368-4e54-bfc8-4eaefcbaa0c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -69,31 +75,10 @@
     <ClCompile Include="Renderer\HighLevelRenderer.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="Systems\PhysicsSystem.cpp">
-      <Filter>Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\BodyComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\CameraComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
     <ClCompile Include="Components\Component.cpp">
       <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="Components\LightComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\MeshComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\TransformComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
     <ClCompile Include="Systems\RendererSystem.cpp">
-      <Filter>Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="Systems\TransformSystem.cpp">
       <Filter>Systems</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\Font.cpp">
@@ -119,12 +104,6 @@
     </ClCompile>
     <ClCompile Include="Resources\Texture.cpp">
       <Filter>Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\EntityManager.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\SceneManager.cpp">
-      <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="Resources\Multishader.cpp">
       <Filter>Resources</Filter>
@@ -158,6 +137,69 @@
     </ClCompile>
     <ClCompile Include="Renderer\ImGuiWrapper.cpp">
       <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Entity.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Systems\EntitySystem.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Systems\System.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\InputEvent.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\GameObject.cpp">
+      <Filter>Resources\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\GameObjectNode.cpp">
+      <Filter>Resources\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Systems\GameObjectSystem.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\GameObjectController.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\GameObjectInstance.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\ComponentMesh.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\ComponentLight.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\ComponentGameObject.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\ComponentCamera.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\ComponentBody.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\GameObjectComponent.cpp">
+      <Filter>Resources\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\GameObjectComponentMesh.cpp">
+      <Filter>Resources\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\GameObjectComponentCamera.cpp">
+      <Filter>Resources\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\GameObjectComponentLight.cpp">
+      <Filter>Resources\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\GameObjectComponentBody.cpp">
+      <Filter>Resources\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\SceneManager.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Systems\PhysicsSystemImpl.cpp">
+      <Filter>Systems</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -194,31 +236,10 @@
     <ClInclude Include="Renderer\RendererModule.hpp">
       <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="Systems\PhysicsSystem.hpp">
-      <Filter>Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\BodyComponent.hpp">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\CameraComponent.hpp">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="Components\Component.hpp">
       <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="Components\LightComponent.hpp">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\MeshComponent.hpp">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\TransformComponent.hpp">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="Systems\RendererSystem.hpp">
-      <Filter>Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="Systems\TransformSystem.hpp">
       <Filter>Systems</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\Font.hpp">
@@ -244,12 +265,6 @@
     </ClInclude>
     <ClInclude Include="Resources\Texture.hpp">
       <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\EntityManager.hpp">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\SceneManager.hpp">
-      <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="Resources\Multishader.hpp">
       <Filter>Resources</Filter>
@@ -304,6 +319,75 @@
     </ClInclude>
     <ClInclude Include="Renderer\ImGuiWrapper.hpp">
       <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Entity.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\EntitySystem.hpp">
+      <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\System.hpp">
+      <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\InputEvent.hpp">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\GameObject.hpp">
+      <Filter>Resources\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\GameObjectNode.hpp">
+      <Filter>Resources\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\GameObjectSystem.hpp">
+      <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\GameObjectController.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\GameObjectInstance.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\ComponentMesh.hpp">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\ComponentLight.hpp">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\ComponentGameObject.hpp">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\ComponentCamera.hpp">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\ComponentBody.hpp">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\GameObjectComponent.hpp">
+      <Filter>Resources\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\GameObjectComponentMesh.hpp">
+      <Filter>Resources\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\GameObjectComponentBody.hpp">
+      <Filter>Resources\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\GameObjectComponentCamera.hpp">
+      <Filter>Resources\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\GameObjectComponentLight.hpp">
+      <Filter>Resources\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\RenderProxies.hpp">
+      <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneManager.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\PhysicsSystemImpl.hpp">
+      <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\PhysicsSystem.hpp">
+      <Filter>Systems</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

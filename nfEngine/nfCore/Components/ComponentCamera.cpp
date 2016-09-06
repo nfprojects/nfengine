@@ -5,44 +5,43 @@
  */
 
 #include "PCH.hpp"
-#include "CameraComponent.hpp"
+#include "ComponentCamera.hpp"
 
 namespace NFE {
 namespace Scene {
 
 using namespace Math;
+using namespace Resource;
 
-NFE_REGISTER_COMPONENT(CameraComponent);
 
 CameraComponent::CameraComponent()
     : mProjMode(ProjectionMode::Perspective)
 {
 }
 
-void CameraComponent::SetPerspective(const Perspective* desc)
+void CameraComponent::SetPerspective(const PerspectiveProjectionDesc* desc)
 {
     mProjMode = ProjectionMode::Perspective;
     mPerspective = *desc;
 }
 
-void CameraComponent::GetPerspective(Perspective* desc) const
+void CameraComponent::GetPerspective(PerspectiveProjectionDesc* desc) const
 {
     *desc = mPerspective;
 }
 
-void CameraComponent::SetOrtho(const Ortho* desc)
+void CameraComponent::SetOrtho(const OrthoProjectionDesc* desc)
 {
     mProjMode = ProjectionMode::Ortho;
     mOrtho = *desc;
 }
 
-void CameraComponent::GetOrtho(Ortho* desc) const
+void CameraComponent::GetOrtho(OrthoProjectionDesc* desc) const
 {
     *desc = mOrtho;
 }
 
-void CameraComponent::Update(const Matrix& matrix, const Vector& velocity,
-                             const Vector& angularVelocity, float dt)
+void CameraComponent::Update(const Matrix& matrix, const Vector& velocity, const Vector& angularVelocity, float dt)
 {
     // calculate view matrix
     mViewMatrix = MatrixLookTo(matrix.r[3], matrix.r[2], matrix.r[1]);
@@ -121,10 +120,7 @@ void CameraComponent::Update(const Matrix& matrix, const Vector& velocity,
     mFrustum.CalculatePlanes();
 }
 
-// Used for Cascaded Shadow Mapping to calculate shadow cascades.
-// This function doesn't calculate frustum's planes
-void CameraComponent::SplitFrustum(const Matrix& matrix, float zn, float zf,
-                                   Frustum* frustum) const
+void CameraComponent::SplitFrustum(const Matrix& matrix, float zn, float zf, Frustum* frustum) const
 {
     Vector xAxis, yAxis, zAxis;
     Vector pos = matrix.GetRow(3);

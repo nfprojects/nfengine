@@ -226,13 +226,13 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Components\BodyComponent.cpp">
+    <ClCompile Include="Components\ComponentBody.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Components\CameraComponent.cpp">
+    <ClCompile Include="Components\ComponentCamera.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
@@ -244,27 +244,30 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Components\LightComponent.cpp">
+    <ClCompile Include="Components\ComponentGameObject.cpp" />
+    <ClCompile Include="Components\ComponentLight.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Components\MeshComponent.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Components\TransformComponent.cpp">
+    <ClCompile Include="Components\ComponentMesh.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="GameObject\GameObject.cpp" />
+    <ClCompile Include="GameObject\GameObjectComponent.cpp" />
+    <ClCompile Include="GameObject\GameObjectComponentBody.cpp" />
+    <ClCompile Include="GameObject\GameObjectComponentCamera.cpp" />
+    <ClCompile Include="GameObject\GameObjectComponentLight.cpp" />
+    <ClCompile Include="GameObject\GameObjectComponentMesh.cpp" />
+    <ClCompile Include="GameObject\GameObjectNode.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="Core.cpp" />
+    <ClCompile Include="Input\InputEvent.cpp" />
     <ClCompile Include="Renderer\DebugRenderer.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
@@ -387,9 +390,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Scene\EntityManager.cpp" />
+    <ClCompile Include="Scene\Entity.cpp" />
+    <ClCompile Include="Scene\GameObjectController.cpp" />
+    <ClCompile Include="Scene\GameObjectInstance.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
-    <ClCompile Include="Systems\PhysicsSystem.cpp">
+    <ClCompile Include="Systems\EntitySystem.cpp" />
+    <ClCompile Include="Systems\GameObjectSystem.cpp" />
+    <ClCompile Include="Systems\PhysicsSystemImpl.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
@@ -401,12 +408,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Systems\TransformSystem.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
+    <ClCompile Include="Systems\System.cpp" />
     <ClCompile Include="Utils\ConfigManager.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
@@ -422,13 +424,21 @@
     <ClCompile Include="Utils\Profiler.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Components\BodyComponent.hpp" />
-    <ClInclude Include="Components\CameraComponent.hpp" />
+    <ClInclude Include="Components\ComponentBody.hpp" />
+    <ClInclude Include="Components\ComponentCamera.hpp" />
     <ClInclude Include="Components\Component.hpp" />
-    <ClInclude Include="Components\LightComponent.hpp" />
-    <ClInclude Include="Components\MeshComponent.hpp" />
-    <ClInclude Include="Components\TransformComponent.hpp" />
+    <ClInclude Include="Components\ComponentGameObject.hpp" />
+    <ClInclude Include="Components\ComponentLight.hpp" />
+    <ClInclude Include="Components\ComponentMesh.hpp" />
+    <ClInclude Include="GameObject\GameObject.hpp" />
+    <ClInclude Include="GameObject\GameObjectComponent.hpp" />
+    <ClInclude Include="GameObject\GameObjectComponentBody.hpp" />
+    <ClInclude Include="GameObject\GameObjectComponentCamera.hpp" />
+    <ClInclude Include="GameObject\GameObjectComponentLight.hpp" />
+    <ClInclude Include="GameObject\GameObjectComponentMesh.hpp" />
+    <ClInclude Include="GameObject\GameObjectNode.hpp" />
     <ClInclude Include="Globals.hpp" />
+    <ClInclude Include="Input\InputEvent.hpp" />
     <ClInclude Include="Prerequisites.hpp" />
     <ClInclude Include="Engine.hpp" />
     <ClInclude Include="Core.hpp" />
@@ -460,12 +470,18 @@
     <ClInclude Include="Resources\SoundSample.hpp" />
     <ClInclude Include="Resources\Texture.hpp" />
     <ClInclude Include="PCH.hpp" />
-    <ClInclude Include="Scene\EntityManager.hpp" />
+    <ClInclude Include="Scene\Entity.hpp" />
+    <ClInclude Include="Scene\GameObjectController.hpp" />
+    <ClInclude Include="Scene\GameObjectInstance.hpp" />
     <ClInclude Include="Scene\SceneManager.hpp" />
     <ClInclude Include="ShaderCommon.hpp" />
+    <ClInclude Include="Systems\EntitySystem.hpp" />
+    <ClInclude Include="Systems\GameObjectSystem.hpp" />
     <ClInclude Include="Systems\PhysicsSystem.hpp" />
+    <ClInclude Include="Systems\PhysicsSystemImpl.hpp" />
     <ClInclude Include="Systems\RendererSystem.hpp" />
-    <ClInclude Include="Systems\TransformSystem.hpp" />
+    <ClInclude Include="Systems\RenderProxies.hpp" />
+    <ClInclude Include="Systems\System.hpp" />
     <ClInclude Include="Utils\ConfigManager.hpp" />
     <ClInclude Include="Utils\ConfigVariable.hpp" />
     <ClInclude Include="Utils\Profiler.hpp" />

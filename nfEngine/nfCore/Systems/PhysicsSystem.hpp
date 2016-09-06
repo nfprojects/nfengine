@@ -7,42 +7,88 @@
 #pragma once
 
 #include "../Core.hpp"
+#include "System.hpp"
 #include "nfCommon/Aligned.hpp"
-#include "nfCommon/ThreadPool.hpp"
+#include "nfCommon/Math/Vector.hpp"
+#include "nfCommon/Math/Matrix.hpp"
 
-#include "btBulletCollisionCommon.h"
-#include "btBulletDynamicsCommon.h"
+// TODO joins
+// TODO physics materials
+// TODO force fields
+// TODO destruction
+// TODO cloth
+// TODO soft body
+// TODO fluid
 
 
 namespace NFE {
 namespace Scene {
 
+class SceneManager;
+
+using PhysicsProxyID = uint32;
+
+/**
+ * Physics body proxy properties.
+ */
 NFE_ALIGN16
-class PhysicsSystem : public Common::Aligned<16>
+struct PhysicsBodyProxyInfo
 {
-    friend void PhysicsUpdateCallback(void* userData, int instance, int threadID);
+    // body transformation matrix
+    Math::Matrix transform;
 
-    SceneManager* mScene;
+    // collision shape resource, can be null
+    Resource::CollisionShape* collisionShape;
+    
+    // Mass in kg. Zero means infinite mass
+    float mass;
 
-    btEmptyShape mEmptyCollisionShape;
+    // moment of inertia vector
+    Math::Vector inertia;
 
-    /// Bullet Physics objects
-    std::unique_ptr<btBroadphaseInterface> mBroadphase;
-    std::unique_ptr<btDefaultCollisionConfiguration> mCollsionConfig;
-    std::unique_ptr<btCollisionDispatcher> mDispatcher;
-    std::unique_ptr<btSequentialImpulseConstraintSolver> mSolver;
-    std::unique_ptr<btDiscreteDynamicsWorld> mDynamicsWorld;
+    // TODO material properties
+    // TODO drag/friction
+    // TODO CCD
 
-    void UpdatePhysics(float dt);
-    void ProcessContacts();
+    NFE_INLINE PhysicsBodyProxyInfo()
+        : collisionShape(nullptr)
+        , mass(0.0f)
+    { }
+};
 
+/**
+ * Physics system interface.
+ *
+ * NOTE: extracting the interface from the actual implementation hides
+ * underlying physics implementation (Bullet library in this case).
+ * It could be also possible to implement other "physics backends" in the future.
+ */
+NFE_ALIGN16
+class IPhysicsSystem : public ISystem
+{
 public:
-    PhysicsSystem(SceneManager* scene);
+    NFE_INLINE IPhysicsSystem(SceneManager* scene)
+        : ISystem(scene)
+    { }
+
+    virtual ~IPhysicsSystem() { }
 
     /**
-     * Update the system.
+     * Create a new physics body proxy.
      */
-    void Update(float dt);
+    virtual PhysicsProxyID CreateBodyProxy(const PhysicsBodyProxyInfo& info) = 0;
+
+    /**
+     * Update existing physics body proxy.
+     * All the properties will be overridden.
+     * @return False if properties are corrupted.
+     */
+    virtual bool UpdateBodyProxy(const PhysicsProxyID proxyID, const PhysicsBodyProxyInfo& info) = 0;
+
+    /**
+     * Delete existing physics body proxy. Proxy ID must be valid.
+     */
+    virtual void DeleteBodyProxy(const PhysicsProxyID proxyID) = 0;
 };
 
 } // namespace Scene

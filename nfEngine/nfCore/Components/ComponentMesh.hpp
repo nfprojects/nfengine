@@ -9,35 +9,22 @@
 #include "../Core.hpp"
 #include "../Resources/Mesh.hpp"
 #include "Component.hpp"
+#include "../Systems/RenderProxies.hpp"
 #include "nfCommon/Aligned.hpp"
 
 namespace NFE {
 namespace Scene {
 
-// Mesh entity descriptor used for serialization.
-#pragma pack(push, 1)
-struct MeshComponentDesc
-{
-    char meshResourceName[RES_NAME_MAX_LENGTH];
-};
-#pragma pack(pop)
-
 NFE_ALIGN16
 class CORE_API MeshComponent
-    : public ComponentBase<MeshComponent>
+    : public Component
     , public Common::Aligned<16>
 {
-    friend class SceneManager;
-    friend class RendererSystem;
-
-    Resource::Mesh* mMesh;
-    Math::Box mGlobalAABB;
-
-    void CalcAABB(const Math::Matrix& transform);
+    NFE_MAKE_NONCOPYABLE(MeshComponent);
 
 public:
     MeshComponent();
-    ~MeshComponent();
+    virtual ~MeshComponent();
 
     /**
      * Set mesh resource by pointer.
@@ -48,6 +35,19 @@ public:
      * Set mesh resource by name.
      */
     bool SetMeshResource(const char* name);
+
+private:
+    // TODO resource handle instead of manual ref counting
+    Resource::Mesh* mMesh;
+
+    // 
+    RenderProxyID mRenderingProxy;
+
+    virtual void OnDetach() override;
+
+    void DeleteRenderingProxy();
+
+    void OnMeshResourceLoaded();
 };
 
 } // namespace Scene

@@ -18,41 +18,19 @@ namespace NFE {
 namespace Scene {
 
 /**
- * Body entity descriptor used for serialization.
- */
-#pragma pack(push, 1)
-struct BodyComponentDesc
-{
-    float mass;
-    char collisionShapeName[RES_NAME_MAX_LENGTH];
-};
-#pragma pack(pop)
-
-#define BODY_COMPONENT_FLAG_INIT (1<<0)
-#define BODY_COMPONENT_FLAG_RELEASE (1<<1)
-
-
-/**
  * Component representing physical body.
  */
 NFE_ALIGN16
 class CORE_API BodyComponent
-    : public ComponentBase<BodyComponent>
+    : public Component
     , public Common::Aligned<16>
 {
     NFE_MAKE_NONCOPYABLE(BodyComponent)
     NFE_MAKE_NONMOVEABLE(BodyComponent)
 
-    friend class PhysicsSystem;
-    friend class RendererSystem;
-
 private:
     Math::Vector mVelocity;
     Math::Vector mAngularVelocity;
-
-    // TODO: these shouldn't be allocated dynamically
-    std::unique_ptr<btDefaultMotionState> mMotionState;
-    std::unique_ptr<btRigidBody> mRigidBody;
 
     Resource::CollisionShape* mCollisionShape;
     int mFlags;
@@ -65,9 +43,9 @@ public:
     void Invalidate();
 
     /**
-     * Enable physics interaction via assigning a collision shape
+     * Assigning a collision shape.
      */
-    void EnablePhysics(Resource::CollisionShape* shape);
+    void SetCollisionShape(Resource::CollisionShape* shape);
 
     /**
      * Disable physics interaction

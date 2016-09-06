@@ -7,6 +7,7 @@
 #pragma once
 
 #include "../Core.hpp"
+#include "nfCommon/nfCommon.hpp"
 
 #include <vector>
 
@@ -14,78 +15,42 @@
 namespace NFE {
 namespace Scene {
 
-#define NFE_MAX_COMPONENT_TYPES 32
+class Entity;
+class SceneManager;
 
 /**
- * Structure storing component type information.
+ * Base class for all component types.
  */
-struct ComponentInfo
-{
-    int id;
-    size_t size;
-    const char* name;
-};
-
 class CORE_API Component
 {
-private:
-    static std::vector<ComponentInfo> mComponents;
+public:
+    Component();
+    virtual ~Component();
+
+    /**
+     * Get parent Entity pointer.
+     */
+    NFE_INLINE Entity* GetEntity() const { return mEntity; }
+
+    /**
+     * Get parent Scene.
+     */
+    SceneManager* GetScene() const;
 
 protected:
-    static int mComponentIdCounter;
-
-public:
-    virtual ~Component() {}
+    /**
+     * Called when attached to an entity.
+     */
+    virtual void OnAttach(Entity* entity);
 
     /**
-     * Invalidate a component. This should be called when entity is moved to removed components
-     * list.
+     * Called when detached from the entity.
      */
-    virtual void Invalidate();
+    virtual void OnDetach();
 
-    /**
-     * Register a component type. Should be called via @p NFE_REGISTER_COMPONENT macro.
-     * @param id   Component's unique ID.
-     * @param name Component name.
-     * @param size Component class size in bytes.
-     * @return True on success.
-     */
-    static bool Register(int id, const char* name, size_t size);
+private:
+    Entity* mEntity;    // parent entity
 };
-
-/**
- * Base class for entity component.
- *
- * All components must derive from this class in order to properly generate component IDs
- * thanks to "curiously recurring template pattern".
- */
-template<typename T>
-class ComponentBase : public Component
-{
-    ComponentBase(const ComponentBase&) = delete;
-    ComponentBase& operator=(const ComponentBase&) = delete;
-
-public:
-    ComponentBase() { }
-
-    virtual ~ComponentBase() {}
-
-    /**
-     * Get component's class unique ID.
-     */
-    static int GetID()
-    {
-        static int id = mComponentIdCounter++;
-        return id;
-    }
-};
-
-/**
- * This macro should be used to register an existence of a component type (ususally in *.cpp file).
- * Component registering is required by EntityManager for memory allocations.
- */
-#define NFE_REGISTER_COMPONENT(c) \
-    static bool gRegisterComponent_##c##_Var = Component::Register(c::GetID(), #c, sizeof(c));
 
 } // namespace Scene
 } // namespace NFE

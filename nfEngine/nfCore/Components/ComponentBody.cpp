@@ -5,7 +5,7 @@
 */
 
 #include "PCH.hpp"
-#include "BodyComponent.hpp"
+#include "ComponentBody.hpp"
 #include "Resources/ResourcesManager.hpp"
 #include "Resources/CollisionShape.hpp"
 
@@ -41,8 +41,6 @@ btVector3 Vector2bt(const Vector& v)
 
 } // namespace
 
-NFE_REGISTER_COMPONENT(BodyComponent);
-
 BodyComponent::BodyComponent()
     : mCollisionShape(nullptr)
     , mMass(0.0f)
@@ -61,7 +59,7 @@ BodyComponent::~BodyComponent()
     }
 }
 
-void BodyComponent::EnablePhysics(CollisionShape* shape)
+void BodyComponent::SetCollisionShape(CollisionShape* shape)
 {
     if (mRigidBody)
         return;

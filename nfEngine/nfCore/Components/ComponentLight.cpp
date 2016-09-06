@@ -5,7 +5,7 @@
  */
 
 #include "PCH.hpp"
-#include "LightComponent.hpp"
+#include "ComponentLight.hpp"
 #include "Resources/ResourcesManager.hpp"
 #include "Engine.hpp"
 #include "Renderer/LightsRenderer.hpp"
@@ -21,13 +21,11 @@ using namespace Math;
 using namespace Resource;
 using namespace Renderer;
 
-NFE_REGISTER_COMPONENT(LightComponent);
-
 LightComponent::LightComponent()
     : mColor(Vector(1.0f, 1.0f, 1.0f, 1.0f))
     , mShadowMap(nullptr)
     , mLightMap(nullptr)
-    , mLightType(LightType::Unknown)
+    , mLightType(LightType::Omni)
 {
 }
 
@@ -142,6 +140,10 @@ bool LightComponent::HasShadowMap() const
 
 void LightComponent::OnLightMapTextureLoaded()
 {
+    // TODO create rendering proxy
+
+    // TODO move this stuff to renderer
+
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
 
     std::recursive_mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
