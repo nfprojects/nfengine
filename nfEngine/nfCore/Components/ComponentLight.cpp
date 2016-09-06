@@ -5,7 +5,7 @@
  */
 
 #include "PCH.hpp"
-#include "LightComponent.hpp"
+#include "ComponentLight.hpp"
 #include "Resources/ResourcesManager.hpp"
 #include "Engine.hpp"
 #include "Renderer/LightsRenderer.hpp"

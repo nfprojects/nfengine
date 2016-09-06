@@ -8,8 +8,7 @@
 #include "PhysicsSystem.hpp"
 #include "Engine.hpp"
 #include "Scene/EntityManager.hpp"
-#include "Components/TransformComponent.hpp"
-#include "Components/BodyComponent.hpp"
+#include "Components/ComponentBody.hpp"
 #include "Utils/ConfigVariable.hpp"
 
 #include "nfCommon/Timer.hpp"
@@ -47,7 +46,7 @@ btVector3 Vector2bt(const Vector& v)
 } // namespace
 
 PhysicsSystem::PhysicsSystem(SceneManager* scene)
-    : mScene(scene)
+    : ISystem(scene)
 {
     mBroadphase.reset(new btDbvtBroadphase());
     mCollsionConfig.reset(new btDefaultCollisionConfiguration());
@@ -200,7 +199,8 @@ void PhysicsSystem::Update(float dt)
         }
     };
 
-    mScene->GetEntityManager()->ForEach<TransformComponent, BodyComponent>(iterFunc);
+    // TODO: use listener instead
+    mScene->GetEntityManager()->ForEach_DEPRECATED<TransformComponent, BodyComponent>(iterFunc);
 
     ProcessContacts();
 }

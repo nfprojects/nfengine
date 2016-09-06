@@ -42,11 +42,8 @@ namespace NFE {
         class BodyComponent;
         class LightComponent;
         class CameraComponent;
-        class TransformComponent;
 
-        class EntityManager;
         class SceneManager;
-        class TransformSystem;
         class PhysicsSystem;
         class RendererSystem;
 
@@ -55,9 +52,6 @@ namespace NFE {
         struct LightDesc;
         struct CameraDesc;
         struct BodyComponentDesc;
-
-        enum class ComponentMsg;
-        enum class ComponentType;
     } // namespace Scene
 
 

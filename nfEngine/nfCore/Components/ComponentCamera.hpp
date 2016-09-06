@@ -65,9 +65,6 @@ class CORE_API CameraComponent
     : public ComponentBase<CameraComponent>
     , public Common::Aligned<16>
 {
-    friend class SceneManager;
-    friend class RendererSystem;
-
     // additional matrix that modifies camera matrix relative to parent entity
     Math::Matrix mParentOffset;
 

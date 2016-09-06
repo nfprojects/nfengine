@@ -5,7 +5,7 @@
 */
 
 #include "PCH.hpp"
-#include "BodyComponent.hpp"
+#include "ComponentBody.hpp"
 #include "Resources/ResourcesManager.hpp"
 #include "Resources/CollisionShape.hpp"
 

@@ -7,6 +7,7 @@
 #pragma once
 
 #include "../Core.hpp"
+#include "System.hpp"
 #include "nfCommon/Aligned.hpp"
 #include "nfCommon/ThreadPool.hpp"
 
@@ -18,7 +19,9 @@ namespace NFE {
 namespace Scene {
 
 NFE_ALIGN16
-class PhysicsSystem : public Common::Aligned<16>
+class PhysicsSystem
+    : public ISystem
+    , public Common::Aligned<16>
 {
     friend void PhysicsUpdateCallback(void* userData, int instance, int threadID);
 
@@ -42,7 +45,7 @@ public:
     /**
      * Update the system.
      */
-    void Update(float dt);
+    void Update(float timeDelta) override;
 };
 
 } // namespace Scene

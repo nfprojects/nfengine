@@ -80,9 +80,6 @@ class CORE_API LightComponent
     : public ComponentBase<LightComponent>
     , public Common::Aligned<16>
 {
-    friend class SceneManager;
-    friend class RendererSystem;
-
     Math::Vector mColor;
 
     union

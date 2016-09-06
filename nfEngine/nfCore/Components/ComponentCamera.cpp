@@ -5,7 +5,7 @@
  */
 
 #include "PCH.hpp"
-#include "CameraComponent.hpp"
+#include "ComponentCamera.hpp"
 
 namespace NFE {
 namespace Scene {
