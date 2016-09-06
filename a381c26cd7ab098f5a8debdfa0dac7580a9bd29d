@@ -1,0 +1,147 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_6c45cb41",
+        "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-06T18:39:41Z",
+      "side": 1,
+      "message": "...",
+      "revId": "a381c26cd7ab098f5a8debdfa0dac7580a9bd29d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_4c7327b5",
+        "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-06T18:39:41Z",
+      "side": 1,
+      "message": "...",
+      "revId": "a381c26cd7ab098f5a8debdfa0dac7580a9bd29d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2c76a3a3",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-06T18:39:41Z",
+      "side": 1,
+      "message": "maybe add comment that Win version does not require anything here",
+      "revId": "a381c26cd7ab098f5a8debdfa0dac7580a9bd29d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ac62b3d7",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-06T18:39:41Z",
+      "side": 1,
+      "message": "This error may be no longer valid. For example async queue is not initialized. Make sure that EnqueueJob reports what failed exactly",
+      "range": {
+        "startLine": 199,
+        "startChar": 73,
+        "endLine": 199,
+        "endChar": 101
+      },
+      "revId": "a381c26cd7ab098f5a8debdfa0dac7580a9bd29d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_6c5cab19",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-06T18:39:41Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 238,
+        "startChar": 74,
+        "endLine": 238,
+        "endChar": 102
+      },
+      "revId": "a381c26cd7ab098f5a8debdfa0dac7580a9bd29d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_0ca4ff05",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 295,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-06T18:39:41Z",
+      "side": 1,
+      "message": "Redundant. We know exact line number from log",
+      "range": {
+        "startLine": 295,
+        "startChar": 19,
+        "endLine": 295,
+        "endChar": 39
+      },
+      "revId": "a381c26cd7ab098f5a8debdfa0dac7580a9bd29d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_eca67b0e",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-06T18:39:41Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 311,
+        "startChar": 19,
+        "endLine": 311,
+        "endChar": 38
+      },
+      "revId": "a381c26cd7ab098f5a8debdfa0dac7580a9bd29d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
