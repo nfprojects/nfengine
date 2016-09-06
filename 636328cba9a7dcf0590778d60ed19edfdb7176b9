@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_81e69842",
+        "filename": "nfEngine/nfCommon/Image/ImageDDS.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-06T14:17:47Z",
+      "side": 1,
+      "message": "not needed, use forward declaration",
+      "revId": "636328cba9a7dcf0590778d60ed19edfdb7176b9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a1d75c4e",
+        "filename": "nfEngine/nfCommon/Image/ImageType.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-06T14:17:47Z",
+      "side": 1,
+      "message": "not needed use forward declaration",
+      "revId": "636328cba9a7dcf0590778d60ed19edfdb7176b9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c1dca076",
+        "filename": "nfEngine/nfCommon/Image/ImageType.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-06T14:17:47Z",
+      "side": 1,
+      "message": "move definitions to cpp",
+      "revId": "636328cba9a7dcf0590778d60ed19edfdb7176b9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
