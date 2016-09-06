@@ -269,5 +269,8 @@
     <ClInclude Include="Resources\MultiPipelineState.hpp">
       <Filter>Resources</Filter>
     </ClInclude>
+    <ClInclude Include="Scene\Entity.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

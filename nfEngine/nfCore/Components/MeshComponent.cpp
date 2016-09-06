@@ -51,10 +51,19 @@ bool MeshComponent::SetMeshResource(Mesh* resource)
 
     mMesh = resource;
     if (mMesh == nullptr)
+    {
+        HasChanged();
         return false;
+    }
 
     // add reference to the new mesh
     mMesh->AddRef();
+
+    // TODO: call HasChanged() when mesh resource was loaded (to updateAABB)
+    // mMesh->AddPostLoadCallback()
+
+    HasChanged();
+
     return true;
 }
 

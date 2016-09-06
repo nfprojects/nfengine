@@ -190,7 +190,8 @@ void PhysicsSystem::Update(float dt)
         }
     };
 
-    mScene->GetEntityManager()->ForEach<TransformComponent, BodyComponent>(iterFunc);
+    // TODO: use listener instead
+    mScene->GetEntityManager()->ForEach_DEPRECATED<TransformComponent, BodyComponent>(iterFunc);
 
     ProcessContacts();
 }

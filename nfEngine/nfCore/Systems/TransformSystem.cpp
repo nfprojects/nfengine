@@ -58,7 +58,7 @@ void TransformSystem::UpdateComponent(TransformComponent* component)
 
 void TransformSystem::Update()
 {
-    mEntityManager->ForEach<TransformComponent>(
+    mEntityManager->ForEach_DEPRECATED<TransformComponent>(
         [this](EntityID, TransformComponent* transform)
         {
             UpdateComponent(transform);

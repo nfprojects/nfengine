@@ -440,6 +440,7 @@
     <ClInclude Include="Resources\SoundSample.hpp" />
     <ClInclude Include="Resources\Texture.hpp" />
     <ClInclude Include="PCH.hpp" />
+    <ClInclude Include="Scene\Entity.hpp" />
     <ClInclude Include="Scene\EntityManager.hpp" />
     <ClInclude Include="Scene\SceneEvent.hpp" />
     <ClInclude Include="Scene\SceneManager.hpp" />

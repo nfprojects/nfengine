@@ -47,6 +47,8 @@ void TransformComponent::SetMatrix(const Matrix& matrix)
 {
     mFlags |= NFE_TRANSFORM_FLAG_GLOBAL_MOVED;
     mMatrix = matrix;
+
+    HasChanged();
 }
 
 void TransformComponent::SetPosition(const Vector& pos)
@@ -54,6 +56,8 @@ void TransformComponent::SetPosition(const Vector& pos)
     mFlags |= NFE_TRANSFORM_FLAG_GLOBAL_MOVED;
     mMatrix.r[3] = pos;
     mMatrix.r[3].f[3] = 1.0f;
+
+    HasChanged();
 }
 
 void TransformComponent::SetOrientation(const Quaternion& quat)
@@ -64,6 +68,8 @@ void TransformComponent::SetOrientation(const Quaternion& quat)
     mMatrix.r[0] = rotMatrix.r[0];
     mMatrix.r[1] = rotMatrix.r[1];
     mMatrix.r[2] = rotMatrix.r[2];
+
+    HasChanged();
 }
 
 void TransformComponent::SetOrientation(const Orientation& orientation)
@@ -83,6 +89,8 @@ void TransformComponent::SetOrientation(const Orientation& orientation)
     mMatrix.r[0].f[3] = 0.0f;
     mMatrix.r[1].f[3] = 0.0f;
     mMatrix.r[2].f[3] = 0.0f;
+
+    HasChanged();
 }
 
 void TransformComponent::SetLocalPosition(const Vector& pos)
@@ -91,6 +99,8 @@ void TransformComponent::SetLocalPosition(const Vector& pos)
     mLocalMatrix.r[3].f[3] = 1.0f;
 
     mFlags |= NFE_TRANSFORM_FLAG_LOCAL_MOVED;
+
+    HasChanged();
 }
 
 void TransformComponent::SetLocalOrientation(const Orientation& orientation)
@@ -110,6 +120,8 @@ void TransformComponent::SetLocalOrientation(const Orientation& orientation)
     mLocalMatrix.r[2].f[3] = 0.0f;
 
     mFlags |= NFE_TRANSFORM_FLAG_LOCAL_MOVED;
+
+    HasChanged();
 }
 
 } // namespace Scene
