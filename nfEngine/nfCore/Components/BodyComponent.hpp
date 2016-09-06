@@ -43,9 +43,6 @@ class CORE_API BodyComponent
     NFE_MAKE_NONCOPYABLE(BodyComponent)
     NFE_MAKE_NONMOVEABLE(BodyComponent)
 
-    friend class PhysicsSystem;
-    friend class RendererSystem;
-
 private:
     Math::Vector mVelocity;
     Math::Vector mAngularVelocity;

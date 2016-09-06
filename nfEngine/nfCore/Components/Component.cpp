@@ -6,25 +6,46 @@
 
 #include "PCH.hpp"
 #include "Component.hpp"
+#include "../Scene/EntityManager.hpp"
+#include "nfCommon/Logger.hpp"
+
 
 namespace NFE {
 namespace Scene {
 
-std::vector<ComponentInfo> Component::mComponents;
+std::vector<ComponentInfo> Component::mComponentTypes;
 int Component::mComponentIdCounter = 0;
 
-void Component::Invalidate()
+Component::Component(int id)
+    : mEntity(nullptr)
+    , mComponentType(id)
 {
 }
 
-bool Component::Register(int id, const char* name, size_t size)
+Component::~Component()
+{
+    NFE_ASSERT(mEntity == nullptr, "Component must be detached before being destroyed");
+}
+
+void Component::OnAttachToEntity(Entity* entity)
+{
+    mEntity = entity;
+}
+
+void Component::OnChanged()
+{
+    // TODO
+}
+
+bool Component::RegisterType(int id, const char* name, size_t size)
 {
     ComponentInfo info;
     info.id = id;
     info.name = name;
     info.size = size;
-    mComponents.push_back(info);
+    mComponentTypes.push_back(info);
 
+    LOG_INFO("Component type '%s' registered: ID = %i, size = %zu", name, id, size);
     return true;
 }
 

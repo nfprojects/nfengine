@@ -215,12 +215,14 @@ popd</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Editor.hpp" />
+    <ClInclude Include="FreeCameraController.hpp" />
     <ClInclude Include="Scenes.hpp" />
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="Test.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Editor.cpp" />
+    <ClCompile Include="FreeCameraController.cpp" />
     <ClCompile Include="Scenes.cpp" />
     <ClCompile Include="PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

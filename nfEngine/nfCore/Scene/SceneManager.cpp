@@ -9,8 +9,6 @@
 #include "SceneManager.hpp"
 #include "Engine.hpp"
 #include "nfCommon/Memory.hpp"
-#include "Components/TransformComponent.hpp"
-#include "Systems/TransformSystem.hpp"
 #include "Systems/PhysicsSystem.hpp"
 #include "Systems/RendererSystem.hpp"
 
@@ -22,8 +20,7 @@ using namespace Renderer;
 using namespace Resource;
 
 SceneManager::SceneManager()
-    : mTransformSystem(new TransformSystem(this))
-    , mPhysicsSystem(new PhysicsSystem(this))
+    : mPhysicsSystem(new PhysicsSystem(this))
     , mRendererSystem(new RendererSystem(this))
 {
 }

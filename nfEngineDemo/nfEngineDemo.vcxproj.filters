@@ -23,6 +23,9 @@
     <ClInclude Include="Scenes.hpp">
       <Filter>Main</Filter>
     </ClInclude>
+    <ClInclude Include="FreeCameraController.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Test.cpp">
@@ -35,6 +38,9 @@
       <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="Scenes.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="FreeCameraController.cpp">
       <Filter>Main</Filter>
     </ClCompile>
   </ItemGroup>

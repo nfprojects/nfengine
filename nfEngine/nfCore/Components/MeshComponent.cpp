@@ -31,14 +31,6 @@ MeshComponent::~MeshComponent()
     }
 }
 
-void MeshComponent::CalcAABB(const Math::Matrix& transform)
-{
-    if (mMesh != nullptr)
-    {
-        mGlobalAABB = TransformBox(transform, mMesh->mLocalBox);
-    }
-}
-
 bool MeshComponent::SetMeshResource(Mesh* resource)
 {
     // no change
@@ -51,10 +43,18 @@ bool MeshComponent::SetMeshResource(Mesh* resource)
 
     mMesh = resource;
     if (mMesh == nullptr)
+    {
+        OnChanged();
         return false;
+    }
 
     // add reference to the new mesh
     mMesh->AddRef();
+
+    // TODO: call HasChanged() when mesh resource was loaded (to updateAABB)
+    // mMesh->AddPostLoadCallback()
+
+    OnChanged();
     return true;
 }
 

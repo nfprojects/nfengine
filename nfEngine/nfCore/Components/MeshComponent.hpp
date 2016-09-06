@@ -27,17 +27,12 @@ class CORE_API MeshComponent
     : public ComponentBase<MeshComponent>
     , public Common::Aligned<16>
 {
-    friend class SceneManager;
-    friend class RendererSystem;
-
     Resource::Mesh* mMesh;
-    Math::Box mGlobalAABB;
-
-    void CalcAABB(const Math::Matrix& transform);
+    uint32 mRenderingProxy;
 
 public:
     MeshComponent();
-    ~MeshComponent();
+    virtual ~MeshComponent();
 
     /**
      * Set mesh resource by pointer.

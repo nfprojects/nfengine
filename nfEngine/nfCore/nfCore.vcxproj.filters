@@ -40,6 +40,12 @@
     <Filter Include="Renderer\Geometry">
       <UniqueIdentifier>{84cf2ca8-6d90-470b-8366-e93886ee9bc1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{0cff49de-7eaf-4b44-a05c-bb6f1d68fb38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject">
+      <UniqueIdentifier>{a1b0dba6-5368-4e54-bfc8-4eaefcbaa0c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -87,13 +93,7 @@
     <ClCompile Include="Components\MeshComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="Components\TransformComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
     <ClCompile Include="Systems\RendererSystem.cpp">
-      <Filter>Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="Systems\TransformSystem.cpp">
       <Filter>Systems</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\Font.cpp">
@@ -119,9 +119,6 @@
     </ClCompile>
     <ClCompile Include="Resources\Texture.cpp">
       <Filter>Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\EntityManager.cpp">
-      <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="Scene\SceneManager.cpp">
       <Filter>Scene</Filter>
@@ -158,6 +155,45 @@
     </ClCompile>
     <ClCompile Include="Renderer\ImGuiWrapper.cpp">
       <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Entity.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\SoundSourceComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\TriggerComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Systems\EntitySystem.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Systems\System.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\InputEvent.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\GameObject.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\GameObjectComponent.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\GameObjectNode.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Systems\GameObjectSystem.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\GameObjectComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\GameObjectController.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\GameObjectInstance.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -212,13 +248,7 @@
     <ClInclude Include="Components\MeshComponent.hpp">
       <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="Components\TransformComponent.hpp">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="Systems\RendererSystem.hpp">
-      <Filter>Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="Systems\TransformSystem.hpp">
       <Filter>Systems</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\Font.hpp">
@@ -244,9 +274,6 @@
     </ClInclude>
     <ClInclude Include="Resources\Texture.hpp">
       <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\EntityManager.hpp">
-      <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="Scene\SceneManager.hpp">
       <Filter>Scene</Filter>
@@ -304,6 +331,45 @@
     </ClInclude>
     <ClInclude Include="Renderer\ImGuiWrapper.hpp">
       <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Entity.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\SoundSourceComponent.hpp">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\TriggerComponent.hpp">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\EntitySystem.hpp">
+      <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\System.hpp">
+      <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\InputEvent.hpp">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\GameObject.hpp">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\GameObjectComponent.hpp">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\GameObjectNode.hpp">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\GameObjectSystem.hpp">
+      <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\GameObjectComponent.hpp">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\GameObjectController.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\GameObjectInstance.hpp">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

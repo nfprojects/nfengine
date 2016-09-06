@@ -145,12 +145,8 @@ void SceneDeleter(Scene::SceneManager* scene)
 // overload own callback functions
 class CustomWindow : public Common::Window
 {
-    EntityManager* entityManager;
-
 public:
     Quaternion cameraOrientation;
-    EntityID cameraEntity;
-    EntityID secondaryCameraEntity;  // camera for secondary view
     std::unique_ptr<MainCameraView> view;
     std::unique_ptr<Renderer::View> secondaryView;
     std::shared_ptr<Scene::SceneManager> scene;
@@ -170,15 +166,14 @@ public:
     }
 
     CustomWindow()
-        : cameraEntity(-1)
-        , entityManager(nullptr)
+        : mScene(nullptr)
     {
         InitCameraOrientation();
     }
 
     ~CustomWindow()
     {
-        entityManager = nullptr;
+        mScene = nullptr;
     }
 
     void InitCameraOrientation()
@@ -268,61 +263,6 @@ public:
                                   static_cast<float>(SECONDARY_VIEW_HEIGHT);
         CameraComponent* camera = entityManager->AddComponent<CameraComponent>(secondaryCameraEntity);
         camera->SetPerspective(&perspective);
-    }
-
-#define CAMERA_ROTATION_SMOOTHING 0.05f
-#define CAMERA_TRANSLATION_SMOOTHING 0.2f
-
-    // update camera position and orientation
-    void UpdateCamera()
-    {
-        auto cameraBody = entityManager->GetComponent<BodyComponent>(cameraEntity);
-        auto cameraTransform = entityManager->GetComponent<TransformComponent>(cameraEntity);
-        if (cameraBody == nullptr || cameraTransform == nullptr)
-            return;
-
-        Quaternion destOrientation = QuaternionMultiply(QuaternionRotationY(cameraXZ),
-                                     QuaternionRotationX(-cameraY));
-        destOrientation = QuaternionNormalize(destOrientation);
-
-        //LPF
-        Quaternion prevOrientation = cameraOrientation;
-        cameraOrientation = QuaternionInterpolate(cameraOrientation, destOrientation,
-                            gDeltaTime / (CAMERA_ROTATION_SMOOTHING + gDeltaTime));
-        cameraOrientation = QuaternionNormalize(cameraOrientation);
-
-        Quaternion rotation = QuaternionMultiply(prevOrientation,
-                                                 QuaternionInverse(cameraOrientation));
-        cameraBody->SetAngularVelocity(-QuaternionToAxis(rotation) / gDeltaTime);
-
-        Matrix rotMatrix = MatrixFromQuaternion(QuaternionNormalize(cameraOrientation));
-        Orientation orient;
-        orient.x = rotMatrix.r[0];
-        orient.y = rotMatrix.r[1];
-        orient.z = rotMatrix.r[2];
-        cameraTransform->SetOrientation(orient);
-
-
-        Vector destVelocity = Vector();
-        if (cameraControl)
-        {
-            if (IsKeyPressed(Common::KeyCode::W)) destVelocity += orient.z;
-            if (IsKeyPressed(Common::KeyCode::S)) destVelocity -= orient.z;
-            if (IsKeyPressed(Common::KeyCode::D)) destVelocity += orient.x;
-            if (IsKeyPressed(Common::KeyCode::A)) destVelocity -= orient.x;
-            if (IsKeyPressed(Common::KeyCode::R)) destVelocity += orient.y;
-            if (IsKeyPressed(Common::KeyCode::F)) destVelocity -= orient.y;
-
-            if (IsKeyPressed(Common::KeyCode::ShiftLeft)) destVelocity *= 30.0f;
-            else if (IsKeyPressed(Common::KeyCode::ControlLeft)) destVelocity *= 0.2f;
-            else destVelocity *= 3.0f;
-        }
-
-        Vector prevVelocity = cameraBody->GetVelocity();
-
-        // low pass filter - for smooth camera movement
-        float factor = gDeltaTime / (CAMERA_TRANSLATION_SMOOTHING + gDeltaTime);
-        cameraBody->SetVelocity(VectorLerp(prevVelocity, destVelocity, factor));
     }
 
     void OnKeyPress(Common::KeyCode key) override
@@ -562,6 +502,9 @@ public:
             }
         }
     }
+
+private:
+    SceneManager* mScene;
 };
 
 CustomWindow* AddWindow(CustomWindow* parent)
@@ -685,7 +628,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         {
             window->SetTitle(str);
             window->ProcessMessages();
-            window->UpdateCamera();
 
             // remove if closed
             if (window->IsClosed())
