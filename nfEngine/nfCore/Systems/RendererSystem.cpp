@@ -45,7 +45,8 @@ RenderingData::RenderingData()
     , geometryPassTask(NFE_INVALID_TASK_ID)
     , lightsPassTask(NFE_INVALID_TASK_ID)
     , debugLayerTask(NFE_INVALID_TASK_ID)
-{}
+{
+}
 
 RenderingData::RenderingData(const RenderingData& other)
 {
@@ -94,6 +95,33 @@ void RenderingData::ExecuteCommandLists() const
 RendererSystem::RendererSystem(SceneManager* scene)
     : mScene(scene)
 {
+    using namespace std::placeholders;
+
+    EntityManager* entityManager = mScene->GetEntityManager();
+
+    // register entity manager listeners
+
+    mMeshesListener.AddFilter<MeshComponent>();
+    mMeshesListener.AddFilter<TransformComponent>();
+    mMeshesListener.onCreated = std::bind(&RendererSystem::OnMeshEntityCreated, this, _1);
+    mMeshesListener.onRemoved = std::bind(&RendererSystem::OnMeshEntityRemoved, this, _1);
+    mMeshesListener.onChanged = std::bind(&RendererSystem::OnMeshEntityChanged, this, _1);
+    entityManager->RegisterEntityListener(&mMeshesListener);
+
+    mLightsListener.AddFilter<LightComponent>();
+    mLightsListener.AddFilter<TransformComponent>();
+    mLightsListener.onCreated = std::bind(&RendererSystem::OnLightEntityCreated, this, _1);
+    mLightsListener.onRemoved = std::bind(&RendererSystem::OnLightEntityRemoved, this, _1);
+    mLightsListener.onChanged = std::bind(&RendererSystem::OnLightEntityChanged, this, _1);
+    entityManager->RegisterEntityListener(&mLightsListener);
+}
+
+RendererSystem::~RendererSystem()
+{
+    EntityManager* entityManager = mScene->GetEntityManager();
+
+    entityManager->UnregisterEntityListener(&mLightsListener);
+    entityManager->UnregisterEntityListener(&mMeshesListener);
 }
 
 void RendererSystem::RenderLights(const Common::TaskContext& context, RenderingData& data) const
@@ -116,10 +144,10 @@ void RendererSystem::RenderLights(const Common::TaskContext& context, RenderingD
 
 
 
-    for (const uint32 i : data.visibleOmniLights)
+    for (const LightEntry* lightEntry : data.visibleOmniLights)
     {
-        TransformComponent* transform = std::get<0>(mOmniLights[i]);
-        LightComponent* light = std::get<1>(mOmniLights[i]);
+        const TransformComponent* transform = lightEntry->transform;
+        const LightComponent* light = lightEntry->light;
 
         LightsRenderer::Get()->DrawOmniLight(renderCtx, transform->GetPosition(),
                                              light->mOmniLight.radius,
@@ -127,18 +155,17 @@ void RendererSystem::RenderLights(const Common::TaskContext& context, RenderingD
                                              light->mShadowMap.get());
     }
 
-    for (const uint32 i : data.visibleSpotLights)
+    for (const LightEntry* lightEntry : data.visibleSpotLights)
     {
-        const SpotLightData& lightData = mSpotLightsData[i];
-        const TransformComponent* transform = std::get<0>(mSpotLights[i]);
-        const LightComponent* light = std::get<1>(mSpotLights[i]);
+        const TransformComponent* transform = lightEntry->transform;
+        const LightComponent* light = lightEntry->light;
 
         SpotLightProperties prop;
         prop.color = renderer->GammaFix(light->mColor);
         prop.position = transform->GetPosition();
         prop.direction = transform->GetMatrix().r[2];
         prop.farDist.Set(light->mSpotLight.farDist);
-        prop.viewProjMatrix = lightData.viewMatrix * lightData.projMatrix;
+        prop.viewProjMatrix = lightEntry->viewMatrix * lightEntry->projMatrix;
         prop.viewProjMatrixInv = MatrixInverse(prop.viewProjMatrix); // TODO move to SpotLightData?
         prop.shadowMapProps = Vector();
 
@@ -151,10 +178,13 @@ void RendererSystem::RenderLights(const Common::TaskContext& context, RenderingD
                                              light->mLightMapBindingInstance.get());
     }
 
-    for (auto lightTuple : mDirLights)
+    // TODO
+    /*
+    for (const auto& pair : mDirLights)
     {
-        TransformComponent* transform = std::get<0>(lightTuple);
-        LightComponent* light = std::get<1>(lightTuple);
+        const LightEntry& lightEntry = pair.second;
+        TransformComponent* transform = lightEntry.transform;
+        LightComponent* light = lightEntry.light;
 
         DirLightProperties prop;
         prop.color = renderer->GammaFix(light->mColor);
@@ -170,6 +200,7 @@ void RendererSystem::RenderLights(const Common::TaskContext& context, RenderingD
 
         LightsRenderer::Get()->DrawDirLight(renderCtx, prop, light->mShadowMap.get());
     }
+    */
 
     LightsRenderer::Get()->DrawFog(renderCtx);
     LightsRenderer::Get()->Leave(renderCtx);
@@ -180,10 +211,10 @@ void RendererSystem::RenderLightsDebug(RenderingData& data, Renderer::RenderCont
 {
     uint32 lightDebugColor = 0xFF00FFFF;
 
-    for (const uint32 i : data.visibleOmniLights)
+    for (const LightEntry* lightEntry : data.visibleOmniLights)
     {
-        TransformComponent* transform = std::get<0>(mOmniLights[i]);
-        LightComponent* light = std::get<1>(mOmniLights[i]);
+        const TransformComponent* transform = lightEntry->transform;
+        const LightComponent* light = lightEntry->light;
 
         Box box;
         box.min = transform->GetPosition() - VectorSplat(light->mOmniLight.radius);
@@ -191,9 +222,9 @@ void RendererSystem::RenderLightsDebug(RenderingData& data, Renderer::RenderCont
         DebugRenderer::Get()->DrawBox(ctx, box, lightDebugColor);
     }
 
-    for (const uint32 i : data.visibleSpotLights)
+    for (const LightEntry* lightEntry : data.visibleSpotLights)
     {
-        DebugRenderer::Get()->DrawFrustum(ctx, mSpotLightsData[i].frustum, lightDebugColor);
+        DebugRenderer::Get()->DrawFrustum(ctx, lightEntry->frustum, lightDebugColor);
     }
 
     // TODO: dir light
@@ -207,19 +238,16 @@ void RendererSystem::RenderGeometry(RenderContext* ctx, const Math::Frustum& vie
     FindVisibleMeshEntities(viewFrustum, visibleMeshes);
     RenderCommandBuffer commandBuffer;
 
-    for (auto meshTuple : visibleMeshes)
+    for (const auto& data : visibleMeshes)
     {
-        TransformComponent* transform = std::get<0>(meshTuple);
-        MeshComponent* mesh = std::get<1>(meshTuple);
-        BodyComponent* body = std::get<2>(meshTuple);
-        Mesh* meshResource = mesh->mMesh;
+        const Mesh* meshResource = data.mesh->GetMeshResource();
 
         RenderCommand command;
-        command.matrix = transform->GetMatrix();
-        if (body != nullptr)
+        command.matrix = data.transform->GetMatrix();
+        if (data.body != nullptr)
         {
-            command.velocity = body->GetVelocity();
-            command.angularVelocity = body->GetAngularVelocity();
+            command.velocity = data.body->GetVelocity();
+            command.angularVelocity = data.body->GetAngularVelocity();
         }
         else
         {
@@ -229,7 +257,7 @@ void RendererSystem::RenderGeometry(RenderContext* ctx, const Math::Frustum& vie
         command.pVB = meshResource->mVB.get();
         command.pIB = meshResource->mIB.get();
         command.distance = VectorLength3(cameraTransform->GetPosition() -
-                                         transform->GetPosition()).f[0];
+                                         data.transform->GetPosition()).f[0];
 
         for (const auto& subMesh : meshResource->mSubMeshes)
         {
@@ -247,9 +275,7 @@ void RendererSystem::RenderGeometry(RenderContext* ctx, const Math::Frustum& vie
 }
 
 void RendererSystem::RenderSpotShadowMap(const Common::TaskContext& context,
-                                         const SpotLightData& lightData,
-                                         const TransformComponent* transform,
-                                         const LightComponent* light,
+                                         const LightEntry* lightData,
                                          RenderingData& data) const
 {
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
@@ -257,21 +283,20 @@ void RendererSystem::RenderSpotShadowMap(const Common::TaskContext& context,
     renderCtx->commandBuffer->Reset();
 
     ShadowCameraRenderDesc cameraDesc;
-    cameraDesc.viewProjMatrix = lightData.viewMatrix * lightData.projMatrix;
-    cameraDesc.lightPos = transform->GetPosition();
+    cameraDesc.viewProjMatrix = lightData->viewMatrix * lightData->projMatrix;
+    cameraDesc.lightPos = lightData->transform->GetPosition();
 
     GeometryRenderer::Get()->Enter(renderCtx);
-    GeometryRenderer::Get()->SetUpForShadowMap(renderCtx, light->mShadowMap.get(),
+    GeometryRenderer::Get()->SetUpForShadowMap(renderCtx, lightData->light->mShadowMap.get(),
                                                &cameraDesc, 0);
-    RenderGeometry(renderCtx, lightData.frustum, transform);
+    RenderGeometry(renderCtx, lightData->frustum, lightData->transform);
     GeometryRenderer::Get()->Leave(renderCtx);
 
     data.shadowPassCLs[context.threadId].push_back(std::move(renderCtx->commandBuffer->Finish()));
 };
 
 void RendererSystem::RenderOmniShadowMap(const Common::TaskContext& context,
-                                         const TransformComponent* transform,
-                                         const LightComponent* light,
+                                         const LightEntry* lightData,
                                          RenderingData& data) const
 {
     // The below vector arrays are front, up and right vectors for each cubemap face camera matrix:
@@ -316,21 +341,21 @@ void RendererSystem::RenderOmniShadowMap(const Common::TaskContext& context,
 
     // TODO: include "transform" rotation
     Matrix matrix = Matrix(xVectors[face], yVectors[face], zVectors[face],
-                           transform->GetPosition());
+                           lightData->transform->GetPosition());
 
     Matrix viewMatrix, projMatrix;
     Frustum frustum;
-    SetupPerspective(matrix, 0.01f, light->mOmniLight.radius, NFE_MATH_PI / 2.0f, 1.0f,
+    SetupPerspective(matrix, 0.01f, lightData->light->mOmniLight.radius, NFE_MATH_PI / 2.0f, 1.0f,
                      viewMatrix, projMatrix, frustum);
 
     ShadowCameraRenderDesc cameraDesc;
     cameraDesc.viewProjMatrix = viewMatrix * projMatrix;
-    cameraDesc.lightPos = transform->GetPosition();
+    cameraDesc.lightPos = lightData->transform->GetPosition();
 
     GeometryRenderer::Get()->Enter(renderCtx);
-    GeometryRenderer::Get()->SetUpForShadowMap(renderCtx, light->mShadowMap.get(),
+    GeometryRenderer::Get()->SetUpForShadowMap(renderCtx, lightData->light->mShadowMap.get(),
                                                &cameraDesc, face);
-    RenderGeometry(renderCtx, frustum, transform);
+    RenderGeometry(renderCtx, frustum, lightData->transform);
     GeometryRenderer::Get()->Leave(renderCtx);
 
     data.shadowPassCLs[context.threadId].push_back(std::move(renderCtx->commandBuffer->Finish()));
@@ -340,39 +365,32 @@ void RendererSystem::RenderShadowMaps(const Common::TaskContext& context, Render
 {
     Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
 
-    for (const uint32 i : data.visibleSpotLights)
+    for (LightEntry* lightEntry : data.visibleSpotLights)
     {
         // mark the shadow maps as drawn, continue if it was drawn in another view
-        if (mSpotLightsShadowDrawn[i].exchange(true))
+        if (lightEntry->shadowDrawn.exchange(true))
             continue;
 
-        const TransformComponent* transform = std::get<0>(mSpotLights[i]);
-        const LightComponent* light = std::get<1>(mSpotLights[i]);
-        const SpotLightData& lightData = mSpotLightsData[i];
-        if (light->HasShadowMap())
+        if (lightEntry->light->HasShadowMap())
         {
             using namespace std::placeholders;
             threadPool->CreateTask(std::bind(&RendererSystem::RenderSpotShadowMap, this, _1,
-                                             std::cref(lightData), transform, light,
-                                             std::ref(data)),
+                                             lightEntry, std::ref(data)),
                                    1,  // one instance
                                    context.taskId);
         }
     }
 
-    for (const uint32 i : data.visibleOmniLights)
+    for (LightEntry* lightEntry : data.visibleOmniLights)
     {
         // mark the shadow maps as drawn, continue if it was drawn in another view
-        if (mOmniLightsShadowDrawn[i].exchange(true))
+        if (lightEntry->shadowDrawn.exchange(true))
             continue;
 
-        const TransformComponent* transform = std::get<0>(mOmniLights[i]);
-        const LightComponent* light = std::get<1>(mOmniLights[i]);
-        if (light->HasShadowMap())
+        if (lightEntry->light->HasShadowMap())
         {
             using namespace std::placeholders;
-            threadPool->CreateTask(std::bind(&RendererSystem::RenderOmniShadowMap, this, _1,
-                                             transform, light, std::ref(data)),
+            threadPool->CreateTask(std::bind(&RendererSystem::RenderOmniShadowMap, this, _1, lightEntry, std::ref(data)),
                                    6,  // six cube faces - six intstances
                                    context.taskId);
         }
@@ -493,14 +511,12 @@ void RendererSystem::RenderDebugLayer(const Common::TaskContext& context, Render
     }
 
     // draw entities' coordinate systems
-    for (auto meshTuple : mMeshes)
+    for (const MeshEntry& entry : mMeshes)
     {
-        TransformComponent* transform = std::get<0>(meshTuple);
-
         Float3 start, endX, endY, endZ;
         const float debugSize = 0.2f;
 
-        Matrix matrix = transform->GetMatrix();
+        Matrix matrix = entry.transform->GetMatrix();
         VectorStore(matrix.GetRow(3), &start);
         VectorStore(debugSize * (matrix.GetRow(0)) + matrix.GetRow(3), &endX);
         VectorStore(debugSize * (matrix.GetRow(1)) + matrix.GetRow(3), &endY);
@@ -522,13 +538,10 @@ void RendererSystem::RenderDebugLayer(const Common::TaskContext& context, Render
     // TODO: temporary - fix "if" statement when renderer configuration is implemented
     if (false)
     {
-        for (auto meshTuple : mMeshes)
+        for (const MeshEntry& entry : mMeshes)
         {
-            TransformComponent* transform = std::get<0>(meshTuple);
-            MeshComponent* mesh = std::get<1>(meshTuple);
-
             // TODO: change to boxes only
-            DebugRenderer::Get()->DrawMesh(renderCtx, mesh->mMesh, transform->GetMatrix());
+            DebugRenderer::Get()->DrawMesh(renderCtx, entry.mesh->GetMeshResource(), entry.transform->GetMatrix());
         }
     }
 
@@ -540,59 +553,134 @@ void RendererSystem::RenderDebugLayer(const Common::TaskContext& context, Render
 void RendererSystem::FindVisibleMeshEntities(const Frustum& frustum,
                                              std::vector<MeshEntry>& list) const
 {
-    for (auto meshTuple : mMeshes)
+    /*
+    mMeshesBVH.Query(frustum, [&](void* userData)
     {
-        MeshComponent* mesh = std::get<1>(meshTuple);
+        const EntityID entity = static_cast<EntityID>(reinterpret_cast<size_t>(userData));
 
-        if (Intersect(mesh->mGlobalAABB, frustum))
-            list.push_back(meshTuple);
+        const auto& it = mMeshes.find(entity);
+
+        list.push_back(it->second); // TODO this is slow...
+    });
+    */
+    
+    
+    for (const MeshEntry& entry : mMeshes)
+    {
+        if (Intersect(entry.aabb, frustum))
+            list.push_back(entry);
     }
 }
 
-void RendererSystem::FindVisibleLights(const Math::Frustum& frustum, RenderingData& data) const
+void RendererSystem::FindVisibleLights(const Math::Frustum& frustum, RenderingData& data)
 {
-    for (size_t i = 0; i < mOmniLights.size(); ++i)
+    for (auto& it : mLights)
     {
-        TransformComponent* transform = std::get<0>(mOmniLights[i]);
-        LightComponent* light = std::get<1>(mOmniLights[i]);
+        TransformComponent* transform = it.second.transform;
+        LightComponent* light = it.second.light;
 
-        Sphere lightSphere;
-        lightSphere.origin = transform->GetPosition();
-        lightSphere.r = light->mOmniLight.radius;
+        if (light->mLightType == LightType::Omni)
+        {
+            Sphere lightSphere;
+            lightSphere.origin = transform->GetPosition();
+            lightSphere.r = light->mOmniLight.radius;
 
-        if (Intersect(frustum, lightSphere))
-            data.visibleOmniLights.push_back(static_cast<uint32>(i));
-    }
-
-    for (size_t i = 0; i < mSpotLights.size(); ++i)
-    {
-        const SpotLightData& lightData = mSpotLightsData[i];
-
-        if (Intersect(frustum, lightData.frustum))
-            data.visibleSpotLights.push_back(static_cast<uint32>(i));
+            if (Intersect(frustum, lightSphere))
+                data.visibleOmniLights.push_back(&it.second);
+        }
+        else if (light->mLightType == LightType::Spot)
+        {
+            if (Intersect(frustum, it.second.frustum))
+                data.visibleSpotLights.push_back(&it.second);
+        }
     }
 }
 
-void RendererSystem::UpdateMeshes()
+void RendererSystem::OnMeshEntityCreated(EntityID entity)
 {
     EntityManager* entityManager = mScene->GetEntityManager();
-    mMeshes.clear();
 
-    entityManager->ForEach<TransformComponent, MeshComponent>(
-        [&](EntityID entity,
-            TransformComponent* transform,
-            MeshComponent* mesh)
-        {
-            Mesh* meshResource = mesh->mMesh;
-            if (meshResource == nullptr || meshResource->GetState() != ResourceState::Loaded)
-                return;
+    size_t meshID = mMeshes.size();
+    mMeshesEntityMapping[entity] = meshID;
 
-            mesh->CalcAABB(transform->GetMatrix());
+    // setup mesh entry
+    MeshEntry entry;
+    entry.mesh = entityManager->GetComponent<MeshComponent>(entity);
+    entry.transform = entityManager->GetComponent<TransformComponent>(entity);
+    entry.body = entityManager->GetComponent<BodyComponent>(entity);
+    entry.aabb = entry.mesh->CalculateAABB(entry.transform->GetMatrix());
+    entry.bvhNode = mMeshesBVH.Insert(entry.aabb, reinterpret_cast<void*>(meshID));
+    mMeshes.push_back(entry);
+}
 
-            BodyComponent* body = entityManager->GetComponent<BodyComponent>(entity);
-            mMeshes.push_back(std::make_tuple(transform, mesh, body));
-        }
-    );
+void RendererSystem::OnMeshEntityRemoved(EntityID entity)
+{
+    const auto& iter = mMeshesEntityMapping.find(entity);
+    if (iter == mMeshesEntityMapping.end())
+        return;
+
+    size_t id = iter->second;
+    mMeshesBVH.Remove(mMeshes[id].bvhNode);
+    mMeshesEntityMapping.erase(iter);
+
+    if (mMeshes.size() > 0)
+    {
+        // move last mesh in place of removed
+        mMeshes[id] = mMeshes[mMeshes.size() - 1];
+        mMeshesEntityMapping[mMeshes[id].entityID] = id;
+        mMeshesBVH.SetUserData(mMeshes[id].bvhNode, reinterpret_cast<void*>(id));
+    }
+}
+
+void RendererSystem::OnMeshEntityChanged(EntityID entity)
+{
+    const auto& iter = mMeshesEntityMapping.find(entity);
+    if (iter == mMeshesEntityMapping.end())
+        return;
+
+    MeshEntry& entry = mMeshes[iter->second];
+
+    // TODO: AABB should be only updated when transform has changed
+    // TODO: notification about source component
+    entry.aabb = entry.mesh->CalculateAABB(entry.transform->GetMatrix());
+    mMeshesBVH.Move(entry.bvhNode, entry.aabb);
+}
+
+
+void RendererSystem::OnLightEntityCreated(EntityID entity)
+{
+    EntityManager* entityManager = mScene->GetEntityManager();
+
+    LightEntry entry;
+    entry.light = entityManager->GetComponent<LightComponent>(entity);
+    entry.transform = entityManager->GetComponent<TransformComponent>(entity);
+    mLights[entity] = entry;
+
+    OnLightEntityChanged(entity);
+}
+
+void RendererSystem::OnLightEntityRemoved(EntityID entity)
+{
+    mLights.erase(entity);
+}
+
+void RendererSystem::OnLightEntityChanged(EntityID entity)
+{
+    const auto& it = mLights.find(entity);
+
+    if (it == mLights.end())
+        return;
+
+    LightEntry& entry = it->second;
+    
+    if (entry.light->mLightType == LightType::Spot)
+    {
+        SetupPerspective(entry.transform->GetMatrix(),
+                         entry.light->mSpotLight.nearDist,
+                         entry.light->mSpotLight.farDist,
+                         entry.light->mSpotLight.cutoff, 1.0f,
+                         entry.viewMatrix, entry.projMatrix, entry.frustum);
+    }
 }
 
 void RendererSystem::UpdateCameras()
@@ -600,7 +688,7 @@ void RendererSystem::UpdateCameras()
     EntityManager* entityManager = mScene->GetEntityManager();
     mCameras.clear();
 
-    entityManager->ForEach<TransformComponent, CameraComponent>(
+    entityManager->ForEach_DEPRECATED<TransformComponent, CameraComponent>(
         [&](EntityID entity,
             TransformComponent* transform,
             CameraComponent* camera)
@@ -622,62 +710,18 @@ void RendererSystem::UpdateCameras()
 
 void RendererSystem::UpdateLights()
 {
-    EntityManager* entityManager = mScene->GetEntityManager();
-
-    mOmniLights.clear();
-    mSpotLights.clear();
-    mDirLights.clear();
-
-    entityManager->ForEach<TransformComponent, LightComponent>(
-        [&](EntityID entity,
-            TransformComponent* transform,
-            LightComponent* light)
-        {
-            switch (light->mLightType)
-            {
-            case LightType::Omni:
-                mOmniLights.push_back(std::make_tuple(transform, light));
-                break;
-            case LightType::Spot:
-                mSpotLights.push_back(std::make_tuple(transform, light));
-                break;
-            case LightType::Dir:
-                mDirLights.push_back(std::make_tuple(transform, light));
-                break;
-            }
-        }
-    );
-
-    mSpotLightsData.resize(mSpotLights.size());
-
-    for (size_t i = 0; i < mSpotLights.size(); ++i)
-    {
-        TransformComponent* transform = std::get<0>(mSpotLights[i]);
-        LightComponent* light = std::get<1>(mSpotLights[i]);
-        SpotLightData& data = mSpotLightsData[i];
-
-        SetupPerspective(transform->GetMatrix(),
-                         light->mSpotLight.nearDist,
-                         light->mSpotLight.farDist,
-                         light->mSpotLight.cutoff, 1.0f,
-                         data.viewMatrix, data.projMatrix, data.frustum);
-    }
+    // TODO: instead of iterating through everything we can keep list of lights,
+    // for which shadow map was drawn in previous frame
 
     // mark all shadow maps as not-drawn
+    for (auto& it : mLights)
     {
-        mSpotLightsShadowDrawn.reset(new std::atomic_bool[mSpotLights.size()]);
-        for (size_t i = 0; i < mSpotLights.size(); ++i)
-            mSpotLightsShadowDrawn[i] = false;
-
-        mOmniLightsShadowDrawn.reset(new std::atomic_bool[mOmniLights.size()]);
-        for (size_t i = 0; i < mOmniLights.size(); ++i)
-            mOmniLightsShadowDrawn[i] = false;
+        it.second.shadowDrawn = false;
     }
 }
 
 void RendererSystem::Update(const Common::TaskContext& context, float dt)
 {
-    context.pool->CreateTask(std::bind(&RendererSystem::UpdateMeshes, this), 1, context.taskId);
     context.pool->CreateTask(std::bind(&RendererSystem::UpdateCameras, this), 1, context.taskId);
     context.pool->CreateTask(std::bind(&RendererSystem::UpdateLights, this), 1, context.taskId);
 }

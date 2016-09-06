@@ -7,6 +7,8 @@
 #pragma once
 
 #include "../Core.hpp"
+#include "../Scene/Entity.hpp"
+#include "nfCommon/nfCommon.hpp"
 
 #include <vector>
 
@@ -14,7 +16,8 @@
 namespace NFE {
 namespace Scene {
 
-#define NFE_MAX_COMPONENT_TYPES 32
+#define NFE_MAX_COMPONENT_TYPES     32
+#define NFE_INVALID_COMPONENT_TYPE  0xFFFFFFFF
 
 /**
  * Structure storing component type information.
@@ -28,13 +31,31 @@ struct ComponentInfo
 
 class CORE_API Component
 {
+    friend class EntityManager;
+
 private:
-    static std::vector<ComponentInfo> mComponents;
+    // global list of component types
+    static std::vector<ComponentInfo> mComponentTypes;
+
+    EntityManager*  mEntityManager;     // owner
+    EntityID        mEntity;            // parent entity
+    int             mComponentType;     // component type
+
+    // called by EntityManager when component is attached to entity
+    void OnAttachToEntity(EntityManager* manager, EntityID entity);
 
 protected:
+    // global component type ID counter
     static int mComponentIdCounter;
 
+    /**
+     * Should be called when a component property has been changed.
+     * This will notify all interested systems.
+     */
+    void HasChanged() const;
+
 public:
+    Component(int id);
     virtual ~Component() {}
 
     /**
@@ -50,7 +71,23 @@ public:
      * @param size Component class size in bytes.
      * @return True on success.
      */
-    static bool Register(int id, const char* name, size_t size);
+    static bool RegisterType(int id, const char* name, size_t size);
+
+    /**
+     * Get entity manager, in which the component was created.
+     */
+    NFE_INLINE EntityManager* GetEntityManager() const
+    {
+        return mEntityManager;
+    }
+
+    /**
+     * Get parent entity.
+     */
+    NFE_INLINE EntityID GetEntity() const
+    {
+        return mEntity;
+    }
 };
 
 /**
@@ -62,11 +99,12 @@ public:
 template<typename T>
 class ComponentBase : public Component
 {
-    ComponentBase(const ComponentBase&) = delete;
-    ComponentBase& operator=(const ComponentBase&) = delete;
+    NFE_MAKE_NONCOPYABLE(ComponentBase);
 
 public:
-    ComponentBase() { }
+    NFE_INLINE ComponentBase()
+        : Component(GetID())
+    { }
 
     virtual ~ComponentBase() {}
 
@@ -85,7 +123,7 @@ public:
  * Component registering is required by EntityManager for memory allocations.
  */
 #define NFE_REGISTER_COMPONENT(c) \
-    static bool gRegisterComponent_##c##_Var = Component::Register(c::GetID(), #c, sizeof(c));
+    static bool gRegisterComponent_##c##_Var = Component::RegisterType(c::GetID(), #c, sizeof(c));
 
 } // namespace Scene
 } // namespace NFE

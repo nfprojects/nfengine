@@ -52,8 +52,6 @@ BodyComponent::BodyComponent()
 
 BodyComponent::~BodyComponent()
 {
-    DisablePhysics();
-
     if (mCollisionShape != nullptr)
     {
         mCollisionShape->DelRef();
@@ -61,7 +59,7 @@ BodyComponent::~BodyComponent()
     }
 }
 
-void BodyComponent::EnablePhysics(CollisionShape* shape)
+void BodyComponent::SetShape(CollisionShape* shape)
 {
     if (mRigidBody)
         return;
@@ -77,11 +75,6 @@ void BodyComponent::EnablePhysics(CollisionShape* shape)
 }
 
 void BodyComponent::Invalidate()
-{
-    DisablePhysics();
-}
-
-void BodyComponent::DisablePhysics()
 {
     mFlags |= BODY_COMPONENT_FLAG_RELEASE;
 }
@@ -130,11 +123,6 @@ void BodyComponent::SetMass(float mass)
         btVector3 inertia = Vector2bt(mCollisionShape->mLocalInertia);
         mRigidBody->setMassProps(mMass, inertia * mMass);
     }
-}
-
-float BodyComponent::GetMass() const
-{
-    return mMass;
 }
 
 } // namespace Scene

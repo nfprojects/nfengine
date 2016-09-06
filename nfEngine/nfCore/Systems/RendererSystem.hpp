@@ -10,20 +10,51 @@
 #include "nfCommon/Aligned.hpp"
 #include "nfCommon/ThreadPool.hpp"
 #include "nfCommon/Math/Frustum.hpp"
+#include "nfCommon/BVH.hpp"
+#include "nfCommon/PackedArray.hpp"
 #include "../Renderer/RendererResources.hpp"
 #include "../Renderers/RendererInterface/CommandBuffer.hpp"
+#include "../Scene/EntityManager.hpp"
 
 namespace NFE {
 namespace Scene {
 
-/**
- * Temporary data of active spot light.
- */
-struct NFE_ALIGN16 SpotLightData
+struct MeshEntry
+{
+    Math::Box aabb;                 // axis aligned bounding box
+    TransformComponent* transform;  // transform component (obligatory)
+    MeshComponent* mesh;            // mesh component (obligatory)
+    BodyComponent* body;            // body component (optional - for velocity information)
+    uint32 entityID;                // entity ID
+    uint32 bvhNode;                 // node ID in meshes BVH tree
+};
+
+struct NFE_ALIGN16 LightEntry
 {
     Math::Frustum frustum;
     Math::Matrix viewMatrix;
     Math::Matrix projMatrix;
+
+    TransformComponent* transform;
+    LightComponent* light;
+
+    std::atomic_bool shadowDrawn;
+
+
+    // required because of atomic member
+    NFE_INLINE LightEntry& operator= (const LightEntry& other)
+    {
+        frustum = other.frustum;
+        viewMatrix = other.viewMatrix;
+        projMatrix = other.projMatrix;
+        transform = other.transform;
+        light = other.light;
+        shadowDrawn = false;
+
+        return *this;
+    }
+
+    // TODO: keep more renderer variables: AABB, BVH node, etc.
 };
 
 /**
@@ -39,8 +70,8 @@ struct NFE_ALIGN16 RenderingData
     TransformComponent* cameraTransform;
     Renderer::CameraRenderDesc cameraRenderDesc;
 
-    std::vector<uint32> visibleOmniLights;
-    std::vector<uint32> visibleSpotLights;
+    std::vector<LightEntry*> visibleOmniLights;
+    std::vector<LightEntry*> visibleSpotLights;
 
     Common::TaskID sceneRenderTask;
 
@@ -65,22 +96,32 @@ struct NFE_ALIGN16 RenderingData
 NFE_ALIGN16
 class RendererSystem : public Common::Aligned<16>
 {
-    typedef std::tuple<TransformComponent*, MeshComponent*, BodyComponent*> MeshEntry;
-    typedef std::tuple<TransformComponent*, LightComponent*> LightEntry;
+    using LightEntries = std::map<EntityID, LightEntry, Common::AlignedAllocator<LightEntry, 16>>;
+
     typedef std::tuple<TransformComponent*, CameraComponent*, BodyComponent*> CameraEntry;
 
     Common::TaskID mUpdateTask;
+
+    EntityListener mMeshesListener;
+    EntityListener mLightsListener;
+
+    Common::BVH mMeshesBVH;
 
     /**
      * Temorary, per-frame data (they are overwritten by Update method).
      * Note that they can be shared by multiple Views.
      */
-    std::vector<MeshEntry> mMeshes;       // active mesh entities
-    std::vector<CameraEntry> mCameras;    // active camera entities
-    std::vector<LightEntry> mOmniLights;  // active omni light entities
-    std::vector<LightEntry> mSpotLights;  // active spot light entities
-    std::vector<LightEntry> mDirLights;   // active dir light entities
-    std::vector<SpotLightData, Common::AlignedAllocator<SpotLightData, 16>> mSpotLightsData;
+
+    // visible mesh entities (containing at least transform and mesh component)
+    std::vector<MeshEntry> mMeshes;
+
+    // mapping from scene's entity ID to mesh vector index
+    std::unordered_map<EntityID, size_t> mMeshesEntityMapping;
+
+    std::vector<CameraEntry> mCameras;          // active camera entities
+    std::unordered_map<EntityID, LightEntry> mLights;                       // active light entities
+
+
     // which spot lights have its shadow map already rendered?
     std::unique_ptr<std::atomic_bool[]> mSpotLightsShadowDrawn;
     // which omni lights have its shadow map already rendered?
@@ -92,13 +133,10 @@ class RendererSystem : public Common::Aligned<16>
     void RenderLightsDebug(RenderingData& data, Renderer::RenderContext* ctx) const;
     void RenderShadowMaps(const Common::TaskContext& context, RenderingData& data);
     void RenderSpotShadowMap(const Common::TaskContext& context,
-                             const SpotLightData& lightData,
-                             const TransformComponent* transform,
-                             const LightComponent* light,
+                             const LightEntry* lightData,
                              RenderingData& data) const;
     void RenderOmniShadowMap(const Common::TaskContext& context,
-                             const TransformComponent* transform,
-                             const LightComponent* light,
+                             const LightEntry* lightData,
                              RenderingData& data) const;
     void RenderLights(const Common::TaskContext& context, RenderingData& data) const;
 
@@ -114,14 +152,22 @@ class RendererSystem : public Common::Aligned<16>
 
     void FindVisibleMeshEntities(const Math::Frustum & frustum,
                                  std::vector<MeshEntry>& list) const;
-    void FindVisibleLights(const Math::Frustum & frustum, RenderingData& data) const;
+    void FindVisibleLights(const Math::Frustum & frustum, RenderingData& data);
 
-    void UpdateMeshes();
     void UpdateCameras();
     void UpdateLights();
 
+    void OnMeshEntityCreated(EntityID entity);
+    void OnMeshEntityRemoved(EntityID entity);
+    void OnMeshEntityChanged(EntityID entity);
+
+    void OnLightEntityCreated(EntityID entity);
+    void OnLightEntityRemoved(EntityID entity);
+    void OnLightEntityChanged(EntityID entity);
+
 public:
     RendererSystem(SceneManager* scene);
+    ~RendererSystem();
 
     /**
      * Update the renderer system.

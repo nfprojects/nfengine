@@ -55,9 +55,6 @@ namespace NFE {
         struct LightDesc;
         struct CameraDesc;
         struct BodyComponentDesc;
-
-        enum class ComponentMsg;
-        enum class ComponentType;
     } // namespace Scene
 
 

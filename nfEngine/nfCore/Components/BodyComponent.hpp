@@ -44,7 +44,6 @@ class CORE_API BodyComponent
     NFE_MAKE_NONMOVEABLE(BodyComponent)
 
     friend class PhysicsSystem;
-    friend class RendererSystem;
 
 private:
     Math::Vector mVelocity;
@@ -65,14 +64,9 @@ public:
     void Invalidate();
 
     /**
-     * Enable physics interaction via assigning a collision shape
+     * Set collision shape.
      */
-    void EnablePhysics(Resource::CollisionShape* shape);
-
-    /**
-     * Disable physics interaction
-     */
-    void DisablePhysics();
+    void SetShape(Resource::CollisionShape* shape);
 
     /**
      * Get current linear velocity.
@@ -100,7 +94,10 @@ public:
      */
     void SetMass(float mass);
 
-    float GetMass() const;
+    NFE_INLINE float GetMass() const
+    {
+        return mMass;
+    }
 };
 
 } // namespace Scene

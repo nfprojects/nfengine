@@ -432,7 +432,7 @@ public:
             BodyComponent* body = entityManager->AddComponent<BodyComponent>(cube);
             body->SetMass(10.0f);
             body->SetVelocity(0.1f * camOrient.z);
-            body->EnablePhysics(ENGINE_GET_COLLISION_SHAPE("shape_box"));
+            body->SetShape(ENGINE_GET_COLLISION_SHAPE("shape_box"));
 
             {
                 EntityID child = entityManager->CreateEntity();
@@ -470,7 +470,7 @@ public:
             BodyComponent* body = entityManager->AddComponent<BodyComponent>(barrel);
             body->SetMass(20.0f);
             body->SetVelocity(30.0f * camOrient.z);
-            body->EnablePhysics(ENGINE_GET_COLLISION_SHAPE("shape_barrel"));
+            body->SetShape(ENGINE_GET_COLLISION_SHAPE("shape_barrel"));
         }
     }
 

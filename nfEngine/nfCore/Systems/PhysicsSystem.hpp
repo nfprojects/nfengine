@@ -7,6 +7,7 @@
 #pragma once
 
 #include "../Core.hpp"
+#include "Scene/EntityManager.hpp"
 #include "nfCommon/Aligned.hpp"
 #include "nfCommon/ThreadPool.hpp"
 
@@ -17,12 +18,22 @@
 namespace NFE {
 namespace Scene {
 
+struct BodyEntry
+{
+
+};
+
 NFE_ALIGN16
 class PhysicsSystem : public Common::Aligned<16>
 {
-    friend void PhysicsUpdateCallback(void* userData, int instance, int threadID);
+    NFE_MAKE_NONCOPYABLE(PhysicsSystem);
+    NFE_MAKE_NONMOVEABLE(PhysicsSystem);
 
+    // parent scene
     SceneManager* mScene;
+
+    // entity listeners for body entities
+    EntityListener mBodiesListener;
 
     btEmptyShape mEmptyCollisionShape;
 
@@ -36,8 +47,13 @@ class PhysicsSystem : public Common::Aligned<16>
     void UpdatePhysics(float dt);
     void ProcessContacts();
 
+    void OnBodyEntityCreated(EntityID entity);
+    void OnBodyEntityRemoved(EntityID entity);
+    void OnBodyEntityChanged(EntityID entity);
+
 public:
     PhysicsSystem(SceneManager* scene);
+    ~PhysicsSystem();
 
     /**
      * Update the system.

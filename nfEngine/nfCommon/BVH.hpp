@@ -158,6 +158,11 @@ public:
     bool Remove(uint32 nodeID);
 
     /**
+     * Update user data for existing leaf node.
+     */
+    bool SetUserData(uint32 nodeID, void* newUserData);
+
+    /**
      * Change leaf's AABB.
      * @param nodeID   Leaf node ID.
      * @param aabb     New leaf axis-aligned bounding box.

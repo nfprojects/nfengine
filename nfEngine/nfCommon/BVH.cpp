@@ -97,6 +97,15 @@ uint32 BVH::Insert(const Box& aabb, void* userData)
     return leaf;
 }
 
+bool BVH::SetUserData(uint32 nodeID, void* newUserData)
+{
+    if (nodeID >= mNodesCapacity || !mNodes[nodeID].IsValid() || !mNodes[nodeID].IsLeaf())
+        return false;
+
+    mNodes[nodeID].userData = newUserData;
+    return true;
+}
+
 bool BVH::Remove(uint32 nodeID)
 {
     if (nodeID >= mNodesCapacity || !mNodes[nodeID].IsValid() || !mNodes[nodeID].IsLeaf())

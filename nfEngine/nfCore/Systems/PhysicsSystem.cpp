@@ -10,7 +10,7 @@
 #include "Scene/EntityManager.hpp"
 #include "Components/TransformComponent.hpp"
 #include "Components/BodyComponent.hpp"
-
+#include "nfCommon/Logger.hpp"
 #include "nfCommon/Timer.hpp"
 
 namespace NFE {
@@ -41,6 +41,20 @@ btVector3 Vector2bt(const Vector& v)
 PhysicsSystem::PhysicsSystem(SceneManager* scene)
     : mScene(scene)
 {
+    using namespace std::placeholders;
+
+    EntityManager* entityManager = mScene->GetEntityManager();
+
+    // register entity manager listeners
+
+    mBodiesListener.AddFilter<BodyComponent>();
+    mBodiesListener.AddFilter<TransformComponent>();
+    mBodiesListener.onCreated = std::bind(&PhysicsSystem::OnBodyEntityCreated, this, _1);
+    mBodiesListener.onRemoved = std::bind(&PhysicsSystem::OnBodyEntityRemoved, this, _1);
+    mBodiesListener.onChanged = std::bind(&PhysicsSystem::OnBodyEntityChanged, this, _1);
+    entityManager->RegisterEntityListener(&mBodiesListener);
+
+
     mBroadphase.reset(new btDbvtBroadphase());
     mCollsionConfig.reset(new btDefaultCollisionConfiguration());
     mDispatcher.reset(new btCollisionDispatcher(mCollsionConfig.get()));
@@ -53,6 +67,12 @@ PhysicsSystem::PhysicsSystem(SceneManager* scene)
     mDynamicsWorld->setGravity(btVector3(0.0f, -9.81f, 0.0f));
 }
 
+PhysicsSystem::~PhysicsSystem()
+{
+    EntityManager* entityManager = mScene->GetEntityManager();
+    entityManager->UnregisterEntityListener(&mBodiesListener);
+}
+
 void PhysicsSystem::UpdatePhysics(float dt)
 {
     mDynamicsWorld->stepSimulation(dt, 40, 1.0f / 90.0f);
@@ -60,26 +80,26 @@ void PhysicsSystem::UpdatePhysics(float dt)
 
 void PhysicsSystem::ProcessContacts()
 {
-    EventBodyCollide event;
-
     // process contacts
     int numManifolds = mDispatcher->getNumManifolds();
     for (int i = 0; i < numManifolds; i++)
     {
-        btPersistentManifold* contactManifold = mDispatcher->getManifoldByIndexInternal(i);
-        const btCollisionObject* obA = contactManifold->getBody0();
-        const btCollisionObject* obB = contactManifold->getBody1();
+        const btPersistentManifold* contactManifold = mDispatcher->getManifoldByIndexInternal(i);
+        const btCollisionObject* objA = contactManifold->getBody0();
+        const btCollisionObject* objB = contactManifold->getBody1();
 
-        // extract body objects
-        event.bodyA = (BodyComponent*)obA->getUserPointer();
-        event.bodyB = (BodyComponent*)obB->getUserPointer();
+        // extract body components
+        BodyComponent* bodyA = reinterpret_cast<BodyComponent*>(objA->getUserPointer());
+        BodyComponent* bodyB = reinterpret_cast<BodyComponent*>(objB->getUserPointer());
 
         int numContacts = contactManifold->getNumContacts();
         for (int j = 0; j < numContacts; j++)
         {
-            btManifoldPoint& pt = contactManifold->getContactPoint(j);
+            const btManifoldPoint& pt = contactManifold->getContactPoint(j);
             if (pt.getDistance() < 0.0f)
             {
+                LOG_INFO("Body collision: entityA = %u, entityB = %u", bodyA->GetEntity(), bodyB->GetEntity());
+
                 // TODO: finish when event system is implemented
                 //const btVector3& ptA = pt.getPositionWorldOnA();
                 //const btVector3& ptB = pt.getPositionWorldOnB();
@@ -134,6 +154,7 @@ void PhysicsSystem::Update(float dt)
             body->mRigidBody->setDamping(0.01f, 0.01f);
             body->mRigidBody->setRollingFriction(0.1f);
             body->mRigidBody->setSleepingThresholds(0.005f, 0.005f);
+            body->mRigidBody->setUserPointer(body);
 
             if (body->mMass > 0.0f)
             {
@@ -190,9 +211,25 @@ void PhysicsSystem::Update(float dt)
         }
     };
 
-    mScene->GetEntityManager()->ForEach<TransformComponent, BodyComponent>(iterFunc);
+    // TODO: use listener instead
+    mScene->GetEntityManager()->ForEach_DEPRECATED<TransformComponent, BodyComponent>(iterFunc);
 
     ProcessContacts();
+}
+
+void PhysicsSystem::OnBodyEntityCreated(EntityID entity)
+{
+
+}
+
+void PhysicsSystem::OnBodyEntityRemoved(EntityID entity)
+{
+
+}
+
+void PhysicsSystem::OnBodyEntityChanged(EntityID entity)
+{
+
 }
 
 } // namespace Scene

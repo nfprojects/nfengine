@@ -27,13 +27,8 @@ class CORE_API MeshComponent
     : public ComponentBase<MeshComponent>
     , public Common::Aligned<16>
 {
-    friend class SceneManager;
-    friend class RendererSystem;
-
+    // mesh resource
     Resource::Mesh* mMesh;
-    Math::Box mGlobalAABB;
-
-    void CalcAABB(const Math::Matrix& transform);
 
 public:
     MeshComponent();
@@ -48,6 +43,16 @@ public:
      * Set mesh resource by name.
      */
     bool SetMeshResource(const char* name);
+
+    /**
+     * Calculate global-space AABB.
+     */
+    Math::Box CalculateAABB(const Math::Matrix& transform) const;
+
+    NFE_INLINE Resource::Mesh* GetMeshResource() const
+    {
+        return mMesh;
+    }
 };
 
 } // namespace Scene

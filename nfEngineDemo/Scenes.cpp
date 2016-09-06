@@ -89,7 +89,7 @@ void CreateSceneSponza(SceneManager* scene)
 
         CollisionShape* sponzaShape = ENGINE_GET_COLLISION_SHAPE("sponza_collision_shape.nfcs");
         BodyComponent* body = entityManager->AddComponent<BodyComponent>(sponza);
-        body->EnablePhysics(sponzaShape);
+        body->SetShape(sponzaShape);
         body->SetMass(0.0);
     }
 
@@ -138,7 +138,7 @@ void CreateChamberArray(SceneManager* scene,
                 mesh->SetMeshResource("chamber.nfm");
 
                 BodyComponent* body = entityManager->AddComponent<BodyComponent>(chamber);
-                body->EnablePhysics(ENGINE_GET_COLLISION_SHAPE("chamber_collision_shape.nfcs"));
+                body->SetShape(ENGINE_GET_COLLISION_SHAPE("chamber_collision_shape.nfcs"));
             }
 
             OmniLightDesc omni;
@@ -197,7 +197,7 @@ void CreateChamberArray(SceneManager* scene,
                         mesh->SetMeshResource("cube.nfm");
 
                         BodyComponent* body = entityManager->AddComponent<BodyComponent>(cube);
-                        body->EnablePhysics(ENGINE_GET_COLLISION_SHAPE("shape_box"));
+                        body->SetShape(ENGINE_GET_COLLISION_SHAPE("shape_box"));
                     }
                 }
             }
