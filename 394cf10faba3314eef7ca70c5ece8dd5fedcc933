@@ -1,0 +1,204 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_6c170b46",
+        "filename": "nfEngine/nfCommon/Image/Image.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-06T18:33:18Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 8
+      },
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_4c2567ac",
+        "filename": "nfEngine/nfCommon/Image/Image.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-06T18:33:18Z",
+      "side": 1,
+      "message": "Shouldn\u0027t be this methods placed in ImageType class?\nThen it would be more clear: ImageType::Register, ImageType::Get, etc.",
+      "range": {
+        "startLine": 56,
+        "startChar": 0,
+        "endLine": 78,
+        "endChar": 38
+      },
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2c28e384",
+        "filename": "nfEngine/nfCommon/Image/ImageBMP.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-06T18:33:18Z",
+      "side": 1,
+      "message": "why you moved NFE::Common namespace? Now you need these usings here...",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 35
+      },
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_0c1f5f5c",
+        "filename": "nfEngine/nfCommon/Image/ImageDDS.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-06T18:33:18Z",
+      "side": 1,
+      "message": "as in ImageBMP",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 45
+      },
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ec21db9f",
+        "filename": "nfEngine/nfCommon/Image/ImageDDS.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-06T18:33:18Z",
+      "side": 1,
+      "message": "not required",
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ac34f3de",
+        "filename": "nfEngine/nfCommon/Image/ImageJPG.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-06T18:33:18Z",
+      "side": 1,
+      "message": "as in ImageBMP",
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_cc3977da",
+        "filename": "nfEngine/nfCommon/Image/ImageJPG.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-06T18:33:18Z",
+      "side": 1,
+      "message": "not required",
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8c336ff6",
+        "filename": "nfEngine/nfCommon/Image/ImagePNG.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-06T18:33:18Z",
+      "side": 1,
+      "message": "as in ImageBMP",
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_6c2eeb8d",
+        "filename": "nfEngine/nfCommon/Image/ImagePNG.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-06T18:33:18Z",
+      "side": 1,
+      "message": "not required",
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2c4fc36b",
+        "filename": "nfEngine/nfCommon/Image/ImageType.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-06T18:33:18Z",
+      "side": 1,
+      "message": "To be honest, I don\u0027t like this much. Why you can just use Image::SetData() in every Load() method?",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 48
+      },
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
