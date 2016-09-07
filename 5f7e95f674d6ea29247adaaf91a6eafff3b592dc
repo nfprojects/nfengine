@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_fd7660a2",
+        "filename": "nfEngine/nfCommon/AsyncQueueManager.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-07T08:51:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_e73ed18a",
+      "revId": "5f7e95f674d6ea29247adaaf91a6eafff3b592dc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_c743cd12",
         "filename": "nfEngine/nfCommon/AsyncQueueManager.hpp",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2016-08-18T18:17:32Z",
       "side": 1,
       "message": "NFE_MAKE_NON_COPYABLE, NFE_MAKE_NON_MOVABLE",
+      "revId": "5f7e95f674d6ea29247adaaf91a6eafff3b592dc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_9d6634ed",
+        "filename": "nfEngine/nfCommon/AsyncQueueManager.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-07T08:51:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_c743cd12",
       "revId": "5f7e95f674d6ea29247adaaf91a6eafff3b592dc",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
