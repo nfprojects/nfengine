@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_12409406",
+        "filename": "nfEngine/nfCommon/Math/Conversions.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-09-07T09:22:07Z",
+      "side": 1,
+      "message": "ToFloat",
+      "range": {
+        "startLine": 19,
+        "startChar": 19,
+        "endLine": 19,
+        "endChar": 42
+      },
+      "revId": "dea78e931bc6e8359609f523b81b23ca0ae9634a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
