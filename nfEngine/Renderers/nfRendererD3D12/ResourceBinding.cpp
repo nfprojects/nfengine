@@ -31,6 +31,7 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
         desc.shaderVisibility != ShaderType::Domain &&
         desc.shaderVisibility != ShaderType::Geometry &&
         desc.shaderVisibility != ShaderType::Pixel &&
+        desc.shaderVisibility != ShaderType::Compute &&
         desc.shaderVisibility != ShaderType::All)
     {
         LOG_ERROR("Invalid shader visibility");
@@ -45,7 +46,10 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
         const ResourceBindingDesc& bindingDesc = desc.resourceBindings[i];
 
         if (bindingDesc.resourceType != ShaderResourceType::CBuffer &&
-            bindingDesc.resourceType != ShaderResourceType::Texture)
+            bindingDesc.resourceType != ShaderResourceType::Texture &&
+            bindingDesc.resourceType != ShaderResourceType::StructuredBuffer &&
+            bindingDesc.resourceType != ShaderResourceType::WritableTexture &&
+            bindingDesc.resourceType != ShaderResourceType::WritableStructuredBuffer)
         {
             LOG_ERROR("Invalid shader resource type at binding %i", i);
             return false;
@@ -118,7 +122,12 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
                 rangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
                 break;
             case ShaderResourceType::Texture:
+            case ShaderResourceType::StructuredBuffer:
                 rangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+                break;
+            case ShaderResourceType::WritableTexture:
+            case ShaderResourceType::WritableStructuredBuffer:
+                rangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
                 break;
             default:
                 LOG_ERROR("Invalid shader resource type");
@@ -304,9 +313,42 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, IBuffer* buffer)
 
 bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, ITexture* texture)
 {
-    UNUSED(slot);
-    UNUSED(texture);
-    return false;
+    Texture* tex = dynamic_cast<Texture*>(texture);
+    if (!tex || !tex->mBuffers[0])
+    {
+        LOG_ERROR("Invalid buffer");
+        return false;
+    }
+
+    D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc;
+    uavDesc.Format = tex->mSrvFormat;
+
+    switch (tex->mType)
+    {
+    case TextureType::Texture1D:
+        uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE1D;
+        uavDesc.Texture1D.MipSlice = 0;
+        break;
+    case TextureType::Texture2D:
+        uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
+        uavDesc.Texture2D.MipSlice = 0;
+        uavDesc.Texture2D.PlaneSlice = 0;
+        break;
+    case TextureType::Texture3D:
+        uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE3D;
+        uavDesc.Texture3D.FirstWSlice = 0;
+        uavDesc.Texture3D.MipSlice = 0;
+        uavDesc.Texture3D.WSize = 0xFFFFFFFF;
+        break;
+        // TODO multisampled and multilayered textures, etc.
+    }
+
+    HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
+    D3D12_CPU_DESCRIPTOR_HANDLE handle = allocator.GetCpuHandle();
+    handle.ptr += allocator.GetDescriptorSize() * (mDescriptorHeapOffset + slot);
+    gDevice->GetDevice()->CreateUnorderedAccessView(tex->mBuffers[0].get(), nullptr, &uavDesc, handle);
+
+    return true;
 }
 
 } // namespace Renderer
