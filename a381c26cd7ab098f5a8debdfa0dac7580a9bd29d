@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_271a3c7d",
+        "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-07T08:51:41Z",
+      "side": 1,
+      "message": "Done in AQM commit",
+      "parentUuid": "baa041b7_6c45cb41",
+      "revId": "a381c26cd7ab098f5a8debdfa0dac7580a9bd29d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_4c7327b5",
         "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.cpp",
         "patchSetId": 5
@@ -30,6 +48,24 @@
       "writtenOn": "2016-09-06T18:39:41Z",
       "side": 1,
       "message": "...",
+      "revId": "a381c26cd7ab098f5a8debdfa0dac7580a9bd29d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_0711785d",
+        "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-07T08:51:41Z",
+      "side": 1,
+      "message": "Done in AQM commit",
+      "parentUuid": "baa041b7_4c7327b5",
       "revId": "a381c26cd7ab098f5a8debdfa0dac7580a9bd29d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_12089427",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-07T08:51:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_2c76a3a3",
+      "revId": "a381c26cd7ab098f5a8debdfa0dac7580a9bd29d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_ac62b3d7",
         "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
         "patchSetId": 5
@@ -64,6 +118,30 @@
       "writtenOn": "2016-09-06T18:39:41Z",
       "side": 1,
       "message": "This error may be no longer valid. For example async queue is not initialized. Make sure that EnqueueJob reports what failed exactly",
+      "range": {
+        "startLine": 199,
+        "startChar": 73,
+        "endLine": 199,
+        "endChar": 101
+      },
+      "revId": "a381c26cd7ab098f5a8debdfa0dac7580a9bd29d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_f20ad01f",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-07T08:51:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_ac62b3d7",
       "range": {
         "startLine": 199,
         "startChar": 73,
@@ -99,6 +177,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_d2122c58",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-07T08:51:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_6c5cab19",
+      "range": {
+        "startLine": 238,
+        "startChar": 74,
+        "endLine": 238,
+        "endChar": 102
+      },
+      "revId": "a381c26cd7ab098f5a8debdfa0dac7580a9bd29d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_0ca4ff05",
         "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
         "patchSetId": 5
@@ -122,6 +224,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_b20d6837",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 295,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-07T08:51:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_0ca4ff05",
+      "range": {
+        "startLine": 295,
+        "startChar": 19,
+        "endLine": 295,
+        "endChar": 39
+      },
+      "revId": "a381c26cd7ab098f5a8debdfa0dac7580a9bd29d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_eca67b0e",
         "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
         "patchSetId": 5
@@ -133,6 +259,30 @@
       "writtenOn": "2016-09-06T18:39:41Z",
       "side": 1,
       "message": "as above",
+      "range": {
+        "startLine": 311,
+        "startChar": 19,
+        "endLine": 311,
+        "endChar": 38
+      },
+      "revId": "a381c26cd7ab098f5a8debdfa0dac7580a9bd29d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7217e045",
+        "filename": "nfEngine/nfCommon/Win/FileAsyncPlatform.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-07T08:51:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_eca67b0e",
       "range": {
         "startLine": 311,
         "startChar": 19,
