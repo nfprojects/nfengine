@@ -8,16 +8,18 @@
 
 #include "../RendererInterface/CommandBuffer.hpp"
 #include "Common.hpp"
-#include "RenderTarget.hpp"
-#include "Shader.hpp"
-#include "PipelineState.hpp"
-#include "ResourceBinding.hpp"
 #include "RingBuffer.hpp"
-#include "Buffer.hpp"
+#include "ResourceBinding.hpp"
 
 
 namespace NFE {
 namespace Renderer {
+
+// predeclarations
+class RenderTarget;
+class PipelineState;
+class ComputePipelineState;
+class Buffer;
 
 struct CommandList : public ICommandList
 {
@@ -43,12 +45,16 @@ class CommandBuffer : public ICommandBuffer
     // ring buffer for dynamic buffers support
     RingBuffer mRingBuffer;
     Buffer* mBoundVolatileCBuffers[NFE_RENDERER_MAX_VOLATILE_CBUFFERS];
+    Buffer* mBoundComputeVolatileCBuffers[NFE_RENDERER_MAX_VOLATILE_CBUFFERS];
 
     RenderTarget* mCurrRenderTarget;
     ResourceBindingLayout* mBindingLayout;
     ResourceBindingLayout* mCurrBindingLayout;
     PipelineState* mCurrPipelineState;
     PipelineState* mPipelineState;
+
+    ResourceBindingLayout* mComputeBindingLayout;
+    ComputePipelineState* mCurrComputePipelineState;
 
     D3D12_PRIMITIVE_TOPOLOGY mCurrPrimitiveTopology;
 

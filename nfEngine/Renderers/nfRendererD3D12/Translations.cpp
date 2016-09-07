@@ -285,6 +285,7 @@ bool TranslateShaderVisibility(ShaderType shaderType, D3D12_SHADER_VISIBILITY& v
     case ShaderType::Pixel:
         visibility = D3D12_SHADER_VISIBILITY_PIXEL;
         return true;
+    case ShaderType::Compute: // for compute there is only one shader stage
     case ShaderType::All:
         visibility = D3D12_SHADER_VISIBILITY_ALL;
         return true;
