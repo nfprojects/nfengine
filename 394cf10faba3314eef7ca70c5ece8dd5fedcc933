@@ -284,6 +284,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_b2f328e7",
+        "filename": "nfEngine/nfCommon/Image/ImageJPG.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-07T09:40:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_ac34f3de",
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_cc3977da",
         "filename": "nfEngine/nfCommon/Image/ImageJPG.cpp",
         "patchSetId": 4
@@ -295,6 +313,24 @@
       "writtenOn": "2016-09-06T18:33:18Z",
       "side": 1,
       "message": "not required",
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_920264b3",
+        "filename": "nfEngine/nfCommon/Image/ImageJPG.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-07T09:40:06Z",
+      "side": 1,
+      "message": "check last answer",
+      "parentUuid": "baa041b7_cc3977da",
       "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -318,6 +354,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_72fda0b0",
+        "filename": "nfEngine/nfCommon/Image/ImagePNG.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-07T09:40:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_8c336ff6",
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_6c2eeb8d",
         "filename": "nfEngine/nfCommon/Image/ImagePNG.cpp",
         "patchSetId": 4
@@ -329,6 +383,24 @@
       "writtenOn": "2016-09-06T18:33:18Z",
       "side": 1,
       "message": "not required",
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_522bbc33",
+        "filename": "nfEngine/nfCommon/Image/ImagePNG.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-07T09:40:06Z",
+      "side": 1,
+      "message": "check last answer",
+      "parentUuid": "baa041b7_6c2eeb8d",
       "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
