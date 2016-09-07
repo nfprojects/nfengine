@@ -15,9 +15,16 @@ namespace Renderer {
 
 class ComputePipelineState : public IComputePipelineState
 {
+    D3DPtr<ID3D12PipelineState> mPipelineState;
+
 public:
     ComputePipelineState();
     bool Init(const ComputePipelineStateDesc& desc);
+
+    NFE_INLINE ID3D12PipelineState* GetPSO() const
+    {
+        return mPipelineState.get();
+    }
 };
 
 } // namespace Renderer
