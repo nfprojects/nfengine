@@ -80,6 +80,9 @@ bool Shader::Init(const ShaderDesc& desc)
     case ShaderType::Pixel:
         profileName = "ps_5_0";
         break;
+    case ShaderType::Compute:
+        profileName = "cs_5_0";
+        break;
     default:
         LOG_ERROR("Invalid shader type");
         return false;
@@ -228,6 +231,15 @@ bool Shader::GetIODesc()
             break;
         case D3D_SIT_SAMPLER:
             bindingDesc.type = ShaderResourceType::Sampler;
+            break;
+        case D3D_SIT_STRUCTURED:
+            bindingDesc.type = ShaderResourceType::StructuredBuffer;
+            break;
+        case D3D_SIT_UAV_RWSTRUCTURED:
+            bindingDesc.type = ShaderResourceType::WritableStructuredBuffer;
+            break;
+        case D3D_SIT_UAV_RWTYPED:
+            bindingDesc.type = ShaderResourceType::WritableTexture;
             break;
         default:
             LOG_WARNING("Unsupported shader resource type (%d) at slot %d (name: '%s')",

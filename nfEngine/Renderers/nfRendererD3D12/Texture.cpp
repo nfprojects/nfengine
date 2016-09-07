@@ -323,6 +323,12 @@ bool Texture::Init(const TextureDesc& desc)
         mSrvFormat = TranslateElementFormat(desc.format);
         mDsvFormat = DXGI_FORMAT_UNKNOWN;
 
+        if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER_WRITABLE)
+        {
+            resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+            initialState = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
+        }
+
         if (desc.binding & NFE_RENDERER_TEXTURE_BIND_RENDERTARGET)
         {
             if (desc.mode != BufferMode::GPUOnly)

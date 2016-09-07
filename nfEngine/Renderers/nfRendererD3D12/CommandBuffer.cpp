@@ -17,6 +17,7 @@
 #include "Shader.hpp"
 #include "RenderTarget.hpp"
 #include "PipelineState.hpp"
+#include "ComputePipelineState.hpp"
 #include "Sampler.hpp"
 #include "Translations.hpp"
 #include "ResourceBinding.hpp"
@@ -33,6 +34,8 @@ CommandBuffer::CommandBuffer()
     , mCurrBindingLayout(nullptr)
     , mCurrPipelineState(nullptr)
     , mPipelineState(nullptr)
+    , mComputeBindingLayout(nullptr)
+    , mCurrComputePipelineState(nullptr)
     , mCurrPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_UNDEFINED)
     , mFrameCounter(0)
     , mFrameCount(3) // TODO this must be configurable
@@ -41,7 +44,10 @@ CommandBuffer::CommandBuffer()
     , mReset(false)
 {
     for (int i = 0; i < NFE_RENDERER_MAX_VOLATILE_CBUFFERS; ++i)
+    {
         mBoundVolatileCBuffers[i] = nullptr;
+        mBoundComputeVolatileCBuffers[i] = nullptr;
+    }
 
     for (int i = 0; i < NFE_RENDERER_MAX_VERTEX_BUFFERS; ++i)
         mBoundVertexBuffers[i] = nullptr;
@@ -149,10 +155,15 @@ void CommandBuffer::Reset()
     mCurrBindingLayout = nullptr;
     mCurrPipelineState = nullptr;
     mPipelineState = nullptr;
+    mComputeBindingLayout = nullptr;
+    mCurrComputePipelineState = nullptr;
     mCurrPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
 
     for (int i = 0; i < NFE_RENDERER_MAX_VOLATILE_CBUFFERS; ++i)
+    {
         mBoundVolatileCBuffers[i] = nullptr;
+        mBoundComputeVolatileCBuffers[i] = nullptr;
+    }
 
     mNumBoundVertexBuffers = 0;
     for (int i = 0; i < NFE_RENDERER_MAX_VERTEX_BUFFERS; ++i)
@@ -482,6 +493,19 @@ void CommandBuffer::WriteVolatileBuffer(Buffer* buffer, const void* data)
     D3D12_GPU_VIRTUAL_ADDRESS gpuPtr = mRingBuffer.GetGpuAddress();
     gpuPtr += ringBufferOffset;
 
+    // check if the buffer is not used as compute CBV
+    if (mComputeBindingLayout)
+    {
+        for (uint32 i = 0; i < NFE_RENDERER_MAX_VOLATILE_CBUFFERS; ++i)
+        {
+            if (mBoundComputeVolatileCBuffers[i] == buffer)
+            {
+                UINT rootParamIndex = static_cast<UINT>(mComputeBindingLayout->mBindingSets.size()) + i;
+                mCommandList->SetComputeRootConstantBufferView(rootParamIndex, gpuPtr);
+            }
+        }
+    }
+
     // check if the buffer is not used as CBV
     for (uint32 i = 0; i < NFE_RENDERER_MAX_VOLATILE_CBUFFERS; ++i)
     {
@@ -718,6 +742,7 @@ void CommandBuffer::UpdateStates()
         // set pipeline state
         mCommandList->SetPipelineState(mPipelineState->GetPSO());
         mCurrPipelineState = mPipelineState;
+        mCurrComputePipelineState = nullptr;
 
         // set root signature
         if (mCurrBindingLayout != mBindingLayout)
@@ -753,31 +778,76 @@ void CommandBuffer::DrawIndexed(int indexNum, int instancesNum,
 
 void CommandBuffer::BindComputeResources(size_t slot, IResourceBindingInstance* bindingSetInstance)
 {
-    UNUSED(slot);
-    UNUSED(bindingSetInstance);
+    ResourceBindingInstance* instance = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance);
+    if (!instance)
+    {
+        // clear the slot
+        D3D12_GPU_DESCRIPTOR_HANDLE ptr;
+        ptr.ptr = 0;
+        mCommandList->SetComputeRootDescriptorTable(static_cast<UINT>(slot), ptr);
+        return;
+    }
+
+    NFE_ASSERT(mComputeBindingLayout, "Compute binding layout not set");
+    NFE_ASSERT(slot < mComputeBindingLayout->mBindingSets.size(), "Binding set index out of bounds");
+
+    HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
+    D3D12_GPU_DESCRIPTOR_HANDLE ptr = allocator.GetGpuHandle();
+    ptr.ptr += instance->mDescriptorHeapOffset * allocator.GetDescriptorSize();
+    mCommandList->SetComputeRootDescriptorTable(static_cast<UINT>(slot), ptr);
 }
 
 void CommandBuffer::BindComputeVolatileCBuffer(size_t slot, IBuffer* buffer)
 {
-    UNUSED(slot);
-    UNUSED(buffer);
+    NFE_ASSERT(slot < NFE_RENDERER_MAX_VOLATILE_CBUFFERS, "Invalid volatile buffer slot number");
+
+    Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer);
+    NFE_ASSERT(bufferPtr->GetMode() == BufferMode::Volatile, "Buffer mode must be volatile");
+
+    mBoundComputeVolatileCBuffers[slot] = bufferPtr;
 }
 
 void CommandBuffer::SetComputeResourceBindingLayout(IResourceBindingLayout* layout)
 {
-    UNUSED(layout);
+    ResourceBindingLayout* newLayout = dynamic_cast<ResourceBindingLayout*>(layout);
+    NFE_ASSERT(newLayout, "Invalid layout");
+
+    if (mComputeBindingLayout != newLayout)
+    {
+        mCommandList->SetComputeRootSignature(newLayout->GetD3DRootSignature());
+        mComputeBindingLayout = newLayout;
+    }
 }
 
 void CommandBuffer::SetComputePipelineState(IComputePipelineState* state)
 {
-    UNUSED(state);
+    ComputePipelineState* newState = dynamic_cast<ComputePipelineState*>(state);
+    NFE_ASSERT(newState, "Invalid compute pipeline state");
+
+    if (mCurrComputePipelineState != newState)
+    {
+        mCommandList->SetPipelineState(newState->GetPSO());
+        mCurrComputePipelineState = newState;
+    }
+
+    mCurrPipelineState = nullptr;
 }
 
 void CommandBuffer::Dispatch(uint32 x, uint32 y, uint32 z)
 {
-    UNUSED(x);
-    UNUSED(y);
-    UNUSED(z);
+    if (!mComputeBindingLayout)
+    {
+        LOG_ERROR("Binding layout not set");
+        return;
+    }
+
+    if (!mCurrComputePipelineState)
+    {
+        LOG_ERROR("Compute pipeline state not set");
+        return;
+    }
+
+    mCommandList->Dispatch(x, y, z);
 }
 
 std::unique_ptr<ICommandList> CommandBuffer::Finish()
