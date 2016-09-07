@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_f26f70c2",
+        "filename": "nfEngine/nfCommon/Image/Image.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-07T09:01:10Z",
+      "side": 1,
+      "message": "tru",
+      "parentUuid": "baa041b7_6c170b46",
+      "range": {
+        "startLine": 42,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 8
+      },
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_4c2567ac",
         "filename": "nfEngine/nfCommon/Image/Image.hpp",
         "patchSetId": 4
@@ -36,6 +60,30 @@
       "writtenOn": "2016-09-06T18:33:18Z",
       "side": 1,
       "message": "Shouldn\u0027t be this methods placed in ImageType class?\nThen it would be more clear: ImageType::Register, ImageType::Get, etc.",
+      "range": {
+        "startLine": 56,
+        "startChar": 0,
+        "endLine": 78,
+        "endChar": 38
+      },
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_529a9cc6",
+        "filename": "nfEngine/nfCommon/Image/Image.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-07T09:01:10Z",
+      "side": 1,
+      "message": "True - this seems like a more sensible approach. As long as ImageType is a friend class, there will be no problem.",
+      "parentUuid": "baa041b7_4c2567ac",
       "range": {
         "startLine": 56,
         "startChar": 0,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_127bf47c",
+        "filename": "nfEngine/nfCommon/Image/ImageBMP.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-07T09:01:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_2c28e384",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 35
+      },
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_0c1f5f5c",
         "filename": "nfEngine/nfCommon/Image/ImageDDS.cpp",
         "patchSetId": 4
@@ -94,6 +166,54 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_52817c4c",
+        "filename": "nfEngine/nfCommon/Image/ImageDDS.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-07T09:01:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_0c1f5f5c",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 45
+      },
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3284b85b",
+        "filename": "nfEngine/nfCommon/Image/ImageDDS.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-07T09:01:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_0c1f5f5c",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 45
+      },
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_ec21db9f",
         "filename": "nfEngine/nfCommon/Image/ImageDDS.cpp",
         "patchSetId": 4
@@ -105,6 +225,42 @@
       "writtenOn": "2016-09-06T18:33:18Z",
       "side": 1,
       "message": "not required",
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_72b3604e",
+        "filename": "nfEngine/nfCommon/Image/ImageDDS.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-07T09:01:10Z",
+      "side": 1,
+      "message": "check last answer",
+      "parentUuid": "baa041b7_ec21db9f",
+      "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_92b8242c",
+        "filename": "nfEngine/nfCommon/Image/ImageDDS.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-07T09:01:10Z",
+      "side": 1,
+      "message": "Actually it is. We don\u0027t have full control over every load algorithm due to the libraries we use and so we cannot always skip reading signature in Load() method - that\u0027s why this Seek is needed.",
+      "parentUuid": "baa041b7_ec21db9f",
       "revId": "394cf10faba3314eef7ca70c5ece8dd5fedcc933",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
