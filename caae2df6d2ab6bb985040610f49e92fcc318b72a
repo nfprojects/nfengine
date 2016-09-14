@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_564dd7c2",
+        "filename": "nfEngine/nfCommon/Image/ImageJPG.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-14T18:58:32Z",
+      "side": 1,
+      "message": "should be as parameter",
+      "revId": "caae2df6d2ab6bb985040610f49e92fcc318b72a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_16c62f16",
+        "filename": "nfEngine/nfCommon/Image/ImageJPG.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-14T18:58:32Z",
+      "side": 1,
+      "message": "what about format check?",
+      "revId": "caae2df6d2ab6bb985040610f49e92fcc318b72a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_76d57bb5",
+        "filename": "nfEngine/nfCommonTest/ImageTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 469,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-14T18:58:32Z",
+      "side": 1,
+      "message": "shouldn\u0027t be this file created in another directory? temp? what about gitignore?",
+      "revId": "caae2df6d2ab6bb985040610f49e92fcc318b72a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
