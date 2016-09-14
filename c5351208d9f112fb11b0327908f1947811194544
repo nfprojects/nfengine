@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_36dff3d7",
+        "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-14T19:04:28Z",
+      "side": 1,
+      "message": "you can (and should) unlock mutex at this point",
+      "revId": "c5351208d9f112fb11b0327908f1947811194544",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_d6e687af",
+        "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-14T19:04:28Z",
+      "side": 1,
+      "message": "why not use iterator?",
+      "revId": "c5351208d9f112fb11b0327908f1947811194544",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_f6ef4b84",
+        "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-14T19:04:28Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "c5351208d9f112fb11b0327908f1947811194544",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b6e9c381",
+        "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-14T19:04:28Z",
+      "side": 1,
+      "message": "unlock mutex",
+      "revId": "c5351208d9f112fb11b0327908f1947811194544",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_96011f3c",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-14T19:04:28Z",
+      "side": 1,
+      "message": "?",
+      "revId": "c5351208d9f112fb11b0327908f1947811194544",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
