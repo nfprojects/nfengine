@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_5472707d",
+        "filename": "nfEngine/nfCommon/Math/Conversions.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-14T22:36:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_32d5d81a",
+      "range": {
+        "startLine": 75,
+        "startChar": 45,
+        "endLine": 75,
+        "endChar": 57
+      },
+      "revId": "dea78e931bc6e8359609f523b81b23ca0ae9634a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_12dc1445",
         "filename": "nfEngine/nfCommon/Math/Conversions.cpp",
         "patchSetId": 5
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_346dac99",
+        "filename": "nfEngine/nfCommon/Math/Conversions.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-14T22:36:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_12dc1445",
+      "range": {
+        "startLine": 80,
+        "startChar": 30,
+        "endLine": 80,
+        "endChar": 36
+      },
+      "revId": "dea78e931bc6e8359609f523b81b23ca0ae9634a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_52d29c35",
         "filename": "nfEngine/nfCommon/Math/Conversions.cpp",
         "patchSetId": 5
@@ -59,6 +107,30 @@
       "writtenOn": "2016-09-07T10:23:52Z",
       "side": 1,
       "message": "I think, you should be consequent and change it to INT*_MAX, INT*_MIN macros",
+      "range": {
+        "startLine": 85,
+        "startChar": 44,
+        "endLine": 85,
+        "endChar": 59
+      },
+      "revId": "dea78e931bc6e8359609f523b81b23ca0ae9634a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_146ce89a",
+        "filename": "nfEngine/nfCommon/Math/Conversions.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-14T22:36:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_52d29c35",
       "range": {
         "startLine": 85,
         "startChar": 44,
@@ -117,6 +189,54 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_d40440c7",
+        "filename": "nfEngine/nfCommon/Math/Conversions.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-14T22:36:16Z",
+      "side": 1,
+      "message": "there is no such a thing",
+      "parentUuid": "baa041b7_f2de503d",
+      "range": {
+        "startLine": 106,
+        "startChar": 46,
+        "endLine": 106,
+        "endChar": 50
+      },
+      "revId": "dea78e931bc6e8359609f523b81b23ca0ae9634a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_f46624ba",
+        "filename": "nfEngine/nfCommon/Math/Conversions.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-14T22:36:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_92f024cb",
+      "range": {
+        "startLine": 106,
+        "startChar": 52,
+        "endLine": 106,
+        "endChar": 82
+      },
+      "revId": "dea78e931bc6e8359609f523b81b23ca0ae9634a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_12409406",
         "filename": "nfEngine/nfCommon/Math/Conversions.hpp",
         "patchSetId": 5
@@ -128,6 +248,30 @@
       "writtenOn": "2016-09-07T09:22:07Z",
       "side": 1,
       "message": "ToFloat",
+      "range": {
+        "startLine": 19,
+        "startChar": 19,
+        "endLine": 19,
+        "endChar": 42
+      },
+      "revId": "dea78e931bc6e8359609f523b81b23ca0ae9634a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b4077cc8",
+        "filename": "nfEngine/nfCommon/Math/Conversions.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-14T22:36:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_12409406",
       "range": {
         "startLine": 19,
         "startChar": 19,
@@ -163,6 +307,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_54f950c7",
+        "filename": "nfEngine/nfCommon/Math/Math.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-14T22:36:16Z",
+      "side": 1,
+      "message": "but it\u0027s less readable",
+      "parentUuid": "baa041b7_a1207cf9",
+      "range": {
+        "startLine": 130,
+        "startChar": 4,
+        "endLine": 133,
+        "endChar": 13
+      },
+      "revId": "dea78e931bc6e8359609f523b81b23ca0ae9634a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_32b838c7",
         "filename": "nfEngine/nfCommonTest/MathTest.cpp",
         "patchSetId": 5
@@ -174,6 +342,30 @@
       "writtenOn": "2016-09-07T10:23:52Z",
       "side": 1,
       "message": "shouldn\u0027t we generate random values here? Ofc because we\u0027re testing, You can use some standard stuff like rand() from \u003ccstdlib\u003e or have some fun with \u003crandom\u003e library...or just use our random :\u003e",
+      "range": {
+        "startLine": 26,
+        "startChar": 4,
+        "endLine": 26,
+        "endChar": 90
+      },
+      "revId": "dea78e931bc6e8359609f523b81b23ca0ae9634a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_1403c8b9",
+        "filename": "nfEngine/nfCommonTest/MathTest.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-14T22:36:16Z",
+      "side": 1,
+      "message": "This values aren\u0027t arbitrary. They test sme special cases: 135.0 is just above 128, 65504 is just below 2^16, etc.",
+      "parentUuid": "baa041b7_32b838c7",
       "range": {
         "startLine": 26,
         "startChar": 4,
