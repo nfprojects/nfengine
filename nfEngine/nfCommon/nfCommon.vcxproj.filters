@@ -278,6 +278,15 @@
     <ClInclude Include="Utils\OutputStream.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Containers\Comparator.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\Set.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\SetImpl.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
