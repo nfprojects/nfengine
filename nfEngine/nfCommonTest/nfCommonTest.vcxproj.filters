@@ -64,6 +64,9 @@
     <ClCompile Include="TestCases\RayGeometryTest.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\SetTest.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
     <ClCompile Include="TestCases\SystemInfoTest.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>
