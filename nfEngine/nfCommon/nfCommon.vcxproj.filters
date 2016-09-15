@@ -299,6 +299,15 @@
     <ClInclude Include="Containers\PackedArrayImpl.hpp">
       <Filter>Header Files\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="Containers\Set.hpp">
+      <Filter>Header Files\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\SetImpl.hpp">
+      <Filter>Header Files\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\Comparator.hpp">
+      <Filter>Header Files\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
