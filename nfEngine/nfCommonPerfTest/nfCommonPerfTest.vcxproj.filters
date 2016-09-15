@@ -9,6 +9,7 @@
     <ClCompile Include="BVH.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="File.cpp" />
+    <ClCompile Include="Set.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Test.hpp" />

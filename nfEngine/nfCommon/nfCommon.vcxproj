@@ -247,6 +247,7 @@ popd</Command>
     <ClInclude Include="LoggerBackends\Win\BackendWindowsDebugger.hpp" />
     <ClInclude Include="LogGrouper.hpp" />
     <ClInclude Include="LogScope.hpp" />
+    <ClInclude Include="Set.hpp" />
     <ClInclude Include="Math\Box.hpp" />
     <ClInclude Include="Math\Conversions.hpp" />
     <ClInclude Include="Math\FPU\Matrix.hpp" />
