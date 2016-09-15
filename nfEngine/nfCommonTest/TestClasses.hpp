@@ -27,29 +27,61 @@ template<typename T>
 class CopyOnlyTestClass
 {
 public:
+    static_assert(std::is_copy_assignable<T>::value, "Payload type must be copy assignable");
+    static_assert(std::is_copy_constructible<T>::value, "Payload type must be copy constructible");
+
+    struct Comparator
+    {
+        NFE_INLINE bool Less(const CopyOnlyTestClass& left, const CopyOnlyTestClass& right) const
+        {
+            return left.mPayload < right.mPayload;
+        }
+
+        NFE_INLINE bool Equal(const CopyOnlyTestClass& left, const CopyOnlyTestClass& right) const
+        {
+            return left.mPayload == right.mPayload;
+        }
+    };
+
     CopyOnlyTestClass(ClassMethodCallCounters* counters, const T& payload = T())
         : mCounters(counters)
         , mPayload(payload)
     {
-        mCounters->constructor++;
+        if (mCounters)
+        {
+            mCounters->constructor++;
+        }
     }
 
     CopyOnlyTestClass(const CopyOnlyTestClass& rhs)
         : mCounters(rhs.mCounters)
+        , mPayload(rhs.mPayload)
     {
-        mCounters->copyConstructor++;
+        if (mCounters)
+        {
+            mCounters->copyConstructor++;
+        }
     }
 
     CopyOnlyTestClass& operator=(const CopyOnlyTestClass& rhs)
     {
+        mPayload = rhs.mPayload;
         mCounters = rhs.mCounters;
-        mCounters->assignment++;
+
+        if (mCounters)
+        {
+            mCounters->assignment++;
+        }
+
         return *this;
     }
 
     ~CopyOnlyTestClass()
     {
-        mCounters->destructor++;
+        if (mCounters)
+        {
+            mCounters->destructor++;
+        }
     }
 
 private:
@@ -68,25 +100,55 @@ template<typename T>
 class MoveOnlyTestClass
 {
 public:
+    static_assert(std::is_move_assignable<T>::value, "Payload type must be move assignable");
+    static_assert(std::is_move_constructible<T>::value, "Payload type must be move constructible");
+
+    struct Comparator
+    {
+        NFE_INLINE bool Less(const MoveOnlyTestClass& left, const MoveOnlyTestClass& right) const
+        {
+            return left.mPayload < right.mPayload;
+        }
+
+        NFE_INLINE bool Equal(const MoveOnlyTestClass& left, const MoveOnlyTestClass& right) const
+        {
+            return left.mPayload == right.mPayload;
+        }
+    };
+
     MoveOnlyTestClass(ClassMethodCallCounters* counters, const T& payload = T())
         : mCounters(counters)
         , mPayload(payload)
     {
-        mCounters->constructor++;
+        if (mCounters)
+        {
+            mCounters->constructor++;
+        }
     }
 
     MoveOnlyTestClass(MoveOnlyTestClass&& rhs)
         : mCounters(rhs.mCounters)
+        , mPayload(std::move(rhs.mPayload))
     {
-        mCounters->moveConstructor++;
+        if (mCounters)
+        {
+            mCounters->moveConstructor++;
+        }
+
         rhs.mCounters = nullptr;
     }
 
     MoveOnlyTestClass& operator=(MoveOnlyTestClass&& rhs)
     {
+        mPayload = std::move(rhs.mPayload);
         mCounters = rhs.mCounters;
         rhs.mCounters = nullptr;
-        mCounters->moveAssignment++;
+
+        if (mCounters)
+        {
+            mCounters->moveAssignment++;
+        }
+
         return *this;
     }
 
