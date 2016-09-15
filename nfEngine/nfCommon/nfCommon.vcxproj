@@ -22,8 +22,11 @@
     <ClInclude Include="Config\Config.hpp" />
     <ClInclude Include="Config\ConfigDataTranslator.hpp" />
     <ClInclude Include="Config\ConfigTokenizer.hpp" />
+    <ClInclude Include="Containers\Comparator.hpp" />
     <ClInclude Include="Containers\PackedArray.hpp" />
     <ClInclude Include="Containers\PackedArrayImpl.hpp" />
+    <ClInclude Include="Containers\Set.hpp" />
+    <ClInclude Include="Containers\SetImpl.hpp" />
     <ClInclude Include="FileSystem\DirectoryWatch.hpp" />
     <ClInclude Include="FileSystem\File.hpp" />
     <ClInclude Include="FileSystem\FileAsync.hpp" />
