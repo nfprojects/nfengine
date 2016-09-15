@@ -161,7 +161,8 @@ def main(argv):
 
             # building args for subprocess
             testArgs = [testPath, '--gtest_output=xml', gtestArgs]
-
+            testArgs.remove('')
+            
             # running subprocess
             runTest(testArgs, args.verbose)
 
