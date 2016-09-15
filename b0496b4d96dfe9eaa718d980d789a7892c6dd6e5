@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_4890934e",
+        "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-15T19:45:39Z",
+      "side": 1,
+      "message": "are you sure? according to this http://www.cplusplus.com/reference/mutex/defer_lock/ it won\u0027t make the lock at all",
+      "range": {
+        "startLine": 205,
+        "startChar": 80,
+        "endLine": 205,
+        "endChar": 90
+      },
+      "revId": "b0496b4d96dfe9eaa718d980d789a7892c6dd6e5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
