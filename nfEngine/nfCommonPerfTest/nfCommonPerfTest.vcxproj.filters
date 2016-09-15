@@ -21,6 +21,9 @@
     <ClCompile Include="TestCases\BVHPerfTest.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\SetPerfTest.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Test.hpp" />

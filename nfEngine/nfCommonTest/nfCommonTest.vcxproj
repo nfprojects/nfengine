@@ -236,6 +236,7 @@
     <ClCompile Include="TestCases\PackerBasicTest.cpp" />
     <ClCompile Include="TestCases\PackerComplexTest.cpp" />
     <ClCompile Include="TestCases\RayGeometryTest.cpp" />
+    <ClCompile Include="TestCases\SetTest.cpp" />
     <ClCompile Include="TestCases\SystemInfoTest.cpp" />
     <ClCompile Include="TestCases\ThreadPoolSimpleTest.cpp" />
     <ClCompile Include="TestCases\ThreadPoolStressTest.cpp" />
