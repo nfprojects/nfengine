@@ -160,7 +160,9 @@ def main(argv):
             print '\n====Running {} for {}'.format(nameFromPath(testPath), typeFromPath(testPath))
 
             # building args for subprocess
-            testArgs = [testPath, '--gtest_output=xml', gtestArgs]
+            testArgs = [testPath, '--gtest_output=xml']
+            if gtestArgs:
+                testArgs.append(gtestArgs)
 
             # running subprocess
             runTest(testArgs, args.verbose)
