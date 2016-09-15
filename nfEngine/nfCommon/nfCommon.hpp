@@ -98,6 +98,18 @@
 #endif // UNUSED
 
 
+// HACK
+// Workaround for C2244 error "unable to match function definition to an existing declaration"
+// when using 'template' keyword to declare that a dependent name is a template.
+#if defined(WIN32)
+#define NFE_DEPENDENT_TEMPLATE_NAME
+#elif defined(__LINUX__) | defined(__linux__)
+#define NFE_DEPENDENT_TEMPLATE_NAME template
+#else
+#error "Target system not supported!"
+#endif // defined(WIN32)
+
+
 namespace NFE {
 
 // Linux datatypes workaround
