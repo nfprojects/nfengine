@@ -24,6 +24,10 @@ int main(int argc, char* argv[])
     // TODO use some helper class instead of manual checks
     for (int i = 1; i < argc; ++i)
     {
+        // ignore empty arguments
+        if (strlen(argv[i]) == 0)
+            continue;
+
         if (strcmp(argv[i], "--renderer") == 0 || strcmp(argv[i], "-r") == 0)
         {
             if (i + 1 < argc)
