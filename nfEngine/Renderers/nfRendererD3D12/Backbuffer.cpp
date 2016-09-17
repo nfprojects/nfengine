@@ -21,7 +21,6 @@ Backbuffer::Backbuffer()
 
 Backbuffer::~Backbuffer()
 {
-    gDevice->WaitForGPU();
 }
 
 bool Backbuffer::Resize(int newWidth, int newHeight)
@@ -53,8 +52,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
 
     // set Texture properties
     mBuffersNum = NUM_BUFFERS;
-    mSubresourceStates.push_back(D3D12_RESOURCE_STATE_PRESENT);
-    mTargetState = D3D12_RESOURCE_STATE_PRESENT;
+    mDefaultState = D3D12_RESOURCE_STATE_PRESENT;
 
     DXGI_SWAP_CHAIN_DESC1 scd = {};
     scd.BufferCount = mBuffersNum;

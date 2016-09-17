@@ -58,6 +58,8 @@ class DemoWindow : public NFE::Common::Window
 
         mScenes[mCurrentScene]->Release();
 
+        mRendererDevice->WaitForGPU();
+
         if (mScenes[scene]->Init(mRendererDevice, GetHandle()))
         {
             /// success - update the scene counter
@@ -117,7 +119,7 @@ public:
         //       possible, when a feature is not implemented in renderer
         mScenes.push_back(NFE::Common::MakeUniquePtr<BasicScene>());
         mScenes.push_back(NFE::Common::MakeUniquePtr<DepthStencilScene>());
-        mScenes.push_back(NFE::Common::MakeUniquePtr<RenderTargetsScene>());
+        //mScenes.push_back(NFE::Common::MakeUniquePtr<RenderTargetsScene>());
         mScenes.push_back(NFE::Common::MakeUniquePtr<VertexBuffersScene>());
         mScenes.push_back(NFE::Common::MakeUniquePtr<TessellationScene>());
         mScenes.push_back(NFE::Common::MakeUniquePtr<ComputeScene>());
