@@ -34,8 +34,6 @@ RenderTarget::~RenderTarget()
     HeapAllocator& dsvAllocator = gDevice->GetDsvHeapAllocator();
     if (mDSV != -1)
         dsvAllocator.Free(mDSV, 1);
-
-    gDevice->WaitForGPU();
 }
 
 void RenderTarget::GetDimensions(int& width, int& height)

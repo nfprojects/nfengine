@@ -8,11 +8,12 @@
 
 #include "../RendererInterface/Texture.hpp"
 #include "Common.hpp"
+#include "Resource.hpp"
 
 namespace NFE {
 namespace Renderer {
 
-class Texture : virtual public ITexture
+class Texture : public Resource, virtual public ITexture
 {
     friend class RenderTarget;
     friend class ResourceBindingInstance;
@@ -22,6 +23,12 @@ protected:
     // TODO this array is needed only for backbuffers
     D3DPtr<ID3D12Resource> mBuffers[2];
 
+    uint32 mBuffersNum;
+    uint32 mCurrentBuffer;
+
+    DXGI_FORMAT mSrvFormat;
+    DXGI_FORMAT mDsvFormat;
+
     uint32 mRowPitch;
     uint16 mWidth;
     uint16 mLayers;
@@ -30,14 +37,6 @@ protected:
     TextureType mType;
     BufferMode mMode;
     ElementFormat mFormat;
-    DXGI_FORMAT mSrvFormat;
-    DXGI_FORMAT mDsvFormat;
-
-    uint32 mBuffersNum;
-    uint32 mCurrentBuffer;
-
-    D3D12_RESOURCE_STATES mTargetState; // TODO
-    std::vector<D3D12_RESOURCE_STATES> mSubresourceStates;
 
     // upload initial data
     bool UploadData(const TextureDesc& desc);
@@ -71,21 +70,6 @@ public:
     NFE_INLINE uint16 GetMipmapsNum() const
     {
         return mMipmapsNum;
-    }
-
-    NFE_INLINE D3D12_RESOURCE_STATES GetState(uint32 subresource) const
-    {
-        return mSubresourceStates[subresource];
-    }
-
-    NFE_INLINE D3D12_RESOURCE_STATES GetTargetState() const
-    {
-        return mTargetState;
-    }
-
-    NFE_INLINE void SetState(uint32 subresource, D3D12_RESOURCE_STATES newState)
-    {
-        mSubresourceStates[subresource] = newState;
     }
 
     uint32 GetCurrentBuffer() const
