@@ -10,7 +10,7 @@
 #include "Common.hpp"
 #include "RingBuffer.hpp"
 #include "ResourceBinding.hpp"
-
+#include "CommandList.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -20,19 +20,34 @@ class RenderTarget;
 class PipelineState;
 class ComputePipelineState;
 class Buffer;
+class CommandList;
+
+/**
+ * Helper structure used for tracking resources references (Direct3D 12 does not do it by its own).
+ */
+class ReferencedResources
+{
+    // lists of referenced resources by this command list
+    // TODO use hash set?
+    std::vector<RenderTargetPtr> renderTargets;
+    std::vector<ResourceBindingLayoutPtr> resBindingLayouts;
+    std::vector<ResourceBindingInstancePtr> resBindingInstances;
+    std::vector<BufferPtr> buffers;
+    std::vector<PipelineStatePtr> pipelineStates;
+    std::vector<ComputePipelineStatePtr> computePipelineStates;
+};
 
 class CommandRecorder : public ICommandRecorder
 {
+private:
     uint64 mFrameCounter;       // total frame counter
-    uint32 mFrameCount;         // number of queued frames
+    uint32 mFrameCount;         // max number of queued frames
     uint32 mFrameBufferIndex;   // current frame (command allocator index)
-    std::vector<D3DPtr<ID3D12CommandAllocator>> mCommandAllocators;
-    D3DPtr<ID3D12GraphicsCommandList> mCommandList;
+    std::vector<D3DPtr<ID3D12CommandAllocator>> mCommandAllocators; // command allocator for each frame
+    std::vector<ReferencedResources> mReferencedResources; // referenced resources by each frame
 
-    // synchronization objects
-    D3DPtr<ID3D12Fence> mFence;
-    HANDLE mFenceEvent;
-    std::vector<uint64> mFenceValues;
+    CommandList* mCommandListObject;
+    ID3D12GraphicsCommandList* mCommandList; // cached D3D12 command list pointer
 
     // ring buffer for dynamic buffers support
     RingBuffer mRingBuffer;
@@ -54,14 +69,8 @@ class CommandRecorder : public ICommandRecorder
     const Buffer* mBoundVertexBuffers[NFE_RENDERER_MAX_VERTEX_BUFFERS];
     uint32 mNumBoundVertexBuffers;
 
-    // is in reset state? (true after calling Reset(), false after calling Finish())
-    bool mReset;
-
     void UpdateStates();
     void UnsetRenderTarget();
-
-    // called by Device, when command list was queued
-    bool MoveToNextFrame(ID3D12CommandQueue* commandQueue);
 
     void WriteDynamicBuffer(Buffer* buffer, size_t offset, size_t size, const void* data);
     void WriteVolatileBuffer(Buffer* buffer, const void* data);
@@ -69,7 +78,7 @@ class CommandRecorder : public ICommandRecorder
 public:
     CommandRecorder();
     ~CommandRecorder();
-    bool Init(ID3D12Device* device);
+    bool Init(ID3D12Device* device, uint32 frameCount);
 
     /// Common methods
     bool Begin() override;
@@ -88,15 +97,11 @@ public:
     void SetResourceBindingLayout(const ResourceBindingLayoutPtr& layout) override;
     void SetPipelineState(const PipelineStatePtr& state) override;
     void SetStencilRef(unsigned char ref) override;
-    void SetViewport(float left, float width, float top, float height,
-                     float minDepth, float maxDepth) override;
+    void SetViewport(float left, float width, float top, float height, float minDepth, float maxDepth) override;
     void SetScissors(int left, int top, int right, int bottom) override;
-    void Clear(int flags, uint32 numTargets, const uint32* slots, const Math::Float4* colors,
-               float depthValue, uint8 stencilValue) override;
-    void Draw(int vertexNum, int instancesNum, int vertexOffset,
-              int instanceOffset) override;
-    void DrawIndexed(int indexNum, int instancesNum, int indexOffset,
-                     int vertexOffset, int instanceOffset) override;
+    void Clear(int flags, uint32 numTargets, const uint32* slots, const Math::Float4* colors, float depthValue, uint8 stencilValue) override;
+    void Draw(int vertexNum, int instancesNum, int vertexOffset, int instanceOffset) override;
+    void DrawIndexed(int indexNum, int instancesNum, int indexOffset, int vertexOffset, int instanceOffset) override;
 
     /// Compute pipeline methods
     void BindComputeResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance) override;
@@ -109,6 +114,9 @@ public:
     void BeginDebugGroup(const char* text) override;
     void EndDebugGroup() override;
     void InsertDebugMarker(const char* text) override;
+
+    bool OnFinishFrame(uint64 fenceValue);
+    bool OnFrameCompleted(uint64 fenceValue);
 };
 
 } // namespace Renderer
