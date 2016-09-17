@@ -7,12 +7,15 @@
 #pragma once
 
 #include "../RendererInterface/Buffer.hpp"
+
+#include "Resource.hpp"
 #include "Common.hpp"
+
 
 namespace NFE {
 namespace Renderer {
 
-class Buffer : public IBuffer
+class Buffer : public IBuffer, public Resource
 {
     D3DPtr<ID3D12Resource> mResource;
     uint32 mSize;

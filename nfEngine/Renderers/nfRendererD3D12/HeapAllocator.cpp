@@ -16,18 +16,18 @@ namespace Renderer {
 
 namespace {
 
-Common::StringView GetHeapName(HeapAllocator::Type type)
+Common::String GetHeapName(HeapAllocator::Type type)
 {
     switch (type)
     {
     case HeapAllocator::Type::CbvSrvUav:
-        return Common::StringView("CBV_SRV_UAV");
+        return "CBV_SRV_UAV";
     case HeapAllocator::Type::Rtv:
-        return Common::StringView("RTV");
+        return "RTV";
     case HeapAllocator::Type::Dsv:
-        return Common::StringView("DSV");
+        return "DSV";
     }
-    return Common::StringView("(Unknown)");
+    return "(Unknown)";
 }
 
 } // namespace
@@ -62,8 +62,7 @@ void HeapAllocator::Release()
     mBitmap.Clear();
 
     if (allocatedDescriptors > 0)
-        NFE_LOG_WARNING("There are still %u descriptors allocated in %s heap",
-                    allocatedDescriptors, GetHeapName(mType));
+        NFE_LOG_WARNING("There are still %u descriptors allocated in %s heap", allocatedDescriptors, GetHeapName(mType).Str());
 }
 
 bool HeapAllocator::Init()
@@ -98,7 +97,7 @@ bool HeapAllocator::Init()
     mCpuHandle = mHeap->GetCPUDescriptorHandleForHeapStart();
     mGpuHandle = mHeap->GetGPUDescriptorHandleForHeapStart();
     mDescriptorSize = gDevice->GetDevice()->GetDescriptorHandleIncrementSize(heapDesc.Type);
-    NFE_LOG_DEBUG("%s descriptor heap handle increment: %u", GetHeapName(mType), mDescriptorSize);
+    NFE_LOG_DEBUG("%s descriptor heap handle increment: %u", GetHeapName(mType).Str(), mDescriptorSize);
 
     return true;
 }
