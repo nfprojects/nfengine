@@ -27,7 +27,7 @@ RingBuffer::RingBuffer()
 
 RingBuffer::~RingBuffer()
 {
-
+    NFE_ASSERT(mCompletedFrames.empty(), "Ring buffer is still in use");
 }
 
 bool RingBuffer::Init(size_t size)
@@ -124,26 +124,29 @@ void RingBuffer::FinishFrame(uint64 frameIndex)
 
 void RingBuffer::OnFrameCompleted(uint64 frameIndex)
 {
-    while (!mCompletedFrames.empty() && mCompletedFrames.front().first < frameIndex)
+    NFE_ASSERT(!mCompletedFrames.empty(), "");
+    NFE_ASSERT(mCompletedFrames.front().first == frameIndex, "");
+
+    size_t oldestFrameTail = mCompletedFrames.front().second;
+    size_t newUsed = 0;
+
+    if (mUsed > 0)
     {
-        size_t oldestFrameTail = mCompletedFrames.front().second;
-
-        if (mUsed > 0 )
+        if (oldestFrameTail >= mHead)
         {
-            if (oldestFrameTail > mHead)
-            {
-                mUsed -= oldestFrameTail - mHead;
-            }
-            else
-            {
-                mUsed -= mSize - mHead;
-                mUsed -= oldestFrameTail;
-            }
+            newUsed = mUsed - oldestFrameTail + mHead;
         }
-
-        mHead = oldestFrameTail;
-        mCompletedFrames.pop();
+        else
+        {
+            newUsed = mUsed - oldestFrameTail - mSize + mHead;
+        }
     }
+
+    NFE_ASSERT(newUsed <= mSize, "Ring buffer overrun");
+
+    mUsed = newUsed;
+    mHead = oldestFrameTail;
+    mCompletedFrames.pop();
 }
 
 } // namespace Renderer

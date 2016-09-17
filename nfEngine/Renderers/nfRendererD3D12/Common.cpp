@@ -49,9 +49,10 @@ HRESULT D3DError(HRESULT hr, const char* srcFile, int line)
 {
     if (FAILED(hr))
     {
-        NFE_LOG_ERROR("Direct3D call in %s:%d failed with code 0x%08X (%s)", srcFile, line, hr,
-                  TranslateHResult(hr));
+        NFE_LOG_ERROR("Direct3D call in %s:%d failed with code 0x%08X (%s)", srcFile, line, hr, TranslateHResult(hr));
+        ::DebugBreak();
     }
+
     return hr;
 }
 
