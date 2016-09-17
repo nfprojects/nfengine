@@ -151,6 +151,8 @@ TessellationScene::~TessellationScene()
 
 void TessellationScene::ReleaseSubsceneResources()
 {
+    Scene::ReleaseSubsceneResources();
+
     // clear resources
     mVertexLayout.Reset();
     mVertexBuffer.Reset();

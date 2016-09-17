@@ -7,8 +7,10 @@
 #pragma once
 
 #include "Types.hpp"
+#include "nfCommon/Math/Float4.hpp"
 
 #include <cfloat>
+
 
 namespace NFE {
 namespace Renderer {
@@ -52,6 +54,11 @@ struct TextureDesc
     uint32 samplesNum;  //< when bigger than 1, the texture is multisampled
     uint32 mipmaps;     //< number of mipmap levels
 
+    // optional
+    Math::Float4 defaultColorClearValue;
+    float defaultDepthClearValue;
+    uint8 defaultStencilClearValue;
+
     /**
      * Array of structures describing initial texture data for each mipmap level.
      * Can be NULL.
@@ -72,6 +79,9 @@ struct TextureDesc
         , layers(1)
         , samplesNum(1)
         , mipmaps(1)
+        , defaultColorClearValue(Math::Float4(0.0f, 0.0f, 0.0f, 1.0f))
+        , defaultDepthClearValue(1.0f)
+        , defaultStencilClearValue(0)
         , dataDesc(nullptr)
         , debugName(nullptr)
     {}

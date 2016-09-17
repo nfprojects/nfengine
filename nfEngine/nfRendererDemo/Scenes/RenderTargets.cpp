@@ -197,6 +197,8 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
     // render target texture
     texDesc.format = ElementFormat::R8G8B8A8_U_Norm;
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET | NFE_RENDERER_TEXTURE_BIND_SHADER;
+
+    texDesc.defaultColorClearValue = Math::Float4(0.2f, 0.3f, 0.4f, 1.0f);
     texDesc.debugName = "RenderTargetsScene::mRenderTargetTexture[0]";
     mRenderTargetTextures[0] = mRendererDevice->CreateTexture(texDesc);
     if (!mRenderTargetTextures[0])
@@ -213,6 +215,7 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
 
     if (multipleRT)
     {
+        texDesc.defaultColorClearValue = Math::Float4(0.8f, 0.8f, 0.8f, 1.0f);
         texDesc.debugName = "RenderTargetsScene::mRenderTargetTexture[1]";
         mRenderTargetTextures[1] = mRendererDevice->CreateTexture(texDesc);
         if (!mRenderTargetTextures[1])
@@ -510,6 +513,8 @@ void RenderTargetsScene::Draw(float dt)
 
 void RenderTargetsScene::ReleaseSubsceneResources()
 {
+    Scene::ReleaseSubsceneResources();
+
     mWindowRenderTarget.Reset();
     mRenderTargetTextures[0].Reset();
     mRenderTargetTextures[1].Reset();

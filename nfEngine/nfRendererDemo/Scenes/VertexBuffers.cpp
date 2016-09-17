@@ -227,6 +227,8 @@ VertexBuffersScene::~VertexBuffersScene()
 
 void VertexBuffersScene::ReleaseSubsceneResources()
 {
+    Scene::ReleaseSubsceneResources();
+
     // clear resources
 
     mPositionsVertexBuffer.Reset();

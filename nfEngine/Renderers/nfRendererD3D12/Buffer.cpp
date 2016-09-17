@@ -7,20 +7,19 @@
 #include "PCH.hpp"
 #include "Buffer.hpp"
 #include "RendererD3D12.hpp"
-#include "nfCommon/Logger/Logger.hpp"
 
 
 namespace NFE {
 namespace Renderer {
 
 Buffer::Buffer()
-    : mSize(0)
+    : Resource(D3D12_RESOURCE_STATE_GENERIC_READ)
+    , mSize(0)
 {
 }
 
 Buffer::~Buffer()
 {
-    gDevice->WaitForGPU();
 }
 
 bool Buffer::UploadData(const BufferDesc& desc)

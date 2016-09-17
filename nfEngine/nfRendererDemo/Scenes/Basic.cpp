@@ -393,6 +393,8 @@ BasicScene::~BasicScene()
 
 void BasicScene::ReleaseSubsceneResources()
 {
+    Scene::ReleaseSubsceneResources();
+
     // clear resources
     mTexture.Reset();
     mSampler.Reset();

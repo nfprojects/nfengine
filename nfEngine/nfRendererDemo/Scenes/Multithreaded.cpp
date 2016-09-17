@@ -256,13 +256,13 @@ MultithreadedScene::MultithreadedScene()
 
     RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Dynamic, 1), "1x1, dynamic cbuffer");
     RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Dynamic, 4), "4x4, dynamic cbuffer");
-    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Dynamic, 10), "10x10, dynamic cbuffer");
-    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Dynamic, 30), "30x30, dynamic cbuffer");
+    //RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Dynamic, 10), "10x10, dynamic cbuffer");
+    //RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Dynamic, 30), "30x30, dynamic cbuffer");
 
     RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Volatile, 1), "1x1, volatile cbuffer");
     RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Volatile, 4), "4x4, volatile cbuffer");
-    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Volatile, 10), "10x10, volatile cbuffer");
-    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Volatile, 30), "30x30, volatile cbuffer");
+    //RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Volatile, 10), "10x10, volatile cbuffer");
+    //RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Volatile, 30), "30x30, volatile cbuffer");
 }
 
 MultithreadedScene::~MultithreadedScene()
@@ -272,6 +272,8 @@ MultithreadedScene::~MultithreadedScene()
 
 void MultithreadedScene::ReleaseSubsceneResources()
 {
+    Scene::ReleaseSubsceneResources();
+
     // clear resources
     mConstantBuffer.Reset();
     mIndexBuffer.Reset();

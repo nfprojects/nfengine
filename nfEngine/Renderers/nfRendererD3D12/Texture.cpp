@@ -15,15 +15,14 @@ namespace NFE {
 namespace Renderer {
 
 Texture::Texture()
-    : mBuffersNum(1)
+    : Resource(D3D12_RESOURCE_STATE_GENERIC_READ)
+    , mBuffersNum(1)
     , mCurrentBuffer(0)
-    , mTargetState(D3D12_RESOURCE_STATE_COMMON)
 {
 }
 
 Texture::~Texture()
 {
-    gDevice->WaitForGPU();
 }
 
 bool Texture::UploadData(const TextureDesc& desc)
@@ -303,7 +302,7 @@ bool Texture::Init(const TextureDesc& desc)
         resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
         resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
-        mTargetState = D3D12_RESOURCE_STATE_COPY_DEST;
+        mDefaultState = D3D12_RESOURCE_STATE_COPY_DEST;
 
         hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommittedResource(&heapProperties,
                                                                           D3D12_HEAP_FLAG_NONE,
@@ -338,10 +337,10 @@ bool Texture::Init(const TextureDesc& desc)
             }
 
             clearValue.Format = mSrvFormat;
-            clearValue.Color[0] = 0.0f;
-            clearValue.Color[1] = 0.0f;
-            clearValue.Color[2] = 0.0f;
-            clearValue.Color[3] = 1.0f;
+            clearValue.Color[0] = desc.defaultColorClearValue.f[0];
+            clearValue.Color[1] = desc.defaultColorClearValue.f[1];
+            clearValue.Color[2] = desc.defaultColorClearValue.f[2];
+            clearValue.Color[3] = desc.defaultColorClearValue.f[3];
             passClearValue = true;
 
             resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
@@ -370,8 +369,8 @@ bool Texture::Init(const TextureDesc& desc)
             resourceDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 
             clearValue.Format = mDsvFormat;
-            clearValue.DepthStencil.Depth = 1.0f;
-            clearValue.DepthStencil.Stencil = 0;
+            clearValue.DepthStencil.Depth = desc.defaultDepthClearValue;
+            clearValue.DepthStencil.Stencil = desc.defaultStencilClearValue;
             passClearValue = true;
 
             initialState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
@@ -398,11 +397,8 @@ bool Texture::Init(const TextureDesc& desc)
             return false;
         }
 
-
-        if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER)
-            mTargetState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
-        else
-            mTargetState = initialState;
+        // TODO reduce state range
+        mDefaultState = initialState;
 
         if (desc.mode == BufferMode::Static)
         {
@@ -431,9 +427,6 @@ bool Texture::Init(const TextureDesc& desc)
     mLayers = static_cast<uint16>(desc.layers);
     mMipmapsNum = static_cast<uint16>(desc.mipmaps);
     mMode = desc.mode;
-
-    for (uint32 subresource = 0; subresource < desc.layers * desc.mipmaps; ++subresource)
-        mSubresourceStates.PushBack(initialState);
 
     return true;
 }
