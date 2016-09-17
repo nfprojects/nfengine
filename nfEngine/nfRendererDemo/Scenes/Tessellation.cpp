@@ -151,6 +151,8 @@ TessellationScene::~TessellationScene()
 
 void TessellationScene::ReleaseSubsceneResources()
 {
+    Scene::ReleaseSubsceneResources();
+
     // clear resources
     mVertexLayout.Reset();
     mVertexBuffer.Reset();
@@ -166,20 +168,14 @@ void TessellationScene::ReleaseSubsceneResources()
 
 bool TessellationScene::OnInit(void* winHandle)
 {
-    // create backbuffer connected with the window
-    BackbufferDesc bbDesc;
-    bbDesc.width = WINDOW_WIDTH;
-    bbDesc.height = WINDOW_HEIGHT;
-    bbDesc.format = mBackbufferFormat;
-    bbDesc.windowHandle = winHandle;
-    bbDesc.vSync = false;
-    mWindowBackbuffer = mRendererDevice->CreateBackbuffer(bbDesc);
-    if (!mWindowBackbuffer)
+    if (!Scene::OnInit(winHandle))
+    {
         return false;
+    }
 
     // create rendertarget that will render to the window's backbuffer
     RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowBackbuffer;
+    rtTarget.texture = mWindowRenderTargetTexture;
     RenderTargetDesc rtDesc;
     rtDesc.numTargets = 1;
     rtDesc.targets = &rtTarget;
@@ -223,6 +219,8 @@ void TessellationScene::Draw(float dt)
 
     // draw
     mCommandBuffer->Draw(4, 1);
+
+    mCommandBuffer->CopyTexture(mWindowRenderTargetTexture, mWindowBackbuffer);
 
     CommandListID commandList = mCommandBuffer->Finish();
     mRendererDevice->Execute(commandList);

@@ -257,12 +257,10 @@ MultithreadedScene::MultithreadedScene()
     RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Dynamic, 1), "1x1, dynamic cbuffer");
     RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Dynamic, 4), "4x4, dynamic cbuffer");
     RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Dynamic, 10), "10x10, dynamic cbuffer");
-    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Dynamic, 30), "30x30, dynamic cbuffer");
 
     RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Volatile, 1), "1x1, volatile cbuffer");
     RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Volatile, 4), "4x4, volatile cbuffer");
     RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Volatile, 10), "10x10, volatile cbuffer");
-    RegisterSubScene(std::bind(&MultithreadedScene::CreateSubSceneNormal, this, BufferMode::Volatile, 30), "30x30, volatile cbuffer");
 }
 
 MultithreadedScene::~MultithreadedScene()
@@ -272,6 +270,8 @@ MultithreadedScene::~MultithreadedScene()
 
 void MultithreadedScene::ReleaseSubsceneResources()
 {
+    Scene::ReleaseSubsceneResources();
+
     // clear resources
     mConstantBuffer.Reset();
     mIndexBuffer.Reset();
@@ -290,20 +290,14 @@ void MultithreadedScene::ReleaseSubsceneResources()
 
 bool MultithreadedScene::OnInit(void* winHandle)
 {
-    // create backbuffer connected with the window
-    BackbufferDesc bbDesc;
-    bbDesc.width = WINDOW_WIDTH;
-    bbDesc.height = WINDOW_HEIGHT;
-    bbDesc.format = mBackbufferFormat;
-    bbDesc.windowHandle = winHandle;
-    bbDesc.vSync = false;
-    mWindowBackbuffer = mRendererDevice->CreateBackbuffer(bbDesc);
-    if (!mWindowBackbuffer)
+    if (!Scene::OnInit(winHandle))
+    {
         return false;
+    }
 
     // create rendertarget that will render to the window's backbuffer
     RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowBackbuffer;
+    rtTarget.texture = mWindowRenderTargetTexture;
     RenderTargetDesc rtDesc;
     rtDesc.numTargets = 1;
     rtDesc.targets = &rtTarget;
@@ -364,7 +358,7 @@ void MultithreadedScene::DrawTask(const Common::TaskContext& ctx, int i, int j)
     recorder->DrawIndexed(6, 1);
 
     CommandListID commandList = recorder->Finish();
-    mCollectedCommandLists[ctx.threadId].push_back(commandList);
+    mRendererDevice->Execute(commandList);
 }
 
 void MultithreadedScene::Draw(float dt)
@@ -375,7 +369,6 @@ void MultithreadedScene::Draw(float dt)
         mAngle -= 2.0f * Constants::pi<float>;
 
     // clear only once
-    CommandListID clearCommandList;
     {
         mCommandBuffer->Begin();
         mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
@@ -386,7 +379,8 @@ void MultithreadedScene::Draw(float dt)
         const Float4 color(0.0f, 0.0f, 0.0f, 1.0f);
         mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
 
-        clearCommandList = mCommandBuffer->Finish();
+        CommandListID clearCommandList = mCommandBuffer->Finish();
+        mRendererDevice->Execute(clearCommandList);
     }
 
     for (int i = 0; i < mGridSize; ++i)
@@ -398,21 +392,17 @@ void MultithreadedScene::Draw(float dt)
         }
     }
 
-    mRendererDevice->Execute(clearCommandList);
-
     // TODO execute some more command lists while recording
 
     mThreadPool.WaitForAllTasks();
 
-    // execute recorded command lists
-    for (CollectedCommandLists& collectedCommandLists : mCollectedCommandLists)
+    // copy to back buffer
     {
-        for (CommandListID commandList : collectedCommandLists)
-        {
-            mRendererDevice->Execute(commandList);
-        }
+        mCommandBuffer->Begin();
+        mCommandBuffer->CopyTexture(mWindowRenderTargetTexture, mWindowBackbuffer);
 
-        collectedCommandLists.clear();
+        CommandListID commandList = mCommandBuffer->Finish();
+        mRendererDevice->Execute(commandList);
     }
 
     mWindowBackbuffer->Present();

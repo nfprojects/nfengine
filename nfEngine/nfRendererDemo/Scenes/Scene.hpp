@@ -36,12 +36,14 @@ protected:
     NFE::Renderer::CommandRecorderPtr mCommandBuffer;
     NFE::Renderer::ElementFormat mBackbufferFormat;
 
-    virtual bool OnInit(void* winHandle) = 0;
+    NFE::Renderer::BackbufferPtr mWindowBackbuffer;
+    NFE::Renderer::TexturePtr mWindowRenderTargetTexture;
+
+    virtual bool OnInit(void* winHandle);
     virtual bool OnSwitchSubscene();
     void RegisterSubScene(SubSceneInitializer initializer, const std::string& name);
 
     // Methods common for all scenes:
-
     NFE::Renderer::ShaderPtr CompileShader(const char* path, NFE::Renderer::ShaderType type, NFE::Renderer::ShaderMacro* macros, NFE::uint32 macrosNum);
 
 public:

@@ -142,6 +142,8 @@ ComputeScene::~ComputeScene()
 
 void ComputeScene::ReleaseSubsceneResources()
 {
+    Scene::ReleaseSubsceneResources();
+
     mBindingInstance.Reset();
     mBindingSet.Reset();
     mResBindingLayout.Reset();

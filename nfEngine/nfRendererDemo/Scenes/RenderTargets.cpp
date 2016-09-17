@@ -51,17 +51,6 @@ RenderTargetsScene::~RenderTargetsScene()
 
 bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuffer)
 {
-    // create rendertarget that will render to the window's backbuffer
-    RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowBackbuffer;
-    RenderTargetDesc rtDesc;
-    rtDesc.numTargets = 1;
-    rtDesc.targets = &rtTarget;
-    rtDesc.debugName = "RenderTargetsScene::mWindowRenderTarget";
-    mWindowRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
-    if (!mWindowRenderTarget)
-        return false;
-
     SamplerDesc samplerDesc;
     mSampler = mRendererDevice->CreateSampler(samplerDesc);
     if (!mSampler)
@@ -197,6 +186,8 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
     // render target texture
     texDesc.format = ElementFormat::R8G8B8A8_U_Norm;
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET | NFE_RENDERER_TEXTURE_BIND_SHADER;
+
+    texDesc.defaultColorClearValue = Math::Float4(0.2f, 0.3f, 0.4f, 1.0f);
     texDesc.debugName = "RenderTargetsScene::mRenderTargetTexture[0]";
     mRenderTargetTextures[0] = mRendererDevice->CreateTexture(texDesc);
     if (!mRenderTargetTextures[0])
@@ -213,6 +204,7 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
 
     if (multipleRT)
     {
+        texDesc.defaultColorClearValue = Math::Float4(0.8f, 0.8f, 0.8f, 1.0f);
         texDesc.debugName = "RenderTargetsScene::mRenderTargetTexture[1]";
         mRenderTargetTextures[1] = mRendererDevice->CreateTexture(texDesc);
         if (!mRenderTargetTextures[1])
@@ -375,16 +367,19 @@ bool RenderTargetsScene::CreateSubSceneMRTandMSAA()
 
 bool RenderTargetsScene::OnInit(void* winHandle)
 {
-    // create backbuffer connected with the window
-    BackbufferDesc bbDesc;
-    bbDesc.width = WINDOW_WIDTH;
-    bbDesc.height = WINDOW_HEIGHT;
-    bbDesc.format = mBackbufferFormat;
-    bbDesc.windowHandle = winHandle;
-    bbDesc.vSync = false;
-    bbDesc.debugName = "RenderTargetsScene::mWindowBackbuffer";
-    mWindowBackbuffer = mRendererDevice->CreateBackbuffer(bbDesc);
-    if (!mWindowBackbuffer)
+    if (!Scene::OnInit(winHandle))
+    {
+        return false;
+    }
+
+    // create rendertarget that will render to the window's backbuffer
+    RenderTargetElement rtTarget;
+    rtTarget.texture = mWindowRenderTargetTexture;
+    RenderTargetDesc rtDesc;
+    rtDesc.numTargets = 1;
+    rtDesc.targets = &rtTarget;
+    mWindowRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
+    if (!mWindowRenderTarget)
         return false;
 
     return true;
@@ -502,6 +497,8 @@ void RenderTargetsScene::Draw(float dt)
     // unbind texture from pixel shader, because we will be rendering to it in the next frame
     mCommandBuffer->BindResources(0, nullptr);
 
+    mCommandBuffer->CopyTexture(mWindowRenderTargetTexture, mWindowBackbuffer);
+
     CommandListID commandList = mCommandBuffer->Finish();
     mRendererDevice->Execute(commandList);
     mWindowBackbuffer->Present();
@@ -510,7 +507,8 @@ void RenderTargetsScene::Draw(float dt)
 
 void RenderTargetsScene::ReleaseSubsceneResources()
 {
-    mWindowRenderTarget.Reset();
+    Scene::ReleaseSubsceneResources();
+
     mRenderTargetTextures[0].Reset();
     mRenderTargetTextures[1].Reset();
     mDepthBuffer.Reset();
@@ -541,6 +539,7 @@ void RenderTargetsScene::ReleaseSubsceneResources()
 void RenderTargetsScene::Release()
 {
     ReleaseSubsceneResources();
+    mWindowRenderTarget.Reset();
     mWindowBackbuffer.Reset();
     mCommandBuffer.Reset();
     mRendererDevice = nullptr;
