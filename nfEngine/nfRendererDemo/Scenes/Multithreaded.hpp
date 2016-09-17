@@ -18,7 +18,6 @@ class MultithreadedScene : public Scene
     std::vector<CollectedCommandLists> mCollectedCommandLists; // separate for each thread
     std::vector<NFE::Renderer::CommandRecorderPtr> mCommandRecorders;
 
-    NFE::Renderer::BackbufferPtr mWindowBackbuffer;
     NFE::Renderer::RenderTargetPtr mWindowRenderTarget;
     NFE::Renderer::PipelineStatePtr mPipelineState;
     NFE::Renderer::ShaderPtr mVertexShader;

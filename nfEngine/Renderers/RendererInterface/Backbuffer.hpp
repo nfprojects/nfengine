@@ -37,7 +37,7 @@ struct BackbufferDesc
     }
 };
 
-class IBackbuffer : virtual public ITexture
+class IBackbuffer
 {
 public:
     virtual ~IBackbuffer() {}

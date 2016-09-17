@@ -102,6 +102,13 @@ public:
      */
     virtual void CopyTexture(const TexturePtr& src, const TexturePtr& dest) = 0;
 
+    /**
+     * Copy contents of texture @p src to backbuffer @p dest.
+     * @param src  Source texture object.
+     * @param dest Destination backbuffer object.
+     */
+    virtual void CopyTexture(const TexturePtr& src, const BackbufferPtr& dest) = 0;
+
     /**@}*/
 
 

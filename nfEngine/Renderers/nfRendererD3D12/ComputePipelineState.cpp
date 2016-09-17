@@ -7,9 +7,6 @@
 #include "PCH.hpp"
 #include "ComputePipelineState.hpp"
 #include "RendererD3D12.hpp"
-#include "Shader.hpp"
-
-#include "nfCommon/Logger/Logger.hpp"
 
 
 namespace NFE {

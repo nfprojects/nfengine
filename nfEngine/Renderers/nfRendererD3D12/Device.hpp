@@ -10,6 +10,10 @@
 #include "Common.hpp"
 #include "PipelineState.hpp"
 #include "HeapAllocator.hpp"
+#include "RingBuffer.hpp"
+
+#include "nfCommon/Containers/DynArray.hpp"
+#include "nfCommon/Containers/WeakPtr.hpp"
 
 #include <atomic>
 
@@ -18,6 +22,9 @@ namespace NFE {
 namespace Renderer {
 
 class CommandRecorder;
+class CommandListManager;
+
+using CommandRecorderWeakPtr = Common::WeakPtr<CommandRecorder>;
 
 class Device : public IDevice
 {
@@ -36,9 +43,25 @@ class Device : public IDevice
     D3DPtr<ID3D12DebugDevice> mDebugDevice;
     D3DPtr<ID3D12InfoQueue> mInfoQueue;
 
+    uint64 mFrameCounter;       // total frame counter
+    uint32 mBufferingDepth;     // number of queued frames
+    uint32 mFrameBufferIndex;   // current frame (command allocator index)
+    uint32 mEnqueuedFrames;     // number of frames submitted to the GPU
+
+    // global D3D12 command lists manager
+    Common::UniquePtr<CommandListManager> mCommandListManager;
+
+    // created command recorders, in-use by user
+    Common::DynArray<CommandRecorderPtr> mCommandRecorders;
+
+    // List of command recorders which ref count reached 1, which means they are not in use by the user
+    // However, they cannot be destroyed immediately, because they may keep references to resources
+    // that are used by the GPU.
+    Common::DynArray<CommandRecorderPtr> mCommandRecordersToRemove;
+
     // synchronization objects
     D3DPtr<ID3D12Fence> mFence;
-    std::atomic<uint64> mFenceValue;
+    Common::DynArray<uint64> mFenceValues;
     HANDLE mFenceEvent;
 
     HeapAllocator mCbvSrvUavHeapAllocator;
@@ -47,7 +70,14 @@ class Device : public IDevice
 
     bool mDebugLayerEnabled;
 
+    void NotifyCommandRecordersFrameCompleted(uint64 completedFrameIndex);
+    
+    bool InitDebugLayer(int32 level);
+    bool InitializeDevice(const DeviceInitParams* params);
+    bool DetectFeatureLevel();
+    bool PrepareDebugLayer();
     bool DetectVideoCards(int preferredId);
+    bool CreateResources();
 
 public:
     Device();
@@ -84,22 +114,27 @@ public:
 
     bool WaitForGPU() override;
 
-    NFE_INLINE HeapAllocator& GetCbvSrvUavHeapAllocator()
+    CommandListManager* GetCommandListManager() const
+    {
+        return mCommandListManager.Get();
+    }
+
+    HeapAllocator& GetCbvSrvUavHeapAllocator()
     {
         return mCbvSrvUavHeapAllocator;
     }
 
-    NFE_INLINE HeapAllocator& GetRtvHeapAllocator()
+    HeapAllocator& GetRtvHeapAllocator()
     {
         return mRtvHeapAllocator;
     }
 
-    NFE_INLINE HeapAllocator& GetDsvHeapAllocator()
+    HeapAllocator& GetDsvHeapAllocator()
     {
         return mDsvHeapAllocator;
     }
 
-    NFE_INLINE bool IsDebugLayerEnabled()
+    bool IsDebugLayerEnabled() const
     {
         return mDebugLayerEnabled;
     }

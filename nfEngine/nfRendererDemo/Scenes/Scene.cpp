@@ -16,6 +16,7 @@ Scene::Scene(const std::string& name)
     : mCurrentSubScene(SIZE_MAX)
     , mHighestAvailableSubScene(SIZE_MAX)
     , mName(name)
+    , mRendererDevice(nullptr)
 {
 }
 
@@ -57,6 +58,12 @@ void Scene::RegisterSubScene(SubSceneInitializer initializer, const std::string&
 
 void Scene::ReleaseSubsceneResources()
 {
+    // HACK
+    // TODO remove (requires fix in D3D12 renderer)
+    if (mRendererDevice)
+    {
+        mRendererDevice->WaitForGPU();
+    }
 }
 
 bool Scene::Init(IDevice* rendererDevice, void* winHandle)
@@ -84,6 +91,8 @@ bool Scene::Init(IDevice* rendererDevice, void* winHandle)
             break;
         }
     }
+
+    mBackbufferFormat = ElementFormat::R8G8B8A8_U_Norm;
 
     if (!OnInit(winHandle))
         return false;
@@ -125,6 +134,34 @@ bool Scene::SwitchSubscene(size_t subScene)
         return false;
 
     mCurrentSubScene = subScene;
+    return true;
+}
+
+bool Scene::OnInit(void* winHandle)
+{
+    TextureDesc texDesc;
+    texDesc.width = WINDOW_WIDTH;
+    texDesc.height = WINDOW_HEIGHT;
+    texDesc.type = TextureType::Texture2D;
+    texDesc.mode = BufferMode::GPUOnly;
+    texDesc.format = ElementFormat::R8G8B8A8_U_Norm;
+    texDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
+    texDesc.debugName = "Scene::mWindowRenderTargetTexture";
+    mWindowRenderTargetTexture = mRendererDevice->CreateTexture(texDesc);
+    if (!mWindowRenderTargetTexture)
+        return false;
+
+    // create backbuffer connected with the window
+    BackbufferDesc bbDesc;
+    bbDesc.width = WINDOW_WIDTH;
+    bbDesc.height = WINDOW_HEIGHT;
+    bbDesc.format = mBackbufferFormat;
+    bbDesc.windowHandle = winHandle;
+    bbDesc.vSync = false;
+    mWindowBackbuffer = mRendererDevice->CreateBackbuffer(bbDesc);
+    if (!mWindowBackbuffer)
+        return false;
+
     return true;
 }
 
