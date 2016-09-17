@@ -17,7 +17,10 @@ namespace Common {
 template<typename T>
 WeakPtr<T>::WeakPtr(WeakPtr<T>&& rhs)
 {
+    this->mPointer = rhs.mPointer;
     this->mData = rhs.mData;
+
+    rhs.mPointer = nullptr;
     rhs.mData = nullptr;
 }
 
@@ -51,8 +54,13 @@ template<typename T>
 WeakPtr<T>& WeakPtr<T>::operator = (WeakPtr<T>&& rhs)
 {
     Reset();
+
+    this->mPointer = rhs.mPointer;
     this->mData = rhs.mData;
+
+    rhs.mPointer = nullptr;
     rhs.mData = nullptr;
+
     return *this;
 }
 
@@ -66,6 +74,7 @@ WeakPtr<T>& WeakPtr<T>::operator = (const SharedPtr<T>& rhs)
         this->mData = rhs.mData;
         if (this->mData)
         {
+            this->mPointer = rhs.mPointer;
             this->mData->AddWeakRef();
         }
     }
@@ -83,6 +92,7 @@ WeakPtr<T>& WeakPtr<T>::operator = (const WeakPtr<T>& rhs)
         this->mData = rhs.mData;
         if (this->mData)
         {
+            this->mPointer = rhs.mPointer;
             this->mData->AddWeakRef();
         }
     }
