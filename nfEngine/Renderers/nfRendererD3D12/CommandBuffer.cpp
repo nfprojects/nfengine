@@ -10,6 +10,7 @@
 
 #include "PCH.hpp"
 #include "CommandBuffer.hpp"
+#include "CommandListManager.hpp"
 #include "RendererD3D12.hpp"
 #include "VertexLayout.hpp"
 #include "Buffer.hpp"
@@ -37,11 +38,7 @@ CommandBuffer::CommandBuffer()
     , mComputeBindingLayout(nullptr)
     , mCurrComputePipelineState(nullptr)
     , mCurrPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_UNDEFINED)
-    , mFrameCounter(0)
-    , mFrameCount(3) // TODO this must be configurable
-    , mFrameBufferIndex(0)
-    , mNumBoundVertexBuffers(0)
-    , mReset(false)
+    , mCommandList(nullptr)
 {
     for (int i = 0; i < NFE_RENDERER_MAX_VOLATILE_CBUFFERS; ++i)
     {
@@ -55,64 +52,9 @@ CommandBuffer::CommandBuffer()
 
 bool CommandBuffer::Init(ID3D12Device* device)
 {
-    HRESULT hr;
+    UNUSED(device);
 
-    mFrameCounter = 1;
-    mFenceValues.resize(mFrameCount);
-
-    for (uint32 i = 0; i < mFrameCount; ++i)
-    {
-        D3DPtr<ID3D12CommandAllocator> commandAllocator;
-        hr = D3D_CALL_CHECK(device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                           IID_PPV_ARGS(&commandAllocator)));
-        if (FAILED(hr))
-        {
-            LOG_ERROR("Failed to create D3D12 command allocator for frame %u (out of %u)", i, mFrameCount);
-            return false;
-        }
-
-        mCommandAllocators.emplace_back(std::move(commandAllocator));
-        mFenceValues[i] = 1;
-    }
-
-
-    // create fence for frames synchronization
-    if (FAILED(D3D_CALL_CHECK(gDevice->mDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE,
-                                                            IID_PPV_ARGS(&mFence)))))
-    {
-        LOG_ERROR("Failed to create D3D12 fence object");
-        return false;
-    }
-
-    // create an event handle to use for frame synchronization
-    mFenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-    if (mFenceEvent == nullptr)
-    {
-        LOG_ERROR("Failed to create fence event object");
-        return false;
-    }
-
-
-    // create D3D command list
-    hr = D3D_CALL_CHECK(device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                  mCommandAllocators[mFrameBufferIndex].get(), nullptr,
-                                                  IID_PPV_ARGS(&mCommandList)));
-    if (FAILED(hr))
-    {
-        LOG_ERROR("Failed to create D3D12 command list");
-        return false;
-    }
-
-    // we don't want the command list to be in recording state
-    hr = D3D_CALL_CHECK(mCommandList->Close());
-    if (FAILED(hr))
-    {
-        LOG_ERROR("Failed to close command list");
-        return false;
-    }
-
-    // TODO: dynamic buffer growing
-    if (!mRingBuffer.Init(8 * 1024 * 1024))
+    if (!mRingBuffer.Init(1024 * 1024))
     {
         LOG_ERROR("Failed to initialize ring buffer");
         return false;
@@ -123,26 +65,27 @@ bool CommandBuffer::Init(ID3D12Device* device)
 
 CommandBuffer::~CommandBuffer()
 {
-    ::CloseHandle(mFenceEvent);
+    NFE_ASSERT(mCommandList == nullptr, "Finish() not called before command buffer destruction");
 }
 
 void CommandBuffer::Reset()
 {
-    if (mReset)
+    if (!mCommandList)
     {
         LOG_WARNING("Redundant command buffer reset");
         return;
     }
 
-    HRESULT hr;
-
-    hr = D3D_CALL_CHECK(mCommandAllocators[mFrameBufferIndex]->Reset());
-    if (FAILED(hr))
+    // get a free command list from the command list manager
+    mCommandListPtr = gDevice->GetCommandListManager()->ObtainCommandList();
+    if (!mCommandListPtr)
+    {
+        LOG_ERROR("Failed to optain command list");
         return;
+    }
 
-    hr = D3D_CALL_CHECK(mCommandList->Reset(mCommandAllocators[mFrameBufferIndex].get(), nullptr));
-    if (FAILED(hr))
-        return;
+    mCommandList = mCommandListPtr->GetD3DCommandList();
+
 
     ID3D12DescriptorHeap* heaps[] =
     {
@@ -168,8 +111,6 @@ void CommandBuffer::Reset()
     mNumBoundVertexBuffers = 0;
     for (int i = 0; i < NFE_RENDERER_MAX_VERTEX_BUFFERS; ++i)
         mBoundVertexBuffers[i] = nullptr;
-
-    mReset = true;
 }
 
 void CommandBuffer::SetViewport(float left, float width, float top, float height,
@@ -852,28 +793,18 @@ void CommandBuffer::Dispatch(uint32 x, uint32 y, uint32 z)
 
 std::unique_ptr<ICommandList> CommandBuffer::Finish()
 {
-    if (!mReset)
+    if (!mCommandList)
     {
         LOG_ERROR("Command buffer is not in recording state");
         return nullptr;
     }
 
-    mReset = false;
-
     UnsetRenderTarget();
 
     D3D_CALL_CHECK(mCommandList->Close());
+    mCommandList = nullptr;
 
-    // TODO: use memory pool
-    std::unique_ptr<CommandList> list(new (std::nothrow) CommandList);
-    if (!list)
-    {
-        LOG_ERROR("Memory allocation failed");
-        return nullptr;
-    }
-
-    list->commandBuffer = this;
-    return list;
+    return std::move(mCommandListPtr);
 }
 
 bool CommandBuffer::MoveToNextFrame(ID3D12CommandQueue* commandQueue)

@@ -10,7 +10,7 @@
 #include "Common.hpp"
 #include "RingBuffer.hpp"
 #include "ResourceBinding.hpp"
-
+#include "CommandList.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -21,26 +21,10 @@ class PipelineState;
 class ComputePipelineState;
 class Buffer;
 
-struct CommandList : public ICommandList
-{
-    // TODO what about generating multiple command list on a single command buffer?
-    CommandBuffer* commandBuffer;
-};
-
 class CommandBuffer : public ICommandBuffer
 {
-    friend class Device;
-
-    uint64 mFrameCounter;       // total frame counter
-    uint32 mFrameCount;         // number of queued frames
-    uint32 mFrameBufferIndex;   // current frame (command allocator index)
-    std::vector<D3DPtr<ID3D12CommandAllocator>> mCommandAllocators;
-    D3DPtr<ID3D12GraphicsCommandList> mCommandList;
-
-    // synchronization objects
-    D3DPtr<ID3D12Fence> mFence;
-    HANDLE mFenceEvent;
-    std::vector<uint64> mFenceValues;
+    CommandListPtr mCommandListPtr;
+    ID3D12GraphicsCommandList* mCommandList;
 
     // ring buffer for dynamic buffers support
     RingBuffer mRingBuffer;
@@ -62,14 +46,8 @@ class CommandBuffer : public ICommandBuffer
     Buffer* mBoundVertexBuffers[NFE_RENDERER_MAX_VERTEX_BUFFERS];
     uint32 mNumBoundVertexBuffers;
 
-    // is in reset state? (true after calling Reset(), false after calling Finish())
-    bool mReset;
-
     void UpdateStates();
     void UnsetRenderTarget();
-
-    // called by Device, when command list was queued
-    bool MoveToNextFrame(ID3D12CommandQueue* commandQueue);
 
     void WriteDynamicBuffer(Buffer* buffer, size_t offset, size_t size, const void* data);
     void WriteVolatileBuffer(Buffer* buffer, const void* data);

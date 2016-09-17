@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "Device.hpp"
+#include "CommandListManager.hpp"
 #include "CommandBuffer.hpp"
 #include "RendererD3D12.hpp"
 #include "VertexLayout.hpp"
@@ -244,12 +245,22 @@ bool Device::Init(const DeviceInitParams* params)
         return false;
     }
 
+    mCommandListManager = std::make_unique<CommandListManager>();
+    if (!mCommandListManager->Init(mDevice.get()))
+    {
+        LOG_ERROR("Failed to initialize command list manager");
+        return false;
+    }
+
+
     return true;
 }
 
 Device::~Device()
 {
     WaitForGPU();
+
+    mCommandListManager.reset();
 
     mCbvSrvUavHeapAllocator.Release();
     mRtvHeapAllocator.Release();

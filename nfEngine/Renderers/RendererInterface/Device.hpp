@@ -98,6 +98,14 @@ public:
     virtual bool Execute(ICommandList* commandList) = 0;
 
     /**
+     * Signals an end of a previous frame and beginning of another.
+     * All the non-bundle command lists recorded in the previous frame must have been SUBMITTED and RELEASED
+     * before calling this method.
+     * @return  True on success.
+     */
+    virtual bool FinishFrame() = 0;
+
+    /**
      * Read data from a GPU buffer to the CPU memory.
      * @param      buffer Source buffer.
      * @param      offset Offset in the GPU buffer (in bytes).

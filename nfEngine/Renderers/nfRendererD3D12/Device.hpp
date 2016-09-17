@@ -18,7 +18,7 @@
 namespace NFE {
 namespace Renderer {
 
-class CommandBuffer;
+class CommandListManager;
 
 class Device : public IDevice
 {
@@ -41,6 +41,8 @@ class Device : public IDevice
     D3DPtr<ID3D12Fence> mFence;
     std::atomic<uint64> mFenceValue;
     HANDLE mFenceEvent;
+
+    std::unique_ptr<CommandListManager> mCommandListManager;
 
     HeapAllocator mCbvSrvUavHeapAllocator;
     HeapAllocator mRtvHeapAllocator;
@@ -82,6 +84,11 @@ public:
     bool DownloadTexture(ITexture* tex, void* data, int mipmap, int layer) override;
 
     bool WaitForGPU() override;
+
+    NFE_INLINE CommandListManager* GetCommandListManager() const
+    {
+        return mCommandListManager.get();
+    }
 
     NFE_INLINE HeapAllocator& GetCbvSrvUavHeapAllocator()
     {
