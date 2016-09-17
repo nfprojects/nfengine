@@ -10,6 +10,10 @@
 #include "Common.hpp"
 #include "PipelineState.hpp"
 #include "HeapAllocator.hpp"
+#include "RingBuffer.hpp"
+
+#include "nfCommon/Containers/DynArray.hpp"
+#include "nfCommon/Containers/WeakPtr.hpp"
 
 #include <atomic>
 
@@ -18,36 +22,15 @@ namespace NFE {
 namespace Renderer {
 
 class CommandRecorder;
+class CommandListManager;
+
+using CommandRecorderWeakPtr = Common::WeakPtr<CommandRecorder>;
 
 class Device : public IDevice
 {
     friend class Backbuffer;
     friend class CommandRecorder;
     friend class RenderTarget;
-
-    D3D_FEATURE_LEVEL mFeatureLevel;
-
-    Common::DynArray<D3DPtr<IDXGIAdapter>> mAdapters;
-    int mAdapterInUse;
-
-    D3DPtr<IDXGIFactory4> mDXGIFactory;
-    D3DPtr<ID3D12Device> mDevice;
-    D3DPtr<ID3D12CommandQueue> mCommandQueue;
-    D3DPtr<ID3D12DebugDevice> mDebugDevice;
-    D3DPtr<ID3D12InfoQueue> mInfoQueue;
-
-    // synchronization objects
-    D3DPtr<ID3D12Fence> mFence;
-    std::atomic<uint64> mFenceValue;
-    HANDLE mFenceEvent;
-
-    HeapAllocator mCbvSrvUavHeapAllocator;
-    HeapAllocator mRtvHeapAllocator;
-    HeapAllocator mDsvHeapAllocator;
-
-    bool mDebugLayerEnabled;
-
-    bool DetectVideoCards(int preferredId);
 
 public:
     Device();
@@ -84,25 +67,75 @@ public:
 
     bool WaitForGPU() override;
 
-    NFE_INLINE HeapAllocator& GetCbvSrvUavHeapAllocator()
+    RingBuffer& GetRingBuffer()
+    {
+        return mRingBuffer;
+    }
+
+    CommandListManager* GetCommandListManager() const
+    {
+        return mCommandListManager.Get();
+    }
+
+    HeapAllocator& GetCbvSrvUavHeapAllocator()
     {
         return mCbvSrvUavHeapAllocator;
     }
 
-    NFE_INLINE HeapAllocator& GetRtvHeapAllocator()
+    HeapAllocator& GetRtvHeapAllocator()
     {
         return mRtvHeapAllocator;
     }
 
-    NFE_INLINE HeapAllocator& GetDsvHeapAllocator()
+    HeapAllocator& GetDsvHeapAllocator()
     {
         return mDsvHeapAllocator;
     }
 
-    NFE_INLINE bool IsDebugLayerEnabled()
+    bool IsDebugLayerEnabled() const
     {
         return mDebugLayerEnabled;
     }
+
+private:
+
+    bool InitializeDevice(const DeviceInitParams* params);
+    bool DetectFeatureLevel();
+    bool PrepareDebugLayer();
+    bool DetectVideoCards(int preferredId);
+    bool CreateResources();
+
+    D3D_FEATURE_LEVEL mFeatureLevel;
+
+    Common::DynArray<D3DPtr<IDXGIAdapter>> mAdapters;
+    int mAdapterInUse;
+
+    D3DPtr<IDXGIFactory4> mDXGIFactory;
+    D3DPtr<ID3D12Device> mDevice;
+    D3DPtr<ID3D12CommandQueue> mCommandQueue;
+    D3DPtr<ID3D12DebugDevice> mDebugDevice;
+    D3DPtr<ID3D12InfoQueue> mInfoQueue;
+
+    uint64 mFrameCounter;       // total frame counter
+    uint32 mBufferingDepth;     // number of queued frames
+    uint32 mFrameBufferIndex;   // current frame (command allocator index)
+    uint32 mEnqueuedFrames;     // number of frames submitted to the GPu
+    Common::UniquePtr<CommandListManager> mCommandListManager;
+    Common::DynArray<CommandRecorderWeakPtr> mCommandRecorders; // created command recorders
+
+    // synchronization objects
+    D3DPtr<ID3D12Fence> mFence;
+    Common::DynArray<uint64> mFenceValues;
+    HANDLE mFenceEvent;
+
+    // ring buffer for dynamic buffers support
+    RingBuffer mRingBuffer;
+
+    HeapAllocator mCbvSrvUavHeapAllocator;
+    HeapAllocator mRtvHeapAllocator;
+    HeapAllocator mDsvHeapAllocator;
+
+    bool mDebugLayerEnabled;
 };
 
 } // namespace Renderer

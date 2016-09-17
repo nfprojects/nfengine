@@ -8,6 +8,7 @@
 
 #include "Common.hpp"
 #include "Texture.hpp"
+#include "nfCommon\System\RWLock.hpp"
 
 #include <queue>
 
@@ -22,6 +23,8 @@ public:
 
 private:
     friend class CommandRecorder;
+
+    Common::RWLock mLock;
 
     void* mCpuAddress;
     D3D12_GPU_VIRTUAL_ADDRESS mGpuAddress;

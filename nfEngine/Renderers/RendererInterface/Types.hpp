@@ -48,7 +48,7 @@ using VertexLayoutPtr = Common::SharedPtr<IVertexLayout>;
 
 #define MAX_RENDER_TARGETS 8
 #define MAX_MIPMAP_LEVELS 16
-#define INVALID_COMMAND_LIST_ID 0
+#define INVALID_COMMAND_LIST_ID 0xFFFFFFFF
 
 // number of "graphics" shader types
 #define NFE_GRAPHICS_SHADER_TYPES_NUM 5

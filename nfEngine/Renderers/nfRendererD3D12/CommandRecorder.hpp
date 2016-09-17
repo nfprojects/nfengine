@@ -8,8 +8,14 @@
 
 #include "../RendererInterface/CommandRecorder.hpp"
 #include "Common.hpp"
-#include "RingBuffer.hpp"
 #include "ResourceBinding.hpp"
+#include "CommandList.hpp"
+#include "ResourceStateCache.hpp"
+#include "Resource.hpp"
+#include "ReferencedResourcesList.hpp"
+
+#include "nfCommon/Containers/HashSet.hpp"
+#include "nfCommon/Containers/DynArray.hpp"
 
 
 namespace NFE {
@@ -20,56 +26,15 @@ class RenderTarget;
 class PipelineState;
 class ComputePipelineState;
 class Buffer;
+class CommandList;
+
 
 class CommandRecorder : public ICommandRecorder
 {
-    uint64 mFrameCounter;       // total frame counter
-    uint32 mFrameCount;         // number of queued frames
-    uint32 mFrameBufferIndex;   // current frame (command allocator index)
-    Common::DynArray<D3DPtr<ID3D12CommandAllocator>> mCommandAllocators;
-    D3DPtr<ID3D12GraphicsCommandList> mCommandList;
-
-    // synchronization objects
-    D3DPtr<ID3D12Fence> mFence;
-    HANDLE mFenceEvent;
-    Common::DynArray<uint64> mFenceValues;
-
-    // ring buffer for dynamic buffers support
-    RingBuffer mRingBuffer;
-    const Buffer* mBoundVolatileCBuffers[NFE_RENDERER_MAX_VOLATILE_CBUFFERS];
-    const Buffer* mBoundComputeVolatileCBuffers[NFE_RENDERER_MAX_VOLATILE_CBUFFERS];
-
-    RenderTarget* mCurrRenderTarget;
-    ResourceBindingLayout* mBindingLayout;
-    ResourceBindingLayout* mCurrBindingLayout;
-    PipelineState* mCurrPipelineState;
-    PipelineState* mPipelineState;
-
-    ResourceBindingLayout* mComputeBindingLayout;
-    ComputePipelineState* mCurrComputePipelineState;
-
-    D3D12_PRIMITIVE_TOPOLOGY mCurrPrimitiveTopology;
-
-    D3D12_VERTEX_BUFFER_VIEW mCurrVertexBufferViews[NFE_RENDERER_MAX_VERTEX_BUFFERS];
-    const Buffer* mBoundVertexBuffers[NFE_RENDERER_MAX_VERTEX_BUFFERS];
-    uint32 mNumBoundVertexBuffers;
-
-    // is in reset state? (true after calling Reset(), false after calling Finish())
-    bool mReset;
-
-    void UpdateStates();
-    void UnsetRenderTarget();
-
-    // called by Device, when command list was queued
-    bool MoveToNextFrame(ID3D12CommandQueue* commandQueue);
-
-    void WriteDynamicBuffer(Buffer* buffer, size_t offset, size_t size, const void* data);
-    void WriteVolatileBuffer(Buffer* buffer, const void* data);
-
 public:
     CommandRecorder();
     ~CommandRecorder();
-    bool Init(ID3D12Device* device);
+    bool Init(ID3D12Device* device, uint32 frameCount);
 
     /// Common methods
     bool Begin() override;
@@ -105,6 +70,49 @@ public:
     void BeginDebugGroup(const char* text) override;
     void EndDebugGroup() override;
     void InsertDebugMarker(const char* text) override;
+
+    bool OnFinishFrame(uint64 frameIndex);
+    bool OnFrameCompleted(uint64 frameIndex, uint32 frameBufferIndex);
+
+private:
+    void Internal_UpdateStates();
+    void Internal_UnsetRenderTarget();
+
+    void Internal_WriteDynamicBuffer(Buffer* buffer, size_t offset, size_t size, const void* data);
+    void Internal_WriteVolatileBuffer(Buffer* buffer, const void* data);
+
+    ReferencedResourcesList& Internal_GetReferencedResources();
+
+    uint64 mLastFinishedFrameIndex;
+    uint64 mLastCompletedFrameIndex;
+    uint32 mFrameBufferIndex;   // current frame (command allocator index)
+
+    // TODO move to device?
+    Common::DynArray<D3DPtr<ID3D12CommandAllocator>> mCommandAllocators; // command allocator for each frame
+    Common::DynArray<ReferencedResourcesList> mReferencedResources; // referenced resources by each frame
+
+    CommandList* mCommandListObject;
+    ID3D12GraphicsCommandList* mCommandList; // cached D3D12 command list pointer
+
+    ResourceStateCache mResourceStateCache;
+
+    const Buffer* mBoundVolatileCBuffers[NFE_RENDERER_MAX_VOLATILE_CBUFFERS];
+    const Buffer* mBoundComputeVolatileCBuffers[NFE_RENDERER_MAX_VOLATILE_CBUFFERS];
+
+    RenderTarget* mCurrRenderTarget;
+    ResourceBindingLayout* mBindingLayout;
+    ResourceBindingLayout* mCurrBindingLayout;
+    PipelineState* mCurrPipelineState;
+    PipelineState* mPipelineState;
+
+    ResourceBindingLayout* mComputeBindingLayout;
+    ComputePipelineState* mCurrComputePipelineState;
+
+    D3D12_PRIMITIVE_TOPOLOGY mCurrPrimitiveTopology;
+
+    D3D12_VERTEX_BUFFER_VIEW mCurrVertexBufferViews[NFE_RENDERER_MAX_VERTEX_BUFFERS];
+    const Buffer* mBoundVertexBuffers[NFE_RENDERER_MAX_VERTEX_BUFFERS];
+    uint32 mNumBoundVertexBuffers;
 };
 
 } // namespace Renderer
