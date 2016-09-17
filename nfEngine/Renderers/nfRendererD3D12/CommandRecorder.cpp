@@ -10,6 +10,7 @@
 
 #include "PCH.hpp"
 #include "CommandRecorder.hpp"
+#include "CommandListManager.hpp"
 #include "RendererD3D12.hpp"
 #include "VertexLayout.hpp"
 #include "Buffer.hpp"
@@ -22,10 +23,11 @@
 #include "Translations.hpp"
 #include "ResourceBinding.hpp"
 
-#include "nfCommon/Math/Vector.hpp"
+#include "nfCommon/Math/Vector.hpp" // TODO remove
 #include "nfCommon/System/Assertion.hpp"
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/System/Win/Common.hpp"  // required for ID3DUserDefinedAnnotation
+#include "nfCommon/Containers/StaticArray.hpp"
 
 
 namespace NFE {
@@ -40,11 +42,11 @@ CommandRecorder::CommandRecorder()
     , mComputeBindingLayout(nullptr)
     , mCurrComputePipelineState(nullptr)
     , mCurrPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_UNDEFINED)
-    , mFrameCounter(0)
-    , mFrameCount(3) // TODO this must be configurable
+    , mCommandList(nullptr)
+    , mCommandListObject(nullptr)
+    , mFrameCount(0)
+    , mFrameCounter(1)
     , mFrameBufferIndex(0)
-    , mNumBoundVertexBuffers(0)
-    , mReset(false)
 {
     for (int i = 0; i < NFE_RENDERER_MAX_VOLATILE_CBUFFERS; ++i)
     {
@@ -56,66 +58,34 @@ CommandRecorder::CommandRecorder()
         mBoundVertexBuffers[i] = nullptr;
 }
 
-bool CommandRecorder::Init(ID3D12Device* device)
+bool CommandRecorder::Init(ID3D12Device* device, uint32 frameCount)
 {
     HRESULT hr;
 
+    mFrameCount = frameCount;
     mFrameCounter = 1;
-    mFenceValues.resize(mFrameCount);
+    mFrameBufferIndex = 0;
 
+    mReferencedResources.Resize(mFrameCount);
+    mCommandAllocators.Resize(mFrameCount);
     for (uint32 i = 0; i < mFrameCount; ++i)
     {
-        D3DPtr<ID3D12CommandAllocator> commandAllocator;
-        hr = D3D_CALL_CHECK(device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                           IID_PPV_ARGS(commandAllocator.GetPtr())));
+        hr = D3D_CALL_CHECK(device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(mCommandAllocators[i].GetPtr())));
         if (FAILED(hr))
         {
             LOG_ERROR("Failed to create D3D12 command allocator for frame %u (out of %u)", i, mFrameCount);
             return false;
         }
 
-        mCommandAllocators.emplace_back(std::move(commandAllocator));
-        mFenceValues[i] = 1;
+        hr = D3D_CALL_CHECK(mCommandAllocators[i]->Reset());
+        if (FAILED(hr))
+        {
+            LOG_ERROR("Failed to reset command allocator for frame %u (out of %u)", i, mFrameCount);
+            return false;
+        }
     }
 
-
-    // create fence for frames synchronization
-    if (FAILED(D3D_CALL_CHECK(gDevice->mDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE,
-                                                            IID_PPV_ARGS(mFence.GetPtr())))))
-    {
-        LOG_ERROR("Failed to create D3D12 fence object");
-        return false;
-    }
-
-    // create an event handle to use for frame synchronization
-    mFenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-    if (mFenceEvent == nullptr)
-    {
-        LOG_ERROR("Failed to create fence event object");
-        return false;
-    }
-
-
-    // create D3D command list
-    hr = D3D_CALL_CHECK(device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                  mCommandAllocators[mFrameBufferIndex].Get(), nullptr,
-                                                  IID_PPV_ARGS(mCommandList.GetPtr())));
-    if (FAILED(hr))
-    {
-        LOG_ERROR("Failed to create D3D12 command list");
-        return false;
-    }
-
-    // we don't want the command list to be in recording state
-    hr = D3D_CALL_CHECK(mCommandList->Close());
-    if (FAILED(hr))
-    {
-        LOG_ERROR("Failed to close command list");
-        return false;
-    }
-
-    // TODO: dynamic buffer growing
-    if (!mRingBuffer.Init(8 * 1024 * 1024))
+    if (!mRingBuffer.Init(1024 * 1024))
     {
         LOG_ERROR("Failed to initialize ring buffer");
         return false;
@@ -126,26 +96,27 @@ bool CommandRecorder::Init(ID3D12Device* device)
 
 CommandRecorder::~CommandRecorder()
 {
-    ::CloseHandle(mFenceEvent);
+    NFE_ASSERT(mCommandList == nullptr, "Finish() not called before command buffer destruction");
 }
 
 bool CommandRecorder::Begin()
 {
-    if (mReset)
+    if (mCommandList)
     {
         LOG_WARNING("Redundant command buffer reset");
         return false;
     }
 
-    HRESULT hr;
-
-    hr = D3D_CALL_CHECK(mCommandAllocators[mFrameBufferIndex]->Reset());
-    if (FAILED(hr))
+    // get a free command list from the command list manager
+    ID3D12CommandAllocator* currentCommandAllocator = mCommandAllocators[mFrameBufferIndex].Get();
+    mCommandListObject = gDevice->GetCommandListManager()->RequestCommandList(currentCommandAllocator);
+    if (!mCommandListObject)
+    {
+        LOG_ERROR("Failed to optain command list");
         return false;
+    }
 
-    hr = D3D_CALL_CHECK(mCommandList->Reset(mCommandAllocators[mFrameBufferIndex].Get(), nullptr));
-    if (FAILED(hr))
-        return false;
+    mCommandList = mCommandListObject->GetD3DCommandList();
 
     ID3D12DescriptorHeap* heaps[] =
     {
@@ -172,12 +143,58 @@ bool CommandRecorder::Begin()
     for (int i = 0; i < NFE_RENDERER_MAX_VERTEX_BUFFERS; ++i)
         mBoundVertexBuffers[i] = nullptr;
 
-    mReset = true;
     return true;
 }
 
-void CommandRecorder::SetViewport(float left, float width, float top, float height,
-                                float minDepth, float maxDepth)
+CommandListID CommandRecorder::Finish()
+{
+    NFE_ASSERT(mCommandList, "Command buffer is not in recording state");
+
+    UnsetRenderTarget();
+
+    // verify resource states
+    mResourceStateCache.OnFinishCommandBuffer();
+
+    HRESULT hr = D3D_CALL_CHECK(mCommandList->Close());
+    if (FAILED(hr))
+    {
+        // recording failed
+        mCommandListObject = nullptr;
+        mCommandList = nullptr;
+        return INVALID_COMMAND_LIST_ID;
+    }
+
+    // TODO pass current frame ID to the command list
+    const CommandListID id = gDevice->GetCommandListManager()->OnCommandListRecorded(mCommandListObject);
+    mCommandListObject = nullptr;
+    mCommandList = nullptr;
+    return id;
+}
+
+bool CommandRecorder::OnFinishFrame(uint64 fenceValue)
+{
+    mRingBuffer.FinishFrame(fenceValue);
+    return true;
+}
+
+bool CommandRecorder::OnFrameCompleted(uint64 fenceValue)
+{
+    mFrameBufferIndex++;
+    if (mFrameBufferIndex >= mFrameCount)
+        mFrameBufferIndex = 0;
+
+    HRESULT hr = D3D_CALL_CHECK(mCommandAllocators[mFrameBufferIndex]->Reset());
+    if (FAILED(hr))
+    {
+        LOG_ERROR("Failed to reset command allocator for frame %u", mFrameBufferIndex);
+        return false;
+    }
+
+    mRingBuffer.OnFrameCompleted(fenceValue);
+    return true;
+}
+
+void CommandRecorder::SetViewport(float left, float width, float top, float height, float minDepth, float maxDepth)
 {
     D3D12_VIEWPORT viewport;
     viewport.TopLeftX = left;
@@ -344,15 +361,15 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
             rtvs[i] = allocator.GetCpuHandle();
             rtvs[i].ptr += mCurrRenderTarget->GetRTV(i) * allocator.GetDescriptorSize();
 
-            D3D12_RESOURCE_STATES targetState = D3D12_RESOURCE_STATE_RENDER_TARGET;
-            if (tex->GetState(subResource) != targetState)
+            const D3D12_RESOURCE_STATES targetState = D3D12_RESOURCE_STATE_RENDER_TARGET;
+            const D3D12_RESOURCE_STATES previousState = mResourceStateCache.SetResourceState(tex.Get(), subResource, targetState);
+            if (previousState != targetState)
             {
                 rb.Transition.pResource = tex->GetResource();
                 rb.Transition.Subresource = subResource;
-                rb.Transition.StateBefore = tex->GetState(subResource);
+                rb.Transition.StateBefore = previousState;
                 rb.Transition.StateAfter = targetState;
                 barriers[numBarriers++] = rb;
-                tex->SetState(subResource, targetState);
             }
         }
 
@@ -362,15 +379,15 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
             uint32 subResource = mCurrRenderTarget->GetDepthTexSubresourceID();
 
             // TODO sometimes we may need only read access
-            D3D12_RESOURCE_STATES targetState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
-            if (tex->GetState(subResource) != targetState)
+            const D3D12_RESOURCE_STATES targetState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+            const D3D12_RESOURCE_STATES previousState = mResourceStateCache.SetResourceState(tex.Get(), subResource, targetState);
+            if (previousState != targetState)
             {
                 rb.Transition.pResource = tex->GetResource();
                 rb.Transition.Subresource = subResource;
-                rb.Transition.StateBefore = tex->GetState(subResource);
+                rb.Transition.StateBefore = previousState;
                 rb.Transition.StateAfter = targetState;
                 barriers[numBarriers++] = rb;
-                tex->SetState(subResource, targetState);
             }
 
             dsv = dsvAllocator.GetCpuHandle();
@@ -403,16 +420,17 @@ void CommandRecorder::UnsetRenderTarget()
         {
             const InternalTexturePtr& tex = mCurrRenderTarget->GetTexture(i);
             uint32 subResource = mCurrRenderTarget->GetSubresourceID(i);
-            D3D12_RESOURCE_STATES targetState = tex->GetTargetState();
 
-            if (tex->GetState(subResource) != targetState)
+            const D3D12_RESOURCE_STATES targetState = tex->GetDefaultState();
+            const D3D12_RESOURCE_STATES previousState = mResourceStateCache.SetResourceState(tex.Get(), subResource, targetState);
+
+            if (previousState != targetState)
             {
                 rb.Transition.pResource = tex->GetResource();
                 rb.Transition.Subresource = subResource;
-                rb.Transition.StateBefore = tex->GetState(subResource);
+                rb.Transition.StateBefore = previousState;
                 rb.Transition.StateAfter = targetState;
                 barriers[numBarriers++] = rb;
-                tex->SetState(subResource, targetState);
             }
         }
 
@@ -421,16 +439,17 @@ void CommandRecorder::UnsetRenderTarget()
         {
             const InternalTexturePtr& tex = mCurrRenderTarget->GetDepthTexture();
             uint32 subResource = mCurrRenderTarget->GetDepthTexSubresourceID();
-            D3D12_RESOURCE_STATES targetState = tex->GetTargetState();
 
-            if (tex->GetState(subResource) != targetState)
+            const D3D12_RESOURCE_STATES targetState = tex->GetDefaultState();
+            const D3D12_RESOURCE_STATES previousState = mResourceStateCache.SetResourceState(tex.Get(), subResource, targetState);
+
+            if (previousState != targetState)
             {
                 rb.Transition.pResource = tex->GetResource();
                 rb.Transition.Subresource = subResource;
-                rb.Transition.StateBefore = tex->GetState(subResource);
+                rb.Transition.StateBefore = previousState;
                 rb.Transition.StateAfter = targetState;
                 barriers[numBarriers++] = rb;
-                tex->SetState(subResource, targetState);
             }
         }
     }
@@ -588,11 +607,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
     // TODO resource tracking
 
     Texture* srcTex = dynamic_cast<Texture*>(src.Get());
-    if (srcTex == nullptr)
-    {
-        LOG_ERROR("Invalid 'src' pointer");
-        return;
-    }
+    NFE_ASSERT(src, "Invalid 'src' pointer");
 
     if (srcTex->GetMode() == BufferMode::Readback || srcTex->GetMode() == BufferMode::Volatile)
     {
@@ -601,11 +616,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
     }
 
     Texture* destTex = dynamic_cast<Texture*>(dest.Get());
-    if (destTex == nullptr)
-    {
-        LOG_ERROR("Invalid 'dest' pointer");
-        return;
-    }
+    NFE_ASSERT(destTex, "Invalid 'dest' pointer");
 
     if (destTex->GetMode() == BufferMode::Static || destTex->GetMode() == BufferMode::Volatile)
     {
@@ -613,8 +624,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
         return;
     }
 
-    const D3D12_RESOURCE_STATES prevSrcTextureState = srcTex->GetState(0);
-    const D3D12_RESOURCE_STATES prevDestTextureState = destTex->GetState(0);
+    Common::StaticArray<D3D12_RESOURCE_BARRIER, 2> barriers;
 
     D3D12_RESOURCE_BARRIER rb;
     ZeroMemory(&rb, sizeof(rb));
@@ -623,25 +633,28 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
     rb.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 
     // transit source texture to "copy source" state
+    const D3D12_RESOURCE_STATES prevSrcTextureState = mResourceStateCache.SetResourceState(srcTex, 0, D3D12_RESOURCE_STATE_COPY_SOURCE);
     if (prevSrcTextureState != D3D12_RESOURCE_STATE_COPY_SOURCE)
     {
         rb.Transition.pResource = srcTex->GetResource();
         rb.Transition.StateBefore = prevSrcTextureState;
         rb.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE;
-        mCommandList->ResourceBarrier(1, &rb);
-
-        srcTex->SetState(0, D3D12_RESOURCE_STATE_COPY_SOURCE);
+        barriers.PushBack(rb);
     }
 
     // transit destination texture to "copy destination" state
+    const D3D12_RESOURCE_STATES prevDestTextureState = mResourceStateCache.SetResourceState(destTex, 0, D3D12_RESOURCE_STATE_COPY_DEST);
     if (prevDestTextureState != D3D12_RESOURCE_STATE_COPY_DEST)
     {
         rb.Transition.pResource = destTex->GetResource();
         rb.Transition.StateBefore = prevDestTextureState;
         rb.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST;
-        mCommandList->ResourceBarrier(1, &rb);
+        barriers.PushBack(rb);
+    }
 
-        destTex->SetState(0, D3D12_RESOURCE_STATE_COPY_DEST);
+    if (!barriers.Empty())
+    {
+        mCommandList->ResourceBarrier(barriers.Size(), barriers.Data());
     }
 
     // perform copy
@@ -669,15 +682,17 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
         mCommandList->CopyResource(destTex->GetResource(), srcTex->GetResource());
     }
 
+    barriers.Clear();
+
     // transit source texture to previous state
     if (prevSrcTextureState != D3D12_RESOURCE_STATE_COPY_SOURCE)
     {
         rb.Transition.pResource = srcTex->GetResource();
         rb.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE;
         rb.Transition.StateAfter = prevSrcTextureState;
-        mCommandList->ResourceBarrier(1, &rb);
+        barriers.PushBack(rb);
 
-        srcTex->SetState(0, prevSrcTextureState);
+        mResourceStateCache.SetResourceState(srcTex, 0, prevSrcTextureState);
     }
 
     // transit destination texture to previous state
@@ -686,9 +701,14 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
         rb.Transition.pResource = destTex->GetResource();
         rb.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
         rb.Transition.StateAfter = prevDestTextureState;
-        mCommandList->ResourceBarrier(1, &rb);
+        barriers.PushBack(rb);
 
-        destTex->SetState(0, prevDestTextureState);
+        mResourceStateCache.SetResourceState(destTex, 0, prevDestTextureState);
+    }
+
+    if (!barriers.Empty())
+    {
+        mCommandList->ResourceBarrier(barriers.Size(), barriers.Data());
     }
 }
 
@@ -718,7 +738,9 @@ void CommandRecorder::Clear(int flags, uint32 numTargets, const uint32* slots,
 
             const InternalTexturePtr& tex = mCurrRenderTarget->GetTexture(i);
             uint32 subResource = mCurrRenderTarget->GetSubresourceID(i);
-            NFE_ASSERT(tex->GetState(subResource) == D3D12_RESOURCE_STATE_RENDER_TARGET, "Invalid resource state");
+
+            const auto currentResourceState = mResourceStateCache.GetResourceState(tex.Get(), subResource);
+            NFE_ASSERT(currentResourceState == D3D12_RESOURCE_STATE_RENDER_TARGET, "Invalid resource state");
 
             D3D12_CPU_DESCRIPTOR_HANDLE handle = allocator.GetCpuHandle();
             handle.ptr += mCurrRenderTarget->GetRTV(slot) * allocator.GetDescriptorSize();
@@ -870,75 +892,6 @@ void CommandRecorder::Dispatch(uint32 x, uint32 y, uint32 z)
     }
 
     mCommandList->Dispatch(x, y, z);
-}
-
-CommandListID CommandRecorder::Finish()
-{
-    if (!mReset)
-    {
-        LOG_ERROR("Command buffer is not in recording state");
-        return 0;
-    }
-
-    mReset = false;
-
-    UnsetRenderTarget();
-
-    HRESULT hr = D3D_CALL_CHECK(mCommandList->Close());
-    if (FAILED(hr))
-    {
-        // recording failed
-        return 0;
-    }
-
-    // TODO
-    return 0;
-}
-
-bool CommandRecorder::MoveToNextFrame(ID3D12CommandQueue* commandQueue)
-{
-    uint64 currFenceValue = mFenceValues[mFrameBufferIndex];
-    mRingBuffer.FinishFrame(currFenceValue);
-
-    HRESULT hr = D3D_CALL_CHECK(commandQueue->Signal(mFence.Get(), currFenceValue));
-    if (FAILED(hr))
-    {
-        LOG_ERROR("Failed to enqueue fence value update");
-        return false;
-    }
-
-    // update frame index
-    mFrameBufferIndex++;
-    if (mFrameBufferIndex >= mFrameCount)
-        mFrameBufferIndex = 0;
-
-    // wait for frame
-    UINT64 completedValue = mFence->GetCompletedValue();
-    if (completedValue < mFenceValues[mFrameBufferIndex])
-    {
-        // TODO
-        // Count how many times we enter this scope per second.
-        // This means that we are render-bound.
-
-        hr = D3D_CALL_CHECK(mFence->SetEventOnCompletion(mFenceValues[mFrameBufferIndex], mFenceEvent));
-        if (FAILED(hr))
-        {
-            LOG_ERROR("Failed to set completion event for fence");
-            return false;
-        }
-
-        if (WaitForSingleObject(mFenceEvent, INFINITE) != WAIT_OBJECT_0)
-        {
-            LOG_ERROR("WaitForSingleObject failed");
-            return false;
-        }
-    }
-
-    mRingBuffer.OnFrameCompleted(mFenceValues[mFrameBufferIndex]);
-
-    mFenceValues[mFrameBufferIndex] = ++mFrameCounter;
-
-    return true;
 }
 
 void CommandRecorder::BeginDebugGroup(const char* text)

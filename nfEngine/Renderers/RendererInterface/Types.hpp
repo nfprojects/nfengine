@@ -46,7 +46,7 @@ using VertexLayoutPtr = Common::SharedPtr<IVertexLayout>;
 
 #define MAX_RENDER_TARGETS 8
 #define MAX_MIPMAP_LEVELS 16
-#define INVALID_COMMAND_LIST_ID 0
+#define INVALID_COMMAND_LIST_ID 0xFFFFFFFF
 
 // number of "graphics" shader types
 #define NFE_GRAPHICS_SHADER_TYPES_NUM 5
@@ -54,7 +54,7 @@ using VertexLayoutPtr = Common::SharedPtr<IVertexLayout>;
 /**
  * GPU resources data format.
  */
-enum class ElementFormat
+enum class ElementFormat : uint8
 {
     Unknown,
 
@@ -151,7 +151,7 @@ enum class ElementFormat
 /**
  * Depth buffer format
  */
-enum class DepthBufferFormat
+enum class DepthBufferFormat : uint8
 {
     Unknown,
     Depth16,          // 16-bit depth buffer
@@ -159,7 +159,7 @@ enum class DepthBufferFormat
     Depth32,          // 32-bit depth buffer
 };
 
-enum class TextureType
+enum class TextureType : uint8
 {
     Texture1D,
     Texture2D,
@@ -168,16 +168,16 @@ enum class TextureType
     Unknown
 };
 
-enum class BufferType
+enum class BufferType : uint8
 {
     Vertex,
     Index,
     Constant
 };
 
-enum class ShaderType
+enum class ShaderType : uint8
 {
-    Unknown = -1,
+    Unknown = 0xFF,
     Vertex  = 0,
     Hull,       //< aka. "tessellation control"
     Domain,     //< aka. "tessellation evaluation"
@@ -190,7 +190,7 @@ enum class ShaderType
 /**
  * GPU buffer modes.
  */
-enum class BufferMode
+enum class BufferMode : uint8
 {
     /**
      * GPU read-only resource, for example a static mesh or texture.
@@ -229,7 +229,7 @@ enum class BufferMode
 /**
  * GPU resource mapping type.
  */
-enum class MapType
+enum class MapType : uint8
 {
     WriteOnly,
     ReadOnly,
@@ -239,7 +239,7 @@ enum class MapType
 /**
  * Data format in a index buffer.
  */
-enum class IndexBufferFormat
+enum class IndexBufferFormat : uint8
 {
     Uint16,
     Uint32
@@ -248,7 +248,7 @@ enum class IndexBufferFormat
 /**
  * Alpha blending functions.
  */
-enum class BlendFunc
+enum class BlendFunc : uint8
 {
     Zero,
     One,
@@ -266,7 +266,7 @@ enum class BlendFunc
 /**
  * Alpha blending operators.
  */
-enum class BlendOp
+enum class BlendOp : uint8
 {
     Add,         //< A + B
     Subtract,    //< A - B
@@ -278,7 +278,7 @@ enum class BlendOp
 /**
  * Polygon culling mode.
  */
-enum class CullMode
+enum class CullMode : uint8
 {
     Disabled, //< disable backface culling
     CW,   //< cull clockwise faces (default)
@@ -288,7 +288,7 @@ enum class CullMode
 /**
  * Polygon filling mode.
  */
-enum class FillMode
+enum class FillMode : uint8
 {
     Solid,    //< fill triangles (default)
     Wireframe //< draw wireframe only
@@ -297,7 +297,7 @@ enum class FillMode
 /*
  * Comparison function.
  */
-enum class CompareFunc
+enum class CompareFunc : uint8
 {
     Never,
     Less,
@@ -309,7 +309,7 @@ enum class CompareFunc
     Pass
 };
 
-enum class StencilOp
+enum class StencilOp : uint8
 {
     Keep,          //< Keep the old value
     Zero,          //< Set value to zero
@@ -321,7 +321,7 @@ enum class StencilOp
     Invert         //< Invert the value
 };
 
-enum class PrimitiveType
+enum class PrimitiveType : uint8
 {
     Unknown,
     Points,
@@ -335,7 +335,7 @@ enum class PrimitiveType
 /**
  * Texture addressing mode for coordinates outside range [0.0, 1.0)
  */
-enum class TextureWrapMode
+enum class TextureWrapMode : uint8
 {
     Repeat,
     Clamp,
@@ -346,7 +346,7 @@ enum class TextureWrapMode
 /**
  * Texture minification filter.
  */
-enum class TextureMinFilter
+enum class TextureMinFilter : uint8
 {
     NearestMipmapNearest,
     LinearMipmapNearest,
@@ -357,7 +357,7 @@ enum class TextureMinFilter
 /**
  * Texture magnification filter.
  */
-enum class TextureMagFilter
+enum class TextureMagFilter : uint8
 {
     Nearest,
     Linear
