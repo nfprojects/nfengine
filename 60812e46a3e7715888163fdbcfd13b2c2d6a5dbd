@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_fbda8c16",
+        "filename": "nfEngine/Renderers/nfRendererD3D11/Backbuffer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-09-17T16:26:56Z",
+      "side": 1,
+      "message": "Remove",
+      "revId": "60812e46a3e7715888163fdbcfd13b2c2d6a5dbd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
