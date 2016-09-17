@@ -10,6 +10,7 @@
 
 #include "PCH.hpp"
 #include "CommandRecorder.hpp"
+#include "CommandListManager.hpp"
 #include "RendererD3D12.hpp"
 #include "VertexLayout.hpp"
 #include "Buffer.hpp"
@@ -22,7 +23,7 @@
 #include "Translations.hpp"
 #include "ResourceBinding.hpp"
 
-#include "nfCommon/Math/Vector.hpp"
+#include "nfCommon/Math/Vector.hpp" // TODO remove
 #include "nfCommon/System/Assertion.hpp"
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/System/Win/Common.hpp"  // required for ID3DUserDefinedAnnotation
@@ -40,11 +41,11 @@ CommandRecorder::CommandRecorder()
     , mComputeBindingLayout(nullptr)
     , mCurrComputePipelineState(nullptr)
     , mCurrPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_UNDEFINED)
-    , mFrameCounter(0)
-    , mFrameCount(3) // TODO this must be configurable
+    , mCommandList(nullptr)
+    , mCommandListObject(nullptr)
+    , mFrameCount(0)
+    , mFrameCounter(1)
     , mFrameBufferIndex(0)
-    , mNumBoundVertexBuffers(0)
-    , mReset(false)
 {
     for (int i = 0; i < NFE_RENDERER_MAX_VOLATILE_CBUFFERS; ++i)
     {
@@ -56,66 +57,34 @@ CommandRecorder::CommandRecorder()
         mBoundVertexBuffers[i] = nullptr;
 }
 
-bool CommandRecorder::Init(ID3D12Device* device)
+bool CommandRecorder::Init(ID3D12Device* device, uint32 frameCount)
 {
     HRESULT hr;
 
+    mFrameCount = frameCount;
     mFrameCounter = 1;
-    mFenceValues.resize(mFrameCount);
+    mFrameBufferIndex = 0;
 
+    mReferencedResources.resize(mFrameCount);
+    mCommandAllocators.resize(mFrameCount);
     for (uint32 i = 0; i < mFrameCount; ++i)
     {
-        D3DPtr<ID3D12CommandAllocator> commandAllocator;
-        hr = D3D_CALL_CHECK(device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                           IID_PPV_ARGS(commandAllocator.GetPtr())));
+        hr = D3D_CALL_CHECK(device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(mCommandAllocators[i].GetPtr())));
         if (FAILED(hr))
         {
             LOG_ERROR("Failed to create D3D12 command allocator for frame %u (out of %u)", i, mFrameCount);
             return false;
         }
 
-        mCommandAllocators.emplace_back(std::move(commandAllocator));
-        mFenceValues[i] = 1;
+        hr = D3D_CALL_CHECK(mCommandAllocators[i]->Reset());
+        if (FAILED(hr))
+        {
+            LOG_ERROR("Failed to reset command allocator for frame %u (out of %u)", i, mFrameCount);
+            return false;
+        }
     }
 
-
-    // create fence for frames synchronization
-    if (FAILED(D3D_CALL_CHECK(gDevice->mDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE,
-                                                            IID_PPV_ARGS(mFence.GetPtr())))))
-    {
-        LOG_ERROR("Failed to create D3D12 fence object");
-        return false;
-    }
-
-    // create an event handle to use for frame synchronization
-    mFenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-    if (mFenceEvent == nullptr)
-    {
-        LOG_ERROR("Failed to create fence event object");
-        return false;
-    }
-
-
-    // create D3D command list
-    hr = D3D_CALL_CHECK(device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                  mCommandAllocators[mFrameBufferIndex].Get(), nullptr,
-                                                  IID_PPV_ARGS(mCommandList.GetPtr())));
-    if (FAILED(hr))
-    {
-        LOG_ERROR("Failed to create D3D12 command list");
-        return false;
-    }
-
-    // we don't want the command list to be in recording state
-    hr = D3D_CALL_CHECK(mCommandList->Close());
-    if (FAILED(hr))
-    {
-        LOG_ERROR("Failed to close command list");
-        return false;
-    }
-
-    // TODO: dynamic buffer growing
-    if (!mRingBuffer.Init(8 * 1024 * 1024))
+    if (!mRingBuffer.Init(1024 * 1024))
     {
         LOG_ERROR("Failed to initialize ring buffer");
         return false;
@@ -126,26 +95,27 @@ bool CommandRecorder::Init(ID3D12Device* device)
 
 CommandRecorder::~CommandRecorder()
 {
-    ::CloseHandle(mFenceEvent);
+    NFE_ASSERT(mCommandList == nullptr, "Finish() not called before command buffer destruction");
 }
 
 bool CommandRecorder::Begin()
 {
-    if (mReset)
+    if (mCommandList)
     {
         LOG_WARNING("Redundant command buffer reset");
         return false;
     }
 
-    HRESULT hr;
-
-    hr = D3D_CALL_CHECK(mCommandAllocators[mFrameBufferIndex]->Reset());
-    if (FAILED(hr))
+    // get a free command list from the command list manager
+    ID3D12CommandAllocator* currentCommandAllocator = mCommandAllocators[mFrameBufferIndex].Get();
+    mCommandListObject = gDevice->GetCommandListManager()->RequestCommandList(currentCommandAllocator);
+    if (!mCommandListObject)
+    {
+        LOG_ERROR("Failed to optain command list");
         return false;
+    }
 
-    hr = D3D_CALL_CHECK(mCommandList->Reset(mCommandAllocators[mFrameBufferIndex].Get(), nullptr));
-    if (FAILED(hr))
-        return false;
+    mCommandList = mCommandListObject->GetD3DCommandList();
 
     ID3D12DescriptorHeap* heaps[] =
     {
@@ -172,12 +142,55 @@ bool CommandRecorder::Begin()
     for (int i = 0; i < NFE_RENDERER_MAX_VERTEX_BUFFERS; ++i)
         mBoundVertexBuffers[i] = nullptr;
 
-    mReset = true;
     return true;
 }
 
-void CommandRecorder::SetViewport(float left, float width, float top, float height,
-                                float minDepth, float maxDepth)
+CommandListID CommandRecorder::Finish()
+{
+    NFE_ASSERT(mCommandList, "Command buffer is not in recording state");
+
+    UnsetRenderTarget();
+
+    HRESULT hr = D3D_CALL_CHECK(mCommandList->Close());
+    if (FAILED(hr))
+    {
+        // recording failed
+        mCommandListObject = nullptr;
+        mCommandList = nullptr;
+        return INVALID_COMMAND_LIST_ID;
+    }
+
+    // TODO pass current frame ID to the command list
+    const CommandListID id = gDevice->GetCommandListManager()->OnCommandListRecorded(mCommandListObject);
+    mCommandListObject = nullptr;
+    mCommandList = nullptr;
+    return id;
+}
+
+bool CommandRecorder::OnFinishFrame(uint64 fenceValue)
+{
+    mRingBuffer.FinishFrame(fenceValue);
+    return true;
+}
+
+bool CommandRecorder::OnFrameCompleted(uint64 fenceValue)
+{
+    mFrameBufferIndex++;
+    if (mFrameBufferIndex >= mFrameCount)
+        mFrameBufferIndex = 0;
+
+    HRESULT hr = D3D_CALL_CHECK(mCommandAllocators[mFrameBufferIndex]->Reset());
+    if (FAILED(hr))
+    {
+        LOG_ERROR("Failed to reset command allocator for frame %u", mFrameBufferIndex);
+        return false;
+    }
+
+    mRingBuffer.OnFrameCompleted(fenceValue);
+    return true;
+}
+
+void CommandRecorder::SetViewport(float left, float width, float top, float height, float minDepth, float maxDepth)
 {
     D3D12_VIEWPORT viewport;
     viewport.TopLeftX = left;
@@ -870,75 +883,6 @@ void CommandRecorder::Dispatch(uint32 x, uint32 y, uint32 z)
     }
 
     mCommandList->Dispatch(x, y, z);
-}
-
-CommandListID CommandRecorder::Finish()
-{
-    if (!mReset)
-    {
-        LOG_ERROR("Command buffer is not in recording state");
-        return 0;
-    }
-
-    mReset = false;
-
-    UnsetRenderTarget();
-
-    HRESULT hr = D3D_CALL_CHECK(mCommandList->Close());
-    if (FAILED(hr))
-    {
-        // recording failed
-        return 0;
-    }
-
-    // TODO
-    return 0;
-}
-
-bool CommandRecorder::MoveToNextFrame(ID3D12CommandQueue* commandQueue)
-{
-    uint64 currFenceValue = mFenceValues[mFrameBufferIndex];
-    mRingBuffer.FinishFrame(currFenceValue);
-
-    HRESULT hr = D3D_CALL_CHECK(commandQueue->Signal(mFence.Get(), currFenceValue));
-    if (FAILED(hr))
-    {
-        LOG_ERROR("Failed to enqueue fence value update");
-        return false;
-    }
-
-    // update frame index
-    mFrameBufferIndex++;
-    if (mFrameBufferIndex >= mFrameCount)
-        mFrameBufferIndex = 0;
-
-    // wait for frame
-    UINT64 completedValue = mFence->GetCompletedValue();
-    if (completedValue < mFenceValues[mFrameBufferIndex])
-    {
-        // TODO
-        // Count how many times we enter this scope per second.
-        // This means that we are render-bound.
-
-        hr = D3D_CALL_CHECK(mFence->SetEventOnCompletion(mFenceValues[mFrameBufferIndex], mFenceEvent));
-        if (FAILED(hr))
-        {
-            LOG_ERROR("Failed to set completion event for fence");
-            return false;
-        }
-
-        if (WaitForSingleObject(mFenceEvent, INFINITE) != WAIT_OBJECT_0)
-        {
-            LOG_ERROR("WaitForSingleObject failed");
-            return false;
-        }
-    }
-
-    mRingBuffer.OnFrameCompleted(mFenceValues[mFrameBufferIndex]);
-
-    mFenceValues[mFrameBufferIndex] = ++mFrameCounter;
-
-    return true;
 }
 
 void CommandRecorder::BeginDebugGroup(const char* text)
