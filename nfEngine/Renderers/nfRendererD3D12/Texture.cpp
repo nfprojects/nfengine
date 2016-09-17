@@ -15,15 +15,14 @@ namespace NFE {
 namespace Renderer {
 
 Texture::Texture()
-    : mBuffersNum(1)
+    : Resource(D3D12_RESOURCE_STATE_COMMON)
+    , mBuffersNum(1)
     , mCurrentBuffer(0)
-    , mTargetState(D3D12_RESOURCE_STATE_COMMON)
 {
 }
 
 Texture::~Texture()
 {
-    gDevice->WaitForGPU();
 }
 
 bool Texture::UploadData(const TextureDesc& desc)
@@ -303,7 +302,7 @@ bool Texture::Init(const TextureDesc& desc)
         resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
         resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
-        mTargetState = D3D12_RESOURCE_STATE_COPY_DEST;
+        mDefaultState = D3D12_RESOURCE_STATE_COPY_DEST;
 
         hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommittedResource(&heapProperties,
                                                                           D3D12_HEAP_FLAG_NONE,
@@ -400,9 +399,9 @@ bool Texture::Init(const TextureDesc& desc)
 
 
         if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER)
-            mTargetState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
+            mDefaultState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
         else
-            mTargetState = initialState;
+            mDefaultState = initialState;
 
         if (desc.mode == BufferMode::Static)
         {
@@ -431,9 +430,6 @@ bool Texture::Init(const TextureDesc& desc)
     mLayers = static_cast<uint16>(desc.layers);
     mMipmapsNum = static_cast<uint16>(desc.mipmaps);
     mMode = desc.mode;
-
-    for (uint32 subresource = 0; subresource < desc.layers * desc.mipmaps; ++subresource)
-        mSubresourceStates.push_back(initialState);
 
     return true;
 }
