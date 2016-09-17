@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 #include "Device.hpp"
 #include "CommandRecorder.hpp"
+#include "CommandListManager.hpp"
 #include "RendererD3D12.hpp"
 #include "VertexLayout.hpp"
 #include "Buffer.hpp"
@@ -53,7 +54,6 @@ Device::Device()
     , mRtvHeapAllocator(HeapAllocator::Type::Rtv, 512)
     , mDsvHeapAllocator(HeapAllocator::Type::Dsv, 512)
     , mAdapterInUse(-1)
-    , mFenceValue(1)
     , mDebugLayerEnabled(false)
 {
 }
@@ -64,6 +64,117 @@ bool Device::Init(const DeviceInitParams* params)
     if (!params)
         params = &defaultParams;
 
+    HRESULT hr;
+
+    if (!InitializeDevice(params))
+    {
+        return false;
+    }
+
+    if (!DetectFeatureLevel())
+    {
+        return false;
+    }
+
+    if (params->debugLevel > 0)
+    {
+        if (!PrepareDebugLayer())
+        {
+            LOG_ERROR("Failed to setup Direct3D 12 debug layer");
+        }
+    }
+
+    // print device info
+    // TODO: move to separate file (common for all renderers)
+    {
+        DeviceInfo deviceInfo;
+        if (GetDeviceInfo(deviceInfo))
+        {
+            LOG_INFO("GPU name: %s", deviceInfo.description.c_str());
+            LOG_INFO("GPU info: %s", deviceInfo.misc.c_str());
+
+            std::string features;
+            for (size_t i = 0; i < deviceInfo.features.size(); ++i)
+            {
+                if (i > 0)
+                    features += ", ";
+                features += deviceInfo.features[i];
+            }
+            LOG_INFO("GPU features: %s", features.c_str());
+        }
+    }
+
+    /// create command queue
+    D3D12_COMMAND_QUEUE_DESC queueDesc = {};
+    queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+    queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+    hr = D3D_CALL_CHECK(mDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&mCommandQueue)));
+    if (FAILED(hr))
+        return false;
+
+    // create fence for frame synchronization
+    hr = D3D_CALL_CHECK(gDevice->mDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mFence)));
+    if (FAILED(hr))
+    {
+        LOG_ERROR("Failed to create D3D12 fence object");
+        return false;
+    }
+
+    // Create an event handle to use for frame synchronization.
+    mFenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+    if (mFenceEvent == nullptr)
+    {
+        LOG_ERROR("Failed to create fence event object");
+        return false;
+    }
+
+
+    // create command lists manager
+    mCommandListManager = std::make_unique<CommandListManager>();
+    if (!mCommandListManager->Init(mDevice.Get()))
+    {
+        LOG_ERROR("Failed to initialize command list manager");
+        return false;
+    }
+
+    if (!CreateResources())
+    {
+        LOG_ERROR("Failed to create low-level renderer resources");
+        return false;
+    }
+
+    return true;
+}
+
+Device::~Device()
+{
+    WaitForGPU();
+
+    mCommandListManager.reset();
+
+    mCbvSrvUavHeapAllocator.Release();
+    mRtvHeapAllocator.Release();
+    mDsvHeapAllocator.Release();
+
+    mDXGIFactory.Reset();
+    mAdapters.clear();
+    mCommandQueue.Reset();
+    mFence.Reset();
+    mDevice.Reset();
+
+    ::CloseHandle(mFenceEvent);
+
+    if (mDebugDevice)
+    {
+        mInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, FALSE);
+        mInfoQueue.Reset();
+
+        mDebugDevice->ReportLiveDeviceObjects(D3D12_RLDO_DETAIL | D3D12_RLDO_IGNORE_INTERNAL);
+    }
+}
+
+bool Device::InitializeDevice(const DeviceInitParams* params)
+{
     HRESULT hr;
 
     // Enable the D3D12 debug layer
@@ -93,140 +204,50 @@ bool Device::Init(const DeviceInitParams* params)
     if (FAILED(hr))
         return false;
 
-    D3D_FEATURE_LEVEL featureLevels[] =
+    return true;
+}
+
+bool Device::PrepareDebugLayer()
+{
+    HRESULT hr = D3D_CALL_CHECK(mDevice->QueryInterface(IID_PPV_ARGS(&mDebugDevice)));
+    if (FAILED(hr))
     {
-        D3D_FEATURE_LEVEL_9_1,  D3D_FEATURE_LEVEL_9_2, D3D_FEATURE_LEVEL_9_3,
-        D3D_FEATURE_LEVEL_10_0, D3D_FEATURE_LEVEL_10_1,
-        D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_11_1,
-        D3D_FEATURE_LEVEL_12_0, D3D_FEATURE_LEVEL_12_1,
+        LOG_ERROR("D3D12 device debugging won't be supported");
+        return false;
+    }
+
+    mDebugLayerEnabled = true;
+    if (SUCCEEDED(mDevice->QueryInterface(IID_PPV_ARGS(&mInfoQueue))))
+    {
+        LOG_ERROR("Failed to query ID3D12InfoQueue interface");
+        return false;
+    }
+
+    D3D12_MESSAGE_ID messagesToHide[] =
+    {
+        // this warning makes debugging with VS Graphics Debugger impossible
+        D3D12_MESSAGE_ID_MAP_INVALID_NULLRANGE,
+
+        // performance warning - let's ignore it for now
+        D3D12_MESSAGE_ID_CLEARRENDERTARGETVIEW_MISMATCHINGCLEARVALUE,
     };
-    D3D12_FEATURE_DATA_FEATURE_LEVELS featureLevelsInfo;
-    featureLevelsInfo.NumFeatureLevels = 9;
-    featureLevelsInfo.pFeatureLevelsRequested = featureLevels;
-    hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_FEATURE_LEVELS, &featureLevelsInfo,
-                                      sizeof(featureLevelsInfo));
-    if (SUCCEEDED(hr))
-    {
-        const char* featureLevelStr = "unknown";
-        mFeatureLevel = featureLevelsInfo.MaxSupportedFeatureLevel;
-        switch (mFeatureLevel)
-        {
-        case D3D_FEATURE_LEVEL_9_1:
-            featureLevelStr = "9_1";
-            break;
-        case D3D_FEATURE_LEVEL_9_2:
-            featureLevelStr = "9_2";
-            break;
-        case D3D_FEATURE_LEVEL_9_3:
-            featureLevelStr = "9_3";
-            break;
-        case D3D_FEATURE_LEVEL_10_0:
-            featureLevelStr = "10_0";
-            break;
-        case D3D_FEATURE_LEVEL_10_1:
-            featureLevelStr = "10_1";
-            break;
-        case D3D_FEATURE_LEVEL_11_0:
-            featureLevelStr = "11_0";
-            break;
-        case D3D_FEATURE_LEVEL_11_1:
-            featureLevelStr = "11_1";
-            break;
-        case D3D_FEATURE_LEVEL_12_0:
-            featureLevelStr = "12_0";
-            break;
-        case D3D_FEATURE_LEVEL_12_1:
-            featureLevelStr = "12_1";
-            break;
-        }
-        LOG_INFO("Direct3D 12 device created with %s feature level", featureLevelStr);
-    }
-    else
-    {
-        LOG_ERROR("Failed to obtain Direct3D feature level");
-        mFeatureLevel = D3D_FEATURE_LEVEL_9_1;
-    }
 
-    if (params->debugLevel > 0)
-    {
-        hr = D3D_CALL_CHECK(mDevice->QueryInterface(IID_PPV_ARGS(&mDebugDevice)));
-        if (FAILED(hr))
-        {
-            LOG_ERROR("D3D12 device debugging won't be supported");
-        }
-    }
+    bool success = true;
 
-    // print device info
-    // TODO: move to separate file (common for all renderers)
-    {
-        DeviceInfo deviceInfo;
-        if (GetDeviceInfo(deviceInfo))
-        {
-            LOG_INFO("GPU name: %s", deviceInfo.description.c_str());
-            LOG_INFO("GPU info: %s", deviceInfo.misc.c_str());
+    D3D12_INFO_QUEUE_FILTER filter;
+    memset(&filter, 0, sizeof(filter));
+    filter.DenyList.NumIDs = _countof(messagesToHide);
+    filter.DenyList.pIDList = messagesToHide;
+    success &= SUCCEEDED(D3D_CALL_CHECK(mInfoQueue->AddStorageFilterEntries(&filter)));
+    success &= SUCCEEDED(D3D_CALL_CHECK(mInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE)));
+    success &= SUCCEEDED(D3D_CALL_CHECK(mInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE)));
+    success &= SUCCEEDED(D3D_CALL_CHECK(mInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE)));
 
-            std::string features;
-            for (size_t i = 0; i < deviceInfo.features.size(); ++i)
-            {
-                if (i > 0)
-                    features += ", ";
-                features += deviceInfo.features[i];
-            }
-            LOG_INFO("GPU features: %s", features.c_str());
-        }
-    }
+    return success;
+}
 
-    if (params->debugLevel > 0)
-    {
-        mDebugLayerEnabled = true;
-        if (SUCCEEDED(mDevice->QueryInterface(IID_PPV_ARGS(&mInfoQueue))))
-        {
-            D3D12_MESSAGE_ID messagesToHide[] =
-            {
-                // this warning makes debugging with VS Graphics Debugger impossible
-                D3D12_MESSAGE_ID_MAP_INVALID_NULLRANGE,
-
-                // performance warning - let's ignore it for now
-                D3D12_MESSAGE_ID_CLEARRENDERTARGETVIEW_MISMATCHINGCLEARVALUE,
-            };
-
-            D3D12_INFO_QUEUE_FILTER filter;
-            memset(&filter, 0, sizeof(filter));
-            filter.DenyList.NumIDs = _countof(messagesToHide);
-            filter.DenyList.pIDList = messagesToHide;
-            mInfoQueue->AddStorageFilterEntries(&filter);
-
-            mInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
-            mInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
-            mInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE);
-        }
-    }
-
-    /// create command queue
-    D3D12_COMMAND_QUEUE_DESC queueDesc = {};
-    queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-    queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-    hr = D3D_CALL_CHECK(mDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&mCommandQueue)));
-    if (FAILED(hr))
-        return false;
-
-    // create fence for frame synchronization
-    hr = D3D_CALL_CHECK(gDevice->mDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mFence)));
-    if (FAILED(hr))
-    {
-        LOG_ERROR("Failed to create D3D12 fence object");
-        return false;
-    }
-
-    // Create an event handle to use for frame synchronization.
-    mFenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-    if (mFenceEvent == nullptr)
-    {
-        LOG_ERROR("Failed to create fence event object");
-        return false;
-    }
-
-
+bool Device::CreateResources()
+{
     if (!mCbvSrvUavHeapAllocator.Init())
     {
         LOG_ERROR("Failed to initialize heap allocator for CBV, SRV and UAV");
@@ -246,31 +267,6 @@ bool Device::Init(const DeviceInitParams* params)
     }
 
     return true;
-}
-
-Device::~Device()
-{
-    WaitForGPU();
-
-    mCbvSrvUavHeapAllocator.Release();
-    mRtvHeapAllocator.Release();
-    mDsvHeapAllocator.Release();
-
-    mDXGIFactory.Reset();
-    mAdapters.clear();
-    mCommandQueue.Reset();
-    mFence.Reset();
-    mDevice.Reset();
-
-    ::CloseHandle(mFenceEvent);
-
-    if (mDebugDevice)
-    {
-        mInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, FALSE);
-        mInfoQueue.Reset();
-
-        mDebugDevice->ReportLiveDeviceObjects(D3D12_RLDO_DETAIL | D3D12_RLDO_IGNORE_INTERNAL);
-    }
 }
 
 ID3D12Device* Device::GetDevice() const
@@ -392,6 +388,68 @@ bool Device::DetectVideoCards(int preferredId)
     }
 
     return false;
+}
+
+bool Device::DetectFeatureLevel()
+{
+    HRESULT hr;
+
+    D3D_FEATURE_LEVEL featureLevels[] =
+    {
+        D3D_FEATURE_LEVEL_9_1,  D3D_FEATURE_LEVEL_9_2, D3D_FEATURE_LEVEL_9_3,
+        D3D_FEATURE_LEVEL_10_0, D3D_FEATURE_LEVEL_10_1,
+        D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_11_1,
+        D3D_FEATURE_LEVEL_12_0, D3D_FEATURE_LEVEL_12_1,
+    };
+    D3D12_FEATURE_DATA_FEATURE_LEVELS featureLevelsInfo;
+    featureLevelsInfo.NumFeatureLevels = 9;
+    featureLevelsInfo.pFeatureLevelsRequested = featureLevels;
+    hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_FEATURE_LEVELS, &featureLevelsInfo,
+                                      sizeof(featureLevelsInfo));
+    if (SUCCEEDED(hr))
+    {
+        const char* featureLevelStr = "unknown";
+        mFeatureLevel = featureLevelsInfo.MaxSupportedFeatureLevel;
+        switch (mFeatureLevel)
+        {
+        case D3D_FEATURE_LEVEL_9_1:
+            featureLevelStr = "9_1";
+            break;
+        case D3D_FEATURE_LEVEL_9_2:
+            featureLevelStr = "9_2";
+            break;
+        case D3D_FEATURE_LEVEL_9_3:
+            featureLevelStr = "9_3";
+            break;
+        case D3D_FEATURE_LEVEL_10_0:
+            featureLevelStr = "10_0";
+            break;
+        case D3D_FEATURE_LEVEL_10_1:
+            featureLevelStr = "10_1";
+            break;
+        case D3D_FEATURE_LEVEL_11_0:
+            featureLevelStr = "11_0";
+            break;
+        case D3D_FEATURE_LEVEL_11_1:
+            featureLevelStr = "11_1";
+            break;
+        case D3D_FEATURE_LEVEL_12_0:
+            featureLevelStr = "12_0";
+            break;
+        case D3D_FEATURE_LEVEL_12_1:
+            featureLevelStr = "12_1";
+            break;
+        }
+        LOG_INFO("Direct3D 12 device created with %s feature level", featureLevelStr);
+    }
+    else
+    {
+        LOG_ERROR("Failed to obtain Direct3D feature level");
+        mFeatureLevel = D3D_FEATURE_LEVEL_9_1;
+        return false;
+    }
+
+    return true;
 }
 
 bool Device::GetDeviceInfo(DeviceInfo& info)
@@ -533,8 +591,48 @@ bool Device::Execute(CommandListID commandList)
 
 bool Device::FinishFrame()
 {
-    // TODO insert fence (extract code from CommandRecorder)
-    return false;
+    uint64 currFenceValue = mFenceValues[mFrameBufferIndex];
+    mRingBuffer.FinishFrame(currFenceValue);
+
+    HRESULT hr = D3D_CALL_CHECK(mCommandQueue->Signal(mFence.get(), currFenceValue));
+    if (FAILED(hr))
+    {
+        LOG_ERROR("Failed to enqueue fence value update");
+        return false;
+    }
+
+    // update frame index
+    mFrameBufferIndex++;
+    if (mFrameBufferIndex >= mFrameCount)
+        mFrameBufferIndex = 0;
+
+    // wait for frame
+    UINT64 completedValue = mFence->GetCompletedValue();
+    if (completedValue < mFenceValues[mFrameBufferIndex])
+    {
+        // TODO
+        // Count how many times we enter this scope per second.
+        // This means that we are render-bound.
+
+        hr = D3D_CALL_CHECK(mFence->SetEventOnCompletion(mFenceValues[mFrameBufferIndex], mFenceEvent));
+        if (FAILED(hr))
+        {
+            LOG_ERROR("Failed to set completion event for fence");
+            return false;
+        }
+
+        if (WaitForSingleObject(mFenceEvent, INFINITE) != WAIT_OBJECT_0)
+        {
+            LOG_ERROR("WaitForSingleObject failed");
+            return false;
+        }
+    }
+
+    mRingBuffer.OnFrameCompleted(mFenceValues[mFrameBufferIndex]);
+
+    mFenceValues[mFrameBufferIndex] = ++mFrameCounter;
+
+    return true;
 }
 
 bool Device::DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data)

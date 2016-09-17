@@ -10,6 +10,7 @@
 #include "Common.hpp"
 #include "PipelineState.hpp"
 #include "HeapAllocator.hpp"
+#include "RingBuffer.hpp"
 
 #include <map>
 #include <atomic>
@@ -19,6 +20,7 @@ namespace NFE {
 namespace Renderer {
 
 class CommandRecorder;
+class CommandListManager;
 
 class Device : public IDevice
 {
@@ -37,10 +39,18 @@ class Device : public IDevice
     D3DPtr<ID3D12DebugDevice> mDebugDevice;
     D3DPtr<ID3D12InfoQueue> mInfoQueue;
 
+    uint64 mFrameCounter;       // total frame counter
+    uint32 mFrameCount;         // number of queued frames
+    uint32 mFrameBufferIndex;   // current frame (command allocator index)
+    std::vector<D3DPtr<ID3D12CommandAllocator>> mCommandAllocators;
+    D3DPtr<ID3D12GraphicsCommandList> mCommandList;
+
     // synchronization objects
     D3DPtr<ID3D12Fence> mFence;
-    std::atomic<uint64> mFenceValue;
+    std::vector<uint64> mFenceValues;
     HANDLE mFenceEvent;
+
+    std::unique_ptr<CommandListManager> mCommandListManager;
 
     HeapAllocator mCbvSrvUavHeapAllocator;
     HeapAllocator mRtvHeapAllocator;
@@ -48,7 +58,11 @@ class Device : public IDevice
 
     bool mDebugLayerEnabled;
 
+    bool InitializeDevice(const DeviceInitParams* params);
+    bool DetectFeatureLevel();
+    bool PrepareDebugLayer();
     bool DetectVideoCards(int preferredId);
+    bool CreateResources();
 
 public:
     Device();
@@ -84,6 +98,11 @@ public:
     bool DownloadTexture(const TexturePtr& tex, void* data, int mipmap, int layer) override;
 
     bool WaitForGPU() override;
+
+    NFE_INLINE CommandListManager* GetCommandListManager() const
+    {
+        return mCommandListManager.get();
+    }
 
     NFE_INLINE HeapAllocator& GetCbvSrvUavHeapAllocator()
     {
