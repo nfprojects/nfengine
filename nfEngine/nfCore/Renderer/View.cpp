@@ -93,10 +93,12 @@ bool View::SetWindow(Common::Window* window)
 
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
 
+
     // create backbuffer connected with the window
     BackbufferDesc bbDesc;
     bbDesc.width = width;
     bbDesc.height = height;
+    bbDesc.format = renderer->GetBackbufferFormat();
     bbDesc.windowHandle = static_cast<void*>(window->GetHandle());
     bbDesc.vSync = false;
     mWindowBackbuffer.reset(renderer->GetDevice()->CreateBackbuffer(bbDesc));

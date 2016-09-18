@@ -101,6 +101,12 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     std::vector<VkDescriptorSetLayoutBinding> volatileBindings;
     std::vector<VkDescriptorSetLayout> layouts;
 
+    if (desc.numVolatileCBuffers > 0)
+    {
+        LOG_ERROR("Volatile CBuffers are unsupported.");
+        return false;
+    }
+
     for (int d = 0; d < VK_DESCRIPTOR_TYPE_RANGE_SIZE; ++d)
         descSizes[d] = 0;
 

@@ -156,6 +156,26 @@ bool Device::Init(const DeviceInitParams* params)
 
     vkGetPhysicalDeviceMemoryProperties(mPhysicalDevice, &mMemoryProperties);
 
+    // create a temporary platform-specific surface to get format capabilities
+    VkSurfaceKHR tempSurface = VK_NULL_HANDLE;
+    if (!CreateTemporarySurface(tempSurface))
+    {
+        LOG_ERROR("Unable to create a temporary surface to gather available formats");
+        return false;
+    }
+
+    uint32 formatCount = 0;
+    vkGetPhysicalDeviceSurfaceFormatsKHR(mPhysicalDevice, tempSurface, &formatCount, nullptr);
+    if (formatCount == 0)
+    {
+        LOG_ERROR("Temporary surface does not have any formats on this physical device");
+        return false;
+    }
+
+    mSupportedFormats.resize(formatCount);
+    vkGetPhysicalDeviceSurfaceFormatsKHR(mPhysicalDevice, tempSurface, &formatCount, mSupportedFormats.data());
+    CleanupTemporarySurface(tempSurface);
+
     // Grab queue properties from our selected device
     uint32 queueCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(mPhysicalDevice, &queueCount, nullptr);
@@ -376,6 +396,16 @@ ICommandBuffer* Device::CreateCommandBuffer()
     }
 
     return cb;
+}
+
+bool Device::IsBackbufferFormatSupported(ElementFormat format)
+{
+    VkFormat bbFormat = TranslateElementFormatToVkFormat(format);
+    for (auto& f: mSupportedFormats)
+        if (f.format == bbFormat)
+            return true;
+
+    return false;
 }
 
 bool Device::GetDeviceInfo(DeviceInfo& info)

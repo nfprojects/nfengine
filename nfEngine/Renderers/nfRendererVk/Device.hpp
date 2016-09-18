@@ -31,9 +31,13 @@ private:
     VkSemaphore mPresentSemaphore;
     VkSemaphore mPostPresentSemaphore;
     VkPipelineCache mPipelineCache;
+    std::vector<VkSurfaceFormatKHR> mSupportedFormats;
     bool mDebugEnable;
 
     VkPhysicalDevice SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices, int preferredId);
+
+    bool CreateTemporarySurface(VkSurfaceKHR& surface);
+    void CleanupTemporarySurface(VkSurfaceKHR& surface);
 
 public:
     Device();
@@ -96,6 +100,7 @@ public:
     // overrides
     void* GetHandle() const override;
     bool GetDeviceInfo(DeviceInfo& info) override;
+    bool IsBackbufferFormatSupported(ElementFormat format) override;
 
     IVertexLayout* CreateVertexLayout(const VertexLayoutDesc& desc) override;
     IBuffer* CreateBuffer(const BufferDesc& desc) override;

@@ -83,6 +83,7 @@ bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuf
         return false;
 
     PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.rtFormats[0] = mBackbufferFormat;
     pipelineStateDesc.vertexShader = mVertexShader.get();
     pipelineStateDesc.depthFormat = DepthBufferFormat::Unknown;
     pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
@@ -109,6 +110,8 @@ bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuf
     if (!mSecondTargetPipelineState)
         return false;
 
+    pipelineStateDesc.rtFormats[0] = ElementFormat::R8G8B8A8_U_Norm;
+    pipelineStateDesc.rtFormats[1] = ElementFormat::R8G8B8A8_U_Norm;
     pipelineStateDesc.pixelShader = mRTPixelShader.get();
     pipelineStateDesc.depthFormat = withDepthBuffer ? DepthBufferFormat::Depth16 : DepthBufferFormat::Unknown;
     pipelineStateDesc.numRenderTargets = multipleRT ? 2 : 1;
@@ -193,7 +196,7 @@ bool RenderTargetsScene::CreateRenderTarget(bool withDepthBuffer, bool multipleR
     texDesc.samplesNum = withMSAA ? MULTISAMPLE_SAMPLES : 1;
 
     // render target texture
-    texDesc.format = ElementFormat::B8G8R8A8_U_Norm;
+    texDesc.format = ElementFormat::R8G8B8A8_U_Norm;
     texDesc.binding = NFE_RENDERER_TEXTURE_BIND_RENDERTARGET | NFE_RENDERER_TEXTURE_BIND_SHADER;
     texDesc.debugName = "RenderTargetsScene::mRenderTargetTexture[0]";
     mRenderTargetTextures[0].reset(mRendererDevice->CreateTexture(texDesc));
@@ -383,6 +386,7 @@ bool RenderTargetsScene::OnInit(void* winHandle)
     BackbufferDesc bbDesc;
     bbDesc.width = WINDOW_WIDTH;
     bbDesc.height = WINDOW_HEIGHT;
+    bbDesc.format = mBackbufferFormat;
     bbDesc.windowHandle = winHandle;
     bbDesc.vSync = false;
     bbDesc.debugName = "RenderTargetsScene::mWindowBackbuffer";

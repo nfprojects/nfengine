@@ -40,6 +40,7 @@ public:
     void* GetHandle() const override;
     ID3D11Device* Get() const;
     bool GetDeviceInfo(DeviceInfo& info) override;
+    bool IsBackbufferFormatSupported(ElementFormat format) override;
 
     /// Resources creation functions
 

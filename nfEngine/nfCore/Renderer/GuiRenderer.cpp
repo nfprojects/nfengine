@@ -82,6 +82,7 @@ GuiRenderer::GuiRenderer()
     mVertexBuffer.reset(device->CreateBuffer(bufferDesc));
 
     PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.rtFormats[0] = mRenderer->GetBackbufferFormat();
     pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
     // blend state that enables additive alpha-blending
     pipelineStateDesc.blendState.rtDescs[0].enable = true;

@@ -7,8 +7,8 @@
 #include "PCH.hpp"
 #include "Backbuffer.hpp"
 #include "RendererD3D12.hpp"
+#include "Translations.hpp"
 #include "nfCommon/Logger.hpp"
-
 
 
 namespace NFE {
@@ -46,7 +46,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     mType = TextureType::Texture2D;
     mWidth = static_cast<uint16>(desc.width);
     mHeight = static_cast<uint16>(desc.height);
-    mSrvFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
+    mSrvFormat = TranslateElementFormat(desc.format);
     mLayers = 1;
     mWindow = static_cast<HWND>(desc.windowHandle);
     mVSync = desc.vSync;
@@ -87,7 +87,8 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
         }
     }
 
-    LOG_DEBUG("Swapchain created successfully.");
+    LOG_DEBUG("Swapchain created successfully (width=%i, height=%i, format=%s)",
+              desc.width, desc.height, GetElementFormatName(desc.format));
     return true;
 }
 
