@@ -110,6 +110,9 @@ extern PFN_vkCreateFence vkCreateFence;
 extern PFN_vkCreateSemaphore vkCreateSemaphore;
 extern PFN_vkDestroyFence vkDestroyFence;
 extern PFN_vkDestroySemaphore vkDestroySemaphore;
+extern PFN_vkGetFenceStatus vkGetFenceStatus;
+extern PFN_vkResetFences vkResetFences;
+extern PFN_vkWaitForFences vkWaitForFences;
 
 // Shaders
 extern PFN_vkCreateShaderModule vkCreateShaderModule;

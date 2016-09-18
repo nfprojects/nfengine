@@ -471,9 +471,12 @@ bool Device::Execute(ICommandList* commandList)
     // and when you finish, signal render semaphore
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = &mRenderSemaphore;
-    VkResult result = vkQueueSubmit(mGraphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+
+    VkResult result = vkQueueSubmit(mGraphicsQueue, 1, &submitInfo,
+                                    cl->cmdBuffer->mFences[cl->cmdBuffer->mCurrentFence]);
     CHECK_VKRESULT(result, "Failed to submit graphics operations");
 
+    cl->cmdBuffer->AdvanceFrame();
     return true;
 }
 
