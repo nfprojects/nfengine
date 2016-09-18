@@ -16,6 +16,7 @@ Buffer::Buffer()
     : mBuffer(VK_NULL_HANDLE)
     , mBufferMemory(VK_NULL_HANDLE)
     , mBufferSize(0)
+    , mMode(BufferMode::Static)
 {
 }
 
@@ -30,12 +31,14 @@ Buffer::~Buffer()
 bool Buffer::Init(const BufferDesc& desc)
 {
     // Temporary early leave until below types are implemented
-    if (desc.mode == BufferMode::Dynamic || desc.mode == BufferMode::Volatile ||
+    if (desc.mode == BufferMode::Volatile ||
         desc.mode == BufferMode::GPUOnly || desc.mode == BufferMode::Readback)
     {
         LOG_ERROR("Requested unsupported buffer mode");
         return false;
     }
+
+    mMode = desc.mode;
 
     if (desc.mode == BufferMode::Volatile && desc.type == BufferType::Constant)
         return true; // handled by RingBuffer

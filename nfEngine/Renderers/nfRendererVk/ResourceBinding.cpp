@@ -76,6 +76,8 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
 ResourceBindingLayout::ResourceBindingLayout()
     : mPipelineLayout(VK_NULL_HANDLE)
     , mDescriptorPool(VK_NULL_HANDLE)
+    , mVolatileBufferSet(VK_NULL_HANDLE)
+    , mVolatileBufferLayout(VK_NULL_HANDLE)
 {
 }
 
@@ -90,6 +92,8 @@ ResourceBindingLayout::~ResourceBindingLayout()
     }
     if (mPipelineLayout != VK_NULL_HANDLE)
         vkDestroyPipelineLayout(gDevice->GetDevice(), mPipelineLayout, nullptr);
+    if (mVolatileBufferLayout != VK_NULL_HANDLE)
+        vkDestroyDescriptorSetLayout(gDevice->GetDevice(), mVolatileBufferLayout, nullptr);
 }
 
 bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
@@ -108,6 +112,39 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
             descSizes[d.first] += d.second;
 
         layouts.push_back(rbs->mDescriptorLayout);
+    }
+
+    // create additional layout to support dynamic buffers
+    for (uint32 buf = 0; buf < desc.numVolatileCBuffers; ++buf)
+    {
+        const VolatileCBufferBinding& vb = desc.volatileCBuffers[buf];
+
+        VkDescriptorSetLayoutBinding dslBinding;
+        VK_ZERO_MEMORY(dslBinding);
+        dslBinding.stageFlags = TranslateShaderTypeToVkShaderStage(vb.shaderVisibility);
+        dslBinding.binding = vb.slot;
+        dslBinding.descriptorCount = 1;
+        dslBinding.descriptorType = TranslateDynamicResourceTypeToVkDescriptorType(vb.resourceType);
+        if (dslBinding.descriptorType == VK_DESCRIPTOR_TYPE_MAX_ENUM)
+        {
+            LOG_ERROR("Unsupported dynamic resource type provided");
+            return false;
+        }
+
+        volatileBindings.push_back(dslBinding);
+        descSizes[dslBinding.descriptorType]++;
+    }
+
+    if (!volatileBindings.empty())
+    {
+        VkDescriptorSetLayoutCreateInfo dslInfo;
+        VK_ZERO_MEMORY(dslInfo);
+        dslInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+        dslInfo.bindingCount = static_cast<uint32>(volatileBindings.size());
+        dslInfo.pBindings = volatileBindings.data();
+        result = vkCreateDescriptorSetLayout(gDevice->GetDevice(), &dslInfo, nullptr, &mVolatileBufferLayout);
+        CHECK_VKRESULT(result, "Failed to create layout for volatile buffers");
+        layouts.push_back(mVolatileBufferLayout);
     }
 
     // join all layouts into a Pipeline Layout
@@ -131,13 +168,13 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     }
 
     // perform set allocation, but only when there is something to allocate
-    if (desc.numBindingSets > 0)
+    if (desc.numBindingSets + desc.numVolatileCBuffers > 0)
     {
         // allocate pool for descriptors
         VkDescriptorPoolCreateInfo poolInfo;
         VK_ZERO_MEMORY(poolInfo);
         poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-        poolInfo.maxSets = static_cast<uint32>(desc.numBindingSets);
+        poolInfo.maxSets = static_cast<uint32>(desc.numBindingSets + 1); // plus one Volatile Buffer Set
         poolInfo.poolSizeCount = static_cast<uint32>(poolSizes.size());
         poolInfo.pPoolSizes = poolSizes.data();
         result = vkCreateDescriptorPool(gDevice->GetDevice(), &poolInfo, nullptr, &mDescriptorPool);
@@ -162,6 +199,14 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
             allocInfo.descriptorSetCount = 1;
             allocInfo.pSetLayouts = &layouts[i];
             result = vkAllocateDescriptorSets(gDevice->GetDevice(), &allocInfo, &(rbs->mDescriptorSet));
+            CHECK_VKRESULT(result, "Failed to allocate descriptor set from pool");
+        }
+
+        if (desc.numVolatileCBuffers > 0)
+        {
+            allocInfo.descriptorSetCount = static_cast<uint32>(desc.numVolatileCBuffers);
+            allocInfo.pSetLayouts = &mVolatileBufferLayout;
+            result = vkAllocateDescriptorSets(gDevice->GetDevice(), &allocInfo, &mVolatileBufferSet);
             CHECK_VKRESULT(result, "Failed to allocate descriptor set from pool");
         }
     }
