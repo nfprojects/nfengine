@@ -67,6 +67,9 @@ private:
     /// low-level renderer objects
     IDevice* mRenderingDevice;
 
+    // format used form backbuffer creation
+    ElementFormat mBackbufferFormat;
+
     // default sampler for 3D rendering
     std::unique_ptr<ISampler> mDefaultSampler;
 
@@ -132,6 +135,11 @@ public:
      * Get shaders location.
      */
     std::string GetShadersPath() const;
+
+    NFE_INLINE ElementFormat GetBackbufferFormat() const
+    {
+        return mBackbufferFormat;
+    }
 
     /**
      * Get default sampler for 3D meshes rendering.

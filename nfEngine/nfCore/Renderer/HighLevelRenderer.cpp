@@ -62,6 +62,27 @@ bool HighLevelRenderer::Init(const std::string& preferredRendererName)
     if (mRenderingDevice == nullptr)
         return false;
 
+    // find suitable back buffer format
+    ElementFormat preferredFormats[] =
+    {
+        ElementFormat::R16G16B16A16_U_Norm,
+        ElementFormat::R10G10B10A2_U_Norm,
+        ElementFormat::R8G8B8A8_U_Norm,
+        ElementFormat::B8G8R8A8_U_Norm,
+        ElementFormat::R8G8B8A8_U_Norm_sRGB,
+        ElementFormat::B8G8R8A8_U_Norm_sRGB,
+    };
+
+    mBackbufferFormat = ElementFormat::Unknown;
+    for (int i = 0; i < ArraySize(preferredFormats); ++i)
+    {
+        if (mRenderingDevice->IsBackbufferFormatSupported(preferredFormats[i]))
+        {
+            mBackbufferFormat = preferredFormats[i];
+            break;
+        }
+    }
+
     Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
 
     const size_t numThreads = threadPool->GetThreadsNumber();

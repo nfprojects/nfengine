@@ -6,8 +6,11 @@
 
 #include "../PCH.hpp"
 #include "Scene.hpp"
+#include "nfCommon/nfCommon.hpp"
 
-using namespace NFE::Renderer;
+
+using namespace NFE;
+using namespace Renderer;
 
 Scene::Scene(const std::string& name)
     : mCurrentSubScene(SIZE_MAX)
@@ -56,10 +59,31 @@ void Scene::ReleaseSubsceneResources()
 {
 }
 
-bool Scene::Init(NFE::Renderer::IDevice* rendererDevice, void* winHandle)
+bool Scene::Init(IDevice* rendererDevice, void* winHandle)
 {
     mRendererDevice = rendererDevice;
     mCommandBuffer.reset(mRendererDevice->CreateCommandBuffer());
+
+    // find suitable back buffer format
+    ElementFormat preferredFormats[] =
+    {
+        ElementFormat::R16G16B16A16_U_Norm,
+        ElementFormat::R10G10B10A2_U_Norm,
+        ElementFormat::R8G8B8A8_U_Norm,
+        ElementFormat::B8G8R8A8_U_Norm,
+        ElementFormat::R8G8B8A8_U_Norm_sRGB,
+        ElementFormat::B8G8R8A8_U_Norm_sRGB,
+    };
+
+    mBackbufferFormat = ElementFormat::Unknown;
+    for (int i = 0; i < ArraySize(preferredFormats); ++i)
+    {
+        if (rendererDevice->IsBackbufferFormatSupported(preferredFormats[i]))
+        {
+            mBackbufferFormat = preferredFormats[i];
+            break;
+        }
+    }
 
     if (!OnInit(winHandle))
         return false;

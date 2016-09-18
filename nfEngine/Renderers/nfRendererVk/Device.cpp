@@ -378,6 +378,13 @@ ICommandBuffer* Device::CreateCommandBuffer()
     return cb;
 }
 
+bool Device::IsBackbufferFormatSupported(ElementFormat format)
+{
+    // TODO
+    UNUSED(format);
+    return false;
+}
+
 bool Device::GetDeviceInfo(DeviceInfo& info)
 {
     VkPhysicalDeviceProperties devProps = {};

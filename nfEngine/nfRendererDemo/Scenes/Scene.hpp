@@ -34,6 +34,7 @@ protected:
     // Renderer interfaces
     NFE::Renderer::IDevice* mRendererDevice;
     std::unique_ptr<NFE::Renderer::ICommandBuffer> mCommandBuffer;
+    NFE::Renderer::ElementFormat mBackbufferFormat;
 
     virtual bool OnInit(void* winHandle) = 0;
     virtual bool OnSwitchSubscene();
@@ -71,7 +72,7 @@ public:
      * The method provides rendererDevice for further devices initialization, and winHandle in case
      * Backbuffer must be initialized.
      */
-    virtual bool Init(NFE::Renderer::IDevice* rendererDevice, void* winHandle);
+    bool Init(NFE::Renderer::IDevice* rendererDevice, void* winHandle);
 
     /**
      * Swiches the SubScene in current Scene

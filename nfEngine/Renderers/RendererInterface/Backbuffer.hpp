@@ -20,6 +20,7 @@ struct BackbufferDesc
     void* windowHandle; //< platform dependent window handle
     int width;
     int height;
+    ElementFormat format;
     bool vSync;
     const char* debugName; //< optional debug name
     // TODO: options such as: UAV usage, mulitsampling, texture format, etc.
@@ -29,6 +30,7 @@ struct BackbufferDesc
         : windowHandle(nullptr)
         , width(0)
         , height(0)
+        , format(ElementFormat::R8G8B8A8_U_Norm)
         , vSync(false)
         , debugName(nullptr)
     {

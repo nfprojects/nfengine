@@ -532,6 +532,9 @@ NFE_INLINE const char* GetElementFormatName(ElementFormat format)
     case ElementFormat::R32G32B32A32_Float:     return "R32G32B32A32_Float";
     case ElementFormat::R32G32B32A32_U_Int:     return "R32G32B32A32_U_Int";
     case ElementFormat::R32G32B32A32_S_Int:     return "R32G32B32A32_S_Int";
+    case ElementFormat::R32G32B32_Float:        return "R32G32B32_Float";
+    case ElementFormat::R32G32B32_U_Int:        return "R32G32B32_U_Int";
+    case ElementFormat::R32G32B32_S_Int:        return "R32G32B32_S_Int";
     case ElementFormat::R32G32_Float:           return "R32G32_Float";
     case ElementFormat::R32G32_U_Int:           return "R32G32_U_Int";
     case ElementFormat::R32G32_S_Int:           return "R32G32_S_Int";
@@ -557,7 +560,9 @@ NFE_INLINE const char* GetElementFormatName(ElementFormat format)
     case ElementFormat::R8G8B8A8_U_Int:         return "R8G8B8A8_U_Int";
     case ElementFormat::R8G8B8A8_S_Norm:        return "R8G8B8A8_S_Norm";
     case ElementFormat::R8G8B8A8_U_Norm:        return "R8G8B8A8_U_Norm";
+    case ElementFormat::R8G8B8A8_U_Norm_sRGB:   return "R8G8B8A8_U_Norm_sRGB";
     case ElementFormat::B8G8R8A8_U_Norm:        return "B8G8R8A8_U_Norm";
+    case ElementFormat::B8G8R8A8_U_Norm_sRGB:   return "B8G8R8A8_U_Norm_sRGB";
     case ElementFormat::R8G8_S_Int:             return "R8G8_S_Int";
     case ElementFormat::R8G8_U_Int:             return "R8G8_U_Int";
     case ElementFormat::R8G8_S_Norm:            return "R8G8_S_Norm";
