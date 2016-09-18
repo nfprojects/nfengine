@@ -127,6 +127,9 @@ PFN_vkCreateFence vkCreateFence = VK_NULL_HANDLE;
 PFN_vkCreateSemaphore vkCreateSemaphore = VK_NULL_HANDLE;
 PFN_vkDestroyFence vkDestroyFence = VK_NULL_HANDLE;
 PFN_vkDestroySemaphore vkDestroySemaphore = VK_NULL_HANDLE;
+PFN_vkGetFenceStatus vkGetFenceStatus = VK_NULL_HANDLE;
+PFN_vkResetFences vkResetFences = VK_NULL_HANDLE;
+PFN_vkWaitForFences vkWaitForFences = VK_NULL_HANDLE;
 
 // Shaders
 PFN_vkCreateShaderModule vkCreateShaderModule = VK_NULL_HANDLE;
@@ -221,6 +224,9 @@ bool nfvkDeviceExtensionsInit(VkDevice device)
     VK_GET_DEVICEPROC(device, vkCreateSemaphore);
     VK_GET_DEVICEPROC(device, vkDestroyFence);
     VK_GET_DEVICEPROC(device, vkDestroySemaphore);
+    VK_GET_DEVICEPROC(device, vkGetFenceStatus);
+    VK_GET_DEVICEPROC(device, vkResetFences);
+    VK_GET_DEVICEPROC(device, vkWaitForFences);
 
     // Shaders
     VK_GET_DEVICEPROC(device, vkCreateShaderModule);

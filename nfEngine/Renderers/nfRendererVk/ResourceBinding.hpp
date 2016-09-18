@@ -41,6 +41,8 @@ class ResourceBindingLayout : public IResourceBindingLayout
 
     VkPipelineLayout mPipelineLayout;
     VkDescriptorPool mDescriptorPool;
+    VkDescriptorSet mVolatileBufferSet;
+    VkDescriptorSetLayout mVolatileBufferLayout;
 
 public:
     ResourceBindingLayout();
