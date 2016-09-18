@@ -16,6 +16,7 @@ Buffer::Buffer()
     : mBuffer(VK_NULL_HANDLE)
     , mBufferMemory(VK_NULL_HANDLE)
     , mBufferSize(0)
+    , mMode(BufferMode::Static)
 {
 }
 
@@ -29,26 +30,28 @@ Buffer::~Buffer()
 
 bool Buffer::Init(const BufferDesc& desc)
 {
+    VkResult result = VK_SUCCESS;
+    VkDeviceMemory stagingBufferMemory = VK_NULL_HANDLE;
+    VkBuffer stagingBuffer = VK_NULL_HANDLE;
+
     // Temporary early leave until below types are implemented
-    if (desc.mode == BufferMode::Dynamic || desc.mode == BufferMode::Volatile ||
-        desc.mode == BufferMode::GPUOnly || desc.mode == BufferMode::Readback)
+    if (desc.mode == BufferMode::GPUOnly || desc.mode == BufferMode::Readback)
     {
         LOG_ERROR("Requested unsupported buffer mode");
         return false;
     }
 
+    mMode = desc.mode;
+    mBufferSize = static_cast<VkDeviceSize>(desc.size);
+
     if (desc.mode == BufferMode::Volatile && desc.type == BufferType::Constant)
-        return true; // handled by RingBuffer
+        goto leave;
 
     if (desc.mode == BufferMode::Static && desc.initialData == nullptr)
     {
         LOG_ERROR("Cannot create a Static buffer without initial data provided");
         return false;
     }
-
-    VkResult result = VK_SUCCESS;
-    VkDeviceMemory stagingBufferMemory = VK_NULL_HANDLE;
-    VkBuffer stagingBuffer = VK_NULL_HANDLE;
 
     mBufferSize = static_cast<VkDeviceSize>(desc.size);
 
@@ -147,7 +150,19 @@ bool Buffer::Init(const BufferDesc& desc)
         vkDestroyBuffer(gDevice->GetDevice(), stagingBuffer, nullptr);
     }
 
-    LOG_INFO("%u-byte Buffer created successfully", desc.size);
+leave:
+    std::string bufferModeStr;
+    switch (mMode)
+    {
+    case BufferMode::Static: bufferModeStr = "Static"; break;
+    case BufferMode::Dynamic: bufferModeStr = "Dynamic"; break;
+    case BufferMode::Volatile: bufferModeStr = "Volatile"; break;
+    case BufferMode::GPUOnly: bufferModeStr = "GPUOnly"; break;
+    case BufferMode::Readback: bufferModeStr = "Readback"; break;
+    default: bufferModeStr = "Unknown";
+    }
+
+    LOG_INFO("%u-byte %s Buffer created successfully", desc.size, bufferModeStr.c_str());
     return true;
 }
 

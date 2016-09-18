@@ -14,6 +14,7 @@
 #endif // defined(WIN32) && defined(_DEBUG)
 
 #ifdef WIN32
+#define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #endif
@@ -27,3 +28,4 @@
 #include <map>
 #include <tuple>
 #include <sstream>
+#include <queue>
