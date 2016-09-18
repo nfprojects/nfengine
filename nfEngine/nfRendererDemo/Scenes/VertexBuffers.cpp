@@ -164,6 +164,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, BufferMode verte
         return false;
 
     PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.rtFormats[0] = mBackbufferFormat;
     pipelineStateDesc.vertexShader = mVertexShader.get();
     pipelineStateDesc.pixelShader = mPixelShader.get();
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
@@ -247,6 +248,7 @@ bool VertexBuffersScene::OnInit(void* winHandle)
     BackbufferDesc bbDesc;
     bbDesc.width = WINDOW_WIDTH;
     bbDesc.height = WINDOW_HEIGHT;
+    bbDesc.format = mBackbufferFormat;
     bbDesc.windowHandle = winHandle;
     bbDesc.vSync = false;
     mWindowBackbuffer.reset(mRendererDevice->CreateBackbuffer(bbDesc));

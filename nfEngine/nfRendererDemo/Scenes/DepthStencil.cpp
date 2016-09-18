@@ -111,6 +111,7 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
     blendStateDesc.rtDescs[0].destColorFunc = BlendFunc::OneMinusSrcAlpha;
 
     PipelineStateDesc psd;
+    psd.rtFormats[0] = mBackbufferFormat;
     psd.vertexShader = mVertexShader.get();
     psd.pixelShader = mPixelShader.get();
     psd.raterizerState.cullMode = CullMode::Disabled;
@@ -268,6 +269,7 @@ bool DepthStencilScene::OnInit(void* winHandle)
     BackbufferDesc bbDesc;
     bbDesc.width = WINDOW_WIDTH;
     bbDesc.height = WINDOW_HEIGHT;
+    bbDesc.format = mBackbufferFormat;
     bbDesc.windowHandle = winHandle;
     bbDesc.vSync = false;
     bbDesc.debugName = "DepthStencilScene::mWindowBackbuffer";

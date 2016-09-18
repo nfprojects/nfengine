@@ -18,6 +18,7 @@
 #include "ComputePipelineState.hpp"
 #include "Sampler.hpp"
 #include "ResourceBinding.hpp"
+#include "Translations.hpp"
 
 #include "nfCommon/Win/Common.hpp"
 #include "nfCommon/Logger.hpp"
@@ -415,8 +416,7 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
         ", Shared System Memory: " + std::to_string(adapterDesc.SharedSystemMemory >> 10) + " KB";
 
     D3D12_FEATURE_DATA_D3D12_OPTIONS d3d12options;
-    hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &d3d12options,
-                                      sizeof(d3d12options));
+    hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &d3d12options, sizeof(d3d12options));
     if (FAILED(hr))
         LOG_ERROR("Failed to obtain D3D12 options info");
     else
@@ -476,6 +476,21 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
     }
 
     return true;
+}
+
+bool Device::IsBackbufferFormatSupported(ElementFormat format)
+{
+    D3D12_FEATURE_DATA_FORMAT_SUPPORT formatData;
+    formatData.Format = TranslateElementFormat(format);
+
+    HRESULT hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_FORMAT_SUPPORT, &formatData, sizeof(formatData));
+    if (FAILED(hr))
+    {
+        LOG_ERROR("Failed to check format support info");
+        return false;
+    }
+
+    return (formatData.Support1 & D3D12_FORMAT_SUPPORT1_DISPLAY) == D3D12_FORMAT_SUPPORT1_DISPLAY;
 }
 
 ICommandBuffer* Device::CreateCommandBuffer()

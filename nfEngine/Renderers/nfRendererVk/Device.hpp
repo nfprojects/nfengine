@@ -96,6 +96,7 @@ public:
     // overrides
     void* GetHandle() const override;
     bool GetDeviceInfo(DeviceInfo& info) override;
+    bool IsBackbufferFormatSupported(ElementFormat format) override;
 
     IVertexLayout* CreateVertexLayout(const VertexLayoutDesc& desc) override;
     IBuffer* CreateBuffer(const BufferDesc& desc) override;

@@ -378,6 +378,19 @@ bool Device::DetectVideoCards(int preferredId)
     return false;
 }
 
+bool Device::IsBackbufferFormatSupported(ElementFormat format)
+{
+    UINT formatSupport;
+    HRESULT hr = mDevice->CheckFormatSupport(TranslateElementFormat(format), &formatSupport);
+    if (FAILED(hr))
+    {
+        LOG_ERROR("Failed to check format support info");
+        return false;
+    }
+
+    return (formatSupport & D3D11_FORMAT_SUPPORT_DISPLAY) == D3D11_FORMAT_SUPPORT_DISPLAY;
+}
+
 bool Device::GetDeviceInfo(DeviceInfo& info)
 {
     if (!mDevice.get())

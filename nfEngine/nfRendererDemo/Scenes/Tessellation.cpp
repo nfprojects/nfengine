@@ -101,6 +101,7 @@ bool TessellationScene::CreateVertexBuffer()
         return false;
 
     PipelineStateDesc pipelineStateDesc;
+    pipelineStateDesc.rtFormats[0] = mBackbufferFormat;
     pipelineStateDesc.vertexShader = mVertexShader.get();
     pipelineStateDesc.pixelShader = mPixelShader.get();
     pipelineStateDesc.hullShader = mHullShader.get();
@@ -169,6 +170,7 @@ bool TessellationScene::OnInit(void* winHandle)
     BackbufferDesc bbDesc;
     bbDesc.width = WINDOW_WIDTH;
     bbDesc.height = WINDOW_HEIGHT;
+    bbDesc.format = mBackbufferFormat;
     bbDesc.windowHandle = winHandle;
     bbDesc.vSync = false;
     mWindowBackbuffer.reset(mRendererDevice->CreateBackbuffer(bbDesc));
