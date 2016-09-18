@@ -11,6 +11,8 @@
 #include "Defines.hpp"
 #include "RenderTarget.hpp"
 #include "PipelineState.hpp"
+#include "Buffer.hpp"
+#include "RingBuffer.hpp"
 
 
 namespace NFE {
@@ -30,7 +32,15 @@ class CommandBuffer : public ICommandBuffer
     VkCommandBuffer mCommandBuffer;
     VkCommandBufferBeginInfo mCommandBufferBeginInfo;
     RenderTarget* mRenderTarget;
+    bool mActiveRenderPass;
     ResourceBindingLayout* mResourceBindingLayout;
+    RingBuffer mRingBuffer;
+    VkFence mFences[VK_FENCE_COUNT]; // TODO TEMPORARY
+    uint32 mCurrentFence;
+    Buffer* mBoundVolatileBuffers[VK_MAX_VOLATILE_BUFFERS];
+
+    bool WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, const void* data);
+    bool WriteVolatileBuffer(Buffer* b, size_t size, const void* data);
 
 public:
     CommandBuffer();
@@ -74,6 +84,9 @@ public:
     void BeginDebugGroup(const char* text) override;
     void EndDebugGroup() override;
     void InsertDebugMarker(const char* text) override;
+
+    // TODO COMPLETELY TEMPORARY
+    void AdvanceFrame();
 };
 
 } // namespace Renderer
