@@ -110,7 +110,7 @@ bool ComputeScene::CreateSubSceneSimple()
     // create texture that compute shader will write to
     TextureDesc textureDesc;
     textureDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER_WRITABLE;
-    textureDesc.format = ElementFormat::R8G8B8A8_U_Norm;
+    textureDesc.format = mBackbufferFormat; // match with backbuffer format, because we copy the data directly
     textureDesc.mode = BufferMode::GPUOnly;
     textureDesc.width = WINDOW_WIDTH;
     textureDesc.height = WINDOW_HEIGHT;
@@ -159,6 +159,7 @@ bool ComputeScene::OnInit(void* winHandle)
     BackbufferDesc bbDesc;
     bbDesc.width = WINDOW_WIDTH;
     bbDesc.height = WINDOW_HEIGHT;
+    bbDesc.format = mBackbufferFormat;
     bbDesc.windowHandle = winHandle;
     bbDesc.vSync = false;
     mWindowBackbuffer.reset(mRendererDevice->CreateBackbuffer(bbDesc));

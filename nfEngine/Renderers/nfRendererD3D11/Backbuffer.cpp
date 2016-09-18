@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 #include "Backbuffer.hpp"
 #include "RendererD3D11.hpp"
+#include "Translations.hpp"
 
 #include "nfCommon/Logger.hpp"
 
@@ -91,7 +92,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     scd.BufferCount = 1;
     scd.BufferDesc.Width = mWidth;
     scd.BufferDesc.Height = mHeight;
-    scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    scd.BufferDesc.Format = TranslateElementFormat(desc.format);
     scd.BufferUsage = usageFlags;
     scd.OutputWindow = mWindow;
     scd.SampleDesc.Count = 1;
@@ -110,6 +111,8 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
                                                   static_cast<UINT>(swapChainName.length()), swapChainName.c_str()));
     }
 
+    LOG_DEBUG("Swapchain created successfully (width=%i, height=%i, format=%s)",
+              desc.width, desc.height, GetElementFormatName(desc.format));
     return GetBackbufferTexture();
 }
 

@@ -9,7 +9,7 @@
 namespace NFE {
 namespace Renderer {
 
-DXGI_FORMAT TranslateElementFormat(ElementFormat format)
+NFE_INLINE DXGI_FORMAT TranslateElementFormat(ElementFormat format)
 {
     switch (format)
     {

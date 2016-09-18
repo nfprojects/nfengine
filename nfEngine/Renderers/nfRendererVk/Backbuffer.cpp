@@ -104,27 +104,19 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
                                                   &formatCount, formats.data());
     CHECK_VKRESULT(result, "Unable to retrieve surface formats");
     uint32 formatIndex = 0;
-    // One entry with VK_FORMAT_UNDEFINED means no preferred formats - select our preference
-    if ((formatCount == 1) && (formats[0].format == VK_FORMAT_UNDEFINED))
-        mFormat = VK_PREFERRED_FORMAT;
-    else
-    {
-        // Try to find a preferred format from possible surface formats
-        for (formatIndex = 0; formatIndex < formatCount; formatIndex++)
-        {
-            if (formats[formatIndex].format == VK_PREFERRED_FORMAT)
-            {
-                mFormat = formats[formatIndex].format;
+    mFormat = TranslateElementFormatToVkFormat(desc.format);
+    // check if format is supported
+    // the only exception is having 1 format - VK_FORMAT_UNDEFINED
+    // then we can be sure, the physical device doesn't care what format we choose
+    if ((formatCount > 1) || (formats[0].format != VK_FORMAT_UNDEFINED))
+        for (formatIndex = 0; formatIndex < formatCount; ++formatIndex)
+            if (formats[formatIndex].format == mFormat)
                 break;
-            }
-        }
 
-        // Go back to first possible selected if our preffered format is not found
-        if (formatIndex == formatCount)
-        {
-            formatIndex = 0;
-            mFormat = formats[formatIndex].format;
-        }
+    if (formatIndex == formatCount)
+    {
+        LOG_ERROR("Requested format for Backbuffer is unsupported.");
+        return false;
     }
 
     mColorSpace = formats[formatIndex].colorSpace;

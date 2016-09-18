@@ -54,6 +54,12 @@ public:
     virtual bool GetDeviceInfo(DeviceInfo& info) = 0;
 
     /**
+     * Check if a given format is supported for a backbuffer texture.
+     * @return True if format is supported.
+     */
+    virtual bool IsBackbufferFormatSupported(ElementFormat format) = 0;
+
+    /**
      * DeviceResourcesCreation Resources creation functions
      * @{
      */

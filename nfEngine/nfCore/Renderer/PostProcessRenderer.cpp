@@ -80,7 +80,7 @@ PostProcessRenderer::PostProcessRenderer()
     pipelineStateDesc.vertexLayout = mVertexLayout.get();
     pipelineStateDesc.debugName = "PostProcessRenderer::mTonemappingPipelineState";
     pipelineStateDesc.numRenderTargets = 1;
-    pipelineStateDesc.rtFormats[0] = ElementFormat::B8G8R8A8_U_Norm;
+    pipelineStateDesc.rtFormats[0] = mRenderer->GetBackbufferFormat();
     mTonemappingPipelineState.Build(pipelineStateDesc);
 }
 
