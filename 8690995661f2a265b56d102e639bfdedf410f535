@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_4af9a0c7",
+        "filename": "nfEngine/Shaders/HLSL5/SpotLightPS.hlsl",
+        "patchSetId": 7
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-19T19:41:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_51b6f7f9",
+      "revId": "8690995661f2a265b56d102e639bfdedf410f535",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_31ced383",
         "filename": "nfEngine/Shaders/HLSL5/SpotLightPS.hlsl",
         "patchSetId": 7
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_2af41ccd",
+        "filename": "nfEngine/Shaders/HLSL5/SpotLightPS.hlsl",
+        "patchSetId": 7
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-19T19:41:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_31ced383",
+      "revId": "8690995661f2a265b56d102e639bfdedf410f535",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_d14fa732",
         "filename": "nfEngine/nfCore/Renderer/LightsRenderer.cpp",
         "patchSetId": 7
@@ -47,6 +83,24 @@
       "writtenOn": "2016-09-19T09:04:18Z",
       "side": 1,
       "message": "remove",
+      "revId": "8690995661f2a265b56d102e639bfdedf410f535",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_0a0398b9",
+        "filename": "nfEngine/nfCore/Renderer/LightsRenderer.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-19T19:41:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_d14fa732",
       "revId": "8690995661f2a265b56d102e639bfdedf410f535",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -88,6 +142,30 @@
       "side": 1,
       "message": "yeah, it should be moved there",
       "parentUuid": "baa041b7_51283733",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 13
+      },
+      "revId": "8690995661f2a265b56d102e639bfdedf410f535",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_4a208049",
+        "filename": "nfEngine/nfCore/Systems/RendererSystem.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-19T19:41:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_91a35fb1",
       "range": {
         "startLine": 18,
         "startChar": 0,
