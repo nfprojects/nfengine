@@ -1,0 +1,1476 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_31d133fc",
+        "filename": "nfEngine/Tools/ResourceManager/CollisionShapeImporter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "I see this function for nth time. Please move it somewhere",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 1
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_af071ec8",
+        "filename": "nfEngine/Tools/ResourceManager/CollisionShapeImporter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "It looks like parsing only translation",
+      "range": {
+        "startLine": 33,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 63
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b1178353",
+        "filename": "nfEngine/Tools/ResourceManager/CollisionShapeImporter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "We should have some separate header that contains global vars for config, that we can change.\nI mean - one file that holds enums, arrays, vectors, const chars \u0026 defines, in which we can change them (according to the file and our wishes) and the rest of the code is generic and so, works not knowing these values.\nWhaddya think?",
+      "range": {
+        "startLine": 36,
+        "startChar": 4,
+        "endLine": 36,
+        "endChar": 53
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8f0e9ae3",
+        "filename": "nfEngine/Tools/ResourceManager/CollisionShapeImporter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "typedef/using",
+      "range": {
+        "startLine": 65,
+        "startChar": 0,
+        "endLine": 65,
+        "endChar": 42
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_effd26b2",
+        "filename": "nfEngine/Tools/ResourceManager/CollisionShapeImporter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "maybe try `auto result \u003d std::make_unique\u003cCollisionShapeFile::BoxShape\u003e();`\nor try to omit template type, like so: `std::unique_ptr result();` - though i\u0027m not sure if the second solution is valid yet.",
+      "range": {
+        "startLine": 73,
+        "startChar": 4,
+        "endLine": 73,
+        "endChar": 49
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8f257a5d",
+        "filename": "nfEngine/Tools/ResourceManager/CollisionShapeImporter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "magic",
+      "range": {
+        "startLine": 78,
+        "startChar": 23,
+        "endLine": 78,
+        "endChar": 34
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_6fdfd63a",
+        "filename": "nfEngine/Tools/ResourceManager/CollisionShapeImporter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "no need for scope bracers",
+      "range": {
+        "startLine": 100,
+        "startChar": 4,
+        "endLine": 102,
+        "endChar": 5
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_4f209249",
+        "filename": "nfEngine/Tools/ResourceManager/CollisionShapeImporter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 113,
+        "startChar": 0,
+        "endLine": 113,
+        "endChar": 42
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2f1b0e1e",
+        "filename": "nfEngine/Tools/ResourceManager/CollisionShapeImporter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 121,
+        "startChar": 2,
+        "endLine": 121,
+        "endChar": 101
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_0f1a8a17",
+        "filename": "nfEngine/Tools/ResourceManager/CollisionShapeImporter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "magic",
+      "range": {
+        "startLine": 128,
+        "startChar": 24,
+        "endLine": 128,
+        "endChar": 32
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_cfd26234",
+        "filename": "nfEngine/Tools/ResourceManager/CollisionShapeImporter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "magic",
+      "range": {
+        "startLine": 147,
+        "startChar": 29,
+        "endLine": 147,
+        "endChar": 37
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8fdc5a47",
+        "filename": "nfEngine/Tools/ResourceManager/CollisionShapeImporter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "no need for scope bracers",
+      "range": {
+        "startLine": 171,
+        "startChar": 0,
+        "endLine": 174,
+        "endChar": 5
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_efebe6da",
+        "filename": "nfEngine/Tools/ResourceManager/CollisionShapeImporter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "size_t fileSize \u003d static_cast\u003csize_t\u003e(configFile.GetSize());\nstd::vector\u003cchar\u003e str(fileSize);",
+      "range": {
+        "startLine": 197,
+        "startChar": 0,
+        "endLine": 199,
+        "endChar": 29
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_cfb942ee",
+        "filename": "nfEngine/Tools/ResourceManager/CollisionShapeImporter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "to read config",
+      "range": {
+        "startLine": 202,
+        "startChar": 26,
+        "endLine": 202,
+        "endChar": 35
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_6fad969a",
+        "filename": "nfEngine/Tools/ResourceManager/CollisionShapeImporter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "magic",
+      "range": {
+        "startLine": 223,
+        "startChar": 24,
+        "endLine": 223,
+        "endChar": 29
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2f90ae4d",
+        "filename": "nfEngine/Tools/ResourceManager/CollisionShapeImporter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "magic",
+      "range": {
+        "startLine": 240,
+        "startChar": 29,
+        "endLine": 240,
+        "endChar": 39
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8f81fafd",
+        "filename": "nfEngine/Tools/ResourceManager/CollisionShapeImporter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "std::nothrow",
+      "range": {
+        "startLine": 283,
+        "startChar": 44,
+        "endLine": 283,
+        "endChar": 53
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2f778e3c",
+        "filename": "nfEngine/Tools/ResourceManager/CollisionShapeImporter.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "can you use reserve() as in vertices, few lines above?",
+      "range": {
+        "startLine": 305,
+        "startChar": 12,
+        "endLine": 305,
+        "endChar": 25
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_1eabde1f",
+        "filename": "nfEngine/Tools/ResourceManager/CollisionShapeImporter.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "indentation",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 2
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ef99a67a",
+        "filename": "nfEngine/Tools/ResourceManager/CollisionShapeImporter.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "Import what? Also add doxygen - i have no idea what \u0027targetFilePath\u0027 is supposed to be - does it import or save or what?",
+      "range": {
+        "startLine": 19,
+        "startChar": 7,
+        "endLine": 19,
+        "endChar": 17
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3daa2fd3",
+        "filename": "nfEngine/nfCommon/Config.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "Should those go like:\nNFE_INLINE bool IsBool() const { return ConfigValue::Is\u003cbool\u003e(); } etc?",
+      "range": {
+        "startLine": 99,
+        "startChar": 4,
+        "endLine": 104,
+        "endChar": 67
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_fdb3a74b",
+        "filename": "nfEngine/nfCommon/Config.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "as above?",
+      "range": {
+        "startLine": 110,
+        "startChar": 3,
+        "endLine": 115,
+        "endChar": 68
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ba288586",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "UINT?",
+      "range": {
+        "startLine": 38,
+        "startChar": 3,
+        "endLine": 38,
+        "endChar": 8
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_e558b78c",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "just plox",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 43,
+        "endChar": 24
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7a22fda4",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "UINTs? You mean uint8?",
+      "range": {
+        "startLine": 45,
+        "startChar": 4,
+        "endLine": 52,
+        "endChar": 7
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3a3595da",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "If you use default ctor, then why is it here anyway?\nrm",
+      "range": {
+        "startLine": 58,
+        "startChar": 4,
+        "endLine": 58,
+        "endChar": 29
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7a59dd34",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "use mShape.reset(nullptr); to make sure that the std::nullptr_t version is used",
+      "range": {
+        "startLine": 71,
+        "startChar": 4,
+        "endLine": 71,
+        "endChar": 19
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_05627b3d",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "just use file.GetShapes(), its\u0027 the only place, that it\u0027s used",
+      "range": {
+        "startLine": 85,
+        "startChar": 29,
+        "endLine": 85,
+        "endChar": 35
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_a553cf6b",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "check if it\u0027s nullptr - in that case throw LOG_ERROR and continue the loop",
+      "range": {
+        "startLine": 93,
+        "startChar": 16,
+        "endLine": 93,
+        "endChar": 102
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_854e8bc0",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "add (std::nothrow)",
+      "range": {
+        "startLine": 94,
+        "startChar": 56,
+        "endLine": 94,
+        "endChar": 76
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_654dc7c3",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "i guess it\u0027s a unique_ptr. In that case always add std::nothrow - we dont want no exceptions in our code",
+      "range": {
+        "startLine": 106,
+        "startChar": 40,
+        "endLine": 106,
+        "endChar": 87
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3a6355df",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 111,
+        "startChar": 12,
+        "endLine": 125,
+        "endChar": 22
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_1a62d1d8",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "mChildren.reserve(shapes.size()) before for loop above",
+      "range": {
+        "startLine": 134,
+        "startChar": 7,
+        "endLine": 134,
+        "endChar": 52
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_da9a29c5",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "Erm...MatrixToBtTransfort (bt/bullet doesnt matter)",
+      "range": {
+        "startLine": 140,
+        "startChar": 12,
+        "endLine": 140,
+        "endChar": 34
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ba9d25bd",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "maybe call it shapeChild, cause shape.shape below looks weird",
+      "range": {
+        "startLine": 153,
+        "startChar": 23,
+        "endLine": 153,
+        "endChar": 28
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7aa79d0b",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "also std::nothrow as always ofc ;)",
+      "range": {
+        "startLine": 154,
+        "startChar": 22,
+        "endLine": 154,
+        "endChar": 26
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_9aa4a108",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 163,
+        "startChar": 23,
+        "endLine": 163,
+        "endChar": 28
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_5aaf39e3",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "nullptr...anyway if OnLoadCallback were std::function, you could use bool operator to check if it\u0027s callable",
+      "range": {
+        "startLine": 181,
+        "startChar": 19,
+        "endLine": 181,
+        "endChar": 23
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_fab3ad4b",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "i don\u0027t see you use this string anywhere...maybe just a const char*?",
+      "range": {
+        "startLine": 184,
+        "startChar": 8,
+        "endLine": 184,
+        "endChar": 19
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_3aaa35d3",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "why is it not gCookedDataPath ?",
+      "range": {
+        "startLine": 184,
+        "startChar": 27,
+        "endLine": 184,
+        "endChar": 43
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_773d76dc",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "} // namespace Common",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 1
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_da7349b3",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "there should be no need to choose FileInputStream over InputStream. Also the method can be called Load",
+      "range": {
+        "startLine": 56,
+        "startChar": 30,
+        "endLine": 56,
+        "endChar": 55
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_5a13b95c",
+        "filename": "nfEngine/nfCore/Resources/CollisionShape.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "Shouldn\u0027t we like use different shape classes here just as in CSShapeFile? We could make same classes for \u0027CSShapeHeader\u0027 so CSSHBox would have halfsize \u0026 matrix, CSSHCylinder would have height and radius and so on...\nThen we could use those as containers for Shape related data here and in CSSF.\nargs would be CSType enum class \u0026 CSHeader base class (though we\u0027d always pass some class with inheritance).\n\nWhaddya think?",
+      "range": {
+        "startLine": 58,
+        "startChar": 1,
+        "endLine": 62,
+        "endChar": 39
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_25621f17",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "file",
+      "range": {
+        "startLine": 4,
+        "startChar": 27,
+        "endLine": 4,
+        "endChar": 36
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_e56b17f0",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "shouldn\u0027t this be a quaternion?",
+      "range": {
+        "startLine": 27,
+        "startChar": 10,
+        "endLine": 27,
+        "endChar": 16
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8571ebe0",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "this looks like a useful method, that could be in some more  common header",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 1
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_e542f767",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "just make typedef/using few lines above with\n`CSFShape \u003d CollisionShapeFile::Shape` and\n`CSFShapePtr \u003d std::unique_ptr\u003cCSFShape\u003e`. Hope it\u0027s not an overkill",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 43,
+        "endChar": 42
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8558cb58",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "You mean nullptr, right? Did it even compile?",
+      "range": {
+        "startLine": 49,
+        "startChar": 15,
+        "endLine": 49,
+        "endChar": 20
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_05339b14",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "std::nothrow",
+      "range": {
+        "startLine": 56,
+        "startChar": 9,
+        "endLine": 62,
+        "endChar": 39
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_40a751a7",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "You should be able to do sizeof(vertices[0]) instead of sizeof(Float3) - that way it would work no matter what type You later change it to (if u do ofc)",
+      "range": {
+        "startLine": 110,
+        "startChar": 61,
+        "endLine": 110,
+        "endChar": 67
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_20b56dcf",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 117,
+        "startChar": 52,
+        "endLine": 117,
+        "endChar": 67
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_0006e984",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 129,
+        "startChar": 69,
+        "endLine": 129,
+        "endChar": 83
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b7be5e62",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 154,
+        "startChar": 54,
+        "endLine": 154,
+        "endChar": 69
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_97b59a7f",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 161,
+        "startChar": 52,
+        "endLine": 161,
+        "endChar": 67
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_77b8d675",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 172,
+        "startChar": 61,
+        "endLine": 172,
+        "endChar": 75
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_b7977eea",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "sizeof(packedHalfSize)",
+      "range": {
+        "startLine": 188,
+        "startChar": 36,
+        "endLine": 188,
+        "endChar": 71
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_d7bb2274",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 210,
+        "startChar": 37,
+        "endLine": 210,
+        "endChar": 72
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_976c7a09",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "Why 2*sizeof(float)? With no comment it\u0027s brutal, you could\u0027ve even written \u0027sizeof(height)+sizeof(radius).\n\nShape is aligned\u003c16\u003e, so i get this logic, but are you sure, that these 2 variables will be always next to each other?",
+      "range": {
+        "startLine": 223,
+        "startChar": 29,
+        "endLine": 223,
+        "endChar": 46
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_577712d4",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 276,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "Why do you clean ALL shapes if even one is erroneus? Just skip this shape and try to save as many, as You can I guess?",
+      "range": {
+        "startLine": 272,
+        "startChar": 8,
+        "endLine": 276,
+        "endChar": 9
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_7746967c",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "Call mShapes.reserve(header.numShapes) before the for loop above - less reallocs",
+      "range": {
+        "startLine": 278,
+        "startChar": 8,
+        "endLine": 278,
+        "endChar": 44
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_e5e677af",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "file",
+      "range": {
+        "startLine": 4,
+        "startChar": 26,
+        "endLine": 4,
+        "endChar": 35
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_25945fe6",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "can\u0027t we go with uint8? I don\u0027t think, that we\u0027ll support more than 254 shape types",
+      "range": {
+        "startLine": 29,
+        "startChar": 32,
+        "endLine": 29,
+        "endChar": 38
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_05971bec",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "handled",
+      "range": {
+        "startLine": 70,
+        "startChar": 31,
+        "endLine": 70,
+        "endChar": 37
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_e59d570b",
+        "filename": "nfEngine/nfResources/CollisionShapeFile.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2016-09-19T16:48:44Z",
+      "side": 1,
+      "message": "shouldn\u0027t stuff like that be called mVertices and mIndices? We got the same problem with lot of stuff in this file ;)",
+      "range": {
+        "startLine": 89,
+        "startChar": 8,
+        "endLine": 90,
+        "endChar": 36
+      },
+      "revId": "f92152442bf0d0b61e160e0bd885946fb6f75c6e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
