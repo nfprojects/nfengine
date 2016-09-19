@@ -73,6 +73,30 @@
       "revId": "8690995661f2a265b56d102e639bfdedf410f535",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_91a35fb1",
+        "filename": "nfEngine/nfCore/Systems/RendererSystem.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-19T09:19:13Z",
+      "side": 1,
+      "message": "yeah, it should be moved there",
+      "parentUuid": "baa041b7_51283733",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 13
+      },
+      "revId": "8690995661f2a265b56d102e639bfdedf410f535",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
