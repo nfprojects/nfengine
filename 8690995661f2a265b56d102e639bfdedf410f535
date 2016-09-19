@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_d14fa732",
+        "filename": "nfEngine/nfCore/Renderer/LightsRenderer.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-09-19T09:04:18Z",
+      "side": 1,
+      "message": "remove",
+      "revId": "8690995661f2a265b56d102e639bfdedf410f535",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_51283733",
+        "filename": "nfEngine/nfCore/Systems/RendererSystem.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-09-19T09:04:18Z",
+      "side": 1,
+      "message": "Don\u0027t we have Prerequisites.hpp for this?",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 13
+      },
+      "revId": "8690995661f2a265b56d102e639bfdedf410f535",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
