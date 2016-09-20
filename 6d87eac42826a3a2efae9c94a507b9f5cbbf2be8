@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_6537f54d",
+        "filename": "nfEngine/Renderers/nfRendererVk/ResourceBinding.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-09-20T07:40:55Z",
+      "side": 1,
+      "message": "it\u0027s better to use uint8 array instead of map here",
+      "revId": "6d87eac42826a3a2efae9c94a507b9f5cbbf2be8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
