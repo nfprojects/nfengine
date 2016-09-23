@@ -16,6 +16,24 @@
       "revId": "6d87eac42826a3a2efae9c94a507b9f5cbbf2be8",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_904ea436",
+        "filename": "nfEngine/Renderers/nfRendererVk/ResourceBinding.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-09-23T15:22:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "baa041b7_6537f54d",
+      "revId": "6d87eac42826a3a2efae9c94a507b9f5cbbf2be8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
