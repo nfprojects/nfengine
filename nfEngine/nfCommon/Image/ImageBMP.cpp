@@ -351,9 +351,73 @@ bool ImageBMP::Load(Image* img, InputStream* stream)
     return result;
 }
 
-bool ImageBMP::Save(Image*, OutputStream*)
+bool ImageBMP::Save(Image* img, OutputStream* fileStream)
 {
-    return false;
+    if (img->GetFormat() != ImageFormat::RGBA_UByte)
+    {
+        LOG_ERROR("To save image as BMP, RGBA_UByte format is needed.");
+        return false;
+    }
+
+    BitmapFileHeader fileHeader;
+    BitmapV5Header infoHeader;
+
+    memset(&fileHeader, 0, sizeof(fileHeader));
+    memset(&infoHeader, 0, sizeof(infoHeader));
+
+    uint8 colorSize = 3;
+    const Mipmap* mip = img->GetMipmap(0);
+    const int height = static_cast<int>(mip->GetHeight());
+    const int width = static_cast<int>(mip->GetWidth());
+
+    uint32 lineSize = width * colorSize;
+    while (lineSize % 4)
+        lineSize++;
+
+    size_t dataSize = lineSize * height;
+
+    std::unique_ptr<uint8[]> bmpData(new (std::nothrow) uint8[dataSize]);
+    memset(bmpData.get(), 0, sizeof(bmpData[0]) * dataSize);
+
+
+
+    for (int y = 0; y < height; y++)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            Color currentPixel = mip->GetTexel(x, (height - 1) - y, ImageFormat::RGBA_UByte);
+            for (uint8 i = 0; i < colorSize; i++)
+            {
+                uint8 col = static_cast<uint8>(currentPixel[(colorSize - 1) - i] * 255);
+                bmpData[(y * lineSize + x * colorSize) + i] = col;
+            }
+        }
+    }
+
+    infoHeader.size = sizeof(infoHeader);
+    infoHeader.width = width;
+    infoHeader.height = height;
+    infoHeader.planes = 1;
+    infoHeader.bitCount = 24;
+    infoHeader.compression = 0;
+    infoHeader.sizeImage = static_cast<uint32>(dataSize);
+    infoHeader.xPelsPerMeter = 2835;
+    infoHeader.yPelsPerMeter = 2835;
+    infoHeader.clrUsed = 0;
+    infoHeader.clrImportant = 0;
+
+    fileHeader.type = 0x4D42;
+    fileHeader.offBits = sizeof(infoHeader) + sizeof(fileHeader);
+    fileHeader.size = sizeof(infoHeader) + sizeof(fileHeader) + infoHeader.sizeImage;
+
+    bool writeResult = true;
+
+    writeResult &= sizeof(fileHeader) == fileStream->Write(&fileHeader, sizeof(fileHeader));
+    writeResult &= sizeof(infoHeader) == fileStream->Write(&infoHeader, sizeof(infoHeader));
+    auto bmpDataSize = sizeof(bmpData[0]) * dataSize;
+    writeResult &= bmpDataSize == fileStream->Write(bmpData.get(), bmpDataSize);
+
+    return writeResult;
 }
 
 } // namespace Common

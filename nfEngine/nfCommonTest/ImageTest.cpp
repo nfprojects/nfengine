@@ -540,6 +540,21 @@ TEST_F(ImageTest, LoadBMP)
     LoadCheck(ImageFormat::RGBA_UByte);
 }
 
+TEST_F(ImageTest, SaveBMP)
+{
+    FillTestImage(ImageFormat::RGB_UByte);
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP24).data()));
+    LoadCheck(ImageFormat::RGBA_UByte);
+
+    {
+        FileOutputStream outFile((TEST_IMAGES_SAVEPATH + TEXTURE_BMP24 + "_saved.bmp").data());
+        ASSERT_TRUE(ImageType::GetImageType("BMP")->Save(mImage.get(), &outFile));
+    }
+
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_SAVEPATH + TEXTURE_BMP24 + "_saved.bmp").data()));
+    LoadCheck(ImageFormat::RGBA_UByte);
+}
+
 TEST_F(ImageTest, LoadDDS)
 {
     // BC1
