@@ -44,6 +44,9 @@ class BasicScene: public Scene
     // how many instances will be drawn?
     int mGridSize;
 
+    int mVSBindingSlot;
+    int mPSBindingSlot;
+
     // cbuffer mode
     NFE::Renderer::BufferMode mCBufferMode;
 
@@ -63,7 +66,7 @@ class BasicScene: public Scene
     bool CreateSubSceneVertexBuffer();
     bool CreateSubSceneIndexBuffer();
     bool CreateSubSceneConstantBuffer(NFE::Renderer::BufferMode cbufferMode);
-    bool CreateSubSceneTexture(int gridSize = 1);
+    bool CreateSubSceneTexture(NFE::Renderer::BufferMode cbufferMode, int gridSize = 1);
 
 public:
     BasicScene();

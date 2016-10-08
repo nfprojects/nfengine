@@ -53,7 +53,8 @@ bool BasicScene::CreateShaders(bool useCBuffer, bool useTexture, BufferMode cbuf
     if (!mPixelShader)
         return false;
 
-    std::vector<IResourceBindingSet*> bindingSets;
+    int numBindingSets = 0;
+    IResourceBindingSet* bindingSets[2];
 
     // create binding set
     if (useCBuffer)
@@ -76,7 +77,9 @@ bool BasicScene::CreateShaders(bool useCBuffer, bool useTexture, BufferMode cbuf
                 ResourceBindingSetDesc(&pixelShaderBinding, 1, ShaderType::Pixel)));
             if (!mPSBindingSet)
                 return false;
-            bindingSets.push_back(mPSBindingSet.get());
+
+            mPSBindingSlot = numBindingSets++;
+            bindingSets[mPSBindingSlot] = mPSBindingSet.get();
         }
 
         if (cbufferMode == BufferMode::Static || cbufferMode == BufferMode::Dynamic)
@@ -88,7 +91,9 @@ bool BasicScene::CreateShaders(bool useCBuffer, bool useTexture, BufferMode cbuf
                 ResourceBindingSetDesc(&vertexShaderBinding, 1, ShaderType::Vertex)));
             if (!mVSBindingSet)
                 return false;
-            bindingSets.push_back(mVSBindingSet.get());
+
+            mVSBindingSlot = numBindingSets++;
+            bindingSets[mVSBindingSlot] = mVSBindingSet.get();
         }
     }
 
@@ -99,7 +104,7 @@ bool BasicScene::CreateShaders(bool useCBuffer, bool useTexture, BufferMode cbuf
 
     // create binding layout
     mResBindingLayout.reset(mRendererDevice->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(bindingSets.data(), bindingSets.size(),
+        ResourceBindingLayoutDesc(bindingSets, numBindingSets,
                                   &volatileCBufferBinding, useVolatileCBufferBinding ? 1 : 0)));
     if (!mResBindingLayout)
         return false;
@@ -341,14 +346,14 @@ bool BasicScene::CreateSubSceneConstantBuffer(BufferMode cbufferMode)
 
 // Add texture support
 // The triangle should be rendered checked
-bool BasicScene::CreateSubSceneTexture(int gridSize)
+bool BasicScene::CreateSubSceneTexture(BufferMode cbufferMode, int gridSize)
 {
     mGridSize = gridSize;
 
     if (!CreateSampler())
         return false;
 
-    if (!CreateShaders(true, true, BufferMode::Volatile))
+    if (!CreateShaders(true, true, cbufferMode))
         return false;
 
     if (!CreateVertexBuffer(true))
@@ -357,7 +362,7 @@ bool BasicScene::CreateSubSceneTexture(int gridSize)
     if (!CreateIndexBuffer())
         return false;
 
-    if (!CreateConstantBuffer(BufferMode::Volatile))
+    if (!CreateConstantBuffer(cbufferMode))
         return false;
 
     return CreateTexture();
@@ -376,9 +381,10 @@ BasicScene::BasicScene()
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, BufferMode::Static), "ConstantBuffer (Static)");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, BufferMode::Dynamic), "ConstantBuffer (Dynamic)");
     RegisterSubScene(std::bind(&BasicScene::CreateSubSceneConstantBuffer, this, BufferMode::Volatile), "ConstantBuffer (Volatile)");
-    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, 1), "Texture");
-    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, 5), "CBufferStress5");
-    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, 30), "CBufferStress30");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, BufferMode::Dynamic, 1), "Texture + Dynamic CBuffer");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, BufferMode::Volatile, 1), "Texture + Volatile CBuffer");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, BufferMode::Volatile, 5), "CBufferStress5");
+    RegisterSubScene(std::bind(&BasicScene::CreateSubSceneTexture, this, BufferMode::Volatile, 30), "CBufferStress30");
 }
 
 BasicScene::~BasicScene()
@@ -454,12 +460,12 @@ void BasicScene::Draw(float dt)
         mCommandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
 
     if (mTexture)
-        mCommandBuffer->BindResources(0, mPSBindingInstance.get());
+        mCommandBuffer->BindResources(mPSBindingSlot, mPSBindingInstance.get());
 
     if (mConstantBuffer)
     {
         if (mCBufferMode == BufferMode::Static || mCBufferMode == BufferMode::Dynamic)
-            mCommandBuffer->BindResources(mTexture ? 1 : 0, mVSBindingInstance.get());
+            mCommandBuffer->BindResources(mVSBindingSlot, mVSBindingInstance.get());
         else if (mCBufferMode == BufferMode::Volatile)
             mCommandBuffer->BindVolatileCBuffer(0, mConstantBuffer.get());
     }
