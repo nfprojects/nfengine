@@ -26,12 +26,18 @@ class ResourceBindingSet : public IResourceBindingSet
     VkDescriptorSet mDescriptorSet;
     VkDescriptorSetLayout mDescriptorLayout;
     uint8 mDescriptorCounter[VK_DESCRIPTOR_TYPE_RANGE_SIZE];
+    uint16 mSetSlot;
 
 public:
     ResourceBindingSet();
     ~ResourceBindingSet();
 
     bool Init(const ResourceBindingSetDesc& desc) override;
+
+    NFE_INLINE uint16 GetSetSlot() const
+    {
+        return mSetSlot;
+    }
 };
 
 class ResourceBindingLayout : public IResourceBindingLayout
@@ -43,6 +49,7 @@ class ResourceBindingLayout : public IResourceBindingLayout
     VkDescriptorPool mDescriptorPool;
     VkDescriptorSet mVolatileBufferSet;
     VkDescriptorSetLayout mVolatileBufferLayout;
+    uint16 mVolatileSetSlot;
 
 public:
     ResourceBindingLayout();

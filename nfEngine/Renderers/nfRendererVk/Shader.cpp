@@ -14,6 +14,9 @@
 #include <glslang/SPIRV/GlslangToSpv.h>
 #include <glslang/SPIRV/disassemble.h>
 
+#include <cstring>
+#include <cctype>
+
 namespace NFE {
 namespace Renderer {
 
@@ -120,8 +123,7 @@ const TBuiltInResource DEFAULT_RESOURCE = {
 const int DEFAULT_VERSION = 110;
 const std::string SHADER_HEADER_START = "#version 450\n\
 #extension GL_ARB_separate_shader_objects: enable\n\
-#extension GL_ARB_shading_language_420pack: enable\n\
-#define VULKAN 1\n";
+#extension GL_ARB_shading_language_420pack: enable\n";
 const std::string DEFINE_STR = "#define ";
 const std::string SHADER_HEADER_TAIL = "\0";
 
@@ -214,7 +216,7 @@ bool Shader::Init(const ShaderDesc& desc)
 
     // TODO we might want to enable includes, so this includer is useless for later on
     glslang::TShader::ForbidInclude includer;
-    EShMessages msg = static_cast<EShMessages>(EShMsgDefault);
+    EShMessages msg = static_cast<EShMessages>(EShMsgDefault | EShMsgVulkanRules);
     if (!mShaderGlslang->parse(&DEFAULT_RESOURCE, DEFAULT_VERSION, ENoProfile, false, false, msg, includer))
     {
         LOG_ERROR("Failed to parse shader file %s:\n%s", desc.path, mShaderGlslang->getInfoLog());
@@ -237,15 +239,11 @@ bool Shader::Init(const ShaderDesc& desc)
         return false;
     }
 
-    if (!mProgramGlslang->buildReflection())
-    {
-        LOG_ERROR("Failed to build shader's reflection");
-        return false;
-    }
-
     std::string errorMessages;
     spv::SpvBuildLogger spvLogger;
     glslang::GlslangToSpv(*progInt, mShaderSpv, &spvLogger);
+
+    ParseResourceSlots();
 
     // now we have spirv representation of shader, provide it to Vulkan
     VkShaderModuleCreateInfo shaderInfo;
@@ -269,7 +267,7 @@ bool Shader::Init(const ShaderDesc& desc)
 bool Shader::Disassemble(bool html, std::string& output)
 {
     UNUSED(html); // TODO
-
+    // Disassemble the shader, to provide parsing source for slot extraction
     std::stringstream ss;
     spv::Disassemble(ss, mShaderSpv);
     output = ss.str();
@@ -282,9 +280,96 @@ bool Shader::GetIODesc()
     return false;
 }
 
+void Shader::ParseResourceSlots()
+{
+    std::stringstream disasm;
+    spv::Disassemble(disasm, mShaderSpv);
+
+    std::string line;
+    std::vector<std::string> names;
+    std::vector<std::string> decorates;
+    while (std::getline(disasm, line))
+    {
+        size_t namePos = line.find("Name");
+        size_t decoratePos = line.find("Decorate");
+        if (namePos == std::string::npos && decoratePos == std::string::npos)
+            continue;
+
+        // trim from starting whitespaces
+        line.erase(line.begin(), std::find_if(line.begin(), line.end(),
+            [](char c) -> bool { return !std::isspace(c); }));
+
+        if (namePos == std::string::npos)
+            decorates.push_back(line);
+        else
+            names.push_back(line);
+    }
+
+    // TODO decoration-name matching should be done by resource IDs
+    for (auto& decoration: decorates)
+    {
+        // extract number which relates to provided decorate
+        std::istringstream iss(decoration);
+        std::vector<std::string> tokens;
+        std::string token;
+        while (std::getline(iss, token,' '))
+            tokens.push_back(token);
+
+        // SPIR-V assumes following order:
+        //   [0] - "Decorate" keyword
+        //   [1] - "XX(<name>)" (Resource SPIR-V identifier & name)
+        //   [2] - DecoratorType (ex. DescriptorSet, Binding, Location)
+        //   [3] - Decoration value (ex. Binding number for Binding DecoratorType)
+        // Different amount than 4 tokens means we shouldn't care about it
+        if (tokens.size() != 4)
+            continue;
+
+        // trim ID(name) to acquire these values
+        size_t openBracketPos = tokens[1].find('(');
+        size_t closeBracketPos = tokens[1].find(')', openBracketPos+1);
+
+        std::string tokenName = tokens[1].substr(openBracketPos+1, closeBracketPos - openBracketPos - 1);
+        SetSlotMap::iterator it;
+        if (tokens[2] == "DescriptorSet" || tokens[2] == "Binding")
+        {
+            it = mResourceSlotMap.find(tokenName);
+            if (it == mResourceSlotMap.end())
+                it = std::get<0>(mResourceSlotMap.emplace(tokenName, std::make_pair(0, 0)));
+        }
+        else
+            continue;
+
+        if (tokens[2] == "DescriptorSet")
+        {
+            LOG_DEBUG("Found resource %s with DescriptorSet = %s", tokens[1].c_str(), tokens[3].c_str());
+            it->second.first = static_cast<uint16>(std::atoi(tokens[3].c_str()));
+        }
+
+        if (tokens[2] == "Binding")
+        {
+            LOG_DEBUG("Found resource %s with Binding = %s", tokens[1].c_str(), tokens[3].c_str());
+            it->second.second = static_cast<uint16>(std::atoi(tokens[3].c_str()));
+        }
+    }
+
+    return;
+}
+
 int Shader::GetResourceSlotByName(const char* name)
 {
-    return mProgramGlslang->getUniformIndex(name);
+    auto it = mResourceSlotMap.find(name);
+    if (it == mResourceSlotMap.end())
+        return -1;
+
+    const SetSlotPair& pair = it->second;
+
+    // encode slot/binding pair onto a single uint
+    // 16 MSB are set, 16 LSB are binding point
+    uint32 result = std::get<0>(pair);
+    result <<= 16;
+    result |= std::get<1>(pair);
+
+    return static_cast<int>(result);
 }
 
 } // namespace Renderer

@@ -64,7 +64,7 @@ struct TextureDesc
         : type(TextureType::Texture2D)
         , format(ElementFormat::R8G8B8A8_U_Norm)
         , mode(BufferMode::Static)
-        , depthBufferFormat(DepthBufferFormat::Depth16)
+        , depthBufferFormat(DepthBufferFormat::Unknown)
         , binding(0)
         , width(1)
         , height(1)

@@ -17,14 +17,19 @@ class Shader : public IShader
     friend class CommandBuffer;
     friend class PipelineState;
 
+    typedef std::pair<uint16, uint16> SetSlotPair; // first is set, second is binding
+    typedef std::map<std::string, SetSlotPair> SetSlotMap; // mapping Resource Name to Slot
+
     ShaderType mType;
     std::unique_ptr<glslang::TShader> mShaderGlslang;
     std::unique_ptr<glslang::TProgram> mProgramGlslang;
     std::vector<uint32> mShaderSpv;
+    SetSlotMap mResourceSlotMap;
     VkShaderModule mShader;
     VkPipelineShaderStageCreateInfo mStageInfo;
 
     bool GetIODesc();
+    void ParseResourceSlots();
 
 public:
     Shader();
