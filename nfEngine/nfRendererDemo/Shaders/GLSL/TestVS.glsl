@@ -1,11 +1,11 @@
-layout (location=0) in vec3 InPos;
-layout (location=1) in vec2 InTexCoord;
-layout (location=2) in vec4 InColor;
+layout (location = 0) in vec3 InPos;
+layout (location = 1) in vec2 InTexCoord;
+layout (location = 2) in vec4 InColor;
 
-layout (row_major, set=0, binding=0) uniform TestCBuffer
+layout (row_major, set = 0, binding = 0) uniform cbuf
 {
     mat4 viewMatrix;
-} cbuffer;
+} TestCBuffer;
 
 out gl_PerVertex
 {
@@ -28,7 +28,7 @@ void main()
 #endif
 
 #if USE_CBUFFER == 1
-    gl_Position = gl_Position * cbuffer.viewMatrix;
+    gl_Position = gl_Position * TestCBuffer.viewMatrix;
 #endif
 
     Output.TexCoord = InTexCoord;

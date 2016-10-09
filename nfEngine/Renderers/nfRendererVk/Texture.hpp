@@ -16,12 +16,18 @@ class Texture : virtual public ITexture
 {
     friend class CommandBuffer;
     friend class RenderTarget;
+    friend class ResourceBindingInstance;
 
 protected:
     TextureType mType;
-    int mWidth;
-    int mHeight;
+    uint32 mWidth;
+    uint32 mHeight;
+    uint32 mDepth;
     VkFormat mFormat;
+    VkImage mImage;
+    VkImageView mImageView;
+    VkImageLayout mImageLayout;
+    VkDeviceMemory mImageMemory;
 
     // tempshit to support double-buffering
     uint32 mBuffersNum;
@@ -29,10 +35,6 @@ protected:
     std::vector<VkImage> mBuffers;
     std::vector<VkImageView> mBufferViews;
     bool mFromSwapchain;
-
-    bool InitTexture1D(const TextureDesc& desc);
-    bool InitTexture2D(const TextureDesc& desc);
-    bool InitTexture3D(const TextureDesc& desc);
 
 public:
     Texture();

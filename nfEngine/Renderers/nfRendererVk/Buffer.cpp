@@ -59,6 +59,7 @@ bool Buffer::Init(const BufferDesc& desc)
     VK_ZERO_MEMORY(bufInfo);
     bufInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
     bufInfo.size = mBufferSize;
+    bufInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
     VkMemoryAllocateInfo memInfo;
     VK_ZERO_MEMORY(memInfo);

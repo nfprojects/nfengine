@@ -33,6 +33,7 @@ VkFilter TranslateMagFilterToVkFilter(TextureMagFilter filter);
 VkFilter TranslateMinFilterToVkFilter(TextureMinFilter filter);
 VkSamplerMipmapMode TranslateMinFilterToVkSamplerMipmapMode(TextureMinFilter filter);
 VkPrimitiveTopology TranslatePrimitiveTypeToVkTopology(PrimitiveType type);
+VkSampleCountFlagBits TranslateSamplesNumToVkSampleCount(uint32 sampleNum);
 VkDescriptorType TranslateShaderResourceTypeToVkDescriptorType(ShaderResourceType type);
 VkShaderStageFlagBits TranslateShaderTypeToVkShaderStage(ShaderType type);
 VkStencilOp TranslateStencilOpToVkStencilOp(StencilOp op);
