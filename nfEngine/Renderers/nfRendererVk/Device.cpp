@@ -277,11 +277,9 @@ uint32 Device::GetMemoryTypeIndex(uint32 typeBits, VkFlags properties)
 {
     for (uint32 i = 0; i < mMemoryProperties.memoryTypeCount; ++i)
     {
-        if (typeBits & 1)
+        if (typeBits & (1 << i))
             if (mMemoryProperties.memoryTypes[i].propertyFlags & properties)
                 return i;
-
-        typeBits >>= 1;
     }
 
     return UINT32_MAX;
@@ -304,8 +302,7 @@ IBuffer* Device::CreateBuffer(const BufferDesc& desc)
 
 ITexture* Device::CreateTexture(const TextureDesc& desc)
 {
-    UNUSED(desc);
-    return nullptr;
+    return GenericCreateResource<Texture, TextureDesc>(desc);
 }
 
 IBackbuffer* Device::CreateBackbuffer(const BackbufferDesc& desc)

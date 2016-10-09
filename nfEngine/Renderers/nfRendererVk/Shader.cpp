@@ -14,6 +14,8 @@
 #include <glslang/SPIRV/GlslangToSpv.h>
 #include <glslang/SPIRV/disassemble.h>
 
+#include <cstring>
+
 namespace NFE {
 namespace Renderer {
 
@@ -120,8 +122,7 @@ const TBuiltInResource DEFAULT_RESOURCE = {
 const int DEFAULT_VERSION = 110;
 const std::string SHADER_HEADER_START = "#version 450\n\
 #extension GL_ARB_separate_shader_objects: enable\n\
-#extension GL_ARB_shading_language_420pack: enable\n\
-#define VULKAN 1\n";
+#extension GL_ARB_shading_language_420pack: enable\n";
 const std::string DEFINE_STR = "#define ";
 const std::string SHADER_HEADER_TAIL = "\0";
 
@@ -214,7 +215,7 @@ bool Shader::Init(const ShaderDesc& desc)
 
     // TODO we might want to enable includes, so this includer is useless for later on
     glslang::TShader::ForbidInclude includer;
-    EShMessages msg = static_cast<EShMessages>(EShMsgDefault);
+    EShMessages msg = static_cast<EShMessages>(EShMsgDefault | EShMsgVulkanRules);
     if (!mShaderGlslang->parse(&DEFAULT_RESOURCE, DEFAULT_VERSION, ENoProfile, false, false, msg, includer))
     {
         LOG_ERROR("Failed to parse shader file %s:\n%s", desc.path, mShaderGlslang->getInfoLog());
@@ -237,15 +238,14 @@ bool Shader::Init(const ShaderDesc& desc)
         return false;
     }
 
-    if (!mProgramGlslang->buildReflection())
-    {
-        LOG_ERROR("Failed to build shader's reflection");
-        return false;
-    }
-
     std::string errorMessages;
     spv::SpvBuildLogger spvLogger;
     glslang::GlslangToSpv(*progInt, mShaderSpv, &spvLogger);
+
+    // Disassemble the shader, to provide parsing source for slot extraction
+    std::stringstream ss;
+    spv::Disassemble(ss, mShaderSpv);
+    mShaderDisassembly = ss.str();
 
     // now we have spirv representation of shader, provide it to Vulkan
     VkShaderModuleCreateInfo shaderInfo;
@@ -270,9 +270,7 @@ bool Shader::Disassemble(bool html, std::string& output)
 {
     UNUSED(html); // TODO
 
-    std::stringstream ss;
-    spv::Disassemble(ss, mShaderSpv);
-    output = ss.str();
+    output = mShaderDisassembly;
     return true;
 }
 
@@ -284,7 +282,88 @@ bool Shader::GetIODesc()
 
 int Shader::GetResourceSlotByName(const char* name)
 {
-    return mProgramGlslang->getUniformIndex(name);
+    std::unique_ptr<char> disasm(new char[mShaderDisassembly.size()]);
+    strncpy(disasm.get(), mShaderDisassembly.c_str(), mShaderDisassembly.size());
+
+    uint32 ID = 0;
+
+    // first, search for "Name" SPIRV token
+    char* curTok = strtok(disasm.get(), " ");
+    while (curTok != nullptr)
+    {
+        if (strncmp(curTok, "Name", 4))
+        {
+            // Token is not "Name", continu
+            curTok = strtok(NULL, " ");
+            continue;
+        }
+
+        // Token is "Name", extract another one and convert to int
+        curTok = strtok(NULL, " ");
+        ID = static_cast<uint32>(atoi(curTok));
+
+        // now get the actual name and compare it against argument
+        curTok = strtok(NULL, " \"");
+        if (strcmp(name, curTok))
+        {
+            // not the same name, continue
+            curTok = strtok(NULL, " ");
+            continue;
+        }
+
+        // we got the name - leave
+        break;
+    }
+
+    if (curTok == nullptr)
+    {
+        LOG_ERROR("Shader does not have \"%s\" resource", name);
+        return -1;
+    }
+
+    // now search for "Decorate" keyword and extract whatever we need
+    bool setFound = false;
+    bool bindFound = false;
+    uint16 set = 0;
+    uint16 bind = 0;
+    while (curTok != nullptr)
+    {
+        curTok = strtok(NULL, " ");
+        if (strncmp(curTok, "Decorate", 8))
+            continue;
+
+        // here we found "Decorate", check if it is about our ID
+        curTok = strtok(NULL, " ");
+        uint32 decID = static_cast<uint32>(atoi(curTok));
+        if (decID != ID)
+            continue;
+
+        // it is our ID - get what kind of decoration we talk about
+        curTok = strtok(NULL, " ");
+        if (strncmp(curTok, "DescriptorSet", 13) == 0)
+        {
+            curTok = strtok(NULL, " ");
+            set = static_cast<uint16>(atoi(curTok));
+            setFound = true;
+        }
+        else if (strncmp(curTok, "Binding", 7) == 0)
+        {
+            curTok = strtok(NULL, " ");
+            bind = static_cast<uint16>(atoi(curTok));
+            bindFound = true;
+        }
+
+        if (setFound && bindFound)
+            break;
+    }
+
+    // encode slot/binding pair onto a single uint
+    // 16 MSB are set, 16 LSB are binding point
+    uint32 result = set;
+    result <<= 16;
+    result |= bind;
+
+    return static_cast<int>(result);
 }
 
 } // namespace Renderer

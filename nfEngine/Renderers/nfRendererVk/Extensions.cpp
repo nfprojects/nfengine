@@ -90,6 +90,7 @@ PFN_vkCmdBindPipeline vkCmdBindPipeline = VK_NULL_HANDLE;
 PFN_vkCmdBindVertexBuffers vkCmdBindVertexBuffers = VK_NULL_HANDLE;
 PFN_vkCmdClearAttachments vkCmdClearAttachments = VK_NULL_HANDLE;
 PFN_vkCmdCopyBuffer vkCmdCopyBuffer = VK_NULL_HANDLE;
+PFN_vkCmdCopyBufferToImage vkCmdCopyBufferToImage = VK_NULL_HANDLE;
 PFN_vkCmdDraw vkCmdDraw = VK_NULL_HANDLE;
 PFN_vkCmdDrawIndexed vkCmdDrawIndexed = VK_NULL_HANDLE;
 PFN_vkCmdSetScissor vkCmdSetScissor = VK_NULL_HANDLE;
@@ -110,6 +111,7 @@ PFN_vkQueueWaitIdle vkQueueWaitIdle = VK_NULL_HANDLE;
 // Memory
 PFN_vkAllocateMemory vkAllocateMemory = VK_NULL_HANDLE;
 PFN_vkBindBufferMemory vkBindBufferMemory = VK_NULL_HANDLE;
+PFN_vkBindImageMemory vkBindImageMemory = VK_NULL_HANDLE;
 PFN_vkCreateBuffer vkCreateBuffer = VK_NULL_HANDLE;
 PFN_vkCreateImage vkCreateImage = VK_NULL_HANDLE;
 PFN_vkCreateImageView vkCreateImageView = VK_NULL_HANDLE;
@@ -118,6 +120,7 @@ PFN_vkDestroyImage vkDestroyImage = VK_NULL_HANDLE;
 PFN_vkDestroyImageView vkDestroyImageView = VK_NULL_HANDLE;
 PFN_vkFreeMemory vkFreeMemory = VK_NULL_HANDLE;
 PFN_vkGetBufferMemoryRequirements vkGetBufferMemoryRequirements = VK_NULL_HANDLE;
+PFN_vkGetImageMemoryRequirements vkGetImageMemoryRequirements = VK_NULL_HANDLE;
 PFN_vkMapMemory vkMapMemory = VK_NULL_HANDLE;
 PFN_vkUnmapMemory vkUnmapMemory = VK_NULL_HANDLE;
 
@@ -187,6 +190,7 @@ bool nfvkDeviceExtensionsInit(VkDevice device)
     VK_GET_DEVICEPROC(device, vkCmdBindVertexBuffers);
     VK_GET_DEVICEPROC(device, vkCmdClearAttachments);
     VK_GET_DEVICEPROC(device, vkCmdCopyBuffer);
+    VK_GET_DEVICEPROC(device, vkCmdCopyBufferToImage);
     VK_GET_DEVICEPROC(device, vkCmdDraw);
     VK_GET_DEVICEPROC(device, vkCmdDrawIndexed);
     VK_GET_DEVICEPROC(device, vkCmdSetScissor);
@@ -207,6 +211,7 @@ bool nfvkDeviceExtensionsInit(VkDevice device)
     // Memory
     VK_GET_DEVICEPROC(device, vkAllocateMemory);
     VK_GET_DEVICEPROC(device, vkBindBufferMemory);
+    VK_GET_DEVICEPROC(device, vkBindImageMemory);
     VK_GET_DEVICEPROC(device, vkCreateBuffer);
     VK_GET_DEVICEPROC(device, vkCreateImage);
     VK_GET_DEVICEPROC(device, vkCreateImageView);
@@ -215,6 +220,7 @@ bool nfvkDeviceExtensionsInit(VkDevice device)
     VK_GET_DEVICEPROC(device, vkDestroyImageView);
     VK_GET_DEVICEPROC(device, vkFreeMemory);
     VK_GET_DEVICEPROC(device, vkGetBufferMemoryRequirements);
+    VK_GET_DEVICEPROC(device, vkGetImageMemoryRequirements);
     VK_GET_DEVICEPROC(device, vkMapMemory);
     VK_GET_DEVICEPROC(device, vkUnmapMemory);
 
