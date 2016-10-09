@@ -84,6 +84,9 @@ bool CommandBuffer::Init()
 
 void CommandBuffer::Reset()
 {
+    for (uint32 i = 0; i < VK_MAX_VOLATILE_BUFFERS; ++i)
+        mBoundVolatileBuffers[i] = nullptr;
+
     mRenderTarget = nullptr;
     vkBeginCommandBuffer(mCommandBuffer, &mCommandBufferBeginInfo);
 }
@@ -127,6 +130,8 @@ void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat forma
 
 void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance)
 {
+    UNUSED(slot);
+
     ResourceBindingInstance* rbi = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance);
     if (rbi == nullptr)
     {
@@ -135,7 +140,7 @@ void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* binding
     }
 
     vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                            mResourceBindingLayout->mPipelineLayout, static_cast<uint32>(slot), 1,
+                            mResourceBindingLayout->mPipelineLayout, rbi->mSet->mSetSlot, 1,
                             &rbi->mSet->mDescriptorSet, 0, nullptr);
 }
 
@@ -321,7 +326,8 @@ bool CommandBuffer::WriteVolatileBuffer(Buffer* b, size_t size, const void* data
         if (b == mBoundVolatileBuffers[i])
         {
             vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mResourceBindingLayout->mPipelineLayout,
-                                    i, 1, &mResourceBindingLayout->mVolatileBufferSet, 1, &writeHead);
+                                    mResourceBindingLayout->mVolatileSetSlot, 1, &mResourceBindingLayout->mVolatileBufferSet,
+                                    1, &writeHead);
         }
     }
 
