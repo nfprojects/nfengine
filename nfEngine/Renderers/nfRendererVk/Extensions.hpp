@@ -73,6 +73,7 @@ extern PFN_vkCmdBindPipeline vkCmdBindPipeline;
 extern PFN_vkCmdBindVertexBuffers vkCmdBindVertexBuffers;
 extern PFN_vkCmdClearAttachments vkCmdClearAttachments;
 extern PFN_vkCmdCopyBuffer vkCmdCopyBuffer;
+extern PFN_vkCmdCopyBufferToImage vkCmdCopyBufferToImage;
 extern PFN_vkCmdDraw vkCmdDraw;
 extern PFN_vkCmdDrawIndexed vkCmdDrawIndexed;
 extern PFN_vkCmdSetScissor vkCmdSetScissor;
@@ -93,6 +94,7 @@ extern PFN_vkQueueWaitIdle vkQueueWaitIdle;
 // Memory
 extern PFN_vkAllocateMemory vkAllocateMemory;
 extern PFN_vkBindBufferMemory vkBindBufferMemory;
+extern PFN_vkBindImageMemory vkBindImageMemory;
 extern PFN_vkCreateBuffer vkCreateBuffer;
 extern PFN_vkCreateImage vkCreateImage;
 extern PFN_vkCreateImageView vkCreateImageView;
@@ -101,6 +103,7 @@ extern PFN_vkDestroyImage vkDestroyImage;
 extern PFN_vkDestroyImageView vkDestroyImageView;
 extern PFN_vkFreeMemory vkFreeMemory;
 extern PFN_vkGetBufferMemoryRequirements vkGetBufferMemoryRequirements;
+extern PFN_vkGetImageMemoryRequirements vkGetImageMemoryRequirements;
 extern PFN_vkMapMemory vkMapMemory;
 extern PFN_vkUnmapMemory vkUnmapMemory;
 

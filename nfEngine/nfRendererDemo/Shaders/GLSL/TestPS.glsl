@@ -1,5 +1,5 @@
 #if USE_TEXTURE == 1
-layout (binding = 0) uniform sampler2D gTextureSampler;
+layout (set = 1, binding = 0) uniform sampler2D gTexture;
 #endif
 
 layout (location = 0) in VertexShaderOutput
@@ -13,7 +13,7 @@ layout (location = 0) out vec4 color;
 void main()
 {
 #if USE_TEXTURE == 1
-    color = Input.Color * texture2D(gTextureSampler, Input.TexCoord);
+    color = Input.Color * texture(gTexture, Input.TexCoord);
 #else
     color = Input.Color;
 #endif

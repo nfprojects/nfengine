@@ -21,6 +21,7 @@ class Shader : public IShader
     std::unique_ptr<glslang::TShader> mShaderGlslang;
     std::unique_ptr<glslang::TProgram> mProgramGlslang;
     std::vector<uint32> mShaderSpv;
+    std::string mShaderDisassembly;
     VkShaderModule mShader;
     VkPipelineShaderStageCreateInfo mStageInfo;
 
