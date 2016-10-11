@@ -84,6 +84,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_b4e71f11",
+        "filename": "nfEngine/nfCommon/Image/ImageBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 404,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-10-11T19:13:34Z",
+      "side": 1,
+      "message": "But it\u0027s reused in multiple places",
+      "parentUuid": "baa041b7_0c294a9b",
+      "range": {
+        "startLine": 404,
+        "startChar": 31,
+        "endLine": 404,
+        "endChar": 35
+      },
+      "revId": "3856c6d71f5116379aae0d759b80bb879b9d25ad",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_69cb2854",
         "filename": "nfEngine/nfCommon/Image/ImageBMP.cpp",
         "patchSetId": 1
@@ -248,6 +272,30 @@
       "side": 1,
       "message": "It\u0027s for accounting the type of array we store bmpData in?",
       "parentUuid": "baa041b7_09bedcad",
+      "range": {
+        "startLine": 417,
+        "startChar": 23,
+        "endLine": 417,
+        "endChar": 41
+      },
+      "revId": "3856c6d71f5116379aae0d759b80bb879b9d25ad",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_54ea13d9",
+        "filename": "nfEngine/nfCommon/Image/ImageBMP.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 417,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-10-11T19:13:34Z",
+      "side": 1,
+      "message": "I thought that dataSize is already in bytes. It\u0027s obvious that uint8 will have 1 byte, as the name says...",
+      "parentUuid": "baa041b7_4c0ab227",
       "range": {
         "startLine": 417,
         "startChar": 23,
