@@ -129,12 +129,17 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     VkPipelineDynamicStateCreateInfo pdsInfo;
     VK_ZERO_MEMORY(pdsInfo);
     pdsInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-    VkDynamicState dynStates[] = {
-        VK_DYNAMIC_STATE_VIEWPORT,
-        VK_DYNAMIC_STATE_SCISSOR,
-        VK_DYNAMIC_STATE_STENCIL_REFERENCE
-    };
-    pdsInfo.dynamicStateCount = sizeof(dynStates) / sizeof(dynStates[0]);
+    VkDynamicState dynStates[3];
+    dynStates[0] = VK_DYNAMIC_STATE_VIEWPORT;
+    dynStates[1] = VK_DYNAMIC_STATE_SCISSOR;
+    if (desc.depthFormat == DepthBufferFormat::Depth24_Stencil8)
+    {
+        dynStates[2] = VK_DYNAMIC_STATE_STENCIL_REFERENCE;
+        pdsInfo.dynamicStateCount = 3;
+    }
+    else
+        pdsInfo.dynamicStateCount = 2;
+
     pdsInfo.pDynamicStates = dynStates;
 
 
@@ -178,6 +183,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
 
         depthRef.attachment = curAtt;
         depthRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+        curAtt++;
     }
 
     VkSubpassDescription subpass;

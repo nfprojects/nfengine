@@ -340,11 +340,16 @@ void DepthStencilScene::Draw(float dt)
         mCommandBuffer->SetPipelineState(mReflectionPipelineState.get());
         mCommandBuffer->DrawIndexed(2 * 6 * 3);
     }
-    else
+    else if (GetCurrentSubSceneNumber() == 1)
     {
         // clear depth buffer
         mCommandBuffer->Clear(ClearFlagsDepth, 0, nullptr, nullptr, 1.0f);
 
+        const Float4 color(0.7f, 0.8f, 0.9f, 1.0f);
+        mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
+    }
+    else
+    {
         const Float4 color(0.7f, 0.8f, 0.9f, 1.0f);
         mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
     }

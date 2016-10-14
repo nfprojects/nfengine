@@ -286,6 +286,9 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
         CHECK_VKRESULT(result, "Error during present command buffer recording");
     }
 
+    // TODO very much a hack, which won't work with multiple Backbuffers and needs proper fixing
+    gDevice->RebuildSemaphores();
+
     const VkSemaphore& presentSem = gDevice->GetPresentSemaphore();
     const VkSemaphore& postPresentSem = gDevice->GetPostPresentSemaphore();
     // TODO handle VK_ERROR_OUT_OF_DATE (happens ex. during resize)

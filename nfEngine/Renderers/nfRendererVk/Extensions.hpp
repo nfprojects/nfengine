@@ -77,6 +77,7 @@ extern PFN_vkCmdCopyBufferToImage vkCmdCopyBufferToImage;
 extern PFN_vkCmdDraw vkCmdDraw;
 extern PFN_vkCmdDrawIndexed vkCmdDrawIndexed;
 extern PFN_vkCmdSetScissor vkCmdSetScissor;
+extern PFN_vkCmdSetStencilReference vkCmdSetStencilReference;
 extern PFN_vkCmdSetViewport vkCmdSetViewport;
 
 // Swapchain

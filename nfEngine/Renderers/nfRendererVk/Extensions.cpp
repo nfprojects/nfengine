@@ -94,6 +94,7 @@ PFN_vkCmdCopyBufferToImage vkCmdCopyBufferToImage = VK_NULL_HANDLE;
 PFN_vkCmdDraw vkCmdDraw = VK_NULL_HANDLE;
 PFN_vkCmdDrawIndexed vkCmdDrawIndexed = VK_NULL_HANDLE;
 PFN_vkCmdSetScissor vkCmdSetScissor = VK_NULL_HANDLE;
+PFN_vkCmdSetStencilReference vkCmdSetStencilReference = VK_NULL_HANDLE;
 PFN_vkCmdSetViewport vkCmdSetViewport = VK_NULL_HANDLE;
 
 // Swapchain
@@ -194,6 +195,7 @@ bool nfvkDeviceExtensionsInit(VkDevice device)
     VK_GET_DEVICEPROC(device, vkCmdDraw);
     VK_GET_DEVICEPROC(device, vkCmdDrawIndexed);
     VK_GET_DEVICEPROC(device, vkCmdSetScissor);
+    VK_GET_DEVICEPROC(device, vkCmdSetStencilReference);
     VK_GET_DEVICEPROC(device, vkCmdSetViewport);
 
     // Swapchain

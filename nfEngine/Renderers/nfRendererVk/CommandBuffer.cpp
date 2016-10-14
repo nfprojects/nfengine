@@ -237,7 +237,7 @@ void CommandBuffer::SetPipelineState(IPipelineState* state)
 
 void CommandBuffer::SetStencilRef(unsigned char ref)
 {
-    UNUSED(ref);
+    vkCmdSetStencilReference(mCommandBuffer, VK_STENCIL_FRONT_AND_BACK, ref);
 }
 
 void CommandBuffer::SetViewport(float left, float width, float top, float height,

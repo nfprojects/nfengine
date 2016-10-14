@@ -274,16 +274,6 @@ bool Device::Init(const DeviceInitParams* params)
         return false;
     }
 
-    VkSemaphoreCreateInfo semInfo;
-    VK_ZERO_MEMORY(semInfo);
-    semInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-    result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mRenderSemaphore);
-    CHECK_VKRESULT(result, "Failed to create rendering semaphore");
-    result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mPresentSemaphore);
-    CHECK_VKRESULT(result, "Failed to create present semaphore");
-    result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mPostPresentSemaphore);
-    CHECK_VKRESULT(result, "Failed to create post present semaphore");
-
     VkPipelineCacheCreateInfo pipeCacheInfo;
     VK_ZERO_MEMORY(pipeCacheInfo);
     pipeCacheInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
@@ -303,6 +293,29 @@ uint32 Device::GetMemoryTypeIndex(uint32 typeBits, VkFlags properties)
     }
 
     return UINT32_MAX;
+}
+
+bool Device::RebuildSemaphores()
+{
+    if (mPostPresentSemaphore != VK_NULL_HANDLE)
+        vkDestroySemaphore(mDevice, mPostPresentSemaphore, nullptr);
+    if (mPresentSemaphore != VK_NULL_HANDLE)
+        vkDestroySemaphore(mDevice, mPresentSemaphore, nullptr);
+    if (mRenderSemaphore != VK_NULL_HANDLE)
+        vkDestroySemaphore(mDevice, mRenderSemaphore, nullptr);
+
+    VkResult result;
+    VkSemaphoreCreateInfo semInfo;
+    VK_ZERO_MEMORY(semInfo);
+    semInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+    result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mRenderSemaphore);
+    CHECK_VKRESULT(result, "Failed to create rendering semaphore");
+    result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mPresentSemaphore);
+    CHECK_VKRESULT(result, "Failed to create present semaphore");
+    result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mPostPresentSemaphore);
+    CHECK_VKRESULT(result, "Failed to create post present semaphore");
+
+    return true;
 }
 
 void* Device::GetHandle() const

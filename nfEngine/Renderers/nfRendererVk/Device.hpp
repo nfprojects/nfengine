@@ -96,6 +96,7 @@ public:
     }
 
     uint32 GetMemoryTypeIndex(uint32 typeBits, VkFlags properties);
+    bool RebuildSemaphores();
 
     // overrides
     void* GetHandle() const override;

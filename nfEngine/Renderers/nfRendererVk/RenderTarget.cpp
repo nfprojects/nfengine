@@ -128,7 +128,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             std::vector<VkImageView> fbAtts;
             fbAtts.push_back(mTex[0]->mBufferViews[i]);
             if (mDepthTex)
-                fbAtts.push_back(mDepthTex->mBufferViews[0]);
+                fbAtts.push_back(mDepthTex->mImageView);
 
             VkFramebufferCreateInfo fbInfo;
             VK_ZERO_MEMORY(fbInfo);
@@ -146,6 +146,8 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
     else // ...or, if we create a framebuffer from a single image
     {
         // TODO fill
+        LOG_ERROR("Unable to create framebuffer from a non-swapchain texture");
+        return false;
     }
 
     Texture* tex = dynamic_cast<Texture*>(desc.targets[0].texture);
