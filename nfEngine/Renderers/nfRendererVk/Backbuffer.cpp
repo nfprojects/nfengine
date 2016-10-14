@@ -286,6 +286,8 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
         CHECK_VKRESULT(result, "Error during present command buffer recording");
     }
 
+    gDevice->RebuildSemaphores();
+
     const VkSemaphore& presentSem = gDevice->GetPresentSemaphore();
     const VkSemaphore& postPresentSem = gDevice->GetPostPresentSemaphore();
     // TODO handle VK_ERROR_OUT_OF_DATE (happens ex. during resize)
@@ -302,7 +304,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     submitInfo.waitSemaphoreCount = 1;
     submitInfo.pWaitSemaphores = &presentSem;
     submitInfo.pWaitDstStageMask = &pipelineStages;
-    submitInfo.signalSemaphoreCount = 1;
+    submitInfo.signalSemaphoreCount = 0;
     submitInfo.pSignalSemaphores = &postPresentSem;
     result = vkQueueSubmit(mPresentQueue, 1, &submitInfo, VK_NULL_HANDLE);
     CHECK_VKRESULT(result, "Failed to submit present operations");
