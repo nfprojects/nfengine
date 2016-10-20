@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_ed401908",
+        "filename": "nfEngine/Renderers/nfRendererVk/ResourceBinding.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-10-20T21:50:02Z",
+      "side": 1,
+      "message": "const",
+      "revId": "aa53aa656efe0e041ba5f0a07ddacba546ac30fb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_0d557dc0",
+        "filename": "nfEngine/Renderers/nfRendererVk/Shader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-10-20T21:50:02Z",
+      "side": 1,
+      "message": "IMO you should do all of this stuff in single pass, when shader is compiled (and store required data in some structure), because GetResourceSlotByName will be called many times for the same shader",
+      "revId": "aa53aa656efe0e041ba5f0a07ddacba546ac30fb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8d52addc",
+        "filename": "nfEngine/Renderers/nfRendererVk/Shader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-10-20T21:50:02Z",
+      "side": 1,
+      "message": "we don\u0027t need this for the runtime",
+      "revId": "aa53aa656efe0e041ba5f0a07ddacba546ac30fb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ed57f9c6",
+        "filename": "nfEngine/Renderers/nfRendererVk/Texture.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-10-20T21:50:02Z",
+      "side": 1,
+      "message": "you can even change to uint16",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 18
+      },
+      "revId": "aa53aa656efe0e041ba5f0a07ddacba546ac30fb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
