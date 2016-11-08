@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "baa041b7_bd91cd48",
+        "filename": "nfEngine/nfCommon/Set.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2016-11-08T22:20:54Z",
+      "side": 1,
+      "message": "Ah, it\u0027s generic because it handles const and non-const iterator. It won\u0027t be used for other containers (which wouldn\u0027t have sense, because each container must have it\u0027s own iterator)",
+      "parentUuid": "baa041b7_8d2ee2a9",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 67,
+        "endChar": 6
+      },
+      "revId": "ea4c3bfb2f8a672bfb625691d790330371fc1763",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baa041b7_2d46b67b",
         "filename": "nfEngine/nfCommon/Set.hpp",
         "patchSetId": 2
