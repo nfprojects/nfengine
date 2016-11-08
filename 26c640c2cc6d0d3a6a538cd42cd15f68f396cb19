@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_48b1e800",
+        "filename": "engineConfig.cfg",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-11-08T09:46:05Z",
+      "side": 1,
+      "message": "We must somewhere document all possible options in the configuration file supported by Core. The file will unclutter from all comments, and without it we\u0027ll easily get lost in the future during development.\n\nConsider adding a Wiki article about Engine config file.",
+      "revId": "26c640c2cc6d0d3a6a538cd42cd15f68f396cb19",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_c8ee18ed",
+        "filename": "engineConfig.cfg",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-11-08T09:46:05Z",
+      "side": 1,
+      "message": "rm",
+      "revId": "26c640c2cc6d0d3a6a538cd42cd15f68f396cb19",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_08cc0089",
+        "filename": "nfEngine/nfCore/Engine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-11-08T09:46:05Z",
+      "side": 1,
+      "message": "rm",
+      "revId": "26c640c2cc6d0d3a6a538cd42cd15f68f396cb19",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
