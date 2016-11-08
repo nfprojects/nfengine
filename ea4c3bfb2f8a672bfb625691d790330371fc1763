@@ -1,0 +1,274 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa041b7_8d2ee2a9",
+        "filename": "nfEngine/nfCommon/Set.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-11-08T09:32:43Z",
+      "side": 1,
+      "message": "If it\u0027s generic (and it probably will be used by other container implementations in the Engine), why not move it and its implementation to a separate header?",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 67,
+        "endChar": 6
+      },
+      "revId": "ea4c3bfb2f8a672bfb625691d790330371fc1763",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2d46b67b",
+        "filename": "nfEngine/nfCommon/Set.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-11-08T09:32:43Z",
+      "side": 1,
+      "message": "@node? Shouldn\u0027t this be @note?\n\nCorrect below comments as well",
+      "range": {
+        "startLine": 115,
+        "startChar": 8,
+        "endLine": 115,
+        "endChar": 12
+      },
+      "revId": "ea4c3bfb2f8a672bfb625691d790330371fc1763",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ed1fae6e",
+        "filename": "nfEngine/nfCommon/Set.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-11-08T09:32:43Z",
+      "side": 1,
+      "message": "For clarity purposes, this magic should be replaced with a constant in an IteratorTemplate.",
+      "range": {
+        "startLine": 267,
+        "startChar": 17,
+        "endLine": 267,
+        "endChar": 19
+      },
+      "revId": "ea4c3bfb2f8a672bfb625691d790330371fc1763",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_ad29a69d",
+        "filename": "nfEngine/nfCommon/Set.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 274,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-11-08T09:32:43Z",
+      "side": 1,
+      "message": "As above",
+      "range": {
+        "startLine": 274,
+        "startChar": 17,
+        "endLine": 274,
+        "endChar": 19
+      },
+      "revId": "ea4c3bfb2f8a672bfb625691d790330371fc1763",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_6d1a7e7e",
+        "filename": "nfEngine/nfCommon/Set.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-11-08T09:32:43Z",
+      "side": 1,
+      "message": "As above",
+      "range": {
+        "startLine": 278,
+        "startChar": 46,
+        "endLine": 278,
+        "endChar": 49
+      },
+      "revId": "ea4c3bfb2f8a672bfb625691d790330371fc1763",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_2d14764b",
+        "filename": "nfEngine/nfCommon/Set.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-11-08T09:32:43Z",
+      "side": 1,
+      "message": "came",
+      "range": {
+        "startLine": 285,
+        "startChar": 26,
+        "endLine": 285,
+        "endChar": 31
+      },
+      "revId": "ea4c3bfb2f8a672bfb625691d790330371fc1763",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_287ea46a",
+        "filename": "nfEngine/nfCommon/Set.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 476,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-11-08T09:32:43Z",
+      "side": 1,
+      "message": "As above, use a constant here and check the rest of the file as well.",
+      "range": {
+        "startLine": 476,
+        "startChar": 16,
+        "endLine": 476,
+        "endChar": 19
+      },
+      "revId": "ea4c3bfb2f8a672bfb625691d790330371fc1763",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_08708072",
+        "filename": "nfEngine/nfCommon/Set.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 625,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-11-08T09:32:43Z",
+      "side": 1,
+      "message": "node",
+      "range": {
+        "startLine": 625,
+        "startChar": 16,
+        "endLine": 625,
+        "endChar": 20
+      },
+      "revId": "ea4c3bfb2f8a672bfb625691d790330371fc1763",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_880250b9",
+        "filename": "nfEngine/nfCommon/Set.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1044,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-11-08T09:32:43Z",
+      "side": 1,
+      "message": "approximately :)",
+      "range": {
+        "startLine": 1044,
+        "startChar": 35,
+        "endLine": 1044,
+        "endChar": 49
+      },
+      "revId": "ea4c3bfb2f8a672bfb625691d790330371fc1763",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_8829303d",
+        "filename": "nfEngine/nfCommonPerfTest/Set.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-11-08T09:32:43Z",
+      "side": 1,
+      "message": "find",
+      "range": {
+        "startLine": 53,
+        "startChar": 15,
+        "endLine": 53,
+        "endChar": 21
+      },
+      "revId": "ea4c3bfb2f8a672bfb625691d790330371fc1763",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_682eec43",
+        "filename": "nfEngine/nfCommonPerfTest/Set.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-11-08T09:32:43Z",
+      "side": 1,
+      "message": "find",
+      "range": {
+        "startLine": 77,
+        "startChar": 15,
+        "endLine": 77,
+        "endChar": 21
+      },
+      "revId": "ea4c3bfb2f8a672bfb625691d790330371fc1763",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baa041b7_88d0102d",
+        "filename": "nfEngine/nfCommonTest/SetTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2016-11-08T09:32:43Z",
+      "side": 1,
+      "message": "rm",
+      "revId": "ea4c3bfb2f8a672bfb625691d790330371fc1763",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
