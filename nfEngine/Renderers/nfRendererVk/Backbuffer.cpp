@@ -11,23 +11,18 @@
 #include <string.h>
 
 
-namespace {
-
-// TODO make this customizable from the outside
-const VkFormat VK_PREFERRED_FORMAT = VK_FORMAT_R8G8B8A8_UNORM;
-
-} // namespace
-
 namespace NFE {
 namespace Renderer {
 
 Backbuffer::Backbuffer()
-    : mSurface(VK_NULL_HANDLE)
+    : Texture()
+    , mSurface(VK_NULL_HANDLE)
     , mColorSpace(VK_COLORSPACE_SRGB_NONLINEAR_KHR)
     , mPresentQueueIndex(UINT32_MAX)
     , mPresentQueue(VK_NULL_HANDLE)
     , mSwapchain(VK_NULL_HANDLE)
     , mPresentCommandPool(VK_NULL_HANDLE)
+    , mSwapPresentMode(VK_PRESENT_MODE_MAILBOX_KHR)
 {
 }
 
@@ -49,17 +44,16 @@ Backbuffer::~Backbuffer()
     CleanupPlatformSpecifics();
 }
 
-bool Backbuffer::Init(const BackbufferDesc& desc)
+bool Backbuffer::SelectPresentQueue()
 {
-    if (!CreateSurface(desc))
-    {
-        LOG_ERROR("Failed to create Vulkan Surface.");
-        return false;
-    }
-
     // check which queue supports presenting
     uint32 queueCount;
     vkGetPhysicalDeviceQueueFamilyProperties(gDevice->GetPhysicalDevice(), &queueCount, nullptr);
+    if (queueCount == 0)
+    {
+        LOG_ERROR("No queues to choose from for Present operations");
+        return false;
+    }
 
     std::vector<VkQueueFamilyProperties> queueProps(queueCount);
     vkGetPhysicalDeviceQueueFamilyProperties(gDevice->GetPhysicalDevice(), &queueCount, queueProps.data());
@@ -87,6 +81,11 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
 
     vkGetDeviceQueue(gDevice->GetDevice(), mPresentQueueIndex, 0, &mPresentQueue);
 
+    return true;
+}
+
+bool Backbuffer::SelectSurfaceFormat(const BackbufferDesc& desc)
+{
     // get surface's format
     uint32_t formatCount;
     VkResult result = vkGetPhysicalDeviceSurfaceFormatsKHR(gDevice->GetPhysicalDevice(), mSurface,
@@ -121,10 +120,15 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
 
     mColorSpace = formats[formatIndex].colorSpace;
 
+    return true;
+}
+
+bool Backbuffer::SelectPresentMode(const BackbufferDesc& desc)
+{
     // Gather possible present mdoes
     uint32 presentModeCount = UINT32_MAX;
-    result = vkGetPhysicalDeviceSurfacePresentModesKHR(gDevice->GetPhysicalDevice(), mSurface,
-                                                       &presentModeCount, nullptr);
+    VkResult result = vkGetPhysicalDeviceSurfacePresentModesKHR(gDevice->GetPhysicalDevice(), mSurface,
+                                                                &presentModeCount, nullptr);
     CHECK_VKRESULT(result, "Failed to acquire surface's present modes");
 
     std::vector<VkPresentModeKHR> presentModes(presentModeCount);
@@ -133,7 +137,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     CHECK_VKRESULT(result, "Failed to acquire surface's present modes");
 
     // By default, assume FIFO present mode (aka vSync enabled)
-    VkPresentModeKHR swapPresentMode = VK_PRESENT_MODE_FIFO_KHR;
+    mSwapPresentMode = VK_PRESENT_MODE_FIFO_KHR;
     if (!desc.vSync)
     {
         // If vsync is to be disabled, go through surface's present modes and find a better one
@@ -142,27 +146,53 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
             // Mailbox would be perfect, as it would negate tearing without much latency
             if (presentModes[i] == VK_PRESENT_MODE_MAILBOX_KHR)
             {
-                swapPresentMode = VK_PRESENT_MODE_MAILBOX_KHR;
+                mSwapPresentMode = VK_PRESENT_MODE_MAILBOX_KHR;
                 break;
             }
 
             // ...however, immediate can be used as well if possible (will produce tearing)
             if (presentModes[i] == VK_PRESENT_MODE_IMMEDIATE_KHR)
-                swapPresentMode = VK_PRESENT_MODE_IMMEDIATE_KHR;
+                mSwapPresentMode = VK_PRESENT_MODE_IMMEDIATE_KHR;
         }
     }
 
+    return true;
+}
+
+bool Backbuffer::SelectBufferCount()
+{
     // Gather surface's capabilities
-    VkSurfaceCapabilitiesKHR surfCaps;
-    result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(gDevice->GetPhysicalDevice(), mSurface,
-                                                       &surfCaps);
+    VkResult result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(gDevice->GetPhysicalDevice(), mSurface,
+                                                                &mSurfaceCapabilities);
     CHECK_VKRESULT(result, "Failed to acquire surface's capabilities");
 
     // Ideally we should be able to double-buffer, but for safety check this against caps
     mBuffersNum = 2;
-    if (mBuffersNum > surfCaps.maxImageCount)
-        mBuffersNum = surfCaps.maxImageCount;
+    if (mSurfaceCapabilities.maxImageCount > 0)
+    {
+        if (mBuffersNum > mSurfaceCapabilities.maxImageCount)
+        {
+            LOG_WARNING("Requested %d swapchain image count exceeds max limit %d - reducing",
+                        mBuffersNum, mSurfaceCapabilities.maxImageCount);
+            mBuffersNum = mSurfaceCapabilities.maxImageCount;
+        }
+    }
 
+    if (mSurfaceCapabilities.minImageCount > 0)
+    {
+        if (mBuffersNum < mSurfaceCapabilities.minImageCount)
+        {
+            LOG_WARNING("Requested %d swapchain image count exceeds minimum limit %d - increasing",
+                        mBuffersNum, mSurfaceCapabilities.minImageCount);
+            mBuffersNum = mSurfaceCapabilities.minImageCount;
+        }
+    }
+
+    return true;
+}
+
+bool Backbuffer::CreateSwapchain(const BackbufferDesc& desc)
+{
     // Create swapchain
     VkSwapchainCreateInfoKHR swapInfo;
     VK_ZERO_MEMORY(swapInfo);
@@ -174,24 +204,32 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     swapInfo.imageExtent.width = desc.width;
     swapInfo.imageExtent.height = desc.height;
     swapInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-    swapInfo.preTransform = surfCaps.currentTransform;
+    swapInfo.preTransform = mSurfaceCapabilities.currentTransform;
     swapInfo.imageArrayLayers = 1;
     swapInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    swapInfo.presentMode = swapPresentMode;
+    swapInfo.presentMode = mSwapPresentMode;
     swapInfo.oldSwapchain = VK_NULL_HANDLE;
     swapInfo.clipped = VK_TRUE;
     swapInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-    result = vkCreateSwapchainKHR(gDevice->GetDevice(), &swapInfo, nullptr, &mSwapchain);
+    VkResult result = vkCreateSwapchainKHR(gDevice->GetDevice(), &swapInfo, nullptr, &mSwapchain);
     CHECK_VKRESULT(result, "Failed to create a swapchain");
 
+    return true;
+}
+
+bool Backbuffer::CreateSwapchainImageViews()
+{
     uint32 swapImageCount = 0;
-    result = vkGetSwapchainImagesKHR(gDevice->GetDevice(), mSwapchain, &swapImageCount, nullptr);
+    VkResult result = vkGetSwapchainImagesKHR(gDevice->GetDevice(), mSwapchain, &swapImageCount, nullptr);
     CHECK_VKRESULT(result, "Failed to get swapchain image count");
     if (swapImageCount < mBuffersNum)
     {
         LOG_ERROR("Not enough swap images created (%d, requested %d)", swapImageCount, mBuffersNum);
         return false;
     }
+    else if (swapImageCount > mBuffersNum)
+        LOG_WARNING("Created more swapchain images than requested (%d, requested %d)", swapImageCount, mBuffersNum);
+
     mBuffersNum = swapImageCount;
 
     mBuffers.resize(mBuffersNum);
@@ -226,18 +264,18 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
         CHECK_VKRESULT(result, "Failed to generate Image View from Swapchain image");
     }
 
-    mWidth = desc.width;
-    mHeight = desc.height;
-    mType = TextureType::Texture2D;
-    mFromSwapchain = true;
+    return true;
+}
 
+bool Backbuffer::BuildPresentCommandBuffers()
+{
     // Present command pool and command buffer creation
     VkCommandPoolCreateInfo poolInfo;
     VK_ZERO_MEMORY(poolInfo);
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
     poolInfo.queueFamilyIndex = mPresentQueueIndex;
     poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-    result = vkCreateCommandPool(gDevice->GetDevice(), &poolInfo, nullptr, &mPresentCommandPool);
+    VkResult result = vkCreateCommandPool(gDevice->GetDevice(), &poolInfo, nullptr, &mPresentCommandPool);
     CHECK_VKRESULT(result, "Unable to create present command pool");
 
     VkCommandBufferAllocateInfo buffInfo = {};
@@ -286,10 +324,15 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
         CHECK_VKRESULT(result, "Error during present command buffer recording");
     }
 
+    return true;
+}
+
+bool Backbuffer::AcquireNextImage()
+{
     const VkSemaphore& presentSem = gDevice->GetPresentSemaphore();
     const VkSemaphore& postPresentSem = gDevice->GetPostPresentSemaphore();
     // TODO handle VK_ERROR_OUT_OF_DATE (happens ex. during resize)
-    result = vkAcquireNextImageKHR(gDevice->GetDevice(), mSwapchain, UINT64_MAX, presentSem, VK_NULL_HANDLE, &mCurrentBuffer);
+    VkResult result = vkAcquireNextImageKHR(gDevice->GetDevice(), mSwapchain, UINT64_MAX, presentSem, VK_NULL_HANDLE, &mCurrentBuffer);
     CHECK_VKRESULT(result, "Failed to acquire next image");
 
     // Submit a pipeline barrier call to ensure our buffer is a color attachment
@@ -306,6 +349,32 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     submitInfo.pSignalSemaphores = &postPresentSem;
     result = vkQueueSubmit(mPresentQueue, 1, &submitInfo, VK_NULL_HANDLE);
     CHECK_VKRESULT(result, "Failed to submit present operations");
+
+    return true;
+}
+
+bool Backbuffer::Init(const BackbufferDesc& desc)
+{
+    if (!CreateSurface(desc))
+    {
+        LOG_ERROR("Failed to create Vulkan Surface.");
+        return false;
+    }
+
+    if (!SelectPresentQueue()) return false;
+    if (!SelectSurfaceFormat(desc)) return false;
+    if (!SelectPresentMode(desc)) return false;
+    if (!SelectBufferCount()) return false;
+    if (!CreateSwapchain(desc)) return false;
+    if (!CreateSwapchainImageViews()) return false;
+
+    mWidth = desc.width;
+    mHeight = desc.height;
+    mType = TextureType::Texture2D;
+    mFromSwapchain = true;
+
+    if (!BuildPresentCommandBuffers()) return false;
+    if (!AcquireNextImage()) return false;
 
     LOG_INFO("Backbuffer initialized successfully.");
     return true;
@@ -326,8 +395,6 @@ bool Backbuffer::Present()
     CHECK_VKRESULT(result, "Present Queue is not useable");
 
     const VkSemaphore& renderSem = gDevice->GetRenderSemaphore();
-    const VkSemaphore& presentSem = gDevice->GetPresentSemaphore();
-    const VkSemaphore& postPresentSem = gDevice->GetPostPresentSemaphore();
 
     // Present whatever was drawn (only if render semaphore is signalled)
     VkPresentInfoKHR presentInfo;
@@ -342,29 +409,7 @@ bool Backbuffer::Present()
     vkQueuePresentKHR(mPresentQueue, &presentInfo);
     CHECK_VKRESULT(result, "Failed to present image on current swap chain");
 
-    // Acquire next image for future use.
-    // In case there are no free buffers to use, mPresentSemaphore will lock further execution and
-    // the function will signal it - this way we know when to safely start executing render queue.
-    result = vkAcquireNextImageKHR(gDevice->GetDevice(), mSwapchain, UINT64_MAX,
-                                   presentSem, VK_NULL_HANDLE, &mCurrentBuffer);
-    CHECK_VKRESULT(result, "Failed to acquire next image from Vulkan Surface");
-
-    // Submit a pipeline barrier call to ensure our buffer is now back to be a color attachment
-    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-    VkSubmitInfo submitInfo;
-    VK_ZERO_MEMORY(submitInfo);
-    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &mPresentCommandBuffers[mCurrentBuffer];
-    submitInfo.waitSemaphoreCount = 1;
-    submitInfo.pWaitSemaphores = &presentSem;
-    submitInfo.signalSemaphoreCount = 1;
-    submitInfo.pSignalSemaphores = &postPresentSem;
-    submitInfo.pWaitDstStageMask = &pipelineStages;
-    result = vkQueueSubmit(mPresentQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    CHECK_VKRESULT(result, "Failed to submit present operations");
-
-    return true;
+    return AcquireNextImage();
 }
 
 } // namespace Renderer
