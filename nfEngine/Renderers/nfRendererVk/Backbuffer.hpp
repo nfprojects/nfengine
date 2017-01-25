@@ -30,9 +30,10 @@ class Backbuffer : public IBackbuffer, public Texture
     VkColorSpaceKHR mColorSpace;
     uint32 mPresentQueueIndex;
     VkQueue mPresentQueue;
-    uint32 mSwapImagesCount;
+    VkSurfaceCapabilitiesKHR mSurfCaps;
     VkSwapchainKHR mSwapchain;
     VkCommandPool mPresentCommandPool;
+    VkPresentModeKHR mSwapPresentMode;
     std::vector<VkCommandBuffer> mPresentCommandBuffers;
 
     // platform-specific surface creator
@@ -40,6 +41,15 @@ class Backbuffer : public IBackbuffer, public Texture
 
     // right now needed purely by XCB implementation
     void CleanupPlatformSpecifics();
+
+    bool GetPresentQueue();
+    bool GetSurfaceFormat(const BackbufferDesc& desc);
+    bool SelectPresentMode(const BackbufferDesc& desc);
+    bool SelectBufferCount();
+    bool CreateSwapchain(const BackbufferDesc& desc);
+    bool CreateSwapchainImageViews();
+    bool BuildPresentCommandBuffers();
+    bool AcquireNextImage();
 
 public:
     Backbuffer();
