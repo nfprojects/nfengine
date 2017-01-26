@@ -387,12 +387,6 @@ void CommandBuffer::Clear(int flags, uint32 numTargets, const uint32* slots,
             uint32 slot = i;
             if (slots)
             {
-                if (slots[i] >= mRenderTarget->mAttachmentCount)
-                {
-                    LOG_ERROR("Invalid render target texture slot = %u", slots[i]);
-                    return;
-                }
-
                 slot = slots[i];
             }
 
