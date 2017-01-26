@@ -1,0 +1,181 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fabf19d9_ec0f5a2c",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 566,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-01-26T21:01:25Z",
+      "side": 1,
+      "message": "WTF? you have memory leak here",
+      "range": {
+        "startLine": 566,
+        "startChar": 12,
+        "endLine": 566,
+        "endChar": 19
+      },
+      "revId": "c2aa6fcb48ab2666bbde7c3fb334763cdcdb6f37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_cc1ed662",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-01-26T21:01:25Z",
+      "side": 1,
+      "message": "unique_ptr",
+      "revId": "c2aa6fcb48ab2666bbde7c3fb334763cdcdb6f37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_cc4c9672",
+        "filename": "nfEngine/Renderers/nfRendererVk/PipelineState.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-01-26T21:01:25Z",
+      "side": 1,
+      "message": "This is copy-pasted to another header. Why not move it inside the GetRenderPass()?",
+      "range": {
+        "startLine": 149,
+        "startChar": 0,
+        "endLine": 157,
+        "endChar": 5
+      },
+      "revId": "c2aa6fcb48ab2666bbde7c3fb334763cdcdb6f37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_ec363ae6",
+        "filename": "nfEngine/Renderers/nfRendererVk/RenderPassDesc.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-01-26T21:01:25Z",
+      "side": 1,
+      "message": "can\u0027t be just \"0\"?",
+      "range": {
+        "startLine": 65,
+        "startChar": 31,
+        "endLine": 65,
+        "endChar": 68
+      },
+      "revId": "c2aa6fcb48ab2666bbde7c3fb334763cdcdb6f37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_ec3d1abc",
+        "filename": "nfEngine/Renderers/nfRendererVk/RenderPassManager.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-01-26T21:01:25Z",
+      "side": 1,
+      "message": "why \"+2\"?",
+      "range": {
+        "startLine": 29,
+        "startChar": 51,
+        "endLine": 29,
+        "endChar": 55
+      },
+      "revId": "c2aa6fcb48ab2666bbde7c3fb334763cdcdb6f37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_0c43ae43",
+        "filename": "nfEngine/Renderers/nfRendererVk/RenderPassManager.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-01-26T21:01:25Z",
+      "side": 1,
+      "message": "some comments would be nice",
+      "revId": "c2aa6fcb48ab2666bbde7c3fb334763cdcdb6f37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_4c588632",
+        "filename": "nfEngine/Renderers/nfRendererVk/RenderPassManager.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-01-26T21:01:25Z",
+      "side": 1,
+      "message": "OFF TOPIC:\nWe should start puting \"public\" methods at the top of a class. Imagine that you have huge hpp with huge class. You have to scroll to find reelevant methods. If \"public\" is on top then all the comments are in the same place, and the class internals are on the bottom, which is more natural I think",
+      "revId": "c2aa6fcb48ab2666bbde7c3fb334763cdcdb6f37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_2c5b1230",
+        "filename": "nfEngine/Renderers/nfRendererVk/RenderPassManager.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-01-26T21:01:25Z",
+      "side": 1,
+      "message": "It\u0027s C++11 - use \"using\" :)",
+      "revId": "c2aa6fcb48ab2666bbde7c3fb334763cdcdb6f37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_8c757e99",
+        "filename": "nfEngine/Renderers/nfRendererVk/Translations.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-01-26T21:01:25Z",
+      "side": 1,
+      "message": "in this situation #define is a good choice",
+      "revId": "c2aa6fcb48ab2666bbde7c3fb334763cdcdb6f37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
