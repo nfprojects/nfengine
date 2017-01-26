@@ -57,12 +57,15 @@ Device::Device()
     , mPresentSemaphore(VK_NULL_HANDLE)
     , mPostPresentSemaphore(VK_NULL_HANDLE)
     , mPipelineCache(VK_NULL_HANDLE)
+    , mRenderPassManager(nullptr)
     , mDebugEnable(false)
 {
 }
 
 Device::~Device()
 {
+    mRenderPassManager.reset();
+
     if (mPipelineCache != VK_NULL_HANDLE)
         vkDestroyPipelineCache(mDevice, mPipelineCache, nullptr);
     if (mPostPresentSemaphore != VK_NULL_HANDLE)
@@ -275,6 +278,9 @@ bool Device::Init(const DeviceInitParams* params)
         return false;
     }
 
+    mRenderPassManager.reset(new RenderPassManager(mDevice));
+
+    // TODO to Semaphore Manager
     VkSemaphoreCreateInfo semInfo;
     VK_ZERO_MEMORY(semInfo);
     semInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;

@@ -12,6 +12,7 @@
 
 #include "CommandBuffer.hpp"
 #include "Instance.hpp"
+#include "RenderPassManager.hpp"
 
 
 namespace NFE {
@@ -32,6 +33,7 @@ private:
     VkSemaphore mPostPresentSemaphore;
     VkPipelineCache mPipelineCache;
     std::vector<VkSurfaceFormatKHR> mSupportedFormats;
+    std::unique_ptr<RenderPassManager> mRenderPassManager;
     bool mDebugEnable;
 
     VkPhysicalDevice SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices, int preferredId);
@@ -93,6 +95,11 @@ public:
     NFE_INLINE const uint32& GetQueueIndex() const
     {
         return mGraphicsQueueIndex;
+    }
+
+    NFE_INLINE RenderPassManager* GetRenderPassManager() const
+    {
+        return mRenderPassManager.get();
     }
 
     uint32 GetMemoryTypeIndex(uint32 typeBits, VkFlags properties);

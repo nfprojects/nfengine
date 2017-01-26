@@ -9,6 +9,7 @@
 #include "VertexLayout.hpp"
 #include "Device.hpp"
 #include "Shader.hpp"
+#include "RenderPassManager.hpp"
 
 
 namespace NFE {
@@ -137,72 +138,21 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     pdsInfo.dynamicStateCount = sizeof(dynStates) / sizeof(dynStates[0]);
     pdsInfo.pDynamicStates = dynStates;
 
-
-    // TODO move this to Render Pass Manager, duplicated temporarily from RenderTarget.cpp
-    // ----------8<---------- CUT BEGIN
-    VkAttachmentDescription atts[MAX_RENDER_TARGETS + 2];
-    uint32 curAtt = 0;
-    VkAttachmentReference colorRefs[MAX_RENDER_TARGETS];
-
+    // request a render pass from manager
+    VkFormat colorFormats[MAX_RENDER_TARGETS];
+    VkFormat depthFormat = TranslateDepthFormatToVkFormat(desc.depthFormat);
     for (i = 0; i < desc.numRenderTargets; ++i)
-    {
-        VK_ZERO_MEMORY(atts[curAtt]);
-        atts[curAtt].format = TranslateElementFormatToVkFormat(desc.rtFormats[i]);
-        atts[curAtt].samples = VK_SAMPLE_COUNT_1_BIT;
-        // we do not care about auto-clearing - this should be triggered by CommandBuffer::Clear()
-        atts[curAtt].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-        atts[curAtt].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-        atts[curAtt].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-        atts[curAtt].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-        atts[curAtt].initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-        atts[curAtt].finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        colorFormats[i] = TranslateElementFormatToVkFormat(desc.rtFormats[i]);
 
-        VK_ZERO_MEMORY(colorRefs[i]);
-        colorRefs[i].attachment = i;
-        colorRefs[i].layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-        curAtt++;
-    }
+    RenderPassDesc rpDesc(colorFormats, desc.numRenderTargets, depthFormat);
+    VkRenderPass renderPass = gDevice->GetRenderPassManager()->GetRenderPass(rpDesc);
+    if (renderPass == VK_NULL_HANDLE)
+        return false;
 
-    VkAttachmentReference depthRef;
-    if (desc.depthState.depthTestEnable)
-    {
-        VK_ZERO_MEMORY(atts[curAtt]);
-        atts[curAtt].format = TranslateDepthFormatToVkFormat(desc.depthFormat);
-        atts[curAtt].samples = VK_SAMPLE_COUNT_1_BIT;
-        atts[curAtt].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-        atts[curAtt].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-        atts[curAtt].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-        atts[curAtt].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-        atts[curAtt].initialLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-        atts[curAtt].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-
-        depthRef.attachment = curAtt;
-        depthRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-    }
-
-    VkSubpassDescription subpass;
-    VK_ZERO_MEMORY(subpass);
-    subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-    subpass.colorAttachmentCount = desc.numRenderTargets;
-    subpass.pColorAttachments = colorRefs;
-    if (desc.depthState.depthTestEnable)
-        subpass.pDepthStencilAttachment = &depthRef;
-
-    VkRenderPassCreateInfo rpInfo;
-    VK_ZERO_MEMORY(rpInfo);
-    rpInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-    rpInfo.attachmentCount = curAtt;
-    rpInfo.pAttachments = atts;
-    rpInfo.subpassCount = 1;
-    rpInfo.pSubpasses = &subpass;
-
-    VkRenderPass tempRenderPass = VK_NULL_HANDLE;
-    VkResult result = vkCreateRenderPass(gDevice->GetDevice(), &rpInfo, nullptr, &tempRenderPass);
-    CHECK_VKRESULT(result, "Failed to create a temporary Render Pass for Pipeline State");
-    // ----------8<---------- CUT END
-
+    // bind resource layout
     ResourceBindingLayout* rbl = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout);
 
+    // shader stages
     VkPipelineShaderStageCreateInfo stages[5];
     uint32 stageCount = 0;
 
@@ -251,14 +201,12 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     pipeInfo.pDepthStencilState = &pdssInfo;
     pipeInfo.pColorBlendState = &pcbsInfo;
     pipeInfo.pDynamicState = &pdsInfo;
-    pipeInfo.renderPass = tempRenderPass;
+    pipeInfo.renderPass = renderPass;
     pipeInfo.layout = rbl->mPipelineLayout;
     pipeInfo.subpass = 0;
-    result = vkCreateGraphicsPipelines(gDevice->GetDevice(), VK_NULL_HANDLE, 1, &pipeInfo,
-                                       nullptr, &mPipeline);
+    VkResult result = vkCreateGraphicsPipelines(gDevice->GetDevice(), VK_NULL_HANDLE, 1, &pipeInfo,
+                                                nullptr, &mPipeline);
     CHECK_VKRESULT(result, "Failed to create Graphics Pipeline");
-
-    vkDestroyRenderPass(gDevice->GetDevice(), tempRenderPass, nullptr);
 
     return true;
 }
