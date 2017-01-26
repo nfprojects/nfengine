@@ -27,8 +27,7 @@ RenderTarget::~RenderTarget()
         if (fb != VK_NULL_HANDLE)
             vkDestroyFramebuffer(gDevice->GetDevice(), fb, nullptr);
 
-    if (mRenderPass != VK_NULL_HANDLE)
-        vkDestroyRenderPass(gDevice->GetDevice(), mRenderPass, nullptr);
+    // Render pass is cleaned by Render Pass Manager
 }
 
 void RenderTarget::GetDimensions(int& width, int& height)
@@ -48,78 +47,40 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
     mTex.resize(desc.numTargets);
     mDepthTex = dynamic_cast<Texture*>(desc.depthBuffer);
 
-    VkAttachmentDescription atts[MAX_RENDER_TARGETS + 2];
-    uint32 curAtt = 0;
-    VkAttachmentReference colorRefs[MAX_RENDER_TARGETS];
+    // request a render pass from manager
+    VkFormat colorFormats[MAX_RENDER_TARGETS];
+    VkFormat depthFormat = VK_FORMAT_UNDEFINED;
 
     for (uint32 i = 0; i < desc.numTargets; ++i)
     {
-        VK_ZERO_MEMORY(atts[curAtt]);
         if (desc.targets[i].format == ElementFormat::Unknown)
         {
             mTex[i] = dynamic_cast<Texture*>(desc.targets[i].texture);
-            atts[curAtt].format = mTex[i]->mFormat;
+            colorFormats[i] = mTex[i]->mFormat;
         }
         else
-            atts[curAtt].format = TranslateElementFormatToVkFormat(desc.targets[i].format);
-
-        atts[curAtt].samples = VK_SAMPLE_COUNT_1_BIT;
-        // we do not care about auto-clearing - this should be triggered by CommandBuffer::Clear()
-        atts[curAtt].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-        atts[curAtt].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-        atts[curAtt].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-        atts[curAtt].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-        atts[curAtt].initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-        atts[curAtt].finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-        VK_ZERO_MEMORY(colorRefs[curAtt]);
-        colorRefs[curAtt].attachment = curAtt;
-        colorRefs[curAtt].layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-        curAtt++;
+            colorFormats[i] = TranslateElementFormatToVkFormat(desc.targets[i].format);
     }
 
-    VkAttachmentReference depthRef;
-    if (desc.depthBuffer)
+    if (mDepthTex)
+        depthFormat = mDepthTex->mFormat;
+
+    RenderPassDesc rpDesc(colorFormats, desc.numTargets, depthFormat);
+    mRenderPass = gDevice->GetRenderPassManager()->GetRenderPass(rpDesc);
+    if (mRenderPass == VK_NULL_HANDLE)
     {
-        VK_ZERO_MEMORY(atts[curAtt]);
-        atts[curAtt].format = mDepthTex->mFormat;
-        atts[curAtt].samples = VK_SAMPLE_COUNT_1_BIT;
-        atts[curAtt].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-        atts[curAtt].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-        atts[curAtt].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-        atts[curAtt].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-        atts[curAtt].initialLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-        atts[curAtt].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-
-        depthRef.attachment = curAtt;
-        depthRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-        curAtt++;
+        LOG_ERROR("Failed to acquire Render Pass needed for Pipeline State creation");
+        LOG_DEBUG("Formats requested are:");
+        for (uint32 i = 0; i < desc.numTargets; ++i)
+            LOG_DEBUG("    color #%i: %d (%s)", i, colorFormats[i], TranslateVkFormatToString(colorFormats[i]));
+        LOG_DEBUG("    depth:     %d (%s)", depthFormat, TranslateVkFormatToString(depthFormat));
+        return false;
     }
-
-    VkSubpassDescription subpass;
-    VK_ZERO_MEMORY(subpass);
-    subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-    subpass.colorAttachmentCount = desc.numTargets;
-    subpass.pColorAttachments = colorRefs;
-    if (desc.depthBuffer)
-        subpass.pDepthStencilAttachment = &depthRef;
-
-    VkRenderPassCreateInfo rpInfo;
-    VK_ZERO_MEMORY(rpInfo);
-    rpInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-    rpInfo.attachmentCount = curAtt;
-    rpInfo.pAttachments = atts;
-    rpInfo.subpassCount = 1;
-    rpInfo.pSubpasses = &subpass;
-
-    VkResult result = vkCreateRenderPass(gDevice->GetDevice(), &rpInfo, nullptr, &mRenderPass);
-    CHECK_VKRESULT(result, "Failed to create Render Pass");
-
-    mAttachmentCount = curAtt;
 
     // TODO something very temporary to resolve in the future
     mFramebuffers.resize(mTex[0]->mBuffersNum);
 
+    VkResult result = VK_SUCCESS;
     // for each swapchain image create a framebuffer
     if (mTex[0]->mFromSwapchain)
     {
