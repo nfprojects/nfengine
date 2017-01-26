@@ -20,7 +20,6 @@ class RenderTarget : public IRenderTarget
 
     int mWidth;
     int mHeight;
-    uint32 mAttachmentCount;
 
     VkRenderPass mRenderPass;
     std::vector<Texture*> mTex;

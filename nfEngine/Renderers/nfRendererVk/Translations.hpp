@@ -17,6 +17,7 @@ namespace Renderer {
 // debugging helpers
 const char* TranslateDeviceTypeToString(VkPhysicalDeviceType type);
 const char* TranslateVkResultToString(VkResult result);
+const char* TranslateVkFormatToString(VkFormat format);
 
 // NFE to Vulkan
 VkBlendFactor TranslateBlendFuncToVkBlendFactor(BlendFunc func);
