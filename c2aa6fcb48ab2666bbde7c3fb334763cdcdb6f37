@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fabf19d9_f0c60899",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 566,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-01-27T22:15:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fabf19d9_ec0f5a2c",
+      "range": {
+        "startLine": 566,
+        "startChar": 12,
+        "endLine": 566,
+        "endChar": 19
+      },
+      "revId": "c2aa6fcb48ab2666bbde7c3fb334763cdcdb6f37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fabf19d9_cc1ed662",
         "filename": "nfEngine/Renderers/nfRendererVk/Device.hpp",
         "patchSetId": 2
@@ -42,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "fabf19d9_10cdfcb6",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-01-27T22:15:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fabf19d9_cc1ed662",
+      "revId": "c2aa6fcb48ab2666bbde7c3fb334763cdcdb6f37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fabf19d9_cc4c9672",
         "filename": "nfEngine/Renderers/nfRendererVk/PipelineState.cpp",
         "patchSetId": 2
@@ -53,6 +95,30 @@
       "writtenOn": "2017-01-26T21:01:25Z",
       "side": 1,
       "message": "This is copy-pasted to another header. Why not move it inside the GetRenderPass()?",
+      "range": {
+        "startLine": 149,
+        "startChar": 0,
+        "endLine": 157,
+        "endChar": 5
+      },
+      "revId": "c2aa6fcb48ab2666bbde7c3fb334763cdcdb6f37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_d0c30488",
+        "filename": "nfEngine/Renderers/nfRendererVk/PipelineState.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-01-27T22:15:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fabf19d9_cc4c9672",
       "range": {
         "startLine": 149,
         "startChar": 0,
@@ -88,6 +154,30 @@
     },
     {
       "key": {
+        "uuid": "fabf19d9_b0bc1007",
+        "filename": "nfEngine/Renderers/nfRendererVk/RenderPassDesc.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-01-27T22:15:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fabf19d9_ec363ae6",
+      "range": {
+        "startLine": 65,
+        "startChar": 31,
+        "endLine": 65,
+        "endChar": 68
+      },
+      "revId": "c2aa6fcb48ab2666bbde7c3fb334763cdcdb6f37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fabf19d9_ec3d1abc",
         "filename": "nfEngine/Renderers/nfRendererVk/RenderPassManager.cpp",
         "patchSetId": 2
@@ -99,6 +189,30 @@
       "writtenOn": "2017-01-26T21:01:25Z",
       "side": 1,
       "message": "why \"+2\"?",
+      "range": {
+        "startLine": 29,
+        "startChar": 51,
+        "endLine": 29,
+        "endChar": 55
+      },
+      "revId": "c2aa6fcb48ab2666bbde7c3fb334763cdcdb6f37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_b053f0e1",
+        "filename": "nfEngine/Renderers/nfRendererVk/RenderPassManager.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-01-27T22:15:34Z",
+      "side": 1,
+      "message": "TBH I don\u0027t remember.\n\nI know that we will have MAX_RENDER_TARGET color attachments, plus one Depth Stencil attachment. Maybe myself from past thought there will be one Attachment for Depth and one separate for Stencil.\n\nDone",
+      "parentUuid": "fabf19d9_ec3d1abc",
       "range": {
         "startLine": 29,
         "startChar": 51,
@@ -128,6 +242,24 @@
     },
     {
       "key": {
+        "uuid": "fabf19d9_f04de83e",
+        "filename": "nfEngine/Renderers/nfRendererVk/RenderPassManager.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-01-27T22:15:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fabf19d9_0c43ae43",
+      "revId": "c2aa6fcb48ab2666bbde7c3fb334763cdcdb6f37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fabf19d9_4c588632",
         "filename": "nfEngine/Renderers/nfRendererVk/RenderPassManager.hpp",
         "patchSetId": 2
@@ -145,6 +277,24 @@
     },
     {
       "key": {
+        "uuid": "fabf19d9_90b90c18",
+        "filename": "nfEngine/Renderers/nfRendererVk/RenderPassManager.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-01-27T22:15:34Z",
+      "side": 1,
+      "message": "I\u0027m not seeing converting all possible source files to \"top-public\" style, but if you want, we could do so.\n\nAfter all I think it\u0027s just a habit.",
+      "parentUuid": "fabf19d9_4c588632",
+      "revId": "c2aa6fcb48ab2666bbde7c3fb334763cdcdb6f37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fabf19d9_2c5b1230",
         "filename": "nfEngine/Renderers/nfRendererVk/RenderPassManager.hpp",
         "patchSetId": 2
@@ -156,6 +306,24 @@
       "writtenOn": "2017-01-26T21:01:25Z",
       "side": 1,
       "message": "It\u0027s C++11 - use \"using\" :)",
+      "revId": "c2aa6fcb48ab2666bbde7c3fb334763cdcdb6f37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_d04ae425",
+        "filename": "nfEngine/Renderers/nfRendererVk/RenderPassManager.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-01-27T22:15:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fabf19d9_2c5b1230",
       "revId": "c2aa6fcb48ab2666bbde7c3fb334763cdcdb6f37",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
