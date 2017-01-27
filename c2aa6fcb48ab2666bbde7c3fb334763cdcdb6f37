@@ -295,6 +295,24 @@
     },
     {
       "key": {
+        "uuid": "fabf19d9_90158ce6",
+        "filename": "nfEngine/Renderers/nfRendererVk/RenderPassManager.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-01-27T22:31:04Z",
+      "side": 1,
+      "message": "I didn\u0027t mean to \"converting all possible source files\" but to write the new classes in this style",
+      "parentUuid": "fabf19d9_90b90c18",
+      "revId": "c2aa6fcb48ab2666bbde7c3fb334763cdcdb6f37",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fabf19d9_2c5b1230",
         "filename": "nfEngine/Renderers/nfRendererVk/RenderPassManager.hpp",
         "patchSetId": 2
