@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fabf19d9_b0e53039",
+        "filename": "nfEngine/Renderers/nfRendererVk/Backbuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-01-27T21:50:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fabf19d9_4c0ac622",
+      "range": {
+        "startLine": 87,
+        "startChar": 17,
+        "endLine": 87,
+        "endChar": 33
+      },
+      "revId": "4b6d3c3067bac155b92a4ef96e0a613451863cea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fabf19d9_a9027409",
         "filename": "nfEngine/Renderers/nfRendererVk/Backbuffer.cpp",
         "patchSetId": 1
@@ -42,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "fabf19d9_70d2f85d",
+        "filename": "nfEngine/Renderers/nfRendererVk/Backbuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-01-27T21:50:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fabf19d9_a9027409",
+      "revId": "4b6d3c3067bac155b92a4ef96e0a613451863cea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fabf19d9_2c0d5237",
         "filename": "nfEngine/Renderers/nfRendererVk/Backbuffer.hpp",
         "patchSetId": 1
@@ -53,6 +95,30 @@
       "writtenOn": "2017-01-26T20:43:25Z",
       "side": 1,
       "message": "for me, this is too much abbreviated",
+      "range": {
+        "startLine": 33,
+        "startChar": 29,
+        "endLine": 33,
+        "endChar": 38
+      },
+      "revId": "4b6d3c3067bac155b92a4ef96e0a613451863cea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_d0dc2475",
+        "filename": "nfEngine/Renderers/nfRendererVk/Backbuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-01-27T21:50:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fabf19d9_2c0d5237",
       "range": {
         "startLine": 33,
         "startChar": 29,
