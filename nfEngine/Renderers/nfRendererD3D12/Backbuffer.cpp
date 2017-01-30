@@ -75,7 +75,6 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     gDevice->mDXGIFactory->MakeWindowAssociation(mWindow, DXGI_MWA_NO_ALT_ENTER);
 
     mCurrentBuffer = mSwapChain->GetCurrentBackBufferIndex();
-    LOG_DEBUG("current buffer = %u", mCurrentBuffer);
 
     for (UINT n = 0; n < mBuffersNum; n++)
     {
