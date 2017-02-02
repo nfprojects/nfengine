@@ -41,6 +41,7 @@
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="Constants.hpp" />
+    <ClInclude Include="TestClasses.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ThreadPool">

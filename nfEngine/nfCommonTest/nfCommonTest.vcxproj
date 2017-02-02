@@ -194,6 +194,7 @@
   <ItemGroup>
     <ClInclude Include="Constants.hpp" />
     <ClInclude Include="PCH.hpp" />
+    <ClInclude Include="TestClasses.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AlignedTest.cpp" />

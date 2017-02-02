@@ -4,6 +4,8 @@
  * @brief  PackedArray template class definition
  */
 
+#pragma once
+
 #include "nfCommon.hpp"
 #include "Memory/DefaultAllocator.hpp"
 #include "Math/Math.hpp"
@@ -66,11 +68,18 @@ public:
     ~PackedArray();
 
     /**
-     * Add an object to the array.
+     * Add an object to the array (by reference).
      * @param obj Object to be added
      * @return    Object index
      */
     IDType Add(const ObjType& obj);
+
+    /**
+     * Add an object to the array (by rvalue reference).
+     * @param obj Object to be added
+     * @return    Object index
+     */
+    IDType Add(ObjType&& obj);
 
     /**
      * Check if provided index is a valid index.
@@ -117,6 +126,9 @@ public:
      * Print freelist structure for debugging purposes.
      */
     void DebugPrint();
+
+private:
+    IDType AddInternal(IDType& id);
 };
 
 //
@@ -140,6 +152,15 @@ PackedArray<ObjType, IDType, Alignment>::PackedArray(size_t initialSize)
 template<typename ObjType, typename IDType, size_t Alignment>
 PackedArray<ObjType, IDType, Alignment>::~PackedArray()
 {
+    if (mNodes && mObjects && mIDs)
+    {
+        // call destructors
+        for (size_t i = 0; i < mUsed; ++i)
+        {
+            mObjects[i].~ObjType();
+        }
+    }
+
     if (mNodes)
         NFE_FREE(mNodes);
     if (mObjects)
@@ -208,7 +229,7 @@ bool PackedArray<ObjType, IDType, Alignment>::Resize(size_t newSize)
 }
 
 template<typename ObjType, typename IDType, size_t Alignment>
-IDType PackedArray<ObjType, IDType, Alignment>::Add(const ObjType& obj)
+IDType PackedArray<ObjType, IDType, Alignment>::AddInternal(IDType& id)
 {
     if (mUsed == MaxSize())
         return InvalidIndex;
@@ -222,7 +243,7 @@ IDType PackedArray<ObjType, IDType, Alignment>::Add(const ObjType& obj)
 
     // get next free index and update the free list
     IDType index = mFreeHead;
-    IDType id = static_cast<IDType>(mUsed); // next free object is always at the end
+    id = static_cast<IDType>(mUsed); // next free object is always at the end
 
     // update free indices list
     mFreeHead = mNodes[index].next;
@@ -237,9 +258,26 @@ IDType PackedArray<ObjType, IDType, Alignment>::Add(const ObjType& obj)
     mNodes[index].prev = InvalidIndex;
     mTakenHead = index;
 
-    *(mObjects + id) = obj;
     mUsed++;
 
+    return index;
+}
+
+template<typename ObjType, typename IDType, size_t Alignment>
+IDType PackedArray<ObjType, IDType, Alignment>::Add(const ObjType& obj)
+{
+    IDType index, id;
+    index = AddInternal(id);
+    new (mObjects + id) ObjType(obj);
+    return index;
+}
+
+template<typename ObjType, typename IDType, size_t Alignment>
+IDType PackedArray<ObjType, IDType, Alignment>::Add(ObjType&& obj)
+{
+    IDType index, id;
+    index = AddInternal(id);
+    new (mObjects + id) ObjType(std::move(obj));
     return index;
 }
 
@@ -261,7 +299,8 @@ void PackedArray<ObjType, IDType, Alignment>::Remove(IDType index)
     if (id < mUsed)
     {
         // move the object from the end to fill the gap
-        mObjects[id] = mObjects[mUsed];
+        mObjects[id] = std::move(mObjects[mUsed]);
+        mObjects[mUsed].~ObjType();
     }
 
     IDType newLastTaken = mNodes[mTakenHead].next;
@@ -277,7 +316,7 @@ void PackedArray<ObjType, IDType, Alignment>::Remove(IDType index)
     mNodes[mTakenHead].next = mNodes[index].next;
     mNodes[mTakenHead].prev = mNodes[index].prev;
 
-    /// correct neighbours pointers
+    /// correct neighbors pointers
     if (mNodes[mTakenHead].prev != InvalidIndex)
         mNodes[mNodes[mTakenHead].prev].next = mTakenHead;
     if (mNodes[mTakenHead].next != InvalidIndex)
