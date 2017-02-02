@@ -53,6 +53,8 @@
 #include <mutex>
 #include <atomic>
 #include <condition_variable>
+#include <unordered_set>
+#include <unordered_map>
 
 // Bullet physics Engine
 #include "btBulletCollisionCommon.h"

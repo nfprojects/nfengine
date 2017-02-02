@@ -7,7 +7,6 @@
 #pragma once
 
 #include "../Core.hpp"
-#include "EntityManager.hpp"
 
 #include "nfCommon/Math/Vector.hpp"
 #include "nfCommon/Memory/Aligned.hpp"
@@ -16,74 +15,65 @@
 namespace NFE {
 namespace Scene {
 
-NFE_ALIGN16
-class CORE_API EnviromentDesc : public Common::Aligned<16>
+struct SceneUpdateInfo
 {
-public:
-    Math::Vector ambientLight;
-    Math::Vector backgroundColor;
+    float timeDelta;
+    // TODO system filtering, system parameters, etc.
 
-    EnviromentDesc()
-    {
-        ambientLight = Math::Vector(0.3f, 0.3f, 0.3f);
-        backgroundColor = Math::Vector(0.3f, 0.3f, 0.3f);
-    }
+    SceneUpdateInfo()
+        : timeDelta(0.0f)
+    { }
 };
 
 /**
- * Scene manager.
+ * Scene - class responsible for managing and updating scene systems.
  */
-NFE_ALIGN16
-class CORE_API SceneManager : public Common::Aligned<16>
+// TODO rename to "Scene". But there is name collision with Scene namespace...
+class CORE_API NFE_ALIGN16 SceneManager final
+    : public Common::Aligned<16>
 {
 private:
-    EntityManager mEntityManager;
+    NFE_MAKE_NONCOPYABLE(SceneManager);
 
-    // environment
-    EnviromentDesc mEnvDesc;
+    std::string mName;
 
-    Common::TaskID mRendererUpdateTask;
+    // Systems
+    // TODO more clever way of storing the systems (there will be more of them)
+    std::unique_ptr<EntitySystem>       mEntitySystem;
+    std::unique_ptr<InputSystem>        mInputSystem;
+    std::unique_ptr<IPhysicsSystem>     mPhysicsSystem;
+    std::unique_ptr<IRendererSystem>    mRendererSystem;
 
-    /// Systems
-    std::unique_ptr<TransformSystem> mTransformSystem;
-    std::unique_ptr<PhysicsSystem> mPhysicsSystem;
-    std::unique_ptr<RendererSystem> mRendererSystem;
-
+    // scene update task
     Common::TaskID mUpdateTask;
 
 public:
-    SceneManager();
+    SceneManager(const std::string& name);
     ~SceneManager();
 
-    void SetEnvironment(const EnviromentDesc* desc);
-    void GetEnvironment(EnviromentDesc* desc) const;
+    const std::string& GetName() const { return mName; }
+
+    EntitySystem* GetEntitySystem() { return mEntitySystem.get(); }
+    InputSystem* GetInputSystem() { return mInputSystem.get(); }
+    IPhysicsSystem* GetPhysicsSystem() { return mPhysicsSystem.get(); }
+    IRendererSystem* GetRendererSystem() { return mRendererSystem.get(); }
 
     /**
-     * Calculate physics, prepare scene for rendering.
-     * @param deltaTime Delta time used for physics simulations.
+     * Launch scene update task. Internal systems will be updated asynchronously.
+     *
+     * @param deltaTime     Delta time used for physics simulations.
+     * @return              Scene update task.
      */
-    void Update(float deltaTime);
+    Common::TaskID BeginUpdate(const SceneUpdateInfo& info);
 
     /**
      * Launch rendering task.
-     * @param renderingData Temporary rendering data.
      */
-    void Render(RenderingData& renderingData);
-
-    NFE_INLINE EntityManager* GetEntityManager()
-    {
-        return &mEntityManager;
-    }
-
-    NFE_INLINE TransformSystem* GetTransformSystem()
-    {
-        return mTransformSystem.get();
-    }
-
-    NFE_INLINE RendererSystem* GetRendererSystem()
-    {
-        return mRendererSystem.get();
-    }
+    // TODO
+    // Consider merging the separate "rendering task" with the renderer system update procedure.
+    // This will require refactoring the whole Engine::Advance, because the renderer systems will have to
+    // know in advance which views they should render to. However, this will make everything more consistent.
+    Common::TaskID BeginRendering(const Renderer::View* view);
 };
 
 } // namespace Scene

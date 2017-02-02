@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <memory>
+
 namespace NFE {
 
     class Engine;
@@ -20,12 +22,6 @@ namespace NFE {
         class OutputStream;
     } // namespace Common
 
-    namespace Util {
-        class BVH;
-        class FrameStats;
-        class Aligned;
-    } // namespace Util
-
     namespace Resource {
         class ResManager;
         class ResourceBase;
@@ -37,29 +33,33 @@ namespace NFE {
     } // namespace Resource
 
     namespace Scene {
-        class Component;
+        class Entity;
+        class IEntityController;
+
+        class IComponent;
         class MeshComponent;
         class BodyComponent;
         class LightComponent;
         class CameraComponent;
-        class TransformComponent;
+        class InputComponent;
 
-        class EntityManager;
         class SceneManager;
-        class TransformSystem;
-        class PhysicsSystem;
-        class RendererSystem;
+        class IPhysicsSystem;
+        class IRendererSystem;
+        class InputSystem;
+        class EntitySystem;
 
-        class RenderingData;
-        struct MeshComponentDesc;
-        struct LightDesc;
-        struct CameraDesc;
-        struct BodyComponentDesc;
+        class Event;
+        class Event_Tick;
+        class Event_Input;
 
-        enum class ComponentMsg;
-        enum class ComponentType;
+        using EntityID = uint32;
+        using EntityPtr = std::unique_ptr<Entity>;
+        using ComponentPtr = std::unique_ptr<IComponent>;
+        using EntityControllerPtr = std::unique_ptr<IEntityController>;
+        using SceneManagerPtr = std::unique_ptr<SceneManager>;
+
     } // namespace Scene
-
 
     namespace Renderer {
         class HighLevelRenderer;
