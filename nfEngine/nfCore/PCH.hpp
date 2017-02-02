@@ -51,6 +51,8 @@
 #include <sstream>
 #include <tuple>
 #include <atomic>
+#include <unordered_set>
+#include <unordered_map>
 
 // Bullet physics Engine
 #include "btBulletCollisionCommon.h"

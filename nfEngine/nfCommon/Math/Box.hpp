@@ -45,6 +45,19 @@ public:
     NFE_INLINE void MakeFromPoints(const Vector* pPoints, int number);
     NFE_INLINE float SurfaceArea() const;
     NFE_INLINE float Volume() const;
+
+    // return empty box
+    NFE_INLINE static Box Empty();
+
+    bool operator == (const Box& rhs) const
+    {
+        return (min == rhs.min) && (max == rhs.max);
+    }
+
+    bool operator != (const Box& rhs) const
+    {
+        return (min != rhs.min) || (max != rhs.max);
+    }
 };
 
 
@@ -87,14 +100,29 @@ void Box::MakeFromPoints(const Vector* pPoints, int number)
 
 float Box::SurfaceArea() const
 {
+    if (min > max)
+    {
+        return 0.0f;
+    }
+
     Vector size = max - min;
     return size.f[0] * (size.f[1] + size.f[2]) + size.f[1] * size.f[2];
 }
 
 float Box::Volume() const
 {
+    if (min > max)
+    {
+        return 0.0f;
+    }
+
     Vector size = max - min;
     return size.f[0] * size.f[1] * size.f[2];
+}
+
+Box Box::Empty()
+{
+    return Box(Vector(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX), Vector(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN));
 }
 
 /**

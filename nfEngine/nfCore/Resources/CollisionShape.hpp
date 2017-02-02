@@ -28,9 +28,6 @@ struct CompoundShapeChild
 
 class CORE_API CollisionShape : public ResourceBase
 {
-    friend class Scene::BodyComponent;
-    friend class Scene::PhysicsSystem;
-
 private:
     std::vector<CompoundShapeChild> mChildren;
     btCollisionShape* mShape;
@@ -44,6 +41,9 @@ public:
 
     static CollisionShape* Allocate();
     static void Free(CollisionShape* ptr);
+
+    NFE_INLINE const Math::Vector& GetLocalInertia() const { return mLocalInertia; }
+    NFE_INLINE btCollisionShape* GetShape() const { return mShape; }
 
     bool OnLoad();
     void OnUnload();
