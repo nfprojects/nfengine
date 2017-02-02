@@ -32,19 +32,16 @@ struct SubMesh : public Common::Aligned<16>
     uint32 trianglesCount;
 };
 
+using SubMeshes = std::vector<SubMesh>;
+
 /**
  * Mesh resource class.
  */
 NFE_ALIGN16
 class CORE_API Mesh : public ResourceBase
 {
-    friend class Scene::RendererSystem;
-    friend class Scene::MeshComponent;
-    friend class Scene::SceneManager;
-    friend class Renderer::DebugRenderer;
-
 private:
-    std::vector<SubMesh> mSubMeshes;
+    SubMeshes mSubMeshes;
     Math::Box mLocalBox;
 
     Renderer::BufferPtr mVB;
@@ -59,9 +56,13 @@ public:
     bool OnLoad();
     void OnUnload();
 
+    NFE_INLINE const Renderer::BufferPtr& GetVertexBuffer() const { return mVB; }
+    NFE_INLINE const Renderer::BufferPtr& GetIndexBuffer() const { return mIB; }
+    NFE_INLINE const SubMeshes& GetSubMeshes() const { return mSubMeshes; }
+
     /**
      * Calculate approximate transformed mesh AABB.
-     * @param matrix Transformation matrix aplied to the mesh vertices.
+     * @param matrix Transformation matrix applied to the mesh vertices.
      */
     Math::Box GetGlobalAABB(const Math::Matrix& matrix) const;
 };
