@@ -1,7 +1,7 @@
 #include "PCH.hpp"
 #include "Test.hpp"
-#include "Editor.hpp"
 #include "Scenes.hpp"
+#include "FreeCameraController.hpp"
 
 #include "nfCommon/Window.hpp"
 #include "nfCommon/Logger.hpp"
@@ -27,20 +27,17 @@ const int SECONDARY_VIEW_HEIGHT = 256;
 
 CustomWindow* AddWindow(CustomWindow* parent = nullptr);
 
-class MainCameraView : public NFE::Renderer::View
+class MainCameraView : public Renderer::View
 {
 public:
     bool showViewProperties;
     bool showProfiler;
-    bool drawSecondaryView;
-    std::string secondaryViewTexName;
 
     const int dtHistorySize = 100;
     std::vector<float> dtHistory;
 
     MainCameraView()
         : Renderer::View(/* useImGui = */ true)
-        , drawSecondaryView(false)
         , showViewProperties(false)
         , showProfiler(false)
     {
@@ -104,6 +101,8 @@ public:
                                                 0xFFFFFFFF, 0xFF000000,
                                                 VerticalAlignment::Bottom);
 
+        // TODO restore this
+        /*
         if (!drawSecondaryView)
             return;
 
@@ -120,7 +119,6 @@ public:
                                      0xAA000000);
 
         // draw quad with secondary camera view
-
         Texture* texture = ENGINE_GET_TEXTURE(secondaryViewTexName.c_str());
         GuiRenderer::Get()->DrawTexturedQuad(ctx,
                                              Rectf(left, viewHeight - bottom - height,
@@ -128,66 +126,34 @@ public:
                                              Rectf(0.0f, 0.0f, 1.0f, 1.0f),
                                              texture->GetRendererTextureBinding(),
                                              0xFFFFFFFF);
+        */
     }
 };
 
 void SceneDeleter(Scene::SceneManager* scene)
 {
-    if (scene->GetEntityManager() == gEntityManager)
-    {
-        gEntityManager = nullptr;
-        gSelectedEntity = -1;
-    }
-
     gEngine->DeleteScene(scene);
 }
 
-// overload own callback functions
-class CustomWindow : public Common::Window
+/**
+ * Custom
+ */
+class CustomWindow
+    : public Common::Window
 {
-    EntityManager* entityManager;
+private:
+    std::unique_ptr<MainCameraView> mView;
+    std::shared_ptr<Scene::SceneManager> mScene;
+    std::unique_ptr<Scene::GameObjectInstance> mCameraGameObject;
 
 public:
-    Quaternion cameraOrientation;
-    EntityID cameraEntity;
-    EntityID secondaryCameraEntity;  // camera for secondary view
-    std::unique_ptr<MainCameraView> view;
-    std::unique_ptr<Renderer::View> secondaryView;
-    std::shared_ptr<Scene::SceneManager> scene;
-
-    bool cameraControl;
-    float cameraXZ;
-    float cameraY;
-
-    void* operator new(size_t size)
-    {
-        return _aligned_malloc(size, 16);
-    }
-
-    void operator delete(void* ptr)
-    {
-        _aligned_free(ptr);
-    }
+    NFE_INLINE Scene::SceneManager* GetScene() const { return mScene.get(); }
+    NFE_INLINE Renderer::View* GetView() const { return mView.get(); }
+    NFE_INLINE Scene::GameObjectInstance* GetCameraGameObject() const { return mCameraGameObject.get(); }
 
     CustomWindow()
-        : cameraEntity(-1)
-        , entityManager(nullptr)
+        : mScene(nullptr)
     {
-        InitCameraOrientation();
-    }
-
-    ~CustomWindow()
-    {
-        entityManager = nullptr;
-    }
-
-    void InitCameraOrientation()
-    {
-        cameraControl = 0;
-        cameraXZ = 0.0f;
-        cameraY = 0.0f;
-        cameraOrientation = QuaternionMultiply(QuaternionRotationY(cameraXZ),
-                                               QuaternionRotationX(-cameraY));
     }
 
     void SetUpScene(int sceneId = 0, CustomWindow* parent = nullptr)
@@ -197,18 +163,18 @@ public:
             SceneManager* newScene = InitScene(sceneId);
             if (newScene == nullptr)
                 return;
-            scene.reset(newScene, SceneDeleter);
+            mScene.reset(newScene, SceneDeleter);
         }
         else  // fork
         {
-            scene = parent->scene;
+            mScene = parent->mScene;
         }
 
-        entityManager = scene->GetEntityManager();
-        InitCamera();
+        // TODO spawn FreeCamera game object
     }
 
-    // create camera entity, etc.
+    /*
+    // create camera game object
     void InitCamera()
     {
         InitCameraOrientation();
@@ -269,61 +235,7 @@ public:
         CameraComponent* camera = entityManager->AddComponent<CameraComponent>(secondaryCameraEntity);
         camera->SetPerspective(&perspective);
     }
-
-#define CAMERA_ROTATION_SMOOTHING 0.05f
-#define CAMERA_TRANSLATION_SMOOTHING 0.2f
-
-    // update camera position and orientation
-    void UpdateCamera()
-    {
-        auto cameraBody = entityManager->GetComponent<BodyComponent>(cameraEntity);
-        auto cameraTransform = entityManager->GetComponent<TransformComponent>(cameraEntity);
-        if (cameraBody == nullptr || cameraTransform == nullptr)
-            return;
-
-        Quaternion destOrientation = QuaternionMultiply(QuaternionRotationY(cameraXZ),
-                                     QuaternionRotationX(-cameraY));
-        destOrientation = QuaternionNormalize(destOrientation);
-
-        //LPF
-        Quaternion prevOrientation = cameraOrientation;
-        cameraOrientation = QuaternionInterpolate(cameraOrientation, destOrientation,
-                            gDeltaTime / (CAMERA_ROTATION_SMOOTHING + gDeltaTime));
-        cameraOrientation = QuaternionNormalize(cameraOrientation);
-
-        Quaternion rotation = QuaternionMultiply(prevOrientation,
-                                                 QuaternionInverse(cameraOrientation));
-        cameraBody->SetAngularVelocity(-QuaternionToAxis(rotation) / gDeltaTime);
-
-        Matrix rotMatrix = MatrixFromQuaternion(QuaternionNormalize(cameraOrientation));
-        Orientation orient;
-        orient.x = rotMatrix.r[0];
-        orient.y = rotMatrix.r[1];
-        orient.z = rotMatrix.r[2];
-        cameraTransform->SetOrientation(orient);
-
-
-        Vector destVelocity = Vector();
-        if (cameraControl)
-        {
-            if (IsKeyPressed(Common::KeyCode::W)) destVelocity += orient.z;
-            if (IsKeyPressed(Common::KeyCode::S)) destVelocity -= orient.z;
-            if (IsKeyPressed(Common::KeyCode::D)) destVelocity += orient.x;
-            if (IsKeyPressed(Common::KeyCode::A)) destVelocity -= orient.x;
-            if (IsKeyPressed(Common::KeyCode::R)) destVelocity += orient.y;
-            if (IsKeyPressed(Common::KeyCode::F)) destVelocity -= orient.y;
-
-            if (IsKeyPressed(Common::KeyCode::ShiftLeft)) destVelocity *= 30.0f;
-            else if (IsKeyPressed(Common::KeyCode::ControlLeft)) destVelocity *= 0.2f;
-            else destVelocity *= 3.0f;
-        }
-
-        Vector prevVelocity = cameraBody->GetVelocity();
-
-        // low pass filter - for smooth camera movement
-        float factor = gDeltaTime / (CAMERA_TRANSLATION_SMOOTHING + gDeltaTime);
-        cameraBody->SetVelocity(VectorLerp(prevVelocity, destVelocity, factor));
-    }
+    */
 
     void OnKeyPress(Common::KeyCode key) override
     {
@@ -334,7 +246,7 @@ public:
         event.isCtrlPressed = IsKeyPressed(Common::KeyCode::ControlLeft);
         event.isShiftPressed = IsKeyPressed(Common::KeyCode::ShiftLeft);
 
-        if (view && view->OnKeyPressed(event))
+        if (mView && mView->OnKeyPressed(event))
             return; // key press event was consumed by the engine
 
         if (key == Common::KeyCode::F1)
@@ -343,6 +255,8 @@ public:
             SetFullscreenMode(!fullscreen);
         }
 
+        // TODO
+        /*
         auto cameraTransform = entityManager->GetComponent<TransformComponent>(cameraEntity);
         Orientation orient;
 
@@ -413,6 +327,7 @@ public:
         if (key >= Common::KeyCode::Num0 && key <= Common::KeyCode::Num9)
             SetUpScene(static_cast<unsigned int>(key) -
                        static_cast<unsigned int>(Common::KeyCode::Num0));
+        */
 
         // spawn a new window
         if (key == Common::KeyCode::N)
@@ -427,9 +342,10 @@ public:
         event.x = x;
         event.y = y;
 
-        if (view && view->OnMouseDown(event))
+        if (mView && mView->OnMouseDown(event))
             return; // mouse event was consumed by the engine
 
+        /*
         if (button == 0)
             cameraControl = true;
 
@@ -492,6 +408,7 @@ public:
             body->SetVelocity(30.0f * camOrient.z);
             body->EnablePhysics(ENGINE_GET_COLLISION_SHAPE("shape_barrel"));
         }
+        */
     }
 
     void OnMouseMove(int x, int y, int deltaX, int deltaY) override
@@ -501,6 +418,7 @@ public:
         event.x = x;
         event.y = y;
 
+        /*
         if (view && view->OnMouseMove(event))
             return; // mouse event was consumed by the engine
 
@@ -516,6 +434,7 @@ public:
             if (cameraY > NFE_MATH_PI / 2.0f) cameraY = NFE_MATH_PI / 2.0f;
             if (cameraY < -NFE_MATH_PI / 2.0f) cameraY = -NFE_MATH_PI / 2.0f;
         }
+        */
     }
 
     void OnMouseUp(UINT button) override
@@ -525,42 +444,45 @@ public:
         event.mouseButton = button;
         GetMousePosition(event.x, event.y);
 
-        if (view && view->OnMouseUp(event))
+        if (mView && mView->OnMouseUp(event))
             return; // mouse event was consumed by the engine
-
-        if (button == 0)
-            cameraControl = false;
     }
 
     void OnScroll(int delta) override
     {
-        if (view && view->OnMouseScroll(delta))
+        if (mView && mView->OnMouseScroll(delta))
             return; // mouse event was consumed by the engine
     }
 
     void OnCharTyped(const char* charUTF8) override
     {
-        if (view && view->OnCharTyped(charUTF8))
+        if (mView && mView->OnCharTyped(charUTF8))
             return; // mouse event was consumed by the engine
     }
 
     // window resized
     void OnResize(UINT width, UINT height)
     {
-        if (entityManager == nullptr)
-            return;
-
-        auto camera = entityManager->GetComponent<CameraComponent>(cameraEntity);
-        if (camera != nullptr)
+        if (!mCameraGameObject)
         {
-            if (width || height)
-            {
-                Perspective perspective;
-                camera->GetPerspective(&perspective);
-                perspective.aspectRatio = static_cast<float>(width) / static_cast<float>(height);
-                camera->SetPerspective(&perspective);
-            }
+            return;
         }
+
+        if (width == 0 || height == 0)
+        {
+            return;
+        }
+
+        Entity* cameraEntity = mCameraGameObject->GetEntity();
+        NFE_ASSERT(cameraEntity, "Invalid camera entity");
+
+        CameraComponent* cameraComponent = cameraEntity->GetComponent<CameraComponent>();
+        NFE_ASSERT(cameraComponent, "Invalid camera component");
+
+        PerspectiveProjectionDesc perspective;
+        cameraComponent->GetPerspective(&perspective);
+        perspective.aspectRatio = static_cast<float>(width) / static_cast<float>(height);
+        cameraComponent->SetPerspective(&perspective);
     }
 };
 
@@ -619,17 +541,8 @@ bool OnLoadCustomShapeResource(ResourceBase* res, void* data)
     return true;
 }
 
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+void InitializeCustomResources()
 {
-    std::string execPath = Common::FileSystem::GetExecutablePath();
-    std::string execDir = NFE::Common::FileSystem::GetParentDir(execPath);
-    NFE::Common::FileSystem::ChangeDirectory(execDir + "/../../..");
-
-    //initialize engine
-    gEngine = Engine::GetInstance();
-    if (gEngine == nullptr)
-        return 1;
-
     gFont.reset(new Font);
     gFont->Init("nfEngineDemo/Data/Fonts/Inconsolata.otf", 11);
 
@@ -656,11 +569,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     CollisionShape* chamberShape = ENGINE_GET_COLLISION_SHAPE("chamber_collision_shape.nfcs");
     chamberShape->Load();
     chamberShape->AddRef();
+}
 
-    AddWindow();
-
-    // message loop
-
+void MainLoop()
+{
     std::vector<UpdateRequest> updateRequests;
     std::vector<View*> drawRequests;
     Common::Timer timer;
@@ -685,14 +597,13 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         {
             window->SetTitle(str);
             window->ProcessMessages();
-            window->UpdateCamera();
 
             // remove if closed
             if (window->IsClosed())
             {
                 auto it = std::find_if(gWindows.begin(), gWindows.end(),
                                        [&](const std::unique_ptr<CustomWindow>& w)
-                                       { return w.get() == window; });
+                { return w.get() == window; });
                 if (it != gWindows.end())
                     gWindows.erase(it);
                 continue;
@@ -701,28 +612,45 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
             // build list of scene update requests (they should not be duplicated)
             auto it = std::find_if(updateRequests.begin(), updateRequests.end(),
                                    [&](const UpdateRequest& request)
-                                   { return request.scene == window->scene.get(); });
+            { return request.scene == window->GetScene(); });
             if (it == updateRequests.end())
             {
                 UpdateRequest request;
-                request.scene = window->scene.get();
+                request.scene = window->GetScene();
                 request.deltaTime = gDeltaTime;
                 updateRequests.push_back(request);
             }
 
-            // secondary view draw request
-            if (window->view->drawSecondaryView)
-                drawRequests.push_back(window->secondaryView.get());
-
-            drawRequests.push_back(window->view.get());
+            drawRequests.push_back(window->GetView());
         }
 
         gEngine->Advance(drawRequests.data(), drawRequests.size(),
                          updateRequests.data(), updateRequests.size());
     }
+}
 
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+    std::string execPath = Common::FileSystem::GetExecutablePath();
+    std::string execDir = NFE::Common::FileSystem::GetParentDir(execPath);
+    NFE::Common::FileSystem::ChangeDirectory(execDir + "/../../..");
+
+    // initialize engine
+    gEngine = Engine::GetInstance();
+    if (gEngine == nullptr)
+        return 1;
+
+    // load manual resources
+    InitializeCustomResources();
+
+    // spawn default window
+    AddWindow();
+
+    // game loop
+    MainLoop();
+
+    // cleanup
     gFont.reset();
-    gWindows.clear();
     Engine::Release();
 
     // enable memory leak detection at the process exit (Windows only)

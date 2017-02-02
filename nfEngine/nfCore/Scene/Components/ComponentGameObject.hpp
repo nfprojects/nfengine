@@ -1,0 +1,52 @@
+/**
+ * @file
+ * @author Witek902 (witek902@gmail.com)
+ */
+
+#pragma once
+
+#include "../../Core.hpp"
+#include "Component.hpp"
+#include "../../Resources/GameObject/GameObject.hpp"
+#include "../GameObjectInstance.hpp"
+
+
+namespace NFE {
+namespace Scene {
+
+/**
+ * Component spawning a Game Object Instance.
+ */
+class CORE_API GameObjectComponent final
+    : public Component
+{
+public:
+    GameObjectComponent();
+    ~GameObjectComponent();
+
+    NFE_INLINE Resource::GameObject* GetResource() const { return mGameObject; }
+    NFE_INLINE GameObjectInstance* GetInstance() const { return mGameObjectInstance; }
+
+    /**
+     * Set a new Game Object resource.
+     * Spawned instance of the old Game Object will be destroyed.
+     */
+    bool SetResource(Resource::GameObject* newGameObject);
+
+    /**
+     * Spawn Game Object Instance, if not spawned.
+     */
+    bool Spawn();
+
+    /**
+     * Destroy spawned Game Object Instance.
+     */
+    bool Destroy();
+
+private:
+    Resource::GameObject* mGameObject;          // source Game Object resource
+    GameObjectInstance* mGameObjectInstance;    // spawned instance of the Game Object
+};
+
+} // namespace Scene
+} // namespace NFE
