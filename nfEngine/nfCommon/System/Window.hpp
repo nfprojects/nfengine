@@ -205,6 +205,7 @@ public:
     virtual void OnClose();
     virtual void OnResize(uint32 width, uint32 height);
     virtual void OnKeyPress(KeyCode key);
+    virtual void OnKeyUp(KeyCode key);
     virtual void OnCharTyped(const char* charUTF8);
     virtual void OnScroll(int delta);
     virtual void OnMouseDown(uint32 button, int x, int y);

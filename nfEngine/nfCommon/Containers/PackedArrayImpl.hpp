@@ -195,7 +195,8 @@ void PackedArray<ObjType, IDType, Alignment>::Remove(IDType index)
     if (id < mUsed)
     {
         // move the object from the end to fill the gap
-        MemoryHelpers::Move<ObjType>(mObjects + id, mObjects + mUsed);
+        mObjects[id] = std::move(mObjects[mUsed]);
+        mObjects[mUsed].~ObjType();
     }
     else
     {
