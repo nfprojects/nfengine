@@ -8,7 +8,7 @@
 
 #include "RendererResources.hpp"
 #include "RendererContext.hpp"
-#include "../Renderers/RendererInterface/Device.hpp"
+#include "../../Renderers/RendererInterface/Device.hpp"
 
 #include "nfCommon/System/Library.hpp"
 
