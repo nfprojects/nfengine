@@ -7,7 +7,6 @@
 #pragma once
 
 #include "../Core.hpp"
-#include "EntityManager.hpp"
 
 #include "nfCommon/Utils/ThreadPool.hpp"
 #include "nfCommon/Math/Vector.hpp"
@@ -16,6 +15,8 @@
 
 namespace NFE {
 namespace Scene {
+
+class RenderingData;
 
 NFE_ALIGN16
 class CORE_API EnviromentDesc : public Common::Aligned<16>
@@ -32,25 +33,23 @@ public:
 };
 
 /**
- * Scene manager.
+ * Scene.
+ *
+ * Class responsible for holding and ticking scene systems.
  */
 NFE_ALIGN16
-class CORE_API SceneManager : public Common::Aligned<16>
+class CORE_API SceneManager final : public Common::Aligned<16>
 {
 private:
-    EntityManager mEntityManager;
-
     // environment
     EnviromentDesc mEnvDesc;
 
-    Common::TaskID mRendererUpdateTask;
-
-    /// Systems
-    std::unique_ptr<TransformSystem> mTransformSystem;
-    std::unique_ptr<PhysicsSystem> mPhysicsSystem;
-    std::unique_ptr<RendererSystem> mRendererSystem;
-
-    Common::TaskID mUpdateTask;
+    // Systems
+    // TODO more clever way of storing the systems
+    std::unique_ptr<EntitySystem>       mEntitySystem;
+    std::unique_ptr<InputSystem>        mInputSystem;
+    std::unique_ptr<IPhysicsSystem>     mPhysicsSystem;
+    std::unique_ptr<RendererSystem>     mRendererSystem;
 
 public:
     SceneManager();
@@ -63,6 +62,7 @@ public:
      * Calculate physics, prepare scene for rendering.
      * @param deltaTime Delta time used for physics simulations.
      */
+    // TODO multithreading
     void Update(float deltaTime);
 
     /**
@@ -71,20 +71,10 @@ public:
      */
     void Render(RenderingData& renderingData);
 
-    NFE_INLINE EntityManager* GetEntityManager()
-    {
-        return &mEntityManager;
-    }
-
-    NFE_INLINE TransformSystem* GetTransformSystem()
-    {
-        return mTransformSystem.get();
-    }
-
-    NFE_INLINE RendererSystem* GetRendererSystem()
-    {
-        return mRendererSystem.get();
-    }
+    NFE_INLINE EntitySystem* GetEntitySystem() { return mEntitySystem.get(); }
+    NFE_INLINE InputSystem* GetInputSystem() { return mInputSystem.get(); }
+    NFE_INLINE IPhysicsSystem* GetPhysicsSystem() { return mPhysicsSystem.get(); }
+    NFE_INLINE RendererSystem* GetRendererSystem() { return mRendererSystem.get(); }
 };
 
 } // namespace Scene

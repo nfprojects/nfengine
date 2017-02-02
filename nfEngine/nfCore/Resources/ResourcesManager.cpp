@@ -9,7 +9,7 @@
 #include "nfCommon/System/Memory.hpp"
 #include "nfCommon/Logger/Logger.hpp"
 
-// TODO: remove these dependencies - adding a new resource type shouldn't force programmer to modify this file...
+// TODO use RTTI system for this...
 #include "Multishader.hpp"
 #include "Texture.hpp"
 #include "Material.hpp"
@@ -79,6 +79,7 @@ ResourceBase* ResManager::GetResource(const char* name, ResourceType type, bool 
     if (check)
         return nullptr;
 
+    // TODO use RTTI system for this...
     switch (type)
     {
         case ResourceType::Shader:
@@ -99,10 +100,6 @@ ResourceBase* ResManager::GetResource(const char* name, ResourceType type, bool 
 
         case ResourceType::CollisionShape:
             resource = new CollisionShape;
-            break;
-
-        case ResourceType::Sound:
-            resource = new SoundSample;
             break;
 
         default:
@@ -165,8 +162,6 @@ bool ResManager::DeleteResource(const char* name)
 
 bool ResManager::AddCustomResource(ResourceBase* resource, const char* name)
 {
-    using namespace Util;
-
     if (!Common::MemoryCheck(resource))
     {
         LOG_ERROR("Memory pointed by resource pointer is corrupted.");
