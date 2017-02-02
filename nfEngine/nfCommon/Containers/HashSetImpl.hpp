@@ -160,7 +160,7 @@ HashSet<KeyType, HashFunction>::HashSet(const HashSet& other)
 {
     Reserve(other.Size());
 
-    for (KeyType& key : other)
+    for (const KeyType& key : other)
     {
         const auto insertResult = InsertOrReplace_Internal(key);
         NFE_ASSERT(insertResult.iterator.mElement != InvalidID, "Failed to copy element from the other hash set");
@@ -175,7 +175,7 @@ HashSet<KeyType, HashFunction>& HashSet<KeyType, HashFunction>::operator = (cons
 {
     Reserve(other.Size());
 
-    for (KeyType& key : other)
+    for (const KeyType& key : other)
     {
         const auto insertResult = InsertOrReplace_Internal(key);
         NFE_ASSERT(insertResult.iterator.mElement != InvalidID, "Failed to copy element from the other hash set");

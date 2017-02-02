@@ -38,8 +38,8 @@ struct RenderCommand
     float distance;
 
     //mesh data
-    BufferPtr pIB;
-    BufferPtr pVB;
+    BufferPtr indexBuffer;
+    BufferPtr vertexBuffer;
     const RendererMaterial* material;
     uint32 startIndex;
     uint32 indexCount;

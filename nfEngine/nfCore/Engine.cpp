@@ -7,7 +7,9 @@
 #include "PCH.hpp"
 #include "Engine.hpp"
 #include "Resources/Texture.hpp"
-#include "Systems/RendererSystem.hpp"
+#include "Renderer/RenderScene.hpp"
+#include "Scene/SceneManager.hpp"
+#include "Scene/Entity.hpp"
 
 #include "Renderer/HighLevelRenderer.hpp"
 #include "Renderer/GuiRenderer.hpp"
@@ -24,6 +26,7 @@
 
 namespace NFE {
 
+using namespace Common;
 using namespace Renderer;
 using namespace Scene;
 using namespace Resource;
@@ -42,11 +45,12 @@ bool Engine::OnInit()
 
     // init renderer
     LOG_INFO("Initializing renderer...");
-    mRenderer.reset(new Renderer::HighLevelRenderer());
+    mRenderer = MakeUniquePtr<Renderer::HighLevelRenderer>();
     if (!mRenderer->Init())
     {
-        mRenderer.reset();
+        mRenderer.Reset();
         LOG_ERROR("Failed to initialize renderer. Drawing will not be supported");
+        return false;
     }
 
     return true;
@@ -55,12 +59,9 @@ bool Engine::OnInit()
 void Engine::OnRelease()
 {
     // destroy scenes
-    if (!mScenes.empty())
+    if (!mScenes.Empty())
     {
-        for (auto& scene : mScenes)
-            delete scene;
-
-        mScenes.clear();
+        mScenes.Clear();
         LOG_WARNING("Not all scenes has been released before engine shutdown.");
     }
 
@@ -74,36 +75,46 @@ void Engine::OnRelease()
     LOG_INFO("Resources manager released.");
 
     // release renderer
-    mRenderer.reset();
+    mRenderer.Reset();
     LOG_INFO("Renderer released.");
 
     Font::ReleaseFreeType();
 }
 
-SceneManager* Engine::CreateScene()
+SceneManager* Engine::CreateScene(const Common::String& name)
 {
-    SceneManager* scene = new SceneManager;
-    if (scene == nullptr)
+    auto scene = MakeUniquePtr<SceneManager>(name);
+    if (!scene)
     {
         LOG_ERROR("Memory allocation failed");
         return nullptr;
     }
 
-    mScenes.insert(scene);
-    return scene;
+    if (!scene->InitializeSystems())
+    {
+        LOG_ERROR("Scene creation failed: could not initialize scene systems");
+        return nullptr;
+    }
+
+    LOG_INFO("Scene '%s' created", scene->GetName().Str());
+    mScenes.PushBack(std::move(scene));
+    return mScenes.Back().Get();
 }
 
 
-void Engine::DeleteScene(SceneManager* scene)
+bool Engine::DeleteScene(SceneManager* scene)
 {
-    if (mScenes.erase(scene))
+    auto iter = std::find_if(mScenes.begin(), mScenes.end(),
+                             [scene](const SceneManagerPtr& ptr) { return ptr.Get() == scene; });
+    if (mScenes.end() != iter)
     {
-        delete scene;
-        LOG_WARNING("Scene has been deleted"); // TODO: which scene?
-        return;
+        LOG_INFO("Deleting scene: '%s'", scene->GetName().Str());
+        mScenes.Erase(iter);
+        return true;
     }
 
-    LOG_WARNING("Scene not found, scene = %p", scene);
+    LOG_ERROR("Scene '%s' not found", scene->GetName().Str());
+    return false;
 }
 
 Engine* Engine::GetInstance()
@@ -141,27 +152,28 @@ void Engine::Release()
     gEngineInstance.reset();
 }
 
-bool Engine::Advance(View** views, size_t viewsNum,
-                     const UpdateRequest* updateRequests, size_t updateRequestsNum)
+bool Engine::Advance(const Common::ArrayView<Renderer::View*> views, const Common::ArrayView<const UpdateRequest> updateRequests)
 {
-    using namespace Util;
-
-    if (viewsNum > 0 && !mRenderer)
+    if (views.Size() > 0 && !mRenderer)
     {
         LOG_ERROR("Renderer is not initialized, drawing is not supported.");
         return false;
     }
 
+    // TODO get rid of that
     std::unique_lock<std::recursive_mutex> lock(mRenderingMutex);
 
     // update physics
     bool scenesUpdatedSuccessfully = true;
-    for (size_t i = 0; i < updateRequestsNum; i++)
+    for (const UpdateRequest& updateRequest : updateRequests)
     {
-        SceneManager* scene = updateRequests[i].scene;
+        SceneManager* scene = updateRequest.scene;
+        NFE_ASSERT(scene, "Invalid scene pointer");
 
         //check if scene is valid
-        if (mScenes.count(scene) == 0)
+        auto iter = std::find_if(mScenes.begin(), mScenes.end(),
+                                 [scene](const SceneManagerPtr& ptr) { return scene == ptr.Get(); });
+        if (mScenes.end() == iter)
         {
             LOG_ERROR("Scene pointer '%p' passed in UpdateRequest structure is invalid "
                       "- the scene does not exist.", scene);
@@ -169,26 +181,39 @@ bool Engine::Advance(View** views, size_t viewsNum,
             continue;
         }
 
-        scene->Update(updateRequests[i].deltaTime);
+        // begin scene update
+        {
+            SceneUpdateInfo info;
+            info.timeDelta = updateRequest.deltaTime;
+            scene->BeginUpdate(info);
+        }
     }
-
-    // temporary rendering data for each view
-    std::vector<RenderingData, Common::AlignedAllocator<RenderingData, 16>> renderingData;
-    renderingData.resize(viewsNum);
 
     // prepare for rendering
     mRenderer->ResetCommandBuffers();
 
-    bool scenesRenderedSuccessfully = true;
-    for (size_t i = 0; i < viewsNum; i++)
-    {
-        View* view = views[i];
-        if (view == nullptr)
-            continue;
-        SceneManager* scene = view->GetSceneManager();
+    Common::DynArray<Common::TaskID> renderingTasks;
+    renderingTasks.Reserve(views.Size());
 
-        //check if scene is valid
-        if (mScenes.count(scene) == 0)
+    bool scenesRenderedSuccessfully = true;
+    for (View* view : views)
+    {
+        NFE_ASSERT(view, "Invalid view pointer provided");
+
+        Entity* cameraEntity = view->GetCameraEntity();
+        if (!cameraEntity)
+        {
+            LOG_ERROR("Invalid camera");
+            scenesRenderedSuccessfully = false;
+            continue;
+        }
+
+        SceneManager& scene = cameraEntity->GetScene();
+
+        // check if scene is valid
+        auto iter = std::find_if(mScenes.begin(), mScenes.end(),
+                                 [&scene](const SceneManagerPtr& ptr) { return &scene == ptr.Get(); });
+        if (mScenes.end() == iter)
         {
             LOG_ERROR("Scene pointer '%p' passed in DrawRequest structure is invalid "
                       "- the scene does not exist.", scene);
@@ -196,26 +221,22 @@ bool Engine::Advance(View** views, size_t viewsNum,
             continue;
         }
 
-        if (scene != nullptr)
+        // start the rendering
+        const Common::TaskID taskID = scene.BeginRendering(view);
+        if (taskID != NFE_INVALID_TASK_ID)
         {
-            renderingData[i].view = view;
-            scene->Render(renderingData[i]);
+            renderingTasks.PushBack(taskID);
         }
     }
 
     // wait until all command buffers are filled
-    for (size_t i = 0; i < viewsNum; i++)
-    {
-        renderingData[i].WaitForRenderingTasks();
-    }
-
+    // TODO get rid of this - everything must be asynchronous !!!
+    mMainThreadPool.WaitForTasks(renderingTasks.Data(), renderingTasks.Size());
     mRenderer->FinishAndExecuteCommandBuffers();
 
-    for (size_t i = 0; i < viewsNum; i++)
+    for (View* view : views)
     {
-        View* view = views[i];
-        if (view == nullptr)
-            continue;
+        NFE_ASSERT(view, "Invalid view pointer provided");
 
         // TODO: post process and GUI renderer can be done on multiple threads
         RenderContext* ctx = mRenderer->GetDeferredContext(0);

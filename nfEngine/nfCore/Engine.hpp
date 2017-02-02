@@ -11,6 +11,9 @@
 #include "Scene/SceneManager.hpp"
 #include "Renderer/HighLevelRenderer.hpp"
 #include "nfCommon/Utils/ThreadPool.hpp"
+#include "nfCommon/Containers/DynArray.hpp"
+#include "nfCommon/Containers/UniquePtr.hpp"
+#include "nfCommon/Containers/String.hpp"
 
 #include <mutex> // TODO remove
 
@@ -37,8 +40,8 @@ private:
 
     Common::ThreadPool mMainThreadPool;
     Resource::ResManager mResManager;
-    std::unique_ptr<Renderer::HighLevelRenderer> mRenderer;
-    std::set<Scene::SceneManager*> mScenes;
+    Common::UniquePtr<Renderer::HighLevelRenderer> mRenderer;
+    Common::DynArray<Scene::SceneManagerPtr> mScenes;
 
     bool OnInit();
     void OnRelease();
@@ -76,7 +79,7 @@ public:
      */
     NFE_INLINE Renderer::HighLevelRenderer* GetRenderer() const
     {
-        return mRenderer.get();
+        return mRenderer.Get();
     }
 
     /**
@@ -95,25 +98,22 @@ public:
      *
      * @return NULL on failure.
      */
-    Scene::SceneManager* CreateScene();
+    Scene::SceneManager* CreateScene(const Common::String& name = "unnamed_scene");
 
     /**
-     * Destroy a scene and all its entities.
+     * Destroy a scene and all its systems.
+     * @return  True if the scene was found and destroyed.
      */
-    void DeleteScene(Scene::SceneManager* scene);
+    bool DeleteScene(Scene::SceneManager* scene);
 
     /**
      * Update physics and/or draw a scene(s).
      *
      * @param  views             List of scene draw requests.
-     * @param  viewsNum          Number of elements in @p views array.
-     * @param  updateRequests    List of scene updage requests.
-     * @param  updateRequestsNum Number of elements in @p updateRequests array.
+     * @param  updateRequests    List of scene update requests.
      * @return True on success.
      */
-    bool Advance(Renderer::View** views, size_t viewsNum,
-                 const UpdateRequest* updateRequests, size_t updateRequestsNum);
-
+    bool Advance(const Common::ArrayView<Renderer::View*> views, const Common::ArrayView<const UpdateRequest> updateRequests);
 
     NFE_INLINE std::recursive_mutex& GetRenderingMutex()
     {

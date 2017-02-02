@@ -329,16 +329,21 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
 
         case WM_KEYDOWN:
         {
-            wParam = MapLeftRightSpecialKey(wParam, lParam);
-            window->mKeys[wParam] = true;
-            window->OnKeyPress(static_cast<KeyCode>(wParam));
-            return 0;
+            if ((lParam & 0xFFFF) == 1) // handle only first message repeat
+            {
+                wParam = MapLeftRightSpecialKey(wParam, lParam);
+                window->mKeys[wParam] = true;
+                window->OnKeyPress(static_cast<KeyCode>(wParam));
+                return 0;
+            }
+            break;
         }
 
         case WM_KEYUP:
         {
             wParam = MapLeftRightSpecialKey(wParam, lParam);
             window->mKeys[wParam] = false;
+            window->OnKeyUp(static_cast<KeyCode>(wParam));
             return 0;
         }
 
@@ -430,7 +435,13 @@ void Window::LostFocus()
     MouseUp(2);
 
     for (int i = 0; i < NFE_WINDOW_KEYS_NUM; i++)
-        mKeys[i] = false;
+    {
+        if (mKeys[i])
+        {
+            OnKeyUp(static_cast<KeyCode>(i));
+            mKeys[i] = false;
+        }
+    }
 }
 
 bool Window::IsClosed() const
@@ -498,6 +509,11 @@ void Window::OnResize(uint32 width, uint32 height)
 }
 
 void Window::OnKeyPress(KeyCode key)
+{
+    UNUSED(key);
+}
+
+void Window::OnKeyUp(KeyCode key)
 {
     UNUSED(key);
 }

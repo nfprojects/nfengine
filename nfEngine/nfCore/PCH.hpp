@@ -58,13 +58,13 @@
 #include <vector>
 #include <deque>
 #include <map>
-#include <set>
 #include <queue>
 #include <memory>
 #include <functional>
 #include <sstream>
 #include <tuple>
 #include <atomic>
+#include <unordered_map>
 
 // Bullet physics Engine
 #include "btBulletCollisionCommon.h"
