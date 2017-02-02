@@ -68,7 +68,13 @@ bool PackedArray<ObjType, IDType, Alignment>::Resize(size_t newSize)
         return false;
     }
 
-    memcpy(newObjects, mObjects, sizeof(ObjType) * mSize);
+    // move objects from old buffer to the new one
+    for (size_t i = 0; i < mUsed; ++i)
+    {
+        new (newObjects + i) ObjType(std::move(mObjects[i]));
+        mObjects[i].~ObjType();
+    }
+
     memcpy(newNodes, mNodes, sizeof(ListNode) * mSize);
     memcpy(newIDs, mIDs, sizeof(IDType) * mSize);
 
