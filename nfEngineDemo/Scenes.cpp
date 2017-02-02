@@ -25,7 +25,7 @@ std::vector<std::function<void(SceneManager*)>> gScenes =
 
 void CreateSceneMinecraft(SceneManager* scene)
 {
-    EntityManager* entityManager = scene->GetEntityManager();
+    EntitySystem* entitySystem = scene->GetEntitySystem();
 
     //set ambient & background color
     EnviromentDesc envDesc;
@@ -33,46 +33,20 @@ void CreateSceneMinecraft(SceneManager* scene)
     envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
     scene->SetEnvironment(&envDesc);
 
-    // SUNLIGHT
-    EntityID dirLight = entityManager->CreateEntity();
-    {
-        Orientation orient;
-        orient.x = Vector(0.0f, -0.0f, -0.0f, 0.0f);
-        orient.z = Vector(-1.5f, -1.0f, 0.5f, 0.0f);
-        orient.y = Vector(0.0f, 1.0f, 0.0f, 0.0f);
-
-        TransformComponent* transform = entityManager->AddComponent<TransformComponent>(dirLight);
-        transform->SetOrientation(orient);
-
-        // TODO: directional lights are not yet supported
-        /*
-        DirLightDesc dirLightDesc;
-        dirLightDesc.farDist = 100.0f;
-        dirLightDesc.splits = 4;
-        dirLightDesc.lightDist = 1000.0f;
-
-        LightComponent light;
-        light->SetDirLight(&dirLightDesc);
-        light->SetColor(Float3(2.2f, 2.0f, 1.8f));
-        light->SetShadowMap(1024);
-        entityManager->AddComponent(dirLight, light);
-        */
-    }
+    // TODO directional light
 
     // MINECRAFT
-    EntityID map = entityManager->CreateEntity();
-    {
-        TransformComponent* transform = entityManager->AddComponent<TransformComponent>(map);
-        transform->SetPosition(Vector(0.0f, -70.0f, 0.0f));
+    Entity* map = entitySystem->CreateEntity();
+    map->SetGlobalPosition(Vector(0.0f, -70.0f, 0.0f));
 
-        MeshComponent* mesh = entityManager->AddComponent<MeshComponent>(map);
-        mesh->SetMeshResource("minecraft.nfm");
-    }
+    std::unique_ptr<MeshComponent> meshComponent(new MeshComponent);
+    meshComponent->SetMeshResource("minecraft.nfm");
+    map->AddComponent(std::move(meshComponent));
 }
 
 void CreateSceneSponza(SceneManager* scene)
 {
-    EntityManager* entityManager = scene->GetEntityManager();
+    EntitySystem* entitySystem = scene->GetEntitySystem();
 
     //set ambient & background color
     EnviromentDesc envDesc;
@@ -80,32 +54,32 @@ void CreateSceneSponza(SceneManager* scene)
     envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
     scene->SetEnvironment(&envDesc);
 
-    EntityID sponza = entityManager->CreateEntity();
+    Entity* sponza = entitySystem->CreateEntity();
     {
-        entityManager->AddComponent<TransformComponent>(sponza);
-
-        MeshComponent* mesh = entityManager->AddComponent<MeshComponent>(sponza);
+        std::unique_ptr<MeshComponent> mesh(new MeshComponent);
         mesh->SetMeshResource("sponza.nfm");
+        sponza->AddComponent(std::move(mesh));
 
+        std::unique_ptr<BodyComponent> body(new BodyComponent);
         CollisionShape* sponzaShape = ENGINE_GET_COLLISION_SHAPE("sponza_collision_shape.nfcs");
-        BodyComponent* body = entityManager->AddComponent<BodyComponent>(sponza);
-        body->EnablePhysics(sponzaShape);
-        body->SetMass(0.0);
+        body->SetCollisionShape(sponzaShape);
+        body->SetMass(0.0f);
+        sponza->AddComponent(std::move(body));
     }
 
-    EntityID lightEntity = entityManager->CreateEntity();
+    Entity* lightEntity = entitySystem->CreateEntity();
+    lightEntity->SetGlobalPosition(Vector(0.0f, 3.5f, 0.0f));
     {
-        TransformComponent* transform = entityManager->AddComponent<TransformComponent>(lightEntity);
-        transform->SetPosition(Vector(0.0f, 3.5f, 0.0f));
-
-        LightComponent* light = entityManager->AddComponent<LightComponent>(lightEntity);
         OmniLightDesc omni;
         omni.shadowFadeStart = 12.0f;
         omni.maxShadowDistance = 120.0f;
         omni.radius = 90.0f;
+
+        std::unique_ptr<LightComponent> light(new LightComponent);
         light->SetOmniLight(&omni);
         light->SetColor(Float3(8.0f, 8.0f, 8.0f));
         light->SetShadowMap(512);
+        lightEntity->AddComponent(std::move(light));
     }
 }
 
@@ -113,7 +87,7 @@ void CreateChamberArray(SceneManager* scene,
                         int chambersX, int chambersZ,
                         int boxesX, int boxesZ, int boxesY)
 {
-    EntityManager* entityManager = scene->GetEntityManager();
+    EntitySystem* entitySystem = scene->GetEntitySystem();
 
     // set ambient & background color
     EnviromentDesc envDesc;
