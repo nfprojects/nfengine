@@ -38,7 +38,7 @@ private:
     Common::ThreadPool mMainThreadPool;
     Resource::ResManager mResManager;
     std::unique_ptr<Renderer::HighLevelRenderer> mRenderer;
-    std::set<Scene::SceneManager*> mScenes;
+    std::vector<Scene::SceneManagerPtr> mScenes;
 
     bool OnInit();
     void OnRelease();
@@ -95,24 +95,24 @@ public:
      *
      * @return NULL on failure.
      */
-    Scene::SceneManager* CreateScene();
+    Scene::SceneManager* CreateScene(const std::string& name = "unnamed_scene");
 
     /**
      * Destroy a scene and all its entities.
+     * @return  True if the scene was found and destroyed.
      */
-    void DeleteScene(Scene::SceneManager* scene);
+    bool DeleteScene(Scene::SceneManager* scene);
 
     /**
      * Update physics and/or draw a scene(s).
      *
      * @param  views             List of scene draw requests.
      * @param  viewsNum          Number of elements in @p views array.
-     * @param  updateRequests    List of scene updage requests.
+     * @param  updateRequests    List of scene update requests.
      * @param  updateRequestsNum Number of elements in @p updateRequests array.
      * @return True on success.
      */
-    bool Advance(Renderer::View** views, size_t viewsNum,
-                 const UpdateRequest* updateRequests, size_t updateRequestsNum);
+    bool Advance(Renderer::View** views, size_t viewsNum, const UpdateRequest* updateRequests, size_t updateRequestsNum);
 
 
     NFE_INLINE std::recursive_mutex& GetRenderingMutex()
