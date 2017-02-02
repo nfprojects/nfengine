@@ -9,6 +9,8 @@
 #include "nfCommon/nfCommon.hpp"
 #include "nfCommon/Containers/SharedPtr.hpp"
 
+#include <memory>
+
 
 namespace NFE {
 namespace Renderer {
