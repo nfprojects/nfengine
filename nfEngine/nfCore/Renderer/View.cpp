@@ -34,10 +34,9 @@ namespace Renderer {
 
 View::View(bool useImGui)
 {
-    mScene = nullptr;
     mTexture = nullptr;
     mWindow = nullptr;
-    mCameraEntity = 0;
+    mCameraEntity = nullptr;
 
     if (useImGui && gUseImGui.Get())
     {
@@ -143,9 +142,8 @@ void View::OnDrawImGui(void* state)
     UNUSED(state);
 }
 
-bool View::SetCamera(Scene::SceneManager* scene, Scene::EntityID cameraEntity)
+bool View::SetCamera(Scene::Entity* cameraEntity)
 {
-    mScene = scene;
     mCameraEntity = cameraEntity;
     return true;
 }
