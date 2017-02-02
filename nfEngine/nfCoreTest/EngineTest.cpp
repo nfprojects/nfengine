@@ -2,9 +2,9 @@
 #include "nfCore/Engine.hpp"
 #include "nfCore/Renderer/HighLevelRenderer.hpp"
 #include "nfCore/Components/TransformComponent.hpp"
-#include "nfCore/Components/MeshComponent.hpp"
-#include "nfCore/Components/BodyComponent.hpp"
-#include "nfCore/Components/LightComponent.hpp"
+#include "nfCore/Components/ComponentMesh.hpp"
+#include "nfCore/Components/ComponentBody.hpp"
+#include "nfCore/Components/ComponentLight.hpp"
 
 
 using namespace NFE;
@@ -63,7 +63,7 @@ TEST_F(nfEngineTest, GetInstance)
 // basic scene creation / removal
 TEST_F(nfEngineTest, SceneManagement)
 {
-    SceneManager* scene;
+    Scene* scene;
 
     scene = mEngine->CreateScene();
     ASSERT_NE(nullptr, scene);
