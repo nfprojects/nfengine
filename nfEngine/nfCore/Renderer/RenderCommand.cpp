@@ -97,8 +97,8 @@ int RenderCommandMeshCmp(const int& a, const int& b, void* p)
     const RenderCommand* pA = pList + a;
     const RenderCommand* pB = pList + b;
 
-    size_t p_a = (size_t)(pA->pVB.Get()); // TODO: IB too!
-    size_t p_b = (size_t)(pB->pVB.Get());
+    size_t p_a = (size_t)(pA->vertexBuffer.Get()); // TODO: IB too!
+    size_t p_b = (size_t)(pB->vertexBuffer.Get());
 
     if (p_a == p_b)
     {
@@ -126,8 +126,8 @@ int RenderCommandCmp(const int& a, const int& b, void* p)
 
     //compare by material
     int p_c = 0;
-    p_a = (size_t)(pA->pVB.Get()); // TODO: IB too!
-    p_b = (size_t)(pB->pVB.Get());
+    p_a = (size_t)(pA->vertexBuffer.Get()); // TODO: IB too!
+    p_b = (size_t)(pB->vertexBuffer.Get());
     if (p_a > p_b)
         return 1;
     else if (p_a < p_b)

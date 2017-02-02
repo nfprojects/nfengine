@@ -20,6 +20,9 @@
 
 // "interaction between '_setjmp' and C++ object destruction is non - portable"
 #pragma warning(disable: 4611)
+
+// "structure was padded due to alignment specifier"
+#pragma warning(disable: 4324)
 #endif
 
 

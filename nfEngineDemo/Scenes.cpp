@@ -1,18 +1,26 @@
 #include "PCH.hpp"
 #include "Scenes.hpp"
-#include "Test.hpp"
+#include "Main.hpp"
 
-using namespace NFE;
-using namespace NFE::Renderer;
-using namespace NFE::Math;
-using namespace NFE::Scene;
-using namespace NFE::Resource;
+#include "nfCore/Renderer/RenderScene.hpp" // TODO remove
+#include "nfCore/Scene/Systems/RendererSystem.hpp"
+#include "nfCore/Scene/Components/ComponentBody.hpp"
+#include "nfCore/Scene/Components/ComponentLight.hpp"
+#include "nfCore/Scene/Components/ComponentMesh.hpp"
+
+
+namespace NFE {
+
+using namespace Common;
+using namespace Renderer;
+using namespace Math;
+using namespace Scene;
+using namespace Resource;
 
 void CreateSceneSimple(SceneManager* scene);
 void CreateSceneMinecraft(SceneManager* scene);
 void CreateSceneSponza(SceneManager* scene);
 void CreateScenePerformance(SceneManager* scene);
-// void CreateSceneSegments(SceneManager* scene);
 
 std::vector<std::function<void(SceneManager*)>> gScenes =
 {
@@ -25,87 +33,61 @@ std::vector<std::function<void(SceneManager*)>> gScenes =
 
 void CreateSceneMinecraft(SceneManager* scene)
 {
-    EntityManager* entityManager = scene->GetEntityManager();
+    EntitySystem* entitySystem = scene->GetSystem<EntitySystem>();
 
     //set ambient & background color
-    EnviromentDesc envDesc;
+    EnvironmentDesc envDesc;
     envDesc.ambientLight = Vector(0.3f, 0.35f, 0.4f, 0.0f);
     envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
-    scene->SetEnvironment(&envDesc);
+    scene->GetSystem<RendererSystem>()->GetRenderScene()->SetEnvironment(envDesc);
 
-    // SUNLIGHT
-    EntityID dirLight = entityManager->CreateEntity();
-    {
-        Orientation orient;
-        orient.x = Vector(0.0f, -0.0f, -0.0f, 0.0f);
-        orient.z = Vector(-1.5f, -1.0f, 0.5f, 0.0f);
-        orient.y = Vector(0.0f, 1.0f, 0.0f, 0.0f);
-
-        TransformComponent* transform = entityManager->AddComponent<TransformComponent>(dirLight);
-        transform->SetOrientation(orient);
-
-        // TODO: directional lights are not yet supported
-        /*
-        DirLightDesc dirLightDesc;
-        dirLightDesc.farDist = 100.0f;
-        dirLightDesc.splits = 4;
-        dirLightDesc.lightDist = 1000.0f;
-
-        LightComponent light;
-        light->SetDirLight(&dirLightDesc);
-        light->SetColor(Float3(2.2f, 2.0f, 1.8f));
-        light->SetShadowMap(1024);
-        entityManager->AddComponent(dirLight, light);
-        */
-    }
+    // TODO directional light
 
     // MINECRAFT
-    EntityID map = entityManager->CreateEntity();
-    {
-        TransformComponent* transform = entityManager->AddComponent<TransformComponent>(map);
-        transform->SetPosition(Vector(0.0f, -70.0f, 0.0f));
+    Entity* map = entitySystem->CreateEntity();
+    map->SetGlobalPosition(Vector(0.0f, -70.0f, 0.0f));
 
-        MeshComponent* mesh = entityManager->AddComponent<MeshComponent>(map);
-        mesh->SetMeshResource("minecraft.nfm");
-    }
+    auto meshComponent = MakeUniquePtr<MeshComponent>();
+    meshComponent->SetMeshResource("minecraft.nfm");
+    map->AddComponent(std::move(meshComponent));
 }
 
 void CreateSceneSponza(SceneManager* scene)
 {
-    EntityManager* entityManager = scene->GetEntityManager();
+    EntitySystem* entitySystem = scene->GetSystem<EntitySystem>();
 
     //set ambient & background color
-    EnviromentDesc envDesc;
+    EnvironmentDesc envDesc;
     envDesc.ambientLight = Vector(0.3f, 0.35f, 0.4f, 0.0f);
     envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
-    scene->SetEnvironment(&envDesc);
+    scene->GetSystem<RendererSystem>()->GetRenderScene()->SetEnvironment(envDesc);
 
-    EntityID sponza = entityManager->CreateEntity();
+    Entity* sponza = entitySystem->CreateEntity();
     {
-        entityManager->AddComponent<TransformComponent>(sponza);
-
-        MeshComponent* mesh = entityManager->AddComponent<MeshComponent>(sponza);
+        auto mesh = MakeUniquePtr<MeshComponent>();
         mesh->SetMeshResource("sponza.nfm");
+        sponza->AddComponent(std::move(mesh));
 
+        auto body = MakeUniquePtr<BodyComponent>();
         CollisionShape* sponzaShape = ENGINE_GET_COLLISION_SHAPE("sponza_collision_shape.nfcs");
-        BodyComponent* body = entityManager->AddComponent<BodyComponent>(sponza);
-        body->EnablePhysics(sponzaShape);
-        body->SetMass(0.0);
+        body->SetCollisionShape(sponzaShape);
+        body->SetMass(0.0f);
+        sponza->AddComponent(std::move(body));
     }
 
-    EntityID lightEntity = entityManager->CreateEntity();
+    Entity* lightEntity = entitySystem->CreateEntity();
+    lightEntity->SetGlobalPosition(Vector(0.0f, 3.5f, 0.0f));
     {
-        TransformComponent* transform = entityManager->AddComponent<TransformComponent>(lightEntity);
-        transform->SetPosition(Vector(0.0f, 3.5f, 0.0f));
-
-        LightComponent* light = entityManager->AddComponent<LightComponent>(lightEntity);
         OmniLightDesc omni;
         omni.shadowFadeStart = 12.0f;
         omni.maxShadowDistance = 120.0f;
         omni.radius = 90.0f;
-        light->SetOmniLight(&omni);
+
+        auto light = MakeUniquePtr<LightComponent>();
+        light->SetOmniLight(omni);
         light->SetColor(Float3(8.0f, 8.0f, 8.0f));
         light->SetShadowMap(512);
+        lightEntity->AddComponent(std::move(light));
     }
 }
 
@@ -113,13 +95,15 @@ void CreateChamberArray(SceneManager* scene,
                         int chambersX, int chambersZ,
                         int boxesX, int boxesZ, int boxesY)
 {
-    EntityManager* entityManager = scene->GetEntityManager();
+    EntitySystem* entitySystem = scene->GetSystem<EntitySystem>();
 
     // set ambient & background color
-    EnviromentDesc envDesc;
+    EnvironmentDesc envDesc;
     envDesc.ambientLight = Vector(0.3f, 0.35f, 0.4f, 0.0f);
     envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
-    scene->SetEnvironment(&envDesc);
+    scene->GetSystem<RendererSystem>()->GetRenderScene()->SetEnvironment(envDesc);
+
+    // TODO all of this must be loaded from game object resource
 
     for (int x = -chambersX; x <= chambersX; x++)
     {
@@ -129,54 +113,54 @@ void CreateChamberArray(SceneManager* scene,
                                            0.0f,
                                            static_cast<float>(z));
 
-            EntityID chamber = entityManager->CreateEntity();
+            Entity* chamberEntity = entitySystem->CreateEntity();
+            chamberEntity->SetGlobalPosition(offset);
             {
-                TransformComponent* transform = entityManager->AddComponent<TransformComponent>(chamber);
-                transform->SetPosition(offset);
-
-                MeshComponent* mesh = entityManager->AddComponent<MeshComponent>(chamber);
+                auto mesh = MakeUniquePtr<MeshComponent>();
                 mesh->SetMeshResource("chamber.nfm");
+                chamberEntity->AddComponent(std::move(mesh));
 
-                BodyComponent* body = entityManager->AddComponent<BodyComponent>(chamber);
-                body->EnablePhysics(ENGINE_GET_COLLISION_SHAPE("chamber_collision_shape.nfcs"));
+                auto body = MakeUniquePtr<BodyComponent>();
+                body->SetCollisionShape(ENGINE_GET_COLLISION_SHAPE("chamber_collision_shape.nfcs"));
+                chamberEntity->AddComponent(std::move(body));
             }
 
             OmniLightDesc omni;
             omni.shadowFadeStart = 80.0f;
             omni.maxShadowDistance = 120.0f;
-            omni.radius = 8.0f;
+            omni.radius = 12.0f;
 
-            EntityID mainLight = entityManager->CreateEntity();
+            Entity* mainLightEntity = entitySystem->CreateEntity();
+            mainLightEntity->SetGlobalPosition(offset + Vector(0.0f, 3.5f, 0.0f));
             {
-                TransformComponent* transform = entityManager->AddComponent<TransformComponent>(mainLight);
-                transform->SetPosition(offset + Vector(0.0f, 3.5f, 0.0f));
+                auto light = MakeUniquePtr<LightComponent>();
+                light->SetOmniLight(omni);
+                light->SetColor(Float3(20.0f, 20.0f, 20.0f));
+                light->SetShadowMap(512);
 
-                LightComponent* light = entityManager->AddComponent<LightComponent>(mainLight);
-                light->SetOmniLight(&omni);
-                light->SetColor(Float3(12.0f, 12.0f, 12.0f));
-                light->SetShadowMap(64);
+                mainLightEntity->AddComponent(std::move(light));
             }
 
-            EntityID lightA = entityManager->CreateEntity();
+            Entity* lightEntityA = entitySystem->CreateEntity();
+            lightEntityA->SetGlobalPosition(offset + Vector(6.0f, 1.8f, 0.0f));
             {
-                TransformComponent* transform = entityManager->AddComponent<TransformComponent>(lightA);
-                transform->SetPosition(offset + Vector(6.0f, 1.8f, 0.0f));
-
-                LightComponent* light = entityManager->AddComponent<LightComponent>(lightA);
+                auto light = MakeUniquePtr<LightComponent>();
                 omni.radius = 3.0f;
-                light->SetOmniLight(&omni);
+                light->SetOmniLight(omni);
                 light->SetColor(Float3(1.0f, 0.2f, 0.1f));
+
+                lightEntityA->AddComponent(std::move(light));
             }
 
-            EntityID lightB = entityManager->CreateEntity();
+            Entity* lightEntityB = entitySystem->CreateEntity();
+            lightEntityB->SetGlobalPosition(offset + Vector(0.0f, 1.8f, 6.0f));
             {
-                TransformComponent* transform = entityManager->AddComponent<TransformComponent>(lightB);
-                transform->SetPosition(offset + Vector(0.0f, 1.8f, 6.0f));
-
-                LightComponent* light = entityManager->AddComponent<LightComponent>(lightB);
+                auto light = MakeUniquePtr<LightComponent>();
                 omni.radius = 3.0f;
-                light->SetOmniLight(&omni);
+                light->SetOmniLight(omni);
                 light->SetColor(Float3(1.0f, 0.2f, 0.1f));
+
+                lightEntityB->AddComponent(std::move(light));
             }
 
             for (int i = -boxesX; i <= boxesX; i++)
@@ -185,19 +169,19 @@ void CreateChamberArray(SceneManager* scene,
                 {
                     for (int k = -boxesZ; k <= boxesZ; k++)
                     {
-                        EntityID cube = entityManager->CreateEntity();
+                        Entity* boxEntity = entitySystem->CreateEntity();
+                        boxEntity->SetGlobalPosition(offset + Vector(0.0f, 0.25f, 0.0f) +
+                                                     0.6f * Vector(static_cast<float>(i),
+                                                                   static_cast<float>(j),
+                                                                   static_cast<float>(k)));
 
-                        TransformComponent* transform = entityManager->AddComponent<TransformComponent>(cube);
-                        transform->SetPosition(offset + Vector(0.0f, 0.25f, 0.0f) +
-                                              0.6f * Vector(static_cast<float>(i),
-                                                            static_cast<float>(j),
-                                                            static_cast<float>(k)));
-
-                        MeshComponent* mesh = entityManager->AddComponent<MeshComponent>(cube);
+                        auto mesh = MakeUniquePtr<MeshComponent>();
                         mesh->SetMeshResource("cube.nfm");
+                        boxEntity->AddComponent(std::move(mesh));
 
-                        BodyComponent* body = entityManager->AddComponent<BodyComponent>(cube);
-                        body->EnablePhysics(ENGINE_GET_COLLISION_SHAPE("shape_box"));
+                        auto body = MakeUniquePtr<BodyComponent>();
+                        body->SetCollisionShape(ENGINE_GET_COLLISION_SHAPE("shape_box"));
+                        boxEntity->AddComponent(std::move(body));
                     }
                 }
             }
@@ -210,7 +194,7 @@ void CreateChamberArray(SceneManager* scene,
  */
 void CreateSceneSimple(SceneManager* scene)
 {
-    CreateChamberArray(scene, 0, 0, 2, 2, 1);
+    CreateChamberArray(scene, 1, 1, 2, 2, 1);
 }
 
 /**
@@ -220,93 +204,6 @@ void CreateScenePerformance(SceneManager* scene)
 {
     CreateChamberArray(scene, 4, 4, 4, 4, 2);
 }
-
-// TODO: restore when scene segments are implemented
-/**
- * Infinite looped scene.
- */
-/*
-void CreateSceneSegments()
-{
-    //set ambient & background color
-    EnviromentDesc envDesc;
-    envDesc.ambientLight = Vector(0.3f, 0.35f, 0.4f, 0.0f);
-    envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
-    gScene->SetEnvironment(&envDesc);
-
-    NFE::Common::BufferOutputStream segmentDesc;
-
-    Matrix mat = Matrix::MakeRotationNormal(Vector(0, 1, 0), Constants::pi<float> / 4.0f);
-
-    // create segments description buffer
-    {
-        OmniLightDesc omni;
-        LightComponent* light;
-        Entity entity;
-        entity.SetPosition(Vector());
-        //entity->SetMatrix(mat);
-        MeshComponent* mesh = new MeshComponent(&entity);
-        mesh->SetMeshResource("chamber.nfm");
-        BodyComponent* body = new BodyComponent(&entity);
-        body->EnablePhysics(ENGINE_GET_COLLISION_SHAPE("chamber_collision_shape.nfcs"));
-        entity.Serialize(&segmentDesc, Vector());
-
-        entity.RemoveAllComponents();
-        entity.SetPosition(Vector(0.0f, 3.5f, 0.0f));
-
-        entity.RemoveAllComponents();
-        entity.SetPosition(Vector(6.0f, 1.8f, 0.0f));
-        light = new LightComponent(&entity);
-        omni.radius = 3.0f;
-        light->SetOmniLight(&omni);
-        light->SetColor(Float3(1.0f, 0.5f, 0.25f));
-        entity.Serialize(&segmentDesc, Vector());
-
-        entity.RemoveAllComponents();
-        entity.SetPosition(Vector(0.0f, 1.8f, 6.0f));
-        light = new LightComponent(&entity);
-        omni.radius = 3.0f;
-        light->SetOmniLight(&omni);
-        light->SetColor(Float3(1.0f, 0.5f, 0.25f));
-        entity.Serialize(&segmentDesc, Vector());
-    }
-
-#define SEG_AXIS_NUM 12
-
-    Segment* segments[SEG_AXIS_NUM][SEG_AXIS_NUM];
-
-    // create segments array
-    for (int i = 0; i < SEG_AXIS_NUM; i++)
-    {
-        for (int j = 0; j < SEG_AXIS_NUM; j++)
-        {
-            char segName[32];
-            sprintf_s(segName, "seg_%i_%i", i, j);
-            segments[i][j] = gScene->CreateSegment(segName, Vector(5.99f, 1000.0f, 5.99f));
-            segments[i][j]->AddEntityFromRawBuffer(segmentDesc.GetData(), segmentDesc.GetSize());
-        }
-    }
-
-    // create links
-    for (int x = 0; x < SEG_AXIS_NUM; x++)
-    {
-        for (int z = 0; z < SEG_AXIS_NUM; z++)
-        {
-            //make inifinite loop
-            for (int depth = 1; depth <= 5; depth++)
-            {
-                gScene->CreateLink(segments[x][z], segments[(x + depth) % SEG_AXIS_NUM][z],
-                                   Vector(depth * 12.0f, 0.0f, 0.0f));
-                gScene->CreateLink(segments[x][z], segments[x][(z + depth) % SEG_AXIS_NUM],
-                                   Vector(0.0, 0.0f, depth * 12.0f));
-            }
-        }
-    }
-
-    // Set focus
-    gScene->SetFocusSegment(segments[0][0]);
-}
-*/
 
 int GetScenesNum()
 {
@@ -324,3 +221,5 @@ SceneManager* InitScene(int sceneId)
     gScenes[sceneId](scene);
     return scene;
 }
+
+} // namespace NFE
