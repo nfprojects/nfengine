@@ -34,32 +34,29 @@ namespace NFE {
         class Texture;
         class CollisionShape;
         class SoundSample;
+        class GameObject;
+        class GameObjectNode;
+        class GameObjectComponent;
     } // namespace Resource
 
     namespace Scene {
-        class Component;
+        class Entity;
+        class GameObjectInstance;
+        class GameObjectController;
+
+        class IComponent;
         class MeshComponent;
         class BodyComponent;
         class LightComponent;
         class CameraComponent;
-        class TransformComponent;
 
-        class EntityManager;
         class SceneManager;
-        class TransformSystem;
         class PhysicsSystem;
         class RendererSystem;
-
-        class RenderingData;
-        struct MeshComponentDesc;
-        struct LightDesc;
-        struct CameraDesc;
-        struct BodyComponentDesc;
-
-        enum class ComponentMsg;
-        enum class ComponentType;
+        class InputSystem;
+        class EntitySystem;
+        class GameObjectSystem;
     } // namespace Scene
-
 
     namespace Renderer {
         class HighLevelRenderer;

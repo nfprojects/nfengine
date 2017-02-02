@@ -10,7 +10,6 @@
 #include "HighLevelRenderer.hpp"
 #include "RendererResources.hpp"
 #include "ImGuiWrapper.hpp"
-#include "../Scene/EntityManager.hpp"
 #include "../Utils/SimpleInput.hpp"
 
 namespace NFE {
@@ -31,6 +30,13 @@ struct PostProcessParameters
     {}
 };
 
+// TODO splitscreen
+
+/**
+ * Class representing high-level rendering viewport.
+ * Target can be a window or a texture.
+ * Source is a scene and entity with camera.
+ */
 class CORE_API View : public Utils::SimpleInputListener
 {
     // not NULL when rendering to a off-screen render target
@@ -50,8 +56,8 @@ class CORE_API View : public Utils::SimpleInputListener
     std::unique_ptr<IResourceBindingInstance> mTemporaryBufferPostprocessBinding;
     std::unique_ptr<IRenderTarget> mTemporaryRenderTarget;  // before postprocess
 
-    Scene::SceneManager* mScene;
-    Scene::EntityID mCameraEntity;
+    // camera entity used for rendering
+    Scene::Entity* mCameraEntity;
 
     std::unique_ptr<ImGuiWrapper> mImGuiWrapper;
 
@@ -92,14 +98,9 @@ public:
     bool OnMouseScroll(int delta) override;
     bool OnCharTyped(const char* charUTF8) override;
 
-    bool SetCamera(Scene::SceneManager* scene, Scene::EntityID cameraEntity);
+    bool SetCamera(Scene::Entity* cameraEntity);
 
-    NFE_INLINE Scene::SceneManager* GetSceneManager() const
-    {
-        return mScene;
-    }
-
-    NFE_INLINE Scene::EntityID GetCameraEntity() const
+    NFE_INLINE Scene::Entity* GetCameraEntity() const
     {
         return mCameraEntity;
     }
