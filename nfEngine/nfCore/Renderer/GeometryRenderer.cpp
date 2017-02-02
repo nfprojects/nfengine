@@ -300,7 +300,7 @@ void GeometryRenderer::Draw(GeometryRendererContext* context, const RenderComman
 
         bool bufferIsFull = (bufferedInstances + bufferedInstances >= GeometryRendererContext::gMaxBufferedInstances) || (i == 0);
         bool materialChange = (command.material != currMaterial);
-        bool meshChange = ((currIB != command.pIB) || (currVB != command.pVB) ||
+        bool meshChange = ((currIB != command.indexBuffer) || (currVB != command.vertexBuffer) ||
                            (currStartIndex != command.startIndex));
 
         // flush buffered instances
@@ -351,8 +351,8 @@ void GeometryRenderer::Draw(GeometryRendererContext* context, const RenderComman
         {
             currStartIndex = command.startIndex;
             currIndexCount = command.indexCount;
-            currIB = command.pIB;
-            currVB = command.pVB;
+            currIB = command.indexBuffer;
+            currVB = command.vertexBuffer;
 
             const BufferPtr buffers[] = { currVB, mInstancesVertexBuffer };
             int strides[] = { sizeof(Resource::MeshVertex), sizeof(InstanceData) };

@@ -23,7 +23,14 @@ public:
     Vector max;
 
     NFE_INLINE Box() : min(), max() {}
-    NFE_INLINE Box(const Vector& min_, const Vector& max_) : min(min_), max(max_) {}
+    NFE_INLINE Box(const Vector& min, const Vector& max) : min(min), max(max) {}
+
+    // create box from center point and radius (e.g. bounding box of a sphere)
+    NFE_INLINE Box(const Vector& center, float radius)
+    {
+        min = center - VectorSplat(radius);
+        max = center + VectorSplat(radius);
+    }
 
     // merge boxes
     NFE_INLINE Box(const Box& a, const Box& b)
