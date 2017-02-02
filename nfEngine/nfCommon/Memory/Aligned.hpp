@@ -41,7 +41,17 @@ public:
         return NFE_MALLOC(size, Alignment);
     }
 
+    void* operator new[](size_t size)
+    {
+        return NFE_MALLOC(size, Alignment);
+    }
+
     void operator delete(void* ptr)
+    {
+        NFE_FREE(ptr);
+    }
+
+    void operator delete[](void* ptr)
     {
         NFE_FREE(ptr);
     }
