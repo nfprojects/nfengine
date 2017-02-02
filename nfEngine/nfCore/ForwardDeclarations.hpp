@@ -20,12 +20,6 @@ namespace NFE {
         class OutputStream;
     } // namespace Common
 
-    namespace Util {
-        class BVH;
-        class FrameStats;
-        class Aligned;
-    } // namespace Util
-
     namespace Resource {
         class ResManager;
         class ResourceBase;
@@ -37,29 +31,27 @@ namespace NFE {
     } // namespace Resource
 
     namespace Scene {
-        class Component;
+        class Entity;
+        class Event;
+
+        class IComponent;
         class MeshComponent;
         class BodyComponent;
         class LightComponent;
         class CameraComponent;
-        class TransformComponent;
+        class ScriptComponent;
 
-        class EntityManager;
         class SceneManager;
-        class TransformSystem;
-        class PhysicsSystem;
+        class IPhysicsSystem;
         class RendererSystem;
+        class InputSystem;
+        class EntitySystem;
 
-        class RenderingData;
-        struct MeshComponentDesc;
-        struct LightDesc;
-        struct CameraDesc;
-        struct BodyComponentDesc;
+        using EntityID = uint32;
+        using EntityPtr = std::unique_ptr<Entity>;
+        using ComponentPtr = std::unique_ptr<IComponent>;
 
-        enum class ComponentMsg;
-        enum class ComponentType;
     } // namespace Scene
-
 
     namespace Renderer {
         class HighLevelRenderer;
