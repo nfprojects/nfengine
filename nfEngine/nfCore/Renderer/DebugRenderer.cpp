@@ -9,6 +9,8 @@
 #include "PCH.hpp"
 #include "DebugRenderer.hpp"
 #include "HighLevelRenderer.hpp"
+
+// TODO remove these
 #include "Resources/Material.hpp"
 #include "Resources/Mesh.hpp"
 
@@ -401,8 +403,8 @@ void DebugRenderer::DrawMesh(DebugRendererContext* context, const Resource::Mesh
 
     Flush(context);
 
-    const BufferPtr& vb = mesh->mVB;
-    const BufferPtr& ib = mesh->mIB;
+    const BufferPtr& vb = mesh->GetVertexBuffer();
+    const BufferPtr& ib = mesh->GetIndexBuffer();
 
     if (!vb || !ib)
     {
@@ -426,7 +428,7 @@ void DebugRenderer::DrawMesh(DebugRendererContext* context, const Resource::Mesh
     int offsets[] = { 0 };
     context->commandRecorder->SetVertexBuffers(1, &vb, strides, offsets);
     context->commandRecorder->SetIndexBuffer(ib, IndexBufferFormat::Uint32);
-    for (const auto& subMesh : mesh->mSubMeshes)
+    for (const auto& subMesh : mesh->GetSubMeshes())
     {
         SetMeshMaterial(context, subMesh.material);
         context->commandRecorder->DrawIndexed(3 * subMesh.trianglesCount, 1, subMesh.indexOffset);
