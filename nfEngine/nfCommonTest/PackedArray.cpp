@@ -167,3 +167,154 @@ TEST(PackedArray, AddAndRemoveRandom)
         }
     }
 }
+
+TEST(PackedArray, ComplexTypeCopy)
+{
+    struct Counters
+    {
+        int constructor;
+        int copyConstructor;
+        int assignment;
+        int destructor;
+
+        Counters()
+            : constructor(0)
+            , copyConstructor(0)
+            , assignment(0)
+            , destructor(0)
+        {}
+    };
+
+    Counters counter;
+
+    class TestClass
+    {
+    public:
+        TestClass(Counters* counters)
+            : mCounters(counters)
+        {
+            mCounters->constructor++;
+        }
+
+        TestClass(const TestClass& rhs)
+            : mCounters(rhs.mCounters)
+        {
+            mCounters->copyConstructor++;
+        }
+
+        TestClass& operator=(const TestClass& rhs)
+        {
+            mCounters = rhs.mCounters;
+            mCounters->assignment++;
+            return *this;
+        }
+
+        ~TestClass()
+        {
+            mCounters->destructor++;
+        }
+
+    private:
+        TestClass(TestClass&& rhs) = delete;
+        TestClass& operator=(TestClass&& rhs) = delete;
+
+        Counters* mCounters;
+    };
+
+    {
+        PackedArray<TestClass> array;
+
+        {
+            TestClass obj(&counter);
+            array.Add(obj);
+        }
+
+        EXPECT_EQ(1, counter.constructor);
+        EXPECT_EQ(1, counter.copyConstructor);
+        EXPECT_EQ(0, counter.assignment);
+        EXPECT_EQ(1, counter.destructor); // original only
+    }
+
+    EXPECT_EQ(1, counter.constructor);
+    EXPECT_EQ(1, counter.copyConstructor);
+    EXPECT_EQ(0, counter.assignment);
+    EXPECT_EQ(2, counter.destructor); // one for original, second for the copy
+}
+
+TEST(PackedArray, ComplexTypeMove)
+{
+    struct Counters
+    {
+        int constructor;
+        int moveConstructor;
+        int moveAssignment;
+        int destructor;
+
+        Counters()
+            : constructor(0)
+            , moveConstructor(0)
+            , moveAssignment(0)
+            , destructor(0)
+        {}
+    };
+
+    Counters counter;
+
+    class TestClass
+    {
+    public:
+        TestClass(Counters* counters)
+            : mCounters(counters)
+        {
+            mCounters->constructor++;
+        }
+
+        TestClass(TestClass&& rhs)
+            : mCounters(rhs.mCounters)
+        {
+            mCounters->moveConstructor++;
+            rhs.mCounters = nullptr;
+        }
+
+        TestClass& operator=(TestClass&& rhs)
+        {
+            mCounters = rhs.mCounters;
+            rhs.mCounters = nullptr;
+            mCounters->moveAssignment++;
+            return *this;
+        }
+
+        ~TestClass()
+        {
+            if (mCounters)
+            {
+                mCounters->destructor++;
+            }
+        }
+
+    private:
+        TestClass(const TestClass& rhs) = delete;
+        TestClass& operator=(const TestClass& rhs) = delete;
+
+        Counters* mCounters;
+    };
+
+    {
+        PackedArray<TestClass> array;
+
+        {
+            TestClass obj(&counter);
+            array.Add(std::move(obj));
+        }
+
+        EXPECT_EQ(1, counter.constructor);
+        EXPECT_EQ(1, counter.moveConstructor);
+        EXPECT_EQ(0, counter.moveAssignment);
+        EXPECT_EQ(0, counter.destructor);
+    }
+
+    EXPECT_EQ(1, counter.constructor);
+    EXPECT_EQ(1, counter.moveConstructor);
+    EXPECT_EQ(0, counter.moveAssignment);
+    EXPECT_EQ(1, counter.destructor);
+}
