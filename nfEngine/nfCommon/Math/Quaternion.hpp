@@ -34,39 +34,6 @@ NFE_INLINE Quaternion QuaternionFromAxis(const Vector& axis, float angle)
     return q;
 }
 
-
-NFE_INLINE float safe_acos(float x)
-{
-    if (x <= -1.0f) return NFE_MATH_PI;
-    if (x >= 1.0f) return 0.0f;
-    return acosf(x);
-}
-
-/**
- * Extract rotation axis from a quaternion.
- */
-NFE_INLINE Vector QuaternionToAxis(const Quaternion& quat)
-{
-    float x = quat.f[0];
-    float y = quat.f[1];
-    float z = quat.f[2];
-    float sin_squared = x * x + y * y + z * z;
-
-    Vector result;
-    if (sin_squared > 0.0f)
-    {
-        float sin_theta = sqrtf(sin_squared);
-        float k = 2.0f * atan2f(sin_theta, quat.f[3]) / sin_theta;
-        result = quat * k;
-    }
-    else
-    {
-        result = 2.0f * quat;
-    }
-    result.f[3] = 0.0f;
-    return result;
-}
-
 /**
  * Create quaternion representing rotation around X axis.
  */
@@ -131,6 +98,25 @@ NFE_INLINE Quaternion QuaternionInverse(const Quaternion& q)
 }
 
 /**
+ * Create quaternion from Euler angles.
+ * @param   pitch   Rotation in X axis.
+ * @param   yaw     Rotation in Y axis.
+ * @param   roll    Rotation in Z axis.
+ */
+NFCOMMON_API Quaternion QuaternionFromAngles(float pitch, float yaw, float roll);
+
+/**
+ * Rotate a vector with a quaternion.
+ */
+NFCOMMON_API Vector QuaternionRotateVector(const Quaternion& q, const Vector& v);
+
+/**
+ * Extract rotation axis from a quaternion.
+ * @note    This is slow.
+ */
+NFCOMMON_API Vector QuaternionToAxis(const Quaternion& q);
+
+/**
  * Spherical interpolation of two quaternions.
  * @param q0,q1 Quaternions to interpolate.
  * @param t     Interpolation factor.
@@ -143,7 +129,7 @@ NFCOMMON_API Quaternion QuaternionInterpolate(const Quaternion& q0, const Quater
  * @note Quaternion must be normalized.
  * @return Matrix representing the same rotation as input quaternion.
  */
-NFCOMMON_API Matrix MatrixFromQuaternion(const Quaternion& q);
+NFCOMMON_API Matrix QuaternionToMatrix(const Quaternion& q);
 
 /**
  * Create quaternion from 4x4 matrix.
