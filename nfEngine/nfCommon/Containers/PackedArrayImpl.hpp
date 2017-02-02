@@ -189,14 +189,14 @@ void PackedArray<ObjType, IDType, Alignment>::Remove(IDType index)
 
     IDType id = mIDs[index];
     --mUsed;
+
+    mObjects[id].~ObjType();
+
     if (id < mUsed)
     {
         // move the object from the end to fill the gap
         MemoryHelpers::Move<ObjType>(mObjects + id, mObjects + mUsed);
-    }
-    else
-    {
-        mObjects[id].~ObjType();
+        mObjects[mUsed].~ObjType();
     }
 
     IDType newLastTaken = mNodes[mTakenHead].next;

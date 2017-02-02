@@ -72,12 +72,6 @@ NFE_INLINE constexpr uint32 GetHash<int64>(const int64& x)
  * Hash function for pointers.
  */
 template<typename T>
-uint32 constexpr GetHash(const T* x)
-{
-    return GetHash(reinterpret_cast<size_t>(x));
-}
-
-template<typename T>
 uint32 constexpr GetHash(T* x)
 {
     return GetHash(reinterpret_cast<size_t>(x));

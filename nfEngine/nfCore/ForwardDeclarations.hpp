@@ -7,6 +7,11 @@
 
 #pragma once
 
+#include "nfCommon/Containers/UniquePtr.hpp"
+
+#include <memory>
+
+
 namespace NFE {
 
     class Engine;
@@ -20,12 +25,6 @@ namespace NFE {
         class OutputStream;
     } // namespace Common
 
-    namespace Util {
-        class BVH;
-        class FrameStats;
-        class Aligned;
-    } // namespace Util
-
     namespace Resource {
         class ResManager;
         class ResourceBase;
@@ -37,31 +36,46 @@ namespace NFE {
     } // namespace Resource
 
     namespace Scene {
-        class Component;
+        class Entity;
+        class IEntityController;
+
+        class IComponent;
         class MeshComponent;
         class BodyComponent;
         class LightComponent;
         class CameraComponent;
-        class TransformComponent;
+        class ControllerComponent;
+        class TriggerComponent;
 
-        class EntityManager;
         class SceneManager;
-        class TransformSystem;
-        class PhysicsSystem;
         class RendererSystem;
+        class InputSystem;
+        class EntitySystem;
+        class EventSystem;
+        class PhysicsSystem;
+        class TriggerSystem;
 
-        class RenderingData;
-        struct MeshComponentDesc;
-        struct LightDesc;
-        struct CameraDesc;
-        struct BodyComponentDesc;
+        class Event;
+        class Event_Tick;
+        class Event_Input;
+        class Event_Trigger;
 
-        enum class ComponentMsg;
-        enum class ComponentType;
+        using EntityID = uint32;
+        using EntityPtr = Common::UniquePtr<Entity>;
+        using ComponentPtr = Common::UniquePtr<IComponent>;
+        using EntityControllerPtr = Common::UniquePtr<IEntityController>;
+        using SceneManagerPtr = Common::UniquePtr<SceneManager>;
+
     } // namespace Scene
 
+    namespace Physics {
+        struct BodyProxyInfo;
+        class IPhysicsScene;
+    } // namespace Physics
 
     namespace Renderer {
+        class RenderScene;
+
         class HighLevelRenderer;
         class DebugRenderer;
         class GeometryRenderer;

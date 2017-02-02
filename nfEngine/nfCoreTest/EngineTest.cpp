@@ -1,10 +1,9 @@
 #include "PCH.hpp"
 #include "nfCore/Engine.hpp"
 #include "nfCore/Renderer/HighLevelRenderer.hpp"
-#include "nfCore/Components/TransformComponent.hpp"
-#include "nfCore/Components/MeshComponent.hpp"
-#include "nfCore/Components/BodyComponent.hpp"
-#include "nfCore/Components/LightComponent.hpp"
+#include "nfCore/Scene/Components/ComponentMesh.hpp"
+#include "nfCore/Scene/Components/ComponentBody.hpp"
+#include "nfCore/Scene/Components/ComponentLight.hpp"
 
 
 using namespace NFE;
@@ -58,18 +57,6 @@ TEST_F(nfEngineTest, GetInstance)
     ResManager* newResourcesManagerPtr = mEngine->GetResManager();
     EXPECT_EQ(mResourcesManager, newResourcesManagerPtr) <<
             "Resources Manager pointer should not change";
-}
-
-// basic scene creation / removal
-TEST_F(nfEngineTest, SceneManagement)
-{
-    SceneManager* scene;
-
-    scene = mEngine->CreateScene();
-    ASSERT_NE(nullptr, scene);
-    mEngine->DeleteScene(scene);
-    mEngine->DeleteScene(scene); // second try should fail
-    mEngine->DeleteScene(nullptr); // pass invalid pointer
 }
 
 // ResManager::GetResource weird arguments test
