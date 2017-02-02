@@ -1,41 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Precomp">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Main">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Editor.hpp">
-      <Filter>Main</Filter>
+    <ClInclude Include="GameWindow.hpp" />
+    <ClInclude Include="Main.hpp" />
+    <ClInclude Include="Scenes.hpp" />
+    <ClInclude Include="PCH.hpp" />
+    <ClInclude Include="Controllers\TriggeredLightController.hpp">
+      <Filter>Controllers</Filter>
     </ClInclude>
-    <ClInclude Include="Test.hpp">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="PCH.hpp">
-      <Filter>Precomp</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenes.hpp">
-      <Filter>Main</Filter>
+    <ClInclude Include="Controllers\FreeCameraController.hpp">
+      <Filter>Controllers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Test.cpp">
-      <Filter>Main</Filter>
+    <ClCompile Include="GameWindow.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Scenes.cpp" />
+    <ClCompile Include="PCH.cpp" />
+    <ClCompile Include="Controllers\FreeCameraController.cpp">
+      <Filter>Controllers</Filter>
     </ClCompile>
-    <ClCompile Include="PCH.cpp">
-      <Filter>Precomp</Filter>
+    <ClCompile Include="Controllers\TriggeredLightController.cpp">
+      <Filter>Controllers</Filter>
     </ClCompile>
-    <ClCompile Include="Editor.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
-    <ClCompile Include="Scenes.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Controllers">
+      <UniqueIdentifier>{eda95a72-cfb5-4ac5-91a7-554d7828156c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

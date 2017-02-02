@@ -7,7 +7,9 @@
 #include "PCH.hpp"
 #include "Engine.hpp"
 #include "Resources/Texture.hpp"
-#include "Systems/RendererSystem.hpp"
+#include "Scene/Systems/RendererSystem.hpp"
+#include "Scene/SceneManager.hpp"
+#include "Scene/Entity.hpp"
 
 #include "Renderer/HighLevelRenderer.hpp"
 #include "Renderer/GuiRenderer.hpp"
@@ -57,9 +59,6 @@ void Engine::OnRelease()
     // destroy scenes
     if (!mScenes.empty())
     {
-        for (auto& scene : mScenes)
-            delete scene;
-
         mScenes.clear();
         LOG_WARNING("Not all scenes has been released before engine shutdown.");
     }
@@ -80,30 +79,34 @@ void Engine::OnRelease()
     Font::ReleaseFreeType();
 }
 
-SceneManager* Engine::CreateScene()
+SceneManager* Engine::CreateScene(const std::string& name)
 {
-    SceneManager* scene = new SceneManager;
-    if (scene == nullptr)
+    std::unique_ptr<SceneManager> scene(new SceneManager(name));
+    if (!scene)
     {
         LOG_ERROR("Memory allocation failed");
         return nullptr;
     }
 
-    mScenes.insert(scene);
-    return scene;
+    LOG_INFO("Scene '%s' created", scene->GetName().c_str());
+    mScenes.push_back(std::move(scene));
+    return mScenes.back().get();
 }
 
 
-void Engine::DeleteScene(SceneManager* scene)
+bool Engine::DeleteScene(SceneManager* scene)
 {
-    if (mScenes.erase(scene))
+    auto iter = std::find_if(mScenes.begin(), mScenes.end(),
+                             [scene](const SceneManagerPtr& ptr) { return ptr.get() == scene; });
+    if (mScenes.end() != iter)
     {
-        delete scene;
-        LOG_WARNING("Scene has been deleted"); // TODO: which scene?
-        return;
+        LOG_INFO("Deleting scene: '%s'", scene->GetName().c_str());
+        mScenes.erase(iter);
+        return true;
     }
 
-    LOG_WARNING("Scene not found, scene = %p", scene);
+    LOG_ERROR("Scene '%s' not found", scene->GetName().c_str());
+    return false;
 }
 
 Engine* Engine::GetInstance()
@@ -144,14 +147,13 @@ void Engine::Release()
 bool Engine::Advance(View** views, size_t viewsNum,
                      const UpdateRequest* updateRequests, size_t updateRequestsNum)
 {
-    using namespace Util;
-
     if (viewsNum > 0 && !mRenderer)
     {
         LOG_ERROR("Renderer is not initialized, drawing is not supported.");
         return false;
     }
 
+    // TODO get rid of that
     std::unique_lock<std::recursive_mutex> lock(mRenderingMutex);
 
     // update physics
@@ -161,7 +163,9 @@ bool Engine::Advance(View** views, size_t viewsNum,
         SceneManager* scene = updateRequests[i].scene;
 
         //check if scene is valid
-        if (mScenes.count(scene) == 0)
+        auto iter = std::find_if(mScenes.begin(), mScenes.end(),
+                                 [scene](const SceneManagerPtr& ptr) { return scene == ptr.get(); });
+        if (mScenes.end() == iter)
         {
             LOG_ERROR("Scene pointer '%p' passed in UpdateRequest structure is invalid "
                       "- the scene does not exist.", scene);
@@ -169,26 +173,46 @@ bool Engine::Advance(View** views, size_t viewsNum,
             continue;
         }
 
-        scene->Update(updateRequests[i].deltaTime);
+        // begin scene update
+        {
+            SceneUpdateInfo info;
+            info.timeDelta = updateRequests[i].deltaTime;
+            scene->BeginUpdate(info);
+        }
     }
-
-    // temporary rendering data for each view
-    std::vector<RenderingData, Common::AlignedAllocator<RenderingData, 16>> renderingData;
-    renderingData.resize(viewsNum);
 
     // prepare for rendering
     mRenderer->ResetCommandBuffers();
+
+    std::vector<Common::TaskID> renderingTasks;
+    renderingTasks.reserve(viewsNum);
 
     bool scenesRenderedSuccessfully = true;
     for (size_t i = 0; i < viewsNum; i++)
     {
         View* view = views[i];
-        if (view == nullptr)
-            continue;
-        SceneManager* scene = view->GetSceneManager();
+        NFE_ASSERT(view, "Invalid view pointer provided");
 
-        //check if scene is valid
-        if (mScenes.count(scene) == 0)
+        Entity* cameraEntity = view->GetCameraEntity();
+        if (!cameraEntity)
+        {
+            LOG_ERROR("Invalid camera");
+            scenesRenderedSuccessfully = false;
+            continue;
+        }
+
+        SceneManager* scene = cameraEntity->GetScene();
+        if (!scene)
+        {
+            LOG_ERROR("Camera entity does not belong to any scene");
+            scenesRenderedSuccessfully = false;
+            continue;
+        }
+
+        // check if scene is valid
+        auto iter = std::find_if(mScenes.begin(), mScenes.end(),
+                                 [scene](const SceneManagerPtr& ptr) { return scene == ptr.get(); });
+        if (mScenes.end() == iter)
         {
             LOG_ERROR("Scene pointer '%p' passed in DrawRequest structure is invalid "
                       "- the scene does not exist.", scene);
@@ -196,19 +220,17 @@ bool Engine::Advance(View** views, size_t viewsNum,
             continue;
         }
 
-        if (scene != nullptr)
+        // start the rendering
+        const Common::TaskID taskID = scene->BeginRendering(view);
+        if (taskID != NFE_INVALID_TASK_ID)
         {
-            renderingData[i].view = view;
-            scene->Render(renderingData[i]);
+            renderingTasks.push_back(taskID);
         }
     }
 
     // wait until all command buffers are filled
-    for (size_t i = 0; i < viewsNum; i++)
-    {
-        renderingData[i].WaitForRenderingTasks();
-    }
-
+    // TODO get rid of this - everything must be asynchronous !!!
+    mMainThreadPool.WaitForTasks(renderingTasks.data(), renderingTasks.size());
     mRenderer->FinishAndExecuteCommandBuffers();
 
     for (size_t i = 0; i < viewsNum; i++)

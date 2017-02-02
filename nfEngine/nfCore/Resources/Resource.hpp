@@ -38,7 +38,7 @@ enum class ResourceType
     Material,
     Mesh,
     CollisionShape,
-    Sound,
+    GameObject,
 };
 
 // Maximum resource's name length in bytes (including terminating null)

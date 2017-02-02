@@ -151,6 +151,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HLSL5", "HLSL5", "{9BA96BF9
 	EndProjectSection
 EndProject
 Global
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|Win32 = Debug|Win32
