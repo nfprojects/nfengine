@@ -3,6 +3,9 @@
 #include "nfCommon/Math/Math.hpp"
 #include "nfCommon/Math/Random.hpp"
 
+#include "TestClasses.hpp"
+
+
 using namespace NFE::Common;
 using namespace NFE::Math;
 
@@ -166,4 +169,54 @@ TEST(PackedArray, AddAndRemoveRandom)
             ASSERT_EQ(value, array[idx]) << "i=" << i;
         }
     }
+}
+
+TEST(PackedArray, ComplexTypeCopy)
+{
+    using TestClass = CopyOnlyTestClass<int>;
+    ClassMethodCallCounters counter;
+
+    {
+        PackedArray<TestClass> array;
+
+        {
+            TestClass obj(&counter);
+            array.Add(obj);
+        }
+
+        EXPECT_EQ(1, counter.constructor);
+        EXPECT_EQ(1, counter.copyConstructor);
+        EXPECT_EQ(0, counter.assignment);
+        EXPECT_EQ(1, counter.destructor); // original only
+    }
+
+    EXPECT_EQ(1, counter.constructor);
+    EXPECT_EQ(1, counter.copyConstructor);
+    EXPECT_EQ(0, counter.assignment);
+    EXPECT_EQ(2, counter.destructor); // one for original, second for the copy
+}
+
+TEST(PackedArray, ComplexTypeMove)
+{
+    using TestClass = MoveOnlyTestClass<int>;
+    ClassMethodCallCounters counter;
+
+    {
+        PackedArray<TestClass> array;
+
+        {
+            TestClass obj(&counter);
+            array.Add(std::move(obj));
+        }
+
+        EXPECT_EQ(1, counter.constructor);
+        EXPECT_EQ(1, counter.moveConstructor);
+        EXPECT_EQ(0, counter.moveAssignment);
+        EXPECT_EQ(0, counter.destructor);
+    }
+
+    EXPECT_EQ(1, counter.constructor);
+    EXPECT_EQ(1, counter.moveConstructor);
+    EXPECT_EQ(0, counter.moveAssignment);
+    EXPECT_EQ(1, counter.destructor);
 }
