@@ -22,7 +22,7 @@
     <ProjectGuid>{49AB8AC7-1834-4AF8-9792-59313C71C7E0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>RendererD3D12</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
