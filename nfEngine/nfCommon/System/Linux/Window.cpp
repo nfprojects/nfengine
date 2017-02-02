@@ -403,6 +403,7 @@ void Window::ProcessMessages()
             {
                 xcb_key_release_event_t* kr = reinterpret_cast<xcb_key_release_event_t*>(event);
                 this->mKeys[kr->detail] = false;
+                OnKeyUp(static_cast<KeyCode>(kr->detail));
                 break;
             }
             case XCB_MOTION_NOTIFY:
@@ -462,8 +463,14 @@ void Window::LostFocus()
     MouseUp(1);
     MouseUp(2);
 
-    for (int i = 0; i < 256; i++)
-        mKeys[i] = false;
+    for (int i = 0; i < NFE_WINDOW_KEYS_NUM; i++)
+    {
+        if (mKeys[i])
+        {
+            OnKeyUp(static_cast<KeyCode>(i));
+            mKeys[i] = false;
+        }
+    }
 }
 
 bool Window::IsClosed() const
@@ -516,6 +523,11 @@ void Window::OnResize(uint32 width, uint32 height)
 }
 
 void Window::OnKeyPress(KeyCode key)
+{
+    UNUSED(key);
+}
+
+void Window::OnKeyUp(KeyCode key)
 {
     UNUSED(key);
 }

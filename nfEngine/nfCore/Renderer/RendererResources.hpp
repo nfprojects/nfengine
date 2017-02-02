@@ -7,7 +7,7 @@
 #pragma once
 
 #include "../Core.hpp"
-#include "../Renderers/RendererInterface/Device.hpp"
+#include "../../Renderers/RendererInterface/Device.hpp"
 
 #include "nfCommon/Math/Matrix.hpp"
 
@@ -82,6 +82,7 @@ public:
     };
 
     ShadowMap();
+    ~ShadowMap();
     void Release();
     bool Resize(uint32 size, Type type, uint32 splits = 1);
 

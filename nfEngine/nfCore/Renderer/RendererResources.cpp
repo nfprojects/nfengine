@@ -22,6 +22,11 @@ ShadowMap::ShadowMap()
 {
 }
 
+ShadowMap::~ShadowMap()
+{
+
+}
+
 void ShadowMap::Release()
 {
     for (uint32 i = 0; i < MAX_CASCADE_SPLITS; ++i)

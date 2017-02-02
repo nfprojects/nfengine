@@ -8,11 +8,17 @@
 #include "PCH.hpp"
 #include "SceneManager.hpp"
 #include "Engine.hpp"
-#include "Components/TransformComponent.hpp"
-#include "Systems/TransformSystem.hpp"
+
+// TODO remove this
+#include "Renderer/RenderScene.hpp"
 #include "Systems/PhysicsSystem.hpp"
 #include "Systems/RendererSystem.hpp"
+#include "Systems/InputSystem.hpp"
+#include "Systems/EntitySystem.hpp"
+#include "Systems/EventSystem.hpp"
+#include "Systems/TriggerSystem.hpp"
 
+#include "nfCommon/System/Memory.hpp"
 #include "nfCommon/System/Memory.hpp"
 #include "nfCommon/Utils/ThreadPool.hpp"
 
@@ -24,58 +30,86 @@ using namespace Math;
 using namespace Renderer;
 using namespace Resource;
 
-SceneManager::SceneManager()
-    : mTransformSystem(new TransformSystem(this))
-    , mPhysicsSystem(new PhysicsSystem(this))
-    , mRendererSystem(new RendererSystem(this))
-{
-}
+SceneManager::SceneManager(const Common::String& name)
+    : mName(name)
+    , mFrameNumber(0)
+    , mTotalTime(0.0)
+{ }
 
 SceneManager::~SceneManager()
 {
+    // Entity system has potentially dependency on every other system (e.g. MeshComponent
+    // uses RenderScene), so remove all the pending entities first.
+    GetSystem<EntitySystem>()->RemoveAllEntities();
 }
 
-void SceneManager::SetEnvironment(const EnviromentDesc* desc)
+bool SceneManager::InitializeSystems()
 {
-    if (!Common::MemoryCheck(desc))
-        mEnvDesc = *desc;
+    ReleaseSystems();
+
+    mSystems[EntitySystem::ID] = Common::MakeUniquePtr<EntitySystem>(*this);
+    mSystems[InputSystem::ID] = Common::MakeUniquePtr<InputSystem>(*this);
+    mSystems[PhysicsSystem::ID] = Common::MakeUniquePtr<PhysicsSystem>(*this);
+    mSystems[RendererSystem::ID] = Common::MakeUniquePtr<RendererSystem>(*this);
+    mSystems[EventSystem::ID] = Common::MakeUniquePtr<EventSystem>(*this);
+    mSystems[TriggerSystem::ID] = Common::MakeUniquePtr<TriggerSystem>(*this);
+
+    return true;
 }
 
-void SceneManager::GetEnvironment(EnviromentDesc* desc) const
+void SceneManager::ReleaseSystems()
 {
-    if (!Common::MemoryCheck(desc))
-        *desc = mEnvDesc;
+    // TODO release in appropriate order (there may be some inter-system dependencies)
+    for (int i = 0; i < MaxSystems; ++i)
+    {
+        mSystems[i].Reset();
+    }
 }
 
-void SceneManager::Update(float deltaTime)
+Common::TaskID SceneManager::BeginUpdate(const SceneUpdateInfo& info)
 {
-    using namespace std::placeholders;
+    // TODO this should be thread pool tasks
+    // TODO systems update graph (right now it's very serial...)
+
+    SystemUpdateContext updateContext;
+    updateContext.timeDelta = info.timeDelta;
+    updateContext.totalTime = mTotalTime;
+    updateContext.frameNumber = mFrameNumber;
+
+    mFrameNumber++;
+    mTotalTime += static_cast<double>(info.timeDelta);
+
+    for (auto& system : mSystems)
+    {
+        // ignore uninitialized systems
+        if (!system)
+            continue;
+
+        system->Update(updateContext);
+    }
+
+    // TODO
+    return NFE_INVALID_TASK_ID;
+}
+
+Common::TaskID SceneManager::BeginRendering(const Renderer::View* view)
+{
+    RendererSystem* rendererSystem = GetSystem<RendererSystem>();
+    if (!rendererSystem)
+    {
+        // rendering not supported
+        return NFE_INVALID_TASK_ID;
+    }
+
     Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
+    NFE_ASSERT(threadPool, "Invalid thread pool");
 
-    mPhysicsSystem->Update(deltaTime);
-    mTransformSystem->Update();
-    mEntityManager.FlushInvalidComponents();
+    auto renderCallback = [rendererSystem, view](const Common::TaskContext& context)
+    {
+        rendererSystem->GetRenderScene()->Render(context, view);
+    };
 
-    mRendererUpdateTask = threadPool->CreateTask(
-        std::bind(&RendererSystem::Update,
-                  mRendererSystem.get(), // "this"
-                  _1,                    // task context
-                  deltaTime));
-}
-
-void SceneManager::Render(RenderingData& renderingData)
-{
-    using namespace std::placeholders;
-    Common::ThreadPool* threadPool = Engine::GetInstance()->GetThreadPool();
-
-    renderingData.sceneRenderTask =
-        threadPool->CreateTask(std::bind(&RendererSystem::Render,
-                                         mRendererSystem.get(), // "this"
-                                         _1,                    // task context
-                                         std::ref(renderingData)),
-                               1,                   // instances number
-                               NFE_INVALID_TASK_ID, // no parent
-                               mRendererUpdateTask);
+    return threadPool->CreateTask(renderCallback);
 }
 
 } // namespace Scene

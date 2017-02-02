@@ -83,7 +83,7 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)nfEngineDeps\imgui;$(SolutionDir)nfEngine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)nfEngineDeps\imgui;$(SolutionDir)nfEngine;$(ProjectDir)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -103,7 +103,7 @@ popd</Command>
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)nfEngineDeps\imgui;$(SolutionDir)nfEngine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)nfEngineDeps\imgui;$(SolutionDir)nfEngine;$(ProjectDir)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -124,7 +124,7 @@ popd</Command>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)nfEngineDeps\imgui;$(SolutionDir)nfEngine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)nfEngineDeps\imgui;$(SolutionDir)nfEngine;$(ProjectDir)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
@@ -148,7 +148,7 @@ popd</Command>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)nfEngineDeps\imgui;$(SolutionDir)nfEngine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)nfEngineDeps\imgui;$(SolutionDir)nfEngine;$(ProjectDir)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
@@ -168,13 +168,19 @@ popd</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Editor.hpp" />
+    <ClInclude Include="Controllers\FlickeringLightController.hpp" />
+    <ClInclude Include="Controllers\FreeCameraController.hpp" />
+    <ClInclude Include="Controllers\TriggeredLightController.hpp" />
+    <ClInclude Include="GameWindow.hpp" />
     <ClInclude Include="Scenes.hpp" />
     <ClInclude Include="PCH.hpp" />
-    <ClInclude Include="Test.hpp" />
+    <ClInclude Include="Main.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Editor.cpp" />
+    <ClCompile Include="Controllers\FlickeringLightController.cpp" />
+    <ClCompile Include="Controllers\FreeCameraController.cpp" />
+    <ClCompile Include="Controllers\TriggeredLightController.cpp" />
+    <ClCompile Include="GameWindow.cpp" />
     <ClCompile Include="Scenes.cpp" />
     <ClCompile Include="PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -182,7 +188,7 @@ popd</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Test.cpp" />
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
