@@ -11,30 +11,36 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Editor.hpp">
-      <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="Test.hpp">
-      <Filter>Main</Filter>
-    </ClInclude>
     <ClInclude Include="PCH.hpp">
       <Filter>Precomp</Filter>
     </ClInclude>
     <ClInclude Include="Scenes.hpp">
       <Filter>Main</Filter>
     </ClInclude>
+    <ClInclude Include="FreeCameraController.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Main.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="GameWindow.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Test.cpp">
-      <Filter>Main</Filter>
-    </ClCompile>
     <ClCompile Include="PCH.cpp">
       <Filter>Precomp</Filter>
     </ClCompile>
-    <ClCompile Include="Editor.cpp">
+    <ClCompile Include="Scenes.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="Scenes.cpp">
+    <ClCompile Include="FreeCameraController.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="GameWindow.cpp">
       <Filter>Main</Filter>
     </ClCompile>
   </ItemGroup>

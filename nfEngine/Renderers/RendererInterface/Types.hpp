@@ -8,6 +8,8 @@
 
 #include "nfCommon/nfCommon.hpp"
 
+#include <memory>
+
 
 namespace NFE {
 namespace Renderer {
