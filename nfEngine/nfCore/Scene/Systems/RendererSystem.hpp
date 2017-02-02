@@ -1,0 +1,84 @@
+/**
+ * @file
+ * @author Witek902 (witek902@gmail.com)
+ * @brief  Declarations of renderer system.
+ */
+
+#pragma once
+
+#include "../../Core.hpp"
+#include "../../Renderer/View.hpp"
+#include "System.hpp"
+#include "RenderProxies.hpp"
+
+#include "nfCommon/Utils/ThreadPool.hpp"
+
+
+namespace NFE {
+namespace Scene {
+
+/**
+ * Scene system - high level renderer (interface).
+ */
+class IRendererSystem : public ISystem
+{
+    NFE_MAKE_NONCOPYABLE(IRendererSystem)
+
+public:
+    IRendererSystem(SceneManager* scene);
+
+    /**
+     * Render the scene for a view.
+     * This function will be called as thread pool task.
+     *
+     * @param context   Thread pool's task context.
+     * @param view      Target viewport.
+     * @return          Rendering task ID.
+     */
+    virtual Common::TaskID Render(const Common::TaskContext& context, const Renderer::View* view) = 0;
+
+    /**
+     * Create a new mesh rendering proxy.
+     * @param   desc    Rendering proxy descriptor.
+     * @return  Rendering proxy ID.
+     */
+    virtual RenderProxyID CreateMeshProxy(const MeshProxyDesc& desc) = 0;
+
+    /**
+     * Create a new light rendering proxy.
+     * @param   desc    Rendering proxy descriptor.
+     * @return  Rendering proxy ID.
+     */
+    virtual RenderProxyID CreateLightProxy(const LightProxyDesc& desc) = 0;
+
+    /**
+     * Update mesh rendering proxy. For example change mesh or it's transformation matrix.
+     * @param   desc    New rendering proxy descriptor.
+     * @return  True on success.
+     */
+    virtual bool UpdateMeshProxy(const RenderProxyID proxyID, const MeshProxyDesc& desc) = 0;
+
+    /**
+     * Update light rendering proxy. For example change mesh or it's transformation matrix.
+     * @param   desc    New rendering proxy descriptor.
+     * @return  True on success.
+     */
+    virtual bool UpdateLightProxy(const RenderProxyID proxyID, const LightProxyDesc& desc) = 0;
+
+    /**
+     * Delete mesh rendering proxy.
+     * @param   proxyID Valid proxy ID.
+     * @return  True on success.
+     */
+    virtual bool DeleteMeshProxy(const RenderProxyID proxyID) = 0;
+
+    /**
+     * Delete light rendering proxy.
+     * @param   proxyID Valid proxy ID.
+     * @return  True on success.
+     */
+    virtual bool DeleteLightProxy(const RenderProxyID proxyID) = 0;
+};
+
+} // namespace Scene
+} // namespace NFE
