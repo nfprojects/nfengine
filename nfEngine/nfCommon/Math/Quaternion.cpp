@@ -10,8 +10,73 @@
 namespace NFE {
 namespace Math {
 
+Quaternion QuaternionFromAngles(float pitch, float yaw, float roll)
+{
+    // based on: https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+
+    pitch *= 0.5f;
+    yaw *= 0.5f;
+    roll *= 0.5f;
+
+    Quaternion q;
+    float t0 = cosf(yaw);
+    float t1 = sinf(yaw);
+    float t2 = cosf(roll);
+    float t3 = sinf(roll);
+    float t4 = cosf(pitch);
+    float t5 = sinf(pitch);
+
+    const Vector term0 = Vector(t0, t0, t1, t0);
+    const Vector term1 = Vector(t3, t2, t2, t2);
+    const Vector term2 = Vector(t4, t5, t4, t4);
+
+    const Vector term3 = Vector(-t1, t1, -t0, t1);
+    const Vector term4 = Vector(t2, t3, t3, t3);
+    const Vector term5 = Vector(t5, t4, t5, t5);
+ 
+    return term0 * term1 * term2 + term3 * term4 * term5;
+}
+
+Vector QuaternionRotateVector(const Quaternion& q, const Vector& v)
+{
+    // based on: http://gamedev.stackexchange.com/a/50545
+
+    // TODO write SSE version
+
+    // extract the scalar part
+    const float s = q[3];
+
+    // extract vector part
+    const Vector u = Vector(q[0], q[1], q[2], 0.0f);
+
+    return 2.0f * VectorDot3(u, v) * u + (s * s - VectorDot3f(u, u)) * v + (2.0f * s) * VectorCross3(u, v);
+}
+
+Vector QuaternionToAxis(const Quaternion& q)
+{
+    float x = q.f[0];
+    float y = q.f[1];
+    float z = q.f[2];
+    float sin_squared = x * x + y * y + z * z;
+
+    Vector result;
+    if (sin_squared > 0.0f)
+    {
+        float sin_theta = sqrtf(sin_squared);
+        float k = 2.0f * atan2f(sin_theta, q.f[3]) / sin_theta;
+        result = q * k;
+    }
+    else
+    {
+        result = 2.0f * q;
+    }
+
+    result.f[3] = 0.0f;
+    return result;
+}
+
 // Create rotation matrix from quaternion. Quaternion must be normalized!
-Matrix MatrixFromQuaternion(const Quaternion& q)
+Matrix QuaternionToMatrix(const Quaternion& q)
 {
     float xx = q.f[0] * q.f[0], yy = q.f[1] * q.f[1], zz = q.f[2] * q.f[2];
     float xy = q.f[0] * q.f[1], xz = q.f[0] * q.f[2];
