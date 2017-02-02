@@ -7,7 +7,8 @@
 #include "PCH.hpp"
 #include "Engine.hpp"
 #include "Resources/Texture.hpp"
-#include "Systems/RendererSystem.hpp"
+#include "Scene/Systems/RendererSystem.hpp"
+#include "Scene/Entity.hpp"
 
 #include "Renderer/HighLevelRenderer.hpp"
 #include "Renderer/GuiRenderer.hpp"
@@ -183,9 +184,23 @@ bool Engine::Advance(View** views, size_t viewsNum,
     for (size_t i = 0; i < viewsNum; i++)
     {
         View* view = views[i];
-        if (view == nullptr)
+        NFE_ASSERT(view, "Invalid view pointer provided");
+
+        Entity* cameraEntity = view->GetCameraEntity();
+        if (!cameraEntity)
+        {
+            LOG_ERROR("Invalid camera");
+            scenesRenderedSuccessfully = false;
             continue;
-        SceneManager* scene = view->GetSceneManager();
+        }
+
+        SceneManager* scene = cameraEntity->GetScene();
+        if (!scene)
+        {
+            LOG_ERROR("Camera entity does not belong to any scene");
+            scenesRenderedSuccessfully = false;
+            continue;
+        }
 
         //check if scene is valid
         if (mScenes.count(scene) == 0)

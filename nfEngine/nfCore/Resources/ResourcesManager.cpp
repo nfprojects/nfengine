@@ -9,13 +9,14 @@
 #include "nfCommon/System/Memory.hpp"
 #include "nfCommon/Logger/Logger.hpp"
 
-// TODO: remove these dependencies - adding a new resource type shouldn't force programmer to modify this file...
+// TODO use RTTI system for this...
 #include "Multishader.hpp"
 #include "Texture.hpp"
 #include "Material.hpp"
 #include "Mesh.hpp"
 #include "CollisionShape.hpp"
 #include "SoundSample.hpp"
+#include "GameObject/GameObject.hpp"
 
 namespace NFE {
 namespace Resource {
@@ -79,6 +80,7 @@ ResourceBase* ResManager::GetResource(const char* name, ResourceType type, bool 
     if (check)
         return nullptr;
 
+    // TODO use RTTI system for this...
     switch (type)
     {
         case ResourceType::Shader:
@@ -101,8 +103,8 @@ ResourceBase* ResManager::GetResource(const char* name, ResourceType type, bool 
             resource = new CollisionShape;
             break;
 
-        case ResourceType::Sound:
-            resource = new SoundSample;
+        case ResourceType::GameObject:
+            resource = new GameObject;
             break;
 
         default:
