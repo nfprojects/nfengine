@@ -25,6 +25,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <signal.h>
 #endif // defined(__LINUX__) | defined(__linux__)
 
 /// C lib
