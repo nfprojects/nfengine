@@ -125,14 +125,6 @@ TEST_F(LoggerTest, Invalid)
 }
 
 
-// LOGGER DEATHTESTS
-TEST_F(LoggerDeathTest, FatalLogs)
-{
-    ASSERT_EXIT(LOG_FATAL("Some fatal log."), testing::ExitedWithCode(1), "");
-    ASSERT_EXIT(LOG_FATAL_S("Some fatal log."), testing::ExitedWithCode(1), "");
-}
-
-
 // LOGGER BACKENDS
 
 TEST_F(LoggerBackendsTest, DisableAll)
