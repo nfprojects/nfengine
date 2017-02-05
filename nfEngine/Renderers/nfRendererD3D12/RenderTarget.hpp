@@ -10,6 +10,8 @@
 #include "Common.hpp"
 #include "Texture.hpp"
 
+#include "nfCommon/Assertion.hpp"
+
 #include <vector>
 
 
