@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fabf19d9_00c346ee",
+        "filename": "nfEngine/nfCommonTest/PackedArray.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-02-05T11:51:01Z",
+      "side": 1,
+      "message": "I think that Counters and TestClass could be defined only once for all ComplexType* tests. It would be a little bit more readable then.\n\nThen, I would also rename TestClass to CounterClass or sth.",
+      "range": {
+        "startLine": 263,
+        "startChar": 0,
+        "endLine": 300,
+        "endChar": 6
+      },
+      "revId": "90996c532c0ec8d191a7377baf59684bb5ff29b1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
