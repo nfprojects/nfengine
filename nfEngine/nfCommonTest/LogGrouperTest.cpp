@@ -128,36 +128,3 @@ TEST_F(LogGrouperTest, Simple)
 
     testBackend->Enable(false);
 }
-
-TEST_F(LogGrouperTest, Fatal)
-{
-    // Lambda for checking if anything was logged
-    auto wasLogged = []() -> bool {
-        auto tBackend = Logger::GetBackend("Test");
-        if (tBackend == nullptr)
-            return false;
-        return !dynamic_cast<TestBackend*>(tBackend)->mLastLogInfo.lastFile.empty();
-    };
-
-    auto testBackend = dynamic_cast<TestBackend*>(Logger::GetBackend("Test"));
-    ASSERT_NE(nullptr, testBackend);
-
-    {
-        LOG_GROUP_CREATE(testGroup);
-        ASSERT_FALSE(wasLogged());
-
-        LOG_INFO_GROUP(testGroup, "some log 43");
-        ASSERT_FALSE(wasLogged());
-
-        // If it exits - it means that LogGrouper was flushed and quit
-        ASSERT_EXIT(LOG_FATAL_GROUP(testGroup, "some log %d", 43), testing::ExitedWithCode(1), "");
-
-        // If it exits - it means that LogGrouper was flushed and quit
-        ASSERT_EXIT(LOG_FATAL_S_GROUP(testGroup, "some log " << 43), testing::ExitedWithCode(1), "");
-
-        LOG_INFO_GROUP(testGroup, "some log 43");
-        ASSERT_FALSE(wasLogged());
-    }
-    // Fatal log should flush all logs before it - new ones should be valid and wait for next flush
-    ASSERT_TRUE(wasLogged());
-}
