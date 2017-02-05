@@ -15,6 +15,7 @@
 #include "Resources/ResourcesManager.hpp"
 #include "Resources/Texture.hpp"
 
+#include "nfCommon/Assertion.hpp"
 #include "nfCommon/Window.hpp"
 #include "nfCommon/Logger.hpp"
 #include "nfCommon/KeyCodes.hpp"
