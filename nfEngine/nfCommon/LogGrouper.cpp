@@ -89,11 +89,10 @@ void LogGrouper::Log(LogType type, int line, const char* file, const char* str, 
 
     InsertLog(log);
 
-   // If it's a fatal log, flush logs and exit the engine
+   // If it's a fatal log, flush logs
     if (type == NFE::Common::LogType::Fatal)
     {
         Flush();
-        exit(1);
     }
 }
 
@@ -113,11 +112,10 @@ void LogGrouper::Log(LogType type, const char* str, int line, const char* file)
 
     InsertLog(log);
 
-    // If it's a fatal log, flush logs and exit the engine
+    // If it's a fatal log, flush logs
     if (type == NFE::Common::LogType::Fatal)
     {
         Flush();
-        exit(1);
     }
 }
 
