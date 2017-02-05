@@ -213,10 +213,6 @@ void Logger::Log(LogType type, const char* srcFile, int line, const char* str, .
         if (backend.second->IsEnabled())
             backend.second->Log(type, srcFile, line, formattedStr, logTime);
     }
-
-    // If it's a fatal log, exit the engine
-    if (type == NFE::Common::LogType::Fatal)
-        exit(1);
 }
 
 void Logger::Log(LogType type, const char* srcFile, const char* str, int line)
@@ -233,10 +229,6 @@ void Logger::Log(LogType type, const char* srcFile, const char* str, int line)
         if (backend.second->IsEnabled())
             backend.second->Log(type, srcFile, line, str, logTime);
     }
-
-    // If it's a fatal log, exit the engine
-    if (type == NFE::Common::LogType::Fatal)
-        exit(1);
 }
 
 const char* Logger::LogTypeToString(LogType logType) noexcept

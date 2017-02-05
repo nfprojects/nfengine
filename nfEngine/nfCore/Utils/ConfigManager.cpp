@@ -9,6 +9,7 @@
 #include "ConfigManager.hpp"
 #include "ConfigVariable.hpp"
 
+#include "nfCommon/Assertion.hpp"
 #include "nfCommon/Config.hpp"
 #include "nfCommon/File.hpp"
 #include "nfCommon/Logger.hpp"

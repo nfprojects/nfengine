@@ -22,6 +22,7 @@
 #include "Sampler.hpp"
 #include "Translations.hpp"
 
+#include "nfCommon/Assertion.hpp"
 #include "nfCommon/Logger.hpp"
 #include "nfCommon/Win/Common.hpp"  // required for ID3DUserDefinedAnnotation
 
