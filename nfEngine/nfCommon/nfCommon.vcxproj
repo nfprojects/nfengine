@@ -213,6 +213,7 @@ popd</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Aligned.hpp" />
+    <ClInclude Include="Assertion.hpp" />
     <ClInclude Include="AsyncThreadPool.hpp" />
     <ClInclude Include="Bit.hpp" />
     <ClInclude Include="Buffer.hpp" />
@@ -289,6 +290,7 @@ popd</Command>
     <ClInclude Include="Win\Console.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Assertion.cpp" />
     <ClCompile Include="AsyncThreadPool.cpp" />
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="Config.cpp" />

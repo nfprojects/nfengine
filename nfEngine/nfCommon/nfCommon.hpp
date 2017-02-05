@@ -77,17 +77,6 @@
 #endif // WIN32
 
 
-// debug assert
-// TODO: reimplement
-#ifndef NFE_ASSERT
-#ifdef _DEBUG
-#define NFE_ASSERT(e, s) { if ((e)==0) {OutputDebugStringA(s); DebugBreak();}}
-#else
-#define NFE_ASSERT(e, s) (void)(e)
-#endif
-#endif
-
-
 // use this inside a class declaration to make it non-copyable
 #define NFE_MAKE_NONCOPYABLE(Type)              \
     Type(const Type&) = delete;                 \
