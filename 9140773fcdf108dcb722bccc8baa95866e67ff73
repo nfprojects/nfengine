@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fabf19d9_c388b573",
+        "filename": "nfEngine/nfCommon/Assertion.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-02-06T12:58:34Z",
+      "side": 1,
+      "message": "FYI: Message box is a difficult thing to do in Linux.\n\nBasically, you need to access your window manager to display anything on screen. We are now using XCB (which is way too low level to display a window), we might switch to Wayland, or go back to Xlib if need occurs. Window management on Linux is too generic, unlike Windows and its MessageBox call, and it would require proper handling.\n\nThe only solution I would see here is to create an NFE Common function called MessageBox - on Windows it would just passthrough to MessageBox WinAPI call, on Linux it would do whatever magic is needed to popup a message window.\n\nI\u0027ll create an issue for that.",
+      "revId": "9140773fcdf108dcb722bccc8baa95866e67ff73",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
