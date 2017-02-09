@@ -194,7 +194,8 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     pipeInfo.pStages = stages;
     pipeInfo.pVertexInputState = &pvisInfo;
     pipeInfo.pInputAssemblyState = &piasInfo;
-    pipeInfo.pTessellationState = &ptsInfo;
+    if ((mDesc.numControlPoints > 0) && (mDesc.hullShader != nullptr) && (mDesc.domainShader != nullptr))
+        pipeInfo.pTessellationState = &ptsInfo;
     pipeInfo.pViewportState = &pvsInfo;
     pipeInfo.pRasterizationState = &prsInfo;
     pipeInfo.pMultisampleState = &pmsInfo;
