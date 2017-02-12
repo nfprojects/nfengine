@@ -442,6 +442,9 @@ bool BasicScene::OnInit(void* winHandle)
 
 void BasicScene::Draw(float dt)
 {
+    static unsigned int frameCtr = 0;
+    LOG_DEBUG("====== BEGIN FRAME %d ======", frameCtr++);
+
     // reset bound resources and set them once again
     mCommandBuffer->Reset();
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);

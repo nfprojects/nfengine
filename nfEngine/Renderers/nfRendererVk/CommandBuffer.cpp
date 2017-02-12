@@ -88,6 +88,7 @@ void CommandBuffer::Reset()
         mBoundVolatileBuffers[i] = nullptr;
 
     mRenderTarget = nullptr;
+
     vkBeginCommandBuffer(mCommandBuffer, &mCommandBufferBeginInfo);
 }
 
