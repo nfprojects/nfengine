@@ -18,11 +18,11 @@ namespace NFE {
 namespace Renderer {
 
 CommandBuffer::CommandBuffer()
-    : mCommandBuffer(VK_NULL_HANDLE)
-    , mRenderTarget(nullptr)
+    : mRenderTarget(nullptr)
     , mActiveRenderPass(false)
     , mResourceBindingLayout(nullptr)
     , mCurrentFence(0)
+    , mCurrentCommandBuffer(0)
 {
     for (uint32 i = 0; i < VK_FENCE_COUNT; ++i)
         mFences[i] = VK_NULL_HANDLE;
@@ -39,7 +39,7 @@ CommandBuffer::~CommandBuffer()
 
     if (mCommandBuffer)
         vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(),
-                             1, &mCommandBuffer);
+                             VK_FENCE_COUNT, mCommandBuffer);
 }
 
 bool CommandBuffer::Init()
@@ -49,8 +49,8 @@ bool CommandBuffer::Init()
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.commandPool = gDevice->GetCommandPool();
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandBufferCount = 1;
-    VkResult result = vkAllocateCommandBuffers(gDevice->GetDevice(), &allocInfo, &mCommandBuffer);
+    allocInfo.commandBufferCount = VK_FENCE_COUNT;
+    VkResult result = vkAllocateCommandBuffers(gDevice->GetDevice(), &allocInfo, mCommandBuffer);
     CHECK_VKRESULT(result, "Failed to allocate a command buffer");
 
     VK_ZERO_MEMORY(mCommandBufferBeginInfo);
@@ -81,7 +81,8 @@ void CommandBuffer::Reset()
         mBoundVolatileBuffers[i] = nullptr;
 
     mRenderTarget = nullptr;
-    vkBeginCommandBuffer(mCommandBuffer, &mCommandBufferBeginInfo);
+
+    vkBeginCommandBuffer(mCommandBuffer[mCurrentCommandBuffer], &mCommandBufferBeginInfo);
 }
 
 void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets)
@@ -106,7 +107,7 @@ void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* stri
     }
 
     // TODO assumes start slot 0
-    vkCmdBindVertexBuffers(mCommandBuffer, 0, num, buffers, offs);
+    vkCmdBindVertexBuffers(mCommandBuffer[mCurrentCommandBuffer], 0, num, buffers, offs);
 }
 
 void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format)
@@ -118,7 +119,7 @@ void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat forma
         return;
     }
 
-    vkCmdBindIndexBuffer(mCommandBuffer, ib->mBuffer, 0, TranslateIndexBufferFormatToVkIndexType(format));
+    vkCmdBindIndexBuffer(mCommandBuffer[mCurrentCommandBuffer], ib->mBuffer, 0, TranslateIndexBufferFormatToVkIndexType(format));
 }
 
 void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance)
@@ -132,7 +133,7 @@ void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* binding
         return;
     }
 
-    vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+    vkCmdBindDescriptorSets(mCommandBuffer[mCurrentCommandBuffer], VK_PIPELINE_BIND_POINT_GRAPHICS,
                             mResourceBindingLayout->mPipelineLayout, rbi->mSet->mSetSlot, 1,
                             &rbi->mSet->mDescriptorSet, 0, nullptr);
 }
@@ -176,7 +177,7 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
     if (mRenderTarget)
     {
         // there is a previous render pass active, end it
-        vkCmdEndRenderPass(mCommandBuffer);
+        vkCmdEndRenderPass(mCommandBuffer[mCurrentCommandBuffer]);
     }
 
     mRenderTarget = dynamic_cast<RenderTarget*>(renderTarget);
@@ -194,7 +195,7 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
     rpBeginInfo.renderArea.offset = { 0, 0 };
     rpBeginInfo.renderArea.extent = { static_cast<uint32>(mRenderTarget->mWidth),
                                       static_cast<uint32>(mRenderTarget->mHeight) };
-    vkCmdBeginRenderPass(mCommandBuffer, &rpBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+    vkCmdBeginRenderPass(mCommandBuffer[mCurrentCommandBuffer], &rpBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 }
 
 void CommandBuffer::SetPipelineState(IPipelineState* state)
@@ -207,7 +208,7 @@ void CommandBuffer::SetPipelineState(IPipelineState* state)
     }
 
     // TODO support compute bind point
-    vkCmdBindPipeline(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, ps->mPipeline);
+    vkCmdBindPipeline(mCommandBuffer[mCurrentCommandBuffer], VK_PIPELINE_BIND_POINT_GRAPHICS, ps->mPipeline);
 }
 
 void CommandBuffer::SetStencilRef(unsigned char ref)
@@ -225,7 +226,7 @@ void CommandBuffer::SetViewport(float left, float width, float top, float height
     viewport.height = height;
     viewport.minDepth = minDepth;
     viewport.maxDepth = maxDepth;
-    vkCmdSetViewport(mCommandBuffer, 0, 1, &viewport);
+    vkCmdSetViewport(mCommandBuffer[mCurrentCommandBuffer], 0, 1, &viewport);
 }
 
 void CommandBuffer::SetScissors(int left, int top, int right, int bottom)
@@ -235,7 +236,7 @@ void CommandBuffer::SetScissors(int left, int top, int right, int bottom)
     scissor.offset.y = top;
     scissor.extent.width = right - left;
     scissor.extent.height = bottom - top;
-    vkCmdSetScissor(mCommandBuffer, 0, 1, &scissor);
+    vkCmdSetScissor(mCommandBuffer[mCurrentCommandBuffer], 0, 1, &scissor);
 }
 
 void* CommandBuffer::MapBuffer(IBuffer* buffer, MapType type)
@@ -262,14 +263,14 @@ bool CommandBuffer::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, co
     }
 
     if (mRenderTarget)
-        vkCmdEndRenderPass(mCommandBuffer);
+        vkCmdEndRenderPass(mCommandBuffer[mCurrentCommandBuffer]);
 
     VkBufferCopy region;
     VK_ZERO_MEMORY(region);
     region.size = size;
     region.srcOffset = static_cast<VkDeviceSize>(sourceOffset);
     region.dstOffset = static_cast<VkDeviceSize>(offset);
-    vkCmdCopyBuffer(mCommandBuffer, gDevice->GetRingBuffer()->GetVkBuffer(), b->mBuffer, 1, &region);
+    vkCmdCopyBuffer(mCommandBuffer[mCurrentCommandBuffer], gDevice->GetRingBuffer()->GetVkBuffer(), b->mBuffer, 1, &region);
 
     if (mRenderTarget)
     {
@@ -281,7 +282,7 @@ bool CommandBuffer::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, co
         rpBeginInfo.renderArea.offset = { 0, 0 };
         rpBeginInfo.renderArea.extent = { static_cast<uint32>(mRenderTarget->mWidth),
                                           static_cast<uint32>(mRenderTarget->mHeight) };
-        vkCmdBeginRenderPass(mCommandBuffer, &rpBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+        vkCmdBeginRenderPass(mCommandBuffer[mCurrentCommandBuffer], &rpBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
     }
 
     return true;
@@ -300,7 +301,7 @@ bool CommandBuffer::WriteVolatileBuffer(Buffer* b, size_t size, const void* data
     {
         if (b == mBoundVolatileBuffers[i])
         {
-            vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mResourceBindingLayout->mPipelineLayout,
+            vkCmdBindDescriptorSets(mCommandBuffer[mCurrentCommandBuffer], VK_PIPELINE_BIND_POINT_GRAPHICS, mResourceBindingLayout->mPipelineLayout,
                                     mResourceBindingLayout->mVolatileSetSlot, 1, &mResourceBindingLayout->mVolatileBufferSet,
                                     1, &writeHead);
         }
@@ -395,20 +396,20 @@ void CommandBuffer::Clear(int flags, uint32 numTargets, const uint32* slots,
                          static_cast<uint32>(mRenderTarget->mHeight) };
     rect.baseArrayLayer = 0;
     rect.layerCount = 1;
-    vkCmdClearAttachments(mCommandBuffer, clearAttsNum, clearAtts, 1, &rect);
+    vkCmdClearAttachments(mCommandBuffer[mCurrentCommandBuffer], clearAttsNum, clearAtts, 1, &rect);
 }
 
 
 void CommandBuffer::Draw(int vertexNum, int instancesNum, int vertexOffset,
                          int instanceOffset)
 {
-    vkCmdDraw(mCommandBuffer, vertexNum, instancesNum, vertexOffset, instanceOffset);
+    vkCmdDraw(mCommandBuffer[mCurrentCommandBuffer], vertexNum, instancesNum, vertexOffset, instanceOffset);
 }
 
 void CommandBuffer::DrawIndexed(int indexNum, int instancesNum,
                                 int indexOffset, int vertexOffset, int instanceOffset)
 {
-    vkCmdDrawIndexed(mCommandBuffer, indexNum, instancesNum, indexOffset, vertexOffset, instanceOffset);
+    vkCmdDrawIndexed(mCommandBuffer[mCurrentCommandBuffer], indexNum, instancesNum, indexOffset, vertexOffset, instanceOffset);
 }
 
 void CommandBuffer::BindComputeResources(size_t slot, IResourceBindingInstance* bindingSetInstance)
@@ -444,7 +445,7 @@ std::unique_ptr<ICommandList> CommandBuffer::Finish()
 {
     if (mRenderTarget)
     {
-        vkCmdEndRenderPass(mCommandBuffer);
+        vkCmdEndRenderPass(mCommandBuffer[mCurrentCommandBuffer]);
 
         // barrier for our backbuffer, pre-present
         VkImageMemoryBarrier prePresentBarrier;
@@ -462,12 +463,12 @@ std::unique_ptr<ICommandList> CommandBuffer::Finish()
         prePresentBarrier.subresourceRange.baseArrayLayer = 0;
         prePresentBarrier.subresourceRange.layerCount = 1;
         prePresentBarrier.image = mRenderTarget->mTex[0]->mBuffers[mRenderTarget->mTex[0]->mCurrentBuffer];
-        vkCmdPipelineBarrier(mCommandBuffer, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+        vkCmdPipelineBarrier(mCommandBuffer[mCurrentCommandBuffer], VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
                              VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0,
                              0, nullptr, 0, nullptr, 1, &prePresentBarrier);
     }
 
-    VkResult result = vkEndCommandBuffer(mCommandBuffer);
+    VkResult result = vkEndCommandBuffer(mCommandBuffer[mCurrentCommandBuffer]);
     if (result != VK_SUCCESS)
     {
         LOG_ERROR("Error during Constant Buffer recording: %d (%s)",
@@ -516,6 +517,10 @@ void CommandBuffer::AdvanceFrame()
 
     vkResetFences(gDevice->GetDevice(), 1, &mFences[mCurrentFence]);
     gDevice->GetRingBuffer()->PopOldestFrame(); // TODO move to Device
+
+    mCurrentCommandBuffer++;
+    if (mCurrentCommandBuffer == VK_FENCE_COUNT)
+        mCurrentCommandBuffer = 0;
 }
 
 } // namespace Renderer

@@ -396,6 +396,8 @@ BasicScene::~BasicScene()
 
 void BasicScene::ReleaseSubsceneResources()
 {
+    mRendererDevice->WaitForGPU();
+
     // clear resources
     mTexture.reset();
     mSampler.reset();

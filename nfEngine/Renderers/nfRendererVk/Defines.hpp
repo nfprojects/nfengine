@@ -37,5 +37,6 @@
     memset(&x, 0, sizeof(x))
 #endif // VK_ZERO_MEMORY
 
-#define VK_FENCE_COUNT 4
+#define VK_FENCE_COUNT 2
 #define VK_MAX_VOLATILE_BUFFERS 8
+#define VK_SEMAPHORE_POOL_SIZE 16
