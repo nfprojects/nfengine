@@ -13,6 +13,7 @@
 #include "CommandBuffer.hpp"
 #include "Instance.hpp"
 #include "RenderPassManager.hpp"
+#include "RingBuffer.hpp"
 
 
 namespace NFE {
@@ -34,6 +35,7 @@ private:
     VkPipelineCache mPipelineCache;
     std::vector<VkSurfaceFormatKHR> mSupportedFormats;
     std::unique_ptr<RenderPassManager> mRenderPassManager;
+    std::unique_ptr<RingBuffer> mRingBuffer;
     bool mDebugEnable;
 
     VkPhysicalDevice SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices, int preferredId);
@@ -100,6 +102,11 @@ public:
     NFE_INLINE RenderPassManager* GetRenderPassManager() const
     {
         return mRenderPassManager.get();
+    }
+
+    NFE_INLINE RingBuffer* GetRingBuffer() const
+    {
+        return mRingBuffer.get();
     }
 
     uint32 GetMemoryTypeIndex(uint32 typeBits, VkFlags properties);

@@ -22,7 +22,6 @@ CommandBuffer::CommandBuffer()
     , mRenderTarget(nullptr)
     , mActiveRenderPass(false)
     , mResourceBindingLayout(nullptr)
-    , mRingBuffer()
     , mCurrentFence(0)
 {
     for (uint32 i = 0; i < VK_FENCE_COUNT; ++i)
@@ -57,12 +56,6 @@ bool CommandBuffer::Init()
     VK_ZERO_MEMORY(mCommandBufferBeginInfo);
     mCommandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     mCommandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-
-    if (!mRingBuffer.Init(1024 * 1024))
-    {
-        LOG_ERROR("Failed to initialize Ring Buffer");
-        return false;
-    }
 
     VkFenceCreateInfo fenceInfo;
     VK_ZERO_MEMORY(fenceInfo);
@@ -168,24 +161,6 @@ void CommandBuffer::BindVolatileCBuffer(size_t slot, IBuffer* buffer)
     if (b != mBoundVolatileBuffers[slot])
     {
         mBoundVolatileBuffers[slot] = b;
-
-        VkDescriptorBufferInfo bufInfo;
-        VK_ZERO_MEMORY(bufInfo);
-        bufInfo.buffer = mRingBuffer.GetVkBuffer();
-        bufInfo.offset = 0;
-        bufInfo.range = b->mBufferSize;
-
-        VkWriteDescriptorSet writeSet;
-        VK_ZERO_MEMORY(writeSet);
-        writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        writeSet.dstSet = mResourceBindingLayout->mVolatileBufferSet;
-        writeSet.dstBinding = static_cast<uint32>(slot);
-        writeSet.dstArrayElement = 0;
-        writeSet.descriptorCount = 1;
-        writeSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-        writeSet.pBufferInfo = &bufInfo;
-
-        vkUpdateDescriptorSets(gDevice->GetDevice(), 1, &writeSet, 0, nullptr);
     }
 }
 
@@ -278,7 +253,7 @@ void CommandBuffer::UnmapBuffer(IBuffer* buffer)
 bool CommandBuffer::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, const void* data)
 {
     // copy data to Ring Buffer
-    uint32 sourceOffset = mRingBuffer.Write(data, static_cast<uint32>(size));
+    uint32 sourceOffset = gDevice->GetRingBuffer()->Write(data, static_cast<uint32>(size));
 
     if (sourceOffset == std::numeric_limits<uint32>::max())
     {
@@ -294,7 +269,7 @@ bool CommandBuffer::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, co
     region.size = size;
     region.srcOffset = static_cast<VkDeviceSize>(sourceOffset);
     region.dstOffset = static_cast<VkDeviceSize>(offset);
-    vkCmdCopyBuffer(mCommandBuffer, mRingBuffer.GetVkBuffer(), b->mBuffer, 1, &region);
+    vkCmdCopyBuffer(mCommandBuffer, gDevice->GetRingBuffer()->GetVkBuffer(), b->mBuffer, 1, &region);
 
     if (mRenderTarget)
     {
@@ -314,7 +289,7 @@ bool CommandBuffer::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, co
 
 bool CommandBuffer::WriteVolatileBuffer(Buffer* b, size_t size, const void* data)
 {
-    uint32 writeHead = mRingBuffer.Write(data, static_cast<uint32>(size));
+    uint32 writeHead = gDevice->GetRingBuffer()->Write(data, static_cast<uint32>(size));
     if (writeHead == std::numeric_limits<uint32>::max())
     {
         LOG_ERROR("Failed to write data to Ring Ruffer - the Ring Buffer is full");
@@ -500,7 +475,7 @@ std::unique_ptr<ICommandList> CommandBuffer::Finish()
         return nullptr;
     }
 
-    mRingBuffer.FinishFrame();
+    gDevice->GetRingBuffer()->FinishFrame();
 
     std::unique_ptr<CommandList> list(new (std::nothrow) CommandList);
     if (!list)
@@ -540,7 +515,7 @@ void CommandBuffer::AdvanceFrame()
     } while (result != VK_SUCCESS);
 
     vkResetFences(gDevice->GetDevice(), 1, &mFences[mCurrentFence]);
-    mRingBuffer.PopOldestFrame();
+    gDevice->GetRingBuffer()->PopOldestFrame(); // TODO move to Device
 }
 
 } // namespace Renderer

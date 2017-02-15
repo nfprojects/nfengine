@@ -279,6 +279,27 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         }
     }
 
+    if (desc.numVolatileCBuffers > 0)
+    {
+        VkDescriptorBufferInfo bufInfo;
+        VK_ZERO_MEMORY(bufInfo);
+        bufInfo.buffer = gDevice->GetRingBuffer()->GetVkBuffer();
+        bufInfo.offset = 0;
+        bufInfo.range = gDevice->GetRingBuffer()->GetSize(); // FIXME we must know buffer's size here
+
+        VkWriteDescriptorSet writeSet;
+        VK_ZERO_MEMORY(writeSet);
+        writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        writeSet.dstSet = mVolatileBufferSet;
+        writeSet.dstBinding = 0;
+        writeSet.dstArrayElement = 0;
+        writeSet.descriptorCount = 1;
+        writeSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+        writeSet.pBufferInfo = &bufInfo;
+
+        vkUpdateDescriptorSets(gDevice->GetDevice(), 1, &writeSet, 0, nullptr);
+    }
+
     return true;
 }
 

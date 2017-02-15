@@ -34,7 +34,6 @@ class CommandBuffer : public ICommandBuffer
     RenderTarget* mRenderTarget;
     bool mActiveRenderPass;
     ResourceBindingLayout* mResourceBindingLayout;
-    RingBuffer mRingBuffer;
     VkFence mFences[VK_FENCE_COUNT]; // TODO TEMPORARY
     uint32 mCurrentFence;
     Buffer* mBoundVolatileBuffers[VK_MAX_VOLATILE_BUFFERS];

@@ -58,12 +58,14 @@ Device::Device()
     , mPostPresentSemaphore(VK_NULL_HANDLE)
     , mPipelineCache(VK_NULL_HANDLE)
     , mRenderPassManager(nullptr)
+    , mRingBuffer(nullptr)
     , mDebugEnable(false)
 {
 }
 
 Device::~Device()
 {
+    mRingBuffer.reset();
     mRenderPassManager.reset();
 
     if (mPipelineCache != VK_NULL_HANDLE)
@@ -106,6 +108,7 @@ VkPhysicalDevice Device::SelectPhysicalDevice(const std::vector<VkPhysicalDevice
                                             VK_VERSION_MINOR(devProps.driverVersion),
                                             VK_VERSION_PATCH(devProps.driverVersion));
         LOG_DEBUG("  VP Bounds:  %f-%f", devProps.limits.viewportBoundsRange[0], devProps.limits.viewportBoundsRange[1]);
+        LOG_DEBUG("  MaxBufSize: %u", devProps.limits.maxUniformBufferRange);
     }
 
     if (static_cast<size_t>(preferredId) >= devices.size())
@@ -279,6 +282,9 @@ bool Device::Init(const DeviceInitParams* params)
     }
 
     mRenderPassManager.reset(new RenderPassManager(mDevice));
+
+    mRingBuffer.reset(new RingBuffer(mDevice));
+    mRingBuffer->Init(1024 * 1024);
 
     // TODO to Semaphore Manager
     VkSemaphoreCreateInfo semInfo;
