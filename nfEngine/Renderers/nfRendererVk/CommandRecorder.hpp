@@ -27,9 +27,6 @@ class CommandRecorder: public ICommandRecorder
     RenderTarget* mRenderTarget;
     bool mActiveRenderPass;
     ResourceBindingLayout* mResourceBindingLayout;
-    RingBuffer mRingBuffer;
-    VkFence mFences[VK_FENCE_COUNT]; // TODO TEMPORARY
-    uint32 mCurrentFence;
     Buffer* mBoundVolatileBuffers[VK_MAX_VOLATILE_BUFFERS];
 
     bool WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, const void* data);
@@ -77,9 +74,6 @@ public:
     void BeginDebugGroup(const char* text) override;
     void EndDebugGroup() override;
     void InsertDebugMarker(const char* text) override;
-
-    // TODO COMPLETELY TEMPORARY
-    void AdvanceFrame();
 };
 
 } // namespace Renderer
