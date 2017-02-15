@@ -89,7 +89,8 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
         return false;
 
     // create binding layout
-    VolatileCBufferBinding cbufferDesc(ShaderType::Vertex, ShaderResourceType::CBuffer, 0);
+    VolatileCBufferBinding cbufferDesc(ShaderType::Vertex, ShaderResourceType::CBuffer, 0,
+                                       sizeof(VertexCBuffer));
     mResBindingLayout.reset(mRendererDevice->CreateResourceBindingLayout(
         ResourceBindingLayoutDesc(nullptr, 0, &cbufferDesc, 1)));
     if (!mResBindingLayout)

@@ -76,13 +76,16 @@ struct VolatileCBufferBinding
     ShaderType shaderVisibility;
     ShaderResourceType resourceType;
     unsigned int slot; //< shader's resource slot
+    unsigned int size;
 
     VolatileCBufferBinding(ShaderType shaderVisibility,
-                             ShaderResourceType resourceType,
-                             unsigned int slot)
+                           ShaderResourceType resourceType,
+                           unsigned int slot,
+                           unsigned int size)
         : shaderVisibility(shaderVisibility)
         , resourceType(resourceType)
         , slot(slot)
+        , size(size)
     {
     }
 };

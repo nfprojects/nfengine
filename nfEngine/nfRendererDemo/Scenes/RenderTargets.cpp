@@ -323,7 +323,8 @@ bool RenderTargetsScene::CreateShaders(bool multipleRT, bool withMSAA)
         return false;
 
     // define cbuffer binding for VS
-    VolatileCBufferBinding cbufferDesc(ShaderType::Vertex, ShaderResourceType::CBuffer, cbufferSlot);
+    VolatileCBufferBinding cbufferDesc(ShaderType::Vertex, ShaderResourceType::CBuffer, cbufferSlot,
+                                       sizeof(VertexCBuffer));
 
     // create binding set for pixel shader
     ResourceBindingDesc pixelShaderBinding(ShaderResourceType::Texture,

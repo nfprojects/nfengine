@@ -13,6 +13,7 @@ namespace Renderer {
 
 class RingBuffer
 {
+    VkDevice mDevice;
     VkBuffer mBuffer;
     VkDeviceMemory mBufferMemory;
     char* mBufferHostMemory; // char type to allow pointer arithmetics with 1 byte precision
@@ -24,7 +25,7 @@ class RingBuffer
     std::queue<uint32> mFinishedFrames;
 
 public:
-    RingBuffer();
+    RingBuffer(VkDevice device);
     ~RingBuffer();
 
     bool Init(uint32 size);
