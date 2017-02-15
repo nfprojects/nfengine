@@ -96,7 +96,7 @@ bool PostProcessRenderer::CreateResourceBindingLayouts()
     if (sourceTextureSlot < 0)
         return false;
 
-    VolatileCBufferBinding cbufferBindingDesc(ShaderType::Pixel, ShaderResourceType::CBuffer, paramsCBufferSlot);
+    VolatileCBufferBinding cbufferBindingDesc(ShaderType::Pixel, ShaderResourceType::CBuffer, paramsCBufferSlot, sizeof(ToneMappingCBuffer));
 
     std::vector<ResourceBindingSetPtr> bindingSets;
     ResourceBindingDesc binding(ShaderResourceType::Texture, sourceTextureSlot,

@@ -180,8 +180,8 @@ bool GeometryRenderer::CreateResourceBindingLayouts()
 
     VolatileCBufferBinding cbufferBindingsDesc[2] =
     {
-        VolatileCBufferBinding(ShaderType::All, ShaderResourceType::CBuffer, globalCBufferSlot),
-        VolatileCBufferBinding(ShaderType::Pixel, ShaderResourceType::CBuffer, materialCBufferSlot),
+        VolatileCBufferBinding(ShaderType::All, ShaderResourceType::CBuffer, globalCBufferSlot, sizeof(GlobalCBuffer)),
+        VolatileCBufferBinding(ShaderType::Pixel, ShaderResourceType::CBuffer, materialCBufferSlot, sizeof(MaterialCBuffer)),
     };
 
     // create binding layout

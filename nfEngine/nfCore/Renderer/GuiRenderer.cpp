@@ -116,7 +116,7 @@ bool GuiRenderer::CreateResourceBindingLayouts()
 
     std::vector<ResourceBindingSetPtr> bindingSets;
 
-    VolatileCBufferBinding cbufferBindingDesc(ShaderType::All, ShaderResourceType::CBuffer, cbufferSlot);
+    VolatileCBufferBinding cbufferBindingDesc(ShaderType::All, ShaderResourceType::CBuffer, cbufferSlot, sizeof(GlobalCBuffer));
 
     ResourceBindingDesc pixelShaderBinding(ShaderResourceType::Texture, textureSlot,
                                            mRenderer->GetDefaultSampler());

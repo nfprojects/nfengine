@@ -159,8 +159,8 @@ bool DebugRenderer::CreateResourceBindingLayouts()
 
     VolatileCBufferBinding cbufferBindingsDesc[2] =
     {
-        VolatileCBufferBinding(ShaderType::Vertex, ShaderResourceType::CBuffer, globalCBufferSlot),
-        VolatileCBufferBinding(ShaderType::Vertex, ShaderResourceType::CBuffer, perMeshCBufferSlot),
+        VolatileCBufferBinding(ShaderType::Vertex, ShaderResourceType::CBuffer, globalCBufferSlot, sizeof(DebugCBuffer)),
+        VolatileCBufferBinding(ShaderType::Vertex, ShaderResourceType::CBuffer, perMeshCBufferSlot, sizeof(DebugPerMeshCBuffer)),
     };
 
     // TODO: material binding set (textures)

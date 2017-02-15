@@ -287,8 +287,8 @@ bool LightsRenderer::CreateResourceBindingLayouts()
 
     VolatileCBufferBinding cbufferBindingsDesc[2] =
     {
-        VolatileCBufferBinding(ShaderType::All, ShaderResourceType::CBuffer, globalCBufferSlot),
-        VolatileCBufferBinding(ShaderType::All, ShaderResourceType::CBuffer, lightParamsSlot),
+        VolatileCBufferBinding(ShaderType::All, ShaderResourceType::CBuffer, globalCBufferSlot, sizeof(LightsGlobalCBuffer)),
+        VolatileCBufferBinding(ShaderType::All, ShaderResourceType::CBuffer, lightParamsSlot, sizeof(OmniLightCBuffer)),
     };
 
     // create binding layout

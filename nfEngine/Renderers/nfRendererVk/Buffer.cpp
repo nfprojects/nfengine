@@ -22,6 +22,9 @@ Buffer::Buffer()
 
 Buffer::~Buffer()
 {
+    // TODO this needs to go away
+    gDevice->WaitForGPU();
+
     if (mBufferMemory != VK_NULL_HANDLE)
         vkFreeMemory(gDevice->GetDevice(), mBufferMemory, nullptr);
     if (mBuffer != VK_NULL_HANDLE)

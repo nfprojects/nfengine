@@ -99,7 +99,7 @@ bool BasicScene::CreateShaders(bool useCBuffer, bool useTexture, BufferMode cbuf
     bool useVolatileCBufferBinding = useCBuffer && (cbufferMode == BufferMode::Volatile);
     VolatileCBufferBinding volatileCBufferBinding(ShaderType::Vertex,
                                                   ShaderResourceType::CBuffer,
-                                                  mCBufferSlot);
+                                                  mCBufferSlot, sizeof(VertexCBuffer));
 
     // create binding layout
     mResBindingLayout = mRendererDevice->CreateResourceBindingLayout(

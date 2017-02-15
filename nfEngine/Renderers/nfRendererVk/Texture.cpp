@@ -32,6 +32,9 @@ Texture::Texture()
 
 Texture::~Texture()
 {
+    // TODO this needs to go away
+    gDevice->WaitForGPU();
+
     if (mImageMemory != VK_NULL_HANDLE)
         vkFreeMemory(gDevice->GetDevice(), mImageMemory, nullptr);
     if (mImageView != VK_NULL_HANDLE)
