@@ -179,7 +179,7 @@ enum class ShaderType
     Unknown = -1,
     Vertex  = 0,
     Hull,       //< aka. "tessellation control"
-    Domain,     //< aka. "tessellation eveluation"
+    Domain,     //< aka. "tessellation evaluation"
     Geometry,
     Pixel,      //< aka. "fragment"
     Compute,
@@ -192,19 +192,19 @@ enum class ShaderType
 enum class BufferMode
 {
     /**
-     * Read-only resource, for example a static mesh or texture.
+     * GPU read-only resource, for example a static mesh or texture.
      * The resource content must be specified during creation.
      */
     Static,
 
     /**
-     * Read-only resource, for example a constant buffer.
+     * GPU read-only resource, for example a constant buffer.
      * The content can be written by the CPU.
      */
     Dynamic,
 
     /**
-     * Frequently written-to read-only resource.
+     * GPU read-only resource, frequently written by CPU.
      * The content can be written by the CPU. Assumes the data will be refreshed at least every frame.
      * This mode uses no actual Resource/Buffer allocation. Instead, internal Ring Buffer is used
      * to write data.
@@ -212,14 +212,14 @@ enum class BufferMode
     Volatile,
 
     /**
-     * Read-write resource, for example a texture used as a render target.
+     * GPU read-write resource, for example a texture used as a render target.
      * The content can't be accessed by the CPU.
      */
     GPUOnly,
 
     /**
      * Readback resource, for example a screenshot texture.
-     * The content can't be accessed directly by the CPU (only via Copy operations).
+     * The content can't be accessed directly by the GPU (only via Copy operations).
      * The data can be read by the CPU.
      */
     Readback
@@ -332,7 +332,7 @@ enum class PrimitiveType
 };
 
 /**
- * Texture adressing mode for coordinates outside range [0.0, 1.0)
+ * Texture addressing mode for coordinates outside range [0.0, 1.0)
  */
 enum class TextureWrapMode
 {
