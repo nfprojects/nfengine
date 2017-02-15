@@ -122,7 +122,7 @@ struct ResourceBindingLayoutDesc
 
 /**
  * Shader resource binding layout.
- * Contains a list of resource bining sets. Describes how resources can be bound to the pipeline.
+ * Contains a list of resource binding sets. Describes how resources can be bound to the pipeline.
  */
 class IResourceBindingLayout
 {
@@ -133,7 +133,7 @@ public:
 
 
 /**
- * Instance of shader resource bining set.
+ * Instance of shader resource binding set.
  * Contains an actual list of shader resource views that can be bound to the pipeline.
  */
 class IResourceBindingInstance
