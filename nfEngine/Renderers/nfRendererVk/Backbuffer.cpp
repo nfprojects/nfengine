@@ -329,26 +329,27 @@ bool Backbuffer::BuildPresentCommandBuffers()
 
 bool Backbuffer::AcquireNextImage()
 {
-    const VkSemaphore& presentSem = gDevice->GetPresentSemaphore();
-    const VkSemaphore& postPresentSem = gDevice->GetPostPresentSemaphore();
     // TODO handle VK_ERROR_OUT_OF_DATE (happens ex. during resize)
-    VkResult result = vkAcquireNextImageKHR(gDevice->GetDevice(), mSwapchain, UINT64_MAX, presentSem, VK_NULL_HANDLE, &mCurrentBuffer);
+    VkResult result = vkAcquireNextImageKHR(gDevice->GetDevice(), mSwapchain, UINT64_MAX, gDevice->mPresentSemaphore,
+                                            VK_NULL_HANDLE, &mCurrentBuffer);
     CHECK_VKRESULT(result, "Failed to acquire next image");
 
     // Submit a pipeline barrier call to ensure our buffer is a color attachment
-    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
     VkSubmitInfo submitInfo;
     VK_ZERO_MEMORY(submitInfo);
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &mPresentCommandBuffers[mCurrentBuffer];
     submitInfo.waitSemaphoreCount = 1;
-    submitInfo.pWaitSemaphores = &presentSem;
+    submitInfo.pWaitSemaphores = &gDevice->mPresentSemaphore;
     submitInfo.pWaitDstStageMask = &pipelineStages;
     submitInfo.signalSemaphoreCount = 1;
-    submitInfo.pSignalSemaphores = &postPresentSem;
+    submitInfo.pSignalSemaphores = &gDevice->mPostPresentSemaphore;
     result = vkQueueSubmit(mPresentQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    CHECK_VKRESULT(result, "Failed to submit present operations");
+    CHECK_VKRESULT(result, "Failed to submit post present operations");
+
+    gDevice->SignalPresent();
 
     return true;
 }
@@ -391,12 +392,11 @@ bool Backbuffer::Resize(int newWidth, int newHeight)
 
 bool Backbuffer::Present()
 {
-    VkResult result = vkQueueWaitIdle(mPresentQueue);
-    CHECK_VKRESULT(result, "Present Queue is not useable");
-
-    const VkSemaphore& renderSem = gDevice->GetRenderSemaphore();
+    // our semaphore to wait for will be the last used from SemaphorePool
+    VkSemaphore renderSem = gDevice->GetSemaphorePool()->GetCurrentSemaphore();
 
     // Present whatever was drawn (only if render semaphore is signalled)
+    VkResult result;
     VkPresentInfoKHR presentInfo;
     VK_ZERO_MEMORY(presentInfo);
     presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -407,7 +407,12 @@ bool Backbuffer::Present()
     presentInfo.pWaitSemaphores = &renderSem;
     presentInfo.pResults = &result;
     vkQueuePresentKHR(mPresentQueue, &presentInfo);
-    CHECK_VKRESULT(result, "Failed to present image on current swap chain");
+    //CHECK_VKRESULT(result, "Failed to present image on current swap chain");
+    if (result != VK_SUCCESS)
+    {
+        LOG_ERROR("Failed to present image on current swap chain: %d (%s)", result,
+                  TranslateVkResultToString(result));
+    }
 
     return AcquireNextImage();
 }

@@ -54,29 +54,33 @@ Device::Device()
     , mCommandPool(VK_NULL_HANDLE)
     , mGraphicsQueueIndex(UINT32_MAX)
     , mGraphicsQueue(VK_NULL_HANDLE)
-    , mRenderSemaphore(VK_NULL_HANDLE)
+    , mPipelineCache(VK_NULL_HANDLE)
     , mPresentSemaphore(VK_NULL_HANDLE)
     , mPostPresentSemaphore(VK_NULL_HANDLE)
-    , mPipelineCache(VK_NULL_HANDLE)
+    , mWaitForPresent(false)
     , mRenderPassManager(nullptr)
+    , mSemaphorePool(nullptr)
+    , mRingBuffer(nullptr)
     , mDebugEnable(false)
 {
 }
 
 Device::~Device()
 {
+    WaitForGPU();
+
+    mRingBuffer.reset();
+    mSemaphorePool.reset();
     mRenderPassManager.reset();
 
     if (mPipelineCache != VK_NULL_HANDLE)
         vkDestroyPipelineCache(mDevice, mPipelineCache, nullptr);
-    if (mPostPresentSemaphore != VK_NULL_HANDLE)
-        vkDestroySemaphore(mDevice, mPostPresentSemaphore, nullptr);
-    if (mPresentSemaphore != VK_NULL_HANDLE)
-        vkDestroySemaphore(mDevice, mPresentSemaphore, nullptr);
-    if (mRenderSemaphore != VK_NULL_HANDLE)
-        vkDestroySemaphore(mDevice, mRenderSemaphore, nullptr);
     if (mCommandPool != VK_NULL_HANDLE)
         vkDestroyCommandPool(mDevice, mCommandPool, nullptr);
+    if (mPresentSemaphore != VK_NULL_HANDLE)
+        vkDestroySemaphore(mDevice, mPresentSemaphore, nullptr);
+    if (mPostPresentSemaphore != VK_NULL_HANDLE)
+        vkDestroySemaphore(mDevice, mPostPresentSemaphore, nullptr);
     if (mDevice != VK_NULL_HANDLE)
         vkDestroyDevice(mDevice, nullptr);
 
@@ -107,6 +111,7 @@ VkPhysicalDevice Device::SelectPhysicalDevice(const std::vector<VkPhysicalDevice
                                             VK_VERSION_MINOR(devProps.driverVersion),
                                             VK_VERSION_PATCH(devProps.driverVersion));
         LOG_DEBUG("  VP Bounds:  %f-%f", devProps.limits.viewportBoundsRange[0], devProps.limits.viewportBoundsRange[1]);
+        LOG_DEBUG("  MaxBufSize: %u", devProps.limits.maxUniformBufferRange);
     }
 
     if (static_cast<size_t>(preferredId) >= devices.size())
@@ -281,12 +286,15 @@ bool Device::Init(const DeviceInitParams* params)
 
     mRenderPassManager.reset(new RenderPassManager(mDevice));
 
-    // TODO to Semaphore Manager
+    mSemaphorePool.reset(new SemaphorePool(mDevice));
+    mSemaphorePool->Init(VK_SEMAPHORE_POOL_SIZE);
+
+    mRingBuffer.reset(new RingBuffer(mDevice));
+    mRingBuffer->Init(1024 * 1024);
+
     VkSemaphoreCreateInfo semInfo;
     VK_ZERO_MEMORY(semInfo);
     semInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-    result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mRenderSemaphore);
-    CHECK_VKRESULT(result, "Failed to create rendering semaphore");
     result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mPresentSemaphore);
     CHECK_VKRESULT(result, "Failed to create present semaphore");
     result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mPostPresentSemaphore);
@@ -497,9 +505,21 @@ bool Device::Execute(CommandListID commandList)
         return false;
     }
 
-    WaitForGPU();
+    // each time we submit a new command list, grab new semaphore to signal
+    mSemaphorePool->Advance();
 
-    // perform waiting for wait semaphores at the beginning of our pipeline
+    VkSemaphore waitSemaphore;
+    if (mWaitForPresent)
+    {
+        waitSemaphore = mPostPresentSemaphore;
+    }
+    else
+    {
+        waitSemaphore = mSemaphorePool->GetPreviousSemaphore();
+    }
+
+    VkSemaphore signalSemaphore = mSemaphorePool->GetCurrentSemaphore();
+
     VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 
     VkSubmitInfo submitInfo;
@@ -508,12 +528,10 @@ bool Device::Execute(CommandListID commandList)
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = VK_NULL_HANDLE;//&cl->cmdBuffer->mCommandBuffer;
     submitInfo.pWaitDstStageMask = &pipelineStages;
-    // wait until present is signalled
     submitInfo.waitSemaphoreCount = 1;
-    submitInfo.pWaitSemaphores = &mPostPresentSemaphore;
-    // and when you finish, signal render semaphore
+    submitInfo.pWaitSemaphores = &waitSemaphore;
     submitInfo.signalSemaphoreCount = 1;
-    submitInfo.pSignalSemaphores = &mRenderSemaphore;
+    submitInfo.pSignalSemaphores = &signalSemaphore;
 
     VkResult result = vkQueueSubmit(mGraphicsQueue, 1, &submitInfo,
                                     /*cl->cmdBuffer->mFences[cl->cmdBuffer->mCurrentFence]*/VK_NULL_HANDLE);
@@ -521,6 +539,11 @@ bool Device::Execute(CommandListID commandList)
 
     //cl->cmdBuffer->AdvanceFrame();
     return true;
+}
+
+void Device::SignalPresent()
+{
+    mWaitForPresent = true;
 }
 
 bool Device::WaitForGPU()

@@ -22,14 +22,14 @@ class CommandRecorder: public ICommandRecorder
 {
     friend class Device;
 
-    VkCommandBuffer mCommandBuffer;
+    VkCommandBuffer mCommandBuffer[VK_FENCE_COUNT];
     VkCommandBufferBeginInfo mCommandBufferBeginInfo;
     RenderTarget* mRenderTarget;
     bool mActiveRenderPass;
     ResourceBindingLayout* mResourceBindingLayout;
-    RingBuffer mRingBuffer;
     VkFence mFences[VK_FENCE_COUNT]; // TODO TEMPORARY
     uint32 mCurrentFence;
+    uint32 mCurrentCommandBuffer;
     Buffer* mBoundVolatileBuffers[VK_MAX_VOLATILE_BUFFERS];
 
     bool WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, const void* data);

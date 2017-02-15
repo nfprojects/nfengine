@@ -13,7 +13,8 @@
 #include "CommandRecorder.hpp"
 #include "Instance.hpp"
 #include "RenderPassManager.hpp"
-
+#include "SemaphorePool.hpp"
+#include "RingBuffer.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -21,6 +22,8 @@ namespace Renderer {
 class Device : public IDevice
 {
 private:
+    friend class Backbuffer;
+
     Instance mInstance;
     VkPhysicalDevice mPhysicalDevice;
     VkPhysicalDeviceMemoryProperties mMemoryProperties;
@@ -28,18 +31,22 @@ private:
     VkCommandPool mCommandPool;
     uint32 mGraphicsQueueIndex;
     VkQueue mGraphicsQueue;
-    VkSemaphore mRenderSemaphore;
+    VkPipelineCache mPipelineCache;
     VkSemaphore mPresentSemaphore;
     VkSemaphore mPostPresentSemaphore;
-    VkPipelineCache mPipelineCache;
+    bool mWaitForPresent;
     std::vector<VkSurfaceFormatKHR> mSupportedFormats;
     std::unique_ptr<RenderPassManager> mRenderPassManager;
+    std::unique_ptr<SemaphorePool> mSemaphorePool;
+    std::unique_ptr<RingBuffer> mRingBuffer;
     bool mDebugEnable;
 
     VkPhysicalDevice SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices, int preferredId);
 
     bool CreateTemporarySurface(VkSurfaceKHR& surface);
     void CleanupTemporarySurface(VkSurfaceKHR& surface);
+
+    void SignalPresent();
 
 public:
     Device();
@@ -67,21 +74,6 @@ public:
         return mCommandPool;
     }
 
-    NFE_INLINE const VkSemaphore& GetRenderSemaphore() const
-    {
-        return mRenderSemaphore;
-    }
-
-    NFE_INLINE const VkSemaphore& GetPresentSemaphore() const
-    {
-        return mPresentSemaphore;
-    }
-
-    NFE_INLINE const VkSemaphore& GetPostPresentSemaphore() const
-    {
-        return mPostPresentSemaphore;
-    }
-
     NFE_INLINE const VkPipelineCache& GetPipelineCache() const
     {
         return mPipelineCache;
@@ -97,9 +89,29 @@ public:
         return mGraphicsQueueIndex;
     }
 
+    NFE_INLINE const VkSemaphore& GetPresentSemaphore() const
+    {
+        return mPresentSemaphore;
+    }
+
+    NFE_INLINE const VkSemaphore& GetPostPresentSemaphore() const
+    {
+        return mPostPresentSemaphore;
+    }
+
     NFE_INLINE RenderPassManager* GetRenderPassManager() const
     {
         return mRenderPassManager.get();
+    }
+
+    NFE_INLINE SemaphorePool* GetSemaphorePool() const
+    {
+        return mSemaphorePool.get();
+    }
+
+    NFE_INLINE RingBuffer* GetRingBuffer() const
+    {
+        return mRingBuffer.get();
     }
 
     uint32 GetMemoryTypeIndex(uint32 typeBits, VkFlags properties);

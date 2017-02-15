@@ -18,12 +18,11 @@ namespace NFE {
 namespace Renderer {
 
 CommandRecorder::CommandRecorder()
-    : mCommandBuffer(VK_NULL_HANDLE)
-    , mRenderTarget(nullptr)
+    :  mRenderTarget(nullptr)
     , mActiveRenderPass(false)
     , mResourceBindingLayout(nullptr)
-    , mRingBuffer()
     , mCurrentFence(0)
+    , mCurrentCommandBuffer(0)
 {
     for (uint32 i = 0; i < VK_FENCE_COUNT; ++i)
         mFences[i] = VK_NULL_HANDLE;
@@ -40,7 +39,7 @@ CommandRecorder::~CommandRecorder()
 
     if (mCommandBuffer)
         vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(),
-                             1, &mCommandBuffer);
+                             VK_FENCE_COUNT, mCommandBuffer);
 }
 
 bool CommandRecorder::Init()
@@ -50,19 +49,13 @@ bool CommandRecorder::Init()
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.commandPool = gDevice->GetCommandPool();
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandBufferCount = 1;
-    VkResult result = vkAllocateCommandBuffers(gDevice->GetDevice(), &allocInfo, &mCommandBuffer);
+    allocInfo.commandBufferCount = VK_FENCE_COUNT;
+    VkResult result = vkAllocateCommandBuffers(gDevice->GetDevice(), &allocInfo, mCommandBuffer);
     CHECK_VKRESULT(result, "Failed to allocate a command buffer");
 
     VK_ZERO_MEMORY(mCommandBufferBeginInfo);
     mCommandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     mCommandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-
-    if (!mRingBuffer.Init(1024 * 1024))
-    {
-        LOG_ERROR("Failed to initialize Ring Buffer");
-        return false;
-    }
 
     VkFenceCreateInfo fenceInfo;
     VK_ZERO_MEMORY(fenceInfo);
@@ -88,7 +81,8 @@ bool CommandRecorder::Begin()
         mBoundVolatileBuffers[i] = nullptr;
 
     mRenderTarget = nullptr;
-    vkBeginCommandBuffer(mCommandBuffer, &mCommandBufferBeginInfo);
+
+    vkBeginCommandBuffer(mCommandBuffer[mCurrentCommandBuffer], &mCommandBufferBeginInfo);
 
     return true;
 }
@@ -115,7 +109,7 @@ void CommandRecorder::SetVertexBuffers(int num, const BufferPtr* vertexBuffers, 
     }
 
     // TODO assumes start slot 0
-    vkCmdBindVertexBuffers(mCommandBuffer, 0, num, buffers, offs);
+    vkCmdBindVertexBuffers(mCommandBuffer[mCurrentCommandBuffer], 0, num, buffers, offs);
 }
 
 void CommandRecorder::SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFormat format)
@@ -127,7 +121,7 @@ void CommandRecorder::SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFo
         return;
     }
 
-    vkCmdBindIndexBuffer(mCommandBuffer, ib->mBuffer, 0, TranslateIndexBufferFormatToVkIndexType(format));
+    vkCmdBindIndexBuffer(mCommandBuffer[mCurrentCommandBuffer], ib->mBuffer, 0, TranslateIndexBufferFormatToVkIndexType(format));
 }
 
 void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance)
@@ -141,7 +135,7 @@ void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePt
         return;
     }
 
-    vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+    vkCmdBindDescriptorSets(mCommandBuffer[mCurrentCommandBuffer], VK_PIPELINE_BIND_POINT_GRAPHICS,
                             mResourceBindingLayout->mPipelineLayout, rbi->mSet->mSetSlot, 1,
                             &rbi->mSet->mDescriptorSet, 0, nullptr);
 }
@@ -170,24 +164,6 @@ void CommandRecorder::BindVolatileCBuffer(size_t slot, const BufferPtr& buffer)
     if (b != mBoundVolatileBuffers[slot])
     {
         mBoundVolatileBuffers[slot] = b;
-
-        VkDescriptorBufferInfo bufInfo;
-        VK_ZERO_MEMORY(bufInfo);
-        bufInfo.buffer = mRingBuffer.GetVkBuffer();
-        bufInfo.offset = 0;
-        bufInfo.range = b->mBufferSize;
-
-        VkWriteDescriptorSet writeSet;
-        VK_ZERO_MEMORY(writeSet);
-        writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        writeSet.dstSet = mResourceBindingLayout->mVolatileBufferSet;
-        writeSet.dstBinding = static_cast<uint32>(slot);
-        writeSet.dstArrayElement = 0;
-        writeSet.descriptorCount = 1;
-        writeSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-        writeSet.pBufferInfo = &bufInfo;
-
-        vkUpdateDescriptorSets(gDevice->GetDevice(), 1, &writeSet, 0, nullptr);
     }
 }
 
@@ -203,7 +179,7 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
     if (mRenderTarget)
     {
         // there is a previous render pass active, end it
-        vkCmdEndRenderPass(mCommandBuffer);
+        vkCmdEndRenderPass(mCommandBuffer[mCurrentCommandBuffer]);
     }
 
     mRenderTarget = dynamic_cast<RenderTarget*>(renderTarget.get());
@@ -221,7 +197,7 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
     rpBeginInfo.renderArea.offset = { 0, 0 };
     rpBeginInfo.renderArea.extent = { static_cast<uint32>(mRenderTarget->mWidth),
                                       static_cast<uint32>(mRenderTarget->mHeight) };
-    vkCmdBeginRenderPass(mCommandBuffer, &rpBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+    vkCmdBeginRenderPass(mCommandBuffer[mCurrentCommandBuffer], &rpBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 }
 
 void CommandRecorder::SetPipelineState(const PipelineStatePtr& state)
@@ -234,7 +210,7 @@ void CommandRecorder::SetPipelineState(const PipelineStatePtr& state)
     }
 
     // TODO support compute bind point
-    vkCmdBindPipeline(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, ps->mPipeline);
+    vkCmdBindPipeline(mCommandBuffer[mCurrentCommandBuffer], VK_PIPELINE_BIND_POINT_GRAPHICS, ps->mPipeline);
 }
 
 void CommandRecorder::SetStencilRef(unsigned char ref)
@@ -252,7 +228,7 @@ void CommandRecorder::SetViewport(float left, float width, float top, float heig
     viewport.height = height;
     viewport.minDepth = minDepth;
     viewport.maxDepth = maxDepth;
-    vkCmdSetViewport(mCommandBuffer, 0, 1, &viewport);
+    vkCmdSetViewport(mCommandBuffer[mCurrentCommandBuffer], 0, 1, &viewport);
 }
 
 void CommandRecorder::SetScissors(int left, int top, int right, int bottom)
@@ -262,7 +238,7 @@ void CommandRecorder::SetScissors(int left, int top, int right, int bottom)
     scissor.offset.y = top;
     scissor.extent.width = right - left;
     scissor.extent.height = bottom - top;
-    vkCmdSetScissor(mCommandBuffer, 0, 1, &scissor);
+    vkCmdSetScissor(mCommandBuffer[mCurrentCommandBuffer], 0, 1, &scissor);
 }
 
 void* CommandRecorder::MapBuffer(const BufferPtr& buffer, MapType type)
@@ -280,7 +256,7 @@ void CommandRecorder::UnmapBuffer(const BufferPtr& buffer)
 bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, const void* data)
 {
     // copy data to Ring Buffer
-    uint32 sourceOffset = mRingBuffer.Write(data, static_cast<uint32>(size));
+    uint32 sourceOffset = gDevice->GetRingBuffer()->Write(data, static_cast<uint32>(size));
 
     if (sourceOffset == std::numeric_limits<uint32>::max())
     {
@@ -289,14 +265,14 @@ bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, 
     }
 
     if (mRenderTarget)
-        vkCmdEndRenderPass(mCommandBuffer);
+        vkCmdEndRenderPass(mCommandBuffer[mCurrentCommandBuffer]);
 
     VkBufferCopy region;
     VK_ZERO_MEMORY(region);
     region.size = size;
     region.srcOffset = static_cast<VkDeviceSize>(sourceOffset);
     region.dstOffset = static_cast<VkDeviceSize>(offset);
-    vkCmdCopyBuffer(mCommandBuffer, mRingBuffer.GetVkBuffer(), b->mBuffer, 1, &region);
+    vkCmdCopyBuffer(mCommandBuffer[mCurrentCommandBuffer], gDevice->GetRingBuffer()->GetVkBuffer(), b->mBuffer, 1, &region);
 
     if (mRenderTarget)
     {
@@ -308,7 +284,7 @@ bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, 
         rpBeginInfo.renderArea.offset = { 0, 0 };
         rpBeginInfo.renderArea.extent = { static_cast<uint32>(mRenderTarget->mWidth),
                                           static_cast<uint32>(mRenderTarget->mHeight) };
-        vkCmdBeginRenderPass(mCommandBuffer, &rpBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+        vkCmdBeginRenderPass(mCommandBuffer[mCurrentCommandBuffer], &rpBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
     }
 
     return true;
@@ -316,7 +292,7 @@ bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, 
 
 bool CommandRecorder::WriteVolatileBuffer(Buffer* b, size_t size, const void* data)
 {
-    uint32 writeHead = mRingBuffer.Write(data, static_cast<uint32>(size));
+    uint32 writeHead = gDevice->GetRingBuffer()->Write(data, static_cast<uint32>(size));
     if (writeHead == std::numeric_limits<uint32>::max())
     {
         LOG_ERROR("Failed to write data to Ring Ruffer - the Ring Buffer is full");
@@ -327,7 +303,7 @@ bool CommandRecorder::WriteVolatileBuffer(Buffer* b, size_t size, const void* da
     {
         if (b == mBoundVolatileBuffers[i])
         {
-            vkCmdBindDescriptorSets(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mResourceBindingLayout->mPipelineLayout,
+            vkCmdBindDescriptorSets(mCommandBuffer[mCurrentCommandBuffer], VK_PIPELINE_BIND_POINT_GRAPHICS, mResourceBindingLayout->mPipelineLayout,
                                     mResourceBindingLayout->mVolatileSetSlot, 1, &mResourceBindingLayout->mVolatileBufferSet,
                                     1, &writeHead);
         }
@@ -422,20 +398,20 @@ void CommandRecorder::Clear(int flags, uint32 numTargets, const uint32* slots,
                          static_cast<uint32>(mRenderTarget->mHeight) };
     rect.baseArrayLayer = 0;
     rect.layerCount = 1;
-    vkCmdClearAttachments(mCommandBuffer, clearAttsNum, clearAtts, 1, &rect);
+    vkCmdClearAttachments(mCommandBuffer[mCurrentCommandBuffer], clearAttsNum, clearAtts, 1, &rect);
 }
 
 
 void CommandRecorder::Draw(int vertexNum, int instancesNum, int vertexOffset,
                          int instanceOffset)
 {
-    vkCmdDraw(mCommandBuffer, vertexNum, instancesNum, vertexOffset, instanceOffset);
+    vkCmdDraw(mCommandBuffer[mCurrentCommandBuffer], vertexNum, instancesNum, vertexOffset, instanceOffset);
 }
 
 void CommandRecorder::DrawIndexed(int indexNum, int instancesNum,
                                 int indexOffset, int vertexOffset, int instanceOffset)
 {
-    vkCmdDrawIndexed(mCommandBuffer, indexNum, instancesNum, indexOffset, vertexOffset, instanceOffset);
+    vkCmdDrawIndexed(mCommandBuffer[mCurrentCommandBuffer], indexNum, instancesNum, indexOffset, vertexOffset, instanceOffset);
 }
 
 void CommandRecorder::BindComputeResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance)
@@ -471,7 +447,7 @@ CommandListID CommandRecorder::Finish()
 {
     if (mRenderTarget)
     {
-        vkCmdEndRenderPass(mCommandBuffer);
+        vkCmdEndRenderPass(mCommandBuffer[mCurrentCommandBuffer]);
 
         // barrier for our backbuffer, pre-present
         VkImageMemoryBarrier prePresentBarrier;
@@ -489,12 +465,12 @@ CommandListID CommandRecorder::Finish()
         prePresentBarrier.subresourceRange.baseArrayLayer = 0;
         prePresentBarrier.subresourceRange.layerCount = 1;
         prePresentBarrier.image = mRenderTarget->mTex[0]->mBuffers[mRenderTarget->mTex[0]->mCurrentBuffer];
-        vkCmdPipelineBarrier(mCommandBuffer, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+        vkCmdPipelineBarrier(mCommandBuffer[mCurrentCommandBuffer], VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
                              VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0,
                              0, nullptr, 0, nullptr, 1, &prePresentBarrier);
     }
 
-    VkResult result = vkEndCommandBuffer(mCommandBuffer);
+    VkResult result = vkEndCommandBuffer(mCommandBuffer[mCurrentCommandBuffer]);
     if (result != VK_SUCCESS)
     {
         LOG_ERROR("Error during Constant Buffer recording: %d (%s)",
@@ -502,7 +478,7 @@ CommandListID CommandRecorder::Finish()
         return 0;
     }
 
-    mRingBuffer.FinishFrame();
+    gDevice->GetRingBuffer()->FinishFrame();
 
     /*std::unique_ptr<CommandList> list(new (std::nothrow) CommandList);
     if (!list)
@@ -543,7 +519,11 @@ void CommandRecorder::AdvanceFrame()
     } while (result != VK_SUCCESS);
 
     vkResetFences(gDevice->GetDevice(), 1, &mFences[mCurrentFence]);
-    mRingBuffer.PopOldestFrame();
+    gDevice->GetRingBuffer()->PopOldestFrame(); // TODO move to Device
+
+    mCurrentCommandBuffer++;
+    if (mCurrentCommandBuffer == VK_FENCE_COUNT)
+        mCurrentCommandBuffer = 0;
 }
 
 } // namespace Renderer

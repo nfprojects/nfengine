@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include "PCH.hpp"
 #include "Defines.hpp"
 #include "RenderPassDesc.hpp"
 
