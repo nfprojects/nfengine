@@ -32,9 +32,9 @@ class Backbuffer : public IBackbuffer, public Texture
     VkQueue mPresentQueue;
     VkSurfaceCapabilitiesKHR mSurfaceCapabilities;
     VkSwapchainKHR mSwapchain;
-    VkCommandPool mPresentCommandPool;
     VkPresentModeKHR mSwapPresentMode;
     std::vector<VkCommandBuffer> mPresentCommandBuffers;
+    std::vector<VkCommandBuffer> mPostPresentCommandBuffers;
 
     // platform-specific surface creator
     bool CreateSurface(const BackbufferDesc& desc);

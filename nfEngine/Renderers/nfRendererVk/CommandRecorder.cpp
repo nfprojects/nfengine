@@ -22,61 +22,18 @@ CommandRecorder::CommandRecorder()
     , mRenderTarget(nullptr)
     , mActiveRenderPass(false)
     , mResourceBindingLayout(nullptr)
-    , mRingBuffer()
-    , mCurrentFence(0)
 {
-    for (uint32 i = 0; i < VK_FENCE_COUNT; ++i)
-        mFences[i] = VK_NULL_HANDLE;
-
-    for (uint32 i = 0; i < VK_MAX_VOLATILE_BUFFERS; ++i)
-        mBoundVolatileBuffers[i] = nullptr;
 }
 
 CommandRecorder::~CommandRecorder()
 {
-    for (uint32 i = 0; i < VK_FENCE_COUNT; ++i)
-        if (mFences[i] != VK_NULL_HANDLE)
-            vkDestroyFence(gDevice->GetDevice(), mFences[i], nullptr);
-
-    if (mCommandBuffer)
-        vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(),
-                             1, &mCommandBuffer);
 }
 
 bool CommandRecorder::Init()
 {
-    VkCommandBufferAllocateInfo allocInfo = {};
-    VK_ZERO_MEMORY(allocInfo);
-    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    allocInfo.commandPool = gDevice->GetCommandPool();
-    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandBufferCount = 1;
-    VkResult result = vkAllocateCommandBuffers(gDevice->GetDevice(), &allocInfo, &mCommandBuffer);
-    CHECK_VKRESULT(result, "Failed to allocate a command buffer");
-
     VK_ZERO_MEMORY(mCommandBufferBeginInfo);
     mCommandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     mCommandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-
-    if (!mRingBuffer.Init(1024 * 1024))
-    {
-        LOG_ERROR("Failed to initialize Ring Buffer");
-        return false;
-    }
-
-    VkFenceCreateInfo fenceInfo;
-    VK_ZERO_MEMORY(fenceInfo);
-    fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-    fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-
-    for (uint32 i = 0; i < VK_FENCE_COUNT; ++i)
-    {
-        result = vkCreateFence(gDevice->GetDevice(), &fenceInfo, nullptr, &mFences[i]);
-        CHECK_VKRESULT(result, "Failed to create Fence");
-    }
-
-    // prepare fence 0 to be in unsignalled state before use
-    vkResetFences(gDevice->GetDevice(), 1, mFences);
 
     LOG_INFO("Command Buffer initialized successfully.");
     return true;
@@ -88,6 +45,9 @@ bool CommandRecorder::Begin()
         mBoundVolatileBuffers[i] = nullptr;
 
     mRenderTarget = nullptr;
+
+    // acquire command buffer from pool in Device
+    mCommandBuffer = gDevice->GetAvailableCommandBuffer();
     vkBeginCommandBuffer(mCommandBuffer, &mCommandBufferBeginInfo);
 
     return true;
@@ -170,24 +130,6 @@ void CommandRecorder::BindVolatileCBuffer(size_t slot, const BufferPtr& buffer)
     if (b != mBoundVolatileBuffers[slot])
     {
         mBoundVolatileBuffers[slot] = b;
-
-        VkDescriptorBufferInfo bufInfo;
-        VK_ZERO_MEMORY(bufInfo);
-        bufInfo.buffer = mRingBuffer.GetVkBuffer();
-        bufInfo.offset = 0;
-        bufInfo.range = b->mBufferSize;
-
-        VkWriteDescriptorSet writeSet;
-        VK_ZERO_MEMORY(writeSet);
-        writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        writeSet.dstSet = mResourceBindingLayout->mVolatileBufferSet;
-        writeSet.dstBinding = static_cast<uint32>(slot);
-        writeSet.dstArrayElement = 0;
-        writeSet.descriptorCount = 1;
-        writeSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-        writeSet.pBufferInfo = &bufInfo;
-
-        vkUpdateDescriptorSets(gDevice->GetDevice(), 1, &writeSet, 0, nullptr);
     }
 }
 
@@ -280,7 +222,7 @@ void CommandRecorder::UnmapBuffer(const BufferPtr& buffer)
 bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, const void* data)
 {
     // copy data to Ring Buffer
-    uint32 sourceOffset = mRingBuffer.Write(data, static_cast<uint32>(size));
+    uint32 sourceOffset = gDevice->GetRingBuffer()->Write(data, static_cast<uint32>(size));
 
     if (sourceOffset == std::numeric_limits<uint32>::max())
     {
@@ -296,7 +238,7 @@ bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, 
     region.size = size;
     region.srcOffset = static_cast<VkDeviceSize>(sourceOffset);
     region.dstOffset = static_cast<VkDeviceSize>(offset);
-    vkCmdCopyBuffer(mCommandBuffer, mRingBuffer.GetVkBuffer(), b->mBuffer, 1, &region);
+    vkCmdCopyBuffer(mCommandBuffer, gDevice->GetRingBuffer()->GetVkBuffer(), b->mBuffer, 1, &region);
 
     if (mRenderTarget)
     {
@@ -316,7 +258,7 @@ bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, 
 
 bool CommandRecorder::WriteVolatileBuffer(Buffer* b, size_t size, const void* data)
 {
-    uint32 writeHead = mRingBuffer.Write(data, static_cast<uint32>(size));
+    uint32 writeHead = gDevice->GetRingBuffer()->Write(data, static_cast<uint32>(size));
     if (writeHead == std::numeric_limits<uint32>::max())
     {
         LOG_ERROR("Failed to write data to Ring Ruffer - the Ring Buffer is full");
@@ -472,26 +414,6 @@ CommandListID CommandRecorder::Finish()
     if (mRenderTarget)
     {
         vkCmdEndRenderPass(mCommandBuffer);
-
-        // barrier for our backbuffer, pre-present
-        VkImageMemoryBarrier prePresentBarrier;
-        VK_ZERO_MEMORY(prePresentBarrier);
-        prePresentBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        prePresentBarrier.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-        prePresentBarrier.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-        prePresentBarrier.oldLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-        prePresentBarrier.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-        prePresentBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        prePresentBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        prePresentBarrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        prePresentBarrier.subresourceRange.baseMipLevel = 0;
-        prePresentBarrier.subresourceRange.levelCount = 1;
-        prePresentBarrier.subresourceRange.baseArrayLayer = 0;
-        prePresentBarrier.subresourceRange.layerCount = 1;
-        prePresentBarrier.image = mRenderTarget->mTex[0]->mBuffers[mRenderTarget->mTex[0]->mCurrentBuffer];
-        vkCmdPipelineBarrier(mCommandBuffer, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
-                             VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0,
-                             0, nullptr, 0, nullptr, 1, &prePresentBarrier);
     }
 
     VkResult result = vkEndCommandBuffer(mCommandBuffer);
@@ -502,18 +424,7 @@ CommandListID CommandRecorder::Finish()
         return 0;
     }
 
-    mRingBuffer.FinishFrame();
-
-    /*std::unique_ptr<CommandList> list(new (std::nothrow) CommandList);
-    if (!list)
-    {
-        LOG_ERROR("Failed to allocate memory for command list");
-        return nullptr;
-    }
-
-    list->cmdBuffer = this;
-    return list;*/
-    return 0;
+    return gDevice->GetCurrentCommandBuffer() + 1;
 }
 
 void CommandRecorder::BeginDebugGroup(const char* text)
@@ -528,22 +439,6 @@ void CommandRecorder::EndDebugGroup()
 void CommandRecorder::InsertDebugMarker(const char* text)
 {
     UNUSED(text);
-}
-
-void CommandRecorder::AdvanceFrame()
-{
-    mCurrentFence++;
-    if (mCurrentFence == VK_FENCE_COUNT)
-        mCurrentFence = 0;
-
-    VkResult result;
-    do
-    {
-        result = vkGetFenceStatus(gDevice->GetDevice(), mFences[mCurrentFence]);
-    } while (result != VK_SUCCESS);
-
-    vkResetFences(gDevice->GetDevice(), 1, &mFences[mCurrentFence]);
-    mRingBuffer.PopOldestFrame();
 }
 
 } // namespace Renderer
