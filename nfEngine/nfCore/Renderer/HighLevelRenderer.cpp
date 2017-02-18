@@ -151,7 +151,7 @@ void HighLevelRenderer::CreateCommonResources()
     samplerDesc.magFilter = TextureMagFilter::Linear;
     samplerDesc.minFilter = TextureMinFilter::LinearMipmapLinear;
     samplerDesc.debugName = "HighLevelRenderer::mDefaultSampler";
-    mDefaultSampler.reset(mRenderingDevice->CreateSampler(samplerDesc));
+    mDefaultSampler = mRenderingDevice->CreateSampler(samplerDesc);
 
     TextureDataDesc texDataDesc;
     texDataDesc.lineSize = texDataDesc.sliceSize = 4 * sizeof(uint8);
@@ -169,18 +169,18 @@ void HighLevelRenderer::CreateCommonResources()
     uint8 diffuseColor[] = { 255, 255, 255, 255 };
     texDataDesc.data = diffuseColor;
     texDesc.debugName = "DefaultDiffuseTexture";
-    mDefaultDiffuseTexture.reset(mRenderingDevice->CreateTexture(texDesc));
+    mDefaultDiffuseTexture = mRenderingDevice->CreateTexture(texDesc);
 
     uint8 normalColor[] = { 127, 127, 255, 255 };
     texDataDesc.data = normalColor;
     texDesc.debugName = "DefaultNormalTexture";
-    mDefaultNormalTexture.reset(mRenderingDevice->CreateTexture(texDesc));
+    mDefaultNormalTexture = mRenderingDevice->CreateTexture(texDesc);
 
     // TODO: this should be configurable
     uint8 specularColor[] = { 25, 25, 25, 255 };
     texDataDesc.data = specularColor;
     texDesc.debugName = "DefaultSpecularTexture";
-    mDefaultSpecularTexture.reset(mRenderingDevice->CreateTexture(texDesc));
+    mDefaultSpecularTexture = mRenderingDevice->CreateTexture(texDesc);
 }
 
 RenderContext* HighLevelRenderer::GetDeferredContext(size_t id) const
@@ -204,10 +204,10 @@ void HighLevelRenderer::ResetCommandBuffers()
     {
         RenderContext* ctx = GetDeferredContext(i);
 
-        ctx->commandRecorderShadows->Reset();
-        ctx->commandRecorderGeometry->Reset();
-        ctx->commandRecorderLights->Reset();
-        ctx->commandRecorderDebug->Reset();
+        ctx->commandRecorderShadows->Begin();
+        ctx->commandRecorderGeometry->Begin();
+        ctx->commandRecorderLights->Begin();
+        ctx->commandRecorderDebug->Begin();
     }
 }
 
@@ -220,25 +220,25 @@ void HighLevelRenderer::FinishAndExecuteCommandBuffers()
     for (size_t i = 0; i < threadPool->GetThreadsNumber(); ++i)
     {
         RenderContext* ctx = GetDeferredContext(i);
-        mRenderingDevice->Execute(ctx->commandRecorderShadows->Finish().get());
+        mRenderingDevice->Execute(ctx->commandRecorderShadows->Finish());
     }
 
     for (size_t i = 0; i < threadPool->GetThreadsNumber(); ++i)
     {
         RenderContext* ctx = GetDeferredContext(i);
-        mRenderingDevice->Execute(ctx->commandRecorderGeometry->Finish().get());
+        mRenderingDevice->Execute(ctx->commandRecorderGeometry->Finish());
     }
 
     for (size_t i = 0; i < threadPool->GetThreadsNumber(); ++i)
     {
         RenderContext* ctx = GetDeferredContext(i);
-        mRenderingDevice->Execute(ctx->commandRecorderLights->Finish().get());
+        mRenderingDevice->Execute(ctx->commandRecorderLights->Finish());
     }
 
     for (size_t i = 0; i < threadPool->GetThreadsNumber(); ++i)
     {
         RenderContext* ctx = GetDeferredContext(i);
-        mRenderingDevice->Execute(ctx->commandRecorderDebug->Finish().get());
+        mRenderingDevice->Execute(ctx->commandRecorderDebug->Finish());
     }
 }
 

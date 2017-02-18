@@ -16,13 +16,11 @@
 namespace NFE {
 namespace Renderer {
 
-class Texture;
-
 class RenderTarget : public IRenderTarget
 {
     struct Target
     {
-        Texture* texture;
+        InternalTexturePtr texture;
         uint32 subresource;
     };
 
@@ -30,7 +28,7 @@ class RenderTarget : public IRenderTarget
     std::vector<Target> mTargets;
     std::vector<uint32> mRTVs[2];
 
-    Texture* mDepthTexture;
+    InternalTexturePtr mDepthTexture;
     uint32 mDepthTextureSubresource;
     uint32 mDSV;
 
@@ -49,26 +47,28 @@ public:
     }
 
     // get texture pointer for given target ID
-    NFE_INLINE Texture* GetTexture(size_t targetID) const
+    NFE_INLINE const InternalTexturePtr& GetTexture(size_t targetID) const
     {
+        NFE_ASSERT(targetID < mTargets.size(), "Invalid target ID");
         return mTargets[targetID].texture;
     }
 
     // get texture subresource index for given target ID
     NFE_INLINE uint32 GetSubresourceID(size_t targetID) const
     {
+        NFE_ASSERT(targetID < mTargets.size(), "Invalid target ID");
         return mTargets[targetID].subresource;
     }
 
     // get RTV for given target ID
     NFE_INLINE uint32 GetRTV(size_t targetID) const
     {
-        Texture* tex = GetTexture(targetID);
+        const InternalTexturePtr& tex = GetTexture(targetID);
         return mRTVs[tex->GetCurrentBuffer()][targetID];
     }
 
     // get depth texture pointer
-    NFE_INLINE Texture* GetDepthTexture() const
+    NFE_INLINE const InternalTexturePtr& GetDepthTexture() const
     {
         return mDepthTexture;
     }

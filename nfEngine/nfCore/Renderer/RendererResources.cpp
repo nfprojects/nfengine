@@ -73,7 +73,7 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
     depthBufferDesc.mipmaps = 1;
     depthBufferDesc.depthBufferFormat = DepthBufferFormat::Depth32;
     depthBufferDesc.debugName = "ShadowMap::mDepthBuffer";
-    mDepthBuffer.reset(renderer->GetDevice()->CreateTexture(depthBufferDesc));
+    mDepthBuffer = renderer->GetDevice()->CreateTexture(depthBufferDesc);
     if (mDepthBuffer == nullptr)
     {
         LOG_ERROR("Failed to create depth buffer");
@@ -91,7 +91,7 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
     texDesc.format = ElementFormat::R32_Float;
     texDesc.debugName = "ShadowMap::mTexture";
 
-    mTexture.reset(renderer->GetDevice()->CreateTexture(texDesc));
+    mTexture = renderer->GetDevice()->CreateTexture(texDesc);
     if (mTexture == nullptr)
     {
         LOG_ERROR("Failed to create shadow map texture");
@@ -100,14 +100,14 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
     }
 
     // create binding instance
-    mBindingInstance.reset(renderer->GetDevice()->CreateResourceBindingInstance(
-        LightsRenderer::Get()->GetShadowMapBindingSet().get()));
+    mBindingInstance = renderer->GetDevice()->CreateResourceBindingInstance(
+        LightsRenderer::Get()->GetShadowMapBindingSet());
     if (!mBindingInstance)
     {
         LOG_ERROR("Failed to create shadow map's resource binding instance");
         return false;
     }
-    if (!mBindingInstance->WriteTextureView(0, mTexture.get()))
+    if (!mBindingInstance->WriteTextureView(0, mTexture))
     {
         LOG_ERROR("Failed to write shadow map's binding instance");
         Release();
@@ -117,15 +117,15 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
     if (type == Type::Flat)
     {
         RenderTargetElement rtElement;
-        rtElement.texture = mTexture.get();
+        rtElement.texture = mTexture;
 
         RenderTargetDesc rtDesc;
         rtDesc.numTargets = 1;
         rtDesc.targets = &rtElement;
-        rtDesc.depthBuffer = mDepthBuffer.get();
+        rtDesc.depthBuffer = mDepthBuffer;
         rtDesc.debugName = "ShadowMap::mRenderTarget";
 
-        mRenderTargets[0].reset(renderer->GetDevice()->CreateRenderTarget(rtDesc));
+        mRenderTargets[0]= renderer->GetDevice()->CreateRenderTarget(rtDesc);
         if (!mRenderTargets[0])
         {
             LOG_ERROR("Failed to create shadow map's render target");
@@ -136,12 +136,12 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
     else
     {
         RenderTargetElement rtElement;
-        rtElement.texture = mTexture.get();
+        rtElement.texture = mTexture;
 
         RenderTargetDesc rtDesc;
         rtDesc.numTargets = 1;
         rtDesc.targets = &rtElement;
-        rtDesc.depthBuffer = mDepthBuffer.get();
+        rtDesc.depthBuffer = mDepthBuffer;
         rtDesc.debugName = "ShadowMap::mRenderTarget";
 
         // create rendertargets for each split / cube face
@@ -149,7 +149,7 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
         {
             rtElement.layer = i;
 
-            mRenderTargets[i].reset(renderer->GetDevice()->CreateRenderTarget(rtDesc));
+            mRenderTargets[i]= renderer->GetDevice()->CreateRenderTarget(rtDesc);
             if (!mRenderTargets[i])
             {
                 LOG_ERROR("Failed to create shadow map's render target for i = %u", i);
@@ -189,7 +189,7 @@ bool GeometryBuffer::Resize(int width, int height)
     depthBufferDesc.mipmaps = 1;
     depthBufferDesc.depthBufferFormat = DepthBufferFormat::Depth32;
     depthBufferDesc.debugName = "GeometryBuffer::mDepthBuffer";
-    mDepthBuffer.reset(renderer->GetDevice()->CreateTexture(depthBufferDesc));
+    mDepthBuffer = renderer->GetDevice()->CreateTexture(depthBufferDesc);
     if (mDepthBuffer == nullptr)
     {
         LOG_ERROR("Failed to create depth buffer");
@@ -215,14 +215,14 @@ bool GeometryBuffer::Resize(int width, int height)
     };
 
 
-    mBindingInstance.reset(renderer->GetDevice()->CreateResourceBindingInstance(
-        LightsRenderer::Get()->GetGBufferBindingSet().get()));
+    mBindingInstance = renderer->GetDevice()->CreateResourceBindingInstance(
+        LightsRenderer::Get()->GetGBufferBindingSet());
     if (!mBindingInstance)
     {
         LOG_ERROR("Failed to create G-Buffer's resource binding instance");
         return false;
     }
-    if (!mBindingInstance->WriteTextureView(0, mDepthBuffer.get()))
+    if (!mBindingInstance->WriteTextureView(0, mDepthBuffer))
     {
         LOG_ERROR("Failed to write depth buffer texture to binding instance");
         Release();
@@ -233,7 +233,7 @@ bool GeometryBuffer::Resize(int width, int height)
     for (int i = 0; i < gLayers; ++i)
     {
         texDesc.format = elementFormats[i];
-        mTextures[i].reset(renderer->GetDevice()->CreateTexture(texDesc));
+        mTextures[i]= renderer->GetDevice()->CreateTexture(texDesc);
         if (!mTextures[i])
         {
             LOG_ERROR("Failed to create G-Buffer's texture (i = %i)", i);
@@ -241,23 +241,23 @@ bool GeometryBuffer::Resize(int width, int height)
             return false;
         }
 
-        if (!mBindingInstance->WriteTextureView(i + 1, mTextures[i].get()))
+        if (!mBindingInstance->WriteTextureView(i + 1, mTextures[i]))
         {
             LOG_ERROR("Failed to write G-Buffer's texture (i = %i) to binding instance", i);
             Release();
             return false;
         }
 
-        rtTargets[i].texture = mTextures[i].get();
+        rtTargets[i].texture = mTextures[i];
     }
 
     /// create G-Buffer render target
     RenderTargetDesc rtDesc;
     rtDesc.numTargets = gLayers;
     rtDesc.targets = rtTargets;
-    rtDesc.depthBuffer = mDepthBuffer.get();
+    rtDesc.depthBuffer = mDepthBuffer;
     rtDesc.debugName = "GeometryBuffer::mRenderTarget";
-    mRenderTarget.reset(renderer->GetDevice()->CreateRenderTarget(rtDesc));
+    mRenderTarget = renderer->GetDevice()->CreateRenderTarget(rtDesc);
     if (!mRenderTarget)
     {
         LOG_ERROR("Failed to create G-Buffer's render target");

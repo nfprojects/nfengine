@@ -94,7 +94,7 @@ class CORE_API LightComponent
 
     std::unique_ptr<Renderer::ShadowMap> mShadowMap;
     Resource::Texture* mLightMap;
-    std::unique_ptr<Renderer::IResourceBindingInstance> mLightMapBindingInstance;
+    Renderer::ResourceBindingInstancePtr mLightMapBindingInstance;
 
     LightType mLightType;
 

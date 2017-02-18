@@ -232,15 +232,15 @@ void Material::OnTextureLoaded()
             return;
 
         auto& bindingInstance = mRendererData.layers[0].bindingInstance;
-        bindingInstance.reset(renderer->GetDevice()->CreateResourceBindingInstance(
-            GeometryRenderer::Get()->GetMaterialTexturesBindingSet()));
+        bindingInstance = renderer->GetDevice()->CreateResourceBindingInstance(
+            GeometryRenderer::Get()->GetMaterialTexturesBindingSet());
         if (!bindingInstance)
         {
             LOG_ERROR("Failed to create material's binding instance");
             return;
         }
 
-        ITexture* diffuseTexture = renderer->GetDefaultDiffuseTexture();
+        TexturePtr diffuseTexture = renderer->GetDefaultDiffuseTexture();
         if (mLayers[0].diffuseTexture && mLayers[0].diffuseTexture->GetRendererTexture())
             diffuseTexture = mLayers[0].diffuseTexture->GetRendererTexture();
         if (!bindingInstance->WriteTextureView(0, diffuseTexture))
@@ -249,7 +249,7 @@ void Material::OnTextureLoaded()
             return;
         }
 
-        ITexture* normalTexture = renderer->GetDefaultNormalTexture();
+        TexturePtr normalTexture = renderer->GetDefaultNormalTexture();
         if (mLayers[0].normalTexture && mLayers[0].normalTexture->GetRendererTexture())
             normalTexture = mLayers[0].normalTexture->GetRendererTexture();
         if (!bindingInstance->WriteTextureView(1, normalTexture))
@@ -258,7 +258,7 @@ void Material::OnTextureLoaded()
             return;
         }
 
-        ITexture* specularTexture = renderer->GetDefaultSpecularTexture();
+        TexturePtr specularTexture = renderer->GetDefaultSpecularTexture();
         if (mLayers[0].specularTexture && mLayers[0].specularTexture->GetRendererTexture())
             specularTexture = mLayers[0].specularTexture->GetRendererTexture();
         if (!bindingInstance->WriteTextureView(2, specularTexture))

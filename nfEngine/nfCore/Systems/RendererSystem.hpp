@@ -32,8 +32,6 @@ struct NFE_ALIGN16 SpotLightData
  // TODO: there are "false sharing" problems here
 struct NFE_ALIGN16 RenderingData
 {
-    typedef std::unique_ptr<Renderer::ICommandList> CommandListPtr;
-
     Renderer::View* view;
     CameraComponent* cameraComponent;
     TransformComponent* cameraTransform;

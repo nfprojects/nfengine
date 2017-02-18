@@ -47,8 +47,8 @@ private:
     std::vector<SubMesh> mSubMeshes;
     Math::Box mLocalBox;
 
-    std::unique_ptr<Renderer::IBuffer> mVB;
-    std::unique_ptr<Renderer::IBuffer> mIB;
+    Renderer::BufferPtr mVB;
+    Renderer::BufferPtr mIB;
 
     void Release();
 

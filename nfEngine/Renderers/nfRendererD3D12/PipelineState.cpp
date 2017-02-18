@@ -18,8 +18,17 @@ namespace NFE {
 namespace Renderer {
 
 PipelineState::PipelineState()
-    : mBindingLayout(nullptr)
 {
+}
+
+void PipelineState::Release()
+{
+    mBindingLayout.reset();
+    mVS.reset();
+    mPS.reset();
+    mGS.reset();
+    mHS.reset();
+    mDS.reset();
 }
 
 bool PipelineState::Init(const PipelineStateDesc& desc)
@@ -33,8 +42,8 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
         return false;
     }
 
-    ResourceBindingLayout* resBindingLayout = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout);
-    if (!resBindingLayout)
+    mBindingLayout = std::dynamic_pointer_cast<ResourceBindingLayout>(desc.resBindingLayout);
+    if (!mBindingLayout)
     {
         LOG_ERROR("Invalid resource binding layout");
         return false;
@@ -106,16 +115,23 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     // prepare D3D12 input layout
 
     D3D12_INPUT_LAYOUT_DESC inputLayoutDesc;
-    VertexLayout* vertexLayout = dynamic_cast<VertexLayout*>(desc.vertexLayout);
+    VertexLayout* vertexLayout = dynamic_cast<VertexLayout*>(desc.vertexLayout.get());
     inputLayoutDesc.NumElements = static_cast<UINT>(vertexLayout->mElements.size());
     inputLayoutDesc.pInputElementDescs = vertexLayout->mElements.data();
 
 
-    Shader* mVS = dynamic_cast<Shader*>(desc.vertexShader);
-    Shader* mHS = dynamic_cast<Shader*>(desc.hullShader);
-    Shader* mDS = dynamic_cast<Shader*>(desc.domainShader);
-    Shader* mGS = dynamic_cast<Shader*>(desc.geometryShader);
-    Shader* mPS = dynamic_cast<Shader*>(desc.pixelShader);
+    mVS = std::dynamic_pointer_cast<Shader>(desc.vertexShader);
+    mHS = std::dynamic_pointer_cast<Shader>(desc.hullShader);
+    mDS = std::dynamic_pointer_cast<Shader>(desc.domainShader);
+    mGS = std::dynamic_pointer_cast<Shader>(desc.geometryShader);
+    mPS = std::dynamic_pointer_cast<Shader>(desc.pixelShader);
+
+    if (!mVS)
+    {
+        Release();
+        LOG_ERROR("Vertex shader must be provided when creating pipeline state object");
+        return false;
+    }
 
     D3D12_SHADER_BYTECODE nullBytecode;
     nullBytecode.BytecodeLength = 0;
@@ -124,7 +140,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     D3D12_GRAPHICS_PIPELINE_STATE_DESC psd;
     ZeroMemory(&psd, sizeof(psd));
 
-    psd.pRootSignature = resBindingLayout->GetD3DRootSignature();
+    psd.pRootSignature = mBindingLayout->GetD3DRootSignature();
     psd.VS = mVS ? mVS->GetD3D12Bytecode() : nullBytecode;
     psd.HS = mHS ? mHS->GetD3D12Bytecode() : nullBytecode;
     psd.DS = mDS ? mDS->GetD3D12Bytecode() : nullBytecode;
@@ -146,6 +162,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
         psd.RTVFormats[i] = TranslateElementFormat(desc.rtFormats[i]);
         if (psd.RTVFormats[i] == DXGI_FORMAT_UNKNOWN)
         {
+            Release();
             LOG_ERROR("Invalid render target framt for i = %u", i);
             return false;
         }
@@ -168,11 +185,11 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
                                                                           IID_PPV_ARGS(&mPipelineState)));
     if (FAILED(hr))
     {
+        Release();
         LOG_ERROR("Failed to create pipeline state object");
         return false;
     }
 
-    mBindingLayout = resBindingLayout;
     mPrimitiveTopology = TranslatePrimitiveType(desc.primitiveType, desc.numControlPoints);
 
     if (desc.debugName && !SetDebugName(mPipelineState.get(), desc.debugName))

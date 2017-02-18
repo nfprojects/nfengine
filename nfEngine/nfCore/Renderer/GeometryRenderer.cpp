@@ -79,35 +79,35 @@ GeometryRenderer::GeometryRenderer()
     meshVertexLayoutDesc.elements = vertexLayoutElements;
     meshVertexLayoutDesc.numElements = 9;
     meshVertexLayoutDesc.debugName = "GeometryRenderer::mMeshVertexLayout";
-    mVertexLayout.reset(device->CreateVertexLayout(meshVertexLayoutDesc));
+    mVertexLayout = device->CreateVertexLayout(meshVertexLayoutDesc);
 
     // create vertex buffer for per-instance data
     bufferDesc.mode = BufferMode::Dynamic;
     bufferDesc.size = GeometryRendererContext::gMaxBufferedInstances * sizeof(InstanceData);
     bufferDesc.type = BufferType::Vertex;
     bufferDesc.debugName = "GeometryRenderer::mInstancesVertexBuffer";
-    mInstancesVertexBuffer.reset(device->CreateBuffer(bufferDesc));
+    mInstancesVertexBuffer = device->CreateBuffer(bufferDesc);
 
     bufferDesc.mode = BufferMode::Volatile;
     bufferDesc.size = sizeof(MaterialCBuffer);
     bufferDesc.type = BufferType::Constant;
     bufferDesc.debugName = "GeometryRenderer::mMaterialCBuffer";
-    mMaterialCBuffer.reset(device->CreateBuffer(bufferDesc));
+    mMaterialCBuffer = device->CreateBuffer(bufferDesc);
 
     bufferDesc.mode = BufferMode::Volatile;
     bufferDesc.size = sizeof(GlobalCBuffer);
     bufferDesc.type = BufferType::Constant;
     bufferDesc.debugName = "GeometryRenderer::mGlobalCBuffer";
-    mGlobalCBuffer.reset(device->CreateBuffer(bufferDesc));
+    mGlobalCBuffer = device->CreateBuffer(bufferDesc);
 
     bufferDesc.mode = BufferMode::Volatile;
     bufferDesc.size = sizeof(ShadowCameraRenderDesc);
     bufferDesc.type = BufferType::Constant;
     bufferDesc.debugName = "GeometryRenderer::mShadowGlobalCBuffer";
-    mShadowGlobalCBuffer.reset(device->CreateBuffer(bufferDesc));
+    mShadowGlobalCBuffer = device->CreateBuffer(bufferDesc);
 
     // dummy material (with default textures) binding instance
-    mDummyMaterialBindingInstance.reset(device->CreateResourceBindingInstance(mMatTexturesBindingSet.get()));
+    mDummyMaterialBindingInstance = device->CreateResourceBindingInstance(mMatTexturesBindingSet);
     if (mDummyMaterialBindingInstance)
     {
         mDummyMaterialBindingInstance->WriteTextureView(0, mRenderer->GetDefaultDiffuseTexture());
@@ -116,14 +116,14 @@ GeometryRenderer::GeometryRenderer()
     }
 
     PipelineStateDesc pipelineStateDesc;
-    pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
+    pipelineStateDesc.resBindingLayout = mResBindingLayout;
     pipelineStateDesc.depthState.depthCompareFunc = CompareFunc::Less;
     pipelineStateDesc.depthState.depthTestEnable = true;
     pipelineStateDesc.depthState.depthWriteEnable = true;
     pipelineStateDesc.raterizerState.cullMode = CullMode::CW;
     pipelineStateDesc.raterizerState.fillMode = FillMode::Solid;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
-    pipelineStateDesc.vertexLayout = mVertexLayout.get();
+    pipelineStateDesc.vertexLayout = mVertexLayout;
 
     pipelineStateDesc.debugName = "GeometryRenderer::mShadowPipelineState";
     pipelineStateDesc.depthFormat = DepthBufferFormat::Depth32;
@@ -159,7 +159,7 @@ bool GeometryRenderer::CreateResourceBindingLayouts()
     if (materialCBufferSlot < 0 || normalTextureSlot < 0 || specularTextureSlot < 0)
         return false;
 
-    std::vector<IResourceBindingSet*> bindingSets;
+    std::vector<ResourceBindingSetPtr> bindingSets;
 
     ResourceBindingDesc binding2[3] =
     {
@@ -173,11 +173,10 @@ bool GeometryRenderer::CreateResourceBindingLayouts()
                             specularTextureSlot,
                             mRenderer->GetDefaultSampler()),
     };
-    mMatTexturesBindingSet.reset(device->CreateResourceBindingSet(
-        ResourceBindingSetDesc(binding2, 3, ShaderType::Pixel)));
+    mMatTexturesBindingSet = device->CreateResourceBindingSet(ResourceBindingSetDesc(binding2, 3, ShaderType::Pixel));
     if (!mMatTexturesBindingSet)
         return false;
-    bindingSets.push_back(mMatTexturesBindingSet.get());
+    bindingSets.push_back(mMatTexturesBindingSet);
 
     VolatileCBufferBinding cbufferBindingsDesc[2] =
     {
@@ -186,8 +185,8 @@ bool GeometryRenderer::CreateResourceBindingLayouts()
     };
 
     // create binding layout
-    mResBindingLayout.reset(device->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(bindingSets.data(), bindingSets.size(), cbufferBindingsDesc, 2)));
+    mResBindingLayout = device->CreateResourceBindingLayout(
+        ResourceBindingLayoutDesc(bindingSets.data(), bindingSets.size(), cbufferBindingsDesc, 2));
     if (!mResBindingLayout)
         return false;
 
@@ -210,8 +209,8 @@ void GeometryRenderer::SetUp(GeometryRendererContext* context, GeometryBuffer* g
 {
     context->commandRecorder->InsertDebugMarker(__FUNCTION__);
 
-    context->commandRecorder->SetResourceBindingLayout(mResBindingLayout.get());
-    context->commandRecorder->SetRenderTarget(geometryBuffer->mRenderTarget.get());
+    context->commandRecorder->SetResourceBindingLayout(mResBindingLayout);
+    context->commandRecorder->SetRenderTarget(geometryBuffer->mRenderTarget);
     context->commandRecorder->SetViewport(0.0f, static_cast<float>(geometryBuffer->mWidth),
                                         0.0f, static_cast<float>(geometryBuffer->mHeight),
                                         0.0f, 1.0f);
@@ -222,8 +221,8 @@ void GeometryRenderer::SetUp(GeometryRendererContext* context, GeometryBuffer* g
     int macros[] = { 0 }; // USE_MOTION_BLUR
     context->commandRecorder->SetPipelineState(mGeometryPassPipelineState.GetPipelineState(macros));
 
-    context->commandRecorder->BindVolatileCBuffer(0, mGlobalCBuffer.get());
-    context->commandRecorder->BindVolatileCBuffer(1, mMaterialCBuffer.get());
+    context->commandRecorder->BindVolatileCBuffer(0, mGlobalCBuffer);
+    context->commandRecorder->BindVolatileCBuffer(1, mMaterialCBuffer);
 
     GlobalCBuffer cbuffer;
     cbuffer.ProjMatrix = cameraDesc->projMatrix;
@@ -233,7 +232,7 @@ void GeometryRenderer::SetUp(GeometryRendererContext* context, GeometryBuffer* g
     cbuffer.CameraVelocity = cameraDesc->velocity;
     cbuffer.CameraAngularVelocity = cameraDesc->angualrVelocity;
 
-    context->commandRecorder->WriteBuffer(mGlobalCBuffer.get(), 0, sizeof(GlobalCBuffer),
+    context->commandRecorder->WriteBuffer(mGlobalCBuffer, 0, sizeof(GlobalCBuffer),
                                         &cbuffer);
 }
 
@@ -243,8 +242,8 @@ void GeometryRenderer::SetUpForShadowMap(GeometryRendererContext *context, Shado
 {
     context->commandRecorder->InsertDebugMarker(__FUNCTION__);
 
-    context->commandRecorder->SetResourceBindingLayout(mResBindingLayout.get());
-    context->commandRecorder->SetRenderTarget(shadowMap->mRenderTargets[faceID].get());
+    context->commandRecorder->SetResourceBindingLayout(mResBindingLayout);
+    context->commandRecorder->SetRenderTarget(shadowMap->mRenderTargets[faceID]);
     context->commandRecorder->SetViewport(0.0f, static_cast<float>(shadowMap->mSize),
                                         0.0f, static_cast<float>(shadowMap->mSize),
                                         0.0f, 1.0f);
@@ -259,17 +258,17 @@ void GeometryRenderer::SetUpForShadowMap(GeometryRendererContext *context, Shado
 
     context->commandRecorder->SetPipelineState(mShadowPipelineState.GetPipelineState(macros));
 
-    context->commandRecorder->BindVolatileCBuffer(0, mShadowGlobalCBuffer.get());
+    context->commandRecorder->BindVolatileCBuffer(0, mShadowGlobalCBuffer);
 
-    context->commandRecorder->WriteBuffer(mShadowGlobalCBuffer.get(), 0,
+    context->commandRecorder->WriteBuffer(mShadowGlobalCBuffer, 0,
                                         sizeof(ShadowCameraRenderDesc), cameraDesc);
 }
 
 void GeometryRenderer::SetMaterial(GeometryRendererContext* context, const RendererMaterial* material)
 {
-    IResourceBindingInstance* bindingInstance = mDummyMaterialBindingInstance.get();
+    ResourceBindingInstancePtr bindingInstance = mDummyMaterialBindingInstance;
     if (material && material->layers[0].bindingInstance)
-        bindingInstance = material->layers[0].bindingInstance.get();
+        bindingInstance = material->layers[0].bindingInstance;
 
     context->commandRecorder->BindResources(0, bindingInstance);
 
@@ -277,7 +276,7 @@ void GeometryRenderer::SetMaterial(GeometryRendererContext* context, const Rende
     cbuffer.diffuseColor = Vector(1.0f, 1.0f, 1.0f, 1.0f);
     cbuffer.specularColor = Vector(1.0f, 1.0f, 1.0f, 1.0f);
     cbuffer.emissionColor = Vector();
-    context->commandRecorder->WriteBuffer(mMaterialCBuffer.get(), 0, sizeof(MaterialCBuffer),
+    context->commandRecorder->WriteBuffer(mMaterialCBuffer, 0, sizeof(MaterialCBuffer),
                                         &cbuffer);
 }
 
@@ -286,8 +285,8 @@ void GeometryRenderer::Draw(GeometryRendererContext* context, const RenderComman
     if (buffer.commands.size() <= 0)
         return;
 
-    IBuffer* currVB = nullptr;
-    IBuffer* currIB = nullptr;
+    BufferPtr currVB = nullptr;
+    BufferPtr currIB = nullptr;
     uint32 currStartIndex = 0xFFFFFFFF;
     uint32 currIndexCount = 0;
 
@@ -333,7 +332,7 @@ void GeometryRenderer::Draw(GeometryRendererContext* context, const RenderComman
                 context->instanceData[j].angularVelocity = buffer.commands[j + i].angularVelocity;
             }
 
-            context->commandRecorder->WriteBuffer(mInstancesVertexBuffer.get(),
+            context->commandRecorder->WriteBuffer(mInstancesVertexBuffer,
                                                 0, instancesToBuffer * sizeof(InstanceData),
                                                 context->instanceData.data());
 
@@ -355,7 +354,7 @@ void GeometryRenderer::Draw(GeometryRendererContext* context, const RenderComman
             currIB = command.pIB;
             currVB = command.pVB;
 
-            IBuffer* buffers[] = { currVB, mInstancesVertexBuffer.get() };
+            const BufferPtr buffers[] = { currVB, mInstancesVertexBuffer };
             int strides[] = { sizeof(Resource::MeshVertex), sizeof(InstanceData) };
             int offsets[] = { 0, 0 };
             context->commandRecorder->SetVertexBuffers(2, buffers, strides, offsets);

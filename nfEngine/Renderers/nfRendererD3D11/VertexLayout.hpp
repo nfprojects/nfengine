@@ -22,5 +22,7 @@ public:
     bool Init(const VertexLayoutDesc& desc);
 };
 
+using InternalVertexLayoutPtr = std::shared_ptr<VertexLayout>;
+
 } // namespace Renderer
 } // namespace NFE
