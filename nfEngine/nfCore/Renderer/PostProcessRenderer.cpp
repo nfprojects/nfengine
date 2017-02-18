@@ -98,7 +98,7 @@ bool PostProcessRenderer::CreateResourceBindingLayouts()
 
     VolatileCBufferBinding cbufferBindingDesc(ShaderType::Pixel, ShaderResourceType::CBuffer, paramsCBufferSlot);
 
-    std::vector<IResourceBindingSet*> bindingSets;
+    std::vector<ResourceBindingSetPtr> bindingSets;
     ResourceBindingDesc binding(ShaderResourceType::Texture, sourceTextureSlot,
                                  mRenderer->GetDefaultSampler());
     mTexturesBindingSet.reset(device->CreateResourceBindingSet(
@@ -116,16 +116,16 @@ bool PostProcessRenderer::CreateResourceBindingLayouts()
     return true;
 }
 
-std::unique_ptr<IResourceBindingInstance> PostProcessRenderer::CreateTextureBinding(ITexture* texture)
+ResourceBindingInstancePtr PostProcessRenderer::CreateTextureBinding(const TexturePtr& texture)
 {
     IDevice* device = mRenderer->GetDevice();
 
-    std::unique_ptr<IResourceBindingInstance> bindingInstance(
+    ResourceBindingInstancePtr bindingInstance(
         device->CreateResourceBindingInstance(mTexturesBindingSet.get()));
     if (!bindingInstance)
-        return std::unique_ptr<IResourceBindingInstance>();
+        return ResourceBindingInstancePtr();
     if (!bindingInstance->WriteTextureView(0, texture))
-        return std::unique_ptr<IResourceBindingInstance>();
+        return ResourceBindingInstancePtr();
 
     return bindingInstance;
 }
@@ -136,7 +136,7 @@ void PostProcessRenderer::OnEnter(PostProcessRendererContext* context)
 
     context->commandRecorder->SetResourceBindingLayout(mResBindingLayout.get());
 
-    IBuffer* veretexBuffers[] = { mVertexBuffer.get() };
+    BufferPtr veretexBuffers[] = { mVertexBuffer.get() };
     int strides[] = { sizeof(Float3) };
     int offsets[] = { 0 };
     context->commandRecorder->SetVertexBuffers(1, veretexBuffers, strides, offsets);
@@ -149,7 +149,7 @@ void PostProcessRenderer::OnLeave(PostProcessRendererContext* context)
 
 void PostProcessRenderer::ApplyTonemapping(PostProcessRendererContext* context,
                                            const ToneMappingParameters& params,
-                                           IResourceBindingInstance* src, IRenderTarget* dest)
+                                           ResourceBindingInstancePtr src, RenderTargetPtr dest)
 {
     int width, height;
     dest->GetDimensions(width, height);

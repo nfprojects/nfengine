@@ -40,27 +40,27 @@ struct PixelCBuffer
 bool TessellationScene::LoadShaders()
 {
     std::string vsPath = gShaderPathPrefix + "TessellationVS" + gShaderPathExt;
-    mVertexShader.reset(CompileShader(vsPath.c_str(), ShaderType::Vertex, nullptr, 0));
+    mVertexShader = CompileShader(vsPath.c_str(), ShaderType::Vertex, nullptr, 0);
     if (!mVertexShader)
         return false;
 
     std::string hsPath = gShaderPathPrefix + "TessellationHS" + gShaderPathExt;
-    mHullShader.reset(CompileShader(hsPath.c_str(), ShaderType::Hull, nullptr, 0));
+    mHullShader = CompileShader(hsPath.c_str(), ShaderType::Hull, nullptr, 0);
     if (!mHullShader)
         return false;
 
     std::string dsPath = gShaderPathPrefix + "TessellationDS" + gShaderPathExt;
-    mDomainShader.reset(CompileShader(dsPath.c_str(), ShaderType::Domain, nullptr, 0));
+    mDomainShader = CompileShader(dsPath.c_str(), ShaderType::Domain, nullptr, 0);
     if (!mDomainShader)
         return false;
 
     std::string psPath = gShaderPathPrefix + "TessellationPS" + gShaderPathExt;
-    mPixelShader.reset(CompileShader(psPath.c_str(), ShaderType::Pixel, nullptr, 0));
+    mPixelShader = CompileShader(psPath.c_str(), ShaderType::Pixel, nullptr, 0);
     if (!mPixelShader)
         return false;
 
     // create binding layout
-    mResBindingLayout.reset(mRendererDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc()));
+    mResBindingLayout = mRendererDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc());
     if (!mResBindingLayout)
         return false;
 
@@ -84,7 +84,7 @@ bool TessellationScene::CreateVertexBuffer()
     vbDesc.mode = BufferMode::Static;
     vbDesc.size = sizeof(vbData);
     vbDesc.initialData = vbData;
-    mVertexBuffer.reset(mRendererDevice->CreateBuffer(vbDesc));
+    mVertexBuffer = mRendererDevice->CreateBuffer(vbDesc);
     if (!mVertexBuffer)
         return false;
 
@@ -96,23 +96,23 @@ bool TessellationScene::CreateVertexBuffer()
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;
     vertexLayoutDesc.numElements = 1;
-    mVertexLayout.reset(mRendererDevice->CreateVertexLayout(vertexLayoutDesc));
+    mVertexLayout = mRendererDevice->CreateVertexLayout(vertexLayoutDesc);
     if (!mVertexLayout)
         return false;
 
     PipelineStateDesc pipelineStateDesc;
     pipelineStateDesc.rtFormats[0] = mBackbufferFormat;
-    pipelineStateDesc.vertexShader = mVertexShader.get();
-    pipelineStateDesc.pixelShader = mPixelShader.get();
-    pipelineStateDesc.hullShader = mHullShader.get();
-    pipelineStateDesc.domainShader = mDomainShader.get();
+    pipelineStateDesc.vertexShader = mVertexShader;
+    pipelineStateDesc.pixelShader = mPixelShader;
+    pipelineStateDesc.hullShader = mHullShader;
+    pipelineStateDesc.domainShader = mDomainShader;
     pipelineStateDesc.blendState.independent = false;
     pipelineStateDesc.blendState.rtDescs[0].enable = true;
     pipelineStateDesc.primitiveType = PrimitiveType::Patch;
     pipelineStateDesc.numControlPoints = 4;
-    pipelineStateDesc.vertexLayout = mVertexLayout.get();
-    pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
-    mPipelineState.reset(mRendererDevice->CreatePipelineState(pipelineStateDesc));
+    pipelineStateDesc.vertexLayout = mVertexLayout;
+    pipelineStateDesc.resBindingLayout = mResBindingLayout;
+    mPipelineState = mRendererDevice->CreatePipelineState(pipelineStateDesc);
     if (!mPipelineState)
         return false;
 
@@ -135,7 +135,7 @@ bool TessellationScene::CreateSubSceneBezierLine()
 
 
 /////////////////////////////////////////////////
-/// TessellationScene methods and virtuals overriden ///
+/// TessellationScene methods and virtuals overridden ///
 /////////////////////////////////////////////////
 
 TessellationScene::TessellationScene()
@@ -173,17 +173,17 @@ bool TessellationScene::OnInit(void* winHandle)
     bbDesc.format = mBackbufferFormat;
     bbDesc.windowHandle = winHandle;
     bbDesc.vSync = false;
-    mWindowBackbuffer.reset(mRendererDevice->CreateBackbuffer(bbDesc));
+    mWindowBackbuffer = mRendererDevice->CreateBackbuffer(bbDesc);
     if (!mWindowBackbuffer)
         return false;
 
     // create rendertarget that will render to the window's backbuffer
     RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowBackbuffer.get();
+    rtTarget.texture = mWindowBackbuffer;
     RenderTargetDesc rtDesc;
     rtDesc.numTargets = 1;
     rtDesc.targets = &rtTarget;
-    mWindowRenderTarget.reset(mRendererDevice->CreateRenderTarget(rtDesc));
+    mWindowRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
     if (!mWindowRenderTarget)
         return false;
 
@@ -195,27 +195,27 @@ void TessellationScene::Draw(float dt)
     UNUSED(dt);
 
     // reset bound resources and set them once again
-    mCommandBuffer->Reset();
+    mCommandBuffer->Begin();
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
     mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-    mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
+    mCommandBuffer->SetRenderTarget(mWindowRenderTarget);
 
     int stride = 3 * sizeof(float);
     int offset = 0;
 
     if (mVertexBuffer)
     {
-        IBuffer* vb = mVertexBuffer.get();
+        BufferPtr vb = mVertexBuffer;
         mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
     }
 
     if (mResBindingLayout)
-        mCommandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
+        mCommandBuffer->SetResourceBindingLayout(mResBindingLayout);
 
     if (mPipelineState)
-        mCommandBuffer->SetPipelineState(mPipelineState.get());
+        mCommandBuffer->SetPipelineState(mPipelineState);
 
-    mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
+    mCommandBuffer->SetRenderTarget(mWindowRenderTarget);
 
     // clear target
     const Float4 color(0.0f, 0.0f, 0.0f, 1.0f);
@@ -224,8 +224,10 @@ void TessellationScene::Draw(float dt)
     // draw
     mCommandBuffer->Draw(4, 1);
 
-    mRendererDevice->Execute(mCommandBuffer->Finish().get());
+    CommandListID commandList = mCommandBuffer->Finish();
+    mRendererDevice->Execute(commandList);
     mWindowBackbuffer->Present();
+    mRendererDevice->FinishFrame();
 }
 
 void TessellationScene::Release()

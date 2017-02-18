@@ -58,10 +58,10 @@ class ResourceBindingInstance : public IResourceBindingInstance
 public:
     ResourceBindingInstance() : mDescriptorHeapOffset(0), mSet(nullptr) { }
     ~ResourceBindingInstance();
-    bool Init(IResourceBindingSet* bindingSet) override;
-    bool WriteTextureView(size_t slot, ITexture* texture) override;
-    bool WriteCBufferView(size_t slot, IBuffer* buffer) override;
-    bool WriteWritableTextureView(size_t slot, ITexture* texture) override;
+    bool Init(ResourceBindingSetPtr bindingSet) override;
+    bool WriteTextureView(size_t slot, const TexturePtr& texture) override;
+    bool WriteCBufferView(size_t slot, BufferPtr buffer) override;
+    bool WriteWritableTextureView(size_t slot, const TexturePtr& texture) override;
 };
 
 } // namespace Renderer

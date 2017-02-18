@@ -222,7 +222,7 @@ ResourceBindingInstance::~ResourceBindingInstance()
     }
 }
 
-bool ResourceBindingInstance::Init(IResourceBindingSet* bindingSet)
+bool ResourceBindingInstance::Init(ResourceBindingSetPtr bindingSet)
 {
     mSet = dynamic_cast<ResourceBindingSet*>(bindingSet);
     if (!mSet)
@@ -237,7 +237,7 @@ bool ResourceBindingInstance::Init(IResourceBindingSet* bindingSet)
     return mDescriptorHeapOffset != -1;
 }
 
-bool ResourceBindingInstance::WriteTextureView(size_t slot, ITexture* texture)
+bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& texture)
 {
     // TODO this won't work if there are multiple buffers (frames) in the texture
 
@@ -290,7 +290,7 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, ITexture* texture)
     return true;
 }
 
-bool ResourceBindingInstance::WriteCBufferView(size_t slot, IBuffer* buffer)
+bool ResourceBindingInstance::WriteCBufferView(size_t slot, BufferPtr buffer)
 {
     Buffer* cbuffer = dynamic_cast<Buffer*>(buffer);
     if (!buffer || !cbuffer->GetResource())
@@ -311,7 +311,7 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, IBuffer* buffer)
     return true;
 }
 
-bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, ITexture* texture)
+bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, const TexturePtr& texture)
 {
     Texture* tex = dynamic_cast<Texture*>(texture);
     if (!tex || !tex->mBuffers[0])

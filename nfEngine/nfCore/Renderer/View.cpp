@@ -252,7 +252,7 @@ bool View::InitTemporaryRenderTarget(uint32 width, uint32 height)
     return true;
 }
 
-bool View::InitRenderTarget(ITexture* texture, uint32 width, uint32 height)
+bool View::InitRenderTarget(const TexturePtr& texture, uint32 width, uint32 height)
 {
     RenderTargetElement rtTarget;
     rtTarget.texture = texture;

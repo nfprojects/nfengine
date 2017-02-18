@@ -50,7 +50,7 @@ struct NFE_ALIGN16 CameraRenderDesc
  */
 struct RendererMaterialLayer
 {
-    std::unique_ptr<IResourceBindingInstance> bindingInstance;
+    ResourceBindingInstancePtr bindingInstance;
 
     Math::Float4 diffuseColor;
     Math::Float4 specularColor; // x - factor, w - power
@@ -92,10 +92,10 @@ public:
     }
 
 private:
-    std::unique_ptr<ITexture> mTexture;
-    std::unique_ptr<ITexture> mDepthBuffer;
-    std::unique_ptr<IRenderTarget> mRenderTargets[MAX_CASCADE_SPLITS];
-    std::unique_ptr<IResourceBindingInstance> mBindingInstance;
+    std::unique_ptr<const TexturePtr&> mTexture;
+    std::unique_ptr<const TexturePtr&> mDepthBuffer;
+    RenderTargetPtr mRenderTargets[MAX_CASCADE_SPLITS];
+    ResourceBindingInstancePtr mBindingInstance;
 
     uint16 mSize;
     Type mType;
@@ -111,10 +111,10 @@ class GeometryBuffer
 
     int mWidth;
     int mHeight;
-    std::unique_ptr<ITexture> mDepthBuffer;
-    std::unique_ptr<ITexture> mTextures[gLayers];
-    std::unique_ptr<IRenderTarget> mRenderTarget;
-    std::unique_ptr<IResourceBindingInstance> mBindingInstance;
+    std::unique_ptr<const TexturePtr&> mDepthBuffer;
+    std::unique_ptr<const TexturePtr&> mTextures[gLayers];
+    RenderTargetPtr mRenderTarget;
+    ResourceBindingInstancePtr mBindingInstance;
 
 public:
     void Release();

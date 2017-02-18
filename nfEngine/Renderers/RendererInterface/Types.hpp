@@ -17,14 +17,31 @@ class ITexture;
 class IBuffer;
 class ISampler;
 class IBackbuffer;
+class IResourceBindingSet;
 class IResourceBindingLayout;
-class ICommandList;
+class IResourceBindingInstance;
 class ICommandRecorder;
 class IPipelineState;
 class IComputePipelineState;
 class IRenderTarget;
 class IShader;
 class IVertexLayout;
+
+// TODO discuss if unique_ptr wouldn't fit better
+using CommandRecorderPtr = AtomicSharedPtr<ICommandRecorder>;
+
+using TexturePtr = AtomicSharedPtr<ITexture>;
+using BufferPtr = AtomicSharedPtr<IBuffer>;
+using SamplerPtr = AtomicSharedPtr<ISampler>;
+using BackbufferPtr = AtomicSharedPtr<IBackbuffer>;
+using ResourceBindingSetPtr = AtomicSharedPtr<IResourceBindingSet>;
+using ResourceBindingLayoutPtr = AtomicSharedPtr<IResourceBindingLayout>;
+using ResourceBindingInstancePtr = AtomicSharedPtr<IResourceBindingInstance>;
+using PipelineStatePtr = AtomicSharedPtr<IPipelineState>;
+using ComputePipelineStatePtr = AtomicSharedPtr<IComputePipelineState>;
+using RenderTargetPtr = AtomicSharedPtr<IRenderTarget>;
+using ShaderPtr = AtomicSharedPtr<IShader>;
+using VertexLayoutPtr = AtomicSharedPtr<IVertexLayout>;
 
 #define MAX_RENDER_TARGETS 8
 #define MAX_MIPMAP_LEVELS 16

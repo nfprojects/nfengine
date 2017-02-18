@@ -179,7 +179,7 @@ bool Multishader::LoadSubshader(int* macroValues)
     shaderDesc.macros = macros.data();
     shaderDesc.macrosNum = macros.size();
 
-    std::unique_ptr<IShader> shader;
+    ShaderPtr shader;
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
     shader.reset(renderer->GetDevice()->CreateShader(shaderDesc));
     mSubShaders.push_back(std::move(shader));
