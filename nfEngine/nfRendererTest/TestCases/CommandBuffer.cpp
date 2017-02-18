@@ -8,7 +8,7 @@ class CommandList : public RendererTest
 
 TEST_F(CommandList, FinishWithoutReset)
 {
-    std::unique_ptr<ICommandRecorder> commandRecorder(gRendererDevice->CreateCommandRecorder());
+    CommandRecorderPtr commandRecorder(gRendererDevice->CreateCommandRecorder());
     ASSERT_NE(nullptr, commandRecorder.get());
 
     // finishing command buffer should fail, because it was not reset first
@@ -18,7 +18,7 @@ TEST_F(CommandList, FinishWithoutReset)
 
 TEST_F(CommandList, ResetAndFinish)
 {
-    std::unique_ptr<ICommandRecorder> commandRecorder(gRendererDevice->CreateCommandRecorder());
+    CommandRecorderPtr commandRecorder(gRendererDevice->CreateCommandRecorder());
     ASSERT_NE(nullptr, commandRecorder.get());
 
     commandRecorder->Reset();

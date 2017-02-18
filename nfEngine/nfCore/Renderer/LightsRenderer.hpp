@@ -38,46 +38,46 @@ struct NFE_ALIGN16 SpotLightProperties
 
 class LightsRenderer : public RendererModule<LightsRenderer, LightsRendererContext>
 {
-    std::unique_ptr<IBuffer> mGlobalCBuffer;
-    std::unique_ptr<ISampler> mShadowMapSampler;
+    BufferPtr mGlobalCBuffer;
+    SamplerPtr mShadowMapSampler;
 
-    std::unique_ptr<IBuffer> mVertexBuffer;
-    std::unique_ptr<IBuffer> mIndexBuffer;
-    std::unique_ptr<IVertexLayout> mVertexLayout;
+    BufferPtr mVertexBuffer;
+    BufferPtr mIndexBuffer;
+    VertexLayoutPtr mVertexLayout;
 
-    std::unique_ptr<IResourceBindingSet> mGBufferBindingSet;
-    std::unique_ptr<IResourceBindingSet> mShadowMapBindingSet;
-    std::unique_ptr<IResourceBindingSet> mLightMapBindingSet;
-    std::unique_ptr<IResourceBindingLayout> mResBindingLayout;
+    ResourceBindingSetPtr mGBufferBindingSet;
+    ResourceBindingSetPtr mShadowMapBindingSet;
+    ResourceBindingSetPtr mLightMapBindingSet;
+    ResourceBindingLayoutPtr mResBindingLayout;
 
     Resource::MultiPipelineState mAmbientLightPipelineState;
-    std::unique_ptr<IBuffer> mAmbientLightCBuffer;
+    BufferPtr mAmbientLightCBuffer;
 
     int mOmniLightUseShadowMap;
     Resource::MultiPipelineState mOmniLightPipelineState;
-    std::unique_ptr<IBuffer> mOmniLightCBuffer;
+    BufferPtr mOmniLightCBuffer;
 
     int mSpotLightUseLightMap;
     int mSpotLightUseShadowMap;
     Resource::MultiPipelineState mSpotLightPipelineState;
-    std::unique_ptr<IBuffer> mSpotLightCBuffer;
+    BufferPtr mSpotLightCBuffer;
 
     bool CreateResourceBindingLayouts();
 
 public:
     LightsRenderer();
 
-    NFE_INLINE std::unique_ptr<IResourceBindingSet>& GetGBufferBindingSet()
+    NFE_INLINE ResourceBindingSetPtr& GetGBufferBindingSet()
     {
         return mGBufferBindingSet;
     }
 
-    NFE_INLINE std::unique_ptr<IResourceBindingSet>& GetShadowMapBindingSet()
+    NFE_INLINE ResourceBindingSetPtr& GetShadowMapBindingSet()
     {
         return mShadowMapBindingSet;
     }
 
-    NFE_INLINE std::unique_ptr<IResourceBindingSet>& GetLightMapBindingSet()
+    NFE_INLINE ResourceBindingSetPtr& GetLightMapBindingSet()
     {
         return mLightMapBindingSet;
     }
@@ -85,14 +85,14 @@ public:
     void OnEnter(LightsRendererContext* context);
     void OnLeave(LightsRendererContext* context);
 
-    void SetUp(LightsRendererContext* context, IRenderTarget* target, GeometryBuffer *gbuffer,
+    void SetUp(LightsRendererContext* context, const RenderTargetPtr& target, GeometryBuffer *gbuffer,
                const CameraRenderDesc* camera);
     void DrawAmbientLight(LightsRendererContext* context, const Vector& ambientLightColor,
                           const Vector& backgroundColor);
     void DrawOmniLight(LightsRendererContext* context, const Vector& pos, float radius, const Vector& color,
                        ShadowMap* shadowMap);
     void DrawSpotLight(LightsRendererContext* context, const SpotLightProperties& prop,
-                       ShadowMap* shadowMap, IResourceBindingInstance* pLightMap);
+                       ShadowMap* shadowMap, const ResourceBindingInstancePtr& pLightMap);
     void DrawDirLight(LightsRendererContext* context, const DirLightProperties& prop, ShadowMap* shadowMap);
 
     void DrawFog(LightsRendererContext* context);

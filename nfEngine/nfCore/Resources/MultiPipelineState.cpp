@@ -204,7 +204,7 @@ void MultiPipelineState::LoadShaderSet(int* macroValues)
                 shaderMacros[dest] = macroValues[j];
         }
 
-        IShader* shader = mShaderResources[i]->GetShader(shaderMacros);
+        const ShaderPtr& shader = mShaderResources[i]->GetShader(shaderMacros);
         ShaderType type = static_cast<ShaderType>(i);
 
         switch (type)
@@ -242,7 +242,7 @@ bool MultiPipelineState::Build(const Renderer::PipelineStateDesc& desc)
         psoDesc.pixelShader = mShaderSets[i].shaders[4];
 
         HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
-        std::unique_ptr<IPipelineState> pso(renderer->GetDevice()->CreatePipelineState(psoDesc));
+        PipelineStatePtr pso(renderer->GetDevice()->CreatePipelineState(psoDesc));
 
         if (!pso)
             return false;
@@ -269,7 +269,7 @@ int MultiPipelineState::GetMacroByName(const char* name) const
     return -1;
 }
 
-IPipelineState* MultiPipelineState::GetPipelineState(int* macroValues) const
+const PipelineStatePtr& MultiPipelineState::GetPipelineState(int* macroValues) const
 {
     int subshaderId = 0;
     int multiplier = 1;
@@ -289,10 +289,10 @@ IPipelineState* MultiPipelineState::GetPipelineState(int* macroValues) const
         multiplier *= (macro.maxValue - macro.minValue + 1);
     }
 
-    return mSubPipelineStates[subshaderId].get();
+    return mSubPipelineStates[subshaderId];
 }
 
-IShader* MultiPipelineState::GetShader(Renderer::ShaderType type, int* values) const
+const ShaderPtr& MultiPipelineState::GetShader(Renderer::ShaderType type, int* values) const
 {
     int typeId = static_cast<int>(type);
     int macroValues[16] = { 0 };

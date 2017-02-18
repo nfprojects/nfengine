@@ -23,15 +23,15 @@ struct ToneMappingParameters
 class PostProcessRenderer : public RendererModule<PostProcessRenderer, PostProcessRendererContext>
 {
     // TODO: these are common with lights renderer:
-    std::unique_ptr<IVertexLayout> mVertexLayout;
-    std::unique_ptr<IBuffer> mVertexBuffer;
+    VertexLayoutPtr mVertexLayout;
+    BufferPtr mVertexBuffer;
 
     Resource::MultiPipelineState mTonemappingPipelineState;
-    std::unique_ptr<IBuffer> mTonemappingCBuffer;
+    BufferPtr mTonemappingCBuffer;
 
-    std::unique_ptr<IResourceBindingSet> mTexturesBindingSet;
-    std::unique_ptr<IResourceBindingLayout> mResBindingLayout;
-    std::unique_ptr<IResourceBindingInstance> mNullTextureBindingInstance;
+    ResourceBindingSetPtr mTexturesBindingSet;
+    ResourceBindingLayoutPtr mResBindingLayout;
+    ResourceBindingInstancePtr mNullTextureBindingInstance;
 
     bool CreateResourceBindingLayouts();
 
@@ -44,13 +44,13 @@ public:
      * Create shader resource binding for a texture that will be input for a postprocess
      * pass.
      */
-    std::unique_ptr<IResourceBindingInstance> CreateTextureBinding(ITexture* texture);
+    ResourceBindingInstancePtr CreateTextureBinding(const TexturePtr& texture);
 
     /**
      * Apply tonemapping, gamma correction and dithering (final post-process).
      */
     void ApplyTonemapping(PostProcessRendererContext* context, const ToneMappingParameters& params,
-                          IResourceBindingInstance* src, IRenderTarget* dest);
+                          ResourceBindingInstancePtr src, RenderTargetPtr dest);
 };
 
 } // namespace Renderer

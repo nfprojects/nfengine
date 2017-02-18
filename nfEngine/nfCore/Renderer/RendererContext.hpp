@@ -23,11 +23,11 @@ class RenderContext
 public:
     // low-level API command buffers for each pass
     // TODO: this can take too much driver and GPU memory...
-    std::unique_ptr<ICommandRecorder> commandRecorderDebug;
-    std::unique_ptr<ICommandRecorder> commandRecorderGeometry;
-    std::unique_ptr<ICommandRecorder> commandRecorderShadows;
-    std::unique_ptr<ICommandRecorder> commandRecorderLights;
-    std::unique_ptr<ICommandRecorder> commandRecorderOnScreen;
+    CommandRecorderPtr commandRecorderDebug;
+    CommandRecorderPtr commandRecorderGeometry;
+    CommandRecorderPtr commandRecorderShadows;
+    CommandRecorderPtr commandRecorderLights;
+    CommandRecorderPtr commandRecorderOnScreen;
 
     std::unique_ptr<GeometryRendererContext> geometryContext;
     std::unique_ptr<GeometryRendererContext> shadowsContext;

@@ -26,11 +26,11 @@ protected:
         }
     };
 
-    std::unique_ptr<IBuffer> mVertexBuffer;
-    std::unique_ptr<IBuffer> mIndexBuffer;
-    std::unique_ptr<IVertexLayout> mVertexLayout;
-    std::unique_ptr<IShader> mVertexShader;
-    std::unique_ptr<IShader> mPixelShader;
+    BufferPtr mVertexBuffer;
+    BufferPtr mIndexBuffer;
+    VertexLayoutPtr mVertexLayout;
+    ShaderPtr mVertexShader;
+    ShaderPtr mPixelShader;
 
 
     IShader* CompileShader(const char* path, ShaderType type, ShaderMacro* macros = nullptr,
@@ -51,11 +51,11 @@ protected:
     {
         IShader* vs = CompileShader(vsPath, ShaderType::Vertex, macros, macrosNum);
         ASSERT_NE(nullptr, vs);
-        mVertexShader = std::unique_ptr<IShader>(vs);
+        mVertexShader = ShaderPtr(vs);
 
         IShader* ps = CompileShader(psPath, ShaderType::Pixel, macros, macrosNum);
         ASSERT_NE(nullptr, ps);
-        mPixelShader = std::unique_ptr<IShader>(ps);
+        mPixelShader = ShaderPtr(ps);
     }
 
     void SetUp() override
@@ -112,8 +112,8 @@ protected:
 // draw constant color quad with different polygon culling modes
 TEST_F(SimpleDrawTest, Culling)
 {
-    std::unique_ptr<IResourceBindingLayout> resBindingLayout;
-    std::unique_ptr<IPipelineState> pipelineState;
+    ResourceBindingLayoutPtr resBindingLayout;
+    PipelineStatePtr pipelineState;
 
     CreateShaderProgram("SimpleDrawVS", "SimpleDrawPS");
 
@@ -169,7 +169,7 @@ TEST_F(SimpleDrawTest, Culling)
         {
             mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &CLEAR_COLOR);
 
-            IBuffer* vb = mVertexBuffer.get();
+            BufferPtr vb = mVertexBuffer.get();
             int stride = sizeof(VertexFormat);
             int offset = 0;
             mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
@@ -455,11 +455,11 @@ TEST_F(SimpleDrawTest, StaticCBuffer)
 {
     const Float4 customColor = Float4(0.123f, -654.0f, 983.0f, 1.0f);
 
-    std::unique_ptr<IBuffer> constatnBuffer;
-    std::unique_ptr<IResourceBindingSet> resBindingSet;
-    std::unique_ptr<IResourceBindingInstance> resBindingInstance;
-    std::unique_ptr<IResourceBindingLayout> resBindingLayout;
-    std::unique_ptr<IPipelineState> pipelineState;
+    BufferPtr constatnBuffer;
+    ResourceBindingSetPtr resBindingSet;
+    ResourceBindingInstancePtr resBindingInstance;
+    ResourceBindingLayoutPtr resBindingLayout;
+    PipelineStatePtr pipelineState;
 
     ShaderMacro macro("USE_CBUFFER", "1");
     CreateShaderProgram("SimpleDrawVS", "SimpleDrawPS", &macro, 1);
@@ -484,7 +484,7 @@ TEST_F(SimpleDrawTest, StaticCBuffer)
     ASSERT_NE(nullptr, resBindingInstance.get());
     ASSERT_TRUE(resBindingInstance->WriteCBufferView(0, constatnBuffer.get()));
 
-    IResourceBindingSet* sets[] = { resBindingSet.get() };
+    ResourceBindingSetPtr sets[] = { resBindingSet.get() };
     resBindingLayout.reset(gRendererDevice->CreateResourceBindingLayout(
         ResourceBindingLayoutDesc(sets, 1)));
     ASSERT_NE(nullptr, resBindingLayout.get());
@@ -506,7 +506,7 @@ TEST_F(SimpleDrawTest, StaticCBuffer)
     {
         mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &CLEAR_COLOR);
 
-        IBuffer* vb = mVertexBuffer.get();
+        BufferPtr vb = mVertexBuffer.get();
         int stride = sizeof(VertexFormat);
         int offset = 0;
         mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);

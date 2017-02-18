@@ -17,20 +17,30 @@ namespace Renderer {
 
 ComputePipelineState::ComputePipelineState()
     : mComputeShader(nullptr)
-    , mResBindingLayout(nullptr)
 {
+}
+
+ComputePipelineState::~ComputePipelineState()
+{
+    Release();
+}
+
+void ComputePipelineState::Release()
+{
+    mResBindingLayout.reset();
+    D3D_SAFE_RELEASE(mComputeShader);
 }
 
 bool ComputePipelineState::Init(const ComputePipelineStateDesc& desc)
 {
-    mResBindingLayout = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout);
+    mResBindingLayout = desc.resBindingLayout;
     if (!mResBindingLayout)
     {
         LOG_ERROR("Invalid shader resource binding layout");
         return false;
     }
 
-    Shader* computeShader = dynamic_cast<Shader*>(desc.computeShader);
+    Shader* computeShader = dynamic_cast<Shader*>(desc.computeShader.get());
 
     if (computeShader)
         mComputeShader = static_cast<ID3D11ComputeShader*>(computeShader->GetShaderObject());
@@ -41,6 +51,8 @@ bool ComputePipelineState::Init(const ComputePipelineStateDesc& desc)
         return false;
     }
 
+    // additional reference in case of IShader is released
+    mComputeShader->AddRef();
     return true;
 }
 

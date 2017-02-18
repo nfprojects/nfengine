@@ -147,4 +147,8 @@ size_t ArraySize(const T(&)[N])
     return N;
 }
 
+// TODO remove after own implementation of AtomicSharedPtr
+template<typename T>
+using AtomicSharedPtr = std::shared_ptr<T>;
+
 } // namespace NFE

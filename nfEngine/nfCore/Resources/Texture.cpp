@@ -23,7 +23,7 @@ namespace {
 
 const size_t gMaxMipmaps = 24;
 
-Renderer::ITexture* CreateRendererTextureFromImage(const Common::Image& image,
+Renderer::TexturePtr CreateRendererTextureFromImage(const Common::Image& image,
                                                    const char* debugName = nullptr)
 {
     using namespace Renderer;
@@ -240,7 +240,7 @@ bool Texture::CreateFromImage(const Common::Image& image)
         std::recursive_mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
         std::unique_lock<std::recursive_mutex> lock(renderingMutex);
 
-        mTex.reset(CreateRendererTextureFromImage(image, mName));
+        mTex = CreateRendererTextureFromImage(image, mName);
     }
 
     if (!mTex)
@@ -270,28 +270,18 @@ bool Texture::CreateAsRenderTarget(uint32 width, uint32 height, Renderer::Elemen
     texDesc.format = format;
 
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
-    mTex.reset(renderer->GetDevice()->CreateTexture(texDesc));
+    mTex = renderer->GetDevice()->CreateTexture(texDesc);
     if (!mTex)
     {
         LOG_ERROR("Failed to create render target texture");
         return false;
     }
 
-    mTexBinding = GuiRenderer::Get()->CreateTextureBinding(mTex.get());
+    mTexBinding = GuiRenderer::Get()->CreateTextureBinding(mTex);
     if (!mTexBinding)
         return false;
 
     return true;
-}
-
-Renderer::ITexture* Texture::GetRendererTexture() const
-{
-    return mTex.get();
-}
-
-IResourceBindingInstance* Texture::GetRendererTextureBinding() const
-{
-    return mTexBinding.get();
 }
 
 } // namespace Resource
