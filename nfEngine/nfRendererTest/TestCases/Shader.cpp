@@ -17,8 +17,8 @@ TEST_F(ShaderTest, Disassemble)
     desc.type = ShaderType::Vertex;
 
     /// compile shader
-    std::unique_ptr<IShader> shader;
-    shader.reset(gRendererDevice->CreateShader(desc));
+    ShaderPtr shader;
+    shader = gRendererDevice->CreateShader(desc);
     ASSERT_TRUE(shader != nullptr);
 
     std::string disasm;

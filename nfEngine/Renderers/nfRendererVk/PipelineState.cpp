@@ -30,7 +30,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
 {
     mDesc = desc;
 
-    VertexLayout* vl = dynamic_cast<VertexLayout*>(desc.vertexLayout);
+    VertexLayout* vl = dynamic_cast<VertexLayout*>(desc.vertexLayout.get());
     VkPipelineVertexInputStateCreateInfo pvisInfo;
     VK_ZERO_MEMORY(pvisInfo);
     pvisInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -150,7 +150,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
         return false;
 
     // bind resource layout
-    ResourceBindingLayout* rbl = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout);
+    ResourceBindingLayout* rbl = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout.get());
 
     // shader stages
     VkPipelineShaderStageCreateInfo stages[5];
@@ -158,31 +158,31 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
 
     if (mDesc.vertexShader)
     {
-        Shader* s = dynamic_cast<Shader*>(mDesc.vertexShader);
+        Shader* s = dynamic_cast<Shader*>(mDesc.vertexShader.get());
         stages[stageCount] = s->mStageInfo;
         stageCount++;
     }
     if (mDesc.hullShader)
     {
-        Shader* s = dynamic_cast<Shader*>(mDesc.hullShader);
+        Shader* s = dynamic_cast<Shader*>(mDesc.hullShader.get());
         stages[stageCount] = s->mStageInfo;
         stageCount++;
     }
     if (mDesc.domainShader)
     {
-        Shader* s = dynamic_cast<Shader*>(mDesc.domainShader);
+        Shader* s = dynamic_cast<Shader*>(mDesc.domainShader.get());
         stages[stageCount] = s->mStageInfo;
         stageCount++;
     }
     if (mDesc.geometryShader)
     {
-        Shader* s = dynamic_cast<Shader*>(mDesc.geometryShader);
+        Shader* s = dynamic_cast<Shader*>(mDesc.geometryShader.get());
         stages[stageCount] = s->mStageInfo;
         stageCount++;
     }
     if (mDesc.pixelShader)
     {
-        Shader* s = dynamic_cast<Shader*>(mDesc.pixelShader);
+        Shader* s = dynamic_cast<Shader*>(mDesc.pixelShader.get());
         stages[stageCount] = s->mStageInfo;
         stageCount++;
     }

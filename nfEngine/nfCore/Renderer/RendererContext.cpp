@@ -26,18 +26,18 @@ RenderContext::RenderContext()
 {
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
 
-    commandRecorderGeometry.reset(renderer->GetDevice()->CreateCommandRecorder());
-    commandRecorderShadows.reset(renderer->GetDevice()->CreateCommandRecorder());
-    commandRecorderLights.reset(renderer->GetDevice()->CreateCommandRecorder());
-    commandRecorderDebug.reset(renderer->GetDevice()->CreateCommandRecorder());
-    commandRecorderOnScreen.reset(renderer->GetDevice()->CreateCommandRecorder());
+    commandRecorderGeometry = renderer->GetDevice()->CreateCommandRecorder();
+    commandRecorderShadows = renderer->GetDevice()->CreateCommandRecorder();
+    commandRecorderLights = renderer->GetDevice()->CreateCommandRecorder();
+    commandRecorderDebug = renderer->GetDevice()->CreateCommandRecorder();
+    commandRecorderOnScreen = renderer->GetDevice()->CreateCommandRecorder();
 
-    geometryContext = std::make_unique<GeometryRendererContext>(commandRecorderGeometry.get());
-    shadowsContext = std::make_unique<GeometryRendererContext>(commandRecorderShadows.get());
-    lightsContext = std::make_unique<LightsRendererContext>(commandRecorderLights.get());
-    debugContext = std::make_unique<DebugRendererContext>(commandRecorderDebug.get());
-    postProcessContext = std::make_unique<PostProcessRendererContext>(commandRecorderOnScreen.get());
-    guiContext = std::make_unique<GuiRendererContext>(commandRecorderOnScreen.get());
+    geometryContext = std::make_unique<GeometryRendererContext>(commandRecorderGeometry);
+    shadowsContext = std::make_unique<GeometryRendererContext>(commandRecorderShadows);
+    lightsContext = std::make_unique<LightsRendererContext>(commandRecorderLights);
+    debugContext = std::make_unique<DebugRendererContext>(commandRecorderDebug);
+    postProcessContext = std::make_unique<PostProcessRendererContext>(commandRecorderOnScreen);
+    guiContext = std::make_unique<GuiRendererContext>(commandRecorderOnScreen);
 }
 
 } // namespace Renderer

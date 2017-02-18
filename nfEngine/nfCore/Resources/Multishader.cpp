@@ -125,7 +125,7 @@ bool Multishader::OnLoad()
             macroValues[i] = macro.minValue;
         }
 
-        /// generate and load all mutlishader combinations
+        /// generate and load all multishader combinations
         for (size_t i = 0; i < totalCombinations; ++i)
         {
             loadedSuccessfully &= LoadSubshader(macroValues.get());
@@ -179,12 +179,9 @@ bool Multishader::LoadSubshader(int* macroValues)
     shaderDesc.macros = macros.data();
     shaderDesc.macrosNum = macros.size();
 
-    std::unique_ptr<IShader> shader;
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
-    shader.reset(renderer->GetDevice()->CreateShader(shaderDesc));
-    mSubShaders.push_back(std::move(shader));
-
-    return shader.get() != nullptr;
+    mSubShaders.emplace_back(renderer->GetDevice()->CreateShader(shaderDesc));
+    return mSubShaders.back() != nullptr;
 }
 
 size_t Multishader::GetMacrosNumber() const
@@ -203,7 +200,7 @@ int Multishader::GetMacroByName(const char* name) const
     return -1;
 }
 
-IShader* Multishader::GetShader(int* values) const
+const Renderer::ShaderPtr& Multishader::GetShader(int* values) const
 {
     int subshaderId = 0;
     int multiplier = 1;
@@ -223,7 +220,7 @@ IShader* Multishader::GetShader(int* values) const
         multiplier *= (macro.maxValue - macro.minValue + 1);
     }
 
-    return mSubShaders[subshaderId].get();
+    return mSubShaders[subshaderId];
 }
 
 } // namespace Renderer

@@ -9,6 +9,8 @@
 #include "../RendererInterface/PipelineState.hpp"
 #include "Common.hpp"
 #include "ResourceBinding.hpp"
+#include "Shader.hpp"
+
 
 namespace NFE {
 namespace Renderer {
@@ -16,8 +18,16 @@ namespace Renderer {
 class PipelineState : public IPipelineState
 {
     D3DPtr<ID3D12PipelineState> mPipelineState;
-    ResourceBindingLayout* mBindingLayout;
     D3D12_PRIMITIVE_TOPOLOGY mPrimitiveTopology;
+
+    InternalResourceBindingLayoutPtr mBindingLayout;
+    InternalShaderPtr mVS;
+    InternalShaderPtr mPS;
+    InternalShaderPtr mGS;
+    InternalShaderPtr mHS;
+    InternalShaderPtr mDS;
+
+    void Release();
 
 public:
     PipelineState();
@@ -29,7 +39,7 @@ public:
         return mPipelineState.get();
     }
 
-    NFE_INLINE ResourceBindingLayout* GetResBindingLayout() const
+    NFE_INLINE const InternalResourceBindingLayoutPtr& GetResBindingLayout() const
     {
         return mBindingLayout;
     }

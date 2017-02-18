@@ -62,7 +62,7 @@ void Scene::ReleaseSubsceneResources()
 bool Scene::Init(IDevice* rendererDevice, void* winHandle)
 {
     mRendererDevice = rendererDevice;
-    mCommandBuffer.reset(mRendererDevice->CreateCommandRecorder());
+    mCommandBuffer = mRendererDevice->CreateCommandRecorder();
 
     // find suitable back buffer format
     ElementFormat preferredFormats[] =
@@ -101,7 +101,7 @@ bool Scene::Init(IDevice* rendererDevice, void* winHandle)
         {
             ReleaseSubsceneResources();
             mHighestAvailableSubScene = SIZE_MAX;
-            return false; // we hit the end of our scenes vector, no scene successfully inited
+            return false; // we hit the end of our scenes vector, no scene successfully initialized
         }
     }
 
@@ -128,8 +128,7 @@ bool Scene::SwitchSubscene(size_t subScene)
     return true;
 }
 
-IShader* Scene::CompileShader(const char* path, ShaderType type, ShaderMacro* macros,
-                              size_t macrosNum)
+ShaderPtr Scene::CompileShader(const char* path, ShaderType type, ShaderMacro* macros, size_t macrosNum)
 {
     ShaderDesc desc;
     desc.type = type;

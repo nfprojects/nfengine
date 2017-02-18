@@ -19,17 +19,24 @@ ComputePipelineState::ComputePipelineState()
 {
 }
 
+void ComputePipelineState::Release()
+{
+    mPipelineState.reset();
+    mResBindingLayout.reset();
+    mComputeShader.reset();
+}
+
 bool ComputePipelineState::Init(const ComputePipelineStateDesc& desc)
 {
-    ResourceBindingLayout* resBindingLayout = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout);
-    if (!resBindingLayout)
+    mResBindingLayout = std::dynamic_pointer_cast<ResourceBindingLayout>(desc.resBindingLayout);
+    if (!mResBindingLayout)
     {
         LOG_ERROR("Invalid resource binding layout");
         return false;
     }
 
-    Shader* computeShader = dynamic_cast<Shader*>(desc.computeShader);
-    if (!computeShader)
+    mComputeShader = std::dynamic_pointer_cast<Shader>(desc.computeShader);
+    if (!mComputeShader)
     {
         LOG_ERROR("Invalid compute shader");
         return false;
@@ -37,8 +44,8 @@ bool ComputePipelineState::Init(const ComputePipelineStateDesc& desc)
 
     D3D12_COMPUTE_PIPELINE_STATE_DESC psd;
     ZeroMemory(&psd, sizeof(psd));
-    psd.CS = computeShader->GetD3D12Bytecode();
-    psd.pRootSignature = resBindingLayout->GetD3DRootSignature();
+    psd.CS = mComputeShader->GetD3D12Bytecode();
+    psd.pRootSignature = mResBindingLayout->GetD3DRootSignature();
     // TODO pipeline caching
 
     HRESULT hr;

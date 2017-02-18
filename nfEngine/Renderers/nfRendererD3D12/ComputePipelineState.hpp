@@ -9,6 +9,8 @@
 #include "../RendererInterface/ComputePipelineState.hpp"
 #include "Common.hpp"
 #include "ResourceBinding.hpp"
+#include "Shader.hpp"
+
 
 namespace NFE {
 namespace Renderer {
@@ -16,6 +18,14 @@ namespace Renderer {
 class ComputePipelineState : public IComputePipelineState
 {
     D3DPtr<ID3D12PipelineState> mPipelineState;
+
+    // keep reference to compute shader bytecode
+    InternalShaderPtr mComputeShader;
+
+    // keeps reference to root signature
+    InternalResourceBindingLayoutPtr mResBindingLayout;
+
+    void Release();
 
 public:
     ComputePipelineState();

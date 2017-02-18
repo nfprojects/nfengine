@@ -48,13 +48,13 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
 {
     // create rendertarget that will render to the window's backbuffer
     RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowBackbuffer.get();
+    rtTarget.texture = mWindowBackbuffer;
     RenderTargetDesc rtDesc;
     rtDesc.numTargets = 1;
     rtDesc.targets = &rtTarget;
-    rtDesc.depthBuffer = mDepthBuffer.get();
+    rtDesc.depthBuffer = mDepthBuffer;
     rtDesc.debugName = "DepthStencilScene::mWindowRenderTarget";
-    mWindowRenderTarget.reset(mRendererDevice->CreateRenderTarget(rtDesc));
+    mWindowRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
     if (!mWindowRenderTarget)
         return false;
 
@@ -68,19 +68,19 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;
     vertexLayoutDesc.numElements = 3;
-    mVertexLayout.reset(mRendererDevice->CreateVertexLayout(vertexLayoutDesc));
+    mVertexLayout = mRendererDevice->CreateVertexLayout(vertexLayoutDesc);
     if (!mVertexLayout)
         return false;
 
     ShaderMacro vsMacro[] = { { "USE_CBUFFER", "1" } };
     std::string vsPath = gShaderPathPrefix + "TestVS" + gShaderPathExt;
-    mVertexShader.reset(CompileShader(vsPath.c_str(), ShaderType::Vertex, vsMacro, 1));
+    mVertexShader = CompileShader(vsPath.c_str(), ShaderType::Vertex, vsMacro, 1);
     if (!mVertexShader)
         return false;
 
     ShaderMacro psMacro[] = { { "USE_TEXTURE", "0" } };
     std::string psPath = gShaderPathPrefix + "TestPS" + gShaderPathExt;
-    mPixelShader.reset(CompileShader(psPath.c_str(), ShaderType::Pixel, psMacro, 1));
+    mPixelShader = CompileShader(psPath.c_str(), ShaderType::Pixel, psMacro, 1);
     if (!mPixelShader)
         return false;
 
@@ -90,8 +90,7 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
 
     // create binding layout
     VolatileCBufferBinding cbufferDesc(ShaderType::Vertex, ShaderResourceType::CBuffer, 0);
-    mResBindingLayout.reset(mRendererDevice->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(nullptr, 0, &cbufferDesc, 1)));
+    mResBindingLayout = mRendererDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc(nullptr, 0, &cbufferDesc, 1));
     if (!mResBindingLayout)
         return false;
 
@@ -112,12 +111,12 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
 
     PipelineStateDesc psd;
     psd.rtFormats[0] = mBackbufferFormat;
-    psd.vertexShader = mVertexShader.get();
-    psd.pixelShader = mPixelShader.get();
+    psd.vertexShader = mVertexShader;
+    psd.pixelShader = mPixelShader;
     psd.raterizerState.cullMode = CullMode::Disabled;
     psd.primitiveType = PrimitiveType::Triangles;
-    psd.vertexLayout = mVertexLayout.get();
-    psd.resBindingLayout = mResBindingLayout.get();
+    psd.vertexLayout = mVertexLayout;
+    psd.resBindingLayout = mResBindingLayout;
 
     if (withDepth && !withStencil)
         psd.depthFormat = DepthBufferFormat::Depth16;
@@ -132,7 +131,7 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
         psd.depthState.stencilFunc = CompareFunc::Pass;
         psd.depthState.stencilEnable = true;
         psd.depthState.stencilMask = 0xFF;
-        mMaskPipelineState.reset(mRendererDevice->CreatePipelineState(psd));
+        mMaskPipelineState = mRendererDevice->CreatePipelineState(psd);
         if (!mMaskPipelineState)
             return false;
 
@@ -145,19 +144,19 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
         psd.depthState.stencilFunc = CompareFunc::Equal;
         psd.depthState.stencilEnable = true;
         psd.depthState.stencilMask = 0xFF;
-        mReflectionPipelineState.reset(mRendererDevice->CreatePipelineState(psd));
+        mReflectionPipelineState = mRendererDevice->CreatePipelineState(psd);
         if (!mReflectionPipelineState)
             return false;
     }
 
     psd.depthState = depthStateDesc;
-    mCubePipelineState.reset(mRendererDevice->CreatePipelineState(psd));
+    mCubePipelineState = mRendererDevice->CreatePipelineState(psd);
     if (!mCubePipelineState)
         return false;
 
     psd.depthState = depthStateDesc;
     psd.blendState = blendStateDesc;
-    mFloorPipelineState.reset(mRendererDevice->CreatePipelineState(psd));
+    mFloorPipelineState = mRendererDevice->CreatePipelineState(psd);
     if (!mFloorPipelineState)
         return false;
 
@@ -200,7 +199,7 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
     bufferDesc.mode = BufferMode::Static;
     bufferDesc.size = sizeof(vbData);
     bufferDesc.initialData = vbData;
-    mVertexBuffer.reset(mRendererDevice->CreateBuffer(bufferDesc));
+    mVertexBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mVertexBuffer)
         return false;
 
@@ -208,7 +207,7 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
     bufferDesc.mode = BufferMode::Static;
     bufferDesc.size = sizeof(ibData);
     bufferDesc.initialData = ibData;
-    mIndexBuffer.reset(mRendererDevice->CreateBuffer(bufferDesc));
+    mIndexBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mIndexBuffer)
         return false;
 
@@ -216,7 +215,7 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
     bufferDesc.mode = BufferMode::Volatile;
     bufferDesc.size = sizeof(VertexCBuffer);
     bufferDesc.initialData = nullptr;
-    mConstantBuffer.reset(mRendererDevice->CreateBuffer(bufferDesc));
+    mConstantBuffer = mRendererDevice->CreateBuffer(bufferDesc);
     if (!mConstantBuffer)
         return false;
 
@@ -235,7 +234,7 @@ bool DepthStencilScene::CreateDepthBuffer(bool withStencil)
     depthBufferDesc.depthBufferFormat = withStencil ?
         DepthBufferFormat::Depth24_Stencil8 : DepthBufferFormat::Depth16;
     depthBufferDesc.debugName = "DepthStencilScene::mDepthBuffer";
-    mDepthBuffer.reset(mRendererDevice->CreateTexture(depthBufferDesc));
+    mDepthBuffer = mRendererDevice->CreateTexture(depthBufferDesc);
     if (!mDepthBuffer)
         return false;
 
@@ -273,7 +272,7 @@ bool DepthStencilScene::OnInit(void* winHandle)
     bbDesc.windowHandle = winHandle;
     bbDesc.vSync = false;
     bbDesc.debugName = "DepthStencilScene::mWindowBackbuffer";
-    mWindowBackbuffer.reset(mRendererDevice->CreateBackbuffer(bbDesc));
+    mWindowBackbuffer = mRendererDevice->CreateBackbuffer(bbDesc);
     if (!mWindowBackbuffer)
         return false;
 
@@ -302,21 +301,21 @@ void DepthStencilScene::Draw(float dt)
     Matrix reflectionMatrix = MatrixScaling(Vector(1.0f, -1.0f, 1.0f)) *
                               MatrixTranslation3(Vector(0.0f, -2.0f, 0.0f));
 
-    mCommandBuffer->Reset();
+    mCommandBuffer->Begin();
     mCommandBuffer->SetViewport(0.0f, static_cast<float>(WINDOW_WIDTH), 0.0f,
                                 static_cast<float>(WINDOW_HEIGHT), 0.0f, 1.0f);
     mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-    mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
-    mCommandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
-    mCommandBuffer->BindVolatileCBuffer(0, mConstantBuffer.get());
+    mCommandBuffer->SetRenderTarget(mWindowRenderTarget);
+    mCommandBuffer->SetResourceBindingLayout(mResBindingLayout);
+    mCommandBuffer->BindVolatileCBuffer(0, mConstantBuffer);
 
     int stride = 9 * sizeof(float);
     int offset = 0;
-    IBuffer* vb = mVertexBuffer.get();
+    BufferPtr vb = mVertexBuffer;
     mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
-    mCommandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
+    mCommandBuffer->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
 
-    IBuffer* cb = mConstantBuffer.get();
+    BufferPtr cb = mConstantBuffer;
     VertexCBuffer cbuffer;
 
     if (GetCurrentSubSceneNumber() >= 2)
@@ -329,7 +328,7 @@ void DepthStencilScene::Draw(float dt)
         mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
         // Step 1: draw floor to stencil buffer
-        mCommandBuffer->SetPipelineState(mMaskPipelineState.get());
+        mCommandBuffer->SetPipelineState(mMaskPipelineState);
         mCommandBuffer->SetStencilRef(0x01);
         mCommandBuffer->DrawIndexed(2 * 3, 1, 2 * 6 * 3);
 
@@ -337,7 +336,7 @@ void DepthStencilScene::Draw(float dt)
         mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &color);
 
         // Step 2: draw cube reflection
-        mCommandBuffer->SetPipelineState(mReflectionPipelineState.get());
+        mCommandBuffer->SetPipelineState(mReflectionPipelineState);
         mCommandBuffer->DrawIndexed(2 * 6 * 3);
     }
     else
@@ -354,15 +353,17 @@ void DepthStencilScene::Draw(float dt)
     mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
     // Step 3: draw floor
-    mCommandBuffer->SetPipelineState(mFloorPipelineState.get());
+    mCommandBuffer->SetPipelineState(mFloorPipelineState);
     mCommandBuffer->DrawIndexed(2 * 3, 1, 2 * 6 * 3);
 
     // Step 4: draw "normal" cube
-    mCommandBuffer->SetPipelineState(mCubePipelineState.get());
+    mCommandBuffer->SetPipelineState(mCubePipelineState);
     mCommandBuffer->DrawIndexed(2 * 6 * 3);
 
-    mRendererDevice->Execute(mCommandBuffer->Finish().get());
+    CommandListID commandList = mCommandBuffer->Finish();
+    mRendererDevice->Execute(commandList);
     mWindowBackbuffer->Present();
+    mRendererDevice->FinishFrame();
 }
 
 void DepthStencilScene::ReleaseSubsceneResources()

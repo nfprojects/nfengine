@@ -44,7 +44,7 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
     bool setApplied = false;
     for (uint32 i = 0; i < desc.numBindings; ++i)
     {
-        ResourceBindingDesc& rb = desc.resourceBindings[i];
+        ResourceBindingDesc rb = desc.resourceBindings[i];
 
         // decode set and bind from slot value
         if (setApplied)
@@ -66,7 +66,7 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
         layoutBinding.descriptorType = TranslateShaderResourceTypeToVkDescriptorType(rb.resourceType);
         if (rb.staticSampler)
         {
-            Sampler* s = dynamic_cast<Sampler*>(rb.staticSampler);
+            Sampler* s = dynamic_cast<Sampler*>(rb.staticSampler.get());
             if (s == nullptr)
             {
                 LOG_ERROR("Incorrect Sampler pointer provided at entry %d.");
@@ -181,7 +181,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     std::vector<ResourceBindingSet*> setPtrs;
     setPtrs.resize(desc.numBindingSets);
     for (uint32 i = 0; i < desc.numBindingSets; ++i)
-        setPtrs[i] = dynamic_cast<ResourceBindingSet*>(desc.bindingSets[i]);
+        setPtrs[i] = dynamic_cast<ResourceBindingSet*>(desc.bindingSets[i].get());
 
     std::sort(setPtrs.begin(), setPtrs.end(), [](ResourceBindingSet* rbs1, ResourceBindingSet* rbs2) {
         return rbs1->GetSetSlot() < rbs2->GetSetSlot();
@@ -283,9 +283,9 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
 }
 
 
-bool ResourceBindingInstance::Init(IResourceBindingSet* bindingSet)
+bool ResourceBindingInstance::Init(const ResourceBindingSetPtr& bindingSet)
 {
-    mSet = dynamic_cast<ResourceBindingSet*>(bindingSet);
+    mSet = dynamic_cast<ResourceBindingSet*>(bindingSet.get());
     if (mSet == nullptr)
     {
         LOG_ERROR("Incorrect binding set provided");
@@ -295,9 +295,9 @@ bool ResourceBindingInstance::Init(IResourceBindingSet* bindingSet)
     return true;
 }
 
-bool ResourceBindingInstance::WriteTextureView(size_t slot, ITexture* texture)
+bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& texture)
 {
-    Texture* t = dynamic_cast<Texture*>(texture);
+    Texture* t = dynamic_cast<Texture*>(texture.get());
     if (t == nullptr)
     {
         LOG_ERROR("Incorrect Texture pointer provided");
@@ -323,9 +323,9 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, ITexture* texture)
     return true;
 }
 
-bool ResourceBindingInstance::WriteCBufferView(size_t slot, IBuffer* buffer)
+bool ResourceBindingInstance::WriteCBufferView(size_t slot, const BufferPtr& buffer)
 {
-    Buffer* b = dynamic_cast<Buffer*>(buffer);
+    Buffer* b = dynamic_cast<Buffer*>(buffer.get());
     if (b == nullptr)
     {
         LOG_ERROR("Incorrect Buffer pointer provided");
@@ -353,7 +353,7 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, IBuffer* buffer)
     return true;
 }
 
-bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, ITexture* texture)
+bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, const TexturePtr& texture)
 {
     UNUSED(slot);
     UNUSED(texture);

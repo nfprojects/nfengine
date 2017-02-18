@@ -168,14 +168,14 @@ bool View::SetWindow(Common::Window* window)
     bbDesc.windowHandle = static_cast<void*>(window->GetHandle());
     bbDesc.vSync = false;
     bbDesc.format = ElementFormat::R8G8B8A8_U_Norm_sRGB;
-    mWindowBackbuffer.reset(renderer->GetDevice()->CreateBackbuffer(bbDesc));
+    mWindowBackbuffer = renderer->GetDevice()->CreateBackbuffer(bbDesc);
     if (mWindowBackbuffer == nullptr)
     {
         LOG_ERROR("Failed to create backbuffer");
         return false;
     }
 
-    if (!InitRenderTarget(mWindowBackbuffer.get(), width, height))
+    if (!InitRenderTarget(mWindowBackbuffer, width, height))
     {
         mWindowBackbuffer.reset();
         return false;
@@ -199,7 +199,7 @@ void View::OnWindowResize(void* userData)
         view->mWindow->GetSize(width, height);
         view->mWindowBackbuffer->Resize(width, height);
 
-        if (!view->InitRenderTarget(view->mWindowBackbuffer.get(), width, height))
+        if (!view->InitRenderTarget(view->mWindowBackbuffer, width, height))
         {
             view->mWindowBackbuffer.reset();
         }
@@ -220,15 +220,14 @@ bool View::InitTemporaryRenderTarget(uint32 width, uint32 height)
     texDesc.debugName = "View::mTemporaryBuffer";
     texDesc.format = ElementFormat::R16G16B16A16_Float; // TODO: support for other formats
 
-    mTemporaryBuffer.reset(renderer->GetDevice()->CreateTexture(texDesc));
+    mTemporaryBuffer = renderer->GetDevice()->CreateTexture(texDesc);
     if (!mTemporaryBuffer)
     {
         LOG_ERROR("Failed to create temporary buffer texture");
         return false;
     }
 
-    mTemporaryBufferPostprocessBinding =
-        PostProcessRenderer::Get()->CreateTextureBinding(mTemporaryBuffer.get());
+    mTemporaryBufferPostprocessBinding = PostProcessRenderer::Get()->CreateTextureBinding(mTemporaryBuffer);
     if (!mTemporaryBufferPostprocessBinding)
     {
         LOG_ERROR("Failed to create binding for temporary buffer texture");
@@ -236,13 +235,13 @@ bool View::InitTemporaryRenderTarget(uint32 width, uint32 height)
     }
 
     RenderTargetElement rtTarget;
-    rtTarget.texture = mTemporaryBuffer.get();
+    rtTarget.texture = mTemporaryBuffer;
     RenderTargetDesc rtDesc;
     rtDesc.numTargets = 1;
     rtDesc.targets = &rtTarget;
     rtDesc.debugName = "View::mTemporaryRenderTarget";
 
-    mTemporaryRenderTarget.reset(renderer->GetDevice()->CreateRenderTarget(rtDesc));
+    mTemporaryRenderTarget = renderer->GetDevice()->CreateRenderTarget(rtDesc);
     if (!mTemporaryRenderTarget)
     {
         LOG_ERROR("Failed to create temporary buffer's render target");
@@ -252,7 +251,7 @@ bool View::InitTemporaryRenderTarget(uint32 width, uint32 height)
     return true;
 }
 
-bool View::InitRenderTarget(ITexture* texture, uint32 width, uint32 height)
+bool View::InitRenderTarget(const TexturePtr& texture, uint32 width, uint32 height)
 {
     RenderTargetElement rtTarget;
     rtTarget.texture = texture;
@@ -263,7 +262,7 @@ bool View::InitRenderTarget(ITexture* texture, uint32 width, uint32 height)
     rtDesc.debugName = "View::mRenderTarget";
 
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
-    mRenderTarget.reset(renderer->GetDevice()->CreateRenderTarget(rtDesc));
+    mRenderTarget = renderer->GetDevice()->CreateRenderTarget(rtDesc);
     if (mRenderTarget == nullptr)
     {
         LOG_ERROR("Failed to create render target");
@@ -300,8 +299,8 @@ void View::Postprocess(RenderContext* ctx)
 
         PostProcessRenderer::Get()->OnEnter(postProcessContext);
         PostProcessRenderer::Get()->ApplyTonemapping(postProcessContext, params,
-                                                     mTemporaryBufferPostprocessBinding.get(),
-                                                     mRenderTarget.get());
+                                                     mTemporaryBufferPostprocessBinding,
+                                                     mRenderTarget);
         PostProcessRenderer::Get()->OnLeave(postProcessContext);
     }
 }

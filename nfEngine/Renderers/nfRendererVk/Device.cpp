@@ -24,15 +24,16 @@
 namespace {
 
 template<typename Type, typename Desc>
-Type* GenericCreateResource(const Desc& desc)
+std::shared_ptr<Type> GenericCreateResource(const Desc& desc)
 {
-    Type* resource = new (std::nothrow) Type;
-    if (resource == nullptr)
+    std::shared_ptr<Type> resource = std::make_shared<Type>();
+    if (!resource)
+    {
         return nullptr;
+    }
 
     if (!resource->Init(desc))
     {
-        delete resource;
         return nullptr;
     }
 
@@ -317,85 +318,87 @@ void* Device::GetHandle() const
     return nullptr;
 }
 
-IVertexLayout* Device::CreateVertexLayout(const VertexLayoutDesc& desc)
+VertexLayoutPtr Device::CreateVertexLayout(const VertexLayoutDesc& desc)
 {
     return GenericCreateResource<VertexLayout, VertexLayoutDesc>(desc);
 }
 
-IBuffer* Device::CreateBuffer(const BufferDesc& desc)
+BufferPtr Device::CreateBuffer(const BufferDesc& desc)
 {
     return GenericCreateResource<Buffer, BufferDesc>(desc);
 }
 
-ITexture* Device::CreateTexture(const TextureDesc& desc)
+TexturePtr Device::CreateTexture(const TextureDesc& desc)
 {
     return GenericCreateResource<Texture, TextureDesc>(desc);
 }
 
-IBackbuffer* Device::CreateBackbuffer(const BackbufferDesc& desc)
+BackbufferPtr Device::CreateBackbuffer(const BackbufferDesc& desc)
 {
     return GenericCreateResource<Backbuffer, BackbufferDesc>(desc);
 }
 
-IRenderTarget* Device::CreateRenderTarget(const RenderTargetDesc& desc)
+RenderTargetPtr Device::CreateRenderTarget(const RenderTargetDesc& desc)
 {
     return GenericCreateResource<RenderTarget, RenderTargetDesc>(desc);
 }
 
-IPipelineState* Device::CreatePipelineState(const PipelineStateDesc& desc)
+PipelineStatePtr Device::CreatePipelineState(const PipelineStateDesc& desc)
 {
     return GenericCreateResource<PipelineState, PipelineStateDesc>(desc);
 }
 
-IComputePipelineState* Device::CreateComputePipelineState(const ComputePipelineStateDesc& desc)
+ComputePipelineStatePtr Device::CreateComputePipelineState(const ComputePipelineStateDesc& desc)
 {
     return GenericCreateResource<ComputePipelineState, ComputePipelineStateDesc>(desc);
 }
 
-ISampler* Device::CreateSampler(const SamplerDesc& desc)
+SamplerPtr Device::CreateSampler(const SamplerDesc& desc)
 {
     return GenericCreateResource<Sampler, SamplerDesc>(desc);
 }
 
-IShader* Device::CreateShader(const ShaderDesc& desc)
+ShaderPtr Device::CreateShader(const ShaderDesc& desc)
 {
     return GenericCreateResource<Shader, ShaderDesc>(desc);
 }
 
-IResourceBindingSet* Device::CreateResourceBindingSet(const ResourceBindingSetDesc& desc)
+ResourceBindingSetPtr Device::CreateResourceBindingSet(const ResourceBindingSetDesc& desc)
 {
     return GenericCreateResource<ResourceBindingSet, ResourceBindingSetDesc>(desc);
 }
 
-IResourceBindingLayout* Device::CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc)
+ResourceBindingLayoutPtr Device::CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc)
 {
     return GenericCreateResource<ResourceBindingLayout, ResourceBindingLayoutDesc>(desc);
 }
 
-IResourceBindingInstance* Device::CreateResourceBindingInstance(IResourceBindingSet* set)
+ResourceBindingInstancePtr Device::CreateResourceBindingInstance(const ResourceBindingSetPtr& set)
 {
-    ResourceBindingInstance* rbi = new (std::nothrow) ResourceBindingInstance();
-    if (rbi == nullptr)
+    std::shared_ptr<ResourceBindingInstance> rbi = std::make_shared<ResourceBindingInstance>();
+    if (!rbi)
+    {
         return nullptr;
+    }
 
     if (!rbi->Init(set))
     {
-        delete rbi;
         return nullptr;
     }
 
     return rbi;
 }
 
-ICommandRecorder* Device::CreateCommandRecorder()
+CommandRecorderPtr Device::CreateCommandRecorder()
 {
-    CommandRecorder* cr = new (std::nothrow) CommandRecorder;
-    if (cr == nullptr)
+    std::shared_ptr<CommandRecorder> cr = std::make_shared<CommandRecorder>();
+    if (!cr)
+    {
         return nullptr;
+    }
 
     if (!cr->Init())
     {
-        delete cr;
         return nullptr;
     }
 
@@ -479,12 +482,18 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
     return true;
 }
 
-bool Device::Execute(ICommandList* commandList)
-{
+bool Device::Execute(CommandListID commandList)
+{/*
     CommandList* cl = dynamic_cast<CommandList*>(commandList);
     if (!cl)
     {
         LOG_ERROR("Invalid Command List provided.");
+        return false;
+    }
+    */
+    if (commandList == INVALID_COMMAND_LIST_ID)
+    {
+        LOG_ERROR("Invalid Command List ID provided for execution");
         return false;
     }
 
@@ -497,7 +506,7 @@ bool Device::Execute(ICommandList* commandList)
     VK_ZERO_MEMORY(submitInfo);
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &cl->cmdBuffer->mCommandBuffer;
+    submitInfo.pCommandBuffers = VK_NULL_HANDLE;//&cl->cmdBuffer->mCommandBuffer;
     submitInfo.pWaitDstStageMask = &pipelineStages;
     // wait until present is signalled
     submitInfo.waitSemaphoreCount = 1;
@@ -507,10 +516,10 @@ bool Device::Execute(ICommandList* commandList)
     submitInfo.pSignalSemaphores = &mRenderSemaphore;
 
     VkResult result = vkQueueSubmit(mGraphicsQueue, 1, &submitInfo,
-                                    cl->cmdBuffer->mFences[cl->cmdBuffer->mCurrentFence]);
+                                    /*cl->cmdBuffer->mFences[cl->cmdBuffer->mCurrentFence]*/VK_NULL_HANDLE);
     CHECK_VKRESULT(result, "Failed to submit graphics operations");
 
-    cl->cmdBuffer->AdvanceFrame();
+    //cl->cmdBuffer->AdvanceFrame();
     return true;
 }
 
@@ -521,7 +530,12 @@ bool Device::WaitForGPU()
     return true;
 }
 
-bool Device::DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data)
+bool Device::FinishFrame()
+{
+    return false;
+}
+
+bool Device::DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data)
 {
     UNUSED(buffer);
     UNUSED(offset);
@@ -530,7 +544,7 @@ bool Device::DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* d
     return false;
 }
 
-bool Device::DownloadTexture(ITexture* tex, void* data, int mipmap, int layer)
+bool Device::DownloadTexture(const TexturePtr& tex, void* data, int mipmap, int layer)
 {
     UNUSED(tex);
     UNUSED(data);

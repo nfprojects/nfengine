@@ -34,7 +34,7 @@ class Multishader : public ResourceBase
     /// don't keep names along with ranges - it's bad for cache
     std::vector<std::string> mMacroNames;
 
-    std::vector<std::unique_ptr<Renderer::IShader>> mSubShaders;
+    std::vector<Renderer::ShaderPtr> mSubShaders;
     Renderer::ShaderType mType;
 
     bool LoadSubshader(int* macroValues);
@@ -66,7 +66,7 @@ public:
                       Must not be null.
      * @return Shader interface pointer.
      */
-    Renderer::IShader* GetShader(int* values) const;
+    const Renderer::ShaderPtr& GetShader(int* values) const;
 
     /**
      * Get shader type.

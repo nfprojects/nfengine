@@ -26,15 +26,15 @@ protected:
         }
     };
 
-    std::unique_ptr<IBuffer> mVertexBuffer;
-    std::unique_ptr<IBuffer> mIndexBuffer;
-    std::unique_ptr<IVertexLayout> mVertexLayout;
-    std::unique_ptr<IShader> mVertexShader;
-    std::unique_ptr<IShader> mPixelShader;
+    BufferPtr mVertexBuffer;
+    BufferPtr mIndexBuffer;
+    VertexLayoutPtr mVertexLayout;
+    ShaderPtr mVertexShader;
+    ShaderPtr mPixelShader;
 
 
-    IShader* CompileShader(const char* path, ShaderType type, ShaderMacro* macros = nullptr,
-                           size_t macrosNum = 0)
+    ShaderPtr CompileShader(const char* path, ShaderType type, ShaderMacro* macros = nullptr,
+                            size_t macrosNum = 0)
     {
         const std::string shaderPath = gShaderPathPrefix + path + gShaderPathExt;
 
@@ -49,13 +49,11 @@ protected:
     void CreateShaderProgram(const char* vsPath, const char* psPath,
                              ShaderMacro* macros = nullptr, size_t macrosNum = 0)
     {
-        IShader* vs = CompileShader(vsPath, ShaderType::Vertex, macros, macrosNum);
-        ASSERT_NE(nullptr, vs);
-        mVertexShader = std::unique_ptr<IShader>(vs);
+        mVertexShader = CompileShader(vsPath, ShaderType::Vertex, macros, macrosNum);
+        ASSERT_NE(nullptr, mVertexShader.get());
 
-        IShader* ps = CompileShader(psPath, ShaderType::Pixel, macros, macrosNum);
-        ASSERT_NE(nullptr, ps);
-        mPixelShader = std::unique_ptr<IShader>(ps);
+        mPixelShader = CompileShader(psPath, ShaderType::Pixel, macros, macrosNum);
+        ASSERT_NE(nullptr, mPixelShader.get());
     }
 
     void SetUp() override
@@ -74,7 +72,7 @@ protected:
         vbDesc.mode = BufferMode::Static;
         vbDesc.size = sizeof(vbData);
         vbDesc.initialData = vbData;
-        mVertexBuffer.reset(gRendererDevice->CreateBuffer(vbDesc));
+        mVertexBuffer = gRendererDevice->CreateBuffer(vbDesc);
         ASSERT_NE(nullptr, mVertexBuffer.get());
 
         // index buffer
@@ -88,7 +86,7 @@ protected:
         ibDesc.mode = BufferMode::Static;
         ibDesc.size = sizeof(ibData);
         ibDesc.initialData = ibData;
-        mIndexBuffer.reset(gRendererDevice->CreateBuffer(ibDesc));
+        mIndexBuffer = gRendererDevice->CreateBuffer(ibDesc);
         ASSERT_NE(nullptr, mIndexBuffer.get());
 
 
@@ -103,7 +101,7 @@ protected:
         VertexLayoutDesc vertexLayoutDesc;
         vertexLayoutDesc.elements = vertexLayoutElements;
         vertexLayoutDesc.numElements = 3;
-        mVertexLayout.reset(gRendererDevice->CreateVertexLayout(vertexLayoutDesc));
+        mVertexLayout = gRendererDevice->CreateVertexLayout(vertexLayoutDesc);
         ASSERT_NE(nullptr, mVertexLayout.get());
     }
 };
@@ -112,12 +110,12 @@ protected:
 // draw constant color quad with different polygon culling modes
 TEST_F(SimpleDrawTest, Culling)
 {
-    std::unique_ptr<IResourceBindingLayout> resBindingLayout;
-    std::unique_ptr<IPipelineState> pipelineState;
+    ResourceBindingLayoutPtr resBindingLayout;
+    PipelineStatePtr pipelineState;
 
     CreateShaderProgram("SimpleDrawVS", "SimpleDrawPS");
 
-    resBindingLayout.reset(gRendererDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc()));
+    resBindingLayout = gRendererDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc());
     ASSERT_NE(nullptr, resBindingLayout.get());
 
     const CullMode cullModes[] =
@@ -153,15 +151,15 @@ TEST_F(SimpleDrawTest, Culling)
         rasterizerDesc.cullMode = cullModes[i];
 
         PipelineStateDesc pipelineStateDesc;
-        pipelineStateDesc.vertexShader = mVertexShader.get();
-        pipelineStateDesc.pixelShader = mPixelShader.get();
+        pipelineStateDesc.vertexShader = mVertexShader;
+        pipelineStateDesc.pixelShader = mPixelShader;
         pipelineStateDesc.raterizerState = rasterizerDesc;
         pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
-        pipelineStateDesc.vertexLayout = mVertexLayout.get();
-        pipelineStateDesc.resBindingLayout = resBindingLayout.get();
+        pipelineStateDesc.vertexLayout = mVertexLayout;
+        pipelineStateDesc.resBindingLayout = resBindingLayout;
         pipelineStateDesc.numRenderTargets = 1;
         pipelineStateDesc.rtFormats[0] = ElementFormat::R32G32B32A32_Float;
-        pipelineState.reset(gRendererDevice->CreatePipelineState(pipelineStateDesc));
+        pipelineState = gRendererDevice->CreatePipelineState(pipelineStateDesc);
         ASSERT_NE(nullptr, pipelineState.get());
 
         ElementFormat formats[] = { ElementFormat::R32G32B32A32_Float };
@@ -169,13 +167,13 @@ TEST_F(SimpleDrawTest, Culling)
         {
             mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &CLEAR_COLOR);
 
-            IBuffer* vb = mVertexBuffer.get();
+            const BufferPtr& vb = mVertexBuffer;
             int stride = sizeof(VertexFormat);
             int offset = 0;
             mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
-            mCommandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
-            mCommandBuffer->SetResourceBindingLayout(resBindingLayout.get());
-            mCommandBuffer->SetPipelineState(pipelineState.get());
+            mCommandBuffer->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
+            mCommandBuffer->SetResourceBindingLayout(resBindingLayout);
+            mCommandBuffer->SetPipelineState(pipelineState);
 
             mCommandBuffer->DrawIndexed(6, 1);
         }
@@ -455,11 +453,11 @@ TEST_F(SimpleDrawTest, StaticCBuffer)
 {
     const Float4 customColor = Float4(0.123f, -654.0f, 983.0f, 1.0f);
 
-    std::unique_ptr<IBuffer> constatnBuffer;
-    std::unique_ptr<IResourceBindingSet> resBindingSet;
-    std::unique_ptr<IResourceBindingInstance> resBindingInstance;
-    std::unique_ptr<IResourceBindingLayout> resBindingLayout;
-    std::unique_ptr<IPipelineState> pipelineState;
+    BufferPtr constatnBuffer;
+    ResourceBindingSetPtr resBindingSet;
+    ResourceBindingInstancePtr resBindingInstance;
+    ResourceBindingLayoutPtr resBindingLayout;
+    PipelineStatePtr pipelineState;
 
     ShaderMacro macro("USE_CBUFFER", "1");
     CreateShaderProgram("SimpleDrawVS", "SimpleDrawPS", &macro, 1);
@@ -469,35 +467,33 @@ TEST_F(SimpleDrawTest, StaticCBuffer)
     cbufferDesc.mode = BufferMode::Static;
     cbufferDesc.size = sizeof(Float4);
     cbufferDesc.initialData = &customColor;
-    constatnBuffer.reset(gRendererDevice->CreateBuffer(cbufferDesc));
+    constatnBuffer = gRendererDevice->CreateBuffer(cbufferDesc);
     ASSERT_NE(nullptr, constatnBuffer.get());
 
     // create resource binding set for cbuffer
     int cbufferSlot = mVertexShader->GetResourceSlotByName("TestCBuffer");
     ASSERT_NE(-1, cbufferSlot);
     ResourceBindingDesc binding(ShaderResourceType::CBuffer, cbufferSlot);
-    resBindingSet.reset(gRendererDevice->CreateResourceBindingSet(
-        ResourceBindingSetDesc(&binding, 1, ShaderType::Vertex)));
+    resBindingSet = gRendererDevice->CreateResourceBindingSet(ResourceBindingSetDesc(&binding, 1, ShaderType::Vertex));
     ASSERT_NE(nullptr, resBindingSet.get());
 
-    resBindingInstance.reset(gRendererDevice->CreateResourceBindingInstance(resBindingSet.get()));
+    resBindingInstance = gRendererDevice->CreateResourceBindingInstance(resBindingSet);
     ASSERT_NE(nullptr, resBindingInstance.get());
-    ASSERT_TRUE(resBindingInstance->WriteCBufferView(0, constatnBuffer.get()));
+    ASSERT_TRUE(resBindingInstance->WriteCBufferView(0, constatnBuffer));
 
-    IResourceBindingSet* sets[] = { resBindingSet.get() };
-    resBindingLayout.reset(gRendererDevice->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(sets, 1)));
+    ResourceBindingSetPtr sets[] = { resBindingSet };
+    resBindingLayout = gRendererDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc(sets, 1));
     ASSERT_NE(nullptr, resBindingLayout.get());
 
     PipelineStateDesc pipelineStateDesc;
-    pipelineStateDesc.vertexShader = mVertexShader.get();
-    pipelineStateDesc.pixelShader = mPixelShader.get();
+    pipelineStateDesc.vertexShader = mVertexShader;
+    pipelineStateDesc.pixelShader = mPixelShader;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
-    pipelineStateDesc.vertexLayout = mVertexLayout.get();
-    pipelineStateDesc.resBindingLayout = resBindingLayout.get();
+    pipelineStateDesc.vertexLayout = mVertexLayout;
+    pipelineStateDesc.resBindingLayout = resBindingLayout;
     pipelineStateDesc.numRenderTargets = 1;
     pipelineStateDesc.rtFormats[0] = ElementFormat::R32G32B32A32_Float;
-    pipelineState.reset(gRendererDevice->CreatePipelineState(pipelineStateDesc));
+    pipelineState = gRendererDevice->CreatePipelineState(pipelineStateDesc);
     ASSERT_NE(nullptr, pipelineState.get());
 
 
@@ -506,14 +502,14 @@ TEST_F(SimpleDrawTest, StaticCBuffer)
     {
         mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &CLEAR_COLOR);
 
-        IBuffer* vb = mVertexBuffer.get();
+        const BufferPtr& vb = mVertexBuffer;
         int stride = sizeof(VertexFormat);
         int offset = 0;
         mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
-        mCommandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
-        mCommandBuffer->SetResourceBindingLayout(resBindingLayout.get());
-        mCommandBuffer->SetPipelineState(pipelineState.get());
-        mCommandBuffer->BindResources(0, resBindingInstance.get());
+        mCommandBuffer->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
+        mCommandBuffer->SetResourceBindingLayout(resBindingLayout);
+        mCommandBuffer->SetPipelineState(pipelineState);
+        mCommandBuffer->BindResources(0, resBindingInstance);
 
         mCommandBuffer->DrawIndexed(6, 1);
     }

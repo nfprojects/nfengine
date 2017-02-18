@@ -27,11 +27,7 @@
 namespace NFE {
 namespace Renderer {
 
-class ICommandList
-{
-public:
-    virtual ~ICommandList() {}
-};
+using CommandListID = uint32;
 
 enum ClearFlags
 {
@@ -55,33 +51,38 @@ public:
      */
 
     /**
-     * Reset pipeline state (clean all bound resources and shaders to the pipeline)
-     * and turn the command buffer into recording state.
+     * Turn the command recorder into recording state.
+     *
+     * @return True on success.
      */
-    virtual void Reset() = 0;
+    virtual bool Begin() = 0;
 
     /**
-     * Store all executed commands to a command list and turn the command buffer into
+     * Store all recorded commands to a command list and turn the command recorder into
      * non-recording state.
+     *
+     * @return Recorded Command List ID or zero if recording had errors.
+     *
      * @note Command buffer must be in recording state for the method to succeed.
+     * @remarks Generated Command List can be executed only once.
+     *
      * @see @p Reset()
-     * @return Saved command list or nullptr on an error.
      */
-    virtual std::unique_ptr<ICommandList> Finish() = 0;
+    virtual CommandListID Finish() = 0;
 
-        /**
+    /**
      * Map buffer content into process virtual memory.
      * @param buffer Target buffer.
      * @param type   Mapping type.
      * @return Valid pointer on success or NULL on failure.
      */
-    virtual void* MapBuffer(IBuffer* buffer, MapType type) = 0;
+    virtual void* MapBuffer(const BufferPtr& buffer, MapType type) = 0;
 
     /**
      * Unmap buffer content mapped with @p Map method.
      * @param buffer Target buffer.
      */
-    virtual void UnmapBuffer(IBuffer* buffer) = 0;
+    virtual void UnmapBuffer(const BufferPtr& buffer) = 0;
 
     /**
      * Write data from the CPU memory to a GPU buffer.
@@ -91,7 +92,7 @@ public:
      * @param data   Pointer to source CPU buffer.
      * @return true on success.
      */
-    virtual bool WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data) = 0;
+    virtual bool WriteBuffer(const BufferPtr& buffer, size_t offset, size_t size, const void* data) = 0;
 
     /**
      * Copy contents of texture @p src to @p dest.
@@ -100,7 +101,7 @@ public:
      * @param src  Source texture object.
      * @param dest Destination texture object.
      */
-    virtual void CopyTexture(ITexture* src, ITexture* dest) = 0;
+    virtual void CopyTexture(const TexturePtr& src, const TexturePtr& dest) = 0;
 
     /**@}*/
 
@@ -111,9 +112,8 @@ public:
      * @{
      */
 
-    virtual void SetVertexBuffers(int num, IBuffer** vertexBuffers,
-                                  int* strides, int* offsets) = 0;
-    virtual void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format) = 0;
+    virtual void SetVertexBuffers(int num, const BufferPtr* vertexBuffers, int* strides, int* offsets) = 0;
+    virtual void SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFormat format) = 0;
 
     /**
      * Bind shader resources via setting a binding set instance.
@@ -121,33 +121,33 @@ public:
      * @param bindingSetInstance Binding set instance to be bound to the pipeline or NULL
      *                           to clear all bound resources for this set.
      */
-    virtual void BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance) = 0;
+    virtual void BindResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance) = 0;
 
     /**
      * Bind dynamic buffer to the graphics pipeline.
      * @param slot      Dynamic buffer slot in the current resource binding layout.
      * @param buffer    Buffer to bind.
      */
-    virtual void BindVolatileCBuffer(size_t slot, IBuffer* buffer) = 0;
+    virtual void BindVolatileCBuffer(size_t slot, const BufferPtr& buffer) = 0;
 
     /**
      * Set new shaders resources binding layout for graphics pipeline.
      * @param layout Resource binding layout
      */
-    virtual void SetResourceBindingLayout(IResourceBindingLayout* layout) = 0;
+    virtual void SetResourceBindingLayout(const ResourceBindingLayoutPtr& layout) = 0;
 
     /**
      * Bind render target object.
      * Pass nullptr to unbind current render target.
      */
-    virtual void SetRenderTarget(IRenderTarget* renderTarget) = 0;
+    virtual void SetRenderTarget(const RenderTargetPtr& renderTarget) = 0;
 
     /**
      * Set graphics pipeline state.
      * @remarks     When draw call is executed, a matching Resource Binding Layout must be set.
      * @param state New graphics pipeline state.
      */
-    virtual void SetPipelineState(IPipelineState* state) = 0;
+    virtual void SetPipelineState(const PipelineStatePtr& state) = 0;
 
     virtual void SetStencilRef(unsigned char ref) = 0;
     virtual void SetViewport(float left, float width, float top, float height,
@@ -180,7 +180,7 @@ public:
     /**
      * Draw geometry (with indexed verticies).
      *
-     * @param indexNum       Indicies number per instance.
+     * @param indexNum       Indices number per instance.
      * @param instancesNum   Number of instances to draw. Set to a negative value to disable
      *                       instancing.
      * @param indexOffset    Location of the first index.
@@ -206,27 +206,27 @@ public:
      * @param bindingSetInstance Binding set instance to be bound to the pipeline or NULL
      *                           to clear all bound resources for this set.
      */
-    virtual void BindComputeResources(size_t slot, IResourceBindingInstance* bindingSetInstance) = 0;
+    virtual void BindComputeResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance) = 0;
 
     /**
      * Bind dynamic buffer to the compute pipeline.
      * @param slot      Dynamic buffer slot in the current resource binding layout.
      * @param buffer    Buffer to bind.
      */
-    virtual void BindComputeVolatileCBuffer(size_t slot, IBuffer* buffer) = 0;
+    virtual void BindComputeVolatileCBuffer(size_t slot, const BufferPtr& buffer) = 0;
 
     /**
      * Set new shaders resources binding layout for compute pipeline.
      * @param layout Resource binding layout
      */
-    virtual void SetComputeResourceBindingLayout(IResourceBindingLayout* layout) = 0;
+    virtual void SetComputeResourceBindingLayout(const ResourceBindingLayoutPtr& layout) = 0;
 
     /**
      * Set compute pipeline state.
      * @remarks     When Dispatch() is executed, a matching compute Resource Binding Layout must be set.
      * @param state New compute pipeline state.
      */
-    virtual void SetComputePipelineState(IComputePipelineState* state) = 0;
+    virtual void SetComputePipelineState(const ComputePipelineStatePtr& state) = 0;
 
     /**
      * Execute compute shader.

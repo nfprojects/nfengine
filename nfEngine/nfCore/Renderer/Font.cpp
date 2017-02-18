@@ -183,11 +183,11 @@ bool Font::Init(const char* file, int size)
     texDesc.debugName = debugName.c_str();
 
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
-    mTexture.reset(renderer->GetDevice()->CreateTexture(texDesc));
+    mTexture = renderer->GetDevice()->CreateTexture(texDesc);
     if (!mTexture)
         return false;
 
-    mTextureBinding = GuiRenderer::Get()->CreateTextureBinding(mTexture.get());
+    mTextureBinding = GuiRenderer::Get()->CreateTextureBinding(mTexture);
     if (!mTextureBinding)
         return false;
 

@@ -17,8 +17,9 @@ class ITexture;
 class IBuffer;
 class ISampler;
 class IBackbuffer;
+class IResourceBindingSet;
 class IResourceBindingLayout;
-class ICommandList;
+class IResourceBindingInstance;
 class ICommandRecorder;
 class IPipelineState;
 class IComputePipelineState;
@@ -26,9 +27,25 @@ class IRenderTarget;
 class IShader;
 class IVertexLayout;
 
+// TODO discuss if unique_ptr wouldn't fit better
+using CommandRecorderPtr = std::shared_ptr<ICommandRecorder>;
+
+using TexturePtr = std::shared_ptr<ITexture>;
+using BufferPtr = std::shared_ptr<IBuffer>;
+using SamplerPtr = std::shared_ptr<ISampler>;
+using BackbufferPtr = std::shared_ptr<IBackbuffer>;
+using ResourceBindingSetPtr = std::shared_ptr<IResourceBindingSet>;
+using ResourceBindingLayoutPtr = std::shared_ptr<IResourceBindingLayout>;
+using ResourceBindingInstancePtr = std::shared_ptr<IResourceBindingInstance>;
+using PipelineStatePtr = std::shared_ptr<IPipelineState>;
+using ComputePipelineStatePtr = std::shared_ptr<IComputePipelineState>;
+using RenderTargetPtr = std::shared_ptr<IRenderTarget>;
+using ShaderPtr = std::shared_ptr<IShader>;
+using VertexLayoutPtr = std::shared_ptr<IVertexLayout>;
+
 #define MAX_RENDER_TARGETS 8
 #define MAX_MIPMAP_LEVELS 16
-
+#define INVALID_COMMAND_LIST_ID 0
 
 // number of "graphics" shader types
 #define NFE_GRAPHICS_SHADER_TYPES_NUM 5

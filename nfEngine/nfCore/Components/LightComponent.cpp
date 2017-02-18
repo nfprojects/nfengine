@@ -147,8 +147,8 @@ void LightComponent::OnLightMapTextureLoaded()
     std::recursive_mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
     std::unique_lock<std::recursive_mutex> lock(renderingMutex);
 
-    mLightMapBindingInstance.reset(renderer->GetDevice()->CreateResourceBindingInstance(
-        LightsRenderer::Get()->GetLightMapBindingSet().get()));
+    mLightMapBindingInstance = renderer->GetDevice()->CreateResourceBindingInstance(
+        LightsRenderer::Get()->GetLightMapBindingSet());
     if (!mLightMapBindingInstance)
     {
         LOG_ERROR("Failed to create light map's binding instance");

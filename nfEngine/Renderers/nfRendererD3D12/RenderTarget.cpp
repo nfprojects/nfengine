@@ -50,7 +50,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 
     for (unsigned int i = 0; i < desc.numTargets; ++i)
     {
-        Texture* tex = dynamic_cast<Texture*>(desc.targets[i].texture);
+        InternalTexturePtr tex = std::dynamic_pointer_cast<Texture>(desc.targets[i].texture);
         if (tex == nullptr)
         {
             LOG_ERROR("Invalid target texture at index %u", i);
@@ -130,7 +130,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
     {
         HeapAllocator& allocator = gDevice->GetDsvHeapAllocator();
 
-        Texture* tex = dynamic_cast<Texture*>(desc.depthBuffer);
+        InternalTexturePtr tex = std::dynamic_pointer_cast<Texture>(desc.depthBuffer);
         if (tex == nullptr)
         {
             LOG_ERROR("Invalid texture for depth buffer");

@@ -126,23 +126,23 @@ CommandRecorder::~CommandRecorder()
     ::CloseHandle(mFenceEvent);
 }
 
-void CommandRecorder::Reset()
+bool CommandRecorder::Begin()
 {
     if (mReset)
     {
         LOG_WARNING("Redundant command buffer reset");
-        return;
+        return false;
     }
 
     HRESULT hr;
 
     hr = D3D_CALL_CHECK(mCommandAllocators[mFrameBufferIndex]->Reset());
     if (FAILED(hr))
-        return;
+        return false;
 
     hr = D3D_CALL_CHECK(mCommandList->Reset(mCommandAllocators[mFrameBufferIndex].get(), nullptr));
     if (FAILED(hr))
-        return;
+        return false;
 
     ID3D12DescriptorHeap* heaps[] =
     {
@@ -170,6 +170,7 @@ void CommandRecorder::Reset()
         mBoundVertexBuffers[i] = nullptr;
 
     mReset = true;
+    return true;
 }
 
 void CommandRecorder::SetViewport(float left, float width, float top, float height,
@@ -195,19 +196,19 @@ void CommandRecorder::SetScissors(int left, int top, int right, int bottom)
     mCommandList->RSSetScissorRects(1, &rect);
 }
 
-void* CommandRecorder::MapBuffer(IBuffer* buffer, MapType type)
+void* CommandRecorder::MapBuffer(const BufferPtr& buffer, MapType type)
 {
     UNUSED(buffer);
     UNUSED(type);
     return nullptr;
 }
 
-void CommandRecorder::UnmapBuffer(IBuffer* buffer)
+void CommandRecorder::UnmapBuffer(const BufferPtr& buffer)
 {
     UNUSED(buffer);
 }
 
-void CommandRecorder::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets)
+void CommandRecorder::SetVertexBuffers(int num, const BufferPtr* vertexBuffers, int* strides, int* offsets)
 {
     // TODO
     UNUSED(offsets);
@@ -219,7 +220,9 @@ void CommandRecorder::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* st
         D3D12_GPU_VIRTUAL_ADDRESS gpuAddress = 0;
         uint32 size = 0;
 
-        Buffer* buffer = dynamic_cast<Buffer*>(vertexBuffers[i]);
+        // TODO resource tracking
+
+        const Buffer* buffer = dynamic_cast<Buffer*>(vertexBuffers[i].get());
         if (!buffer)
         {
             LOG_ERROR("Invalid vertex buffer at slot %i", i);
@@ -243,9 +246,10 @@ void CommandRecorder::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* st
     mCommandList->IASetVertexBuffers(0, num, mCurrVertexBufferViews);
 }
 
-void CommandRecorder::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format)
+void CommandRecorder::SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFormat format)
 {
-    Buffer* buffer = dynamic_cast<Buffer*>(indexBuffer);
+    // TODO resource tracking
+    const Buffer* buffer = dynamic_cast<Buffer*>(indexBuffer.get());
 
     // TODO handle dynamic index buffers via ring buffer
     D3D12_INDEX_BUFFER_VIEW view;
@@ -264,9 +268,10 @@ void CommandRecorder::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat for
     mCommandList->IASetIndexBuffer(&view);
 }
 
-void CommandRecorder::BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance)
+void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance)
 {
-    ResourceBindingInstance* instance = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance);
+    // TODO resource tracking
+    ResourceBindingInstance* instance = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.get());
     if (!instance)
         return;
 
@@ -284,11 +289,11 @@ void CommandRecorder::BindResources(size_t slot, IResourceBindingInstance* bindi
     mCommandList->SetGraphicsRootDescriptorTable(static_cast<UINT>(slot), ptr);
 }
 
-void CommandRecorder::BindVolatileCBuffer(size_t slot, IBuffer* buffer)
+void CommandRecorder::BindVolatileCBuffer(size_t slot, const BufferPtr& buffer)
 {
     NFE_ASSERT(slot < NFE_RENDERER_MAX_VOLATILE_CBUFFERS, "Invalid volatile buffer slot number");
 
-    Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer);
+    const Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer.get());
     NFE_ASSERT(bufferPtr->GetMode() == BufferMode::Volatile, "Buffer mode must be volatile");
 
     if (mCurrBindingLayout != mBindingLayout)
@@ -300,14 +305,15 @@ void CommandRecorder::BindVolatileCBuffer(size_t slot, IBuffer* buffer)
     mBoundVolatileCBuffers[slot] = bufferPtr;
 }
 
-void CommandRecorder::SetRenderTarget(IRenderTarget* renderTarget)
+void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
 {
-    if (mCurrRenderTarget == renderTarget)
+    if (mCurrRenderTarget == renderTarget.get())
         return;
 
     UnsetRenderTarget();
 
-    mCurrRenderTarget = dynamic_cast<RenderTarget*>(renderTarget);
+    // TODO resource tracking
+    mCurrRenderTarget = dynamic_cast<RenderTarget*>(renderTarget.get());
 
     D3D12_RESOURCE_BARRIER barriers[MAX_RENDER_TARGETS + 1];
     uint32 numBarriers = 0;
@@ -329,7 +335,7 @@ void CommandRecorder::SetRenderTarget(IRenderTarget* renderTarget)
         size_t numTargets = mCurrRenderTarget->GetNumTargets();
         for (size_t i = 0; i < numTargets; ++i)
         {
-            Texture* tex = mCurrRenderTarget->GetTexture(i);
+            const InternalTexturePtr& tex = mCurrRenderTarget->GetTexture(i);
             uint32 subResource = mCurrRenderTarget->GetSubresourceID(i);
 
             rtvs[i] = allocator.GetCpuHandle();
@@ -349,10 +355,10 @@ void CommandRecorder::SetRenderTarget(IRenderTarget* renderTarget)
 
         if (mCurrRenderTarget->GetDSV() != -1)
         {
-            Texture* tex = mCurrRenderTarget->GetDepthTexture();
+            const InternalTexturePtr& tex = mCurrRenderTarget->GetDepthTexture();
             uint32 subResource = mCurrRenderTarget->GetDepthTexSubresourceID();
 
-            // TODO sometimes we may need ony read access
+            // TODO sometimes we may need only read access
             D3D12_RESOURCE_STATES targetState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
             if (tex->GetState(subResource) != targetState)
             {
@@ -392,7 +398,7 @@ void CommandRecorder::UnsetRenderTarget()
         size_t numTargets = mCurrRenderTarget->GetNumTargets();
         for (size_t i = 0; i < numTargets; ++i)
         {
-            Texture* tex = mCurrRenderTarget->GetTexture(i);
+            const InternalTexturePtr& tex = mCurrRenderTarget->GetTexture(i);
             uint32 subResource = mCurrRenderTarget->GetSubresourceID(i);
             D3D12_RESOURCE_STATES targetState = tex->GetTargetState();
 
@@ -410,7 +416,7 @@ void CommandRecorder::UnsetRenderTarget()
         // unset depth texture if used
         if (mCurrRenderTarget->GetDepthTexture() != nullptr)
         {
-            Texture* tex = mCurrRenderTarget->GetDepthTexture();
+            const InternalTexturePtr& tex = mCurrRenderTarget->GetDepthTexture();
             uint32 subResource = mCurrRenderTarget->GetDepthTexSubresourceID();
             D3D12_RESOURCE_STATES targetState = tex->GetTargetState();
 
@@ -430,14 +436,16 @@ void CommandRecorder::UnsetRenderTarget()
         mCommandList->ResourceBarrier(numBarriers, barriers);
 }
 
-void CommandRecorder::SetResourceBindingLayout(IResourceBindingLayout* layout)
+void CommandRecorder::SetResourceBindingLayout(const ResourceBindingLayoutPtr& layout)
 {
-    mBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout);
+    // TODO resource tracking
+    mBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout.get());
 }
 
-void CommandRecorder::SetPipelineState(IPipelineState* state)
+void CommandRecorder::SetPipelineState(const PipelineStatePtr& state)
 {
-    mPipelineState = dynamic_cast<PipelineState*>(state);
+    // TODO resource tracking
+    mPipelineState = dynamic_cast<PipelineState*>(state.get());
 }
 
 void CommandRecorder::SetStencilRef(unsigned char ref)
@@ -534,9 +542,9 @@ void CommandRecorder::WriteVolatileBuffer(Buffer* buffer, const void* data)
     }
 }
 
-bool CommandRecorder::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data)
+bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t size, const void* data)
 {
-    Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer);
+    Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer.get());
     if (!bufferPtr)
     {
         LOG_ERROR("Invalid buffer");
@@ -569,9 +577,14 @@ bool CommandRecorder::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, c
     return true;
 }
 
-void CommandRecorder::CopyTexture(ITexture* src, ITexture* dest)
+void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
 {
-    Texture* srcTex = dynamic_cast<Texture*>(src);
+    NFE_ASSERT(src, "Invalid source texture");
+    NFE_ASSERT(dest, "Invalid destination texture");
+
+    // TODO resource tracking
+
+    Texture* srcTex = dynamic_cast<Texture*>(src.get());
     if (srcTex == nullptr)
     {
         LOG_ERROR("Invalid 'src' pointer");
@@ -584,7 +597,7 @@ void CommandRecorder::CopyTexture(ITexture* src, ITexture* dest)
         return;
     }
 
-    Texture* destTex = dynamic_cast<Texture*>(dest);
+    Texture* destTex = dynamic_cast<Texture*>(dest.get());
     if (destTex == nullptr)
     {
         LOG_ERROR("Invalid 'dest' pointer");
@@ -700,7 +713,7 @@ void CommandRecorder::Clear(int flags, uint32 numTargets, const uint32* slots,
                 slot = slots[i];
             }
 
-            Texture* tex = mCurrRenderTarget->GetTexture(i);
+            const InternalTexturePtr& tex = mCurrRenderTarget->GetTexture(i);
             uint32 subResource = mCurrRenderTarget->GetSubresourceID(i);
             NFE_ASSERT(tex->GetState(subResource) == D3D12_RESOURCE_STATE_RENDER_TARGET, "Invalid resource state");
 
@@ -735,8 +748,8 @@ void CommandRecorder::UpdateStates()
     if (mCurrPipelineState != mPipelineState)
     {
         if (mBindingLayout == nullptr)
-            mBindingLayout = mPipelineState->GetResBindingLayout();
-        else if (mBindingLayout != mPipelineState->GetResBindingLayout())
+            mBindingLayout = mPipelineState->GetResBindingLayout().get();
+        else if (mBindingLayout != mPipelineState->GetResBindingLayout().get())
             LOG_ERROR("Resource binding layout mismatch");
 
         // set pipeline state
@@ -776,9 +789,11 @@ void CommandRecorder::DrawIndexed(int indexNum, int instancesNum,
                                        instanceOffset);
 }
 
-void CommandRecorder::BindComputeResources(size_t slot, IResourceBindingInstance* bindingSetInstance)
+void CommandRecorder::BindComputeResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance)
 {
-    ResourceBindingInstance* instance = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance);
+    // TODO resource tracking
+
+    ResourceBindingInstance* instance = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.get());
     if (!instance)
     {
         // clear the slot
@@ -797,19 +812,21 @@ void CommandRecorder::BindComputeResources(size_t slot, IResourceBindingInstance
     mCommandList->SetComputeRootDescriptorTable(static_cast<UINT>(slot), ptr);
 }
 
-void CommandRecorder::BindComputeVolatileCBuffer(size_t slot, IBuffer* buffer)
+void CommandRecorder::BindComputeVolatileCBuffer(size_t slot, const BufferPtr& buffer)
 {
     NFE_ASSERT(slot < NFE_RENDERER_MAX_VOLATILE_CBUFFERS, "Invalid volatile buffer slot number");
 
-    Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer);
+    const Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer.get());
     NFE_ASSERT(bufferPtr->GetMode() == BufferMode::Volatile, "Buffer mode must be volatile");
 
     mBoundComputeVolatileCBuffers[slot] = bufferPtr;
 }
 
-void CommandRecorder::SetComputeResourceBindingLayout(IResourceBindingLayout* layout)
+void CommandRecorder::SetComputeResourceBindingLayout(const ResourceBindingLayoutPtr& layout)
 {
-    ResourceBindingLayout* newLayout = dynamic_cast<ResourceBindingLayout*>(layout);
+    // TODO resource tracking
+
+    ResourceBindingLayout* newLayout = dynamic_cast<ResourceBindingLayout*>(layout.get());
     NFE_ASSERT(newLayout, "Invalid layout");
 
     if (mComputeBindingLayout != newLayout)
@@ -819,9 +836,11 @@ void CommandRecorder::SetComputeResourceBindingLayout(IResourceBindingLayout* la
     }
 }
 
-void CommandRecorder::SetComputePipelineState(IComputePipelineState* state)
+void CommandRecorder::SetComputePipelineState(const ComputePipelineStatePtr& state)
 {
-    ComputePipelineState* newState = dynamic_cast<ComputePipelineState*>(state);
+    // TODO resource tracking
+
+    ComputePipelineState* newState = dynamic_cast<ComputePipelineState*>(state.get());
     NFE_ASSERT(newState, "Invalid compute pipeline state");
 
     if (mCurrComputePipelineState != newState)
@@ -850,30 +869,27 @@ void CommandRecorder::Dispatch(uint32 x, uint32 y, uint32 z)
     mCommandList->Dispatch(x, y, z);
 }
 
-std::unique_ptr<ICommandList> CommandRecorder::Finish()
+CommandListID CommandRecorder::Finish()
 {
     if (!mReset)
     {
         LOG_ERROR("Command buffer is not in recording state");
-        return nullptr;
+        return 0;
     }
 
     mReset = false;
 
     UnsetRenderTarget();
 
-    D3D_CALL_CHECK(mCommandList->Close());
-
-    // TODO: use memory pool
-    std::unique_ptr<CommandList> list(new (std::nothrow) CommandList);
-    if (!list)
+    HRESULT hr = D3D_CALL_CHECK(mCommandList->Close());
+    if (FAILED(hr))
     {
-        LOG_ERROR("Memory allocation failed");
-        return nullptr;
+        // recording failed
+        return 0;
     }
 
-    list->commandRecorder = this;
-    return list;
+    // TODO
+    return 0;
 }
 
 bool CommandRecorder::MoveToNextFrame(ID3D12CommandQueue* commandQueue)

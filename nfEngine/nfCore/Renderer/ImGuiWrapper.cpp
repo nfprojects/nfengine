@@ -135,11 +135,11 @@ bool ImGuiWrapper::InitImGui()
     texDesc.debugName = "GuiRenderer::mImGuiTexture";
 
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
-    mImGuiTexture.reset(renderer->GetDevice()->CreateTexture(texDesc));
+    mImGuiTexture = renderer->GetDevice()->CreateTexture(texDesc);
     if (!mImGuiTexture)
         return false;
 
-    mImGuiTextureBinding = GuiRenderer::Get()->CreateTextureBinding(mImGuiTexture.get());
+    mImGuiTextureBinding = GuiRenderer::Get()->CreateTextureBinding(mImGuiTexture);
     if (!mImGuiTextureBinding)
         return false;
 
@@ -243,7 +243,7 @@ void ImGuiWrapper::FinishDrawing(RenderContext* context)
 {
     ImGui::SetInternalState(mImGuiState);
 
-    GuiRenderer::Get()->DrawImGui(context->guiContext.get(), mImGuiTextureBinding.get());
+    GuiRenderer::Get()->DrawImGui(context->guiContext.get(), mImGuiTextureBinding);
 
     ImGuiIO& io = ImGui::GetIO();
 

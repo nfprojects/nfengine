@@ -23,7 +23,7 @@ class MultiPipelineState
 private:
     struct ShaderSet
     {
-        Renderer::IShader* shaders[NFE_GRAPHICS_SHADER_TYPES_NUM];
+        Renderer::ShaderPtr shaders[NFE_GRAPHICS_SHADER_TYPES_NUM];
 
         NFE_INLINE ShaderSet()
             : shaders{nullptr, nullptr, nullptr, nullptr, nullptr}
@@ -47,7 +47,7 @@ private:
      */
     std::vector<int> mShaderMacroMapping[NFE_GRAPHICS_SHADER_TYPES_NUM];
 
-    std::vector<std::unique_ptr<Renderer::IPipelineState>> mSubPipelineStates;
+    std::vector<Renderer::PipelineStatePtr> mSubPipelineStates;
     std::vector<ShaderSet> mShaderSets;
 
     void GenerateShaderSets();
@@ -78,7 +78,7 @@ public:
      * @param type   Shader type.
      * @return IPipelineState interface pointer.
      */
-    Renderer::IPipelineState* GetPipelineState(int* values = nullptr) const;
+    const Renderer::PipelineStatePtr& GetPipelineState(int* values = nullptr) const;
 
     /**
      * Get sub shader defined by a list of macro values and shader type.
@@ -89,7 +89,7 @@ public:
      *               or set to NULL to use default macro values.
      * @return IShader interface pointer.
      */
-    Renderer::IShader* GetShader(Renderer::ShaderType type, int* values = nullptr) const;
+    const Renderer::ShaderPtr& GetShader(Renderer::ShaderType type, int* values = nullptr) const;
 
     /**
      * Load multishader from config file. This operation only parses config file and
@@ -99,7 +99,7 @@ public:
     bool Load(const char* name);
 
     /**
-     * Build pipeline state objects ste.
+     * Build pipeline state objects state.
      * @return True on success.
      */
     bool Build(const Renderer::PipelineStateDesc& desc);

@@ -82,8 +82,8 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     size_t rangeCounter = 0;
     for (size_t i = 0; i < desc.numBindingSets; ++i, ++rootParamIndex)
     {
-        ResourceBindingSet* bindingSet = dynamic_cast<ResourceBindingSet*>(desc.bindingSets[i]);
-        if (bindingSet == nullptr)
+        InternalResourceBindingSetPtr bindingSet = std::dynamic_pointer_cast<ResourceBindingSet>(desc.bindingSets[i]);
+        if (!bindingSet)
         {
             LOG_ERROR("Invalid binding set");
             return false;
@@ -144,7 +144,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
             if (bindingDesc.resourceType == ShaderResourceType::Texture &&
                 bindingDesc.staticSampler != nullptr)
             {
-                Sampler* sampler = dynamic_cast<Sampler*>(bindingDesc.staticSampler);
+                Sampler* sampler = dynamic_cast<Sampler*>(bindingDesc.staticSampler.get());
                 if (!sampler)
                 {
                     LOG_ERROR("Invalid static sampler in binding set %zu at slot %zu", i, j);
@@ -222,9 +222,9 @@ ResourceBindingInstance::~ResourceBindingInstance()
     }
 }
 
-bool ResourceBindingInstance::Init(IResourceBindingSet* bindingSet)
+bool ResourceBindingInstance::Init(const ResourceBindingSetPtr& bindingSet)
 {
-    mSet = dynamic_cast<ResourceBindingSet*>(bindingSet);
+    mSet = std::dynamic_pointer_cast<ResourceBindingSet>(bindingSet);
     if (!mSet)
     {
         LOG_ERROR("Invalid resource binding set");
@@ -237,11 +237,11 @@ bool ResourceBindingInstance::Init(IResourceBindingSet* bindingSet)
     return mDescriptorHeapOffset != -1;
 }
 
-bool ResourceBindingInstance::WriteTextureView(size_t slot, ITexture* texture)
+bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& texture)
 {
     // TODO this won't work if there are multiple buffers (frames) in the texture
 
-    Texture* tex = dynamic_cast<Texture*>(texture);
+    const Texture* tex = dynamic_cast<Texture*>(texture.get());
     if (!tex || !tex->mBuffers[0])
     {
         LOG_ERROR("Invalid buffer");
@@ -290,9 +290,9 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, ITexture* texture)
     return true;
 }
 
-bool ResourceBindingInstance::WriteCBufferView(size_t slot, IBuffer* buffer)
+bool ResourceBindingInstance::WriteCBufferView(size_t slot, const BufferPtr& buffer)
 {
-    Buffer* cbuffer = dynamic_cast<Buffer*>(buffer);
+    const Buffer* cbuffer = dynamic_cast<Buffer*>(buffer.get());
     if (!buffer || !cbuffer->GetResource())
     {
         LOG_ERROR("Invalid buffer");
@@ -311,9 +311,9 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, IBuffer* buffer)
     return true;
 }
 
-bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, ITexture* texture)
+bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, const TexturePtr& texture)
 {
-    Texture* tex = dynamic_cast<Texture*>(texture);
+    const Texture* tex = dynamic_cast<Texture*>(texture.get());
     if (!tex || !tex->mBuffers[0])
     {
         LOG_ERROR("Invalid buffer");
