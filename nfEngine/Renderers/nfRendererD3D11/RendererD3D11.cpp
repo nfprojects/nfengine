@@ -16,7 +16,7 @@ IDevice* Init(const DeviceInitParams* params)
 {
     if (gDevice == nullptr)
     {
-        gDevice.reset(new Device);
+        gDevice = std::make_unique<Device>();
         if (!gDevice->Init(params))
             gDevice.reset();
     }

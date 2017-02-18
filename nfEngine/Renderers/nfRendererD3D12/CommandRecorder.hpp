@@ -81,20 +81,20 @@ public:
 
     /// Common methods
     void Reset() override;
-    void* MapBuffer(IBuffer* buffer, MapType type) override;
-    void UnmapBuffer(IBuffer* buffer) override;
-    bool WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data) override;
-    void CopyTexture(ITexture* src, ITexture* dest) override;
+    void* MapBuffer(BufferPtr buffer, MapType type) override;
+    void UnmapBuffer(BufferPtr buffer) override;
+    bool WriteBuffer(BufferPtr buffer, size_t offset, size_t size, const void* data) override;
+    void CopyTexture(const TexturePtr& src, const TexturePtr& dest) override;
     std::unique_ptr<ICommandList> Finish() override;
 
     /// Compute pipeline methods
-    void SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets) override;
-    void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format) override;
-    void BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance) override;
-    void BindVolatileCBuffer(size_t slot, IBuffer* buffer) override;
-    void SetRenderTarget(IRenderTarget* renderTarget) override;
-    void SetResourceBindingLayout(IResourceBindingLayout* layout) override;
-    void SetPipelineState(IPipelineState* state) override;
+    void SetVertexBuffers(int num, BufferPtr* vertexBuffers, int* strides, int* offsets) override;
+    void SetIndexBuffer(BufferPtr indexBuffer, IndexBufferFormat format) override;
+    void BindResources(size_t slot, ResourceBindingInstancePtr bindingSetInstance) override;
+    void BindVolatileCBuffer(size_t slot, BufferPtr buffer) override;
+    void SetRenderTarget(RenderTargetPtr renderTarget) override;
+    void SetResourceBindingLayout(ResourceBindingLayoutPtr layout) override;
+    void SetPipelineState(PipelineStatePtr state) override;
     void SetStencilRef(unsigned char ref) override;
     void SetViewport(float left, float width, float top, float height,
                      float minDepth, float maxDepth) override;
@@ -107,10 +107,10 @@ public:
                      int vertexOffset, int instanceOffset) override;
 
     /// Compute pipeline methods
-    void BindComputeResources(size_t slot, IResourceBindingInstance* bindingSetInstance) override;
-    void BindComputeVolatileCBuffer(size_t slot, IBuffer* buffer) override;
-    void SetComputeResourceBindingLayout(IResourceBindingLayout* layout) override;
-    void SetComputePipelineState(IComputePipelineState* state) override;
+    void BindComputeResources(size_t slot, ResourceBindingInstancePtr bindingSetInstance) override;
+    void BindComputeVolatileCBuffer(size_t slot, BufferPtr buffer) override;
+    void SetComputeResourceBindingLayout(ResourceBindingLayoutPtr layout) override;
+    void SetComputePipelineState(ComputePipelineStatePtr state) override;
     void Dispatch(uint32 x, uint32 y, uint32 z) override;
 
     /// Debugging

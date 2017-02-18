@@ -292,12 +292,12 @@ IVertexLayout* Device::CreateVertexLayout(const VertexLayoutDesc& desc)
     return CreateGenericResource<VertexLayout, VertexLayoutDesc>(desc);
 }
 
-IBuffer* Device::CreateBuffer(const BufferDesc& desc)
+BufferPtr Device::CreateBuffer(const BufferDesc& desc)
 {
     return CreateGenericResource<Buffer, BufferDesc>(desc);
 }
 
-ITexture* Device::CreateTexture(const TextureDesc& desc)
+const TexturePtr& Device::CreateTexture(const TextureDesc& desc)
 {
     return CreateGenericResource<Texture, TextureDesc>(desc);
 }
@@ -307,17 +307,17 @@ IBackbuffer* Device::CreateBackbuffer(const BackbufferDesc& desc)
     return CreateGenericResource<Backbuffer, BackbufferDesc>(desc);
 }
 
-IRenderTarget* Device::CreateRenderTarget(const RenderTargetDesc& desc)
+RenderTargetPtr Device::CreateRenderTarget(const RenderTargetDesc& desc)
 {
 return CreateGenericResource<RenderTarget, RenderTargetDesc>(desc);
 }
 
-IPipelineState* Device::CreatePipelineState(const PipelineStateDesc& desc)
+PipelineStatePtr Device::CreatePipelineState(const PipelineStateDesc& desc)
 {
     return CreateGenericResource<PipelineState, PipelineStateDesc>(desc);
 }
 
-IComputePipelineState* Device::CreateComputePipelineState(const ComputePipelineStateDesc& desc)
+ComputePipelineStatePtr Device::CreateComputePipelineState(const ComputePipelineStateDesc& desc)
 {
     return CreateGenericResource<ComputePipelineState, ComputePipelineStateDesc>(desc);
 }
@@ -332,19 +332,19 @@ IShader* Device::CreateShader(const ShaderDesc& desc)
     return CreateGenericResource<Shader, ShaderDesc>(desc);
 }
 
-IResourceBindingSet* Device::CreateResourceBindingSet(const ResourceBindingSetDesc& desc)
+ResourceBindingSetPtr Device::CreateResourceBindingSet(const ResourceBindingSetDesc& desc)
 {
     return CreateGenericResource<ResourceBindingSet, ResourceBindingSetDesc>(desc);
 }
 
-IResourceBindingLayout* Device::CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc)
+ResourceBindingLayoutPtr Device::CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc)
 {
     return CreateGenericResource<ResourceBindingLayout, ResourceBindingLayoutDesc>(desc);
 }
 
-IResourceBindingInstance* Device::CreateResourceBindingInstance(IResourceBindingSet* set)
+ResourceBindingInstancePtr Device::CreateResourceBindingInstance(ResourceBindingSetPtr set)
 {
-    return CreateGenericResource<ResourceBindingInstance, IResourceBindingSet*>(set);
+    return CreateGenericResource<ResourceBindingInstance, ResourceBindingSetPtr>(set);
 }
 
 bool Device::DetectVideoCards(int preferredId)
@@ -520,7 +520,7 @@ bool Device::Execute(ICommandList* commandList)
     return list->commandRecorder->MoveToNextFrame(gDevice->mCommandQueue.get());
 }
 
-bool Device::DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data)
+bool Device::DownloadBuffer(BufferPtr buffer, size_t offset, size_t size, void* data)
 {
     UNUSED(buffer);
     UNUSED(offset);
@@ -529,7 +529,7 @@ bool Device::DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* d
     return false;
 }
 
-bool Device::DownloadTexture(ITexture* tex, void* data, int mipmap, int layer)
+bool Device::DownloadTexture(const TexturePtr& tex, void* data, int mipmap, int layer)
 {
     UNUSED(mipmap);
     UNUSED(layer);

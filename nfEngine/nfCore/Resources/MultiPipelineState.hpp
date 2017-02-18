@@ -78,7 +78,7 @@ public:
      * @param type   Shader type.
      * @return IPipelineState interface pointer.
      */
-    Renderer::IPipelineState* GetPipelineState(int* values = nullptr) const;
+    Renderer::PipelineStatePtr GetPipelineState(int* values = nullptr) const;
 
     /**
      * Get sub shader defined by a list of macro values and shader type.

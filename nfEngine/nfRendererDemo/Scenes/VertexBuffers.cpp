@@ -30,12 +30,12 @@ bool VertexBuffersScene::LoadShaders(bool useInstancing)
 {
     ShaderMacro vsMacro[] = { { "USE_INSTANCING", useInstancing ? "1" : "0" } };
     std::string vsPath = gShaderPathPrefix + "InstancingTestVS" + gShaderPathExt;
-    mVertexShader.reset(CompileShader(vsPath.c_str(), ShaderType::Vertex, vsMacro, 1));
+    mVertexShader = CompileShader(vsPath.c_str(), ShaderType::Vertex, vsMacro, 1);
     if (!mVertexShader)
         return false;
 
     std::string psPath = gShaderPathPrefix + "InstancingTestPS" + gShaderPathExt;
-    mPixelShader.reset(CompileShader(psPath.c_str(), ShaderType::Pixel, nullptr, 0));
+    mPixelShader = CompileShader(psPath.c_str(), ShaderType::Pixel, nullptr, 0);
     if (!mPixelShader)
         return false;
 
@@ -61,7 +61,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, BufferMode verte
 
     vbDesc.size = sizeof(vbPositionData);
     vbDesc.initialData = vbPositionData;
-    mPositionsVertexBuffer.reset(mRendererDevice->CreateBuffer(vbDesc));
+    mPositionsVertexBuffer = mRendererDevice->CreateBuffer(vbDesc);
     if (!mPositionsVertexBuffer)
         return false;
 
@@ -77,7 +77,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, BufferMode verte
 
     vbDesc.size = sizeof(vbColorData);
     vbDesc.initialData = vbColorData;
-    mColorVertexBuffer.reset(mRendererDevice->CreateBuffer(vbDesc));
+    mColorVertexBuffer = mRendererDevice->CreateBuffer(vbDesc);
     if (!mColorVertexBuffer)
         return false;
 
@@ -94,7 +94,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, BufferMode verte
     ibDesc.mode = BufferMode::Static;
     ibDesc.size = sizeof(ibData);
     ibDesc.initialData = ibData;
-    mIndexBuffer.reset(mRendererDevice->CreateBuffer(ibDesc));
+    mIndexBuffer = mRendererDevice->CreateBuffer(ibDesc);
     if (!mIndexBuffer)
         return false;
 
@@ -122,7 +122,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, BufferMode verte
         vbDesc.mode = vertexBufferMode;
         vbDesc.size = sizeof(InstanceData) * gInstancesNumber;
         vbDesc.initialData = mInstancesData.data();
-        mInstanceBuffer.reset(mRendererDevice->CreateBuffer(vbDesc));
+        mInstanceBuffer = mRendererDevice->CreateBuffer(vbDesc);
         if (!mInstanceBuffer)
             return false;
 
@@ -138,7 +138,7 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, BufferMode verte
         VertexLayoutDesc vertexLayoutDesc;
         vertexLayoutDesc.elements = vertexLayoutElements;
         vertexLayoutDesc.numElements = 4;
-        mVertexLayout.reset(mRendererDevice->CreateVertexLayout(vertexLayoutDesc));
+        mVertexLayout = mRendererDevice->CreateVertexLayout(vertexLayoutDesc);
     }
     else
     {
@@ -151,27 +151,26 @@ bool VertexBuffersScene::CreateBuffers(bool withInstanceBuffer, BufferMode verte
         VertexLayoutDesc vertexLayoutDesc;
         vertexLayoutDesc.elements = vertexLayoutElements;
         vertexLayoutDesc.numElements = 2;
-        mVertexLayout.reset(mRendererDevice->CreateVertexLayout(vertexLayoutDesc));
+        mVertexLayout = mRendererDevice->CreateVertexLayout(vertexLayoutDesc);
     }
 
     if (!mVertexLayout)
         return false;
 
     // create empty binding layout
-    mResBindingLayout.reset(mRendererDevice->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc()));
+    mResBindingLayout = mRendererDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc());
     if (!mResBindingLayout)
         return false;
 
     PipelineStateDesc pipelineStateDesc;
     pipelineStateDesc.rtFormats[0] = mBackbufferFormat;
-    pipelineStateDesc.vertexShader = mVertexShader.get();
-    pipelineStateDesc.pixelShader = mPixelShader.get();
+    pipelineStateDesc.vertexShader = mVertexShader;
+    pipelineStateDesc.pixelShader = mPixelShader;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
-    pipelineStateDesc.vertexLayout = mVertexLayout.get();
+    pipelineStateDesc.vertexLayout = mVertexLayout;
     pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
-    pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
-    mPipelineState.reset(mRendererDevice->CreatePipelineState(pipelineStateDesc));
+    pipelineStateDesc.resBindingLayout = mResBindingLayout;
+    mPipelineState = mRendererDevice->CreatePipelineState(pipelineStateDesc);
     if (!mPipelineState)
         return false;
 
@@ -205,7 +204,7 @@ bool VertexBuffersScene::CreateSubSceneInstancing(BufferMode vertexBufferMode)
 }
 
 /////////////////////////////////////////////////////////
-/// VertexBuffersScene methods and virtuals overriden ///
+/// VertexBuffersScene methods and virtuals overridden ///
 /////////////////////////////////////////////////////////
 
 VertexBuffersScene::VertexBuffersScene()
@@ -251,17 +250,17 @@ bool VertexBuffersScene::OnInit(void* winHandle)
     bbDesc.format = mBackbufferFormat;
     bbDesc.windowHandle = winHandle;
     bbDesc.vSync = false;
-    mWindowBackbuffer.reset(mRendererDevice->CreateBackbuffer(bbDesc));
+    mWindowBackbuffer = mRendererDevice->CreateBackbuffer(bbDesc);
     if (!mWindowBackbuffer)
         return false;
 
     // create rendertarget that will render to the window's backbuffer
     RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowBackbuffer.get();
+    rtTarget.texture = mWindowBackbuffer;
     RenderTargetDesc rtDesc;
     rtDesc.numTargets = 1;
     rtDesc.targets = &rtTarget;
-    mWindowRenderTarget.reset(mRendererDevice->CreateRenderTarget(rtDesc));
+    mWindowRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
     if (!mWindowRenderTarget)
         return false;
 
@@ -271,24 +270,22 @@ bool VertexBuffersScene::OnInit(void* winHandle)
 void VertexBuffersScene::Draw(float dt)
 {
     // not used - the scene is static
-    (void)dt;
+    UNUSED(dt);
 
     // reset bound resources and set them once again
-    mCommandBuffer->Reset();
+    mCommandBuffer->Begin();
     mCommandBuffer->SetViewport(0.0f, static_cast<float>(WINDOW_WIDTH), 0.0f,
                                 static_cast<float>(WINDOW_HEIGHT), 0.0f, 1.0f);
     mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-    mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
+    mCommandBuffer->SetRenderTarget(mWindowRenderTarget);
 
-    mCommandBuffer->SetPipelineState(mPipelineState.get());
+    mCommandBuffer->SetPipelineState(mPipelineState);
 
-    mCommandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
+    mCommandBuffer->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
 
     if (mInstanceBuffer)
     {
-        IBuffer* vertexBuffers[] = { mPositionsVertexBuffer.get(),
-                                     mColorVertexBuffer.get(),
-                                     mInstanceBuffer.get() };
+        const BufferPtr vertexBuffers[] = { mPositionsVertexBuffer, mColorVertexBuffer, mInstanceBuffer };
         int strides[] = { 3 * sizeof(float), 4 * sizeof(float), sizeof(InstanceData) };
         int offsets[] = { 0, 0, 0 };
         mCommandBuffer->SetVertexBuffers(3, vertexBuffers, strides, offsets);
@@ -309,12 +306,12 @@ void VertexBuffersScene::Draw(float dt)
                     mVelocities[i].y = -mVelocities[i].y;
             }
 
-            mCommandBuffer->WriteBuffer(mInstanceBuffer.get(), 0, sizeof(InstanceData) * gInstancesNumber, mInstancesData.data());
+            mCommandBuffer->WriteBuffer(mInstanceBuffer, 0, sizeof(InstanceData) * gInstancesNumber, mInstancesData.data());
         }
     }
     else
     {
-        IBuffer* vertexBuffers[] = { mPositionsVertexBuffer.get(), mColorVertexBuffer.get() };
+        const BufferPtr vertexBuffers[] = { mPositionsVertexBuffer, mColorVertexBuffer };
         int strides[] = { 3 * sizeof(float), 4 * sizeof(float) };
         int offsets[] = { 0, 0 };
         mCommandBuffer->SetVertexBuffers(2, vertexBuffers, strides, offsets);
@@ -331,8 +328,10 @@ void VertexBuffersScene::Draw(float dt)
     else
         mCommandBuffer->DrawIndexed(6);
 
-    mRendererDevice->Execute(mCommandBuffer->Finish().get());
+    CommandListID commandList = mCommandBuffer->Finish();
+    mRendererDevice->Execute(commandList);
     mWindowBackbuffer->Present();
+    mRendererDevice->FinishFrame();
 }
 
 void VertexBuffersScene::Release()

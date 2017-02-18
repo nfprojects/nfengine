@@ -64,22 +64,22 @@ public:
     /// Resources creation functions
 
     IVertexLayout* CreateVertexLayout(const VertexLayoutDesc& desc) override;
-    IBuffer* CreateBuffer(const BufferDesc& desc) override;
-    ITexture* CreateTexture(const TextureDesc& desc) override;
+    BufferPtr CreateBuffer(const BufferDesc& desc) override;
+    const TexturePtr& CreateTexture(const TextureDesc& desc) override;
     IBackbuffer* CreateBackbuffer(const BackbufferDesc& desc) override;
-    IRenderTarget* CreateRenderTarget(const RenderTargetDesc& desc) override;
-    IPipelineState* CreatePipelineState(const PipelineStateDesc& desc) override;
-    IComputePipelineState* CreateComputePipelineState(const ComputePipelineStateDesc& desc) override;
+    RenderTargetPtr CreateRenderTarget(const RenderTargetDesc& desc) override;
+    PipelineStatePtr CreatePipelineState(const PipelineStateDesc& desc) override;
+    ComputePipelineStatePtr CreateComputePipelineState(const ComputePipelineStateDesc& desc) override;
     ISampler* CreateSampler(const SamplerDesc& desc) override;
     IShader* CreateShader(const ShaderDesc& desc) override;
-    IResourceBindingSet* CreateResourceBindingSet(const ResourceBindingSetDesc& desc) override;
-    IResourceBindingLayout* CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc) override;
-    IResourceBindingInstance* CreateResourceBindingInstance(IResourceBindingSet* set) override;
+    ResourceBindingSetPtr CreateResourceBindingSet(const ResourceBindingSetDesc& desc) override;
+    ResourceBindingLayoutPtr CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc) override;
+    ResourceBindingInstancePtr CreateResourceBindingInstance(ResourceBindingSetPtr set) override;
 
     ICommandRecorder* CreateCommandRecorder() override;
     bool Execute(ICommandList* commandList) override;
-    bool DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data) override;
-    bool DownloadTexture(ITexture* tex, void* data, int mipmap, int layer) override;
+    bool DownloadBuffer(BufferPtr buffer, size_t offset, size_t size, void* data) override;
+    bool DownloadTexture(const TexturePtr& tex, void* data, int mipmap, int layer) override;
 
     bool WaitForGPU() override;
 

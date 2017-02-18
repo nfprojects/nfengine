@@ -33,7 +33,7 @@ class Scene
 protected:
     // Renderer interfaces
     NFE::Renderer::IDevice* mRendererDevice;
-    std::unique_ptr<NFE::Renderer::ICommandRecorder> mCommandBuffer;
+    NFE::Renderer::CommandRecorderPtr mCommandBuffer;
     NFE::Renderer::ElementFormat mBackbufferFormat;
 
     virtual bool OnInit(void* winHandle) = 0;
@@ -42,10 +42,8 @@ protected:
 
     // Methods common for all scenes:
 
-    NFE::Renderer::IShader* CompileShader(const char* path,
-                                          NFE::Renderer::ShaderType type,
-                                          NFE::Renderer::ShaderMacro* macros,
-                                          size_t macrosNum);
+    NFE::Renderer::ShaderPtr CompileShader(const char* path, NFE::Renderer::ShaderType type,
+                                          NFE::Renderer::ShaderMacro* macros, size_t macrosNum);
 
 public:
     Scene(const std::string& name);
@@ -53,7 +51,7 @@ public:
     /**
      * Virtual destructor for Scene
      *
-     * Each derived scene should define the descrutor to clean up.
+     * Each derived scene should define the destructor to clean up.
      */
     virtual ~Scene() {};
 
@@ -75,7 +73,7 @@ public:
     bool Init(NFE::Renderer::IDevice* rendererDevice, void* winHandle);
 
     /**
-     * Swiches the SubScene in current Scene
+     * Switches the SubScene in current Scene
      *
      * @param subScene Subscene ID to switch to
      * @return True on successful switch, false if subscene was unable to initialize

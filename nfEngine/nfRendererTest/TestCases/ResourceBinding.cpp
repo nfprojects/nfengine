@@ -8,7 +8,7 @@ class ResourceBinding : public RendererTest
 
 TEST_F(ResourceBinding, BindingSet)
 {
-    std::unique_ptr<IResourceBindingSet> bindingSet;
+    ResourceBindingSetPtr bindingSet;
 
     // there is no point in creating empty binding set
     {
@@ -62,8 +62,8 @@ TEST_F(ResourceBinding, BindingSet)
 
 TEST_F(ResourceBinding, BindingLayout)
 {
-    std::unique_ptr<IResourceBindingSet> bindingSetA, bindingSetB, bindingSetC, bindingSetD;
-    std::unique_ptr<IResourceBindingLayout> bindingLayout;
+    ResourceBindingSetPtr bindingSetA, bindingSetB, bindingSetC, bindingSetD;
+    ResourceBindingLayoutPtr bindingLayout;
 
     // create binding sets
 
@@ -96,7 +96,7 @@ TEST_F(ResourceBinding, BindingLayout)
 
     // valid binding layout (independent cbuffers in VS and PS at slot 0)
     {
-        IResourceBindingSet* bindingSets[] = { bindingSetA.get(), bindingSetB.get() };
+        ResourceBindingSetPtr bindingSets[] = { bindingSetA.get(), bindingSetB.get() };
         ResourceBindingLayoutDesc bindingLayoutDesc(bindingSets, 2);
         bindingLayout.reset(gRendererDevice->CreateResourceBindingLayout(bindingLayoutDesc));
         EXPECT_TRUE(bindingLayout.get() != nullptr);
@@ -104,7 +104,7 @@ TEST_F(ResourceBinding, BindingLayout)
 
     // valid binding layout (independent cbuffers in VS at slots 0 and 1)
     {
-        IResourceBindingSet* bindingSets[] = { bindingSetA.get(), bindingSetD.get() };
+        ResourceBindingSetPtr bindingSets[] = { bindingSetA.get(), bindingSetD.get() };
         ResourceBindingLayoutDesc bindingLayoutDesc(bindingSets, 2);
         bindingLayout.reset(gRendererDevice->CreateResourceBindingLayout(bindingLayoutDesc));
         EXPECT_TRUE(bindingLayout.get() != nullptr);
@@ -112,7 +112,7 @@ TEST_F(ResourceBinding, BindingLayout)
 
     // invalid binding layout reuse of the same binding
     {
-        IResourceBindingSet* bindingSets[] = { bindingSetA.get(), bindingSetA.get() };
+        ResourceBindingSetPtr bindingSets[] = { bindingSetA.get(), bindingSetA.get() };
         ResourceBindingLayoutDesc bindingLayoutDesc(bindingSets, 2);
         bindingLayout.reset(gRendererDevice->CreateResourceBindingLayout(bindingLayoutDesc));
         EXPECT_TRUE(bindingLayout.get() == nullptr);
@@ -120,7 +120,7 @@ TEST_F(ResourceBinding, BindingLayout)
 
     // invalid binding layout - overlapping binding (cbuffer at slot 0)
     {
-        IResourceBindingSet* bindingSets[] = { bindingSetA.get(), bindingSetC.get() };
+        ResourceBindingSetPtr bindingSets[] = { bindingSetA.get(), bindingSetC.get() };
         ResourceBindingLayoutDesc bindingLayoutDesc(bindingSets, 2);
         bindingLayout.reset(gRendererDevice->CreateResourceBindingLayout(bindingLayoutDesc));
         EXPECT_TRUE(bindingLayout.get() == nullptr);
@@ -129,7 +129,7 @@ TEST_F(ResourceBinding, BindingLayout)
     // invalid binding layout - overlapping binding (cbuffer at slot 0)
     // (same as above, but different order)
     {
-        IResourceBindingSet* bindingSets[] = { bindingSetC.get(), bindingSetA.get() };
+        ResourceBindingSetPtr bindingSets[] = { bindingSetC.get(), bindingSetA.get() };
         ResourceBindingLayoutDesc bindingLayoutDesc(bindingSets, 2);
         bindingLayout.reset(gRendererDevice->CreateResourceBindingLayout(bindingLayoutDesc));
         EXPECT_TRUE(bindingLayout.get() == nullptr);

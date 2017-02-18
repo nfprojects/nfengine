@@ -24,19 +24,19 @@ using namespace Math;
  */
 class DebugRenderer : public RendererModule<DebugRenderer, DebugRendererContext>
 {
-    std::unique_ptr<IVertexLayout> mVertexLayout;
-    std::unique_ptr<IVertexLayout> mMeshVertexLayout;
+    VertexLayoutPtr mVertexLayout;
+    VertexLayoutPtr mMeshVertexLayout;
     Resource::MultiPipelineState mLinesPipelineState;
     Resource::MultiPipelineState mTrianglesPipelineState;
     Resource::MultiPipelineState mMeshPipelineState;
 
-    std::unique_ptr<IBuffer> mConstantBuffer;
-    std::unique_ptr<IBuffer> mPerMeshConstantBuffer;
-    std::unique_ptr<IBuffer> mVertexBuffer;
-    std::unique_ptr<IBuffer> mIndexBuffer;
+    BufferPtr mConstantBuffer;
+    BufferPtr mPerMeshConstantBuffer;
+    BufferPtr mVertexBuffer;
+    BufferPtr mIndexBuffer;
 
     // TODO: material data (textures)
-    std::unique_ptr<IResourceBindingLayout> mResBindingLayout;
+    ResourceBindingLayoutPtr mResBindingLayout;
 
     uint32 mIsMeshMacroId;
     uint32 mUseTextureMacroId;
@@ -51,7 +51,7 @@ public:
     void OnEnter(DebugRendererContext* context) override;
     void OnLeave(DebugRendererContext* context) override;
 
-    void SetTarget(DebugRendererContext* context, IRenderTarget* target);
+    void SetTarget(DebugRendererContext* context, RenderTargetPtr target);
     void SetCamera(DebugRendererContext* context, const Matrix& viewMatrix, const Matrix& projMatrix);
     void DrawLine(DebugRendererContext* context, const Vector& A, const Vector& B, const uint32 color);
     void DrawLine(DebugRendererContext* context, const Float3& A, const Float3& B, const uint32 color);

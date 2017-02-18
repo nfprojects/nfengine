@@ -32,19 +32,19 @@ enum class HorizontalAlignment
 class CORE_API GuiRenderer : public RendererModule<GuiRenderer, GuiRendererContext>
 {
     Resource::MultiPipelineState mPipelineState;
-    std::unique_ptr<IBuffer> mVertexBuffer;
-    std::unique_ptr<IVertexLayout> mVertexLayout;
-    std::unique_ptr<IBuffer> mConstantBuffer;
+    BufferPtr mVertexBuffer;
+    VertexLayoutPtr mVertexLayout;
+    BufferPtr mConstantBuffer;
 
-    std::unique_ptr<IResourceBindingSet> mCBufferBindingSet;
-    std::unique_ptr<IResourceBindingSet> mPSBindingSet;
-    std::unique_ptr<IResourceBindingLayout> mResBindingLayout;
+    ResourceBindingSetPtr mCBufferBindingSet;
+    ResourceBindingSetPtr mPSBindingSet;
+    ResourceBindingLayoutPtr mResBindingLayout;
 
     /// ImGui resources
     Resource::MultiPipelineState mImGuiPipelineState;
-    std::unique_ptr<IVertexLayout> mImGuiVertexLayout;
-    std::unique_ptr<IBuffer> mImGuiVertexBuffer;
-    std::unique_ptr<IBuffer> mImGuiIndexBuffer;
+    VertexLayoutPtr mImGuiVertexLayout;
+    BufferPtr mImGuiVertexBuffer;
+    BufferPtr mImGuiIndexBuffer;
 
     bool CreateResourceBindingLayouts();
     void FlushQueue(GuiRendererContext* context);
@@ -54,17 +54,17 @@ class CORE_API GuiRenderer : public RendererModule<GuiRenderer, GuiRendererConte
 public:
     GuiRenderer();
 
-    std::unique_ptr<IResourceBindingInstance> CreateTextureBinding(ITexture* texture);
+    ResourceBindingInstancePtr CreateTextureBinding(const TexturePtr& texture);
 
     void OnEnter(GuiRendererContext* context) override;
     void OnLeave(GuiRendererContext* context) override;
 
-    void SetTarget(GuiRendererContext* context, IRenderTarget* target);
+    void SetTarget(GuiRendererContext* context, RenderTargetPtr target);
     void BeginOrdinaryGuiRendering(GuiRendererContext* context);
 
     void DrawQuad(GuiRendererContext* context, const Rectf& rect, uint32 color);
     void DrawTexturedQuad(GuiRendererContext* context, const Rectf& rect, const Rectf& texCoords,
-                          IResourceBindingInstance* textureBinding, uint32 color,
+                          ResourceBindingInstancePtr textureBinding, uint32 color,
                           bool alpha = false);
     bool PrintText(GuiRendererContext* context, Font* font, const char* text,
                    const Recti& rect, uint32 color,
@@ -74,7 +74,7 @@ public:
                              const Recti& rect, uint32 color, uint32 borderColor,
                              VerticalAlignment vAlign = VerticalAlignment::Top,
                              HorizontalAlignment hAlign = HorizontalAlignment::Right);
-    bool DrawImGui(GuiRendererContext* context, IResourceBindingInstance* imGuiTextureBinding);
+    bool DrawImGui(GuiRendererContext* context, ResourceBindingInstancePtr imGuiTextureBinding);
 };
 
 } // namespace Renderer

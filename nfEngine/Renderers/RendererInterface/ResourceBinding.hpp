@@ -19,7 +19,7 @@ struct ResourceBindingDesc
     unsigned int slot; //< shader's resource slot
     // TODO support for ranges of bindings
 
-    ISampler* staticSampler; //< optional static sampler (for textures only)
+    SamplerPtr staticSampler; //< optional static sampler (for textures only)
 
     ResourceBindingDesc()
         : resourceType(ShaderResourceType::Unknown)
@@ -28,7 +28,7 @@ struct ResourceBindingDesc
     { }
 
     ResourceBindingDesc(ShaderResourceType resourceType, unsigned int slot,
-                        ISampler* staticSampler = nullptr)
+                        SamplerPtr staticSampler = nullptr)
         : resourceType(resourceType)
         , slot(slot)
         , staticSampler(staticSampler)
@@ -37,7 +37,7 @@ struct ResourceBindingDesc
 
 struct ResourceBindingSetDesc
 {
-    ResourceBindingDesc* resourceBindings;
+    const ResourceBindingDesc* resourceBindings;
     size_t numBindings;
     ShaderType shaderVisibility;
 
@@ -47,7 +47,7 @@ struct ResourceBindingSetDesc
         , shaderVisibility(ShaderType::Unknown)
     { }
 
-    ResourceBindingSetDesc(ResourceBindingDesc* resourceBindings,
+    ResourceBindingSetDesc(const ResourceBindingDesc* resourceBindings,
                            size_t numBindings,
                            ShaderType shaderVisibility)
         : resourceBindings(resourceBindings)
@@ -67,6 +67,10 @@ public:
     virtual bool Init(const ResourceBindingSetDesc& desc) = 0;
 };
 
+
+//////////////////////////////////////////////////////////////////////////
+
+
 /**
  * Buffers that will be updated frequently (e.g. constant buffers) must be
  * bound via this structure.
@@ -77,9 +81,7 @@ struct VolatileCBufferBinding
     ShaderResourceType resourceType;
     unsigned int slot; //< shader's resource slot
 
-    VolatileCBufferBinding(ShaderType shaderVisibility,
-                             ShaderResourceType resourceType,
-                             unsigned int slot)
+    VolatileCBufferBinding(ShaderType shaderVisibility, ShaderResourceType resourceType, unsigned int slot)
         : shaderVisibility(shaderVisibility)
         , resourceType(resourceType)
         , slot(slot)
@@ -89,10 +91,10 @@ struct VolatileCBufferBinding
 
 struct ResourceBindingLayoutDesc
 {
-    IResourceBindingSet** bindingSets;
+    const ResourceBindingSetPtr* bindingSets;
     size_t numBindingSets;
 
-    VolatileCBufferBinding* volatileCBuffers;
+    const VolatileCBufferBinding* volatileCBuffers;
     size_t numVolatileCBuffers;
 
     const char* debugName;
@@ -109,8 +111,8 @@ struct ResourceBindingLayoutDesc
         , debugName(nullptr)
     { }
 
-    ResourceBindingLayoutDesc(IResourceBindingSet** bindingSets, size_t numBindingSets,
-                              VolatileCBufferBinding* volatileCBuffers = nullptr,
+    ResourceBindingLayoutDesc(const ResourceBindingSetPtr* bindingSets, size_t numBindingSets,
+                              const VolatileCBufferBinding* volatileCBuffers = nullptr,
                               size_t numVolatileCBuffers = 0, const char* debugName = nullptr)
         : bindingSets(bindingSets)
         , numBindingSets(numBindingSets)
@@ -122,7 +124,7 @@ struct ResourceBindingLayoutDesc
 
 /**
  * Shader resource binding layout.
- * Contains a list of resource bining sets. Describes how resources can be bound to the pipeline.
+ * Contains a list of resource binding sets. Describes how resources can be bound to the pipeline.
  */
 class IResourceBindingLayout
 {
@@ -132,8 +134,11 @@ public:
 };
 
 
+//////////////////////////////////////////////////////////////////////////
+
+
 /**
- * Instance of shader resource bining set.
+ * Instance of shader resource binding set.
  * Contains an actual list of shader resource views that can be bound to the pipeline.
  */
 class IResourceBindingInstance
@@ -141,7 +146,7 @@ class IResourceBindingInstance
 public:
     virtual ~IResourceBindingInstance() { }
 
-    virtual bool Init(IResourceBindingSet* bindingSet) = 0;
+    virtual bool Init(const ResourceBindingSetPtr& bindingSet) = 0;
 
     // TODO: custom samplers
     /**
@@ -150,14 +155,14 @@ public:
      * @param texture  Texture resource.
      * @return True on success.
      */
-    virtual bool WriteTextureView(size_t slot, ITexture* texture) = 0;
+    virtual bool WriteTextureView(size_t slot, const TexturePtr& texture) = 0;
 
     /**
      * Create a constant buffer view in the binding instance.
      * @param slot Target slot within the binding set.
      * @return True on success.
      */
-    virtual bool WriteCBufferView(size_t slot, IBuffer* buffer) = 0;
+    virtual bool WriteCBufferView(size_t slot, const BufferPtr& buffer) = 0;
 
     /**
      * Create a writable texture view in the binding instance.
@@ -165,8 +170,9 @@ public:
      * @param texture  Shader-writable texture resource.
      * @return True on success.
      */
-    virtual bool WriteWritableTextureView(size_t slot, ITexture* texture) = 0;
+    virtual bool WriteWritableTextureView(size_t slot, const TexturePtr& texture) = 0;
 };
+
 
 } // namespace Renderer
 } // namespace NFE

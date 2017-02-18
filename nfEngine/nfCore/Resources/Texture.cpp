@@ -23,7 +23,7 @@ namespace {
 
 const size_t gMaxMipmaps = 24;
 
-Renderer::ITexture* CreateRendererTextureFromImage(const Common::Image& image,
+Renderer::const TexturePtr& CreateRendererTextureFromImage(const Common::Image& image,
                                                    const char* debugName = nullptr)
 {
     using namespace Renderer;
@@ -284,12 +284,12 @@ bool Texture::CreateAsRenderTarget(uint32 width, uint32 height, Renderer::Elemen
     return true;
 }
 
-Renderer::ITexture* Texture::GetRendererTexture() const
+Renderer::const TexturePtr& Texture::GetRendererTexture() const
 {
     return mTex.get();
 }
 
-IResourceBindingInstance* Texture::GetRendererTextureBinding() const
+ResourceBindingInstancePtr Texture::GetRendererTextureBinding() const
 {
     return mTexBinding.get();
 }

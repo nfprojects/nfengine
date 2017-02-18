@@ -139,21 +139,43 @@ PipelineState::PipelineState()
 {
 }
 
+PipelineState::~PipelineState()
+{
+    Release();
+}
+
+void PipelineState::Release()
+{
+    mResBindingLayout.reset();
+    mVertexLayout.reset();
+    mRS.reset();
+    mBS.reset();
+    mDS.reset();
+
+    D3D_SAFE_RELEASE(mVertexShader);
+    D3D_SAFE_RELEASE(mGeometryShader);
+    D3D_SAFE_RELEASE(mHullShader);
+    D3D_SAFE_RELEASE(mDomainShader);
+    D3D_SAFE_RELEASE(mPixelShader);
+}
+
 bool PipelineState::Init(const PipelineStateDesc& desc)
 {
     mPrimitiveType = desc.primitiveType;
     mNumControlPoints = desc.numControlPoints;
 
-    mResBindingLayout = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout);
+    mResBindingLayout = desc.resBindingLayout;
     if (!mResBindingLayout)
     {
+        Release();
         LOG_ERROR("Invalid shader resource binding layout");
         return false;
     }
 
-    mVertexLayout = dynamic_cast<VertexLayout*>(desc.vertexLayout);
+    mVertexLayout = std::dynamic_pointer_cast<VertexLayout>(desc.vertexLayout);
     if (!mVertexLayout)
     {
+        Release();
         LOG_ERROR("Invalid vertexLayout parameter");
         return false;
     }
@@ -164,9 +186,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
 
     if (!mRS || !mBS || !mDS)
     {
-        mRS.reset();
-        mBS.reset();
-        mDS.reset();
+        Release();
         return false;
     }
 
@@ -187,22 +207,63 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
         D3D_CALL_CHECK(mDS->SetPrivateData(WKPDID_D3DDebugObjectName, len, buffer));
     }
 
-    Shader* vertexShader = dynamic_cast<Shader*>(desc.vertexShader);
-    Shader* geometryShader = dynamic_cast<Shader*>(desc.geometryShader);
-    Shader* hullShader = dynamic_cast<Shader*>(desc.hullShader);
-    Shader* domainShader = dynamic_cast<Shader*>(desc.domainShader);
-    Shader* pixelShader = dynamic_cast<Shader*>(desc.pixelShader);
+    Shader* vertexShader = dynamic_cast<Shader*>(desc.vertexShader.get());
+    Shader* geometryShader = dynamic_cast<Shader*>(desc.geometryShader.get());
+    Shader* hullShader = dynamic_cast<Shader*>(desc.hullShader.get());
+    Shader* domainShader = dynamic_cast<Shader*>(desc.domainShader.get());
+    Shader* pixelShader = dynamic_cast<Shader*>(desc.pixelShader.get());
 
-    if (vertexShader)   mVertexShader = static_cast<ID3D11VertexShader*>(vertexShader->GetShaderObject());
-    if (geometryShader) mGeometryShader = static_cast<ID3D11GeometryShader*>(geometryShader->GetShaderObject());
-    if (hullShader)     mHullShader = static_cast<ID3D11HullShader*>(hullShader->GetShaderObject());
-    if (domainShader)   mDomainShader = static_cast<ID3D11DomainShader*>(domainShader->GetShaderObject());
-    if (pixelShader)    mPixelShader = static_cast<ID3D11PixelShader*>(pixelShader->GetShaderObject());
+    if (vertexShader)
+    {
+        mVertexShader = static_cast<ID3D11VertexShader*>(vertexShader->GetShaderObject());
 
+        // additional reference in case of IShader is released
+        if (mVertexShader)
+            mVertexShader->AddRef();
+    }
+
+    // Pipeline State must have at least vertex shader
     if (!mVertexShader)
     {
+        Release();
         LOG_ERROR("Vertex shader must be provided when creating pipeline state object");
         return false;
+    }
+
+    if (geometryShader)
+    {
+        mGeometryShader = static_cast<ID3D11GeometryShader*>(geometryShader->GetShaderObject());
+
+        // additional reference in case of IShader is released
+        if (mGeometryShader)
+            mGeometryShader->AddRef();
+    }
+
+    if (hullShader)
+    {
+        mHullShader = static_cast<ID3D11HullShader*>(hullShader->GetShaderObject());
+
+        // additional reference in case of IShader is released
+        if (mHullShader)
+            mHullShader->AddRef();
+    }
+
+    if (domainShader)
+    {
+        mDomainShader = static_cast<ID3D11DomainShader*>(domainShader->GetShaderObject());
+
+        // additional reference in case of IShader is released
+        if (mDomainShader)
+            mDomainShader->AddRef();
+    }
+
+    if (pixelShader)
+    {
+        mPixelShader = static_cast<ID3D11PixelShader*>(pixelShader->GetShaderObject());
+
+        // additional reference in case of IShader is released
+        if (mPixelShader)
+            mPixelShader->AddRef();
     }
 
     return true;

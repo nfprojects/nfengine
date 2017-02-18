@@ -8,7 +8,7 @@ class Texture2D : public RendererTest
 
 TEST_F(Texture2D, Creation)
 {
-    std::unique_ptr<ITexture> texture;
+    TexturePtr texture;
 
     uint32_t bitmap[] = { 0xFFFFFFFF, 0, 0, 0xFFFFFFFF };
 
@@ -29,7 +29,7 @@ TEST_F(Texture2D, Creation)
 
     TextureDesc textureDesc;
 
-    // no texture data suplied
+    // no texture data supplied
     textureDesc = defTextureDesc;
     textureDesc.dataDesc = nullptr;
     texture.reset(gRendererDevice->CreateTexture(textureDesc));

@@ -22,5 +22,7 @@ public:
     bool Init(const VertexLayoutDesc& desc);
 };
 
+using InternalVertexLayoutPtr = AtomicSharedPtr<VertexLayout>;
+
 } // namespace Renderer
 } // namespace NFE

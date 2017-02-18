@@ -9,6 +9,8 @@
 #include "../RendererInterface/Device.hpp"
 #include "Common.hpp"
 
+#include <mutex>
+
 
 namespace NFE {
 namespace Renderer {
@@ -29,6 +31,9 @@ class Device : public IDevice
     D3D_FEATURE_LEVEL mFeatureLevel;
     bool mDebugLayerEnabled;
 
+    std::mutex mCommandListsMutex;
+    std::vector<ID3D11CommandList*> mCommandLists;
+
     bool DetectVideoCards(int preferredId);
 
 public:
@@ -44,30 +49,34 @@ public:
 
     /// Resources creation functions
 
-    IVertexLayout* CreateVertexLayout(const VertexLayoutDesc& desc) override;
-    IBuffer* CreateBuffer(const BufferDesc& desc) override;
-    ITexture* CreateTexture(const TextureDesc& desc) override;
-    IBackbuffer* CreateBackbuffer(const BackbufferDesc& desc) override;
-    IRenderTarget* CreateRenderTarget(const RenderTargetDesc& desc) override;
-    IPipelineState* CreatePipelineState(const PipelineStateDesc& desc) override;
-    IComputePipelineState* CreateComputePipelineState(const ComputePipelineStateDesc& desc) override;
-    ISampler* CreateSampler(const SamplerDesc& desc) override;
-    IShader* CreateShader(const ShaderDesc& desc) override;
-    IResourceBindingSet* CreateResourceBindingSet(const ResourceBindingSetDesc& desc) override;
-    IResourceBindingLayout* CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc) override;
-    IResourceBindingInstance* CreateResourceBindingInstance(IResourceBindingSet* set) override;
+    VertexLayoutPtr CreateVertexLayout(const VertexLayoutDesc& desc) override;
+    BufferPtr CreateBuffer(const BufferDesc& desc) override;
+    TexturePtr CreateTexture(const TextureDesc& desc) override;
+    BackbufferPtr CreateBackbuffer(const BackbufferDesc& desc) override;
+    RenderTargetPtr CreateRenderTarget(const RenderTargetDesc& desc) override;
+    PipelineStatePtr CreatePipelineState(const PipelineStateDesc& desc) override;
+    ComputePipelineStatePtr CreateComputePipelineState(const ComputePipelineStateDesc& desc) override;
+    SamplerPtr CreateSampler(const SamplerDesc& desc) override;
+    ShaderPtr CreateShader(const ShaderDesc& desc) override;
+    ResourceBindingSetPtr CreateResourceBindingSet(const ResourceBindingSetDesc& desc) override;
+    ResourceBindingLayoutPtr CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc) override;
+    ResourceBindingInstancePtr CreateResourceBindingInstance(const ResourceBindingSetPtr& set) override;
 
-    ICommandRecorder* CreateCommandRecorder() override;
-    bool Execute(ICommandList* commandList) override;
+    CommandRecorderPtr CreateCommandRecorder() override;
+    bool Execute(CommandListID id) override;
+    bool FinishFrame() override;
     bool WaitForGPU() override;
 
-    bool DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data) override;
-    bool DownloadTexture(ITexture* tex, void* data, int mipmap, int layer) override;
+    bool DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data) override;
+    bool DownloadTexture(const TexturePtr& tex, void* data, int mipmap, int layer) override;
 
     NFE_INLINE bool IsDebugLayerEnabled()
     {
         return mDebugLayerEnabled;
     }
+
+    // registers a recorded command list for current frame
+    CommandListID RegisterCommandList(ID3D11CommandList* commandList);
 };
 
 } // namespace Renderer
