@@ -19,7 +19,7 @@ class VertexLayout;
 
 class PipelineState : public IPipelineState
 {
-    friend class CommandRecorder;
+    friend class CommandRecorder; // TODO remove
 
     ID3D11VertexShader* mVertexShader;
     ID3D11GeometryShader* mGeometryShader;
@@ -32,11 +32,16 @@ class PipelineState : public IPipelineState
     D3DPtr<ID3D11DepthStencilState> mDS;
     PrimitiveType mPrimitiveType;
     uint32 mNumControlPoints;
-    VertexLayout* mVertexLayout;
-    ResourceBindingLayout* mResBindingLayout;
+
+    InternalVertexLayoutPtr mVertexLayout;
+    ResourceBindingLayoutPtr mResBindingLayout;
+
+    // release internal references
+    void Release();
 
 public:
     PipelineState();
+    ~PipelineState();
     bool Init(const PipelineStateDesc& desc);
 };
 

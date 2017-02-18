@@ -13,7 +13,7 @@ TEST_F(BufferTest, BufferCreation)
 {
     const size_t testBufferSize = 64;
     const char data[] = { 0 };
-    std::unique_ptr<IBuffer> buffer;
+    BufferPtr buffer;
 
     const BufferType bufferTypes[] =
     {

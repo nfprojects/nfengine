@@ -149,7 +149,7 @@ void RendererSystem::RenderLights(const Common::TaskContext& context, RenderingD
         }
 
         LightsRenderer::Get()->DrawSpotLight(renderCtx->lightsContext.get(), prop, light->mShadowMap.get(),
-                                             light->mLightMapBindingInstance.get());
+                                             light->mLightMapBindingInstance);
     }
 
     for (auto lightTuple : mDirLights)
@@ -226,8 +226,8 @@ void RendererSystem::RenderGeometry(GeometryRendererContext* ctx, const Math::Fr
             command.velocity = Vector();
             command.angularVelocity = Vector();
         }
-        command.pVB = meshResource->mVB.get();
-        command.pIB = meshResource->mIB.get();
+        command.pVB = meshResource->mVB;
+        command.pIB = meshResource->mIB;
         command.distance = VectorLength3(cameraTransform->GetPosition() -
                                          transform->GetPosition()).f[0];
 

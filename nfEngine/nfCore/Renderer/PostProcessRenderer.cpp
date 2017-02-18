@@ -41,7 +41,7 @@ PostProcessRenderer::PostProcessRenderer()
     vertexLayoutDesc.elements = vertexLayoutElements;
     vertexLayoutDesc.numElements = 1;
     vertexLayoutDesc.debugName = "PostProcessRenderer::mVertexLayout";
-    mVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
+    mVertexLayout= device->CreateVertexLayout(vertexLayoutDesc);
 
     // vertices for full-screen quad
     Float3 vertices[] =
@@ -61,23 +61,23 @@ PostProcessRenderer::PostProcessRenderer()
     bufferDesc.type = BufferType::Vertex;
     bufferDesc.initialData = vertices;
     bufferDesc.debugName = "PostProcessRenderer::mVertexBuffer";
-    mVertexBuffer.reset(device->CreateBuffer(bufferDesc));
+    mVertexBuffer= device->CreateBuffer(bufferDesc);
 
     bufferDesc.mode = BufferMode::Volatile;
     bufferDesc.type = BufferType::Constant;
     bufferDesc.initialData = nullptr;
     bufferDesc.size = sizeof(ToneMappingCBuffer);
     bufferDesc.debugName = "PostProcessRenderer::mTonemappingCBuffer";
-    mTonemappingCBuffer.reset(device->CreateBuffer(bufferDesc));
+    mTonemappingCBuffer= device->CreateBuffer(bufferDesc);
 
     mNullTextureBindingInstance = CreateTextureBinding(mRenderer->GetDefaultDiffuseTexture());
 
     PipelineStateDesc pipelineStateDesc;
-    pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
+    pipelineStateDesc.resBindingLayout = mResBindingLayout;
     pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
     pipelineStateDesc.raterizerState.fillMode = FillMode::Solid;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
-    pipelineStateDesc.vertexLayout = mVertexLayout.get();
+    pipelineStateDesc.vertexLayout = mVertexLayout;
     pipelineStateDesc.debugName = "PostProcessRenderer::mTonemappingPipelineState";
     pipelineStateDesc.numRenderTargets = 1;
     pipelineStateDesc.rtFormats[0] = mRenderer->GetBackbufferFormat();
@@ -98,34 +98,33 @@ bool PostProcessRenderer::CreateResourceBindingLayouts()
 
     VolatileCBufferBinding cbufferBindingDesc(ShaderType::Pixel, ShaderResourceType::CBuffer, paramsCBufferSlot);
 
-    std::vector<IResourceBindingSet*> bindingSets;
+    std::vector<ResourceBindingSetPtr> bindingSets;
     ResourceBindingDesc binding(ShaderResourceType::Texture, sourceTextureSlot,
                                  mRenderer->GetDefaultSampler());
-    mTexturesBindingSet.reset(device->CreateResourceBindingSet(
-        ResourceBindingSetDesc(&binding, 1, ShaderType::Pixel)));
+    mTexturesBindingSet = device->CreateResourceBindingSet(ResourceBindingSetDesc(&binding, 1, ShaderType::Pixel));
     if (!mTexturesBindingSet)
         return false;
-    bindingSets.push_back(mTexturesBindingSet.get());
+    bindingSets.push_back(mTexturesBindingSet);
 
     // create binding layout
-    mResBindingLayout.reset(device->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(bindingSets.data(), bindingSets.size(), &cbufferBindingDesc, 1)));
+    mResBindingLayout = device->CreateResourceBindingLayout(
+        ResourceBindingLayoutDesc(bindingSets.data(), bindingSets.size(), &cbufferBindingDesc, 1));
     if (!mResBindingLayout)
         return false;
 
     return true;
 }
 
-std::unique_ptr<IResourceBindingInstance> PostProcessRenderer::CreateTextureBinding(ITexture* texture)
+ResourceBindingInstancePtr PostProcessRenderer::CreateTextureBinding(const TexturePtr& texture)
 {
     IDevice* device = mRenderer->GetDevice();
 
-    std::unique_ptr<IResourceBindingInstance> bindingInstance(
-        device->CreateResourceBindingInstance(mTexturesBindingSet.get()));
+    ResourceBindingInstancePtr bindingInstance(
+        device->CreateResourceBindingInstance(mTexturesBindingSet));
     if (!bindingInstance)
-        return std::unique_ptr<IResourceBindingInstance>();
+        return ResourceBindingInstancePtr();
     if (!bindingInstance->WriteTextureView(0, texture))
-        return std::unique_ptr<IResourceBindingInstance>();
+        return ResourceBindingInstancePtr();
 
     return bindingInstance;
 }
@@ -134,9 +133,9 @@ void PostProcessRenderer::OnEnter(PostProcessRendererContext* context)
 {
     context->commandRecorder->BeginDebugGroup("Post Process Renderer stage");
 
-    context->commandRecorder->SetResourceBindingLayout(mResBindingLayout.get());
+    context->commandRecorder->SetResourceBindingLayout(mResBindingLayout);
 
-    IBuffer* veretexBuffers[] = { mVertexBuffer.get() };
+    BufferPtr veretexBuffers[] = { mVertexBuffer };
     int strides[] = { sizeof(Float3) };
     int offsets[] = { 0 };
     context->commandRecorder->SetVertexBuffers(1, veretexBuffers, strides, offsets);
@@ -149,7 +148,7 @@ void PostProcessRenderer::OnLeave(PostProcessRendererContext* context)
 
 void PostProcessRenderer::ApplyTonemapping(PostProcessRendererContext* context,
                                            const ToneMappingParameters& params,
-                                           IResourceBindingInstance* src, IRenderTarget* dest)
+                                           ResourceBindingInstancePtr src, RenderTargetPtr dest)
 {
     int width, height;
     dest->GetDimensions(width, height);
@@ -169,8 +168,8 @@ void PostProcessRenderer::ApplyTonemapping(PostProcessRendererContext* context,
     cbufferData.seed = Vector(context->random.GetFloat2());
 
     context->commandRecorder->BindResources(0, src);
-    context->commandRecorder->BindVolatileCBuffer(0, mTonemappingCBuffer.get());
-    context->commandRecorder->WriteBuffer(mTonemappingCBuffer.get(), 0,
+    context->commandRecorder->BindVolatileCBuffer(0, mTonemappingCBuffer);
+    context->commandRecorder->WriteBuffer(mTonemappingCBuffer, 0,
                                         sizeof(cbufferData), &cbufferData);
 
     context->commandRecorder->SetRenderTarget(dest);
@@ -180,7 +179,7 @@ void PostProcessRenderer::ApplyTonemapping(PostProcessRendererContext* context,
     context->commandRecorder->Draw(2 * 3);  // draw 2 triangles
 
     // unbind source texture
-    context->commandRecorder->BindResources(0, mNullTextureBindingInstance.get());
+    context->commandRecorder->BindResources(0, mNullTextureBindingInstance);
 }
 
 } // namespace Renderer

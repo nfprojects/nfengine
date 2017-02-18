@@ -37,7 +37,7 @@ struct DebugRendererContext
     static const size_t gVertexBufferSize;
     static const size_t gIndexBufferSize;
 
-    ICommandRecorder* commandRecorder;
+    CommandRecorderPtr commandRecorder;
     size_t queuedVertices;
     size_t queuedIndicies;
     DebugRendererMode mode;
@@ -45,7 +45,7 @@ struct DebugRendererContext
     std::unique_ptr<DebugVertex[]> vertices;
     std::unique_ptr<DebugIndexType[]> indicies;
 
-    NFE_INLINE DebugRendererContext(ICommandRecorder* commandRecorder)
+    NFE_INLINE DebugRendererContext(const CommandRecorderPtr& commandRecorder)
         : commandRecorder(commandRecorder)
         , queuedVertices(0)
         , queuedIndicies(0)

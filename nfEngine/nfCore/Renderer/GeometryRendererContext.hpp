@@ -20,10 +20,10 @@ struct GeometryRendererContext
 {
     static const size_t gMaxBufferedInstances;
 
-    ICommandRecorder* commandRecorder;
+    CommandRecorderPtr commandRecorder;
     std::vector<InstanceData, Common::AlignedAllocator<InstanceData, 64>> instanceData;
 
-    NFE_INLINE GeometryRendererContext(ICommandRecorder* commandRecorder)
+    NFE_INLINE GeometryRendererContext(const CommandRecorderPtr& commandRecorder)
         : commandRecorder(commandRecorder)
     {
         instanceData.resize(gMaxBufferedInstances);

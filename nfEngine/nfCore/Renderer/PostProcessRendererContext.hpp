@@ -18,11 +18,11 @@ namespace Renderer {
  */
 struct PostProcessRendererContext
 {
-    ICommandRecorder* commandRecorder;
+    CommandRecorderPtr commandRecorder;
 
     Math::Random random;
 
-    NFE_INLINE PostProcessRendererContext(ICommandRecorder* commandRecorder)
+    NFE_INLINE PostProcessRendererContext(const CommandRecorderPtr& commandRecorder)
         : commandRecorder(commandRecorder)
     {
     }

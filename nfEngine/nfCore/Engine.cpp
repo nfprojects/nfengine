@@ -219,7 +219,7 @@ bool Engine::Advance(View** views, size_t viewsNum,
 
         // TODO: post process and GUI renderer can be done on multiple threads
         RenderContext* ctx = mRenderer->GetDeferredContext(0);
-        ctx->commandRecorderOnScreen->Reset();
+        ctx->commandRecorderOnScreen->Begin();
         view->Postprocess(ctx);
 
         // GUI renderer pass
@@ -234,13 +234,14 @@ bool Engine::Advance(View** views, size_t viewsNum,
             GuiRenderer::Get()->OnLeave(guiContext);
         }
 
-        mRenderer->GetDevice()->Execute(ctx->commandRecorderOnScreen->Finish().get());
+        mRenderer->GetDevice()->Execute(ctx->commandRecorderOnScreen->Finish());
 
         // present frame in the display
         view->Present();
     }
 
     mMainThreadPool.WaitForAllTasks();
+    mRenderer->GetDevice()->FinishFrame();
 
     return scenesUpdatedSuccessfully && scenesRenderedSuccessfully;
 }

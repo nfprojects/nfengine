@@ -67,7 +67,7 @@ bool Mesh::OnLoad()
     bufferDesc.size = meshFile.GetVertices().size() * sizeof(MeshVertex);
     bufferDesc.initialData = meshFile.GetVertices().data();
     bufferDesc.debugName = mName;
-    mVB.reset(renderer->GetDevice()->CreateBuffer(bufferDesc));
+    mVB = renderer->GetDevice()->CreateBuffer(bufferDesc);
     if (!mVB)
     {
         LOG_ERROR("Failed to create vertex buffer for mesh '%s'.", mName);
@@ -79,7 +79,7 @@ bool Mesh::OnLoad()
     bufferDesc.size = meshFile.GetIndices().size() * sizeof(uint32);
     bufferDesc.initialData = meshFile.GetIndices().data();
     bufferDesc.debugName = mName;
-    mIB.reset(renderer->GetDevice()->CreateBuffer(bufferDesc));
+    mIB = renderer->GetDevice()->CreateBuffer(bufferDesc);
     if (!mIB)
     {
         LOG_ERROR("Failed to create index buffer for mesh '%s'.", mName);
