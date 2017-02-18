@@ -49,5 +49,7 @@ public:
     virtual bool Present() = 0;
 };
 
+using BackbufferPtr = AtomicSharedPtr<IBackbuffer>;
+
 } // namespace Renderer
 } // namespace NFE

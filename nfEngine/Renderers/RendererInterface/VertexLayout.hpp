@@ -50,5 +50,7 @@ public:
     virtual ~IVertexLayout() {}
 };
 
+using VertexLayoutPtr = AtomicSharedPtr<IVertexLayout>;
+
 } // namespace Renderer
 } // namespace NFE

@@ -17,7 +17,7 @@ namespace Renderer {
  */
 struct RenderTargetElement
 {
-    ITexture* texture;    //< target texture object
+    TexturePtr texture;    //< target texture object
     int level;            //< target mipmap level within the texture
     int layer;            //< target layer (or slice for 3D textures) within the texture
     ElementFormat format; //< texture format override (use "Unknown" to inherit from the texture)
@@ -37,7 +37,7 @@ struct RenderTargetDesc
 {
     unsigned int numTargets;      //< number of targets
     RenderTargetElement* targets; //< array of RenderTargetElement
-    ITexture* depthBuffer;        //< optional pointer to a depth buffer's texture
+    TexturePtr depthBuffer;        //< optional pointer to a depth buffer's texture
     const char* debugName;        //< optional debug name
 
     RenderTargetDesc()
@@ -63,6 +63,8 @@ public:
     virtual void GetDimensions(int& width, int& height) = 0;
     virtual bool Init(const RenderTargetDesc& desc) = 0;
 };
+
+using RenderTargetPtr = AtomicSharedPtr<IRenderTarget>;
 
 } // namespace Renderer
 } // namespace NFE

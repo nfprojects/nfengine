@@ -40,5 +40,7 @@ public:
     virtual ~IBuffer() {}
 };
 
+using BufferPtr = AtomicSharedPtr<IBuffer>;
+
 } // namespace Renderer
 } // namespace NFE

@@ -97,5 +97,7 @@ public:
     virtual int GetResourceSlotByName(const char* name) = 0;
 };
 
+using ShaderPtr = AtomicSharedPtr<IShader>;
+
 } // namespace Renderer
 } // namespace NFE

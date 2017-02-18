@@ -122,11 +122,11 @@ struct DepthStateDesc
  */
 struct PipelineStateDesc
 {
-    IShader* vertexShader;
-    IShader* hullShader;
-    IShader* domainShader;
-    IShader* geometryShader;
-    IShader* pixelShader;
+    ShaderPtr vertexShader;
+    ShaderPtr hullShader;
+    ShaderPtr domainShader;
+    ShaderPtr geometryShader;
+    ShaderPtr pixelShader;
 
     RasterizerStateDesc raterizerState;
     BlendStateDesc blendState;
@@ -134,13 +134,13 @@ struct PipelineStateDesc
 
     PrimitiveType primitiveType;
     uint32 numControlPoints; //< for tessellation
-    IVertexLayout* vertexLayout;
+    VertexLayoutPtr vertexLayout;
 
     uint32 numRenderTargets;
     ElementFormat rtFormats[MAX_RENDER_TARGETS];
     DepthBufferFormat depthFormat;
 
-    IResourceBindingLayout* resBindingLayout;
+    ResourceBindingLayoutPtr resBindingLayout;
     const char* debugName;   //< optional debug name
 
     NFE_INLINE PipelineStateDesc()
@@ -174,6 +174,8 @@ class IPipelineState
 public:
     virtual ~IPipelineState() {}
 };
+
+using PipelineStatePtr = AtomicSharedPtr<IPipelineState>;
 
 } // namespace Renderer
 } // namespace NFE

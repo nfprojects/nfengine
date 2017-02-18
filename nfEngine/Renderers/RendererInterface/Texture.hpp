@@ -142,5 +142,8 @@ public:
     virtual ~ISampler() {}
 };
 
+using TexturePtr = AtomicSharedPtr<ITexture>;
+using SamplerPtr = AtomicSharedPtr<ISampler>;
+
 } // namespace Renderer
 } // namespace NFE

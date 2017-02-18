@@ -17,12 +17,12 @@ namespace Renderer {
  */
 struct ComputePipelineStateDesc
 {
-    IShader* computeShader;
-    IResourceBindingLayout* resBindingLayout;
+    ShaderPtr computeShader;
+    ResourceBindingLayoutPtr resBindingLayout;
     const char* debugName;   //< optional debug name
 
-    NFE_INLINE ComputePipelineStateDesc(IShader* computeShader = nullptr,
-                                        IResourceBindingLayout* resBindingLayout = nullptr,
+    NFE_INLINE ComputePipelineStateDesc(ShaderPtr& computeShader,
+                                        ResourceBindingLayoutPtr& resBindingLayout,
                                         const char* debugName = nullptr)
         : computeShader(computeShader)
         , resBindingLayout(resBindingLayout)
@@ -40,6 +40,8 @@ class IComputePipelineState
 public:
     virtual ~IComputePipelineState() {}
 };
+
+using ComputePipelineStatePtr = AtomicSharedPtr<IComputePipelineState>;
 
 } // namespace Renderer
 } // namespace NFE
