@@ -16,10 +16,10 @@ namespace Renderer {
  */
 struct LightsRendererContext
 {
-    ICommandBuffer* commandBuffer;
+    ICommandRecorder* commandRecorder;
 
-    NFE_INLINE LightsRendererContext(ICommandBuffer* commandBuffer)
-        : commandBuffer(commandBuffer)
+    NFE_INLINE LightsRendererContext(ICommandRecorder* commandRecorder)
+        : commandRecorder(commandRecorder)
     {
     }
 };

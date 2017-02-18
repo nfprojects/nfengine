@@ -16,7 +16,7 @@ namespace Renderer {
 
 class PipelineState : public IPipelineState
 {
-    friend class CommandBuffer;
+    friend class CommandRecorder;
 
     PipelineStateDesc mDesc;
     VkPipeline mPipeline;

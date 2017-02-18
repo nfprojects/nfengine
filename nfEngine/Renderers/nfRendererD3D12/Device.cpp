@@ -6,7 +6,7 @@
 
 #include "PCH.hpp"
 #include "Device.hpp"
-#include "CommandBuffer.hpp"
+#include "CommandRecorder.hpp"
 #include "RendererD3D12.hpp"
 #include "VertexLayout.hpp"
 #include "Buffer.hpp"
@@ -496,28 +496,28 @@ bool Device::IsBackbufferFormatSupported(ElementFormat format)
     return (formatData.Support1 & D3D12_FORMAT_SUPPORT1_DISPLAY) == D3D12_FORMAT_SUPPORT1_DISPLAY;
 }
 
-ICommandBuffer* Device::CreateCommandBuffer()
+ICommandRecorder* Device::CreateCommandRecorder()
 {
-    CommandBuffer* commandBuffer = new CommandBuffer;
-    if (!commandBuffer->Init(mDevice.get()))
+    CommandRecorder* commandRecorder = new CommandRecorder;
+    if (!commandRecorder->Init(mDevice.get()))
     {
-        delete commandBuffer;
+        delete commandRecorder;
         return nullptr;
     }
 
-    return commandBuffer;
+    return commandRecorder;
 }
 
 bool Device::Execute(ICommandList* commandList)
 {
     CommandList* list = dynamic_cast<CommandList*>(commandList);
-    if (!list || !list->commandBuffer)
+    if (!list || !list->commandRecorder)
         return false;
 
-    ID3D12CommandList* commandLists[] = { list->commandBuffer->mCommandList.get() };
+    ID3D12CommandList* commandLists[] = { list->commandRecorder->mCommandList.get() };
     gDevice->mCommandQueue->ExecuteCommandLists(1, commandLists);
 
-    return list->commandBuffer->MoveToNextFrame(gDevice->mCommandQueue.get());
+    return list->commandRecorder->MoveToNextFrame(gDevice->mCommandQueue.get());
 }
 
 bool Device::DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data)

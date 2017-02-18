@@ -205,7 +205,7 @@ void RendererSystem::RenderGeometry(GeometryRendererContext* ctx, const Math::Fr
     // draw meshes
     std::vector<MeshEntry> visibleMeshes; //TODO: dynamic allocation per frame should be avoided
     FindVisibleMeshEntities(viewFrustum, visibleMeshes);
-    RenderCommandBuffer commandBuffer;
+    RenderCommandBuffer commandRecorder;
 
     for (auto meshTuple : visibleMeshes)
     {
@@ -237,13 +237,13 @@ void RendererSystem::RenderGeometry(GeometryRendererContext* ctx, const Math::Fr
             command.indexCount = 3 * subMesh.trianglesCount;
             command.startIndex = subMesh.indexOffset;
             command.material = subMesh.material->GetRendererData();
-            commandBuffer.PushBack(command);
+            commandRecorder.PushBack(command);
         }
     }
     visibleMeshes.clear();
-    commandBuffer.Sort();
+    commandRecorder.Sort();
 
-    GeometryRenderer::Get()->Draw(ctx, commandBuffer);
+    GeometryRenderer::Get()->Draw(ctx, commandRecorder);
 }
 
 void RendererSystem::RenderSpotShadowMap(const Common::TaskContext& context,

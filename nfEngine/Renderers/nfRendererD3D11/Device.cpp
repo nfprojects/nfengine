@@ -6,7 +6,7 @@
 
 #include "PCH.hpp"
 #include "Device.hpp"
-#include "CommandBuffer.hpp"
+#include "CommandRecorder.hpp"
 #include "RendererD3D11.hpp"
 #include "VertexLayout.hpp"
 #include "Buffer.hpp"
@@ -252,7 +252,7 @@ IResourceBindingInstance* Device::CreateResourceBindingInstance(IResourceBinding
     return CreateGenericResource<ResourceBindingInstance, IResourceBindingSet*>(set);
 }
 
-ICommandBuffer* Device::CreateCommandBuffer()
+ICommandRecorder* Device::CreateCommandRecorder()
 {
     HRESULT hr;
     ID3D11DeviceContext* context;
@@ -260,15 +260,15 @@ ICommandBuffer* Device::CreateCommandBuffer()
     if (FAILED(hr))
         return nullptr;
 
-    CommandBuffer* commandBuffer = new (std::nothrow) CommandBuffer(context);
-    if (!commandBuffer)
+    CommandRecorder* commandRecorder = new (std::nothrow) CommandRecorder(context);
+    if (!commandRecorder)
     {
         D3D_SAFE_RELEASE(context);
         LOG_ERROR("Memory allocation failed");
         return nullptr;
     }
 
-    return commandBuffer;
+    return commandRecorder;
 }
 
 

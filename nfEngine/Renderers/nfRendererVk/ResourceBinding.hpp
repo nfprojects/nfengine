@@ -21,7 +21,7 @@ class ResourceBindingSet : public IResourceBindingSet
 {
     friend class ResourceBindingInstance;
     friend class ResourceBindingLayout;
-    friend class CommandBuffer;
+    friend class CommandRecorder;
 
     VkDescriptorSet mDescriptorSet;
     VkDescriptorSetLayout mDescriptorLayout;
@@ -42,7 +42,7 @@ public:
 
 class ResourceBindingLayout : public IResourceBindingLayout
 {
-    friend class CommandBuffer;
+    friend class CommandRecorder;
     friend class PipelineState;
 
     VkPipelineLayout mPipelineLayout;
@@ -60,7 +60,7 @@ public:
 
 class ResourceBindingInstance : public IResourceBindingInstance
 {
-    friend class CommandBuffer;
+    friend class CommandRecorder;
 
     ResourceBindingSet* mSet;
 

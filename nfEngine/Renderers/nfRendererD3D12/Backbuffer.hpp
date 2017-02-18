@@ -15,7 +15,7 @@ namespace Renderer {
 
 class Backbuffer : public IBackbuffer, public Texture
 {
-    friend class CommandBuffer;
+    friend class CommandRecorder;
 
     // TODO: support for tripple buffering, etc.
     static const UINT NUM_BUFFERS = 2;

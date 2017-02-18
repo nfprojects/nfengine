@@ -35,7 +35,7 @@ VkRenderPass RenderPassManager::ConstructRenderPass(const RenderPassDesc& desc)
         VK_ZERO_MEMORY(atts[curAtt]);
         atts[curAtt].format = desc.colorFormats[i];
         atts[curAtt].samples = VK_SAMPLE_COUNT_1_BIT;
-        // we do not care about auto-clearing - this should be triggered by CommandBuffer::Clear()
+        // we do not care about auto-clearing - this should be triggered by CommandRecorder::Clear()
         atts[curAtt].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
         atts[curAtt].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
         atts[curAtt].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;

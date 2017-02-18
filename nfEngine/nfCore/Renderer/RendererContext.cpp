@@ -26,18 +26,18 @@ RenderContext::RenderContext()
 {
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
 
-    commandBufferGeometry.reset(renderer->GetDevice()->CreateCommandBuffer());
-    commandBufferShadows.reset(renderer->GetDevice()->CreateCommandBuffer());
-    commandBufferLights.reset(renderer->GetDevice()->CreateCommandBuffer());
-    commandBufferDebug.reset(renderer->GetDevice()->CreateCommandBuffer());
-    commandBufferOnScreen.reset(renderer->GetDevice()->CreateCommandBuffer());
+    commandRecorderGeometry.reset(renderer->GetDevice()->CreateCommandRecorder());
+    commandRecorderShadows.reset(renderer->GetDevice()->CreateCommandRecorder());
+    commandRecorderLights.reset(renderer->GetDevice()->CreateCommandRecorder());
+    commandRecorderDebug.reset(renderer->GetDevice()->CreateCommandRecorder());
+    commandRecorderOnScreen.reset(renderer->GetDevice()->CreateCommandRecorder());
 
-    geometryContext = std::make_unique<GeometryRendererContext>(commandBufferGeometry.get());
-    shadowsContext = std::make_unique<GeometryRendererContext>(commandBufferShadows.get());
-    lightsContext = std::make_unique<LightsRendererContext>(commandBufferLights.get());
-    debugContext = std::make_unique<DebugRendererContext>(commandBufferDebug.get());
-    postProcessContext = std::make_unique<PostProcessRendererContext>(commandBufferOnScreen.get());
-    guiContext = std::make_unique<GuiRendererContext>(commandBufferOnScreen.get());
+    geometryContext = std::make_unique<GeometryRendererContext>(commandRecorderGeometry.get());
+    shadowsContext = std::make_unique<GeometryRendererContext>(commandRecorderShadows.get());
+    lightsContext = std::make_unique<LightsRendererContext>(commandRecorderLights.get());
+    debugContext = std::make_unique<DebugRendererContext>(commandRecorderDebug.get());
+    postProcessContext = std::make_unique<PostProcessRendererContext>(commandRecorderOnScreen.get());
+    guiContext = std::make_unique<GuiRendererContext>(commandRecorderOnScreen.get());
 }
 
 } // namespace Renderer

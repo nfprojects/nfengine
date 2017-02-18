@@ -14,7 +14,7 @@ namespace Renderer {
 
 class Sampler : public ISampler
 {
-    friend class CommandBuffer;
+    friend class CommandRecorder;
     friend class ResourceBindingSet;
 
     VkSampler mSampler;

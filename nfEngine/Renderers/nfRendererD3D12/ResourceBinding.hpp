@@ -21,7 +21,7 @@ class ResourceBindingSet : public IResourceBindingSet
 {
     friend class ResourceBindingInstance;
     friend class ResourceBindingLayout;
-    friend class CommandBuffer;
+    friend class CommandRecorder;
 
     std::vector<ResourceBindingDesc> mBindings;
     ShaderType mShaderVisibility;
@@ -32,7 +32,7 @@ public:
 
 class ResourceBindingLayout : public IResourceBindingLayout
 {
-    friend class CommandBuffer;
+    friend class CommandRecorder;
     friend class PipelineState;
 
     D3DPtr<ID3D12RootSignature> mRootSignature;
@@ -50,7 +50,7 @@ public:
 
 class ResourceBindingInstance : public IResourceBindingInstance
 {
-    friend class CommandBuffer;
+    friend class CommandRecorder;
 
     ResourceBindingSet* mSet;
     uint32 mDescriptorHeapOffset;

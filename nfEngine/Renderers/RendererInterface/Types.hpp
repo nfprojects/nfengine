@@ -19,7 +19,7 @@ class ISampler;
 class IBackbuffer;
 class IResourceBindingLayout;
 class ICommandList;
-class ICommandBuffer;
+class ICommandRecorder;
 class IPipelineState;
 class IComputePipelineState;
 class IRenderTarget;

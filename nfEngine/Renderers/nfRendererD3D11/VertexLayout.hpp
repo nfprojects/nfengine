@@ -14,7 +14,7 @@ namespace Renderer {
 
 class VertexLayout : public IVertexLayout
 {
-    friend class CommandBuffer;
+    friend class CommandRecorder;
     D3DPtr<ID3D11InputLayout> mIL;
 
 public:

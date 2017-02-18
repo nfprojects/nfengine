@@ -33,7 +33,6 @@ public:
     virtual ~ICommandList() {}
 };
 
-
 enum ClearFlags
 {
     ClearFlagsColor     = (1 << 0),
@@ -45,10 +44,10 @@ enum ClearFlags
 /**
  * Interface allowing to control rendering pipeline state and executing rendering commands.
  */
-class ICommandBuffer
+class ICommandRecorder
 {
 public:
-    virtual ~ICommandBuffer() {}
+    virtual ~ICommandRecorder() {}
 
     /**
      * CommandBufferCommon      Common methods.

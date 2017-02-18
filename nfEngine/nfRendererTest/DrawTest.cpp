@@ -10,7 +10,7 @@ void DrawTest::BeginTestFrame(uint32 width, uint32 height, size_t numTargets, El
 
     mTargetTextures.clear();
 
-    mCommandBuffer.reset(gRendererDevice->CreateCommandBuffer());
+    mCommandBuffer.reset(gRendererDevice->CreateCommandRecorder());
     ASSERT_FALSE(!mCommandBuffer);
 
     for (size_t i = 0; i < numTargets; ++i)

@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "CommandBuffer.hpp"
+#include "CommandRecorder.hpp"
 
 #include <vector>
 
@@ -80,9 +80,9 @@ public:
     /**@}*/
 
     /**
-     * Create a deffered context.
+     * Create a command recorder.
      */
-    virtual ICommandBuffer* CreateCommandBuffer() = 0;
+    virtual ICommandRecorder* CreateCommandRecorder() = 0;
 
     /**
      * Waits until all operations sent to the command queue has been completed.

@@ -1,12 +1,12 @@
 /**
  * @file
  * @author  LKostyra (costyrra.xl@gmail.com)
- * @brief   Declarations of Vulkan Command Buffer
+ * @brief   Declarations of Vulkan Command Recorder
  */
 
 #pragma once
 
-#include "../RendererInterface/CommandBuffer.hpp"
+#include "../RendererInterface/CommandRecorder.hpp"
 
 #include "Defines.hpp"
 #include "RenderTarget.hpp"
@@ -18,14 +18,14 @@
 namespace NFE {
 namespace Renderer {
 
-class CommandBuffer;
+class CommandRecorder;
 
 struct CommandList : public ICommandList
 {
-    CommandBuffer* cmdBuffer;
+    CommandRecorder* cmdBuffer;
 };
 
-class CommandBuffer : public ICommandBuffer
+class CommandRecorder : public ICommandRecorder
 {
     friend class Device;
 
@@ -43,8 +43,8 @@ class CommandBuffer : public ICommandBuffer
     bool WriteVolatileBuffer(Buffer* b, size_t size, const void* data);
 
 public:
-    CommandBuffer();
-    ~CommandBuffer();
+    CommandRecorder();
+    ~CommandRecorder();
 
     bool Init();
 

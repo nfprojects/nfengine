@@ -204,10 +204,10 @@ void HighLevelRenderer::ResetCommandBuffers()
     {
         RenderContext* ctx = GetDeferredContext(i);
 
-        ctx->commandBufferShadows->Reset();
-        ctx->commandBufferGeometry->Reset();
-        ctx->commandBufferLights->Reset();
-        ctx->commandBufferDebug->Reset();
+        ctx->commandRecorderShadows->Reset();
+        ctx->commandRecorderGeometry->Reset();
+        ctx->commandRecorderLights->Reset();
+        ctx->commandRecorderDebug->Reset();
     }
 }
 
@@ -220,25 +220,25 @@ void HighLevelRenderer::FinishAndExecuteCommandBuffers()
     for (size_t i = 0; i < threadPool->GetThreadsNumber(); ++i)
     {
         RenderContext* ctx = GetDeferredContext(i);
-        mRenderingDevice->Execute(ctx->commandBufferShadows->Finish().get());
+        mRenderingDevice->Execute(ctx->commandRecorderShadows->Finish().get());
     }
 
     for (size_t i = 0; i < threadPool->GetThreadsNumber(); ++i)
     {
         RenderContext* ctx = GetDeferredContext(i);
-        mRenderingDevice->Execute(ctx->commandBufferGeometry->Finish().get());
+        mRenderingDevice->Execute(ctx->commandRecorderGeometry->Finish().get());
     }
 
     for (size_t i = 0; i < threadPool->GetThreadsNumber(); ++i)
     {
         RenderContext* ctx = GetDeferredContext(i);
-        mRenderingDevice->Execute(ctx->commandBufferLights->Finish().get());
+        mRenderingDevice->Execute(ctx->commandRecorderLights->Finish().get());
     }
 
     for (size_t i = 0; i < threadPool->GetThreadsNumber(); ++i)
     {
         RenderContext* ctx = GetDeferredContext(i);
-        mRenderingDevice->Execute(ctx->commandBufferDebug->Finish().get());
+        mRenderingDevice->Execute(ctx->commandRecorderDebug->Finish().get());
     }
 }
 

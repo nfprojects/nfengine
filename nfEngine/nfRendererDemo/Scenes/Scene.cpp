@@ -62,7 +62,7 @@ void Scene::ReleaseSubsceneResources()
 bool Scene::Init(IDevice* rendererDevice, void* winHandle)
 {
     mRendererDevice = rendererDevice;
-    mCommandBuffer.reset(mRendererDevice->CreateCommandBuffer());
+    mCommandBuffer.reset(mRendererDevice->CreateCommandRecorder());
 
     // find suitable back buffer format
     ElementFormat preferredFormats[] =

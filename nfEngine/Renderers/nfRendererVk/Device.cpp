@@ -387,19 +387,19 @@ IResourceBindingInstance* Device::CreateResourceBindingInstance(IResourceBinding
     return rbi;
 }
 
-ICommandBuffer* Device::CreateCommandBuffer()
+ICommandRecorder* Device::CreateCommandRecorder()
 {
-    CommandBuffer* cb = new (std::nothrow) CommandBuffer;
-    if (cb == nullptr)
+    CommandRecorder* cr = new (std::nothrow) CommandRecorder;
+    if (cr == nullptr)
         return nullptr;
 
-    if (!cb->Init())
+    if (!cr->Init())
     {
-        delete cb;
+        delete cr;
         return nullptr;
     }
 
-    return cb;
+    return cr;
 }
 
 bool Device::IsBackbufferFormatSupported(ElementFormat format)

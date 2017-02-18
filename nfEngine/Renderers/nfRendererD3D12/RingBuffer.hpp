@@ -21,7 +21,7 @@ public:
     typedef std::pair<uint64, size_t> FinishedFrameOffset;
 
 private:
-    friend class CommandBuffer;
+    friend class CommandRecorder;
 
     void* mCpuAddress;
     D3D12_GPU_VIRTUAL_ADDRESS mGpuAddress;

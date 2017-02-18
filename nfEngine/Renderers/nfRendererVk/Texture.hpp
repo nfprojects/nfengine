@@ -14,7 +14,7 @@ namespace Renderer {
 
 class Texture : virtual public ITexture
 {
-    friend class CommandBuffer;
+    friend class CommandRecorder;
     friend class RenderTarget;
     friend class ResourceBindingInstance;
 

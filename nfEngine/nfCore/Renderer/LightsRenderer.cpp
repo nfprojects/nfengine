@@ -308,34 +308,34 @@ bool LightsRenderer::CreateResourceBindingLayouts()
 
 void LightsRenderer::OnEnter(LightsRendererContext* context)
 {
-    context->commandBuffer->BeginDebugGroup("Lights Renderer stage");
-    context->commandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
+    context->commandRecorder->BeginDebugGroup("Lights Renderer stage");
+    context->commandRecorder->SetResourceBindingLayout(mResBindingLayout.get());
 }
 
 void LightsRenderer::OnLeave(LightsRendererContext* context)
 {
-    context->commandBuffer->EndDebugGroup();
+    context->commandRecorder->EndDebugGroup();
 }
 
 void LightsRenderer::SetUp(LightsRendererContext* context, IRenderTarget* target, GeometryBuffer *gbuffer,
                            const CameraRenderDesc* camera)
 {
-    context->commandBuffer->SetRenderTarget(target);
+    context->commandRecorder->SetRenderTarget(target);
 
     int width, height;
     target->GetDimensions(width, height);
-    context->commandBuffer->SetViewport(0.0f, static_cast<float>(width),
+    context->commandRecorder->SetViewport(0.0f, static_cast<float>(width),
                                         0.0f, static_cast<float>(height),
                                         0.0f, 1.0f);
-    context->commandBuffer->SetScissors(0, 0, width, height);
-    context->commandBuffer->BindResources(0, gbuffer->mBindingInstance.get());
-    context->commandBuffer->BindVolatileCBuffer(0, mGlobalCBuffer.get());
+    context->commandRecorder->SetScissors(0, 0, width, height);
+    context->commandRecorder->BindResources(0, gbuffer->mBindingInstance.get());
+    context->commandRecorder->BindVolatileCBuffer(0, mGlobalCBuffer.get());
 
     IBuffer* buffers[] = { mVertexBuffer.get() };
     int strides[] = { sizeof(Float3) };
     int offsets[] = { 0 };
-    context->commandBuffer->SetVertexBuffers(1, buffers, strides, offsets);
-    context->commandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
+    context->commandRecorder->SetVertexBuffers(1, buffers, strides, offsets);
+    context->commandRecorder->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
 
     LightsGlobalCBuffer cbuffer;
     cbuffer.cameraMatrix = camera->matrix;
@@ -343,24 +343,24 @@ void LightsRenderer::SetUp(LightsRendererContext* context, IRenderTarget* target
     cbuffer.viewMatrix = camera->viewMatrix;
     cbuffer.viewportResInv = Vector(1.0f / gbuffer->GetWidth(), 1.0f / gbuffer->GetHeight());
     cbuffer.screenScale = camera->screenScale;
-    context->commandBuffer->WriteBuffer(mGlobalCBuffer.get(), 0, sizeof(LightsGlobalCBuffer),
+    context->commandRecorder->WriteBuffer(mGlobalCBuffer.get(), 0, sizeof(LightsGlobalCBuffer),
                                         &cbuffer);
 }
 
 void LightsRenderer::DrawAmbientLight(LightsRendererContext* context, const Vector& ambientLightColor,
                                       const Vector& backgroundColor)
 {
-    context->commandBuffer->SetPipelineState(mAmbientLightPipelineState.GetPipelineState(nullptr));
-    context->commandBuffer->BindVolatileCBuffer(0, mGlobalCBuffer.get());
-    context->commandBuffer->BindVolatileCBuffer(1, mAmbientLightCBuffer.get());
+    context->commandRecorder->SetPipelineState(mAmbientLightPipelineState.GetPipelineState(nullptr));
+    context->commandRecorder->BindVolatileCBuffer(0, mGlobalCBuffer.get());
+    context->commandRecorder->BindVolatileCBuffer(1, mAmbientLightCBuffer.get());
 
     AmbientLightCBuffer cbuffer;
     VectorStore(ambientLightColor, &cbuffer.ambientLight);
     VectorStore(backgroundColor, &cbuffer.backgroundColor);
-    context->commandBuffer->WriteBuffer(mAmbientLightCBuffer.get(), 0, sizeof(AmbientLightCBuffer),
+    context->commandRecorder->WriteBuffer(mAmbientLightCBuffer.get(), 0, sizeof(AmbientLightCBuffer),
                                         &cbuffer);
 
-    context->commandBuffer->DrawIndexed(6);
+    context->commandRecorder->DrawIndexed(6);
 }
 
 void LightsRenderer::DrawOmniLight(LightsRendererContext* context, const Vector& pos, float radius,
@@ -380,17 +380,17 @@ void LightsRenderer::DrawOmniLight(LightsRendererContext* context, const Vector&
         macros[mOmniLightUseShadowMap] = 1;
         cbuffer.shadowMapProps = Vector(1.0f / shadowMap->GetSize());
 
-        context->commandBuffer->BindResources(1, shadowMap->mBindingInstance.get());
+        context->commandRecorder->BindResources(1, shadowMap->mBindingInstance.get());
     }
 
-    context->commandBuffer->SetPipelineState(mOmniLightPipelineState.GetPipelineState(macros));
-    context->commandBuffer->BindVolatileCBuffer(0, mGlobalCBuffer.get());
-    context->commandBuffer->BindVolatileCBuffer(1, mOmniLightCBuffer.get());
+    context->commandRecorder->SetPipelineState(mOmniLightPipelineState.GetPipelineState(macros));
+    context->commandRecorder->BindVolatileCBuffer(0, mGlobalCBuffer.get());
+    context->commandRecorder->BindVolatileCBuffer(1, mOmniLightCBuffer.get());
 
-    context->commandBuffer->WriteBuffer(mOmniLightCBuffer.get(), 0, sizeof(OmniLightCBuffer),
+    context->commandRecorder->WriteBuffer(mOmniLightCBuffer.get(), 0, sizeof(OmniLightCBuffer),
                                         &cbuffer);
 
-    context->commandBuffer->DrawIndexed(20 * 3, // 20 triangles
+    context->commandRecorder->DrawIndexed(20 * 3, // 20 triangles
                                         1,      // no instancing
                                         6,      // ignore first 6 indices
                                         4);     // ignore first 4 vertices
@@ -407,23 +407,23 @@ void LightsRenderer::DrawSpotLight(LightsRendererContext* context, const SpotLig
     if (lightMap != nullptr)
     {
         macros[mSpotLightUseLightMap] = 1;
-        context->commandBuffer->BindResources(2, lightMap);
+        context->commandRecorder->BindResources(2, lightMap);
     }
 
     if (shadowMap && shadowMap->mTexture)
     {
         macros[mSpotLightUseShadowMap] = 1;
-        context->commandBuffer->BindResources(1, shadowMap->mBindingInstance.get());
+        context->commandRecorder->BindResources(1, shadowMap->mBindingInstance.get());
     }
 
-    context->commandBuffer->SetPipelineState(mSpotLightPipelineState.GetPipelineState(macros));
-    context->commandBuffer->BindVolatileCBuffer(0, mGlobalCBuffer.get());
-    context->commandBuffer->BindVolatileCBuffer(1, mSpotLightCBuffer.get());
+    context->commandRecorder->SetPipelineState(mSpotLightPipelineState.GetPipelineState(macros));
+    context->commandRecorder->BindVolatileCBuffer(0, mGlobalCBuffer.get());
+    context->commandRecorder->BindVolatileCBuffer(1, mSpotLightCBuffer.get());
 
-    context->commandBuffer->WriteBuffer(mSpotLightCBuffer.get(), 0, sizeof(SpotLightProperties),
+    context->commandRecorder->WriteBuffer(mSpotLightCBuffer.get(), 0, sizeof(SpotLightProperties),
                                         &prop);
 
-    context->commandBuffer->DrawIndexed(2 * 6 * 3,  // 2 triangles per 6 sides
+    context->commandRecorder->DrawIndexed(2 * 6 * 3,  // 2 triangles per 6 sides
                                         1,          // no instancing
                                         6 + 20 * 3, // ignore indices
                                         4 + 12);    // ignore vertices

@@ -55,7 +55,7 @@ struct GuiRendererContext
 {
     static const size_t gQuadsBufferSize;
 
-    ICommandBuffer* commandBuffer;
+    ICommandRecorder* commandRecorder;
     size_t queuedQuads;
     int vertexBufferSize;
     int indexBufferSize;
@@ -66,8 +66,8 @@ struct GuiRendererContext
     // geometry and color data (pushed directly to vertex buffer)
     std::unique_ptr<GuiQuadVertex[]> quadVertices;
 
-    NFE_INLINE GuiRendererContext(ICommandBuffer* commandBuffer)
-        : commandBuffer(commandBuffer)
+    NFE_INLINE GuiRendererContext(ICommandRecorder* commandRecorder)
+        : commandRecorder(commandRecorder)
         , queuedQuads(0)
         , vertexBufferSize(0)
         , indexBufferSize(0)

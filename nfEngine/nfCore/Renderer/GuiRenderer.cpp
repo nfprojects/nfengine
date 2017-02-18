@@ -151,7 +151,7 @@ std::unique_ptr<IResourceBindingInstance> GuiRenderer::CreateTextureBinding(ITex
 
 void GuiRenderer::OnEnter(GuiRendererContext* context)
 {
-    context->commandBuffer->BeginDebugGroup("GUI Renderer stage");
+    context->commandRecorder->BeginDebugGroup("GUI Renderer stage");
 }
 
 void GuiRenderer::BeginOrdinaryGuiRendering(GuiRendererContext* context)
@@ -159,16 +159,16 @@ void GuiRenderer::BeginOrdinaryGuiRendering(GuiRendererContext* context)
     IBuffer* vertexBuffers[] = { mVertexBuffer.get() };
     int strides[] = { sizeof(GuiQuadVertex) };
     int offsets[] = { 0 };
-    context->commandBuffer->SetVertexBuffers(1, vertexBuffers, strides, offsets);
+    context->commandRecorder->SetVertexBuffers(1, vertexBuffers, strides, offsets);
 
-    context->commandBuffer->SetPipelineState(mPipelineState.GetPipelineState());
+    context->commandRecorder->SetPipelineState(mPipelineState.GetPipelineState());
 }
 
 void GuiRenderer::OnLeave(GuiRendererContext* context)
 {
     FlushQueue(context);
 
-    context->commandBuffer->EndDebugGroup();
+    context->commandRecorder->EndDebugGroup();
 }
 
 void GuiRenderer::SetTarget(GuiRendererContext* context, IRenderTarget* target)
@@ -181,18 +181,18 @@ void GuiRenderer::SetTarget(GuiRendererContext* context, IRenderTarget* target)
                                      -1.0f, 1.0f);
 
     // TODO remove
-    context->commandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
-    context->commandBuffer->BindVolatileCBuffer(0, mConstantBuffer.get());
+    context->commandRecorder->SetResourceBindingLayout(mResBindingLayout.get());
+    context->commandRecorder->BindVolatileCBuffer(0, mConstantBuffer.get());
     //
 
-    context->commandBuffer->WriteBuffer(mConstantBuffer.get(), 0, sizeof(GlobalCBuffer),
+    context->commandRecorder->WriteBuffer(mConstantBuffer.get(), 0, sizeof(GlobalCBuffer),
                                         &cbuffer);
 
-    context->commandBuffer->SetRenderTarget(target);
-    context->commandBuffer->SetViewport(0.0f, static_cast<float>(width),
+    context->commandRecorder->SetRenderTarget(target);
+    context->commandRecorder->SetViewport(0.0f, static_cast<float>(width),
                                         0.0f, static_cast<float>(height),
                                         0.0f, 1.0f);
-    context->commandBuffer->SetScissors(0, 0, width, height);
+    context->commandRecorder->SetScissors(0, 0, width, height);
 }
 
 void GuiRenderer::FlushQueue(GuiRendererContext* context)
@@ -201,14 +201,14 @@ void GuiRenderer::FlushQueue(GuiRendererContext* context)
         return;
 
     // copy quads to vertex buffer
-    context->commandBuffer->WriteBuffer(mVertexBuffer.get(), 0,
+    context->commandRecorder->WriteBuffer(mVertexBuffer.get(), 0,
                                         context->queuedQuads * sizeof(GuiQuadVertex),
                                         context->quadVertices.get());
 
     int macros[1] = { 0 }; // use texture
     IResourceBindingInstance* currTextureBinding = nullptr;
     bool currAlphaTexture = false;
-    context->commandBuffer->SetPipelineState(mPipelineState.GetPipelineState());
+    context->commandRecorder->SetPipelineState(mPipelineState.GetPipelineState());
 
     int firstQuad = 0;
     int packetSize = 0;
@@ -218,7 +218,7 @@ void GuiRenderer::FlushQueue(GuiRendererContext* context)
             (context->quadData[i].alphaTexture != currAlphaTexture))
         {
             // flush quads
-            context->commandBuffer->Draw(packetSize, 1, firstQuad);
+            context->commandRecorder->Draw(packetSize, 1, firstQuad);
             packetSize = 0;
             firstQuad = static_cast<int>(i);
 
@@ -227,18 +227,18 @@ void GuiRenderer::FlushQueue(GuiRendererContext* context)
             currAlphaTexture = context->quadData[i].alphaTexture;
             if (currTextureBinding)
             {
-                context->commandBuffer->BindResources(0, currTextureBinding);
+                context->commandRecorder->BindResources(0, currTextureBinding);
                 macros[0] = currAlphaTexture ? 2 : 1;
             }
             else
                 macros[0] = 0;
-            context->commandBuffer->SetPipelineState(mPipelineState.GetPipelineState(macros));
+            context->commandRecorder->SetPipelineState(mPipelineState.GetPipelineState(macros));
         }
         packetSize++;
     }
 
     if (packetSize > 0)
-        context->commandBuffer->Draw(packetSize, 1, firstQuad);
+        context->commandRecorder->Draw(packetSize, 1, firstQuad);
 
     context->queuedQuads = 0;
 }
@@ -405,12 +405,12 @@ bool GuiRenderer::DrawImGui(GuiRendererContext* context, IResourceBindingInstanc
     {
         const ImDrawList* cmdList = drawData->CmdLists[i];
 
-        context->commandBuffer->WriteBuffer(mImGuiVertexBuffer.get(),
+        context->commandRecorder->WriteBuffer(mImGuiVertexBuffer.get(),
                                             vbOffset * sizeof(ImDrawVert),
                                             cmdList->VtxBuffer.size() * sizeof(ImDrawVert),
                                             &cmdList->VtxBuffer[0]);
 
-        context->commandBuffer->WriteBuffer(mImGuiIndexBuffer.get(),
+        context->commandRecorder->WriteBuffer(mImGuiIndexBuffer.get(),
                                             ibOffset * sizeof(ImDrawIdx),
                                             cmdList->IdxBuffer.size() * sizeof(ImDrawIdx),
                                             &cmdList->IdxBuffer[0]);
@@ -424,12 +424,12 @@ bool GuiRenderer::DrawImGui(GuiRendererContext* context, IResourceBindingInstanc
     IBuffer* vertexBuffers[] = { mImGuiVertexBuffer.get() };
     int strides[] = { sizeof(ImDrawVert) };
     int offsets[] = { 0 };
-    context->commandBuffer->SetVertexBuffers(1, vertexBuffers, strides, offsets);
-    context->commandBuffer->SetIndexBuffer(mImGuiIndexBuffer.get(), IndexBufferFormat::Uint16);
-    context->commandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
-    context->commandBuffer->SetPipelineState(mImGuiPipelineState.GetPipelineState());
-    context->commandBuffer->BindVolatileCBuffer(0, mConstantBuffer.get());
-    context->commandBuffer->BindResources(0, imGuiTextureBinding);
+    context->commandRecorder->SetVertexBuffers(1, vertexBuffers, strides, offsets);
+    context->commandRecorder->SetIndexBuffer(mImGuiIndexBuffer.get(), IndexBufferFormat::Uint16);
+    context->commandRecorder->SetResourceBindingLayout(mResBindingLayout.get());
+    context->commandRecorder->SetPipelineState(mImGuiPipelineState.GetPipelineState());
+    context->commandRecorder->BindVolatileCBuffer(0, mConstantBuffer.get());
+    context->commandRecorder->BindResources(0, imGuiTextureBinding);
 
     int vertexOffset = 0, indexOffset = 0;
     for (int i = 0; i < drawData->CmdListsCount; ++i)
@@ -445,11 +445,11 @@ bool GuiRenderer::DrawImGui(GuiRendererContext* context, IResourceBindingInstanc
             }
             else
             {
-                context->commandBuffer->SetScissors(static_cast<int>(command->ClipRect.x),
+                context->commandRecorder->SetScissors(static_cast<int>(command->ClipRect.x),
                                                     static_cast<int>(command->ClipRect.y),
                                                     static_cast<int>(command->ClipRect.z),
                                                     static_cast<int>(command->ClipRect.w));
-                context->commandBuffer->DrawIndexed(command->ElemCount,
+                context->commandRecorder->DrawIndexed(command->ElemCount,
                                                     1,
                                                     indexOffset,
                                                     vertexOffset);

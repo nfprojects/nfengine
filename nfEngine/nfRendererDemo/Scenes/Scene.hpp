@@ -33,7 +33,7 @@ class Scene
 protected:
     // Renderer interfaces
     NFE::Renderer::IDevice* mRendererDevice;
-    std::unique_ptr<NFE::Renderer::ICommandBuffer> mCommandBuffer;
+    std::unique_ptr<NFE::Renderer::ICommandRecorder> mCommandBuffer;
     NFE::Renderer::ElementFormat mBackbufferFormat;
 
     virtual bool OnInit(void* winHandle) = 0;

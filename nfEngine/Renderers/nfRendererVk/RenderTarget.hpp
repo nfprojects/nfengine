@@ -16,7 +16,7 @@ namespace Renderer {
 
 class RenderTarget : public IRenderTarget
 {
-    friend class CommandBuffer;
+    friend class CommandRecorder;
 
     int mWidth;
     int mHeight;

@@ -24,7 +24,7 @@ class DrawTest : public RendererTest
     uint32 mTestTextureHeight;
 
 protected:
-    std::unique_ptr<ICommandBuffer> mCommandBuffer;
+    std::unique_ptr<ICommandRecorder> mCommandBuffer;
 
     /**
      * Start rendering into test render target texture.

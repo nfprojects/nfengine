@@ -18,12 +18,12 @@
 namespace NFE {
 namespace Renderer {
 
-class CommandBuffer;
+class CommandRecorder;
 
 class Device : public IDevice
 {
     friend class Backbuffer;
-    friend class CommandBuffer;
+    friend class CommandRecorder;
     friend class RenderTarget;
 
     D3D_FEATURE_LEVEL mFeatureLevel;
@@ -76,7 +76,7 @@ public:
     IResourceBindingLayout* CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc) override;
     IResourceBindingInstance* CreateResourceBindingInstance(IResourceBindingSet* set) override;
 
-    ICommandBuffer* CreateCommandBuffer() override;
+    ICommandRecorder* CreateCommandRecorder() override;
     bool Execute(ICommandList* commandList) override;
     bool DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data) override;
     bool DownloadTexture(ITexture* tex, void* data, int mipmap, int layer) override;

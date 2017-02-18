@@ -11,7 +11,7 @@
 #include "nfCommon/ThreadPool.hpp"
 #include "nfCommon/Math/Frustum.hpp"
 #include "../Renderer/RendererResources.hpp"
-#include "../Renderers/RendererInterface/CommandBuffer.hpp"
+#include "../Renderers/RendererInterface/CommandRecorder.hpp"
 
 namespace NFE {
 namespace Scene {

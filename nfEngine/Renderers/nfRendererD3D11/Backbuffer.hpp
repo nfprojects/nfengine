@@ -15,7 +15,7 @@ namespace Renderer {
 
 class Backbuffer : public IBackbuffer, public Texture
 {
-    friend class CommandBuffer;
+    friend class CommandRecorder;
 
     HWND mWindow;
     D3DPtr<IDXGISwapChain> mSwapChain;

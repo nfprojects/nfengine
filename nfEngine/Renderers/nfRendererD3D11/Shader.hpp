@@ -22,7 +22,7 @@ class Shader : public IShader
         ResBinding() : type(ShaderResourceType::Unknown), slot(0) { }
     };
 
-    friend class CommandBuffer;
+    friend class CommandRecorder;
 
     ShaderType mType;
     D3DPtr<ID3DBlob> mBytecode;

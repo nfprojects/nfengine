@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "Renderers/RendererInterface/CommandBuffer.hpp"
+#include "Renderers/RendererInterface/CommandRecorder.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -23,11 +23,11 @@ class RenderContext
 public:
     // low-level API command buffers for each pass
     // TODO: this can take too much driver and GPU memory...
-    std::unique_ptr<ICommandBuffer> commandBufferDebug;
-    std::unique_ptr<ICommandBuffer> commandBufferGeometry;
-    std::unique_ptr<ICommandBuffer> commandBufferShadows;
-    std::unique_ptr<ICommandBuffer> commandBufferLights;
-    std::unique_ptr<ICommandBuffer> commandBufferOnScreen;
+    std::unique_ptr<ICommandRecorder> commandRecorderDebug;
+    std::unique_ptr<ICommandRecorder> commandRecorderGeometry;
+    std::unique_ptr<ICommandRecorder> commandRecorderShadows;
+    std::unique_ptr<ICommandRecorder> commandRecorderLights;
+    std::unique_ptr<ICommandRecorder> commandRecorderOnScreen;
 
     std::unique_ptr<GeometryRendererContext> geometryContext;
     std::unique_ptr<GeometryRendererContext> shadowsContext;

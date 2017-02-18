@@ -57,7 +57,7 @@ public:
     IResourceBindingLayout* CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc) override;
     IResourceBindingInstance* CreateResourceBindingInstance(IResourceBindingSet* set) override;
 
-    ICommandBuffer* CreateCommandBuffer() override;
+    ICommandRecorder* CreateCommandRecorder() override;
     bool Execute(ICommandList* commandList) override;
     bool WaitForGPU() override;
 

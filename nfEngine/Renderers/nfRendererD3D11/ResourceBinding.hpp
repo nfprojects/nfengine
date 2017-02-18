@@ -15,7 +15,7 @@ namespace Renderer {
 class ResourceBindingSet : public IResourceBindingSet
 {
     friend class ResourceBindingInstance;
-    friend class CommandBuffer;
+    friend class CommandRecorder;
 
     std::vector<ResourceBindingDesc> mBindings;
     ShaderType mShaderVisibility;
@@ -28,7 +28,7 @@ public:
 
 class ResourceBindingLayout : public IResourceBindingLayout
 {
-    friend class CommandBuffer;
+    friend class CommandRecorder;
 
     std::vector<ResourceBindingSet*> mBindingSets;
     std::vector<VolatileCBufferBinding> mVolatileCBuffers;
@@ -39,7 +39,7 @@ public:
 
 class ResourceBindingInstance : public IResourceBindingInstance
 {
-    friend class CommandBuffer;
+    friend class CommandRecorder;
 
     ResourceBindingSet* mBindingSet;
     std::vector<D3DPtr<ID3D11View>> mViews;

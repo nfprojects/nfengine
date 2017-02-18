@@ -16,7 +16,7 @@ class Texture;
 
 class RenderTarget : public IRenderTarget
 {
-    friend class CommandBuffer;
+    friend class CommandRecorder;
 
     std::vector<D3DPtr<ID3D11RenderTargetView>> mRTVs;
     Texture* mDepthBuffer;

@@ -177,13 +177,13 @@ bool DebugRenderer::CreateResourceBindingLayouts()
 void DebugRenderer::OnEnter(DebugRendererContext* context)
 {
     context->mode = DebugRendererMode::Unknown;
-    context->commandBuffer->BeginDebugGroup("Debug Renderer stage");
+    context->commandRecorder->BeginDebugGroup("Debug Renderer stage");
 }
 
 void DebugRenderer::OnLeave(DebugRendererContext* context)
 {
     Flush(context);
-    context->commandBuffer->EndDebugGroup();
+    context->commandRecorder->EndDebugGroup();
 }
 
 void DebugRenderer::Flush(DebugRendererContext* context)
@@ -196,31 +196,31 @@ void DebugRenderer::Flush(DebugRendererContext* context)
         int stride = sizeof(DebugVertex);
         int offset = 0;
         IBuffer* vb = mVertexBuffer.get();
-        context->commandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
-        context->commandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
+        context->commandRecorder->SetVertexBuffers(1, &vb, &stride, &offset);
+        context->commandRecorder->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
 
         int macros[] = { 0, 0 }; // IS_MESH
 
         if (context->polyType == PrimitiveType::Lines)
-            context->commandBuffer->SetPipelineState(mLinesPipelineState.GetPipelineState(macros));
+            context->commandRecorder->SetPipelineState(mLinesPipelineState.GetPipelineState(macros));
         else
-            context->commandBuffer->SetPipelineState(mTrianglesPipelineState.GetPipelineState(macros));
+            context->commandRecorder->SetPipelineState(mTrianglesPipelineState.GetPipelineState(macros));
 
-        context->commandBuffer->BindVolatileCBuffer(0, mConstantBuffer.get());
-        context->commandBuffer->BindVolatileCBuffer(1, mPerMeshConstantBuffer.get());
+        context->commandRecorder->BindVolatileCBuffer(0, mConstantBuffer.get());
+        context->commandRecorder->BindVolatileCBuffer(1, mPerMeshConstantBuffer.get());
 
         context->mode = DebugRendererMode::Simple;
     }
 
-    context->commandBuffer->WriteBuffer(mVertexBuffer.get(), 0,
+    context->commandRecorder->WriteBuffer(mVertexBuffer.get(), 0,
                                         context->queuedVertices * sizeof(DebugVertex),
                                         context->vertices.get());
 
-    context->commandBuffer->WriteBuffer(mIndexBuffer.get(), 0,
+    context->commandRecorder->WriteBuffer(mIndexBuffer.get(), 0,
                                         context->queuedIndicies * sizeof(DebugIndexType),
                                         context->indicies.get());
 
-    context->commandBuffer->DrawIndexed(static_cast<int>(context->queuedIndicies));
+    context->commandRecorder->DrawIndexed(static_cast<int>(context->queuedIndicies));
 
     context->queuedVertices = 0;
     context->queuedIndicies = 0;
@@ -233,11 +233,11 @@ void DebugRenderer::SetTarget(DebugRendererContext *context, IRenderTarget* targ
         int width, height;
         target->GetDimensions(width, height);
 
-        context->commandBuffer->SetRenderTarget(target);
-        context->commandBuffer->SetViewport(0.0f, static_cast<float>(width),
+        context->commandRecorder->SetRenderTarget(target);
+        context->commandRecorder->SetViewport(0.0f, static_cast<float>(width),
                                             0.0f, static_cast<float>(height),
                                             0.0f, 1.0f);
-        context->commandBuffer->SetScissors(0, 0, width, height);
+        context->commandRecorder->SetScissors(0, 0, width, height);
     }
 }
 
@@ -247,7 +247,7 @@ void DebugRenderer::SetCamera(DebugRendererContext *context, const Matrix& viewM
     DebugCBuffer debugCBufferData;
     debugCBufferData.projMatrix = projMatrix;
     debugCBufferData.viewMatrix = viewMatrix;
-    context->commandBuffer->WriteBuffer(mConstantBuffer.get(), 0, sizeof(DebugCBuffer),
+    context->commandRecorder->WriteBuffer(mConstantBuffer.get(), 0, sizeof(DebugCBuffer),
                                         &debugCBufferData);
 }
 
@@ -384,11 +384,11 @@ void DebugRenderer::SetMeshMaterial(DebugRendererContext* context, const Resourc
     macros[mUseTextureMacroId] = 0;
     // macros[mUseTextureMacroId] = tex != nullptr ? 1 : 0;
 
-    context->commandBuffer->SetPipelineState(mMeshPipelineState.GetPipelineState(macros));
+    context->commandRecorder->SetPipelineState(mMeshPipelineState.GetPipelineState(macros));
 
     // FIXME
     // if (tex)
-    //    context->commandBuffer->SetTextures(&tex, 1, ShaderType::Pixel);ale n
+    //    context->commandRecorder->SetTextures(&tex, 1, ShaderType::Pixel);ale n
 }
 
 void DebugRenderer::DrawMesh(DebugRendererContext* context, const Resource::Mesh* mesh,
@@ -410,7 +410,7 @@ void DebugRenderer::DrawMesh(DebugRendererContext* context, const Resource::Mesh
 
     if (context->mode != DebugRendererMode::Meshes)
     {
-        context->commandBuffer->BindVolatileCBuffer(0, mPerMeshConstantBuffer.get());
+        context->commandRecorder->BindVolatileCBuffer(0, mPerMeshConstantBuffer.get());
         context->mode = DebugRendererMode::Meshes;
         context->polyType = PrimitiveType::Unknown;
     }
@@ -418,18 +418,18 @@ void DebugRenderer::DrawMesh(DebugRendererContext* context, const Resource::Mesh
     /// update model matrix
     DebugPerMeshCBuffer perMeshCBuffer;
     perMeshCBuffer.modelMatrix = matrix;
-    context->commandBuffer->WriteBuffer(mPerMeshConstantBuffer.get(), 0,
+    context->commandRecorder->WriteBuffer(mPerMeshConstantBuffer.get(), 0,
                                         sizeof(DebugPerMeshCBuffer),
                                         &perMeshCBuffer);
 
     int strides[] = { sizeof(Resource::MeshVertex) };
     int offsets[] = { 0 };
-    context->commandBuffer->SetVertexBuffers(1, &vb, strides, offsets);
-    context->commandBuffer->SetIndexBuffer(ib, IndexBufferFormat::Uint32);
+    context->commandRecorder->SetVertexBuffers(1, &vb, strides, offsets);
+    context->commandRecorder->SetIndexBuffer(ib, IndexBufferFormat::Uint32);
     for (const auto& subMesh : mesh->mSubMeshes)
     {
         SetMeshMaterial(context, subMesh.material);
-        context->commandBuffer->DrawIndexed(3 * subMesh.trianglesCount, 1, subMesh.indexOffset);
+        context->commandRecorder->DrawIndexed(3 * subMesh.trianglesCount, 1, subMesh.indexOffset);
     }
 }
 

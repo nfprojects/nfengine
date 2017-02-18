@@ -132,19 +132,19 @@ std::unique_ptr<IResourceBindingInstance> PostProcessRenderer::CreateTextureBind
 
 void PostProcessRenderer::OnEnter(PostProcessRendererContext* context)
 {
-    context->commandBuffer->BeginDebugGroup("Post Process Renderer stage");
+    context->commandRecorder->BeginDebugGroup("Post Process Renderer stage");
 
-    context->commandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
+    context->commandRecorder->SetResourceBindingLayout(mResBindingLayout.get());
 
     IBuffer* veretexBuffers[] = { mVertexBuffer.get() };
     int strides[] = { sizeof(Float3) };
     int offsets[] = { 0 };
-    context->commandBuffer->SetVertexBuffers(1, veretexBuffers, strides, offsets);
+    context->commandRecorder->SetVertexBuffers(1, veretexBuffers, strides, offsets);
 }
 
 void PostProcessRenderer::OnLeave(PostProcessRendererContext* context)
 {
-    context->commandBuffer->EndDebugGroup();
+    context->commandRecorder->EndDebugGroup();
 }
 
 void PostProcessRenderer::ApplyTonemapping(PostProcessRendererContext* context,
@@ -153,12 +153,12 @@ void PostProcessRenderer::ApplyTonemapping(PostProcessRendererContext* context,
 {
     int width, height;
     dest->GetDimensions(width, height);
-    context->commandBuffer->SetViewport(0.0f, static_cast<float>(width),
+    context->commandRecorder->SetViewport(0.0f, static_cast<float>(width),
                                         0.0f, static_cast<float>(height),
                                         0.0f, 1.0f);
-    context->commandBuffer->SetScissors(0, 0, width, height);
+    context->commandRecorder->SetScissors(0, 0, width, height);
 
-    context->commandBuffer->SetPipelineState(mTonemappingPipelineState.GetPipelineState());
+    context->commandRecorder->SetPipelineState(mTonemappingPipelineState.GetPipelineState());
 
     ToneMappingCBuffer cbufferData;
     cbufferData.bufferInvRes = Vector(1.0f / static_cast<float>(width),
@@ -168,19 +168,19 @@ void PostProcessRenderer::ApplyTonemapping(PostProcessRendererContext* context,
                                 expf(params.exposureOffset));
     cbufferData.seed = Vector(context->random.GetFloat2());
 
-    context->commandBuffer->BindResources(0, src);
-    context->commandBuffer->BindVolatileCBuffer(0, mTonemappingCBuffer.get());
-    context->commandBuffer->WriteBuffer(mTonemappingCBuffer.get(), 0,
+    context->commandRecorder->BindResources(0, src);
+    context->commandRecorder->BindVolatileCBuffer(0, mTonemappingCBuffer.get());
+    context->commandRecorder->WriteBuffer(mTonemappingCBuffer.get(), 0,
                                         sizeof(cbufferData), &cbufferData);
 
-    context->commandBuffer->SetRenderTarget(dest);
+    context->commandRecorder->SetRenderTarget(dest);
 
 
     // TODO: use compute shaders if supported
-    context->commandBuffer->Draw(2 * 3);  // draw 2 triangles
+    context->commandRecorder->Draw(2 * 3);  // draw 2 triangles
 
     // unbind source texture
-    context->commandBuffer->BindResources(0, mNullTextureBindingInstance.get());
+    context->commandRecorder->BindResources(0, mNullTextureBindingInstance.get());
 }
 
 } // namespace Renderer

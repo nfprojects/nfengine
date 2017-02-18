@@ -19,7 +19,7 @@ class VertexLayout;
 
 class PipelineState : public IPipelineState
 {
-    friend class CommandBuffer;
+    friend class CommandRecorder;
 
     ID3D11VertexShader* mVertexShader;
     ID3D11GeometryShader* mGeometryShader;

@@ -196,34 +196,34 @@ bool GeometryRenderer::CreateResourceBindingLayouts()
 
 void GeometryRenderer::OnEnter(GeometryRendererContext* context)
 {
-    context->commandBuffer->BeginDebugGroup("Geometry Buffer Renderer stage");
+    context->commandRecorder->BeginDebugGroup("Geometry Buffer Renderer stage");
 }
 
 void GeometryRenderer::OnLeave(GeometryRendererContext* context)
 {
-    context->commandBuffer->SetRenderTarget(nullptr);
-    context->commandBuffer->EndDebugGroup();
+    context->commandRecorder->SetRenderTarget(nullptr);
+    context->commandRecorder->EndDebugGroup();
 }
 
 void GeometryRenderer::SetUp(GeometryRendererContext* context, GeometryBuffer* geometryBuffer,
                              const CameraRenderDesc* cameraDesc)
 {
-    context->commandBuffer->InsertDebugMarker(__FUNCTION__);
+    context->commandRecorder->InsertDebugMarker(__FUNCTION__);
 
-    context->commandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
-    context->commandBuffer->SetRenderTarget(geometryBuffer->mRenderTarget.get());
-    context->commandBuffer->SetViewport(0.0f, static_cast<float>(geometryBuffer->mWidth),
+    context->commandRecorder->SetResourceBindingLayout(mResBindingLayout.get());
+    context->commandRecorder->SetRenderTarget(geometryBuffer->mRenderTarget.get());
+    context->commandRecorder->SetViewport(0.0f, static_cast<float>(geometryBuffer->mWidth),
                                         0.0f, static_cast<float>(geometryBuffer->mHeight),
                                         0.0f, 1.0f);
-    context->commandBuffer->SetScissors(0, 0, geometryBuffer->mWidth, geometryBuffer->mHeight);
+    context->commandRecorder->SetScissors(0, 0, geometryBuffer->mWidth, geometryBuffer->mHeight);
 
-    context->commandBuffer->Clear(ClearFlagsDepth, 0, nullptr, nullptr, 1.0f);
+    context->commandRecorder->Clear(ClearFlagsDepth, 0, nullptr, nullptr, 1.0f);
 
     int macros[] = { 0 }; // USE_MOTION_BLUR
-    context->commandBuffer->SetPipelineState(mGeometryPassPipelineState.GetPipelineState(macros));
+    context->commandRecorder->SetPipelineState(mGeometryPassPipelineState.GetPipelineState(macros));
 
-    context->commandBuffer->BindVolatileCBuffer(0, mGlobalCBuffer.get());
-    context->commandBuffer->BindVolatileCBuffer(1, mMaterialCBuffer.get());
+    context->commandRecorder->BindVolatileCBuffer(0, mGlobalCBuffer.get());
+    context->commandRecorder->BindVolatileCBuffer(1, mMaterialCBuffer.get());
 
     GlobalCBuffer cbuffer;
     cbuffer.ProjMatrix = cameraDesc->projMatrix;
@@ -233,7 +233,7 @@ void GeometryRenderer::SetUp(GeometryRendererContext* context, GeometryBuffer* g
     cbuffer.CameraVelocity = cameraDesc->velocity;
     cbuffer.CameraAngularVelocity = cameraDesc->angualrVelocity;
 
-    context->commandBuffer->WriteBuffer(mGlobalCBuffer.get(), 0, sizeof(GlobalCBuffer),
+    context->commandRecorder->WriteBuffer(mGlobalCBuffer.get(), 0, sizeof(GlobalCBuffer),
                                         &cbuffer);
 }
 
@@ -241,27 +241,27 @@ void GeometryRenderer::SetUpForShadowMap(GeometryRendererContext *context, Shado
                                          const ShadowCameraRenderDesc* cameraDesc,
                                          uint32 faceID)
 {
-    context->commandBuffer->InsertDebugMarker(__FUNCTION__);
+    context->commandRecorder->InsertDebugMarker(__FUNCTION__);
 
-    context->commandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
-    context->commandBuffer->SetRenderTarget(shadowMap->mRenderTargets[faceID].get());
-    context->commandBuffer->SetViewport(0.0f, static_cast<float>(shadowMap->mSize),
+    context->commandRecorder->SetResourceBindingLayout(mResBindingLayout.get());
+    context->commandRecorder->SetRenderTarget(shadowMap->mRenderTargets[faceID].get());
+    context->commandRecorder->SetViewport(0.0f, static_cast<float>(shadowMap->mSize),
                                         0.0f, static_cast<float>(shadowMap->mSize),
                                         0.0f, 1.0f);
-    context->commandBuffer->SetScissors(0, 0, shadowMap->mSize, shadowMap->mSize);
+    context->commandRecorder->SetScissors(0, 0, shadowMap->mSize, shadowMap->mSize);
 
     const Float4 clearColor(1.0f, 0.0f, 0.0f, 0.0f);
-    context->commandBuffer->Clear(ClearFlagsColor | ClearFlagsDepth, 1, nullptr, &clearColor, 1.0f);
+    context->commandRecorder->Clear(ClearFlagsColor | ClearFlagsDepth, 1, nullptr, &clearColor, 1.0f);
 
     int macros[] = { 0 };
     if (shadowMap->mType == ShadowMap::Type::Cube)
         macros[0] = 1;
 
-    context->commandBuffer->SetPipelineState(mShadowPipelineState.GetPipelineState(macros));
+    context->commandRecorder->SetPipelineState(mShadowPipelineState.GetPipelineState(macros));
 
-    context->commandBuffer->BindVolatileCBuffer(0, mShadowGlobalCBuffer.get());
+    context->commandRecorder->BindVolatileCBuffer(0, mShadowGlobalCBuffer.get());
 
-    context->commandBuffer->WriteBuffer(mShadowGlobalCBuffer.get(), 0,
+    context->commandRecorder->WriteBuffer(mShadowGlobalCBuffer.get(), 0,
                                         sizeof(ShadowCameraRenderDesc), cameraDesc);
 }
 
@@ -271,13 +271,13 @@ void GeometryRenderer::SetMaterial(GeometryRendererContext* context, const Rende
     if (material && material->layers[0].bindingInstance)
         bindingInstance = material->layers[0].bindingInstance.get();
 
-    context->commandBuffer->BindResources(0, bindingInstance);
+    context->commandRecorder->BindResources(0, bindingInstance);
 
     MaterialCBuffer cbuffer;
     cbuffer.diffuseColor = Vector(1.0f, 1.0f, 1.0f, 1.0f);
     cbuffer.specularColor = Vector(1.0f, 1.0f, 1.0f, 1.0f);
     cbuffer.emissionColor = Vector();
-    context->commandBuffer->WriteBuffer(mMaterialCBuffer.get(), 0, sizeof(MaterialCBuffer),
+    context->commandRecorder->WriteBuffer(mMaterialCBuffer.get(), 0, sizeof(MaterialCBuffer),
                                         &cbuffer);
 }
 
@@ -309,7 +309,7 @@ void GeometryRenderer::Draw(GeometryRendererContext* context, const RenderComman
         {
             if (bufferedInstances > 0)
             {
-                context->commandBuffer->DrawIndexed(currIndexCount,
+                context->commandRecorder->DrawIndexed(currIndexCount,
                                                     bufferedInstances, currStartIndex, 0,
                                                     startInstanceLocation);
                 startInstanceLocation += bufferedInstances;
@@ -333,7 +333,7 @@ void GeometryRenderer::Draw(GeometryRendererContext* context, const RenderComman
                 context->instanceData[j].angularVelocity = buffer.commands[j + i].angularVelocity;
             }
 
-            context->commandBuffer->WriteBuffer(mInstancesVertexBuffer.get(),
+            context->commandRecorder->WriteBuffer(mInstancesVertexBuffer.get(),
                                                 0, instancesToBuffer * sizeof(InstanceData),
                                                 context->instanceData.data());
 
@@ -358,8 +358,8 @@ void GeometryRenderer::Draw(GeometryRendererContext* context, const RenderComman
             IBuffer* buffers[] = { currVB, mInstancesVertexBuffer.get() };
             int strides[] = { sizeof(Resource::MeshVertex), sizeof(InstanceData) };
             int offsets[] = { 0, 0 };
-            context->commandBuffer->SetVertexBuffers(2, buffers, strides, offsets);
-            context->commandBuffer->SetIndexBuffer(currIB, IndexBufferFormat::Uint32);
+            context->commandRecorder->SetVertexBuffers(2, buffers, strides, offsets);
+            context->commandRecorder->SetIndexBuffer(currIB, IndexBufferFormat::Uint32);
         }
 
         bufferedInstances++;
@@ -368,7 +368,7 @@ void GeometryRenderer::Draw(GeometryRendererContext* context, const RenderComman
     // flush the rest
     if (bufferedInstances > 0)
     {
-        context->commandBuffer->DrawIndexed(currIndexCount,
+        context->commandRecorder->DrawIndexed(currIndexCount,
                                             bufferedInstances, currStartIndex, 0,
                                             startInstanceLocation);
     }

@@ -1,83 +1,65 @@
 /**
  * @file
  * @author  Witek902 (witek902@gmail.com)
- * @brief   Declaration of Direct3D 12 render's command buffer.
+ * @brief   Declaration of Direct3D 11 render's command buffer.
  */
 
 #pragma once
 
-#include "../RendererInterface/CommandBuffer.hpp"
+#include "../RendererInterface/CommandRecorder.hpp"
 #include "Common.hpp"
-#include "RingBuffer.hpp"
-#include "ResourceBinding.hpp"
 
 
 namespace NFE {
 namespace Renderer {
 
 // predeclarations
+class Shader;
 class RenderTarget;
 class PipelineState;
 class ComputePipelineState;
-class Buffer;
+class ResourceBindingLayout;
 
-struct CommandList : public ICommandList
+
+class CommandList : public ICommandList
 {
-    // TODO what about generating multiple command list on a single command buffer?
-    CommandBuffer* commandBuffer;
+public:
+    D3DPtr<ID3D11CommandList> mD3DList;
 };
 
-class CommandBuffer : public ICommandBuffer
+class CommandRecorder : public ICommandRecorder
 {
     friend class Device;
 
-    uint64 mFrameCounter;       // total frame counter
-    uint32 mFrameCount;         // number of queued frames
-    uint32 mFrameBufferIndex;   // current frame (command allocator index)
-    std::vector<D3DPtr<ID3D12CommandAllocator>> mCommandAllocators;
-    D3DPtr<ID3D12GraphicsCommandList> mCommandList;
-
-    // synchronization objects
-    D3DPtr<ID3D12Fence> mFence;
-    HANDLE mFenceEvent;
-    std::vector<uint64> mFenceValues;
-
-    // ring buffer for dynamic buffers support
-    RingBuffer mRingBuffer;
-    Buffer* mBoundVolatileCBuffers[NFE_RENDERER_MAX_VOLATILE_CBUFFERS];
-    Buffer* mBoundComputeVolatileCBuffers[NFE_RENDERER_MAX_VOLATILE_CBUFFERS];
-
-    RenderTarget* mCurrRenderTarget;
-    ResourceBindingLayout* mBindingLayout;
-    ResourceBindingLayout* mCurrBindingLayout;
-    PipelineState* mCurrPipelineState;
-    PipelineState* mPipelineState;
-
-    ResourceBindingLayout* mComputeBindingLayout;
-    ComputePipelineState* mCurrComputePipelineState;
-
-    D3D12_PRIMITIVE_TOPOLOGY mCurrPrimitiveTopology;
-
-    D3D12_VERTEX_BUFFER_VIEW mCurrVertexBufferViews[NFE_RENDERER_MAX_VERTEX_BUFFERS];
-    Buffer* mBoundVertexBuffers[NFE_RENDERER_MAX_VERTEX_BUFFERS];
-    uint32 mNumBoundVertexBuffers;
-
-    // is in reset state? (true after calling Reset(), false after calling Finish())
     bool mReset;
+    D3DPtr<ID3D11DeviceContext> mContext;
+    D3DPtr<ID3DUserDefinedAnnotation> mUserDefinedAnnotation;
 
-    void UpdateStates();
-    void UnsetRenderTarget();
+    // graphics pipeline
+    unsigned char mStencilRef;
+    unsigned char mCurrentStencilRef;
+    RenderTarget* mCurrentRenderTarget;
+    PrimitiveType mCurrentPrimitiveType;
+    ResourceBindingLayout* mBindingLayout;
+    PipelineState* mPipelineState;
+    PipelineState* mCurrentPipelineState;
+    ID3D11VertexShader* mBoundVertexShader;
+    ID3D11HullShader* mBoundHullShader;
+    ID3D11DomainShader* mBoundDomainShader;
+    ID3D11GeometryShader* mBoundGeometryShader;
+    ID3D11PixelShader* mBoundPixelShader;
 
-    // called by Device, when command list was queued
-    bool MoveToNextFrame(ID3D12CommandQueue* commandQueue);
+    // compute pipeline
+    ResourceBindingLayout* mComputeBindingLayout;
+    ComputePipelineState* mComputePipelineState;
+    ID3D11ComputeShader* mBoundComputeShader;
 
-    void WriteDynamicBuffer(Buffer* buffer, size_t offset, size_t size, const void* data);
-    void WriteVolatileBuffer(Buffer* buffer, const void* data);
+    void UpdateSamplers();
+    void UpdateState();
 
 public:
-    CommandBuffer();
-    ~CommandBuffer();
-    bool Init(ID3D12Device* device);
+    CommandRecorder(ID3D11DeviceContext* deviceContext);
+    ~CommandRecorder();
 
     /// Common methods
     void Reset() override;
@@ -87,13 +69,13 @@ public:
     void CopyTexture(ITexture* src, ITexture* dest) override;
     std::unique_ptr<ICommandList> Finish() override;
 
-    /// Compute pipeline methods
+    /// Graphics pipeline methods
     void SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets) override;
     void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format) override;
     void BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance) override;
     void BindVolatileCBuffer(size_t slot, IBuffer* buffer) override;
-    void SetRenderTarget(IRenderTarget* renderTarget) override;
     void SetResourceBindingLayout(IResourceBindingLayout* layout) override;
+    void SetRenderTarget(IRenderTarget* renderTarget) override;
     void SetPipelineState(IPipelineState* state) override;
     void SetStencilRef(unsigned char ref) override;
     void SetViewport(float left, float width, float top, float height,
@@ -114,6 +96,7 @@ public:
     void Dispatch(uint32 x, uint32 y, uint32 z) override;
 
     /// Debugging
+
     void BeginDebugGroup(const char* text) override;
     void EndDebugGroup() override;
     void InsertDebugMarker(const char* text) override;

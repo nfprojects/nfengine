@@ -14,7 +14,7 @@ namespace Renderer {
 
 class Buffer : public IBuffer
 {
-    friend class CommandBuffer;
+    friend class CommandRecorder;
     friend class Device;
     friend class ResourceBindingInstance;
 

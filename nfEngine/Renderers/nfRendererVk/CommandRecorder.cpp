@@ -1,12 +1,12 @@
 /**
  * @file
  * @author  LKostyra (costyrra.xl@gmail.com)
- * @brief   Definitions of Vulkan Command Buffer
+ * @brief   Definitions of Vulkan Command Recorder
  */
 
 #include "PCH.hpp"
 
-#include "CommandBuffer.hpp"
+#include "CommandRecorder.hpp"
 #include "Device.hpp"
 #include "Translations.hpp"
 #include "ResourceBinding.hpp"
@@ -17,7 +17,7 @@
 namespace NFE {
 namespace Renderer {
 
-CommandBuffer::CommandBuffer()
+CommandRecorder::CommandRecorder()
     : mCommandBuffer(VK_NULL_HANDLE)
     , mRenderTarget(nullptr)
     , mActiveRenderPass(false)
@@ -32,7 +32,7 @@ CommandBuffer::CommandBuffer()
         mBoundVolatileBuffers[i] = nullptr;
 }
 
-CommandBuffer::~CommandBuffer()
+CommandRecorder::~CommandRecorder()
 {
     for (uint32 i = 0; i < VK_FENCE_COUNT; ++i)
         if (mFences[i] != VK_NULL_HANDLE)
@@ -43,7 +43,7 @@ CommandBuffer::~CommandBuffer()
                              1, &mCommandBuffer);
 }
 
-bool CommandBuffer::Init()
+bool CommandRecorder::Init()
 {
     VkCommandBufferAllocateInfo allocInfo = {};
     VK_ZERO_MEMORY(allocInfo);
@@ -82,7 +82,7 @@ bool CommandBuffer::Init()
     return true;
 }
 
-void CommandBuffer::Reset()
+void CommandRecorder::Reset()
 {
     for (uint32 i = 0; i < VK_MAX_VOLATILE_BUFFERS; ++i)
         mBoundVolatileBuffers[i] = nullptr;
@@ -91,7 +91,7 @@ void CommandBuffer::Reset()
     vkBeginCommandBuffer(mCommandBuffer, &mCommandBufferBeginInfo);
 }
 
-void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets)
+void CommandRecorder::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets)
 {
     UNUSED(strides);
 
@@ -116,7 +116,7 @@ void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* stri
     vkCmdBindVertexBuffers(mCommandBuffer, 0, num, buffers, offs);
 }
 
-void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format)
+void CommandRecorder::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format)
 {
     Buffer* ib = dynamic_cast<Buffer*>(indexBuffer);
     if (ib == nullptr)
@@ -128,7 +128,7 @@ void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat forma
     vkCmdBindIndexBuffer(mCommandBuffer, ib->mBuffer, 0, TranslateIndexBufferFormatToVkIndexType(format));
 }
 
-void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance)
+void CommandRecorder::BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance)
 {
     UNUSED(slot);
 
@@ -144,7 +144,7 @@ void CommandBuffer::BindResources(size_t slot, IResourceBindingInstance* binding
                             &rbi->mSet->mDescriptorSet, 0, nullptr);
 }
 
-void CommandBuffer::BindVolatileCBuffer(size_t slot, IBuffer* buffer)
+void CommandRecorder::BindVolatileCBuffer(size_t slot, IBuffer* buffer)
 {
     Buffer* b = dynamic_cast<Buffer*>(buffer);
     if (b == nullptr)
@@ -189,14 +189,14 @@ void CommandBuffer::BindVolatileCBuffer(size_t slot, IBuffer* buffer)
     }
 }
 
-void CommandBuffer::SetResourceBindingLayout(IResourceBindingLayout* layout)
+void CommandRecorder::SetResourceBindingLayout(IResourceBindingLayout* layout)
 {
     mResourceBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout);
     if (!mResourceBindingLayout)
         LOG_ERROR("Incorrect binding layout provided");
 }
 
-void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
+void CommandRecorder::SetRenderTarget(IRenderTarget* renderTarget)
 {
     if (mRenderTarget)
     {
@@ -222,7 +222,7 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
     vkCmdBeginRenderPass(mCommandBuffer, &rpBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 }
 
-void CommandBuffer::SetPipelineState(IPipelineState* state)
+void CommandRecorder::SetPipelineState(IPipelineState* state)
 {
     PipelineState* ps = dynamic_cast<PipelineState*>(state);
     if (ps == nullptr)
@@ -235,12 +235,12 @@ void CommandBuffer::SetPipelineState(IPipelineState* state)
     vkCmdBindPipeline(mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, ps->mPipeline);
 }
 
-void CommandBuffer::SetStencilRef(unsigned char ref)
+void CommandRecorder::SetStencilRef(unsigned char ref)
 {
     UNUSED(ref);
 }
 
-void CommandBuffer::SetViewport(float left, float width, float top, float height,
+void CommandRecorder::SetViewport(float left, float width, float top, float height,
                                 float minDepth, float maxDepth)
 {
     VkViewport viewport;
@@ -253,7 +253,7 @@ void CommandBuffer::SetViewport(float left, float width, float top, float height
     vkCmdSetViewport(mCommandBuffer, 0, 1, &viewport);
 }
 
-void CommandBuffer::SetScissors(int left, int top, int right, int bottom)
+void CommandRecorder::SetScissors(int left, int top, int right, int bottom)
 {
     VkRect2D scissor;
     scissor.offset.x = left;
@@ -263,19 +263,19 @@ void CommandBuffer::SetScissors(int left, int top, int right, int bottom)
     vkCmdSetScissor(mCommandBuffer, 0, 1, &scissor);
 }
 
-void* CommandBuffer::MapBuffer(IBuffer* buffer, MapType type)
+void* CommandRecorder::MapBuffer(IBuffer* buffer, MapType type)
 {
     UNUSED(buffer);
     UNUSED(type);
     return nullptr;
 }
 
-void CommandBuffer::UnmapBuffer(IBuffer* buffer)
+void CommandRecorder::UnmapBuffer(IBuffer* buffer)
 {
     UNUSED(buffer);
 }
 
-bool CommandBuffer::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, const void* data)
+bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, const void* data)
 {
     // copy data to Ring Buffer
     uint32 sourceOffset = mRingBuffer.Write(data, static_cast<uint32>(size));
@@ -312,7 +312,7 @@ bool CommandBuffer::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, co
     return true;
 }
 
-bool CommandBuffer::WriteVolatileBuffer(Buffer* b, size_t size, const void* data)
+bool CommandRecorder::WriteVolatileBuffer(Buffer* b, size_t size, const void* data)
 {
     uint32 writeHead = mRingBuffer.Write(data, static_cast<uint32>(size));
     if (writeHead == std::numeric_limits<uint32>::max())
@@ -334,7 +334,7 @@ bool CommandBuffer::WriteVolatileBuffer(Buffer* b, size_t size, const void* data
     return true;
 }
 
-bool CommandBuffer::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data)
+bool CommandRecorder::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data)
 {
     Buffer* b = dynamic_cast<Buffer*>(buffer);
     if (b == nullptr)
@@ -365,13 +365,13 @@ bool CommandBuffer::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, con
     }
 }
 
-void CommandBuffer::CopyTexture(ITexture* src, ITexture* dest)
+void CommandRecorder::CopyTexture(ITexture* src, ITexture* dest)
 {
     UNUSED(src);
     UNUSED(dest);
 }
 
-void CommandBuffer::Clear(int flags, uint32 numTargets, const uint32* slots,
+void CommandRecorder::Clear(int flags, uint32 numTargets, const uint32* slots,
                           const Math::Float4* colors, float depthValue, uint8 stencilValue)
 {
     if (!mRenderTarget)
@@ -424,48 +424,48 @@ void CommandBuffer::Clear(int flags, uint32 numTargets, const uint32* slots,
 }
 
 
-void CommandBuffer::Draw(int vertexNum, int instancesNum, int vertexOffset,
+void CommandRecorder::Draw(int vertexNum, int instancesNum, int vertexOffset,
                          int instanceOffset)
 {
     vkCmdDraw(mCommandBuffer, vertexNum, instancesNum, vertexOffset, instanceOffset);
 }
 
-void CommandBuffer::DrawIndexed(int indexNum, int instancesNum,
+void CommandRecorder::DrawIndexed(int indexNum, int instancesNum,
                                 int indexOffset, int vertexOffset, int instanceOffset)
 {
     vkCmdDrawIndexed(mCommandBuffer, indexNum, instancesNum, indexOffset, vertexOffset, instanceOffset);
 }
 
-void CommandBuffer::BindComputeResources(size_t slot, IResourceBindingInstance* bindingSetInstance)
+void CommandRecorder::BindComputeResources(size_t slot, IResourceBindingInstance* bindingSetInstance)
 {
     UNUSED(slot);
     UNUSED(bindingSetInstance);
 }
 
-void CommandBuffer::BindComputeVolatileCBuffer(size_t slot, IBuffer* buffer)
+void CommandRecorder::BindComputeVolatileCBuffer(size_t slot, IBuffer* buffer)
 {
     UNUSED(slot);
     UNUSED(buffer);
 }
 
-void CommandBuffer::SetComputeResourceBindingLayout(IResourceBindingLayout* layout)
+void CommandRecorder::SetComputeResourceBindingLayout(IResourceBindingLayout* layout)
 {
     UNUSED(layout);
 }
 
-void CommandBuffer::SetComputePipelineState(IComputePipelineState* state)
+void CommandRecorder::SetComputePipelineState(IComputePipelineState* state)
 {
     UNUSED(state);
 }
 
-void CommandBuffer::Dispatch(uint32 x, uint32 y, uint32 z)
+void CommandRecorder::Dispatch(uint32 x, uint32 y, uint32 z)
 {
     UNUSED(x);
     UNUSED(y);
     UNUSED(z);
 }
 
-std::unique_ptr<ICommandList> CommandBuffer::Finish()
+std::unique_ptr<ICommandList> CommandRecorder::Finish()
 {
     if (mRenderTarget)
     {
@@ -513,21 +513,21 @@ std::unique_ptr<ICommandList> CommandBuffer::Finish()
     return list;
 }
 
-void CommandBuffer::BeginDebugGroup(const char* text)
+void CommandRecorder::BeginDebugGroup(const char* text)
 {
     UNUSED(text);
 }
 
-void CommandBuffer::EndDebugGroup()
+void CommandRecorder::EndDebugGroup()
 {
 }
 
-void CommandBuffer::InsertDebugMarker(const char* text)
+void CommandRecorder::InsertDebugMarker(const char* text)
 {
     UNUSED(text);
 }
 
-void CommandBuffer::AdvanceFrame()
+void CommandRecorder::AdvanceFrame()
 {
     mCurrentFence++;
     if (mCurrentFence == VK_FENCE_COUNT)
