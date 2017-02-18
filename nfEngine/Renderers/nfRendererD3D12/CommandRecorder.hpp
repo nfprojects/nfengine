@@ -21,16 +21,8 @@ class PipelineState;
 class ComputePipelineState;
 class Buffer;
 
-struct CommandList : public ICommandList
-{
-    // TODO what about generating multiple command list on a single command buffer?
-    CommandRecorder* commandRecorder;
-};
-
 class CommandRecorder : public ICommandRecorder
 {
-    friend class Device;
-
     uint64 mFrameCounter;       // total frame counter
     uint32 mFrameCount;         // number of queued frames
     uint32 mFrameBufferIndex;   // current frame (command allocator index)
@@ -44,8 +36,8 @@ class CommandRecorder : public ICommandRecorder
 
     // ring buffer for dynamic buffers support
     RingBuffer mRingBuffer;
-    Buffer* mBoundVolatileCBuffers[NFE_RENDERER_MAX_VOLATILE_CBUFFERS];
-    Buffer* mBoundComputeVolatileCBuffers[NFE_RENDERER_MAX_VOLATILE_CBUFFERS];
+    const Buffer* mBoundVolatileCBuffers[NFE_RENDERER_MAX_VOLATILE_CBUFFERS];
+    const Buffer* mBoundComputeVolatileCBuffers[NFE_RENDERER_MAX_VOLATILE_CBUFFERS];
 
     RenderTarget* mCurrRenderTarget;
     ResourceBindingLayout* mBindingLayout;
@@ -59,7 +51,7 @@ class CommandRecorder : public ICommandRecorder
     D3D12_PRIMITIVE_TOPOLOGY mCurrPrimitiveTopology;
 
     D3D12_VERTEX_BUFFER_VIEW mCurrVertexBufferViews[NFE_RENDERER_MAX_VERTEX_BUFFERS];
-    Buffer* mBoundVertexBuffers[NFE_RENDERER_MAX_VERTEX_BUFFERS];
+    const Buffer* mBoundVertexBuffers[NFE_RENDERER_MAX_VERTEX_BUFFERS];
     uint32 mNumBoundVertexBuffers;
 
     // is in reset state? (true after calling Reset(), false after calling Finish())
@@ -80,21 +72,21 @@ public:
     bool Init(ID3D12Device* device);
 
     /// Common methods
-    void Reset() override;
-    void* MapBuffer(IBuffer* buffer, MapType type) override;
-    void UnmapBuffer(IBuffer* buffer) override;
-    bool WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data) override;
-    void CopyTexture(ITexture* src, ITexture* dest) override;
-    std::unique_ptr<ICommandList> Finish() override;
+    bool Begin() override;
+    void* MapBuffer(const BufferPtr& buffer, MapType type) override;
+    void UnmapBuffer(const BufferPtr& buffer) override;
+    bool WriteBuffer(const BufferPtr& buffer, size_t offset, size_t size, const void* data) override;
+    void CopyTexture(const TexturePtr& src, const TexturePtr& dest) override;
+    CommandListID Finish() override;
 
     /// Compute pipeline methods
-    void SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets) override;
-    void SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format) override;
-    void BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance) override;
-    void BindVolatileCBuffer(size_t slot, IBuffer* buffer) override;
-    void SetRenderTarget(IRenderTarget* renderTarget) override;
-    void SetResourceBindingLayout(IResourceBindingLayout* layout) override;
-    void SetPipelineState(IPipelineState* state) override;
+    void SetVertexBuffers(int num, const BufferPtr* vertexBuffers, int* strides, int* offsets) override;
+    void SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFormat format) override;
+    void BindResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance) override;
+    void BindVolatileCBuffer(size_t slot, const BufferPtr& buffer) override;
+    void SetRenderTarget(const RenderTargetPtr& renderTarget) override;
+    void SetResourceBindingLayout(const ResourceBindingLayoutPtr& layout) override;
+    void SetPipelineState(const PipelineStatePtr& state) override;
     void SetStencilRef(unsigned char ref) override;
     void SetViewport(float left, float width, float top, float height,
                      float minDepth, float maxDepth) override;
@@ -107,10 +99,10 @@ public:
                      int vertexOffset, int instanceOffset) override;
 
     /// Compute pipeline methods
-    void BindComputeResources(size_t slot, IResourceBindingInstance* bindingSetInstance) override;
-    void BindComputeVolatileCBuffer(size_t slot, IBuffer* buffer) override;
-    void SetComputeResourceBindingLayout(IResourceBindingLayout* layout) override;
-    void SetComputePipelineState(IComputePipelineState* state) override;
+    void BindComputeResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance) override;
+    void BindComputeVolatileCBuffer(size_t slot, const BufferPtr& buffer) override;
+    void SetComputeResourceBindingLayout(const ResourceBindingLayoutPtr& layout) override;
+    void SetComputePipelineState(const ComputePipelineStatePtr& state) override;
     void Dispatch(uint32 x, uint32 y, uint32 z) override;
 
     /// Debugging

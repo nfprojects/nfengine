@@ -8,12 +8,12 @@ class ResourceBinding : public RendererTest
 
 TEST_F(ResourceBinding, BindingSet)
 {
-    std::unique_ptr<IResourceBindingSet> bindingSet;
+    ResourceBindingSetPtr bindingSet;
 
     // there is no point in creating empty binding set
     {
         ResourceBindingSetDesc bindingSetDesc(nullptr, 0, ShaderType::Vertex);
-        bindingSet.reset(gRendererDevice->CreateResourceBindingSet(bindingSetDesc));
+        bindingSet = gRendererDevice->CreateResourceBindingSet(bindingSetDesc);
         EXPECT_TRUE(bindingSet.get() == nullptr);
     }
 
@@ -21,7 +21,7 @@ TEST_F(ResourceBinding, BindingSet)
     {
         ResourceBindingDesc binding(ShaderResourceType::CBuffer, 0);
         ResourceBindingSetDesc bindingSetDesc(&binding, 1, ShaderType::Vertex);
-        bindingSet.reset(gRendererDevice->CreateResourceBindingSet(bindingSetDesc));
+        bindingSet = gRendererDevice->CreateResourceBindingSet(bindingSetDesc);
         EXPECT_TRUE(bindingSet.get() != nullptr);
     }
 
@@ -29,7 +29,7 @@ TEST_F(ResourceBinding, BindingSet)
     {
         ResourceBindingDesc binding(ShaderResourceType::Texture, 0);
         ResourceBindingSetDesc bindingSetDesc(&binding, 1, ShaderType::Vertex);
-        bindingSet.reset(gRendererDevice->CreateResourceBindingSet(bindingSetDesc));
+        bindingSet = gRendererDevice->CreateResourceBindingSet(bindingSetDesc);
         EXPECT_TRUE(bindingSet.get() != nullptr);
     }
 
@@ -39,7 +39,7 @@ TEST_F(ResourceBinding, BindingSet)
         bindings[0] = ResourceBindingDesc(ShaderResourceType::Texture, 123);
         bindings[1] = ResourceBindingDesc(ShaderResourceType::CBuffer, 321);
         ResourceBindingSetDesc bindingSetDesc(bindings, 2, ShaderType::Pixel);
-        bindingSet.reset(gRendererDevice->CreateResourceBindingSet(bindingSetDesc));
+        bindingSet = gRendererDevice->CreateResourceBindingSet(bindingSetDesc);
         EXPECT_TRUE(bindingSet.get() != nullptr);
     }
 
@@ -47,7 +47,7 @@ TEST_F(ResourceBinding, BindingSet)
     {
         ResourceBindingDesc binding(ShaderResourceType::Sampler, 0);
         ResourceBindingSetDesc bindingSetDesc(&binding, 1, ShaderType::Vertex);
-        bindingSet.reset(gRendererDevice->CreateResourceBindingSet(bindingSetDesc));
+        bindingSet = gRendererDevice->CreateResourceBindingSet(bindingSetDesc);
         EXPECT_TRUE(bindingSet.get() == nullptr);
     }
 
@@ -55,15 +55,15 @@ TEST_F(ResourceBinding, BindingSet)
     {
         ResourceBindingDesc binding(ShaderResourceType::Unknown, 0);
         ResourceBindingSetDesc bindingSetDesc(&binding, 1, ShaderType::Vertex);
-        bindingSet.reset(gRendererDevice->CreateResourceBindingSet(bindingSetDesc));
+        bindingSet = gRendererDevice->CreateResourceBindingSet(bindingSetDesc);
         EXPECT_TRUE(bindingSet.get() == nullptr);
     }
 }
 
 TEST_F(ResourceBinding, BindingLayout)
 {
-    std::unique_ptr<IResourceBindingSet> bindingSetA, bindingSetB, bindingSetC, bindingSetD;
-    std::unique_ptr<IResourceBindingLayout> bindingLayout;
+    ResourceBindingSetPtr bindingSetA, bindingSetB, bindingSetC, bindingSetD;
+    ResourceBindingLayoutPtr bindingLayout;
 
     // create binding sets
 
@@ -71,67 +71,67 @@ TEST_F(ResourceBinding, BindingLayout)
     ResourceBindingDesc cbufferBinding1(ShaderResourceType::CBuffer, 1);
 
     ResourceBindingSetDesc bindingSetDescA(&cbufferBinding0, 1, ShaderType::Vertex);
-    bindingSetA.reset(gRendererDevice->CreateResourceBindingSet(bindingSetDescA));
+    bindingSetA = gRendererDevice->CreateResourceBindingSet(bindingSetDescA);
     ASSERT_TRUE(bindingSetA.get() != nullptr);
 
     ResourceBindingSetDesc bindingSetDescB(&cbufferBinding0, 1, ShaderType::Pixel);
-    bindingSetB.reset(gRendererDevice->CreateResourceBindingSet(bindingSetDescB));
+    bindingSetB = gRendererDevice->CreateResourceBindingSet(bindingSetDescB);
     ASSERT_TRUE(bindingSetB.get() != nullptr);
 
     ResourceBindingSetDesc bindingSetDescC(&cbufferBinding0, 1, ShaderType::All);
-    bindingSetC.reset(gRendererDevice->CreateResourceBindingSet(bindingSetDescC));
+    bindingSetC = gRendererDevice->CreateResourceBindingSet(bindingSetDescC);
     ASSERT_TRUE(bindingSetC.get() != nullptr);
 
     ResourceBindingSetDesc bindingSetDescD(&cbufferBinding1, 1, ShaderType::Vertex);
-    bindingSetD.reset(gRendererDevice->CreateResourceBindingSet(bindingSetDescD));
+    bindingSetD = gRendererDevice->CreateResourceBindingSet(bindingSetDescD);
     ASSERT_TRUE(bindingSetD.get() != nullptr);
 
 
     // empty binding layout is OK
     {
         ResourceBindingLayoutDesc bindingLayoutDesc(nullptr, 0);
-        bindingLayout.reset(gRendererDevice->CreateResourceBindingLayout(bindingLayoutDesc));
+        bindingLayout = gRendererDevice->CreateResourceBindingLayout(bindingLayoutDesc);
         EXPECT_TRUE(bindingLayout.get() != nullptr);
     }
 
     // valid binding layout (independent cbuffers in VS and PS at slot 0)
     {
-        IResourceBindingSet* bindingSets[] = { bindingSetA.get(), bindingSetB.get() };
+        ResourceBindingSetPtr bindingSets[] = { bindingSetA, bindingSetB };
         ResourceBindingLayoutDesc bindingLayoutDesc(bindingSets, 2);
-        bindingLayout.reset(gRendererDevice->CreateResourceBindingLayout(bindingLayoutDesc));
+        bindingLayout = gRendererDevice->CreateResourceBindingLayout(bindingLayoutDesc);
         EXPECT_TRUE(bindingLayout.get() != nullptr);
     }
 
     // valid binding layout (independent cbuffers in VS at slots 0 and 1)
     {
-        IResourceBindingSet* bindingSets[] = { bindingSetA.get(), bindingSetD.get() };
+        ResourceBindingSetPtr bindingSets[] = { bindingSetA, bindingSetD };
         ResourceBindingLayoutDesc bindingLayoutDesc(bindingSets, 2);
-        bindingLayout.reset(gRendererDevice->CreateResourceBindingLayout(bindingLayoutDesc));
+        bindingLayout = gRendererDevice->CreateResourceBindingLayout(bindingLayoutDesc);
         EXPECT_TRUE(bindingLayout.get() != nullptr);
     }
 
     // invalid binding layout reuse of the same binding
     {
-        IResourceBindingSet* bindingSets[] = { bindingSetA.get(), bindingSetA.get() };
+        ResourceBindingSetPtr bindingSets[] = { bindingSetA, bindingSetA };
         ResourceBindingLayoutDesc bindingLayoutDesc(bindingSets, 2);
-        bindingLayout.reset(gRendererDevice->CreateResourceBindingLayout(bindingLayoutDesc));
+        bindingLayout = gRendererDevice->CreateResourceBindingLayout(bindingLayoutDesc);
         EXPECT_TRUE(bindingLayout.get() == nullptr);
     }
 
     // invalid binding layout - overlapping binding (cbuffer at slot 0)
     {
-        IResourceBindingSet* bindingSets[] = { bindingSetA.get(), bindingSetC.get() };
+        ResourceBindingSetPtr bindingSets[] = { bindingSetA, bindingSetC };
         ResourceBindingLayoutDesc bindingLayoutDesc(bindingSets, 2);
-        bindingLayout.reset(gRendererDevice->CreateResourceBindingLayout(bindingLayoutDesc));
+        bindingLayout = gRendererDevice->CreateResourceBindingLayout(bindingLayoutDesc);
         EXPECT_TRUE(bindingLayout.get() == nullptr);
     }
 
     // invalid binding layout - overlapping binding (cbuffer at slot 0)
     // (same as above, but different order)
     {
-        IResourceBindingSet* bindingSets[] = { bindingSetC.get(), bindingSetA.get() };
+        ResourceBindingSetPtr bindingSets[] = { bindingSetC, bindingSetA };
         ResourceBindingLayoutDesc bindingLayoutDesc(bindingSets, 2);
-        bindingLayout.reset(gRendererDevice->CreateResourceBindingLayout(bindingLayoutDesc));
+        bindingLayout = gRendererDevice->CreateResourceBindingLayout(bindingLayoutDesc);
         EXPECT_TRUE(bindingLayout.get() == nullptr);
     }
 }

@@ -13,7 +13,7 @@ TEST_F(BufferTest, BufferCreation)
 {
     const size_t testBufferSize = 64;
     const char data[] = { 0 };
-    std::unique_ptr<IBuffer> buffer;
+    BufferPtr buffer;
 
     const BufferType bufferTypes[] =
     {
@@ -52,7 +52,7 @@ TEST_F(BufferTest, BufferCreation)
         // zero-sized buffer
         bufferDesc = defBufferDesc;
         bufferDesc.size = 0;
-        buffer.reset(gRendererDevice->CreateBuffer(bufferDesc));
+        buffer = gRendererDevice->CreateBuffer(bufferDesc);
         EXPECT_EQ(nullptr, buffer.get());
 
         if (defBufferDesc.type == BufferType::Constant)
@@ -60,40 +60,40 @@ TEST_F(BufferTest, BufferCreation)
             // constant buffer too big buffer
             bufferDesc = defBufferDesc;
             bufferDesc.size = 1024 * 1024 * 1024;
-            buffer.reset(gRendererDevice->CreateBuffer(bufferDesc));
+            buffer = gRendererDevice->CreateBuffer(bufferDesc);
             EXPECT_EQ(nullptr, buffer.get());
         }
 
         // buffers can not be CPU readable
         bufferDesc = defBufferDesc;
         bufferDesc.mode = BufferMode::Readback;
-        buffer.reset(gRendererDevice->CreateBuffer(bufferDesc));
+        buffer = gRendererDevice->CreateBuffer(bufferDesc);
         EXPECT_EQ(nullptr, buffer.get());
 
         // static buffers must have defined content upon creation
         bufferDesc = defBufferDesc;
         bufferDesc.mode = BufferMode::Static;
         bufferDesc.initialData = nullptr;
-        buffer.reset(gRendererDevice->CreateBuffer(bufferDesc));
+        buffer = gRendererDevice->CreateBuffer(bufferDesc);
 
         EXPECT_EQ(nullptr, buffer.get());
 
         // valid dynamic buffer
         bufferDesc = defBufferDesc;
         bufferDesc.initialData = data;
-        buffer.reset(gRendererDevice->CreateBuffer(bufferDesc));
+        buffer = gRendererDevice->CreateBuffer(bufferDesc);
         EXPECT_NE(nullptr, buffer.get());
 
         // valid dynamic buffer
         bufferDesc = defBufferDesc;
-        buffer.reset(gRendererDevice->CreateBuffer(bufferDesc));
+        buffer = gRendererDevice->CreateBuffer(bufferDesc);
         EXPECT_NE(nullptr, buffer.get());
 
         // valid static buffer
         bufferDesc = defBufferDesc;
         bufferDesc.mode = BufferMode::Static;
         bufferDesc.initialData = data;
-        buffer.reset(gRendererDevice->CreateBuffer(bufferDesc));
+        buffer = gRendererDevice->CreateBuffer(bufferDesc);
         EXPECT_NE(nullptr, buffer.get());
     }
 }

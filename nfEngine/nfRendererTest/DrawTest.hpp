@@ -10,21 +10,21 @@ class DrawTest : public RendererTest
     // texture used as render target
     struct TargetTexture
     {
-        std::unique_ptr<ITexture>   texture;            // render target texture
-        std::unique_ptr<ITexture>   readbackTexture;    // texture used for GPU -> CPU data transfer
-        std::unique_ptr<char[]>     pixelData;
-        size_t                      textureSize;
-        ElementFormat               format;
+        TexturePtr texture;            // render target texture
+        TexturePtr readbackTexture;    // texture used for GPU -> CPU data transfer
+        std::unique_ptr<char[]> pixelData;
+        size_t textureSize;
+        ElementFormat format;
     };
 
-    std::unique_ptr<IRenderTarget> mTestRenderTarget;
+    RenderTargetPtr mTestRenderTarget;
     std::vector<TargetTexture> mTargetTextures;
 
     uint32 mTestTextureWidth;
     uint32 mTestTextureHeight;
 
 protected:
-    std::unique_ptr<ICommandRecorder> mCommandBuffer;
+    CommandRecorderPtr mCommandBuffer;
 
     /**
      * Start rendering into test render target texture.

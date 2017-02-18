@@ -30,13 +30,19 @@ public:
     bool Init(const ResourceBindingSetDesc& desc) override;
 };
 
+using InternalResourceBindingSetPtr = std::shared_ptr<ResourceBindingSet>;
+
+
+//////////////////////////////////////////////////////////////////////////
+
+
 class ResourceBindingLayout : public IResourceBindingLayout
 {
     friend class CommandRecorder;
     friend class PipelineState;
 
     D3DPtr<ID3D12RootSignature> mRootSignature;
-    std::vector<ResourceBindingSet*> mBindingSets;
+    std::vector<InternalResourceBindingSetPtr> mBindingSets;
     std::vector<VolatileCBufferBinding> mDynamicBuffers;
 
 public:
@@ -48,21 +54,28 @@ public:
     }
 };
 
+using InternalResourceBindingLayoutPtr = std::shared_ptr<ResourceBindingLayout>;
+
+
+//////////////////////////////////////////////////////////////////////////
+
+
 class ResourceBindingInstance : public IResourceBindingInstance
 {
     friend class CommandRecorder;
 
-    ResourceBindingSet* mSet;
+    InternalResourceBindingSetPtr mSet;
     uint32 mDescriptorHeapOffset;
 
 public:
     ResourceBindingInstance() : mDescriptorHeapOffset(0), mSet(nullptr) { }
     ~ResourceBindingInstance();
-    bool Init(IResourceBindingSet* bindingSet) override;
-    bool WriteTextureView(size_t slot, ITexture* texture) override;
-    bool WriteCBufferView(size_t slot, IBuffer* buffer) override;
-    bool WriteWritableTextureView(size_t slot, ITexture* texture) override;
+    bool Init(const ResourceBindingSetPtr& bindingSet) override;
+    bool WriteTextureView(size_t slot, const TexturePtr& texture) override;
+    bool WriteCBufferView(size_t slot, const BufferPtr& buffer) override;
+    bool WriteWritableTextureView(size_t slot, const TexturePtr& texture) override;
 };
+
 
 } // namespace Renderer
 } // namespace NFE

@@ -71,20 +71,20 @@ private:
     ElementFormat mBackbufferFormat;
 
     // default sampler for 3D rendering
-    std::unique_ptr<ISampler> mDefaultSampler;
+    SamplerPtr mDefaultSampler;
 
     // default (empty) textures for G-Buffer Renderer
-    std::unique_ptr<ITexture> mDefaultDiffuseTexture;
-    std::unique_ptr<ITexture> mDefaultNormalTexture;
-    std::unique_ptr<ITexture> mDefaultSpecularTexture;
+    TexturePtr mDefaultDiffuseTexture;
+    TexturePtr mDefaultNormalTexture;
+    TexturePtr mDefaultSpecularTexture;
 
     /// TODO: make sure there is no false sharing problem here
     std::unique_ptr<RenderContext[]> mDeferredContexts;
 
-    std::vector<std::unique_ptr<ICommandList>> mGeometryCLs;
-    std::vector<std::unique_ptr<ICommandList>> mShadowsCLs;
-    std::vector<std::unique_ptr<ICommandList>> mLightsCLs;
-    std::vector<std::unique_ptr<ICommandList>> mDebugCLs;
+    std::vector<CommandListID> mGeometryCLs;
+    std::vector<CommandListID> mShadowsCLs;
+    std::vector<CommandListID> mLightsCLs;
+    std::vector<CommandListID> mDebugCLs;
 
     RendererConfig mConfig;
 
@@ -144,24 +144,24 @@ public:
     /**
      * Get default sampler for 3D meshes rendering.
      */
-    NFE_INLINE ISampler* GetDefaultSampler() const
+    NFE_INLINE const SamplerPtr& GetDefaultSampler() const
     {
-        return mDefaultSampler.get();
+        return mDefaultSampler;
     }
 
-    NFE_INLINE ITexture* GetDefaultDiffuseTexture() const
+    NFE_INLINE const TexturePtr& GetDefaultDiffuseTexture() const
     {
-        return mDefaultDiffuseTexture.get();
+        return mDefaultDiffuseTexture;
     }
 
-    NFE_INLINE ITexture* GetDefaultNormalTexture() const
+    NFE_INLINE const TexturePtr& GetDefaultNormalTexture() const
     {
-        return mDefaultNormalTexture.get();
+        return mDefaultNormalTexture;
     }
 
-    NFE_INLINE ITexture* GetDefaultSpecularTexture() const
+    NFE_INLINE const TexturePtr& GetDefaultSpecularTexture() const
     {
-        return mDefaultSpecularTexture.get();
+        return mDefaultSpecularTexture;
     }
 
     NFE_INLINE Math::Vector GammaFix(const Math::Vector& color) const

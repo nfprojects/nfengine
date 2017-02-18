@@ -44,18 +44,18 @@ bool BasicScene::CreateShaders(bool useCBuffer, bool useTexture, BufferMode cbuf
 
     ShaderMacro vsMacro[] = { { "USE_CBUFFER", useCBuffer ? "1" : "0" } };
     std::string vsPath = gShaderPathPrefix + "TestVS" + gShaderPathExt;
-    mVertexShader.reset(CompileShader(vsPath.c_str(), ShaderType::Vertex, vsMacro, 1));
+    mVertexShader = CompileShader(vsPath.c_str(), ShaderType::Vertex, vsMacro, 1);
     if (!mVertexShader)
         return false;
 
     ShaderMacro psMacro[] = { { "USE_TEXTURE", useTexture ? "1" : "0" } };
     std::string psPath = gShaderPathPrefix + "TestPS" + gShaderPathExt;
-    mPixelShader.reset(CompileShader(psPath.c_str(), ShaderType::Pixel, psMacro, 1));
+    mPixelShader = CompileShader(psPath.c_str(), ShaderType::Pixel, psMacro, 1);
     if (!mPixelShader)
         return false;
 
     int numBindingSets = 0;
-    IResourceBindingSet* bindingSets[2];
+    ResourceBindingSetPtr bindingSets[2];
 
     // create binding set
     if (useCBuffer)
@@ -73,28 +73,26 @@ bool BasicScene::CreateShaders(bool useCBuffer, bool useTexture, BufferMode cbuf
             // create binding set for pixel shader bindings
             ResourceBindingDesc pixelShaderBinding(ShaderResourceType::Texture,
                                                    mTextureSlot,
-                                                   mSampler.get());
-            mPSBindingSet.reset(mRendererDevice->CreateResourceBindingSet(
-                ResourceBindingSetDesc(&pixelShaderBinding, 1, ShaderType::Pixel)));
+                                                   mSampler);
+            mPSBindingSet = mRendererDevice->CreateResourceBindingSet(ResourceBindingSetDesc(&pixelShaderBinding, 1, ShaderType::Pixel));
             if (!mPSBindingSet)
                 return false;
 
             mPSBindingSlot = numBindingSets++;
-            bindingSets[mPSBindingSlot] = mPSBindingSet.get();
+            bindingSets[mPSBindingSlot] = mPSBindingSet;
         }
 
         if (cbufferMode == BufferMode::Static || cbufferMode == BufferMode::Dynamic)
         {
             ResourceBindingDesc vertexShaderBinding(ShaderResourceType::CBuffer,
                                                     mCBufferSlot,
-                                                    mSampler.get());
-            mVSBindingSet.reset(mRendererDevice->CreateResourceBindingSet(
-                ResourceBindingSetDesc(&vertexShaderBinding, 1, ShaderType::Vertex)));
+                                                    mSampler);
+            mVSBindingSet = mRendererDevice->CreateResourceBindingSet(ResourceBindingSetDesc(&vertexShaderBinding, 1, ShaderType::Vertex));
             if (!mVSBindingSet)
                 return false;
 
             mVSBindingSlot = numBindingSets++;
-            bindingSets[mVSBindingSlot] = mVSBindingSet.get();
+            bindingSets[mVSBindingSlot] = mVSBindingSet;
         }
     }
 
@@ -104,9 +102,8 @@ bool BasicScene::CreateShaders(bool useCBuffer, bool useTexture, BufferMode cbuf
                                                   mCBufferSlot);
 
     // create binding layout
-    mResBindingLayout.reset(mRendererDevice->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(bindingSets, numBindingSets,
-                                  &volatileCBufferBinding, useVolatileCBufferBinding ? 1 : 0)));
+    mResBindingLayout = mRendererDevice->CreateResourceBindingLayout(
+        ResourceBindingLayoutDesc(bindingSets, numBindingSets, &volatileCBufferBinding, useVolatileCBufferBinding ? 1 : 0));
     if (!mResBindingLayout)
         return false;
 
@@ -149,7 +146,7 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
     vbDesc.mode = BufferMode::Static;
     vbDesc.size = withExtraVert ? sizeof(vbDataExtra) : sizeof(vbData);
     vbDesc.initialData = withExtraVert ? vbDataExtra : vbData;
-    mVertexBuffer.reset(mRendererDevice->CreateBuffer(vbDesc));
+    mVertexBuffer = mRendererDevice->CreateBuffer(vbDesc);
     if (!mVertexBuffer)
         return false;
 
@@ -163,20 +160,20 @@ bool BasicScene::CreateVertexBuffer(bool withExtraVert)
     VertexLayoutDesc vertexLayoutDesc;
     vertexLayoutDesc.elements = vertexLayoutElements;
     vertexLayoutDesc.numElements = 3;
-    mVertexLayout.reset(mRendererDevice->CreateVertexLayout(vertexLayoutDesc));
+    mVertexLayout = mRendererDevice->CreateVertexLayout(vertexLayoutDesc);
     if (!mVertexLayout)
         return false;
 
     PipelineStateDesc pipelineStateDesc;
     pipelineStateDesc.rtFormats[0] = mBackbufferFormat;
-    pipelineStateDesc.vertexShader = mVertexShader.get();
-    pipelineStateDesc.pixelShader = mPixelShader.get();
+    pipelineStateDesc.vertexShader = mVertexShader;
+    pipelineStateDesc.pixelShader = mPixelShader;
     pipelineStateDesc.blendState.independent = false;
     pipelineStateDesc.blendState.rtDescs[0].enable = true;
     pipelineStateDesc.primitiveType = PrimitiveType::Triangles;
-    pipelineStateDesc.vertexLayout = mVertexLayout.get();
-    pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
-    mPipelineState.reset(mRendererDevice->CreatePipelineState(pipelineStateDesc));
+    pipelineStateDesc.vertexLayout = mVertexLayout;
+    pipelineStateDesc.resBindingLayout = mResBindingLayout;
+    mPipelineState = mRendererDevice->CreatePipelineState(pipelineStateDesc);
     if (!mPipelineState)
         return false;
 
@@ -198,7 +195,7 @@ bool BasicScene::CreateIndexBuffer()
     ibDesc.mode = BufferMode::Static;
     ibDesc.size = sizeof(ibData);
     ibDesc.initialData = ibData;
-    mIndexBuffer.reset(mRendererDevice->CreateBuffer(ibDesc));
+    mIndexBuffer = mRendererDevice->CreateBuffer(ibDesc);
     if (!mIndexBuffer)
         return false;
 
@@ -221,17 +218,17 @@ bool BasicScene::CreateConstantBuffer(BufferMode cbufferMode)
         cbufferDesc.initialData = &rotMatrix;
     }
 
-    mConstantBuffer.reset(mRendererDevice->CreateBuffer(cbufferDesc));
+    mConstantBuffer = mRendererDevice->CreateBuffer(cbufferDesc);
     if (!mConstantBuffer)
         return false;
 
     if (cbufferMode == BufferMode::Static || cbufferMode == BufferMode::Dynamic)
     {
         // create and fill binding set instance
-        mVSBindingInstance.reset(mRendererDevice->CreateResourceBindingInstance(mVSBindingSet.get()));
+        mVSBindingInstance = mRendererDevice->CreateResourceBindingInstance(mVSBindingSet);
         if (!mVSBindingInstance)
             return false;
-        if (!mVSBindingInstance->WriteCBufferView(0, mConstantBuffer.get()))
+        if (!mVSBindingInstance->WriteCBufferView(0, mConstantBuffer))
             return false;
     }
 
@@ -254,15 +251,15 @@ bool BasicScene::CreateTexture()
     textureDesc.mipmaps = 1;
     textureDesc.dataDesc = &textureDataDesc;
     textureDesc.layers = 1;
-    mTexture.reset(mRendererDevice->CreateTexture(textureDesc));
+    mTexture = mRendererDevice->CreateTexture(textureDesc);
     if (!mTexture)
         return false;
 
     // create and fill binding set instance
-    mPSBindingInstance.reset(mRendererDevice->CreateResourceBindingInstance(mPSBindingSet.get()));
+    mPSBindingInstance = mRendererDevice->CreateResourceBindingInstance(mPSBindingSet);
     if (!mPSBindingInstance)
         return false;
-    if (!mPSBindingInstance->WriteTextureView(0, mTexture.get()))
+    if (!mPSBindingInstance->WriteTextureView(0, mTexture))
         return false;
 
     return true;
@@ -271,7 +268,7 @@ bool BasicScene::CreateTexture()
 bool BasicScene::CreateSampler()
 {
     SamplerDesc samplerDesc;
-    mSampler.reset(mRendererDevice->CreateSampler(samplerDesc));
+    mSampler = mRendererDevice->CreateSampler(samplerDesc);
     return mSampler != nullptr;
 }
 
@@ -423,17 +420,17 @@ bool BasicScene::OnInit(void* winHandle)
     bbDesc.format = mBackbufferFormat;
     bbDesc.windowHandle = winHandle;
     bbDesc.vSync = false;
-    mWindowBackbuffer.reset(mRendererDevice->CreateBackbuffer(bbDesc));
+    mWindowBackbuffer = mRendererDevice->CreateBackbuffer(bbDesc);
     if (!mWindowBackbuffer)
         return false;
 
     // create rendertarget that will render to the window's backbuffer
     RenderTargetElement rtTarget;
-    rtTarget.texture = mWindowBackbuffer.get();
+    rtTarget.texture = mWindowBackbuffer;
     RenderTargetDesc rtDesc;
     rtDesc.numTargets = 1;
     rtDesc.targets = &rtTarget;
-    mWindowRenderTarget.reset(mRendererDevice->CreateRenderTarget(rtDesc));
+    mWindowRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
     if (!mWindowRenderTarget)
         return false;
 
@@ -443,38 +440,38 @@ bool BasicScene::OnInit(void* winHandle)
 void BasicScene::Draw(float dt)
 {
     // reset bound resources and set them once again
-    mCommandBuffer->Reset();
+    mCommandBuffer->Begin();
     mCommandBuffer->SetViewport(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT, 0.0f, 1.0f);
     mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-    mCommandBuffer->SetRenderTarget(mWindowRenderTarget.get());
+    mCommandBuffer->SetRenderTarget(mWindowRenderTarget);
 
     int stride = 9 * sizeof(float);
     int offset = 0;
     if (mIndexBuffer)
-        mCommandBuffer->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
+        mCommandBuffer->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
 
     if (mVertexBuffer)
     {
-        IBuffer* vb = mVertexBuffer.get();
+        const BufferPtr& vb = mVertexBuffer;
         mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
     }
 
     if (mResBindingLayout)
-        mCommandBuffer->SetResourceBindingLayout(mResBindingLayout.get());
+        mCommandBuffer->SetResourceBindingLayout(mResBindingLayout);
 
     if (mTexture)
-        mCommandBuffer->BindResources(mPSBindingSlot, mPSBindingInstance.get());
+        mCommandBuffer->BindResources(mPSBindingSlot, mPSBindingInstance);
 
     if (mConstantBuffer)
     {
         if (mCBufferMode == BufferMode::Static || mCBufferMode == BufferMode::Dynamic)
-            mCommandBuffer->BindResources(mVSBindingSlot, mVSBindingInstance.get());
+            mCommandBuffer->BindResources(mVSBindingSlot, mVSBindingInstance);
         else if (mCBufferMode == BufferMode::Volatile)
-            mCommandBuffer->BindVolatileCBuffer(0, mConstantBuffer.get());
+            mCommandBuffer->BindVolatileCBuffer(0, mConstantBuffer);
     }
 
     if (mPipelineState)
-        mCommandBuffer->SetPipelineState(mPipelineState.get());
+        mCommandBuffer->SetPipelineState(mPipelineState);
 
     // apply rotation
     mAngle += 2.0f * dt;
@@ -502,8 +499,7 @@ void BasicScene::Draw(float dt)
 
                 VertexCBuffer vertexCBufferData;
                 vertexCBufferData.viewMatrix = scaleMatrix * rotMatrix * translationMatrix;
-                mCommandBuffer->WriteBuffer(mConstantBuffer.get(), 0, sizeof(VertexCBuffer),
-                                            &vertexCBufferData);
+                mCommandBuffer->WriteBuffer(mConstantBuffer, 0, sizeof(VertexCBuffer), &vertexCBufferData);
             }
 
             // draw
@@ -514,8 +510,10 @@ void BasicScene::Draw(float dt)
         }
     }
 
-    mRendererDevice->Execute(mCommandBuffer->Finish().get());
+    CommandListID commandList = mCommandBuffer->Finish();
+    mRendererDevice->Execute(commandList);
     mWindowBackbuffer->Present();
+    mRendererDevice->FinishFrame();
 }
 
 void BasicScene::Release()

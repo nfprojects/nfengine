@@ -31,15 +31,16 @@ namespace Renderer {
 namespace {
 
 template<typename Type, typename Desc>
-Type* CreateGenericResource(const Desc& desc)
+std::shared_ptr<Type> CreateGenericResource(const Desc& desc)
 {
-    Type* resource = new (std::nothrow) Type;
-    if (resource == nullptr)
+    std::shared_ptr<Type> resource = std::make_unique<Type>();
+    if (!resource)
+    {
         return nullptr;
+    }
 
     if (!resource->Init(desc))
     {
-        delete resource;
         return nullptr;
     }
 
@@ -192,67 +193,67 @@ ID3D11Device* Device::Get() const
     return mDevice.get();
 }
 
-IVertexLayout* Device::CreateVertexLayout(const VertexLayoutDesc& desc)
+VertexLayoutPtr Device::CreateVertexLayout(const VertexLayoutDesc& desc)
 {
     return CreateGenericResource<VertexLayout, VertexLayoutDesc>(desc);
 }
 
-IBuffer* Device::CreateBuffer(const BufferDesc& desc)
+BufferPtr Device::CreateBuffer(const BufferDesc& desc)
 {
     return CreateGenericResource<Buffer, BufferDesc>(desc);
 }
 
-ITexture* Device::CreateTexture(const TextureDesc& desc)
+TexturePtr Device::CreateTexture(const TextureDesc& desc)
 {
     return CreateGenericResource<Texture, TextureDesc>(desc);
 }
 
-IBackbuffer* Device::CreateBackbuffer(const BackbufferDesc& desc)
+BackbufferPtr Device::CreateBackbuffer(const BackbufferDesc& desc)
 {
     return CreateGenericResource<Backbuffer, BackbufferDesc>(desc);
 }
 
-IRenderTarget* Device::CreateRenderTarget(const RenderTargetDesc& desc)
+RenderTargetPtr Device::CreateRenderTarget(const RenderTargetDesc& desc)
 {
     return CreateGenericResource<RenderTarget, RenderTargetDesc>(desc);
 }
 
-IPipelineState* Device::CreatePipelineState(const PipelineStateDesc& desc)
+PipelineStatePtr Device::CreatePipelineState(const PipelineStateDesc& desc)
 {
     return CreateGenericResource<PipelineState, PipelineStateDesc>(desc);
 }
 
-IComputePipelineState* Device::CreateComputePipelineState(const ComputePipelineStateDesc& desc)
+ComputePipelineStatePtr Device::CreateComputePipelineState(const ComputePipelineStateDesc& desc)
 {
     return CreateGenericResource<ComputePipelineState, ComputePipelineStateDesc>(desc);
 }
 
-ISampler* Device::CreateSampler(const SamplerDesc& desc)
+SamplerPtr Device::CreateSampler(const SamplerDesc& desc)
 {
     return CreateGenericResource<Sampler, SamplerDesc>(desc);
 }
 
-IShader* Device::CreateShader(const ShaderDesc& desc)
+ShaderPtr Device::CreateShader(const ShaderDesc& desc)
 {
     return CreateGenericResource<Shader, ShaderDesc>(desc);
 }
 
-IResourceBindingSet* Device::CreateResourceBindingSet(const ResourceBindingSetDesc& desc)
+ResourceBindingSetPtr Device::CreateResourceBindingSet(const ResourceBindingSetDesc& desc)
 {
     return CreateGenericResource<ResourceBindingSet, ResourceBindingSetDesc>(desc);
 }
 
-IResourceBindingLayout* Device::CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc)
+ResourceBindingLayoutPtr Device::CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc)
 {
     return CreateGenericResource<ResourceBindingLayout, ResourceBindingLayoutDesc>(desc);
 }
 
-IResourceBindingInstance* Device::CreateResourceBindingInstance(IResourceBindingSet* set)
+ResourceBindingInstancePtr Device::CreateResourceBindingInstance(const ResourceBindingSetPtr& set)
 {
-    return CreateGenericResource<ResourceBindingInstance, IResourceBindingSet*>(set);
+    return CreateGenericResource<ResourceBindingInstance, ResourceBindingSetPtr>(set);
 }
 
-ICommandRecorder* Device::CreateCommandRecorder()
+CommandRecorderPtr Device::CreateCommandRecorder()
 {
     HRESULT hr;
     ID3D11DeviceContext* context;
@@ -260,7 +261,7 @@ ICommandRecorder* Device::CreateCommandRecorder()
     if (FAILED(hr))
         return nullptr;
 
-    CommandRecorder* commandRecorder = new (std::nothrow) CommandRecorder(context);
+    CommandRecorderPtr commandRecorder = std::make_unique<CommandRecorder>(context);
     if (!commandRecorder)
     {
         D3D_SAFE_RELEASE(context);
@@ -271,26 +272,88 @@ ICommandRecorder* Device::CreateCommandRecorder()
     return commandRecorder;
 }
 
-
-bool Device::Execute(ICommandList* commandList)
+CommandListID Device::RegisterCommandList(ID3D11CommandList* commandList)
 {
-    CommandList* list = dynamic_cast<CommandList*>(commandList);
-    if (!list || !list->mD3DList)
-        return false;
+    CommandListID id = 0;
+    {
+        std::unique_lock<std::mutex> lock(mCommandListsMutex);
+        mCommandLists.push_back(commandList);
+        id = static_cast<CommandListID>(mCommandLists.size());
+    }
 
-    mImmediateContext->ExecuteCommandList(list->mD3DList.get(), FALSE);
+    return id;
+}
+
+bool Device::Execute(CommandListID id)
+{
+    if (id == 0)
+    {
+        LOG_ERROR("Invalid command list");
+        return false;
+    }
+
+    ID3D11CommandList* list = nullptr;
+    {
+        std::unique_lock<std::mutex> lock(mCommandListsMutex);
+        if (id > mCommandLists.size())
+        {
+            LOG_ERROR("Invalid command list ID");
+            return false;
+        }
+
+        list = mCommandLists[id - 1];
+        if (!list)
+        {
+            LOG_ERROR("Invalid command list ID - already executed?");
+            return false;
+        }
+
+        // mark as used
+        mCommandLists[id - 1] = nullptr;
+    }
+
+    mImmediateContext->ExecuteCommandList(list, FALSE);
+    D3D_SAFE_RELEASE(list);
+    return true;
+}
+
+bool Device::FinishFrame()
+{
+    uint32 danglingLists = 0;
+
+    {
+        std::unique_lock<std::mutex> lock(mCommandListsMutex);
+
+        // cleanup command list array
+        for (ID3D11CommandList* commandList : mCommandLists)
+        {
+            if (commandList)
+            {
+                danglingLists++;
+                D3D_SAFE_RELEASE(commandList);
+            }
+        }
+
+        mCommandLists.clear();
+    }
+
+    if (danglingLists > 0)
+    {
+        LOG_WARNING("There are %u recorded but unused command lists in this frame", danglingLists);
+    }
+
     return true;
 }
 
 bool Device::WaitForGPU()
 {
-    // not required
+    // not required in D3D11
     return true;
 }
 
-bool Device::DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data)
+bool Device::DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data)
 {
-    Buffer* buf = dynamic_cast<Buffer*>(buffer);
+    const Buffer* buf = dynamic_cast<Buffer*>(buffer.get());
     if (!buf)
         return false;
 
@@ -305,9 +368,9 @@ bool Device::DownloadBuffer(IBuffer* buffer, size_t offset, size_t size, void* d
     return true;
 }
 
-bool Device::DownloadTexture(ITexture* tex, void* data, int mipmap, int layer)
+bool Device::DownloadTexture(const TexturePtr& tex, void* data, int mipmap, int layer)
 {
-    Texture* texture = dynamic_cast<Texture*>(tex);
+    const Texture* texture = dynamic_cast<Texture*>(tex.get());
     if (!texture)
     {
         LOG_ERROR("Invalid 'tex' pointer");

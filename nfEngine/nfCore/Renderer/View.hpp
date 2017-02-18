@@ -37,18 +37,18 @@ class CORE_API View : public Utils::SimpleInputListener
     Resource::Texture* mTexture;
 
     // not NULL when rendering to a window
-    std::unique_ptr<IBackbuffer> mWindowBackbuffer;
+    BackbufferPtr mWindowBackbuffer;
     Common::Window* mWindow;
 
     /// TODO: depth buffers, g-buffers and rendertargets should be managed
     /// by the HighLevelRenderer. For example, multiple views can have the same dimensions,
     /// so keeping separate copies will be a waste of RAM.
     std::unique_ptr<GeometryBuffer> mGBuffer;
-    std::unique_ptr<IRenderTarget> mRenderTarget;
+    RenderTargetPtr mRenderTarget;
 
-    std::unique_ptr<ITexture> mTemporaryBuffer;
-    std::unique_ptr<IResourceBindingInstance> mTemporaryBufferPostprocessBinding;
-    std::unique_ptr<IRenderTarget> mTemporaryRenderTarget;  // before postprocess
+    TexturePtr mTemporaryBuffer;
+    ResourceBindingInstancePtr mTemporaryBufferPostprocessBinding;
+    RenderTargetPtr mTemporaryRenderTarget;  // before postprocess
 
     Scene::SceneManager* mScene;
     Scene::EntityID mCameraEntity;
@@ -59,7 +59,7 @@ class CORE_API View : public Utils::SimpleInputListener
     std::vector<Utils::SimpleInputListener*> mInputListeners;
 
     bool InitTemporaryRenderTarget(uint32 width, uint32 height);
-    bool InitRenderTarget(ITexture* texture, uint32 width, uint32 height);
+    bool InitRenderTarget(const TexturePtr& texture, uint32 width, uint32 height);
     static void OnWindowResize(void* userData);
 
 public:
@@ -110,15 +110,15 @@ public:
      *                         rendering after post-process pass. For example: debug info, GUI.
      * @return Render target interface pointer
      */
-    NFE_INLINE IRenderTarget* GetRenderTarget(bool afterPostProcess = false) const
+    NFE_INLINE const RenderTargetPtr& GetRenderTarget(bool afterPostProcess = false) const
     {
         if (afterPostProcess)
-            return mRenderTarget.get();
+            return mRenderTarget;
 
         if (postProcessParams.enabled && mTemporaryRenderTarget)
-            return mTemporaryRenderTarget.get();
+            return mTemporaryRenderTarget;
 
-        return mRenderTarget.get();
+        return mRenderTarget;
     }
 
     NFE_INLINE GeometryBuffer* GetGeometryBuffer() const

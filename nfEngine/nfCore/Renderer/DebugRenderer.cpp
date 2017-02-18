@@ -82,7 +82,7 @@ DebugRenderer::DebugRenderer()
     vertexLayoutDesc.elements = vertexLayoutElements;
     vertexLayoutDesc.numElements = 3;
     vertexLayoutDesc.debugName = "DebugRenderer::mVertexLayout";
-    mVertexLayout.reset(device->CreateVertexLayout(vertexLayoutDesc));
+    mVertexLayout = device->CreateVertexLayout(vertexLayoutDesc);
 
     /// create vertex layout for meshes
     VertexLayoutElement meshVertexLayoutElements[] =
@@ -96,39 +96,39 @@ DebugRenderer::DebugRenderer()
     meshVertexLayoutDesc.elements = meshVertexLayoutElements;
     meshVertexLayoutDesc.numElements = 4;
     meshVertexLayoutDesc.debugName = "DebugRenderer::mMeshVertexLayout";
-    mMeshVertexLayout.reset(device->CreateVertexLayout(meshVertexLayoutDesc));
+    mMeshVertexLayout = device->CreateVertexLayout(meshVertexLayoutDesc);
 
     /// create constant buffer
     bufferDesc.mode = BufferMode::Dynamic;
     bufferDesc.size = sizeof(DebugCBuffer);
     bufferDesc.type = BufferType::Constant;
     bufferDesc.debugName = "DebugRenderer::mConstantBuffer";
-    mConstantBuffer.reset(device->CreateBuffer(bufferDesc));
+    mConstantBuffer = device->CreateBuffer(bufferDesc);
 
     bufferDesc.mode = BufferMode::Volatile;
     bufferDesc.size = sizeof(DebugPerMeshCBuffer);
     bufferDesc.type = BufferType::Constant;
     bufferDesc.debugName = "DebugRenderer::mPerMeshConstantBuffer";
-    mPerMeshConstantBuffer.reset(device->CreateBuffer(bufferDesc));
+    mPerMeshConstantBuffer = device->CreateBuffer(bufferDesc);
 
     /// create vertex buffer
     bufferDesc.mode = BufferMode::Dynamic;
     bufferDesc.size = DebugRendererContext::gVertexBufferSize * sizeof(DebugVertex);
     bufferDesc.type = BufferType::Vertex;
     bufferDesc.debugName = "DebugRenderer::mVertexBuffer";
-    mVertexBuffer.reset(device->CreateBuffer(bufferDesc));
+    mVertexBuffer = device->CreateBuffer(bufferDesc);
 
     /// create index buffer
     bufferDesc.mode = BufferMode::Dynamic;
     bufferDesc.size = DebugRendererContext::gIndexBufferSize * sizeof(DebugIndexType);
     bufferDesc.type = BufferType::Index;
     bufferDesc.debugName = "DebugRenderer::mIndexBuffer";
-    mIndexBuffer.reset(device->CreateBuffer(bufferDesc));
+    mIndexBuffer = device->CreateBuffer(bufferDesc);
 
     PipelineStateDesc pipelineStateDesc;
-    pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
+    pipelineStateDesc.resBindingLayout = mResBindingLayout;
     pipelineStateDesc.primitiveType = PrimitiveType::Lines;
-    pipelineStateDesc.vertexLayout = mVertexLayout.get();
+    pipelineStateDesc.vertexLayout = mVertexLayout;
     pipelineStateDesc.raterizerState.cullMode = CullMode::Disabled;
     pipelineStateDesc.raterizerState.fillMode = FillMode::Solid;
     pipelineStateDesc.debugName = "DebugRenderer::mLinesPipelineState";
@@ -138,7 +138,7 @@ DebugRenderer::DebugRenderer()
     pipelineStateDesc.debugName = "DebugRenderer::mTrianglesPipelineState";
     mTrianglesPipelineState.Build(pipelineStateDesc);
 
-    pipelineStateDesc.vertexLayout = mMeshVertexLayout.get();
+    pipelineStateDesc.vertexLayout = mMeshVertexLayout;
     pipelineStateDesc.debugName = "DebugRenderer::mMeshPipelineState";
     mMeshPipelineState.Build(pipelineStateDesc);
 
@@ -166,8 +166,7 @@ bool DebugRenderer::CreateResourceBindingLayouts()
     // TODO: material binding set (textures)
 
     // create binding layout
-    mResBindingLayout.reset(device->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(nullptr, 0, cbufferBindingsDesc, 2)));
+    mResBindingLayout = device->CreateResourceBindingLayout(ResourceBindingLayoutDesc(nullptr, 0, cbufferBindingsDesc, 2));
     if (!mResBindingLayout)
         return false;
 
@@ -195,9 +194,9 @@ void DebugRenderer::Flush(DebugRendererContext* context)
     {
         int stride = sizeof(DebugVertex);
         int offset = 0;
-        IBuffer* vb = mVertexBuffer.get();
+        const BufferPtr& vb = mVertexBuffer;
         context->commandRecorder->SetVertexBuffers(1, &vb, &stride, &offset);
-        context->commandRecorder->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
+        context->commandRecorder->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
 
         int macros[] = { 0, 0 }; // IS_MESH
 
@@ -206,17 +205,17 @@ void DebugRenderer::Flush(DebugRendererContext* context)
         else
             context->commandRecorder->SetPipelineState(mTrianglesPipelineState.GetPipelineState(macros));
 
-        context->commandRecorder->BindVolatileCBuffer(0, mConstantBuffer.get());
-        context->commandRecorder->BindVolatileCBuffer(1, mPerMeshConstantBuffer.get());
+        context->commandRecorder->BindVolatileCBuffer(0, mConstantBuffer);
+        context->commandRecorder->BindVolatileCBuffer(1, mPerMeshConstantBuffer);
 
         context->mode = DebugRendererMode::Simple;
     }
 
-    context->commandRecorder->WriteBuffer(mVertexBuffer.get(), 0,
+    context->commandRecorder->WriteBuffer(mVertexBuffer, 0,
                                         context->queuedVertices * sizeof(DebugVertex),
                                         context->vertices.get());
 
-    context->commandRecorder->WriteBuffer(mIndexBuffer.get(), 0,
+    context->commandRecorder->WriteBuffer(mIndexBuffer, 0,
                                         context->queuedIndicies * sizeof(DebugIndexType),
                                         context->indicies.get());
 
@@ -226,7 +225,7 @@ void DebugRenderer::Flush(DebugRendererContext* context)
     context->queuedIndicies = 0;
 }
 
-void DebugRenderer::SetTarget(DebugRendererContext *context, IRenderTarget* target)
+void DebugRenderer::SetTarget(DebugRendererContext *context, const RenderTargetPtr& target)
 {
     if (target)
     {
@@ -247,8 +246,7 @@ void DebugRenderer::SetCamera(DebugRendererContext *context, const Matrix& viewM
     DebugCBuffer debugCBufferData;
     debugCBufferData.projMatrix = projMatrix;
     debugCBufferData.viewMatrix = viewMatrix;
-    context->commandRecorder->WriteBuffer(mConstantBuffer.get(), 0, sizeof(DebugCBuffer),
-                                        &debugCBufferData);
+    context->commandRecorder->WriteBuffer(mConstantBuffer, 0, sizeof(DebugCBuffer), &debugCBufferData);
 }
 
 void DebugRenderer::DrawLine(DebugRendererContext *context, const Vector& A, const Vector& B,
@@ -368,7 +366,7 @@ void DebugRenderer::DrawFrustum(DebugRendererContext *context, const Frustum& fr
 
 void DebugRenderer::SetMeshMaterial(DebugRendererContext* context, const Resource::Material* material)
 {
-    // ITexture* tex = nullptr;
+    // const TexturePtr& tex = nullptr;
 
     // FIXME
     /*
@@ -399,10 +397,10 @@ void DebugRenderer::DrawMesh(DebugRendererContext* context, const Resource::Mesh
 
     Flush(context);
 
-    IBuffer* vb = mesh->mVB.get();
-    IBuffer* ib = mesh->mIB.get();
+    const BufferPtr& vb = mesh->mVB;
+    const BufferPtr& ib = mesh->mIB;
 
-    if (vb == nullptr || ib == nullptr)
+    if (!vb || !ib)
     {
         LOG_ERROR("Invalid vertex or index buffer");
         return;
@@ -410,7 +408,7 @@ void DebugRenderer::DrawMesh(DebugRendererContext* context, const Resource::Mesh
 
     if (context->mode != DebugRendererMode::Meshes)
     {
-        context->commandRecorder->BindVolatileCBuffer(0, mPerMeshConstantBuffer.get());
+        context->commandRecorder->BindVolatileCBuffer(0, mPerMeshConstantBuffer);
         context->mode = DebugRendererMode::Meshes;
         context->polyType = PrimitiveType::Unknown;
     }
@@ -418,9 +416,7 @@ void DebugRenderer::DrawMesh(DebugRendererContext* context, const Resource::Mesh
     /// update model matrix
     DebugPerMeshCBuffer perMeshCBuffer;
     perMeshCBuffer.modelMatrix = matrix;
-    context->commandRecorder->WriteBuffer(mPerMeshConstantBuffer.get(), 0,
-                                        sizeof(DebugPerMeshCBuffer),
-                                        &perMeshCBuffer);
+    context->commandRecorder->WriteBuffer(mPerMeshConstantBuffer, 0, sizeof(DebugPerMeshCBuffer), &perMeshCBuffer);
 
     int strides[] = { sizeof(Resource::MeshVertex) };
     int offsets[] = { 0 };

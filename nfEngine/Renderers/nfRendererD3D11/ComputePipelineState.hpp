@@ -16,10 +16,13 @@ namespace Renderer {
 class ComputePipelineState : public IComputePipelineState
 {
     ID3D11ComputeShader* mComputeShader;
-    ResourceBindingLayout* mResBindingLayout;
+    ResourceBindingLayoutPtr mResBindingLayout;
+
+    void Release();
 
 public:
     ComputePipelineState();
+    ~ComputePipelineState();
     bool Init(const ComputePipelineStateDesc& desc);
 
     NFE_INLINE ID3D11ComputeShader* GetShader() const
@@ -27,9 +30,9 @@ public:
         return mComputeShader;
     }
 
-    NFE_INLINE ResourceBindingLayout* GetResBindingLayout() const
+    NFE_INLINE const ResourceBindingLayout* GetResBindingLayout() const
     {
-        return mResBindingLayout;
+        return static_cast<const ResourceBindingLayout*>(mResBindingLayout.get());
     }
 };
 

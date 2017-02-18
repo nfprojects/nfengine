@@ -121,5 +121,7 @@ public:
     }
 };
 
+using InternalTexturePtr = std::shared_ptr<Texture>;
+
 } // namespace Renderer
 } // namespace NFE

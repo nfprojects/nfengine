@@ -45,7 +45,7 @@ bool ComputeScene::CreateSubSceneSimple()
         { "THREADS_Y", threadGroupSizeStr.c_str() },
     };
     std::string vsPath = gShaderPathPrefix + "TestCS" + gShaderPathExt;
-    mShader.reset(CompileShader(vsPath.c_str(), ShaderType::Compute, macros, 2));
+    mShader = CompileShader(vsPath.c_str(), ShaderType::Compute, macros, 2);
     if (!mShader)
         return false;
 
@@ -70,22 +70,18 @@ bool ComputeScene::CreateSubSceneSimple()
         ResourceBindingDesc(ShaderResourceType::CBuffer, mCBufferSlot),
         ResourceBindingDesc(ShaderResourceType::WritableTexture, mTextureSlot),
     };
-    mBindingSet.reset(mRendererDevice->CreateResourceBindingSet(
-        ResourceBindingSetDesc(bindings, 2, ShaderType::Compute)));
+    mBindingSet = mRendererDevice->CreateResourceBindingSet(ResourceBindingSetDesc(bindings, 2, ShaderType::Compute));
     if (!mBindingSet)
         return false;
 
     // create binding layout
-    IResourceBindingSet* set = mBindingSet.get();
-    mResBindingLayout.reset(mRendererDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc(&set, 1)));
+    mResBindingLayout = mRendererDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc(&mBindingSet, 1));
     if (!mResBindingLayout)
         return false;
 
     // create pipeline state
-    ComputePipelineStateDesc pipelineStateDesc;
-    pipelineStateDesc.computeShader = mShader.get();
-    pipelineStateDesc.resBindingLayout = mResBindingLayout.get();
-    mPipelineState.reset(mRendererDevice->CreateComputePipelineState(pipelineStateDesc));
+    ComputePipelineStateDesc pipelineStateDesc(mShader, mResBindingLayout);
+    mPipelineState = mRendererDevice->CreateComputePipelineState(pipelineStateDesc);
     if (!mPipelineState)
         return false;
 
@@ -102,7 +98,7 @@ bool ComputeScene::CreateSubSceneSimple()
     cbufferDesc.mode = BufferMode::Static;
     cbufferDesc.size = sizeof(CBuffer);
     cbufferDesc.initialData = &cubfferData;
-    mConstantBuffer.reset(mRendererDevice->CreateBuffer(cbufferDesc));
+    mConstantBuffer = mRendererDevice->CreateBuffer(cbufferDesc);
     if (!mConstantBuffer)
         return false;
 
@@ -114,17 +110,17 @@ bool ComputeScene::CreateSubSceneSimple()
     textureDesc.mode = BufferMode::GPUOnly;
     textureDesc.width = WINDOW_WIDTH;
     textureDesc.height = WINDOW_HEIGHT;
-    mTexture.reset(mRendererDevice->CreateTexture(textureDesc));
+    mTexture = mRendererDevice->CreateTexture(textureDesc);
     if (!mTexture)
         return false;
 
     // create and fill binding set instance
-    mBindingInstance.reset(mRendererDevice->CreateResourceBindingInstance(mBindingSet.get()));
+    mBindingInstance = mRendererDevice->CreateResourceBindingInstance(mBindingSet);
     if (!mBindingInstance)
         return false;
-    if (!mBindingInstance->WriteCBufferView(0, mConstantBuffer.get()))
+    if (!mBindingInstance->WriteCBufferView(0, mConstantBuffer))
         return false;
-    if (!mBindingInstance->WriteWritableTextureView(1, mTexture.get()))
+    if (!mBindingInstance->WriteWritableTextureView(1, mTexture))
         return false;
 
     return true;
@@ -162,7 +158,7 @@ bool ComputeScene::OnInit(void* winHandle)
     bbDesc.format = mBackbufferFormat;
     bbDesc.windowHandle = winHandle;
     bbDesc.vSync = false;
-    mWindowBackbuffer.reset(mRendererDevice->CreateBackbuffer(bbDesc));
+    mWindowBackbuffer = mRendererDevice->CreateBackbuffer(bbDesc);
     if (!mWindowBackbuffer)
         return false;
 
@@ -174,21 +170,23 @@ void ComputeScene::Draw(float dt)
     UNUSED(dt);
 
     // reset bound resources and set them once again
-    mCommandBuffer->Reset();
+    mCommandBuffer->Begin();
 
     // bind resources
-    mCommandBuffer->SetComputeResourceBindingLayout(mResBindingLayout.get());
-    mCommandBuffer->BindComputeResources(0, mBindingInstance.get());
-    mCommandBuffer->SetComputePipelineState(mPipelineState.get());
+    mCommandBuffer->SetComputeResourceBindingLayout(mResBindingLayout);
+    mCommandBuffer->BindComputeResources(0, mBindingInstance);
+    mCommandBuffer->SetComputePipelineState(mPipelineState);
 
     // execute compute shader
     mCommandBuffer->Dispatch(mDispatchX, mDispatchY);
 
     // copy result to backbuffer
-    mCommandBuffer->CopyTexture(mTexture.get(), mWindowBackbuffer.get());
+    mCommandBuffer->CopyTexture(mTexture, mWindowBackbuffer);
 
-    mRendererDevice->Execute(mCommandBuffer->Finish().get());
+    CommandListID commandList = mCommandBuffer->Finish();
+    mRendererDevice->Execute(commandList);
     mWindowBackbuffer->Present();
+    mRendererDevice->FinishFrame();
 }
 
 void ComputeScene::Release()

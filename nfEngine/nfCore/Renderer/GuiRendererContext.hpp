@@ -15,7 +15,7 @@ using namespace Math;
 
 struct GuiQuadData
 {
-    IResourceBindingInstance* textureBinding;
+    ResourceBindingInstancePtr textureBinding;
     bool alphaTexture;
 
     GuiQuadData()
@@ -23,7 +23,7 @@ struct GuiQuadData
         , alphaTexture(false)
     {}
 
-    GuiQuadData(IResourceBindingInstance* textureBinding, bool alphaTexture)
+    GuiQuadData(ResourceBindingInstancePtr textureBinding, bool alphaTexture)
         : textureBinding(textureBinding)
         , alphaTexture(alphaTexture)
     {}
@@ -55,7 +55,7 @@ struct GuiRendererContext
 {
     static const size_t gQuadsBufferSize;
 
-    ICommandRecorder* commandRecorder;
+    CommandRecorderPtr commandRecorder;
     size_t queuedQuads;
     int vertexBufferSize;
     int indexBufferSize;
@@ -66,7 +66,7 @@ struct GuiRendererContext
     // geometry and color data (pushed directly to vertex buffer)
     std::unique_ptr<GuiQuadVertex[]> quadVertices;
 
-    NFE_INLINE GuiRendererContext(ICommandRecorder* commandRecorder)
+    NFE_INLINE GuiRendererContext(const CommandRecorderPtr& commandRecorder)
         : commandRecorder(commandRecorder)
         , queuedQuads(0)
         , vertexBufferSize(0)

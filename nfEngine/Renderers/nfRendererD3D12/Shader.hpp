@@ -39,5 +39,7 @@ public:
     int GetResourceSlotByName(const char* name) override;
 };
 
+using InternalShaderPtr = std::shared_ptr<Shader>;
+
 } // namespace Renderer
 } // namespace NFE

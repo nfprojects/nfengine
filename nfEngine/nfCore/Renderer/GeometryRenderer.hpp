@@ -20,16 +20,16 @@ class GeometryRenderer : public RendererModule<GeometryRenderer, GeometryRendere
     Resource::MultiPipelineState mGeometryPassPipelineState;
     Resource::MultiPipelineState mShadowPipelineState;
 
-    std::unique_ptr<IVertexLayout> mVertexLayout;
-    std::unique_ptr<IBuffer> mInstancesVertexBuffer;
-    std::unique_ptr<IBuffer> mMaterialCBuffer;
-    std::unique_ptr<IBuffer> mGlobalCBuffer;
-    std::unique_ptr<IBuffer> mShadowGlobalCBuffer;
+    VertexLayoutPtr mVertexLayout;
+    BufferPtr mInstancesVertexBuffer;
+    BufferPtr mMaterialCBuffer;
+    BufferPtr mGlobalCBuffer;
+    BufferPtr mShadowGlobalCBuffer;
 
-    std::unique_ptr<IResourceBindingSet> mMatTexturesBindingSet;
-    std::unique_ptr<IResourceBindingLayout> mResBindingLayout;
-    std::unique_ptr<IResourceBindingInstance> mGlobalBindingInstance;
-    std::unique_ptr<IResourceBindingInstance> mDummyMaterialBindingInstance;
+    ResourceBindingSetPtr mMatTexturesBindingSet;
+    ResourceBindingLayoutPtr mResBindingLayout;
+    ResourceBindingInstancePtr mGlobalBindingInstance;
+    ResourceBindingInstancePtr mDummyMaterialBindingInstance;
 
     uint32 mUseMotionBlurMacroId;
     uint32 mCubeShadowMapMacroId;
@@ -42,9 +42,9 @@ public:
     void OnEnter(GeometryRendererContext* context) override;
     void OnLeave(GeometryRendererContext* context) override;
 
-    NFE_INLINE IResourceBindingSet* GetMaterialTexturesBindingSet() const
+    NFE_INLINE const ResourceBindingSetPtr& GetMaterialTexturesBindingSet() const
     {
-        return mMatTexturesBindingSet.get();
+        return mMatTexturesBindingSet;
     }
 
     /**
