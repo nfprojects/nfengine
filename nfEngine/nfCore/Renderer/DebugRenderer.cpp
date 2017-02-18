@@ -195,7 +195,7 @@ void DebugRenderer::Flush(DebugRendererContext* context)
     {
         int stride = sizeof(DebugVertex);
         int offset = 0;
-        IBuffer* vb = mVertexBuffer.get();
+        BufferPtr vb = mVertexBuffer;
         context->commandRecorder->SetVertexBuffers(1, &vb, &stride, &offset);
         context->commandRecorder->SetIndexBuffer(mIndexBuffer.get(), IndexBufferFormat::Uint16);
 
@@ -226,7 +226,7 @@ void DebugRenderer::Flush(DebugRendererContext* context)
     context->queuedIndicies = 0;
 }
 
-void DebugRenderer::SetTarget(DebugRendererContext *context, IRenderTarget* target)
+void DebugRenderer::SetTarget(DebugRendererContext *context, RenderTargetPtr target)
 {
     if (target)
     {
@@ -368,7 +368,7 @@ void DebugRenderer::DrawFrustum(DebugRendererContext *context, const Frustum& fr
 
 void DebugRenderer::SetMeshMaterial(DebugRendererContext* context, const Resource::Material* material)
 {
-    // ITexture* tex = nullptr;
+    // const TexturePtr& tex = nullptr;
 
     // FIXME
     /*
@@ -399,10 +399,10 @@ void DebugRenderer::DrawMesh(DebugRendererContext* context, const Resource::Mesh
 
     Flush(context);
 
-    IBuffer* vb = mesh->mVB.get();
-    IBuffer* ib = mesh->mIB.get();
+    const BufferPtr& vb = mesh->mVB;
+    const BufferPtr& ib = mesh->mIB;
 
-    if (vb == nullptr || ib == nullptr)
+    if (!vb || !ib)
     {
         LOG_ERROR("Invalid vertex or index buffer");
         return;

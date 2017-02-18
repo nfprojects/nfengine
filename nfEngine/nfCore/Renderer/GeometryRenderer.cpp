@@ -159,7 +159,7 @@ bool GeometryRenderer::CreateResourceBindingLayouts()
     if (materialCBufferSlot < 0 || normalTextureSlot < 0 || specularTextureSlot < 0)
         return false;
 
-    std::vector<IResourceBindingSet*> bindingSets;
+    std::vector<ResourceBindingSetPtr> bindingSets;
 
     ResourceBindingDesc binding2[3] =
     {
@@ -267,7 +267,7 @@ void GeometryRenderer::SetUpForShadowMap(GeometryRendererContext *context, Shado
 
 void GeometryRenderer::SetMaterial(GeometryRendererContext* context, const RendererMaterial* material)
 {
-    IResourceBindingInstance* bindingInstance = mDummyMaterialBindingInstance.get();
+    ResourceBindingInstancePtr bindingInstance = mDummyMaterialBindingInstance.get();
     if (material && material->layers[0].bindingInstance)
         bindingInstance = material->layers[0].bindingInstance.get();
 
@@ -286,8 +286,8 @@ void GeometryRenderer::Draw(GeometryRendererContext* context, const RenderComman
     if (buffer.commands.size() <= 0)
         return;
 
-    IBuffer* currVB = nullptr;
-    IBuffer* currIB = nullptr;
+    BufferPtr currVB = nullptr;
+    BufferPtr currIB = nullptr;
     uint32 currStartIndex = 0xFFFFFFFF;
     uint32 currIndexCount = 0;
 
@@ -355,7 +355,7 @@ void GeometryRenderer::Draw(GeometryRendererContext* context, const RenderComman
             currIB = command.pIB;
             currVB = command.pVB;
 
-            IBuffer* buffers[] = { currVB, mInstancesVertexBuffer.get() };
+            const BufferPtr& buffers[] = { currVB, mInstancesVertexBuffer };
             int strides[] = { sizeof(Resource::MeshVertex), sizeof(InstanceData) };
             int offsets[] = { 0, 0 };
             context->commandRecorder->SetVertexBuffers(2, buffers, strides, offsets);

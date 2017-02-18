@@ -12,7 +12,7 @@
 namespace NFE {
 namespace Renderer {
 
-class Texture : virtual public ITexture
+class Texture : virtual public TexturePtr
 {
     friend class CommandRecorder;
     friend class RenderTarget;

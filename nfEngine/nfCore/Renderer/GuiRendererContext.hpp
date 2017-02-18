@@ -15,7 +15,7 @@ using namespace Math;
 
 struct GuiQuadData
 {
-    IResourceBindingInstance* textureBinding;
+    ResourceBindingInstancePtr textureBinding;
     bool alphaTexture;
 
     GuiQuadData()
@@ -23,7 +23,7 @@ struct GuiQuadData
         , alphaTexture(false)
     {}
 
-    GuiQuadData(IResourceBindingInstance* textureBinding, bool alphaTexture)
+    GuiQuadData(ResourceBindingInstancePtr textureBinding, bool alphaTexture)
         : textureBinding(textureBinding)
         , alphaTexture(alphaTexture)
     {}

@@ -242,7 +242,7 @@ bool MultiPipelineState::Build(const Renderer::PipelineStateDesc& desc)
         psoDesc.pixelShader = mShaderSets[i].shaders[4];
 
         HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
-        std::unique_ptr<IPipelineState> pso(renderer->GetDevice()->CreatePipelineState(psoDesc));
+        PipelineStatePtr pso(renderer->GetDevice()->CreatePipelineState(psoDesc));
 
         if (!pso)
             return false;
@@ -269,7 +269,7 @@ int MultiPipelineState::GetMacroByName(const char* name) const
     return -1;
 }
 
-IPipelineState* MultiPipelineState::GetPipelineState(int* macroValues) const
+PipelineStatePtr MultiPipelineState::GetPipelineState(int* macroValues) const
 {
     int subshaderId = 0;
     int multiplier = 1;

@@ -95,7 +95,7 @@ void CommandRecorder::SetViewport(float left, float width, float top, float heig
     mContext->RSSetViewports(1, &viewport);
 }
 
-void CommandRecorder::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets)
+void CommandRecorder::SetVertexBuffers(int num, BufferPtr* vertexBuffers, int* strides, int* offsets)
 {
     ID3D11Buffer* vbs[16];
     for (int i = 0; i < num; ++i)
@@ -109,7 +109,7 @@ void CommandRecorder::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* st
                                  reinterpret_cast<UINT*>(offsets));
 }
 
-void CommandRecorder::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat format)
+void CommandRecorder::SetIndexBuffer(BufferPtr indexBuffer, IndexBufferFormat format)
 {
     DXGI_FORMAT dxgiFormat = DXGI_FORMAT_UNKNOWN;
     switch (format)
@@ -126,7 +126,7 @@ void CommandRecorder::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat for
     mContext->IASetIndexBuffer(ib->mBuffer.get(), dxgiFormat, 0);
 }
 
-void CommandRecorder::BindResources(size_t slot, IResourceBindingInstance* bindingSetInstance)
+void CommandRecorder::BindResources(size_t slot, ResourceBindingInstancePtr bindingSetInstance)
 {
     if (!mBindingLayout)
     {
@@ -214,7 +214,7 @@ void CommandRecorder::BindResources(size_t slot, IResourceBindingInstance* bindi
     }
 }
 
-void CommandRecorder::BindVolatileCBuffer(size_t slot, IBuffer* buffer)
+void CommandRecorder::BindVolatileCBuffer(size_t slot, BufferPtr buffer)
 {
     if (!mBindingLayout)
     {
@@ -316,7 +316,7 @@ void CommandRecorder::UpdateSamplers()
     }
 }
 
-void CommandRecorder::SetRenderTarget(IRenderTarget* renderTarget)
+void CommandRecorder::SetRenderTarget(RenderTargetPtr renderTarget)
 {
     RenderTarget* rt = dynamic_cast<RenderTarget*>(renderTarget);
     if (rt == nullptr && renderTarget != nullptr)
@@ -347,12 +347,12 @@ void CommandRecorder::SetRenderTarget(IRenderTarget* renderTarget)
     mCurrentRenderTarget = rt;
 }
 
-void CommandRecorder::SetResourceBindingLayout(IResourceBindingLayout* layout)
+void CommandRecorder::SetResourceBindingLayout(ResourceBindingLayoutPtr layout)
 {
     mBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout);
 }
 
-void CommandRecorder::SetPipelineState(IPipelineState* state)
+void CommandRecorder::SetPipelineState(PipelineStatePtr state)
 {
     mPipelineState = dynamic_cast<PipelineState*>(state);
     NFE_ASSERT(mPipelineState != nullptr, "Invalid pipeline state");
@@ -405,7 +405,7 @@ void CommandRecorder::SetScissors(int left, int top, int right, int bottom)
     mContext->RSSetScissorRects(1, &rect);
 }
 
-void* CommandRecorder::MapBuffer(IBuffer* buffer, MapType type)
+void* CommandRecorder::MapBuffer(BufferPtr buffer, MapType type)
 {
     Buffer* buf = dynamic_cast<Buffer*>(buffer);
     if (!buf)
@@ -436,7 +436,7 @@ void* CommandRecorder::MapBuffer(IBuffer* buffer, MapType type)
     return mapped.pData;
 }
 
-void CommandRecorder::UnmapBuffer(IBuffer* buffer)
+void CommandRecorder::UnmapBuffer(BufferPtr buffer)
 {
     Buffer* buf = dynamic_cast<Buffer*>(buffer);
     if (!buf)
@@ -446,7 +446,7 @@ void CommandRecorder::UnmapBuffer(IBuffer* buffer)
     mContext->Unmap(res, 0);
 }
 
-bool CommandRecorder::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data)
+bool CommandRecorder::WriteBuffer(BufferPtr buffer, size_t offset, size_t size, const void* data)
 {
     Buffer* buf = dynamic_cast<Buffer*>(buffer);
     if (!buf)
@@ -463,7 +463,7 @@ bool CommandRecorder::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, c
     return true;
 }
 
-void CommandRecorder::CopyTexture(ITexture* src, ITexture* dest)
+void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
 {
     Texture* srcTex = dynamic_cast<Texture*>(src);
     if (srcTex == nullptr)
@@ -577,7 +577,7 @@ void CommandRecorder::DrawIndexed(int indexNum, int instancesNum,
         mContext->DrawIndexed(indexNum, indexOffset, vertexOffset);
 }
 
-void CommandRecorder::BindComputeResources(size_t slot, IResourceBindingInstance* bindingSetInstance)
+void CommandRecorder::BindComputeResources(size_t slot, ResourceBindingInstancePtr bindingSetInstance)
 {
     if (!mComputeBindingLayout)
     {
@@ -626,7 +626,7 @@ void CommandRecorder::BindComputeResources(size_t slot, IResourceBindingInstance
     }
 }
 
-void CommandRecorder::BindComputeVolatileCBuffer(size_t slot, IBuffer* buffer)
+void CommandRecorder::BindComputeVolatileCBuffer(size_t slot, BufferPtr buffer)
 {
     if (!mComputeBindingLayout)
     {
@@ -652,12 +652,12 @@ void CommandRecorder::BindComputeVolatileCBuffer(size_t slot, IBuffer* buffer)
     mContext->CSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
 }
 
-void CommandRecorder::SetComputeResourceBindingLayout(IResourceBindingLayout* layout)
+void CommandRecorder::SetComputeResourceBindingLayout(ResourceBindingLayoutPtr layout)
 {
     mComputeBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout);
 }
 
-void CommandRecorder::SetComputePipelineState(IComputePipelineState* state)
+void CommandRecorder::SetComputePipelineState(ComputePipelineStatePtr state)
 {
     mComputePipelineState = dynamic_cast<ComputePipelineState*>(state);
     NFE_ASSERT(mComputePipelineState != nullptr, "Invalid compute pipeline state");

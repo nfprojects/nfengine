@@ -120,7 +120,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     return true;
 }
 
-bool ResourceBindingInstance::Init(IResourceBindingSet* bindingSet)
+bool ResourceBindingInstance::Init(ResourceBindingSetPtr bindingSet)
 {
     mBindingSet = dynamic_cast<ResourceBindingSet*>(bindingSet);
     if (bindingSet == nullptr)
@@ -134,7 +134,7 @@ bool ResourceBindingInstance::Init(IResourceBindingSet* bindingSet)
     return true;
 }
 
-bool ResourceBindingInstance::WriteTextureView(size_t slot, ITexture* texture)
+bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& texture)
 {
     if (slot >= mBindingSet->mBindings.size())
     {
@@ -243,7 +243,7 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, ITexture* texture)
     return true;
 }
 
-bool ResourceBindingInstance::WriteCBufferView(size_t slot, IBuffer* buffer)
+bool ResourceBindingInstance::WriteCBufferView(size_t slot, BufferPtr buffer)
 {
     if (slot >= mBindingSet->mBindings.size())
     {
@@ -269,7 +269,7 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, IBuffer* buffer)
     return true;
 }
 
-bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, ITexture* texture)
+bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, const TexturePtr& texture)
 {
     if (slot >= mBindingSet->mBindings.size())
     {

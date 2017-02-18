@@ -8,7 +8,7 @@ class Texture2D : public RendererTest
 
 TEST_F(Texture2D, Creation)
 {
-    std::unique_ptr<ITexture> texture;
+    std::unique_ptr<const TexturePtr&> texture;
 
     uint32_t bitmap[] = { 0xFFFFFFFF, 0, 0, 0xFFFFFFFF };
 

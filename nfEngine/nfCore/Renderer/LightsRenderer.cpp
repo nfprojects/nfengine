@@ -292,7 +292,7 @@ bool LightsRenderer::CreateResourceBindingLayouts()
     };
 
     // create binding layout
-    IResourceBindingSet* sets[] =
+    ResourceBindingSetPtr sets[] =
     {
         mGBufferBindingSet.get(),
         mShadowMapBindingSet.get(),
@@ -317,7 +317,7 @@ void LightsRenderer::OnLeave(LightsRendererContext* context)
     context->commandRecorder->EndDebugGroup();
 }
 
-void LightsRenderer::SetUp(LightsRendererContext* context, IRenderTarget* target, GeometryBuffer *gbuffer,
+void LightsRenderer::SetUp(LightsRendererContext* context, RenderTargetPtr target, GeometryBuffer *gbuffer,
                            const CameraRenderDesc* camera)
 {
     context->commandRecorder->SetRenderTarget(target);
@@ -331,7 +331,7 @@ void LightsRenderer::SetUp(LightsRendererContext* context, IRenderTarget* target
     context->commandRecorder->BindResources(0, gbuffer->mBindingInstance.get());
     context->commandRecorder->BindVolatileCBuffer(0, mGlobalCBuffer.get());
 
-    IBuffer* buffers[] = { mVertexBuffer.get() };
+    BufferPtr buffers[] = { mVertexBuffer.get() };
     int strides[] = { sizeof(Float3) };
     int offsets[] = { 0 };
     context->commandRecorder->SetVertexBuffers(1, buffers, strides, offsets);
@@ -397,7 +397,7 @@ void LightsRenderer::DrawOmniLight(LightsRendererContext* context, const Vector&
 }
 
 void LightsRenderer::DrawSpotLight(LightsRendererContext* context, const SpotLightProperties& prop,
-                                   ShadowMap* shadowMap, IResourceBindingInstance* lightMap)
+                                   ShadowMap* shadowMap, ResourceBindingInstancePtr lightMap)
 {
     // TODO: use instancing to draw lights
 

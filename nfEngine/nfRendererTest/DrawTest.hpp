@@ -10,14 +10,14 @@ class DrawTest : public RendererTest
     // texture used as render target
     struct TargetTexture
     {
-        std::unique_ptr<ITexture>   texture;            // render target texture
-        std::unique_ptr<ITexture>   readbackTexture;    // texture used for GPU -> CPU data transfer
+        std::unique_ptr<const TexturePtr&>   texture;            // render target texture
+        std::unique_ptr<const TexturePtr&>   readbackTexture;    // texture used for GPU -> CPU data transfer
         std::unique_ptr<char[]>     pixelData;
         size_t                      textureSize;
         ElementFormat               format;
     };
 
-    std::unique_ptr<IRenderTarget> mTestRenderTarget;
+    RenderTargetPtr mTestRenderTarget;
     std::vector<TargetTexture> mTargetTextures;
 
     uint32 mTestTextureWidth;

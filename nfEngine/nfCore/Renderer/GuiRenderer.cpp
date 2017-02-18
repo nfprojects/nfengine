@@ -114,7 +114,7 @@ bool GuiRenderer::CreateResourceBindingLayouts()
     if (textureSlot < 0)
         return false;
 
-    std::vector<IResourceBindingSet*> bindingSets;
+    std::vector<ResourceBindingSetPtr> bindingSets;
 
     VolatileCBufferBinding cbufferBindingDesc(ShaderType::All, ShaderResourceType::CBuffer, cbufferSlot);
 
@@ -135,16 +135,16 @@ bool GuiRenderer::CreateResourceBindingLayouts()
     return true;
 }
 
-std::unique_ptr<IResourceBindingInstance> GuiRenderer::CreateTextureBinding(ITexture* texture)
+ResourceBindingInstancePtr GuiRenderer::CreateTextureBinding(const TexturePtr& texture)
 {
     IDevice* device = mRenderer->GetDevice();
 
-    std::unique_ptr<IResourceBindingInstance> bindingInstance(
+    ResourceBindingInstancePtr bindingInstance(
         device->CreateResourceBindingInstance(mPSBindingSet.get()));
     if (!bindingInstance)
-        return std::unique_ptr<IResourceBindingInstance>();
+        return ResourceBindingInstancePtr();
     if (!bindingInstance->WriteTextureView(0, texture))
-        return std::unique_ptr<IResourceBindingInstance>();
+        return ResourceBindingInstancePtr();
 
     return bindingInstance;
 }
@@ -156,7 +156,7 @@ void GuiRenderer::OnEnter(GuiRendererContext* context)
 
 void GuiRenderer::BeginOrdinaryGuiRendering(GuiRendererContext* context)
 {
-    IBuffer* vertexBuffers[] = { mVertexBuffer.get() };
+    BufferPtr vertexBuffers[] = { mVertexBuffer.get() };
     int strides[] = { sizeof(GuiQuadVertex) };
     int offsets[] = { 0 };
     context->commandRecorder->SetVertexBuffers(1, vertexBuffers, strides, offsets);
@@ -171,7 +171,7 @@ void GuiRenderer::OnLeave(GuiRendererContext* context)
     context->commandRecorder->EndDebugGroup();
 }
 
-void GuiRenderer::SetTarget(GuiRendererContext* context, IRenderTarget* target)
+void GuiRenderer::SetTarget(GuiRendererContext* context, RenderTargetPtr target)
 {
     GlobalCBuffer cbuffer;
     int width, height;
@@ -206,7 +206,7 @@ void GuiRenderer::FlushQueue(GuiRendererContext* context)
                                         context->quadVertices.get());
 
     int macros[1] = { 0 }; // use texture
-    IResourceBindingInstance* currTextureBinding = nullptr;
+    ResourceBindingInstancePtr currTextureBinding = nullptr;
     bool currAlphaTexture = false;
     context->commandRecorder->SetPipelineState(mPipelineState.GetPipelineState());
 
@@ -260,7 +260,7 @@ void GuiRenderer::DrawQuad(GuiRendererContext* context, const Rectf& rect, uint3
 }
 
 void GuiRenderer::DrawTexturedQuad(GuiRendererContext* context, const Rectf& rect,
-                                   const Rectf& texCoords, IResourceBindingInstance* textureBinding,
+                                   const Rectf& texCoords, ResourceBindingInstancePtr textureBinding,
                                    uint32 color, bool alpha)
 {
     PushQuad(context, GuiQuadData(textureBinding, alpha), GuiQuadVertex(rect, texCoords, color));
@@ -365,7 +365,7 @@ bool GuiRenderer::PrintTextWithBorder(GuiRendererContext* context, Font* font, c
     return PrintText(context, font, text, rect, color, vAlign, hAlign);
 }
 
-bool GuiRenderer::DrawImGui(GuiRendererContext* context, IResourceBindingInstance* imGuiTextureBinding)
+bool GuiRenderer::DrawImGui(GuiRendererContext* context, ResourceBindingInstancePtr imGuiTextureBinding)
 {
     ImGui::Render();
     ImDrawData* drawData = ImGui::GetDrawData();
@@ -421,7 +421,7 @@ bool GuiRenderer::DrawImGui(GuiRendererContext* context, IResourceBindingInstanc
 
     // setup pipeline
 
-    IBuffer* vertexBuffers[] = { mImGuiVertexBuffer.get() };
+    BufferPtr vertexBuffers[] = { mImGuiVertexBuffer.get() };
     int strides[] = { sizeof(ImDrawVert) };
     int offsets[] = { 0 };
     context->commandRecorder->SetVertexBuffers(1, vertexBuffers, strides, offsets);

@@ -46,10 +46,10 @@ class ResourceBindingInstance : public IResourceBindingInstance
     std::vector<ID3D11Buffer*> mCBuffers;
 
 public:
-    bool Init(IResourceBindingSet* bindingSet) override;
-    bool WriteTextureView(size_t slot, ITexture* texture) override;
-    bool WriteCBufferView(size_t slot, IBuffer* buffer) override;
-    bool WriteWritableTextureView(size_t slot, ITexture* texture) override;
+    bool Init(const ResourceBindingSetPtr& bindingSet) override;
+    bool WriteTextureView(size_t slot, const TexturePtr& texture) override;
+    bool WriteCBufferView(size_t slot, const BufferPtr& buffer) override;
+    bool WriteWritableTextureView(size_t slot, const TexturePtr& texture) override;
 };
 
 } // namespace Renderer

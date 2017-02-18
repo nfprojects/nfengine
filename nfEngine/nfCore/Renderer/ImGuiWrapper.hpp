@@ -20,8 +20,8 @@ class ImGuiWrapper final : public Utils::SimpleInputListener
     // ImGui internal state
     void* mDefaultImGuiState;
     void* mImGuiState;
-    std::unique_ptr<ITexture> mImGuiTexture;
-    std::unique_ptr<IResourceBindingInstance> mImGuiTextureBinding; // For GUI Renderer
+    std::unique_ptr<const TexturePtr&> mImGuiTexture;
+    ResourceBindingInstancePtr mImGuiTextureBinding; // For GUI Renderer
 
     bool InitImGui();
 
