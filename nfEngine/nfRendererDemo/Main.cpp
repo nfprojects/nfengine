@@ -14,6 +14,7 @@
 #include "Scenes/RenderTargets.hpp"
 #include "Scenes/Tessellation.hpp"
 #include "Scenes/Compute.hpp"
+#include "Scenes/Multithreaded.hpp"
 
 #include "../Renderers/RendererInterface/Device.hpp"
 #include "nfCommon/Library.hpp"
@@ -109,7 +110,7 @@ public:
         , mDeltaTime(0.0f)
     {
         // TODO: move scene registration to their source files
-        // TODO: switching to arbitrary scene (e.g. ommiting a single scene should be
+        // TODO: switching to arbitrary scene (e.g. omitting a single scene should be
         //       possible, when a feature is not implemented in renderer
         mScenes.push_back(std::unique_ptr<Scene>(new BasicScene));
         mScenes.push_back(std::unique_ptr<Scene>(new DepthStencilScene));
@@ -117,6 +118,7 @@ public:
         mScenes.push_back(std::unique_ptr<Scene>(new VertexBuffersScene));
         mScenes.push_back(std::unique_ptr<Scene>(new TessellationScene));
         mScenes.push_back(std::unique_ptr<Scene>(new ComputeScene));
+        mScenes.push_back(std::unique_ptr<Scene>(new MultithreadedScene));
     }
 
     /**
@@ -159,7 +161,7 @@ public:
     /**
      * Initializes Demo with selected scene
      *
-     * @param scene Scene index to intialize.
+     * @param scene Scene index to initialize.
      * @return True on success, false otherwise
      *
      * InitScene initializes selected scene. Should be used only during Demo initialization. To
@@ -285,6 +287,7 @@ int main(int argc, char* argv[])
     NFE::Common::FileSystem::ChangeDirectory(execDir + "/../../..");
 
     std::string selectedBackend;
+    int initialScene = 0;
     int selectedCard = -1;
     int debugLevel = 0;
 #ifdef _DEBUG
@@ -323,6 +326,18 @@ int main(int argc, char* argv[])
             if (i + 1 < argc)
             {
                 debugLevel = atoi(argv[++i]);
+            }
+            else
+            {
+                LOG_ERROR("Missing command line parameter");
+                return 1;
+            }
+        }
+        else if (strcmp(argv[i], "--scene") == 0 || strcmp(argv[i], "-s") == 0)
+        {
+            if (i + 1 < argc)
+            {
+                initialScene = atoi(argv[++i]);
             }
             else
             {
@@ -392,7 +407,7 @@ int main(int argc, char* argv[])
     }
 
     /// Initial scene to begin with
-    if (!window.InitScene(0))
+    if (!window.InitScene(initialScene))
     {
         LOG_ERROR("Scene failed to initialize");
         return 3;
