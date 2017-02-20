@@ -60,6 +60,9 @@
     <ClCompile Include="Scenes\Compute.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Scenes\Multithreaded.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp">
@@ -87,6 +90,9 @@
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Scenes\Compute.hpp">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\Multithreaded.hpp">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
