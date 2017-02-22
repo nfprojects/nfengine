@@ -1,0 +1,186 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fabf19d9_63f510ca",
+        "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-02-22T23:03:03Z",
+      "side": 1,
+      "message": "error checking?",
+      "revId": "74083041cf0f5dab19c83e9a3ded344a4d8e4b04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_436b2c86",
+        "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-02-22T23:03:03Z",
+      "side": 1,
+      "message": "You could call Init() inside AsyncQueueManager ctor. Right now GetInstance() is trying initialize it every call. I don\u0027t know if it\u0027s intended. If it failed for the first time, there is high chance that it won\u0027t create this at all.",
+      "range": {
+        "startLine": 79,
+        "startChar": 0,
+        "endLine": 81,
+        "endChar": 61
+      },
+      "revId": "74083041cf0f5dab19c83e9a3ded344a4d8e4b04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_23683887",
+        "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-02-22T23:03:03Z",
+      "side": 1,
+      "message": "error checking?",
+      "revId": "74083041cf0f5dab19c83e9a3ded344a4d8e4b04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_e30800dc",
+        "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-02-22T23:03:03Z",
+      "side": 1,
+      "message": "if block should be in brackets - it\u0027s more readable",
+      "revId": "74083041cf0f5dab19c83e9a3ded344a4d8e4b04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_030414c4",
+        "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-02-22T23:03:03Z",
+      "side": 1,
+      "message": "error checking?",
+      "revId": "74083041cf0f5dab19c83e9a3ded344a4d8e4b04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_a3120808",
+        "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-02-22T23:03:03Z",
+      "side": 1,
+      "message": "if it returns reference - use it, don\u0027t convert to pointer",
+      "revId": "74083041cf0f5dab19c83e9a3ded344a4d8e4b04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_c30dfce9",
+        "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-02-22T23:03:03Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "74083041cf0f5dab19c83e9a3ded344a4d8e4b04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_8371447a",
+        "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-02-22T23:03:03Z",
+      "side": 1,
+      "message": "const JobProcedure\u0026",
+      "range": {
+        "startLine": 56,
+        "startChar": 20,
+        "endLine": 56,
+        "endChar": 32
+      },
+      "revId": "74083041cf0f5dab19c83e9a3ded344a4d8e4b04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_43020cb6",
+        "filename": "nfEngine/nfCommon/Linux/AsyncQueueManager.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-02-22T23:03:03Z",
+      "side": 1,
+      "message": "maybe return reference?",
+      "revId": "74083041cf0f5dab19c83e9a3ded344a4d8e4b04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_032bf434",
+        "filename": "nfEngine/nfCommon/Win/AsyncQueueManager.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-02-22T23:03:03Z",
+      "side": 1,
+      "message": "as in linux version",
+      "revId": "74083041cf0f5dab19c83e9a3ded344a4d8e4b04",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
