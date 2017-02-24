@@ -64,6 +64,7 @@ VkRenderPass RenderPassManager::ConstructRenderPass(const RenderPassDesc& desc)
 
         depthRef.attachment = curAtt;
         depthRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+        curAtt++;
     }
 
     VkSubpassDescription subpass;
