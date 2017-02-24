@@ -58,9 +58,6 @@ Device::Device()
     , mGraphicsQueueIndex(UINT32_MAX)
     , mGraphicsQueue(VK_NULL_HANDLE)
     , mPipelineCache(VK_NULL_HANDLE)
-    , mPrePresentSemaphore(VK_NULL_HANDLE)
-    , mPresentSemaphore(VK_NULL_HANDLE)
-    , mPostPresentSemaphore(VK_NULL_HANDLE)
     , mWaitForPresent(false)
     , mRenderPassManager(nullptr)
     , mSemaphorePool(nullptr)
@@ -84,12 +81,6 @@ Device::~Device()
         vkDestroyPipelineCache(mDevice, mPipelineCache, nullptr);
     if (mCommandPool != VK_NULL_HANDLE)
         vkDestroyCommandPool(mDevice, mCommandPool, nullptr);
-    if (mPrePresentSemaphore != VK_NULL_HANDLE)
-        vkDestroySemaphore(mDevice, mPrePresentSemaphore, nullptr);
-    if (mPresentSemaphore != VK_NULL_HANDLE)
-        vkDestroySemaphore(mDevice, mPresentSemaphore, nullptr);
-    if (mPostPresentSemaphore != VK_NULL_HANDLE)
-        vkDestroySemaphore(mDevice, mPostPresentSemaphore, nullptr);
     if (mDevice != VK_NULL_HANDLE)
         vkDestroyDevice(mDevice, nullptr);
 
@@ -312,16 +303,6 @@ bool Device::Init(const DeviceInitParams* params)
     mRingBuffer.reset(new RingBuffer(mDevice));
     mRingBuffer->Init(1024 * 1024);
 
-    VkSemaphoreCreateInfo semInfo;
-    VK_ZERO_MEMORY(semInfo);
-    semInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-    result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mPrePresentSemaphore);
-    CHECK_VKRESULT(result, "Failed to create pre present semaphore");
-    result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mPresentSemaphore);
-    CHECK_VKRESULT(result, "Failed to create present semaphore");
-    result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mPostPresentSemaphore);
-    CHECK_VKRESULT(result, "Failed to create post present semaphore");
-
     VkPipelineCacheCreateInfo pipeCacheInfo;
     VK_ZERO_MEMORY(pipeCacheInfo);
     pipeCacheInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
@@ -536,30 +517,29 @@ bool Device::Execute(CommandListID commandList)
     // each time we submit a new command list, grab new semaphore to signal
     mSemaphorePool->Advance();
 
-    VkSemaphore waitSemaphore;
-    if (mWaitForPresent)
-    {
-        waitSemaphore = mPostPresentSemaphore;
-    }
-    else
-    {
-        waitSemaphore = mSemaphorePool->GetPreviousSemaphore();
-    }
-
-    VkSemaphore signalSemaphore = mSemaphorePool->GetCurrentSemaphore();
-
     VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+    VkSemaphore waitSemaphore = mSemaphorePool->GetPreviousSemaphore();
+    VkSemaphore signalSemaphore = mSemaphorePool->GetCurrentSemaphore();
 
     VkSubmitInfo submitInfo;
     VK_ZERO_MEMORY(submitInfo);
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &mCommandBufferPool[commandList - 1];
-    submitInfo.pWaitDstStageMask = &pipelineStages;
-    submitInfo.waitSemaphoreCount = 1;
-    submitInfo.pWaitSemaphores = &waitSemaphore;
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = &signalSemaphore;
+
+    if (mWaitForPresent)
+    {
+        // right after present there's nothing to wait for
+        mWaitForPresent = false;
+    }
+    else
+    {
+        submitInfo.pWaitDstStageMask = &pipelineStages;
+        submitInfo.waitSemaphoreCount = 1;
+        submitInfo.pWaitSemaphores = &waitSemaphore;
+    }
 
     VkResult result = vkQueueSubmit(mGraphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
     CHECK_VKRESULT(result, "Failed to submit graphics operations");

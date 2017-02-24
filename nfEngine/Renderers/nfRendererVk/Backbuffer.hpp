@@ -36,6 +36,10 @@ class Backbuffer : public IBackbuffer, public Texture
     std::vector<VkCommandBuffer> mPresentCommandBuffers;
     std::vector<VkCommandBuffer> mPostPresentCommandBuffers;
 
+    VkSemaphore mPrePresentSemaphore;
+    VkSemaphore mPresentSemaphore;
+    VkSemaphore mPostPresentSemaphore;
+
     // platform-specific surface creator
     bool CreateSurface(const BackbufferDesc& desc);
 
@@ -49,6 +53,7 @@ class Backbuffer : public IBackbuffer, public Texture
     bool CreateSwapchain(const BackbufferDesc& desc);
     bool CreateSwapchainImageViews();
     bool BuildPresentCommandBuffers();
+    bool BuildPresentSemaphores();
     bool AcquireNextImage();
 
 public:

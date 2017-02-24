@@ -34,9 +34,6 @@ private:
     uint32 mGraphicsQueueIndex;
     VkQueue mGraphicsQueue;
     VkPipelineCache mPipelineCache;
-    VkSemaphore mPrePresentSemaphore;
-    VkSemaphore mPresentSemaphore;
-    VkSemaphore mPostPresentSemaphore;
     bool mWaitForPresent;
     std::vector<VkSurfaceFormatKHR> mSupportedFormats;
     std::unique_ptr<RenderPassManager> mRenderPassManager;
@@ -90,16 +87,6 @@ public:
     NFE_INLINE const uint32& GetQueueIndex() const
     {
         return mGraphicsQueueIndex;
-    }
-
-    NFE_INLINE const VkSemaphore& GetPresentSemaphore() const
-    {
-        return mPresentSemaphore;
-    }
-
-    NFE_INLINE const VkSemaphore& GetPostPresentSemaphore() const
-    {
-        return mPostPresentSemaphore;
     }
 
     NFE_INLINE RenderPassManager* GetRenderPassManager() const
