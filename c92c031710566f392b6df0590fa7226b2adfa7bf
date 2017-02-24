@@ -16,6 +16,24 @@
       "revId": "c92c031710566f392b6df0590fa7226b2adfa7bf",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_0bc0a2df",
+        "filename": "nfEngine/Renderers/nfRendererVk/SemaphorePool.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-02-24T20:41:38Z",
+      "side": 1,
+      "message": "It is happening. CHECK_VKRESULT handles this situation and when result !\u003d VK_SUCCESS the macro returns false after printing the message with error code stringified.",
+      "parentUuid": "fabf19d9_cba2aa4b",
+      "revId": "c92c031710566f392b6df0590fa7226b2adfa7bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
