@@ -236,10 +236,10 @@ bool Backbuffer::CreateSwapchainImageViews()
 
     mBuffersNum = swapImageCount;
 
-    mBuffers.resize(mBuffersNum);
-    mBufferViews.resize(mBuffersNum);
-
-    result = vkGetSwapchainImagesKHR(gDevice->GetDevice(), mSwapchain, &mBuffersNum, mBuffers.data());
+    // get images from swapchain and store them (we will need them in Present Command Buffers)
+    mImages.resize(mBuffersNum);
+    std::vector<VkImage> images(mBuffersNum);
+    result = vkGetSwapchainImagesKHR(gDevice->GetDevice(), mSwapchain, &mBuffersNum, images.data());
     CHECK_VKRESULT(result, "Failed to get swapchain images");
 
     LOG_DEBUG("%d swapchain buffers acquired", mBuffersNum);
@@ -248,7 +248,7 @@ bool Backbuffer::CreateSwapchainImageViews()
         VkImageViewCreateInfo ivInfo;
         VK_ZERO_MEMORY(ivInfo);
         ivInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-        ivInfo.image = mBuffers[mCurrentBuffer];
+        ivInfo.image = images[mCurrentBuffer];
         ivInfo.format = mFormat;
         ivInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
         ivInfo.components = {
@@ -263,8 +263,10 @@ bool Backbuffer::CreateSwapchainImageViews()
         ivInfo.subresourceRange.levelCount = 1;
         ivInfo.subresourceRange.baseArrayLayer = 0;
         ivInfo.subresourceRange.layerCount = 1;
-        result = vkCreateImageView(gDevice->GetDevice(), &ivInfo, nullptr, &mBufferViews[mCurrentBuffer]);
+        result = vkCreateImageView(gDevice->GetDevice(), &ivInfo, nullptr, &mImages[mCurrentBuffer].view);
         CHECK_VKRESULT(result, "Failed to generate Image View from Swapchain image");
+
+        mImages[mCurrentBuffer].image = images[mCurrentBuffer];
     }
 
     return true;
@@ -314,7 +316,7 @@ bool Backbuffer::BuildPresentCommandBuffers()
         result = vkBeginCommandBuffer(mPrePresentCommandBuffers[i], &cmdBeginInfo);
         CHECK_VKRESULT(result, "Failed to start recording present command buffer");
 
-        presentBarrier.image = mBuffers[i];
+        presentBarrier.image = mImages[i].image;
 
         vkCmdPipelineBarrier(mPrePresentCommandBuffers[i], VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
                              VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0,
@@ -337,7 +339,7 @@ bool Backbuffer::BuildPresentCommandBuffers()
         result = vkBeginCommandBuffer(mPostPresentCommandBuffers[i], &cmdBeginInfo);
         CHECK_VKRESULT(result, "Failed to start recording post present command buffer");
 
-        presentBarrier.image = mBuffers[i];
+        presentBarrier.image = mImages[i].image;
 
         vkCmdPipelineBarrier(mPostPresentCommandBuffers[i], VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
                              VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0,
