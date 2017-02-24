@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fabf19d9_4bf8da49",
+        "filename": "nfEngine/nfCommonTest/FileAsyncTest.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-02-24T20:10:42Z",
+      "side": 1,
+      "message": "We should avoid abbreviations like that. We don\u0027t write Linux kernel... :P",
+      "range": {
+        "startLine": 28,
+        "startChar": 48,
+        "endLine": 28,
+        "endChar": 52
+      },
+      "revId": "dfb6874417a2e54a767449ea2a18979da6ef08fd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
