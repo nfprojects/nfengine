@@ -181,7 +181,7 @@ void CommandRecorder::SetPipelineState(const PipelineStatePtr& state)
 
 void CommandRecorder::SetStencilRef(unsigned char ref)
 {
-    UNUSED(ref);
+    vkCmdSetStencilReference(mCommandBuffer, VK_STENCIL_FRONT_AND_BACK, static_cast<uint32>(ref));
 }
 
 void CommandRecorder::SetViewport(float left, float width, float top, float height,
@@ -344,17 +344,19 @@ void CommandRecorder::Clear(int flags, uint32 numTargets, const uint32* slots,
         }
     }
 
-    if (flags & ClearFlagsDepth)
+    if (flags & (ClearFlagsDepth | ClearFlagsStencil))
     {
-        clearAtts[clearAttsNum].aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-        clearAtts[clearAttsNum].clearValue.depthStencil.depth = depthValue;
-        clearAttsNum++;
-    }
+        if (!mRenderTarget->HasDepthStencilAttachment())
+            return;
 
-    if (flags & ClearFlagsStencil)
-    {
-        clearAtts[clearAttsNum].aspectMask = VK_IMAGE_ASPECT_STENCIL_BIT;
-        clearAtts[clearAttsNum].clearValue.depthStencil.stencil = stencilValue;
+        clearAtts[clearAttsNum].aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+        if (flags & ClearFlagsStencil)
+        {
+            clearAtts[clearAttsNum].aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+        }
+
+        clearAtts[clearAttsNum].clearValue.depthStencil.depth = depthValue;
+        clearAtts[clearAttsNum].clearValue.depthStencil.stencil = static_cast<uint32>(stencilValue);
         clearAttsNum++;
     }
 
