@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fabf19d9_04a537b4",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-02-24T00:35:13Z",
+      "side": 1,
+      "message": "if (mEventFD \u0026\u0026 !AsyncQueueManager::GetInstance().DequeueJob(mEventFD))",
+      "range": {
+        "startLine": 192,
+        "startChar": 0,
+        "endLine": 193,
+        "endChar": 71
+      },
+      "revId": "3f043bc38f97e12992cfc3a0109d3bea1694b7a6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_a4944b44",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-02-24T00:35:13Z",
+      "side": 1,
+      "message": "WTF is this?! Just calculate the \u0027event\u0027 pointer in the loop body. You also have a bug: there should be \"event++\" instead of \"event +\u003d loopStep\". You are omiting sizeof(io_event) events in each iteration....",
+      "range": {
+        "startLine": 348,
+        "startChar": 0,
+        "endLine": 351,
+        "endChar": 84
+      },
+      "revId": "3f043bc38f97e12992cfc3a0109d3bea1694b7a6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_84914755",
+        "filename": "nfEngine/nfCommonTest/FileAsyncTest.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-02-24T00:35:13Z",
+      "side": 1,
+      "message": "Why these are global variables? It would be better to move to FileAsyncTest class",
+      "revId": "3f043bc38f97e12992cfc3a0109d3bea1694b7a6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
