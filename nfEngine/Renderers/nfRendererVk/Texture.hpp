@@ -19,22 +19,26 @@ class Texture : virtual public ITexture
     friend class ResourceBindingInstance;
 
 protected:
+    struct ImageDataSet
+    {
+        VkImage image;
+        VkImageView view;
+        VkDeviceMemory memory;
+    };
+
     TextureType mType;
     uint32 mWidth;
     uint32 mHeight;
     uint32 mDepth;
     VkFormat mFormat;
-    VkImage mImage;
-    VkImageView mImageView;
     VkImageLayout mImageLayout;
-    VkDeviceMemory mImageMemory;
 
-    // tempshit to support double-buffering
+    // Below vectors are needed to support Backbuffer and it's double-buffering
     uint32 mBuffersNum;
     uint32 mCurrentBuffer;
-    std::vector<VkImage> mBuffers;
-    std::vector<VkImageView> mBufferViews;
+    std::vector<ImageDataSet> mImages;
     bool mFromSwapchain;
+    bool mDepthTexture;
 
 public:
     Texture();
