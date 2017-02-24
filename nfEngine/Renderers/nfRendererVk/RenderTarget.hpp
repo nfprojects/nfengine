@@ -34,7 +34,16 @@ public:
     void GetDimensions(int& width, int& height);
     bool Init(const RenderTargetDesc& desc);
 
-    const VkFramebuffer& GetCurrentFramebuffer() const;
+    NFE_INLINE const VkFramebuffer& GetCurrentFramebuffer() const
+    {
+        // TODO assertions
+        return mFramebuffers[mTex[0]->mCurrentBuffer];
+    }
+
+    NFE_INLINE bool HasDepthStencilAttachment() const
+    {
+        return (mDepthTex != nullptr);
+    }
 };
 
 } // namespace Renderer

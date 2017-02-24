@@ -80,9 +80,9 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         for (unsigned int i = 0; i < mTex[0]->mBuffersNum; ++i)
         {
             std::vector<VkImageView> fbAtts;
-            fbAtts.push_back(mTex[0]->mBufferViews[i]);
+            fbAtts.push_back(mTex[0]->mImages[i].view);
             if (mDepthTex)
-                fbAtts.push_back(mDepthTex->mBufferViews[0]);
+                fbAtts.push_back(mDepthTex->mImages[0].view);
 
             VkFramebufferCreateInfo fbInfo;
             VK_ZERO_MEMORY(fbInfo);
@@ -108,11 +108,6 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 
     LOG_INFO("Render Target created successfully");
     return true;
-}
-
-const VkFramebuffer& RenderTarget::GetCurrentFramebuffer() const
-{
-    return mFramebuffers[mTex[0]->mCurrentBuffer];
 }
 
 } // namespace Renderer
