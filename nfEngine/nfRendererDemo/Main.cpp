@@ -392,7 +392,7 @@ int main(int argc, char* argv[])
     }
 
     /// Initial scene to begin with
-    if (!window.InitScene(0))
+    if (!window.InitScene(1))
     {
         LOG_ERROR("Scene failed to initialize");
         return 3;
