@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fabf19d9_55f87b49",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-02-24T13:55:06Z",
+      "side": 1,
+      "message": "I wasn\u0027t sure if in case mEventFD would be invalid, DequeueJob() would never be executed, but if so then sure ;\u003e",
+      "parentUuid": "fabf19d9_04a537b4",
+      "range": {
+        "startLine": 192,
+        "startChar": 0,
+        "endLine": 193,
+        "endChar": 71
+      },
+      "revId": "3f043bc38f97e12992cfc3a0109d3bea1694b7a6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fabf19d9_a4944b44",
         "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
         "patchSetId": 9
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "fabf19d9_75801f8c",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-02-24T13:55:06Z",
+      "side": 1,
+      "message": "If \u0027event++\u0027 is valid, then whaddya mean by \"calculate the event pointer in the loop body\"?",
+      "parentUuid": "fabf19d9_a4944b44",
+      "range": {
+        "startLine": 348,
+        "startChar": 0,
+        "endLine": 351,
+        "endChar": 84
+      },
+      "revId": "3f043bc38f97e12992cfc3a0109d3bea1694b7a6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fabf19d9_84914755",
         "filename": "nfEngine/nfCommonTest/FileAsyncTest.cpp",
         "patchSetId": 9
@@ -59,6 +107,47 @@
       "writtenOn": "2017-02-24T00:35:13Z",
       "side": 1,
       "message": "Why these are global variables? It would be better to move to FileAsyncTest class",
+      "revId": "3f043bc38f97e12992cfc3a0109d3bea1694b7a6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_b576b7d6",
+        "filename": "nfEngine/nfCommonTest/FileAsyncTest.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-02-24T13:55:06Z",
+      "side": 1,
+      "message": "I just wanted to make some function unaffiliated with the class, but sure - I can fit it into the FileAsyncTest along with all these variables.",
+      "parentUuid": "fabf19d9_84914755",
+      "revId": "3f043bc38f97e12992cfc3a0109d3bea1694b7a6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_f59d4f0b",
+        "filename": "nfEngine/nfCommonTest/FileAsyncTest.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-02-24T13:55:06Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 3
+      },
       "revId": "3f043bc38f97e12992cfc3a0109d3bea1694b7a6",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
