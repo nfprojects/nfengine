@@ -128,7 +128,12 @@ bool AsyncQueueManager::EnqueueJob(JobProcedure callback, int eventFD)
 
     // We shoot mQuitEvent in order to poll for new jobs as well
     u_int64_t data = 0xFF;
-    ::write(mQuitEvent, &data, sizeof(data));
+    ssize_t result = ::write(mQuitEvent, &data, sizeof(data));
+    if (result < 0)
+    {
+        LOG_ERROR("Error during write while queueing job");
+        return false;
+    }
 
     return true;
 }
@@ -153,9 +158,12 @@ bool AsyncQueueManager::DequeueJob(int eventFD)
 
     // We shoot mQuitEvent in order to stop polling for deleted jobs
     u_int64_t data = 0xFF;
-    ::write(mQuitEvent, &data, sizeof(data));
-
-
+    ssize_t result = ::write(mQuitEvent, &data, sizeof(data));
+    if (result < 0)
+    {
+        LOG_ERROR("Error during write while dequeueing job");
+        return false;
+    }
 
     return true;
 }
