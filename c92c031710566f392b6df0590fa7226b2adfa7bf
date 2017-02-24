@@ -34,6 +34,24 @@
       "revId": "c92c031710566f392b6df0590fa7226b2adfa7bf",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_cbb98a7b",
+        "filename": "nfEngine/Renderers/nfRendererVk/SemaphorePool.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-02-24T20:46:02Z",
+      "side": 1,
+      "message": "So this is a very good example of #define abuse... :)",
+      "parentUuid": "fabf19d9_0bc0a2df",
+      "revId": "c92c031710566f392b6df0590fa7226b2adfa7bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
