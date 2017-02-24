@@ -23,6 +23,8 @@ PFN_vkGetPhysicalDeviceProperties vkGetPhysicalDeviceProperties = VK_NULL_HANDLE
 PFN_vkGetPhysicalDeviceFeatures vkGetPhysicalDeviceFeatures = VK_NULL_HANDLE;
 PFN_vkGetPhysicalDeviceMemoryProperties vkGetPhysicalDeviceMemoryProperties = VK_NULL_HANDLE;
 PFN_vkGetPhysicalDeviceQueueFamilyProperties vkGetPhysicalDeviceQueueFamilyProperties = VK_NULL_HANDLE;
+PFN_vkGetPhysicalDeviceFormatProperties vkGetPhysicalDeviceFormatProperties = VK_NULL_HANDLE;
+PFN_vkGetPhysicalDeviceImageFormatProperties vkGetPhysicalDeviceImageFormatProperties = VK_NULL_HANDLE;
 PFN_vkCreateDevice vkCreateDevice = VK_NULL_HANDLE;
 PFN_vkDestroyDevice vkDestroyDevice = VK_NULL_HANDLE;
 PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr = VK_NULL_HANDLE;
@@ -41,6 +43,8 @@ bool nfvkInstanceExtensionsInit(VkInstance instance)
     VK_GET_INSTANCEPROC(instance, vkGetPhysicalDeviceFeatures);
     VK_GET_INSTANCEPROC(instance, vkGetPhysicalDeviceMemoryProperties);
     VK_GET_INSTANCEPROC(instance, vkGetPhysicalDeviceQueueFamilyProperties);
+    VK_GET_INSTANCEPROC(instance, vkGetPhysicalDeviceFormatProperties);
+    VK_GET_INSTANCEPROC(instance, vkGetPhysicalDeviceImageFormatProperties);
     VK_GET_INSTANCEPROC(instance, vkCreateDevice);
     VK_GET_INSTANCEPROC(instance, vkDestroyDevice);
     VK_GET_INSTANCEPROC(instance, vkGetDeviceProcAddr);
@@ -94,6 +98,7 @@ PFN_vkCmdCopyBufferToImage vkCmdCopyBufferToImage = VK_NULL_HANDLE;
 PFN_vkCmdDraw vkCmdDraw = VK_NULL_HANDLE;
 PFN_vkCmdDrawIndexed vkCmdDrawIndexed = VK_NULL_HANDLE;
 PFN_vkCmdSetScissor vkCmdSetScissor = VK_NULL_HANDLE;
+PFN_vkCmdSetStencilReference vkCmdSetStencilReference = VK_NULL_HANDLE;
 PFN_vkCmdSetViewport vkCmdSetViewport = VK_NULL_HANDLE;
 
 // Swapchain
@@ -194,6 +199,7 @@ bool nfvkDeviceExtensionsInit(VkDevice device)
     VK_GET_DEVICEPROC(device, vkCmdDraw);
     VK_GET_DEVICEPROC(device, vkCmdDrawIndexed);
     VK_GET_DEVICEPROC(device, vkCmdSetScissor);
+    VK_GET_DEVICEPROC(device, vkCmdSetStencilReference);
     VK_GET_DEVICEPROC(device, vkCmdSetViewport);
 
     // Swapchain

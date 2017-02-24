@@ -24,17 +24,16 @@ protected:
     uint32 mHeight;
     uint32 mDepth;
     VkFormat mFormat;
-    VkImage mImage;
-    VkImageView mImageView;
     VkImageLayout mImageLayout;
-    VkDeviceMemory mImageMemory;
 
-    // tempshit to support double-buffering
+    // Below vectors are needed to support Backbuffer and it's double-buffering
     uint32 mBuffersNum;
     uint32 mCurrentBuffer;
-    std::vector<VkImage> mBuffers;
-    std::vector<VkImageView> mBufferViews;
+    std::vector<VkImage> mImages;
+    std::vector<VkImageView> mImageViews;
+    std::vector<VkDeviceMemory> mImageMemories;
     bool mFromSwapchain;
+    bool mDepthTexture;
 
 public:
     Texture();

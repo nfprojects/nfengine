@@ -327,7 +327,7 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& te
 
     VkDescriptorImageInfo imgInfo;
     VK_ZERO_MEMORY(imgInfo);
-    imgInfo.imageView = t->mImageView;
+    imgInfo.imageView = t->mImageViews[0];
 
     VkWriteDescriptorSet writeSet;
     VK_ZERO_MEMORY(writeSet);
