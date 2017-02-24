@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "fabf19d9_6bfb9e48",
+        "filename": "nfEngine/nfCommon/Linux/FileAsyncPlatform.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-02-24T20:10:42Z",
+      "side": 1,
+      "message": "Because it\u0027s more readable. But it can be also that way. The most important is that you removed the bug :P",
+      "parentUuid": "fabf19d9_75801f8c",
+      "range": {
+        "startLine": 348,
+        "startChar": 0,
+        "endLine": 351,
+        "endChar": 84
+      },
+      "revId": "3f043bc38f97e12992cfc3a0109d3bea1694b7a6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fabf19d9_84914755",
         "filename": "nfEngine/nfCommonTest/FileAsyncTest.cpp",
         "patchSetId": 9
