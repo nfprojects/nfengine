@@ -1,0 +1,263 @@
+#include "PCH.hpp"
+#include "ReflectionTestCommon.hpp"
+#include "nfCommon/Reflection/ReflectionMacros.hpp"
+#include "nfCommon/Reflection/Types/ReflectionFundamentalType.hpp"
+#include "nfCommon/Config/Config.hpp"
+#include "nfCommon/Config/ConfigValue.hpp"
+
+
+using namespace NFE;
+using namespace NFE::RTTI;
+using namespace NFE::Common;
+
+
+//////////////////////////////////////////////////////////////////////////
+
+class TestBaseClass
+{
+    NFE_DECLARE_POLYMORPHIC_CLASS(TestBaseClass)
+public:
+    int32 intVal;
+    float floatVal;
+    TestBaseClass()
+        : mPrivateBool(false)
+    {}
+    virtual ~TestBaseClass() { }
+    bool GetBool() const { return mPrivateBool; };
+private:
+    bool mPrivateBool;
+};
+
+
+class TestAbstractClass
+{
+    NFE_DECLARE_POLYMORPHIC_CLASS(TestAbstractClass)
+public:
+    int32 intVal;
+    float floatVal;
+    virtual ~TestAbstractClass() { }
+    virtual void PureVirtualMethod() = 0;
+};
+
+
+class TestChildClass : public TestBaseClass
+{
+    NFE_DECLARE_POLYMORPHIC_CLASS(TestChildClass)
+public:
+    uint32 foo;
+};
+
+
+//////////////////////////////////////////////////////////////////////////
+
+
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(TestChildClass)
+    NFE_CLASS_PARENT(TestBaseClass)
+    NFE_CLASS_MEMBER(foo)
+NFE_END_DEFINE_CLASS()
+
+
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(TestAbstractClass)
+    NFE_CLASS_MEMBER(intVal)
+    NFE_CLASS_MEMBER(floatVal)
+NFE_END_DEFINE_CLASS()
+
+
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(TestBaseClass)
+    NFE_CLASS_MEMBER(intVal)
+    NFE_CLASS_MEMBER(floatVal)
+    NFE_CLASS_MEMBER(mPrivateBool)
+NFE_END_DEFINE_CLASS()
+
+
+//////////////////////////////////////////////////////////////////////////
+
+
+TEST(ReflectionClassTest, BaseClass_Verify)
+{
+    const size_t minSize = sizeof(size_t) + sizeof(int32) + sizeof(float) + sizeof(bool);
+    const auto* type = GetType<TestBaseClass>();
+    ASSERT_NE(nullptr, type);
+
+    // check class type properties
+    EXPECT_STREQ("TestBaseClass", type->GetName());
+    EXPECT_EQ(TypeKind::PolymorphicClass, type->GetKind());
+    EXPECT_LE(minSize, type->GetSize());
+    EXPECT_LE(sizeof(size_t), type->GetAlignment());
+    EXPECT_EQ(nullptr, type->GetParent());
+
+    // vtable offset
+    const size_t initialOffset = sizeof(size_t);
+
+    // check class members
+    ASSERT_EQ(3, type->GetNumOfMembers());
+    std::vector<Member> members;
+    type->ListMembers(members);
+    ASSERT_EQ(3, members.size());
+    {
+        EXPECT_STREQ("intVal", members[0].GetName());
+        EXPECT_EQ(GetType<int32>(), members[0].GetType());
+        EXPECT_EQ(initialOffset + 0, members[0].GetOffset());
+
+        EXPECT_STREQ("floatVal", members[1].GetName());
+        EXPECT_EQ(GetType<float>(), members[1].GetType());
+        EXPECT_EQ(initialOffset + 4, members[1].GetOffset());
+
+        EXPECT_STREQ("mPrivateBool", members[2].GetName());
+        EXPECT_EQ(GetType<bool>(), members[2].GetType());
+        EXPECT_EQ(initialOffset + 8, members[2].GetOffset());
+    }
+
+    EXPECT_STREQ("intVal", members[0].GetName());
+    EXPECT_EQ(GetType<int32>(), members[0].GetType());
+    EXPECT_EQ(initialOffset, members[0].GetOffset()); // size_t = vtable offset
+
+    EXPECT_STREQ("floatVal", members[1].GetName());
+    EXPECT_EQ(GetType<float>(), members[1].GetType());
+    EXPECT_EQ(initialOffset + sizeof(int32), members[1].GetOffset());
+
+    EXPECT_STREQ("mPrivateBool", members[2].GetName());
+    EXPECT_EQ(GetType<bool>(), members[2].GetType());
+    EXPECT_EQ(initialOffset + sizeof(int32) + sizeof(float), members[2].GetOffset());
+}
+
+TEST(ReflectionClassTest, BaseClass_Serialization)
+{
+    const auto* type = GetType<TestBaseClass>();
+    ASSERT_NE(nullptr, type);
+
+    TestBaseClass obj;
+    {
+        obj.intVal = 123;
+        obj.floatVal = 1.1f;
+    }
+
+    std::string str;
+    ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
+    EXPECT_STREQ("obj={intVal=123 floatVal=1.1 mPrivateBool=false}", str.c_str());
+}
+
+TEST(ReflectionClassTest, BaseClass_Deserialization)
+{
+    const auto* type = GetType<TestBaseClass>();
+    ASSERT_NE(nullptr, type);
+
+    TestBaseClass obj;
+    helper::DeserializeObject(type, &obj, "obj={intVal=42 floatVal=4.321 mPrivateBool=true}");
+
+    EXPECT_EQ(42, obj.intVal);
+    EXPECT_EQ(4.321f, obj.floatVal);
+    EXPECT_EQ(true, obj.GetBool());
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+
+
+TEST(ReflectionClassTest, ChildClass_Verify)
+{
+    const size_t minSize = sizeof(size_t) + sizeof(int32) + sizeof(float) + sizeof(bool) + sizeof(uint32);
+    const auto* type = GetType<TestChildClass>();
+    ASSERT_NE(nullptr, type);
+
+    // check class type properties
+    EXPECT_STREQ("TestChildClass", type->GetName());
+    EXPECT_EQ(TypeKind::PolymorphicClass, type->GetKind());
+    EXPECT_LE(minSize, type->GetSize());
+    EXPECT_LE(sizeof(size_t), type->GetAlignment());
+    EXPECT_EQ(GetType<TestBaseClass>(), type->GetParent());
+
+    // vtable offset
+    const size_t initialOffset = sizeof(size_t);
+
+    // check class members
+    ASSERT_EQ(4, type->GetNumOfMembers());
+    std::vector<Member> members;
+    type->ListMembers(members);
+    ASSERT_EQ(4, members.size());
+    {
+        EXPECT_STREQ("intVal", members[0].GetName());
+        EXPECT_EQ(GetType<int32>(), members[0].GetType());
+        EXPECT_EQ(initialOffset + 0, members[0].GetOffset());
+
+        EXPECT_STREQ("floatVal", members[1].GetName());
+        EXPECT_EQ(GetType<float>(), members[1].GetType());
+        EXPECT_EQ(initialOffset + 4, members[1].GetOffset());
+
+        EXPECT_STREQ("mPrivateBool", members[2].GetName());
+        EXPECT_EQ(GetType<bool>(), members[2].GetType());
+        EXPECT_EQ(initialOffset + 8, members[2].GetOffset());
+
+        EXPECT_STREQ("foo", members[3].GetName());
+        EXPECT_EQ(GetType<uint32>(), members[3].GetType());
+        EXPECT_EQ(sizeof(TestBaseClass), members[3].GetOffset());
+    }
+}
+
+TEST(ReflectionClassTest, ChildClass_Serialization)
+{
+    const auto* type = GetType<TestChildClass>();
+    ASSERT_NE(nullptr, type);
+
+    TestChildClass obj;
+    {
+        obj.intVal = 456;
+        obj.floatVal = 3.14f;
+        obj.foo = 12345;
+    }
+
+    std::string str;
+    ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
+    EXPECT_STREQ("obj={intVal=456 floatVal=3.14 mPrivateBool=false foo=12345}", str.c_str());
+}
+
+TEST(ReflectionClassTest, ChildClass_Deserialization)
+{
+    const auto* type = GetType<TestChildClass>();
+    ASSERT_NE(nullptr, type);
+
+    TestChildClass obj;
+    helper::DeserializeObject(type, &obj, "obj={intVal=999 floatVal=2.71 mPrivateBool=true foo=76543}");
+
+    EXPECT_EQ(999, obj.intVal);
+    EXPECT_EQ(2.71f, obj.floatVal);
+    EXPECT_EQ(true, obj.GetBool());
+    EXPECT_EQ(76543, obj.foo);
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+
+
+TEST(ReflectionClassTest, AbstractClass_Verify)
+{
+    const size_t minSize = sizeof(size_t) + sizeof(int32) + sizeof(float);
+    const auto* type = GetType<TestAbstractClass>();
+    ASSERT_NE(nullptr, type);
+
+    // check class type properties
+    EXPECT_STREQ("TestAbstractClass", type->GetName());
+    EXPECT_EQ(TypeKind::AbstractClass, type->GetKind());
+    EXPECT_LE(minSize, type->GetSize());
+    EXPECT_LE(sizeof(size_t), type->GetAlignment());
+    EXPECT_EQ(nullptr, type->GetParent());
+
+    // vtable offset
+    const size_t initialOffset = sizeof(size_t);
+
+    // check class members
+    ASSERT_EQ(2, type->GetNumOfMembers());
+    std::vector<Member> members;
+    type->ListMembers(members);
+    ASSERT_EQ(2, members.size());
+    {
+        EXPECT_STREQ("intVal", members[0].GetName());
+        EXPECT_EQ(GetType<int32>(), members[0].GetType());
+        EXPECT_EQ(initialOffset + 0, members[0].GetOffset());
+
+        EXPECT_STREQ("floatVal", members[1].GetName());
+        EXPECT_EQ(GetType<float>(), members[1].GetType());
+        EXPECT_EQ(initialOffset + 4, members[1].GetOffset());
+    }
+}
+
