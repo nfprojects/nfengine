@@ -7,11 +7,17 @@
 
 #pragma once
 
+#include <memory>
+
 namespace NFE {
 
 namespace Common {
 
 // Config
+class Config;
+class ConfigObject;
+class ConfigArray;
+class ConfigValue;
 class ConfigTokenizer;
 struct Token;
 template <class T> class DataTranslator;
@@ -101,5 +107,18 @@ class Random;
 class Matrix;
 
 } // namespace Math
+
+
+namespace RTTI {
+
+enum class TypeKind : uint8;
+struct TypeInfo;
+class Type;
+using TypePtr = std::unique_ptr<Type>;
+class TypeRegistry;
+class Member;
+class ITypeSerialization;
+
+} // namespace RTTI
 
 } // namespace NFE
