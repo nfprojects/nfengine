@@ -200,6 +200,7 @@
   <ItemGroup>
     <ClInclude Include="Constants.hpp" />
     <ClInclude Include="PCH.hpp" />
+    <ClInclude Include="TestCases\Reflection\ReflectionTestCommon.hpp" />
     <ClInclude Include="TestClasses.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -246,6 +247,27 @@
     <ClCompile Include="TestCases\PackerBasicTest.cpp" />
     <ClCompile Include="TestCases\PackerComplexTest.cpp" />
     <ClCompile Include="TestCases\RayGeometryTest.cpp" />
+    <ClCompile Include="TestCases\Reflection\ReflectionClassTest.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" />
+    <ClCompile Include="TestCases\Reflection\ReflectionInterLibraryTest.cpp" />
+    <ClCompile Include="TestCases\Reflection\ReflectionPointersTest.cpp" />
+    <ClCompile Include="TestCases\Reflection\ReflectionPolymorphicClassTest.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="TestCases\Reflection\ReflectionTestCommon.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="TestCases\SetTest.cpp" />
     <ClCompile Include="TestCases\StringTest.cpp" />
     <ClCompile Include="TestCases\StringViewTest.cpp" />
