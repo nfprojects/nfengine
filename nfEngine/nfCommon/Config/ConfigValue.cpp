@@ -17,6 +17,7 @@
 namespace NFE {
 namespace Common {
 
+
 ConfigGenericValue::ConfigGenericValue(const Config* config)
     : ConfigValue(), mConfig(config)
 {

@@ -100,6 +100,13 @@ public:
     template<> NFE_INLINE bool Is<double>() const { return type == Type::Double; }
     template<> NFE_INLINE bool Is<const char*>() const { return type == Type::String; }
 
+    /**
+     * Cast to another type.
+     * @return  False if casting failed.
+     */
+    template<typename T>
+    bool As(T& outValue) const;
+
     /// Getters
     template <typename T>
     NFE_INLINE T Get() const;
