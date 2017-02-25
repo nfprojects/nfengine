@@ -127,15 +127,39 @@
     <ClCompile Include="TestCases\MathTransformTest.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\Reflection\ReflectionFundamentalTypesTest.cpp">
+      <Filter>TestCases\Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Reflection\ReflectionPolymorphicClassTest.cpp">
+      <Filter>TestCases\Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Reflection\ReflectionTestCommon.cpp">
+      <Filter>TestCases\Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Reflection\ReflectionClassTest.cpp">
+      <Filter>TestCases\Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Reflection\ReflectionInterLibraryTest.cpp">
+      <Filter>TestCases\Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Reflection\ReflectionPointersTest.cpp">
+      <Filter>TestCases\Reflection</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="Constants.hpp" />
     <ClInclude Include="TestClasses.hpp" />
+    <ClInclude Include="TestCases\Reflection\ReflectionTestCommon.hpp">
+      <Filter>TestCases\Reflection</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="TestCases">
       <UniqueIdentifier>{ddc87e8a-e935-4ca4-bf40-ac2cce4fc85b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestCases\Reflection">
+      <UniqueIdentifier>{9a3d8919-e3a4-4cde-a54e-ede1ec8a38c4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
