@@ -372,7 +372,7 @@ bool DynArray<ElementType>::Reserve(uint32 size)
         newAllocSize += newAllocSize / 2;
     }
 
-    ElementType* newBuffer = static_cast<ElementType*>(NFE_MALLOC(newAllocSize * sizeof(ElementType), sizeof(ElementType)));
+    ElementType* newBuffer = static_cast<ElementType*>(NFE_MALLOC(newAllocSize * sizeof(ElementType), alignof(ElementType)));
     if (!newBuffer)
     {
         // memory allocation failed
