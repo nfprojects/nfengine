@@ -54,6 +54,12 @@
     <Filter Include="Source Files\Memory">
       <UniqueIdentifier>{84fccf24-1002-4827-8796-97433d6f6d6a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Reflection">
+      <UniqueIdentifier>{8d062651-8ad7-43f3-a524-9bd747afe9ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Reflection">
+      <UniqueIdentifier>{26a2483e-061c-4eed-877a-3b319452c73d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp">
@@ -287,6 +293,18 @@
     <ClInclude Include="AsyncQueueManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Reflection\ReflectionMember.h">
+      <Filter>Header Files\Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\ReflectionType.h">
+      <Filter>Header Files\Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\ReflectionTypeRegistry.h">
+      <Filter>Header Files\Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\Reflection.h">
+      <Filter>Header Files\Reflection</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -480,6 +498,15 @@
     </ClCompile>
     <ClCompile Include="Win\AsyncQueueManager.cpp">
       <Filter>Source Files\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflection\Reflection.cpp">
+      <Filter>Source Files\Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflection\ReflectionType.cpp">
+      <Filter>Source Files\Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflection\ReflectionTypeRegistry.cpp">
+      <Filter>Source Files\Reflection</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
