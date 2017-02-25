@@ -11,6 +11,9 @@
 #include "../Memory/DefaultAllocator.hpp"
 #include "../Logger/Logger.hpp"
 
+#include "../Reflection/ReflectionMacros.hpp"
+#include "../Reflection/ReflectionDynArray.hpp"
+
 
 namespace NFE {
 namespace Common {
@@ -21,6 +24,8 @@ namespace Common {
 template<typename ElementType>
 class DynArray : public ArrayView<ElementType>
 {
+    NFE_DECLARE_CLASS(DynArray<ElementType>)
+
 public:
     using IteratorType = typename ArrayView<ElementType>::Iterator;
     using ConstIteratorType = typename ArrayView<ElementType>::ConstIterator;

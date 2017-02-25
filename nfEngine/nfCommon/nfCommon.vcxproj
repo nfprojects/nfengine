@@ -93,6 +93,14 @@
     <ClInclude Include="Packer\PackerResourceFile.hpp" />
     <ClInclude Include="Packer\PackerWriter.hpp" />
     <ClInclude Include="PCH.hpp" />
+    <ClInclude Include="Reflection\ReflectionDynArray.hpp" />
+    <ClInclude Include="Reflection\ReflectionFundamentalTypes.hpp" />
+    <ClInclude Include="Reflection\ReflectionMacros.hpp" />
+    <ClInclude Include="Reflection\ReflectionMember.hpp" />
+    <ClInclude Include="Reflection\ReflectionType.hpp" />
+    <ClInclude Include="Reflection\ReflectionTypeRegistry.hpp" />
+    <ClInclude Include="Reflection\ReflectionTypeSerializer.hpp" />
+    <ClInclude Include="Reflection\ReflectionUtils.hpp" />
     <ClInclude Include="System\Assertion.hpp" />
     <ClInclude Include="System\AsyncQueueManager.hpp" />
     <ClInclude Include="System\Console.hpp" />
@@ -176,6 +184,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Reflection\ReflectionFundamentalTypes.cpp" />
+    <ClCompile Include="Reflection\ReflectionType.cpp" />
+    <ClCompile Include="Reflection\ReflectionTypeRegistry.cpp" />
     <ClCompile Include="System\Assertion.cpp" />
     <ClCompile Include="System\SystemInfo.cpp" />
     <ClCompile Include="System\Win\AsyncQueueManager.cpp" />

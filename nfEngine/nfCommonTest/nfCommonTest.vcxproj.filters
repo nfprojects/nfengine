@@ -127,11 +127,26 @@
     <ClCompile Include="TestCases\MathTransformTest.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\ReflectionFundamentalTypesTest.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\ReflectionClassTest.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\ReflectionPolymorphicClassTest.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\ReflectionTestCommon.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="Constants.hpp" />
     <ClInclude Include="TestClasses.hpp" />
+    <ClInclude Include="TestCases\ReflectionTestCommon.hpp">
+      <Filter>TestCases</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="TestCases">
