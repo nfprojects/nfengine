@@ -40,6 +40,15 @@
     <Filter Include="FileSystem">
       <UniqueIdentifier>{f0641d02-205b-4fa4-8829-3ddb94e9aff8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Reflection">
+      <UniqueIdentifier>{78236db4-ac7a-433f-b752-beb3ff950afc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Reflection\Types">
+      <UniqueIdentifier>{05329a90-3726-4c05-b027-b118b9738d62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Reflection\Test">
+      <UniqueIdentifier>{08e600f2-4daa-4dbb-b2b2-6fcd5501fb2a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nfCommon.hpp" />
@@ -51,6 +60,12 @@
       <Filter>Config</Filter>
     </ClInclude>
     <ClInclude Include="Config\Config.hpp">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\ConfigValue.hpp">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\ConfigCommon.hpp">
       <Filter>Config</Filter>
     </ClInclude>
     <ClInclude Include="Containers\PackedArray.hpp">
@@ -330,11 +345,38 @@
     <ClInclude Include="Math\Transform.hpp">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Config\ConfigValue.hpp">
-      <Filter>Config</Filter>
+    <ClInclude Include="Reflection\ReflectionMacros.hpp">
+      <Filter>Reflection</Filter>
     </ClInclude>
-    <ClInclude Include="Config\ConfigCommon.hpp">
-      <Filter>Config</Filter>
+    <ClInclude Include="Reflection\ReflectionMember.hpp">
+      <Filter>Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\ReflectionTypeRegistry.hpp">
+      <Filter>Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\ReflectionUtils.hpp">
+      <Filter>Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\Types\ReflectionClassType.hpp">
+      <Filter>Reflection\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\Types\ReflectionType.hpp">
+      <Filter>Reflection\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\Types\ReflectionFundamentalType.hpp">
+      <Filter>Reflection\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\Test\ReflectionTestTypes.hpp">
+      <Filter>Reflection\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\Types\ReflectionDynArrayType.hpp">
+      <Filter>Reflection\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\Types\ReflectionNativeArrayType.hpp">
+      <Filter>Reflection\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\Types\ReflectionUniquePtrType.hpp">
+      <Filter>Reflection\Types</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -343,6 +385,9 @@
       <Filter>Config</Filter>
     </ClCompile>
     <ClCompile Include="Config\Config.cpp">
+      <Filter>Config</Filter>
+    </ClCompile>
+    <ClCompile Include="Config\ConfigValue.cpp">
       <Filter>Config</Filter>
     </ClCompile>
     <ClCompile Include="Image\ImageBMP.cpp">
@@ -540,8 +585,17 @@
     <ClCompile Include="Math\Transform.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="Config\ConfigValue.cpp">
-      <Filter>Config</Filter>
+    <ClCompile Include="Reflection\ReflectionTypeRegistry.cpp">
+      <Filter>Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflection\Types\ReflectionType.cpp">
+      <Filter>Reflection\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflection\Types\ReflectionClassType.cpp">
+      <Filter>Reflection\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflection\Test\ReflectionTestTypes.cpp">
+      <Filter>Reflection\Test</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
