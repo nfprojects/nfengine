@@ -25,10 +25,19 @@
 
 // DLL import / export macro
 #ifdef WIN32
+#define NFE_API_EXPORT __declspec(dllexport)
+#define NFE_API_IMPORT __declspec(dllimport)
+#else // WIN32
+#define NFE_API_EXPORT __attribute__((visibility("default")))
+#define NFE_API_IMPORT __attribute__((visibility("default")))
+#endif // WIN32
+
+// DLL import / export macro
+#ifdef WIN32
 #ifdef NFCOMMON_EXPORTS
-#define NFCOMMON_API __declspec(dllexport)
+#define NFCOMMON_API NFE_API_EXPORT
 #else // NFCOMMON_EXPORTS
-#define NFCOMMON_API __declspec(dllimport)
+#define NFCOMMON_API NFE_API_IMPORT
 #endif // NFCOMMON_EXPORTS
 #else // WIN32
 #define NFCOMMON_API __attribute__((visibility("default")))
@@ -98,6 +107,13 @@
 #ifndef UNUSED
 #define UNUSED(x) (void)(x)
 #endif // UNUSED
+
+// merge two identifiers
+#define NFE_MERGE(a, b) a##b
+
+// generate unique name within a single compilation unit
+#define NFE_UNIQUE_NAME_INTERNAL(prefix, line) NFE_MERGE(prefix, line)
+#define NFE_UNIQUE_NAME(prefix) NFE_UNIQUE_NAME_INTERNAL(prefix, __LINE__)
 
 
 namespace NFE {
