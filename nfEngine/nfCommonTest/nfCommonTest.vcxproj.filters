@@ -103,6 +103,15 @@
     <ClCompile Include="TestCases\EnumIteratorTest.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\ReflectionFundamentalTypesTest.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\ReflectionClassTest.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\ReflectionPolymorphicClassTest.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
