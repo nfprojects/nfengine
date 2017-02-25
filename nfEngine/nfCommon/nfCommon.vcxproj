@@ -280,6 +280,10 @@ popd</Command>
     <ClInclude Include="Packer\PackerResourceFile.hpp" />
     <ClInclude Include="Packer\PackerWriter.hpp" />
     <ClInclude Include="PCH.hpp" />
+    <ClInclude Include="Reflection\Reflection.h" />
+    <ClInclude Include="Reflection\ReflectionMember.h" />
+    <ClInclude Include="Reflection\ReflectionType.h" />
+    <ClInclude Include="Reflection\ReflectionTypeRegistry.h" />
     <ClInclude Include="SystemInfo.hpp" />
     <ClInclude Include="SystemInfoConstants.hpp" />
     <ClInclude Include="Thread.hpp" />
@@ -504,6 +508,24 @@ popd</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Reflection\Reflection.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Reflection\ReflectionType.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Reflection\ReflectionTypeRegistry.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="SystemInfo.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
