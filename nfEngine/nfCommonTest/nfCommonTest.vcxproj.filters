@@ -37,6 +37,8 @@
     <ClCompile Include="FileAsyncTest.cpp" />
     <ClCompile Include="FileBufferedTest.cpp" />
     <ClCompile Include="MathTest.cpp" />
+    <ClCompile Include="ReflectionFundamentalTypesTest.cpp" />
+    <ClCompile Include="ReflectionClassTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
