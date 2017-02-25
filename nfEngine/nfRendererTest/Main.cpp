@@ -1,7 +1,9 @@
 #include "PCH.hpp"
 #include "Backends.hpp"
+
 #include "nfCommon/FileSystem/FileSystem.hpp"
 #include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/Reflection/ReflectionTypeRegistry.hpp"
 
 
 const std::string BACKEND_ARG_NAME = "--renderer";
@@ -101,6 +103,8 @@ int main(int argc, char* argv[])
     }
 
     int ret = RUN_ALL_TESTS();
+
+    NFE::RTTI::TypeRegistry::GetInstance().Cleanup();
 
     // enable memory leak detection at the process exit (Windows only)
 #ifdef _CRTDBG_MAP_ALLOC

@@ -7,6 +7,7 @@
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/FileSystem/FileSystem.hpp"
 #include "nfCommon/System/KeyCodes.hpp"
+#include "nfCommon/Reflection/ReflectionTypeRegistry.hpp"
 
 using namespace NFE;
 using namespace NFE::Renderer;
@@ -735,6 +736,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     gFont.reset();
     gWindows.clear();
     Engine::Release();
+
+    NFE::RTTI::TypeRegistry::GetInstance().Cleanup();
 
     // enable memory leak detection at the process exit (Windows only)
 #ifdef _CRTDBG_MAP_ALLOC

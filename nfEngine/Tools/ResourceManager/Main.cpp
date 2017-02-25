@@ -10,6 +10,7 @@
 
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/FileSystem/FileSystem.hpp"
+#include "nfCommon/Reflection/ReflectionTypeRegistry.hpp"
 
 
 using namespace NFE;
@@ -80,6 +81,8 @@ int main(int argc, char* argv[])
         LOG_ERROR("Failed to scan directory '%s'!", DEFAULT_SOURCE_DIR.c_str());
         return 1;
     }
+
+    NFE::RTTI::TypeRegistry::GetInstance().Cleanup();
 
     return 0;
 }

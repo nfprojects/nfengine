@@ -9,6 +9,8 @@
 #include "StringView.hpp"
 #include "../System/Assertion.hpp"
 
+#include <string.h>
+
 
 namespace NFE {
 namespace Common {

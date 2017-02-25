@@ -24,6 +24,7 @@
 #include "nfCommon/System/Timer.hpp"
 #include "nfCommon/System/KeyCodes.hpp"
 #include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/Reflection/ReflectionTypeRegistry.hpp"
 
 #include <algorithm>
 #include <string.h>
@@ -417,6 +418,8 @@ int main(int argc, char* argv[])
 
     window.DrawLoop();
     window.Release();
+
+    NFE::RTTI::TypeRegistry::GetInstance().Cleanup();
 
     // enable memory leak detection at the process exit (Windows only)
 #ifdef _CRTDBG_MAP_ALLOC
