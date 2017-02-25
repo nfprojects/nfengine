@@ -40,6 +40,9 @@
     <Filter Include="FileSystem">
       <UniqueIdentifier>{f0641d02-205b-4fa4-8829-3ddb94e9aff8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Reflection">
+      <UniqueIdentifier>{78236db4-ac7a-433f-b752-beb3ff950afc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nfCommon.hpp" />
@@ -279,6 +282,18 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="ForwardDeclarations.hpp" />
+    <ClInclude Include="Reflection\Reflection.h">
+      <Filter>Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\ReflectionMember.h">
+      <Filter>Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\ReflectionType.h">
+      <Filter>Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\ReflectionTypeRegistry.h">
+      <Filter>Reflection</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -473,6 +488,15 @@
     </ClCompile>
     <ClCompile Include="Utils\OutputStream.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflection\Reflection.cpp">
+      <Filter>Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflection\ReflectionType.cpp">
+      <Filter>Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflection\ReflectionTypeRegistry.cpp">
+      <Filter>Reflection</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
