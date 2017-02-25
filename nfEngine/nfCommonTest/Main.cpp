@@ -1,5 +1,6 @@
 #include "PCH.hpp"
 #include "nfCommon/FileSystem/FileSystem.hpp"
+#include "nfCommon/Reflection/ReflectionTypeRegistry.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -14,6 +15,8 @@ int main(int argc, char* argv[])
 #ifdef _CRTDBG_MAP_ALLOC
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif // _CRTDBG_MAP_ALLOC
+
+    NFE::RTTI::TypeRegistry::GetInstance().Cleanup();
 
     return result;
 }
