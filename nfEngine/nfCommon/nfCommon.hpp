@@ -25,10 +25,19 @@
 
 // DLL import / export macro
 #ifdef WIN32
+#define NFE_API_EXPORT __declspec(dllexport)
+#define NFE_API_IMPORT __declspec(dllimport)
+#else // WIN32
+#define NFE_API_EXPORT __attribute__((visibility("default")))
+#define NFE_API_IMPORT __attribute__((visibility("default")))
+#endif // WIN32
+
+// DLL import / export macro
+#ifdef WIN32
 #ifdef NFCOMMON_EXPORTS
-#define NFCOMMON_API __declspec(dllexport)
+#define NFCOMMON_API NFE_API_EXPORT
 #else // NFCOMMON_EXPORTS
-#define NFCOMMON_API __declspec(dllimport)
+#define NFCOMMON_API NFE_API_IMPORT
 #endif // NFCOMMON_EXPORTS
 #else // WIN32
 #define NFCOMMON_API __attribute__((visibility("default")))
