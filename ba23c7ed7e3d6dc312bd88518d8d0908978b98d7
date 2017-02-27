@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fabf19d9_222f00f8",
+        "filename": "nfEngine/Renderers/nfRendererVk/RenderTarget.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-02-27T16:27:56Z",
+      "side": 1,
+      "message": "When assertions will show up, I will make a separate commit with assertions. Right now NFE_ASSERT is not implemented on Linux, which will cause build break there.\n\nTODO added.",
+      "parentUuid": "fabf19d9_ab7656d6",
+      "revId": "ba23c7ed7e3d6dc312bd88518d8d0908978b98d7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fabf19d9_8b7392e7",
         "filename": "nfEngine/Renderers/nfRendererVk/Texture.hpp",
         "patchSetId": 2
@@ -30,6 +48,30 @@
       "writtenOn": "2017-02-24T21:33:12Z",
       "side": 1,
       "message": "Use AoS instead of SoA",
+      "range": {
+        "startLine": 32,
+        "startChar": 1,
+        "endLine": 34,
+        "endChar": 47
+      },
+      "revId": "ba23c7ed7e3d6dc312bd88518d8d0908978b98d7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_a2fe7036",
+        "filename": "nfEngine/Renderers/nfRendererVk/Texture.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-02-27T16:27:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fabf19d9_8b7392e7",
       "range": {
         "startLine": 32,
         "startChar": 1,
