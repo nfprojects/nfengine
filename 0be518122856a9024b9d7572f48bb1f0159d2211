@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fabf19d9_57a9987a",
+        "filename": "nfEngine/nfCommon/Assertion.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-02-27T15:08:29Z",
+      "side": 1,
+      "message": "disabled\n\nBesides, shouldn\u0027t assertions be disabled in Release builds (in other words, exist only in Debug)? Because that way, this TODO is within one patch-set reach. ;)",
+      "range": {
+        "startLine": 23,
+        "startChar": 29,
+        "endLine": 23,
+        "endChar": 36
+      },
+      "revId": "0be518122856a9024b9d7572f48bb1f0159d2211",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
