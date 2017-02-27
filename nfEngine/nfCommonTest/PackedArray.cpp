@@ -1,5 +1,5 @@
 #include "PCH.hpp"
-#include "nfCommon/PackedArray.hpp"
+#include "nfCommon/Containers/PackedArray.hpp"
 #include "nfCommon/Math/Math.hpp"
 #include "nfCommon/Math/Random.hpp"
 

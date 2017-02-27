@@ -223,6 +223,8 @@ popd</Command>
     <ClInclude Include="ConfigTokenizer.hpp" />
     <ClInclude Include="BVH.hpp" />
     <ClInclude Include="Console.hpp" />
+    <ClInclude Include="Containers\PackedArray.hpp" />
+    <ClInclude Include="Containers\PackedArrayImpl.hpp" />
     <ClInclude Include="DirectoryWatch.hpp" />
     <ClInclude Include="EnumIterator.hpp" />
     <ClInclude Include="File.hpp" />
