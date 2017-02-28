@@ -30,7 +30,7 @@ VkRenderPass RenderPassManager::ConstructRenderPass(const RenderPassDesc& desc)
     uint32 curAtt = 0;
     VkAttachmentReference colorRefs[MAX_RENDER_TARGETS];
 
-    for (uint32 i = 0; i < desc.colorFormatCount; ++i)
+    for (uint32 i = 0; i < desc.colorFormats.size(); ++i)
     {
         VK_ZERO_MEMORY(atts[curAtt]);
         atts[curAtt].format = desc.colorFormats[i];
@@ -69,7 +69,7 @@ VkRenderPass RenderPassManager::ConstructRenderPass(const RenderPassDesc& desc)
     VkSubpassDescription subpass;
     VK_ZERO_MEMORY(subpass);
     subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-    subpass.colorAttachmentCount = desc.colorFormatCount;
+    subpass.colorAttachmentCount = static_cast<uint32>(desc.colorFormats.size());
     subpass.pColorAttachments = colorRefs;
     if (desc.depthFormat != VK_FORMAT_UNDEFINED)
         subpass.pDepthStencilAttachment = &depthRef;
@@ -88,8 +88,10 @@ VkRenderPass RenderPassManager::ConstructRenderPass(const RenderPassDesc& desc)
     {
         LOG_ERROR("Failed to construct new Render Pass");
         LOG_DEBUG("Formats requested are:");
-        for (uint32 i = 0; i < desc.colorFormatCount; ++i)
+        for (uint32 i = 0; i < desc.colorFormats.size(); ++i)
+        {
             LOG_DEBUG("    color #%i: %d (%s)", i, desc.colorFormats[i], TranslateVkFormatToString(desc.colorFormats[i]));
+        }
         LOG_DEBUG("    depth:     %d (%s)", desc.depthFormat, TranslateVkFormatToString(desc.depthFormat));
         return VK_NULL_HANDLE;
     }

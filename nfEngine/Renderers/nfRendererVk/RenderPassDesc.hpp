@@ -11,35 +11,29 @@ namespace Renderer {
 
 struct RenderPassDesc
 {
-    VkFormat* colorFormats;
-    uint32 colorFormatCount;
+    std::vector<VkFormat> colorFormats;
     VkFormat depthFormat;
 
     RenderPassDesc()
-        : colorFormats(nullptr)
-        , colorFormatCount(0)
+        : colorFormats()
         , depthFormat(VK_FORMAT_UNDEFINED)
     {
     }
 
     RenderPassDesc(VkFormat* color, uint32 colorCount, VkFormat depth)
-        : colorFormats(color)
-        , colorFormatCount(colorCount)
+        : colorFormats(colorCount)
         , depthFormat(depth)
     {
+        for (uint32 i = 0; i < colorCount; ++i)
+            colorFormats[i] = color[i];
     }
 
     bool operator==(const RenderPassDesc& other) const
     {
-        if (colorFormatCount != other.colorFormatCount)
-            return false;
         if (depthFormat != other.depthFormat)
             return false;
-        for (uint32 i = 0; i < colorFormatCount; ++i)
-            if (colorFormats[i] != other.colorFormats[i])
-                return false;
 
-        return true;
+        return (colorFormats == other.colorFormats);
     }
 };
 
@@ -63,9 +57,9 @@ namespace std
         size_t operator()(const NFE::Renderer::RenderPassDesc& x) const
         {
             size_t colorHash = 0;
-            for (NFE::uint32 i = 0; i < x.colorFormatCount; ++i)
-                colorHash ^= hash<VkFormat>()(x.colorFormats[i]);
-            return colorHash ^ hash<NFE::uint32>()(x.colorFormatCount) ^ hash<VkFormat>()(x.depthFormat);
+            for (auto& format: x.colorFormats)
+                colorHash ^= hash<VkFormat>()(format);
+            return colorHash ^ hash<size_t>()(x.colorFormats.size()) ^ hash<VkFormat>()(x.depthFormat);
         }
     };
 } // namespace std
