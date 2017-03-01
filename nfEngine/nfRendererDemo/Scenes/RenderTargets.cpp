@@ -63,11 +63,6 @@ bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuf
     if (!mWindowRenderTarget)
         return false;
 
-    SamplerDesc samplerDesc;
-    mSampler = mRendererDevice->CreateSampler(samplerDesc);
-    if (!mSampler)
-        return false;
-
     VertexLayoutElement vertexLayoutElements[] =
     {
         { ElementFormat::R32G32B32_Float,       0, 0, false, 0 }, // position
@@ -315,6 +310,12 @@ bool RenderTargetsScene::CreateShaders(bool multipleRT, bool withMSAA)
         return false;
     int textureSlot = mPrimaryTargetPixelShader->GetResourceSlotByName("gTexture");
     if (textureSlot < 0)
+        return false;
+
+    // sampler to be used with our textures
+    SamplerDesc samplerDesc;
+    mSampler = mRendererDevice->CreateSampler(samplerDesc);
+    if (!mSampler)
         return false;
 
     // define cbuffer binding for VS
