@@ -148,6 +148,12 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
         vkCmdEndRenderPass(mCommandBuffer);
     }
 
+    if (!renderTarget)
+    {
+        mRenderTarget = nullptr;
+        return;
+    }
+
     mRenderTarget = dynamic_cast<RenderTarget*>(renderTarget.get());
     if (!mRenderTarget)
     {

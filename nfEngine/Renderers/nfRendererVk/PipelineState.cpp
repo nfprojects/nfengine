@@ -74,7 +74,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     VkPipelineMultisampleStateCreateInfo pmsInfo;
     VK_ZERO_MEMORY(pmsInfo);
     pmsInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-    pmsInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+    pmsInfo.rasterizationSamples = TranslateSamplesNumToVkSampleCount(desc.samplesNum);
     pmsInfo.sampleShadingEnable = VK_FALSE;
     pmsInfo.minSampleShading = 0.0f;
     pmsInfo.pSampleMask = nullptr;
@@ -144,7 +144,8 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     for (i = 0; i < desc.numRenderTargets; ++i)
         colorFormats[i] = TranslateElementFormatToVkFormat(desc.rtFormats[i]);
 
-    RenderPassDesc rpDesc(colorFormats, desc.numRenderTargets, depthFormat);
+    RenderPassDesc rpDesc(colorFormats, desc.numRenderTargets, depthFormat,
+                          TranslateSamplesNumToVkSampleCount(desc.samplesNum));
     VkRenderPass renderPass = gDevice->GetRenderPassManager()->GetRenderPass(rpDesc);
     if (renderPass == VK_NULL_HANDLE)
         return false;

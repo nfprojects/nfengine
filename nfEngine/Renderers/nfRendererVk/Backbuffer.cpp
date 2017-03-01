@@ -410,6 +410,9 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     mHeight = desc.height;
     mType = TextureType::Texture2D;
     mFromSwapchain = true;
+    // TODO temporary to prevent crashes, extract from Swapchain when multisampling is added to desc
+    mSamplesNum = VK_SAMPLE_COUNT_1_BIT;
+    //mImageLayout = mCurrentImageLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
     if (!BuildPresentCommandBuffers()) return false;
     if (!BuildPresentSemaphores()) return false;
