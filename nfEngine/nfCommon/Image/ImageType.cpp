@@ -11,12 +11,12 @@
 namespace NFE {
 namespace Common {
 
-bool ImageType::RegisterImageType(const std::string& name, ImageTypePtr imageType) noexcept
+bool ImageType::RegisterImageType(const std::string& name, ImageTypePtr imageType)
 {
     return Image::mImageTypes().insert(std::make_pair(name, std::move(imageType))).second;
 }
 
-ImageType* ImageType::GetImageType(const std::string& name) noexcept
+ImageType* ImageType::GetImageType(const std::string& name)
 {
     ImageTypeMap::const_iterator imageType = Image::mImageTypes().find(name);
 

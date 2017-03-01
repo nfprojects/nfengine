@@ -114,10 +114,10 @@ TEST_F(Packer, AddFile)
         totalTime = 0.0;
 
         // reset writer
-        EXPECT_NO_THROW(mWriter.reset(new PackerWriter()));
+        mWriter.reset(new PackerWriter());
         EXPECT_NE(nullptr, mWriter.get());
 
-        EXPECT_NO_THROW(pr = mWriter->Init(TEST_PACK_PATH));
+        pr = mWriter->Init(TEST_PACK_PATH);
         EXPECT_EQ(PackerResult::OK, pr);
 
         // test performance of AddFile only
@@ -128,7 +128,7 @@ TEST_F(Packer, AddFile)
         {
             path = prefix + std::to_string(j);
             mTimer.Start();
-            EXPECT_NO_THROW(pr = mWriter->AddFile(path, path));
+            pr = mWriter->AddFile(path, path);
             totalTime += mTimer.Stop();
             EXPECT_EQ(PackerResult::OK, pr);
         }
@@ -149,17 +149,17 @@ TEST_F(Packer, AddFilesRecursively)
         totalTime = 0.0;
 
         // reset writer
-        EXPECT_NO_THROW(mWriter.reset(new PackerWriter()));
+        mWriter.reset(new PackerWriter());
         EXPECT_NE(nullptr, mWriter.get());
 
-        EXPECT_NO_THROW(pr = mWriter->Init(TEST_PACK_PATH));
+        pr = mWriter->Init(TEST_PACK_PATH);
         EXPECT_EQ(PackerResult::OK, pr);
 
         // test performance of AddFilesRecursively
         const std::string testRecDir = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_REC_DIR_PREFIX +
                                        std::to_string(i);
         mTimer.Start();
-        EXPECT_NO_THROW(pr = mWriter->AddFilesRecursively(testRecDir));
+        pr = mWriter->AddFilesRecursively(testRecDir);
         totalTime += mTimer.Stop();
         EXPECT_EQ(PackerResult::OK, pr);
 

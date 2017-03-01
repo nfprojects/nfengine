@@ -61,8 +61,8 @@ public:
                      double timeElapsed) = 0;
 
     NFE_INLINE virtual void Reset() {};
-    NFE_INLINE void Enable(bool enable) noexcept { mIsEnabled = enable; };
-    NFE_INLINE bool IsEnabled() const noexcept { return mIsEnabled; };
+    NFE_INLINE void Enable(bool enable) { mIsEnabled = enable; };
+    NFE_INLINE bool IsEnabled() const { return mIsEnabled; };
 };
 
 
@@ -94,7 +94,7 @@ class NFCOMMON_API Logger
     std::mutex mLogMutex;                 //< For synchronizing logger output
     std::mutex mResetMutex;               //< For locking logger initialization
     Timer mTimer;
-    static LoggerBackendMap& mBackends() noexcept; //< Method encapsulation to solve "static initialization order fiasco"
+    static LoggerBackendMap& mBackends(); //< Method encapsulation to solve "static initialization order fiasco"
 
     Logger();
     ~Logger();
@@ -116,7 +116,7 @@ public:
      *
      * @return True, if new backend with @name was inserted. False if @name is already in use.
      */
-    static bool RegisterBackend(const std::string& name, LoggerBackendPtr backend) noexcept;
+    static bool RegisterBackend(const std::string& name, LoggerBackendPtr backend);
 
     /**
      * Get pointer to already registered backend.
@@ -125,7 +125,7 @@ public:
      *
      * @return Pointer to the backend if registered, otherwise nullptr.
      */
-    static LoggerBackend* GetBackend(const std::string& name) noexcept;
+    static LoggerBackend* GetBackend(const std::string& name);
 
     /**
      * Get list of the registered backends.
@@ -154,7 +154,7 @@ public:
     /**
      * Get pre-calculated file path prefix (nfEngine root directory).
      */
-    NFE_INLINE size_t GetPathPrefixLen() const noexcept
+    NFE_INLINE size_t GetPathPrefixLen() const
     {
         return mPathPrefixLen;
     }
@@ -162,7 +162,7 @@ public:
     /**
      * Get logs directory location.
      */
-    NFE_INLINE const std::string& GetLogsDirectory() const noexcept
+    NFE_INLINE const std::string& GetLogsDirectory() const
     {
         return mLogsDirectory;
     }
@@ -175,7 +175,7 @@ public:
     /**
      * Translate log type to string.
      */
-    static const char* LogTypeToString(LogType logType) noexcept;
+    static const char* LogTypeToString(LogType logType);
 
     /**
      * Check if Logger is fully initialized.
