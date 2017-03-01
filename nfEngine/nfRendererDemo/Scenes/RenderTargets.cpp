@@ -49,7 +49,7 @@ RenderTargetsScene::~RenderTargetsScene()
     Release();
 }
 
-bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuffer)
+bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuffer, bool withMSAA)
 {
     // create rendertarget that will render to the window's backbuffer
     RenderTargetElement rtTarget;
@@ -61,11 +61,6 @@ bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuf
     rtDesc.debugName = "RenderTargetsScene::mWindowRenderTarget";
     mWindowRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
     if (!mWindowRenderTarget)
-        return false;
-
-    SamplerDesc samplerDesc;
-    mSampler = mRendererDevice->CreateSampler(samplerDesc);
-    if (!mSampler)
         return false;
 
     VertexLayoutElement vertexLayoutElements[] =
@@ -112,6 +107,7 @@ bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuf
 
     pipelineStateDesc.rtFormats[0] = ElementFormat::R8G8B8A8_U_Norm;
     pipelineStateDesc.rtFormats[1] = ElementFormat::R8G8B8A8_U_Norm;
+    pipelineStateDesc.samplesNum = withMSAA ? MULTISAMPLE_SAMPLES : 1;
     pipelineStateDesc.pixelShader = mRTPixelShader;
     pipelineStateDesc.depthFormat = withDepthBuffer ? DepthBufferFormat::Depth16 : DepthBufferFormat::Unknown;
     pipelineStateDesc.numRenderTargets = multipleRT ? 2 : 1;
@@ -317,6 +313,12 @@ bool RenderTargetsScene::CreateShaders(bool multipleRT, bool withMSAA)
     if (textureSlot < 0)
         return false;
 
+    // sampler to be used with our textures
+    SamplerDesc samplerDesc;
+    mSampler = mRendererDevice->CreateSampler(samplerDesc);
+    if (!mSampler)
+        return false;
+
     // define cbuffer binding for VS
     VolatileCBufferBinding cbufferDesc(ShaderType::Vertex, ShaderResourceType::CBuffer, cbufferSlot,
                                        sizeof(VertexCBuffer));
@@ -369,7 +371,7 @@ bool RenderTargetsScene::CreateSubSceneMRTandMSAA()
 {
     if (!CreateShaders(true, true))
         return false;
-    if (!CreateBasicResources(true, true))
+    if (!CreateBasicResources(true, true, true))
         return false;
     return CreateRenderTarget(true, true, true);
 }

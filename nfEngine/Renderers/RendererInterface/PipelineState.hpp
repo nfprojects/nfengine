@@ -139,6 +139,7 @@ struct PipelineStateDesc
     uint32 numRenderTargets;
     ElementFormat rtFormats[MAX_RENDER_TARGETS];
     DepthBufferFormat depthFormat;
+    uint32 samplesNum;
 
     ResourceBindingLayoutPtr resBindingLayout;
     const char* debugName;   //< optional debug name
@@ -157,6 +158,7 @@ struct PipelineStateDesc
         , vertexLayout(nullptr)
         , numRenderTargets(1)
         , depthFormat(DepthBufferFormat::Unknown)
+        , samplesNum(1)
         , resBindingLayout(nullptr)
         , debugName(nullptr)
     {

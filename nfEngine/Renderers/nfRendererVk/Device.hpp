@@ -34,7 +34,6 @@ private:
     uint32 mGraphicsQueueIndex;
     VkQueue mGraphicsQueue;
     VkPipelineCache mPipelineCache;
-    bool mPresented;
     std::vector<VkSurfaceFormatKHR> mSupportedFormats;
     std::unique_ptr<RenderPassManager> mRenderPassManager;
     std::unique_ptr<SemaphorePool> mSemaphorePool;
@@ -45,11 +44,6 @@ private:
 
     bool CreateTemporarySurface(VkSurfaceKHR& surface);
     void CleanupTemporarySurface(VkSurfaceKHR& surface);
-
-    NFE_INLINE void SignalPresent()
-    {
-        mPresented = true;
-    }
 
 public:
     Device();

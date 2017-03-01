@@ -24,6 +24,8 @@ protected:
         VkImage image;
         VkImageView view;
         VkDeviceMemory memory;
+        VkImageLayout defaultImageLayout;
+        VkImageLayout currentImageLayout;
     };
 
     TextureType mType;
@@ -31,7 +33,8 @@ protected:
     uint32 mHeight;
     uint32 mDepth;
     VkFormat mFormat;
-    VkImageLayout mImageLayout;
+    VkSampleCountFlagBits mSamplesNum;
+    VkImageSubresourceRange mSubresRange;
 
     // Below vectors are needed to support Backbuffer and it's double-buffering
     uint32 mBuffersNum;
@@ -44,6 +47,9 @@ public:
     Texture();
     virtual ~Texture();
     bool Init(const TextureDesc& desc);
+
+    // Record resource layout transition. VK_IMAGE_LAYOUT_UNDEFINED reverts to default layout.
+    void Transition(VkCommandBuffer cmdBuffer, VkImageLayout targetLayout = VK_IMAGE_LAYOUT_UNDEFINED);
 };
 
 } // namespace Renderer

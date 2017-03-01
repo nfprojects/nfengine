@@ -64,17 +64,116 @@ bool Texture::Init(const TextureDesc& desc)
     {
         mDepthTexture = true;
         mFormat = TranslateDepthFormatToVkFormat(desc.depthBufferFormat);
+        mImages[mCurrentBuffer].defaultImageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
     }
     else
     {
         mDepthTexture = false;
         mFormat = TranslateElementFormatToVkFormat(desc.format);
+        mImages[mCurrentBuffer].defaultImageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
     }
 
     VkResult result = VK_SUCCESS;
 
     VkBuffer stagingBuffer = VK_NULL_HANDLE;
     VkDeviceMemory stagingBufferMemory = VK_NULL_HANDLE;
+
+
+    // Image creation
+
+    VkImageCreateInfo imageInfo;
+    VK_ZERO_MEMORY(imageInfo);
+    imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    if (mType == TextureType::TextureCube)
+        imageInfo.flags = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
+
+    switch (mType)
+    {
+    case TextureType::Texture1D:
+        imageInfo.imageType = VK_IMAGE_TYPE_1D;
+        break;
+    case TextureType::Texture2D:
+        imageInfo.imageType = VK_IMAGE_TYPE_2D;
+        break;
+    case TextureType::Texture3D:
+        imageInfo.imageType = VK_IMAGE_TYPE_3D;
+        break;
+    case TextureType::TextureCube:
+        imageInfo.imageType = VK_IMAGE_TYPE_2D;
+        break;
+    default:
+        LOG_ERROR("Unsupported or incorrect texture type.");
+        return false;
+    }
+
+    mWidth = desc.width;
+    if (mType == TextureType::Texture2D || mType == TextureType::Texture3D || mType == TextureType::TextureCube)
+        mHeight = desc.height;
+    if (mType == TextureType::Texture3D)
+        mDepth = desc.depth;
+
+    mSamplesNum = TranslateSamplesNumToVkSampleCount(desc.samplesNum);
+
+    imageInfo.format = mFormat;
+    imageInfo.extent.width = mWidth;
+    imageInfo.extent.height = mHeight;
+    imageInfo.extent.depth = mDepth;
+    imageInfo.mipLevels = desc.mipmaps;
+    imageInfo.arrayLayers = desc.layers;
+    imageInfo.samples = mSamplesNum;
+    imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+
+    // TODO SHADER_WRITABLE
+    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
+        imageInfo.usage |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_RENDERTARGET)
+        imageInfo.usage |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER)
+        imageInfo.usage |= VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT;
+
+    imageInfo.usage |= VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+    imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    imageInfo.initialLayout = mImages[mCurrentBuffer].currentImageLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
+
+    result = vkCreateImage(gDevice->GetDevice(), &imageInfo, nullptr, &mImages[0].image);
+    CHECK_VKRESULT(result, "Failed to create Image for texture");
+
+    VkMemoryRequirements imageMemReqs;
+    vkGetImageMemoryRequirements(gDevice->GetDevice(), mImages[0].image, &imageMemReqs);
+
+    VkMemoryAllocateInfo imageMemInfo;
+    VK_ZERO_MEMORY(imageMemInfo);
+    imageMemInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    imageMemInfo.allocationSize = imageMemReqs.size;
+    imageMemInfo.memoryTypeIndex = gDevice->GetMemoryTypeIndex(imageMemReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+    result = vkAllocateMemory(gDevice->GetDevice(), &imageMemInfo, nullptr, &mImages[0].memory);
+    CHECK_VKRESULT(result, "Failed to allocate memory for Image");
+
+    result = vkBindImageMemory(gDevice->GetDevice(), mImages[0].image, mImages[0].memory, 0);
+    CHECK_VKRESULT(result, "Failed to bind Image to its memory");
+
+    VK_ZERO_MEMORY(mSubresRange);
+    mSubresRange.baseMipLevel = 0;
+    mSubresRange.levelCount = desc.mipmaps;
+    mSubresRange.layerCount = desc.layers;
+    if (mDepthTexture)
+    {
+        if (mFormat == VK_FORMAT_D24_UNORM_S8_UINT)
+        {
+            mSubresRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+        }
+        else
+        {
+            mSubresRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+        }
+    }
+    else
+    {
+        mSubresRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    }
+
+
+    // Data copying to Device Memory
 
     if (desc.dataDesc)
     {
@@ -115,6 +214,7 @@ bool Texture::Init(const TextureDesc& desc)
         result = vkAllocateMemory(gDevice->GetDevice(), &memInfo, nullptr, &stagingBufferMemory);
         CHECK_VKRESULT(result, "Failed to allocate memory for staging buffer");
 
+        // TODO multiple dataDesc support
         void* bufferData = nullptr;
         result = vkMapMemory(gDevice->GetDevice(), stagingBufferMemory, 0, memInfo.allocationSize, 0, &bufferData);
         CHECK_VKRESULT(result, "Failed to map staging buffer's memory");
@@ -124,105 +224,6 @@ bool Texture::Init(const TextureDesc& desc)
         CHECK_VKRESULT(result, "Failed to bind staging buffer to its memory");
     }
 
-    VkFormatProperties formatProps;
-    vkGetPhysicalDeviceFormatProperties(gDevice->GetPhysicalDevice(), mFormat, &formatProps);
-
-    VkImageFormatProperties imgFormatProps;
-    vkGetPhysicalDeviceImageFormatProperties(gDevice->GetPhysicalDevice(), mFormat, VK_IMAGE_TYPE_2D,
-                                             VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
-                                             0, &imgFormatProps);
-
-
-    // Create our image
-    VkImageCreateInfo imageInfo;
-    VK_ZERO_MEMORY(imageInfo);
-    imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-    if (mType == TextureType::TextureCube)
-        imageInfo.flags = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
-
-    switch (mType)
-    {
-    case TextureType::Texture1D:
-        imageInfo.imageType = VK_IMAGE_TYPE_1D;
-        break;
-    case TextureType::Texture2D:
-        imageInfo.imageType = VK_IMAGE_TYPE_2D;
-        break;
-    case TextureType::Texture3D:
-        imageInfo.imageType = VK_IMAGE_TYPE_3D;
-        break;
-    case TextureType::TextureCube:
-        imageInfo.imageType = VK_IMAGE_TYPE_2D;
-        break;
-    default:
-        LOG_ERROR("Unsupported or incorrect texture type.");
-        return false;
-    }
-
-    mWidth = desc.width;
-    if (mType == TextureType::Texture2D || mType == TextureType::Texture3D || mType == TextureType::TextureCube)
-        mHeight = desc.height;
-    if (mType == TextureType::Texture3D)
-        mDepth = desc.depth;
-
-    imageInfo.format = mFormat;
-    imageInfo.extent.width = mWidth;
-    imageInfo.extent.height = mHeight;
-    imageInfo.extent.depth = mDepth;
-    imageInfo.mipLevels = desc.mipmaps;
-    imageInfo.arrayLayers = desc.layers;
-    imageInfo.samples = TranslateSamplesNumToVkSampleCount(desc.samplesNum);
-    imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-
-    // TODO SHADER_WRITABLE
-    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
-        imageInfo.usage |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_RENDERTARGET)
-        imageInfo.usage |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-    if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER)
-        imageInfo.usage |= VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT;
-
-    imageInfo.usage |= VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-    imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    imageInfo.initialLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
-
-    result = vkCreateImage(gDevice->GetDevice(), &imageInfo, nullptr, &mImages[0].image);
-    CHECK_VKRESULT(result, "Failed to create Image for texture");
-
-    VkMemoryRequirements imageMemReqs;
-    vkGetImageMemoryRequirements(gDevice->GetDevice(), mImages[0].image, &imageMemReqs);
-
-    VkMemoryAllocateInfo imageMemInfo;
-    VK_ZERO_MEMORY(imageMemInfo);
-    imageMemInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    imageMemInfo.allocationSize = imageMemReqs.size;
-    imageMemInfo.memoryTypeIndex = gDevice->GetMemoryTypeIndex(imageMemReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-    result = vkAllocateMemory(gDevice->GetDevice(), &imageMemInfo, nullptr, &mImages[0].memory);
-    CHECK_VKRESULT(result, "Failed to allocate memory for Image");
-
-    result = vkBindImageMemory(gDevice->GetDevice(), mImages[0].image, mImages[0].memory, 0);
-    CHECK_VKRESULT(result, "Failed to bind Image to its memory");
-
-    VkImageSubresourceRange subresRange;
-    VK_ZERO_MEMORY(subresRange);
-    subresRange.baseMipLevel = 0;
-    subresRange.levelCount = desc.mipmaps;
-    subresRange.layerCount = desc.layers;
-    if (mDepthTexture)
-    {
-        if (mFormat == VK_FORMAT_D24_UNORM_S8_UINT)
-        {
-            subresRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
-        }
-        else
-        {
-            subresRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-        }
-    }
-    else
-    {
-        subresRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    }
 
     // TODO right now copying is done on a general queue, but some devices support separate Transfer queue.
     //      Consider moving copy command buffers to transfer queue if device makes it possible.
@@ -243,18 +244,9 @@ bool Texture::Init(const TextureDesc& desc)
     result = vkBeginCommandBuffer(initCmdBuffer, &cmdBeginInfo);
     CHECK_VKRESULT(result, "Failed to begin command rendering for buffer copy operation");
 
-    VkImageMemoryBarrier imageBarrier;
-    VK_ZERO_MEMORY(imageBarrier);
-    imageBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    imageBarrier.image = mImages[0].image;
-    imageBarrier.subresourceRange = subresRange;
-
     if (desc.dataDesc)
     {
-        imageBarrier.oldLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
-        imageBarrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-        vkCmdPipelineBarrier(initCmdBuffer, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                            0, 0, nullptr, 0, nullptr, 1, &imageBarrier);
+        Transition(initCmdBuffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
         // TODO Multiple dataDescs support
         VkBufferImageCopy imageCopyRegion;
@@ -267,25 +259,9 @@ bool Texture::Init(const TextureDesc& desc)
         imageCopyRegion.imageSubresource.layerCount = desc.layers;
         imageCopyRegion.imageSubresource.mipLevel = 0;
         vkCmdCopyBufferToImage(initCmdBuffer, stagingBuffer, mImages[0].image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &imageCopyRegion);
-
-        imageBarrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-    }
-    else
-    {
-        imageBarrier.oldLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
     }
 
-    if (mDepthTexture)
-    {
-        imageBarrier.newLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-    }
-    else
-    {
-        imageBarrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    }
-
-    vkCmdPipelineBarrier(initCmdBuffer, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                        0, 0, nullptr, 0, nullptr, 1, &imageBarrier);
+    Transition(initCmdBuffer);
 
     result = vkEndCommandBuffer(initCmdBuffer);
     CHECK_VKRESULT(result, "Failure during copy command buffer recording");
@@ -299,13 +275,15 @@ bool Texture::Init(const TextureDesc& desc)
 
     gDevice->WaitForGPU();
 
-    vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(), 1, &initCmdBuffer);
-
     if (desc.dataDesc)
     {
+        vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(), 1, &initCmdBuffer);
         vkFreeMemory(gDevice->GetDevice(), stagingBufferMemory, nullptr);
         vkDestroyBuffer(gDevice->GetDevice(), stagingBuffer, nullptr);
     }
+
+
+    // Image View creation
 
     VkImageViewCreateInfo ivInfo;
     VK_ZERO_MEMORY(ivInfo);
@@ -339,12 +317,33 @@ bool Texture::Init(const TextureDesc& desc)
             VK_COMPONENT_SWIZZLE_B,
             VK_COMPONENT_SWIZZLE_A,
     };
-    ivInfo.subresourceRange = subresRange;
+    ivInfo.subresourceRange = mSubresRange;
     result = vkCreateImageView(gDevice->GetDevice(), &ivInfo, nullptr, &mImages[0].view);
     CHECK_VKRESULT(result, "Failed to generate Image View from created Texure's image");
 
     LOG_INFO("Texture initialized successfully");
     return true;
+}
+
+void Texture::Transition(VkCommandBuffer cmdBuffer, VkImageLayout targetLayout)
+{
+    if (targetLayout == VK_IMAGE_LAYOUT_UNDEFINED)
+        targetLayout = mImages[mCurrentBuffer].defaultImageLayout;
+
+    if (targetLayout == mImages[mCurrentBuffer].currentImageLayout)
+        return; // no need to transition layouts when we are already at it
+
+    VkImageMemoryBarrier imageBarrier;
+    VK_ZERO_MEMORY(imageBarrier);
+    imageBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    imageBarrier.image = mImages[mCurrentBuffer].image;
+    imageBarrier.subresourceRange = mSubresRange;
+    imageBarrier.oldLayout = mImages[mCurrentBuffer].currentImageLayout;
+    imageBarrier.newLayout = targetLayout;
+    vkCmdPipelineBarrier(cmdBuffer, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                         0, 0, nullptr, 0, nullptr, 1, &imageBarrier);
+
+    mImages[mCurrentBuffer].currentImageLayout = targetLayout;
 }
 
 } // namespace Renderer

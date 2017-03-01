@@ -22,8 +22,6 @@ Backbuffer::Backbuffer()
     , mPresentQueue(VK_NULL_HANDLE)
     , mSwapchain(VK_NULL_HANDLE)
     , mSwapPresentMode(VK_PRESENT_MODE_MAILBOX_KHR)
-    , mPrePresentSemaphore(VK_NULL_HANDLE)
-    , mPostPresentSemaphore(VK_NULL_HANDLE)
 {
 }
 
@@ -31,15 +29,6 @@ Backbuffer::~Backbuffer()
 {
     vkQueueWaitIdle(mPresentQueue);
 
-    if (mPostPresentCommandBuffers.size())
-        vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(), mBuffersNum, mPostPresentCommandBuffers.data());
-    if (mPrePresentCommandBuffers.size())
-        vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(), mBuffersNum, mPrePresentCommandBuffers.data());
-
-    if (mPostPresentSemaphore != VK_NULL_HANDLE)
-        vkDestroySemaphore(gDevice->GetDevice(), mPostPresentSemaphore, nullptr);
-    if (mPrePresentSemaphore != VK_NULL_HANDLE)
-        vkDestroySemaphore(gDevice->GetDevice(), mPrePresentSemaphore, nullptr);
     if (mSwapchain != VK_NULL_HANDLE)
         vkDestroySwapchainKHR(gDevice->GetDevice(), mSwapchain, nullptr);
     if (mSurface != VK_NULL_HANDLE)
@@ -272,121 +261,14 @@ bool Backbuffer::CreateSwapchainImageViews()
     return true;
 }
 
-bool Backbuffer::BuildPresentCommandBuffers()
-{
-    mPrePresentCommandBuffers.resize(mBuffersNum);
-    mPostPresentCommandBuffers.resize(mBuffersNum);
-
-    VkResult result = VK_SUCCESS;
-    VkCommandBufferAllocateInfo buffInfo = {};
-    VK_ZERO_MEMORY(buffInfo);
-    buffInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    buffInfo.commandPool = gDevice->GetCommandPool();
-    buffInfo.commandBufferCount = mBuffersNum;
-    buffInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    result = vkAllocateCommandBuffers(gDevice->GetDevice(), &buffInfo, mPrePresentCommandBuffers.data());
-    CHECK_VKRESULT(result, "Unable to allocate present command buffer");
-    result = vkAllocateCommandBuffers(gDevice->GetDevice(), &buffInfo, mPostPresentCommandBuffers.data());
-    CHECK_VKRESULT(result, "Unable to allocate post present command buffer");
-
-    // Build pre-present and post-present command buffers
-    // These will contain only a PipelineBarrier which will convert our image through layouts
-    VkImageMemoryBarrier presentBarrier;
-    VK_ZERO_MEMORY(presentBarrier);
-    presentBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    presentBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-    presentBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-    presentBarrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    presentBarrier.subresourceRange.baseMipLevel = 0;
-    presentBarrier.subresourceRange.levelCount = 1;
-    presentBarrier.subresourceRange.baseArrayLayer = 0;
-    presentBarrier.subresourceRange.layerCount = 1;
-
-    VkCommandBufferBeginInfo cmdBeginInfo;
-    VK_ZERO_MEMORY(cmdBeginInfo);
-    cmdBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-
-    // layout conversion before present (color attachment -> present source)
-    presentBarrier.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-    presentBarrier.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-    presentBarrier.oldLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-    presentBarrier.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-    for (uint32 i = 0; i < mBuffersNum; ++i)
-    {
-        result = vkBeginCommandBuffer(mPrePresentCommandBuffers[i], &cmdBeginInfo);
-        CHECK_VKRESULT(result, "Failed to start recording present command buffer");
-
-        presentBarrier.image = mImages[i].image;
-
-        vkCmdPipelineBarrier(mPrePresentCommandBuffers[i], VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
-                             VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0,
-                             0, nullptr, 0, nullptr,
-                             1, &presentBarrier);
-
-        result = vkEndCommandBuffer(mPrePresentCommandBuffers[i]);
-        CHECK_VKRESULT(result, "Error during present command buffer recording");
-    }
-
-    // layout conversion after present (whatever -> color attachment)
-    // here we don't care about source access and old layout, because we'll use this
-    // command buffer in initialization stage as well
-    presentBarrier.srcAccessMask = 0;
-    presentBarrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-    presentBarrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    presentBarrier.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-    for (uint32 i = 0; i < mBuffersNum; ++i)
-    {
-        result = vkBeginCommandBuffer(mPostPresentCommandBuffers[i], &cmdBeginInfo);
-        CHECK_VKRESULT(result, "Failed to start recording post present command buffer");
-
-        presentBarrier.image = mImages[i].image;
-
-        vkCmdPipelineBarrier(mPostPresentCommandBuffers[i], VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
-                             VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0,
-                             0, nullptr, 0, nullptr,
-                             1, &presentBarrier);
-
-        result = vkEndCommandBuffer(mPostPresentCommandBuffers[i]);
-        CHECK_VKRESULT(result, "Error during post present command buffer recording");
-    }
-
-    return true;
-}
-
-bool Backbuffer::BuildPresentSemaphores()
-{
-    VkSemaphoreCreateInfo semInfo;
-    VK_ZERO_MEMORY(semInfo);
-    semInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-    VkResult result = vkCreateSemaphore(gDevice->GetDevice(), &semInfo, nullptr, &mPrePresentSemaphore);
-    CHECK_VKRESULT(result, "Failed to create pre present semaphore");
-    result = vkCreateSemaphore(gDevice->GetDevice(), &semInfo, nullptr, &mPostPresentSemaphore);
-    CHECK_VKRESULT(result, "Failed to create post present semaphore");
-    return true;
-}
-
 bool Backbuffer::AcquireNextImage()
 {
+    // we don't advance semaphores here, because we will wait for
     // TODO handle VK_ERROR_OUT_OF_DATE (happens ex. during resize)
     VkResult result = vkAcquireNextImageKHR(gDevice->GetDevice(), mSwapchain, UINT64_MAX,
-                                            mPostPresentSemaphore, VK_NULL_HANDLE, &mCurrentBuffer);
+                                            gDevice->GetSemaphorePool()->GetCurrentSemaphore(),
+                                            VK_NULL_HANDLE, &mCurrentBuffer);
     CHECK_VKRESULT(result, "Failed to acquire next image");
-
-    // Submit a pipeline barrier call to ensure our buffer is a color attachment
-    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-    VkSubmitInfo submitInfo;
-    VK_ZERO_MEMORY(submitInfo);
-    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &mPostPresentCommandBuffers[mCurrentBuffer];
-    submitInfo.waitSemaphoreCount = 1;
-    submitInfo.pWaitSemaphores = &mPostPresentSemaphore;
-    submitInfo.pWaitDstStageMask = &pipelineStages;
-    // no semaphores to signal - the chain of dependencies for this frame ends here
-    result = vkQueueSubmit(mPresentQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    CHECK_VKRESULT(result, "Failed to submit post present operations");
-
-    gDevice->SignalPresent();
 
     return true;
 }
@@ -410,10 +292,24 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     mHeight = desc.height;
     mType = TextureType::Texture2D;
     mFromSwapchain = true;
+    // TODO temporary to prevent crashes, extract from Swapchain when multisampling is added to desc
+    mSamplesNum = VK_SAMPLE_COUNT_1_BIT;
+    mSubresRange.baseMipLevel = 0;
+    mSubresRange.levelCount = 1;
+    mSubresRange.baseArrayLayer = 0;
+    mSubresRange.layerCount = 1;
+    mSubresRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    for (auto& image: mImages)
+    {
+        image.defaultImageLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+        image.currentImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    }
 
-    if (!BuildPresentCommandBuffers()) return false;
-    if (!BuildPresentSemaphores()) return false;
     if (!AcquireNextImage()) return false;
+
+    VkSubmitInfo submit;
+    VK_ZERO_MEMORY(submit);
+    submit.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
     LOG_INFO("Backbuffer initialized successfully.");
     return true;
@@ -431,22 +327,8 @@ bool Backbuffer::Resize(int newWidth, int newHeight)
 bool Backbuffer::Present()
 {
     // our semaphore to wait for will be the last used from SemaphorePool
-    VkSemaphore renderSem = gDevice->GetSemaphorePool()->GetCurrentSemaphore();
-
-    // Submit a pipeline barrier call to ensure our buffer is a present source
-    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-    VkSubmitInfo submitInfo;
-    VK_ZERO_MEMORY(submitInfo);
-    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &mPrePresentCommandBuffers[mCurrentBuffer];
-    submitInfo.waitSemaphoreCount = 1;
-    submitInfo.pWaitSemaphores = &renderSem;
-    submitInfo.pWaitDstStageMask = &pipelineStages;
-    submitInfo.signalSemaphoreCount = 1;
-    submitInfo.pSignalSemaphores = &mPrePresentSemaphore;
-    VkResult result = vkQueueSubmit(mPresentQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    CHECK_VKRESULT(result, "Failed to submit post present operations");
+    VkSemaphore lastRenderSem = gDevice->GetSemaphorePool()->GetCurrentSemaphore();
+    VkResult result = VK_SUCCESS;
 
     // Present whatever was drawn (only if render semaphore is signalled)
     VkPresentInfoKHR presentInfo;
@@ -456,7 +338,7 @@ bool Backbuffer::Present()
     presentInfo.pSwapchains = &mSwapchain;
     presentInfo.pImageIndices = &mCurrentBuffer;
     presentInfo.waitSemaphoreCount = 1;
-    presentInfo.pWaitSemaphores = &mPrePresentSemaphore;
+    presentInfo.pWaitSemaphores = &lastRenderSem;
     presentInfo.pResults = &result;
     vkQueuePresentKHR(mPresentQueue, &presentInfo);
     //CHECK_VKRESULT(result, "Failed to present image on current swap chain");

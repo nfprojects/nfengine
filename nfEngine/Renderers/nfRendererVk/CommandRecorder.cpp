@@ -35,7 +35,7 @@ bool CommandRecorder::Init()
     mCommandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     mCommandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
-    LOG_INFO("Command Buffer initialized successfully.");
+    LOG_INFO("Command Recorder initialized successfully.");
     return true;
 }
 
@@ -94,6 +94,9 @@ void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePt
 {
     UNUSED(slot);
 
+    if (bindingSetInstance == nullptr)
+        return;
+
     ResourceBindingInstance* rbi = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.get());
     if (rbi == nullptr)
     {
@@ -146,6 +149,18 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
     {
         // there is a previous render pass active, end it
         vkCmdEndRenderPass(mCommandBuffer);
+
+        for (auto& tex : mRenderTarget->mTex)
+            tex->Transition(mCommandBuffer);
+
+        if (mRenderTarget->mDepthTex)
+            mRenderTarget->mDepthTex->Transition(mCommandBuffer);
+    }
+
+    if (!renderTarget)
+    {
+        mRenderTarget = nullptr;
+        return;
     }
 
     mRenderTarget = dynamic_cast<RenderTarget*>(renderTarget.get());
@@ -154,6 +169,12 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
         LOG_ERROR("Incorrect Render Target pointer.");
         return;
     }
+
+    for (auto& tex : mRenderTarget->mTex)
+        tex->Transition(mCommandBuffer, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+
+    if (mRenderTarget->mDepthTex)
+        mRenderTarget->mDepthTex->Transition(mCommandBuffer, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 
     VkRenderPassBeginInfo rpBeginInfo;
     VK_ZERO_MEMORY(rpBeginInfo);
@@ -416,6 +437,9 @@ CommandListID CommandRecorder::Finish()
     if (mRenderTarget)
     {
         vkCmdEndRenderPass(mCommandBuffer);
+        mRenderTarget->mTex[0]->Transition(mCommandBuffer);
+        if (mRenderTarget->mDepthTex)
+            mRenderTarget->mDepthTex->Transition(mCommandBuffer);
     }
 
     VkResult result = vkEndCommandBuffer(mCommandBuffer);
