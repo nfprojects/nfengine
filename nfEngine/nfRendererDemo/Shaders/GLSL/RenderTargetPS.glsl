@@ -4,9 +4,9 @@ in VertexShaderOutput
     vec4 Color;
 } Input;
 
-out vec4 color0;
+layout (location = 0) out vec4 color0;
 #if (TARGETS > 1)
-out vec4 color1;
+layout (location = 1) out vec4 color1;
 #endif
 
 void main()

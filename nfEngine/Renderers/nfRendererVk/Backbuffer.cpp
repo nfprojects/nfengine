@@ -369,22 +369,8 @@ bool Backbuffer::AcquireNextImage()
 {
     // TODO handle VK_ERROR_OUT_OF_DATE (happens ex. during resize)
     VkResult result = vkAcquireNextImageKHR(gDevice->GetDevice(), mSwapchain, UINT64_MAX,
-                                            mPostPresentSemaphore, VK_NULL_HANDLE, &mCurrentBuffer);
+                                            VK_NULL_HANDLE, VK_NULL_HANDLE, &mCurrentBuffer);
     CHECK_VKRESULT(result, "Failed to acquire next image");
-
-    // Submit a pipeline barrier call to ensure our buffer is a color attachment
-    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-    VkSubmitInfo submitInfo;
-    VK_ZERO_MEMORY(submitInfo);
-    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &mPostPresentCommandBuffers[mCurrentBuffer];
-    submitInfo.waitSemaphoreCount = 1;
-    submitInfo.pWaitSemaphores = &mPostPresentSemaphore;
-    submitInfo.pWaitDstStageMask = &pipelineStages;
-    // no semaphores to signal - the chain of dependencies for this frame ends here
-    result = vkQueueSubmit(mPresentQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    CHECK_VKRESULT(result, "Failed to submit post present operations");
 
     gDevice->SignalPresent();
 
@@ -410,10 +396,18 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     mHeight = desc.height;
     mType = TextureType::Texture2D;
     mFromSwapchain = true;
+    // TODO temporary to prevent crashes, extract from Swapchain when multisampling is added to desc
+    mSamplesNum = VK_SAMPLE_COUNT_1_BIT;
+    mImageLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+    mCurrentImageLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
     if (!BuildPresentCommandBuffers()) return false;
     if (!BuildPresentSemaphores()) return false;
     if (!AcquireNextImage()) return false;
+
+    VkSubmitInfo submit;
+    VK_ZERO_MEMORY(submit);
+    submit.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
     LOG_INFO("Backbuffer initialized successfully.");
     return true;
@@ -432,21 +426,7 @@ bool Backbuffer::Present()
 {
     // our semaphore to wait for will be the last used from SemaphorePool
     VkSemaphore renderSem = gDevice->GetSemaphorePool()->GetCurrentSemaphore();
-
-    // Submit a pipeline barrier call to ensure our buffer is a present source
-    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-    VkSubmitInfo submitInfo;
-    VK_ZERO_MEMORY(submitInfo);
-    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &mPrePresentCommandBuffers[mCurrentBuffer];
-    submitInfo.waitSemaphoreCount = 1;
-    submitInfo.pWaitSemaphores = &renderSem;
-    submitInfo.pWaitDstStageMask = &pipelineStages;
-    submitInfo.signalSemaphoreCount = 1;
-    submitInfo.pSignalSemaphores = &mPrePresentSemaphore;
-    VkResult result = vkQueueSubmit(mPresentQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    CHECK_VKRESULT(result, "Failed to submit post present operations");
+    VkResult result = VK_SUCCESS;
 
     // Present whatever was drawn (only if render semaphore is signalled)
     VkPresentInfoKHR presentInfo;
@@ -456,7 +436,7 @@ bool Backbuffer::Present()
     presentInfo.pSwapchains = &mSwapchain;
     presentInfo.pImageIndices = &mCurrentBuffer;
     presentInfo.waitSemaphoreCount = 1;
-    presentInfo.pWaitSemaphores = &mPrePresentSemaphore;
+    presentInfo.pWaitSemaphores = &renderSem; //&mPrePresentSemaphore;
     presentInfo.pResults = &result;
     vkQueuePresentKHR(mPresentQueue, &presentInfo);
     //CHECK_VKRESULT(result, "Failed to present image on current swap chain");

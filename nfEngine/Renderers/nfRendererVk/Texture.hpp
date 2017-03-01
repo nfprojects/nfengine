@@ -32,6 +32,9 @@ protected:
     uint32 mDepth;
     VkFormat mFormat;
     VkImageLayout mImageLayout;
+    VkImageLayout mCurrentImageLayout;
+    VkSampleCountFlagBits mSamplesNum;
+    VkImageSubresourceRange mSubresRange;
 
     // Below vectors are needed to support Backbuffer and it's double-buffering
     uint32 mBuffersNum;
@@ -44,6 +47,10 @@ public:
     Texture();
     virtual ~Texture();
     bool Init(const TextureDesc& desc);
+
+    // Perform resource transition on bind/unbind. VK_IMAGE_LAYOUT_UNDEFINED reverts to original layout.ITexture
+    // NOTE: this function must be called only on active command buffer
+    void Transition(VkCommandBuffer cmdBuffer, VkImageLayout targetLayout = VK_IMAGE_LAYOUT_UNDEFINED);
 };
 
 } // namespace Renderer

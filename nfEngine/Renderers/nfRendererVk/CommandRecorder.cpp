@@ -148,12 +148,22 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
         vkCmdEndRenderPass(mCommandBuffer);
     }
 
+    if (!renderTarget)
+    {
+        mRenderTarget = nullptr;
+        return;
+    }
+
     mRenderTarget = dynamic_cast<RenderTarget*>(renderTarget.get());
     if (!mRenderTarget)
     {
         LOG_ERROR("Incorrect Render Target pointer.");
         return;
     }
+
+    mRenderTarget->mTex[0]->Transition(mCommandBuffer, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+    if (mRenderTarget->mDepthTex)
+        mRenderTarget->mDepthTex->Transition(mCommandBuffer, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 
     VkRenderPassBeginInfo rpBeginInfo;
     VK_ZERO_MEMORY(rpBeginInfo);
@@ -416,6 +426,9 @@ CommandListID CommandRecorder::Finish()
     if (mRenderTarget)
     {
         vkCmdEndRenderPass(mCommandBuffer);
+        mRenderTarget->mTex[0]->Transition(mCommandBuffer);
+        if (mRenderTarget->mDepthTex)
+            mRenderTarget->mDepthTex->Transition(mCommandBuffer);
     }
 
     VkResult result = vkEndCommandBuffer(mCommandBuffer);
