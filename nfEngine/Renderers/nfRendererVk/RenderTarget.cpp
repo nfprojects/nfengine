@@ -38,12 +38,6 @@ void RenderTarget::GetDimensions(int& width, int& height)
 
 bool RenderTarget::Init(const RenderTargetDesc& desc)
 {
-    if (desc.numTargets > 1)
-    {
-        LOG_ERROR("MRTs are not yet supported");
-        return false;
-    }
-
     mTex.resize(desc.numTargets);
     mDepthTex = dynamic_cast<Texture*>(desc.depthBuffer.get());
 
@@ -53,11 +47,10 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 
     for (uint32 i = 0; i < desc.numTargets; ++i)
     {
+        mTex[i] = dynamic_cast<Texture*>(desc.targets[i].texture.get());
+
         if (desc.targets[i].format == ElementFormat::Unknown)
-        {
-            mTex[i] = dynamic_cast<Texture*>(desc.targets[i].texture.get());
             colorFormats[i] = mTex[i]->mFormat;
-        }
         else
             colorFormats[i] = TranslateElementFormatToVkFormat(desc.targets[i].format);
     }
@@ -77,7 +70,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
     // for each swapchain image create a framebuffer
     if (mTex[0]->mFromSwapchain)
     {
-        for (unsigned int i = 0; i < mTex[0]->mBuffersNum; ++i)
+        for (uint32 i = 0; i < mTex[0]->mBuffersNum; ++i)
         {
             std::vector<VkImageView> fbAtts;
             fbAtts.push_back(mTex[0]->mImages[i].view);
@@ -99,12 +92,31 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
     }
     else // ...or, if we create a framebuffer from a single image
     {
-        // TODO fill
+        // TODO this has lots of corner-cases which might be uncovered. Needs discussion & lots of thinking.
+        std::vector<VkImageView> fbAtts;
+        for (uint32 i = 0; i < desc.numTargets; ++i)
+        {
+            fbAtts.push_back(mTex[i]->mImages[0].view);
+        }
+
+        if (mDepthTex)
+            fbAtts.push_back(mDepthTex->mImages[0].view);
+
+        VkFramebufferCreateInfo fbInfo;
+        VK_ZERO_MEMORY(fbInfo);
+        fbInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        fbInfo.width = mTex[0]->mWidth;
+        fbInfo.height = mTex[0]->mHeight;
+        fbInfo.renderPass = mRenderPass;
+        fbInfo.attachmentCount = static_cast<uint32>(fbAtts.size());
+        fbInfo.pAttachments = fbAtts.data();
+        fbInfo.layers = 1;
+        result = vkCreateFramebuffer(gDevice->GetDevice(), &fbInfo, nullptr, &mFramebuffers[0]);
+        CHECK_VKRESULT(result, "Failed to create framebuffer");
     }
 
-    Texture* tex = dynamic_cast<Texture*>(desc.targets[0].texture.get());
-    mWidth = tex->mWidth;
-    mHeight = tex->mHeight;
+    mWidth = mTex[0]->mWidth;
+    mHeight = mTex[0]->mHeight;
 
     LOG_INFO("Render Target created successfully");
     return true;

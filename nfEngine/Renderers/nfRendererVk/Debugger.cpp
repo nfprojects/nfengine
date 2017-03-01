@@ -39,12 +39,9 @@ VkBool32 DebugReport(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT obj
     if (flags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT)
         LOG_WARNING(format, perf, messageCode, pLayerPrefix, pMessage);
 
-    // returning VK_TRUE here would cause Vulkan APIs to return VK_ERROR_VALIDATION_FAILED_EXT
-    // right now we don't want that, but for debugging purposes it can be changed.
-    //if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
-        return VK_TRUE;
-   // else
-       // return VK_FALSE;
+    // returning VK_TRUE here would cause Vulkan APIs to return VK_ERROR_VALIDATION_FAILED_EXT.
+    // Temporarily (due to Linux and its unfinished drivers), the errors are suppressed.
+    return VK_FALSE;
 }
 
 } // namespace
