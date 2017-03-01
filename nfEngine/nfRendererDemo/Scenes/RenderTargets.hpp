@@ -46,7 +46,8 @@ class RenderTargetsScene : public Scene
 
     void ReleaseSubsceneResources() override;
 
-    bool CreateBasicResources(bool multipleRT, bool withDepthBuffer);
+    bool CreateBasicResources(bool multipleRT, bool withDepthBuffer,
+                              bool withMSAA = false);
     bool CreateRenderTarget(bool withDepthBuffer = false,
                             bool multipleRT = false,
                             bool withMSAA = false);
