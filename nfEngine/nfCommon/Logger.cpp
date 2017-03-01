@@ -62,7 +62,7 @@ void Logger::Reset()
     LogSysInfo();
 }
 
-LoggerBackendMap& Logger::mBackends() noexcept
+LoggerBackendMap& Logger::mBackends()
 {
     static LoggerBackendMap mBackend;
     return mBackend;
@@ -130,12 +130,12 @@ void Logger::LogSysInfo() const
     LOG_INFO("OS: %s", sysInfo.GetOSVersion().c_str());
 }
 
-bool Logger::RegisterBackend(const std::string& name, LoggerBackendPtr backend) noexcept
+bool Logger::RegisterBackend(const std::string& name, LoggerBackendPtr backend)
 {
     return mBackends().insert(std::make_pair(name, std::move(backend))).second;
 }
 
-LoggerBackend* Logger::GetBackend(const std::string& name) noexcept
+LoggerBackend* Logger::GetBackend(const std::string& name)
 {
     LoggerBackendMap::const_iterator backend = mBackends().find(name);
 
@@ -231,7 +231,7 @@ void Logger::Log(LogType type, const char* srcFile, const char* str, int line)
     }
 }
 
-const char* Logger::LogTypeToString(LogType logType) noexcept
+const char* Logger::LogTypeToString(LogType logType)
 {
     switch (logType)
     {

@@ -101,12 +101,12 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";LIBCONFIG_STATIC;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";_HAS_EXCEPTIONS=0;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngineDeps\imgui;$(SolutionDir)nfEngineDeps\rapidjson\include;$(SolutionDir)nfEngineDeps\FreeType\include;$(SolutionDir)nfEngineDeps\bullet\src;$(SolutionDir)nfEngineDeps\rapidxml-1.13;$(SolutionDir)nfEngine;..\FreeType\include\</AdditionalIncludeDirectories>
       <StructMemberAlignment>Default</StructMemberAlignment>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
-      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExceptionHandling>false</ExceptionHandling>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -130,11 +130,11 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";LIBCONFIG_STATIC;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";_HAS_EXCEPTIONS=0;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngineDeps\imgui;$(SolutionDir)nfEngineDeps\rapidjson\include;$(SolutionDir)nfEngineDeps\FreeType\include;$(SolutionDir)nfEngineDeps\bullet\src;$(SolutionDir)nfEngineDeps\rapidxml-1.13;$(SolutionDir)nfEngine;..\FreeType\include\</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
-      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExceptionHandling>false</ExceptionHandling>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -159,14 +159,14 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";LIBCONFIG_STATIC;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";_HAS_EXCEPTIONS=0;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <OmitFramePointers>true</OmitFramePointers>
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngineDeps\imgui;$(SolutionDir)nfEngineDeps\rapidjson\include;$(SolutionDir)nfEngineDeps\FreeType\include;$(SolutionDir)nfEngineDeps\bullet\src;$(SolutionDir)nfEngineDeps\rapidxml-1.13;$(SolutionDir)nfEngine;..\FreeType\include\</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExceptionHandling>false</ExceptionHandling>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
@@ -196,14 +196,14 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";LIBCONFIG_STATIC;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";_HAS_EXCEPTIONS=0;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;NF_CORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <OmitFramePointers>true</OmitFramePointers>
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngineDeps\imgui;$(SolutionDir)nfEngineDeps\rapidjson\include;$(SolutionDir)nfEngineDeps\FreeType\include;$(SolutionDir)nfEngineDeps\bullet\src;$(SolutionDir)nfEngineDeps\rapidxml-1.13;$(SolutionDir)nfEngine;..\..\SDK\bullet-2.80\src\;..\FreeType\include\</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExceptionHandling>false</ExceptionHandling>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>

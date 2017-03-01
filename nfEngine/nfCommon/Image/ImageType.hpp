@@ -41,7 +41,7 @@ public:
      *
      * @return True, if new ImageType with @name was inserted. False if @name is already in use.
      */
-    static bool RegisterImageType(const std::string& name, ImageTypePtr imageType) noexcept;
+    static bool RegisterImageType(const std::string& name, ImageTypePtr imageType);
 
     /**
      * Get pointer to an already registered ImageType.
@@ -50,7 +50,7 @@ public:
      *
      * @return Pointer to the ImageType if registered, otherwise nullptr.
      */
-    static ImageType* GetImageType(const std::string& name) noexcept;
+    static ImageType* GetImageType(const std::string& name);
 
     /**
      * Get list of the registered ImageTypes.

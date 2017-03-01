@@ -20,7 +20,7 @@ protected:
     // preapre test case enviroment - initialize the engine
     static void SetUpTestCase()
     {
-        EXPECT_NO_THROW(mEngine = Engine::GetInstance());
+        mEngine = Engine::GetInstance();
         ASSERT_NE(nullptr, mEngine);
 
         mRenderer = mEngine->GetRenderer();
@@ -30,7 +30,7 @@ protected:
     // preapre test case enviroment - release the engine
     static void TearDownTestCase()
     {
-        EXPECT_NO_THROW(Engine::Release());
+        Engine::Release();
     }
 
     static Engine* mEngine;
@@ -56,13 +56,13 @@ TEST_F(EntityManagerTest, Basic)
         ASSERT_TRUE(em.EntityExists(entities[i]));
 
     for (int i = 0; i < entityNum / 2; ++i)
-        ASSERT_NO_THROW(em.RemoveEntity(entities[i]));
+        em.RemoveEntity(entities[i]);
 
     for (int i = 0; i < entityNum / 2; ++i)
         ASSERT_FALSE(em.EntityExists(entities[i]));
 
     for (int i = entityNum / 2; i < entityNum; ++i)
-        ASSERT_NO_THROW(em.RemoveEntity(entities[i]));
+        em.RemoveEntity(entities[i]);
 
     for (int i = entityNum / 2; i < entityNum; ++i)
         ASSERT_FALSE(em.EntityExists(entities[i]));
@@ -179,7 +179,7 @@ TEST_F(EntityManagerTest, EntityChildren)
 {
     TransformComponent* transform;
     SceneManager* scene;
-    EXPECT_NO_THROW(scene = mEngine->CreateScene());
+    scene = mEngine->CreateScene();
     ASSERT_NE(nullptr, scene);
     EntityManager* em = scene->GetEntityManager();
     ASSERT_TRUE(em != nullptr);

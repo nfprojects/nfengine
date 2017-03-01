@@ -14,10 +14,10 @@ class PackerBasicTest : public testing::Test
 protected:
     void SetUp()
     {
-        EXPECT_NO_THROW(mReader.reset(new PackerReader()));
+        mReader.reset(new PackerReader());
         EXPECT_NE(nullptr, mReader.get());
 
-        EXPECT_NO_THROW(mWriter.reset(new PackerWriter()));
+        mWriter.reset(new PackerWriter());
         EXPECT_NE(nullptr, mWriter.get());
     }
 
@@ -42,17 +42,17 @@ protected:
 TEST_F(PackerBasicTest, WriterInitTest)
 {
     PackerResult pr;
-    EXPECT_NO_THROW(pr = mWriter->Init(testPackFilePath));
+    pr = mWriter->Init(testPackFilePath);
     EXPECT_EQ(PackerResult::OK, pr);
 }
 
 TEST_F(PackerBasicTest, WriterEmptyTest)
 {
     PackerResult pr;
-    EXPECT_NO_THROW(pr = mWriter->Init(testPackFilePath));
+    pr = mWriter->Init(testPackFilePath);
     EXPECT_EQ(PackerResult::OK, pr);
 
-    EXPECT_NO_THROW(pr = mWriter->WritePAK());
+    pr = mWriter->WritePAK();
     EXPECT_EQ(PackerResult::OK, pr);
 
     // open file manually and check if it contains data in order:
@@ -75,23 +75,23 @@ TEST_F(PackerBasicTest, ReaderEmptyTest)
 {
     // create correct file
     PackerResult pr;
-    EXPECT_NO_THROW(pr = mWriter->Init(testPackFilePath));
+    pr = mWriter->Init(testPackFilePath);
     EXPECT_EQ(PackerResult::OK, pr);
 
-    EXPECT_NO_THROW(pr = mWriter->WritePAK());
+    pr = mWriter->WritePAK();
     EXPECT_EQ(PackerResult::OK, pr);
 
     // open it with reader
-    EXPECT_NO_THROW(pr = mReader->Init(testPackFilePath));
+    pr = mReader->Init(testPackFilePath);
     EXPECT_EQ(PackerResult::OK, pr);
 
     // get file version and file size
     uint32 readFileVersion;
     size_t readFileCount;
-    EXPECT_NO_THROW(readFileVersion = mReader->GetFileVersion());
+    readFileVersion = mReader->GetFileVersion();
     EXPECT_EQ(gPackFileVersion, readFileVersion);
 
-    EXPECT_NO_THROW(readFileCount = mReader->GetFileCount());
+    readFileCount = mReader->GetFileCount();
     EXPECT_EQ(0, readFileCount);
 }
 
@@ -100,7 +100,7 @@ TEST_F(PackerBasicTest, ReaderBuggyPathTest)
     PackerResult pr;
 
     // open path to non existing file with reader
-    EXPECT_NO_THROW(pr = mReader->Init(testPackFilePath));
+    pr = mReader->Init(testPackFilePath);
     EXPECT_EQ(PackerResult::FileNotFound, pr);
 }
 
@@ -116,6 +116,6 @@ TEST_F(PackerBasicTest, ReaderBuggyFileTest)
     file.close();
 
     // initialization should fail - no information about file count inside archive
-    EXPECT_NO_THROW(pr = mReader->Init(testPackFilePath));
+    pr = mReader->Init(testPackFilePath);
     EXPECT_EQ(PackerResult::ReadFailed, pr);
 }
