@@ -11,7 +11,7 @@ using namespace NFE::Common;
 
 TEST(ThreadPoolSimple, ConstructorDestructor)
 {
-    ASSERT_NO_THROW(ThreadPool tp);
+    ThreadPool tp;
 }
 
 // Spawn an empty task, no waiting.
@@ -19,7 +19,7 @@ TEST(ThreadPoolSimple, EmptyTask)
 {
     ThreadPool tp;
     auto emptyTaskFunc = [](const TaskContext& /* context */) {};
-    ASSERT_NO_THROW(tp.CreateTask(emptyTaskFunc, 1));
+    tp.CreateTask(emptyTaskFunc, 1);
 }
 
 // Destroy a pool while executing a task
@@ -34,7 +34,7 @@ TEST(ThreadPoolSimple, DestroyWhileExecuting)
     TaskID task = 0;
     ASSERT_NE(NFE_INVALID_TASK_ID, task = tp->CreateTask(taskFunc, 20));
     ASSERT_NE(NFE_INVALID_TASK_ID, tp->CreateTask(taskFunc, 20, NFE_INVALID_TASK_ID, task));
-    ASSERT_NO_THROW(tp.reset());
+    tp.reset();
 }
 
 // Spawn small and long task, wait in various orders.
@@ -90,11 +90,11 @@ TEST(ThreadPoolSimple, EnqueueInsideTask)
         {
             EXPECT_EQ(0, context.instanceId);
             condition = 1;
-            ASSERT_NO_THROW(task = tp.CreateTask(taskFuncB, 1, NFE_INVALID_TASK_ID,
-                                                  context.taskId));
+            task = tp.CreateTask(taskFuncB, 1, NFE_INVALID_TASK_ID, context.taskId);
+            ASSERT_NE(NFE_INVALID_TASK_ID, task);
         };
 
-        ASSERT_NO_THROW(tp.CreateTask(taskFuncA, 1));
+        tp.CreateTask(taskFuncA, 1);
 
         latch.Wait();
         tp.WaitForTask(task);

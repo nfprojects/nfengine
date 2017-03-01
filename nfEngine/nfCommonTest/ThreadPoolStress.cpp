@@ -64,8 +64,7 @@ TEST(ThreadPoolStress, SingleDependency)
 
         task.instanceNum = rand() % 4 + 1;
         tasks.push_back(task);
-        ASSERT_NO_THROW(taskId = tp.CreateTask(std::bind(func, _1, i), task.instanceNum,
-                                               NFE_INVALID_TASK_ID, task.dependency));
+        taskId = tp.CreateTask(std::bind(func, _1, i), task.instanceNum, NFE_INVALID_TASK_ID, task.dependency);
         ASSERT_EQ(i, taskId);
         taskIds.push_back(taskId);
     }
