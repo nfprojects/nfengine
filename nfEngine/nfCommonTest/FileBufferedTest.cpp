@@ -48,10 +48,10 @@ TEST_F(FileBufferedTest, Constructors)
 {
     // Due to a bogus path, no file will be open for Read operation, but it shouldn't throw
     std::string path = "./some/path";
-    ASSERT_NO_THROW(FileBuffered());
-    ASSERT_NO_THROW(FileBuffered(path, AccessMode::Read));
-    ASSERT_NO_THROW(FileBuffered(path, AccessMode::Read, true));
-    ASSERT_NO_THROW(FileBuffered(FileBuffered(path, AccessMode::Read, true)));
+    FileBuffered();
+    FileBuffered(path, AccessMode::Read);
+    FileBuffered(path, AccessMode::Read, true);
+    FileBuffered(FileBuffered(path, AccessMode::Read, true));
 
     // Just to make sure...
     ASSERT_TRUE(std::is_move_constructible<FileBuffered>::value);

@@ -16,10 +16,10 @@ using namespace NFE::Common;
 class nfEngineTest : public testing::Test
 {
 protected:
-    // preapre test case enviroment - initialize the engine
+    // prepare test case environment - initialize the engine
     static void SetUpTestCase()
     {
-        EXPECT_NO_THROW(mEngine = Engine::GetInstance());
+        mEngine = Engine::GetInstance();
         ASSERT_NE(nullptr, mEngine);
 
         mRenderer = mEngine->GetRenderer();
@@ -29,10 +29,10 @@ protected:
         ASSERT_NE(nullptr, mResourcesManager);
     }
 
-    // preapre test case enviroment - release the engine
+    // prepare test case environment - release the engine
     static void TearDownTestCase()
     {
-        EXPECT_NO_THROW(Engine::Release());
+        Engine::Release();
     }
 
     static Engine* mEngine;
@@ -67,9 +67,9 @@ TEST_F(nfEngineTest, SceneManagement)
 
     scene = mEngine->CreateScene();
     ASSERT_NE(nullptr, scene);
-    EXPECT_NO_THROW(mEngine->DeleteScene(scene));
-    EXPECT_NO_THROW(mEngine->DeleteScene(scene)); // second try should fail
-    EXPECT_NO_THROW(mEngine->DeleteScene(nullptr)); // pass invalid poiner
+    mEngine->DeleteScene(scene);
+    mEngine->DeleteScene(scene); // second try should fail
+    mEngine->DeleteScene(nullptr); // pass invalid pointer
 }
 
 // ResManager::GetResource weird arguments test
@@ -77,15 +77,15 @@ TEST_F(nfEngineTest, GetResourceWeirdArguments)
 {
     ResourceBase* resource = nullptr;
 
-    EXPECT_NO_THROW(resource = mResourcesManager->GetResource(NULL, ResourceType::Unknown, true));
+    resource = mResourcesManager->GetResource(NULL, ResourceType::Unknown, true);
     EXPECT_EQ(nullptr, resource);
 
-    EXPECT_NO_THROW(resource = mResourcesManager->GetResource(NULL, ResourceType::Unknown, false));
+    resource = mResourcesManager->GetResource(NULL, ResourceType::Unknown, false);
     EXPECT_EQ(nullptr, resource);
 
-    EXPECT_NO_THROW(resource = mResourcesManager->GetResource(NULL, ResourceType::Texture, true));
+    resource = mResourcesManager->GetResource(NULL, ResourceType::Texture, true);
     EXPECT_EQ(nullptr, resource);
 
-    EXPECT_NO_THROW(resource = mResourcesManager->GetResource("blah", ResourceType::Unknown, true));
+    resource = mResourcesManager->GetResource("blah", ResourceType::Unknown, true);
     EXPECT_EQ(nullptr, resource);
 }

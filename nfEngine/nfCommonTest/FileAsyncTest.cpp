@@ -97,12 +97,12 @@ TEST_F(FileAsyncTest, Constructors)
 
     // Due to a bogus path, no file will be open for Read operation, but it shouldn't throw
     std::string path = "./some/path";
-    ASSERT_NO_THROW(FileAsync());
-    // ASSERT_NO_THROW(FileAsync(simpleCallback));
-    ASSERT_NO_THROW(FileAsync(nullptr));
-    ASSERT_NO_THROW(FileAsync(path, AccessMode::Read, simpleCallback));
-    ASSERT_NO_THROW(FileAsync(path, AccessMode::Read, simpleCallback, true));
-    ASSERT_NO_THROW(FileAsync(FileAsync(path, AccessMode::Read, simpleCallback, true)));
+    FileAsync();
+    // FileAsync(simpleCallback);
+    FileAsync(nullptr);
+    FileAsync(path, AccessMode::Read, simpleCallback);
+    FileAsync(path, AccessMode::Read, simpleCallback, true);
+    FileAsync(FileAsync(path, AccessMode::Read, simpleCallback, true));
 
     // Just to make sure...
     ASSERT_TRUE(std::is_move_constructible<FileAsync>::value);

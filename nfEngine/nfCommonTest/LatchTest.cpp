@@ -23,7 +23,7 @@ TEST(Latch, Wait)
     });
 
     t.join();
-    ASSERT_NO_THROW(l.Wait());
+    l.Wait();
 }
 
 TEST(Latch, WaitFor)

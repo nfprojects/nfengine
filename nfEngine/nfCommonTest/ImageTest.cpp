@@ -83,7 +83,7 @@ protected:
 
     void SetUp()
     {
-        EXPECT_NO_THROW(mImage.reset(new Image()));
+        mImage.reset(new Image());
     }
 
     static void SetUpTestCase()

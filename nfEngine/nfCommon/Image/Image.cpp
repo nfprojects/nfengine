@@ -44,7 +44,7 @@ Image::~Image()
     Release();
 }
 
-ImageTypeMap& Image::mImageTypes() noexcept
+ImageTypeMap& Image::mImageTypes()
 {
     static ImageTypeMap mImageType;
     return mImageType;

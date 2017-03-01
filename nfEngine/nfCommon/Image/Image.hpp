@@ -28,7 +28,7 @@ class NFCOMMON_API Image
     int mHeight;
     ImageFormat mFormat;
 
-    static ImageTypeMap& mImageTypes() noexcept;
+    static ImageTypeMap& mImageTypes();
     friend class ImageType;
 
     bool DecompressDDS();

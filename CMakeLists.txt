@@ -60,6 +60,9 @@ IF(DEFINED CMAKE_BUILD_USE_SSE4)
     ADD_DEFINITIONS("-msse4.1 -DNFE_USE_SSE4")
 ENDIF(DEFINED CMAKE_BUILD_USE_SSE4)
 
+# disable C++ exceptions
+ADD_DEFINITIONS("-fno-exceptions")
+
 # Enable all warnings and make them errors
 ADD_DEFINITIONS("-Wall -Wpedantic -Wextra -Wno-sign-compare -Werror")
 

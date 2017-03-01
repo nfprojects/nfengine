@@ -8,6 +8,7 @@
 
 #include "nfCommon.hpp"
 #include "Memory/DefaultAllocator.hpp"
+#include "Assertion.hpp"
 
 #include <cstddef>
 
@@ -140,16 +141,10 @@ public:
         // All allocators should contain an integer overflow check.
         // The Standardization Committee recommends that std::length_error
         // be thrown in the case of integer overflow.
-        if (n > max_size())
-            throw std::length_error("AlignedAllocator<T>::allocate() - Integer overflow.");
+        NFE_ASSERT(n <= max_size(), "AlignedAllocator<T>::allocate() - Integer overflow.");
 
         // Mallocator wraps malloc().
         void* const pv = NFE_MALLOC(n * sizeof(T), Alignment);
-
-        // Allocators should throw std::bad_alloc in the case of memory allocation failure.
-        if (nullptr == pv)
-            throw std::bad_alloc();
-
         return static_cast<T*>(pv);
     }
 
