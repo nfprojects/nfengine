@@ -58,7 +58,6 @@ Device::Device()
     , mGraphicsQueueIndex(UINT32_MAX)
     , mGraphicsQueue(VK_NULL_HANDLE)
     , mPipelineCache(VK_NULL_HANDLE)
-    , mPresented(false)
     , mRenderPassManager(nullptr)
     , mSemaphorePool(nullptr)
     , mRingBuffer(nullptr)
@@ -528,18 +527,15 @@ bool Device::Execute(CommandListID commandList)
     submitInfo.pCommandBuffers = &mCommandBufferPool[commandList - 1];
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = &signalSemaphore;
-
     if (mPresented)
     {
-        // right after present there's nothing to wait for, as we are
-        // at the beginning of dependency chain - just release the flag
         mPresented = false;
     }
     else
     {
-        submitInfo.pWaitDstStageMask = &pipelineStages;
         submitInfo.waitSemaphoreCount = 1;
         submitInfo.pWaitSemaphores = &waitSemaphore;
+        submitInfo.pWaitDstStageMask = &pipelineStages;
     }
 
     VkResult result = vkQueueSubmit(mGraphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
