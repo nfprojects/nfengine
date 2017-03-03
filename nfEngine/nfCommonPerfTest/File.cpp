@@ -26,7 +26,7 @@ class FilePerf : public CommonPerfTest
 public:
     const char* mPath = "testFile.perf";
 
-    void TearDown()
+    void TearDown() override
     {
         // Clean up after tests
         FileSystem::Remove(mPath);

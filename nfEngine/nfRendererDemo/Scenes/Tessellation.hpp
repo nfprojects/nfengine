@@ -25,7 +25,7 @@ class TessellationScene : public Scene
     NFE::Renderer::ResourceBindingLayoutPtr mResBindingLayout;
 
     // Releases only subscene-related resources. Backbuffer, RT and BlendState stay intact.
-    void ReleaseSubsceneResources();
+    void ReleaseSubsceneResources() override;
 
     // Resource creators for subscenes
     bool LoadShaders();

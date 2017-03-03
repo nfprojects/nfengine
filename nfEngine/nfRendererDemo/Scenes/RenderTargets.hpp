@@ -44,7 +44,7 @@ class RenderTargetsScene : public Scene
 
     float mAngle;
 
-    void ReleaseSubsceneResources();
+    void ReleaseSubsceneResources() override;
 
     bool CreateBasicResources(bool multipleRT, bool withDepthBuffer);
     bool CreateRenderTarget(bool withDepthBuffer = false,

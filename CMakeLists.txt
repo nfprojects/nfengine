@@ -67,6 +67,8 @@ ADD_DEFINITIONS("-Wall -Wpedantic -Wextra -Wno-sign-compare -Werror")
 ADD_DEFINITIONS("-Wno-multichar")
 ADD_DEFINITIONS("-Wno-switch")
 ADD_DEFINITIONS("-Wno-unused-result")
+ADD_DEFINITIONS("-Wno-unused-private-field")
+ADD_DEFINITIONS("-Wno-four-char-constants")
 
 ADD_DEFINITIONS(-DNFE_ROOT_DIRECTORY="${NFE_ROOT_DIRECTORY}/")
 ADD_DEFINITIONS(-DNFE_COMPILER="${CMAKE_CXX_COMPILER_ID}")

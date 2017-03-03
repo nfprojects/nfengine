@@ -31,7 +31,7 @@ class DepthStencilScene: public Scene
 
     float mAngle;
 
-    void ReleaseSubsceneResources();
+    void ReleaseSubsceneResources() override;
 
     bool CreateBasicResources(bool withDepth, bool withStencil);
     bool CreateDepthBuffer(bool withStencil);

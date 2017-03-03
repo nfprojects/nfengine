@@ -22,7 +22,7 @@ class ComputeScene: public Scene
     NFE::Renderer::ResourceBindingInstancePtr mBindingInstance;
 
     // Releases only subscene-related resources. Backbuffer, RT and BlendState stay intact.
-    void ReleaseSubsceneResources();
+    void ReleaseSubsceneResources() override;
 
     // Subscenes
     bool CreateSubSceneSimple();

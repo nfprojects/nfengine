@@ -48,7 +48,7 @@ class MultithreadedScene : public Scene
     NFE::Common::ThreadPool mThreadPool;
 
     // Releases only subscene-related resources. Backbuffer, RT and BlendState stay intact.
-    void ReleaseSubsceneResources();
+    void ReleaseSubsceneResources() override;
 
     // Resource creators for subscenes
     bool CreateCommandRecorders();

@@ -38,23 +38,19 @@ class CommonPerfTest : public testing::Test
 public:
     std::fstream mFile;
 
-    void SetUp()
+    void SetUp() override
     {
         static const std::string gLogFilePath = LOGS_DIR + GetName() + "_" + ::getTime()
                                                 + ".txt";
         mFile.open(gLogFilePath, std::fstream::out | std::fstream::app);
     }
 
-    void TearDown()
+    void TearDown() override
     {
         if (mFile.is_open())
             mFile.close();
 
         NFE::Common::Logger::GetInstance()->Reset();
-    }
-
-    void TestBody()
-    {
     }
 
     virtual const std::string GetName() const

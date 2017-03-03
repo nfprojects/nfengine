@@ -47,7 +47,7 @@ class VertexBuffersScene : public Scene
     NFE::Renderer::BufferMode mVertexBufferMode;
 
     // Releases only subscene-related resources. Backbuffer, RT and BlendState stay intact.
-    void ReleaseSubsceneResources();
+    void ReleaseSubsceneResources() override;
 
     // Resource creators for subscenes
     bool LoadShaders(bool useInstancing);

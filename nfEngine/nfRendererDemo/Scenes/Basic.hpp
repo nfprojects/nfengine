@@ -51,7 +51,7 @@ class BasicScene: public Scene
     NFE::Renderer::BufferMode mCBufferMode;
 
     // Releases only subscene-related resources. Backbuffer, RT and BlendState stay intact.
-    void ReleaseSubsceneResources();
+    void ReleaseSubsceneResources() override;
 
     // Resource creators for subscenes
     bool CreateShaders(bool useCBuffer, bool useTexture, NFE::Renderer::BufferMode cbufferMode);
