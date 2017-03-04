@@ -308,6 +308,18 @@
     <ClInclude Include="Containers\Comparator.hpp">
       <Filter>Header Files\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="Containers\DynArray.hpp">
+      <Filter>Header Files\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\DynArrayImpl.hpp">
+      <Filter>Header Files\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\ArrayView.hpp">
+      <Filter>Header Files\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\ArrayViewImpl.hpp">
+      <Filter>Header Files\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
