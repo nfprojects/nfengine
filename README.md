@@ -21,8 +21,8 @@ To make the code compilable, the following requirements have to be met:
     * Run built _ResourceManager.exe_ binary. The program will automatically gather and process files downloaded by _syncher.py_ script.
 
 **NOTE:** In current state, not all projects are right now buildable inside Visual Studio. Following projects are guaranteed to fail the build:
-    * nfRendererOGL4
-    * PackerTool
+* nfRendererOGL4
+* PackerTool
 
 It is unsure whether we will make them buildable again, or remove them - for now it is recommended to manually unload them inside Visual Studio solution.
 
