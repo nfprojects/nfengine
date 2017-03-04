@@ -14,16 +14,18 @@ To make the code compilable, the following requirements have to be met:
 2. Pulled external dependencies from [here](http://www.github.com/nfprojects/nfenginedeps)
     * **"nfEngineDeps"** directory will be created by using git submodules inside repo - fetch its contents by using `git submodule update --init` command
     * **NOTE:** Dependencies need to be built separately from engine. See README.md inside nfEngineDeps repo for more info.
-3. Downloaded resources from [here](http://drive.google.com/open?id=0B66mya2agFOEd0RJUWx1aDZ6Ym8)
-    * **"Data"** directory created in **"nfEngineDemo"** with content copied from subfolder **nfEngineTestData**
-    * **NOTE:** it is convenient to use Google Drive application to synchronize resources automatically (by adding this folder to your drive) and create symbolic link to them.
+3. Acquired additional resources from our server with _syncher.py_ script.
+    * Download resources with `Scripts/syncher.py init` command - all needed data will automatically download into correct directory.
+4. Project is now buildable, however resources still need to be processed to NFE-compatible format.
+    * Build ResourceManager project (it's available inside Tools directory)
+    * Run built _ResourceManager.exe_ binary. The program will automatically gather and process files downloaded by _syncher.py_ script.
 
-Example Batch code on Windows:
+**NOTE:** In current state, not all projects are right now buildable inside Visual Studio. Following projects are guaranteed to fail the build:
+    * nfRendererOGL4
+    * PackerTool
 
-```
-cd nfengine/nfEngineDemo // go to root of repository
-mklink /J Data "path-to-nfEngineTestData"
-```
+It is unsure whether we will make them buildable again, or remove them - for now it is recommended to manually unload them inside Visual Studio solution.
+
 
 Building the project - Linux
 ----------------------------
