@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fabf19d9_8d5ca3ee",
+        "filename": "nfEngine/nfCommon/Containers/Set.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-03-05T23:42:11Z",
+      "side": 1,
+      "message": "use inheritance like in ArrayView",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 62,
+        "endChar": 69
+      },
+      "revId": "63d30462055a31312d910c64d9dd08aa143835cf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_6d726f7e",
+        "filename": "nfEngine/nfCommon/Containers/Set.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-03-05T23:42:11Z",
+      "side": 1,
+      "message": "const",
+      "revId": "63d30462055a31312d910c64d9dd08aa143835cf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_4d6fab92",
+        "filename": "nfEngine/nfCommon/Containers/Set.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-03-05T23:42:11Z",
+      "side": 1,
+      "message": "const",
+      "revId": "63d30462055a31312d910c64d9dd08aa143835cf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fabf19d9_2d6c779b",
+        "filename": "nfEngine/nfCommon/Containers/Set.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-03-05T23:42:11Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 153,
+        "startChar": 0,
+        "endLine": 153,
+        "endChar": 41
+      },
+      "revId": "63d30462055a31312d910c64d9dd08aa143835cf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
