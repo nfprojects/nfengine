@@ -38,6 +38,7 @@
     <ClCompile Include="FileBufferedTest.cpp" />
     <ClCompile Include="MathTest.cpp" />
     <ClCompile Include="SetTest.cpp" />
+    <ClCompile Include="ArrayViewTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
