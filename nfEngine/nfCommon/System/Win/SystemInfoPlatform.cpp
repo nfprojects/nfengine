@@ -11,6 +11,7 @@
 #include "Common.hpp"
 
 #include <VersionHelpers.h>
+#include <intrin.h>
 
 
 namespace {
