@@ -39,6 +39,7 @@
     <ClCompile Include="MathTest.cpp" />
     <ClCompile Include="SetTest.cpp" />
     <ClCompile Include="ArrayViewTest.cpp" />
+    <ClCompile Include="DynArrayTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
