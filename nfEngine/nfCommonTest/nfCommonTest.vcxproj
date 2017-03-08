@@ -216,6 +216,7 @@
     <ClCompile Include="TestCases\BVHTest.cpp" />
     <ClCompile Include="TestCases\ConfigTest.cpp" />
     <ClCompile Include="TestCases\DirectoryWatchTest.cpp" />
+    <ClCompile Include="TestCases\DynArrayTest.cpp" />
     <ClCompile Include="TestCases\EnumIteratorTest.cpp" />
     <ClCompile Include="TestCases\FileAsyncTest.cpp" />
     <ClCompile Include="TestCases\FileBufferedTest.cpp" />
