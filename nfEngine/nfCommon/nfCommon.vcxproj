@@ -25,6 +25,8 @@
     <ClInclude Include="Containers\ArrayView.hpp" />
     <ClInclude Include="Containers\ArrayViewImpl.hpp" />
     <ClInclude Include="Containers\Comparator.hpp" />
+    <ClInclude Include="Containers\DynArray.hpp" />
+    <ClInclude Include="Containers\DynArrayImpl.hpp" />
     <ClInclude Include="Containers\PackedArray.hpp" />
     <ClInclude Include="Containers\PackedArrayImpl.hpp" />
     <ClInclude Include="Containers\Set.hpp" />
