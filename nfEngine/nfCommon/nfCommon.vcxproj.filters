@@ -293,6 +293,12 @@
     <ClInclude Include="Containers\ArrayView.hpp">
       <Filter>Containers</Filter>
     </ClInclude>
+    <ClInclude Include="Containers\DynArray.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\DynArrayImpl.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />

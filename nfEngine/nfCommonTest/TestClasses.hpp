@@ -84,6 +84,16 @@ public:
         }
     }
 
+    NFE_INLINE bool operator==(const CopyOnlyTestClass& other) const
+    {
+        return mPayload == other.mPayload;
+    }
+
+    NFE_INLINE bool operator!=(const CopyOnlyTestClass& other) const
+    {
+        return mPayload != other.mPayload;
+    }
+
 private:
     CopyOnlyTestClass(CopyOnlyTestClass&& rhs) = delete;
     CopyOnlyTestClass& operator=(CopyOnlyTestClass&& rhs) = delete;
@@ -158,6 +168,16 @@ public:
         {
             mCounters->destructor++;
         }
+    }
+
+    NFE_INLINE bool operator==(const MoveOnlyTestClass& other) const
+    {
+        return mPayload == other.mPayload;
+    }
+
+    NFE_INLINE bool operator!=(const MoveOnlyTestClass& other) const
+    {
+        return mPayload != other.mPayload;
     }
 
 private:
