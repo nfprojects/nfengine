@@ -85,7 +85,7 @@ bool Material::OnLoad()
     FILE* pFile = fopen(path.c_str(), "r");
     if (pFile == NULL)
     {
-        LOG_ERROR("Failed to open file: %s", path);
+        LOG_ERROR("Failed to open file: %s", path.c_str());
         return false;
     }
 

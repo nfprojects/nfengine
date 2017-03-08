@@ -9,7 +9,9 @@
 #include "../Math/Math.hpp"
 #include "../Library.hpp"
 #include "Common.hpp"
+
 #include <VersionHelpers.h>
+#include <intrin.h>
 
 
 namespace {

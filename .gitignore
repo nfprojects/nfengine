@@ -44,6 +44,7 @@ Makefile
 *.vcxproj.user
 *.pyc
 *.VC.db
+.vs/
 
 # Eclipse project files
 .cproject

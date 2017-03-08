@@ -334,7 +334,7 @@ void Shader::ParseResourceSlots()
         {
             it = mResourceSlotMap.find(tokenName);
             if (it == mResourceSlotMap.end())
-                it = std::get<0>(mResourceSlotMap.emplace(tokenName, std::make_pair(0, 0)));
+                it = std::get<0>(mResourceSlotMap.emplace(tokenName, std::make_pair(static_cast<uint16>(0), static_cast<uint16>(0))));
         }
         else
             continue;

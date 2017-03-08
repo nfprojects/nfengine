@@ -63,7 +63,14 @@ bool Multishader::OnLoad()
     /// extract shader type
     const rapidjson::Value& typeNode = document["type"];
     std::string shaderTypeStr = typeNode.GetString();
-    std::transform(shaderTypeStr.begin(), shaderTypeStr.end(), shaderTypeStr.begin(), ::tolower);
+    std::transform(shaderTypeStr.begin(), shaderTypeStr.end(), shaderTypeStr.begin(), [](const char c) -> char
+    {
+        if (c >= 'A' && c <= 'Z')
+            return c - ('Z' - 'A');
+        else
+            return c;
+    });
+
     if (shaderTypeStr == "vertex")
         mType = ShaderType::Vertex;
     else if (shaderTypeStr == "hull")
