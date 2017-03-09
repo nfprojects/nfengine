@@ -31,6 +31,8 @@
     <ClInclude Include="Containers\PackedArrayImpl.hpp" />
     <ClInclude Include="Containers\Set.hpp" />
     <ClInclude Include="Containers\SetImpl.hpp" />
+    <ClInclude Include="Containers\StringView.hpp" />
+    <ClInclude Include="Containers\StringViewImpl.hpp" />
     <ClInclude Include="FileSystem\DirectoryWatch.hpp" />
     <ClInclude Include="FileSystem\File.hpp" />
     <ClInclude Include="FileSystem\FileAsync.hpp" />
@@ -111,6 +113,7 @@
   <ItemGroup>
     <ClCompile Include="Config\Config.cpp" />
     <ClCompile Include="Config\ConfigTokenizer.cpp" />
+    <ClCompile Include="Containers\StringView.cpp" />
     <ClCompile Include="FileSystem\FileAsync.cpp" />
     <ClCompile Include="FileSystem\FileBuffered.cpp" />
     <ClCompile Include="FileSystem\FileSystemCommon.cpp" />
