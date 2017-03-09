@@ -105,6 +105,7 @@ public:
 
     /**
      * Remove last element if exists.
+     * @return 'false' if there is nothing to pop (container is empty).
      */
     bool PopBack();
 
@@ -117,6 +118,7 @@ public:
     /**
      * Resize the array.
      * Element type must have default constructor.
+     * @return 'false' if memory allocation failed.
      */
     bool Resize(uint32 size);
 
