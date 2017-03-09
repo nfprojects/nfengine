@@ -11,8 +11,6 @@
 namespace NFE {
 namespace Common {
 
-// TODO this file was created as stub. Implementation was NOT tested.
-// When nfCommon will be ported to linux make sure it works correctly.
 void PrintColored(const ConsoleColor& foreground, const char* format, ...)
 {
     // In Linux - form an escape sequence and print text surrounded with it
@@ -24,14 +22,40 @@ void PrintColored(const ConsoleColor& foreground, const char* format, ...)
         initialColor = 40;
 
     initialColor += static_cast<ConsoleColorType>(foreground & ConsoleColor::White);
-    printf("\033[%um", initialColor);
+
+    const int MSG_LEN = 1024;
+    char stackBuffer[MSG_LEN];
+    std::unique_ptr<char[]> heapBuffer;
+    char* formatted;
 
     va_list args;
+    va_list argsCopy;
     va_start(args, format);
-    vfprintf(stderr, format, args);
+    va_copy(argsCopy, args);
+
+    int len = vsnprintf(stackBuffer, MSG_LEN, format, args);
+    if (len < 0)
+    {
+        //va_end(argsCopy);
+        va_end(args);
+        return;
+    }
+
+    if (len >= MSG_LEN)
+    {
+        heapBuffer.reset(new (std::nothrow) char[len + 1]);
+        if (heapBuffer)
+        {
+            formatted = heapBuffer.get();
+            vsnprintf(formatted, len + 1, format, argsCopy);
+        }
+    }
+    else if (len > 0)
+        formatted = stackBuffer;
+
     va_end(args);
 
-    printf("\033[0m");
+    printf("\033[%um%s\033[0m", initialColor, formatted);
 }
 
 } // namespace Common
