@@ -236,6 +236,7 @@ popd</Command>
     <ClInclude Include="Containers\PackedArrayImpl.hpp" />
     <ClInclude Include="Containers\Set.hpp" />
     <ClInclude Include="Containers\SetImpl.hpp" />
+    <ClInclude Include="Containers\StringView.hpp" />
     <ClInclude Include="DirectoryWatch.hpp" />
     <ClInclude Include="EnumIterator.hpp" />
     <ClInclude Include="File.hpp" />

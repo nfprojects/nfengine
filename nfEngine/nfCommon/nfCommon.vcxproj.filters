@@ -320,6 +320,9 @@
     <ClInclude Include="Containers\ArrayViewImpl.hpp">
       <Filter>Header Files\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="Containers\StringView.hpp">
+      <Filter>Header Files\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
