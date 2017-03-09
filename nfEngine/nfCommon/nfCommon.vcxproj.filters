@@ -299,6 +299,12 @@
     <ClInclude Include="Containers\DynArrayImpl.hpp">
       <Filter>Containers</Filter>
     </ClInclude>
+    <ClInclude Include="Containers\StringView.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\StringViewImpl.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -493,6 +499,9 @@
     </ClCompile>
     <ClCompile Include="Utils\OutputStream.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Containers\StringView.cpp">
+      <Filter>Containers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
