@@ -8,6 +8,9 @@ PROJECT(nfEngine)
 
 MESSAGE("Generating Makefile for nfEngine project")
 
+SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/nfEngineDeps/cotire")
+
+INCLUDE(cotire)
 INCLUDE(FindPkgConfig)
 
 # Pre-define Release build
@@ -52,26 +55,27 @@ SET(CMAKE_BUILD_USE_SSE4 "TRUE")
 
 IF(DEFINED CMAKE_BUILD_USE_SSE)
     MESSAGE("Using SSE instructions")
-    ADD_DEFINITIONS("-msse -DNFE_USE_SSE")
+    SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -msse -DNFE_USE_SSE")
 ENDIF(DEFINED CMAKE_BUILD_USE_SSE)
 
 IF(DEFINED CMAKE_BUILD_USE_SSE4)
     MESSAGE("Using SSE4.1 instructions")
-    ADD_DEFINITIONS("-msse4.1 -DNFE_USE_SSE4")
+    SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -msse4.1 -DNFE_USE_SSE4")
 ENDIF(DEFINED CMAKE_BUILD_USE_SSE4)
 
 # disable C++ exceptions
-ADD_DEFINITIONS("-fno-exceptions")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fno-exceptions")
+
 
 # Enable all warnings and make them errors
-ADD_DEFINITIONS("-Wall -Wpedantic -Wextra -Wno-sign-compare -Werror")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -Wpedantic -Wextra -Wno-sign-compare -Werror")
 
 # Warnings exceptions
-ADD_DEFINITIONS("-Wno-multichar")
-ADD_DEFINITIONS("-Wno-switch")
-ADD_DEFINITIONS("-Wno-unused-result")
-ADD_DEFINITIONS("-Wno-unused-private-field")
-ADD_DEFINITIONS("-Wno-four-char-constants")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-multichar")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-switch")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-unused-result")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-unused-private-field")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-four-char-constants")
 
 ADD_DEFINITIONS(-DNFE_ROOT_DIRECTORY="${NFE_ROOT_DIRECTORY}/")
 ADD_DEFINITIONS(-DNFE_COMPILER="${CMAKE_CXX_COMPILER_ID}")
