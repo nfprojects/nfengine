@@ -11,7 +11,7 @@
 #include "Shader.hpp"
 #include "VertexLayout.hpp"
 #include "ResourceBinding.hpp"
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 
 namespace NFE {

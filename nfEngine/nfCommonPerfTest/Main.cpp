@@ -5,7 +5,7 @@
  */
 
 #include "PCH.hpp"
-#include "nfCommon/FileSystem.hpp"
+#include "nfCommon/FileSystem/FileSystem.hpp"
 
 int main(int argc, char* argv[])
 {

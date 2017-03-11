@@ -5,9 +5,9 @@
  */
 
 #include "PCH.hpp"
-#include "nfCommon/Timer.hpp"
-#include "nfCommon/FileBuffered.hpp"
-#include "nfCommon/FileSystem.hpp"
+#include "nfCommon/System/Timer.hpp"
+#include "nfCommon/FileSystem/FileBuffered.hpp"
+#include "nfCommon/FileSystem/FileSystem.hpp"
 #include "Test.hpp"
 
 

@@ -1,505 +1,477 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Config">
+      <UniqueIdentifier>{bb617d16-c05c-47c9-bd7b-ab58710c8192}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    <Filter Include="Containers">
+      <UniqueIdentifier>{f943b287-645f-4390-96ca-fe6c19094473}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Math">
-      <UniqueIdentifier>{df3bda64-5d62-4bf6-93b9-5235b5403ac3}</UniqueIdentifier>
+    <Filter Include="Image">
+      <UniqueIdentifier>{9a6e8826-c73c-4e8e-9f14-8d10da825d2a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Packer">
-      <UniqueIdentifier>{2705f939-6203-4037-8999-840d59e8deeb}</UniqueIdentifier>
+    <Filter Include="Logger">
+      <UniqueIdentifier>{97f92f5c-59c9-4ced-8178-c132205ba29b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Packer">
-      <UniqueIdentifier>{6a3e9a23-d2b4-47c7-9e30-c0e784f6e277}</UniqueIdentifier>
+    <Filter Include="Memory">
+      <UniqueIdentifier>{328d644f-c676-4afc-9afc-e187f4999c98}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Win">
-      <UniqueIdentifier>{82f86556-6e16-4b25-ba75-f3376ee985ee}</UniqueIdentifier>
+    <Filter Include="Math">
+      <UniqueIdentifier>{48b04ae9-ceb7-4b42-bfca-3c624ca936f7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Win">
-      <UniqueIdentifier>{bd3f5c23-9ea9-4e8c-9ad5-e1d9ed7a40cb}</UniqueIdentifier>
+    <Filter Include="Packer">
+      <UniqueIdentifier>{9eaf8d6a-0311-4455-8fa3-7cffd7344051}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\LoggerBackends">
-      <UniqueIdentifier>{df0fe897-aba8-4a28-9be3-6d965ea69f0a}</UniqueIdentifier>
+    <Filter Include="System">
+      <UniqueIdentifier>{f54b2f1c-c287-4ba3-adc8-f5b73876c24f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Math">
-      <UniqueIdentifier>{6e6fcf7b-9b40-43f8-af57-5000e952046a}</UniqueIdentifier>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{64e965ff-fa3f-422d-b5ba-a763ce48985b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\LoggerBackends\Win">
-      <UniqueIdentifier>{8a1f06d7-8a12-4102-b4fe-1932bf32c8f0}</UniqueIdentifier>
+    <Filter Include="Logger\Backends">
+      <UniqueIdentifier>{d58b4e54-eb13-4338-941f-e18bacf8ac4a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Image">
-      <UniqueIdentifier>{daff1ecc-f467-4b34-92c3-87eaa8f51f9b}</UniqueIdentifier>
+    <Filter Include="Math\FPU">
+      <UniqueIdentifier>{24704159-c8a8-443f-91a1-aa78548d6524}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Math\SSE">
-      <UniqueIdentifier>{01473106-35d7-40a6-addb-38a02e0575e6}</UniqueIdentifier>
+    <Filter Include="Math\SSE">
+      <UniqueIdentifier>{dbdbbe97-bfb3-4aba-8f94-d71c86d2fba3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Math\FPU">
-      <UniqueIdentifier>{9d9b53de-5cb2-46fb-bfde-7308a88ca9b2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Math\SSE">
-      <UniqueIdentifier>{14d8996f-bc97-490d-be41-1e682459b396}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Math\FPU">
-      <UniqueIdentifier>{9cd7e1d2-dbe2-4932-b2c4-4ce945f2bf7f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Memory">
-      <UniqueIdentifier>{ba683b64-b258-4ec0-9c7c-6d98391dbc76}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Memory">
-      <UniqueIdentifier>{84fccf24-1002-4827-8796-97433d6f6d6a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Containers">
-      <UniqueIdentifier>{c04b7397-d83f-47f6-a891-edb4cdd69167}</UniqueIdentifier>
+    <Filter Include="FileSystem">
+      <UniqueIdentifier>{f0641d02-205b-4fa4-8829-3ddb94e9aff8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PCH.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InputStream.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OutputStream.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Window.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Buffer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Geometry.hpp">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Matrix.hpp">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Quaternion.hpp">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Random.hpp">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Vector.hpp">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="nfCommon.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Math.hpp">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadPool.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Timer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Logger.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MD5.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Bit.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Packer\Packer.hpp">
-      <Filter>Header Files\Packer</Filter>
-    </ClInclude>
-    <ClInclude Include="Packer\PackerDefines.hpp">
-      <Filter>Header Files\Packer</Filter>
-    </ClInclude>
-    <ClInclude Include="Packer\PackerElement.hpp">
-      <Filter>Header Files\Packer</Filter>
-    </ClInclude>
-    <ClInclude Include="Packer\PackerReader.hpp">
-      <Filter>Header Files\Packer</Filter>
-    </ClInclude>
-    <ClInclude Include="Packer\PackerWriter.hpp">
-      <Filter>Header Files\Packer</Filter>
-    </ClInclude>
-    <ClInclude Include="Console.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Win\Console.hpp">
-      <Filter>Header Files\Win</Filter>
-    </ClInclude>
-    <ClInclude Include="Packer\PackerResource.hpp">
-      <Filter>Header Files\Packer</Filter>
-    </ClInclude>
-    <ClInclude Include="Packer\PackerResourceFile.hpp">
-      <Filter>Header Files\Packer</Filter>
-    </ClInclude>
-    <ClInclude Include="FileSystem.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Win\Common.hpp">
-      <Filter>Header Files\Win</Filter>
-    </ClInclude>
-    <ClInclude Include="File.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Library.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SystemInfo.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SystemInfoConstants.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Box.hpp">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Frustum.hpp">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Ray.hpp">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Sphere.hpp">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Triangle.hpp">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="LoggerBackends\BackendConsole.hpp">
-      <Filter>Source Files\LoggerBackends</Filter>
-    </ClInclude>
-    <ClInclude Include="LoggerBackends\BackendHTML.hpp">
-      <Filter>Source Files\LoggerBackends</Filter>
-    </ClInclude>
-    <ClInclude Include="Image\Image.hpp">
-      <Filter>Source Files\Image</Filter>
-    </ClInclude>
-    <ClInclude Include="Image\Mipmap.hpp">
-      <Filter>Source Files\Image</Filter>
-    </ClInclude>
-    <ClInclude Include="Image\ImageFormat.hpp">
-      <Filter>Source Files\Image</Filter>
-    </ClInclude>
-    <ClInclude Include="LoggerBackends\Win\BackendWindowsDebugger.hpp">
-      <Filter>Source Files\LoggerBackends\Win</Filter>
-    </ClInclude>
-    <ClInclude Include="AsyncThreadPool.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\FPU\Vector.hpp">
-      <Filter>Header Files\Math\FPU</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\SSE\Vector.hpp">
-      <Filter>Header Files\Math\SSE</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\SSE\Matrix.hpp">
-      <Filter>Header Files\Math\SSE</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\FPU\Matrix.hpp">
-      <Filter>Header Files\Math\FPU</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\FPU\RayGeometry.hpp">
-      <Filter>Header Files\Math\FPU</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\SSE\RayGeometry.hpp">
-      <Filter>Header Files\Math\SSE</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectoryWatch.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PackedArray.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Config.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ConfigTokenizer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ConfigDataTranslator.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Aligned.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BVH.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LoggerBackends\BackendTxt.hpp">
-      <Filter>Source Files\LoggerBackends</Filter>
-    </ClInclude>
-    <ClInclude Include="KeyCodes.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EnumIterator.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LoggerBackends\BackendXML.hpp">
-      <Filter>Source Files\LoggerBackends</Filter>
-    </ClInclude>
-    <ClInclude Include="LoggerBackends\BackendCommon.hpp">
-      <Filter>Source Files\LoggerBackends</Filter>
-    </ClInclude>
-    <ClInclude Include="LogGrouper.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Thread.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LogScope.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory.hpp">
-      <Filter>Header Files\Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory\DefaultAllocator.hpp">
-      <Filter>Header Files\Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="FileAsync.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FileBuffered.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Image\ImageBMP.hpp">
-      <Filter>Source Files\Image</Filter>
-    </ClInclude>
-    <ClInclude Include="Image\ImageType.hpp">
-      <Filter>Source Files\Image</Filter>
-    </ClInclude>
-    <ClInclude Include="Image\ImageJPG.hpp">
-      <Filter>Source Files\Image</Filter>
-    </ClInclude>
-    <ClInclude Include="Image\ImagePNG.hpp">
-      <Filter>Source Files\Image</Filter>
-    </ClInclude>
-    <ClInclude Include="Image\ImageDDS.hpp">
-      <Filter>Source Files\Image</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Conversions.hpp">
-      <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Win\AsyncQueueManager.hpp">
-      <Filter>Header Files\Win</Filter>
-    </ClInclude>
-    <ClInclude Include="AsyncQueueManager.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Assertion.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="nfCommon.hpp" />
+    <ClInclude Include="PCH.hpp" />
+    <ClInclude Include="Config\ConfigDataTranslator.hpp">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\ConfigTokenizer.hpp">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\Config.hpp">
+      <Filter>Config</Filter>
     </ClInclude>
     <ClInclude Include="Containers\PackedArray.hpp">
-      <Filter>Header Files\Containers</Filter>
+      <Filter>Containers</Filter>
     </ClInclude>
     <ClInclude Include="Containers\PackedArrayImpl.hpp">
-      <Filter>Header Files\Containers</Filter>
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Image\ImageBMP.hpp">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Image\ImageDDS.hpp">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Image\ImageFormat.hpp">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Image\ImageJPG.hpp">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Image\ImagePNG.hpp">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Image\ImageType.hpp">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Image\Mipmap.hpp">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Image\Image.hpp">
+      <Filter>Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger\Logger.hpp">
+      <Filter>Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger\LogGrouper.hpp">
+      <Filter>Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger\LogScope.hpp">
+      <Filter>Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger\Backends\BackendCommon.hpp">
+      <Filter>Logger\Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger\Backends\BackendConsole.hpp">
+      <Filter>Logger\Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger\Backends\BackendHTML.hpp">
+      <Filter>Logger\Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger\Backends\BackendTxt.hpp">
+      <Filter>Logger\Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger\Backends\BackendXML.hpp">
+      <Filter>Logger\Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger\Backends\Win\BackendWindowsDebugger.hpp">
+      <Filter>Logger\Backends</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\FPU\RayGeometry.hpp">
+      <Filter>Math\FPU</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\FPU\Vector.hpp">
+      <Filter>Math\FPU</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\FPU\Matrix.hpp">
+      <Filter>Math\FPU</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\SSE\Matrix.hpp">
+      <Filter>Math\SSE</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\SSE\RayGeometry.hpp">
+      <Filter>Math\SSE</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\SSE\Vector.hpp">
+      <Filter>Math\SSE</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Box.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Conversions.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Frustum.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Geometry.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Math.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Matrix.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Quaternion.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Random.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Ray.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Sphere.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Triangle.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vector.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\DefaultAllocator.hpp">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Aligned.hpp">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Buffer.hpp">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Packer\PackerDefines.hpp">
+      <Filter>Packer</Filter>
+    </ClInclude>
+    <ClInclude Include="Packer\PackerElement.hpp">
+      <Filter>Packer</Filter>
+    </ClInclude>
+    <ClInclude Include="Packer\PackerReader.hpp">
+      <Filter>Packer</Filter>
+    </ClInclude>
+    <ClInclude Include="Packer\PackerResource.hpp">
+      <Filter>Packer</Filter>
+    </ClInclude>
+    <ClInclude Include="Packer\PackerResourceFile.hpp">
+      <Filter>Packer</Filter>
+    </ClInclude>
+    <ClInclude Include="Packer\PackerWriter.hpp">
+      <Filter>Packer</Filter>
+    </ClInclude>
+    <ClInclude Include="Packer\Packer.hpp">
+      <Filter>Packer</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\BVH.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\EnumIterator.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\MD5.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\ThreadPool.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\AsyncThreadPool.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Bit.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="FileSystem\DirectoryWatch.hpp">
+      <Filter>FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="FileSystem\File.hpp">
+      <Filter>FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="FileSystem\FileAsync.hpp">
+      <Filter>FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="FileSystem\FileBuffered.hpp">
+      <Filter>FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="FileSystem\FileSystem.hpp">
+      <Filter>FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Latch.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Win\AsyncQueueManager.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Win\Common.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Win\Console.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Assertion.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\AsyncQueueManager.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Console.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\KeyCodes.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Library.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\SystemInfo.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\SystemInfoConstants.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Thread.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Timer.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Window.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Memory.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\InputStream.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\OutputStream.hpp">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PCH.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="PCH.cpp" />
+    <ClCompile Include="Config\ConfigTokenizer.cpp">
+      <Filter>Config</Filter>
     </ClCompile>
-    <ClCompile Include="OutputStream.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InputStream.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Geometry.cpp">
-      <Filter>Source Files\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Matrix.cpp">
-      <Filter>Source Files\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Quaternion.cpp">
-      <Filter>Source Files\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Random.cpp">
-      <Filter>Source Files\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="ThreadPool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Logger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Buffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MD5.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Packer\PackerDefines.cpp">
-      <Filter>Source Files\Packer</Filter>
-    </ClCompile>
-    <ClCompile Include="Packer\PackerReader.cpp">
-      <Filter>Source Files\Packer</Filter>
-    </ClCompile>
-    <ClCompile Include="Packer\PackerWriter.cpp">
-      <Filter>Source Files\Packer</Filter>
-    </ClCompile>
-    <ClCompile Include="Win\Console.cpp">
-      <Filter>Source Files\Win</Filter>
-    </ClCompile>
-    <ClCompile Include="Win\Timer.cpp">
-      <Filter>Source Files\Win</Filter>
-    </ClCompile>
-    <ClCompile Include="Packer\PackerResource.cpp">
-      <Filter>Source Files\Packer</Filter>
-    </ClCompile>
-    <ClCompile Include="Packer\PackerResourceFile.cpp">
-      <Filter>Source Files\Packer</Filter>
-    </ClCompile>
-    <ClCompile Include="Win\FileSystem.cpp">
-      <Filter>Source Files\Win</Filter>
-    </ClCompile>
-    <ClCompile Include="Win\Common.cpp">
-      <Filter>Source Files\Win</Filter>
-    </ClCompile>
-    <ClCompile Include="Win\File.cpp">
-      <Filter>Source Files\Win</Filter>
-    </ClCompile>
-    <ClCompile Include="Win\Window.cpp">
-      <Filter>Source Files\Win</Filter>
-    </ClCompile>
-    <ClCompile Include="Win\Library.cpp">
-      <Filter>Source Files\Win</Filter>
-    </ClCompile>
-    <ClCompile Include="Latch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Win\SystemInfoPlatform.cpp">
-      <Filter>Source Files\Win</Filter>
-    </ClCompile>
-    <ClCompile Include="SystemInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Math.cpp">
-      <Filter>Source Files\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Box.cpp">
-      <Filter>Source Files\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="FileSystemCommon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LoggerBackends\BackendConsole.cpp">
-      <Filter>Source Files\LoggerBackends</Filter>
-    </ClCompile>
-    <ClCompile Include="LoggerBackends\BackendHTML.cpp">
-      <Filter>Source Files\LoggerBackends</Filter>
-    </ClCompile>
-    <ClCompile Include="Image\Image.cpp">
-      <Filter>Source Files\Image</Filter>
-    </ClCompile>
-    <ClCompile Include="Image\Mipmap.cpp">
-      <Filter>Source Files\Image</Filter>
-    </ClCompile>
-    <ClCompile Include="Image\ImageFormat.cpp">
-      <Filter>Source Files\Image</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Frustum.cpp">
-      <Filter>Source Files\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="LoggerBackends\Win\BackendWindowsDebugger.cpp">
-      <Filter>Source Files\LoggerBackends\Win</Filter>
-    </ClCompile>
-    <ClCompile Include="AsyncThreadPool.cpp">
-      <Filter>Source Files\Win</Filter>
-    </ClCompile>
-    <ClCompile Include="Win\DirectoryWatch.cpp">
-      <Filter>Source Files\Win</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\RayGeometry.cpp">
-      <Filter>Source Files\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="BVH.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\SSE\MatrixSSE.cpp">
-      <Filter>Source Files\Math\SSE</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\FPU\MatrixFPU.cpp">
-      <Filter>Source Files\Math\FPU</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\SSE\GeometrySSE.cpp">
-      <Filter>Source Files\Math\SSE</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\FPU\GeometryFPU.cpp">
-      <Filter>Source Files\Math\FPU</Filter>
-    </ClCompile>
-    <ClCompile Include="Win\Memory.cpp">
-      <Filter>Source Files\Win</Filter>
-    </ClCompile>
-    <ClCompile Include="Config.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ConfigTokenizer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LoggerBackends\BackendTxt.cpp">
-      <Filter>Source Files\LoggerBackends</Filter>
-    </ClCompile>
-    <ClCompile Include="LoggerBackends\BackendXML.cpp">
-      <Filter>Source Files\LoggerBackends</Filter>
-    </ClCompile>
-    <ClCompile Include="LogGrouper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Win\Thread.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FileAsync.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Win\FileAsyncPlatform.cpp">
-      <Filter>Source Files\Win</Filter>
-    </ClCompile>
-    <ClCompile Include="LogScope.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Memory\DefaultAllocator.cpp">
-      <Filter>Source Files\Memory</Filter>
-    </ClCompile>
-    <ClCompile Include="FileBuffered.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Config\Config.cpp">
+      <Filter>Config</Filter>
     </ClCompile>
     <ClCompile Include="Image\ImageBMP.cpp">
-      <Filter>Source Files\Image</Filter>
-    </ClCompile>
-    <ClCompile Include="Image\ImageJPG.cpp">
-      <Filter>Source Files\Image</Filter>
-    </ClCompile>
-    <ClCompile Include="Image\ImagePNG.cpp">
-      <Filter>Source Files\Image</Filter>
+      <Filter>Image</Filter>
     </ClCompile>
     <ClCompile Include="Image\ImageDDS.cpp">
-      <Filter>Source Files\Image</Filter>
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\ImageFormat.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\ImageJPG.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\ImagePNG.cpp">
+      <Filter>Image</Filter>
     </ClCompile>
     <ClCompile Include="Image\ImageType.cpp">
-      <Filter>Source Files\Image</Filter>
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\Mipmap.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Image\Image.cpp">
+      <Filter>Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger\Logger.cpp">
+      <Filter>Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger\LogGrouper.cpp">
+      <Filter>Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger\LogScope.cpp">
+      <Filter>Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger\Backends\BackendConsole.cpp">
+      <Filter>Logger\Backends</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger\Backends\BackendHTML.cpp">
+      <Filter>Logger\Backends</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger\Backends\BackendTxt.cpp">
+      <Filter>Logger\Backends</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger\Backends\BackendXML.cpp">
+      <Filter>Logger\Backends</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger\Backends\Win\BackendWindowsDebugger.cpp">
+      <Filter>Logger\Backends</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\FPU\MatrixFPU.cpp">
+      <Filter>Math\FPU</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\FPU\GeometryFPU.cpp">
+      <Filter>Math\FPU</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\SSE\MatrixSSE.cpp">
+      <Filter>Math\SSE</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\SSE\GeometrySSE.cpp">
+      <Filter>Math\SSE</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Box.cpp">
+      <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="Math\Conversions.cpp">
-      <Filter>Source Files\Math</Filter>
+      <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="Win\AsyncQueueManager.cpp">
-      <Filter>Source Files\Win</Filter>
+    <ClCompile Include="Math\Frustum.cpp">
+      <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="Assertion.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Math\Geometry.cpp">
+      <Filter>Math</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Latch.hpp">
-      <Filter>Header Files</Filter>
-    </None>
+    <ClCompile Include="Math\Math.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Matrix.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Quaternion.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Random.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\RayGeometry.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\DefaultAllocator.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\Buffer.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Packer\PackerReader.cpp">
+      <Filter>Packer</Filter>
+    </ClCompile>
+    <ClCompile Include="Packer\PackerResource.cpp">
+      <Filter>Packer</Filter>
+    </ClCompile>
+    <ClCompile Include="Packer\PackerResourceFile.cpp">
+      <Filter>Packer</Filter>
+    </ClCompile>
+    <ClCompile Include="Packer\PackerWriter.cpp">
+      <Filter>Packer</Filter>
+    </ClCompile>
+    <ClCompile Include="Packer\PackerDefines.cpp">
+      <Filter>Packer</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\BVH.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\MD5.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\ThreadPool.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\AsyncThreadPool.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="FileSystem\FileAsync.cpp">
+      <Filter>FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="FileSystem\FileBuffered.cpp">
+      <Filter>FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="FileSystem\FileSystemCommon.cpp">
+      <Filter>FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="FileSystem\Windows\File.cpp">
+      <Filter>FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="FileSystem\Windows\FileAsyncPlatform.cpp">
+      <Filter>FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="FileSystem\Windows\FileSystem.cpp">
+      <Filter>FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="FileSystem\Windows\DirectoryWatch.cpp">
+      <Filter>FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Latch.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Win\AsyncQueueManager.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Win\Common.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Win\Console.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Win\Library.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Win\Main.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Win\Memory.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Win\SystemInfoPlatform.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Win\Thread.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Win\Timer.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Win\Window.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Assertion.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\SystemInfo.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\InputStream.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\OutputStream.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

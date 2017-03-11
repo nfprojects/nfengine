@@ -4,7 +4,7 @@
  * @brief  Module with class used to read files from PAK archive.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "PackerReader.hpp"
 
 namespace NFE {

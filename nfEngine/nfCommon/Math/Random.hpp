@@ -9,6 +9,9 @@
 #include "../nfCommon.hpp"
 #include "Math.hpp"
 
+#include <iterator>
+
+
 namespace NFE {
 namespace Math {
 

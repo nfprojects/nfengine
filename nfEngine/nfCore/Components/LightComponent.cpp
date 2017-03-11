@@ -10,9 +10,9 @@
 #include "Engine.hpp"
 #include "Renderer/LightsRenderer.hpp"
 
-#include "nfCommon/InputStream.hpp"
-#include "nfCommon/OutputStream.hpp"
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/Utils/InputStream.hpp"
+#include "nfCommon/Utils/OutputStream.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 namespace NFE {
 namespace Scene {

@@ -7,9 +7,9 @@
 #include "PCH.hpp"
 #include "MeshImporter.hpp"
 
-#include "nfCommon/Logger.hpp"
-#include "nfCommon/FileSystem.hpp"
-#include "nfCommon/File.hpp"
+#include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/FileSystem/FileSystem.hpp"
+#include "nfCommon/FileSystem/File.hpp"
 
 #include "model_obj/model_obj.h"
 

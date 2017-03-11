@@ -8,7 +8,7 @@
 
 #include "Scene.hpp"
 
-#include "nfCommon/ThreadPool.hpp"
+#include "nfCommon/Utils/ThreadPool.hpp"
 
 
 class MultithreadedScene : public Scene

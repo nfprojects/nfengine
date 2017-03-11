@@ -8,7 +8,7 @@
 
 #include "../Core.hpp"
 #include "Resource.hpp"
-#include "nfCommon/InputStream.hpp"
+#include "nfCommon/Utils/InputStream.hpp"
 #include "Renderers/RendererInterface/Device.hpp"
 
 namespace NFE {

@@ -12,7 +12,7 @@
 #include "Resources/Material.hpp"
 #include "Resources/Mesh.hpp"
 #include "ShaderCommon.hpp"
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 namespace NFE {
 namespace Renderer {

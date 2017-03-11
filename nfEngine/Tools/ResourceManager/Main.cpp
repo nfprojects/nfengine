@@ -8,8 +8,8 @@
 
 #include "MeshImporter.hpp"
 
-#include "../../nfCommon/Logger.hpp"
-#include "../../nfCommon/FileSystem.hpp"
+#include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/FileSystem/FileSystem.hpp"
 
 
 using namespace NFE;

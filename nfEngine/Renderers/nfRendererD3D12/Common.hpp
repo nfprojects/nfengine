@@ -7,7 +7,7 @@
 #pragma once
 
 #include "nfCommon/nfCommon.hpp"
-#include "nfCommon/Win/Common.hpp"
+#include "nfCommon/System/Win/Common.hpp"
 #include "../D3DCommon/D3DPtr.hpp"
 
 

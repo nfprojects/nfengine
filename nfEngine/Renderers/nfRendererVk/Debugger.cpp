@@ -8,7 +8,7 @@
 
 #include "Debugger.hpp"
 #include "GetProc.hpp"
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 namespace NFE {
 namespace Renderer {

@@ -8,7 +8,7 @@
 
 #include "PCH.hpp"
 #include "GuiRenderer.hpp"
-#include "../nfCommon/Logger.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 #include "imgui.h"
 

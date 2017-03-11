@@ -6,6 +6,9 @@
 
 #pragma once
 
+#include <inttypes.h>
+#include <stddef.h>
+
 
 // disable some Visual Studio specific warnings
 #ifdef _MSC_VER

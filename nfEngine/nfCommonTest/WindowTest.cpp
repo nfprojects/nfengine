@@ -1,7 +1,8 @@
 #include "PCH.hpp"
-#include "nfCommon/Window.hpp"
+#include "nfCommon/System/Window.hpp"
 
 #include <thread>
+
 
 namespace {
 

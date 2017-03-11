@@ -15,9 +15,9 @@
 #include "../nfEngine/nfCore/Components/MeshComponent.hpp"
 
 #include "nfCommon/Math/Random.hpp"
-#include "nfCommon/InputStream.hpp"
-#include "nfCommon/OutputStream.hpp"
-#include "nfCommon/Timer.hpp"
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/Utils/InputStream.hpp"
+#include "nfCommon/Utils/OutputStream.hpp"
+#include "nfCommon/System/Timer.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 extern NFE::Engine* gEngine;

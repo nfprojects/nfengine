@@ -8,7 +8,6 @@
 #pragma once
 
 #include "../nfCommon.hpp"
-#include "../InputStream.hpp"
 #include "Mipmap.hpp"
 #include "ImageFormat.hpp"
 #include "ImageType.hpp"
@@ -20,6 +19,7 @@
 namespace NFE {
 namespace Common {
 
+class InputStream;
 
 class NFCOMMON_API Image
 {

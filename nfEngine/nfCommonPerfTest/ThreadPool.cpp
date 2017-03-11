@@ -5,9 +5,9 @@
  */
 
 #include "PCH.hpp"
-#include "nfCommon/ThreadPool.hpp"
-#include "nfCommon/Timer.hpp"
-#include "nfCommon/Latch.hpp"
+#include "nfCommon/Utils/ThreadPool.hpp"
+#include "nfCommon/System/Timer.hpp"
+#include "nfCommon/Utils/Latch.hpp"
 
 
 using namespace NFE::Common;

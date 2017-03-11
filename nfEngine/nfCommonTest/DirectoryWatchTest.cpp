@@ -1,8 +1,8 @@
 #include "PCH.hpp"
-#include "nfCommon/DirectoryWatch.hpp"
-#include "nfCommon/FileSystem.hpp"
-#include "nfCommon/File.hpp"
-#include "nfCommon/Latch.hpp"
+#include "nfCommon/FileSystem/DirectoryWatch.hpp"
+#include "nfCommon/FileSystem/FileSystem.hpp"
+#include "nfCommon/FileSystem/File.hpp"
+#include "nfCommon/Utils/Latch.hpp"
 
 using namespace NFE::Common;
 

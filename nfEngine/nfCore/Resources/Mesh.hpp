@@ -10,7 +10,7 @@
 #include "Resource.hpp"
 #include "../Renderer/RendererResources.hpp"
 #include "nfCommon/Math/Box.hpp"
-#include "nfCommon/Aligned.hpp"
+#include "nfCommon/Memory/Aligned.hpp"
 #include "nfResources/MeshFile.hpp"
 
 
