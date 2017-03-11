@@ -4,7 +4,7 @@
  * @brief  Quaternion function definitions.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "Quaternion.hpp"
 
 namespace NFE {

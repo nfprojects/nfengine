@@ -20,8 +20,8 @@
 #include "Translations.hpp"
 
 #include "ResourceBinding.hpp"
-#include "nfCommon/Win/Common.hpp"
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/System/Win/Common.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 
 

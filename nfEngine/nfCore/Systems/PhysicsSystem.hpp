@@ -7,8 +7,8 @@
 #pragma once
 
 #include "../Core.hpp"
-#include "nfCommon/Aligned.hpp"
-#include "nfCommon/ThreadPool.hpp"
+#include "nfCommon/Memory/Aligned.hpp"
+#include "nfCommon/Utils/ThreadPool.hpp"
 
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"

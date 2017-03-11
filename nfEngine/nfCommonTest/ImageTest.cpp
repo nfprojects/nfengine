@@ -1,7 +1,8 @@
 #include "PCH.hpp"
 #include "nfCommon/Image/Image.hpp"
-#include "nfCommon/InputStream.hpp"
-#include "nfCommon/FileSystem.hpp"
+#include "nfCommon/IO/InputStream.hpp"
+#include "nfCommon/IO/OutputStream.hpp"
+#include "nfCommon/FileSystem/FileSystem.hpp"
 #include "Constants.hpp"
 
 #include <memory>

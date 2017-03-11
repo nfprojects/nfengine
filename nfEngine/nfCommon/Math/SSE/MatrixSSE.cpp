@@ -4,8 +4,9 @@
  * @brief  Matrix function definitions.
  */
 
-#include "../../PCH.hpp"
+#include "PCH.hpp"
 #include "../Matrix.hpp"
+
 
 #ifdef NFE_USE_SSE
 

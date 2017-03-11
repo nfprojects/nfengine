@@ -9,9 +9,9 @@
 #include "../Core.hpp"
 #include "EntityManager.hpp"
 
-#include "nfCommon/ThreadPool.hpp"
+#include "nfCommon/Utils/ThreadPool.hpp"
 #include "nfCommon/Math/Vector.hpp"
-#include "nfCommon/Aligned.hpp"
+#include "nfCommon/Memory/Aligned.hpp"
 
 
 namespace NFE {

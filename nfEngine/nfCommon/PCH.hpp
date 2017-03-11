@@ -17,6 +17,8 @@
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
+#include <windowsx.h>
+#include <VersionHelpers.h>
 #endif // defined(WIN32)
 
 #if defined(__LINUX__) | defined(__linux__)

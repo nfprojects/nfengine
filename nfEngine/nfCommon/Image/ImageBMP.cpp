@@ -5,11 +5,11 @@
  * @brief  LoadBMP function definition from Image class.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "ImageBMP.hpp"
 #include "Image.hpp"
-#include "../Logger.hpp"
-#include "../Bit.hpp"
+#include "Logger/Logger.hpp"
+#include "Utils/Bit.hpp"
 
 
 namespace NFE {

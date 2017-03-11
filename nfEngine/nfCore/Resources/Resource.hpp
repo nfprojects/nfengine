@@ -8,8 +8,8 @@
 
 #include "../Core.hpp"
 
-#include "nfCommon/Aligned.hpp"
-#include "nfCommon/AsyncThreadPool.hpp"
+#include "nfCommon/Memory/Aligned.hpp"
+#include "nfCommon/Utils/AsyncThreadPool.hpp"
 
 
 

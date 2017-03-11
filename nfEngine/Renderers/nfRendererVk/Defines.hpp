@@ -18,7 +18,7 @@
 #endif // WIN32
 
 #include "nfCommon/nfCommon.hpp"
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 #include "Extensions.hpp"
 #include "Translations.hpp"

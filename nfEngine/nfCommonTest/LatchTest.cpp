@@ -5,7 +5,7 @@
  */
 
 #include "PCH.hpp"
-#include "nfCommon/Latch.hpp"
+#include "nfCommon/Utils/Latch.hpp"
 
 #include <thread>
 

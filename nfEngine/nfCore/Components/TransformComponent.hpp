@@ -8,7 +8,7 @@
 
 #include "../Core.hpp"
 #include "Component.hpp"
-#include "nfCommon/Aligned.hpp"
+#include "nfCommon/Memory/Aligned.hpp"
 #include "nfCommon/Math/Quaternion.hpp"
 
 #include <set>

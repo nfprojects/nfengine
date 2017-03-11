@@ -8,7 +8,8 @@
 
 #include "ImageFormat.hpp"
 #include "../Math/Vector.hpp"
-#include "../Buffer.hpp"
+#include "../Memory/Buffer.hpp"
+
 
 namespace NFE {
 namespace Common {

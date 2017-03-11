@@ -1,5 +1,5 @@
 #include "PCH.hpp"
-#include "nfCommon/InputStream.hpp"
+#include "nfCommon/IO/InputStream.hpp"
 
 #include "Constants.hpp"
 

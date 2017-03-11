@@ -8,7 +8,7 @@
 #include "RenderTarget.hpp"
 #include "Texture.hpp"
 #include "RendererD3D12.hpp"
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 
 namespace NFE {

@@ -4,11 +4,12 @@
  * @brief  ImagePNG class definition.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "ImagePNG.hpp"
 #include "Image.hpp"
 #include "libpng/png.h"
-#include "../Logger.hpp"
+#include "Logger/Logger.hpp"
+
 
 #define PNGSIGSIZE 8
 
