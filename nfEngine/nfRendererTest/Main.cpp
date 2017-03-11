@@ -1,7 +1,7 @@
 #include "PCH.hpp"
 #include "Backends.hpp"
-#include "nfCommon/FileSystem.hpp"
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/FileSystem/FileSystem.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 
 const std::string BACKEND_ARG_NAME = "--renderer";

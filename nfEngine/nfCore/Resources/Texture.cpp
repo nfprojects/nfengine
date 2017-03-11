@@ -12,8 +12,8 @@
 #include "Renderer/GuiRenderer.hpp"
 #include "ResourcesManager.hpp"
 
-#include "nfCommon/Logger.hpp"
-#include "nfCommon/InputStream.hpp"
+#include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/IO/InputStream.hpp"
 #include "nfCommon/Image/Image.hpp"
 
 namespace NFE {

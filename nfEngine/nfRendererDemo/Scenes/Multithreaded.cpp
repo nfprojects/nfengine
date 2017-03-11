@@ -11,8 +11,8 @@
 
 #include "nfCommon/Math/Math.hpp"
 #include "nfCommon/Math/Matrix.hpp"
-#include "nfCommon/Logger.hpp"
-#include "nfCommon/Assertion.hpp"
+#include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/System/Assertion.hpp"
 
 #include <vector>
 #include <functional>

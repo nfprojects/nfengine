@@ -17,15 +17,26 @@
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
+#include <windowsx.h>
+#include <VersionHelpers.h>
 #endif // defined(WIN32)
+
 
 #if defined(__LINUX__) | defined(__linux__)
 #define _LARGEFILE64_SOURCE
+#include <sys/syscall.h>
+#include <sys/eventfd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/inotify.h>
+#include <linux/aio_abi.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <signal.h>
+#include <dlfcn.h>
+#include <dirent.h>
+#include <poll.h>
+#include <pthread.h>
 #endif // defined(__LINUX__) | defined(__linux__)
 
 /// C lib
@@ -35,6 +46,7 @@
 #include <string.h>
 #include <inttypes.h>
 #include <stdarg.h>
+#include <stddef.h>
 
 /// STL
 #include <vector>
@@ -46,6 +58,7 @@
 #include <queue>
 #include <string>
 #include <array>
+#include <algorithm>
 
 #include <sstream>
 #include <iostream>

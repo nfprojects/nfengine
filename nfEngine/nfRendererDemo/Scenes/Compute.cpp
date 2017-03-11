@@ -9,7 +9,7 @@
 #include "Compute.hpp"
 #include "../Common.hpp"
 
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 #include <vector>
 #include <functional>

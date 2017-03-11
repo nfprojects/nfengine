@@ -4,9 +4,10 @@
  * @brief  SSE-specific geometry function definitions.
  */
 
-#include "../../PCH.hpp"
+#include "PCH.hpp"
 #include "../Geometry.hpp"
 #include "../Box.hpp"
+
 
 #ifdef NFE_USE_SSE
 

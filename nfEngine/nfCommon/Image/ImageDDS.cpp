@@ -5,10 +5,11 @@
  */
 
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "ImageDDS.hpp"
 #include "Image.hpp"
-#include "../Logger.hpp"
+#include "Logger/Logger.hpp"
+
 
 #define DDS_MAGIC_NUMBER    0x20534444
 

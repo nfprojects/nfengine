@@ -18,6 +18,160 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Config\Config.hpp" />
+    <ClInclude Include="Config\ConfigDataTranslator.hpp" />
+    <ClInclude Include="Config\ConfigTokenizer.hpp" />
+    <ClInclude Include="Containers\PackedArray.hpp" />
+    <ClInclude Include="Containers\PackedArrayImpl.hpp" />
+    <ClInclude Include="FileSystem\DirectoryWatch.hpp" />
+    <ClInclude Include="FileSystem\File.hpp" />
+    <ClInclude Include="FileSystem\FileAsync.hpp" />
+    <ClInclude Include="FileSystem\FileBuffered.hpp" />
+    <ClInclude Include="FileSystem\FileSystem.hpp" />
+    <ClInclude Include="Image\Image.hpp" />
+    <ClInclude Include="Image\ImageBMP.hpp" />
+    <ClInclude Include="Image\ImageDDS.hpp" />
+    <ClInclude Include="Image\ImageFormat.hpp" />
+    <ClInclude Include="Image\ImageJPG.hpp" />
+    <ClInclude Include="Image\ImagePNG.hpp" />
+    <ClInclude Include="Image\ImageType.hpp" />
+    <ClInclude Include="Image\Mipmap.hpp" />
+    <ClInclude Include="IO\InputStream.hpp" />
+    <ClInclude Include="IO\OutputStream.hpp" />
+    <ClInclude Include="Logger\Backends\BackendCommon.hpp" />
+    <ClInclude Include="Logger\Backends\BackendConsole.hpp" />
+    <ClInclude Include="Logger\Backends\BackendHTML.hpp" />
+    <ClInclude Include="Logger\Backends\BackendTxt.hpp" />
+    <ClInclude Include="Logger\Backends\BackendXML.hpp" />
+    <ClInclude Include="Logger\Backends\Win\BackendWindowsDebugger.hpp" />
+    <ClInclude Include="Logger\Logger.hpp" />
+    <ClInclude Include="Logger\LogGrouper.hpp" />
+    <ClInclude Include="Logger\LogScope.hpp" />
+    <ClInclude Include="Math\Box.hpp" />
+    <ClInclude Include="Math\Conversions.hpp" />
+    <ClInclude Include="Math\FPU\Matrix.hpp" />
+    <ClInclude Include="Math\FPU\RayGeometry.hpp" />
+    <ClInclude Include="Math\FPU\Vector.hpp" />
+    <ClInclude Include="Math\Frustum.hpp" />
+    <ClInclude Include="Math\Geometry.hpp" />
+    <ClInclude Include="Math\Math.hpp" />
+    <ClInclude Include="Math\Matrix.hpp" />
+    <ClInclude Include="Math\Quaternion.hpp" />
+    <ClInclude Include="Math\Random.hpp" />
+    <ClInclude Include="Math\Ray.hpp" />
+    <ClInclude Include="Math\Sphere.hpp" />
+    <ClInclude Include="Math\SSE\Matrix.hpp" />
+    <ClInclude Include="Math\SSE\RayGeometry.hpp" />
+    <ClInclude Include="Math\SSE\Vector.hpp" />
+    <ClInclude Include="Math\Triangle.hpp" />
+    <ClInclude Include="Math\Vector.hpp" />
+    <ClInclude Include="Memory\Aligned.hpp" />
+    <ClInclude Include="Memory\Buffer.hpp" />
+    <ClInclude Include="Memory\DefaultAllocator.hpp" />
+    <ClInclude Include="nfCommon.hpp" />
+    <ClInclude Include="Packer\Packer.hpp" />
+    <ClInclude Include="Packer\PackerDefines.hpp" />
+    <ClInclude Include="Packer\PackerElement.hpp" />
+    <ClInclude Include="Packer\PackerReader.hpp" />
+    <ClInclude Include="Packer\PackerResource.hpp" />
+    <ClInclude Include="Packer\PackerResourceFile.hpp" />
+    <ClInclude Include="Packer\PackerWriter.hpp" />
+    <ClInclude Include="PCH.hpp" />
+    <ClInclude Include="System\Assertion.hpp" />
+    <ClInclude Include="System\AsyncQueueManager.hpp" />
+    <ClInclude Include="System\Console.hpp" />
+    <ClInclude Include="System\KeyCodes.hpp" />
+    <ClInclude Include="System\Library.hpp" />
+    <ClInclude Include="System\Memory.hpp" />
+    <ClInclude Include="System\SystemInfo.hpp" />
+    <ClInclude Include="System\SystemInfoConstants.hpp" />
+    <ClInclude Include="System\Thread.hpp" />
+    <ClInclude Include="System\Timer.hpp" />
+    <ClInclude Include="System\Window.hpp" />
+    <ClInclude Include="System\Win\AsyncQueueManager.hpp" />
+    <ClInclude Include="System\Win\Common.hpp" />
+    <ClInclude Include="System\Win\Console.hpp" />
+    <ClInclude Include="Utils\AsyncThreadPool.hpp" />
+    <ClInclude Include="Utils\Bit.hpp" />
+    <ClInclude Include="Utils\BVH.hpp" />
+    <ClInclude Include="Utils\EnumIterator.hpp" />
+    <ClInclude Include="Utils\Latch.hpp" />
+    <ClInclude Include="Utils\MD5.hpp" />
+    <ClInclude Include="Utils\ThreadPool.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Config\Config.cpp" />
+    <ClCompile Include="Config\ConfigTokenizer.cpp" />
+    <ClCompile Include="FileSystem\FileAsync.cpp" />
+    <ClCompile Include="FileSystem\FileBuffered.cpp" />
+    <ClCompile Include="FileSystem\FileSystemCommon.cpp" />
+    <ClCompile Include="FileSystem\Windows\DirectoryWatch.cpp" />
+    <ClCompile Include="FileSystem\Windows\File.cpp" />
+    <ClCompile Include="FileSystem\Windows\FileAsyncPlatform.cpp" />
+    <ClCompile Include="FileSystem\Windows\FileSystem.cpp" />
+    <ClCompile Include="Image\Image.cpp" />
+    <ClCompile Include="Image\ImageBMP.cpp" />
+    <ClCompile Include="Image\ImageDDS.cpp" />
+    <ClCompile Include="Image\ImageFormat.cpp" />
+    <ClCompile Include="Image\ImageJPG.cpp" />
+    <ClCompile Include="Image\ImagePNG.cpp" />
+    <ClCompile Include="Image\ImageType.cpp" />
+    <ClCompile Include="Image\Mipmap.cpp" />
+    <ClCompile Include="IO\InputStream.cpp" />
+    <ClCompile Include="IO\OutputStream.cpp" />
+    <ClCompile Include="Logger\Backends\BackendConsole.cpp" />
+    <ClCompile Include="Logger\Backends\BackendHTML.cpp" />
+    <ClCompile Include="Logger\Backends\BackendTxt.cpp" />
+    <ClCompile Include="Logger\Backends\BackendXML.cpp" />
+    <ClCompile Include="Logger\Backends\Win\BackendWindowsDebugger.cpp" />
+    <ClCompile Include="Logger\Logger.cpp" />
+    <ClCompile Include="Logger\LogGrouper.cpp" />
+    <ClCompile Include="Logger\LogScope.cpp" />
+    <ClCompile Include="Math\Box.cpp" />
+    <ClCompile Include="Math\Conversions.cpp" />
+    <ClCompile Include="Math\FPU\GeometryFPU.cpp" />
+    <ClCompile Include="Math\FPU\MatrixFPU.cpp" />
+    <ClCompile Include="Math\Frustum.cpp" />
+    <ClCompile Include="Math\Geometry.cpp" />
+    <ClCompile Include="Math\Math.cpp" />
+    <ClCompile Include="Math\Matrix.cpp" />
+    <ClCompile Include="Math\Quaternion.cpp" />
+    <ClCompile Include="Math\Random.cpp" />
+    <ClCompile Include="Math\RayGeometry.cpp" />
+    <ClCompile Include="Math\SSE\GeometrySSE.cpp" />
+    <ClCompile Include="Math\SSE\MatrixSSE.cpp" />
+    <ClCompile Include="Memory\Buffer.cpp" />
+    <ClCompile Include="Memory\DefaultAllocator.cpp" />
+    <ClCompile Include="Packer\PackerDefines.cpp" />
+    <ClCompile Include="Packer\PackerReader.cpp" />
+    <ClCompile Include="Packer\PackerResource.cpp" />
+    <ClCompile Include="Packer\PackerResourceFile.cpp" />
+    <ClCompile Include="Packer\PackerWriter.cpp" />
+    <ClCompile Include="PCH.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="System\Assertion.cpp" />
+    <ClCompile Include="System\SystemInfo.cpp" />
+    <ClCompile Include="System\Win\AsyncQueueManager.cpp" />
+    <ClCompile Include="System\Win\Common.cpp" />
+    <ClCompile Include="System\Win\Console.cpp" />
+    <ClCompile Include="System\Win\Library.cpp" />
+    <ClCompile Include="System\Win\Main.cpp" />
+    <ClCompile Include="System\Win\Memory.cpp" />
+    <ClCompile Include="System\Win\SystemInfoPlatform.cpp" />
+    <ClCompile Include="System\Win\Thread.cpp" />
+    <ClCompile Include="System\Win\Timer.cpp" />
+    <ClCompile Include="System\Win\Window.cpp" />
+    <ClCompile Include="Utils\AsyncThreadPool.cpp" />
+    <ClCompile Include="Utils\BVH.cpp" />
+    <ClCompile Include="Utils\Latch.cpp" />
+    <ClCompile Include="Utils\MD5.cpp" />
+    <ClCompile Include="Utils\ThreadPool.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -94,7 +248,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";_HAS_EXCEPTIONS=0;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;NFCOMMON_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)nfEngineDeps\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngineDeps\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -124,7 +278,7 @@ popd</Command>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";_HAS_EXCEPTIONS=0;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;NFCOMMON_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)nfEngineDeps\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngineDeps\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -158,7 +312,7 @@ popd</Command>
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
-      <AdditionalIncludeDirectories>$(SolutionDir)nfEngineDeps\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngineDeps\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -192,7 +346,7 @@ popd</Command>
       <SDLCheck>true</SDLCheck>
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
-      <AdditionalIncludeDirectories>$(SolutionDir)nfEngineDeps\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngineDeps\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -215,393 +369,6 @@ Scripts\copy_deps.bat $(Platform) $(Configuration) libpng.dll zlib.dll
 popd</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="Aligned.hpp" />
-    <ClInclude Include="AsyncQueueManager.hpp" />
-    <ClInclude Include="Assertion.hpp" />
-    <ClInclude Include="AsyncThreadPool.hpp" />
-    <ClInclude Include="Bit.hpp" />
-    <ClInclude Include="Buffer.hpp" />
-    <ClInclude Include="Config.hpp" />
-    <ClInclude Include="ConfigDataTranslator.hpp" />
-    <ClInclude Include="ConfigTokenizer.hpp" />
-    <ClInclude Include="BVH.hpp" />
-    <ClInclude Include="Console.hpp" />
-    <ClInclude Include="Containers\PackedArray.hpp" />
-    <ClInclude Include="Containers\PackedArrayImpl.hpp" />
-    <ClInclude Include="DirectoryWatch.hpp" />
-    <ClInclude Include="EnumIterator.hpp" />
-    <ClInclude Include="File.hpp" />
-    <ClInclude Include="FileAsync.hpp" />
-    <ClInclude Include="FileBuffered.hpp" />
-    <ClInclude Include="FileSystem.hpp" />
-    <ClInclude Include="Image\Image.hpp" />
-    <ClInclude Include="Image\ImageBMP.hpp" />
-    <ClInclude Include="Image\ImageDDS.hpp" />
-    <ClInclude Include="Image\ImageFormat.hpp" />
-    <ClInclude Include="Image\ImageJPG.hpp" />
-    <ClInclude Include="Image\ImagePNG.hpp" />
-    <ClInclude Include="Image\ImageType.hpp" />
-    <ClInclude Include="Image\Mipmap.hpp" />
-    <ClInclude Include="InputStream.hpp" />
-    <ClInclude Include="KeyCodes.hpp" />
-    <ClInclude Include="Library.hpp" />
-    <ClInclude Include="Logger.hpp" />
-    <ClInclude Include="LoggerBackends\BackendCommon.hpp" />
-    <ClInclude Include="LoggerBackends\BackendConsole.hpp" />
-    <ClInclude Include="LoggerBackends\BackendHTML.hpp" />
-    <ClInclude Include="LoggerBackends\BackendTxt.hpp" />
-    <ClInclude Include="LoggerBackends\BackendXML.hpp" />
-    <ClInclude Include="LoggerBackends\Win\BackendWindowsDebugger.hpp" />
-    <ClInclude Include="LogGrouper.hpp" />
-    <ClInclude Include="LogScope.hpp" />
-    <ClInclude Include="Math\Box.hpp" />
-    <ClInclude Include="Math\Conversions.hpp" />
-    <ClInclude Include="Math\FPU\Matrix.hpp" />
-    <ClInclude Include="Math\FPU\RayGeometry.hpp" />
-    <ClInclude Include="Math\FPU\Vector.hpp" />
-    <ClInclude Include="Math\Frustum.hpp" />
-    <ClInclude Include="Math\Geometry.hpp" />
-    <ClInclude Include="Math\Math.hpp" />
-    <ClInclude Include="Math\Matrix.hpp" />
-    <ClInclude Include="Math\Quaternion.hpp" />
-    <ClInclude Include="Math\Random.hpp" />
-    <ClInclude Include="Math\Ray.hpp" />
-    <ClInclude Include="Math\Sphere.hpp" />
-    <ClInclude Include="Math\SSE\Matrix.hpp" />
-    <ClInclude Include="Math\SSE\RayGeometry.hpp" />
-    <ClInclude Include="Math\SSE\Vector.hpp" />
-    <ClInclude Include="Math\Triangle.hpp" />
-    <ClInclude Include="Math\Vector.hpp" />
-    <ClInclude Include="MD5.hpp" />
-    <ClInclude Include="Memory.hpp" />
-    <ClInclude Include="Memory\DefaultAllocator.hpp" />
-    <ClInclude Include="nfCommon.hpp" />
-    <ClInclude Include="OutputStream.hpp" />
-    <ClInclude Include="PackedArray.hpp" />
-    <ClInclude Include="Packer\Packer.hpp" />
-    <ClInclude Include="Packer\PackerDefines.hpp" />
-    <ClInclude Include="Packer\PackerElement.hpp" />
-    <ClInclude Include="Packer\PackerReader.hpp" />
-    <ClInclude Include="Packer\PackerResource.hpp" />
-    <ClInclude Include="Packer\PackerResourceFile.hpp" />
-    <ClInclude Include="Packer\PackerWriter.hpp" />
-    <ClInclude Include="PCH.hpp" />
-    <ClInclude Include="SystemInfo.hpp" />
-    <ClInclude Include="SystemInfoConstants.hpp" />
-    <ClInclude Include="Thread.hpp" />
-    <ClInclude Include="ThreadPool.hpp" />
-    <ClInclude Include="Timer.hpp" />
-    <ClInclude Include="Window.hpp" />
-    <ClInclude Include="Win\AsyncQueueManager.hpp" />
-    <ClInclude Include="Win\Common.hpp" />
-    <ClInclude Include="Win\Console.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Assertion.cpp" />
-    <ClCompile Include="AsyncThreadPool.cpp" />
-    <ClCompile Include="Buffer.cpp" />
-    <ClCompile Include="Config.cpp" />
-    <ClCompile Include="ConfigTokenizer.cpp" />
-    <ClCompile Include="BVH.cpp" />
-    <ClCompile Include="FileAsync.cpp" />
-    <ClCompile Include="FileBuffered.cpp" />
-    <ClCompile Include="FileSystemCommon.cpp" />
-    <ClCompile Include="Image\Image.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Image\ImageFormat.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Image\ImageBMP.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Image\ImageDDS.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Image\ImageJPG.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Image\ImagePNG.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Image\ImageType.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Image\Mipmap.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="InputStream.cpp" />
-    <ClCompile Include="Latch.cpp" />
-    <ClCompile Include="Logger.cpp" />
-    <ClCompile Include="LoggerBackends\BackendConsole.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="LoggerBackends\BackendHTML.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="LoggerBackends\BackendTxt.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="LoggerBackends\BackendXML.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="LoggerBackends\Win\BackendWindowsDebugger.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="LogGrouper.cpp" />
-    <ClCompile Include="LogScope.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Math\Box.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Math\Conversions.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Math\FPU\GeometryFPU.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Math\FPU\MatrixFPU.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Math\Frustum.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Math\Geometry.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Math\Math.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Math\Matrix.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Math\Quaternion.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Math\Random.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Math\RayGeometry.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Math\SSE\GeometrySSE.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Math\SSE\MatrixSSE.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="MD5.cpp" />
-    <ClCompile Include="Memory\DefaultAllocator.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="OutputStream.cpp" />
-    <ClCompile Include="Packer\PackerDefines.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Packer\PackerReader.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Packer\PackerResource.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Packer\PackerResourceFile.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Packer\PackerWriter.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="PCH.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="SystemInfo.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="ThreadPool.cpp" />
-    <ClCompile Include="Win\AsyncQueueManager.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Win\Common.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Win\Console.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Win\DirectoryWatch.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Win\File.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Win\FileAsyncPlatform.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Win\FileSystem.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Win\Library.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Win\Memory.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Win\SystemInfoPlatform.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Win\Thread.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Win\Timer.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Win\Window.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Latch.hpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

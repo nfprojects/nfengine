@@ -9,7 +9,7 @@
 #include "Texture.hpp"
 #include "RendererD3D11.hpp"
 
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 
 namespace NFE {

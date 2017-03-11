@@ -8,7 +8,8 @@
 
 #include "Defines.hpp"
 
-#include "nfCommon/Library.hpp"
+#include "nfCommon/System/Library.hpp"
+
 
 namespace NFE {
 namespace Renderer {

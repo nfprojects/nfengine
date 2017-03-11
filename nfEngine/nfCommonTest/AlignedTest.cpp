@@ -5,7 +5,7 @@
  */
 
 #include "PCH.hpp"
-#include "nfCommon/Aligned.hpp"
+#include "nfCommon/Memory/Aligned.hpp"
 
 #include <memory>
 

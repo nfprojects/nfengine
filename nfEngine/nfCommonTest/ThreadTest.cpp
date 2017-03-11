@@ -5,7 +5,7 @@
  */
 
 #include "PCH.hpp"
-#include "nfCommon/Thread.hpp"
+#include "nfCommon/System/Thread.hpp"
 #include <algorithm>
 #include <array>
 

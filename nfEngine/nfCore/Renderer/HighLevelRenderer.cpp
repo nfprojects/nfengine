@@ -12,8 +12,8 @@
 #include "View.hpp"
 #include "Engine.hpp"
 #include "Utils/ConfigVariable.hpp"
-#include "nfCommon/ThreadPool.hpp"
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/Utils/ThreadPool.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 #include "GuiRenderer.hpp"
 #include "DebugRenderer.hpp"

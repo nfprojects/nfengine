@@ -5,10 +5,11 @@
  * @brief  Image class definitions.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "Image.hpp"
-#include "../Logger.hpp"
+#include "Logger/Logger.hpp"
 #include "squish/src/squish.h"
+
 
 namespace {
 

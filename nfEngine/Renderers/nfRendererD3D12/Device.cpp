@@ -20,8 +20,8 @@
 #include "ResourceBinding.hpp"
 #include "Translations.hpp"
 
-#include "nfCommon/Win/Common.hpp"
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/System/Win/Common.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 
 namespace NFE {

@@ -7,7 +7,10 @@
 #pragma once
 
 #include "PackedArray.hpp"
-#include "../Assertion.hpp"
+#include "../System/Assertion.hpp"
+
+#include <string.h>
+
 
 namespace NFE {
 namespace Common {

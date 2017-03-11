@@ -5,7 +5,8 @@
  */
 
 #include "PCH.hpp"
-#include "nfCommon/LogGrouper.hpp"
+#include "nfCommon/Logger/LogGrouper.hpp"
+
 
 using namespace NFE::Common;
 

@@ -4,7 +4,7 @@
  * @brief  Basic math functions definitions.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "Math.hpp"
 
 namespace NFE {

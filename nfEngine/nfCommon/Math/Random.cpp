@@ -4,7 +4,7 @@
  * @brief  Pseudorandom number generator definitions.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "Math.hpp"
 #include "Random.hpp"
 

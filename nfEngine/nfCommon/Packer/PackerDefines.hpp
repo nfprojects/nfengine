@@ -7,9 +7,9 @@
 #pragma once
 
 #include "../nfCommon.hpp"
-#include "../File.hpp"
-#include "../FileSystem.hpp"
-#include "../Buffer.hpp"
+#include "../FileSystem/File.hpp"
+#include "../FileSystem/FileSystem.hpp"
+#include "../Memory/Buffer.hpp"
 #include <type_traits>
 #include <cstdio>
 #include <iostream>

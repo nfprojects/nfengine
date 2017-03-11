@@ -7,9 +7,9 @@
 #include "../PCH.hpp"
 #include "ConfigVariable.hpp"
 
-#include "nfCommon/Config.hpp"
-#include "nfCommon/File.hpp"
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/Config/Config.hpp"
+#include "nfCommon/FileSystem/File.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/Math/Math.hpp"
 
 namespace NFE {

@@ -7,8 +7,8 @@
 #pragma once
 
 #include "nfCommon/Math/Math.hpp"
-#include "nfCommon/InputStream.hpp"
-#include "nfCommon/OutputStream.hpp"
+#include "nfCommon/IO/InputStream.hpp"
+#include "nfCommon/IO/OutputStream.hpp"
 
 #include <vector>
 

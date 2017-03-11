@@ -17,15 +17,17 @@
 #include "Scenes/Multithreaded.hpp"
 
 #include "../Renderers/RendererInterface/Device.hpp"
-#include "nfCommon/Library.hpp"
-#include "nfCommon/FileSystem.hpp"
-#include "nfCommon/Window.hpp"
-#include "nfCommon/Timer.hpp"
-#include "nfCommon/KeyCodes.hpp"
-#include "nfCommon/Logger.hpp"
+
+#include "nfCommon/System/Library.hpp"
+#include "nfCommon/FileSystem/FileSystem.hpp"
+#include "nfCommon/System/Window.hpp"
+#include "nfCommon/System/Timer.hpp"
+#include "nfCommon/System/KeyCodes.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 #include <algorithm>
 #include <string.h>
+
 
 using namespace NFE::Renderer;
 

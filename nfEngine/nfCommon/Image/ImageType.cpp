@@ -4,9 +4,10 @@
  * @brief  ImageType interface class declarations
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "ImageType.hpp"
 #include "Image.hpp"
+
 
 namespace NFE {
 namespace Common {

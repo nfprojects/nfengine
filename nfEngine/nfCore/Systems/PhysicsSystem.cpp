@@ -12,7 +12,7 @@
 #include "Components/BodyComponent.hpp"
 #include "Utils/ConfigVariable.hpp"
 
-#include "nfCommon/Timer.hpp"
+#include "nfCommon/System/Timer.hpp"
 
 namespace NFE {
 

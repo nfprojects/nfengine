@@ -16,11 +16,11 @@
 
 #include "Utils/ConfigVariable.hpp"
 
-#include "nfCommon/Memory.hpp"
-#include "nfCommon/Window.hpp"
-#include "nfCommon/Timer.hpp"
-#include "nfCommon/Logger.hpp"
-#include "nfCommon/SystemInfo.hpp"
+#include "nfCommon/System/Memory.hpp"
+#include "nfCommon/System/Window.hpp"
+#include "nfCommon/System/Timer.hpp"
+#include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/System/SystemInfo.hpp"
 
 namespace NFE {
 

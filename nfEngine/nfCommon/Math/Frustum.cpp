@@ -4,7 +4,7 @@
  * @brief  Frustum class definitions.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "Frustum.hpp"
 
 namespace NFE {

@@ -4,10 +4,11 @@
  * @brief  Generic memory allocator definition.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "DefaultAllocator.hpp"
-#include "../Logger.hpp"
-#include "../Math/Math.hpp"
+#include "Logger/Logger.hpp"
+#include "Math/Math.hpp"
+
 
 // TODO
 // 1. Allocated size tracking in Release mode

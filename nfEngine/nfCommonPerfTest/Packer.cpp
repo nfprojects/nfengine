@@ -1,8 +1,8 @@
 #include "PCH.hpp"
 #include "nfCommon/Packer/Packer.hpp"
-#include "nfCommon/Timer.hpp"
-#include "nfCommon/FileSystem.hpp"
-#include "nfCommon/File.hpp"
+#include "nfCommon/System/Timer.hpp"
+#include "nfCommon/FileSystem/FileSystem.hpp"
+#include "nfCommon/FileSystem/File.hpp"
 
 #include "Test.hpp"
 

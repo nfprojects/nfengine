@@ -4,7 +4,7 @@
  * @brief  Ray intersection functions.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "Geometry.hpp"
 #include "Box.hpp"
 #include "Sphere.hpp"

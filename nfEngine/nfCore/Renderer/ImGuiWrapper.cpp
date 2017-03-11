@@ -12,9 +12,9 @@
 #include "Resources/ResourcesManager.hpp"
 #include "Resources/Texture.hpp"
 
-#include "nfCommon/Window.hpp"
-#include "nfCommon/Logger.hpp"
-#include "nfCommon/KeyCodes.hpp"
+#include "nfCommon/System/Window.hpp"
+#include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/System/KeyCodes.hpp"
 
 #include "imgui.h"
 

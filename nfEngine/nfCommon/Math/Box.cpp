@@ -4,8 +4,9 @@
  * @brief  Box class definitions.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "Box.hpp"
+
 
 namespace NFE {
 namespace Math {

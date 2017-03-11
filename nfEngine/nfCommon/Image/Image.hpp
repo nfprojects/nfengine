@@ -8,7 +8,7 @@
 #pragma once
 
 #include "../nfCommon.hpp"
-#include "../InputStream.hpp"
+#include "../IO/InputStream.hpp"
 #include "Mipmap.hpp"
 #include "ImageFormat.hpp"
 #include "ImageType.hpp"

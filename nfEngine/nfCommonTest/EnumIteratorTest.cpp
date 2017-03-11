@@ -1,5 +1,5 @@
 #include "PCH.hpp"
-#include "nfCommon/EnumIterator.hpp"
+#include "nfCommon/Utils/EnumIterator.hpp"
 #include <iostream>
 
 using namespace NFE::Common;

@@ -9,7 +9,7 @@
 #include "Shader.hpp"
 #include "Defines.hpp"
 #include "Device.hpp"
-#include "nfCommon/File.hpp"
+#include "nfCommon/FileSystem/File.hpp"
 
 #include <glslang/SPIRV/GlslangToSpv.h>
 #include <glslang/SPIRV/disassemble.h>

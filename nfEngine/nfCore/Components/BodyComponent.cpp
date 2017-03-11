@@ -9,8 +9,8 @@
 #include "Resources/ResourcesManager.hpp"
 #include "Resources/CollisionShape.hpp"
 
-#include "nfCommon/InputStream.hpp"
-#include "nfCommon/OutputStream.hpp"
+#include "nfCommon/IO/InputStream.hpp"
+#include "nfCommon/IO/OutputStream.hpp"
 
 #include "btBulletDynamicsCommon.h"
 
