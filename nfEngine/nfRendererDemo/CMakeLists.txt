@@ -23,8 +23,8 @@ LINK_DIRECTORIES(${NFEDEPS_LIB_DIRECTORY}
 ADD_EXECUTABLE(nfRendererDemo ${NFRENDERERDEMO_SOURCES} ${NFRENDERERDEMO_HEADERS}
                               ${NFRENDERERDEMO_SCENE_SOURCES} ${NFRENDERERDEMO_SCENE_HEADERS})
 SET_TARGET_PROPERTIES(nfRendererDemo PROPERTIES
-                      COMPILE_FLAGS "-pthread"
-                      LINK_FLAGS "-pthread")
+                      LINK_FLAGS "-pthread"
+                      COTIRE_CXX_PREFIX_HEADER_INIT "PCH.hpp")
 
 # nfRendererOGL4 dependency removed temporarily
 ADD_DEPENDENCIES(nfRendererDemo nfCommon)
@@ -33,3 +33,5 @@ TARGET_LINK_LIBRARIES(nfRendererDemo nfCommon squish jpeg png dl
 ADD_CUSTOM_COMMAND(TARGET nfRendererDemo POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:nfRendererDemo>
                                                     ${NFE_OUTPUT_DIRECTORY}/${targetfile})
+
+# cotire(nfRendererDemo)

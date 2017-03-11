@@ -19,13 +19,15 @@ INCLUDE_DIRECTORIES(${NFE_ROOT_DIRECTORY}/nfEngineDeps/
 LINK_DIRECTORIES(${NFEDEPS_LIB_DIRECTORY}
                  ${NFE_OUTPUT_DIRECTORY})
 
-ADD_EXECUTABLE(nfCommonPerfTest
-               ${NFCOMMONPERFTEST_SOURCES} ${NFCOMMONPERFTEST_HEADERS})
+ADD_EXECUTABLE(nfCommonPerfTest ${NFCOMMONPERFTEST_SOURCES} ${NFCOMMONPERFTEST_HEADERS})
 SET_TARGET_PROPERTIES(nfCommonPerfTest PROPERTIES
-                      COMPILE_FLAGS "-pthread"
-                      LINK_FLAGS "-pthread")
+                      LINK_FLAGS "-pthread"
+                      COTIRE_CXX_PREFIX_HEADER_INIT "PCH.hpp")
+
 ADD_DEPENDENCIES(nfCommonPerfTest nfCommon)
 TARGET_LINK_LIBRARIES(nfCommonPerfTest nfCommon gtest squish jpeg png dl ${NFCOMMONPERFTEST_DEPS_LIBRARIES})
 ADD_CUSTOM_COMMAND(TARGET nfCommonPerfTest POST_BUILD COMMAND
                    ${CMAKE_COMMAND} -E copy $<TARGET_FILE:nfCommonPerfTest>
                                             ${NFE_OUTPUT_DIRECTORY}/${targetfile})
+
+cotire(nfCommonPerfTest)

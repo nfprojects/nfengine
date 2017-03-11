@@ -22,8 +22,8 @@ LINK_DIRECTORIES(${NFEDEPS_LIB_DIRECTORY}
 
 ADD_EXECUTABLE(nfRendererTest ${NFRENDERERTEST_SOURCES} ${NFRENDERERTEST_HEADERS})
 SET_TARGET_PROPERTIES(nfRendererTest PROPERTIES
-                      COMPILE_FLAGS "-pthread"
-                      LINK_FLAGS "-pthread")
+                      LINK_FLAGS "-pthread"
+                      COTIRE_CXX_PREFIX_HEADER_INIT "PCH.hpp")
 
 # nfRendererOGL4 dependency removed temporarily
 ADD_DEPENDENCIES(nfRendererTest nfCommon)
@@ -31,3 +31,5 @@ TARGET_LINK_LIBRARIES(nfRendererTest nfCommon gtest png squish jpeg dl
                       ${NFRENDERERTEST_DEPS_LIBRARIES})
 ADD_CUSTOM_COMMAND(TARGET nfRendererTest POST_BUILD COMMAND
                    ${CMAKE_COMMAND} -E copy $<TARGET_FILE:nfRendererTest> ${NFE_OUTPUT_DIRECTORY}/${targetfile})
+
+cotire(nfRendererTest)
