@@ -4,8 +4,9 @@
  * @brief  Enums and functions used by Image class
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "ImageFormat.hpp"
+
 
 namespace NFE {
 namespace Common {

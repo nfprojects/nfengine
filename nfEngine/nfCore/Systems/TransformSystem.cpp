@@ -10,7 +10,7 @@
 #include "Scene/EntityManager.hpp"
 #include "Components/TransformComponent.hpp"
 
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 namespace NFE {
 namespace Scene {

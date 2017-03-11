@@ -4,7 +4,7 @@
  * @brief  Module with abstract class representing single VFS file.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 
 #include "PackerResource.hpp"
 

@@ -1,6 +1,6 @@
 #include "PCH.hpp"
-#include "nfCommon/FileSystem.hpp"
-#include "nfCommon/File.hpp"
+#include "nfCommon/FileSystem/FileSystem.hpp"
+#include "nfCommon/FileSystem/File.hpp"
 
 
 using namespace NFE;

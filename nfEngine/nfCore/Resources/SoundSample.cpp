@@ -7,7 +7,7 @@
 #include "PCH.hpp"
 #include "SoundSample.hpp"
 
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 namespace NFE {
 namespace Resource {

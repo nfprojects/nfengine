@@ -5,11 +5,11 @@
  */
 
 #pragma once
+
 #include "ImageFormat.hpp"
-#include "../InputStream.hpp"
-#include "../OutputStream.hpp"
 
 #include <vector>
+
 
 namespace NFE {
 namespace Common {
@@ -17,6 +17,8 @@ namespace Common {
 class Image;
 class Mipmap;
 class ImageType;
+class InputStream;
+class OutputStream;
 
 // Typedefs to make these types shorter and more readable
 using ImageTypePtr = std::unique_ptr<ImageType>;

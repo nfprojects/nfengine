@@ -1,7 +1,8 @@
 #pragma once
 
 #include "../Renderers/RendererInterface/Device.hpp"
-#include "nfCommon/Library.hpp"
+#include "nfCommon/System/Library.hpp"
+
 
 using namespace NFE;
 using namespace NFE::Renderer;
@@ -9,10 +10,10 @@ using namespace NFE::Renderer;
 class RendererTest : public testing::Test
 {
 protected:
-    // preapre test case enviroment - initialize the renderer
+    // prepare test case environment - initialize the renderer
     static void SetUpTestCase();
 
-    // preapre test case enviroment - release the renderer
+    // prepare test case environment - release the renderer
     static void TearDownTestCase();
 
     static Common::Library gRendererLib;

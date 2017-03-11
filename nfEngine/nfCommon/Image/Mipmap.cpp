@@ -4,9 +4,9 @@
  * @brief  Mipmap class definitions.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "Mipmap.hpp"
-#include "../Logger.hpp"
+#include "Logger/Logger.hpp"
 
 namespace NFE {
 namespace Common {

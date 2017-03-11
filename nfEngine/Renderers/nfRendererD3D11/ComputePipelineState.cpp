@@ -9,7 +9,7 @@
 #include "RendererD3D11.hpp"
 #include "Shader.hpp"
 
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 
 namespace NFE {

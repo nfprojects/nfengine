@@ -4,7 +4,7 @@
  * @brief  Matrix function definitions.
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "Matrix.hpp"
 
 namespace NFE {

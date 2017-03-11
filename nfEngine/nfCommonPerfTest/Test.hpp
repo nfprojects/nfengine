@@ -7,7 +7,7 @@
 #pragma once
 
 #include <string>
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 #include <fstream>
 

@@ -7,9 +7,9 @@
 #include "PCH.hpp"
 #include "MeshFile.hpp"
 
-#include "nfCommon/Logger.hpp"
-#include "nfCommon/FileSystem.hpp"
-#include "nfCommon/File.hpp"
+#include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/FileSystem/FileSystem.hpp"
+#include "nfCommon/FileSystem/File.hpp"
 
 
 namespace NFE {

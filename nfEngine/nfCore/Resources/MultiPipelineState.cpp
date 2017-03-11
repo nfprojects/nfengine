@@ -8,9 +8,9 @@
 
 #include "PCH.hpp"
 #include "MultiPipelineState.hpp"
-#include "nfCommon/Logger.hpp"
-#include "nfCommon/File.hpp"
-#include "nfCommon/Config.hpp"
+#include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/FileSystem/File.hpp"
+#include "nfCommon/Config/Config.hpp"
 
 namespace NFE {
 namespace Resource {

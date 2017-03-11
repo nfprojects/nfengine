@@ -5,7 +5,8 @@
  */
 
 #include "PCH.hpp"
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/Logger/Logger.hpp"
+
 
 using namespace NFE::Common;
 

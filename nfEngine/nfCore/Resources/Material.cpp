@@ -11,7 +11,7 @@
 #include "Globals.hpp"
 #include "Renderer/GeometryRenderer.hpp"
 
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 #include "../rapidjson/include/rapidjson/document.h"
 #include "../rapidjson/include/rapidjson/filestream.h"

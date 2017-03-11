@@ -8,7 +8,7 @@
 #include "PCH.hpp"
 #include "SceneManager.hpp"
 #include "Engine.hpp"
-#include "nfCommon/Memory.hpp"
+#include "nfCommon/System/Memory.hpp"
 #include "Components/TransformComponent.hpp"
 #include "Systems/TransformSystem.hpp"
 #include "Systems/PhysicsSystem.hpp"

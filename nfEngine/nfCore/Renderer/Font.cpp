@@ -10,7 +10,7 @@
 #include "Font.hpp"
 #include "Engine.hpp"
 
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 #include "ft2build.h"
 #include "freetype/freetype.h"

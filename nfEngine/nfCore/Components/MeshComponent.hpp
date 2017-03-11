@@ -9,7 +9,7 @@
 #include "../Core.hpp"
 #include "../Resources/Mesh.hpp"
 #include "Component.hpp"
-#include "nfCommon/Aligned.hpp"
+#include "nfCommon/Memory/Aligned.hpp"
 
 namespace NFE {
 namespace Scene {

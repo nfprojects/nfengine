@@ -7,8 +7,8 @@
 #include "PCH.hpp"
 
 #include "nfCommon/nfCommon.hpp"
-#include "nfCommon/BVH.hpp"
-#include "nfCommon/Timer.hpp"
+#include "nfCommon/Utils/BVH.hpp"
+#include "nfCommon/System/Timer.hpp"
 #include "nfCommon/Math/Random.hpp"
 #include "nfCommon/Math/Vector.hpp"
 

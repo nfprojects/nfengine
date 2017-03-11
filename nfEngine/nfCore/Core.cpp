@@ -6,7 +6,7 @@
 
 #include "PCH.hpp"
 #include "Core.hpp"
-#include "nfCommon/Logger.hpp"
+#include "nfCommon/Logger/Logger.hpp"
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {

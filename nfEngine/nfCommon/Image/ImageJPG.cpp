@@ -5,10 +5,13 @@
  */
 
 
-#include "../PCH.hpp"
-#include "../Logger.hpp"
+#include "PCH.hpp"
+#include "Logger/Logger.hpp"
+#include "IO/InputStream.hpp"
+#include "IO/OutputStream.hpp"
 #include "Image.hpp"
 #include "ImageJPG.hpp"
+
 #include "jpeg/jpgd.h"
 #include "jpeg/jpge.h"
 

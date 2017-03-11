@@ -4,7 +4,7 @@
  * @brief  Common definitions for Packer
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "PackerDefines.hpp"
 
 namespace NFE {

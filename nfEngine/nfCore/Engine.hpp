@@ -10,7 +10,7 @@
 #include "Resources/ResourcesManager.hpp"
 #include "Scene/SceneManager.hpp"
 #include "Renderer/HighLevelRenderer.hpp"
-#include "nfCommon/ThreadPool.hpp"
+#include "nfCommon/Utils/ThreadPool.hpp"
 
 namespace NFE {
 

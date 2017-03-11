@@ -8,8 +8,8 @@
 #include "Shader.hpp"
 #include "RendererD3D12.hpp"
 
-#include "nfCommon/Logger.hpp"
-#include "nfCommon/File.hpp"
+#include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/FileSystem/File.hpp"
 
 #include <sstream>
 

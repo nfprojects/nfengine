@@ -7,8 +7,10 @@
 #pragma once
 
 #include "../Core.hpp"
+
 #include "nfCommon/nfCommon.hpp"
-#include "nfCommon/KeyCodes.hpp"
+#include "nfCommon/System/KeyCodes.hpp"
+
 
 namespace NFE {
 namespace Utils {

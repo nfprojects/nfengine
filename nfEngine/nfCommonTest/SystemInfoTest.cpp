@@ -1,5 +1,6 @@
 #include "PCH.hpp"
-#include "nfCommon/SystemInfo.hpp"
+#include "nfCommon/System/SystemInfo.hpp"
+
 
 using namespace NFE::Common;
 
