@@ -15,10 +15,12 @@ LINK_DIRECTORIES(${NFEDEPS_LIB_DIRECTORY}
 
 ADD_LIBRARY(nfResources STATIC ${NFRESOURCES_SOURCES} ${NFRESOURCES_HEADERS})
 SET_TARGET_PROPERTIES(nfResources PROPERTIES
-                      COMPILE_FLAGS "-pthread"
-                      LINK_FLAGS "-pthread")
+                      LINK_FLAGS "-pthread"
+                      COTIRE_CXX_PREFIX_HEADER_INIT "PCH.hpp")
 
 ADD_DEPENDENCIES(nfResources nfCommon)
 TARGET_LINK_LIBRARIES(nfResources nfCommon squish jpeg png dl ${NFRESOURCES_DEPS_LIBRARIES})
 ADD_CUSTOM_COMMAND(TARGET nfResources POST_BUILD COMMAND
                    ${CMAKE_COMMAND} -E copy $<TARGET_FILE:nfResources> ${NFE_OUTPUT_DIRECTORY}/${targetfile})
+
+cotire(nfResources)

@@ -1,7 +1,7 @@
 /**
  * @file
  * @author Witek902 (witek902@gmail.com)
- * @brief  File with defined bitwise operations
+ * @brief  File with defined native bitwise operations
  */
 #pragma once
 
@@ -34,7 +34,7 @@ inline size_t BitUtils<uint32>::CountBits(uint32 x)
 {
     x -= ((x >> 1) & 0x55555555);
     x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
-    return ((x + (x >> 4) & 0xF0F0F0F) * 0x1010101) >> 24;
+    return (((x + (x >> 4)) & 0xF0F0F0F) * 0x1010101) >> 24;
 }
 
 template<>
@@ -46,8 +46,6 @@ inline size_t BitUtils<uint16>::CountBits(uint16 x)
     const uint64 m2 = 0x3333;
     const uint64 m4 = 0x0f0f;
     const uint64 m8 = 0x00ff;
-    const uint64 hff = 0xffff;
-    const uint64 h01 = 0x0101;
 
     x = (x & m1) + ((x >> 1) & m1);
     x = (x & m2) + ((x >> 2) & m2);

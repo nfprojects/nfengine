@@ -46,6 +46,9 @@ Makefile
 *.VC.db
 .vs/
 
+# Build results on Linux
+/build-*
+
 # Eclipse project files
 .cproject
 .metadata

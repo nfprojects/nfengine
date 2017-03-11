@@ -339,9 +339,6 @@
     <ClInclude Include="Utils\BitUtilsImplCommon.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\BitUtilsImplImplNative.hpp">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="Math\Transform.hpp">
       <Filter>Math</Filter>
     </ClInclude>
@@ -425,6 +422,9 @@
     </ClInclude>
     <ClInclude Include="Containers\SharedPtrBase.hpp">
       <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\BitUtilsImplNative.hpp">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

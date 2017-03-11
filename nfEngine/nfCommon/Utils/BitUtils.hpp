@@ -64,5 +64,5 @@ public:
 #include "BitUtilsImplLinuxAVX.hpp"
 #endif //WIN32
 #else // NFE_USE_AVX
-#include "BitUtilsImpl.hpp"
+#include "BitUtilsImplNative.hpp"
 #endif // NFE_USE_AVX

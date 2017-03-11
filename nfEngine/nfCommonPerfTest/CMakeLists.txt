@@ -24,10 +24,13 @@ LINK_DIRECTORIES(${NFEDEPS_LIB_DIRECTORY}
 ADD_EXECUTABLE(nfCommonPerfTest
                ${NFCOMMONPERFTEST_SOURCES} ${NFCOMMONPERFTEST_HEADERS} ${NFCOMMONPERFTEST_TEST_CASES_SOURCES})
 SET_TARGET_PROPERTIES(nfCommonPerfTest PROPERTIES
-                      COMPILE_FLAGS "-pthread"
-                      LINK_FLAGS "-pthread")
+                      LINK_FLAGS "-pthread"
+                      COTIRE_CXX_PREFIX_HEADER_INIT "PCH.hpp")
+
 ADD_DEPENDENCIES(nfCommonPerfTest nfCommon)
 TARGET_LINK_LIBRARIES(nfCommonPerfTest nfCommon gtest squish jpeg png dl ${NFCOMMONPERFTEST_DEPS_LIBRARIES})
 ADD_CUSTOM_COMMAND(TARGET nfCommonPerfTest POST_BUILD COMMAND
                    ${CMAKE_COMMAND} -E copy $<TARGET_FILE:nfCommonPerfTest>
                                             ${NFE_OUTPUT_DIRECTORY}/${targetfile})
+
+cotire(nfCommonPerfTest)

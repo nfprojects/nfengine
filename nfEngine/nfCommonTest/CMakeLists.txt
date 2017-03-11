@@ -23,9 +23,12 @@ LINK_DIRECTORIES(${NFEDEPS_LIB_DIRECTORY}
 
 ADD_EXECUTABLE(nfCommonTest ${NFCOMMONTEST_SOURCES} ${NFCOMMONTEST_HEADERS} ${NFCOMMONTEST_TEST_CASES_SOURCES})
 SET_TARGET_PROPERTIES(nfCommonTest PROPERTIES
-                      COMPILE_FLAGS "-pthread"
-                      LINK_FLAGS "-pthread")
+                      LINK_FLAGS "-pthread"
+                      COTIRE_CXX_PREFIX_HEADER_INIT "PCH.hpp")
 ADD_DEPENDENCIES(nfCommonTest nfCommon testCalcLib)
 TARGET_LINK_LIBRARIES(nfCommonTest nfCommon gtest squish jpeg png dl ${NFCOMMONTEST_DEPS_LIBRARIES})
+
 ADD_CUSTOM_COMMAND(TARGET nfCommonTest POST_BUILD COMMAND
                    ${CMAKE_COMMAND} -E copy $<TARGET_FILE:nfCommonTest> ${NFE_OUTPUT_DIRECTORY}/${targetfile})
+
+cotire(nfCommonTest)

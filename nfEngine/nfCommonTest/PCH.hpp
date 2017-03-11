@@ -20,6 +20,7 @@
 #include <unordered_map>
 #include <vector>
 #include <algorithm>
+#include <array>
 #include <memory>
 #include <atomic>
 #include <string>
@@ -32,6 +33,8 @@
 #include <chrono>
 
 #include "gtest/gtest.h"
+
+#include "nfCommon/nfCommon.hpp"
 
 // workaround for Windows/Linux mkdir difference
 #if defined(__LINUX__) | defined(__linux__)
