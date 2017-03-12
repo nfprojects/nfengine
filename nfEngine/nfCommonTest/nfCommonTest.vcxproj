@@ -98,7 +98,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";_HAS_EXCEPTIONS=0;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_VARIADIC_MAX=10;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <MinimalRebuild>false</MinimalRebuild>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -122,7 +122,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";_HAS_EXCEPTIONS=0;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_VARIADIC_MAX=10;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <MinimalRebuild>false</MinimalRebuild>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -147,7 +147,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";_HAS_EXCEPTIONS=0;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_VARIADIC_MAX=10;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -176,7 +176,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";_HAS_EXCEPTIONS=0;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_VARIADIC_MAX=10;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -201,47 +201,47 @@
     <ClInclude Include="TestClasses.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AlignedTest.cpp" />
-    <ClCompile Include="BufferInputStreamTest.cpp" />
-    <ClCompile Include="BufferOutputStreamTest.cpp" />
-    <ClCompile Include="ConfigTest.cpp" />
-    <ClCompile Include="BVHTest.cpp" />
     <ClCompile Include="Constants.cpp" />
-    <ClCompile Include="DirectoryWatchTest.cpp" />
-    <ClCompile Include="EnumIteratorTest.cpp" />
-    <ClCompile Include="FileAsyncTest.cpp" />
-    <ClCompile Include="FileBufferedTest.cpp" />
-    <ClCompile Include="FileSystemTest.cpp" />
-    <ClCompile Include="FileTest.cpp" />
-    <ClCompile Include="ImageTest.cpp" />
-    <ClCompile Include="LatchTest.cpp" />
-    <ClCompile Include="LibraryTest.cpp" />
-    <ClCompile Include="LoggerTest.cpp" />
-    <ClCompile Include="LogGrouperTest.cpp" />
-    <ClCompile Include="LogScopeTest.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="MathGeometryTest.cpp" />
-    <ClCompile Include="MathMatrixTest.cpp" />
-    <ClCompile Include="MathTest.cpp" />
-    <ClCompile Include="MathVectorTest.cpp" />
-    <ClCompile Include="MD5Test.cpp" />
-    <ClCompile Include="MemoryTest.cpp" />
-    <ClCompile Include="PackedArray.cpp" />
-    <ClCompile Include="PackerBasicTest.cpp" />
-    <ClCompile Include="PackerComplexTest.cpp" />
-    <ClCompile Include="RayGeometryTest.cpp" />
-    <ClCompile Include="SystemInfoTest.cpp" />
-    <ClCompile Include="ThreadPoolSimple.cpp" />
     <ClCompile Include="PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="ThreadPoolStress.cpp" />
-    <ClCompile Include="ThreadTest.cpp" />
-    <ClCompile Include="TimerTest.cpp" />
-    <ClCompile Include="WindowTest.cpp" />
+    <ClCompile Include="TestCases\AlignedTest.cpp" />
+    <ClCompile Include="TestCases\BufferInputStreamTest.cpp" />
+    <ClCompile Include="TestCases\BufferOutputStreamTest.cpp" />
+    <ClCompile Include="TestCases\BVHTest.cpp" />
+    <ClCompile Include="TestCases\ConfigTest.cpp" />
+    <ClCompile Include="TestCases\DirectoryWatchTest.cpp" />
+    <ClCompile Include="TestCases\EnumIteratorTest.cpp" />
+    <ClCompile Include="TestCases\FileAsyncTest.cpp" />
+    <ClCompile Include="TestCases\FileBufferedTest.cpp" />
+    <ClCompile Include="TestCases\FileSystemTest.cpp" />
+    <ClCompile Include="TestCases\FileTest.cpp" />
+    <ClCompile Include="TestCases\ImageTest.cpp" />
+    <ClCompile Include="TestCases\LatchTest.cpp" />
+    <ClCompile Include="TestCases\LibraryTest.cpp" />
+    <ClCompile Include="TestCases\LoggerTest.cpp" />
+    <ClCompile Include="TestCases\LogGrouperTest.cpp" />
+    <ClCompile Include="TestCases\LogScopeTest.cpp" />
+    <ClCompile Include="TestCases\MathGeometryTest.cpp" />
+    <ClCompile Include="TestCases\MathMatrixTest.cpp" />
+    <ClCompile Include="TestCases\MathTest.cpp" />
+    <ClCompile Include="TestCases\MathVectorTest.cpp" />
+    <ClCompile Include="TestCases\MD5Test.cpp" />
+    <ClCompile Include="TestCases\MemoryTest.cpp" />
+    <ClCompile Include="TestCases\PackedArrayTest.cpp" />
+    <ClCompile Include="TestCases\PackerBasicTest.cpp" />
+    <ClCompile Include="TestCases\PackerComplexTest.cpp" />
+    <ClCompile Include="TestCases\RayGeometryTest.cpp" />
+    <ClCompile Include="TestCases\SystemInfoTest.cpp" />
+    <ClCompile Include="TestCases\ThreadPoolSimpleTest.cpp" />
+    <ClCompile Include="TestCases\ThreadPoolStressTest.cpp" />
+    <ClCompile Include="TestCases\ThreadTest.cpp" />
+    <ClCompile Include="TestCases\TimerTest.cpp" />
+    <ClCompile Include="TestCases\WindowTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
