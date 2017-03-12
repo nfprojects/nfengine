@@ -2,16 +2,33 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
-    <ClCompile Include="ThreadPool.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Packer.cpp" />
-    <ClCompile Include="Config.cpp" />
-    <ClCompile Include="BVH.cpp" />
-    <ClCompile Include="Logger.cpp" />
-    <ClCompile Include="File.cpp" />
+    <ClCompile Include="TestCases\ConfigPerfTest.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\FilePerfTest.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\LoggerPerfTest.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\PackerPerfTest.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\ThreadPoolPerfTest.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\BVHPerfTest.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Test.hpp" />
     <ClInclude Include="PCH.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="TestCases">
+      <UniqueIdentifier>{6cc44dc7-3fc5-4919-b542-78f67345f08c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

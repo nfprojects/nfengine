@@ -19,10 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Config.cpp" />
-    <ClCompile Include="BVH.cpp" />
-    <ClCompile Include="File.cpp" />
-    <ClCompile Include="Logger.cpp" />
     <ClCompile Include="Main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
@@ -33,7 +29,6 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Packer.cpp" />
     <ClCompile Include="PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -44,16 +39,12 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="ThreadPool.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
+    <ClCompile Include="TestCases\BVHPerfTest.cpp" />
+    <ClCompile Include="TestCases\ConfigPerfTest.cpp" />
+    <ClCompile Include="TestCases\FilePerfTest.cpp" />
+    <ClCompile Include="TestCases\LoggerPerfTest.cpp" />
+    <ClCompile Include="TestCases\PackerPerfTest.cpp" />
+    <ClCompile Include="TestCases\ThreadPoolPerfTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
@@ -127,7 +118,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";_HAS_EXCEPTIONS=0;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_VARIADIC_MAX=10;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -148,7 +139,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";_HAS_EXCEPTIONS=0;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_VARIADIC_MAX=10;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -170,7 +161,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";_HAS_EXCEPTIONS=0;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_VARIADIC_MAX=10;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -196,7 +187,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps\gtest\include\</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NFE_ROOT_DIRECTORY=LR"($(SolutionDir))";_HAS_EXCEPTIONS=0;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_VARIADIC_MAX=10;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
