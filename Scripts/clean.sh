@@ -11,6 +11,11 @@ rm -f Engine.sdf *.vsp *.psess
 rm -rf ipch
 echo "DONE"
 
+# remove Visual Studio files
+echo -n "Removing CMake-related files... "
+rm -f CMakeFiles CMakeCache.txt cmake_install.cmake
+echo "DONE"
+
 echo -n "Removing compilation results... "
 rm -rf Bin
 rm -rf Obj
