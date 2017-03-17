@@ -16,6 +16,8 @@ namespace Common {
  */
 class NFCOMMON_API StringView
 {
+    friend class String;
+
 public:
     // denotes end of the string
     static constexpr uint32 END() { return UINT32_MAX; }
