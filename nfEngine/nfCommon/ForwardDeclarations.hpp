@@ -11,6 +11,10 @@ namespace NFE {
 
 namespace Common {
 
+// Containers
+class String;
+class StringView;
+
 // Config
 class ConfigTokenizer;
 struct Token;
