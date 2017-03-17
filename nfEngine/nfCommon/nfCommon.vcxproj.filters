@@ -305,6 +305,12 @@
     <ClInclude Include="Containers\StringViewImpl.hpp">
       <Filter>Containers</Filter>
     </ClInclude>
+    <ClInclude Include="Containers\String.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\StringImpl.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -501,6 +507,9 @@
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Containers\StringView.cpp">
+      <Filter>Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Containers\String.cpp">
       <Filter>Containers</Filter>
     </ClCompile>
   </ItemGroup>
