@@ -16,6 +16,8 @@ namespace Common {
  */
 class NFCOMMON_API StringView
 {
+    friend class String;
+
 public:
     static const uint32 END;
 
