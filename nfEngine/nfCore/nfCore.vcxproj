@@ -265,7 +265,7 @@
     </ClCompile>
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Globals.cpp" />
-    <ClCompile Include="Core.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="Renderer\DebugRenderer.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
@@ -430,7 +430,7 @@
     <ClInclude Include="Components\MeshComponent.hpp" />
     <ClInclude Include="Components\TransformComponent.hpp" />
     <ClInclude Include="Globals.hpp" />
-    <ClInclude Include="Prerequisites.hpp" />
+    <ClInclude Include="ForwardDeclarations.hpp" />
     <ClInclude Include="Engine.hpp" />
     <ClInclude Include="Core.hpp" />
     <ClInclude Include="Renderer\DebugRenderer.hpp" />

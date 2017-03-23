@@ -27,8 +27,6 @@
 namespace NFE {
 namespace Common {
 
-class DirectoryWatch;
-
 #if defined(WIN32)
 struct WatchRequest
 {

@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include "nfCommon/Math/Math.hpp"
 #include "nfResources/MeshFile.hpp"
 
 

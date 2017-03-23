@@ -9,7 +9,6 @@
 #include <inttypes.h>
 #include <stddef.h>
 
-
 // disable some Visual Studio specific warnings
 #ifdef _MSC_VER
 // "class 'type' needs to have dll-interface to be used by clients of class 'type2'"
@@ -140,3 +139,6 @@ size_t ArraySize(const T(&)[N])
 }
 
 } // namespace NFE
+
+
+#include "ForwardDeclarations.hpp"

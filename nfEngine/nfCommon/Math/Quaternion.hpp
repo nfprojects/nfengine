@@ -10,10 +10,9 @@
 #include "Vector.hpp"
 #include "Matrix.hpp"
 
+
 namespace NFE {
 namespace Math {
-
-typedef Vector Quaternion;
 
 /**
  * Create null rotation quaternion.

@@ -12,6 +12,7 @@
 #include "ResourcesManager.hpp"
 #include "Engine.hpp"
 
+#include "nfCommon/Utils/InputStream.hpp"
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/FileSystem/File.hpp"
 #include "nfCommon/Memory/DefaultAllocator.hpp"
@@ -43,7 +44,7 @@ bool Mesh::OnLoad()
     Common::Timer timer;
     timer.Start();
 
-    //realtive file path
+    // relative file path
     std::string path = g_CookedDataPath + "Meshes/" + mName;
 
     Common::FileInputStream stream(path.c_str());

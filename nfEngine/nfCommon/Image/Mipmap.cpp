@@ -8,8 +8,11 @@
 #include "Mipmap.hpp"
 #include "Logger/Logger.hpp"
 
+
 namespace NFE {
 namespace Common {
+
+using namespace Math;
 
 Mipmap::Mipmap()
     : mWidth(0)

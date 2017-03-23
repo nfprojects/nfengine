@@ -11,7 +11,11 @@
 #include "HighLevelRenderer.hpp"
 #include "Resources/Material.hpp"
 #include "Resources/Mesh.hpp"
+
 #include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/Math/Box.hpp"
+#include "nfCommon/Math/Frustum.hpp"
+
 
 namespace NFE {
 namespace Renderer {
@@ -41,7 +45,7 @@ const DebugIndexType gBoxIndexBuffer[] =
 {
     0, 1, 1, 3, 3, 2, 2, 0,   // front side
     4, 5, 5, 7, 7, 6, 6, 4,   // back side
-    0, 4, 1, 5, 2, 6, 3, 7,   // fron-back connections
+    0, 4, 1, 5, 2, 6, 3, 7,   // front-back connections
 };
 
 } // namespace

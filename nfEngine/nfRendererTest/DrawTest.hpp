@@ -2,6 +2,9 @@
 
 #include "RendererTest.hpp"
 
+#include "nfCommon/Math/Math.hpp"
+
+
 using namespace NFE;
 using namespace NFE::Renderer;
 

@@ -452,7 +452,7 @@ bool Image::ConvertActual(ImageFormat destFormat)
         newMipmaps[i].mHeight = height;
         newMipmaps[i].mWidth = width;
 
-        Vector tmp;
+        Math::Vector tmp;
 
         for (uint32 y = 0; y < height; y++)
         {

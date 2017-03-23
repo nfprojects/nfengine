@@ -10,6 +10,7 @@
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/FileSystem/FileSystem.hpp"
 #include "nfCommon/FileSystem/File.hpp"
+#include "nfCommon/Utils/OutputStream.hpp"
 
 #include "model_obj/model_obj.h"
 

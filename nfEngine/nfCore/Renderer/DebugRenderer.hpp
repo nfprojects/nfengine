@@ -6,12 +6,11 @@
 
 #pragma once
 
-#include "../Prerequisites.hpp"
+#include "../Core.hpp"
 #include "RendererModule.hpp"
 #include "DebugRendererContext.hpp"
 #include "../Resources/MultiPipelineState.hpp"
-#include "nfCommon/Math/Box.hpp"
-#include "nfCommon/Math/Frustum.hpp"
+
 
 namespace NFE {
 namespace Renderer {
