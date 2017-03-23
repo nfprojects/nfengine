@@ -155,7 +155,7 @@ bool Buffer::Init(const BufferDesc& desc)
     }
 
 leave:
-    std::string bufferModeStr;
+    String bufferModeStr;
     switch (mMode)
     {
     case BufferMode::Static: bufferModeStr = "Static"; break;
@@ -166,7 +166,7 @@ leave:
     default: bufferModeStr = "Unknown";
     }
 
-    LOG_INFO("%u-byte %s Buffer created successfully", desc.size, bufferModeStr.c_str());
+    LOG_INFO("%u-byte %s Buffer created successfully", desc.size, bufferModeStr.Str());
     return true;
 }
 

@@ -18,7 +18,7 @@ class NFCOMMON_API LoggerBackendWinDebugger final : public LoggerBackend
 {
     std::vector<char> mBuffer;
 
-    std::string mDebugString;
+    String mDebugString;
     std::wstring mWideDebugString;
 
 public:

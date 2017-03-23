@@ -81,9 +81,9 @@ Profiler& Profiler::Instance()
     return instance;
 }
 
-ProfilerNode* Profiler::RegisterNode(const std::string& name, ProfilerNode* parent)
+ProfilerNode* Profiler::RegisterNode(const Common::String& name, ProfilerNode* parent)
 {
-    return RegisterNode(name.c_str(), parent);
+    return RegisterNode(name.Str(), parent);
 }
 
 ProfilerNode* Profiler::RegisterNode(const char* name, ProfilerNode* parent)

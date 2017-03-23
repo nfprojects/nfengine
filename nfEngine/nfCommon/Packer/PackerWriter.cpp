@@ -12,12 +12,12 @@ namespace NFE {
 namespace Common {
 
 PackerWriter::PackerWriter() {}
-PackerWriter::PackerWriter(const std::string& archiveName)
+PackerWriter::PackerWriter(const String& archiveName)
 {
     Init(archiveName);
 }
 
-PackerResult PackerWriter::Init(const std::string& archiveName)
+PackerResult PackerWriter::Init(const String& archiveName)
 {
     if (archiveName.empty())
         return PackerResult::InvalidInputParam;
@@ -29,7 +29,7 @@ PackerResult PackerWriter::Init(const std::string& archiveName)
     return PackerResult::OK;
 }
 
-PackerResult PackerWriter::AddFile(const std::string& filePath, const std::string& vfsFilePath)
+PackerResult PackerWriter::AddFile(const String& filePath, const String& vfsFilePath)
 {
     PackerResourceFile* resource = new PackerResourceFile();
 
@@ -45,7 +45,7 @@ PackerResult PackerWriter::AddFile(const std::string& filePath, const std::strin
     return PackerResult::OK;
 }
 
-PackerResult PackerWriter::AddFile(const Buffer& /*buffer*/, const std::string& /*vfsFilePath*/)
+PackerResult PackerWriter::AddFile(const Buffer& /*buffer*/, const String& /*vfsFilePath*/)
 {
     // TODO implement after editing PackerElement (see PackerElement.hpp@15).
     //      To prevent usage of this function, Uninitialized error is returned
@@ -53,12 +53,12 @@ PackerResult PackerWriter::AddFile(const Buffer& /*buffer*/, const std::string& 
     return PackerResult::Uninitialized;
 }
 
-PackerResult PackerWriter::AddFilesRecursively(const std::string& filePath)
+PackerResult PackerWriter::AddFilesRecursively(const String& filePath)
 {
     PackerResult pr;
     uint64 counter = 0;
 
-    auto recursiveAddLambda = [&](const std::string& path, bool isDirectory) -> bool
+    auto recursiveAddLambda = [&](const String& path, bool isDirectory) -> bool
     {
         if (!isDirectory)
         {
@@ -142,7 +142,7 @@ size_t PackerWriter::GetFileCount() const
     return mFileList.size();
 }
 
-const std::string& PackerWriter::GetPAKName() const
+const String& PackerWriter::GetPAKName() const
 {
     return mFilePath;
 }

@@ -14,8 +14,6 @@
 #include <Windows.h>
 #endif
 
-#include <string>
-
 
 namespace NFE {
 namespace Common {
@@ -58,7 +56,7 @@ private:
 
 public:
     File();
-    File(const std::string& path, AccessMode mode, bool overwrite = false);
+    File(const String& path, AccessMode mode, bool overwrite = false);
     File(File&& other);
     ~File();
 
@@ -74,7 +72,7 @@ public:
      * @param access File access mode.
      * @param overwrite Overwrite a file if it already exists.
      */
-    bool virtual Open(const std::string& path, AccessMode access, bool overwrite = false);
+    bool virtual Open(const String& path, AccessMode access, bool overwrite = false);
 
     /**
      * Close opened file.

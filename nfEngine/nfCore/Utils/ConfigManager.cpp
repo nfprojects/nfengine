@@ -45,8 +45,8 @@ void ConfigManager::RegisterVariable(IConfigVariable* variable)
     const char* path = variable->GetPath();
 
     std::stringstream sstream(path);
-    std::string segment;
-    std::vector<std::string> segments;
+    String segment;
+    std::vector<String> segments;
     while (std::getline(sstream, segment, '/'))
     {
         segments.push_back(segment);
@@ -144,7 +144,7 @@ bool ConfigManager::Node::Parse(const Common::Config& config, ConfigObjectNodePt
             {
                 if (variable.second->ParseConfigValue(value))
                 {
-                    LOG_DEBUG("'%s' = %s", variable.second->GetPath(), variable.second->ToString().c_str());
+                    LOG_DEBUG("'%s' = %s", variable.second->GetPath(), variable.second->ToString().Str());
                 }
             }
         }

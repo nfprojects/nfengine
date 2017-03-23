@@ -38,7 +38,7 @@ TEST_F(BufferTest, BufferCreation)
             bufferTypeStr = "Vertex";
             break;
         }
-        SCOPED_TRACE("BufferType: " + std::string(bufferTypeStr));
+        SCOPED_TRACE("BufferType: " + String(bufferTypeStr));
 
         // default (valid) buffer descriptor
         BufferDesc defBufferDesc;

@@ -26,7 +26,7 @@ class Shader : public IShader
 
     ShaderType mType;
     D3DPtr<ID3DBlob> mBytecode;
-    std::map<std::string, ResBinding> mResBindings;
+    std::map<String, ResBinding> mResBindings;
 
     union
     {
@@ -49,7 +49,7 @@ public:
     void* GetShaderObject() const;
     ID3DBlob* GetBytecode() const;
 
-    bool Disassemble(bool html, std::string& output) override;
+    bool Disassemble(bool html, String& output) override;
     int GetResourceSlotByName(const char* name) override;
 };
 

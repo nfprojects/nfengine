@@ -16,22 +16,22 @@ class NFCOMMON_API PackerWriter
 {
 public:
     PackerWriter();
-    PackerWriter(const std::string& archiveName);
+    PackerWriter(const String& archiveName);
 
-    PackerResult Init(const std::string& archiveName);
+    PackerResult Init(const String& archiveName);
 
-    PackerResult AddFile(const std::string& filePath, const std::string& vfsFilePath);
-    PackerResult AddFile(const Buffer& buffer, const std::string& vfsFilePath);
-    PackerResult AddFilesRecursively(const std::string& startPath);
+    PackerResult AddFile(const String& filePath, const String& vfsFilePath);
+    PackerResult AddFile(const Buffer& buffer, const String& vfsFilePath);
+    PackerResult AddFilesRecursively(const String& startPath);
     PackerResult WritePAK() const;
 
     void PrintFilesToStdout() const;
     const ResourceListType& GetFiles() const;
     size_t GetFileCount() const;
-    const std::string& GetPAKName() const;
+    const String& GetPAKName() const;
 
 private:
-    std::string mFilePath;
+    String mFilePath;
     ResourceListType mFileList;
 };
 

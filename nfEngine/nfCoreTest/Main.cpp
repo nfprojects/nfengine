@@ -5,8 +5,8 @@ int main(int argc, char* argv[])
 {
     testing::InitGoogleTest(&argc, argv);
 
-    std::string execPath = NFE::Common::FileSystem::GetExecutablePath();
-    std::string execDir = NFE::Common::FileSystem::GetParentDir(execPath);
+    String execPath = NFE::Common::FileSystem::GetExecutablePath();
+    String execDir = NFE::Common::FileSystem::GetParentDir(execPath);
     NFE::Common::FileSystem::ChangeDirectory(execDir + "/../../..");
     int result = RUN_ALL_TESTS();
 

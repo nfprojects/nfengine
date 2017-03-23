@@ -353,11 +353,13 @@ void Config::ObjectToString(std::stringstream& out, ConfigObjectNodePtr objectPt
     }
 }
 
-std::string Config::ToString(bool format) const
+String Config::ToString(bool format) const
 {
     std::stringstream stringStream;
     ObjectToString(stringStream, GetRootNode(), format ? 0 : -1);
-    return stringStream.str();
+
+    // TODO ObjectToString should write to string
+    return String(stringStream.str().c_str());
 }
 
 

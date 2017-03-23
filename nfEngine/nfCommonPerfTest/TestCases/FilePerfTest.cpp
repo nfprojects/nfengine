@@ -18,9 +18,9 @@ const int BIG_TEXT_SIZE = 10000;
 
 class FilePerf : public CommonPerfTest
 {
-    const std::string GetName() const override
+    const String GetName() const override
     {
-        return std::string("FilePerfTest");
+        return String("FilePerfTest");
     }
 
 public:
@@ -79,7 +79,7 @@ TEST_F(FilePerf, BigWrite)
     double fileTime, fileBuffTime;
 
     // Prepare the test data
-    const std::string data(BIG_TEXT_SIZE, 'c');
+    const String data(BIG_TEXT_SIZE, 'c');
 
     // Start testing File class
     File file(mPath, AccessMode::Write, true);
@@ -116,7 +116,7 @@ TEST_F(FilePerf, VariousWrite)
     double fileTime, fileBuffTime;
 
     // Prepare the test data
-    const std::string data(OPERATION_TEST_NUMBER, 'c');
+    const String data(OPERATION_TEST_NUMBER, 'c');
 
     // Start testing File class
     File file(mPath, AccessMode::Write, true);
@@ -154,7 +154,7 @@ TEST_F(FilePerf, SmallRead)
     double fileTime, fileBuffTime;
 
     // Prepare the test data
-    const std::string data(OPERATION_TEST_NUMBER, 'c');
+    const String data(OPERATION_TEST_NUMBER, 'c');
     File filePrep(mPath, AccessMode::Write, true);
     filePrep.Write(data.data(), OPERATION_TEST_NUMBER);
     filePrep.Close();
@@ -195,7 +195,7 @@ TEST_F(FilePerf, BigRead)
     double fileTime, fileBuffTime;
 
     // Prepare the test data
-    const std::string data(BIG_TEXT_SIZE * OPERATION_TEST_NUMBER, 'c');
+    const String data(BIG_TEXT_SIZE * OPERATION_TEST_NUMBER, 'c');
     File filePrep(mPath, AccessMode::Write, true);
     filePrep.Write(data.data(), BIG_TEXT_SIZE * OPERATION_TEST_NUMBER);
     filePrep.Close();
@@ -238,7 +238,7 @@ TEST_F(FilePerf, VariousRead)
     // Prepare the test data
     size_t bufferSize = OPERATION_TEST_NUMBER + 1;
     bufferSize *= (OPERATION_TEST_NUMBER / 2);
-    const std::string data(bufferSize, 'c');
+    const String data(bufferSize, 'c');
     File filePrep(mPath, AccessMode::Write, true);
     filePrep.Write(data.data(), bufferSize);
     filePrep.Close();

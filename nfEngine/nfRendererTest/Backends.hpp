@@ -9,21 +9,21 @@
 /// renderer configuration
 extern int gDebugLevel;
 extern int gPreferedCardId;
-extern std::string gBackend;
-extern std::string gShaderPathPrefix;
-extern std::string gShaderPathExt;
+extern String gBackend;
+extern String gShaderPathPrefix;
+extern String gShaderPathExt;
 
 /// Renderer backends
-extern const std::string D3D11_BACKEND;
-extern const std::string D3D12_BACKEND;
-extern const std::string OGL4_BACKEND;
-extern const std::string VK_BACKEND;
+extern const String D3D11_BACKEND;
+extern const String D3D12_BACKEND;
+extern const String OGL4_BACKEND;
+extern const String VK_BACKEND;
 
-extern const std::string HLSL5_SHADER_PATH_PREFIX;
-extern const std::string HLSL5_SHADER_EXTENSION;
+extern const String HLSL5_SHADER_PATH_PREFIX;
+extern const String HLSL5_SHADER_EXTENSION;
 
-extern const std::string GLSL_SHADER_PATH_PREFIX;
-extern const std::string GLSL_SHADER_EXTENSION;
+extern const String GLSL_SHADER_PATH_PREFIX;
+extern const String GLSL_SHADER_EXTENSION;
 
 /**
  * Returns a default backend, according to current system.
@@ -32,4 +32,4 @@ extern const std::string GLSL_SHADER_EXTENSION;
  *
  * @note First element is used library, second is shader path prefix, third is shader extension
  */
-std::vector<std::string> GetDefaultBackend();
+std::vector<String> GetDefaultBackend();

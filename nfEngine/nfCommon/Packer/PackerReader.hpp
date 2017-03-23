@@ -16,10 +16,10 @@ class NFCOMMON_API PackerReader
 {
 public:
     PackerReader();
-    PackerReader(const std::string& filePath);
+    PackerReader(const String& filePath);
 
-    PackerResult Init(const std::string& filePath);
-    PackerResult GetFile(const std::string& vfsFilePath, Buffer& outputBuffer);
+    PackerResult Init(const String& filePath);
+    PackerResult GetFile(const String& vfsFilePath, Buffer& outputBuffer);
 
     void PrintFilesToStdout() const;
     size_t GetFileCount() const;
@@ -27,7 +27,7 @@ public:
 
 private:
     uint32 mFileVersion;
-    std::string mFilePath;
+    String mFilePath;
     VFSFileListType mFileList;
 };
 

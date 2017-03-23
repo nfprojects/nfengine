@@ -15,8 +15,6 @@
 #include <Windows.h>
 #endif // WIN32
 
-#include <string>
-
 
 namespace NFE {
 namespace Common {
@@ -35,11 +33,11 @@ private:
 #error "Target system not supported!"
 #endif // WIN32
 
-    void* GetSymbol(const std::string& name);
+    void* GetSymbol(const String& name);
 
 public:
     Library();
-    Library(const std::string& path);
+    Library(const String& path);
     Library(const Library& other) = delete;
     Library(Library&& other);
     Library& operator=(const Library& other) = delete;
@@ -56,7 +54,7 @@ public:
      * @param  path File path.
      * @return true on success.
      */
-    bool Open(const std::string& path);
+    bool Open(const String& path);
 
     /**
      * Close opened library. All returned function pointers will be invalid after this operation.
@@ -70,7 +68,7 @@ public:
      * @return False if symbol does not exist or the library is not opened.
      */
     template <typename T>
-    bool GetSymbol(const std::string& name, T& result)
+    bool GetSymbol(const String& name, T& result)
     {
         // workaround: simple casting from data pointer to function pointer is not legal in C++
         *(reinterpret_cast<void**>(&result)) = GetSymbol(name);

@@ -8,7 +8,7 @@ using namespace NFE::Common;
 
 TEST(FileTest, Simple)
 {
-    const std::string filePath = "test_file";
+    const String filePath = "test_file";
     const int testData = 0xAABBCCDD;
     int data;
 
@@ -46,7 +46,7 @@ TEST(FileTest, Simple)
 
 TEST(FileTest, OpenNotExisting)
 {
-    const std::string filePath = "test_file";
+    const String filePath = "test_file";
 
     File file(filePath, AccessMode::Read);
     EXPECT_FALSE(file.IsOpened());
@@ -59,7 +59,7 @@ TEST(FileTest, OpenNotExisting)
 
 TEST(FileTest, Overwrite)
 {
-    const std::string filePath = "test_file";
+    const String filePath = "test_file";
     const int testData = 0xAABBCCDD;
     int data;
 
@@ -129,7 +129,7 @@ TEST(FileTest, Overwrite)
 #ifdef WIN32
 TEST(FileTest, AccessShare)
 {
-    const std::string filePath = "access_share_test_file";
+    const String filePath = "access_share_test_file";
 
     // create the test file first
     {

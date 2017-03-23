@@ -112,12 +112,12 @@ bool Buffer::Init(const BufferDesc& desc)
     if (gDevice->IsDebugLayerEnabled())
     {
         /// set debug name
-        std::string bufferName = "NFE::Renderer::Buffer \"";
+        String bufferName = "NFE::Renderer::Buffer \"";
         if (desc.debugName)
             bufferName += desc.debugName;
         bufferName += '"';
         D3D_CALL_CHECK(mBuffer->SetPrivateData(WKPDID_D3DDebugObjectName,
-                                               static_cast<UINT>(bufferName.length()), bufferName.c_str()));
+                                               static_cast<UINT>(bufferName.length()), bufferName.Str()));
     }
 
     mMode = desc.mode;

@@ -34,7 +34,7 @@ TEST(BufferOutputStreamTest, WriteTest)
     // Check if our data (2*TEXT) was inserted correctly
     streamSize = stream.GetSize();
     streamData = stream.GetData();
-    std::string doubleStr = TEXT + TEXT;
+    String doubleStr = TEXT + TEXT;
     ASSERT_EQ(streamSize, 2 * TEXTSIZE);
     ASSERT_EQ(memcmp(streamData, doubleStr.data(), 2 * TEXTSIZE), 0);
 }

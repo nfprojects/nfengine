@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include <string>
 #include "nfCommon/Logger/Logger.hpp"
 
 #include <fstream>
@@ -16,7 +15,7 @@ static const char* LOGS_DIR = "./Logs/PerfTests/";
 
 namespace
 {
-std::string getTime()
+String getTime()
 {
     time_t rawTime;
     time(&rawTime);
@@ -27,7 +26,7 @@ std::string getTime()
         const int MAX_DATE_LENGTH = 32;
         char dateTimeStr[MAX_DATE_LENGTH];
         strftime(dateTimeStr, MAX_DATE_LENGTH, "%m-%d-%Y_%H.%M.%S", timeInfo);
-        return std::string(dateTimeStr);
+        return String(dateTimeStr);
     }
     return "";
 }
@@ -40,7 +39,7 @@ public:
 
     void SetUp() override
     {
-        static const std::string gLogFilePath = LOGS_DIR + GetName() + "_" + ::getTime()
+        static const String gLogFilePath = LOGS_DIR + GetName() + "_" + ::getTime()
                                                 + ".txt";
         mFile.open(gLogFilePath, std::fstream::out | std::fstream::app);
     }
@@ -53,9 +52,9 @@ public:
         NFE::Common::Logger::GetInstance()->Reset();
     }
 
-    virtual const std::string GetName() const
+    virtual const String GetName() const
     {
-        return std::string("CommonPerfTest");
+        return String("CommonPerfTest");
     }
 
     CommonPerfTest& GetOStream()

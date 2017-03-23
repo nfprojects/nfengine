@@ -5,6 +5,7 @@
  */
 
 #include "PCH.hpp"
+#include "Containers/String.hpp"
 #include "ImageType.hpp"
 #include "Image.hpp"
 
@@ -12,12 +13,12 @@
 namespace NFE {
 namespace Common {
 
-bool ImageType::RegisterImageType(const std::string& name, ImageTypePtr imageType)
+bool ImageType::RegisterImageType(const String& name, ImageTypePtr imageType)
 {
     return Image::mImageTypes().insert(std::make_pair(name, std::move(imageType))).second;
 }
 
-ImageType* ImageType::GetImageType(const std::string& name)
+ImageType* ImageType::GetImageType(const String& name)
 {
     ImageTypeMap::const_iterator imageType = Image::mImageTypes().find(name);
 
@@ -27,9 +28,9 @@ ImageType* ImageType::GetImageType(const std::string& name)
     return imageType->second.get();
 }
 
-std::vector<std::string> ImageType::ListImageTypes()
+std::vector<String> ImageType::ListImageTypes()
 {
-    std::vector<std::string> vect;
+    std::vector<String> vect;
     vect.reserve(Image::mImageTypes().size());
 
     for (const auto& i : Image::mImageTypes())

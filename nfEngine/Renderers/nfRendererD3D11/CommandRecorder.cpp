@@ -717,7 +717,7 @@ void CommandRecorder::BeginDebugGroup(const char* text)
     {
         std::wstring wideText;
         if (Common::UTF8ToUTF16(text, wideText))
-            mUserDefinedAnnotation->BeginEvent(wideText.c_str());
+            mUserDefinedAnnotation->BeginEvent(wideText.Str());
         else
         {
             // We must begin an event, even if the UTF-8 -> UTF-16 conversion fails,
@@ -739,7 +739,7 @@ void CommandRecorder::InsertDebugMarker(const char* text)
     {
         std::wstring wideText;
         if (Common::UTF8ToUTF16(text, wideText))
-            mUserDefinedAnnotation->SetMarker(wideText.c_str());
+            mUserDefinedAnnotation->SetMarker(wideText.Str());
     }
 }
 

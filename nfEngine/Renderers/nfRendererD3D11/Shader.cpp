@@ -111,7 +111,7 @@ bool Shader::Init(const ShaderDesc& desc)
         d3dMacros[desc.macrosNum].Definition = nullptr;
     }
 
-    LOG_INFO("Compiling shader '%s' with macros: [%s]...", desc.path, macrosStr.str().c_str());
+    LOG_INFO("Compiling shader '%s' with macros: [%s]...", desc.path, macrosStr.str().Str());
 
     ID3DBlob* errorsBuffer = nullptr;
     hr = D3DCompile(code, shaderSize, desc.path, d3dMacros.get(),
@@ -157,7 +157,7 @@ bool Shader::Init(const ShaderDesc& desc)
     if (gDevice->IsDebugLayerEnabled())
     {
         /// set debug name
-        std::string shaderName = "NFE::Renderer::Shader \"";
+        String shaderName = "NFE::Renderer::Shader \"";
         if (desc.path)
             shaderName += desc.path;
         shaderName += '"';
@@ -166,27 +166,27 @@ bool Shader::Init(const ShaderDesc& desc)
         {
         case ShaderType::Vertex:
             D3D_CALL_CHECK(mVS->SetPrivateData(WKPDID_D3DDebugObjectName,
-                                               static_cast<UINT>(shaderName.length()), shaderName.c_str()));
+                                               static_cast<UINT>(shaderName.length()), shaderName.Str()));
             break;
         case ShaderType::Geometry:
             D3D_CALL_CHECK(mGS->SetPrivateData(WKPDID_D3DDebugObjectName,
-                                               static_cast<UINT>(shaderName.length()), shaderName.c_str()));
+                                               static_cast<UINT>(shaderName.length()), shaderName.Str()));
             break;
         case ShaderType::Hull:
             D3D_CALL_CHECK(mHS->SetPrivateData(WKPDID_D3DDebugObjectName,
-                                               static_cast<UINT>(shaderName.length()), shaderName.c_str()));
+                                               static_cast<UINT>(shaderName.length()), shaderName.Str()));
             break;
         case ShaderType::Domain:
             D3D_CALL_CHECK(mDS->SetPrivateData(WKPDID_D3DDebugObjectName,
-                                               static_cast<UINT>(shaderName.length()), shaderName.c_str()));
+                                               static_cast<UINT>(shaderName.length()), shaderName.Str()));
             break;
         case ShaderType::Pixel:
             D3D_CALL_CHECK(mPS->SetPrivateData(WKPDID_D3DDebugObjectName,
-                                               static_cast<UINT>(shaderName.length()), shaderName.c_str()));
+                                               static_cast<UINT>(shaderName.length()), shaderName.Str()));
             break;
         case ShaderType::Compute:
             D3D_CALL_CHECK(mCS->SetPrivateData(WKPDID_D3DDebugObjectName,
-                                               static_cast<UINT>(shaderName.length()), shaderName.c_str()));
+                                               static_cast<UINT>(shaderName.length()), shaderName.Str()));
             break;
         }
     }
@@ -205,7 +205,7 @@ bool Shader::Init(const ShaderDesc& desc)
     return true;
 }
 
-bool Shader::Disassemble(bool html, std::string& output)
+bool Shader::Disassemble(bool html, String& output)
 {
     ID3DBlob* bytecode = mBytecode.get();
     if (bytecode == nullptr)
@@ -226,7 +226,7 @@ bool Shader::Disassemble(bool html, std::string& output)
         return false;
 
     const char* str = static_cast<const char*>(disassembly->GetBufferPointer());
-    output = std::string(str, disassembly->GetBufferSize());
+    output = String(str, disassembly->GetBufferSize());
 
     return true;
 }
@@ -305,7 +305,7 @@ bool Shader::GetIODesc()
             continue;
         }
 
-        std::string name = d3dBindingDesc.Name;
+        String name = d3dBindingDesc.Name;
         if (mResBindings.find(name) != mResBindings.end())
         {
             LOG_ERROR("Multiple declarations of shader resource named '%s'", d3dBindingDesc.Name);

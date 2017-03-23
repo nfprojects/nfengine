@@ -133,12 +133,12 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         if (gDevice->IsDebugLayerEnabled() && desc.debugName)
         {
             /// set debug name
-            std::string bufferName = "NFE::Renderer::RenderTarget \"";
+            String bufferName = "NFE::Renderer::RenderTarget \"";
             if (desc.debugName)
                 bufferName += desc.debugName;
             bufferName += '"';
             D3D_CALL_CHECK(rtv->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(bufferName.length()),
-                                               bufferName.c_str()));
+                                               bufferName.Str()));
         }
 
         mRTVs.emplace_back(rtv);

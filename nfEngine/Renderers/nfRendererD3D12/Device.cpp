@@ -162,17 +162,17 @@ bool Device::Init(const DeviceInitParams* params)
         DeviceInfo deviceInfo;
         if (GetDeviceInfo(deviceInfo))
         {
-            LOG_INFO("GPU name: %s", deviceInfo.description.c_str());
-            LOG_INFO("GPU info: %s", deviceInfo.misc.c_str());
+            LOG_INFO("GPU name: %s", deviceInfo.description.Str());
+            LOG_INFO("GPU info: %s", deviceInfo.misc.Str());
 
-            std::string features;
+            String features;
             for (size_t i = 0; i < deviceInfo.features.size(); ++i)
             {
                 if (i > 0)
                     features += ", ";
                 features += deviceInfo.features[i];
             }
-            LOG_INFO("GPU features: %s", features.c_str());
+            LOG_INFO("GPU features: %s", features.Str());
         }
     }
 
@@ -369,7 +369,7 @@ bool Device::DetectVideoCards(int preferredId)
 
         // get GPU description
         std::wstring wideDesc = adapterDesc.Description;
-        std::string descString;
+        String descString;
         Common::UTF16ToUTF8(wideDesc, descString);
 
         if (adapterDesc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
@@ -380,7 +380,7 @@ bool Device::DetectVideoCards(int preferredId)
         if (static_cast<uint32>(preferredId) == i)
             mAdapterInUse = i;
 
-        LOG_INFO("Adapter found at slot %u: %s", i, descString.c_str());
+        LOG_INFO("Adapter found at slot %u: %s", i, descString.Str());
         mAdapters.push_back(std::move(adapter));
     }
 
@@ -461,7 +461,7 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
             minPrecissionSupportStr = "10bit";
             break;
         }
-        info.features.push_back(std::string("MinPrecisionSupport=") + minPrecissionSupportStr);
+        info.features.push_back(String("MinPrecisionSupport=") + minPrecissionSupportStr);
 
         const char* crossNodeSharingStr = "notSupported";
         switch (d3d12options.CrossNodeSharingTier)
@@ -476,7 +476,7 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
             crossNodeSharingStr = "2";
             break;
         }
-        info.features.push_back(std::string("CrossNodeSharingTier=") + crossNodeSharingStr);
+        info.features.push_back(String("CrossNodeSharingTier=") + crossNodeSharingStr);
     }
 
     return true;

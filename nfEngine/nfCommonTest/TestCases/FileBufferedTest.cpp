@@ -30,7 +30,7 @@ class FileBufferedTest : public testing::Test
 public:
     NFE::uint8 mBufferExpected[bufferSize];
     NFE::Math::Random mRand;
-    const std::string mPath = "./testFile.buffered";
+    const String mPath = "./testFile.buffered";
 
     void SetUp()
     {
@@ -49,7 +49,7 @@ public:
 TEST_F(FileBufferedTest, Constructors)
 {
     // Due to a bogus path, no file will be open for Read operation, but it shouldn't throw
-    std::string path = "./some/path";
+    String path = "./some/path";
     FileBuffered();
     FileBuffered(path, AccessMode::Read);
     FileBuffered(path, AccessMode::Read, true);

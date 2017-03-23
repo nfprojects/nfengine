@@ -18,7 +18,7 @@ namespace Resource {
 
 namespace {
 
-const std::string gShadersRoot = "nfEngine/Shaders/";
+const String gShadersRoot = "nfEngine/Shaders/";
 
 } // namespace
 
@@ -62,7 +62,7 @@ bool Multishader::OnLoad()
 
     /// extract shader type
     const rapidjson::Value& typeNode = document["type"];
-    std::string shaderTypeStr = typeNode.GetString();
+    String shaderTypeStr = typeNode.GetString();
     std::transform(shaderTypeStr.begin(), shaderTypeStr.end(), shaderTypeStr.begin(), [](const char c) -> char
     {
         if (c >= 'A' && c <= 'Z')
@@ -96,7 +96,7 @@ bool Multishader::OnLoad()
         {
             const auto& macroNode = macrosNode[i];
 
-            std::string macroName = macroNode["name"].GetString();
+            String macroName = macroNode["name"].GetString();
 
             MultishaderMacro macro;
             macro.minValue = macroNode["min"].GetInt();
@@ -108,7 +108,7 @@ bool Multishader::OnLoad()
 
             if (macro.minValue > macro.maxValue)
             {
-                LOG_ERROR("Invalid values ranges for macro: '%s'", macroName.c_str());
+                LOG_ERROR("Invalid values ranges for macro: '%s'", macroName.Str());
                 return false;
             }
 
@@ -161,13 +161,13 @@ bool Multishader::LoadSubshader(int* macroValues)
     // TODO: shader bytecode cache
 
     std::vector<ShaderMacro> macros;
-    std::vector<std::string> valuesStrings;
+    std::vector<String> valuesStrings;
     macros.reserve(mMacros.size());
     valuesStrings.reserve(mMacros.size());
 
-    std::string shaderLanguage = "HLSL5"; // TODO: move to IDevice or HighLevelRenderer
-    std::string shaderExt = ".hlsl"; // TODO: move to IDevice or HighLevelRenderer
-    std::string shaderPath = gShadersRoot + shaderLanguage + '/' + mName + shaderExt;
+    String shaderLanguage = "HLSL5"; // TODO: move to IDevice or HighLevelRenderer
+    String shaderExt = ".hlsl"; // TODO: move to IDevice or HighLevelRenderer
+    String shaderPath = gShadersRoot + shaderLanguage + '/' + mName + shaderExt;
 
     for (size_t i = 0; i < mMacros.size(); ++i)
     {
@@ -175,13 +175,13 @@ bool Multishader::LoadSubshader(int* macroValues)
         valuesStrings.push_back(std::to_string(macroValues[i]));
 
         ShaderMacro shaderMacro;
-        shaderMacro.name = mMacroNames[i].c_str();
-        shaderMacro.value = valuesStrings.back().c_str();
+        shaderMacro.name = mMacroNames[i].Str();
+        shaderMacro.value = valuesStrings.back().Str();
         macros.push_back(shaderMacro);
     }
 
     ShaderDesc shaderDesc;
-    shaderDesc.path = shaderPath.c_str();
+    shaderDesc.path = shaderPath.Str();
     shaderDesc.type = mType;
     shaderDesc.macros = macros.data();
     shaderDesc.macrosNum = macros.size();

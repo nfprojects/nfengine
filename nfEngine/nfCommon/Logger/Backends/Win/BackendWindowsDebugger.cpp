@@ -58,7 +58,7 @@ void LoggerBackendWinDebugger::Log(LogType type, const char* srcFile, int line, 
     if (!UTF8ToUTF16(mDebugString, mWideDebugString))
         return;
 
-    OutputDebugStringW(mWideDebugString.c_str());
+    OutputDebugStringW(mWideDebugString.Str());
 }
 
 } // namespace Common

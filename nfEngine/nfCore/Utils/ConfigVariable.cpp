@@ -90,43 +90,43 @@ void ConfigVariable<Math::Float4>::SetType()
 
 
 template<>
-std::string ConfigVariable<bool>::ToString() const
+String ConfigVariable<bool>::ToString() const
 {
     return mValue ? "true" : "false";
 }
 
 template<>
-std::string ConfigVariable<int>::ToString() const
+String ConfigVariable<int>::ToString() const
 {
     return std::to_string(mValue);
 }
 
 template<>
-std::string ConfigVariable<float>::ToString() const
+String ConfigVariable<float>::ToString() const
 {
     return std::to_string(mValue);
 }
 
 template<>
-std::string ConfigVariable<const char*>::ToString() const
+String ConfigVariable<const char*>::ToString() const
 {
-    return '\"' + std::string(mValue) + '\"';
+    return '\"' + String(mValue) + '\"';
 }
 
 template<>
-std::string ConfigVariable<Math::Float2>::ToString() const
+String ConfigVariable<Math::Float2>::ToString() const
 {
     return '[' + std::to_string(mValue.x) + ", " + std::to_string(mValue.y) + ']';
 }
 
 template<>
-std::string ConfigVariable<Math::Float3>::ToString() const
+String ConfigVariable<Math::Float3>::ToString() const
 {
     return '[' + std::to_string(mValue.x) + ", " + std::to_string(mValue.y) + ", " + std::to_string(mValue.z) + ']';
 }
 
 template<>
-std::string ConfigVariable<Math::Float4>::ToString() const
+String ConfigVariable<Math::Float4>::ToString() const
 {
     return '[' + std::to_string(mValue.x) + ", " + std::to_string(mValue.y) + ", " + std::to_string(mValue.z) + ", " + std::to_string(mValue.w) + ']';
 }

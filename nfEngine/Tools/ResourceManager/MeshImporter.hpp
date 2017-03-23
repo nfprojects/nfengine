@@ -16,15 +16,15 @@ class MeshImporter : public MeshFile
 {
     struct MaterialDesc
     {
-        std::string name;
-        std::string diffuseTextureFileName;
-        std::string normalTextureFileName;
+        String name;
+        String diffuseTextureFileName;
+        String normalTextureFileName;
     };
 
     std::vector<MaterialDesc> mMaterials;
 
 public:
-    bool ImportOBJ(const std::string& sourceFilePath, const std::string& targetFilePath);
+    bool ImportOBJ(const String& sourceFilePath, const String& targetFilePath);
 };
 
 } // namespace Resource

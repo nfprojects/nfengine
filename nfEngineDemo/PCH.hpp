@@ -11,7 +11,6 @@
 #include <crtdbg.h>
 #endif // defined(WIN32) && defined(_DEBUG)
 
-#include <string>
 #include <map>
 #include <vector>
 #include <set>

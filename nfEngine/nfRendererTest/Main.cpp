@@ -4,15 +4,15 @@
 #include "nfCommon/Logger/Logger.hpp"
 
 
-const std::string BACKEND_ARG_NAME = "--renderer";
-const std::string CARD_ID_ARG_NAME = "--card_id";
+const String BACKEND_ARG_NAME = "--renderer";
+const String CARD_ID_ARG_NAME = "--card_id";
 
 int main(int argc, char* argv[])
 {
     testing::InitGoogleTest(&argc, argv);
 
-    std::string execPath = NFE::Common::FileSystem::GetExecutablePath();
-    std::string execDir = NFE::Common::FileSystem::GetParentDir(execPath);
+    String execPath = NFE::Common::FileSystem::GetExecutablePath();
+    String execDir = NFE::Common::FileSystem::GetParentDir(execPath);
     NFE::Common::FileSystem::ChangeDirectory(execDir + "/../../..");
 
     gPreferedCardId = -1;
@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
 
     if (gBackend.empty())
     {
-        const std::vector<std::string>& defBackend = GetDefaultBackend();
+        const std::vector<String>& defBackend = GetDefaultBackend();
         gBackend = defBackend[0];
         gShaderPathPrefix = defBackend[1];
         gShaderPathExt = defBackend[2];

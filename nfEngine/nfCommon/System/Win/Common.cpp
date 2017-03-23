@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "Common.hpp"
+#include "Containers/String.hpp"
 
 #include <strsafe.h>
 
@@ -16,20 +17,20 @@
 namespace NFE {
 namespace Common {
 
-bool UTF8ToUTF16(const std::string& in, std::wstring& out)
+bool UTF8ToUTF16(const String& in, std::wstring& out)
 {
     // TODO: consider dynamic allocation
     const int bufferSize = 1024;
     wchar_t buffer[bufferSize];
 
     size_t inChars;
-    HRESULT hr = ::StringCchLengthA(in.c_str(), INT_MAX - 1, &inChars);
+    HRESULT hr = ::StringCchLengthA(in.Str(), INT_MAX - 1, &inChars);
     if (FAILED(hr))
         return false;
 
     ++inChars;
 
-    int result = ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, in.c_str(),
+    int result = ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, in.Str(),
                                        static_cast<int>(inChars), buffer, bufferSize);
     if (result == 0)
         return false;
@@ -38,7 +39,7 @@ bool UTF8ToUTF16(const std::string& in, std::wstring& out)
     return true;
 }
 
-bool UTF16ToUTF8(const std::wstring& in, std::string& out)
+bool UTF16ToUTF8(const std::wstring& in, String& out)
 {
     // TODO: consider dynamic allocation
     const int bufferSize = 1024;
@@ -60,7 +61,7 @@ bool UTF16ToUTF8(const std::wstring& in, std::string& out)
     return true;
 }
 
-std::string GetLastErrorString()
+String GetLastErrorString()
 {
     DWORD lastError = ::GetLastError();
     wchar_t buffer[256];
@@ -68,7 +69,7 @@ std::string GetLastErrorString()
     ::FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, lastError,
                     MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), buffer, 255, NULL);
 
-    std::string shortString = "?";
+    String shortString = "?";
     UTF16ToUTF8(std::wstring(buffer), shortString);
     return shortString;
 }

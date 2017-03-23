@@ -23,9 +23,9 @@ public:
     struct LogInfoStruct
     {
         LogType lastType;
-        std::string lastFile;
+        String lastFile;
         int lastLine;
-        std::string lastMsg;
+        String lastMsg;
         double lastTime;
     };
 
@@ -40,9 +40,9 @@ public:
              double timeElapsed) override
     {
         mLastLogInfo.lastType = type;
-        mLastLogInfo.lastFile = std::string(srcFile);
+        mLastLogInfo.lastFile = String(srcFile);
         mLastLogInfo.lastLine = line;
-        mLastLogInfo.lastMsg = std::string(str);
+        mLastLogInfo.lastMsg = String(str);
         mLastLogInfo.lastTime = timeElapsed;
     }
 };
@@ -57,7 +57,7 @@ public:
          * TestBackend will be registered in this test with name="Test". It will be available for every
          * test in LoggerBackendsTest suite.
          */
-        std::vector<std::string> existingBackends = Logger::GetInstance()->ListBackends();
+        std::vector<String> existingBackends = Logger::GetInstance()->ListBackends();
 
         auto result = std::find(existingBackends.cbegin(), existingBackends.cend(), "Test");
         ASSERT_EQ(existingBackends.cend(), result);
@@ -103,20 +103,20 @@ TEST_F(LoggerTest, Null)
 TEST_F(LoggerTest, MultipleTypes)
 {
     int num = 5;
-    std::string text = "text";
+    String text = "text";
     float quarter = 1.0f / 4.0f;
-    LOG_INFO("String: %s, int: %d, float: %f", text.c_str(), num, quarter);
+    LOG_INFO("String: %s, int: %d, float: %f", text.Str(), num, quarter);
     LOG_INFO_S("String: " << text << ", int: " << num << ", float: " << quarter);
 }
 
 TEST_F(LoggerTest, Long)
 {
-    std::string longMessage;
+    String longMessage;
     for (int i = 0; i < 25; ++i)
         longMessage += std::to_string(i) + ": There should be 25 this veeery long messages...\n";
 
-    LOG_INFO(longMessage.c_str());
-    LOG_INFO("%s", longMessage.c_str());
+    LOG_INFO(longMessage.Str());
+    LOG_INFO("%s", longMessage.Str());
 }
 
 TEST_F(LoggerTest, Invalid)
@@ -130,7 +130,7 @@ TEST_F(LoggerTest, Invalid)
 
 TEST_F(LoggerBackendsTest, DisableAll)
 {
-    std::vector<std::string> existingBackends = Logger::GetInstance()->ListBackends();
+    std::vector<String> existingBackends = Logger::GetInstance()->ListBackends();
 
     LOG_SUCCESS("DisableAll: This log should be seen in every standard backend");
 
@@ -154,7 +154,7 @@ TEST_F(LoggerBackendsTest, DisableAll)
 
 TEST_F(LoggerBackendsTest, DisableSingle)
 {
-    std::vector<std::string> existingBackends = Logger::GetInstance()->ListBackends();
+    std::vector<String> existingBackends = Logger::GetInstance()->ListBackends();
 
     LOG_SUCCESS("DisableSingle: This log should be seen in every standard backend");
 
@@ -175,7 +175,7 @@ TEST_F(LoggerBackendsTest, DisableSingle)
 TEST_F(LoggerBackendsTest, LogMethodArguments)
 {
     // Disable all backends apart the test one
-    std::vector<std::string> existingBackends = Logger::GetInstance()->ListBackends();
+    std::vector<String> existingBackends = Logger::GetInstance()->ListBackends();
     for (const auto& i : existingBackends)
     {
         if (i.compare("Test") == 0)

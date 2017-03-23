@@ -527,7 +527,7 @@ TEST(Set, Permutations)
         int permutation = 0;
         do
         {
-            std::string trace = "numValues = " + std::to_string(numValues) + ", permutation = " + std::to_string(permutation);
+            String trace = "numValues = " + std::to_string(numValues) + ", permutation = " + std::to_string(permutation);
             SCOPED_TRACE(trace);
 
             // initialize the tree

@@ -19,7 +19,7 @@ using namespace Common;
 
 namespace {
 
-const std::string gShadersSetsRoot = "nfEngine/Shaders/Sets/";
+const String gShadersSetsRoot = "nfEngine/Shaders/Sets/";
 
 const char* gShaderNameStrings[] =
 {
@@ -150,7 +150,7 @@ void MultiPipelineState::GenerateShaderSets()
             rm->WaitForResource(shader);
 
             for (size_t j = 0; j < mMacros.size(); ++j)
-                mShaderMacroMapping[i][j] = shader->GetMacroByName(mMacroNames[j].c_str());
+                mShaderMacroMapping[i][j] = shader->GetMacroByName(mMacroNames[j].Str());
         }
     }
 
@@ -330,7 +330,7 @@ int MultiPipelineState::GetResourceSlotByName(const char* slotName)
             if (currSlot != slot)
             {
                 LOG_ERROR("Resource slot ID for slot name '%s' is mismatched in multi pipeline states '%s'",
-                          slotName, mName.c_str());
+                          slotName, mName.Str());
                 continue;
             }
         }
@@ -338,7 +338,7 @@ int MultiPipelineState::GetResourceSlotByName(const char* slotName)
 
     if (slot < 0)
         LOG_ERROR("Resource slot '%s' not found in multi pipeline states '%s'",
-                  slotName, mName.c_str());
+                  slotName, mName.Str());
 
     return slot;
 }

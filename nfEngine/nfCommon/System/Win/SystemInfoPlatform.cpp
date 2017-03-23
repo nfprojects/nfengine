@@ -118,7 +118,7 @@ void SystemInfo::InitOSVersion()
         mOSVersion += std::to_string(os.dwMajorVersion) + '.' + std::to_string(os.dwMinorVersion);
     }
 
-    std::string szCSDVer;
+    String szCSDVer;
     if (UTF16ToUTF8(os.szCSDVersion, szCSDVer))
         if (!szCSDVer.empty())
             mOSVersion += " " + szCSDVer;

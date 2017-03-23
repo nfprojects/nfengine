@@ -21,7 +21,7 @@ class Backbuffer : public IBackbuffer, public Texture
     D3DPtr<IDXGISwapChain> mSwapChain;
     bool mVSync;
 
-    std::string mDebugName;
+    String mDebugName;
 
     // get ID3D11Texture2D from the IDXGISwapChain
     bool GetBackbufferTexture();

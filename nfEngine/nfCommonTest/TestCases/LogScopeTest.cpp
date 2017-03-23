@@ -25,9 +25,9 @@ public:
     struct LogInfoStruct
     {
         LogType lastType;
-        std::string lastFile;
+        String lastFile;
         int lastLine;
-        std::string lastMsg;
+        String lastMsg;
         double lastTime;
     };
 
@@ -42,9 +42,9 @@ public:
              double timeElapsed) override
     {
         mLastLogInfo.lastType = type;
-        mLastLogInfo.lastFile = std::string(srcFile);
+        mLastLogInfo.lastFile = String(srcFile);
         mLastLogInfo.lastLine = line;
-        mLastLogInfo.lastMsg = std::string(str);
+        mLastLogInfo.lastMsg = String(str);
         mLastLogInfo.lastTime = timeElapsed;
     }
 };

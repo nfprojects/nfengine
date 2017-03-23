@@ -18,7 +18,7 @@ class Shader : public IShader
     friend class PipelineState;
 
     typedef std::pair<uint16, uint16> SetSlotPair; // first is set, second is binding
-    typedef std::map<std::string, SetSlotPair> SetSlotMap; // mapping Resource Name to Slot
+    typedef std::map<String, SetSlotPair> SetSlotMap; // mapping Resource Name to Slot
 
     ShaderType mType;
     std::unique_ptr<glslang::TShader> mShaderGlslang;
@@ -36,7 +36,7 @@ public:
     ~Shader();
     bool Init(const ShaderDesc& desc);
 
-    bool Disassemble(bool html, std::string& output) override;
+    bool Disassemble(bool html, String& output) override;
     int GetResourceSlotByName(const char* name) override;
 };
 

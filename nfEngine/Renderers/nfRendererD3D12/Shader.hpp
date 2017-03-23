@@ -25,7 +25,7 @@ class Shader : public IShader
 
     ShaderType mType;
     D3DPtr<ID3DBlob> mBytecode;
-    std::map<std::string, ResBinding> mResBindings;
+    std::map<String, ResBinding> mResBindings;
 
     bool GetIODesc();
 
@@ -35,7 +35,7 @@ public:
     ID3DBlob* GetBytecode() const;
     D3D12_SHADER_BYTECODE GetD3D12Bytecode() const;
 
-    bool Disassemble(bool html, std::string& output) override;
+    bool Disassemble(bool html, String& output) override;
     int GetResourceSlotByName(const char* name) override;
 };
 

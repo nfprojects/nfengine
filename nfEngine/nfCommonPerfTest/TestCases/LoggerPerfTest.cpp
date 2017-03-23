@@ -15,9 +15,9 @@ const int LOG_TEST_NUMBER = 10000;
 
 class LoggerPerf : public CommonPerfTest
 {
-    const std::string GetName() const override
+    const String GetName() const override
     {
-        return std::string("LoggerPerfTest");
+        return String("LoggerPerfTest");
     }
 
 public:
@@ -71,7 +71,7 @@ TEST_F(LoggerPerf, SymbolsShort)
     TestFixture([this](){
         GetOStream() << "SymbolsShort:" << std::endl;
         Timer timer;
-        const std::string text = "<>'\"&";
+        const String text = "<>'\"&";
         double logTime[5], logStreamTime[5];
         unsigned char counter = 0;
 
@@ -79,12 +79,12 @@ TEST_F(LoggerPerf, SymbolsShort)
         {
             timer.Start();
             for (int j = LOG_TEST_NUMBER; j > 0; j--)
-                LOG_WARNING(std::to_string(i).c_str());
+                LOG_WARNING(std::to_string(i).Str());
             logTime[counter] = timer.Stop();
 
             timer.Start();
             for (int j = LOG_TEST_NUMBER; j > 0; j--)
-                LOG_WARNING_S(std::to_string(i).c_str());
+                LOG_WARNING_S(std::to_string(i).Str());
             logStreamTime[counter++] = timer.Stop();
         }
 
@@ -131,15 +131,15 @@ TEST_F(LoggerPerf, LongText)
         GetOStream() << "LongText:" << std::endl;
         Timer timer;
         const unsigned int longMessageLength = 100000;
-        std::string text(longMessageLength, 'x');
+        String text(longMessageLength, 'x');
         double logTime, logStreamTime;
 
         timer.Start();
-        LOG_WARNING(text.c_str());
+        LOG_WARNING(text.Str());
         logTime = timer.Stop();
 
         timer.Start();
-        LOG_WARNING_S(text.c_str());
+        LOG_WARNING_S(text.Str());
         logStreamTime = timer.Stop();
 
         // print stats

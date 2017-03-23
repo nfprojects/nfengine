@@ -17,17 +17,17 @@ namespace Renderer {
 
 namespace {
 
-const std::string DEFINE_STR = "#define ";
+const String DEFINE_STR = "#define ";
 
 // TODO this might be only a temporary solution. Investigate in the future.
 //      The problem is, #version *must* be the first line in shader code.
 //      If more flexibility is needed in this situation, some additional
 //      parsing to shader code might be necessary.
-const std::string SHADER_HEADER = "#version 330 core\n\
+const String SHADER_HEADER = "#version 330 core\n\
 #extension GL_ARB_separate_shader_objects: enable\n\
 #extension GL_ARB_shading_language_420pack : enable\n";
 
-const std::string SHADER_HEADER_TAIL = "#line 0 1\n";
+const String SHADER_HEADER_TAIL = "#line 0 1\n";
 
 } // namespace
 
@@ -49,7 +49,7 @@ bool Shader::Init(const ShaderDesc& desc)
     mType = desc.type;
 
     // construct a shader string containing all the macros
-    std::string shaderHead = SHADER_HEADER;
+    String shaderHead = SHADER_HEADER;
     if (desc.macrosNum > 0)
     {
         for (unsigned int i = 0; i < desc.macrosNum; ++i)
@@ -60,7 +60,7 @@ bool Shader::Init(const ShaderDesc& desc)
     shaderHead += SHADER_HEADER_TAIL + '\0';
 
     const char* shaderCode;
-    std::string shaderStr;
+    String shaderStr;
     if (desc.code)
     {
         shaderCode = desc.code;
@@ -91,7 +91,7 @@ bool Shader::Init(const ShaderDesc& desc)
         }
 
         shaderStr[shaderSize] = 0;
-        shaderCode = shaderStr.c_str();
+        shaderCode = shaderStr.Str();
     }
 
     // create old-style shader
@@ -102,7 +102,7 @@ bool Shader::Init(const ShaderDesc& desc)
         return false;
     }
 
-    const char* shaderCStr[] = { shaderHead.c_str(), shaderCode };
+    const char* shaderCStr[] = { shaderHead.Str(), shaderCode };
     glShaderSource(mShader, 2, shaderCStr, nullptr);
     glCompileShader(mShader);
 
@@ -163,7 +163,7 @@ bool Shader::GetIODesc(ShaderIODesc& result)
     return false;
 }
 
-bool Shader::Disassemble(bool html, std::string& output)
+bool Shader::Disassemble(bool html, String& output)
 {
     UNUSED(html);
     UNUSED(output);

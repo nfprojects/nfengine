@@ -68,8 +68,8 @@ public:
 
 // Typedefs to make these types shorter and more readable
 using LoggerBackendPtr =  std::unique_ptr<LoggerBackend>;
-using LoggerBackendMap = std::unordered_map<std::string, LoggerBackendPtr>;
-using StrVector = std::vector<std::string>;
+using LoggerBackendMap = std::unordered_map<String, LoggerBackendPtr>;
+using StrVector = std::vector<String>;
 
 
 /**
@@ -84,10 +84,12 @@ class NFCOMMON_API Logger
         Initialized,
     };
 
-    std::string mLogsDirectory;
+    // We're not using String here directly, because String is using Logger,
+    // which would lead to recursive header inclusion.
+    std::unique_ptr<String> mLogsDirectory;
 
     /// for trimming source file paths in Log() method
-    std::string mPathPrefix;
+    std::unique_ptr<String> mPathPrefix;
     size_t mPathPrefixLen;
 
     std::atomic<InitStage> mInitialized;  //< Set to Initialized, when Logger is fully initialized
@@ -116,7 +118,7 @@ public:
      *
      * @return True, if new backend with @name was inserted. False if @name is already in use.
      */
-    static bool RegisterBackend(const std::string& name, LoggerBackendPtr backend);
+    static bool RegisterBackend(const String& name, LoggerBackendPtr backend);
 
     /**
      * Get pointer to already registered backend.
@@ -125,7 +127,7 @@ public:
      *
      * @return Pointer to the backend if registered, otherwise nullptr.
      */
-    static LoggerBackend* GetBackend(const std::string& name);
+    static LoggerBackend* GetBackend(const String& name);
 
     /**
      * Get list of the registered backends.
@@ -162,9 +164,9 @@ public:
     /**
      * Get logs directory location.
      */
-    NFE_INLINE const std::string& GetLogsDirectory() const
+    NFE_INLINE const String& GetLogsDirectory() const
     {
-        return mLogsDirectory;
+        return *mLogsDirectory.get();
     }
 
     /**
@@ -211,7 +213,7 @@ do {                                                                    \
     {                                                                   \
         std::stringstream stream;                                       \
         stream << msg;                                                  \
-        logger->Log(type, __FILE__, stream.str().c_str(), __LINE__);    \
+        logger->Log(type, __FILE__, stream.str().Str(), __LINE__);    \
     }                                                                   \
 } while (0)
 

@@ -30,14 +30,14 @@ private:
         { }
     };
 
-    std::string mName;
+    String mName;
 
     typedef std::unique_ptr<Multishader, void(*)(Multishader*)> ShaderResourcePtr;
     ShaderResourcePtr mShaderResources[NFE_GRAPHICS_SHADER_TYPES_NUM];
 
     std::vector<MultishaderMacro> mMacros;
     /// don't keep names along with ranges - it's bad for cache
-    std::vector<std::string> mMacroNames;
+    std::vector<String> mMacroNames;
 
     /**
      * Macro mapping table.

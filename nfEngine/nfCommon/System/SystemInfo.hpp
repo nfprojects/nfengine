@@ -40,10 +40,10 @@ class NFCOMMON_API SystemInfo
 private:
     SystemInfo();
 
-    std::map<std::string, CpuidFeature> mCpuidFeatureMap;
-    std::string mCPUBrand;
-    std::string mOSVersion;
-    std::string mCompilerInfo;
+    std::map<String, CpuidFeature> mCpuidFeatureMap;
+    String mCPUBrand;
+    String mOSVersion;
+    String mCompilerInfo;
     uint64_t mCPUCoreNo;
     uint64_t mPageSize;
     uint64_t mCacheLineSize;
@@ -80,7 +80,7 @@ public:
      * Check if feature is supported. List of features at the bottom of this file.
      * @return True if feature is supported, False otherwise
      */
-    bool IsFeatureSupported(const std::string& featureName) const;
+    bool IsFeatureSupported(const String& featureName) const;
 
     /**
      * Update free physical memory information
@@ -104,14 +104,14 @@ public:
      * Print all gathered information
      * @return Formatted string with all information
      */
-    std::string ConstructAllInfoString();
+    String ConstructAllInfoString();
 
     /**
      * Get class fields
      */
-    const std::string& GetCPUBrand() const;
-    const std::string& GetOSVersion() const;
-    const std::string& GetCompilerInfo() const;
+    const String& GetCPUBrand() const;
+    const String& GetOSVersion() const;
+    const String& GetCompilerInfo() const;
     uint64_t GetCPUCoreNo() const;
     uint64_t GetPageSize() const;
     uint64_t GetCacheLineSize() const;
@@ -121,7 +121,7 @@ public:
 };
 
 /**
- * List of features supported by IsFeatureSupported(std::string) function:
+ * List of features supported by IsFeatureSupported(String) function:
  *     ABM - Advanced Bit Manipulation
  *     ACPI - Thermal Monitor & Software Controlled Clock
  *     ADX - Multi-Precision Add-Carry instruction Extensions

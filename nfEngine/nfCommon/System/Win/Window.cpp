@@ -103,7 +103,7 @@ void Window::SetTitle(const char* title)
     {
         std::wstring wideTitle;
         if (UTF8ToUTF16(title, wideTitle))
-            SetWindowText(mHandle, wideTitle.c_str());
+            SetWindowText(mHandle, wideTitle.Str());
     }
 }
 
@@ -198,7 +198,7 @@ bool Window::Open()
         return false;
     if (mFullscreen)
     {
-        mHandle = CreateWindowEx(gFullscreenExStyle, mWndClass, wideTitle.c_str(),
+        mHandle = CreateWindowEx(gFullscreenExStyle, mWndClass, wideTitle.Str(),
                                  gFullscreenStyle, 0, 0, mWidth, mHeight,
                                  nullptr, nullptr, mInstance, nullptr);
     }
@@ -215,7 +215,7 @@ bool Window::Open()
         mTop = -windowRect.top;
 
         mHandle = CreateWindowEx(gWindowedExStyle,
-                                 mWndClass, wideTitle.c_str(),
+                                 mWndClass, wideTitle.Str(),
                                  gWindowedStyle,
                                  mTop, mTop,
                                  windowRect.right - windowRect.left,
@@ -227,7 +227,7 @@ bool Window::Open()
         return false;
 
     SetWindowLongPtr(mHandle, GWLP_USERDATA, (LONG_PTR)this);
-    SetWindowText(mHandle, wideTitle.c_str());
+    SetWindowText(mHandle, wideTitle.Str());
 
     if (!mInvisible)
         ShowWindow(mHandle, SW_SHOW);

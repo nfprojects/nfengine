@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 #include "BackendHTML.hpp"
 #include "BackendCommon.hpp"
+#include "Containers/String.hpp"
 
 
 namespace NFE {
@@ -26,7 +27,7 @@ void LoggerBackendHTML::Reset()
      * TODO: move intro, outro and the other HTML code templates to another file, so the logger
      * backend can be easly customizable.
      */
-    const static std::string gLogIntro = R"(
+    const static String gLogIntro = R"(
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
@@ -67,10 +68,10 @@ void LoggerBackendHTML::Reset()
        <tbody>
 )";
 
-    const std::string logFileName = "log.html";
+    const String logFileName = "log.html";
     mBuffer.resize(NFE_MAX_LOG_MESSAGE_LENGTH);
 
-    const std::string logFilePath = Logger::GetInstance()->GetLogsDirectory() + '/' + logFileName;
+    const String logFilePath = Logger::GetInstance()->GetLogsDirectory() + '/' + logFileName;
     if (!mFile.Open(logFilePath, AccessMode::Write, true))
     {
         // this will be handled by other logger
@@ -83,7 +84,7 @@ void LoggerBackendHTML::Reset()
 
 LoggerBackendHTML::~LoggerBackendHTML()
 {
-    const static std::string gLogOutro = R"(
+    const static String gLogOutro = R"(
             </tbody>
         </table>
         <script src='../nfEngine/Data/tablefilter.js'></script>

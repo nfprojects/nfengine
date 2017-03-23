@@ -8,6 +8,7 @@
 #include "../Library.hpp"
 #include "Logger/Logger.hpp"
 #include "Common.hpp"
+#include "Containers/String.hpp"
 
 
 namespace NFE {
@@ -18,7 +19,7 @@ Library::Library()
 {
 }
 
-Library::Library(const std::string& path)
+Library::Library(const String& path)
     : Library()
 {
     Open(path);
@@ -46,12 +47,12 @@ bool Library::IsOpened() const
     return mModule != nullptr;
 }
 
-bool Library::Open(const std::string& path)
+bool Library::Open(const String& path)
 {
     Close();
 
-    std::string pathExt(path);
-    std::string libExt = ".dll";
+    String pathExt(path);
+    String libExt = ".dll";
     if (libExt.compare(pathExt.substr(pathExt.size() - libExt.size())) != 0)
         pathExt.append(libExt);
 
@@ -59,11 +60,11 @@ bool Library::Open(const std::string& path)
     if (!UTF8ToUTF16(pathExt, widePath))
         return false;
 
-    mModule = ::LoadLibrary(widePath.c_str());
+    mModule = ::LoadLibrary(widePath.Str());
 
     if (mModule == nullptr)
     {
-        LOG_ERROR("Failed to load library '%s': %s", pathExt.c_str(), GetLastErrorString().c_str());
+        LOG_ERROR("Failed to load library '%s': %s", pathExt.Str(), GetLastErrorString().Str());
         return false;
     }
 
@@ -79,16 +80,16 @@ void Library::Close()
     }
 }
 
-void* Library::GetSymbol(const std::string& name)
+void* Library::GetSymbol(const String& name)
 {
     if (mModule == nullptr)
         return nullptr;
 
-    FARPROC ptr = ::GetProcAddress(mModule, name.c_str());
+    FARPROC ptr = ::GetProcAddress(mModule, name.Str());
     if (ptr == nullptr)
     {
-        LOG_ERROR("Failed to get pointer to symbol '%s': %s", name.c_str(),
-                  GetLastErrorString().c_str());
+        LOG_ERROR("Failed to get pointer to symbol '%s': %s", name.Str(),
+                  GetLastErrorString().Str());
         return nullptr;
     }
 

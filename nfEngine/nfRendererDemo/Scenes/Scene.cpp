@@ -12,14 +12,14 @@
 using namespace NFE;
 using namespace Renderer;
 
-Scene::Scene(const std::string& name)
+Scene::Scene(const String& name)
     : mCurrentSubScene(SIZE_MAX)
     , mHighestAvailableSubScene(SIZE_MAX)
     , mName(name)
 {
 }
 
-std::string Scene::GetSceneName() const
+String Scene::GetSceneName() const
 {
     return mName;
 }
@@ -34,10 +34,10 @@ size_t Scene::GetAvailableSubSceneCount() const
     return mHighestAvailableSubScene;
 }
 
-std::string Scene::GetCurrentSubSceneName() const
+String Scene::GetCurrentSubSceneName() const
 {
     if (mCurrentSubScene > mHighestAvailableSubScene)
-        return std::string();
+        return String();
 
     return mSubScenes[mCurrentSubScene].name;
 }
@@ -47,7 +47,7 @@ bool Scene::OnSwitchSubscene()
     return true;
 }
 
-void Scene::RegisterSubScene(SubSceneInitializer initializer, const std::string& name)
+void Scene::RegisterSubScene(SubSceneInitializer initializer, const String& name)
 {
     SubSceneDefinition def;
     def.initializer = initializer;

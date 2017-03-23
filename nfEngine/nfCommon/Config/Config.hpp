@@ -8,6 +8,8 @@
 
 #include "../nfCommon.hpp"
 
+#include "Containers/String.hpp"
+
 #include <memory>
 #include <functional>
 #include <vector>
@@ -209,7 +211,7 @@ public:
      *       (intendation, comments, etc.).
      * @return Config string.
      */
-    std::string ToString(bool format = true) const;
+    String ToString(bool format = true) const;
 
     /**
      * Iterate through a config object.

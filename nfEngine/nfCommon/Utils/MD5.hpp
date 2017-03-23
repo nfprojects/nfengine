@@ -59,7 +59,7 @@ namespace Common {
 
 struct NFCOMMON_API MD5DataSet
 {
-    MD5DataSet(const std::string& input);
+    MD5DataSet(const String& input);
     ~MD5DataSet();
 
     std::vector<uint32> mChunks;
@@ -70,7 +70,7 @@ class NFCOMMON_API MD5Hash
 public:
     MD5Hash();
 
-    void Calculate(const std::string& data);
+    void Calculate(const String& data);
     void Set(uint32 h0, uint32 h1, uint32 h2, uint32 h3);
 
     // operators

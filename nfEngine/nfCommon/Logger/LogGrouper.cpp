@@ -6,6 +6,8 @@
 
 #include "PCH.hpp"
 #include "LogGrouper.hpp"
+#include "Containers/String.hpp"
+
 #include <stdarg.h>
 #include <string.h>
 
@@ -87,9 +89,9 @@ void LogGrouper::Log(LogType type, int line, const char* file, const char* str, 
     log.line = line;
     log.file = file;
     log.type = type;
-    log.msg = std::string(formattedStr);
+    log.msg = String(formattedStr);
 
-    InsertLog(log);
+    InsertLog(std::move(log));
 
    // If it's a fatal log, flush logs
     if (type == NFE::Common::LogType::Fatal)
@@ -110,9 +112,9 @@ void LogGrouper::Log(LogType type, const char* str, int line, const char* file)
     log.line = line;
     log.file = file;
     log.type = type;
-    log.msg = std::string(str);
+    log.msg = String(str);
 
-    InsertLog(log);
+    InsertLog(std::move(log));
 
     // If it's a fatal log, flush logs
     if (type == NFE::Common::LogType::Fatal)
@@ -130,13 +132,13 @@ void LogGrouper::Flush()
             auto backend = Logger::GetBackend(b);
             LogStruct log = mLogs[i];
             if (backend->IsEnabled())
-                backend->Log(log.type, log.file.c_str(), log.line, log.msg.c_str(), log.time);
+                backend->Log(log.type, log.file.Str(), log.line, log.msg.Str(), log.time);
         }
 
     mLogCounter = 0;
 }
 
-void LogGrouper::InsertLog(LogStruct log)
+void LogGrouper::InsertLog(LogStruct&& log)
 {
     mLogCounter++;
     if (mCurrentSize == mLogCounter)
@@ -147,7 +149,7 @@ void LogGrouper::InsertLog(LogStruct log)
         mLogs.reset(newArray);
     }
 
-    mLogs[mLogCounter - 1] = log;
+    mLogs[mLogCounter - 1] = std::move(log);
 }
 
 } // namespace Common

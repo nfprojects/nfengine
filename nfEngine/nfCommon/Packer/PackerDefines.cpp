@@ -14,7 +14,7 @@ namespace Common {
 // Saved at the beginning of every PAK file, allows for file versioning
 const uint32 gPackFileVersion = 1;
 
-NFCOMMON_API std::string Packer_GetErrorStr(PackerResult pr)
+NFCOMMON_API String Packer_GetErrorStr(PackerResult pr)
 {
     switch (pr)
     {

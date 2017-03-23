@@ -18,11 +18,11 @@ class PackerResourceFile: public PackerResource
 public:
     ~PackerResourceFile();
 
-    PackerResult Init(const std::string& filePath, const std::string& vfsFilePath);
+    PackerResult Init(const String& filePath, const String& vfsFilePath);
     PackerResult Save(File& file);
 
 private:
-    std::string mFilePath;
+    String mFilePath;
 };
 
 } // namespace Common

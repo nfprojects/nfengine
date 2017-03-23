@@ -65,7 +65,7 @@ void HandleFatalAssertion(const char* expressionStr, const char* functionStr, co
     else
     {
         message << "\n\nPress 'YES' to continue (not recommended) or 'NO' to abort.";
-        if (IDYES == ::MessageBoxA(NULL, message.str().c_str(), "Assertion failed", MB_ICONERROR | MB_YESNO))
+        if (IDYES == ::MessageBoxA(NULL, message.str().Str(), "Assertion failed", MB_ICONERROR | MB_YESNO))
         {
             return;
         }

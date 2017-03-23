@@ -18,8 +18,8 @@ class NFCOMMON_API LogGrouper
 {
     struct LogStruct
     {
-        std::string file;
-        std::string msg;
+        String file;
+        String msg;
         double time;
         int line;
         LogType type;
@@ -30,7 +30,7 @@ class NFCOMMON_API LogGrouper
     size_t mCurrentSize;
     size_t mLogCounter;
     Timer mTimer;
-    void InsertLog(LogStruct log);
+    void InsertLog(LogStruct&& log);
 
 public:
     LogGrouper();
@@ -51,7 +51,7 @@ public:
 do {                                                                    \
         std::stringstream stream;                                       \
         stream << msg;                                                  \
-        group.Log(type, stream.str().c_str(), __LINE__, __FILE__);      \
+        group.Log(type, stream.str().Str(), __LINE__, __FILE__);      \
 } while (0)
 
 #ifdef _DEBUG

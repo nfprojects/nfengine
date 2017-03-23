@@ -32,7 +32,7 @@ class Multishader : public ResourceBase
 {
     std::vector<MultishaderMacro> mMacros;
     /// don't keep names along with ranges - it's bad for cache
-    std::vector<std::string> mMacroNames;
+    std::vector<String> mMacroNames;
 
     std::vector<Renderer::ShaderPtr> mSubShaders;
     Renderer::ShaderType mType;

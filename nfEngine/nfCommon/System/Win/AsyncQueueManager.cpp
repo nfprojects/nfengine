@@ -46,14 +46,14 @@ bool AsyncQueueManager::Init()
     mQueueThread = ::CreateThread(0, 0, AsyncQueueManager::JobQueue, nullptr, 0, 0);
     if (mQueueThread == NULL)
     {
-        LOG_ERROR("CreateThread() failed for AsyncQueueManager: %s", GetLastErrorString().c_str());
+        LOG_ERROR("CreateThread() failed for AsyncQueueManager: %s", GetLastErrorString().Str());
         return false;
     }
 
     mQuitEvent = ::CreateEvent(nullptr, FALSE, FALSE, L"JobQueue QuitEvent");
     if (mQuitEvent == NULL)
     {
-        LOG_ERROR("CreateEvent() failed for AsyncQueueManager: %s", GetLastErrorString().c_str());
+        LOG_ERROR("CreateEvent() failed for AsyncQueueManager: %s", GetLastErrorString().Str());
         return false;
     }
 
@@ -70,7 +70,7 @@ bool AsyncQueueManager::EnqueueJob(JobProcedure callback, void* data)
 
     if (0 == ::QueueUserAPC(callback, mQueueThread, reinterpret_cast<ULONG_PTR>(data)))
     {
-        LOG_ERROR("QueueUserAPC() failed for AsyncQueueManager: %s", GetLastErrorString().c_str());
+        LOG_ERROR("QueueUserAPC() failed for AsyncQueueManager: %s", GetLastErrorString().Str());
         return false;
     }
 

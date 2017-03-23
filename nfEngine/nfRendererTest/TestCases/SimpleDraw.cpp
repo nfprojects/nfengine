@@ -36,11 +36,11 @@ protected:
     ShaderPtr CompileShader(const char* path, ShaderType type, ShaderMacro* macros = nullptr,
                             size_t macrosNum = 0)
     {
-        const std::string shaderPath = gShaderPathPrefix + path + gShaderPathExt;
+        const String shaderPath = gShaderPathPrefix + path + gShaderPathExt;
 
         ShaderDesc desc;
         desc.type = type;
-        desc.path = shaderPath.c_str();
+        desc.path = shaderPath.Str();
         desc.macros = macros;
         desc.macrosNum = macrosNum;
         return gRendererDevice->CreateShader(desc);
@@ -145,7 +145,7 @@ TEST_F(SimpleDrawTest, Culling)
             break;
         }
 
-        SCOPED_TRACE("CullMode: " + std::string(cullModeStr));
+        SCOPED_TRACE("CullMode: " + String(cullModeStr));
 
         RasterizerStateDesc rasterizerDesc;
         rasterizerDesc.cullMode = cullModes[i];
@@ -260,7 +260,7 @@ TEST_F(SimpleDrawTest, RenderTargetFormats)
                 continue;
 
             const char* formatName = GetElementFormatName(format);
-            SCOPED_TRACE("Format: " + std::string(formatName));
+            SCOPED_TRACE("Format: " + String(formatName));
 
             BeginTestFrame(VIEWPORT_SIZE, VIEWPORT_SIZE, 1, &format);
             {

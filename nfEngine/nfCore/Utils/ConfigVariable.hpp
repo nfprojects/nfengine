@@ -54,7 +54,7 @@ public:
     /**
      * Convert config variable value to string.
      */
-    virtual std::string ToString() const = 0;
+    virtual String ToString() const = 0;
 };
 
 
@@ -95,7 +95,7 @@ public:
         mValue = val;
     }
 
-    std::string ToString() const override;
+    String ToString() const override;
 };
 
 } // namespace NFE

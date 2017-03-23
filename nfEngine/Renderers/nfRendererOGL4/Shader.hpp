@@ -37,7 +37,7 @@ public:
     bool Init(const ShaderDesc& desc);
 
     bool GetIODesc(ShaderIODesc& result);
-    bool Disassemble(bool html, std::string& output);
+    bool Disassemble(bool html, String& output);
 };
 
 } // namespace Renderer

@@ -134,7 +134,7 @@ public:
     /**
      * Get shaders location.
      */
-    std::string GetShadersPath() const;
+    String GetShadersPath() const;
 
     NFE_INLINE ElementFormat GetBackbufferFormat() const
     {

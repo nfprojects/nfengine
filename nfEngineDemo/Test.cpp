@@ -33,7 +33,7 @@ public:
     bool showViewProperties;
     bool showProfiler;
     bool drawSecondaryView;
-    std::string secondaryViewTexName;
+    String secondaryViewTexName;
 
     const int dtHistorySize = 100;
     std::vector<float> dtHistory;
@@ -121,7 +121,7 @@ public:
 
         // draw quad with secondary camera view
 
-        Texture* texture = ENGINE_GET_TEXTURE(secondaryViewTexName.c_str());
+        Texture* texture = ENGINE_GET_TEXTURE(secondaryViewTexName.Str());
         GuiRenderer::Get()->DrawTexturedQuad(ctx,
                                              Rectf(left, viewHeight - bottom - height,
                                                    left + width, viewHeight - bottom),
@@ -238,12 +238,12 @@ public:
 
         InitSecondaryCamera();
 
-        std::string secondaryViewTexName = "secondaryViewTexture_" +
+        String secondaryViewTexName = "secondaryViewTexture_" +
             std::to_string(reinterpret_cast<size_t>(view.get()));
         secondaryView.reset(new Renderer::View);
         secondaryView->SetCamera(scene.get(), secondaryCameraEntity);
         secondaryView->SetOffScreen(SECONDARY_VIEW_WIDTH, SECONDARY_VIEW_HEIGHT,
-                                    secondaryViewTexName.c_str());
+                                    secondaryViewTexName.Str());
 
         // set custom postprocessing parameters
         secondaryView->postProcessParams.noiseFactor = 0.1f;
@@ -621,8 +621,8 @@ bool OnLoadCustomShapeResource(ResourceBase* res, void* data)
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    std::string execPath = Common::FileSystem::GetExecutablePath();
-    std::string execDir = NFE::Common::FileSystem::GetParentDir(execPath);
+    String execPath = Common::FileSystem::GetExecutablePath();
+    String execDir = NFE::Common::FileSystem::GetParentDir(execPath);
     NFE::Common::FileSystem::ChangeDirectory(execDir + "/../../..");
 
     //initialize engine

@@ -15,7 +15,7 @@ namespace NFE {
 namespace Common {
 
 using ImageTypePtr = std::unique_ptr<ImageType>;
-using ImageTypeMap = std::unordered_map<std::string, ImageTypePtr>;
+using ImageTypeMap = std::map<String, ImageTypePtr>;
 
 class NFCOMMON_API ImageType
 {
@@ -35,7 +35,7 @@ public:
      *
      * @return True, if new ImageType with @name was inserted. False if @name is already in use.
      */
-    static bool RegisterImageType(const std::string& name, ImageTypePtr imageType);
+    static bool RegisterImageType(const String& name, ImageTypePtr imageType);
 
     /**
      * Get pointer to an already registered ImageType.
@@ -44,12 +44,12 @@ public:
      *
      * @return Pointer to the ImageType if registered, otherwise nullptr.
      */
-    static ImageType* GetImageType(const std::string& name);
+    static ImageType* GetImageType(const String& name);
 
     /**
      * Get list of the registered ImageTypes.
      */
-    static std::vector<std::string> ListImageTypes();
+    static std::vector<String> ListImageTypes();
 
 protected:
     std::vector<Mipmap>* GetMipmaps(Image* img);

@@ -83,7 +83,7 @@ private:
 public:
     FileAsync();
     explicit FileAsync(CallbackFuncRef callback);
-    FileAsync(const std::string& path, AccessMode mode, CallbackFuncRef callback,
+    FileAsync(const String& path, AccessMode mode, CallbackFuncRef callback,
               bool overwrite = false);
     FileAsync(FileAsync&& other);
     FileAsync(const FileAsync& other) = delete;
@@ -101,7 +101,7 @@ public:
      * @param access File access mode.
      * @param overwrite Overwrite a file if it already exists.
      */
-    bool Open(const std::string& path, AccessMode access, bool overwrite = false);
+    bool Open(const String& path, AccessMode access, bool overwrite = false);
 
     /**
      * Close opened file and cancel all unfinished operations.

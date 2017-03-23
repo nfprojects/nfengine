@@ -121,11 +121,11 @@ const TBuiltInResource DEFAULT_RESOURCE = {
     }};
 
 const int DEFAULT_VERSION = 110;
-const std::string SHADER_HEADER_START = "#version 450\n\
+const String SHADER_HEADER_START = "#version 450\n\
 #extension GL_ARB_separate_shader_objects: enable\n\
 #extension GL_ARB_shading_language_420pack: enable\n";
-const std::string DEFINE_STR = "#define ";
-const std::string SHADER_HEADER_TAIL = "\0";
+const String DEFINE_STR = "#define ";
+const String SHADER_HEADER_TAIL = "\0";
 
 } // namespace
 
@@ -174,7 +174,7 @@ bool Shader::Init(const ShaderDesc& desc)
     }
 
     // construct a shader string containing all the macros
-    std::string shaderHead = SHADER_HEADER_START;
+    String shaderHead = SHADER_HEADER_START;
     if (desc.macrosNum > 0)
     {
         for (unsigned int i = 0; i < desc.macrosNum; ++i)
@@ -210,7 +210,7 @@ bool Shader::Init(const ShaderDesc& desc)
 
     // create and parse shader
     mShaderGlslang.reset(new (std::nothrow) glslang::TShader(lang));
-    const char * shaderStrs[] = { shaderHead.c_str(), code };
+    const char * shaderStrs[] = { shaderHead.Str(), code };
     mShaderGlslang->setStrings(shaderStrs, 2);
     mShaderGlslang->setEntryPoint("main");
 
@@ -239,7 +239,7 @@ bool Shader::Init(const ShaderDesc& desc)
         return false;
     }
 
-    std::string errorMessages;
+    String errorMessages;
     spv::SpvBuildLogger spvLogger;
     glslang::GlslangToSpv(*progInt, mShaderSpv, &spvLogger);
 
@@ -264,7 +264,7 @@ bool Shader::Init(const ShaderDesc& desc)
     return true;
 }
 
-bool Shader::Disassemble(bool html, std::string& output)
+bool Shader::Disassemble(bool html, String& output)
 {
     UNUSED(html); // TODO
     // Disassemble the shader, to provide parsing source for slot extraction
@@ -285,21 +285,21 @@ void Shader::ParseResourceSlots()
     std::stringstream disasm;
     spv::Disassemble(disasm, mShaderSpv);
 
-    std::string line;
-    std::vector<std::string> names;
-    std::vector<std::string> decorates;
+    String line;
+    std::vector<String> names;
+    std::vector<String> decorates;
     while (std::getline(disasm, line))
     {
         size_t namePos = line.find("Name");
         size_t decoratePos = line.find("Decorate");
-        if (namePos == std::string::npos && decoratePos == std::string::npos)
+        if (namePos == String::npos && decoratePos == String::npos)
             continue;
 
         // trim from starting whitespaces
         line.erase(line.begin(), std::find_if(line.begin(), line.end(),
             [](char c) -> bool { return !std::isspace(c); }));
 
-        if (namePos == std::string::npos)
+        if (namePos == String::npos)
             decorates.push_back(line);
         else
             names.push_back(line);
@@ -310,8 +310,8 @@ void Shader::ParseResourceSlots()
     {
         // extract number which relates to provided decorate
         std::istringstream iss(decoration);
-        std::vector<std::string> tokens;
-        std::string token;
+        std::vector<String> tokens;
+        String token;
         while (std::getline(iss, token,' '))
             tokens.push_back(token);
 
@@ -328,7 +328,7 @@ void Shader::ParseResourceSlots()
         size_t openBracketPos = tokens[1].find('(');
         size_t closeBracketPos = tokens[1].find(')', openBracketPos+1);
 
-        std::string tokenName = tokens[1].substr(openBracketPos+1, closeBracketPos - openBracketPos - 1);
+        String tokenName = tokens[1].substr(openBracketPos+1, closeBracketPos - openBracketPos - 1);
         SetSlotMap::iterator it;
         if (tokens[2] == "DescriptorSet" || tokens[2] == "Binding")
         {
@@ -341,14 +341,14 @@ void Shader::ParseResourceSlots()
 
         if (tokens[2] == "DescriptorSet")
         {
-            LOG_DEBUG("Found resource %s with DescriptorSet = %s", tokens[1].c_str(), tokens[3].c_str());
-            it->second.first = static_cast<uint16>(std::atoi(tokens[3].c_str()));
+            LOG_DEBUG("Found resource %s with DescriptorSet = %s", tokens[1].Str(), tokens[3].Str());
+            it->second.first = static_cast<uint16>(std::atoi(tokens[3].Str()));
         }
 
         if (tokens[2] == "Binding")
         {
-            LOG_DEBUG("Found resource %s with Binding = %s", tokens[1].c_str(), tokens[3].c_str());
-            it->second.second = static_cast<uint16>(std::atoi(tokens[3].c_str()));
+            LOG_DEBUG("Found resource %s with Binding = %s", tokens[1].Str(), tokens[3].Str());
+            it->second.second = static_cast<uint16>(std::atoi(tokens[3].Str()));
         }
     }
 

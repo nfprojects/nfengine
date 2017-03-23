@@ -33,9 +33,9 @@ void idTestFunc(size_t* id)
 }
 
 // Simple function to test if setting thread name went good
-void setNameTestFunc(const std::string& threadName, bool shouldSuccess)
+void setNameTestFunc(const String& threadName, bool shouldSuccess)
 {
-    ASSERT_EQ(shouldSuccess, Thread::SetCurrentThreadName(threadName.c_str()));
+    ASSERT_EQ(shouldSuccess, Thread::SetCurrentThreadName(threadName.Str()));
 }
 
 TEST(ThreadTest, SetPriority)
@@ -95,11 +95,11 @@ TEST(ThreadTest, ThreadId)
 TEST(ThreadTest, SetThreadNameNormal)
 {
     std::array<std::thread, testThreadNumber> testThreads;
-    std::string threadName = "thread No";
+    String threadName = "thread No";
 
     for (int i = 0; i < testThreadNumber; i++)
     {
-        std::string name = threadName + std::to_string(i);
+        String name = threadName + std::to_string(i);
         name.resize(maxThreadNameLength);
         testThreads[i] = std::thread(setNameTestFunc, name, true);
     }
@@ -112,11 +112,11 @@ TEST(ThreadTest, SetThreadNameNormal)
 TEST(ThreadTest, SetThreadNameInvalid)
 {
     std::array<std::thread, testThreadNumber> testThreads;
-    std::string threadName = "thread";
+    String threadName = "thread";
 
     for (int i = 0; i < testThreadNumber; i++)
     {
-        std::string name = threadName + std::to_string(i);
+        String name = threadName + std::to_string(i);
         while (name.size() <= maxThreadNameLength)
             name += name;
         testThreads[i] = std::thread(setNameTestFunc, name, false);

@@ -5,8 +5,8 @@ using namespace NFE::Common;
 
 TEST(FileSystemTest, DirectoryAndRemove)
 {
-    const std::string testDir = "testDir1";
-    const std::string testDir2 = testDir + "/testDir2";
+    const String testDir = "testDir1";
+    const String testDir2 = testDir + "/testDir2";
 
     ASSERT_TRUE(FileSystem::CreateDir(testDir));
     ASSERT_TRUE(FileSystem::CreateDir(testDir2));
@@ -25,7 +25,7 @@ TEST(FileSystemTest, DirectoryAndRemove)
 
 TEST(FileSystemTest, TouchFile)
 {
-    const std::string filePath = "touch_test_file";
+    const String filePath = "touch_test_file";
 
     ASSERT_EQ(PathType::Invalid, FileSystem::GetPathType(filePath));
     ASSERT_TRUE(FileSystem::TouchFile(filePath));
@@ -36,16 +36,16 @@ TEST(FileSystemTest, TouchFile)
 
 TEST(FileSystemTest, Iterate)
 {
-    const std::string root = "test_dir";
+    const String root = "test_dir";
 
-    const std::vector<std::string> test_dirs =
+    const std::vector<String> test_dirs =
     {
         root + "/a",
         root + "/b",
         root + "/a/b"
     };
 
-    const std::vector<std::string> test_files =
+    const std::vector<String> test_files =
     {
         root + "/a_file",
         root + "/b_file",
@@ -55,15 +55,15 @@ TEST(FileSystemTest, Iterate)
 
     // prepare test files structure
     ASSERT_EQ(true, FileSystem::CreateDir(root)) << "create directory '" << root << "'";
-    for (const std::string& path : test_dirs)
+    for (const String& path : test_dirs)
         ASSERT_TRUE(FileSystem::CreateDir(path)) << "create directory '" << path << "'";
-    for (const std::string& path : test_files)
+    for (const String& path : test_files)
         ASSERT_TRUE(FileSystem::TouchFile(path)) << "create file '" << path << "'";
 
 
-    std::set<std::string> dirs;
-    std::set<std::string> files;
-    auto callback = [&](const std::string & path, bool isDirectory)
+    std::set<String> dirs;
+    std::set<String> files;
+    auto callback = [&](const String & path, bool isDirectory)
     {
         if (isDirectory)
             dirs.insert(path);
@@ -75,9 +75,9 @@ TEST(FileSystemTest, Iterate)
 
     ASSERT_TRUE(FileSystem::Iterate(root, callback));
 
-    for (const std::string& path : test_dirs)
+    for (const String& path : test_dirs)
         EXPECT_EQ(1, dirs.count(path)) << "check directory '" << path << "'";
-    for (const std::string& path : test_files)
+    for (const String& path : test_files)
         EXPECT_EQ(1, files.count(path)) << "check file '" << path << "'";
 
     // cleanup
@@ -85,7 +85,7 @@ TEST(FileSystemTest, Iterate)
 }
 TEST(FileSystemTest, GetExecutablePath)
 {
-    std::string path = FileSystem::GetExecutablePath();
+    String path = FileSystem::GetExecutablePath();
     ASSERT_FALSE(path.empty());
     ASSERT_EQ(PathType::File, FileSystem::GetPathType(path));
 }

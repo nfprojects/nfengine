@@ -12,36 +12,36 @@ using namespace NFE;
 using namespace NFE::Common;
 
 namespace {
-const std::string TEST_IMAGES_PATH = "./nfEngine/TestResources/ImageSamples/";
-const std::string TEST_IMAGES_SAVEPATH = "./nfEngine/TestResources/ImageSamples/SaveTests/";
+const String TEST_IMAGES_PATH = "./nfEngine/TestResources/ImageSamples/";
+const String TEST_IMAGES_SAVEPATH = "./nfEngine/TestResources/ImageSamples/SaveTests/";
 const int TEXTURE_WIDTH = 16;
 const int TEXTURE_HEIGHT = 16;
 
-const std::string TEXTURE_DDS_BC1 = "textureBC1.dds";
-const std::string TEXTURE_DDS_BC2 = "textureBC2.dds";
-const std::string TEXTURE_DDS_BC3 = "textureBC3.dds";
-const std::string TEXTURE_DDS_BC4 = "textureBC4.dds";
-const std::string TEXTURE_DDS_BC5 = "textureBC5.dds";
-const std::string TEXTURE_DDS_BC6H = "textureBC6H.dds";
-const std::string TEXTURE_DDS_BC7 = "textureBC7.dds";
-const std::string TEXTURE_DDS_MM = "textureBC1_MM.dds";
+const String TEXTURE_DDS_BC1 = "textureBC1.dds";
+const String TEXTURE_DDS_BC2 = "textureBC2.dds";
+const String TEXTURE_DDS_BC3 = "textureBC3.dds";
+const String TEXTURE_DDS_BC4 = "textureBC4.dds";
+const String TEXTURE_DDS_BC5 = "textureBC5.dds";
+const String TEXTURE_DDS_BC6H = "textureBC6H.dds";
+const String TEXTURE_DDS_BC7 = "textureBC7.dds";
+const String TEXTURE_DDS_MM = "textureBC1_MM.dds";
 
-const std::string TEXTURE_JPG = "textureJPG.jpg";
+const String TEXTURE_JPG = "textureJPG.jpg";
 
-const std::string TEXTURE_BMP4 = "textureBMP4.bmp";
-const std::string TEXTURE_BMP8 = "textureBMP8.bmp";
-const std::string TEXTURE_BMP16ARGB = "textureBMP16ARGB.bmp";
-const std::string TEXTURE_BMP16XRGB = "textureBMP16XRGB.bmp";
-const std::string TEXTURE_BMP16RGB = "textureBMP16RGB.bmp";
-const std::string TEXTURE_BMP24 = "textureBMP24.bmp";
-const std::string TEXTURE_BMP32ARGB = "textureBMP32ARGB.bmp";
-const std::string TEXTURE_BMP32XRGB = "textureBMP32XRGB.bmp";
+const String TEXTURE_BMP4 = "textureBMP4.bmp";
+const String TEXTURE_BMP8 = "textureBMP8.bmp";
+const String TEXTURE_BMP16ARGB = "textureBMP16ARGB.bmp";
+const String TEXTURE_BMP16XRGB = "textureBMP16XRGB.bmp";
+const String TEXTURE_BMP16RGB = "textureBMP16RGB.bmp";
+const String TEXTURE_BMP24 = "textureBMP24.bmp";
+const String TEXTURE_BMP32ARGB = "textureBMP32ARGB.bmp";
+const String TEXTURE_BMP32XRGB = "textureBMP32XRGB.bmp";
 
-const std::string TEXTURE_PNG_RGB = "texturePNG_RGB.png";
-const std::string TEXTURE_PNG_RGBA = "texturePNG_RGBA.png";
-const std::string TEXTURE_PNG_RGBA_PALETTE = "texturePNG_RGBA_palette.png";
-const std::string TEXTURE_PNG_RGBA_INTERLACED = "texturePNG_RGBA_interlaced.png";
-const std::string TEXTURE_PNG_GA = "texturePNG_GA.png";
+const String TEXTURE_PNG_RGB = "texturePNG_RGB.png";
+const String TEXTURE_PNG_RGBA = "texturePNG_RGBA.png";
+const String TEXTURE_PNG_RGBA_PALETTE = "texturePNG_RGBA_palette.png";
+const String TEXTURE_PNG_RGBA_INTERLACED = "texturePNG_RGBA_interlaced.png";
+const String TEXTURE_PNG_GA = "texturePNG_GA.png";
 
 const int GRAYSCALE_R = 53;
 const int GRAYSCALE_B = 17;
@@ -96,7 +96,7 @@ protected:
     void LoadAssert(ImageFormat fmt)
     {
         // Add scoped trace, to give information where exactly the error occured
-        SCOPED_TRACE("Loading " + std::string(FormatToStr(fmt)));
+        SCOPED_TRACE("Loading " + String(FormatToStr(fmt)));
 
         ASSERT_TRUE(mImage->Load(mImageFile.get()));
         ASSERT_EQ(fmt, mImage->GetFormat());
@@ -120,7 +120,7 @@ protected:
         for (auto i : SUPPORTED_CONVERSION_FORMATS_NON_BC)
         {
             // Add scoped trace, to give information where exactly the error occured
-            SCOPED_TRACE("Conversion to " + std::string(FormatToStr(i)));
+            SCOPED_TRACE("Conversion to " + String(FormatToStr(i)));
 
             Image imageToConvert(*mImage.get());
 
@@ -134,7 +134,7 @@ protected:
         for (auto i : SUPPORTED_CONVERSION_FORMATS_BC)
         {
             // Add scoped trace, to give information where exactly the error occured
-            SCOPED_TRACE("Conversion to " + std::string(FormatToStr(i)));
+            SCOPED_TRACE("Conversion to " + String(FormatToStr(i)));
 
             Image imageToConvert(*mImage.get());
 

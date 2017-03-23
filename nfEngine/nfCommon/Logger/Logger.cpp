@@ -8,6 +8,8 @@
 #include "Logger.hpp"
 #include "FileSystem/FileSystem.hpp"
 #include "System/SystemInfo.hpp"
+#include "Containers/String.hpp"
+
 #include <stdarg.h>
 
 #ifdef WIN32
@@ -81,8 +83,8 @@ void Logger::LogInit()
 #endif
     mPathPrefixLen = mPathPrefix.length();
 
-    std::string execPath = NFE::Common::FileSystem::GetExecutablePath();
-    std::string execDir = NFE::Common::FileSystem::GetParentDir(execPath);
+    String execPath = NFE::Common::FileSystem::GetExecutablePath();
+    String execDir = NFE::Common::FileSystem::GetParentDir(execPath);
     mLogsDirectory = execDir + "/../../../Logs";
     FileSystem::CreateDir(mLogsDirectory);
 
@@ -93,7 +95,7 @@ void Logger::LogInit()
 
 void Logger::LogBuildInfo() const
 {
-    LOG_INFO("Compiler: %s", SystemInfo::Instance().GetCompilerInfo().c_str());
+    LOG_INFO("Compiler: %s", SystemInfo::Instance().GetCompilerInfo().Str());
     LOG_INFO("nfCommon build date: " __DATE__ ", " __TIME__);
 
 #ifdef NFE_USE_SSE
@@ -126,17 +128,17 @@ void Logger::LogSysInfo() const
 {
     SystemInfo& sysInfo = SystemInfo::Instance();
 
-    LOG_INFO("CPU: %s, %u cores", sysInfo.GetCPUBrand().c_str(), sysInfo.GetCPUCoreNo());
+    LOG_INFO("CPU: %s, %u cores", sysInfo.GetCPUBrand().Str(), sysInfo.GetCPUCoreNo());
     LOG_INFO("RAM: %uKB total, %uKB free", sysInfo.GetMemTotalPhysKb(), sysInfo.GetMemFreePhysKb());
-    LOG_INFO("OS: %s", sysInfo.GetOSVersion().c_str());
+    LOG_INFO("OS: %s", sysInfo.GetOSVersion().Str());
 }
 
-bool Logger::RegisterBackend(const std::string& name, LoggerBackendPtr backend)
+bool Logger::RegisterBackend(const String& name, LoggerBackendPtr backend)
 {
     return mBackends().insert(std::make_pair(name, std::move(backend))).second;
 }
 
-LoggerBackend* Logger::GetBackend(const std::string& name)
+LoggerBackend* Logger::GetBackend(const String& name)
 {
     LoggerBackendMap::const_iterator backend = mBackends().find(name);
 
@@ -146,9 +148,9 @@ LoggerBackend* Logger::GetBackend(const std::string& name)
     return backend->second.get();
 }
 
-std::vector<std::string> Logger::ListBackends()
+std::vector<String> Logger::ListBackends()
 {
-    std::vector<std::string> vect;
+    std::vector<String> vect;
     vect.reserve(mBackends().size());
 
     for (const auto& i : mBackends())

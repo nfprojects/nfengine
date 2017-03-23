@@ -14,10 +14,10 @@ namespace {
 const uint32 TEST_FILE_MAX_COUNT = 4096;
 const uint32 TEST_FILE_MAX_DATA_COUNT = 16384;
 
-const std::string TEST_PACK_PATH = "testfile.nfp";
-const std::string TEST_SAMPLE_FILE_DIR = "./TestDir/";
-const std::string TEST_SAMPLE_FILE_REC_DIR_PREFIX = "TestRecDir_";
-const std::string TEST_SAMPLE_FILE_PREFIX = "samplefile_";
+const String TEST_PACK_PATH = "testfile.nfp";
+const String TEST_SAMPLE_FILE_DIR = "./TestDir/";
+const String TEST_SAMPLE_FILE_REC_DIR_PREFIX = "TestRecDir_";
+const String TEST_SAMPLE_FILE_PREFIX = "samplefile_";
 } // namespace
 
 class Packer : public testing::Test
@@ -40,7 +40,7 @@ protected:
         EXPECT_TRUE(FileSystem::CreateDir(TEST_SAMPLE_FILE_DIR)) <<
                     "Failed to create directory for test files.";
 
-        const std::string testFilePrefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
+        const String testFilePrefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
 
         for (uint32 i = 0; i < TEST_FILE_MAX_COUNT; ++i)
         {
@@ -65,7 +65,7 @@ protected:
 
         for (uint32 i = 1; i <= TEST_FILE_MAX_COUNT; i<<=1)
         {
-            const std::string testRecDir = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_REC_DIR_PREFIX +
+            const String testRecDir = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_REC_DIR_PREFIX +
                                            std::to_string(i);
             EXPECT_TRUE(FileSystem::CreateDir(testRecDir));
 
@@ -122,8 +122,8 @@ TEST_F(Packer, AddFile)
 
         // test performance of AddFile only
         // we don't take into account time for construction of argument strings
-        const std::string prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
-        std::string path;
+        const String prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
+        String path;
         for (uint32 j = 0; j < i; ++j)
         {
             path = prefix + std::to_string(j);
@@ -156,7 +156,7 @@ TEST_F(Packer, AddFilesRecursively)
         EXPECT_EQ(PackerResult::OK, pr);
 
         // test performance of AddFilesRecursively
-        const std::string testRecDir = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_REC_DIR_PREFIX +
+        const String testRecDir = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_REC_DIR_PREFIX +
                                        std::to_string(i);
         mTimer.Start();
         pr = mWriter->AddFilesRecursively(testRecDir);

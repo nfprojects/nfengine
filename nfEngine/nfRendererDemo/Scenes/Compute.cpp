@@ -38,15 +38,15 @@ bool ComputeScene::CreateSubSceneSimple()
     mDispatchX = (WINDOW_WIDTH / THREAD_GROUP_SIZE) + ((WINDOW_WIDTH % THREAD_GROUP_SIZE > 0) ? 1 : 0);
     mDispatchY = (WINDOW_HEIGHT / THREAD_GROUP_SIZE) + ((WINDOW_HEIGHT % THREAD_GROUP_SIZE > 0) ? 1 : 0);
 
-    std::string threadGroupSizeStr = std::to_string(THREAD_GROUP_SIZE);
+    String threadGroupSizeStr = std::to_string(THREAD_GROUP_SIZE);
 
     ShaderMacro macros[] =
     {
-        { "THREADS_X", threadGroupSizeStr.c_str() },
-        { "THREADS_Y", threadGroupSizeStr.c_str() },
+        { "THREADS_X", threadGroupSizeStr.Str() },
+        { "THREADS_Y", threadGroupSizeStr.Str() },
     };
-    std::string vsPath = gShaderPathPrefix + "TestCS" + gShaderPathExt;
-    mShader = CompileShader(vsPath.c_str(), ShaderType::Compute, macros, 2);
+    String vsPath = gShaderPathPrefix + "TestCS" + gShaderPathExt;
+    mShader = CompileShader(vsPath.Str(), ShaderType::Compute, macros, 2);
     if (!mShader)
         return false;
 

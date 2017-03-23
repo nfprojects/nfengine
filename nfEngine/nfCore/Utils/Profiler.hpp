@@ -154,7 +154,7 @@ public:
      *
      * @return Pointer to newly registered node
      */
-    ProfilerNode* RegisterNode(const std::string& name, ProfilerNode* parent);
+    ProfilerNode* RegisterNode(const Common::String& name, ProfilerNode* parent);
 
     /**
      * Register new Profiler node

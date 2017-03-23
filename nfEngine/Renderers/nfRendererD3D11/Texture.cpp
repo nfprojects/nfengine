@@ -165,7 +165,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
         return false;
 
 
-    std::string textureName;
+    String textureName;
     if (gDevice->IsDebugLayerEnabled() && desc.debugName)
     {
         /// set debug name
@@ -174,7 +174,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
             textureName += desc.debugName;
         textureName += '"';
         D3D_CALL_CHECK(mTexture2D->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(textureName.length()),
-                                                  textureName.c_str()));
+                                                  textureName.Str()));
     }
 
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
@@ -203,7 +203,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
         {
             // set debug name
             D3D_CALL_CHECK(mDSV->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(textureName.length()),
-                                                textureName.c_str()));
+                                                textureName.Str()));
         }
     }
 

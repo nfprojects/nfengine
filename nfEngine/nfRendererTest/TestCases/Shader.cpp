@@ -10,10 +10,10 @@ TEST_F(ShaderTest, Disassemble)
 {
     const size_t resourceBindings = 3;
 
-    const std::string shaderPath = gShaderPathPrefix + "Simple" + gShaderPathExt;
+    const String shaderPath = gShaderPathPrefix + "Simple" + gShaderPathExt;
 
     ShaderDesc desc;
-    desc.path = shaderPath.c_str();
+    desc.path = shaderPath.Str();
     desc.type = ShaderType::Vertex;
 
     /// compile shader
@@ -21,7 +21,7 @@ TEST_F(ShaderTest, Disassemble)
     shader = gRendererDevice->CreateShader(desc);
     ASSERT_TRUE(shader != nullptr);
 
-    std::string disasm;
+    String disasm;
     ASSERT_TRUE(shader->Disassemble(false, disasm));
     EXPECT_TRUE(disasm.length() > 0);
 }

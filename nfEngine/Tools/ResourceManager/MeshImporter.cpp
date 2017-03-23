@@ -27,7 +27,7 @@ using namespace Common;
 namespace {
 
 // replace backslashes with forward slashes
-NFE_INLINE std::string FixTexturePath(std::string str)
+NFE_INLINE String FixTexturePath(String str)
 {
     std::replace(str.begin(), str.end(), '\\', '/');
     return str;
@@ -46,14 +46,14 @@ int8 FloatToInt8(float x)
 
 } // namespace
 
-bool MeshImporter::ImportOBJ(const std::string& sourceFilePath, const std::string& targetFilePath)
+bool MeshImporter::ImportOBJ(const String& sourceFilePath, const String& targetFilePath)
 {
     ModelOBJ model;
 
     // open mesh
-    if (!model.import(sourceFilePath.c_str()))
+    if (!model.import(sourceFilePath.Str()))
     {
-        LOG_ERROR("Failed to open file '%s'!", sourceFilePath.c_str());
+        LOG_ERROR("Failed to open file '%s'!", sourceFilePath.Str());
         return false;
     }
 
@@ -64,7 +64,7 @@ bool MeshImporter::ImportOBJ(const std::string& sourceFilePath, const std::strin
     int matCount = model.getNumberOfMaterials();
 
     LOG_INFO("Mesh '%s' loaded. Vertices: %i, Indices: %i, Submeshes: %i, Materials: %i",
-             sourceFilePath.c_str(), verticesCount, indicesCount, subMeshesCount, matCount);
+             sourceFilePath.Str(), verticesCount, indicesCount, subMeshesCount, matCount);
 
     mVertices.resize(verticesCount);
     mIndices.resize(indicesCount);
@@ -129,7 +129,7 @@ bool MeshImporter::ImportOBJ(const std::string& sourceFilePath, const std::strin
 
         subMesh.indexOffset = srcMesh.startIndex;
         subMesh.triangleCount = srcMesh.triangleCount;
-        strcpy(subMesh.materialName, srcMesh.pMaterial->name.c_str());
+        strcpy(subMesh.materialName, srcMesh.pMaterial->name.Str());
     }
 
     // read materials
@@ -146,7 +146,7 @@ bool MeshImporter::ImportOBJ(const std::string& sourceFilePath, const std::strin
     // generate material files
     for (const MaterialDesc& mat : mMaterials)
     {
-        std::string matFileName = FileSystem::GetParentDir(targetFilePath);
+        String matFileName = FileSystem::GetParentDir(targetFilePath);
         matFileName += "/../Materials/";
         matFileName += mat.name;
         matFileName += ".json";
@@ -155,12 +155,12 @@ bool MeshImporter::ImportOBJ(const std::string& sourceFilePath, const std::strin
         if (FileSystem::GetPathType(matFileName) == PathType::File)
         {
             LOG_INFO("Material %s already exists. Skipping material file generation...",
-                     mat.name.c_str());
+                     mat.name.Str());
             continue;
         }
 
 
-        std::string materialString;
+        String materialString;
         materialString = "{\n\t\"Layers\" :\n\t[\n\t\t{\n";
 
         if (mat.diffuseTextureFileName.length())
@@ -183,13 +183,13 @@ bool MeshImporter::ImportOBJ(const std::string& sourceFilePath, const std::strin
         File materialFile;
         if (!materialFile.Open(matFileName, AccessMode::Write, true))
         {
-            LOG_ERROR("Could not open output file '%s'!", matFileName.c_str());
+            LOG_ERROR("Could not open output file '%s'!", matFileName.Str());
             return false;
         }
         materialFile.Write(materialString.data(), materialString.length());
     }
 
-    FileOutputStream stream(targetFilePath.c_str());
+    FileOutputStream stream(targetFilePath.Str());
     return Save(stream);
 }
 

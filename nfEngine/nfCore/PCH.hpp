@@ -40,7 +40,6 @@
 #include <sys/stat.h>
 
 // STL lib
-#include <string>
 #include <vector>
 #include <deque>
 #include <map>

@@ -8,6 +8,8 @@
 
 #include "../nfCommon.hpp"
 
+#include "Containers/String.hpp"
+
 #if defined(WIN32)
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
@@ -16,7 +18,6 @@
 
 #include <map>
 #include <vector>
-#include <string>
 #include <memory>
 #include <type_traits>
 #include <mutex>
@@ -33,7 +34,7 @@ struct WatchRequest
     int filter;
     DirectoryWatch* watch;
 
-    std::string path;
+    String path;
     std::wstring widePath;
 
     HANDLE dirHandle;
@@ -66,7 +67,7 @@ private:
 
     std::mutex mMutex;
     std::atomic<size_t> mRequestsNum;
-    std::map<std::string, std::unique_ptr<WatchRequest>> mRequests;
+    std::map<String, std::unique_ptr<WatchRequest>> mRequests;
 
     static DWORD CALLBACK Dispatcher(LPVOID param);
     static void CALLBACK NotificationCompletion(DWORD errorCode,
@@ -80,9 +81,9 @@ private:
     std::thread mWatchThread;  //< worker thread
     int inotifyFd;             //< inotify file descriptor
 
-    std::map<std::string, int> mWatchPathMap;
+    std::map<String, int> mWatchPathMap;
     std::mutex mWatchDescriptorMapMutex; //< lock for mWatchDescriptorMap
-    std::map<int, std::string> mWatchDescriptorMap;
+    std::map<int, String> mWatchDescriptorMap;
 
     void WatchRoutine();
     bool ProcessInotifyEvent(void* event);
@@ -130,7 +131,7 @@ public:
      * @param  eventFilter Bitfield selecting event types to be monitored.
      * @return True on success
      */
-    bool WatchPath(const std::string& path, Event eventFilter);
+    bool WatchPath(const String& path, Event eventFilter);
 
     /**
      * Change directory monitor callback.

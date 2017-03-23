@@ -8,6 +8,7 @@
 #include "BackendTxt.hpp"
 #include "../Logger.hpp"
 #include "BackendCommon.hpp"
+#include "Containers/String.hpp"
 
 
 namespace NFE {
@@ -23,14 +24,14 @@ LoggerBackendTxt::LoggerBackendTxt()
 
 void LoggerBackendTxt::Reset()
 {
-    const static std::string gLogIntro = "nfEngine - log file\n"
+    const static String gLogIntro = "nfEngine - log file\n"
                                          "[Seconds elapsed] [LogType] "
                                          "[SourceFile]:[LineOfCode]: [Message]\n";
 
-    const std::string logFileName = "log.txt";
+    const String logFileName = "log.txt";
     mBuffer.resize(NFE_MAX_LOG_MESSAGE_LENGTH);
 
-    const std::string logFilePath = Logger::GetInstance()->GetLogsDirectory() + '/' + logFileName;
+    const String logFilePath = Logger::GetInstance()->GetLogsDirectory() + '/' + logFileName;
     if (!mFile.Open(logFilePath, AccessMode::Write, true))
     {
         // this will be handled by other logger

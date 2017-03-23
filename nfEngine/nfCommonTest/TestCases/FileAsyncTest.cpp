@@ -71,7 +71,7 @@ class FileAsyncTest : public testing::Test
 public:
     NFE::uint8 mBufferExpected[bufferSize];
     NFE::Math::Random mRand;
-    const std::string mPath = "./testFile.async";
+    const String mPath = "./testFile.async";
 
     void SetUp()
     {
@@ -98,7 +98,7 @@ TEST_F(FileAsyncTest, Constructors)
     auto simpleCallback = [](void*, FileAsync*, size_t, bool) ->void { return; };
 
     // Due to a bogus path, no file will be open for Read operation, but it shouldn't throw
-    std::string path = "./some/path";
+    String path = "./some/path";
     FileAsync();
     // FileAsync(simpleCallback);
     FileAsync(nullptr);

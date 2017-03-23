@@ -7,7 +7,7 @@
 using namespace NFE;
 using namespace NFE::Common;
 
-const std::string testPackFilePath = "testfile.nfp";
+const String testPackFilePath = "testfile.nfp";
 
 class PackerBasicTest : public testing::Test
 {
@@ -30,7 +30,7 @@ protected:
         if (fs.good())
         {
             fs.close();
-            EXPECT_EQ(0, remove(testPackFilePath.c_str())) << "remove() failed. "
+            EXPECT_EQ(0, remove(testPackFilePath.Str())) << "remove() failed. "
                     << "Error: " << errno << " (" << strerror(errno) << ")";
         }
     }

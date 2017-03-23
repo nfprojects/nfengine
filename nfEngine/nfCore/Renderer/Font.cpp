@@ -164,8 +164,8 @@ bool Font::Init(const char* file, int size)
     mTexHeight = offsetY + 2 * size;
     mTexWidth = texWidth;
 
-    std::string debugName;
-    debugName = std::string("Font::mTexture name=") + file + ", size=" + std::to_string(size);
+    String debugName;
+    debugName = String("Font::mTexture name=") + file + ", size=" + std::to_string(size);
 
     TextureDataDesc texDataDesc;
     texDataDesc.lineSize = texDataDesc.sliceSize = mTexWidth * sizeof(uint8);
@@ -180,7 +180,7 @@ bool Font::Init(const char* file, int size)
     texDesc.mipmaps = 1;
     texDesc.dataDesc = &texDataDesc;
     texDesc.format = ElementFormat::R8_U_Norm;
-    texDesc.debugName = debugName.c_str();
+    texDesc.debugName = debugName.Str();
 
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
     mTexture = renderer->GetDevice()->CreateTexture(texDesc);

@@ -30,7 +30,7 @@ private:
 
 public:
     FileBuffered();
-    FileBuffered(const std::string& path, AccessMode mode, bool overwrite = false);
+    FileBuffered(const String& path, AccessMode mode, bool overwrite = false);
     FileBuffered(FileBuffered&& other);
     FileBuffered(const FileBuffered& other) = delete;
     ~FileBuffered();
@@ -47,7 +47,7 @@ public:
      * @param access File access mode.
      * @param overwrite Overwrite a file if it already exists.
      */
-    bool Open(const std::string& path, AccessMode access, bool overwrite = false);
+    bool Open(const String& path, AccessMode access, bool overwrite = false);
 
     /**
      * Close opened file.

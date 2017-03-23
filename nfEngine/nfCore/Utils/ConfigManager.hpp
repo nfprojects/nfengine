@@ -27,8 +27,8 @@ class ConfigManager
 {
     struct Node;
     using NodePtr = std::unique_ptr<Node>;
-    using SubNodesMap = std::map<std::string, NodePtr>;
-    using VariablesMap = std::map<std::string, IConfigVariable*>;
+    using SubNodesMap = std::map<String, NodePtr>;
+    using VariablesMap = std::map<String, IConfigVariable*>;
 
     struct Node
     {

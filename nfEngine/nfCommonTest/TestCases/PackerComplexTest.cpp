@@ -23,11 +23,11 @@ protected:
 
         srand(static_cast<unsigned int>(time(nullptr)));
 
-        int result = _mkdir(TEST_SAMPLE_FILE_DIR.c_str());
+        int result = _mkdir(TEST_SAMPLE_FILE_DIR.Str());
         EXPECT_FALSE(result != 0 && errno != EEXIST) << "mkdir() failed. "
                 << "Error: " << errno << " (" << strerror(errno) << ")";
 
-        const std::string testFilePrefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
+        const String testFilePrefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
 
         for (uint32 i = 0; i < TEST_FILE_COUNT; ++i)
         {
@@ -68,23 +68,23 @@ protected:
         std::cout << "Removing files... ";
 
         // remove sample files
-        const std::string prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
-        std::string path;
+        const String prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
+        String path;
         for (uint32 i = 0; i < TEST_FILE_COUNT; ++i)
         {
             path = prefix + std::to_string(i);
-            EXPECT_EQ(0, remove(path.c_str())) << "remove(" << path.c_str() << ") failed. "
+            EXPECT_EQ(0, remove(path.Str())) << "remove(" << path.Str() << ") failed. "
                                                << "Error: " << errno << " (" << strerror(errno) << ")";
         }
 
-        rmdir(TEST_SAMPLE_FILE_DIR.c_str());
+        rmdir(TEST_SAMPLE_FILE_DIR.Str());
 
         // remove created archive
         std::ifstream fs(TEST_PACK_PATH);
         if (fs.good())
         {
             fs.close();
-            EXPECT_EQ(0, remove(TEST_PACK_PATH.c_str())) << "remove() failed. "
+            EXPECT_EQ(0, remove(TEST_PACK_PATH.Str())) << "remove() failed. "
                     << "Error: " << errno << " (" << strerror(errno) << ")";
         }
 
@@ -104,8 +104,8 @@ TEST_F(PackerComplexTest, AddFiles)
     EXPECT_EQ(PackerResult::OK, pr);
 
     // add files
-    const std::string prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
-    std::string path;
+    const String prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
+    String path;
     for (int i = 0; i < TEST_FILE_COUNT; ++i)
     {
         path = prefix + std::to_string(i);
@@ -147,8 +147,8 @@ TEST_F(PackerComplexTest, WriteFiles)
 TEST_F(PackerComplexTest, ReadSingleFile)
 {
     PackerResult pr;
-    const std::string testFilePathVFS = TEST_SAMPLE_FILE_PREFIX + "0";
-    const std::string testFilePath = TEST_SAMPLE_FILE_DIR + testFilePathVFS;
+    const String testFilePathVFS = TEST_SAMPLE_FILE_PREFIX + "0";
+    const String testFilePath = TEST_SAMPLE_FILE_DIR + testFilePathVFS;
 
     // initialize mWriter
     pr = mWriter->Init(TEST_PACK_PATH);
@@ -180,7 +180,7 @@ TEST_F(PackerComplexTest, ReadSingleFile)
     ASSERT_EQ(PackerResult::OK, pr);
 
     // read original file
-    FILE* pFile = fopen(testFilePath.c_str(), "rb");
+    FILE* pFile = fopen(testFilePath.Str(), "rb");
     ASSERT_NE(nullptr, pFile);
 
     // get file size
@@ -210,8 +210,8 @@ TEST_F(PackerComplexTest, ReadMultipleSimplyAddedFiles)
     EXPECT_EQ(PackerResult::OK, pr);
 
     // add files through simple AddFile function
-    const std::string prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
-    std::string path;
+    const String prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
+    String path;
     for (int i = 0; i < TEST_FILE_COUNT; ++i)
     {
         path = prefix + std::to_string(i);
@@ -246,7 +246,7 @@ TEST_F(PackerComplexTest, ReadMultipleSimplyAddedFiles)
         ASSERT_EQ(PackerResult::OK, pr) << "i = " << i;
 
         // read original file
-        FILE* pFile = fopen(path.c_str(), "rb");
+        FILE* pFile = fopen(path.Str(), "rb");
         ASSERT_NE(nullptr, pFile) << "i = " << i;
 
         // get file size
@@ -294,8 +294,8 @@ TEST_F(PackerComplexTest, ReadMultipleRecursivelyAddedFiles)
     ASSERT_EQ(TEST_FILE_COUNT, fileCount);
 
     std::unique_ptr<Buffer> readData, correctData;
-    const std::string prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
-    std::string path;
+    const String prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
+    String path;
 
     // read every file and see if data was copied correctly
     for (int i = 0; i < TEST_FILE_COUNT; ++i)
@@ -310,7 +310,7 @@ TEST_F(PackerComplexTest, ReadMultipleRecursivelyAddedFiles)
         ASSERT_EQ(PackerResult::OK, pr) << "i = " << i;
 
         // read original file
-        FILE* pFile = fopen(path.c_str(), "rb");
+        FILE* pFile = fopen(path.Str(), "rb");
         ASSERT_NE(nullptr, pFile) << "i = " << i;
 
         // get file size

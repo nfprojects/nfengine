@@ -26,9 +26,9 @@ namespace Renderer {
  */
 struct DeviceInfo
 {
-    std::string description;  //< GPU name
-    std::string misc;         //< miscellaneous GPU info
-    std::vector<std::string> features; //< list of supported features (depends on low-level API)
+    String description;  //< GPU name
+    String misc;         //< miscellaneous GPU info
+    std::vector<String> features; //< list of supported features (depends on low-level API)
 };
 
 /**

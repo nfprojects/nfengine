@@ -9,7 +9,6 @@
 #include "Types.hpp"
 #include "../../nfCommon/nfCommon.hpp"
 
-#include <string>
 
 namespace NFE {
 namespace Renderer {
@@ -88,7 +87,7 @@ public:
      * @param html        Generate a colorful HTML document.
      * @param output[out] Output string.
      */
-    virtual bool Disassemble(bool html, std::string& output) = 0;
+    virtual bool Disassemble(bool html, String& output) = 0;
 
     /**
      * Get shader resource (texture, buffer, etc.) slot ID by name.

@@ -61,7 +61,7 @@ bool Buffer::UploadData(const BufferDesc& desc)
                                                                       nullptr,
                                                                       IID_PPV_ARGS(&uploadBuffer)));
 
-    if (desc.debugName && !SetDebugName(uploadBuffer.get(), desc.debugName + std::string("_UPLOAD")))
+    if (desc.debugName && !SetDebugName(uploadBuffer.get(), desc.debugName + String("_UPLOAD")))
     {
         LOG_WARNING("Failed to set debug name");
     }

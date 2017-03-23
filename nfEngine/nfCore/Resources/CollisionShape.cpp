@@ -214,8 +214,8 @@ bool CollisionShape::OnLoad()
     if (mOnLoad == NULL)
     {
         //find relative path
-        std::string path = g_DataPath + "CollisionShapes/" + mName;
-        ret = LoadFromFile(path.c_str());
+        String path = g_DataPath + "CollisionShapes/" + mName;
+        ret = LoadFromFile(path.Str());
     }
     else
     {

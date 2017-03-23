@@ -265,16 +265,16 @@ bool RenderTargetsScene::CreateShaders(bool multipleRT, bool withMSAA)
     // Common Vertex Shader
 
     ShaderMacro vsMacro[] = { { "USE_CBUFFER", "1" } };
-    std::string vsPath = gShaderPathPrefix + "TestVS" + gShaderPathExt;
-    mVertexShader = CompileShader(vsPath.c_str(), ShaderType::Vertex, vsMacro, 1);
+    String vsPath = gShaderPathPrefix + "TestVS" + gShaderPathExt;
+    mVertexShader = CompileShader(vsPath.Str(), ShaderType::Vertex, vsMacro, 1);
     if (!mVertexShader)
         return false;
 
     // Pixel Shader for 3D cube rendering
 
     ShaderMacro psMacroRT[] = { { "TARGETS", multipleRT ? "2" : "1" } };
-    std::string psPath = gShaderPathPrefix + "RenderTargetPS" + gShaderPathExt;
-    mRTPixelShader = CompileShader(psPath.c_str(), ShaderType::Pixel, psMacroRT, 1);
+    String psPath = gShaderPathPrefix + "RenderTargetPS" + gShaderPathExt;
+    mRTPixelShader = CompileShader(psPath.Str(), ShaderType::Pixel, psMacroRT, 1);
     if (!mRTPixelShader)
         return false;
 
@@ -285,7 +285,7 @@ bool RenderTargetsScene::CreateShaders(bool multipleRT, bool withMSAA)
 
     ShaderMacro psMacrosNormal[] = { { "MODE", "0" }, { "SAMPLES_NUM", samplesNumStr } };
     psPath = gShaderPathPrefix + "PostProcessPS" + gShaderPathExt;
-    mPrimaryTargetPixelShader = CompileShader(psPath.c_str(), ShaderType::Pixel, psMacrosNormal, 2);
+    mPrimaryTargetPixelShader = CompileShader(psPath.Str(), ShaderType::Pixel, psMacrosNormal, 2);
     if (!mPrimaryTargetPixelShader)
         return false;
 
@@ -293,7 +293,7 @@ bool RenderTargetsScene::CreateShaders(bool multipleRT, bool withMSAA)
 
     ShaderMacro psMacroDepth[] = { { "MODE", "1" }, { "SAMPLES_NUM", samplesNumStr } };
     psPath = gShaderPathPrefix + "PostProcessPS" + gShaderPathExt;
-    mDepthPixelShader = CompileShader(psPath.c_str(), ShaderType::Pixel, psMacroDepth, 2);
+    mDepthPixelShader = CompileShader(psPath.Str(), ShaderType::Pixel, psMacroDepth, 2);
     if (!mDepthPixelShader)
         return false;
 
@@ -301,7 +301,7 @@ bool RenderTargetsScene::CreateShaders(bool multipleRT, bool withMSAA)
 
     ShaderMacro psMacroSecondary[] = { { "MODE", "2" }, { "SAMPLES_NUM", samplesNumStr } };
     psPath = gShaderPathPrefix + "PostProcessPS" + gShaderPathExt;
-    mSecondTargetPixelShader = CompileShader(psPath.c_str(), ShaderType::Pixel, psMacroSecondary, 2);
+    mSecondTargetPixelShader = CompileShader(psPath.Str(), ShaderType::Pixel, psMacroSecondary, 2);
     if (!mSecondTargetPixelShader)
         return false;
 

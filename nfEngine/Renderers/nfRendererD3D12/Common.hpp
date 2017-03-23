@@ -26,13 +26,13 @@ HRESULT D3DError(HRESULT hr, const char* srcFile, int line);
 #endif
 
 template<typename T>
-bool SetDebugName(T* obj, const std::string& name)
+bool SetDebugName(T* obj, const String& name)
 {
     if (gDevice->IsDebugLayerEnabled() && !name.empty())
     {
         std::wstring longName;
         if (Common::UTF8ToUTF16(name, longName))
-            return SUCCEEDED(D3D_CALL_CHECK(obj->SetName(longName.c_str())));
+            return SUCCEEDED(D3D_CALL_CHECK(obj->SetName(longName.Str())));
         else
             return false;
     }

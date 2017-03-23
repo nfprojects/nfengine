@@ -17,7 +17,7 @@ typedef std::function<bool()> SubSceneInitializer;
 struct SubSceneDefinition
 {
     SubSceneInitializer initializer;
-    std::string name;
+    String name;
 };
 
 /**
@@ -27,7 +27,7 @@ class Scene
 {
     size_t mCurrentSubScene;
     size_t mHighestAvailableSubScene;
-    std::string mName;  //< scene name
+    String mName;  //< scene name
     std::vector<SubSceneDefinition> mSubScenes;
 
 protected:
@@ -38,7 +38,7 @@ protected:
 
     virtual bool OnInit(void* winHandle) = 0;
     virtual bool OnSwitchSubscene();
-    void RegisterSubScene(SubSceneInitializer initializer, const std::string& name);
+    void RegisterSubScene(SubSceneInitializer initializer, const String& name);
 
     // Methods common for all scenes:
 
@@ -46,7 +46,7 @@ protected:
                                           NFE::Renderer::ShaderMacro* macros, size_t macrosNum);
 
 public:
-    Scene(const std::string& name);
+    Scene(const String& name);
 
     /**
      * Virtual destructor for Scene
@@ -58,7 +58,7 @@ public:
     /**
      * Retrieves scene name
      */
-    std::string GetSceneName() const;
+    String GetSceneName() const;
 
     /**
      * Initializes the scene
@@ -103,7 +103,7 @@ public:
     /**
      * Retrieves current subscene name
      */
-    std::string GetCurrentSubSceneName() const;
+    String GetCurrentSubSceneName() const;
 
     /**
      * Drawing call

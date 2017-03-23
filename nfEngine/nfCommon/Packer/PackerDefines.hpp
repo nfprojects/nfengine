@@ -38,7 +38,7 @@ enum class PackerResult : uint32
 
 typedef std::underlying_type<PackerResult>::type PackerResultType;
 
-NFCOMMON_API std::string Packer_GetErrorStr(PackerResult pr);
+NFCOMMON_API String Packer_GetErrorStr(PackerResult pr);
 
 #define PACK_RESULT_TO_STRING(x) std::to_string(static_cast<PackerResultType>(x))
 #define PACKER_DEF_BUFFER_SIZE 4096

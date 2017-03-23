@@ -28,7 +28,7 @@ TEST(SystemInfoTest, MemoryInfoTest)
 TEST(SystemInfoTest, InfoStringTest)
 {
     SystemInfo& sysInfoPtr = SystemInfo::Instance();
-    std::string sysInfoStr = sysInfoPtr.ConstructAllInfoString();
+    String sysInfoStr = sysInfoPtr.ConstructAllInfoString();
     std::cout << sysInfoStr;
     ASSERT_FALSE(sysInfoStr.empty());
 }

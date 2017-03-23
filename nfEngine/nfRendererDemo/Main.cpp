@@ -41,13 +41,13 @@ class DemoWindow : public NFE::Common::Window
 
     void SetWindowTitle()
     {
-        std::string title = "nfRendererDemo - scene: " +
+        String title = "nfRendererDemo - scene: " +
             std::to_string(mCurrentScene) + " (" + mScenes[mCurrentScene]->GetSceneName() + ')' +
             ", subscene: " + std::to_string(mScenes[mCurrentScene]->GetCurrentSubSceneNumber()) +
             " (" + mScenes[mCurrentScene]->GetCurrentSubSceneName() + "), dt: " +
             std::to_string(mDeltaTime * 1000.0f) + "ms";
 
-        SetTitle(title.c_str());
+        SetTitle(title.Str());
     }
 
     void SwitchScene(size_t scene)
@@ -144,7 +144,7 @@ public:
      * function for renderer and creates NFE::Renderer::IDevice this way. Should be called only
      * once during Demo lifespan (switching renderers on-the-fly is not supported).
      */
-    bool InitRenderer(const std::string& renderer, int preferredCardId, int debugLevel)
+    bool InitRenderer(const String& renderer, int preferredCardId, int debugLevel)
     {
         if (!mRendererLib.Open(renderer))
             return false;
@@ -284,11 +284,11 @@ public:
 
 int main(int argc, char* argv[])
 {
-    std::string execPath = NFE::Common::FileSystem::GetExecutablePath();
-    std::string execDir = NFE::Common::FileSystem::GetParentDir(execPath);
+    String execPath = NFE::Common::FileSystem::GetExecutablePath();
+    String execDir = NFE::Common::FileSystem::GetParentDir(execPath);
     NFE::Common::FileSystem::ChangeDirectory(execDir + "/../../..");
 
-    std::string selectedBackend;
+    String selectedBackend;
     int initialScene = 0;
     int selectedCard = -1;
     int debugLevel = 0;
@@ -356,7 +356,7 @@ int main(int argc, char* argv[])
 
     if (selectedBackend.empty())
     {
-        const std::vector<std::string>& defBackend = GetDefaultBackend();
+        const std::vector<String>& defBackend = GetDefaultBackend();
         selectedBackend = defBackend[0];
         gShaderPathPrefix = defBackend[1];
         gShaderPathExt = defBackend[2];

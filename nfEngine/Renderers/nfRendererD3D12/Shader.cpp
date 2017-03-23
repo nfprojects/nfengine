@@ -106,7 +106,7 @@ bool Shader::Init(const ShaderDesc& desc)
         d3dMacros[desc.macrosNum].Definition = nullptr;
     }
 
-    LOG_INFO("Compiling shader '%s' with macros: [%s]...", desc.path, macrosStr.str().c_str());
+    LOG_INFO("Compiling shader '%s' with macros: [%s]...", desc.path, macrosStr.str().Str());
 
     ID3DBlob* errorsBuffer = nullptr;
     hr = D3DCompile(code, shaderSize, desc.path, d3dMacros.get(),
@@ -133,7 +133,7 @@ bool Shader::Init(const ShaderDesc& desc)
     return true;
 }
 
-bool Shader::Disassemble(bool html, std::string& output)
+bool Shader::Disassemble(bool html, String& output)
 {
     ID3DBlob* bytecode = mBytecode.get();
     if (bytecode == nullptr)
@@ -154,7 +154,7 @@ bool Shader::Disassemble(bool html, std::string& output)
         return false;
 
     const char* str = static_cast<const char*>(disassembly->GetBufferPointer());
-    output = std::string(str, disassembly->GetBufferSize());
+    output = String(str, disassembly->GetBufferSize());
 
     return true;
 }
@@ -247,7 +247,7 @@ bool Shader::GetIODesc()
             continue;
         }
 
-        std::string name = d3dBindingDesc.Name;
+        String name = d3dBindingDesc.Name;
         if (mResBindings.find(name) != mResBindings.end())
         {
             LOG_ERROR("Multiple declarations of shader resource named '%s'", d3dBindingDesc.Name);

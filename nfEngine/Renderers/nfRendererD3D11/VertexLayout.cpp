@@ -21,7 +21,7 @@ VertexLayout::VertexLayout()
 bool VertexLayout::Init(const VertexLayoutDesc& desc)
 {
     HRESULT hr;
-    std::string vertexShaderCode;
+    String vertexShaderCode;
     D3D11_INPUT_ELEMENT_DESC elementDescs[16];
 
     vertexShaderCode = "struct VertexShaderInput { ";
@@ -75,12 +75,12 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
     if (gDevice->IsDebugLayerEnabled() && desc.debugName)
     {
         /// set debug name
-        std::string bufferName = "NFE::Renderer::VertexLayout \"";
+        String bufferName = "NFE::Renderer::VertexLayout \"";
         if (desc.debugName)
             bufferName += desc.debugName;
         bufferName += '"';
         D3D_CALL_CHECK(mIL->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(bufferName.length()),
-                                           bufferName.c_str()));
+                                           bufferName.Str()));
 }
 
     return true;

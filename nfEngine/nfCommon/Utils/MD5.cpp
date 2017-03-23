@@ -14,7 +14,7 @@
 namespace NFE {
 namespace Common {
 
-MD5DataSet::MD5DataSet(const std::string& input)
+MD5DataSet::MD5DataSet(const String& input)
 {
     if (input.size() == 0)
     {
@@ -44,7 +44,7 @@ MD5DataSet::MD5DataSet(const std::string& input)
     memset(mChunks.data(), 0, mChunkSize * sizeof(uint32));
 
     // copy data
-    memcpy(mChunks.data(), input.c_str(), input.size());
+    memcpy(mChunks.data(), input.Str(), input.size());
 
     // append '1' bit to the end of data
     size_t d = input.size() / 4;
@@ -70,7 +70,7 @@ MD5Hash::MD5Hash()
     h[3] = 0x10325476;
 }
 
-void MD5Hash::Calculate(const std::string& input)
+void MD5Hash::Calculate(const String& input)
 {
     MD5DataSet data(input);
 
