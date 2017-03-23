@@ -9,8 +9,6 @@
 #include "../Core.hpp"
 
 #include "nfCommon/Memory/Aligned.hpp"
-#include "nfCommon/Utils/AsyncThreadPool.hpp"
-
 
 
 namespace NFE {

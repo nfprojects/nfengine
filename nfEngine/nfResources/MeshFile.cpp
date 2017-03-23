@@ -10,6 +10,8 @@
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/FileSystem/FileSystem.hpp"
 #include "nfCommon/FileSystem/File.hpp"
+#include "nfCommon/Utils/InputStream.hpp"
+#include "nfCommon/Utils/OutputStream.hpp"
 
 
 namespace NFE {

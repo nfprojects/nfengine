@@ -14,8 +14,7 @@
 namespace NFE {
 namespace Common {
 
-using namespace Math;
-typedef Vector Color;
+using Color = Math::Vector;
 
 class NFCOMMON_API Mipmap
 {

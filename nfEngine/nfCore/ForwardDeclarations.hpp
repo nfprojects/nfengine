@@ -1,8 +1,8 @@
 /**
  * @file
  * @author Witek902 (witek902@gmail.com)
- * @brief  This file contains predeclarations of all needed clases.
- *         Including this file only instead of whole header can decrease compilation time.
+ * @brief  This file contains forward declarations of all classes exposed be this project.
+ *         Including this file only instead of whole header decreases compilation time.
  */
 
 #pragma once

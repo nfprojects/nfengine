@@ -10,6 +10,7 @@
 #include "../Common.hpp"
 
 #include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/Math/Math.hpp"
 
 #include <vector>
 #include <functional>

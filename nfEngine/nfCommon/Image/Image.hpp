@@ -19,8 +19,6 @@
 namespace NFE {
 namespace Common {
 
-class InputStream;
-
 class NFCOMMON_API Image
 {
     std::vector<Mipmap> mMipmaps;

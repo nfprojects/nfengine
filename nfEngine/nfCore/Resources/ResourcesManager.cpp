@@ -8,6 +8,7 @@
 #include "ResourcesManager.hpp"
 #include "nfCommon/System/Memory.hpp"
 #include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/Utils/AsyncThreadPool.hpp"
 
 // TODO: remove these dependencies - adding a new resource type shouldn't force programmer to modify this file...
 #include "Multishader.hpp"

@@ -9,7 +9,6 @@
 #include "../Core.hpp"
 #include "EntityManager.hpp"
 
-#include "nfCommon/Utils/ThreadPool.hpp"
 #include "nfCommon/Math/Vector.hpp"
 #include "nfCommon/Memory/Aligned.hpp"
 

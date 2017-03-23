@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include "Prerequisites.hpp"
 #include "nfCommon/nfCommon.hpp"
+#include "ForwardDeclarations.hpp"
 
 
  // DLL import / export macro

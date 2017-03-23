@@ -24,7 +24,7 @@ namespace Common {
 /**
  * Thread pool task unique identifier.
  */
-typedef uint32 TaskID;
+using TaskID = uint32;
 
 #define NFE_INVALID_TASK_ID (static_cast<NFE::Common::TaskID>(-1))
 

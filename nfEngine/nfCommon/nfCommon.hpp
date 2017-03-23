@@ -140,3 +140,6 @@ size_t ArraySize(const T(&)[N])
 }
 
 } // namespace NFE
+
+
+#include "ForwardDeclarations.hpp"

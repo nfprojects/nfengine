@@ -45,9 +45,6 @@
     <ClCompile Include="PCH.cpp">
       <Filter>PCH</Filter>
     </ClCompile>
-    <ClCompile Include="Core.cpp">
-      <Filter>Base</Filter>
-    </ClCompile>
     <ClCompile Include="Engine.cpp">
       <Filter>Base</Filter>
     </ClCompile>
@@ -159,15 +156,12 @@
     <ClCompile Include="Renderer\ImGuiWrapper.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Prerequisites.hpp">
-      <Filter>Base</Filter>
-    </ClInclude>
     <ClInclude Include="Engine.hpp">
-      <Filter>Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Core.hpp">
       <Filter>Base</Filter>
     </ClInclude>
     <ClInclude Include="PCH.hpp">
@@ -304,6 +298,12 @@
     </ClInclude>
     <ClInclude Include="Renderer\ImGuiWrapper.hpp">
       <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="ForwardDeclarations.hpp">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Core.hpp">
+      <Filter>Base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -11,9 +11,6 @@
 namespace NFE {
 namespace Math {
 
-struct Vectorf;
-struct Vectori;
-
 /**
  * 4 element vector of floats.
  * @details Used to perform operations on 4D, 3D and 2D vectors. The content is mapped to

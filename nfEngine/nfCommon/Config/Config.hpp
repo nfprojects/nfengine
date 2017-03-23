@@ -18,11 +18,6 @@ namespace Common {
 
 #define INVALID_NODE_PTR static_cast<uint32>(-1)
 
-/// Predeclarations
-class ConfigTokenizer;
-struct Token;
-template <class T> class DataTranslator;
-
 /**
  * Pointers to config structure elements (values, array nodes and object nodes).
  * We access them via index instead of pointers, because:

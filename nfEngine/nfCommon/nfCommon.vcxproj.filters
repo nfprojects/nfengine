@@ -278,6 +278,7 @@
     <ClInclude Include="Utils\OutputStream.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="ForwardDeclarations.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />

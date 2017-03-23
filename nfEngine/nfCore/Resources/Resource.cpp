@@ -11,6 +11,8 @@
 
 #include "nfCommon/System/Memory.hpp"
 #include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/Utils/AsyncThreadPool.hpp"
+
 
 namespace NFE {
 namespace Resource {

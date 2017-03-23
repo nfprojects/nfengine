@@ -7,7 +7,6 @@
 #pragma once
 
 #include "../Core.hpp"
-#include "../Prerequisites.hpp"
 #include "../Renderers/RendererInterface/Device.hpp"
 
 #include "nfCommon/Math/Matrix.hpp"

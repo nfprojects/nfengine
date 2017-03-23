@@ -11,6 +11,8 @@
 #include "Translations.hpp"
 #include "ResourceBinding.hpp"
 
+#include "nfCommon/Math/Vector.hpp"
+
 #include <string.h>
 
 

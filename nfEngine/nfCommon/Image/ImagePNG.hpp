@@ -5,12 +5,12 @@
  */
 
 #pragma once
+
 #include "ImageType.hpp"
+
 
 namespace NFE {
 namespace Common {
-
-class Image;
 
 class ImagePNG : public ImageType
 {

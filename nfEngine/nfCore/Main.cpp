@@ -1,12 +1,12 @@
 /**
  * @file
  * @author Witek902 (witek902@gmail.com)
- * @brief  DLL entry point.
+ * @brief  DLL entry point (Windows only).
  */
 
 #include "PCH.hpp"
 #include "Core.hpp"
-#include "nfCommon/Logger/Logger.hpp"
+
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {

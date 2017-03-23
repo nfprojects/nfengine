@@ -29,6 +29,7 @@
     <ClInclude Include="FileSystem\FileAsync.hpp" />
     <ClInclude Include="FileSystem\FileBuffered.hpp" />
     <ClInclude Include="FileSystem\FileSystem.hpp" />
+    <ClInclude Include="ForwardDeclarations.hpp" />
     <ClInclude Include="Image\Image.hpp" />
     <ClInclude Include="Image\ImageBMP.hpp" />
     <ClInclude Include="Image\ImageDDS.hpp" />
