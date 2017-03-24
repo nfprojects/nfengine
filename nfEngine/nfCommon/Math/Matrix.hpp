@@ -233,10 +233,10 @@ NFE_INLINE Vector LinearCombination3(const Vector& a, const Matrix& m)
  */
 NFE_INLINE Matrix MatrixAbs(const Matrix& m)
 {
-    return Matrix(VectorAbs(m[0]),
-                  VectorAbs(m[1]),
-                  VectorAbs(m[2]),
-                  VectorAbs(m[3]));
+    return Matrix(Vector::Abs(m[0]),
+                  Vector::Abs(m[1]),
+                  Vector::Abs(m[2]),
+                  Vector::Abs(m[3]));
 }
 
 /**
@@ -245,7 +245,7 @@ NFE_INLINE Matrix MatrixAbs(const Matrix& m)
 NFE_INLINE bool MatrixEqual(const Matrix& m1, const Matrix& m2, float epsilon)
 {
     Matrix diff = MatrixAbs(m1 - m2);
-    Vector epsilonV = VectorSplat(epsilon);
+    Vector epsilonV = Vector::Splat(epsilon);
     return ((diff[0] < epsilonV) && (diff[1] < epsilonV)) &&
            ((diff[2] < epsilonV) && (diff[3] < epsilonV));
 }

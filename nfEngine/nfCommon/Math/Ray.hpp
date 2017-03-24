@@ -23,8 +23,8 @@ public:
     Ray(const Vector& direction, const Vector& origin)
         : origin(origin)
     {
-        dir = VectorNormalize3(direction);
-        invDir = VectorReciprocal(dir);
+        dir = direction.Normalized3();
+        invDir = Vector::Reciprocal(dir);
     }
 };
 

@@ -186,8 +186,8 @@ void RendererSystem::RenderLightsDebug(RenderingData& data, Renderer::RenderCont
         LightComponent* light = std::get<1>(mOmniLights[i]);
 
         Box box;
-        box.min = transform->GetPosition() - VectorSplat(light->mOmniLight.radius);
-        box.max = transform->GetPosition() + VectorSplat(light->mOmniLight.radius);
+        box.min = transform->GetPosition() - Vector::Splat(light->mOmniLight.radius);
+        box.max = transform->GetPosition() + Vector::Splat(light->mOmniLight.radius);
         DebugRenderer::Get()->DrawBox(ctx->debugContext.get(), box, lightDebugColor);
     }
 
@@ -228,8 +228,7 @@ void RendererSystem::RenderGeometry(GeometryRendererContext* ctx, const Math::Fr
         }
         command.pVB = meshResource->mVB;
         command.pIB = meshResource->mIB;
-        command.distance = VectorLength3(cameraTransform->GetPosition() -
-                                         transform->GetPosition()).f[0];
+        command.distance = (cameraTransform->GetPosition() - transform->GetPosition()).Length3();
 
         for (const auto& subMesh : meshResource->mSubMeshes)
         {
@@ -493,10 +492,10 @@ void RendererSystem::RenderDebugLayer(const Common::TaskContext& context, Render
         const float debugSize = 0.2f;
 
         Matrix matrix = transform->GetMatrix();
-        VectorStore(matrix.GetRow(3), &start);
-        VectorStore(debugSize * (matrix.GetRow(0)) + matrix.GetRow(3), &endX);
-        VectorStore(debugSize * (matrix.GetRow(1)) + matrix.GetRow(3), &endY);
-        VectorStore(debugSize * (matrix.GetRow(2)) + matrix.GetRow(3), &endZ);
+        matrix.GetRow(3).Store(&start);
+        (debugSize * (matrix.GetRow(0)) + matrix.GetRow(3)).Store(&endX);
+        (debugSize * (matrix.GetRow(1)) + matrix.GetRow(3)).Store(&endY);
+        (debugSize * (matrix.GetRow(2)) + matrix.GetRow(3)).Store(&endZ);
 
         DebugRenderer::Get()->DrawLine(debugContext, start, endX, 0xFF0000FF);
         DebugRenderer::Get()->DrawLine(debugContext, start, endY, 0xFF00FF00);

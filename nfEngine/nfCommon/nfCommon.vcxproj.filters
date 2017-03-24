@@ -279,6 +279,9 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="ForwardDeclarations.hpp" />
+    <ClInclude Include="Math\FPU\QuaternionFPU.hpp">
+      <Filter>Math\FPU</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />

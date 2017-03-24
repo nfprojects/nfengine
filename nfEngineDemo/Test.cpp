@@ -186,8 +186,7 @@ public:
         cameraControl = 0;
         cameraXZ = 0.0f;
         cameraY = 0.0f;
-        cameraOrientation = QuaternionMultiply(QuaternionRotationY(cameraXZ),
-                                               QuaternionRotationX(-cameraY));
+        cameraOrientation = Quaternion::FromAngles(cameraXZ, -cameraY, 0.0f);
     }
 
     void SetUpScene(int sceneId = 0, CustomWindow* parent = nullptr)
@@ -281,21 +280,18 @@ public:
         if (cameraBody == nullptr || cameraTransform == nullptr)
             return;
 
-        Quaternion destOrientation = QuaternionMultiply(QuaternionRotationY(cameraXZ),
-                                     QuaternionRotationX(-cameraY));
-        destOrientation = QuaternionNormalize(destOrientation);
+        Quaternion destOrientation = Quaternion::FromAngles(cameraXZ, -cameraY, 0.0f).Normalized();
 
         //LPF
         Quaternion prevOrientation = cameraOrientation;
-        cameraOrientation = QuaternionInterpolate(cameraOrientation, destOrientation,
+        cameraOrientation = Quaternion::Interpolate(cameraOrientation, destOrientation,
                             gDeltaTime / (CAMERA_ROTATION_SMOOTHING + gDeltaTime));
-        cameraOrientation = QuaternionNormalize(cameraOrientation);
+        cameraOrientation.Normalize();
 
-        Quaternion rotation = QuaternionMultiply(prevOrientation,
-                                                 QuaternionInverse(cameraOrientation));
-        cameraBody->SetAngularVelocity(-QuaternionToAxis(rotation) / gDeltaTime);
+        Quaternion rotation = prevOrientation * cameraOrientation.Inverted();
+        cameraBody->SetAngularVelocity(-rotation.ToAxis() / gDeltaTime);
 
-        Matrix rotMatrix = MatrixFromQuaternion(QuaternionNormalize(cameraOrientation));
+        Matrix rotMatrix = cameraOrientation.Normalized().ToMatrix();
         Orientation orient;
         orient.x = rotMatrix.r[0];
         orient.y = rotMatrix.r[1];
@@ -322,7 +318,7 @@ public:
 
         // low pass filter - for smooth camera movement
         float factor = gDeltaTime / (CAMERA_TRANSLATION_SMOOTHING + gDeltaTime);
-        cameraBody->SetVelocity(VectorLerp(prevVelocity, destVelocity, factor));
+        cameraBody->SetVelocity(Vector::Lerp(prevVelocity, destVelocity, factor));
     }
 
     void OnKeyPress(Common::KeyCode key) override

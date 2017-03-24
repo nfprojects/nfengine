@@ -61,22 +61,22 @@ public:
 
 void Frustum::CalculatePlanes()
 {
-    planes[Front]  = PlaneFromPoints(verticies[0], verticies[1], verticies[3]);
-    planes[Back]   = PlaneFromPoints(verticies[7], verticies[5], verticies[4]);
-    planes[Left]   = PlaneFromPoints(verticies[4], verticies[0], verticies[6]);
-    planes[Right]  = PlaneFromPoints(verticies[7], verticies[3], verticies[5]);
-    planes[Bottom] = PlaneFromPoints(verticies[5], verticies[1], verticies[4]);
-    planes[Top]    = PlaneFromPoints(verticies[6], verticies[3], verticies[7]);
+    planes[Front]  = Vector::PlaneFromPoints(verticies[0], verticies[1], verticies[3]);
+    planes[Back]   = Vector::PlaneFromPoints(verticies[7], verticies[5], verticies[4]);
+    planes[Left]   = Vector::PlaneFromPoints(verticies[4], verticies[0], verticies[6]);
+    planes[Right]  = Vector::PlaneFromPoints(verticies[7], verticies[3], verticies[5]);
+    planes[Bottom] = Vector::PlaneFromPoints(verticies[5], verticies[1], verticies[4]);
+    planes[Top]    = Vector::PlaneFromPoints(verticies[6], verticies[3], verticies[7]);
 
     boundingBox.MakeFromPoints(verticies, 8);
 }
 
 float Frustum::SupportVertex(const Vector& dir) const
 {
-    float d = VectorDot3f(dir, verticies[0]);
+    float d = Vector::Dot3(dir, verticies[0]);
     for (int i = 1; i < 8; i++)
     {
-        float tmp_d = VectorDot3f(dir, verticies[i]);
+        float tmp_d = Vector::Dot3(dir, verticies[i]);
         if (tmp_d > d)
             d = tmp_d;
     }

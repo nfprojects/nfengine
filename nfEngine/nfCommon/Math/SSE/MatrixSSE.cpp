@@ -169,7 +169,7 @@ Matrix MatrixInverse(const Matrix& m)
     C6 = _mm_shuffle_ps(C6, C6, _MM_SHUFFLE(3, 1, 2, 0));
 
     // Get the determinate
-    Vector vTemp = VectorDot4(C0, MT.r[0]);
+    Vector vTemp = Vector::Dot4V(C0, MT.r[0]);
     vTemp = _mm_div_ps(VECTOR_ONE, vTemp);
 
     return Matrix(_mm_mul_ps(C0, vTemp),

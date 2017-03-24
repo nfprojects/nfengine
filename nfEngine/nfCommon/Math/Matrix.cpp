@@ -13,16 +13,16 @@ namespace Math {
 Matrix MatrixLookTo(const Vector& EyePosition, const Vector& EyeDirection,
                     const Vector& UpDirection)
 {
-    Vector zaxis = VectorNormalize3(EyeDirection);
-    Vector xaxis = VectorNormalize3(VectorCross3(UpDirection, zaxis));
-    Vector yaxis = VectorCross3(zaxis, xaxis);
+    Vector zaxis = EyeDirection.Normalized3();
+    Vector xaxis = Vector::Cross3(UpDirection, zaxis).Normalized3();
+    Vector yaxis = Vector::Cross3(zaxis, xaxis);
 
     return Matrix(Vector(xaxis.f[0], yaxis.f[0], zaxis.f[0], 0.0f),
                   Vector(xaxis.f[1], yaxis.f[1], zaxis.f[1], 0.0f),
                   Vector(xaxis.f[2], yaxis.f[2], zaxis.f[2], 0.0f),
-                  Vector(-VectorDot3(xaxis, EyePosition)[0],
-                         -VectorDot3(yaxis, EyePosition)[0],
-                         -VectorDot3(zaxis, EyePosition)[0],
+                  Vector(-Vector::Dot3V(xaxis, EyePosition)[0],
+                         -Vector::Dot3V(yaxis, EyePosition)[0],
+                         -Vector::Dot3V(zaxis, EyePosition)[0],
                          1.0f));
 }
 
