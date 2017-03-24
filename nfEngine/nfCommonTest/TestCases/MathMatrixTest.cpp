@@ -5,7 +5,7 @@ using namespace NFE::Math;
 
 /*
  * TODO:
- * * tests for functions MatrixPerspective(), MatrixTranslation3(), etc.
+ * * tests for functions Matrix::MakePerspective(), Matrix::MakeTranslation3(), etc.
  */
 
 namespace {
@@ -37,7 +37,7 @@ TEST(MathMatrix, Simple)
     EXPECT_TRUE(matA[2][2] == -1.0f); // rows access
     EXPECT_FALSE(matA == matB);
     EXPECT_TRUE(matI == Matrix());
-    EXPECT_TRUE(matTransposeA == MatrixTranspose(matA));
+    EXPECT_TRUE(matTransposeA == matA.Transposed());
 }
 
 TEST(MathMatrix, Arithmetics)
@@ -53,8 +53,8 @@ TEST(MathMatrix, Arithmetics)
     const Vector matAvecAaffine = Vector(-11.0f, 42.0f, 11.0f, 19.0f);
 
     EXPECT_TRUE(matAB == matA * matB);
-    EXPECT_TRUE(MatrixEqual(matI, matA * MatrixInverse(matA), NFE_MATH_EPSILON));
-    EXPECT_TRUE(VectorAbs(matAvecA - vecA * matA) < VectorSplat(NFE_MATH_EPSILON));
-    EXPECT_TRUE(VectorAbs(matAvecAaffine - LinearCombination3(vecA, matA)) <
-                VectorSplat(NFE_MATH_EPSILON));
+    EXPECT_TRUE(Matrix::Equal(matI, matA * matA.Inverted(), NFE_MATH_EPSILON));
+    EXPECT_TRUE(Vector::Abs(matAvecA - vecA * matA) < Vector::Splat(NFE_MATH_EPSILON));
+    EXPECT_TRUE(Vector::Abs(matAvecAaffine - matA.LinearCombination3(vecA)) <
+                Vector::Splat(NFE_MATH_EPSILON));
 }

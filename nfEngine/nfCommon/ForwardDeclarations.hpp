@@ -93,6 +93,7 @@ struct Float4;
 struct Vector;
 struct Vectorf;
 struct Vectori;
+struct Quaternion;
 class Triangle;
 class Sphere;
 class Ray;
@@ -100,7 +101,6 @@ class Frustum;
 class Box;
 class RayBoxSegment;
 class Random;
-using Quaternion = Vector;
 class Matrix;
 
 } // namespace Math

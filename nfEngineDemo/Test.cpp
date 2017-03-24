@@ -156,8 +156,9 @@ public:
     std::shared_ptr<Scene::SceneManager> scene;
 
     bool cameraControl;
-    float cameraXZ;
-    float cameraY;
+    float cameraYaw;
+    float cameraPitch;
+    float cameraRoll;
 
     void* operator new(size_t size)
     {
@@ -184,10 +185,10 @@ public:
     void InitCameraOrientation()
     {
         cameraControl = 0;
-        cameraXZ = 0.0f;
-        cameraY = 0.0f;
-        cameraOrientation = QuaternionMultiply(QuaternionRotationY(cameraXZ),
-                                               QuaternionRotationX(-cameraY));
+        cameraYaw = 0.0f;
+        cameraPitch = 0.0f;
+        cameraRoll = 0.0f;
+        cameraOrientation = Quaternion::FromAngles(cameraPitch, cameraYaw, cameraRoll);
     }
 
     void SetUpScene(int sceneId = 0, CustomWindow* parent = nullptr)
@@ -281,21 +282,21 @@ public:
         if (cameraBody == nullptr || cameraTransform == nullptr)
             return;
 
-        Quaternion destOrientation = QuaternionMultiply(QuaternionRotationY(cameraXZ),
-                                     QuaternionRotationX(-cameraY));
-        destOrientation = QuaternionNormalize(destOrientation);
+        Quaternion destOrientation = Quaternion::FromAngles(cameraPitch, cameraYaw, cameraRoll).Normalized();
 
         //LPF
         Quaternion prevOrientation = cameraOrientation;
-        cameraOrientation = QuaternionInterpolate(cameraOrientation, destOrientation,
+        cameraOrientation = Quaternion::Interpolate(cameraOrientation, destOrientation,
                             gDeltaTime / (CAMERA_ROTATION_SMOOTHING + gDeltaTime));
-        cameraOrientation = QuaternionNormalize(cameraOrientation);
+        cameraOrientation.Normalize();
 
-        Quaternion rotation = QuaternionMultiply(prevOrientation,
-                                                 QuaternionInverse(cameraOrientation));
-        cameraBody->SetAngularVelocity(-QuaternionToAxis(rotation) / gDeltaTime);
+        Quaternion rotation = prevOrientation * cameraOrientation.Inverted();
+        Vector axis;
+        float angle;
+        rotation.ToAxis(axis, angle);
+        cameraBody->SetAngularVelocity(-axis / gDeltaTime);
 
-        Matrix rotMatrix = MatrixFromQuaternion(QuaternionNormalize(cameraOrientation));
+        Matrix rotMatrix = cameraOrientation.Normalized().ToMatrix();
         Orientation orient;
         orient.x = rotMatrix.r[0];
         orient.y = rotMatrix.r[1];
@@ -322,7 +323,7 @@ public:
 
         // low pass filter - for smooth camera movement
         float factor = gDeltaTime / (CAMERA_TRANSLATION_SMOOTHING + gDeltaTime);
-        cameraBody->SetVelocity(VectorLerp(prevVelocity, destVelocity, factor));
+        cameraBody->SetVelocity(Vector::Lerp(prevVelocity, destVelocity, factor));
     }
 
     void OnKeyPress(Common::KeyCode key) override
@@ -409,6 +410,16 @@ public:
                 secondaryCamTransform->SetMatrix(matrix);
             }
         }
+
+        if (key == Common::KeyCode::Q)
+        {
+            cameraRoll -= gDeltaTime * 2.0f;
+        }
+        else if(key == Common::KeyCode::E)
+        {
+            cameraRoll += gDeltaTime * 2.0f;
+        }
+
 
         if (key >= Common::KeyCode::Num0 && key <= Common::KeyCode::Num9)
             SetUpScene(static_cast<unsigned int>(key) -
@@ -509,12 +520,12 @@ public:
             float fDeltaX = static_cast<float>(deltaX) * 0.005f;
             float fDeltaY = static_cast<float>(deltaY) * 0.005f;
 
-            cameraXZ += fDeltaX;
-            cameraY -= fDeltaY;
-            cameraXZ = fmodf(cameraXZ, 2.0f * NFE_MATH_PI);
+            cameraYaw += fDeltaX;
+            cameraPitch += fDeltaY;
+            cameraYaw = fmodf(cameraYaw, 2.0f * NFE_MATH_PI);
 
-            if (cameraY > NFE_MATH_PI / 2.0f) cameraY = NFE_MATH_PI / 2.0f;
-            if (cameraY < -NFE_MATH_PI / 2.0f) cameraY = -NFE_MATH_PI / 2.0f;
+            if (cameraPitch > NFE_MATH_PI / 2.0f) cameraPitch = NFE_MATH_PI / 2.0f;
+            if (cameraPitch < -NFE_MATH_PI / 2.0f) cameraPitch = -NFE_MATH_PI / 2.0f;
         }
     }
 
@@ -594,22 +605,22 @@ bool OnLoadCustomShapeResource(ResourceBase* res, void* data)
     else if (strcmp(shape->GetName(), "shape_frame") == 0)
     {
         // Z axis
-        shape->AddBox(Vector(0.025f, 0.025f, 0.45f), MatrixTranslation3(Vector(-0.475f, -0.475f, 0.0f)));
-        shape->AddBox(Vector(0.025f, 0.025f, 0.45f), MatrixTranslation3(Vector(-0.475f, 0.475f, 0.0f)));
-        shape->AddBox(Vector(0.025f, 0.025f, 0.45f), MatrixTranslation3(Vector(0.475f, -0.475f, 0.0f)));
-        shape->AddBox(Vector(0.025f, 0.025f, 0.45f), MatrixTranslation3(Vector(0.475f, 0.475f, 0.0f)));
+        shape->AddBox(Vector(0.025f, 0.025f, 0.45f), Matrix::MakeTranslation3(Vector(-0.475f, -0.475f, 0.0f)));
+        shape->AddBox(Vector(0.025f, 0.025f, 0.45f), Matrix::MakeTranslation3(Vector(-0.475f, 0.475f, 0.0f)));
+        shape->AddBox(Vector(0.025f, 0.025f, 0.45f), Matrix::MakeTranslation3(Vector(0.475f, -0.475f, 0.0f)));
+        shape->AddBox(Vector(0.025f, 0.025f, 0.45f), Matrix::MakeTranslation3(Vector(0.475f, 0.475f, 0.0f)));
 
         // Y axis
-        shape->AddBox(Vector(0.025f, 0.5f, 0.025f), MatrixTranslation3(Vector(-0.475f, 0.0f, -0.475f)));
-        shape->AddBox(Vector(0.025f, 0.5f, 0.025f), MatrixTranslation3(Vector(-0.475f, 0.0f, 0.475f)));
-        shape->AddBox(Vector(0.025f, 0.5f, 0.025f), MatrixTranslation3(Vector(0.475f, 0.0f, -0.475f)));
-        shape->AddBox(Vector(0.025f, 0.5f, 0.025f), MatrixTranslation3(Vector(0.475f, 0.0f, 0.475f)));
+        shape->AddBox(Vector(0.025f, 0.5f, 0.025f), Matrix::MakeTranslation3(Vector(-0.475f, 0.0f, -0.475f)));
+        shape->AddBox(Vector(0.025f, 0.5f, 0.025f), Matrix::MakeTranslation3(Vector(-0.475f, 0.0f, 0.475f)));
+        shape->AddBox(Vector(0.025f, 0.5f, 0.025f), Matrix::MakeTranslation3(Vector(0.475f, 0.0f, -0.475f)));
+        shape->AddBox(Vector(0.025f, 0.5f, 0.025f), Matrix::MakeTranslation3(Vector(0.475f, 0.0f, 0.475f)));
 
         // X axis
-        shape->AddBox(Vector(0.5f, 0.025f, 0.025f), MatrixTranslation3(Vector(0.0f, -0.475f, -0.475f)));
-        shape->AddBox(Vector(0.5f, 0.025f, 0.025f), MatrixTranslation3(Vector(0.0f, -0.475f, 0.475f)));
-        shape->AddBox(Vector(0.5f, 0.025f, 0.025f), MatrixTranslation3(Vector(0.0f, 0.475f, -0.475f)));
-        shape->AddBox(Vector(0.5f, 0.025f, 0.025f), MatrixTranslation3(Vector(0.0f, 0.475f, 0.475f)));
+        shape->AddBox(Vector(0.5f, 0.025f, 0.025f), Matrix::MakeTranslation3(Vector(0.0f, -0.475f, -0.475f)));
+        shape->AddBox(Vector(0.5f, 0.025f, 0.025f), Matrix::MakeTranslation3(Vector(0.0f, -0.475f, 0.475f)));
+        shape->AddBox(Vector(0.5f, 0.025f, 0.025f), Matrix::MakeTranslation3(Vector(0.0f, 0.475f, -0.475f)));
+        shape->AddBox(Vector(0.5f, 0.025f, 0.025f), Matrix::MakeTranslation3(Vector(0.0f, 0.475f, 0.475f)));
     }
     else if (strcmp(shape->GetName(), "shape_barrel") == 0)
     {

@@ -149,6 +149,9 @@
     <ClInclude Include="Math\Quaternion.hpp">
       <Filter>Math</Filter>
     </ClInclude>
+    <ClInclude Include="Math\QuaternionImpl.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
     <ClInclude Include="Math\Random.hpp">
       <Filter>Math</Filter>
     </ClInclude>
@@ -310,6 +313,10 @@
     </ClInclude>
     <ClInclude Include="Containers\StringImpl.hpp">
       <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="ForwardDeclarations.hpp" />
+    <ClInclude Include="Math\VectorConstants.hpp">
+      <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

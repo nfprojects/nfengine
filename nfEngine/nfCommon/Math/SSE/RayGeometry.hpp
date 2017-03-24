@@ -26,8 +26,8 @@ NFE_INLINE bool RayBoxIntersectInline(const Ray& ray, const Box& box, Vector& di
     // calculate all box planes distances
     tmp1 = (box.min - ray.origin) * ray.invDir;
     tmp2 = (box.max - ray.origin) * ray.invDir;
-    lmin = VectorMin(tmp1, tmp2);
-    lmax = VectorMax(tmp1, tmp2);
+    lmin = Vector::Min(tmp1, tmp2);
+    lmax = Vector::Max(tmp1, tmp2);
 
     // transpose (we need to calculate min and max of X, Y and Z)
     Vector lx = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(0, 0, 0, 0));
@@ -60,19 +60,19 @@ NFE_INLINE bool RayTriangleIntersectInline(const Ray& ray, const Triangle& tri, 
     Vector edge0 = tri.v1 - tri.v0;
     Vector edge1 = tri.v2 - tri.v0;
     // begin calculating determinant - also used to calculate U parameter
-    Vector pvec = VectorCross3(ray.dir, edge1);
+    Vector pvec = Vector::Cross3(ray.dir, edge1);
     // calculate distance from vert0 to ray origin
     Vector tvec = ray.origin - tri.v0;
     // prepare to test V parameter
-    Vector qvec = VectorCross3(tvec, edge0);
+    Vector qvec = Vector::Cross3(tvec, edge0);
     // if determinant is near zero, ray lies in plane of triangle
-    Vector det = VectorDot3(edge0, pvec);
+    Vector det = Vector::Dot3V(edge0, pvec);
     // calculate U parameter
-    Vector u = VectorDot3(tvec, pvec);
+    Vector u = Vector::Dot3V(tvec, pvec);
     // calculate V parameter
-    Vector v = VectorDot3(ray.dir, qvec);
+    Vector v = Vector::Dot3V(ray.dir, qvec);
     // calculate t (distance)
-    Vector t = VectorDot3(edge1, qvec);
+    Vector t = Vector::Dot3V(edge1, qvec);
 
     // prepare data to the final comparison
     Vector tmp1 = _mm_shuffle_ps(v, u, _MM_SHUFFLE(0, 0, 0, 0));

@@ -9,6 +9,8 @@
 #include "../nfCommon.hpp"
 #include <math.h>
 
+// TODO move these below to PCH as well
+
 #ifdef NFE_USE_SSE
 #include <xmmintrin.h>
 #endif // NFE_USE_SSE
@@ -20,10 +22,19 @@
 #include <smmintrin.h>
 #endif // NFE_USE_SSE4
 
+#if defined(NFE_USE_AVX) | defined(NFE_USE_FMA)
+    #ifndef NFE_USE_SSE4
+        #error "SSE4 must be enabled when using AVX"
+    #endif // NFE_USE_SSE4
+#include <immintrin.h>
+#endif // defined(NFE_USE_AVX) | defined(NFE_USE_FMA)
+
+
 #define NFE_MATH_EPSILON (0.000001f)
 #define NFE_MATH_PI (3.14159265359f)
 #define NFE_MATH_2PI (6.28318530718f)
 #define NFE_MATH_E (2.7182818f)
+
 
 namespace NFE {
 namespace Math {

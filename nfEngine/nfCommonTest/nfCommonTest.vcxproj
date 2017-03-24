@@ -105,7 +105,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <UseFullPaths>true</UseFullPaths>
       <StringPooling>true</StringPooling>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
     <Link>
@@ -130,6 +130,7 @@
       <UseFullPaths>true</UseFullPaths>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>false</ExceptionHandling>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,7 +156,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <StringPooling>true</StringPooling>
       <FloatingPointExceptions>false</FloatingPointExceptions>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
     <Link>
@@ -185,6 +186,7 @@
       <StringPooling>true</StringPooling>
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <ExceptionHandling>false</ExceptionHandling>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -230,6 +232,7 @@
     <ClCompile Include="TestCases\LogScopeTest.cpp" />
     <ClCompile Include="TestCases\MathGeometryTest.cpp" />
     <ClCompile Include="TestCases\MathMatrixTest.cpp" />
+    <ClCompile Include="TestCases\MathQuaternionTest.cpp" />
     <ClCompile Include="TestCases\MathTest.cpp" />
     <ClCompile Include="TestCases\MathVectorTest.cpp" />
     <ClCompile Include="TestCases\MD5Test.cpp" />

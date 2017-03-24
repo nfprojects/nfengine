@@ -51,12 +51,12 @@ bool Intersect(const Ray& ray, const Triangle& tri, Vector& dist)
 NFE_INLINE bool RaySphereIntersectInline(const Ray& ray, const Sphere& sphere, Vector& dist)
 {
     Vector d = sphere.origin - ray.origin;
-    float v = VectorDot3f(ray.dir, d);
-    float det = sphere.r * sphere.r - VectorDot3f(d, d) + v * v;
+    float v = Vector::Dot3(ray.dir, d);
+    float det = sphere.r * sphere.r - Vector::Dot3(d, d) + v * v;
 
     if (det > 0.0f)
     {
-        dist = VectorSplat(v - sqrtf(det));
+        dist = Vector::Splat(v - sqrtf(det));
         return true;
     }
     return false;

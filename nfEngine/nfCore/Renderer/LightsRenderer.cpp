@@ -356,8 +356,8 @@ void LightsRenderer::DrawAmbientLight(LightsRendererContext* context, const Vect
     context->commandRecorder->BindVolatileCBuffer(1, mAmbientLightCBuffer);
 
     AmbientLightCBuffer cbuffer;
-    VectorStore(ambientLightColor, &cbuffer.ambientLight);
-    VectorStore(backgroundColor, &cbuffer.backgroundColor);
+    ambientLightColor.Store(&cbuffer.ambientLight);
+    backgroundColor.Store(&cbuffer.backgroundColor);
     context->commandRecorder->WriteBuffer(mAmbientLightCBuffer, 0, sizeof(AmbientLightCBuffer),
                                         &cbuffer);
 
@@ -371,7 +371,7 @@ void LightsRenderer::DrawOmniLight(LightsRendererContext* context, const Vector&
 
     OmniLightCBuffer cbuffer;
     cbuffer.position = pos;
-    cbuffer.radius = VectorSplat(radius);
+    cbuffer.radius = Vector::Splat(radius);
     cbuffer.color = color;
     cbuffer.shadowMapProps = Vector();
 

@@ -176,9 +176,9 @@ void GuiRenderer::SetTarget(GuiRendererContext* context, const RenderTargetPtr& 
     GlobalCBuffer cbuffer;
     int width, height;
     target->GetDimensions(width, height);
-    cbuffer.projMatrix = MatrixOrtho(0.0f, static_cast<float>(width),
-                                     static_cast<float>(height), 0.0f,
-                                     -1.0f, 1.0f);
+    cbuffer.projMatrix = Matrix::MakeOrtho(0.0f, static_cast<float>(width),
+                                           static_cast<float>(height), 0.0f,
+                                           -1.0f, 1.0f);
 
     // TODO remove
     context->commandRecorder->SetResourceBindingLayout(mResBindingLayout);

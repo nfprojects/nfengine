@@ -15,12 +15,12 @@ Box TransformBox(const Matrix& matrix, const Box& localBox)
 {
     Vector boxCenter = localBox.GetCenter();
 
-    float x = VectorDot3(localBox.SupportVertex(matrix.r[0]) - boxCenter, matrix.r[0])[0];
-    float y = VectorDot3(localBox.SupportVertex(matrix.r[1]) - boxCenter, matrix.r[1])[0];
-    float z = VectorDot3(localBox.SupportVertex(matrix.r[2]) - boxCenter, matrix.r[2])[0];
+    float x = Vector::Dot3(localBox.SupportVertex(matrix.r[0]) - boxCenter, matrix.r[0]);
+    float y = Vector::Dot3(localBox.SupportVertex(matrix.r[1]) - boxCenter, matrix.r[1]);
+    float z = Vector::Dot3(localBox.SupportVertex(matrix.r[2]) - boxCenter, matrix.r[2]);
     Vector boxDim = Vector(x, y, z);
 
-    Vector transformedBoxCenter = LinearCombination3(boxCenter, matrix);
+    Vector transformedBoxCenter = matrix.LinearCombination3(boxCenter);
 
     Box result;
     result.max = transformedBoxCenter + boxDim;

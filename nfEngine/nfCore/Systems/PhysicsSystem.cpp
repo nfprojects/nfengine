@@ -189,7 +189,7 @@ void PhysicsSystem::Update(float dt)
         }
         else
         {
-            isActive = (VectorGreaterMask(VectorAbs(body->GetVelocity()), NFE_MATH_EPSILON) & 0x7)
+            isActive = (Vector::GreaterMask(Vector::Abs(body->GetVelocity()), VECTOR_EPSILON) & 0x7)
                            != 0;
             if (isActive)
             {
