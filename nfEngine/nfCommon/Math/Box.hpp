@@ -23,13 +23,20 @@ public:
     Vector max;
 
     NFE_INLINE Box() : min(), max() {}
-    NFE_INLINE Box(const Vector& min_, const Vector& max_) : min(min_), max(max_) {}
+    NFE_INLINE Box(const Vector& min, const Vector& max) : min(min), max(max) {}
+
+    // create box from center point and radius (e.g. bounding box of a sphere)
+    NFE_INLINE Box(const Vector& center, float radius)
+    {
+        min = center - Vector::Splat(radius);
+        max = center + Vector::Splat(radius);
+    }
 
     // merge boxes
     NFE_INLINE Box(const Box& a, const Box& b)
     {
-        min = VectorMin(a.min, b.min);
-        max = VectorMax(a.max, b.max);
+        min = Vector::Min(a.min, b.min);
+        max = Vector::Max(a.max, b.max);
     }
 
     NFE_INLINE Vector GetCenter() const;
@@ -57,7 +64,7 @@ Vector Box::GetVertex(int id) const
 
 Vector Box::SupportVertex(const Vector& dir) const
 {
-    return VectorSelectBySign(max, min, dir);
+    return Vector::SelectBySign(max, min, dir);
 }
 
 void Box::MakeFromPoints(const Vector* pPoints, int number)
@@ -72,8 +79,8 @@ void Box::MakeFromPoints(const Vector* pPoints, int number)
 
         for (int i = 1; i < number; i++)
         {
-            min = VectorMin(min, pPoints[i]);
-            max = VectorMax(max, pPoints[i]);
+            min = Vector::Min(min, pPoints[i]);
+            max = Vector::Max(max, pPoints[i]);
         }
     }
 }

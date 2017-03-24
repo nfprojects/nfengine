@@ -43,19 +43,19 @@ public:
         matrix[1][2] = 2.0f * (P4.f[1] - P1.f[1]);
         matrix[2][2] = 2.0f * (P4.f[2] - P1.f[2]);
 
-        float tmp = VectorDot3(P1, P1)[0];
-        matrix[3][0] = VectorDot3(P2, P2)[0] - tmp;
-        matrix[3][1] = VectorDot3(P3, P3)[0] - tmp;
-        matrix[3][2] = VectorDot3(P4, P4)[0] - tmp;
+        float tmp = Vector::Dot3V(P1, P1)[0];
+        matrix[3][0] = Vector::Dot3V(P2, P2)[0] - tmp;
+        matrix[3][1] = Vector::Dot3V(P3, P3)[0] - tmp;
+        matrix[3][2] = Vector::Dot3V(P4, P4)[0] - tmp;
 
         SolveEquationsSystem3(matrix, origin.f[0], origin.f[1], origin.f[2]);
-        r = VectorLength3(origin - P1).f[0];
+        r = (origin - P1).Length3();
     }
 
     NFE_INLINE float SupportVertex(const Vector& dir) const
     {
         Vector pos = origin + r * dir;
-        return VectorDot3(dir, pos).f[0];
+        return Vector::Dot3V(dir, pos).f[0];
     }
 };
 

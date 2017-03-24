@@ -27,8 +27,8 @@ TEST(MathGeometry, RayBoxIntersection)
         // check if a point 'p' is on the surface of the test box
         auto onBoxSurface = [&boxHalfExtent, &boxOffset](const Vector& p) -> bool
         {
-            return (VectorLessEqMask(boxOffset + boxHalfExtent - p, VECTOR_EPSILON) != 0) ||
-                   (VectorLessEqMask(boxOffset - boxHalfExtent - p, VECTOR_EPSILON) != 0);
+            return (Vector::LessEqMask(boxOffset + boxHalfExtent - p, VECTOR_EPSILON) != 0) ||
+                   (Vector::LessEqMask(boxOffset - boxHalfExtent - p, VECTOR_EPSILON) != 0);
         };
 
         EXPECT_TRUE(Intersect(Ray(Vector(-1.0f, 0.0f, 0.0f),
@@ -94,8 +94,8 @@ TEST(MathGeometry, RayTriangleIntersection)
     // check if a point 'p' is on the surface of the test triangle's plane
     auto onTrianglePlane = [&tri](const Vector& p) -> bool
     {
-        Vector plane = PlaneFromPoints(tri.v0, tri.v1, tri.v2);
-        float d = VectorDot3(plane, p).f[0] + plane.f[3];
+        Vector plane = Vector::PlaneFromPoints(tri.v0, tri.v1, tri.v2);
+        float d = Vector::Dot3V(plane, p).f[0] + plane.f[3];
         return fabsf(d) < NFE_MATH_EPSILON;
     };
 
@@ -142,7 +142,7 @@ TEST(MathGeometry, RaySphereIntersection)
     // check if a point 'p' is on the surface of the test sphere
     auto onSphereSurface = [&radius](const Vector& p) -> bool
     {
-        float len = VectorLength3(p).f[0];
+        float len = p.Length3();
         // increased epsilon in order to handle corner cases
         return fabsf(len - radius) < 10.0f * NFE_MATH_EPSILON;
     };
@@ -183,7 +183,7 @@ TEST(MathGeometry, RaySphereIntersection)
         const Ray ray = Ray(rayDir, rayOrigin);
 
         //Vector dist;
-        if (VectorLength3(rayOrigin).f[0] <= radius)
+        if (rayOrigin.Length3() <= radius)
         {
             EXPECT_TRUE(Intersect(ray, sphere));
             EXPECT_TRUE(Intersect(ray, sphere, dist));

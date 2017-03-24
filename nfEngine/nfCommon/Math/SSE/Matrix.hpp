@@ -13,12 +13,24 @@
 namespace NFE {
 namespace Math {
 
-Matrix MatrixTranspose(const Matrix& m)
+Matrix& Matrix::Transpose()
 {
-    Vector row0 = m.r[0];
-    Vector row1 = m.r[1];
-    Vector row2 = m.r[2];
-    Vector row3 = m.r[3];
+    Vector& row0 = r[0];
+    Vector& row1 = r[1];
+    Vector& row2 = r[2];
+    Vector& row3 = r[3];
+
+    _MM_TRANSPOSE4_PS(row0, row1, row2, row3);
+
+    return *this;
+}
+
+Matrix Matrix::Transposed() const
+{
+    Vector row0 = r[0];
+    Vector row1 = r[1];
+    Vector row2 = r[2];
+    Vector row3 = r[3];
 
     _MM_TRANSPOSE4_PS(row0, row1, row2, row3);
 

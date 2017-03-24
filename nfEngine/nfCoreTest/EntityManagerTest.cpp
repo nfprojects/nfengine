@@ -221,13 +221,13 @@ TEST_F(EntityManagerTest, EntityChildren)
 
     transform = em->GetComponent<TransformComponent>(entityB);
     ASSERT_NE(nullptr, transform);
-    EXPECT_TRUE(VectorAbs(Vector(1.0f, 2.0f, 0.0f) - transform->GetPosition())
-                < VectorSplat(NFE_MATH_EPSILON));
+    EXPECT_TRUE(Vector::Abs(Vector(1.0f, 2.0f, 0.0f) - transform->GetPosition())
+                < Vector::Splat(NFE_MATH_EPSILON));
 
     transform = em->GetComponent<TransformComponent>(entityC);
     ASSERT_NE(nullptr, transform);
-    EXPECT_TRUE(VectorAbs(Vector(1.0f, 2.0f, 3.0f) - transform->GetPosition())
-                < VectorSplat(NFE_MATH_EPSILON));
+    EXPECT_TRUE(Vector::Abs(Vector(1.0f, 2.0f, 3.0f) - transform->GetPosition())
+                < Vector::Splat(NFE_MATH_EPSILON));
 
     /// detach children from parents
     ASSERT_TRUE(ts->SetParent(entityA, gInvalidEntityID));

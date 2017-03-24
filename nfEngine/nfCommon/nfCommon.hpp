@@ -61,10 +61,13 @@
 #endif // defined(WIN32)
 
 
-// we assume that when using Windows we build for x86 CPU supporting SSE and SSE4
+// we assume that when using Windows we build for x86 CPU supporting AVX2 and FMA (e.g. Intel Haswell)
 #if defined(WIN32)
 #define NFE_USE_SSE
 #define NFE_USE_SSE4
+#define NFE_USE_AVX
+#define NFE_USE_AVX2
+#define NFE_USE_FMA
 #endif // defined(WIN32)
 
 
@@ -92,7 +95,7 @@
     Type& operator=(Type&&) = delete;
 
 
-// macro for disabling "unsused parameter"
+// macro for disabling "unused parameter"
 #ifndef UNUSED
 #define UNUSED(x) (void)(x)
 #endif // UNUSED
