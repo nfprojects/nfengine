@@ -268,11 +268,11 @@ void DebugRenderer::DrawLine(DebugRendererContext *context, const Vector& A, con
     DebugVertex vert;
     vert.color = color;
 
-    VectorStore(A, &vert.pos);
+    A.Store(&vert.pos);
     context->indicies[context->queuedIndicies++] = static_cast<DebugIndexType>(context->queuedVertices);
     context->vertices[context->queuedVertices++] = vert;
 
-    VectorStore(B, &vert.pos);
+    B.Store(&vert.pos);
     context->indicies[context->queuedIndicies++] = static_cast<DebugIndexType>(context->queuedVertices);
     context->vertices[context->queuedVertices++] = vert;
 }
@@ -319,7 +319,7 @@ void DebugRenderer::DrawBox(DebugRendererContext *context, const Box& box, const
     for (size_t i = 0; i < vertexRequired; ++i)
     {
         Vector v = box.GetVertex(static_cast<int>(i));
-        VectorStore(v, &boxVerticies[i].pos);
+        v.Store(&boxVerticies[i].pos);
         boxVerticies[i].color = color;
     }
 
@@ -354,7 +354,7 @@ void DebugRenderer::DrawFrustum(DebugRendererContext *context, const Frustum& fr
     for (size_t i = 0; i < vertexRequired; ++i)
     {
         Vector v = frustum.verticies[i];
-        VectorStore(v, &boxVerticies[i].pos);
+        v.Store(&boxVerticies[i].pos);
         boxVerticies[i].color = color;
     }
 

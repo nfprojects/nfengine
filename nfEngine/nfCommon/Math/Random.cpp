@@ -177,5 +177,35 @@ Float4 Random::GetFloatNormal4()
     return result;
 }
 
+Float2 Random::GetPointInsideCircle()
+{
+    const Float3 v = GetFloat3();
+
+    // angle (uniform distribution)
+    const float t = 2.0f * NFE_MATH_PI * v.x;
+
+    // radius (corrected distribution)
+    const float u = v.y + v.z;
+    const float r = (u > 1.0f) ? (2.0f - u) : u;
+
+    return Float2(r * cosf(t), r * sinf(t));
+}
+
+Float3 Random::GetPointOnSphere()
+{
+    const Float2 uv = GetFloat2();
+
+    // latitude (corrected distribution)
+    const float z = 2.0f * uv.x - 1;
+    const float r = sqrtf(1.0f - z * z);
+    const float theta = 2.0f * NFE_MATH_PI * uv.y;
+
+    // longitude (uniform)
+    const float x = r * cosf(theta);
+    const float y = r * sinf(theta);
+
+    return Float3(x, z, y);
+}
+
 } // namespace Math
 } // namespace NFE

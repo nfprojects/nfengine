@@ -20,6 +20,13 @@
 #include <smmintrin.h>
 #endif // NFE_USE_SSE4
 
+#ifdef NFE_USE_AVX
+    #ifndef NFE_USE_SSE
+        #error "SSE must be enabled when using AVX"
+    #endif // NFE_USE_SSE
+#include "immintrin.h"
+#endif
+
 #define NFE_MATH_EPSILON (0.000001f)
 #define NFE_MATH_PI (3.14159265359f)
 #define NFE_MATH_2PI (6.28318530718f)

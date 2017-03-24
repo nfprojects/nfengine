@@ -494,7 +494,7 @@ bool Image::Grayscale()
                     tmp = mMipmaps[i].GetTexel(x, y, mFormat);
 
                     // Calculate grayscale value using luminance transformation
-                    float grayVal = VectorDot3f(tmp, luminanceMask);
+                    float grayVal = Math::Vector::Dot3(tmp, luminanceMask);
 
                     // Overwrite only color values, leaving alpha as it was
                     mMipmaps[i].SetTexel(Color(grayVal, grayVal, grayVal, tmp.f[3]),

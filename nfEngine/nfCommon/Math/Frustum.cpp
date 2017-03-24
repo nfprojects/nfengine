@@ -15,8 +15,8 @@ void SetupPerspective(const Matrix& matrix,
                       Matrix& viewMatrix, Matrix& projMatrix, Frustum& frustum)
 {
     // calculate view and projection matrices
-    viewMatrix = MatrixLookTo(matrix.GetRow(3), matrix.GetRow(2), matrix.GetRow(1));
-    projMatrix = MatrixPerspective(1.0f, cutoff, farDist, nearDist);
+    viewMatrix = Matrix::MakeLookTo(matrix.GetRow(3), matrix.GetRow(2), matrix.GetRow(1));
+    projMatrix = Matrix::MakePerspective(1.0f, cutoff, farDist, nearDist);
 
     Vector pos = matrix.GetRow(3) & VECTOR_MASK_XYZ;
     float scale = tanf(cutoff / 2.0f);

@@ -13,7 +13,7 @@
 namespace NFE {
 namespace Math {
 
-Matrix MatrixRotationNormal(const Vector& normalAxis, float angle)
+Matrix Matrix::MakeRotationNormal(const Vector& normalAxis, float angle)
 {
     Matrix result;
 
@@ -58,13 +58,13 @@ Matrix MatrixRotationNormal(const Vector& normalAxis, float angle)
     result.r[1] = R2;
     V2 = _mm_shuffle_ps(V2, V0, _MM_SHUFFLE(3, 2, 1, 0));
     result.r[2] = V2;
-    result.r[3] = VECTOR_IDENTITY_ROW_3;
+    result.r[3] = VECTOR_Z;
     return result;
 }
 
-Matrix MatrixInverse(const Matrix& m)
+Matrix Matrix::Inverted() const
 {
-    Matrix MT = MatrixTranspose(m);
+    Matrix MT = Transposed();
     Vector V00 = _mm_shuffle_ps(MT.r[2], MT.r[2], _MM_SHUFFLE(1, 1, 0, 0));
     Vector V10 = _mm_shuffle_ps(MT.r[3], MT.r[3], _MM_SHUFFLE(3, 2, 3, 2));
     Vector V01 = _mm_shuffle_ps(MT.r[0], MT.r[0], _MM_SHUFFLE(1, 1, 0, 0));
@@ -169,7 +169,7 @@ Matrix MatrixInverse(const Matrix& m)
     C6 = _mm_shuffle_ps(C6, C6, _MM_SHUFFLE(3, 1, 2, 0));
 
     // Get the determinate
-    Vector vTemp = VectorDot4(C0, MT.r[0]);
+    Vector vTemp = Vector::Dot4V(C0, MT.r[0]);
     vTemp = _mm_div_ps(VECTOR_ONE, vTemp);
 
     return Matrix(_mm_mul_ps(C0, vTemp),

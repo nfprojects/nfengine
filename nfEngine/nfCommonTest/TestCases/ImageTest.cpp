@@ -277,8 +277,8 @@ protected:
                 uint8 testTexelUCh[4];
 
                 // Store vector in uint8 table and remove compression errors
-                VectorStoreUChar4(texel, texelUCh);
-                VectorStoreUChar4(testTexel, testTexelUCh);
+                texel.Store4(texelUCh);
+                testTexel.Store4(testTexelUCh);
 
                 // Add scoped trace, to give information where exactly the error occured
                 SCOPED_TRACE("X: " + std::to_string(j) + " Y: " + std::to_string(i));
@@ -385,7 +385,7 @@ TEST_F(ImageTest, Grayscale)
             uint8 texelUCh[4];
             uint8 testTexelUCh[4];
             // Store vector in uint8 table
-            VectorStoreUChar4(texel, texelUCh);
+            texel.Store4(texelUCh);
 
             if (i < 2)
             {
@@ -393,7 +393,8 @@ TEST_F(ImageTest, Grayscale)
                     testTexelUCh[0] = 0;
                 else
                     testTexelUCh[0] = GRAYSCALE_R;
-            } else
+            }
+            else
             {
                 if (j < 2)
                     testTexelUCh[0] = GRAYSCALE_B;

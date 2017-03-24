@@ -17,8 +17,8 @@ namespace Math {
 float ClosestPointOnSegment(const Vector& p, const Vector& p1, const Vector& p2, Vector& out)
 {
     Vector ab = p2 - p1;
-    float dot = VectorDot3(p - p1, ab)[0];
-    float len_sq = VectorDot3(ab, ab)[0];
+    float dot = Vector::Dot3(p - p1, ab);
+    float len_sq = Vector::Dot3(ab, ab);
     float param = dot / len_sq;
 
     Vector result;
@@ -30,7 +30,7 @@ float ClosestPointOnSegment(const Vector& p, const Vector& p1, const Vector& p2,
         result = p1 + param * ab;
     out = result;
 
-    return VectorLength3(result - p)[0];
+    return (result - p).Length3();
 }
 
 // Box-frustum intersection test
@@ -42,8 +42,8 @@ bool Intersect(const Box& box, const Frustum& frustum)
     int minMask = 0x7;
     for (int i = 0; i < 8; i++)
     {
-        maxMask &= VectorGreaterMask(frustum.verticies[i], box.max);
-        minMask &= VectorLessMask(frustum.verticies[i], box.min);
+        maxMask &= Vector::GreaterMask(frustum.verticies[i], box.max);
+        minMask &= Vector::LessMask(frustum.verticies[i], box.min);
     }
 
     if (maxMask | minMask)
@@ -53,8 +53,8 @@ bool Intersect(const Box& box, const Frustum& frustum)
     for (int i = 0; i < 6; i++)
     {
         Vector plane = frustum.planes[i];
-        Vector vmax = VectorSelectBySign(box.max, box.min, plane);
-        if (!PlanePointSide(plane, vmax))
+        Vector vmax = Vector::SelectBySign(box.max, box.min, plane);
+        if (!Vector::PlanePointSide(plane, vmax))
             return false;
     }
 
@@ -77,8 +77,8 @@ IntersectionResult IntersectEx(const Box& box, const Frustum& frustum)
     int minMask = 0x7;
     for (int i = 0; i < 8; i++)
     {
-        maxMask &= VectorGreaterMask(frustum.verticies[i], box.max);
-        minMask &= VectorLessMask(frustum.verticies[i], box.min);
+        maxMask &= Vector::GreaterMask(frustum.verticies[i], box.max);
+        minMask &= Vector::LessMask(frustum.verticies[i], box.min);
     }
 
     if (maxMask | minMask)
@@ -88,13 +88,13 @@ IntersectionResult IntersectEx(const Box& box, const Frustum& frustum)
     for (int i = 0; i < 6; i++)
     {
         Vector plane = frustum.planes[i];
-        Vector vmax = VectorSelectBySign(box.max, box.min, plane);
-        Vector vmin = VectorSelectBySign(box.min, box.max, plane);
+        Vector vmax = Vector::SelectBySign(box.max, box.min, plane);
+        Vector vmin = Vector::SelectBySign(box.min, box.max, plane);
 
-        if (!PlanePointSide(plane, vmax))
+        if (!Vector::PlanePointSide(plane, vmax))
             return IntersectionResult::Outside;
 
-        if (!PlanePointSide(plane, vmin))
+        if (!Vector::PlanePointSide(plane, vmin))
             numPlanes++;
     }
 
@@ -114,7 +114,7 @@ bool Intersect(const Frustum& f1, const Frustum& f2)
         int count = 0;
 
         for (int j = 0; j < 8; j++)
-            if (!PlanePointSide(f2.planes[i], f1.verticies[j]))
+            if (!Vector::PlanePointSide(f2.planes[i], f1.verticies[j]))
                 count++;
 
         if (count == 8)
@@ -127,7 +127,7 @@ bool Intersect(const Frustum& f1, const Frustum& f2)
         int count = 0;
 
         for (int j = 0; j < 8; j++)
-            if (!PlanePointSide(f1.planes[i], f2.verticies[j]))
+            if (!Vector::PlanePointSide(f1.planes[i], f2.verticies[j]))
                 count++;
 
         if (count == 8)
@@ -142,7 +142,7 @@ template<> NFCOMMON_API
 bool Intersect(const Vector& point, const Frustum& frustum)
 {
     for (int i = 0; i < 6; i++)
-        if (!PlanePointSide(frustum.planes[i], point))
+        if (!Vector::PlanePointSide(frustum.planes[i], point))
             return false;
 
     return true;
@@ -155,19 +155,19 @@ bool Intersect(const Triangle& tri, const Frustum& frustum)
     // frustum planes vs. triangle verticies
     for (int i = 0; i < 6; i++)
     {
-        bool outside = !PlanePointSide(frustum.planes[i], tri.v0);
-        outside &= !PlanePointSide(frustum.planes[i], tri.v1);
-        outside &= !PlanePointSide(frustum.planes[i], tri.v2);
+        bool outside = !Vector::PlanePointSide(frustum.planes[i], tri.v0);
+        outside &= !Vector::PlanePointSide(frustum.planes[i], tri.v1);
+        outside &= !Vector::PlanePointSide(frustum.planes[i], tri.v2);
         if (outside)
             return false;
     }
 
-    // traingle plane vs. frustum vertices
-    Vector plane = PlaneFromPoints(tri.v0, tri.v1, tri.v2);
+    // triangle plane vs. frustum vertices
+    Vector plane = Vector::PlaneFromPoints(tri.v0, tri.v1, tri.v2);
     int tmpSide = 0;
     for (int i = 0; i < 8; i++)
     {
-        bool side = PlanePointSide(plane, frustum.verticies[i]);
+        bool side = Vector::PlanePointSide(plane, frustum.verticies[i]);
 
         if (!side && tmpSide > 0)
             return true;
@@ -187,7 +187,7 @@ template<> NFCOMMON_API
 bool Intersect(const Vector& point, const Sphere& sphere)
 {
     Vector segment = point - sphere.origin;
-    return VectorDot3f(segment, segment) <= sphere.r * sphere.r;
+    return Vector::Dot3(segment, segment) <= sphere.r * sphere.r;
 }
 
 // Sphere-sphere intersection test
@@ -196,7 +196,7 @@ bool Intersect(const Sphere& sphere1, const Sphere& sphere2)
 {
     Vector segment = sphere1.origin - sphere2.origin;
     float radiiSum = sphere1.r + sphere2.r;
-    return VectorDot3f(segment, segment) <= radiiSum * radiiSum;
+    return Vector::Dot3(segment, segment) <= radiiSum * radiiSum;
 }
 
 // Box-sphere intersection test
@@ -240,7 +240,7 @@ bool Intersect(const Frustum& frustum, const Sphere& sphere)
     {
         Vector plane = frustum.planes[i];
         plane.f[3] += sphere.r;
-        if (!PlanePointSide(plane, sphere.origin))
+        if (!Vector::PlanePointSide(plane, sphere.origin))
             return false;
     }
 
@@ -280,17 +280,17 @@ bool Intersect(const Frustum& frustum, const Sphere& sphere)
     check(2, 6);
     check(3, 7);
 
-    // sphere coliding with edge
+    // sphere colliding with edge
     if (dist < sphere.r)
         return true;
 
     // test sphere against frustum vertices
-    Vector plane = PlaneFromNormalAndPoint(VectorNormalize3(nearest - sphere.origin), sphere.origin);
+    Vector plane = Vector::PlaneFromNormalAndPoint((nearest - sphere.origin).Normalized3(), sphere.origin);
     plane.f[3] -= sphere.r;
 
     for (int i = 0; i < 8; ++i)
     {
-        if (!PlanePointSide(plane, frustum.verticies[i]))
+        if (!Vector::PlanePointSide(plane, frustum.verticies[i]))
             return true;
     }
 

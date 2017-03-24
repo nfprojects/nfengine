@@ -292,15 +292,15 @@ void DepthStencilScene::Draw(float dt)
     if (mAngle > NFE_MATH_2PI)
         mAngle -= NFE_MATH_2PI;
 
-    Matrix modelMatrix = MatrixRotationNormal(Vector(0.0f, 1.0f, 0.0f), mAngle);
-    Matrix viewMatrix = MatrixLookTo(Vector(6.0f, 1.2f, 0.0f), Vector(-2.0f, -1.0f, 0.0f),
+    Matrix modelMatrix = Matrix::MakeRotationNormal(Vector(0.0f, 1.0f, 0.0f), mAngle);
+    Matrix viewMatrix = Matrix::MakeLookTo(Vector(6.0f, 1.2f, 0.0f), Vector(-2.0f, -1.0f, 0.0f),
                                      Vector(0.0f, 1.0f, 0.0f));
-    Matrix projMatrix = MatrixPerspective(static_cast<float>(WINDOW_WIDTH) /
+    Matrix projMatrix = Matrix::MakePerspective(static_cast<float>(WINDOW_WIDTH) /
                                           static_cast<float>(WINDOW_HEIGHT),
                                           70.0f * NFE_MATH_PI / 180.0f, 100.0f, 0.1f);
 
-    Matrix reflectionMatrix = MatrixScaling(Vector(1.0f, -1.0f, 1.0f)) *
-                              MatrixTranslation3(Vector(0.0f, -2.0f, 0.0f));
+    Matrix reflectionMatrix = Matrix::MakeScaling(Vector(1.0f, -1.0f, 1.0f)) *
+                              Matrix::MakeTranslation3(Vector(0.0f, -2.0f, 0.0f));
 
     mCommandBuffer->Begin();
     mCommandBuffer->SetViewport(0.0f, static_cast<float>(WINDOW_WIDTH), 0.0f,
