@@ -32,7 +32,7 @@ void TransformSystem::UpdateComponent(TransformComponent* component)
         {
             if (parent)
             {
-                Matrix parentMatrixInverse = MatrixInverse(parent->mMatrix);
+                Matrix parentMatrixInverse = parent->mMatrix.Inverted();
                 component->mLocalMatrix = component->mMatrix * parentMatrixInverse;
             }
             else

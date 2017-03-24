@@ -60,12 +60,14 @@
 #error "Target system not supported!"
 #endif // defined(WIN32)
 
-
-// we assume that when using Windows we build for x86 CPU supporting SSE and SSE4
-#if defined(WIN32)
+// TODO these should be defined by Visual Studio solution somehow
+// for now we assume that we always build for x86 CPU supporting AVX and FMA (e.g. Intel Haswell)
+#ifdef WIN32
 #define NFE_USE_SSE
 #define NFE_USE_SSE4
-#endif // defined(WIN32)
+#define NFE_USE_AVX
+#define NFE_USE_FMA
+#endif // WIN32
 
 
 // macro for data prefetching from RAM to CPU cache.
@@ -92,7 +94,7 @@
     Type& operator=(Type&&) = delete;
 
 
-// macro for disabling "unsused parameter"
+// macro for disabling "unused parameter"
 #ifndef UNUSED
 #define UNUSED(x) (void)(x)
 #endif // UNUSED

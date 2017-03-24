@@ -15,9 +15,9 @@
 namespace NFE {
 namespace Math {
 
-/*
-    Pseudorandom number generator
-*/
+/**
+ * Pseudorandom number generator
+ */
 class NFCOMMON_API Random
 {
 private:
@@ -38,24 +38,36 @@ public:
     uint64 GetLong();
     int GetInt();
 
-    //Generate random float with uniform distribution from range (0.0f, 1.0f]
+    // Generate random float with uniform distribution from range (0.0f, 1.0f]
     float GetFloat();
     double GetDouble();
 
-    //Generate random float with uniform distribution from range [-1.0f, 1.0f)
-    //faster than "GetFloat()*2.0f-1.0f"
+    // Generate random float with uniform distribution from range [-1.0f, 1.0f)
+    // faster than "GetFloat()*2.0f-1.0f"
     float GetFloatBipolar();
 
-    //generate uniformly distributed float vectors
+    // generate uniformly distributed float vectors
     Float2 GetFloat2();
     Float3 GetFloat3();
     Float4 GetFloat4();
 
-    //Generate random float (vector) with gaussian distribution. (SLOW)
+    // Generate random float (vector) with Gaussian distribution. (SLOW)
     float GetFloatNormal();
     Float2 GetFloatNormal2();
     Float3 GetFloatNormal3();
     Float4 GetFloatNormal4();
+
+    /**
+     * Generate random point on a circle (uniform distribution).
+     * @note This is slow.
+     */
+    Float2 GetPointInsideCircle();
+
+    /**
+     * Generate random point on a sphere (uniform distribution).
+     * @note This is slow.
+     */
+    Float3 GetPointOnSphere();
 
     /**
      * Fisher-Yates shuffle algorithm.

@@ -96,14 +96,38 @@ void Logger::LogBuildInfo() const
     LOG_INFO("Compiler: %s", SystemInfo::Instance().GetCompilerInfo().c_str());
     LOG_INFO("nfCommon build date: " __DATE__ ", " __TIME__);
 
+    std::vector<const char*> instructionSet;
+
 #ifdef NFE_USE_SSE
-    LOG_INFO("nfCommon built with SSE instructions");
-#ifdef NFE_USE_SSE4
-    LOG_INFO("nfCommon built with SSE4.1 instructions");
-#endif // NFE_USE_SSE4
-#else
-    LOG_INFO("nfCommon built with native FPU instructions only");
+    instructionSet.push_back("SSE");
 #endif // NFE_USE_SSE
+
+#ifdef NFE_USE_SSE4
+    instructionSet.push_back("SSE4");
+#endif // NFE_USE_SSE4
+
+#ifdef NFE_USE_AVX
+    instructionSet.push_back("AVX");
+#endif // NFE_USE_AVX
+
+#ifdef NFE_USE_FMA
+    instructionSet.push_back("FMA");
+#endif // NFE_USE_FMA
+
+    if (instructionSet.empty())
+    {
+        LOG_INFO("nfCommon built with native FPU instructions only");
+    }
+    else
+    {
+        std::string str;
+        for (const char* name : instructionSet)
+        {
+            str += ' ';
+            str += name;
+        }
+        LOG_INFO("nfCommon built with instructions:%s", str.c_str());
+    }
 }
 
 void Logger::LogRunTime() const

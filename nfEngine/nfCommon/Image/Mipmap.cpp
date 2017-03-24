@@ -132,7 +132,7 @@ Color Mipmap::FilterGammaCorrected(uint32 x, uint32 y, ImageFormat fmt)
     c *= c;
     d *= d;
 
-    return VectorSqrt(((a + b) + (c + d)) * 0.25f);
+    return Vector::Sqrt(((a + b) + (c + d)) * 0.25f);
 }
 
 Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
@@ -179,7 +179,7 @@ Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
         {
             uint8* data = static_cast<uint8*>(mData.GetData());
             data += 4 * (y * mWidth + x);
-            return VectorLoadUChar4(data) * VECTOR_INV_255;
+            return Vector::Load4(data) * VECTOR_INV_255;
         }
 
         case ImageFormat::R_Float:
@@ -238,7 +238,7 @@ void Mipmap::SetTexel(const Color& v, uint32 x, uint32 y, ImageFormat fmt)
         {
             uint8* data = static_cast<uint8*>(mData.GetData());
             data += 4 * (y * mWidth + x);
-            VectorStoreUChar4(v * 255.0f, data);
+            (v * 255.0f).Store4(data);
             break;
         }
 
@@ -253,7 +253,7 @@ void Mipmap::SetTexel(const Color& v, uint32 x, uint32 y, ImageFormat fmt)
         {
             Float4* data = static_cast<Float4*>(mData.GetData());
             data += (y * mWidth + x);
-            VectorStore(v, data);
+            v.Store(data);
             break;
         }
 

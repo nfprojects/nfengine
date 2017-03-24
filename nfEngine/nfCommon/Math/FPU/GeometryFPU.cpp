@@ -17,25 +17,25 @@ namespace Math {
 template<> NFCOMMON_API
 bool Intersect(const Box& box1, const Box& box2)
 {
-    return VectorLess3(box1.min, box2.max) && VectorLess3(box2.min, box1.max);
+    return Vector::Less3(box1.min, box2.max) && Vector::Less3(box2.min, box1.max);
 }
 
 // Box-point intersection test
 template<> NFCOMMON_API
 bool Intersect(const Box& box, const Vector& point)
 {
-    return VectorGreaterEq3(box.max, point) && VectorGreaterEq3(point, box.min);
+    return Vector::GreaterEq3(box.max, point) && Vector::GreaterEq3(point, box.min);
 }
 
 template<> NFCOMMON_API
 IntersectionResult IntersectEx(const Box& box1, const Box& box2)
 {
-    if (VectorGreaterMask(box1.min, box2.max) & 0x7)
+    if (Vector::GreaterMask(box1.min, box2.max) & 0x7)
         return IntersectionResult::Outside;
-    if (VectorGreaterMask(box2.min, box1.max) & 0x7)
+    if (Vector::GreaterMask(box2.min, box1.max) & 0x7)
         return IntersectionResult::Outside;
 
-    if (VectorGreater3(box1.min, box2.min) && VectorGreater3(box2.max, box1.max))
+    if (Vector::Greater3(box1.min, box2.min) && Vector::Greater3(box2.max, box1.max))
         return IntersectionResult::Inside;
 
     return IntersectionResult::Intersect;

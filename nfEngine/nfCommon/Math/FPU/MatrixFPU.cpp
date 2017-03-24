@@ -13,7 +13,7 @@
 namespace NFE {
 namespace Math {
 
-Matrix MatrixRotationNormal(const Vector& normalAxis, float angle)
+Matrix Matrix::MakeRotationNormal(const Vector& normalAxis, float angle)
 {
     Matrix result;
 
@@ -39,66 +39,66 @@ Matrix MatrixRotationNormal(const Vector& normalAxis, float angle)
                          t * z * z + c,
                          0.0f);
 
-    result.r[3] = VECTOR_IDENTITY_ROW_3;
+    result.r[3] = VECTOR_W;
 
     return result;
 }
 
-Matrix MatrixInverse(const Matrix& m)
+Matrix Matrix::Inverted() const
 {
     float inv[16], det;
 
-    // formula taken from MESA implmentation of GLU library
-    inv[0 ] =  m.f[5 ] * m.f[10] * m.f[15] - m.f[5 ] * m.f[11] * m.f[14] -
-               m.f[9 ] * m.f[6 ] * m.f[15] + m.f[9 ] * m.f[7 ] * m.f[14] +
-               m.f[13] * m.f[6 ] * m.f[11] - m.f[13] * m.f[7 ] * m.f[10];
-    inv[1 ] = -m.f[1 ] * m.f[10] * m.f[15] + m.f[1 ] * m.f[11] * m.f[14] +
-               m.f[9 ] * m.f[2 ] * m.f[15] - m.f[9 ] * m.f[3 ] * m.f[14] -
-               m.f[13] * m.f[2 ] * m.f[11] + m.f[13] * m.f[3 ] * m.f[10];
-    inv[2 ] =  m.f[1 ] * m.f[6 ] * m.f[15] - m.f[1 ] * m.f[7 ] * m.f[14] -
-               m.f[5 ] * m.f[2 ] * m.f[15] + m.f[5 ] * m.f[3 ] * m.f[14] +
-               m.f[13] * m.f[2 ] * m.f[7 ] - m.f[13] * m.f[3 ] * m.f[6 ];
-    inv[3 ] = -m.f[1 ] * m.f[6 ] * m.f[11] + m.f[1 ] * m.f[7 ] * m.f[10] +
-               m.f[5 ] * m.f[2 ] * m.f[11] - m.f[5 ] * m.f[3 ] * m.f[10] -
-               m.f[9 ] * m.f[2 ] * m.f[7 ] + m.f[9 ] * m.f[3 ] * m.f[6 ];
-    inv[4 ] = -m.f[4 ] * m.f[10] * m.f[15] + m.f[4 ] * m.f[11] * m.f[14] +
-               m.f[8 ] * m.f[6 ] * m.f[15] - m.f[8 ] * m.f[7 ] * m.f[14] -
-               m.f[12] * m.f[6 ] * m.f[11] + m.f[12] * m.f[7 ] * m.f[10];
-    inv[5 ] =  m.f[0 ] * m.f[10] * m.f[15] - m.f[0 ] * m.f[11] * m.f[14] -
-               m.f[8 ] * m.f[2 ] * m.f[15] + m.f[8 ] * m.f[3 ] * m.f[14] +
-               m.f[12] * m.f[2 ] * m.f[11] - m.f[12] * m.f[3 ] * m.f[10];
-    inv[6 ] = -m.f[0 ] * m.f[6 ] * m.f[15] + m.f[0 ] * m.f[7 ] * m.f[14] +
-               m.f[4 ] * m.f[2 ] * m.f[15] - m.f[4 ] * m.f[3 ] * m.f[14] -
-               m.f[12] * m.f[2 ] * m.f[7 ] + m.f[12] * m.f[3 ] * m.f[6 ];
-    inv[7 ] =  m.f[0 ] * m.f[6 ] * m.f[11] - m.f[0 ] * m.f[7 ] * m.f[10] -
-               m.f[4 ] * m.f[2 ] * m.f[11] + m.f[4 ] * m.f[3 ] * m.f[10] +
-               m.f[8 ] * m.f[2 ] * m.f[7 ] - m.f[8 ] * m.f[3 ] * m.f[6 ];
-    inv[8 ] =  m.f[4 ] * m.f[9 ] * m.f[15] - m.f[4 ] * m.f[11] * m.f[13] -
-               m.f[8 ] * m.f[5 ] * m.f[15] + m.f[8 ] * m.f[7 ] * m.f[13] +
-               m.f[12] * m.f[5 ] * m.f[11] - m.f[12] * m.f[7 ] * m.f[9 ];
-    inv[9 ] = -m.f[0 ] * m.f[9 ] * m.f[15] + m.f[0 ] * m.f[11] * m.f[13] +
-               m.f[8 ] * m.f[1 ] * m.f[15] - m.f[8 ] * m.f[3 ] * m.f[13] -
-               m.f[12] * m.f[1 ] * m.f[11] + m.f[12] * m.f[3 ] * m.f[9 ];
-    inv[10] =  m.f[0 ] * m.f[5 ] * m.f[15] - m.f[0 ] * m.f[7 ] * m.f[13] -
-               m.f[4 ] * m.f[1 ] * m.f[15] + m.f[4 ] * m.f[3 ] * m.f[13] +
-               m.f[12] * m.f[1 ] * m.f[7 ] - m.f[12] * m.f[3 ] * m.f[5 ];
-    inv[11] = -m.f[0 ] * m.f[5 ] * m.f[11] + m.f[0 ] * m.f[7 ] * m.f[9 ] +
-               m.f[4 ] * m.f[1 ] * m.f[11] - m.f[4 ] * m.f[3 ] * m.f[9 ] -
-               m.f[8 ] * m.f[1 ] * m.f[7 ] + m.f[8 ] * m.f[3 ] * m.f[5 ];
-    inv[12] = -m.f[4 ] * m.f[9 ] * m.f[14] + m.f[4 ] * m.f[10] * m.f[13] +
-               m.f[8 ] * m.f[5 ] * m.f[14] - m.f[8 ] * m.f[6 ] * m.f[13] -
-               m.f[12] * m.f[5 ] * m.f[10] + m.f[12] * m.f[6 ] * m.f[9 ];
-    inv[13] =  m.f[0 ] * m.f[9 ] * m.f[14] - m.f[0 ] * m.f[10] * m.f[13] -
-               m.f[8 ] * m.f[1 ] * m.f[14] + m.f[8 ] * m.f[2 ] * m.f[13] +
-               m.f[12] * m.f[1 ] * m.f[10] - m.f[12] * m.f[2 ] * m.f[9 ];
-    inv[14] = -m.f[0 ] * m.f[5 ] * m.f[14] + m.f[0 ] * m.f[6 ] * m.f[13] +
-               m.f[4 ] * m.f[1 ] * m.f[14] - m.f[4 ] * m.f[2 ] * m.f[13] -
-               m.f[12] * m.f[1 ] * m.f[6 ] + m.f[12] * m.f[2 ] * m.f[5 ];
-    inv[15] =  m.f[0 ] * m.f[5 ] * m.f[10] - m.f[0 ] * m.f[6 ] * m.f[9 ] -
-               m.f[4 ] * m.f[1 ] * m.f[10] + m.f[4 ] * m.f[2 ] * m.f[9 ] +
-               m.f[8 ] * m.f[1 ] * m.f[6 ] - m.f[8 ] * m.f[2 ] * m.f[5 ];
+    // formula taken from MESA implementation of GLU library
+    inv[0 ] =  f[5 ] * f[10] * f[15] - f[5 ] * f[11] * f[14] -
+               f[9 ] * f[6 ] * f[15] + f[9 ] * f[7 ] * f[14] +
+               f[13] * f[6 ] * f[11] - f[13] * f[7 ] * f[10];
+    inv[1 ] = -f[1 ] * f[10] * f[15] + f[1 ] * f[11] * f[14] +
+               f[9 ] * f[2 ] * f[15] - f[9 ] * f[3 ] * f[14] -
+               f[13] * f[2 ] * f[11] + f[13] * f[3 ] * f[10];
+    inv[2 ] =  f[1 ] * f[6 ] * f[15] - f[1 ] * f[7 ] * f[14] -
+               f[5 ] * f[2 ] * f[15] + f[5 ] * f[3 ] * f[14] +
+               f[13] * f[2 ] * f[7 ] - f[13] * f[3 ] * f[6 ];
+    inv[3 ] = -f[1 ] * f[6 ] * f[11] + f[1 ] * f[7 ] * f[10] +
+               f[5 ] * f[2 ] * f[11] - f[5 ] * f[3 ] * f[10] -
+               f[9 ] * f[2 ] * f[7 ] + f[9 ] * f[3 ] * f[6 ];
+    inv[4 ] = -f[4 ] * f[10] * f[15] + f[4 ] * f[11] * f[14] +
+               f[8 ] * f[6 ] * f[15] - f[8 ] * f[7 ] * f[14] -
+               f[12] * f[6 ] * f[11] + f[12] * f[7 ] * f[10];
+    inv[5 ] =  f[0 ] * f[10] * f[15] - f[0 ] * f[11] * f[14] -
+               f[8 ] * f[2 ] * f[15] + f[8 ] * f[3 ] * f[14] +
+               f[12] * f[2 ] * f[11] - f[12] * f[3 ] * f[10];
+    inv[6 ] = -f[0 ] * f[6 ] * f[15] + f[0 ] * f[7 ] * f[14] +
+               f[4 ] * f[2 ] * f[15] - f[4 ] * f[3 ] * f[14] -
+               f[12] * f[2 ] * f[7 ] + f[12] * f[3 ] * f[6 ];
+    inv[7 ] =  f[0 ] * f[6 ] * f[11] - f[0 ] * f[7 ] * f[10] -
+               f[4 ] * f[2 ] * f[11] + f[4 ] * f[3 ] * f[10] +
+               f[8 ] * f[2 ] * f[7 ] - f[8 ] * f[3 ] * f[6 ];
+    inv[8 ] =  f[4 ] * f[9 ] * f[15] - f[4 ] * f[11] * f[13] -
+               f[8 ] * f[5 ] * f[15] + f[8 ] * f[7 ] * f[13] +
+               f[12] * f[5 ] * f[11] - f[12] * f[7 ] * f[9 ];
+    inv[9 ] = -f[0 ] * f[9 ] * f[15] + f[0 ] * f[11] * f[13] +
+               f[8 ] * f[1 ] * f[15] - f[8 ] * f[3 ] * f[13] -
+               f[12] * f[1 ] * f[11] + f[12] * f[3 ] * f[9 ];
+    inv[10] =  f[0 ] * f[5 ] * f[15] - f[0 ] * f[7 ] * f[13] -
+               f[4 ] * f[1 ] * f[15] + f[4 ] * f[3 ] * f[13] +
+               f[12] * f[1 ] * f[7 ] - f[12] * f[3 ] * f[5 ];
+    inv[11] = -f[0 ] * f[5 ] * f[11] + f[0 ] * f[7 ] * f[9 ] +
+               f[4 ] * f[1 ] * f[11] - f[4 ] * f[3 ] * f[9 ] -
+               f[8 ] * f[1 ] * f[7 ] + f[8 ] * f[3 ] * f[5 ];
+    inv[12] = -f[4 ] * f[9 ] * f[14] + f[4 ] * f[10] * f[13] +
+               f[8 ] * f[5 ] * f[14] - f[8 ] * f[6 ] * f[13] -
+               f[12] * f[5 ] * f[10] + f[12] * f[6 ] * f[9 ];
+    inv[13] =  f[0 ] * f[9 ] * f[14] - f[0 ] * f[10] * f[13] -
+               f[8 ] * f[1 ] * f[14] + f[8 ] * f[2 ] * f[13] +
+               f[12] * f[1 ] * f[10] - f[12] * f[2 ] * f[9 ];
+    inv[14] = -f[0 ] * f[5 ] * f[14] + f[0 ] * f[6 ] * f[13] +
+               f[4 ] * f[1 ] * f[14] - f[4 ] * f[2 ] * f[13] -
+               f[12] * f[1 ] * f[6 ] + f[12] * f[2 ] * f[5 ];
+    inv[15] =  f[0 ] * f[5 ] * f[10] - f[0 ] * f[6 ] * f[9 ] -
+               f[4 ] * f[1 ] * f[10] + f[4 ] * f[2 ] * f[9 ] +
+               f[8 ] * f[1 ] * f[6 ] - f[8 ] * f[2 ] * f[5 ];
 
-    det = m.f[0] * inv[0] + m.f[1] * inv[4] + m.f[2] * inv[8] + m.f[3] * inv[12];
+    det = f[0] * inv[0] + f[1] * inv[4] + f[2] * inv[8] + f[3] * inv[12];
 
     return Matrix({inv[0],  inv[1],  inv[2],  inv[3],
                    inv[4],  inv[5],  inv[6],  inv[7],
