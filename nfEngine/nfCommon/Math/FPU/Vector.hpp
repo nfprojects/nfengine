@@ -79,7 +79,7 @@ void Vector::Set(float scalar)
 
 // Load & store ===================================================================================
 
-Vector VectorLoadUChar4(const unsigned char* src)
+Vector Vector::Load4(const unsigned char* src)
 {
     Vector vec;
     vec[0] = static_cast<float>(src[0]);
@@ -89,42 +89,42 @@ Vector VectorLoadUChar4(const unsigned char* src)
     return vec;
 }
 
-void VectorStoreUChar4(const Vector& src, unsigned char* dest)
+void Vector::Store4(uint8* dest) const
 {
-    Vector vec = src; // TODO: saturate to <0, 255>
-    dest[0] = static_cast<unsigned char>(vec[0]);
-    dest[1] = static_cast<unsigned char>(vec[1]);
-    dest[2] = static_cast<unsigned char>(vec[2]);
-    dest[3] = static_cast<unsigned char>(vec[3]);
+    // TODO: saturate to <0, 255>
+    dest[0] = static_cast<unsigned char>(f[0]);
+    dest[1] = static_cast<unsigned char>(f[1]);
+    dest[2] = static_cast<unsigned char>(f[2]);
+    dest[3] = static_cast<unsigned char>(f[3]);
 }
 
-void VectorStore(const Vector& src, float* dest)
+void Vector::Store(float* dest) const
 {
-    dest[0] = src[0];
-    dest[1] = src[1];
-    dest[2] = src[2];
-    dest[3] = src[3];
+    dest[0] = f[0];
+    dest[1] = f[1];
+    dest[2] = f[2];
+    dest[3] = f[3];
 }
 
-void VectorStore(const Vector& src, Float2* dest)
+void Vector::Store(Float2* dest) const
 {
-    dest->x = src[0];
-    dest->y = src[1];
+    dest->x = f[0];
+    dest->y = f[1];
 }
 
-void VectorStore(const Vector& src, Float3* dest)
+void Vector::Store(Float3* dest) const
 {
-    dest->x = src[0];
-    dest->y = src[1];
-    dest->z = src[2];
+    dest->x = f[0];
+    dest->y = f[1];
+    dest->z = f[2];
 }
 
-void VectorStore(const Vector& src, Float4* dest)
+void Vector::Store(Float4* dest) const
 {
-    dest->x = src[0];
-    dest->y = src[1];
-    dest->z = src[2];
-    dest->w = src[3];
+    dest->x = f[0];
+    dest->y = f[1];
+    dest->z = f[2];
+    dest->w = f[3];
 }
 
 Vector Vector::SplatX() const
@@ -147,12 +147,12 @@ Vector Vector::SplatW() const
     return Vector(f[3], f[3], f[3], f[3]);
 }
 
-Vector VectorSplat(float f)
+Vector Vector::Splat(float f)
 {
     return Vector(f, f, f, f);
 }
 
-Vector VectorSelectBySign(const Vector& a, const Vector& b, const Vector& sel)
+Vector Vector::SelectBySign(const Vector& a, const Vector& b, const Vector& sel)
 {
     Vector ret;
     ret[0] = sel[0] > 0.0f ? a[0] : b[0];
@@ -303,22 +303,22 @@ Vector& Vector::operator/= (float b)
     return *this;
 }
 
-Vector VectorFloor(const Vector& v)
+Vector Vector::Floor(const Vector& v)
 {
     return Vector(floorf(v.f[0]), floorf(v.f[1]), floorf(v.f[2]), floorf(v.f[3]));
 }
 
-Vector VectorSqrt(const Vector& v)
+Vector Vector::Sqrt(const Vector& v)
 {
     return Vector(sqrtf(v.f[0]), v.f[1], v.f[2], v.f[3]);
 }
 
-Vector VectorSqrt4(const Vector& v)
+Vector Vector::Sqrt4(const Vector& v)
 {
     return Vector(sqrtf(v.f[0]), sqrtf(v.f[1]), sqrtf(v.f[2]), sqrtf(v.f[3]));
 }
 
-Vector VectorReciprocal(const Vector& v)
+Vector Vector::Reciprocal(const Vector& v)
 {
     // this checks are required to avoid "potential divide by 0" warning
     return Vector(v.f[0] != 0.0f ? 1.0f / v.f[0] : INFINITY,
@@ -327,32 +327,32 @@ Vector VectorReciprocal(const Vector& v)
                   v.f[3] != 0.0f ? 1.0f / v.f[3] : INFINITY);
 }
 
-Vector VectorMin(const Vector& a, const Vector& b)
+Vector Vector::Min(const Vector& a, const Vector& b)
 {
     Vector vec;
-    vec.f[0] = Min(a.f[0], b.f[0]);
-    vec.f[1] = Min(a.f[1], b.f[1]);
-    vec.f[2] = Min(a.f[2], b.f[2]);
-    vec.f[3] = Min(a.f[3], b.f[3]);
+    vec.f[0] = Math::Min<float>(a.f[0], b.f[0]);
+    vec.f[1] = Math::Min<float>(a.f[1], b.f[1]);
+    vec.f[2] = Math::Min<float>(a.f[2], b.f[2]);
+    vec.f[3] = Math::Min<float>(a.f[3], b.f[3]);
     return vec;
 }
 
-Vector VectorMax(const Vector& a, const Vector& b)
+Vector Vector::Max(const Vector& a, const Vector& b)
 {
     Vector vec;
-    vec.f[0] = Max(a.f[0], b.f[0]);
-    vec.f[1] = Max(a.f[1], b.f[1]);
-    vec.f[2] = Max(a.f[2], b.f[2]);
-    vec.f[3] = Max(a.f[3], b.f[3]);
+    vec.f[0] = Math::Max<float>(a.f[0], b.f[0]);
+    vec.f[1] = Math::Max<float>(a.f[1], b.f[1]);
+    vec.f[2] = Math::Max<float>(a.f[2], b.f[2]);
+    vec.f[3] = Math::Max<float>(a.f[3], b.f[3]);
     return vec;
 }
 
-Vector VectorAbs(const Vector& v)
+Vector Vector::Abs(const Vector& v)
 {
     return Vector(fabsf(v.f[0]), fabsf(v.f[1]), fabsf(v.f[2]), fabsf(v.f[3]));
 }
 
-Vector VectorLerp(const Vector& v1, const Vector& v2, const Vector& weight)
+Vector Vector::Lerp(const Vector& v1, const Vector& v2, const Vector& weight)
 {
     Vector vec;
     vec.f[0] = v1.f[0] + weight.f[0] * (v2.f[0] - v1.f[0]);
@@ -362,7 +362,7 @@ Vector VectorLerp(const Vector& v1, const Vector& v2, const Vector& weight)
     return vec;
 }
 
-Vector VectorLerp(const Vector& v1, const Vector& v2, float weight)
+Vector Vector::Lerp(const Vector& v1, const Vector& v2, float weight)
 {
     Vector vec;
     vec.f[0] = v1.f[0] + weight * (v2.f[0] - v1.f[0]);
@@ -374,7 +374,7 @@ Vector VectorLerp(const Vector& v1, const Vector& v2, float weight)
 
 // Comparison functions ===========================================================================
 
-int VectorEqualMask(const Vector& v1, const Vector& v2)
+int Vector::EqualMask(const Vector& v1, const Vector& v2)
 {
     int ret = 0;
     ret |= (v1.f[0] == v2.f[0]) ? (1 << 0) : 0;
@@ -384,7 +384,7 @@ int VectorEqualMask(const Vector& v1, const Vector& v2)
     return ret;
 }
 
-int VectorLessMask(const Vector& v1, const Vector& v2)
+int Vector::LessMask(const Vector& v1, const Vector& v2)
 {
     int ret = 0;
     ret |= (v1.f[0] < v2.f[0]) ? (1 << 0) : 0;
@@ -394,7 +394,7 @@ int VectorLessMask(const Vector& v1, const Vector& v2)
     return ret;
 }
 
-int VectorLessEqMask(const Vector& v1, const Vector& v2)
+int Vector::LessEqMask(const Vector& v1, const Vector& v2)
 {
     int ret = 0;
     ret |= (v1.f[0] <= v2.f[0]) ? (1 << 0) : 0;
@@ -404,7 +404,7 @@ int VectorLessEqMask(const Vector& v1, const Vector& v2)
     return ret;
 }
 
-int VectorGreaterMask(const Vector& v1, const Vector& v2)
+int Vector::GreaterMask(const Vector& v1, const Vector& v2)
 {
     int ret = 0;
     ret |= (v1.f[0] > v2.f[0]) ? (1 << 0) : 0;
@@ -414,7 +414,7 @@ int VectorGreaterMask(const Vector& v1, const Vector& v2)
     return ret;
 }
 
-int VectorGreaterEqMask(const Vector& v1, const Vector& v2)
+int Vector::GreaterEqMask(const Vector& v1, const Vector& v2)
 {
     int ret = 0;
     ret |= (v1.f[0] >= v2.f[0]) ? (1 << 0) : 0;
@@ -424,7 +424,7 @@ int VectorGreaterEqMask(const Vector& v1, const Vector& v2)
     return ret;
 }
 
-int VectorNotEqualMask(const Vector& v1, const Vector& v2)
+int Vector::NotEqualMask(const Vector& v1, const Vector& v2)
 {
     int ret = 0;
     ret |= (v1.f[0] != v2.f[0]) ? (1 << 0) : 0;
@@ -436,64 +436,64 @@ int VectorNotEqualMask(const Vector& v1, const Vector& v2)
 
 // 2D vector comparison functions =================================================================
 
-bool VectorEqual2(const Vector& v1, const Vector& v2)
+bool Vector::Equal2(const Vector& v1, const Vector& v2)
 {
     return (v1.f[0] == v2.f[0]) && (v1.f[1] == v2.f[1]);
 }
 
-bool VectorLess2(const Vector& v1, const Vector& v2)
+bool Vector::Less2(const Vector& v1, const Vector& v2)
 {
     return (v1.f[0] < v2.f[0]) && (v1.f[1] < v2.f[1]);
 }
 
-bool VectorLessEq2(const Vector& v1, const Vector& v2)
+bool Vector::LessEq2(const Vector& v1, const Vector& v2)
 {
     return (v1.f[0] <= v2.f[0]) && (v1.f[1] <= v2.f[1]);
 }
 
-bool VectorGreater2(const Vector& v1, const Vector& v2)
+bool Vector::Greater2(const Vector& v1, const Vector& v2)
 {
     return (v1.f[0] > v2.f[0]) && (v1.f[1] > v2.f[1]);
 }
 
-bool VectorGreaterEq2(const Vector& v1, const Vector& v2)
+bool Vector::GreaterEq2(const Vector& v1, const Vector& v2)
 {
     return (v1.f[0] >= v2.f[0]) && (v1.f[1] >= v2.f[1]);
 }
 
-bool VectorNotEqual2(const Vector& v1, const Vector& v2)
+bool Vector::NotEqual2(const Vector& v1, const Vector& v2)
 {
     return (v1.f[0] != v2.f[0]) && (v1.f[1] != v2.f[1]);
 }
 
 // 3D vector comparison functions =================================================================
 
-bool VectorEqual3(const Vector& v1, const Vector& v2)
+bool Vector::Equal3(const Vector& v1, const Vector& v2)
 {
     return (v1.f[0] == v2.f[0]) && (v1.f[1] == v2.f[1]) && (v1.f[2] == v2.f[2]);
 }
 
-bool VectorLess3(const Vector& v1, const Vector& v2)
+bool Vector::Less3(const Vector& v1, const Vector& v2)
 {
     return (v1.f[0] < v2.f[0]) && (v1.f[1] < v2.f[1]) && (v1.f[2] < v2.f[2]);
 }
 
-bool VectorLessEq3(const Vector& v1, const Vector& v2)
+bool Vector::LessEq3(const Vector& v1, const Vector& v2)
 {
     return (v1.f[0] <= v2.f[0]) && (v1.f[1] <= v2.f[1]) && (v1.f[2] <= v2.f[2]);
 }
 
-bool VectorGreater3(const Vector& v1, const Vector& v2)
+bool Vector::Greater3(const Vector& v1, const Vector& v2)
 {
     return (v1.f[0] > v2.f[0]) && (v1.f[1] > v2.f[1]) && (v1.f[2] > v2.f[2]);
 }
 
-bool VectorGreaterEq3(const Vector& v1, const Vector& v2)
+bool Vector::GreaterEq3(const Vector& v1, const Vector& v2)
 {
     return (v1.f[0] >= v2.f[0]) && (v1.f[1] >= v2.f[1]) && (v1.f[2] >= v2.f[2]);
 }
 
-bool VectorNotEqual3(const Vector& v1, const Vector& v2)
+bool Vector::NotEqual3(const Vector& v1, const Vector& v2)
 {
     return (v1.f[0] != v2.f[0]) && (v1.f[1] != v2.f[1]) && (v1.f[2] != v2.f[2]);
 }
@@ -538,23 +538,27 @@ bool Vector::operator!= (const Vector& b) const
 
 // Geometry functions =============================================================================
 
-float VectorDot3f(const Vector& v1, const Vector& v2)
+float Vector::Dot3(const Vector& v1, const Vector& v2)
 {
     return v1.f[0] * v2.f[0] + v1.f[1] * v2.f[1] + v1.f[2] * v2.f[2];
 }
 
-Vector VectorDot3(const Vector& v1, const Vector& v2)
+Vector Vector::Dot3V(const Vector& v1, const Vector& v2)
 {
-    return VectorSplat(VectorDot3f(v1, v2));
+    return Vector::Splat(Vector::Dot3(v1, v2));
 }
 
-Vector VectorDot4(const Vector& v1, const Vector& v2)
+float Vector::Dot4(const Vector& v1, const Vector& v2)
 {
-    return VectorSplat((v1.f[0] * v2.f[0] + v1.f[1] * v2.f[1]) +
-                       (v1.f[2] * v2.f[2] + v1.f[3] * v2.f[3]));
+    return (v1.f[0] * v2.f[0] + v1.f[1] * v2.f[1]) + (v1.f[2] * v2.f[2] + v1.f[3] * v2.f[3]);
 }
 
-Vector VectorCross3(const Vector& v1, const Vector& v2)
+Vector Vector::Dot4V(const Vector& v1, const Vector& v2)
+{
+    return Vector::Splat(Vector::Dot4(v1, v2));
+}
+
+Vector Vector::Cross3(const Vector& v1, const Vector& v2)
 {
     Vector vec;
     vec.f[0] = v1.f[1] * v2.f[2] - v1.f[2] * v2.f[1];
@@ -563,62 +567,79 @@ Vector VectorCross3(const Vector& v1, const Vector& v2)
     return vec;
 }
 
-float VectorLength3f(const Vector& v)
+float Vector::Length3() const
 {
-    return sqrtf(v.f[0] * v.f[0] + v.f[1] * v.f[1] + v.f[2] * v.f[2]);
+    return sqrtf(f[0] * f[0] + f[1] * f[1] + f[2] * f[2]);
 }
 
-Vector VectorLength3(const Vector& v)
+Vector Vector::Length3V() const
 {
-    return VectorSplat(VectorLength3f(v));
+    return Vector::Splat(Length3());
 }
 
-Vector VectorNormalize3(const Vector& v)
+float Vector::Length4() const
 {
-    float lenInv = 1.0f / VectorLength3f(v);
-    return Vector(v.f[0] * lenInv, v.f[1] * lenInv, v.f[2] * lenInv, 0.0f);
+    return sqrtf((f[0] * f[0] + f[1] * f[1]) + (f[2] * f[2] + f[3] * f[3]));
 }
 
-float VectorLength4f(const Vector& v)
+Vector Vector::Length4V() const
 {
-    return sqrtf((v.f[0] * v.f[0] + v.f[1] * v.f[1]) + (v.f[2] * v.f[2] + v.f[3] * v.f[3]));
+    return Splat(Length4());
 }
 
-Vector VectorLength4(const Vector& v)
+Vector Vector::Normalized3() const
 {
-    return VectorSplat(VectorLength4f(v));
+    float lenInv = 1.0f / Length3();
+    return Vector(f[0] * lenInv, f[1] * lenInv, f[2] * lenInv, 0.0f);
 }
 
-Vector VectorNormalize4(const Vector& v)
+Vector& Vector::Normalize3()
 {
-    float lenInv = 1.0f / VectorLength4f(v);
-    return v * lenInv;
+    float lenInv = 1.0f / Length3();
+    f[0] /= lenInv;
+    f[1] /= lenInv;
+    f[2] /= lenInv;
+    f[3] = 0.0f;
+    return *this;
 }
 
-Vector VectorReflect3(const Vector& i, const Vector& n)
+Vector Vector::Normalized4() const
 {
-    float dot = VectorDot3f(i, n);
+    float lenInv = 1.0f / Length3();
+    return *this * lenInv;
+}
+
+Vector& Vector::Normalize4()
+{
+    float lenInv = 1.0f / Length3();
+    *this *= lenInv;
+    return *this;
+}
+
+Vector Vector::Reflect3(const Vector& i, const Vector& n)
+{
+    float dot = Vector::Dot3(i, n);
     return i - n * (dot + dot);
 }
 
-Vector PlaneFromPoints(const Vector& p1, const Vector& p2, const Vector& p3)
+Vector Vector::PlaneFromPoints(const Vector& p1, const Vector& p2, const Vector& p3)
 {
     Vector v21 = p1 - p2;
     Vector v31 = p1 - p3;
-    Vector n = VectorNormalize3(VectorCross3(v21, v31));
-    float d = VectorDot3f(n, p1);
+    Vector n = Vector::Cross3(v21, v31).Normalized3();
+    float d = Vector::Dot3(n, p1);
     return Vector(n.f[0], n.f[1], n.f[2], -d);
 }
 
-Vector PlaneFromNormalAndPoint(const Vector& normal, const Vector& p)
+Vector Vector::PlaneFromNormalAndPoint(const Vector& normal, const Vector& p)
 {
-    float d = VectorDot3f(normal, p);
+    float d = Vector::Dot3(normal, p);
     return Vector(normal.f[0], normal.f[1], normal.f[2], -d);
 }
 
-bool PlanePointSide(const Vector& plane, const Vector& point)
+bool Vector::PlanePointSide(const Vector& plane, const Vector& point)
 {
-    float d = VectorDot3f(plane, point) + plane.f[3];
+    float d = Vector::Dot3(plane, point) + plane.f[3];
     return d > 0.0f;
 }
 

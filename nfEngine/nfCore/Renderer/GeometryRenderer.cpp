@@ -319,12 +319,12 @@ void GeometryRenderer::Draw(GeometryRendererContext* context, const RenderComman
         // instances buffer is full
         if (bufferIsFull)
         {
-            // udapte per instance data buffer
+            // update per instance data buffer
             size_t instancesToBuffer = Min<size_t>(GeometryRendererContext::gMaxBufferedInstances, buffer.commands.size() - i);
 
             for (size_t j = 0; j < instancesToBuffer; j++)
             {
-                Matrix tmpMatrix = MatrixTranspose(buffer.commands[j + i].matrix);
+                const Matrix tmpMatrix = buffer.commands[j + i].matrix.Transposed();
                 context->instanceData[j].worldMatrix[0] = tmpMatrix.r[0];
                 context->instanceData[j].worldMatrix[1] = tmpMatrix.r[1];
                 context->instanceData[j].worldMatrix[2] = tmpMatrix.r[2];

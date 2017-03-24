@@ -403,10 +403,10 @@ void RenderTargetsScene::Draw(float dt)
     if (mAngle > NFE_MATH_2PI)
         mAngle -= NFE_MATH_2PI;
 
-    Matrix modelMatrix = MatrixRotationNormal(Vector(0.0f, 1.0f, 0.0f), mAngle);
-    Matrix viewMatrix = MatrixLookTo(Vector(3.0f, 0.0f, 0.0f), Vector(-1.0f, 0.0f, 0.0f),
+    Matrix modelMatrix = Matrix::MakeRotationNormal(Vector(0.0f, 1.0f, 0.0f), mAngle);
+    Matrix viewMatrix = Matrix::MakeLookTo(Vector(3.0f, 0.0f, 0.0f), Vector(-1.0f, 0.0f, 0.0f),
                                      Vector(0.0f, 1.0f, 0.0f));
-    Matrix projMatrix = MatrixPerspective((float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
+    Matrix projMatrix = Matrix::MakePerspective((float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
                                           70.0f * NFE_MATH_PI / 180.0f, 5.0f, 1.0f);
 
     mCommandBuffer->Begin();
@@ -461,8 +461,8 @@ void RenderTargetsScene::Draw(float dt)
     // show primary render target texture with simple effect (blur)
     {
         VertexCBuffer cbuffer;
-        cbuffer.viewMatrix = MatrixScaling(Vector(0.5f, 0.5f, 0.5f, 1.0f)) *
-                             MatrixTranslation3(Vector(-0.5f, 0.5f, 0.5f));
+        cbuffer.viewMatrix = Matrix::MakeScaling(Vector(0.5f, 0.5f, 0.5f, 1.0f)) *
+                             Matrix::MakeTranslation3(Vector(-0.5f, 0.5f, 0.5f));
         mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
         mCommandBuffer->DrawIndexed(2 * 3,      // 2 triangles
@@ -474,8 +474,8 @@ void RenderTargetsScene::Draw(float dt)
     if (GetCurrentSubSceneNumber() > 0)
     {
         VertexCBuffer cbuffer;
-        cbuffer.viewMatrix = MatrixScaling(Vector(0.5f, 0.5f, 0.5f, 1.0f)) *
-            MatrixTranslation3(Vector(0.5f, 0.5f, 0.5f));
+        cbuffer.viewMatrix = Matrix::MakeScaling(Vector(0.5f, 0.5f, 0.5f, 1.0f)) *
+            Matrix::MakeTranslation3(Vector(0.5f, 0.5f, 0.5f));
         mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
         mCommandBuffer->SetPipelineState(mDepthPipelineState);
@@ -489,8 +489,8 @@ void RenderTargetsScene::Draw(float dt)
     if (GetCurrentSubSceneNumber() > 1)
     {
         VertexCBuffer cbuffer;
-        cbuffer.viewMatrix = MatrixScaling(Vector(0.5f, 0.5f, 0.5f, 1.0f)) *
-            MatrixTranslation3(Vector(-0.5f, -0.5f, 0.5f));
+        cbuffer.viewMatrix = Matrix::MakeScaling(Vector(0.5f, 0.5f, 0.5f, 1.0f)) *
+            Matrix::MakeTranslation3(Vector(-0.5f, -0.5f, 0.5f));
         mCommandBuffer->WriteBuffer(cb, 0, sizeof(VertexCBuffer), &cbuffer);
 
         mCommandBuffer->SetPipelineState(mSecondTargetPipelineState);

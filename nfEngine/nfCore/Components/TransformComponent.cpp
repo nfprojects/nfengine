@@ -60,7 +60,7 @@ void TransformComponent::SetOrientation(const Quaternion& quat)
 {
     mFlags |= NFE_TRANSFORM_FLAG_GLOBAL_MOVED;
 
-    Matrix rotMatrix = MatrixFromQuaternion(QuaternionNormalize(quat));
+    Matrix rotMatrix = quat.Normalized().ToMatrix();
     mMatrix.r[0] = rotMatrix.r[0];
     mMatrix.r[1] = rotMatrix.r[1];
     mMatrix.r[2] = rotMatrix.r[2];
@@ -72,9 +72,9 @@ void TransformComponent::SetOrientation(const Orientation& orientation)
 
     /// normalize directions
     Vector zAxis, yAxis, xAxis;
-    zAxis = VectorNormalize3(orientation.z);
-    xAxis = VectorNormalize3(VectorCross3(orientation.y, orientation.z));
-    yAxis = VectorNormalize3(VectorCross3(zAxis, xAxis));
+    zAxis = orientation.z.Normalized3();
+    xAxis = Vector::Cross3(orientation.y, orientation.z).Normalized3();
+    yAxis = Vector::Cross3(zAxis, xAxis).Normalized3();
 
     mMatrix.r[0] = xAxis;
     mMatrix.r[1] = yAxis;
@@ -97,9 +97,9 @@ void TransformComponent::SetLocalOrientation(const Orientation& orientation)
 {
     /// normalize directions
     Vector zAxis, yAxis, xAxis;
-    zAxis = VectorNormalize3(orientation.z);
-    xAxis = VectorNormalize3(VectorCross3(orientation.y, orientation.z));
-    yAxis = VectorNormalize3(VectorCross3(zAxis, xAxis));
+    zAxis = orientation.z.Normalized3();
+    xAxis = Vector::Cross3(orientation.y, orientation.z).Normalized3();
+    yAxis = Vector::Cross3(zAxis, xAxis).Normalized3();
 
     mLocalMatrix.r[0] = xAxis;
     mLocalMatrix.r[1] = yAxis;

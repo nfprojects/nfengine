@@ -10,146 +10,132 @@
 #include "Vector.hpp"
 #include "Matrix.hpp"
 
-
 namespace NFE {
 namespace Math {
 
-/**
- * Create null rotation quaternion.
- */
-NFE_INLINE Quaternion QuaternionIdentity()
+NFE_ALIGN16
+struct NFCOMMON_API Quaternion final
 {
-    return Vector(0.0f, 0.0f, 0.0f, 1.0f);
-}
-
-/**
- * Create quaternion form axis and angle.
- */
-NFE_INLINE Quaternion QuaternionFromAxis(const Vector& axis, float angle)
-{
-    angle *= 0.5f;
-    Quaternion q = axis * sinf(angle);
-    q.f[3] = cosf(angle);
-    return q;
-}
-
-
-NFE_INLINE float safe_acos(float x)
-{
-    if (x <= -1.0f) return NFE_MATH_PI;
-    if (x >= 1.0f) return 0.0f;
-    return acosf(x);
-}
-
-/**
- * Extract rotation axis from a quaternion.
- */
-NFE_INLINE Vector QuaternionToAxis(const Quaternion& quat)
-{
-    float x = quat.f[0];
-    float y = quat.f[1];
-    float z = quat.f[2];
-    float sin_squared = x * x + y * y + z * z;
-
-    Vector result;
-    if (sin_squared > 0.0f)
+    union
     {
-        float sin_theta = sqrtf(sin_squared);
-        float k = 2.0f * atan2f(sin_theta, quat.f[3]) / sin_theta;
-        result = quat * k;
-    }
-    else
-    {
-        result = 2.0f * quat;
-    }
-    result.f[3] = 0.0f;
-    return result;
-}
+        Vector q;
+        float f[4];
+    };
 
-/**
- * Create quaternion representing rotation around X axis.
- */
-NFE_INLINE Quaternion QuaternionRotationX(float angle)
-{
-    angle *= 0.5f;
-    Quaternion q = Quaternion(sinf(angle), 0.0f, 0.0f, cosf(angle));
-    return q;
-}
+    NFE_INLINE Quaternion()
+        : q(0.0f, 0.0f, 0.0f, 1.0f)
+    {}
 
-/**
- * Create quaternion representing rotation around Y axis.
- */
-NFE_INLINE Quaternion QuaternionRotationY(float angle)
-{
-    angle *= 0.5f;
-    Quaternion q = Quaternion(0.0f, sinf(angle), 0.0f, cosf(angle));
-    return q;
-}
+    Quaternion(const Quaternion&) = default;
 
-/**
- * Create quaternion representing rotation around Z axis.
- */
-NFE_INLINE Quaternion QuaternionRotationZ(float angle)
-{
-    angle *= 0.5f;
-    Quaternion q = Quaternion(0.0f, 0.0f, sinf(angle), cosf(angle));
-    return q;
-}
+    NFE_INLINE Quaternion(const Vector& v)
+        : q(v)
+    { }
 
-/**
- * Multiply two quaternions.
- */
-NFE_INLINE Quaternion QuaternionMultiply(const Quaternion& q1, const Quaternion& q2)
-{
-    // TODO: convert to SSE!
+    NFE_INLINE Quaternion(float x, float y, float z, float w)
+        : q(x, y, z, w)
+    {}
 
-    Quaternion q;
-    q.f[0] = q1.f[3] * q2.f[0] + q1.f[0] * q2.f[3] + q1.f[1] * q2.f[2] - q1.f[2] * q2.f[1];
-    q.f[1] = q1.f[3] * q2.f[1] + q1.f[1] * q2.f[3] + q1.f[2] * q2.f[0] - q1.f[0] * q2.f[2];
-    q.f[2] = q1.f[3] * q2.f[2] + q1.f[2] * q2.f[3] + q1.f[0] * q2.f[1] - q1.f[1] * q2.f[0];
-    q.f[3] = q1.f[3] * q2.f[3] - q1.f[0] * q2.f[0] - q1.f[1] * q2.f[1] - q1.f[2] * q2.f[2];
-    return q;
-}
+    NFE_INLINE operator const Vector&() const { return q; }
+    NFE_INLINE operator Vector&() { return q; }
 
-NFE_INLINE Quaternion QuaternionNormalize(const Quaternion& q)
-{
-    return VectorNormalize4(q);
-}
+    /**
+     * Create null rotation quaternion.
+     */
+    NFE_INLINE static Quaternion Identity();
 
-/**
- * Calculate inverse of quaternion.
- */
-NFE_INLINE Quaternion QuaternionInverse(const Quaternion& q)
-{
-    Quaternion result;
-    result.f[3] =   q.f[3];
-    result.f[0] = - q.f[0];
-    result.f[1] = - q.f[1];
-    result.f[2] = - q.f[2];
-    return result / VectorLength4(q);
-}
+    /**
+     * Create quaternion form axis and angle.
+     */
+    static Quaternion FromAxis(const Vector& axis, float angle);
 
-/**
- * Spherical interpolation of two quaternions.
- * @param q0,q1 Quaternions to interpolate.
- * @param t     Interpolation factor.
- * @return Interpolated quaternion (equal to q0 when t=0.0f and equal tp q1 when t=1.0f).
- */
-NFCOMMON_API Quaternion QuaternionInterpolate(const Quaternion& q0, const Quaternion& q1, float t);
+    /**
+     * Create quaternion representing rotation around X axis.
+     */
+    static Quaternion RotationX(float angle);
 
-/**
- * Create rotation matrix from quaternion.
- * @note Quaternion must be normalized.
- * @return Matrix representing the same rotation as input quaternion.
- */
-NFCOMMON_API Matrix MatrixFromQuaternion(const Quaternion& q);
+    /**
+     * Create quaternion representing rotation around Y axis.
+     */
+    static Quaternion RotationY(float angle);
 
-/**
- * Create quaternion from 4x4 matrix.
- * @note Only 3x3 is considered.
- * @return Quaternion representing the same rotation as input matrix.
- */
-NFCOMMON_API Quaternion QuaternionFromMatrix(const Matrix& m);
+    /**
+     * Create quaternion representing rotation around Z axis.
+     */
+    static Quaternion RotationZ(float angle);
+
+    /**
+     * Create quaternion from 4x4 matrix.
+     * @note Only 3x3 is considered.
+     * @return Quaternion representing the same rotation as input matrix.
+     */
+    static Quaternion FromMatrix(const Matrix& m);
+
+    /**
+     * Create quaternion from Euler angles.
+     * @param   yaw     Rotation in Y axis (in radians).
+     * @param   pitch   Rotation in X axis (in radians).
+     * @param   roll    Rotation in Z axis (in radians).
+     */
+    static Quaternion FromAngles(float yaw, float pitch, float roll);
+
+    /**
+     * Quaternion multiplication.
+     */
+    Quaternion operator * (const Quaternion& q2) const;
+    NFE_INLINE Quaternion& operator *= (const Quaternion& q2);
+
+    NFE_INLINE Quaternion& Normalize();
+    NFE_INLINE Quaternion Normalized() const;
+
+    /**
+     * Calculate inverse of quaternion.
+     */
+    Quaternion Inverted() const;
+
+    /**
+     * Invert this quaternion.
+     */
+    Quaternion& Invert();
+
+    /**
+     * Rotate a 3D vector with a quaternion.
+     */
+    Vector Transform(const Vector& v) const;
+
+    /**
+     * Extract rotation axis from a quaternion.
+     * @note    This is slow.
+     */
+    Vector ToAxis() const;
+
+    /**
+     * Create rotation matrix from quaternion.
+     * @note Quaternion must be normalized.
+     * @return Matrix representing the same rotation as input quaternion.
+     */
+    Matrix ToMatrix() const;
+
+    /**
+     * Convert quaternion to Euler angles.
+     * @param   outYaw     Returned rotation in Y axis (in radians).
+     * @param   outPitch   Returned rotation in X axis (in radians).
+     * @param   outRoll    Returned rotation in Z axis (in radians).
+     * @note    This is quite costly method.
+     */
+    void ToAngles(float& outPitch, float& outYaw, float& outRoll) const;
+
+    /**
+     * Spherical interpolation of two quaternions.
+     * @param q0,q1 Quaternions to interpolate.
+     * @param t     Interpolation factor.
+     * @return Interpolated quaternion (equal to q0 when t=0.0f and equal to q1 when t=1.0f).
+     */
+    static Quaternion Interpolate(const Quaternion& q0, const Quaternion& q1, float t);
+};
 
 } // namespace Math
 } // namespace NFE
+
+// TODO SSE version
+#include "FPU/QuaternionFPU.hpp"

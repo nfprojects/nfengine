@@ -50,6 +50,7 @@
     <ClInclude Include="Math\Box.hpp" />
     <ClInclude Include="Math\Conversions.hpp" />
     <ClInclude Include="Math\FPU\Matrix.hpp" />
+    <ClInclude Include="Math\FPU\QuaternionFPU.hpp" />
     <ClInclude Include="Math\FPU\RayGeometry.hpp" />
     <ClInclude Include="Math\FPU\Vector.hpp" />
     <ClInclude Include="Math\Frustum.hpp" />

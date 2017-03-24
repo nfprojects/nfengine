@@ -228,6 +228,7 @@
     <ClCompile Include="TestCases\LogScopeTest.cpp" />
     <ClCompile Include="TestCases\MathGeometryTest.cpp" />
     <ClCompile Include="TestCases\MathMatrixTest.cpp" />
+    <ClCompile Include="TestCases\MathQuaternionTest.cpp" />
     <ClCompile Include="TestCases\MathTest.cpp" />
     <ClCompile Include="TestCases\MathVectorTest.cpp" />
     <ClCompile Include="TestCases\MD5Test.cpp" />

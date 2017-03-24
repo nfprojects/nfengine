@@ -45,28 +45,29 @@ void CameraComponent::Update(const Matrix& matrix, const Vector& velocity,
                              const Vector& angularVelocity, float dt)
 {
     // calculate view matrix
-    mViewMatrix = MatrixLookTo(matrix.r[3], matrix.r[2], matrix.r[1]);
-    mViewMatrixInv = MatrixInverse(mViewMatrix);
+    mViewMatrix = Matrix::MakeLookTo(matrix.r[3], matrix.r[2], matrix.r[1]);
+    mViewMatrixInv = mViewMatrix.Inverted();
 
     // calculate projection matrix
     if (mProjMode == ProjectionMode::Perspective)
-        mProjMatrix = MatrixPerspective(mPerspective.aspectRatio, mPerspective.FoV,
-                                        mPerspective.farDist, mPerspective.nearDist);
+        mProjMatrix = Matrix::MakePerspective(mPerspective.aspectRatio, mPerspective.FoV,
+                                              mPerspective.farDist, mPerspective.nearDist);
     else
-        mProjMatrix = MatrixOrtho(mOrtho.left, mOrtho.right, mOrtho.bottom, mOrtho.top,
-                                  mOrtho.nearDist, mOrtho.farDist);
-    mProjMatrixInv = MatrixInverse(mProjMatrix);
+        mProjMatrix = Matrix::MakeOrtho(mOrtho.left, mOrtho.right, mOrtho.bottom, mOrtho.top,
+                                        mOrtho.nearDist, mOrtho.farDist);
+    mProjMatrixInv = mProjMatrix.Inverted();
 
 
     //calculate secondary view matrix for motion blur
-    Matrix rotMatrix = MatrixRotationNormal(angularVelocity, 0.01f);
+    Matrix rotMatrix = Matrix::MakeRotationNormal(angularVelocity, 0.01f);
     Matrix secondaryCameraMatrix;
-    secondaryCameraMatrix.r[0] = LinearCombination3(matrix.r[0], rotMatrix);
-    secondaryCameraMatrix.r[1] = LinearCombination3(matrix.r[1], rotMatrix);
-    secondaryCameraMatrix.r[2] = LinearCombination3(matrix.r[2], rotMatrix);
+    secondaryCameraMatrix.r[0] = rotMatrix.LinearCombination3(matrix.r[0]);
+    secondaryCameraMatrix.r[1] = rotMatrix.LinearCombination3(matrix.r[1]);
+    secondaryCameraMatrix.r[2] = rotMatrix.LinearCombination3(matrix.r[2]);
     secondaryCameraMatrix.r[3] = (Vector)matrix.r[3] + velocity * 0.01f;
-    Matrix secondaryViewMatrix = MatrixLookTo(secondaryCameraMatrix.r[3], secondaryCameraMatrix.r[2],
-                                 secondaryCameraMatrix.r[1]);
+    Matrix secondaryViewMatrix = Matrix::MakeLookTo(secondaryCameraMatrix.r[3],
+                                                    secondaryCameraMatrix.r[2],
+                                                    secondaryCameraMatrix.r[1]);
     mSecondaryProjViewMatrix = secondaryViewMatrix * mProjMatrix;
 
     Vector xAxis, yAxis, zAxis;

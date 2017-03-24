@@ -108,8 +108,8 @@ bool Mesh::OnLoad()
         for (int j = startIndex + 1; j < lastIndex; j++)
         {
             vertex = vertices[indices[j]].position;
-            vMin = VectorMin(vMin, vertex);
-            vMax = VectorMax(vMax, vertex);
+            vMin = Vector::Min(vMin, vertex);
+            vMax = Vector::Max(vMax, vertex);
         }
 
         mSubMeshes[i].localBox.min = vMin;
@@ -122,8 +122,8 @@ bool Mesh::OnLoad()
         mLocalBox = mSubMeshes[0].localBox;
         for (uint32 i = 1; i < mSubMeshes.size(); i++)
         {
-            mLocalBox.min = VectorMin(mLocalBox.min, mSubMeshes[i].localBox.min);
-            mLocalBox.max = VectorMax(mLocalBox.max, mSubMeshes[i].localBox.max);
+            mLocalBox.min = Vector::Min(mLocalBox.min, mSubMeshes[i].localBox.min);
+            mLocalBox.max = Vector::Max(mLocalBox.max, mSubMeshes[i].localBox.max);
         }
     }
 
@@ -156,13 +156,13 @@ void Mesh::OnUnload()
 Box Mesh::GetGlobalAABB(const Matrix& matrix) const
 {
     Box result;
-    result.min = result.max = LinearCombination3(mLocalBox.GetVertex(0), matrix);
+    result.min = result.max = matrix.LinearCombination3(mLocalBox.GetVertex(0));
 
     for (int i = 1; i < 8; i++)
     {
-        Vector vert = LinearCombination3(mLocalBox.GetVertex(i), matrix);
-        result.min = VectorMin(result.min, vert);
-        result.max = VectorMax(result.max, vert);
+        Vector vert = matrix.LinearCombination3(mLocalBox.GetVertex(i));
+        result.min = Vector::Min(result.min, vert);
+        result.max = Vector::Max(result.max, vert);
     }
 
     return result;
