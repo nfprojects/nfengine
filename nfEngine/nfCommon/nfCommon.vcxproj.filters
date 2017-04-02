@@ -209,9 +209,6 @@
     <ClInclude Include="Utils\AsyncThreadPool.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\Bit.hpp">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="FileSystem\DirectoryWatch.hpp">
       <Filter>FileSystem</Filter>
     </ClInclude>
@@ -281,6 +278,18 @@
     <ClInclude Include="ForwardDeclarations.hpp" />
     <ClInclude Include="Math\QuaternionImpl.hpp">
       <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\BitUtils.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\BitUtilsImplWindowsAVX.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\BitUtilsImplCommon.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\BitUtilsImplImplNative.hpp">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
