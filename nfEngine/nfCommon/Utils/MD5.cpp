@@ -6,7 +6,7 @@
 
 #include "PCH.hpp"
 #include "MD5.hpp"
-#include "Bit.hpp"
+#include "BitUtils.hpp"
 
 #include <iomanip>
 
@@ -204,10 +204,10 @@ std::ostream& operator<<(std::ostream& os, const MD5Hash& hash)
 {
     // modify endianness for display purposes
     MD5Hash dispHash = hash;
-    SWAP_ENDIANNESS(dispHash.h[0]);
-    SWAP_ENDIANNESS(dispHash.h[1]);
-    SWAP_ENDIANNESS(dispHash.h[2]);
-    SWAP_ENDIANNESS(dispHash.h[3]);
+    SwapEndianness(dispHash.h[0]);
+    SwapEndianness(dispHash.h[1]);
+    SwapEndianness(dispHash.h[2]);
+    SwapEndianness(dispHash.h[3]);
 
     // do the display operation
     os.setf(std::ios_base::hex, std::ios_base::basefield);

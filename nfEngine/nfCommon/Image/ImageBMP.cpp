@@ -9,7 +9,7 @@
 #include "ImageBMP.hpp"
 #include "Image.hpp"
 #include "Logger/Logger.hpp"
-#include "Utils/Bit.hpp"
+#include "Utils/BitUtils.hpp"
 #include "Utils/InputStream.hpp"
 
 
@@ -165,7 +165,7 @@ bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
                     for (uint8 i = 0; i < 4; i++)
                     {
                         // Count trailing zeros for current colorMask
-                        uint8 maskOffset = NFE::Common::CountTrailingZeros(colorMask[i]);
+                        size_t maskOffset = NFE::Common::CountTrailingZeros(colorMask[i]);
 
                         // Get color value (it may be 5, 6 or 8 bits)
                         uint32 singleColor = (colorData32 & colorMask[i]) >> maskOffset;
