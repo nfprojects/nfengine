@@ -93,7 +93,10 @@
     <ClInclude Include="System\Win\Common.hpp" />
     <ClInclude Include="System\Win\Console.hpp" />
     <ClInclude Include="Utils\AsyncThreadPool.hpp" />
-    <ClInclude Include="Utils\Bit.hpp" />
+    <ClInclude Include="Utils\BitUtils.hpp" />
+    <ClInclude Include="Utils\BitUtilsImplAVX.hpp" />
+    <ClInclude Include="Utils\BitUtilsImplCommon.hpp" />
+    <ClInclude Include="Utils\BitUtilsImplImplNative.hpp" />
     <ClInclude Include="Utils\BVH.hpp" />
     <ClInclude Include="Utils\EnumIterator.hpp" />
     <ClInclude Include="Utils\InputStream.hpp" />
