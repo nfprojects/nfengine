@@ -213,6 +213,7 @@
     </ClCompile>
     <ClCompile Include="TestCases\AlignedTest.cpp" />
     <ClCompile Include="TestCases\ArrayViewTest.cpp" />
+    <ClCompile Include="TestCases\BitUtilsTest.cpp" />
     <ClCompile Include="TestCases\BufferInputStreamTest.cpp" />
     <ClCompile Include="TestCases\BufferOutputStreamTest.cpp" />
     <ClCompile Include="TestCases\BVHTest.cpp" />
