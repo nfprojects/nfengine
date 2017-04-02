@@ -9,7 +9,7 @@
 #include "ImageBMP.hpp"
 #include "Image.hpp"
 #include "Logger/Logger.hpp"
-#include "Utils/Bit.hpp"
+#include "Utils/BitUtils.hpp"
 #include "Utils/InputStream.hpp"
 
 
@@ -140,7 +140,7 @@ bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
     {
         std::unique_ptr<uint32[]> colorData(new (std::nothrow) uint32[lineSize]);
         uint8 colorsPer4Bytes = 4 / colorSize;
-        uint32 colorsMask = NFE::Common::CreateBitMask(bitsPerPixel);
+        uint32 colorsMask = BitUtils<uint32>::CreateBitMask(bitsPerPixel);
 
         for (int y = static_cast<int>(height - 1); y >= 0; y--)
         {
@@ -165,7 +165,7 @@ bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
                     for (uint8 i = 0; i < 4; i++)
                     {
                         // Count trailing zeros for current colorMask
-                        uint8 maskOffset = NFE::Common::CountTrailingZeros(colorMask[i]);
+                        size_t maskOffset = BitUtils<uint32>::CountTrailingZeros(colorMask[i]);
 
                         // Get color value (it may be 5, 6 or 8 bits)
                         uint32 singleColor = (colorData32 & colorMask[i]) >> maskOffset;
@@ -203,7 +203,7 @@ bool ReadPixelsWithPalette(InputStream* stream, size_t offset, uint32 width,
 {
     size_t dataSize = width * height * 4;
     uint8 colorsPerByte = 8 / bitsPerPixel;
-    uint8 bitMask = static_cast<uint8>(NFE::Common::CreateBitMask(bitsPerPixel));
+    uint8 bitMask = BitUtils<uint8>::CreateBitMask(bitsPerPixel);
 
     // lineSize is a size of all non-empty bytes in line
     uint32 lineSize = (width + (width % colorsPerByte)) / colorsPerByte;
