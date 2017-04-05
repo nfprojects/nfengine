@@ -75,6 +75,7 @@
     <ClInclude Include="Math\SSE\Matrix.hpp" />
     <ClInclude Include="Math\SSE\RayGeometry.hpp" />
     <ClInclude Include="Math\SSE\Vector.hpp" />
+    <ClInclude Include="Math\Transform.hpp" />
     <ClInclude Include="Math\Triangle.hpp" />
     <ClInclude Include="Math\Vector.hpp" />
     <ClInclude Include="Math\VectorConstants.hpp" />
@@ -158,6 +159,7 @@
     <ClCompile Include="Math\RayGeometry.cpp" />
     <ClCompile Include="Math\SSE\GeometrySSE.cpp" />
     <ClCompile Include="Math\SSE\MatrixSSE.cpp" />
+    <ClCompile Include="Math\Transform.cpp" />
     <ClCompile Include="Memory\Buffer.cpp" />
     <ClCompile Include="Memory\DefaultAllocator.cpp" />
     <ClCompile Include="Packer\PackerDefines.cpp" />
