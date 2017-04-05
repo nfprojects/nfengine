@@ -291,6 +291,9 @@
     <ClInclude Include="Utils\BitUtilsImplImplNative.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Math\Transform.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -485,6 +488,9 @@
     </ClCompile>
     <ClCompile Include="Utils\OutputStream.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Transform.cpp">
+      <Filter>Math</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
