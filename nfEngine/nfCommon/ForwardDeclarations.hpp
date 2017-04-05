@@ -94,6 +94,7 @@ struct Vector;
 struct Vectorf;
 struct Vectori;
 struct Quaternion;
+class Transform;
 class Triangle;
 class Sphere;
 class Ray;

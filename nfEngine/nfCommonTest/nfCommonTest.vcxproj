@@ -235,6 +235,7 @@
     <ClCompile Include="TestCases\MathMatrixTest.cpp" />
     <ClCompile Include="TestCases\MathQuaternionTest.cpp" />
     <ClCompile Include="TestCases\MathTest.cpp" />
+    <ClCompile Include="TestCases\MathTransformTest.cpp" />
     <ClCompile Include="TestCases\MathVectorTest.cpp" />
     <ClCompile Include="TestCases\MD5Test.cpp" />
     <ClCompile Include="TestCases\MemoryTest.cpp" />
