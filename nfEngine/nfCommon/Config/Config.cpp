@@ -105,7 +105,7 @@ bool Config::ParseValue(ConfigTokenizer& tokenizer, const Token& token, ConfigVa
     switch (token.type)
     {
     case Token::Type::Integer:
-        value.type = ConfigValue::Type::Int;
+        value.type = ConfigValue::Type::Int32;
         value.intData = token.integerData;
         break;
     case Token::Type::Float:
@@ -289,11 +289,23 @@ void Config::ValueToString(std::stringstream& out, ConfigValuePtr valuePtr, int 
     case ConfigValue::Type::Bool:
         out << SPACING << (value.boolData ? "true" : "false");
         break;
-    case ConfigValue::Type::Int:
+    case ConfigValue::Type::Int32:
         out << SPACING << value.intData;
+        break;
+    case ConfigValue::Type::UInt32:
+        out << SPACING << value.uintData;
+        break;
+    case ConfigValue::Type::Int64:
+        out << SPACING << value.intData64;
+        break;
+    case ConfigValue::Type::UInt64:
+        out << SPACING << value.uintData64;
         break;
     case ConfigValue::Type::Float:
         out << SPACING << value.floatData;
+        break;
+    case ConfigValue::Type::Double:
+        out << SPACING << value.doubleData;
         break;
     case ConfigValue::Type::String:
         out << SPACING << '"' << value.stringData << '"';

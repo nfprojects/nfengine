@@ -114,10 +114,10 @@ bool MultiPipelineState::Load(const char* name)
             const char* macroName = macroNode["name"].GetString();
 
             MultishaderMacro macro;
-            macro.minValue = macroNode["min"].GetInt();
-            macro.maxValue = macroNode["max"].GetInt();
+            macro.minValue = macroNode["min"].GetInt32();
+            macro.maxValue = macroNode["max"].GetInt32();
             if (macroNode.HasMember("default"))
-                macro.defaultValue = macroNode["default"].GetInt();
+                macro.defaultValue = macroNode["default"].GetInt32();
             else
                 macro.defaultValue = macro.minValue;
 
