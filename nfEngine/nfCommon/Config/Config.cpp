@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "Config.hpp"
+#include "ConfigValue.hpp"
 #include "ConfigTokenizer.hpp"
 #include "Logger/Logger.hpp"
 
@@ -105,8 +106,8 @@ bool Config::ParseValue(ConfigTokenizer& tokenizer, const Token& token, ConfigVa
     switch (token.type)
     {
     case Token::Type::Integer:
-        value.type = ConfigValue::Type::Int;
-        value.intData = token.integerData;
+        value.type = ConfigValue::Type::Int32;
+        value.intData32 = token.integerData;
         break;
     case Token::Type::Float:
         value.type = ConfigValue::Type::Float;
@@ -262,7 +263,7 @@ void Config::IterateArray(const ArrayIterator& callback, ConfigArrayNodePtr node
         return;
     }
 
-    int index = 0;
+    uint32 index = 0;
     while (node != INVALID_NODE_PTR)
     {
         const ConfigArrayNode& arrayNode = mArrayNodes[node];
@@ -289,11 +290,35 @@ void Config::ValueToString(std::stringstream& out, ConfigValuePtr valuePtr, int 
     case ConfigValue::Type::Bool:
         out << SPACING << (value.boolData ? "true" : "false");
         break;
-    case ConfigValue::Type::Int:
-        out << SPACING << value.intData;
+    case ConfigValue::Type::Int8:
+        out << SPACING << static_cast<int32>(value.intData8);
+        break;
+    case ConfigValue::Type::Uint8:
+        out << SPACING << static_cast<uint32>(value.uintData8);
+        break;
+    case ConfigValue::Type::Int16:
+        out << SPACING << value.intData16;
+        break;
+    case ConfigValue::Type::Uint16:
+        out << SPACING << value.uintData16;
+        break;
+    case ConfigValue::Type::Int32:
+        out << SPACING << value.intData32;
+        break;
+    case ConfigValue::Type::Uint32:
+        out << SPACING << value.uintData32;
+        break;
+    case ConfigValue::Type::Int64:
+        out << SPACING << value.intData64;
+        break;
+    case ConfigValue::Type::Uint64:
+        out << SPACING << value.uintData64;
         break;
     case ConfigValue::Type::Float:
         out << SPACING << value.floatData;
+        break;
+    case ConfigValue::Type::Double:
+        out << SPACING << value.doubleData;
         break;
     case ConfigValue::Type::String:
         out << SPACING << '"' << value.stringData << '"';
@@ -360,98 +385,6 @@ std::string Config::ToString(bool format) const
     return stringStream.str();
 }
 
-
-//
-// ConfigGenericValue definitions
-//
-
-ConfigGenericValue::ConfigGenericValue(const Config* config)
-    : ConfigValue(), mConfig(config)
-{
-    type = Type::Object;
-    object = mConfig->GetRootNode();
-}
-
-ConfigGenericValue::ConfigGenericValue(const Config* config, const ConfigValue& val)
-    : ConfigValue(val), mConfig(config)
-{
-}
-
-bool ConfigGenericValue::HasMember(const char* key) const
-{
-    if (!IsObject())
-        return false;
-
-    bool found = false;
-    auto callback = [&] (const char* iteratorKey, const ConfigValue&)
-    {
-        if (strcmp(iteratorKey, key) == 0)
-        {
-            found = true;
-            return false;
-        }
-        return true;
-    };
-
-    mConfig->Iterate(callback, GetObj());
-    return found;
-}
-
-ConfigGenericValue ConfigGenericValue::operator[](const char* key) const
-{
-    if (!IsObject())
-        return ConfigGenericValue();
-
-    ConfigValue valueFound;
-    auto callback = [&] (const char* iteratorKey, const ConfigValue& value)
-    {
-        if (strcmp(iteratorKey, key) == 0)
-        {
-            valueFound = value;
-            return false;
-        }
-        return true;
-    };
-
-    mConfig->Iterate(callback, GetObj());
-    return ConfigGenericValue(mConfig, valueFound);
-}
-
-size_t ConfigGenericValue::GetSize() const
-{
-    if (!IsArray())
-        return 0;
-
-    size_t arraySize = 0;
-    auto callback = [&] (int, const ConfigValue&)
-    {
-        arraySize++;
-        return true;
-    };
-
-    mConfig->IterateArray(callback, GetArray());
-    return arraySize;
-}
-
-ConfigGenericValue ConfigGenericValue::operator[](int index) const
-{
-    if (!IsArray())
-        return ConfigGenericValue();
-
-    ConfigValue valueFound;
-    auto callback = [&] (int iteratorIndex, const ConfigValue& value)
-    {
-        if (iteratorIndex == index)
-        {
-            valueFound = value;
-            return false;
-        }
-        return true;
-    };
-
-    mConfig->IterateArray(callback, GetArray());
-    return ConfigGenericValue(mConfig, valueFound);
-}
 
 } // namespace Common
 } // namespace NFE
