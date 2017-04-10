@@ -114,15 +114,15 @@ bool Config::TranslateConfigObject(ConfigObjectNodePtr node,
     bool success = true;
 
     auto intArrayIterator = [&success](const char* key, const ConfigValue& value,
-                                       std::vector<int>& array)
+                                       std::vector<int32>& array)
     {
-        if (!value.IsInt())
+        if (!value.IsInt32())
         {
             success = false;
             LOG_ERROR("Array '%s' contains non-integer value", key);
             return false;
         }
-        array.push_back(value.GetInt());
+        array.push_back(value.GetInt32());
         return true;
     };
 
@@ -180,14 +180,14 @@ bool Config::TranslateConfigObject(ConfigObjectNodePtr node,
         }
         else if (translator.mIntValues.count(key) > 0)
         {
-            if (!value.IsInt())
+            if (!value.IsInt32())
             {
                 success = false;
                 LOG_ERROR("Value '%s' is not of integer type", key);
                 return false;
             }
             auto memberPtr = translator.mIntValues[key];
-            object.*memberPtr = value.GetInt();
+            object.*memberPtr = value.GetInt32();
         }
         else if (translator.mFloatValues.count(key) > 0)
         {
