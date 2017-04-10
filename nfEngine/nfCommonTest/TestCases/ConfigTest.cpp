@@ -6,9 +6,10 @@
 
 #include "PCH.hpp"
 #include "nfCommon/Config/Config.hpp"
+#include "nfCommon/Config/ConfigValue.hpp"
 #include "nfCommon/Config/ConfigDataTranslator.hpp"
 
-
+using namespace NFE;
 using namespace NFE::Common;
 
 namespace {
@@ -147,31 +148,31 @@ TEST(Config, ValueCheck)
     {
         if (strcmp(key, "int") == 0)
         {
-            EXPECT_TRUE(value.IsInt());
-            EXPECT_EQ(1, value.GetInt());
+            EXPECT_TRUE(value.Is<int32>());
+            EXPECT_EQ(1, value.Get<int32>());
             subObjectInt = true;
         }
         return true;
     };
 
-    auto arrayIteratorCallback = [&] (int index, const ConfigValue& value)
+    auto arrayIteratorCallback = [&] (size_t index, const ConfigValue& value)
     {
         if (index == 0)
         {
-            EXPECT_TRUE(value.IsInt());
-            EXPECT_EQ(1, value.GetInt());
+            EXPECT_TRUE(value.Is<int32>());
+            EXPECT_EQ(1, value.Get<int32>());
             arrayCheck[0] = true;
         }
         else if (index == 1)
         {
-            EXPECT_TRUE(value.IsInt());
-            EXPECT_EQ(2, value.GetInt());
+            EXPECT_TRUE(value.Is<int32>());
+            EXPECT_EQ(2, value.Get<int32>());
             arrayCheck[1] = true;
         }
         else if (index == 2)
         {
-            EXPECT_TRUE(value.IsInt());
-            EXPECT_EQ(3, value.GetInt());
+            EXPECT_TRUE(value.Is<int32>());
+            EXPECT_EQ(3, value.Get<int32>());
             arrayCheck[2] = true;
         }
         return true;
@@ -181,20 +182,20 @@ TEST(Config, ValueCheck)
     {
         if (strcmp(key, "integerValue") == 0)
         {
-            EXPECT_TRUE(value.IsInt());
-            EXPECT_EQ(-1, value.GetInt());
+            EXPECT_TRUE(value.Is<int32>());
+            EXPECT_EQ(-1, value.Get<int32>());
             intOccurred = true;
         }
         else if (strcmp(key, "booleanValue") == 0)
         {
-            EXPECT_TRUE(value.IsBool());
-            EXPECT_EQ(true, value.GetBool());
+            EXPECT_TRUE(value.Is<bool>());
+            EXPECT_EQ(true, value.Get<bool>());
             boolOccurred = true;
         }
         else if (strcmp(key, "floatValue") == 0)
         {
-            EXPECT_TRUE(value.IsFloat());
-            EXPECT_EQ(10.0f, value.GetFloat());
+            EXPECT_TRUE(value.Is<float>());
+            EXPECT_EQ(10.0f, value.Get<float>());
             floatOccurred = true;
         }
         else if (strcmp(key, "stringValue") == 0)
@@ -268,20 +269,20 @@ TEST(Config, GenericValue)
     ConfigGenericValue root(&config);
 
     ASSERT_TRUE(root.HasMember("integerValue"));
-    ASSERT_TRUE(root["integerValue"].IsInt());
-    EXPECT_EQ(-1, root["integerValue"].GetInt());
+    ASSERT_TRUE(root["integerValue"].Is<int32>());
+    EXPECT_EQ(-1, root["integerValue"].Get<int32>());
 
     ASSERT_TRUE(root.HasMember("hexValue"));
-    ASSERT_TRUE(root["hexValue"].IsInt());
-    EXPECT_EQ(0xFF, root["hexValue"].GetInt());
+    ASSERT_TRUE(root["hexValue"].Is<int32>());
+    EXPECT_EQ(0xFF, root["hexValue"].Get<int32>());
 
     ASSERT_TRUE(root.HasMember("booleanValue"));
-    ASSERT_TRUE(root["booleanValue"].IsBool());
-    EXPECT_EQ(true, root["booleanValue"].GetBool());
+    ASSERT_TRUE(root["booleanValue"].Is<bool>());
+    EXPECT_EQ(true, root["booleanValue"].Get<bool>());
 
     ASSERT_TRUE(root.HasMember("floatValue"));
-    ASSERT_TRUE(root["floatValue"].IsFloat());
-    EXPECT_EQ(10.0f, root["floatValue"].GetFloat());
+    ASSERT_TRUE(root["floatValue"].Is<float>());
+    EXPECT_EQ(10.0f, root["floatValue"].Get<float>());
 
     ASSERT_TRUE(root.HasMember("stringValue"));
     ASSERT_TRUE(root["stringValue"].IsString());
@@ -293,22 +294,22 @@ TEST(Config, GenericValue)
         ConfigGenericValue object = root["object"];
 
         ASSERT_TRUE(object.HasMember("int"));
-        ASSERT_TRUE(object["int"].IsInt());
-        EXPECT_EQ(1, object["int"].GetInt());
+        ASSERT_TRUE(object["int"].Is<int32>());
+        EXPECT_EQ(1, object["int"].Get<int32>());
 
         ASSERT_TRUE(object.HasMember("nestedObject"));
         ASSERT_TRUE(object["nestedObject"].IsObject());
         ASSERT_TRUE(object["nestedObject"].HasMember("bla"));
-        ASSERT_TRUE(object["nestedObject"]["bla"].IsInt());
-        EXPECT_EQ(123, object["nestedObject"]["bla"].GetInt());
+        ASSERT_TRUE(object["nestedObject"]["bla"].Is<int32>());
+        EXPECT_EQ(123, object["nestedObject"]["bla"].Get<int32>());
     }
 
     ASSERT_TRUE(root.HasMember("array"));
     ASSERT_TRUE(root["array"].IsArray());
     ASSERT_EQ(3, root["array"].GetSize());
-    EXPECT_EQ(1, root["array"][0].GetInt());
-    EXPECT_EQ(2, root["array"][1].GetInt());
-    EXPECT_EQ(3, root["array"][2].GetInt());
+    EXPECT_EQ(1, root["array"][0u].Get<int32>());
+    EXPECT_EQ(2, root["array"][1u].Get<int32>());
+    EXPECT_EQ(3, root["array"][2u].Get<int32>());
 
     ASSERT_TRUE(root.HasMember("emptyObject"));
     ASSERT_TRUE(root["emptyObject"].IsObject());

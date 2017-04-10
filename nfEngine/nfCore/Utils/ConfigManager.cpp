@@ -11,6 +11,7 @@
 
 #include "nfCommon/System/Assertion.hpp"
 #include "nfCommon/Config/Config.hpp"
+#include "nfCommon/Config/ConfigValue.hpp"
 #include "nfCommon/FileSystem/File.hpp"
 #include "nfCommon/Logger/Logger.hpp"
 
