@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "nfCommon/Config/Config.hpp"
+#include "nfCommon/Config/ConfigValue.hpp"
 #include "nfCommon/System/Timer.hpp"
 
 using namespace NFE::Common;

@@ -114,41 +114,41 @@ bool Config::TranslateConfigObject(ConfigObjectNodePtr node,
     bool success = true;
 
     auto intArrayIterator = [&success](const char* key, const ConfigValue& value,
-                                       std::vector<int>& array)
+                                       std::vector<int32>& array)
     {
-        if (!value.IsInt())
+        if (!value.Is<int32>())
         {
             success = false;
             LOG_ERROR("Array '%s' contains non-integer value", key);
             return false;
         }
-        array.push_back(value.GetInt());
+        array.push_back(value.Get<int32>());
         return true;
     };
 
     auto boolArrayIterator = [&success](const char* key, const ConfigValue& value,
                                         std::vector<bool>& array)
     {
-        if (!value.IsBool())
+        if (!value.Is<bool>())
         {
             success = false;
             LOG_ERROR("Array '%s' contains non-boolean value", key);
             return false;
         }
-        array.push_back(value.GetBool());
+        array.push_back(value.Get<bool>());
         return true;
     };
 
     auto floatArrayIterator = [&success](const char* key, const ConfigValue& value,
                                          std::vector<float>& array)
     {
-        if (!value.IsFloat())
+        if (!value.Is<float>())
         {
             success = false;
             LOG_ERROR("Array '%s' contains non-float value", key);
             return false;
         }
-        array.push_back(value.GetFloat());
+        array.push_back(value.Get<float>());
         return true;
     };
 
@@ -169,36 +169,36 @@ bool Config::TranslateConfigObject(ConfigObjectNodePtr node,
     {
         if (translator.mBoolValues.count(key) > 0)
         {
-            if (!value.IsBool())
+            if (!value.Is<bool>())
             {
                 success = false;
                 LOG_ERROR("Value '%s' is not of boolean type", key);
                 return false;
             }
             auto memberPtr = translator.mBoolValues[key];
-            object.*memberPtr = value.GetBool();
+            object.*memberPtr = value.Get<bool>();
         }
         else if (translator.mIntValues.count(key) > 0)
         {
-            if (!value.IsInt())
+            if (!value.Is<int32>())
             {
                 success = false;
                 LOG_ERROR("Value '%s' is not of integer type", key);
                 return false;
             }
             auto memberPtr = translator.mIntValues[key];
-            object.*memberPtr = value.GetInt();
+            object.*memberPtr = value.Get<int32>();
         }
         else if (translator.mFloatValues.count(key) > 0)
         {
-            if (!value.IsFloat())
+            if (!value.Is<float>())
             {
                 success = false;
                 LOG_ERROR("Value '%s' is not of float type", key);
                 return false;
             }
             auto memberPtr = translator.mFloatValues[key];
-            object.*memberPtr = value.GetFloat();
+            object.*memberPtr = value.Get<float>();
         }
         else if (translator.mStringValues.count(key) > 0)
         {
