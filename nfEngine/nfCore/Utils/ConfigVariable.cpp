@@ -8,6 +8,7 @@
 #include "ConfigVariable.hpp"
 
 #include "nfCommon/Config/Config.hpp"
+#include "nfCommon/Config/ConfigValue.hpp"
 #include "nfCommon/FileSystem/File.hpp"
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/Math/Math.hpp"
@@ -16,16 +17,16 @@ namespace NFE {
 
 bool IConfigVariable::ParseConfigValue(const Common::ConfigValue& value)
 {
-    if (value.IsInt() && mType == ConfigVarType::Integer)
+    if (value.Is<int32>() && mType == ConfigVarType::Integer)
     {
         auto var = static_cast<ConfigVariable<int>*>(this);
-        var->mValue = value.GetInt();
+        var->mValue = value.Get<int32>();
         return true;
     }
-    else if (value.IsBool() && mType == ConfigVarType::Bool)
+    else if (value.Is<bool>() && mType == ConfigVarType::Bool)
     {
         auto var = static_cast<ConfigVariable<bool>*>(this);
-        var->mValue = value.GetBool();
+        var->mValue = value.Get<bool>();
         return true;
     }
     else if (value.IsString() && mType == ConfigVarType::String)
@@ -34,10 +35,10 @@ bool IConfigVariable::ParseConfigValue(const Common::ConfigValue& value)
         var->mValue = value.GetString();
         return true;
     }
-    else if (value.IsFloat() && mType == ConfigVarType::Float)
+    else if (value.Is<float>() && mType == ConfigVarType::Float)
     {
         auto var = static_cast<ConfigVariable<float>*>(this);
-        var->mValue = value.GetFloat();
+        var->mValue = value.Get<float>();
         return true;
     }
 
