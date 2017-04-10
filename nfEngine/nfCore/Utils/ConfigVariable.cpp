@@ -16,10 +16,10 @@ namespace NFE {
 
 bool IConfigVariable::ParseConfigValue(const Common::ConfigValue& value)
 {
-    if (value.IsInt() && mType == ConfigVarType::Integer)
+    if (value.IsInt32() && mType == ConfigVarType::Integer)
     {
         auto var = static_cast<ConfigVariable<int>*>(this);
-        var->mValue = value.GetInt();
+        var->mValue = value.GetInt32();
         return true;
     }
     else if (value.IsBool() && mType == ConfigVarType::Bool)

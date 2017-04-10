@@ -65,14 +65,18 @@ class NFCOMMON_API ConfigValue
 protected:
     enum class Type
     {
-        None, Bool, Int, Float, String, Object, Array,
+        None, Bool, Int32, Int64, UInt32, UInt64, Float, Double, String, Object, Array,
     };
 
     union
     {
         bool boolData;
-        int intData;
+        int32 intData;
+        int64 intData64;
+        uint32 uintData;
+        uint64 uintData64;
         float floatData;
+        double doubleData;
         const char* stringData;
         ConfigObjectNodePtr object;
         ConfigArrayNodePtr array;
@@ -85,24 +89,36 @@ public:
 
     /// Constructors
     ConfigValue(bool val) { type = Type::Bool; boolData = val; }
-    ConfigValue(int val) { type = Type::Int; intData = val; }
+    explicit ConfigValue(int32 val) { type = Type::Int32; intData = val; }
+    explicit ConfigValue(uint32 val) { type = Type::UInt32; uintData = val; }
+    explicit ConfigValue(int64 val) { type = Type::Int64; intData64 = val; }
+    explicit ConfigValue(uint64 val) { type = Type::UInt64; uintData64 = val; }
     ConfigValue(float val) { type = Type::Float; floatData = val; }
+    ConfigValue(double val) { type = Type::Double; doubleData = val; }
     ConfigValue(const char* val) { type = Type::String; stringData = val; }
     ConfigValue(const ConfigObject& val) { type = Type::Object; object = val.mHead; }
     ConfigValue(const ConfigArray& val) { type = Type::Array; array = val.mHead; }
 
     /// Checkers
     NFE_INLINE bool IsBool() const { return type == Type::Bool; }
-    NFE_INLINE bool IsInt() const { return type == Type::Int; }
+    NFE_INLINE bool IsInt32() const { return type == Type::Int32; }
+    NFE_INLINE bool IsInt64() const { return type == Type::Int64; }
+    NFE_INLINE bool IsUInt32() const { return type == Type::Int32; }
+    NFE_INLINE bool IsUInt64() const { return type == Type::Int64; }
     NFE_INLINE bool IsFloat() const { return type == Type::Float; }
+    NFE_INLINE bool IsDouble() const { return type == Type::Double; }
     NFE_INLINE bool IsString() const { return type == Type::String; }
     NFE_INLINE bool IsObject() const { return type == Type::Object; }
     NFE_INLINE bool IsArray() const { return type == Type::Array; }
 
     /// Getters
     NFE_INLINE bool GetBool() const { return boolData; }
-    NFE_INLINE int GetInt() const { return intData; }
+    NFE_INLINE int32 GetInt32() const { return intData; }
+    NFE_INLINE int64 GetInt64() const { return intData64; }
+    NFE_INLINE uint32 GetUInt32() const { return intData; }
+    NFE_INLINE uint64 GetUInt64() const { return intData64; }
     NFE_INLINE float GetFloat() const { return floatData; }
+    NFE_INLINE double GetDouble() const { return doubleData; }
     NFE_INLINE const char* GetString() const { return stringData; }
     NFE_INLINE ConfigObjectNodePtr GetObj() const { return object; }
     NFE_INLINE ConfigArrayNodePtr GetArray() const { return array; }
