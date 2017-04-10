@@ -20,8 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config\Config.hpp" />
+    <ClInclude Include="Config\ConfigCommon.hpp" />
     <ClInclude Include="Config\ConfigDataTranslator.hpp" />
     <ClInclude Include="Config\ConfigTokenizer.hpp" />
+    <ClInclude Include="Config\ConfigValue.hpp" />
     <ClInclude Include="Containers\ArrayView.hpp" />
     <ClInclude Include="Containers\ArrayViewImpl.hpp" />
     <ClInclude Include="Containers\Comparator.hpp" />
@@ -121,6 +123,7 @@
   <ItemGroup>
     <ClCompile Include="Config\Config.cpp" />
     <ClCompile Include="Config\ConfigTokenizer.cpp" />
+    <ClCompile Include="Config\ConfigValue.cpp" />
     <ClCompile Include="Containers\String.cpp" />
     <ClCompile Include="Containers\StringView.cpp" />
     <ClCompile Include="FileSystem\FileAsync.cpp" />

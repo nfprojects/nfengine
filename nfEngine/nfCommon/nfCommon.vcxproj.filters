@@ -330,6 +330,12 @@
     <ClInclude Include="Math\Transform.hpp">
       <Filter>Math</Filter>
     </ClInclude>
+    <ClInclude Include="Config\ConfigValue.hpp">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\ConfigCommon.hpp">
+      <Filter>Config</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -533,6 +539,9 @@
     </ClCompile>
     <ClCompile Include="Math\Transform.cpp">
       <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Config\ConfigValue.cpp">
+      <Filter>Config</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

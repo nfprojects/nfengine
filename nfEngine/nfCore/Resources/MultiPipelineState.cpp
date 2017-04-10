@@ -10,7 +10,9 @@
 #include "MultiPipelineState.hpp"
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/FileSystem/File.hpp"
+#include "nfCommon/Config/ConfigValue.hpp"
 #include "nfCommon/Config/Config.hpp"
+
 
 namespace NFE {
 namespace Resource {
@@ -114,10 +116,10 @@ bool MultiPipelineState::Load(const char* name)
             const char* macroName = macroNode["name"].GetString();
 
             MultishaderMacro macro;
-            macro.minValue = macroNode["min"].GetInt();
-            macro.maxValue = macroNode["max"].GetInt();
+            macro.minValue = macroNode["min"].Get<int32>();
+            macro.maxValue = macroNode["max"].Get<int32>();
             if (macroNode.HasMember("default"))
-                macro.defaultValue = macroNode["default"].GetInt();
+                macro.defaultValue = macroNode["default"].Get<int32>();
             else
                 macro.defaultValue = macro.minValue;
 
