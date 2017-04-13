@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1d1e9990_f4e7abcc",
+        "filename": "nfEngine/nfCommon/Math/SSE/Vector.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-04-13T23:19:34Z",
+      "side": 1,
+      "message": "c - a * b",
+      "range": {
+        "startLine": 333,
+        "startChar": 11,
+        "endLine": 333,
+        "endChar": 23
+      },
+      "revId": "2ea71cae98ca44e7598332e98fa8b526c280c684",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e70a3ee4_4707d714",
+        "filename": "nfEngine/nfCommon/Math/SSE/Vector.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 342,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-04-13T23:19:34Z",
+      "side": 1,
+      "message": "-(a * b) - c",
+      "range": {
+        "startLine": 342,
+        "startChar": 11,
+        "endLine": 342,
+        "endChar": 20
+      },
+      "revId": "2ea71cae98ca44e7598332e98fa8b526c280c684",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
