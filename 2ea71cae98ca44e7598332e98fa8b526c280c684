@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "377ed9e5_c93b94dc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-04-14T20:00:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "22aee24a_04ba4d77",
+      "range": {
+        "startLine": 13,
+        "startChar": 2,
+        "endLine": 13,
+        "endChar": 7
+      },
+      "revId": "2ea71cae98ca44e7598332e98fa8b526c280c684",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3fb5c80f_383a6dd3",
         "filename": "nfEngine/nfCommon/Math/Math.hpp",
         "patchSetId": 4
@@ -36,6 +60,30 @@
       "writtenOn": "2017-04-14T05:51:19Z",
       "side": 1,
       "message": "use \u003c \u003e brackets, immintrin is not our header.",
+      "range": {
+        "startLine": 27,
+        "startChar": 9,
+        "endLine": 27,
+        "endChar": 22
+      },
+      "revId": "2ea71cae98ca44e7598332e98fa8b526c280c684",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "26a69737_e49b25e0",
+        "filename": "nfEngine/nfCommon/Math/Math.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-04-14T20:00:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3fb5c80f_383a6dd3",
       "range": {
         "startLine": 27,
         "startChar": 9,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "b8178775_a67896f0",
+        "filename": "nfEngine/nfCommon/Math/Quaternion.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-04-14T20:00:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "efea3990_763586bb",
+      "range": {
+        "startLine": 57,
+        "startChar": 0,
+        "endLine": 57,
+        "endChar": 4
+      },
+      "revId": "2ea71cae98ca44e7598332e98fa8b526c280c684",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "1d1e9990_f4e7abcc",
         "filename": "nfEngine/nfCommon/Math/SSE/Vector.hpp",
         "patchSetId": 4
@@ -82,6 +154,30 @@
       "writtenOn": "2017-04-13T23:19:34Z",
       "side": 1,
       "message": "c - a * b",
+      "range": {
+        "startLine": 333,
+        "startChar": 11,
+        "endLine": 333,
+        "endChar": 23
+      },
+      "revId": "2ea71cae98ca44e7598332e98fa8b526c280c684",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b0373028_f11da120",
+        "filename": "nfEngine/nfCommon/Math/SSE/Vector.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-04-14T20:00:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1d1e9990_f4e7abcc",
       "range": {
         "startLine": 333,
         "startChar": 11,
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "d38a3361_a8b64a3d",
+        "filename": "nfEngine/nfCommon/Math/SSE/Vector.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 342,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-04-14T20:00:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e70a3ee4_4707d714",
+      "range": {
+        "startLine": 342,
+        "startChar": 11,
+        "endLine": 342,
+        "endChar": 20
+      },
+      "revId": "2ea71cae98ca44e7598332e98fa8b526c280c684",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "60879343_74d935fb",
         "filename": "nfEngine/nfCommon/Math/Vector.hpp",
         "patchSetId": 4
@@ -140,6 +260,30 @@
     },
     {
       "key": {
+        "uuid": "b8a3ad9c_8abba219",
+        "filename": "nfEngine/nfCommon/Math/Vector.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-04-14T20:00:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "60879343_74d935fb",
+      "range": {
+        "startLine": 300,
+        "startChar": 0,
+        "endLine": 300,
+        "endChar": 8
+      },
+      "revId": "2ea71cae98ca44e7598332e98fa8b526c280c684",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6f72f380_c6b3a1cf",
         "filename": "nfEngine/nfCommon/nfCommon.hpp",
         "patchSetId": 4
@@ -151,6 +295,24 @@
       "writtenOn": "2017-04-14T05:51:19Z",
       "side": 1,
       "message": "I\u0027m actually not sure why we don\u0027t make that assumption on Linux.",
+      "revId": "2ea71cae98ca44e7598332e98fa8b526c280c684",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0518e5dd_e246cd0d",
+        "filename": "nfEngine/nfCommon/nfCommon.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-04-14T20:00:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6f72f380_c6b3a1cf",
       "revId": "2ea71cae98ca44e7598332e98fa8b526c280c684",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": true
