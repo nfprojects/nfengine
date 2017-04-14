@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "3fb5c80f_383a6dd3",
+        "filename": "nfEngine/nfCommon/Math/Math.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-04-14T05:51:19Z",
+      "side": 1,
+      "message": "use \u003c \u003e brackets, immintrin is not our header.",
+      "range": {
+        "startLine": 27,
+        "startChar": 9,
+        "endLine": 27,
+        "endChar": 22
+      },
+      "revId": "2ea71cae98ca44e7598332e98fa8b526c280c684",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "efea3990_763586bb",
+        "filename": "nfEngine/nfCommon/Math/Quaternion.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-04-14T05:51:19Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 57,
+        "startChar": 0,
+        "endLine": 57,
+        "endChar": 4
+      },
+      "revId": "2ea71cae98ca44e7598332e98fa8b526c280c684",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "1d1e9990_f4e7abcc",
         "filename": "nfEngine/nfCommon/Math/SSE/Vector.hpp",
         "patchSetId": 4
@@ -45,6 +91,46 @@
       "revId": "2ea71cae98ca44e7598332e98fa8b526c280c684",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "60879343_74d935fb",
+        "filename": "nfEngine/nfCommon/Math/Vector.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-04-14T05:51:19Z",
+      "side": 1,
+      "message": "rm",
+      "range": {
+        "startLine": 300,
+        "startChar": 0,
+        "endLine": 300,
+        "endChar": 8
+      },
+      "revId": "2ea71cae98ca44e7598332e98fa8b526c280c684",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6f72f380_c6b3a1cf",
+        "filename": "nfEngine/nfCommon/nfCommon.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-04-14T05:51:19Z",
+      "side": 1,
+      "message": "I\u0027m actually not sure why we don\u0027t make that assumption on Linux.",
+      "revId": "2ea71cae98ca44e7598332e98fa8b526c280c684",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
     }
   ]
 }
