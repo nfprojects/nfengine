@@ -1,0 +1,280 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3fdc2340_0e63de47",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-04-28T09:00:50Z",
+      "side": 1,
+      "message": "not used anywhere",
+      "range": {
+        "startLine": 70,
+        "startChar": 39,
+        "endLine": 70,
+        "endChar": 49
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bd78c867_86128865",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-04-28T09:00:50Z",
+      "side": 1,
+      "message": "try: namespace NFE::RTTI {",
+      "range": {
+        "startLine": 73,
+        "startChar": 4,
+        "endLine": 73,
+        "endChar": 37
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "31ddd527_c71c57f3",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-04-28T09:00:50Z",
+      "side": 1,
+      "message": "No closing brace - I REALLY dislike this kind of weird macros, where You have to add specific things at the end for it to work. :/",
+      "range": {
+        "startLine": 81,
+        "startChar": 3,
+        "endLine": 83,
+        "endChar": 82
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "26818ea9_e3e514e5",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-04-28T09:00:50Z",
+      "side": 1,
+      "message": "very useful",
+      "range": {
+        "startLine": 90,
+        "startChar": 35,
+        "endLine": 90,
+        "endChar": 36
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e7bc31d2_7b595e74",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-04-28T09:00:50Z",
+      "side": 1,
+      "message": "such usage",
+      "range": {
+        "startLine": 96,
+        "startChar": 38,
+        "endLine": 96,
+        "endChar": 45
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4a17ed3c_9a493387",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-04-28T09:00:50Z",
+      "side": 1,
+      "message": "so used",
+      "range": {
+        "startLine": 102,
+        "startChar": 43,
+        "endLine": 102,
+        "endChar": 58
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "51a9fce3_d3c577e3",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-04-28T09:00:50Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 113,
+        "startChar": 51,
+        "endLine": 113,
+        "endChar": 61
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "05b6de43_a9bae1af",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-04-28T09:00:50Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 117,
+        "startChar": 4,
+        "endLine": 117,
+        "endChar": 38
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2a04bade_1fd40aa2",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-04-28T09:00:50Z",
+      "side": 1,
+      "message": "as above",
+      "range": {
+        "startLine": 128,
+        "startChar": 3,
+        "endLine": 131,
+        "endChar": 0
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "26ca7aea_184879cc",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-04-28T09:00:50Z",
+      "side": 1,
+      "message": "SRSLY? THIS is your solution? -.-\u0027",
+      "range": {
+        "startLine": 157,
+        "startChar": 0,
+        "endLine": 157,
+        "endChar": 68
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e49f7fc9_5e424a78",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-04-28T09:00:50Z",
+      "side": 1,
+      "message": "so this needs to be inside class and `using ClassType` has to be used beforehand - can\u0027t it just get 2 args?\nIt would be less error prone \u0026 there wouldn\u0027t be more code (just 1 more arg name).",
+      "range": {
+        "startLine": 165,
+        "startChar": 3,
+        "endLine": 165,
+        "endChar": 109
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d41d612b_88337989",
+        "filename": "nfEngine/nfCommon/Reflection/Types/ReflectionStringType.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-04-28T09:00:50Z",
+      "side": 1,
+      "message": "wut?",
+      "range": {
+        "startLine": 43,
+        "startChar": 4,
+        "endLine": 43,
+        "endChar": 35
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
