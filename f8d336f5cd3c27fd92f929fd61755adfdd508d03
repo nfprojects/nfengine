@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "6816753b_6da10aea",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-11T20:44:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3fdc2340_0e63de47",
+      "range": {
+        "startLine": 70,
+        "startChar": 39,
+        "endLine": 70,
+        "endChar": 49
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bd78c867_86128865",
         "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
         "patchSetId": 19
@@ -36,6 +60,30 @@
       "writtenOn": "2017-04-28T09:00:50Z",
       "side": 1,
       "message": "try: namespace NFE::RTTI {",
+      "range": {
+        "startLine": 73,
+        "startChar": 4,
+        "endLine": 73,
+        "endChar": 37
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "780d5f61_982aceea",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-11T20:44:09Z",
+      "side": 1,
+      "message": "Not supported in VS2015",
+      "parentUuid": "bd78c867_86128865",
       "range": {
         "startLine": 73,
         "startChar": 4,
@@ -94,6 +142,30 @@
     },
     {
       "key": {
+        "uuid": "216b76cb_02fc6bae",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-11T20:44:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "26818ea9_e3e514e5",
+      "range": {
+        "startLine": 90,
+        "startChar": 35,
+        "endLine": 90,
+        "endChar": 36
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e7bc31d2_7b595e74",
         "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
         "patchSetId": 19
@@ -105,6 +177,30 @@
       "writtenOn": "2017-04-28T09:00:50Z",
       "side": 1,
       "message": "such usage",
+      "range": {
+        "startLine": 96,
+        "startChar": 38,
+        "endLine": 96,
+        "endChar": 45
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8688a50d_1272fc13",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-11T20:44:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e7bc31d2_7b595e74",
       "range": {
         "startLine": 96,
         "startChar": 38,
@@ -140,6 +236,30 @@
     },
     {
       "key": {
+        "uuid": "dff7a01f_1c25e110",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-11T20:44:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4a17ed3c_9a493387",
+      "range": {
+        "startLine": 102,
+        "startChar": 43,
+        "endLine": 102,
+        "endChar": 58
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "51a9fce3_d3c577e3",
         "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
         "patchSetId": 19
@@ -151,6 +271,30 @@
       "writtenOn": "2017-04-28T09:00:50Z",
       "side": 1,
       "message": "as above",
+      "range": {
+        "startLine": 113,
+        "startChar": 51,
+        "endLine": 113,
+        "endChar": 61
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5f433e45_242c87f2",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-11T20:44:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "51a9fce3_d3c577e3",
       "range": {
         "startLine": 113,
         "startChar": 51,
@@ -232,6 +376,30 @@
     },
     {
       "key": {
+        "uuid": "b850a33a_133c5112",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-11T20:44:09Z",
+      "side": 1,
+      "message": "Yes :P",
+      "parentUuid": "26ca7aea_184879cc",
+      "range": {
+        "startLine": 157,
+        "startChar": 0,
+        "endLine": 157,
+        "endChar": 68
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e49f7fc9_5e424a78",
         "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
         "patchSetId": 19
@@ -255,6 +423,30 @@
     },
     {
       "key": {
+        "uuid": "7fa520d1_fce3fb3f",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionMacros.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-11T20:44:09Z",
+      "side": 1,
+      "message": "As I said before. We won\u0027t be touching these macros - their usage should be a priority. Adding additional parameter (which was already defined in NFE_BEGIN_DEFINE_CLASS) would be more error-prone",
+      "parentUuid": "e49f7fc9_5e424a78",
+      "range": {
+        "startLine": 165,
+        "startChar": 3,
+        "endLine": 165,
+        "endChar": 109
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d41d612b_88337989",
         "filename": "nfEngine/nfCommon/Reflection/Types/ReflectionStringType.hpp",
         "patchSetId": 19
@@ -266,6 +458,30 @@
       "writtenOn": "2017-04-28T09:00:50Z",
       "side": 1,
       "message": "wut?",
+      "range": {
+        "startLine": 43,
+        "startChar": 4,
+        "endLine": 43,
+        "endChar": 35
+      },
+      "revId": "f8d336f5cd3c27fd92f929fd61755adfdd508d03",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e3b3c2ad_cab44594",
+        "filename": "nfEngine/nfCommon/Reflection/Types/ReflectionStringType.hpp",
+        "patchSetId": 19
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-11T20:44:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d41d612b_88337989",
       "range": {
         "startLine": 43,
         "startChar": 4,
