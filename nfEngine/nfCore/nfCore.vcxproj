@@ -281,7 +281,8 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Resources\ResourcesManager.cpp">
+    <ClCompile Include="Resources\ResourceLoadingToken.cpp" />
+    <ClCompile Include="Resources\ResourceManager.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
@@ -372,7 +373,8 @@
     <ClInclude Include="Resources\Multishader.hpp" />
     <ClInclude Include="Resources\MultiPipelineState.hpp" />
     <ClInclude Include="Resources\Resource.hpp" />
-    <ClInclude Include="Resources\ResourcesManager.hpp" />
+    <ClInclude Include="Resources\ResourceLoadingToken.hpp" />
+    <ClInclude Include="Resources\ResourceManager.hpp" />
     <ClInclude Include="Resources\SoundSample.hpp" />
     <ClInclude Include="Resources\Texture.hpp" />
     <ClInclude Include="PCH.hpp" />

@@ -93,9 +93,6 @@
     <ClCompile Include="Resources\Resource.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
-    <ClCompile Include="Resources\ResourcesManager.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
     <ClCompile Include="Resources\SoundSample.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
@@ -201,6 +198,12 @@
     <ClCompile Include="Renderer\RenderScene.cpp">
       <Filter>Renderer\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Resources\ResourceLoadingToken.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\ResourceManager.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.hpp">
@@ -243,9 +246,6 @@
       <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="Resources\Resource.hpp">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\ResourcesManager.hpp">
       <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="Resources\SoundSample.hpp">
@@ -385,6 +385,12 @@
     </ClInclude>
     <ClInclude Include="Renderer\RenderScene.hpp">
       <Filter>Renderer\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\ResourceLoadingToken.hpp">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\ResourceManager.hpp">
+      <Filter>Resources</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

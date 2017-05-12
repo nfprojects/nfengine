@@ -7,7 +7,7 @@
 #pragma once
 
 #include "Core.hpp"
-#include "Resources/ResourcesManager.hpp"
+#include "Resources/ResourceManager.hpp"
 #include "Scene/SceneManager.hpp"
 #include "Renderer/HighLevelRenderer.hpp"
 #include "nfCommon/Utils/ThreadPool.hpp"
@@ -36,7 +36,7 @@ private:
     std::recursive_mutex mRenderingMutex; // TODO get rid of that
 
     Common::ThreadPool mMainThreadPool;
-    Resource::ResManager mResManager;
+    Resource::ResourceManager mResManager;
     std::unique_ptr<Renderer::HighLevelRenderer> mRenderer;
     std::vector<Scene::SceneManagerPtr> mScenes;
 
@@ -64,7 +64,7 @@ public:
      *
      * @return NULL on failure.
      */
-    NFE_INLINE Resource::ResManager* GetResManager()
+    NFE_INLINE Resource::ResourceManager* GetResManager()
     {
         return &mResManager;
     }
