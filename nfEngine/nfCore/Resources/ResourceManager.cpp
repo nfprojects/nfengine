@@ -5,37 +5,120 @@
  */
 
 #include "PCH.hpp"
-#include "ResourcesManager.hpp"
+#include "ResourceManager.hpp"
 #include "nfCommon/System/Memory.hpp"
 #include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/Utils/ThreadPool.hpp"
 #include "nfCommon/Utils/AsyncThreadPool.hpp"
 #include "nfCommon/Utils/ScopedLock.hpp"
+#include "nfCommon/System/Assertion.hpp"
 
-// TODO use RTTI system for this...
-#include "Multishader.hpp"
-#include "Texture.hpp"
-#include "Material.hpp"
-#include "Mesh.hpp"
-#include "CollisionShape.hpp"
-#include "SoundSample.hpp"
 
 namespace NFE {
 namespace Resource {
 
-// TEMPORARY
-const char g_CustomResourcePrefix = '/';
+
+class WaitableTask
+{
+private:
+    Common::TaskID mTaskID;
+
+public:
+    void Wait(Common::ThreadPool& pool)
+    {
+        if (mTaskID != NFE_INVALID_TASK_ID)
+        {
+            pool.WaitForTask(mTaskID);
+        }
+    }
+};
 
 
-ResManager::ResManager()
+ResourceManager::ResourceManager()
 {
     mThreadPool.reset(new Common::AsyncThreadPool);
 }
 
-ResManager::~ResManager()
+ResourceManager::~ResourceManager()
+{
+    // TODO cleanup
+}
+
+LoadingTokenPtr ResourceManager::StartResourceLoading(const ResourceName& name)
+{
+    Lock lock(mLoadedResourcesMutex);
+
+    LoadingTokenPtr existingToken = GetExistingToken_NoLock(name);
+    if (existingToken)
+    {
+        // the token already existed - don't create a new one
+        return existingToken;
+    }
+
+    // TODO spawn tasks:
+    // 1. load resource from disk (async)
+    // 2. OnLoad() [spawns sub-resources loading]
+    // 3. OnPostLoad() [resource is fully loaded, with all dependencies]
+}
+
+LoadingTokenPtr ResourceManager::CreateCustomResource(const ResourceName& name, void* userData)
+{
+    Lock lock(mLoadedResourcesMutex);
+}
+
+bool ResourceManager::IsResourceLoaded(const ResourceName& name)
+{
+    Lock lock(mLoadedResourcesMutex);
+    return mLoadedResources.count(name) > 0;
+}
+
+ResourcePtr ResourceManager::GetLoadedResource(const ResourceName& name)
+{
+    Lock lock(mLoadedResourcesMutex);
+    return GetLoadedResource_NoLock(name);
+}
+
+LoadingTokenPtr ResourceManager::GetExistingToken_NoLock(const ResourceName& name)
+{
+    const auto iter = mLoadingResources.find(name);
+    if (iter == mLoadingResources.end())
+    {
+        // resource has no token
+        return LoadingTokenPtr();
+    }
+
+    LoadingTokenPtr token = iter->second;
+    NFE_ASSERT(token, "Expected valid token. This indicates resource manager bug");
+    return token;
+}
+
+ResourcePtr ResourceManager::GetLoadedResource_NoLock(const ResourceName& name)
+{
+    const auto iter = mLoadedResources.find(name);
+    if (iter == mLoadedResources.end())
+    {
+        // resource not loaded
+        return ResourcePtr();
+    }
+
+    ResourcePtr resource = iter->second.lock();
+    NFE_ASSERT(resource, "Expected valid resource pointer. This indicates resource manager bug");
+    return resource;
+}
+
+/*
+
+ResourceManager::ResourceManager()
+{
+    mThreadPool.reset(new Common::AsyncThreadPool);
+}
+
+ResourceManager::~ResourceManager()
 {
 }
 
-void ResManager::Release()
+
+void ResourceManager::Release()
 {
     // unload all resources
     NFE_LOG_INFO("Unloading resources...");
@@ -58,7 +141,7 @@ void ResManager::Release()
     mResources.clear();
 }
 
-ResourceBase* ResManager::GetResource(const char* name, ResourceType type, bool check)
+ResourceBase* ResourceManager::GetResource(const char* name, ResourceType type, bool check)
 {
     if (name == nullptr)
     {
@@ -136,7 +219,7 @@ ResourceBase* ResManager::GetResource(const char* name, ResourceType type, bool 
     return resource;
 }
 
-bool ResManager::DeleteResource(const char* name)
+bool ResourceManager::DeleteResource(const char* name)
 {
     Common::ScopedMutexLock ulock(mResListMutex);
     std::map<const char*, ResourceBase*, CompareResName>::iterator it;
@@ -162,7 +245,7 @@ bool ResManager::DeleteResource(const char* name)
     return true;
 }
 
-bool ResManager::AddCustomResource(ResourceBase* resource, const char* name)
+bool ResourceManager::AddCustomResource(ResourceBase* resource, const char* name)
 {
     if (!Common::MemoryCheck(resource))
     {
@@ -196,19 +279,19 @@ bool ResManager::AddCustomResource(ResourceBase* resource, const char* name)
     return true;
 }
 
-void ResManager::LoadResource(ResourceBase* resource)
+void ResourceManager::LoadResource(ResourceBase* resource)
 {
     resource->mDestState.store(ResourceState::Loaded);
     resource->mFuncID = mThreadPool->Enqueue(std::bind(&ResourceBase::Load, resource));
 }
 
-void ResManager::UnloadResource(ResourceBase* resource)
+void ResourceManager::UnloadResource(ResourceBase* resource)
 {
     resource->mDestState.store(ResourceState::Unloaded);
     resource->mFuncID = mThreadPool->Enqueue(std::bind(&ResourceBase::Unload, resource));
 }
 
-void ResManager::ReloadResource(ResourceBase* resource)
+void ResourceManager::ReloadResource(ResourceBase* resource)
 {
     auto resourceReloadFunc = [resource] ()
     {
@@ -227,7 +310,7 @@ void ResManager::ReloadResource(ResourceBase* resource)
         resource->mFuncID = mThreadPool->Enqueue(std::bind(resourceReloadFunc));
 }
 
-bool ResManager::WaitForResource(ResourceBase* resource)
+bool ResourceManager::WaitForResource(ResourceBase* resource)
 {
     if (!resource)
     {
@@ -238,6 +321,8 @@ bool ResManager::WaitForResource(ResourceBase* resource)
     mThreadPool->WaitForTask(resource->mFuncID);
     return true;
 }
+
+*/
 
 } // namespace Resource
 } // namespace NFE

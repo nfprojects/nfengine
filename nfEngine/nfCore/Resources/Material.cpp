@@ -6,7 +6,7 @@
 
 #include "PCH.hpp"
 #include "Material.hpp"
-#include "ResourcesManager.hpp"
+#include "ResourceManager.hpp"
 #include "Engine.hpp"
 #include "Globals.hpp"
 #include "Renderer/GeometryRenderer.hpp"
@@ -15,6 +15,12 @@
 
 #include "../rapidjson/include/rapidjson/document.h"
 #include "../rapidjson/include/rapidjson/filestream.h"
+
+
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Resource::Material)
+    NFE_CLASS_PARENT(NFE::Resource::ResourceBase)
+NFE_END_DEFINE_CLASS()
+
 
 namespace NFE {
 namespace Resource {
@@ -111,7 +117,7 @@ bool Material::OnLoad()
     std::recursive_mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
     std::unique_lock<std::recursive_mutex> lock(renderingMutex);
 
-    ResManager* rm = Engine::GetInstance()->GetResManager();
+    ResourceManager* rm = Engine::GetInstance()->GetResManager();
 
     for (uint32 i = 0; i < layersNode.Size(); i++)
     {

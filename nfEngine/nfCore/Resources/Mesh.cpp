@@ -9,13 +9,18 @@
 #include "Mesh.hpp"
 #include "Material.hpp"
 #include "Renderer/HighLevelRenderer.hpp"
-#include "ResourcesManager.hpp"
+#include "ResourceManager.hpp"
 #include "Engine.hpp"
 
 #include "nfCommon/Utils/InputStream.hpp"
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/FileSystem/File.hpp"
 #include "nfCommon/Memory/DefaultAllocator.hpp"
+
+
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Resource::Mesh)
+    NFE_CLASS_PARENT(NFE::Resource::ResourceBase)
+NFE_END_DEFINE_CLASS()
 
 
 namespace NFE {
@@ -58,7 +63,7 @@ bool Mesh::OnLoad()
     const auto& vertices = meshFile.GetVertices();
     const auto& indices = meshFile.GetIndices();
 
-    ResManager* rm = Engine::GetInstance()->GetResManager();
+    ResourceManager* rm = Engine::GetInstance()->GetResManager();
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
 
     /// create renderer's vertex buffer

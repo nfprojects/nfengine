@@ -12,7 +12,7 @@
 
 #include "Engine.hpp"
 #include "Utils/ConfigVariable.hpp"
-#include "Resources/ResourcesManager.hpp"
+#include "Resources/ResourceManager.hpp"
 #include "Resources/Texture.hpp"
 
 #include "nfCommon/System/Assertion.hpp"
@@ -329,7 +329,7 @@ Texture* View::SetOffScreen(uint32 width, uint32 height, const char* textureName
 {
     Release();
 
-    ResManager* rm = Engine::GetInstance()->GetResManager();
+    ResourceManager* rm = Engine::GetInstance()->GetResManager();
     mTexture = static_cast<Texture*>(rm->GetResource(textureName, ResourceType::Texture));
     if (mTexture == nullptr) return nullptr;
 
