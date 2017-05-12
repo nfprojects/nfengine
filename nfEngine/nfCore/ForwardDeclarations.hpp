@@ -26,8 +26,10 @@ namespace NFE {
     } // namespace Common
 
     namespace Resource {
-        class ResManager;
+        class ResourceManager;
         class ResourceBase;
+        class LoadingToken;
+
         class Material;
         class Mesh;
         class Texture;
