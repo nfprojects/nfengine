@@ -52,6 +52,9 @@
     <Filter Include="Renderer\Scene">
       <UniqueIdentifier>{727a9d5b-adf4-4f6e-86af-132eaa992566}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Resource">
+      <UniqueIdentifier>{bd021e30-c24e-496e-9e9b-f289008b46ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -88,12 +91,6 @@
       <Filter>Resources</Filter>
     </ClCompile>
     <ClCompile Include="Resources\Mesh.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="Resources\Resource.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="Resources\ResourcesManager.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
     <ClCompile Include="Resources\SoundSample.cpp">
@@ -201,6 +198,18 @@
     <ClCompile Include="Renderer\RenderScene.cpp">
       <Filter>Renderer\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Resources\Resource.cpp">
+      <Filter>Resources\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\ResourceLoadingToken.cpp">
+      <Filter>Resources\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\ResourceManager.cpp">
+      <Filter>Resources\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\ResourceName.cpp">
+      <Filter>Resources\Resource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.hpp">
@@ -240,12 +249,6 @@
       <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="Resources\Mesh.hpp">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\Resource.hpp">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\ResourcesManager.hpp">
       <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="Resources\SoundSample.hpp">
@@ -385,6 +388,18 @@
     </ClInclude>
     <ClInclude Include="Renderer\RenderScene.hpp">
       <Filter>Renderer\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\Resource.hpp">
+      <Filter>Resources\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\ResourceLoadingToken.hpp">
+      <Filter>Resources\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\ResourceManager.hpp">
+      <Filter>Resources\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\ResourceName.hpp">
+      <Filter>Resources\Resource</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

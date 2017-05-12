@@ -9,7 +9,7 @@
 #include "GuiRenderer.hpp"
 
 #include "Engine.hpp"
-#include "Resources/ResourcesManager.hpp"
+#include "Resources/ResourceManager.hpp"
 #include "Resources/Texture.hpp"
 
 #include "nfCommon/System/Window.hpp"
