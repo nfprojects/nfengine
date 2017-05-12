@@ -20,6 +20,9 @@ namespace Resource {
  */
 class CORE_API Texture : public ResourceBase
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(Texture)
+
+private:
     Renderer::TexturePtr mTex;
     Renderer::ResourceBindingInstancePtr mTexBinding; // for GUI renderer
     Common::ImageFormat mFormat;

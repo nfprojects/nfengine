@@ -35,13 +35,13 @@ protected:
     }
 
     static Engine* mEngine;
-    static ResManager* mResourcesManager;
+    static ResourceManager* mResourcesManager;
     static HighLevelRenderer* mRenderer;
 };
 
 /// static members definitions
 Engine* nfEngineTest::mEngine = nullptr;
-ResManager* nfEngineTest::mResourcesManager = nullptr;
+ResourceManager* nfEngineTest::mResourcesManager = nullptr;
 HighLevelRenderer* nfEngineTest::mRenderer = nullptr;
 
 
@@ -54,7 +54,7 @@ TEST_F(nfEngineTest, GetInstance)
     HighLevelRenderer* newRendererPtr = mEngine->GetRenderer();
     EXPECT_EQ(mRenderer, newRendererPtr) << "Renderer pointer should not change";
 
-    ResManager* newResourcesManagerPtr = mEngine->GetResManager();
+    ResourceManager* newResourcesManagerPtr = mEngine->GetResManager();
     EXPECT_EQ(mResourcesManager, newResourcesManagerPtr) <<
             "Resources Manager pointer should not change";
 }
@@ -69,7 +69,7 @@ TEST_F(nfEngineTest, SceneManagement)
     mEngine->DeleteScene(nullptr); // pass invalid pointer
 }
 
-// ResManager::GetResource weird arguments test
+// ResourceManager::GetResource weird arguments test
 TEST_F(nfEngineTest, GetResourceWeirdArguments)
 {
     ResourceBase* resource = nullptr;

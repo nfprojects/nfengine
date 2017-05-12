@@ -7,7 +7,7 @@
 #include "PCH.hpp"
 #include "ComponentMesh.hpp"
 #include "Engine.hpp"
-#include "Resources/ResourcesManager.hpp"
+#include "Resources/ResourceManager.hpp"
 #include "../Entity.hpp"
 #include "../SceneManager.hpp"
 #include "../Systems/RendererSystem.hpp"
@@ -80,7 +80,7 @@ bool MeshComponent::SetMeshResource(Mesh* resource)
 
 bool MeshComponent::SetMeshResource(const char* name)
 {
-    ResManager* rm = Engine::GetInstance()->GetResManager();
+    ResourceManager* rm = Engine::GetInstance()->GetResManager();
     Mesh* newMesh = static_cast<Mesh*>(rm->GetResource(name, ResourceType::Mesh));
     return SetMeshResource(newMesh);
 }

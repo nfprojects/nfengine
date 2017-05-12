@@ -10,11 +10,17 @@
 #include "Texture.hpp"
 #include "Renderer/HighLevelRenderer.hpp"
 #include "Renderer/GuiRenderer.hpp"
-#include "ResourcesManager.hpp"
+#include "ResourceManager.hpp"
 
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/Utils/InputStream.hpp"
 #include "nfCommon/Image/Image.hpp"
+
+
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Resource::Texture)
+    NFE_CLASS_PARENT(NFE::Resource::ResourceBase)
+NFE_END_DEFINE_CLASS()
+
 
 namespace NFE {
 namespace Resource {

@@ -47,6 +47,8 @@ struct CORE_API MaterialLayer
  */
 class CORE_API Material : public ResourceBase
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(Material)
+
     friend class Renderer::GeometryRenderer;
     friend class Renderer::DebugRenderer;
 
