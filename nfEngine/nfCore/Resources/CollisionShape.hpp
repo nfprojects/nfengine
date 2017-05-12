@@ -28,6 +28,8 @@ struct CompoundShapeChild
 
 class CORE_API CollisionShape : public ResourceBase
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(CollisionShape)
+
 private:
     std::vector<CompoundShapeChild> mChildren;
     btCollisionShape* mShape;

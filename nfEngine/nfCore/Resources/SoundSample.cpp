@@ -9,6 +9,12 @@
 
 #include "nfCommon/Logger/Logger.hpp"
 
+
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Resource::SoundSample)
+    NFE_CLASS_PARENT(NFE::Resource::ResourceBase)
+NFE_END_DEFINE_CLASS()
+
+
 namespace NFE {
 namespace Resource {
 

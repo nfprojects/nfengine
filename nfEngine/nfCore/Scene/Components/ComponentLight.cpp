@@ -9,7 +9,7 @@
 #include "../Entity.hpp"
 #include "../SceneManager.hpp"
 #include "../Systems/RendererSystem.hpp"
-#include "Resources/ResourcesManager.hpp"
+#include "Resources/ResourceManager.hpp"
 #include "Engine.hpp"
 #include "Renderer/RenderScene.hpp"
 #include "Renderer/LightsRenderer.hpp"
@@ -209,7 +209,7 @@ void LightComponent::SetLightMap(const char* name)
         return;
     }
 
-    ResManager* rm = Engine::GetInstance()->GetResManager();
+    ResourceManager* rm = Engine::GetInstance()->GetResManager();
     Texture* newTexture = static_cast<Texture*>(rm->GetResource(name, ResourceType::Texture));
 
     if (newTexture != mLightMap)
