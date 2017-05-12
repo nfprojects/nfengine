@@ -38,7 +38,7 @@ private:
     std::recursive_mutex mRenderingMutex; // TODO get rid of that
 
     Common::ThreadPool mMainThreadPool;
-    Resource::ResManager mResManager;
+    Resource::ResourceManager mResManager;
     Common::UniquePtr<Renderer::HighLevelRenderer> mRenderer;
 
     bool OnInit();
@@ -65,7 +65,7 @@ public:
      *
      * @return NULL on failure.
      */
-    NFE_INLINE Resource::ResManager* GetResManager()
+    NFE_INLINE Resource::ResourceManager* GetResManager()
     {
         return &mResManager;
     }

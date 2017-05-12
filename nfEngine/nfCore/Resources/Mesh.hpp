@@ -40,6 +40,8 @@ using SubMeshes = std::vector<SubMesh>;
 NFE_ALIGN(16)
 class CORE_API Mesh : public ResourceBase
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(Mesh)
+
 private:
     SubMeshes mSubMeshes;
     Math::Box mLocalBox;

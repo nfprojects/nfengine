@@ -35,6 +35,8 @@ struct SoundInfo
  */
 class CORE_API SoundSample : public ResourceBase
 {
+    NFE_DECLARE_POLYMORPHIC_CLASS(SoundSample)
+
     SoundInfo mSoundInfo;
 
     // if sound type = sample, data is stored here

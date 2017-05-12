@@ -59,7 +59,7 @@ bool MultiPipelineState::Load(const char* name)
 {
     mName = name;
 
-    ResManager* rm = Engine::GetInstance()->GetResManager();
+    ResourceManager* rm = Engine::GetInstance()->GetResManager();
     LOG_INFO("Loading multi shader set '%s'...", name);
 
     /// read config file
@@ -140,7 +140,7 @@ bool MultiPipelineState::Load(const char* name)
 
 void MultiPipelineState::GenerateShaderSets()
 {
-    ResManager* rm = Engine::GetInstance()->GetResManager();
+    ResourceManager* rm = Engine::GetInstance()->GetResManager();
 
     // wait for shader resources and build macro mapping table
     for (size_t i = 0; i < NFE_GRAPHICS_SHADER_TYPES_NUM; ++i)

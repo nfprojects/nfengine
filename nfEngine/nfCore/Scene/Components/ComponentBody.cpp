@@ -11,6 +11,7 @@
 #include "../Systems/PhysicsSystem.hpp"
 #include "../../Physics/PhysicsScene.hpp"
 #include "Resources/ResourcesManager.hpp"
+#include "Resources/ResourceManager.hpp"
 #include "Resources/CollisionShape.hpp"
 
 #include "nfCommon/Utils/InputStream.hpp"
