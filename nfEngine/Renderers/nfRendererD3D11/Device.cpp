@@ -78,7 +78,7 @@ bool Device::Init(const DeviceInitParams* params)
     if (params->debugLevel > 0)
         flags |= D3D11_CREATE_DEVICE_DEBUG;
 
-    hr = D3D_CALL_CHECK(D3D11CreateDevice(mAdapters[mAdapterInUse].get(), D3D_DRIVER_TYPE_UNKNOWN,
+    hr = D3D_CALL_CHECK(D3D11CreateDevice(mAdapters[mAdapterInUse].Get(), D3D_DRIVER_TYPE_UNKNOWN,
                                           NULL, flags, NULL, 0, D3D11_SDK_VERSION,
                                           &mDevice, &mFeatureLevel, &mImmediateContext));
     if (FAILED(hr))
@@ -171,12 +171,12 @@ Device::~Device()
             mImmediateContext->Flush();
 
             mInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_WARNING, FALSE);
-            mInfoQueue.reset();
+            mInfoQueue.Reset();
 
-            mDXGIFactory.reset();
+            mDXGIFactory.Reset();
             mAdapters.clear();
-            mImmediateContext.reset();
-            mDevice.reset();
+            mImmediateContext.Reset();
+            mDevice.Reset();
 
             debugInterface->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
         }
@@ -185,12 +185,12 @@ Device::~Device()
 
 void* Device::GetHandle() const
 {
-    return mDevice.get();
+    return mDevice.Get();
 }
 
 ID3D11Device* Device::Get() const
 {
-    return mDevice.get();
+    return mDevice.Get();
 }
 
 VertexLayoutPtr Device::CreateVertexLayout(const VertexLayoutDesc& desc)
@@ -358,7 +358,7 @@ bool Device::DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size,
         return false;
 
     D3D11_MAPPED_SUBRESOURCE mapped = { 0 };
-    ID3D11Resource* res = reinterpret_cast<ID3D11Resource*>(buf->mBuffer.get());
+    ID3D11Resource* res = reinterpret_cast<ID3D11Resource*>(buf->mBuffer.Get());
     HRESULT hr = D3D_CALL_CHECK(mImmediateContext->Map(res, 0, D3D11_MAP_READ, 0, &mapped));
     if (FAILED(hr))
         return false;
@@ -428,7 +428,7 @@ bool Device::DetectVideoCards(int preferredId)
             mAdapterInUse = i;
 
         LOG_INFO("Adapter found at slot %u: %s", i, descString.c_str());
-        mAdapters.push_back(std::move(adapter));
+        mAdapters.push_back(adapter);
     }
 
     if (mAdapters.size() > 0)
@@ -456,7 +456,7 @@ bool Device::IsBackbufferFormatSupported(ElementFormat format)
 
 bool Device::GetDeviceInfo(DeviceInfo& info)
 {
-    if (!mDevice.get())
+    if (!mDevice.Get())
         return false;
 
     HRESULT hr;

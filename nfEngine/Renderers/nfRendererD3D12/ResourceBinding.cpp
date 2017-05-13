@@ -205,7 +205,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         0, rootSignature->GetBufferPointer(), rootSignature->GetBufferSize(),
         IID_PPV_ARGS(&mRootSignature)));
 
-    if (desc.debugName && !SetDebugName(mRootSignature.get(), desc.debugName))
+    if (desc.debugName && !SetDebugName(mRootSignature.Get(), desc.debugName))
     {
         LOG_WARNING("Failed to set debug name");
     }
@@ -285,7 +285,7 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& te
     HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
     D3D12_CPU_DESCRIPTOR_HANDLE handle = allocator.GetCpuHandle();
     handle.ptr += allocator.GetDescriptorSize() * (mDescriptorHeapOffset + slot);
-    gDevice->GetDevice()->CreateShaderResourceView(tex->mBuffers[0].get(), &srvDesc, handle);
+    gDevice->GetDevice()->CreateShaderResourceView(tex->mBuffers[0].Get(), &srvDesc, handle);
 
     return true;
 }
@@ -346,7 +346,7 @@ bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, const Textur
     HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
     D3D12_CPU_DESCRIPTOR_HANDLE handle = allocator.GetCpuHandle();
     handle.ptr += allocator.GetDescriptorSize() * (mDescriptorHeapOffset + slot);
-    gDevice->GetDevice()->CreateUnorderedAccessView(tex->mBuffers[0].get(), nullptr, &uavDesc, handle);
+    gDevice->GetDevice()->CreateUnorderedAccessView(tex->mBuffers[0].Get(), nullptr, &uavDesc, handle);
 
     return true;
 }

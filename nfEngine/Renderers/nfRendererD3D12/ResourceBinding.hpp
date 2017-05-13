@@ -50,7 +50,7 @@ public:
 
     NFE_INLINE ID3D12RootSignature* GetD3DRootSignature() const
     {
-        return mRootSignature.get();
+        return mRootSignature.Get();
     }
 };
 

@@ -48,7 +48,7 @@ HeapAllocator::~HeapAllocator()
 
 void HeapAllocator::Release()
 {
-    mHeap.reset();
+    mHeap.Reset();
 
     uint32 allocatedDescriptors = 0;
     for (bool state : mBitmap)
@@ -86,7 +86,7 @@ bool HeapAllocator::Init()
     if (FAILED(hr))
         return false;
 
-    if (!SetDebugName(mHeap.get(), GetHeapName(mType)))
+    if (!SetDebugName(mHeap.Get(), GetHeapName(mType)))
     {
         LOG_WARNING("Failed to set debug name");
     }

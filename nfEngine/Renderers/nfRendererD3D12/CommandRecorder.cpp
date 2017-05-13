@@ -98,7 +98,7 @@ bool CommandRecorder::Init(ID3D12Device* device)
 
     // create D3D command list
     hr = D3D_CALL_CHECK(device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                  mCommandAllocators[mFrameBufferIndex].get(), nullptr,
+                                                  mCommandAllocators[mFrameBufferIndex].Get(), nullptr,
                                                   IID_PPV_ARGS(&mCommandList)));
     if (FAILED(hr))
     {
@@ -143,7 +143,7 @@ bool CommandRecorder::Begin()
     if (FAILED(hr))
         return false;
 
-    hr = D3D_CALL_CHECK(mCommandList->Reset(mCommandAllocators[mFrameBufferIndex].get(), nullptr));
+    hr = D3D_CALL_CHECK(mCommandList->Reset(mCommandAllocators[mFrameBufferIndex].Get(), nullptr));
     if (FAILED(hr))
         return false;
 
@@ -280,7 +280,7 @@ void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePt
 
     if (mCurrBindingLayout != mBindingLayout)
     {
-        mCommandList->SetGraphicsRootSignature(mBindingLayout->mRootSignature.get());
+        mCommandList->SetGraphicsRootSignature(mBindingLayout->mRootSignature.Get());
         mCurrBindingLayout = mBindingLayout;
     }
 
@@ -301,7 +301,7 @@ void CommandRecorder::BindVolatileCBuffer(size_t slot, const BufferPtr& buffer)
 
     if (mCurrBindingLayout != mBindingLayout)
     {
-        mCommandList->SetGraphicsRootSignature(mBindingLayout->mRootSignature.get());
+        mCommandList->SetGraphicsRootSignature(mBindingLayout->mRootSignature.Get());
         mCurrBindingLayout = mBindingLayout;
     }
 
@@ -763,7 +763,7 @@ void CommandRecorder::UpdateStates()
         // set root signature
         if (mCurrBindingLayout != mBindingLayout)
         {
-            mCommandList->SetGraphicsRootSignature(mBindingLayout->mRootSignature.get());
+            mCommandList->SetGraphicsRootSignature(mBindingLayout->mRootSignature.Get());
             mCurrBindingLayout = mBindingLayout;
         }
 
@@ -900,7 +900,7 @@ bool CommandRecorder::MoveToNextFrame(ID3D12CommandQueue* commandQueue)
     uint64 currFenceValue = mFenceValues[mFrameBufferIndex];
     mRingBuffer.FinishFrame(currFenceValue);
 
-    HRESULT hr = D3D_CALL_CHECK(commandQueue->Signal(mFence.get(), currFenceValue));
+    HRESULT hr = D3D_CALL_CHECK(commandQueue->Signal(mFence.Get(), currFenceValue));
     if (FAILED(hr))
     {
         LOG_ERROR("Failed to enqueue fence value update");

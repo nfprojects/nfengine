@@ -88,7 +88,7 @@ bool Device::Init(const DeviceInitParams* params)
         return false;
     }
 
-    hr = D3D_CALL_CHECK(D3D12CreateDevice(mAdapters[mAdapterInUse].get(),
+    hr = D3D_CALL_CHECK(D3D12CreateDevice(mAdapters[mAdapterInUse].Get(),
                                           D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&mDevice)));
     if (FAILED(hr))
         return false;
@@ -256,18 +256,18 @@ Device::~Device()
     mRtvHeapAllocator.Release();
     mDsvHeapAllocator.Release();
 
-    mDXGIFactory.reset();
+    mDXGIFactory.Reset();
     mAdapters.clear();
-    mCommandQueue.reset();
-    mFence.reset();
-    mDevice.reset();
+    mCommandQueue.Reset();
+    mFence.Reset();
+    mDevice.Reset();
 
     ::CloseHandle(mFenceEvent);
 
     if (mDebugDevice)
     {
         mInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, FALSE);
-        mInfoQueue.reset();
+        mInfoQueue.Reset();
 
         mDebugDevice->ReportLiveDeviceObjects(D3D12_RLDO_DETAIL | D3D12_RLDO_IGNORE_INTERNAL);
     }
@@ -275,17 +275,17 @@ Device::~Device()
 
 ID3D12Device* Device::GetDevice() const
 {
-    return mDevice.get();
+    return mDevice.Get();
 }
 
 ID3D12CommandQueue* Device::GetCommandQueue() const
 {
-    return mCommandQueue.get();
+    return mCommandQueue.Get();
 }
 
 void* Device::GetHandle() const
 {
-    return mDevice.get();
+    return mDevice.Get();
 }
 
 VertexLayoutPtr Device::CreateVertexLayout(const VertexLayoutDesc& desc)
@@ -396,7 +396,7 @@ bool Device::DetectVideoCards(int preferredId)
 
 bool Device::GetDeviceInfo(DeviceInfo& info)
 {
-    if (!mDevice.get())
+    if (!mDevice)
         return false;
 
     HRESULT hr;
@@ -500,7 +500,7 @@ bool Device::IsBackbufferFormatSupported(ElementFormat format)
 CommandRecorderPtr Device::CreateCommandRecorder()
 {
     std::shared_ptr<CommandRecorder> commandRecorder = std::make_shared<CommandRecorder>();
-    if (!commandRecorder->Init(mDevice.get()))
+    if (!commandRecorder->Init(mDevice.Get()))
     {
         return nullptr;
     }
@@ -587,7 +587,7 @@ bool Device::WaitForGPU()
 
     // Signal and increment the fence value
     const uint64 prevFenceValue = mFenceValue++;
-    hr = D3D_CALL_CHECK(mCommandQueue->Signal(mFence.get(), prevFenceValue));
+    hr = D3D_CALL_CHECK(mCommandQueue->Signal(mFence.Get(), prevFenceValue));
     if (FAILED(hr))
     {
         LOG_ERROR("Failed to enqueue fence value update");

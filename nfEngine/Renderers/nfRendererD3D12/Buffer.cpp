@@ -61,7 +61,7 @@ bool Buffer::UploadData(const BufferDesc& desc)
                                                                       nullptr,
                                                                       IID_PPV_ARGS(&uploadBuffer)));
 
-    if (desc.debugName && !SetDebugName(uploadBuffer.get(), desc.debugName + std::string("_UPLOAD")))
+    if (desc.debugName && !SetDebugName(uploadBuffer.Get(), desc.debugName + std::string("_UPLOAD")))
     {
         LOG_WARNING("Failed to set debug name");
     }
@@ -86,7 +86,7 @@ bool Buffer::UploadData(const BufferDesc& desc)
 
         D3DPtr<ID3D12GraphicsCommandList> commandList;
         hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                                    commandAllocator.get(), nullptr,
+                                                                    commandAllocator.Get(), nullptr,
                                                                     IID_PPV_ARGS(&commandList)));
         if (FAILED(hr))
             return false;
@@ -94,7 +94,7 @@ bool Buffer::UploadData(const BufferDesc& desc)
         if (FAILED(D3D_CALL_CHECK(commandList->Close())))
             return false;
 
-        if (FAILED(D3D_CALL_CHECK(commandList->Reset(commandAllocator.get(), nullptr))))
+        if (FAILED(D3D_CALL_CHECK(commandList->Reset(commandAllocator.Get(), nullptr))))
             return false;
 
         // Copy data to upload buffer
@@ -110,13 +110,13 @@ bool Buffer::UploadData(const BufferDesc& desc)
         memcpy(mappedData, desc.initialData, desc.size);
         uploadBuffer->Unmap(0, NULL);
 
-        commandList->CopyResource(mResource.get(), uploadBuffer.get());
+        commandList->CopyResource(mResource.Get(), uploadBuffer.Get());
 
         // Enqueue resource barrier
         D3D12_RESOURCE_BARRIER resBarrier;
         resBarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
         resBarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-        resBarrier.Transition.pResource = mResource.get();
+        resBarrier.Transition.pResource = mResource.Get();
         resBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
         resBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
         resBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_GENERIC_READ;
@@ -126,7 +126,7 @@ bool Buffer::UploadData(const BufferDesc& desc)
         // close the command list and send it to the command queue
         if (FAILED(D3D_CALL_CHECK(commandList->Close())))
             return false;
-        ID3D12CommandList* commandLists[] = { commandList.get() };
+        ID3D12CommandList* commandLists[] = { commandList.Get() };
         gDevice->GetCommandQueue()->ExecuteCommandLists(1, commandLists);
 
 
@@ -194,7 +194,7 @@ bool Buffer::Init(const BufferDesc& desc)
     if (FAILED(hr))
         return false;
 
-    if (desc.debugName && !SetDebugName(mResource.get(), desc.debugName))
+    if (desc.debugName && !SetDebugName(mResource.Get(), desc.debugName))
     {
         LOG_WARNING("Failed to set debug name");
     }

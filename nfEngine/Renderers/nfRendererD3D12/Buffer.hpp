@@ -30,7 +30,7 @@ public:
 
     NFE_INLINE ID3D12Resource* GetResource() const
     {
-        return mResource.get();
+        return mResource.Get();
     }
 
     NFE_INLINE uint32 GetSize() const

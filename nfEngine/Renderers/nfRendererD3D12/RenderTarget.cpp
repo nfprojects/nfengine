@@ -116,7 +116,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 
             D3D12_CPU_DESCRIPTOR_HANDLE handle = rtvAllocator.GetCpuHandle();
             handle.ptr += rtvAllocator.GetDescriptorSize() * offset;
-            gDevice->mDevice->CreateRenderTargetView(tex->mBuffers[n].get(), &rtvDesc, handle);
+            gDevice->mDevice->CreateRenderTargetView(tex->mBuffers[n].Get(), &rtvDesc, handle);
             mRTVs[n].push_back(offset);
         }
 
@@ -163,7 +163,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 
         D3D12_CPU_DESCRIPTOR_HANDLE handle = allocator.GetCpuHandle();
         handle.ptr += allocator.GetDescriptorSize() * mDSV;
-        gDevice->mDevice->CreateDepthStencilView(tex->mBuffers[0].get(), &dsvDesc, handle);
+        gDevice->mDevice->CreateDepthStencilView(tex->mBuffers[0].Get(), &dsvDesc, handle);
 
         mDepthTexture = tex;
         mDepthTextureSubresource = 0; // TODO: selectable mipmap and texture layer in the interface

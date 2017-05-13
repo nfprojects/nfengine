@@ -192,7 +192,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
 
     mPrimitiveTopology = TranslatePrimitiveType(desc.primitiveType, desc.numControlPoints);
 
-    if (desc.debugName && !SetDebugName(mPipelineState.get(), desc.debugName))
+    if (desc.debugName && !SetDebugName(mPipelineState.Get(), desc.debugName))
     {
         LOG_WARNING("Failed to set debug name");
     }

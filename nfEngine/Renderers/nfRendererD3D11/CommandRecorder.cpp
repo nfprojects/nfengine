@@ -51,7 +51,7 @@ CommandRecorder::CommandRecorder(ID3D11DeviceContext* deviceContext)
     HRESULT hr;
     hr = deviceContext->QueryInterface(IID_PPV_ARGS(&mUserDefinedAnnotation));
     if (FAILED(hr))
-        mUserDefinedAnnotation.reset();
+        mUserDefinedAnnotation.Reset();
 }
 
 CommandRecorder::~CommandRecorder()
@@ -108,7 +108,7 @@ void CommandRecorder::SetVertexBuffers(int num, const BufferPtr* vertexBuffers, 
     for (int i = 0; i < num; ++i)
     {
         const Buffer* vertexBuffer = dynamic_cast<Buffer*>(vertexBuffers[i].get());
-        vbs[i] = vertexBuffer->mBuffer.get();
+        vbs[i] = vertexBuffer->mBuffer.Get();
     }
 
     mContext->IASetVertexBuffers(0, num, vbs,
@@ -130,7 +130,7 @@ void CommandRecorder::SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFo
     };
 
     const Buffer* ib = dynamic_cast<Buffer*>(indexBuffer.get());
-    mContext->IASetIndexBuffer(ib->mBuffer.get(), dxgiFormat, 0);
+    mContext->IASetIndexBuffer(ib->mBuffer.Get(), dxgiFormat, 0);
 }
 
 void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance)
@@ -190,7 +190,7 @@ void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePt
         else if (bindingDesc.resourceType == ShaderResourceType::Texture)
         {
             ID3D11ShaderResourceView* srv =
-                instance ? static_cast<ID3D11ShaderResourceView*>(instance->mViews[i].get()) : nullptr;
+                instance ? static_cast<ID3D11ShaderResourceView*>(instance->mViews[i].Get()) : nullptr;
 
             switch (bindingSet->mShaderVisibility)
             {
@@ -245,7 +245,7 @@ void CommandRecorder::BindVolatileCBuffer(size_t slot, const BufferPtr& buffer)
     const ShaderType targetShader = mBindingLayout->mVolatileCBuffers[slot].shaderVisibility;
     UINT slotOffset = mBindingLayout->mVolatileCBuffers[slot].slot;
 
-    ID3D11Buffer* d3dBuffer = bufferPtr->mBuffer.get();
+    ID3D11Buffer* d3dBuffer = bufferPtr->mBuffer.Get();
 
     switch (targetShader)
     {
@@ -292,7 +292,7 @@ void CommandRecorder::UpdateSamplers()
             if (!sampler)
                 continue;
 
-            ID3D11SamplerState* samplerState = sampler->mSamplerState.get();
+            ID3D11SamplerState* samplerState = sampler->mSamplerState.Get();
 
             switch (bindingSet->mShaderVisibility)
             {
@@ -345,10 +345,10 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
     size_t num = rt->mRTVs.size();
 
     for (size_t i = 0; i < num; ++i)
-        rtvs[i] = rt->mRTVs[i].get();
+        rtvs[i] = rt->mRTVs[i].Get();
 
     if (rt->mDepthBuffer)
-        dsv = rt->mDepthBuffer->mDSV.get();
+        dsv = rt->mDepthBuffer->mDSV.Get();
 
     mContext->OMSetRenderTargets(static_cast<UINT>(num), rtvs, dsv);
     mCurrentRenderTarget = rt;
@@ -436,7 +436,7 @@ void* CommandRecorder::MapBuffer(const BufferPtr& buffer, MapType type)
     }
 
     D3D11_MAPPED_SUBRESOURCE mapped = { 0 };
-    ID3D11Resource* res = reinterpret_cast<ID3D11Resource*>(buf->mBuffer.get());
+    ID3D11Resource* res = reinterpret_cast<ID3D11Resource*>(buf->mBuffer.Get());
     HRESULT hr = D3D_CALL_CHECK(mContext->Map(res, 0, mapType, 0, &mapped));
     if (FAILED(hr))
         return nullptr;
@@ -451,7 +451,7 @@ void CommandRecorder::UnmapBuffer(const BufferPtr& buffer)
     if (!buf)
         return;
 
-    ID3D11Resource* res = reinterpret_cast<ID3D11Resource*>(buf->mBuffer.get());
+    ID3D11Resource* res = reinterpret_cast<ID3D11Resource*>(buf->mBuffer.Get());
     mContext->Unmap(res, 0);
 }
 
@@ -463,7 +463,7 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
         return false;
 
     D3D11_MAPPED_SUBRESOURCE mapped = { 0 };
-    ID3D11Resource* res = reinterpret_cast<ID3D11Resource*>(buf->mBuffer.get());
+    ID3D11Resource* res = reinterpret_cast<ID3D11Resource*>(buf->mBuffer.Get());
     HRESULT hr = D3D_CALL_CHECK(mContext->Map(res, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped));
     if (FAILED(hr))
         return false;
@@ -517,7 +517,7 @@ void CommandRecorder::Clear(int flags, uint32 numTargets, const uint32* slots,
                     slot = slots[i];
                 }
 
-                mContext->ClearRenderTargetView(mCurrentRenderTarget->mRTVs[slot].get(),
+                mContext->ClearRenderTargetView(mCurrentRenderTarget->mRTVs[slot].Get(),
                                                 reinterpret_cast<const float*>(&colors[i]));
             }
         }
@@ -527,7 +527,7 @@ void CommandRecorder::Clear(int flags, uint32 numTargets, const uint32* slots,
             ID3D11DepthStencilView* dsv;
             if (mCurrentRenderTarget->mDepthBuffer)
             {
-                dsv = mCurrentRenderTarget->mDepthBuffer->mDSV.get();
+                dsv = mCurrentRenderTarget->mDepthBuffer->mDSV.Get();
                 if (!dsv)
                     return;
 
@@ -549,10 +549,10 @@ void CommandRecorder::UpdateState()
 
         UpdateSamplers();
 
-        mContext->OMSetBlendState(mPipelineState->mBS.get(), nullptr, 0xFFFFFFFF);
-        mContext->RSSetState(mPipelineState->mRS.get());
-        mContext->OMSetDepthStencilState(mPipelineState->mDS.get(), mStencilRef);
-        mContext->IASetInputLayout(mPipelineState->mVertexLayout->mIL.get());
+        mContext->OMSetBlendState(mPipelineState->mBS.Get(), nullptr, 0xFFFFFFFF);
+        mContext->RSSetState(mPipelineState->mRS.Get());
+        mContext->OMSetDepthStencilState(mPipelineState->mDS.Get(), mStencilRef);
+        mContext->IASetInputLayout(mPipelineState->mVertexLayout->mIL.Get());
 
         mCurrentPipelineState = mPipelineState;
         mCurrentStencilRef = mStencilRef;
@@ -623,7 +623,7 @@ void CommandRecorder::BindComputeResources(size_t slot, const ResourceBindingIns
             case ShaderResourceType::Texture:
             {
                 ID3D11ShaderResourceView* srv =
-                    instance ? static_cast<ID3D11ShaderResourceView*>(instance->mViews[i].get()) : nullptr;
+                    instance ? static_cast<ID3D11ShaderResourceView*>(instance->mViews[i].Get()) : nullptr;
                 mContext->CSSetShaderResources(slotOffset, 1, &srv);
                 break;
             }
@@ -631,7 +631,7 @@ void CommandRecorder::BindComputeResources(size_t slot, const ResourceBindingIns
             case ShaderResourceType::WritableTexture:
             {
                 ID3D11UnorderedAccessView* uav =
-                    instance ? static_cast<ID3D11UnorderedAccessView*>(instance->mViews[i].get()) : nullptr;
+                    instance ? static_cast<ID3D11UnorderedAccessView*>(instance->mViews[i].Get()) : nullptr;
                 mContext->CSSetUnorderedAccessViews(slotOffset, 1, &uav, nullptr);
                 break;
             }
@@ -661,7 +661,7 @@ void CommandRecorder::BindComputeVolatileCBuffer(size_t slot, const BufferPtr& b
     }
 
     UINT slotOffset = mComputeBindingLayout->mVolatileCBuffers[slot].slot;
-    ID3D11Buffer* d3dBuffer = bufferPtr->mBuffer.get();
+    ID3D11Buffer* d3dBuffer = bufferPtr->mBuffer.Get();
     mContext->CSSetConstantBuffers(slotOffset, 1, &d3dBuffer);
 }
 
@@ -713,7 +713,7 @@ CommandListID CommandRecorder::Finish()
 
 void CommandRecorder::BeginDebugGroup(const char* text)
 {
-    if (mUserDefinedAnnotation.get())
+    if (mUserDefinedAnnotation.Get())
     {
         std::wstring wideText;
         if (Common::UTF8ToUTF16(text, wideText))
@@ -729,13 +729,13 @@ void CommandRecorder::BeginDebugGroup(const char* text)
 
 void CommandRecorder::EndDebugGroup()
 {
-    if (mUserDefinedAnnotation.get())
+    if (mUserDefinedAnnotation.Get())
         mUserDefinedAnnotation->EndEvent();
 }
 
 void CommandRecorder::InsertDebugMarker(const char* text)
 {
-    if (mUserDefinedAnnotation.get())
+    if (mUserDefinedAnnotation.Get())
     {
         std::wstring wideText;
         if (Common::UTF8ToUTF16(text, wideText))

@@ -240,7 +240,7 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& te
         return false;
     }
 
-    mViews[slot] = srv.release();
+    mViews[slot] = srv.Release();
     return true;
 }
 
@@ -266,7 +266,7 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, const BufferPtr& buf
         return false;
     }
 
-    mCBuffers[slot] = buf->mBuffer.get();
+    mCBuffers[slot] = buf->mBuffer.Get();
     return true;
 }
 
@@ -338,7 +338,7 @@ bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, const Textur
         return false;
     }
 
-    mViews[slot] = uav.release();
+    mViews[slot] = uav.Release();
     return true;
 }
 

@@ -50,7 +50,7 @@ bool Backbuffer::Resize(int newWidth, int newHeight)
     LOG_INFO("Resizing backbuffer '%s'", mDebugName.c_str());
 
     HRESULT hr;
-    if (!mSwapChain.get())
+    if (!mSwapChain.Get())
         return false;
 
     // Release all outstanding references to the swap chain's buffers.
@@ -99,8 +99,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     scd.Windowed = 1;
 
     Release();
-    hr = D3D_CALL_CHECK(gDevice->mDXGIFactory->CreateSwapChain(gDevice->mDevice.get(), &scd,
-                        &mSwapChain));
+    hr = D3D_CALL_CHECK(gDevice->mDXGIFactory->CreateSwapChain(gDevice->mDevice.Get(), &scd, &mSwapChain));
     if (FAILED(hr))
         return false;
 
@@ -118,7 +117,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
 
 bool Backbuffer::Present()
 {
-    IDXGISwapChain* swapChain = mSwapChain.get();
+    IDXGISwapChain* swapChain = mSwapChain.Get();
 
     if (!swapChain)
         return false;
@@ -129,12 +128,12 @@ bool Backbuffer::Present()
 
 void Backbuffer::Release()
 {
-    IDXGISwapChain* swapChain = mSwapChain.get();
+    IDXGISwapChain* swapChain = mSwapChain.Get();
     if (swapChain)
     {
         // swap chain must enter windowed state before releasing
         swapChain->SetFullscreenState(FALSE, nullptr);
-        mSwapChain.reset();
+        mSwapChain.Reset();
     }
 }
 

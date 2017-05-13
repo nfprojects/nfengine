@@ -97,11 +97,11 @@ public:
     {
         if (mBuffersNum == 1)
         {
-            return mBuffers[0].get();
+            return mBuffers[0].Get();
         }
         else
         {
-            return mBuffers[mCurrentBuffer].get();
+            return mBuffers[mCurrentBuffer].Get();
         }
     }
 

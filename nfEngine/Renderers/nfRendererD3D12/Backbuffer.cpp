@@ -66,7 +66,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     scd.SampleDesc.Count = 1;
 
     hr = D3D_CALL_CHECK(gDevice->mDXGIFactory->CreateSwapChainForHwnd(
-        gDevice->mCommandQueue.get(), static_cast<HWND>(desc.windowHandle), &scd, nullptr, nullptr,
+        gDevice->mCommandQueue.Get(), static_cast<HWND>(desc.windowHandle), &scd, nullptr, nullptr,
         reinterpret_cast<IDXGISwapChain1**>(&mSwapChain)));
     if (FAILED(hr))
         return false;

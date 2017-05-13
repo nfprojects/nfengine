@@ -194,7 +194,7 @@ bool Shader::Init(const ShaderDesc& desc)
 
     if (FAILED(hr))
     {
-        mBytecode.reset();
+        mBytecode.Reset();
         return false;
     }
 
@@ -207,7 +207,7 @@ bool Shader::Init(const ShaderDesc& desc)
 
 bool Shader::Disassemble(bool html, std::string& output)
 {
-    ID3DBlob* bytecode = mBytecode.get();
+    ID3DBlob* bytecode = mBytecode.Get();
     if (bytecode == nullptr)
     {
         LOG_ERROR("Shader is not compiled");
@@ -239,14 +239,14 @@ void* Shader::GetShaderObject() const
 
 ID3DBlob* Shader::GetBytecode() const
 {
-    return mBytecode.get();
+    return mBytecode.Get();
 }
 
 bool Shader::GetIODesc()
 {
     HRESULT hr;
 
-    ID3DBlob* bytecode = mBytecode.get();
+    ID3DBlob* bytecode = mBytecode.Get();
     if (bytecode == nullptr)
     {
         LOG_ERROR("Shader is not compiled");
