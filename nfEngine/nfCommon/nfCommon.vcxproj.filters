@@ -342,6 +342,15 @@
     <ClInclude Include="Containers\UniquePtrImpl.hpp">
       <Filter>Containers</Filter>
     </ClInclude>
+    <ClInclude Include="Containers\SharedPtr.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\SharedPtrImpl.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\SharedPtrData.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
