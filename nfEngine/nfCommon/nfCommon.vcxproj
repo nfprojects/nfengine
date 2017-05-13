@@ -31,6 +31,9 @@
     <ClInclude Include="Containers\DynArrayImpl.hpp" />
     <ClInclude Include="Containers\PackedArray.hpp" />
     <ClInclude Include="Containers\PackedArrayImpl.hpp" />
+    <ClInclude Include="Containers\SharedPtr.hpp" />
+    <ClInclude Include="Containers\SharedPtrData.hpp" />
+    <ClInclude Include="Containers\SharedPtrImpl.hpp" />
     <ClInclude Include="Containers\UniquePtr.hpp" />
     <ClInclude Include="Containers\Set.hpp" />
     <ClInclude Include="Containers\SetImpl.hpp" />
@@ -39,6 +42,8 @@
     <ClInclude Include="Containers\StringView.hpp" />
     <ClInclude Include="Containers\StringViewImpl.hpp" />
     <ClInclude Include="Containers\UniquePtrImpl.hpp" />
+    <ClInclude Include="Containers\WeakPtr.hpp" />
+    <ClInclude Include="Containers\WeakPtrImpl.hpp" />
     <ClInclude Include="FileSystem\DirectoryWatch.hpp" />
     <ClInclude Include="FileSystem\File.hpp" />
     <ClInclude Include="FileSystem\FileAsync.hpp" />
