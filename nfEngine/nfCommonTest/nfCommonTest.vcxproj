@@ -244,6 +244,7 @@
     <ClCompile Include="TestCases\PackerComplexTest.cpp" />
     <ClCompile Include="TestCases\RayGeometryTest.cpp" />
     <ClCompile Include="TestCases\SetTest.cpp" />
+    <ClCompile Include="TestCases\SharedPtrTest.cpp" />
     <ClCompile Include="TestCases\StringTest.cpp" />
     <ClCompile Include="TestCases\StringViewTest.cpp" />
     <ClCompile Include="TestCases\SystemInfoTest.cpp" />
