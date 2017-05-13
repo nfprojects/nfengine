@@ -127,6 +127,9 @@
     <ClCompile Include="TestCases\MathTransformTest.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\UniquePtrTest.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />

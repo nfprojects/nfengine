@@ -251,6 +251,7 @@
     <ClCompile Include="TestCases\ThreadPoolStressTest.cpp" />
     <ClCompile Include="TestCases\ThreadTest.cpp" />
     <ClCompile Include="TestCases\TimerTest.cpp" />
+    <ClCompile Include="TestCases\UniquePtrTest.cpp" />
     <ClCompile Include="TestCases\WindowTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
