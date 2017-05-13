@@ -157,6 +157,12 @@
     <ClCompile Include="TestCases\MutexTest.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\SharedPtrTest.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\WeakPtrTest.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
