@@ -148,9 +148,9 @@ void PipelineState::Release()
 {
     mResBindingLayout.reset();
     mVertexLayout.reset();
-    mRS.reset();
-    mBS.reset();
-    mDS.reset();
+    mRS.Reset();
+    mBS.Reset();
+    mDS.Reset();
 
     D3D_SAFE_RELEASE(mVertexShader);
     D3D_SAFE_RELEASE(mGeometryShader);

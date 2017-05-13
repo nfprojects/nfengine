@@ -36,7 +36,7 @@ public:
 
     NFE_INLINE ID3D12PipelineState* GetPSO() const
     {
-        return mPipelineState.get();
+        return mPipelineState.Get();
     }
 
     NFE_INLINE const InternalResourceBindingLayoutPtr& GetResBindingLayout() const

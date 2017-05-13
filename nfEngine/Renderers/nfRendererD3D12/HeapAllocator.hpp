@@ -49,7 +49,7 @@ public:
 
     NFE_INLINE ID3D12DescriptorHeap* GetHeap() const
     {
-        return mHeap.get();
+        return mHeap.Get();
     }
 
     NFE_INLINE const D3D12_CPU_DESCRIPTOR_HANDLE& GetCpuHandle() const

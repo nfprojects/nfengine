@@ -87,7 +87,7 @@ bool Texture::UploadData(const TextureDesc& desc)
 
         D3DPtr<ID3D12GraphicsCommandList> commandList;
         hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                                    commandAllocator.get(), nullptr,
+                                                                    commandAllocator.Get(), nullptr,
                                                                     IID_PPV_ARGS(&commandList)));
         if (FAILED(hr))
             return false;
@@ -95,7 +95,7 @@ bool Texture::UploadData(const TextureDesc& desc)
         if (FAILED(D3D_CALL_CHECK(commandList->Close())))
             return false;
 
-        if (FAILED(D3D_CALL_CHECK(commandList->Reset(commandAllocator.get(), nullptr))))
+        if (FAILED(D3D_CALL_CHECK(commandList->Reset(commandAllocator.Get(), nullptr))))
             return false;
 
         // Copy data to upload buffer
@@ -135,12 +135,12 @@ bool Texture::UploadData(const TextureDesc& desc)
         for (uint32 i = 0; i < desc.mipmaps; ++i)
         {
             D3D12_TEXTURE_COPY_LOCATION src;
-            src.pResource = uploadBuffer.get();
+            src.pResource = uploadBuffer.Get();
             src.PlacedFootprint = layouts[i];
             src.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
 
             D3D12_TEXTURE_COPY_LOCATION dest;
-            dest.pResource = mBuffers[0].get();
+            dest.pResource = mBuffers[0].Get();
             dest.SubresourceIndex = i;
             dest.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
 
@@ -151,7 +151,7 @@ bool Texture::UploadData(const TextureDesc& desc)
         D3D12_RESOURCE_BARRIER resBarrier;
         resBarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
         resBarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-        resBarrier.Transition.pResource = mBuffers[0].get();
+        resBarrier.Transition.pResource = mBuffers[0].Get();
         resBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
         resBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
         resBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
@@ -161,7 +161,7 @@ bool Texture::UploadData(const TextureDesc& desc)
         // close the command list and send it to the command queue
         if (FAILED(D3D_CALL_CHECK(commandList->Close())))
             return false;
-        ID3D12CommandList* commandLists[] = { commandList.get() };
+        ID3D12CommandList* commandLists[] = { commandList.Get() };
         gDevice->GetCommandQueue()->ExecuteCommandLists(1, commandLists);
 
 
@@ -416,7 +416,7 @@ bool Texture::Init(const TextureDesc& desc)
         }
     }
 
-    if (desc.debugName && !SetDebugName(mBuffers[0].get(), desc.debugName))
+    if (desc.debugName && !SetDebugName(mBuffers[0].Get(), desc.debugName))
     {
         LOG_WARNING("Failed to set debug name");
     }

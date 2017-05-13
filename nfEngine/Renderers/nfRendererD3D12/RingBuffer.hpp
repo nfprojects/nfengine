@@ -64,7 +64,7 @@ public:
 
     NFE_INLINE ID3D12Resource* GetD3DResource() const
     {
-        return mBuffer.get();
+        return mBuffer.Get();
     }
 };
 

@@ -21,7 +21,7 @@ ComputePipelineState::ComputePipelineState()
 
 void ComputePipelineState::Release()
 {
-    mPipelineState.reset();
+    mPipelineState.Reset();
     mResBindingLayout.reset();
     mComputeShader.reset();
 }

@@ -7,106 +7,36 @@
 #pragma once
 
 
+#include "nfCommon/Containers/UniquePtr.hpp"
+
+
 #ifndef D3D_SAFE_RELEASE
 #define D3D_SAFE_RELEASE(x) { if (x) {(x)->Release(); (x)=0;} }
 #endif // D3D_SAFE_RELEASE
 
+
 namespace NFE {
 namespace Renderer {
 
-// helper class template for automatic releasing of Direct3D objects
 template<typename T>
-class D3DPtr
+struct D3DPointerDeleter
 {
-    static_assert(std::is_base_of<IUnknown, T>::value, "D3DPtr only accepts IUnknown-based types");
+    static_assert(std::is_base_of<IUnknown, T>::value, "D3DPointerDeleter only accepts IUnknown-based types");
 
-    T* pointer;
-
-    D3DPtr(const D3DPtr&) = delete;
-    D3DPtr& operator=(const D3DPtr&) = delete;
-
-public:
-    D3DPtr() : pointer(nullptr)
-    {
-    }
-
-    D3DPtr(T* ptr)
-    {
-        pointer = ptr;
-    }
-
-    D3DPtr(D3DPtr<T>&& rhs)
-    {
-        pointer = rhs.pointer;
-        rhs.pointer = nullptr;
-    }
-
-    ~D3DPtr()
-    {
-        reset();
-    }
-
-    D3DPtr& operator=(T* ptr)
-    {
-        if (pointer != ptr)
-        {
-            if (nullptr != pointer)
-                pointer->Release();
-            pointer = ptr;
-        }
-        return *this;
-    }
-
-    D3DPtr& operator=(D3DPtr&& ptr)
-    {
-        reset();
-        pointer = ptr.pointer;
-        ptr.pointer = nullptr;
-        return *this;
-    }
-
-    T** operator&()
-    {
-        return &pointer;
-    }
-
-    T* operator->() const
-    {
-        return pointer;
-    }
-
-    T& operator*() const
-    {
-        return *pointer;
-    }
-
-    T* get() const
-    {
-        return pointer;
-    }
-
-    void reset(T* newPtr = nullptr)
+    static void Delete(T* pointer)
     {
         if (pointer)
         {
             pointer->Release();
-            pointer = nullptr;
         }
-        pointer = newPtr;
-    }
-
-    T* release()
-    {
-        T* ptr = pointer;
-        pointer = 0;
-        return ptr;
-    }
-
-    operator bool() const
-    {
-        return pointer != nullptr;
     }
 };
+
+
+// helper class template for automatic releasing of Direct3D objects
+template<typename T>
+using D3DPtr = Common::UniquePtr<T, D3DPointerDeleter<T>>;
+
 
 } // namespace Renderer
 } // namespace NFE
