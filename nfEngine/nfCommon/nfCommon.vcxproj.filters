@@ -336,6 +336,12 @@
     <ClInclude Include="Config\ConfigCommon.hpp">
       <Filter>Config</Filter>
     </ClInclude>
+    <ClInclude Include="Containers\UniquePtr.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\UniquePtrImpl.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
