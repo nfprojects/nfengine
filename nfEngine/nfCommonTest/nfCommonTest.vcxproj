@@ -244,6 +244,7 @@
     <ClCompile Include="TestCases\PackerComplexTest.cpp" />
     <ClCompile Include="TestCases\RayGeometryTest.cpp" />
     <ClCompile Include="TestCases\SetTest.cpp" />
+    <ClCompile Include="TestCases\SharedPtrTest.cpp" />
     <ClCompile Include="TestCases\StringTest.cpp" />
     <ClCompile Include="TestCases\StringViewTest.cpp" />
     <ClCompile Include="TestCases\SystemInfoTest.cpp" />
@@ -252,6 +253,7 @@
     <ClCompile Include="TestCases\ThreadTest.cpp" />
     <ClCompile Include="TestCases\TimerTest.cpp" />
     <ClCompile Include="TestCases\UniquePtrTest.cpp" />
+    <ClCompile Include="TestCases\WeakPtrTest.cpp" />
     <ClCompile Include="TestCases\WindowTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
