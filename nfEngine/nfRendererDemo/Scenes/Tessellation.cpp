@@ -152,16 +152,16 @@ TessellationScene::~TessellationScene()
 void TessellationScene::ReleaseSubsceneResources()
 {
     // clear resources
-    mVertexLayout.reset();
-    mVertexBuffer.reset();
+    mVertexLayout.Reset();
+    mVertexBuffer.Reset();
 
-    mPixelShader.reset();
-    mHullShader.reset();
-    mDomainShader.reset();
-    mVertexShader.reset();
+    mPixelShader.Reset();
+    mHullShader.Reset();
+    mDomainShader.Reset();
+    mVertexShader.Reset();
 
-    mPipelineState.reset();
-    mResBindingLayout.reset();
+    mPipelineState.Reset();
+    mResBindingLayout.Reset();
 }
 
 bool TessellationScene::OnInit(void* winHandle)
@@ -205,8 +205,8 @@ void TessellationScene::Draw(float dt)
 
     if (mVertexBuffer)
     {
-        BufferPtr vb = mVertexBuffer;
-        mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
+        const BufferPtr vertexBuffers[] = { mVertexBuffer };
+        mCommandBuffer->SetVertexBuffers(1, vertexBuffers, &stride, &offset);
     }
 
     if (mResBindingLayout)
@@ -233,8 +233,8 @@ void TessellationScene::Draw(float dt)
 void TessellationScene::Release()
 {
     ReleaseSubsceneResources();
-    mWindowRenderTarget.reset();
-    mWindowBackbuffer.reset();
+    mWindowRenderTarget.Reset();
+    mWindowBackbuffer.Reset();
     mCommandBuffer = nullptr;
     mRendererDevice = nullptr;
 }

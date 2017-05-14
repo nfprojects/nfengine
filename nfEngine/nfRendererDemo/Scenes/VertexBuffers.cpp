@@ -229,16 +229,16 @@ void VertexBuffersScene::ReleaseSubsceneResources()
 {
     // clear resources
 
-    mPositionsVertexBuffer.reset();
-    mColorVertexBuffer.reset();
-    mInstanceBuffer.reset();
-    mIndexBuffer.reset();
-    mVertexLayout.reset();
-    mPipelineState.reset();
+    mPositionsVertexBuffer.Reset();
+    mColorVertexBuffer.Reset();
+    mInstanceBuffer.Reset();
+    mIndexBuffer.Reset();
+    mVertexLayout.Reset();
+    mPipelineState.Reset();
 
-    mPixelShader.reset();
-    mVertexShader.reset();
-    mResBindingLayout.reset();
+    mPixelShader.Reset();
+    mVertexShader.Reset();
+    mResBindingLayout.Reset();
 }
 
 bool VertexBuffersScene::OnInit(void* winHandle)
@@ -337,8 +337,8 @@ void VertexBuffersScene::Draw(float dt)
 void VertexBuffersScene::Release()
 {
     ReleaseSubsceneResources();
-    mWindowRenderTarget.reset();
-    mWindowBackbuffer.reset();
+    mWindowRenderTarget.Reset();
+    mWindowBackbuffer.Reset();
     mCommandBuffer = nullptr;
     mRendererDevice = nullptr;
 }

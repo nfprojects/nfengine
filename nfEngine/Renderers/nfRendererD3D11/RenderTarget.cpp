@@ -41,7 +41,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
     mRTVs.reserve(desc.numTargets);
     for (unsigned int i = 0; i < desc.numTargets; ++i)
     {
-        Texture* tex = dynamic_cast<Texture*>(desc.targets[i].texture.get());
+        Texture* tex = dynamic_cast<Texture*>(desc.targets[i].texture.Get());
 
         if (tex == nullptr)
         {
@@ -146,7 +146,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 
     if (desc.depthBuffer != nullptr)
     {
-        mDepthBuffer = dynamic_cast<Texture*>(desc.depthBuffer.get());
+        mDepthBuffer = dynamic_cast<Texture*>(desc.depthBuffer.Get());
     }
 
     return true;

@@ -394,21 +394,21 @@ BasicScene::~BasicScene()
 void BasicScene::ReleaseSubsceneResources()
 {
     // clear resources
-    mTexture.reset();
-    mSampler.reset();
-    mConstantBuffer.reset();
-    mIndexBuffer.reset();
-    mVertexLayout.reset();
-    mVertexBuffer.reset();
-    mPixelShader.reset();
-    mVertexShader.reset();
-    mPipelineState.reset();
+    mTexture.Reset();
+    mSampler.Reset();
+    mConstantBuffer.Reset();
+    mIndexBuffer.Reset();
+    mVertexLayout.Reset();
+    mVertexBuffer.Reset();
+    mPixelShader.Reset();
+    mVertexShader.Reset();
+    mPipelineState.Reset();
 
-    mVSBindingInstance.reset();
-    mPSBindingInstance.reset();
-    mResBindingLayout.reset();
-    mVSBindingSet.reset();
-    mPSBindingSet.reset();
+    mVSBindingInstance.Reset();
+    mPSBindingInstance.Reset();
+    mResBindingLayout.Reset();
+    mVSBindingSet.Reset();
+    mPSBindingSet.Reset();
 }
 
 bool BasicScene::OnInit(void* winHandle)
@@ -519,8 +519,8 @@ void BasicScene::Draw(float dt)
 void BasicScene::Release()
 {
     ReleaseSubsceneResources();
-    mWindowRenderTarget.reset();
-    mWindowBackbuffer.reset();
+    mWindowRenderTarget.Reset();
+    mWindowBackbuffer.Reset();
     mCommandBuffer = nullptr;
     mRendererDevice = nullptr;
 }
