@@ -12,6 +12,7 @@
 namespace NFE {
 namespace Common {
 
+
 template<typename T>
 struct DefaultDeleter
 {
@@ -21,24 +22,34 @@ struct DefaultDeleter
     }
 };
 
+template<typename T>
+struct DefaultDeleter<T[]>
+{
+    static void Delete(T* pointer)
+    {
+        delete[] pointer;
+    }
+};
 
 template<typename T, typename Deleter = DefaultDeleter<T>>
-class UniquePtr
+class UniquePtr;
+
+
+template<typename T, typename Deleter>
+class UniquePtrBase
 {
 public:
-    UniquePtr();
-    UniquePtr(T* ptr);
-    UniquePtr(UniquePtr&& rhs);
-    ~UniquePtr();
-    UniquePtr& operator = (T* ptr);
-    UniquePtr& operator = (UniquePtr&& ptr);
+    UniquePtrBase();
+    UniquePtrBase(T* ptr);
+    UniquePtrBase(UniquePtrBase&& rhs);
+    ~UniquePtrBase();
+    UniquePtrBase& operator = (T* ptr);
+    UniquePtrBase& operator = (UniquePtrBase&& ptr);
 
     /**
      * Access pointed object.
      */
     T** operator&();
-    T* operator->() const;
-    T& operator*() const;
     T* Get() const;
 
     /**
@@ -63,12 +74,68 @@ public:
     bool operator == (const T* other) const;
     bool operator != (const T* other) const;
 
-private:
+protected:
     T* mPointer;
 
+private:
     // disable copy methods
-    UniquePtr(const UniquePtr&) = delete;
-    UniquePtr& operator=(const UniquePtr&) = delete;
+    UniquePtrBase(const UniquePtrBase&) = delete;
+    UniquePtrBase& operator=(const UniquePtrBase&) = delete;
+};
+
+
+/**
+ * Unique pointer - single object.
+ */
+template<typename T, typename Deleter>
+class UniquePtr : public UniquePtrBase<T, Deleter>
+{
+public:
+    UniquePtr() {}
+    UniquePtr(nullptr_t) : UniquePtrBase() {}
+    UniquePtr(T* ptr) : UniquePtrBase(ptr) {}
+    UniquePtr(UniquePtr&& rhs) : UniquePtrBase(std::move(rhs)) {}
+    UniquePtr& operator = (T* ptr) { UniquePtrBase::operator=(ptr); return *this; }
+    UniquePtr& operator = (UniquePtr&& ptr) { UniquePtrBase::operator=(std::move(ptr)); return *this; }
+
+    /**
+     * Convert to another type (e.g. base class).
+     */
+    template<typename U>
+    operator UniquePtr<U>();
+
+    /**
+     * Access pointed object.
+     */
+    T* operator->() const;
+    T& operator*() const;
+};
+
+/**
+ * UniquePtr - array of objects.
+ */
+template<typename T, typename Deleter>
+class UniquePtr<T[], Deleter>
+    : public UniquePtrBase<T, Deleter>
+{
+public:
+    UniquePtr() {}
+    UniquePtr(nullptr_t) : UniquePtrBase() {}
+    UniquePtr(T* ptr) : UniquePtrBase(ptr) {}
+    UniquePtr(UniquePtr&& rhs) : UniquePtrBase(std::move(rhs)) {}
+    UniquePtr& operator = (T* ptr) { UniquePtrBase::operator=(ptr); return *this; }
+    UniquePtr& operator = (UniquePtr&& ptr) { UniquePtrBase::operator=(std::move(ptr)); return *this; }
+
+    /**
+     * Convert to another type (e.g. base class).
+     */
+    template<typename U>
+    operator UniquePtr<U[]>();
+
+    /**
+     * Access array element.
+     */
+    T& operator[] (size_t i) const;
 };
 
 
@@ -77,6 +144,13 @@ private:
  */
 template<typename T, typename ... Args>
 UniquePtr<T> MakeUniquePtr(Args&& ... args);
+
+
+/**
+ * Static cast a unique pointer.
+ */
+template<typename T, typename U>
+UniquePtr<T> StaticCast(UniquePtr<U>&& source);
 
 
 } // namespace Common
