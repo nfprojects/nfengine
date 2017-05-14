@@ -139,8 +139,8 @@ void Mesh::OnUnload()
     std::recursive_mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
     std::lock_guard<std::recursive_mutex> lock(renderingMutex);
 
-    mVB.reset();
-    mIB.reset();
+    mVB.Reset();
+    mIB.Reset();
 
     // delete materials references
     for (auto& submesh : mSubMeshes)

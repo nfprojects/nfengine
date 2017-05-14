@@ -23,10 +23,10 @@
 
 namespace {
 
-template<typename Type, typename Desc>
-std::shared_ptr<Type> GenericCreateResource(const Desc& desc)
+template<typename BaseType, typename Type, typename Desc>
+NFE::Common::SharedPtr<BaseType> GenericCreateResource(const Desc& desc)
 {
-    std::shared_ptr<Type> resource = std::make_shared<Type>();
+    auto resource = NFE::Common::MakeSharedPtr<Type>();
     if (!resource)
     {
         return nullptr;
@@ -37,7 +37,7 @@ std::shared_ptr<Type> GenericCreateResource(const Desc& desc)
         return nullptr;
     }
 
-    return resource;
+    return NFE::Common::DynamicCast<BaseType>(resource);
 }
 
 const NFE::uint32 COMMAND_BUFFER_COUNT = 5;
@@ -47,7 +47,7 @@ const NFE::uint32 COMMAND_BUFFER_COUNT = 5;
 namespace NFE {
 namespace Renderer {
 
-std::unique_ptr<Device> gDevice;
+Common::UniquePtr<Device> gDevice;
 
 Device::Device()
     : mInstance()
@@ -73,9 +73,9 @@ Device::~Device()
 {
     WaitForGPU();
 
-    mRingBuffer.reset();
-    mSemaphorePool.reset();
-    mRenderPassManager.reset();
+    mRingBuffer.Reset();
+    mSemaphorePool.Reset();
+    mRenderPassManager.Reset();
 
     if (mCommandBufferPool.size())
         vkFreeCommandBuffers(mDevice, mCommandPool, COMMAND_BUFFER_COUNT, mCommandBufferPool.data());
@@ -304,12 +304,12 @@ bool Device::Init(const DeviceInitParams* params)
     result = vkAllocateCommandBuffers(mDevice, &cbInfo, mCommandBufferPool.data());
     CHECK_VKRESULT(result, "Failed to initialize Command Buffer Pool");
 
-    mRenderPassManager.reset(new RenderPassManager(mDevice));
+    mRenderPassManager.Reset(new RenderPassManager(mDevice));
 
-    mSemaphorePool.reset(new SemaphorePool(mDevice));
+    mSemaphorePool.Reset(new SemaphorePool(mDevice));
     mSemaphorePool->Init(VK_SEMAPHORE_POOL_SIZE);
 
-    mRingBuffer.reset(new RingBuffer(mDevice));
+    mRingBuffer.Reset(new RingBuffer(mDevice));
     mRingBuffer->Init(1024 * 1024);
 
     VkSemaphoreCreateInfo semInfo;
@@ -361,62 +361,62 @@ void* Device::GetHandle() const
 
 VertexLayoutPtr Device::CreateVertexLayout(const VertexLayoutDesc& desc)
 {
-    return GenericCreateResource<VertexLayout, VertexLayoutDesc>(desc);
+    return GenericCreateResource<IVertexLayout, VertexLayout, VertexLayoutDesc>(desc);
 }
 
 BufferPtr Device::CreateBuffer(const BufferDesc& desc)
 {
-    return GenericCreateResource<Buffer, BufferDesc>(desc);
+    return GenericCreateResource<IBuffer, Buffer, BufferDesc>(desc);
 }
 
 TexturePtr Device::CreateTexture(const TextureDesc& desc)
 {
-    return GenericCreateResource<Texture, TextureDesc>(desc);
+    return GenericCreateResource<ITexture, Texture, TextureDesc>(desc);
 }
 
 BackbufferPtr Device::CreateBackbuffer(const BackbufferDesc& desc)
 {
-    return GenericCreateResource<Backbuffer, BackbufferDesc>(desc);
+    return GenericCreateResource<IBackbuffer, Backbuffer, BackbufferDesc>(desc);
 }
 
 RenderTargetPtr Device::CreateRenderTarget(const RenderTargetDesc& desc)
 {
-    return GenericCreateResource<RenderTarget, RenderTargetDesc>(desc);
+    return GenericCreateResource<IRenderTarget, RenderTarget, RenderTargetDesc>(desc);
 }
 
 PipelineStatePtr Device::CreatePipelineState(const PipelineStateDesc& desc)
 {
-    return GenericCreateResource<PipelineState, PipelineStateDesc>(desc);
+    return GenericCreateResource<IPipelineState, PipelineState, PipelineStateDesc>(desc);
 }
 
 ComputePipelineStatePtr Device::CreateComputePipelineState(const ComputePipelineStateDesc& desc)
 {
-    return GenericCreateResource<ComputePipelineState, ComputePipelineStateDesc>(desc);
+    return GenericCreateResource<IComputePipelineState, ComputePipelineState, ComputePipelineStateDesc>(desc);
 }
 
 SamplerPtr Device::CreateSampler(const SamplerDesc& desc)
 {
-    return GenericCreateResource<Sampler, SamplerDesc>(desc);
+    return GenericCreateResource<ISampler, Sampler, SamplerDesc>(desc);
 }
 
 ShaderPtr Device::CreateShader(const ShaderDesc& desc)
 {
-    return GenericCreateResource<Shader, ShaderDesc>(desc);
+    return GenericCreateResource<IShader, Shader, ShaderDesc>(desc);
 }
 
 ResourceBindingSetPtr Device::CreateResourceBindingSet(const ResourceBindingSetDesc& desc)
 {
-    return GenericCreateResource<ResourceBindingSet, ResourceBindingSetDesc>(desc);
+    return GenericCreateResource<IResourceBindingSet, ResourceBindingSet, ResourceBindingSetDesc>(desc);
 }
 
 ResourceBindingLayoutPtr Device::CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc)
 {
-    return GenericCreateResource<ResourceBindingLayout, ResourceBindingLayoutDesc>(desc);
+    return GenericCreateResource<IResourceBindingLayout, ResourceBindingLayout, ResourceBindingLayoutDesc>(desc);
 }
 
 ResourceBindingInstancePtr Device::CreateResourceBindingInstance(const ResourceBindingSetPtr& set)
 {
-    std::shared_ptr<ResourceBindingInstance> rbi = std::make_shared<ResourceBindingInstance>();
+    auto rbi = Common::MakeSharedPtr<ResourceBindingInstance>();
     if (!rbi)
     {
         return nullptr;
@@ -427,12 +427,12 @@ ResourceBindingInstancePtr Device::CreateResourceBindingInstance(const ResourceB
         return nullptr;
     }
 
-    return rbi;
+    return Common::DynamicCast<IResourceBindingInstance>(rbi);
 }
 
 CommandRecorderPtr Device::CreateCommandRecorder()
 {
-    std::shared_ptr<CommandRecorder> cr = std::make_shared<CommandRecorder>();
+    auto cr = Common::MakeSharedPtr<CommandRecorder>();
     if (!cr)
     {
         return nullptr;
@@ -443,7 +443,7 @@ CommandRecorderPtr Device::CreateCommandRecorder()
         return nullptr;
     }
 
-    return cr;
+    return Common::DynamicCast<ICommandRecorder>(cr);;
 }
 
 bool Device::IsBackbufferFormatSupported(ElementFormat format)
@@ -601,10 +601,10 @@ IDevice* Init(const DeviceInitParams* params)
 {
     if (gDevice == nullptr)
     {
-        gDevice.reset(new (std::nothrow) Device);
+        gDevice.Reset(new Device);
         if (!gDevice->Init(params))
         {
-            gDevice.reset();
+            gDevice.Reset();
             return nullptr;
         }
     }
@@ -615,13 +615,13 @@ IDevice* Init(const DeviceInitParams* params)
     //      Bump glslang version, fix it by yourself, or use other library for GLSL/HLSL->SPV.
     glslang::InitializeProcess();
 
-    return gDevice.get();
+    return gDevice.Get();
 }
 
 void Release()
 {
     glslang::FinalizeProcess();
-    gDevice.reset();
+    gDevice.Reset();
 }
 
 } // namespace Renderer

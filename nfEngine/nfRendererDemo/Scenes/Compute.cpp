@@ -76,7 +76,8 @@ bool ComputeScene::CreateSubSceneSimple()
         return false;
 
     // create binding layout
-    mResBindingLayout = mRendererDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc(&mBindingSet, 1));
+    const ResourceBindingSetPtr bindingSets[] = { mBindingSet };
+    mResBindingLayout = mRendererDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc(bindingSets, 1));
     if (!mResBindingLayout)
         return false;
 
@@ -140,14 +141,14 @@ ComputeScene::~ComputeScene()
 
 void ComputeScene::ReleaseSubsceneResources()
 {
-    mBindingInstance.reset();
-    mBindingSet.reset();
-    mResBindingLayout.reset();
+    mBindingInstance.Reset();
+    mBindingSet.Reset();
+    mResBindingLayout.Reset();
 
-    mTexture.reset();
-    mConstantBuffer.reset();
-    mShader.reset();
-    mPipelineState.reset();
+    mTexture.Reset();
+    mConstantBuffer.Reset();
+    mShader.Reset();
+    mPipelineState.Reset();
 }
 
 bool ComputeScene::OnInit(void* winHandle)
@@ -194,7 +195,7 @@ void ComputeScene::Release()
 {
     ReleaseSubsceneResources();
 
-    mWindowBackbuffer.reset();
-    mCommandBuffer = nullptr;
+    mWindowBackbuffer.Reset();
+    mCommandBuffer.Reset();
     mRendererDevice = nullptr;
 }

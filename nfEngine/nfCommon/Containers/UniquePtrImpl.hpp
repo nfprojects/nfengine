@@ -122,7 +122,7 @@ template<typename T, typename Deleter>
 template<typename U>
 UniquePtr<T, Deleter>::operator UniquePtr<U>()
 {
-    static_assert(std::is_convertible<T, U>::value, "Cannot convert unique pointer");
+    static_assert(std::is_base_of<U, T>::value, "Cannot convert unique pointer");
 
     UniquePtr<U> result(static_cast<U*>(this->mPointer));
     this->mPointer = nullptr;
@@ -142,7 +142,7 @@ template<typename T, typename Deleter>
 template<typename U>
 UniquePtr<T[], Deleter>::operator UniquePtr<U[]>()
 {
-    static_assert(std::is_convertible<T, U>::value, "Cannot convert unique pointer");
+    static_assert(std::is_base_of<U, T>::value, "Cannot convert unique pointer");
 
     UniquePtr<U[]> result(static_cast<U*>(this->mPointer));
     this->mPointer = nullptr;

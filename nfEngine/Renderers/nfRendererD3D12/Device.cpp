@@ -29,10 +29,10 @@ namespace Renderer {
 
 namespace {
 
-template<typename Type, typename Desc>
-std::shared_ptr<Type> CreateGenericResource(const Desc& desc)
+template<typename BaseType, typename Type, typename Desc>
+Common::SharedPtr<BaseType> CreateGenericResource(const Desc& desc)
 {
-    std::shared_ptr<Type> resource = std::make_unique<Type>();
+    auto resource = Common::MakeSharedPtr<Type>();
     if (!resource)
     {
         return nullptr;
@@ -43,7 +43,7 @@ std::shared_ptr<Type> CreateGenericResource(const Desc& desc)
         return nullptr;
     }
 
-    return resource;
+    return Common::DynamicCast<BaseType>(resource);
 }
 
 } // namespace
@@ -290,62 +290,62 @@ void* Device::GetHandle() const
 
 VertexLayoutPtr Device::CreateVertexLayout(const VertexLayoutDesc& desc)
 {
-    return CreateGenericResource<VertexLayout, VertexLayoutDesc>(desc);
+    return CreateGenericResource<IVertexLayout, VertexLayout, VertexLayoutDesc>(desc);
 }
 
 BufferPtr Device::CreateBuffer(const BufferDesc& desc)
 {
-    return CreateGenericResource<Buffer, BufferDesc>(desc);
+    return CreateGenericResource<IBuffer, Buffer, BufferDesc>(desc);
 }
 
 TexturePtr Device::CreateTexture(const TextureDesc& desc)
 {
-    return CreateGenericResource<Texture, TextureDesc>(desc);
+    return CreateGenericResource<ITexture, Texture, TextureDesc>(desc);
 }
 
 BackbufferPtr Device::CreateBackbuffer(const BackbufferDesc& desc)
 {
-    return CreateGenericResource<Backbuffer, BackbufferDesc>(desc);
+    return CreateGenericResource<IBackbuffer, Backbuffer, BackbufferDesc>(desc);
 }
 
 RenderTargetPtr Device::CreateRenderTarget(const RenderTargetDesc& desc)
 {
-return CreateGenericResource<RenderTarget, RenderTargetDesc>(desc);
+    return CreateGenericResource<IRenderTarget, RenderTarget, RenderTargetDesc>(desc);
 }
 
 PipelineStatePtr Device::CreatePipelineState(const PipelineStateDesc& desc)
 {
-    return CreateGenericResource<PipelineState, PipelineStateDesc>(desc);
+    return CreateGenericResource<IPipelineState, PipelineState, PipelineStateDesc>(desc);
 }
 
 ComputePipelineStatePtr Device::CreateComputePipelineState(const ComputePipelineStateDesc& desc)
 {
-    return CreateGenericResource<ComputePipelineState, ComputePipelineStateDesc>(desc);
+    return CreateGenericResource<IComputePipelineState, ComputePipelineState, ComputePipelineStateDesc>(desc);
 }
 
 SamplerPtr Device::CreateSampler(const SamplerDesc& desc)
 {
-    return CreateGenericResource<Sampler, SamplerDesc>(desc);
+    return CreateGenericResource<ISampler, Sampler, SamplerDesc>(desc);
 }
 
 ShaderPtr Device::CreateShader(const ShaderDesc& desc)
 {
-    return CreateGenericResource<Shader, ShaderDesc>(desc);
+    return CreateGenericResource<IShader, Shader, ShaderDesc>(desc);
 }
 
 ResourceBindingSetPtr Device::CreateResourceBindingSet(const ResourceBindingSetDesc& desc)
 {
-    return CreateGenericResource<ResourceBindingSet, ResourceBindingSetDesc>(desc);
+    return CreateGenericResource<IResourceBindingSet, ResourceBindingSet, ResourceBindingSetDesc>(desc);
 }
 
 ResourceBindingLayoutPtr Device::CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc)
 {
-    return CreateGenericResource<ResourceBindingLayout, ResourceBindingLayoutDesc>(desc);
+    return CreateGenericResource<IResourceBindingLayout, ResourceBindingLayout, ResourceBindingLayoutDesc>(desc);
 }
 
 ResourceBindingInstancePtr Device::CreateResourceBindingInstance(const ResourceBindingSetPtr& set)
 {
-    return CreateGenericResource<ResourceBindingInstance, ResourceBindingSetPtr>(set);
+    return CreateGenericResource<IResourceBindingInstance, ResourceBindingInstance, ResourceBindingSetPtr>(set);
 }
 
 bool Device::DetectVideoCards(int preferredId)
@@ -499,13 +499,13 @@ bool Device::IsBackbufferFormatSupported(ElementFormat format)
 
 CommandRecorderPtr Device::CreateCommandRecorder()
 {
-    std::shared_ptr<CommandRecorder> commandRecorder = std::make_shared<CommandRecorder>();
+    auto commandRecorder = Common::MakeSharedPtr<CommandRecorder>();
     if (!commandRecorder->Init(mDevice.Get()))
     {
         return nullptr;
     }
 
-    return commandRecorder;
+    return Common::DynamicCast<ICommandRecorder>(commandRecorder);
 }
 
 bool Device::Execute(CommandListID commandList)
@@ -521,10 +521,10 @@ bool Device::Execute(CommandListID commandList)
     if (!list || !list->commandRecorder)
         return false;
 
-    ID3D12CommandList* commandLists[] = { list->commandRecorder->mCommandList.get() };
+    ID3D12CommandList* commandLists[] = { list->commandRecorder->mCommandList.Get() };
     gDevice->mCommandQueue->ExecuteCommandLists(1, commandLists);
 
-    return list->commandRecorder->MoveToNextFrame(gDevice->mCommandQueue.get());
+    return list->commandRecorder->MoveToNextFrame(gDevice->mCommandQueue.Get());
     */
 
     // TODO
@@ -551,7 +551,7 @@ bool Device::DownloadTexture(const TexturePtr& tex, void* data, int mipmap, int 
     UNUSED(mipmap);
     UNUSED(layer);
 
-    const Texture* texture = dynamic_cast<Texture*>(tex.get());
+    const Texture* texture = dynamic_cast<Texture*>(tex.Get());
     if (!texture)
     {
         LOG_ERROR("Invalid texture pointer");

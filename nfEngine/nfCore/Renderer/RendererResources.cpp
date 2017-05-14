@@ -25,10 +25,10 @@ ShadowMap::ShadowMap()
 void ShadowMap::Release()
 {
     for (uint32 i = 0; i < MAX_CASCADE_SPLITS; ++i)
-        mRenderTargets[i].reset();
-    mBindingInstance.reset();
-    mTexture.reset();
-    mDepthBuffer.reset();
+        mRenderTargets[i].Reset();
+    mBindingInstance.Reset();
+    mTexture.Reset();
+    mDepthBuffer.Reset();
 
     mSize = 0;
     mType = Type::None;
@@ -167,10 +167,10 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
 
 void GeometryBuffer::Release()
 {
-    mBindingInstance.reset();
-    mRenderTarget.reset();
+    mBindingInstance.Reset();
+    mRenderTarget.Reset();
     for (int i = 0; i < gLayers; ++i)
-        mTextures[i].reset();
+        mTextures[i].Reset();
 }
 
 bool GeometryBuffer::Resize(int width, int height)

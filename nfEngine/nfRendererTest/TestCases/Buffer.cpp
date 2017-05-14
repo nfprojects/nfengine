@@ -53,7 +53,7 @@ TEST_F(BufferTest, BufferCreation)
         bufferDesc = defBufferDesc;
         bufferDesc.size = 0;
         buffer = gRendererDevice->CreateBuffer(bufferDesc);
-        EXPECT_EQ(nullptr, buffer.get());
+        EXPECT_EQ(nullptr, buffer.Get());
 
         if (defBufferDesc.type == BufferType::Constant)
         {
@@ -61,14 +61,14 @@ TEST_F(BufferTest, BufferCreation)
             bufferDesc = defBufferDesc;
             bufferDesc.size = 1024 * 1024 * 1024;
             buffer = gRendererDevice->CreateBuffer(bufferDesc);
-            EXPECT_EQ(nullptr, buffer.get());
+            EXPECT_EQ(nullptr, buffer.Get());
         }
 
         // buffers can not be CPU readable
         bufferDesc = defBufferDesc;
         bufferDesc.mode = BufferMode::Readback;
         buffer = gRendererDevice->CreateBuffer(bufferDesc);
-        EXPECT_EQ(nullptr, buffer.get());
+        EXPECT_EQ(nullptr, buffer.Get());
 
         // static buffers must have defined content upon creation
         bufferDesc = defBufferDesc;
@@ -76,24 +76,24 @@ TEST_F(BufferTest, BufferCreation)
         bufferDesc.initialData = nullptr;
         buffer = gRendererDevice->CreateBuffer(bufferDesc);
 
-        EXPECT_EQ(nullptr, buffer.get());
+        EXPECT_EQ(nullptr, buffer.Get());
 
         // valid dynamic buffer
         bufferDesc = defBufferDesc;
         bufferDesc.initialData = data;
         buffer = gRendererDevice->CreateBuffer(bufferDesc);
-        EXPECT_NE(nullptr, buffer.get());
+        EXPECT_NE(nullptr, buffer.Get());
 
         // valid dynamic buffer
         bufferDesc = defBufferDesc;
         buffer = gRendererDevice->CreateBuffer(bufferDesc);
-        EXPECT_NE(nullptr, buffer.get());
+        EXPECT_NE(nullptr, buffer.Get());
 
         // valid static buffer
         bufferDesc = defBufferDesc;
         bufferDesc.mode = BufferMode::Static;
         bufferDesc.initialData = data;
         buffer = gRendererDevice->CreateBuffer(bufferDesc);
-        EXPECT_NE(nullptr, buffer.get());
+        EXPECT_NE(nullptr, buffer.Get());
     }
 }

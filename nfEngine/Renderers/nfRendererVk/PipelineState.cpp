@@ -30,7 +30,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
 {
     mDesc = desc;
 
-    VertexLayout* vl = dynamic_cast<VertexLayout*>(desc.vertexLayout.get());
+    VertexLayout* vl = dynamic_cast<VertexLayout*>(desc.vertexLayout.Get());
     VkPipelineVertexInputStateCreateInfo pvisInfo;
     VK_ZERO_MEMORY(pvisInfo);
     pvisInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -150,7 +150,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
         return false;
 
     // bind resource layout
-    ResourceBindingLayout* rbl = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout.get());
+    ResourceBindingLayout* rbl = dynamic_cast<ResourceBindingLayout*>(desc.resBindingLayout.Get());
 
     // shader stages
     VkPipelineShaderStageCreateInfo stages[5];
@@ -158,31 +158,31 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
 
     if (mDesc.vertexShader)
     {
-        Shader* s = dynamic_cast<Shader*>(mDesc.vertexShader.get());
+        Shader* s = dynamic_cast<Shader*>(mDesc.vertexShader.Get());
         stages[stageCount] = s->mStageInfo;
         stageCount++;
     }
     if (mDesc.hullShader)
     {
-        Shader* s = dynamic_cast<Shader*>(mDesc.hullShader.get());
+        Shader* s = dynamic_cast<Shader*>(mDesc.hullShader.Get());
         stages[stageCount] = s->mStageInfo;
         stageCount++;
     }
     if (mDesc.domainShader)
     {
-        Shader* s = dynamic_cast<Shader*>(mDesc.domainShader.get());
+        Shader* s = dynamic_cast<Shader*>(mDesc.domainShader.Get());
         stages[stageCount] = s->mStageInfo;
         stageCount++;
     }
     if (mDesc.geometryShader)
     {
-        Shader* s = dynamic_cast<Shader*>(mDesc.geometryShader.get());
+        Shader* s = dynamic_cast<Shader*>(mDesc.geometryShader.Get());
         stages[stageCount] = s->mStageInfo;
         stageCount++;
     }
     if (mDesc.pixelShader)
     {
-        Shader* s = dynamic_cast<Shader*>(mDesc.pixelShader.get());
+        Shader* s = dynamic_cast<Shader*>(mDesc.pixelShader.Get());
         stages[stageCount] = s->mStageInfo;
         stageCount++;
     }
