@@ -58,7 +58,7 @@ Matrix Matrix::MakeRotationNormal(const Vector& normalAxis, float angle)
     result.r[1] = R2;
     V2 = _mm_shuffle_ps(V2, V0, _MM_SHUFFLE(3, 2, 1, 0));
     result.r[2] = V2;
-    result.r[3] = VECTOR_Z;
+    result.r[3] = VECTOR_W;
     return result;
 }
 
