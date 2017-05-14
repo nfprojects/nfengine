@@ -18,7 +18,7 @@
 namespace NFE {
 namespace Renderer {
 
-extern std::unique_ptr<Device> gDevice;
+extern Common::UniquePtr<Device> gDevice;
 
 // export Device creation function
 extern "C" RENDERER_API IDevice* Init(const DeviceInitParams* params);

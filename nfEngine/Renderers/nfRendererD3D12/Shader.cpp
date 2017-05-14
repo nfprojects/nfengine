@@ -89,10 +89,10 @@ bool Shader::Init(const ShaderDesc& desc)
     }
 
     std::stringstream macrosStr;
-    std::unique_ptr<D3D_SHADER_MACRO[]> d3dMacros;
+    Common::UniquePtr<D3D_SHADER_MACRO[]> d3dMacros;
     if (desc.macrosNum > 0)
     {
-        d3dMacros.reset(new D3D_SHADER_MACRO[desc.macrosNum + 1]);
+        d3dMacros.Reset(new D3D_SHADER_MACRO[desc.macrosNum + 1]);
         for (size_t i = 0; i < desc.macrosNum; ++i)
         {
             d3dMacros[i].Name = desc.macros[i].name;

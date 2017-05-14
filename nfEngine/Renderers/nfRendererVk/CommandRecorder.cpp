@@ -65,7 +65,7 @@ void CommandRecorder::SetVertexBuffers(int num, const BufferPtr* vertexBuffers, 
 
     for (int i = 0; i < num; ++i)
     {
-        Buffer* buf = dynamic_cast<Buffer*>(vertexBuffers[i].get());
+        Buffer* buf = dynamic_cast<Buffer*>(vertexBuffers[i].Get());
         if (!buf)
         {
             LOG_ERROR("Incorrect buffer provided at slot %d", i);
@@ -82,7 +82,7 @@ void CommandRecorder::SetVertexBuffers(int num, const BufferPtr* vertexBuffers, 
 
 void CommandRecorder::SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFormat format)
 {
-    Buffer* ib = dynamic_cast<Buffer*>(indexBuffer.get());
+    Buffer* ib = dynamic_cast<Buffer*>(indexBuffer.Get());
     if (ib == nullptr)
     {
         LOG_ERROR("Incorrect Index Buffer provided");
@@ -96,7 +96,7 @@ void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePt
 {
     UNUSED(slot);
 
-    ResourceBindingInstance* rbi = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.get());
+    ResourceBindingInstance* rbi = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.Get());
     if (rbi == nullptr)
     {
         LOG_ERROR("Incorrect resource binding instance provided");
@@ -110,7 +110,7 @@ void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePt
 
 void CommandRecorder::BindVolatileCBuffer(size_t slot, const BufferPtr& buffer)
 {
-    Buffer* b = dynamic_cast<Buffer*>(buffer.get());
+    Buffer* b = dynamic_cast<Buffer*>(buffer.Get());
     if (b == nullptr)
     {
         LOG_ERROR("Invalid volatile buffer provided");
@@ -137,7 +137,7 @@ void CommandRecorder::BindVolatileCBuffer(size_t slot, const BufferPtr& buffer)
 
 void CommandRecorder::SetResourceBindingLayout(const ResourceBindingLayoutPtr& layout)
 {
-    mResourceBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout.get());
+    mResourceBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout.Get());
     if (!mResourceBindingLayout)
         LOG_ERROR("Incorrect binding layout provided");
 }
@@ -150,7 +150,7 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
         vkCmdEndRenderPass(mCommandBuffer);
     }
 
-    mRenderTarget = dynamic_cast<RenderTarget*>(renderTarget.get());
+    mRenderTarget = dynamic_cast<RenderTarget*>(renderTarget.Get());
     if (!mRenderTarget)
     {
         LOG_ERROR("Incorrect Render Target pointer.");
@@ -170,7 +170,7 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
 
 void CommandRecorder::SetPipelineState(const PipelineStatePtr& state)
 {
-    PipelineState* ps = dynamic_cast<PipelineState*>(state.get());
+    PipelineState* ps = dynamic_cast<PipelineState*>(state.Get());
     if (ps == nullptr)
     {
         LOG_ERROR("Incorrect pipeline state provided");
@@ -282,7 +282,7 @@ bool CommandRecorder::WriteVolatileBuffer(Buffer* b, size_t size, const void* da
 
 bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t size, const void* data)
 {
-    Buffer* b = dynamic_cast<Buffer*>(buffer.get());
+    Buffer* b = dynamic_cast<Buffer*>(buffer.Get());
     if (b == nullptr)
     {
         LOG_ERROR("Invalid buffer pointer provided");

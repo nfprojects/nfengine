@@ -21,8 +21,8 @@ class Shader : public IShader
     typedef std::map<std::string, SetSlotPair> SetSlotMap; // mapping Resource Name to Slot
 
     ShaderType mType;
-    std::unique_ptr<glslang::TShader> mShaderGlslang;
-    std::unique_ptr<glslang::TProgram> mProgramGlslang;
+    Common::UniquePtr<glslang::TShader> mShaderGlslang;
+    Common::UniquePtr<glslang::TProgram> mProgramGlslang;
     std::vector<uint32> mShaderSpv;
     SetSlotMap mResourceSlotMap;
     VkShaderModule mShader;

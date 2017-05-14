@@ -273,17 +273,17 @@ MultithreadedScene::~MultithreadedScene()
 void MultithreadedScene::ReleaseSubsceneResources()
 {
     // clear resources
-    mConstantBuffer.reset();
-    mIndexBuffer.reset();
-    mVertexLayout.reset();
-    mVertexBuffer.reset();
-    mPixelShader.reset();
-    mVertexShader.reset();
-    mPipelineState.reset();
+    mConstantBuffer.Reset();
+    mIndexBuffer.Reset();
+    mVertexLayout.Reset();
+    mVertexBuffer.Reset();
+    mPixelShader.Reset();
+    mVertexShader.Reset();
+    mPipelineState.Reset();
 
-    mVSBindingInstance.reset();
-    mResBindingLayout.reset();
-    mVSBindingSet.reset();
+    mVSBindingInstance.Reset();
+    mResBindingLayout.Reset();
+    mVSBindingSet.Reset();
 
     mCommandRecorders.clear();
 }
@@ -422,8 +422,8 @@ void MultithreadedScene::Draw(float dt)
 void MultithreadedScene::Release()
 {
     ReleaseSubsceneResources();
-    mWindowRenderTarget.reset();
-    mWindowBackbuffer.reset();
+    mWindowRenderTarget.Reset();
+    mWindowBackbuffer.Reset();
     mCommandBuffer = nullptr;
     mRendererDevice = nullptr;
 }

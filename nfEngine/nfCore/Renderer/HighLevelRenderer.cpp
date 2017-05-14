@@ -126,10 +126,10 @@ void HighLevelRenderer::ReleaseModules()
 
 void HighLevelRenderer::Release()
 {
-    mDefaultSampler.reset();
-    mDefaultDiffuseTexture.reset();
-    mDefaultNormalTexture.reset();
-    mDefaultSpecularTexture.reset();
+    mDefaultSampler.Reset();
+    mDefaultDiffuseTexture.Reset();
+    mDefaultNormalTexture.Reset();
+    mDefaultSpecularTexture.Reset();
 
     mDeferredContexts.reset();
 

@@ -16,6 +16,9 @@
 #include "SemaphorePool.hpp"
 #include "RingBuffer.hpp"
 
+#include "nfCommon/Containers/UniquePtr.hpp"
+
+
 namespace NFE {
 namespace Renderer {
 
@@ -39,9 +42,9 @@ private:
     VkSemaphore mPostPresentSemaphore;
     bool mPresented;
     std::vector<VkSurfaceFormatKHR> mSupportedFormats;
-    std::unique_ptr<RenderPassManager> mRenderPassManager;
-    std::unique_ptr<SemaphorePool> mSemaphorePool;
-    std::unique_ptr<RingBuffer> mRingBuffer;
+    Common::UniquePtr<RenderPassManager> mRenderPassManager;
+    Common::UniquePtr<SemaphorePool> mSemaphorePool;
+    Common::UniquePtr<RingBuffer> mRingBuffer;
     bool mDebugEnable;
 
     VkPhysicalDevice SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices, int preferredId);
@@ -107,17 +110,17 @@ public:
 
     NFE_INLINE RenderPassManager* GetRenderPassManager() const
     {
-        return mRenderPassManager.get();
+        return mRenderPassManager.Get();
     }
 
     NFE_INLINE SemaphorePool* GetSemaphorePool() const
     {
-        return mSemaphorePool.get();
+        return mSemaphorePool.Get();
     }
 
     NFE_INLINE RingBuffer* GetRingBuffer() const
     {
-        return mRingBuffer.get();
+        return mRingBuffer.Get();
     }
 
     NFE_INLINE uint32 GetCurrentCommandBuffer() const
@@ -156,7 +159,7 @@ public:
     bool DownloadTexture(const TexturePtr& tex, void* data, int mipmap = 0, int layer = 0) override;
 };
 
-extern std::unique_ptr<Device> gDevice;
+extern Common::UniquePtr<Device> gDevice;
 
 extern "C" RENDERER_API IDevice* Init(const DeviceInitParams* params);
 extern "C" RENDERER_API void Release();
