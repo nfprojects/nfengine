@@ -66,7 +66,7 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
         layoutBinding.descriptorType = TranslateShaderResourceTypeToVkDescriptorType(rb.resourceType);
         if (rb.staticSampler)
         {
-            Sampler* s = dynamic_cast<Sampler*>(rb.staticSampler.get());
+            Sampler* s = dynamic_cast<Sampler*>(rb.staticSampler.Get());
             if (s == nullptr)
             {
                 LOG_ERROR("Incorrect Sampler pointer provided at entry %d.");
@@ -181,7 +181,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     std::vector<ResourceBindingSet*> setPtrs;
     setPtrs.resize(desc.numBindingSets);
     for (uint32 i = 0; i < desc.numBindingSets; ++i)
-        setPtrs[i] = dynamic_cast<ResourceBindingSet*>(desc.bindingSets[i].get());
+        setPtrs[i] = dynamic_cast<ResourceBindingSet*>(desc.bindingSets[i].Get());
 
     std::sort(setPtrs.begin(), setPtrs.end(), [](ResourceBindingSet* rbs1, ResourceBindingSet* rbs2) {
         return rbs1->GetSetSlot() < rbs2->GetSetSlot();
@@ -306,7 +306,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
 
 bool ResourceBindingInstance::Init(const ResourceBindingSetPtr& bindingSet)
 {
-    mSet = dynamic_cast<ResourceBindingSet*>(bindingSet.get());
+    mSet = dynamic_cast<ResourceBindingSet*>(bindingSet.Get());
     if (mSet == nullptr)
     {
         LOG_ERROR("Incorrect binding set provided");
@@ -318,7 +318,7 @@ bool ResourceBindingInstance::Init(const ResourceBindingSetPtr& bindingSet)
 
 bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& texture)
 {
-    Texture* t = dynamic_cast<Texture*>(texture.get());
+    Texture* t = dynamic_cast<Texture*>(texture.Get());
     if (t == nullptr)
     {
         LOG_ERROR("Incorrect Texture pointer provided");
@@ -346,7 +346,7 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& te
 
 bool ResourceBindingInstance::WriteCBufferView(size_t slot, const BufferPtr& buffer)
 {
-    Buffer* b = dynamic_cast<Buffer*>(buffer.get());
+    Buffer* b = dynamic_cast<Buffer*>(buffer.Get());
     if (b == nullptr)
     {
         LOG_ERROR("Incorrect Buffer pointer provided");

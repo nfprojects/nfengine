@@ -31,9 +31,9 @@ namespace Renderer {
 namespace {
 
 template<typename Type, typename Desc>
-std::shared_ptr<Type> CreateGenericResource(const Desc& desc)
+Common::SharedPtr<Type> CreateGenericResource(const Desc& desc)
 {
-    std::shared_ptr<Type> resource = std::make_unique<Type>();
+    auto resource = Common::MakeSharedPtr<Type>();
     if (!resource)
     {
         return nullptr;
@@ -261,7 +261,7 @@ CommandRecorderPtr Device::CreateCommandRecorder()
     if (FAILED(hr))
         return nullptr;
 
-    CommandRecorderPtr commandRecorder = std::make_unique<CommandRecorder>(context);
+    auto commandRecorder = Common::MakeSharedPtr<CommandRecorder>(context);
     if (!commandRecorder)
     {
         D3D_SAFE_RELEASE(context);
@@ -353,7 +353,7 @@ bool Device::WaitForGPU()
 
 bool Device::DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data)
 {
-    const Buffer* buf = dynamic_cast<Buffer*>(buffer.get());
+    const Buffer* buf = dynamic_cast<Buffer*>(buffer.Get());
     if (!buf)
         return false;
 
@@ -370,7 +370,7 @@ bool Device::DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size,
 
 bool Device::DownloadTexture(const TexturePtr& tex, void* data, int mipmap, int layer)
 {
-    const Texture* texture = dynamic_cast<Texture*>(tex.get());
+    const Texture* texture = dynamic_cast<Texture*>(tex.Get());
     if (!texture)
     {
         LOG_ERROR("Invalid 'tex' pointer");

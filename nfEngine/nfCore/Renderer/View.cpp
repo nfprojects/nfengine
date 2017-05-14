@@ -178,7 +178,7 @@ bool View::SetWindow(Common::Window* window)
 
     if (!InitRenderTarget(mWindowBackbuffer, width, height))
     {
-        mWindowBackbuffer.reset();
+        mWindowBackbuffer.Reset();
         return false;
     }
 
@@ -194,7 +194,7 @@ void View::OnWindowResize(void* userData)
 
     if (view->mWindowBackbuffer != nullptr && view->mWindow != nullptr)
     {
-        view->mRenderTarget.reset();
+        view->mRenderTarget.Reset();
 
         uint32 width, height;
         view->mWindow->GetSize(width, height);
@@ -202,7 +202,7 @@ void View::OnWindowResize(void* userData)
 
         if (!view->InitRenderTarget(view->mWindowBackbuffer, width, height))
         {
-            view->mWindowBackbuffer.reset();
+            view->mWindowBackbuffer.Reset();
         }
     }
 }
@@ -274,7 +274,7 @@ bool View::InitRenderTarget(const TexturePtr& texture, uint32 width, uint32 heig
     mGBuffer.reset(new GeometryBuffer);
     if (!mGBuffer->Resize(width, height))
     {
-        mRenderTarget.reset();
+        mRenderTarget.Reset();
         LOG_ERROR("Failed to create render target");
         return false;
     }

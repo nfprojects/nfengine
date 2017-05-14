@@ -312,8 +312,8 @@ void DepthStencilScene::Draw(float dt)
 
     int stride = 9 * sizeof(float);
     int offset = 0;
-    BufferPtr vb = mVertexBuffer;
-    mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
+    const BufferPtr vertexBuffers[] = { mVertexBuffer };
+    mCommandBuffer->SetVertexBuffers(1, vertexBuffers, &stride, &offset);
     mCommandBuffer->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
 
     BufferPtr cb = mConstantBuffer;
@@ -369,25 +369,25 @@ void DepthStencilScene::Draw(float dt)
 
 void DepthStencilScene::ReleaseSubsceneResources()
 {
-    mWindowRenderTarget.reset();
-    mDepthBuffer.reset();
-    mVertexShader.reset();
-    mPixelShader.reset();
-    mConstantBuffer.reset();
-    mVertexBuffer.reset();
-    mIndexBuffer.reset();
-    mVertexLayout.reset();
-    mMaskPipelineState.reset();
-    mReflectionPipelineState.reset();
-    mFloorPipelineState.reset();
-    mCubePipelineState.reset();
-    mResBindingLayout.reset();
+    mWindowRenderTarget.Reset();
+    mDepthBuffer.Reset();
+    mVertexShader.Reset();
+    mPixelShader.Reset();
+    mConstantBuffer.Reset();
+    mVertexBuffer.Reset();
+    mIndexBuffer.Reset();
+    mVertexLayout.Reset();
+    mMaskPipelineState.Reset();
+    mReflectionPipelineState.Reset();
+    mFloorPipelineState.Reset();
+    mCubePipelineState.Reset();
+    mResBindingLayout.Reset();
 }
 
 void DepthStencilScene::Release()
 {
     ReleaseSubsceneResources();
-    mWindowBackbuffer.reset();
+    mWindowBackbuffer.Reset();
     mCommandBuffer = nullptr;
     mRendererDevice = nullptr;
 }

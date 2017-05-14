@@ -10,23 +10,23 @@
 namespace NFE {
 namespace Renderer {
 
-std::unique_ptr<Device> gDevice;
+Common::UniquePtr<Device> gDevice;
 
 IDevice* Init(const DeviceInitParams* params)
 {
     if (gDevice == nullptr)
     {
-        gDevice = std::make_unique<Device>();
+        gDevice = Common::MakeUniquePtr<Device>();
         if (!gDevice->Init(params))
-            gDevice.reset();
+            gDevice.Reset();
     }
 
-    return gDevice.get();
+    return gDevice.Get();
 }
 
 void Release()
 {
-    gDevice.reset();
+    gDevice.Reset();
 }
 
 } // namespace Renderer

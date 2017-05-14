@@ -212,7 +212,7 @@ void Material::OnUnload()
     std::recursive_mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
     std::unique_lock<std::recursive_mutex> lock(renderingMutex);
 
-    mRendererData.layers[0].bindingInstance.reset();
+    mRendererData.layers[0].bindingInstance.Reset();
     mLayers.clear();
 }
 
