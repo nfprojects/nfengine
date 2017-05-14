@@ -1,6 +1,6 @@
 // simple compute shader
 
-RWTexture2D<float4> gOutputTexture : register(u0);
+RWTexture2D<unorm float4> gOutputTexture : register(u0);
 
 cbuffer gParams : register (b0)
 {
