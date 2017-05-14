@@ -115,13 +115,13 @@ public:
         // TODO: move scene registration to their source files
         // TODO: switching to arbitrary scene (e.g. omitting a single scene should be
         //       possible, when a feature is not implemented in renderer
-        mScenes.push_back(std::unique_ptr<Scene>(new BasicScene));
-        mScenes.push_back(std::unique_ptr<Scene>(new DepthStencilScene));
-        mScenes.push_back(std::unique_ptr<Scene>(new RenderTargetsScene));
-        mScenes.push_back(std::unique_ptr<Scene>(new VertexBuffersScene));
-        mScenes.push_back(std::unique_ptr<Scene>(new TessellationScene));
-        mScenes.push_back(std::unique_ptr<Scene>(new ComputeScene));
-        mScenes.push_back(std::unique_ptr<Scene>(new MultithreadedScene));
+        mScenes.push_back(NFE::Common::MakeUniquePtr<BasicScene>());
+        mScenes.push_back(NFE::Common::MakeUniquePtr<DepthStencilScene>());
+        mScenes.push_back(NFE::Common::MakeUniquePtr<RenderTargetsScene>());
+        mScenes.push_back(NFE::Common::MakeUniquePtr<VertexBuffersScene>());
+        mScenes.push_back(NFE::Common::MakeUniquePtr<TessellationScene>());
+        mScenes.push_back(NFE::Common::MakeUniquePtr<ComputeScene>());
+        mScenes.push_back(NFE::Common::MakeUniquePtr<MultithreadedScene>());
     }
 
     /**
@@ -225,7 +225,7 @@ public:
     {
         // free scenes
         for (auto& scene : mScenes)
-            scene.reset();
+            scene.Reset();
 
         // free Renderer
         if (mRendererDevice != nullptr)

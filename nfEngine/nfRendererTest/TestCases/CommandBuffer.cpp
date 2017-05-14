@@ -14,12 +14,12 @@ private:
     void SetUp() override
     {
         commandRecorder = gRendererDevice->CreateCommandRecorder();
-        ASSERT_NE(nullptr, commandRecorder.get());
+        ASSERT_NE(nullptr, commandRecorder.Get());
     }
 
     void TearDown() override
     {
-        commandRecorder.reset();
+        commandRecorder.Reset();
         ASSERT_TRUE(gRendererDevice->WaitForGPU());
     }
 };

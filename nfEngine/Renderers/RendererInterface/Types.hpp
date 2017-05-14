@@ -7,6 +7,7 @@
 #pragma once
 
 #include "nfCommon/nfCommon.hpp"
+#include "nfCommon/Containers/SharedPtr.hpp"
 
 
 namespace NFE {
@@ -28,20 +29,20 @@ class IShader;
 class IVertexLayout;
 
 // TODO discuss if unique_ptr wouldn't fit better
-using CommandRecorderPtr = std::shared_ptr<ICommandRecorder>;
+using CommandRecorderPtr = Common::SharedPtr<ICommandRecorder>;
 
-using TexturePtr = std::shared_ptr<ITexture>;
-using BufferPtr = std::shared_ptr<IBuffer>;
-using SamplerPtr = std::shared_ptr<ISampler>;
-using BackbufferPtr = std::shared_ptr<IBackbuffer>;
-using ResourceBindingSetPtr = std::shared_ptr<IResourceBindingSet>;
-using ResourceBindingLayoutPtr = std::shared_ptr<IResourceBindingLayout>;
-using ResourceBindingInstancePtr = std::shared_ptr<IResourceBindingInstance>;
-using PipelineStatePtr = std::shared_ptr<IPipelineState>;
-using ComputePipelineStatePtr = std::shared_ptr<IComputePipelineState>;
-using RenderTargetPtr = std::shared_ptr<IRenderTarget>;
-using ShaderPtr = std::shared_ptr<IShader>;
-using VertexLayoutPtr = std::shared_ptr<IVertexLayout>;
+using TexturePtr = Common::SharedPtr<ITexture>;
+using BufferPtr = Common::SharedPtr<IBuffer>;
+using SamplerPtr = Common::SharedPtr<ISampler>;
+using BackbufferPtr = Common::SharedPtr<IBackbuffer>;
+using ResourceBindingSetPtr = Common::SharedPtr<IResourceBindingSet>;
+using ResourceBindingLayoutPtr = Common::SharedPtr<IResourceBindingLayout>;
+using ResourceBindingInstancePtr = Common::SharedPtr<IResourceBindingInstance>;
+using PipelineStatePtr = Common::SharedPtr<IPipelineState>;
+using ComputePipelineStatePtr = Common::SharedPtr<IComputePipelineState>;
+using RenderTargetPtr = Common::SharedPtr<IRenderTarget>;
+using ShaderPtr = Common::SharedPtr<IShader>;
+using VertexLayoutPtr = Common::SharedPtr<IVertexLayout>;
 
 #define MAX_RENDER_TARGETS 8
 #define MAX_MIPMAP_LEVELS 16

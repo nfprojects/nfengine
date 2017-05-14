@@ -57,7 +57,6 @@ bool RenderTargetsScene::CreateBasicResources(bool multipleRT, bool withDepthBuf
     RenderTargetDesc rtDesc;
     rtDesc.numTargets = 1;
     rtDesc.targets = &rtTarget;
-    rtDesc.depthBuffer = nullptr;
     rtDesc.debugName = "RenderTargetsScene::mWindowRenderTarget";
     mWindowRenderTarget = mRendererDevice->CreateRenderTarget(rtDesc);
     if (!mWindowRenderTarget)
@@ -413,8 +412,8 @@ void RenderTargetsScene::Draw(float dt)
 
     int stride = 9 * sizeof(float);
     int offset = 0;
-    BufferPtr vb = mVertexBuffer;
-    mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
+    const BufferPtr vertexBuffers[] = { mVertexBuffer };
+    mCommandBuffer->SetVertexBuffers(1, vertexBuffers, &stride, &offset);
     mCommandBuffer->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
     mCommandBuffer->SetResourceBindingLayout(mResBindingLayout);
 
@@ -511,38 +510,38 @@ void RenderTargetsScene::Draw(float dt)
 
 void RenderTargetsScene::ReleaseSubsceneResources()
 {
-    mWindowRenderTarget.reset();
-    mRenderTargetTextures[0].reset();
-    mRenderTargetTextures[1].reset();
-    mDepthBuffer.reset();
-    mRenderTarget.reset();
-    mVertexShader.reset();
-    mRTPixelShader.reset();
-    mPrimaryTargetPixelShader.reset();
-    mDepthPixelShader.reset();
-    mSecondTargetPixelShader.reset();
-    mPipelineStateMRT.reset();
-    mPrimaryTargetPipelineState.reset();
-    mDepthPipelineState.reset();
-    mSecondTargetPipelineState.reset();
-    mConstantBuffer.reset();
-    mVertexBuffer.reset();
-    mIndexBuffer.reset();
-    mVertexLayout.reset();
-    mSampler.reset();
+    mWindowRenderTarget.Reset();
+    mRenderTargetTextures[0].Reset();
+    mRenderTargetTextures[1].Reset();
+    mDepthBuffer.Reset();
+    mRenderTarget.Reset();
+    mVertexShader.Reset();
+    mRTPixelShader.Reset();
+    mPrimaryTargetPixelShader.Reset();
+    mDepthPixelShader.Reset();
+    mSecondTargetPixelShader.Reset();
+    mPipelineStateMRT.Reset();
+    mPrimaryTargetPipelineState.Reset();
+    mDepthPipelineState.Reset();
+    mSecondTargetPipelineState.Reset();
+    mConstantBuffer.Reset();
+    mVertexBuffer.Reset();
+    mIndexBuffer.Reset();
+    mVertexLayout.Reset();
+    mSampler.Reset();
 
 
-    mPSBindingInstancePrimary.reset();
-    mPSBindingInstanceDepth.reset();
-    mPSBindingInstanceSecondary.reset();
-    mResBindingLayout.reset();
-    mPSBindingSet.reset();
+    mPSBindingInstancePrimary.Reset();
+    mPSBindingInstanceDepth.Reset();
+    mPSBindingInstanceSecondary.Reset();
+    mResBindingLayout.Reset();
+    mPSBindingSet.Reset();
 }
 
 void RenderTargetsScene::Release()
 {
     ReleaseSubsceneResources();
-    mWindowBackbuffer.reset();
-    mCommandBuffer = nullptr;
+    mWindowBackbuffer.Reset();
+    mCommandBuffer.Reset();
     mRendererDevice = nullptr;
 }

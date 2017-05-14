@@ -146,8 +146,8 @@ PipelineState::~PipelineState()
 
 void PipelineState::Release()
 {
-    mResBindingLayout.reset();
-    mVertexLayout.reset();
+    mResBindingLayout.Reset();
+    mVertexLayout.Reset();
     mRS.Reset();
     mBS.Reset();
     mDS.Reset();
@@ -172,7 +172,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
         return false;
     }
 
-    mVertexLayout = std::dynamic_pointer_cast<VertexLayout>(desc.vertexLayout);
+    mVertexLayout = Common::StaticCast<VertexLayout>(desc.vertexLayout);
     if (!mVertexLayout)
     {
         Release();
@@ -207,11 +207,11 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
         D3D_CALL_CHECK(mDS->SetPrivateData(WKPDID_D3DDebugObjectName, len, buffer));
     }
 
-    Shader* vertexShader = dynamic_cast<Shader*>(desc.vertexShader.get());
-    Shader* geometryShader = dynamic_cast<Shader*>(desc.geometryShader.get());
-    Shader* hullShader = dynamic_cast<Shader*>(desc.hullShader.get());
-    Shader* domainShader = dynamic_cast<Shader*>(desc.domainShader.get());
-    Shader* pixelShader = dynamic_cast<Shader*>(desc.pixelShader.get());
+    Shader* vertexShader = dynamic_cast<Shader*>(desc.vertexShader.Get());
+    Shader* geometryShader = dynamic_cast<Shader*>(desc.geometryShader.Get());
+    Shader* hullShader = dynamic_cast<Shader*>(desc.hullShader.Get());
+    Shader* domainShader = dynamic_cast<Shader*>(desc.domainShader.Get());
+    Shader* pixelShader = dynamic_cast<Shader*>(desc.pixelShader.Get());
 
     if (vertexShader)
     {

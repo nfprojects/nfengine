@@ -143,7 +143,7 @@ bool ImGuiWrapper::InitImGui()
     if (!mImGuiTextureBinding)
         return false;
 
-    io.Fonts->TexID = mImGuiTextureBinding.get();
+    io.Fonts->TexID = mImGuiTextureBinding.Get();
     io.Fonts->ClearInputData();
     io.Fonts->ClearTexData();
     io.IniFilename = nullptr;  // don't use INI file

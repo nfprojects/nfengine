@@ -50,7 +50,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 
     for (unsigned int i = 0; i < desc.numTargets; ++i)
     {
-        InternalTexturePtr tex = std::dynamic_pointer_cast<Texture>(desc.targets[i].texture);
+        Texture* tex = dynamic_cast<Texture*>(desc.targets[i].texture.Get());
         if (tex == nullptr)
         {
             LOG_ERROR("Invalid target texture at index %u", i);
@@ -121,7 +121,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         }
 
         Target targetInfo;
-        targetInfo.texture = tex;
+        targetInfo.texture = Common::DynamicCast<Texture>(desc.targets[i].texture);
         targetInfo.subresource = desc.targets[i].level + desc.targets[i].layer * tex->GetMipmapsNum();
         mTargets.push_back(targetInfo);
     }
@@ -130,7 +130,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
     {
         HeapAllocator& allocator = gDevice->GetDsvHeapAllocator();
 
-        InternalTexturePtr tex = std::dynamic_pointer_cast<Texture>(desc.depthBuffer);
+        Texture* tex = dynamic_cast<Texture*>(desc.depthBuffer.Get());
         if (tex == nullptr)
         {
             LOG_ERROR("Invalid texture for depth buffer");
@@ -165,7 +165,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         handle.ptr += allocator.GetDescriptorSize() * mDSV;
         gDevice->mDevice->CreateDepthStencilView(tex->mBuffers[0].Get(), &dsvDesc, handle);
 
-        mDepthTexture = tex;
+        mDepthTexture = Common::DynamicCast<Texture>(desc.depthBuffer);
         mDepthTextureSubresource = 0; // TODO: selectable mipmap and texture layer in the interface
     }
 

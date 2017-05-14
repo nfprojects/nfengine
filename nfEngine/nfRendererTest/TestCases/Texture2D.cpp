@@ -33,23 +33,23 @@ TEST_F(Texture2D, Creation)
     textureDesc = defTextureDesc;
     textureDesc.dataDesc = nullptr;
     texture = gRendererDevice->CreateTexture(textureDesc);
-    EXPECT_TRUE(texture.get() == nullptr) << "Texture was created despite null data desc.";
+    EXPECT_TRUE(texture.Get() == nullptr) << "Texture was created despite null data desc.";
 
     // invalid width
     textureDesc = defTextureDesc;
     textureDesc.width = 0;
     texture = gRendererDevice->CreateTexture(textureDesc);
-    EXPECT_TRUE(texture.get() == nullptr) << "Texture was created despite incorrect width.";
+    EXPECT_TRUE(texture.Get() == nullptr) << "Texture was created despite incorrect width.";
 
     // invalid height
     textureDesc = defTextureDesc;
     textureDesc.height = 0;
     texture = gRendererDevice->CreateTexture(textureDesc);
-    EXPECT_TRUE(texture.get() == nullptr) << "Texture was created despite incorrect height.";
+    EXPECT_TRUE(texture.Get() == nullptr) << "Texture was created despite incorrect height.";
 
     // TODO: write more cases
 
     textureDesc = defTextureDesc;
     texture = gRendererDevice->CreateTexture(textureDesc);
-    EXPECT_TRUE(texture.get() != nullptr) << "Texture was not created despite correct data.";
+    EXPECT_TRUE(texture.Get() != nullptr) << "Texture was not created despite correct data.";
 }

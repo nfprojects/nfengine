@@ -86,7 +86,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
 
     for (size_t i = 0; i < desc.numBindingSets; ++i)
     {
-        InternalResourceBindingSetPtr bindingSet = std::dynamic_pointer_cast<ResourceBindingSet>(desc.bindingSets[i]);
+        InternalResourceBindingSetPtr bindingSet = Common::StaticCast<ResourceBindingSet>(desc.bindingSets[i]);
         if (bindingSet == nullptr)
         {
             LOG_ERROR("Invalid binding set");
@@ -102,7 +102,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
                 return false;
             }
 
-            if (bindingSet->IsBindingSetOverlapping(mBindingSets[j].get()))
+            if (bindingSet->IsBindingSetOverlapping(mBindingSets[j].Get()))
             {
                 LOG_ERROR("Resource binding slots are overlapping (sets %zu and %zu)", j, i);
                 return false;
@@ -123,7 +123,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
 
 bool ResourceBindingInstance::Init(const ResourceBindingSetPtr& bindingSet)
 {
-    mBindingSet = std::dynamic_pointer_cast<ResourceBindingSet>(bindingSet);
+    mBindingSet = Common::StaticCast<ResourceBindingSet>(bindingSet);
     if (bindingSet == nullptr)
     {
         LOG_ERROR("Invalid binding set");
@@ -144,7 +144,7 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& te
         return false;
     }
 
-    const Texture* tex = dynamic_cast<Texture*>(texture.get());
+    const Texture* tex = dynamic_cast<Texture*>(texture.Get());
     if (!tex)
     {
         LOG_ERROR("Invalid texture");
@@ -253,7 +253,7 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, const BufferPtr& buf
         return false;
     }
 
-    const Buffer* buf = dynamic_cast<Buffer*>(buffer.get());
+    const Buffer* buf = dynamic_cast<Buffer*>(buffer.Get());
     if (!buf || !buf->mBuffer)
     {
         LOG_ERROR("Invalid constant buffer");
@@ -279,7 +279,7 @@ bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, const Textur
         return false;
     }
 
-    const Texture* tex = dynamic_cast<Texture*>(texture.get());
+    const Texture* tex = dynamic_cast<Texture*>(texture.Get());
     if (!tex)
     {
         LOG_ERROR("Invalid texture");
