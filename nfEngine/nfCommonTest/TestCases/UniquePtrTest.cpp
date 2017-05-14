@@ -9,11 +9,27 @@ namespace {
 class TestClass
 {
 public:
-    TestClass(int& counter) : mCounter(counter) { }
-    ~TestClass() { mCounter++; }
+    TestClass(int* counter = nullptr) : mCounter(counter) { }
+    ~TestClass()
+    {
+        if (mCounter)
+            (*mCounter)++;
+    }
+
+    void SetCounter(int* counter)
+    {
+        mCounter = counter;
+    }
+
     int payload;
 private:
-    int& mCounter;
+    int* mCounter;
+};
+
+class ChildTestClass : public TestClass
+{
+public:
+    ChildTestClass(int* counter = nullptr) : TestClass(counter) { }
 };
 
 } // namespace
@@ -74,7 +90,7 @@ TEST(UniquePtr, Destructor)
 {
     int counter = 0;
     {
-        UniquePtr<TestClass> pointer(new TestClass(counter));
+        UniquePtr<TestClass> pointer(new TestClass(&counter));
         ASSERT_EQ(0, counter);
     }
     ASSERT_EQ(1, counter);
@@ -83,7 +99,7 @@ TEST(UniquePtr, Destructor)
 TEST(UniquePtr, Reset)
 {
     int counter = 0;
-    UniquePtr<TestClass> pointer(new TestClass(counter));
+    UniquePtr<TestClass> pointer(new TestClass(&counter));
 
     ASSERT_EQ(0, counter);
     ASSERT_NE(pointer, nullptr);
@@ -100,7 +116,7 @@ TEST(UniquePtr, Reset)
 TEST(UniquePtr, Release)
 {
     int counter = 0;
-    UniquePtr<TestClass> pointer(new TestClass(counter));
+    UniquePtr<TestClass> pointer(new TestClass(&counter));
 
     ASSERT_EQ(0, counter);
     ASSERT_NE(pointer, nullptr);
@@ -119,7 +135,7 @@ TEST(UniquePtr, Release)
 TEST(UniquePtr, MoveConstructor)
 {
     int counter = 0;
-    UniquePtr<TestClass> pointer(new TestClass(counter));
+    UniquePtr<TestClass> pointer(new TestClass(&counter));
 
     ASSERT_EQ(0, counter);
     ASSERT_NE(pointer, nullptr);
@@ -141,8 +157,8 @@ TEST(UniquePtr, MoveAssignment)
 {
     int counter = 0;
     int counter2 = 0;
-    UniquePtr<TestClass> pointer(new TestClass(counter));
-    UniquePtr<TestClass> pointer2(new TestClass(counter2));
+    UniquePtr<TestClass> pointer(new TestClass(&counter));
+    UniquePtr<TestClass> pointer2(new TestClass(&counter2));
     const TestClass* rawPointer = pointer.Get();
 
     ASSERT_EQ(0, counter);
@@ -174,7 +190,7 @@ TEST(UniquePtr, MakeUniquePtr)
 {
     int counter = 0;
     {
-        auto pointer = MakeUniquePtr<TestClass>(counter);
+        auto pointer = MakeUniquePtr<TestClass>(&counter);
 
         ASSERT_EQ(0, counter);
         ASSERT_NE(pointer, nullptr);
@@ -182,4 +198,64 @@ TEST(UniquePtr, MakeUniquePtr)
     }
 
     ASSERT_EQ(1, counter);
+}
+
+TEST(UniquePtr, CastToBaseClass_Scalar)
+{
+    int counter = 0;
+    {
+        UniquePtr<ChildTestClass> childPtr(new ChildTestClass(&counter));
+
+        ASSERT_EQ(0, counter);
+
+        UniquePtr<TestClass> basePtr = childPtr;
+
+        ASSERT_EQ(0, counter);
+        ASSERT_FALSE(childPtr);
+        ASSERT_TRUE(basePtr);
+    }
+    ASSERT_EQ(1, counter);
+}
+
+TEST(UniquePtr, ArrayType)
+{
+    int counterA = 0;
+    int counterB = 0;
+
+    {
+        UniquePtr<TestClass[]> pointer(new TestClass[2]);
+        pointer[0].SetCounter(&counterA);
+        pointer[1].SetCounter(&counterB);
+
+        ASSERT_NE(pointer, nullptr);
+        ASSERT_TRUE(pointer);
+    }
+
+    EXPECT_EQ(1, counterA);
+    EXPECT_EQ(1, counterB);
+}
+
+TEST(UniquePtr, CastToBaseClass_Array)
+{
+    int counterA = 0;
+    int counterB = 0;
+
+    {
+        UniquePtr<ChildTestClass[]> childPtrArray(new ChildTestClass[2]);
+        childPtrArray[0].SetCounter(&counterA);
+        childPtrArray[1].SetCounter(&counterB);
+
+        ASSERT_EQ(0, counterA);
+        ASSERT_EQ(0, counterB);
+
+        UniquePtr<TestClass[]> basePtrArray = childPtrArray;
+
+        ASSERT_EQ(0, counterA);
+        ASSERT_EQ(0, counterB);
+        ASSERT_FALSE(childPtrArray);
+        ASSERT_TRUE(basePtrArray);
+    }
+
+    EXPECT_EQ(1, counterA);
+    EXPECT_EQ(1, counterB);
 }
