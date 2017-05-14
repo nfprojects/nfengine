@@ -30,7 +30,7 @@ public:
     bool Init(const ResourceBindingSetDesc& desc) override;
 };
 
-using InternalResourceBindingSetPtr = std::shared_ptr<ResourceBindingSet>;
+using InternalResourceBindingSetPtr = Common::SharedPtr<ResourceBindingSet>;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -54,7 +54,7 @@ public:
     }
 };
 
-using InternalResourceBindingLayoutPtr = std::shared_ptr<ResourceBindingLayout>;
+using InternalResourceBindingLayoutPtr = Common::SharedPtr<ResourceBindingLayout>;
 
 
 //////////////////////////////////////////////////////////////////////////

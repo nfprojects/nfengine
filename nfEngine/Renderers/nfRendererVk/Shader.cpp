@@ -209,7 +209,12 @@ bool Shader::Init(const ShaderDesc& desc)
     }
 
     // create and parse shader
-    mShaderGlslang.reset(new (std::nothrow) glslang::TShader(lang));
+    mShaderGlslang.Reset(new glslang::TShader(lang));
+    if (!mShaderGlslang)
+    {
+        LOG_ERROR("Memory allocation failed");
+        return false;
+    }
     const char * shaderStrs[] = { shaderHead.c_str(), code };
     mShaderGlslang->setStrings(shaderStrs, 2);
     mShaderGlslang->setEntryPoint("main");
@@ -224,8 +229,13 @@ bool Shader::Init(const ShaderDesc& desc)
     }
 
     // create temporary TProgram to extract an intermediate SPIR-V
-    mProgramGlslang.reset(new (std::nothrow) glslang::TProgram());
-    mProgramGlslang->addShader(mShaderGlslang.get());
+    mProgramGlslang.Reset(new glslang::TProgram());
+    if (!mProgramGlslang)
+    {
+        LOG_ERROR("Memory allocation failed");
+        return false;
+    }
+    mProgramGlslang->addShader(mShaderGlslang.Get());
     if (!mProgramGlslang->link(msg))
     {
         LOG_ERROR("Failed to pre-link shader stage:\n%s", mProgramGlslang->getInfoLog());

@@ -107,7 +107,7 @@ void CommandRecorder::SetVertexBuffers(int num, const BufferPtr* vertexBuffers, 
     ID3D11Buffer* vbs[16];
     for (int i = 0; i < num; ++i)
     {
-        const Buffer* vertexBuffer = dynamic_cast<Buffer*>(vertexBuffers[i].get());
+        const Buffer* vertexBuffer = dynamic_cast<Buffer*>(vertexBuffers[i].Get());
         vbs[i] = vertexBuffer->mBuffer.Get();
     }
 
@@ -129,7 +129,7 @@ void CommandRecorder::SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFo
             break;
     };
 
-    const Buffer* ib = dynamic_cast<Buffer*>(indexBuffer.get());
+    const Buffer* ib = dynamic_cast<Buffer*>(indexBuffer.Get());
     mContext->IASetIndexBuffer(ib->mBuffer.Get(), dxgiFormat, 0);
 }
 
@@ -142,7 +142,7 @@ void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePt
     }
 
     const ResourceBindingInstance* instance =
-        dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.get());
+        dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.Get());
 
     if (slot >= mBindingLayout->mBindingSets.size())
     {
@@ -150,7 +150,7 @@ void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePt
         return;
     }
 
-    const ResourceBindingSet* bindingSet = mBindingLayout->mBindingSets[slot].get();
+    const ResourceBindingSet* bindingSet = mBindingLayout->mBindingSets[slot].Get();
     for (size_t i = 0; i < bindingSet->mBindings.size(); ++i)
     {
         const ResourceBindingDesc& bindingDesc = bindingSet->mBindings[i];
@@ -235,7 +235,7 @@ void CommandRecorder::BindVolatileCBuffer(size_t slot, const BufferPtr& buffer)
         return;
     }
 
-    const Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer.get());
+    const Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer.Get());
     if (!bufferPtr)
     {
         LOG_ERROR("Invalid buffer");
@@ -278,7 +278,7 @@ void CommandRecorder::UpdateSamplers()
 {
     for (size_t j = 0; j < mBindingLayout->mBindingSets.size(); ++j)
     {
-        const ResourceBindingSet* bindingSet = mBindingLayout->mBindingSets[j].get();
+        const ResourceBindingSet* bindingSet = mBindingLayout->mBindingSets[j].Get();
 
         for (size_t i = 0; i < bindingSet->mBindings.size(); ++i)
         {
@@ -288,7 +288,7 @@ void CommandRecorder::UpdateSamplers()
             if (bindingDesc.resourceType != ShaderResourceType::Texture)
                 continue;
 
-            Sampler* sampler = dynamic_cast<Sampler*>(bindingDesc.staticSampler.get());
+            Sampler* sampler = dynamic_cast<Sampler*>(bindingDesc.staticSampler.Get());
             if (!sampler)
                 continue;
 
@@ -325,7 +325,7 @@ void CommandRecorder::UpdateSamplers()
 
 void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
 {
-    RenderTarget* rt = dynamic_cast<RenderTarget*>(renderTarget.get());
+    RenderTarget* rt = dynamic_cast<RenderTarget*>(renderTarget.Get());
     if (rt == nullptr && renderTarget != nullptr)
         LOG_ERROR("Invalid 'renderTarget' pointer");
 
@@ -356,15 +356,15 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
 
 void CommandRecorder::SetResourceBindingLayout(const ResourceBindingLayoutPtr& layout)
 {
-    mBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout.get());
+    mBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout.Get());
 }
 
 void CommandRecorder::SetPipelineState(const PipelineStatePtr& state)
 {
-    mPipelineState = dynamic_cast<PipelineState*>(state.get());
+    mPipelineState = dynamic_cast<PipelineState*>(state.Get());
     NFE_ASSERT(mPipelineState != nullptr, "Invalid pipeline state");
 
-    mBindingLayout = dynamic_cast<ResourceBindingLayout*>(mPipelineState->mResBindingLayout.get());
+    mBindingLayout = dynamic_cast<ResourceBindingLayout*>(mPipelineState->mResBindingLayout.Get());
 
     if (mPipelineState->mVertexShader != mBoundVertexShader)
     {
@@ -415,7 +415,7 @@ void CommandRecorder::SetScissors(int left, int top, int right, int bottom)
 void* CommandRecorder::MapBuffer(const BufferPtr& buffer, MapType type)
 {
     NFE_ASSERT(buffer, "Invalid buffer");
-    Buffer* buf = dynamic_cast<Buffer*>(buffer.get());
+    Buffer* buf = dynamic_cast<Buffer*>(buffer.Get());
     if (!buf)
         return nullptr;
 
@@ -447,7 +447,7 @@ void* CommandRecorder::MapBuffer(const BufferPtr& buffer, MapType type)
 void CommandRecorder::UnmapBuffer(const BufferPtr& buffer)
 {
     NFE_ASSERT(buffer, "Invalid buffer");
-    const Buffer* buf = dynamic_cast<Buffer*>(buffer.get());
+    const Buffer* buf = dynamic_cast<Buffer*>(buffer.Get());
     if (!buf)
         return;
 
@@ -458,7 +458,7 @@ void CommandRecorder::UnmapBuffer(const BufferPtr& buffer)
 bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t size, const void* data)
 {
     NFE_ASSERT(buffer, "Invalid buffer");
-    const Buffer* buf = dynamic_cast<Buffer*>(buffer.get());
+    const Buffer* buf = dynamic_cast<Buffer*>(buffer.Get());
     if (!buf)
         return false;
 
@@ -478,14 +478,14 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
     NFE_ASSERT(src, "Invalid source texture");
     NFE_ASSERT(dest, "Invalid destination texture");
 
-    Texture* srcTex = dynamic_cast<Texture*>(src.get());
+    Texture* srcTex = dynamic_cast<Texture*>(src.Get());
     if (srcTex == nullptr)
     {
         LOG_ERROR("Invalid 'src' pointer");
         return;
     }
 
-    Texture* destTex = dynamic_cast<Texture*>(dest.get());
+    Texture* destTex = dynamic_cast<Texture*>(dest.Get());
     if (destTex == nullptr)
     {
         LOG_ERROR("Invalid 'dest' pointer");
@@ -544,7 +544,7 @@ void CommandRecorder::UpdateState()
 {
     if (mCurrentPipelineState != mPipelineState || mCurrentStencilRef != mStencilRef)
     {
-        if (mBindingLayout != mPipelineState->mResBindingLayout.get())
+        if (mBindingLayout != mPipelineState->mResBindingLayout.Get())
             LOG_ERROR("Binding layout mismatch");
 
         UpdateSamplers();
@@ -598,14 +598,14 @@ void CommandRecorder::BindComputeResources(size_t slot, const ResourceBindingIns
         return;
     }
 
-    const ResourceBindingInstance* instance = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.get());
+    const ResourceBindingInstance* instance = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.Get());
     if (slot >= mComputeBindingLayout->mBindingSets.size())
     {
         LOG_ERROR("Invalid binding set slot");
         return;
     }
 
-    const ResourceBindingSet* bindingSet = mComputeBindingLayout->mBindingSets[slot].get();
+    const ResourceBindingSet* bindingSet = mComputeBindingLayout->mBindingSets[slot].Get();
     for (size_t i = 0; i < bindingSet->mBindings.size(); ++i)
     {
         const ResourceBindingDesc& bindingDesc = bindingSet->mBindings[i];
@@ -653,7 +653,7 @@ void CommandRecorder::BindComputeVolatileCBuffer(size_t slot, const BufferPtr& b
         return;
     }
 
-    const Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer.get());
+    const Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer.Get());
     if (!bufferPtr)
     {
         LOG_ERROR("Invalid buffer");
@@ -667,12 +667,12 @@ void CommandRecorder::BindComputeVolatileCBuffer(size_t slot, const BufferPtr& b
 
 void CommandRecorder::SetComputeResourceBindingLayout(const ResourceBindingLayoutPtr& layout)
 {
-    mComputeBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout.get());
+    mComputeBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout.Get());
 }
 
 void CommandRecorder::SetComputePipelineState(const ComputePipelineStatePtr& state)
 {
-    mComputePipelineState = dynamic_cast<ComputePipelineState*>(state.get());
+    mComputePipelineState = dynamic_cast<ComputePipelineState*>(state.Get());
     NFE_ASSERT(mComputePipelineState != nullptr, "Invalid compute pipeline state");
 
     if (mComputePipelineState->GetShader() != mBoundComputeShader)

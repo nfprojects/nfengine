@@ -22,20 +22,20 @@ ComputePipelineState::ComputePipelineState()
 void ComputePipelineState::Release()
 {
     mPipelineState.Reset();
-    mResBindingLayout.reset();
-    mComputeShader.reset();
+    mResBindingLayout.Reset();
+    mComputeShader.Reset();
 }
 
 bool ComputePipelineState::Init(const ComputePipelineStateDesc& desc)
 {
-    mResBindingLayout = std::dynamic_pointer_cast<ResourceBindingLayout>(desc.resBindingLayout);
+    mResBindingLayout = desc.resBindingLayout;
     if (!mResBindingLayout)
     {
         LOG_ERROR("Invalid resource binding layout");
         return false;
     }
 
-    mComputeShader = std::dynamic_pointer_cast<Shader>(desc.computeShader);
+    mComputeShader = Common::StaticCast<Shader>(desc.computeShader);
     if (!mComputeShader)
     {
         LOG_ERROR("Invalid compute shader");

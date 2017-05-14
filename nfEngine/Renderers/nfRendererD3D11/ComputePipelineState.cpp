@@ -27,7 +27,7 @@ ComputePipelineState::~ComputePipelineState()
 
 void ComputePipelineState::Release()
 {
-    mResBindingLayout.reset();
+    mResBindingLayout.Reset();
     D3D_SAFE_RELEASE(mComputeShader);
 }
 
@@ -40,7 +40,7 @@ bool ComputePipelineState::Init(const ComputePipelineStateDesc& desc)
         return false;
     }
 
-    Shader* computeShader = dynamic_cast<Shader*>(desc.computeShader.get());
+    Shader* computeShader = dynamic_cast<Shader*>(desc.computeShader.Get());
 
     if (computeShader)
         mComputeShader = static_cast<ID3D11ComputeShader*>(computeShader->GetShaderObject());

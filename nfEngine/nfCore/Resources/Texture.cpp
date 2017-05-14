@@ -113,9 +113,8 @@ Renderer::TexturePtr CreateRendererTextureFromImage(const Common::Image& image,
 } // namespace
 
 Texture::Texture()
+    : mFormat(Common::ImageFormat::Unknown)
 {
-    mTex = nullptr;
-    mFormat = Common::ImageFormat::Unknown;
 }
 
 Texture::~Texture()
@@ -128,7 +127,7 @@ void Texture::Release()
     std::recursive_mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
     std::unique_lock<std::recursive_mutex> lock(renderingMutex);
 
-    mTex.reset();
+    mTex.Reset();
 }
 
 bool Texture::OnLoad()

@@ -43,7 +43,6 @@ struct RenderTargetDesc
     RenderTargetDesc()
         : numTargets(0)
         , targets(nullptr)
-        , depthBuffer(nullptr)
         , debugName(nullptr)
     {}
 };

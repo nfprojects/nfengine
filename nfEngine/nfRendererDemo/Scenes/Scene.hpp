@@ -126,4 +126,4 @@ public:
     virtual void Release() = 0;
 };
 
-typedef std::vector<std::unique_ptr<Scene>> SceneArrayType;
+typedef std::vector<NFE::Common::UniquePtr<Scene>> SceneArrayType;
