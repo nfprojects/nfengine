@@ -32,7 +32,7 @@ public:
 
     NFE_INLINE const ResourceBindingLayout* GetResBindingLayout() const
     {
-        return static_cast<const ResourceBindingLayout*>(mResBindingLayout.get());
+        return static_cast<const ResourceBindingLayout*>(mResBindingLayout.Get());
     }
 };
 

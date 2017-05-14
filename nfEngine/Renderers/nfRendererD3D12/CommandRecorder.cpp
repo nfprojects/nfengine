@@ -225,7 +225,7 @@ void CommandRecorder::SetVertexBuffers(int num, const BufferPtr* vertexBuffers, 
 
         // TODO resource tracking
 
-        const Buffer* buffer = dynamic_cast<Buffer*>(vertexBuffers[i].get());
+        const Buffer* buffer = dynamic_cast<Buffer*>(vertexBuffers[i].Get());
         if (!buffer)
         {
             LOG_ERROR("Invalid vertex buffer at slot %i", i);
@@ -252,7 +252,7 @@ void CommandRecorder::SetVertexBuffers(int num, const BufferPtr* vertexBuffers, 
 void CommandRecorder::SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFormat format)
 {
     // TODO resource tracking
-    const Buffer* buffer = dynamic_cast<Buffer*>(indexBuffer.get());
+    const Buffer* buffer = dynamic_cast<Buffer*>(indexBuffer.Get());
 
     // TODO handle dynamic index buffers via ring buffer
     D3D12_INDEX_BUFFER_VIEW view;
@@ -274,7 +274,7 @@ void CommandRecorder::SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFo
 void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance)
 {
     // TODO resource tracking
-    ResourceBindingInstance* instance = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.get());
+    ResourceBindingInstance* instance = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.Get());
     if (!instance)
         return;
 
@@ -296,7 +296,7 @@ void CommandRecorder::BindVolatileCBuffer(size_t slot, const BufferPtr& buffer)
 {
     NFE_ASSERT(slot < NFE_RENDERER_MAX_VOLATILE_CBUFFERS, "Invalid volatile buffer slot number");
 
-    const Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer.get());
+    const Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer.Get());
     NFE_ASSERT(bufferPtr->GetMode() == BufferMode::Volatile, "Buffer mode must be volatile");
 
     if (mCurrBindingLayout != mBindingLayout)
@@ -310,13 +310,13 @@ void CommandRecorder::BindVolatileCBuffer(size_t slot, const BufferPtr& buffer)
 
 void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
 {
-    if (mCurrRenderTarget == renderTarget.get())
+    if (mCurrRenderTarget == renderTarget.Get())
         return;
 
     UnsetRenderTarget();
 
     // TODO resource tracking
-    mCurrRenderTarget = dynamic_cast<RenderTarget*>(renderTarget.get());
+    mCurrRenderTarget = dynamic_cast<RenderTarget*>(renderTarget.Get());
 
     D3D12_RESOURCE_BARRIER barriers[MAX_RENDER_TARGETS + 1];
     uint32 numBarriers = 0;
@@ -442,13 +442,13 @@ void CommandRecorder::UnsetRenderTarget()
 void CommandRecorder::SetResourceBindingLayout(const ResourceBindingLayoutPtr& layout)
 {
     // TODO resource tracking
-    mBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout.get());
+    mBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout.Get());
 }
 
 void CommandRecorder::SetPipelineState(const PipelineStatePtr& state)
 {
     // TODO resource tracking
-    mPipelineState = dynamic_cast<PipelineState*>(state.get());
+    mPipelineState = dynamic_cast<PipelineState*>(state.Get());
 }
 
 void CommandRecorder::SetStencilRef(unsigned char ref)
@@ -547,7 +547,7 @@ void CommandRecorder::WriteVolatileBuffer(Buffer* buffer, const void* data)
 
 bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t size, const void* data)
 {
-    Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer.get());
+    Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer.Get());
     if (!bufferPtr)
     {
         LOG_ERROR("Invalid buffer");
@@ -587,7 +587,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
 
     // TODO resource tracking
 
-    Texture* srcTex = dynamic_cast<Texture*>(src.get());
+    Texture* srcTex = dynamic_cast<Texture*>(src.Get());
     if (srcTex == nullptr)
     {
         LOG_ERROR("Invalid 'src' pointer");
@@ -600,7 +600,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
         return;
     }
 
-    Texture* destTex = dynamic_cast<Texture*>(dest.get());
+    Texture* destTex = dynamic_cast<Texture*>(dest.Get());
     if (destTex == nullptr)
     {
         LOG_ERROR("Invalid 'dest' pointer");
@@ -751,8 +751,8 @@ void CommandRecorder::UpdateStates()
     if (mCurrPipelineState != mPipelineState)
     {
         if (mBindingLayout == nullptr)
-            mBindingLayout = mPipelineState->GetResBindingLayout().get();
-        else if (mBindingLayout != mPipelineState->GetResBindingLayout().get())
+            mBindingLayout = mPipelineState->GetResBindingLayout().Get();
+        else if (mBindingLayout != mPipelineState->GetResBindingLayout().Get())
             LOG_ERROR("Resource binding layout mismatch");
 
         // set pipeline state
@@ -796,7 +796,7 @@ void CommandRecorder::BindComputeResources(size_t slot, const ResourceBindingIns
 {
     // TODO resource tracking
 
-    ResourceBindingInstance* instance = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.get());
+    ResourceBindingInstance* instance = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.Get());
     if (!instance)
     {
         // clear the slot
@@ -819,7 +819,7 @@ void CommandRecorder::BindComputeVolatileCBuffer(size_t slot, const BufferPtr& b
 {
     NFE_ASSERT(slot < NFE_RENDERER_MAX_VOLATILE_CBUFFERS, "Invalid volatile buffer slot number");
 
-    const Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer.get());
+    const Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer.Get());
     NFE_ASSERT(bufferPtr->GetMode() == BufferMode::Volatile, "Buffer mode must be volatile");
 
     mBoundComputeVolatileCBuffers[slot] = bufferPtr;
@@ -829,7 +829,7 @@ void CommandRecorder::SetComputeResourceBindingLayout(const ResourceBindingLayou
 {
     // TODO resource tracking
 
-    ResourceBindingLayout* newLayout = dynamic_cast<ResourceBindingLayout*>(layout.get());
+    ResourceBindingLayout* newLayout = dynamic_cast<ResourceBindingLayout*>(layout.Get());
     NFE_ASSERT(newLayout, "Invalid layout");
 
     if (mComputeBindingLayout != newLayout)
@@ -843,7 +843,7 @@ void CommandRecorder::SetComputePipelineState(const ComputePipelineStatePtr& sta
 {
     // TODO resource tracking
 
-    ComputePipelineState* newState = dynamic_cast<ComputePipelineState*>(state.get());
+    ComputePipelineState* newState = dynamic_cast<ComputePipelineState*>(state.Get());
     NFE_ASSERT(newState, "Invalid compute pipeline state");
 
     if (mCurrComputePipelineState != newState)

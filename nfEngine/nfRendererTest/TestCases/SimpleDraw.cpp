@@ -50,10 +50,10 @@ protected:
                              ShaderMacro* macros = nullptr, size_t macrosNum = 0)
     {
         mVertexShader = CompileShader(vsPath, ShaderType::Vertex, macros, macrosNum);
-        ASSERT_NE(nullptr, mVertexShader.get());
+        ASSERT_NE(nullptr, mVertexShader.Get());
 
         mPixelShader = CompileShader(psPath, ShaderType::Pixel, macros, macrosNum);
-        ASSERT_NE(nullptr, mPixelShader.get());
+        ASSERT_NE(nullptr, mPixelShader.Get());
     }
 
     void SetUp() override
@@ -73,7 +73,7 @@ protected:
         vbDesc.size = sizeof(vbData);
         vbDesc.initialData = vbData;
         mVertexBuffer = gRendererDevice->CreateBuffer(vbDesc);
-        ASSERT_NE(nullptr, mVertexBuffer.get());
+        ASSERT_NE(nullptr, mVertexBuffer.Get());
 
         // index buffer
         uint16 ibData[] =
@@ -87,7 +87,7 @@ protected:
         ibDesc.size = sizeof(ibData);
         ibDesc.initialData = ibData;
         mIndexBuffer = gRendererDevice->CreateBuffer(ibDesc);
-        ASSERT_NE(nullptr, mIndexBuffer.get());
+        ASSERT_NE(nullptr, mIndexBuffer.Get());
 
 
         // vertex layout
@@ -102,7 +102,7 @@ protected:
         vertexLayoutDesc.elements = vertexLayoutElements;
         vertexLayoutDesc.numElements = 3;
         mVertexLayout = gRendererDevice->CreateVertexLayout(vertexLayoutDesc);
-        ASSERT_NE(nullptr, mVertexLayout.get());
+        ASSERT_NE(nullptr, mVertexLayout.Get());
     }
 };
 
@@ -116,7 +116,7 @@ TEST_F(SimpleDrawTest, Culling)
     CreateShaderProgram("SimpleDrawVS", "SimpleDrawPS");
 
     resBindingLayout = gRendererDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc());
-    ASSERT_NE(nullptr, resBindingLayout.get());
+    ASSERT_NE(nullptr, resBindingLayout.Get());
 
     const CullMode cullModes[] =
     {
@@ -160,7 +160,7 @@ TEST_F(SimpleDrawTest, Culling)
         pipelineStateDesc.numRenderTargets = 1;
         pipelineStateDesc.rtFormats[0] = ElementFormat::R32G32B32A32_Float;
         pipelineState = gRendererDevice->CreatePipelineState(pipelineStateDesc);
-        ASSERT_NE(nullptr, pipelineState.get());
+        ASSERT_NE(nullptr, pipelineState.Get());
 
         ElementFormat formats[] = { ElementFormat::R32G32B32A32_Float };
         BeginTestFrame(VIEWPORT_SIZE, VIEWPORT_SIZE, 1, formats);
@@ -468,22 +468,22 @@ TEST_F(SimpleDrawTest, StaticCBuffer)
     cbufferDesc.size = sizeof(Float4);
     cbufferDesc.initialData = &customColor;
     constatnBuffer = gRendererDevice->CreateBuffer(cbufferDesc);
-    ASSERT_NE(nullptr, constatnBuffer.get());
+    ASSERT_NE(nullptr, constatnBuffer.Get());
 
     // create resource binding set for cbuffer
     int cbufferSlot = mVertexShader->GetResourceSlotByName("TestCBuffer");
     ASSERT_NE(-1, cbufferSlot);
     ResourceBindingDesc binding(ShaderResourceType::CBuffer, cbufferSlot);
     resBindingSet = gRendererDevice->CreateResourceBindingSet(ResourceBindingSetDesc(&binding, 1, ShaderType::Vertex));
-    ASSERT_NE(nullptr, resBindingSet.get());
+    ASSERT_NE(nullptr, resBindingSet.Get());
 
     resBindingInstance = gRendererDevice->CreateResourceBindingInstance(resBindingSet);
-    ASSERT_NE(nullptr, resBindingInstance.get());
+    ASSERT_NE(nullptr, resBindingInstance.Get());
     ASSERT_TRUE(resBindingInstance->WriteCBufferView(0, constatnBuffer));
 
     ResourceBindingSetPtr sets[] = { resBindingSet };
     resBindingLayout = gRendererDevice->CreateResourceBindingLayout(ResourceBindingLayoutDesc(sets, 1));
-    ASSERT_NE(nullptr, resBindingLayout.get());
+    ASSERT_NE(nullptr, resBindingLayout.Get());
 
     PipelineStateDesc pipelineStateDesc;
     pipelineStateDesc.vertexShader = mVertexShader;
@@ -494,7 +494,7 @@ TEST_F(SimpleDrawTest, StaticCBuffer)
     pipelineStateDesc.numRenderTargets = 1;
     pipelineStateDesc.rtFormats[0] = ElementFormat::R32G32B32A32_Float;
     pipelineState = gRendererDevice->CreatePipelineState(pipelineStateDesc);
-    ASSERT_NE(nullptr, pipelineState.get());
+    ASSERT_NE(nullptr, pipelineState.Get());
 
 
     ElementFormat formats[] = { ElementFormat::R32G32B32A32_Float };

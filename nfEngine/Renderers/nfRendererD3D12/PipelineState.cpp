@@ -23,12 +23,12 @@ PipelineState::PipelineState()
 
 void PipelineState::Release()
 {
-    mBindingLayout.reset();
-    mVS.reset();
-    mPS.reset();
-    mGS.reset();
-    mHS.reset();
-    mDS.reset();
+    mBindingLayout.Reset();
+    mVS.Reset();
+    mPS.Reset();
+    mGS.Reset();
+    mHS.Reset();
+    mDS.Reset();
 }
 
 bool PipelineState::Init(const PipelineStateDesc& desc)
@@ -42,7 +42,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
         return false;
     }
 
-    mBindingLayout = std::dynamic_pointer_cast<ResourceBindingLayout>(desc.resBindingLayout);
+    mBindingLayout = Common::StaticCast<ResourceBindingLayout>(desc.resBindingLayout);
     if (!mBindingLayout)
     {
         LOG_ERROR("Invalid resource binding layout");
@@ -115,16 +115,16 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     // prepare D3D12 input layout
 
     D3D12_INPUT_LAYOUT_DESC inputLayoutDesc;
-    VertexLayout* vertexLayout = dynamic_cast<VertexLayout*>(desc.vertexLayout.get());
+    VertexLayout* vertexLayout = dynamic_cast<VertexLayout*>(desc.vertexLayout.Get());
     inputLayoutDesc.NumElements = static_cast<UINT>(vertexLayout->mElements.size());
     inputLayoutDesc.pInputElementDescs = vertexLayout->mElements.data();
 
 
-    mVS = std::dynamic_pointer_cast<Shader>(desc.vertexShader);
-    mHS = std::dynamic_pointer_cast<Shader>(desc.hullShader);
-    mDS = std::dynamic_pointer_cast<Shader>(desc.domainShader);
-    mGS = std::dynamic_pointer_cast<Shader>(desc.geometryShader);
-    mPS = std::dynamic_pointer_cast<Shader>(desc.pixelShader);
+    mVS = Common::StaticCast<Shader>(desc.vertexShader);
+    mHS = Common::StaticCast<Shader>(desc.hullShader);
+    mDS = Common::StaticCast<Shader>(desc.domainShader);
+    mGS = Common::StaticCast<Shader>(desc.geometryShader);
+    mPS = Common::StaticCast<Shader>(desc.pixelShader);
 
     if (!mVS)
     {

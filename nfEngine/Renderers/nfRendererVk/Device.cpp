@@ -24,9 +24,9 @@
 namespace {
 
 template<typename Type, typename Desc>
-std::shared_ptr<Type> GenericCreateResource(const Desc& desc)
+NFE::Common::SharedPtr<Type> GenericCreateResource(const Desc& desc)
 {
-    std::shared_ptr<Type> resource = std::make_shared<Type>();
+    auto resource = NFE::Common::MakeSharedPtr<Type>();
     if (!resource)
     {
         return nullptr;
@@ -47,7 +47,7 @@ const NFE::uint32 COMMAND_BUFFER_COUNT = 5;
 namespace NFE {
 namespace Renderer {
 
-std::unique_ptr<Device> gDevice;
+Common::UniquePtr<Device> gDevice;
 
 Device::Device()
     : mInstance()
@@ -73,9 +73,9 @@ Device::~Device()
 {
     WaitForGPU();
 
-    mRingBuffer.reset();
-    mSemaphorePool.reset();
-    mRenderPassManager.reset();
+    mRingBuffer.Reset();
+    mSemaphorePool.Reset();
+    mRenderPassManager.Reset();
 
     if (mCommandBufferPool.size())
         vkFreeCommandBuffers(mDevice, mCommandPool, COMMAND_BUFFER_COUNT, mCommandBufferPool.data());
@@ -304,12 +304,12 @@ bool Device::Init(const DeviceInitParams* params)
     result = vkAllocateCommandBuffers(mDevice, &cbInfo, mCommandBufferPool.data());
     CHECK_VKRESULT(result, "Failed to initialize Command Buffer Pool");
 
-    mRenderPassManager.reset(new RenderPassManager(mDevice));
+    mRenderPassManager.Reset(new RenderPassManager(mDevice));
 
-    mSemaphorePool.reset(new SemaphorePool(mDevice));
+    mSemaphorePool.Reset(new SemaphorePool(mDevice));
     mSemaphorePool->Init(VK_SEMAPHORE_POOL_SIZE);
 
-    mRingBuffer.reset(new RingBuffer(mDevice));
+    mRingBuffer.Reset(new RingBuffer(mDevice));
     mRingBuffer->Init(1024 * 1024);
 
     VkSemaphoreCreateInfo semInfo;
@@ -416,7 +416,7 @@ ResourceBindingLayoutPtr Device::CreateResourceBindingLayout(const ResourceBindi
 
 ResourceBindingInstancePtr Device::CreateResourceBindingInstance(const ResourceBindingSetPtr& set)
 {
-    std::shared_ptr<ResourceBindingInstance> rbi = std::make_shared<ResourceBindingInstance>();
+    auto rbi = Common::MakeSharedPtr<ResourceBindingInstance>();
     if (!rbi)
     {
         return nullptr;
@@ -432,7 +432,7 @@ ResourceBindingInstancePtr Device::CreateResourceBindingInstance(const ResourceB
 
 CommandRecorderPtr Device::CreateCommandRecorder()
 {
-    std::shared_ptr<CommandRecorder> cr = std::make_shared<CommandRecorder>();
+    auto cr = Common::MakeSharedPtr<CommandRecorder>();
     if (!cr)
     {
         return nullptr;
@@ -601,10 +601,10 @@ IDevice* Init(const DeviceInitParams* params)
 {
     if (gDevice == nullptr)
     {
-        gDevice.reset(new (std::nothrow) Device);
+        gDevice.Reset(new Device);
         if (!gDevice->Init(params))
         {
-            gDevice.reset();
+            gDevice.Reset();
             return nullptr;
         }
     }
@@ -615,13 +615,13 @@ IDevice* Init(const DeviceInitParams* params)
     //      Bump glslang version, fix it by yourself, or use other library for GLSL/HLSL->SPV.
     glslang::InitializeProcess();
 
-    return gDevice.get();
+    return gDevice.Get();
 }
 
 void Release()
 {
     glslang::FinalizeProcess();
-    gDevice.reset();
+    gDevice.Reset();
 }
 
 } // namespace Renderer
