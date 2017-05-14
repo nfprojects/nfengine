@@ -45,7 +45,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
     }
 
     mTex.resize(desc.numTargets);
-    mDepthTex = dynamic_cast<Texture*>(desc.depthBuffer.get());
+    mDepthTex = dynamic_cast<Texture*>(desc.depthBuffer.Get());
 
     // request a render pass from manager
     VkFormat colorFormats[MAX_RENDER_TARGETS];
@@ -55,7 +55,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
     {
         if (desc.targets[i].format == ElementFormat::Unknown)
         {
-            mTex[i] = dynamic_cast<Texture*>(desc.targets[i].texture.get());
+            mTex[i] = dynamic_cast<Texture*>(desc.targets[i].texture.Get());
             colorFormats[i] = mTex[i]->mFormat;
         }
         else
@@ -102,7 +102,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         // TODO fill
     }
 
-    Texture* tex = dynamic_cast<Texture*>(desc.targets[0].texture.get());
+    Texture* tex = dynamic_cast<Texture*>(desc.targets[0].texture.Get());
     mWidth = tex->mWidth;
     mHeight = tex->mHeight;
 

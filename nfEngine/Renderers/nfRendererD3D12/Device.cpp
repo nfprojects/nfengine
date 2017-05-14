@@ -30,9 +30,9 @@ namespace Renderer {
 namespace {
 
 template<typename Type, typename Desc>
-std::shared_ptr<Type> CreateGenericResource(const Desc& desc)
+Common::SharedPtr<Type> CreateGenericResource(const Desc& desc)
 {
-    std::shared_ptr<Type> resource = std::make_unique<Type>();
+    auto resource = Common::MakeSharedPtr<Type>();
     if (!resource)
     {
         return nullptr;
@@ -499,7 +499,7 @@ bool Device::IsBackbufferFormatSupported(ElementFormat format)
 
 CommandRecorderPtr Device::CreateCommandRecorder()
 {
-    std::shared_ptr<CommandRecorder> commandRecorder = std::make_shared<CommandRecorder>();
+    auto commandRecorder = Common::MakeSharedPtr<CommandRecorder>();
     if (!commandRecorder->Init(mDevice.Get()))
     {
         return nullptr;
@@ -521,10 +521,10 @@ bool Device::Execute(CommandListID commandList)
     if (!list || !list->commandRecorder)
         return false;
 
-    ID3D12CommandList* commandLists[] = { list->commandRecorder->mCommandList.get() };
+    ID3D12CommandList* commandLists[] = { list->commandRecorder->mCommandList.Get() };
     gDevice->mCommandQueue->ExecuteCommandLists(1, commandLists);
 
-    return list->commandRecorder->MoveToNextFrame(gDevice->mCommandQueue.get());
+    return list->commandRecorder->MoveToNextFrame(gDevice->mCommandQueue.Get());
     */
 
     // TODO
@@ -551,7 +551,7 @@ bool Device::DownloadTexture(const TexturePtr& tex, void* data, int mipmap, int 
     UNUSED(mipmap);
     UNUSED(layer);
 
-    const Texture* texture = dynamic_cast<Texture*>(tex.get());
+    const Texture* texture = dynamic_cast<Texture*>(tex.Get());
     if (!texture)
     {
         LOG_ERROR("Invalid texture pointer");
