@@ -15,32 +15,30 @@ namespace Common {
 
 
 template<typename T, typename Deleter>
-UniquePtr<T, Deleter>::UniquePtr()
+UniquePtrBase<T, Deleter>::UniquePtrBase()
     : mPointer(nullptr)
-{
-}
+{}
 
 template<typename T, typename Deleter>
-UniquePtr<T, Deleter>::UniquePtr(T* ptr)
+UniquePtrBase<T, Deleter>::UniquePtrBase(T* ptr)
     : mPointer(ptr)
-{
-}
+{}
 
 template<typename T, typename Deleter>
-UniquePtr<T, Deleter>::UniquePtr(UniquePtr&& rhs)
+UniquePtrBase<T, Deleter>::UniquePtrBase(UniquePtrBase&& rhs)
     : mPointer(rhs.mPointer)
 {
     rhs.mPointer = nullptr;
 }
 
 template<typename T, typename Deleter>
-UniquePtr<T, Deleter>::~UniquePtr()
+UniquePtrBase<T, Deleter>::~UniquePtrBase()
 {
     Reset();
 }
 
 template<typename T, typename Deleter>
-UniquePtr<T, Deleter>& UniquePtr<T, Deleter>::operator = (T* ptr)
+UniquePtrBase<T, Deleter>& UniquePtrBase<T, Deleter>::operator = (T* ptr)
 {
     NFE_ASSERT(mPointer != ptr, "Assigning the same object to an unique pointer. Fix your code.");
 
@@ -53,7 +51,7 @@ UniquePtr<T, Deleter>& UniquePtr<T, Deleter>::operator = (T* ptr)
 }
 
 template<typename T, typename Deleter>
-UniquePtr<T, Deleter>& UniquePtr<T, Deleter>::operator = (UniquePtr&& ptr)
+UniquePtrBase<T, Deleter>& UniquePtrBase<T, Deleter>::operator = (UniquePtrBase&& ptr)
 {
     Reset();
     mPointer = ptr.mPointer;
@@ -62,38 +60,26 @@ UniquePtr<T, Deleter>& UniquePtr<T, Deleter>::operator = (UniquePtr&& ptr)
 }
 
 template<typename T, typename Deleter>
-T** UniquePtr<T, Deleter>::operator&()
+T** UniquePtrBase<T, Deleter>::operator&()
 {
     return &mPointer;
 }
 
 template<typename T, typename Deleter>
-T* UniquePtr<T, Deleter>::operator->() const
+T* UniquePtrBase<T, Deleter>::Get() const
 {
     return mPointer;
 }
 
 template<typename T, typename Deleter>
-T& UniquePtr<T, Deleter>::operator*() const
-{
-    return *mPointer;
-}
-
-template<typename T, typename Deleter>
-T* UniquePtr<T, Deleter>::Get() const
-{
-    return mPointer;
-}
-
-template<typename T, typename Deleter>
-void UniquePtr<T, Deleter>::Reset(T* newPtr)
+void UniquePtrBase<T, Deleter>::Reset(T* newPtr)
 {
     Deleter::Delete(mPointer);
     mPointer = newPtr;
 }
 
 template<typename T, typename Deleter>
-T* UniquePtr<T, Deleter>::Release()
+T* UniquePtrBase<T, Deleter>::Release()
 {
     T* ptr = mPointer;
     mPointer = nullptr;
@@ -101,27 +87,81 @@ T* UniquePtr<T, Deleter>::Release()
 }
 
 template<typename T, typename Deleter>
-UniquePtr<T, Deleter>::operator bool() const
+UniquePtrBase<T, Deleter>::operator bool() const
 {
     return mPointer != nullptr;
 }
 
 template<typename T, typename Deleter>
-bool UniquePtr<T, Deleter>::operator == (const T* other) const
+bool UniquePtrBase<T, Deleter>::operator == (const T* other) const
 {
     return mPointer == other;
 }
 
 template<typename T, typename Deleter>
-bool UniquePtr<T, Deleter>::operator != (const T* other) const
+bool UniquePtrBase<T, Deleter>::operator != (const T* other) const
 {
     return mPointer != other;
 }
+
+//////////////////////////////////////////////////////////////////////////
+
+template<typename T, typename Deleter>
+T* UniquePtr<T, Deleter>::operator->() const
+{
+    return this->mPointer;
+}
+
+template<typename T, typename Deleter>
+T& UniquePtr<T, Deleter>::operator*() const
+{
+    return *(this->mPointer);
+}
+
+template<typename T, typename Deleter>
+template<typename U>
+UniquePtr<T, Deleter>::operator UniquePtr<U>()
+{
+    static_assert(std::is_convertible<T, U>::value, "Cannot convert unique pointer");
+
+    UniquePtr<U> result(static_cast<U*>(this->mPointer));
+    this->mPointer = nullptr;
+    return result;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+template<typename T, typename Deleter>
+T& UniquePtr<T[], Deleter>::operator [] (size_t i) const
+{
+    NFE_ASSERT(this->mPointer, "Trying to access null array");
+    return this->mPointer[i];
+}
+
+template<typename T, typename Deleter>
+template<typename U>
+UniquePtr<T[], Deleter>::operator UniquePtr<U[]>()
+{
+    static_assert(std::is_convertible<T, U>::value, "Cannot convert unique pointer");
+
+    UniquePtr<U[]> result(static_cast<U*>(this->mPointer));
+    this->mPointer = nullptr;
+    return result;
+}
+
+//////////////////////////////////////////////////////////////////////////
 
 template<typename T, typename ... Args>
 UniquePtr<T> MakeUniquePtr(Args&& ... args)
 {
     return UniquePtr<T>(new T(std::forward<Args>(args) ...));
+}
+
+template<typename T, typename U>
+UniquePtr<T> StaticCast(UniquePtr<U>&& source)
+{
+    T* pointer = static_cast<T*>(source.Release());
+    return UniquePtr<T>(pointer);
 }
 
 } // namespace Common
