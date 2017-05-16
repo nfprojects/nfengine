@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d4951a0a_21ac4f3c",
+        "filename": "nfEngine/nfCommon/Containers/SharedPtrImpl.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-05-16T10:57:53Z",
+      "side": 1,
+      "message": "just delegate it to SharedPtr(nullptr_t) - it will be more visible, that standard ctor is a nullptr_t ctor.",
+      "range": {
+        "startLine": 19,
+        "startChar": 4,
+        "endLine": 20,
+        "endChar": 20
+      },
+      "revId": "8c3dd02a2ba1172ef1ec83199c7c8d53fa8035cf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "46628612_51ac5510",
+        "filename": "nfEngine/nfCommon/Containers/WeakPtrImpl.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-05-16T10:57:53Z",
+      "side": 1,
+      "message": "WeakPtr(nullptr_t)",
+      "range": {
+        "startLine": 19,
+        "startChar": 6,
+        "endLine": 19,
+        "endChar": 20
+      },
+      "revId": "8c3dd02a2ba1172ef1ec83199c7c8d53fa8035cf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b3920b0a_780c5802",
+        "filename": "nfEngine/nfCommon/Containers/WeakPtrImpl.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-05-16T10:57:53Z",
+      "side": 1,
+      "message": "that\u0027s actually wrong - if weakPtr is invalid byt sharedPtr is valid, it will result in false and compare mData\u0027s.\nI believe it should be \"if either is invalid, check if they\u0027re both invalid, else check if they\u0027re the same\":\nif (!Valid() || !other) return (!Valid() \u0026\u0026 !other);\nreturn mData \u003d\u003d other.mData;",
+      "range": {
+        "startLine": 136,
+        "startChar": 4,
+        "endLine": 142,
+        "endChar": 32
+      },
+      "revId": "8c3dd02a2ba1172ef1ec83199c7c8d53fa8035cf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "75bcd258_15138174",
+        "filename": "nfEngine/nfCommon/Containers/WeakPtrImpl.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-05-16T10:57:53Z",
+      "side": 1,
+      "message": "as above - if either one is invalid, then dont compare mData\u0027s",
+      "range": {
+        "startLine": 148,
+        "startChar": 4,
+        "endLine": 152,
+        "endChar": 5
+      },
+      "revId": "8c3dd02a2ba1172ef1ec83199c7c8d53fa8035cf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "59176689_b5414b32",
+        "filename": "nfEngine/nfCommon/Containers/WeakPtrImpl.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1003055
+      },
+      "writtenOn": "2017-05-16T10:57:53Z",
+      "side": 1,
+      "message": "as above. Anyway can\u0027t you just:\nreturn rhs \u003d\u003d lhs; ?",
+      "range": {
+        "startLine": 160,
+        "startChar": 4,
+        "endLine": 166,
+        "endChar": 33
+      },
+      "revId": "8c3dd02a2ba1172ef1ec83199c7c8d53fa8035cf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
