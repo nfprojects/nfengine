@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3a608887_867690df",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionTypeRegistry.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-18T23:05:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "37c0c1c7_5ebc4047",
+      "range": {
+        "startLine": 55,
+        "startChar": 4,
+        "endLine": 55,
+        "endChar": 90
+      },
+      "revId": "58545cea9c54e4438448e60e740155c25d2baa0c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ed2764e_98636a2c",
         "filename": "nfEngine/nfCommon/Reflection/ReflectionTypeRegistry.cpp",
         "patchSetId": 21
@@ -71,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "357bcf5c_9652d068",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionTypeRegistry.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-18T23:05:45Z",
+      "side": 1,
+      "message": "Needed if I want to remove all the types from the registry explicitly",
+      "parentUuid": "e5f7422c_18c37bca",
+      "range": {
+        "startLine": 68,
+        "startChar": 4,
+        "endLine": 69,
+        "endChar": 25
+      },
+      "revId": "58545cea9c54e4438448e60e740155c25d2baa0c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "91b0031b_e1999b4d",
         "filename": "nfEngine/nfCommon/Reflection/ReflectionTypeRegistry.hpp",
         "patchSetId": 21
@@ -94,6 +142,30 @@
     },
     {
       "key": {
+        "uuid": "5f6c1be6_aebc0544",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionTypeRegistry.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-18T23:05:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "91b0031b_e1999b4d",
+      "range": {
+        "startLine": 42,
+        "startChar": 16,
+        "endLine": 42,
+        "endChar": 37
+      },
+      "revId": "58545cea9c54e4438448e60e740155c25d2baa0c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "075d378e_9f14ab8f",
         "filename": "nfEngine/nfCommon/Reflection/ReflectionTypeRegistry.hpp",
         "patchSetId": 21
@@ -105,6 +177,30 @@
       "writtenOn": "2017-05-16T14:46:41Z",
       "side": 1,
       "message": "Cleanup();",
+      "range": {
+        "startLine": 52,
+        "startChar": 9,
+        "endLine": 52,
+        "endChar": 18
+      },
+      "revId": "58545cea9c54e4438448e60e740155c25d2baa0c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "00358653_dddf81e8",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionTypeRegistry.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-18T23:05:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "075d378e_9f14ab8f",
       "range": {
         "startLine": 52,
         "startChar": 9,
@@ -186,6 +282,30 @@
     },
     {
       "key": {
+        "uuid": "44b6b4e3_b1397930",
+        "filename": "nfEngine/nfCommon/Reflection/Types/ReflectionClassType.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-18T23:05:45Z",
+      "side": 1,
+      "message": "We don\u0027t support multiple inheritance (at least for now)",
+      "parentUuid": "caee4548_8593a15a",
+      "range": {
+        "startLine": 92,
+        "startChar": 0,
+        "endLine": 100,
+        "endChar": 1
+      },
+      "revId": "58545cea9c54e4438448e60e740155c25d2baa0c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "85e6f0a9_f7a369c8",
         "filename": "nfEngine/nfCommon/Reflection/Types/ReflectionClassType.hpp",
         "patchSetId": 21
@@ -197,6 +317,30 @@
       "writtenOn": "2017-05-16T14:46:41Z",
       "side": 1,
       "message": "ClassType::Children",
+      "range": {
+        "startLine": 25,
+        "startChar": 4,
+        "endLine": 25,
+        "endChar": 33
+      },
+      "revId": "58545cea9c54e4438448e60e740155c25d2baa0c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9c4203ec_a36bf6ba",
+        "filename": "nfEngine/nfCommon/Reflection/Types/ReflectionClassType.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-18T23:05:45Z",
+      "side": 1,
+      "message": "I can\u0027t do that, because ClassType was not declared. ClassTypeInfo uses ClassType and ClassType uses ClassTypeInfo. There must be forward declaration.",
+      "parentUuid": "85e6f0a9_f7a369c8",
       "range": {
         "startLine": 25,
         "startChar": 4,
@@ -232,6 +376,30 @@
     },
     {
       "key": {
+        "uuid": "54b70cb3_feffb1a9",
+        "filename": "nfEngine/nfCommon/Reflection/Types/ReflectionClassType.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-18T23:05:45Z",
+      "side": 1,
+      "message": "As above.",
+      "parentUuid": "67134074_007e4154",
+      "range": {
+        "startLine": 26,
+        "startChar": 4,
+        "endLine": 26,
+        "endChar": 23
+      },
+      "revId": "58545cea9c54e4438448e60e740155c25d2baa0c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "22fd1613_91fc8158",
         "filename": "nfEngine/nfCommon/Reflection/Types/ReflectionClassType.hpp",
         "patchSetId": 21
@@ -243,6 +411,30 @@
       "writtenOn": "2017-05-16T14:46:41Z",
       "side": 1,
       "message": "Children",
+      "range": {
+        "startLine": 62,
+        "startChar": 22,
+        "endLine": 62,
+        "endChar": 51
+      },
+      "revId": "58545cea9c54e4438448e60e740155c25d2baa0c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e0ed9793_352367ce",
+        "filename": "nfEngine/nfCommon/Reflection/Types/ReflectionClassType.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-18T23:05:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "22fd1613_91fc8158",
       "range": {
         "startLine": 62,
         "startChar": 22,
@@ -278,6 +470,30 @@
     },
     {
       "key": {
+        "uuid": "f4dd635a_dd6d59d6",
+        "filename": "nfEngine/nfCommon/Reflection/Types/ReflectionClassType.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-18T23:05:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "19877d23_7911534a",
+      "range": {
+        "startLine": 72,
+        "startChar": 21,
+        "endLine": 72,
+        "endChar": 40
+      },
+      "revId": "58545cea9c54e4438448e60e740155c25d2baa0c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4adee236_49666e8a",
         "filename": "nfEngine/nfCommon/Reflection/Types/ReflectionType.cpp",
         "patchSetId": 21
@@ -289,6 +505,30 @@
       "writtenOn": "2017-05-16T14:46:41Z",
       "side": 1,
       "message": "U mean alignment? Is that possible to have alignment bigger than UINT32_MAX?",
+      "range": {
+        "startLine": 51,
+        "startChar": 4,
+        "endLine": 51,
+        "endChar": 68
+      },
+      "revId": "58545cea9c54e4438448e60e740155c25d2baa0c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "688991b0_98b96177",
+        "filename": "nfEngine/nfCommon/Reflection/Types/ReflectionType.cpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-18T23:05:45Z",
+      "side": 1,
+      "message": "Done. I think it\u0027s possible, if you for example use \"__declspec(align(5000000000))\". Any way, that huge value for sure indicates a bug.",
+      "parentUuid": "4adee236_49666e8a",
       "range": {
         "startLine": 51,
         "startChar": 4,
@@ -324,6 +564,30 @@
     },
     {
       "key": {
+        "uuid": "da022618_50c4de21",
+        "filename": "nfEngine/nfCommon/Reflection/Types/ReflectionUniquePtrType.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-18T23:05:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2dc48892_6cdcc12c",
+      "range": {
+        "startLine": 32,
+        "startChar": 42,
+        "endLine": 32,
+        "endChar": 48
+      },
+      "revId": "58545cea9c54e4438448e60e740155c25d2baa0c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8656cd14_35a18290",
         "filename": "nfEngine/nfCommon/Reflection/Types/ReflectionUniquePtrType.hpp",
         "patchSetId": 21
@@ -335,6 +599,30 @@
       "writtenOn": "2017-05-16T14:46:41Z",
       "side": 1,
       "message": "rm",
+      "range": {
+        "startLine": 54,
+        "startChar": 53,
+        "endLine": 54,
+        "endChar": 55
+      },
+      "revId": "58545cea9c54e4438448e60e740155c25d2baa0c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f595564f_a9a5fc4f",
+        "filename": "nfEngine/nfCommon/Reflection/Types/ReflectionUniquePtrType.hpp",
+        "patchSetId": 21
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2017-05-18T23:05:45Z",
+      "side": 1,
+      "message": "We are not deserializing pointer, but TO an object under the pointer. So IMO \"to\" is appropriate here.",
+      "parentUuid": "8656cd14_35a18290",
       "range": {
         "startLine": 54,
         "startChar": 53,
