@@ -228,6 +228,7 @@
     <ClCompile Include="TestCases\ImageTest.cpp" />
     <ClCompile Include="TestCases\LatchTest.cpp" />
     <ClCompile Include="TestCases\LibraryTest.cpp" />
+    <ClCompile Include="TestCases\LockTest.cpp" />
     <ClCompile Include="TestCases\LoggerTest.cpp" />
     <ClCompile Include="TestCases\LogGrouperTest.cpp" />
     <ClCompile Include="TestCases\LogScopeTest.cpp" />
