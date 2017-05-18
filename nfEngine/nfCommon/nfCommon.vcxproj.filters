@@ -342,6 +342,15 @@
     <ClInclude Include="Containers\UniquePtrImpl.hpp">
       <Filter>Containers</Filter>
     </ClInclude>
+    <ClInclude Include="System\Lock.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Win\LockImpl.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\ScopedLock.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
