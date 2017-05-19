@@ -342,14 +342,26 @@
     <ClInclude Include="Containers\UniquePtrImpl.hpp">
       <Filter>Containers</Filter>
     </ClInclude>
-    <ClInclude Include="System\Lock.hpp">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="System\Win\LockImpl.hpp">
-      <Filter>System</Filter>
-    </ClInclude>
     <ClInclude Include="Utils\ScopedLock.hpp">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="System\RWLock.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Win\RWLockImpl.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Mutex.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Win\MutexImpl.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ConditionVariable.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Win\ConditionVariableImpl.hpp">
+      <Filter>System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

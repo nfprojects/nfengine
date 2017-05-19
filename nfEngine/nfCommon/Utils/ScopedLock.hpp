@@ -8,6 +8,7 @@
 
 #include "../nfCommon.hpp"
 #include "../System/RWLock.hpp"
+#include "../System/Mutex.hpp"
 
 
 namespace NFE {
@@ -88,6 +89,11 @@ public:
         return mIsLocked;
     }
 
+    LockType& GetLockObject() const
+    {
+        return mLock;
+    }
+
     ScopedLock& operator = (const ScopedLock&) = default;
     ScopedLock& operator = (ScopedLock&&) = default;
 
@@ -103,6 +109,7 @@ private:
 
 using ScopedSharedLock = ScopedLock<RWLock, SharedLockPolicy<RWLock>>;
 using ScopedExclusiveLock = ScopedLock<RWLock, ExclusiveLockPolicy<RWLock>>;
+using ScopedMutexLock = ScopedLock<Mutex, ExclusiveLockPolicy<Mutex>>;
 
 
 } // namespace Common

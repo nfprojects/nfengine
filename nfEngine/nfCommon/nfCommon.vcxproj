@@ -97,10 +97,12 @@
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="System\Assertion.hpp" />
     <ClInclude Include="System\AsyncQueueManager.hpp" />
+    <ClInclude Include="System\ConditionVariable.hpp" />
     <ClInclude Include="System\Console.hpp" />
     <ClInclude Include="System\KeyCodes.hpp" />
     <ClInclude Include="System\Library.hpp" />
-    <ClInclude Include="System\Lock.hpp" />
+    <ClInclude Include="System\Mutex.hpp" />
+    <ClInclude Include="System\RWLock.hpp" />
     <ClInclude Include="System\Memory.hpp" />
     <ClInclude Include="System\SystemInfo.hpp" />
     <ClInclude Include="System\SystemInfoConstants.hpp" />
@@ -109,8 +111,10 @@
     <ClInclude Include="System\Window.hpp" />
     <ClInclude Include="System\Win\AsyncQueueManager.hpp" />
     <ClInclude Include="System\Win\Common.hpp" />
+    <ClInclude Include="System\Win\ConditionVariableImpl.hpp" />
     <ClInclude Include="System\Win\Console.hpp" />
-    <ClInclude Include="System\Win\LockImpl.hpp" />
+    <ClInclude Include="System\Win\MutexImpl.hpp" />
+    <ClInclude Include="System\Win\RWLockImpl.hpp" />
     <ClInclude Include="Utils\AsyncThreadPool.hpp" />
     <ClInclude Include="Utils\BitUtils.hpp" />
     <ClInclude Include="Utils\BitUtilsImplWindowsAVX.hpp" />
