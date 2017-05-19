@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 #include "../FileAsync.hpp"
 #include "Logger/Logger.hpp"
+#include "Utils/ScopedLock.hpp"
 
 
 namespace NFE {
@@ -200,7 +201,7 @@ void FileAsync::Close()
 
         {
             // Block access to mSystemPtrs map before accessing it
-            std::lock_guard<std::mutex> guard(mSetAccessMutex);
+            ScopedMutexLock guard(mSetAccessMutex);
 
             // Check if there are any ongoing jobs
             if (!mSystemPtrs.empty())

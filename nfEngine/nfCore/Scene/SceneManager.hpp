@@ -12,6 +12,8 @@
 #include "nfCommon/Math/Vector.hpp"
 #include "nfCommon/Memory/Aligned.hpp"
 
+#include <memory>
+
 
 namespace NFE {
 namespace Scene {

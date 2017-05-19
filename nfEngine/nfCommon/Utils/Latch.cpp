@@ -7,8 +7,9 @@
 
 #include "PCH.hpp"
 #include "Latch.hpp"
+#include "ScopedLock.hpp"
+#include "../System/Timer.hpp"
 
-#include <chrono>
 
 namespace NFE {
 namespace Common {
@@ -20,22 +21,42 @@ Latch::Latch()
 
 void Latch::Set()
 {
-    Lock lock(mMutex);
+    ScopedMutexLock lock(mMutex);
     mSet = true;
-    mCV.notify_all();
+    mCV.SignalAll();
 }
 
 void Latch::Wait()
 {
-    Lock lock(mMutex);
-    mCV.wait(lock, [this] { return mSet.load(); });
+    ScopedMutexLock lock(mMutex);
+    while (!mSet)
+    {
+        mCV.Wait(lock);
+    }
 }
 
 bool Latch::Wait(const unsigned int timeoutMs)
 {
-    Lock lock(mMutex);
-    return mCV.wait_for(lock, std::chrono::milliseconds(timeoutMs),
-                        [this] { return mSet.load(); });
+    Timer timer;
+    timer.Start();
+
+    const double timeoutSeconds = static_cast<double>(timeoutMs) / 1000.0f;
+
+    ScopedMutexLock lock(mMutex);
+    while (!mSet)
+    {
+        if (timer.Stop() >= timeoutSeconds)
+        {
+            return false;
+        }
+
+        if (!mCV.WaitFor(lock, timeoutMs))
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 } // namespace Common

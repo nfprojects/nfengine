@@ -22,7 +22,7 @@
 #include "ResourceBinding.hpp"
 #include "nfCommon/System/Win/Common.hpp"
 #include "nfCommon/Logger/Logger.hpp"
-
+#include "nfCommon/Utils/ScopedLock.hpp"
 
 
 namespace NFE {
@@ -276,7 +276,7 @@ CommandListID Device::RegisterCommandList(ID3D11CommandList* commandList)
 {
     CommandListID id = INVALID_COMMAND_LIST_ID;
     {
-        std::unique_lock<std::mutex> lock(mCommandListsMutex);
+        Common::ScopedMutexLock lock(mCommandListsMutex);
         mCommandLists.push_back(commandList);
         id = static_cast<CommandListID>(mCommandLists.size());
     }
@@ -294,7 +294,7 @@ bool Device::Execute(CommandListID id)
 
     ID3D11CommandList* list = nullptr;
     {
-        std::unique_lock<std::mutex> lock(mCommandListsMutex);
+        Common::ScopedMutexLock lock(mCommandListsMutex);
         if (id > mCommandLists.size())
         {
             LOG_ERROR("Invalid command list ID");
@@ -322,7 +322,7 @@ bool Device::FinishFrame()
     uint32 danglingLists = 0;
 
     {
-        std::unique_lock<std::mutex> lock(mCommandListsMutex);
+        Common::ScopedMutexLock lock(mCommandListsMutex);
 
         // cleanup command list array
         for (ID3D11CommandList* commandList : mCommandLists)

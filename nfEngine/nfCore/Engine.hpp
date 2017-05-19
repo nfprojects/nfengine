@@ -12,6 +12,8 @@
 #include "Renderer/HighLevelRenderer.hpp"
 #include "nfCommon/Utils/ThreadPool.hpp"
 
+#include <mutex> // TODO remove
+
 namespace NFE {
 
 struct UpdateRequest
@@ -31,7 +33,7 @@ private:
      * Mutex used to synchronize scene rendering and resources allocations.
      * Resources must be released outside rendering stage.
      */
-    std::recursive_mutex mRenderingMutex;
+    std::recursive_mutex mRenderingMutex; // TODO get rid of that
 
     Common::ThreadPool mMainThreadPool;
     Resource::ResManager mResManager;
@@ -44,7 +46,7 @@ private:
 
 public:
     /**
-     * Aquire pointer to the Engine instance.
+     * Acquire pointer to the Engine instance.
      * If the function was not called before, the engine will be initialized.
      *
      * @return Valid Engine class instance or NULL on failure. See logs for more information.

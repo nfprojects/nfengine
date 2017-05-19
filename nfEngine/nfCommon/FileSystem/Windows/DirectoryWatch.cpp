@@ -8,6 +8,7 @@
 #include "../DirectoryWatch.hpp"
 #include "Logger/Logger.hpp"
 #include "System/Win/Common.hpp"
+#include "Utils/ScopedLock.hpp"
 
 #include <assert.h>
 #include <string.h>
@@ -102,7 +103,7 @@ void DirectoryWatch::SetCallback(WatchCallback callback)
 bool DirectoryWatch::WatchPath(const std::string& path, Event eventFilter)
 {
     {
-        std::unique_lock<std::mutex> lock(mMutex);
+        ScopedMutexLock lock(mMutex);
         auto it = mRequests.find(path);
         if (it != mRequests.end())
         {
@@ -156,7 +157,7 @@ bool DirectoryWatch::WatchPath(const std::string& path, Event eventFilter)
     WatchRequest* requestPtr = request.get();
     mRequestsNum++;
     {
-        std::unique_lock<std::mutex> lock(mMutex);
+        ScopedMutexLock lock(mMutex);
         mRequests.insert(std::make_pair(path, std::move(request)));
     }
 
@@ -188,7 +189,7 @@ void DirectoryWatch::NotificationCompletion(DWORD errorCode, DWORD bytesTransfer
         if (::SetEvent(watch->mEvent) == 0)
             LOG_ERROR("SetEvent() failed: %s", GetLastErrorString().c_str());
 
-        std::unique_lock<std::mutex> lock(watch->mMutex);
+        ScopedMutexLock lock(watch->mMutex);
         watch->mRequests.erase(request->path);
         watch->mRequestsNum--;
         return;
@@ -274,7 +275,7 @@ void DirectoryWatch::TerminateProc(ULONG_PTR arg)
 {
     DirectoryWatch* watch = reinterpret_cast<DirectoryWatch*>(arg);
 
-    std::unique_lock<std::mutex> lock(watch->mMutex);
+    ScopedMutexLock lock(watch->mMutex);
     for (auto& request : watch->mRequests)
         request.second->Stop();
 }

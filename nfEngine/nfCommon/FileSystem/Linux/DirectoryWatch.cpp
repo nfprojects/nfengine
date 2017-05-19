@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 #include "../DirectoryWatch.hpp"
 #include "Logger/Logger.hpp"
+#include "Utils/ScopedLock.hpp"
 
 #include <sstream>
 #include <poll.h>
@@ -54,7 +55,7 @@ bool DirectoryWatch::WatchPath(const std::string& path, Event eventFilter)
         ::inotify_rm_watch(inotifyFd, fd);
         mWatchPathMap.erase(path);
 
-        std::unique_lock<std::mutex> lock(mWatchDescriptorMapMutex);
+        ScopedMutexLock lock(mWatchDescriptorMapMutex);
         mWatchDescriptorMap.erase(fd);
         return true;
     }
@@ -80,7 +81,7 @@ bool DirectoryWatch::WatchPath(const std::string& path, Event eventFilter)
 
     int oldFd = mWatchPathMap[path];
     {
-        std::unique_lock<std::mutex> lock(mWatchDescriptorMapMutex);
+        ScopedMutexLock lock(mWatchDescriptorMapMutex);
         mWatchDescriptorMap.erase(oldFd);
         mWatchPathMap[path] = fd;
         mWatchDescriptorMap[fd] = path;
@@ -148,7 +149,7 @@ bool DirectoryWatch::ProcessInotifyEvent(void* event)
 
     char path[PATH_MAX];
     {
-        std::unique_lock<std::mutex> lock(mWatchDescriptorMapMutex);
+        ScopedMutexLock lock(mWatchDescriptorMapMutex);
         strcpy(path, mWatchDescriptorMap[e->wd].c_str());
     }
 

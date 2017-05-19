@@ -8,6 +8,7 @@
 #include "DefaultAllocator.hpp"
 #include "Logger/Logger.hpp"
 #include "Math/Math.hpp"
+#include "Utils/ScopedLock.hpp"
 
 
 // TODO
@@ -68,7 +69,7 @@ void* DefaultAllocator::Malloc(size_t size, size_t alignment, const char* source
         mAllocationsNum++;
 
 #ifdef _DEBUG
-        std::lock_guard<std::mutex> lock(mMutex);
+        ScopedMutexLock lock(mMutex);
         AllocationDebugInfo info;
         info.size = size;
         info.sourceFile = sourceFile;
@@ -91,7 +92,7 @@ void DefaultAllocator::Free(void* ptr)
 
 #ifdef _DEBUG
     {
-        std::lock_guard<std::mutex> lock(mMutex);
+        ScopedMutexLock lock(mMutex);
         const auto iter = mAllocationsDebugInfo.find(ptr);
 
         if (iter == mAllocationsDebugInfo.end())
@@ -115,7 +116,7 @@ void DefaultAllocator::Free(void* ptr)
 void DefaultAllocator::ReportAllocations()
 {
 #ifdef _DEBUG
-    std::lock_guard<std::mutex> lock(mMutex);
+    ScopedMutexLock lock(mMutex);
 
     LOG_INFO("Allocated blocks: %zu (%zu bytes)", mAllocationsNum.load(), mBytesAllocated.load());
     for (const auto& it : mAllocationsDebugInfo)

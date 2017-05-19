@@ -8,6 +8,7 @@
 #include "nfCommon/System/Timer.hpp"
 #include "Test.hpp"
 
+#include <functional>
 
 using namespace NFE::Common;
 
