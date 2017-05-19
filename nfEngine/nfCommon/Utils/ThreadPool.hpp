@@ -7,14 +7,13 @@
 #pragma once
 
 #include "../nfCommon.hpp"
+#include "../System/ConditionVariable.hpp"
 
 #include <inttypes.h>
 #include <set>
 #include <queue>
 #include <functional>
-#include <condition_variable>
 #include <atomic>
-#include <mutex>
 #include <thread>
 
 
@@ -111,8 +110,6 @@ class NFCOMMON_API ThreadPool final
 {
     friend class WorkerThread;
 
-    typedef std::unique_lock<std::mutex> Lock;
-
     /// Worker threads varibles:
     size_t mLastThreadId;
     std::set<WorkerThreadPtr> mThreads;
@@ -120,11 +117,11 @@ class NFCOMMON_API ThreadPool final
     /// Tasks queue variables:
     size_t mMaxTasks;
     std::queue<TaskID> mTasksQueue;        //< queue for tasks with "Queued" state
-    std::mutex mTasksQueueMutex;           //< lock for "mTasksQueue" access
-    std::condition_variable mTaskQueueCV;  //< CV for notifying about a new task in the queue
+    Mutex mTasksQueueMutex;                 //< lock for "mTasksQueue" access
+    ConditionVariable mTaskQueueCV;         //< CV for notifying about a new task in the queue
 
-    std::mutex mFinishedTasksMutex;
-    std::condition_variable mFinishedTasksCV;
+    Mutex mFinishedTasksMutex;
+    ConditionVariable mFinishedTasksCV;
 
     /// Tasks allocator variables:
     std::atomic<uint32> mTasksNum;

@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 #include "AsyncQueueManager.hpp"
 #include "Logger/Logger.hpp"
+#include "Utils/ScopedLock.hpp"
 #include "Common.hpp"
 
 
@@ -33,7 +34,7 @@ AsyncQueueManager& AsyncQueueManager::GetInstance()
     static AsyncQueueManager instance;
     if (!instance.mIsInitialized)
     {
-        std::lock_guard<std::mutex> lock(instance.mInitLock);
+        ScopedMutexLock lock(instance.mInitLock);
         if (!instance.mIsInitialized)
             instance.mIsInitialized = instance.Init();
     }

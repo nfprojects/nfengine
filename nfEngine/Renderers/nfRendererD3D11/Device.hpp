@@ -8,8 +8,7 @@
 
 #include "../RendererInterface/Device.hpp"
 #include "Common.hpp"
-
-#include <mutex>
+#include "nfCommon/System/Mutex.hpp"
 
 
 namespace NFE {
@@ -31,7 +30,7 @@ class Device : public IDevice
     D3D_FEATURE_LEVEL mFeatureLevel;
     bool mDebugLayerEnabled;
 
-    std::mutex mCommandListsMutex;
+    Common::Mutex mCommandListsMutex;
     std::vector<ID3D11CommandList*> mCommandLists;
 
     bool DetectVideoCards(int preferredId);

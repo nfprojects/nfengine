@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "FileAsync.hpp"
+#include "../Utils/ScopedLock.hpp"
 
 
 namespace NFE {
@@ -33,7 +34,7 @@ struct FileAsync::AsyncDataStruct
 
 bool FileAsync::SafeErasePtr(AsyncDataStruct* ptrToErase)
 {
-    std::lock_guard<std::mutex> guard(mSetAccessMutex);
+    ScopedMutexLock guard(mSetAccessMutex);
     bool eraseResult = 1 == mSystemPtrs.erase(ptrToErase);
     if (ptrToErase)
         delete ptrToErase;
@@ -42,7 +43,7 @@ bool FileAsync::SafeErasePtr(AsyncDataStruct* ptrToErase)
 
 bool FileAsync::SafeInsertPtr(AsyncDataStruct* ptrToInsert)
 {
-    std::lock_guard<std::mutex> guard(mSetAccessMutex);
+    ScopedMutexLock guard(mSetAccessMutex);
     return mSystemPtrs.insert(ptrToInsert).second;
 }
 

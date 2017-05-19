@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "ThreadPool.hpp"
+#include "ScopedLock.hpp"
 #include "Logger/Logger.hpp"
 
 namespace NFE {
@@ -60,12 +61,12 @@ ThreadPool::ThreadPool(size_t maxTasks, size_t threadsNum)
 ThreadPool::~ThreadPool()
 {
     {
-        Lock lock(mTasksQueueMutex);
+        ScopedMutexLock lock(mTasksQueueMutex);
 
         for (auto thread : mThreads)
             thread->mStarted = false;
 
-        mTaskQueueCV.notify_all();
+        mTaskQueueCV.SignalAll();
     }
 
     // cleanup
@@ -83,7 +84,7 @@ void ThreadPool::SpawnWorkerThreads(size_t num)
 void ThreadPool::TriggerWorkerStop(WorkerThreadPtr workerThread)
 {
     workerThread->mStarted = false;
-    mTaskQueueCV.notify_all();
+    mTaskQueueCV.SignalAll();
 }
 
 size_t ThreadPool::GetThreadsNumber() const
@@ -101,11 +102,11 @@ void ThreadPool::SchedulerCallback(WorkerThread* thread)
     for (;;)
     {
         {
-            Lock lock(mTasksQueueMutex);
+            ScopedMutexLock lock(mTasksQueueMutex);
 
             // wait for new task
             while (thread->mStarted && mTasksQueue.empty())
-                mTaskQueueCV.wait(lock);
+                mTaskQueueCV.Wait(lock);
 
             if (!thread->mStarted)
                 return;
@@ -134,8 +135,8 @@ void ThreadPool::FinishTask(Task* task)
 
     {
         // TODO: get rid of this lock
-        Lock lock(mFinishedTasksMutex);
-        mFinishedTasksCV.notify_all();
+        ScopedMutexLock lock(mFinishedTasksMutex);
+        mFinishedTasksCV.SignalAll();
     }
 
     // update parent
@@ -153,9 +154,9 @@ void ThreadPool::FinishTask(Task* task)
 
 void ThreadPool::EnqueueTask(TaskID taskID)
 {
-    Lock lock(mTasksQueueMutex);
+    ScopedMutexLock lock(mTasksQueueMutex);
     mTasksQueue.push(taskID);
-    mTaskQueueCV.notify_all();
+    mTaskQueueCV.SignalAll();
 }
 
 TaskID ThreadPool::CreateTask(const TaskFunction& function, size_t instancesNum,
@@ -185,7 +186,7 @@ TaskID ThreadPool::CreateTask(const TaskFunction& function, size_t instancesNum,
     {
         Task& dependency = mTasks[dependencyID];
 
-        Lock lock(mFinishedTasksMutex); // TODO: how to get rid of it?
+        ScopedMutexLock lock(mFinishedTasksMutex); // TODO: how to get rid of it?
         if (dependency.mTasksLeft > 0)
         {
             // update dependency list
@@ -217,9 +218,9 @@ void ThreadPool::WaitForTask(TaskID taskID)
     if (mTasks[taskID].mTasksLeft == 0)
         return;
 
-    Lock lock(mFinishedTasksMutex);
+    ScopedMutexLock lock(mFinishedTasksMutex);
     while (mTasks[taskID].mTasksLeft > 0)
-        mFinishedTasksCV.wait(lock);
+        mFinishedTasksCV.Wait(lock);
 }
 
 void ThreadPool::WaitForTasks(TaskID* tasks, size_t tasksNum)
@@ -229,9 +230,9 @@ void ThreadPool::WaitForTasks(TaskID* tasks, size_t tasksNum)
         if (mTasks[tasks[i]].mTasksLeft == 0)
             continue;
 
-        Lock lock(mFinishedTasksMutex);
+        ScopedMutexLock lock(mFinishedTasksMutex);
         while (mTasks[tasks[i]].mTasksLeft > 0)
-            mFinishedTasksCV.wait(lock);
+            mFinishedTasksCV.Wait(lock);
     }
 }
 
@@ -242,9 +243,9 @@ void ThreadPool::WaitForAllTasks()
         if (mTasks[i].mTasksLeft == 0)
             continue;
 
-        Lock lock(mFinishedTasksMutex);
+        ScopedMutexLock lock(mFinishedTasksMutex);
         while (mTasks[i].mTasksLeft > 0)
-            mFinishedTasksCV.wait(lock);
+            mFinishedTasksCV.Wait(lock);
     }
 
     mTasksNum = 0;

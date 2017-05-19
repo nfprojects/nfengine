@@ -7,8 +7,8 @@
 #pragma once
 
 #include "../nfCommon.hpp"
+#include "../System/ConditionVariable.hpp"
 
-#include <condition_variable>
 #include <functional>
 #include <inttypes.h>
 #include <thread>
@@ -54,19 +54,17 @@ public:
  */
 class NFCOMMON_API AsyncThreadPool final
 {
-    typedef std::unique_lock<std::mutex> Lock;
-
     std::vector<std::thread> mWorkerThreads;
 
-    std::condition_variable mTaskQueueTask;
+    ConditionVariable mTaskQueueTask;
     std::queue<AsyncFunc*> mTasksQueue;
-    std::mutex mTasksQueueMutex;  //< lock for "mTasksQueue" access
+    Mutex mTasksQueueMutex;  //< lock for "mTasksQueue" access
 
     std::atomic<bool> mStarted;
     std::atomic<AsyncFuncID> mLastTaskId;
     std::map<AsyncFuncID, AsyncFunc*> mTasks;
-    std::mutex mTasksMutex;                 //< lock for "mTasks"
-    std::condition_variable mTasksMutexCV;  //< condition variable used to notify about finished task
+    Mutex mTasksMutex;                 //< lock for "mTasks"
+    ConditionVariable mTasksMutexCV;  //< condition variable used to notify about finished task
 
     // translate AsyncFuncID to Task object
     AsyncFunc* GetTask(const AsyncFuncID& taskID) const;

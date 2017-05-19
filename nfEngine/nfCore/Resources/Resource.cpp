@@ -12,7 +12,7 @@
 #include "nfCommon/System/Memory.hpp"
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/Utils/AsyncThreadPool.hpp"
-
+#include "nfCommon/Utils/ScopedLock.hpp"
 
 namespace NFE {
 namespace Resource {
@@ -148,7 +148,7 @@ void ResourceBase::Load()
             {
                 SetState(result ? ResourceState::Loaded : ResourceState::Failed);
 
-                std::lock_guard<std::mutex> lock(mCallbacksMutex);
+                Common::ScopedMutexLock lock(mCallbacksMutex);
                 for (const auto& callback : mPostLoadCallbacks)
                     callback();
 
@@ -205,7 +205,7 @@ void ResourceBase::Unload()
 
 void ResourceBase::AddPostLoadCallback(const ResourcePostLoadCallback& callback)
 {
-    std::lock_guard<std::mutex> lock(mCallbacksMutex);
+    Common::ScopedMutexLock lock(mCallbacksMutex);
     mPostLoadCallbacks.push_back(callback);
 
     // resource is already loaded, so call the callback

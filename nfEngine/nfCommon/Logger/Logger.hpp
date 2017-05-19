@@ -8,11 +8,11 @@
 
 #include "../nfCommon.hpp"
 #include "../System/Timer.hpp"
+#include "../System/Mutex.hpp"
 
 #include <unordered_map>
 #include <memory>
 #include <atomic>
-#include <mutex>
 #include <vector>
 
 
@@ -91,8 +91,8 @@ class NFCOMMON_API Logger
     size_t mPathPrefixLen;
 
     std::atomic<InitStage> mInitialized;  //< Set to Initialized, when Logger is fully initialized
-    std::mutex mLogMutex;                 //< For synchronizing logger output
-    std::mutex mResetMutex;               //< For locking logger initialization
+    Mutex mLogMutex;                 //< For synchronizing logger output
+    Mutex mResetMutex;               //< For locking logger initialization
     Timer mTimer;
     static LoggerBackendMap& mBackends(); //< Method encapsulation to solve "static initialization order fiasco"
 

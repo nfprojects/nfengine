@@ -8,6 +8,8 @@
 #include "Logger.hpp"
 #include "FileSystem/FileSystem.hpp"
 #include "System/SystemInfo.hpp"
+#include "Utils/ScopedLock.hpp"
+
 #include <stdarg.h>
 
 #ifdef WIN32
@@ -46,7 +48,7 @@ void Logger::Reset()
     if (mInitialized == InitStage::Uninitialized)
         return;
 
-    std::lock_guard<std::mutex> lock(mResetMutex);
+    ScopedMutexLock lock(mResetMutex);
     // Change mInitialized, to avoid Logging while backends are resetting
     mInitialized.store(InitStage::Initializing);
 
@@ -232,7 +234,7 @@ void Logger::Log(LogType type, const char* srcFile, int line, const char* str, .
     if (len < 0 || !formattedStr)
         return;
 
-    std::lock_guard<std::mutex> lock(mLogMutex);
+    ScopedMutexLock lock(mLogMutex);
     for (const auto& backend : mBackends())
     {
         if (backend.second->IsEnabled())
@@ -248,7 +250,7 @@ void Logger::Log(LogType type, const char* srcFile, const char* str, int line)
     // TODO: consider logging local time instead of time elapsed since Logger initialization
     double logTime = mTimer.Stop();
 
-    std::lock_guard<std::mutex> lock(mLogMutex);
+    ScopedMutexLock lock(mLogMutex);
     for (const auto& backend : mBackends())
     {
         if (backend.second->IsEnabled())
