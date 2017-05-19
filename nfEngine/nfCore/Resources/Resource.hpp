@@ -9,7 +9,9 @@
 #include "../Core.hpp"
 
 #include "nfCommon/Memory/Aligned.hpp"
+#include "nfCommon/System/Mutex.hpp"
 
+#include <functional>
 
 namespace NFE {
 namespace Resource {
@@ -68,7 +70,7 @@ class CORE_API ResourceBase
 
 private:
     // TODO: temporary hack
-    std::mutex mCallbacksMutex;
+    Common::Mutex mCallbacksMutex;
     std::vector<ResourcePostLoadCallback> mPostLoadCallbacks;
 
 protected:

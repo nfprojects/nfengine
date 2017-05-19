@@ -8,9 +8,8 @@
 #pragma once
 
 #include "../nfCommon.hpp"
+#include "../System/ConditionVariable.hpp"
 
-#include <mutex>
-#include <condition_variable>
 #include <atomic>
 
 
@@ -24,11 +23,9 @@ namespace Common {
 class NFCOMMON_API Latch final
 {
 private:
-    typedef std::unique_lock<std::mutex> Lock;
-
-    std::mutex mMutex;
-    std::condition_variable mCV;
-    std::atomic<bool> mSet;
+    Mutex mMutex;
+    ConditionVariable mCV;
+    bool mSet;
 
 public:
     Latch();
@@ -45,10 +42,10 @@ public:
 
     /**
      * Waits until another thread calls @p Set() method, or until timeout occurs.
-     * 
+     *
      * @param  timeoutMs timeout in milliseconds, 0 to wait infinitely.
      *
-     * @return true on success, false when timeout occured
+     * @return true on success, false when timeout occurred
      */
      bool Wait(const unsigned int timeoutMs);
 };

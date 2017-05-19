@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "AsyncThreadPool.hpp"
+#include "ScopedLock.hpp"
 #include "Logger/Logger.hpp"
 
 namespace NFE {
@@ -30,8 +31,8 @@ AsyncThreadPool::~AsyncThreadPool()
 {
     mStarted = false;
     {
-        Lock lock(mTasksQueueMutex);
-        mTaskQueueTask.notify_all();
+        ScopedMutexLock lock(mTasksQueueMutex);
+        mTaskQueueTask.SignalAll();
     }
 
     // cleanup worker threads
@@ -51,11 +52,11 @@ void AsyncThreadPool::SchedulerCallback()
     for (;;)
     {
         {
-            Lock lock(mTasksQueueMutex);
+            ScopedMutexLock lock(mTasksQueueMutex);
 
             // wait for new task
             while (mStarted && mTasksQueue.empty())
-                mTaskQueueTask.wait(lock);
+                mTaskQueueTask.Wait(lock);
 
             if (!mStarted)
                 return;
@@ -70,9 +71,9 @@ void AsyncThreadPool::SchedulerCallback()
 
         // mark as done and notify waiting threads
         {
-            Lock lock(mTasksMutex);
+            ScopedMutexLock lock(mTasksMutex);
             mTasks.erase(currTask->ptr);
-            mTasksMutexCV.notify_all();
+            mTasksMutexCV.SignalAll();
 
             // cleanup
             delete currTask;
@@ -88,14 +89,14 @@ AsyncFuncID AsyncThreadPool::Enqueue(AsyncFuncCallback function)
     task->ptr = taskPtr;
 
     {
-        Lock lock(mTasksMutex);
+        ScopedMutexLock lock(mTasksMutex);
         mTasks.insert(std::pair<AsyncFuncID, AsyncFunc*>(taskPtr, task));
     }
 
     {
-        Lock lock(mTasksQueueMutex);
+        ScopedMutexLock lock(mTasksQueueMutex);
         mTasksQueue.push(task);
-        mTaskQueueTask.notify_all();
+        mTaskQueueTask.SignalAll();
     }
 
     return taskPtr;
@@ -114,20 +115,26 @@ AsyncFunc* AsyncThreadPool::GetTask(const AsyncFuncID& taskID) const
 
 bool AsyncThreadPool::IsTaskFinished(const AsyncFuncID& taskID)
 {
-    Lock lock(mTasksMutex);
+    ScopedMutexLock lock(mTasksMutex);
     return GetTask(taskID) == nullptr;
 }
 
 void AsyncThreadPool::WaitForTask(const AsyncFuncID& taskID)
 {
-    Lock lock(mTasksMutex);
-    mTasksMutexCV.wait(lock, [&] { return GetTask(taskID) == nullptr; });
+    ScopedMutexLock lock(mTasksMutex);
+    while (GetTask(taskID) != nullptr)
+    {
+        mTasksMutexCV.Wait(lock);
+    }
 }
 
 void AsyncThreadPool::WaitForAllTasks()
 {
-    Lock lock(mTasksMutex);
-    mTasksMutexCV.wait(lock, [&] { return mTasks.size() == 0; });
+    ScopedMutexLock lock(mTasksMutex);
+    while (!mTasks.empty())
+    {
+        mTasksMutexCV.Wait(lock);
+    }
 }
 
 } // namespace Common

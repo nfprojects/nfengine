@@ -50,9 +50,7 @@
 #include <functional>
 #include <sstream>
 #include <tuple>
-#include <mutex>
 #include <atomic>
-#include <condition_variable>
 
 // Bullet physics Engine
 #include "btBulletCollisionCommon.h"

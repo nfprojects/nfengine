@@ -9,6 +9,8 @@
 #include "../Core.hpp"
 #include "Resource.hpp"
 
+#include <memory>
+
 
 namespace NFE {
 namespace Resource {
@@ -40,7 +42,7 @@ class CORE_API ResManager final
 private:
     std::unique_ptr<Common::AsyncThreadPool> mThreadPool;
 
-    std::mutex mResListMutex;
+    Common::Mutex mResListMutex;
     std::map<const char*, ResourceBase*, CompareResName> mResources;
 
     void Release();
