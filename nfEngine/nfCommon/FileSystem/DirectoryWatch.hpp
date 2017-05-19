@@ -7,6 +7,7 @@
 #pragma once
 
 #include "../nfCommon.hpp"
+#include "../System/Mutex.hpp"
 
 #if defined(WIN32)
 #define WIN32_LEAN_AND_MEAN
@@ -19,7 +20,6 @@
 #include <string>
 #include <memory>
 #include <type_traits>
-#include <mutex>
 #include <atomic>
 #include <thread>
 
@@ -64,7 +64,7 @@ private:
     HANDLE mEvent;
     HANDLE mThread;
 
-    std::mutex mMutex;
+    Mutex mMutex;
     std::atomic<size_t> mRequestsNum;
     std::map<std::string, std::unique_ptr<WatchRequest>> mRequests;
 
@@ -81,7 +81,7 @@ private:
     int inotifyFd;             //< inotify file descriptor
 
     std::map<std::string, int> mWatchPathMap;
-    std::mutex mWatchDescriptorMapMutex; //< lock for mWatchDescriptorMap
+    Mutex mWatchDescriptorMapMutex; //< lock for mWatchDescriptorMap
     std::map<int, std::string> mWatchDescriptorMap;
 
     void WatchRoutine();

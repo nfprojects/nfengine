@@ -9,6 +9,7 @@
 #include "nfCommon/System/Memory.hpp"
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/Utils/AsyncThreadPool.hpp"
+#include "nfCommon/Utils/ScopedLock.hpp"
 
 // TODO: remove these dependencies - adding a new resource type shouldn't force programmer to modify this file...
 #include "Multishader.hpp"
@@ -65,7 +66,7 @@ ResourceBase* ResManager::GetResource(const char* name, ResourceType type, bool 
         return nullptr;
     }
 
-    std::unique_lock<std::mutex> ulock(mResListMutex);
+    Common::ScopedMutexLock ulock(mResListMutex);
 
     ResourceBase* resource = nullptr;
 
@@ -107,14 +108,14 @@ ResourceBase* ResManager::GetResource(const char* name, ResourceType type, bool 
             break;
 
         default:
-            ulock.unlock();
+            ulock.Unlock();
             LOG_ERROR("Wrong 'type' argument");
             return nullptr;
     }
 
     if (resource == nullptr)
     {
-        ulock.unlock();
+        ulock.Unlock();
         LOG_ERROR("Memory allocation failed");
         return nullptr;
     }
@@ -128,7 +129,7 @@ ResourceBase* ResManager::GetResource(const char* name, ResourceType type, bool 
     resPair.second = resource;
     mResources.insert(resPair);
 
-    ulock.unlock();
+    ulock.Unlock();
 
     if (name[0] == g_CustomResourcePrefix)
     {
@@ -140,7 +141,7 @@ ResourceBase* ResManager::GetResource(const char* name, ResourceType type, bool 
 
 bool ResManager::DeleteResource(const char* name)
 {
-    std::unique_lock<std::mutex> ulock(mResListMutex);
+    Common::ScopedMutexLock ulock(mResListMutex);
     std::map<const char*, ResourceBase*, CompareResName>::iterator it;
 
     it = mResources.find(name);
@@ -152,12 +153,12 @@ bool ResManager::DeleteResource(const char* name)
         if (resource->GetState() == ResourceState::Unloaded)
         {
             mResources.erase(it);
-            ulock.unlock();
+            ulock.Unlock();
             delete resource;
             return true;
         }
 
-        ulock.unlock();
+        ulock.Unlock();
         LOG_WARNING("Can't remove resource '%s', because it's still loaded", name);
         return false;
     }
@@ -174,13 +175,13 @@ bool ResManager::AddCustomResource(ResourceBase* resource, const char* name)
         return false;
     }
 
-    std::unique_lock<std::mutex> ulock(mResListMutex);
+    Common::ScopedMutexLock ulock(mResListMutex);
 
     // check if resource already exists
     const char* pNameToCheck = (name != nullptr) ? name : resource->mName;
     if (mResources.count(pNameToCheck) > 0)
     {
-        ulock.unlock();
+        ulock.Unlock();
         LOG_ERROR("Resource with name '%s' already exists.", pNameToCheck);
         return false;
     }

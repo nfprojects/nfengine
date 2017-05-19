@@ -8,10 +8,10 @@
 
 #include "../nfCommon.hpp"
 #include "File.hpp"
+#include "../System/Mutex.hpp"
 
 #include <unordered_set>
 #include <functional>
-#include <mutex>
 #include <thread>
 
 #if defined(WIN32)
@@ -74,7 +74,7 @@ private:
 
     AccessMode mMode;
     std::unordered_set<AsyncDataStruct*> mSystemPtrs;
-    std::mutex mSetAccessMutex;
+    Mutex mSetAccessMutex;
     CallbackFunc mCallback;
 
     bool SafeErasePtr(AsyncDataStruct* ptrToErase);

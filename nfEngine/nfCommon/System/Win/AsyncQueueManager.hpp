@@ -6,10 +6,13 @@
 
 #pragma once
 #include "../../nfCommon.hpp"
+#include "../../System/Mutex.hpp"
 
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
+
+#include <atomic>
 
 
 namespace NFE {
@@ -23,7 +26,7 @@ private:
     HANDLE mQuitEvent;
     std::atomic_bool mIsDestroyed;
     std::atomic_bool mIsInitialized;
-    std::mutex mInitLock;
+    Mutex mInitLock;
 
     AsyncQueueManager();
     ~AsyncQueueManager();

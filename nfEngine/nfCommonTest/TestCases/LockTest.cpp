@@ -67,15 +67,15 @@ TEST(LockTest, SharedLock_Multithreaded)
 {
     RWLock testLock; // the lock being tested
 
-    using LockType = std::unique_lock<std::mutex>;
+    using LockType = ScopedMutexLock;
 
     uint32 counter;
-    std::condition_variable hasEnteredCV;
-    std::mutex hasEnteredMutex;
+    ConditionVariable hasEnteredCV;
+    Mutex hasEnteredMutex;
 
     bool canContinue;
-    std::condition_variable canContinueCV;
-    std::mutex canContinueMutex;
+    ConditionVariable canContinueCV;
+    Mutex canContinueMutex;
 
 
     const auto func = [&]()
@@ -86,7 +86,7 @@ TEST(LockTest, SharedLock_Multithreaded)
         {
             LockType lock(hasEnteredMutex);
             counter++;
-            hasEnteredCV.notify_one();
+            hasEnteredCV.SignalOne();
         }
 
         // if we are here, it means that all the threads are inside shared lock
@@ -96,7 +96,7 @@ TEST(LockTest, SharedLock_Multithreaded)
             LockType lock(canContinueMutex);
             while (!canContinue)
             {
-                canContinueCV.wait(lock);
+                canContinueCV.Wait(lock);
             }
         }
     };
@@ -117,7 +117,7 @@ TEST(LockTest, SharedLock_Multithreaded)
         LockType lock(hasEnteredMutex);
         while (counter < static_cast<uint32>(numThreads))
         {
-            hasEnteredCV.wait(lock);
+            hasEnteredCV.Wait(lock);
         }
     }
 
@@ -129,7 +129,7 @@ TEST(LockTest, SharedLock_Multithreaded)
     {
         LockType lock(canContinueMutex);
         canContinue = true;
-        canContinueCV.notify_all();
+        canContinueCV.SignalAll();
     }
 
     for (size_t i = 0; i < numThreads; ++i)

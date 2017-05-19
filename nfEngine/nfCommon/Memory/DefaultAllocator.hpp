@@ -6,9 +6,9 @@
 
 #pragma once
 #include "../nfCommon.hpp"
+#include "../System/Mutex.hpp"
 
 #include <unordered_map>
-#include <mutex>
 #include <atomic>
 
 namespace NFE {
@@ -31,7 +31,7 @@ struct AllocatorStats
 class NFCOMMON_API DefaultAllocator
 {
 #ifdef _DEBUG
-    std::mutex mMutex;
+    Mutex mMutex;
     std::unordered_map<void*, AllocationDebugInfo> mAllocationsDebugInfo;
 #endif
 
