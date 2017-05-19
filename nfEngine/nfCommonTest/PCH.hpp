@@ -21,7 +21,6 @@
 #include <vector>
 #include <algorithm>
 #include <memory>
-#include <mutex>
 #include <atomic>
 #include <string>
 #include <iostream>
@@ -31,7 +30,6 @@
 #include <fstream>
 #include <functional>
 #include <chrono>
-#include <condition_variable>
 
 #include "gtest/gtest.h"
 
