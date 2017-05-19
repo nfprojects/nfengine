@@ -217,6 +217,7 @@
     <ClCompile Include="TestCases\BufferInputStreamTest.cpp" />
     <ClCompile Include="TestCases\BufferOutputStreamTest.cpp" />
     <ClCompile Include="TestCases\BVHTest.cpp" />
+    <ClCompile Include="TestCases\ConditionVariableTest.cpp" />
     <ClCompile Include="TestCases\ConfigTest.cpp" />
     <ClCompile Include="TestCases\DirectoryWatchTest.cpp" />
     <ClCompile Include="TestCases\DynArrayTest.cpp" />
@@ -240,6 +241,7 @@
     <ClCompile Include="TestCases\MathVectorTest.cpp" />
     <ClCompile Include="TestCases\MD5Test.cpp" />
     <ClCompile Include="TestCases\MemoryTest.cpp" />
+    <ClCompile Include="TestCases\MutexTest.cpp" />
     <ClCompile Include="TestCases\PackedArrayTest.cpp" />
     <ClCompile Include="TestCases\PackerBasicTest.cpp" />
     <ClCompile Include="TestCases\PackerComplexTest.cpp" />
