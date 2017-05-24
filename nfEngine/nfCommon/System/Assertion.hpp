@@ -7,7 +7,6 @@
 #pragma once
 
 #include "../nfCommon.hpp"
-#include "../Logger/Logger.hpp"
 
 
 namespace NFE {
@@ -25,7 +24,6 @@ void NFCOMMON_API HandleFatalAssertion(const char* expressionStr, const char* fu
 do {                                                                                                    \
     if (!(expression))                                                                                  \
     {                                                                                                   \
-        LOG_FATAL(__VA_ARGS__);                                                                         \
         NFE::Common::HandleFatalAssertion(#expression, __FUNCTION__, __FILE__, __LINE__, __VA_ARGS__);  \
     }                                                                                                   \
 } while (0)
