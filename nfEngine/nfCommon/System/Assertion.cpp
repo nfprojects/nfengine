@@ -6,6 +6,8 @@
 
 #include "PCH.hpp"
 #include "Assertion.hpp"
+#include "Console.hpp"
+
 
 #if defined(__LINUX__) | defined(__linux__)
 #include <signal.h>
@@ -73,6 +75,8 @@ void HandleFatalAssertion(const char* expressionStr, const char* functionStr, co
 
     ::ExitProcess(1);
 #elif defined(__LINUX__) | defined(__linux__)
+    PrintColored(ConsoleColor::Red, message);
+    fflush(stdout);
     ::raise(SIGTRAP);
 #endif // defined(WIN32)
 }
