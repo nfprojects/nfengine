@@ -43,6 +43,8 @@ enum class ThreadPriority
 
 #define MAX_THREAD_NAME_LENGTH 16
 
+using ThreadID = uint32;
+
 /**
  * Helper methods for thread interaction
  */
@@ -62,9 +64,24 @@ public:
     static bool SetCurrentThreadName(const char* name);
 
     /**
-     * Get current threads' ID
+     * Get current thread's ID
      */
-    static size_t GetCurrentThreadId();
+    static ThreadID GetCurrentThreadId();
+
+    /**
+     * Get main thread's ID
+     */
+    static ThreadID GetMainThreadId();
+
+    /**
+     * Returns 'true' if called from the main thread.
+     */
+    static bool IsMainThread();
+
+    /**
+     * Get number of logical processors.
+     */
+    static uint32 GetNumLogicalCPUs();
 };
 
 } // namespace Common
