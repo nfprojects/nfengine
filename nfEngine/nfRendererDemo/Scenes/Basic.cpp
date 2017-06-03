@@ -204,7 +204,7 @@ bool BasicScene::CreateIndexBuffer()
 
 bool BasicScene::CreateConstantBuffer(BufferMode cbufferMode)
 {
-    const Matrix rotMatrix = Matrix::MakeRotationNormal(Vector(0.0f, 0.0f, 1.0f), NFE_MATH_PI);
+    const Matrix rotMatrix = Matrix::MakeRotationNormal(Vector(0.0f, 0.0f, 1.0f), Constants::pi<float>);
     mAngle = 0.0f;
     mCBufferMode = cbufferMode;
 
@@ -475,8 +475,8 @@ void BasicScene::Draw(float dt)
 
     // apply rotation
     mAngle += 2.0f * dt;
-    if (mAngle > NFE_MATH_2PI)
-        mAngle -= NFE_MATH_2PI;
+    if (mAngle > 2.0f * Constants::pi<float>)
+        mAngle -= 2.0f * Constants::pi<float>;
 
     // clear target
     const Float4 color(0.0f, 0.0f, 0.0f, 1.0f);

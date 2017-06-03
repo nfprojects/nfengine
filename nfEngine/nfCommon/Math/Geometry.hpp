@@ -26,8 +26,7 @@ enum class IntersectionResult
  * @param[out] out Nearest point on the segment.
  * @return     Distance to the segment.
  */
-NFCOMMON_API float ClosestPointOnSegment(const Vector& p, const Vector& p1, const Vector& p2,
-                                         Vector& out);
+NFCOMMON_API float ClosestPointOnSegment(const Vector& p, const Vector& p1, const Vector& p2, Vector& out);
 
 /**
  * Template function for intersection tests.

@@ -36,7 +36,7 @@ TEST(MathVector, VectorLoadAndStore)
     EXPECT_TRUE(Vector(4.0f, 4.0f, 4.0f, 4.0f) == vecB.SplatW());
 }
 
-TEST(MathVector, VectorMisc)
+TEST(MathVector, SelectBySign)
 {
     Vector vA(1.0f, 2.0f, 3.0f, 4.0f);
     Vector vB(5.0f, 6.0f, 7.0f, 8.0f);
@@ -54,6 +54,8 @@ TEST(MathVector, VectorMisc)
     EXPECT_TRUE(Vector(5.0f, 6.0f, 7.0f, 8.0f) ==
                 Vector::SelectBySign(vA, vB, Vector(-1.0f, -1.0f, -1.0f, -1.0f)));
 }
+
+//////////////////////////////////////////////////////////////////////////
 
 TEST(MathVector, VectorArithmetics)
 {
@@ -90,6 +92,20 @@ TEST(MathVector, VectorGeometrics)
     EXPECT_TRUE(Vector::Cross3(vecB, vecC) == Vector(-1.0f, 2.0f, -1.0f, 0.0f));
     EXPECT_TRUE(Vector::Cross3(vecC, vecB) == Vector(1.0f, -2.0f, 1.0f, 0.0f));
 }
+
+TEST(MathVector, FusedMultiplyAndAdd)
+{
+    const Vector a(0.5f, 1.0f, 2.0f, 3.0f);
+    const Vector b(4.0f, 5.0f, 6.0f, 7.0f);
+    const Vector c(1.5f, 1.5f, 1.5f, 1.5f);
+
+    EXPECT_TRUE(Vector(3.5f, 6.5f, 13.5f, 22.5f) == Vector::MulAndAdd(a, b, c));
+    EXPECT_TRUE(Vector(0.5f, 3.5f, 10.5f, 19.5f) == Vector::MulAndSub(a, b, c));
+    EXPECT_TRUE(Vector(-0.5f, -3.5f, -10.5f, -19.5f) == Vector::NegMulAndAdd(a, b, c));
+    EXPECT_TRUE(Vector(-3.5f, -6.5f, -13.5f, -22.5f) == Vector::NegMulAndSub(a, b, c));
+}
+
+//////////////////////////////////////////////////////////////////////////
 
 TEST(MathVector, VectorLess)
 {
@@ -161,6 +177,71 @@ TEST(MathVector, VectorNotEqual)
     EXPECT_FALSE(Vector(4.0f, 3.0f, 2.0f, 4.0f) != Vector(1.0f, 2.0f, 3.0f, 4.0f));
 }
 
+//////////////////////////////////////////////////////////////////////////
+
+TEST(MathVector, VectorLess3)
+{
+    EXPECT_TRUE(Vector::Less3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(10.0f, 20.0f, 30.0f, 4.0f)));
+    EXPECT_TRUE(Vector::Less3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(10.0f, 20.0f, 30.0f, 0.0f)));
+    EXPECT_FALSE(Vector::Less3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(1.0f, 20.0f, 30.0f, 0.0f)));
+    EXPECT_FALSE(Vector::Less3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(10.0f, 2.0f, 30.0f, 0.0f)));
+    EXPECT_FALSE(Vector::Less3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(10.0f, 20.0f, 3.0f, 0.0f)));
+}
+
+TEST(MathVector, VectorGreater3)
+{
+    EXPECT_TRUE(Vector::Greater3(Vector(10.0f, 20.0f, 30.0f, 4.0f), Vector(1.0f, 2.0f, 3.0f, 4.0f)));
+    EXPECT_TRUE(Vector::Greater3(Vector(10.0f, 20.0f, 30.0f, 4.0f), Vector(1.0f, 2.0f, 3.0f, 40.0f)));
+    EXPECT_FALSE(Vector::Greater3(Vector(1.0f, 20.0f, 30.0f, 4.0f), Vector(1.0f, 2.0f, 3.0f, 40.0f)));
+    EXPECT_FALSE(Vector::Greater3(Vector(10.0f, 2.0f, 30.0f, 4.0f), Vector(1.0f, 2.0f, 3.0f, 40.0f)));
+    EXPECT_FALSE(Vector::Greater3(Vector(10.0f, 20.0f, 3.0f, 4.0f), Vector(1.0f, 2.0f, 3.0f, 40.0f)));
+}
+
+TEST(MathVector, VectorLessEq3)
+{
+    EXPECT_TRUE(Vector::LessEq3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(10.0f, 20.0f, 30.0f, 4.0f)));
+    EXPECT_TRUE(Vector::LessEq3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(10.0f, 20.0f, 30.0f, 40.0f)));
+    EXPECT_TRUE(Vector::LessEq3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(1.0f, 2.0f, 3.0f, 4.0f)));
+    EXPECT_TRUE(Vector::LessEq3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(1.0f, 2.0f, 3.0f, 0.0f)));
+    EXPECT_FALSE(Vector::LessEq3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(0.0f, 20.0f, 30.0f, 40.0f)));
+    EXPECT_FALSE(Vector::LessEq3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(10.0f, 0.0f, 30.0f, 40.0f)));
+    EXPECT_FALSE(Vector::LessEq3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(10.0f, 20.0f, 0.0f, 40.0f)));
+}
+
+TEST(MathVector, VectorGreaterEq3)
+{
+    EXPECT_TRUE(Vector::GreaterEq3(Vector(10.0f, 2.0f, 30.0f, 4.0f), Vector(1.0f, 2.0f, 3.0f, 4.0f)));
+    EXPECT_TRUE(Vector::GreaterEq3(Vector(10.0f, 20.0f, 30.0f, 40.0f), Vector(1.0f, 2.0f, 3.0f, 4.0f)));
+    EXPECT_TRUE(Vector::GreaterEq3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(1.0f, 2.0f, 3.0f, 4.0f)));
+    EXPECT_TRUE(Vector::GreaterEq3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(1.0f, 2.0f, 3.0f, 111.0f)));
+    EXPECT_FALSE(Vector::GreaterEq3(Vector(0.0f, 20.0f, 30.0f, 40.0f), Vector(1.0f, 2.0f, 3.0f, 4.0f)));
+    EXPECT_FALSE(Vector::GreaterEq3(Vector(10.0f, 0.0f, 30.0f, 40.0f), Vector(1.0f, 2.0f, 3.0f, 4.0f)));
+    EXPECT_FALSE(Vector::GreaterEq3(Vector(10.0f, 20.0f, 0.0f, 40.0f), Vector(1.0f, 2.0f, 3.0f, 4.0f)));
+}
+
+
+TEST(MathVector, VectorEqual3)
+{
+    EXPECT_TRUE(Vector::Equal3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(1.0f, 2.0f, 3.0f, 4.0f)));
+    EXPECT_TRUE(Vector::Equal3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(1.0f, 2.0f, 3.0f, 111.0f)));
+    EXPECT_FALSE(Vector::Equal3(Vector(111.0f, 2.0f, 3.0f, 4.0f), Vector(1.0f, 2.0f, 3.0f, 4.0f)));
+    EXPECT_FALSE(Vector::Equal3(Vector(1.0f, 222.0f, 3.0f, 4.0f), Vector(1.0f, 2.0f, 3.0f, 4.0f)));
+    EXPECT_FALSE(Vector::Equal3(Vector(1.0f, 2.0f, 333.0f, 4.0f), Vector(1.0f, 2.0f, 3.0f, 4.0f)));
+}
+
+TEST(MathVector, VectorNotEqual3)
+{
+    EXPECT_TRUE(Vector::NotEqual3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(10.0f, 20.0f, 30.0f, 40.0f)));
+    EXPECT_TRUE(Vector::NotEqual3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(10.0f, 20.0f, 30.0f, 4.0f)));
+    EXPECT_FALSE(Vector::NotEqual3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(1.0f, 2.0f, 333.0f, 4.0f)));
+    EXPECT_FALSE(Vector::NotEqual3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(1.0f, 222.0f, 3.0f, 4.0f)));
+    EXPECT_FALSE(Vector::NotEqual3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(111.0f, 2.0f, 3.0f, 4.0f)));
+    EXPECT_FALSE(Vector::NotEqual3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(1.0f, 2.0f, 3.0f, 4.0f)));
+    EXPECT_FALSE(Vector::NotEqual3(Vector(1.0f, 2.0f, 3.0f, 4.0f), Vector(1.0f, 2.0f, 3.0f, 444.0f)));
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 TEST(MathVector, VectorSwizzle)
 {
     const Vector v(0.0f, 1.0f, 2.0f, 3.0f);
@@ -188,6 +269,29 @@ TEST(MathVector, VectorSwizzle)
     EXPECT_TRUE(Vector(0.0f, 0.0f, 0.0f, 3.0f) == (v.Swizzle<0, 0, 0, 3>()));
 }
 
+TEST(MathVector, Blend)
+{
+    const Vector a(1.0f, 2.0f, 3.0f, 4.0f);
+    const Vector b(5.0f, 6.0f, 7.0f, 8.0f);
+
+    EXPECT_TRUE(Vector(1.0f, 2.0f, 3.0f, 4.0f) == (Vector::Blend<0, 0, 0, 0>(a, b)));
+    EXPECT_TRUE(Vector(1.0f, 2.0f, 3.0f, 8.0f) == (Vector::Blend<0, 0, 0, 1>(a, b)));
+    EXPECT_TRUE(Vector(1.0f, 2.0f, 7.0f, 4.0f) == (Vector::Blend<0, 0, 1, 0>(a, b)));
+    EXPECT_TRUE(Vector(1.0f, 2.0f, 7.0f, 8.0f) == (Vector::Blend<0, 0, 1, 1>(a, b)));
+    EXPECT_TRUE(Vector(1.0f, 6.0f, 3.0f, 4.0f) == (Vector::Blend<0, 1, 0, 0>(a, b)));
+    EXPECT_TRUE(Vector(1.0f, 6.0f, 3.0f, 8.0f) == (Vector::Blend<0, 1, 0, 1>(a, b)));
+    EXPECT_TRUE(Vector(1.0f, 6.0f, 7.0f, 4.0f) == (Vector::Blend<0, 1, 1, 0>(a, b)));
+    EXPECT_TRUE(Vector(1.0f, 6.0f, 7.0f, 8.0f) == (Vector::Blend<0, 1, 1, 1>(a, b)));
+    EXPECT_TRUE(Vector(5.0f, 2.0f, 3.0f, 4.0f) == (Vector::Blend<1, 0, 0, 0>(a, b)));
+    EXPECT_TRUE(Vector(5.0f, 2.0f, 3.0f, 8.0f) == (Vector::Blend<1, 0, 0, 1>(a, b)));
+    EXPECT_TRUE(Vector(5.0f, 2.0f, 7.0f, 4.0f) == (Vector::Blend<1, 0, 1, 0>(a, b)));
+    EXPECT_TRUE(Vector(5.0f, 2.0f, 7.0f, 8.0f) == (Vector::Blend<1, 0, 1, 1>(a, b)));
+    EXPECT_TRUE(Vector(5.0f, 6.0f, 3.0f, 4.0f) == (Vector::Blend<1, 1, 0, 0>(a, b)));
+    EXPECT_TRUE(Vector(5.0f, 6.0f, 3.0f, 8.0f) == (Vector::Blend<1, 1, 0, 1>(a, b)));
+    EXPECT_TRUE(Vector(5.0f, 6.0f, 7.0f, 4.0f) == (Vector::Blend<1, 1, 1, 0>(a, b)));
+    EXPECT_TRUE(Vector(5.0f, 6.0f, 7.0f, 8.0f) == (Vector::Blend<1, 1, 1, 1>(a, b)));
+}
+
 TEST(MathVector, ChangeSign)
 {
     const Vector v(0.5f, 1.0f, 2.0f, 3.0f);
@@ -209,16 +313,3 @@ TEST(MathVector, ChangeSign)
     EXPECT_TRUE(Vector(-0.5f, -1.0f, -2.0f, 3.0f) == (v.ChangeSign<true, true, true, false>()));
     EXPECT_TRUE(Vector(-0.5f, -1.0f, -2.0f, -3.0f) == (v.ChangeSign<true, true, true, true>()));
 }
-
-TEST(MathVector, FMA)
-{
-    const Vector a(0.5f, 1.0f, 2.0f, 3.0f);
-    const Vector b(4.0f, 5.0f, 6.0f, 7.0f);
-    const Vector c(1.5f, 1.5f, 1.5f, 1.5f);
-
-    EXPECT_TRUE(Vector(3.5f, 6.5f, 13.5f, 22.5f) == Vector::MulAndAdd(a, b, c));
-    EXPECT_TRUE(Vector(0.5f, 3.5f, 10.5f, 19.5f) == Vector::MulAndSub(a, b, c));
-    EXPECT_TRUE(Vector(-0.5f, -3.5f, -10.5f, -19.5f) == Vector::NegMulAndAdd(a, b, c));
-    EXPECT_TRUE(Vector(-3.5f, -6.5f, -13.5f, -22.5f) == Vector::NegMulAndSub(a, b, c));
-}
-

@@ -108,6 +108,8 @@ class Frustum;
 class Box;
 class RayBoxSegment;
 class Random;
+class Matrix2;
+class Matrix3;
 class Matrix;
 
 } // namespace Math
