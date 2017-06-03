@@ -7,6 +7,7 @@
 #pragma once
 
 #include "nfCommon/Math/Math.hpp"
+#include "nfCommon/Math/Rect.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -36,9 +37,7 @@ struct GuiQuadVertex
     uint32 color;
 
     GuiQuadVertex()
-        : rect(Rectf())
-        , texCoord(Rectf())
-        , color(0xFFFFFFFF)
+        : color(0xFFFFFFFF)
     {}
 
     GuiQuadVertex(const Rectf& rect, const Rectf& texCoord, uint32 color)

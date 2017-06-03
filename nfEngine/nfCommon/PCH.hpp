@@ -22,6 +22,19 @@
 #endif // defined(WIN32)
 
 
+#ifdef NFE_USE_SSE
+#include <xmmintrin.h>
+#endif // NFE_USE_SSE
+
+#ifdef NFE_USE_SSE4
+#include <smmintrin.h>
+#endif // NFE_USE_SSE4
+
+#if defined(NFE_USE_AVX2) | defined(NFE_USE_AVX) | defined(NFE_USE_FMA)
+#include <immintrin.h>
+#endif // defined(NFE_USE_AVX2) | defined(NFE_USE_AVX) | defined(NFE_USE_FMA)
+
+
 #if defined(__LINUX__) | defined(__linux__)
 #define _LARGEFILE64_SOURCE
 #include <sys/syscall.h>
@@ -48,6 +61,7 @@
 #include <inttypes.h>
 #include <stdarg.h>
 #include <stddef.h>
+#include <float.h>
 
 /// STL
 #include <vector>

@@ -50,9 +50,9 @@ bool Intersect(const Ray& ray, const Triangle& tri, Vector& dist)
 
 NFE_INLINE bool RaySphereIntersectInline(const Ray& ray, const Sphere& sphere, Vector& dist)
 {
-    Vector d = sphere.origin - ray.origin;
+    Vector d = sphere.GetOrigin() - ray.origin;
     float v = Vector::Dot3(ray.dir, d);
-    float det = sphere.r * sphere.r - Vector::Dot3(d, d) + v * v;
+    float det = sphere.GetRadius() * sphere.GetRadius() - Vector::Dot3(d, d) + v * v;
 
     if (det > 0.0f)
     {

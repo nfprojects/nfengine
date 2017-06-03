@@ -7,9 +7,12 @@
 #pragma once
 
 #include "Math.hpp"
+#include "Float4.hpp"
+
 
 namespace NFE {
 namespace Math {
+
 
 /**
  * 4 element vector of floats.
@@ -23,7 +26,6 @@ struct NFE_ALIGN(16) Vector
         float f[4];
         int i[4];
         unsigned int u[4];
-
 #ifdef NFE_USE_SSE
         __m128 v;
 #endif
@@ -31,19 +33,19 @@ struct NFE_ALIGN(16) Vector
 
 #ifdef NFE_USE_SSE
     /// conversion to/from SSE types
-    NFE_INLINE operator __m128() const
+    operator __m128() const
     {
         return v;
     }
-    NFE_INLINE operator __m128i() const
+    operator __m128i() const
     {
         return reinterpret_cast<const __m128i*>(&v)[0];
     }
-    NFE_INLINE operator __m128d() const
+    operator __m128d() const
     {
         return reinterpret_cast<const __m128d*>(&v)[0];
     }
-    NFE_INLINE Vector(const __m128& src)
+    Vector(const __m128& src)
     {
         v = src;
     }
@@ -53,22 +55,37 @@ struct NFE_ALIGN(16) Vector
     NFE_INLINE Vector();
     NFE_INLINE explicit Vector(float x, float y = 0.0f, float z = 0.0f, float w = 0.0f);
     NFE_INLINE explicit Vector(int x, int y = 0, int z = 0, int w = 0);
-    NFE_INLINE Vector(const float* src);
-    NFE_INLINE Vector(const Float2& src);
-    NFE_INLINE Vector(const Float3& src);
-    NFE_INLINE Vector(const Float4& src);
+    NFE_INLINE explicit Vector(const float* src);
+    NFE_INLINE explicit Vector(const Float2& src);
+    NFE_INLINE explicit Vector(const Float3& src);
+    NFE_INLINE explicit Vector(const Float4& src);
     NFE_INLINE void Set(float scalar);
 
     // element access
-    NFE_INLINE float operator[] (int index) const
+    float operator[] (int index) const
     {
         return f[index];
     }
 
     // element access (reference)
-    NFE_INLINE float& operator[] (int index)
+    float& operator[] (int index)
     {
         return f[index];
+    }
+
+    Float2 ToFloat2() const
+    {
+        return Float2(f[0], f[1]);
+    }
+
+    Float3 ToFloat3() const
+    {
+        return Float3(f[0], f[1], f[2]);
+    }
+
+    Float4 ToFloat4() const
+    {
+        return Float4(f[0], f[1], f[2], f[3]);
     }
 
     /// simple arithmetics
@@ -118,6 +135,12 @@ struct NFE_ALIGN(16) Vector
      */
     template<uint32 ix = 0, uint32 iy = 1, uint32 iz = 2, uint32 iw = 3>
     NFE_INLINE Vector Swizzle() const;
+
+    /**
+     * Blend two vectors.
+     */
+    template<uint32 ix, uint32 iy, uint32 iz, uint32 iw>
+    NFE_INLINE static Vector Blend(const Vector& a, const Vector& b);
 
     /**
      * Convert 4 uint8 to a Vector.

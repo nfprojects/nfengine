@@ -62,12 +62,6 @@ bool Intersect(const Box& box, const Frustum& frustum)
 }
 
 template<> NFCOMMON_API
-bool Intersect(const Frustum& frustum, const Box& box)
-{
-    return Intersect(box, frustum);
-}
-
-template<> NFCOMMON_API
 IntersectionResult IntersectEx(const Box& box, const Frustum& frustum)
 {
     int numPlanes = 0;
@@ -186,16 +180,16 @@ bool Intersect(const Triangle& tri, const Frustum& frustum)
 template<> NFCOMMON_API
 bool Intersect(const Vector& point, const Sphere& sphere)
 {
-    Vector segment = point - sphere.origin;
-    return Vector::Dot3(segment, segment) <= sphere.r * sphere.r;
+    Vector segment = point - sphere.GetOrigin();
+    return Vector::Dot3(segment, segment) <= sphere.GetRadius() * sphere.GetRadius();
 }
 
 // Sphere-sphere intersection test
 template<> NFCOMMON_API
 bool Intersect(const Sphere& sphere1, const Sphere& sphere2)
 {
-    Vector segment = sphere1.origin - sphere2.origin;
-    float radiiSum = sphere1.r + sphere2.r;
+    const Vector segment = sphere1.GetOrigin() - sphere2.GetOrigin();
+    const float radiiSum = sphere1.GetRadius() + sphere2.GetRadius();
     return Vector::Dot3(segment, segment) <= radiiSum * radiiSum;
 }
 
@@ -224,11 +218,12 @@ bool Intersect(const Box& box, const Sphere& sphere)
     };
 
     // squared distance
-    float sqrDist = check(sphere.origin[0], box.min[0], box.max[0]) +
-                    check(sphere.origin[1], box.min[1], box.max[1]) +
-                    check(sphere.origin[2], box.min[2], box.max[2]);
+    const Vector sphereOrigin = sphere.GetOrigin();
+    float sqrDist = check(sphereOrigin[0], box.min[0], box.max[0]) +
+                    check(sphereOrigin[1], box.min[1], box.max[1]) +
+                    check(sphereOrigin[2], box.min[2], box.max[2]);
 
-    return sqrDist <= sphere.r * sphere.r;
+    return sqrDist <= sphere.GetRadius() * sphere.GetRadius();
 }
 
 // Frustum-sphere intersection test
@@ -239,8 +234,8 @@ bool Intersect(const Frustum& frustum, const Sphere& sphere)
     for (int i = 0; i < 6; i++)
     {
         Vector plane = frustum.planes[i];
-        plane.f[3] += sphere.r;
-        if (!Vector::PlanePointSide(plane, sphere.origin))
+        plane.f[3] += sphere.GetRadius();
+        if (!Vector::PlanePointSide(plane, sphere.GetOrigin()))
             return false;
     }
 
@@ -253,7 +248,7 @@ bool Intersect(const Frustum& frustum, const Sphere& sphere)
     {
         Vector tmpNearest;
         float tmpDist;
-        tmpDist = ClosestPointOnSegment(sphere.origin, frustum.verticies[i], frustum.verticies[j],
+        tmpDist = ClosestPointOnSegment(sphere.GetOrigin(), frustum.verticies[i], frustum.verticies[j],
                                         tmpNearest);
         if (tmpDist < dist)
         {
@@ -281,12 +276,12 @@ bool Intersect(const Frustum& frustum, const Sphere& sphere)
     check(3, 7);
 
     // sphere colliding with edge
-    if (dist < sphere.r)
+    if (dist < sphere.GetRadius())
         return true;
 
     // test sphere against frustum vertices
-    Vector plane = Vector::PlaneFromNormalAndPoint((nearest - sphere.origin).Normalized3(), sphere.origin);
-    plane.f[3] -= sphere.r;
+    Vector plane = Vector::PlaneFromNormalAndPoint((nearest - sphere.GetOrigin()).Normalized3(), sphere.GetOrigin());
+    plane.f[3] -= sphere.GetRadius();
 
     for (int i = 0; i < 8; ++i)
     {

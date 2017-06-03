@@ -221,7 +221,7 @@ public:
 
         UpdateCamera();
         Perspective perspective;
-        perspective.FoV = NFE_MATH_PI * 60.0f / 180.0f;
+        perspective.FoV = DegToRad(60.0f);
         perspective.nearDist = 0.01f;
         perspective.farDist = 1000.0f;
         perspective.aspectRatio = GetAspectRatio();
@@ -263,7 +263,7 @@ public:
 
         UpdateCamera();
         Perspective perspective;
-        perspective.FoV = NFE_MATH_PI * 60.0f / 180.0f;
+        perspective.FoV = DegToRad(60.0f);
         perspective.nearDist = 0.01f;
         perspective.farDist = 1000.0f;
         perspective.aspectRatio = static_cast<float>(SECONDARY_VIEW_WIDTH) /
@@ -363,7 +363,7 @@ public:
             SpotLightDesc lightDesc;
             lightDesc.nearDist = 0.1f;
             lightDesc.farDist = 500.0f;
-            lightDesc.cutoff = NFE_MATH_PI / 4.0f;
+            lightDesc.cutoff = Constants::pi<float> / 4.0f;
             lightDesc.maxShadowDistance = 60.0f;
             light->SetSpotLight(&lightDesc);
             light->SetColor(Float3(30.0f, 15.0f, 5.0f));
@@ -523,10 +523,10 @@ public:
 
             cameraYaw += fDeltaX;
             cameraPitch += fDeltaY;
-            cameraYaw = fmodf(cameraYaw, 2.0f * NFE_MATH_PI);
+            cameraYaw = fmodf(cameraYaw, 2.0f * Constants::pi<float>);
 
-            if (cameraPitch > NFE_MATH_PI / 2.0f) cameraPitch = NFE_MATH_PI / 2.0f;
-            if (cameraPitch < -NFE_MATH_PI / 2.0f) cameraPitch = -NFE_MATH_PI / 2.0f;
+            if (cameraPitch > Constants::pi<float> / 2.0f) cameraPitch = Constants::pi<float> / 2.0f;
+            if (cameraPitch < -Constants::pi<float> / 2.0f) cameraPitch = -Constants::pi<float> / 2.0f;
         }
     }
 
