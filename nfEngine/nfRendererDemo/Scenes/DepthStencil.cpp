@@ -296,8 +296,8 @@ void DepthStencilScene::Draw(float dt)
     Matrix viewMatrix = Matrix::MakeLookTo(Vector(6.0f, 1.2f, 0.0f), Vector(-2.0f, -1.0f, 0.0f),
                                      Vector(0.0f, 1.0f, 0.0f));
     Matrix projMatrix = Matrix::MakePerspective(static_cast<float>(WINDOW_WIDTH) /
-                                          static_cast<float>(WINDOW_HEIGHT),
-                                          70.0f * NFE_MATH_PI / 180.0f, 100.0f, 0.1f);
+                                                static_cast<float>(WINDOW_HEIGHT),
+                                                DegToRad(70.0f), 100.0f, 0.1f);
 
     Matrix reflectionMatrix = Matrix::MakeScaling(Vector(1.0f, -1.0f, 1.0f)) *
                               Matrix::MakeTranslation3(Vector(0.0f, -2.0f, 0.0f));

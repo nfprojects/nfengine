@@ -34,18 +34,6 @@
     <ClCompile Include="TestCases\LogScopeTest.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>
-    <ClCompile Include="TestCases\MathGeometryTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\MathMatrixTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\MathTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\MathVectorTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
     <ClCompile Include="TestCases\MD5Test.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>
@@ -118,13 +106,7 @@
     <ClCompile Include="TestCases\StringTest.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>
-    <ClCompile Include="TestCases\MathQuaternionTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
     <ClCompile Include="TestCases\BitUtilsTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\MathTransformTest.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>
     <ClCompile Include="TestCases\Reflection\ReflectionFundamentalTypesTest.cpp">
@@ -163,6 +145,45 @@
     <ClCompile Include="TestCases\WeakPtrTest.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\Math\MathTransformTest.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\MathVectorTest.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\MathGeometryTest.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\MathMatrixTest.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\MathQuaternionTest.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\MathBoxTest.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\MathRandomTest.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\MathConversionsTest.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\MathTest.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\MathMatrix2Test.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\MathFloat4Test.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\MathFloat3Test.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\MathFloat2Test.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
@@ -178,6 +199,9 @@
     </Filter>
     <Filter Include="TestCases\Reflection">
       <UniqueIdentifier>{9a3d8919-e3a4-4cde-a54e-ede1ec8a38c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestCases\Math">
+      <UniqueIdentifier>{76bb7d67-f013-4acd-bc7b-a04d926bad3b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
