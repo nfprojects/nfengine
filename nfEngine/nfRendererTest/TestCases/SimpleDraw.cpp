@@ -4,6 +4,7 @@
 
 #include "nfCommon/Math/Math.hpp"
 #include "nfCommon/Math/Conversions.hpp"
+#include "nfCommon/Math/Float4.hpp"
 
 
 using namespace Math;

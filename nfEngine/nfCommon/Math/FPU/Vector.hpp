@@ -151,6 +151,20 @@ Vector Vector::Swizzle() const
     return Vector(f[ix], f[iy], f[iz], f[iw]);
 }
 
+template<uint32 ix, uint32 iy, uint32 iz, uint32 iw>
+Vector Vector::Blend(const Vector& a, const Vector& b)
+{
+    static_assert(ix < 2, "Invalid index for X component");
+    static_assert(iy < 2, "Invalid index for Y component");
+    static_assert(iz < 2, "Invalid index for Z component");
+    static_assert(iw < 2, "Invalid index for W component");
+
+    return Vector(ix == 0 ? a[0] : b[0],
+                  iy == 0 ? a[1] : b[1],
+                  iz == 0 ? a[2] : b[2],
+                  iw == 0 ? a[3] : b[3]);
+}
+
 Vector Vector::SplatX() const
 {
     return Vector(f[0], f[0], f[0], f[0]);
@@ -650,13 +664,13 @@ Vector& Vector::Normalize3()
 
 Vector Vector::Normalized4() const
 {
-    float lenInv = 1.0f / Length3();
+    float lenInv = 1.0f / Length4();
     return *this * lenInv;
 }
 
 Vector& Vector::Normalize4()
 {
-    float lenInv = 1.0f / Length3();
+    float lenInv = 1.0f / Length4();
     *this *= lenInv;
     return *this;
 }

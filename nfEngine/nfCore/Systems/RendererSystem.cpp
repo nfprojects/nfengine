@@ -314,10 +314,15 @@ void RendererSystem::RenderOmniShadowMap(const Common::TaskContext& context,
     Matrix matrix = Matrix(xVectors[face], yVectors[face], zVectors[face],
                            transform->GetPosition());
 
-    Matrix viewMatrix, projMatrix;
-    Frustum frustum;
-    SetupPerspective(matrix, 0.01f, light->mOmniLight.radius, NFE_MATH_PI / 2.0f, 1.0f,
-                     viewMatrix, projMatrix, frustum);
+    // calculate frustum, view and projection matrices
+    const float nearDistance = 0.01f; // TODO this should be adjustable
+    const float farDistance = light->mOmniLight.radius;
+    const float cutoff = Constants::pi<float> / 2.0f;
+    const Frustum frustum = Frustum::ConstructForPerspective(matrix, nearDistance, farDistance, cutoff, 1.0f);
+    const Matrix viewMatrix = Matrix::MakeLookTo(matrix.GetRow(3), matrix.GetRow(2), matrix.GetRow(1));
+    const Matrix projMatrix = Matrix::MakePerspective(1.0f, cutoff, farDistance, nearDistance);
+    // TODO write separate versions of the functions above that have cutoff value hardcoded to 90 degrees
+    // (to avoid costly trigonometric operations)
 
     ShadowCameraRenderDesc cameraDesc;
     cameraDesc.viewProjMatrix = viewMatrix * projMatrix;
@@ -644,11 +649,14 @@ void RendererSystem::UpdateLights()
         LightComponent* light = std::get<1>(mSpotLights[i]);
         SpotLightData& data = mSpotLightsData[i];
 
-        SetupPerspective(transform->GetMatrix(),
-                         light->mSpotLight.nearDist,
-                         light->mSpotLight.farDist,
-                         light->mSpotLight.cutoff, 1.0f,
-                         data.viewMatrix, data.projMatrix, data.frustum);
+        const float nearDistance = light->mSpotLight.nearDist;
+        const float farDistance = light->mSpotLight.farDist;
+        const float cutoff = light->mSpotLight.cutoff;
+        const Matrix& matrix = transform->GetMatrix();
+
+        data.frustum = Frustum::ConstructForPerspective(matrix, nearDistance, farDistance, cutoff, 1.0f);
+        data.viewMatrix = Matrix::MakeLookTo(matrix.GetRow(3), matrix.GetRow(2), matrix.GetRow(1));
+        data.projMatrix = Matrix::MakePerspective(1.0f, cutoff, farDistance, nearDistance);
     }
 
     // mark all shadow maps as not-drawn

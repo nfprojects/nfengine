@@ -7,9 +7,12 @@
 #pragma once
 
 #include "Math.hpp"
+#include "Float4.hpp"
+
 
 namespace NFE {
 namespace Math {
+
 
 /**
  * 4 element vector of floats.
@@ -53,10 +56,10 @@ struct NFE_ALIGN(16) Vector
     NFE_INLINE Vector();
     NFE_INLINE explicit Vector(float x, float y = 0.0f, float z = 0.0f, float w = 0.0f);
     NFE_INLINE explicit Vector(int x, int y = 0, int z = 0, int w = 0);
-    NFE_INLINE Vector(const float* src);
-    NFE_INLINE Vector(const Float2& src);
-    NFE_INLINE Vector(const Float3& src);
-    NFE_INLINE Vector(const Float4& src);
+    NFE_INLINE explicit Vector(const float* src);
+    NFE_INLINE explicit Vector(const Float2& src);
+    NFE_INLINE explicit Vector(const Float3& src);
+    NFE_INLINE explicit Vector(const Float4& src);
     NFE_INLINE void Set(float scalar);
 
     // element access
@@ -118,6 +121,12 @@ struct NFE_ALIGN(16) Vector
      */
     template<uint32 ix = 0, uint32 iy = 1, uint32 iz = 2, uint32 iw = 3>
     NFE_INLINE Vector Swizzle() const;
+
+    /**
+     * Blend two vectors.
+     */
+    template<uint32 ix, uint32 iy, uint32 iz, uint32 iw>
+    NFE_INLINE static Vector Blend(const Vector& a, const Vector& b);
 
     /**
      * Convert 4 uint8 to a Vector.
