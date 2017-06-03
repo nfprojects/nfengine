@@ -11,7 +11,7 @@ namespace Math {
 
 Quaternion Quaternion::Identity()
 {
-    return Vector(0.0f, 0.0f, 0.0f, 1.0f);
+    return Quaternion(Vector(0.0f, 0.0f, 0.0f, 1.0f));
 }
 
 Quaternion Quaternion::Conjugate() const
@@ -23,7 +23,7 @@ Quaternion Quaternion::Conjugate() const
 
 Quaternion Quaternion::Normalized() const
 {
-    return q.Normalized4();
+    return Quaternion(q.Normalized4());
 }
 
 Quaternion& Quaternion::Normalize()
