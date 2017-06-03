@@ -102,12 +102,12 @@ bool Mesh::OnLoad()
         mSubMeshes[i].material->AddRef();
 
         Vector vertex;
-        Vector vMin = vertices[indices[startIndex]].position;
+        Vector vMin = Vector(vertices[indices[startIndex]].position);
         Vector vMax = vMin;
 
         for (int j = startIndex + 1; j < lastIndex; j++)
         {
-            vertex = vertices[indices[j]].position;
+            vertex = Vector(vertices[indices[j]].position);
             vMin = Vector::Min(vMin, vertex);
             vMax = Vector::Max(vMax, vertex);
         }

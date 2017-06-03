@@ -7,6 +7,7 @@
 #pragma once
 
 #include "nfCommon/Math/Math.hpp"
+#include "nfCommon/Math/Float3.hpp"
 
 #include <vector>
 

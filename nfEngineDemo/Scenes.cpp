@@ -236,7 +236,7 @@ void CreateSceneSegments()
 
     NFE::Common::BufferOutputStream segmentDesc;
 
-    Matrix mat = Matrix::MakeRotationNormal(Vector(0, 1, 0), NFE_MATH_PI / 4.0f);
+    Matrix mat = Matrix::MakeRotationNormal(Vector(0, 1, 0), Constants::pi<float> / 4.0f);
 
     // create segments description buffer
     {
