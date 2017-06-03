@@ -8,14 +8,14 @@ namespace {
 // some random values
 const Vector TEST_TRANSLATION(1.0f, 2.0f, 3.0f);
 const Vector TEST_TRANSLATION2(-4.1f, 5.74f, -1.52f);
-const Quaternion TEST_ROTATION = Quaternion::FromAxisAndAngle(Vector(1.0f, -1.53f, 2.34f).Normalized3(), NFE_MATH_PI * 1.273f);
-const Quaternion TEST_ROTATION2 = Quaternion::FromAxisAndAngle(Vector(-2.0f, 1.46f, 1.2f).Normalized3(), -NFE_MATH_PI * 0.235f);
+const Quaternion TEST_ROTATION = Quaternion::FromAxisAndAngle(Vector(1.0f, -1.53f, 2.34f).Normalized3(), Constants::pi<float> * 1.273f);
+const Quaternion TEST_ROTATION2 = Quaternion::FromAxisAndAngle(Vector(-2.0f, 1.46f, 1.2f).Normalized3(), -Constants::pi<float> * 0.235f);
 
 } // namespace
 
 TEST(MathTransform, TransformPoint)
 {
-    const Transform t(TEST_TRANSLATION, Quaternion::RotationY(NFE_MATH_PI / 2.0f));
+    const Transform t(TEST_TRANSLATION, Quaternion::RotationY(Constants::pi<float> / 2.0f));
 
     EXPECT_TRUE(Vector::AlmostEqual(Vector(1.0f, 2.0f, 3.0f), t.TransformPoint(Vector())));
     EXPECT_TRUE(Vector::AlmostEqual(Vector(1.0f, 2.0f, 2.0f), t.TransformPoint(Vector(1.0f, 0.0f, 0.0f))));
@@ -28,7 +28,7 @@ TEST(MathTransform, TransformPoint)
 
 TEST(MathTransform, TransformVector)
 {
-    const Transform t(TEST_TRANSLATION, Quaternion::RotationY(NFE_MATH_PI / 2.0f));
+    const Transform t(TEST_TRANSLATION, Quaternion::RotationY(Constants::pi<float> / 2.0f));
 
     EXPECT_TRUE(Vector::AlmostEqual(Vector(0.0f, 0.0f, 0.0f), t.TransformVector(Vector())));
     EXPECT_TRUE(Vector::AlmostEqual(Vector(0.0f, 0.0f, -1.0f), t.TransformVector(Vector(1.0f, 0.0f, 0.0f))));

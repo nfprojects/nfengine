@@ -34,7 +34,7 @@ class PackedArray
 {
     static_assert(std::numeric_limits<IDType>::is_integer, "IDType must be integer type");
     static_assert(!std::numeric_limits<IDType>::is_signed, "IDType must be unsigned type");
-    static_assert(Math::PowerOfTwo(Alignment), "'Alignment' template parameter must be a power of two.");
+    static_assert(Math::IsPowerOfTwo(Alignment), "'Alignment' template parameter must be a power of two.");
 
     // doubly link list node
     struct ListNode

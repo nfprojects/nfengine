@@ -12,6 +12,8 @@
 #include "nfCommon/FileSystem/File.hpp"
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/Math/Math.hpp"
+#include "nfCommon/Math/Float4.hpp"
+
 
 namespace NFE {
 

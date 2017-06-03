@@ -151,6 +151,20 @@ Vector Vector::Swizzle() const
     return Vector(f[ix], f[iy], f[iz], f[iw]);
 }
 
+template<uint32 ix, uint32 iy, uint32 iz, uint32 iw>
+Vector Vector::Blend(const Vector& a, const Vector& b)
+{
+    static_assert(ix < 2, "Invalid index for X component");
+    static_assert(iy < 2, "Invalid index for Y component");
+    static_assert(iz < 2, "Invalid index for Z component");
+    static_assert(iw < 2, "Invalid index for W component");
+
+    return Vector(ix == 0 ? a[0] : b[0],
+                  iy == 0 ? a[1] : b[1],
+                  iz == 0 ? a[2] : b[2],
+                  iw == 0 ? a[3] : b[3]);
+}
+
 Vector Vector::SplatX() const
 {
     return Vector(f[0], f[0], f[0], f[0]);
@@ -583,6 +597,16 @@ bool Vector::operator!= (const Vector& b) const
 
 // Geometry functions =============================================================================
 
+float Vector::Dot2(const Vector& v1, const Vector& v2)
+{
+    return v1.f[0] * v2.f[0] + v1.f[1] * v2.f[1];
+}
+
+Vector Vector::Dot2V(const Vector& v1, const Vector& v2)
+{
+    return Vector::Splat(Vector::Dot2(v1, v2));
+}
+
 float Vector::Dot3(const Vector& v1, const Vector& v2)
 {
     return v1.f[0] * v2.f[0] + v1.f[1] * v2.f[1] + v1.f[2] * v2.f[2];
@@ -612,6 +636,16 @@ Vector Vector::Cross3(const Vector& v1, const Vector& v2)
     return vec;
 }
 
+float Vector::Length2() const
+{
+    return sqrtf(f[0] * f[0] + f[1] * f[1]);
+}
+
+Vector Vector::Length2V() const
+{
+    return Vector::Splat(Length2());
+}
+
 float Vector::Length3() const
 {
     return sqrtf(f[0] * f[0] + f[1] * f[1] + f[2] * f[2]);
@@ -632,6 +666,22 @@ Vector Vector::Length4V() const
     return Splat(Length4());
 }
 
+Vector Vector::Normalized2() const
+{
+    float lenInv = 1.0f / Length2();
+    return Vector(f[0] * lenInv, f[1] * lenInv, 0.0f, 0.0f);
+}
+
+Vector& Vector::Normalize2()
+{
+    float lenInv = 1.0f / Length2();
+    f[0] *= lenInv;
+    f[1] *= lenInv;
+    f[2] = 0.0f;
+    f[3] = 0.0f;
+    return *this;
+}
+
 Vector Vector::Normalized3() const
 {
     float lenInv = 1.0f / Length3();
@@ -641,22 +691,22 @@ Vector Vector::Normalized3() const
 Vector& Vector::Normalize3()
 {
     float lenInv = 1.0f / Length3();
-    f[0] /= lenInv;
-    f[1] /= lenInv;
-    f[2] /= lenInv;
+    f[0] *= lenInv;
+    f[1] *= lenInv;
+    f[2] *= lenInv;
     f[3] = 0.0f;
     return *this;
 }
 
 Vector Vector::Normalized4() const
 {
-    float lenInv = 1.0f / Length3();
+    float lenInv = 1.0f / Length4();
     return *this * lenInv;
 }
 
 Vector& Vector::Normalize4()
 {
-    float lenInv = 1.0f / Length3();
+    float lenInv = 1.0f / Length4();
     *this *= lenInv;
     return *this;
 }
