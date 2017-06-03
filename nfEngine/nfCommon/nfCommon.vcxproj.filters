@@ -408,6 +408,9 @@
     <ClInclude Include="System\Win\ConditionVariableImpl.hpp">
       <Filter>System</Filter>
     </ClInclude>
+    <ClInclude Include="Math\BoxImpl.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />

@@ -12,7 +12,10 @@
 namespace NFE {
 namespace Math {
 
-class NFE_ALIGN(16) Triangle
+/**
+ * 3D triangle.
+ */
+class NFCOMMON_API NFE_ALIGN(16) Triangle
 {
 public:
     Vector v0, v1, v2; //< Triangle vertices

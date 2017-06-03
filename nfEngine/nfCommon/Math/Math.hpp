@@ -118,7 +118,7 @@ union Bits64
  * Minimum.
  */
 template<typename T>
-NFE_INLINE T Min(const T a, const T b)
+NFE_INLINE constexpr T Min(const T a, const T b)
 {
     return (a < b) ? a : b;
 }
@@ -127,7 +127,7 @@ NFE_INLINE T Min(const T a, const T b)
  * Maximum.
  */
 template<typename T>
-NFE_INLINE T Max(const T a, const T b)
+NFE_INLINE constexpr T Max(const T a, const T b)
 {
     return (a < b) ? b : a;
 }
@@ -174,7 +174,7 @@ NFE_INLINE T Clamp(const T x, const T min, const T max)
  * Linear interpolation.
  */
 template<typename T>
-NFE_INLINE T Lerp(const T a, const T b, const T w)
+NFE_INLINE constexpr T Lerp(const T a, const T b, const T w)
 {
     return a + w * (b - a);
 }
