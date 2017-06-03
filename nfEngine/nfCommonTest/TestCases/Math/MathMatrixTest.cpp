@@ -54,7 +54,7 @@ TEST(MathMatrix, Arithmetics)
 
     EXPECT_TRUE(matAB == matA * matB);
     EXPECT_TRUE(Matrix::Equal(matI, matA * matA.Inverted(), NFE_MATH_EPSILON));
-    EXPECT_TRUE(Vector::Abs(matAvecA - vecA * matA) < Vector::Splat(NFE_MATH_EPSILON));
+    EXPECT_TRUE(Vector::AlmostEqual(matAvecA, vecA * matA));
     EXPECT_TRUE(Vector::Abs(matAvecAaffine - matA.LinearCombination3(vecA)) <
                 Vector::Splat(NFE_MATH_EPSILON));
 }

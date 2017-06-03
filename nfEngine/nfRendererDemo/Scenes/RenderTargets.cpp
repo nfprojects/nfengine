@@ -399,14 +399,14 @@ bool RenderTargetsScene::OnSwitchSubscene()
 void RenderTargetsScene::Draw(float dt)
 {
     mAngle += 1.0f * dt;
-    if (mAngle > NFE_MATH_2PI)
-        mAngle -= NFE_MATH_2PI;
+    if (mAngle > 2.0f * Constants::pi<float>)
+        mAngle -= 2.0f * Constants::pi<float>;
 
     Matrix modelMatrix = Matrix::MakeRotationNormal(Vector(0.0f, 1.0f, 0.0f), mAngle);
     Matrix viewMatrix = Matrix::MakeLookTo(Vector(3.0f, 0.0f, 0.0f), Vector(-1.0f, 0.0f, 0.0f),
                                      Vector(0.0f, 1.0f, 0.0f));
     Matrix projMatrix = Matrix::MakePerspective((float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
-                                          70.0f * NFE_MATH_PI / 180.0f, 5.0f, 1.0f);
+                                                DegToRad(70.0f), 5.0f, 1.0f);
 
     mCommandBuffer->Begin();
 

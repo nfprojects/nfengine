@@ -43,7 +43,7 @@ void* DefaultAllocator::Malloc(size_t size, size_t alignment, const char* source
         return nullptr;
     }
 
-    if (!Math::PowerOfTwo(alignment))
+    if (!Math::IsPowerOfTwo(alignment))
     {
         LOG_ERROR("Invalid memory alignment: %zu. Must be power of two.", alignment);
         return nullptr;

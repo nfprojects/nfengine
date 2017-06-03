@@ -7,9 +7,12 @@
 #pragma once
 
 #include "Math.hpp"
+#include "Float4.hpp"
+
 
 namespace NFE {
 namespace Math {
+
 
 /**
  * 4 element vector of floats.
@@ -53,10 +56,10 @@ struct NFE_ALIGN(16) Vector
     NFE_INLINE Vector();
     NFE_INLINE explicit Vector(float x, float y = 0.0f, float z = 0.0f, float w = 0.0f);
     NFE_INLINE explicit Vector(int x, int y = 0, int z = 0, int w = 0);
-    NFE_INLINE Vector(const float* src);
-    NFE_INLINE Vector(const Float2& src);
-    NFE_INLINE Vector(const Float3& src);
-    NFE_INLINE Vector(const Float4& src);
+    NFE_INLINE explicit Vector(const float* src);
+    NFE_INLINE explicit Vector(const Float2& src);
+    NFE_INLINE explicit Vector(const Float3& src);
+    NFE_INLINE explicit Vector(const Float4& src);
     NFE_INLINE void Set(float scalar);
 
     // element access
@@ -120,6 +123,12 @@ struct NFE_ALIGN(16) Vector
     NFE_INLINE Vector Swizzle() const;
 
     /**
+     * Blend two vectors.
+     */
+    template<uint32 ix, uint32 iy, uint32 iz, uint32 iw>
+    NFE_INLINE static Vector Blend(const Vector& a, const Vector& b);
+
+    /**
      * Convert 4 uint8 to a Vector.
      */
     NFE_INLINE static Vector Load4(const uint8* src);
@@ -172,6 +181,18 @@ struct NFE_ALIGN(16) Vector
     NFE_INLINE static Vector SelectBySign(const Vector& a, const Vector& b, const Vector& sel);
 
     /**
+     * Calculate 2D dot product.
+     * @return Dot product (scalar value).
+     */
+    NFE_INLINE static float Dot2(const Vector& v1, const Vector& v2);
+
+    /**
+     * Calculate 2D dot product.
+     * @return Vector of dot products.
+     */
+    NFE_INLINE static Vector Dot2V(const Vector& v1, const Vector& v2);
+
+    /**
      * Calculate 3D dot product.
      * @return Dot product (scalar value).
      */
@@ -202,6 +223,18 @@ struct NFE_ALIGN(16) Vector
     NFE_INLINE static Vector Cross3(const Vector& v1, const Vector& v2);
 
     /**
+     * Calculate length of a 2D vector.
+     * @return Length of vector @p.
+     */
+    NFE_INLINE float Length2() const;
+
+    /**
+     * Calculate length of a 2D vector.
+     * @return Length of vector @p.
+     */
+    NFE_INLINE Vector Length2V() const;
+
+    /**
      * Calculate length of a 3D vector.
      * @details 4th element is ignored.
      * @return Length of vector @p.
@@ -228,6 +261,12 @@ struct NFE_ALIGN(16) Vector
     NFE_INLINE Vector Length4V() const;
 
     /**
+     * Normalize as 2D vector.
+     * @details 3rd and 4th elements are ignored.
+     */
+    NFE_INLINE Vector& Normalize2();
+
+    /**
      * Normalize as 3D vector.
      * @details 4th element is ignored.
      */
@@ -237,6 +276,12 @@ struct NFE_ALIGN(16) Vector
      * Normalize as 4D vector.
      */
     NFE_INLINE Vector& Normalize4();
+
+    /**
+     * Return normalized 2D vector.
+     * @details 3rd and 4th elements are ignored.
+     */
+    NFE_INLINE Vector Normalized2() const;
 
     /**
      * Return normalized 3D vector.
