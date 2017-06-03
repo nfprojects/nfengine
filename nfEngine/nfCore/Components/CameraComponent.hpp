@@ -35,7 +35,7 @@ struct Perspective
         farDist = 1000.0f;
         nearDist = 0.05f;
         aspectRatio = 1.0f;
-        FoV = 60.0f / 180.0f * NFE_MATH_PI; // [rad]
+        FoV = 60.0f / 180.0f * Constants::pi<float>; // [rad]
     }
 };
 

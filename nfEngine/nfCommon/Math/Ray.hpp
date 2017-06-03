@@ -20,7 +20,7 @@ public:
     Vector origin;
 
     Ray() {}
-    Ray(const Vector& direction, const Vector& origin)
+    explicit Ray(const Vector& direction, const Vector& origin)
         : origin(origin)
     {
         dir = direction.Normalized3();

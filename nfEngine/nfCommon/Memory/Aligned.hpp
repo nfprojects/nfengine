@@ -9,6 +9,7 @@
 #include "../nfCommon.hpp"
 #include "DefaultAllocator.hpp"
 #include "../System/Assertion.hpp"
+#include "../Math/Math.hpp"
 
 #include <stddef.h>
 
@@ -31,8 +32,7 @@ template <size_t Alignment = 16>
 class Aligned
 {
 public:
-    static_assert((Alignment > 1) & !(Alignment & (Alignment - 1)),
-                  "'Alignment' template parameter must be a power of two.");
+    static_assert(Math::IsPowerOfTwo(Alignment), "'Alignment' template parameter must be a power of two.");
 
     virtual ~Aligned() { }
 
