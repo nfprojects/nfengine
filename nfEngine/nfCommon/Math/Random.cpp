@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 #include "Math.hpp"
 #include "Random.hpp"
+#include "Float4.hpp"
 
 #include <time.h>
 
@@ -126,7 +127,7 @@ float Random::GetFloatNormal()
 {
     // Box-Muller method
     Float2 uv = GetFloat2();
-    return sqrtf(- 2.0f * logf(uv.x)) * cosf(6.2831853f * uv.y);
+    return sqrtf(- 2.0f * logf(uv.x)) * cosf(2.0f * Constants::pi<float> * uv.y);
 }
 
 Float2 Random::GetFloatNormal2()
@@ -137,8 +138,8 @@ Float2 Random::GetFloatNormal2()
     Float2 uv = GetFloat2();
     float temp = sqrtf(- 2.0f * logf(uv.x));
 
-    result.x = temp * cosf(6.2831853f * uv.y);
-    result.y = temp * sinf(6.2831853f * uv.y);
+    result.x = temp * cosf(2.0f * Constants::pi<float> * uv.y);
+    result.y = temp * sinf(2.0f * Constants::pi<float> * uv.y);
     return result;
 }
 
@@ -149,12 +150,12 @@ Float3 Random::GetFloatNormal3()
     // Box-Muller method
     Float2 uv = GetFloat2();
     float temp = sqrtf(- 2.0f * logf(uv.x));
-    result.x = temp * cosf(6.2831853f * uv.y);
-    result.y = temp * sinf(6.2831853f * uv.y);
+    result.x = temp * cosf(2.0f * Constants::pi<float> * uv.y);
+    result.y = temp * sinf(2.0f * Constants::pi<float> * uv.y);
 
     uv = GetFloat2();
     temp = sqrtf(- 2.0f * logf(uv.x));
-    result.z = temp * cosf(6.2831853f * uv.y);
+    result.z = temp * cosf(2.0f * Constants::pi<float> * uv.y);
 
     return result;
 }
@@ -166,13 +167,13 @@ Float4 Random::GetFloatNormal4()
     // Box-Muller method
     Float2 uv = GetFloat2();
     float temp = sqrtf(- 2.0f * logf(uv.x));
-    result.x = temp * cosf(6.2831853f * uv.y);
-    result.y = temp * sinf(6.2831853f * uv.y);
+    result.x = temp * cosf(2.0f * Constants::pi<float> * uv.y);
+    result.y = temp * sinf(2.0f * Constants::pi<float> * uv.y);
 
     uv = GetFloat2();
     temp = sqrtf(- 2.0f * logf(uv.x));
-    result.z = temp * cosf(6.2831853f * uv.y);
-    result.w = temp * sinf(6.2831853f * uv.y);
+    result.z = temp * cosf(2.0f * Constants::pi<float> * uv.y);
+    result.w = temp * sinf(2.0f * Constants::pi<float> * uv.y);
 
     return result;
 }
@@ -182,7 +183,7 @@ Float2 Random::GetPointInsideCircle()
     const Float3 v = GetFloat3();
 
     // angle (uniform distribution)
-    const float t = 2.0f * NFE_MATH_PI * v.x;
+    const float t = 2.0f * Constants::pi<float> * v.x;
 
     // radius (corrected distribution)
     const float u = v.y + v.z;
@@ -198,7 +199,7 @@ Float3 Random::GetPointOnSphere()
     // latitude (corrected distribution)
     const float z = 2.0f * uv.x - 1;
     const float r = sqrtf(1.0f - z * z);
-    const float theta = 2.0f * NFE_MATH_PI * uv.y;
+    const float theta = 2.0f * Constants::pi<float> * uv.y;
 
     // longitude (uniform)
     const float x = r * cosf(theta);

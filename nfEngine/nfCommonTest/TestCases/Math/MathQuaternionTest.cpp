@@ -9,7 +9,7 @@ namespace {
 
 // test rotation (axis = [1.23, -2.45, 4.43], angle = 74 degrees)
 const Vector testAxis = Vector(1.23f, -2.45f, 4.43f);
-const float testAngle = NFE_MATH_PI * 74.0f / 180.f;
+const float testAngle = DegToRad(74.0f);
 
 const Vector testVector0 = Vector(2.4f, -0.12f, 47.0f);
 
@@ -24,8 +24,8 @@ const Vector transformed0 = Vector(-13.545702f, -22.565163f, 39.014123f);   // t
 
 TEST(MathQuaternion, Equal)
 {
-    const Quaternion q00 = Quaternion::FromAxisAndAngle(Vector(1.0f, 0.0f, 0.0f), NFE_MATH_PI / 2.0f);
-    const Quaternion q01 = Quaternion::FromAxisAndAngle(Vector(-1.0f, 0.0f, 0.0f), -NFE_MATH_PI / 2.0f);
+    const Quaternion q00 = Quaternion::FromAxisAndAngle(Vector(1.0f, 0.0f, 0.0f), Constants::pi<float> / 2.0f);
+    const Quaternion q01 = Quaternion::FromAxisAndAngle(Vector(-1.0f, 0.0f, 0.0f), -Constants::pi<float> / 2.0f);
 
     const Quaternion q10 = Quaternion::FromAxisAndAngle(testAxis.Normalized3(), testAngle);
     const Quaternion q11 = Quaternion::FromAxisAndAngle(-testAxis.Normalized3(), -testAngle);
@@ -43,7 +43,7 @@ TEST(MathQuaternion, Equal)
 
 TEST(MathQuaternion, RotationAxisX)
 {
-    const Quaternion q = Quaternion::RotationX(NFE_MATH_PI / 2.0f);
+    const Quaternion q = Quaternion::RotationX(Constants::pi<float> / 2.0f);
 
     const Vector tx = q.Transform(Vector(1.0f, 0.0f, 0.0f));
     const Vector ty = q.Transform(Vector(0.0f, 1.0f, 0.0f));
@@ -58,7 +58,7 @@ TEST(MathQuaternion, RotationAxisX)
 
 TEST(MathQuaternion, RotationAxisY)
 {
-    const Quaternion q = Quaternion::RotationY(NFE_MATH_PI / 2.0f);
+    const Quaternion q = Quaternion::RotationY(Constants::pi<float> / 2.0f);
 
     const Vector tx = q.Transform(Vector(1.0f, 0.0f, 0.0f));
     const Vector ty = q.Transform(Vector(0.0f, 1.0f, 0.0f));
@@ -73,7 +73,7 @@ TEST(MathQuaternion, RotationAxisY)
 
 TEST(MathQuaternion, RotationAxisZ)
 {
-    const Quaternion q = Quaternion::RotationZ(NFE_MATH_PI / 2.0f);
+    const Quaternion q = Quaternion::RotationZ(Constants::pi<float> / 2.0f);
 
     const Vector tx = q.Transform(Vector(1.0f, 0.0f, 0.0f));
     const Vector ty = q.Transform(Vector(0.0f, 1.0f, 0.0f));
@@ -208,19 +208,19 @@ TEST(MathQuaternion, MultiplyRotations)
     EXPECT_TRUE(Quaternion::AlmostEqual(Quaternion::Identity() * Quaternion::Identity(), Quaternion::Identity()));
 
     // 90 degree rotations (CW)
-    const Quaternion xRot = Quaternion::RotationX(NFE_MATH_PI / 2.0f);
-    const Quaternion yRot = Quaternion::RotationY(NFE_MATH_PI / 2.0f);
-    const Quaternion zRot = Quaternion::RotationZ(NFE_MATH_PI / 2.0f);
+    const Quaternion xRot = Quaternion::RotationX(Constants::pi<float> / 2.0f);
+    const Quaternion yRot = Quaternion::RotationY(Constants::pi<float> / 2.0f);
+    const Quaternion zRot = Quaternion::RotationZ(Constants::pi<float> / 2.0f);
 
     // 180 degree rotations
-    const Quaternion xRevRot = Quaternion::RotationX(-NFE_MATH_PI / 2.0f);
-    const Quaternion yRevRot = Quaternion::RotationY(-NFE_MATH_PI / 2.0f);
-    const Quaternion zRevRot = Quaternion::RotationZ(-NFE_MATH_PI / 2.0f);
+    const Quaternion xRevRot = Quaternion::RotationX(-Constants::pi<float> / 2.0f);
+    const Quaternion yRevRot = Quaternion::RotationY(-Constants::pi<float> / 2.0f);
+    const Quaternion zRevRot = Quaternion::RotationZ(-Constants::pi<float> / 2.0f);
 
     // 90 degree rotation (CCW)
-    const Quaternion xRot2 = Quaternion::RotationX(NFE_MATH_PI);
-    const Quaternion yRot2 = Quaternion::RotationY(NFE_MATH_PI);
-    const Quaternion zRot2 = Quaternion::RotationZ(NFE_MATH_PI);
+    const Quaternion xRot2 = Quaternion::RotationX(Constants::pi<float>);
+    const Quaternion yRot2 = Quaternion::RotationY(Constants::pi<float>);
+    const Quaternion zRot2 = Quaternion::RotationZ(Constants::pi<float>);
 
     // rotation in the same plane
     EXPECT_TRUE(Quaternion::AlmostEqual(xRot * xRot, xRot2, 0.00001f));
@@ -250,7 +250,7 @@ TEST(MathQuaternion, MultiplyRandomInverse)
 
     for (size_t i = 0; i < iterations; ++i)
     {
-        const Quaternion q = Quaternion::FromAxisAndAngle(Vector(random.GetPointOnSphere()), random.GetFloat() * NFE_MATH_PI);
+        const Quaternion q = Quaternion::FromAxisAndAngle(Vector(random.GetPointOnSphere()), random.GetFloat() * Constants::pi<float>);
         const Quaternion qInv = q.Inverted();
 
         EXPECT_TRUE(Quaternion::AlmostEqual(qInv * q, Quaternion::Identity(), 0.00001f));
@@ -260,7 +260,7 @@ TEST(MathQuaternion, MultiplyRandomInverse)
 
 TEST(MathQuaternion, FromEulerAngles)
 {
-    const float angle = NFE_MATH_PI * 10.0f / 180.0f;
+    const float angle = DegToRad(10.0f);
     ASSERT_TRUE(Quaternion::AlmostEqual(Quaternion::FromAngles(angle, 0.0f, 0.0f), Quaternion::RotationX(angle), 0.00001f));
     ASSERT_TRUE(Quaternion::AlmostEqual(Quaternion::FromAngles(0.0f, angle, 0.0f), Quaternion::RotationY(angle), 0.00001f));
     ASSERT_TRUE(Quaternion::AlmostEqual(Quaternion::FromAngles(0.0f, 0.0f, angle), Quaternion::RotationZ(angle), 0.00001f));
@@ -268,9 +268,9 @@ TEST(MathQuaternion, FromEulerAngles)
     ASSERT_TRUE(Quaternion::AlmostEqual(Quaternion::FromAngles(0.0f, -angle, 0.0f), Quaternion::RotationY(-angle), 0.00001f));
     ASSERT_TRUE(Quaternion::AlmostEqual(Quaternion::FromAngles(0.0f, 0.0f, -angle), Quaternion::RotationZ(-angle), 0.00001f));
 
-    const float yawAngle = NFE_MATH_PI * 10.0f / 180.0f;
-    const float pitchAngle = NFE_MATH_PI * 20.0f / 180.0f;
-    const float rollAngle = NFE_MATH_PI * 34.0f / 180.0f;
+    const float yawAngle = DegToRad(10.0f);
+    const float pitchAngle = DegToRad(20.0f);
+    const float rollAngle = DegToRad(34.0f);
 
     const Quaternion pitchRot = Quaternion::RotationX(pitchAngle);
     const Quaternion yawRot = Quaternion::RotationY(yawAngle);
@@ -284,7 +284,7 @@ TEST(MathQuaternion, FromEulerAngles)
 
 TEST(MathQuaternion, ToEulerAngles)
 {
-    const float angle = NFE_MATH_PI * 10.0f / 180.0f;
+    const float angle = DegToRad(10.0f);
 
     float pitch, yaw, roll;
 
@@ -304,9 +304,9 @@ TEST(MathQuaternion, ToEulerAngles)
     EXPECT_FLOAT_EQ(angle, roll);
 
 
-    const float yawAngle = NFE_MATH_PI * 10.0f / 180.0f;
-    const float pitchAngle = NFE_MATH_PI * 20.0f / 180.0f;
-    const float rollAngle = NFE_MATH_PI * 34.0f / 180.0f;
+    const float yawAngle = DegToRad(10.0f);
+    const float pitchAngle = DegToRad(20.0f);
+    const float rollAngle = DegToRad(34.0f);
     const Quaternion q = Quaternion::FromAngles(pitchAngle, yawAngle, rollAngle);
     q.ToAngles(pitch, yaw, roll);
 
