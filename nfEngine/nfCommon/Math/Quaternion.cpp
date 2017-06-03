@@ -14,7 +14,7 @@ namespace Math {
 Quaternion Quaternion::FromAxisAndAngle(const Vector& axis, float angle)
 {
     angle *= 0.5f;
-    Quaternion q = axis * sinf(angle);
+    Quaternion q = Quaternion(axis * sinf(angle));
     q.f[3] = cosf(angle);
     return q;
 }
@@ -55,7 +55,7 @@ Quaternion Quaternion::operator * (const Quaternion& b) const
     const Vector b1202 = b.q.Swizzle<1, 2, 0, 2>();
     const Vector t03 = Vector::NegMulAndAdd(a2012, b1202, t0);
 
-    return t03 + t12.ChangeSign<false, false, false, true>();
+    return Quaternion(t03 + t12.ChangeSign<false, false, false, true>());
 }
 
 Quaternion Quaternion::Inverted() const
@@ -97,7 +97,7 @@ Quaternion Quaternion::FromAngles(float pitch, float yaw, float roll)
     const Vector term4 = Vector(t3, t3, t2, t3);
     const Vector term5 = Vector(t4, t5, t5, t5);
 
-    return term0 * term1 * term2 + term3 * term4 * term5;
+    return Quaternion(term0 * term1 * term2 + term3 * term4 * term5);
 }
 
 Quaternion Quaternion::FromMatrix(const Matrix& m)
@@ -111,9 +111,9 @@ Quaternion Quaternion::FromMatrix(const Matrix& m)
     q.q = Vector::Max(q.q, Vector());
     q.q = Vector::Sqrt4(q.q) * 0.5f;
 
-    q.f[0] = CopySignF(q.f[0], m.m[1][2] - m.m[2][1]);
-    q.f[1] = CopySignF(q.f[1], m.m[2][0] - m.m[0][2]);
-    q.f[2] = CopySignF(q.f[2], m.m[0][1] - m.m[1][0]);
+    q.f[0] = CopySign(q.f[0], m.m[1][2] - m.m[2][1]);
+    q.f[1] = CopySign(q.f[1], m.m[2][0] - m.m[0][2]);
+    q.f[2] = CopySign(q.f[2], m.m[0][1] - m.m[1][0]);
     return q;
 }
 
@@ -223,7 +223,7 @@ Quaternion Quaternion::Interpolate(const Quaternion& q0, const Quaternion& q1, f
         k1 = sinf(t * omega) * oneOverSinOmega;
     }
 
-    return q0.q * k0 + new_q1 * k1;
+    return Quaternion(q0.q * k0 + new_q1 * k1);
 }
 
 bool Quaternion::AlmostEqual(const Quaternion& a, const Quaternion& b, float epsilon)
