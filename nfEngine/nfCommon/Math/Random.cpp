@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 #include "Math.hpp"
 #include "Random.hpp"
+#include "Float4.hpp"
 
 #include <time.h>
 

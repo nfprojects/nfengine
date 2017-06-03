@@ -38,7 +38,7 @@ LightComponent::~LightComponent()
 
 void LightComponent::SetColor(const Float3& color)
 {
-    mColor = color;
+    mColor = Vector(color);
 }
 
 void LightComponent::Release()

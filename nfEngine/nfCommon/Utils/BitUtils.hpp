@@ -63,6 +63,6 @@ public:
 #else // WIN32
 #include "BitUtilsImplLinuxAVX.hpp"
 #endif //WIN32
-#else // NFE_USE_AVX
-#include "BitUtilsImpl.hpp"
+#else // not defined NFE_USE_AVX
+#include "BitUtilsImplImplNative.hpp"
 #endif // NFE_USE_AVX

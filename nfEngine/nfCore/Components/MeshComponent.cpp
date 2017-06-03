@@ -9,6 +9,7 @@
 #include "Engine.hpp"
 #include "Resources/ResourcesManager.hpp"
 
+
 namespace NFE {
 namespace Scene {
 
@@ -35,7 +36,7 @@ void MeshComponent::CalcAABB(const Math::Matrix& transform)
 {
     if (mMesh != nullptr)
     {
-        mGlobalAABB = TransformBox(transform, mMesh->mLocalBox);
+        mGlobalAABB = Math::Box::TransformBox(transform, mMesh->mLocalBox);
     }
 }
 
