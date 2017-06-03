@@ -25,27 +25,29 @@ struct NFE_ALIGN(16) Vectorf
     };
 
 #ifdef NFE_USE_SSE
-    NFE_INLINE operator Vector() const
+    operator Vector() const
     {
         Vector temp;
         temp.v = v;
         return temp;
     }
 
-    NFE_INLINE operator __m128() const
+    operator __m128() const
     {
         return v;
     }
-    NFE_INLINE operator __m128i() const
+
+    operator __m128i() const
     {
         return reinterpret_cast<const __m128i*>(&v)[0];
     }
-    NFE_INLINE operator __m128d() const
+
+    operator __m128d() const
     {
         return reinterpret_cast<const __m128d*>(&v)[0];
     }
 #else
-    NFE_INLINE operator Vector() const
+    operator Vector() const
     {
         Vector temp;
         temp.f[0] = f[0];
@@ -68,22 +70,24 @@ struct NFE_ALIGN(16) Vectori
         __m128 v;
     };
 
-    NFE_INLINE operator Vector() const
+    operator Vector() const
     {
         Vector temp;
         temp.v = v;
         return temp;
     }
 
-    NFE_INLINE operator __m128() const
+    operator __m128() const
     {
         return v;
     }
-    NFE_INLINE operator __m128i() const
+
+    operator __m128i() const
     {
         return reinterpret_cast<const __m128i*>(&v)[0];
     }
-    NFE_INLINE operator __m128d() const
+
+    operator __m128d() const
     {
         return reinterpret_cast<const __m128d*>(&v)[0];
     }
@@ -93,7 +97,7 @@ struct NFE_ALIGN(16) Vectori
         unsigned int u[4];
     };
 
-    NFE_INLINE operator Vector() const
+    operator Vector() const
     {
         Vector temp;
         temp.u[0] = u[0];
@@ -106,6 +110,10 @@ struct NFE_ALIGN(16) Vectori
 };
 
 
+const Vectorf VECTOR_MAX = { { { FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX } } };
+const Vectorf VECTOR_NEG_MAX = { { { -FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX } } };
+const Vectorf VECTOR_MIN = { { { FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN } } };
+const Vectorf VECTOR_NEG_MIN = { { { -FLT_MIN, -FLT_MIN, -FLT_MIN, -FLT_MIN } } };
 const Vectorf VECTOR_EPSILON = { { { NFE_MATH_EPSILON, NFE_MATH_EPSILON, NFE_MATH_EPSILON, NFE_MATH_EPSILON } } };
 const Vectorf VECTOR_ONE = { { { 1.0f, 1.0f, 1.0f, 1.0f } } };
 const Vectorf VECTOR_ONE3 = { { { 1.0f, 1.0f, 1.0f, 0.0f } } };
@@ -114,6 +122,7 @@ const Vectori VECTOR_MASK_X = { { { 0xFFFFFFFF, 0, 0, 0 } } };
 const Vectori VECTOR_MASK_Y = { { { 0, 0xFFFFFFFF, 0, 0 } } };
 const Vectori VECTOR_MASK_Z = { { { 0, 0, 0xFFFFFFFF, 0 } } };
 const Vectori VECTOR_MASK_W = { { { 0, 0, 0, 0xFFFFFFFF } } };
+const Vectori VECTOR_MASK_XY = { { { 0xFFFFFFFF, 0xFFFFFFFF, 0, 0 } } };
 const Vectori VECTOR_MASK_XYZ = { { { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0 } } };
 const Vectori VECTOR_MASK_ABS = { { { 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF } } };
 
