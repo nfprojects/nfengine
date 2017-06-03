@@ -17,7 +17,7 @@ TEST(MathGeometry, RayBoxIntersection)
 
     for (int i = 0; i < MAX_BOX_OFFSETS; ++i)
     {
-        const Vector boxOffset = (2.0f * random.GetFloat3() - VECTOR_ONE) * 5.0f;
+        const Vector boxOffset = (2.0f * Vector(random.GetFloat3()) - VECTOR_ONE) * 5.0f;
         SCOPED_TRACE("boxOffset = [" + std::to_string(boxOffset[0]) + ", " +
                      std::to_string(boxOffset[1]) + ", " + std::to_string(boxOffset[2]) + "]");
 

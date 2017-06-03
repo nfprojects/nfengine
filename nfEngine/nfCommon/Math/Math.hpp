@@ -24,10 +24,16 @@
 
 #if defined(NFE_USE_AVX) | defined(NFE_USE_FMA)
     #ifndef NFE_USE_SSE4
-        #error "SSE4 must be enabled when using AVX"
+        #error "SSE4 must be enabled when using AVX or FMA"
     #endif // NFE_USE_SSE4
 #include <immintrin.h>
 #endif // defined(NFE_USE_AVX) | defined(NFE_USE_FMA)
+
+#if defined(NFE_USE_AVX2)
+    #ifndef NFE_USE_AVX
+        #error "AVX must be enabled when using AVX2"
+    #endif // NFE_USE_AVX
+#endif // defined(NFE_USE_AVX2)
 
 
 #define NFE_MATH_EPSILON (0.000001f)
@@ -39,59 +45,6 @@
 namespace NFE {
 namespace Math {
 
-/**
- * Structure for efficient 2D vector storing.
- */
-struct Float2
-{
-    float x, y;
-
-    Float2() : x(0.0f), y(0.0f) {};
-    Float2(float x_, float y_) : x(x_), y(y_) {};
-    Float2(float* pArr) : x(pArr[0]), y(pArr[1]) {};
-};
-
-/**
- * Structure for efficient 3D vector storing.
- */
-struct Float3
-{
-    float x, y, z;
-
-    Float3() : x(0.0f), y(0.0f), z(0.0f) {};
-    Float3(float x_, float y_, float z_) : x(x_), y(y_), z(z_) {};
-    Float3(float* pArr) : x(pArr[0]), y(pArr[1]), z(pArr[2]) {};
-};
-
-/**
- * Structure for efficient 4D vector storing - unaligned version of Vector class.
- */
-struct Float4
-{
-    float x, y, z, w;
-
-    Float4() : x(0.0f), y(0.0f), z(0.0f), w(0.0f) {};
-    Float4(float x_, float y_, float z_, float w_) : x(x_), y(y_), z(z_), w(w_) {};
-    Float4(float* pArr) : x(pArr[0]), y(pArr[1]), z(pArr[2]), w(pArr[3]) {};
-};
-
-
-/**
- * Rectangle template.
- */
-template<typename T>
-struct Rect
-{
-    T Xmin, Xmax, Ymin, Ymax;
-
-    Rect() : Xmin(0), Xmax(0), Ymin(0), Ymax(0) { }
-
-    Rect(T Xmin_, T Ymin_, T Xmax_, T Ymax_)
-        : Xmin(Xmin_), Xmax(Xmax_), Ymin(Ymin_), Ymax(Ymax_) { }
-};
-
-typedef Rect<int> Recti;
-typedef Rect<float> Rectf;
 
 
 /**
@@ -114,122 +67,100 @@ union Bits64
     int64 si;
 };
 
-/**
- * Minimum.
- */
-template<typename T>
-NFE_INLINE T Min(const T a, const T b)
-{
-    return (a < b) ? a : b;
-}
+
+//////////////////////////////////////////////////////////////////////////
+
 
 /**
- * Maximum.
+ * Minimum of a single value.
+ * @note    This is required for the Min() variadic template function to work.
  */
-template<typename T>
-NFE_INLINE T Max(const T a, const T b)
-{
-    return (a < b) ? b : a;
-}
+template<typename T, typename ... Types>
+NFE_INLINE constexpr T Min(const T& a);
+
+/**
+ * Minimum of multiple values.
+ */
+template<typename T, typename ... Types>
+NFE_INLINE constexpr T Min(const T& a, const T& b, const Types& ... r);
+
+/**
+ * Maximum of a single value.
+ * @note    This is required for the Max() variadic template function to work.
+ */
+template<typename T, typename ... Types>
+NFE_INLINE constexpr T Max(const T& a);
+
+/**
+ * Maximum of multiple values.
+ */
+template<typename T, typename ... Types>
+NFE_INLINE constexpr T Max(const T& a, const T& b, const Types& ... r);
 
 /**
  * Absolute value.
  */
 template<typename T>
-NFE_INLINE T Abs(const T x)
-{
-    if (x < static_cast<T>(0))
-        return -x;
-
-    return x;
-}
+NFE_INLINE constexpr T Abs(const T& x);
 
 /**
- * Returns x with sign of y
+ * Returns 'x' with a sign of 'y'.
  */
-NFE_INLINE float CopySignF(const float x, const float y)
-{
-    Bits32 xInt, yInt;
-    xInt.f = x;
-    yInt.f = y;
-    xInt.ui = (0x7fffffff & xInt.ui) | (0x80000000 & yInt.ui);
-    return xInt.f;
-}
+template<typename T>
+NFE_INLINE T CopySign(T x, T y);
 
 /**
  * Clamp to range.
  */
 template<typename T>
-NFE_INLINE T Clamp(const T x, const T min, const T max)
-{
-    if (x > max)
-        return max;
-    else if (x < min)
-        return min;
-    else
-        return x;
-}
+NFE_INLINE T Clamp(const T x, const T min, const T max);
 
 /**
  * Linear interpolation.
  */
 template<typename T>
-NFE_INLINE T Lerp(const T a, const T b, const T w)
-{
-    return a + w * (b - a);
-}
+NFE_INLINE constexpr T Lerp(const T& a, const T& b, const T w);
 
 /**
  * Rounds down "x" to nearest multiply of "step"
  */
-NFE_INLINE float Quantize(float x, float step)
-{
-    float tmp = x / step;
-    tmp = floorf(tmp);
-    return tmp * step;
-}
+NFE_INLINE float Quantize(float x, float step);
 
 /**
  * Check if a given number is NaN (not a number), according to IEEE 754 standard.
  */
-NFE_INLINE bool IsNaN(float a)
-{
-    Bits32 num;
-    num.f = a;
-    return ((num.ui & 0x7F800000) == 0x7F800000) && ((num.ui & 0x7FFFFF) != 0);
-}
+template<typename T>
+NFE_INLINE bool IsNaN(T a);
 
 /**
  * Check if a given number is infinity (positive or negative), according to IEEE 754 standard.
  */
-NFE_INLINE bool IsInfinity(float a)
-{
-    Bits32 num;
-    num.f = a;
-    return (num.ui & 0x7FFFFFFF) == 0x7F800000;
-}
+template<typename T>
+NFE_INLINE bool IsInfinity(T a);
 
 /**
  * Wang hash.
  */
-NFE_INLINE unsigned int Hash(unsigned int x)
-{
-    x = (x ^ 61) ^ (x >> 16);
-    x *= 9;
-    x = x ^ (x >> 4);
-    x *= 0x27d4eb2d;
-    x = x ^ (x >> 15);
-    return x;
-}
+NFE_INLINE unsigned int Hash(unsigned int x);
 
 /**
  * Check if a number is power of two.
  */
 template<typename T>
-NFE_INLINE constexpr bool PowerOfTwo(const T x)
-{
-    return x && !(x & (x - 1));
-}
+NFE_INLINE constexpr bool IsPowerOfTwo(const T x);
+
+/**
+ * Convert radians to degrees.
+ */
+NFE_INLINE constexpr float RadToDeg(const float radians);
+
+/**
+ * Convert degrees to radians.
+ */
+NFE_INLINE constexpr float DegToRad(const float degrees);
+
+//////////////////////////////////////////////////////////////////////////
+
 
 /**
  * Solve a system of linear equations with 3 variables.
@@ -243,3 +174,7 @@ NFCOMMON_API bool SolveEquationsSystem3(float M[4][3], float& x, float& y, float
 
 } // namespace Math
 } // namespace NFE
+
+
+// Inline definitions go there:
+#include "MathImpl.hpp"

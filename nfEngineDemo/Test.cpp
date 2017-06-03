@@ -221,7 +221,7 @@ public:
 
         UpdateCamera();
         Perspective perspective;
-        perspective.FoV = NFE_MATH_PI * 60.0f / 180.0f;
+        perspective.FoV = DegToRad(60.0f);
         perspective.nearDist = 0.01f;
         perspective.farDist = 1000.0f;
         perspective.aspectRatio = GetAspectRatio();
@@ -263,7 +263,7 @@ public:
 
         UpdateCamera();
         Perspective perspective;
-        perspective.FoV = NFE_MATH_PI * 60.0f / 180.0f;
+        perspective.FoV = DegToRad(60.0f);
         perspective.nearDist = 0.01f;
         perspective.farDist = 1000.0f;
         perspective.aspectRatio = static_cast<float>(SECONDARY_VIEW_WIDTH) /
