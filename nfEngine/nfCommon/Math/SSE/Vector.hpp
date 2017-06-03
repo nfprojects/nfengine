@@ -158,6 +158,24 @@ Vector Vector::Swizzle() const
     return _mm_shuffle_ps(v, v, _MM_SHUFFLE(iw, iz, iy, ix));
 }
 
+template<uint32 ix, uint32 iy, uint32 iz, uint32 iw>
+Vector Vector::Blend(const Vector& a, const Vector& b)
+{
+    static_assert(ix < 2, "Invalid index for X component");
+    static_assert(iy < 2, "Invalid index for Y component");
+    static_assert(iz < 2, "Invalid index for Z component");
+    static_assert(iw < 2, "Invalid index for W component");
+
+#if defined(NFE_USE_SSE4)
+    constexpr uint32 mask = ix | (iy << 1) | (iz << 2) | (iw << 3);
+    return _mm_blend_ps(a, b, mask);
+#else
+    static const Vectori mask = { { { ix ? 0xFFFFFFFF : 0, iy ? 0xFFFFFFFF : 0, iz ? 0xFFFFFFFF : 0, iw ? 0xFFFFFFFF : 0 } } };
+    const Vector maskf = _mm_castsi128_ps(mask);
+    return _mm_or_ps(_mm_andnot_ps(maskf, a), _mm_and_ps(maskf, b));
+#endif
+}
+
 Vector Vector::SplatX() const
 {
     return _mm_shuffle_ps(v, v, _MM_SHUFFLE(0, 0, 0, 0));

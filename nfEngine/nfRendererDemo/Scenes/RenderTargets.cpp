@@ -406,7 +406,7 @@ void RenderTargetsScene::Draw(float dt)
     Matrix viewMatrix = Matrix::MakeLookTo(Vector(3.0f, 0.0f, 0.0f), Vector(-1.0f, 0.0f, 0.0f),
                                      Vector(0.0f, 1.0f, 0.0f));
     Matrix projMatrix = Matrix::MakePerspective((float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
-                                          70.0f * NFE_MATH_PI / 180.0f, 5.0f, 1.0f);
+                                                DegToRad(70.0f), 5.0f, 1.0f);
 
     mCommandBuffer->Begin();
 

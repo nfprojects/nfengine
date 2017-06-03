@@ -49,6 +49,12 @@
     <Filter Include="Reflection\Test">
       <UniqueIdentifier>{08e600f2-4daa-4dbb-b2b2-6fcd5501fb2a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Math\Vector">
+      <UniqueIdentifier>{0330ed34-d614-49f5-a052-2ce130e109bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math\Matrix">
+      <UniqueIdentifier>{7fc68f6a-21ed-4e29-8023-1224df25f2ef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nfCommon.hpp" />
@@ -146,6 +152,9 @@
     <ClInclude Include="Math\Box.hpp">
       <Filter>Math</Filter>
     </ClInclude>
+    <ClInclude Include="Math\BoxImpl.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
     <ClInclude Include="Math\Conversions.hpp">
       <Filter>Math</Filter>
     </ClInclude>
@@ -156,9 +165,6 @@
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="Math\Math.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Matrix.hpp">
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="Math\Quaternion.hpp">
@@ -177,9 +183,6 @@
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="Math\Triangle.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Vector.hpp">
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="Memory\DefaultAllocator.hpp">
@@ -327,9 +330,6 @@
       <Filter>Containers</Filter>
     </ClInclude>
     <ClInclude Include="ForwardDeclarations.hpp" />
-    <ClInclude Include="Math\VectorConstants.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
     <ClInclude Include="Utils\BitUtils.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -426,6 +426,57 @@
     <ClInclude Include="Containers\SharedPtrBase.hpp">
       <Filter>Containers</Filter>
     </ClInclude>
+    <ClInclude Include="Math\Rect.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\MathImpl.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\EquationSolver.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Float4.hpp">
+      <Filter>Math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Float4Impl.hpp">
+      <Filter>Math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vector.hpp">
+      <Filter>Math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\VectorConstants.hpp">
+      <Filter>Math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Matrix.hpp">
+      <Filter>Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Matrix2.hpp">
+      <Filter>Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Matrix2Impl.hpp">
+      <Filter>Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\MatrixImpl.hpp">
+      <Filter>Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Float3Impl.hpp">
+      <Filter>Math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Float3.hpp">
+      <Filter>Math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Float2.hpp">
+      <Filter>Math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Float2Impl.hpp">
+      <Filter>Math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Matrix3.hpp">
+      <Filter>Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Matrix3Impl.hpp">
+      <Filter>Math\Matrix</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -511,9 +562,6 @@
       <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="Math\Math.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Matrix.cpp">
       <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="Math\Quaternion.cpp">
@@ -650,6 +698,18 @@
     </ClCompile>
     <ClCompile Include="Reflection\ReflectionMember.cpp">
       <Filter>Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\EquationSolver.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Matrix.cpp">
+      <Filter>Math\Matrix</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Matrix2.cpp">
+      <Filter>Math\Matrix</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Matrix3.cpp">
+      <Filter>Math\Matrix</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
