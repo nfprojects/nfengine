@@ -11,6 +11,6 @@ using namespace NFE::Scene;
 using namespace NFE::Resource;
 
 EntityManager* gEntityManager = nullptr;
-EntityID gSelectedEntity = -1;
+EntityID gSelectedEntity = static_cast<EntityID>(-1);
 
 // TODO: reimplement Scene editor with ImGui

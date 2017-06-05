@@ -136,7 +136,7 @@ void SceneDeleter(Scene::SceneManager* scene)
     if (scene->GetEntityManager() == gEntityManager)
     {
         gEntityManager = nullptr;
-        gSelectedEntity = -1;
+        gSelectedEntity = static_cast<EntityID>(-1);
     }
 
     gEngine->DeleteScene(scene);
@@ -171,7 +171,7 @@ public:
     }
 
     CustomWindow()
-        : cameraEntity(-1)
+        : cameraEntity(static_cast<EntityID>(-1))
         , entityManager(nullptr)
     {
         InitCameraOrientation();
@@ -470,8 +470,8 @@ public:
                 gSelectedEntity = cube;
                 gEntityManager = entityManager;
 
-                TransformComponent* transform = entityManager->AddComponent<TransformComponent>(child);
-                transform->SetLocalPosition(Vector(0.0f, 1.0f, 0.0f));
+                TransformComponent* childTransform = entityManager->AddComponent<TransformComponent>(child);
+                childTransform->SetLocalPosition(Vector(0.0f, 1.0f, 0.0f));
 
                 OmniLightDesc lightDesc;
                 lightDesc.radius = 4.0f;
