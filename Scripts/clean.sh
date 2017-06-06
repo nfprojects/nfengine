@@ -13,7 +13,7 @@ echo "DONE"
 
 # remove CMake files
 echo -n "Removing CMake-related files... "
-rm -f CMakeFiles CMakeCache.txt cmake_install.cmake
+rm -rf CMakeFiles CMakeCache.txt cmake_install.cmake
 echo "DONE"
 
 echo -n "Removing compilation results... "

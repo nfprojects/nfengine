@@ -39,6 +39,9 @@ mkdir -p build-$BUILD_TYPE
 cd build-$BUILD_TYPE
 cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE
 make -j ${CPU_COUNT}
+rc=$?
 echo
 
 popd > /dev/null
+
+exit $rc
