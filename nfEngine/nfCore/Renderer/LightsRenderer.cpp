@@ -17,7 +17,7 @@ namespace Renderer {
 
 namespace {
 
-struct NFE_ALIGN16 LightsGlobalCBuffer
+struct NFE_ALIGN(16) LightsGlobalCBuffer
 {
     Matrix cameraMatrix;
     Matrix viewMatrix;
@@ -32,7 +32,7 @@ struct AmbientLightCBuffer
     Float4 backgroundColor;
 };
 
-struct NFE_ALIGN16 OmniLightCBuffer
+struct NFE_ALIGN(16) OmniLightCBuffer
 {
     Vector position;
     Vector radius;

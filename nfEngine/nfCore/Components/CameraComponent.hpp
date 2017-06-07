@@ -60,7 +60,7 @@ struct Ortho
 };
 
 
-NFE_ALIGN16
+NFE_ALIGN(16)
 class CORE_API CameraComponent
     : public ComponentBase<CameraComponent>
     , public Common::Aligned<16>

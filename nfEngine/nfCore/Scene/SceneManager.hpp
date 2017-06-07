@@ -18,7 +18,7 @@
 namespace NFE {
 namespace Scene {
 
-NFE_ALIGN16
+NFE_ALIGN(16)
 class CORE_API EnviromentDesc : public Common::Aligned<16>
 {
 public:
@@ -35,7 +35,7 @@ public:
 /**
  * Scene manager.
  */
-NFE_ALIGN16
+NFE_ALIGN(16)
 class CORE_API SceneManager : public Common::Aligned<16>
 {
 private:

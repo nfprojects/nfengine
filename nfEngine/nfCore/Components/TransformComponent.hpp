@@ -42,7 +42,7 @@ public:
 #define NFE_TRANSFORM_FLAG_GLOBAL_MOVED (1 << 0)
 #define NFE_TRANSFORM_FLAG_LOCAL_MOVED  (1 << 1)
 
-NFE_ALIGN16
+NFE_ALIGN(16)
 class CORE_API TransformComponent
     : public ComponentBase<TransformComponent>
     , public Common::Aligned<16>

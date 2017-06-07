@@ -15,7 +15,7 @@ namespace Math {
 /**
  * Sphere
  */
-class NFE_ALIGN16 Sphere
+class NFE_ALIGN(16) Sphere
 {
 public:
     Vector origin; //< Sphere center

@@ -19,7 +19,7 @@ class btCompoundShape;
 namespace NFE {
 namespace Resource {
 
-NFE_ALIGN16
+NFE_ALIGN(16)
 struct CompoundShapeChild
 {
     btCollisionShape* pShape;

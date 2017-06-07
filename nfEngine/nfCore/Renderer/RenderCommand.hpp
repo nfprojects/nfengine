@@ -19,7 +19,7 @@
 namespace NFE {
 namespace Renderer {
 
-NFE_ALIGN16
+NFE_ALIGN(16)
 struct InstanceData
 {
     Math::Vector worldMatrix[3];
@@ -27,7 +27,7 @@ struct InstanceData
     Math::Vector angularVelocity;
 };
 
-NFE_ALIGN16
+NFE_ALIGN(16)
 struct RenderCommand
 {
     //instance data

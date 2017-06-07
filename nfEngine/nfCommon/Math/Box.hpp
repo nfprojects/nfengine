@@ -16,7 +16,7 @@ namespace Math {
 /**
  * Axis Aligned Box
  */
-class NFE_ALIGN16 Box
+class NFE_ALIGN(16) Box
 {
 public:
     Vector min;

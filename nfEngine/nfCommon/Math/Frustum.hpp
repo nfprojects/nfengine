@@ -17,7 +17,7 @@ namespace Math {
 /**
  * Frustum
  */
-class NFE_ALIGN16 Frustum
+class NFE_ALIGN(16) Frustum
 {
 public:
     /// planes IDs

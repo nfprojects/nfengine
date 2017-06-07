@@ -31,7 +31,7 @@
 namespace NFE {
 namespace Common {
 
-struct NFE_ALIGN16 BVHNode
+struct NFE_ALIGN(16) BVHNode
 {
     union
     {

@@ -17,7 +17,7 @@ using namespace Math;
 // renderer modules instance definition
 std::unique_ptr<PostProcessRenderer> PostProcessRenderer::mPtr;
 
-struct NFE_ALIGN16 ToneMappingCBuffer
+struct NFE_ALIGN(16) ToneMappingCBuffer
 {
     Vector bufferInvRes;
     Vector seed;

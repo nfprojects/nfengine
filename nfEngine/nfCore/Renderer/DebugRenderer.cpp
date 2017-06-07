@@ -27,13 +27,13 @@ std::unique_ptr<DebugRenderer> DebugRenderer::mPtr;
 /**
  * Debug Renderer constant buffer layout for vertex shader.
  */
-struct NFE_ALIGN16 DebugCBuffer
+struct NFE_ALIGN(16) DebugCBuffer
 {
     Matrix viewMatrix;
     Matrix projMatrix;
 };
 
-struct NFE_ALIGN16 DebugPerMeshCBuffer
+struct NFE_ALIGN(16) DebugPerMeshCBuffer
 {
     Matrix modelMatrix;
 };

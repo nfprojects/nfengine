@@ -17,7 +17,7 @@ namespace Math {
 /**
  * Class representing 3D transformation (translation + rotation).
  */
-class NFCOMMON_API NFE_ALIGN16 Transform final
+class NFCOMMON_API NFE_ALIGN(16) Transform final
 {
 public:
     Transform() = default;

@@ -23,7 +23,7 @@ namespace Resource {
  * Part of the Mesh.
  * @details Submesh is meant to be using one material
  */
-NFE_ALIGN16
+NFE_ALIGN(16)
 struct SubMesh : public Common::Aligned<16>
 {
     Math::Box localBox;
@@ -35,7 +35,7 @@ struct SubMesh : public Common::Aligned<16>
 /**
  * Mesh resource class.
  */
-NFE_ALIGN16
+NFE_ALIGN(16)
 class CORE_API Mesh : public ResourceBase
 {
     friend class Scene::RendererSystem;

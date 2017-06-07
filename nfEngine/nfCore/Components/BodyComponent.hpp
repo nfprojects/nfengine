@@ -35,7 +35,7 @@ struct BodyComponentDesc
 /**
  * Component representing physical body.
  */
-NFE_ALIGN16
+NFE_ALIGN(16)
 class CORE_API BodyComponent
     : public ComponentBase<BodyComponent>
     , public Common::Aligned<16>

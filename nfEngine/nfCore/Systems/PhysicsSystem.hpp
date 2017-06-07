@@ -17,7 +17,7 @@
 namespace NFE {
 namespace Scene {
 
-NFE_ALIGN16
+NFE_ALIGN(16)
 class PhysicsSystem : public Common::Aligned<16>
 {
     friend void PhysicsUpdateCallback(void* userData, int instance, int threadID);

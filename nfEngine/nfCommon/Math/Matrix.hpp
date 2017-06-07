@@ -17,7 +17,7 @@ namespace Math {
 /**
  * 4x4 matrix
  */
-class NFCOMMON_API NFE_ALIGN16 Matrix final
+class NFCOMMON_API NFE_ALIGN(16) Matrix final
 {
 public:
     union

@@ -16,7 +16,7 @@ namespace Math {
  * @details Used to perform operations on 4D, 3D and 2D vectors. The content is mapped to
  *          SSE registers to speedup computations.
  */
-struct NFE_ALIGN16 Vector
+struct NFE_ALIGN(16) Vector
 {
     union
     {

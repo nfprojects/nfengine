@@ -17,7 +17,7 @@ namespace Math {
 /**
  * Class representing 4D quaternion. Useful for representing rotations.
  */
-struct NFCOMMON_API NFE_ALIGN16 Quaternion final
+struct NFCOMMON_API NFE_ALIGN(16) Quaternion final
 {
     // XYZ - vector part, W - scalar part:
     // q = f[3] + i * q[0] + j * q[1] + k * q[2]

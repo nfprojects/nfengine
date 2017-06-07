@@ -75,7 +75,7 @@ struct LightDesc
 };
 #pragma pack(pop)
 
-NFE_ALIGN16
+NFE_ALIGN(16)
 class CORE_API LightComponent
     : public ComponentBase<LightComponent>
     , public Common::Aligned<16>

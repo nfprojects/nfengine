@@ -60,23 +60,14 @@
 #endif // WIN32
 
 
-// 16-byte aligning macro for objects using SSE registers
+// aligning macro for objects using SIMD registers
 #if defined(WIN32)
-#define NFE_ALIGN16 __declspec(align(16))
+#define NFE_ALIGN(bytes) __declspec(align(bytes))
 #elif defined(__LINUX__) | defined(__linux__)
-#define NFE_ALIGN16 __attribute__((aligned(16)))
+#define NFE_ALIGN(bytes) __attribute__((aligned(bytes)))
 #else
 #error "Target system not supported!"
 #endif // defined(WIN32)
-
-// TODO these should be defined by Visual Studio solution somehow
-// for now we assume that we always build for x86 CPU supporting AVX and FMA (e.g. Intel Haswell)
-#ifdef WIN32
-#define NFE_USE_SSE
-#define NFE_USE_SSE4
-#define NFE_USE_AVX
-#define NFE_USE_FMA
-#endif // WIN32
 
 
 // macro for data prefetching from RAM to CPU cache.

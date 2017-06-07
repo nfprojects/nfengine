@@ -22,7 +22,7 @@ struct MeshComponentDesc
 };
 #pragma pack(pop)
 
-NFE_ALIGN16
+NFE_ALIGN(16)
 class CORE_API MeshComponent
     : public ComponentBase<MeshComponent>
     , public Common::Aligned<16>

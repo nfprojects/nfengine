@@ -14,7 +14,7 @@ namespace Math {
 
 
 // used to initialize float constants
-struct NFE_ALIGN16 Vectorf
+struct NFE_ALIGN(16) Vectorf
 {
     union
     {
@@ -59,7 +59,7 @@ struct NFE_ALIGN16 Vectorf
 
 
 // used to initialize integer constants
-struct NFE_ALIGN16 Vectori
+struct NFE_ALIGN(16) Vectori
 {
 #ifdef NFE_USE_SSE
     union

@@ -15,7 +15,7 @@ namespace Renderer {
 
 using namespace Math;
 
-struct NFE_ALIGN16 DirLightProperties
+struct NFE_ALIGN(16) DirLightProperties
 {
     Math::Vector direction;
     Math::Vector color;
@@ -25,7 +25,7 @@ struct NFE_ALIGN16 DirLightProperties
     Math::Matrix viewProjMatrix[8];
 };
 
-struct NFE_ALIGN16 SpotLightProperties
+struct NFE_ALIGN(16) SpotLightProperties
 {
     Math::Vector position;
     Math::Vector direction;

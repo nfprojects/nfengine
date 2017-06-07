@@ -19,7 +19,7 @@ namespace Scene {
 /**
  * Temporary data of active spot light.
  */
-struct NFE_ALIGN16 SpotLightData
+struct NFE_ALIGN(16) SpotLightData
 {
     Math::Frustum frustum;
     Math::Matrix viewMatrix;
@@ -30,7 +30,7 @@ struct NFE_ALIGN16 SpotLightData
  * Temporary data used during single View rendering.
  */
  // TODO: there are "false sharing" problems here
-struct NFE_ALIGN16 RenderingData
+struct NFE_ALIGN(16) RenderingData
 {
     Renderer::View* view;
     CameraComponent* cameraComponent;
@@ -52,7 +52,7 @@ struct NFE_ALIGN16 RenderingData
     void WaitForRenderingTasks() const;
 };
 
-NFE_ALIGN16
+NFE_ALIGN(16)
 class RendererSystem : public Common::Aligned<16>
 {
     typedef std::tuple<TransformComponent*, MeshComponent*, BodyComponent*> MeshEntry;

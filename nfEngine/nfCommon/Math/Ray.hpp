@@ -12,7 +12,7 @@
 namespace NFE {
 namespace Math {
 
-class NFE_ALIGN16 Ray
+class NFE_ALIGN(16) Ray
 {
 public:
     Vector dir;
@@ -28,7 +28,7 @@ public:
     }
 };
 
-class NFE_ALIGN16 RayBoxSegment
+class NFE_ALIGN(16) RayBoxSegment
 {
 public:
     Vector nearDist;
