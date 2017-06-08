@@ -79,10 +79,14 @@ Window::~Window()
 {
     Close();
     free(mDeleteReply);
-    xcb_set_screen_saver(mConnection, -1, 0, XCB_BLANKING_NOT_PREFERRED, XCB_EXPOSURES_ALLOWED);
-    xcb_destroy_window(mConnection, mWindow);
-    xcb_flush(mConnection);
-    xcb_disconnect(mConnection);
+
+    if (mConnection)
+    {
+        xcb_set_screen_saver(mConnection, -1, 0, XCB_BLANKING_NOT_PREFERRED, XCB_EXPOSURES_ALLOWED);
+        xcb_destroy_window(mConnection, mWindow);
+        xcb_flush(mConnection);
+        xcb_disconnect(mConnection);
+    }
 }
 
 bool Window::Init()
