@@ -45,6 +45,7 @@ namespace NFE {
         class LightComponent;
         class CameraComponent;
         class ControllerComponent;
+        class TriggerComponent;
 
         class SceneManager;
         class RendererSystem;
@@ -52,10 +53,12 @@ namespace NFE {
         class EntitySystem;
         class EventSystem;
         class PhysicsSystem;
+        class TriggerSystem;
 
         class Event;
         class Event_Tick;
         class Event_Input;
+        class Event_Trigger;
 
         using EntityID = uint32;
         using EntityPtr = Common::UniquePtr<Entity>;
