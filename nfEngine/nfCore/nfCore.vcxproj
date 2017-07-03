@@ -311,11 +311,13 @@
     <ClCompile Include="Scene\Components\ComponentController.cpp" />
     <ClCompile Include="Scene\Components\ComponentLight.cpp" />
     <ClCompile Include="Scene\Components\ComponentMesh.cpp" />
+    <ClCompile Include="Scene\Components\ComponentTrigger.cpp" />
     <ClCompile Include="Scene\Entity.cpp" />
     <ClCompile Include="Scene\EntityController.cpp" />
     <ClCompile Include="Scene\Events\Event.cpp" />
     <ClCompile Include="Scene\Events\Event_Input.cpp" />
     <ClCompile Include="Scene\Events\Event_Tick.cpp" />
+    <ClCompile Include="Scene\Events\Event_Trigger.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Scene\Systems\EntitySystem.cpp" />
     <ClCompile Include="Scene\Systems\EventSystem.cpp" />
@@ -323,6 +325,7 @@
     <ClCompile Include="Scene\Systems\PhysicsSystem.cpp" />
     <ClCompile Include="Scene\Systems\RendererSystem.cpp" />
     <ClCompile Include="Scene\Systems\System.cpp" />
+    <ClCompile Include="Scene\Systems\TriggerSystem.cpp" />
     <ClCompile Include="Utils\ConfigManager.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
@@ -382,11 +385,13 @@
     <ClInclude Include="Scene\Components\ComponentController.hpp" />
     <ClInclude Include="Scene\Components\ComponentLight.hpp" />
     <ClInclude Include="Scene\Components\ComponentMesh.hpp" />
+    <ClInclude Include="Scene\Components\ComponentTrigger.hpp" />
     <ClInclude Include="Scene\Entity.hpp" />
     <ClInclude Include="Scene\EntityController.hpp" />
     <ClInclude Include="Scene\Events\Event.hpp" />
     <ClInclude Include="Scene\Events\Event_Input.hpp" />
     <ClInclude Include="Scene\Events\Event_Tick.hpp" />
+    <ClInclude Include="Scene\Events\Event_Trigger.hpp" />
     <ClInclude Include="Scene\SceneManager.hpp" />
     <ClInclude Include="Scene\Systems\EntitySystem.hpp" />
     <ClInclude Include="Scene\Systems\EventSystem.hpp" />
@@ -394,6 +399,7 @@
     <ClInclude Include="Scene\Systems\PhysicsSystem.hpp" />
     <ClInclude Include="Scene\Systems\RendererSystem.hpp" />
     <ClInclude Include="Scene\Systems\System.hpp" />
+    <ClInclude Include="Scene\Systems\TriggerSystem.hpp" />
     <ClInclude Include="ShaderCommon.hpp" />
     <ClInclude Include="Utils\ConfigManager.hpp" />
     <ClInclude Include="Utils\ConfigVariable.hpp" />

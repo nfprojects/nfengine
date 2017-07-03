@@ -16,6 +16,7 @@
 #include "Systems/InputSystem.hpp"
 #include "Systems/EntitySystem.hpp"
 #include "Systems/EventSystem.hpp"
+#include "Systems/TriggerSystem.hpp"
 
 #include "nfCommon/System/Memory.hpp"
 #include "nfCommon/System/Memory.hpp"
@@ -50,6 +51,7 @@ bool SceneManager::InitializeSystems()
     mSystems[PhysicsSystem::ID] = Common::MakeUniquePtr<PhysicsSystem>(this);
     mSystems[RendererSystem::ID] = Common::MakeUniquePtr<RendererSystem>(this);
     mSystems[EventSystem::ID] = Common::MakeUniquePtr<EventSystem>(this);
+    mSystems[TriggerSystem::ID] = Common::MakeUniquePtr<TriggerSystem>(this);
 
     return true;
 }
