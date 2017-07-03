@@ -201,6 +201,15 @@
     <ClCompile Include="Renderer\RenderScene.cpp">
       <Filter>Renderer\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\Events\Event_Trigger.cpp">
+      <Filter>Scene\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Systems\TriggerSystem.cpp">
+      <Filter>Scene\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Components\ComponentTrigger.cpp">
+      <Filter>Scene\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.hpp">
@@ -385,6 +394,15 @@
     </ClInclude>
     <ClInclude Include="Renderer\RenderScene.hpp">
       <Filter>Renderer\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Events\Event_Trigger.hpp">
+      <Filter>Scene\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Systems\TriggerSystem.hpp">
+      <Filter>Scene\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Components\ComponentTrigger.hpp">
+      <Filter>Scene\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
