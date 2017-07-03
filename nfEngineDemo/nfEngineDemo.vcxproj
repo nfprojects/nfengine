@@ -169,6 +169,7 @@ popd</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Controllers\FreeCameraController.hpp" />
+    <ClInclude Include="Controllers\TriggeredLightController.hpp" />
     <ClInclude Include="GameWindow.hpp" />
     <ClInclude Include="Scenes.hpp" />
     <ClInclude Include="PCH.hpp" />
@@ -176,6 +177,7 @@ popd</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Controllers\FreeCameraController.cpp" />
+    <ClCompile Include="Controllers\TriggeredLightController.cpp" />
     <ClCompile Include="GameWindow.cpp" />
     <ClCompile Include="Scenes.cpp" />
     <ClCompile Include="PCH.cpp">
