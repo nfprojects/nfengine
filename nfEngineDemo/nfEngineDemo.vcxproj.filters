@@ -8,6 +8,9 @@
     <ClInclude Include="Controllers\FreeCameraController.hpp">
       <Filter>Controllers</Filter>
     </ClInclude>
+    <ClInclude Include="Controllers\TriggeredLightController.hpp">
+      <Filter>Controllers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameWindow.cpp" />
@@ -15,6 +18,9 @@
     <ClCompile Include="Scenes.cpp" />
     <ClCompile Include="PCH.cpp" />
     <ClCompile Include="Controllers\FreeCameraController.cpp">
+      <Filter>Controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="Controllers\TriggeredLightController.cpp">
       <Filter>Controllers</Filter>
     </ClCompile>
   </ItemGroup>
