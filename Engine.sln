@@ -156,6 +156,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Natvis", "Natvis", "{24032E
 		nfEngine\nfCommon\Math\Math.natvis = nfEngine\nfCommon\Math\Math.natvis
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Audio", "Audio", "{290AB636-FE58-4B21-953D-1408DE4B821F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfAudioWindows", "nfEngine\Audio\nfAudioWindows\nfAudioWindows.vcxproj", "{6AB8FD5C-2252-4365-881E-ECD3881A2C67}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -358,6 +362,18 @@ Global
 		{39346F9B-F1D6-41A9-A539-91D0448C491C}.Release|Win32.Build.0 = Release|Win32
 		{39346F9B-F1D6-41A9-A539-91D0448C491C}.Release|x64.ActiveCfg = Release|x64
 		{39346F9B-F1D6-41A9-A539-91D0448C491C}.Release|x64.Build.0 = Release|x64
+		{6AB8FD5C-2252-4365-881E-ECD3881A2C67}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{6AB8FD5C-2252-4365-881E-ECD3881A2C67}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{6AB8FD5C-2252-4365-881E-ECD3881A2C67}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6AB8FD5C-2252-4365-881E-ECD3881A2C67}.Debug|Win32.Build.0 = Debug|Win32
+		{6AB8FD5C-2252-4365-881E-ECD3881A2C67}.Debug|x64.ActiveCfg = Debug|x64
+		{6AB8FD5C-2252-4365-881E-ECD3881A2C67}.Debug|x64.Build.0 = Debug|x64
+		{6AB8FD5C-2252-4365-881E-ECD3881A2C67}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{6AB8FD5C-2252-4365-881E-ECD3881A2C67}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{6AB8FD5C-2252-4365-881E-ECD3881A2C67}.Release|Win32.ActiveCfg = Release|Win32
+		{6AB8FD5C-2252-4365-881E-ECD3881A2C67}.Release|Win32.Build.0 = Release|Win32
+		{6AB8FD5C-2252-4365-881E-ECD3881A2C67}.Release|x64.ActiveCfg = Release|x64
+		{6AB8FD5C-2252-4365-881E-ECD3881A2C67}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -385,6 +401,8 @@ Global
 		{39346F9B-F1D6-41A9-A539-91D0448C491C} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
 		{8720D62A-B414-41F5-A793-D2B19D8FF955} = {265F0BFF-E485-46E3-9213-D339828982B3}
 		{9BA96BF9-A3AC-4B9D-911A-46C0FE261983} = {B19B4C10-EB4D-4782-8933-120A35AC259D}
+		{290AB636-FE58-4B21-953D-1408DE4B821F} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
+		{6AB8FD5C-2252-4365-881E-ECD3881A2C67} = {290AB636-FE58-4B21-953D-1408DE4B821F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0DA0ED22-E481-43EF-8228-F75562FD998A}
