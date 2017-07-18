@@ -52,6 +52,9 @@
     <Filter Include="Renderer\Scene">
       <UniqueIdentifier>{727a9d5b-adf4-4f6e-86af-132eaa992566}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\EntityTemplate">
+      <UniqueIdentifier>{2dd82d4f-23ed-4745-a6ed-193d2fc925d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp">
@@ -209,6 +212,33 @@
     </ClCompile>
     <ClCompile Include="Scene\Components\ComponentTrigger.cpp">
       <Filter>Scene\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\EntityTemplate\EntityTemplateComponentCamera.cpp">
+      <Filter>Resources\EntityTemplate</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\EntityTemplate\EntityTemplateComponentLight.cpp">
+      <Filter>Resources\EntityTemplate</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\EntityTemplate\EntityTemplateComponentMesh.cpp">
+      <Filter>Resources\EntityTemplate</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\EntityTemplate\EntityTemplateComponentTrigger.cpp">
+      <Filter>Resources\EntityTemplate</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\EntityTemplate\EntityTemplateEntity.cpp">
+      <Filter>Resources\EntityTemplate</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\EntityTemplate\EntityTemplate.cpp">
+      <Filter>Resources\EntityTemplate</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\EntityTemplate\EntityTemplateComponent.cpp">
+      <Filter>Resources\EntityTemplate</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\EntityTemplate\EntityTemplateComponentBody.cpp">
+      <Filter>Resources\EntityTemplate</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\EntityTemplate\EntityTemplateComponentController.cpp">
+      <Filter>Resources\EntityTemplate</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -403,6 +433,33 @@
     </ClInclude>
     <ClInclude Include="Scene\Components\ComponentTrigger.hpp">
       <Filter>Scene\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\EntityTemplate\EntityTemplateComponentCamera.hpp">
+      <Filter>Resources\EntityTemplate</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\EntityTemplate\EntityTemplateComponentLight.hpp">
+      <Filter>Resources\EntityTemplate</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\EntityTemplate\EntityTemplateComponentMesh.hpp">
+      <Filter>Resources\EntityTemplate</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\EntityTemplate\EntityTemplateComponentTrigger.hpp">
+      <Filter>Resources\EntityTemplate</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\EntityTemplate\EntityTemplateEntity.hpp">
+      <Filter>Resources\EntityTemplate</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\EntityTemplate\EntityTemplate.hpp">
+      <Filter>Resources\EntityTemplate</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\EntityTemplate\EntityTemplateComponent.hpp">
+      <Filter>Resources\EntityTemplate</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\EntityTemplate\EntityTemplateComponentBody.hpp">
+      <Filter>Resources\EntityTemplate</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\EntityTemplate\EntityTemplateComponentController.hpp">
+      <Filter>Resources\EntityTemplate</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
