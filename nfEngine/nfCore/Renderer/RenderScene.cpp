@@ -337,7 +337,7 @@ bool RenderScene::Render(const Common::TaskContext& context, const Renderer::Vie
     }
 
     // TODO orthogonal camera support
-    Scene::PerspectiveProjectionDesc perspectiveDesc;
+    Resource::PerspectiveProjectionDesc perspectiveDesc;
     camera->GetPerspective(&perspectiveDesc);
 
     RenderingDataPtr renderingData = Common::MakeSharedPtr<RenderingData>();
