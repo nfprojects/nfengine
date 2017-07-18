@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Component.hpp"
+#include "Resources/EntityTemplate/EntityTemplateComponentCamera.hpp"
 
 #include "nfCommon/Memory/Aligned.hpp"
 #include "nfCommon/Math/Frustum.hpp"
@@ -14,52 +15,6 @@
 
 namespace NFE {
 namespace Scene {
-
-/**
- * Camera projection mode.
- */
-enum class ProjectionMode : uint8
-{
-    Perspective,
-    Ortho,
-};
-
-/**
- * Perspective projection descriptor
- */
-struct PerspectiveProjectionDesc
-{
-    float farDist;
-    float nearDist;
-    float aspectRatio;
-    float FoV;          //< vertical Field of View angle (in up-down axis) in radians
-
-    PerspectiveProjectionDesc()
-        : farDist(1000.0f)
-        , nearDist(0.05f)
-        , aspectRatio(1.0f)
-        , FoV(Math::DegToRad(60.0f))
-    { }
-};
-
-/**
- * Orthogonal projection descriptor
- */
-struct OrthoProjectionDesc
-{
-    float nearDist, farDist;
-    float bottom, top;
-    float left, right;
-
-    OrthoProjectionDesc()
-        : nearDist(-100.0f)
-        , farDist(100.0f)
-        , bottom(-1.0f)
-        , top(1.0f)
-        , left(-1.0f)
-        , right(1.0f)
-    { }
-};
 
 /**
  * Camera component - allows an entity to be a camera.
@@ -80,25 +35,25 @@ public:
      * Set perspective projection
      * @param desc Valid pointer to perspective projection settings
      */
-    void SetPerspective(const PerspectiveProjectionDesc* desc);
+    void SetPerspective(const Resource::PerspectiveProjectionDesc* desc);
 
     /**
      * Get perspective projection
      * @param desc Valid pointer, where perspective projection settings will be saved to
      */
-    void GetPerspective(PerspectiveProjectionDesc* desc) const;
+    void GetPerspective(Resource::PerspectiveProjectionDesc* desc) const;
 
     /**
      * Set orthographic projection
      * @param desc Valid pointer to orthographic projection settings
      */
-    void SetOrtho(const OrthoProjectionDesc* desc);
+    void SetOrtho(const Resource::OrthoProjectionDesc* desc);
 
     /**
      * Get orthographic projection
      * @param desc Valid pointer, where orthographic projection settings will be saved to
      */
-    void GetOrtho(OrthoProjectionDesc* desc) const;
+    void GetOrtho(Resource::OrthoProjectionDesc* desc) const;
 
     /**
      * Get a section of the camera frustum.
@@ -120,12 +75,12 @@ public:
     const Math::Frustum& GetFrustum() const { return mFrustum; }
 
 private:
-    ProjectionMode mProjMode;
+    Resource::ProjectionMode mProjMode;
 
     union
     {
-        PerspectiveProjectionDesc mPerspective;
-        OrthoProjectionDesc mOrtho;
+        Resource::PerspectiveProjectionDesc mPerspective;
+        Resource::OrthoProjectionDesc mOrtho;
     };
 
     Math::Matrix4 mViewMatrix;

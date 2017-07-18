@@ -33,6 +33,13 @@ namespace NFE {
         class Texture;
         class CollisionShape;
         class SoundSample;
+
+        class IEntityTemplateComponent;
+        class EntityTemplate;
+        class EntityTemplateEntity;
+
+        using EntityTemplateEntityPtr = Common::UniquePtr<EntityTemplateEntity>;
+        using EntityTemplateComponentPtr = Common::UniquePtr<IEntityTemplateComponent>;
     } // namespace Resource
 
     namespace Scene {
@@ -65,7 +72,6 @@ namespace NFE {
         using ComponentPtr = Common::UniquePtr<IComponent>;
         using EntityControllerPtr = Common::UniquePtr<IEntityController>;
         using SceneManagerPtr = Common::UniquePtr<SceneManager>;
-
     } // namespace Scene
 
     namespace Physics {
