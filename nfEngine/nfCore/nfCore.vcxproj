@@ -261,6 +261,15 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Resources\EntityTemplate\EntityTemplate.cpp" />
+    <ClCompile Include="Resources\EntityTemplate\EntityTemplateComponent.cpp" />
+    <ClCompile Include="Resources\EntityTemplate\EntityTemplateComponentBody.cpp" />
+    <ClCompile Include="Resources\EntityTemplate\EntityTemplateComponentCamera.cpp" />
+    <ClCompile Include="Resources\EntityTemplate\EntityTemplateComponentController.cpp" />
+    <ClCompile Include="Resources\EntityTemplate\EntityTemplateComponentLight.cpp" />
+    <ClCompile Include="Resources\EntityTemplate\EntityTemplateComponentMesh.cpp" />
+    <ClCompile Include="Resources\EntityTemplate\EntityTemplateComponentTrigger.cpp" />
+    <ClCompile Include="Resources\EntityTemplate\EntityTemplateEntity.cpp" />
     <ClCompile Include="Resources\Material.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PCH.hpp</PrecompiledHeaderFile>
@@ -370,6 +379,15 @@
     <ClInclude Include="Renderer\RenderScene.hpp" />
     <ClInclude Include="Renderer\View.hpp" />
     <ClInclude Include="Resources\CollisionShape.hpp" />
+    <ClInclude Include="Resources\EntityTemplate\EntityTemplate.hpp" />
+    <ClInclude Include="Resources\EntityTemplate\EntityTemplateComponent.hpp" />
+    <ClInclude Include="Resources\EntityTemplate\EntityTemplateComponentBody.hpp" />
+    <ClInclude Include="Resources\EntityTemplate\EntityTemplateComponentCamera.hpp" />
+    <ClInclude Include="Resources\EntityTemplate\EntityTemplateComponentController.hpp" />
+    <ClInclude Include="Resources\EntityTemplate\EntityTemplateComponentLight.hpp" />
+    <ClInclude Include="Resources\EntityTemplate\EntityTemplateComponentMesh.hpp" />
+    <ClInclude Include="Resources\EntityTemplate\EntityTemplateComponentTrigger.hpp" />
+    <ClInclude Include="Resources\EntityTemplate\EntityTemplateEntity.hpp" />
     <ClInclude Include="Resources\Material.hpp" />
     <ClInclude Include="Resources\Mesh.hpp" />
     <ClInclude Include="Resources\Multishader.hpp" />
