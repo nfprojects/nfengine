@@ -11,10 +11,6 @@
 #include "../ReflectionMember.hpp"
 #include "../../Config/ConfigValue.hpp"
 
-// TODO replace with DynArray and String
-#include <vector>
-#include <string>
-
 
 namespace NFE {
 namespace RTTI {

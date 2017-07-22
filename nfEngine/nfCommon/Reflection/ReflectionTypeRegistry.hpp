@@ -11,7 +11,6 @@
 #include "Types/ReflectionClassType.hpp"
 
 #include <unordered_map>
-#include <memory>
 
 
 namespace NFE {

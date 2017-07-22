@@ -7,10 +7,11 @@
 #pragma once
 
 #include "../../nfCommon.hpp"
+#include "../../Containers/UniquePtr.hpp"
+#include "../../Containers/String.hpp"
 
 #include <type_traits>
 #include <typeinfo>
-#include <string>
 #include <functional>
 
 
@@ -77,7 +78,7 @@ public:
      * Get type name.
      * @note This includes namespaces also.
      */
-    const char* GetName() const { return mName.c_str(); }
+    const char* GetName() const { return mName.Str(); }
 
     /**
      * Get type size (in bytes).
@@ -145,7 +146,7 @@ protected:
     void* CreateRawObject() const;
 
     // type name (including namespace)
-    std::string mName;
+    Common::String mName;
 
     uint32 mSize;
     uint32 mAlignment;
@@ -158,7 +159,7 @@ protected:
     bool mInitialized;
 };
 
-using TypePtr = std::unique_ptr<Type>;
+using TypePtr = Common::UniquePtr<Type>;
 
 
 } // namespace RTTI
