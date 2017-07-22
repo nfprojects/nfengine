@@ -342,9 +342,6 @@
     <ClInclude Include="Math\Transform.hpp">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Reflection\ReflectionMacros.hpp">
-      <Filter>Reflection</Filter>
-    </ClInclude>
     <ClInclude Include="Reflection\ReflectionMember.hpp">
       <Filter>Reflection</Filter>
     </ClInclude>
@@ -425,6 +422,15 @@
     </ClInclude>
     <ClInclude Include="Utils\BitUtilsImplNative.hpp">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\Types\ReflectionEnumType.hpp">
+      <Filter>Reflection\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\ReflectionClassMacros.hpp">
+      <Filter>Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflection\ReflectionEnumMacros.hpp">
+      <Filter>Reflection</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -650,6 +656,9 @@
     </ClCompile>
     <ClCompile Include="Reflection\ReflectionMember.cpp">
       <Filter>Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflection\Types\ReflectionEnumType.cpp">
+      <Filter>Reflection\Types</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
