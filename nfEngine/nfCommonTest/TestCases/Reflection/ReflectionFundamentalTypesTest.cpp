@@ -2,7 +2,6 @@
 #include "ReflectionTestCommon.hpp"
 #include "nfCommon/Config/Config.hpp"
 #include "nfCommon/Config/ConfigValue.hpp"
-#include "nfCommon/Reflection/ReflectionMacros.hpp"
 #include "nfCommon/Reflection/Types/ReflectionFundamentalType.hpp"
 
 

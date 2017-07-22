@@ -24,6 +24,7 @@ const char* Type::TypeKindToString(const TypeKind kind)
     switch (kind)
     {
     case TypeKind::Fundamental:         return "fundamental";
+    case TypeKind::Enumeration:         return "enum";
     case TypeKind::NativeArray:         return "native array";
     case TypeKind::DynArray:            return "dynamic array";
     case TypeKind::UniquePtr:           return "unique pointer";
@@ -49,6 +50,9 @@ Type::Type(const TypeInfo& info)
     // downcast to 4 bytes to save space - there shouldn't be classes greater than 4GB...
     NFE_ASSERT(info.size < UINT32_MAX, "Type size is too big");
     NFE_ASSERT(info.alignment < UINT32_MAX, "Type alignment is too big");
+
+    NFE_ASSERT(info.size > 0, "Type size cannot be zero");
+    NFE_ASSERT(info.alignment > 0, "Type alignment cannot be zero");
 
     mSize = static_cast<uint32>(info.size);
     mAlignment = static_cast<uint32>(info.alignment);

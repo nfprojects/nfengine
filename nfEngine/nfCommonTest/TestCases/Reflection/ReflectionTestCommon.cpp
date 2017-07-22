@@ -69,6 +69,14 @@ NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(TestBaseClass)
 NFE_END_DEFINE_CLASS()
 
 
+// Enum
+
+NFE_BEGIN_DEFINE_ENUM(TestEnum)
+    NFE_ENUM_OPTION(OptionA)
+    NFE_ENUM_OPTION(OptionB)
+    NFE_ENUM_OPTION(OptionC)
+NFE_END_DEFINE_ENUM()
+
 //////////////////////////////////////////////////////////////////////////
 
 
