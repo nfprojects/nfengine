@@ -32,7 +32,7 @@ const Type* TypeRegistry::GetExistingType(size_t hash) const
         return nullptr;
     }
 
-    return iter->second.get();
+    return iter->second.Get();
 }
 
 const Type* TypeRegistry::GetExistingType(const std::string& name) const
@@ -54,7 +54,7 @@ const Type* TypeRegistry::RegisterType(size_t hash, TypePtr&& type)
     const auto iter = mTypesByHash.find(hash);
     NFE_ASSERT(iter == mTypesByHash.end(), "Type with given hash already exists (%s)", iter->second->GetName());
 
-    const Type* typePtr = type.get();
+    const Type* typePtr = type.Get();
     mTypesByHash[hash] = std::move(type);
     mTypesByName[typePtr->GetName()] = typePtr;
 

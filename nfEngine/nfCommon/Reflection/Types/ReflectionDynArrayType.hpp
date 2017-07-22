@@ -114,13 +114,13 @@ public:
     {
         const Type* templateArgumentType = GetType<T>();
 
-        std::string typeName = std::string("NFE::Common::DynArray<") + templateArgumentType->GetName() + '>';
+        const Common::String typeName = Common::String("NFE::Common::DynArray<") + templateArgumentType->GetName() + '>';
 
         TypeInfo typeInfo;
         typeInfo.kind = TypeKind::DynArray;
         typeInfo.size = sizeof(Common::DynArray<T>);
         typeInfo.alignment = alignof(Common::DynArray<T>);
-        typeInfo.name = typeName.c_str();
+        typeInfo.name = typeName.Str();
         typeInfo.constructor = []() { return new Common::DynArray<T>; };
         typeInfo.arrayConstructor = [](uint32 num) { return new Common::DynArray<T>[num]; };
 

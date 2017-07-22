@@ -7,8 +7,6 @@
 
 #pragma once
 
-#include <memory>
-
 namespace NFE {
 
 namespace Common {
@@ -118,7 +116,6 @@ namespace RTTI {
 enum class TypeKind : uint8;
 struct TypeInfo;
 class Type;
-using TypePtr = std::unique_ptr<Type>;
 class TypeRegistry;
 class Member;
 class ITypeSerializer;
