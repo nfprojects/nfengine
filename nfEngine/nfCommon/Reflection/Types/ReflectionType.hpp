@@ -25,6 +25,7 @@ enum class TypeKind : uint8
 {
     Undefined,          // invalid
     Fundamental,        // fundamental type (int, float, bool, etc.)
+    Enumeration,        // enum / enum class
     NativeArray,        // T[N] types
     DynArray,           // DynArray<T> types
     UniquePtr,          // UniquePtr<T> types
@@ -33,7 +34,7 @@ enum class TypeKind : uint8
     PolymorphicClass,   // class containing at least one virtual method
     AbstractClass,      // class containing at least one pure-virtual method
 
-    // TODO enums, bitfields
+    // TODO bitfields
 };
 
 using ConstructorFunc = std::function<void*()>;
@@ -155,8 +156,6 @@ protected:
     ArrayConstructorFunc mArrayConstructor;
 
     TypeKind mKind;
-
-    bool mInitialized;
 };
 
 using TypePtr = Common::UniquePtr<Type>;

@@ -201,6 +201,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="TestCases\Reflection\ReflectionEnumTest.cpp" />
     <ClCompile Include="TestCases\Reflection\ReflectionFundamentalTypesTest.cpp" />
     <ClCompile Include="TestCases\Reflection\ReflectionInterLibraryTest.cpp" />
     <ClCompile Include="TestCases\Reflection\ReflectionPointersTest.cpp" />
