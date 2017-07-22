@@ -163,6 +163,9 @@
     <ClCompile Include="TestCases\WeakPtrTest.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\Reflection\ReflectionEnumTest.cpp">
+      <Filter>TestCases\Reflection</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />

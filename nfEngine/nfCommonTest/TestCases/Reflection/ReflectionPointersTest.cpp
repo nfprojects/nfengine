@@ -2,7 +2,6 @@
 #include "ReflectionTestCommon.hpp"
 #include "nfCommon/Config/Config.hpp"
 #include "nfCommon/Containers/DynArray.hpp"
-#include "nfCommon/Reflection/ReflectionMacros.hpp"
 
 
 using namespace NFE;

@@ -7,7 +7,7 @@
 #pragma once
 
 #include "../../nfCommon.hpp"
-#include "../ReflectionMacros.hpp"
+#include "../ReflectionClassMacros.hpp"
 #include "../Types/ReflectionFundamentalType.hpp"
 
 
