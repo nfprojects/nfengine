@@ -101,12 +101,14 @@
     <ClInclude Include="Packer\PackerResourceFile.hpp" />
     <ClInclude Include="Packer\PackerWriter.hpp" />
     <ClInclude Include="PCH.hpp" />
-    <ClInclude Include="Reflection\ReflectionMacros.hpp" />
+    <ClInclude Include="Reflection\ReflectionClassMacros.hpp" />
+    <ClInclude Include="Reflection\ReflectionEnumMacros.hpp" />
     <ClInclude Include="Reflection\ReflectionMember.hpp" />
     <ClInclude Include="Reflection\ReflectionTypeRegistry.hpp" />
     <ClInclude Include="Reflection\ReflectionUtils.hpp" />
     <ClInclude Include="Reflection\Test\ReflectionTestTypes.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionClassType.hpp" />
+    <ClInclude Include="Reflection\Types\ReflectionEnumType.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionFundamentalType.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionNativeArrayType.hpp" />
     <ClInclude Include="Reflection\Types\ReflectionStringType.hpp" />
@@ -207,6 +209,7 @@
     <ClCompile Include="Reflection\ReflectionTypeRegistry.cpp" />
     <ClCompile Include="Reflection\Test\ReflectionTestTypes.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionClassType.cpp" />
+    <ClCompile Include="Reflection\Types\ReflectionEnumType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionStringType.cpp" />
     <ClCompile Include="Reflection\Types\ReflectionType.cpp" />
     <ClCompile Include="System\Assertion.cpp" />

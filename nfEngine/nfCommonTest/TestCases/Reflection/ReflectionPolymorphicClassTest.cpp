@@ -1,6 +1,5 @@
 #include "PCH.hpp"
 #include "ReflectionTestCommon.hpp"
-#include "nfCommon/Reflection/ReflectionMacros.hpp"
 #include "nfCommon/Reflection/Types/ReflectionFundamentalType.hpp"
 #include "nfCommon/Reflection/ReflectionUtils.hpp"
 #include "nfCommon/Config/Config.hpp"

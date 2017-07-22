@@ -4,7 +4,8 @@
 #include "nfCommon/Containers/DynArray.hpp"
 
 // TODO encapsulate these into one common header
-#include "nfCommon/Reflection/ReflectionMacros.hpp"
+#include "nfCommon/Reflection/ReflectionClassMacros.hpp"
+#include "nfCommon/Reflection/ReflectionEnumMacros.hpp"
 #include "nfCommon/Reflection/Types/ReflectionFundamentalType.hpp"
 #include "nfCommon/Reflection/Types/ReflectionDynArrayType.hpp"
 #include "nfCommon/Reflection/Types/ReflectionUniquePtrType.hpp"
@@ -126,6 +127,15 @@ public:
     float bar;
 };
 
+
+enum class TestEnum : NFE::uint8
+{
+    OptionA = 0,
+    OptionB = 3,
+    OptionC = 123
+};
+
+NFE_DECLARE_ENUM_TYPE(TestEnum)
 
 //////////////////////////////////////////////////////////////////////////
 
