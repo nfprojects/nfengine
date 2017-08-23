@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a7e2349e_c331f655",
+        "filename": "nfEngine/nfCommon/Reflection/ReflectionEnumMacros.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2017-08-23T07:25:39Z",
+      "side": 1,
+      "message": "Alignment",
+      "range": {
+        "startLine": 24,
+        "startChar": 78,
+        "endLine": 24,
+        "endChar": 79
+      },
+      "revId": "555923b1c00a1df773883061bc5992bb541ac783",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
