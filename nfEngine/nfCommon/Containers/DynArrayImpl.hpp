@@ -9,6 +9,7 @@
 #include "DynArray.hpp"
 #include "../System/Assertion.hpp"
 #include "../Math/Math.hpp"
+#include "../Memory/MemoryHelpers.hpp"
 
 
 namespace NFE {
@@ -379,8 +380,11 @@ bool DynArray<ElementType>::Reserve(uint32 size)
         return false;
     }
 
-    // copy elements
-    memcpy(newBuffer, this->mElements, sizeof(ElementType) * this->mSize);
+    // move elements
+    for (uint32 i = 0; i < this->mSize; ++i)
+    {
+        MemoryHelpers::Move<ElementType>(newBuffer + i, this->mElements + i);
+    }
 
     // replace buffer
     NFE_FREE(this->mElements);

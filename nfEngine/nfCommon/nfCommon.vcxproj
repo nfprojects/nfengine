@@ -92,6 +92,7 @@
     <ClInclude Include="Memory\Aligned.hpp" />
     <ClInclude Include="Memory\Buffer.hpp" />
     <ClInclude Include="Memory\DefaultAllocator.hpp" />
+    <ClInclude Include="Memory\MemoryHelpers.hpp" />
     <ClInclude Include="nfCommon.hpp" />
     <ClInclude Include="Packer\Packer.hpp" />
     <ClInclude Include="Packer\PackerDefines.hpp" />
