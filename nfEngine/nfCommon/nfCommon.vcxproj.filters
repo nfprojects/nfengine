@@ -432,6 +432,9 @@
     <ClInclude Include="Reflection\ReflectionEnumMacros.hpp">
       <Filter>Reflection</Filter>
     </ClInclude>
+    <ClInclude Include="Memory\MemoryHelpers.hpp">
+      <Filter>Memory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
