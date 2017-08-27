@@ -8,6 +8,7 @@
 
 #include "Set.hpp"
 #include "../System/Assertion.hpp"
+#include "../Memory/MemoryHelpers.hpp"
 
 
 namespace NFE {
@@ -156,7 +157,7 @@ Set<KeyType, Comparator>::Set(const Set& other)
         // TODO this is not optimal when the 'other' set is almost empty but has allocated huge buffer
         memcpy(mNodes, other.mNodes, nodesSize);
 
-        // copy-construct the nodes
+        // copy-construct the keys
         for (ConstIterator iter = other.Begin(); iter != other.End(); ++iter)
         {
             new (mKeys + iter.mNode) KeyType(*iter);
@@ -202,7 +203,7 @@ Set<KeyType, Comparator>& Set<KeyType, Comparator>::operator = (const Set& other
         // TODO this is not optimal when the 'other' set is almost empty but has allocated huge buffer
         memcpy(mNodes, other.mNodes, nodesSize);
 
-        // copy-construct the nodes
+        // copy-construct the keys
         for (ConstIterator iter = other.Begin(); iter != other.End(); ++iter)
         {
             new (mKeys + iter.mNode) KeyType(*iter);
@@ -619,8 +620,13 @@ int Set<KeyType, Comparator>::AllocateNode()
             return InvalidID;
         }
 
+        // move the keys
+        for (Iterator iter = Begin(); iter != End(); ++iter)
+        {
+            MemoryHelpers::Move<KeyType>(newKeys + iter.mNode, mKeys + iter.mNode);
+        }
+
         memcpy(newNodes, mNodes, mNumElements * sizeof(Node));
-        memcpy(newKeys, mKeys, mNumElements * sizeof(KeyType));
 
         NFE_FREE(mNodes);
         NFE_FREE(mKeys);

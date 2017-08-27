@@ -8,6 +8,7 @@
 
 #include "PackedArray.hpp"
 #include "../System/Assertion.hpp"
+#include "../Memory/MemoryHelpers.hpp"
 
 #include <string.h>
 
@@ -68,7 +69,12 @@ bool PackedArray<ObjType, IDType, Alignment>::Resize(size_t newSize)
         return false;
     }
 
-    memcpy(newObjects, mObjects, sizeof(ObjType) * mSize);
+    // move objects from old buffer to the new one
+    for (size_t i = 0; i < mUsed; ++i)
+    {
+        MemoryHelpers::Move<ObjType>(newObjects + i, mObjects + i);
+    }
+
     memcpy(newNodes, mNodes, sizeof(ListNode) * mSize);
     memcpy(newIDs, mIDs, sizeof(IDType) * mSize);
 
@@ -189,8 +195,11 @@ void PackedArray<ObjType, IDType, Alignment>::Remove(IDType index)
     if (id < mUsed)
     {
         // move the object from the end to fill the gap
-        mObjects[id] = std::move(mObjects[mUsed]);
-        mObjects[mUsed].~ObjType();
+        MemoryHelpers::Move<ObjType>(mObjects + id, mObjects + mUsed);
+    }
+    else
+    {
+        mObjects[id].~ObjType();
     }
 
     IDType newLastTaken = mNodes[mTakenHead].next;
