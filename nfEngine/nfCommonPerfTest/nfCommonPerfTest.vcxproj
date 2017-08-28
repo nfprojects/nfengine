@@ -42,6 +42,7 @@
     <ClCompile Include="TestCases\BVHPerfTest.cpp" />
     <ClCompile Include="TestCases\ConfigPerfTest.cpp" />
     <ClCompile Include="TestCases\FilePerfTest.cpp" />
+    <ClCompile Include="TestCases\HashSetPerfTest.cpp" />
     <ClCompile Include="TestCases\LoggerPerfTest.cpp" />
     <ClCompile Include="TestCases\PackerPerfTest.cpp" />
     <ClCompile Include="TestCases\SetPerfTest.cpp" />
