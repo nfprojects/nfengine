@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "nfCommon/Containers/Set.hpp"
+#include "nfCommon/Containers/HashSet.hpp"
 #include "nfCommon/Math/Random.hpp"
 
 #include "TestClasses.hpp"
@@ -13,9 +14,19 @@
 using namespace NFE;
 using namespace NFE::Common;
 
-TEST(Set, Empty)
+template<typename T>
+class SetTest : public ::testing::Test
 {
-    Set<int> set;
+};
+
+using SetKeyType = int;
+using SetTestTypes = ::testing::Types<Set<SetKeyType>, HashSet<SetKeyType>>;
+TYPED_TEST_CASE(SetTest, SetTestTypes);
+
+
+TYPED_TEST(SetTest, Empty)
+{
+    TypeParam set;
 
     EXPECT_EQ(0, set.Size());
     EXPECT_TRUE(set.Empty());
@@ -25,24 +36,49 @@ TEST(Set, Empty)
     EXPECT_FALSE(set.Erase(set.End()));
 }
 
-TEST(Set, SimpleInsert)
+TYPED_TEST(SetTest, SimpleInsert)
 {
-    Set<int> set;
+    TypeParam set;
 
-    ASSERT_NE(set.End(), set.Insert(1).iterator);
-    // set = [1]
-    EXPECT_EQ(1, set.Size());
-    EXPECT_FALSE(set.Empty());
+    {
+        const auto result = set.Insert(1);
+        ASSERT_NE(set.End(), result.iterator);
+        EXPECT_FALSE(result.replaced);
+        // set = [1]
+        EXPECT_EQ(1, set.Size());
+        EXPECT_FALSE(set.Empty());
+    }
 
-    ASSERT_NE(set.End(), set.Insert(2).iterator);
-    // set = [1,2]
-    EXPECT_EQ(2, set.Size());
-    EXPECT_FALSE(set.Empty());
+    {
+        const auto result = set.Insert(2);
+        ASSERT_NE(set.End(), result.iterator);
+        EXPECT_FALSE(result.replaced);
+        // set = [1,2]
+        EXPECT_EQ(2, set.Size());
+        EXPECT_FALSE(set.Empty());
+    }
+
+    // insert existing element
+    {
+        const auto result = set.Insert(1);
+        ASSERT_NE(set.End(), result.iterator);
+        EXPECT_TRUE(result.replaced);
+        EXPECT_EQ(2, set.Size());
+        EXPECT_FALSE(set.Empty());
+    }
+
+    {
+        const auto result = set.Insert(2);
+        ASSERT_NE(set.End(), result.iterator);
+        EXPECT_TRUE(result.replaced);
+        EXPECT_EQ(2, set.Size());
+        EXPECT_FALSE(set.Empty());
+    }
 }
 
-TEST(Set, Clear)
+TYPED_TEST(SetTest, Clear)
 {
-    Set<int> set;
+    TypeParam set;
 
     ASSERT_NE(set.End(), set.Insert(1).iterator);
     ASSERT_NE(set.End(), set.Insert(2).iterator);
@@ -54,9 +90,9 @@ TEST(Set, Clear)
     EXPECT_TRUE(set.Empty());
 }
 
-TEST(Set, CopyConstructor)
+TYPED_TEST(SetTest, CopyConstructor)
 {
-    using Type = CopyOnlyTestClass<int>;
+    using Type = CopyOnlyTestClass<SetKeyType>;
     using SetType = Set<Type, Type::Comparator>;
 
     ClassMethodCallCounters counters;
@@ -123,9 +159,9 @@ TEST(Set, CopyConstructor)
     EXPECT_EQ(4, counters.destructor);
 }
 
-TEST(Set, Assign)
+TYPED_TEST(SetTest, Assign)
 {
-    using Type = CopyOnlyTestClass<int>;
+    using Type = CopyOnlyTestClass<SetKeyType>;
     using SetType = Set<Type, Type::Comparator>;
 
     ClassMethodCallCounters counters;
@@ -200,9 +236,9 @@ TEST(Set, Assign)
     EXPECT_EQ(6, counters.destructor);
 }
 
-TEST(Set, InsertViaMove)
+TYPED_TEST(SetTest, InsertViaMove)
 {
-    using Type = MoveOnlyTestClass<int>;
+    using Type = MoveOnlyTestClass<SetKeyType>;
     using SetType = Set<Type, Type::Comparator>;
 
     ClassMethodCallCounters counters;
@@ -245,9 +281,9 @@ TEST(Set, InsertViaMove)
     EXPECT_EQ(3, counters.destructor);
 }
 
-TEST(Set, MoveConstructor)
+TYPED_TEST(SetTest, MoveConstructor)
 {
-    using Type = MoveOnlyTestClass<int>;
+    using Type = MoveOnlyTestClass<SetKeyType>;
     using SetType = Set<Type, Type::Comparator>;
 
     ClassMethodCallCounters counters;
@@ -292,9 +328,9 @@ TEST(Set, MoveConstructor)
     EXPECT_EQ(2, counters.destructor);
 }
 
-TEST(Set, MoveAssignment)
+TYPED_TEST(SetTest, MoveAssignment)
 {
-    using Type = MoveOnlyTestClass<int>;
+    using Type = MoveOnlyTestClass<SetKeyType>;
     using SetType = Set<Type, Type::Comparator>;
 
     ClassMethodCallCounters counters;
@@ -352,9 +388,9 @@ TEST(Set, MoveAssignment)
     EXPECT_EQ(4, counters.destructor);
 }
 
-TEST(Set, Iterator)
+TYPED_TEST(SetTest, Iterator)
 {
-    Set<int> set;
+    TypeParam set;
     ASSERT_NE(set.End(), set.Insert(1).iterator);
     ASSERT_NE(set.End(), set.Insert(4).iterator);
     ASSERT_NE(set.End(), set.Insert(2).iterator);
@@ -391,10 +427,10 @@ TEST(Set, Iterator)
     ASSERT_EQ(set.End(), iter);
 }
 
-TEST(Set, Find)
+TYPED_TEST(SetTest, Find)
 {
     const int size = 10;
-    Set<int> set;
+    TypeParam set;
 
     for (int i = 0; i < size; ++i)
         ASSERT_NE(set.End(), set.Insert(i).iterator);
@@ -410,9 +446,9 @@ TEST(Set, Find)
     EXPECT_EQ(set.End(), set.Find(-1234));
 }
 
-TEST(Set, RangeBasedFor)
+TYPED_TEST(SetTest, RangeBasedFor)
 {
-    Set<int> set;
+    TypeParam set;
     ASSERT_NE(set.End(), set.Insert(4).iterator);
     ASSERT_NE(set.End(), set.Insert(3).iterator);
     ASSERT_NE(set.End(), set.Insert(2).iterator);
@@ -429,9 +465,9 @@ TEST(Set, RangeBasedFor)
     ASSERT_EQ(5, i);
 }
 
-TEST(Set, EraseSingleElementTree)
+TYPED_TEST(SetTest, EraseSingleElementTree)
 {
-    Set<int> set;
+    TypeParam set;
     ASSERT_NE(set.End(), set.Insert(0).iterator);
 
     ASSERT_TRUE(set.Erase(0));
@@ -442,10 +478,10 @@ TEST(Set, EraseSingleElementTree)
     EXPECT_FALSE(set.Erase(0));
 }
 
-TEST(Set, EraseBasic)
+TYPED_TEST(SetTest, EraseBasic)
 {
     const int size = 10;
-    Set<int> set;
+    TypeParam set;
 
     for (int i = 0; i < size; ++i)
         ASSERT_NE(set.End(), set.Insert(i).iterator);
@@ -457,17 +493,17 @@ TEST(Set, EraseBasic)
     ASSERT_TRUE(set.Verify());
 }
 
-TEST(Set, BigTest)
+TYPED_TEST(SetTest, BigTest)
 {
     // prepare some random data
     const int numValues = 1000;
-    std::vector<int> values;
+    std::vector<SetKeyType> values;
     values.reserve(numValues);
 
     for (int i = 0; i < numValues; ++i)
         values.push_back(i);
 
-    Set<int> set;
+    TypeParam set;
 
     // insert values in random order
     Math::Random random(0);
@@ -511,10 +547,10 @@ TEST(Set, BigTest)
     }
 }
 
-TEST(Set, Permutations)
+TYPED_TEST(SetTest, Permutations)
 {
     Math::Random random(1);
-    std::vector<int> values;
+    std::vector<SetKeyType> values;
 
     // build trees containing from 1 to 6 elements
     for (int numValues = 1; numValues <= 6; ++numValues)
@@ -531,7 +567,7 @@ TEST(Set, Permutations)
             SCOPED_TRACE(trace);
 
             // initialize the tree
-            Set<int> set;
+            TypeParam set;
             for (int i = 0; i < numValues; ++i)
                 ASSERT_NE(set.End(), set.Insert(i).iterator);
 
