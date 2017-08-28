@@ -230,6 +230,9 @@ NFE_INLINE bool operator>=(const StringView& lhs, const String& rhs);
 NFE_INLINE bool operator==(const StringView& lhs, const String& rhs);
 NFE_INLINE bool operator!=(const StringView& lhs, const String& rhs);
 
+// hashing function for String class
+NFE_INLINE uint32 GetHash(const String& string);
+
 } // namespace Common
 } // namespace NFE
 
