@@ -47,6 +47,7 @@
 #include <chrono>
 
 #include "gtest/gtest.h"
+#include "gtest/gtest-typed-test.h"
 
 #include "nfCommon/nfCommon.hpp"
 

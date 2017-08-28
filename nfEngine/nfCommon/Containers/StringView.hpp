@@ -116,6 +116,13 @@ protected:
 };
 
 
+/**
+ * Calculate hash of a string view.
+ * @note This function is meant to be fast (it's used in hash tables), not to be cryptographically secure.
+ */
+NFCOMMON_API uint32 GetHash(const StringView& stringView);
+
+
 } // namespace Common
 } // namespace NFE
 

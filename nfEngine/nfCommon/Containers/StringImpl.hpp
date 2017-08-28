@@ -315,5 +315,10 @@ bool operator!=(const StringView& lhs, const String& rhs)
 
 //////////////////////////////////////////////////////////////////////////
 
+uint32 GetHash(const String& string)
+{
+    return GetHash(string.ToView());
+}
+
 } // namespace Common
 } // namespace NFE

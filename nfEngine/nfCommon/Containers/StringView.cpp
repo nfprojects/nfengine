@@ -217,6 +217,22 @@ bool StringView::operator >= (const StringView& other) const
     return true;
 }
 
+uint32 GetHash(const StringView& stringView)
+{
+    const uint32 length = stringView.Length();
+
+    // djb2 hash function
+    // http://www.cse.yorku.ca/~oz/hash.html
+
+    uint32 hash = 5381u;
+    for (uint32 i = 0; i < length; ++i)
+    {
+        hash = hash * 33u + static_cast<uint32>(stringView[i]);
+    }
+
+    return hash;
+}
+
 
 } // namespace Common
 } // namespace NFE
