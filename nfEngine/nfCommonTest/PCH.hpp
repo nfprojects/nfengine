@@ -50,6 +50,11 @@
 
 #include "nfCommon/nfCommon.hpp"
 
+// disable some Visual Studio specific warnings
+#ifdef _MSC_VER
+#pragma warning(disable: 4324) // "structure was padded due to alignment specifier"
+#endif
+
 // workaround for Windows/Linux mkdir difference
 #if defined(__LINUX__) | defined(__linux__)
 #define _mkdir(x) mkdir(x, 0777)
