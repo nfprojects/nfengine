@@ -34,8 +34,6 @@ class Aligned
 public:
     static_assert(Math::IsPowerOfTwo(Alignment), "'Alignment' template parameter must be a power of two.");
 
-    virtual ~Aligned() { }
-
     void* operator new(size_t size)
     {
         return NFE_MALLOC(size, Alignment);
@@ -46,10 +44,27 @@ public:
         NFE_FREE(ptr);
     }
 
+    void* operator new[](size_t size)
+    {
+        return NFE_MALLOC(size, Alignment);
+    }
+
+    void operator delete[](void* ptr)
+    {
+        NFE_FREE(ptr);
+    }
+
     // placement new
     void* operator new(size_t size, void* ptr)
     {
-        (void)size;
+        UNUSED(size);
+        return ptr;
+    }
+    
+    // placement new (array)
+    void* operator new[](size_t size, void* ptr)
+    {
+        UNUSED(size);
         return ptr;
     }
 };
