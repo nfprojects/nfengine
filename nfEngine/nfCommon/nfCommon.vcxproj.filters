@@ -486,6 +486,9 @@
     <ClInclude Include="Memory\MemoryHelpers.hpp">
       <Filter>Memory</Filter>
     </ClInclude>
+    <ClInclude Include="Containers\BitMask.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -700,6 +703,9 @@
       <Filter>Containers</Filter>
     </ClCompile>
     <ClCompile Include="Containers\String.cpp">
+      <Filter>Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Containers\BitMask.cpp">
       <Filter>Containers</Filter>
     </ClCompile>
     <ClCompile Include="Reflection\ReflectionTypeRegistry.cpp">
