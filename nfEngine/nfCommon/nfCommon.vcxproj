@@ -26,6 +26,7 @@
     <ClInclude Include="Config\ConfigValue.hpp" />
     <ClInclude Include="Containers\ArrayView.hpp" />
     <ClInclude Include="Containers\ArrayViewImpl.hpp" />
+    <ClInclude Include="Containers\BitMask.hpp" />
     <ClInclude Include="Containers\Comparator.hpp" />
     <ClInclude Include="Containers\DynArray.hpp" />
     <ClInclude Include="Containers\DynArrayImpl.hpp" />
@@ -176,6 +177,7 @@
     <ClCompile Include="Config\Config.cpp" />
     <ClCompile Include="Config\ConfigTokenizer.cpp" />
     <ClCompile Include="Config\ConfigValue.cpp" />
+    <ClCompile Include="Containers\BitMask.cpp" />
     <ClCompile Include="Containers\String.cpp" />
     <ClCompile Include="Containers\StringView.cpp" />
     <ClCompile Include="FileSystem\FileAsync.cpp" />
