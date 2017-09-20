@@ -636,3 +636,20 @@ TEST(DynArray, Erase_Range_Empty)
     EXPECT_FALSE(array.Erase(array.End(), array.End()));
     ASSERT_EQ(5, array.Size());
 }
+
+TEST(DynArray, StlFindIf)
+{
+    DynArray<int> array({ 10, 20, 30, 40, 50 });
+
+    EXPECT_FALSE(array.Erase(array.Begin(), array.Begin()));
+    ASSERT_EQ(5, array.Size());
+
+    EXPECT_FALSE(array.Erase(array.Begin() + 1, array.Begin()));
+    ASSERT_EQ(5, array.Size());
+
+    EXPECT_FALSE(array.Erase(array.Begin() + 1, array.Begin() + 1));
+    ASSERT_EQ(5, array.Size());
+
+    EXPECT_FALSE(array.Erase(array.End(), array.End()));
+    ASSERT_EQ(5, array.Size());
+}
