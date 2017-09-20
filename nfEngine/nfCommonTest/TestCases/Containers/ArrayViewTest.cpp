@@ -115,17 +115,17 @@ TEST(ArrayView, Iterator)
     ASSERT_NE(array.End(), iter);
     EXPECT_EQ(10, *iter);
 
-    ++iter;
-    ASSERT_NE(array.Begin(), iter);
-    ASSERT_NE(array.End(), iter);
-    EXPECT_EQ(20, *iter);
-
-    ++iter;
+    iter += 2;
     ASSERT_NE(array.Begin(), iter);
     ASSERT_NE(array.End(), iter);
     EXPECT_EQ(30, *iter);
 
-    ++iter;
+    iter -= 1;
+    ASSERT_NE(array.Begin(), iter);
+    ASSERT_NE(array.End(), iter);
+    EXPECT_EQ(20, *iter);
+
+    iter += 2;
     ASSERT_NE(array.Begin(), iter);
     ASSERT_NE(array.End(), iter);
     EXPECT_EQ(40, *iter);
@@ -149,17 +149,17 @@ TEST(ArrayView, ConstIterator)
     ASSERT_NE(array.End(), iter);
     EXPECT_EQ(10, *iter);
 
-    ++iter;
-    ASSERT_NE(array.Begin(), iter);
-    ASSERT_NE(array.End(), iter);
-    EXPECT_EQ(20, *iter);
-
-    ++iter;
+    iter += 2;
     ASSERT_NE(array.Begin(), iter);
     ASSERT_NE(array.End(), iter);
     EXPECT_EQ(30, *iter);
 
-    ++iter;
+    iter -= 1;
+    ASSERT_NE(array.Begin(), iter);
+    ASSERT_NE(array.End(), iter);
+    EXPECT_EQ(20, *iter);
+
+    iter += 2;
     ASSERT_NE(array.Begin(), iter);
     ASSERT_NE(array.End(), iter);
     EXPECT_EQ(40, *iter);
@@ -167,6 +167,45 @@ TEST(ArrayView, ConstIterator)
     ++iter;
     ASSERT_NE(array.Begin(), iter);
     ASSERT_EQ(array.End(), iter);
+}
+
+TEST(ArrayView, IteratorConversion)
+{
+    int elements[5] = { 0, 10, 20, 30, 40 };
+    ArrayView<int> array(elements, 5);
+    ASSERT_EQ(5, array.Size());
+
+    const ArrayView<int>::Iterator iter = array.Begin();
+    const ArrayView<int>::ConstIterator iter2 = iter;
+
+    ASSERT_NE(array.End(), iter2);
+    ASSERT_EQ(0, *iter2);
+}
+
+TEST(ArrayView, IteratorArithmetics)
+{
+    int elements[5] = { 0, 10, 20, 30, 40 };
+    ArrayView<int> array(elements, 5);
+    ASSERT_EQ(5, array.Size());
+
+    const ArrayView<int>::Iterator iter = array.Begin();
+    const ArrayView<int>::Iterator iter2 = iter + 1;
+
+    ASSERT_NE(array.End(), iter2);
+    ASSERT_EQ(10, *iter2);
+}
+
+TEST(ArrayView, ConstIteratorArithmetics)
+{
+    int elements[5] = { 0, 10, 20, 30, 40 };
+    ArrayView<int> array(elements, 5);
+    ASSERT_EQ(5, array.Size());
+
+    const ArrayView<int>::ConstIterator iter = array.Begin();
+    const ArrayView<int>::ConstIterator iter2 = iter + 1;
+
+    ASSERT_NE(array.End(), iter2);
+    ASSERT_EQ(10, *iter2);
 }
 
 TEST(ArrayView, RangeBasedFor)
@@ -261,4 +300,51 @@ TEST(ArrayView, CompareConstAndNonConst)
     ASSERT_TRUE(array2 == array);
     ASSERT_FALSE(array != array2);
     ASSERT_FALSE(array2 != array);
+}
+
+TEST(ArrayView, Stl_FindIf)
+{
+    int elements[5] = { 0, 1, 2, 3, 4 };
+    const ArrayView<int> array(elements, 5);
+
+    const auto it = std::find_if(array.begin(), array.end(), [](int x) { return x == 1; });
+    ASSERT_NE(array.End(), it);
+    ASSERT_EQ(1, *it);
+}
+
+TEST(ArrayView, Stl_Count)
+{
+    int elements[5] = { 0, 0, 1, 1, 1 };
+    const ArrayView<int> array(elements, 5);
+
+    const auto result = std::count(array.begin(), array.end(), 1);
+    ASSERT_EQ(3, result);
+}
+
+TEST(ArrayView, Stl_Sort)
+{
+    int elements[5] = { 3, 2, 0, 4, 1 };
+    ArrayView<int> array(elements, 5);
+
+    std::sort(array.Begin(), array.End());
+
+    EXPECT_EQ(0, array[0]);
+    EXPECT_EQ(1, array[1]);
+    EXPECT_EQ(2, array[2]);
+    EXPECT_EQ(3, array[3]);
+    EXPECT_EQ(4, array[4]);
+}
+
+TEST(ArrayView, Stl_StableSort)
+{
+    int elements[5] = { 3, 2, 0, 4, 1 };
+    ArrayView<int> array(elements, 5);
+
+    std::stable_sort(array.Begin(), array.End());
+
+    EXPECT_EQ(0, array[0]);
+    EXPECT_EQ(1, array[1]);
+    EXPECT_EQ(2, array[2]);
+    EXPECT_EQ(3, array[3]);
+    EXPECT_EQ(4, array[4]);
 }
