@@ -29,9 +29,29 @@ bool ArrayView<ElementType>::ConstIterator::operator != (const ConstIterator& ot
 }
 
 template<typename ElementType>
+bool ArrayView<ElementType>::ConstIterator::operator < (const ConstIterator& other) const
+{
+    NFE_ASSERT(mArray == other.mArray, "Comparing incompatible iterators");
+    return mIndex < other.mIndex;
+}
+
+template<typename ElementType>
+int32 ArrayView<ElementType>::ConstIterator::operator-(const ConstIterator& rhs) const
+{
+    NFE_ASSERT(this->mArray == rhs.mArray, "Comparing incompatible iterators");
+    return static_cast<int32>(this->mIndex) - static_cast<int32>(rhs.mIndex);
+}
+
+template<typename ElementType>
 const ElementType& ArrayView<ElementType>::ConstIterator::operator*() const
 {
     return mArray->mElements[mIndex];
+}
+
+template<typename ElementType>
+const ElementType* ArrayView<ElementType>::ConstIterator::operator->() const
+{
+    return mArray->mElements + mIndex;
 }
 
 template<typename ElementType>
@@ -48,15 +68,50 @@ typename ArrayView<ElementType>::ConstIterator ArrayView<ElementType>::ConstIter
 }
 
 template<typename ElementType>
-typename ArrayView<ElementType>::ConstIterator ArrayView<ElementType>::ConstIterator::operator+(int32 offset)
+typename ArrayView<ElementType>::ConstIterator& ArrayView<ElementType>::ConstIterator::operator+=(int32 offset)
+{
+    mIndex += offset;
+    return *this;
+}
+
+template<typename ElementType>
+typename ArrayView<ElementType>::ConstIterator& ArrayView<ElementType>::ConstIterator::operator--()
+{
+    mIndex--;
+    return *this;
+}
+
+template<typename ElementType>
+typename ArrayView<ElementType>::ConstIterator ArrayView<ElementType>::ConstIterator::operator--(int)
+{
+    return ConstIterator(mArray, mIndex--);
+}
+
+template<typename ElementType>
+typename ArrayView<ElementType>::ConstIterator& ArrayView<ElementType>::ConstIterator::operator-=(int32 offset)
+{
+    mIndex -= offset;
+    return *this;
+}
+
+template<typename ElementType>
+typename ArrayView<ElementType>::ConstIterator ArrayView<ElementType>::ConstIterator::operator+(int32 offset) const
 {
     return ConstIterator(mArray, mIndex + offset);
 }
 
 template<typename ElementType>
-typename ArrayView<ElementType>::ConstIterator ArrayView<ElementType>::ConstIterator::operator-(int32 offset)
+typename ArrayView<ElementType>::ConstIterator ArrayView<ElementType>::ConstIterator::operator-(int32 offset) const
 {
     return ConstIterator(mArray, mIndex - offset);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+template<typename ElementType>
+int32 ArrayView<ElementType>::Iterator::operator-(const Iterator& rhs) const
+{
+    return ConstIterator::operator - (rhs);
 }
 
 template<typename ElementType>
@@ -64,6 +119,64 @@ ElementType& ArrayView<ElementType>::Iterator::operator*() const
 {
     // 'this' is required, because compiler does not now that 'mArray' is dependent type
     return this->mArray->mElements[this->mIndex];
+}
+
+template<typename ElementType>
+ElementType* ArrayView<ElementType>::Iterator::operator->() const
+{
+    return this->mArray->mElements + this->mIndex;
+}
+
+template<typename ElementType>
+typename ArrayView<ElementType>::Iterator& ArrayView<ElementType>::Iterator::operator++()
+{
+    this->mIndex++;
+    return *this;
+}
+
+template<typename ElementType>
+typename ArrayView<ElementType>::Iterator ArrayView<ElementType>::Iterator::operator++(int)
+{
+    return Iterator(this->mArray, this->mIndex++);
+}
+
+template<typename ElementType>
+typename ArrayView<ElementType>::Iterator& ArrayView<ElementType>::Iterator::operator+=(int32 offset)
+{
+    this->mIndex += offset;
+    return *this;
+}
+
+template<typename ElementType>
+typename ArrayView<ElementType>::Iterator& ArrayView<ElementType>::Iterator::operator--()
+{
+    this->mIndex--;
+    return *this;
+}
+
+template<typename ElementType>
+typename ArrayView<ElementType>::Iterator ArrayView<ElementType>::Iterator::operator--(int)
+{
+    return Iterator(this->mArray, this->mIndex--);
+}
+
+template<typename ElementType>
+typename ArrayView<ElementType>::Iterator& ArrayView<ElementType>::Iterator::operator-=(int32 offset)
+{
+    this->mIndex -= offset;
+    return *this;
+}
+
+template<typename ElementType>
+typename ArrayView<ElementType>::Iterator ArrayView<ElementType>::Iterator::operator+(int32 offset) const
+{
+    return Iterator(this->mArray, this->mIndex + offset);
+}
+
+template<typename ElementType>
+typename ArrayView<ElementType>::Iterator ArrayView<ElementType>::Iterator::operator-(int32 offset) const
+{
+    return Iterator(this->mArray, this->mIndex - offset);
 }
 
 //////////////////////////////////////////////////////////////////////////

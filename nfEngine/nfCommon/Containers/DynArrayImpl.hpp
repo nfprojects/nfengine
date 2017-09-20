@@ -344,12 +344,12 @@ bool DynArray<ElementType>::Erase(const ConstIteratorType& first, const ConstIte
     }
 
     // call destructors
-    for (uint32 i = first.mIndex; i < last.mIndex; ++i)
+    for (int32 i = first.mIndex; i < last.mIndex; ++i)
     {
         this->mElements[i].~ElementType();
     }
 
-    const uint32 num = last.mIndex - first.mIndex;
+    const int32 num = last.mIndex - first.mIndex;
     ElementType* base = this->mElements + first.mIndex;
     memmove(base, base + num, sizeof(ElementType) * (this->mSize - last.mIndex));
     this->mSize -= num;
