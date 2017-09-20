@@ -190,6 +190,9 @@
     <ClCompile Include="TestCases\Utils\EnumIteratorTest.cpp">
       <Filter>TestCases\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\Containers\MapTest.cpp">
+      <Filter>TestCases\Containers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />

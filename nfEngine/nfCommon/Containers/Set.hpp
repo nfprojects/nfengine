@@ -63,12 +63,12 @@ public:
     struct InsertResult final
     {
         // iterator to the inserted node
-        ConstIterator iterator;
+        const ConstIterator iterator;
 
         // set to true if the node with given value already existed
-        bool replaced;
+        const bool replaced;
 
-        NFE_INLINE InsertResult(const ConstIterator& iterator, bool replaced = false)
+        explicit InsertResult(const ConstIterator& iterator, bool replaced = false)
             : iterator(iterator)
             , replaced(replaced)
         { }
@@ -122,8 +122,15 @@ public:
     Iterator Find(const KeyType& key);
 
     /**
+     * Check if a given key exists.
+     * @note    This operation takes O(log n) time.
+     */
+    bool Exists(const KeyType& key) const;
+
+    /**
      * Insert a new element to the set (by reference).
      * @note    This operation takes O(log n) time.
+     * @note    If the element already existed, the method will fail.
      * @return  Structure with insertion information.
      */
     InsertResult Insert(const KeyType& key);
@@ -131,9 +138,24 @@ public:
     /**
      * Insert a new element to the set (by rvalue reference).
      * @note    This operation takes O(log n) time.
+     * @note    If the element already existed, the method will fail.
      * @return  Structure with insertion information.
      */
     InsertResult Insert(KeyType&& key);
+
+    /**
+     * Insert a new element to the set or replace existing (by reference).
+     * @note    This operation takes O(log n) time.
+     * @return  Structure with insertion information.
+     */
+    InsertResult InsertOrReplace(const KeyType& key);
+
+    /**
+     * Insert a new element to the set or replace existing (by rvalue reference).
+     * @note    This operation takes O(log n) time.
+     * @return  Structure with insertion information.
+     */
+    InsertResult InsertOrReplace(KeyType&& key);
 
     /**
      * Erase an element by value.

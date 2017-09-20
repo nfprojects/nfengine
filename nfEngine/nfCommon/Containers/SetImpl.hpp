@@ -354,6 +354,12 @@ typename Set<KeyType, Comparator>::Iterator Set<KeyType, Comparator>::End()
 }
 
 template<typename KeyType, typename Comparator>
+bool Set<KeyType, Comparator>::Exists(const KeyType& key) const
+{
+    return Find(key) == End();
+}
+
+template<typename KeyType, typename Comparator>
 typename Set<KeyType, Comparator>::ConstIterator Set<KeyType, Comparator>::Find(const KeyType& key) const
 {
     Comparator comparator;
@@ -397,6 +403,12 @@ template<typename KeyType, typename Comparator>
 typename Set<KeyType, Comparator>::InsertResult Set<KeyType, Comparator>::Insert(const KeyType& key)
 {
     const InsertResult result = InsertInternal(key);
+    if (result.replaced || result.iterator == End())
+    {
+        // Insert method cannot replace
+        return InsertResult(End());
+    }
+
     new (mKeys + result.iterator.mNode) KeyType(key);
     return result;
 }
@@ -404,7 +416,41 @@ typename Set<KeyType, Comparator>::InsertResult Set<KeyType, Comparator>::Insert
 template<typename KeyType, typename Comparator>
 typename Set<KeyType, Comparator>::InsertResult Set<KeyType, Comparator>::Insert(KeyType&& key)
 {
-    const auto result = InsertInternal(key);
+    const InsertResult result = InsertInternal(key);
+    if (result.replaced || result.iterator == End())
+    {
+        // Insert method cannot replace
+        return InsertResult(End());
+    }
+
+    new (mKeys + result.iterator.mNode) KeyType(std::move(key));
+    return result;
+}
+
+template<typename KeyType, typename Comparator>
+typename Set<KeyType, Comparator>::InsertResult Set<KeyType, Comparator>::InsertOrReplace(const KeyType& key)
+{
+    const InsertResult result = InsertInternal(key);
+
+    if (result.iterator == End()) // memory allocation failed
+    {
+        return result;
+    }
+
+    new (mKeys + result.iterator.mNode) KeyType(key);
+    return result;
+}
+
+template<typename KeyType, typename Comparator>
+typename Set<KeyType, Comparator>::InsertResult Set<KeyType, Comparator>::InsertOrReplace(KeyType&& key)
+{
+    const InsertResult result = InsertInternal(key);
+
+    if (result.iterator == End()) // memory allocation failed
+    {
+        return result;
+    }
+
     if (result.replaced)
     {
         // destroy the old object
@@ -437,9 +483,14 @@ typename Set<KeyType, Comparator>::InsertResult Set<KeyType, Comparator>::Insert
         node = mNodes[node].next[index];
     }
 
-
     // create new node
-    int newNode = AllocateNode();
+    const int newNode = AllocateNode();
+    if (newNode == InvalidID)
+    {
+        // memory allocation failed
+        return InsertResult(End());
+    }
+
     mNodes[newNode].next[0] = InvalidID;
     mNodes[newNode].next[1] = InvalidID;
     mNodes[newNode].height = 1;

@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "nfCommon/Containers/Set.hpp"
+#include "nfCommon/Containers/String.hpp"
 #include "nfCommon/Math/Random.hpp"
 
 #include "TestClasses.hpp"
@@ -38,6 +39,43 @@ TEST(Set, SimpleInsert)
     // set = [1,2]
     EXPECT_EQ(2, set.Size());
     EXPECT_FALSE(set.Empty());
+
+    ASSERT_EQ(set.End(), set.Insert(2).iterator);
+    // set = [1,2]
+    EXPECT_EQ(2, set.Size());
+    EXPECT_FALSE(set.Empty());
+}
+
+TEST(Set, SimpleInsertOrReplace)
+{
+    Set<int> set;
+
+    {
+        const auto result = set.InsertOrReplace(1);
+        ASSERT_NE(set.End(), result.iterator);
+        ASSERT_FALSE(result.replaced);
+        // set = [1]
+        EXPECT_EQ(1, set.Size());
+        EXPECT_FALSE(set.Empty());
+    }
+
+    {
+        const auto result = set.InsertOrReplace(2);
+        ASSERT_NE(set.End(), result.iterator);
+        ASSERT_FALSE(result.replaced);
+        // set = [1,2]
+        EXPECT_EQ(2, set.Size());
+        EXPECT_FALSE(set.Empty());
+    }
+
+    {
+        const auto result = set.InsertOrReplace(2);
+        ASSERT_NE(set.End(), result.iterator);
+        ASSERT_TRUE(result.replaced);
+        // set = [1,2]
+        EXPECT_EQ(2, set.Size());
+        EXPECT_FALSE(set.Empty());
+    }
 }
 
 TEST(Set, Clear)
@@ -224,17 +262,21 @@ TEST(Set, InsertViaMove)
         EXPECT_EQ(0, counters.assignment);
         EXPECT_EQ(0, counters.destructor);
 
-        // insert existing element - the old one should be deleted
-        ASSERT_NE(set.End(), set.Insert(Type(&counters, 2)).iterator);
-        ASSERT_EQ(2, set.Size());
-        // set = [1, 2]
+        // replace existing element - the old one should be deleted
+        {
+            const auto result = set.InsertOrReplace(Type(&counters, 2));
+            ASSERT_NE(set.End(), result.iterator);
+            ASSERT_TRUE(result.replaced);
+            ASSERT_EQ(2, set.Size());
+            // set = [1, 2]
 
-        EXPECT_EQ(3, counters.constructor);
-        EXPECT_EQ(3, counters.moveConstructor);
-        EXPECT_EQ(0, counters.copyConstructor);
-        EXPECT_EQ(0, counters.moveAssignment);
-        EXPECT_EQ(0, counters.assignment);
-        EXPECT_EQ(1, counters.destructor);
+            EXPECT_EQ(3, counters.constructor);
+            EXPECT_EQ(3, counters.moveConstructor);
+            EXPECT_EQ(0, counters.copyConstructor);
+            EXPECT_EQ(0, counters.moveAssignment);
+            EXPECT_EQ(0, counters.assignment);
+            EXPECT_EQ(1, counters.destructor);
+        }
     }
 
     EXPECT_EQ(3, counters.constructor);
@@ -572,4 +614,22 @@ TEST(Set, Permutations)
             permutation++;
         } while (std::next_permutation(values.begin(), values.end()));
     }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+TEST(Set, SetOfStrings)
+{
+    Set<String> set;
+
+    ASSERT_NE(set.End(), set.Insert("aaa").iterator);
+    ASSERT_NE(set.End(), set.Insert("bbb").iterator);
+
+    ASSERT_NE(set.End(), set.Find("aaa"));
+    ASSERT_NE(set.End(), set.Find("bbb"));
+    ASSERT_EQ(set.End(), set.Find("ccc"));
+
+    ASSERT_TRUE(set.Erase("aaa"));
+    ASSERT_TRUE(set.Erase("bbb"));
+    ASSERT_FALSE(set.Erase("ccc"));
 }
