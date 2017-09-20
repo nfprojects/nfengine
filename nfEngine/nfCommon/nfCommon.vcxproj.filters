@@ -486,6 +486,12 @@
     <ClInclude Include="Memory\MemoryHelpers.hpp">
       <Filter>Memory</Filter>
     </ClInclude>
+    <ClInclude Include="Containers\Map.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\MapImpl.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />

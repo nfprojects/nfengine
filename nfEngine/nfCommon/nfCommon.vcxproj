@@ -29,6 +29,8 @@
     <ClInclude Include="Containers\Comparator.hpp" />
     <ClInclude Include="Containers\DynArray.hpp" />
     <ClInclude Include="Containers\DynArrayImpl.hpp" />
+    <ClInclude Include="Containers\Map.hpp" />
+    <ClInclude Include="Containers\MapImpl.hpp" />
     <ClInclude Include="Containers\PackedArray.hpp" />
     <ClInclude Include="Containers\PackedArrayImpl.hpp" />
     <ClInclude Include="Containers\SharedPtr.hpp" />
