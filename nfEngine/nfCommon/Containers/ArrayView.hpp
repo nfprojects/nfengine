@@ -8,6 +8,8 @@
 
 #include "../nfCommon.hpp"
 
+#include <iterator>
+
 namespace NFE {
 namespace Common {
 
@@ -21,29 +23,48 @@ class ArrayView
     template<typename T> friend class DynArray;
 
 public:
-    class ConstIterator
+    class ConstIterator : public std::iterator<std::bidirectional_iterator_tag, ElementType, int32>
     {
         friend class ArrayView;
         template<typename T> friend class DynArray;
 
     public:
-        NFE_INLINE ConstIterator() : mArray(nullptr), mIndex(0) { }
+        // C++ standard iterator traits
+        using self_type = ConstIterator;
+
+        // creates invalid iterator
+        ConstIterator() : mArray(nullptr), mIndex(0) { }
+
+        // comparisons
         NFE_INLINE bool operator == (const ConstIterator& other) const;
         NFE_INLINE bool operator != (const ConstIterator& other) const;
+        NFE_INLINE bool operator < (const ConstIterator& rhs) const;
+        NFE_INLINE int32 operator - (const ConstIterator& rhs) const;
+
+        // element access
         NFE_INLINE const ElementType& operator*() const;
+        NFE_INLINE const ElementType* operator->() const;
+
+        // arithmetics
         NFE_INLINE ConstIterator& operator++();
         NFE_INLINE ConstIterator operator++(int);
-        NFE_INLINE ConstIterator operator+(int32 offset);
-        NFE_INLINE ConstIterator operator-(int32 offset);
-        NFE_INLINE uint32 GetIndex() const { return mIndex; }
+        NFE_INLINE ConstIterator& operator+=(int32 offset);
+        NFE_INLINE ConstIterator& operator--();
+        NFE_INLINE ConstIterator operator--(int);
+        NFE_INLINE ConstIterator& operator-=(int32 offset);
+        NFE_INLINE ConstIterator operator+(int32 offset) const;
+        NFE_INLINE ConstIterator operator-(int32 offset) const;
+
+        // get array index
+        int32 GetIndex() const { return mIndex; }
 
     protected:
-        NFE_INLINE ConstIterator(const ArrayView* array, uint32 index)
+        ConstIterator(const ArrayView* array, int32 index)
             : mArray(array), mIndex(index)
         { }
 
         const ArrayView* mArray;    // array we are iterating
-        uint32 mIndex;              // current index in the array
+        int32 mIndex;              // current index in the array
     };
 
     class Iterator : public ConstIterator
@@ -52,12 +73,32 @@ public:
         template<typename T> friend class DynArray;
 
     public:
+        // C++ standard iterator traits
+        using self_type = Iterator;
+
+        // creates invalid iterator
+        Iterator() : ConstIterator() { }
+
+        // comparisons
+        NFE_INLINE int32 operator - (const Iterator& rhs) const;
+
+        // element access
         NFE_INLINE ElementType& operator*() const;
+        NFE_INLINE ElementType* operator->() const;
+
+        // arithmetics
+        NFE_INLINE Iterator& operator++();
+        NFE_INLINE Iterator operator++(int);
+        NFE_INLINE Iterator& operator+=(int32 offset);
+        NFE_INLINE Iterator& operator--();
+        NFE_INLINE Iterator operator--(int);
+        NFE_INLINE Iterator& operator-=(int32 offset);
+        NFE_INLINE Iterator operator+(int32 offset) const;
+        NFE_INLINE Iterator operator-(int32 offset) const;
 
     private:
-        NFE_INLINE Iterator(ArrayView* array, uint32 index)
-            : ConstIterator(array, index)
-        { }
+        // creates invalid iterator
+        Iterator(const ArrayView* array, uint32 index) : ConstIterator(array, index) { }
     };
 
 
@@ -149,6 +190,8 @@ public:
     // lower-case aliases for Begin()/End(), required by C++
     NFE_INLINE ConstIterator begin() const { return Begin(); }
     NFE_INLINE ConstIterator end() const { return End(); }
+    NFE_INLINE ConstIterator cbegin() const { return Begin(); }
+    NFE_INLINE ConstIterator cend() const { return End(); }
     NFE_INLINE Iterator begin() { return Begin(); }
     NFE_INLINE Iterator end() { return End(); }
 
