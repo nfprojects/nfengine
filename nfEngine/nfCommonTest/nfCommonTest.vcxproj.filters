@@ -4,111 +4,6 @@
     <ClCompile Include="PCH.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Constants.cpp" />
-    <ClCompile Include="TestCases\FileAsyncTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\FileBufferedTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\FileSystemTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\FileTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\ImageTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\LatchTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\LibraryTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\LoggerTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\LogGrouperTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\LogScopeTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\MD5Test.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\MemoryTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\PackedArrayTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\PackerBasicTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\PackerComplexTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\RayGeometryTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\SetTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\SystemInfoTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\ThreadPoolSimpleTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\ThreadPoolStressTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\ThreadTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\TimerTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\WindowTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\AlignedTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\BufferInputStreamTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\BufferOutputStreamTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\BVHTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\ConfigTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\DirectoryWatchTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\EnumIteratorTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\ArrayViewTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\DynArrayTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\StringViewTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\StringTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\BitUtilsTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
     <ClCompile Include="TestCases\Reflection\ReflectionFundamentalTypesTest.cpp">
       <Filter>TestCases\Reflection</Filter>
     </ClCompile>
@@ -126,24 +21,6 @@
     </ClCompile>
     <ClCompile Include="TestCases\Reflection\ReflectionPointersTest.cpp">
       <Filter>TestCases\Reflection</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\UniquePtrTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\LockTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\ConditionVariableTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\MutexTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\SharedPtrTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\WeakPtrTest.cpp">
-      <Filter>TestCases</Filter>
     </ClCompile>
     <ClCompile Include="TestCases\Reflection\ReflectionEnumTest.cpp">
       <Filter>TestCases\Reflection</Filter>
@@ -193,6 +70,126 @@
     <ClCompile Include="TestCases\Math\MathEquationSolverTest.cpp">
       <Filter>TestCases\Math</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\Containers\SetTest.cpp">
+      <Filter>TestCases\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Containers\SharedPtrTest.cpp">
+      <Filter>TestCases\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Containers\StringTest.cpp">
+      <Filter>TestCases\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Containers\StringViewTest.cpp">
+      <Filter>TestCases\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Containers\UniquePtrTest.cpp">
+      <Filter>TestCases\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Containers\WeakPtrTest.cpp">
+      <Filter>TestCases\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Containers\ArrayViewTest.cpp">
+      <Filter>TestCases\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Containers\DynArrayTest.cpp">
+      <Filter>TestCases\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Containers\PackedArrayTest.cpp">
+      <Filter>TestCases\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\FileSystem\FileSystemTest.cpp">
+      <Filter>TestCases\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\FileSystem\FileTest.cpp">
+      <Filter>TestCases\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\FileSystem\DirectoryWatchTest.cpp">
+      <Filter>TestCases\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\FileSystem\FileAsyncTest.cpp">
+      <Filter>TestCases\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\FileSystem\FileBufferedTest.cpp">
+      <Filter>TestCases\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Logger\LogGrouperTest.cpp">
+      <Filter>TestCases\Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Logger\LogScopeTest.cpp">
+      <Filter>TestCases\Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Logger\LoggerTest.cpp">
+      <Filter>TestCases\Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Memory\MemoryTest.cpp">
+      <Filter>TestCases\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Memory\AlignedTest.cpp">
+      <Filter>TestCases\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Utils\BVHTest.cpp">
+      <Filter>TestCases\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Utils\MD5Test.cpp">
+      <Filter>TestCases\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Utils\ThreadPoolSimpleTest.cpp">
+      <Filter>TestCases\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Utils\ThreadPoolStressTest.cpp">
+      <Filter>TestCases\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Utils\BitUtilsTest.cpp">
+      <Filter>TestCases\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Utils\BufferInputStreamTest.cpp">
+      <Filter>TestCases\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Utils\BufferOutputStreamTest.cpp">
+      <Filter>TestCases\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Utils\LatchTest.cpp">
+      <Filter>TestCases\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\System\SystemInfoTest.cpp">
+      <Filter>TestCases\System</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\System\ThreadTest.cpp">
+      <Filter>TestCases\System</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\System\TimerTest.cpp">
+      <Filter>TestCases\System</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\System\WindowTest.cpp">
+      <Filter>TestCases\System</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\System\ConditionVariableTest.cpp">
+      <Filter>TestCases\System</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\System\LibraryTest.cpp">
+      <Filter>TestCases\System</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\System\LockTest.cpp">
+      <Filter>TestCases\System</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\System\MutexTest.cpp">
+      <Filter>TestCases\System</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Packer\PackerComplexTest.cpp">
+      <Filter>TestCases\Packer</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Packer\PackerBasicTest.cpp">
+      <Filter>TestCases\Packer</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Utils\ImageTest.cpp">
+      <Filter>TestCases\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Utils\ConfigTest.cpp">
+      <Filter>TestCases\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Utils\EnumIteratorTest.cpp">
+      <Filter>TestCases\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
@@ -211,6 +208,27 @@
     </Filter>
     <Filter Include="TestCases\Math">
       <UniqueIdentifier>{76bb7d67-f013-4acd-bc7b-a04d926bad3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestCases\Containers">
+      <UniqueIdentifier>{d0b56c4f-7ca4-4348-9f8d-d0e2714ed304}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestCases\System">
+      <UniqueIdentifier>{4ef51df5-d67c-4355-b391-1a23cba1493a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestCases\Utils">
+      <UniqueIdentifier>{b9815eb8-3ea2-4fcb-b443-b585a70e951d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestCases\Logger">
+      <UniqueIdentifier>{c5569081-7c29-458f-b81c-629d2e3d6cf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestCases\FileSystem">
+      <UniqueIdentifier>{2ed6bbb0-90bf-40ec-b4b1-8822e5a26f1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestCases\Memory">
+      <UniqueIdentifier>{94b45222-e0a0-41d4-b5f4-2176c63aacd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestCases\Packer">
+      <UniqueIdentifier>{7ca4fe4e-eef4-419f-bcf2-26e761f38ab9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

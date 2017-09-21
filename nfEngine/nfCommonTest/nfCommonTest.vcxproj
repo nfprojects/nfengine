@@ -160,28 +160,23 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TestCases\AlignedTest.cpp" />
-    <ClCompile Include="TestCases\ArrayViewTest.cpp" />
-    <ClCompile Include="TestCases\BitUtilsTest.cpp" />
-    <ClCompile Include="TestCases\BufferInputStreamTest.cpp" />
-    <ClCompile Include="TestCases\BufferOutputStreamTest.cpp" />
-    <ClCompile Include="TestCases\BVHTest.cpp" />
-    <ClCompile Include="TestCases\ConditionVariableTest.cpp" />
-    <ClCompile Include="TestCases\ConfigTest.cpp" />
-    <ClCompile Include="TestCases\DirectoryWatchTest.cpp" />
-    <ClCompile Include="TestCases\DynArrayTest.cpp" />
-    <ClCompile Include="TestCases\EnumIteratorTest.cpp" />
-    <ClCompile Include="TestCases\FileAsyncTest.cpp" />
-    <ClCompile Include="TestCases\FileBufferedTest.cpp" />
-    <ClCompile Include="TestCases\FileSystemTest.cpp" />
-    <ClCompile Include="TestCases\FileTest.cpp" />
-    <ClCompile Include="TestCases\ImageTest.cpp" />
-    <ClCompile Include="TestCases\LatchTest.cpp" />
-    <ClCompile Include="TestCases\LibraryTest.cpp" />
-    <ClCompile Include="TestCases\LockTest.cpp" />
-    <ClCompile Include="TestCases\LoggerTest.cpp" />
-    <ClCompile Include="TestCases\LogGrouperTest.cpp" />
-    <ClCompile Include="TestCases\LogScopeTest.cpp" />
+    <ClCompile Include="TestCases\Containers\ArrayViewTest.cpp" />
+    <ClCompile Include="TestCases\Containers\DynArrayTest.cpp" />
+    <ClCompile Include="TestCases\Containers\PackedArrayTest.cpp" />
+    <ClCompile Include="TestCases\Containers\SetTest.cpp" />
+    <ClCompile Include="TestCases\Containers\SharedPtrTest.cpp" />
+    <ClCompile Include="TestCases\Containers\StringTest.cpp" />
+    <ClCompile Include="TestCases\Containers\StringViewTest.cpp" />
+    <ClCompile Include="TestCases\Containers\UniquePtrTest.cpp" />
+    <ClCompile Include="TestCases\Containers\WeakPtrTest.cpp" />
+    <ClCompile Include="TestCases\FileSystem\DirectoryWatchTest.cpp" />
+    <ClCompile Include="TestCases\FileSystem\FileAsyncTest.cpp" />
+    <ClCompile Include="TestCases\FileSystem\FileBufferedTest.cpp" />
+    <ClCompile Include="TestCases\FileSystem\FileSystemTest.cpp" />
+    <ClCompile Include="TestCases\FileSystem\FileTest.cpp" />
+    <ClCompile Include="TestCases\Logger\LoggerTest.cpp" />
+    <ClCompile Include="TestCases\Logger\LogGrouperTest.cpp" />
+    <ClCompile Include="TestCases\Logger\LogScopeTest.cpp" />
     <ClCompile Include="TestCases\Math\MathBoxTest.cpp" />
     <ClCompile Include="TestCases\Math\MathEquationSolverTest.cpp" />
     <ClCompile Include="TestCases\Math\MathFloat2Test.cpp" />
@@ -197,13 +192,10 @@
     <ClCompile Include="TestCases\Math\MathTest.cpp" />
     <ClCompile Include="TestCases\Math\MathTransformTest.cpp" />
     <ClCompile Include="TestCases\Math\MathVectorTest.cpp" />
-    <ClCompile Include="TestCases\MD5Test.cpp" />
-    <ClCompile Include="TestCases\MemoryTest.cpp" />
-    <ClCompile Include="TestCases\MutexTest.cpp" />
-    <ClCompile Include="TestCases\PackedArrayTest.cpp" />
-    <ClCompile Include="TestCases\PackerBasicTest.cpp" />
-    <ClCompile Include="TestCases\PackerComplexTest.cpp" />
-    <ClCompile Include="TestCases\RayGeometryTest.cpp" />
+    <ClCompile Include="TestCases\Memory\AlignedTest.cpp" />
+    <ClCompile Include="TestCases\Memory\MemoryTest.cpp" />
+    <ClCompile Include="TestCases\Packer\PackerBasicTest.cpp" />
+    <ClCompile Include="TestCases\Packer\PackerComplexTest.cpp" />
     <ClCompile Include="TestCases\Reflection\ReflectionClassTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
@@ -226,18 +218,25 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="TestCases\SetTest.cpp" />
-    <ClCompile Include="TestCases\SharedPtrTest.cpp" />
-    <ClCompile Include="TestCases\StringTest.cpp" />
-    <ClCompile Include="TestCases\StringViewTest.cpp" />
-    <ClCompile Include="TestCases\SystemInfoTest.cpp" />
-    <ClCompile Include="TestCases\ThreadPoolSimpleTest.cpp" />
-    <ClCompile Include="TestCases\ThreadPoolStressTest.cpp" />
-    <ClCompile Include="TestCases\ThreadTest.cpp" />
-    <ClCompile Include="TestCases\TimerTest.cpp" />
-    <ClCompile Include="TestCases\UniquePtrTest.cpp" />
-    <ClCompile Include="TestCases\WeakPtrTest.cpp" />
-    <ClCompile Include="TestCases\WindowTest.cpp" />
+    <ClCompile Include="TestCases\System\ConditionVariableTest.cpp" />
+    <ClCompile Include="TestCases\System\LibraryTest.cpp" />
+    <ClCompile Include="TestCases\System\LockTest.cpp" />
+    <ClCompile Include="TestCases\System\MutexTest.cpp" />
+    <ClCompile Include="TestCases\System\SystemInfoTest.cpp" />
+    <ClCompile Include="TestCases\System\ThreadTest.cpp" />
+    <ClCompile Include="TestCases\System\TimerTest.cpp" />
+    <ClCompile Include="TestCases\System\WindowTest.cpp" />
+    <ClCompile Include="TestCases\Utils\BitUtilsTest.cpp" />
+    <ClCompile Include="TestCases\Utils\BufferInputStreamTest.cpp" />
+    <ClCompile Include="TestCases\Utils\BufferOutputStreamTest.cpp" />
+    <ClCompile Include="TestCases\Utils\BVHTest.cpp" />
+    <ClCompile Include="TestCases\Utils\ConfigTest.cpp" />
+    <ClCompile Include="TestCases\Utils\EnumIteratorTest.cpp" />
+    <ClCompile Include="TestCases\Utils\ImageTest.cpp" />
+    <ClCompile Include="TestCases\Utils\LatchTest.cpp" />
+    <ClCompile Include="TestCases\Utils\MD5Test.cpp" />
+    <ClCompile Include="TestCases\Utils\ThreadPoolSimpleTest.cpp" />
+    <ClCompile Include="TestCases\Utils\ThreadPoolStressTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
