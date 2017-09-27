@@ -12,19 +12,79 @@
 namespace NFE {
 namespace Common {
 
-AsyncFunc::AsyncFunc(AsyncFuncCallback callback)
-    : ptr(0)
+
+AsyncTask::AsyncTask(AsyncThreadPool& pool, const AsyncFuncCallback& callback)
+    : mPool(pool)
     , mCallback(callback)
+    , mState(State::Pending)
 {}
+
+void AsyncTask::AddDependency(const AsyncDependencyPtr& dep)
+{
+    NFE_ASSERT(mState == State::Pending, "Task dependencies must be set for non-scheduled task");
+
+    // TODO synchronize access
+    mDependencies.PushBack(dep);
+}
+
+void AsyncTask::AddDependencies(const ArrayView<const AsyncDependencyPtr> deps)
+{
+    NFE_ASSERT(mState == State::Pending, "Task dependencies must be set for non-scheduled task");
+
+    // TODO synchronize access
+    mDependencies.PushBackArray(deps);
+}
+
+void AsyncTask::Schedule()
+{
+    // TODO CAS
+}
+
+void AsyncTask::Execute()
+{
+    {
+        const State stateBefore = mState.exchange(State::Executing);
+        NFE_ASSERT(stateBefore == State::Sheduled, "Execute() must be called on a scheduled task only");
+    }
+
+    if (mCallback)
+    {
+        const AsyncTaskContext context =
+        {
+            *this,
+            0,      // TODO thread ID
+        };
+
+        mCallback(context);
+    }
+
+    {
+        const State stateBefore = mState.exchange(State::Executed);
+        NFE_ASSERT(stateBefore == State::Executing, "Task state has been changed externally during execution");
+    }
+
+    // notify waiting tasks
+    OnDepenencyFulfulled();
+}
+
+void AsyncTask::Wait() const
+{
+
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////
 
 AsyncThreadPool::AsyncThreadPool()
 {
-    mLastTaskId = 0;
     mStarted = true;
 
     // spawn worker threads
     for (size_t i = 0; i < std::thread::hardware_concurrency(); ++i)
-        mWorkerThreads.emplace_back(std::thread(&AsyncThreadPool::SchedulerCallback, this));
+    {
+        mWorkerThreads.PushBack(std::thread(&AsyncThreadPool::SchedulerCallback, this));
+    }
 }
 
 AsyncThreadPool::~AsyncThreadPool()
@@ -37,12 +97,10 @@ AsyncThreadPool::~AsyncThreadPool()
 
     // cleanup worker threads
     for (auto& thread : mWorkerThreads)
+    {
         thread.join();
-    mWorkerThreads.clear();
-
-    // cleanup tasks
-    for (auto taskPair : mTasks)
-        delete taskPair.second;
+    }
+    mWorkerThreads.Clear();
 }
 
 void AsyncThreadPool::SchedulerCallback()
@@ -100,23 +158,6 @@ AsyncFuncID AsyncThreadPool::Enqueue(AsyncFuncCallback function)
     }
 
     return taskPtr;
-}
-
-AsyncFunc* AsyncThreadPool::GetTask(const AsyncFuncID& taskID) const
-{
-    // assume called in mTasksMutex lock
-
-    auto it = mTasks.find(taskID);
-    if (it != mTasks.end())
-        return it->second;
-
-    return nullptr;
-}
-
-bool AsyncThreadPool::IsTaskFinished(const AsyncFuncID& taskID)
-{
-    ScopedMutexLock lock(mTasksMutex);
-    return GetTask(taskID) == nullptr;
 }
 
 void AsyncThreadPool::WaitForTask(const AsyncFuncID& taskID)
