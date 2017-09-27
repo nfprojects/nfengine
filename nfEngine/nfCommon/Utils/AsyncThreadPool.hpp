@@ -8,43 +8,128 @@
 
 #include "../nfCommon.hpp"
 #include "../System/ConditionVariable.hpp"
+#include "../Containers/SharedPtr.hpp"
+#include "../Containers/DynArray.hpp"
 
 #include <functional>
 #include <inttypes.h>
 #include <thread>
 #include <atomic>
 #include <queue>
-#include <map>
 
 namespace NFE {
 namespace Common {
 
-/**
- * Thread pool task unique identifier.
- */
-typedef uint64_t AsyncFuncID;
+
+struct AsyncTaskContext
+{
+    const AsyncTask& task;
+    uint32 threadId;
+};
 
 /**
  * Function object representing a task.
- * @param instance Instance id of the whole task
  * @param thread   Thread id
  */
-typedef std::function<void()> AsyncFuncCallback;
+using AsyncFuncCallback = std::function<void(const AsyncTaskContext&)>;
+
+class AsyncThreadPool;
+class IAsyncDependency;
+class AsyncTask;
+
+using AsyncDependencyPtr = SharedPtr<IAsyncDependency>;
+using AsyncDependencyWeakPtr = WeakPtr<IAsyncDependency>;
+using AsyncTaskPtr = SharedPtr<AsyncTask>;
+
 
 /**
- * @class Task
- * @brief Internal task structure.
- * @remarks Only @p AsyncThreadPool class can access it.
+ * Generic task dependency.
  */
-class AsyncFunc final
+class IAsyncDependency
 {
-    friend class AsyncThreadPool;
-
-    AsyncFuncID ptr;
-    AsyncFuncCallback mCallback;
-
 public:
-    AsyncFunc(AsyncFuncCallback callback);
+    explicit IAsyncDependency(AsyncThreadPool& pool);
+    virtual ~IAsyncDependency() = default;
+
+    // Return parent tread pool.
+    NFE_INLINE AsyncThreadPool& GetPool() const { return mPool; }
+
+    // Check if the dependency is fulfilled
+    NFE_INLINE bool IsFulfilled() const { return mFullfilled; }
+
+protected:
+    /**
+     * Called when dependency has been fulfilled.
+     */
+    virtual void OnDepenencyFulfilled();
+
+private:
+    AsyncThreadPool& mPool;
+
+    // list of tasks that are dependent on this dependency
+    DynArray<AsyncTaskPtr> mReverseDependencies;
+
+    std::atomic<bool> mFullfilled;
+};
+
+
+struct AsyncTaskSetup
+{
+    AsyncTaskPtr parent;
+    AsyncDependencyPtr dependency;
+};
+
+class NFE_ALIGN(64) AsyncTask : public IAsyncDependency
+{
+public:
+
+    enum class State : uint8
+    {
+        Pending,    // created, not scheduled
+        Sheduled,   // scheduled for execution (waiting for dependency)
+        Enqueued,   // ready for execution, waiting in queue
+        Executing,  // task is being executed at this moment
+        Executed,   // executed
+    };
+
+    AsyncTask(AsyncThreadPool& pool, const AsyncFuncCallback& callback, const AsyncTaskSetup& setup);
+    ~AsyncTask();
+
+    // Get task state
+    NFE_INLINE State GetState() const { return mState; }
+
+    /**
+     * Schedule a pending scheduled task for execution.
+     * @remarks Calling this function second is forbidden.
+     * @remarks This method is thread-safe.
+     */
+    void Schedule();
+    void Enqueue();
+
+    /**
+     * Execute the task now. Should be called by the pool only.
+     */
+    void OnExecute();
+
+    /**
+     * Wait until the task is finished.
+     * @remarks This can be called ONLY ON MAIN THREAD - do not abuse.
+     */
+    void Wait() const;
+
+    void UpdateState(const State newState);
+
+private:
+
+    void OnFinished();
+
+    AsyncTaskPtr mParent;                   // parent task
+    AsyncDependencyPtr mDependency;
+
+    const AsyncFuncCallback mCallback;
+
+    std::atomic<uint32> mTasksLeft;
+    std::atomic<State> mState;
 };
 
 
@@ -54,53 +139,41 @@ public:
  */
 class NFCOMMON_API AsyncThreadPool final
 {
-    std::vector<std::thread> mWorkerThreads;
+    NFE_MAKE_NONCOPYABLE(AsyncThreadPool);
+    NFE_MAKE_NONMOVEABLE(AsyncThreadPool);
 
-    ConditionVariable mTaskQueueTask;
-    std::queue<AsyncFunc*> mTasksQueue;
-    Mutex mTasksQueueMutex;  //< lock for "mTasksQueue" access
+public:
+    AsyncThreadPool();
+    ~AsyncThreadPool();
 
-    std::atomic<bool> mStarted;
-    std::atomic<AsyncFuncID> mLastTaskId;
-    std::map<AsyncFuncID, AsyncFunc*> mTasks;
-    Mutex mTasksMutex;                 //< lock for "mTasks"
-    ConditionVariable mTasksMutexCV;  //< condition variable used to notify about finished task
+    std::enable_shared_from_this
+    /**
+     * Create a new task.
+     * @remarks This function is thread-safe.
+     * @remarks Created task IS NOT scheduled automatically - it must be done manually.
+     * @param function  Task routine (can be null for creating synchronization point only).
+     * @return          Task pointer.
+     */
+    AsyncTaskPtr CreateTask(const AsyncFuncCallback& function, const AsyncTaskSetup& setup = AsyncTaskSetup());
 
-    // translate AsyncFuncID to Task object
-    AsyncFunc* GetTask(const AsyncFuncID& taskID) const;
+private:
+    void EnqueueTask(const AsyncTaskPtr& task);
 
     void SchedulerCallback();
 
     // worker thread routine
     void WorkerThreadCallback();
 
-public:
-    AsyncThreadPool();
-    ~AsyncThreadPool();
+    DynArray<std::thread> mWorkerThreads;
 
-    /**
-     * Create a new task.
-     *
-     * @remarks This function is thread-safe.
-     * @param function  Task routine (can be null for creating synchronization point only).
-     * @return          Task ID
-     */
-    AsyncFuncID Enqueue(AsyncFuncCallback function);
+    ConditionVariable mFinishedTasksCV; // notifies about finished task
+    Mutex mFinishedTaskMutex;
 
-    /**
-     * Check if a task is completed.
-     */
-    bool IsTaskFinished(const AsyncFuncID& taskID);
+    ConditionVariable mTaskQueueCV; // notifies about a new task in the queue
+    std::queue<AsyncTaskPtr> mTasksQueue;
+    Mutex mTasksQueueMutex;  //< lock for "mTasksQueue" access
 
-    /**
-     * Waits for a task to finish.
-     */
-    void WaitForTask(const AsyncFuncID& taskID);
-
-    /**
-     * Waits for all tasks in the pool to finish.
-     */
-    void WaitForAllTasks();
+    std::atomic<bool> mStarted;
 };
 
 } // namespace Common
