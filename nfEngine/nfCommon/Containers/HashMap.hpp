@@ -1,13 +1,13 @@
 /**
  * @file
  * @author Witek902 (witek902@gmail.com)
- * @brief  Map data container declaration
+ * @brief  HashMap data container declaration
  */
 
 #pragma once
 
 #include "../nfCommon.hpp"
-#include "Set.hpp"
+#include "HashSet.hpp"
 
 #include <utility>
 
@@ -16,30 +16,41 @@ namespace NFE {
 namespace Common {
 
 
-template<typename KeyType, typename ValueType, typename Comparator = DefaultComparator<KeyType>>
-class Map final
+template<typename KeyType, typename ValueType, typename HashPolicy = DefaultHashPolicy<KeyType>>
+class HashMap final
 {
 public:
 
-    using InternalKey = std::pair<KeyType, ValueType>;
-
-    // comparator that compares only first element of the internal key
-    struct InternalComparator
+    struct InternalKey
     {
-        bool Less(const InternalKey& left, const InternalKey& right) const
-        {
-            const Comparator comparator;
-            return comparator.Less(left.first, right.first);
-        }
+        KeyType first;
+        ValueType second;
 
-        bool Equal(const InternalKey& left, const InternalKey& right) const
+        InternalKey() = default;
+        InternalKey(const InternalKey&) = default;
+        InternalKey(InternalKey&&) = default;
+        InternalKey& operator = (const InternalKey&) = default;
+        InternalKey& operator = (InternalKey&&) = default;
+        NFE_INLINE explicit InternalKey(const KeyType& key) : first(key) { }
+        NFE_INLINE InternalKey(const KeyType& key, const ValueType& value) : first(key), second(value) { }
+        NFE_INLINE InternalKey(KeyType&& key, ValueType&& value) : first(std::move(key)), second(std::move(value)) { }
+
+        NFE_INLINE bool operator == (const InternalKey& rhs) const
         {
-            const Comparator comparator;
-            return comparator.Equal(left.first, right.first);
+            return first == rhs.first;
         }
     };
 
-    using InternalSet = Set<InternalKey, InternalComparator>;
+    // hash policy that takes first pair element into account
+    struct InternalHashPolicy
+    {
+        uint32 operator() (const InternalKey& in) const
+        {
+            return GetHash(in.first);
+        }
+    };
+
+    using InternalSet = HashSet<InternalKey, InternalHashPolicy>;
     using InsertResult = typename InternalSet::InsertResult;
     using ConstIterator = typename InternalSet::ConstIterator;
     using Iterator = typename InternalSet::Iterator;
@@ -79,7 +90,7 @@ public:
 
 private:
 
-    // internal set
+    // internal hash set
     InternalSet mSet;
 };
 
@@ -88,4 +99,4 @@ private:
 } // namespace NFE
 
 
-#include "MapImpl.hpp"
+#include "HashMapImpl.hpp"
