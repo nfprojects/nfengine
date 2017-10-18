@@ -78,7 +78,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
 
     for (UINT n = 0; n < mBuffersNum; n++)
     {
-        hr = mSwapChain->GetBuffer(n, IID_PPV_ARGS(&mBuffers[n]));
+        hr = mSwapChain->GetBuffer(n, IID_PPV_ARGS(mBuffers[n].GetPtr()));
         if (FAILED(hr))
         {
             LOG_ERROR("Failed to get swap chain buffer for n = %u", n);

@@ -351,17 +351,18 @@ typename ArrayView<ElementType>::Iterator ArrayView<ElementType>::Find(const Ele
 }
 
 template<typename ElementTypeA, typename ElementTypeB>
-bool operator == (const ArrayView<ElementTypeA>& a, const ArrayView<ElementTypeB>& b)
+bool operator == (const ArrayView<ElementTypeA>& lhs, const ArrayView<ElementTypeB>& rhs)
 {
-    static_assert(std::is_same<typename std::remove_cv<ElementTypeA>::type, typename std::remove_cv<ElementTypeB>::type>::value,
+    static_assert(std::is_same<typename std::remove_cv<ElementTypeA>::type,
+                               typename std::remove_cv<ElementTypeB>::type>::value,
                   "ArrayView types are incompatible");
 
-    if (a.Size() != b.Size())
+    if (lhs.Size() != rhs.Size())
         return false;
 
-    for (uint32 i = 0; i < a.Size(); ++i)
+    for (uint32 i = 0; i < lhs.Size(); ++i)
     {
-        if (a[i] != b[i])
+        if (lhs[i] != rhs[i])
         {
             return false;
         }
@@ -371,23 +372,101 @@ bool operator == (const ArrayView<ElementTypeA>& a, const ArrayView<ElementTypeB
 }
 
 template<typename ElementTypeA, typename ElementTypeB>
-bool operator != (const ArrayView<ElementTypeA>& a, const ArrayView<ElementTypeB>& b)
+bool operator != (const ArrayView<ElementTypeA>& lhs, const ArrayView<ElementTypeB>& rhs)
 {
-    static_assert(std::is_same<typename std::remove_cv<ElementTypeA>::type, typename std::remove_cv<ElementTypeB>::type>::value,
+    static_assert(std::is_same<typename std::remove_cv<ElementTypeA>::type,
+                               typename std::remove_cv<ElementTypeB>::type>::value,
                   "ArrayView types are incompatible");
 
-    if (a.Size() != b.Size())
+    if (lhs.Size() != rhs.Size())
         return true;
 
-    for (uint32 i = 0; i < a.Size(); ++i)
+    for (uint32 i = 0; i < lhs.Size(); ++i)
     {
-        if (a[i] != b[i])
+        if (lhs[i] != rhs[i])
         {
             return true;
         }
     }
 
     return false;
+}
+
+template<typename ElementTypeA, typename ElementTypeB>
+bool operator < (const ArrayView<ElementTypeA>& lhs, const ArrayView<ElementTypeB>& rhs)
+{
+    static_assert(std::is_same<typename std::remove_cv<ElementTypeA>::type,
+                               typename std::remove_cv<ElementTypeB>::type>::value,
+                  "ArrayView types are incompatible");
+
+    if (lhs.Size() < rhs.Size())
+        return true;
+
+    if (lhs.Size() > rhs.Size())
+        return false;
+
+    for (uint32 i = 0; i < lhs.Size(); ++i)
+    {
+        if (lhs[i] < rhs[i])
+            return true;
+
+        if (lhs[i] > rhs[i])
+            return false;
+    }
+
+    // arrays are equal
+    return false;
+}
+
+template<typename ElementTypeA, typename ElementTypeB>
+bool operator > (const ArrayView<ElementTypeA>& lhs, const ArrayView<ElementTypeB>& rhs)
+{
+    return rhs < lhs;
+}
+
+template<typename ElementTypeA, typename ElementTypeB>
+bool operator <= (const ArrayView<ElementTypeA>& lhs, const ArrayView<ElementTypeB>& rhs)
+{
+    static_assert(std::is_same<typename std::remove_cv<ElementTypeA>::type,
+                               typename std::remove_cv<ElementTypeB>::type>::value,
+                  "ArrayView types are incompatible");
+
+    if (lhs.Size() < rhs.Size())
+        return true;
+
+    if (lhs.Size() > rhs.Size())
+        return false;
+
+    for (uint32 i = 0; i < lhs.Size(); ++i)
+    {
+        if (lhs[i] < rhs[i])
+            return true;
+
+        if (lhs[i] > rhs[i])
+            return false;
+    }
+
+    // arrays are equal
+    return true;
+}
+
+template<typename ElementTypeA, typename ElementTypeB>
+bool operator >= (const ArrayView<ElementTypeA>& lhs, const ArrayView<ElementTypeB>& rhs)
+{
+    return rhs <= lhs;
+}
+
+template<typename ElementType>
+uint32 GetHash(const ArrayView<ElementType>& arrayView)
+{
+    // hashing algorithm based on boost's hash_combine
+
+    uint32 seed = 0;
+    for (const ElementType& element : arrayView)
+    {
+        seed ^= GetHash(element) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+    }
+    return seed;
 }
 
 

@@ -7,9 +7,9 @@
 #pragma once
 
 #include "../nfCommon.hpp"
+#include "Hash.hpp"
 
 #include <iterator>
-#include <vector>
 
 namespace NFE {
 namespace Common {
@@ -205,17 +205,30 @@ protected:
     uint32 mSize;
 };
 
-/**
- * Equality operator.
- */
-template<typename ElementTypeA, typename ElementTypeB>
-bool operator == (const ArrayView<ElementTypeA>& a, const ArrayView<ElementTypeB>& b);
 
 /**
- * Inequality operator.
+ * Comparison operators.
  */
 template<typename ElementTypeA, typename ElementTypeB>
-bool operator != (const ArrayView<ElementTypeA>& a, const ArrayView<ElementTypeB>& b);
+bool operator == (const ArrayView<ElementTypeA>& lhs, const ArrayView<ElementTypeB>& rhs);
+template<typename ElementTypeA, typename ElementTypeB>
+bool operator != (const ArrayView<ElementTypeA>& lhs, const ArrayView<ElementTypeB>& rhs);
+template<typename ElementTypeA, typename ElementTypeB>
+bool operator < (const ArrayView<ElementTypeA>& lhs, const ArrayView<ElementTypeB>& rhs);
+template<typename ElementTypeA, typename ElementTypeB>
+bool operator > (const ArrayView<ElementTypeA>& lhs, const ArrayView<ElementTypeB>& rhs);
+template<typename ElementTypeA, typename ElementTypeB>
+bool operator <= (const ArrayView<ElementTypeA>& lhs, const ArrayView<ElementTypeB>& rhs);
+template<typename ElementTypeA, typename ElementTypeB>
+bool operator >= (const ArrayView<ElementTypeA>& lhs, const ArrayView<ElementTypeB>& rhs);
+
+
+/**
+ * Calculate hash of an array view.
+ * @note This function is meant to be fast (it's used in hash tables), not to be cryptographically secure.
+ */
+template<typename ElementType>
+uint32 GetHash(const ArrayView<ElementType>& arrayView);
 
 
 } // namespace Common

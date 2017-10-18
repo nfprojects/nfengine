@@ -67,7 +67,7 @@ bool CommandRecorder::Init(ID3D12Device* device)
     {
         D3DPtr<ID3D12CommandAllocator> commandAllocator;
         hr = D3D_CALL_CHECK(device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                           IID_PPV_ARGS(&commandAllocator)));
+                                                           IID_PPV_ARGS(commandAllocator.GetPtr())));
         if (FAILED(hr))
         {
             LOG_ERROR("Failed to create D3D12 command allocator for frame %u (out of %u)", i, mFrameCount);
@@ -81,7 +81,7 @@ bool CommandRecorder::Init(ID3D12Device* device)
 
     // create fence for frames synchronization
     if (FAILED(D3D_CALL_CHECK(gDevice->mDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE,
-                                                            IID_PPV_ARGS(&mFence)))))
+                                                            IID_PPV_ARGS(mFence.GetPtr())))))
     {
         LOG_ERROR("Failed to create D3D12 fence object");
         return false;
@@ -99,7 +99,7 @@ bool CommandRecorder::Init(ID3D12Device* device)
     // create D3D command list
     hr = D3D_CALL_CHECK(device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,
                                                   mCommandAllocators[mFrameBufferIndex].Get(), nullptr,
-                                                  IID_PPV_ARGS(&mCommandList)));
+                                                  IID_PPV_ARGS(mCommandList.GetPtr())));
     if (FAILED(hr))
     {
         LOG_ERROR("Failed to create D3D12 command list");

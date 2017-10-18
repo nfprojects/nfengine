@@ -59,7 +59,7 @@ bool Buffer::UploadData(const BufferDesc& desc)
                                                                       &resourceDesc,
                                                                       D3D12_RESOURCE_STATE_GENERIC_READ,
                                                                       nullptr,
-                                                                      IID_PPV_ARGS(&uploadBuffer)));
+                                                                      IID_PPV_ARGS(uploadBuffer.GetPtr())));
 
     if (desc.debugName && !SetDebugName(uploadBuffer.Get(), desc.debugName + std::string("_UPLOAD")))
     {
@@ -77,7 +77,7 @@ bool Buffer::UploadData(const BufferDesc& desc)
 
         D3DPtr<ID3D12CommandAllocator> commandAllocator;
         hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                                         IID_PPV_ARGS(&commandAllocator)));
+                                                                         IID_PPV_ARGS(commandAllocator.GetPtr())));
         if (FAILED(hr))
             return false;
 
@@ -87,7 +87,7 @@ bool Buffer::UploadData(const BufferDesc& desc)
         D3DPtr<ID3D12GraphicsCommandList> commandList;
         hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,
                                                                     commandAllocator.Get(), nullptr,
-                                                                    IID_PPV_ARGS(&commandList)));
+                                                                    IID_PPV_ARGS(commandList.GetPtr())));
         if (FAILED(hr))
             return false;
 
@@ -190,7 +190,7 @@ bool Buffer::Init(const BufferDesc& desc)
                                                                       &resourceDesc,
                                                                       initialState,
                                                                       nullptr,
-                                                                      IID_PPV_ARGS(&mResource)));
+                                                                      IID_PPV_ARGS(mResource.GetPtr())));
     if (FAILED(hr))
         return false;
 

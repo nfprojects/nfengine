@@ -184,7 +184,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
 
     HRESULT hr;
     hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateGraphicsPipelineState(&psd,
-                                                                          IID_PPV_ARGS(&mPipelineState)));
+                                                                          IID_PPV_ARGS(mPipelineState.GetPtr())));
     if (FAILED(hr))
     {
         Release();

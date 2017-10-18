@@ -64,7 +64,7 @@ bool Device::Init(const DeviceInitParams* params)
     HRESULT hr;
     UINT flags = 0;
 
-    hr = D3D_CALL_CHECK(CreateDXGIFactory(IID_PPV_ARGS(&mDXGIFactory)));
+    hr = D3D_CALL_CHECK(CreateDXGIFactory(IID_PPV_ARGS(mDXGIFactory.GetPtr())));
     if (FAILED(hr))
         return false;
 
@@ -80,7 +80,7 @@ bool Device::Init(const DeviceInitParams* params)
 
     hr = D3D_CALL_CHECK(D3D11CreateDevice(mAdapters[mAdapterInUse].Get(), D3D_DRIVER_TYPE_UNKNOWN,
                                           NULL, flags, NULL, 0, D3D11_SDK_VERSION,
-                                          &mDevice, &mFeatureLevel, &mImmediateContext));
+                                          mDevice.GetPtr(), &mFeatureLevel, mImmediateContext.GetPtr()));
     if (FAILED(hr))
     {
         LOG_ERROR("D3D11CreateDevice() failed");
@@ -117,7 +117,7 @@ bool Device::Init(const DeviceInitParams* params)
     if (params->debugLevel > 0)
     {
         mDebugLayerEnabled = true;
-        if (SUCCEEDED(mDevice->QueryInterface(IID_PPV_ARGS(&mInfoQueue))))
+        if (SUCCEEDED(mDevice->QueryInterface(IID_PPV_ARGS(mInfoQueue.GetPtr()))))
         {
             D3D11_MESSAGE_ID messagesToHide[] =
             {
@@ -162,7 +162,7 @@ Device::~Device()
     if (IsDebugLayerEnabled())
     {
         D3DPtr<ID3D11Debug> debugInterface;
-        D3D_CALL_CHECK(mDevice->QueryInterface(IID_PPV_ARGS(&debugInterface)));
+        D3D_CALL_CHECK(mDevice->QueryInterface(IID_PPV_ARGS(debugInterface.GetPtr())));
 
         if (debugInterface)
         {
@@ -428,7 +428,7 @@ bool Device::DetectVideoCards(int preferredId)
             mAdapterInUse = i;
 
         LOG_INFO("Adapter found at slot %u: %s", i, descString.c_str());
-        mAdapters.push_back(adapter);
+        mAdapters.push_back(D3DPtr<IDXGIAdapter>(adapter));
     }
 
     if (mAdapters.size() > 0)

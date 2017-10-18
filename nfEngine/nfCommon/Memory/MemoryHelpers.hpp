@@ -17,7 +17,7 @@ namespace NFE {
 namespace Common {
 
 /**
- * Collection of various classes for C++ objects memory manipulation.
+ * Collection of various classes for low-level C++ objects memory manipulation.
  */
 class MemoryHelpers
 {
@@ -64,6 +64,39 @@ public:
         Move(T* target, T* source)
     {
         memcpy(target, source, sizeof(T));
+    }
+
+    /**
+     * Move an array of objects (will call move constructor or copy constructor if possible).
+     * @note    Source and target memory blocks can overlap.
+     */
+    template<typename T>
+    static void MoveArray(T* target, T* source, size_t numElements)
+    {
+        if (target == source || numElements == 0)
+        {
+            // nothing to do
+            return;
+        }
+
+        if (reinterpret_cast<std::uintptr_t>(target) > reinterpret_cast<std::uintptr_t>(source))
+        {
+            // move starting from the end in this scenario:
+            // source: .....XXXXXXXX.........
+            // target: .........XXXXXXXXX....
+
+            for (size_t i = numElements; i-- > 0; )
+            {
+                Move(target + i, source + i);
+            }
+        }
+        else
+        {
+            for (size_t i = 0; i < numElements; ++i)
+            {
+                Move(target + i, source + i);
+            }
+        }
     }
 };
 

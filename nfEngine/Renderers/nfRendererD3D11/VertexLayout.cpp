@@ -53,7 +53,7 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
     D3DPtr<ID3DBlob> errorsBuffer;
     D3DPtr<ID3DBlob> bytecode;
     hr = D3DCompile(vertexShaderCode.data(), vertexShaderCode.size(), nullptr, nullptr,
-                    nullptr, "main", "vs_4_0", 0, 0, &bytecode, &errorsBuffer);
+                    nullptr, "main", "vs_4_0", 0, 0, bytecode.GetPtr(), errorsBuffer.GetPtr());
     if (errorsBuffer)
     {
         LOG_INFO("Dummy vertex shader compilation output:\n%s",
@@ -68,7 +68,7 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
 
     hr = D3D_CALL_CHECK(gDevice->Get()->CreateInputLayout(elementDescs, desc.numElements,
                                                           bytecode->GetBufferPointer(),
-                                                          bytecode->GetBufferSize(), &mIL));
+                                                          bytecode->GetBufferSize(), mIL.GetPtr()));
     if (FAILED(hr))
         return false;
 

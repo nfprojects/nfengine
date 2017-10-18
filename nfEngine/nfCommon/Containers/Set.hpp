@@ -34,10 +34,14 @@ public:
         Right
     };
 
-    class ConstIterator
+    // iterator with read-only access
+    class ConstIterator : public std::iterator<std::forward_iterator_tag, KeyType>
     {
         friend class Set;
     public:
+        // C++ standard iterator traits
+        using self_type = ConstIterator;
+
         NFE_INLINE ConstIterator();
         NFE_INLINE bool operator == (const ConstIterator& other) const;
         NFE_INLINE bool operator != (const ConstIterator& other) const;
@@ -50,10 +54,14 @@ public:
         int mNode;          // current node ID
     };
 
+    // iterator with read-write access
     class Iterator : public ConstIterator
     {
         friend class Set;
     public:
+        // C++ standard iterator traits
+        using self_type = Iterator;
+
         NFE_INLINE KeyType& operator*() const;
     private:
         NFE_INLINE Iterator(const Set* set, int node);

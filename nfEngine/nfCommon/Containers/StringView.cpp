@@ -159,22 +159,7 @@ bool StringView::operator < (const StringView& other) const
 
 bool StringView::operator > (const StringView& other) const
 {
-    if (mLength > other.mLength)
-        return true;
-
-    if (mLength < other.mLength)
-        return false;
-
-    for (uint32 i = 0; i < mLength; ++i)
-    {
-        if (mData[i] > other.mData[i])
-            return true;
-        else if (mData[i] < other.mData[i])
-            return false;
-    }
-
-    // string are equal
-    return false;
+    return other.operator < (*this);
 }
 
 bool StringView::operator <= (const StringView& other) const
@@ -199,22 +184,7 @@ bool StringView::operator <= (const StringView& other) const
 
 bool StringView::operator >= (const StringView& other) const
 {
-    if (mLength > other.mLength)
-        return true;
-
-    if (mLength < other.mLength)
-        return false;
-
-    for (uint32 i = 0; i < mLength; ++i)
-    {
-        if (mData[i] > other.mData[i])
-            return true;
-        else if (mData[i] < other.mData[i])
-            return false;
-    }
-
-    // string are equal
-    return true;
+    return other.operator <= (*this);
 }
 
 uint32 GetHash(const StringView& stringView)

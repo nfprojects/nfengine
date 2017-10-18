@@ -195,7 +195,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     HRESULT hr;
     D3DPtr<ID3D10Blob> rootSignature, errorsBuffer;
     hr = D3D_CALL_CHECK(D3D12SerializeRootSignature(&rsd, D3D_ROOT_SIGNATURE_VERSION_1,
-                                                    &rootSignature, &errorsBuffer));
+                                                    rootSignature.GetPtr(), errorsBuffer.GetPtr()));
     if (FAILED(hr))
         return false;
 
@@ -203,7 +203,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
 
     hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateRootSignature(
         0, rootSignature->GetBufferPointer(), rootSignature->GetBufferSize(),
-        IID_PPV_ARGS(&mRootSignature)));
+        IID_PPV_ARGS(mRootSignature.GetPtr())));
 
     if (desc.debugName && !SetDebugName(mRootSignature.Get(), desc.debugName))
     {

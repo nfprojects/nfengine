@@ -60,15 +60,15 @@ UniquePtrBase<T, Deleter>& UniquePtrBase<T, Deleter>::operator = (UniquePtrBase&
 }
 
 template<typename T, typename Deleter>
-T** UniquePtrBase<T, Deleter>::operator&()
-{
-    return &mPointer;
-}
-
-template<typename T, typename Deleter>
 T* UniquePtrBase<T, Deleter>::Get() const
 {
     return mPointer;
+}
+
+template<typename T, typename Deleter>
+T** UniquePtrBase<T, Deleter>::GetPtr()
+{
+    return &mPointer;
 }
 
 template<typename T, typename Deleter>
@@ -102,6 +102,34 @@ template<typename T, typename Deleter>
 bool UniquePtrBase<T, Deleter>::operator != (const T* other) const
 {
     return mPointer != other;
+}
+
+template<typename T, typename Deleter>
+bool UniquePtrBase<T, Deleter>::operator == (const UniquePtrBase& other) const
+{
+    if (this == &other)
+    {
+        return true;
+    }
+    else
+    {
+        NFE_ASSERT(mPointer != other.mPointer, "Two different unique pointers must point to different objects. Fix your code.");
+        return mPointer == other.mPointer;
+    }
+}
+
+template<typename T, typename Deleter>
+bool UniquePtrBase<T, Deleter>::operator != (const UniquePtrBase& other) const
+{
+    if (this == &other)
+    {
+        NFE_ASSERT(mPointer != other.mPointer, "Two different unique pointers must point to different objects. Fix your code.");
+        return mPointer != other.mPointer;
+    }
+    else
+    {
+        return true;
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -163,6 +191,13 @@ UniquePtr<T> StaticCast(UniquePtr<U>&& source)
     T* pointer = static_cast<T*>(source.Release());
     return UniquePtr<T>(pointer);
 }
+
+template<typename T>
+uint32 GetHash(const UniquePtr<T>& x)
+{
+    return GetHash(x.Get());
+}
+
 
 } // namespace Common
 } // namespace NFE

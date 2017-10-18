@@ -47,10 +47,17 @@ bool HashSet<KeyType, HashFunction>::ConstIterator::operator != (const ConstIter
 }
 
 template<typename KeyType, typename HashFunction>
-const KeyType& HashSet<KeyType, HashFunction>::ConstIterator::operator*() const
+const KeyType& HashSet<KeyType, HashFunction>::ConstIterator::operator * () const
 {
     NFE_ASSERT(mElement != InvalidID, "Trying to dereference 'end' iterator");
     return mSet->mKeys[mElement];
+}
+
+template<typename KeyType, typename HashFunction>
+const KeyType* HashSet<KeyType, HashFunction>::ConstIterator::operator -> () const
+{
+    NFE_ASSERT(mElement != InvalidID, "Trying to dereference 'end' iterator");
+    return mSet->mKeys + mElement;
 }
 
 template<typename KeyType, typename HashFunction>
@@ -103,15 +110,27 @@ typename HashSet<KeyType, HashFunction>::ConstIterator HashSet<KeyType, HashFunc
 // HashSet::Iterator //////////////////////////////////////////////////////////////////////////////////
 
 template<typename KeyType, typename HashFunction>
+HashSet<KeyType, HashFunction>::Iterator::Iterator()
+    : ConstIterator()
+{ }
+
+template<typename KeyType, typename HashFunction>
 HashSet<KeyType, HashFunction>::Iterator::Iterator(const HashSet* set, ElementID bucket, ElementID element)
     : ConstIterator(set, bucket, element)
 { }
 
 template<typename KeyType, typename HashFunction>
-KeyType& HashSet<KeyType, HashFunction>::Iterator::operator*() const
+KeyType& HashSet<KeyType, HashFunction>::Iterator::operator * () const
 {
     NFE_ASSERT(this->mElement != InvalidID, "Trying to dereference 'end' iterator");
     return this->mSet->mKeys[this->mElement];
+}
+
+template<typename KeyType, typename HashFunction>
+KeyType* HashSet<KeyType, HashFunction>::Iterator::operator -> () const
+{
+    NFE_ASSERT(this->mElement != InvalidID, "Trying to dereference 'end' iterator");
+    return this->mSet->mKeys + this->mElement;
 }
 
 
@@ -625,7 +644,7 @@ typename HashSet<KeyType, HashFunction>::InsertResult HashSet<KeyType, HashFunct
 
             if (mKeys[currentElement] == key)
             {
-                return InsertResult(ConstIterator(this, hashValue, currentElement), /* replaced */ true);
+                return InsertResult(Iterator(this, hashValue, currentElement), /* replaced */ true);
             }
 
             currentElement = mNextElements[currentElement];
@@ -642,7 +661,7 @@ typename HashSet<KeyType, HashFunction>::InsertResult HashSet<KeyType, HashFunct
 
     ++mNumKeys;
 
-    return InsertResult(ConstIterator(this, hashValue, newElementID));
+    return InsertResult(Iterator(this, hashValue, newElementID));
 }
 
 template<typename KeyType, typename HashFunction>

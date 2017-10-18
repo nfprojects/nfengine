@@ -116,7 +116,7 @@ bool Shader::Init(const ShaderDesc& desc)
     ID3DBlob* errorsBuffer = nullptr;
     hr = D3DCompile(code, shaderSize, desc.path, d3dMacros.Get(),
                     D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", profileName, flags, 0,
-                    &mBytecode, &errorsBuffer);
+                    mBytecode.GetPtr(), &errorsBuffer);
 
     if (errorsBuffer)
     {
@@ -220,8 +220,7 @@ bool Shader::Disassemble(bool html, std::string& output)
 
     HRESULT hr;
     D3DPtr<ID3DBlob> disassembly;
-    hr = D3D_CALL_CHECK(D3DDisassemble(bytecode->GetBufferPointer(), bytecode->GetBufferSize(),
-                                       flags, 0, &disassembly));
+    hr = D3D_CALL_CHECK(D3DDisassemble(bytecode->GetBufferPointer(), bytecode->GetBufferSize(), flags, 0, disassembly.GetPtr()));
     if (FAILED(hr))
         return false;
 

@@ -99,7 +99,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     scd.Windowed = 1;
 
     Release();
-    hr = D3D_CALL_CHECK(gDevice->mDXGIFactory->CreateSwapChain(gDevice->mDevice.Get(), &scd, &mSwapChain));
+    hr = D3D_CALL_CHECK(gDevice->mDXGIFactory->CreateSwapChain(gDevice->mDevice.Get(), &scd, mSwapChain.GetPtr()));
     if (FAILED(hr))
         return false;
 

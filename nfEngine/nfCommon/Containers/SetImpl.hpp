@@ -585,7 +585,7 @@ bool Set<KeyType, Comparator>::EraseInternal(int node)
         }
         else // case 1: node to be removed has only right children
         {
-            mKeys[node] = mKeys[right];
+            MemoryHelpers::Move<KeyType>(mKeys + node, mKeys + right);
             mNodes[node].next[1] = InvalidID;
             node = right;
         }
@@ -594,7 +594,7 @@ bool Set<KeyType, Comparator>::EraseInternal(int node)
     {
         if (right == InvalidID) // case 2: node to be removed has only left children
         {
-            mKeys[node] = mKeys[left];
+            MemoryHelpers::Move<KeyType>(mKeys + node, mKeys + left);
             mNodes[node].next[0] = InvalidID;
             node = left;
         }
@@ -607,8 +607,8 @@ bool Set<KeyType, Comparator>::EraseInternal(int node)
                 successor = mNodes[successor].next[0];
             }
 
-            // copy in-order successor data in place of deleted node
-            mKeys[node] = mKeys[successor];
+            // move in-order successor data in place of deleted node
+            MemoryHelpers::Move<KeyType>(mKeys + node, mKeys + successor);
 
             right = mNodes[successor].next[1];
             if (right != InvalidID)
