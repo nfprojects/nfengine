@@ -7,6 +7,7 @@
 #pragma once
 
 #include "../nfCommon.hpp"
+#include "Hash.hpp"
 
 
 namespace NFE {
@@ -49,8 +50,8 @@ public:
     /**
      * Access pointed object.
      */
-    T** operator&();
     T* Get() const;
+    T** operator&();
 
     /**
      * Set a new object.
@@ -93,7 +94,7 @@ class UniquePtr : public UniquePtrBase<T, Deleter>
 public:
     UniquePtr() {}
     UniquePtr(std::nullptr_t) : UniquePtr() {}
-    UniquePtr(T* ptr) : UniquePtrBase<T, Deleter>(ptr) {}
+    explicit UniquePtr(T* ptr) : UniquePtrBase<T, Deleter>(ptr) {}
     UniquePtr(UniquePtr&& rhs) : UniquePtrBase<T, Deleter>(std::move(rhs)) {}
     UniquePtr& operator = (T* ptr) { UniquePtrBase<T, Deleter>::operator=(ptr); return *this; }
     UniquePtr& operator = (UniquePtr&& ptr) { UniquePtrBase<T, Deleter>::operator=(std::move(ptr)); return *this; }
@@ -121,7 +122,7 @@ class UniquePtr<T[], Deleter>
 public:
     UniquePtr() {}
     UniquePtr(std::nullptr_t) : UniquePtr() {}
-    UniquePtr(T* ptr) : UniquePtrBase<T, Deleter>(ptr) {}
+    explicit UniquePtr(T* ptr) : UniquePtrBase<T, Deleter>(ptr) {}
     UniquePtr(UniquePtr&& rhs) : UniquePtrBase<T, Deleter>(std::move(rhs)) {}
     UniquePtr& operator = (T* ptr) { UniquePtrBase<T, Deleter>::operator=(ptr); return *this; }
     UniquePtr& operator = (UniquePtr&& ptr) { UniquePtrBase<T, Deleter>::operator=(std::move(ptr)); return *this; }
@@ -143,14 +144,21 @@ public:
  * Create unique pointer.
  */
 template<typename T, typename ... Args>
-UniquePtr<T> MakeUniquePtr(Args&& ... args);
+NFE_INLINE UniquePtr<T> MakeUniquePtr(Args&& ... args);
 
 
 /**
  * Static cast a unique pointer.
  */
 template<typename T, typename U>
-UniquePtr<T> StaticCast(UniquePtr<U>&& source);
+NFE_INLINE UniquePtr<T> StaticCast(UniquePtr<U>&& source);
+
+
+/**
+ * Calculate hash of shared pointer.
+ */
+template<typename T>
+NFE_INLINE uint32 GetHash(const UniquePtr<T>& x);
 
 
 } // namespace Common

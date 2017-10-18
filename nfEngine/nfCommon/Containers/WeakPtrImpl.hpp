@@ -182,6 +182,12 @@ bool WeakPtr<T>::Valid() const
     return false;
 }
 
+template<typename T>
+uint32 GetHash(const WeakPtr<T>& x)
+{
+    return GetHash(x.Get());
+}
+
 
 } // namespace Common
 } // namespace NFE

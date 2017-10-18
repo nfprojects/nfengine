@@ -7,7 +7,6 @@
 #include "PCH.hpp"
 #include "nfCommon/Containers/Set.hpp"
 #include "nfCommon/Containers/HashSet.hpp"
-#include "nfCommon/Containers/String.hpp"
 #include "nfCommon/Math/Random.hpp"
 
 #include "TestClasses.hpp"
@@ -629,38 +628,4 @@ TYPED_TEST(SetTest, Permutations)
             permutation++;
         } while (std::next_permutation(values.begin(), values.end()));
     }
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-TEST(Set, SetOfStrings)
-{
-    Set<String> set;
-
-    ASSERT_NE(set.End(), set.Insert("aaa").iterator);
-    ASSERT_NE(set.End(), set.Insert("bbb").iterator);
-
-    ASSERT_NE(set.End(), set.Find("aaa"));
-    ASSERT_NE(set.End(), set.Find("bbb"));
-    ASSERT_EQ(set.End(), set.Find("ccc"));
-
-    ASSERT_TRUE(set.Erase("aaa"));
-    ASSERT_TRUE(set.Erase("bbb"));
-    ASSERT_FALSE(set.Erase("ccc"));
-}
-
-TEST(HashSet, HashSetOfStrings)
-{
-    HashSet<String> set;
-
-    ASSERT_NE(set.End(), set.Insert("aaa").iterator);
-    ASSERT_NE(set.End(), set.Insert("bbb").iterator);
-
-    ASSERT_NE(set.End(), set.Find("aaa"));
-    ASSERT_NE(set.End(), set.Find("bbb"));
-    ASSERT_EQ(set.End(), set.Find("ccc"));
-
-    ASSERT_TRUE(set.Erase("aaa"));
-    ASSERT_TRUE(set.Erase("bbb"));
-    ASSERT_FALSE(set.Erase("ccc"));
 }

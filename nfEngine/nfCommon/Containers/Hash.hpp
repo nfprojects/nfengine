@@ -17,53 +17,53 @@ namespace Common {
  * Generic hash function.
  */
 template<typename T>
-uint32 GetHash(T x);
+uint32 GetHash(const T& x);
 
 
 template<>
-NFE_INLINE constexpr uint32 GetHash<uint8>(uint8 x)
+NFE_INLINE constexpr uint32 GetHash<uint8>(const uint8& x)
 {
     return static_cast<uint32>(x);
 }
 
 template<>
-NFE_INLINE constexpr uint32 GetHash<uint16>(uint16 x)
+NFE_INLINE constexpr uint32 GetHash<uint16>(const uint16& x)
 {
     return static_cast<uint32>(x);
 }
 
 template<>
-NFE_INLINE constexpr uint32 GetHash<uint32>(uint32 x)
+NFE_INLINE constexpr uint32 GetHash<uint32>(const uint32& x)
 {
     return x;
 }
 
 template<>
-NFE_INLINE constexpr uint32 GetHash<uint64>(uint64 x)
+NFE_INLINE constexpr uint32 GetHash<uint64>(const uint64& x)
 {
     return static_cast<uint32>(x) ^ static_cast<uint32>(x >> 32);
 }
 
 template<>
-NFE_INLINE constexpr uint32 GetHash<int8>(int8 x)
+NFE_INLINE constexpr uint32 GetHash<int8>(const int8& x)
 {
     return static_cast<uint32>(x);
 }
 
 template<>
-NFE_INLINE constexpr uint32 GetHash<int16>(int16 x)
+NFE_INLINE constexpr uint32 GetHash<int16>(const int16& x)
 {
     return static_cast<uint32>(x);
 }
 
 template<>
-NFE_INLINE constexpr uint32 GetHash<int32>(int32 x)
+NFE_INLINE constexpr uint32 GetHash<int32>(const int32& x)
 {
     return static_cast<uint32>(x);
 }
 
 template<>
-NFE_INLINE constexpr uint32 GetHash<int64>(int64 x)
+NFE_INLINE constexpr uint32 GetHash<int64>(const int64& x)
 {
     return GetHash(static_cast<uint64>(x));
 }
@@ -77,8 +77,14 @@ uint32 constexpr GetHash(const T* x)
     return GetHash(reinterpret_cast<size_t>(x));
 }
 
+template<typename T>
+uint32 constexpr GetHash(T* x)
+{
+    return GetHash(reinterpret_cast<size_t>(x));
+}
+
 template<>
-NFE_INLINE uint32 GetHash<float>(float x)
+NFE_INLINE uint32 GetHash<float>(const float& x)
 {
     Math::Bits32 bits;
     bits.f = x;
@@ -86,7 +92,7 @@ NFE_INLINE uint32 GetHash<float>(float x)
 }
 
 template<>
-NFE_INLINE uint32 GetHash<double>(double x)
+NFE_INLINE uint32 GetHash<double>(const double& x)
 {
     Math::Bits64 bits;
     bits.f = x;

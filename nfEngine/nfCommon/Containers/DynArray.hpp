@@ -130,6 +130,17 @@ private:
     uint32 mAllocSize;
 };
 
+
+/**
+ * Calculate hash of an dynamic array (simple wrapper for ArrayView's GetHash).
+ */
+template<typename ElementType>
+NFE_INLINE uint32 GetHash(const DynArray<ElementType>& array)
+{
+    return GetHash(static_cast<const ArrayView<ElementType>&>(array));
+}
+
+
 } // namespace Common
 } // namespace NFE
 

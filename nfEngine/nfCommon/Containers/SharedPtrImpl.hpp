@@ -150,12 +150,6 @@ void SharedPtr<T>::Reset(T* newPtr, const DeleterFunc& deleter)
 //////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-T** SharedPtr<T>::operator&()
-{
-    return &(this->mPointer);
-}
-
-template<typename T>
 T* SharedPtr<T>::operator->() const
 {
     return this->mPointer;
@@ -243,6 +237,13 @@ SharedPtr<TargetType> DynamicCast(const SharedPtr<SourceType>& source)
 
     return result;
 }
+
+template<typename T>
+uint32 GetHash(const SharedPtr<T>& x)
+{
+    return GetHash(x.Get());
+}
+
 
 } // namespace Common
 } // namespace NFE

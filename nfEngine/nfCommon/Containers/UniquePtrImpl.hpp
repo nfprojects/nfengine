@@ -164,5 +164,12 @@ UniquePtr<T> StaticCast(UniquePtr<U>&& source)
     return UniquePtr<T>(pointer);
 }
 
+template<typename T>
+uint32 GetHash(const UniquePtr<T>& x)
+{
+    return GetHash(x.Get());
+}
+
+
 } // namespace Common
 } // namespace NFE

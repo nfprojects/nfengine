@@ -381,7 +381,7 @@ bool Device::DetectVideoCards(int preferredId)
             mAdapterInUse = i;
 
         LOG_INFO("Adapter found at slot %u: %s", i, descString.c_str());
-        mAdapters.push_back(std::move(adapter));
+        mAdapters.push_back(D3DPtr<IDXGIAdapter>(adapter));
     }
 
     if (mAdapters.size() > 0)
