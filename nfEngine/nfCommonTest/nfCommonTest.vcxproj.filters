@@ -193,6 +193,9 @@
     <ClCompile Include="TestCases\Containers\MapTest.cpp">
       <Filter>TestCases\Containers</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\Containers\HashMapTest.cpp">
+      <Filter>TestCases\Containers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />

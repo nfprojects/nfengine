@@ -501,6 +501,12 @@
     <ClInclude Include="Containers\Hash.hpp">
       <Filter>Containers</Filter>
     </ClInclude>
+    <ClInclude Include="Containers\HashMap.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\HashMapImpl.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
