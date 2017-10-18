@@ -82,7 +82,7 @@ bool HeapAllocator::Init()
         break;
     }
 
-    HRESULT hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&mHeap)));
+    HRESULT hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(mHeap.GetPtr())));
     if (FAILED(hr))
         return false;
 

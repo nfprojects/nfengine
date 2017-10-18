@@ -7,7 +7,6 @@
 #include "PCH.hpp"
 #include "nfCommon/Containers/Set.hpp"
 #include "nfCommon/Containers/HashSet.hpp"
-#include "nfCommon/Containers/String.hpp"
 #include "nfCommon/Math/Random.hpp"
 
 #include "TestClasses.hpp"
@@ -631,36 +630,23 @@ TYPED_TEST(SetTest, Permutations)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////
-
-TEST(Set, SetOfStrings)
+TYPED_TEST(SetTest, Stl_FindIf)
 {
-    Set<String> set;
+    TypeParam set;
+    ASSERT_NE(set.End(), set.Insert(0).iterator);
+    ASSERT_NE(set.End(), set.Insert(1).iterator);
+    ASSERT_NE(set.End(), set.Insert(2).iterator);
 
-    ASSERT_NE(set.End(), set.Insert("aaa").iterator);
-    ASSERT_NE(set.End(), set.Insert("bbb").iterator);
+    // find existing element
+    {
+        const auto it = std::find_if(set.begin(), set.end(), [](int x) { return x == 1; });
+        ASSERT_NE(set.End(), it);
+        ASSERT_EQ(1, *it);
+    }
 
-    ASSERT_NE(set.End(), set.Find("aaa"));
-    ASSERT_NE(set.End(), set.Find("bbb"));
-    ASSERT_EQ(set.End(), set.Find("ccc"));
-
-    ASSERT_TRUE(set.Erase("aaa"));
-    ASSERT_TRUE(set.Erase("bbb"));
-    ASSERT_FALSE(set.Erase("ccc"));
-}
-
-TEST(HashSet, HashSetOfStrings)
-{
-    HashSet<String> set;
-
-    ASSERT_NE(set.End(), set.Insert("aaa").iterator);
-    ASSERT_NE(set.End(), set.Insert("bbb").iterator);
-
-    ASSERT_NE(set.End(), set.Find("aaa"));
-    ASSERT_NE(set.End(), set.Find("bbb"));
-    ASSERT_EQ(set.End(), set.Find("ccc"));
-
-    ASSERT_TRUE(set.Erase("aaa"));
-    ASSERT_TRUE(set.Erase("bbb"));
-    ASSERT_FALSE(set.Erase("ccc"));
+    // find non-existing element
+    {
+        const auto it = std::find_if(set.begin(), set.end(), [](int x) { return x == 123; });
+        ASSERT_EQ(set.End(), it);
+    }
 }

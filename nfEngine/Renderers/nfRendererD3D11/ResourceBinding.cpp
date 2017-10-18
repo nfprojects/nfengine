@@ -233,7 +233,7 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& te
     }
 
     D3DPtr<ID3D11ShaderResourceView> srv;
-    HRESULT hr = D3D_CALL_CHECK(gDevice->Get()->CreateShaderResourceView(tex->mTextureGeneric, &srvd, &srv));
+    HRESULT hr = D3D_CALL_CHECK(gDevice->Get()->CreateShaderResourceView(tex->mTextureGeneric, &srvd, srv.GetPtr()));
     if (FAILED(hr))
     {
         LOG_ERROR("Failed to create Shader Resource View");
@@ -331,7 +331,7 @@ bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, const Textur
     }
 
     D3DPtr<ID3D11UnorderedAccessView> uav;
-    HRESULT hr = D3D_CALL_CHECK(gDevice->Get()->CreateUnorderedAccessView(tex->mTextureGeneric, &uavd, &uav));
+    HRESULT hr = D3D_CALL_CHECK(gDevice->Get()->CreateUnorderedAccessView(tex->mTextureGeneric, &uavd, uav.GetPtr()));
     if (FAILED(hr))
     {
         LOG_ERROR("Failed to create Unordered Access View");

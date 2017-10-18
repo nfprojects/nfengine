@@ -192,7 +192,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
             dsvd.Texture2D.MipSlice = 0;
         }
 
-        hr = D3D_CALL_CHECK(gDevice->Get()->CreateDepthStencilView(mTexture2D, &dsvd, &mDSV));
+        hr = D3D_CALL_CHECK(gDevice->Get()->CreateDepthStencilView(mTexture2D, &dsvd, mDSV.GetPtr()));
         if (FAILED(hr))
         {
             D3D_SAFE_RELEASE(mTexture2D);

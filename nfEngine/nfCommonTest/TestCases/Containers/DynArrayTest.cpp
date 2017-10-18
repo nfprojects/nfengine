@@ -148,6 +148,7 @@ TEST(DynArray, CopyConstructor)
 
     {
         ArrayType array;
+        array.Reserve(2);
         {
             auto iter = array.PushBack(value1);
             ASSERT_NE(array.End(), iter);
@@ -163,9 +164,9 @@ TEST(DynArray, CopyConstructor)
         EXPECT_EQ(0, counters.destructor);
 
         // copy constructor
-        const ArrayType set2(array);
+        const ArrayType array2(array);
         // array = []
-        // set2 = [1, 2]
+        // array2 = [1, 2]
 
         ArrayType::ConstIterator iter;
         const Type* ptr;
@@ -179,7 +180,7 @@ TEST(DynArray, CopyConstructor)
         EXPECT_EQ(0, counters.destructor);
 
         ASSERT_EQ(2, array.Size());
-        ASSERT_EQ(2, set2.Size());
+        ASSERT_EQ(2, array2.Size());
 
         // convert "array" to const to force use of ConstIterator
         const ArrayType& constSet = array;
@@ -187,8 +188,8 @@ TEST(DynArray, CopyConstructor)
         ASSERT_NE(constSet.End(), iter);
         ptr = &(*iter);
 
-        iter = set2.Find(value1);
-        ASSERT_NE(set2.End(), iter);
+        iter = array2.Find(value1);
+        ASSERT_NE(array2.End(), iter);
         ptr2 = &(*iter);
 
         // compare pointer to the same value in both sets - they should be different
@@ -223,6 +224,7 @@ TEST(DynArray, Assign)
 
     {
         ArrayType array;
+        array.Reserve(2);
         {
             auto iter = array.PushBack(value1);
             ASSERT_NE(array.End(), iter);
@@ -237,15 +239,16 @@ TEST(DynArray, Assign)
         EXPECT_EQ(0, counters.assignment);
         EXPECT_EQ(0, counters.destructor);
 
-        ArrayType set2;
+        ArrayType array2;
+        array2.Reserve(2);
         {
-            auto iter = set2.PushBack(value3);
-            ASSERT_NE(set2.End(), iter);
-            iter = set2.PushBack(value4);
-            ASSERT_NE(set2.End(), iter);
+            auto iter = array2.PushBack(value3);
+            ASSERT_NE(array2.End(), iter);
+            iter = array2.PushBack(value4);
+            ASSERT_NE(array2.End(), iter);
         }
         // array = [1, 2]
-        // set2 = [3, 4]
+        // array2 = [3, 4]
         EXPECT_EQ(4, counters.constructor);
         EXPECT_EQ(0, counters.moveConstructor);
         EXPECT_EQ(4, counters.copyConstructor);
@@ -254,9 +257,9 @@ TEST(DynArray, Assign)
         EXPECT_EQ(0, counters.destructor);
 
         // assignment operator
-        set2 = array;
+        array2 = array;
         // array = [1, 2]
-        // set2 = [1, 2]
+        // array2 = [1, 2]
         EXPECT_EQ(4, counters.constructor);
         EXPECT_EQ(0, counters.moveConstructor);
         EXPECT_EQ(6, counters.copyConstructor);
@@ -265,15 +268,15 @@ TEST(DynArray, Assign)
         EXPECT_EQ(2, counters.destructor);
 
         ASSERT_EQ(2, array.Size());
-        ASSERT_EQ(2, set2.Size());
+        ASSERT_EQ(2, array2.Size());
 
         // convert "array" to const to force use of ConstIterator
         auto iter = array.Find(value1);
         ASSERT_NE(array.End(), iter);
         const Type* ptr = &(*iter);
 
-        iter = set2.Find(value1);
-        ASSERT_NE(set2.End(), iter);
+        iter = array2.Find(value1);
+        ASSERT_NE(array2.End(), iter);
         const Type* ptr2 = &(*iter);
 
         // compare pointer to the same value in both sets - they should be different
@@ -297,6 +300,7 @@ TEST(DynArray, MoveConstructor)
     {
         // initialize source DynArray
         ArrayType array;
+        array.Reserve(2);
         {
             auto iter = array.PushBack(Type(&counters, 1));
             ASSERT_NE(array.End(), iter);
@@ -312,9 +316,9 @@ TEST(DynArray, MoveConstructor)
         EXPECT_EQ(0, counters.destructor);
 
         // call the move constructor
-        ArrayType set2(std::move(array));
+        ArrayType array2(std::move(array));
         // array = []
-        // set2 = [1, 2]
+        // array2 = [1, 2]
         EXPECT_EQ(2, counters.constructor);
         EXPECT_EQ(2, counters.moveConstructor);
         EXPECT_EQ(0, counters.copyConstructor);
@@ -326,9 +330,9 @@ TEST(DynArray, MoveConstructor)
         EXPECT_EQ(0, array.Size());
 
         // check if elements were moved
-        EXPECT_EQ(2, set2.Size());
-        EXPECT_NE(set2.End(), set2.Find(Type(nullptr, 1)));
-        EXPECT_NE(set2.End(), set2.Find(Type(nullptr, 2)));
+        EXPECT_EQ(2, array2.Size());
+        EXPECT_NE(array2.End(), array2.Find(Type(nullptr, 1)));
+        EXPECT_NE(array2.End(), array2.Find(Type(nullptr, 2)));
     }
 
     EXPECT_EQ(2, counters.constructor);
@@ -348,6 +352,7 @@ TEST(DynArray, MoveAssignment)
     {
         // initialize target array
         ArrayType array;
+        array.Reserve(2);
         {
             auto iter = array.PushBack(Type(&counters, 1));
             ASSERT_NE(array.End(), iter);
@@ -363,15 +368,16 @@ TEST(DynArray, MoveAssignment)
         EXPECT_EQ(0, counters.destructor);
 
         // initialize source array
-        ArrayType set2;
+        ArrayType array2;
+        array2.Reserve(2);
         {
-            auto iter = set2.PushBack(Type(&counters, 3));
-            ASSERT_NE(set2.End(), iter);
-            iter = set2.PushBack(Type(&counters, 4));
-            ASSERT_NE(set2.End(), iter);
+            auto iter = array2.PushBack(Type(&counters, 3));
+            ASSERT_NE(array2.End(), iter);
+            iter = array2.PushBack(Type(&counters, 4));
+            ASSERT_NE(array2.End(), iter);
         }
         // array = [1, 2]
-        // set2 = [3, 4]
+        // array2 = [3, 4]
         EXPECT_EQ(4, counters.constructor);
         EXPECT_EQ(4, counters.moveConstructor);
         EXPECT_EQ(0, counters.copyConstructor);
@@ -380,9 +386,9 @@ TEST(DynArray, MoveAssignment)
         EXPECT_EQ(0, counters.destructor);
 
         // move assign
-        set2 = std::move(array);
+        array2 = std::move(array);
         // array = []
-        // set2 = [1, 2]
+        // array2 = [1, 2]
         EXPECT_EQ(4, counters.constructor);
         EXPECT_EQ(4, counters.moveConstructor);
         EXPECT_EQ(0, counters.copyConstructor);
@@ -394,9 +400,9 @@ TEST(DynArray, MoveAssignment)
         EXPECT_EQ(0, array.Size());
 
         // check if elements were moved
-        EXPECT_EQ(2, set2.Size());
-        EXPECT_NE(set2.End(), set2.Find(Type(nullptr, 1)));
-        EXPECT_NE(set2.End(), set2.Find(Type(nullptr, 2)));
+        EXPECT_EQ(2, array2.Size());
+        EXPECT_NE(array2.End(), array2.Find(Type(nullptr, 1)));
+        EXPECT_NE(array2.End(), array2.Find(Type(nullptr, 2)));
     }
 
     EXPECT_EQ(4, counters.constructor);

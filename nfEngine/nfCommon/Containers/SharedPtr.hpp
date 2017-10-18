@@ -8,6 +8,7 @@
 
 #include "UniquePtr.hpp"
 #include "SharedPtrBase.hpp"
+#include "Hash.hpp"
 
 
 namespace NFE {
@@ -57,7 +58,6 @@ public:
     /**
      * Access pointed object.
      */
-    T** operator&();
     T* operator->() const;
     T& operator*() const;
     T* Get() const;
@@ -75,6 +75,8 @@ public:
     /**
      * Compare pointers.
      */
+    bool operator == (std::nullptr_t) const;
+    bool operator != (std::nullptr_t) const;
     bool operator == (const SharedPtr& other) const;
     bool operator != (const SharedPtr& other) const;
     bool operator == (const T* other) const;
@@ -102,7 +104,7 @@ private:
  * Create shared pointer.
  */
 template<typename T, typename ... Args>
-SharedPtr<T> MakeSharedPtr(Args&& ... args);
+NFE_INLINE SharedPtr<T> MakeSharedPtr(Args&& ... args);
 
 /**
  * Static cast a shared pointer.
@@ -116,6 +118,13 @@ SharedPtr<TargetType> StaticCast(const SharedPtr<SourceType>& source);
 // TODO this should be removed and replaced with RTTI's Cast
 template<typename TargetType, typename SourceType>
 SharedPtr<TargetType> DynamicCast(const SharedPtr<SourceType>& source);
+
+/**
+ * Calculate hash of shared pointer.
+ */
+template<typename T>
+NFE_INLINE uint32 GetHash(const SharedPtr<T>& x);
+
 
 } // namespace Common
 } // namespace NFE

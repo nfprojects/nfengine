@@ -93,7 +93,7 @@ bool Buffer::Init(const BufferDesc& desc)
         initialData.pSysMem = desc.initialData;
         initialData.SysMemPitch = 0;
         initialData.SysMemSlicePitch = 0;
-        hr = D3D_CALL_CHECK(gDevice->Get()->CreateBuffer(&bufferDesc, &initialData, &mBuffer));
+        hr = D3D_CALL_CHECK(gDevice->Get()->CreateBuffer(&bufferDesc, &initialData, mBuffer.GetPtr()));
     }
     else
     {
@@ -103,7 +103,7 @@ bool Buffer::Init(const BufferDesc& desc)
             return false;
         }
 
-        hr = D3D_CALL_CHECK(gDevice->Get()->CreateBuffer(&bufferDesc, NULL, &mBuffer));
+        hr = D3D_CALL_CHECK(gDevice->Get()->CreateBuffer(&bufferDesc, NULL, mBuffer.GetPtr()));
     }
 
     if (FAILED(hr))

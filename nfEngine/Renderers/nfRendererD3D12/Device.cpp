@@ -70,14 +70,14 @@ bool Device::Init(const DeviceInitParams* params)
     if (params->debugLevel > 0)
     {
         D3DPtr<ID3D12Debug> debugController;
-        if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
+        if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(debugController.GetPtr()))))
         {
             LOG_INFO("Enabling D3D12 debug layer");
             debugController->EnableDebugLayer();
         }
     }
 
-    hr = D3D_CALL_CHECK(CreateDXGIFactory1(IID_PPV_ARGS(&mDXGIFactory)));
+    hr = D3D_CALL_CHECK(CreateDXGIFactory1(IID_PPV_ARGS(mDXGIFactory.GetPtr())));
     if (FAILED(hr))
         return false;
 
@@ -89,7 +89,7 @@ bool Device::Init(const DeviceInitParams* params)
     }
 
     hr = D3D_CALL_CHECK(D3D12CreateDevice(mAdapters[mAdapterInUse].Get(),
-                                          D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&mDevice)));
+                                          D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(mDevice.GetPtr())));
     if (FAILED(hr))
         return false;
 
@@ -149,7 +149,7 @@ bool Device::Init(const DeviceInitParams* params)
 
     if (params->debugLevel > 0)
     {
-        hr = D3D_CALL_CHECK(mDevice->QueryInterface(IID_PPV_ARGS(&mDebugDevice)));
+        hr = D3D_CALL_CHECK(mDevice->QueryInterface(IID_PPV_ARGS(mDebugDevice.GetPtr())));
         if (FAILED(hr))
         {
             LOG_ERROR("D3D12 device debugging won't be supported");
@@ -179,7 +179,7 @@ bool Device::Init(const DeviceInitParams* params)
     if (params->debugLevel > 0)
     {
         mDebugLayerEnabled = true;
-        if (SUCCEEDED(mDevice->QueryInterface(IID_PPV_ARGS(&mInfoQueue))))
+        if (SUCCEEDED(mDevice->QueryInterface(IID_PPV_ARGS(mInfoQueue.GetPtr()))))
         {
             D3D12_MESSAGE_ID messagesToHide[] =
             {
@@ -206,12 +206,12 @@ bool Device::Init(const DeviceInitParams* params)
     D3D12_COMMAND_QUEUE_DESC queueDesc = {};
     queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
     queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-    hr = D3D_CALL_CHECK(mDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&mCommandQueue)));
+    hr = D3D_CALL_CHECK(mDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(mCommandQueue.GetPtr())));
     if (FAILED(hr))
         return false;
 
     // create fence for frame synchronization
-    hr = D3D_CALL_CHECK(gDevice->mDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mFence)));
+    hr = D3D_CALL_CHECK(gDevice->mDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(mFence.GetPtr())));
     if (FAILED(hr))
     {
         LOG_ERROR("Failed to create D3D12 fence object");
@@ -381,7 +381,7 @@ bool Device::DetectVideoCards(int preferredId)
             mAdapterInUse = i;
 
         LOG_INFO("Adapter found at slot %u: %s", i, descString.c_str());
-        mAdapters.push_back(std::move(adapter));
+        mAdapters.push_back(D3DPtr<IDXGIAdapter>(adapter));
     }
 
     if (mAdapters.size() > 0)

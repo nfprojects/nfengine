@@ -307,9 +307,18 @@ TEST(ArrayView, Stl_FindIf)
     int elements[5] = { 0, 1, 2, 3, 4 };
     const ArrayView<int> array(elements, 5);
 
-    const auto it = std::find_if(array.begin(), array.end(), [](int x) { return x == 1; });
-    ASSERT_NE(array.End(), it);
-    ASSERT_EQ(1, *it);
+    // find existing element
+    {
+        const auto it = std::find_if(array.begin(), array.end(), [](int x) { return x == 1; });
+        ASSERT_NE(array.End(), it);
+        ASSERT_EQ(1, *it);
+    }
+
+    // find non-existing element
+    {
+        const auto it = std::find_if(array.begin(), array.end(), [](int x) { return x == 123; });
+        ASSERT_EQ(array.End(), it);
+    }
 }
 
 TEST(ArrayView, Stl_Count)

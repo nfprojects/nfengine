@@ -45,15 +45,18 @@ public:
     static constexpr uint32 RehashThresholdDenominator = 4;
 
     // iterator with read-only access
-    // TODO make this iterator STL-compatible
-    class ConstIterator
+    class ConstIterator : public std::iterator<std::forward_iterator_tag, KeyType>
     {
         friend class HashSet;
     public:
+        // C++ standard iterator traits
+        using self_type = ConstIterator;
+
         NFE_INLINE ConstIterator();
         NFE_INLINE bool operator == (const ConstIterator& other) const;
         NFE_INLINE bool operator != (const ConstIterator& other) const;
-        NFE_INLINE const KeyType& operator*() const;
+        NFE_INLINE const KeyType& operator * () const;
+        NFE_INLINE const KeyType* operator -> () const;
         ConstIterator& operator++();
         NFE_INLINE ConstIterator operator++(int);
     private:
@@ -64,12 +67,16 @@ public:
     };
 
     // iterator with read-write access
-    // TODO make this iterator STL-compatible
     class Iterator : public ConstIterator
     {
         friend class HashSet;
     public:
-        NFE_INLINE KeyType& operator*() const;
+        // C++ standard iterator traits
+        using self_type = Iterator;
+
+        NFE_INLINE Iterator();
+        NFE_INLINE KeyType& operator * () const;
+        NFE_INLINE KeyType* operator -> () const;
     private:
         NFE_INLINE Iterator(const HashSet* set, ElementID bucket, ElementID element);
     };
@@ -77,10 +84,10 @@ public:
     // insertion information
     struct InsertResult final
     {
-        ConstIterator iterator; // iterator to the inserted node
+        Iterator iterator; // iterator to the inserted node
         bool replaced;          // set to true if the node with given key already existed
 
-        explicit InsertResult(const ConstIterator& iterator, bool replaced = false)
+        explicit InsertResult(const Iterator& iterator, bool replaced = false)
             : iterator(iterator), replaced(replaced)
         { }
     };

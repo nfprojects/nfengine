@@ -111,12 +111,11 @@ bool Shader::Init(const ShaderDesc& desc)
     ID3DBlob* errorsBuffer = nullptr;
     hr = D3DCompile(code, shaderSize, desc.path, d3dMacros.Get(),
                     D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", profileName, flags, 0,
-                    &mBytecode, &errorsBuffer);
+                    mBytecode.GetPtr(), &errorsBuffer);
 
     if (errorsBuffer)
     {
-        LOG_ERROR("Shader '%s' compilation output:\n%s", desc.path,
-                  (char*)errorsBuffer->GetBufferPointer());
+        LOG_ERROR("Shader '%s' compilation output:\n%s", desc.path, (char*)errorsBuffer->GetBufferPointer());
         errorsBuffer->Release();
     }
 
@@ -149,7 +148,7 @@ bool Shader::Disassemble(bool html, std::string& output)
     HRESULT hr;
     D3DPtr<ID3DBlob> disassembly;
     hr = D3D_CALL_CHECK(D3DDisassemble(bytecode->GetBufferPointer(), bytecode->GetBufferSize(),
-                                       flags, 0, &disassembly));
+                                       flags, 0, disassembly.GetPtr()));
     if (FAILED(hr))
         return false;
 
@@ -195,8 +194,7 @@ bool Shader::GetIODesc()
 
     // get reflector object
     D3DPtr<ID3D11ShaderReflection> reflection;
-    hr = D3D_CALL_CHECK(D3DReflect(bytecode->GetBufferPointer(), bytecode->GetBufferSize(),
-                                   IID_PPV_ARGS(&reflection)));
+    hr = D3D_CALL_CHECK(D3DReflect(bytecode->GetBufferPointer(), bytecode->GetBufferSize(), IID_PPV_ARGS(reflection.GetPtr())));
     if (FAILED(hr))
         return false;
 

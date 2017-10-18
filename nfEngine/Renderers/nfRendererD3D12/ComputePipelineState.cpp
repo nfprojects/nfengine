@@ -49,7 +49,7 @@ bool ComputePipelineState::Init(const ComputePipelineStateDesc& desc)
     // TODO pipeline caching
 
     HRESULT hr;
-    hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateComputePipelineState(&psd, IID_PPV_ARGS(&mPipelineState)));
+    hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateComputePipelineState(&psd, IID_PPV_ARGS(mPipelineState.GetPtr())));
     if (FAILED(hr))
     {
         LOG_ERROR("Failed to create compute pipeline state object");

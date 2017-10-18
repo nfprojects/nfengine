@@ -61,7 +61,7 @@ bool RingBuffer::Init(size_t size)
                                                                       &resourceDesc,
                                                                       D3D12_RESOURCE_STATE_GENERIC_READ,
                                                                       nullptr,
-                                                                      IID_PPV_ARGS(&mBuffer)));
+                                                                      IID_PPV_ARGS(mBuffer.GetPtr())));
     if (FAILED(hr))
         return false;
 

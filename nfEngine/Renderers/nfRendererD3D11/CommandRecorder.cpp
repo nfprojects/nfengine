@@ -49,7 +49,7 @@ CommandRecorder::CommandRecorder(ID3D11DeviceContext* deviceContext)
     , mComputePipelineState(nullptr)
 {
     HRESULT hr;
-    hr = deviceContext->QueryInterface(IID_PPV_ARGS(&mUserDefinedAnnotation));
+    hr = deviceContext->QueryInterface(IID_PPV_ARGS(mUserDefinedAnnotation.GetPtr()));
     if (FAILED(hr))
         mUserDefinedAnnotation.Reset();
 }
