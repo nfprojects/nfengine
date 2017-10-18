@@ -84,6 +84,12 @@ bool operator == (const SharedPtr<T>& lhs, const WeakPtr<T>& rhs);
 template<typename TargetType, typename SourceType>
 SharedPtr<TargetType> Cast(const SharedPtr<SourceType>& source);
 
+/**
+ * Calculate hash of a weak pointer.
+ */
+template<typename T>
+NFE_INLINE uint32 GetHash(const WeakPtr<T>& x);
+
 
 } // namespace Common
 } // namespace NFE

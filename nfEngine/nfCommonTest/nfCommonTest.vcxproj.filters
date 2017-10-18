@@ -196,6 +196,15 @@
     <ClCompile Include="TestCases\Containers\HashMapTest.cpp">
       <Filter>TestCases\Containers</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\Containers\SetTest_Containers.cpp">
+      <Filter>TestCases\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Containers\DynArrayTest_Containers.cpp">
+      <Filter>TestCases\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Containers\HashSetTest_Containers.cpp">
+      <Filter>TestCases\Containers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />

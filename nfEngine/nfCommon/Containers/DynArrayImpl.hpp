@@ -238,7 +238,7 @@ typename DynArray<ElementType>::IteratorType DynArray<ElementType>::InsertAt(uin
     }
 
     ElementType* base = this->mElements + index;
-    memmove(base + 1, base, sizeof(ElementType) * (this->mSize - index));
+    MemoryHelpers::MoveArray<ElementType>(base + 1, base, this->mSize - index);
     new (base) ElementType(element);
     this->mSize++;
     return IteratorType(this, index);
@@ -254,7 +254,7 @@ typename DynArray<ElementType>::IteratorType DynArray<ElementType>::InsertAt(uin
     }
 
     ElementType* base = this->mElements + index;
-    memmove(base + 1, base, sizeof(ElementType) * (this->mSize - index));
+    MemoryHelpers::MoveArray<ElementType>(base + 1, base, this->mSize - index);
     new (base) ElementType(std::move(element));
     this->mSize++;
     return IteratorType(this, index);
@@ -276,7 +276,7 @@ typename DynArray<ElementType>::IteratorType DynArray<ElementType>::InsertAt(uin
     }
 
     ElementType* base = this->mElements + index;
-    memmove(base + count, base, sizeof(ElementType) * (this->mSize - index));
+    MemoryHelpers::MoveArray<ElementType>(base + count, base, this->mSize - index);
 
     for (uint32 i = 0; i < count; ++i)
     {
@@ -307,7 +307,7 @@ typename DynArray<ElementType>::IteratorType DynArray<ElementType>::InsertArrayA
     }
 
     ElementType* base = this->mElements + index;
-    memmove(base + arrayView.mSize, base, sizeof(ElementType) * (this->mSize - index));
+    MemoryHelpers::MoveArray<ElementType>(base + arrayView.mSize, base, this->mSize - index);
 
     for (uint32 i = 0; i < arrayView.mSize; ++i)
     {
@@ -329,7 +329,7 @@ bool DynArray<ElementType>::Erase(const ConstIteratorType& iterator)
     this->mElements[iterator.mIndex].~ElementType();
 
     ElementType* base = this->mElements + iterator.mIndex;
-    memmove(base, base + 1, sizeof(ElementType) * (this->mSize - iterator.mIndex - 1));
+    MemoryHelpers::MoveArray<ElementType>(base, base + 1, this->mSize - iterator.mIndex - 1);
     this->mSize--;
     return true;
 }
@@ -351,7 +351,7 @@ bool DynArray<ElementType>::Erase(const ConstIteratorType& first, const ConstIte
 
     const int32 num = last.mIndex - first.mIndex;
     ElementType* base = this->mElements + first.mIndex;
-    memmove(base, base + num, sizeof(ElementType) * (this->mSize - last.mIndex));
+    MemoryHelpers::MoveArray<ElementType>(base, base + num, this->mSize - last.mIndex);
     this->mSize -= num;
     return true;
 }
@@ -365,12 +365,11 @@ bool DynArray<ElementType>::Reserve(uint32 size)
         return true;
     }
 
-    const uint32 initialSize = 4;
-    uint32 newAllocSize = Math::Max(mAllocSize, initialSize);
+    uint32 newAllocSize = mAllocSize;
     while (size > newAllocSize)
     {
         // grow by 50%
-        newAllocSize += newAllocSize / 2;
+        newAllocSize += Math::Max<uint32>(1, newAllocSize / 2);
     }
 
     ElementType* newBuffer = static_cast<ElementType*>(NFE_MALLOC(newAllocSize * sizeof(ElementType), alignof(ElementType)));
@@ -381,10 +380,7 @@ bool DynArray<ElementType>::Reserve(uint32 size)
     }
 
     // move elements
-    for (uint32 i = 0; i < this->mSize; ++i)
-    {
-        MemoryHelpers::Move<ElementType>(newBuffer + i, this->mElements + i);
-    }
+    MemoryHelpers::MoveArray<ElementType>(newBuffer, this->mElements, mSize);
 
     // replace buffer
     NFE_FREE(this->mElements);

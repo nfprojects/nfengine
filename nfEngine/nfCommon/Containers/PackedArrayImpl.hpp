@@ -70,10 +70,7 @@ bool PackedArray<ObjType, IDType, Alignment>::Resize(size_t newSize)
     }
 
     // move objects from old buffer to the new one
-    for (size_t i = 0; i < mUsed; ++i)
-    {
-        MemoryHelpers::Move<ObjType>(newObjects + i, mObjects + i);
-    }
+    MemoryHelpers::MoveArray<ObjType>(newObjects, mObjects, mUsed);
 
     memcpy(newNodes, mNodes, sizeof(ListNode) * mSize);
     memcpy(newIDs, mIDs, sizeof(IDType) * mSize);

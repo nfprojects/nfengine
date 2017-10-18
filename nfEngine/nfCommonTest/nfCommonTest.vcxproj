@@ -162,10 +162,13 @@
     </ClCompile>
     <ClCompile Include="TestCases\Containers\ArrayViewTest.cpp" />
     <ClCompile Include="TestCases\Containers\DynArrayTest.cpp" />
+    <ClCompile Include="TestCases\Containers\DynArrayTest_Containers.cpp" />
     <ClCompile Include="TestCases\Containers\HashMapTest.cpp" />
+    <ClCompile Include="TestCases\Containers\HashSetTest_Containers.cpp" />
     <ClCompile Include="TestCases\Containers\MapTest.cpp" />
     <ClCompile Include="TestCases\Containers\PackedArrayTest.cpp" />
     <ClCompile Include="TestCases\Containers\SetTest.cpp" />
+    <ClCompile Include="TestCases\Containers\SetTest_Containers.cpp" />
     <ClCompile Include="TestCases\Containers\SharedPtrTest.cpp" />
     <ClCompile Include="TestCases\Containers\StringTest.cpp" />
     <ClCompile Include="TestCases\Containers\StringViewTest.cpp" />

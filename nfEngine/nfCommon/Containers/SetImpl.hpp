@@ -636,6 +636,9 @@ bool Set<KeyType, Comparator>::EraseInternal(int node)
     // remove the node
     FreeNode(nodeToRemove);
 
+    // destroy the object
+    mKeys[nodeToRemove].~KeyType();
+
     // balance the tree
     mRoot = RebalancePath(node);
 
