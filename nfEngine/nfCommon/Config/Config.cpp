@@ -25,9 +25,9 @@ Config::Config()
 void Config::Clear()
 {
     mRootNode = INVALID_NODE_PTR;
-    mValues.clear();
-    mObjectNodes.clear();
-    mArrayNodes.clear();
+    mValues.Clear();
+    mObjectNodes.Clear();
+    mArrayNodes.Clear();
 }
 
 void Config::SetRoot(const ConfigObject& rootObject)
@@ -37,22 +37,22 @@ void Config::SetRoot(const ConfigObject& rootObject)
 
 ConfigValuePtr Config::AllocateValue()
 {
-    ConfigValuePtr ptr = static_cast<ConfigValuePtr>(mValues.size());
-    mValues.push_back(ConfigValue());
+    ConfigValuePtr ptr = static_cast<ConfigValuePtr>(mValues.Size());
+    mValues.PushBack(ConfigValue());
     return ptr;
 }
 
 ConfigObjectNodePtr Config::AllocateObjectNode()
 {
-    ConfigObjectNodePtr nodePtr = static_cast<ConfigObjectNodePtr>(mObjectNodes.size());
-    mObjectNodes.push_back(ConfigObjectNode());
+    ConfigObjectNodePtr nodePtr = static_cast<ConfigObjectNodePtr>(mObjectNodes.Size());
+    mObjectNodes.PushBack(ConfigObjectNode());
     return nodePtr;
 }
 
 ConfigArrayNodePtr Config::AllocateArrayNode()
 {
-    ConfigArrayNodePtr nodePtr = static_cast<ConfigArrayNodePtr>(mArrayNodes.size());
-    mArrayNodes.push_back(ConfigArrayNode());
+    ConfigArrayNodePtr nodePtr = static_cast<ConfigArrayNodePtr>(mArrayNodes.Size());
+    mArrayNodes.PushBack(ConfigArrayNode());
     return nodePtr;
 }
 
@@ -96,9 +96,9 @@ Config& Config::AddValue(ConfigArray& configArray, const ConfigValue& val)
 bool Config::Parse(const char* string)
 {
     size_t strLength = strlen(string) + 1;
-    mStringCopy.reset(new char[strLength]);
-    memcpy(mStringCopy.get(), string, strLength);
-    return ParseInPlace(mStringCopy.get());
+    mStringCopy.Reset(new char[strLength]);
+    memcpy(mStringCopy.Get(), string, strLength);
+    return ParseInPlace(mStringCopy.Get());
 }
 
 bool Config::ParseValue(ConfigTokenizer& tokenizer, const Token& token, ConfigValue& value)
@@ -240,7 +240,7 @@ void Config::Iterate(const ObjectIterator& callback, ConfigObjectNodePtr node) c
 {
     if (node == INVALID_NODE_PTR)
         node = GetRootNode();
-    else if (node >= mObjectNodes.size())
+    else if (node >= mObjectNodes.Size())
     {
         LOG_ERROR("Invalid 'node'");
         return;
@@ -257,7 +257,7 @@ void Config::Iterate(const ObjectIterator& callback, ConfigObjectNodePtr node) c
 
 void Config::IterateArray(const ArrayIterator& callback, ConfigArrayNodePtr node) const
 {
-    if (node >= mArrayNodes.size())
+    if (node >= mArrayNodes.Size())
     {
         LOG_ERROR("Invalid 'node'");
         return;

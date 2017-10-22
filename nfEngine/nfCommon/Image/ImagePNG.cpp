@@ -50,7 +50,7 @@ void userReadData(png_structp pngPtr, png_bytep data, png_size_t length)
 }
 
 // Register PNG image type
-bool gImagePNGRegistered = ImageType::RegisterImageType("PNG", std::make_unique<ImagePNG>());
+bool gImagePNGRegistered = ImageType::RegisterImageType(StringView("PNG"), MakeUniquePtr<ImagePNG>());
 
 bool ImagePNG::Check(InputStream* stream)
 {

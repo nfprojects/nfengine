@@ -36,8 +36,7 @@ Image::Image(const Image& other)
     , mFormat(other.mFormat)
 {
     // Clone all mMipmaps
-    mMipmaps.reserve(other.mMipmaps.size());
-    mMipmaps.assign(other.mMipmaps.begin(), other.mMipmaps.end());
+    mMipmaps = other.mMipmaps;
 }
 
 Image::~Image()
@@ -53,13 +52,12 @@ ImageTypeMap& Image::mImageTypes()
 
 void Image::Release()
 {
-    if (!mMipmaps.empty())
+    if (!mMipmaps.Empty())
     {
         for (auto& i : mMipmaps)
             i.Release();
 
-        mMipmaps.clear();
-        mMipmaps.shrink_to_fit();
+        mMipmaps.Clear();
     }
 
     mWidth = 0;
@@ -84,7 +82,7 @@ bool Image::SetData(const void* data, uint32 width, uint32 height, ImageFormat f
     mHeight = height;
     mFormat = format;
 
-    mMipmaps.push_back(mipmap);
+    mMipmaps.PushBack(std::move(mipmap));
 
     return true;
 }
@@ -127,14 +125,14 @@ ImageFormat Image::GetFormat() const
     return mFormat;
 }
 
-size_t Image::GetMipmapsNum() const
+uint32 Image::GetMipmapsNum() const
 {
-    return mMipmaps.size();
+    return mMipmaps.Size();
 }
 
 const Mipmap* Image::GetMipmap(uint32 id) const
 {
-    if (id < mMipmaps.size())
+    if (id < mMipmaps.Size())
         return &mMipmaps[id];
 
     LOG_WARNING("Trying to access not existing mipmap.");
@@ -209,7 +207,7 @@ bool Image::CompressDDS(ImageFormat destFormat)
         return false;
     }
 
-    std::vector<Mipmap> newMipmaps;
+    DynArray<Mipmap> newMipmaps;
     // Get number of mipmaps to be compressed, apart from the 1st one
     uint32 mipmapNum = static_cast<uint32>(GetMipmapsNum());
 
@@ -230,7 +228,7 @@ bool Image::CompressDDS(ImageFormat destFormat)
 
     // Compress the first mipmap
     squish::CompressImage(pixels, width, height, block.get(), compressionFlag);
-    newMipmaps.emplace_back(Mipmap(block.get(), width, height, size));
+    newMipmaps.EmplaceBack(block.get(), width, height, size);
 
     // Compress the rest
     for (uint32 i = 1; i < mipmapNum; i++)
@@ -252,14 +250,14 @@ bool Image::CompressDDS(ImageFormat destFormat)
         }
 
         squish::CompressImage(pixels, width, height, block.get(), compressionFlag);
-        newMipmaps.emplace_back(Mipmap(block.get(), width, height, size));
+        newMipmaps.EmplaceBack(block.get(), width, height, size);
     }
 
     Release();
     mWidth = width;
     mHeight = height;
     mFormat = destFormat;
-    mMipmaps.assign(newMipmaps.begin(), newMipmaps.end());
+    mMipmaps = std::move(newMipmaps);
 
     return true;
 }
@@ -317,11 +315,12 @@ bool Image::GenerateMipmaps(MipmapFilter filterType, uint32 num)
 bool Image::GenerateMipmapsActual(MipmapFilter filterType, uint32 num)
 {
     // Erase all existing mipmaps apart from the first one
-    mMipmaps.resize(1);
-    mMipmaps.shrink_to_fit();
+    if (mMipmaps.Size() > 1)
+    {
+        mMipmaps.Erase(mMipmaps.Begin() + 1, mMipmaps.End());
+    }
 
     // Start from most detailed mipmap
-    Mipmap* mipmap;
     Mipmap::filterFunctor filter = nullptr;
 
     // Resolve what filter should be used
@@ -343,18 +342,18 @@ bool Image::GenerateMipmapsActual(MipmapFilter filterType, uint32 num)
 
     // TODO  NEEDS CHANGE
     auto isPowerOfTwo = [](int x){return !(x == 0) && !(x & (x - 1)); };
-    if (isPowerOfTwo(mMipmaps.back().GetWidth())
-        || isPowerOfTwo(mMipmaps.back().GetHeight()))
+    if (isPowerOfTwo(mMipmaps.Back().GetWidth())
+        || isPowerOfTwo(mMipmaps.Back().GetHeight()))
         LOG_WARNING("No support for non-power-of-2 !");
 
     // Generate mipmaps main loop
     for (uint32 i = 0; i < num; i++)
     {
-        mipmap = &mMipmaps.back();
+        const Mipmap& mipmap = mMipmaps.Back();
 
         // Calculate the size of the new mipmap
-        uint32 nextMipWidth = (mipmap->GetWidth() / 2) + (mipmap->GetWidth() % 2);
-        uint32 nextMipHeight = (mipmap->GetHeight() / 2) + (mipmap->GetHeight() % 2);
+        uint32 nextMipWidth = (mipmap.GetWidth() / 2) + (mipmap.GetWidth() % 2);
+        uint32 nextMipHeight = (mipmap.GetHeight() / 2) + (mipmap.GetHeight() % 2);
         if (nextMipWidth == 0)
             nextMipWidth = 1;
         if (nextMipHeight == 0)
@@ -376,11 +375,11 @@ bool Image::GenerateMipmapsActual(MipmapFilter filterType, uint32 num)
         {
             for (uint32 x = 0; x < nextMipWidth; x++)
             {
-                Color outputTexel = (mipmap->*filter)(x, y, mFormat);
+                Color outputTexel = (mipmap.*filter)(x, y, mFormat);
                 nextMip.SetTexel(outputTexel, x, y, mFormat);
             }
         }
-        mMipmaps.push_back(nextMip);
+        mMipmaps.PushBack(std::move(nextMip));
 
         if (nextMipWidth == 1 && nextMipHeight == 1)
             break;
@@ -441,10 +440,10 @@ bool Image::Convert(ImageFormat destFormat)
 
 bool Image::ConvertActual(ImageFormat destFormat)
 {
-    std::vector<Mipmap> newMipmaps;
-    newMipmaps.resize(mMipmaps.size());
+    DynArray<Mipmap> newMipmaps;
+    newMipmaps.Resize(mMipmaps.Size());
 
-    for (uint32 i = 0; i < mMipmaps.size(); i++)
+    for (uint32 i = 0; i < mMipmaps.Size(); i++)
     {
         uint32 width = mMipmaps[i].GetWidth();
         uint32 height = mMipmaps[i].GetHeight();
@@ -463,8 +462,8 @@ bool Image::ConvertActual(ImageFormat destFormat)
             }
         }
     }
-    mMipmaps.assign(newMipmaps.begin(), newMipmaps.end());
 
+    mMipmaps = std::move(newMipmaps);
     mFormat = destFormat;
 
     return true;
@@ -479,7 +478,7 @@ bool Image::Grayscale()
         // These are common values for luminance grayscale transformation
         Color luminanceMask(0.21f, 0.72f, 0.07f, 1.0f);
 
-        for (uint32 i = 0; i < mMipmaps.size(); i++)
+        for (uint32 i = 0; i < mMipmaps.Size(); i++)
         {
             uint32 width = mMipmaps[i].GetWidth();
             uint32 height = mMipmaps[i].GetHeight();
@@ -506,8 +505,7 @@ bool Image::Grayscale()
         return true;
     }
 
-    LOG_ERROR("Conversion to grayscale is not available for image format: %s.",
-              FormatToStr(mFormat));
+    LOG_ERROR("Conversion to grayscale is not available for image format: %s.", FormatToStr(mFormat));
     return false;
 }
 } // namespace Common

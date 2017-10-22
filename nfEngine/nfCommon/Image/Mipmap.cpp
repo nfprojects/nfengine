@@ -37,7 +37,7 @@ Mipmap::Mipmap(const Mipmap& other)
 Mipmap::Mipmap(Mipmap&& other)
     : Mipmap()
 {
-    mData = other.mData;
+    mData = std::move(other.mData);
     std::swap(mHeight, other.mHeight);
     std::swap(mWidth, other.mWidth);
 }
@@ -111,7 +111,7 @@ size_t Mipmap::GetDataSize() const
     return mData.GetSize();
 }
 
-Color Mipmap::FilterBox(uint32 x, uint32 y, ImageFormat fmt)
+Color Mipmap::FilterBox(uint32 x, uint32 y, ImageFormat fmt) const
 {
     Color a = GetTexel(2 * x,     2 * y,     fmt);
     Color b = GetTexel(2 * x + 1, 2 * y,     fmt);
@@ -121,7 +121,7 @@ Color Mipmap::FilterBox(uint32 x, uint32 y, ImageFormat fmt)
     return ((a + b) + (c + d)) * 0.25f;
 }
 
-Color Mipmap::FilterGammaCorrected(uint32 x, uint32 y, ImageFormat fmt)
+Color Mipmap::FilterGammaCorrected(uint32 x, uint32 y, ImageFormat fmt) const
 {
     Color a = GetTexel(2 * x,     2 * y,     fmt);
     Color b = GetTexel(2 * x + 1, 2 * y,     fmt);
