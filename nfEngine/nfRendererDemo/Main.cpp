@@ -29,7 +29,7 @@
 #include <algorithm>
 #include <string.h>
 
-
+using namespace NFE;
 using namespace NFE::Renderer;
 
 class DemoWindow : public NFE::Common::Window
@@ -145,7 +145,7 @@ public:
      * function for renderer and creates NFE::Renderer::IDevice this way. Should be called only
      * once during Demo lifespan (switching renderers on-the-fly is not supported).
      */
-    bool InitRenderer(const std::string& renderer, int preferredCardId, int debugLevel)
+    bool InitRenderer(const Common::String& renderer, int preferredCardId, int debugLevel)
     {
         if (!mRendererLib.Open(renderer))
             return false;
@@ -285,11 +285,11 @@ public:
 
 int InnerMain(int argc, char* argv[])
 {
-    std::string execPath = NFE::Common::FileSystem::GetExecutablePath();
-    std::string execDir = NFE::Common::FileSystem::GetParentDir(execPath);
+    const NFE::Common::String execPath = NFE::Common::FileSystem::GetExecutablePath();
+    const NFE::Common::String execDir = NFE::Common::FileSystem::GetParentDir(execPath);
     NFE::Common::FileSystem::ChangeDirectory(execDir + "/../../..");
 
-    std::string selectedBackend;
+    Common::String selectedBackend;
     int initialScene = 0;
     int selectedCard = -1;
     int debugLevel = 0;
@@ -355,9 +355,9 @@ int InnerMain(int argc, char* argv[])
         }
     }
 
-    if (selectedBackend.empty())
+    if (selectedBackend.Empty())
     {
-        const std::vector<std::string>& defBackend = GetDefaultBackend();
+        const auto& defBackend = GetDefaultBackend();
         selectedBackend = defBackend[0];
         gShaderPathPrefix = defBackend[1];
         gShaderPathExt = defBackend[2];

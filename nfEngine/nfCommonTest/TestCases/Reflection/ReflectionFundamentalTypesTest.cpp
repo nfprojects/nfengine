@@ -150,7 +150,7 @@ TEST(ReflectionFundamentalTypeTest, SerializeBool_False)
 {
     const auto* type = GetType<bool>();
 
-    std::string str;
+    String str;
     bool obj = false;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
 
@@ -162,7 +162,7 @@ TEST(ReflectionFundamentalTypeTest, SerializeBool_True)
 {
     const auto* type = GetType<bool>();
 
-    std::string str;
+    String str;
     bool obj = true;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
     const char* REFERENCE_CONFIG_STRING = "obj=true";
@@ -173,7 +173,7 @@ TEST(ReflectionFundamentalTypeTest, SerializeInt8)
 {
     const auto* type = GetType<int8>();
 
-    std::string str;
+    String str;
     int8 obj = -53;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
     const char* REFERENCE_CONFIG_STRING = "obj=-53";
@@ -184,7 +184,7 @@ TEST(ReflectionFundamentalTypeTest, SerializeInt16)
 {
     const auto* type = GetType<int16>();
 
-    std::string str;
+    String str;
     int16 obj = -1415;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
     const char* REFERENCE_CONFIG_STRING = "obj=-1415";
@@ -195,7 +195,7 @@ TEST(ReflectionFundamentalTypeTest, SerializeInt32)
 {
     const auto* type = GetType<int32>();
 
-    std::string str;
+    String str;
     int32 obj = -1415365;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
     const char* REFERENCE_CONFIG_STRING = "obj=-1415365";
@@ -206,7 +206,7 @@ TEST(ReflectionFundamentalTypeTest, SerializeInt64)
 {
     const auto* type = GetType<int64>();
 
-    std::string str;
+    String str;
     int64 obj = -14152740275365ll;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
     const char* REFERENCE_CONFIG_STRING = "obj=-14152740275365";
@@ -217,7 +217,7 @@ TEST(ReflectionFundamentalTypeTest, SerializeUInt8)
 {
     const auto* type = GetType<uint8>();
 
-    std::string str;
+    String str;
     uint8 obj = 123u;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
 
@@ -229,7 +229,7 @@ TEST(ReflectionFundamentalTypeTest, SerializeUInt16)
 {
     const auto* type = GetType<uint16>();
 
-    std::string str;
+    String str;
     uint16 obj = 62572u;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
 
@@ -241,7 +241,7 @@ TEST(ReflectionFundamentalTypeTest, SerializeUInt32)
 {
     const auto* type = GetType<uint32>();
 
-    std::string str;
+    String str;
     uint32 obj = 3837613155u;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
 
@@ -253,7 +253,7 @@ TEST(ReflectionFundamentalTypeTest, SerializeUInt64)
 {
     const auto* type = GetType<uint64>();
 
-    std::string str;
+    String str;
     uint64 obj = 25236526261571ull;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
 
@@ -266,7 +266,7 @@ TEST(ReflectionFundamentalTypeTest, SerializeFloat)
 {
     const auto* type = GetType<float>();
 
-    std::string str;
+    String str;
     float obj = 123.0f;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
 
@@ -278,7 +278,7 @@ TEST(ReflectionFundamentalTypeTest, SerializeDouble)
 {
     const auto* type = GetType<double>();
 
-    std::string str;
+    String str;
     double obj = 123.0;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
 
@@ -290,7 +290,7 @@ TEST(ReflectionFundamentalTypeTest, SerializeString_Empty)
 {
     const auto* type = GetType<String>();
 
-    std::string str;
+    String str;
     const String obj;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
 
@@ -302,7 +302,7 @@ TEST(ReflectionFundamentalTypeTest, SerializeString_NonEmpty)
 {
     const auto* type = GetType<String>();
 
-    std::string str;
+    String str;
     const String obj("qwertyuiop12345");
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
 

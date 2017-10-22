@@ -54,6 +54,8 @@ public:
     NFE_INLINE ConstIterator End() const;
     NFE_INLINE Iterator End();
 
+    NFE_INLINE bool Exists(const KeyType& key) const;
+
     NFE_INLINE ConstIterator Find(const KeyType& key) const;
     NFE_INLINE Iterator Find(const KeyType& key);
 

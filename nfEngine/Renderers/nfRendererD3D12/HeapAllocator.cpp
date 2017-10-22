@@ -16,18 +16,18 @@ namespace Renderer {
 
 namespace {
 
-const char* GetHeapName(HeapAllocator::Type type)
+Common::StringView GetHeapName(HeapAllocator::Type type)
 {
     switch (type)
     {
     case HeapAllocator::Type::CbvSrvUav:
-        return "CBV_SRV_UAV";
+        return Common::StringView("CBV_SRV_UAV");
     case HeapAllocator::Type::Rtv:
-        return "RTV";
+        return Common::StringView("RTV");
     case HeapAllocator::Type::Dsv:
-        return "DSV";
+        return Common::StringView("DSV");
     }
-    return "(Unknown)";
+    return Common::StringView("(Unknown)");
 }
 
 } // namespace

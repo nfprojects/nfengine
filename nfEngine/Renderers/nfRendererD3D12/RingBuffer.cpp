@@ -65,7 +65,7 @@ bool RingBuffer::Init(size_t size)
     if (FAILED(hr))
         return false;
 
-    if (!SetDebugName(mBuffer.Get(), "RingBuffer"))
+    if (!SetDebugName(mBuffer.Get(), Common::StringView("RingBuffer")))
     {
         NFE_LOG_WARNING("Failed to set debug name");
     }

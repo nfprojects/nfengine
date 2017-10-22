@@ -135,13 +135,13 @@ public:
     static TypePtr CreateType()
     {
         const Type* templateArgumentType = GetType<T>();
-        std::string typeName = std::string(templateArgumentType->GetName()) + "[]";
+        const Common::String typeName = Common::String(templateArgumentType->GetName()) + "[]";
 
         TypeInfo typeInfo;
         typeInfo.kind = TypeKind::NativeArray;
         typeInfo.size = sizeof(T[N]);
         typeInfo.alignment = alignof(T[N]);
-        typeInfo.name = typeName.c_str();
+        typeInfo.name = typeName.Str();
         typeInfo.constructor = []() { return new T[N]; };
         //typeInfo.arrayConstructor = [](uint32 num) { return new T[N][num]; };
 

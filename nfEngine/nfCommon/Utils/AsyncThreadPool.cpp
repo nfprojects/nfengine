@@ -24,7 +24,7 @@ AsyncThreadPool::AsyncThreadPool()
 
     // spawn worker threads
     for (size_t i = 0; i < std::thread::hardware_concurrency(); ++i)
-        mWorkerThreads.emplace_back(std::thread(&AsyncThreadPool::SchedulerCallback, this));
+        mWorkerThreads.PushBack(std::thread(&AsyncThreadPool::SchedulerCallback, this));
 }
 
 AsyncThreadPool::~AsyncThreadPool()
@@ -38,7 +38,7 @@ AsyncThreadPool::~AsyncThreadPool()
     // cleanup worker threads
     for (auto& thread : mWorkerThreads)
         thread.join();
-    mWorkerThreads.clear();
+    mWorkerThreads.Clear();
 
     // cleanup tasks
     for (auto taskPair : mTasks)
@@ -72,7 +72,7 @@ void AsyncThreadPool::SchedulerCallback()
         // mark as done and notify waiting threads
         {
             ScopedMutexLock lock(mTasksMutex);
-            mTasks.erase(currTask->ptr);
+            mTasks.Erase(currTask->ptr);
             mTasksMutexCV.SignalAll();
 
             // cleanup
@@ -90,7 +90,7 @@ AsyncFuncID AsyncThreadPool::Enqueue(AsyncFuncCallback function)
 
     {
         ScopedMutexLock lock(mTasksMutex);
-        mTasks.insert(std::pair<AsyncFuncID, AsyncFunc*>(taskPtr, task));
+        mTasks.Insert(taskPtr, task);
     }
 
     {
@@ -106,8 +106,8 @@ AsyncFunc* AsyncThreadPool::GetTask(const AsyncFuncID& taskID) const
 {
     // assume called in mTasksMutex lock
 
-    auto it = mTasks.find(taskID);
-    if (it != mTasks.end())
+    auto it = mTasks.Find(taskID);
+    if (it != mTasks.End())
         return it->second;
 
     return nullptr;
@@ -131,7 +131,7 @@ void AsyncThreadPool::WaitForTask(const AsyncFuncID& taskID)
 void AsyncThreadPool::WaitForAllTasks()
 {
     ScopedMutexLock lock(mTasksMutex);
-    while (!mTasks.empty())
+    while (!mTasks.Empty())
     {
         mTasksMutexCV.Wait(lock);
     }

@@ -219,7 +219,7 @@ static ImageFormat DDSGetFormat(const DDS_PIXELFORMAT& ddpf)
 }
 
 // Register DDS image type
-bool gImageDDSRegistered = ImageType::RegisterImageType("DDS", std::make_unique<ImageDDS>());
+bool gImageDDSRegistered = ImageType::RegisterImageType(StringView("DDS"), MakeUniquePtr<ImageDDS>());
 
 bool ImageDDS::Check(InputStream* stream)
 {
@@ -259,7 +259,7 @@ bool ImageDDS::Load(Image* img, InputStream* stream)
     if (format == ImageFormat::Unknown)
         return false;
 
-    std::vector<Mipmap> mipmaps;
+    DynArray<Mipmap> mipmaps;
     for (int i = 0; i < numMipmaps; i++)
     {
         //keep mipmap size > 0
@@ -282,7 +282,7 @@ bool ImageDDS::Load(Image* img, InputStream* stream)
             return false;
         }
 
-        mipmaps.emplace_back(mipmapData.get(), width, height, dataSize);
+        mipmaps.PushBack(Mipmap(mipmapData.get(), width, height, dataSize));
 
         width /= 2;
         height /= 2;
@@ -292,8 +292,10 @@ bool ImageDDS::Load(Image* img, InputStream* stream)
     bool result = img->SetData(mipmaps.begin()->GetData(), initWidth, initHeight, format);
 
     // Fill in the remaining mipmaps if they exist
-    if (mipmaps.size() > 1)
-        GetMipmaps(img)->assign(mipmaps.begin(), mipmaps.end());
+    if (mipmaps.Size() > 1)
+    {
+        *GetMipmaps(img) = std::move(mipmaps);
+    }
 
     return result;
 }

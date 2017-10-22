@@ -9,17 +9,22 @@
 #include "Math/Math.hpp"
 #include "../Library.hpp"
 #include "Common.hpp"
+#include "../../Utils/StringUtils.hpp"
 
 #include <VersionHelpers.h>
 #include <intrin.h>
 
 
+namespace NFE {
+namespace Common {
+
 namespace {
+
 typedef void (WINAPI *RtlGetVersionFuncType)(OSVERSIONINFOEXW*);
 
 bool GetVersion(OSVERSIONINFOEX* os)
 {
-    NFE::Common::Library lib;
+    Library lib;
     RtlGetVersionFuncType func;
 
 #ifdef UNICODE
@@ -29,7 +34,7 @@ bool GetVersion(OSVERSIONINFOEX* os)
     OSVERSIONINFOEXW* osw = &o;
 #endif
 
-    if (lib.Open("ntdll.dll"))
+    if (lib.Open(StringView("ntdll.dll")))
     {
         if(!lib.GetSymbol("RtlGetVersion", func))
         {
@@ -59,10 +64,8 @@ bool GetVersion(OSVERSIONINFOEX* os)
     lib.Close();
     return true;
 }
-}
 
-namespace NFE {
-namespace Common {
+} // namespace
 
 void SystemInfo::InitCPUInfoPlatform()
 {
@@ -76,9 +79,15 @@ void SystemInfo::InitCPUInfoPlatform()
 void SystemInfo::InitOSVersion()
 {
     OSVERSIONINFOEX os;
+    if (!GetVersion(&os))
+    {
+        NFE_LOG_ERROR("Failed to get OS version");
+        return;
+    }
+
     mOSVersion = "Microsoft Windows ";
 
-    if (GetVersion(&os) && os.dwMajorVersion == 10)
+    if (os.dwMajorVersion == 10)
     {
         if (IsWindowsServer())
             mOSVersion += "Server 2016 Technical Preview";
@@ -115,14 +124,19 @@ void SystemInfo::InitOSVersion()
     }
     else
     {
-        mOSVersion += std::to_string(os.dwMajorVersion) + '.' + std::to_string(os.dwMinorVersion);
+        mOSVersion += ToString(uint32(os.dwMajorVersion)) + '.' + ToString(uint32(os.dwMinorVersion));
     }
 
-    std::string szCSDVer;
+    String szCSDVer;
     if (UTF16ToUTF8(os.szCSDVersion, szCSDVer))
-        if (!szCSDVer.empty())
+    {
+        if (!szCSDVer.Empty())
+        {
             mOSVersion += " " + szCSDVer;
-    mOSVersion += " Build: " + std::to_string(os.dwBuildNumber);
+        }
+    }
+    mOSVersion += " Build: ";
+    mOSVersion += ToString(uint32(os.dwBuildNumber));
 }
 
 void SystemInfo::InitMemoryInfo()
@@ -208,5 +222,6 @@ uint64_t SystemInfo::GetMemFreeSwapKb()
         mMemFreeSwapKb = 0;
     return mMemFreeSwapKb;
 }
+
 } // namespace Common
 } // namespace NFE

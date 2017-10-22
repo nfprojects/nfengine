@@ -9,22 +9,22 @@
 
 int gDebugLevel;
 int gPreferedCardId;
-std::string gBackend;
-std::string gShaderPathPrefix;
-std::string gShaderPathExt;
+NFE::Common::String gBackend;
+NFE::Common::String gShaderPathPrefix;
+NFE::Common::String gShaderPathExt;
 
-const std::string D3D11_BACKEND("nfRendererD3D11");
-const std::string D3D12_BACKEND("nfRendererD3D12");
-const std::string OGL4_BACKEND("nfRendererOGL4");
-const std::string VK_BACKEND("nfRendererVk");
+const NFE::Common::String D3D11_BACKEND("nfRendererD3D11");
+const NFE::Common::String D3D12_BACKEND("nfRendererD3D12");
+const NFE::Common::String OGL4_BACKEND("nfRendererOGL4");
+const NFE::Common::String VK_BACKEND("nfRendererVk");
 
-const std::string HLSL5_SHADER_PATH_PREFIX("nfEngine/nfRendererTest/Shaders/HLSL5/");
-const std::string HLSL5_SHADER_EXTENSION(".hlsl");
+const NFE::Common::String HLSL5_SHADER_PATH_PREFIX("nfEngine/nfRendererTest/Shaders/HLSL5/");
+const NFE::Common::String HLSL5_SHADER_EXTENSION(".hlsl");
 
-const std::string GLSL_SHADER_PATH_PREFIX("nfEngine/nfRendererTest/Shaders/GLSL/");
-const std::string GLSL_SHADER_EXTENSION(".glsl");
+const NFE::Common::String GLSL_SHADER_PATH_PREFIX("nfEngine/nfRendererTest/Shaders/GLSL/");
+const NFE::Common::String GLSL_SHADER_EXTENSION(".glsl");
 
-std::vector<std::string> GetDefaultBackend()
+NFE::Common::DynArray<NFE::Common::String> GetDefaultBackend()
 {
 #ifdef WIN32
     return { D3D11_BACKEND, HLSL5_SHADER_PATH_PREFIX, HLSL5_SHADER_EXTENSION };

@@ -18,7 +18,7 @@ namespace Resource {
 
 namespace {
 
-const std::string gShadersRoot = "nfEngine/Shaders/";
+const Common::String gShadersRoot = "nfEngine/Shaders/";
 
 } // namespace
 
@@ -43,7 +43,8 @@ bool Multishader::OnLoad()
     /// read multishader JSON file
     std::vector<char> str;
     {
-        Common::File file(gShadersRoot + mName + ".json", Common::AccessMode::Read);
+        const Common::String path = gShadersRoot + mName + ".json";
+        Common::File file(path, Common::AccessMode::Read);
         size_t fileSize = static_cast<size_t>(file.GetSize());
         str.resize(fileSize + 1);
 
@@ -165,9 +166,9 @@ bool Multishader::LoadSubshader(int* macroValues)
     macros.reserve(mMacros.size());
     valuesStrings.reserve(mMacros.size());
 
-    std::string shaderLanguage = "HLSL5"; // TODO: move to IDevice or HighLevelRenderer
-    std::string shaderExt = ".hlsl"; // TODO: move to IDevice or HighLevelRenderer
-    std::string shaderPath = gShadersRoot + shaderLanguage + '/' + mName + shaderExt;
+    const Common::String shaderLanguage = "HLSL5"; // TODO: move to IDevice or HighLevelRenderer
+    const Common::String shaderExt = ".hlsl"; // TODO: move to IDevice or HighLevelRenderer
+    const Common::String shaderPath = gShadersRoot + shaderLanguage + '/' + mName + shaderExt;
 
     for (size_t i = 0; i < mMacros.size(); ++i)
     {
@@ -181,7 +182,7 @@ bool Multishader::LoadSubshader(int* macroValues)
     }
 
     ShaderDesc shaderDesc;
-    shaderDesc.path = shaderPath.c_str();
+    shaderDesc.path = shaderPath.Str();
     shaderDesc.type = mType;
     shaderDesc.macros = macros.data();
     shaderDesc.macrosNum = macros.size();

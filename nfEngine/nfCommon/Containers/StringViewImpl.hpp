@@ -25,6 +25,8 @@ StringView::StringView()
 StringView::StringView(const char* string)
     : mData(string)
 {
+    NFE_ASSERT(string, "Invalid string pointer");
+
     mLength = static_cast<uint32>(::strlen(string));
     NFE_ASSERT(mLength <= MAX_LENGTH(), "String is too long");
 }
@@ -33,6 +35,8 @@ StringView::StringView(const char* string, uint32 length)
     : mData(string)
     , mLength(length)
 {
+    NFE_ASSERT(string, "Invalid string pointer");
+
     NFE_ASSERT(mLength <= MAX_LENGTH(), "String is too long");
 
     for (uint32 i = 0; i < length; ++i)
