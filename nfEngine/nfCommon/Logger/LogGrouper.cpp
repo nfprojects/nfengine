@@ -32,7 +32,7 @@ LogGrouper::~LogGrouper()
 
 void LogGrouper::Log(LogType type, int line, const char* file, const char* str, ...)
 {
-    if (Logger::ListBackends().empty() || !Logger::IsInitialized())
+    if (Logger::ListBackends().Empty() || !Logger::IsInitialized())
         return;
 
     /// keep shorter strings on the stack for performance
@@ -85,7 +85,7 @@ void LogGrouper::Log(LogType type, int line, const char* file, const char* str, 
     log.line = line;
     log.file = file;
     log.type = type;
-    log.msg = std::string(formattedStr);
+    log.msg = String(formattedStr);
 
     InsertLog(log);
 
@@ -98,7 +98,7 @@ void LogGrouper::Log(LogType type, int line, const char* file, const char* str, 
 
 void LogGrouper::Log(LogType type, const char* str, int line, const char* file)
 {
-    if (Logger::ListBackends().empty() || !Logger::IsInitialized())
+    if (Logger::ListBackends().Empty() || !Logger::IsInitialized())
         return;
 
     double logTime = mTimer.Stop();
@@ -108,7 +108,7 @@ void LogGrouper::Log(LogType type, const char* str, int line, const char* file)
     log.line = line;
     log.file = file;
     log.type = type;
-    log.msg = std::string(str);
+    log.msg = String(str);
 
     InsertLog(log);
 
@@ -121,15 +121,16 @@ void LogGrouper::Log(LogType type, const char* str, int line, const char* file)
 
 void LogGrouper::Flush()
 {
-    auto backends = Logger::ListBackends();
+    const LoggerBackendMap& backends = Logger::ListBackends();
     for (size_t i = 0; i < mLogCounter; i++)
+    {
         for (const auto& b : backends)
         {
-            auto backend = Logger::GetBackend(b);
             LogStruct log = mLogs[i];
-            if (backend->IsEnabled())
-                backend->Log(log.type, log.file.c_str(), log.line, log.msg.c_str(), log.time);
+            if (b.ptr->IsEnabled())
+                b.ptr->Log(log.type, log.file.Str(), log.line, log.msg.Str(), log.time);
         }
+    }
 
     mLogCounter = 0;
 }

@@ -50,7 +50,7 @@ IDevice* HighLevelRenderer::GetDevice()
 
 bool HighLevelRenderer::Init()
 {
-    if (!mLowLevelRendererLib.Open(gRendererBackendName.Get()))
+    if (!mLowLevelRendererLib.Open(Common::StringView(gRendererBackendName.Get())))
         return false;
 
     RendererInitFunc initFunc;

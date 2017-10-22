@@ -9,6 +9,7 @@
 #include "FileSystem/FileSystem.hpp"
 #include "System/SystemInfo.hpp"
 #include "Utils/ScopedLock.hpp"
+#include "Containers/DynArray.hpp"
 
 #ifdef WIN32
 #include "System/Win/Common.hpp"
@@ -41,6 +42,13 @@ Logger* Logger::GetInstance()
     return &mInstance;
 }
 
+void Logger::Shutdown()
+{
+    ScopedMutexLock lock(mResetMutex);
+
+    mBackends().Clear();
+}
+
 void Logger::Reset()
 {
     if (mInitialized == InitStage::Uninitialized)
@@ -50,10 +58,7 @@ void Logger::Reset()
     // Change mInitialized, to avoid Logging while backends are resetting
     mInitialized.store(InitStage::Initializing);
 
-    for (const auto& i : mBackends())
-    {
-        i.second->Reset();
-    }
+    mBackends().Clear();
 
     // Backends are done resetting - allow logging
     mInitialized.store(InitStage::Initialized);
@@ -79,10 +84,10 @@ void Logger::LogInit()
 #else
     mPathPrefix = NFE_ROOT_DIRECTORY;
 #endif
-    mPathPrefixLen = mPathPrefix.length();
+    mPathPrefixLen = mPathPrefix.Length();
 
-    std::string execPath = NFE::Common::FileSystem::GetExecutablePath();
-    std::string execDir = NFE::Common::FileSystem::GetParentDir(execPath);
+    String execPath = NFE::Common::FileSystem::GetExecutablePath();
+    String execDir = NFE::Common::FileSystem::GetParentDir(execPath);
     mLogsDirectory = execDir + "/../../../Logs";
     FileSystem::CreateDir(mLogsDirectory);
 
@@ -93,40 +98,40 @@ void Logger::LogInit()
 
 void Logger::LogBuildInfo() const
 {
-    NFE_LOG_INFO("Compiler: %s", SystemInfo::Instance().GetCompilerInfo().c_str());
+    NFE_LOG_INFO("Compiler: %s", SystemInfo::Instance().GetCompilerInfo().Str());
     NFE_LOG_INFO("nfCommon build date: " __DATE__ ", " __TIME__);
 
-    std::vector<const char*> instructionSet;
+    DynArray<const char*> instructionSet;
 
 #ifdef NFE_USE_SSE
-    instructionSet.push_back("SSE");
+    instructionSet.PushBack("SSE");
 #endif // NFE_USE_SSE
 
 #ifdef NFE_USE_SSE4
-    instructionSet.push_back("SSE4");
+    instructionSet.PushBack("SSE4");
 #endif // NFE_USE_SSE4
 
 #ifdef NFE_USE_AVX
-    instructionSet.push_back("AVX");
+    instructionSet.PushBack("AVX");
 #endif // NFE_USE_AVX
 
 #ifdef NFE_USE_FMA
-    instructionSet.push_back("FMA");
+    instructionSet.PushBack("FMA");
 #endif // NFE_USE_FMA
 
-    if (instructionSet.empty())
+    if (instructionSet.Empty())
     {
         NFE_LOG_INFO("nfCommon built with native FPU instructions only");
     }
     else
     {
-        std::string str;
+        String str;
         for (const char* name : instructionSet)
         {
             str += ' ';
             str += name;
         }
-        NFE_LOG_INFO("nfCommon built with instructions:%s", str.c_str());
+        NFE_LOG_INFO("nfCommon built with instructions:%s", str.Str());
     }
 }
 
@@ -150,40 +155,47 @@ void Logger::LogSysInfo() const
 {
     SystemInfo& sysInfo = SystemInfo::Instance();
 
-    NFE_LOG_INFO("CPU: %s, %u cores", sysInfo.GetCPUBrand().c_str(), sysInfo.GetCPUCoreNo());
+    NFE_LOG_INFO("CPU: %s, %u cores", sysInfo.GetCPUBrand().Str(), sysInfo.GetCPUCoreNo());
     NFE_LOG_INFO("RAM: %uKB total, %uKB free", sysInfo.GetMemTotalPhysKb(), sysInfo.GetMemFreePhysKb());
-    NFE_LOG_INFO("OS: %s", sysInfo.GetOSVersion().c_str());
+    NFE_LOG_INFO("OS: %s", sysInfo.GetOSVersion().Str());
 }
 
-bool Logger::RegisterBackend(const std::string& name, LoggerBackendPtr backend)
+bool Logger::RegisterBackend(const StringView name, LoggerBackendPtr backend)
 {
-    return mBackends().insert(std::make_pair(name, std::move(backend))).second;
+    for (const auto& backendInfo : mBackends())
+    {
+        if (backendInfo.name == name)
+        {
+            return false;
+        }
+    }
+
+    LoggerBackendInfo info = { name, std::move( backend ) };
+    mBackends().PushBack(std::move(info));
+    return true;
 }
 
-LoggerBackend* Logger::GetBackend(const std::string& name)
+LoggerBackend* Logger::GetBackend(const StringView name)
 {
-    LoggerBackendMap::const_iterator backend = mBackends().find(name);
+    for (const auto& backend : mBackends())
+    {
+        if (backend.name == name)
+        {
+            return backend.ptr.Get();
+        }
+    }
 
-    if (backend == mBackends().cend())
-        return nullptr;
-
-    return backend->second.get();
+    return nullptr;
 }
 
-std::vector<std::string> Logger::ListBackends()
+const LoggerBackendMap& Logger::ListBackends()
 {
-    std::vector<std::string> vect;
-    vect.reserve(mBackends().size());
-
-    for (const auto& i : mBackends())
-        vect.push_back(i.first);
-
-    return vect;
+    return mBackends();
 }
 
 void Logger::Log(LogType type, const char* srcFile, int line, const char* str, ...)
 {
-    if (mBackends().empty() || mInitialized != InitStage::Initialized)
+    if (mBackends().Empty() || mInitialized != InitStage::Initialized)
         return;
 
     /// keep shorter strings on the stack for performance
@@ -235,14 +247,16 @@ void Logger::Log(LogType type, const char* srcFile, int line, const char* str, .
     ScopedMutexLock lock(mLogMutex);
     for (const auto& backend : mBackends())
     {
-        if (backend.second->IsEnabled())
-            backend.second->Log(type, srcFile, line, formattedStr, logTime);
+        if (backend.ptr->IsEnabled())
+        {
+            backend.ptr->Log(type, srcFile, line, formattedStr, logTime);
+        }
     }
 }
 
 void Logger::Log(LogType type, const char* srcFile, const char* str, int line)
 {
-    if (mBackends().empty() || mInitialized != InitStage::Initialized)
+    if (mBackends().Empty() || mInitialized != InitStage::Initialized)
         return;
 
     // TODO: consider logging local time instead of time elapsed since Logger initialization
@@ -251,8 +265,10 @@ void Logger::Log(LogType type, const char* srcFile, const char* str, int line)
     ScopedMutexLock lock(mLogMutex);
     for (const auto& backend : mBackends())
     {
-        if (backend.second->IsEnabled())
-            backend.second->Log(type, srcFile, line, str, logTime);
+        if (backend.ptr->IsEnabled())
+        {
+            backend.ptr->Log(type, srcFile, line, str, logTime);
+        }
     }
 }
 

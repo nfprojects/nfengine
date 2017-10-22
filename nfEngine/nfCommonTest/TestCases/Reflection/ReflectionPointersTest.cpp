@@ -30,9 +30,9 @@ TEST(ReflectionClassTest, UniquePtr_Serialize_Nullptr)
     const auto* type = GetType<TestUniquePtr>();
 
     TestUniquePtr obj;
-    std::string str;
+    String str;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
-    EXPECT_STREQ("obj=0", str.c_str());
+    EXPECT_STREQ("obj=0", str.Str());
 }
 
 TEST(ReflectionClassTest, UniquePtr_Serialize_Base)
@@ -43,9 +43,9 @@ TEST(ReflectionClassTest, UniquePtr_Serialize_Base)
     obj->floatVal = 123.0f;
     obj->intVal = 321;
 
-    std::string str;
+    String str;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
-    EXPECT_STREQ("obj={__type=\"TestBaseClass\" intVal=321 floatVal=123 mPrivateBool=false}", str.c_str());
+    EXPECT_STREQ("obj={__type=\"TestBaseClass\" intVal=321 floatVal=123 mPrivateBool=false}", str.Str());
 }
 
 TEST(ReflectionClassTest, UniquePtr_Deserialize_Nullptr)

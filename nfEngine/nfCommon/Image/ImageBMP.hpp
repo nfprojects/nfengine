@@ -14,13 +14,13 @@ class Image;
 
 class ImageBMP : public ImageType
 {
-public:
-    ImageBMP() {};
-    ~ImageBMP() {};
+    NFE_DECLARE_POLYMORPHIC_CLASS(ImageBMP)
 
-    bool Check(InputStream* stream) override;
-    bool Load(Image* img, InputStream* stream) override;
-    bool Save(Image* img, OutputStream* stream) override;
+public:
+    virtual StringView GetName() const;
+    virtual bool Check(InputStream* stream) override;
+    virtual bool Load(Image* img, InputStream* stream) override;
+    virtual bool Save(Image* img, OutputStream* stream) override;
 };
 
 } // namespace Common

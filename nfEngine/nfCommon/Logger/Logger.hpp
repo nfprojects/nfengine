@@ -9,11 +9,11 @@
 #include "../nfCommon.hpp"
 #include "../System/Timer.hpp"
 #include "../System/Mutex.hpp"
+#include "../Containers/String.hpp" // TODO remove - this is circular dependency
+#include "../Containers/UniquePtr.hpp"
+#include "../Containers/StaticArray.hpp"
 
-#include <unordered_map>
-#include <memory>
 #include <atomic>
-#include <vector>
 
 
 namespace NFE {
@@ -57,8 +57,7 @@ public:
      * @param str         Message string
      * @param timeElapsed Seconds elapsed since log beginning
      */
-    virtual void Log(LogType type, const char* srcFile, int line, const char* str,
-                     double timeElapsed) = 0;
+    virtual void Log(LogType type, const char* srcFile, int line, const char* str, double timeElapsed) = 0;
 
     NFE_INLINE virtual void Reset() {};
     NFE_INLINE void Enable(bool enable) { mIsEnabled = enable; };
@@ -67,9 +66,15 @@ public:
 
 
 // Typedefs to make these types shorter and more readable
-using LoggerBackendPtr =  std::unique_ptr<LoggerBackend>;
-using LoggerBackendMap = std::unordered_map<std::string, LoggerBackendPtr>;
-using StrVector = std::vector<std::string>;
+using LoggerBackendPtr = UniquePtr<LoggerBackend>;
+
+struct LoggerBackendInfo
+{
+    String name;
+    LoggerBackendPtr ptr;
+};
+
+using LoggerBackendMap = StaticArray<LoggerBackendInfo, 8>;
 
 
 /**
@@ -84,11 +89,11 @@ class NFCOMMON_API Logger
         Initialized,
     };
 
-    std::string mLogsDirectory;
+    String mLogsDirectory;
 
     /// for trimming source file paths in Log() method
-    std::string mPathPrefix;
-    size_t mPathPrefixLen;
+    String mPathPrefix;
+    uint32 mPathPrefixLen;
 
     std::atomic<InitStage> mInitialized;  //< Set to Initialized, when Logger is fully initialized
     Mutex mLogMutex;                 //< For synchronizing logger output
@@ -116,7 +121,7 @@ public:
      *
      * @return True, if new backend with @name was inserted. False if @name is already in use.
      */
-    static bool RegisterBackend(const std::string& name, LoggerBackendPtr backend);
+    static bool RegisterBackend(const StringView name, LoggerBackendPtr backend);
 
     /**
      * Get pointer to already registered backend.
@@ -125,12 +130,12 @@ public:
      *
      * @return Pointer to the backend if registered, otherwise nullptr.
      */
-    static LoggerBackend* GetBackend(const std::string& name);
+    static LoggerBackend* GetBackend(const StringView name);
 
     /**
      * Get list of the registered backends.
      */
-    static StrVector ListBackends();
+    static const LoggerBackendMap& ListBackends();
 
     /**
      * Log single line using formated string.
@@ -145,6 +150,11 @@ public:
      */
     void Log(LogType type, const char* srcFile, int line, const char* str, ...);
     void Log(LogType type, const char* srcFile, const char* str, int line);
+
+    /**
+     * Flush the log and destroy all the backends.
+     */
+    void Shutdown();
 
     /**
      * Reset all backends that save to a file
@@ -162,7 +172,7 @@ public:
     /**
      * Get logs directory location.
      */
-    NFE_INLINE const std::string& GetLogsDirectory() const
+    NFE_INLINE const String& GetLogsDirectory() const
     {
         return mLogsDirectory;
     }

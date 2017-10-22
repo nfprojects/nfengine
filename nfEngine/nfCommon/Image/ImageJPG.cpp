@@ -16,6 +16,10 @@
 #include "jpeg/jpge.h"
 
 
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Common::ImageJPG)
+    NFE_CLASS_PARENT(NFE::Common::ImageType)
+NFE_END_DEFINE_CLASS()
+
 namespace NFE {
 namespace Common {
 
@@ -64,8 +68,13 @@ public:
 
 } // namespace
 
-// Register JPG image type
-bool gImageJPGRegistered = ImageType::RegisterImageType("JPG", std::make_unique<ImageJPG>());
+//////////////////////////////////////////////////////////////////////////
+
+StringView ImageJPG::GetName() const
+{
+    const StringView name("JPG");
+    return name;
+}
 
 bool ImageJPG::Check(InputStream* stream)
 {

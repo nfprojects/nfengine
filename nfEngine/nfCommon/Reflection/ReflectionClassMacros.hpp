@@ -81,6 +81,7 @@ NFE_INLINE constexpr size_t OffsetOf(Member Class::*member)
     const char* T::_GetName() { return #T; }                                                            \
     bool T::_InitType(NFE::RTTI::ClassTypeInfo& typeInfo)                                               \
     {                                                                                                   \
+        (void)typeInfo;                                                                                 \
         using ClassType = T; /* ClassType can be used in other NFE_CLASS macros */
 
 
@@ -106,6 +107,7 @@ NFE_INLINE constexpr size_t OffsetOf(Member Class::*member)
     const NFE::RTTI::Type* T::GetDynamicType() const { return NFE::RTTI::GetType<T>(); }                        \
     bool T::_InitType(NFE::RTTI::ClassTypeInfo& typeInfo)                                                       \
     {                                                                                                           \
+        (void)typeInfo;                                                                                         \
         using ClassType = T; /* ClassType can be used in other NFE_CLASS macros */
 
 

@@ -67,9 +67,9 @@ TEST(ReflectionClassTest, BaseClass_Serialization)
         obj.floatVal = 1.1f;
     }
 
-    std::string str;
+    String str;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
-    EXPECT_STREQ("obj={__type=\"TestBaseClass\" intVal=123 floatVal=1.1 mPrivateBool=false}", str.c_str());
+    EXPECT_STREQ("obj={__type=\"TestBaseClass\" intVal=123 floatVal=1.1 mPrivateBool=false}", str.Str());
 }
 
 TEST(ReflectionClassTest, BaseClass_Deserialization)
@@ -141,9 +141,9 @@ TEST(ReflectionClassTest, ChildClass_Serialization)
         obj.foo = 12345;
     }
 
-    std::string str;
+    String str;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
-    EXPECT_STREQ("obj={__type=\"TestChildClassA\" intVal=456 floatVal=3.14 mPrivateBool=false foo=12345}", str.c_str());
+    EXPECT_STREQ("obj={__type=\"TestChildClassA\" intVal=456 floatVal=3.14 mPrivateBool=false foo=12345}", str.Str());
 }
 
 TEST(ReflectionClassTest, ChildClass_Deserialization)
@@ -218,7 +218,7 @@ TEST(ReflectionClassTest, AbstractClass_Serialization)
         obj.foo = 12345;
     }
 
-    std::string str;
+    String str;
     ASSERT_FALSE(helper::SerializeObject(type, &obj, str));
 }
 

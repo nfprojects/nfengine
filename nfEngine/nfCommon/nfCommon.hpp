@@ -151,6 +151,18 @@ size_t ArraySize(const T(&)[N])
     return N;
 }
 
+
+namespace Common {
+
+/**
+ * Safely shutdown all the subsystems: RTTI, logger, memory, etc.
+ * @remarks This must be called just before returning from main().
+ *          Otherwise application will crash, because of non-deterministic global variables destruction.
+ */
+NFCOMMON_API void ShutdownSubsystems();
+
+
+} // namespace Common
 } // namespace NFE
 
 

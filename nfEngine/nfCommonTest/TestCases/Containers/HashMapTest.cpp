@@ -42,6 +42,9 @@ TEST(HashMap, Insert)
         EXPECT_EQ(2, map[1]);
     }
 
+    EXPECT_TRUE(map.Exists(1));
+    EXPECT_FALSE(map.Exists(2));
+
     EXPECT_NE(map.End(), map.Find(1));
     EXPECT_EQ(map.End(), map.Find(2));
 }
@@ -67,6 +70,9 @@ TEST(HashMap, InsertOrReplace)
         // map = { 1 -> 3 }
         EXPECT_EQ(3, map[1]);
     }
+
+    EXPECT_TRUE(map.Exists(1));
+    EXPECT_FALSE(map.Exists(2));
 
     EXPECT_NE(map.End(), map.Find(1));
     EXPECT_EQ(map.End(), map.Find(2));

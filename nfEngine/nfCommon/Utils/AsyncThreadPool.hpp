@@ -8,13 +8,14 @@
 
 #include "../nfCommon.hpp"
 #include "../System/ConditionVariable.hpp"
+#include "../Containers/HashMap.hpp"
+#include "../Containers/DynArray.hpp"
 
 #include <functional>
 #include <inttypes.h>
 #include <thread>
 #include <atomic>
 #include <queue>
-#include <map>
 
 namespace NFE {
 namespace Common {
@@ -54,7 +55,7 @@ public:
  */
 class NFCOMMON_API AsyncThreadPool final
 {
-    std::vector<std::thread> mWorkerThreads;
+    DynArray<std::thread> mWorkerThreads;
 
     ConditionVariable mTaskQueueTask;
     std::queue<AsyncFunc*> mTasksQueue;
@@ -62,7 +63,7 @@ class NFCOMMON_API AsyncThreadPool final
 
     std::atomic<bool> mStarted;
     std::atomic<AsyncFuncID> mLastTaskId;
-    std::map<AsyncFuncID, AsyncFunc*> mTasks;
+    HashMap<AsyncFuncID, AsyncFunc*> mTasks;
     Mutex mTasksMutex;                 //< lock for "mTasks"
     ConditionVariable mTasksMutexCV;  //< condition variable used to notify about finished task
 

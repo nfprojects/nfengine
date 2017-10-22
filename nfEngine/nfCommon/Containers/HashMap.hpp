@@ -33,7 +33,9 @@ public:
         InternalKey& operator = (InternalKey&&) = default;
         NFE_INLINE explicit InternalKey(const KeyType& key) : first(key) { }
         NFE_INLINE InternalKey(const KeyType& key, const ValueType& value) : first(key), second(value) { }
+        NFE_INLINE InternalKey(const KeyType& key, ValueType&& value) : first(key), second(std::move(value)) { }
         NFE_INLINE InternalKey(KeyType&& key, ValueType&& value) : first(std::move(key)), second(std::move(value)) { }
+        NFE_INLINE InternalKey(KeyType&& key, const ValueType& value) : first(std::move(key)), second(value) { }
 
         NFE_INLINE bool operator == (const InternalKey& rhs) const
         {
@@ -64,6 +66,8 @@ public:
 
     NFE_INLINE ConstIterator End() const;
     NFE_INLINE Iterator End();
+
+    NFE_INLINE bool Exists(const KeyType& key) const;
 
     NFE_INLINE ConstIterator Find(const KeyType& key) const;
     NFE_INLINE Iterator Find(const KeyType& key);

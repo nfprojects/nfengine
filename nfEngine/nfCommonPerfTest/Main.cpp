@@ -7,23 +7,27 @@
 #include "PCH.hpp"
 
 #include "nfCommon/FileSystem/FileSystem.hpp"
-#include "nfCommon/Reflection/ReflectionTypeRegistry.hpp"
+#include "nfCommon/Containers/String.hpp"
 
+
+using namespace NFE::Common;
 
 int main(int argc, char* argv[])
 {
     testing::InitGoogleTest(&argc, argv);
 
-    std::string execPath = NFE::Common::FileSystem::GetExecutablePath();
-    std::string execDir = NFE::Common::FileSystem::GetParentDir(execPath);
-    NFE::Common::FileSystem::ChangeDirectory(execDir + "/../../..");
-    NFE::Common::PathType logsDir = NFE::Common::FileSystem::GetPathType("Logs/PerfTests");
-    if (logsDir != NFE::Common::PathType::Directory)
-        NFE::Common::FileSystem::CreateDir("Logs/PerfTests");
+    const StringView logsDirPath("Logs/PerfTests");
+
+    const String execPath = FileSystem::GetExecutablePath();
+    const String execDir = FileSystem::GetParentDir(execPath);
+    FileSystem::ChangeDirectory(execDir + "/../../..");
+    PathType logsDir = FileSystem::GetPathType(logsDirPath);
+    if (logsDir != PathType::Directory)
+        FileSystem::CreateDir(logsDirPath);
 
     int result = RUN_ALL_TESTS();
 
-    NFE::RTTI::TypeRegistry::GetInstance().Cleanup();
+    NFE::Common::ShutdownSubsystems();
 
     // enable memory leak detection at the process exit (Windows only)
 #ifdef _CRTDBG_MAP_ALLOC

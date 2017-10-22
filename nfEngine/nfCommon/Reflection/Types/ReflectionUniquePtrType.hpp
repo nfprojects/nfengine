@@ -65,10 +65,10 @@ public:
         else if (value.IsObject()) // valid object
         {
             const char* typeName = nullptr;
-            const auto configIteratorCallback = [&typeName](const char* key, const Common::ConfigValue& value)
+            const auto configIteratorCallback = [&typeName](StringView key, const Common::ConfigValue& value)
             {
                 // marker found
-                if (strcmp(key, ClassType::TYPE_MARKER) == 0)
+                if (key == ClassType::TYPE_MARKER)
                 {
                     if (!value.IsString())
                     {
@@ -90,7 +90,7 @@ public:
             if (typeName)
             {
                 // get type from name
-                targetType = TypeRegistry::GetInstance().GetExistingType(typeName);
+                targetType = TypeRegistry::GetInstance().GetExistingType(Common::StringView(typeName));
                 if (!targetType)
                 {
                     NFE_LOG_ERROR("Type not found: '%s'", typeName);
@@ -157,13 +157,13 @@ public:
     {
         const Type* templateArgumentType = GetType<T>();
 
-        std::string typeName = std::string("NFE::Common::UniquePtr<") + templateArgumentType->GetName() + '>';
+        const Common::String typeName = Common::String("NFE::Common::UniquePtr<") + templateArgumentType->GetName() + '>';
 
         TypeInfo typeInfo;
         typeInfo.kind = TypeKind::UniquePtr;
         typeInfo.size = sizeof(Common::UniquePtr<T>);
         typeInfo.alignment = alignof(Common::UniquePtr<T>);
-        typeInfo.name = typeName.c_str();
+        typeInfo.name = typeName.Str();
         typeInfo.constructor = []() { return new Common::UniquePtr<T>; };
         typeInfo.arrayConstructor = [](uint32 num) { return new Common::UniquePtr<T>[num]; };
 

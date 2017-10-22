@@ -20,6 +20,8 @@
 #include "PipelineState.hpp"
 #include "ComputePipelineState.hpp"
 
+#include "nfCommon\Utils\StringUtils.hpp"
+
 
 namespace {
 
@@ -458,67 +460,69 @@ bool Device::IsBackbufferFormatSupported(ElementFormat format)
 
 bool Device::GetDeviceInfo(DeviceInfo& info)
 {
+    using namespace Common;
+
     VkPhysicalDeviceProperties devProps = {};
     vkGetPhysicalDeviceProperties(mPhysicalDevice, &devProps);
 
     info.description = devProps.deviceName;
     info.misc = "Vulkan API version: "
-              + std::to_string(VK_VERSION_MAJOR(devProps.apiVersion)) + "."
-              + std::to_string(VK_VERSION_MINOR(devProps.apiVersion)) + "."
-              + std::to_string(VK_VERSION_PATCH(devProps.apiVersion));
+              + ToString(VK_VERSION_MAJOR(devProps.apiVersion)) + "."
+              + ToString(VK_VERSION_MINOR(devProps.apiVersion)) + "."
+              + ToString(VK_VERSION_PATCH(devProps.apiVersion));
 
     VkPhysicalDeviceFeatures devFeatures = {};
     vkGetPhysicalDeviceFeatures(mPhysicalDevice, &devFeatures);
 
     // Description of below features is available on Vulkan registry:
     //   https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkGetPhysicalDeviceFeatures.html
-    info.features.push_back("RobustBufferAccess=" + std::to_string(devFeatures.robustBufferAccess));
-    info.features.push_back("FullDrawIndexUint32=" + std::to_string(devFeatures.fullDrawIndexUint32));
-    info.features.push_back("ImageCubeArray=" + std::to_string(devFeatures.imageCubeArray));
-    info.features.push_back("IndependentBlend=" + std::to_string(devFeatures.independentBlend));
-    info.features.push_back("GeometryShader=" + std::to_string(devFeatures.geometryShader));
-    info.features.push_back("TesselationShader=" + std::to_string(devFeatures.tessellationShader));
-    info.features.push_back("SampleRateShading=" + std::to_string(devFeatures.sampleRateShading));
-    info.features.push_back("DualSourceBlend=" + std::to_string(devFeatures.dualSrcBlend));
-    info.features.push_back("LogicOp=" + std::to_string(devFeatures.logicOp));
-    info.features.push_back("DepthClamp=" + std::to_string(devFeatures.depthClamp));
-    info.features.push_back("DepthBiasClamp=" + std::to_string(devFeatures.depthBiasClamp));
-    info.features.push_back("DepthBounds=" + std::to_string(devFeatures.depthBounds));
-    info.features.push_back("FillModeNonSolid=" + std::to_string(devFeatures.fillModeNonSolid));
-    info.features.push_back("WideLines=" + std::to_string(devFeatures.wideLines));
-    info.features.push_back("LargePoints=" + std::to_string(devFeatures.largePoints));
-    info.features.push_back("TextureCompressionETC2=" + std::to_string(devFeatures.textureCompressionETC2));
-    info.features.push_back("TextureCompressionASTC_LDR=" + std::to_string(devFeatures.textureCompressionASTC_LDR));
-    info.features.push_back("TextureCompressionBC=" + std::to_string(devFeatures.textureCompressionBC));
-    info.features.push_back("OcclusionQueryPrecise=" + std::to_string(devFeatures.occlusionQueryPrecise));
-    info.features.push_back("PipelineStatisticsQuery=" + std::to_string(devFeatures.pipelineStatisticsQuery));
-    info.features.push_back("VertexPipelineStoresAndAtomics=" + std::to_string(devFeatures.vertexPipelineStoresAndAtomics));
-    info.features.push_back("FragmentStoresAndAtomics=" + std::to_string(devFeatures.fragmentStoresAndAtomics));
-    info.features.push_back("ShaderTessellationAndGeometryPointSize=" + std::to_string(devFeatures.shaderTessellationAndGeometryPointSize));
-    info.features.push_back("ShaderImageGatherExtended=" + std::to_string(devFeatures.shaderImageGatherExtended));
-    info.features.push_back("ShaderStorageImageExtendedFormats=" + std::to_string(devFeatures.shaderStorageImageExtendedFormats));
-    info.features.push_back("ShaderStorageImageMultisample=" + std::to_string(devFeatures.shaderStorageImageMultisample));
-    info.features.push_back("ShaderUniformBufferArrayDynamicIndexing=" + std::to_string(devFeatures.shaderUniformBufferArrayDynamicIndexing));
-    info.features.push_back("ShaderSampledImageArrayDynamicIndexing=" + std::to_string(devFeatures.shaderSampledImageArrayDynamicIndexing));
-    info.features.push_back("ShaderStorageBufferArrayDynamicIndexing=" + std::to_string(devFeatures.shaderStorageBufferArrayDynamicIndexing));
-    info.features.push_back("ShaderStorageImageArrayDynamicIndexing=" + std::to_string(devFeatures.shaderStorageImageArrayDynamicIndexing));
-    info.features.push_back("ShaderClipDistance=" + std::to_string(devFeatures.shaderClipDistance));
-    info.features.push_back("ShaderCullDistance=" + std::to_string(devFeatures.shaderCullDistance));
-    info.features.push_back("ShaderFloat64=" + std::to_string(devFeatures.shaderFloat64));
-    info.features.push_back("ShaderInt64=" + std::to_string(devFeatures.shaderInt64));
-    info.features.push_back("ShaderInt16=" + std::to_string(devFeatures.shaderInt16));
-    info.features.push_back("ShaderResourceResidency=" + std::to_string(devFeatures.shaderResourceResidency));
-    info.features.push_back("ShaderResourceMinLod=" + std::to_string(devFeatures.shaderResourceMinLod));
-    info.features.push_back("AlphaToOne=" + std::to_string(devFeatures.alphaToOne));
-    info.features.push_back("SparseBinding=" + std::to_string(devFeatures.sparseBinding));
-    info.features.push_back("SparseResidencyBuffer=" + std::to_string(devFeatures.sparseResidencyBuffer));
-    info.features.push_back("SparseResidencyImage2D=" + std::to_string(devFeatures.sparseResidencyImage2D));
-    info.features.push_back("SparseResidencyImage3D=" + std::to_string(devFeatures.sparseResidencyImage3D));
-    info.features.push_back("SparseResidency2Samples=" + std::to_string(devFeatures.sparseResidency2Samples));
-    info.features.push_back("SparseResidency4Samples=" + std::to_string(devFeatures.sparseResidency4Samples));
-    info.features.push_back("SparseResidency8Samples=" + std::to_string(devFeatures.sparseResidency8Samples));
-    info.features.push_back("SparseResidency16Samples=" + std::to_string(devFeatures.sparseResidency16Samples));
-    info.features.push_back("SparseResidencyAliased=" + std::to_string(devFeatures.sparseResidencyAliased));
+    info.features.PushBack("RobustBufferAccess=" + ToString(devFeatures.robustBufferAccess));
+    info.features.PushBack("FullDrawIndexUint32=" + ToString(devFeatures.fullDrawIndexUint32));
+    info.features.PushBack("ImageCubeArray=" + ToString(devFeatures.imageCubeArray));
+    info.features.PushBack("IndependentBlend=" + ToString(devFeatures.independentBlend));
+    info.features.PushBack("GeometryShader=" + ToString(devFeatures.geometryShader));
+    info.features.PushBack("TesselationShader=" + ToString(devFeatures.tessellationShader));
+    info.features.PushBack("SampleRateShading=" + ToString(devFeatures.sampleRateShading));
+    info.features.PushBack("DualSourceBlend=" + ToString(devFeatures.dualSrcBlend));
+    info.features.PushBack("LogicOp=" + ToString(devFeatures.logicOp));
+    info.features.PushBack("DepthClamp=" + ToString(devFeatures.depthClamp));
+    info.features.PushBack("DepthBiasClamp=" + ToString(devFeatures.depthBiasClamp));
+    info.features.PushBack("DepthBounds=" + ToString(devFeatures.depthBounds));
+    info.features.PushBack("FillModeNonSolid=" + ToString(devFeatures.fillModeNonSolid));
+    info.features.PushBack("WideLines=" + ToString(devFeatures.wideLines));
+    info.features.PushBack("LargePoints=" + ToString(devFeatures.largePoints));
+    info.features.PushBack("TextureCompressionETC2=" + ToString(devFeatures.textureCompressionETC2));
+    info.features.PushBack("TextureCompressionASTC_LDR=" + ToString(devFeatures.textureCompressionASTC_LDR));
+    info.features.PushBack("TextureCompressionBC=" + ToString(devFeatures.textureCompressionBC));
+    info.features.PushBack("OcclusionQueryPrecise=" + ToString(devFeatures.occlusionQueryPrecise));
+    info.features.PushBack("PipelineStatisticsQuery=" + ToString(devFeatures.pipelineStatisticsQuery));
+    info.features.PushBack("VertexPipelineStoresAndAtomics=" + ToString(devFeatures.vertexPipelineStoresAndAtomics));
+    info.features.PushBack("FragmentStoresAndAtomics=" + ToString(devFeatures.fragmentStoresAndAtomics));
+    info.features.PushBack("ShaderTessellationAndGeometryPointSize=" + ToString(devFeatures.shaderTessellationAndGeometryPointSize));
+    info.features.PushBack("ShaderImageGatherExtended=" + ToString(devFeatures.shaderImageGatherExtended));
+    info.features.PushBack("ShaderStorageImageExtendedFormats=" + ToString(devFeatures.shaderStorageImageExtendedFormats));
+    info.features.PushBack("ShaderStorageImageMultisample=" + ToString(devFeatures.shaderStorageImageMultisample));
+    info.features.PushBack("ShaderUniformBufferArrayDynamicIndexing=" + ToString(devFeatures.shaderUniformBufferArrayDynamicIndexing));
+    info.features.PushBack("ShaderSampledImageArrayDynamicIndexing=" + ToString(devFeatures.shaderSampledImageArrayDynamicIndexing));
+    info.features.PushBack("ShaderStorageBufferArrayDynamicIndexing=" + ToString(devFeatures.shaderStorageBufferArrayDynamicIndexing));
+    info.features.PushBack("ShaderStorageImageArrayDynamicIndexing=" + ToString(devFeatures.shaderStorageImageArrayDynamicIndexing));
+    info.features.PushBack("ShaderClipDistance=" + ToString(devFeatures.shaderClipDistance));
+    info.features.PushBack("ShaderCullDistance=" + ToString(devFeatures.shaderCullDistance));
+    info.features.PushBack("ShaderFloat64=" + ToString(devFeatures.shaderFloat64));
+    info.features.PushBack("ShaderInt64=" + ToString(devFeatures.shaderInt64));
+    info.features.PushBack("ShaderInt16=" + ToString(devFeatures.shaderInt16));
+    info.features.PushBack("ShaderResourceResidency=" + ToString(devFeatures.shaderResourceResidency));
+    info.features.PushBack("ShaderResourceMinLod=" + ToString(devFeatures.shaderResourceMinLod));
+    info.features.PushBack("AlphaToOne=" + ToString(devFeatures.alphaToOne));
+    info.features.PushBack("SparseBinding=" + ToString(devFeatures.sparseBinding));
+    info.features.PushBack("SparseResidencyBuffer=" + ToString(devFeatures.sparseResidencyBuffer));
+    info.features.PushBack("SparseResidencyImage2D=" + ToString(devFeatures.sparseResidencyImage2D));
+    info.features.PushBack("SparseResidencyImage3D=" + ToString(devFeatures.sparseResidencyImage3D));
+    info.features.PushBack("SparseResidency2Samples=" + ToString(devFeatures.sparseResidency2Samples));
+    info.features.PushBack("SparseResidency4Samples=" + ToString(devFeatures.sparseResidency4Samples));
+    info.features.PushBack("SparseResidency8Samples=" + ToString(devFeatures.sparseResidency8Samples));
+    info.features.PushBack("SparseResidency16Samples=" + ToString(devFeatures.sparseResidency16Samples));
+    info.features.PushBack("SparseResidencyAliased=" + ToString(devFeatures.sparseResidencyAliased));
 
     return true;
 }
