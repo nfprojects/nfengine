@@ -13,8 +13,6 @@
 #include <xcb/xcb.h>
 #endif // defined(__LINUX__) | defined(__linux__)
 
-#include <string>
-
 
 #define NFE_WINDOW_KEYS_NUM 256
 

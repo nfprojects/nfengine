@@ -16,60 +16,77 @@
 namespace NFE {
 namespace Common {
 
-bool UTF8ToUTF16(const std::string& in, std::wstring& out)
+bool UTF8ToUTF16(const StringView in, Utf16String& out)
 {
-    // TODO: consider dynamic allocation
-    const int bufferSize = 1024;
-    wchar_t buffer[bufferSize];
+    if (in.Empty())
+    {
+        out.clear();
+        return true;
+    }
 
-    size_t inChars;
-    HRESULT hr = ::StringCchLengthA(in.c_str(), INT_MAX - 1, &inChars);
-    if (FAILED(hr))
+    const int numWideChars = ::MultiByteToWideChar(CP_UTF8, 0, in.Data(), in.Length(), nullptr, 0);
+    if (numWideChars <= 0)
+    {
+        // conversion failed
         return false;
+    }
 
-    ++inChars;
-
-    int result = ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, in.c_str(),
-                                       static_cast<int>(inChars), buffer, bufferSize);
-    if (result == 0)
+    DynArray<wchar_t> buffer;
+    buffer.Resize(numWideChars);
+    const int ret = ::MultiByteToWideChar(CP_UTF8, 0, in.Data(), in.Length(), buffer.Data(), numWideChars);
+    if (ret <= 0)
+    {
+        // conversion failed
         return false;
+    }
 
-    out = buffer;
+    out = std::wstring(buffer.Data());
     return true;
 }
 
-bool UTF16ToUTF8(const std::wstring& in, std::string& out)
+bool UTF16ToUTF8(const Utf16String& in, String& out)
 {
-    // TODO: consider dynamic allocation
-    const int bufferSize = 1024;
-    char buffer[bufferSize];
+    if (in.empty())
+    {
+        out.Clear();
+        return true;
+    }
 
-    size_t inChars;
-    HRESULT hr = ::StringCchLengthW(in.c_str(), INT_MAX - 1, &inChars);
-    if (FAILED(hr))
+    int numChars = ::WideCharToMultiByte(CP_UTF8, 0, in.c_str(), static_cast<int>(in.length()), nullptr, 0, 0, 0);
+    if (numChars <= 0)
+    {
+        // conversion failed
         return false;
+    }
 
-    ++inChars;
+    DynArray<char> buffer;
+    buffer.Resize(numChars);
 
-    int result = ::WideCharToMultiByte(CP_UTF8, 0, in.c_str(), static_cast<int>(inChars), buffer,
-                                       bufferSize, 0, 0);
-    if (result == 0)
+    int wideChars = ::WideCharToMultiByte(CP_UTF8, 0, in.c_str(), static_cast<int>(in.length()), buffer.Data(), numChars, 0, 0);
+    if (wideChars <= 0)
+    {
+        // conversion failed
         return false;
+    }
 
-    out = buffer;
+    buffer.PushBack(0);
+    out = buffer.Data();
+
     return true;
 }
 
-std::string GetLastErrorString()
+String GetLastErrorString()
 {
+    const int bufferLength = 1024;
+
     DWORD lastError = ::GetLastError();
-    wchar_t buffer[256];
+    wchar_t buffer[bufferLength];
 
     ::FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, lastError,
-                    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), buffer, 255, NULL);
+                    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), buffer, bufferLength - 1, NULL);
 
-    std::string shortString = "?";
-    UTF16ToUTF8(std::wstring(buffer), shortString);
+    String shortString = "?";
+    UTF16ToUTF8(Utf16String(buffer, wcslen(buffer)), shortString);
     return shortString;
 }
 

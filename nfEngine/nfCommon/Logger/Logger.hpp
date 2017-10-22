@@ -9,6 +9,7 @@
 #include "../nfCommon.hpp"
 #include "../System/Timer.hpp"
 #include "../System/Mutex.hpp"
+#include "../Containers/String.hpp"
 
 #include <unordered_map>
 #include <memory>
@@ -84,11 +85,11 @@ class NFCOMMON_API Logger
         Initialized,
     };
 
-    std::string mLogsDirectory;
+    String mLogsDirectory;
 
     /// for trimming source file paths in Log() method
-    std::string mPathPrefix;
-    size_t mPathPrefixLen;
+    String mPathPrefix;
+    uint32 mPathPrefixLen;
 
     std::atomic<InitStage> mInitialized;  //< Set to Initialized, when Logger is fully initialized
     Mutex mLogMutex;                 //< For synchronizing logger output
@@ -162,7 +163,7 @@ public:
     /**
      * Get logs directory location.
      */
-    NFE_INLINE const std::string& GetLogsDirectory() const
+    NFE_INLINE const String& GetLogsDirectory() const
     {
         return mLogsDirectory;
     }

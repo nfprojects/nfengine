@@ -8,6 +8,9 @@
 
 #include "../nfCommon.hpp"
 #include "../System/Mutex.hpp"
+#include "../../Containers/UniquePtr.hpp"
+#include "../../Containers/HashMap.hpp"
+#include "../../Containers/DynArray.hpp"
 
 #if defined(WIN32)
 #define WIN32_LEAN_AND_MEAN
@@ -17,7 +20,6 @@
 
 #include <map>
 #include <vector>
-#include <string>
 #include <memory>
 #include <type_traits>
 #include <atomic>
@@ -30,16 +32,18 @@ namespace Common {
 #if defined(WIN32)
 struct WatchRequest
 {
+    static constexpr uint32 BufferSize = 16384;
+
     int filter;
     DirectoryWatch* watch;
 
-    std::string path;
+    String path;
     std::wstring widePath;
 
     HANDLE dirHandle;
     OVERLAPPED overlapped;
-    std::vector<char> frontBuffer;
-    std::vector<char> backBuffer;
+    DynArray<char> frontBuffer;
+    DynArray<char> backBuffer;
 
     WatchRequest();
 
@@ -66,7 +70,7 @@ private:
 
     Mutex mMutex;
     std::atomic<size_t> mRequestsNum;
-    std::map<std::string, std::unique_ptr<WatchRequest>> mRequests;
+    HashMap<String, UniquePtr<WatchRequest>> mRequests;
 
     static DWORD CALLBACK Dispatcher(LPVOID param);
     static void CALLBACK NotificationCompletion(DWORD errorCode,
@@ -92,7 +96,7 @@ private:
 
 public:
     // notification event type
-    enum class Event : unsigned int
+    enum class Event : uint8
     {
         None     = 0,
         Create   = 1 << 0,  //< a file or a directory has been created
@@ -102,7 +106,7 @@ public:
         MoveTo   = 1 << 4,  //< a file has been moved to
     };
 
-    typedef std::underlying_type<Event>::type EventType;
+    using EventType = std::underlying_type<Event>::type;
 
     // notification event data
     struct EventData
@@ -117,7 +121,7 @@ public:
      * The function should be as lightweight as possible, because other events
      * are handled on the same thread.
      */
-    typedef std::function<void(const EventData& event)> WatchCallback;
+    using WatchCallback = std::function<void(const EventData& event)>;
 
     DirectoryWatch();
     ~DirectoryWatch();
@@ -130,7 +134,7 @@ public:
      * @param  eventFilter Bitfield selecting event types to be monitored.
      * @return True on success
      */
-    bool WatchPath(const std::string& path, Event eventFilter);
+    bool WatchPath(const StringView path, Event eventFilter);
 
     /**
      * Change directory monitor callback.

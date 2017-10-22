@@ -26,16 +26,16 @@ void LoggerBackendXML::Reset()
 {
     /**
      * TODO: move intro, outro and the other XML code templates to another file, so the logger
-     * backend can be easly customizable.
+     * backend can be easily customizable.
      */
-    const static std::string gLogIntro = R"(<?xml version="1.0" encoding="utf-8"?>
+    const static StringView gLogIntro(R"(<?xml version="1.0" encoding="utf-8"?>
 <LoggerOutput title = "nfEngine - log file">
-)";
+)");
 
-    const std::string logFileName = "log.xml";
+    const StringView logFileName("log.xml");
     mBuffer.resize(NFE_MAX_LOG_MESSAGE_LENGTH);
 
-    const std::string logFilePath = Logger::GetInstance()->GetLogsDirectory() + '/' + logFileName;
+    const String logFilePath = Logger::GetInstance()->GetLogsDirectory() + '/' + logFileName;
     if (!mFile.Open(logFilePath, AccessMode::Write, true))
     {
         // this will be handled by other logger
@@ -43,7 +43,7 @@ void LoggerBackendXML::Reset()
         return;
     }
 
-    mFile.Write(gLogIntro.data(), gLogIntro.length());
+    mFile.Write(gLogIntro.Data(), gLogIntro.Length());
 }
 
 LoggerBackendXML::~LoggerBackendXML()

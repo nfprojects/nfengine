@@ -67,10 +67,10 @@ void LoggerBackendHTML::Reset()
        <tbody>
 )";
 
-    const std::string logFileName = "log.html";
+    const StringView logFileName("log.html");
     mBuffer.resize(NFE_MAX_LOG_MESSAGE_LENGTH);
 
-    const std::string logFilePath = Logger::GetInstance()->GetLogsDirectory() + '/' + logFileName;
+    const String logFilePath = Logger::GetInstance()->GetLogsDirectory() + '/' + logFileName;
     if (!mFile.Open(logFilePath, AccessMode::Write, true))
     {
         // this will be handled by other logger

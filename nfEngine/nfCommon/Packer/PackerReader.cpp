@@ -11,12 +11,12 @@ namespace NFE {
 namespace Common {
 
 PackerReader::PackerReader(): mFileVersion(0) {}
-PackerReader::PackerReader(const std::string& filePath): mFileVersion(0)
+PackerReader::PackerReader(const StringView filePath): mFileVersion(0)
 {
     Init(filePath);
 }
 
-PackerResult PackerReader::Init(const std::string& filePath)
+PackerResult PackerReader::Init(const StringView filePath)
 {
     mFilePath = filePath;
     File file(mFilePath, AccessMode::Read);
@@ -52,7 +52,7 @@ PackerResult PackerReader::Init(const std::string& filePath)
     return PackerResult::OK;
 }
 
-PackerResult PackerReader::GetFile(const std::string& vfsFilePath, Buffer& outputBuffer)
+PackerResult PackerReader::GetFile(const StringView vfsFilePath, Buffer& outputBuffer)
 {
     if (mFileList.empty())
         return PackerResult::Uninitialized;

@@ -14,12 +14,16 @@
 #include <intrin.h>
 
 
+namespace NFE {
+namespace Common {
+
 namespace {
+
 typedef void (WINAPI *RtlGetVersionFuncType)(OSVERSIONINFOEXW*);
 
 bool GetVersion(OSVERSIONINFOEX* os)
 {
-    NFE::Common::Library lib;
+    Library lib;
     RtlGetVersionFuncType func;
 
 #ifdef UNICODE
@@ -29,7 +33,7 @@ bool GetVersion(OSVERSIONINFOEX* os)
     OSVERSIONINFOEXW* osw = &o;
 #endif
 
-    if (lib.Open("ntdll.dll"))
+    if (lib.Open(StringView("ntdll.dll")))
     {
         if(!lib.GetSymbol("RtlGetVersion", func))
         {
@@ -59,10 +63,8 @@ bool GetVersion(OSVERSIONINFOEX* os)
     lib.Close();
     return true;
 }
-}
 
-namespace NFE {
-namespace Common {
+} // namespace
 
 void SystemInfo::InitCPUInfoPlatform()
 {
@@ -118,10 +120,14 @@ void SystemInfo::InitOSVersion()
         mOSVersion += std::to_string(os.dwMajorVersion) + '.' + std::to_string(os.dwMinorVersion);
     }
 
-    std::string szCSDVer;
+    String szCSDVer;
     if (UTF16ToUTF8(os.szCSDVersion, szCSDVer))
-        if (!szCSDVer.empty())
+    {
+        if (!szCSDVer.Empty())
+        {
             mOSVersion += " " + szCSDVer;
+        }
+    }
     mOSVersion += " Build: " + std::to_string(os.dwBuildNumber);
 }
 
@@ -208,5 +214,6 @@ uint64_t SystemInfo::GetMemFreeSwapKb()
         mMemFreeSwapKb = 0;
     return mMemFreeSwapKb;
 }
+
 } // namespace Common
 } // namespace NFE

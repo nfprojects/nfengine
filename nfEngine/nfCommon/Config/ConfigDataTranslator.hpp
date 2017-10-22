@@ -39,10 +39,10 @@ class DataTranslator
     typedef const char* T::*StringValue;
 
     // arrays of values
-    typedef std::vector<bool> T::*BoolArrayValue;
-    typedef std::vector<int> T::*IntArrayValue;
-    typedef std::vector<float> T::*FloatArrayValue;
-    typedef std::vector<const char*> T::*StringArrayValue;
+    typedef DynArray<bool> T::*BoolArrayValue;
+    typedef DynArray<int> T::*IntArrayValue;
+    typedef DynArray<float> T::*FloatArrayValue;
+    typedef DynArray<const char*> T::*StringArrayValue;
 
     std::map<const char*, BoolValue, CStringComparator> mBoolValues;
     std::map<const char*, IntValue, CStringComparator> mIntValues;
@@ -105,16 +105,13 @@ public:
 
 
 template <typename T>
-bool Config::TranslateConfigObject(ConfigObjectNodePtr node,
-                                   DataTranslator<T>& translator,
-                                   T& object) const
+bool Config::TranslateConfigObject(ConfigObjectNodePtr node, DataTranslator<T>& translator, T& object) const
 {
     using namespace std::placeholders;
 
     bool success = true;
 
-    auto intArrayIterator = [&success](const char* key, const ConfigValue& value,
-                                       std::vector<int32>& array)
+    auto intArrayIterator = [&success](const char* key, const ConfigValue& value, DynArray<int32>& array)
     {
         if (!value.Is<int32>())
         {
@@ -122,12 +119,11 @@ bool Config::TranslateConfigObject(ConfigObjectNodePtr node,
             NFE_LOG_ERROR("Array '%s' contains non-integer value", key);
             return false;
         }
-        array.push_back(value.Get<int32>());
+        array.PushBack(value.Get<int32>());
         return true;
     };
 
-    auto boolArrayIterator = [&success](const char* key, const ConfigValue& value,
-                                        std::vector<bool>& array)
+    auto boolArrayIterator = [&success](const char* key, const ConfigValue& value, DynArray<bool>& array)
     {
         if (!value.Is<bool>())
         {
@@ -135,12 +131,11 @@ bool Config::TranslateConfigObject(ConfigObjectNodePtr node,
             NFE_LOG_ERROR("Array '%s' contains non-boolean value", key);
             return false;
         }
-        array.push_back(value.Get<bool>());
+        array.PushBack(value.Get<bool>());
         return true;
     };
 
-    auto floatArrayIterator = [&success](const char* key, const ConfigValue& value,
-                                         std::vector<float>& array)
+    auto floatArrayIterator = [&success](const char* key, const ConfigValue& value, DynArray<float>& array)
     {
         if (!value.Is<float>())
         {
@@ -148,12 +143,11 @@ bool Config::TranslateConfigObject(ConfigObjectNodePtr node,
             NFE_LOG_ERROR("Array '%s' contains non-float value", key);
             return false;
         }
-        array.push_back(value.Get<float>());
+        array.PushBack(value.Get<float>());
         return true;
     };
 
-    auto stringArrayIterator = [&success](const char* key, const ConfigValue& value,
-                                          std::vector<const char*>& array)
+    auto stringArrayIterator = [&success](const char* key, const ConfigValue& value, DynArray<const char*>& array)
     {
         if (!value.IsString())
         {
@@ -161,7 +155,7 @@ bool Config::TranslateConfigObject(ConfigObjectNodePtr node,
             NFE_LOG_ERROR("Array '%s' contains non-string value", key);
             return false;
         }
-        array.push_back(value.GetString());
+        array.PushBack(value.GetString());
         return true;
     };
 

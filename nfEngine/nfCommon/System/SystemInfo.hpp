@@ -7,8 +7,10 @@
 #pragma once
 
 #include "../nfCommon.hpp"
+#include "../Containers/HashMap.hpp"
+#include "../Containers/String.hpp"
+#include "../Containers/StringView.hpp"
 
-#include <map>
 
 #if defined(__LINUX__) | defined(__linux__)
 #include "sys/sysinfo.h"
@@ -26,10 +28,8 @@ struct CpuidFeature
 {
     int AddressNo;
     int FeatureNo;
-    CpuidFeature() : AddressNo(0), FeatureNo(0)
-    {};
-    CpuidFeature(int x, int y) : AddressNo(x), FeatureNo(y)
-    {}
+    CpuidFeature() : AddressNo(0), FeatureNo(0) {}
+    CpuidFeature(int x, int y) : AddressNo(x), FeatureNo(y) {}
 };
 
 /**
@@ -40,10 +40,10 @@ class NFCOMMON_API SystemInfo
 private:
     SystemInfo();
 
-    std::map<std::string, CpuidFeature> mCpuidFeatureMap;
-    std::string mCPUBrand;
-    std::string mOSVersion;
-    std::string mCompilerInfo;
+    HashMap<String, CpuidFeature> mCpuidFeatureMap;
+    String mCPUBrand;
+    String mOSVersion;
+    String mCompilerInfo;
     uint64_t mCPUCoreNo;
     uint64_t mPageSize;
     uint64_t mCacheLineSize;
@@ -80,7 +80,7 @@ public:
      * Check if feature is supported. List of features at the bottom of this file.
      * @return True if feature is supported, False otherwise
      */
-    bool IsFeatureSupported(const std::string& featureName) const;
+    bool IsFeatureSupported(const StringView featureName) const;
 
     /**
      * Update free physical memory information
@@ -104,14 +104,14 @@ public:
      * Print all gathered information
      * @return Formatted string with all information
      */
-    std::string ConstructAllInfoString();
+    String ConstructAllInfoString();
 
     /**
      * Get class fields
      */
-    const std::string& GetCPUBrand() const;
-    const std::string& GetOSVersion() const;
-    const std::string& GetCompilerInfo() const;
+    const String& GetCPUBrand() const;
+    const String& GetOSVersion() const;
+    const String& GetCompilerInfo() const;
     uint64_t GetCPUCoreNo() const;
     uint64_t GetPageSize() const;
     uint64_t GetCacheLineSize() const;

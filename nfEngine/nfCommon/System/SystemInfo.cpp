@@ -79,11 +79,11 @@ void SystemInfo::InitCPUInfoCommon()
             memcpy(CPUBrandString + 32, CPUInfo, sizeof(CPUInfo));
         }
     }
-    mCPUBrand.assign(CPUBrandString);
+    mCPUBrand = CPUBrandString;
     // Intel is known for a long space before CPU name
     {
         const size_t strBegin = mCPUBrand.find_first_not_of(" \t");
-        if (strBegin != std::string::npos)
+        if (strBegin != String::npos)
             mCPUBrand.erase(0, strBegin);
     }
 
@@ -168,11 +168,12 @@ void SystemInfo::InitMap()
     mCpuidFeatureMap["EM64T"] = CpuidFeature(4, 1<<29); // Support for 64bit OS
 }
 
-std::string SystemInfo::ConstructAllInfoString()
+String SystemInfo::ConstructAllInfoString()
 {
     // Lambda used for printing. Got 3 modes for our purposes only.
-    auto cpuInfoPrinter = [](int mode, std::string name, std::string value, std::string units)
+    auto cpuInfoPrinter = [](int mode, const std::string& name, const std::string& value, const std::string& units)
     {
+        // TODO
         std::stringstream sStream;
         if (mode == 1)
         {
@@ -192,37 +193,39 @@ std::string SystemInfo::ConstructAllInfoString()
             sStream << std::setw(13) << std::right << value << std::endl;
         }
 
-        return sStream.str();
+        return String(sStream.str().c_str());
     };
 
     // Building output string
-    std::string outputStr;
-    outputStr.append("\nSYSTEM INFORMATION:\n");
+    String outputStr;
+    outputStr += "\nSYSTEM INFORMATION:\n";
 
-    outputStr.append("..::CPU::..\n");
-    outputStr.append(cpuInfoPrinter(1, "Brand", mCPUBrand, ""));
-    outputStr.append(cpuInfoPrinter(1, "CPU cores no.", std::to_string(mCPUCoreNo), ""));
-    outputStr.append(cpuInfoPrinter(1, "Page size", std::to_string(mPageSize), "B"));
-    outputStr.append(cpuInfoPrinter(1, "Cache line size", std::to_string(mCacheLineSize), "B"));
+    outputStr += "..::CPU::..\n";
+    outputStr += cpuInfoPrinter(1, "Brand", mCPUBrand, "");
+    outputStr += cpuInfoPrinter(1, "CPU cores no.", std::to_string(mCPUCoreNo), "");
+    outputStr += cpuInfoPrinter(1, "Page size", std::to_string(mPageSize), "B");
+    outputStr += cpuInfoPrinter(1, "Cache line size", std::to_string(mCacheLineSize), "B");
 
-    outputStr.append("\n..::MEMORY::..\n");
-    outputStr.append(cpuInfoPrinter(2, "Free", std::to_string(GetFreeMemoryKb()), "total"));
-    outputStr.append(cpuInfoPrinter(2, "Physical", std::to_string(mMemTotalPhysKb), "total"));
-    outputStr.append(cpuInfoPrinter(2, "Physical", std::to_string(mMemFreePhysKb), "avail"));
-    outputStr.append(cpuInfoPrinter(2, "Swap", std::to_string(mMemTotalSwapKb), "total"));
-    outputStr.append(cpuInfoPrinter(2, "Swap", std::to_string(mMemFreeSwapKb), "avail"));
-    outputStr.append(cpuInfoPrinter(2, "Virtual", std::to_string(mMemTotalVirtKb), "total"));
-    outputStr.append(cpuInfoPrinter(2, "Virtual", std::to_string(mMemFreeVirtKb), "avail"));
+    outputStr += "\n..::MEMORY::..\n");
+    outputStr += cpuInfoPrinter(2, "Free", std::to_string(GetFreeMemoryKb()), "total");
+    outputStr += cpuInfoPrinter(2, "Physical", std::to_string(mMemTotalPhysKb), "total");
+    outputStr += cpuInfoPrinter(2, "Physical", std::to_string(mMemFreePhysKb), "avail");
+    outputStr += cpuInfoPrinter(2, "Swap", std::to_string(mMemTotalSwapKb), "total");
+    outputStr += cpuInfoPrinter(2, "Swap", std::to_string(mMemFreeSwapKb), "avail");
+    outputStr += cpuInfoPrinter(2, "Virtual", std::to_string(mMemTotalVirtKb), "total");
+    outputStr += cpuInfoPrinter(2, "Virtual", std::to_string(mMemFreeVirtKb), "avail");
 
     // cast boolean to string lambda
     auto b2s = [](bool x){return x ? "supported" : "NOT supported"; };
 
-    outputStr.append("\n..::Processor features::..\n");
+    outputStr += "\n..::Processor features::..\n";
     // iterate features map and print to the output string
-    for(auto const &it : mCpuidFeatureMap)
-        outputStr.append(cpuInfoPrinter(4, it.first, b2s(CheckFeature(it.second)), ""));
+    for (auto const &it : mCpuidFeatureMap)
+    {
+        outputStr += cpuInfoPrinter(4, it.first, b2s(CheckFeature(it.second)), "");
+    }
 
-    outputStr.append("\n");
+    outputStr += '\n';
     return outputStr;
 }
 
@@ -231,25 +234,25 @@ bool SystemInfo::CheckFeature(CpuidFeature feature) const
     return (mCpuidFeatures[feature.AddressNo] & feature.FeatureNo) != 0;
 }
 
-bool SystemInfo::IsFeatureSupported(const std::string& featureName) const
+bool SystemInfo::IsFeatureSupported(const StringView& featureName) const
 {
-    std::map<std::string, CpuidFeature>::const_iterator it = mCpuidFeatureMap.find(featureName);
+    const auto it = mCpuidFeatureMap.find(featureName);
     if (it != mCpuidFeatureMap.end())
         return CheckFeature(it->second);
     return false;
 }
 
-const std::string& SystemInfo::GetCPUBrand() const
+const String& SystemInfo::GetCPUBrand() const
 {
     return mCPUBrand;
 }
 
-const std::string& SystemInfo::GetOSVersion() const
+const String& SystemInfo::GetOSVersion() const
 {
     return mOSVersion;
 }
 
-const std::string& SystemInfo::GetCompilerInfo() const
+const String& SystemInfo::GetCompilerInfo() const
 {
     return mCompilerInfo;
 }

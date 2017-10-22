@@ -81,10 +81,10 @@ void Logger::LogInit()
 #else
     mPathPrefix = NFE_ROOT_DIRECTORY;
 #endif
-    mPathPrefixLen = mPathPrefix.length();
+    mPathPrefixLen = mPathPrefix.Length();
 
-    std::string execPath = NFE::Common::FileSystem::GetExecutablePath();
-    std::string execDir = NFE::Common::FileSystem::GetParentDir(execPath);
+    String execPath = NFE::Common::FileSystem::GetExecutablePath();
+    String execDir = NFE::Common::FileSystem::GetParentDir(execPath);
     mLogsDirectory = execDir + "/../../../Logs";
     FileSystem::CreateDir(mLogsDirectory);
 

@@ -12,33 +12,33 @@
 namespace NFE {
 namespace Common {
 
-bool ImageType::RegisterImageType(const std::string& name, ImageTypePtr imageType)
+bool ImageType::RegisterImageType(const StringView name, ImageTypePtr imageType)
 {
-    return Image::mImageTypes().insert(std::make_pair(name, std::move(imageType))).second;
+    return Image::mImageTypes().Insert(name, std::move(imageType)).iterator != Image::mImageTypes().End();
 }
 
-ImageType* ImageType::GetImageType(const std::string& name)
+ImageType* ImageType::GetImageType(const StringView name)
 {
-    ImageTypeMap::const_iterator imageType = Image::mImageTypes().find(name);
+    const ImageTypeMap::ConstIterator imageType = Image::mImageTypes().Find(name);
 
     if (imageType == Image::mImageTypes().cend())
         return nullptr;
 
-    return imageType->second.get();
+    return imageType->second.Get();
 }
 
-std::vector<std::string> ImageType::ListImageTypes()
+DynArray<StringView> ImageType::ListImageTypes()
 {
-    std::vector<std::string> vect;
-    vect.reserve(Image::mImageTypes().size());
+    DynArray<StringView> array;
+    array.Reserve(Image::mImageTypes().Size());
 
     for (const auto& i : Image::mImageTypes())
-        vect.push_back(i.first);
+        array.PushBack(i.first);
 
-    return vect;
+    return array;
 }
 
-std::vector<Mipmap>* ImageType::GetMipmaps(Image* img)
+DynArray<Mipmap>* ImageType::GetMipmaps(Image* img)
 {
     return &img->mMipmaps;
 }
