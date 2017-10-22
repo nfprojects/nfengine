@@ -8,20 +8,17 @@
 #pragma once
 
 #include "../nfCommon.hpp"
+#include "../Containers/DynArray.hpp"
 #include "Mipmap.hpp"
 #include "ImageFormat.hpp"
 #include "ImageType.hpp"
-
-#include <unordered_map>
-#include <memory>
-#include <vector>
 
 namespace NFE {
 namespace Common {
 
 class NFCOMMON_API Image
 {
-    std::vector<Mipmap> mMipmaps;
+    DynArray<Mipmap> mMipmaps;
     int mWidth;
     int mHeight;
     ImageFormat mFormat;
@@ -102,7 +99,7 @@ public:
     /**
      * Get number of mipmaps in the image.
      */
-    size_t GetMipmapsNum() const;
+    uint32 GetMipmapsNum() const;
 
     /**
      * Access n-th mipmap data.

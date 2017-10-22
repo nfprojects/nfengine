@@ -10,6 +10,8 @@
 #include "Math/Math.hpp"
 #include "Utils/ScopedLock.hpp"
 
+#pragma warning(disable: 4073) // "initializers put in library initialization area"
+#pragma init_seg(user)
 
 // TODO
 // 1. Allocated size tracking in Release mode
@@ -17,6 +19,11 @@
 
 namespace NFE {
 namespace Common {
+
+namespace
+{
+DefaultAllocator& gPreinitDefaultAllocator = DefaultAllocator::GetInstance();
+} // namespace
 
 DefaultAllocator::DefaultAllocator()
     : mAllocationsNum(0)
@@ -27,6 +34,7 @@ DefaultAllocator::DefaultAllocator()
 DefaultAllocator::~DefaultAllocator()
 {
     ReportAllocations();
+    mAllocationsDebugInfo.clear();
 }
 
 DefaultAllocator& DefaultAllocator::GetInstance()
@@ -52,7 +60,7 @@ void* DefaultAllocator::Malloc(size_t size, size_t alignment, const char* source
     void* ptr = nullptr;
 
 #if defined(WIN32)
-    ptr = _aligned_malloc(size, alignment);
+    ptr = _aligned_malloc_dbg(size, alignment, sourceFile, sourceLine);
 
 #elif defined(__LINUX__) | defined(__linux__)
     alignment = std::max(alignment, sizeof(void*));

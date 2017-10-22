@@ -476,9 +476,9 @@ TEST_F(ImageTest, SaveJPG)
 
     {
         FileOutputStream outFile((TEST_IMAGES_SAVEPATH + TEXTURE_JPG + "_saved.jpg").data());
-        ASSERT_FALSE(ImageType::GetImageType("JPG")->Save(mImage.get(), &outFile));
+        ASSERT_FALSE(ImageType::GetImageType(StringView("JPG"))->Save(mImage.get(), &outFile));
         ASSERT_TRUE(mImage->Convert(ImageFormat::RGBA_UByte));
-        ASSERT_TRUE(ImageType::GetImageType("JPG")->Save(mImage.get(), &outFile));
+        ASSERT_TRUE(ImageType::GetImageType(StringView("JPG"))->Save(mImage.get(), &outFile));
     }
 
     mImageFile.reset(new FileInputStream((TEST_IMAGES_SAVEPATH + TEXTURE_JPG + "_saved.jpg").data()));

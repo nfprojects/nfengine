@@ -8,6 +8,8 @@
 
 #include "ConfigCommon.hpp"
 #include "ConfigValue.hpp"
+#include "../Containers/DynArray.hpp"
+#include "../Containers/UniquePtr.hpp"
 
 #include <memory>
 #include <functional>
@@ -22,14 +24,14 @@ namespace Common {
  */
 class NFCOMMON_API Config
 {
-    std::unique_ptr<char[]> mStringCopy;
+    UniquePtr<char[]> mStringCopy;
 
     ConfigObjectNodePtr mRootNode;
 
     /// Buffers of the config elements:
-    std::vector<ConfigValue> mValues;
-    std::vector<ConfigObjectNode> mObjectNodes;
-    std::vector<ConfigArrayNode> mArrayNodes;
+    DynArray<ConfigValue> mValues;
+    DynArray<ConfigObjectNode> mObjectNodes;
+    DynArray<ConfigArrayNode> mArrayNodes;
 
     /// Methods for allocations of config elements:
     ConfigValuePtr AllocateValue();
