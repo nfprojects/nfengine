@@ -8,9 +8,10 @@
 
 #include "../nfCommon.hpp"
 #include "../System/ConditionVariable.hpp"
+#include "../Containers/UniquePtr.hpp"
+#include "../Containers/DynArray.hpp"
 
 #include <inttypes.h>
-#include <set>
 #include <queue>
 #include <functional>
 #include <atomic>
@@ -99,7 +100,7 @@ public:
     ~WorkerThread();
 };
 
-typedef std::shared_ptr<WorkerThread> WorkerThreadPtr;
+using WorkerThreadPtr = UniquePtr<WorkerThread>;
 
 
 /**
@@ -112,7 +113,7 @@ class NFCOMMON_API ThreadPool final
 
     /// Worker threads varibles:
     size_t mLastThreadId;
-    std::set<WorkerThreadPtr> mThreads;
+    DynArray<WorkerThreadPtr> mThreads;
 
     /// Tasks queue variables:
     size_t mMaxTasks;
@@ -125,7 +126,7 @@ class NFCOMMON_API ThreadPool final
 
     /// Tasks allocator variables:
     std::atomic<uint32> mTasksNum;
-    std::unique_ptr<Task[]> mTasks;
+    UniquePtr<Task[]> mTasks;
 
     void SchedulerCallback(WorkerThread* thread);
 
@@ -148,7 +149,7 @@ public:
     /**
      * Get number of worker threads in the pool.
      */
-    size_t GetThreadsNumber() const;
+    uint32 GetThreadsNumber() const;
 
     /**
      * Create a new task and enqueue it if dependency is resolved.

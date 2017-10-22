@@ -12,24 +12,24 @@ namespace NFE {
 namespace Common {
 
 PackerWriter::PackerWriter() {}
-PackerWriter::PackerWriter(const std::string& archiveName)
+PackerWriter::PackerWriter(StringView archiveName)
 {
     Init(archiveName);
 }
 
-PackerResult PackerWriter::Init(const std::string& archiveName)
+PackerResult PackerWriter::Init(StringView archiveName)
 {
-    if (archiveName.empty())
+    if (archiveName.Empty())
         return PackerResult::InvalidInputParam;
 
-    if (!mFilePath.empty())
+    if (!mFilePath.Empty())
         return PackerResult::AlreadyInitialized;
 
     mFilePath = archiveName;
     return PackerResult::OK;
 }
 
-PackerResult PackerWriter::AddFile(const std::string& filePath, const std::string& vfsFilePath)
+PackerResult PackerWriter::AddFile(StringView filePath, StringView vfsFilePath)
 {
     PackerResourceFile* resource = new PackerResourceFile();
 
@@ -45,7 +45,7 @@ PackerResult PackerWriter::AddFile(const std::string& filePath, const std::strin
     return PackerResult::OK;
 }
 
-PackerResult PackerWriter::AddFile(const Buffer& /*buffer*/, const std::string& /*vfsFilePath*/)
+PackerResult PackerWriter::AddFile(const Buffer& /*buffer*/, StringView /*vfsFilePath*/)
 {
     // TODO implement after editing PackerElement (see PackerElement.hpp@15).
     //      To prevent usage of this function, Uninitialized error is returned
@@ -53,21 +53,18 @@ PackerResult PackerWriter::AddFile(const Buffer& /*buffer*/, const std::string& 
     return PackerResult::Uninitialized;
 }
 
-PackerResult PackerWriter::AddFilesRecursively(const std::string& filePath)
+PackerResult PackerWriter::AddFilesRecursively(StringView filePath)
 {
     PackerResult pr;
     uint64 counter = 0;
 
-    auto recursiveAddLambda = [&](const std::string& path, bool isDirectory) -> bool
+    auto recursiveAddLambda = [&](const String& path, PathType type) -> bool
     {
-        if (!isDirectory)
+        if (type == PathType::File)
         {
             pr = AddFile(path, path);
             ++counter;
-
-            if (pr != PackerResult::OK)
-                return false;
-            return true;
+            return pr == PackerResult::OK;
         }
         return true;
     };
@@ -142,7 +139,7 @@ size_t PackerWriter::GetFileCount() const
     return mFileList.size();
 }
 
-const std::string& PackerWriter::GetPAKName() const
+const String& PackerWriter::GetPAKName() const
 {
     return mFilePath;
 }

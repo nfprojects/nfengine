@@ -8,6 +8,7 @@
 
 #include "PackerDefines.hpp"
 #include "PackerResourceFile.hpp"
+#include "../Containers/String.hpp"
 
 namespace NFE {
 namespace Common {
@@ -16,22 +17,22 @@ class NFCOMMON_API PackerWriter
 {
 public:
     PackerWriter();
-    PackerWriter(const std::string& archiveName);
+    PackerWriter(const StringView archiveName);
 
-    PackerResult Init(const std::string& archiveName);
+    PackerResult Init(const StringView archiveName);
 
-    PackerResult AddFile(const std::string& filePath, const std::string& vfsFilePath);
-    PackerResult AddFile(const Buffer& buffer, const std::string& vfsFilePath);
-    PackerResult AddFilesRecursively(const std::string& startPath);
+    PackerResult AddFile(const StringView filePath, const StringView vfsFilePath);
+    PackerResult AddFile(const Buffer& buffer, const StringView vfsFilePath);
+    PackerResult AddFilesRecursively(const StringView startPath);
     PackerResult WritePAK() const;
 
     void PrintFilesToStdout() const;
     const ResourceListType& GetFiles() const;
     size_t GetFileCount() const;
-    const std::string& GetPAKName() const;
+    const String& GetPAKName() const;
 
 private:
-    std::string mFilePath;
+    String mFilePath;
     ResourceListType mFileList;
 };
 

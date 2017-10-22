@@ -21,8 +21,8 @@ bool gLoggerBackendWinDebuggerRegistered = IsDebuggerPresent() ?
 
 LoggerBackendWinDebugger::LoggerBackendWinDebugger()
 {
-    const size_t initialBufferSize = 1024;
-    mBuffer.resize(initialBufferSize);
+    const uint32 initialBufferSize = 1024;
+    mBuffer.Resize(initialBufferSize);
 }
 
 void LoggerBackendWinDebugger::Log(LogType type, const char* srcFile, int line, const char* str,
@@ -31,7 +31,7 @@ void LoggerBackendWinDebugger::Log(LogType type, const char* srcFile, int line, 
     const char* format = "%s(%i): %.4f [%s] %s\n";
     size_t pathOffset = Logger::GetInstance()->GetPathPrefixLen();
 
-    int len = snprintf(mBuffer.data(), mBuffer.size(), format,
+    int len = snprintf(mBuffer.Data(), mBuffer.Size(), format,
                        srcFile + pathOffset, line, timeElapsed, Logger::LogTypeToString(type), str);
     if (len < 0)
     {
@@ -40,12 +40,12 @@ void LoggerBackendWinDebugger::Log(LogType type, const char* srcFile, int line, 
     }
 
     size_t outputStrSize = static_cast<size_t>(len);
-    if (outputStrSize >= mBuffer.size()) // buffer is too small
+    if (outputStrSize >= mBuffer.Size()) // buffer is too small
     {
-        while (outputStrSize >= mBuffer.size())
-            mBuffer.resize(2 * mBuffer.size());
+        while (outputStrSize >= mBuffer.Size())
+            mBuffer.Resize(2 * mBuffer.Size());
 
-        len = snprintf(mBuffer.data(), mBuffer.size(), format,
+        len = snprintf(mBuffer.Data(), mBuffer.Size(), format,
                        srcFile + pathOffset, line, timeElapsed, Logger::LogTypeToString(type), str);
         if (len < 0)
         {
@@ -54,7 +54,7 @@ void LoggerBackendWinDebugger::Log(LogType type, const char* srcFile, int line, 
         }
     }
 
-    mDebugString = mBuffer.data();
+    mDebugString = mBuffer.Data();
     if (!UTF8ToUTF16(mDebugString, mWideDebugString))
         return;
 

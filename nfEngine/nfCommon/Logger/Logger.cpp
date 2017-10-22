@@ -81,10 +81,10 @@ void Logger::LogInit()
 #else
     mPathPrefix = NFE_ROOT_DIRECTORY;
 #endif
-    mPathPrefixLen = mPathPrefix.length();
+    mPathPrefixLen = mPathPrefix.Length();
 
-    std::string execPath = NFE::Common::FileSystem::GetExecutablePath();
-    std::string execDir = NFE::Common::FileSystem::GetParentDir(execPath);
+    String execPath = NFE::Common::FileSystem::GetExecutablePath();
+    String execDir = NFE::Common::FileSystem::GetParentDir(execPath);
     mLogsDirectory = execDir + "/../../../Logs";
     FileSystem::CreateDir(mLogsDirectory);
 
@@ -95,7 +95,7 @@ void Logger::LogInit()
 
 void Logger::LogBuildInfo() const
 {
-    NFE_LOG_INFO("Compiler: %s", SystemInfo::Instance().GetCompilerInfo().c_str());
+    NFE_LOG_INFO("Compiler: %s", SystemInfo::Instance().GetCompilerInfo().Str());
     NFE_LOG_INFO("nfCommon build date: " __DATE__ ", " __TIME__);
 
     std::vector<const char*> instructionSet;
@@ -152,9 +152,9 @@ void Logger::LogSysInfo() const
 {
     SystemInfo& sysInfo = SystemInfo::Instance();
 
-    NFE_LOG_INFO("CPU: %s, %u cores", sysInfo.GetCPUBrand().c_str(), sysInfo.GetCPUCoreNo());
+    NFE_LOG_INFO("CPU: %s, %u cores", sysInfo.GetCPUBrand().Str(), sysInfo.GetCPUCoreNo());
     NFE_LOG_INFO("RAM: %uKB total, %uKB free", sysInfo.GetMemTotalPhysKb(), sysInfo.GetMemFreePhysKb());
-    NFE_LOG_INFO("OS: %s", sysInfo.GetOSVersion().c_str());
+    NFE_LOG_INFO("OS: %s", sysInfo.GetOSVersion().Str());
 }
 
 bool Logger::RegisterBackend(const std::string& name, LoggerBackendPtr backend)

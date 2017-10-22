@@ -23,14 +23,13 @@ LoggerBackendTxt::LoggerBackendTxt()
 
 void LoggerBackendTxt::Reset()
 {
-    const static std::string gLogIntro = "nfEngine - log file\n"
-                                         "[Seconds elapsed] [LogType] "
-                                         "[SourceFile]:[LineOfCode]: [Message]\n";
+    const static StringView gLogIntro("nfEngine - log file\n"
+        "[Seconds elapsed] [LogType] [SourceFile]:[LineOfCode]: [Message]\n");
 
-    const std::string logFileName = "log.txt";
+    const StringView logFileName("log.txt");
     mBuffer.resize(NFE_MAX_LOG_MESSAGE_LENGTH);
 
-    const std::string logFilePath = Logger::GetInstance()->GetLogsDirectory() + '/' + logFileName;
+    const String logFilePath = Logger::GetInstance()->GetLogsDirectory() + '/' + logFileName;
     if (!mFile.Open(logFilePath, AccessMode::Write, true))
     {
         // this will be handled by other logger
@@ -38,7 +37,7 @@ void LoggerBackendTxt::Reset()
         return;
     }
 
-    mFile.Write(gLogIntro.data(), gLogIntro.length());
+    mFile.Write(gLogIntro.Data(), gLogIntro.Length());
 }
 
 void LoggerBackendTxt::Log(LogType type, const char* srcFile, int line, const char* str,

@@ -1,13 +1,13 @@
 #include "PCH.hpp"
 #include "nfCommon/System/SystemInfo.hpp"
-
+#include "nfCommon/Containers/String.hpp"
 
 using namespace NFE::Common;
 
 TEST(SystemInfoTest, CpuInfoTest)
 {
     SystemInfo& sysInfoPtr = SystemInfo::Instance();
-    ASSERT_FALSE(sysInfoPtr.GetCPUBrand().empty());
+    ASSERT_FALSE(sysInfoPtr.GetCPUBrand().Empty());
     ASSERT_GE(sysInfoPtr.GetCPUCoreNo(), 1);
     ASSERT_GT(sysInfoPtr.GetPageSize(), 100);
     ASSERT_GE(sysInfoPtr.GetCacheLineSize(), 32);
@@ -28,9 +28,9 @@ TEST(SystemInfoTest, MemoryInfoTest)
 TEST(SystemInfoTest, InfoStringTest)
 {
     SystemInfo& sysInfoPtr = SystemInfo::Instance();
-    std::string sysInfoStr = sysInfoPtr.ConstructAllInfoString();
-    std::cout << sysInfoStr;
-    ASSERT_FALSE(sysInfoStr.empty());
+    const String sysInfoStr = sysInfoPtr.ConstructAllInfoString();
+    std::cout << sysInfoStr.Str();
+    ASSERT_FALSE(sysInfoStr.Empty());
 }
 
 TEST(SystemInfoTest, FeatureSupportTest)
@@ -38,9 +38,9 @@ TEST(SystemInfoTest, FeatureSupportTest)
     SystemInfo& sysInfoPtr = SystemInfo::Instance();
     // checking for TSC - it should be available on all CPUs since Pentium
     // + we use rdtsc, so we need it
-    bool result = sysInfoPtr.IsFeatureSupported("TSC");
+    bool result = sysInfoPtr.IsFeatureSupported(StringView("TSC"));
     ASSERT_TRUE(result);
 
-    result = sysInfoPtr.IsFeatureSupported("Should return false");
+    result = sysInfoPtr.IsFeatureSupported(StringView("Should return false"));
     ASSERT_FALSE(result);
 }

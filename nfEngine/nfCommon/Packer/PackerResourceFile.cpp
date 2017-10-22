@@ -15,7 +15,7 @@ PackerResourceFile::~PackerResourceFile()
 {
 }
 
-PackerResult PackerResourceFile::Init(const std::string& filePath, const std::string& vfsFilePath)
+PackerResult PackerResourceFile::Init(const StringView filePath, const StringView vfsFilePath)
 {
     File file(filePath, AccessMode::Read);
     if (!(file.IsOpened()))

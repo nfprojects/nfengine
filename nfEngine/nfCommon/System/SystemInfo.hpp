@@ -7,8 +7,10 @@
 #pragma once
 
 #include "../nfCommon.hpp"
+#include "../Containers/HashMap.hpp"
+#include "../Containers/String.hpp"
+#include "../Containers/StringView.hpp"
 
-#include <map>
 
 #if defined(__LINUX__) | defined(__linux__)
 #include "sys/sysinfo.h"
@@ -26,10 +28,8 @@ struct CpuidFeature
 {
     int AddressNo;
     int FeatureNo;
-    CpuidFeature() : AddressNo(0), FeatureNo(0)
-    {};
-    CpuidFeature(int x, int y) : AddressNo(x), FeatureNo(y)
-    {}
+    CpuidFeature() : AddressNo(0), FeatureNo(0) {}
+    CpuidFeature(int x, int y) : AddressNo(x), FeatureNo(y) {}
 };
 
 /**
@@ -40,23 +40,23 @@ class NFCOMMON_API SystemInfo
 private:
     SystemInfo();
 
-    std::map<std::string, CpuidFeature> mCpuidFeatureMap;
-    std::string mCPUBrand;
-    std::string mOSVersion;
-    std::string mCompilerInfo;
-    uint64_t mCPUCoreNo;
-    uint64_t mPageSize;
-    uint64_t mCacheLineSize;
-    uint64_t mMemTotalPhysKb;
-    uint64_t mMemFreePhysKb;
-    uint64_t mMemTotalSwapKb;
-    uint64_t mMemFreeSwapKb;
-    uint64_t mMemTotalVirtKb;
-    uint64_t mMemFreeVirtKb;
-    uint64_t mCpuidFeatures[5];
+    HashMap<String, CpuidFeature> mCpuidFeatureMap;
+    String mCPUBrand;
+    String mOSVersion;
+    String mCompilerInfo;
+    uint64 mCPUCoreNo;
+    uint64 mPageSize;
+    uint64 mCacheLineSize;
+    uint64 mMemTotalPhysKb;
+    uint64 mMemFreePhysKb;
+    uint64 mMemTotalSwapKb;
+    uint64 mMemFreeSwapKb;
+    uint64 mMemTotalVirtKb;
+    uint64 mMemFreeVirtKb;
+    uint64 mCpuidFeatures[5];
 
     void Cpuid(int cpuInfo[4], int function_id);
-    uint64_t Rdtsc();
+    uint64 Rdtsc();
 
     void InitCPUInfoCommon();
     void InitOSVersion();
@@ -74,50 +74,50 @@ public:
      * Update mMemFree fields
      * @return Free memory in kB
      */
-    uint64_t GetFreeMemoryKb();
+    uint64 GetFreeMemoryKb();
 
     /**
      * Check if feature is supported. List of features at the bottom of this file.
      * @return True if feature is supported, False otherwise
      */
-    bool IsFeatureSupported(const std::string& featureName) const;
+    bool IsFeatureSupported(const StringView featureName) const;
 
     /**
      * Update free physical memory information
      * @return Free physical memory in kB
      */
-    uint64_t GetMemFreePhysKb();
+    uint64 GetMemFreePhysKb();
 
     /**
      * Update free virtual memory information
      * @return Free virtual memory in kB
      */
-    uint64_t GetMemFreeVirtKb();
+    uint64 GetMemFreeVirtKb();
 
     /**
      * Update free swap memory information
      * @return Free swap memory in kB
      */
-    uint64_t GetMemFreeSwapKb();
+    uint64 GetMemFreeSwapKb();
 
     /**
      * Print all gathered information
      * @return Formatted string with all information
      */
-    std::string ConstructAllInfoString();
+    String ConstructAllInfoString();
 
     /**
      * Get class fields
      */
-    const std::string& GetCPUBrand() const;
-    const std::string& GetOSVersion() const;
-    const std::string& GetCompilerInfo() const;
-    uint64_t GetCPUCoreNo() const;
-    uint64_t GetPageSize() const;
-    uint64_t GetCacheLineSize() const;
-    uint64_t GetMemTotalPhysKb() const;
-    uint64_t GetMemTotalVirtKb() const;
-    uint64_t GetMemTotalSwapKb() const;
+    const String& GetCPUBrand() const;
+    const String& GetOSVersion() const;
+    const String& GetCompilerInfo() const;
+    uint64 GetCPUCoreNo() const;
+    uint64 GetPageSize() const;
+    uint64 GetCacheLineSize() const;
+    uint64 GetMemTotalPhysKb() const;
+    uint64 GetMemTotalVirtKb() const;
+    uint64 GetMemTotalSwapKb() const;
 };
 
 /**
