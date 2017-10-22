@@ -22,6 +22,7 @@
 
 #include "nfCommon/System/Win/Common.hpp"
 #include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/Utils/StringUtils.hpp"
 
 
 namespace NFE {
@@ -162,17 +163,17 @@ bool Device::Init(const DeviceInitParams* params)
         DeviceInfo deviceInfo;
         if (GetDeviceInfo(deviceInfo))
         {
-            NFE_LOG_INFO("GPU name: %s", deviceInfo.description.c_str());
-            NFE_LOG_INFO("GPU info: %s", deviceInfo.misc.c_str());
+            NFE_LOG_INFO("GPU name: %s", deviceInfo.description.Str());
+            NFE_LOG_INFO("GPU info: %s", deviceInfo.misc.Str());
 
-            std::string features;
-            for (size_t i = 0; i < deviceInfo.features.size(); ++i)
+            Common::String features;
+            for (uint32 i = 0; i < deviceInfo.features.Size(); ++i)
             {
                 if (i > 0)
                     features += ", ";
                 features += deviceInfo.features[i];
             }
-            NFE_LOG_INFO("GPU features: %s", features.c_str());
+            NFE_LOG_INFO("GPU features: %s", features.Str());
         }
     }
 
@@ -368,8 +369,8 @@ bool Device::DetectVideoCards(int preferredId)
         adapter->GetDesc1(&adapterDesc);
 
         // get GPU description
-        std::wstring wideDesc = adapterDesc.Description;
-        std::string descString;
+        Common::Utf16String wideDesc = adapterDesc.Description;
+        Common::String descString;
         Common::UTF16ToUTF8(wideDesc, descString);
 
         if (adapterDesc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
@@ -380,7 +381,7 @@ bool Device::DetectVideoCards(int preferredId)
         if (static_cast<uint32>(preferredId) == i)
             mAdapterInUse = i;
 
-        NFE_LOG_INFO("Adapter found at slot %u: %s", i, descString.c_str());
+        NFE_LOG_INFO("Adapter found at slot %u: %s", i, descString.Str());
         mAdapters.push_back(D3DPtr<IDXGIAdapter>(adapter));
     }
 
@@ -396,6 +397,8 @@ bool Device::DetectVideoCards(int preferredId)
 
 bool Device::GetDeviceInfo(DeviceInfo& info)
 {
+    using namespace Common;
+
     if (!mDevice)
         return false;
 
@@ -411,13 +414,13 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
 
     // get various GPU information
     info.misc =
-        "Vendor ID: " + std::to_string(adapterDesc.VendorId) +
-        ", Device ID: " + std::to_string(adapterDesc.DeviceId) +
-        ", Sub System ID: " + std::to_string(adapterDesc.SubSysId) +
-        ", Revision: " + std::to_string(adapterDesc.Revision) +
-        ", Dedicated Video Memory: " + std::to_string(adapterDesc.DedicatedVideoMemory >> 10) + " KB"
-        ", Dedicated System Memory: " + std::to_string(adapterDesc.DedicatedSystemMemory >> 10) + " KB"
-        ", Shared System Memory: " + std::to_string(adapterDesc.SharedSystemMemory >> 10) + " KB";
+        "Vendor ID: " + ToString(adapterDesc.VendorId) +
+        ", Device ID: " + ToString(adapterDesc.DeviceId) +
+        ", Sub System ID: " + ToString(adapterDesc.SubSysId) +
+        ", Revision: " + ToString(adapterDesc.Revision) +
+        ", Dedicated Video Memory: " + ToString(uint64(adapterDesc.DedicatedVideoMemory >> 10u)) + " KB"
+        ", Dedicated System Memory: " + ToString(uint64(adapterDesc.DedicatedSystemMemory >> 10u)) + " KB"
+        ", Shared System Memory: " + ToString(uint64(adapterDesc.SharedSystemMemory >> 10u)) + " KB";
 
     D3D12_FEATURE_DATA_D3D12_OPTIONS d3d12options;
     hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &d3d12options, sizeof(d3d12options));
@@ -425,31 +428,19 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
         NFE_LOG_ERROR("Failed to obtain D3D12 options info");
     else
     {
-        info.features.push_back("TiledResourcesTier=" +
-                                std::to_string(static_cast<int>(d3d12options.TiledResourcesTier)));
-        info.features.push_back("ResourceBindingTier=" +
-                                std::to_string(static_cast<int>(d3d12options.ResourceBindingTier)));
-        info.features.push_back("ResourceHeapTier=" +
-                                std::to_string(static_cast<int>(d3d12options.ResourceHeapTier)));
+        info.features.PushBack("TiledResourcesTier=" + ToString(static_cast<int>(d3d12options.TiledResourcesTier)));
+        info.features.PushBack("ResourceBindingTier=" + ToString(static_cast<int>(d3d12options.ResourceBindingTier)));
+        info.features.PushBack("ResourceHeapTier=" + ToString(static_cast<int>(d3d12options.ResourceHeapTier)));
 
-        info.features.push_back("DoublePrecisionFloatShaderOps=" +
-                                std::to_string(d3d12options.DoublePrecisionFloatShaderOps));
-        info.features.push_back("OutputMergerLogicOp=" +
-                                std::to_string(d3d12options.OutputMergerLogicOp));
-        info.features.push_back("PSSpecifiedStencilRefSupported=" +
-                                std::to_string(d3d12options.PSSpecifiedStencilRefSupported));
-        info.features.push_back("TypedUAVLoadAdditionalFormats=" +
-                                std::to_string(d3d12options.TypedUAVLoadAdditionalFormats));
-        info.features.push_back("ROVsSupported=" +
-                                std::to_string(d3d12options.ROVsSupported));
-        info.features.push_back("ConservativeRasterizationTier=" +
-                                std::to_string(d3d12options.ConservativeRasterizationTier));
-        info.features.push_back("MaxGPUVirtualAddressBitsPerResource=" +
-                                std::to_string(d3d12options.MaxGPUVirtualAddressBitsPerResource));
-        info.features.push_back("StandardSwizzle64KBSupported=" +
-                                std::to_string(d3d12options.StandardSwizzle64KBSupported));
-        info.features.push_back("CrossAdapterRowMajorTextureSupported=" +
-                                std::to_string(d3d12options.CrossAdapterRowMajorTextureSupported));
+        info.features.PushBack("DoublePrecisionFloatShaderOps=" + ToString(d3d12options.DoublePrecisionFloatShaderOps));
+        info.features.PushBack("OutputMergerLogicOp=" + ToString(d3d12options.OutputMergerLogicOp));
+        info.features.PushBack("PSSpecifiedStencilRefSupported=" + ToString(d3d12options.PSSpecifiedStencilRefSupported));
+        info.features.PushBack("TypedUAVLoadAdditionalFormats=" + ToString(d3d12options.TypedUAVLoadAdditionalFormats));
+        info.features.PushBack("ROVsSupported=" + ToString(d3d12options.ROVsSupported));
+        info.features.PushBack("ConservativeRasterizationTier=" + ToString(d3d12options.ConservativeRasterizationTier));
+        info.features.PushBack("MaxGPUVirtualAddressBitsPerResource=" + ToString(d3d12options.MaxGPUVirtualAddressBitsPerResource));
+        info.features.PushBack("StandardSwizzle64KBSupported=" + ToString(d3d12options.StandardSwizzle64KBSupported));
+        info.features.PushBack("CrossAdapterRowMajorTextureSupported=" + ToString(d3d12options.CrossAdapterRowMajorTextureSupported));
 
         const char* minPrecissionSupportStr = "none";
         switch (d3d12options.MinPrecisionSupport)
@@ -461,7 +452,7 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
             minPrecissionSupportStr = "10bit";
             break;
         }
-        info.features.push_back(std::string("MinPrecisionSupport=") + minPrecissionSupportStr);
+        info.features.PushBack(String("MinPrecisionSupport=") + minPrecissionSupportStr);
 
         const char* crossNodeSharingStr = "notSupported";
         switch (d3d12options.CrossNodeSharingTier)
@@ -476,7 +467,7 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
             crossNodeSharingStr = "2";
             break;
         }
-        info.features.push_back(std::string("CrossNodeSharingTier=") + crossNodeSharingStr);
+        info.features.PushBack(String("CrossNodeSharingTier=") + crossNodeSharingStr);
     }
 
     return true;

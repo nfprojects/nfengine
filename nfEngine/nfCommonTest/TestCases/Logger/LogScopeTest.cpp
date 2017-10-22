@@ -12,8 +12,14 @@
 
 using namespace NFE::Common;
 
+namespace {
+
+const StringView testBackendName("Test");
+
 const char* scopeText = "Entering scope ";
 const char* scopeExitText = "Exiting scope ";
+
+} // namespace
 
 /**
 * Test backend for testing LoggerBackend class
@@ -55,17 +61,17 @@ public:
     void SetUp()
     {
         // Ensure that the test backend is registered and enabled
-        Logger::RegisterBackend("Test", std::make_unique<TestBackend>());
-        mBackend = dynamic_cast<TestBackend*>(Logger::GetBackend("Test"));
+        Logger::RegisterBackend(testBackendName, MakeUniquePtr<TestBackend>());
+        mBackend = dynamic_cast<TestBackend*>(Logger::GetBackend(testBackendName));
         ASSERT_NE(nullptr, mBackend);
 
-        auto backends = Logger::ListBackends();
-        for (const auto& b : backends)
+        const LoggerBackendMap& backends = Logger::ListBackends();
+        for (const auto& backend : backends)
         {
-            if (b.compare("Test") == 0)
-                Logger::GetBackend(b)->Enable(true);
+            if (backend.name == testBackendName)
+                backend.ptr->Enable(true);
             else
-                Logger::GetBackend(b)->Enable(false);
+                backend.ptr->Enable(false);
         }
 
         mBackend->Reset();

@@ -9,38 +9,44 @@
 #include "Image.hpp"
 
 
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Common::ImageType)
+NFE_END_DEFINE_CLASS()
+
 namespace NFE {
 namespace Common {
 
-bool ImageType::RegisterImageType(const std::string& name, ImageTypePtr imageType)
+
+DynArray<ImageTypePtr> ImageType::GetTypes()
 {
-    return Image::mImageTypes().insert(std::make_pair(name, std::move(imageType))).second;
+    DynArray<ImageTypePtr> imageTypes;
+
+    // construct image type objects via RTTI
+    DynArray<const RTTI::ClassType*> types;
+    RTTI::GetType<ImageType>()->ListSubtypes(types);
+    for (const RTTI::ClassType* type : types)
+    {
+        if (type->IsConstructible())
+        {
+            ImageTypePtr imageType(type->CreateObject<ImageType>());
+            imageTypes.PushBack(std::move(imageType));
+        }
+    }
+
+    return imageTypes;
 }
 
-ImageType* ImageType::GetImageType(const std::string& name)
+ImageTypePtr ImageType::GetImageType(const StringView name)
 {
-    ImageTypeMap::const_iterator imageType = Image::mImageTypes().find(name);
+    DynArray<ImageTypePtr> types = GetTypes();
+    for (ImageTypePtr& type : types)
+    {
+        if (type->GetName() == name)
+        {
+            return std::move(type);
+        }
+    }
 
-    if (imageType == Image::mImageTypes().cend())
-        return nullptr;
-
-    return imageType->second.get();
-}
-
-std::vector<std::string> ImageType::ListImageTypes()
-{
-    std::vector<std::string> vect;
-    vect.reserve(Image::mImageTypes().size());
-
-    for (const auto& i : Image::mImageTypes())
-        vect.push_back(i.first);
-
-    return vect;
-}
-
-std::vector<Mipmap>* ImageType::GetMipmaps(Image* img)
-{
-    return &img->mMipmaps;
+    return nullptr;
 }
 
 } // namespace Common

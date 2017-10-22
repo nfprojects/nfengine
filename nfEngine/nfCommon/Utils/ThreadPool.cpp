@@ -49,7 +49,7 @@ ThreadPool::ThreadPool(size_t maxTasks, size_t threadsNum)
     , mTasksNum(0)
 {
     // allocate tasks buffer
-    mTasks.reset(new Task [mMaxTasks]);
+    mTasks.Reset(new Task [mMaxTasks]);
 
     if (threadsNum > 0)
         SpawnWorkerThreads(threadsNum);
@@ -62,21 +62,21 @@ ThreadPool::~ThreadPool()
     {
         ScopedMutexLock lock(mTasksQueueMutex);
 
-        for (auto thread : mThreads)
+        for (const auto& thread : mThreads)
             thread->mStarted = false;
 
         mTaskQueueCV.SignalAll();
     }
 
     // cleanup
-    mThreads.clear();
+    mThreads.Clear();
 }
 
 void ThreadPool::SpawnWorkerThreads(size_t num)
 {
     for (size_t i = 0; i < num; ++i)
     {
-        mThreads.insert(WorkerThreadPtr(new WorkerThread(this, mLastThreadId++)));
+        mThreads.PushBack(MakeUniquePtr<WorkerThread>(this, mLastThreadId++));
     }
 }
 
@@ -86,9 +86,9 @@ void ThreadPool::TriggerWorkerStop(WorkerThreadPtr workerThread)
     mTaskQueueCV.SignalAll();
 }
 
-size_t ThreadPool::GetThreadsNumber() const
+uint32 ThreadPool::GetThreadsNumber() const
 {
-    return mThreads.size();
+    return mThreads.Size();
 }
 
 void ThreadPool::SchedulerCallback(WorkerThread* thread)

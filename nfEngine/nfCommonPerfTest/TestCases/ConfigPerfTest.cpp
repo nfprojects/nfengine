@@ -22,7 +22,7 @@ TEST(Config, GenerateAndParse)
     for (int maxDepth = 2; maxDepth < MAX_DEPTH; ++maxDepth)
     {
         double buildTime, generateTime;
-        std::string configString;
+        String configString;
 
         {
             Config config;
@@ -33,20 +33,20 @@ TEST(Config, GenerateAndParse)
             LambdaType generateNode = [&](int depth)
             {
                 ConfigObject node;
-                config.AddValue(node, "a", ConfigValue(1));
-                config.AddValue(node, "b", ConfigValue(true));
-                config.AddValue(node, "c", ConfigValue(1.2f));
-                config.AddValue(node, "d", ConfigValue("a"));
+                config.AddValue(node, StringView("a"), ConfigValue(1));
+                config.AddValue(node, StringView("b"), ConfigValue(true));
+                config.AddValue(node, StringView("c"), ConfigValue(1.2f));
+                config.AddValue(node, StringView("d"), ConfigValue("a"));
 
                 ConfigArray array;
                 config.AddValue(array, ConfigValue(1));
                 config.AddValue(array, ConfigValue(2));
-                config.AddValue(node, "e", ConfigValue(array));
+                config.AddValue(node, StringView("e"), ConfigValue(array));
 
                 if (depth < maxDepth)
                 {
-                    config.AddValue(node, "f", ConfigValue(generateNode(depth + 1)));
-                    config.AddValue(node, "g", ConfigValue(generateNode(depth + 1)));
+                    config.AddValue(node, StringView("f"), ConfigValue(generateNode(depth + 1)));
+                    config.AddValue(node, StringView("g"), ConfigValue(generateNode(depth + 1)));
                 }
 
                 return node;
@@ -67,7 +67,7 @@ TEST(Config, GenerateAndParse)
         timer.Start();
         {
             Config config;
-            config.Parse(configString.c_str());
+            config.Parse(configString.Str());
         }
         double parseTime = 1000.0 * timer.Stop();
 
@@ -77,6 +77,6 @@ TEST(Config, GenerateAndParse)
             << std::setw(10) << buildTime << " | "
             << std::setw(13) << generateTime << " | "
             << std::setw(10) << parseTime << " | "
-            << configString.length() << std::endl;
+            << configString.Length() << std::endl;
     }
 }

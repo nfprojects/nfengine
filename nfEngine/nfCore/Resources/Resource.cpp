@@ -148,9 +148,11 @@ void ResourceBase::Load()
             {
                 SetState(result ? ResourceState::Loaded : ResourceState::Failed);
 
+                // TODO get rid of that
                 Common::ScopedMutexLock lock(mCallbacksMutex);
                 for (const auto& callback : mPostLoadCallbacks)
                     callback();
+                mPostLoadCallbacks.clear();
 
                 return;
             }

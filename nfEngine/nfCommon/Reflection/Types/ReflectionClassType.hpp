@@ -30,7 +30,7 @@ public:
     friend class TypeCreator;
 
     // type marker used in config, when serializing polymorphic types
-    static const char* TYPE_MARKER;
+    static const Common::StringView TYPE_MARKER;
 
     using Members = Common::DynArray<Member>;
     using Children = Common::DynArray<const ClassType*>;
@@ -84,7 +84,7 @@ private:
     bool SerializeDirectly(const void* object, Common::Config& config, Common::ConfigObject& outObject) const;
 
     // deserialize member of this class (or derived one) by name
-    bool DeserializeMember(void* outObject, const char* memberName, const Common::Config& config, const Common::ConfigValue& value) const;
+    bool DeserializeMember(void* outObject, const Common::StringView memberName, const Common::Config& config, const Common::ConfigValue& value) const;
 };
 
 

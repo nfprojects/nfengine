@@ -1,10 +1,11 @@
 #include "PCH.hpp"
+#include "Test.hpp"
+
 #include "nfCommon/Packer/Packer.hpp"
 #include "nfCommon/System/Timer.hpp"
 #include "nfCommon/FileSystem/FileSystem.hpp"
 #include "nfCommon/FileSystem/File.hpp"
-
-#include "Test.hpp"
+#include "nfCommon/Utils/StringUtils.hpp"
 
 
 using namespace NFE;
@@ -14,10 +15,10 @@ namespace {
 const uint32 TEST_FILE_MAX_COUNT = 4096;
 const uint32 TEST_FILE_MAX_DATA_COUNT = 16384;
 
-const std::string TEST_PACK_PATH = "testfile.nfp";
-const std::string TEST_SAMPLE_FILE_DIR = "./TestDir/";
-const std::string TEST_SAMPLE_FILE_REC_DIR_PREFIX = "TestRecDir_";
-const std::string TEST_SAMPLE_FILE_PREFIX = "samplefile_";
+const String TEST_PACK_PATH = "testfile.nfp";
+const String TEST_SAMPLE_FILE_DIR = "./TestDir/";
+const String TEST_SAMPLE_FILE_REC_DIR_PREFIX = "TestRecDir_";
+const String TEST_SAMPLE_FILE_PREFIX = "samplefile_";
 } // namespace
 
 class Packer : public testing::Test
@@ -28,7 +29,7 @@ protected:
         if (FileSystem::GetPathType(TEST_SAMPLE_FILE_DIR) != PathType::Invalid)
         {
             ASSERT_TRUE(FileSystem::Remove(TEST_SAMPLE_FILE_DIR, true)) <<
-                        "Failed to remove test directory " << TEST_SAMPLE_FILE_DIR <<
+                        "Failed to remove test directory " << TEST_SAMPLE_FILE_DIR.Str() <<
                         ", it might be used. Aborting.";
         }
 
@@ -40,21 +41,25 @@ protected:
         EXPECT_TRUE(FileSystem::CreateDir(TEST_SAMPLE_FILE_DIR)) <<
                     "Failed to create directory for test files.";
 
-        const std::string testFilePrefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
+        const String testFilePrefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
 
         for (uint32 i = 0; i < TEST_FILE_MAX_COUNT; ++i)
         {
-            File f(testFilePrefix + std::to_string(i), AccessMode::Write, true);
-            EXPECT_TRUE(f.IsOpened()) << "Failed to open " << TEST_SAMPLE_FILE_DIR <<
-                        TEST_SAMPLE_FILE_PREFIX << std::to_string(i);
+            const String path = testFilePrefix + ToString(i);
+            File f(path, AccessMode::Write, true);
+            EXPECT_TRUE(f.IsOpened()) << "Failed to open " << path.Str();
 
             // generate <1; TEST_FILE_MAX_DATA_COUNT> uint32 values to write
             uint32 dataCount = (rand() % TEST_FILE_MAX_DATA_COUNT) + 1;
+            DynArray<uint32> buffer;
+            buffer.Resize(dataCount);
+
             for (uint32 j = 0; j < dataCount; ++j)
             {
-                uint32 val = rand();
-                f.Write(static_cast<const void*>(&val), sizeof(uint32));
+                buffer[j] = rand();
             }
+
+            f.Write(buffer.Data(), buffer.Size() * sizeof(uint32));
         }
 
         // Files are created, however AddFilesRecursively needs separate directories
@@ -65,14 +70,13 @@ protected:
 
         for (uint32 i = 1; i <= TEST_FILE_MAX_COUNT; i<<=1)
         {
-            const std::string testRecDir = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_REC_DIR_PREFIX +
-                                           std::to_string(i);
+            const String testRecDir = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_REC_DIR_PREFIX + ToString(i);
             EXPECT_TRUE(FileSystem::CreateDir(testRecDir));
 
             for (uint32 j = 0; j < i; j++)
             {
-                FileSystem::Copy(testFilePrefix + std::to_string(j),
-                                 testRecDir + "/" + TEST_SAMPLE_FILE_PREFIX + std::to_string(j));
+                FileSystem::Copy(testFilePrefix + ToString(j),
+                                 testRecDir + "/" + TEST_SAMPLE_FILE_PREFIX + ToString(j));
             }
         }
 
@@ -97,8 +101,8 @@ protected:
         std::cout << "DONE" << std::endl;
     }
 
-    std::unique_ptr<PackerReader> mReader;
-    std::unique_ptr<PackerWriter> mWriter;
+    UniquePtr<PackerReader> mReader;
+    UniquePtr<PackerWriter> mWriter;
     Timer mTimer;
 };
 
@@ -114,19 +118,19 @@ TEST_F(Packer, AddFile)
         totalTime = 0.0;
 
         // reset writer
-        mWriter.reset(new PackerWriter());
-        EXPECT_NE(nullptr, mWriter.get());
+        mWriter = MakeUniquePtr<PackerWriter>();
+        EXPECT_NE(nullptr, mWriter.Get());
 
         pr = mWriter->Init(TEST_PACK_PATH);
         EXPECT_EQ(PackerResult::OK, pr);
 
         // test performance of AddFile only
         // we don't take into account time for construction of argument strings
-        const std::string prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
-        std::string path;
+        const String prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
+        String path;
         for (uint32 j = 0; j < i; ++j)
         {
-            path = prefix + std::to_string(j);
+            path = prefix + ToString(j);
             mTimer.Start();
             pr = mWriter->AddFile(path, path);
             totalTime += mTimer.Stop();
@@ -149,15 +153,14 @@ TEST_F(Packer, AddFilesRecursively)
         totalTime = 0.0;
 
         // reset writer
-        mWriter.reset(new PackerWriter());
-        EXPECT_NE(nullptr, mWriter.get());
+        mWriter = MakeUniquePtr<PackerWriter>();
+        EXPECT_NE(nullptr, mWriter.Get());
 
         pr = mWriter->Init(TEST_PACK_PATH);
         EXPECT_EQ(PackerResult::OK, pr);
 
         // test performance of AddFilesRecursively
-        const std::string testRecDir = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_REC_DIR_PREFIX +
-                                       std::to_string(i);
+        const String testRecDir = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_REC_DIR_PREFIX + ToString(i);
         mTimer.Start();
         pr = mWriter->AddFilesRecursively(testRecDir);
         totalTime += mTimer.Stop();

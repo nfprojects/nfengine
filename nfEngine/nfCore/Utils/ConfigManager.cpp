@@ -19,7 +19,7 @@ namespace NFE {
 
 using namespace Common;
 
-const char* MAIN_CONFIG_FILE_PATH = "engineConfig.cfg";
+const String gMainConfigFilePath = "engineConfig.cfg";
 
 ConfigManager::ConfigManager()
     : mNumVariables(0)
@@ -97,7 +97,7 @@ bool ConfigManager::LoadConfiguration()
     size_t configFileSize = 0;
 
     // load config file to memory
-    File file(MAIN_CONFIG_FILE_PATH, AccessMode::Read);
+    File file(gMainConfigFilePath, AccessMode::Read);
     configFileSize = static_cast<size_t>(file.GetSize());
     configFileStr.resize(configFileSize + 1);
     if (file.Read(configFileStr.data(), configFileSize) != configFileSize)
@@ -127,12 +127,12 @@ bool ConfigManager::LoadConfiguration()
 
 bool ConfigManager::Node::Parse(const Common::Config& config, ConfigObjectNodePtr node)
 {
-    auto callback = [&](const char* key, const ConfigValue& value)
+    auto callback = [&](StringView key, const ConfigValue& value)
     {
         // find matching subnodes (objects)
         for (auto& subNode : subNodes)
         {
-            if (subNode.first == key && value.IsObject())
+            if (subNode.first.c_str() == key && value.IsObject())
             {
                 subNode.second->Parse(config, value.GetObj());
             }
@@ -141,7 +141,7 @@ bool ConfigManager::Node::Parse(const Common::Config& config, ConfigObjectNodePt
         // find matching variables (values)
         for (auto& variable : variables)
         {
-            if (variable.first == key && !value.IsObject())
+            if (variable.first.c_str() == key && !value.IsObject())
             {
                 if (variable.second->ParseConfigValue(value))
                 {

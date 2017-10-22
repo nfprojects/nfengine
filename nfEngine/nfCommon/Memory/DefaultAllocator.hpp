@@ -30,22 +30,17 @@ struct AllocatorStats
 
 class NFCOMMON_API DefaultAllocator
 {
-#ifdef _DEBUG
-    Mutex mMutex;
-    std::unordered_map<void*, AllocationDebugInfo> mAllocationsDebugInfo;
-#endif
-
-    std::atomic<size_t> mAllocationsNum;
-    std::atomic<size_t> mBytesAllocated;
-
-    DefaultAllocator();
-    ~DefaultAllocator();
-
 public:
     /**
      * Get instance of default global memory allocator.
      */
     static DefaultAllocator& GetInstance();
+
+    /**
+     * Cleanup internal state.
+     * @remarks Trying to allocate a memory block after this block will result in fatal assert.
+     */
+    void Shutdown();
 
     /**
      * Allocate memory.
@@ -73,6 +68,23 @@ public:
      * Get the default memory allocator statistics.
      */
     AllocatorStats GetStats() const;
+
+private:
+
+#ifdef _DEBUG
+    Mutex mMutex;
+
+    // TODO use custom hash-map (not Common::HashMap, because there would be circular dependency)
+    std::unordered_map<void*, AllocationDebugInfo> mAllocationsDebugInfo;
+#endif
+
+    std::atomic<size_t> mAllocationsNum;
+    std::atomic<size_t> mBytesAllocated;
+
+    bool mInitialized;
+
+    DefaultAllocator();
+    ~DefaultAllocator();
 };
 
 } // namespace Common

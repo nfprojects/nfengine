@@ -25,15 +25,15 @@ ConfigGenericValue::ConfigGenericValue(const Config* config, const ConfigValue& 
 {
 }
 
-bool ConfigGenericValue::HasMember(const char* key) const
+bool ConfigGenericValue::HasMember(StringView key) const
 {
     if (!IsObject())
         return false;
 
     bool found = false;
-    auto callback = [&] (const char* iteratorKey, const ConfigValue&)
+    auto callback = [&] (StringView iteratorKey, const ConfigValue&)
     {
-        if (strcmp(iteratorKey, key) == 0)
+        if (iteratorKey == key)
         {
             found = true;
             return false;
@@ -45,15 +45,15 @@ bool ConfigGenericValue::HasMember(const char* key) const
     return found;
 }
 
-ConfigGenericValue ConfigGenericValue::operator[](const char* key) const
+ConfigGenericValue ConfigGenericValue::operator[](StringView key) const
 {
     if (!IsObject())
         return ConfigGenericValue();
 
     ConfigValue valueFound;
-    auto callback = [&] (const char* iteratorKey, const ConfigValue& value)
+    auto callback = [&] (StringView iteratorKey, const ConfigValue& value)
     {
-        if (strcmp(iteratorKey, key) == 0)
+        if (iteratorKey == key)
         {
             valueFound = value;
             return false;

@@ -9,7 +9,7 @@
 #include "nfCommon/FileSystem/FileBuffered.hpp"
 #include "nfCommon/FileSystem/FileSystem.hpp"
 #include "nfCommon/Math/Random.hpp"
-
+#include "nfCommon/Containers/String.hpp"
 
 
 using namespace NFE::Common;
@@ -18,6 +18,7 @@ using namespace NFE::Common;
 namespace {
 const int bufferSize = 1000;                              //< Size of the test buffer
 const NFE::uint8 operationsUpperLimit = 10;               //< Number of operations to perform on the buffer
+const String testPath("./testFile.buffered");
 
 } // namespace
 
@@ -26,7 +27,6 @@ class FileBufferedTest : public testing::Test
 public:
     NFE::uint8 mBufferExpected[bufferSize];
     NFE::Math::Random mRand;
-    const std::string mPath = "./testFile.buffered";
 
     void SetUp()
     {
@@ -38,14 +38,14 @@ public:
     void TearDown()
     {
         // Clean up after tests
-        FileSystem::Remove(mPath);
+        FileSystem::Remove(testPath);
     }
 };
 
 TEST_F(FileBufferedTest, Constructors)
 {
     // Due to a bogus path, no file will be open for Read operation, but it shouldn't throw
-    std::string path = "./some/path";
+    const StringView path("./some/path");
     FileBuffered();
     FileBuffered(path, AccessMode::Read);
     FileBuffered(path, AccessMode::Read, true);
@@ -63,12 +63,12 @@ TEST_F(FileBufferedTest, Read)
         bufferActual[i] = 0;
 
     // Save values buffer to the file
-    File testFile(mPath, AccessMode::Write, true);
+    File testFile(testPath, AccessMode::Write, true);
     ASSERT_TRUE(testFile.IsOpened());
     ASSERT_EQ(bufferSize, testFile.Write(mBufferExpected, bufferSize));
     testFile.Close();
 
-    FileBuffered testBufferedFile(mPath, AccessMode::Read);
+    FileBuffered testBufferedFile(testPath, AccessMode::Read);
     ASSERT_TRUE(testBufferedFile.IsOpened());
 
     // Do tha read, yo!
@@ -91,12 +91,12 @@ TEST_F(FileBufferedTest, ReadSeek)
         bufferActual[i] = 0;
 
     // Save values buffer to the file
-    File testFile(mPath, AccessMode::Write, true);
+    File testFile(testPath, AccessMode::Write, true);
     ASSERT_TRUE(testFile.IsOpened());
     ASSERT_EQ(bufferSize, testFile.Write(mBufferExpected, bufferSize));
     testFile.Close();
 
-    FileBuffered testBufferedFile(mPath, AccessMode::Read);
+    FileBuffered testBufferedFile(testPath, AccessMode::Read);
     ASSERT_TRUE(testBufferedFile.IsOpened());
 
     // Do tha read, yo!
@@ -135,13 +135,13 @@ TEST_F(FileBufferedTest, ReadWrite)
     memset(bufferActual, 0, bufferSize * sizeof(bufferActual[0]));
 
     // Save values buffer to the file
-    File testFile(mPath, AccessMode::Write, true);
+    File testFile(testPath, AccessMode::Write, true);
     ASSERT_TRUE(testFile.IsOpened());
     ASSERT_EQ(bufferSize, testFile.Write(mBufferExpected, bufferSize));
     testFile.Close();
 
     // Open file in ReadWrite mode
-    FileBuffered testBufferedFile(mPath, AccessMode::ReadWrite);
+    FileBuffered testBufferedFile(testPath, AccessMode::ReadWrite);
     ASSERT_TRUE(testBufferedFile.IsOpened());
 
     // First read whole previously written file to some buffer
@@ -168,7 +168,7 @@ TEST_F(FileBufferedTest, ReadWrite)
     testBufferedFile.Close();
 
     // Open the file and perform 2 reads with the size of the buffer and check values
-    testFile.Open(mPath, AccessMode::Read);
+    testFile.Open(testPath, AccessMode::Read);
     ASSERT_TRUE(testFile.IsOpened());
 
     memset(bufferActual, 0, bufferSize * sizeof(bufferActual[0]));
@@ -188,7 +188,7 @@ TEST_F(FileBufferedTest, Write)
     for (int i = 0; i < bufferSize; i++)
         bufferActual[i] = 0;
 
-    FileBuffered testBufferedFile(mPath, AccessMode::Write, true);
+    FileBuffered testBufferedFile(testPath, AccessMode::Write, true);
     ASSERT_TRUE(testBufferedFile.IsOpened());
 
     // So for one last time nigga make some writes
@@ -203,7 +203,7 @@ TEST_F(FileBufferedTest, Write)
     // Otherwise they'll be canceled.
     testBufferedFile.Close();
 
-    File testFile(mPath, AccessMode::Read);
+    File testFile(testPath, AccessMode::Read);
     ASSERT_TRUE(testFile.IsOpened());
     ASSERT_EQ(bufferSize, testFile.Read(bufferActual, bufferSize));
     testFile.Close();
@@ -215,7 +215,7 @@ TEST_F(FileBufferedTest, Write)
 TEST_F(FileBufferedTest, OpenClose)
 {
     // Make sure file is opened after constructor
-    FileBuffered testBufferedFile(mPath, AccessMode::Write, true);
+    FileBuffered testBufferedFile(testPath, AccessMode::Write, true);
     ASSERT_TRUE(testBufferedFile.IsOpened());
 
     // Make sure file is closed after Close() method
@@ -223,7 +223,7 @@ TEST_F(FileBufferedTest, OpenClose)
     ASSERT_FALSE(testBufferedFile.IsOpened());
 
     // Make sure file is opened after Open() method
-    testBufferedFile.Open(mPath, AccessMode::Write);
+    testBufferedFile.Open(testPath, AccessMode::Write);
     ASSERT_TRUE(testBufferedFile.IsOpened());
 
     // Make sure file is closed after Close() method
@@ -234,7 +234,7 @@ TEST_F(FileBufferedTest, OpenClose)
 TEST_F(FileBufferedTest, OperationsOnClosed)
 {
     // Make sure file is opened after constructor
-    FileBuffered testBufferedFile(mPath, AccessMode::ReadWrite, true);
+    FileBuffered testBufferedFile(testPath, AccessMode::ReadWrite, true);
     ASSERT_TRUE(testBufferedFile.IsOpened());
 
     // Make sure file is closed after Close() method
@@ -252,7 +252,7 @@ TEST_F(FileBufferedTest, InvalidOperations)
     char buffer[bufferSize];
 
     // Open file for writing, then try to read
-    FileBuffered testBufferedFile(mPath, AccessMode::Write, true);
+    FileBuffered testBufferedFile(testPath, AccessMode::Write, true);
     ASSERT_TRUE(testBufferedFile.IsOpened());
 
     ASSERT_EQ(0, testBufferedFile.Read(buffer, bufferSize));
@@ -260,7 +260,7 @@ TEST_F(FileBufferedTest, InvalidOperations)
     testBufferedFile.Close();
 
     // Reopen file for reading, then try to write
-    testBufferedFile.Open(mPath, AccessMode::Read, true);
+    testBufferedFile.Open(testPath, AccessMode::Read, true);
     ASSERT_TRUE(testBufferedFile.IsOpened());
 
     ASSERT_EQ(0, testBufferedFile.Write(buffer, bufferSize));
@@ -271,24 +271,24 @@ TEST_F(FileBufferedTest, InvalidOperations)
 TEST_F(FileBufferedTest, GetSize)
 {
     // Save values buffer to the file
-    File testFile(mPath, AccessMode::Write, true);
+    File testFile(testPath, AccessMode::Write, true);
     ASSERT_TRUE(testFile.IsOpened());
     ASSERT_EQ(bufferSize, testFile.Write(mBufferExpected, bufferSize));
     NFE::int64 expectedSize = testFile.GetSize();
     ASSERT_GT(expectedSize, 0);
     testFile.Close();
 
-    FileBuffered bufFile(mPath, AccessMode::Write);
+    FileBuffered bufFile(testPath, AccessMode::Write);
     ASSERT_TRUE(bufFile.IsOpened());
     ASSERT_EQ(expectedSize, bufFile.GetSize());
     bufFile.Close();
 
-    bufFile.Open(mPath, AccessMode::Read);
+    bufFile.Open(testPath, AccessMode::Read);
     ASSERT_TRUE(bufFile.IsOpened());
     ASSERT_EQ(expectedSize, bufFile.GetSize());
     bufFile.Close();
 
-    bufFile.Open(mPath, AccessMode::ReadWrite);
+    bufFile.Open(testPath, AccessMode::ReadWrite);
     ASSERT_TRUE(bufFile.IsOpened());
     ASSERT_EQ(expectedSize, bufFile.GetSize());
     bufFile.Close();

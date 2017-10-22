@@ -8,7 +8,7 @@
 
 #include "PackerDefines.hpp"
 #include "../Utils/MD5.hpp"
-
+#include "../Containers/DynArray.hpp"
 
 namespace NFE {
 namespace Common {
@@ -16,11 +16,11 @@ namespace Common {
 struct PackerElement
 {
     MD5Hash mHash;
-    size_t mFilePos;
-    size_t mFileSize;
+    uint64 mFilePos;
+    uint32 mFileSize;
 };
 
-typedef std::vector<PackerElement> VFSFileListType;
+typedef DynArray<PackerElement> VFSFileListType;
 
 } // namespace Common
 } // namespace NFE

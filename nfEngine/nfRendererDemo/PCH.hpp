@@ -13,8 +13,15 @@
 #include <crtdbg.h>
 #endif // defined(WIN32) && defined(_DEBUG)
 
+#if defined(WIN32)
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <Windows.h>
+#endif // defined(WIN32)
+
 #include <iostream>
 #include <memory>
 #include <fstream>
 #include <vector>
 #include <string>
+#include <limits>

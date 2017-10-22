@@ -145,7 +145,7 @@ Set<KeyType, Comparator>::Set(const Set& other)
         }
 
         size_t keysSize = static_cast<size_t>(other.mNumAllocElements) * sizeof(KeyType);
-        mKeys = reinterpret_cast<KeyType*>(NFE_MALLOC(keysSize, 4));
+        mKeys = reinterpret_cast<KeyType*>(NFE_MALLOC(keysSize, alignof(KeyType)));
         if (!mKeys)
         {
             NFE_FREE(mNodes);
@@ -191,7 +191,7 @@ Set<KeyType, Comparator>& Set<KeyType, Comparator>::operator = (const Set& other
         }
 
         size_t keysSize = static_cast<size_t>(other.mNumAllocElements) * sizeof(KeyType);
-        mKeys = reinterpret_cast<KeyType*>(NFE_MALLOC(keysSize, 4));
+        mKeys = reinterpret_cast<KeyType*>(NFE_MALLOC(keysSize, alignof(KeyType)));
         if (!mKeys)
         {
             NFE_FREE(mNodes);
@@ -663,7 +663,7 @@ int Set<KeyType, Comparator>::AllocateNode()
         }
 
         // alloc new keys
-        KeyType* newKeys = reinterpret_cast<KeyType*>(NFE_MALLOC(mNumAllocElements * sizeof(KeyType), 4));
+        KeyType* newKeys = reinterpret_cast<KeyType*>(NFE_MALLOC(mNumAllocElements * sizeof(KeyType), alignof(KeyType)));
         if (!newKeys)
         {
             NFE_FREE(newNodes);

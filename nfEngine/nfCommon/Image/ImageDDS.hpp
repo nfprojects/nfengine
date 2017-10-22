@@ -14,13 +14,13 @@ namespace Common {
 
 class ImageDDS : public ImageType
 {
-public:
-    ImageDDS() {};
-    ~ImageDDS() {};
+    NFE_DECLARE_POLYMORPHIC_CLASS(ImageDDS)
 
-    bool Check(InputStream* stream) override;
-    bool Load(Image* img, InputStream* stream) override;
-    bool Save(Image* img, OutputStream* stream) override;
+public:
+    virtual StringView GetName() const override;
+    virtual bool Check(InputStream* stream) override;
+    virtual bool Load(Image* img, InputStream* stream) override;
+    virtual bool Save(Image* img, OutputStream* stream) override;
 };
 
 } // namespace Common

@@ -7,7 +7,8 @@
 #pragma once
 
 #include "../Logger.hpp"
-#include "FileSystem/File.hpp"
+#include "../../FileSystem/File.hpp"
+#include "../../Containers/DynArray.hpp"
 
 
 namespace NFE {
@@ -19,7 +20,7 @@ namespace Common {
 class NFCOMMON_API LoggerBackendXML : public LoggerBackend
 {
     File mFile;
-    std::vector<char> mBuffer;
+    DynArray<char> mBuffer;
 
 public:
     LoggerBackendXML();

@@ -7,35 +7,35 @@
 #pragma once
 
 #include "ImageFormat.hpp"
-
-#include <vector>
+#include "../Containers/DynArray.hpp"
+#include "../Containers/UniquePtr.hpp"
+#include "../Containers/StringView.hpp"
+#include "../Containers/HashMap.hpp"
+#include "../Reflection/ReflectionClassMacros.hpp"
 
 
 namespace NFE {
 namespace Common {
 
-using ImageTypePtr = std::unique_ptr<ImageType>;
-using ImageTypeMap = std::unordered_map<std::string, ImageTypePtr>;
+using ImageTypePtr = UniquePtr<ImageType>;
+using ImageTypeMap = HashMap<StringView, ImageTypePtr>;
 
 class NFCOMMON_API ImageType
 {
-public:
-    ImageType() {}
-    ~ImageType() {}
+    NFE_DECLARE_POLYMORPHIC_CLASS(ImageType)
 
+public:
+    virtual ~ImageType() {}
+
+    virtual StringView GetName() const = 0;
     virtual bool Check(InputStream*) = 0;
     virtual bool Load(Image*, InputStream*) = 0;
     virtual bool Save(Image*, OutputStream*) = 0;
 
     /**
-     * Register an image type to make it available for saving/loading.
-     *
-     * @param name      Image type name.
-     * @param imageType Image type object - must implement ImageType class.
-     *
-     * @return True, if new ImageType with @name was inserted. False if @name is already in use.
+     * List image types.
      */
-    static bool RegisterImageType(const std::string& name, ImageTypePtr imageType);
+    static DynArray<ImageTypePtr> GetTypes();
 
     /**
      * Get pointer to an already registered ImageType.
@@ -44,15 +44,7 @@ public:
      *
      * @return Pointer to the ImageType if registered, otherwise nullptr.
      */
-    static ImageType* GetImageType(const std::string& name);
-
-    /**
-     * Get list of the registered ImageTypes.
-     */
-    static std::vector<std::string> ListImageTypes();
-
-protected:
-    std::vector<Mipmap>* GetMipmaps(Image* img);
+    static ImageTypePtr GetImageType(const StringView name);
 };
 
 } // namespace Common

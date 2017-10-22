@@ -2,6 +2,8 @@
 #include "../Backends.hpp"
 #include "../RendererTest.hpp"
 
+using namespace NFE::Common;
+
 class ShaderTest : public RendererTest
 {
 };
@@ -10,10 +12,10 @@ TEST_F(ShaderTest, Disassemble)
 {
     const size_t resourceBindings = 3;
 
-    const std::string shaderPath = gShaderPathPrefix + "Simple" + gShaderPathExt;
+    const String shaderPath = gShaderPathPrefix + "Simple" + gShaderPathExt;
 
     ShaderDesc desc;
-    desc.path = shaderPath.c_str();
+    desc.path = shaderPath.Str();
     desc.type = ShaderType::Vertex;
 
     /// compile shader
