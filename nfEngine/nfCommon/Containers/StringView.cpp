@@ -99,6 +99,60 @@ uint32 StringView::FindLast(const char c) const
     return END();
 }
 
+uint32 StringView::FindFirstNotOf(const char other) const
+{
+    for (uint32 i = 0; i < mLength; ++i)
+    {
+        if (mData[i] != other)
+        {
+            return i;
+        }
+    }
+
+    return END();
+}
+
+uint32 StringView::FindFirstNotOf(const StringView& other) const
+{
+    for (uint32 i = 0; i < mLength; ++i)
+    {
+        bool found = false;
+        for (uint32 j = 0; j < other.Length(); ++j)
+        {
+            if (mData[i] == other.mData[j])
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
+        {
+            return i;
+        }
+    }
+
+    return END();
+}
+
+bool StringView::EndsWith(const StringView& subString) const
+{
+    if (subString.mLength > mLength || subString.mLength == 0)
+    {
+        return false;
+    }
+
+    for (uint32 j = 0; j < subString.mLength; ++j)
+    {
+        if (mData[mLength - subString.mLength + j] != subString[j])
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 

@@ -10,6 +10,11 @@
 
 using namespace NFE::Common;
 
+namespace {
+
+const StringView testBackendName("Test");
+
+} // namespace
 
 /**
 * Test backend for testing LoggerBackend class
@@ -49,17 +54,17 @@ class LogGrouperTest : public testing::Test
     void SetUp()
     {
         // Ensure that the test backend is registered and enabled
-        Logger::RegisterBackend("Test", std::make_unique<TestBackend>());
-        auto testBackend = dynamic_cast<TestBackend*>(Logger::GetBackend("Test"));
+        Logger::RegisterBackend(testBackendName, MakeUniquePtr<TestBackend>());
+        auto testBackend = dynamic_cast<TestBackend*>(Logger::GetBackend(testBackendName));
         ASSERT_NE(nullptr, testBackend);
 
-        auto backends = Logger::ListBackends();
+        const LoggerBackendMap& backends = Logger::ListBackends();
         for (const auto& b : backends)
         {
-            if (b.compare("Test") == 0)
-                Logger::GetBackend(b)->Enable(true);
+            if (b.name == testBackendName)
+                b.ptr->Enable(true);
             else
-                Logger::GetBackend(b)->Enable(false);
+                b.ptr->Enable(false);
         }
 
         testBackend->Reset();
@@ -67,7 +72,7 @@ class LogGrouperTest : public testing::Test
 
     void TearDown()
     {
-        auto testBackend = dynamic_cast<TestBackend*>(Logger::GetBackend("Test"));
+        auto testBackend = dynamic_cast<TestBackend*>(Logger::GetBackend(testBackendName));
         ASSERT_NE(nullptr, testBackend);
         testBackend->Enable(false);
     }
@@ -78,13 +83,13 @@ TEST_F(LogGrouperTest, Simple)
 {
     // Lambda for checking if anything was logged
     auto wasLogged = []() -> bool {
-        auto tBackend = Logger::GetBackend("Test");
+        auto tBackend = Logger::GetBackend(testBackendName);
         if (tBackend == nullptr)
             return false;
         return !dynamic_cast<TestBackend*>(tBackend)->mLastLogInfo.lastFile.empty();
     };
 
-    auto testBackend = dynamic_cast<TestBackend*>(Logger::GetBackend("Test"));
+    auto testBackend = dynamic_cast<TestBackend*>(Logger::GetBackend(testBackendName));
     ASSERT_NE(nullptr, testBackend);
 
     double loggerTimeBeg, loggerTimeEnd;

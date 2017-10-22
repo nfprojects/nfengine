@@ -335,10 +335,10 @@ TEST(Config, DataTranslator)
         float floatValue;
         const char* stringValue;
 
-        std::vector<int> intArray;
-        std::vector<bool> boolArray;
-        std::vector<float> floatArray;
-        std::vector<const char*> stringArray;
+        DynArray<int> intArray;
+        DynArray<bool> boolArray;
+        DynArray<float> floatArray;
+        DynArray<const char*> stringArray;
     };
 
     // set up data translator
@@ -360,22 +360,22 @@ TEST(Config, DataTranslator)
     EXPECT_EQ(10.0f, object.floatValue);
     EXPECT_STREQ("this is a string", object.stringValue);
 
-    ASSERT_EQ(3, object.intArray.size());
+    ASSERT_EQ(3, object.intArray.Size());
     EXPECT_EQ(1, object.intArray[0]);
     EXPECT_EQ(2, object.intArray[1]);
     EXPECT_EQ(3, object.intArray[2]);
 
-    ASSERT_EQ(3, object.boolArray.size());
+    ASSERT_EQ(3, object.boolArray.Size());
     EXPECT_TRUE(object.boolArray[0]);
     EXPECT_FALSE(object.boolArray[1]);
     EXPECT_TRUE(object.boolArray[2]);
 
-    ASSERT_EQ(3, object.floatArray.size());
+    ASSERT_EQ(3, object.floatArray.Size());
     EXPECT_EQ(1.0f, object.floatArray[0]);
     EXPECT_EQ(2.0f, object.floatArray[1]);
     EXPECT_EQ(3.0f, object.floatArray[2]);
 
-    ASSERT_EQ(2, object.stringArray.size());
+    ASSERT_EQ(2, object.stringArray.Size());
     EXPECT_STREQ("aaa", object.stringArray[0]);
     EXPECT_STREQ("bbb", object.stringArray[1]);
 }
@@ -392,10 +392,10 @@ TEST(Config, DataTranslatorInvalidTypes)
         float floatValue;
         const char* stringValue;
 
-        std::vector<int> intArray;
-        std::vector<bool> boolArray;
-        std::vector<float> floatArray;
-        std::vector<const char*> stringArray;
+        DynArray<int> intArray;
+        DynArray<bool> boolArray;
+        DynArray<float> floatArray;
+        DynArray<const char*> stringArray;
     };
 
     // set up data translator with messed up types

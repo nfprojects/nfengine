@@ -22,7 +22,7 @@ TEST(Config, GenerateAndParse)
     for (int maxDepth = 2; maxDepth < MAX_DEPTH; ++maxDepth)
     {
         double buildTime, generateTime;
-        std::string configString;
+        String configString;
 
         {
             Config config;
@@ -67,7 +67,7 @@ TEST(Config, GenerateAndParse)
         timer.Start();
         {
             Config config;
-            config.Parse(configString.c_str());
+            config.Parse(configString.Str());
         }
         double parseTime = 1000.0 * timer.Stop();
 
@@ -77,6 +77,6 @@ TEST(Config, GenerateAndParse)
             << std::setw(10) << buildTime << " | "
             << std::setw(13) << generateTime << " | "
             << std::setw(10) << parseTime << " | "
-            << configString.length() << std::endl;
+            << configString.Length() << std::endl;
     }
 }

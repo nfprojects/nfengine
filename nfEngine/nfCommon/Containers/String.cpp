@@ -146,7 +146,6 @@ String String::Printf(const char* format, ...)
     {
         va_end(argsCopy);
         va_end(args);
-        NFE_LOG_ERROR("vsnprintf() failed, format = \"%s\"", format);
         return String();
     }
 
@@ -350,7 +349,6 @@ bool String::Reserve(uint32 length)
     char* newBuffer = static_cast<char*>(NFE_MALLOC(size, 1));
     if (!newBuffer)
     {
-        NFE_LOG_ERROR("Memory allocation failed");
         return false;
     }
 

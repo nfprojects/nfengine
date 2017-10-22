@@ -13,7 +13,7 @@ namespace NFE {
 namespace Common {
 
 // Register HTML backend
-bool gLoggerBackendHTMLRegistered = Logger::RegisterBackend("HTML", std::make_unique<LoggerBackendHTML>());
+bool gLoggerBackendHTMLRegistered = Logger::RegisterBackend(StringView("HTML"), MakeUniquePtr<LoggerBackendHTML>());
 
 LoggerBackendHTML::LoggerBackendHTML()
 {
@@ -26,7 +26,7 @@ void LoggerBackendHTML::Reset()
      * TODO: move intro, outro and the other HTML code templates to another file, so the logger
      * backend can be easly customizable.
      */
-    const static std::string gLogIntro = R"(
+    const static String gLogIntro = R"(
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
@@ -67,10 +67,10 @@ void LoggerBackendHTML::Reset()
        <tbody>
 )";
 
-    const std::string logFileName = "log.html";
-    mBuffer.resize(NFE_MAX_LOG_MESSAGE_LENGTH);
+    const StringView logFileName("log.html");
+    mBuffer.Resize(NFE_MAX_LOG_MESSAGE_LENGTH);
 
-    const std::string logFilePath = Logger::GetInstance()->GetLogsDirectory() + '/' + logFileName;
+    const String logFilePath = Logger::GetInstance()->GetLogsDirectory() + '/' + logFileName;
     if (!mFile.Open(logFilePath, AccessMode::Write, true))
     {
         // this will be handled by other logger
@@ -78,12 +78,12 @@ void LoggerBackendHTML::Reset()
         return;
     }
 
-    mFile.Write(gLogIntro.data(), gLogIntro.length());
+    mFile.Write(gLogIntro.Str(), gLogIntro.Length());
 }
 
 LoggerBackendHTML::~LoggerBackendHTML()
 {
-    const static std::string gLogOutro = R"(
+    const static String gLogOutro = R"(
             </tbody>
         </table>
         <script src='../nfEngine/Data/tablefilter.js'></script>
@@ -91,11 +91,10 @@ LoggerBackendHTML::~LoggerBackendHTML()
 </html>
 )";
 
-    mFile.Write(gLogOutro.data(), gLogOutro.length());
+    mFile.Write(gLogOutro.Str(), gLogOutro.Length());
 }
 
-void LoggerBackendHTML::Log(LogType type, const char* srcFile, int line, const char* str,
-                            double timeElapsed)
+void LoggerBackendHTML::Log(LogType type, const char* srcFile, int line, const char* str, double timeElapsed)
 {
     // begin row tag with style + begin column tag
     const char* str0 = nullptr;
@@ -132,7 +131,7 @@ void LoggerBackendHTML::Log(LogType type, const char* srcFile, int line, const c
 
 
     size_t pathOffset = Logger::GetInstance()->GetPathPrefixLen();
-    int len = snprintf(mBuffer.data(), mBuffer.size(), format,
+    int len = snprintf(mBuffer.Data(), mBuffer.Size(), format,
                        str0, timeElapsed, str, str1, srcFile, srcFile + pathOffset, line, str2);
     if (len < 0)
     {
@@ -141,16 +140,16 @@ void LoggerBackendHTML::Log(LogType type, const char* srcFile, int line, const c
     }
 
     size_t outputStrSize = static_cast<size_t>(len);
-    if (outputStrSize >= mBuffer.size())
+    if (outputStrSize >= mBuffer.Size())
     {
-        while (outputStrSize >= mBuffer.size())
-            mBuffer.resize(2 * mBuffer.size());
+        while (outputStrSize >= mBuffer.Size())
+            mBuffer.Resize(2 * mBuffer.Size());
 
-        snprintf(mBuffer.data(), mBuffer.size(), format,
+        snprintf(mBuffer.Data(), mBuffer.Size(), format,
                  str0, timeElapsed, str, str1, srcFile, srcFile + pathOffset, line, str2);
     }
 
-    mFile.Write(mBuffer.data(), outputStrSize);
+    mFile.Write(mBuffer.Data(), outputStrSize);
 }
 
 } // namespace Common
