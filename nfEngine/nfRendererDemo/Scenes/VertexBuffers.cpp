@@ -29,13 +29,13 @@ int gInstancesNumber = 200;
 bool VertexBuffersScene::LoadShaders(bool useInstancing)
 {
     ShaderMacro vsMacro[] = { { "USE_INSTANCING", useInstancing ? "1" : "0" } };
-    std::string vsPath = gShaderPathPrefix + "InstancingTestVS" + gShaderPathExt;
-    mVertexShader = CompileShader(vsPath.c_str(), ShaderType::Vertex, vsMacro, 1);
+    const Common::String vsPath = gShaderPathPrefix + "InstancingTestVS" + gShaderPathExt;
+    mVertexShader = CompileShader(vsPath.Str(), ShaderType::Vertex, vsMacro, 1);
     if (!mVertexShader)
         return false;
 
-    std::string psPath = gShaderPathPrefix + "InstancingTestPS" + gShaderPathExt;
-    mPixelShader = CompileShader(psPath.c_str(), ShaderType::Pixel, nullptr, 0);
+    const Common::String psPath = gShaderPathPrefix + "InstancingTestPS" + gShaderPathExt;
+    mPixelShader = CompileShader(psPath.Str(), ShaderType::Pixel, nullptr, 0);
     if (!mPixelShader)
         return false;
 

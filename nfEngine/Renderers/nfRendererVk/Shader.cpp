@@ -158,7 +158,7 @@ bool Shader::Init(const ShaderDesc& desc)
         }
 
         using namespace Common;
-        File file(desc.path, AccessMode::Read);
+        File file(StringView(desc.path), AccessMode::Read);
         shaderSize = static_cast<size_t>(file.GetSize());
         str.resize(shaderSize + 1);
 

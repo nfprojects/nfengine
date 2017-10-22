@@ -49,7 +49,7 @@ private:
     File mFile;
 
 public:
-    FileOutputStream(const char* pFileName);
+    FileOutputStream(const StringView fileName);
 
     size_t Write(const void* buffer, size_t num) override;
 };

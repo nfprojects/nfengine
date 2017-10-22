@@ -14,6 +14,12 @@ class TestBackend;
 class LoggerTest : public testing::Test {};
 using LoggerDeathTest = LoggerTest;
 
+namespace {
+
+const StringView testBackendName("Test");
+
+} // namespace
+
 /**
 * Test backend for testing LoggerBackend class
 */
@@ -52,22 +58,11 @@ class LoggerBackendsTest : public LoggerTest
 public:
     static void SetUpTestCase()
     {
-        /**
-         * Test for ListBackends() method needs TestBackend to NOT be registered beforehand.
-         * TestBackend will be registered in this test with name="Test". It will be available for every
-         * test in LoggerBackendsTest suite.
-         */
-        std::vector<std::string> existingBackends = Logger::GetInstance()->ListBackends();
+        ASSERT_TRUE(Logger::RegisterBackend(testBackendName, MakeUniquePtr<TestBackend>()));
 
-        auto result = std::find(existingBackends.cbegin(), existingBackends.cend(), "Test");
-        ASSERT_EQ(existingBackends.cend(), result);
-
-        ASSERT_TRUE(Logger::RegisterBackend("Test", std::make_unique<TestBackend>()));
-        existingBackends = Logger::GetInstance()->ListBackends();
-
-        result = std::find(existingBackends.cbegin(), existingBackends.cend(), "Test");
-        ASSERT_NE(existingBackends.cend(), result);
-        Logger::GetBackend("Test")->Enable(false);
+        LoggerBackend* testBackend = Logger::GetBackend(testBackendName);
+        ASSERT_NE(nullptr, testBackend);
+        testBackend->Enable(false);
     }
 };
 
@@ -130,64 +125,60 @@ TEST_F(LoggerTest, Invalid)
 
 TEST_F(LoggerBackendsTest, DisableAll)
 {
-    std::vector<std::string> existingBackends = Logger::GetInstance()->ListBackends();
+    const LoggerBackendMap& existingBackends = Logger::GetInstance()->ListBackends();
 
     NFE_LOG_SUCCESS("DisableAll: This log should be seen in every standard backend");
 
-    for (const auto& i : existingBackends)
+    for (const auto& backend : existingBackends)
     {
-        LoggerBackend* backend = Logger::GetBackend(i);
-        backend->Enable(false);
-        ASSERT_FALSE(backend->IsEnabled());
+        backend.ptr->Enable(false);
+        ASSERT_FALSE(backend.ptr->IsEnabled());
     }
 
     NFE_LOG_ERROR("DisableAll: This log should NOT be seen anywhere!");
 
     // Turn back on all backends
-    for (const auto& i : existingBackends)
+    for (const auto& backend : existingBackends)
     {
-        LoggerBackend* backend = Logger::GetBackend(i);
-        backend->Enable(true);
-        ASSERT_TRUE(backend->IsEnabled());
+        backend.ptr->Enable(true);
+        ASSERT_TRUE(backend.ptr->IsEnabled());
     }
 }
 
 TEST_F(LoggerBackendsTest, DisableSingle)
 {
-    std::vector<std::string> existingBackends = Logger::GetInstance()->ListBackends();
+    const LoggerBackendMap& existingBackends = Logger::GetInstance()->ListBackends();
 
     NFE_LOG_SUCCESS("DisableSingle: This log should be seen in every standard backend");
 
-    for (const auto& i : existingBackends)
+    for (const auto& backend : existingBackends)
     {
-        LoggerBackend* backend = Logger::GetBackend(i);
+        backend.ptr->Enable(false);
+        ASSERT_FALSE(backend.ptr->IsEnabled());
 
-        backend->Enable(false);
-        ASSERT_FALSE(backend->IsEnabled());
+        NFE_LOG_SUCCESS("DisableSingle: This log should NOT be seen in '%.*s' backend.", backend.name.Length(), backend.name.Data());
 
-        NFE_LOG_SUCCESS_S("DisableSingle: This log should NOT be seen in " << i << " backend.");
-
-        backend->Enable(true);
-        ASSERT_TRUE(backend->IsEnabled());
+        backend.ptr->Enable(true);
+        ASSERT_TRUE(backend.ptr->IsEnabled());
     }
 }
 
 TEST_F(LoggerBackendsTest, LogMethodArguments)
 {
     // Disable all backends apart the test one
-    std::vector<std::string> existingBackends = Logger::GetInstance()->ListBackends();
-    for (const auto& i : existingBackends)
+    const LoggerBackendMap& existingBackends = Logger::GetInstance()->ListBackends();
+    for (const auto& backend : existingBackends)
     {
-        if (i.compare("Test") == 0)
-            Logger::GetBackend(i)->Enable(true);
+        if (backend.name == testBackendName)
+            backend.ptr->Enable(true);
         else
-            Logger::GetBackend(i)->Enable(false);
+            backend.ptr->Enable(false);
     }
 
-    ASSERT_NE(nullptr, Logger::GetBackend("Test"));
+    ASSERT_NE(nullptr, Logger::GetBackend(testBackendName));
 
     NFE_LOG_INFO("This is log");
-    auto lastLogInfo = reinterpret_cast<TestBackend*>(Logger::GetBackend("Test"))->mLastLogInfo;
+    auto lastLogInfo = reinterpret_cast<TestBackend*>(Logger::GetBackend(testBackendName))->mLastLogInfo;
     ASSERT_EQ(lastLogInfo.lastLine, __LINE__ - 2);
     ASSERT_EQ(lastLogInfo.lastMsg, "This is log");
     ASSERT_EQ(lastLogInfo.lastType, LogType::Info);
@@ -195,7 +186,7 @@ TEST_F(LoggerBackendsTest, LogMethodArguments)
     ASSERT_NE(lastLogInfo.lastTime, 0);
 
     NFE_LOG_WARNING_S("This is log2");
-    lastLogInfo = reinterpret_cast<TestBackend*>(Logger::GetBackend("Test"))->mLastLogInfo;
+    lastLogInfo = reinterpret_cast<TestBackend*>(Logger::GetBackend(testBackendName))->mLastLogInfo;
     ASSERT_EQ(lastLogInfo.lastLine, __LINE__ - 2);
     ASSERT_EQ(lastLogInfo.lastMsg, "This is log2");
     ASSERT_EQ(lastLogInfo.lastType, LogType::Warning);
@@ -203,7 +194,7 @@ TEST_F(LoggerBackendsTest, LogMethodArguments)
     ASSERT_NE(lastLogInfo.lastTime, 0);
 
     NFE_LOG_ERROR("This is log3");
-    lastLogInfo = reinterpret_cast<TestBackend*>(Logger::GetBackend("Test"))->mLastLogInfo;
+    lastLogInfo = reinterpret_cast<TestBackend*>(Logger::GetBackend(testBackendName))->mLastLogInfo;
     ASSERT_EQ(lastLogInfo.lastLine, __LINE__ - 2);
     ASSERT_EQ(lastLogInfo.lastMsg, "This is log3");
     ASSERT_EQ(lastLogInfo.lastType, LogType::Error);
@@ -211,17 +202,17 @@ TEST_F(LoggerBackendsTest, LogMethodArguments)
     ASSERT_NE(lastLogInfo.lastTime, 0);
 
     NFE_LOG_SUCCESS_S("This is log4");
-    lastLogInfo = reinterpret_cast<TestBackend*>(Logger::GetBackend("Test"))->mLastLogInfo;
+    lastLogInfo = reinterpret_cast<TestBackend*>(Logger::GetBackend(testBackendName))->mLastLogInfo;
     ASSERT_EQ(lastLogInfo.lastLine, __LINE__ - 2);
     ASSERT_EQ(lastLogInfo.lastMsg, "This is log4");
     ASSERT_EQ(lastLogInfo.lastType, LogType::OK);
     ASSERT_EQ(lastLogInfo.lastFile, __FILE__);
     ASSERT_NE(lastLogInfo.lastTime, 0);
 
-    Logger::GetBackend("Test")->Enable(false);
-    Logger::GetBackend("Test")->Reset();
+    Logger::GetBackend(testBackendName)->Enable(false);
+    Logger::GetBackend(testBackendName)->Reset();
     NFE_LOG_INFO("This is log");
-    lastLogInfo = reinterpret_cast<TestBackend*>(Logger::GetBackend("Test"))->mLastLogInfo;
+    lastLogInfo = reinterpret_cast<TestBackend*>(Logger::GetBackend(testBackendName))->mLastLogInfo;
     ASSERT_EQ(lastLogInfo.lastLine, 0);
     ASSERT_EQ(lastLogInfo.lastMsg, "");
     ASSERT_EQ(lastLogInfo.lastType, static_cast<LogType>(0));
@@ -229,11 +220,11 @@ TEST_F(LoggerBackendsTest, LogMethodArguments)
     ASSERT_EQ(lastLogInfo.lastTime, 0);
 
     // Turn back all backends apart the test one
-    for (const auto& i : existingBackends)
+    for (const auto& backend : existingBackends)
     {
-        if (i.compare("Test") == 0)
-            Logger::GetBackend(i)->Enable(false);
+        if (backend.name == testBackendName)
+            backend.ptr->Enable(false);
         else
-            Logger::GetBackend(i)->Enable(true);
+            backend.ptr->Enable(true);
     }
 }

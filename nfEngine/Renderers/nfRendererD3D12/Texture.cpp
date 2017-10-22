@@ -416,7 +416,7 @@ bool Texture::Init(const TextureDesc& desc)
         }
     }
 
-    if (desc.debugName && !SetDebugName(mBuffers[0].Get(), desc.debugName))
+    if (desc.debugName && !SetDebugName(mBuffers[0].Get(), Common::StringView(desc.debugName)))
     {
         NFE_LOG_WARNING("Failed to set debug name");
     }

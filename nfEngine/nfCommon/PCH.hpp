@@ -63,15 +63,9 @@
 #include <stddef.h>
 
 /// STL
-#include <vector>
-#include <map>
-#include <set>
 #include <unordered_map>
-#include <unordered_set>
 #include <stack>
 #include <queue>
-#include <string>
-#include <array>
 #include <algorithm>
 
 #include <sstream>
@@ -81,7 +75,6 @@
 #include <atomic>
 #include <thread>
 
-#include <chrono>
 #include <memory>
 #include <functional>
 #include <limits>
