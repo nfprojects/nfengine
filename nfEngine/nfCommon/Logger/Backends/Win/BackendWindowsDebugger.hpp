@@ -7,6 +7,9 @@
 #pragma once
 
 #include "../../Logger.hpp"
+#include "../../../Containers/DynArray.hpp"
+#include "../../../Containers/String.hpp"
+#include "../../../System/Win/Common.hpp"
 
 namespace NFE {
 namespace Common {
@@ -16,15 +19,13 @@ namespace Common {
  */
 class NFCOMMON_API LoggerBackendWinDebugger final : public LoggerBackend
 {
-    std::vector<char> mBuffer;
-
-    std::string mDebugString;
-    std::wstring mWideDebugString;
+    DynArray<char> mBuffer;
+    String mDebugString;
+    Utf16String mWideDebugString;
 
 public:
     LoggerBackendWinDebugger();
-    void Log(LogType type, const char* srcFile, int line, const char* str,
-             double timeElapsed) override;
+    void Log(LogType type, const char* srcFile, int line, const char* str, double timeElapsed) override;
 };
 
 } // namespace Common

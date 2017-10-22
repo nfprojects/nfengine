@@ -131,7 +131,7 @@ void Window::SetTitle(const char* title)
     if (!mClosed)
     {
         xcb_change_property(mConnection, XCB_PROP_MODE_REPLACE, mWindow, XCB_ATOM_WM_NAME,
-                            XCB_ATOM_STRING, 8, mTitle.size(), mTitle.c_str());
+                            XCB_ATOM_STRING, 8, mTitle.Length(), mTitle.Str());
     }
 }
 
@@ -297,7 +297,7 @@ bool Window::Open()
     }
 
     xcb_change_property(mConnection, XCB_PROP_MODE_REPLACE, mWindow, XCB_ATOM_WM_NAME,
-                        XCB_ATOM_STRING, 8, mTitle.size(), mTitle.c_str());
+                        XCB_ATOM_STRING, 8, mTitle.Length(), mTitle.Str());
 
     // pre-initialize delete atom to be later on notified about Window being destroyed
     xcb_intern_atom_cookie_t deleteCookie = xcb_intern_atom(mConnection, 1, 16, "WM_DELETE_WINDOW");

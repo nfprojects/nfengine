@@ -6,7 +6,7 @@
 using namespace NFE;
 using namespace NFE::Common;
 
-const std::string testPackFilePath = "testfile.nfp";
+const String testPackFilePath("testfile.nfp");
 
 class PackerBasicTest : public testing::Test
 {
@@ -25,13 +25,7 @@ protected:
         mReader.reset();
         mWriter.reset();
 
-        std::ifstream fs(testPackFilePath);
-        if (fs.good())
-        {
-            fs.close();
-            EXPECT_EQ(0, remove(testPackFilePath.c_str())) << "remove() failed. "
-                    << "Error: " << errno << " (" << strerror(errno) << ")";
-        }
+        FileSystem::Remove(testPackFilePath);
     }
 
     std::unique_ptr<PackerReader> mReader;
@@ -57,14 +51,14 @@ TEST_F(PackerBasicTest, WriterEmptyTest)
     // open file manually and check if it contains data in order:
     //   * version number
     //   * number of files (in this case 0)
-    std::ifstream fs(testPackFilePath);
+    std::ifstream fs(testPackFilePath.Str());
     EXPECT_TRUE(fs.good());
 
     uint32 readFileVersion;
-    size_t readFileCount;
+    uint32 readFileCount;
 
     fs.read(reinterpret_cast<char*>(&readFileVersion), sizeof(uint32));
-    fs.read(reinterpret_cast<char*>(&readFileCount), sizeof(size_t));
+    fs.read(reinterpret_cast<char*>(&readFileCount), sizeof(uint32));
 
     EXPECT_EQ(gPackFileVersion, readFileVersion);
     EXPECT_EQ(0, readFileCount);
@@ -108,7 +102,7 @@ TEST_F(PackerBasicTest, ReaderBuggyFileTest)
     PackerResult pr;
 
     // create file with file version only
-    std::ofstream file(testPackFilePath);
+    std::ofstream file(testPackFilePath.Str());
     EXPECT_TRUE(file.good());
 
     file.write(reinterpret_cast<const char*>(&gPackFileVersion), sizeof(gPackFileVersion));

@@ -9,8 +9,9 @@
 #include "../nfCommon.hpp"
 #include "File.hpp"
 #include "../System/Mutex.hpp"
+#include "../Containers/String.hpp"
+#include "../Containers/HashSet.hpp"
 
-#include <unordered_set>
 #include <functional>
 #include <thread>
 
@@ -73,7 +74,7 @@ private:
 #endif // defined(WIN32)
 
     AccessMode mMode;
-    std::unordered_set<AsyncDataStruct*> mSystemPtrs;
+    HashSet<AsyncDataStruct*> mSystemPtrs;
     Mutex mSetAccessMutex;
     CallbackFunc mCallback;
 
@@ -83,8 +84,7 @@ private:
 public:
     FileAsync();
     explicit FileAsync(CallbackFuncRef callback);
-    FileAsync(const std::string& path, AccessMode mode, CallbackFuncRef callback,
-              bool overwrite = false);
+    FileAsync(const String& path, AccessMode mode, CallbackFuncRef callback, bool overwrite = false);
     FileAsync(FileAsync&& other);
     FileAsync(const FileAsync& other) = delete;
     ~FileAsync();
@@ -101,7 +101,7 @@ public:
      * @param access File access mode.
      * @param overwrite Overwrite a file if it already exists.
      */
-    bool Open(const std::string& path, AccessMode access, bool overwrite = false);
+    bool Open(const String& path, AccessMode access, bool overwrite = false);
 
     /**
      * Close opened file and cancel all unfinished operations.

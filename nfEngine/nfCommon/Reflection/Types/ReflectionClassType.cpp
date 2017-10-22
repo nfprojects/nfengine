@@ -15,7 +15,7 @@ namespace RTTI {
 
 using namespace Common;
 
-const char* ClassType::TYPE_MARKER = "__type";
+const StringView ClassType::TYPE_MARKER("__type");
 
 ClassType::ClassType(const ClassTypeInfo& info)
     : Type(info)
@@ -27,7 +27,7 @@ ClassType::ClassType(const ClassTypeInfo& info)
     {
         NFE_ASSERT(member.GetName(), "Member has no name");
         NFE_ASSERT(member.GetType(), "Member '%s' has invalid type", member.GetName());
-        NFE_ASSERT(strcmp(member.GetName(), TYPE_MARKER) != 0, "Name reserved");
+        NFE_ASSERT(member.GetName() != TYPE_MARKER, "Name reserved");
     }
 
     for (uint32 i = 1; i < mMembers.Size(); ++i)
@@ -144,7 +144,9 @@ bool ClassType::SerializeDirectly(const void* object, Common::Config& config, Co
             NFE_LOG_ERROR("Failed to serialize member '%s' in object of type '%s'", member.GetName(), GetName());
             return false;
         }
-        config.AddValue(outObject, member.GetName(), memberValue);
+
+        // TODO Member::GetName should contain StringValu instead of const char* ?
+        config.AddValue(outObject, StringView(member.GetName()), memberValue);
     }
 
     return true;
@@ -186,15 +188,16 @@ bool ClassType::Serialize(const void* object, Config& config, ConfigValue& outVa
     return true;
 }
 
-bool ClassType::DeserializeMember(void* outObject, const char* memberName, const Config& config, const ConfigValue& value) const
+bool ClassType::DeserializeMember(void* outObject, const StringView memberName, const Config& config, const ConfigValue& value) const
 {
     // find member with given name
-    const Member* targetMember = FindMember(StringView(memberName));
+    const Member* targetMember = FindMember(memberName);
 
     // target member not found
     if (!targetMember)
     {
-        NFE_LOG_WARNING("Member '%s' not found in runtime type, but present in deserialized object", memberName);
+        NFE_LOG_WARNING("Member '%.*s' not found in runtime type, but present in deserialized object",
+                        memberName.Length(), memberName.Data());
         return true;
     }
 
@@ -203,7 +206,7 @@ bool ClassType::DeserializeMember(void* outObject, const char* memberName, const
 
     if (!memberType->Deserialize(memberPtr, config, value))
     {
-        NFE_LOG_ERROR("Failed to deserialize member '%s'", memberName);
+        NFE_LOG_ERROR("Failed to deserialize member '%.*s'", memberName.Length(), memberName.Data());
         return false;
     }
 
@@ -225,10 +228,10 @@ bool ClassType::Deserialize(void* outObject, const Config& config, const ConfigV
     }
 
     bool success = true;
-    const auto configIteratorCallback = [&](const char* key, const ConfigValue& value)
+    const auto configIteratorCallback = [&](StringView key, const ConfigValue& value)
     {
         // polymorphic type marker found
-        if (strcmp(key, TYPE_MARKER) == 0)
+        if (key == TYPE_MARKER)
         {
             if (!value.IsString())
             {

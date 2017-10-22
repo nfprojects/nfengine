@@ -777,5 +777,6 @@
     <ClCompile Include="Utils\StringUtils.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="nfCommon.cpp" />
   </ItemGroup>
 </Project>

@@ -33,7 +33,7 @@ void BVH::Clear()
 
     mNodesCapacity = NFE_BVH_INITIAL_CAPACITY;
     mNodesNum = 0;
-    mNodes.resize(mNodesCapacity);
+    mNodes.Resize(mNodesCapacity);
 
     // init free list
     for (uint32 i = 0; i < mNodesCapacity - 1; i++)
@@ -53,7 +53,7 @@ uint32 BVH::AllocNode()
     if (mFreeNode == NFE_BVH_NULL_NODE)
     {
         mNodesCapacity *= 2;
-        mNodes.resize(mNodesCapacity);
+        mNodes.Resize(mNodesCapacity);
 
         for (uint32 i = mNodesNum; i < mNodesCapacity - 1; i++)
         {

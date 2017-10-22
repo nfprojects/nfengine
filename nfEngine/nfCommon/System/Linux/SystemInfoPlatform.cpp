@@ -8,8 +8,9 @@
 #include "../SystemInfo.hpp"
 #include "Math/Math.hpp"
 #include "Logger/Logger.hpp"
+#include "Containers/DynArray.hpp"
+#include "FileSystem/File.hpp"
 
-#include <vector>
 #include <streambuf>
 #include <fstream>
 #include <sys/utsname.h>
@@ -17,6 +18,39 @@
 
 namespace NFE {
 namespace Common {
+
+namespace {
+
+bool ReadFileToString(const String& path, String& outString)
+{
+    File file(path, AccessMode::Read);
+
+    int64 size = file.GetSize();
+    if (size < 0)
+    {
+        return false;
+    }
+
+    if (size > static_cast<int64>(String::MaxInternalLength))
+    {
+        NFE_LOG_WARNING("File is too big to fit a String (%ull bytes)", size);
+        size = static_cast<int64>(String::MaxInternalLength);
+    }
+
+    // TODO this buffer is redundant
+    DynArray<char> buffer;
+    buffer.Resize(static_cast<uint32>(size));
+    const size_t bytesToRead = static_cast<size_t>(size);
+    if (bytesToRead != file.Read(buffer.Data(), bytesToRead))
+    {
+        return false;
+    }
+
+    outString = StringView(buffer.Data(), buffer.Size());
+    return true;
+}
+
+} // namespace
 
 void SystemInfo::InitCPUInfoPlatform()
 {
@@ -28,32 +62,34 @@ void SystemInfo::InitCPUInfoPlatform()
 
 void SystemInfo::InitOSVersion()
 {
-    static const std::vector<std::string> osFiles = { "/etc/redhat-release",
-                                                      "/etc/issue",
-    };
+    static const DynArray<String> osFiles = { "/etc/redhat-release", "/etc/issue" };
 
-    for (const auto& i : osFiles)
+    for (const auto& path : osFiles)
     {
-        std::ifstream sysFile(i.c_str());
-
-        if (sysFile)
+        String str;
+        if (ReadFileToString(path, str))
         {
-            std::getline(sysFile, mOSVersion);
+            if (!str.Empty())
+            {
+                if (str[str.Length() - 1])
+                {
+                    str.Erase(str.Length() - 1, 1);
+                }
 
-            // There often is a newline char at the end
-            if (mOSVersion.back() == '\n')
-                mOSVersion.pop_back();
-
-            break;
+                mOSVersion = std::move(str);
+                break;
+            }
         }
     }
 
     struct utsname ver;
     uname(&ver);
 
-    if (mOSVersion.empty())
-        mOSVersion = std::string(ver.sysname);
-    mOSVersion += " Build: " + std::string(ver.release);
+    if (mOSVersion.Empty())
+        mOSVersion = ver.sysname;
+
+    mOSVersion += " Build: ";
+    mOSVersion + ver.release;
 }
 
 void SystemInfo::InitMemoryInfo()
@@ -65,7 +101,7 @@ void SystemInfo::InitMemoryInfo()
     /* TODO Implement checking total virtual memory for the current process
      * then we will be able to calculate the second one
      *     std:string line;
-     *     uint64_t memUsedVirtKb;
+     *     uint64 memUsedVirtKb;
      *     std::ifstream statmStream("/proc/self/statm");
      *     std::getline(statmStream, line);
      *     sscanf(line.c_str(), "%*s %ul", memUsedVirtKb);
@@ -77,7 +113,7 @@ void SystemInfo::InitMemoryInfo()
     mMemTotalVirtKb = 0;
     mMemFreeVirtKb = 0;
 
-    uint64_t memUnit = sysInfo.mem_unit;
+    uint64 memUnit = sysInfo.mem_unit;
 
     mMemTotalSwapKb = sysInfo.totalswap * memUnit;
     mMemTotalSwapKb /= MEMORY_BYTES_DIVISOR;
@@ -118,20 +154,20 @@ void SystemInfo::Cpuid(int cpuInfo[4], int function_id)
 #endif
 }
 
-uint64_t SystemInfo::Rdtsc()
+uint64 SystemInfo::Rdtsc()
 {
     unsigned int hi, lo;
     __asm__ volatile("rdtsc" : "=a" (lo), "=d" (hi));
-    return ((uint64_t)hi << 32) | lo;
+    return ((uint64)hi << 32) | lo;
 }
 
-uint64_t SystemInfo::GetFreeMemoryKb()
+uint64 SystemInfo::GetFreeMemoryKb()
 {
     //get RAM info
     struct sysinfo sysInfo;
     sysinfo(&sysInfo);
 
-    uint64_t memUnit = sysInfo.mem_unit;
+    uint64 memUnit = sysInfo.mem_unit;
 
     mMemFreeSwapKb = sysInfo.freeswap * memUnit;
     mMemFreeSwapKb /= MEMORY_BYTES_DIVISOR;
@@ -142,7 +178,7 @@ uint64_t SystemInfo::GetFreeMemoryKb()
     /* TODO Implement checking total virtual memory for the current process
      * then we will be able to calculate the second one
      *     std:string line;
-     *     uint64_t memUsedVirtKb;
+     *     uint64 memUsedVirtKb;
      *     std::ifstream statmStream("/proc/self/statm");
      *     std::getline(statmStream, line);
      *     sscanf(line.c_str(), "%*s %ul", memUsedVirtKb);
@@ -156,24 +192,24 @@ uint64_t SystemInfo::GetFreeMemoryKb()
     return mMemFreeSwapKb + mMemFreePhysKb;
 }
 
-uint64_t SystemInfo::GetMemFreePhysKb()
+uint64 SystemInfo::GetMemFreePhysKb()
 {
     struct sysinfo sysInfo;
     sysinfo(&sysInfo);
 
-    uint64_t memUnit = sysInfo.mem_unit;
+    uint64 memUnit = sysInfo.mem_unit;
 
     mMemFreePhysKb = sysInfo.freeram * memUnit;
     mMemFreePhysKb /= MEMORY_BYTES_DIVISOR;
     return mMemFreePhysKb;
 }
 
-uint64_t SystemInfo::GetMemFreeVirtKb()
+uint64 SystemInfo::GetMemFreeVirtKb()
 {
     /* TODO Implement checking total virtual memory for the current process
      * then we will be able to calculate the second one
      *     std:string line;
-     *     uint64_t memUsedVirtKb;
+     *     uint64 memUsedVirtKb;
      *     std::ifstream statmStream("/proc/self/statm");
      *     std::getline(statmStream, line);
      *     sscanf(line.c_str(), "%*s %ul", memUsedVirtKb);
@@ -184,12 +220,12 @@ uint64_t SystemInfo::GetMemFreeVirtKb()
     return mMemFreeVirtKb;
 }
 
-uint64_t SystemInfo::GetMemFreeSwapKb()
+uint64 SystemInfo::GetMemFreeSwapKb()
 {
     struct sysinfo sysInfo;
     sysinfo(&sysInfo);
 
-    uint64_t memUnit = sysInfo.mem_unit;
+    uint64 memUnit = sysInfo.mem_unit;
 
     mMemFreeSwapKb = sysInfo.freeswap * memUnit;
     mMemFreeSwapKb /= MEMORY_BYTES_DIVISOR;

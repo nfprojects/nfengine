@@ -61,9 +61,13 @@ bool Buffer::UploadData(const BufferDesc& desc)
                                                                       nullptr,
                                                                       IID_PPV_ARGS(uploadBuffer.GetPtr())));
 
-    if (desc.debugName && !SetDebugName(uploadBuffer.Get(), desc.debugName + std::string("_UPLOAD")))
+    if (desc.debugName)
     {
-        NFE_LOG_WARNING("Failed to set debug name");
+        const Common::String debugName = desc.debugName + Common::String("_UPLOAD");
+        if (!SetDebugName(uploadBuffer.Get(), debugName))
+        {
+            NFE_LOG_WARNING("Failed to set debug name");
+        }
     }
 
     if (FAILED(hr))
@@ -194,7 +198,7 @@ bool Buffer::Init(const BufferDesc& desc)
     if (FAILED(hr))
         return false;
 
-    if (desc.debugName && !SetDebugName(mResource.Get(), desc.debugName))
+    if (desc.debugName && !SetDebugName(mResource.Get(), Common::StringView(desc.debugName)))
     {
         NFE_LOG_WARNING("Failed to set debug name");
     }

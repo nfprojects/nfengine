@@ -79,13 +79,13 @@ bool Material::OnLoad()
     NFE_LOG_INFO("Loading material '%s'...", mName);
 
     //get relative path
-    std::string path = g_CookedDataPath + "Materials/" + mName + ".json";
+    const Common::String path = g_CookedDataPath + "Materials/" + mName + ".json";
 
     // TODO: support for file in memory
-    FILE* pFile = fopen(path.c_str(), "r");
+    FILE* pFile = fopen(path.Str(), "r");
     if (pFile == NULL)
     {
-        NFE_LOG_ERROR("Failed to open file: %s", path.c_str());
+        NFE_LOG_ERROR("Failed to open file: %s", path.Str());
         return false;
     }
 

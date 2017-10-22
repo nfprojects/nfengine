@@ -1,5 +1,6 @@
 #include "PCH.hpp"
 #include "nfCommon/Image/Image.hpp"
+#include "nfCommon/Image/ImageType.hpp"
 #include "nfCommon/Utils/InputStream.hpp"
 #include "nfCommon/Utils/OutputStream.hpp"
 #include "nfCommon/FileSystem/FileSystem.hpp"
@@ -10,36 +11,36 @@ using namespace NFE;
 using namespace NFE::Common;
 
 namespace {
-const std::string TEST_IMAGES_PATH = "./nfEngine/TestResources/ImageSamples/";
-const std::string TEST_IMAGES_SAVEPATH = "./nfEngine/TestResources/ImageSamples/SaveTests/";
+const String TEST_IMAGES_PATH = "./nfEngine/TestResources/ImageSamples/";
+const String TEST_IMAGES_SAVEPATH = "./nfEngine/TestResources/ImageSamples/SaveTests/";
 const int TEXTURE_WIDTH = 16;
 const int TEXTURE_HEIGHT = 16;
 
-const std::string TEXTURE_DDS_BC1 = "textureBC1.dds";
-const std::string TEXTURE_DDS_BC2 = "textureBC2.dds";
-const std::string TEXTURE_DDS_BC3 = "textureBC3.dds";
-const std::string TEXTURE_DDS_BC4 = "textureBC4.dds";
-const std::string TEXTURE_DDS_BC5 = "textureBC5.dds";
-const std::string TEXTURE_DDS_BC6H = "textureBC6H.dds";
-const std::string TEXTURE_DDS_BC7 = "textureBC7.dds";
-const std::string TEXTURE_DDS_MM = "textureBC1_MM.dds";
+const String TEXTURE_DDS_BC1 = "textureBC1.dds";
+const String TEXTURE_DDS_BC2 = "textureBC2.dds";
+const String TEXTURE_DDS_BC3 = "textureBC3.dds";
+const String TEXTURE_DDS_BC4 = "textureBC4.dds";
+const String TEXTURE_DDS_BC5 = "textureBC5.dds";
+const String TEXTURE_DDS_BC6H = "textureBC6H.dds";
+const String TEXTURE_DDS_BC7 = "textureBC7.dds";
+const String TEXTURE_DDS_MM = "textureBC1_MM.dds";
 
-const std::string TEXTURE_JPG = "textureJPG.jpg";
+const String TEXTURE_JPG = "textureJPG.jpg";
 
-const std::string TEXTURE_BMP4 = "textureBMP4.bmp";
-const std::string TEXTURE_BMP8 = "textureBMP8.bmp";
-const std::string TEXTURE_BMP16ARGB = "textureBMP16ARGB.bmp";
-const std::string TEXTURE_BMP16XRGB = "textureBMP16XRGB.bmp";
-const std::string TEXTURE_BMP16RGB = "textureBMP16RGB.bmp";
-const std::string TEXTURE_BMP24 = "textureBMP24.bmp";
-const std::string TEXTURE_BMP32ARGB = "textureBMP32ARGB.bmp";
-const std::string TEXTURE_BMP32XRGB = "textureBMP32XRGB.bmp";
+const String TEXTURE_BMP4 = "textureBMP4.bmp";
+const String TEXTURE_BMP8 = "textureBMP8.bmp";
+const String TEXTURE_BMP16ARGB = "textureBMP16ARGB.bmp";
+const String TEXTURE_BMP16XRGB = "textureBMP16XRGB.bmp";
+const String TEXTURE_BMP16RGB = "textureBMP16RGB.bmp";
+const String TEXTURE_BMP24 = "textureBMP24.bmp";
+const String TEXTURE_BMP32ARGB = "textureBMP32ARGB.bmp";
+const String TEXTURE_BMP32XRGB = "textureBMP32XRGB.bmp";
 
-const std::string TEXTURE_PNG_RGB = "texturePNG_RGB.png";
-const std::string TEXTURE_PNG_RGBA = "texturePNG_RGBA.png";
-const std::string TEXTURE_PNG_RGBA_PALETTE = "texturePNG_RGBA_palette.png";
-const std::string TEXTURE_PNG_RGBA_INTERLACED = "texturePNG_RGBA_interlaced.png";
-const std::string TEXTURE_PNG_GA = "texturePNG_GA.png";
+const String TEXTURE_PNG_RGB = "texturePNG_RGB.png";
+const String TEXTURE_PNG_RGBA = "texturePNG_RGBA.png";
+const String TEXTURE_PNG_RGBA_PALETTE = "texturePNG_RGBA_palette.png";
+const String TEXTURE_PNG_RGBA_INTERLACED = "texturePNG_RGBA_interlaced.png";
+const String TEXTURE_PNG_GA = "texturePNG_GA.png";
 
 const int GRAYSCALE_R = 53;
 const int GRAYSCALE_B = 17;
@@ -94,7 +95,7 @@ protected:
     void LoadAssert(ImageFormat fmt)
     {
         // Add scoped trace, to give information where exactly the error occured
-        SCOPED_TRACE("Loading " + std::string(FormatToStr(fmt)));
+        SCOPED_TRACE(("Loading " + String(FormatToStr(fmt))).Str());
 
         ASSERT_TRUE(mImage->Load(mImageFile.get()));
         ASSERT_EQ(fmt, mImage->GetFormat());
@@ -118,7 +119,7 @@ protected:
         for (auto i : SUPPORTED_CONVERSION_FORMATS_NON_BC)
         {
             // Add scoped trace, to give information where exactly the error occured
-            SCOPED_TRACE("Conversion to " + std::string(FormatToStr(i)));
+            SCOPED_TRACE(("Conversion to " + String(FormatToStr(i))).Str());
 
             Image imageToConvert(*mImage.get());
 
@@ -132,7 +133,7 @@ protected:
         for (auto i : SUPPORTED_CONVERSION_FORMATS_BC)
         {
             // Add scoped trace, to give information where exactly the error occured
-            SCOPED_TRACE("Conversion to " + std::string(FormatToStr(i)));
+            SCOPED_TRACE(("Conversion to " + String(FormatToStr(i))).Str());
 
             Image imageToConvert(*mImage.get());
 
@@ -436,7 +437,7 @@ TEST_F(ImageTest, GenerateMipmaps)
 
     // Successfully loaded picture
     mImage->Release();
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_JPG).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_JPG)));
     ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGB_UByte));
     ASSERT_TRUE(mImage->GenerateMipmaps(MipmapFilter::Box, TEST_DATA_MAX_MIPMAP_NUM));
     ASSERT_EQ(TEST_DATA_MAX_MIPMAP_NUM + 1, mImage->GetMipmapsNum());
@@ -462,24 +463,27 @@ TEST_F(ImageTest, Release)
 TEST_F(ImageTest, LoadJPG)
 {
     FillTestImage(ImageFormat::RGB_UByte);
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_JPG).data()));
+    mImageFile.reset(new FileInputStream(TEST_IMAGES_PATH + TEXTURE_JPG));
     LoadCheck(ImageFormat::RGB_UByte);
 }
 
 TEST_F(ImageTest, SaveJPG)
 {
     FillTestImage(ImageFormat::RGB_UByte);
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_JPG).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_JPG)));
     LoadCheck(ImageFormat::RGB_UByte);
 
     {
-        FileOutputStream outFile((TEST_IMAGES_SAVEPATH + TEXTURE_JPG + "_saved.jpg").data());
-        ASSERT_FALSE(ImageType::GetImageType("JPG")->Save(mImage.get(), &outFile));
+        auto imageType = ImageType::GetImageType(StringView("JPG"));
+        ASSERT_NE(nullptr, imageType.Get());
+
+        FileOutputStream outFile((TEST_IMAGES_SAVEPATH + TEXTURE_JPG + "_saved.jpg"));
+        ASSERT_FALSE(imageType->Save(mImage.get(), &outFile));
         ASSERT_TRUE(mImage->Convert(ImageFormat::RGBA_UByte));
-        ASSERT_TRUE(ImageType::GetImageType("JPG")->Save(mImage.get(), &outFile));
+        ASSERT_TRUE(imageType->Save(mImage.get(), &outFile));
     }
 
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_SAVEPATH + TEXTURE_JPG + "_saved.jpg").data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_SAVEPATH + TEXTURE_JPG + "_saved.jpg")));
     LoadCheck(ImageFormat::RGB_UByte);
 }
 
@@ -487,20 +491,20 @@ TEST_F(ImageTest, LoadPNG)
 {
     FillTestImage(ImageFormat::RGB_UByte);
 
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGB).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGB)));
     LoadCheck(ImageFormat::RGB_UByte);
 
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA)));
     LoadCheck(ImageFormat::RGBA_UByte);
 
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA_PALETTE).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA_PALETTE)));
     LoadCheck(ImageFormat::RGB_UByte);
 
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA_INTERLACED).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA_INTERLACED)));
     LoadCheck(ImageFormat::RGBA_UByte);
 
     // When loading grayscale PNG, convert testImage just before checking texels
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_GA).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_GA)));
     LoadAssert(ImageFormat::RGBA_UByte);
     ASSERT_TRUE(mTestImageRGB->Grayscale());
     CheckTexels(mImage.get());
@@ -511,69 +515,69 @@ TEST_F(ImageTest, LoadBMP)
     FillTestImage(ImageFormat::RGB_UByte);
 
     // 4bpp
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP4).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP4)));
     LoadCheck(ImageFormat::RGBA_UByte);
 
     // 8bpp
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP8).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP8)));
     LoadCheck(ImageFormat::RGBA_UByte);
 
     // 16bpp
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16ARGB).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16ARGB)));
     LoadCheck(ImageFormat::RGBA_UByte);
 
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16XRGB).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16XRGB)));
     LoadCheck(ImageFormat::RGBA_UByte);
 
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16RGB).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16RGB)));
     LoadCheck(ImageFormat::RGBA_UByte);
 
     // 24bpp
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP24).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP24)));
     LoadCheck(ImageFormat::RGBA_UByte);
 
     // 32bpp
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP32ARGB).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP32ARGB)));
     LoadCheck(ImageFormat::RGBA_UByte);
 
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP32XRGB).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP32XRGB)));
     LoadCheck(ImageFormat::RGBA_UByte);
 }
 
 TEST_F(ImageTest, LoadDDS)
 {
     // BC1
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC1).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC1)));
     LoadAssert(ImageFormat::BC1);
 
     // BC2
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC2).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC2)));
     LoadAssert(ImageFormat::BC2);
 
     // BC3
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC3).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC3)));
     LoadAssert(ImageFormat::BC3);
 
     // BC4
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC4).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC4)));
     LoadAssert(ImageFormat::BC4);
 
     // BC5
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC5).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC5)));
     LoadAssert(ImageFormat::BC5);
 
     /* TODO Enable, when BC6H and BC7 support is implemented
     // BC6H
-    mImageFile.reset(new FileInputStream(TEXTURE_DDS_BC6H.data()));
+    mImageFile.reset(new FileInputStream(TEXTURE_DDS_BC6H));
     LoadAssert(ImageFormat::BC6H);
 
     // BC7
-    mImageFile.reset(new FileInputStream(TEXTURE_DDS_BC7.data()));
+    mImageFile.reset(new FileInputStream(TEXTURE_DDS_BC7));
     LoadAssert(ImageFormat::BC7);
     */
 
     // DDS format with mipmaps
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_MM).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_MM)));
     LoadAssert(ImageFormat::BC1);
     ASSERT_EQ(5, mImage->GetMipmapsNum());
 }
@@ -593,7 +597,7 @@ TEST_F(ImageTest, ConvertJPG)
     FillTestImage(ImageFormat::A_UByte);
     FillTestImage(ImageFormat::R_UByte);
 
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_JPG).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_JPG)));
     ConvertAssert();
 }
 
@@ -603,16 +607,16 @@ TEST_F(ImageTest, ConvertPNG)
     FillTestImage(ImageFormat::A_UByte);
     FillTestImage(ImageFormat::R_UByte);
 
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGB).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGB)));
     ConvertAssert();
 
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA)));
     ConvertAssert();
 
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA_PALETTE).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA_PALETTE)));
     ConvertAssert();
 
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA_INTERLACED).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_PNG_RGBA_INTERLACED)));
     ConvertAssert();
 }
 
@@ -623,24 +627,24 @@ TEST_F(ImageTest, ConvertBMP)
     FillTestImage(ImageFormat::R_UByte);
 
     // 16bpp
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16ARGB).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16ARGB)));
     ConvertAssert();
 
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16XRGB).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16XRGB)));
     ConvertAssert();
 
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16RGB).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP16RGB)));
     ConvertAssert();
 
     // 24bpp
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP24).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP24)));
     ConvertAssert();
 
     // 32bpp
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP32ARGB).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP32ARGB)));
     ConvertAssert();
 
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP32XRGB).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_BMP32XRGB)));
     ConvertAssert();
 }
 
@@ -651,39 +655,39 @@ TEST_F(ImageTest, ConvertDDS)
     FillTestImage(ImageFormat::R_UByte);
 
     // BC1
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC1).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC1)));
     ConvertAssert();
 
     // BC2
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC2).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC2)));
     ConvertAssert();
 
     // BC3
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC3).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC3)));
     ConvertAssert();
 
     /* TODO Enable, when BC4 - BC7 support is implemented
     // BC4
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC4).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC4)));
     ConvertAssert();
 
     // BC5
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC5).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC5)));
     ConvertAssert();
 
     // BC6H
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC6H).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC6H)));
     ConvertAssert();
 
     // BC7
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC7).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_BC7)));
     ConvertAssert();
     */
 }
 
 TEST_F(ImageTest, ConvertErrors)
 {
-    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_JPG).data()));
+    mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_JPG)));
     ASSERT_NO_FATAL_FAILURE(LoadAssert(ImageFormat::RGB_UByte));
 
     // Conversion to unknown format

@@ -21,7 +21,7 @@ File::File()
 {
 }
 
-File::File(const std::string& path, AccessMode mode, bool overwrite)
+File::File(const String& path, AccessMode mode, bool overwrite)
     : mFD(INVALID_FD)
     , mMode (AccessMode::No)
 {
@@ -47,7 +47,7 @@ bool File::IsOpened() const
 }
 
 // TODO: access sharing flags
-bool File::Open(const std::string& path, AccessMode access, bool overwrite)
+bool File::Open(const String& path, AccessMode access, bool overwrite)
 {
     Close();
 
@@ -77,11 +77,11 @@ bool File::Open(const std::string& path, AccessMode access, bool overwrite)
             flags |= O_TRUNC;
     }
 
-    mFD = ::open(path.c_str(), flags, 0644);
+    mFD = ::open(path.Str(), flags, 0644);
 
     if (mFD == -1)
     {
-        NFE_LOG_ERROR("Failed to open file '%s': %s", path.c_str(), strerror(errno));
+        NFE_LOG_ERROR("Failed to open file '%s': %s", path.Str(), strerror(errno));
         mMode = AccessMode::No;
         return false;
     }

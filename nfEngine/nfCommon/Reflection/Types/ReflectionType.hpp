@@ -119,6 +119,7 @@ public:
     template<typename T>
     T* CreateObject() const
     {
+        NFE_ASSERT(mConstructor, "Cannot create an object of type '%s'", GetName());
         return reinterpret_cast<T*>(CreateRawObject());
     }
 

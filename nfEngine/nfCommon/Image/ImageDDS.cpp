@@ -12,6 +12,10 @@
 #include "Utils/InputStream.hpp"
 
 
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Common::ImageDDS)
+    NFE_CLASS_PARENT(NFE::Common::ImageType)
+NFE_END_DEFINE_CLASS()
+
 #define DDS_MAGIC_NUMBER    0x20534444
 
 #define DDSD_CAPS   0x1
@@ -215,10 +219,15 @@ static ImageFormat DDSGetFormat(const DDS_PIXELFORMAT& ddpf)
     return ImageFormat::Unknown;
 }
 
-}
+} // namespace
 
-// Register DDS image type
-bool gImageDDSRegistered = ImageType::RegisterImageType("DDS", std::make_unique<ImageDDS>());
+//////////////////////////////////////////////////////////////////////////
+
+StringView ImageDDS::GetName() const
+{
+    const StringView name("DDS");
+    return name;
+}
 
 bool ImageDDS::Check(InputStream* stream)
 {
@@ -258,7 +267,7 @@ bool ImageDDS::Load(Image* img, InputStream* stream)
     if (format == ImageFormat::Unknown)
         return false;
 
-    std::vector<Mipmap> mipmaps;
+    DynArray<Mipmap> mipmaps;
     for (int i = 0; i < numMipmaps; i++)
     {
         //keep mipmap size > 0
@@ -281,24 +290,19 @@ bool ImageDDS::Load(Image* img, InputStream* stream)
             return false;
         }
 
-        mipmaps.emplace_back(mipmapData.get(), width, height, dataSize);
+        mipmaps.PushBack(Mipmap(mipmapData.get(), width, height, dataSize));
 
         width /= 2;
         height /= 2;
     }
 
-    // Set basic vars like width, height format and first mipmap
-    bool result = img->SetData(mipmaps.begin()->GetData(), initWidth, initHeight, format);
-
-    // Fill in the remaining mipmaps if they exist
-    if (mipmaps.size() > 1)
-        GetMipmaps(img)->assign(mipmaps.begin(), mipmaps.end());
-
-    return result;
+    return img->SetData(std::move(mipmaps), initWidth, initHeight, format);
 }
 
 bool ImageDDS::Save(Image*, OutputStream*)
 {
+    // TODO implement
+
     return false;
 }
 

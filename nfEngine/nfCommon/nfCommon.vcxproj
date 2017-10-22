@@ -228,6 +228,7 @@
     <ClCompile Include="Math\Transform.cpp" />
     <ClCompile Include="Memory\Buffer.cpp" />
     <ClCompile Include="Memory\DefaultAllocator.cpp" />
+    <ClCompile Include="nfCommon.cpp" />
     <ClCompile Include="Packer\PackerDefines.cpp" />
     <ClCompile Include="Packer\PackerReader.cpp" />
     <ClCompile Include="Packer\PackerResource.cpp" />
