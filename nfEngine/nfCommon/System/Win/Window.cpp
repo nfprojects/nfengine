@@ -101,9 +101,11 @@ void Window::SetTitle(const char* title)
     mTitle = title;
     if (!mClosed)
     {
-        std::wstring wideTitle;
-        if (UTF8ToUTF16(title, wideTitle))
+        Utf16String wideTitle;
+        if (UTF8ToUTF16(StringView(title), wideTitle))
+        {
             SetWindowText(mHandle, wideTitle.c_str());
+        }
     }
 }
 
@@ -193,9 +195,11 @@ bool Window::Open()
 {
     if (!mClosed)
         return false;
-    std::wstring wideTitle;
+
+    Utf16String wideTitle;
     if(!UTF8ToUTF16(mTitle, wideTitle))
         return false;
+
     if (mFullscreen)
     {
         mHandle = CreateWindowEx(gFullscreenExStyle, mWndClass, wideTitle.c_str(),

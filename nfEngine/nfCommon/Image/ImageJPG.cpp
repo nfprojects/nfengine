@@ -65,7 +65,7 @@ public:
 } // namespace
 
 // Register JPG image type
-bool gImageJPGRegistered = ImageType::RegisterImageType("JPG", std::make_unique<ImageJPG>());
+bool gImageJPGRegistered = ImageType::RegisterImageType(StringView("JPG"), MakeUniquePtr<ImageJPG>());
 
 bool ImageJPG::Check(InputStream* stream)
 {

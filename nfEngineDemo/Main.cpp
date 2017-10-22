@@ -185,8 +185,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 {
     using namespace NFE;
 
-    std::string execPath = Common::FileSystem::GetExecutablePath();
-    std::string execDir = Common::FileSystem::GetParentDir(execPath);
+    const Common::String execPath = Common::FileSystem::GetExecutablePath();
+    const Common::String execDir = Common::FileSystem::GetParentDir(execPath);
     Common::FileSystem::ChangeDirectory(execDir + "/../../..");
 
     // initialize engine

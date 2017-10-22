@@ -20,13 +20,13 @@ PackerResult PackerResource::SaveHeader(File& file)
     if (!file.Write(reinterpret_cast<const void*>(&mHash), 4 * sizeof(uint32)))
         return PackerResult::WriteFailed;
 
-    if (!file.Write(reinterpret_cast<const void*>(&mFileSize), sizeof(size_t)))
+    if (!file.Write(reinterpret_cast<const void*>(&mFileSize), sizeof(uint32)))
         return PackerResult::WriteFailed;
 
     return PackerResult::OK;
 }
 
-size_t PackerResource::GetFileSize() const
+uint32 PackerResource::GetFileSize() const
 {
     return mFileSize;
 }

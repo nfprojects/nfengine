@@ -39,23 +39,23 @@ struct PixelCBuffer
 
 bool TessellationScene::LoadShaders()
 {
-    std::string vsPath = gShaderPathPrefix + "TessellationVS" + gShaderPathExt;
-    mVertexShader = CompileShader(vsPath.c_str(), ShaderType::Vertex, nullptr, 0);
+    const Common::String vsPath = gShaderPathPrefix + "TessellationVS" + gShaderPathExt;
+    mVertexShader = CompileShader(vsPath.Str(), ShaderType::Vertex, nullptr, 0);
     if (!mVertexShader)
         return false;
 
-    std::string hsPath = gShaderPathPrefix + "TessellationHS" + gShaderPathExt;
-    mHullShader = CompileShader(hsPath.c_str(), ShaderType::Hull, nullptr, 0);
+    const Common::String hsPath = gShaderPathPrefix + "TessellationHS" + gShaderPathExt;
+    mHullShader = CompileShader(hsPath.Str(), ShaderType::Hull, nullptr, 0);
     if (!mHullShader)
         return false;
 
-    std::string dsPath = gShaderPathPrefix + "TessellationDS" + gShaderPathExt;
-    mDomainShader = CompileShader(dsPath.c_str(), ShaderType::Domain, nullptr, 0);
+    const Common::String dsPath = gShaderPathPrefix + "TessellationDS" + gShaderPathExt;
+    mDomainShader = CompileShader(dsPath.Str(), ShaderType::Domain, nullptr, 0);
     if (!mDomainShader)
         return false;
 
-    std::string psPath = gShaderPathPrefix + "TessellationPS" + gShaderPathExt;
-    mPixelShader = CompileShader(psPath.c_str(), ShaderType::Pixel, nullptr, 0);
+    const Common::String psPath = gShaderPathPrefix + "TessellationPS" + gShaderPathExt;
+    mPixelShader = CompileShader(psPath.Str(), ShaderType::Pixel, nullptr, 0);
     if (!mPixelShader)
         return false;
 

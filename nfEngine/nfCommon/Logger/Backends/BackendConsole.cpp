@@ -14,7 +14,7 @@ namespace NFE {
 namespace Common {
 
 // Register Console backend
-bool gLoggerBackendConsoleRegistered = Logger::RegisterBackend("Console", std::make_unique<LoggerBackendConsole>());
+bool gLoggerBackendConsoleRegistered = Logger::RegisterBackend(StringView("Console"), MakeUniquePtr<LoggerBackendConsole>());
 
 namespace {
 

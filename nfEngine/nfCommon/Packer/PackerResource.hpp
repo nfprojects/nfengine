@@ -8,8 +8,8 @@
 
 #include "PackerDefines.hpp"
 #include "../Utils/MD5.hpp"
-
-#include <memory>
+#include "../Containers/DynArray.hpp"
+#include "../Containers/SharedPtr.hpp"
 
 
 namespace NFE {
@@ -24,15 +24,15 @@ public:
 
     PackerResult SaveHeader(File& file);
 
-    size_t GetFileSize() const;
+    uint32 GetFileSize() const;
     void PrintToStdout() const;
 
 protected:
     MD5Hash mHash;
-    size_t mFileSize;
+    uint32 mFileSize;
 };
 
-typedef std::vector<std::shared_ptr<PackerResource>> ResourceListType;
+typedef DynArray<SharedPtr<PackerResource>> ResourceListType;
 
 } // namespace Common
 } // namespace NFE

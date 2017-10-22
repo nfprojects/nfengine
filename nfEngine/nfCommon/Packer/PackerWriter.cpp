@@ -12,24 +12,24 @@ namespace NFE {
 namespace Common {
 
 PackerWriter::PackerWriter() {}
-PackerWriter::PackerWriter(const std::string& archiveName)
+PackerWriter::PackerWriter(StringView archiveName)
 {
     Init(archiveName);
 }
 
-PackerResult PackerWriter::Init(const std::string& archiveName)
+PackerResult PackerWriter::Init(StringView archiveName)
 {
-    if (archiveName.empty())
+    if (archiveName.Empty())
         return PackerResult::InvalidInputParam;
 
-    if (!mFilePath.empty())
+    if (!mFilePath.Empty())
         return PackerResult::AlreadyInitialized;
 
     mFilePath = archiveName;
     return PackerResult::OK;
 }
 
-PackerResult PackerWriter::AddFile(const std::string& filePath, const std::string& vfsFilePath)
+PackerResult PackerWriter::AddFile(StringView filePath, StringView vfsFilePath)
 {
     PackerResourceFile* resource = new PackerResourceFile();
 
@@ -40,12 +40,12 @@ PackerResult PackerWriter::AddFile(const std::string& filePath, const std::strin
         return pr;
     }
 
-    mFileList.emplace_back(std::shared_ptr<PackerResource>(resource));
+    mFileList.PushBack(SharedPtr<PackerResource>(resource));
 
     return PackerResult::OK;
 }
 
-PackerResult PackerWriter::AddFile(const Buffer& /*buffer*/, const std::string& /*vfsFilePath*/)
+PackerResult PackerWriter::AddFile(const Buffer& /*buffer*/, StringView /*vfsFilePath*/)
 {
     // TODO implement after editing PackerElement (see PackerElement.hpp@15).
     //      To prevent usage of this function, Uninitialized error is returned
@@ -53,21 +53,18 @@ PackerResult PackerWriter::AddFile(const Buffer& /*buffer*/, const std::string& 
     return PackerResult::Uninitialized;
 }
 
-PackerResult PackerWriter::AddFilesRecursively(const std::string& filePath)
+PackerResult PackerWriter::AddFilesRecursively(StringView filePath)
 {
     PackerResult pr;
     uint64 counter = 0;
 
-    auto recursiveAddLambda = [&](const std::string& path, bool isDirectory) -> bool
+    auto recursiveAddLambda = [&](const String& path, PathType type) -> bool
     {
-        if (!isDirectory)
+        if (type == PathType::File)
         {
             pr = AddFile(path, path);
             ++counter;
-
-            if (pr != PackerResult::OK)
-                return false;
-            return true;
+            return pr == PackerResult::OK;
         }
         return true;
     };
@@ -89,23 +86,23 @@ PackerResult PackerWriter::WritePAK() const
         return PackerResult::WriteFailed;
 
     //save number of files
-    size_t fileSize = mFileList.size();
-    if (!file.Write(reinterpret_cast<void*>(&fileSize), sizeof(size_t)))
+    uint32 fileSize = mFileList.Size();
+    if (!file.Write(reinterpret_cast<void*>(&fileSize), sizeof(uint32)))
         return PackerResult::WriteFailed;
 
     // Position of first file in archive, calculated as follows
     //   header_size             = version<uint32> + file_table_element_count<size_t>
     //   file_table_element_size = current_pos<size_t> + hash<MD5Hash> + file_size<size_t>
     //   curFilePos              = header_size + file_table_element_size * element_count
-    size_t curFilePos = sizeof(uint32) + sizeof(size_t) +
-                        (sizeof(size_t) + sizeof(MD5Hash) + sizeof(size_t)) * mFileList.size();
+    size_t curFilePos = sizeof(uint32) + sizeof(uint32) +
+                        (sizeof(uint64) + sizeof(MD5Hash) + sizeof(uint32)) * mFileList.Size();
 
     PackerResult pr;
 
     //save file list
     for (const auto& it : mFileList)
     {
-        if (!file.Write(reinterpret_cast<const void*>(&curFilePos), sizeof(size_t)))
+        if (!file.Write(reinterpret_cast<const void*>(&curFilePos), sizeof(uint64)))
             return PackerResult::WriteFailed;
 
         pr = it->SaveHeader(file);
@@ -137,12 +134,12 @@ const ResourceListType& PackerWriter::GetFiles() const
     return mFileList;
 }
 
-size_t PackerWriter::GetFileCount() const
+uint32 PackerWriter::GetFileCount() const
 {
-    return mFileList.size();
+    return mFileList.Size();
 }
 
-const std::string& PackerWriter::GetPAKName() const
+const String& PackerWriter::GetPAKName() const
 {
     return mFilePath;
 }

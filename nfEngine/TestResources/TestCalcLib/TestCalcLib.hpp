@@ -13,6 +13,8 @@
 #define TESTCALCDLL_API __declspec(dllimport)
 #endif // TESTCALCDLL_EXPORTS
 
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 #include <Windows.h>
 #elif defined(__LINUX__) | defined(__linux__)
 #define TESTCALCDLL_API

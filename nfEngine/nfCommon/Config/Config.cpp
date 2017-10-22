@@ -9,8 +9,8 @@
 #include "ConfigValue.hpp"
 #include "ConfigTokenizer.hpp"
 #include "Logger/Logger.hpp"
+#include "Utils/StringUtils.hpp"
 
-#include <sstream>
 #include <string.h>
 
 
@@ -25,9 +25,9 @@ Config::Config()
 void Config::Clear()
 {
     mRootNode = INVALID_NODE_PTR;
-    mValues.clear();
-    mObjectNodes.clear();
-    mArrayNodes.clear();
+    mValues.Clear();
+    mObjectNodes.Clear();
+    mArrayNodes.Clear();
 }
 
 void Config::SetRoot(const ConfigObject& rootObject)
@@ -37,22 +37,22 @@ void Config::SetRoot(const ConfigObject& rootObject)
 
 ConfigValuePtr Config::AllocateValue()
 {
-    ConfigValuePtr ptr = static_cast<ConfigValuePtr>(mValues.size());
-    mValues.push_back(ConfigValue());
+    ConfigValuePtr ptr = static_cast<ConfigValuePtr>(mValues.Size());
+    mValues.PushBack(ConfigValue());
     return ptr;
 }
 
 ConfigObjectNodePtr Config::AllocateObjectNode()
 {
-    ConfigObjectNodePtr nodePtr = static_cast<ConfigObjectNodePtr>(mObjectNodes.size());
-    mObjectNodes.push_back(ConfigObjectNode());
+    ConfigObjectNodePtr nodePtr = static_cast<ConfigObjectNodePtr>(mObjectNodes.Size());
+    mObjectNodes.PushBack(ConfigObjectNode());
     return nodePtr;
 }
 
 ConfigArrayNodePtr Config::AllocateArrayNode()
 {
-    ConfigArrayNodePtr nodePtr = static_cast<ConfigArrayNodePtr>(mArrayNodes.size());
-    mArrayNodes.push_back(ConfigArrayNode());
+    ConfigArrayNodePtr nodePtr = static_cast<ConfigArrayNodePtr>(mArrayNodes.Size());
+    mArrayNodes.PushBack(ConfigArrayNode());
     return nodePtr;
 }
 
@@ -96,9 +96,9 @@ Config& Config::AddValue(ConfigArray& configArray, const ConfigValue& val)
 bool Config::Parse(const char* string)
 {
     size_t strLength = strlen(string) + 1;
-    mStringCopy.reset(new char[strLength]);
-    memcpy(mStringCopy.get(), string, strLength);
-    return ParseInPlace(mStringCopy.get());
+    mStringCopy.Reset(new char[strLength]);
+    memcpy(mStringCopy.Get(), string, strLength);
+    return ParseInPlace(mStringCopy.Get());
 }
 
 bool Config::ParseValue(ConfigTokenizer& tokenizer, const Token& token, ConfigValue& value)
@@ -240,7 +240,7 @@ void Config::Iterate(const ObjectIterator& callback, ConfigObjectNodePtr node) c
 {
     if (node == INVALID_NODE_PTR)
         node = GetRootNode();
-    else if (node >= mObjectNodes.size())
+    else if (node >= mObjectNodes.Size())
     {
         NFE_LOG_ERROR("Invalid 'node'");
         return;
@@ -257,7 +257,7 @@ void Config::Iterate(const ObjectIterator& callback, ConfigObjectNodePtr node) c
 
 void Config::IterateArray(const ArrayIterator& callback, ConfigArrayNodePtr node) const
 {
-    if (node >= mArrayNodes.size())
+    if (node >= mArrayNodes.Size())
     {
         NFE_LOG_ERROR("Invalid 'node'");
         return;
@@ -275,11 +275,8 @@ void Config::IterateArray(const ArrayIterator& callback, ConfigArrayNodePtr node
 
 const char* INDENT = "  ";
 
-void Config::ValueToString(std::stringstream& out, ConfigValuePtr valuePtr, int indent) const
+void Config::ValueToString(String& out, ConfigValuePtr valuePtr, int indent) const
 {
-    // TODO: this stringstream implementation is quite slow (it's slower than parsing),
-    //       consider optimization
-
     const ConfigValue& value = mValues[valuePtr];
 
     int nextLevelIndent = indent >= 0 ? (indent + 1) : indent;
@@ -288,101 +285,117 @@ void Config::ValueToString(std::stringstream& out, ConfigValuePtr valuePtr, int 
     switch (value.type)
     {
     case ConfigValue::Type::Bool:
-        out << SPACING << (value.boolData ? "true" : "false");
+        out += SPACING;
+        out += (value.boolData ? "true" : "false");
         break;
     case ConfigValue::Type::Int8:
-        out << SPACING << static_cast<int32>(value.intData8);
+        out += SPACING;
+        out += Common::ToString(static_cast<int32>(value.intData8));
         break;
     case ConfigValue::Type::Uint8:
-        out << SPACING << static_cast<uint32>(value.uintData8);
+        out += SPACING;
+        out += Common::ToString(static_cast<uint32>(value.uintData8));
         break;
     case ConfigValue::Type::Int16:
-        out << SPACING << value.intData16;
+        out += SPACING;
+        out += Common::ToString(value.intData16);
         break;
     case ConfigValue::Type::Uint16:
-        out << SPACING << value.uintData16;
+        out += SPACING;
+        out += Common::ToString(value.uintData16);
         break;
     case ConfigValue::Type::Int32:
-        out << SPACING << value.intData32;
+        out += SPACING;
+        out += Common::ToString(value.intData32);
         break;
     case ConfigValue::Type::Uint32:
-        out << SPACING << value.uintData32;
+        out += SPACING;
+        out += Common::ToString(value.uintData32);
         break;
     case ConfigValue::Type::Int64:
-        out << SPACING << value.intData64;
+        out += SPACING;
+        out += Common::ToString(value.intData64);
         break;
     case ConfigValue::Type::Uint64:
-        out << SPACING << value.uintData64;
+        out += SPACING;
+        out += Common::ToString(value.uintData64);
         break;
     case ConfigValue::Type::Float:
-        out << SPACING << value.floatData;
+        out += SPACING;
+        out += Common::ToString(value.floatData);
         break;
     case ConfigValue::Type::Double:
-        out << SPACING << value.doubleData;
+        out += SPACING;
+        out += Common::ToString(value.doubleData);
         break;
     case ConfigValue::Type::String:
-        out << SPACING << '"' << value.stringData << '"';
+        out += SPACING;
+        out += '\"';
+        out += value.stringData;
+        out += '\"';
         break;
     case ConfigValue::Type::Object:
         if (indent >= 0)
-            out << '\n';
+            out += '\n';
         for (int i = 0; i < indent; ++i)
-            out << INDENT;
-        out << '{';
+            out += INDENT;
+        out += '{';
         if (indent >= 0)
-            out << '\n';
+            out += '\n';
         ObjectToString(out, value.object, nextLevelIndent);
         for (int i = 0; i < indent; ++i)
-            out << INDENT;
-        out << '}';
+            out += INDENT;
+        out += '}';
         break;
     case ConfigValue::Type::Array:
+    {
+        out += SPACING;
+        out += '[';
+        ConfigArrayNodePtr arrayNodePtr = value.array;
+        while (arrayNodePtr != INVALID_NODE_PTR)
         {
-            out << SPACING << '[';
-            ConfigArrayNodePtr arrayNodePtr = value.array;
-            while (arrayNodePtr != INVALID_NODE_PTR)
-            {
-                const ConfigArrayNode& arrayNode = mArrayNodes[arrayNodePtr];
-                ValueToString(out, arrayNode.valuePtr, nextLevelIndent);
-                arrayNodePtr = arrayNode.next;
-                if (indent < 0 && arrayNodePtr != INVALID_NODE_PTR)
-                    out << ' ';
-            }
-            out << SPACING << ']';
-            break;
+            const ConfigArrayNode& arrayNode = mArrayNodes[arrayNodePtr];
+            ValueToString(out, arrayNode.valuePtr, nextLevelIndent);
+            arrayNodePtr = arrayNode.next;
+            if (indent < 0 && arrayNodePtr != INVALID_NODE_PTR)
+                out += ' ';
         }
+        out += SPACING;
+        out += ']';
+        break;
+    }
     default:
-        out << SPACING << "(Unknown)";
+        out += SPACING;
+        out += "(Unknown)";
         break;
     }
 }
 
-void Config::ObjectToString(std::stringstream& out, ConfigObjectNodePtr objectPtr,
-                            int indent) const
+void Config::ObjectToString(String& out, ConfigObjectNodePtr objectPtr, int indent) const
 {
     while (objectPtr != INVALID_NODE_PTR)
     {
         for (int i = 0; i < indent; ++i)
-            out << INDENT;
+            out += INDENT;
 
         const ConfigObjectNode& objectNode = mObjectNodes[objectPtr];
-        out << objectNode.name;
-        out << (indent >= 0 ? " =" : "=");
+        out += objectNode.name;
+        out += (indent >= 0 ? " =" : "=");
         ValueToString(out, objectNode.valuePtr, indent);
         objectPtr = objectNode.next;
 
         if (indent >= 0)
-            out << '\n';
+            out += '\n';
         else if (objectPtr != INVALID_NODE_PTR)
-            out << ' ';
+            out += ' ';
     }
 }
 
-std::string Config::ToString(bool format) const
+String Config::ToString(bool format) const
 {
-    std::stringstream stringStream;
-    ObjectToString(stringStream, GetRootNode(), format ? 0 : -1);
-    return stringStream.str();
+    String str;
+    ObjectToString(str, GetRootNode(), format ? 0 : -1);
+    return str;
 }
 
 

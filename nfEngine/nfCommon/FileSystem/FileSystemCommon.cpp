@@ -10,21 +10,43 @@
 namespace NFE {
 namespace Common {
 
-std::string FileSystem::GetParentDir(const std::string& path)
+
+StringView FileSystem::GetParentDir(const StringView path)
 {
-    size_t found = path.find_last_of("/\\");
-    return path.substr(0, found);
+    uint32 index = path.FindLast('/');
+    if (index == std::numeric_limits<uint32>::max())
+    {
+        index = path.FindLast('\\');
+    }
+
+    if (index != std::numeric_limits<uint32>::max())
+    {
+        return path.Range(0, index);
+    }
+
+    // path separator not found
+    return StringView();
 }
 
-std::string FileSystem::ExtractExtension(const std::string& path)
+StringView FileSystem::ExtractExtension(const StringView path)
 {
-    return path.substr(path.find_last_of('.') + 1);
+    const uint32 index = path.FindLast('.');
+    if (index != std::numeric_limits<uint32>::max())
+    {
+        return path.Range(index, path.Length() - index);
+    }
+
+    // extension not found
+    return StringView();
 }
 
-bool FileSystem::CreateDirIfNotExist(const std::string& path)
+bool FileSystem::CreateDirIfNotExist(const StringView path)
 {
     if (FileSystem::GetPathType(path) != PathType::Directory)
+    {
         return FileSystem::CreateDir(path);
+    }
+
     return true;
 }
 

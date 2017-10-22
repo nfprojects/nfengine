@@ -11,7 +11,7 @@
 #include "Logger/Logger.hpp"
 #include "Utils/BitUtils.hpp"
 #include "Utils/InputStream.hpp"
-
+#include "Containers/DynArray.hpp"
 
 namespace NFE {
 namespace Common {
@@ -80,12 +80,10 @@ struct RGBQuad
 };
 
 // Function to load color palette
-bool GetColorPalette(InputStream* stream, std::vector<RGBQuad>& palette)
+bool GetColorPalette(InputStream* stream, DynArray<RGBQuad>& palette)
 {
-    size_t sizeToRead = sizeof(RGBQuad) * palette.size();
-    stream->Read(palette.data(), sizeToRead);
-
-    return true;
+    size_t sizeToRead = sizeof(RGBQuad) * palette.Size();
+    return stream->Read(palette.Data(), sizeToRead) == sizeToRead;
 }
 
 // Function to read pixels for BMPs with >8bpp
@@ -199,7 +197,7 @@ bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
 // Function to read pixels for BMPs with <=8bpp (these contain color palette)
 bool ReadPixelsWithPalette(InputStream* stream, size_t offset, uint32 width,
                            uint32 height, uint8 bitsPerPixel, Image* img,
-                           std::vector<RGBQuad> &palette)
+                           DynArray<RGBQuad> &palette)
 {
     size_t dataSize = width * height * 4;
     uint8 colorsPerByte = 8 / bitsPerPixel;
@@ -255,7 +253,7 @@ bool ReadPixelsWithPalette(InputStream* stream, size_t offset, uint32 width,
 }
 
 // Register BMP image type
-bool gImageBMPRegistered = ImageType::RegisterImageType("BMP", std::make_unique<ImageBMP>());
+bool gImageBMPRegistered = ImageType::RegisterImageType(StringView("BMP"), MakeUniquePtr<ImageBMP>());
 
 bool ImageBMP::Check(InputStream* stream)
 {
@@ -276,7 +274,7 @@ bool ImageBMP::Load(Image* img, InputStream* stream)
 {
     BitmapFileHeader fileHeader;
     BitmapV5Header infoHeader;
-    std::vector<RGBQuad> palette;
+    DynArray<RGBQuad> palette;
 
     // Check for buffer too small
     if (stream->GetSize() < sizeof(BitmapFileHeader) + sizeof(BitmapV5Header))
@@ -315,7 +313,7 @@ bool ImageBMP::Load(Image* img, InputStream* stream)
         stream->Seek(paletteOffset);
 
         // Resize & fill the palette
-        palette.resize(infoHeader.clrUsed);
+        palette.Resize(infoHeader.clrUsed);
         if (!GetColorPalette(stream, palette))
         {
             NFE_LOG_ERROR("Palette could not be read");
