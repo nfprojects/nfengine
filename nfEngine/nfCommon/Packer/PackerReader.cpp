@@ -11,12 +11,12 @@ namespace NFE {
 namespace Common {
 
 PackerReader::PackerReader(): mFileVersion(0) {}
-PackerReader::PackerReader(const std::string& filePath): mFileVersion(0)
+PackerReader::PackerReader(const StringView filePath): mFileVersion(0)
 {
     Init(filePath);
 }
 
-PackerResult PackerReader::Init(const std::string& filePath)
+PackerResult PackerReader::Init(const StringView filePath)
 {
     mFilePath = filePath;
     File file(mFilePath, AccessMode::Read);
@@ -30,37 +30,37 @@ PackerResult PackerReader::Init(const std::string& filePath)
     if (!file.Read(&mFileVersion, sizeof(uint32)))
         return PackerResult::ReadFailed;
 
-    size_t fileSize = 0;
-    if (!file.Read(&fileSize, sizeof(size_t)))
+    uint32 numFiles = 0;
+    if (!file.Read(&numFiles, sizeof(uint32)))
         return PackerResult::ReadFailed;
 
     PackerElement tempElement;
-    for (size_t i = 0; i < fileSize; ++i)
+    for (uint32 i = 0; i < numFiles; ++i)
     {
-        if (!file.Read(reinterpret_cast<void*>(&tempElement.mFilePos), sizeof(size_t)))
+        if (!file.Read(&tempElement.mFilePos, sizeof(uint64)))
             return PackerResult::ReadFailed;
 
-        if (!file.Read(reinterpret_cast<void*>(&tempElement.mHash), 4 * sizeof(uint32)))
+        if (!file.Read(&tempElement.mHash, 4 * sizeof(uint32)))
             return PackerResult::ReadFailed;
 
-        if (!file.Read(reinterpret_cast<void*>(&tempElement.mFileSize), sizeof(size_t)))
+        if (!file.Read(&tempElement.mFileSize, sizeof(uint32)))
             return PackerResult::ReadFailed;
 
-        mFileList.push_back(tempElement);
+        mFileList.PushBack(tempElement);
     }
 
     return PackerResult::OK;
 }
 
-PackerResult PackerReader::GetFile(const std::string& vfsFilePath, Buffer& outputBuffer)
+PackerResult PackerReader::GetFile(const StringView vfsFilePath, Buffer& outputBuffer)
 {
-    if (mFileList.empty())
+    if (mFileList.Empty())
         return PackerResult::Uninitialized;
 
     MD5Hash searchHash;
     searchHash.Calculate(vfsFilePath);
 
-    for (size_t i = 0; i < mFileList.size(); ++i)
+    for (uint32 i = 0; i < mFileList.Size(); ++i)
     {
         if (searchHash == mFileList[i].mHash)
         {
@@ -68,7 +68,7 @@ PackerResult PackerReader::GetFile(const std::string& vfsFilePath, Buffer& outpu
 
             File file(mFilePath, AccessMode::Read);
 
-            size_t filePos = mFileList[i].mFilePos;
+            uint64 filePos = mFileList[i].mFilePos;
             if (!file.Seek(static_cast<int64>(filePos), SeekMode::Begin))
                 return PackerResult::ReadFailed;
 
@@ -88,9 +88,9 @@ void PackerReader::PrintFilesToStdout() const
         std::cout << "Element " << it.mHash << ", size " << it.mFileSize << std::endl;
 }
 
-size_t PackerReader::GetFileCount() const
+uint32 PackerReader::GetFileCount() const
 {
-    return mFileList.size();
+    return mFileList.Size();
 }
 
 uint32 PackerReader::GetFileVersion() const

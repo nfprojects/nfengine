@@ -12,7 +12,9 @@
 #include "Utils/InputStream.hpp"
 
 
-#define PNGSIGSIZE 8
+NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Common::ImagePNG)
+    NFE_CLASS_PARENT(NFE::Common::ImageType)
+NFE_END_DEFINE_CLASS()
 
 namespace NFE {
 namespace Common {
@@ -47,10 +49,15 @@ void userReadData(png_structp pngPtr, png_bytep data, png_size_t length)
         info->offset += stream->Read(data, length);
 }
 
-}
+} // namespace
 
-// Register PNG image type
-bool gImagePNGRegistered = ImageType::RegisterImageType("PNG", std::make_unique<ImagePNG>());
+//////////////////////////////////////////////////////////////////////////
+
+StringView ImagePNG::GetName() const
+{
+    const StringView name("PNG");
+    return name;
+}
 
 bool ImagePNG::Check(InputStream* stream)
 {
@@ -69,16 +76,18 @@ bool ImagePNG::Check(InputStream* stream)
 
 bool ImagePNG::Load(Image* img, InputStream* stream)
 {
+    const size_t PngSigSize = 8;
+
     // read png signature
-    uint8 signature[PNGSIGSIZE];
-    if (stream->Read(signature, PNGSIGSIZE) != PNGSIGSIZE)
+    uint8 signature[PngSigSize];
+    if (stream->Read(signature, PngSigSize) != PngSigSize)
     {
         NFE_LOG_ERROR("Reading PNG signature failed.");
         return false;
     }
 
     // verify png signature
-    if (!png_check_sig(static_cast<png_const_bytep>(signature), PNGSIGSIZE))
+    if (!png_check_sig(static_cast<png_const_bytep>(signature), PngSigSize))
     {
         NFE_LOG_ERROR("Veryfing PNG signature failed.");
         return false;
@@ -110,12 +119,12 @@ bool ImagePNG::Load(Image* img, InputStream* stream)
 
     // set up reading callback
     pngReadInfo readInfo;
-    readInfo.offset = PNGSIGSIZE;
+    readInfo.offset = PngSigSize;
     readInfo.data = (char*)stream;
     png_set_read_fn(pngPtr, static_cast<png_voidp>(&readInfo), userReadData);
 
     // Set the amount signature bytes
-    png_set_sig_bytes(pngPtr, PNGSIGSIZE);
+    png_set_sig_bytes(pngPtr, PngSigSize);
 
     // Now call png_read_info to receive the file info.
     png_read_info(pngPtr, infoPtr);
@@ -209,14 +218,14 @@ bool ImagePNG::Load(Image* img, InputStream* stream)
     const unsigned int stride = imgWidth * bitdepth * channels / 8;
 
     // A loop to set all row pointers to the starting
-    // adresses for every row in the buffer
+    // addresses for every row in the buffer
     for (png_uint_32 i = 0; i < imgHeight; i++)
     {
         png_uint_32 q = i * stride;
         rowPtrs[i] = static_cast<png_bytep>(static_cast<uint8*>(dataPtr.get()) + q);
     }
 
-    // Read the imagedata and write it to the adresses pointed to
+    // Read the imagedata and write it to the addresses pointed to
     // by rowptrs
     png_read_image(pngPtr, rowPtrs.get());
 

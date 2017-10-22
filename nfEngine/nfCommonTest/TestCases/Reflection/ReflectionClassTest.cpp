@@ -67,9 +67,9 @@ TEST(ReflectionClassTest, TestClassWithFundamentalMembers_Serialization)
         obj.strValue = "test";
     }
 
-    std::string str;
+    String str;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
-    EXPECT_STREQ("obj={intValue=42 floatValue=1.234 boolValue=true strValue=\"test\"}", str.c_str());
+    EXPECT_STREQ("obj={intValue=42 floatValue=1.234 boolValue=true strValue=\"test\"}", str.Str());
 }
 
 TEST(ReflectionClassTest, TestClassWithFundamentalMembers_Deserialization)
@@ -136,9 +136,9 @@ TEST(ReflectionClassTest, TestClassWithNestedType_Serialization)
         obj.foo.boolValue = false;
     }
 
-    std::string str;
+    String str;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
-    EXPECT_STREQ("obj={foo={intValue=789 floatValue=16 boolValue=false strValue=\"\"} bar=123}", str.c_str());
+    EXPECT_STREQ("obj={foo={intValue=789 floatValue=16 boolValue=false strValue=\"\"} bar=123}", str.Str());
 }
 
 TEST(ReflectionClassTest, TestClassWithNestedType_Deserialization)
@@ -207,9 +207,9 @@ TEST(ReflectionClassTest, TestClassWithArrayType_Serialization)
         obj.foo = 123.0;
     }
 
-    std::string str;
+    String str;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
-    EXPECT_STREQ("obj={arrayOfInts=[10 20 30 40 50] foo=123}", str.c_str());
+    EXPECT_STREQ("obj={arrayOfInts=[10 20 30 40 50] foo=123}", str.Str());
 }
 
 TEST(ReflectionClassTest, TestClassWithArrayType_Deserialization)
@@ -305,9 +305,9 @@ TEST(ReflectionClassTest, TestClassWithDynArrayType_Serialization_Empty)
 
     TestClassWithDynArrayType obj;
 
-    std::string str;
+    String str;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
-    EXPECT_STREQ("obj={arrayOfInts=[] arrayOfObjects=[]}", str.c_str());
+    EXPECT_STREQ("obj={arrayOfInts=[] arrayOfObjects=[]}", str.Str());
 }
 
 TEST(ReflectionClassTest, TestClassWithDynArrayType_Serialization)
@@ -325,11 +325,11 @@ TEST(ReflectionClassTest, TestClassWithDynArrayType_Serialization)
         obj.arrayOfObjects.PushBack(TestClassWithFundamentalMembers(15, 15.0f, false, "bbb"));
     }
 
-    std::string str;
+    String str;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
     EXPECT_STREQ("obj={arrayOfInts=[10 20 30] "
                  "arrayOfObjects=[{intValue=1 floatValue=1 boolValue=false strValue=\"aaa\"} "
-                 "{intValue=15 floatValue=15 boolValue=false strValue=\"bbb\"}]}", str.c_str());
+                 "{intValue=15 floatValue=15 boolValue=false strValue=\"bbb\"}]}", str.Str());
 }
 
 TEST(ReflectionClassTest, TestClassWithArrayType_Deserialization_Empty)
@@ -428,7 +428,7 @@ TEST(ReflectionClassTest, TestClassWithUniquePtrType_Serialization_Empty)
     TestClassWithUniquePtrType obj;
     obj.arrayOfPointersToInts.PushBack(nullptr);
 
-    std::string str;
+    String str;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
-    EXPECT_STREQ("obj={pointerToInt=0 pointerToObject=0 pointerToArrayOfInts=0 arrayOfPointersToInts=[0]}", str.c_str());
+    EXPECT_STREQ("obj={pointerToInt=0 pointerToObject=0 pointerToArrayOfInts=0 arrayOfPointersToInts=[0]}", str.Str());
 }

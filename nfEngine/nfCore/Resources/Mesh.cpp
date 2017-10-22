@@ -45,9 +45,9 @@ bool Mesh::OnLoad()
     timer.Start();
 
     // relative file path
-    std::string path = g_CookedDataPath + "Meshes/" + mName;
+    const Common::String path = g_CookedDataPath + "Meshes/" + mName;
 
-    Common::FileInputStream stream(path.c_str());
+    Common::FileInputStream stream(path);
     MeshFile meshFile;
     if (!meshFile.Load(stream))
     {

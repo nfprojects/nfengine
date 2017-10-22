@@ -16,16 +16,16 @@ namespace Common {
 
 namespace {
 
-bool RecursiveDeleteDirectory(const std::string& path)
+bool RecursiveDeleteDirectory(const String& path)
 {
     DIR* d;
     struct dirent* dir;
-    std::string foundPath;
+    String foundPath;
 
-    d = ::opendir(path.c_str());
+    d = ::opendir(path.Str());
     if (d == NULL)
     {
-        NFE_LOG_ERROR("opendir() failed for path '%s': %s", path.c_str(), strerror(errno));
+        NFE_LOG_ERROR("opendir() failed for path '%s': %s", path.Str(), strerror(errno));
         return false;
     }
 
@@ -41,16 +41,16 @@ bool RecursiveDeleteDirectory(const std::string& path)
 
         if (isDir)
             RecursiveDeleteDirectory(foundPath);
-        else if (::unlink(foundPath.c_str()) != 0)
-            NFE_LOG_ERROR("Failed to delete file '%s': %s", foundPath.c_str(), strerror(errno));
+        else if (::unlink(foundPath.Str()) != 0)
+            NFE_LOG_ERROR("Failed to delete file '%s': %s", foundPath.Str(), strerror(errno));
     }
 
     ::closedir(d);
 
     // now we can remove empty directory
-    if (::rmdir(path.c_str()) != 0)
+    if (::rmdir(path.Str()) != 0)
     {
-        NFE_LOG_ERROR("Failed to remove directory '%s': %s", path.c_str(), strerror(errno));
+        NFE_LOG_ERROR("Failed to remove directory '%s': %s", path.Str(), strerror(errno));
         return false;
     }
 
@@ -59,11 +59,11 @@ bool RecursiveDeleteDirectory(const std::string& path)
 
 } // namespace
 
-std::string FileSystem::GetExecutablePath()
+String FileSystem::GetExecutablePath()
 {
-    std::string linkPath = "/proc/self/exe";
-    std::string execPathStr = "";
-    char* execPath = realpath(linkPath.data(), nullptr);
+    String linkPath = "/proc/self/exe";
+    String execPathStr = "";
+    char* execPath = realpath(linkPath.Str(), nullptr);
 
     if (!execPath)
         NFE_LOG_ERROR("Failed to resolve executable's path : %s", strerror(errno));
@@ -76,25 +76,25 @@ std::string FileSystem::GetExecutablePath()
     return execPathStr;
 }
 
-bool FileSystem::ChangeDirectory(const std::string& path)
+bool FileSystem::ChangeDirectory(const String& path)
 {
-    if (::chdir(path.c_str()) != 0)
+    if (::chdir(path.Str()) != 0)
     {
-        NFE_LOG_ERROR("Failed to change current directory to '%s': %s", path.c_str(), strerror(errno));
+        NFE_LOG_ERROR("Failed to change current directory to '%s': %s", path.Str(), strerror(errno));
         return false;
     }
 
-    NFE_LOG_INFO("Current directory changed to: '%s'", path.c_str());
+    NFE_LOG_INFO("Current directory changed to: '%s'", path.Str());
     return true;
 }
 
-bool FileSystem::TouchFile(const std::string& path)
+bool FileSystem::TouchFile(const String& path)
 {
-    int fd = ::open(path.c_str(), O_WRONLY | O_CREAT, S_IRUSR | S_IRGRP | S_IROTH);
+    int fd = ::open(path.Str(), O_WRONLY | O_CREAT, S_IRUSR | S_IRGRP | S_IROTH);
 
     if (fd < 0)
     {
-        NFE_LOG_ERROR("Failed to create file '%s': %s", path.c_str(), strerror(errno));
+        NFE_LOG_ERROR("Failed to create file '%s': %s", path.Str(), strerror(errno));
         return false;
     }
 
@@ -102,12 +102,12 @@ bool FileSystem::TouchFile(const std::string& path)
     return true;
 }
 
-PathType FileSystem::GetPathType(const std::string& path)
+PathType FileSystem::GetPathType(const String& path)
 {
     struct stat stat;
-    if (::stat(path.c_str(), &stat) != 0)
+    if (::stat(path.Str(), &stat) != 0)
     {
-        NFE_LOG_ERROR("stat() for '%s' failed: %s", path.c_str(), strerror(errno));
+        NFE_LOG_ERROR("stat() for '%s' failed: %s", path.Str(), strerror(errno));
         return PathType::Invalid;
     }
 
@@ -119,19 +119,19 @@ PathType FileSystem::GetPathType(const std::string& path)
     return PathType::Invalid;
 }
 
-bool FileSystem::CreateDir(const std::string& path)
+bool FileSystem::CreateDir(const String& path)
 {
-    if (::mkdir(path.c_str(), 0777) != 0)
+    if (::mkdir(path.Str(), 0777) != 0)
     {
-        NFE_LOG_ERROR("Failed to create directory '%s': %s", path.c_str(), strerror(errno));
+        NFE_LOG_ERROR("Failed to create directory '%s': %s", path.Str(), strerror(errno));
         return false;
     }
 
-    NFE_LOG_INFO("Created directory '%s'", path.c_str());
+    NFE_LOG_INFO("Created directory '%s'", path.Str());
     return true;
 }
 
-bool FileSystem::Remove(const std::string& path, bool recursive)
+bool FileSystem::Remove(const String& path, bool recursive)
 {
     PathType pathType = GetPathType(path);
 
@@ -142,28 +142,28 @@ bool FileSystem::Remove(const std::string& path, bool recursive)
             if (!RecursiveDeleteDirectory(path))
                 return false;
         }
-        else if (::rmdir(path.c_str()) != 0)
+        else if (::rmdir(path.Str()) != 0)
         {
-            NFE_LOG_ERROR("Failed to remove directory '%s': %s", path.c_str(), strerror(errno));
+            NFE_LOG_ERROR("Failed to remove directory '%s': %s", path.Str(), strerror(errno));
             return false;
         }
     }
     else if (pathType == PathType::File)
     {
-        if (::unlink(path.c_str()) != 0)
+        if (::unlink(path.Str()) != 0)
         {
-            NFE_LOG_ERROR("Failed to delete file '%s': %s", path.c_str(), strerror(errno));
+            NFE_LOG_ERROR("Failed to delete file '%s': %s", path.Str(), strerror(errno));
             return false;
         }
     }
     else
         return false;
 
-    NFE_LOG_INFO("Removed '%s'", path.c_str());
+    NFE_LOG_INFO("Removed '%s'", path.Str());
     return true;
 }
 
-bool FileSystem::Copy(const std::string& srcPath, const std::string& destPath, bool overwrite)
+bool FileSystem::Copy(const String& srcPath, const String& destPath, bool overwrite)
 {
     (void)overwrite;
 
@@ -171,17 +171,17 @@ bool FileSystem::Copy(const std::string& srcPath, const std::string& destPath, b
     char buf[bufferSize];
     ssize_t nread;
 
-    int fdSrc = ::open(srcPath.c_str(), O_RDONLY);
+    int fdSrc = ::open(srcPath.Str(), O_RDONLY);
     if (fdSrc < 0)
     {
-        NFE_LOG_ERROR("Failed to open file '%s': %s", srcPath.c_str(), strerror(errno));
+        NFE_LOG_ERROR("Failed to open file '%s': %s", srcPath.Str(), strerror(errno));
         return false;
     }
 
-    int fdDest = ::open(destPath.c_str(), O_WRONLY | O_CREAT | O_EXCL, 0666);
+    int fdDest = ::open(destPath.Str(), O_WRONLY | O_CREAT | O_EXCL, 0666);
     if (fdDest < 0)
     {
-        NFE_LOG_ERROR("Failed to open file '%s': %s", destPath.c_str(), strerror(errno));
+        NFE_LOG_ERROR("Failed to open file '%s': %s", destPath.Str(), strerror(errno));
         goto errorLabel;
     }
 
@@ -199,7 +199,7 @@ bool FileSystem::Copy(const std::string& srcPath, const std::string& destPath, b
             }
             else if (errno != EINTR)
             {
-                NFE_LOG_ERROR("Write to file '%s' failed: %s", destPath.c_str(), strerror(errno));
+                NFE_LOG_ERROR("Write to file '%s' failed: %s", destPath.Str(), strerror(errno));
                 goto errorLabel;
             }
         } while (nread > 0);
@@ -210,41 +210,40 @@ bool FileSystem::Copy(const std::string& srcPath, const std::string& destPath, b
     {
         ::close(fdDest);
         ::close(fdSrc);
-        NFE_LOG_INFO("File '%s' copied to '%s'", srcPath.c_str(), destPath.c_str());
+        NFE_LOG_INFO("File '%s' copied to '%s'", srcPath.Str(), destPath.Str());
         return true;
     }
 
-    NFE_LOG_ERROR("Read from file '%s' failed: %s", srcPath.c_str(), strerror(errno));
+    NFE_LOG_ERROR("Read from file '%s' failed: %s", srcPath.Str(), strerror(errno));
 
 errorLabel:
     ::close(fdSrc);
     if (fdDest != -1)
     {
         ::close(fdDest);
-        ::unlink(destPath.c_str());
+        ::unlink(destPath.Str());
     }
 
     return false;
 }
 
-bool FileSystem::Move(const std::string& srcPath, const std::string& destPath)
+bool FileSystem::Move(const String& srcPath, const String& destPath)
 {
-    if (::rename(srcPath.c_str(), destPath.c_str()) != 0)
+    if (::rename(srcPath.Str(), destPath.Str()) != 0)
     {
-        NFE_LOG_ERROR("Failed to move file '%s' to '%s': %s", srcPath.c_str(), destPath.c_str(),
-                  strerror(errno));
+        NFE_LOG_ERROR("Failed to move file '%s' to '%s': %s", srcPath.Str(), destPath.Str(), strerror(errno));
         return false;
     }
 
-    NFE_LOG_INFO("File '%s' moved to '%s'", srcPath.c_str(), destPath.c_str());
+    NFE_LOG_INFO("File '%s' moved to '%s'", srcPath.Str(), destPath.Str());
     return true;
 }
 
-bool FileSystem::Iterate(const std::string& path, DirIterateCallback callback)
+bool FileSystem::Iterate(const String& path, const DirIterateCallback& callback)
 {
     struct dirent* dir;
-    std::stack<std::string> directories;
-    std::string currentDir, foundPath;
+    std::stack<String> directories;
+    String currentDir, foundPath;
 
     directories.push(path);
 
@@ -253,10 +252,10 @@ bool FileSystem::Iterate(const std::string& path, DirIterateCallback callback)
         currentDir = directories.top();
         directories.pop();
 
-        DIR* d = ::opendir(currentDir.c_str());
+        DIR* d = ::opendir(currentDir.Str());
         if (d == NULL)
         {
-            NFE_LOG_ERROR("opendir() failed for path '%s': %s", currentDir.c_str(), strerror(errno));
+            NFE_LOG_ERROR("opendir() failed for path '%s': %s", currentDir.Str(), strerror(errno));
             return false;
         }
 
@@ -273,8 +272,8 @@ bool FileSystem::Iterate(const std::string& path, DirIterateCallback callback)
 
             // ignore multiple '/' or '\'
             // TODO create and use function for path normalization
-            while (currentDir.back() == '/' || currentDir.back() == '\\')
-                currentDir.pop_back();
+            while (currentDir.Back() == '/' || currentDir.Back() == '\\')
+                currentDir.PopBack();
 
             foundPath = currentDir + '/' + dir->d_name;
             bool isDir = dir->d_type == DT_DIR;
@@ -282,7 +281,7 @@ bool FileSystem::Iterate(const std::string& path, DirIterateCallback callback)
             if (isDir)
                 directories.push(foundPath);
 
-            if (!callback(foundPath, isDir))
+            if (!callback(foundPath, isDir ? PathType::Directory : PathType::File))
             {
                 ::closedir(d);
                 return true;

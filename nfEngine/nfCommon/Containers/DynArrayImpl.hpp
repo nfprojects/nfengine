@@ -190,6 +190,20 @@ typename DynArray<ElementType>::IteratorType DynArray<ElementType>::PushBack(Ele
 }
 
 template<typename ElementType>
+template<typename ... Args>
+typename DynArray<ElementType>::IteratorType DynArray<ElementType>::EmplaceBack(Args&& ... args)
+{
+    if (!Reserve(this->mSize + 1))
+    {
+        // memory allocation failed
+        return this->End();
+    }
+
+    new (this->mElements + this->mSize) ElementType(std::forward<Args>(args) ...);
+    return IteratorType(this, this->mSize++);
+}
+
+template<typename ElementType>
 template<typename ElementType2>
 bool DynArray<ElementType>::PushBackArray(const ArrayView<ElementType2>& arrayView)
 {
@@ -392,11 +406,13 @@ bool DynArray<ElementType>::Reserve(uint32 size)
 template<typename ElementType>
 bool DynArray<ElementType>::Resize(uint32 size)
 {
-    Clear();
+    const uint32 oldSize = this->mSize;
+
     if (!Reserve(size))
         return false;
 
-    for (uint32 i = 0; i < size; ++i)
+    // initialize new elements
+    for (uint32 i = oldSize; i < size; ++i)
     {
         new (this->mElements + i) ElementType;
     }

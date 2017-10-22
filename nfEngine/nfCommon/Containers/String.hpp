@@ -87,6 +87,12 @@ public:
      */
     String& Erase(uint32 index, uint32 numCharacters);
 
+    /**
+     * Remove last element.
+     * @remarks Using this function on an empty string is forbidden.
+     */
+    String& PopBack();
+
     // replace characters (works like combination of Erase and Insert)
     String& Replace(uint32 index, uint32 numCharacters, char c);
     String& Replace(uint32 index, uint32 numCharacters, const StringView& other);
@@ -147,6 +153,12 @@ public:
      * @note The index must be valid. Otherwise it will cause an assertion.
      */
     NFE_INLINE char& operator[](uint32 index);
+
+    /**
+     * Access first / last element.
+     */
+    NFE_INLINE char Front() const;
+    NFE_INLINE char Back() const;
 
 private:
 

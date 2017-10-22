@@ -18,7 +18,7 @@ Library::Library()
 {
 }
 
-Library::Library(const std::string& path)
+Library::Library(const StringView path)
     : Library()
 {
     Open(path);
@@ -46,16 +46,18 @@ bool Library::IsOpened() const
     return mModule != nullptr;
 }
 
-bool Library::Open(const std::string& path)
+bool Library::Open(const StringView path)
 {
     Close();
 
-    std::string pathExt(path);
-    std::string libExt = ".dll";
-    if (libExt.compare(pathExt.substr(pathExt.size() - libExt.size())) != 0)
-        pathExt.append(libExt);
+    String pathExt = path;
+    const StringView libExt(".dll");
+    if (!path.EndsWith(libExt))
+    {
+        pathExt += libExt;
+    }
 
-    std::wstring widePath;
+    Utf16String widePath;
     if (!UTF8ToUTF16(pathExt, widePath))
         return false;
 
@@ -63,7 +65,7 @@ bool Library::Open(const std::string& path)
 
     if (mModule == nullptr)
     {
-        NFE_LOG_ERROR("Failed to load library '%s': %s", pathExt.c_str(), GetLastErrorString().c_str());
+        NFE_LOG_ERROR("Failed to load library '%s': %s", pathExt.Str(), GetLastErrorString().Str());
         return false;
     }
 
@@ -79,16 +81,15 @@ void Library::Close()
     }
 }
 
-void* Library::GetSymbol(const std::string& name)
+void* Library::GetSymbol(const String& name)
 {
     if (mModule == nullptr)
         return nullptr;
 
-    FARPROC ptr = ::GetProcAddress(mModule, name.c_str());
+    FARPROC ptr = ::GetProcAddress(mModule, name.Str());
     if (ptr == nullptr)
     {
-        NFE_LOG_ERROR("Failed to get pointer to symbol '%s': %s", name.c_str(),
-                  GetLastErrorString().c_str());
+        NFE_LOG_ERROR("Failed to get pointer to symbol '%s': %s", name.Str(), GetLastErrorString().Str());
         return nullptr;
     }
 

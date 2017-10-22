@@ -18,15 +18,16 @@
 namespace NFE {
 namespace Common {
 
+
 DefaultAllocator::DefaultAllocator()
     : mAllocationsNum(0)
     , mBytesAllocated(0)
+    , mInitialized(true)
 {
 }
 
 DefaultAllocator::~DefaultAllocator()
 {
-    ReportAllocations();
 }
 
 DefaultAllocator& DefaultAllocator::GetInstance()
@@ -35,8 +36,26 @@ DefaultAllocator& DefaultAllocator::GetInstance()
     return allocator;
 }
 
+void DefaultAllocator::Shutdown()
+{
+    ReportAllocations();
+
+#ifdef _DEBUG
+    mAllocationsDebugInfo.clear();
+#endif // _DEBUG
+
+    mInitialized = false;
+}
+
 void* DefaultAllocator::Malloc(size_t size, size_t alignment, const char* sourceFile, int sourceLine)
 {
+    NFE_ASSERT(mInitialized, "Default memory allocator is not initialized");
+
+    if (!mInitialized)
+    {
+        return nullptr;
+    }
+
     if (size == 0)
     {
         NFE_LOG_ERROR("Allocated memory block must be greater than 0 bytes.");
@@ -52,7 +71,7 @@ void* DefaultAllocator::Malloc(size_t size, size_t alignment, const char* source
     void* ptr = nullptr;
 
 #if defined(WIN32)
-    ptr = _aligned_malloc(size, alignment);
+    ptr = _aligned_malloc_dbg(size, alignment, sourceFile, sourceLine);
 
 #elif defined(__LINUX__) | defined(__linux__)
     alignment = std::max(alignment, sizeof(void*));
@@ -79,8 +98,10 @@ void* DefaultAllocator::Malloc(size_t size, size_t alignment, const char* source
 #endif // _DEBUG
     }
     else
+    {
         NFE_LOG_ERROR("Memory allocation requested from %s:%i failed, size=%zu, alignment=%zu, errno=%i",
-                  sourceFile, sourceLine, size, alignment, errno);
+            sourceFile, sourceLine, size, alignment, errno);
+    }
 
     return ptr;
 }

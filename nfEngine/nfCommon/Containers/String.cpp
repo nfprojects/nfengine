@@ -146,7 +146,6 @@ String String::Printf(const char* format, ...)
     {
         va_end(argsCopy);
         va_end(args);
-        NFE_LOG_ERROR("vsnprintf() failed, format = \"%s\"", format);
         return String();
     }
 
@@ -275,6 +274,20 @@ String& String::Erase(uint32 index, uint32 numCharacters)
     return *this;
 }
 
+String& String::PopBack()
+{
+    const uint32 len = Length();
+    NFE_ASSERT(len > 0, "String is empty");
+
+    const uint32 targetLength = len - 1;
+
+    char* buffer = GetBuffer();
+    buffer[targetLength] = '\0';
+    SetLength(targetLength);
+
+    return *this;
+}
+
 String& String::Replace(uint32 index, uint32 numCharacters, const StringView& other)
 {
     NFE_ASSERT(index <= Length(), "String index out of bounds");
@@ -350,7 +363,6 @@ bool String::Reserve(uint32 length)
     char* newBuffer = static_cast<char*>(NFE_MALLOC(size, 1));
     if (!newBuffer)
     {
-        NFE_LOG_ERROR("Memory allocation failed");
         return false;
     }
 

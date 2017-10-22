@@ -7,6 +7,12 @@
 #include <crtdbg.h>
 #endif // defined(WIN32) && defined(_DEBUG)
 
+#if defined(WIN32)
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <Windows.h>
+#endif // defined(WIN32)
+
 #include <memory>
 #include <vector>
 #include <string>

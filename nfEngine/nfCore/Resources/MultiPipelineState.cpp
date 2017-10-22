@@ -21,7 +21,7 @@ using namespace Common;
 
 namespace {
 
-const std::string gShadersSetsRoot = "nfEngine/Shaders/Sets/";
+const String gShadersSetsRoot = "nfEngine/Shaders/Sets/";
 
 const char* gShaderNameStrings[] =
 {
@@ -65,7 +65,8 @@ bool MultiPipelineState::Load(const char* name)
     /// read config file
     std::vector<char> str;
     {
-        File file(gShadersSetsRoot + name + ".cfg", AccessMode::Read);
+        const Common::String path = gShadersSetsRoot + name + ".cfg";
+        File file(path, AccessMode::Read);
         size_t fileSize = static_cast<size_t>(file.GetSize());
         str.resize(fileSize + 1);
 

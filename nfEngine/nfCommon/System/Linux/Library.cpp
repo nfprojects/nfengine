@@ -19,7 +19,7 @@ Library::Library()
 {
 }
 
-Library::Library(const std::string& path)
+Library::Library(const String& path)
     : Library()
 {
     Open(path);
@@ -51,21 +51,22 @@ bool Library::IsOpened() const
     return mModule != nullptr;
 }
 
-bool Library::Open(const std::string& path)
+bool Library::Open(const String& path)
 {
     Close();
 
-    std::string pathExt = "lib";
-    pathExt += path;
-    std::string libExt = ".so";
-    if (libExt.compare(pathExt.substr(pathExt.size() - libExt.size())) != 0)
-        pathExt.append(libExt);
+    String pathExt = "lib" + path;
+    const StringView libExt(".so");
+    if (!path.ToView().EndsWith(libExt))
+    {
+        pathExt += libExt;
+    }
 
-    mModule = dlopen(pathExt.c_str(), RTLD_LAZY);
+    mModule = dlopen(pathExt.Str(), RTLD_LAZY);
 
     if (mModule == nullptr)
     {
-        NFE_LOG_ERROR("Failed to load library '%s': %s", pathExt.c_str(), dlerror());
+        NFE_LOG_ERROR("Failed to load library '%s': %s", pathExt.Str(), dlerror());
         return false;
     }
 
@@ -82,18 +83,18 @@ void Library::Close()
     }
 }
 
-void* Library::GetSymbol(const std::string& name)
+void* Library::GetSymbol(const String& name)
 {
     if (mModule == nullptr)
         return nullptr;
 
     // it is recommended to clear dlerror first, because nullptr value returned CAN be valid
     dlerror();
-    void* ptr = dlsym(mModule, name.c_str());
+    void* ptr = dlsym(mModule, name.Str());
     char* errorMsg = dlerror();
     if (errorMsg != nullptr)
     {
-        NFE_LOG_ERROR("Failed to get pointer to symbol '%s': %s", name.c_str(), errorMsg);
+        NFE_LOG_ERROR("Failed to get pointer to symbol '%s': %s", name.Str(), errorMsg);
         return nullptr;
     }
 

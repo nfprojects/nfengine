@@ -42,21 +42,23 @@ void DirectoryWatch::SetCallback(WatchCallback callback)
     mCallback = callback;
 }
 
-bool DirectoryWatch::WatchPath(const std::string& path, Event eventFilter)
+bool DirectoryWatch::WatchPath(const String& path, Event eventFilter)
 {
     // remove watch
     if (eventFilter == Event::None)
     {
+        const auto iter = mWatchPathMap.Find(path);
+
         // already removed
-        if (mWatchPathMap.count(path) == 0)
+        if (mWatchPathMap.End() == iter)
             return true;
 
-        int fd = mWatchPathMap[path];
+        int fd = iter->second;
         ::inotify_rm_watch(inotifyFd, fd);
-        mWatchPathMap.erase(path);
+        mWatchPathMap.Erase(iter);
 
         ScopedMutexLock lock(mWatchDescriptorMapMutex);
-        mWatchDescriptorMap.erase(fd);
+        mWatchDescriptorMap.Erase(fd);
         return true;
     }
 
@@ -72,21 +74,28 @@ bool DirectoryWatch::WatchPath(const std::string& path, Event eventFilter)
     if (hasEvent(Event::MoveTo))   inotifyMask |= IN_MOVED_TO;
     if (hasEvent(Event::Modify))   inotifyMask |= IN_CLOSE_WRITE;
 
-    int fd = ::inotify_add_watch(inotifyFd, path.c_str(), inotifyMask);
+    int fd = ::inotify_add_watch(inotifyFd, path.Str(), inotifyMask);
     if (fd < 0)
     {
-        NFE_LOG_ERROR("inotify_add_watch() for path '%s' failed: %s", path.c_str(), strerror(errno));
+        NFE_LOG_ERROR("inotify_add_watch() for path '%s' failed: %s", path.Str(), strerror(errno));
         return false;
     }
 
-    int oldFd = mWatchPathMap[path];
     {
         ScopedMutexLock lock(mWatchDescriptorMapMutex);
-        mWatchDescriptorMap.erase(oldFd);
-        mWatchPathMap[path] = fd;
-        mWatchDescriptorMap[fd] = path;
+
+        const auto oldFdIter = mWatchPathMap.Find(path);
+        if (oldFdIter != mWatchPathMap.End())
+        {
+            int oldFd = oldFdIter->second;
+            mWatchDescriptorMap.Erase(oldFd);
+        }
+
+        mWatchPathMap.InsertOrReplace(path, fd);
+        mWatchDescriptorMap.InsertOrReplace(fd, path);
     }
-    NFE_LOG_DEBUG("Directory watch for path '%s' added, wd = %d", path.c_str(), fd);
+
+    NFE_LOG_DEBUG("Directory watch for path '%s' added, wd = %d", path.Str(), fd);
     return true;
 }
 
@@ -150,7 +159,7 @@ bool DirectoryWatch::ProcessInotifyEvent(void* event)
     char path[PATH_MAX];
     {
         ScopedMutexLock lock(mWatchDescriptorMapMutex);
-        strcpy(path, mWatchDescriptorMap[e->wd].c_str());
+        strcpy(path, mWatchDescriptorMap[e->wd].Str());
     }
 
     EventData eventData;

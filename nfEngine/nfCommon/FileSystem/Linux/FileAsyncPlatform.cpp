@@ -106,8 +106,7 @@ FileAsync::FileAsync(CallbackFuncRef callbackFunc)
         setupIo(mCtx);
 }
 
-FileAsync::FileAsync(const std::string& path, AccessMode mode, CallbackFuncRef callbackFunc,
-                     bool overwrite)
+FileAsync::FileAsync(const String& path, AccessMode mode, CallbackFuncRef callbackFunc, bool overwrite)
     : mFD(INVALID_FD)
     , mMode(AccessMode::No)
     , mCallback(callbackFunc)
@@ -150,7 +149,7 @@ bool FileAsync::IsOpened() const
     return mFD != INVALID_FD;
 }
 
-bool FileAsync::Open(const std::string& path, AccessMode access, bool overwrite)
+bool FileAsync::Open(const String& path, AccessMode access, bool overwrite)
 {
     Close();
 
@@ -180,11 +179,11 @@ bool FileAsync::Open(const std::string& path, AccessMode access, bool overwrite)
             flags |= O_TRUNC;
     }
 
-    mFD = ::open(path.c_str(), flags | O_NONBLOCK, 0644);
+    mFD = ::open(path.Str(), flags | O_NONBLOCK, 0644);
 
     if (!IsOpened())
     {
-        NFE_LOG_ERROR("Failed to open file '%s': %s", path.c_str(), strerror(errno));
+        NFE_LOG_ERROR("Failed to open file '%s': %s", path.Str(), strerror(errno));
         mMode = AccessMode::No;
         return false;
     }
@@ -204,21 +203,21 @@ void FileAsync::Close()
             ScopedMutexLock guard(mSetAccessMutex);
 
             // Check if there are any ongoing jobs
-            if (!mSystemPtrs.empty())
+            if (!mSystemPtrs.Empty())
             {
                 // Cancel all jobs in progress to ensure that no file corruption
                 // takes place upon closing file handle
-                std::unique_ptr<io_event> ev = std::make_unique<io_event>();
+                UniquePtr<io_event> ev = MakeUniquePtr<io_event>();
                 for (auto i : mSystemPtrs)
                 {
                     // Cancel job
-                    io_cancel(mCtx, &i->ioData, ev.get());
+                    io_cancel(mCtx, &i->ioData, ev.Get());
 
                     delete i;
                 }
 
                 // Clear mSystemPtrs of freed pointers
-                mSystemPtrs.clear();
+                mSystemPtrs.Clear();
             }
         }
         // Close file handle

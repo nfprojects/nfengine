@@ -73,14 +73,14 @@ bool DepthStencilScene::CreateBasicResources(bool withDepth, bool withStencil)
         return false;
 
     ShaderMacro vsMacro[] = { { "USE_CBUFFER", "1" } };
-    std::string vsPath = gShaderPathPrefix + "TestVS" + gShaderPathExt;
-    mVertexShader = CompileShader(vsPath.c_str(), ShaderType::Vertex, vsMacro, 1);
+    const Common::String vsPath = gShaderPathPrefix + "TestVS" + gShaderPathExt;
+    mVertexShader = CompileShader(vsPath.Str(), ShaderType::Vertex, vsMacro, 1);
     if (!mVertexShader)
         return false;
 
     ShaderMacro psMacro[] = { { "USE_TEXTURE", "0" } };
-    std::string psPath = gShaderPathPrefix + "TestPS" + gShaderPathExt;
-    mPixelShader = CompileShader(psPath.c_str(), ShaderType::Pixel, psMacro, 1);
+    const Common::String psPath = gShaderPathPrefix + "TestPS" + gShaderPathExt;
+    mPixelShader = CompileShader(psPath.Str(), ShaderType::Pixel, psMacro, 1);
     if (!mPixelShader)
         return false;
 

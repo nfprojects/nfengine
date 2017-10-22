@@ -7,6 +7,7 @@
 #pragma once
 
 #include "../nfCommon.hpp"
+#include "../Containers/StringView.hpp"
 
 
 namespace NFE {
@@ -66,11 +67,11 @@ struct ConfigArrayNode
  */
 struct ConfigObjectNode
 {
-    const char* name;
+    StringView name;
     ConfigValuePtr valuePtr;
     ConfigObjectNodePtr next;
 
-    ConfigObjectNode() : name(nullptr), valuePtr(INVALID_NODE_PTR), next(INVALID_NODE_PTR) { }
+    ConfigObjectNode() : valuePtr(INVALID_NODE_PTR), next(INVALID_NODE_PTR) { }
 };
 
 

@@ -6,7 +6,7 @@
 #include "nfCommon/Math/Conversions.hpp"
 #include "nfCommon/Math/Float4.hpp"
 
-
+using namespace NFE::Common;
 using namespace Math;
 
 const int VIEWPORT_SIZE = 16;
@@ -37,11 +37,11 @@ protected:
     ShaderPtr CompileShader(const char* path, ShaderType type, ShaderMacro* macros = nullptr,
                             size_t macrosNum = 0)
     {
-        const std::string shaderPath = gShaderPathPrefix + path + gShaderPathExt;
+        const String shaderPath = gShaderPathPrefix + path + gShaderPathExt;
 
         ShaderDesc desc;
         desc.type = type;
-        desc.path = shaderPath.c_str();
+        desc.path = shaderPath.Str();
         desc.macros = macros;
         desc.macrosNum = macrosNum;
         return gRendererDevice->CreateShader(desc);

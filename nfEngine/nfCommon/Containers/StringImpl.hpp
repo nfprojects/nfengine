@@ -180,6 +180,29 @@ char& String::operator[](uint32 index)
         return mExternalData.data[index];
 }
 
+char String::Front() const
+{
+    const uint32 len = Length();
+    NFE_ASSERT(len > 0, "String is empty");
+
+    if (IsInternal())
+        return mInternalData.data[0];
+    else
+        return mExternalData.data[0];
+}
+
+char String::Back() const
+{
+    const uint32 len = Length();
+    NFE_ASSERT(len > 0, "String is empty");
+
+    if (IsInternal())
+        return mInternalData.data[len - 1];
+    else
+        return mExternalData.data[len - 1];
+}
+
+
 void String::SetLength(uint32 length)
 {
     mInternalData.length = length;

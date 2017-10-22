@@ -46,14 +46,14 @@ int8 FloatToInt8(float x)
 
 } // namespace
 
-bool MeshImporter::ImportOBJ(const std::string& sourceFilePath, const std::string& targetFilePath)
+bool MeshImporter::ImportOBJ(const String& sourceFilePath, const String& targetFilePath)
 {
     ModelOBJ model;
 
     // open mesh
-    if (!model.import(sourceFilePath.c_str()))
+    if (!model.import(sourceFilePath.Str()))
     {
-        NFE_LOG_ERROR("Failed to open file '%s'!", sourceFilePath.c_str());
+        NFE_LOG_ERROR("Failed to open file '%s'!", sourceFilePath.Str());
         return false;
     }
 
@@ -64,7 +64,7 @@ bool MeshImporter::ImportOBJ(const std::string& sourceFilePath, const std::strin
     int matCount = model.getNumberOfMaterials();
 
     NFE_LOG_INFO("Mesh '%s' loaded. Vertices: %i, Indices: %i, Submeshes: %i, Materials: %i",
-             sourceFilePath.c_str(), verticesCount, indicesCount, subMeshesCount, matCount);
+             sourceFilePath.Str(), verticesCount, indicesCount, subMeshesCount, matCount);
 
     mVertices.resize(verticesCount);
     mIndices.resize(indicesCount);
@@ -146,9 +146,9 @@ bool MeshImporter::ImportOBJ(const std::string& sourceFilePath, const std::strin
     // generate material files
     for (const MaterialDesc& mat : mMaterials)
     {
-        std::string matFileName = FileSystem::GetParentDir(targetFilePath);
+        String matFileName = FileSystem::GetParentDir(targetFilePath);
         matFileName += "/../Materials/";
-        matFileName += mat.name;
+        matFileName += mat.name.c_str();
         matFileName += ".json";
 
         // check if material already exists
@@ -183,13 +183,13 @@ bool MeshImporter::ImportOBJ(const std::string& sourceFilePath, const std::strin
         File materialFile;
         if (!materialFile.Open(matFileName, AccessMode::Write, true))
         {
-            NFE_LOG_ERROR("Could not open output file '%s'!", matFileName.c_str());
+            NFE_LOG_ERROR("Could not open output file '%s'!", matFileName.Str());
             return false;
         }
         materialFile.Write(materialString.data(), materialString.length());
     }
 
-    FileOutputStream stream(targetFilePath.c_str());
+    FileOutputStream stream(targetFilePath);
     return Save(stream);
 }
 

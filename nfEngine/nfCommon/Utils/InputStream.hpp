@@ -62,7 +62,7 @@ private:
     File mFile;
 
 public:
-    FileInputStream(const char* path);
+    FileInputStream(const String& path);
     ~FileInputStream();
 
     uint64 GetSize() override;
