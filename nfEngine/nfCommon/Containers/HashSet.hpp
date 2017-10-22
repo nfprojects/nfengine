@@ -84,7 +84,7 @@ public:
     // insertion information
     struct InsertResult final
     {
-        Iterator iterator; // iterator to the inserted node
+        Iterator iterator;      // iterator to the inserted node
         bool replaced;          // set to true if the node with given key already existed
 
         explicit InsertResult(const Iterator& iterator, bool replaced = false)

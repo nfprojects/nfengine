@@ -39,23 +39,23 @@ String::InternalData::InternalData(char c)
 
 String::String()
     : mInternalData()
-{
-}
+{ }
 
 String::String(char c)
     : mInternalData(c)
-{
-}
+{ }
 
 String::String(const String& string)
     : String(string.ToView())
-{
-}
+{ }
 
 String::String(const char* string)
     : String(StringView(string))
-{
-}
+{ }
+
+String::String(const char* string, uint32 length)
+    : String(StringView(string, length))
+{ }
 
 String& String::operator=(const String& other)
 {

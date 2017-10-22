@@ -8,7 +8,9 @@
 
 #include "../RendererInterface/Shader.hpp"
 #include "Common.hpp"
-#include <map>
+
+#include "nfCommon/Containers/HashMap.hpp"
+#include "nfCommon/Containers/String.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -26,7 +28,7 @@ class Shader : public IShader
 
     ShaderType mType;
     D3DPtr<ID3DBlob> mBytecode;
-    std::map<std::string, ResBinding> mResBindings;
+    Common::HashMap<Common::String, ResBinding> mResBindings;
 
     union
     {
@@ -49,7 +51,7 @@ public:
     void* GetShaderObject() const;
     ID3DBlob* GetBytecode() const;
 
-    bool Disassemble(bool html, std::string& output) override;
+    bool Disassemble(bool html, Common::String& output) override;
     int GetResourceSlotByName(const char* name) override;
 };
 

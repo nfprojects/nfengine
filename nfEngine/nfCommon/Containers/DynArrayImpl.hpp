@@ -137,6 +137,24 @@ DynArray<ElementType>::DynArray(const ElementType* elements, uint32 count)
     }
 }
 
+template<typename ElementType>
+DynArray<ElementType>::DynArray(uint32 count)
+    : DynArray()
+{
+    if (!Reserve(count))
+    {
+        LOG_ERROR("Failed to reserve memory for DynArray");
+        return;
+    }
+
+    this->mSize = count;
+    for (uint32 i = 0; i < count; ++i)
+    {
+        // construct default object
+        new (this->mElements + i) ElementType();
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 
 template<typename ElementType>

@@ -205,7 +205,7 @@ bool Shader::Init(const ShaderDesc& desc)
     return true;
 }
 
-bool Shader::Disassemble(bool html, std::string& output)
+bool Shader::Disassemble(bool html, Common::String& output)
 {
     ID3DBlob* bytecode = mBytecode.Get();
     if (bytecode == nullptr)
@@ -225,7 +225,7 @@ bool Shader::Disassemble(bool html, std::string& output)
         return false;
 
     const char* str = static_cast<const char*>(disassembly->GetBufferPointer());
-    output = std::string(str, disassembly->GetBufferSize());
+    output = Common::String(str, static_cast<uint32>(disassembly->GetBufferSize()));
 
     return true;
 }
@@ -304,14 +304,14 @@ bool Shader::GetIODesc()
             continue;
         }
 
-        std::string name = d3dBindingDesc.Name;
-        if (mResBindings.find(name) != mResBindings.end())
+        const Common::String name = d3dBindingDesc.Name;
+        if (mResBindings.Find(name) != mResBindings.End())
         {
             LOG_ERROR("Multiple declarations of shader resource named '%s'", d3dBindingDesc.Name);
             return false;
         }
 
-        mResBindings[name] = bindingDesc;
+        mResBindings.Insert(name, bindingDesc);
     }
 
     return true;
@@ -319,11 +319,11 @@ bool Shader::GetIODesc()
 
 int Shader::GetResourceSlotByName(const char* name)
 {
-    auto iter = mResBindings.find(name);
-    if (iter != mResBindings.end())
+    auto iter = mResBindings.Find(name);
+    if (iter != mResBindings.End())
     {
         // TODO: verify resource type
-        return iter->second.slot;
+        return (*iter).second.slot;
     }
 
     return -1;

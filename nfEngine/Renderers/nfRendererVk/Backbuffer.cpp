@@ -29,10 +29,10 @@ Backbuffer::~Backbuffer()
 {
     vkQueueWaitIdle(mPresentQueue);
 
-    if (mPostPresentCommandBuffers.size())
-        vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(), mBuffersNum, mPostPresentCommandBuffers.data());
-    if (mPresentCommandBuffers.size())
-        vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(), mBuffersNum, mPresentCommandBuffers.data());
+    if (!mPostPresentCommandBuffers.Empty())
+        vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(), mBuffersNum, mPostPresentCommandBuffers.Data());
+    if (!mPresentCommandBuffers.Empty())
+        vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(), mBuffersNum, mPresentCommandBuffers.Data());
 
     if (mSwapchain != VK_NULL_HANDLE)
         vkDestroySwapchainKHR(gDevice->GetDevice(), mSwapchain, nullptr);
@@ -53,8 +53,8 @@ bool Backbuffer::SelectPresentQueue()
         return false;
     }
 
-    std::vector<VkQueueFamilyProperties> queueProps(queueCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(gDevice->GetPhysicalDevice(), &queueCount, queueProps.data());
+    Common::DynArray<VkQueueFamilyProperties> queueProps(queueCount);
+    vkGetPhysicalDeviceQueueFamilyProperties(gDevice->GetPhysicalDevice(), &queueCount, queueProps.Data());
 
     mPresentQueueIndex = UINT32_MAX;
     for (uint32 i = 0; i < queueCount; ++i)
@@ -266,8 +266,8 @@ bool Backbuffer::CreateSwapchainImageViews()
 
 bool Backbuffer::BuildPresentCommandBuffers()
 {
-    mPresentCommandBuffers.resize(mBuffersNum);
-    mPostPresentCommandBuffers.resize(mBuffersNum);
+    mPresentCommandBuffers.Resize(mBuffersNum);
+    mPostPresentCommandBuffers.Resize(mBuffersNum);
 
     VkResult result = VK_SUCCESS;
     VkCommandBufferAllocateInfo buffInfo = {};
@@ -276,9 +276,9 @@ bool Backbuffer::BuildPresentCommandBuffers()
     buffInfo.commandPool = gDevice->GetCommandPool();
     buffInfo.commandBufferCount = mBuffersNum;
     buffInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    result = vkAllocateCommandBuffers(gDevice->GetDevice(), &buffInfo, mPresentCommandBuffers.data());
+    result = vkAllocateCommandBuffers(gDevice->GetDevice(), &buffInfo, mPresentCommandBuffers.Data());
     CHECK_VKRESULT(result, "Unable to allocate present command buffer");
-    result = vkAllocateCommandBuffers(gDevice->GetDevice(), &buffInfo, mPostPresentCommandBuffers.data());
+    result = vkAllocateCommandBuffers(gDevice->GetDevice(), &buffInfo, mPostPresentCommandBuffers.Data());
     CHECK_VKRESULT(result, "Unable to allocate post present command buffer");
 
     // Build present and post-present command buffers

@@ -39,6 +39,9 @@ public:
     // initialize using C-style array
     DynArray(const ElementType* elements, uint32 count);
 
+    // initialize by constructing given number of default objects (default constructor will be called)
+    explicit DynArray(uint32 count);
+
     /**
      * Remove all the elements.
      * @param freeMemory    Release memory?

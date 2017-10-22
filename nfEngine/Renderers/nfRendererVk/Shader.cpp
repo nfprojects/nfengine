@@ -274,13 +274,13 @@ bool Shader::Init(const ShaderDesc& desc)
     return true;
 }
 
-bool Shader::Disassemble(bool html, std::string& output)
+bool Shader::Disassemble(bool html, Common::String& output)
 {
     UNUSED(html); // TODO
     // Disassemble the shader, to provide parsing source for slot extraction
     std::stringstream ss;
     spv::Disassemble(ss, mShaderSpv);
-    output = ss.str();
+    output = ss.str().c_str();
     return true;
 }
 
@@ -338,13 +338,15 @@ void Shader::ParseResourceSlots()
         size_t openBracketPos = tokens[1].find('(');
         size_t closeBracketPos = tokens[1].find(')', openBracketPos+1);
 
-        std::string tokenName = tokens[1].substr(openBracketPos+1, closeBracketPos - openBracketPos - 1);
-        SetSlotMap::iterator it;
+        const Common::String tokenName(tokens[1].substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1).c_str());
+        SetSlotMap::Iterator it;
         if (tokens[2] == "DescriptorSet" || tokens[2] == "Binding")
         {
-            it = mResourceSlotMap.find(tokenName);
-            if (it == mResourceSlotMap.end())
-                it = std::get<0>(mResourceSlotMap.emplace(tokenName, std::make_pair(static_cast<uint16>(0), static_cast<uint16>(0))));
+            it = mResourceSlotMap.Find(tokenName);
+            if (it == mResourceSlotMap.End())
+            {
+                it = mResourceSlotMap.Insert(tokenName, std::make_pair(static_cast<uint16>(0), static_cast<uint16>(0))).iterator;
+            }
         }
         else
             continue;
@@ -352,13 +354,13 @@ void Shader::ParseResourceSlots()
         if (tokens[2] == "DescriptorSet")
         {
             LOG_DEBUG("Found resource %s with DescriptorSet = %s", tokens[1].c_str(), tokens[3].c_str());
-            it->second.first = static_cast<uint16>(std::atoi(tokens[3].c_str()));
+            (*it).second.first = static_cast<uint16>(std::atoi(tokens[3].c_str()));
         }
 
         if (tokens[2] == "Binding")
         {
             LOG_DEBUG("Found resource %s with Binding = %s", tokens[1].c_str(), tokens[3].c_str());
-            it->second.second = static_cast<uint16>(std::atoi(tokens[3].c_str()));
+            (*it).second.second = static_cast<uint16>(std::atoi(tokens[3].c_str()));
         }
     }
 
@@ -367,11 +369,11 @@ void Shader::ParseResourceSlots()
 
 int Shader::GetResourceSlotByName(const char* name)
 {
-    auto it = mResourceSlotMap.find(name);
-    if (it == mResourceSlotMap.end())
+    auto it = mResourceSlotMap.Find(name);
+    if (it == mResourceSlotMap.End())
         return -1;
 
-    const SetSlotPair& pair = it->second;
+    const SetSlotPair& pair = (*it).second;
 
     // encode slot/binding pair onto a single uint
     // 16 MSB are set, 16 LSB are binding point

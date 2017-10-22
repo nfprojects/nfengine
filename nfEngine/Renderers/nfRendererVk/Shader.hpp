@@ -9,6 +9,8 @@
 #include "../RendererInterface/Shader.hpp"
 #include "Defines.hpp"
 
+#include "nfCommon/Containers/HashMap.hpp"
+
 namespace NFE {
 namespace Renderer {
 
@@ -18,7 +20,7 @@ class Shader : public IShader
     friend class PipelineState;
 
     typedef std::pair<uint16, uint16> SetSlotPair; // first is set, second is binding
-    typedef std::map<std::string, SetSlotPair> SetSlotMap; // mapping Resource Name to Slot
+    typedef Common::HashMap<Common::String, SetSlotPair> SetSlotMap; // mapping Resource Name to Slot
 
     ShaderType mType;
     Common::UniquePtr<glslang::TShader> mShaderGlslang;
@@ -36,7 +38,7 @@ public:
     ~Shader();
     bool Init(const ShaderDesc& desc);
 
-    bool Disassemble(bool html, std::string& output) override;
+    bool Disassemble(bool html, Common::String& output) override;
     int GetResourceSlotByName(const char* name) override;
 };
 

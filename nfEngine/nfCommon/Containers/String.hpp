@@ -32,7 +32,12 @@ public:
     NFE_INLINE String(char c);
     String(const StringView& view);
     NFE_INLINE String(const String& string);
+
+    // create a string from null-terminated C string
     NFE_INLINE String(const char* string);
+
+    // create a string from not-null-terminated C string
+    NFE_INLINE String(const char* string, uint32 length);
 
     // assignment operators
     String& operator=(char c);
