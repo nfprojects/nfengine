@@ -24,19 +24,20 @@ class LoggerPerf : public CommonPerfTest
 public:
     void TestFixture(std::function<void()> testFunc)
     {
-        auto bckndList = Logger::ListBackends();
-        for (const auto& b : bckndList)
-            Logger::GetBackend(b)->Enable(false);
-
-        for (const auto& b : bckndList)
+        auto& bckndList = Logger::ListBackends();
+        for (const auto& backend : bckndList)
         {
-            auto backend = Logger::GetBackend(b);
-            backend->Enable(true);
-            GetOStream() << std::endl << "<>LOGGER BACKEND: " << b << std::endl;
+            backend.ptr->Enable(false);
+        }
+
+        for (const auto& backend : bckndList)
+        {
+            backend.ptr->Enable(true);
+            GetOStream() << std::endl << "<>LOGGER BACKEND: " << backend.name.Str() << std::endl;
 
             testFunc();
 
-            backend->Enable(false);
+            backend.ptr->Enable(false);
         }
     }
 };

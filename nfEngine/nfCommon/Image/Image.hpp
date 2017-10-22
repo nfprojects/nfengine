@@ -8,26 +8,20 @@
 #pragma once
 
 #include "../nfCommon.hpp"
+#include "../Containers/DynArray.hpp"
 #include "Mipmap.hpp"
 #include "ImageFormat.hpp"
 #include "ImageType.hpp"
-
-#include <unordered_map>
-#include <memory>
-#include <vector>
 
 namespace NFE {
 namespace Common {
 
 class NFCOMMON_API Image
 {
-    std::vector<Mipmap> mMipmaps;
+    DynArray<Mipmap> mMipmaps;
     int mWidth;
     int mHeight;
     ImageFormat mFormat;
-
-    static ImageTypeMap& mImageTypes();
-    friend class ImageType;
 
     bool DecompressDDS();
     bool CompressDDS(ImageFormat destFormat);
@@ -41,6 +35,8 @@ public:
     Image& operator=(const Image& other) = delete;
     Image& operator=(Image&& other) = delete;
     ~Image();
+
+    static void ClearRegisteredTypesList();
 
     /**
      * Free the image from memory.
@@ -70,6 +66,11 @@ public:
      * @return true on success
      */
     bool SetData(const void* data, uint32 width, uint32 height, ImageFormat format);
+
+    /**
+     * Create an image from a set of mipmaps.
+     */
+    bool SetData(DynArray<Mipmap>&& mipmaps, uint32 width, uint32 height, ImageFormat format);
 
     /**
      * Load image from a data stream. Supported file formats: BMP, JPEG, PNG, DDS.
@@ -102,7 +103,7 @@ public:
     /**
      * Get number of mipmaps in the image.
      */
-    size_t GetMipmapsNum() const;
+    uint32 GetMipmapsNum() const;
 
     /**
      * Access n-th mipmap data.

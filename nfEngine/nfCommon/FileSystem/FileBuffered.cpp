@@ -21,7 +21,7 @@ FileBuffered::FileBuffered()
 {
 }
 
-FileBuffered::FileBuffered(const std::string& path, AccessMode mode, bool overwrite)
+FileBuffered::FileBuffered(const String& path, AccessMode mode, bool overwrite)
     : mFile(path, mode, overwrite)
     , mBufferPosition(0)
     , mBufferOccupied(FILE_BUFFERED_BUFFER_SIZE)
@@ -56,7 +56,7 @@ bool FileBuffered::IsOpened() const
     return mFile.IsOpened();
 }
 
-bool FileBuffered::Open(const std::string& path, AccessMode access, bool overwrite)
+bool FileBuffered::Open(const String& path, AccessMode access, bool overwrite)
 {
     bool result = mFile.Open(path, access, overwrite);
     if (result)

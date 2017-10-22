@@ -142,9 +142,9 @@ TEST(Config, ValueCheck)
     bool arrayCheck[3] = { false, false, false };
     bool subObjectInt = false;
 
-    auto subObjectIteratorCallback = [&] (const char* key, const ConfigValue& value)
+    auto subObjectIteratorCallback = [&] (StringView key, const ConfigValue& value)
     {
-        if (strcmp(key, "int") == 0)
+        if (key == "int")
         {
             EXPECT_TRUE(value.Is<int32>());
             EXPECT_EQ(1, value.Get<int32>());
@@ -176,38 +176,38 @@ TEST(Config, ValueCheck)
         return true;
     };
 
-    auto rootObjectIteratorCallback = [&] (const char* key, const ConfigValue& value)
+    auto rootObjectIteratorCallback = [&] (StringView key, const ConfigValue& value)
     {
-        if (strcmp(key, "integerValue") == 0)
+        if (key == "integerValue")
         {
             EXPECT_TRUE(value.Is<int32>());
             EXPECT_EQ(-1, value.Get<int32>());
             intOccurred = true;
         }
-        else if (strcmp(key, "booleanValue") == 0)
+        else if (key == "booleanValue")
         {
             EXPECT_TRUE(value.Is<bool>());
             EXPECT_EQ(true, value.Get<bool>());
             boolOccurred = true;
         }
-        else if (strcmp(key, "floatValue") == 0)
+        else if (key == "floatValue")
         {
             EXPECT_TRUE(value.Is<float>());
             EXPECT_EQ(10.0f, value.Get<float>());
             floatOccurred = true;
         }
-        else if (strcmp(key, "stringValue") == 0)
+        else if (key == "stringValue")
         {
             EXPECT_TRUE(value.IsString());
             EXPECT_STREQ("this is a string", value.GetString());
             stringOccurred = true;
         }
-        else if (strcmp(key, "object") == 0)
+        else if (key == "object")
         {
             EXPECT_TRUE(value.IsObject());
             config.Iterate(subObjectIteratorCallback, value.GetObj());
         }
-        else if (strcmp(key, "array") == 0)
+        else if (key == "array")
         {
             EXPECT_TRUE(value.IsArray());
             config.IterateArray(arrayIteratorCallback, value.GetArray());
@@ -237,22 +237,22 @@ TEST(Config, Generate)
 
     ConfigObject root;
     config
-        .AddValue(root, "bool", ConfigValue(true))
-        .AddValue(root, "int", ConfigValue(1))
-        .AddValue(root, "float", ConfigValue(123.0f))
-        .AddValue(root, "string", ConfigValue("str"));
+        .AddValue(root, StringView("bool"), ConfigValue(true))
+        .AddValue(root, StringView("int"), ConfigValue(1))
+        .AddValue(root, StringView("float"), ConfigValue(123.0f))
+        .AddValue(root, StringView("string"), ConfigValue("str"));
 
     ConfigObject subObject;
-    config.AddValue(subObject, "blah", ConfigValue(123));
-    config.AddValue(root, "obj", ConfigValue(subObject));
+    config.AddValue(subObject, StringView("blah"), ConfigValue(123));
+    config.AddValue(root, StringView("obj"), ConfigValue(subObject));
 
     ConfigObject subObject2;
-    config.AddValue(subObject2, "blah2", ConfigValue(234));
-    config.AddValue(root, "obj2", ConfigValue(subObject2));
+    config.AddValue(subObject2, StringView("blah2"), ConfigValue(234));
+    config.AddValue(root, StringView("obj2"), ConfigValue(subObject2));
 
     ConfigArray array;
     config.AddValue(array, ConfigValue(1)).AddValue(array, ConfigValue(2));
-    config.AddValue(root, "array", ConfigValue(array));
+    config.AddValue(root, StringView("array"), ConfigValue(array));
 
     config.SetRoot(root);
 
@@ -335,22 +335,22 @@ TEST(Config, DataTranslator)
         float floatValue;
         const char* stringValue;
 
-        std::vector<int> intArray;
-        std::vector<bool> boolArray;
-        std::vector<float> floatArray;
-        std::vector<const char*> stringArray;
+        DynArray<int> intArray;
+        DynArray<bool> boolArray;
+        DynArray<float> floatArray;
+        DynArray<const char*> stringArray;
     };
 
     // set up data translator
     auto translator = DataTranslator<TestStruct>()
-        .Add("integerValue", &TestStruct::integerValue)
-        .Add("booleanValue", &TestStruct::booleanValue)
-        .Add("floatValue", &TestStruct::floatValue)
-        .Add("stringValue", &TestStruct::stringValue)
-        .Add("intArray", &TestStruct::intArray)
-        .Add("boolArray", &TestStruct::boolArray)
-        .Add("floatArray", &TestStruct::floatArray)
-        .Add("stringArray", &TestStruct::stringArray);
+        .Add(StringView("integerValue"), &TestStruct::integerValue)
+        .Add(StringView("booleanValue"), &TestStruct::booleanValue)
+        .Add(StringView("floatValue"), &TestStruct::floatValue)
+        .Add(StringView("stringValue"), &TestStruct::stringValue)
+        .Add(StringView("intArray"), &TestStruct::intArray)
+        .Add(StringView("boolArray"), &TestStruct::boolArray)
+        .Add(StringView("floatArray"), &TestStruct::floatArray)
+        .Add(StringView("stringArray"), &TestStruct::stringArray);
 
     TestStruct object;
     ASSERT_TRUE(config.TranslateConfigObject(config.GetRootNode(), translator, object));
@@ -360,22 +360,22 @@ TEST(Config, DataTranslator)
     EXPECT_EQ(10.0f, object.floatValue);
     EXPECT_STREQ("this is a string", object.stringValue);
 
-    ASSERT_EQ(3, object.intArray.size());
+    ASSERT_EQ(3, object.intArray.Size());
     EXPECT_EQ(1, object.intArray[0]);
     EXPECT_EQ(2, object.intArray[1]);
     EXPECT_EQ(3, object.intArray[2]);
 
-    ASSERT_EQ(3, object.boolArray.size());
+    ASSERT_EQ(3, object.boolArray.Size());
     EXPECT_TRUE(object.boolArray[0]);
     EXPECT_FALSE(object.boolArray[1]);
     EXPECT_TRUE(object.boolArray[2]);
 
-    ASSERT_EQ(3, object.floatArray.size());
+    ASSERT_EQ(3, object.floatArray.Size());
     EXPECT_EQ(1.0f, object.floatArray[0]);
     EXPECT_EQ(2.0f, object.floatArray[1]);
     EXPECT_EQ(3.0f, object.floatArray[2]);
 
-    ASSERT_EQ(2, object.stringArray.size());
+    ASSERT_EQ(2, object.stringArray.Size());
     EXPECT_STREQ("aaa", object.stringArray[0]);
     EXPECT_STREQ("bbb", object.stringArray[1]);
 }
@@ -392,22 +392,22 @@ TEST(Config, DataTranslatorInvalidTypes)
         float floatValue;
         const char* stringValue;
 
-        std::vector<int> intArray;
-        std::vector<bool> boolArray;
-        std::vector<float> floatArray;
-        std::vector<const char*> stringArray;
+        DynArray<int> intArray;
+        DynArray<bool> boolArray;
+        DynArray<float> floatArray;
+        DynArray<const char*> stringArray;
     };
 
     // set up data translator with messed up types
     auto translator = DataTranslator<TestStruct>()
-        .Add("integerValue", &TestStruct::stringValue)
-        .Add("booleanValue", &TestStruct::floatValue)
-        .Add("floatValue", &TestStruct::booleanValue)
-        .Add("stringValue", &TestStruct::integerValue)
-        .Add("intArray", &TestStruct::stringArray)
-        .Add("boolArray", &TestStruct::floatArray)
-        .Add("floatArray", &TestStruct::boolArray)
-        .Add("stringArray", &TestStruct::intArray);
+        .Add(StringView("integerValue"), &TestStruct::stringValue)
+        .Add(StringView("booleanValue"), &TestStruct::floatValue)
+        .Add(StringView("floatValue"), &TestStruct::booleanValue)
+        .Add(StringView("stringValue"), &TestStruct::integerValue)
+        .Add(StringView("intArray"), &TestStruct::stringArray)
+        .Add(StringView("boolArray"), &TestStruct::floatArray)
+        .Add(StringView("floatArray"), &TestStruct::boolArray)
+        .Add(StringView("stringArray"), &TestStruct::intArray);
 
     TestStruct object;
     ASSERT_FALSE(config.TranslateConfigObject(config.GetRootNode(), translator, object));

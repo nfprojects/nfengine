@@ -46,8 +46,8 @@ bool ComputeScene::CreateSubSceneSimple()
         { "THREADS_X", threadGroupSizeStr.c_str() },
         { "THREADS_Y", threadGroupSizeStr.c_str() },
     };
-    std::string vsPath = gShaderPathPrefix + "TestCS" + gShaderPathExt;
-    mShader = CompileShader(vsPath.c_str(), ShaderType::Compute, macros, 2);
+    const Common::String vsPath = gShaderPathPrefix + "TestCS" + gShaderPathExt;
+    mShader = CompileShader(vsPath.Str(), ShaderType::Compute, macros, 2);
     if (!mShader)
         return false;
 

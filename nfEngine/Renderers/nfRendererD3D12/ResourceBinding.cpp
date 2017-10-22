@@ -205,7 +205,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         0, rootSignature->GetBufferPointer(), rootSignature->GetBufferSize(),
         IID_PPV_ARGS(mRootSignature.GetPtr())));
 
-    if (desc.debugName && !SetDebugName(mRootSignature.Get(), desc.debugName))
+    if (desc.debugName && !SetDebugName(mRootSignature.Get(), Common::StringView(desc.debugName)))
     {
         NFE_LOG_WARNING("Failed to set debug name");
     }

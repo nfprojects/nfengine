@@ -23,6 +23,7 @@
 #include "nfCommon/System/Win/Common.hpp"
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/Utils/ScopedLock.hpp"
+#include "nfCommon/Utils/StringUtils.hpp"
 
 
 namespace NFE {
@@ -141,17 +142,17 @@ bool Device::Init(const DeviceInitParams* params)
     DeviceInfo deviceInfo;
     if (GetDeviceInfo(deviceInfo))
     {
-        NFE_LOG_INFO("GPU name: %s", deviceInfo.description.c_str());
-        NFE_LOG_INFO("GPU info: %s", deviceInfo.misc.c_str());
+        NFE_LOG_INFO("GPU name: %s", deviceInfo.description.Str());
+        NFE_LOG_INFO("GPU info: %s", deviceInfo.misc.Str());
 
-        std::string features;
-        for (size_t i = 0; i < deviceInfo.features.size(); ++i)
+        Common::String features;
+        for (uint32 i = 0; i < deviceInfo.features.Size(); ++i)
         {
             if (i > 0)
                 features += ", ";
             features += deviceInfo.features[i];
         }
-        NFE_LOG_INFO("GPU features: %s", features.c_str());
+        NFE_LOG_INFO("GPU features: %s", features.Str());
     }
 
     return true;
@@ -421,13 +422,13 @@ bool Device::DetectVideoCards(int preferredId)
 
         // get GPU description
         std::wstring wideDesc = adapterDesc.Description;
-        std::string descString;
+        Common::String descString;
         Common::UTF16ToUTF8(wideDesc, descString);
 
         if (static_cast<uint32>(preferredId) == i)
             mAdapterInUse = i;
 
-        NFE_LOG_INFO("Adapter found at slot %u: %s", i, descString.c_str());
+        NFE_LOG_INFO("Adapter found at slot %u: %s", i, descString.Str());
         mAdapters.push_back(D3DPtr<IDXGIAdapter>(adapter));
     }
 
@@ -469,16 +470,16 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
 
     // get various GPU information
     info.misc =
-        "Vendor ID: " + std::to_string(adapterDesc.VendorId) +
-        ", Device ID: " + std::to_string(adapterDesc.DeviceId) +
-        ", Sub System ID: " + std::to_string(adapterDesc.SubSysId) +
-        ", Revision: " + std::to_string(adapterDesc.Revision) +
-        ", Dedicated Video Memory: " + std::to_string(adapterDesc.DedicatedVideoMemory >> 10) + " KB"
-        ", Dedicated System Memory: " + std::to_string(adapterDesc.DedicatedSystemMemory >> 10) + " KB"
-        ", Shared System Memory: " + std::to_string(adapterDesc.SharedSystemMemory >> 10) + " KB";
+        "Vendor ID: " + Common::ToString(adapterDesc.VendorId) +
+        ", Device ID: " + Common::ToString(adapterDesc.DeviceId) +
+        ", Sub System ID: " + Common::ToString(adapterDesc.SubSysId) +
+        ", Revision: " + Common::ToString(adapterDesc.Revision) +
+        ", Dedicated Video Memory: " + Common::ToString(uint64(adapterDesc.DedicatedVideoMemory >> 10u)) + " KB"
+        ", Dedicated System Memory: " + Common::ToString(uint64(adapterDesc.DedicatedSystemMemory >> 10u)) + " KB"
+        ", Shared System Memory: " + Common::ToString(uint64(adapterDesc.SharedSystemMemory >> 10u)) + " KB";
 
 
-    info.features.clear();
+    info.features.Clear();
 
     D3D11_FEATURE_DATA_THREADING threadingData;
     hr = mDevice->CheckFeatureSupport(D3D11_FEATURE_THREADING, &threadingData,
@@ -486,9 +487,9 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
     if (SUCCEEDED(hr))
     {
         if (threadingData.DriverCommandLists)
-            info.features.push_back("DriverCommandLists");
+            info.features.PushBack("DriverCommandLists");
         if (threadingData.DriverConcurrentCreates)
-            info.features.push_back("DriverConcurrentCreates");
+            info.features.PushBack("DriverConcurrentCreates");
     }
 
     D3D11_FEATURE_DATA_DOUBLES doublesData;
@@ -496,7 +497,7 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
     if (SUCCEEDED(hr))
     {
         if (doublesData.DoublePrecisionFloatShaderOps)
-            info.features.push_back("DoublePrecisionFloatShaderOps");
+            info.features.PushBack("DoublePrecisionFloatShaderOps");
     }
 
     D3D11_FEATURE_DATA_D3D10_X_HARDWARE_OPTIONS d3d10HardwareData;
@@ -505,7 +506,7 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
     if (SUCCEEDED(hr))
     {
         if (d3d10HardwareData.ComputeShaders_Plus_RawAndStructuredBuffers_Via_Shader_4_x)
-            info.features.push_back("ComputeShaders_Plus_RawAndStructuredBuffers_Via_Shader_4_x");
+            info.features.PushBack("ComputeShaders_Plus_RawAndStructuredBuffers_Via_Shader_4_x");
     }
 
     D3D11_FEATURE_DATA_D3D9_OPTIONS d3d9Data;
@@ -513,7 +514,7 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
     if (SUCCEEDED(hr))
     {
         if (d3d9Data.FullNonPow2TextureSupport)
-            info.features.push_back("FullNonPow2TextureSupport");
+            info.features.PushBack("FullNonPow2TextureSupport");
     }
 
     D3D11_FEATURE_DATA_SHADER_MIN_PRECISION_SUPPORT minPrecisionData;
@@ -521,10 +522,10 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
                                       &minPrecisionData, sizeof(minPrecisionData));
     if (SUCCEEDED(hr))
     {
-        info.features.push_back("PixelShaderMinPrecision=" +
-                                std::to_string(minPrecisionData.PixelShaderMinPrecision));
-        info.features.push_back("AllOtherShaderStagesMinPrecision=" +
-                                std::to_string(minPrecisionData.AllOtherShaderStagesMinPrecision));
+        info.features.PushBack("PixelShaderMinPrecision=" +
+                               Common::ToString(minPrecisionData.PixelShaderMinPrecision));
+        info.features.PushBack("AllOtherShaderStagesMinPrecision=" +
+                               Common::ToString(minPrecisionData.AllOtherShaderStagesMinPrecision));
     }
 
     D3D11_FEATURE_DATA_D3D9_SHADOW_SUPPORT shadowSupportData;
@@ -533,7 +534,7 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
     if (SUCCEEDED(hr))
     {
         if (shadowSupportData.SupportsDepthAsTextureWithLessEqualComparisonFilter)
-            info.features.push_back("SupportsDepthAsTextureWithLessEqualComparisonFilter");
+            info.features.PushBack("SupportsDepthAsTextureWithLessEqualComparisonFilter");
     }
 
     // TODO: Direct3D 11.x support

@@ -79,7 +79,7 @@ NFE_END_DEFINE_ENUM()
 
 namespace helper {
 
-bool SerializeObject(const Type* type, const void* object, std::string& outString)
+bool SerializeObject(const Type* type, const void* object, String& outString)
 {
     Common::Config config;
     Common::ConfigValue value;
@@ -89,17 +89,17 @@ bool SerializeObject(const Type* type, const void* object, std::string& outStrin
     }
 
     Common::ConfigObject root;
-    config.AddValue(root, "obj", value);
+    config.AddValue(root, StringView("obj"), value);
     config.SetRoot(root);
 
     outString = config.ToString(false);
     return true;
 }
 
-bool DeserializeObject(const Type* type, void* outObject, const std::string& string)
+bool DeserializeObject(const Type* type, void* outObject, const String& string)
 {
     Common::Config config;
-    config.Parse(string.c_str());
+    config.Parse(string.Str());
     Common::ConfigGenericValue genericValue(&config);
     Common::ConfigValue value = genericValue["obj"];
 

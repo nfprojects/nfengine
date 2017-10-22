@@ -8,26 +8,30 @@
 
 #include "../../nfCommon.hpp"
 
-#include <string>
+#include "../../Containers/StringView.hpp"
+#include "../../Containers/String.hpp"
 
 
 namespace NFE {
 namespace Common {
 
+// TODO get rid of Utf16String
+using Utf16String = std::wstring;
+
 /**
  * Convert a string from UTF-8 to Windows' UTF-16.
  */
-NFCOMMON_API bool UTF8ToUTF16(const std::string& in, std::wstring& out);
+NFCOMMON_API bool UTF8ToUTF16(const StringView in, Utf16String& out);
 
 /**
 * Convert a string from Windows' UTF-16 to UTF-8.
 */
-NFCOMMON_API bool UTF16ToUTF8(const std::wstring& in, std::string& out);
+NFCOMMON_API bool UTF16ToUTF8(const Utf16String& in, String& out);
 
 /**
  * Translates GetLastError() code to a string.
  */
-std::string GetLastErrorString();
+String GetLastErrorString();
 
 } // namespace Common
 } // namespace NFE

@@ -13,7 +13,7 @@ namespace NFE {
 namespace Common {
 
  // Register HTML backend
-bool gLoggerBackendXMLRegistered = Logger::RegisterBackend("XML", std::make_unique<LoggerBackendXML>());
+bool gLoggerBackendXMLRegistered = Logger::RegisterBackend(StringView("XML"), MakeUniquePtr<LoggerBackendXML>());
 
 LoggerBackendXML::LoggerBackendXML()
 {
@@ -24,16 +24,16 @@ void LoggerBackendXML::Reset()
 {
     /**
      * TODO: move intro, outro and the other XML code templates to another file, so the logger
-     * backend can be easly customizable.
+     * backend can be easily customizable.
      */
-    const static std::string gLogIntro = R"(<?xml version="1.0" encoding="utf-8"?>
+    const static StringView gLogIntro(R"(<?xml version="1.0" encoding="utf-8"?>
 <LoggerOutput title = "nfEngine - log file">
-)";
+)");
 
-    const std::string logFileName = "log.xml";
-    mBuffer.resize(NFE_MAX_LOG_MESSAGE_LENGTH);
+    const StringView logFileName("log.xml");
+    mBuffer.Resize(NFE_MAX_LOG_MESSAGE_LENGTH);
 
-    const std::string logFilePath = Logger::GetInstance()->GetLogsDirectory() + '/' + logFileName;
+    const String logFilePath = Logger::GetInstance()->GetLogsDirectory() + '/' + logFileName;
     if (!mFile.Open(logFilePath, AccessMode::Write, true))
     {
         // this will be handled by other logger
@@ -41,14 +41,14 @@ void LoggerBackendXML::Reset()
         return;
     }
 
-    mFile.Write(gLogIntro.data(), gLogIntro.length());
+    mFile.Write(gLogIntro.Data(), gLogIntro.Length());
 }
 
 LoggerBackendXML::~LoggerBackendXML()
 {
-    const static std::string gLogOutro(R"(</LoggerOutput>)");
+    const static String gLogOutro(R"(</LoggerOutput>)");
 
-    mFile.Write(gLogOutro.data(), gLogOutro.length());
+    mFile.Write(gLogOutro.Str(), gLogOutro.Length());
 }
 
 void LoggerBackendXML::Log(LogType type, const char* srcFile, int line, const char* str,
@@ -88,7 +88,7 @@ void LoggerBackendXML::Log(LogType type, const char* srcFile, int line, const ch
         "</%s>\n";
 
     size_t pathOffset = Logger::GetInstance()->GetPathPrefixLen();
-    int len = snprintf(mBuffer.data(), mBuffer.size(), format,
+    int len = snprintf(mBuffer.Data(), mBuffer.Size(), format,
                        nodeName, srcFile + pathOffset, line,
                        timeElapsed, str, nodeName);
 
@@ -99,17 +99,17 @@ void LoggerBackendXML::Log(LogType type, const char* srcFile, int line, const ch
     }
 
     size_t outputStrSize = static_cast<size_t>(len);
-    if (outputStrSize >= mBuffer.size())
+    if (outputStrSize >= mBuffer.Size())
     {
-        while (outputStrSize >= mBuffer.size())
-            mBuffer.resize(2 * mBuffer.size());
+        while (outputStrSize >= mBuffer.Size())
+            mBuffer.Resize(2 * mBuffer.Size());
 
-        snprintf(mBuffer.data(), mBuffer.size(), format,
+        snprintf(mBuffer.Data(), mBuffer.Size(), format,
                  nodeName, srcFile + pathOffset, line,
                  timeElapsed, str, nodeName);
     }
 
-    mFile.Write(mBuffer.data(), outputStrSize);
+    mFile.Write(mBuffer.Data(), outputStrSize);
 }
 
 } // namespace Common

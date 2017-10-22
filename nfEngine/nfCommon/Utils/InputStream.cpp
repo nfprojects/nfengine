@@ -18,9 +18,9 @@ namespace Common {
 // FileInputStream
 //-----------------------------------------------------------
 
-FileInputStream::FileInputStream(const char* pPath)
+FileInputStream::FileInputStream(const String& path)
 {
-    mFile.Open(pPath, AccessMode::Read, false);
+    mFile.Open(path, AccessMode::Read, false);
 }
 
 FileInputStream::~FileInputStream()

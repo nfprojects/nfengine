@@ -10,7 +10,6 @@
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/FileSystem/FileSystem.hpp"
 #include "nfCommon/System/KeyCodes.hpp"
-#include "nfCommon/Reflection/ReflectionTypeRegistry.hpp"
 
 namespace NFE {
 
@@ -185,8 +184,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 {
     using namespace NFE;
 
-    std::string execPath = Common::FileSystem::GetExecutablePath();
-    std::string execDir = Common::FileSystem::GetParentDir(execPath);
+    const Common::String execPath = Common::FileSystem::GetExecutablePath();
+    const Common::String execDir = Common::FileSystem::GetParentDir(execPath);
     Common::FileSystem::ChangeDirectory(execDir + "/../../..");
 
     // initialize engine
@@ -207,8 +206,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     gFont.Reset();
     Engine::Release();
 
-    // cleanup registered types before dumping memleaks
-    RTTI::TypeRegistry::GetInstance().Cleanup();
+    NFE::Common::ShutdownSubsystems();
 
     // enable memory leak detection at the process exit (Windows only)
 #ifdef _CRTDBG_MAP_ALLOC

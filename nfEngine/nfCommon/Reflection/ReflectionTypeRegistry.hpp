@@ -10,7 +10,8 @@
 #include "Types/ReflectionType.hpp"
 #include "Types/ReflectionClassType.hpp"
 
-#include <unordered_map>
+#include "../Containers/HashMap.hpp"
+#include "../Containers/StringView.hpp"
 
 
 namespace NFE {
@@ -38,7 +39,7 @@ public:
     /**
      * Find existing type by name.
      */
-    const Type* GetExistingType(const std::string& name) const;
+    const Type* GetExistingType(const Common::StringView name) const;
 
     /**
      * Register non-existing type.
@@ -53,8 +54,8 @@ public:
 private:
     TypeRegistry() = default;
 
-    std::unordered_map<std::string, const Type*> mTypesByName;
-    std::unordered_map<size_t, TypePtr> mTypesByHash;
+    Common::HashMap<Common::StringView, const Type*> mTypesByName;
+    Common::HashMap<size_t, TypePtr> mTypesByHash;
 };
 
 

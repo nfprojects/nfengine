@@ -56,6 +56,13 @@ typename Map<KeyType, ValueType, Comparator>::Iterator Map<KeyType, ValueType, C
 }
 
 template<typename KeyType, typename ValueType, typename Comparator>
+bool typename Map<KeyType, ValueType, Comparator>::Exists(const KeyType& key) const
+{
+    const InternalKey internalKey(key, ValueType());
+    return mSet.Exists(internalKey);
+}
+
+template<typename KeyType, typename ValueType, typename Comparator>
 typename Map<KeyType, ValueType, Comparator>::ConstIterator Map<KeyType, ValueType, Comparator>::Find(const KeyType& key) const
 {
     const InternalKey internalKey(key, ValueType());

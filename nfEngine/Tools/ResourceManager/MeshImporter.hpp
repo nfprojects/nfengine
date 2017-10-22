@@ -7,6 +7,7 @@
 #pragma once
 
 #include "nfResources/MeshFile.hpp"
+#include "../../nfCommon/Containers/String.hpp"
 
 
 namespace NFE {
@@ -24,7 +25,7 @@ class MeshImporter : public MeshFile
     std::vector<MaterialDesc> mMaterials;
 
 public:
-    bool ImportOBJ(const std::string& sourceFilePath, const std::string& targetFilePath);
+    bool ImportOBJ(const Common::String& sourceFilePath, const Common::String& targetFilePath);
 };
 
 } // namespace Resource
