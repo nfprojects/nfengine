@@ -14,7 +14,7 @@
 #include <Windows.h>
 #endif
 
-#include <string>
+#include "../Containers/StringView.hpp"
 
 
 namespace NFE {
@@ -58,7 +58,7 @@ private:
 
 public:
     File();
-    File(const std::string& path, AccessMode mode, bool overwrite = false);
+    File(const StringView path, AccessMode mode, bool overwrite = false);
     File(File&& other);
     ~File();
 
@@ -74,7 +74,7 @@ public:
      * @param access File access mode.
      * @param overwrite Overwrite a file if it already exists.
      */
-    bool virtual Open(const std::string& path, AccessMode access, bool overwrite = false);
+    bool virtual Open(const StringView path, AccessMode access, bool overwrite = false);
 
     /**
      * Close opened file.

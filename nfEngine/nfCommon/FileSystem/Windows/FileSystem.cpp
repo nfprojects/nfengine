@@ -18,7 +18,7 @@ namespace {
 
 static const std::wstring allFilesWildcard = L"\\*";
 
-bool RecursiveDeleteDirectory(const std::wstring& path)
+bool RecursiveDeleteDirectory(const Utf16String& path)
 {
     WIN32_FIND_DATA findData;
 
@@ -27,7 +27,7 @@ bool RecursiveDeleteDirectory(const std::wstring& path)
     if (findHandle == INVALID_HANDLE_VALUE)
     {
         NFE_LOG_ERROR("FindFirstFile failed for path '%s': %s", path.c_str(),
-                  GetLastErrorString().c_str());
+                  GetLastErrorString().Str());
         return false;
     }
 
@@ -54,7 +54,7 @@ bool RecursiveDeleteDirectory(const std::wstring& path)
                         if (UTF16ToUTF8(filePath, shortPath))
                         {
                             NFE_LOG_ERROR("Failed to delete file '%s': %s", shortPath.c_str(),
-                                      GetLastErrorString().c_str());
+                                      GetLastErrorString().Str());
                         }
                     }
                 }
@@ -65,7 +65,7 @@ bool RecursiveDeleteDirectory(const std::wstring& path)
             {
                 DWORD lastError = ::GetLastError();
                 if (lastError != ERROR_NO_MORE_FILES)
-                    NFE_LOG_ERROR("FindNextFile() failed: %s", GetLastErrorString().c_str());
+                    NFE_LOG_ERROR("FindNextFile() failed: %s", GetLastErrorString().Str());
                 break;
             }
         }
@@ -90,66 +90,69 @@ bool RecursiveDeleteDirectory(const std::wstring& path)
 
 } // namespace
 
-std::string FileSystem::GetExecutablePath()
+String FileSystem::GetExecutablePath()
 {
-    std::unique_ptr<TCHAR[]> execPath;
-    std::string execPathStr;
+    Utf16String execPath;
     DWORD sizeRead = 0;
-    unsigned int len = MAX_PATH; // Maximum length of a relative paths, available in Windows
-    const unsigned int maxPathWide = 32768; // Maximum length of a path, available in Windows
+    uint32 len = MAX_PATH; // Maximum length of a relative paths, available in Windows
+    const uint32 maxPathWide = 32768; // Maximum length of a path, available in Windows
 
     for (; len < maxPathWide; len *= 2)
     {
-        execPath.reset(new TCHAR[len]);
-        sizeRead = GetModuleFileName(nullptr, execPath.get(), len);
+        execPath.Resize(len);
+        sizeRead = GetModuleFileNameW(nullptr, execPath.Data(), len);
 
         if (sizeRead < len && sizeRead != 0)
+        {
+            execPath.Resize(sizeRead);
             break;
+        }
+
     }
 
     // Check if the buffer did not overflow, if not - convert to UTF8 and check result
     if (len >= maxPathWide)
     {
-        NFE_LOG_ERROR("Failed to resolve executable's path : %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("Failed to resolve executable's path : %s", GetLastErrorString().Str());
         return "";
     }
-    if (!UTF16ToUTF8(execPath.get(), execPathStr))
+
+    String execPathStr;
+    if (!UTF16ToUTF8(execPath, execPathStr))
     {
-        NFE_LOG_ERROR("UTF conversion of executable's path failed : %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("UTF conversion of executable's path failed : %s", GetLastErrorString().Str());
         return "";
     }
 
     return execPathStr;
 }
 
-bool FileSystem::ChangeDirectory(const std::string& path)
+bool FileSystem::ChangeDirectory(const StringView path)
 {
-    std::wstring widePath;
+    Utf16String widePath;
     if (!UTF8ToUTF16(path, widePath))
         return false;
 
-    if (::SetCurrentDirectory(widePath.c_str()) == 0)
+    if (::SetCurrentDirectory(widePath.Data()) == 0)
     {
-        NFE_LOG_ERROR("Failed to change directory to '%s': %s", path.c_str(),
-                  GetLastErrorString().c_str());
+        NFE_LOG_ERROR("Failed to change directory to '%.*s': %s", path.Length(), path.Data(), GetLastErrorString().Str());
         return false;
     }
 
-    NFE_LOG_INFO("Current directory changed to: '%s'", path.c_str());
+    NFE_LOG_INFO("Current directory changed to: '%.*s'", path.Length(), path.Data());
     return true;
 }
 
-bool FileSystem::TouchFile(const std::string& path)
+bool FileSystem::TouchFile(const StringView path)
 {
-    std::wstring widePath;
+    Utf16String widePath;
     if (!UTF8ToUTF16(path, widePath))
         return false;
 
-    HANDLE fileHandle = ::CreateFile(widePath.c_str(), 0, 0, NULL, CREATE_NEW,
-                                     FILE_ATTRIBUTE_NORMAL, 0);
+    HANDLE fileHandle = ::CreateFile(widePath.Data(), 0, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, 0);
     if (fileHandle == INVALID_HANDLE_VALUE)
     {
-        NFE_LOG_ERROR("Failed to create file '%s': %s", path.c_str(), GetLastErrorString().c_str());
+        NFE_LOG_ERROR("Failed to create file '%.*s': %s", path.Length(), path.Data(), GetLastErrorString().Str());
         return false;
     }
 
@@ -157,13 +160,13 @@ bool FileSystem::TouchFile(const std::string& path)
     return true;
 }
 
-PathType FileSystem::GetPathType(const std::string& path)
+PathType FileSystem::GetPathType(const StringView path)
 {
-    std::wstring widePath;
+    Utf16String widePath;
     if (!UTF8ToUTF16(path, widePath))
         return PathType::Invalid;
 
-    DWORD attrs = GetFileAttributes(widePath.c_str());
+    const DWORD attrs = GetFileAttributes(widePath.Data());
 
     if (attrs == INVALID_FILE_ATTRIBUTES)
         return PathType::Invalid;
@@ -173,34 +176,32 @@ PathType FileSystem::GetPathType(const std::string& path)
     return PathType::File;
 }
 
-bool FileSystem::CreateDir(const std::string& path)
+bool FileSystem::CreateDir(const StringView path)
 {
-    std::wstring widePath;
+    Utf16String widePath;
     if (!UTF8ToUTF16(path, widePath))
         return false;
 
-    if (::CreateDirectory(widePath.c_str(), nullptr) == 0)
+    if (::CreateDirectory(widePath.Data(), nullptr) == 0)
     {
-        NFE_LOG_ERROR("Failed to create directory '%s': %s", path.c_str(),
-                  GetLastErrorString().c_str());
+        NFE_LOG_ERROR("Failed to create directory '%.*s': %s", path.Length(), path.Data(), GetLastErrorString().Str());
         return false;
     }
 
-    NFE_LOG_INFO("Created directory '%s'", path.c_str());
+    NFE_LOG_INFO("Created directory '%.*s'", path.Length(), path.Data());
     return true;
 }
 
-bool FileSystem::Remove(const std::string& path, bool recursive)
+bool FileSystem::Remove(const StringView path, bool recursive)
 {
-    std::wstring widePath;
+    Utf16String widePath;
     if (!UTF8ToUTF16(path, widePath))
         return false;
 
-    DWORD attrs = GetFileAttributes(widePath.c_str());
+    const DWORD attrs = GetFileAttributes(widePath.Data());
     if (INVALID_FILE_ATTRIBUTES == attrs)
     {
-        NFE_LOG_INFO("Failed to retrieve attributes for path '%s': %s", path.c_str(),
-                 GetLastErrorString().c_str());
+        NFE_LOG_INFO("Failed to retrieve attributes for path '%.*s': %s", path.Length(), path.Data(), GetLastErrorString().Str());
         return false;
     }
 
@@ -209,57 +210,58 @@ bool FileSystem::Remove(const std::string& path, bool recursive)
         if (recursive)
         {
             if (!RecursiveDeleteDirectory(widePath))
+            {
                 return false;
+            }
         }
-        else if (::RemoveDirectory(widePath.c_str()) == FALSE)
+        else if (::RemoveDirectory(widePath.Data()) == FALSE)
         {
-            NFE_LOG_ERROR("Failed to remove '%s': %s", path.c_str(),
-                      GetLastErrorString().c_str());
+            NFE_LOG_ERROR("Failed to remove '%.*s': %s", path.Length(), path.Data(), GetLastErrorString().Str());
             return false;
         }
     }
     else // delete file only
     {
-        BOOL result = ::DeleteFile(widePath.c_str());
+        BOOL result = ::DeleteFile(widePath.Data());
         if (result == FALSE)
         {
-            NFE_LOG_ERROR("Failed to delete file '%s': %s", path.c_str(),
-                      GetLastErrorString().c_str());
+            NFE_LOG_ERROR("Failed to delete file '%.*s': %s", path.Length(), path.Data(), GetLastErrorString().Str());
             return false;
         }
     }
 
-    NFE_LOG_INFO("Removed '%s'", path.c_str());
+    NFE_LOG_INFO("Removed '%.*s'", path.Length(), path.Data());
     return true;
 }
 
-bool FileSystem::Copy(const std::string& srcPath, const std::string& destPath, bool overwrite)
+bool FileSystem::Copy(const StringView srcPath, const StringView destPath, bool overwrite)
 {
-    std::wstring wideSrcPath, wideDestPath;
+    Utf16String wideSrcPath, wideDestPath;
     if (!UTF8ToUTF16(srcPath, wideSrcPath) || !UTF8ToUTF16(destPath, wideDestPath))
         return false;
 
-    if (::CopyFile(wideSrcPath.c_str(), wideDestPath.c_str(), !overwrite) == 0)
+    if (::CopyFile(wideSrcPath.Data(), wideDestPath.Data(), !overwrite) == 0)
     {
-        NFE_LOG_ERROR("Failed to copy file '%s' to '%s': %s", srcPath.c_str(), destPath.c_str(),
-                  GetLastErrorString().c_str());
+        NFE_LOG_ERROR("Failed to copy file '%.*s' to '%.*s': %s",
+            srcPath.Length(), srcPath.Data(), destPath.Length(), destPath.Data(),
+            GetLastErrorString().Str());
         return false;
     }
 
-    NFE_LOG_INFO("File '%s' copied to '%s'", srcPath.c_str(), destPath.c_str());
+    NFE_LOG_INFO("File '%.*s' copied to '%.*s'", srcPath.Length(), srcPath.Data(), destPath.Length(), destPath.Data());
     return true;
 }
 
-bool FileSystem::Move(const std::string& srcPath, const std::string& destPath)
+bool FileSystem::Move(const StringView srcPath, const StringView destPath)
 {
-    std::wstring wideSrcPath, wideDestPath;
+    Utf16String wideSrcPath, wideDestPath;
     if (!UTF8ToUTF16(srcPath, wideSrcPath) || !UTF8ToUTF16(destPath, wideDestPath))
         return false;
 
     if (::MoveFile(wideSrcPath.c_str(), wideDestPath.c_str()) == 0)
     {
         NFE_LOG_ERROR("Failed to move file '%s' to '%s': %s", srcPath.c_str(), destPath.c_str(),
-                  GetLastErrorString().c_str());
+                  GetLastErrorString().Str());
         return false;
     }
 
@@ -267,9 +269,9 @@ bool FileSystem::Move(const std::string& srcPath, const std::string& destPath)
     return true;
 }
 
-bool FileSystem::Iterate(const std::string& path, DirIterateCallback callback)
+bool FileSystem::Iterate(const StringView path, DirIterateCallback callback)
 {
-    std::wstring widePath;
+    Utf16String widePath;
     HANDLE findHandle = INVALID_HANDLE_VALUE;
     WIN32_FIND_DATA findData;
     std::wstring spec, foundPath;
@@ -290,7 +292,7 @@ bool FileSystem::Iterate(const std::string& path, DirIterateCallback callback)
         if (findHandle == INVALID_HANDLE_VALUE)
         {
             NFE_LOG_ERROR("FindFirstFile failed for path '%s': %s", path.c_str(),
-                      GetLastErrorString().c_str());
+                      GetLastErrorString().Str());
             return false;
         }
 
@@ -339,7 +341,7 @@ bool FileSystem::Iterate(const std::string& path, DirIterateCallback callback)
         {
             FindClose(findHandle);
             NFE_LOG_ERROR("FindNextFile failed for path '%s': %s", path.c_str(),
-                      GetLastErrorString().c_str());
+                      GetLastErrorString().Str());
             return false;
         }
 

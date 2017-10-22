@@ -19,7 +19,7 @@ File::File()
 {
 }
 
-File::File(const std::string& path, AccessMode mode, bool overwrite)
+File::File(const StringView path, AccessMode mode, bool overwrite)
     : mFile(INVALID_HANDLE_VALUE)
     , mMode(AccessMode::No)
 {
@@ -45,11 +45,11 @@ bool File::IsOpened() const
 }
 
 // TODO: access sharing flags
-bool File::Open(const std::string& path, AccessMode access, bool overwrite)
+bool File::Open(const StringView path, AccessMode access, bool overwrite)
 {
     Close();
 
-    std::wstring widePath;
+    Utf16String widePath;
     if (!UTF8ToUTF16(path, widePath))
     {
         mFile = INVALID_HANDLE_VALUE;
@@ -81,12 +81,12 @@ bool File::Open(const std::string& path, AccessMode access, bool overwrite)
     else
         creationDisposition = overwrite ? CREATE_ALWAYS : OPEN_ALWAYS;
 
-    mFile = ::CreateFile(widePath.c_str(), desiredAccess, FILE_SHARE_READ, NULL,
+    mFile = ::CreateFile(widePath.Data(), desiredAccess, FILE_SHARE_READ, NULL,
                          creationDisposition, FILE_ATTRIBUTE_NORMAL, 0);
 
     if (mFile == INVALID_HANDLE_VALUE)
     {
-        NFE_LOG_ERROR("Failed to open file '%s': %s", path.c_str(), GetLastErrorString().c_str());
+        NFE_LOG_ERROR("Failed to open file '%.*s': %s", path.Length(), path.Data(), GetLastErrorString().Str());
         mMode = AccessMode::No;
         return false;
     }
@@ -117,7 +117,7 @@ size_t File::Read(void* data, size_t size)
 
     DWORD read = 0;
     if (::ReadFile(mFile, data, toRead, &read, 0) == 0)
-        NFE_LOG_ERROR("File read failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("File read failed: %s", GetLastErrorString().Str());
 
     return static_cast<size_t>(read);
 }
@@ -135,7 +135,7 @@ size_t File::Write(const void* data, size_t size)
 
     DWORD written = 0;
     if (::WriteFile(mFile, data, toWrite, &written, 0) == 0)
-        NFE_LOG_ERROR("File write failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("File write failed: %s", GetLastErrorString().Str());
 
     return static_cast<size_t>(written);
 }
@@ -148,7 +148,7 @@ int64 File::GetSize() const
     LARGE_INTEGER size;
     if (::GetFileSizeEx(mFile, &size) == 0)
     {
-        NFE_LOG_ERROR("GetFileSizeEx failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("GetFileSizeEx failed: %s", GetLastErrorString().Str());
         return -1;
     }
 
@@ -181,7 +181,7 @@ bool File::Seek(int64 pos, SeekMode mode)
     posLarge.QuadPart = static_cast<LONGLONG>(pos);
     if (::SetFilePointerEx(mFile, posLarge, NULL, moveMethod) == 0)
     {
-        NFE_LOG_ERROR("File seek failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("File seek failed: %s", GetLastErrorString().Str());
         return false;
     }
 
@@ -197,7 +197,7 @@ int64 File::GetPos() const
     posLarge.QuadPart = 0;
     if (::SetFilePointerEx(mFile, posLarge, &pos, FILE_CURRENT) == 0)
     {
-        NFE_LOG_ERROR("File seek failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("File seek failed: %s", GetLastErrorString().Str());
         return -1;
     }
 

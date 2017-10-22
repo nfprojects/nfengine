@@ -111,7 +111,7 @@ bool FileAsync::Open(const std::string& path, AccessMode access, bool overwrite)
 
     if(!IsOpened())
     {
-        NFE_LOG_ERROR("Failed to open file '%s': %s", path.c_str(), GetLastErrorString().c_str());
+        NFE_LOG_ERROR("Failed to open file '%s': %s", path.c_str(), GetLastErrorString().Str());
         mMode = AccessMode::No;
         return false;
     }
@@ -188,7 +188,7 @@ bool FileAsync::Read(void* data, size_t size, uint64 offset, void* dataPtr)
     // Enqueue ReadFileEx call in our callback thread
     if (0 == ::QueueUserAPC(&ReadProc, mCallbackThread, reinterpret_cast<ULONG_PTR>(allocStruct)))
     {
-        NFE_LOG_ERROR("QueueUserAPC() failed for read operation: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("QueueUserAPC() failed for read operation: %s", GetLastErrorString().Str());
         SafeErasePtr(allocStruct);
         return false;
     }
@@ -227,7 +227,7 @@ bool FileAsync::Write(void* data, size_t size, uint64 offset, void* dataPtr)
     // Enqueue WriteFileEx call in our callback thread
     if (0 == ::QueueUserAPC(&WriteProc, mCallbackThread, reinterpret_cast<ULONG_PTR>(allocStruct)))
     {
-        NFE_LOG_ERROR("QueueUserAPC() failed for write operation: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("QueueUserAPC() failed for write operation: %s", GetLastErrorString().Str());
         SafeErasePtr(allocStruct);
         return false;
     }
@@ -242,7 +242,7 @@ int64 FileAsync::GetSize() const
     LARGE_INTEGER size;
     if (::GetFileSizeEx(mFile, &size) == 0)
     {
-        NFE_LOG_ERROR("GetFileSizeEx failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("GetFileSizeEx failed: %s", GetLastErrorString().Str());
         return -1;
     }
 
@@ -295,7 +295,7 @@ void FileAsync::ReadProc(ULONG_PTR arg)
                           &allocStruct->overlapped,
                           reinterpret_cast<OverlappedCmpRtn>(&FileAsync::FinishedOperationsHandler)))
     {
-        NFE_LOG_ERROR("FileAsync failed to enqueue read operation: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("FileAsync failed to enqueue read operation: %s", GetLastErrorString().Str());
         allocStruct->instancePtr->SafeErasePtr(allocStruct);
     }
 }
@@ -311,7 +311,7 @@ void FileAsync::WriteProc(ULONG_PTR arg)
                           &allocStruct->overlapped,
                           reinterpret_cast<OverlappedCmpRtn>(&FileAsync::FinishedOperationsHandler)))
     {
-        NFE_LOG_ERROR("FileAsync failed to enqueue write operation: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("FileAsync failed to enqueue write operation: %s", GetLastErrorString().Str());
         allocStruct->instancePtr->SafeErasePtr(allocStruct);
     }
 }

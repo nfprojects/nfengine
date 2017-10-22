@@ -8,26 +8,34 @@
 
 #include "../../nfCommon.hpp"
 
+#include "../../Containers/StringView.hpp"
+#include "../../Containers/String.hpp"
+#include "../../Containers/ArrayView.hpp"
+#include "../../Containers/DynArray.hpp"
+
 #include <string>
 
 
 namespace NFE {
 namespace Common {
 
+using Utf16String = DynArray<wchar_t>;
+using Utf16StringView = ArrayView<wchar_t>;
+
 /**
  * Convert a string from UTF-8 to Windows' UTF-16.
  */
-NFCOMMON_API bool UTF8ToUTF16(const std::string& in, std::wstring& out);
+NFCOMMON_API bool UTF8ToUTF16(const StringView in, Utf16String& out);
 
 /**
 * Convert a string from Windows' UTF-16 to UTF-8.
 */
-NFCOMMON_API bool UTF16ToUTF8(const std::wstring& in, std::string& out);
+NFCOMMON_API bool UTF16ToUTF8(const Utf16StringView in, String& out);
 
 /**
  * Translates GetLastError() code to a string.
  */
-std::string GetLastErrorString();
+String GetLastErrorString();
 
 } // namespace Common
 } // namespace NFE

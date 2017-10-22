@@ -45,11 +45,11 @@ bool WatchRequest::Start()
                                            &DirectoryWatch::NotificationCompletion);
 
     if (::SetEvent(watch->mEvent) == 0)
-        NFE_LOG_ERROR("SetEvent() failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("SetEvent() failed: %s", GetLastErrorString().Str());
 
     if (success == 0)
     {
-        NFE_LOG_ERROR("ReadDirectoryChangesW() failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("ReadDirectoryChangesW() failed: %s", GetLastErrorString().Str());
         return false;
     }
 
@@ -75,13 +75,13 @@ DirectoryWatch::DirectoryWatch()
     mEvent = ::CreateEvent(NULL, FALSE, FALSE, L"DirectoryWatch Event");
     if (mEvent == NULL)
     {
-        NFE_LOG_ERROR("CreateEvent() failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("CreateEvent() failed: %s", GetLastErrorString().Str());
         return;
     }
 
     mThread = ::CreateThread(0, 0, Dispatcher, this, 0, 0);
     if (mThread == NULL)
-        NFE_LOG_ERROR("CreateThread() failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("CreateThread() failed: %s", GetLastErrorString().Str());
 }
 
 DirectoryWatch::~DirectoryWatch()
@@ -90,7 +90,7 @@ DirectoryWatch::~DirectoryWatch()
 
     DWORD ret = ::QueueUserAPC(&TerminateProc, mThread, reinterpret_cast<ULONG_PTR>(this));
     if (ret == 0)
-        NFE_LOG_ERROR("QueueUserAPC() failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("QueueUserAPC() failed: %s", GetLastErrorString().Str());
 
     ::WaitForSingleObject(mThread, INFINITE);
 }
@@ -116,7 +116,7 @@ bool DirectoryWatch::WatchPath(const std::string& path, Event eventFilter)
                 if (ret == 0)
                 {
                     NFE_LOG_ERROR("QueueUserAPC() failed for path '%s': %s", path.c_str(),
-                              GetLastErrorString().c_str());
+                              GetLastErrorString().Str());
                     return false;
                 }
 
@@ -149,7 +149,7 @@ bool DirectoryWatch::WatchPath(const std::string& path, Event eventFilter)
     if (request->dirHandle == INVALID_HANDLE_VALUE)
     {
         NFE_LOG_ERROR("CreateFile() failed for path '%s': %s", path.c_str(),
-                  GetLastErrorString().c_str());
+                  GetLastErrorString().Str());
         return false;
     }
 
@@ -168,7 +168,7 @@ bool DirectoryWatch::WatchPath(const std::string& path, Event eventFilter)
     if (ret == 0)
     {
         NFE_LOG_ERROR("QueueUserAPC() failed for path '%s': %s", path.c_str(),
-                  GetLastErrorString().c_str());
+                  GetLastErrorString().Str());
         return false;
     }
     // wait for signal from WatchRequest::Start()
@@ -187,7 +187,7 @@ void DirectoryWatch::NotificationCompletion(DWORD errorCode, DWORD bytesTransfer
     if (errorCode == ERROR_OPERATION_ABORTED)
     {
         if (::SetEvent(watch->mEvent) == 0)
-            NFE_LOG_ERROR("SetEvent() failed: %s", GetLastErrorString().c_str());
+            NFE_LOG_ERROR("SetEvent() failed: %s", GetLastErrorString().Str());
 
         ScopedMutexLock lock(watch->mMutex);
         watch->mRequests.erase(request->path);
