@@ -32,6 +32,8 @@ class NFCOMMON_API DefaultAllocator
 {
 #ifdef _DEBUG
     Mutex mMutex;
+
+    // TODO use custom hash-map (not Common::HashMap, because there would be circular dependency)
     std::unordered_map<void*, AllocationDebugInfo> mAllocationsDebugInfo;
 #endif
 

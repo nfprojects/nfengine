@@ -53,6 +53,13 @@ public:
     IteratorType PushBack(ElementType&& element);
 
     /**
+     * In-place construct a new element at the end.
+     * @return  Iterator to the inserted element, or iterator to the end if the insertion failed.
+     */
+    template<typename ... Args>
+    IteratorType EmplaceBack(Args&& ... args);
+
+    /**
      * Insert elements from a view at the end.
      * @return  'True' on success, 'false' on memory allocation failure.
      */
