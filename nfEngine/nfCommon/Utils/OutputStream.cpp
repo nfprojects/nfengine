@@ -17,7 +17,7 @@ namespace Common {
 // FileOutputStream
 // ===============================================================
 
-FileOutputStream::FileOutputStream(const char* fileName)
+FileOutputStream::FileOutputStream(const StringView fileName)
 {
     mFile.Open(fileName, AccessMode::Write, true);
 }

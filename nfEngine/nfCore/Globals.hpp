@@ -8,7 +8,7 @@
 
 #include "Core.hpp"
 
-#include <string>
+#include "../nfCommon/Containers/String.hpp"
 
 
 namespace NFE {
@@ -17,7 +17,7 @@ namespace NFE {
  *  Resources paths, relative to executable.
  *  Temporary - This must be changed!!!
  */
-extern const std::string g_DataPath;
-extern const std::string g_CookedDataPath;
+extern const Common::String g_DataPath;
+extern const Common::String g_CookedDataPath;
 
 } // namespace NFE

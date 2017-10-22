@@ -8,12 +8,11 @@
 
 #include "../nfCommon.hpp"
 #include "KeyCodes.hpp"
+#include "../Containers/String.hpp"
 
 #if defined(__LINUX__) | defined(__linux__)
 #include <xcb/xcb.h>
 #endif // defined(__LINUX__) | defined(__linux__)
-
-#include <string>
 
 
 #define NFE_WINDOW_KEYS_NUM 256
@@ -51,7 +50,7 @@ private:
     uint32 mHeight;
     int mLeft;
     int mTop;
-    std::string mTitle;
+    String mTitle;
 
     /// input recorded since last @p ProcessMessages() method call
     bool mMouseButtons[3];

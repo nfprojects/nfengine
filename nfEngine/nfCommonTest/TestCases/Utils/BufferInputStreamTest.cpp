@@ -35,17 +35,17 @@ TEST_F(BufferInputStreamTest, NullBufferTest)
 TEST_F(BufferInputStreamTest, StringBufferTest)
 {
     // Create stream pointing to our TEXT
-    BufferInputStream stream(TEXT.data(), TEXTSIZE);
+    BufferInputStream stream(TEXT.Str(), TEXTSIZE);
 
     // Write stream to our buffer and compare it with TEXT
     ASSERT_EQ(stream.Read(mBuffer.get(), TEXTSIZE), TEXTSIZE);
-    ASSERT_EQ(memcmp(mBuffer.get(), TEXT.data(), TEXTSIZE), 0);
+    ASSERT_EQ(memcmp(mBuffer.get(), TEXT.Str(), TEXTSIZE), 0);
 }
 
 TEST_F(BufferInputStreamTest, StringBufferSeekTest)
 {
     // Create stream pointing to our TEXT
-    BufferInputStream stream(TEXT.data(), TEXTSIZE);
+    BufferInputStream stream(TEXT.Str(), TEXTSIZE);
 
     // Seek to the middle of the stream (TEXT/2) and compare it with 2nd half of TEXT
     size_t halfSize = TEXTSIZE / 2;
@@ -53,5 +53,5 @@ TEST_F(BufferInputStreamTest, StringBufferSeekTest)
     ASSERT_EQ(seekResult, true);
     size_t readResult = stream.Read(mBuffer.get(), halfSize);
     ASSERT_EQ(readResult, halfSize);
-    ASSERT_EQ(memcmp(mBuffer.get(), TEXT.data() + halfSize, halfSize), 0);
+    ASSERT_EQ(memcmp(mBuffer.get(), TEXT.Str() + halfSize, halfSize), 0);
 }

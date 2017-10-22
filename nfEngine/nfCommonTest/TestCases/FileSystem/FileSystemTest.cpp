@@ -1,12 +1,13 @@
 #include "PCH.hpp"
 #include "nfCommon/FileSystem/FileSystem.hpp"
+#include "nfCommon/Containers/String.hpp"
 
 using namespace NFE::Common;
 
 TEST(FileSystemTest, DirectoryAndRemove)
 {
-    const std::string testDir = "testDir1";
-    const std::string testDir2 = testDir + "/testDir2";
+    const String testDir = "testDir1";
+    const String testDir2 = testDir + "/testDir2";
 
     ASSERT_TRUE(FileSystem::CreateDir(testDir));
     ASSERT_TRUE(FileSystem::CreateDir(testDir2));
@@ -25,7 +26,7 @@ TEST(FileSystemTest, DirectoryAndRemove)
 
 TEST(FileSystemTest, TouchFile)
 {
-    const std::string filePath = "touch_test_file";
+    const String filePath = "touch_test_file";
 
     ASSERT_EQ(PathType::Invalid, FileSystem::GetPathType(filePath));
     ASSERT_TRUE(FileSystem::TouchFile(filePath));
@@ -36,16 +37,16 @@ TEST(FileSystemTest, TouchFile)
 
 TEST(FileSystemTest, Iterate)
 {
-    const std::string root = "test_dir";
+    const String root = "test_dir";
 
-    const std::vector<std::string> test_dirs =
+    const std::vector<String> test_dirs =
     {
         root + "/a",
         root + "/b",
         root + "/a/b"
     };
 
-    const std::vector<std::string> test_files =
+    const std::vector<String> test_files =
     {
         root + "/a_file",
         root + "/b_file",
@@ -54,20 +55,20 @@ TEST(FileSystemTest, Iterate)
     };
 
     // prepare test files structure
-    ASSERT_EQ(true, FileSystem::CreateDir(root)) << "create directory '" << root << "'";
-    for (const std::string& path : test_dirs)
-        ASSERT_TRUE(FileSystem::CreateDir(path)) << "create directory '" << path << "'";
-    for (const std::string& path : test_files)
-        ASSERT_TRUE(FileSystem::TouchFile(path)) << "create file '" << path << "'";
+    ASSERT_EQ(true, FileSystem::CreateDir(root)) << "create directory '" << root.Str() << "'";
+    for (const String& path : test_dirs)
+        ASSERT_TRUE(FileSystem::CreateDir(path)) << "create directory '" << path.Str() << "'";
+    for (const String& path : test_files)
+        ASSERT_TRUE(FileSystem::TouchFile(path)) << "create file '" << path.Str() << "'";
 
 
-    std::set<std::string> dirs;
-    std::set<std::string> files;
-    auto callback = [&](const std::string & path, bool isDirectory)
+    std::set<String> dirs;
+    std::set<String> files;
+    auto callback = [&](const String& path, PathType type)
     {
-        if (isDirectory)
+        if (type == PathType::Directory)
             dirs.insert(path);
-        else
+        else if (type == PathType::File)
             files.insert(path);
 
         return true;
@@ -75,17 +76,18 @@ TEST(FileSystemTest, Iterate)
 
     ASSERT_TRUE(FileSystem::Iterate(root, callback));
 
-    for (const std::string& path : test_dirs)
-        EXPECT_EQ(1, dirs.count(path)) << "check directory '" << path << "'";
-    for (const std::string& path : test_files)
-        EXPECT_EQ(1, files.count(path)) << "check file '" << path << "'";
+    for (const String& path : test_dirs)
+        EXPECT_EQ(1, dirs.count(path)) << "check directory '" << path.Str() << "'";
+    for (const String& path : test_files)
+        EXPECT_EQ(1, files.count(path)) << "check file '" << path.Str() << "'";
 
     // cleanup
     ASSERT_TRUE(FileSystem::Remove(root, true));
 }
+
 TEST(FileSystemTest, GetExecutablePath)
 {
-    std::string path = FileSystem::GetExecutablePath();
-    ASSERT_FALSE(path.empty());
+    String path = FileSystem::GetExecutablePath();
+    ASSERT_FALSE(path.Empty());
     ASSERT_EQ(PathType::File, FileSystem::GetPathType(path));
 }

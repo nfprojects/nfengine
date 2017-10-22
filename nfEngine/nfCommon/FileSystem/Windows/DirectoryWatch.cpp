@@ -8,7 +8,9 @@
 #include "../DirectoryWatch.hpp"
 #include "Logger/Logger.hpp"
 #include "System/Win/Common.hpp"
+#include "System/Assertion.hpp"
 #include "Utils/ScopedLock.hpp"
+#include "Containers/UniquePtr.hpp"
 
 #include <assert.h>
 #include <string.h>
@@ -17,13 +19,11 @@
 namespace NFE {
 namespace Common {
 
-#define BUFFER_SIZE 16384
-
 WatchRequest::WatchRequest()
     : dirHandle(INVALID_HANDLE_VALUE)
 {
-    frontBuffer.resize(BUFFER_SIZE);
-    backBuffer.resize(BUFFER_SIZE);
+    frontBuffer.Resize(BufferSize);
+    backBuffer.Resize(BufferSize);
 
     ::ZeroMemory(&overlapped, sizeof(OVERLAPPED));
     overlapped.hEvent = static_cast<HANDLE>(this);
@@ -33,7 +33,7 @@ bool WatchRequest::Start()
 {
     DWORD bytes = 0;
     BOOL success = ::ReadDirectoryChangesW(dirHandle,
-                                           frontBuffer.data(), BUFFER_SIZE,
+                                           frontBuffer.Data(), BufferSize,
                                            FALSE,
                                            FILE_NOTIFY_CHANGE_LAST_WRITE |
                                            FILE_NOTIFY_CHANGE_CREATION |
@@ -45,11 +45,11 @@ bool WatchRequest::Start()
                                            &DirectoryWatch::NotificationCompletion);
 
     if (::SetEvent(watch->mEvent) == 0)
-        NFE_LOG_ERROR("SetEvent() failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("SetEvent() failed: %s", GetLastErrorString().Str());
 
     if (success == 0)
     {
-        NFE_LOG_ERROR("ReadDirectoryChangesW() failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("ReadDirectoryChangesW() failed: %s", GetLastErrorString().Str());
         return false;
     }
 
@@ -75,13 +75,13 @@ DirectoryWatch::DirectoryWatch()
     mEvent = ::CreateEvent(NULL, FALSE, FALSE, L"DirectoryWatch Event");
     if (mEvent == NULL)
     {
-        NFE_LOG_ERROR("CreateEvent() failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("CreateEvent() failed: %s", GetLastErrorString().Str());
         return;
     }
 
     mThread = ::CreateThread(0, 0, Dispatcher, this, 0, 0);
     if (mThread == NULL)
-        NFE_LOG_ERROR("CreateThread() failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("CreateThread() failed: %s", GetLastErrorString().Str());
 }
 
 DirectoryWatch::~DirectoryWatch()
@@ -90,7 +90,7 @@ DirectoryWatch::~DirectoryWatch()
 
     DWORD ret = ::QueueUserAPC(&TerminateProc, mThread, reinterpret_cast<ULONG_PTR>(this));
     if (ret == 0)
-        NFE_LOG_ERROR("QueueUserAPC() failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("QueueUserAPC() failed: %s", GetLastErrorString().Str());
 
     ::WaitForSingleObject(mThread, INFINITE);
 }
@@ -100,23 +100,21 @@ void DirectoryWatch::SetCallback(WatchCallback callback)
     mCallback = callback;
 }
 
-bool DirectoryWatch::WatchPath(const std::string& path, Event eventFilter)
+bool DirectoryWatch::WatchPath(const StringView path, Event eventFilter)
 {
     {
         ScopedMutexLock lock(mMutex);
-        auto it = mRequests.find(path);
-        if (it != mRequests.end())
+        auto it = mRequests.Find(String(path));
+        if (it != mRequests.End())
         {
             // remove watch request if filter changes
             if (it->second->filter != static_cast<int>(eventFilter))
             {
                 ::ResetEvent(mEvent);
-                DWORD ret = ::QueueUserAPC(&RemoveDirectoryProc, mThread,
-                                           reinterpret_cast<ULONG_PTR>(it->second.get()));
+                DWORD ret = ::QueueUserAPC(&RemoveDirectoryProc, mThread, reinterpret_cast<ULONG_PTR>(it->second.Get()));
                 if (ret == 0)
                 {
-                    NFE_LOG_ERROR("QueueUserAPC() failed for path '%s': %s", path.c_str(),
-                              GetLastErrorString().c_str());
+                    NFE_LOG_ERROR("QueueUserAPC() failed for path '%.*s': %s", path.Length(), path.Data(), GetLastErrorString().Str());
                     return false;
                 }
 
@@ -131,7 +129,7 @@ bool DirectoryWatch::WatchPath(const std::string& path, Event eventFilter)
     if (eventFilter == Event::None)
         return true;
 
-    std::unique_ptr<WatchRequest> request(new WatchRequest);
+    auto request = MakeUniquePtr<WatchRequest>();
     UTF8ToUTF16(path, request->widePath);
     request->path = path;
     request->watch = this;
@@ -146,40 +144,37 @@ bool DirectoryWatch::WatchPath(const std::string& path, Event eventFilter)
         OPEN_EXISTING,                                          // how to create
         FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,      // file attributes
         NULL);                                                  // file with attributes to copy
+
     if (request->dirHandle == INVALID_HANDLE_VALUE)
     {
-        NFE_LOG_ERROR("CreateFile() failed for path '%s': %s", path.c_str(),
-                  GetLastErrorString().c_str());
+        NFE_LOG_ERROR("CreateFile() failed for path '%.*s': %s", path.Length(), path.Data(), GetLastErrorString().Str());
         return false;
     }
 
     /// register watch request
-    WatchRequest* requestPtr = request.get();
+    WatchRequest* requestPtr = request.Get();
     mRequestsNum++;
     {
         ScopedMutexLock lock(mMutex);
-        mRequests.insert(std::make_pair(path, std::move(request)));
+        mRequests.Insert(path, std::move(request));
     }
 
     /// trigger monitoring thread
     ::ResetEvent(mEvent);
-    DWORD ret = ::QueueUserAPC(&AddDirectoryProc, mThread,
-                               reinterpret_cast<ULONG_PTR>(requestPtr));
+    DWORD ret = ::QueueUserAPC(&AddDirectoryProc, mThread, reinterpret_cast<ULONG_PTR>(requestPtr));
     if (ret == 0)
     {
-        NFE_LOG_ERROR("QueueUserAPC() failed for path '%s': %s", path.c_str(),
-                  GetLastErrorString().c_str());
+        NFE_LOG_ERROR("QueueUserAPC() failed for path '%.*s': %s", path.Length(), path.Data(), GetLastErrorString().Str());
         return false;
     }
     // wait for signal from WatchRequest::Start()
     ::WaitForSingleObject(mEvent, INFINITE);
 
-    NFE_LOG_DEBUG("Directory watch for path '%s' added", path.c_str());
+    NFE_LOG_DEBUG("Directory watch for path '%.*s' added", path.Length(), path.Data());
     return true;
 }
 
-void DirectoryWatch::NotificationCompletion(DWORD errorCode, DWORD bytesTransferred,
-                                            LPOVERLAPPED overlapped)
+void DirectoryWatch::NotificationCompletion(DWORD errorCode, DWORD bytesTransferred, LPOVERLAPPED overlapped)
 {
     WatchRequest* request = static_cast<WatchRequest*>(overlapped->hEvent);
     DirectoryWatch* watch = request->watch;
@@ -187,10 +182,10 @@ void DirectoryWatch::NotificationCompletion(DWORD errorCode, DWORD bytesTransfer
     if (errorCode == ERROR_OPERATION_ABORTED)
     {
         if (::SetEvent(watch->mEvent) == 0)
-            NFE_LOG_ERROR("SetEvent() failed: %s", GetLastErrorString().c_str());
+            NFE_LOG_ERROR("SetEvent() failed: %s", GetLastErrorString().Str());
 
         ScopedMutexLock lock(watch->mMutex);
-        watch->mRequests.erase(request->path);
+        watch->mRequests.Erase(request->path);
         watch->mRequestsNum--;
         return;
     }
@@ -199,14 +194,14 @@ void DirectoryWatch::NotificationCompletion(DWORD errorCode, DWORD bytesTransfer
         return;
 
     // TODO: pointer swapping (double buffering)
-    assert(bytesTransferred <= request->frontBuffer.size());
-    memcpy(request->backBuffer.data(), request->frontBuffer.data(), bytesTransferred);
+    NFE_ASSERT(bytesTransferred <= request->frontBuffer.Size(), "Invalid 'bytesTransferred'");
+    memcpy(request->backBuffer.Data(), request->frontBuffer.Data(), bytesTransferred);
 
     // start receiving new events as fast as possible
     request->Start();
 
-    std::string shortPath;
-    char* base = request->backBuffer.data();
+    String shortPath;
+    char* base = request->backBuffer.Data();
     for (;;)
     {
         const FILE_NOTIFY_INFORMATION* fni = reinterpret_cast<FILE_NOTIFY_INFORMATION*>(base);
@@ -242,11 +237,13 @@ void DirectoryWatch::NotificationCompletion(DWORD errorCode, DWORD bytesTransfer
 
             DirectoryWatch::EventData data;
             data.type = eventType;
-            data.path = shortPath.c_str();
-            NFE_LOG_DEBUG("DirectoryWatch: action=%d, path=%s", fni->Action, shortPath.c_str());
+            data.path = shortPath.Str();
+            NFE_LOG_DEBUG("DirectoryWatch: action=%d, path=%s", fni->Action, shortPath.Str());
 
             if (request->watch->mCallback)
+            {
                 request->watch->mCallback(data);
+            }
         }
 
         if (!fni->NextEntryOffset)

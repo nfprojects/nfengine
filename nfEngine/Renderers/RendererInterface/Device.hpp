@@ -12,7 +12,8 @@
 
 #include "CommandRecorder.hpp"
 
-#include <vector>
+#include "../../nfCommon/Containers/DynArray.hpp"
+#include "../../nfCommon/Containers/String.hpp"
 
 
 #define RENDERER_INIT_FUNC "Init"
@@ -26,9 +27,9 @@ namespace Renderer {
  */
 struct DeviceInfo
 {
-    std::string description;  //< GPU name
-    std::string misc;         //< miscellaneous GPU info
-    std::vector<std::string> features; //< list of supported features (depends on low-level API)
+    Common::String description;  //< GPU name
+    Common::String misc;         //< miscellaneous GPU info
+    Common::DynArray<Common::String> features; //< list of supported features (depends on low-level API)
 };
 
 /**
