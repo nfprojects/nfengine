@@ -96,6 +96,17 @@ public:
     uint32 FindLast(const char c) const;
 
     /**
+     * Find a first character that is not part of another string.
+     */
+    uint32 FindFirstNotOf(const char other) const;
+    uint32 FindFirstNotOf(const StringView& other) const;
+
+    /**
+     * Check if the string ends with another string
+     */
+    bool EndsWith(const StringView& subString) const;
+
+    /**
      * Comparison operators.
      * Lexicographic order is preserved.
      */

@@ -15,7 +15,7 @@ PackerResourceFile::~PackerResourceFile()
 {
 }
 
-PackerResult PackerResourceFile::Init(const std::string& filePath, const std::string& vfsFilePath)
+PackerResult PackerResourceFile::Init(const StringView filePath, const StringView vfsFilePath)
 {
     File file(filePath, AccessMode::Read);
     if (!(file.IsOpened()))
@@ -23,7 +23,7 @@ PackerResult PackerResourceFile::Init(const std::string& filePath, const std::st
 
     mFilePath = filePath;
 
-    mFileSize = static_cast<size_t>(file.GetSize());
+    mFileSize = static_cast<uint32>(file.GetSize());
     mHash.Calculate(vfsFilePath);
 
     return PackerResult::OK;

@@ -31,7 +31,7 @@ TEST_F(MD5Test, MD5EmptyTest)
     MD5Hash correctHash;
     correctHash.Set(0xd98c1dd4, 0x04b2008f, 0x980980e9, 0x7e42f8ec);
 
-    hash.Calculate("");
+    hash.Calculate(StringView());
     EXPECT_TRUE(hash == correctHash) << "correct: " << correctHash << "\nis:      " << hash;
 }
 
@@ -40,7 +40,7 @@ TEST_F(MD5Test, MD5SingleChunkTest)
     MD5Hash correctHash;
     correctHash.Set(0xafe2c3e2, 0x655a98e1, 0x14e29d10, 0xc3e8f731);
 
-    hash.Calculate("this_is_test_file");
+    hash.Calculate(StringView("this_is_test_file"));
     EXPECT_TRUE(hash == correctHash) << "correct: " << correctHash << "\nis:      " << hash;
 }
 
@@ -49,7 +49,7 @@ TEST_F(MD5Test, MD5FullSingleChunkTest)
     MD5Hash correctHash;
     correctHash.Set(0xd750b3d6, 0x350b60b9, 0x5733650d, 0xf9108e12);
 
-    hash.Calculate("here_we_have_a_long_text_which_should_have_56_characters");
+    hash.Calculate(StringView("here_we_have_a_long_text_which_should_have_56_characters"));
     EXPECT_TRUE(hash == correctHash) << "correct: " << correctHash << "\nis:      " << hash;
 }
 
@@ -59,6 +59,6 @@ TEST_F(MD5Test, MD5MultiChunkTest)
     MD5Hash correctHash;
     correctHash.Set(0xe367bde5, 0xa9c05fc0, 0x7c930638, 0x6e122d30);
 
-    hash.Calculate("and_here_goes_longer_text_which_just_exceeds_56_characters");
+    hash.Calculate(StringView("and_here_goes_longer_text_which_just_exceeds_56_characters"));
     EXPECT_TRUE(hash == correctHash) << "correct: " << correctHash << "\nis:      " << hash;
 }

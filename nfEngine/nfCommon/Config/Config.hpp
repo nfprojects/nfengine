@@ -8,10 +8,12 @@
 
 #include "ConfigCommon.hpp"
 #include "ConfigValue.hpp"
+#include "../Containers/DynArray.hpp"
+#include "../Containers/UniquePtr.hpp"
+#include "../Containers/String.hpp"
 
 #include <memory>
 #include <functional>
-#include <vector>
 
 
 namespace NFE {
@@ -22,14 +24,14 @@ namespace Common {
  */
 class NFCOMMON_API Config
 {
-    std::unique_ptr<char[]> mStringCopy;
+    UniquePtr<char[]> mStringCopy;
 
     ConfigObjectNodePtr mRootNode;
 
     /// Buffers of the config elements:
-    std::vector<ConfigValue> mValues;
-    std::vector<ConfigObjectNode> mObjectNodes;
-    std::vector<ConfigArrayNode> mArrayNodes;
+    DynArray<ConfigValue> mValues;
+    DynArray<ConfigObjectNode> mObjectNodes;
+    DynArray<ConfigArrayNode> mArrayNodes;
 
     /// Methods for allocations of config elements:
     ConfigValuePtr AllocateValue();
@@ -42,15 +44,15 @@ class NFCOMMON_API Config
     ConfigObjectNodePtr ParseObject(ConfigTokenizer& tokenizer);
 
     /// Generator methods (config to string conversion):
-    void ValueToString(std::stringstream& out, ConfigValuePtr valuePtr, int indent) const;
-    void ObjectToString(std::stringstream& out, ConfigObjectNodePtr objectPtr, int indent) const;
+    void ValueToString(String& out, ConfigValuePtr valuePtr, int indent) const;
+    void ObjectToString(String& out, ConfigObjectNodePtr objectPtr, int indent) const;
 
     Config(const Config&) = delete;
     Config& operator= (const Config&) = delete;
 
 public:
     // callback functions called when walking a config object and array
-    typedef std::function<bool(const char* key, const ConfigValue& value)> ObjectIterator;
+    typedef std::function<bool(StringView key, const ConfigValue& value)> ObjectIterator;
     typedef std::function<bool(uint32 index, const ConfigValue& value)> ArrayIterator;
 
     Config();
@@ -95,7 +97,7 @@ public:
      *       (intendation, comments, etc.).
      * @return Config string.
      */
-    std::string ToString(bool format = true) const;
+    String ToString(bool format = true) const;
 
     /**
      * Iterate through a config object.
@@ -119,7 +121,7 @@ public:
      * @param val          Value.
      * @remarks The function returns a reference to "this" so writing AddValue chains is possible.
      */
-    Config& AddValue(ConfigObject& configObject, const char* key, const ConfigValue& val);
+    Config& AddValue(ConfigObject& configObject, StringView key, const ConfigValue& val);
 
     /**
      * Add a value to a config array.

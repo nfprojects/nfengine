@@ -12,12 +12,12 @@
 namespace NFE {
 namespace Common {
 
-MD5DataSet::MD5DataSet(const std::string& input)
+MD5DataSet::MD5DataSet(const StringView input)
 {
-    if (input.size() == 0)
+    if (input.Length() == 0)
     {
         // no data provided - initialize set in faster, simplier way
-        mChunks.resize(16);
+        mChunks.Resize(16);
 
         mChunks[0] = 0x00000080;
 
@@ -27,30 +27,30 @@ MD5DataSet::MD5DataSet(const std::string& input)
         return;
     }
 
-    size_t mChunkSize;
-    if (input.size() % 64 >= 56)
+    uint32 mChunkSize;
+    if (input.Length() % 64 >= 56)
     {
-        mChunkSize = ((input.size() / 64) + 2) * 16;
+        mChunkSize = ((input.Length() / 64) + 2) * 16;
     }
     else
     {
-        mChunkSize = ((input.size() / 64) + 1) * 16;
+        mChunkSize = ((input.Length() / 64) + 1) * 16;
     }
 
     // initialization - allocate memory and zero it
-    mChunks.resize(mChunkSize);
-    memset(mChunks.data(), 0, mChunkSize * sizeof(uint32));
+    mChunks.Resize(mChunkSize);
+    memset(mChunks.Data(), 0, mChunkSize * sizeof(uint32));
 
     // copy data
-    memcpy(mChunks.data(), input.c_str(), input.size());
+    memcpy(mChunks.Data(), input.Data(), input.Length());
 
     // append '1' bit to the end of data
-    size_t d = input.size() / 4;
-    uint32 mod = input.size() % 4;
+    uint32 d = input.Length() / 4;
+    uint32 mod = input.Length() % 4;
     mChunks[d] += 0x80 << mod * 8;
 
     // append size of message in bits to end of data
-    uint64 bitDataLength = input.size() * 8;
+    uint64 bitDataLength = input.Length() * 8;
 
     mChunks[mChunkSize - 2] = (uint32)(bitDataLength);
     mChunks[mChunkSize - 1] = (uint32)(bitDataLength >> 32);
@@ -68,12 +68,12 @@ MD5Hash::MD5Hash()
     h[3] = 0x10325476;
 }
 
-void MD5Hash::Calculate(const std::string& input)
+void MD5Hash::Calculate(const StringView input)
 {
     MD5DataSet data(input);
 
     // do complete round of MD5 calculation for each set of 16 chunks
-    for (unsigned int i = 0; i < data.mChunks.size(); i += 16)
+    for (unsigned int i = 0; i < data.mChunks.Size(); i += 16)
     {
         uint32 a = h[0];
         uint32 b = h[1];

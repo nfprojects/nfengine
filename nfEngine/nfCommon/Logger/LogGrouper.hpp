@@ -18,8 +18,8 @@ class NFCOMMON_API LogGrouper
 {
     struct LogStruct
     {
-        std::string file;
-        std::string msg;
+        String file; // TODO StringView
+        String msg;
         double time;
         int line;
         LogType type;

@@ -1,5 +1,6 @@
 #include "PCH.hpp"
 #include "nfCommon/Packer/Packer.hpp"
+#include "nfCommon/Utils/StringUtils.hpp"
 
 #include "Constants.hpp"
 
@@ -22,18 +23,18 @@ protected:
 
         srand(static_cast<unsigned int>(time(nullptr)));
 
-        int result = _mkdir(TEST_SAMPLE_FILE_DIR.c_str());
+        int result = _mkdir(TEST_SAMPLE_FILE_DIR.Str());
         EXPECT_FALSE(result != 0 && errno != EEXIST) << "mkdir() failed. "
                 << "Error: " << errno << " (" << strerror(errno) << ")";
 
-        const std::string testFilePrefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
+        const String testFilePrefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
 
         for (uint32 i = 0; i < TEST_FILE_COUNT; ++i)
         {
-            std::ofstream fs(testFilePrefix + std::to_string(i),
+            std::ofstream fs((testFilePrefix + ToString(i)).Str(),
                              std::fstream::out | std::fstream::trunc | std::fstream::binary);
-            EXPECT_TRUE(fs.good()) << "Failed to open " << TEST_SAMPLE_FILE_DIR
-                                   << TEST_SAMPLE_FILE_PREFIX << std::to_string(i);
+            EXPECT_TRUE(fs.good()) << ("Failed to open " + TEST_SAMPLE_FILE_DIR +
+                                       TEST_SAMPLE_FILE_PREFIX + ToString(i)).Str();
 
             // generate <1; TEST_FILE_MAX_DATA_COUNT> uint32 values to write
             uint32 dataCount = (rand() % TEST_FILE_MAX_DATA_COUNT) + 1;
@@ -67,23 +68,23 @@ protected:
         std::cout << "Removing files... ";
 
         // remove sample files
-        const std::string prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
-        std::string path;
+        const String prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
+        String path;
         for (uint32 i = 0; i < TEST_FILE_COUNT; ++i)
         {
-            path = prefix + std::to_string(i);
-            EXPECT_EQ(0, remove(path.c_str())) << "remove(" << path.c_str() << ") failed. "
+            path = prefix + ToString(i);
+            EXPECT_EQ(0, remove(path.Str())) << "remove(" << path.Str() << ") failed. "
                                                << "Error: " << errno << " (" << strerror(errno) << ")";
         }
 
-        rmdir(TEST_SAMPLE_FILE_DIR.c_str());
+        rmdir(TEST_SAMPLE_FILE_DIR.Str());
 
         // remove created archive
-        std::ifstream fs(TEST_PACK_PATH);
+        std::ifstream fs(TEST_PACK_PATH.Str());
         if (fs.good())
         {
             fs.close();
-            EXPECT_EQ(0, remove(TEST_PACK_PATH.c_str())) << "remove() failed. "
+            EXPECT_EQ(0, remove(TEST_PACK_PATH.Str())) << "remove() failed. "
                     << "Error: " << errno << " (" << strerror(errno) << ")";
         }
 
@@ -103,11 +104,11 @@ TEST_F(PackerComplexTest, AddFiles)
     EXPECT_EQ(PackerResult::OK, pr);
 
     // add files
-    const std::string prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
-    std::string path;
+    const String prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
+    String path;
     for (int i = 0; i < TEST_FILE_COUNT; ++i)
     {
-        path = prefix + std::to_string(i);
+        path = prefix + ToString(i);
         pr = mWriter->AddFile(path, path);
         ASSERT_EQ(PackerResult::OK, pr);
     }
@@ -146,8 +147,8 @@ TEST_F(PackerComplexTest, WriteFiles)
 TEST_F(PackerComplexTest, ReadSingleFile)
 {
     PackerResult pr;
-    const std::string testFilePathVFS = TEST_SAMPLE_FILE_PREFIX + "0";
-    const std::string testFilePath = TEST_SAMPLE_FILE_DIR + testFilePathVFS;
+    const String testFilePathVFS = TEST_SAMPLE_FILE_PREFIX + "0";
+    const String testFilePath = TEST_SAMPLE_FILE_DIR + testFilePathVFS;
 
     // initialize mWriter
     pr = mWriter->Init(TEST_PACK_PATH);
@@ -179,7 +180,7 @@ TEST_F(PackerComplexTest, ReadSingleFile)
     ASSERT_EQ(PackerResult::OK, pr);
 
     // read original file
-    FILE* pFile = fopen(testFilePath.c_str(), "rb");
+    FILE* pFile = fopen(testFilePath.Str(), "rb");
     ASSERT_NE(nullptr, pFile);
 
     // get file size
@@ -209,11 +210,11 @@ TEST_F(PackerComplexTest, ReadMultipleSimplyAddedFiles)
     EXPECT_EQ(PackerResult::OK, pr);
 
     // add files through simple AddFile function
-    const std::string prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
-    std::string path;
+    const String prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
+    String path;
     for (int i = 0; i < TEST_FILE_COUNT; ++i)
     {
-        path = prefix + std::to_string(i);
+        path = prefix + ToString(i);
         pr = mWriter->AddFile(path, path);
         ASSERT_EQ(PackerResult::OK, pr);
     }
@@ -236,7 +237,7 @@ TEST_F(PackerComplexTest, ReadMultipleSimplyAddedFiles)
     for (int i = 0; i < TEST_FILE_COUNT; ++i)
     {
         //initialize loop iteration
-        path = prefix + std::to_string(i);
+        path = prefix + ToString(i);
         readData.reset(new Buffer());
         correctData.reset(new Buffer());
 
@@ -245,7 +246,7 @@ TEST_F(PackerComplexTest, ReadMultipleSimplyAddedFiles)
         ASSERT_EQ(PackerResult::OK, pr) << "i = " << i;
 
         // read original file
-        FILE* pFile = fopen(path.c_str(), "rb");
+        FILE* pFile = fopen(path.Str(), "rb");
         ASSERT_NE(nullptr, pFile) << "i = " << i;
 
         // get file size
@@ -293,14 +294,14 @@ TEST_F(PackerComplexTest, ReadMultipleRecursivelyAddedFiles)
     ASSERT_EQ(TEST_FILE_COUNT, fileCount);
 
     std::unique_ptr<Buffer> readData, correctData;
-    const std::string prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
-    std::string path;
+    const String prefix = TEST_SAMPLE_FILE_DIR + TEST_SAMPLE_FILE_PREFIX;
+    String path;
 
     // read every file and see if data was copied correctly
     for (int i = 0; i < TEST_FILE_COUNT; ++i)
     {
         //initialize loop iteration
-        path = prefix + std::to_string(i);
+        path = prefix + ToString(i);
         readData.reset(new Buffer());
         correctData.reset(new Buffer());
 
@@ -309,7 +310,7 @@ TEST_F(PackerComplexTest, ReadMultipleRecursivelyAddedFiles)
         ASSERT_EQ(PackerResult::OK, pr) << "i = " << i;
 
         // read original file
-        FILE* pFile = fopen(path.c_str(), "rb");
+        FILE* pFile = fopen(path.Str(), "rb");
         ASSERT_NE(nullptr, pFile) << "i = " << i;
 
         // get file size

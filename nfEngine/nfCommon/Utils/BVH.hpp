@@ -10,8 +10,8 @@
 #include "../Math/Box.hpp"
 #include "../Math/Geometry.hpp"
 #include "../Memory/Aligned.hpp"
+#include "../Containers/DynArray.hpp"
 
-#include <vector>
 #include <functional>
 
 
@@ -89,13 +89,13 @@ struct BVHStats
 };
 
 /**
- * Dynamic bounding volume herarchy.
+ * Dynamic bounding volume hierarchy.
  * Implementation based on Box2d b2DynamicTree.
  */
 class NFCOMMON_API BVH
 {
     // free list
-    std::vector<BVHNode, AlignedAllocator<BVHNode, 16>> mNodes;
+    DynArray<BVHNode> mNodes;
     uint32 mNodesNum;
     uint32 mNodesCapacity;
     uint32 mFreeNode;

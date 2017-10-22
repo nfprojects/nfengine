@@ -139,12 +139,20 @@ public:
     /**
      * Check if a value with a given key exists in the object.
      */
-    bool HasMember(const char* key) const;
+    bool HasMember(StringView key) const;
+    bool HasMember(const char* key) const
+    {
+        return HasMember(StringView(key));
+    }
 
     /**
      * Find value in object by key.
      */
-    ConfigGenericValue operator[](const char* key) const;
+    ConfigGenericValue operator[](StringView key) const;
+    ConfigGenericValue operator[](const char* key) const
+    {
+        return operator[](StringView(key));
+    }
 
     /**
      * Get array size.

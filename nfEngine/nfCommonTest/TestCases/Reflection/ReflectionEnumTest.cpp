@@ -56,7 +56,7 @@ TEST(ReflectionEnumTest, Serialize_Valid)
     const auto* type = GetType<TestEnum>();
     ASSERT_NE(nullptr, type);
 
-    std::string str;
+    String str;
     TestEnum obj = TestEnum::OptionA;
     ASSERT_TRUE(helper::SerializeObject(type, &obj, str));
 
@@ -69,7 +69,7 @@ TEST(ReflectionEnumTest, Serialize_Invalid)
     const auto* type = GetType<TestEnum>();
     ASSERT_NE(nullptr, type);
 
-    std::string str;
+    String str;
     TestEnum obj = static_cast<TestEnum>(99); // non-mapped enum value
     ASSERT_FALSE(helper::SerializeObject(type, &obj, str));
 }
