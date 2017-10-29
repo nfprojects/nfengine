@@ -55,6 +55,9 @@
     <Filter Include="Math\Matrix">
       <UniqueIdentifier>{7fc68f6a-21ed-4e29-8023-1224df25f2ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Containers\Iterators">
+      <UniqueIdentifier>{51fafc6d-ed35-48ef-8818-d037d9db3688}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nfCommon.hpp" />
@@ -506,6 +509,18 @@
     </ClInclude>
     <ClInclude Include="Containers\HashMapImpl.hpp">
       <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\StaticArray.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\StaticArrayImpl.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\Iterators\ArrayIterator.hpp">
+      <Filter>Containers\Iterators</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\Iterators\ArrayIteratorImpl.hpp">
+      <Filter>Containers\Iterators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

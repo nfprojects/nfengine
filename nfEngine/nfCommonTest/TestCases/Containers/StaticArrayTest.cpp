@@ -1,11 +1,11 @@
 /**
  * @file
  * @author Witek902 (witek902@gmail.com)
- * @brief  Unit tests for DynArray
+ * @brief  Unit tests for StaticArray
  */
 
 #include "PCH.hpp"
-#include "nfCommon/Containers/DynArray.hpp"
+#include "nfCommon/Containers/StaticArray.hpp"
 #include "nfCommon/Math/Random.hpp"
 
 #include "TestClasses.hpp"
@@ -13,38 +13,49 @@
 using namespace NFE;
 using namespace NFE::Common;
 
-TEST(DynArray, Empty)
+static const uint32 DefaultSize = 16;
+
+TEST(StaticArray, Empty)
 {
-    DynArray<int> array;
+    StaticArray<int, DefaultSize> array;
 
     EXPECT_EQ(0, array.Size());
     EXPECT_TRUE(array.Empty());
     EXPECT_EQ(array.Begin(), array.End());
-    EXPECT_EQ(array.End(), array.Find(0));
+    EXPECT_EQ(array.End(), array.GetView().Find(0));
 }
 
-TEST(DynArray, PushBack)
+TEST(StaticArray, Empty_Const)
 {
-    DynArray<int> array;
+    const StaticArray<int, DefaultSize> array;
 
-    {
-        const auto iter1 = array.PushBack(1);
-        ASSERT_NE(array.End(), iter1);
-        ASSERT_EQ(1, array.Size());
-    }
+    EXPECT_EQ(0, array.Size());
+    EXPECT_TRUE(array.Empty());
+    EXPECT_EQ(array.Begin(), array.End());
+    EXPECT_EQ(array.End(), array.GetView().Find(0));
+}
+
+TEST(StaticArray, PushBack)
+{
+    StaticArray<int, DefaultSize> array;
+
+    const auto iter1 = array.PushBack(1);
+    ASSERT_NE(array.End(), iter1);
+    ASSERT_EQ(1, array.Size());
 
     const auto iter2 = array.PushBack(2);
     ASSERT_NE(array.End(), iter2);
     ASSERT_EQ(2, array.Size());
 
+    ASSERT_NE(iter1, iter2);
     EXPECT_EQ(1, array[0]);
     EXPECT_EQ(2, array[1]);
 }
 
-TEST(DynArray, InitializeFromArray)
+TEST(StaticArray, InitializeFromArray)
 {
     const int elements[] = { 10, 20, 30 };
-    DynArray<int> array(elements, 3);
+    StaticArray<int, DefaultSize> array(elements, 3);
 
     ASSERT_EQ(3, array.Size());
     EXPECT_EQ(10, array[0]);
@@ -52,24 +63,23 @@ TEST(DynArray, InitializeFromArray)
     EXPECT_EQ(30, array[2]);
 }
 
-TEST(DynArray, Clear)
+TEST(StaticArray, Clear)
 {
-    const uint32 numElements = 20;
-    DynArray<int> array;
+    StaticArray<int, DefaultSize> array;
 
-    for (uint32 i = 0; i < numElements; ++i)
+    for (uint32 i = 0; i < DefaultSize; ++i)
     {
         array.PushBack(i);
     }
 
-    ASSERT_EQ(numElements, array.Size());
+    ASSERT_EQ(DefaultSize, array.Size());
 
     array.Clear();
     EXPECT_EQ(0, array.Size());
     EXPECT_TRUE(array.Empty());
 }
 
-TEST(DynArray, Resize)
+TEST(StaticArray, Resize)
 {
     struct Type
     {
@@ -82,7 +92,7 @@ TEST(DynArray, Resize)
         }
     };
 
-    DynArray<Type> array;
+    StaticArray<Type, DefaultSize> array;
     ASSERT_TRUE(array.Resize(5));
 
     const Type defaultVal;
@@ -94,9 +104,9 @@ TEST(DynArray, Resize)
     EXPECT_EQ(defaultVal, array[4]);
 }
 
-TEST(DynArray, InitializerList)
+TEST(StaticArray, InitializerList)
 {
-    const DynArray<int> array({ 10, 20, 30, 40, 50 });
+    const StaticArray<int, DefaultSize> array({ 10, 20, 30, 40, 50 });
 
     EXPECT_EQ(5, array.Size());
     EXPECT_FALSE(array.Empty());
@@ -108,22 +118,22 @@ TEST(DynArray, InitializerList)
     EXPECT_EQ(50, array[4]);
 }
 
-TEST(DynArray, PopBack)
+TEST(StaticArray, PopBack)
 {
     int initialElements[] = { 10, 20, 30, 40 };
-    DynArray<int> array(initialElements, 4);
+    StaticArray<int, DefaultSize> array(initialElements, 4);
 
     ASSERT_TRUE(array.PopBack());
     ASSERT_EQ(3, array.Size());
-    EXPECT_EQ(ArrayView<int>(initialElements, 3), array);
+    EXPECT_EQ(ArrayView<int>(initialElements, 3), array.GetView());
 
     ASSERT_TRUE(array.PopBack());
     ASSERT_EQ(2, array.Size());
-    EXPECT_EQ(ArrayView<int>(initialElements, 2), array);
+    EXPECT_EQ(ArrayView<int>(initialElements, 2), array.GetView());
 
     ASSERT_TRUE(array.PopBack());
     ASSERT_EQ(1, array.Size());
-    EXPECT_EQ(ArrayView<int>(initialElements, 1), array);
+    EXPECT_EQ(ArrayView<int>(initialElements, 1), array.GetView());
 
     ASSERT_TRUE(array.PopBack());
     ASSERT_EQ(0, array.Size());
@@ -131,10 +141,10 @@ TEST(DynArray, PopBack)
     ASSERT_FALSE(array.PopBack());
 }
 
-TEST(DynArray, CopyConstructor)
+TEST(StaticArray, CopyConstructor)
 {
     using Type = CopyOnlyTestClass<int>;
-    using ArrayType = DynArray<Type>;
+    using ArrayType = StaticArray<Type, DefaultSize>;
 
     ClassMethodCallCounters counters;
     const Type value1(&counters, 1);
@@ -149,7 +159,6 @@ TEST(DynArray, CopyConstructor)
 
     {
         ArrayType array;
-        array.Reserve(2);
         {
             auto iter = array.PushBack(value1);
             ASSERT_NE(array.End(), iter);
@@ -169,7 +178,6 @@ TEST(DynArray, CopyConstructor)
         // array = []
         // array2 = [1, 2]
 
-        ArrayType::ConstIterator iter;
         const Type* ptr;
         const Type* ptr2;
 
@@ -184,14 +192,19 @@ TEST(DynArray, CopyConstructor)
         ASSERT_EQ(2, array2.Size());
 
         // convert "array" to const to force use of ConstIterator
-        const ArrayType& constSet = array;
-        iter = constSet.Find(value1);
-        ASSERT_NE(constSet.End(), iter);
-        ptr = &(*iter);
+        const ArrayType& constArray = array;
 
-        iter = array2.Find(value1);
-        ASSERT_NE(array2.End(), iter);
-        ptr2 = &(*iter);
+        {
+            auto iter = constArray.GetView().Find(value1);
+            ASSERT_NE(constArray.End(), iter);
+            ptr = &(*iter);
+        }
+
+        {
+            auto iter = array2.GetView().Find(value1);
+            ASSERT_NE(array2.End(), iter);
+            ptr2 = &(*iter);
+        }
 
         // compare pointer to the same value in both sets - they should be different
         EXPECT_NE(ptr, ptr2);
@@ -205,10 +218,10 @@ TEST(DynArray, CopyConstructor)
     EXPECT_EQ(4, counters.destructor);
 }
 
-TEST(DynArray, Assign)
+TEST(StaticArray, Assign)
 {
     using Type = CopyOnlyTestClass<int>;
-    using ArrayType = DynArray<Type>;
+    using ArrayType = StaticArray<Type, DefaultSize>;
 
     ClassMethodCallCounters counters;
     const Type value1(&counters, 1);
@@ -225,7 +238,6 @@ TEST(DynArray, Assign)
 
     {
         ArrayType array;
-        array.Reserve(2);
         {
             auto iter = array.PushBack(value1);
             ASSERT_NE(array.End(), iter);
@@ -241,7 +253,6 @@ TEST(DynArray, Assign)
         EXPECT_EQ(0, counters.destructor);
 
         ArrayType array2;
-        array2.Reserve(2);
         {
             auto iter = array2.PushBack(value3);
             ASSERT_NE(array2.End(), iter);
@@ -272,11 +283,11 @@ TEST(DynArray, Assign)
         ASSERT_EQ(2, array2.Size());
 
         // convert "array" to const to force use of ConstIterator
-        auto iter = array.Find(value1);
+        auto iter = array.GetView().Find(value1);
         ASSERT_NE(array.End(), iter);
         const Type* ptr = &(*iter);
 
-        iter = array2.Find(value1);
+        iter = array2.GetView().Find(value1);
         ASSERT_NE(array2.End(), iter);
         const Type* ptr2 = &(*iter);
 
@@ -292,16 +303,15 @@ TEST(DynArray, Assign)
     EXPECT_EQ(6, counters.destructor);
 }
 
-TEST(DynArray, MoveConstructor)
+TEST(StaticArray, MoveConstructor)
 {
     using Type = MoveOnlyTestClass<int>;
-    using ArrayType = DynArray<Type>;
+    using ArrayType = StaticArray<Type, DefaultSize>;
 
     ClassMethodCallCounters counters;
     {
-        // initialize source DynArray
+        // initialize source StaticArray
         ArrayType array;
-        array.Reserve(2);
         {
             auto iter = array.PushBack(Type(&counters, 1));
             ASSERT_NE(array.End(), iter);
@@ -321,7 +331,7 @@ TEST(DynArray, MoveConstructor)
         // array = []
         // array2 = [1, 2]
         EXPECT_EQ(2, counters.constructor);
-        EXPECT_EQ(2, counters.moveConstructor);
+        EXPECT_EQ(4, counters.moveConstructor);
         EXPECT_EQ(0, counters.copyConstructor);
         EXPECT_EQ(0, counters.moveAssignment);
         EXPECT_EQ(0, counters.assignment);
@@ -332,28 +342,27 @@ TEST(DynArray, MoveConstructor)
 
         // check if elements were moved
         EXPECT_EQ(2, array2.Size());
-        EXPECT_NE(array2.End(), array2.Find(Type(nullptr, 1)));
-        EXPECT_NE(array2.End(), array2.Find(Type(nullptr, 2)));
+        EXPECT_NE(array2.End(), array2.GetView().Find(Type(nullptr, 1)));
+        EXPECT_NE(array2.End(), array2.GetView().Find(Type(nullptr, 2)));
     }
 
     EXPECT_EQ(2, counters.constructor);
-    EXPECT_EQ(2, counters.moveConstructor);
+    EXPECT_EQ(4, counters.moveConstructor);
     EXPECT_EQ(0, counters.copyConstructor);
     EXPECT_EQ(0, counters.moveAssignment);
     EXPECT_EQ(0, counters.assignment);
     EXPECT_EQ(2, counters.destructor);
 }
 
-TEST(DynArray, MoveAssignment)
+TEST(StaticArray, MoveAssignment)
 {
     using Type = MoveOnlyTestClass<int>;
-    using ArrayType = DynArray<Type>;
+    using ArrayType = StaticArray<Type, DefaultSize>;
 
     ClassMethodCallCounters counters;
     {
         // initialize target array
         ArrayType array;
-        array.Reserve(2);
         {
             auto iter = array.PushBack(Type(&counters, 1));
             ASSERT_NE(array.End(), iter);
@@ -370,7 +379,6 @@ TEST(DynArray, MoveAssignment)
 
         // initialize source array
         ArrayType array2;
-        array2.Reserve(2);
         {
             auto iter = array2.PushBack(Type(&counters, 3));
             ASSERT_NE(array2.End(), iter);
@@ -393,7 +401,7 @@ TEST(DynArray, MoveAssignment)
         EXPECT_EQ(4, counters.constructor);
         EXPECT_EQ(4, counters.moveConstructor);
         EXPECT_EQ(0, counters.copyConstructor);
-        EXPECT_EQ(0, counters.moveAssignment);
+        EXPECT_EQ(2, counters.moveAssignment);
         EXPECT_EQ(0, counters.assignment);
         EXPECT_EQ(2, counters.destructor);
 
@@ -402,21 +410,21 @@ TEST(DynArray, MoveAssignment)
 
         // check if elements were moved
         EXPECT_EQ(2, array2.Size());
-        EXPECT_NE(array2.End(), array2.Find(Type(nullptr, 1)));
-        EXPECT_NE(array2.End(), array2.Find(Type(nullptr, 2)));
+        EXPECT_NE(array2.End(), array2.GetView().Find(Type(nullptr, 1)));
+        EXPECT_NE(array2.End(), array2.GetView().Find(Type(nullptr, 2)));
     }
 
     EXPECT_EQ(4, counters.constructor);
     EXPECT_EQ(4, counters.moveConstructor);
     EXPECT_EQ(0, counters.copyConstructor);
-    EXPECT_EQ(0, counters.moveAssignment);
+    EXPECT_EQ(2, counters.moveAssignment);
     EXPECT_EQ(0, counters.assignment);
     EXPECT_EQ(4, counters.destructor);
 }
 
-TEST(DynArray, PushBackArray)
+TEST(StaticArray, PushBackArray)
 {
-    DynArray<int> array;
+    StaticArray<int, DefaultSize> array;
     array.PushBack(10);
     array.PushBack(20);
     array.PushBack(30);
@@ -430,12 +438,12 @@ TEST(DynArray, PushBackArray)
 
     int expectedElements[] = { 10, 20, 30, 40, 100, 200, 300, 400, 500 };
     const ArrayView<int> expected(expectedElements, 9);
-    EXPECT_EQ(expected, array);
+    EXPECT_EQ(expected, array.GetView());
 }
 
-TEST(DynArray, PushBackConstArray)
+TEST(StaticArray, PushBackConstArray)
 {
-    DynArray<int> array;
+    StaticArray<int, DefaultSize> array;
     array.PushBack(10);
     array.PushBack(20);
     array.PushBack(30);
@@ -449,45 +457,45 @@ TEST(DynArray, PushBackConstArray)
 
     int expectedElements[] = { 10, 20, 30, 40, 100, 200, 300, 400, 500 };
     const ArrayView<int> expected(expectedElements, 9);
-    EXPECT_EQ(expected, array);
+    EXPECT_EQ(expected, array.GetView());
 }
 
-TEST(DynArray, InsertAt_Front)
+TEST(StaticArray, InsertAt_Front)
 {
-    DynArray<int> array({ 10, 20, 30, 40, 50 });
+    StaticArray<int, DefaultSize> array({ 10, 20, 30, 40, 50 });
     auto iter = array.InsertAt(0, 111);
     ASSERT_NE(array.End(), iter);
 
     int expectedElements[] = { 111, 10, 20, 30, 40, 50 };
     const ArrayView<int> expected(expectedElements, 6);
-    EXPECT_EQ(expected, array);
+    EXPECT_EQ(expected, array.GetView());
 }
 
-TEST(DynArray, InsertAt_Back)
+TEST(StaticArray, InsertAt_Back)
 {
-    DynArray<int> array({ 10, 20, 30, 40, 50 });
+    StaticArray<int, DefaultSize> array({ 10, 20, 30, 40, 50 });
     auto iter = array.InsertAt(5, 111);
     ASSERT_NE(array.End(), iter);
 
     int expectedElements[] = { 10, 20, 30, 40, 50, 111 };
     const ArrayView<int> expected(expectedElements, 6);
-    EXPECT_EQ(expected, array);
+    EXPECT_EQ(expected, array.GetView());
 }
 
-TEST(DynArray, InsertAt_Middle)
+TEST(StaticArray, InsertAt_Middle)
 {
-    DynArray<int> array({ 10, 20, 30, 40, 50 });
+    StaticArray<int, DefaultSize> array({ 10, 20, 30, 40, 50 });
     auto iter = array.InsertAt(2, 111);
     ASSERT_NE(array.End(), iter);
 
     int expectedElements[] = { 10, 20, 111, 30, 40, 50 };
     const ArrayView<int> expected(expectedElements, 6);
-    EXPECT_EQ(expected, array);
+    EXPECT_EQ(expected, array.GetView());
 }
 
-TEST(DynArray, InsertArrayAt_Empty)
+TEST(StaticArray, InsertArrayAt_Empty)
 {
-    DynArray<int> array({ 10, 20, 30, 40, 50 });
+    StaticArray<int, DefaultSize> array({ 10, 20, 30, 40, 50 });
     const ArrayView<int> toInsert;
 
     auto iter = array.InsertArrayAt(0, toInsert);
@@ -500,136 +508,136 @@ TEST(DynArray, InsertArrayAt_Empty)
     ASSERT_EQ(array.End(), iter);
 }
 
-TEST(DynArray, InsertArrayAt_Front)
+TEST(StaticArray, InsertArrayAt_Front)
 {
     int elementsToInsert[] = { 111, 222, 333 };
     const ArrayView<int> toInsert(elementsToInsert, 3);
 
-    DynArray<int> array({ 10, 20, 30, 40, 50 });
+    StaticArray<int, DefaultSize> array({ 10, 20, 30, 40, 50 });
     auto iter = array.InsertArrayAt(0, toInsert);
     ASSERT_NE(array.End(), iter);
 
     int expectedElements[] = { 111, 222, 333, 10, 20, 30, 40, 50 };
     const ArrayView<int> expected(expectedElements, 8);
-    EXPECT_EQ(expected, array);
+    EXPECT_EQ(expected, array.GetView());
 }
 
-TEST(DynArray, InsertAt_Multiple)
+TEST(StaticArray, InsertAt_Multiple)
 {
-    DynArray<int> array({ 10, 20, 30, 40, 50 });
+    StaticArray<int, DefaultSize> array({ 10, 20, 30, 40, 50 });
     auto iter = array.InsertAt(1, 111, 3);
     ASSERT_NE(array.End(), iter);
 
     int expectedElements[] = { 10, 111, 111, 111, 20, 30, 40, 50 };
     const ArrayView<int> expected(expectedElements, 8);
-    EXPECT_EQ(expected, array);
+    EXPECT_EQ(expected, array.GetView());
 }
 
-TEST(DynArray, InsertArrayAt_Back)
+TEST(StaticArray, InsertArrayAt_Back)
 {
     int elementsToInsert[] = { 111, 222, 333 };
     const ArrayView<int> toInsert(elementsToInsert, 3);
 
-    DynArray<int> array({ 10, 20, 30, 40, 50 });
+    StaticArray<int, DefaultSize> array({ 10, 20, 30, 40, 50 });
     auto iter = array.InsertArrayAt(5, toInsert);
     ASSERT_NE(array.End(), iter);
 
     int expectedElements[] = { 10, 20, 30, 40, 50, 111, 222, 333 };
     const ArrayView<int> expected(expectedElements, 8);
-    EXPECT_EQ(expected, array);
+    EXPECT_EQ(expected, array.GetView());
 }
 
-TEST(DynArray, InsertArrayAt_Middle)
+TEST(StaticArray, InsertArrayAt_Middle)
 {
     int elementsToInsert[] = { 111, 222, 333 };
     const ArrayView<int> toInsert(elementsToInsert, 3);
 
-    DynArray<int> array({ 10, 20, 30, 40, 50 });
+    StaticArray<int, DefaultSize> array({ 10, 20, 30, 40, 50 });
     auto iter = array.InsertArrayAt(2, toInsert);
     ASSERT_NE(array.End(), iter);
 
     int expectedElements[] = { 10, 20, 111, 222, 333, 30, 40, 50 };
     const ArrayView<int> expected(expectedElements, 8);
-    EXPECT_EQ(expected, array);
+    EXPECT_EQ(expected, array.GetView());
 }
 
-TEST(DynArray, Erase_Front)
+TEST(StaticArray, Erase_Front)
 {
-    DynArray<int> array({ 10, 20, 30, 40, 50 });
+    StaticArray<int, DefaultSize> array({ 10, 20, 30, 40, 50 });
 
     EXPECT_TRUE(array.Erase(array.Begin()));
 
     int expectedElements[] = { 20, 30, 40, 50 };
     const ArrayView<int> expected(expectedElements, 4);
-    EXPECT_EQ(expected, array);
+    EXPECT_EQ(expected, array.GetView());
 }
 
-TEST(DynArray, Erase_Middle)
+TEST(StaticArray, Erase_Middle)
 {
-    DynArray<int> array({ 10, 20, 30, 40, 50 });
+    StaticArray<int, DefaultSize> array({ 10, 20, 30, 40, 50 });
 
     EXPECT_TRUE(array.Erase(array.Begin() + 2));
 
     int expectedElements[] = { 10, 20, 40, 50 };
     const ArrayView<int> expected(expectedElements, 4);
-    EXPECT_EQ(expected, array);
+    EXPECT_EQ(expected, array.GetView());
 }
 
-TEST(DynArray, Erase_Back)
+TEST(StaticArray, Erase_Back)
 {
-    DynArray<int> array({ 10, 20, 30, 40, 50 });
+    StaticArray<int, DefaultSize> array({ 10, 20, 30, 40, 50 });
 
     EXPECT_TRUE(array.Erase(array.End() - 1));
 
     int expectedElements[] = { 10, 20, 30, 40 };
     const ArrayView<int> expected(expectedElements, 4);
-    EXPECT_EQ(expected, array);
+    EXPECT_EQ(expected, array.GetView());
 }
 
-TEST(DynArray, Erase_Range_Front)
+TEST(StaticArray, Erase_Range_Front)
 {
-    DynArray<int> array({ 10, 20, 30, 40, 50 });
+    StaticArray<int, DefaultSize> array({ 10, 20, 30, 40, 50 });
 
     EXPECT_TRUE(array.Erase(array.Begin(), array.Begin() + 2));
 
     int expectedElements[] = { 30, 40, 50 };
     const ArrayView<int> expected(expectedElements, 3);
-    EXPECT_EQ(expected, array);
+    EXPECT_EQ(expected, array.GetView());
 }
 
-TEST(DynArray, Erase_Range_Middle)
+TEST(StaticArray, Erase_Range_Middle)
 {
-    DynArray<int> array({ 10, 20, 30, 40, 50 });
+    StaticArray<int, DefaultSize> array({ 10, 20, 30, 40, 50 });
 
     EXPECT_TRUE(array.Erase(array.Begin() + 1, array.Begin() + 3));
 
     int expectedElements[] = { 10, 40, 50 };
     const ArrayView<int> expected(expectedElements, 3);
-    EXPECT_EQ(expected, array);
+    EXPECT_EQ(expected, array.GetView());
 }
 
-TEST(DynArray, Erase_Range_End)
+TEST(StaticArray, Erase_Range_End)
 {
-    DynArray<int> array({ 10, 20, 30, 40, 50 });
+    StaticArray<int, DefaultSize> array({ 10, 20, 30, 40, 50 });
 
     EXPECT_TRUE(array.Erase(array.Begin() + 3, array.End()));
 
     int expectedElements[] = { 10, 20, 30 };
     const ArrayView<int> expected(expectedElements, 3);
-    EXPECT_EQ(expected, array);
+    EXPECT_EQ(expected, array.GetView());
 }
 
-TEST(DynArray, Erase_Range_Everything)
+TEST(StaticArray, Erase_Range_Everything)
 {
-    DynArray<int> array({ 10, 20, 30, 40, 50 });
+    StaticArray<int, DefaultSize> array({ 10, 20, 30, 40, 50 });
 
     EXPECT_TRUE(array.Erase(array.Begin(), array.End()));
     ASSERT_TRUE(array.Empty());
 }
 
-TEST(DynArray, Erase_Range_Empty)
+TEST(StaticArray, Erase_Range_Empty)
 {
-    DynArray<int> array({ 10, 20, 30, 40, 50 });
+    StaticArray<int, DefaultSize> array({ 10, 20, 30, 40, 50 });
 
     EXPECT_FALSE(array.Erase(array.Begin(), array.Begin()));
     ASSERT_EQ(5, array.Size());

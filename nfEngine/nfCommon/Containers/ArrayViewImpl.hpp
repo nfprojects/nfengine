@@ -13,174 +13,6 @@
 namespace NFE {
 namespace Common {
 
-
-template<typename ElementType>
-bool ArrayView<ElementType>::ConstIterator::operator == (const ConstIterator& other) const
-{
-    NFE_ASSERT(this->mArray == other.mArray, "Comparing incompatible iterators");
-    return this->mIndex == other.mIndex;
-}
-
-template<typename ElementType>
-bool ArrayView<ElementType>::ConstIterator::operator != (const ConstIterator& other) const
-{
-    NFE_ASSERT(this->mArray == other.mArray, "Comparing incompatible iterators");
-    return this->mIndex != other.mIndex;
-}
-
-template<typename ElementType>
-bool ArrayView<ElementType>::ConstIterator::operator < (const ConstIterator& other) const
-{
-    NFE_ASSERT(this->mArray == other.mArray, "Comparing incompatible iterators");
-    return this->mIndex < other.mIndex;
-}
-
-template<typename ElementType>
-ptrdiff_t ArrayView<ElementType>::ConstIterator::operator-(const ConstIterator& rhs) const
-{
-    NFE_ASSERT(this->mArray == rhs.mArray, "Comparing incompatible iterators");
-    return static_cast<ptrdiff_t>(this->mIndex) - static_cast<ptrdiff_t>(rhs.mIndex);
-}
-
-template<typename ElementType>
-const ElementType& ArrayView<ElementType>::ConstIterator::operator*() const
-{
-    return this->mArray->mElements[this->mIndex];
-}
-
-template<typename ElementType>
-const ElementType* ArrayView<ElementType>::ConstIterator::operator->() const
-{
-    return this->mArray->mElements + this->mIndex;
-}
-
-template<typename ElementType>
-typename ArrayView<ElementType>::ConstIterator& ArrayView<ElementType>::ConstIterator::operator++()
-{
-    this->mIndex++;
-    return *this;
-}
-
-template<typename ElementType>
-typename ArrayView<ElementType>::ConstIterator ArrayView<ElementType>::ConstIterator::operator++(int)
-{
-    return ConstIterator(this->mArray, this->mIndex++);
-}
-
-template<typename ElementType>
-typename ArrayView<ElementType>::ConstIterator& ArrayView<ElementType>::ConstIterator::operator+=(ptrdiff_t offset)
-{
-    this->mIndex += static_cast<int32>(offset);
-    return *this;
-}
-
-template<typename ElementType>
-typename ArrayView<ElementType>::ConstIterator& ArrayView<ElementType>::ConstIterator::operator--()
-{
-    this->mIndex--;
-    return *this;
-}
-
-template<typename ElementType>
-typename ArrayView<ElementType>::ConstIterator ArrayView<ElementType>::ConstIterator::operator--(int)
-{
-    return ConstIterator(this->mArray, this->mIndex--);
-}
-
-template<typename ElementType>
-typename ArrayView<ElementType>::ConstIterator& ArrayView<ElementType>::ConstIterator::operator-=(ptrdiff_t offset)
-{
-    this->mIndex -= static_cast<int32>(offset);
-    return *this;
-}
-
-template<typename ElementType>
-typename ArrayView<ElementType>::ConstIterator ArrayView<ElementType>::ConstIterator::operator+(ptrdiff_t offset) const
-{
-    return ConstIterator(this->mArray, this->mIndex + static_cast<int32>(offset));
-}
-
-template<typename ElementType>
-typename ArrayView<ElementType>::ConstIterator ArrayView<ElementType>::ConstIterator::operator-(ptrdiff_t offset) const
-{
-    return ConstIterator(this->mArray, this->mIndex - static_cast<int32>(offset));
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-template<typename ElementType>
-ptrdiff_t ArrayView<ElementType>::Iterator::operator-(const Iterator& rhs) const
-{
-    return ConstIterator::operator - (rhs);
-}
-
-template<typename ElementType>
-ElementType& ArrayView<ElementType>::Iterator::operator*() const
-{
-    // 'this' is required, because compiler does not now that 'mArray' is dependent type
-    return this->mArray->mElements[this->mIndex];
-}
-
-template<typename ElementType>
-ElementType* ArrayView<ElementType>::Iterator::operator->() const
-{
-    return this->mArray->mElements + this->mIndex;
-}
-
-template<typename ElementType>
-typename ArrayView<ElementType>::Iterator& ArrayView<ElementType>::Iterator::operator++()
-{
-    this->mIndex++;
-    return *this;
-}
-
-template<typename ElementType>
-typename ArrayView<ElementType>::Iterator ArrayView<ElementType>::Iterator::operator++(int)
-{
-    return Iterator(this->mArray, this->mIndex++);
-}
-
-template<typename ElementType>
-typename ArrayView<ElementType>::Iterator& ArrayView<ElementType>::Iterator::operator+=(ptrdiff_t offset)
-{
-    this->mIndex += static_cast<int32>(offset);
-    return *this;
-}
-
-template<typename ElementType>
-typename ArrayView<ElementType>::Iterator& ArrayView<ElementType>::Iterator::operator--()
-{
-    this->mIndex--;
-    return *this;
-}
-
-template<typename ElementType>
-typename ArrayView<ElementType>::Iterator ArrayView<ElementType>::Iterator::operator--(int)
-{
-    return Iterator(this->mArray, this->mIndex--);
-}
-
-template<typename ElementType>
-typename ArrayView<ElementType>::Iterator& ArrayView<ElementType>::Iterator::operator-=(ptrdiff_t offset)
-{
-    this->mIndex -= static_cast<int32>(offset);
-    return *this;
-}
-
-template<typename ElementType>
-typename ArrayView<ElementType>::Iterator ArrayView<ElementType>::Iterator::operator+(ptrdiff_t offset) const
-{
-    return Iterator(this->mArray, this->mIndex + static_cast<int32>(offset));
-}
-
-template<typename ElementType>
-typename ArrayView<ElementType>::Iterator ArrayView<ElementType>::Iterator::operator-(ptrdiff_t offset) const
-{
-    return Iterator(this->mArray, this->mIndex - static_cast<int32>(offset));
-}
-
-//////////////////////////////////////////////////////////////////////////
-
 template<typename ElementType>
 ArrayView<ElementType>::ArrayView()
     : mElements(nullptr)
@@ -276,27 +108,25 @@ ElementType& ArrayView<ElementType>::Back()
 template<typename ElementType>
 typename ArrayView<ElementType>::ConstIterator ArrayView<ElementType>::Begin() const
 {
-    return ConstIterator(this, 0);
+    return ConstIterator(mElements, 0);
 }
 
 template<typename ElementType>
 typename ArrayView<ElementType>::Iterator ArrayView<ElementType>::Begin()
 {
-    static_assert(!std::is_const<ElementType>::value, "You can only use ConstIterator for const-typed ArrayView");
-    return Iterator(this, 0);
+    return Iterator(mElements, 0);
 }
 
 template<typename ElementType>
 typename ArrayView<ElementType>::ConstIterator ArrayView<ElementType>::End() const
 {
-    return ConstIterator(this, mSize);
+    return ConstIterator(mElements, mSize);
 }
 
 template<typename ElementType>
 typename ArrayView<ElementType>::Iterator ArrayView<ElementType>::End()
 {
-    static_assert(!std::is_const<ElementType>::value, "You can only use ConstIterator for const-typed ArrayView");
-    return Iterator(this, mSize);
+    return Iterator(mElements, mSize);
 }
 
 template<typename ElementType>
@@ -329,7 +159,7 @@ typename ArrayView<ElementType>::ConstIterator ArrayView<ElementType>::Find(cons
     {
         if (mElements[i] == element)
         {
-            return ConstIterator(this, i);
+            return ConstIterator(mElements, i);
         }
     }
 
@@ -343,7 +173,7 @@ typename ArrayView<ElementType>::Iterator ArrayView<ElementType>::Find(const Ele
     {
         if (mElements[i] == element)
         {
-            return Iterator(this, i);
+            return Iterator(mElements, i);
         }
     }
 
