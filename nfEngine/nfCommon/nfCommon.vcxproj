@@ -31,6 +31,8 @@
     <ClInclude Include="Containers\DynArrayImpl.hpp" />
     <ClInclude Include="Containers\HashMap.hpp" />
     <ClInclude Include="Containers\HashMapImpl.hpp" />
+    <ClInclude Include="Containers\Iterators\ArrayIterator.hpp" />
+    <ClInclude Include="Containers\Iterators\ArrayIteratorImpl.hpp" />
     <ClInclude Include="Containers\Map.hpp" />
     <ClInclude Include="Containers\MapImpl.hpp" />
     <ClInclude Include="Containers\Hash.hpp" />
@@ -42,6 +44,8 @@
     <ClInclude Include="Containers\SharedPtrBase.hpp" />
     <ClInclude Include="Containers\SharedPtrData.hpp" />
     <ClInclude Include="Containers\SharedPtrImpl.hpp" />
+    <ClInclude Include="Containers\StaticArray.hpp" />
+    <ClInclude Include="Containers\StaticArrayImpl.hpp" />
     <ClInclude Include="Containers\UniquePtr.hpp" />
     <ClInclude Include="Containers\Set.hpp" />
     <ClInclude Include="Containers\SetImpl.hpp" />

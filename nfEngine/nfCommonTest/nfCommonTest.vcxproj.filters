@@ -211,6 +211,9 @@
     <ClCompile Include="TestCases\Containers\UniquePtrTest_Containers.cpp">
       <Filter>TestCases\Containers</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\Containers\StaticArrayTest.cpp">
+      <Filter>TestCases\Containers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
