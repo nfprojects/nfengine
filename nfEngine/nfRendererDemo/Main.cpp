@@ -283,7 +283,7 @@ public:
 };
 
 
-int main(int argc, char* argv[])
+int InnerMain(int argc, char* argv[])
 {
     std::string execPath = NFE::Common::FileSystem::GetExecutablePath();
     std::string execDir = NFE::Common::FileSystem::GetParentDir(execPath);
@@ -419,6 +419,13 @@ int main(int argc, char* argv[])
     window.DrawLoop();
     window.Release();
 
+    return 0;
+}
+
+int main(int argc, char* argv[])
+{
+    int ret = InnerMain(argc, argv);
+
     NFE::RTTI::TypeRegistry::GetInstance().Cleanup();
 
     // enable memory leak detection at the process exit (Windows only)
@@ -426,5 +433,5 @@ int main(int argc, char* argv[])
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif // _CRTDBG_MAP_ALLOC
 
-    return 0;
+    return ret;
 }
