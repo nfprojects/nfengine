@@ -171,6 +171,7 @@
     <ClCompile Include="TestCases\Containers\SetTest_Containers.cpp" />
     <ClCompile Include="TestCases\Containers\SharedPtrTest.cpp" />
     <ClCompile Include="TestCases\Containers\SharedPtrTest_Containers.cpp" />
+    <ClCompile Include="TestCases\Containers\StaticArrayTest.cpp" />
     <ClCompile Include="TestCases\Containers\StringTest.cpp" />
     <ClCompile Include="TestCases\Containers\StringViewTest.cpp" />
     <ClCompile Include="TestCases\Containers\UniquePtrTest.cpp" />
