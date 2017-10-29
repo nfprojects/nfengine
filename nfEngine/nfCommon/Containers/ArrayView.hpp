@@ -8,8 +8,8 @@
 
 #include "../nfCommon.hpp"
 #include "Hash.hpp"
+#include "Iterators/ArrayIterator.hpp"
 
-#include <iterator>
 
 namespace NFE {
 namespace Common {
@@ -28,84 +28,8 @@ public:
     // maximum size of array view (1 element is reserved for iterator to the end)
     static constexpr uint32 MaxSize = std::numeric_limits<uint32>::max() - 1;
 
-    class ConstIterator : public std::iterator<std::bidirectional_iterator_tag, ElementType>
-    {
-        friend class ArrayView;
-        template<typename T> friend class DynArray;
-
-    public:
-        // C++ standard iterator traits
-        using self_type = ConstIterator;
-
-        // creates invalid iterator
-        ConstIterator() : mArray(nullptr), mIndex(0) { }
-
-        // comparisons
-        NFE_INLINE bool operator == (const ConstIterator& other) const;
-        NFE_INLINE bool operator != (const ConstIterator& other) const;
-        NFE_INLINE bool operator < (const ConstIterator& rhs) const;
-        NFE_INLINE ptrdiff_t operator - (const ConstIterator& rhs) const;
-
-        // element access
-        NFE_INLINE const ElementType& operator*() const;
-        NFE_INLINE const ElementType* operator->() const;
-
-        // arithmetics
-        NFE_INLINE ConstIterator& operator++();
-        NFE_INLINE ConstIterator operator++(int);
-        NFE_INLINE ConstIterator& operator+=(ptrdiff_t offset);
-        NFE_INLINE ConstIterator& operator--();
-        NFE_INLINE ConstIterator operator--(int);
-        NFE_INLINE ConstIterator& operator-=(ptrdiff_t offset);
-        NFE_INLINE ConstIterator operator+(ptrdiff_t offset) const;
-        NFE_INLINE ConstIterator operator-(ptrdiff_t offset) const;
-
-        // get array index
-        int32 GetIndex() const { return mIndex; }
-
-    protected:
-        ConstIterator(const ArrayView* array, int32 index)
-            : mArray(array), mIndex(index)
-        { }
-
-        const ArrayView* mArray;    // array we are iterating
-        int32 mIndex;              // current index in the array
-    };
-
-    class Iterator : public ConstIterator
-    {
-        friend class ArrayView;
-        template<typename T> friend class DynArray;
-
-    public:
-        // C++ standard iterator traits
-        using self_type = Iterator;
-
-        // creates invalid iterator
-        Iterator() : ConstIterator() { }
-
-        // comparisons
-        NFE_INLINE ptrdiff_t operator - (const Iterator& rhs) const;
-
-        // element access
-        NFE_INLINE ElementType& operator*() const;
-        NFE_INLINE ElementType* operator->() const;
-
-        // arithmetics
-        NFE_INLINE Iterator& operator++();
-        NFE_INLINE Iterator operator++(int);
-        NFE_INLINE Iterator& operator+=(ptrdiff_t offset);
-        NFE_INLINE Iterator& operator--();
-        NFE_INLINE Iterator operator--(int);
-        NFE_INLINE Iterator& operator-=(ptrdiff_t offset);
-        NFE_INLINE Iterator operator+(ptrdiff_t offset) const;
-        NFE_INLINE Iterator operator-(ptrdiff_t offset) const;
-
-    private:
-        // creates invalid iterator
-        Iterator(const ArrayView* array, uint32 index) : ConstIterator(array, index) { }
-    };
-
+    using Iterator = ArrayIterator<ElementType>;
+    using ConstIterator = ConstArrayIterator<ElementType>;
 
     // create empty view
     NFE_INLINE ArrayView();

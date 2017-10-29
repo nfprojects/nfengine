@@ -173,7 +173,7 @@ typename DynArray<ElementType>::IteratorType DynArray<ElementType>::PushBack(con
     }
 
     new (this->mElements + this->mSize) ElementType(element);
-    return IteratorType(this, this->mSize++);
+    return IteratorType(this->mElements, this->mSize++);
 }
 
 template<typename ElementType>
@@ -186,7 +186,7 @@ typename DynArray<ElementType>::IteratorType DynArray<ElementType>::PushBack(Ele
     }
 
     new (this->mElements + this->mSize) ElementType(std::move(element));
-    return IteratorType(this, this->mSize++);
+    return IteratorType(this->mElements, this->mSize++);
 }
 
 template<typename ElementType>
@@ -241,7 +241,7 @@ typename DynArray<ElementType>::IteratorType DynArray<ElementType>::InsertAt(uin
     MemoryHelpers::MoveArray<ElementType>(base + 1, base, this->mSize - index);
     new (base) ElementType(element);
     this->mSize++;
-    return IteratorType(this, index);
+    return IteratorType(this->mElements, index);
 }
 
 template<typename ElementType>
@@ -257,7 +257,7 @@ typename DynArray<ElementType>::IteratorType DynArray<ElementType>::InsertAt(uin
     MemoryHelpers::MoveArray<ElementType>(base + 1, base, this->mSize - index);
     new (base) ElementType(std::move(element));
     this->mSize++;
-    return IteratorType(this, index);
+    return IteratorType(this->mElements, index);
 }
 
 template<typename ElementType>
@@ -284,7 +284,7 @@ typename DynArray<ElementType>::IteratorType DynArray<ElementType>::InsertAt(uin
     }
 
     this->mSize += count;
-    return IteratorType(this, index);
+    return IteratorType(this->mElements, index);
 }
 
 template<typename ElementType>
@@ -315,7 +315,7 @@ typename DynArray<ElementType>::IteratorType DynArray<ElementType>::InsertArrayA
     }
 
     this->mSize += arrayView.mSize;
-    return IteratorType(this, index);
+    return IteratorType(this->mElements, index);
 }
 
 template<typename ElementType>
@@ -326,10 +326,10 @@ bool DynArray<ElementType>::Erase(const ConstIteratorType& iterator)
         return false;
     }
 
-    this->mElements[iterator.mIndex].~ElementType();
+    this->mElements[iterator.GetIndex()].~ElementType();
 
-    ElementType* base = this->mElements + iterator.mIndex;
-    MemoryHelpers::MoveArray<ElementType>(base, base + 1, this->mSize - iterator.mIndex - 1);
+    ElementType* base = this->mElements + iterator.GetIndex();
+    MemoryHelpers::MoveArray<ElementType>(base, base + 1, this->mSize - iterator.GetIndex() - 1);
     this->mSize--;
     return true;
 }
@@ -337,21 +337,21 @@ bool DynArray<ElementType>::Erase(const ConstIteratorType& iterator)
 template<typename ElementType>
 bool DynArray<ElementType>::Erase(const ConstIteratorType& first, const ConstIteratorType& last)
 {
-    if (first.mIndex >= last.mIndex)
+    if (first.GetIndex() >= last.GetIndex())
     {
         // nothing to do
         return false;
     }
 
     // call destructors
-    for (int32 i = first.mIndex; i < last.mIndex; ++i)
+    for (int32 i = first.GetIndex(); i < last.GetIndex(); ++i)
     {
         this->mElements[i].~ElementType();
     }
 
-    const int32 num = last.mIndex - first.mIndex;
-    ElementType* base = this->mElements + first.mIndex;
-    MemoryHelpers::MoveArray<ElementType>(base, base + num, this->mSize - last.mIndex);
+    const int32 num = last.GetIndex() - first.GetIndex();
+    ElementType* base = this->mElements + first.GetIndex();
+    MemoryHelpers::MoveArray<ElementType>(base, base + num, this->mSize - last.GetIndex());
     this->mSize -= num;
     return true;
 }
