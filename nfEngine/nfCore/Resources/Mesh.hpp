@@ -8,10 +8,11 @@
 
 #include "../Core.hpp"
 #include "Resource.hpp"
-#include "../Renderer/RendererResources.hpp"
 #include "nfCommon/Math/Box.hpp"
 #include "nfCommon/Memory/Aligned.hpp"
 #include "nfResources/MeshFile.hpp"
+
+#include "../nfRenderer/RendererResources.hpp"
 
 
 // TODO generating mesh at the runtime
@@ -23,8 +24,7 @@ namespace Resource {
  * Part of the Mesh.
  * @details Submesh is meant to be using one material
  */
-NFE_ALIGN(16)
-struct SubMesh : public Common::Aligned<16>
+struct NFE_ALIGN(16) SubMesh : public Common::Aligned<16>
 {
     Math::Box localBox;
     Material* material;
@@ -37,8 +37,7 @@ using SubMeshes = std::vector<SubMesh>;
 /**
  * Mesh resource class.
  */
-NFE_ALIGN(16)
-class CORE_API Mesh : public ResourceBase
+class CORE_API NFE_ALIGN(16) Mesh : public ResourceBase
 {
 private:
     SubMeshes mSubMeshes;

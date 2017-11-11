@@ -11,18 +11,6 @@
 #include "GeometryRenderer.hpp"
 #include "DebugRenderer.hpp"
 #include "RendererContext.hpp"
-#include "View.hpp"
-
-#include "Engine.hpp"
-#include "Utils/ConfigVariable.hpp"
-
-// TODO remove ASAP {
-#include "Scene/Entity.hpp"
-#include "Scene/Components/ComponentCamera.hpp"
-#include "Scene/Components/ComponentBody.hpp"
-#include "Resources/Mesh.hpp"
-#include "Resources/Material.hpp"
-// }
 
 #include "nfCommon/System/Timer.hpp"
 #include "nfCommon/Logger/Logger.hpp"

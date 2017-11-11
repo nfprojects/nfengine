@@ -12,7 +12,6 @@
 #include "nfCommon/Utils/ScopedLock.hpp"
 
 // TODO use RTTI system for this...
-#include "Multishader.hpp"
 #include "Texture.hpp"
 #include "Material.hpp"
 #include "Mesh.hpp"
@@ -84,10 +83,6 @@ ResourceBase* ResManager::GetResource(const char* name, ResourceType type, bool 
     // TODO use RTTI system for this...
     switch (type)
     {
-        case ResourceType::Shader:
-            resource = new Multishader;
-            break;
-
         case ResourceType::Texture:
             resource = new Texture;
             break;

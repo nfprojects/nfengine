@@ -10,7 +10,7 @@
 #include "RenderCommand.hpp"
 #include "GeometryRendererContext.hpp"
 #include "RendererResources.hpp"
-#include "../Resources/MultiPipelineState.hpp"
+
 
 namespace NFE {
 namespace Renderer {
