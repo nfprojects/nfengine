@@ -7,13 +7,13 @@
 #pragma once
 
 #include "RendererResources.hpp"
-#include "../Engine.hpp"
+
 
 namespace NFE {
 namespace Renderer {
 
 template<typename ModuleType, typename ContextType>
-class CORE_API RendererModule
+class NFE_RENDERER_API RendererModule
 {
     NFE_MAKE_NONCOPYABLE(RendererModule)
     NFE_MAKE_NONMOVEABLE(RendererModule)

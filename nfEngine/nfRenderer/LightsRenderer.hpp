@@ -8,7 +8,6 @@
 
 #include "RendererModule.hpp"
 #include "LightsRendererContext.hpp"
-#include "../Resources/MultiPipelineState.hpp"
 
 namespace NFE {
 namespace Renderer {

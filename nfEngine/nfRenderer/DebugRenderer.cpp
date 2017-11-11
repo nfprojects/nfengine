@@ -10,10 +10,6 @@
 #include "DebugRenderer.hpp"
 #include "HighLevelRenderer.hpp"
 
-// TODO remove these
-#include "Resources/Material.hpp"
-#include "Resources/Mesh.hpp"
-
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/Math/Box.hpp"
 #include "nfCommon/Math/Frustum.hpp"

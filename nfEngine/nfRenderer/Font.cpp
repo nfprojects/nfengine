@@ -8,15 +8,11 @@
 
 #include "PCH.hpp"
 #include "Font.hpp"
-#include "Engine.hpp"
+
+#include "GuiRenderer.hpp"
 
 #include "nfCommon/Logger/Logger.hpp"
 
-#include "ft2build.h"
-#include "freetype/freetype.h"
-#include "freetype/ftglyph.h"
-
-#include "GuiRenderer.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -59,7 +55,7 @@ bool Font::GetTextSize(const char* text, int& width, int& lines) const
         if (text[i] == '\n')  // carriage return
         {
             lines++;
-            maxOffsetX = std::max(maxOffsetX, offsetX);
+            maxOffsetX = Max(maxOffsetX, offsetX);
             offsetX = 0;
             continue;
         }

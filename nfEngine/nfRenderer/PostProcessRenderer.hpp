@@ -8,7 +8,7 @@
 
 #include "RendererModule.hpp"
 #include "PostProcessRendererContext.hpp"
-#include "../Resources/MultiPipelineState.hpp"
+
 
 namespace NFE {
 namespace Renderer {

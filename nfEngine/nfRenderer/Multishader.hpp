@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include "Resource.hpp"
-#include "../Renderer/RendererModule.hpp"
-#include "../Renderer/HighLevelRenderer.hpp"
-#include "../Renderer/RenderCommand.hpp"
+#include "nfRenderer.hpp"
+#include "RendererModule.hpp"
+#include "HighLevelRenderer.hpp"
+#include "RenderCommand.hpp"
 
 
 namespace NFE {
@@ -28,7 +28,7 @@ struct MultishaderMacro
     {}
 };
 
-class Multishader : public ResourceBase
+class Multishader
 {
     std::vector<MultishaderMacro> mMacros;
     /// don't keep names along with ranges - it's bad for cache

@@ -8,11 +8,11 @@
 
 #include "Core.hpp"
 #include "Resources/ResourcesManager.hpp"
-#include "Renderer/HighLevelRenderer.hpp"
-#include "nfCommon/Utils/ThreadPool.hpp"
-#include "nfCommon/Containers/DynArray.hpp"
-#include "nfCommon/Containers/UniquePtr.hpp"
-#include "nfCommon/Containers/String.hpp"
+#include "../nfRenderer/HighLevelRenderer.hpp"
+#include "../nfCommon/Utils/ThreadPool.hpp"
+#include "../nfCommon/Containers/DynArray.hpp"
+#include "../nfCommon/Containers/UniquePtr.hpp"
+#include "../nfCommon/Containers/String.hpp"
 
 #include <mutex> // TODO remove
 

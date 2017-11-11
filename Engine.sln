@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2008
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nfEngine", "nfEngine", "{A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}"
 EndProject
@@ -148,6 +148,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HLSL5", "HLSL5", "{9BA96BF9
 		nfEngine\Shaders\HLSL5\SpotLightPS.hlsl = nfEngine\Shaders\HLSL5\SpotLightPS.hlsl
 		nfEngine\Shaders\HLSL5\SpotLightVS.hlsl = nfEngine\Shaders\HLSL5\SpotLightVS.hlsl
 		nfEngine\Shaders\HLSL5\TonemappingPS.hlsl = nfEngine\Shaders\HLSL5\TonemappingPS.hlsl
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nfRenderer", "nfEngine\nfRenderer\nfRenderer.vcxproj", "{439864AE-355B-4CC7-91E0-71CCBC2965E0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EC1CAD07-6B42-4CBC-AC3B-00F0C39ACE44} = {EC1CAD07-6B42-4CBC-AC3B-00F0C39ACE44}
+		{3561E54D-E8B0-4C0E-AB84-0E636A5FE43A} = {3561E54D-E8B0-4C0E-AB84-0E636A5FE43A}
+		{1A1154B8-E09A-472F-A0F0-20F530741587} = {1A1154B8-E09A-472F-A0F0-20F530741587}
+		{49AB8AC7-1834-4AF8-9792-59313C71C7E0} = {49AB8AC7-1834-4AF8-9792-59313C71C7E0}
 	EndProjectSection
 EndProject
 Global
@@ -352,6 +360,18 @@ Global
 		{39346F9B-F1D6-41A9-A539-91D0448C491C}.Release|Win32.Build.0 = Release|Win32
 		{39346F9B-F1D6-41A9-A539-91D0448C491C}.Release|x64.ActiveCfg = Release|x64
 		{39346F9B-F1D6-41A9-A539-91D0448C491C}.Release|x64.Build.0 = Release|x64
+		{439864AE-355B-4CC7-91E0-71CCBC2965E0}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{439864AE-355B-4CC7-91E0-71CCBC2965E0}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{439864AE-355B-4CC7-91E0-71CCBC2965E0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{439864AE-355B-4CC7-91E0-71CCBC2965E0}.Debug|Win32.Build.0 = Debug|Win32
+		{439864AE-355B-4CC7-91E0-71CCBC2965E0}.Debug|x64.ActiveCfg = Debug|x64
+		{439864AE-355B-4CC7-91E0-71CCBC2965E0}.Debug|x64.Build.0 = Debug|x64
+		{439864AE-355B-4CC7-91E0-71CCBC2965E0}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{439864AE-355B-4CC7-91E0-71CCBC2965E0}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{439864AE-355B-4CC7-91E0-71CCBC2965E0}.Release|Win32.ActiveCfg = Release|Win32
+		{439864AE-355B-4CC7-91E0-71CCBC2965E0}.Release|Win32.Build.0 = Release|Win32
+		{439864AE-355B-4CC7-91E0-71CCBC2965E0}.Release|x64.ActiveCfg = Release|x64
+		{439864AE-355B-4CC7-91E0-71CCBC2965E0}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -379,5 +399,9 @@ Global
 		{39346F9B-F1D6-41A9-A539-91D0448C491C} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
 		{8720D62A-B414-41F5-A793-D2B19D8FF955} = {265F0BFF-E485-46E3-9213-D339828982B3}
 		{9BA96BF9-A3AC-4B9D-911A-46C0FE261983} = {B19B4C10-EB4D-4782-8933-120A35AC259D}
+		{439864AE-355B-4CC7-91E0-71CCBC2965E0} = {A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BB79E799-26DA-410C-BE5A-FDD223EBCB3B}
 	EndGlobalSection
 EndGlobal

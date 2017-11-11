@@ -6,45 +6,17 @@
 
 #pragma once
 
+#include "nfRenderer.hpp"
 #include "RendererResources.hpp"
 #include "RendererContext.hpp"
-#include "../../Renderers/RendererInterface/Device.hpp"
 
-#include "nfCommon/System/Library.hpp"
+#include "../Renderers/RendererInterface/Device.hpp"
+
+#include "../nfCommon/System/Library.hpp"
 
 
 namespace NFE {
 namespace Renderer {
-
-struct GPUStats
-{
-    uint32 IAVertices;
-    uint32 IAPrimitives;
-    uint32 VSInvocations;
-    uint32 GSInvocations;
-    uint32 GSPrimitives;
-    uint32 CInvocations;
-    uint32 CPrimitives;
-    uint32 PSInvocations;
-    uint32 HSInvocations;
-    uint32 DSInvocations;
-    uint32 CSInvocations;
-
-    GPUStats()
-        : IAVertices(0)
-        , IAPrimitives(0)
-        , VSInvocations(0)
-        , GSInvocations(0)
-        , GSPrimitives(0)
-        , CInvocations(0)
-        , CPrimitives(0)
-        , PSInvocations(0)
-        , HSInvocations(0)
-        , DSInvocations(0)
-        , CSInvocations(0)
-    {}
-};
-
 
 /**
  * Global renderer configuration.
@@ -91,9 +63,6 @@ private:
     void CreateCommonResources();
 
 public:
-    GPUStats pipelineStats;
-
-
     HighLevelRenderer();
     ~HighLevelRenderer();
 
