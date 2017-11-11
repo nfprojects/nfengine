@@ -7,9 +7,10 @@
 #pragma once
 
 #include "RendererModule.hpp"
-#include "../Resources/MultiPipelineState.hpp"
 #include "GuiRendererContext.hpp"
 #include "Font.hpp"
+#include "MultiPipelineState.hpp"
+
 
 namespace NFE {
 namespace Renderer {
@@ -29,9 +30,9 @@ enum class HorizontalAlignment
     Justify
 };
 
-class CORE_API GuiRenderer : public RendererModule<GuiRenderer, GuiRendererContext>
+class NFE_RENDERER_API GuiRenderer : public RendererModule<GuiRenderer, GuiRendererContext>
 {
-    Resource::MultiPipelineState mPipelineState;
+    MultiPipelineState mPipelineState;
     BufferPtr mVertexBuffer;
     VertexLayoutPtr mVertexLayout;
     BufferPtr mConstantBuffer;
@@ -41,7 +42,7 @@ class CORE_API GuiRenderer : public RendererModule<GuiRenderer, GuiRendererConte
     ResourceBindingLayoutPtr mResBindingLayout;
 
     /// ImGui resources
-    Resource::MultiPipelineState mImGuiPipelineState;
+    MultiPipelineState mImGuiPipelineState;
     VertexLayoutPtr mImGuiVertexLayout;
     BufferPtr mImGuiVertexBuffer;
     BufferPtr mImGuiIndexBuffer;

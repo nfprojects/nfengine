@@ -11,18 +11,7 @@
 #include "GeometryRenderer.hpp"
 #include "DebugRenderer.hpp"
 #include "RendererContext.hpp"
-#include "View.hpp"
-
-#include "Engine.hpp"
-#include "Utils/ConfigVariable.hpp"
-
-// TODO remove ASAP {
-#include "Scene/Entity.hpp"
-#include "Scene/Components/ComponentCamera.hpp"
-#include "Scene/Components/ComponentBody.hpp"
-#include "Resources/Mesh.hpp"
-#include "Resources/Material.hpp"
-// }
+#include "ShadowMap.hpp"
 
 #include "nfCommon/System/Timer.hpp"
 #include "nfCommon/Logger/Logger.hpp"
@@ -33,6 +22,8 @@
 
 namespace NFE {
 
+using namespace Math;
+
 // debug drawing config vars
 namespace {
 ConfigVariable<bool> gDrawDebugEnable("renderer/debug/enable", true);
@@ -41,9 +32,6 @@ ConfigVariable<bool> gDrawDebugMeshes("renderer/debug/meshes", false);
 } // namespace
 
 namespace Renderer {
-
-using namespace Math;
-using namespace Resource;
 
 RenderingData::RenderingData()
     : view(nullptr)
@@ -147,8 +135,7 @@ void RenderScene::RenderLightsDebug(RenderingData& data, Renderer::RenderContext
     // TODO: dir light
 }
 
-void RenderScene::RenderGeometry(GeometryRendererContext* ctx,
-                                    const Frustum& viewFrustum, const Vector4& cameraPosition) const
+void RenderScene::RenderGeometry(GeometryRendererContext* ctx, const Frustum& viewFrustum, const Vector4& cameraPosition) const
 {
     // draw meshes
     Common::DynArray<MeshProxy*> visibleMeshes; //TODO: dynamic allocation per frame should be avoided

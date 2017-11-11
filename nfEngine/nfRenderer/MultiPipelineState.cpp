@@ -15,7 +15,7 @@
 
 
 namespace NFE {
-namespace Resource {
+namespace Renderer {
 
 using namespace Common;
 
@@ -40,8 +40,6 @@ void ShaderResourceDeleter(Multishader* multishader)
 
 } // namespace
 
-using namespace Renderer;
-
 
 MultiPipelineState::MultiPipelineState()
     : mShaderResources
@@ -59,25 +57,24 @@ bool MultiPipelineState::Load(const char* name)
 {
     mName = name;
 
-    ResManager* rm = Engine::GetInstance()->GetResManager();
     NFE_LOG_INFO("Loading multi shader set '%s'...", name);
 
     /// read config file
-    std::vector<char> str;
+    DynArray<char> str;
     {
-        const Common::String path = gShadersSetsRoot + name + ".cfg";
+        const String path = gShadersSetsRoot + name + ".cfg";
         File file(path, AccessMode::Read);
         size_t fileSize = static_cast<size_t>(file.GetSize());
-        str.resize(fileSize + 1);
+        str.Resize(fileSize + 1);
 
-        if (file.Read(str.data(), fileSize) != fileSize)
+        if (file.Read(str.Data(), fileSize) != fileSize)
             return false;
         str[fileSize] = '\0';
     }
 
     /// parse config file
     Config config;
-    if (!config.ParseInPlace(str.data()))
+    if (!config.ParseInPlace(str.Data()))
     {
         NFE_LOG_ERROR("Failed to parse shader set file '%s'...", name);
         return false;
@@ -92,8 +89,7 @@ bool MultiPipelineState::Load(const char* name)
         if (node.IsString())
         {
             const char* shaderName = node.GetString();
-            Multishader* resource = static_cast<Multishader*>(
-                rm->GetResource(shaderName, ResourceType::Shader));
+            Multishader* resource = static_cast<Multishader*>(rm->GetResource(shaderName, ResourceType::Shader));
             mShaderResources[i] = ShaderResourcePtr(resource, ShaderResourceDeleter);
             mShaderResources[i]->AddRef();
         }
@@ -130,8 +126,8 @@ bool MultiPipelineState::Load(const char* name)
                 return false;
             }
 
-            mMacroNames.push_back(macroName);
-            mMacros.push_back(macro);
+            mMacroNames.PushBack(macroName);
+            mMacros.PushBack(macro);
         }
     }
 
@@ -149,20 +145,22 @@ void MultiPipelineState::GenerateShaderSets()
         Multishader* shader = mShaderResources[i].get();
         if (shader)
         {
-            mShaderMacroMapping[i].resize(mMacros.size());
+            mShaderMacroMapping[i].Resize(mMacros.Size());
             rm->WaitForResource(shader);
 
-            for (size_t j = 0; j < mMacros.size(); ++j)
-                mShaderMacroMapping[i][j] = shader->GetMacroByName(mMacroNames[j].c_str());
+            for (size_t j = 0; j < mMacros.Size(); ++j)
+            {
+                mShaderMacroMapping[i][j] = shader->GetMacroByName(mMacroNames[j].Str());
+            }
         }
     }
 
-    if (mMacros.size() > 0)
+    if (mMacros.Size() > 0)
     {
-        std::unique_ptr<int[]> macroValues(new int[mMacros.size()]);
+        std::unique_ptr<int[]> macroValues(new int[mMacros.Size()]);
 
         size_t totalCombinations = 1;
-        for (size_t i = 0; i < mMacros.size(); ++i)
+        for (size_t i = 0; i < mMacros.Size(); ++i)
         {
             const MultishaderMacro& macro = mMacros[i];
             totalCombinations *= (macro.maxValue - macro.minValue + 1);
@@ -175,7 +173,7 @@ void MultiPipelineState::GenerateShaderSets()
             LoadShaderSet(macroValues.get());
 
             macroValues[0]++;
-            for (size_t j = 0; j < mMacros.size() - 1; ++j)
+            for (size_t j = 0; j < mMacros.Size() - 1; ++j)
             {
                 if (macroValues[j] > mMacros[j].maxValue)
                 {
@@ -200,7 +198,7 @@ void MultiPipelineState::LoadShaderSet(int* macroValues)
             continue;
 
         int shaderMacros[16] = { -1 };
-        for (size_t j = 0; j < mMacros.size(); ++j)
+        for (size_t j = 0; j < mMacros.Size(); ++j)
         {
             int dest = mShaderMacroMapping[i][j];
             if (dest >= 0)
@@ -230,12 +228,12 @@ void MultiPipelineState::LoadShaderSet(int* macroValues)
         }
     }
 
-    mShaderSets.push_back(shaderSet);
+    mShaderSets.PushBack(shaderSet);
 }
 
 bool MultiPipelineState::Build(const Renderer::PipelineStateDesc& desc)
 {
-    for (size_t i = 0; i < mShaderSets.size(); ++i)
+    for (size_t i = 0; i < mShaderSets.Size(); ++i)
     {
         PipelineStateDesc psoDesc = desc;
         psoDesc.vertexShader = mShaderSets[i].shaders[0];
@@ -250,20 +248,20 @@ bool MultiPipelineState::Build(const Renderer::PipelineStateDesc& desc)
         if (!pso)
             return false;
 
-        mSubPipelineStates.push_back(std::move(pso));
+        mSubPipelineStates.PushBack(std::move(pso));
     }
 
     return true;
 }
 
-size_t MultiPipelineState::GetMacrosNumber() const
+uint32 MultiPipelineState::GetMacrosNumber() const
 {
-    return mMacros.size();
+    return mMacros.Size();
 }
 
 int MultiPipelineState::GetMacroByName(const char* name) const
 {
-    for (size_t i = 0; i < mMacros.size(); ++i)
+    for (size_t i = 0; i < mMacros.Size(); ++i)
     {
         if (mMacroNames[i] == name)
             return static_cast<int>(i);
@@ -278,7 +276,7 @@ const PipelineStatePtr& MultiPipelineState::GetPipelineState(int* macroValues) c
     int multiplier = 1;
 
     // calculate subshader index based on macro values
-    for (size_t i = 0; i < mMacros.size(); ++i)
+    for (size_t i = 0; i < mMacros.Size(); ++i)
     {
         const MultishaderMacro& macro = mMacros[i];
         int val = macroValues != nullptr ? macroValues[i] : macro.defaultValue;
@@ -300,7 +298,7 @@ const ShaderPtr& MultiPipelineState::GetShader(Renderer::ShaderType type, int* v
     int typeId = static_cast<int>(type);
     int macroValues[16] = { 0 };
 
-    for (size_t i = 0; i < mMacros.size(); ++i)
+    for (size_t i = 0; i < mMacros.Size(); ++i)
     {
         int mapping = mShaderMacroMapping[typeId][i];
         if (mapping >= 0)
@@ -332,16 +330,16 @@ int MultiPipelineState::GetResourceSlotByName(const char* slotName)
                 slot = currSlot;
             if (currSlot != slot)
             {
-                NFE_LOG_ERROR("Resource slot ID for slot name '%s' is mismatched in multi pipeline states '%s'",
-                          slotName, mName.c_str());
+                NFE_LOG_ERROR("Resource slot ID for slot name '%s' is mismatched in multi pipeline states '%s'", slotName, mName.Str());
                 continue;
             }
         }
     }
 
     if (slot < 0)
-        NFE_LOG_ERROR("Resource slot '%s' not found in multi pipeline states '%s'",
-                  slotName, mName.c_str());
+    {
+        NFE_LOG_ERROR("Resource slot '%s' not found in multi pipeline states '%s'", slotName, mName.Str());
+    }
 
     return slot;
 }

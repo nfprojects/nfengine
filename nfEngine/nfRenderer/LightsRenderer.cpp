@@ -8,6 +8,8 @@
 
 #include "PCH.hpp"
 #include "LightsRenderer.hpp"
+#include "GeometryBuffer.hpp"
+#include "ShadowMap.hpp"
 
 #include "nfCommon/Logger/Logger.hpp"
 
@@ -48,8 +50,6 @@ std::unique_ptr<LightsRenderer> LightsRenderer::mPtr;
 
 LightsRenderer::LightsRenderer()
 {
-    using namespace Resource;
-
     IDevice* device = mRenderer->GetDevice();
 
     mAmbientLightPipelineState.Load("AmbientLight");

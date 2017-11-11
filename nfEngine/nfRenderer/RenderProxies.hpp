@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Core.hpp"
+#include "nfRenderer.hpp"
 
 #include "nfCommon/Math/Vector4.hpp"
 #include "nfCommon/Math/Matrix4.hpp"
@@ -27,9 +27,7 @@ struct NFE_ALIGN(16) MeshProxyDesc
     Math::Matrix4 transform;
     Math::Vector4 velocity;
     Math::Vector4 angularVelocity;
-
-    // TODO place IB and VB here instead
-    Resource::Mesh* mesh;
+    Common::SharedPtr<RenderMesh> mesh; // TODO weak ptr?
 
     MeshProxyDesc()
         : mesh(nullptr)
@@ -81,8 +79,11 @@ struct NFE_ALIGN(16) LightProxyDesc
 
     uint16 shadowMapSize;
 
-    LightProxyOmni omni;
-    LightProxySpot spot;
+    union
+    {
+        LightProxyOmni omni;
+        LightProxySpot spot;
+    };
 
     LightProxyDesc()
         : type(LightProxyType::Omni)

@@ -10,15 +10,16 @@
 #include "RenderCommand.hpp"
 #include "GeometryRendererContext.hpp"
 #include "RendererResources.hpp"
-#include "../Resources/MultiPipelineState.hpp"
+#include "MultiPipelineState.hpp"
+
 
 namespace NFE {
 namespace Renderer {
 
 class GeometryRenderer : public RendererModule<GeometryRenderer, GeometryRendererContext>
 {
-    Resource::MultiPipelineState mGeometryPassPipelineState;
-    Resource::MultiPipelineState mShadowPipelineState;
+    MultiPipelineState mGeometryPassPipelineState;
+    MultiPipelineState mShadowPipelineState;
 
     VertexLayoutPtr mVertexLayout;
     BufferPtr mInstancesVertexBuffer;

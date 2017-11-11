@@ -6,10 +6,9 @@
 
 #pragma once
 
-#include "../Core.hpp"
+#include "nfRenderer.hpp"
 #include "RendererModule.hpp"
 #include "DebugRendererContext.hpp"
-#include "../Resources/MultiPipelineState.hpp"
 
 
 namespace NFE {
@@ -25,9 +24,9 @@ class DebugRenderer : public RendererModule<DebugRenderer, DebugRendererContext>
 {
     VertexLayoutPtr mVertexLayout;
     VertexLayoutPtr mMeshVertexLayout;
-    Resource::MultiPipelineState mLinesPipelineState;
-    Resource::MultiPipelineState mTrianglesPipelineState;
-    Resource::MultiPipelineState mMeshPipelineState;
+    MultiPipelineState mLinesPipelineState;
+    MultiPipelineState mTrianglesPipelineState;
+    MultiPipelineState mMeshPipelineState;
 
     BufferPtr mConstantBuffer;
     BufferPtr mPerMeshConstantBuffer;

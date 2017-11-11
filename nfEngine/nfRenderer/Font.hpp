@@ -13,9 +13,9 @@ namespace Renderer {
 
 struct CharacterInfo
 {
-    short width, height;
-    short spacing;
-    short top, left, u, v;
+    int16 width, height;
+    int16 spacing;
+    int16 top, left, u, v;
 
     CharacterInfo()
         : width(-1)
@@ -28,7 +28,10 @@ struct CharacterInfo
     {}
 };
 
-class CORE_API Font
+/**
+ * Bitmap-based font resource.
+ */
+class NFE_RENDERER_API Font
 {
     friend class GuiRenderer;
 

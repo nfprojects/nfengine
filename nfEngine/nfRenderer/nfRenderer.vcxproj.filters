@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="PCH">
+      <UniqueIdentifier>{919e83d0-6fdc-4f55-a591-a61867848687}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules">
+      <UniqueIdentifier>{3f6c4f27-64e5-42a0-81de-a9f97cda451b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Debug">
+      <UniqueIdentifier>{a7ff7369-50ef-46ad-8284-60419de9fd84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Lights">
+      <UniqueIdentifier>{fe380abf-41f5-4b16-b38d-ade2e4ecf581}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\PostProcess">
+      <UniqueIdentifier>{789fea75-de16-4aeb-a7a6-8066c87704ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Gui">
+      <UniqueIdentifier>{2f4c8743-8911-4bf2-bbea-bf82815bd2a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{635926fc-3624-464f-a171-ba88605117aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Geometry">
+      <UniqueIdentifier>{330e686f-e526-432d-891f-2c6d737ab948}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{b129d02e-33c6-420d-8ced-eeaaf0f14830}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="PCH.cpp">
+      <Filter>PCH</Filter>
+    </ClCompile>
+    <ClCompile Include="HighLevelRenderer.cpp" />
+    <ClCompile Include="RenderCommand.cpp" />
+    <ClCompile Include="RendererContext.cpp" />
+    <ClCompile Include="DebugRenderer.cpp">
+      <Filter>Modules\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="LightsRenderer.cpp">
+      <Filter>Modules\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessRenderer.cpp">
+      <Filter>Modules\PostProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiRenderer.cpp">
+      <Filter>Modules\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryRenderer.cpp">
+      <Filter>Modules\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="RendererResources.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryBuffer.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMap.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiPipelineState.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Multishader.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PCH.hpp">
+      <Filter>PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="HighLevelRenderer.hpp" />
+    <ClInclude Include="RenderCommand.hpp" />
+    <ClInclude Include="RendererContext.hpp" />
+    <ClInclude Include="DebugRenderer.hpp">
+      <Filter>Modules\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugRendererContext.hpp">
+      <Filter>Modules\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="LightsRenderer.hpp">
+      <Filter>Modules\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="LightsRendererContext.hpp">
+      <Filter>Modules\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessRenderer.hpp">
+      <Filter>Modules\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessRendererContext.hpp">
+      <Filter>Modules\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiRenderer.hpp">
+      <Filter>Modules\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiRendererContext.hpp">
+      <Filter>Modules\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderScene.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderProxies.hpp">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="RendererModule.hpp">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryRenderer.hpp">
+      <Filter>Modules\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryRendererContext.hpp">
+      <Filter>Modules\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="nfRenderer.hpp" />
+    <ClInclude Include="RendererResources.hpp">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryBuffer.hpp">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMap.hpp">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.hpp">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiPipelineState.hpp">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Multishader.hpp">
+      <Filter>Resources</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

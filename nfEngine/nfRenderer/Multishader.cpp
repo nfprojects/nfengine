@@ -8,21 +8,22 @@
 
 #include "PCH.hpp"
 #include "Multishader.hpp"
+
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/FileSystem/File.hpp"
+#include "nfCommon/Utils/StringUtils.hpp"
+
 #include "../rapidjson/include/rapidjson/document.h"
 #include "../rapidjson/include/rapidjson/filestream.h"
 
 namespace NFE {
-namespace Resource {
+namespace Renderer {
 
 namespace {
 
 const Common::String gShadersRoot = "nfEngine/Shaders/";
 
 } // namespace
-
-using namespace Renderer;
 
 Multishader::Multishader()
 {
@@ -31,31 +32,31 @@ Multishader::Multishader()
 
 void Multishader::OnUnload()
 {
-    mSubShaders.clear();
+    mSubShaders.Clear();
 }
 
 bool Multishader::OnLoad()
 {
-    NFE_LOG_INFO("Loading multishader '%s'...", mName);
+    NFE_LOG_INFO("Loading multishader '%s'...", mName.Str());
 
     // TODO: check JSON file modification date
 
     /// read multishader JSON file
-    std::vector<char> str;
+    Common::DynArray<char> str;
     {
         const Common::String path = gShadersRoot + mName + ".json";
         Common::File file(path, Common::AccessMode::Read);
         size_t fileSize = static_cast<size_t>(file.GetSize());
-        str.resize(fileSize + 1);
+        str.Resize(fileSize + 1);
 
-        if (file.Read(str.data(), fileSize) != fileSize)
+        if (file.Read(str.Data(), fileSize) != fileSize)
             return false;
         str[fileSize] = '\0';
     }
 
     /// parse JSON
     rapidjson::Document document;
-    if (document.Parse<0>(str.data()).HasParseError())
+    if (document.Parse<0>(str.Data()).HasParseError())
     {
         NFE_LOG_ERROR("Failed to parse multishader file '%s'...", mName);
         return false;
@@ -96,8 +97,7 @@ bool Multishader::OnLoad()
         for (rapidjson::SizeType i = 0; i < macrosNode.Size(); ++i)
         {
             const auto& macroNode = macrosNode[i];
-
-            std::string macroName = macroNode["name"].GetString();
+            const Common::String macroName = macroNode["name"].GetString();
 
             MultishaderMacro macro;
             macro.minValue = macroNode["min"].GetInt();
@@ -109,24 +109,24 @@ bool Multishader::OnLoad()
 
             if (macro.minValue > macro.maxValue)
             {
-                NFE_LOG_ERROR("Invalid values ranges for macro: '%s'", macroName.c_str());
+                NFE_LOG_ERROR("Invalid values ranges for macro: '%s'", macroName.Str());
                 return false;
             }
 
-            mMacroNames.push_back(macroName);
-            mMacros.push_back(macro);
+            mMacroNames.PushBack(macroName);
+            mMacros.PushBack(macro);
         }
     }
 
     // TODO: load shader source code and get its modification date
 
     bool loadedSuccessfully = false;
-    if (mMacros.size() > 0)
+    if (!mMacros.Empty())
     {
-        std::unique_ptr<int[]> macroValues(new int[mMacros.size()]);
+        std::unique_ptr<int[]> macroValues(new int[mMacros.Size()]);
 
-        size_t totalCombinations = 1;
-        for (size_t i = 0; i < mMacros.size(); ++i)
+        uint32 totalCombinations = 1;
+        for (uint32 i = 0; i < mMacros.Size(); ++i)
         {
             const MultishaderMacro& macro = mMacros[i];
             totalCombinations *= (macro.maxValue - macro.minValue + 1);
@@ -134,12 +134,12 @@ bool Multishader::OnLoad()
         }
 
         /// generate and load all multishader combinations
-        for (size_t i = 0; i < totalCombinations; ++i)
+        for (uint32 i = 0; i < totalCombinations; ++i)
         {
             loadedSuccessfully &= LoadSubshader(macroValues.get());
 
             macroValues[0]++;
-            for (size_t j = 0; j < mMacros.size() - 1; ++j)
+            for (uint32 j = 0; j < mMacros.Size() - 1; ++j)
             {
                 if (macroValues[j] > mMacros[j].maxValue)
                 {
@@ -161,60 +161,62 @@ bool Multishader::LoadSubshader(int* macroValues)
 {
     // TODO: shader bytecode cache
 
-    std::vector<ShaderMacro> macros;
-    std::vector<std::string> valuesStrings;
-    macros.reserve(mMacros.size());
-    valuesStrings.reserve(mMacros.size());
+    Common::DynArray<ShaderMacro> macros;
+    Common::DynArray<Common::String> valuesStrings;
+    macros.Reserve(mMacros.Size());
+    valuesStrings.Reserve(mMacros.Size());
 
     const Common::String shaderLanguage = "HLSL5"; // TODO: move to IDevice or HighLevelRenderer
     const Common::String shaderExt = ".hlsl"; // TODO: move to IDevice or HighLevelRenderer
     const Common::String shaderPath = gShadersRoot + shaderLanguage + '/' + mName + shaderExt;
 
-    for (size_t i = 0; i < mMacros.size(); ++i)
+    for (uint32 i = 0; i < mMacros.Size(); ++i)
     {
         // allocate all values on heap
-        valuesStrings.push_back(std::to_string(macroValues[i]));
+        valuesStrings.PushBack(Common::ToString(macroValues[i]));
 
         ShaderMacro shaderMacro;
-        shaderMacro.name = mMacroNames[i].c_str();
-        shaderMacro.value = valuesStrings.back().c_str();
-        macros.push_back(shaderMacro);
+        shaderMacro.name = mMacroNames[i].Str();
+        shaderMacro.value = valuesStrings.Back().Str();
+        macros.PushBack(shaderMacro);
     }
 
     ShaderDesc shaderDesc;
     shaderDesc.path = shaderPath.Str();
     shaderDesc.type = mType;
-    shaderDesc.macros = macros.data();
-    shaderDesc.macrosNum = static_cast<uint32>(macros.size());
+    shaderDesc.macros = macros.Data();
+    shaderDesc.macrosNum = static_cast<uint32>(macros.Size());
 
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
-    mSubShaders.emplace_back(renderer->GetDevice()->CreateShader(shaderDesc));
-    return mSubShaders.back() != nullptr;
+    mSubShaders.EmplaceBack(renderer->GetDevice()->CreateShader(shaderDesc));
+    return mSubShaders.Back() != nullptr;
 }
 
-size_t Multishader::GetMacrosNumber() const
+uint32 Multishader::GetMacrosNumber() const
 {
-    return mMacros.size();
+    return mMacros.Size();
 }
 
 int Multishader::GetMacroByName(const char* name) const
 {
-    for (size_t i = 0; i < mMacros.size(); ++i)
+    for (uint32 i = 0; i < mMacros.Size(); ++i)
     {
         if (mMacroNames[i] == name)
+        {
             return static_cast<int>(i);
+        }
     }
 
     return -1;
 }
 
-const Renderer::ShaderPtr& Multishader::GetShader(int* values) const
+const ShaderPtr& Multishader::GetShader(int* values) const
 {
     int subshaderId = 0;
     int multiplier = 1;
 
     // calculate subshader index based on macro values
-    for (size_t i = 0; i < mMacros.size(); ++i)
+    for (uint32 i = 0; i < mMacros.Size(); ++i)
     {
         const MultishaderMacro& macro = mMacros[i];
         int val = values[i];

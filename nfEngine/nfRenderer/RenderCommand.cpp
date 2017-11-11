@@ -7,7 +7,7 @@
 #include "PCH.hpp"
 #include "RenderCommand.hpp"
 
-#include "../../nfCommon/Memory/DefaultAllocator.hpp"
+#include "../nfCommon/Memory/DefaultAllocator.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -147,17 +147,17 @@ int RenderCommandCmp(const int& a, const int& b, void* p)
 
 void RenderCommandBuffer::PushBack(const RenderCommand& command)
 {
-    commands.push_back(command);
+    commands.PushBack(command);
 }
 
 void RenderCommandBuffer::Clear()
 {
-    commands.clear();
+    commands.Clear();
 }
 
 void RenderCommandBuffer::Sort()
 {
-    size_t size = commands.size();
+    uint32 size = commands.Size();
 
     if (size <= 1)
         return;

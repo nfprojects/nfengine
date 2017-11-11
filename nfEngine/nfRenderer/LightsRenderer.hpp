@@ -8,12 +8,15 @@
 
 #include "RendererModule.hpp"
 #include "LightsRendererContext.hpp"
-#include "../Resources/MultiPipelineState.hpp"
+#include "MultiPipelineState.hpp"
 
 namespace NFE {
 namespace Renderer {
 
 using namespace Math;
+
+class GeometryBuffer;
+class ShadowMap;
 
 struct NFE_ALIGN(16) DirLightProperties
 {
@@ -50,16 +53,16 @@ class LightsRenderer : public RendererModule<LightsRenderer, LightsRendererConte
     ResourceBindingSetPtr mLightMapBindingSet;
     ResourceBindingLayoutPtr mResBindingLayout;
 
-    Resource::MultiPipelineState mAmbientLightPipelineState;
+    MultiPipelineState mAmbientLightPipelineState;
     BufferPtr mAmbientLightCBuffer;
 
     int mOmniLightUseShadowMap;
-    Resource::MultiPipelineState mOmniLightPipelineState;
+    MultiPipelineState mOmniLightPipelineState;
     BufferPtr mOmniLightCBuffer;
 
     int mSpotLightUseLightMap;
     int mSpotLightUseShadowMap;
-    Resource::MultiPipelineState mSpotLightPipelineState;
+    MultiPipelineState mSpotLightPipelineState;
     BufferPtr mSpotLightCBuffer;
 
     bool CreateResourceBindingLayouts();
@@ -85,14 +88,10 @@ public:
     void OnEnter(LightsRendererContext* context);
     void OnLeave(LightsRendererContext* context);
 
-    void SetUp(LightsRendererContext* context, const RenderTargetPtr& target, GeometryBuffer *gbuffer,
-               const CameraRenderDesc* camera);
-    void DrawAmbientLight(LightsRendererContext* context, const Vector4& ambientLightColor,
-                          const Vector4& backgroundColor);
-    void DrawOmniLight(LightsRendererContext* context, const Vector4& pos, float radius, const Vector4& color,
-                       ShadowMap* shadowMap);
-    void DrawSpotLight(LightsRendererContext* context, const SpotLightProperties& prop,
-                       ShadowMap* shadowMap, const ResourceBindingInstancePtr& pLightMap);
+    void SetUp(LightsRendererContext* context, const RenderTargetPtr& target, GeometryBuffer *gbuffer, const CameraRenderDesc* camera);
+    void DrawAmbientLight(LightsRendererContext* context, const Vector4& ambientLightColor, const Vector4& backgroundColor);
+    void DrawOmniLight(LightsRendererContext* context, const Vector4& pos, float radius, const Vector4& color, ShadowMap* shadowMap);
+    void DrawSpotLight(LightsRendererContext* context, const SpotLightProperties& prop, ShadowMap* shadowMap, const ResourceBindingInstancePtr& pLightMap);
     void DrawDirLight(LightsRendererContext* context, const DirLightProperties& prop, ShadowMap* shadowMap);
 
     void DrawFog(LightsRendererContext* context);

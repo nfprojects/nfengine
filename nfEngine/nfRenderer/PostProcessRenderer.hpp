@@ -8,7 +8,8 @@
 
 #include "RendererModule.hpp"
 #include "PostProcessRendererContext.hpp"
-#include "../Resources/MultiPipelineState.hpp"
+#include "MultiPipelineState.hpp"
+
 
 namespace NFE {
 namespace Renderer {
@@ -26,7 +27,7 @@ class PostProcessRenderer : public RendererModule<PostProcessRenderer, PostProce
     VertexLayoutPtr mVertexLayout;
     BufferPtr mVertexBuffer;
 
-    Resource::MultiPipelineState mTonemappingPipelineState;
+    MultiPipelineState mTonemappingPipelineState;
     BufferPtr mTonemappingCBuffer;
 
     ResourceBindingSetPtr mTexturesBindingSet;
@@ -49,8 +50,10 @@ public:
     /**
      * Apply tonemapping, gamma correction and dithering (final post-process).
      */
-    void ApplyTonemapping(PostProcessRendererContext* context, const ToneMappingParameters& params,
-                          ResourceBindingInstancePtr src, RenderTargetPtr dest);
+    void ApplyTonemapping(PostProcessRendererContext* context,
+                          const ToneMappingParameters& params,
+                          ResourceBindingInstancePtr src,
+                          RenderTargetPtr dest);
 };
 
 } // namespace Renderer
