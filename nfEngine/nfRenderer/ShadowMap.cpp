@@ -5,12 +5,14 @@
  */
 
 #include "PCH.hpp"
-#include "RendererResources.hpp"
+#include "ShadowMap.hpp"
 #include "HighLevelRenderer.hpp"
 #include "LightsRenderer.hpp"
-#include "Engine.hpp"
+
 #include "../Renderers/RendererInterface/Device.hpp"
+
 #include "nfCommon/Logger/Logger.hpp"
+
 
 namespace NFE {
 namespace Renderer {
@@ -24,7 +26,6 @@ ShadowMap::ShadowMap()
 
 ShadowMap::~ShadowMap()
 {
-
 }
 
 void ShadowMap::Release()
@@ -40,7 +41,7 @@ void ShadowMap::Release()
     mSplits = 0;
 }
 
-bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
+bool ShadowMap::Resize(HighLevelRenderer& renderer, uint16 size, Type type, uint8 splits)
 {
     if (size == mSize || type == mType || splits == mSplits)
         return true;
@@ -68,7 +69,7 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
         return false;
     }
 
-    HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
+    IDevice* device = renderer.GetDevice();
 
     TextureDesc depthBufferDesc;
     depthBufferDesc.type = TextureType::Texture2D;
@@ -78,7 +79,7 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
     depthBufferDesc.mipmaps = 1;
     depthBufferDesc.depthBufferFormat = DepthBufferFormat::Depth32;
     depthBufferDesc.debugName = "ShadowMap::mDepthBuffer";
-    mDepthBuffer = renderer->GetDevice()->CreateTexture(depthBufferDesc);
+    mDepthBuffer = device->CreateTexture(depthBufferDesc);
     if (mDepthBuffer == nullptr)
     {
         NFE_LOG_ERROR("Failed to create depth buffer");
@@ -96,7 +97,7 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
     texDesc.format = ElementFormat::R32_Float;
     texDesc.debugName = "ShadowMap::mTexture";
 
-    mTexture = renderer->GetDevice()->CreateTexture(texDesc);
+    mTexture = device->CreateTexture(texDesc);
     if (mTexture == nullptr)
     {
         NFE_LOG_ERROR("Failed to create shadow map texture");
@@ -105,7 +106,7 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
     }
 
     // create binding instance
-    mBindingInstance = renderer->GetDevice()->CreateResourceBindingInstance(
+    mBindingInstance = device->CreateResourceBindingInstance(
         LightsRenderer::Get()->GetShadowMapBindingSet());
     if (!mBindingInstance)
     {
@@ -130,7 +131,7 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
         rtDesc.depthBuffer = mDepthBuffer;
         rtDesc.debugName = "ShadowMap::mRenderTarget";
 
-        mRenderTargets[0]= renderer->GetDevice()->CreateRenderTarget(rtDesc);
+        mRenderTargets[0]= device->CreateRenderTarget(rtDesc);
         if (!mRenderTargets[0])
         {
             NFE_LOG_ERROR("Failed to create shadow map's render target");
@@ -154,7 +155,7 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
         {
             rtElement.layer = i;
 
-            mRenderTargets[i]= renderer->GetDevice()->CreateRenderTarget(rtDesc);
+            mRenderTargets[i]= device->CreateRenderTarget(rtDesc);
             if (!mRenderTargets[i])
             {
                 NFE_LOG_ERROR("Failed to create shadow map's render target for i = %u", i);
@@ -169,109 +170,6 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
     return true;
 }
 
-
-void GeometryBuffer::Release()
-{
-    mBindingInstance.Reset();
-    mRenderTarget.Reset();
-    for (int i = 0; i < gLayers; ++i)
-        mTextures[i].Reset();
-}
-
-bool GeometryBuffer::Resize(int width, int height)
-{
-    mWidth = width;
-    mHeight = height;
-
-    HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
-
-    TextureDesc depthBufferDesc;
-    depthBufferDesc.type = TextureType::Texture2D;
-    depthBufferDesc.mode = BufferMode::GPUOnly;
-    depthBufferDesc.width = width;
-    depthBufferDesc.height = height;
-    depthBufferDesc.binding = NFE_RENDERER_TEXTURE_BIND_DEPTH | NFE_RENDERER_TEXTURE_BIND_SHADER;
-    depthBufferDesc.mipmaps = 1;
-    depthBufferDesc.depthBufferFormat = DepthBufferFormat::Depth32;
-    depthBufferDesc.debugName = "GeometryBuffer::mDepthBuffer";
-    mDepthBuffer = renderer->GetDevice()->CreateTexture(depthBufferDesc);
-    if (mDepthBuffer == nullptr)
-    {
-        NFE_LOG_ERROR("Failed to create depth buffer");
-        return false;
-    }
-
-    RenderTargetElement rtTargets[gLayers];
-    TextureDesc texDesc;
-    texDesc.type = TextureType::Texture2D;
-    texDesc.mode = BufferMode::GPUOnly;
-    texDesc.width = width;
-    texDesc.height = height;
-    texDesc.binding = NFE_RENDERER_TEXTURE_BIND_SHADER | NFE_RENDERER_TEXTURE_BIND_RENDERTARGET;
-    texDesc.mipmaps = 1;
-
-    /// TODO: this could be extended in the future
-    ElementFormat elementFormats[] =
-    {
-        ElementFormat::R16G16B16A16_Float,
-        ElementFormat::R16G16B16A16_Float,
-        ElementFormat::R16G16B16A16_Float,
-        ElementFormat::R16G16_Float,
-    };
-
-
-    mBindingInstance = renderer->GetDevice()->CreateResourceBindingInstance(
-        LightsRenderer::Get()->GetGBufferBindingSet());
-    if (!mBindingInstance)
-    {
-        NFE_LOG_ERROR("Failed to create G-Buffer's resource binding instance");
-        return false;
-    }
-    if (!mBindingInstance->WriteTextureView(0, mDepthBuffer))
-    {
-        NFE_LOG_ERROR("Failed to write depth buffer texture to binding instance");
-        Release();
-        return false;
-    }
-
-    /// create G-Buffer textures
-    for (int i = 0; i < gLayers; ++i)
-    {
-        texDesc.format = elementFormats[i];
-        mTextures[i]= renderer->GetDevice()->CreateTexture(texDesc);
-        if (!mTextures[i])
-        {
-            NFE_LOG_ERROR("Failed to create G-Buffer's texture (i = %i)", i);
-            Release();
-            return false;
-        }
-
-        if (!mBindingInstance->WriteTextureView(i + 1, mTextures[i]))
-        {
-            NFE_LOG_ERROR("Failed to write G-Buffer's texture (i = %i) to binding instance", i);
-            Release();
-            return false;
-        }
-
-        rtTargets[i].texture = mTextures[i];
-    }
-
-    /// create G-Buffer render target
-    RenderTargetDesc rtDesc;
-    rtDesc.numTargets = gLayers;
-    rtDesc.targets = rtTargets;
-    rtDesc.depthBuffer = mDepthBuffer;
-    rtDesc.debugName = "GeometryBuffer::mRenderTarget";
-    mRenderTarget = renderer->GetDevice()->CreateRenderTarget(rtDesc);
-    if (!mRenderTarget)
-    {
-        NFE_LOG_ERROR("Failed to create G-Buffer's render target");
-        Release();
-        return false;
-    }
-
-    return true;
-}
 
 } // namespace Renderer
 } // namespace NFE

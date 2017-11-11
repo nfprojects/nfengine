@@ -8,6 +8,8 @@
 
 #include "Renderers/RendererInterface/CommandRecorder.hpp"
 
+#include "nfCommon/Containers/UniquePtr.hpp"
+
 namespace NFE {
 namespace Renderer {
 
@@ -29,14 +31,14 @@ public:
     CommandRecorderPtr commandRecorderLights;
     CommandRecorderPtr commandRecorderOnScreen;
 
-    std::unique_ptr<GeometryRendererContext> geometryContext;
-    std::unique_ptr<GeometryRendererContext> shadowsContext;
-    std::unique_ptr<LightsRendererContext> lightsContext;
-    std::unique_ptr<PostProcessRendererContext> postProcessContext;
-    std::unique_ptr<DebugRendererContext> debugContext;
-    std::unique_ptr<GuiRendererContext> guiContext;
+    Common::UniquePtr<GeometryRendererContext> geometryContext;
+    Common::UniquePtr<GeometryRendererContext> shadowsContext;
+    Common::UniquePtr<LightsRendererContext> lightsContext;
+    Common::UniquePtr<PostProcessRendererContext> postProcessContext;
+    Common::UniquePtr<DebugRendererContext> debugContext;
+    Common::UniquePtr<GuiRendererContext> guiContext;
 
-    RenderContext();
+    explicit RenderContext(HighLevelRenderer& renderer);
 };
 
 } // namespace Renderer

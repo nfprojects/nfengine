@@ -6,29 +6,27 @@
 
 #pragma once
 
-#include "../Core.hpp"
-#include "Renderers/RendererInterface/Buffer.hpp"
+#include "nfRenderer.hpp"
 
+#include "../Renderers/RendererInterface/Buffer.hpp"
+
+#include "nfCommon/Containers/DynArray.hpp"
 #include "nfCommon/Memory/Aligned.hpp"
 #include "nfCommon/Math/Vector4.hpp"
 #include "nfCommon/Math/Matrix4.hpp"
-
-#include <vector>
 
 
 namespace NFE {
 namespace Renderer {
 
-NFE_ALIGN(16)
-struct InstanceData
+struct NFE_ALIGN(16) InstanceData
 {
     Math::Vector4 worldMatrix[3];
     Math::Vector4 velocity;
     Math::Vector4 angularVelocity;
 };
 
-NFE_ALIGN(16)
-struct RenderCommand
+struct NFE_ALIGN(16) RenderCommand
 {
     //instance data
     Math::Matrix4 matrix;
@@ -49,7 +47,7 @@ class RenderCommandBuffer
 {
 public:
     // use custom aligned allocator because RenderCommand uses SIMD types
-    std::vector<RenderCommand, Common::AlignedAllocator<RenderCommand, 64>> commands;
+    Common::DynArray<RenderCommand> commands;
 
     void PushBack(const RenderCommand& command);
     void Sort();

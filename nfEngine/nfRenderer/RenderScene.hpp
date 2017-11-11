@@ -6,11 +6,11 @@
 
 #pragma once
 
-#include "../Core.hpp"
+#include "nfRenderer.hpp"
 #include "RenderProxies.hpp"
 #include "RendererResources.hpp"
 
-#include "../../Renderers/RendererInterface/CommandRecorder.hpp"
+#include "../Renderers/RendererInterface/CommandRecorder.hpp"
 
 #include "nfCommon/Memory/Aligned.hpp"
 #include "nfCommon/Containers/PackedArray.hpp"
@@ -30,7 +30,7 @@ namespace Renderer {
 /**
  * Rendering scene environment properties.
  */
-class CORE_API NFE_ALIGN(16) EnvironmentDesc
+class NFE_RENDERER_API NFE_ALIGN(16) EnvironmentDesc
     : public Common::Aligned<16>
 {
 public:
@@ -106,7 +106,6 @@ struct GeometryRenderingContext
 struct NFE_ALIGN(16) RenderingData
     : public Common::Aligned<16>
 {
-    const Renderer::View* view; // TODO remove
     Renderer::CameraRenderDesc cameraRenderDesc;
 
     Common::DynArray<LightProxy*> visibleOmniLights;
@@ -128,9 +127,8 @@ using RenderingDataPtr = Common::SharedPtr<RenderingData>;
  * Rendering scene.
  * Allows for placing rendering proxies (meshes, lights, etc.) and render it to a texture.
  */
-// TODO move to "nfRenderer" project
 // TODO hide implementation (IRenderScene)
-class CORE_API NFE_ALIGN(16) RenderScene final
+class NFE_RENDERER_API NFE_ALIGN(16) RenderScene final
     : public Common::Aligned<16>
 {
     NFE_MAKE_NONCOPYABLE(RenderScene)

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Core.hpp"
+#include "nfRenderer.hpp"
 
 #include "nfCommon/Math/Vector4.hpp"
 #include "nfCommon/Math/Matrix4.hpp"

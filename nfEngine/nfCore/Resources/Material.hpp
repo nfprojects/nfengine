@@ -9,7 +9,8 @@
 #include "../Core.hpp"
 #include "Resource.hpp"
 #include "Texture.hpp"
-#include "../Renderer/RendererResources.hpp"
+
+#include "../nfRenderer/RendererResources.hpp"
 
 namespace NFE {
 namespace Resource {
