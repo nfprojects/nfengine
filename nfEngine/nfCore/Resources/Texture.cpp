@@ -8,9 +8,10 @@
 #include "Globals.hpp"
 #include "Engine.hpp"
 #include "Texture.hpp"
-#include "Renderer/HighLevelRenderer.hpp"
-#include "Renderer/GuiRenderer.hpp"
 #include "ResourcesManager.hpp"
+
+#include "../nfRenderer/HighLevelRenderer.hpp"
+#include "../nfRenderer/GuiRenderer.hpp" // TODO remove
 
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/Utils/InputStream.hpp"
@@ -23,8 +24,7 @@ namespace {
 
 const size_t gMaxMipmaps = 24;
 
-Renderer::TexturePtr CreateRendererTextureFromImage(const Common::Image& image,
-                                                   const char* debugName = nullptr)
+Renderer::TexturePtr CreateRendererTextureFromImage(const Common::Image& image, const char* debugName = nullptr)
 {
     using namespace Renderer;
 
@@ -175,36 +175,10 @@ bool Texture::OnLoad()
             image.Convert(mFormat);
         }
 
-
-        // TODO: pack file support
-        /*
-        Buffer buffer;
-        Common::Image image;
-        if (g_pVfsReader->Read(path, buffer) != PACK_OK)
-        {
-            //oepn from file
-            strcpy(path, "..\\Data\\Textures\\");
-            strcat(path, mName);
-            if (image.LoadFromFile(path) != true)
-            {
-                NFE_LOG_ERROR("Failed to open '%s'.", mName);
-                return false;
-            }
-            NFE_LOG_SUCCESS("File '%s' loaded.", mName);
-        }
-        else
-        {
-            if (image.LoadFromBuffer(buffer.GetData(), buffer.GetSize()) != true)
-            {
-                NFE_LOG_ERROR("Failed to open '%s'.", mName);
-                return false;
-            }
-            NFE_LOG_SUCCESS("File '%s' loaded from PAK file.", mName);
-        }
-        */
-
         if (CreateFromImage(image) != true)
+        {
             return false;
+        }
 
         NFE_LOG_SUCCESS("Texture '%s' loaded in %.3f sec. Dim: %ix%i, format: %s.",
                     mName, timer.Stop(), image.GetWidth(), image.GetHeight(),

@@ -6,15 +6,14 @@
 
 #pragma once
 
-#include "Resource.hpp"
-#include "../Renderer/HighLevelRenderer.hpp"
-#include "../Renderer/RenderCommand.hpp"
+#include "nfRenderer.hpp"
+#include "HighLevelRenderer.hpp"
+#include "RenderCommand.hpp"
 #include "Multishader.hpp"
 
 namespace NFE {
 namespace Resource {
 
-// TODO this class should inherit from ResourceBase
 class MultiPipelineState
 {
     NFE_MAKE_NONCOPYABLE(MultiPipelineState)
@@ -24,10 +23,6 @@ private:
     struct ShaderSet
     {
         Renderer::ShaderPtr shaders[NFE_GRAPHICS_SHADER_TYPES_NUM];
-
-        NFE_INLINE ShaderSet()
-            : shaders{nullptr, nullptr, nullptr, nullptr, nullptr}
-        { }
     };
 
     std::string mName;

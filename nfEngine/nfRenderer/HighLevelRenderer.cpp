@@ -7,7 +7,7 @@
 #pragma once
 
 #include "PCH.hpp"
-#include "Core.hpp"
+#include "nfRenderer.hpp"
 #include "HighLevelRenderer.hpp"
 #include "View.hpp"
 #include "Engine.hpp"

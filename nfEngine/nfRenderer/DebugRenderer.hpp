@@ -6,10 +6,9 @@
 
 #pragma once
 
-#include "../Core.hpp"
+#include "nfRenderer.hpp"
 #include "RendererModule.hpp"
 #include "DebugRendererContext.hpp"
-#include "../Resources/MultiPipelineState.hpp"
 
 
 namespace NFE {

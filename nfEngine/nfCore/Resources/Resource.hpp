@@ -35,7 +35,6 @@ enum class ResourceState : int
 enum class ResourceType
 {
     Unknown,
-    Shader,
     Texture,
     Material,
     Mesh,

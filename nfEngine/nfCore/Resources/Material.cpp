@@ -224,6 +224,7 @@ void Material::OnTextureLoaded()
     std::recursive_mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
     std::lock_guard<std::recursive_mutex> lock(renderingMutex);
 
+    // TODO move to nfRenderer
     // TODO multi-layered textures
     if (mLayers.size() > 0)
     {
