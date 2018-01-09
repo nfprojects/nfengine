@@ -60,7 +60,7 @@ bool MultiPipelineState::Load(const char* name)
     mName = name;
 
     ResManager* rm = Engine::GetInstance()->GetResManager();
-    LOG_INFO("Loading multi shader set '%s'...", name);
+    NFE_LOG_INFO("Loading multi shader set '%s'...", name);
 
     /// read config file
     std::vector<char> str;
@@ -78,7 +78,7 @@ bool MultiPipelineState::Load(const char* name)
     Config config;
     if (!config.ParseInPlace(str.data()))
     {
-        LOG_ERROR("Failed to parse shader set file '%s'...", name);
+        NFE_LOG_ERROR("Failed to parse shader set file '%s'...", name);
         return false;
     }
 
@@ -109,7 +109,7 @@ bool MultiPipelineState::Load(const char* name)
             ConfigGenericValue macroNode = macrosNode[i];
             if (!macroNode.IsObject())
             {
-                LOG_ERROR("'macros' array must contain objects");
+                NFE_LOG_ERROR("'macros' array must contain objects");
                 return false;
             }
 
@@ -125,7 +125,7 @@ bool MultiPipelineState::Load(const char* name)
 
             if (macro.minValue > macro.maxValue)
             {
-                LOG_ERROR("Invalid values ranges for macro: '%s'", macroName);
+                NFE_LOG_ERROR("Invalid values ranges for macro: '%s'", macroName);
                 return false;
             }
 
@@ -331,7 +331,7 @@ int MultiPipelineState::GetResourceSlotByName(const char* slotName)
                 slot = currSlot;
             if (currSlot != slot)
             {
-                LOG_ERROR("Resource slot ID for slot name '%s' is mismatched in multi pipeline states '%s'",
+                NFE_LOG_ERROR("Resource slot ID for slot name '%s' is mismatched in multi pipeline states '%s'",
                           slotName, mName.c_str());
                 continue;
             }
@@ -339,7 +339,7 @@ int MultiPipelineState::GetResourceSlotByName(const char* slotName)
     }
 
     if (slot < 0)
-        LOG_ERROR("Resource slot '%s' not found in multi pipeline states '%s'",
+        NFE_LOG_ERROR("Resource slot '%s' not found in multi pipeline states '%s'",
                   slotName, mName.c_str());
 
     return slot;

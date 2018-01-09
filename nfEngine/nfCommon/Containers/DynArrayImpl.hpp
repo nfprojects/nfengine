@@ -37,7 +37,7 @@ DynArray<ElementType>::DynArray(const DynArray& other)
 
     if (!Reserve(other.mSize))
     {
-        LOG_ERROR("Failed to reserve memory for DynArray");
+        NFE_LOG_ERROR("Failed to reserve memory for DynArray");
         return;
     }
 
@@ -74,7 +74,7 @@ typename DynArray<ElementType>::DynArray& DynArray<ElementType>::operator = (con
 
     if (!Reserve(other.mSize))
     {
-        LOG_ERROR("Failed to reserve memory for DynArray");
+        NFE_LOG_ERROR("Failed to reserve memory for DynArray");
         return *this;
     }
 
@@ -110,7 +110,7 @@ DynArray<ElementType>::DynArray(const std::initializer_list<ElementType>& list)
 {
     if (!Reserve(static_cast<uint32>(list.size())))
     {
-        LOG_ERROR("Failed to reserve memory for DynArray");
+        NFE_LOG_ERROR("Failed to reserve memory for DynArray");
         return;
     }
 
@@ -126,7 +126,7 @@ DynArray<ElementType>::DynArray(const ElementType* elements, uint32 count)
 {
     if (!Reserve(count))
     {
-        LOG_ERROR("Failed to reserve memory for DynArray");
+        NFE_LOG_ERROR("Failed to reserve memory for DynArray");
         return;
     }
 

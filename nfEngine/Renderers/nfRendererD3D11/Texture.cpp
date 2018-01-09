@@ -54,7 +54,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
 
     if (desc.width < 1 || desc.height < 1 || desc.depth < 1)
     {
-        LOG_ERROR("Invalid texture dimensions (width = %i, height = %i, depth = %i)",
+        NFE_LOG_ERROR("Invalid texture dimensions (width = %i, height = %i, depth = %i)",
                   desc.width, desc.height, desc.depth);
         return false;
     }
@@ -65,7 +65,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
                          NFE_RENDERER_TEXTURE_BIND_DEPTH |
                          NFE_RENDERER_TEXTURE_BIND_SHADER_WRITABLE))
     {
-        LOG_ERROR("Invalid texture binding flags");
+        NFE_LOG_ERROR("Invalid texture binding flags");
         return false;
     }
 
@@ -78,7 +78,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
         if (!TranslateDepthBufferTypes(desc.depthBufferFormat,
                                        resourceFormat, mSrvFormat, dsvFormat))
         {
-            LOG_ERROR("Invalid depth buffer format");
+            NFE_LOG_ERROR("Invalid depth buffer format");
             return false;
         }
     }
@@ -88,7 +88,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
         mSrvFormat = resourceFormat;
         if (resourceFormat == DXGI_FORMAT_UNKNOWN)
         {
-            LOG_ERROR("Invalid texture format");
+            NFE_LOG_ERROR("Invalid texture format");
             return false;
         }
     }
@@ -124,7 +124,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
             td.Usage = D3D11_USAGE_DEFAULT;
             break;
         default:
-            LOG_ERROR("Invalid texture access mode");
+            NFE_LOG_ERROR("Invalid texture access mode");
             return false;
     };
 
@@ -153,7 +153,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
     {
         if (desc.mode == BufferMode::Static)
         {
-            LOG_ERROR("GPU read-only textures must be created with initial data provided");
+            NFE_LOG_ERROR("GPU read-only textures must be created with initial data provided");
             return false;
         }
 

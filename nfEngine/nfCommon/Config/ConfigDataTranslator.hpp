@@ -119,7 +119,7 @@ bool Config::TranslateConfigObject(ConfigObjectNodePtr node,
         if (!value.Is<int32>())
         {
             success = false;
-            LOG_ERROR("Array '%s' contains non-integer value", key);
+            NFE_LOG_ERROR("Array '%s' contains non-integer value", key);
             return false;
         }
         array.push_back(value.Get<int32>());
@@ -132,7 +132,7 @@ bool Config::TranslateConfigObject(ConfigObjectNodePtr node,
         if (!value.Is<bool>())
         {
             success = false;
-            LOG_ERROR("Array '%s' contains non-boolean value", key);
+            NFE_LOG_ERROR("Array '%s' contains non-boolean value", key);
             return false;
         }
         array.push_back(value.Get<bool>());
@@ -145,7 +145,7 @@ bool Config::TranslateConfigObject(ConfigObjectNodePtr node,
         if (!value.Is<float>())
         {
             success = false;
-            LOG_ERROR("Array '%s' contains non-float value", key);
+            NFE_LOG_ERROR("Array '%s' contains non-float value", key);
             return false;
         }
         array.push_back(value.Get<float>());
@@ -158,7 +158,7 @@ bool Config::TranslateConfigObject(ConfigObjectNodePtr node,
         if (!value.IsString())
         {
             success = false;
-            LOG_ERROR("Array '%s' contains non-string value", key);
+            NFE_LOG_ERROR("Array '%s' contains non-string value", key);
             return false;
         }
         array.push_back(value.GetString());
@@ -172,7 +172,7 @@ bool Config::TranslateConfigObject(ConfigObjectNodePtr node,
             if (!value.Is<bool>())
             {
                 success = false;
-                LOG_ERROR("Value '%s' is not of boolean type", key);
+                NFE_LOG_ERROR("Value '%s' is not of boolean type", key);
                 return false;
             }
             auto memberPtr = translator.mBoolValues[key];
@@ -183,7 +183,7 @@ bool Config::TranslateConfigObject(ConfigObjectNodePtr node,
             if (!value.Is<int32>())
             {
                 success = false;
-                LOG_ERROR("Value '%s' is not of integer type", key);
+                NFE_LOG_ERROR("Value '%s' is not of integer type", key);
                 return false;
             }
             auto memberPtr = translator.mIntValues[key];
@@ -194,7 +194,7 @@ bool Config::TranslateConfigObject(ConfigObjectNodePtr node,
             if (!value.Is<float>())
             {
                 success = false;
-                LOG_ERROR("Value '%s' is not of float type", key);
+                NFE_LOG_ERROR("Value '%s' is not of float type", key);
                 return false;
             }
             auto memberPtr = translator.mFloatValues[key];
@@ -205,7 +205,7 @@ bool Config::TranslateConfigObject(ConfigObjectNodePtr node,
             if (!value.IsString())
             {
                 success = false;
-                LOG_ERROR("Value '%s' is not of string type", key);
+                NFE_LOG_ERROR("Value '%s' is not of string type", key);
                 return false;
             }
             auto memberPtr = translator.mStringValues[key];

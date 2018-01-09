@@ -286,7 +286,7 @@ bool String::Reserve(uint32 length)
     char* newBuffer = static_cast<char*>(NFE_MALLOC(size, 1));
     if (!newBuffer)
     {
-        LOG_ERROR("Memory allocation failed");
+        NFE_LOG_ERROR("Memory allocation failed");
         return false;
     }
 

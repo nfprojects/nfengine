@@ -65,7 +65,7 @@ bool File::Open(const std::string& path, AccessMode access, bool overwrite)
             flags = O_RDWR;
             break;
         default:
-            LOG_ERROR("Invalid file access mode");
+            NFE_LOG_ERROR("Invalid file access mode");
             mMode = AccessMode::No;
             return false;
     }
@@ -81,7 +81,7 @@ bool File::Open(const std::string& path, AccessMode access, bool overwrite)
 
     if (mFD == -1)
     {
-        LOG_ERROR("Failed to open file '%s': %s", path.c_str(), strerror(errno));
+        NFE_LOG_ERROR("Failed to open file '%s': %s", path.c_str(), strerror(errno));
         mMode = AccessMode::No;
         return false;
     }
@@ -107,7 +107,7 @@ size_t File::Read(void* data, size_t size)
     ssize_t bytesRead = ::read(mFD, data, size);
     if (bytesRead == -1)
     {
-        LOG_ERROR("File read failed: %s", strerror(errno));
+        NFE_LOG_ERROR("File read failed: %s", strerror(errno));
         return 0;
     }
 
@@ -122,7 +122,7 @@ size_t File::Write(const void* data, size_t size)
     ssize_t bytesWritten = ::write(mFD, data, size);
     if (bytesWritten == -1)
     {
-        LOG_ERROR("File write failed: %s", strerror(errno));
+        NFE_LOG_ERROR("File write failed: %s", strerror(errno));
         return 0;
     }
 
@@ -157,13 +157,13 @@ bool File::Seek(int64 pos, SeekMode mode)
             whence = SEEK_END;
             break;
         default:
-            LOG_ERROR("Invalid seek mode");
+            NFE_LOG_ERROR("Invalid seek mode");
             return false;
     }
 
     if (::lseek64(mFD, static_cast<off64_t>(pos), whence) == (off64_t)-1)
     {
-        LOG_ERROR("File seek failed: %s", strerror(errno));
+        NFE_LOG_ERROR("File seek failed: %s", strerror(errno));
         return false;
     }
 
@@ -178,7 +178,7 @@ int64 File::GetPos() const
     off64_t off = ::lseek64(mFD, 0, SEEK_CUR);
     if (off == (off64_t)-1)
     {
-        LOG_ERROR("File seek failed: %s", strerror(errno));
+        NFE_LOG_ERROR("File seek failed: %s", strerror(errno));
         return -1;
     }
 

@@ -26,7 +26,7 @@ do {                                                                            
     proc = reinterpret_cast<type>(GET_PROC_ADDRESS(proc));                                  \
     if (!proc)                                                                              \
     {                                                                                       \
-        LOG_ERROR("Unable to retrieve " #proc " extension function.");                      \
+        NFE_LOG_ERROR("Unable to retrieve " #proc " extension function.");                      \
         allExtensionsAvailable = false;                                                     \
     }                                                                                       \
 } while(0)

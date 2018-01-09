@@ -70,7 +70,7 @@ bool CommandRecorder::Init(ID3D12Device* device)
                                                            IID_PPV_ARGS(commandAllocator.GetPtr())));
         if (FAILED(hr))
         {
-            LOG_ERROR("Failed to create D3D12 command allocator for frame %u (out of %u)", i, mFrameCount);
+            NFE_LOG_ERROR("Failed to create D3D12 command allocator for frame %u (out of %u)", i, mFrameCount);
             return false;
         }
 
@@ -83,7 +83,7 @@ bool CommandRecorder::Init(ID3D12Device* device)
     if (FAILED(D3D_CALL_CHECK(gDevice->mDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE,
                                                             IID_PPV_ARGS(mFence.GetPtr())))))
     {
-        LOG_ERROR("Failed to create D3D12 fence object");
+        NFE_LOG_ERROR("Failed to create D3D12 fence object");
         return false;
     }
 
@@ -91,7 +91,7 @@ bool CommandRecorder::Init(ID3D12Device* device)
     mFenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
     if (mFenceEvent == nullptr)
     {
-        LOG_ERROR("Failed to create fence event object");
+        NFE_LOG_ERROR("Failed to create fence event object");
         return false;
     }
 
@@ -102,7 +102,7 @@ bool CommandRecorder::Init(ID3D12Device* device)
                                                   IID_PPV_ARGS(mCommandList.GetPtr())));
     if (FAILED(hr))
     {
-        LOG_ERROR("Failed to create D3D12 command list");
+        NFE_LOG_ERROR("Failed to create D3D12 command list");
         return false;
     }
 
@@ -110,14 +110,14 @@ bool CommandRecorder::Init(ID3D12Device* device)
     hr = D3D_CALL_CHECK(mCommandList->Close());
     if (FAILED(hr))
     {
-        LOG_ERROR("Failed to close command list");
+        NFE_LOG_ERROR("Failed to close command list");
         return false;
     }
 
     // TODO: dynamic buffer growing
     if (!mRingBuffer.Init(8 * 1024 * 1024))
     {
-        LOG_ERROR("Failed to initialize ring buffer");
+        NFE_LOG_ERROR("Failed to initialize ring buffer");
         return false;
     }
 
@@ -133,7 +133,7 @@ bool CommandRecorder::Begin()
 {
     if (mReset)
     {
-        LOG_WARNING("Redundant command buffer reset");
+        NFE_LOG_WARNING("Redundant command buffer reset");
         return false;
     }
 
@@ -228,7 +228,7 @@ void CommandRecorder::SetVertexBuffers(int num, const BufferPtr* vertexBuffers, 
         const Buffer* buffer = dynamic_cast<Buffer*>(vertexBuffers[i].Get());
         if (!buffer)
         {
-            LOG_ERROR("Invalid vertex buffer at slot %i", i);
+            NFE_LOG_ERROR("Invalid vertex buffer at slot %i", i);
             return;
         }
 
@@ -550,7 +550,7 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
     Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer.Get());
     if (!bufferPtr)
     {
-        LOG_ERROR("Invalid buffer");
+        NFE_LOG_ERROR("Invalid buffer");
         return false;
     }
 
@@ -558,7 +558,7 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
     {
         if (size > bufferPtr->GetSize())
         {
-            LOG_ERROR("Trying to perform write bigger than buffer size.");
+            NFE_LOG_ERROR("Trying to perform write bigger than buffer size.");
             return false;
         }
 
@@ -573,7 +573,7 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
     }
     else
     {
-        LOG_ERROR("Specified buffer can not be CPU-written");
+        NFE_LOG_ERROR("Specified buffer can not be CPU-written");
         return false;
     }
 
@@ -590,26 +590,26 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
     Texture* srcTex = dynamic_cast<Texture*>(src.Get());
     if (srcTex == nullptr)
     {
-        LOG_ERROR("Invalid 'src' pointer");
+        NFE_LOG_ERROR("Invalid 'src' pointer");
         return;
     }
 
     if (srcTex->GetMode() == BufferMode::Readback || srcTex->GetMode() == BufferMode::Volatile)
     {
-        LOG_ERROR("Can't copy from this texture");
+        NFE_LOG_ERROR("Can't copy from this texture");
         return;
     }
 
     Texture* destTex = dynamic_cast<Texture*>(dest.Get());
     if (destTex == nullptr)
     {
-        LOG_ERROR("Invalid 'dest' pointer");
+        NFE_LOG_ERROR("Invalid 'dest' pointer");
         return;
     }
 
     if (destTex->GetMode() == BufferMode::Static || destTex->GetMode() == BufferMode::Volatile)
     {
-        LOG_ERROR("Can't copy to this texture");
+        NFE_LOG_ERROR("Can't copy to this texture");
         return;
     }
 
@@ -709,7 +709,7 @@ void CommandRecorder::Clear(int flags, uint32 numTargets, const uint32* slots,
             {
                 if (slots[i] >= mCurrRenderTarget->GetNumTargets())
                 {
-                    LOG_ERROR("Invalid render target texture slot = %u", slots[i]);
+                    NFE_LOG_ERROR("Invalid render target texture slot = %u", slots[i]);
                     return;
                 }
 
@@ -753,7 +753,7 @@ void CommandRecorder::UpdateStates()
         if (mBindingLayout == nullptr)
             mBindingLayout = mPipelineState->GetResBindingLayout().Get();
         else if (mBindingLayout != mPipelineState->GetResBindingLayout().Get())
-            LOG_ERROR("Resource binding layout mismatch");
+            NFE_LOG_ERROR("Resource binding layout mismatch");
 
         // set pipeline state
         mCommandList->SetPipelineState(mPipelineState->GetPSO());
@@ -859,13 +859,13 @@ void CommandRecorder::Dispatch(uint32 x, uint32 y, uint32 z)
 {
     if (!mComputeBindingLayout)
     {
-        LOG_ERROR("Binding layout not set");
+        NFE_LOG_ERROR("Binding layout not set");
         return;
     }
 
     if (!mCurrComputePipelineState)
     {
-        LOG_ERROR("Compute pipeline state not set");
+        NFE_LOG_ERROR("Compute pipeline state not set");
         return;
     }
 
@@ -876,7 +876,7 @@ CommandListID CommandRecorder::Finish()
 {
     if (!mReset)
     {
-        LOG_ERROR("Command buffer is not in recording state");
+        NFE_LOG_ERROR("Command buffer is not in recording state");
         return 0;
     }
 
@@ -903,7 +903,7 @@ bool CommandRecorder::MoveToNextFrame(ID3D12CommandQueue* commandQueue)
     HRESULT hr = D3D_CALL_CHECK(commandQueue->Signal(mFence.Get(), currFenceValue));
     if (FAILED(hr))
     {
-        LOG_ERROR("Failed to enqueue fence value update");
+        NFE_LOG_ERROR("Failed to enqueue fence value update");
         return false;
     }
 
@@ -923,13 +923,13 @@ bool CommandRecorder::MoveToNextFrame(ID3D12CommandQueue* commandQueue)
         hr = D3D_CALL_CHECK(mFence->SetEventOnCompletion(mFenceValues[mFrameBufferIndex], mFenceEvent));
         if (FAILED(hr))
         {
-            LOG_ERROR("Failed to set completion event for fence");
+            NFE_LOG_ERROR("Failed to set completion event for fence");
             return false;
         }
 
         if (WaitForSingleObject(mFenceEvent, INFINITE) != WAIT_OBJECT_0)
         {
-            LOG_ERROR("WaitForSingleObject failed");
+            NFE_LOG_ERROR("WaitForSingleObject failed");
             return false;
         }
     }

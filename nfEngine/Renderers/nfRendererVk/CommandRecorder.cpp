@@ -37,7 +37,7 @@ bool CommandRecorder::Init()
     mCommandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     mCommandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
-    LOG_INFO("Command Buffer initialized successfully.");
+    NFE_LOG_INFO("Command Buffer initialized successfully.");
     return true;
 }
 
@@ -68,7 +68,7 @@ void CommandRecorder::SetVertexBuffers(int num, const BufferPtr* vertexBuffers, 
         Buffer* buf = dynamic_cast<Buffer*>(vertexBuffers[i].Get());
         if (!buf)
         {
-            LOG_ERROR("Incorrect buffer provided at slot %d", i);
+            NFE_LOG_ERROR("Incorrect buffer provided at slot %d", i);
             return;
         }
 
@@ -85,7 +85,7 @@ void CommandRecorder::SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFo
     Buffer* ib = dynamic_cast<Buffer*>(indexBuffer.Get());
     if (ib == nullptr)
     {
-        LOG_ERROR("Incorrect Index Buffer provided");
+        NFE_LOG_ERROR("Incorrect Index Buffer provided");
         return;
     }
 
@@ -99,7 +99,7 @@ void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePt
     ResourceBindingInstance* rbi = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.Get());
     if (rbi == nullptr)
     {
-        LOG_ERROR("Incorrect resource binding instance provided");
+        NFE_LOG_ERROR("Incorrect resource binding instance provided");
         return;
     }
 
@@ -113,19 +113,19 @@ void CommandRecorder::BindVolatileCBuffer(size_t slot, const BufferPtr& buffer)
     Buffer* b = dynamic_cast<Buffer*>(buffer.Get());
     if (b == nullptr)
     {
-        LOG_ERROR("Invalid volatile buffer provided");
+        NFE_LOG_ERROR("Invalid volatile buffer provided");
         return;
     }
 
     if (b->mMode != BufferMode::Volatile)
     {
-        LOG_ERROR("Buffer with invalid mode provided");
+        NFE_LOG_ERROR("Buffer with invalid mode provided");
         return;
     }
 
     if (slot >= VK_MAX_VOLATILE_BUFFERS)
     {
-        LOG_ERROR("Binding to slot %d impossible (max available slots 0-7).", slot);
+        NFE_LOG_ERROR("Binding to slot %d impossible (max available slots 0-7).", slot);
         return;
     }
 
@@ -139,7 +139,7 @@ void CommandRecorder::SetResourceBindingLayout(const ResourceBindingLayoutPtr& l
 {
     mResourceBindingLayout = dynamic_cast<ResourceBindingLayout*>(layout.Get());
     if (!mResourceBindingLayout)
-        LOG_ERROR("Incorrect binding layout provided");
+        NFE_LOG_ERROR("Incorrect binding layout provided");
 }
 
 void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
@@ -153,7 +153,7 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
     mRenderTarget = dynamic_cast<RenderTarget*>(renderTarget.Get());
     if (!mRenderTarget)
     {
-        LOG_ERROR("Incorrect Render Target pointer.");
+        NFE_LOG_ERROR("Incorrect Render Target pointer.");
         return;
     }
 
@@ -173,7 +173,7 @@ void CommandRecorder::SetPipelineState(const PipelineStatePtr& state)
     PipelineState* ps = dynamic_cast<PipelineState*>(state.Get());
     if (ps == nullptr)
     {
-        LOG_ERROR("Incorrect pipeline state provided");
+        NFE_LOG_ERROR("Incorrect pipeline state provided");
         return;
     }
 
@@ -228,7 +228,7 @@ bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, 
 
     if (sourceOffset == std::numeric_limits<uint32>::max())
     {
-        LOG_ERROR("Failed to write temporary data to Ring Ruffer - the Ring Buffer is full");
+        NFE_LOG_ERROR("Failed to write temporary data to Ring Ruffer - the Ring Buffer is full");
         return false;
     }
 
@@ -263,7 +263,7 @@ bool CommandRecorder::WriteVolatileBuffer(Buffer* b, size_t size, const void* da
     uint32 writeHead = gDevice->GetRingBuffer()->Write(data, static_cast<uint32>(size));
     if (writeHead == std::numeric_limits<uint32>::max())
     {
-        LOG_ERROR("Failed to write data to Ring Ruffer - the Ring Buffer is full");
+        NFE_LOG_ERROR("Failed to write data to Ring Ruffer - the Ring Buffer is full");
         return false;
     }
 
@@ -285,7 +285,7 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
     Buffer* b = dynamic_cast<Buffer*>(buffer.Get());
     if (b == nullptr)
     {
-        LOG_ERROR("Invalid buffer pointer provided");
+        NFE_LOG_ERROR("Invalid buffer pointer provided");
         return false;
     }
 
@@ -293,7 +293,7 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
     {
         if (static_cast<VkDeviceSize>(size) > b->mBufferSize)
         {
-            LOG_ERROR("Requested to write more than provided buffer can handle (%d vs buffer's $d)",
+            NFE_LOG_ERROR("Requested to write more than provided buffer can handle (%d vs buffer's $d)",
                       size, b->mBufferSize);
             return false;
         }
@@ -306,7 +306,7 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
     }
     else
     {
-        LOG_ERROR("Provided buffer does not have a CPU-writable mode");
+        NFE_LOG_ERROR("Provided buffer does not have a CPU-writable mode");
         return false;
     }
 }
@@ -421,7 +421,7 @@ CommandListID CommandRecorder::Finish()
     VkResult result = vkEndCommandBuffer(mCommandBuffer);
     if (result != VK_SUCCESS)
     {
-        LOG_ERROR("Error during Constant Buffer recording: %d (%s)",
+        NFE_LOG_ERROR("Error during Constant Buffer recording: %d (%s)",
                   result, TranslateVkResultToString(result));
         return 0;
     }

@@ -61,7 +61,7 @@ void SoundSample::Release()
 
 bool SoundSample::OnLoad()
 {
-    LOG_INFO("Loading sound resource '%s'...", mName);
+    NFE_LOG_INFO("Loading sound resource '%s'...", mName);
 
     return true;
 }

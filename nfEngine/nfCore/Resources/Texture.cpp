@@ -132,7 +132,7 @@ void Texture::Release()
 
 bool Texture::OnLoad()
 {
-    LOG_INFO("Loading texture '%s'...", mName);
+    NFE_LOG_INFO("Loading texture '%s'...", mName);
     Common::Timer timer;
     timer.Start();
 
@@ -140,7 +140,7 @@ bool Texture::OnLoad()
     {
         if (!mOnLoad(this, mUserPtr))
         {
-            LOG_ERROR("Failed to load '%s'.", mName);
+            NFE_LOG_ERROR("Failed to load '%s'.", mName);
             return false;
         }
     }
@@ -153,10 +153,10 @@ bool Texture::OnLoad()
         Common::FileInputStream stream(path.c_str());
         if (!image.Load(&stream))
         {
-            LOG_ERROR("Failed to open '%s'.", mName);
+            NFE_LOG_ERROR("Failed to open '%s'.", mName);
             return false;
         }
-        LOG_SUCCESS("File '%s' loaded.", mName);
+        NFE_LOG_SUCCESS("File '%s' loaded.", mName);
 
 
         // generate mipmaps only for non-block-coded formats
@@ -187,26 +187,26 @@ bool Texture::OnLoad()
             strcat(path, mName);
             if (image.LoadFromFile(path) != true)
             {
-                LOG_ERROR("Failed to open '%s'.", mName);
+                NFE_LOG_ERROR("Failed to open '%s'.", mName);
                 return false;
             }
-            LOG_SUCCESS("File '%s' loaded.", mName);
+            NFE_LOG_SUCCESS("File '%s' loaded.", mName);
         }
         else
         {
             if (image.LoadFromBuffer(buffer.GetData(), buffer.GetSize()) != true)
             {
-                LOG_ERROR("Failed to open '%s'.", mName);
+                NFE_LOG_ERROR("Failed to open '%s'.", mName);
                 return false;
             }
-            LOG_SUCCESS("File '%s' loaded from PAK file.", mName);
+            NFE_LOG_SUCCESS("File '%s' loaded from PAK file.", mName);
         }
         */
 
         if (CreateFromImage(image) != true)
             return false;
 
-        LOG_SUCCESS("Texture '%s' loaded in %.3f sec. Dim: %ix%i, format: %s.",
+        NFE_LOG_SUCCESS("Texture '%s' loaded in %.3f sec. Dim: %ix%i, format: %s.",
                     mName, timer.Stop(), image.GetWidth(), image.GetHeight(),
                     Common::FormatToStr(image.GetFormat()));
     }
@@ -218,7 +218,7 @@ void Texture::OnUnload()
     if (mOnUnload)
         mOnUnload(this, mUserPtr);
 
-    LOG_INFO("Unloading texture '%s'...", mName);
+    NFE_LOG_INFO("Unloading texture '%s'...", mName);
     Release();
 }
 
@@ -244,7 +244,7 @@ bool Texture::CreateFromImage(const Common::Image& image)
 
     if (!mTex)
     {
-        LOG_ERROR("Failed to create renderer's texture for '%s'.", mName);
+        NFE_LOG_ERROR("Failed to create renderer's texture for '%s'.", mName);
         return false;
     }
 
@@ -272,7 +272,7 @@ bool Texture::CreateAsRenderTarget(uint32 width, uint32 height, Renderer::Elemen
     mTex = renderer->GetDevice()->CreateTexture(texDesc);
     if (!mTex)
     {
-        LOG_ERROR("Failed to create render target texture");
+        NFE_LOG_ERROR("Failed to create render target texture");
         return false;
     }
 

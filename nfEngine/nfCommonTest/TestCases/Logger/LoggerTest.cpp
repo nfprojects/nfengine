@@ -77,27 +77,27 @@ public:
  */
 TEST_F(LoggerTest, Simple)
 {
-    LOG_DEBUG("Test log - debug");
-    LOG_DEBUG_S("Test stream log - " << "debug");
-    LOG_INFO("Test log - info");
-    LOG_INFO_S("Test stream log - " << "info");
-    LOG_SUCCESS("Test log - success");
-    LOG_SUCCESS_S("Test stream log - " << "success");
-    LOG_WARNING("Test log - warning");
-    LOG_WARNING_S("Test stream log - " << "warning");
-    LOG_ERROR("Test log - error");
-    LOG_ERROR_S("Test stream log - " << "error");
+    NFE_LOG_DEBUG("Test log - debug");
+    NFE_LOG_DEBUG_S("Test stream log - " << "debug");
+    NFE_LOG_INFO("Test log - info");
+    NFE_LOG_INFO_S("Test stream log - " << "info");
+    NFE_LOG_SUCCESS("Test log - success");
+    NFE_LOG_SUCCESS_S("Test stream log - " << "success");
+    NFE_LOG_WARNING("Test log - warning");
+    NFE_LOG_WARNING_S("Test stream log - " << "warning");
+    NFE_LOG_ERROR("Test log - error");
+    NFE_LOG_ERROR_S("Test stream log - " << "error");
 }
 
 TEST_F(LoggerTest, EscapeSymbols)
 {
-    LOG_INFO("These are amps && and a <node<>> and some \"\"qoutes\" \'\'in quotes\'\'\".");
-    LOG_INFO_S("These are amps && and a <node<>> and some \"\"qoutes\" \'\'in quotes\'\'\".");
+    NFE_LOG_INFO("These are amps && and a <node<>> and some \"\"qoutes\" \'\'in quotes\'\'\".");
+    NFE_LOG_INFO_S("These are amps && and a <node<>> and some \"\"qoutes\" \'\'in quotes\'\'\".");
 }
 
 TEST_F(LoggerTest, Null)
 {
-    LOG_DEBUG(nullptr);
+    NFE_LOG_DEBUG(nullptr);
 }
 
 TEST_F(LoggerTest, MultipleTypes)
@@ -105,8 +105,8 @@ TEST_F(LoggerTest, MultipleTypes)
     int num = 5;
     std::string text = "text";
     float quarter = 1.0f / 4.0f;
-    LOG_INFO("String: %s, int: %d, float: %f", text.c_str(), num, quarter);
-    LOG_INFO_S("String: " << text << ", int: " << num << ", float: " << quarter);
+    NFE_LOG_INFO("String: %s, int: %d, float: %f", text.c_str(), num, quarter);
+    NFE_LOG_INFO_S("String: " << text << ", int: " << num << ", float: " << quarter);
 }
 
 TEST_F(LoggerTest, Long)
@@ -115,14 +115,14 @@ TEST_F(LoggerTest, Long)
     for (int i = 0; i < 25; ++i)
         longMessage += std::to_string(i) + ": There should be 25 this veeery long messages...\n";
 
-    LOG_INFO(longMessage.c_str());
-    LOG_INFO("%s", longMessage.c_str());
+    NFE_LOG_INFO(longMessage.c_str());
+    NFE_LOG_INFO("%s", longMessage.c_str());
 }
 
 TEST_F(LoggerTest, Invalid)
 {
     // this message won't be printed
-    LOG_INFO("This is an invalid format %.s %");
+    NFE_LOG_INFO("This is an invalid format %.s %");
 }
 
 
@@ -132,7 +132,7 @@ TEST_F(LoggerBackendsTest, DisableAll)
 {
     std::vector<std::string> existingBackends = Logger::GetInstance()->ListBackends();
 
-    LOG_SUCCESS("DisableAll: This log should be seen in every standard backend");
+    NFE_LOG_SUCCESS("DisableAll: This log should be seen in every standard backend");
 
     for (const auto& i : existingBackends)
     {
@@ -141,7 +141,7 @@ TEST_F(LoggerBackendsTest, DisableAll)
         ASSERT_FALSE(backend->IsEnabled());
     }
 
-    LOG_ERROR("DisableAll: This log should NOT be seen anywhere!");
+    NFE_LOG_ERROR("DisableAll: This log should NOT be seen anywhere!");
 
     // Turn back on all backends
     for (const auto& i : existingBackends)
@@ -156,7 +156,7 @@ TEST_F(LoggerBackendsTest, DisableSingle)
 {
     std::vector<std::string> existingBackends = Logger::GetInstance()->ListBackends();
 
-    LOG_SUCCESS("DisableSingle: This log should be seen in every standard backend");
+    NFE_LOG_SUCCESS("DisableSingle: This log should be seen in every standard backend");
 
     for (const auto& i : existingBackends)
     {
@@ -165,7 +165,7 @@ TEST_F(LoggerBackendsTest, DisableSingle)
         backend->Enable(false);
         ASSERT_FALSE(backend->IsEnabled());
 
-        LOG_SUCCESS_S("DisableSingle: This log should NOT be seen in " << i << " backend.");
+        NFE_LOG_SUCCESS_S("DisableSingle: This log should NOT be seen in " << i << " backend.");
 
         backend->Enable(true);
         ASSERT_TRUE(backend->IsEnabled());
@@ -186,7 +186,7 @@ TEST_F(LoggerBackendsTest, LogMethodArguments)
 
     ASSERT_NE(nullptr, Logger::GetBackend("Test"));
 
-    LOG_INFO("This is log");
+    NFE_LOG_INFO("This is log");
     auto lastLogInfo = reinterpret_cast<TestBackend*>(Logger::GetBackend("Test"))->mLastLogInfo;
     ASSERT_EQ(lastLogInfo.lastLine, __LINE__ - 2);
     ASSERT_EQ(lastLogInfo.lastMsg, "This is log");
@@ -194,7 +194,7 @@ TEST_F(LoggerBackendsTest, LogMethodArguments)
     ASSERT_EQ(lastLogInfo.lastFile, __FILE__);
     ASSERT_NE(lastLogInfo.lastTime, 0);
 
-    LOG_WARNING_S("This is log2");
+    NFE_LOG_WARNING_S("This is log2");
     lastLogInfo = reinterpret_cast<TestBackend*>(Logger::GetBackend("Test"))->mLastLogInfo;
     ASSERT_EQ(lastLogInfo.lastLine, __LINE__ - 2);
     ASSERT_EQ(lastLogInfo.lastMsg, "This is log2");
@@ -202,7 +202,7 @@ TEST_F(LoggerBackendsTest, LogMethodArguments)
     ASSERT_EQ(lastLogInfo.lastFile, __FILE__);
     ASSERT_NE(lastLogInfo.lastTime, 0);
 
-    LOG_ERROR("This is log3");
+    NFE_LOG_ERROR("This is log3");
     lastLogInfo = reinterpret_cast<TestBackend*>(Logger::GetBackend("Test"))->mLastLogInfo;
     ASSERT_EQ(lastLogInfo.lastLine, __LINE__ - 2);
     ASSERT_EQ(lastLogInfo.lastMsg, "This is log3");
@@ -210,7 +210,7 @@ TEST_F(LoggerBackendsTest, LogMethodArguments)
     ASSERT_EQ(lastLogInfo.lastFile, __FILE__);
     ASSERT_NE(lastLogInfo.lastTime, 0);
 
-    LOG_SUCCESS_S("This is log4");
+    NFE_LOG_SUCCESS_S("This is log4");
     lastLogInfo = reinterpret_cast<TestBackend*>(Logger::GetBackend("Test"))->mLastLogInfo;
     ASSERT_EQ(lastLogInfo.lastLine, __LINE__ - 2);
     ASSERT_EQ(lastLogInfo.lastMsg, "This is log4");
@@ -220,7 +220,7 @@ TEST_F(LoggerBackendsTest, LogMethodArguments)
 
     Logger::GetBackend("Test")->Enable(false);
     Logger::GetBackend("Test")->Reset();
-    LOG_INFO("This is log");
+    NFE_LOG_INFO("This is log");
     lastLogInfo = reinterpret_cast<TestBackend*>(Logger::GetBackend("Test"))->mLastLogInfo;
     ASSERT_EQ(lastLogInfo.lastLine, 0);
     ASSERT_EQ(lastLogInfo.lastMsg, "");

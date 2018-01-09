@@ -39,7 +39,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
 
     if (desc.numRenderTargets > MAX_RENDER_TARGETS)
     {
-        LOG_ERROR("Too many render targets: %u (max is %u)",
+        NFE_LOG_ERROR("Too many render targets: %u (max is %u)",
                   desc.numRenderTargets, MAX_RENDER_TARGETS);
         return false;
     }
@@ -47,7 +47,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     mBindingLayout = StaticCast<ResourceBindingLayout>(desc.resBindingLayout);
     if (!mBindingLayout)
     {
-        LOG_ERROR("Invalid resource binding layout");
+        NFE_LOG_ERROR("Invalid resource binding layout");
         return false;
     }
 
@@ -131,7 +131,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     if (!mVS)
     {
         Release();
-        LOG_ERROR("Vertex shader must be provided when creating pipeline state object");
+        NFE_LOG_ERROR("Vertex shader must be provided when creating pipeline state object");
         return false;
     }
 
@@ -165,7 +165,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
         if (psd.RTVFormats[i] == DXGI_FORMAT_UNKNOWN)
         {
             Release();
-            LOG_ERROR("Invalid render target framt for i = %u", i);
+            NFE_LOG_ERROR("Invalid render target framt for i = %u", i);
             return false;
         }
     }
@@ -188,7 +188,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     if (FAILED(hr))
     {
         Release();
-        LOG_ERROR("Failed to create pipeline state object");
+        NFE_LOG_ERROR("Failed to create pipeline state object");
         return false;
     }
 
@@ -196,7 +196,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
 
     if (desc.debugName && !SetDebugName(mPipelineState.Get(), desc.debugName))
     {
-        LOG_WARNING("Failed to set debug name");
+        NFE_LOG_WARNING("Failed to set debug name");
     }
 
     return true;

@@ -52,10 +52,10 @@ bool nfvkInstanceExtensionsInit(VkInstance instance)
 
 #ifdef WIN32
     if (!nfvkWin32InstanceExtensionsInit(instance))
-        LOG_WARNING("Win32 extensions failed to init, some Vulkan Win32 APIs might be unavailable.");
+        NFE_LOG_WARNING("Win32 extensions failed to init, some Vulkan Win32 APIs might be unavailable.");
 #elif defined(__linux__) | defined(__LINUX__)
     if (!nfvkXcbInstanceExtensionsInit(instance))
-        LOG_WARNING("Xcb extensions failed to init, some Vulkan Xcb APIs might be unavailable.");
+        NFE_LOG_WARNING("Xcb extensions failed to init, some Vulkan Xcb APIs might be unavailable.");
 #else
 #error "Target platform not supported."
 #endif

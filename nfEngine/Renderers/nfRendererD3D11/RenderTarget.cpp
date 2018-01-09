@@ -34,7 +34,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 
     if (desc.numTargets > MAX_RENDER_TARGETS)
     {
-        LOG_ERROR("Too many targets (got %u, max is %u", desc.numTargets, MAX_RENDER_TARGETS);
+        NFE_LOG_ERROR("Too many targets (got %u, max is %u", desc.numTargets, MAX_RENDER_TARGETS);
         return false;
     }
 
@@ -45,7 +45,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 
         if (tex == nullptr)
         {
-            LOG_ERROR("Invalid texture pointer");
+            NFE_LOG_ERROR("Invalid texture pointer");
             mRTVs.clear();
             return false;
         }
@@ -57,7 +57,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         }
         else if (mWidth != tex->mWidth || mHeight != tex->mHeight)
         {
-            LOG_ERROR("Render target's texture dimensions do not match");
+            NFE_LOG_ERROR("Render target's texture dimensions do not match");
             return false;
         }
 
@@ -106,7 +106,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             }
             else
             {
-                LOG_ERROR("Unsupported texture type");
+                NFE_LOG_ERROR("Unsupported texture type");
                 mRTVs.clear();
                 return false;
             }
@@ -115,7 +115,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             // TODO TextureType::Texture3D
         default:
             {
-                LOG_ERROR("Unsupported texture type for render target");
+                NFE_LOG_ERROR("Unsupported texture type for render target");
                 mRTVs.clear();
                 return false;
             }
@@ -125,7 +125,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         hr = D3D_CALL_CHECK(gDevice->mDevice->CreateRenderTargetView(tex->mTexture2D, &rtvDesc, &rtv));
         if (FAILED(hr))
         {
-            LOG_ERROR("Failed to create render target view");
+            NFE_LOG_ERROR("Failed to create render target view");
             mRTVs.clear();
             return false;
         }

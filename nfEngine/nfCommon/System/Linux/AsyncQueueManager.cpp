@@ -91,14 +91,14 @@ bool AsyncQueueManager::Init()
 {
     if (::io_setup(NUM_EVENTS, &mCtx) < 0)
     {
-        LOG_ERROR("io_setup() failed for AsyncQueueManager[%u]: %s", errno, strerror(errno));
+        NFE_LOG_ERROR("io_setup() failed for AsyncQueueManager[%u]: %s", errno, strerror(errno));
         return false;
     }
 
     mQuitEvent = ::eventfd(0, EFD_NONBLOCK);
     if (mQuitEvent == -1)
     {
-        LOG_ERROR("eventfd() failed for AsyncQueueManager[%u]: %s", errno, strerror(errno));
+        NFE_LOG_ERROR("eventfd() failed for AsyncQueueManager[%u]: %s", errno, strerror(errno));
         return false;
     }
 
@@ -107,7 +107,7 @@ bool AsyncQueueManager::Init()
     mQueueThread = std::thread(AsyncQueueManager::JobQueue);
     if (!mQueueThread.joinable())
     {
-        LOG_ERROR("std::thread() failed for AsyncQueueManager");
+        NFE_LOG_ERROR("std::thread() failed for AsyncQueueManager");
         return false;
     }
 
@@ -118,7 +118,7 @@ bool AsyncQueueManager::EnqueueJob(JobProcedure callback, int eventFD)
 {
     if (!mIsInitialized)
     {
-        LOG_ERROR("AsyncQueueManager is not initialized!");
+        NFE_LOG_ERROR("AsyncQueueManager is not initialized!");
         return false;
     }
 
@@ -132,7 +132,7 @@ bool AsyncQueueManager::EnqueueJob(JobProcedure callback, int eventFD)
     ssize_t result = ::write(mQuitEvent, &data, sizeof(data));
     if (result < 0)
     {
-        LOG_ERROR("Error during write while queueing job");
+        NFE_LOG_ERROR("Error during write while queueing job");
         return false;
     }
 
@@ -143,7 +143,7 @@ bool AsyncQueueManager::DequeueJob(int eventFD)
 {
     if (!mIsInitialized)
     {
-        LOG_ERROR("AsyncQueueManager is not initialized!");
+        NFE_LOG_ERROR("AsyncQueueManager is not initialized!");
         return false;
     }
 
@@ -162,7 +162,7 @@ bool AsyncQueueManager::DequeueJob(int eventFD)
     ssize_t result = ::write(mQuitEvent, &data, sizeof(data));
     if (result < 0)
     {
-        LOG_ERROR("Error during write while dequeueing job");
+        NFE_LOG_ERROR("Error during write while dequeueing job");
         return false;
     }
 
@@ -183,7 +183,7 @@ void AsyncQueueManager::JobQueue()
         waitingEvents = ::poll(instance->mDescriptors.data(), instance->mDescriptors.size(), -1);
         if (waitingEvents < 0) // Error
         {
-            LOG_ERROR("poll() for AsyncQueueManager failed: %s", strerror(errno));
+            NFE_LOG_ERROR("poll() for AsyncQueueManager failed: %s", strerror(errno));
             break;
         }
         else if (waitingEvents == 0) // Timeout

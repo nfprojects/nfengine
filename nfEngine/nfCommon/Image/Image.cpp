@@ -76,7 +76,7 @@ bool Image::SetData(const void* data, uint32 width, uint32 height, ImageFormat f
 
     if (!mipmap.GetData())
     {
-        LOG_ERROR("Mipmap has not been created successfully.");
+        NFE_LOG_ERROR("Mipmap has not been created successfully.");
         return false;
     }
 
@@ -99,7 +99,7 @@ bool Image::Load(InputStream* stream)
             return i.second->Load(this, stream);
     }
 
-    LOG_ERROR("Stream was not recognized as any of the usable file formats.");
+    NFE_LOG_ERROR("Stream was not recognized as any of the usable file formats.");
     return false;
 }
 
@@ -137,7 +137,7 @@ const Mipmap* Image::GetMipmap(uint32 id) const
     if (id < mMipmaps.size())
         return &mMipmaps[id];
 
-    LOG_WARNING("Trying to access not existing mipmap.");
+    NFE_LOG_WARNING("Trying to access not existing mipmap.");
     return nullptr;
 }
 
@@ -157,7 +157,7 @@ bool Image::DecompressDDS()
         compressionFlag = squish::kDxt5;
         break;
     default:
-        LOG_WARNING("BC Decompression cannot be done for %s pixel format.",
+        NFE_LOG_WARNING("BC Decompression cannot be done for %s pixel format.",
             FormatToStr(mFormat));
         return false;
     }
@@ -169,7 +169,7 @@ bool Image::DecompressDDS()
     std::unique_ptr<uint8[]> pixels(new (std::nothrow) uint8[size]);
     if (!pixels.get())
     {
-        LOG_ERROR("Allocating memory for DDS decompression failed.");
+        NFE_LOG_ERROR("Allocating memory for DDS decompression failed.");
         return false;
     }
 
@@ -185,7 +185,7 @@ bool Image::CompressDDS(ImageFormat destFormat)
     if (mFormat != gDDSSrcFormat)
     {
         // TODO After BC6H-BC7 implementation refactor gDDSSrcFormat
-        LOG_WARNING("Compression to BC1-3 can only be made for %s pixel format.",
+        NFE_LOG_WARNING("Compression to BC1-3 can only be made for %s pixel format.",
             FormatToStr(gDDSSrcFormat));
         return false;
     }
@@ -204,7 +204,7 @@ bool Image::CompressDDS(ImageFormat destFormat)
         compressionFlag = squish::kDxt5;
         break;
     default:
-        LOG_WARNING("BC Compression cannot be done for %s pixel format.",
+        NFE_LOG_WARNING("BC Compression cannot be done for %s pixel format.",
             FormatToStr(destFormat));
         return false;
     }
@@ -224,7 +224,7 @@ bool Image::CompressDDS(ImageFormat destFormat)
     std::unique_ptr<uint8[]> block(new (std::nothrow) uint8[size / sizeof(uint8)]);
     if (!block.get())
     {
-        LOG_ERROR("Allocating memory for DDS compression failed.");
+        NFE_LOG_ERROR("Allocating memory for DDS compression failed.");
         return false;
     }
 
@@ -247,7 +247,7 @@ bool Image::CompressDDS(ImageFormat destFormat)
         block.reset(new (std::nothrow) uint8[size / sizeof(uint8)]);
         if (!block.get())
         {
-            LOG_ERROR("Compressing mipmap of level %d failed.", i);
+            NFE_LOG_ERROR("Compressing mipmap of level %d failed.", i);
             return false;
         }
 
@@ -269,20 +269,20 @@ bool Image::GenerateMipmaps(MipmapFilter filterType, uint32 num)
     // Empty image
     if (!GetData())
     {
-        LOG_WARNING("Tried to generate mMipmaps of an empty image");
+        NFE_LOG_WARNING("Tried to generate mMipmaps of an empty image");
         return false;
     }
 
     if (mFormat == ImageFormat::BC4 || mFormat == ImageFormat::BC5 ||
         mFormat == ImageFormat::BC6H || mFormat == ImageFormat::BC7)
     {
-        LOG_ERROR("Block coded (BC4-BC7) pixel formats are unsupported");
+        NFE_LOG_ERROR("Block coded (BC4-BC7) pixel formats are unsupported");
         return false;
     }
 
     if (mFormat == ImageFormat::Unknown)
     {
-        LOG_ERROR("Invalid pixel format");
+        NFE_LOG_ERROR("Invalid pixel format");
         return false;
     }
 
@@ -292,7 +292,7 @@ bool Image::GenerateMipmaps(MipmapFilter filterType, uint32 num)
         oldFormat = mFormat;
         if (!Convert(gDDSSrcFormat))
         {
-            LOG_ERROR("%s decompression failed. No mipmaps generated.",
+            NFE_LOG_ERROR("%s decompression failed. No mipmaps generated.",
                         FormatToStr(oldFormat));
             return false;
         }
@@ -305,7 +305,7 @@ bool Image::GenerateMipmaps(MipmapFilter filterType, uint32 num)
     {
         if (!Convert(oldFormat))
         {
-            LOG_ERROR("%s compression failed. Mipmaps generated in %s format.",
+            NFE_LOG_ERROR("%s compression failed. Mipmaps generated in %s format.",
                         FormatToStr(oldFormat), FormatToStr(mFormat));
             return false;
         }
@@ -336,7 +336,7 @@ bool Image::GenerateMipmapsActual(MipmapFilter filterType, uint32 num)
         break;
 
     default:
-        LOG_ERROR("Unknown filter specified for mipmap generation: %s.",
+        NFE_LOG_ERROR("Unknown filter specified for mipmap generation: %s.",
             FilterToStr(filterType));
         return false;
     }
@@ -345,7 +345,7 @@ bool Image::GenerateMipmapsActual(MipmapFilter filterType, uint32 num)
     auto isPowerOfTwo = [](int x){return !(x == 0) && !(x & (x - 1)); };
     if (isPowerOfTwo(mMipmaps.back().GetWidth())
         || isPowerOfTwo(mMipmaps.back().GetHeight()))
-        LOG_WARNING("No support for non-power-of-2 !");
+        NFE_LOG_WARNING("No support for non-power-of-2 !");
 
     // Generate mipmaps main loop
     for (uint32 i = 0; i < num; i++)
@@ -365,7 +365,7 @@ bool Image::GenerateMipmapsActual(MipmapFilter filterType, uint32 num)
         std::unique_ptr<uint8[]> data(new (std::nothrow) uint8[dataSize / sizeof(uint8)]);
         if (!data.get())
         {
-            LOG_ERROR("Allocating memory for mipmap generation failed.");
+            NFE_LOG_ERROR("Allocating memory for mipmap generation failed.");
             return false;
         }
 
@@ -394,7 +394,7 @@ bool Image::Convert(ImageFormat destFormat)
     // Empty image
     if (GetData() == 0)
     {
-        LOG_WARNING("Tried to convert pixel format of an empty image");
+        NFE_LOG_WARNING("Tried to convert pixel format of an empty image");
         return false;
     }
 
@@ -403,14 +403,14 @@ bool Image::Convert(ImageFormat destFormat)
         destFormat == ImageFormat::BC4 || destFormat == ImageFormat::BC5 ||
         destFormat == ImageFormat::BC6H || destFormat == ImageFormat::BC7)
     {
-        LOG_ERROR("Block coded (BC4-BC7) pixel formats are currently not supported");
+        NFE_LOG_ERROR("Block coded (BC4-BC7) pixel formats are currently not supported");
         return false;
     }
 
     // Invalid format
     if (mFormat == ImageFormat::Unknown || destFormat == ImageFormat::Unknown)
     {
-        LOG_ERROR("Trying to convert invalid pixel format");
+        NFE_LOG_ERROR("Trying to convert invalid pixel format");
         return false;
     }
 
@@ -506,7 +506,7 @@ bool Image::Grayscale()
         return true;
     }
 
-    LOG_ERROR("Conversion to grayscale is not available for image format: %s.",
+    NFE_LOG_ERROR("Conversion to grayscale is not available for image format: %s.",
               FormatToStr(mFormat));
     return false;
 }

@@ -40,7 +40,7 @@ bool Buffer::Init(const BufferDesc& desc)
     // Temporary early leave until below types are implemented
     if (desc.mode == BufferMode::GPUOnly || desc.mode == BufferMode::Readback)
     {
-        LOG_ERROR("Requested unsupported buffer mode");
+        NFE_LOG_ERROR("Requested unsupported buffer mode");
         return false;
     }
 
@@ -52,7 +52,7 @@ bool Buffer::Init(const BufferDesc& desc)
 
     if (desc.mode == BufferMode::Static && desc.initialData == nullptr)
     {
-        LOG_ERROR("Cannot create a Static buffer without initial data provided");
+        NFE_LOG_ERROR("Cannot create a Static buffer without initial data provided");
         return false;
     }
 
@@ -166,7 +166,7 @@ leave:
     default: bufferModeStr = "Unknown";
     }
 
-    LOG_INFO("%u-byte %s Buffer created successfully", desc.size, bufferModeStr.c_str());
+    NFE_LOG_INFO("%u-byte %s Buffer created successfully", desc.size, bufferModeStr.c_str());
     return true;
 }
 

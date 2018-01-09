@@ -58,14 +58,14 @@ bool Texture::Init(const TextureDesc& desc)
     // TODO
     if (desc.type == TextureType::TextureCube)
     {
-        LOG_ERROR("Cube textures unsupported");
+        NFE_LOG_ERROR("Cube textures unsupported");
         return false;
     }
 
     // TODO we might want to create empty textures without initial data
     if (desc.dataDesc == nullptr)
     {
-        LOG_ERROR("No initial data provided for Image");
+        NFE_LOG_ERROR("No initial data provided for Image");
         return false;
     }
 
@@ -97,7 +97,7 @@ bool Texture::Init(const TextureDesc& desc)
         bufInfo.size = desc.dataDesc[0].sliceSize * desc.width;
         break;
     default:
-        LOG_ERROR("Unsupported or incorrect texture type.");
+        NFE_LOG_ERROR("Unsupported or incorrect texture type.");
         return false;
     }
 
@@ -147,7 +147,7 @@ bool Texture::Init(const TextureDesc& desc)
         imageInfo.imageType = VK_IMAGE_TYPE_2D;
         break;
     default:
-        LOG_ERROR("Unsupported or incorrect texture type.");
+        NFE_LOG_ERROR("Unsupported or incorrect texture type.");
         return false;
     }
 
@@ -280,7 +280,7 @@ bool Texture::Init(const TextureDesc& desc)
         ivInfo.viewType = VK_IMAGE_VIEW_TYPE_CUBE;
         break;
     default:
-        LOG_ERROR("Unsupported or incorrect texture type.");
+        NFE_LOG_ERROR("Unsupported or incorrect texture type.");
         return false;
     }
 
@@ -296,7 +296,7 @@ bool Texture::Init(const TextureDesc& desc)
     result = vkCreateImageView(gDevice->GetDevice(), &ivInfo, nullptr, &mImageView);
     CHECK_VKRESULT(result, "Failed to generate Image View from created Texure's image");
 
-    LOG_INFO("Texture initialized successfully");
+    NFE_LOG_INFO("Texture initialized successfully");
     return true;
 }
 

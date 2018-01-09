@@ -214,5 +214,5 @@ TEST(BVH, QueryInsertRemove)
         ASSERT_EQ(leavesNum - leavesToBeRemoved + leavesToBeInserted, bvh.GetSize());
     }
 
-    LOG_INFO("Total queries: %u", totalQueries);
+    NFE_LOG_INFO("Total queries: %u", totalQueries);
 }

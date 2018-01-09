@@ -24,7 +24,7 @@ bool Thread::SetThreadPriority(std::thread& thread, ThreadPriority priority)
     // between normal (OTHER) and idle or batch - we don't need those.
     NFE_UNUSED(thread);
     NFE_UNUSED(priority);
-    LOG_WARNING("SetThreadPriority method does nothing on this system.");
+    NFE_LOG_WARNING("SetThreadPriority method does nothing on this system.");
 
     return false;
 }
@@ -37,9 +37,9 @@ bool Thread::SetCurrentThreadName(const char* name)
         if(retVal == 0)
             return true;
         else
-            LOG_ERROR("Error while setting threads name to '%s': %s", name, strerror(retVal));
+            NFE_LOG_ERROR("Error while setting threads name to '%s': %s", name, strerror(retVal));
     } else
-        LOG_ERROR("Thread name too long - including \\0 it cannot be longer than 16 chars");
+        NFE_LOG_ERROR("Thread name too long - including \\0 it cannot be longer than 16 chars");
 
     return false;
 }

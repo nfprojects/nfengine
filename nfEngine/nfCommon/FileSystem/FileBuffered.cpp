@@ -251,7 +251,7 @@ bool FileBuffered::Seek(int64 pos, SeekMode mode)
                 relativePos = pos + GetSize();
                 break;
             default:
-                LOG_ERROR("Invalid seek mode");
+                NFE_LOG_ERROR("Invalid seek mode");
                 return false;
         }
 

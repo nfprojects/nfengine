@@ -79,7 +79,7 @@ bool Mipmap::SetData(const void* data, uint32 width, uint32 height, size_t dataS
 
     if (!mData.GetData())
     {
-        LOG_ERROR("Allocation error for mData member.");
+        NFE_LOG_ERROR("Allocation error for mData member.");
         return false;
     }
 
@@ -92,7 +92,7 @@ const void* Mipmap::GetData() const
     if (data)
         return data;
 
-    LOG_WARNING("mData member empty. Returned nullptr.");
+    NFE_LOG_WARNING("mData member empty. Returned nullptr.");
     return nullptr;
 }
 
@@ -198,7 +198,7 @@ Color Mipmap::GetTexel(uint32 x, uint32 y, ImageFormat fmt) const
 
         default:
         {
-            LOG_WARNING("Image format %s not recognized, no texels gotten.", FormatToStr(fmt));
+            NFE_LOG_WARNING("Image format %s not recognized, no texels gotten.", FormatToStr(fmt));
             return Color();
         }
     }
@@ -259,7 +259,7 @@ void Mipmap::SetTexel(const Color& v, uint32 x, uint32 y, ImageFormat fmt)
 
         default:
         {
-            LOG_WARNING("Image format %s not recognized, no texels set.", FormatToStr(fmt));
+            NFE_LOG_WARNING("Image format %s not recognized, no texels set.", FormatToStr(fmt));
             break;
         }
     }

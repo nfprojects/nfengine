@@ -29,15 +29,15 @@ VkBool32 DebugReport(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT obj
     const char* format = "%s (code %i) [%s]: %s";
 
     if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
-        LOG_ERROR(format, report, messageCode, pLayerPrefix, pMessage);
+        NFE_LOG_ERROR(format, report, messageCode, pLayerPrefix, pMessage);
     if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
-        LOG_WARNING(format, report, messageCode, pLayerPrefix, pMessage);
+        NFE_LOG_WARNING(format, report, messageCode, pLayerPrefix, pMessage);
     if (flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT)
-        LOG_INFO(format, report, messageCode, pLayerPrefix, pMessage);
+        NFE_LOG_INFO(format, report, messageCode, pLayerPrefix, pMessage);
     if (flags & VK_DEBUG_REPORT_DEBUG_BIT_EXT)
-        LOG_DEBUG(format, report, messageCode, pLayerPrefix, pMessage);
+        NFE_LOG_DEBUG(format, report, messageCode, pLayerPrefix, pMessage);
     if (flags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT)
-        LOG_WARNING(format, perf, messageCode, pLayerPrefix, pMessage);
+        NFE_LOG_WARNING(format, perf, messageCode, pLayerPrefix, pMessage);
 
     // returning VK_TRUE here would cause Vulkan APIs to return VK_ERROR_VALIDATION_FAILED_EXT
     // right now we don't want that, but for debugging purposes it can be changed.
@@ -90,7 +90,7 @@ bool Debugger::InitReport(VkInstance instance, VkDebugReportFlagsEXT flags)
     VkResult result = vkCreateDebugReportCallbackEXT(mVkInstance, &debugInfo, nullptr, &mDebugCallback);
     CHECK_VKRESULT(result, "Failed to allocate debug report callback");
 
-    LOG_DEBUG("Vulkan debug reports initialized successfully.");
+    NFE_LOG_DEBUG("Vulkan debug reports initialized successfully.");
     return true;
 }
 
@@ -115,7 +115,7 @@ bool Debugger::InitMarkers(VkDevice device)
     mVkDevice = device;
     mMarkersUseable = false;
 
-    LOG_DEBUG("Vulkan debug markers initialized successfully.");
+    NFE_LOG_DEBUG("Vulkan debug markers initialized successfully.");
     return true;
 }
 

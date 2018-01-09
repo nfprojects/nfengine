@@ -56,13 +56,13 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
                     nullptr, "main", "vs_4_0", 0, 0, bytecode.GetPtr(), errorsBuffer.GetPtr());
     if (errorsBuffer)
     {
-        LOG_INFO("Dummy vertex shader compilation output:\n%s",
+        NFE_LOG_INFO("Dummy vertex shader compilation output:\n%s",
                  static_cast<char*>(errorsBuffer->GetBufferPointer()));
     }
 
     if (FAILED(hr))
     {
-        LOG_ERROR("Dummy vertex shader compilation failed");
+        NFE_LOG_ERROR("Dummy vertex shader compilation failed");
         return false;
     }
 

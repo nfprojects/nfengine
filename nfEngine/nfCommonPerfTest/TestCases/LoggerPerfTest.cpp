@@ -51,12 +51,12 @@ TEST_F(LoggerPerf, SimpleChars)
 
         timer.Start();
         for (int i = LOG_TEST_NUMBER; i > 0; i--)
-            LOG_WARNING(simple);
+            NFE_LOG_WARNING(simple);
         logTime = timer.Stop();
 
         timer.Start();
         for (int i = LOG_TEST_NUMBER; i > 0; i--)
-            LOG_WARNING_S(simple);
+            NFE_LOG_WARNING_S(simple);
         logStreamTime = timer.Stop();
 
 
@@ -80,12 +80,12 @@ TEST_F(LoggerPerf, SymbolsShort)
         {
             timer.Start();
             for (int j = LOG_TEST_NUMBER; j > 0; j--)
-                LOG_WARNING(std::to_string(i).c_str());
+                NFE_LOG_WARNING(std::to_string(i).c_str());
             logTime[counter] = timer.Stop();
 
             timer.Start();
             for (int j = LOG_TEST_NUMBER; j > 0; j--)
-                LOG_WARNING_S(std::to_string(i).c_str());
+                NFE_LOG_WARNING_S(std::to_string(i).c_str());
             logStreamTime[counter++] = timer.Stop();
         }
 
@@ -111,12 +111,12 @@ TEST_F(LoggerPerf, SymbolsLong)
 
         timer.Start();
         for (int i = LOG_TEST_NUMBER; i > 0; i--)
-            LOG_WARNING(text);
+            NFE_LOG_WARNING(text);
         logTime = timer.Stop();
 
         timer.Start();
         for (int i = LOG_TEST_NUMBER; i > 0; i--)
-            LOG_WARNING_S(text);
+            NFE_LOG_WARNING_S(text);
         logStreamTime = timer.Stop();
 
     // print stats
@@ -136,11 +136,11 @@ TEST_F(LoggerPerf, LongText)
         double logTime, logStreamTime;
 
         timer.Start();
-        LOG_WARNING(text.c_str());
+        NFE_LOG_WARNING(text.c_str());
         logTime = timer.Stop();
 
         timer.Start();
-        LOG_WARNING_S(text.c_str());
+        NFE_LOG_WARNING_S(text.c_str());
         logStreamTime = timer.Stop();
 
         // print stats
@@ -164,7 +164,7 @@ TEST_F(LoggerPerf, FormattedMsg)
 
         timer.Start();
         for (int i = LOG_TEST_NUMBER; i > 0; i--)
-            LOG_INFO(format, text, numInt, numDbl,
+            NFE_LOG_INFO(format, text, numInt, numDbl,
                      text, numInt, numDbl,
                      text, numInt, numDbl);
         logTime = timer.Stop();
@@ -188,7 +188,7 @@ TEST_F(LoggerPerf, StreamMsg)
 
         timer.Start();
         for (int i = LOG_TEST_NUMBER; i > 0; i--)
-            LOG_INFO_S(text << numInt << numDbl <<
+            NFE_LOG_INFO_S(text << numInt << numDbl <<
                        text << numInt << numDbl <<
                        text << numInt << numDbl);
         logTime = timer.Stop();

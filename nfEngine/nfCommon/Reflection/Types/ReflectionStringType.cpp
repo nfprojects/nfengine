@@ -36,7 +36,7 @@ bool StringType::Deserialize(void* outObject, const Common::Config& config, cons
         return true;
     }
 
-    LOG_ERROR("Expected string in the config");
+    NFE_LOG_ERROR("Expected string in the config");
     return false;
 }
 

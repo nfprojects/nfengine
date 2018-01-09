@@ -43,9 +43,9 @@ do                                                                              
     while ((err = glGetError()) != GL_NO_ERROR)                                 \
     {                                                                           \
         const char* str = reinterpret_cast<const char*>(gluErrorString(err));   \
-        LOG_ERROR("OpenGL error %d: ", err, str);                               \
+        NFE_LOG_ERROR("OpenGL error %d: ", err, str);                               \
     }                                                                           \
-    LOG_DEBUG("==== OpenGL Error queue empty ====");                            \
+    NFE_LOG_DEBUG("==== OpenGL Error queue empty ====");                            \
 } while(0)
 #endif // GL_GET_ERRORS
 

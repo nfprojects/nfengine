@@ -60,7 +60,7 @@ void LogGrouper::Log(LogType type, int line, const char* file, const char* str, 
     {
         va_end(argsCopy);
         va_end(args);
-        LOG_ERROR("vsnprintf() failed, format = \"%s\"", str);
+        NFE_LOG_ERROR("vsnprintf() failed, format = \"%s\"", str);
         return;
     }
 

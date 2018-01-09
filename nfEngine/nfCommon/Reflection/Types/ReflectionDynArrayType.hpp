@@ -50,7 +50,7 @@ public:
             const T& arrayElement = typedObject[i];
             if (!elementType->Serialize(&arrayElement, config, arrayElementValue))
             {
-                LOG_ERROR("Failed to serialize DynArray element (index %u/%u)", i, arraySize);
+                NFE_LOG_ERROR("Failed to serialize DynArray element (index %u/%u)", i, arraySize);
                 return false;
             }
             config.AddValue(configArray, arrayElementValue);
@@ -73,7 +73,7 @@ public:
 
         if (!value.IsArray())
         {
-            LOG_ERROR("Expected array type");
+            NFE_LOG_ERROR("Expected array type");
             return false;
         }
 
@@ -84,7 +84,7 @@ public:
             T temp;
             if (!elementType->Deserialize(&temp, config, arrayElement))
             {
-                LOG_ERROR("Failed to parse native array element at index %i", index);
+                NFE_LOG_ERROR("Failed to parse native array element at index %i", index);
                 return false;
             }
 

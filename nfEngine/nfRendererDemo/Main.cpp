@@ -308,7 +308,7 @@ int InnerMain(int argc, char* argv[])
             }
             else
             {
-                LOG_ERROR("Missing command line parameter");
+                NFE_LOG_ERROR("Missing command line parameter");
                 return 1;
             }
         }
@@ -320,7 +320,7 @@ int InnerMain(int argc, char* argv[])
             }
             else
             {
-                LOG_ERROR("Missing command line parameter");
+                NFE_LOG_ERROR("Missing command line parameter");
                 return 1;
             }
         }
@@ -332,7 +332,7 @@ int InnerMain(int argc, char* argv[])
             }
             else
             {
-                LOG_ERROR("Missing command line parameter");
+                NFE_LOG_ERROR("Missing command line parameter");
                 return 1;
             }
         }
@@ -344,13 +344,13 @@ int InnerMain(int argc, char* argv[])
             }
             else
             {
-                LOG_ERROR("Missing command line parameter");
+                NFE_LOG_ERROR("Missing command line parameter");
                 return 1;
             }
         }
         else
         {
-            LOG_ERROR("Unknown command line parameter: %s", argv[i]);
+            NFE_LOG_ERROR("Unknown command line parameter: %s", argv[i]);
             return 1;
         }
     }
@@ -384,14 +384,14 @@ int InnerMain(int argc, char* argv[])
     }
     else
     {
-        LOG_ERROR("Incorrect backend provided");
+        NFE_LOG_ERROR("Incorrect backend provided");
         return 1;
     }
 
     DemoWindow window;
     if (!window.Init())
     {
-        LOG_ERROR("Failed to initialize Window");
+        NFE_LOG_ERROR("Failed to initialize Window");
         return 4;
     }
 
@@ -399,20 +399,20 @@ int InnerMain(int argc, char* argv[])
 
     if (!window.Open())
     {
-        LOG_ERROR("Failed to open Window");
+        NFE_LOG_ERROR("Failed to open Window");
         return 5;
     }
 
     if (!window.InitRenderer(selectedBackend, selectedCard, debugLevel))
     {
-        LOG_ERROR("Renderer failed to initialize");
+        NFE_LOG_ERROR("Renderer failed to initialize");
         return 2;
     }
 
     /// Initial scene to begin with
     if (!window.InitScene(initialScene))
     {
-        LOG_ERROR("Scene failed to initialize");
+        NFE_LOG_ERROR("Scene failed to initialize");
         return 3;
     }
 

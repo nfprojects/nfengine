@@ -65,7 +65,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     if (!wglChoosePixelFormatARB(mHDC, mc.mPixelFormatIntAttribs, mc.mPixelFormatFloatAttribs,
                                  1, &pixelFormat, &numFormats))
     {
-        LOG_ERROR("Failed to choose a Pixel Format for Slave Context.");
+        NFE_LOG_ERROR("Failed to choose a Pixel Format for Slave Context.");
         return false;
     }
 
@@ -73,20 +73,20 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     memset(&pfd, 0, sizeof(pfd));
     if (!SetPixelFormat(mHDC, pixelFormat, &pfd))
     {
-        LOG_ERROR("Failed to set pixel format.");
+        NFE_LOG_ERROR("Failed to set pixel format.");
         return false;
     }
 
     mHRC = wglCreateContextAttribsARB(mHDC, mc.mHRC, mc.mAttribs);
     if (!mHRC)
     {
-        LOG_ERROR("Failed to create Slave Context.");
+        NFE_LOG_ERROR("Failed to create Slave Context.");
         return false;
     }
 
     if (!wglMakeCurrent(mHDC, mHRC))
     {
-        LOG_ERROR("Failed to make Core Context current.");
+        NFE_LOG_ERROR("Failed to make Core Context current.");
         return false;
     }
 
@@ -100,7 +100,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
 
     const GLubyte* glv = glGetString(GL_VERSION);
     const char* glvStr = reinterpret_cast<const char*>(glv);
-    LOG_INFO("OpenGL %s Slave Context obtained.", glvStr);
+    NFE_LOG_INFO("OpenGL %s Slave Context obtained.", glvStr);
 
     return true;
 }

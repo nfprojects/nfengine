@@ -55,14 +55,14 @@ bool ComputeScene::CreateSubSceneSimple()
     int mCBufferSlot = mShader->GetResourceSlotByName("gParams");
     if (mCBufferSlot < 0)
     {
-        LOG_ERROR("Slot not found");
+        NFE_LOG_ERROR("Slot not found");
         return false;
     }
 
     int mTextureSlot = mShader->GetResourceSlotByName("gOutputTexture");
     if (mTextureSlot < 0)
     {
-        LOG_ERROR("Slot not found");
+        NFE_LOG_ERROR("Slot not found");
         return false;
     }
 

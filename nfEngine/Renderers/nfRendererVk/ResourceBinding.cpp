@@ -51,7 +51,7 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
         {
             if ((rb.slot >> 16) != mSetSlot)
             {
-                LOG_ERROR("Supplied bindings do not belong in the same set");
+                NFE_LOG_ERROR("Supplied bindings do not belong in the same set");
                 return false;
             }
         }
@@ -69,7 +69,7 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
             Sampler* s = dynamic_cast<Sampler*>(rb.staticSampler.Get());
             if (s == nullptr)
             {
-                LOG_ERROR("Incorrect Sampler pointer provided at entry %d.");
+                NFE_LOG_ERROR("Incorrect Sampler pointer provided at entry %d.");
                 return false;
             }
 
@@ -143,7 +143,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         {
             if ((vb.slot >> 16) != mVolatileSetSlot)
             {
-                LOG_ERROR("Supplied volatile bindings do not belong in the same set");
+                NFE_LOG_ERROR("Supplied volatile bindings do not belong in the same set");
                 return false;
             }
         }
@@ -158,7 +158,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         dslBinding.descriptorType = TranslateDynamicResourceTypeToVkDescriptorType(vb.resourceType);
         if (dslBinding.descriptorType == VK_DESCRIPTOR_TYPE_MAX_ENUM)
         {
-            LOG_ERROR("Unsupported dynamic resource type provided");
+            NFE_LOG_ERROR("Unsupported dynamic resource type provided");
             return false;
         }
 
@@ -197,7 +197,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
 
         if (rbs->mSetSlot == mVolatileSetSlot)
         {
-            LOG_ERROR("A volatile buffer has the same set slot assigned as one of the binding sets.");
+            NFE_LOG_ERROR("A volatile buffer has the same set slot assigned as one of the binding sets.");
             return false;
         }
 
@@ -309,7 +309,7 @@ bool ResourceBindingInstance::Init(const ResourceBindingSetPtr& bindingSet)
     mSet = dynamic_cast<ResourceBindingSet*>(bindingSet.Get());
     if (mSet == nullptr)
     {
-        LOG_ERROR("Incorrect binding set provided");
+        NFE_LOG_ERROR("Incorrect binding set provided");
         return false;
     }
 
@@ -321,7 +321,7 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& te
     Texture* t = dynamic_cast<Texture*>(texture.Get());
     if (t == nullptr)
     {
-        LOG_ERROR("Incorrect Texture pointer provided");
+        NFE_LOG_ERROR("Incorrect Texture pointer provided");
         return false;
     }
 
@@ -349,7 +349,7 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, const BufferPtr& buf
     Buffer* b = dynamic_cast<Buffer*>(buffer.Get());
     if (b == nullptr)
     {
-        LOG_ERROR("Incorrect Buffer pointer provided");
+        NFE_LOG_ERROR("Incorrect Buffer pointer provided");
         return false;
     }
 

@@ -35,7 +35,7 @@ ConfigManager& ConfigManager::GetInstance()
 
 bool ConfigManager::Initialize()
 {
-    LOG_INFO("%u config variables registered", mNumVariables);
+    NFE_LOG_INFO("%u config variables registered", mNumVariables);
 
     // TODO: load config from multiple config files
     return LoadConfiguration();
@@ -81,7 +81,7 @@ void ConfigManager::RegisterVariable(IConfigVariable* variable)
 
     if (node->variables.find(segments.back()) != node->variables.end())
     {
-        LOG_ERROR("Variable '%s' declared twice", path);
+        NFE_LOG_ERROR("Variable '%s' declared twice", path);
     }
 
     // place variable in the target node
@@ -91,7 +91,7 @@ void ConfigManager::RegisterVariable(IConfigVariable* variable)
 
 bool ConfigManager::LoadConfiguration()
 {
-    LOG_INFO("Loading engine's configuration...");
+    NFE_LOG_INFO("Loading engine's configuration...");
 
     std::vector<char> configFileStr;
     size_t configFileSize = 0;
@@ -102,7 +102,7 @@ bool ConfigManager::LoadConfiguration()
     configFileStr.resize(configFileSize + 1);
     if (file.Read(configFileStr.data(), configFileSize) != configFileSize)
     {
-        LOG_ERROR("Failed to read config file");
+        NFE_LOG_ERROR("Failed to read config file");
         return false;
     }
     configFileStr[configFileSize] = '\0';
@@ -110,18 +110,18 @@ bool ConfigManager::LoadConfiguration()
     // parse
     if (!mConfig->Parse(configFileStr.data()))
     {
-        LOG_ERROR("Failed to parse engine's config file");
+        NFE_LOG_ERROR("Failed to parse engine's config file");
         return false;
     }
 
     // find config variables
     if (!mRootNode.Parse(*mConfig, mConfig->GetRootNode()))
     {
-        LOG_ERROR("Failed to load config variables");
+        NFE_LOG_ERROR("Failed to load config variables");
         return false;
     }
 
-    LOG_SUCCESS("Engine's configuration loaded");
+    NFE_LOG_SUCCESS("Engine's configuration loaded");
     return true;
 }
 
@@ -145,7 +145,7 @@ bool ConfigManager::Node::Parse(const Common::Config& config, ConfigObjectNodePt
             {
                 if (variable.second->ParseConfigValue(value))
                 {
-                    LOG_DEBUG("'%s' = %s", variable.second->GetPath(), variable.second->ToString().c_str());
+                    NFE_LOG_DEBUG("'%s' = %s", variable.second->GetPath(), variable.second->ToString().c_str());
                 }
             }
         }

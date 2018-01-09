@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
             }
             else
             {
-                LOG_ERROR("Missing command line parameter");
+                NFE_LOG_ERROR("Missing command line parameter");
                 return 1;
             }
         }
@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
             }
             else
             {
-                LOG_ERROR("Missing command line parameter");
+                NFE_LOG_ERROR("Missing command line parameter");
                 return 1;
             }
         }
@@ -58,13 +58,13 @@ int main(int argc, char* argv[])
             }
             else
             {
-                LOG_ERROR("Missing command line parameter");
+                NFE_LOG_ERROR("Missing command line parameter");
                 return 1;
             }
         }
         else
         {
-            LOG_ERROR("Unknown command line parameter: %s", argv[i]);
+            NFE_LOG_ERROR("Unknown command line parameter: %s", argv[i]);
             return 1;
         }
     }
@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
     }
     else
     {
-        LOG_ERROR("Incorrect backend provided");
+        NFE_LOG_ERROR("Incorrect backend provided");
         return 1;
     }
 

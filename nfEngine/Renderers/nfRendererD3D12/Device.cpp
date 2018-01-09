@@ -72,7 +72,7 @@ bool Device::Init(const DeviceInitParams* params)
         D3DPtr<ID3D12Debug> debugController;
         if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(debugController.GetPtr()))))
         {
-            LOG_INFO("Enabling D3D12 debug layer");
+            NFE_LOG_INFO("Enabling D3D12 debug layer");
             debugController->EnableDebugLayer();
         }
     }
@@ -84,7 +84,7 @@ bool Device::Init(const DeviceInitParams* params)
     int preferredCardId = params != nullptr ? params->preferredCardId : -1;
     if (!DetectVideoCards(preferredCardId))
     {
-        LOG_ERROR("Failed to detect video cards");
+        NFE_LOG_ERROR("Failed to detect video cards");
         return false;
     }
 
@@ -139,11 +139,11 @@ bool Device::Init(const DeviceInitParams* params)
             featureLevelStr = "12_1";
             break;
         }
-        LOG_INFO("Direct3D 12 device created with %s feature level", featureLevelStr);
+        NFE_LOG_INFO("Direct3D 12 device created with %s feature level", featureLevelStr);
     }
     else
     {
-        LOG_ERROR("Failed to obtain Direct3D feature level");
+        NFE_LOG_ERROR("Failed to obtain Direct3D feature level");
         mFeatureLevel = D3D_FEATURE_LEVEL_9_1;
     }
 
@@ -152,7 +152,7 @@ bool Device::Init(const DeviceInitParams* params)
         hr = D3D_CALL_CHECK(mDevice->QueryInterface(IID_PPV_ARGS(mDebugDevice.GetPtr())));
         if (FAILED(hr))
         {
-            LOG_ERROR("D3D12 device debugging won't be supported");
+            NFE_LOG_ERROR("D3D12 device debugging won't be supported");
         }
     }
 
@@ -162,8 +162,8 @@ bool Device::Init(const DeviceInitParams* params)
         DeviceInfo deviceInfo;
         if (GetDeviceInfo(deviceInfo))
         {
-            LOG_INFO("GPU name: %s", deviceInfo.description.c_str());
-            LOG_INFO("GPU info: %s", deviceInfo.misc.c_str());
+            NFE_LOG_INFO("GPU name: %s", deviceInfo.description.c_str());
+            NFE_LOG_INFO("GPU info: %s", deviceInfo.misc.c_str());
 
             std::string features;
             for (size_t i = 0; i < deviceInfo.features.size(); ++i)
@@ -172,7 +172,7 @@ bool Device::Init(const DeviceInitParams* params)
                     features += ", ";
                 features += deviceInfo.features[i];
             }
-            LOG_INFO("GPU features: %s", features.c_str());
+            NFE_LOG_INFO("GPU features: %s", features.c_str());
         }
     }
 
@@ -214,7 +214,7 @@ bool Device::Init(const DeviceInitParams* params)
     hr = D3D_CALL_CHECK(gDevice->mDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(mFence.GetPtr())));
     if (FAILED(hr))
     {
-        LOG_ERROR("Failed to create D3D12 fence object");
+        NFE_LOG_ERROR("Failed to create D3D12 fence object");
         return false;
     }
 
@@ -222,26 +222,26 @@ bool Device::Init(const DeviceInitParams* params)
     mFenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
     if (mFenceEvent == nullptr)
     {
-        LOG_ERROR("Failed to create fence event object");
+        NFE_LOG_ERROR("Failed to create fence event object");
         return false;
     }
 
 
     if (!mCbvSrvUavHeapAllocator.Init())
     {
-        LOG_ERROR("Failed to initialize heap allocator for CBV, SRV and UAV");
+        NFE_LOG_ERROR("Failed to initialize heap allocator for CBV, SRV and UAV");
         return false;
     }
 
     if (!mRtvHeapAllocator.Init())
     {
-        LOG_ERROR("Failed to initialize heap allocator for RTV");
+        NFE_LOG_ERROR("Failed to initialize heap allocator for RTV");
         return false;
     }
 
     if (!mDsvHeapAllocator.Init())
     {
-        LOG_ERROR("Failed to initialize heap allocator for DSV");
+        NFE_LOG_ERROR("Failed to initialize heap allocator for DSV");
         return false;
     }
 
@@ -360,7 +360,7 @@ bool Device::DetectVideoCards(int preferredId)
 
         if (FAILED(hr))
         {
-            LOG_ERROR("EnumAdapters1 failed for id=%u", i);
+            NFE_LOG_ERROR("EnumAdapters1 failed for id=%u", i);
             continue;
         }
 
@@ -380,7 +380,7 @@ bool Device::DetectVideoCards(int preferredId)
         if (static_cast<uint32>(preferredId) == i)
             mAdapterInUse = i;
 
-        LOG_INFO("Adapter found at slot %u: %s", i, descString.c_str());
+        NFE_LOG_INFO("Adapter found at slot %u: %s", i, descString.c_str());
         mAdapters.push_back(D3DPtr<IDXGIAdapter>(adapter));
     }
 
@@ -422,7 +422,7 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
     D3D12_FEATURE_DATA_D3D12_OPTIONS d3d12options;
     hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &d3d12options, sizeof(d3d12options));
     if (FAILED(hr))
-        LOG_ERROR("Failed to obtain D3D12 options info");
+        NFE_LOG_ERROR("Failed to obtain D3D12 options info");
     else
     {
         info.features.push_back("TiledResourcesTier=" +
@@ -490,7 +490,7 @@ bool Device::IsBackbufferFormatSupported(ElementFormat format)
     HRESULT hr = mDevice->CheckFeatureSupport(D3D12_FEATURE_FORMAT_SUPPORT, &formatData, sizeof(formatData));
     if (FAILED(hr))
     {
-        LOG_ERROR("Failed to check format support info");
+        NFE_LOG_ERROR("Failed to check format support info");
         return false;
     }
 
@@ -512,7 +512,7 @@ bool Device::Execute(CommandListID commandList)
 {
     if (commandList == INVALID_COMMAND_LIST_ID)
     {
-        LOG_ERROR("Invalid command list");
+        NFE_LOG_ERROR("Invalid command list");
         return false;
     }
 
@@ -554,7 +554,7 @@ bool Device::DownloadTexture(const TexturePtr& tex, void* data, int mipmap, int 
     const Texture* texture = dynamic_cast<Texture*>(tex.Get());
     if (!texture)
     {
-        LOG_ERROR("Invalid texture pointer");
+        NFE_LOG_ERROR("Invalid texture pointer");
         return false;
     }
 
@@ -590,25 +590,25 @@ bool Device::WaitForGPU()
     hr = D3D_CALL_CHECK(mCommandQueue->Signal(mFence.Get(), prevFenceValue));
     if (FAILED(hr))
     {
-        LOG_ERROR("Failed to enqueue fence value update");
+        NFE_LOG_ERROR("Failed to enqueue fence value update");
         return false;
     }
 
     if (mFence->GetCompletedValue() < prevFenceValue)
     {
-        LOG_DEBUG("Waiting for GPU...");
+        NFE_LOG_DEBUG("Waiting for GPU...");
 
         // Wait for the fence value to be updated
         hr = D3D_CALL_CHECK(mFence->SetEventOnCompletion(prevFenceValue, mFenceEvent));
         if (FAILED(hr))
         {
-            LOG_ERROR("Failed to set completion event for fence");
+            NFE_LOG_ERROR("Failed to set completion event for fence");
             return false;
         }
 
         if (WaitForSingleObject(mFenceEvent, INFINITE) != WAIT_OBJECT_0)
         {
-            LOG_ERROR("WaitForSingleObject failed");
+            NFE_LOG_ERROR("WaitForSingleObject failed");
             return false;
         }
     }

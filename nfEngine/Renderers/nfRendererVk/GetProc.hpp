@@ -15,7 +15,7 @@
 #ifndef VK_GET_LIBPROC
 #define VK_GET_LIBPROC(lib, x) do { \
     if (!lib.GetSymbol(#x, x)) \
-        LOG_FATAL("Failed to retrieve Library function " #x); \
+        NFE_LOG_FATAL("Failed to retrieve Library function " #x); \
 } while(0)
 #endif
 
@@ -30,7 +30,7 @@
     x = (PFN_##x)vkGetInstanceProcAddr(inst, #x); \
     if (!x) \
     { \
-        LOG_ERROR("Unable to retrieve Instance function " #x); \
+        NFE_LOG_ERROR("Unable to retrieve Instance function " #x); \
         allExtensionsAvailable = false; \
     } \
 } while(0)
@@ -46,7 +46,7 @@
     x = (PFN_##x)vkGetDeviceProcAddr(dev, #x); \
     if (!x) \
     { \
-        LOG_ERROR("Unable to retrieve Device function " #x); \
+        NFE_LOG_ERROR("Unable to retrieve Device function " #x); \
         allExtensionsAvailable = false; \
     } \
 } while(0)

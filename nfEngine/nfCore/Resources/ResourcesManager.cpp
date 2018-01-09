@@ -38,7 +38,7 @@ ResManager::~ResManager()
 void ResManager::Release()
 {
     // unload all resources
-    LOG_INFO("Unloading resources...");
+    NFE_LOG_INFO("Unloading resources...");
     std::map<const char*, ResourceBase*, CompareResName>::iterator it;
     for (it = mResources.begin(); it != mResources.end(); it++)
     {
@@ -49,7 +49,7 @@ void ResManager::Release()
     mThreadPool.reset();
 
     // delete all resources
-    LOG_INFO("Deleting resources...");
+    NFE_LOG_INFO("Deleting resources...");
     for (it = mResources.begin(); it != mResources.end(); it++)
     {
         ResourceBase* resource = (*it).second;
@@ -62,7 +62,7 @@ ResourceBase* ResManager::GetResource(const char* name, ResourceType type, bool 
 {
     if (name == nullptr)
     {
-        LOG_ERROR("Resource name is NULL");
+        NFE_LOG_ERROR("Resource name is NULL");
         return nullptr;
     }
 
@@ -106,14 +106,14 @@ ResourceBase* ResManager::GetResource(const char* name, ResourceType type, bool 
 
         default:
             ulock.Unlock();
-            LOG_ERROR("Wrong 'type' argument");
+            NFE_LOG_ERROR("Wrong 'type' argument");
             return nullptr;
     }
 
     if (resource == nullptr)
     {
         ulock.Unlock();
-        LOG_ERROR("Memory allocation failed");
+        NFE_LOG_ERROR("Memory allocation failed");
         return nullptr;
     }
 
@@ -156,7 +156,7 @@ bool ResManager::DeleteResource(const char* name)
         }
 
         ulock.Unlock();
-        LOG_WARNING("Can't remove resource '%s', because it's still loaded", name);
+        NFE_LOG_WARNING("Can't remove resource '%s', because it's still loaded", name);
         return false;
     }
     return true;
@@ -166,7 +166,7 @@ bool ResManager::AddCustomResource(ResourceBase* resource, const char* name)
 {
     if (!Common::MemoryCheck(resource))
     {
-        LOG_ERROR("Memory pointed by resource pointer is corrupted.");
+        NFE_LOG_ERROR("Memory pointed by resource pointer is corrupted.");
         return false;
     }
 
@@ -177,7 +177,7 @@ bool ResManager::AddCustomResource(ResourceBase* resource, const char* name)
     if (mResources.count(pNameToCheck) > 0)
     {
         ulock.Unlock();
-        LOG_ERROR("Resource with name '%s' already exists.", pNameToCheck);
+        NFE_LOG_ERROR("Resource with name '%s' already exists.", pNameToCheck);
         return false;
     }
 
@@ -231,7 +231,7 @@ bool ResManager::WaitForResource(ResourceBase* resource)
 {
     if (!resource)
     {
-        LOG_ERROR("Invalid resource pointer");
+        NFE_LOG_ERROR("Invalid resource pointer");
         return false;
     }
 

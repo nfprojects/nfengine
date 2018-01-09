@@ -36,7 +36,7 @@ void Multishader::OnUnload()
 
 bool Multishader::OnLoad()
 {
-    LOG_INFO("Loading multishader '%s'...", mName);
+    NFE_LOG_INFO("Loading multishader '%s'...", mName);
 
     // TODO: check JSON file modification date
 
@@ -56,7 +56,7 @@ bool Multishader::OnLoad()
     rapidjson::Document document;
     if (document.Parse<0>(str.data()).HasParseError())
     {
-        LOG_ERROR("Failed to parse multishader file '%s'...", mName);
+        NFE_LOG_ERROR("Failed to parse multishader file '%s'...", mName);
         return false;
     }
 
@@ -83,7 +83,7 @@ bool Multishader::OnLoad()
         mType = ShaderType::Pixel;
     else
     {
-        LOG_ERROR("Unknown shader type: '%s'", typeNode.GetString());
+        NFE_LOG_ERROR("Unknown shader type: '%s'", typeNode.GetString());
         return false;
     }
 
@@ -108,7 +108,7 @@ bool Multishader::OnLoad()
 
             if (macro.minValue > macro.maxValue)
             {
-                LOG_ERROR("Invalid values ranges for macro: '%s'", macroName.c_str());
+                NFE_LOG_ERROR("Invalid values ranges for macro: '%s'", macroName.c_str());
                 return false;
             }
 

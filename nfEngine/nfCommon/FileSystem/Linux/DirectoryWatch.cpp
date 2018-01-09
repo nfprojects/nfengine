@@ -22,7 +22,7 @@ DirectoryWatch::DirectoryWatch()
 {
     inotifyFd = ::inotify_init();
     if (inotifyFd == -1)
-        LOG_ERROR("inotify_init() failed: %s", strerror(errno));
+        NFE_LOG_ERROR("inotify_init() failed: %s", strerror(errno));
 
     mRunning.store(true);
     mWatchThread = std::thread(&DirectoryWatch::WatchRoutine, this);
@@ -75,7 +75,7 @@ bool DirectoryWatch::WatchPath(const std::string& path, Event eventFilter)
     int fd = ::inotify_add_watch(inotifyFd, path.c_str(), inotifyMask);
     if (fd < 0)
     {
-        LOG_ERROR("inotify_add_watch() for path '%s' failed: %s", path.c_str(), strerror(errno));
+        NFE_LOG_ERROR("inotify_add_watch() for path '%s' failed: %s", path.c_str(), strerror(errno));
         return false;
     }
 
@@ -86,7 +86,7 @@ bool DirectoryWatch::WatchPath(const std::string& path, Event eventFilter)
         mWatchPathMap[path] = fd;
         mWatchDescriptorMap[fd] = path;
     }
-    LOG_DEBUG("Directory watch for path '%s' added, wd = %d", path.c_str(), fd);
+    NFE_LOG_DEBUG("Directory watch for path '%s' added, wd = %d", path.c_str(), fd);
     return true;
 }
 
@@ -111,7 +111,7 @@ void DirectoryWatch::WatchRoutine()
         int ret = ::poll(&pfd, 1, pollTimeout);
         if (ret < 0)
         {
-            LOG_ERROR("poll() for inotify failed: %s", strerror(errno));
+            NFE_LOG_ERROR("poll() for inotify failed: %s", strerror(errno));
             break;
         }
         else if (ret == 0) // timeout
@@ -122,13 +122,13 @@ void DirectoryWatch::WatchRoutine()
         if (numRead < 0)
         {
             if (mRunning)
-                LOG_ERROR("read() for inotify failed: %s", strerror(errno));
+                NFE_LOG_ERROR("read() for inotify failed: %s", strerror(errno));
             break;
         }
         else if (numRead == 0)
         {
             // this should not happen
-            LOG_WARNING("read() for inotify returned 0");
+            NFE_LOG_WARNING("read() for inotify returned 0");
             continue;
         }
 
@@ -170,37 +170,37 @@ bool DirectoryWatch::ProcessInotifyEvent(void* event)
     if (e->mask & IN_CREATE)
     {
         constructEventData(true, Event::Create);
-        LOG_DEBUG("DirectoryWatch: path created, path = %s", path);
+        NFE_LOG_DEBUG("DirectoryWatch: path created, path = %s", path);
     }
     else if (e->mask & IN_DELETE)
     {
         constructEventData(true, Event::Delete);
-        LOG_DEBUG("DirectoryWatch: path deleted, path = %s", path);
+        NFE_LOG_DEBUG("DirectoryWatch: path deleted, path = %s", path);
     }
     else if (e->mask & IN_CLOSE_WRITE)
     {
         constructEventData(true, Event::Modify);
-        LOG_DEBUG("DirectoryWatch: file modified, path = %s", path);
+        NFE_LOG_DEBUG("DirectoryWatch: file modified, path = %s", path);
     }
     else if (e->mask & IN_MOVED_FROM)
     {
         constructEventData(true, Event::MoveFrom);
-        LOG_DEBUG("DirectoryWatch: file moved from, path = %s", path);
+        NFE_LOG_DEBUG("DirectoryWatch: file moved from, path = %s", path);
     }
     else if (e->mask & IN_MOVED_TO)
     {
         constructEventData(true, Event::MoveTo);
-        LOG_DEBUG("DirectoryWatch: file moved to, path = %s", path);
+        NFE_LOG_DEBUG("DirectoryWatch: file moved to, path = %s", path);
     }
     else if (e->mask & IN_DELETE_SELF)
     {
         constructEventData(false, Event::Delete);
-        LOG_DEBUG("DirectoryWatch: watched path deleted, path = %s", path);
+        NFE_LOG_DEBUG("DirectoryWatch: watched path deleted, path = %s", path);
     }
     else if (e->mask & IN_MOVE_SELF)
     {
         constructEventData(false, Event::MoveFrom);
-        LOG_DEBUG("DirectoryWatch: watched path moved, path = %s", path);
+        NFE_LOG_DEBUG("DirectoryWatch: watched path moved, path = %s", path);
     }
 
     if (eventData.type != Event::None)

@@ -27,7 +27,7 @@
 #define CHECK_VKRESULT(result, errstr)                                              \
     if (result != VK_SUCCESS)                                                       \
     {                                                                               \
-        LOG_ERROR("%s: %d (%s)", errstr, result, TranslateVkResultToString(result));\
+        NFE_LOG_ERROR("%s: %d (%s)", errstr, result, TranslateVkResultToString(result));\
         return false;                                                               \
     }
 #endif // LOG_VKRESULT

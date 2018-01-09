@@ -48,7 +48,7 @@ void EnumType::PrintInfo() const
 #ifdef _DEBUG
     for (const EnumOption& option : mOptions)
     {
-        LOG_DEBUG("    option '%s'='%llu'", option.name, option.value);
+        NFE_LOG_DEBUG("    option '%s'='%llu'", option.name, option.value);
     }
 #endif // _DEBUG
 }
@@ -100,7 +100,7 @@ bool EnumType::Serialize(const void* object, Common::Config& config, Common::Con
         return true;
     }
 
-    LOG_ERROR("Could not find enum option for type '%s', value=%llu", GetName(), integerValue);
+    NFE_LOG_ERROR("Could not find enum option for type '%s', value=%llu", GetName(), integerValue);
     return false;
 }
 
@@ -126,7 +126,7 @@ bool EnumType::Deserialize(void* outObject, const Common::Config& config, const 
 
         if (!enumOptionFound)
         {
-            LOG_ERROR("Could not find enum option for type '%s', name=%llu", GetName(), optionName);
+            NFE_LOG_ERROR("Could not find enum option for type '%s', name=%llu", GetName(), optionName);
             return false;
         }
 
@@ -152,7 +152,7 @@ bool EnumType::Deserialize(void* outObject, const Common::Config& config, const 
         return true;
     }
 
-    LOG_ERROR("Expected string in the config");
+    NFE_LOG_ERROR("Expected string in the config");
     return false;
 }
 

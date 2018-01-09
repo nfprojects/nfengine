@@ -63,20 +63,20 @@ bool MasterContext::Init()
         mHDC = GetDC(static_cast<HWND>(gInvisibleWindow->GetHandle()));
         if (!mHDC)
         {
-            LOG_ERROR("Failed to get invisible window DC.");
+            NFE_LOG_ERROR("Failed to get invisible window DC.");
             return false;
         }
 
         unsigned int pixelFormat = ChoosePixelFormat(mHDC, &pfd);
         if (!pixelFormat)
         {
-            LOG_ERROR("Unable to choose a Pixel Format for dummy context.");
+            NFE_LOG_ERROR("Unable to choose a Pixel Format for dummy context.");
             return false;
         }
 
         if (!SetPixelFormat(mHDC, pixelFormat, &pfd))
         {
-            LOG_ERROR("Unable to set a Pixel Format for dummy context.");
+            NFE_LOG_ERROR("Unable to set a Pixel Format for dummy context.");
             return false;
         }
 
@@ -84,7 +84,7 @@ bool MasterContext::Init()
         mHRC = wglCreateContext(mHDC);
         if (!mHRC)
         {
-            LOG_ERROR("Failed to create dummy OpenGL context.");
+            NFE_LOG_ERROR("Failed to create dummy OpenGL context.");
             return false;
         }
 
@@ -101,7 +101,7 @@ bool MasterContext::Init()
             (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
         if (!wglCreateContextAttribsARBFunc || !wglChoosePixelFormatARBFunc)
         {
-            LOG_ERROR("Failed to retrieve WGL context creators.");
+            NFE_LOG_ERROR("Failed to retrieve WGL context creators.");
             return false;
         }
 
@@ -131,7 +131,7 @@ bool MasterContext::Init()
     if (!wglChoosePixelFormatARBFunc(mHDC, mPixelFormatIntAttribs, mPixelFormatFloatAttribs, 1,
                                      &pixelFormat, &numFormats))
     {
-        LOG_ERROR("Failed to choose pixel format.");
+        NFE_LOG_ERROR("Failed to choose pixel format.");
         return false;
     }
 
@@ -139,7 +139,7 @@ bool MasterContext::Init()
     memset(&pfd, 0, sizeof(pfd));
     if (!SetPixelFormat(mHDC, pixelFormat, &pfd))
     {
-        LOG_ERROR("Failed to set chosen pixel format.");
+        NFE_LOG_ERROR("Failed to set chosen pixel format.");
         return false;
     }
 
@@ -167,13 +167,13 @@ bool MasterContext::Init()
     mHRC = wglCreateContextAttribsARBFunc(mHDC, 0, mAttribs);
     if (!mHRC)
     {
-        LOG_ERROR("Failed to create Core Context.");
+        NFE_LOG_ERROR("Failed to create Core Context.");
         return false;
     }
 
     if (!wglMakeCurrent(mHDC, mHRC))
     {
-        LOG_ERROR("Failed to make Core Context current.");
+        NFE_LOG_ERROR("Failed to make Core Context current.");
         return false;
     }
 
@@ -184,7 +184,7 @@ bool MasterContext::Init()
     // For information purposes - print what OpenGL Context we achieved
     const GLubyte* glv = glGetString(GL_VERSION);
     const char* glvStr = reinterpret_cast<const char*>(glv);
-    LOG_INFO("OpenGL %s Master Context obtained.", glvStr);
+    NFE_LOG_INFO("OpenGL %s Master Context obtained.", glvStr);
 
     return true;
 }

@@ -22,7 +22,7 @@ bool Device::CreateTemporarySurface(VkSurfaceKHR& surface)
     xcbConnection = xcb_connect(nullptr, nullptr);
     if (xcb_connection_has_error(xcbConnection))
     {
-        LOG_ERROR("Failed to connect to X11");
+        NFE_LOG_ERROR("Failed to connect to X11");
         return false;
     }
 

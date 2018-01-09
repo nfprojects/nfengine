@@ -105,7 +105,7 @@ TEST_F(LogGrouperTest, Simple)
         LOG_WARNING_GROUP(testGroup, "some log %d", 43);
         ASSERT_FALSE(wasLogged());
 
-        LOG_INFO("some log");
+        NFE_LOG_INFO("some log");
         loggerTimeBeg = testBackend->mLastLogInfo.lastTime;
         testBackend->Reset();
         ASSERT_FALSE(wasLogged());
@@ -113,7 +113,7 @@ TEST_F(LogGrouperTest, Simple)
         LOG_ERROR_GROUP(testGroup, "some log %d", 43);
         ASSERT_FALSE(wasLogged());
 
-        LOG_INFO("some log");
+        NFE_LOG_INFO("some log");
         loggerTimeEnd = testBackend->mLastLogInfo.lastTime;
         testBackend->Reset();
         ASSERT_FALSE(wasLogged());

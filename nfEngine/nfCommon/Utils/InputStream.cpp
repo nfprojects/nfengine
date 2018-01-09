@@ -52,7 +52,7 @@ BufferInputStream::BufferInputStream(const void* data, size_t dataSize)
 {
     if (!MemoryCheck(data, dataSize))
     {
-        LOG_ERROR("Provided buffer can't be read");
+        NFE_LOG_ERROR("Provided buffer can't be read");
         mData = nullptr;
         mSize = 0;
     }

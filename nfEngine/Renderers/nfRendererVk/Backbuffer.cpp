@@ -49,7 +49,7 @@ bool Backbuffer::SelectPresentQueue()
     vkGetPhysicalDeviceQueueFamilyProperties(gDevice->GetPhysicalDevice(), &queueCount, nullptr);
     if (queueCount == 0)
     {
-        LOG_ERROR("No queues to choose from for Present operations");
+        NFE_LOG_ERROR("No queues to choose from for Present operations");
         return false;
     }
 
@@ -69,11 +69,11 @@ bool Backbuffer::SelectPresentQueue()
         }
     }
 
-    LOG_DEBUG("Present queue selected #%u", mPresentQueueIndex);
+    NFE_LOG_DEBUG("Present queue selected #%u", mPresentQueueIndex);
 
     if (mPresentQueueIndex == UINT32_MAX)
     {
-        LOG_ERROR("Current physical device has no queue which supports present operations.");
+        NFE_LOG_ERROR("Current physical device has no queue which supports present operations.");
         return false;
     }
 
@@ -92,7 +92,7 @@ bool Backbuffer::SelectSurfaceFormat(const BackbufferDesc& desc)
 
     if (formatCount == 0)
     {
-        LOG_ERROR("No surface formats to choose from.");
+        NFE_LOG_ERROR("No surface formats to choose from.");
         return false;
     }
 
@@ -112,7 +112,7 @@ bool Backbuffer::SelectSurfaceFormat(const BackbufferDesc& desc)
 
     if (formatIndex == formatCount)
     {
-        LOG_ERROR("Requested format for Backbuffer is unsupported.");
+        NFE_LOG_ERROR("Requested format for Backbuffer is unsupported.");
         return false;
     }
 
@@ -170,7 +170,7 @@ bool Backbuffer::SelectBufferCount()
     {
         if (mBuffersNum > mSurfaceCapabilities.maxImageCount)
         {
-            LOG_WARNING("Requested %d swapchain image count exceeds max limit %d - reducing",
+            NFE_LOG_WARNING("Requested %d swapchain image count exceeds max limit %d - reducing",
                         mBuffersNum, mSurfaceCapabilities.maxImageCount);
             mBuffersNum = mSurfaceCapabilities.maxImageCount;
         }
@@ -180,7 +180,7 @@ bool Backbuffer::SelectBufferCount()
     {
         if (mBuffersNum < mSurfaceCapabilities.minImageCount)
         {
-            LOG_WARNING("Requested %d swapchain image count exceeds minimum limit %d - increasing",
+            NFE_LOG_WARNING("Requested %d swapchain image count exceeds minimum limit %d - increasing",
                         mBuffersNum, mSurfaceCapabilities.minImageCount);
             mBuffersNum = mSurfaceCapabilities.minImageCount;
         }
@@ -222,11 +222,11 @@ bool Backbuffer::CreateSwapchainImageViews()
     CHECK_VKRESULT(result, "Failed to get swapchain image count");
     if (swapImageCount < mBuffersNum)
     {
-        LOG_ERROR("Not enough swap images created (%d, requested %d)", swapImageCount, mBuffersNum);
+        NFE_LOG_ERROR("Not enough swap images created (%d, requested %d)", swapImageCount, mBuffersNum);
         return false;
     }
     else if (swapImageCount > mBuffersNum)
-        LOG_WARNING("Created more swapchain images than requested (%d, requested %d)", swapImageCount, mBuffersNum);
+        NFE_LOG_WARNING("Created more swapchain images than requested (%d, requested %d)", swapImageCount, mBuffersNum);
 
     mBuffersNum = swapImageCount;
 
@@ -236,7 +236,7 @@ bool Backbuffer::CreateSwapchainImageViews()
     result = vkGetSwapchainImagesKHR(gDevice->GetDevice(), mSwapchain, &mBuffersNum, mBuffers.data());
     CHECK_VKRESULT(result, "Failed to get swapchain images");
 
-    LOG_DEBUG("%d swapchain buffers acquired", mBuffersNum);
+    NFE_LOG_DEBUG("%d swapchain buffers acquired", mBuffersNum);
     for (mCurrentBuffer = 0; mCurrentBuffer < mBuffersNum; mCurrentBuffer++)
     {
         VkImageViewCreateInfo ivInfo;
@@ -376,7 +376,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
 {
     if (!CreateSurface(desc))
     {
-        LOG_ERROR("Failed to create Vulkan Surface.");
+        NFE_LOG_ERROR("Failed to create Vulkan Surface.");
         return false;
     }
 
@@ -395,7 +395,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     if (!BuildPresentCommandBuffers()) return false;
     if (!AcquireNextImage()) return false;
 
-    LOG_INFO("Backbuffer initialized successfully.");
+    NFE_LOG_INFO("Backbuffer initialized successfully.");
     return true;
 }
 
@@ -443,7 +443,7 @@ bool Backbuffer::Present()
     //CHECK_VKRESULT(result, "Failed to present image on current swap chain");
     if (result != VK_SUCCESS)
     {
-        LOG_ERROR("Failed to present image on current swap chain: %d (%s)", result,
+        NFE_LOG_ERROR("Failed to present image on current swap chain: %d (%s)", result,
                   TranslateVkResultToString(result));
     }
 

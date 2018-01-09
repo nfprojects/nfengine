@@ -99,7 +99,7 @@ bool CollisionShape::LoadFromFile(const char* pPath)
     if (fopen_s(&pFile, pPath, "rb") != 0)
     {
         //error, could not open file
-        LOG_ERROR("Failed to load '%s'.", mName);
+        NFE_LOG_ERROR("Failed to load '%s'.", mName);
         return false;
     }
 
@@ -151,7 +151,7 @@ bool CollisionShape::LoadFromFile(const char* pPath)
         }
         else
         {
-            LOG_ERROR("Unknown shape type.", mName);
+            NFE_LOG_ERROR("Unknown shape type.", mName);
             return false;
         }
     }
@@ -205,7 +205,7 @@ bool CollisionShape::OnLoad()
 {
     Release();
 
-    LOG_INFO("Loading collision shape '%s'...", mName);
+    NFE_LOG_INFO("Loading collision shape '%s'...", mName);
     Common::Timer timer;
     timer.Start();
 
@@ -231,7 +231,7 @@ bool CollisionShape::OnLoad()
             btCompoundShape* pCompound = new btCompoundShape(true);
             if (pCompound == NULL) //check allocation
             {
-                LOG_ERROR("Memory allocation error ocurred during loading collision shape resource '%s'.", mName);
+                NFE_LOG_ERROR("Memory allocation error ocurred during loading collision shape resource '%s'.", mName);
                 return false;
             }
 
@@ -246,7 +246,7 @@ bool CollisionShape::OnLoad()
         }
         else
         {
-            LOG_WARNING("Collision shape '%s' is empty.", mName);
+            NFE_LOG_WARNING("Collision shape '%s' is empty.", mName);
             return false;
         }
 
@@ -262,7 +262,7 @@ bool CollisionShape::OnLoad()
             mLocalInertia = Vector(inertia.m_floats);
         }
 
-        LOG_SUCCESS("Collision shape '%s' successfully loaded in %.3f sec.", mName, timer.Stop());
+        NFE_LOG_SUCCESS("Collision shape '%s' successfully loaded in %.3f sec.", mName, timer.Stop());
         return true;
     }
 
@@ -271,7 +271,7 @@ bool CollisionShape::OnLoad()
 
 void CollisionShape::OnUnload()
 {
-    LOG_INFO("Unloading collision shape '%s'...", mName);
+    NFE_LOG_INFO("Unloading collision shape '%s'...", mName);
 
     if (mOnUnload)
     {

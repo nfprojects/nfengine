@@ -63,7 +63,7 @@ bool Library::Open(const std::string& path)
 
     if (mModule == nullptr)
     {
-        LOG_ERROR("Failed to load library '%s': %s", pathExt.c_str(), GetLastErrorString().c_str());
+        NFE_LOG_ERROR("Failed to load library '%s': %s", pathExt.c_str(), GetLastErrorString().c_str());
         return false;
     }
 
@@ -87,7 +87,7 @@ void* Library::GetSymbol(const std::string& name)
     FARPROC ptr = ::GetProcAddress(mModule, name.c_str());
     if (ptr == nullptr)
     {
-        LOG_ERROR("Failed to get pointer to symbol '%s': %s", name.c_str(),
+        NFE_LOG_ERROR("Failed to get pointer to symbol '%s': %s", name.c_str(),
                   GetLastErrorString().c_str());
         return nullptr;
     }

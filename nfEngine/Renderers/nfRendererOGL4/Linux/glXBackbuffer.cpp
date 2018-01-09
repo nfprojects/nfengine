@@ -55,7 +55,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     mMasterDisplay = ctx.mDisplay;
     if (!mMasterDisplay)
     {
-        LOG_ERROR("Master Context is uninitialized! No connection to X server");
+        NFE_LOG_ERROR("Master Context is uninitialized! No connection to X server");
         return false;
     }
 
@@ -81,7 +81,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
                                            GLX_RGBA_TYPE, ctx.mContext, GL_TRUE);
             if (!mContext)
             {
-                LOG_ERROR("Cannot create OpenGL Context.");
+                NFE_LOG_ERROR("Cannot create OpenGL Context.");
                 return false;
             }
         }
@@ -100,7 +100,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     const GLubyte* glv = glGetString(GL_VERSION);
     const char* glvStr = reinterpret_cast<const char*>(glv);
     bool direct = glXIsDirect(mMasterDisplay, mContext);
-    LOG_INFO("OpenGL %s %s Slave Context obtained.", glvStr,
+    NFE_LOG_INFO("OpenGL %s %s Slave Context obtained.", glvStr,
              direct ? "Direct" : "Indirect");
 
     // some systems might have glXSwapIntervalEXT unavailable

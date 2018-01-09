@@ -227,7 +227,7 @@ bool ImageDDS::Check(InputStream* stream)
     stream->Seek(0);
     if (sizeof(signature) < stream->Read(&signature, sizeof(signature)))
     {
-        LOG_ERROR("Could not read signature from the stream.");
+        NFE_LOG_ERROR("Could not read signature from the stream.");
         return false;
     }
 
@@ -271,14 +271,14 @@ bool ImageDDS::Load(Image* img, InputStream* stream)
         std::unique_ptr<uint8[]> mipmapData(new (std::nothrow) uint8[dataSize]);
         if (!mipmapData.get())
         {
-            LOG_ERROR("Allocating memory for loading DDS image failed.");
+            NFE_LOG_ERROR("Allocating memory for loading DDS image failed.");
             img->Release();
             return false;
         }
 
         if (stream->Read(mipmapData.get(), dataSize) != dataSize)
         {
-            LOG_ERROR("Reading mipmap data failed.");
+            NFE_LOG_ERROR("Reading mipmap data failed.");
             return false;
         }
 

@@ -94,7 +94,7 @@ bool Window::Init()
     mConnection = xcb_connect(nullptr, &mConnScreen);
     if (xcb_connection_has_error(mConnection))
     {
-        LOG_ERROR("Failed to connect to X server!");
+        NFE_LOG_ERROR("Failed to connect to X server!");
         return false;
     }
 
@@ -234,7 +234,7 @@ bool Window::Open()
     GLXFBConfig* fbc = glXChooseFBConfig(mDisplay, DefaultScreen(mDisplay), fbAttribs, &fbCount);
 
     // TODO options should allow to select Multisampling level during init
-    LOG_INFO("Found %d matching FB configs:", fbCount);
+    NFE_LOG_INFO("Found %d matching FB configs:", fbCount);
     // Select the best FB Config according to highest GLX_SAMPLES attribute value
     int bestFBID = -1, maxSamples = 16;
     for (int i = 0; i < fbCount; ++i)
@@ -246,7 +246,7 @@ bool Window::Open()
             int samples;
             glXGetFBConfigAttrib(mDisplay, fbc[i], GLX_SAMPLE_BUFFERS, &sampleBuffers);
             glXGetFBConfigAttrib(mDisplay, fbc[i], GLX_SAMPLES, &samples);
-            LOG_INFO("  #%d: visualID 0x%2lu, SAMPLE_BUFFERS = %d, SAMPLES = %d",
+            NFE_LOG_INFO("  #%d: visualID 0x%2lu, SAMPLE_BUFFERS = %d, SAMPLES = %d",
                      i, vi->visualid, sampleBuffers, samples);
 
             if (samples < maxSamples)
@@ -258,7 +258,7 @@ bool Window::Open()
         XFree(vi);
     }
 
-    LOG_INFO("Choosing FB config #%d", bestFBID);
+    NFE_LOG_INFO("Choosing FB config #%d", bestFBID);
     GLXFBConfig bestFB = fbc[bestFBID];
     XFree(fbc);
 
@@ -290,7 +290,7 @@ bool Window::Open()
     xcb_generic_error_t* err = xcb_request_check(mConnection, cookie);
     if (err)
     {
-        LOG_ERROR("Failed to create a window: X11 protocol error %d (%s)", err->error_code,
+        NFE_LOG_ERROR("Failed to create a window: X11 protocol error %d (%s)", err->error_code,
                   TranslateErrorCodeToStr(err->error_code));
         free(err);
         return false;

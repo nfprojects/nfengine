@@ -22,7 +22,7 @@ bool Sampler::Init(const SamplerDesc& desc)
     glGenSamplers(1, &mSampler);
     if (mSampler == GL_NONE)
     {
-        LOG_ERROR("Failed to create Sampler object.");
+        NFE_LOG_ERROR("Failed to create Sampler object.");
         return false;
     }
 

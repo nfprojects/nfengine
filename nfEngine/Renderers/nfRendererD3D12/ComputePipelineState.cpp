@@ -31,14 +31,14 @@ bool ComputePipelineState::Init(const ComputePipelineStateDesc& desc)
     mResBindingLayout = desc.resBindingLayout;
     if (!mResBindingLayout)
     {
-        LOG_ERROR("Invalid resource binding layout");
+        NFE_LOG_ERROR("Invalid resource binding layout");
         return false;
     }
 
     mComputeShader = Common::StaticCast<Shader>(desc.computeShader);
     if (!mComputeShader)
     {
-        LOG_ERROR("Invalid compute shader");
+        NFE_LOG_ERROR("Invalid compute shader");
         return false;
     }
 
@@ -52,7 +52,7 @@ bool ComputePipelineState::Init(const ComputePipelineStateDesc& desc)
     hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateComputePipelineState(&psd, IID_PPV_ARGS(mPipelineState.GetPtr())));
     if (FAILED(hr))
     {
-        LOG_ERROR("Failed to create compute pipeline state object");
+        NFE_LOG_ERROR("Failed to create compute pipeline state object");
         return false;
     }
 

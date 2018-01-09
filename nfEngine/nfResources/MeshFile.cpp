@@ -24,20 +24,20 @@ bool MeshFile::Load(Common::InputStream& stream)
     MeshHeader header;
     if (stream.Read(&header, sizeof(header)) != sizeof(header))
     {
-        LOG_ERROR("Failed to read mesh signature");
+        NFE_LOG_ERROR("Failed to read mesh signature");
         return false;
     }
 
     if (header.magic != NFE_MESH_FILE_MAGIC)
     {
-        LOG_ERROR("Invalid signature");
+        NFE_LOG_ERROR("Invalid signature");
         return false;
     }
 
     // sanity checks
     if (header.indicesCount == 0 || header.subMeshesCount == 0 || header.verticesCount == 0)
     {
-        LOG_ERROR("Corrupted mesh file");
+        NFE_LOG_ERROR("Corrupted mesh file");
         return false;
     }
 
@@ -51,19 +51,19 @@ bool MeshFile::Load(Common::InputStream& stream)
 
     if (stream.Read(mVertices.data(), verticesSize) != verticesSize)
     {
-        LOG_ERROR("Failed to load vertices data");
+        NFE_LOG_ERROR("Failed to load vertices data");
         return false;
     }
 
     if (stream.Read(mIndices.data(), indicesSize) != indicesSize)
     {
-        LOG_ERROR("Failed to load indices data");
+        NFE_LOG_ERROR("Failed to load indices data");
         return false;
     }
 
     if (stream.Read(mSubMeshes.data(), subMeshesSize) != subMeshesSize)
     {
-        LOG_ERROR("Failed to load submeshes data");
+        NFE_LOG_ERROR("Failed to load submeshes data");
         return false;
     }
 

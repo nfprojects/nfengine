@@ -511,7 +511,7 @@ bool HashSet<KeyType, HashFunction>::Reserve(uint32 size)
     mKeys = reinterpret_cast<KeyType*>(NFE_MALLOC(sizeof(KeyType) * targetSize, alignof(KeyType)));
     if (!mKeys)
     {
-        LOG_ERROR("Could not allocate space for hash set keys");
+        NFE_LOG_ERROR("Could not allocate space for hash set keys");
         return false;
     }
 
@@ -520,7 +520,7 @@ bool HashSet<KeyType, HashFunction>::Reserve(uint32 size)
         mBuckets = reinterpret_cast<ElementID*>(NFE_MALLOC(sizeof(ElementID) * targetSize, alignof(ElementID)));
         if (!mBuckets)
         {
-            LOG_ERROR("Could not allocate space for buckets heads");
+            NFE_LOG_ERROR("Could not allocate space for buckets heads");
             return false;
         }
 
@@ -535,7 +535,7 @@ bool HashSet<KeyType, HashFunction>::Reserve(uint32 size)
         mNextElements = reinterpret_cast<ElementID*>(NFE_MALLOC(sizeof(ElementID) * targetSize, alignof(ElementID)));
         if (!mNextElements)
         {
-            LOG_ERROR("Could not allocate space for next elements indices");
+            NFE_LOG_ERROR("Could not allocate space for next elements indices");
             return false;
         }
 

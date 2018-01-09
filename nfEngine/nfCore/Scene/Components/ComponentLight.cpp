@@ -153,13 +153,13 @@ void LightComponent::OnLightMapTextureLoaded()
         LightsRenderer::Get()->GetLightMapBindingSet());
     if (!mLightMapBindingInstance)
     {
-        LOG_ERROR("Failed to create light map's binding instance");
+        NFE_LOG_ERROR("Failed to create light map's binding instance");
         return;
     }
 
     if (!mLightMapBindingInstance->WriteTextureView(0, mLightMap->GetRendererTexture()))
     {
-        LOG_ERROR("Failed to write light map's binding instance");
+        NFE_LOG_ERROR("Failed to write light map's binding instance");
         return;
     }
     */

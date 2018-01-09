@@ -51,7 +51,7 @@ bool Buffer::Init(const BufferDesc& desc)
         bufferTarget = GL_UNIFORM_BUFFER;
         break;
     default:
-        LOG_ERROR("Invalid buffer type.");
+        NFE_LOG_ERROR("Invalid buffer type.");
         return false;
     }
 
@@ -68,14 +68,14 @@ bool Buffer::Init(const BufferDesc& desc)
         bufferAccess = GL_DYNAMIC_DRAW;
         break;
     default:
-        LOG_ERROR("Invalid buffer access mode.");
+        NFE_LOG_ERROR("Invalid buffer access mode.");
         return false;
     }
 
     glGenBuffers(1, &mBuffer);
     if (!mBuffer)
     {
-        LOG_ERROR("Failed to create Buffer Object.");
+        NFE_LOG_ERROR("Failed to create Buffer Object.");
         return false;
     }
 

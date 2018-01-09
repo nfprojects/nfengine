@@ -171,7 +171,7 @@ void GameWindow::SpawnTestObject(uint32 objectType, const Vector& position, cons
     }
     else
     {
-        LOG_ERROR("Unsupported test object type");
+        NFE_LOG_ERROR("Unsupported test object type");
         return;
     }
 

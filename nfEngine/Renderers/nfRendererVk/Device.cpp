@@ -104,32 +104,32 @@ VkPhysicalDevice Device::SelectPhysicalDevice(const std::vector<VkPhysicalDevice
     VkPhysicalDeviceProperties devProps;
 
     // Debugging-related device description printing
-    LOG_DEBUG("%u physical devices detected:", devices.size());
+    NFE_LOG_DEBUG("%u physical devices detected:", devices.size());
     for (unsigned int i = 0; i < devices.size(); ++i)
     {
         vkGetPhysicalDeviceProperties(devices[i], &devProps);
-        LOG_DEBUG("Device #%u - %s:", i, devProps.deviceName);
-        LOG_DEBUG("  ID:         %u",       devProps.deviceID);
-        LOG_DEBUG("  Type:       %d (%s)",  devProps.deviceType,
+        NFE_LOG_DEBUG("Device #%u - %s:", i, devProps.deviceName);
+        NFE_LOG_DEBUG("  ID:         %u",       devProps.deviceID);
+        NFE_LOG_DEBUG("  Type:       %d (%s)",  devProps.deviceType,
                                             TranslateDeviceTypeToString(devProps.deviceType));
-        LOG_DEBUG("  Vendor ID:  %u",       devProps.vendorID);
-        LOG_DEBUG("  API ver:    %u.%u.%u", VK_VERSION_MAJOR(devProps.apiVersion),
+        NFE_LOG_DEBUG("  Vendor ID:  %u",       devProps.vendorID);
+        NFE_LOG_DEBUG("  API ver:    %u.%u.%u", VK_VERSION_MAJOR(devProps.apiVersion),
                                             VK_VERSION_MINOR(devProps.apiVersion),
                                             VK_VERSION_PATCH(devProps.apiVersion));
-        LOG_DEBUG("  Driver ver: %u.%u.%u", VK_VERSION_MAJOR(devProps.driverVersion),
+        NFE_LOG_DEBUG("  Driver ver: %u.%u.%u", VK_VERSION_MAJOR(devProps.driverVersion),
                                             VK_VERSION_MINOR(devProps.driverVersion),
                                             VK_VERSION_PATCH(devProps.driverVersion));
-        LOG_DEBUG("  VP Bounds:  %f-%f", devProps.limits.viewportBoundsRange[0], devProps.limits.viewportBoundsRange[1]);
-        LOG_DEBUG("  MaxBufSize: %u", devProps.limits.maxUniformBufferRange);
+        NFE_LOG_DEBUG("  VP Bounds:  %f-%f", devProps.limits.viewportBoundsRange[0], devProps.limits.viewportBoundsRange[1]);
+        NFE_LOG_DEBUG("  MaxBufSize: %u", devProps.limits.maxUniformBufferRange);
     }
 
     if (static_cast<size_t>(preferredId) >= devices.size())
     {
-        LOG_ERROR("Preferred device ID #%i is not available", preferredId);
+        NFE_LOG_ERROR("Preferred device ID #%i is not available", preferredId);
         return VK_NULL_HANDLE;
     }
 
-    LOG_INFO("Selected device ID: %i", preferredId);
+    NFE_LOG_INFO("Selected device ID: %i", preferredId);
     return devices[preferredId];
 }
 
@@ -141,7 +141,7 @@ bool Device::Init(const DeviceInitParams* params)
 
     if (!mInstance.Init(params->debugLevel > 0))
     {
-        LOG_ERROR("Vulkan instance failed to initialize");
+        NFE_LOG_ERROR("Vulkan instance failed to initialize");
         return false;
     }
 
@@ -153,7 +153,7 @@ bool Device::Init(const DeviceInitParams* params)
     CHECK_VKRESULT(result, "Unable to enumerate physical devices");
     if (gpuCount == 0)
     {
-        LOG_ERROR("0 physical devices available.");
+        NFE_LOG_ERROR("0 physical devices available.");
         return false;
     }
 
@@ -162,14 +162,14 @@ bool Device::Init(const DeviceInitParams* params)
     result = vkEnumeratePhysicalDevices(instance, &gpuCount, devices.data());
     if (result != VK_SUCCESS)
     {
-        LOG_ERROR("Unable to get more information about physical devices");
+        NFE_LOG_ERROR("Unable to get more information about physical devices");
         return false;
     }
 
     mPhysicalDevice = SelectPhysicalDevice(devices, params->preferredCardId);
     if (mPhysicalDevice == VK_NULL_HANDLE)
     {
-        LOG_ERROR("Unable to select a physical device");
+        NFE_LOG_ERROR("Unable to select a physical device");
         return false;
     }
 
@@ -179,7 +179,7 @@ bool Device::Init(const DeviceInitParams* params)
     VkSurfaceKHR tempSurface = VK_NULL_HANDLE;
     if (!CreateTemporarySurface(tempSurface))
     {
-        LOG_ERROR("Unable to create a temporary surface to gather available formats");
+        NFE_LOG_ERROR("Unable to create a temporary surface to gather available formats");
         return false;
     }
 
@@ -187,7 +187,7 @@ bool Device::Init(const DeviceInitParams* params)
     vkGetPhysicalDeviceSurfaceFormatsKHR(mPhysicalDevice, tempSurface, &formatCount, nullptr);
     if (formatCount == 0)
     {
-        LOG_ERROR("Temporary surface does not have any formats on this physical device");
+        NFE_LOG_ERROR("Temporary surface does not have any formats on this physical device");
         return false;
     }
 
@@ -200,7 +200,7 @@ bool Device::Init(const DeviceInitParams* params)
     vkGetPhysicalDeviceQueueFamilyProperties(mPhysicalDevice, &queueCount, nullptr);
     if (queueCount == 0)
     {
-        LOG_ERROR("Physical device does not have any queue family properties.");
+        NFE_LOG_ERROR("Physical device does not have any queue family properties.");
         return false;
     }
 
@@ -209,8 +209,8 @@ bool Device::Init(const DeviceInitParams* params)
 
     for (uint32 i = 0; i < queueCount; ++i)
     {
-        LOG_DEBUG("Queue #%u:", i);
-        LOG_DEBUG("  Flags: %x", queueProps[i].queueFlags);
+        NFE_LOG_DEBUG("Queue #%u:", i);
+        NFE_LOG_DEBUG("  Flags: %x", queueProps[i].queueFlags);
     }
 
     for (mGraphicsQueueIndex = 0; mGraphicsQueueIndex < queueCount; mGraphicsQueueIndex++)
@@ -219,7 +219,7 @@ bool Device::Init(const DeviceInitParams* params)
 
     if (mGraphicsQueueIndex == queueCount)
     {
-        LOG_ERROR("Selected physical device does not support graphics queue.");
+        NFE_LOG_ERROR("Selected physical device does not support graphics queue.");
         return false;
     }
 
@@ -268,14 +268,14 @@ bool Device::Init(const DeviceInitParams* params)
     {
         if (!Debugger::Instance().InitMarkers(mDevice))
         {
-            LOG_ERROR("Vulkan debugging layer was requested, but is unavailable. Closing.");
+            NFE_LOG_ERROR("Vulkan debugging layer was requested, but is unavailable. Closing.");
             return false;
         }
     }
 
     if (!nfvkDeviceExtensionsInit(mDevice))
     {
-        LOG_ERROR("Failed to initialize Vulkan device extensions.");
+        NFE_LOG_ERROR("Failed to initialize Vulkan device extensions.");
         return false;
     }
 
@@ -289,7 +289,7 @@ bool Device::Init(const DeviceInitParams* params)
     result = vkCreateCommandPool(mDevice, &poolInfo, nullptr, &mCommandPool);
     if (result != VK_SUCCESS)
     {
-        LOG_ERROR("Failed to create a graphics command pool");
+        NFE_LOG_ERROR("Failed to create a graphics command pool");
         return false;
     }
 
@@ -327,7 +327,7 @@ bool Device::Init(const DeviceInitParams* params)
     pipeCacheInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
     result = vkCreatePipelineCache(mDevice, &pipeCacheInfo, nullptr, &mPipelineCache);
 
-    LOG_INFO("Vulkan device initialized successfully");
+    NFE_LOG_INFO("Vulkan device initialized successfully");
     return true;
 }
 
@@ -527,7 +527,7 @@ bool Device::Execute(CommandListID commandList)
 {
     if (commandList == INVALID_COMMAND_LIST_ID)
     {
-        LOG_ERROR("Invalid Command List ID provided for execution");
+        NFE_LOG_ERROR("Invalid Command List ID provided for execution");
         return false;
     }
 

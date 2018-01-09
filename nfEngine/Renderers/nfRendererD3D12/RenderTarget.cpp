@@ -53,7 +53,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         Texture* tex = dynamic_cast<Texture*>(desc.targets[i].texture.Get());
         if (tex == nullptr)
         {
-            LOG_ERROR("Invalid target texture at index %u", i);
+            NFE_LOG_ERROR("Invalid target texture at index %u", i);
             return false;
         }
 
@@ -94,7 +94,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             }
             else
             {
-                LOG_ERROR("Unsupported texture type");
+                NFE_LOG_ERROR("Unsupported texture type");
                 return false;
             }
 
@@ -103,7 +103,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             // TODO multisampled textures
 
         default:
-            LOG_ERROR("Unsupported texture type for render target");
+            NFE_LOG_ERROR("Unsupported texture type for render target");
             return false;
         }
 
@@ -133,7 +133,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         Texture* tex = dynamic_cast<Texture*>(desc.depthBuffer.Get());
         if (tex == nullptr)
         {
-            LOG_ERROR("Invalid texture for depth buffer");
+            NFE_LOG_ERROR("Invalid texture for depth buffer");
             return false;
         }
 
@@ -157,7 +157,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             break;
         // TODO multisampled and multilayered textures
         default:
-            LOG_ERROR("Feature not implemented");
+            NFE_LOG_ERROR("Feature not implemented");
             return false;
         }
 

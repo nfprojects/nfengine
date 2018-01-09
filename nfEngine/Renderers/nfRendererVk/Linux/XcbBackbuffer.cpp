@@ -19,7 +19,7 @@ bool Backbuffer::CreateSurface(const BackbufferDesc& desc)
     mConnection = xcb_connect(nullptr, nullptr);
     if (xcb_connection_has_error(mConnection))
     {
-        LOG_ERROR("Failed to connect to X11");
+        NFE_LOG_ERROR("Failed to connect to X11");
         return false;
     }
 

@@ -22,7 +22,7 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
 {
     if (desc.numBindings == 0)
     {
-        LOG_ERROR("Binding set can not be empty");
+        NFE_LOG_ERROR("Binding set can not be empty");
         return false;
     }
 
@@ -34,7 +34,7 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
         desc.shaderVisibility != ShaderType::Compute &&
         desc.shaderVisibility != ShaderType::All)
     {
-        LOG_ERROR("Invalid shader visibility");
+        NFE_LOG_ERROR("Invalid shader visibility");
         return false;
     }
 
@@ -51,7 +51,7 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
             bindingDesc.resourceType != ShaderResourceType::WritableTexture &&
             bindingDesc.resourceType != ShaderResourceType::WritableStructuredBuffer)
         {
-            LOG_ERROR("Invalid shader resource type at binding %i", i);
+            NFE_LOG_ERROR("Invalid shader resource type at binding %i", i);
             return false;
         }
 
@@ -85,7 +85,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         InternalResourceBindingSetPtr bindingSet = Common::StaticCast<ResourceBindingSet>(desc.bindingSets[i]);
         if (!bindingSet)
         {
-            LOG_ERROR("Invalid binding set");
+            NFE_LOG_ERROR("Invalid binding set");
             return false;
         }
         mBindingSets.push_back(bindingSet);
@@ -98,7 +98,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
 
         if (!TranslateShaderVisibility(bindingSet->mShaderVisibility, rootParameters[rootParamIndex].ShaderVisibility))
         {
-            LOG_ERROR("Invalid shader visibility");
+            NFE_LOG_ERROR("Invalid shader visibility");
             return false;
         }
 
@@ -107,7 +107,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         {
             if (rangeCounter >= maxBindings)
             {
-                LOG_ERROR("Max supported number of bindings exceeded");
+                NFE_LOG_ERROR("Max supported number of bindings exceeded");
                 return false;
             }
 
@@ -130,7 +130,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
                 rangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
                 break;
             default:
-                LOG_ERROR("Invalid shader resource type");
+                NFE_LOG_ERROR("Invalid shader resource type");
                 return false;
             }
             descriptorRanges[rangeCounter].RangeType = rangeType;
@@ -147,7 +147,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
                 Sampler* sampler = dynamic_cast<Sampler*>(bindingDesc.staticSampler.Get());
                 if (!sampler)
                 {
-                    LOG_ERROR("Invalid static sampler in binding set %zu at slot %zu", i, j);
+                    NFE_LOG_ERROR("Invalid static sampler in binding set %zu at slot %zu", i, j);
                     return false;
                 }
 
@@ -174,7 +174,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
             break;
         // TODO: UAVs, raw buffers, etc.
         default:
-            LOG_ERROR("Unsupported shader resource type in dynamic buffer slot %zu", i);
+            NFE_LOG_ERROR("Unsupported shader resource type in dynamic buffer slot %zu", i);
             return false;
         }
 
@@ -183,7 +183,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         rootParameters[rootParamIndex].Descriptor.ShaderRegister = bindingDesc.slot;
         if (!TranslateShaderVisibility(bindingDesc.shaderVisibility, rootParameters[rootParamIndex].ShaderVisibility))
         {
-            LOG_ERROR("Invalid shader visibility");
+            NFE_LOG_ERROR("Invalid shader visibility");
             return false;
         }
     }
@@ -199,7 +199,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     if (FAILED(hr))
         return false;
 
-    LOG_DEBUG("Root signature blob size: %u bytes", rootSignature->GetBufferSize());
+    NFE_LOG_DEBUG("Root signature blob size: %u bytes", rootSignature->GetBufferSize());
 
     hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateRootSignature(
         0, rootSignature->GetBufferPointer(), rootSignature->GetBufferSize(),
@@ -207,7 +207,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
 
     if (desc.debugName && !SetDebugName(mRootSignature.Get(), desc.debugName))
     {
-        LOG_WARNING("Failed to set debug name");
+        NFE_LOG_WARNING("Failed to set debug name");
     }
 
     return true;
@@ -227,7 +227,7 @@ bool ResourceBindingInstance::Init(const ResourceBindingSetPtr& bindingSet)
     mSet = Common::StaticCast<ResourceBindingSet>(bindingSet);
     if (!mSet)
     {
-        LOG_ERROR("Invalid resource binding set");
+        NFE_LOG_ERROR("Invalid resource binding set");
         return false;
     }
 
@@ -244,7 +244,7 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& te
     const Texture* tex = dynamic_cast<Texture*>(texture.Get());
     if (!tex || !tex->mBuffers[0])
     {
-        LOG_ERROR("Invalid buffer");
+        NFE_LOG_ERROR("Invalid buffer");
         return false;
     }
 
@@ -295,7 +295,7 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, const BufferPtr& buf
     const Buffer* cbuffer = dynamic_cast<Buffer*>(buffer.Get());
     if (!buffer || !cbuffer->GetResource())
     {
-        LOG_ERROR("Invalid buffer");
+        NFE_LOG_ERROR("Invalid buffer");
         return false;
     }
 
@@ -316,7 +316,7 @@ bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, const Textur
     const Texture* tex = dynamic_cast<Texture*>(texture.Get());
     if (!tex || !tex->mBuffers[0])
     {
-        LOG_ERROR("Invalid buffer");
+        NFE_LOG_ERROR("Invalid buffer");
         return false;
     }
 

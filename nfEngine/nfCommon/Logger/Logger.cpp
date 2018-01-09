@@ -95,8 +95,8 @@ void Logger::LogInit()
 
 void Logger::LogBuildInfo() const
 {
-    LOG_INFO("Compiler: %s", SystemInfo::Instance().GetCompilerInfo().c_str());
-    LOG_INFO("nfCommon build date: " __DATE__ ", " __TIME__);
+    NFE_LOG_INFO("Compiler: %s", SystemInfo::Instance().GetCompilerInfo().c_str());
+    NFE_LOG_INFO("nfCommon build date: " __DATE__ ", " __TIME__);
 
     std::vector<const char*> instructionSet;
 
@@ -118,7 +118,7 @@ void Logger::LogBuildInfo() const
 
     if (instructionSet.empty())
     {
-        LOG_INFO("nfCommon built with native FPU instructions only");
+        NFE_LOG_INFO("nfCommon built with native FPU instructions only");
     }
     else
     {
@@ -128,7 +128,7 @@ void Logger::LogBuildInfo() const
             str += ' ';
             str += name;
         }
-        LOG_INFO("nfCommon built with instructions:%s", str.c_str());
+        NFE_LOG_INFO("nfCommon built with instructions:%s", str.c_str());
     }
 }
 
@@ -144,7 +144,7 @@ void Logger::LogRunTime() const
         const int MAX_DATE_LENGTH = 32;
         char dateTimeStr[MAX_DATE_LENGTH];
         strftime(dateTimeStr, MAX_DATE_LENGTH, "%b %d %Y, %X", timeInfo);
-        LOG_INFO("Run date: %s", dateTimeStr);
+        NFE_LOG_INFO("Run date: %s", dateTimeStr);
     }
 }
 
@@ -152,9 +152,9 @@ void Logger::LogSysInfo() const
 {
     SystemInfo& sysInfo = SystemInfo::Instance();
 
-    LOG_INFO("CPU: %s, %u cores", sysInfo.GetCPUBrand().c_str(), sysInfo.GetCPUCoreNo());
-    LOG_INFO("RAM: %uKB total, %uKB free", sysInfo.GetMemTotalPhysKb(), sysInfo.GetMemFreePhysKb());
-    LOG_INFO("OS: %s", sysInfo.GetOSVersion().c_str());
+    NFE_LOG_INFO("CPU: %s, %u cores", sysInfo.GetCPUBrand().c_str(), sysInfo.GetCPUCoreNo());
+    NFE_LOG_INFO("RAM: %uKB total, %uKB free", sysInfo.GetMemTotalPhysKb(), sysInfo.GetMemFreePhysKb());
+    NFE_LOG_INFO("OS: %s", sysInfo.GetOSVersion().c_str());
 }
 
 bool Logger::RegisterBackend(const std::string& name, LoggerBackendPtr backend)
@@ -212,7 +212,7 @@ void Logger::Log(LogType type, const char* srcFile, int line, const char* str, .
     {
         va_end(argsCopy);
         va_end(args);
-        LOG_ERROR("vsnprintf() failed, format = \"%s\"", str);
+        NFE_LOG_ERROR("vsnprintf() failed, format = \"%s\"", str);
         return;
     }
 

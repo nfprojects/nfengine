@@ -62,7 +62,7 @@ bool CommandRecorder::Begin()
 {
     if (mReset)
     {
-        LOG_ERROR("CommandRecorder is already in recording state");
+        NFE_LOG_ERROR("CommandRecorder is already in recording state");
         return false;
     }
 
@@ -137,7 +137,7 @@ void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePt
 {
     if (!mBindingLayout)
     {
-        LOG_ERROR("Binding layout is not set");
+        NFE_LOG_ERROR("Binding layout is not set");
         return;
     }
 
@@ -146,7 +146,7 @@ void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePt
 
     if (slot >= mBindingLayout->mBindingSets.size())
     {
-        LOG_ERROR("Invalid binding set slot");
+        NFE_LOG_ERROR("Invalid binding set slot");
         return;
     }
 
@@ -225,20 +225,20 @@ void CommandRecorder::BindVolatileCBuffer(size_t slot, const BufferPtr& buffer)
 {
     if (!mBindingLayout)
     {
-        LOG_ERROR("Binding layout is not set");
+        NFE_LOG_ERROR("Binding layout is not set");
         return;
     }
 
     if (slot >= mBindingLayout->mVolatileCBuffers.size())
     {
-        LOG_ERROR("Invalid dynamic buffer slot");
+        NFE_LOG_ERROR("Invalid dynamic buffer slot");
         return;
     }
 
     const Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer.Get());
     if (!bufferPtr)
     {
-        LOG_ERROR("Invalid buffer");
+        NFE_LOG_ERROR("Invalid buffer");
         return;
     }
 
@@ -327,7 +327,7 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
 {
     RenderTarget* rt = dynamic_cast<RenderTarget*>(renderTarget.Get());
     if (rt == nullptr && renderTarget != nullptr)
-        LOG_ERROR("Invalid 'renderTarget' pointer");
+        NFE_LOG_ERROR("Invalid 'renderTarget' pointer");
 
     if (rt == mCurrentRenderTarget)
         return;
@@ -481,14 +481,14 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
     Texture* srcTex = dynamic_cast<Texture*>(src.Get());
     if (srcTex == nullptr)
     {
-        LOG_ERROR("Invalid 'src' pointer");
+        NFE_LOG_ERROR("Invalid 'src' pointer");
         return;
     }
 
     Texture* destTex = dynamic_cast<Texture*>(dest.Get());
     if (destTex == nullptr)
     {
-        LOG_ERROR("Invalid 'dest' pointer");
+        NFE_LOG_ERROR("Invalid 'dest' pointer");
         return;
     }
 
@@ -510,7 +510,7 @@ void CommandRecorder::Clear(int flags, uint32 numTargets, const uint32* slots,
                 {
                     if (slots[i] >= mCurrentRenderTarget->mRTVs.size())
                     {
-                        LOG_ERROR("Invalid render target texture slot = %u", slots[i]);
+                        NFE_LOG_ERROR("Invalid render target texture slot = %u", slots[i]);
                         return;
                     }
 
@@ -545,7 +545,7 @@ void CommandRecorder::UpdateState()
     if (mCurrentPipelineState != mPipelineState || mCurrentStencilRef != mStencilRef)
     {
         if (mBindingLayout != mPipelineState->mResBindingLayout.Get())
-            LOG_ERROR("Binding layout mismatch");
+            NFE_LOG_ERROR("Binding layout mismatch");
 
         UpdateSamplers();
 
@@ -594,14 +594,14 @@ void CommandRecorder::BindComputeResources(size_t slot, const ResourceBindingIns
 {
     if (!mComputeBindingLayout)
     {
-        LOG_ERROR("Binding layout is not set");
+        NFE_LOG_ERROR("Binding layout is not set");
         return;
     }
 
     const ResourceBindingInstance* instance = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.Get());
     if (slot >= mComputeBindingLayout->mBindingSets.size())
     {
-        LOG_ERROR("Invalid binding set slot");
+        NFE_LOG_ERROR("Invalid binding set slot");
         return;
     }
 
@@ -643,20 +643,20 @@ void CommandRecorder::BindComputeVolatileCBuffer(size_t slot, const BufferPtr& b
 {
     if (!mComputeBindingLayout)
     {
-        LOG_ERROR("Binding layout is not set");
+        NFE_LOG_ERROR("Binding layout is not set");
         return;
     }
 
     if (slot >= mComputeBindingLayout->mVolatileCBuffers.size())
     {
-        LOG_ERROR("Invalid dynamic buffer slot");
+        NFE_LOG_ERROR("Invalid dynamic buffer slot");
         return;
     }
 
     const Buffer* bufferPtr = dynamic_cast<Buffer*>(buffer.Get());
     if (!bufferPtr)
     {
-        LOG_ERROR("Invalid buffer");
+        NFE_LOG_ERROR("Invalid buffer");
         return;
     }
 
@@ -686,7 +686,7 @@ void CommandRecorder::Dispatch(uint32 x, uint32 y, uint32 z)
 {
     if (mComputeBindingLayout != mComputePipelineState->GetResBindingLayout())
     {
-        LOG_ERROR("Binding layout mismatch");
+        NFE_LOG_ERROR("Binding layout mismatch");
         return;
     }
 
@@ -697,7 +697,7 @@ CommandListID CommandRecorder::Finish()
 {
     if (!mReset)
     {
-        LOG_ERROR("Command buffer is not in recording state");
+        NFE_LOG_ERROR("Command buffer is not in recording state");
         return 0;
     }
 

@@ -35,7 +35,7 @@ bool IterateCallback(const std::string& sourcePath, bool isDirectory)
     if (subDir == MESHES_DIR)
         if (extension == "obj")
         {
-            LOG_INFO("Found mesh file: %s", relPath.c_str());
+            NFE_LOG_INFO("Found mesh file: %s", relPath.c_str());
 
             std::string targetPath = DEFAULT_TARGET_DIR + '/' + relPath;
             targetPath = targetPath.substr(0, targetPath.length() - 4) + ".nfm";
@@ -61,14 +61,14 @@ int main(int argc, char* argv[])
 
     if (FileSystem::GetPathType(DEFAULT_SOURCE_DIR) != PathType::Directory)
     {
-        LOG_ERROR("Path '%s' is not a directory!", DEFAULT_SOURCE_DIR.c_str());
+        NFE_LOG_ERROR("Path '%s' is not a directory!", DEFAULT_SOURCE_DIR.c_str());
         return 1;
     }
 
     // create target directory if does not exist
     if (!FileSystem::CreateDirIfNotExist(DEFAULT_TARGET_DIR))
     {
-        LOG_ERROR("Failed to create target directory: %s", DEFAULT_TARGET_DIR.c_str());
+        NFE_LOG_ERROR("Failed to create target directory: %s", DEFAULT_TARGET_DIR.c_str());
         return 1;
     }
 
@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
     // scan source directory
     if (!FileSystem::Iterate(DEFAULT_SOURCE_DIR, IterateCallback))
     {
-        LOG_ERROR("Failed to scan directory '%s'!", DEFAULT_SOURCE_DIR.c_str());
+        NFE_LOG_ERROR("Failed to scan directory '%s'!", DEFAULT_SOURCE_DIR.c_str());
         return 1;
     }
 

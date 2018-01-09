@@ -61,7 +61,7 @@ bool ResourceBase::Rename(const char* pNewName)
     size_t nameLenght = strlen(pNewName);
     if (nameLenght >= RES_NAME_MAX_LENGTH)
     {
-        LOG_ERROR("Resource name is to long (%i chars). Maximum is %i characters.", nameLenght,
+        NFE_LOG_ERROR("Resource name is to long (%i chars). Maximum is %i characters.", nameLenght,
                   RES_NAME_MAX_LENGTH - 1);
         return false;
     }
@@ -71,7 +71,7 @@ bool ResourceBase::Rename(const char* pNewName)
     // check if name is not already used
     if (rm->mResources.count(pNewName) > 0)
     {
-        LOG_ERROR("Can not rename resource '%s' to '%s'. Name already used.", mName, pNewName);
+        NFE_LOG_ERROR("Can not rename resource '%s' to '%s'. Name already used.", mName, pNewName);
         return false;
     }
 
@@ -116,7 +116,7 @@ void ResourceBase::DelRef(void* ptr)
 {
     if (mRefCount.load() == 0)
     {
-        LOG_ERROR("'%s' resource reference counting failed.", mName);
+        NFE_LOG_ERROR("'%s' resource reference counting failed.", mName);
         return;
     }
 

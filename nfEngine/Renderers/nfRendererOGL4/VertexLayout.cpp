@@ -28,7 +28,7 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
     mDesc.elements = new (std::nothrow) VertexLayoutElement[mDesc.numElements];
     if (!mDesc.elements)
     {
-        LOG_ERROR("Unable to copy Vertex Layout Elements");
+        NFE_LOG_ERROR("Unable to copy Vertex Layout Elements");
         return false;
     }
 
@@ -38,7 +38,7 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
     // verify if the copy is correct
     if (memcmp(mDesc.elements, desc.elements, sizeof(VertexLayoutElement)*mDesc.numElements))
     {
-        LOG_ERROR("Copying Vertex Layout elements failed.");
+        NFE_LOG_ERROR("Copying Vertex Layout elements failed.");
         return false;
     }
 

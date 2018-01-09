@@ -35,7 +35,7 @@ void LoggerBackendWinDebugger::Log(LogType type, const char* srcFile, int line, 
                        srcFile + pathOffset, line, timeElapsed, Logger::LogTypeToString(type), str);
     if (len < 0)
     {
-        LOG_ERROR("snprintf() failed");
+        NFE_LOG_ERROR("snprintf() failed");
         return;
     }
 
@@ -49,7 +49,7 @@ void LoggerBackendWinDebugger::Log(LogType type, const char* srcFile, int line, 
                        srcFile + pathOffset, line, timeElapsed, Logger::LogTypeToString(type), str);
         if (len < 0)
         {
-            LOG_ERROR("snprintf() failed");
+            NFE_LOG_ERROR("snprintf() failed");
             return;
         }
     }

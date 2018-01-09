@@ -47,7 +47,7 @@ bool Backbuffer::Resize(int newWidth, int newHeight)
     if (mWidth == 0 || mHeight == 0)
         return false;
 
-    LOG_INFO("Resizing backbuffer '%s'", mDebugName.c_str());
+    NFE_LOG_INFO("Resizing backbuffer '%s'", mDebugName.c_str());
 
     HRESULT hr;
     if (!mSwapChain.Get())
@@ -110,7 +110,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
                                                   static_cast<UINT>(swapChainName.length()), swapChainName.c_str()));
     }
 
-    LOG_DEBUG("Swapchain created successfully (width=%i, height=%i, format=%s)",
+    NFE_LOG_DEBUG("Swapchain created successfully (width=%i, height=%i, format=%s)",
               desc.width, desc.height, GetElementFormatName(desc.format));
     return GetBackbufferTexture();
 }

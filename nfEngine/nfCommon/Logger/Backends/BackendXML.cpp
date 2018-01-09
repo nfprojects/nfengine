@@ -39,7 +39,7 @@ void LoggerBackendXML::Reset()
     if (!mFile.Open(logFilePath, AccessMode::Write, true))
     {
         // this will be handled by other logger
-        LOG_ERROR("Failed to create XML log file");
+        NFE_LOG_ERROR("Failed to create XML log file");
         return;
     }
 
@@ -96,7 +96,7 @@ void LoggerBackendXML::Log(LogType type, const char* srcFile, int line, const ch
 
     if (len < 0)
     {
-        LOG_ERROR("snprintf() failed");
+        NFE_LOG_ERROR("snprintf() failed");
         return;
     }
 

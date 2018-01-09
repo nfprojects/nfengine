@@ -41,7 +41,7 @@ bool Instance::Init(bool enableDebug, VkDebugReportFlagBitsEXT flags)
 #endif
     if (!mVulkanLib.IsOpened())
     {
-        LOG_ERROR("Unable to open Vulkan library.");
+        NFE_LOG_ERROR("Unable to open Vulkan library.");
         return false;
     }
 
@@ -98,14 +98,14 @@ bool Instance::Init(bool enableDebug, VkDebugReportFlagBitsEXT flags)
     {
         if (!Debugger::Instance().InitReport(mInstance, flags))
         {
-            LOG_ERROR("Vulkan debug reports failed to initialize.");
+            NFE_LOG_ERROR("Vulkan debug reports failed to initialize.");
             return false;
         }
     }
 
     if (!nfvkInstanceExtensionsInit(mInstance))
     {
-        LOG_ERROR("Failed to initialize Vulkan Instance extensions.");
+        NFE_LOG_ERROR("Failed to initialize Vulkan Instance extensions.");
         return false;
     }
 

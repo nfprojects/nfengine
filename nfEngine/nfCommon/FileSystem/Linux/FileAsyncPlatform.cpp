@@ -59,7 +59,7 @@ bool setupIo(::aio_context_t& ctx)
     auto res = io_setup(NUM_EVENTS, &ctx);
     if (res < 0)
     {
-        LOG_ERROR("FileAsync failed to setup aio_context[%u]: %s", errno, strerror(errno));
+        NFE_LOG_ERROR("FileAsync failed to setup aio_context[%u]: %s", errno, strerror(errno));
         return false;
     }
     return true;
@@ -168,7 +168,7 @@ bool FileAsync::Open(const std::string& path, AccessMode access, bool overwrite)
             flags = O_RDWR;
             break;
         default:
-            LOG_ERROR("Invalid file access mode");
+            NFE_LOG_ERROR("Invalid file access mode");
             mMode = AccessMode::No;
             return false;
     }
@@ -184,7 +184,7 @@ bool FileAsync::Open(const std::string& path, AccessMode access, bool overwrite)
 
     if (!IsOpened())
     {
-        LOG_ERROR("Failed to open file '%s': %s", path.c_str(), strerror(errno));
+        NFE_LOG_ERROR("Failed to open file '%s': %s", path.c_str(), strerror(errno));
         mMode = AccessMode::No;
         return false;
     }
@@ -251,7 +251,7 @@ bool FileAsync::Read(void* data, size_t size, uint64 offset, void* dataPtr)
 
     if (!SafeInsertPtr(allocStruct))
     {
-        LOG_ERROR("Error in OS-specific data allocation.");
+        NFE_LOG_ERROR("Error in OS-specific data allocation.");
         delete allocStruct;
         return false;
     }
@@ -261,7 +261,7 @@ bool FileAsync::Read(void* data, size_t size, uint64 offset, void* dataPtr)
     int enqueueResult = io_submit(mCtx, 1, cbs);
     if (enqueueResult < 0)
     {
-        LOG_ERROR("FileAsync failed to enqueue read operation[%u]: %s", errno, strerror(errno));
+        NFE_LOG_ERROR("FileAsync failed to enqueue read operation[%u]: %s", errno, strerror(errno));
         SafeErasePtr(allocStruct);
         return false;
     }
@@ -295,7 +295,7 @@ bool FileAsync::Write(void* data, size_t size, uint64 offset, void* dataPtr)
 
     if (!SafeInsertPtr(allocStruct))
     {
-        LOG_ERROR("Error in OS-specific data allocation.");
+        NFE_LOG_ERROR("Error in OS-specific data allocation.");
         delete allocStruct;
         return false;
     }
@@ -305,7 +305,7 @@ bool FileAsync::Write(void* data, size_t size, uint64 offset, void* dataPtr)
     int enqueueResult = io_submit(mCtx, 1, cbs);
     if (enqueueResult < 0)
     {
-        LOG_ERROR("FileAsync failed to enqueue write operation: %s", strerror(errno));
+        NFE_LOG_ERROR("FileAsync failed to enqueue write operation: %s", strerror(errno));
         SafeErasePtr(allocStruct);
         return false;
     }
@@ -333,7 +333,7 @@ void FileAsync::FinishedOperationsHandler(int64_t result, void* allocStructData)
     // If operation wasn't successfull - log an error and change number of bytes processed to 0
     if (result < 0)
     {
-        LOG_ERROR("%s operation for offset:%u and size:%zu failed.",
+        NFE_LOG_ERROR("%s operation for offset:%u and size:%zu failed.",
                   allocStruct->isRead ? "Read" : "Write",
                   allocStruct->ioData.aio_offset,
                   bytesProcessed);
@@ -363,7 +363,7 @@ void FileAsync::CallbackDispatcher()
         waitingEvents = ::poll(&pollDescriptor, 1, pollTimeout);
         if (waitingEvents < 0)
         {
-            LOG_ERROR("poll() for FileAsync failed: %s", strerror(errno));
+            NFE_LOG_ERROR("poll() for FileAsync failed: %s", strerror(errno));
             break;
         }
         else if (waitingEvents == 0) // Timeout
@@ -378,17 +378,17 @@ void FileAsync::CallbackDispatcher()
         if (readEvents < 0)
         {
             if (mCtx)
-                LOG_ERROR("io_getevents() for FileAsync failed: %s", strerror(errno));
+                NFE_LOG_ERROR("io_getevents() for FileAsync failed: %s", strerror(errno));
             break;
         }
         else if (readEvents == 0)
         {
             // This should not happen
             u_int64_t eval = 0;
-            LOG_WARNING("io_getevents() for FileAsync returned 0");
+            NFE_LOG_WARNING("io_getevents() for FileAsync returned 0");
             ssize_t readSize = ::read(mEventFD, &eval, sizeof(eval));
             if (readSize < 0)
-                LOG_WARNING("Failed to read eval variable: %d", errno);
+                NFE_LOG_WARNING("Failed to read eval variable: %d", errno);
             continue;
         }
 
