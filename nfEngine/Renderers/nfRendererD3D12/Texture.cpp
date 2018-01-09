@@ -178,45 +178,45 @@ bool Texture::Init(const TextureDesc& desc)
 
     if (desc.mode == BufferMode::Dynamic || desc.mode == BufferMode::Volatile)
     {
-        LOG_ERROR("Selected buffer mode is not supported yet");
+        NFE_LOG_ERROR("Selected buffer mode is not supported yet");
         return false;
     }
 
     if (desc.samplesNum > 1)
     {
-        LOG_ERROR("Multisampled textures are not supported yet");
+        NFE_LOG_ERROR("Multisampled textures are not supported yet");
         return false;
     }
 
     if (desc.width < 1 || desc.width >= std::numeric_limits<uint16>::max())
     {
-        LOG_ERROR("Invalid texture width");
+        NFE_LOG_ERROR("Invalid texture width");
         return false;
     }
 
     if ((desc.type != TextureType::Texture1D) &&
         (desc.height < 1 || desc.height >= std::numeric_limits<uint16>::max()))
     {
-        LOG_ERROR("Invalid texture height");
+        NFE_LOG_ERROR("Invalid texture height");
         return false;
     }
 
     if ((desc.type == TextureType::TextureCube) &&
         (desc.depth < 1 || desc.depth >= std::numeric_limits<uint16>::max()))
     {
-        LOG_ERROR("Invalid texture depth");
+        NFE_LOG_ERROR("Invalid texture depth");
         return false;
     }
 
     if (desc.layers < 1 || desc.layers >= std::numeric_limits<uint16>::max())
     {
-        LOG_ERROR("Invalid number of layers");
+        NFE_LOG_ERROR("Invalid number of layers");
         return false;
     }
 
     if (desc.mipmaps < 1 || desc.mipmaps >= D3D12_REQ_MIP_LEVELS)
     {
-        LOG_ERROR("Invalid number of mipmaps");
+        NFE_LOG_ERROR("Invalid number of mipmaps");
         return false;
     }
 
@@ -275,13 +275,13 @@ bool Texture::Init(const TextureDesc& desc)
     {
         if (desc.binding != 0)
         {
-            LOG_ERROR("Readback texture can not be bound to any pipeline stage");
+            NFE_LOG_ERROR("Readback texture can not be bound to any pipeline stage");
             return false;
         }
 
         if (desc.mipmaps != 1 && desc.layers != 1)
         {
-            LOG_ERROR("Readback texture can contain only one layer and one mipmap");
+            NFE_LOG_ERROR("Readback texture can contain only one layer and one mipmap");
             return false;
         }
 
@@ -313,7 +313,7 @@ bool Texture::Init(const TextureDesc& desc)
                                                                           IID_PPV_ARGS(mBuffers[0].GetPtr())));
         if (FAILED(hr))
         {
-            LOG_ERROR("Failed to create readback buffer");
+            NFE_LOG_ERROR("Failed to create readback buffer");
             return false;
         }
     }
@@ -333,7 +333,7 @@ bool Texture::Init(const TextureDesc& desc)
         {
             if (desc.mode != BufferMode::GPUOnly)
             {
-                LOG_ERROR("Invalid resource access specified for rendertarget texture");
+                NFE_LOG_ERROR("Invalid resource access specified for rendertarget texture");
                 return false;
             }
 
@@ -350,14 +350,14 @@ bool Texture::Init(const TextureDesc& desc)
         {
             if (desc.mode != BufferMode::GPUOnly)
             {
-                LOG_ERROR("Invalid resource access specified for depth buffer");
+                NFE_LOG_ERROR("Invalid resource access specified for depth buffer");
                 return false;
             }
 
             if (!TranslateDepthBufferTypes(desc.depthBufferFormat,
                                            resourceDesc.Format, mSrvFormat, mDsvFormat))
             {
-                LOG_ERROR("Invalid depth buffer format");
+                NFE_LOG_ERROR("Invalid depth buffer format");
                 return false;
             }
 
@@ -382,7 +382,7 @@ bool Texture::Init(const TextureDesc& desc)
             mSrvFormat = resourceDesc.Format;
             if (resourceDesc.Format == DXGI_FORMAT_UNKNOWN)
             {
-                LOG_ERROR("Invalid texture format");
+                NFE_LOG_ERROR("Invalid texture format");
                 return false;
             }
         }
@@ -394,7 +394,7 @@ bool Texture::Init(const TextureDesc& desc)
                                                                           IID_PPV_ARGS(mBuffers[0].GetPtr())));
         if (FAILED(hr))
         {
-            LOG_ERROR("Failed to create texture resource");
+            NFE_LOG_ERROR("Failed to create texture resource");
             return false;
         }
 
@@ -412,13 +412,13 @@ bool Texture::Init(const TextureDesc& desc)
                     return false;
             }
             else
-                LOG_WARNING("No initial data for read-only texture provided");
+                NFE_LOG_WARNING("No initial data for read-only texture provided");
         }
     }
 
     if (desc.debugName && !SetDebugName(mBuffers[0].Get(), desc.debugName))
     {
-        LOG_WARNING("Failed to set debug name");
+        NFE_LOG_WARNING("Failed to set debug name");
     }
 
 

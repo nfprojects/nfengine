@@ -34,7 +34,7 @@ void LoggerBackendTxt::Reset()
     if (!mFile.Open(logFilePath, AccessMode::Write, true))
     {
         // this will be handled by other logger
-        LOG_ERROR("Failed to create raw txt log file.");
+        NFE_LOG_ERROR("Failed to create raw txt log file.");
         return;
     }
 
@@ -56,7 +56,7 @@ void LoggerBackendTxt::Log(LogType type, const char* srcFile, int line, const ch
                        srcFile + pathOffset, line, str);
     if (len < 0)
     {
-        LOG_ERROR("snprintf() failed");
+        NFE_LOG_ERROR("snprintf() failed");
         return;
     }
 

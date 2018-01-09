@@ -316,14 +316,14 @@ bool RenderScene::Render(const Common::TaskContext& context, const Renderer::Vie
     auto* cameraEntity = view->GetCameraEntity();
     if (!cameraEntity)
     {
-        LOG_WARNING("Invalid camera entity");
+        NFE_LOG_WARNING("Invalid camera entity");
         return false;
     }
 
     const auto* camera = cameraEntity->GetComponent<Scene::CameraComponent>();
     if (camera == nullptr)
     {
-        LOG_WARNING("Camera entity has no camera component");
+        NFE_LOG_WARNING("Camera entity has no camera component");
         return false;
     }
 
@@ -511,7 +511,7 @@ ProxyID RenderScene::CreateLightProxy(const LightProxyDesc& desc)
             break;
         // TODO directional light
         default:
-            LOG_ERROR("Invalid light type");
+            NFE_LOG_ERROR("Invalid light type");
             return false;
         }
     }

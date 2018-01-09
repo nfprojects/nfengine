@@ -134,12 +134,12 @@ bool Config::ParseValue(ConfigTokenizer& tokenizer, const Token& token, ConfigVa
         }
         else
         {
-            LOG_ERROR("Unexpected symbol");
+            NFE_LOG_ERROR("Unexpected symbol");
             return false;
         }
         break;
     default:
-        LOG_ERROR("Unexpected token");
+        NFE_LOG_ERROR("Unexpected token");
         return false;
     }
 
@@ -157,7 +157,7 @@ bool Config::ParseArray(ConfigTokenizer& tokenizer, ConfigValue& value)
         // step 1: read key name (or end of object)
         if (!tokenizer.GetToken(token, line, column)) // end of file
         {
-            LOG_ERROR("End of file occured inside an array");
+            NFE_LOG_ERROR("End of file occured inside an array");
             return false;
         }
         if (token.type == Token::Type::Symbol && token.symbol == ']') // end of array
@@ -196,26 +196,26 @@ ConfigObjectNodePtr Config::ParseObject(ConfigTokenizer& tokenizer)
             key = token.stringData;
         else
         {
-            LOG_ERROR("Unexpected token at %i:%i.", line, column);
+            NFE_LOG_ERROR("Unexpected token at %i:%i.", line, column);
             return INVALID_NODE_PTR;
         }
 
         // step 2: read "=" sign
         if (!tokenizer.GetToken(token, line, column))
         {
-            LOG_ERROR("Unexpected end of file");
+            NFE_LOG_ERROR("Unexpected end of file");
             return INVALID_NODE_PTR;
         }
         if (token.type != Token::Type::Symbol && token.symbol != '=')
         {
-            LOG_ERROR("Unexpected token at %i:%i. '=' expected", line, column);
+            NFE_LOG_ERROR("Unexpected token at %i:%i. '=' expected", line, column);
             return INVALID_NODE_PTR;
         }
 
         // step 3: read value
         if (!tokenizer.GetToken(token, line, column))
         {
-            LOG_ERROR("Unexpected end of file, value expected");
+            NFE_LOG_ERROR("Unexpected end of file, value expected");
             return INVALID_NODE_PTR;
         }
 
@@ -242,7 +242,7 @@ void Config::Iterate(const ObjectIterator& callback, ConfigObjectNodePtr node) c
         node = GetRootNode();
     else if (node >= mObjectNodes.size())
     {
-        LOG_ERROR("Invalid 'node'");
+        NFE_LOG_ERROR("Invalid 'node'");
         return;
     }
 
@@ -259,7 +259,7 @@ void Config::IterateArray(const ArrayIterator& callback, ConfigArrayNodePtr node
 {
     if (node >= mArrayNodes.size())
     {
-        LOG_ERROR("Invalid 'node'");
+        NFE_LOG_ERROR("Invalid 'node'");
         return;
     }
 

@@ -76,7 +76,7 @@ void NodeToColor(const rapidjson::Value& val, Float4& ret)
 
 bool Material::OnLoad()
 {
-    LOG_INFO("Loading material '%s'...", mName);
+    NFE_LOG_INFO("Loading material '%s'...", mName);
 
     //get relative path
     std::string path = g_CookedDataPath + "Materials/" + mName + ".json";
@@ -85,7 +85,7 @@ bool Material::OnLoad()
     FILE* pFile = fopen(path.c_str(), "r");
     if (pFile == NULL)
     {
-        LOG_ERROR("Failed to open file: %s", path.c_str());
+        NFE_LOG_ERROR("Failed to open file: %s", path.c_str());
         return false;
     }
 
@@ -95,14 +95,14 @@ bool Material::OnLoad()
     fclose(pFile);
     if (!document.IsObject())
     {
-        LOG_ERROR("Failed to load material '%s': %s", mName, document.GetParseError());
+        NFE_LOG_ERROR("Failed to load material '%s': %s", mName, document.GetParseError());
         return false;
     }
 
     if (!document.HasMember(ATTR_LAYERS) || !document[ATTR_LAYERS].IsArray())
     {
         // TODO: improve messages after logger is refactored
-        LOG_ERROR("Failed to load material '%s'", mName);
+        NFE_LOG_ERROR("Failed to load material '%s'", mName);
         return false;
     }
 
@@ -129,7 +129,7 @@ bool Material::OnLoad()
             }
             else
             {
-                LOG_WARNING("%s attribute must be a string", ATTR_DIFFUSE_TEXTURE);
+                NFE_LOG_WARNING("%s attribute must be a string", ATTR_DIFFUSE_TEXTURE);
             }
         }
 
@@ -144,7 +144,7 @@ bool Material::OnLoad()
             }
             else
             {
-                LOG_WARNING("%s attribute must be a string", ATTR_NORMAL_TEXTURE);
+                NFE_LOG_WARNING("%s attribute must be a string", ATTR_NORMAL_TEXTURE);
             }
         }
 
@@ -159,7 +159,7 @@ bool Material::OnLoad()
             }
             else
             {
-                LOG_WARNING("%s attribute must be a string", ATTR_SPECULAR_TEXTURE);
+                NFE_LOG_WARNING("%s attribute must be a string", ATTR_SPECULAR_TEXTURE);
             }
         }
 
@@ -201,13 +201,13 @@ bool Material::OnLoad()
         mRendererData.layers[0].specularColor = mLayers[0].specularColor;
     }
 
-    LOG_SUCCESS("Material '%s' loaded successfully.", mName);
+    NFE_LOG_SUCCESS("Material '%s' loaded successfully.", mName);
     return true;
 }
 
 void Material::OnUnload()
 {
-    LOG_INFO("Unloading material '%s'...", mName);
+    NFE_LOG_INFO("Unloading material '%s'...", mName);
 
     std::recursive_mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
     std::unique_lock<std::recursive_mutex> lock(renderingMutex);
@@ -236,7 +236,7 @@ void Material::OnTextureLoaded()
             GeometryRenderer::Get()->GetMaterialTexturesBindingSet());
         if (!bindingInstance)
         {
-            LOG_ERROR("Failed to create material's binding instance");
+            NFE_LOG_ERROR("Failed to create material's binding instance");
             return;
         }
 
@@ -245,7 +245,7 @@ void Material::OnTextureLoaded()
             diffuseTexture = mLayers[0].diffuseTexture->GetRendererTexture();
         if (!bindingInstance->WriteTextureView(0, diffuseTexture))
         {
-            LOG_ERROR("Failed to write material's diffuse texture to binding instance");
+            NFE_LOG_ERROR("Failed to write material's diffuse texture to binding instance");
             return;
         }
 
@@ -254,7 +254,7 @@ void Material::OnTextureLoaded()
             normalTexture = mLayers[0].normalTexture->GetRendererTexture();
         if (!bindingInstance->WriteTextureView(1, normalTexture))
         {
-            LOG_ERROR("Failed to write material's diffuse texture to binding instance");
+            NFE_LOG_ERROR("Failed to write material's diffuse texture to binding instance");
             return;
         }
 
@@ -263,11 +263,11 @@ void Material::OnTextureLoaded()
             specularTexture = mLayers[0].specularTexture->GetRendererTexture();
         if (!bindingInstance->WriteTextureView(2, specularTexture))
         {
-            LOG_ERROR("Failed to write material's diffuse texture to binding instance");
+            NFE_LOG_ERROR("Failed to write material's diffuse texture to binding instance");
             return;
         }
 
-        LOG_SUCCESS("Binding instance for material '%s' created successfully", mName);
+        NFE_LOG_SUCCESS("Binding instance for material '%s' created successfully", mName);
     }
 }
 

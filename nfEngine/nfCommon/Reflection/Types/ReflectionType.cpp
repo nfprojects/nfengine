@@ -62,7 +62,7 @@ Type::Type(const TypeInfo& info)
 
 void Type::PrintInfo() const
 {
-    LOG_DEBUG("%s (%s): size=%u, alignment=%u", GetName(), TypeKindToString(GetKind()), GetSize(), GetAlignment());
+    NFE_LOG_DEBUG("%s (%s): size=%u, alignment=%u", GetName(), TypeKindToString(GetKind()), GetSize(), GetAlignment());
 }
 
 bool Type::IsA(const Type* baseType) const

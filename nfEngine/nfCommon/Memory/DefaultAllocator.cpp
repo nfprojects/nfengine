@@ -39,13 +39,13 @@ void* DefaultAllocator::Malloc(size_t size, size_t alignment, const char* source
 {
     if (size == 0)
     {
-        LOG_ERROR("Allocated memory block must be greater than 0 bytes.");
+        NFE_LOG_ERROR("Allocated memory block must be greater than 0 bytes.");
         return nullptr;
     }
 
     if (!Math::IsPowerOfTwo(alignment))
     {
-        LOG_ERROR("Invalid memory alignment: %zu. Must be power of two.", alignment);
+        NFE_LOG_ERROR("Invalid memory alignment: %zu. Must be power of two.", alignment);
         return nullptr;
     }
 
@@ -59,7 +59,7 @@ void* DefaultAllocator::Malloc(size_t size, size_t alignment, const char* source
     int ret = posix_memalign(&ptr, alignment, size);
     if (ret != 0)
     {
-        LOG_ERROR("posix_memalign() returned %i", ret);
+        NFE_LOG_ERROR("posix_memalign() returned %i", ret);
         ptr = nullptr;
     }
 #endif // defined(WIN32)
@@ -79,7 +79,7 @@ void* DefaultAllocator::Malloc(size_t size, size_t alignment, const char* source
 #endif // _DEBUG
     }
     else
-        LOG_ERROR("Memory allocation requested from %s:%i failed, size=%zu, alignment=%zu, errno=%i",
+        NFE_LOG_ERROR("Memory allocation requested from %s:%i failed, size=%zu, alignment=%zu, errno=%i",
                   sourceFile, sourceLine, size, alignment, errno);
 
     return ptr;
@@ -96,7 +96,7 @@ void DefaultAllocator::Free(void* ptr)
         const auto iter = mAllocationsDebugInfo.find(ptr);
 
         if (iter == mAllocationsDebugInfo.end())
-            LOG_FATAL("Trying to free already freed memory block");
+            NFE_LOG_FATAL("Trying to free already freed memory block");
 
         mBytesAllocated -= iter->second.size;
         mAllocationsDebugInfo.erase(iter);
@@ -118,15 +118,15 @@ void DefaultAllocator::ReportAllocations()
 #ifdef _DEBUG
     ScopedMutexLock lock(mMutex);
 
-    LOG_INFO("Allocated blocks: %zu (%zu bytes)", mAllocationsNum.load(), mBytesAllocated.load());
+    NFE_LOG_INFO("Allocated blocks: %zu (%zu bytes)", mAllocationsNum.load(), mBytesAllocated.load());
     for (const auto& it : mAllocationsDebugInfo)
     {
-        LOG_INFO("Allocated block (ptr=%p, size=%zu) at %s:%i", it.first, it.second.size,
+        NFE_LOG_INFO("Allocated block (ptr=%p, size=%zu) at %s:%i", it.first, it.second.size,
                  it.second.sourceFile, it.second.sourceLine);
     }
 
 #else
-    LOG_INFO("Allocated blocks: %zu", mAllocationsNum.load());
+    NFE_LOG_INFO("Allocated blocks: %zu", mAllocationsNum.load());
 
 #endif // _DEBUG
 }

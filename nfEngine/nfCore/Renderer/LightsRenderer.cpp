@@ -227,7 +227,7 @@ bool LightsRenderer::CreateResourceBindingLayouts()
     // TODO: verify other light types
     if (globalCBufferSlot < 0 || lightParamsSlot < 0)
     {
-        LOG_ERROR("Invalid cbuffer slot");
+        NFE_LOG_ERROR("Invalid cbuffer slot");
         return false;
     }
 
@@ -239,21 +239,21 @@ bool LightsRenderer::CreateResourceBindingLayouts()
     if (depthTexSlot < 0 || gbufferTex0Slot < 0 || gbufferTex1Slot < 0
         /* || gbufferTex2Slot < 0 || gbufferTex3Slot < 0 */ )
     {
-        LOG_ERROR("Invalid gbuffer slot");
+        NFE_LOG_ERROR("Invalid gbuffer slot");
         return false;
     }
 
     int shadowMapSlot = mOmniLightPipelineState.GetResourceSlotByName("gShadowMap");
     if (shadowMapSlot < 0)
     {
-        LOG_ERROR("Invalid shadowMapSlot slot");
+        NFE_LOG_ERROR("Invalid shadowMapSlot slot");
         return false;
     }
 
     int lightMapSlot = mSpotLightPipelineState.GetResourceSlotByName("gLightMap");
     if (lightMapSlot < 0)
     {
-        LOG_ERROR("Invalid lightMapSlot slot");
+        NFE_LOG_ERROR("Invalid lightMapSlot slot");
         return false;
     }
 

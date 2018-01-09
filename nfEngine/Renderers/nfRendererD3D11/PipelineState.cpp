@@ -168,7 +168,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     if (!mResBindingLayout)
     {
         Release();
-        LOG_ERROR("Invalid shader resource binding layout");
+        NFE_LOG_ERROR("Invalid shader resource binding layout");
         return false;
     }
 
@@ -176,7 +176,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     if (!mVertexLayout)
     {
         Release();
-        LOG_ERROR("Invalid vertexLayout parameter");
+        NFE_LOG_ERROR("Invalid vertexLayout parameter");
         return false;
     }
 
@@ -226,7 +226,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     if (!mVertexShader)
     {
         Release();
-        LOG_ERROR("Vertex shader must be provided when creating pipeline state object");
+        NFE_LOG_ERROR("Vertex shader must be provided when creating pipeline state object");
         return false;
     }
 

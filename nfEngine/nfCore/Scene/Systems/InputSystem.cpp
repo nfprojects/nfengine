@@ -83,7 +83,7 @@ bool InputSystem::SetAxisValue(const char* name, float newValue, bool offset)
         }
     }
 
-    LOG_ERROR("Invalid input axis name");
+    NFE_LOG_ERROR("Invalid input axis name");
     return false;
 }
 
@@ -97,7 +97,7 @@ float InputSystem::GetAxisValue(const char* name) const
         }
     }
 
-    LOG_ERROR("Invalid input axis name");
+    NFE_LOG_ERROR("Invalid input axis name");
     return 0.0f;
 }
 

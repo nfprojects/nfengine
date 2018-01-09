@@ -40,7 +40,7 @@ void Mesh::Release()
 
 bool Mesh::OnLoad()
 {
-    LOG_INFO("Loading mesh '%s'...", mName);
+    NFE_LOG_INFO("Loading mesh '%s'...", mName);
     Common::Timer timer;
     timer.Start();
 
@@ -51,7 +51,7 @@ bool Mesh::OnLoad()
     MeshFile meshFile;
     if (!meshFile.Load(stream))
     {
-        LOG_ERROR("Failed to load mesh '%s'", mName);
+        NFE_LOG_ERROR("Failed to load mesh '%s'", mName);
         return false;
     }
 
@@ -71,7 +71,7 @@ bool Mesh::OnLoad()
     mVB = renderer->GetDevice()->CreateBuffer(bufferDesc);
     if (!mVB)
     {
-        LOG_ERROR("Failed to create vertex buffer for mesh '%s'.", mName);
+        NFE_LOG_ERROR("Failed to create vertex buffer for mesh '%s'.", mName);
         return false;
     }
 
@@ -83,7 +83,7 @@ bool Mesh::OnLoad()
     mIB = renderer->GetDevice()->CreateBuffer(bufferDesc);
     if (!mIB)
     {
-        LOG_ERROR("Failed to create index buffer for mesh '%s'.", mName);
+        NFE_LOG_ERROR("Failed to create index buffer for mesh '%s'.", mName);
         return false;
     }
 
@@ -127,14 +127,14 @@ bool Mesh::OnLoad()
         }
     }
 
-    LOG_SUCCESS("Mesh '%s' loaded in %.3f sec. Verticies: %zu, Indices: %zu, Submeshes: %zu.", mName,
+    NFE_LOG_SUCCESS("Mesh '%s' loaded in %.3f sec. Verticies: %zu, Indices: %zu, Submeshes: %zu.", mName,
                 timer.Stop(), vertices.size(), indices.size(), subMeshes.size());
     return true;
 }
 
 void Mesh::OnUnload()
 {
-    LOG_INFO("Unloading mesh '%s'...", mName);
+    NFE_LOG_INFO("Unloading mesh '%s'...", mName);
 
     std::recursive_mutex& renderingMutex = Engine::GetInstance()->GetRenderingMutex();
     std::lock_guard<std::recursive_mutex> lock(renderingMutex);

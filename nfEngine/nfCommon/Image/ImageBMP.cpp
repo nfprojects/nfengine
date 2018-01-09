@@ -104,7 +104,7 @@ bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
 
     if (!imageData.get())
     {
-        LOG_ERROR("Allocating memory for loading BMP image failed.");
+        NFE_LOG_ERROR("Allocating memory for loading BMP image failed.");
         return false;
     }
 
@@ -119,7 +119,7 @@ bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
             // Read single line
             if (stream->Read(colorData.get(), lineSize) != lineSize)
             {
-                LOG_ERROR("Pixels read wrong.");
+                NFE_LOG_ERROR("Pixels read wrong.");
                 return false;
             }
 
@@ -147,7 +147,7 @@ bool ReadPixels(InputStream* stream, size_t offset, uint32 width, uint32 height,
             // Read single line
             if(stream->Read(colorData.get(), lineSize) != lineSize)
             {
-                LOG_ERROR("Pixels read wrong.");
+                NFE_LOG_ERROR("Pixels read wrong.");
                 return false;
             }
 
@@ -216,7 +216,7 @@ bool ReadPixelsWithPalette(InputStream* stream, size_t offset, uint32 width,
 
     if (!imageData.get())
     {
-        LOG_ERROR("Allocating memory for loading BMP image failed.");
+        NFE_LOG_ERROR("Allocating memory for loading BMP image failed.");
         return false;
     }
 
@@ -228,7 +228,7 @@ bool ReadPixelsWithPalette(InputStream* stream, size_t offset, uint32 width,
         // Read one byte of data
         if (stream->Read(colorData.get(), lineSize) != lineSize)
         {
-            LOG_ERROR("Pixels read wrong.");
+            NFE_LOG_ERROR("Pixels read wrong.");
             return false;
         }
 
@@ -263,7 +263,7 @@ bool ImageBMP::Check(InputStream* stream)
     stream->Seek(0);
     if (sizeof(signature) < stream->Read(&signature, sizeof(signature)))
     {
-        LOG_ERROR("Could not read signature from the stream.");
+        NFE_LOG_ERROR("Could not read signature from the stream.");
         return false;
     }
 
@@ -281,7 +281,7 @@ bool ImageBMP::Load(Image* img, InputStream* stream)
     // Check for buffer too small
     if (stream->GetSize() < sizeof(BitmapFileHeader) + sizeof(BitmapV5Header))
     {
-        LOG_ERROR("Stream is not big enough to hold even sole BMP headers.");
+        NFE_LOG_ERROR("Stream is not big enough to hold even sole BMP headers.");
         return false;
     }
 
@@ -291,13 +291,13 @@ bool ImageBMP::Load(Image* img, InputStream* stream)
     // Check for signature mismatch
     if (fileHeader.type != 0x4D42)
     {
-        LOG_ERROR("BMP signature mismatch.");
+        NFE_LOG_ERROR("BMP signature mismatch.");
         return false;
     }
     // Check for wrong file size
     if (fileHeader.size > stream->GetSize())
     {
-        LOG_ERROR("BMP header filesize does not match the size of the stream.");
+        NFE_LOG_ERROR("BMP header filesize does not match the size of the stream.");
         return false;
     }
 
@@ -318,7 +318,7 @@ bool ImageBMP::Load(Image* img, InputStream* stream)
         palette.resize(infoHeader.clrUsed);
         if (!GetColorPalette(stream, palette))
         {
-            LOG_ERROR("Palette could not be read");
+            NFE_LOG_ERROR("Palette could not be read");
             return false;
         }
     }
@@ -345,7 +345,7 @@ bool ImageBMP::Load(Image* img, InputStream* stream)
 
     if (!result)
     {
-        LOG_ERROR("Error while reading pixels");
+        NFE_LOG_ERROR("Error while reading pixels");
         img->Release();
     }
 

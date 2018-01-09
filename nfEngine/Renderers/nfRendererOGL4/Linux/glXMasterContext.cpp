@@ -81,7 +81,7 @@ bool MasterContext::Init()
         XFree(vi);
     }
 
-    LOG_INFO("Master Context selected FB Config #%d", bestFBID);
+    NFE_LOG_INFO("Master Context selected FB Config #%d", bestFBID);
     mBestFB = fbc[bestFBID];
     XFree(fbc);
 
@@ -93,7 +93,7 @@ bool MasterContext::Init()
 
     if (!glXCreateContextAttribsARB)
     {
-        LOG_ERROR("Failed to extract glXCreateContextAttribsARB.");
+        NFE_LOG_ERROR("Failed to extract glXCreateContextAttribsARB.");
         return false;
     }
 
@@ -114,7 +114,7 @@ bool MasterContext::Init()
     mContext = glXCreateContextAttribsARB(mDisplay, mBestFB, NULL, GL_TRUE, attribs);
     if (!mContext)
     {
-        LOG_ERROR("Failed to create OpenGL Master Context.");
+        NFE_LOG_ERROR("Failed to create OpenGL Master Context.");
         return false;
     }
 
@@ -125,7 +125,7 @@ bool MasterContext::Init()
     const GLubyte* glv = glGetString(GL_VERSION);
     const char* glvStr = reinterpret_cast<const char*>(glv);
     bool direct = glXIsDirect(mDisplay, mContext);
-    LOG_INFO("OpenGL %s %s Master Context obtained.", glvStr,
+    NFE_LOG_INFO("OpenGL %s %s Master Context obtained.", glvStr,
              direct ? "Direct" : "Indirect");
 
     return true;

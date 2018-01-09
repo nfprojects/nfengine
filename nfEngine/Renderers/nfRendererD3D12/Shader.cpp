@@ -34,7 +34,7 @@ bool Shader::Init(const ShaderDesc& desc)
     {
         if (desc.path == nullptr)
         {
-            LOG_ERROR("Shader code or path must be suplied");
+            NFE_LOG_ERROR("Shader code or path must be suplied");
             return false;
         }
 
@@ -84,7 +84,7 @@ bool Shader::Init(const ShaderDesc& desc)
         profileName = "cs_5_0";
         break;
     default:
-        LOG_ERROR("Invalid shader type");
+        NFE_LOG_ERROR("Invalid shader type");
         return false;
     }
 
@@ -106,7 +106,7 @@ bool Shader::Init(const ShaderDesc& desc)
         d3dMacros[desc.macrosNum].Definition = nullptr;
     }
 
-    LOG_INFO("Compiling shader '%s' with macros: [%s]...", desc.path, macrosStr.str().c_str());
+    NFE_LOG_INFO("Compiling shader '%s' with macros: [%s]...", desc.path, macrosStr.str().c_str());
 
     ID3DBlob* errorsBuffer = nullptr;
     hr = D3DCompile(code, shaderSize, desc.path, d3dMacros.Get(),
@@ -115,20 +115,20 @@ bool Shader::Init(const ShaderDesc& desc)
 
     if (errorsBuffer)
     {
-        LOG_ERROR("Shader '%s' compilation output:\n%s", desc.path, (char*)errorsBuffer->GetBufferPointer());
+        NFE_LOG_ERROR("Shader '%s' compilation output:\n%s", desc.path, (char*)errorsBuffer->GetBufferPointer());
         errorsBuffer->Release();
     }
 
     if (FAILED(hr))
     {
-        LOG_ERROR("Compilation of shader '%s' failed", desc.path);
+        NFE_LOG_ERROR("Compilation of shader '%s' failed", desc.path);
         return false;
     }
 
     if (!GetIODesc())
         return false;
 
-    LOG_SUCCESS("Shader '%s' compiled successfully", desc.path);
+    NFE_LOG_SUCCESS("Shader '%s' compiled successfully", desc.path);
     return true;
 }
 
@@ -137,7 +137,7 @@ bool Shader::Disassemble(bool html, std::string& output)
     ID3DBlob* bytecode = mBytecode.Get();
     if (bytecode == nullptr)
     {
-        LOG_ERROR("Shader is not compiled");
+        NFE_LOG_ERROR("Shader is not compiled");
         return false;
     }
 
@@ -188,7 +188,7 @@ bool Shader::GetIODesc()
     ID3DBlob* bytecode = mBytecode.Get();
     if (bytecode == nullptr)
     {
-        LOG_ERROR("Shader is not compiled");
+        NFE_LOG_ERROR("Shader is not compiled");
         return false;
     }
 
@@ -212,7 +212,7 @@ bool Shader::GetIODesc()
         hr = D3D_CALL_CHECK(reflection->GetResourceBindingDesc(i, &d3dBindingDesc));
         if (FAILED(hr))
         {
-            LOG_ERROR("Failed to parse resource binding, i = %d", i);
+            NFE_LOG_ERROR("Failed to parse resource binding, i = %d", i);
             return false;
         }
 
@@ -240,7 +240,7 @@ bool Shader::GetIODesc()
             bindingDesc.type = ShaderResourceType::WritableTexture;
             break;
         default:
-            LOG_WARNING("Unsupported shader resource type (%d) at slot %d (name: '%s')",
+            NFE_LOG_WARNING("Unsupported shader resource type (%d) at slot %d (name: '%s')",
                         d3dBindingDesc.Type, i, d3dBindingDesc.Name);
             continue;
         }
@@ -248,7 +248,7 @@ bool Shader::GetIODesc()
         std::string name = d3dBindingDesc.Name;
         if (mResBindings.find(name) != mResBindings.end())
         {
-            LOG_ERROR("Multiple declarations of shader resource named '%s'", d3dBindingDesc.Name);
+            NFE_LOG_ERROR("Multiple declarations of shader resource named '%s'", d3dBindingDesc.Name);
             return false;
         }
 

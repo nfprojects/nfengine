@@ -27,7 +27,7 @@ bool Font::InitFreeType()
 {
     if (FT_Init_FreeType(&gFreeTypeLibrary))
     {
-        LOG_ERROR("Failed to initialize FreeType library. Font's won't be supported.");
+        NFE_LOG_ERROR("Failed to initialize FreeType library. Font's won't be supported.");
         gFreeTypeLibrary = nullptr;
         return false;
     }
@@ -85,13 +85,13 @@ bool Font::Init(const char* file, int size)
 
     if (FT_New_Face(gFreeTypeLibrary, file, 0, &face) != 0)
     {
-        LOG_ERROR("Failed to load font '%s' of size %i.", file, size);
+        NFE_LOG_ERROR("Failed to load font '%s' of size %i.", file, size);
         return false;
     }
 
     if (FT_Set_Char_Size(face, 0, size * 64, 96, 96))
     {
-        LOG_ERROR("FT_Set_Char_Size() failed");
+        NFE_LOG_ERROR("FT_Set_Char_Size() failed");
         return false;
     }
 
@@ -132,7 +132,7 @@ bool Font::Init(const char* file, int size)
 
             if (offsetY >= texHeight)
             {
-                LOG_WARNING("Texture too small");
+                NFE_LOG_WARNING("Texture too small");
                 break;
             }
         }
@@ -191,7 +191,7 @@ bool Font::Init(const char* file, int size)
     if (!mTextureBinding)
         return false;
 
-    LOG_SUCCESS("Font '%s' of size %i loaded successfully", file, size);
+    NFE_LOG_SUCCESS("Font '%s' of size %i loaded successfully", file, size);
     return true;
 }
 

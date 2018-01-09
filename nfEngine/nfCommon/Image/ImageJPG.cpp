@@ -73,7 +73,7 @@ bool ImageJPG::Check(InputStream* stream)
     stream->Seek(0);
     if (sizeof(signature) < stream->Read(&signature, sizeof(signature)))
     {
-        LOG_ERROR("Could not read signature from the stream.");
+        NFE_LOG_ERROR("Could not read signature from the stream.");
         return false;
     }
 
@@ -99,7 +99,7 @@ bool ImageJPG::Save(Image* img, OutputStream* stream)
 {
     if (img->GetFormat() != ImageFormat::RGBA_UByte)
     {
-        LOG_ERROR("To save image as JPG, RGBA_UByte format is needed.");
+        NFE_LOG_ERROR("To save image as JPG, RGBA_UByte format is needed.");
         return false;
     }
 
@@ -115,7 +115,7 @@ bool ImageJPG::Save(Image* img, OutputStream* stream)
 
     if (!jpegEncoder.init(&jpegStream, width, height, static_cast<int>(bitsPerPix / 8), jpegParams))
     {
-        LOG_ERROR("Error while initializing encoder");
+        NFE_LOG_ERROR("Error while initializing encoder");
         jpegEncoder.deinit();
         return false;
     }
@@ -126,14 +126,14 @@ bool ImageJPG::Save(Image* img, OutputStream* stream)
     for (size_t i = 0; i < streamSize; i += lineSize)
         if (!jpegEncoder.process_scanline(linePtr + i))
         {
-            LOG_ERROR("Error while processing line no. %i", i / lineSize);
+            NFE_LOG_ERROR("Error while processing line no. %i", i / lineSize);
             jpegEncoder.deinit();
             return false;
         }
 
     if (!jpegEncoder.process_scanline(nullptr))
     {
-        LOG_ERROR("Error while finishing compression");
+        NFE_LOG_ERROR("Error while finishing compression");
         jpegEncoder.deinit();
         return false;
 

@@ -65,7 +65,7 @@ bool Library::Open(const std::string& path)
 
     if (mModule == nullptr)
     {
-        LOG_ERROR("Failed to load library '%s': %s", pathExt.c_str(), dlerror());
+        NFE_LOG_ERROR("Failed to load library '%s': %s", pathExt.c_str(), dlerror());
         return false;
     }
 
@@ -77,7 +77,7 @@ void Library::Close()
     if (mModule != nullptr)
     {
         if (dlclose(mModule))
-            LOG_ERROR("Failed to close library: %s", dlerror());
+            NFE_LOG_ERROR("Failed to close library: %s", dlerror());
         mModule = nullptr;
     }
 }
@@ -93,7 +93,7 @@ void* Library::GetSymbol(const std::string& name)
     char* errorMsg = dlerror();
     if (errorMsg != nullptr)
     {
-        LOG_ERROR("Failed to get pointer to symbol '%s': %s", name.c_str(), errorMsg);
+        NFE_LOG_ERROR("Failed to get pointer to symbol '%s': %s", name.c_str(), errorMsg);
         return nullptr;
     }
 

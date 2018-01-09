@@ -47,13 +47,13 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
 
     if (desc.width == 0 || desc.height == 0)
     {
-        LOG_ERROR("Invalid Texture dimensions");
+        NFE_LOG_ERROR("Invalid Texture dimensions");
         return false;
     }
 
     if (desc.access == BufferAccess::GPU_ReadOnly && desc.dataDesc == nullptr)
     {
-        LOG_ERROR("Invalid data desc - when access is GPU_ReadOnly, there must be data to init!");
+        NFE_LOG_ERROR("Invalid data desc - when access is GPU_ReadOnly, there must be data to init!");
         return false;
     }
 
@@ -139,7 +139,7 @@ bool Texture::Init(const TextureDesc& desc)
     case TextureType::Texture3D:
         return InitTexture3D(desc);
     default:
-        LOG_ERROR("Unsupported or incorrect texture type.");
+        NFE_LOG_ERROR("Unsupported or incorrect texture type.");
         return false;
     }
 }

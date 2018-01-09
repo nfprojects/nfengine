@@ -153,7 +153,7 @@ bool Shader::Init(const ShaderDesc& desc)
     {
         if (desc.path == nullptr)
         {
-            LOG_ERROR("Shader code or path must be suplied");
+            NFE_LOG_ERROR("Shader code or path must be suplied");
             return false;
         }
 
@@ -204,7 +204,7 @@ bool Shader::Init(const ShaderDesc& desc)
         lang = EShLangFragment;
         break;
     default:
-        LOG_ERROR("Incorrect shader type provided");
+        NFE_LOG_ERROR("Incorrect shader type provided");
         return false;
     }
 
@@ -212,7 +212,7 @@ bool Shader::Init(const ShaderDesc& desc)
     mShaderGlslang.Reset(new glslang::TShader(lang));
     if (!mShaderGlslang)
     {
-        LOG_ERROR("Memory allocation failed");
+        NFE_LOG_ERROR("Memory allocation failed");
         return false;
     }
     const char * shaderStrs[] = { shaderHead.c_str(), code };
@@ -224,7 +224,7 @@ bool Shader::Init(const ShaderDesc& desc)
     EShMessages msg = static_cast<EShMessages>(EShMsgDefault | EShMsgVulkanRules);
     if (!mShaderGlslang->parse(&DEFAULT_RESOURCE, DEFAULT_VERSION, ENoProfile, false, false, msg, includer))
     {
-        LOG_ERROR("Failed to parse shader file %s:\n%s", desc.path, mShaderGlslang->getInfoLog());
+        NFE_LOG_ERROR("Failed to parse shader file %s:\n%s", desc.path, mShaderGlslang->getInfoLog());
         return false;
     }
 
@@ -232,20 +232,20 @@ bool Shader::Init(const ShaderDesc& desc)
     mProgramGlslang.Reset(new glslang::TProgram());
     if (!mProgramGlslang)
     {
-        LOG_ERROR("Memory allocation failed");
+        NFE_LOG_ERROR("Memory allocation failed");
         return false;
     }
     mProgramGlslang->addShader(mShaderGlslang.Get());
     if (!mProgramGlslang->link(msg))
     {
-        LOG_ERROR("Failed to pre-link shader stage:\n%s", mProgramGlslang->getInfoLog());
+        NFE_LOG_ERROR("Failed to pre-link shader stage:\n%s", mProgramGlslang->getInfoLog());
         return false;
     }
 
     glslang::TIntermediate* progInt = mProgramGlslang->getIntermediate(lang);
     if (!progInt)
     {
-        LOG_ERROR("Unable to extract shader intermediate");
+        NFE_LOG_ERROR("Unable to extract shader intermediate");
         return false;
     }
 
@@ -270,7 +270,7 @@ bool Shader::Init(const ShaderDesc& desc)
     mStageInfo.module = mShader;
     mStageInfo.pName = "main";
 
-    LOG_SUCCESS("Shader '%s' compiled successfully", desc.path);
+    NFE_LOG_SUCCESS("Shader '%s' compiled successfully", desc.path);
     return true;
 }
 
@@ -351,13 +351,13 @@ void Shader::ParseResourceSlots()
 
         if (tokens[2] == "DescriptorSet")
         {
-            LOG_DEBUG("Found resource %s with DescriptorSet = %s", tokens[1].c_str(), tokens[3].c_str());
+            NFE_LOG_DEBUG("Found resource %s with DescriptorSet = %s", tokens[1].c_str(), tokens[3].c_str());
             it->second.first = static_cast<uint16>(std::atoi(tokens[3].c_str()));
         }
 
         if (tokens[2] == "Binding")
         {
-            LOG_DEBUG("Found resource %s with Binding = %s", tokens[1].c_str(), tokens[3].c_str());
+            NFE_LOG_DEBUG("Found resource %s with Binding = %s", tokens[1].c_str(), tokens[3].c_str());
             it->second.second = static_cast<uint16>(std::atoi(tokens[3].c_str()));
         }
     }

@@ -251,12 +251,12 @@ Scene::SceneManagerPtr InitScene(int sceneId)
     if (sceneId < 0 || sceneId >= static_cast<int>(gScenes.Size()))
         return nullptr;
 
-    LOG_INFO("Initializing scene %d", sceneId);
+    NFE_LOG_INFO("Initializing scene %d", sceneId);
 
     Scene::SceneManagerPtr scene = Common::MakeUniquePtr<Scene::SceneManager>();
     if (!scene->InitializeSystems())
     {
-        LOG_ERROR("Failed to initialize scene's systems");
+        NFE_LOG_ERROR("Failed to initialize scene's systems");
         return nullptr;
     }
 

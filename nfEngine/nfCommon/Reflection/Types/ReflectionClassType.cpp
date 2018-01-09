@@ -55,12 +55,12 @@ void ClassType::PrintInfo() const
     {
         if (mParent)
         {
-            LOG_DEBUG("    - Parent type: %s", mParent->GetName());
+            NFE_LOG_DEBUG("    - Parent type: %s", mParent->GetName());
         }
 
         for (const Member& member : mMembers)
         {
-            LOG_DEBUG("    - Member '%s': type=%s, offset=%u", member.GetName(), member.GetType()->GetName(), member.GetOffset());
+            NFE_LOG_DEBUG("    - Member '%s': type=%s, offset=%u", member.GetName(), member.GetType()->GetName(), member.GetOffset());
         }
     }
 #endif // _DEBUG
@@ -145,7 +145,7 @@ bool ClassType::SerializeDirectly(const void* object, Common::Config& config, Co
         ConfigValue memberValue;
         if (!memberType->Serialize(memberPtr, config, memberValue))
         {
-            LOG_ERROR("Failed to serialize member '%s' in object of type '%s'", member.GetName(), GetName());
+            NFE_LOG_ERROR("Failed to serialize member '%s' in object of type '%s'", member.GetName(), GetName());
             return false;
         }
         config.AddValue(outObject, member.GetName(), memberValue);
@@ -158,7 +158,7 @@ bool ClassType::Serialize(const void* object, Config& config, ConfigValue& outVa
 {
     if (GetKind() == TypeKind::AbstractClass)
     {
-        LOG_ERROR("Trying to serialize abstract type '%s'", GetName());
+        NFE_LOG_ERROR("Trying to serialize abstract type '%s'", GetName());
         return false;
     }
 
@@ -176,7 +176,7 @@ bool ClassType::Serialize(const void* object, Config& config, ConfigValue& outVa
     {
         if (!mParent->SerializeDirectly(object, config, root))
         {
-            LOG_ERROR("Failed to serialize parent class '%s' of object of type '%s'", mParent->GetName(), GetName());
+            NFE_LOG_ERROR("Failed to serialize parent class '%s' of object of type '%s'", mParent->GetName(), GetName());
             return false;
         }
     }
@@ -198,7 +198,7 @@ bool ClassType::DeserializeMember(void* outObject, const char* memberName, const
     // target member not found
     if (!targetMember)
     {
-        LOG_WARNING("Member '%s' not found in runtime type, but present in deserialized object", memberName);
+        NFE_LOG_WARNING("Member '%s' not found in runtime type, but present in deserialized object", memberName);
         return true;
     }
 
@@ -207,7 +207,7 @@ bool ClassType::DeserializeMember(void* outObject, const char* memberName, const
 
     if (!memberType->Deserialize(memberPtr, config, value))
     {
-        LOG_ERROR("Failed to deserialize member '%s'", memberName);
+        NFE_LOG_ERROR("Failed to deserialize member '%s'", memberName);
         return false;
     }
 
@@ -218,13 +218,13 @@ bool ClassType::Deserialize(void* outObject, const Config& config, const ConfigV
 {
     if (GetKind() == TypeKind::AbstractClass)
     {
-        LOG_ERROR("Trying to deserialize abstract type '%s'", GetName());
+        NFE_LOG_ERROR("Trying to deserialize abstract type '%s'", GetName());
         return false;
     }
 
     if (!value.IsObject())
     {
-        LOG_ERROR("Expected object value");
+        NFE_LOG_ERROR("Expected object value");
         return false;
     }
 
@@ -236,7 +236,7 @@ bool ClassType::Deserialize(void* outObject, const Config& config, const ConfigV
         {
             if (!value.IsString())
             {
-                LOG_ERROR("Marker type found - string expected");
+                NFE_LOG_ERROR("Marker type found - string expected");
                 success = false;
                 return false;
             }
@@ -244,7 +244,7 @@ bool ClassType::Deserialize(void* outObject, const Config& config, const ConfigV
             const char* typeName = value.Get<const char*>();
             if (strcmp(typeName, GetName()) != 0)
             {
-                LOG_ERROR("Invalid polymorphic type in marker: found '%s', expected '%s'", typeName, GetName());
+                NFE_LOG_ERROR("Invalid polymorphic type in marker: found '%s', expected '%s'", typeName, GetName());
                 success = false;
                 return false;
             }

@@ -254,7 +254,7 @@ void CommandBuffer::SetRenderTarget(IRenderTarget* renderTarget)
     RenderTarget* rt = dynamic_cast<RenderTarget*>(renderTarget);
     if (rt == nullptr && renderTarget != nullptr)
     {
-        LOG_ERROR("Invalid 'renderTarget' pointer");
+        NFE_LOG_ERROR("Invalid 'renderTarget' pointer");
         return;
     }
 
@@ -276,13 +276,13 @@ void CommandBuffer::SetShaderProgram(IShaderProgram* shaderProgram)
     ShaderProgram* newShaderProgram = dynamic_cast<ShaderProgram*>(shaderProgram);
     if (newShaderProgram == nullptr)
     {
-        LOG_ERROR("Invalid 'shader' pointer");
+        NFE_LOG_ERROR("Invalid 'shader' pointer");
         return;
     }
 
     if (newShaderProgram->mProgram == GL_NONE)
     {
-        LOG_ERROR("Invalid or uninitialized Shader Program provided.");
+        NFE_LOG_ERROR("Invalid or uninitialized Shader Program provided.");
         return;
     }
 
@@ -443,13 +443,13 @@ void CommandBuffer::CopyTexture(ITexture* src, ITexture* dest)
 
     if (!srcTex)
     {
-        LOG_ERROR("Invalid src pointer");
+        NFE_LOG_ERROR("Invalid src pointer");
         return;
     }
 
     if (!dstTex)
     {
-        LOG_ERROR("Invalid dst pointer");
+        NFE_LOG_ERROR("Invalid dst pointer");
         return;
     }
 
@@ -464,13 +464,13 @@ bool CommandBuffer::ReadTexture(ITexture* tex, void* data)
     Texture* texture = dynamic_cast<Texture*>(tex);
     if (!texture)
     {
-        LOG_ERROR("Invalid tex pointer");
+        NFE_LOG_ERROR("Invalid tex pointer");
         return false;
     }
 
     if (!data)
     {
-        LOG_ERROR("Invalid data pointer");
+        NFE_LOG_ERROR("Invalid data pointer");
         return false;
     }
 

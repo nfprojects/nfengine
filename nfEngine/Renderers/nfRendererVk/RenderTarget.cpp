@@ -40,7 +40,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 {
     if (desc.numTargets > 1)
     {
-        LOG_ERROR("MRTs are not yet supported");
+        NFE_LOG_ERROR("MRTs are not yet supported");
         return false;
     }
 
@@ -106,7 +106,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
     mWidth = tex->mWidth;
     mHeight = tex->mHeight;
 
-    LOG_INFO("Render Target created successfully");
+    NFE_LOG_INFO("Render Target created successfully");
     return true;
 }
 

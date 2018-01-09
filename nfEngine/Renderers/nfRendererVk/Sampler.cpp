@@ -46,7 +46,7 @@ bool Sampler::Init(const SamplerDesc& desc)
     VkResult result = vkCreateSampler(gDevice->GetDevice(), &sampInfo, nullptr, &mSampler);
     CHECK_VKRESULT(result, "Failed to create Sampler");
 
-    LOG_INFO("Sampler created successfully");
+    NFE_LOG_INFO("Sampler created successfully");
     return true;
 }
 

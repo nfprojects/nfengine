@@ -63,7 +63,7 @@ bool Buffer::UploadData(const BufferDesc& desc)
 
     if (desc.debugName && !SetDebugName(uploadBuffer.Get(), desc.debugName + std::string("_UPLOAD")))
     {
-        LOG_WARNING("Failed to set debug name");
+        NFE_LOG_WARNING("Failed to set debug name");
     }
 
     if (FAILED(hr))
@@ -103,7 +103,7 @@ bool Buffer::UploadData(const BufferDesc& desc)
         hr = D3D_CALL_CHECK(uploadBuffer->Map(0, NULL, reinterpret_cast<void**>(&mappedData)));
         if (FAILED(hr))
         {
-            LOG_ERROR("Failed to map upload buffer");
+            NFE_LOG_ERROR("Failed to map upload buffer");
             return false;
         }
 
@@ -141,13 +141,13 @@ bool Buffer::Init(const BufferDesc& desc)
 {
     if (desc.mode == BufferMode::GPUOnly || desc.mode == BufferMode::Readback)
     {
-        LOG_ERROR("This access mode is not supported yet.");
+        NFE_LOG_ERROR("This access mode is not supported yet.");
         return false;
     }
 
     if (desc.size == 0)
     {
-        LOG_ERROR("Cannot create zero-sized buffer");
+        NFE_LOG_ERROR("Cannot create zero-sized buffer");
         return false;
     }
 
@@ -196,7 +196,7 @@ bool Buffer::Init(const BufferDesc& desc)
 
     if (desc.debugName && !SetDebugName(mResource.Get(), desc.debugName))
     {
-        LOG_WARNING("Failed to set debug name");
+        NFE_LOG_WARNING("Failed to set debug name");
     }
 
     // write initial data if provided
@@ -207,7 +207,7 @@ bool Buffer::Init(const BufferDesc& desc)
     }
     else if (desc.mode == BufferMode::Static)
     {
-        LOG_ERROR("Initial data for static buffer was not provided.");
+        NFE_LOG_ERROR("Initial data for static buffer was not provided.");
         return false;
     }
 

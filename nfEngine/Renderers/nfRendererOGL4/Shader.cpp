@@ -69,7 +69,7 @@ bool Shader::Init(const ShaderDesc& desc)
     {
         if (!desc.path)
         {
-            LOG_ERROR("Shader code or path must be supplied.");
+            NFE_LOG_ERROR("Shader code or path must be supplied.");
             return false;
         }
 
@@ -77,7 +77,7 @@ bool Shader::Init(const ShaderDesc& desc)
         File shaderFile(desc.path, AccessMode::Read);
         if (!shaderFile.IsOpened())
         {
-            LOG_ERROR("Failed to open Shader file '%s'", desc.path);
+            NFE_LOG_ERROR("Failed to open Shader file '%s'", desc.path);
             return false;
         }
 
@@ -86,7 +86,7 @@ bool Shader::Init(const ShaderDesc& desc)
 
         if (shaderFile.Read(&shaderStr.front(), shaderSize) != shaderSize)
         {
-            LOG_ERROR("Unable to read shader code.");
+            NFE_LOG_ERROR("Unable to read shader code.");
             return false;
         }
 
@@ -98,7 +98,7 @@ bool Shader::Init(const ShaderDesc& desc)
     mShader = glCreateShader(TranslateShaderTypeToGLMacro(mType));
     if (!mShader)
     {
-        LOG_ERROR("Unable to create Shader '%s'", desc.path);
+        NFE_LOG_ERROR("Unable to create Shader '%s'", desc.path);
         return false;
     }
 
@@ -110,7 +110,7 @@ bool Shader::Init(const ShaderDesc& desc)
     glGetShaderiv(mShader, GL_COMPILE_STATUS, &shaderStatus);
     if (!shaderStatus)
     {
-        LOG_ERROR("Failed to compile Shader '%s'", desc.path);
+        NFE_LOG_ERROR("Failed to compile Shader '%s'", desc.path);
         int logLength = 0;
         glGetShaderiv(mShader, GL_INFO_LOG_LENGTH, &logLength);
         // When empty, Info Log contains only \0 char (thus the length is 1)
@@ -119,7 +119,7 @@ bool Shader::Init(const ShaderDesc& desc)
             std::vector<char> log(logLength);
             glGetShaderInfoLog(mShader, logLength, &logLength, log.data());
 
-            LOG_INFO("Shader '%s' compilation output:\n%s", desc.path, log.data());
+            NFE_LOG_INFO("Shader '%s' compilation output:\n%s", desc.path, log.data());
         }
 
         return false;
@@ -136,7 +136,7 @@ bool Shader::Init(const ShaderDesc& desc)
     glGetProgramiv(mShaderProgram, GL_LINK_STATUS, &programStatus);
     if (!programStatus)
     {
-        LOG_ERROR("Separable Shader Program failed to link.");
+        NFE_LOG_ERROR("Separable Shader Program failed to link.");
 
         int logLength = 0;
         glGetProgramiv(mShaderProgram, GL_INFO_LOG_LENGTH, &logLength);
@@ -145,7 +145,7 @@ bool Shader::Init(const ShaderDesc& desc)
         {
             std::vector<char> log(logLength);
             glGetProgramInfoLog(mShaderProgram, logLength, &logLength, log.data());
-            LOG_INFO("Separable Shader Program linking output:\n%s", log.data());
+            NFE_LOG_INFO("Separable Shader Program linking output:\n%s", log.data());
         }
     }
 
@@ -187,7 +187,7 @@ bool ShaderProgram::Init(const ShaderProgramDesc& desc)
     mProgram = glCreateProgram();
     if (!mProgram)
     {
-        LOG_ERROR("Failed to generate Shader Program");
+        NFE_LOG_ERROR("Failed to generate Shader Program");
         return false;
     }
 
@@ -228,7 +228,7 @@ bool ShaderProgram::Init(const ShaderProgramDesc& desc)
     glGetProgramiv(mProgram, GL_LINK_STATUS, &programStatus);
     if (!programStatus)
     {
-        LOG_ERROR("Shader Program failed to link.");
+        NFE_LOG_ERROR("Shader Program failed to link.");
 
         int logLength = 0;
         glGetProgramiv(mProgram, GL_INFO_LOG_LENGTH, &logLength);
@@ -237,7 +237,7 @@ bool ShaderProgram::Init(const ShaderProgramDesc& desc)
         {
             std::vector<char> log(logLength);
             glGetProgramInfoLog(mProgram, logLength, &logLength, log.data());
-            LOG_INFO("Shader Program linking output:\n%s", log.data());
+            NFE_LOG_INFO("Shader Program linking output:\n%s", log.data());
         }
 
         return false;

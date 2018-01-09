@@ -56,7 +56,7 @@ public:
         {
             if (value.Get<int32>() != 0)
             {
-                LOG_WARNING("Expected zero");
+                NFE_LOG_WARNING("Expected zero");
             }
 
             typedObject.Reset();
@@ -72,7 +72,7 @@ public:
                 {
                     if (!value.IsString())
                     {
-                        LOG_ERROR("Marker type found - string expected");
+                        NFE_LOG_ERROR("Marker type found - string expected");
                         return false;
                     }
 
@@ -93,13 +93,13 @@ public:
                 targetType = TypeRegistry::GetInstance().GetExistingType(typeName);
                 if (!targetType)
                 {
-                    LOG_ERROR("Type not found: '%s'", typeName);
+                    NFE_LOG_ERROR("Type not found: '%s'", typeName);
                     return false;
                 }
 
                 if (!targetType->IsA(mPointedType))
                 {
-                    LOG_ERROR("Target type '%s' is not related with pointed type '%s'", typeName, mPointedType->GetName());
+                    NFE_LOG_ERROR("Target type '%s' is not related with pointed type '%s'", typeName, mPointedType->GetName());
                     return false;
                 }
             }
@@ -107,19 +107,19 @@ public:
             {
                 if (mPointedType->GetKind() != TypeKind::AbstractClass)
                 {
-                    LOG_WARNING("Type marker not found - using pointed type as a reference");
+                    NFE_LOG_WARNING("Type marker not found - using pointed type as a reference");
                     targetType = mPointedType;
                 }
                 else // pointed type is abstract class
                 {
-                    LOG_ERROR("Type marker not found - cannot resolve target type");
+                    NFE_LOG_ERROR("Type marker not found - cannot resolve target type");
                     return false;
                 }
             }
 
             if (!targetType->IsConstructible())
             {
-                LOG_ERROR("Target type '%s' is not constructible", typeName);
+                NFE_LOG_ERROR("Target type '%s' is not constructible", typeName);
                 return false;
             }
 
@@ -127,7 +127,7 @@ public:
             typedObject.Reset(targetType->CreateObject<T>());
             if (!typedObject)
             {
-                LOG_ERROR("Failed to create object");
+                NFE_LOG_ERROR("Failed to create object");
                 return false;
             }
 
@@ -135,7 +135,7 @@ public:
             return targetType->Deserialize(typedObject.Get(), config, value);
         }
 
-        LOG_ERROR("Expected zero (nullptr) or an object");
+        NFE_LOG_ERROR("Expected zero (nullptr) or an object");
         return false;
     }
 

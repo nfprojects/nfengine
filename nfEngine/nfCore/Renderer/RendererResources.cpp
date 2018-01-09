@@ -56,14 +56,14 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
     case Type::Cascaded:
         if (splits < 1 || splits > MAX_CASCADE_SPLITS)
         {
-            LOG_ERROR("Invalid splits number for cascaded shadow map (%u)", splits);
+            NFE_LOG_ERROR("Invalid splits number for cascaded shadow map (%u)", splits);
             Release();
             return false;
         }
         mSplits = static_cast<uint8>(splits);
         break;
     default:
-        LOG_ERROR("Invalid shadow type");
+        NFE_LOG_ERROR("Invalid shadow type");
         Release();
         return false;
     }
@@ -81,7 +81,7 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
     mDepthBuffer = renderer->GetDevice()->CreateTexture(depthBufferDesc);
     if (mDepthBuffer == nullptr)
     {
-        LOG_ERROR("Failed to create depth buffer");
+        NFE_LOG_ERROR("Failed to create depth buffer");
         Release();
         return false;
     }
@@ -99,7 +99,7 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
     mTexture = renderer->GetDevice()->CreateTexture(texDesc);
     if (mTexture == nullptr)
     {
-        LOG_ERROR("Failed to create shadow map texture");
+        NFE_LOG_ERROR("Failed to create shadow map texture");
         Release();
         return false;
     }
@@ -109,12 +109,12 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
         LightsRenderer::Get()->GetShadowMapBindingSet());
     if (!mBindingInstance)
     {
-        LOG_ERROR("Failed to create shadow map's resource binding instance");
+        NFE_LOG_ERROR("Failed to create shadow map's resource binding instance");
         return false;
     }
     if (!mBindingInstance->WriteTextureView(0, mTexture))
     {
-        LOG_ERROR("Failed to write shadow map's binding instance");
+        NFE_LOG_ERROR("Failed to write shadow map's binding instance");
         Release();
         return false;
     }
@@ -133,7 +133,7 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
         mRenderTargets[0]= renderer->GetDevice()->CreateRenderTarget(rtDesc);
         if (!mRenderTargets[0])
         {
-            LOG_ERROR("Failed to create shadow map's render target");
+            NFE_LOG_ERROR("Failed to create shadow map's render target");
             Release();
             return false;
         }
@@ -157,7 +157,7 @@ bool ShadowMap::Resize(uint32 size, Type type, uint32 splits)
             mRenderTargets[i]= renderer->GetDevice()->CreateRenderTarget(rtDesc);
             if (!mRenderTargets[i])
             {
-                LOG_ERROR("Failed to create shadow map's render target for i = %u", i);
+                NFE_LOG_ERROR("Failed to create shadow map's render target for i = %u", i);
                 Release();
                 return false;
             }
@@ -197,7 +197,7 @@ bool GeometryBuffer::Resize(int width, int height)
     mDepthBuffer = renderer->GetDevice()->CreateTexture(depthBufferDesc);
     if (mDepthBuffer == nullptr)
     {
-        LOG_ERROR("Failed to create depth buffer");
+        NFE_LOG_ERROR("Failed to create depth buffer");
         return false;
     }
 
@@ -224,12 +224,12 @@ bool GeometryBuffer::Resize(int width, int height)
         LightsRenderer::Get()->GetGBufferBindingSet());
     if (!mBindingInstance)
     {
-        LOG_ERROR("Failed to create G-Buffer's resource binding instance");
+        NFE_LOG_ERROR("Failed to create G-Buffer's resource binding instance");
         return false;
     }
     if (!mBindingInstance->WriteTextureView(0, mDepthBuffer))
     {
-        LOG_ERROR("Failed to write depth buffer texture to binding instance");
+        NFE_LOG_ERROR("Failed to write depth buffer texture to binding instance");
         Release();
         return false;
     }
@@ -241,14 +241,14 @@ bool GeometryBuffer::Resize(int width, int height)
         mTextures[i]= renderer->GetDevice()->CreateTexture(texDesc);
         if (!mTextures[i])
         {
-            LOG_ERROR("Failed to create G-Buffer's texture (i = %i)", i);
+            NFE_LOG_ERROR("Failed to create G-Buffer's texture (i = %i)", i);
             Release();
             return false;
         }
 
         if (!mBindingInstance->WriteTextureView(i + 1, mTextures[i]))
         {
-            LOG_ERROR("Failed to write G-Buffer's texture (i = %i) to binding instance", i);
+            NFE_LOG_ERROR("Failed to write G-Buffer's texture (i = %i) to binding instance", i);
             Release();
             return false;
         }
@@ -265,7 +265,7 @@ bool GeometryBuffer::Resize(int width, int height)
     mRenderTarget = renderer->GetDevice()->CreateRenderTarget(rtDesc);
     if (!mRenderTarget)
     {
-        LOG_ERROR("Failed to create G-Buffer's render target");
+        NFE_LOG_ERROR("Failed to create G-Buffer's render target");
         Release();
         return false;
     }

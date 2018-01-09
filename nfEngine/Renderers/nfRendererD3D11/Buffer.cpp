@@ -22,13 +22,13 @@ bool Buffer::Init(const BufferDesc& desc)
 {
     if (desc.size == 0)
     {
-        LOG_ERROR("Trying to create empty buffer");
+        NFE_LOG_ERROR("Trying to create empty buffer");
         return false;
     }
 
     if (desc.type == BufferType::Constant && desc.size > D3D11_REQ_CONSTANT_BUFFER_ELEMENT_COUNT)
     {
-        LOG_ERROR("Constant buffer too big");
+        NFE_LOG_ERROR("Constant buffer too big");
         return false;
     }
 
@@ -51,7 +51,7 @@ bool Buffer::Init(const BufferDesc& desc)
             break;
         // TODO: more types
         default:
-            LOG_ERROR("Invalid buffer type");
+            NFE_LOG_ERROR("Invalid buffer type");
             return false;
     }
 
@@ -73,7 +73,7 @@ bool Buffer::Init(const BufferDesc& desc)
             bufferDesc.CPUAccessFlags |= D3D11_CPU_ACCESS_READ;
             break;
         default:
-            LOG_ERROR("Invalid buffer access mode");
+            NFE_LOG_ERROR("Invalid buffer access mode");
             return false;
     }
 
@@ -81,7 +81,7 @@ bool Buffer::Init(const BufferDesc& desc)
     {
         if (desc.type == BufferType::Constant || desc.type == BufferType::Index || desc.type == BufferType::Vertex)
         {
-            LOG_ERROR("This buffer type can not be CPU-readable");
+            NFE_LOG_ERROR("This buffer type can not be CPU-readable");
             return false;
         }
     }
@@ -99,7 +99,7 @@ bool Buffer::Init(const BufferDesc& desc)
     {
         if (desc.mode == BufferMode::Static)
         {
-            LOG_ERROR("Initial data must be provided for GPU read-only buffer");
+            NFE_LOG_ERROR("Initial data must be provided for GPU read-only buffer");
             return false;
         }
 

@@ -72,7 +72,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
     GLenum status = glCheckFramebufferStatus(GL_READ_FRAMEBUFFER);
     if (status != GL_FRAMEBUFFER_COMPLETE)
     {
-        LOG_ERROR("Framebuffer Object is incomplete! Status: 0x%x", status);
+        NFE_LOG_ERROR("Framebuffer Object is incomplete! Status: 0x%x", status);
         return false;
     }
 

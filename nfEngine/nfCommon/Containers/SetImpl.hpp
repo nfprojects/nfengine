@@ -140,7 +140,7 @@ Set<KeyType, Comparator>::Set(const Set& other)
         mNodes = reinterpret_cast<Node*>(NFE_MALLOC(nodesSize, 4));
         if (!mNodes)
         {
-            LOG_ERROR("Can't allocate space for tree nodes");
+            NFE_LOG_ERROR("Can't allocate space for tree nodes");
             return;
         }
 
@@ -149,7 +149,7 @@ Set<KeyType, Comparator>::Set(const Set& other)
         if (!mKeys)
         {
             NFE_FREE(mNodes);
-            LOG_ERROR("Can't allocate space for keys");
+            NFE_LOG_ERROR("Can't allocate space for keys");
             return;
         }
 
@@ -186,7 +186,7 @@ Set<KeyType, Comparator>& Set<KeyType, Comparator>::operator = (const Set& other
         mNodes = reinterpret_cast<Node*>(NFE_MALLOC(nodesSize, 4));
         if (!mNodes)
         {
-            LOG_ERROR("Can't allocate space for tree nodes");
+            NFE_LOG_ERROR("Can't allocate space for tree nodes");
             return *this;
         }
 
@@ -195,7 +195,7 @@ Set<KeyType, Comparator>& Set<KeyType, Comparator>::operator = (const Set& other
         if (!mKeys)
         {
             NFE_FREE(mNodes);
-            LOG_ERROR("Can't allocate space for keys");
+            NFE_LOG_ERROR("Can't allocate space for keys");
             return *this;
         }
 
@@ -658,7 +658,7 @@ int Set<KeyType, Comparator>::AllocateNode()
         Node* newNodes = reinterpret_cast<Node*>(NFE_MALLOC(mNumAllocElements * sizeof(Node), 4));
         if (!newNodes)
         {
-            LOG_ERROR("Can't allocate space for tree nodes");
+            NFE_LOG_ERROR("Can't allocate space for tree nodes");
             return InvalidID;
         }
 
@@ -667,7 +667,7 @@ int Set<KeyType, Comparator>::AllocateNode()
         if (!newKeys)
         {
             NFE_FREE(newNodes);
-            LOG_ERROR("Can't allocate space for keys");
+            NFE_LOG_ERROR("Can't allocate space for keys");
             return InvalidID;
         }
 
@@ -944,7 +944,7 @@ bool Set<KeyType, Comparator>::Verify() const
     {
         if (mNumElements > 0)
         {
-            LOG_ERROR("Tree corrupted");
+            NFE_LOG_ERROR("Tree corrupted");
             return false;
         }
 
@@ -977,13 +977,13 @@ bool Set<KeyType, Comparator>::Verify() const
 
             if (mNodes[left].parent != node || mNodes[left].parentIndex != 0)
             {
-                LOG_ERROR("Parent information corrupted");
+                NFE_LOG_ERROR("Parent information corrupted");
                 return false;
             }
 
             if (comparator.Less(mKeys[node], mKeys[left]))
             {
-                LOG_ERROR("Tree nodes conditions not fullfiled");
+                NFE_LOG_ERROR("Tree nodes conditions not fullfiled");
                 return false;
             }
         }
@@ -995,33 +995,33 @@ bool Set<KeyType, Comparator>::Verify() const
 
             if (mNodes[right].parent != node || mNodes[right].parentIndex != 1)
             {
-                LOG_ERROR("Parent information corrupted");
+                NFE_LOG_ERROR("Parent information corrupted");
                 return false;
             }
 
             if (comparator.Less(mKeys[right], mKeys[node]))
             {
-                LOG_ERROR("Tree nodes conditions not fullfiled");
+                NFE_LOG_ERROR("Tree nodes conditions not fullfiled");
                 return false;
             }
         }
 
         if (mNodes[node].height != (1 + Math::Max(leftHeight, rightHeight)))
         {
-            LOG_ERROR("Node height is invalid");
+            NFE_LOG_ERROR("Node height is invalid");
             return false;
         }
 
         if (stackDepth > maxTreeDepth)
         {
-            LOG_ERROR("Tree is too deep");
+            NFE_LOG_ERROR("Tree is too deep");
             return false;
         }
     }
 
     if (mNumElements != nodeCounter)
     {
-        LOG_ERROR("Tree corrupted");
+        NFE_LOG_ERROR("Tree corrupted");
         return false;
     }
 

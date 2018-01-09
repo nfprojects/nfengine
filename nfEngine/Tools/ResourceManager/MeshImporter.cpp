@@ -53,7 +53,7 @@ bool MeshImporter::ImportOBJ(const std::string& sourceFilePath, const std::strin
     // open mesh
     if (!model.import(sourceFilePath.c_str()))
     {
-        LOG_ERROR("Failed to open file '%s'!", sourceFilePath.c_str());
+        NFE_LOG_ERROR("Failed to open file '%s'!", sourceFilePath.c_str());
         return false;
     }
 
@@ -63,7 +63,7 @@ bool MeshImporter::ImportOBJ(const std::string& sourceFilePath, const std::strin
     int subMeshesCount = model.getNumberOfMeshes();
     int matCount = model.getNumberOfMaterials();
 
-    LOG_INFO("Mesh '%s' loaded. Vertices: %i, Indices: %i, Submeshes: %i, Materials: %i",
+    NFE_LOG_INFO("Mesh '%s' loaded. Vertices: %i, Indices: %i, Submeshes: %i, Materials: %i",
              sourceFilePath.c_str(), verticesCount, indicesCount, subMeshesCount, matCount);
 
     mVertices.resize(verticesCount);
@@ -154,7 +154,7 @@ bool MeshImporter::ImportOBJ(const std::string& sourceFilePath, const std::strin
         // check if material already exists
         if (FileSystem::GetPathType(matFileName) == PathType::File)
         {
-            LOG_INFO("Material %s already exists. Skipping material file generation...",
+            NFE_LOG_INFO("Material %s already exists. Skipping material file generation...",
                      mat.name.c_str());
             continue;
         }
@@ -183,7 +183,7 @@ bool MeshImporter::ImportOBJ(const std::string& sourceFilePath, const std::strin
         File materialFile;
         if (!materialFile.Open(matFileName, AccessMode::Write, true))
         {
-            LOG_ERROR("Could not open output file '%s'!", matFileName.c_str());
+            NFE_LOG_ERROR("Could not open output file '%s'!", matFileName.c_str());
             return false;
         }
         materialFile.Write(materialString.data(), materialString.length());

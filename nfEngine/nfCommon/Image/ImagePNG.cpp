@@ -58,7 +58,7 @@ bool ImagePNG::Check(InputStream* stream)
     stream->Seek(0);
     if (sizeof(signature) < stream->Read(&signature, sizeof(signature)))
     {
-        LOG_ERROR("Could not read signature from the stream.");
+        NFE_LOG_ERROR("Could not read signature from the stream.");
         return false;
     }
 
@@ -73,14 +73,14 @@ bool ImagePNG::Load(Image* img, InputStream* stream)
     uint8 signature[PNGSIGSIZE];
     if (stream->Read(signature, PNGSIGSIZE) != PNGSIGSIZE)
     {
-        LOG_ERROR("Reading PNG signature failed.");
+        NFE_LOG_ERROR("Reading PNG signature failed.");
         return false;
     }
 
     // verify png signature
     if (!png_check_sig(static_cast<png_const_bytep>(signature), PNGSIGSIZE))
     {
-        LOG_ERROR("Veryfing PNG signature failed.");
+        NFE_LOG_ERROR("Veryfing PNG signature failed.");
         return false;
     }
 
@@ -88,7 +88,7 @@ bool ImagePNG::Load(Image* img, InputStream* stream)
     png_structp pngPtr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
     if (!pngPtr)
     {
-        LOG_ERROR("Creating PNG structure failed.");
+        NFE_LOG_ERROR("Creating PNG structure failed.");
         return false;
     }
 
@@ -96,14 +96,14 @@ bool ImagePNG::Load(Image* img, InputStream* stream)
     png_infop infoPtr = png_create_info_struct(pngPtr);
     if (!infoPtr)
     {
-        LOG_ERROR("Creating PNG information structure failed.");
+        NFE_LOG_ERROR("Creating PNG information structure failed.");
         png_destroy_read_struct(&pngPtr, nullptr, nullptr);
         return false;
     }
 
     if (setjmp(png_jmpbuf(pngPtr)))
     {
-        LOG_ERROR("Saving calling environment for long jump in PNG failed.");
+        NFE_LOG_ERROR("Saving calling environment for long jump in PNG failed.");
         png_destroy_read_struct(&pngPtr, &infoPtr, nullptr);
         return false;
     }
@@ -188,7 +188,7 @@ bool ImagePNG::Load(Image* img, InputStream* stream)
             break;
 
         default:
-            LOG_ERROR("PNG color type %d not recognized.", color_type);
+            NFE_LOG_ERROR("PNG color type %d not recognized.", color_type);
             return false;
     }
 
@@ -200,7 +200,7 @@ bool ImagePNG::Load(Image* img, InputStream* stream)
 
     if (!rowPtrs.get() || !dataPtr.get())
     {
-        LOG_ERROR("Allocating memory for loading PNG image failed.");
+        NFE_LOG_ERROR("Allocating memory for loading PNG image failed.");
         img->Release();
         return false;
     }

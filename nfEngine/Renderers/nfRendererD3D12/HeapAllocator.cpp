@@ -58,7 +58,7 @@ void HeapAllocator::Release()
     mBitmap.clear();
 
     if (allocatedDescriptors > 0)
-        LOG_WARNING("There are still %u descriptors allocated in %s heap",
+        NFE_LOG_WARNING("There are still %u descriptors allocated in %s heap",
                     allocatedDescriptors, GetHeapName(mType));
 }
 
@@ -88,13 +88,13 @@ bool HeapAllocator::Init()
 
     if (!SetDebugName(mHeap.Get(), GetHeapName(mType)))
     {
-        LOG_WARNING("Failed to set debug name");
+        NFE_LOG_WARNING("Failed to set debug name");
     }
 
     mCpuHandle = mHeap->GetCPUDescriptorHandleForHeapStart();
     mGpuHandle = mHeap->GetGPUDescriptorHandleForHeapStart();
     mDescriptorSize = gDevice->GetDevice()->GetDescriptorHandleIncrementSize(heapDesc.Type);
-    LOG_DEBUG("%s descriptor heap handle increment: %u", GetHeapName(mType), mDescriptorSize);
+    NFE_LOG_DEBUG("%s descriptor heap handle increment: %u", GetHeapName(mType), mDescriptorSize);
 
     return true;
 }
@@ -125,7 +125,7 @@ uint32 HeapAllocator::Allocate(uint32 numDescriptors)
         }
     }
 
-    LOG_ERROR("Descriptor heap allocation failed");
+    NFE_LOG_ERROR("Descriptor heap allocation failed");
     return UINT32_MAX;
 }
 

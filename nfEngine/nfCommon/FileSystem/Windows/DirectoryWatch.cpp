@@ -45,11 +45,11 @@ bool WatchRequest::Start()
                                            &DirectoryWatch::NotificationCompletion);
 
     if (::SetEvent(watch->mEvent) == 0)
-        LOG_ERROR("SetEvent() failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("SetEvent() failed: %s", GetLastErrorString().c_str());
 
     if (success == 0)
     {
-        LOG_ERROR("ReadDirectoryChangesW() failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("ReadDirectoryChangesW() failed: %s", GetLastErrorString().c_str());
         return false;
     }
 
@@ -75,13 +75,13 @@ DirectoryWatch::DirectoryWatch()
     mEvent = ::CreateEvent(NULL, FALSE, FALSE, L"DirectoryWatch Event");
     if (mEvent == NULL)
     {
-        LOG_ERROR("CreateEvent() failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("CreateEvent() failed: %s", GetLastErrorString().c_str());
         return;
     }
 
     mThread = ::CreateThread(0, 0, Dispatcher, this, 0, 0);
     if (mThread == NULL)
-        LOG_ERROR("CreateThread() failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("CreateThread() failed: %s", GetLastErrorString().c_str());
 }
 
 DirectoryWatch::~DirectoryWatch()
@@ -90,7 +90,7 @@ DirectoryWatch::~DirectoryWatch()
 
     DWORD ret = ::QueueUserAPC(&TerminateProc, mThread, reinterpret_cast<ULONG_PTR>(this));
     if (ret == 0)
-        LOG_ERROR("QueueUserAPC() failed: %s", GetLastErrorString().c_str());
+        NFE_LOG_ERROR("QueueUserAPC() failed: %s", GetLastErrorString().c_str());
 
     ::WaitForSingleObject(mThread, INFINITE);
 }
@@ -115,7 +115,7 @@ bool DirectoryWatch::WatchPath(const std::string& path, Event eventFilter)
                                            reinterpret_cast<ULONG_PTR>(it->second.get()));
                 if (ret == 0)
                 {
-                    LOG_ERROR("QueueUserAPC() failed for path '%s': %s", path.c_str(),
+                    NFE_LOG_ERROR("QueueUserAPC() failed for path '%s': %s", path.c_str(),
                               GetLastErrorString().c_str());
                     return false;
                 }
@@ -148,7 +148,7 @@ bool DirectoryWatch::WatchPath(const std::string& path, Event eventFilter)
         NULL);                                                  // file with attributes to copy
     if (request->dirHandle == INVALID_HANDLE_VALUE)
     {
-        LOG_ERROR("CreateFile() failed for path '%s': %s", path.c_str(),
+        NFE_LOG_ERROR("CreateFile() failed for path '%s': %s", path.c_str(),
                   GetLastErrorString().c_str());
         return false;
     }
@@ -167,14 +167,14 @@ bool DirectoryWatch::WatchPath(const std::string& path, Event eventFilter)
                                reinterpret_cast<ULONG_PTR>(requestPtr));
     if (ret == 0)
     {
-        LOG_ERROR("QueueUserAPC() failed for path '%s': %s", path.c_str(),
+        NFE_LOG_ERROR("QueueUserAPC() failed for path '%s': %s", path.c_str(),
                   GetLastErrorString().c_str());
         return false;
     }
     // wait for signal from WatchRequest::Start()
     ::WaitForSingleObject(mEvent, INFINITE);
 
-    LOG_DEBUG("Directory watch for path '%s' added", path.c_str());
+    NFE_LOG_DEBUG("Directory watch for path '%s' added", path.c_str());
     return true;
 }
 
@@ -187,7 +187,7 @@ void DirectoryWatch::NotificationCompletion(DWORD errorCode, DWORD bytesTransfer
     if (errorCode == ERROR_OPERATION_ABORTED)
     {
         if (::SetEvent(watch->mEvent) == 0)
-            LOG_ERROR("SetEvent() failed: %s", GetLastErrorString().c_str());
+            NFE_LOG_ERROR("SetEvent() failed: %s", GetLastErrorString().c_str());
 
         ScopedMutexLock lock(watch->mMutex);
         watch->mRequests.erase(request->path);
@@ -243,7 +243,7 @@ void DirectoryWatch::NotificationCompletion(DWORD errorCode, DWORD bytesTransfer
             DirectoryWatch::EventData data;
             data.type = eventType;
             data.path = shortPath.c_str();
-            LOG_DEBUG("DirectoryWatch: action=%d, path=%s", fni->Action, shortPath.c_str());
+            NFE_LOG_DEBUG("DirectoryWatch: action=%d, path=%s", fni->Action, shortPath.c_str());
 
             if (request->watch->mCallback)
                 request->watch->mCallback(data);

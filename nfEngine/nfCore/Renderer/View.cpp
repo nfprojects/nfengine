@@ -170,7 +170,7 @@ bool View::SetWindow(Common::Window* window)
     mWindowBackbuffer = renderer->GetDevice()->CreateBackbuffer(bbDesc);
     if (mWindowBackbuffer == nullptr)
     {
-        LOG_ERROR("Failed to create backbuffer");
+        NFE_LOG_ERROR("Failed to create backbuffer");
         return false;
     }
 
@@ -222,14 +222,14 @@ bool View::InitTemporaryRenderTarget(uint32 width, uint32 height)
     mTemporaryBuffer = renderer->GetDevice()->CreateTexture(texDesc);
     if (!mTemporaryBuffer)
     {
-        LOG_ERROR("Failed to create temporary buffer texture");
+        NFE_LOG_ERROR("Failed to create temporary buffer texture");
         return false;
     }
 
     mTemporaryBufferPostprocessBinding = PostProcessRenderer::Get()->CreateTextureBinding(mTemporaryBuffer);
     if (!mTemporaryBufferPostprocessBinding)
     {
-        LOG_ERROR("Failed to create binding for temporary buffer texture");
+        NFE_LOG_ERROR("Failed to create binding for temporary buffer texture");
         return false;
     }
 
@@ -243,7 +243,7 @@ bool View::InitTemporaryRenderTarget(uint32 width, uint32 height)
     mTemporaryRenderTarget = renderer->GetDevice()->CreateRenderTarget(rtDesc);
     if (!mTemporaryRenderTarget)
     {
-        LOG_ERROR("Failed to create temporary buffer's render target");
+        NFE_LOG_ERROR("Failed to create temporary buffer's render target");
         return false;
     }
 
@@ -264,7 +264,7 @@ bool View::InitRenderTarget(const TexturePtr& texture, uint32 width, uint32 heig
     mRenderTarget = renderer->GetDevice()->CreateRenderTarget(rtDesc);
     if (mRenderTarget == nullptr)
     {
-        LOG_ERROR("Failed to create render target");
+        NFE_LOG_ERROR("Failed to create render target");
         return false;
     }
 
@@ -273,7 +273,7 @@ bool View::InitRenderTarget(const TexturePtr& texture, uint32 width, uint32 heig
     if (!mGBuffer->Resize(width, height))
     {
         mRenderTarget.Reset();
-        LOG_ERROR("Failed to create render target");
+        NFE_LOG_ERROR("Failed to create render target");
         return false;
     }
 

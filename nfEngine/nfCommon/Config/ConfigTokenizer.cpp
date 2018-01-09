@@ -166,7 +166,7 @@ bool ConfigTokenizer::GetToken(Token& token, int& line, int& column)
                 multiLineComment = true;
             else
             {
-                LOG_ERROR("Unexpected character at %i:%i.", line, column);
+                NFE_LOG_ERROR("Unexpected character at %i:%i.", line, column);
                 return false;
             }
             commentStart = false;
@@ -197,7 +197,7 @@ bool ConfigTokenizer::GetToken(Token& token, int& line, int& column)
             }
             else
             {
-                LOG_ERROR("Unexpected character at %i:%i.", line, column);
+                NFE_LOG_ERROR("Unexpected character at %i:%i.", line, column);
                 return false;
             }
         }
@@ -220,13 +220,13 @@ bool ConfigTokenizer::GetToken(Token& token, int& line, int& column)
                 ;
             else
             {
-                LOG_ERROR("Unexpected character at %i:%i.", line, column);
+                NFE_LOG_ERROR("Unexpected character at %i:%i.", line, column);
                 return false;
             }
         }
         else
         {
-            LOG_ERROR("Parse error at %i:%i.", line, column);
+            NFE_LOG_ERROR("Parse error at %i:%i.", line, column);
             return false;
         }
 
@@ -253,13 +253,13 @@ bool ConfigTokenizer::GetToken(Token& token, int& line, int& column)
         token.type = Token::Type::String;
         token.stringData = stringStart;
         state = State::None;
-        LOG_WARNING("String reached end of file without closing quotation mark");
+        NFE_LOG_WARNING("String reached end of file without closing quotation mark");
         return true;
     }
 
     if (multiLineComment)
     {
-        LOG_WARNING("Multiline comment reached end of file");
+        NFE_LOG_WARNING("Multiline comment reached end of file");
         multiLineComment = false;
     }
 

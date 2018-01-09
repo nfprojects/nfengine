@@ -74,7 +74,7 @@ void LoggerBackendHTML::Reset()
     if (!mFile.Open(logFilePath, AccessMode::Write, true))
     {
         // this will be handled by other logger
-        LOG_ERROR("Failed to create HTML log file");
+        NFE_LOG_ERROR("Failed to create HTML log file");
         return;
     }
 
@@ -136,7 +136,7 @@ void LoggerBackendHTML::Log(LogType type, const char* srcFile, int line, const c
                        str0, timeElapsed, str, str1, srcFile, srcFile + pathOffset, line, str2);
     if (len < 0)
     {
-        LOG_ERROR("snprintf() failed");
+        NFE_LOG_ERROR("snprintf() failed");
         return;
     }
 

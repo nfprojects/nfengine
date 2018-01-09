@@ -47,7 +47,7 @@ bool SemaphorePool::Init(uint32 semaphoreCount)
     mCurrentSemaphore = 0;
     mPreviousSemaphore = semaphoreCount - 1;
 
-    LOG_DEBUG("Created %d semaphores in pool", semaphoreCount);
+    NFE_LOG_DEBUG("Created %d semaphores in pool", semaphoreCount);
     return true;
 }
 

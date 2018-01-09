@@ -36,7 +36,7 @@ bool ComputePipelineState::Init(const ComputePipelineStateDesc& desc)
     mResBindingLayout = desc.resBindingLayout;
     if (!mResBindingLayout)
     {
-        LOG_ERROR("Invalid shader resource binding layout");
+        NFE_LOG_ERROR("Invalid shader resource binding layout");
         return false;
     }
 
@@ -47,7 +47,7 @@ bool ComputePipelineState::Init(const ComputePipelineStateDesc& desc)
 
     if (!mComputeShader)
     {
-        LOG_ERROR("Compute shader must be provided when creating compute pipeline state object");
+        NFE_LOG_ERROR("Compute shader must be provided when creating compute pipeline state object");
         return false;
     }
 

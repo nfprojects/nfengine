@@ -46,7 +46,7 @@ TriggerID TriggerSystem::CreateTrigger(const TriggerDesc& desc)
 
     if (mTriggers.Insert(id, object).iterator == mTriggers.End())
     {
-        LOG_ERROR("Failed to create trigger object");
+        NFE_LOG_ERROR("Failed to create trigger object");
         return 0;
     }
 
@@ -143,7 +143,7 @@ void TriggerSystem::Update(const SystemUpdateContext& context)
                 {
                     // triggers were not interacting before
                     event = Common::MakeUniquePtr<Event_Trigger>(*triggerA->entity, *triggerB->entity, Event_Trigger::Type::Enter);
-                    LOG_DEBUG("Entering trigger target=%u source=%u", interaction.triggerA, interaction.triggerB);
+                    NFE_LOG_DEBUG("Entering trigger target=%u source=%u", interaction.triggerA, interaction.triggerB);
                 }
             }
             else // no interaction
@@ -152,7 +152,7 @@ void TriggerSystem::Update(const SystemUpdateContext& context)
                 {
                     // triggers were interacting before
                     event = Common::MakeUniquePtr<Event_Trigger>(*triggerA->entity, *triggerB->entity, Event_Trigger::Type::Leave);
-                    LOG_DEBUG("Leaving trigger target=%u source=%u", interaction.triggerA, interaction.triggerB);
+                    NFE_LOG_DEBUG("Leaving trigger target=%u source=%u", interaction.triggerA, interaction.triggerB);
                 }
             }
 

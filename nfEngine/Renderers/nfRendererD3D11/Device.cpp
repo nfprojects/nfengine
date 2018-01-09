@@ -71,7 +71,7 @@ bool Device::Init(const DeviceInitParams* params)
     int preferredCardId = params != nullptr ? params->preferredCardId : -1;
     if (!DetectVideoCards(preferredCardId))
     {
-        LOG_ERROR("Failed to detect video cards");
+        NFE_LOG_ERROR("Failed to detect video cards");
         return false;
     }
 
@@ -83,7 +83,7 @@ bool Device::Init(const DeviceInitParams* params)
                                           mDevice.GetPtr(), &mFeatureLevel, mImmediateContext.GetPtr()));
     if (FAILED(hr))
     {
-        LOG_ERROR("D3D11CreateDevice() failed");
+        NFE_LOG_ERROR("D3D11CreateDevice() failed");
         return false;
     }
 
@@ -112,7 +112,7 @@ bool Device::Init(const DeviceInitParams* params)
         featureLevelStr = "11_1";
         break;
     }
-    LOG_INFO("Direct3D 11 device created with %s feature level", featureLevelStr);
+    NFE_LOG_INFO("Direct3D 11 device created with %s feature level", featureLevelStr);
 
     if (params->debugLevel > 0)
     {
@@ -141,8 +141,8 @@ bool Device::Init(const DeviceInitParams* params)
     DeviceInfo deviceInfo;
     if (GetDeviceInfo(deviceInfo))
     {
-        LOG_INFO("GPU name: %s", deviceInfo.description.c_str());
-        LOG_INFO("GPU info: %s", deviceInfo.misc.c_str());
+        NFE_LOG_INFO("GPU name: %s", deviceInfo.description.c_str());
+        NFE_LOG_INFO("GPU info: %s", deviceInfo.misc.c_str());
 
         std::string features;
         for (size_t i = 0; i < deviceInfo.features.size(); ++i)
@@ -151,7 +151,7 @@ bool Device::Init(const DeviceInitParams* params)
                 features += ", ";
             features += deviceInfo.features[i];
         }
-        LOG_INFO("GPU features: %s", features.c_str());
+        NFE_LOG_INFO("GPU features: %s", features.c_str());
     }
 
     return true;
@@ -265,7 +265,7 @@ CommandRecorderPtr Device::CreateCommandRecorder()
     if (!commandRecorder)
     {
         D3D_SAFE_RELEASE(context);
-        LOG_ERROR("Memory allocation failed");
+        NFE_LOG_ERROR("Memory allocation failed");
         return nullptr;
     }
 
@@ -288,7 +288,7 @@ bool Device::Execute(CommandListID id)
 {
     if (id == INVALID_COMMAND_LIST_ID)
     {
-        LOG_ERROR("Invalid command list");
+        NFE_LOG_ERROR("Invalid command list");
         return false;
     }
 
@@ -297,14 +297,14 @@ bool Device::Execute(CommandListID id)
         Common::ScopedMutexLock lock(mCommandListsMutex);
         if (id > mCommandLists.size())
         {
-            LOG_ERROR("Invalid command list ID");
+            NFE_LOG_ERROR("Invalid command list ID");
             return false;
         }
 
         list = mCommandLists[id - 1];
         if (!list)
         {
-            LOG_ERROR("Invalid command list ID - already executed?");
+            NFE_LOG_ERROR("Invalid command list ID - already executed?");
             return false;
         }
 
@@ -339,7 +339,7 @@ bool Device::FinishFrame()
 
     if (danglingLists > 0)
     {
-        LOG_WARNING("There are %u recorded but unused command lists in this frame", danglingLists);
+        NFE_LOG_WARNING("There are %u recorded but unused command lists in this frame", danglingLists);
     }
 
     return true;
@@ -373,7 +373,7 @@ bool Device::DownloadTexture(const TexturePtr& tex, void* data, int mipmap, int 
     const Texture* texture = dynamic_cast<Texture*>(tex.Get());
     if (!texture)
     {
-        LOG_ERROR("Invalid 'tex' pointer");
+        NFE_LOG_ERROR("Invalid 'tex' pointer");
         return false;
     }
 
@@ -412,7 +412,7 @@ bool Device::DetectVideoCards(int preferredId)
 
         if (FAILED(hr))
         {
-            LOG_ERROR("EnumAdapters1 failed for id=%u", i);
+            NFE_LOG_ERROR("EnumAdapters1 failed for id=%u", i);
             continue;
         }
 
@@ -427,7 +427,7 @@ bool Device::DetectVideoCards(int preferredId)
         if (static_cast<uint32>(preferredId) == i)
             mAdapterInUse = i;
 
-        LOG_INFO("Adapter found at slot %u: %s", i, descString.c_str());
+        NFE_LOG_INFO("Adapter found at slot %u: %s", i, descString.c_str());
         mAdapters.push_back(D3DPtr<IDXGIAdapter>(adapter));
     }
 
@@ -447,7 +447,7 @@ bool Device::IsBackbufferFormatSupported(ElementFormat format)
     HRESULT hr = mDevice->CheckFormatSupport(TranslateElementFormat(format), &formatSupport);
     if (FAILED(hr))
     {
-        LOG_ERROR("Failed to check format support info");
+        NFE_LOG_ERROR("Failed to check format support info");
         return false;
     }
 

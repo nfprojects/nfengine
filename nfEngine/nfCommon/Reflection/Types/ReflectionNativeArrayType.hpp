@@ -31,7 +31,7 @@ public:
     void PrintInfo() const override
     {
         Type::PrintInfo();
-        LOG_DEBUG("  array size = %u", mArraySize);
+        NFE_LOG_DEBUG("  array size = %u", mArraySize);
     }
 
     bool Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const override
@@ -54,7 +54,7 @@ public:
             const T& arrayElement = typedArray[i];
             if (!elementType->Serialize(&arrayElement, config, arrayElementValue))
             {
-                LOG_ERROR("Failed to serialize native array element (index %u/%u)", i, mArraySize);
+                NFE_LOG_ERROR("Failed to serialize native array element (index %u/%u)", i, mArraySize);
                 return false;
             }
             config.AddValue(configArray, arrayElementValue);
@@ -79,7 +79,7 @@ public:
 
         if (!value.IsArray())
         {
-            LOG_ERROR("Expected array type");
+            NFE_LOG_ERROR("Expected array type");
             return false;
         }
 
@@ -88,14 +88,14 @@ public:
         {
             if (static_cast<uint32>(index) >= mArraySize)
             {
-                LOG_WARNING("Deserialized native array object has too many elements (%u expected). "
+                NFE_LOG_WARNING("Deserialized native array object has too many elements (%u expected). "
                             "Elements will be dropped", mArraySize);
                 return false;
             }
 
             if (!elementType->Deserialize(typedArray + index, config, arrayElement))
             {
-                LOG_ERROR("Failed to parse native array element at index %i", index);
+                NFE_LOG_ERROR("Failed to parse native array element at index %i", index);
                 return false;
             }
 
@@ -107,7 +107,7 @@ public:
 
         if (numDeserializedArrayElements != mArraySize)
         {
-            LOG_WARNING("Deserialized native array object has too few array elements (%u found, %u expected).",
+            NFE_LOG_WARNING("Deserialized native array object has too few array elements (%u found, %u expected).",
                         numDeserializedArrayElements, mArraySize);
             // TODO initialize missing elements with default values (run default constructor)
         }

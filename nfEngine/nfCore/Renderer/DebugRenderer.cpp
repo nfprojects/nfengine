@@ -408,7 +408,7 @@ void DebugRenderer::DrawMesh(DebugRendererContext* context, const Resource::Mesh
 
     if (!vb || !ib)
     {
-        LOG_ERROR("Invalid vertex or index buffer");
+        NFE_LOG_ERROR("Invalid vertex or index buffer");
         return;
     }
 

@@ -40,7 +40,7 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
 {
     if (desc.numBindings == 0)
     {
-        LOG_ERROR("Binding set can not be empty");
+        NFE_LOG_ERROR("Binding set can not be empty");
         return false;
     }
 
@@ -52,7 +52,7 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
         desc.shaderVisibility != ShaderType::Compute &&
         desc.shaderVisibility != ShaderType::All)
     {
-        LOG_ERROR("Invalid shader visibility");
+        NFE_LOG_ERROR("Invalid shader visibility");
         return false;
     }
 
@@ -69,7 +69,7 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
             bindingDesc.resourceType != ShaderResourceType::WritableTexture &&
             bindingDesc.resourceType != ShaderResourceType::WritableStructuredBuffer)
         {
-            LOG_ERROR("Invalid shader resource type at binding %i", i);
+            NFE_LOG_ERROR("Invalid shader resource type at binding %i", i);
             return false;
         }
 
@@ -89,7 +89,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         InternalResourceBindingSetPtr bindingSet = Common::StaticCast<ResourceBindingSet>(desc.bindingSets[i]);
         if (bindingSet == nullptr)
         {
-            LOG_ERROR("Invalid binding set");
+            NFE_LOG_ERROR("Invalid binding set");
             return false;
         }
 
@@ -97,14 +97,14 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         {
             if (mBindingSets[j] == bindingSet)
             {
-                LOG_ERROR("Same binding sets (%zu and %zu) can't be reused in a binding layout",
+                NFE_LOG_ERROR("Same binding sets (%zu and %zu) can't be reused in a binding layout",
                           j, i);
                 return false;
             }
 
             if (bindingSet->IsBindingSetOverlapping(mBindingSets[j].Get()))
             {
-                LOG_ERROR("Resource binding slots are overlapping (sets %zu and %zu)", j, i);
+                NFE_LOG_ERROR("Resource binding slots are overlapping (sets %zu and %zu)", j, i);
                 return false;
             }
         }
@@ -126,7 +126,7 @@ bool ResourceBindingInstance::Init(const ResourceBindingSetPtr& bindingSet)
     mBindingSet = Common::StaticCast<ResourceBindingSet>(bindingSet);
     if (bindingSet == nullptr)
     {
-        LOG_ERROR("Invalid binding set");
+        NFE_LOG_ERROR("Invalid binding set");
         return false;
     }
 
@@ -139,7 +139,7 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& te
 {
     if (slot >= mBindingSet->mBindings.size())
     {
-        LOG_ERROR("Invalid binding set slot %zu (there are %zu slots)",
+        NFE_LOG_ERROR("Invalid binding set slot %zu (there are %zu slots)",
                   slot, mBindingSet->mBindings.size());
         return false;
     }
@@ -147,7 +147,7 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& te
     const Texture* tex = dynamic_cast<Texture*>(texture.Get());
     if (!tex)
     {
-        LOG_ERROR("Invalid texture");
+        NFE_LOG_ERROR("Invalid texture");
         return false;
     }
 
@@ -236,7 +236,7 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& te
     HRESULT hr = D3D_CALL_CHECK(gDevice->Get()->CreateShaderResourceView(tex->mTextureGeneric, &srvd, srv.GetPtr()));
     if (FAILED(hr))
     {
-        LOG_ERROR("Failed to create Shader Resource View");
+        NFE_LOG_ERROR("Failed to create Shader Resource View");
         return false;
     }
 
@@ -248,7 +248,7 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, const BufferPtr& buf
 {
     if (slot >= mBindingSet->mBindings.size())
     {
-        LOG_ERROR("Invalid binding set slot %zu (there are %zu slots)",
+        NFE_LOG_ERROR("Invalid binding set slot %zu (there are %zu slots)",
                   slot, mBindingSet->mBindings.size());
         return false;
     }
@@ -256,13 +256,13 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, const BufferPtr& buf
     const Buffer* buf = dynamic_cast<Buffer*>(buffer.Get());
     if (!buf || !buf->mBuffer)
     {
-        LOG_ERROR("Invalid constant buffer");
+        NFE_LOG_ERROR("Invalid constant buffer");
         return false;
     }
 
     if (buf->mType != BufferType::Constant)
     {
-        LOG_ERROR("Not a constant buffer");
+        NFE_LOG_ERROR("Not a constant buffer");
         return false;
     }
 
@@ -274,7 +274,7 @@ bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, const Textur
 {
     if (slot >= mBindingSet->mBindings.size())
     {
-        LOG_ERROR("Invalid binding set slot %zu (there are %zu slots)",
+        NFE_LOG_ERROR("Invalid binding set slot %zu (there are %zu slots)",
                   slot, mBindingSet->mBindings.size());
         return false;
     }
@@ -282,7 +282,7 @@ bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, const Textur
     const Texture* tex = dynamic_cast<Texture*>(texture.Get());
     if (!tex)
     {
-        LOG_ERROR("Invalid texture");
+        NFE_LOG_ERROR("Invalid texture");
         return false;
     }
 
@@ -334,7 +334,7 @@ bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, const Textur
     HRESULT hr = D3D_CALL_CHECK(gDevice->Get()->CreateUnorderedAccessView(tex->mTextureGeneric, &uavd, uav.GetPtr()));
     if (FAILED(hr))
     {
-        LOG_ERROR("Failed to create Unordered Access View");
+        NFE_LOG_ERROR("Failed to create Unordered Access View");
         return false;
     }
 

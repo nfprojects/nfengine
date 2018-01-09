@@ -86,13 +86,13 @@ VkRenderPass RenderPassManager::ConstructRenderPass(const RenderPassDesc& desc)
     VkResult result = vkCreateRenderPass(mDeviceRef, &rpInfo, nullptr, &tempRenderPass);
     if (result != VK_SUCCESS)
     {
-        LOG_ERROR("Failed to construct new Render Pass");
-        LOG_DEBUG("Formats requested are:");
+        NFE_LOG_ERROR("Failed to construct new Render Pass");
+        NFE_LOG_DEBUG("Formats requested are:");
         for (uint32 i = 0; i < desc.colorFormats.size(); ++i)
         {
-            LOG_DEBUG("    color #%i: %d (%s)", i, desc.colorFormats[i], TranslateVkFormatToString(desc.colorFormats[i]));
+            NFE_LOG_DEBUG("    color #%i: %d (%s)", i, desc.colorFormats[i], TranslateVkFormatToString(desc.colorFormats[i]));
         }
-        LOG_DEBUG("    depth:     %d (%s)", desc.depthFormat, TranslateVkFormatToString(desc.depthFormat));
+        NFE_LOG_DEBUG("    depth:     %d (%s)", desc.depthFormat, TranslateVkFormatToString(desc.depthFormat));
         return VK_NULL_HANDLE;
     }
 
@@ -111,11 +111,11 @@ VkRenderPass RenderPassManager::GetRenderPass(const RenderPassDesc& desc)
         if (newRp != VK_NULL_HANDLE)
             mRenderPasses.insert(std::make_pair(desc, newRp));
 
-        LOG_INFO("Created new Render Pass");
+        NFE_LOG_INFO("Created new Render Pass");
         return newRp;
     }
 
-    LOG_INFO("Using existing Render Pass");
+    NFE_LOG_INFO("Using existing Render Pass");
     return rp->second;
 }
 

@@ -39,7 +39,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
         desc.width >= std::numeric_limits<uint16>::max() ||
         desc.height >= std::numeric_limits<uint16>::max())
     {
-        LOG_ERROR("Invalid backbuffer size");
+        NFE_LOG_ERROR("Invalid backbuffer size");
         return false;
     }
 
@@ -81,12 +81,12 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
         hr = mSwapChain->GetBuffer(n, IID_PPV_ARGS(mBuffers[n].GetPtr()));
         if (FAILED(hr))
         {
-            LOG_ERROR("Failed to get swap chain buffer for n = %u", n);
+            NFE_LOG_ERROR("Failed to get swap chain buffer for n = %u", n);
             return false;
         }
     }
 
-    LOG_DEBUG("Swapchain created successfully (width=%i, height=%i, format=%s)",
+    NFE_LOG_DEBUG("Swapchain created successfully (width=%i, height=%i, format=%s)",
               desc.width, desc.height, GetElementFormatName(desc.format));
     return true;
 }

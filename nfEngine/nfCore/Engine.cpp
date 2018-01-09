@@ -44,12 +44,12 @@ bool Engine::OnInit()
     Font::InitFreeType();
 
     // init renderer
-    LOG_INFO("Initializing renderer...");
+    NFE_LOG_INFO("Initializing renderer...");
     mRenderer = MakeUniquePtr<Renderer::HighLevelRenderer>();
     if (!mRenderer->Init())
     {
         mRenderer.Reset();
-        LOG_ERROR("Failed to initialize renderer. Drawing will not be supported");
+        NFE_LOG_ERROR("Failed to initialize renderer. Drawing will not be supported");
         return false;
     }
 
@@ -61,15 +61,15 @@ void Engine::OnRelease()
     // release renderer modules before threadpool - shaders are resources,
     // so they need to be released first
     mRenderer->ReleaseModules();
-    LOG_INFO("Renderer modules released.");
+    NFE_LOG_INFO("Renderer modules released.");
 
     // release resources manager
     mResManager.Release();
-    LOG_INFO("Resources manager released.");
+    NFE_LOG_INFO("Resources manager released.");
 
     // release renderer
     mRenderer.Reset();
-    LOG_INFO("Renderer released.");
+    NFE_LOG_INFO("Renderer released.");
 
     Font::ReleaseFreeType();
 }
@@ -84,7 +84,7 @@ Engine* Engine::GetInstance()
     gEngineInstance.reset(new (std::nothrow) Engine);
     if (!gEngineInstance)
     {
-        LOG_ERROR("Memory allocation failed");
+        NFE_LOG_ERROR("Memory allocation failed");
         return nullptr;
     }
 
@@ -101,7 +101,7 @@ void Engine::Release()
 {
     if (!gEngineInstance)
     {
-        LOG_ERROR("The engine is already released");
+        NFE_LOG_ERROR("The engine is already released");
         return;
     }
 
@@ -113,7 +113,7 @@ bool Engine::Advance(const Common::ArrayView<Renderer::View*> views, const Commo
 {
     if (views.Size() > 0 && !mRenderer)
     {
-        LOG_ERROR("Renderer is not initialized, drawing is not supported.");
+        NFE_LOG_ERROR("Renderer is not initialized, drawing is not supported.");
         return false;
     }
 
@@ -151,7 +151,7 @@ bool Engine::Advance(const Common::ArrayView<Renderer::View*> views, const Commo
         Entity* cameraEntity = view->GetCameraEntity();
         if (!cameraEntity)
         {
-            LOG_ERROR("Invalid camera");
+            NFE_LOG_ERROR("Invalid camera");
             scenesRenderedSuccessfully = false;
             continue;
         }
