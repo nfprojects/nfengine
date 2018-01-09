@@ -57,14 +57,14 @@ public:
     // placement new
     void* operator new(size_t size, void* ptr)
     {
-        UNUSED(size);
+        NFE_UNUSED(size);
         return ptr;
     }
 
     // placement new (array)
     void* operator new[](size_t size, void* ptr)
     {
-        UNUSED(size);
+        NFE_UNUSED(size);
         return ptr;
     }
 };

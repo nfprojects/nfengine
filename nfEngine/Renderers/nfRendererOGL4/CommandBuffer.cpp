@@ -189,8 +189,8 @@ void CommandBuffer::Reset()
 
 void CommandBuffer::SetVertexBuffers(int num, IBuffer** vertexBuffers, int* strides, int* offsets)
 {
-    UNUSED(strides);
-    UNUSED(offsets);
+    NFE_UNUSED(strides);
+    NFE_UNUSED(offsets);
 
     mSetVertexBuffers.clear();
     for (int i = 0; i < num; ++i)
@@ -209,7 +209,7 @@ void CommandBuffer::SetIndexBuffer(IBuffer* indexBuffer, IndexBufferFormat forma
 void CommandBuffer::SetSamplers(ISampler** samplers, int num, ShaderType target, int slotOffset)
 {
     // TODO support SSO, or remove target argument (which requires fixes in D3D11 renderer)
-    UNUSED(target);
+    NFE_UNUSED(target);
 
     // TODO support multiple Samplers
     if (num > 1)
@@ -223,7 +223,7 @@ void CommandBuffer::SetSamplers(ISampler** samplers, int num, ShaderType target,
 void CommandBuffer::SetTextures(ITexture** textures, int num, ShaderType target, int slotOffset)
 {
     // TODO support SSO, or remove target argument (which requires fixes in D3D11 renderer)
-    UNUSED(target);
+    NFE_UNUSED(target);
 
     // TODO support multiple Textures
     if (num > 1)
@@ -237,8 +237,8 @@ void CommandBuffer::SetTextures(ITexture** textures, int num, ShaderType target,
 void CommandBuffer::SetConstantBuffers(IBuffer** constantBuffers, int num, ShaderType target,
                                        int slotOffset)
 {
-    UNUSED(num);
-    UNUSED(target);
+    NFE_UNUSED(num);
+    NFE_UNUSED(target);
 
     // TODO support multiple Constant Buffers
     if (num > 1)
@@ -382,8 +382,8 @@ void CommandBuffer::SetStencilRef(unsigned char ref)
 void CommandBuffer::SetViewport(float left, float width, float top, float height,
                                 float minDepth, float maxDepth)
 {
-    UNUSED(minDepth);
-    UNUSED(maxDepth);
+    NFE_UNUSED(minDepth);
+    NFE_UNUSED(maxDepth);
 
     glViewport(static_cast<GLint>(left),
                static_cast<GLint>(top),
@@ -393,22 +393,22 @@ void CommandBuffer::SetViewport(float left, float width, float top, float height
 
 void CommandBuffer::SetScissors(int left, int top, int right, int bottom)
 {
-    UNUSED(left);
-    UNUSED(top);
-    UNUSED(right);
-    UNUSED(bottom);
+    NFE_UNUSED(left);
+    NFE_UNUSED(top);
+    NFE_UNUSED(right);
+    NFE_UNUSED(bottom);
 }
 
 void* CommandBuffer::MapBuffer(IBuffer* buffer, MapType type)
 {
-    UNUSED(buffer);
-    UNUSED(type);
+    NFE_UNUSED(buffer);
+    NFE_UNUSED(type);
     return nullptr;
 }
 
 void CommandBuffer::UnmapBuffer(IBuffer* buffer)
 {
-    UNUSED(buffer);
+    NFE_UNUSED(buffer);
 }
 
 bool CommandBuffer::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, const void* data)
@@ -428,10 +428,10 @@ bool CommandBuffer::WriteBuffer(IBuffer* buffer, size_t offset, size_t size, con
 
 bool CommandBuffer::ReadBuffer(IBuffer* buffer, size_t offset, size_t size, void* data)
 {
-    UNUSED(buffer);
-    UNUSED(offset);
-    UNUSED(size);
-    UNUSED(data);
+    NFE_UNUSED(buffer);
+    NFE_UNUSED(offset);
+    NFE_UNUSED(size);
+    NFE_UNUSED(data);
 
     return false;
 }
@@ -518,7 +518,7 @@ void CommandBuffer::Clear(int flags, const float* color, float depthValue,
 void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, int vertexOffset,
                          int instanceOffset)
 {
-    UNUSED(instanceOffset);
+    NFE_UNUSED(instanceOffset);
 
     if (mConstantBufferNeedsUpdate)
         BindConstantBuffer();
@@ -542,8 +542,8 @@ void CommandBuffer::Draw(PrimitiveType type, int vertexNum, int instancesNum, in
 void CommandBuffer::DrawIndexed(PrimitiveType type, int indexNum, int instancesNum,
                                 int indexOffset, int vertexOffset, int instanceOffset)
 {
-    UNUSED(vertexOffset);
-    UNUSED(instanceOffset);
+    NFE_UNUSED(vertexOffset);
+    NFE_UNUSED(instanceOffset);
 
     if (mConstantBufferNeedsUpdate)
         BindConstantBuffer();
@@ -578,12 +578,12 @@ ICommandList* CommandBuffer::Finish()
 
 void CommandBuffer::Execute(ICommandList* commandList)
 {
-    UNUSED(commandList);
+    NFE_UNUSED(commandList);
 }
 
 void CommandBuffer::BeginDebugGroup(const char* text)
 {
-    UNUSED(text);
+    NFE_UNUSED(text);
 }
 
 void CommandBuffer::EndDebugGroup()
@@ -592,7 +592,7 @@ void CommandBuffer::EndDebugGroup()
 
 void CommandBuffer::InsertDebugMarker(const char* text)
 {
-    UNUSED(text);
+    NFE_UNUSED(text);
 }
 
 } // namespace Renderer

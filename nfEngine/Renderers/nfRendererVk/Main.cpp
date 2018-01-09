@@ -10,9 +10,9 @@
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
-    UNUSED(hModule);
-    UNUSED(ul_reason_for_call);
-    UNUSED(lpReserved);
+    NFE_UNUSED(hModule);
+    NFE_UNUSED(ul_reason_for_call);
+    NFE_UNUSED(lpReserved);
 
     switch (ul_reason_for_call)
     {

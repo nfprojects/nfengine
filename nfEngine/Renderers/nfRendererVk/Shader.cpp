@@ -276,7 +276,7 @@ bool Shader::Init(const ShaderDesc& desc)
 
 bool Shader::Disassemble(bool html, std::string& output)
 {
-    UNUSED(html); // TODO
+    NFE_UNUSED(html); // TODO
     // Disassemble the shader, to provide parsing source for slot extraction
     std::stringstream ss;
     spv::Disassemble(ss, mShaderSpv);

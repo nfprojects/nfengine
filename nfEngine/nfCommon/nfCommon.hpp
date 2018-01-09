@@ -98,8 +98,8 @@
 
 
 // macro for disabling "unused parameter"
-#ifndef UNUSED
-#define UNUSED(x) (void)(x)
+#ifndef NFE_UNUSED
+#define NFE_UNUSED(x) (void)(x)
 #endif // UNUSED
 
 // merge two identifiers

@@ -22,8 +22,8 @@ bool Thread::SetThreadPriority(std::thread& thread, ThreadPriority priority)
     // On linux we need SU privilages to change threads priority or policy.
     // Only change that is possible with normal privilages would be changing policy
     // between normal (OTHER) and idle or batch - we don't need those.
-    UNUSED(thread);
-    UNUSED(priority);
+    NFE_UNUSED(thread);
+    NFE_UNUSED(priority);
     LOG_WARNING("SetThreadPriority method does nothing on this system.");
 
     return false;

@@ -18,7 +18,7 @@
 #endif // WIN32
 
 // macro for unused parameters to supress warnings
-#define UNUSED(x) (void)(x)
+#define NFE_UNUSED(x) (void)(x)
 
 #include "GL/gl.h"
 

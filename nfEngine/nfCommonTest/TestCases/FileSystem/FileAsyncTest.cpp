@@ -41,8 +41,8 @@ const int expectedOperations = 0x3FF;                     //< Expected state of 
 // Callback for read & write operations
 void TestCallback(void* obj, FileAsync* filePtr, size_t bytesProcessed, bool isRead)
 {
-    UNUSED(bytesProcessed);
-    UNUSED(filePtr);
+    NFE_UNUSED(bytesProcessed);
+    NFE_UNUSED(filePtr);
 
     int shift = *reinterpret_cast<NFE::uint8*>(obj);
 

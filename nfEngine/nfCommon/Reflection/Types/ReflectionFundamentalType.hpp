@@ -34,7 +34,7 @@ public:
     bool Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const override
     {
         // no need to access Config object itself, all the data for fundamental types is contained in ConfigValue
-        UNUSED(config);
+        NFE_UNUSED(config);
 
         const T* typedObject = static_cast<const T*>(object);
         outValue = Common::ConfigValue(*typedObject);
@@ -43,7 +43,7 @@ public:
 
     bool Deserialize(void* outObject, const Common::Config& config, const Common::ConfigValue& value) const override
     {
-        UNUSED(config);
+        NFE_UNUSED(config);
 
         // TODO type casting (with check if there is no overflow)
         if (value.Is<T>())

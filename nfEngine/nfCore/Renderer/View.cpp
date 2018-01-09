@@ -139,7 +139,7 @@ void View::OnPostRender(GuiRendererContext* context)
 
 void View::OnDrawImGui(void* state)
 {
-    UNUSED(state);
+    NFE_UNUSED(state);
 }
 
 bool View::SetCamera(Scene::Entity* cameraEntity)
@@ -319,8 +319,8 @@ using namespace Resource;
  */
 bool OffscreenViewTextureLoadCallback(ResourceBase* resource, void* userPtr)
 {
-    UNUSED(resource);
-    UNUSED(userPtr);
+    NFE_UNUSED(resource);
+    NFE_UNUSED(userPtr);
     return true;
 }
 

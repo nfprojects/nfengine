@@ -18,7 +18,7 @@ ComputePipelineState::ComputePipelineState()
 bool ComputePipelineState::Init(const ComputePipelineStateDesc& desc)
 {
     // TODO
-    UNUSED(desc);
+    NFE_UNUSED(desc);
     return false;
 }
 

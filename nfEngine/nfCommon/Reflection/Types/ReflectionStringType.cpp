@@ -18,7 +18,7 @@ namespace RTTI {
 bool StringType::Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const
 {
     // no need to access Config object itself, all the data for fundamental types is contained in ConfigValue
-    UNUSED(config);
+    NFE_UNUSED(config);
 
     const Common::String* typedObject = static_cast<const Common::String*>(object);
     outValue = Common::ConfigValue(typedObject->Str());
@@ -27,7 +27,7 @@ bool StringType::Serialize(const void* object, Common::Config& config, Common::C
 
 bool StringType::Deserialize(void* outObject, const Common::Config& config, const Common::ConfigValue& value) const
 {
-    UNUSED(config);
+    NFE_UNUSED(config);
 
     if (value.Is<const char*>())
     {

@@ -172,9 +172,9 @@ bool EquationSolver::SolveLinearEquationsSystem4(const Matrix& a, const Vector& 
 {
     // TODO
 
-    UNUSED(a);
-    UNUSED(b);
-    UNUSED(outX);
+    NFE_UNUSED(a);
+    NFE_UNUSED(b);
+    NFE_UNUSED(outX);
     return true;
 }
 

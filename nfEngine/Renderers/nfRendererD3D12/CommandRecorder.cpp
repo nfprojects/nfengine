@@ -201,20 +201,20 @@ void CommandRecorder::SetScissors(int left, int top, int right, int bottom)
 
 void* CommandRecorder::MapBuffer(const BufferPtr& buffer, MapType type)
 {
-    UNUSED(buffer);
-    UNUSED(type);
+    NFE_UNUSED(buffer);
+    NFE_UNUSED(type);
     return nullptr;
 }
 
 void CommandRecorder::UnmapBuffer(const BufferPtr& buffer)
 {
-    UNUSED(buffer);
+    NFE_UNUSED(buffer);
 }
 
 void CommandRecorder::SetVertexBuffers(int num, const BufferPtr* vertexBuffers, int* strides, int* offsets)
 {
     // TODO
-    UNUSED(offsets);
+    NFE_UNUSED(offsets);
 
     NFE_ASSERT(num < NFE_RENDERER_MAX_VERTEX_BUFFERS, "Too many vertex buffers");
 
@@ -943,7 +943,7 @@ bool CommandRecorder::MoveToNextFrame(ID3D12CommandQueue* commandQueue)
 
 void CommandRecorder::BeginDebugGroup(const char* text)
 {
-    UNUSED(text);
+    NFE_UNUSED(text);
 }
 
 void CommandRecorder::EndDebugGroup()
@@ -952,7 +952,7 @@ void CommandRecorder::EndDebugGroup()
 
 void CommandRecorder::InsertDebugMarker(const char* text)
 {
-    UNUSED(text);
+    NFE_UNUSED(text);
 }
 
 } // namespace Renderer

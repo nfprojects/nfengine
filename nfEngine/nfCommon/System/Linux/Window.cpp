@@ -518,48 +518,48 @@ void Window::OnClose()
 
 void Window::OnResize(uint32 width, uint32 height)
 {
-    UNUSED(width);
-    UNUSED(height);
+    NFE_UNUSED(width);
+    NFE_UNUSED(height);
 }
 
 void Window::OnKeyPress(KeyCode key)
 {
-    UNUSED(key);
+    NFE_UNUSED(key);
 }
 
 void Window::OnKeyUp(KeyCode key)
 {
-    UNUSED(key);
+    NFE_UNUSED(key);
 }
 
 void Window::OnCharTyped(const char* charUTF8)
 {
-    UNUSED(charUTF8);
+    NFE_UNUSED(charUTF8);
 }
 
 void Window::OnScroll(int delta)
 {
-    UNUSED(delta);
+    NFE_UNUSED(delta);
 }
 
 void Window::OnMouseDown(uint32 button, int x, int y)
 {
-    UNUSED(button);
-    UNUSED(x);
-    UNUSED(y);
+    NFE_UNUSED(button);
+    NFE_UNUSED(x);
+    NFE_UNUSED(y);
 }
 
 void Window::OnMouseMove(int x, int y, int deltaX, int deltaY)
 {
-    UNUSED(x);
-    UNUSED(y);
-    UNUSED(deltaX);
-    UNUSED(deltaY);
+    NFE_UNUSED(x);
+    NFE_UNUSED(y);
+    NFE_UNUSED(deltaX);
+    NFE_UNUSED(deltaY);
 }
 
 void Window::OnMouseUp(uint32 button)
 {
-    UNUSED(button);
+    NFE_UNUSED(button);
 }
 
 } // namespace Common

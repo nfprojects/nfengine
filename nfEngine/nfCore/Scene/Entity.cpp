@@ -205,7 +205,7 @@ Box Entity::GetBoundingBox(bool includeChildren) const
     Math::Box box;
 
     // TODO
-    UNUSED(includeChildren);
+    NFE_UNUSED(includeChildren);
 
     return box;
 }

@@ -116,7 +116,7 @@ ICommandBuffer* Device::CreateCommandBuffer()
 
 bool Device::GetDeviceInfo(DeviceInfo& info)
 {
-    UNUSED(info);
+    NFE_UNUSED(info);
     return false;
 }
 

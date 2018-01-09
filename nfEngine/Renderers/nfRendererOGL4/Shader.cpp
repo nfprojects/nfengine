@@ -159,14 +159,14 @@ bool Shader::Init(const ShaderDesc& desc)
 
 bool Shader::GetIODesc(ShaderIODesc& result)
 {
-    UNUSED(result);
+    NFE_UNUSED(result);
     return false;
 }
 
 bool Shader::Disassemble(bool html, std::string& output)
 {
-    UNUSED(html);
-    UNUSED(output);
+    NFE_UNUSED(html);
+    NFE_UNUSED(output);
     return false;
 }
 

@@ -539,17 +539,17 @@ bool Device::FinishFrame()
 
 bool Device::DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data)
 {
-    UNUSED(buffer);
-    UNUSED(offset);
-    UNUSED(size);
-    UNUSED(data);
+    NFE_UNUSED(buffer);
+    NFE_UNUSED(offset);
+    NFE_UNUSED(size);
+    NFE_UNUSED(data);
     return false;
 }
 
 bool Device::DownloadTexture(const TexturePtr& tex, void* data, int mipmap, int layer)
 {
-    UNUSED(mipmap);
-    UNUSED(layer);
+    NFE_UNUSED(mipmap);
+    NFE_UNUSED(layer);
 
     const Texture* texture = dynamic_cast<Texture*>(tex.Get());
     if (!texture)

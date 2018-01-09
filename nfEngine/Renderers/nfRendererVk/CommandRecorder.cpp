@@ -57,7 +57,7 @@ bool CommandRecorder::Begin()
 
 void CommandRecorder::SetVertexBuffers(int num, const BufferPtr* vertexBuffers, int* strides, int* offsets)
 {
-    UNUSED(strides);
+    NFE_UNUSED(strides);
 
     const int maxBuffers = 4;
     VkBuffer buffers[maxBuffers];
@@ -94,7 +94,7 @@ void CommandRecorder::SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFo
 
 void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance)
 {
-    UNUSED(slot);
+    NFE_UNUSED(slot);
 
     ResourceBindingInstance* rbi = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.Get());
     if (rbi == nullptr)
@@ -183,7 +183,7 @@ void CommandRecorder::SetPipelineState(const PipelineStatePtr& state)
 
 void CommandRecorder::SetStencilRef(unsigned char ref)
 {
-    UNUSED(ref);
+    NFE_UNUSED(ref);
 }
 
 void CommandRecorder::SetViewport(float left, float width, float top, float height,
@@ -211,14 +211,14 @@ void CommandRecorder::SetScissors(int left, int top, int right, int bottom)
 
 void* CommandRecorder::MapBuffer(const BufferPtr& buffer, MapType type)
 {
-    UNUSED(buffer);
-    UNUSED(type);
+    NFE_UNUSED(buffer);
+    NFE_UNUSED(type);
     return nullptr;
 }
 
 void CommandRecorder::UnmapBuffer(const BufferPtr& buffer)
 {
-    UNUSED(buffer);
+    NFE_UNUSED(buffer);
 }
 
 bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, const void* data)
@@ -313,8 +313,8 @@ bool CommandRecorder::WriteBuffer(const BufferPtr& buffer, size_t offset, size_t
 
 void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
 {
-    UNUSED(src);
-    UNUSED(dest);
+    NFE_UNUSED(src);
+    NFE_UNUSED(dest);
 }
 
 void CommandRecorder::Clear(int flags, uint32 numTargets, const uint32* slots,
@@ -384,31 +384,31 @@ void CommandRecorder::DrawIndexed(int indexNum, int instancesNum,
 
 void CommandRecorder::BindComputeResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance)
 {
-    UNUSED(slot);
-    UNUSED(bindingSetInstance);
+    NFE_UNUSED(slot);
+    NFE_UNUSED(bindingSetInstance);
 }
 
 void CommandRecorder::BindComputeVolatileCBuffer(size_t slot, const BufferPtr& buffer)
 {
-    UNUSED(slot);
-    UNUSED(buffer);
+    NFE_UNUSED(slot);
+    NFE_UNUSED(buffer);
 }
 
 void CommandRecorder::SetComputeResourceBindingLayout(const ResourceBindingLayoutPtr& layout)
 {
-    UNUSED(layout);
+    NFE_UNUSED(layout);
 }
 
 void CommandRecorder::SetComputePipelineState(const ComputePipelineStatePtr& state)
 {
-    UNUSED(state);
+    NFE_UNUSED(state);
 }
 
 void CommandRecorder::Dispatch(uint32 x, uint32 y, uint32 z)
 {
-    UNUSED(x);
-    UNUSED(y);
-    UNUSED(z);
+    NFE_UNUSED(x);
+    NFE_UNUSED(y);
+    NFE_UNUSED(z);
 }
 
 CommandListID CommandRecorder::Finish()
@@ -431,7 +431,7 @@ CommandListID CommandRecorder::Finish()
 
 void CommandRecorder::BeginDebugGroup(const char* text)
 {
-    UNUSED(text);
+    NFE_UNUSED(text);
 }
 
 void CommandRecorder::EndDebugGroup()
@@ -440,7 +440,7 @@ void CommandRecorder::EndDebugGroup()
 
 void CommandRecorder::InsertDebugMarker(const char* text)
 {
-    UNUSED(text);
+    NFE_UNUSED(text);
 }
 
 } // namespace Renderer

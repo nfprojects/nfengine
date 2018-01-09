@@ -275,7 +275,7 @@ void FileAsync::FinishedOperationsHandler(DWORD dwErrorCode, DWORD dwNumberOfByt
 
 DWORD FileAsync::CallbackDispatcher(LPVOID param)
 {
-    UNUSED(param);
+    NFE_UNUSED(param);
 
     // Drift in the abyss of idleness waiting for the moment to become useful
     while (true)

@@ -26,8 +26,8 @@ Backbuffer::~Backbuffer()
 
 bool Backbuffer::Resize(int newWidth, int newHeight)
 {
-    UNUSED(newWidth);
-    UNUSED(newHeight);
+    NFE_UNUSED(newWidth);
+    NFE_UNUSED(newHeight);
     return false;
 }
 

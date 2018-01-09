@@ -192,7 +192,7 @@ bool TessellationScene::OnInit(void* winHandle)
 
 void TessellationScene::Draw(float dt)
 {
-    UNUSED(dt);
+    NFE_UNUSED(dt);
 
     // reset bound resources and set them once again
     mCommandBuffer->Begin();

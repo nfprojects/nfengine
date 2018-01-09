@@ -80,7 +80,7 @@ bool AsyncQueueManager::EnqueueJob(JobProcedure callback, void* data)
 
 DWORD AsyncQueueManager::JobQueue(LPVOID param)
 {
-    UNUSED(param);
+    NFE_UNUSED(param);
     AsyncQueueManager* const instance = &AsyncQueueManager::GetInstance();
 
     // Drift in the abyss of idleness waiting for the moment to become useful

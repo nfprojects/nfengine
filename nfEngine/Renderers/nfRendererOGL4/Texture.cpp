@@ -35,7 +35,7 @@ Texture::~Texture()
 
 bool Texture::InitTexture1D(const TextureDesc& desc)
 {
-    UNUSED(desc);
+    NFE_UNUSED(desc);
 
     return true;
 }
@@ -119,7 +119,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
 
 bool Texture::InitTexture3D(const TextureDesc& desc)
 {
-    UNUSED(desc);
+    NFE_UNUSED(desc);
 
     return true;
 }

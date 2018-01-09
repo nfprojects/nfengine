@@ -42,7 +42,7 @@ Texture::~Texture()
 bool Texture::InitTexture1D(const TextureDesc& desc)
 {
     // TODO: fill
-    UNUSED(desc);
+    NFE_UNUSED(desc);
 
     mType = TextureType::Texture1D;
     return true;
@@ -220,7 +220,7 @@ bool Texture::InitTexture2D(const TextureDesc& desc)
 bool Texture::InitTexture3D(const TextureDesc& desc)
 {
     // TODO: fill
-    UNUSED(desc);
+    NFE_UNUSED(desc);
 
     mType = TextureType::Texture3D;
     return true;

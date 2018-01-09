@@ -97,7 +97,7 @@ void TriggerSystem::InvalidateArea(const Math::Box& box)
 
 void TriggerSystem::Update(const SystemUpdateContext& context)
 {
-    UNUSED(context);
+    NFE_UNUSED(context);
 
     // Resolve ID to actual trigger object pointers in order to reduce number of Map accesses
     // from N^2 to N.

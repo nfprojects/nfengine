@@ -376,8 +376,8 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, const BufferPtr& buf
 
 bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, const TexturePtr& texture)
 {
-    UNUSED(slot);
-    UNUSED(texture);
+    NFE_UNUSED(slot);
+    NFE_UNUSED(texture);
     return false;
 }
 

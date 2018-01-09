@@ -270,7 +270,7 @@ bool VertexBuffersScene::OnInit(void* winHandle)
 void VertexBuffersScene::Draw(float dt)
 {
     // not used - the scene is static
-    UNUSED(dt);
+    NFE_UNUSED(dt);
 
     // reset bound resources and set them once again
     mCommandBuffer->Begin();

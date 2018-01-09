@@ -61,7 +61,7 @@ const EnumOptions& EnumType::GetOptions() const
 bool EnumType::Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const
 {
     // no need to access Config object itself
-    UNUSED(config);
+    NFE_UNUSED(config);
 
     uint64 integerValue = 0;
     switch (GetSize())
@@ -106,7 +106,7 @@ bool EnumType::Serialize(const void* object, Common::Config& config, Common::Con
 
 bool EnumType::Deserialize(void* outObject, const Common::Config& config, const Common::ConfigValue& value) const
 {
-    UNUSED(config);
+    NFE_UNUSED(config);
 
     if (value.Is<const char*>())
     {

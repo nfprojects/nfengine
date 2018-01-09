@@ -19,10 +19,10 @@ VkBool32 DebugReport(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT obj
                      uint64_t object, size_t location, int32_t messageCode, const char* pLayerPrefix,
                      const char* pMessage, void* pUserData)
 {
-    UNUSED(objectType);
-    UNUSED(object);
-    UNUSED(location);
-    UNUSED(pUserData); // for now, but it might be a good idea to use it in the future
+    NFE_UNUSED(objectType);
+    NFE_UNUSED(object);
+    NFE_UNUSED(location);
+    NFE_UNUSED(pUserData); // for now, but it might be a good idea to use it in the future
 
     const char* report = "VK_REPORT";
     const char* perf = "VK_PERF";

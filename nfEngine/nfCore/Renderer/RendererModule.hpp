@@ -38,13 +38,13 @@ public:
     virtual void OnEnter(ContextType* context)
     {
         // nothing to do by default
-        UNUSED(context);
+        NFE_UNUSED(context);
     }
 
     virtual void OnLeave(ContextType* context)
     {
         // nothing to do by default
-        UNUSED(context);
+        NFE_UNUSED(context);
     }
 
     NFE_INLINE static ModuleType* Get()

@@ -170,7 +170,7 @@ bool ComputeScene::OnInit(void* winHandle)
 
 void ComputeScene::Draw(float dt)
 {
-    UNUSED(dt);
+    NFE_UNUSED(dt);
 
     // reset bound resources and set them once again
     mCommandBuffer->Begin();

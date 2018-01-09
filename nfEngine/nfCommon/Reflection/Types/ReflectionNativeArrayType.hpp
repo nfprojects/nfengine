@@ -150,7 +150,7 @@ public:
 
     void FinishInitialization(TypeInfo& typeInfo)
     {
-        UNUSED(typeInfo);
+        NFE_UNUSED(typeInfo);
     }
 };
 
