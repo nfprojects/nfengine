@@ -10,6 +10,9 @@
 #include "Sphere.hpp"
 #include "Frustum.hpp"
 #include "Triangle.hpp"
+#include "Quaternion.hpp"
+#include "Transform.hpp"
+
 
 namespace NFE {
 namespace Math {
@@ -52,10 +55,12 @@ bool Intersect(const Box& box, const Frustum& frustum)
     // test frustum planes against box vertices
     for (int i = 0; i < 6; i++)
     {
-        Vector plane = frustum.planes[i];
-        Vector vmax = Vector::SelectBySign(box.max, box.min, plane);
-        if (!Vector::PlanePointSide(plane, vmax))
+        const Plane& plane = frustum.planes[i];
+        const Vector vmax = Vector::SelectBySign(box.max, box.min, plane.v);
+        if (!plane.Side(vmax))
+        {
             return false;
+        }
     }
 
     return true;
@@ -87,14 +92,14 @@ IntersectionResult IntersectEx(const Box& box, const Frustum& frustum)
     // test frustum planes against box vertices
     for (int i = 0; i < 6; i++)
     {
-        Vector plane = frustum.planes[i];
-        Vector vmax = Vector::SelectBySign(box.max, box.min, plane);
-        Vector vmin = Vector::SelectBySign(box.min, box.max, plane);
+        const Plane& plane = frustum.planes[i];
+        const Vector vmax = Vector::SelectBySign(box.max, box.min, plane.v);
+        const Vector vmin = Vector::SelectBySign(box.min, box.max, plane.v);
 
-        if (!Vector::PlanePointSide(plane, vmax))
+        if (!plane.Side(vmax))
             return IntersectionResult::Outside;
 
-        if (!Vector::PlanePointSide(plane, vmin))
+        if (!plane.Side(vmin))
             numPlanes++;
     }
 
@@ -114,7 +119,7 @@ bool Intersect(const Frustum& f1, const Frustum& f2)
         int count = 0;
 
         for (int j = 0; j < 8; j++)
-            if (!Vector::PlanePointSide(f2.planes[i], f1.verticies[j]))
+            if (!f2.planes[i].Side(f1.verticies[j]))
                 count++;
 
         if (count == 8)
@@ -127,12 +132,14 @@ bool Intersect(const Frustum& f1, const Frustum& f2)
         int count = 0;
 
         for (int j = 0; j < 8; j++)
-            if (!Vector::PlanePointSide(f1.planes[i], f2.verticies[j]))
+            if (!f1.planes[i].Side(f2.verticies[j]))
                 count++;
 
         if (count == 8)
             return false;
     }
+
+    // TODO edge-edge case
 
     return true;
 }
@@ -142,8 +149,12 @@ template<> NFCOMMON_API
 bool Intersect(const Vector& point, const Frustum& frustum)
 {
     for (int i = 0; i < 6; i++)
-        if (!Vector::PlanePointSide(frustum.planes[i], point))
+    {
+        if (!frustum.planes[i].Side(point))
+        {
             return false;
+        }
+    }
 
     return true;
 }
@@ -155,19 +166,21 @@ bool Intersect(const Triangle& tri, const Frustum& frustum)
     // frustum planes vs. triangle verticies
     for (int i = 0; i < 6; i++)
     {
-        bool outside = !Vector::PlanePointSide(frustum.planes[i], tri.v0);
-        outside &= !Vector::PlanePointSide(frustum.planes[i], tri.v1);
-        outside &= !Vector::PlanePointSide(frustum.planes[i], tri.v2);
-        if (outside)
+        const bool outside0 = !frustum.planes[i].Side(tri.v0);
+        const bool outside1 = !frustum.planes[i].Side(tri.v1);
+        const bool outside2 = !frustum.planes[i].Side(tri.v2);
+        if (outside0 && outside1 && outside2)
+        {
             return false;
+        }
     }
 
     // triangle plane vs. frustum vertices
-    Vector plane = Vector::PlaneFromPoints(tri.v0, tri.v1, tri.v2);
+    const Plane plane(tri.v0, tri.v1, tri.v2);
     int tmpSide = 0;
     for (int i = 0; i < 8; i++)
     {
-        bool side = Vector::PlanePointSide(plane, frustum.verticies[i]);
+        const bool side = plane.Side(frustum.verticies[i]);
 
         if (!side && tmpSide > 0)
             return true;
@@ -238,16 +251,16 @@ bool Intersect(const Frustum& frustum, const Sphere& sphere)
     // test frustum planes against the sphere
     for (int i = 0; i < 6; i++)
     {
-        Vector plane = frustum.planes[i];
-        plane.f[3] += sphere.r;
-        if (!Vector::PlanePointSide(plane, sphere.origin))
+        Plane plane = frustum.planes[i];
+        plane.v.w += sphere.r;
+        if (!plane.Side(sphere.origin))
             return false;
     }
 
     // find the nearest point on frustum's edges to the sphere center
     // TODO: optimize - each ClosestPointOnSegment() call does division
     Vector nearest;
-    float dist = 1.0e+10f;
+    float dist = std::numeric_limits<float>::max();
 
     auto check = [&](const int i, const int j)
     {
@@ -285,18 +298,73 @@ bool Intersect(const Frustum& frustum, const Sphere& sphere)
         return true;
 
     // test sphere against frustum vertices
-    Vector plane = Vector::PlaneFromNormalAndPoint((nearest - sphere.origin).Normalized3(), sphere.origin);
-    plane.f[3] -= sphere.r;
+    Plane plane((nearest - sphere.origin).Normalized3(), sphere.origin);
+    plane.v.w -= sphere.r;
 
     for (int i = 0; i < 8; ++i)
     {
-        if (!Vector::PlanePointSide(plane, frustum.verticies[i]))
+        if (!plane.Side(frustum.verticies[i]))
             return true;
     }
 
     return false;
 }
 
+Box TransformBox(const Matrix& matrix, const Box& localBox)
+{
+    // based on:
+    // http://dev.theomader.com/transform-bounding-boxes/
+
+    const Vector xa = matrix.GetRow(0) * localBox.min.x;
+    const Vector xb = matrix.GetRow(0) * localBox.max.x;
+    const Vector ya = matrix.GetRow(1) * localBox.min.y;
+    const Vector yb = matrix.GetRow(1) * localBox.max.y;
+    const Vector za = matrix.GetRow(2) * localBox.min.z;
+    const Vector zb = matrix.GetRow(2) * localBox.max.z;
+
+    return Box(
+        Vector::Min(xa, xb) + Vector::Min(ya, yb) + Vector::Min(za, zb) + matrix.GetRow(3),
+        Vector::Max(xa, xb) + Vector::Max(ya, yb) + Vector::Max(za, zb) + matrix.GetRow(3)
+    );
+}
+
+Box TransformBox(const Quaternion& quat, const Box& localBox)
+{
+    // based on:
+    // http://dev.theomader.com/transform-bounding-boxes/
+
+    const Vector xa = quat.GetAxisX() * localBox.min.x;
+    const Vector xb = quat.GetAxisX() * localBox.max.x;
+    const Vector ya = quat.GetAxisY() * localBox.min.y;
+    const Vector yb = quat.GetAxisY() * localBox.max.y;
+    const Vector za = quat.GetAxisZ() * localBox.min.z;
+    const Vector zb = quat.GetAxisZ() * localBox.max.z;
+
+    return Box(
+        Vector::Min(xa, xb) + Vector::Min(ya, yb) + Vector::Min(za, zb),
+        Vector::Max(xa, xb) + Vector::Max(ya, yb) + Vector::Max(za, zb)
+    );
+}
+
+Box TransformBox(const Transform& transform, const Box& localBox)
+{
+    // based on:
+    // http://dev.theomader.com/transform-bounding-boxes/
+
+    const Quaternion& quat = transform.GetRotation();
+
+    const Vector xa = quat.GetAxisX() * localBox.min.x;
+    const Vector xb = quat.GetAxisX() * localBox.max.x;
+    const Vector ya = quat.GetAxisY() * localBox.min.y;
+    const Vector yb = quat.GetAxisY() * localBox.max.y;
+    const Vector za = quat.GetAxisZ() * localBox.min.z;
+    const Vector zb = quat.GetAxisZ() * localBox.max.z;
+
+    return Box(
+        Vector::Min(xa, xb) + Vector::Min(ya, yb) + Vector::Min(za, zb) + transform.GetTranslation(),
+        Vector::Max(xa, xb) + Vector::Max(ya, yb) + Vector::Max(za, zb) + transform.GetTranslation()
+    );
+}
 
 } // namespace Math
 } // namespace NFE

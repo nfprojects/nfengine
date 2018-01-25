@@ -10,6 +10,8 @@
 #include "Vector.hpp"
 #include "Matrix.hpp"
 #include "Box.hpp"
+#include "Plane.hpp"
+
 
 namespace NFE {
 namespace Math {
@@ -21,7 +23,7 @@ class NFCOMMON_API NFE_ALIGN(16) Frustum
 {
 public:
     /// planes IDs
-    enum Plane : uint8
+    enum Side : uint8
     {
         Front = 0,
         Back,
@@ -31,7 +33,7 @@ public:
         Top
     };
 
-    Vector planes[6];
+    Plane planes[6];
     Vector verticies[8];
     Box boundingBox;
 

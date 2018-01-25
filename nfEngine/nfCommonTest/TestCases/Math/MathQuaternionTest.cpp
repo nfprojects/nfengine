@@ -45,10 +45,10 @@ TEST(MathQuaternion, RotationAxisX)
 {
     const Quaternion q = Quaternion::RotationX(Constants::pi<float> / 2.0f);
 
-    const Vector tx = q.Transform(Vector(1.0f, 0.0f, 0.0f));
-    const Vector ty = q.Transform(Vector(0.0f, 1.0f, 0.0f));
-    const Vector tz = q.Transform(Vector(0.0f, 0.0f, 1.0f));
-    const Vector t0 = q.Transform(testVector0);
+    const Vector tx = q.TransformVector(Vector(1.0f, 0.0f, 0.0f));
+    const Vector ty = q.TransformVector(Vector(0.0f, 1.0f, 0.0f));
+    const Vector tz = q.TransformVector(Vector(0.0f, 0.0f, 1.0f));
+    const Vector t0 = q.TransformVector(testVector0);
 
     EXPECT_TRUE(Vector::AlmostEqual(tx, Vector(1.0f, 0.0f, 0.0f)));
     EXPECT_TRUE(Vector::AlmostEqual(ty, Vector(0.0f, 0.0f, 1.0f)));
@@ -60,10 +60,10 @@ TEST(MathQuaternion, RotationAxisY)
 {
     const Quaternion q = Quaternion::RotationY(Constants::pi<float> / 2.0f);
 
-    const Vector tx = q.Transform(Vector(1.0f, 0.0f, 0.0f));
-    const Vector ty = q.Transform(Vector(0.0f, 1.0f, 0.0f));
-    const Vector tz = q.Transform(Vector(0.0f, 0.0f, 1.0f));
-    const Vector t0 = q.Transform(testVector0);
+    const Vector tx = q.TransformVector(Vector(1.0f, 0.0f, 0.0f));
+    const Vector ty = q.TransformVector(Vector(0.0f, 1.0f, 0.0f));
+    const Vector tz = q.TransformVector(Vector(0.0f, 0.0f, 1.0f));
+    const Vector t0 = q.TransformVector(testVector0);
 
     EXPECT_TRUE(Vector::AlmostEqual(tx, Vector(0.0f, 0.0f, -1.0f)));
     EXPECT_TRUE(Vector::AlmostEqual(ty, Vector(0.0f, 1.0f, 0.0f)));
@@ -75,10 +75,10 @@ TEST(MathQuaternion, RotationAxisZ)
 {
     const Quaternion q = Quaternion::RotationZ(Constants::pi<float> / 2.0f);
 
-    const Vector tx = q.Transform(Vector(1.0f, 0.0f, 0.0f));
-    const Vector ty = q.Transform(Vector(0.0f, 1.0f, 0.0f));
-    const Vector tz = q.Transform(Vector(0.0f, 0.0f, 1.0f));
-    const Vector t0 = q.Transform(testVector0);
+    const Vector tx = q.TransformVector(Vector(1.0f, 0.0f, 0.0f));
+    const Vector ty = q.TransformVector(Vector(0.0f, 1.0f, 0.0f));
+    const Vector tz = q.TransformVector(Vector(0.0f, 0.0f, 1.0f));
+    const Vector t0 = q.TransformVector(testVector0);
 
     EXPECT_TRUE(Vector::AlmostEqual(tx, Vector(0.0f, 1.0f, 0.0f)));
     EXPECT_TRUE(Vector::AlmostEqual(ty, Vector(-1.0f, 0.0f, 0.0f)));
@@ -91,10 +91,10 @@ TEST(MathQuaternion, RotationAxis)
     const Vector axis = testAxis.Normalized3();
     const Quaternion q = Quaternion::FromAxisAndAngle(axis, testAngle);
 
-    const Vector tx = q.Transform(Vector(1.0f, 0.0f, 0.0f));
-    const Vector ty = q.Transform(Vector(0.0f, 1.0f, 0.0f));
-    const Vector tz = q.Transform(Vector(0.0f, 0.0f, 1.0f));
-    const Vector t0 = q.Transform(testVector0);
+    const Vector tx = q.TransformVector(Vector(1.0f, 0.0f, 0.0f));
+    const Vector ty = q.TransformVector(Vector(0.0f, 1.0f, 0.0f));
+    const Vector tz = q.TransformVector(Vector(0.0f, 0.0f, 1.0f));
+    const Vector t0 = q.TransformVector(testVector0);
 
     EXPECT_TRUE(Vector::AlmostEqual(tx, transformedX, 0.00001f));
     EXPECT_TRUE(Vector::AlmostEqual(ty, transformedY, 0.00001f));
@@ -127,10 +127,10 @@ TEST(MathQuaternion, FromMatrix)
 
     ASSERT_TRUE(Quaternion::AlmostEqual(q, q2, 0.00001f));
 
-    const Vector tx = q2.Transform(Vector(1.0f, 0.0f, 0.0f));
-    const Vector ty = q2.Transform(Vector(0.0f, 1.0f, 0.0f));
-    const Vector tz = q2.Transform(Vector(0.0f, 0.0f, 1.0f));
-    const Vector t0 = q2.Transform(testVector0);
+    const Vector tx = q2.TransformVector(Vector(1.0f, 0.0f, 0.0f));
+    const Vector ty = q2.TransformVector(Vector(0.0f, 1.0f, 0.0f));
+    const Vector tz = q2.TransformVector(Vector(0.0f, 0.0f, 1.0f));
+    const Vector t0 = q2.TransformVector(testVector0);
 
     EXPECT_TRUE(Vector::AlmostEqual(tx, transformedX, 0.00001f));
     EXPECT_TRUE(Vector::AlmostEqual(ty, transformedY, 0.00001f));

@@ -153,20 +153,5 @@ void Mesh::OnUnload()
     }
 }
 
-Box Mesh::GetGlobalAABB(const Matrix& matrix) const
-{
-    Box result;
-    result.min = result.max = matrix.LinearCombination3(mLocalBox.GetVertex(0));
-
-    for (int i = 1; i < 8; i++)
-    {
-        Vector vert = matrix.LinearCombination3(mLocalBox.GetVertex(i));
-        result.min = Vector::Min(result.min, vert);
-        result.max = Vector::Max(result.max, vert);
-    }
-
-    return result;
-}
-
 } // namespace Resource
 } // namespace NFE

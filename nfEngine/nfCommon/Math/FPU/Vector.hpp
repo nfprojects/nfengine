@@ -21,11 +21,8 @@ Vector::Vector()
 }
 
 Vector::Vector(float x, float y, float z, float w)
+    : x(x), y(y), z(z), w(w)
 {
-    f[0] = x;
-    f[1] = y;
-    f[2] = z;
-    f[3] = w;
 }
 
 Vector::Vector(int x, int y, int z, int w)
@@ -127,15 +124,15 @@ void Vector::Store(Float4* dest) const
     dest->w = f[3];
 }
 
-template<bool x, bool y, bool z, bool w>
+template<bool negX, bool negY, bool negZ, bool negW>
 Vector Vector::ChangeSign() const
 {
-    Vector ret;
-    ret[0] = x ? -f[0] : f[0];
-    ret[1] = y ? -f[1] : f[1];
-    ret[2] = z ? -f[2] : f[2];
-    ret[3] = w ? -f[3] : f[3];
-    return ret;
+    return Vector(
+        negX ? -f[0] : f[0],
+        negY ? -f[1] : f[1],
+        negZ ? -f[2] : f[2],
+        negW ? -f[3] : f[3]
+    );
 }
 
 // Elements rearrangement =========================================================================
@@ -691,10 +688,10 @@ Vector Vector::Normalized3() const
 Vector& Vector::Normalize3()
 {
     float lenInv = 1.0f / Length3();
-    f[0] *= lenInv;
-    f[1] *= lenInv;
-    f[2] *= lenInv;
-    f[3] = 0.0f;
+    x *= lenInv;
+    y *= lenInv;
+    z *= lenInv;
+    w = 0.0f;
     return *this;
 }
 
@@ -715,27 +712,6 @@ Vector Vector::Reflect3(const Vector& i, const Vector& n)
 {
     float dot = Vector::Dot3(i, n);
     return i - n * (dot + dot);
-}
-
-Vector Vector::PlaneFromPoints(const Vector& p1, const Vector& p2, const Vector& p3)
-{
-    Vector v21 = p1 - p2;
-    Vector v31 = p1 - p3;
-    Vector n = Vector::Cross3(v21, v31).Normalized3();
-    float d = Vector::Dot3(n, p1);
-    return Vector(n.f[0], n.f[1], n.f[2], -d);
-}
-
-Vector Vector::PlaneFromNormalAndPoint(const Vector& normal, const Vector& p)
-{
-    float d = Vector::Dot3(normal, p);
-    return Vector(normal.f[0], normal.f[1], normal.f[2], -d);
-}
-
-bool Vector::PlanePointSide(const Vector& plane, const Vector& point)
-{
-    float d = Vector::Dot3(plane, point) + plane.f[3];
-    return d > 0.0f;
 }
 
 } // namespace Math
