@@ -36,6 +36,13 @@ struct NFE_ALIGN(16) Quaternion final
     operator Vector&() { return q; }
 
     /**
+     * Get transformed X, Y, Z axes.
+     */
+    NFE_INLINE Vector GetAxisX() const;
+    NFE_INLINE Vector GetAxisY() const;
+    NFE_INLINE Vector GetAxisZ() const;
+
+    /**
      * Create null rotation quaternion.
      */
     NFE_INLINE static Quaternion Identity();
@@ -110,7 +117,7 @@ struct NFE_ALIGN(16) Quaternion final
     /**
      * Rotate a 3D vector with a quaternion.
      */
-    NFCOMMON_API Vector Transform(const Vector& v) const;
+    NFCOMMON_API Vector TransformVector(const Vector& v) const;
 
     /**
      * Extract rotation axis and angle from a quaternion.

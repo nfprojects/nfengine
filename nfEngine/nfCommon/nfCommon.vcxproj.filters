@@ -58,6 +58,9 @@
     <Filter Include="Containers\Iterators">
       <UniqueIdentifier>{51fafc6d-ed35-48ef-8818-d037d9db3688}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Math\Shapes">
+      <UniqueIdentifier>{7e9c0cac-163a-4dcc-bd16-02a66e740794}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nfCommon.hpp" />
@@ -152,16 +155,7 @@
     <ClInclude Include="Math\SSE\Vector.hpp">
       <Filter>Math\SSE</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Box.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\BoxImpl.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
     <ClInclude Include="Math\Conversions.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Frustum.hpp">
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="Math\Geometry.hpp">
@@ -177,15 +171,6 @@
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="Math\Random.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Ray.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Sphere.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Triangle.hpp">
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="Memory\DefaultAllocator.hpp">
@@ -423,9 +408,6 @@
     <ClInclude Include="Containers\SharedPtrBase.hpp">
       <Filter>Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Rect.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
     <ClInclude Include="Math\MathImpl.hpp">
       <Filter>Math</Filter>
     </ClInclude>
@@ -522,6 +504,33 @@
     <ClInclude Include="Containers\Iterators\ArrayIteratorImpl.hpp">
       <Filter>Containers\Iterators</Filter>
     </ClInclude>
+    <ClInclude Include="Math\Box.hpp">
+      <Filter>Math\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\BoxImpl.hpp">
+      <Filter>Math\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Frustum.hpp">
+      <Filter>Math\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Plane.hpp">
+      <Filter>Math\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Sphere.hpp">
+      <Filter>Math\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Triangle.hpp">
+      <Filter>Math\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Ray.hpp">
+      <Filter>Math\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Rect.hpp">
+      <Filter>Math\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\PlaneImpl.hpp">
+      <Filter>Math\Shapes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -594,16 +603,10 @@
     <ClCompile Include="Math\SSE\GeometrySSE.cpp">
       <Filter>Math\SSE</Filter>
     </ClCompile>
-    <ClCompile Include="Math\Box.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
     <ClCompile Include="Math\Conversions.cpp">
       <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="Math\EquationSolver.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Frustum.cpp">
       <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="Math\Geometry.cpp">
@@ -759,8 +762,14 @@
     <ClCompile Include="Reflection\Types\ReflectionEnumType.cpp">
       <Filter>Reflection\Types</Filter>
     </ClCompile>
+    <ClCompile Include="Math\Box.cpp">
+      <Filter>Math\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Frustum.cpp">
+      <Filter>Math\Shapes</Filter>
+    </ClCompile>
     <ClCompile Include="Math\Sphere.cpp">
-      <Filter>Math</Filter>
+      <Filter>Math\Shapes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

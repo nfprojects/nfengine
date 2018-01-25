@@ -17,15 +17,12 @@ namespace Math {
 
 Vector::Vector()
 {
-    f[0] = f[1] = f[2] = f[3] = 0.0f;
+    x = y = z = w = 0.0f;
 }
 
 Vector::Vector(float x, float y, float z, float w)
+    : x(x), y(y), z(z), w(w)
 {
-    f[0] = x;
-    f[1] = y;
-    f[2] = z;
-    f[3] = w;
 }
 
 Vector::Vector(int x, int y, int z, int w)
@@ -39,42 +36,42 @@ Vector::Vector(int x, int y, int z, int w)
 // copy array of 4 floats
 Vector::Vector(const float* src)
 {
-    f[0] = src[0];
-    f[1] = src[1];
-    f[2] = src[2];
-    f[3] = src[3];
+    this->x = src[0];
+    this->y = src[1];
+    this->z = src[2];
+    this->w = src[3];
 }
 
 Vector::Vector(const Float2& src)
 {
-    f[0] = src.x;
-    f[1] = src.y;
-    f[2] = 0.0f;
-    f[3] = 0.0f;
+    x = src.x;
+    y = src.y;
+    z = 0.0f;
+    w = 0.0f;
 }
 
 Vector::Vector(const Float3& src)
 {
-    f[0] = src.x;
-    f[1] = src.y;
-    f[2] = src.z;
-    f[3] = 0.0f;
+    x = src.x;
+    y = src.y;
+    z = src.z;
+    w = 0.0f;
 }
 
 Vector::Vector(const Float4& src)
 {
-    f[0] = src.x;
-    f[1] = src.y;
-    f[2] = src.z;
-    f[3] = src.w;
+    x = src.x;
+    y = src.y;
+    z = src.z;
+    w = src.w;
 }
 
 void Vector::Set(float scalar)
 {
-    f[0] = scalar;
-    f[1] = scalar;
-    f[2] = scalar;
-    f[3] = scalar;
+    x = scalar;
+    y = scalar;
+    z = scalar;
+    w = scalar;
 }
 
 // Load & store ===================================================================================
@@ -92,50 +89,50 @@ Vector Vector::Load4(const unsigned char* src)
 void Vector::Store4(uint8* dest) const
 {
     // TODO: saturate to <0, 255>
-    dest[0] = static_cast<unsigned char>(f[0]);
-    dest[1] = static_cast<unsigned char>(f[1]);
-    dest[2] = static_cast<unsigned char>(f[2]);
-    dest[3] = static_cast<unsigned char>(f[3]);
+    dest[0] = static_cast<unsigned char>(x);
+    dest[1] = static_cast<unsigned char>(y);
+    dest[2] = static_cast<unsigned char>(z);
+    dest[3] = static_cast<unsigned char>(w);
 }
 
 void Vector::Store(float* dest) const
 {
-    dest[0] = f[0];
-    dest[1] = f[1];
-    dest[2] = f[2];
-    dest[3] = f[3];
+    dest[0] = x;
+    dest[1] = y;
+    dest[2] = z;
+    dest[3] = w;
 }
 
 void Vector::Store(Float2* dest) const
 {
-    dest->x = f[0];
-    dest->y = f[1];
+    dest->x = x;
+    dest->y = y;
 }
 
 void Vector::Store(Float3* dest) const
 {
-    dest->x = f[0];
-    dest->y = f[1];
-    dest->z = f[2];
+    dest->x = x;
+    dest->y = y;
+    dest->z = z;
 }
 
 void Vector::Store(Float4* dest) const
 {
-    dest->x = f[0];
-    dest->y = f[1];
-    dest->z = f[2];
-    dest->w = f[3];
+    dest->x = x;
+    dest->y = y;
+    dest->z = z;
+    dest->w = w;
 }
 
-template<bool x, bool y, bool z, bool w>
+template<bool negX, bool negY, bool negZ, bool negW>
 Vector Vector::ChangeSign() const
 {
-    Vector ret;
-    ret[0] = x ? -f[0] : f[0];
-    ret[1] = y ? -f[1] : f[1];
-    ret[2] = z ? -f[2] : f[2];
-    ret[3] = w ? -f[3] : f[3];
-    return ret;
+    return Vector(
+        negX ? -x : x,
+        negY ? -y : y,
+        negZ ? -z : z,
+        negW ? -w : w
+    );
 }
 
 // Elements rearrangement =========================================================================
@@ -167,22 +164,22 @@ Vector Vector::Blend(const Vector& a, const Vector& b)
 
 Vector Vector::SplatX() const
 {
-    return Vector(f[0], f[0], f[0], f[0]);
+    return Vector(x, x, x, x);
 }
 
 Vector Vector::SplatY() const
 {
-    return Vector(f[1], f[1], f[1], f[1]);
+    return Vector(y, y, y, y);
 }
 
 Vector Vector::SplatZ() const
 {
-    return Vector(f[2], f[2], f[2], f[2]);
+    return Vector(z, z, z, z);
 }
 
 Vector Vector::SplatW() const
 {
-    return Vector(f[3], f[3], f[3], f[3]);
+    return Vector(w, w, w, w);
 }
 
 Vector Vector::Splat(float f)
@@ -248,7 +245,7 @@ Vector& Vector::operator^= (const Vector& b)
 
 Vector Vector::operator- () const
 {
-    return Vector(-f[0], -f[1], -f[2], -f[3]);
+    return Vector(-x, -y, -z, -w);
 }
 
 Vector Vector::operator+ (const Vector& b) const
@@ -283,61 +280,61 @@ Vector Vector::operator/ (float b) const
 
 Vector operator*(float a, const Vector& b)
 {
-    return Vector(a * b.f[0], a * b.f[1], a * b.f[2], a * b.f[3]);
+    return Vector(a * b.x, a * b.y, a * b.z, a * b.w);
 }
 
 
 Vector& Vector::operator+= (const Vector& b)
 {
-    f[0] += b.f[0];
-    f[1] += b.f[1];
-    f[2] += b.f[2];
-    f[3] += b.f[3];
+    x += b.x;
+    y += b.y;
+    z += b.z;
+    w += b.w;
     return *this;
 }
 
 Vector& Vector::operator-= (const Vector& b)
 {
-    f[0] -= b.f[0];
-    f[1] -= b.f[1];
-    f[2] -= b.f[2];
-    f[3] -= b.f[3];
+    x -= b.x;
+    y -= b.y;
+    z -= b.z;
+    w -= b.w;
     return *this;
 }
 
 Vector& Vector::operator*= (const Vector& b)
 {
-    f[0] *= b.f[0];
-    f[1] *= b.f[1];
-    f[2] *= b.f[2];
-    f[3] *= b.f[3];
+    x *= b.x;
+    y *= b.y;
+    z *= b.z;
+    w *= b.w;
     return *this;
 }
 
 Vector& Vector::operator/= (const Vector& b)
 {
-    f[0] /= b.f[0];
-    f[1] /= b.f[1];
-    f[2] /= b.f[2];
-    f[3] /= b.f[3];
+    x /= b.x;
+    y /= b.y;
+    z /= b.z;
+    w /= b.w;
     return *this;
 }
 
 Vector& Vector::operator*= (float b)
 {
-    f[0] *= b;
-    f[1] *= b;
-    f[2] *= b;
-    f[3] *= b;
+    x *= b;
+    y *= b;
+    z *= b;
+    w *= b;
     return *this;
 }
 
 Vector& Vector::operator/= (float b)
 {
-    f[0] /= b;
-    f[1] /= b;
-    f[2] /= b;
-    f[3] /= b;
+    x /= b;
+    y /= b;
+    z /= b;
+    w /= b;
     return *this;
 }
 
@@ -364,70 +361,70 @@ Vector Vector::NegMulAndSub(const Vector& a, const Vector& b, const Vector& c)
 
 Vector Vector::Floor(const Vector& v)
 {
-    return Vector(floorf(v.f[0]), floorf(v.f[1]), floorf(v.f[2]), floorf(v.f[3]));
+    return Vector(floorf(v.x), floorf(v.y), floorf(v.z), floorf(v.w));
 }
 
 Vector Vector::Sqrt(const Vector& v)
 {
-    return Vector(sqrtf(v.f[0]), v.f[1], v.f[2], v.f[3]);
+    return Vector(sqrtf(v.x), v.y, v.z, v.w);
 }
 
 Vector Vector::Sqrt4(const Vector& v)
 {
-    return Vector(sqrtf(v.f[0]), sqrtf(v.f[1]), sqrtf(v.f[2]), sqrtf(v.f[3]));
+    return Vector(sqrtf(v.x), sqrtf(v.y), sqrtf(v.z), sqrtf(v.w));
 }
 
 Vector Vector::Reciprocal(const Vector& v)
 {
     // this checks are required to avoid "potential divide by 0" warning
-    return Vector(v.f[0] != 0.0f ? 1.0f / v.f[0] : INFINITY,
-                  v.f[1] != 0.0f ? 1.0f / v.f[1] : INFINITY,
-                  v.f[2] != 0.0f ? 1.0f / v.f[2] : INFINITY,
-                  v.f[3] != 0.0f ? 1.0f / v.f[3] : INFINITY);
+    return Vector(v.x != 0.0f ? 1.0f / v.x : INFINITY,
+                  v.y != 0.0f ? 1.0f / v.y : INFINITY,
+                  v.z != 0.0f ? 1.0f / v.z : INFINITY,
+                  v.w != 0.0f ? 1.0f / v.w : INFINITY);
 }
 
 Vector Vector::Min(const Vector& a, const Vector& b)
 {
     Vector vec;
-    vec.f[0] = Math::Min<float>(a.f[0], b.f[0]);
-    vec.f[1] = Math::Min<float>(a.f[1], b.f[1]);
-    vec.f[2] = Math::Min<float>(a.f[2], b.f[2]);
-    vec.f[3] = Math::Min<float>(a.f[3], b.f[3]);
+    vec.x = Math::Min<float>(a.x, b.x);
+    vec.y = Math::Min<float>(a.y, b.y);
+    vec.z = Math::Min<float>(a.z, b.z);
+    vec.w = Math::Min<float>(a.w, b.w);
     return vec;
 }
 
 Vector Vector::Max(const Vector& a, const Vector& b)
 {
     Vector vec;
-    vec.f[0] = Math::Max<float>(a.f[0], b.f[0]);
-    vec.f[1] = Math::Max<float>(a.f[1], b.f[1]);
-    vec.f[2] = Math::Max<float>(a.f[2], b.f[2]);
-    vec.f[3] = Math::Max<float>(a.f[3], b.f[3]);
+    vec.x = Math::Max<float>(a.x, b.x);
+    vec.y = Math::Max<float>(a.y, b.y);
+    vec.z = Math::Max<float>(a.z, b.z);
+    vec.w = Math::Max<float>(a.w, b.w);
     return vec;
 }
 
 Vector Vector::Abs(const Vector& v)
 {
-    return Vector(fabsf(v.f[0]), fabsf(v.f[1]), fabsf(v.f[2]), fabsf(v.f[3]));
+    return Vector(fabsf(v.x), fabsf(v.y), fabsf(v.z), fabsf(v.w));
 }
 
 Vector Vector::Lerp(const Vector& v1, const Vector& v2, const Vector& weight)
 {
     Vector vec;
-    vec.f[0] = v1.f[0] + weight.f[0] * (v2.f[0] - v1.f[0]);
-    vec.f[1] = v1.f[1] + weight.f[1] * (v2.f[1] - v1.f[1]);
-    vec.f[2] = v1.f[2] + weight.f[2] * (v2.f[2] - v1.f[2]);
-    vec.f[3] = v1.f[3] + weight.f[3] * (v2.f[3] - v1.f[3]);
+    vec.x = v1.x + weight.x * (v2.x - v1.x);
+    vec.y = v1.y + weight.y * (v2.y - v1.y);
+    vec.z = v1.z + weight.z * (v2.z - v1.z);
+    vec.w = v1.w + weight.w * (v2.w - v1.w);
     return vec;
 }
 
 Vector Vector::Lerp(const Vector& v1, const Vector& v2, float weight)
 {
     Vector vec;
-    vec.f[0] = v1.f[0] + weight * (v2.f[0] - v1.f[0]);
-    vec.f[1] = v1.f[1] + weight * (v2.f[1] - v1.f[1]);
-    vec.f[2] = v1.f[2] + weight * (v2.f[2] - v1.f[2]);
-    vec.f[3] = v1.f[3] + weight * (v2.f[3] - v1.f[3]);
+    vec.x = v1.x + weight * (v2.x - v1.x);
+    vec.y = v1.y + weight * (v2.y - v1.y);
+    vec.z = v1.z + weight * (v2.z - v1.z);
+    vec.w = v1.w + weight * (v2.w - v1.w);
     return vec;
 }
 
@@ -436,60 +433,60 @@ Vector Vector::Lerp(const Vector& v1, const Vector& v2, float weight)
 int Vector::EqualMask(const Vector& v1, const Vector& v2)
 {
     int ret = 0;
-    ret |= (v1.f[0] == v2.f[0]) ? (1 << 0) : 0;
-    ret |= (v1.f[1] == v2.f[1]) ? (1 << 1) : 0;
-    ret |= (v1.f[2] == v2.f[2]) ? (1 << 2) : 0;
-    ret |= (v1.f[3] == v2.f[3]) ? (1 << 3) : 0;
+    ret |= (v1.x == v2.x) ? (1 << 0) : 0;
+    ret |= (v1.y == v2.y) ? (1 << 1) : 0;
+    ret |= (v1.z == v2.z) ? (1 << 2) : 0;
+    ret |= (v1.w == v2.w) ? (1 << 3) : 0;
     return ret;
 }
 
 int Vector::LessMask(const Vector& v1, const Vector& v2)
 {
     int ret = 0;
-    ret |= (v1.f[0] < v2.f[0]) ? (1 << 0) : 0;
-    ret |= (v1.f[1] < v2.f[1]) ? (1 << 1) : 0;
-    ret |= (v1.f[2] < v2.f[2]) ? (1 << 2) : 0;
-    ret |= (v1.f[3] < v2.f[3]) ? (1 << 3) : 0;
+    ret |= (v1.x < v2.x) ? (1 << 0) : 0;
+    ret |= (v1.y < v2.y) ? (1 << 1) : 0;
+    ret |= (v1.z < v2.z) ? (1 << 2) : 0;
+    ret |= (v1.w < v2.w) ? (1 << 3) : 0;
     return ret;
 }
 
 int Vector::LessEqMask(const Vector& v1, const Vector& v2)
 {
     int ret = 0;
-    ret |= (v1.f[0] <= v2.f[0]) ? (1 << 0) : 0;
-    ret |= (v1.f[1] <= v2.f[1]) ? (1 << 1) : 0;
-    ret |= (v1.f[2] <= v2.f[2]) ? (1 << 2) : 0;
-    ret |= (v1.f[3] <= v2.f[3]) ? (1 << 3) : 0;
+    ret |= (v1.x <= v2.x) ? (1 << 0) : 0;
+    ret |= (v1.y <= v2.y) ? (1 << 1) : 0;
+    ret |= (v1.z <= v2.z) ? (1 << 2) : 0;
+    ret |= (v1.w <= v2.w) ? (1 << 3) : 0;
     return ret;
 }
 
 int Vector::GreaterMask(const Vector& v1, const Vector& v2)
 {
     int ret = 0;
-    ret |= (v1.f[0] > v2.f[0]) ? (1 << 0) : 0;
-    ret |= (v1.f[1] > v2.f[1]) ? (1 << 1) : 0;
-    ret |= (v1.f[2] > v2.f[2]) ? (1 << 2) : 0;
-    ret |= (v1.f[3] > v2.f[3]) ? (1 << 3) : 0;
+    ret |= (v1.x > v2.x) ? (1 << 0) : 0;
+    ret |= (v1.y > v2.y) ? (1 << 1) : 0;
+    ret |= (v1.z > v2.z) ? (1 << 2) : 0;
+    ret |= (v1.w > v2.w) ? (1 << 3) : 0;
     return ret;
 }
 
 int Vector::GreaterEqMask(const Vector& v1, const Vector& v2)
 {
     int ret = 0;
-    ret |= (v1.f[0] >= v2.f[0]) ? (1 << 0) : 0;
-    ret |= (v1.f[1] >= v2.f[1]) ? (1 << 1) : 0;
-    ret |= (v1.f[2] >= v2.f[2]) ? (1 << 2) : 0;
-    ret |= (v1.f[3] >= v2.f[3]) ? (1 << 3) : 0;
+    ret |= (v1.x >= v2.x) ? (1 << 0) : 0;
+    ret |= (v1.y >= v2.y) ? (1 << 1) : 0;
+    ret |= (v1.z >= v2.z) ? (1 << 2) : 0;
+    ret |= (v1.w >= v2.w) ? (1 << 3) : 0;
     return ret;
 }
 
 int Vector::NotEqualMask(const Vector& v1, const Vector& v2)
 {
     int ret = 0;
-    ret |= (v1.f[0] != v2.f[0]) ? (1 << 0) : 0;
-    ret |= (v1.f[1] != v2.f[1]) ? (1 << 1) : 0;
-    ret |= (v1.f[2] != v2.f[2]) ? (1 << 2) : 0;
-    ret |= (v1.f[3] != v2.f[3]) ? (1 << 3) : 0;
+    ret |= (v1.x != v2.x) ? (1 << 0) : 0;
+    ret |= (v1.y != v2.y) ? (1 << 1) : 0;
+    ret |= (v1.z != v2.z) ? (1 << 2) : 0;
+    ret |= (v1.w != v2.w) ? (1 << 3) : 0;
     return ret;
 }
 
@@ -497,109 +494,109 @@ int Vector::NotEqualMask(const Vector& v1, const Vector& v2)
 
 bool Vector::Equal2(const Vector& v1, const Vector& v2)
 {
-    return (v1.f[0] == v2.f[0]) && (v1.f[1] == v2.f[1]);
+    return (v1.x == v2.x) && (v1.y == v2.y);
 }
 
 bool Vector::Less2(const Vector& v1, const Vector& v2)
 {
-    return (v1.f[0] < v2.f[0]) && (v1.f[1] < v2.f[1]);
+    return (v1.x < v2.x) && (v1.y < v2.y);
 }
 
 bool Vector::LessEq2(const Vector& v1, const Vector& v2)
 {
-    return (v1.f[0] <= v2.f[0]) && (v1.f[1] <= v2.f[1]);
+    return (v1.x <= v2.x) && (v1.y <= v2.y);
 }
 
 bool Vector::Greater2(const Vector& v1, const Vector& v2)
 {
-    return (v1.f[0] > v2.f[0]) && (v1.f[1] > v2.f[1]);
+    return (v1.x > v2.x) && (v1.y > v2.y);
 }
 
 bool Vector::GreaterEq2(const Vector& v1, const Vector& v2)
 {
-    return (v1.f[0] >= v2.f[0]) && (v1.f[1] >= v2.f[1]);
+    return (v1.x >= v2.x) && (v1.y >= v2.y);
 }
 
 bool Vector::NotEqual2(const Vector& v1, const Vector& v2)
 {
-    return (v1.f[0] != v2.f[0]) && (v1.f[1] != v2.f[1]);
+    return (v1.x != v2.x) && (v1.y != v2.y);
 }
 
 // 3D vector comparison functions =================================================================
 
 bool Vector::Equal3(const Vector& v1, const Vector& v2)
 {
-    return (v1.f[0] == v2.f[0]) && (v1.f[1] == v2.f[1]) && (v1.f[2] == v2.f[2]);
+    return (v1.x == v2.x) && (v1.y == v2.y) && (v1.z == v2.z);
 }
 
 bool Vector::Less3(const Vector& v1, const Vector& v2)
 {
-    return (v1.f[0] < v2.f[0]) && (v1.f[1] < v2.f[1]) && (v1.f[2] < v2.f[2]);
+    return (v1.x < v2.x) && (v1.y < v2.y) && (v1.z < v2.z);
 }
 
 bool Vector::LessEq3(const Vector& v1, const Vector& v2)
 {
-    return (v1.f[0] <= v2.f[0]) && (v1.f[1] <= v2.f[1]) && (v1.f[2] <= v2.f[2]);
+    return (v1.x <= v2.x) && (v1.y <= v2.y) && (v1.z <= v2.z);
 }
 
 bool Vector::Greater3(const Vector& v1, const Vector& v2)
 {
-    return (v1.f[0] > v2.f[0]) && (v1.f[1] > v2.f[1]) && (v1.f[2] > v2.f[2]);
+    return (v1.x > v2.x) && (v1.y > v2.y) && (v1.z > v2.z);
 }
 
 bool Vector::GreaterEq3(const Vector& v1, const Vector& v2)
 {
-    return (v1.f[0] >= v2.f[0]) && (v1.f[1] >= v2.f[1]) && (v1.f[2] >= v2.f[2]);
+    return (v1.x >= v2.x) && (v1.y >= v2.y) && (v1.z >= v2.z);
 }
 
 bool Vector::NotEqual3(const Vector& v1, const Vector& v2)
 {
-    return (v1.f[0] != v2.f[0]) && (v1.f[1] != v2.f[1]) && (v1.f[2] != v2.f[2]);
+    return (v1.x != v2.x) && (v1.y != v2.y) && (v1.z != v2.z);
 }
 
 // 4D vector comparison functions =================================================================
 
 bool Vector::operator== (const Vector& b) const
 {
-    return ((f[0] == b.f[0]) && (f[1] == b.f[1])) &&
-           ((f[2] == b.f[2]) && (f[3] == b.f[3]));
+    return ((x == b.x) && (y == b.y)) &&
+           ((z == b.z) && (w == b.w));
 }
 
 bool Vector::operator< (const Vector& b) const
 {
-    return ((f[0] < b.f[0]) && (f[1] < b.f[1])) &&
-           ((f[2] < b.f[2]) && (f[3] < b.f[3]));
+    return ((x < b.x) && (y < b.y)) &&
+           ((z < b.z) && (w < b.w));
 }
 
 bool Vector::operator<= (const Vector& b) const
 {
-    return ((f[0] <= b.f[0]) && (f[1] <= b.f[1])) &&
-           ((f[2] <= b.f[2]) && (f[3] <= b.f[3]));
+    return ((x <= b.x) && (y <= b.y)) &&
+           ((z <= b.z) && (w <= b.w));
 }
 
 bool Vector::operator> (const Vector& b) const
 {
-    return ((f[0] > b.f[0]) && (f[1] > b.f[1])) &&
-           ((f[2] > b.f[2]) && (f[3] > b.f[3]));
+    return ((x > b.x) && (y > b.y)) &&
+           ((z > b.z) && (w > b.w));
 }
 
 bool Vector::operator>= (const Vector& b) const
 {
-    return ((f[0] >= b.f[0]) && (f[1] >= b.f[1])) &&
-           ((f[2] >= b.f[2]) && (f[3] >= b.f[3]));
+    return ((x >= b.x) && (y >= b.y)) &&
+           ((z >= b.z) && (w >= b.w));
 }
 
 bool Vector::operator!= (const Vector& b) const
 {
-    return ((f[0] != b.f[0]) && (f[1] != b.f[1])) &&
-           ((f[2] != b.f[2]) && (f[3] != b.f[3]));
+    return ((x != b.x) && (y != b.y)) &&
+           ((z != b.z) && (w != b.w));
 }
 
 // Geometry functions =============================================================================
 
 float Vector::Dot2(const Vector& v1, const Vector& v2)
 {
-    return v1.f[0] * v2.f[0] + v1.f[1] * v2.f[1];
+    return v1.x * v2.x + v1.y * v2.y;
 }
 
 Vector Vector::Dot2V(const Vector& v1, const Vector& v2)
@@ -609,7 +606,7 @@ Vector Vector::Dot2V(const Vector& v1, const Vector& v2)
 
 float Vector::Dot3(const Vector& v1, const Vector& v2)
 {
-    return v1.f[0] * v2.f[0] + v1.f[1] * v2.f[1] + v1.f[2] * v2.f[2];
+    return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 }
 
 Vector Vector::Dot3V(const Vector& v1, const Vector& v2)
@@ -619,7 +616,7 @@ Vector Vector::Dot3V(const Vector& v1, const Vector& v2)
 
 float Vector::Dot4(const Vector& v1, const Vector& v2)
 {
-    return (v1.f[0] * v2.f[0] + v1.f[1] * v2.f[1]) + (v1.f[2] * v2.f[2] + v1.f[3] * v2.f[3]);
+    return (v1.x * v2.x + v1.y * v2.y) + (v1.z * v2.z + v1.w * v2.w);
 }
 
 Vector Vector::Dot4V(const Vector& v1, const Vector& v2)
@@ -630,15 +627,15 @@ Vector Vector::Dot4V(const Vector& v1, const Vector& v2)
 Vector Vector::Cross3(const Vector& v1, const Vector& v2)
 {
     Vector vec;
-    vec.f[0] = v1.f[1] * v2.f[2] - v1.f[2] * v2.f[1];
-    vec.f[1] = v1.f[2] * v2.f[0] - v1.f[0] * v2.f[2];
-    vec.f[2] = v1.f[0] * v2.f[1] - v1.f[1] * v2.f[0];
+    vec.x = v1.y * v2.z - v1.z * v2.y;
+    vec.y = v1.z * v2.x - v1.x * v2.z;
+    vec.z = v1.x * v2.y - v1.y * v2.x;
     return vec;
 }
 
 float Vector::Length2() const
 {
-    return sqrtf(f[0] * f[0] + f[1] * f[1]);
+    return sqrtf(x * x + y * y);
 }
 
 Vector Vector::Length2V() const
@@ -648,7 +645,7 @@ Vector Vector::Length2V() const
 
 float Vector::Length3() const
 {
-    return sqrtf(f[0] * f[0] + f[1] * f[1] + f[2] * f[2]);
+    return sqrtf(x * x + y * y + z * z);
 }
 
 Vector Vector::Length3V() const
@@ -658,7 +655,7 @@ Vector Vector::Length3V() const
 
 float Vector::Length4() const
 {
-    return sqrtf((f[0] * f[0] + f[1] * f[1]) + (f[2] * f[2] + f[3] * f[3]));
+    return sqrtf((x * x + y * y) + (z * z + w * w));
 }
 
 Vector Vector::Length4V() const
@@ -669,32 +666,32 @@ Vector Vector::Length4V() const
 Vector Vector::Normalized2() const
 {
     float lenInv = 1.0f / Length2();
-    return Vector(f[0] * lenInv, f[1] * lenInv, 0.0f, 0.0f);
+    return Vector(x * lenInv, y * lenInv, 0.0f, 0.0f);
 }
 
 Vector& Vector::Normalize2()
 {
     float lenInv = 1.0f / Length2();
-    f[0] *= lenInv;
-    f[1] *= lenInv;
-    f[2] = 0.0f;
-    f[3] = 0.0f;
+    x *= lenInv;
+    y *= lenInv;
+    z = 0.0f;
+    w = 0.0f;
     return *this;
 }
 
 Vector Vector::Normalized3() const
 {
     float lenInv = 1.0f / Length3();
-    return Vector(f[0] * lenInv, f[1] * lenInv, f[2] * lenInv, 0.0f);
+    return Vector(x * lenInv, y * lenInv, z * lenInv, 0.0f);
 }
 
 Vector& Vector::Normalize3()
 {
     float lenInv = 1.0f / Length3();
-    f[0] *= lenInv;
-    f[1] *= lenInv;
-    f[2] *= lenInv;
-    f[3] = 0.0f;
+    x *= lenInv;
+    y *= lenInv;
+    z *= lenInv;
+    w = 0.0f;
     return *this;
 }
 
@@ -715,27 +712,6 @@ Vector Vector::Reflect3(const Vector& i, const Vector& n)
 {
     float dot = Vector::Dot3(i, n);
     return i - n * (dot + dot);
-}
-
-Vector Vector::PlaneFromPoints(const Vector& p1, const Vector& p2, const Vector& p3)
-{
-    Vector v21 = p1 - p2;
-    Vector v31 = p1 - p3;
-    Vector n = Vector::Cross3(v21, v31).Normalized3();
-    float d = Vector::Dot3(n, p1);
-    return Vector(n.f[0], n.f[1], n.f[2], -d);
-}
-
-Vector Vector::PlaneFromNormalAndPoint(const Vector& normal, const Vector& p)
-{
-    float d = Vector::Dot3(normal, p);
-    return Vector(normal.f[0], normal.f[1], normal.f[2], -d);
-}
-
-bool Vector::PlanePointSide(const Vector& plane, const Vector& point)
-{
-    float d = Vector::Dot3(plane, point) + plane.f[3];
-    return d > 0.0f;
 }
 
 } // namespace Math

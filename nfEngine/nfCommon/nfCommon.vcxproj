@@ -102,6 +102,8 @@
     <ClInclude Include="Math\Matrix3.hpp" />
     <ClInclude Include="Math\Matrix3Impl.hpp" />
     <ClInclude Include="Math\MatrixImpl.hpp" />
+    <ClInclude Include="Math\Plane.hpp" />
+    <ClInclude Include="Math\PlaneImpl.hpp" />
     <ClInclude Include="Math\Quaternion.hpp" />
     <ClInclude Include="Math\QuaternionImpl.hpp" />
     <ClInclude Include="Math\Random.hpp" />

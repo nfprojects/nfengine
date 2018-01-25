@@ -8,7 +8,6 @@
 
 #include "Math.hpp"
 #include "Vector.hpp"
-#include "Matrix.hpp"
 
 
 namespace NFE {
@@ -40,6 +39,22 @@ public:
      * Create a box that includes two other boxes.
      */
     NFE_INLINE Box(const Box& a, const Box& b);
+
+    /**
+     * Offset box using a vector.
+     */
+    NFE_INLINE Box& operator += (const Vector& offset);
+    NFE_INLINE Box& operator -= (const Vector& offset);
+    NFE_INLINE Box operator + (const Vector& offset) const;
+    NFE_INLINE Box operator - (const Vector& offset) const;
+
+    /**
+     * Scale the box.
+     */
+    NFE_INLINE Box& operator *= (const Vector& scale);
+    NFE_INLINE Box& operator *= (const float scale);
+    NFE_INLINE Box operator * (const Vector& scale) const;
+    NFE_INLINE Box operator * (const float scale) const;
 
     /**
      * Calculate box center.
@@ -89,11 +104,6 @@ public:
      * Check if is empty (has no extents defined, even a single point).
      */
     NFE_INLINE bool IsEmpty() const;
-
-    /**
-     * Transform Box by a 4x4 matrix.
-     */
-    NFCOMMON_API static Box TransformBox(const Matrix& matrix, const Box& localBox);
 };
 
 } // namespace Math

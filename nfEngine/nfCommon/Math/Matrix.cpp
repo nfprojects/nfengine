@@ -18,9 +18,9 @@ Matrix Matrix::MakeLookTo(const Vector& EyePosition, const Vector& EyeDirection,
     Vector xaxis = Vector::Cross3(UpDirection, zaxis).Normalized3();
     Vector yaxis = Vector::Cross3(zaxis, xaxis);
 
-    return Matrix(Vector(xaxis.f[0], yaxis.f[0], zaxis.f[0], 0.0f),
-                  Vector(xaxis.f[1], yaxis.f[1], zaxis.f[1], 0.0f),
-                  Vector(xaxis.f[2], yaxis.f[2], zaxis.f[2], 0.0f),
+    return Matrix(Vector(xaxis.x, yaxis.x, zaxis.x, 0.0f),
+                  Vector(xaxis.y, yaxis.y, zaxis.y, 0.0f),
+                  Vector(xaxis.z, yaxis.z, zaxis.z, 0.0f),
                   Vector(-Vector::Dot3(xaxis, EyePosition),
                          -Vector::Dot3(yaxis, EyePosition),
                          -Vector::Dot3(zaxis, EyePosition),
