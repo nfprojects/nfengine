@@ -127,15 +127,15 @@ void Vector::Store(Float4* dest) const
     dest->w = f[3];
 }
 
-template<bool x, bool y, bool z, bool w>
+template<bool negX, bool negY, bool negZ, bool negW>
 Vector Vector::ChangeSign() const
 {
-    Vector ret;
-    ret[0] = x ? -f[0] : f[0];
-    ret[1] = y ? -f[1] : f[1];
-    ret[2] = z ? -f[2] : f[2];
-    ret[3] = w ? -f[3] : f[3];
-    return ret;
+    return Vector(
+        negX ? -f[0] : f[0],
+        negY ? -f[1] : f[1],
+        negZ ? -f[2] : f[2],
+        negW ? -f[3] : f[3]
+    );
 }
 
 // Elements rearrangement =========================================================================

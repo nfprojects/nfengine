@@ -13,6 +13,13 @@
 namespace NFE {
 namespace Math {
 
+#ifdef WIN32
+#pragma warning(push)
+#pragma warning(disable : 4201)
+#elif defined(__LINUX__) || defined(__linux__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#endif // WIN32
 
 /**
  * 4 element vector of floats.
@@ -26,6 +33,14 @@ struct NFE_ALIGN(16) Vector
         float f[4];
         int i[4];
         unsigned int u[4];
+
+        struct
+        {
+            float x;
+            float y;
+            float z;
+            float w;
+        };
 
 #ifdef NFE_USE_SSE
         __m128 v;
@@ -113,7 +128,7 @@ struct NFE_ALIGN(16) Vector
     /**
      * Rearrange vector elements.
      */
-    template<bool x = false, bool y = false, bool z = false, bool w = false>
+    template<bool negX = false, bool negY = false, bool negZ = false, bool negW = false>
     NFE_INLINE Vector ChangeSign() const;
 
     /**
@@ -355,6 +370,15 @@ struct NFE_ALIGN(16) Vector
      */
     NFE_INLINE static Vector NegMulAndSub(const Vector& a, const Vector& b, const Vector& c);
 };
+
+
+// enable all warnings again
+#if defined(WIN32)
+#pragma warning(pop)
+#elif defined(__LINUX__) || defined(__linux__)
+#pragma GCC diagnostic pop
+#endif // defined(WIN32)
+
 
 // like Vector::operator * (float)
 NFE_INLINE Vector operator*(float a, const Vector& b);

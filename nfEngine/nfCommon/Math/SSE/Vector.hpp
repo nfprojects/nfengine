@@ -42,18 +42,18 @@ Vector::Vector(const float* src)
 
 Vector::Vector(const Float2& src)
 {
-    __m128 x = _mm_load_ss(&src.x);
-    __m128 y = _mm_load_ss(&src.y);
-    v = _mm_unpacklo_ps(x, y);
+    __m128 vx = _mm_load_ss(&src.x);
+    __m128 vy = _mm_load_ss(&src.y);
+    v = _mm_unpacklo_ps(vx, vy);
 }
 
 Vector::Vector(const Float3& src)
 {
-    __m128 x = _mm_load_ss(&src.x);
-    __m128 y = _mm_load_ss(&src.y);
-    __m128 z = _mm_load_ss(&src.z);
-    __m128 xy = _mm_unpacklo_ps(x, y);
-    v = _mm_movelh_ps(xy, z);
+    __m128 vx = _mm_load_ss(&src.x);
+    __m128 vy = _mm_load_ss(&src.y);
+    __m128 vz = _mm_load_ss(&src.z);
+    __m128 vxy = _mm_unpacklo_ps(vx, vy);
+    v = _mm_movelh_ps(vxy, vz);
 }
 
 Vector::Vector(const Float4& src)
@@ -114,18 +114,18 @@ void Vector::Store(float* dest) const
 
 void Vector::Store(Float2* dest) const
 {
-    __m128 y = _mm_shuffle_ps(v, v, _MM_SHUFFLE(1, 1, 1, 1));
+    __m128 vy = _mm_shuffle_ps(v, v, _MM_SHUFFLE(1, 1, 1, 1));
     _mm_store_ss(&dest->x, v);
-    _mm_store_ss(&dest->y, y);
+    _mm_store_ss(&dest->y, vy);
 }
 
 void Vector::Store(Float3* dest) const
 {
-    __m128 y = _mm_shuffle_ps(v, v, _MM_SHUFFLE(1, 1, 1, 1));
-    __m128 z = _mm_shuffle_ps(v, v, _MM_SHUFFLE(2, 2, 2, 2));
+    __m128 vy = _mm_shuffle_ps(v, v, _MM_SHUFFLE(1, 1, 1, 1));
+    __m128 vz = _mm_shuffle_ps(v, v, _MM_SHUFFLE(2, 2, 2, 2));
     _mm_store_ss(&dest->x, v);
-    _mm_store_ss(&dest->y, y);
-    _mm_store_ss(&dest->z, z);
+    _mm_store_ss(&dest->y, vy);
+    _mm_store_ss(&dest->z, vz);
 }
 
 void Vector::Store(Float4* dest) const
@@ -133,17 +133,17 @@ void Vector::Store(Float4* dest) const
     _mm_storeu_ps(&dest->x, v);
 }
 
-template<bool x, bool y, bool z, bool w>
+template<bool negX, bool negY, bool negZ, bool negW>
 Vector Vector::ChangeSign() const
 {
-    if (!(x || y || z || w))
+    if (!(negX || negY || negZ || negW))
     {
         // no negation
         return *this;
     }
 
     // generate bit negation mask
-    static const Vectori mask = { { {x ? 0x80000000 : 0, y ? 0x80000000 : 0, z ? 0x80000000 : 0, w ? 0x80000000 : 0} } };
+    static const Vectori mask = { { { negX ? 0x80000000 : 0, negY ? 0x80000000 : 0, negZ ? 0x80000000 : 0, negW ? 0x80000000 : 0} } };
 
     // flip sign bits
     return _mm_xor_ps(v, _mm_castsi128_ps(mask));

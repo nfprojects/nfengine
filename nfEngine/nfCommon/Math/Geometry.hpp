@@ -48,6 +48,22 @@ IntersectionResult IntersectEx(const ShapeTypeA& shapeA, const ShapeTypeB& shape
 template<typename ShapeType>
 bool Intersect(const Ray& ray, const ShapeType& shape, Vector& dist);
 
+
+/**
+ * Transform Box by a 4x4 matrix.
+ */
+NFCOMMON_API Box TransformBox(const Matrix& matrix, const Box& localBox);
+
+/**
+ * Transform Box using a quaternion.
+ */
+NFCOMMON_API Box TransformBox(const Quaternion& quat, const Box& localBox);
+
+/**
+ * Transform Box using a transform object.
+ */
+NFCOMMON_API Box TransformBox(const Transform& transform, const Box& localBox);
+
 } // namespace Math
 } // namespace NFE
 

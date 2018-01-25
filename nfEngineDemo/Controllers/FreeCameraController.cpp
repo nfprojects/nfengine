@@ -99,7 +99,7 @@ void FreeCameraController::ProcessTickEvent(const Event_Tick& tickEvent)
     else if (mMovementSpeed < 0.0f)
         movementDirection *= (1.0f / MOVEMENT_SPEED_MULTIPLIER);
 
-    const Vector destVelocity = targetOrientation.Transform(movementDirection);
+    const Vector destVelocity = targetOrientation.TransformVector(movementDirection);
     const Vector prevVelocity =  body->GetVelocity();
 
     // low pass filter - for smooth camera movement

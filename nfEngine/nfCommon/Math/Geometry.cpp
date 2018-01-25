@@ -10,6 +10,9 @@
 #include "Sphere.hpp"
 #include "Frustum.hpp"
 #include "Triangle.hpp"
+#include "Quaternion.hpp"
+#include "Transform.hpp"
+
 
 namespace NFE {
 namespace Math {
@@ -247,7 +250,7 @@ bool Intersect(const Frustum& frustum, const Sphere& sphere)
     // find the nearest point on frustum's edges to the sphere center
     // TODO: optimize - each ClosestPointOnSegment() call does division
     Vector nearest;
-    float dist = 1.0e+10f;
+    float dist = std::numeric_limits<float>::max();
 
     auto check = [&](const int i, const int j)
     {
@@ -297,6 +300,61 @@ bool Intersect(const Frustum& frustum, const Sphere& sphere)
     return false;
 }
 
+Box TransformBox(const Matrix& matrix, const Box& localBox)
+{
+    // based on:
+    // http://dev.theomader.com/transform-bounding-boxes/
+
+    const Vector xa = matrix.GetRow(0) * localBox.min.x;
+    const Vector xb = matrix.GetRow(0) * localBox.max.x;
+    const Vector ya = matrix.GetRow(1) * localBox.min.y;
+    const Vector yb = matrix.GetRow(1) * localBox.max.y;
+    const Vector za = matrix.GetRow(2) * localBox.min.z;
+    const Vector zb = matrix.GetRow(2) * localBox.max.z;
+
+    return Box(
+        Vector::Min(xa, xb) + Vector::Min(ya, yb) + Vector::Min(za, zb) + matrix.GetRow(3),
+        Vector::Max(xa, xb) + Vector::Max(ya, yb) + Vector::Max(za, zb) + matrix.GetRow(3)
+    );
+}
+
+Box TransformBox(const Quaternion& quat, const Box& localBox)
+{
+    // based on:
+    // http://dev.theomader.com/transform-bounding-boxes/
+
+    const Vector xa = quat.GetAxisX() * localBox.min.x;
+    const Vector xb = quat.GetAxisX() * localBox.max.x;
+    const Vector ya = quat.GetAxisY() * localBox.min.y;
+    const Vector yb = quat.GetAxisY() * localBox.max.y;
+    const Vector za = quat.GetAxisZ() * localBox.min.z;
+    const Vector zb = quat.GetAxisZ() * localBox.max.z;
+
+    return Box(
+        Vector::Min(xa, xb) + Vector::Min(ya, yb) + Vector::Min(za, zb),
+        Vector::Max(xa, xb) + Vector::Max(ya, yb) + Vector::Max(za, zb)
+    );
+}
+
+Box TransformBox(const Transform& transform, const Box& localBox)
+{
+    // based on:
+    // http://dev.theomader.com/transform-bounding-boxes/
+
+    const Quaternion& quat = transform.GetRotation();
+
+    const Vector xa = quat.GetAxisX() * localBox.min.x;
+    const Vector xb = quat.GetAxisX() * localBox.max.x;
+    const Vector ya = quat.GetAxisY() * localBox.min.y;
+    const Vector yb = quat.GetAxisY() * localBox.max.y;
+    const Vector za = quat.GetAxisZ() * localBox.min.z;
+    const Vector zb = quat.GetAxisZ() * localBox.max.z;
+
+    return Box(
+        Vector::Min(xa, xb) + Vector::Min(ya, yb) + Vector::Min(za, zb) + transform.GetTranslation(),
+        Vector::Max(xa, xb) + Vector::Max(ya, yb) + Vector::Max(za, zb) + transform.GetTranslation()
+    );
+}
 
 } // namespace Math
 } // namespace NFE

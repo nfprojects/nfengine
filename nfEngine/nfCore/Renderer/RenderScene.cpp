@@ -486,7 +486,7 @@ ProxyID RenderScene::CreateMeshProxy(const MeshProxyDesc& desc)
 {
     MeshProxy proxy;
     proxy.desc = desc;
-    proxy.globalBox = desc.mesh->GetGlobalAABB(desc.transform);
+    proxy.globalBox = TransformBox(desc.transform, desc.mesh->GetLocalBox());
 
     return mMeshProxies.Add(proxy);
 }
@@ -525,7 +525,7 @@ bool RenderScene::UpdateMeshProxy(const ProxyID proxyID, const MeshProxyDesc& de
 
     MeshProxy& proxy = mMeshProxies[proxyID];
     proxy.desc = desc;
-    proxy.globalBox = desc.mesh->GetGlobalAABB(desc.transform);
+    proxy.globalBox = TransformBox(desc.transform, desc.mesh->GetLocalBox());
 
     return true;
 }

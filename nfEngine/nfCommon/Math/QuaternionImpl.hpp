@@ -38,5 +38,32 @@ Quaternion& Quaternion::operator *= (const Quaternion& q2)
     return *this;
 }
 
+Vector Quaternion::GetAxisX() const
+{
+    return Vector(
+        1.0f - 2.0f * (q.y * q.y + q.z * q.z),
+        2.0f * (q.x * q.y + q.w * q.z),
+        2.0f * (q.x * q.z - q.w * q.y)
+    );
+}
+
+Vector Quaternion::GetAxisY() const
+{
+    return Vector(
+        2.0f * (q.x * q.y - q.w * q.z),
+        1.0f - 2.0f * (q.x * q.x + q.z * q.z),
+        2.0f * (q.y * q.z + q.w * q.x)
+    );
+}
+
+Vector Quaternion::GetAxisZ() const
+{
+    return Vector(
+        2.0f * (q.x * q.z + q.w * q.y),
+        2.0f * (q.y * q.z - q.w * q.x),
+        1.0f - 2.0f * (q.x * q.x + q.y * q.y)
+    );
+}
+
 } // namespace Math
 } // namespace NFE
