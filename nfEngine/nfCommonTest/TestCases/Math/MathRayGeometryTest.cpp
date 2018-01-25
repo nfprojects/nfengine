@@ -94,8 +94,8 @@ TEST(MathGeometry, RayTriangleIntersection)
     // check if a point 'p' is on the surface of the test triangle's plane
     auto onTrianglePlane = [&tri](const Vector& p) -> bool
     {
-        Vector plane = Vector::PlaneFromPoints(tri.v0, tri.v1, tri.v2);
-        const float d = Vector::Dot3(plane, p) + plane.f[3];
+        const Plane plane(tri.v0, tri.v1, tri.v2);
+        const float d = plane.PointDistance(p);
         return fabsf(d) < NFE_MATH_EPSILON;
     };
 

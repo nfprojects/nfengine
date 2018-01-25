@@ -42,18 +42,18 @@ Vector::Vector(const float* src)
 
 Vector::Vector(const Float2& src)
 {
-    __m128 x = _mm_load_ss(&src.x);
-    __m128 y = _mm_load_ss(&src.y);
-    v = _mm_unpacklo_ps(x, y);
+    __m128 vx = _mm_load_ss(&src.x);
+    __m128 vy = _mm_load_ss(&src.y);
+    v = _mm_unpacklo_ps(vx, vy);
 }
 
 Vector::Vector(const Float3& src)
 {
-    __m128 x = _mm_load_ss(&src.x);
-    __m128 y = _mm_load_ss(&src.y);
-    __m128 z = _mm_load_ss(&src.z);
-    __m128 xy = _mm_unpacklo_ps(x, y);
-    v = _mm_movelh_ps(xy, z);
+    __m128 vx = _mm_load_ss(&src.x);
+    __m128 vy = _mm_load_ss(&src.y);
+    __m128 vz = _mm_load_ss(&src.z);
+    __m128 vxy = _mm_unpacklo_ps(vx, vy);
+    v = _mm_movelh_ps(vxy, vz);
 }
 
 Vector::Vector(const Float4& src)
@@ -114,18 +114,18 @@ void Vector::Store(float* dest) const
 
 void Vector::Store(Float2* dest) const
 {
-    __m128 y = _mm_shuffle_ps(v, v, _MM_SHUFFLE(1, 1, 1, 1));
+    __m128 vy = _mm_shuffle_ps(v, v, _MM_SHUFFLE(1, 1, 1, 1));
     _mm_store_ss(&dest->x, v);
-    _mm_store_ss(&dest->y, y);
+    _mm_store_ss(&dest->y, vy);
 }
 
 void Vector::Store(Float3* dest) const
 {
-    __m128 y = _mm_shuffle_ps(v, v, _MM_SHUFFLE(1, 1, 1, 1));
-    __m128 z = _mm_shuffle_ps(v, v, _MM_SHUFFLE(2, 2, 2, 2));
+    __m128 vy = _mm_shuffle_ps(v, v, _MM_SHUFFLE(1, 1, 1, 1));
+    __m128 vz = _mm_shuffle_ps(v, v, _MM_SHUFFLE(2, 2, 2, 2));
     _mm_store_ss(&dest->x, v);
-    _mm_store_ss(&dest->y, y);
-    _mm_store_ss(&dest->z, z);
+    _mm_store_ss(&dest->y, vy);
+    _mm_store_ss(&dest->z, vz);
 }
 
 void Vector::Store(Float4* dest) const
@@ -133,17 +133,17 @@ void Vector::Store(Float4* dest) const
     _mm_storeu_ps(&dest->x, v);
 }
 
-template<bool x, bool y, bool z, bool w>
+template<bool negX, bool negY, bool negZ, bool negW>
 Vector Vector::ChangeSign() const
 {
-    if (!(x || y || z || w))
+    if (!(negX || negY || negZ || negW))
     {
         // no negation
         return *this;
     }
 
     // generate bit negation mask
-    static const Vectori mask = { { {x ? 0x80000000 : 0, y ? 0x80000000 : 0, z ? 0x80000000 : 0, w ? 0x80000000 : 0} } };
+    static const Vectori mask = { { { negX ? 0x80000000 : 0, negY ? 0x80000000 : 0, negZ ? 0x80000000 : 0, negW ? 0x80000000 : 0} } };
 
     // flip sign bits
     return _mm_xor_ps(v, _mm_castsi128_ps(mask));
@@ -701,45 +701,6 @@ Vector Vector::Reflect3(const Vector& i, const Vector& n)
     __m128 vTemp = _mm_add_ps(vDot, vDot); // vTemp = 2 * vDot
     vTemp = _mm_mul_ps(vTemp, n);
     return _mm_sub_ps(i, vTemp);
-}
-
-Vector Vector::PlaneFromPoints(const Vector& p1, const Vector& p2, const Vector& p3)
-{
-    Vector V21 = p1 - p2;
-    Vector V31 = p1 - p3;
-    Vector n = Vector::Cross3(V21, V31).Normalized3();
-    Vector d = Vector::Dot3V(n, p1);
-    d = _mm_mul_ps(d, VECTOR_MINUS_ONE);
-    n = _mm_and_ps(n, VECTOR_MASK_XYZ);
-    d = _mm_and_ps(d, VECTOR_MASK_W);
-    return _mm_or_ps(d, n);
-}
-
-Vector Vector::PlaneFromNormalAndPoint(const Vector& normal, const Vector& p)
-{
-    Vector d = Vector::Dot3V(normal, p);
-    d = _mm_mul_ps(d, VECTOR_MINUS_ONE);
-    Vector n = _mm_and_ps(normal, VECTOR_MASK_XYZ);
-    d = _mm_and_ps(d, VECTOR_MASK_W);
-    return _mm_or_ps(d, n);
-}
-
-bool Vector::PlanePointSide(const Vector& plane, const Vector& point)
-{
-    Vector vTemp2 = _mm_and_ps(point, VECTOR_MASK_XYZ);
-    vTemp2 = _mm_or_ps(vTemp2, VECTOR_W);
-    Vector vTemp = _mm_mul_ps(plane, vTemp2);
-    // copy X to the Z position and Y to the W position
-    vTemp2 = _mm_shuffle_ps(vTemp2, vTemp, _MM_SHUFFLE(1, 0, 0, 0));
-    // add Z = X+Z; W = Y+W
-    vTemp2 = _mm_add_ps(vTemp2, vTemp);
-    // copy W to the Z position
-    vTemp = _mm_shuffle_ps(vTemp, vTemp2, _MM_SHUFFLE(0, 3, 0, 0));
-    // add Z and W together
-    vTemp = _mm_add_ps(vTemp, vTemp2);
-    // return Z >= 0.0f
-    int mask = _mm_movemask_ps(_mm_cmpge_ps(vTemp, _mm_setzero_ps()));
-    return (mask & (1 << 2)) != 0;
 }
 
 } // namespace Math

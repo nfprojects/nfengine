@@ -31,11 +31,11 @@ Vector Box::GetCenter() const
 
 Vector Box::GetVertex(int id) const
 {
-    Vector temp;
-    temp.f[0] = (id & (1 << 0)) ? max.f[0] : min.f[0];
-    temp.f[1] = (id & (1 << 1)) ? max.f[1] : min.f[1];
-    temp.f[2] = (id & (1 << 2)) ? max.f[2] : min.f[2];
-    return temp;
+    return Vector(
+        (id & (1 << 0)) ? max.x : min.x,
+        (id & (1 << 1)) ? max.y : min.y,
+        (id & (1 << 2)) ? max.z : min.z
+    );
 }
 
 Vector Box::SupportVertex(const Vector& dir) const
@@ -66,6 +66,54 @@ Box& Box::AddPoint(const Vector& point)
     min = Vector::Min(min, point);
     max = Vector::Max(max, point);
     return *this;
+}
+
+Box& Box::operator += (const Vector& offset)
+{
+    min += offset;
+    max += offset;
+    return *this;
+}
+
+Box& Box::operator -= (const Vector& offset)
+{
+    min -= offset;
+    max -= offset;
+    return *this;
+}
+
+Box& Box::operator *= (const Vector& scale)
+{
+    min *= scale;
+    max *= scale;
+    return *this;
+}
+
+Box& Box::operator *= (const float scale)
+{
+    min *= scale;
+    max *= scale;
+    return *this;
+}
+
+Box Box::operator + (const Vector& offset) const
+{
+    return Box(min + offset, max + offset);
+}
+
+Box Box::operator - (const Vector& offset) const
+{
+    return Box(min - offset, max - offset);
+}
+
+Box Box::operator * (const Vector& scale) const
+{
+    return Box(min * scale, max * scale);
+}
+
+Box Box::operator * (const float scale) const
+{
+    return Box(min * scale, max * scale);
 }
 
 bool Box::operator == (const Box& rhs) const

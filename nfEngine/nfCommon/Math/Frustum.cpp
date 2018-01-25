@@ -42,12 +42,12 @@ Frustum Frustum::ConstructForPerspective(const Vector& origin,
 
 void Frustum::CalculatePlanes()
 {
-    planes[Front] = Vector::PlaneFromPoints(verticies[0], verticies[1], verticies[3]);
-    planes[Back] = Vector::PlaneFromPoints(verticies[7], verticies[5], verticies[4]);
-    planes[Left] = Vector::PlaneFromPoints(verticies[4], verticies[0], verticies[6]);
-    planes[Right] = Vector::PlaneFromPoints(verticies[7], verticies[3], verticies[5]);
-    planes[Bottom] = Vector::PlaneFromPoints(verticies[5], verticies[1], verticies[4]);
-    planes[Top] = Vector::PlaneFromPoints(verticies[6], verticies[3], verticies[7]);
+    planes[Front]   = Plane(verticies[0], verticies[1], verticies[3]);
+    planes[Back]    = Plane(verticies[7], verticies[5], verticies[4]);
+    planes[Left]    = Plane(verticies[4], verticies[0], verticies[6]);
+    planes[Right]   = Plane(verticies[7], verticies[3], verticies[5]);
+    planes[Bottom]  = Plane(verticies[5], verticies[1], verticies[4]);
+    planes[Top]     = Plane(verticies[6], verticies[3], verticies[7]);
 
     boundingBox = Box(verticies[0]);
     for (uint32 i = 1; i < 8; ++i)

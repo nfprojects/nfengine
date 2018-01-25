@@ -316,7 +316,7 @@ void GameWindow::OnMouseDown(UINT button, int x, int y)
 
     if (button == 0)
     {
-        const Vector& forwardVector = mCameraEntity->GetGlobalRotation().Transform(Vector(0.0f, 0.0f, 1.0f));
+        const Vector& forwardVector = mCameraEntity->GetGlobalRotation().GetAxisZ();
         SpawnTestObject(0, mCameraEntity->GetGlobalPosition() + forwardVector, Vector());
     }
 

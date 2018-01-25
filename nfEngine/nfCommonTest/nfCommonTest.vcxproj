@@ -197,6 +197,7 @@
     <ClCompile Include="TestCases\Math\MathQuaternionTest.cpp" />
     <ClCompile Include="TestCases\Math\MathRandomTest.cpp" />
     <ClCompile Include="TestCases\Math\MathConversionsTest.cpp" />
+    <ClCompile Include="TestCases\Math\MathRayGeometryTest.cpp" />
     <ClCompile Include="TestCases\Math\MathTest.cpp" />
     <ClCompile Include="TestCases\Math\MathTransformTest.cpp" />
     <ClCompile Include="TestCases\Math\MathVectorTest.cpp" />
