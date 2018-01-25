@@ -15,7 +15,7 @@ Quaternion Quaternion::FromAxisAndAngle(const Vector& axis, float angle)
 {
     angle *= 0.5f;
     Quaternion q = Quaternion(axis * sinf(angle));
-    q.f[3] = cosf(angle);
+    q.q.w = cosf(angle);
     return q;
 }
 
@@ -111,13 +111,13 @@ Quaternion Quaternion::FromMatrix(const Matrix& m)
     q.q = Vector::Max(q.q, Vector());
     q.q = Vector::Sqrt4(q.q) * 0.5f;
 
-    q.f[0] = CopySign(q.f[0], m.m[1][2] - m.m[2][1]);
-    q.f[1] = CopySign(q.f[1], m.m[2][0] - m.m[0][2]);
-    q.f[2] = CopySign(q.f[2], m.m[0][1] - m.m[1][0]);
+    q.q.x = CopySign(q.q.x, m.m[1][2] - m.m[2][1]);
+    q.q.y = CopySign(q.q.y, m.m[2][0] - m.m[0][2]);
+    q.q.z = CopySign(q.q.z, m.m[0][1] - m.m[1][0]);
     return q;
 }
 
-Vector Quaternion::Transform(const Vector& v) const
+Vector Quaternion::TransformVector(const Vector& v) const
 {
     // based on identity:
     //
@@ -147,15 +147,15 @@ void Quaternion::ToAxis(Vector& outAxis, float& outAngle) const
         outAxis /= s;
     }
 
-    outAxis.f[3] = 0.0f;
+    outAxis.w = 0.0f;
 }
 
 Matrix Quaternion::ToMatrix() const
 {
-    float xx = q.f[0] * q.f[0], yy = q.f[1] * q.f[1], zz = q.f[2] * q.f[2];
-    float xy = q.f[0] * q.f[1], xz = q.f[0] * q.f[2];
-    float yz = q.f[1] * q.f[2], wx = q.f[3] * q.f[0];
-    float wy = q.f[3] * q.f[1], wz = q.f[3] * q.f[2];
+    float xx = q.x * q.x, yy = q.y * q.y, zz = q.z * q.z;
+    float xy = q.x * q.y, xz = q.x * q.z;
+    float yz = q.y * q.z, wx = q.w * q.x;
+    float wy = q.w * q.y, wz = q.w * q.z;
 
     Matrix m;
     m.m[0][0] = 1.0f - 2.0f * ( yy + zz );

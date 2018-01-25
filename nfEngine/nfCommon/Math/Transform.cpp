@@ -15,7 +15,7 @@ namespace Math {
 Transform Transform::operator * (const Transform& other) const
 {
     Transform result;
-    result.mTranslation = mRotation.Transform(other.mTranslation) + mTranslation;
+    result.mTranslation = mRotation.TransformVector(other.mTranslation) + mTranslation;
     result.mRotation = mRotation * other.mRotation;
     return result;
 }
@@ -24,7 +24,7 @@ Transform Transform::Inverted() const
 {
     Transform result;
     result.mRotation = mRotation.Inverted().Normalized();
-    result.mTranslation = result.mRotation.Transform(-mTranslation);
+    result.mTranslation = result.mRotation.TransformVector(-mTranslation);
     return result;
 }
 
@@ -36,12 +36,12 @@ Transform& Transform::Invert()
 
 Vector Transform::TransformPoint(const Vector& p) const
 {
-    return mRotation.Transform(p) + mTranslation;
+    return mRotation.TransformVector(p) + mTranslation;
 }
 
 Vector Transform::TransformVector(const Vector& v) const
 {
-    return mRotation.Transform(v);
+    return mRotation.TransformVector(v);
 }
 
 Matrix Transform::ToMatrix() const

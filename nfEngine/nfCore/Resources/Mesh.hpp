@@ -59,12 +59,7 @@ public:
     NFE_INLINE const Renderer::BufferPtr& GetVertexBuffer() const { return mVB; }
     NFE_INLINE const Renderer::BufferPtr& GetIndexBuffer() const { return mIB; }
     NFE_INLINE const SubMeshes& GetSubMeshes() const { return mSubMeshes; }
-
-    /**
-     * Calculate approximate transformed mesh AABB.
-     * @param matrix Transformation matrix applied to the mesh vertices.
-     */
-    Math::Box GetGlobalAABB(const Math::Matrix& matrix) const;
+    NFE_INLINE const Math::Box& GetLocalBox() const { return mLocalBox; }
 };
 
 } // namespace Resource
