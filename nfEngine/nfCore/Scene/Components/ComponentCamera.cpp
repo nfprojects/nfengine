@@ -62,10 +62,10 @@ void CameraComponent::OnUpdate()
     const Matrix& matrix = GetEntity()->GetGlobalTransform().ToMatrix();
 
     // TODO get velocity from body component
-    Update(matrix, Vector(), Vector());
+    Update(matrix, Vector4(), Vector4());
 }
 
-void CameraComponent::Update(const Matrix& matrix, const Vector& velocity, const Vector& angularVelocity)
+void CameraComponent::Update(const Matrix& matrix, const Vector4& velocity, const Vector4& angularVelocity)
 {
     // calculate view matrix
     mViewMatrix = Matrix::MakeLookTo(matrix.r[3], matrix.r[2], matrix.r[1]);
@@ -91,20 +91,20 @@ void CameraComponent::Update(const Matrix& matrix, const Vector& velocity, const
     secondaryCameraMatrix.r[0] = rotMatrix.LinearCombination3(matrix.r[0]);
     secondaryCameraMatrix.r[1] = rotMatrix.LinearCombination3(matrix.r[1]);
     secondaryCameraMatrix.r[2] = rotMatrix.LinearCombination3(matrix.r[2]);
-    secondaryCameraMatrix.r[3] = (Vector)matrix.r[3] + velocity * 0.01f;
+    secondaryCameraMatrix.r[3] = (Vector4)matrix.r[3] + velocity * 0.01f;
     Matrix secondaryViewMatrix = Matrix::MakeLookTo(secondaryCameraMatrix.r[3],
                                                     secondaryCameraMatrix.r[2],
                                                     secondaryCameraMatrix.r[1]);
     mSecondaryProjViewMatrix = secondaryViewMatrix * mProjMatrix;
 
-    Vector xAxis, yAxis, zAxis;
-    Vector pos = matrix.GetRow(3);
+    Vector4 xAxis, yAxis, zAxis;
+    Vector4 pos = matrix.GetRow(3);
 
     if (mProjMode == ProjectionMode::Perspective)
     {
         float y = tanf(mPerspective.FoV / 2.0f);
         float x = mPerspective.aspectRatio * y;
-        mScreenScale = Vector(x, y);
+        mScreenScale = Vector4(x, y);
 
         xAxis = x * matrix.GetRow(0);
         yAxis = y * matrix.GetRow(1);
@@ -125,7 +125,7 @@ void CameraComponent::Update(const Matrix& matrix, const Vector& velocity, const
         xAxis = matrix.GetRow(0);
         yAxis = matrix.GetRow(1);
         zAxis = matrix.GetRow(2);
-        mScreenScale = Vector(1, 1, 0, 0);
+        mScreenScale = Vector4(1, 1, 0, 0);
 
         mFrustum.verticies[0] = pos + mOrtho.nearDist * zAxis + mOrtho.left * xAxis + mOrtho.bottom * yAxis;
         mFrustum.verticies[1] = pos + mOrtho.nearDist * zAxis + mOrtho.right * xAxis + mOrtho.bottom * yAxis;
@@ -143,8 +143,8 @@ void CameraComponent::Update(const Matrix& matrix, const Vector& velocity, const
 
 void CameraComponent::SplitFrustum(const Matrix& matrix, float zn, float zf, Frustum* frustum) const
 {
-    Vector xAxis, yAxis, zAxis;
-    Vector pos = matrix.GetRow(3);
+    Vector4 xAxis, yAxis, zAxis;
+    Vector4 pos = matrix.GetRow(3);
 
     if (mProjMode == ProjectionMode::Perspective)
     {

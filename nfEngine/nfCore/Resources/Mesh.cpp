@@ -101,15 +101,15 @@ bool Mesh::OnLoad()
             rm->GetResource(subMeshes[i].materialName, ResourceType::Material));
         mSubMeshes[i].material->AddRef();
 
-        Vector vertex;
-        Vector vMin = Vector(vertices[indices[startIndex]].position);
-        Vector vMax = vMin;
+        Vector4 vertex;
+        Vector4 vMin = Vector4(vertices[indices[startIndex]].position);
+        Vector4 vMax = vMin;
 
         for (int j = startIndex + 1; j < lastIndex; j++)
         {
-            vertex = Vector(vertices[indices[j]].position);
-            vMin = Vector::Min(vMin, vertex);
-            vMax = Vector::Max(vMax, vertex);
+            vertex = Vector4(vertices[indices[j]].position);
+            vMin = Vector4::Min(vMin, vertex);
+            vMax = Vector4::Max(vMax, vertex);
         }
 
         mSubMeshes[i].localBox.min = vMin;
@@ -122,8 +122,8 @@ bool Mesh::OnLoad()
         mLocalBox = mSubMeshes[0].localBox;
         for (uint32 i = 1; i < mSubMeshes.size(); i++)
         {
-            mLocalBox.min = Vector::Min(mLocalBox.min, mSubMeshes[i].localBox.min);
-            mLocalBox.max = Vector::Max(mLocalBox.max, mSubMeshes[i].localBox.max);
+            mLocalBox.min = Vector4::Min(mLocalBox.min, mSubMeshes[i].localBox.min);
+            mLocalBox.max = Vector4::Max(mLocalBox.max, mSubMeshes[i].localBox.max);
         }
     }
 

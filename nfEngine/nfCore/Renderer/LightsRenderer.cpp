@@ -22,8 +22,8 @@ struct NFE_ALIGN(16) LightsGlobalCBuffer
     Matrix cameraMatrix;
     Matrix viewMatrix;
     Matrix projMatrix;
-    Vector viewportResInv;
-    Vector screenScale;
+    Vector4 viewportResInv;
+    Vector4 screenScale;
 };
 
 struct AmbientLightCBuffer
@@ -34,10 +34,10 @@ struct AmbientLightCBuffer
 
 struct NFE_ALIGN(16) OmniLightCBuffer
 {
-    Vector position;
-    Vector radius;
-    Vector color;
-    Vector shadowMapProps;
+    Vector4 position;
+    Vector4 radius;
+    Vector4 color;
+    Vector4 shadowMapProps;
 };
 
 } // namespace
@@ -342,14 +342,14 @@ void LightsRenderer::SetUp(LightsRendererContext* context, const RenderTargetPtr
     cbuffer.cameraMatrix = camera->matrix;
     cbuffer.projMatrix = camera->projMatrix;
     cbuffer.viewMatrix = camera->viewMatrix;
-    cbuffer.viewportResInv = Vector(1.0f / gbuffer->GetWidth(), 1.0f / gbuffer->GetHeight());
+    cbuffer.viewportResInv = Vector4(1.0f / gbuffer->GetWidth(), 1.0f / gbuffer->GetHeight());
     cbuffer.screenScale = camera->screenScale;
     context->commandRecorder->WriteBuffer(mGlobalCBuffer, 0, sizeof(LightsGlobalCBuffer),
                                         &cbuffer);
 }
 
-void LightsRenderer::DrawAmbientLight(LightsRendererContext* context, const Vector& ambientLightColor,
-                                      const Vector& backgroundColor)
+void LightsRenderer::DrawAmbientLight(LightsRendererContext* context, const Vector4& ambientLightColor,
+                                      const Vector4& backgroundColor)
 {
     context->commandRecorder->SetPipelineState(mAmbientLightPipelineState.GetPipelineState(nullptr));
     context->commandRecorder->BindVolatileCBuffer(0, mGlobalCBuffer);
@@ -364,22 +364,22 @@ void LightsRenderer::DrawAmbientLight(LightsRendererContext* context, const Vect
     context->commandRecorder->DrawIndexed(6);
 }
 
-void LightsRenderer::DrawOmniLight(LightsRendererContext* context, const Vector& pos, float radius,
-                                   const Vector& color, ShadowMap* shadowMap)
+void LightsRenderer::DrawOmniLight(LightsRendererContext* context, const Vector4& pos, float radius,
+                                   const Vector4& color, ShadowMap* shadowMap)
 {
     // TODO: use instancing to draw lights
 
     OmniLightCBuffer cbuffer;
     cbuffer.position = pos;
-    cbuffer.radius = Vector::Splat(radius);
+    cbuffer.radius = Vector4::Splat(radius);
     cbuffer.color = color;
-    cbuffer.shadowMapProps = Vector();
+    cbuffer.shadowMapProps = Vector4();
 
     int macros[] = { 0, 0 };
     if (shadowMap)
     {
         macros[mOmniLightUseShadowMap] = 1;
-        cbuffer.shadowMapProps = Vector(1.0f / shadowMap->GetSize());
+        cbuffer.shadowMapProps = Vector4(1.0f / shadowMap->GetSize());
 
         context->commandRecorder->BindResources(1, shadowMap->mBindingInstance);
     }

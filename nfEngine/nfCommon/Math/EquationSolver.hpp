@@ -77,7 +77,7 @@ public:
      *
      * @return  True if the equations system has exactly one solution.
      */
-    NFCOMMON_API static bool SolveLinearEquationsSystem4(const Matrix& a, const Vector& b, Vector& outX);
+    NFCOMMON_API static bool SolveLinearEquationsSystem4(const Matrix& a, const Vector4& b, Vector4& outX);
 };
 
 

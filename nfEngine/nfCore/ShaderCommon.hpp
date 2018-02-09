@@ -1,13 +1,13 @@
 #pragma once
 
-#include "nfCommon/Math/Vector.hpp"
+#include "nfCommon/Math/Vector4.hpp"
 #include "nfCommon/Math/Matrix.hpp"
 
 
 namespace NFE {
 
 // translate HLSL types to C++ types
-typedef Math::Vector float4;
+typedef Math::Vector4 float4;
 typedef Math::Float3 float3;
 typedef Math::Float2 float2;
 typedef Math::Matrix float4x4;

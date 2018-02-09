@@ -11,19 +11,19 @@
 namespace NFE {
 namespace Math {
 
-Matrix Matrix::MakeLookTo(const Vector& EyePosition, const Vector& EyeDirection,
-                    const Vector& UpDirection)
+Matrix Matrix::MakeLookTo(const Vector4& EyePosition, const Vector4& EyeDirection,
+                    const Vector4& UpDirection)
 {
-    Vector zaxis = EyeDirection.Normalized3();
-    Vector xaxis = Vector::Cross3(UpDirection, zaxis).Normalized3();
-    Vector yaxis = Vector::Cross3(zaxis, xaxis);
+    Vector4 zaxis = EyeDirection.Normalized3();
+    Vector4 xaxis = Vector4::Cross3(UpDirection, zaxis).Normalized3();
+    Vector4 yaxis = Vector4::Cross3(zaxis, xaxis);
 
-    return Matrix(Vector(xaxis.x, yaxis.x, zaxis.x, 0.0f),
-                  Vector(xaxis.y, yaxis.y, zaxis.y, 0.0f),
-                  Vector(xaxis.z, yaxis.z, zaxis.z, 0.0f),
-                  Vector(-Vector::Dot3(xaxis, EyePosition),
-                         -Vector::Dot3(yaxis, EyePosition),
-                         -Vector::Dot3(zaxis, EyePosition),
+    return Matrix(Vector4(xaxis.x, yaxis.x, zaxis.x, 0.0f),
+                  Vector4(xaxis.y, yaxis.y, zaxis.y, 0.0f),
+                  Vector4(xaxis.z, yaxis.z, zaxis.z, 0.0f),
+                  Vector4(-Vector4::Dot3(xaxis, EyePosition),
+                         -Vector4::Dot3(yaxis, EyePosition),
+                         -Vector4::Dot3(zaxis, EyePosition),
                          1.0f));
 }
 
@@ -32,30 +32,30 @@ Matrix Matrix::MakePerspective(float aspect, float fovY, float farZ, float nearZ
     float yScale = 1.0f / tanf(fovY * 0.5f);
     float xScale = yScale / aspect;
 
-    return Matrix(Vector(xScale, 0.0f,   0.0f,                           0.0f),
-                  Vector(0.0f,   yScale, 0.0f,                           0.0f),
-                  Vector(0.0f,   0.0f,   farZ / (farZ - nearZ),          1.0f),
-                  Vector(0.0f,   0.0f,   -nearZ * farZ / (farZ - nearZ), 0.0f));
+    return Matrix(Vector4(xScale, 0.0f,   0.0f,                           0.0f),
+                  Vector4(0.0f,   yScale, 0.0f,                           0.0f),
+                  Vector4(0.0f,   0.0f,   farZ / (farZ - nearZ),          1.0f),
+                  Vector4(0.0f,   0.0f,   -nearZ * farZ / (farZ - nearZ), 0.0f));
 }
 
 Matrix Matrix::MakeOrtho(float left, float right, float bottom, float top, float zNear, float zFar)
 {
     return Matrix(
-               Vector(2.0f / (right - left), 0.0f,                  0.0f,                  0.0f),
-               Vector(0.0f,                  2.0f / (top - bottom), 0.0f,                  0.0f),
-               Vector(0.0f,                  0.0f,                  1.0f / (zFar - zNear), 0.0f),
-               Vector((left + right) / (left - right),
+               Vector4(2.0f / (right - left), 0.0f,                  0.0f,                  0.0f),
+               Vector4(0.0f,                  2.0f / (top - bottom), 0.0f,                  0.0f),
+               Vector4(0.0f,                  0.0f,                  1.0f / (zFar - zNear), 0.0f),
+               Vector4((left + right) / (left - right),
                       (top + bottom) / (bottom - top),
                       zNear / (zNear - zFar),
                       1.0f));
 }
 
-Matrix Matrix::MakeScaling(const Vector& scale)
+Matrix Matrix::MakeScaling(const Vector4& scale)
 {
-    return Matrix(Vector(scale.f[0], 0.0f, 0.0f, 0.0f),
-                  Vector(0.0f, scale.f[1], 0.0f, 0.0f),
-                  Vector(0.0f, 0.0f, scale.f[2], 0.0f),
-                  Vector(0.0f, 0.0f, 0.0f, 1.0f));
+    return Matrix(Vector4(scale.f[0], 0.0f, 0.0f, 0.0f),
+                  Vector4(0.0f, scale.f[1], 0.0f, 0.0f),
+                  Vector4(0.0f, 0.0f, scale.f[2], 0.0f),
+                  Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 }
 
 Matrix Matrix::operator* (const Matrix& b) const

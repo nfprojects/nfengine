@@ -1,7 +1,7 @@
 /**
  * @file
  * @author Witek902 (witek902@gmail.com)
- * @brief  SSE version of Vector class definitions.
+ * @brief  SSE version of Vector4 class definitions.
  */
 
 #pragma once
@@ -14,40 +14,40 @@ namespace NFE {
 namespace Math {
 
 
-static_assert(alignof(Vector) == 4 * sizeof(float), "Invalid Vector alignment");
+static_assert(alignof(Vector4) == 4 * sizeof(float), "Invalid Vector4 alignment");
 
 
 // Constructors ===================================================================================
 
-Vector::Vector()
+Vector4::Vector4()
 {
     v = _mm_setzero_ps();
 }
 
-Vector::Vector(float x, float y, float z, float w)
+Vector4::Vector4(float x, float y, float z, float w)
 {
     v = _mm_set_ps(w, z, y, x);
 }
 
-Vector::Vector(int x, int y, int z, int w)
+Vector4::Vector4(int x, int y, int z, int w)
 {
     v = _mm_castsi128_ps(_mm_set_epi32(w, z, y, x));
 }
 
 // copy array of 4 floats
-Vector::Vector(const float* src)
+Vector4::Vector4(const float* src)
 {
     v = _mm_loadu_ps(src);
 }
 
-Vector::Vector(const Float2& src)
+Vector4::Vector4(const Float2& src)
 {
     __m128 vx = _mm_load_ss(&src.x);
     __m128 vy = _mm_load_ss(&src.y);
     v = _mm_unpacklo_ps(vx, vy);
 }
 
-Vector::Vector(const Float3& src)
+Vector4::Vector4(const Float3& src)
 {
     __m128 vx = _mm_load_ss(&src.x);
     __m128 vy = _mm_load_ss(&src.y);
@@ -56,24 +56,23 @@ Vector::Vector(const Float3& src)
     v = _mm_movelh_ps(vxy, vz);
 }
 
-Vector::Vector(const Float4& src)
+Vector4::Vector4(const Float4& src)
 {
     v = _mm_loadu_ps(&src.x);
 }
 
-void Vector::Set(float scalar)
+void Vector4::Set(float scalar)
 {
     v = _mm_set1_ps(scalar);
 }
 
 // Load & store ===================================================================================
 
-Vector Vector::Load4(const uint8* src)
+Vector4 Vector4::Load4(const uint8* src)
 {
-    static const Vectori mask = {{{0xFF, 0xFF00, 0xFF0000, 0xFF000000}}};
-    static const __m128 LoadUByte4Mul = {1.0f, 1.0f / 256.0f, 1.0f / 65536.0f,
-                                         1.0f / (65536.0f * 256.0f)};
-    static const Vectori flipW = {{{0, 0, 0, 0x80000000}}};
+    static const Vector4i mask = {{{0xFF, 0xFF00, 0xFF0000, 0xFF000000}}};
+    static const __m128 LoadUByte4Mul = {1.0f, 1.0f / 256.0f, 1.0f / 65536.0f, 1.0f / (65536.0f * 256.0f)};
+    static const Vector4i flipW = {{{0, 0, 0, 0x80000000}}};
     static const __m128 unsignedOffset = {0, 0, 0, 32768.0f * 65536.0f};
 
     __m128 vTemp = _mm_load_ps1((const float*)src);
@@ -87,9 +86,9 @@ Vector Vector::Load4(const uint8* src)
 }
 
 /**
- * Convert a Vector to 4 unsigned chars.
+ * Convert a Vector4 to 4 unsigned chars.
  */
-void Vector::Store4(uint8* dest) const
+void Vector4::Store4(uint8* dest) const
 {
     static const __m128 MaxUByte4 = {255.0f, 255.0f, 255.0f, 255.0f};
 
@@ -107,19 +106,19 @@ void Vector::Store4(uint8* dest) const
     _mm_store_ss(reinterpret_cast<float*>(dest), reinterpret_cast<const __m128*>(&vResulti)[0]);
 }
 
-void Vector::Store(float* dest) const
+void Vector4::Store(float* dest) const
 {
     _mm_store_ss(dest, v);
 }
 
-void Vector::Store(Float2* dest) const
+void Vector4::Store(Float2* dest) const
 {
     __m128 vy = _mm_shuffle_ps(v, v, _MM_SHUFFLE(1, 1, 1, 1));
     _mm_store_ss(&dest->x, v);
     _mm_store_ss(&dest->y, vy);
 }
 
-void Vector::Store(Float3* dest) const
+void Vector4::Store(Float3* dest) const
 {
     __m128 vy = _mm_shuffle_ps(v, v, _MM_SHUFFLE(1, 1, 1, 1));
     __m128 vz = _mm_shuffle_ps(v, v, _MM_SHUFFLE(2, 2, 2, 2));
@@ -128,13 +127,13 @@ void Vector::Store(Float3* dest) const
     _mm_store_ss(&dest->z, vz);
 }
 
-void Vector::Store(Float4* dest) const
+void Vector4::Store(Float4* dest) const
 {
     _mm_storeu_ps(&dest->x, v);
 }
 
 template<bool negX, bool negY, bool negZ, bool negW>
-Vector Vector::ChangeSign() const
+Vector4 Vector4::ChangeSign() const
 {
     if (!(negX || negY || negZ || negW))
     {
@@ -143,7 +142,7 @@ Vector Vector::ChangeSign() const
     }
 
     // generate bit negation mask
-    static const Vectori mask = { { { negX ? 0x80000000 : 0, negY ? 0x80000000 : 0, negZ ? 0x80000000 : 0, negW ? 0x80000000 : 0} } };
+    static const Vector4i mask = { { { negX ? 0x80000000 : 0, negY ? 0x80000000 : 0, negZ ? 0x80000000 : 0, negW ? 0x80000000 : 0} } };
 
     // flip sign bits
     return _mm_xor_ps(v, _mm_castsi128_ps(mask));
@@ -152,7 +151,7 @@ Vector Vector::ChangeSign() const
 // Elements rearrangement =========================================================================
 
 template<uint32 ix, uint32 iy, uint32 iz, uint32 iw>
-Vector Vector::Swizzle() const
+Vector4 Vector4::Swizzle() const
 {
     static_assert(ix < 4, "Invalid X element index");
     static_assert(iy < 4, "Invalid Y element index");
@@ -163,7 +162,7 @@ Vector Vector::Swizzle() const
 }
 
 template<uint32 ix, uint32 iy, uint32 iz, uint32 iw>
-Vector Vector::Blend(const Vector& a, const Vector& b)
+Vector4 Vector4::Blend(const Vector4& a, const Vector4& b)
 {
     static_assert(ix < 2, "Invalid index for X component");
     static_assert(iy < 2, "Invalid index for Y component");
@@ -174,77 +173,77 @@ Vector Vector::Blend(const Vector& a, const Vector& b)
     constexpr uint32 mask = ix | (iy << 1) | (iz << 2) | (iw << 3);
     return _mm_blend_ps(a, b, mask);
 #else
-    static const Vectori mask = { { { ix ? 0xFFFFFFFF : 0, iy ? 0xFFFFFFFF : 0, iz ? 0xFFFFFFFF : 0, iw ? 0xFFFFFFFF : 0 } } };
-    const Vector maskf = _mm_castsi128_ps(mask);
+    static const Vector4i mask = { { { ix ? 0xFFFFFFFF : 0, iy ? 0xFFFFFFFF : 0, iz ? 0xFFFFFFFF : 0, iw ? 0xFFFFFFFF : 0 } } };
+    const Vector4 maskf = _mm_castsi128_ps(mask);
     return _mm_or_ps(_mm_andnot_ps(maskf, a), _mm_and_ps(maskf, b));
 #endif
 }
 
-Vector Vector::SplatX() const
+Vector4 Vector4::SplatX() const
 {
     return _mm_shuffle_ps(v, v, _MM_SHUFFLE(0, 0, 0, 0));
 }
 
-Vector Vector::SplatY() const
+Vector4 Vector4::SplatY() const
 {
     return _mm_shuffle_ps(v, v, _MM_SHUFFLE(1, 1, 1, 1));
 }
 
-Vector Vector::SplatZ() const
+Vector4 Vector4::SplatZ() const
 {
     return _mm_shuffle_ps(v, v, _MM_SHUFFLE(2, 2, 2, 2));
 }
 
-Vector Vector::SplatW() const
+Vector4 Vector4::SplatW() const
 {
     return _mm_shuffle_ps(v, v, _MM_SHUFFLE(3, 3, 3, 3));
 }
 
-Vector Vector::Splat(float f)
+Vector4 Vector4::Splat(float f)
 {
     return _mm_set_ps1(f);
 }
 
-Vector Vector::SelectBySign(const Vector& a, const Vector& b, const Vector& sel)
+Vector4 Vector4::SelectBySign(const Vector4& a, const Vector4& b, const Vector4& sel)
 {
 #if defined(NFE_USE_SSE4)
     return _mm_blendv_ps(a, b, sel);
 #else
-    Vector mask = _mm_cmplt_ps(sel, _mm_setzero_ps());
+    Vector4 mask = _mm_cmplt_ps(sel, _mm_setzero_ps());
     return _mm_xor_ps(a, _mm_and_ps(mask, _mm_xor_ps(b, a)));
 #endif
 }
 
 // Logical operations =============================================================================
 
-Vector Vector::operator& (const Vector& b) const
+Vector4 Vector4::operator& (const Vector4& b) const
 {
     return _mm_and_ps(v, b);
 }
 
-Vector Vector::operator| (const Vector& b) const
+Vector4 Vector4::operator| (const Vector4& b) const
 {
     return _mm_or_ps(v, b);
 }
 
-Vector Vector::operator^ (const Vector& b) const
+Vector4 Vector4::operator^ (const Vector4& b) const
 {
     return _mm_xor_ps(v, b);
 }
 
-Vector& Vector::operator&= (const Vector& b)
+Vector4& Vector4::operator&= (const Vector4& b)
 {
     v = _mm_and_ps(v, b);
     return *this;
 }
 
-Vector& Vector::operator|= (const Vector& b)
+Vector4& Vector4::operator|= (const Vector4& b)
 {
     v = _mm_or_ps(v, b);
     return *this;
 }
 
-Vector& Vector::operator^= (const Vector& b)
+Vector4& Vector4::operator^= (const Vector4& b)
 {
     v = _mm_xor_ps(v, b);
     return *this;
@@ -252,84 +251,84 @@ Vector& Vector::operator^= (const Vector& b)
 
 // Simple arithmetics =============================================================================
 
-Vector Vector::operator- () const
+Vector4 Vector4::operator- () const
 {
-    return Vector() - (*this);
+    return Vector4() - (*this);
 }
 
-Vector Vector::operator+ (const Vector& b) const
+Vector4 Vector4::operator+ (const Vector4& b) const
 {
     return _mm_add_ps(v, b);
 }
 
-Vector Vector::operator- (const Vector& b) const
+Vector4 Vector4::operator- (const Vector4& b) const
 {
     return _mm_sub_ps(v, b);
 }
 
-Vector Vector::operator* (const Vector& b) const
+Vector4 Vector4::operator* (const Vector4& b) const
 {
     return _mm_mul_ps(v, b);
 }
 
-Vector Vector::operator/ (const Vector& b) const
+Vector4 Vector4::operator/ (const Vector4& b) const
 {
     return _mm_div_ps(v, b);
 }
 
-Vector Vector::operator* (float b) const
+Vector4 Vector4::operator* (float b) const
 {
     return _mm_mul_ps(v, _mm_set1_ps(b));
 }
 
-Vector Vector::operator/ (float b) const
+Vector4 Vector4::operator/ (float b) const
 {
     return _mm_div_ps(v, _mm_set1_ps(b));
 }
 
-Vector operator*(float a, const Vector& b)
+Vector4 operator*(float a, const Vector4& b)
 {
     return _mm_mul_ps(b, _mm_set1_ps(a));
 }
 
 
-Vector& Vector::operator+= (const Vector& b)
+Vector4& Vector4::operator+= (const Vector4& b)
 {
     v = _mm_add_ps(v, b);
     return *this;
 }
 
-Vector& Vector::operator-= (const Vector& b)
+Vector4& Vector4::operator-= (const Vector4& b)
 {
     v = _mm_sub_ps(v, b);
     return *this;
 }
 
-Vector& Vector::operator*= (const Vector& b)
+Vector4& Vector4::operator*= (const Vector4& b)
 {
     v = _mm_mul_ps(v, b);
     return *this;
 }
 
-Vector& Vector::operator/= (const Vector& b)
+Vector4& Vector4::operator/= (const Vector4& b)
 {
     v = _mm_div_ps(v, b);
     return *this;
 }
 
-Vector& Vector::operator*= (float b)
+Vector4& Vector4::operator*= (float b)
 {
     v = _mm_mul_ps(v, _mm_set1_ps(b));
     return *this;
 }
 
-Vector& Vector::operator/= (float b)
+Vector4& Vector4::operator/= (float b)
 {
     v = _mm_div_ps(v, _mm_set1_ps(b));
     return *this;
 }
 
-Vector Vector::MulAndAdd(const Vector& a, const Vector& b, const Vector& c)
+Vector4 Vector4::MulAndAdd(const Vector4& a, const Vector4& b, const Vector4& c)
 {
 #ifdef NFE_USE_FMA
     return _mm_fmadd_ps(a, b, c);
@@ -338,7 +337,7 @@ Vector Vector::MulAndAdd(const Vector& a, const Vector& b, const Vector& c)
 #endif
 }
 
-Vector Vector::MulAndSub(const Vector& a, const Vector& b, const Vector& c)
+Vector4 Vector4::MulAndSub(const Vector4& a, const Vector4& b, const Vector4& c)
 {
 #ifdef NFE_USE_FMA
     return _mm_fmsub_ps(a, b, c);
@@ -347,7 +346,7 @@ Vector Vector::MulAndSub(const Vector& a, const Vector& b, const Vector& c)
 #endif
 }
 
-Vector Vector::NegMulAndAdd(const Vector& a, const Vector& b, const Vector& c)
+Vector4 Vector4::NegMulAndAdd(const Vector4& a, const Vector4& b, const Vector4& c)
 {
 #ifdef NFE_USE_FMA
     return _mm_fnmadd_ps(a, b, c);
@@ -356,7 +355,7 @@ Vector Vector::NegMulAndAdd(const Vector& a, const Vector& b, const Vector& c)
 #endif
 }
 
-Vector Vector::NegMulAndSub(const Vector& a, const Vector& b, const Vector& c)
+Vector4 Vector4::NegMulAndSub(const Vector4& a, const Vector4& b, const Vector4& c)
 {
 #ifdef NFE_USE_FMA
     return _mm_fnmsub_ps(a, b, c);
@@ -365,37 +364,37 @@ Vector Vector::NegMulAndSub(const Vector& a, const Vector& b, const Vector& c)
 #endif
 }
 
-Vector Vector::Floor(const Vector& V)
+Vector4 Vector4::Floor(const Vector4& V)
 {
-    Vector vResult = _mm_sub_ps(V, _mm_set1_ps(0.49999f));
+    Vector4 vResult = _mm_sub_ps(V, _mm_set1_ps(0.49999f));
     __m128i vInt = _mm_cvtps_epi32(vResult);
     vResult = _mm_cvtepi32_ps(vInt);
     return vResult;
 }
 
-Vector Vector::Sqrt(const Vector& V)
+Vector4 Vector4::Sqrt(const Vector4& V)
 {
     return _mm_sqrt_ss(V);
 }
 
-Vector Vector::Sqrt4(const Vector& V)
+Vector4 Vector4::Sqrt4(const Vector4& V)
 {
     return _mm_sqrt_ps(V);
 }
 
-Vector Vector::Reciprocal(const Vector& V)
+Vector4 Vector4::Reciprocal(const Vector4& V)
 {
     return _mm_div_ps(VECTOR_ONE, V);
 }
 
-Vector Vector::Lerp(const Vector& v1, const Vector& v2, const Vector& weight)
+Vector4 Vector4::Lerp(const Vector4& v1, const Vector4& v2, const Vector4& weight)
 {
     __m128 vTemp = _mm_sub_ps(v2, v1);
     vTemp = _mm_mul_ps(vTemp, weight);
     return _mm_add_ps(v1, vTemp);
 }
 
-Vector Vector::Lerp(const Vector& v1, const Vector& v2, float weight)
+Vector4 Vector4::Lerp(const Vector4& v1, const Vector4& v2, float weight)
 {
     __m128 vWeight = _mm_set_ps1(weight);
     __m128 vTemp = _mm_sub_ps(v2, v1);
@@ -403,152 +402,152 @@ Vector Vector::Lerp(const Vector& v1, const Vector& v2, float weight)
     return _mm_add_ps(v1, vTemp);
 }
 
-Vector Vector::Min(const Vector& a, const Vector& b)
+Vector4 Vector4::Min(const Vector4& a, const Vector4& b)
 {
     return _mm_min_ps(a, b);
 }
 
-Vector Vector::Max(const Vector& a, const Vector& b)
+Vector4 Vector4::Max(const Vector4& a, const Vector4& b)
 {
     return _mm_max_ps(a, b);
 }
 
-Vector Vector::Abs(const Vector& v)
+Vector4 Vector4::Abs(const Vector4& v)
 {
     return _mm_and_ps(v, VECTOR_MASK_ABS);
 }
 
 // Comparison functions ===========================================================================
 
-int Vector::EqualMask(const Vector& v1, const Vector& v2)
+int Vector4::EqualMask(const Vector4& v1, const Vector4& v2)
 {
     return _mm_movemask_ps(_mm_cmpeq_ps(v1, v2));
 }
 
-int Vector::LessMask(const Vector& v1, const Vector& v2)
+int Vector4::LessMask(const Vector4& v1, const Vector4& v2)
 {
     return _mm_movemask_ps(_mm_cmplt_ps(v1, v2));
 }
 
-int Vector::LessEqMask(const Vector& v1, const Vector& v2)
+int Vector4::LessEqMask(const Vector4& v1, const Vector4& v2)
 {
     return _mm_movemask_ps(_mm_cmple_ps(v1, v2));
 }
 
-int Vector::GreaterMask(const Vector& v1, const Vector& v2)
+int Vector4::GreaterMask(const Vector4& v1, const Vector4& v2)
 {
     return _mm_movemask_ps(_mm_cmpgt_ps(v1, v2));
 }
 
-int Vector::GreaterEqMask(const Vector& v1, const Vector& v2)
+int Vector4::GreaterEqMask(const Vector4& v1, const Vector4& v2)
 {
     return _mm_movemask_ps(_mm_cmpge_ps(v1, v2));
 }
 
-int Vector::NotEqualMask(const Vector& v1, const Vector& v2)
+int Vector4::NotEqualMask(const Vector4& v1, const Vector4& v2)
 {
     return _mm_movemask_ps(_mm_cmpneq_ps(v1, v2));
 }
 
 // 2D vector comparison functions =================================================================
 
-bool Vector::Equal2(const Vector& v1, const Vector& v2)
+bool Vector4::Equal2(const Vector4& v1, const Vector4& v2)
 {
     return (_mm_movemask_ps(_mm_cmpeq_ps(v1, v2)) & 0x3) == 0x3;
 }
 
-bool Vector::Less2(const Vector& v1, const Vector& v2)
+bool Vector4::Less2(const Vector4& v1, const Vector4& v2)
 {
     return (_mm_movemask_ps(_mm_cmplt_ps(v1, v2)) & 0x3) == 0x3;
 }
 
-bool Vector::LessEq2(const Vector& v1, const Vector& v2)
+bool Vector4::LessEq2(const Vector4& v1, const Vector4& v2)
 {
     return (_mm_movemask_ps(_mm_cmple_ps(v1, v2)) & 0x3) == 0x3;
 }
 
-bool Vector::Greater2(const Vector& v1, const Vector& v2)
+bool Vector4::Greater2(const Vector4& v1, const Vector4& v2)
 {
     return (_mm_movemask_ps(_mm_cmpgt_ps(v1, v2)) & 0x3) == 0x3;
 }
 
-bool Vector::GreaterEq2(const Vector& v1, const Vector& v2)
+bool Vector4::GreaterEq2(const Vector4& v1, const Vector4& v2)
 {
     return (_mm_movemask_ps(_mm_cmpge_ps(v1, v2)) & 0x3) == 0x3;
 }
 
-bool Vector::NotEqual2(const Vector& v1, const Vector& v2)
+bool Vector4::NotEqual2(const Vector4& v1, const Vector4& v2)
 {
     return (_mm_movemask_ps(_mm_cmpneq_ps(v1, v2)) & 0x3) == 0x3;
 }
 
 // 3D vector comparison functions =================================================================
 
-bool Vector::Equal3(const Vector& v1, const Vector& v2)
+bool Vector4::Equal3(const Vector4& v1, const Vector4& v2)
 {
     return (_mm_movemask_ps(_mm_cmpeq_ps(v1, v2)) & 0x7) == 0x7;
 }
 
-bool Vector::Less3(const Vector& v1, const Vector& v2)
+bool Vector4::Less3(const Vector4& v1, const Vector4& v2)
 {
     return (_mm_movemask_ps(_mm_cmplt_ps(v1, v2)) & 0x7) == 0x7;
 }
 
-bool Vector::LessEq3(const Vector& v1, const Vector& v2)
+bool Vector4::LessEq3(const Vector4& v1, const Vector4& v2)
 {
     return (_mm_movemask_ps(_mm_cmple_ps(v1, v2)) & 0x7) == 0x7;
 }
 
-bool Vector::Greater3(const Vector& v1, const Vector& v2)
+bool Vector4::Greater3(const Vector4& v1, const Vector4& v2)
 {
     return (_mm_movemask_ps(_mm_cmpgt_ps(v1, v2)) & 0x7) == 0x7;
 }
 
-bool Vector::GreaterEq3(const Vector& v1, const Vector& v2)
+bool Vector4::GreaterEq3(const Vector4& v1, const Vector4& v2)
 {
     return (_mm_movemask_ps(_mm_cmpge_ps(v1, v2)) & 0x7) == 0x7;
 }
 
-bool Vector::NotEqual3(const Vector& v1, const Vector& v2)
+bool Vector4::NotEqual3(const Vector4& v1, const Vector4& v2)
 {
     return (_mm_movemask_ps(_mm_cmpneq_ps(v1, v2)) & 0x7) == 0x7;
 }
 
 // 4D vector comparison functions =================================================================
 
-bool Vector::operator== (const Vector& b) const
+bool Vector4::operator== (const Vector4& b) const
 {
     return EqualMask(*this, b) == 0xF;
 }
 
-bool Vector::operator< (const Vector& b) const
+bool Vector4::operator< (const Vector4& b) const
 {
     return LessMask(*this, b) == 0xF;
 }
 
-bool Vector::operator<= (const Vector& b) const
+bool Vector4::operator<= (const Vector4& b) const
 {
     return LessEqMask(*this, b) == 0xF;
 }
 
-bool Vector::operator> (const Vector& b) const
+bool Vector4::operator> (const Vector4& b) const
 {
     return GreaterMask(*this, b) == 0xF;
 }
 
-bool Vector::operator>= (const Vector& b) const
+bool Vector4::operator>= (const Vector4& b) const
 {
     return GreaterEqMask(*this, b) == 0xF;
 }
 
-bool Vector::operator!= (const Vector& b) const
+bool Vector4::operator!= (const Vector4& b) const
 {
     return NotEqualMask(*this, b) == 0xF;
 }
 
 // Geometry functions =============================================================================
 
-Vector Vector::Dot2V(const Vector& v1, const Vector& v2)
+Vector4 Vector4::Dot2V(const Vector4& v1, const Vector4& v2)
 {
 #ifdef NFE_USE_SSE4
     return _mm_dp_ps(v1, v2, 0x3F);
@@ -560,14 +559,14 @@ Vector Vector::Dot2V(const Vector& v1, const Vector& v2)
 #endif // NFE_USE_SSE4
 }
 
-float Vector::Dot2(const Vector& v1, const Vector& v2)
+float Vector4::Dot2(const Vector4& v1, const Vector4& v2)
 {
     float result;
     _mm_store_ss(&result, Dot2V(v1, v2));
     return result;
 }
 
-Vector Vector::Dot3V(const Vector& v1, const Vector& v2)
+Vector4 Vector4::Dot3V(const Vector4& v1, const Vector4& v2)
 {
 #ifdef NFE_USE_SSE4
     return _mm_dp_ps(v1, v2, 0x7F);
@@ -581,14 +580,14 @@ Vector Vector::Dot3V(const Vector& v1, const Vector& v2)
 #endif // NFE_USE_SSE4
 }
 
-float Vector::Dot3(const Vector& v1, const Vector& v2)
+float Vector4::Dot3(const Vector4& v1, const Vector4& v2)
 {
     float result;
     _mm_store_ss(&result, Dot3V(v1, v2));
     return result;
 }
 
-Vector Vector::Dot4V(const Vector& v1, const Vector& v2)
+Vector4 Vector4::Dot4V(const Vector4& v1, const Vector4& v2)
 {
 #ifdef NFE_USE_SSE4
     return _mm_dp_ps(v1, v2, 0xFF);
@@ -602,14 +601,14 @@ Vector Vector::Dot4V(const Vector& v1, const Vector& v2)
 #endif // NFE_USE_SSE4
 }
 
-float Vector::Dot4(const Vector& v1, const Vector& v2)
+float Vector4::Dot4(const Vector4& v1, const Vector4& v2)
 {
     float result;
     _mm_store_ss(&result, Dot4V(v1, v2));
     return result;
 }
 
-Vector Vector::Cross3(const Vector& V1, const Vector& V2)
+Vector4 Vector4::Cross3(const Vector4& V1, const Vector4& V2)
 {
     __m128 vTemp1 = _mm_shuffle_ps(V1, V1, _MM_SHUFFLE(3, 0, 2, 1));
     __m128 vTemp2 = _mm_shuffle_ps(V2, V2, _MM_SHUFFLE(3, 1, 0, 2));
@@ -620,82 +619,82 @@ Vector Vector::Cross3(const Vector& V1, const Vector& V2)
     return _mm_and_ps(vResult, VECTOR_MASK_XYZ);
 }
 
-float Vector::Length2() const
+float Vector4::Length2() const
 {
     float result;
     _mm_store_ss(&result, Length2V());
     return result;
 }
 
-Vector Vector::Length2V() const
+Vector4 Vector4::Length2V() const
 {
     return Sqrt4(Dot2V(v, v));
 }
 
-float Vector::Length3() const
+float Vector4::Length3() const
 {
     float result;
     _mm_store_ss(&result, Length3V());
     return result;
 }
 
-Vector Vector::Length3V() const
+Vector4 Vector4::Length3V() const
 {
     return Sqrt4(Dot3V(v, v));
 }
 
-float Vector::Length4() const
+float Vector4::Length4() const
 {
     float result;
     _mm_store_ss(&result, Length4V());
     return result;
 }
 
-Vector Vector::Length4V() const
+Vector4 Vector4::Length4V() const
 {
     return Sqrt4(Dot4V(v, v));
 }
 
-Vector& Vector::Normalize2()
+Vector4& Vector4::Normalize2()
 {
     *this /= Length2V();
     return *this;
 }
 
-Vector Vector::Normalized2() const
+Vector4 Vector4::Normalized2() const
 {
-    Vector result = *this;
+    Vector4 result = *this;
     result.Normalize2();
     return result;
 }
 
-Vector& Vector::Normalize3()
+Vector4& Vector4::Normalize3()
 {
     *this /= Length3V();
     return *this;
 }
 
-Vector Vector::Normalized3() const
+Vector4 Vector4::Normalized3() const
 {
-    Vector result = *this;
+    Vector4 result = *this;
     result.Normalize3();
     return result;
 }
 
-Vector& Vector::Normalize4()
+Vector4& Vector4::Normalize4()
 {
     *this /= Length4V();
     return *this;
 }
 
-Vector Vector::Normalized4() const
+Vector4 Vector4::Normalized4() const
 {
-    Vector result = *this;
+    Vector4 result = *this;
     result.Normalize4();
     return result;
 }
 
-Vector Vector::Reflect3(const Vector& i, const Vector& n)
+Vector4 Vector4::Reflect3(const Vector4& i, const Vector4& n)
 {
     const __m128 vDot = Dot3V(i, n);
     __m128 vTemp = _mm_add_ps(vDot, vDot); // vTemp = 2 * vDot

@@ -32,9 +32,9 @@ struct GlobalCBuffer
 
 struct MaterialCBuffer
 {
-    Vector diffuseColor;
-    Vector specularColor;
-    Vector emissionColor;
+    Vector4 diffuseColor;
+    Vector4 specularColor;
+    Vector4 emissionColor;
 };
 
 } // namespace
@@ -273,9 +273,9 @@ void GeometryRenderer::SetMaterial(GeometryRendererContext* context, const Rende
     context->commandRecorder->BindResources(0, bindingInstance);
 
     MaterialCBuffer cbuffer;
-    cbuffer.diffuseColor = Vector(1.0f, 1.0f, 1.0f, 1.0f);
-    cbuffer.specularColor = Vector(1.0f, 1.0f, 1.0f, 1.0f);
-    cbuffer.emissionColor = Vector();
+    cbuffer.diffuseColor = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+    cbuffer.specularColor = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+    cbuffer.emissionColor = Vector4();
     context->commandRecorder->WriteBuffer(mMaterialCBuffer, 0, sizeof(MaterialCBuffer),
                                         &cbuffer);
 }

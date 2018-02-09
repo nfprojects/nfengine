@@ -40,15 +40,15 @@ void CreateSceneMinecraft(SceneManager* scene)
 
     //set ambient & background color
     EnvironmentDesc envDesc;
-    envDesc.ambientLight = Vector(0.3f, 0.35f, 0.4f, 0.0f);
-    envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
+    envDesc.ambientLight = Vector4(0.3f, 0.35f, 0.4f, 0.0f);
+    envDesc.backgroundColor = Vector4(0.3f, 0.35f, 0.4f, 0.01f);
     scene->GetSystem<RendererSystem>()->GetRenderScene()->SetEnvironment(envDesc);
 
     // TODO directional light
 
     // MINECRAFT
     Entity* map = entitySystem->CreateEntity();
-    map->SetGlobalPosition(Vector(0.0f, -70.0f, 0.0f));
+    map->SetGlobalPosition(Vector4(0.0f, -70.0f, 0.0f));
 
     auto meshComponent = MakeUniquePtr<MeshComponent>();
     meshComponent->SetMeshResource("minecraft.nfm");
@@ -61,8 +61,8 @@ void CreateSceneSponza(SceneManager* scene)
 
     //set ambient & background color
     EnvironmentDesc envDesc;
-    envDesc.ambientLight = Vector(0.3f, 0.35f, 0.4f, 0.0f);
-    envDesc.backgroundColor = Vector(0.3f, 0.35f, 0.4f, 0.01f);
+    envDesc.ambientLight = Vector4(0.3f, 0.35f, 0.4f, 0.0f);
+    envDesc.backgroundColor = Vector4(0.3f, 0.35f, 0.4f, 0.01f);
     scene->GetSystem<RendererSystem>()->GetRenderScene()->SetEnvironment(envDesc);
 
     Entity* sponza = entitySystem->CreateEntity();
@@ -79,7 +79,7 @@ void CreateSceneSponza(SceneManager* scene)
     }
 
     Entity* lightEntity = entitySystem->CreateEntity();
-    lightEntity->SetGlobalPosition(Vector(0.0f, 3.5f, 0.0f));
+    lightEntity->SetGlobalPosition(Vector4(0.0f, 3.5f, 0.0f));
     {
         OmniLightDesc omni;
         omni.shadowFadeStart = 12.0f;
@@ -102,8 +102,8 @@ void CreateChamberArray(SceneManager* scene,
 
     // set ambient & background color
     EnvironmentDesc envDesc;
-    envDesc.ambientLight = Vector(0.1f, 0.15f, 0.2f, 0.0f);
-    envDesc.backgroundColor = Vector(0.1f, 0.15f, 0.2f, 0.01f);
+    envDesc.ambientLight = Vector4(0.1f, 0.15f, 0.2f, 0.0f);
+    envDesc.backgroundColor = Vector4(0.1f, 0.15f, 0.2f, 0.01f);
     scene->GetSystem<RendererSystem>()->GetRenderScene()->SetEnvironment(envDesc);
 
     // TODO all of this must be loaded from game object resource
@@ -114,7 +114,7 @@ void CreateChamberArray(SceneManager* scene,
     {
         for (int z = -chambersZ; z <= chambersZ; z++)
         {
-            Vector offset = 12.0f * Vector(static_cast<float>(x),
+            Vector4 offset = 12.0f * Vector4(static_cast<float>(x),
                                            0.0f,
                                            static_cast<float>(z));
 
@@ -136,7 +136,7 @@ void CreateChamberArray(SceneManager* scene,
             omni.radius = 12.0f;
 
             Entity* mainLightEntity = entitySystem->CreateEntity();
-            mainLightEntity->SetGlobalPosition(offset + Vector(0.0f, 3.5f, 0.0f));
+            mainLightEntity->SetGlobalPosition(offset + Vector4(0.0f, 3.5f, 0.0f));
             {
                 {
                     auto light = MakeUniquePtr<LightComponent>();
@@ -148,7 +148,7 @@ void CreateChamberArray(SceneManager* scene,
 
                 {
                     auto trigger = MakeUniquePtr<TriggerComponent>();
-                    trigger->SetSize(Vector(8.0f, 8.0f, 8.0f));
+                    trigger->SetSize(Vector4(8.0f, 8.0f, 8.0f));
                     trigger->SetType(TriggerType::Target);
                     mainLightEntity->AddComponent(trigger);
                 }
@@ -162,7 +162,7 @@ void CreateChamberArray(SceneManager* scene,
             }
 
             Entity* lightEntityA = entitySystem->CreateEntity();
-            lightEntityA->SetGlobalPosition(offset + Vector(6.0f, 1.8f, 0.0f));
+            lightEntityA->SetGlobalPosition(offset + Vector4(6.0f, 1.8f, 0.0f));
             {
                 {
                     auto light = MakeUniquePtr<LightComponent>();
@@ -181,7 +181,7 @@ void CreateChamberArray(SceneManager* scene,
             }
 
             Entity* lightEntityB = entitySystem->CreateEntity();
-            lightEntityB->SetGlobalPosition(offset + Vector(0.0f, 1.8f, 6.0f));
+            lightEntityB->SetGlobalPosition(offset + Vector4(0.0f, 1.8f, 6.0f));
             {
                 {
                     auto light = MakeUniquePtr<LightComponent>();
@@ -206,8 +206,8 @@ void CreateChamberArray(SceneManager* scene,
                     for (int k = -boxesZ; k <= boxesZ; k++)
                     {
                         Entity* boxEntity = entitySystem->CreateEntity();
-                        boxEntity->SetGlobalPosition(offset + Vector(0.0f, 0.25f, 0.0f) +
-                                                     0.6f * Vector(static_cast<float>(i),
+                        boxEntity->SetGlobalPosition(offset + Vector4(0.0f, 0.25f, 0.0f) +
+                                                     0.6f * Vector4(static_cast<float>(i),
                                                                    static_cast<float>(j),
                                                                    static_cast<float>(k)));
 

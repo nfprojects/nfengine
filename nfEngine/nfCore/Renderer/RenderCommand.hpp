@@ -10,7 +10,7 @@
 #include "Renderers/RendererInterface/Buffer.hpp"
 
 #include "nfCommon/Memory/Aligned.hpp"
-#include "nfCommon/Math/Vector.hpp"
+#include "nfCommon/Math/Vector4.hpp"
 #include "nfCommon/Math/Matrix.hpp"
 
 #include <vector>
@@ -22,9 +22,9 @@ namespace Renderer {
 NFE_ALIGN(16)
 struct InstanceData
 {
-    Math::Vector worldMatrix[3];
-    Math::Vector velocity;
-    Math::Vector angularVelocity;
+    Math::Vector4 worldMatrix[3];
+    Math::Vector4 velocity;
+    Math::Vector4 angularVelocity;
 };
 
 NFE_ALIGN(16)
@@ -32,8 +32,8 @@ struct RenderCommand
 {
     //instance data
     Math::Matrix matrix;
-    Math::Vector velocity;
-    Math::Vector angularVelocity;
+    Math::Vector4 velocity;
+    Math::Vector4 angularVelocity;
 
     float distance;
 

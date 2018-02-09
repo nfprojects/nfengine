@@ -168,7 +168,7 @@ bool EquationSolver::SolveLinearEquationsSystem3(const Matrix3& a, const Float3&
     return true;
 }
 
-bool EquationSolver::SolveLinearEquationsSystem4(const Matrix& a, const Vector& b, Vector& outX)
+bool EquationSolver::SolveLinearEquationsSystem4(const Matrix& a, const Vector4& b, Vector4& outX)
 {
     // TODO
 

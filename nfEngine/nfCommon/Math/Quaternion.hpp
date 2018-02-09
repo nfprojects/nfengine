@@ -7,7 +7,7 @@
 #pragma once
 
 #include "Math.hpp"
-#include "Vector.hpp"
+#include "Vector4.hpp"
 #include "Matrix.hpp"
 
 
@@ -23,24 +23,24 @@ struct NFE_ALIGN(16) Quaternion final
     // q = f[3] + i * q[0] + j * q[1] + k * q[2]
     union
     {
-        Vector q;
+        Vector4 q;
         float f[4];
     };
 
     Quaternion() : q(0.0f, 0.0f, 0.0f, 1.0f) { }
     Quaternion(const Quaternion&) = default;
-    explicit Quaternion(const Vector& v) : q(v) { }
+    explicit Quaternion(const Vector4& v) : q(v) { }
     explicit Quaternion(float i, float j, float k, float s) : q(i, j, k, s) { }
 
-    operator const Vector&() const { return q; }
-    operator Vector&() { return q; }
+    operator const Vector4&() const { return q; }
+    operator Vector4&() { return q; }
 
     /**
      * Get transformed X, Y, Z axes.
      */
-    NFE_INLINE Vector GetAxisX() const;
-    NFE_INLINE Vector GetAxisY() const;
-    NFE_INLINE Vector GetAxisZ() const;
+    NFE_INLINE Vector4 GetAxisX() const;
+    NFE_INLINE Vector4 GetAxisY() const;
+    NFE_INLINE Vector4 GetAxisZ() const;
 
     /**
      * Create null rotation quaternion.
@@ -51,7 +51,7 @@ struct NFE_ALIGN(16) Quaternion final
      * Create quaternion form axis and angle.
      * @note    Returned quaternion is be normalized.
      */
-    NFCOMMON_API static Quaternion FromAxisAndAngle(const Vector& axis, float angle);
+    NFCOMMON_API static Quaternion FromAxisAndAngle(const Vector4& axis, float angle);
 
     /**
      * Create quaternion representing rotation around X axis.
@@ -117,7 +117,7 @@ struct NFE_ALIGN(16) Quaternion final
     /**
      * Rotate a 3D vector with a quaternion.
      */
-    NFCOMMON_API Vector TransformVector(const Vector& v) const;
+    NFCOMMON_API Vector4 TransformVector(const Vector4& v) const;
 
     /**
      * Extract rotation axis and angle from a quaternion.
@@ -125,7 +125,7 @@ struct NFE_ALIGN(16) Quaternion final
      * @param   outAngle    Rotation angle in radians.
      * @note    This is slow.
      */
-    NFCOMMON_API void ToAxis(Vector& outAxis, float& outAngle) const;
+    NFCOMMON_API void ToAxis(Vector4& outAxis, float& outAngle) const;
 
     /**
      * Create rotation matrix from quaternion.
