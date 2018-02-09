@@ -117,6 +117,9 @@
     <ClInclude Include="Math\Triangle.hpp" />
     <ClInclude Include="Math\Vector4.hpp" />
     <ClInclude Include="Math\Vector4Constants.hpp" />
+    <ClInclude Include="Math\Vector8.hpp" />
+    <ClInclude Include="Math\Vector8Constants.hpp" />
+    <ClInclude Include="Math\Vector8Impl.hpp" />
     <ClInclude Include="Memory\Aligned.hpp" />
     <ClInclude Include="Memory\Buffer.hpp" />
     <ClInclude Include="Memory\DefaultAllocator.hpp" />
@@ -225,6 +228,7 @@
     <ClCompile Include="Math\SSE\GeometrySSE.cpp" />
     <ClCompile Include="Math\SSE\MatrixSSE.cpp" />
     <ClCompile Include="Math\Transform.cpp" />
+    <ClCompile Include="Math\Vector8.cpp" />
     <ClCompile Include="Memory\Buffer.cpp" />
     <ClCompile Include="Memory\DefaultAllocator.cpp" />
     <ClCompile Include="Packer\PackerDefines.cpp" />

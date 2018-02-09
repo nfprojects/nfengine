@@ -61,6 +61,9 @@
     <Filter Include="Math\Shapes">
       <UniqueIdentifier>{7e9c0cac-163a-4dcc-bd16-02a66e740794}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Math\SIMD">
+      <UniqueIdentifier>{dcbd0692-4b91-49d3-8231-5a36800cbe46}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nfCommon.hpp" />
@@ -531,6 +534,15 @@
     <ClInclude Include="Math\Vector4Constants.hpp">
       <Filter>Math\Vector</Filter>
     </ClInclude>
+    <ClInclude Include="Math\Vector8Constants.hpp">
+      <Filter>Math\SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vector8Impl.hpp">
+      <Filter>Math\SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vector8.hpp">
+      <Filter>Math\SIMD</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -770,6 +782,9 @@
     </ClCompile>
     <ClCompile Include="Math\Sphere.cpp">
       <Filter>Math\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Vector8.cpp">
+      <Filter>Math\SIMD</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
