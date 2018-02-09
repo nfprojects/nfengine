@@ -8,7 +8,7 @@
 
 #include "../Core.hpp"
 
-#include "nfCommon/Math/Vector.hpp"
+#include "nfCommon/Math/Vector4.hpp"
 #include "nfCommon/Math/Matrix.hpp"
 
 
@@ -25,8 +25,8 @@ namespace Renderer {
 struct NFE_ALIGN(16) MeshProxyDesc
 {
     Math::Matrix transform;
-    Math::Vector velocity;
-    Math::Vector angularVelocity;
+    Math::Vector4 velocity;
+    Math::Vector4 angularVelocity;
 
     // TODO place IB and VB here instead
     Resource::Mesh* mesh;
@@ -72,7 +72,7 @@ struct LightProxySpot
 struct NFE_ALIGN(16) LightProxyDesc
 {
     // HDR color value in linear space
-    Math::Vector color;
+    Math::Vector4 color;
 
     // global transformation matrix
     Math::Matrix transform;

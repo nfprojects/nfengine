@@ -19,12 +19,12 @@ namespace Math {
 template<> NFCOMMON_API
 bool Intersect(const Ray& ray, const Box& box)
 {
-    Vector unusedDist;
+    Vector4 unusedDist;
     return RayBoxIntersectInline(ray, box, unusedDist);
 }
 
 template<> NFCOMMON_API
-bool Intersect(const Ray& ray, const Box& box, Vector& dist)
+bool Intersect(const Ray& ray, const Box& box, Vector4& dist)
 {
     return RayBoxIntersectInline(ray, box, dist);
 }
@@ -35,12 +35,12 @@ bool Intersect(const Ray& ray, const Box& box, Vector& dist)
 template<> NFCOMMON_API
 bool Intersect(const Ray& ray, const Triangle& tri)
 {
-    Vector unusedDist;
+    Vector4 unusedDist;
     return RayTriangleIntersectInline(ray, tri, unusedDist);
 }
 
 template<> NFCOMMON_API
-bool Intersect(const Ray& ray, const Triangle& tri, Vector& dist)
+bool Intersect(const Ray& ray, const Triangle& tri, Vector4& dist)
 {
     return RayTriangleIntersectInline(ray, tri, dist);
 }
@@ -48,15 +48,15 @@ bool Intersect(const Ray& ray, const Triangle& tri, Vector& dist)
 
 // Ray-Sphere intersection functions ==============================================================
 
-NFE_INLINE bool RaySphereIntersectInline(const Ray& ray, const Sphere& sphere, Vector& dist)
+NFE_INLINE bool RaySphereIntersectInline(const Ray& ray, const Sphere& sphere, Vector4& dist)
 {
-    Vector d = sphere.origin - ray.origin;
-    float v = Vector::Dot3(ray.dir, d);
-    float det = sphere.r * sphere.r - Vector::Dot3(d, d) + v * v;
+    Vector4 d = sphere.origin - ray.origin;
+    float v = Vector4::Dot3(ray.dir, d);
+    float det = sphere.r * sphere.r - Vector4::Dot3(d, d) + v * v;
 
     if (det > 0.0f)
     {
-        dist = Vector::Splat(v - sqrtf(det));
+        dist = Vector4::Splat(v - sqrtf(det));
         return true;
     }
     return false;
@@ -65,13 +65,13 @@ NFE_INLINE bool RaySphereIntersectInline(const Ray& ray, const Sphere& sphere, V
 template<> NFCOMMON_API
 bool Intersect(const Ray& ray, const Sphere& sphere)
 {
-    Vector unusedDist;
+    Vector4 unusedDist;
 
     return RaySphereIntersectInline(ray, sphere, unusedDist);
 }
 
 template<> NFCOMMON_API
-bool Intersect(const Ray& ray, const Sphere& sphere, Vector& dist)
+bool Intersect(const Ray& ray, const Sphere& sphere, Vector4& dist)
 {
     return RaySphereIntersectInline(ray, sphere, dist);
 }

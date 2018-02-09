@@ -14,7 +14,7 @@ namespace NFE {
 namespace Math {
 
 
-bool Sphere::ConstructFromPoints(const Vector& p1, const Vector& p2, const Vector& p3, const Vector& p4, Sphere& outSphere)
+bool Sphere::ConstructFromPoints(const Vector4& p1, const Vector4& p2, const Vector4& p3, const Vector4& p4, Sphere& outSphere)
 {
     Matrix3 a;
     Float3 b, x;
@@ -32,17 +32,17 @@ bool Sphere::ConstructFromPoints(const Vector& p1, const Vector& p2, const Vecto
 
     a *= 2.0f;
 
-    const float tmp = Vector::Dot3(p1, p1);
-    b.x = Vector::Dot3(p2, p2) - tmp;
-    b.y = Vector::Dot3(p3, p3) - tmp;
-    b.z = Vector::Dot3(p4, p4) - tmp;
+    const float tmp = Vector4::Dot3(p1, p1);
+    b.x = Vector4::Dot3(p2, p2) - tmp;
+    b.y = Vector4::Dot3(p3, p3) - tmp;
+    b.z = Vector4::Dot3(p4, p4) - tmp;
 
     if (!EquationSolver::SolveLinearEquationsSystem3(a, b, x))
     {
         return false;
     }
 
-    outSphere.origin = Vector(x);
+    outSphere.origin = Vector4(x);
     outSphere.r = (outSphere.origin - p1).Length3();
     return true;
 }

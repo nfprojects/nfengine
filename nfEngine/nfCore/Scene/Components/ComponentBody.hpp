@@ -43,23 +43,23 @@ public:
      * Get cached velocity (in m/s).
      * @note    This value may not be up to date (it comes from previous frame).
      */
-    const Math::Vector& GetVelocity() const { return mVelocity; }
+    const Math::Vector4& GetVelocity() const { return mVelocity; }
 
     /**
      * Get cached angular velocity (in rad/s).
      * @note    This value may not be up to date (it comes from previous frame).
      */
-    const Math::Vector& GetAngularVelocity() const { return mAngularVelocity; }
+    const Math::Vector4& GetAngularVelocity() const { return mAngularVelocity; }
 
     /**
      * Change velocity (in m/s).
      */
-    void SetVelocity(const Math::Vector& newVelocity);
+    void SetVelocity(const Math::Vector4& newVelocity);
 
     /**
      * Change angular velocity (in rad/s).
      */
-    void SetAngularVelocity(const Math::Vector& newAngularVelocity);
+    void SetAngularVelocity(const Math::Vector4& newAngularVelocity);
 
     /**
      * Set body mass (in kg).
@@ -73,8 +73,8 @@ public:
     float GetMass() const;
 
 private:
-    Math::Vector mVelocity;
-    Math::Vector mAngularVelocity;
+    Math::Vector4 mVelocity;
+    Math::Vector4 mAngularVelocity;
 
     Resource::CollisionShape* mCollisionShape;
     float mMass;
@@ -92,7 +92,7 @@ private:
     void DeletePhysicsProxy();
 
     void OnBodyUpdateTransform(const Math::Matrix& newTransform);
-    void OnBodyUpdateVelocities(const Math::Vector& newVelocity, const Math::Vector& newAngularVelocity);
+    void OnBodyUpdateVelocities(const Math::Vector4& newVelocity, const Math::Vector4& newAngularVelocity);
 };
 
 } // namespace Scene

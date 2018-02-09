@@ -16,10 +16,10 @@ namespace Math {
 Matrix Matrix::Transposed() const
 {
     Matrix mat;
-    mat.r[0] = Vector(r[0].f[0], r[1].f[0], r[2].f[0], r[3].f[0]);
-    mat.r[1] = Vector(r[0].f[1], r[1].f[1], r[2].f[1], r[3].f[1]);
-    mat.r[2] = Vector(r[0].f[2], r[1].f[2], r[2].f[2], r[3].f[2]);
-    mat.r[3] = Vector(r[0].f[3], r[1].f[3], r[2].f[3], r[3].f[3]);
+    mat.r[0] = Vector4(r[0].f[0], r[1].f[0], r[2].f[0], r[3].f[0]);
+    mat.r[1] = Vector4(r[0].f[1], r[1].f[1], r[2].f[1], r[3].f[1]);
+    mat.r[2] = Vector4(r[0].f[2], r[1].f[2], r[2].f[2], r[3].f[2]);
+    mat.r[3] = Vector4(r[0].f[3], r[1].f[3], r[2].f[3], r[3].f[3]);
     return mat;
 }
 

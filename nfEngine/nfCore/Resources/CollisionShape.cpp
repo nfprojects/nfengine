@@ -56,7 +56,7 @@ void CollisionShape::Free(CollisionShape* ptr)
 CollisionShape::CollisionShape()
 {
     mShape = 0;
-    mLocalInertia = Vector();
+    mLocalInertia = Vector4();
 }
 
 CollisionShape::~CollisionShape()
@@ -171,7 +171,7 @@ btTransform Matrix2BulletTransform(const Matrix& matrix)
     return transform;
 }
 
-bool CollisionShape::AddBox(const Vector& halfSize, const Matrix& matrix)
+bool CollisionShape::AddBox(const Vector4& halfSize, const Matrix& matrix)
 {
     CompoundShapeChild shape;
     shape.pShape = new btBoxShape(btVector3(halfSize.f[0], halfSize.f[1], halfSize.f[2])),
@@ -252,14 +252,14 @@ bool CollisionShape::OnLoad()
 
         if (mShape->isNonMoving())
         {
-            mLocalInertia = Vector();
+            mLocalInertia = Vector4();
         }
         else
         {
             //calculate whole shape properties
             btVector3 inertia = btVector3(0.0f, 0.0f, 0.0f);
             mShape->calculateLocalInertia(1.0f, inertia);
-            mLocalInertia = Vector(inertia.m_floats);
+            mLocalInertia = Vector4(inertia.m_floats);
         }
 
         NFE_LOG_SUCCESS("Collision shape '%s' successfully loaded in %.3f sec.", mName, timer.Stop());

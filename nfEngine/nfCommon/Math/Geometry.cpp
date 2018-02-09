@@ -17,14 +17,14 @@
 namespace NFE {
 namespace Math {
 
-float ClosestPointOnSegment(const Vector& p, const Vector& p1, const Vector& p2, Vector& out)
+float ClosestPointOnSegment(const Vector4& p, const Vector4& p1, const Vector4& p2, Vector4& out)
 {
-    Vector ab = p2 - p1;
-    float dot = Vector::Dot3(p - p1, ab);
-    float len_sq = Vector::Dot3(ab, ab);
+    Vector4 ab = p2 - p1;
+    float dot = Vector4::Dot3(p - p1, ab);
+    float len_sq = Vector4::Dot3(ab, ab);
     float param = dot / len_sq;
 
-    Vector result;
+    Vector4 result;
     if (param < 0.0f)
         result = p1;
     else if (param > 1.0f)
@@ -45,8 +45,8 @@ bool Intersect(const Box& box, const Frustum& frustum)
     int minMask = 0x7;
     for (int i = 0; i < 8; i++)
     {
-        maxMask &= Vector::GreaterMask(frustum.verticies[i], box.max);
-        minMask &= Vector::LessMask(frustum.verticies[i], box.min);
+        maxMask &= Vector4::GreaterMask(frustum.verticies[i], box.max);
+        minMask &= Vector4::LessMask(frustum.verticies[i], box.min);
     }
 
     if (maxMask | minMask)
@@ -56,7 +56,7 @@ bool Intersect(const Box& box, const Frustum& frustum)
     for (int i = 0; i < 6; i++)
     {
         const Plane& plane = frustum.planes[i];
-        const Vector vmax = Vector::SelectBySign(box.max, box.min, plane.v);
+        const Vector4 vmax = Vector4::SelectBySign(box.max, box.min, plane.v);
         if (!plane.Side(vmax))
         {
             return false;
@@ -82,8 +82,8 @@ IntersectionResult IntersectEx(const Box& box, const Frustum& frustum)
     int minMask = 0x7;
     for (int i = 0; i < 8; i++)
     {
-        maxMask &= Vector::GreaterMask(frustum.verticies[i], box.max);
-        minMask &= Vector::LessMask(frustum.verticies[i], box.min);
+        maxMask &= Vector4::GreaterMask(frustum.verticies[i], box.max);
+        minMask &= Vector4::LessMask(frustum.verticies[i], box.min);
     }
 
     if (maxMask | minMask)
@@ -93,8 +93,8 @@ IntersectionResult IntersectEx(const Box& box, const Frustum& frustum)
     for (int i = 0; i < 6; i++)
     {
         const Plane& plane = frustum.planes[i];
-        const Vector vmax = Vector::SelectBySign(box.max, box.min, plane.v);
-        const Vector vmin = Vector::SelectBySign(box.min, box.max, plane.v);
+        const Vector4 vmax = Vector4::SelectBySign(box.max, box.min, plane.v);
+        const Vector4 vmin = Vector4::SelectBySign(box.min, box.max, plane.v);
 
         if (!plane.Side(vmax))
             return IntersectionResult::Outside;
@@ -146,7 +146,7 @@ bool Intersect(const Frustum& f1, const Frustum& f2)
 
 // Point-frustum intersection test
 template<> NFCOMMON_API
-bool Intersect(const Vector& point, const Frustum& frustum)
+bool Intersect(const Vector4& point, const Frustum& frustum)
 {
     for (int i = 0; i < 6; i++)
     {
@@ -197,19 +197,19 @@ bool Intersect(const Triangle& tri, const Frustum& frustum)
 
 // Point-sphere intersection test
 template<> NFCOMMON_API
-bool Intersect(const Vector& point, const Sphere& sphere)
+bool Intersect(const Vector4& point, const Sphere& sphere)
 {
-    Vector segment = point - sphere.origin;
-    return Vector::Dot3(segment, segment) <= sphere.r * sphere.r;
+    Vector4 segment = point - sphere.origin;
+    return Vector4::Dot3(segment, segment) <= sphere.r * sphere.r;
 }
 
 // Sphere-sphere intersection test
 template<> NFCOMMON_API
 bool Intersect(const Sphere& sphere1, const Sphere& sphere2)
 {
-    Vector segment = sphere1.origin - sphere2.origin;
+    Vector4 segment = sphere1.origin - sphere2.origin;
     float radiiSum = sphere1.r + sphere2.r;
-    return Vector::Dot3(segment, segment) <= radiiSum * radiiSum;
+    return Vector4::Dot3(segment, segment) <= radiiSum * radiiSum;
 }
 
 // Box-sphere intersection test
@@ -259,12 +259,12 @@ bool Intersect(const Frustum& frustum, const Sphere& sphere)
 
     // find the nearest point on frustum's edges to the sphere center
     // TODO: optimize - each ClosestPointOnSegment() call does division
-    Vector nearest;
+    Vector4 nearest;
     float dist = std::numeric_limits<float>::max();
 
     auto check = [&](const int i, const int j)
     {
-        Vector tmpNearest;
+        Vector4 tmpNearest;
         float tmpDist;
         tmpDist = ClosestPointOnSegment(sphere.origin, frustum.verticies[i], frustum.verticies[j],
                                         tmpNearest);
@@ -315,16 +315,16 @@ Box TransformBox(const Matrix& matrix, const Box& localBox)
     // based on:
     // http://dev.theomader.com/transform-bounding-boxes/
 
-    const Vector xa = matrix.GetRow(0) * localBox.min.x;
-    const Vector xb = matrix.GetRow(0) * localBox.max.x;
-    const Vector ya = matrix.GetRow(1) * localBox.min.y;
-    const Vector yb = matrix.GetRow(1) * localBox.max.y;
-    const Vector za = matrix.GetRow(2) * localBox.min.z;
-    const Vector zb = matrix.GetRow(2) * localBox.max.z;
+    const Vector4 xa = matrix.GetRow(0) * localBox.min.x;
+    const Vector4 xb = matrix.GetRow(0) * localBox.max.x;
+    const Vector4 ya = matrix.GetRow(1) * localBox.min.y;
+    const Vector4 yb = matrix.GetRow(1) * localBox.max.y;
+    const Vector4 za = matrix.GetRow(2) * localBox.min.z;
+    const Vector4 zb = matrix.GetRow(2) * localBox.max.z;
 
     return Box(
-        Vector::Min(xa, xb) + Vector::Min(ya, yb) + Vector::Min(za, zb) + matrix.GetRow(3),
-        Vector::Max(xa, xb) + Vector::Max(ya, yb) + Vector::Max(za, zb) + matrix.GetRow(3)
+        Vector4::Min(xa, xb) + Vector4::Min(ya, yb) + Vector4::Min(za, zb) + matrix.GetRow(3),
+        Vector4::Max(xa, xb) + Vector4::Max(ya, yb) + Vector4::Max(za, zb) + matrix.GetRow(3)
     );
 }
 
@@ -333,16 +333,16 @@ Box TransformBox(const Quaternion& quat, const Box& localBox)
     // based on:
     // http://dev.theomader.com/transform-bounding-boxes/
 
-    const Vector xa = quat.GetAxisX() * localBox.min.x;
-    const Vector xb = quat.GetAxisX() * localBox.max.x;
-    const Vector ya = quat.GetAxisY() * localBox.min.y;
-    const Vector yb = quat.GetAxisY() * localBox.max.y;
-    const Vector za = quat.GetAxisZ() * localBox.min.z;
-    const Vector zb = quat.GetAxisZ() * localBox.max.z;
+    const Vector4 xa = quat.GetAxisX() * localBox.min.x;
+    const Vector4 xb = quat.GetAxisX() * localBox.max.x;
+    const Vector4 ya = quat.GetAxisY() * localBox.min.y;
+    const Vector4 yb = quat.GetAxisY() * localBox.max.y;
+    const Vector4 za = quat.GetAxisZ() * localBox.min.z;
+    const Vector4 zb = quat.GetAxisZ() * localBox.max.z;
 
     return Box(
-        Vector::Min(xa, xb) + Vector::Min(ya, yb) + Vector::Min(za, zb),
-        Vector::Max(xa, xb) + Vector::Max(ya, yb) + Vector::Max(za, zb)
+        Vector4::Min(xa, xb) + Vector4::Min(ya, yb) + Vector4::Min(za, zb),
+        Vector4::Max(xa, xb) + Vector4::Max(ya, yb) + Vector4::Max(za, zb)
     );
 }
 
@@ -353,16 +353,16 @@ Box TransformBox(const Transform& transform, const Box& localBox)
 
     const Quaternion& quat = transform.GetRotation();
 
-    const Vector xa = quat.GetAxisX() * localBox.min.x;
-    const Vector xb = quat.GetAxisX() * localBox.max.x;
-    const Vector ya = quat.GetAxisY() * localBox.min.y;
-    const Vector yb = quat.GetAxisY() * localBox.max.y;
-    const Vector za = quat.GetAxisZ() * localBox.min.z;
-    const Vector zb = quat.GetAxisZ() * localBox.max.z;
+    const Vector4 xa = quat.GetAxisX() * localBox.min.x;
+    const Vector4 xb = quat.GetAxisX() * localBox.max.x;
+    const Vector4 ya = quat.GetAxisY() * localBox.min.y;
+    const Vector4 yb = quat.GetAxisY() * localBox.max.y;
+    const Vector4 za = quat.GetAxisZ() * localBox.min.z;
+    const Vector4 zb = quat.GetAxisZ() * localBox.max.z;
 
     return Box(
-        Vector::Min(xa, xb) + Vector::Min(ya, yb) + Vector::Min(za, zb) + transform.GetTranslation(),
-        Vector::Max(xa, xb) + Vector::Max(ya, yb) + Vector::Max(za, zb) + transform.GetTranslation()
+        Vector4::Min(xa, xb) + Vector4::Min(ya, yb) + Vector4::Min(za, zb) + transform.GetTranslation(),
+        Vector4::Max(xa, xb) + Vector4::Max(ya, yb) + Vector4::Max(za, zb) + transform.GetTranslation()
     );
 }
 

@@ -13,7 +13,7 @@
 
 #include "Scene.hpp"
 
-#include "nfCommon/Math/Vector.hpp"
+#include "nfCommon/Math/Vector4.hpp"
 
 
 class VertexBuffersScene : public Scene

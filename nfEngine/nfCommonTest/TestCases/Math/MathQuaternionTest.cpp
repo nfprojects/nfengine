@@ -8,24 +8,24 @@ using namespace NFE::Math;
 namespace {
 
 // test rotation (axis = [1.23, -2.45, 4.43], angle = 74 degrees)
-const Vector testAxis = Vector(1.23f, -2.45f, 4.43f);
+const Vector4 testAxis = Vector4(1.23f, -2.45f, 4.43f);
 const float testAngle = DegToRad(74.0f);
 
-const Vector testVector0 = Vector(2.4f, -0.12f, 47.0f);
+const Vector4 testVector0 = Vector4(2.4f, -0.12f, 47.0f);
 
 // calculated online
-const Vector transformedX = Vector(0.316016f, 0.736977f, 0.597493f);        // (1,0,0) transformed with test rotation
-const Vector transformedY = Vector(-0.897835f, 0.435841f, -0.06272f);       // (0,1,0) transformed with test rotation
-const Vector transformedZ = Vector(-0.306636f, -0.51663f, 0.799417f);       // (0,0,1) transformed with test rotation
-const Vector transformed0 = Vector(-13.545702f, -22.565163f, 39.014123f);   // testVector0 transformed with test rotation
+const Vector4 transformedX = Vector4(0.316016f, 0.736977f, 0.597493f);        // (1,0,0) transformed with test rotation
+const Vector4 transformedY = Vector4(-0.897835f, 0.435841f, -0.06272f);       // (0,1,0) transformed with test rotation
+const Vector4 transformedZ = Vector4(-0.306636f, -0.51663f, 0.799417f);       // (0,0,1) transformed with test rotation
+const Vector4 transformed0 = Vector4(-13.545702f, -22.565163f, 39.014123f);   // testVector0 transformed with test rotation
 
 } // namespace
 
 
 TEST(MathQuaternion, Equal)
 {
-    const Quaternion q00 = Quaternion::FromAxisAndAngle(Vector(1.0f, 0.0f, 0.0f), Constants::pi<float> / 2.0f);
-    const Quaternion q01 = Quaternion::FromAxisAndAngle(Vector(-1.0f, 0.0f, 0.0f), -Constants::pi<float> / 2.0f);
+    const Quaternion q00 = Quaternion::FromAxisAndAngle(Vector4(1.0f, 0.0f, 0.0f), Constants::pi<float> / 2.0f);
+    const Quaternion q01 = Quaternion::FromAxisAndAngle(Vector4(-1.0f, 0.0f, 0.0f), -Constants::pi<float> / 2.0f);
 
     const Quaternion q10 = Quaternion::FromAxisAndAngle(testAxis.Normalized3(), testAngle);
     const Quaternion q11 = Quaternion::FromAxisAndAngle(-testAxis.Normalized3(), -testAngle);
@@ -45,81 +45,81 @@ TEST(MathQuaternion, RotationAxisX)
 {
     const Quaternion q = Quaternion::RotationX(Constants::pi<float> / 2.0f);
 
-    const Vector tx = q.TransformVector(Vector(1.0f, 0.0f, 0.0f));
-    const Vector ty = q.TransformVector(Vector(0.0f, 1.0f, 0.0f));
-    const Vector tz = q.TransformVector(Vector(0.0f, 0.0f, 1.0f));
-    const Vector t0 = q.TransformVector(testVector0);
+    const Vector4 tx = q.TransformVector(Vector4(1.0f, 0.0f, 0.0f));
+    const Vector4 ty = q.TransformVector(Vector4(0.0f, 1.0f, 0.0f));
+    const Vector4 tz = q.TransformVector(Vector4(0.0f, 0.0f, 1.0f));
+    const Vector4 t0 = q.TransformVector(testVector0);
 
-    EXPECT_TRUE(Vector::AlmostEqual(tx, Vector(1.0f, 0.0f, 0.0f)));
-    EXPECT_TRUE(Vector::AlmostEqual(ty, Vector(0.0f, 0.0f, 1.0f)));
-    EXPECT_TRUE(Vector::AlmostEqual(tz, Vector(0.0f, -1.0f, 0.0f)));
-    EXPECT_TRUE(Vector::AlmostEqual(t0, Vector(2.4f, -47.0f, -0.12f), 0.00001f));
+    EXPECT_TRUE(Vector4::AlmostEqual(tx, Vector4(1.0f, 0.0f, 0.0f)));
+    EXPECT_TRUE(Vector4::AlmostEqual(ty, Vector4(0.0f, 0.0f, 1.0f)));
+    EXPECT_TRUE(Vector4::AlmostEqual(tz, Vector4(0.0f, -1.0f, 0.0f)));
+    EXPECT_TRUE(Vector4::AlmostEqual(t0, Vector4(2.4f, -47.0f, -0.12f), 0.00001f));
 }
 
 TEST(MathQuaternion, RotationAxisY)
 {
     const Quaternion q = Quaternion::RotationY(Constants::pi<float> / 2.0f);
 
-    const Vector tx = q.TransformVector(Vector(1.0f, 0.0f, 0.0f));
-    const Vector ty = q.TransformVector(Vector(0.0f, 1.0f, 0.0f));
-    const Vector tz = q.TransformVector(Vector(0.0f, 0.0f, 1.0f));
-    const Vector t0 = q.TransformVector(testVector0);
+    const Vector4 tx = q.TransformVector(Vector4(1.0f, 0.0f, 0.0f));
+    const Vector4 ty = q.TransformVector(Vector4(0.0f, 1.0f, 0.0f));
+    const Vector4 tz = q.TransformVector(Vector4(0.0f, 0.0f, 1.0f));
+    const Vector4 t0 = q.TransformVector(testVector0);
 
-    EXPECT_TRUE(Vector::AlmostEqual(tx, Vector(0.0f, 0.0f, -1.0f)));
-    EXPECT_TRUE(Vector::AlmostEqual(ty, Vector(0.0f, 1.0f, 0.0f)));
-    EXPECT_TRUE(Vector::AlmostEqual(tz, Vector(1.0f, 0.0f, 0.0f)));
-    EXPECT_TRUE(Vector::AlmostEqual(t0, Vector(47.0f, -0.12f, -2.4f), 0.00001f));
+    EXPECT_TRUE(Vector4::AlmostEqual(tx, Vector4(0.0f, 0.0f, -1.0f)));
+    EXPECT_TRUE(Vector4::AlmostEqual(ty, Vector4(0.0f, 1.0f, 0.0f)));
+    EXPECT_TRUE(Vector4::AlmostEqual(tz, Vector4(1.0f, 0.0f, 0.0f)));
+    EXPECT_TRUE(Vector4::AlmostEqual(t0, Vector4(47.0f, -0.12f, -2.4f), 0.00001f));
 }
 
 TEST(MathQuaternion, RotationAxisZ)
 {
     const Quaternion q = Quaternion::RotationZ(Constants::pi<float> / 2.0f);
 
-    const Vector tx = q.TransformVector(Vector(1.0f, 0.0f, 0.0f));
-    const Vector ty = q.TransformVector(Vector(0.0f, 1.0f, 0.0f));
-    const Vector tz = q.TransformVector(Vector(0.0f, 0.0f, 1.0f));
-    const Vector t0 = q.TransformVector(testVector0);
+    const Vector4 tx = q.TransformVector(Vector4(1.0f, 0.0f, 0.0f));
+    const Vector4 ty = q.TransformVector(Vector4(0.0f, 1.0f, 0.0f));
+    const Vector4 tz = q.TransformVector(Vector4(0.0f, 0.0f, 1.0f));
+    const Vector4 t0 = q.TransformVector(testVector0);
 
-    EXPECT_TRUE(Vector::AlmostEqual(tx, Vector(0.0f, 1.0f, 0.0f)));
-    EXPECT_TRUE(Vector::AlmostEqual(ty, Vector(-1.0f, 0.0f, 0.0f)));
-    EXPECT_TRUE(Vector::AlmostEqual(tz, Vector(0.0f, 0.0f, 1.0f)));
-    EXPECT_TRUE(Vector::AlmostEqual(t0, Vector(0.12f, 2.4f, 47.0f), 0.00001f));
+    EXPECT_TRUE(Vector4::AlmostEqual(tx, Vector4(0.0f, 1.0f, 0.0f)));
+    EXPECT_TRUE(Vector4::AlmostEqual(ty, Vector4(-1.0f, 0.0f, 0.0f)));
+    EXPECT_TRUE(Vector4::AlmostEqual(tz, Vector4(0.0f, 0.0f, 1.0f)));
+    EXPECT_TRUE(Vector4::AlmostEqual(t0, Vector4(0.12f, 2.4f, 47.0f), 0.00001f));
 }
 
 TEST(MathQuaternion, RotationAxis)
 {
-    const Vector axis = testAxis.Normalized3();
+    const Vector4 axis = testAxis.Normalized3();
     const Quaternion q = Quaternion::FromAxisAndAngle(axis, testAngle);
 
-    const Vector tx = q.TransformVector(Vector(1.0f, 0.0f, 0.0f));
-    const Vector ty = q.TransformVector(Vector(0.0f, 1.0f, 0.0f));
-    const Vector tz = q.TransformVector(Vector(0.0f, 0.0f, 1.0f));
-    const Vector t0 = q.TransformVector(testVector0);
+    const Vector4 tx = q.TransformVector(Vector4(1.0f, 0.0f, 0.0f));
+    const Vector4 ty = q.TransformVector(Vector4(0.0f, 1.0f, 0.0f));
+    const Vector4 tz = q.TransformVector(Vector4(0.0f, 0.0f, 1.0f));
+    const Vector4 t0 = q.TransformVector(testVector0);
 
-    EXPECT_TRUE(Vector::AlmostEqual(tx, transformedX, 0.00001f));
-    EXPECT_TRUE(Vector::AlmostEqual(ty, transformedY, 0.00001f));
-    EXPECT_TRUE(Vector::AlmostEqual(tz, transformedZ, 0.00001f));
-    EXPECT_TRUE(Vector::AlmostEqual(t0, transformed0, 0.00001f));
+    EXPECT_TRUE(Vector4::AlmostEqual(tx, transformedX, 0.00001f));
+    EXPECT_TRUE(Vector4::AlmostEqual(ty, transformedY, 0.00001f));
+    EXPECT_TRUE(Vector4::AlmostEqual(tz, transformedZ, 0.00001f));
+    EXPECT_TRUE(Vector4::AlmostEqual(t0, transformed0, 0.00001f));
 }
 
 TEST(MathQuaternion, ToMatrix)
 {
-    const Vector axis = testAxis.Normalized3();
+    const Vector4 axis = testAxis.Normalized3();
     const Quaternion q = Quaternion::FromAxisAndAngle(axis, testAngle);
 
     Matrix m = q.ToMatrix();
-    m.r[3] = Vector(); // zero 4th row
-    ASSERT_TRUE(Vector::AlmostEqual(m.GetRow(0), transformedX, 0.00001f));
-    ASSERT_TRUE(Vector::AlmostEqual(m.GetRow(1), transformedY, 0.00001f));
-    ASSERT_TRUE(Vector::AlmostEqual(m.GetRow(2), transformedZ, 0.00001f));
+    m.r[3] = Vector4(); // zero 4th row
+    ASSERT_TRUE(Vector4::AlmostEqual(m.GetRow(0), transformedX, 0.00001f));
+    ASSERT_TRUE(Vector4::AlmostEqual(m.GetRow(1), transformedY, 0.00001f));
+    ASSERT_TRUE(Vector4::AlmostEqual(m.GetRow(2), transformedZ, 0.00001f));
 
-    const Vector t0 = m.LinearCombination3(testVector0);
-    EXPECT_TRUE(Vector::AlmostEqual(t0, transformed0, 0.00001f));
+    const Vector4 t0 = m.LinearCombination3(testVector0);
+    EXPECT_TRUE(Vector4::AlmostEqual(t0, transformed0, 0.00001f));
 }
 
 TEST(MathQuaternion, FromMatrix)
 {
-    const Vector axis = testAxis.Normalized3();
+    const Vector4 axis = testAxis.Normalized3();
     const Quaternion q = Quaternion::FromAxisAndAngle(axis, testAngle);
 
     const Matrix m = q.ToMatrix();
@@ -127,34 +127,34 @@ TEST(MathQuaternion, FromMatrix)
 
     ASSERT_TRUE(Quaternion::AlmostEqual(q, q2, 0.00001f));
 
-    const Vector tx = q2.TransformVector(Vector(1.0f, 0.0f, 0.0f));
-    const Vector ty = q2.TransformVector(Vector(0.0f, 1.0f, 0.0f));
-    const Vector tz = q2.TransformVector(Vector(0.0f, 0.0f, 1.0f));
-    const Vector t0 = q2.TransformVector(testVector0);
+    const Vector4 tx = q2.TransformVector(Vector4(1.0f, 0.0f, 0.0f));
+    const Vector4 ty = q2.TransformVector(Vector4(0.0f, 1.0f, 0.0f));
+    const Vector4 tz = q2.TransformVector(Vector4(0.0f, 0.0f, 1.0f));
+    const Vector4 t0 = q2.TransformVector(testVector0);
 
-    EXPECT_TRUE(Vector::AlmostEqual(tx, transformedX, 0.00001f));
-    EXPECT_TRUE(Vector::AlmostEqual(ty, transformedY, 0.00001f));
-    EXPECT_TRUE(Vector::AlmostEqual(tz, transformedZ, 0.00001f));
-    EXPECT_TRUE(Vector::AlmostEqual(t0, transformed0, 0.00001f));
+    EXPECT_TRUE(Vector4::AlmostEqual(tx, transformedX, 0.00001f));
+    EXPECT_TRUE(Vector4::AlmostEqual(ty, transformedY, 0.00001f));
+    EXPECT_TRUE(Vector4::AlmostEqual(tz, transformedZ, 0.00001f));
+    EXPECT_TRUE(Vector4::AlmostEqual(t0, transformed0, 0.00001f));
 }
 
 TEST(MathQuaternion, ToAxis)
 {
-    const Vector axis = testAxis.Normalized3();
+    const Vector4 axis = testAxis.Normalized3();
     const Quaternion q = Quaternion::FromAxisAndAngle(axis, testAngle);
 
     float angle2;
-    Vector axis2;
+    Vector4 axis2;
     q.ToAxis(axis2, angle2);
 
-    if (Vector::Dot3(axis, axis2) > 0.0f)
+    if (Vector4::Dot3(axis, axis2) > 0.0f)
     {
-        ASSERT_TRUE(Vector::AlmostEqual(axis, axis2, 0.00001f));
+        ASSERT_TRUE(Vector4::AlmostEqual(axis, axis2, 0.00001f));
         ASSERT_FLOAT_EQ(testAngle, angle2);
     }
     else
     {
-        ASSERT_TRUE(Vector::AlmostEqual(axis, -axis2, 0.00001f));
+        ASSERT_TRUE(Vector4::AlmostEqual(axis, -axis2, 0.00001f));
         ASSERT_FLOAT_EQ(testAngle, -angle2);
     }
 }
@@ -162,7 +162,7 @@ TEST(MathQuaternion, ToAxis)
 TEST(MathQuaternion, ToAxis_Identity)
 {
     float angle;
-    Vector axis;
+    Vector4 axis;
     Quaternion::Identity().ToAxis(axis, angle);
 
     ASSERT_FLOAT_EQ(0.0f, angle);
@@ -250,7 +250,7 @@ TEST(MathQuaternion, MultiplyRandomInverse)
 
     for (size_t i = 0; i < iterations; ++i)
     {
-        const Quaternion q = Quaternion::FromAxisAndAngle(Vector(random.GetPointOnSphere()), random.GetFloat() * Constants::pi<float>);
+        const Quaternion q = Quaternion::FromAxisAndAngle(Vector4(random.GetPointOnSphere()), random.GetFloat() * Constants::pi<float>);
         const Quaternion qInv = q.Inverted();
 
         EXPECT_TRUE(Quaternion::AlmostEqual(qInv * q, Quaternion::Identity(), 0.00001f));

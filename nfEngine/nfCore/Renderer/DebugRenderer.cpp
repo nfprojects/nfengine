@@ -255,7 +255,7 @@ void DebugRenderer::SetCamera(DebugRendererContext *context, const Matrix& viewM
     context->commandRecorder->WriteBuffer(mConstantBuffer, 0, sizeof(DebugCBuffer), &debugCBufferData);
 }
 
-void DebugRenderer::DrawLine(DebugRendererContext *context, const Vector& A, const Vector& B,
+void DebugRenderer::DrawLine(DebugRendererContext *context, const Vector4& A, const Vector4& B,
                              const uint32 color)
 {
     // check if the shape will fit into the buffers
@@ -320,7 +320,7 @@ void DebugRenderer::DrawBox(DebugRendererContext *context, const Box& box, const
     DebugVertex* boxVerticies = context->vertices.get() + context->queuedVertices;
     for (size_t i = 0; i < vertexRequired; ++i)
     {
-        Vector v = box.GetVertex(static_cast<int>(i));
+        Vector4 v = box.GetVertex(static_cast<int>(i));
         v.Store(&boxVerticies[i].pos);
         boxVerticies[i].color = color;
     }
@@ -355,7 +355,7 @@ void DebugRenderer::DrawFrustum(DebugRendererContext *context, const Frustum& fr
     DebugVertex* boxVerticies = context->vertices.get() + context->queuedVertices;
     for (size_t i = 0; i < vertexRequired; ++i)
     {
-        Vector v = frustum.verticies[i];
+        Vector4 v = frustum.verticies[i];
         v.Store(&boxVerticies[i].pos);
         boxVerticies[i].color = color;
     }

@@ -26,7 +26,7 @@ struct MeshVertex
 struct NFE_ALIGN(16) ShadowCameraRenderDesc
 {
     Math::Matrix viewProjMatrix;
-    Math::Vector lightPos;
+    Math::Vector4 lightPos;
 };
 
 struct NFE_ALIGN(16) CameraRenderDesc
@@ -36,10 +36,10 @@ struct NFE_ALIGN(16) CameraRenderDesc
     Math::Matrix projMatrix;
     Math::Matrix secViewMatrix; // for motionblur
 
-    Math::Vector velocity;
-    Math::Vector angualrVelocity;
+    Math::Vector4 velocity;
+    Math::Vector4 angualrVelocity;
 
-    Math::Vector screenScale;
+    Math::Vector4 screenScale;
     float fov;
 };
 

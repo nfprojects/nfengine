@@ -91,7 +91,7 @@
     <ClInclude Include="Math\Float4Impl.hpp" />
     <ClInclude Include="Math\FPU\Matrix.hpp" />
     <ClInclude Include="Math\FPU\RayGeometry.hpp" />
-    <ClInclude Include="Math\FPU\Vector.hpp" />
+    <ClInclude Include="Math\FPU\Vector4.hpp" />
     <ClInclude Include="Math\Frustum.hpp" />
     <ClInclude Include="Math\Geometry.hpp" />
     <ClInclude Include="Math\Math.hpp" />
@@ -112,11 +112,11 @@
     <ClInclude Include="Math\Sphere.hpp" />
     <ClInclude Include="Math\SSE\Matrix.hpp" />
     <ClInclude Include="Math\SSE\RayGeometry.hpp" />
-    <ClInclude Include="Math\SSE\Vector.hpp" />
+    <ClInclude Include="Math\SSE\Vector4.hpp" />
     <ClInclude Include="Math\Transform.hpp" />
     <ClInclude Include="Math\Triangle.hpp" />
-    <ClInclude Include="Math\Vector.hpp" />
-    <ClInclude Include="Math\VectorConstants.hpp" />
+    <ClInclude Include="Math\Vector4.hpp" />
+    <ClInclude Include="Math\Vector4Constants.hpp" />
     <ClInclude Include="Memory\Aligned.hpp" />
     <ClInclude Include="Memory\Buffer.hpp" />
     <ClInclude Include="Memory\DefaultAllocator.hpp" />

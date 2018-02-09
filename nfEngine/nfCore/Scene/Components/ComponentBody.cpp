@@ -98,14 +98,14 @@ void BodyComponent::SetCollisionShape(CollisionShape* shape)
         mCollisionShape->AddRef();
 }
 
-void BodyComponent::SetVelocity(const Math::Vector& newVelocity)
+void BodyComponent::SetVelocity(const Math::Vector4& newVelocity)
 {
     mVelocity = newVelocity;
 
     UpdatePhysicsProxy();
 }
 
-void BodyComponent::SetAngularVelocity(const Math::Vector& newAngularVelocity)
+void BodyComponent::SetAngularVelocity(const Math::Vector4& newAngularVelocity)
 {
     mAngularVelocity = newAngularVelocity;
 
@@ -130,7 +130,7 @@ void BodyComponent::OnBodyUpdateTransform(const Math::Matrix& newTransform)
     GetEntity()->SetGlobalTransform(transform);
 }
 
-void BodyComponent::OnBodyUpdateVelocities(const Math::Vector& newVelocity, const Math::Vector& newAngularVelocity)
+void BodyComponent::OnBodyUpdateVelocities(const Math::Vector4& newVelocity, const Math::Vector4& newAngularVelocity)
 {
     mVelocity = newVelocity;
     mAngularVelocity = newAngularVelocity;
@@ -151,14 +151,14 @@ void BodyComponent::CreatePhysicsProxy()
     proxyInfo.collisionShape = mCollisionShape;
     proxyInfo.mass = mMass;
     proxyInfo.transform = entity->GetGlobalTransform().ToMatrix();
-    proxyInfo.inertia = Vector(1.0f, 1.0f, 1.0f); // TODO
+    proxyInfo.inertia = Vector4(1.0f, 1.0f, 1.0f); // TODO
     proxyInfo.velocity = mVelocity;
     proxyInfo.angularVelocity = mAngularVelocity;
     proxyInfo.transformUpdateCallback = [this](const Math::Matrix& newTransform)
     {
         OnBodyUpdateTransform(newTransform);
     };
-    proxyInfo.velocityUpdateCallback = [this](const Math::Vector& newVelocity, const Math::Vector& newAngularVelocity)
+    proxyInfo.velocityUpdateCallback = [this](const Math::Vector4& newVelocity, const Math::Vector4& newAngularVelocity)
     {
         OnBodyUpdateVelocities(newVelocity, newAngularVelocity);
     };
@@ -184,7 +184,7 @@ void BodyComponent::UpdatePhysicsProxy()
     proxyInfo.collisionShape = mCollisionShape;
     proxyInfo.mass = mMass;
     proxyInfo.transform = entity->GetGlobalTransform().ToMatrix();
-    proxyInfo.inertia = Vector(1.0f, 1.0f, 1.0f); // TODO
+    proxyInfo.inertia = Vector4(1.0f, 1.0f, 1.0f); // TODO
     proxyInfo.velocity = mVelocity;
     proxyInfo.angularVelocity = mAngularVelocity;
 

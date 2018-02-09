@@ -8,7 +8,7 @@
 
 #include "../Core.hpp"
 
-#include "nfCommon/Math/Vector.hpp"
+#include "nfCommon/Math/Vector4.hpp"
 #include "nfCommon/Math/Matrix.hpp"
 
 #include <functional>
@@ -20,7 +20,7 @@ namespace Physics {
 
 // TODO translation + orientation
 using BodyProxyTransformUpdateCallback = std::function<void(const Math::Matrix&)>;
-using BodyProxyVelocityUpdateCallback = std::function<void(const Math::Vector&, const Math::Vector&)>;
+using BodyProxyVelocityUpdateCallback = std::function<void(const Math::Vector4&, const Math::Vector4&)>;
 using ProxyID = uint32;
 
 static constexpr ProxyID InvalidPhysicsProxyID = std::numeric_limits<ProxyID>::max();
@@ -35,10 +35,10 @@ struct NFE_ALIGN(16) BodyProxyInfo
     Math::Matrix transform;
 
     // moment of inertia vector
-    Math::Vector inertia;
+    Math::Vector4 inertia;
 
-    Math::Vector velocity;
-    Math::Vector angularVelocity;
+    Math::Vector4 velocity;
+    Math::Vector4 angularVelocity;
 
     // collision shape resource, can be null
     Resource::CollisionShape* collisionShape;

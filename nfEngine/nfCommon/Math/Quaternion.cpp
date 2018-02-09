@@ -11,7 +11,7 @@
 namespace NFE {
 namespace Math {
 
-Quaternion Quaternion::FromAxisAndAngle(const Vector& axis, float angle)
+Quaternion Quaternion::FromAxisAndAngle(const Vector4& axis, float angle)
 {
     angle *= 0.5f;
     Quaternion q = Quaternion(axis * sinf(angle));
@@ -39,21 +39,21 @@ Quaternion Quaternion::RotationZ(float angle)
 
 Quaternion Quaternion::operator * (const Quaternion& b) const
 {
-    const Vector a0120 = q.Swizzle<0, 1, 2, 0>();
-    const Vector b3330 = b.q.Swizzle<3, 3, 3, 0>();
-    const Vector t1 = a0120 * b3330;
+    const Vector4 a0120 = q.Swizzle<0, 1, 2, 0>();
+    const Vector4 b3330 = b.q.Swizzle<3, 3, 3, 0>();
+    const Vector4 t1 = a0120 * b3330;
 
-    const Vector a1201 = q.Swizzle<1, 2, 0, 1>();
-    const Vector b2011 = b.q.Swizzle<2, 0, 1, 1>();
-    const Vector t12 = Vector::MulAndAdd(a1201, b2011, t1);
+    const Vector4 a1201 = q.Swizzle<1, 2, 0, 1>();
+    const Vector4 b2011 = b.q.Swizzle<2, 0, 1, 1>();
+    const Vector4 t12 = Vector4::MulAndAdd(a1201, b2011, t1);
 
-    const Vector a3333 = q.Swizzle<3, 3, 3, 3>();
-    const Vector b0123 = b.q;
-    const Vector t0 = a3333 * b0123;
+    const Vector4 a3333 = q.Swizzle<3, 3, 3, 3>();
+    const Vector4 b0123 = b.q;
+    const Vector4 t0 = a3333 * b0123;
 
-    const Vector a2012 = q.Swizzle<2, 0, 1, 2>();
-    const Vector b1202 = b.q.Swizzle<1, 2, 0, 2>();
-    const Vector t03 = Vector::NegMulAndAdd(a2012, b1202, t0);
+    const Vector4 a2012 = q.Swizzle<2, 0, 1, 2>();
+    const Vector4 b1202 = b.q.Swizzle<1, 2, 0, 2>();
+    const Vector4 t03 = Vector4::NegMulAndAdd(a2012, b1202, t0);
 
     return Quaternion(t03 + t12.ChangeSign<false, false, false, true>());
 }
@@ -89,27 +89,27 @@ Quaternion Quaternion::FromAngles(float pitch, float yaw, float roll)
     float t4 = cosf(pitch);
     float t5 = sinf(pitch);
 
-    const Vector term0 = Vector(t0, t1, t0, t0);
-    const Vector term1 = Vector(t2, t2, t3, t2);
-    const Vector term2 = Vector(t5, t4, t4, t4);
+    const Vector4 term0 = Vector4(t0, t1, t0, t0);
+    const Vector4 term1 = Vector4(t2, t2, t3, t2);
+    const Vector4 term2 = Vector4(t5, t4, t4, t4);
 
-    const Vector term3 = Vector(t1, -t0, -t1, t1);
-    const Vector term4 = Vector(t3, t3, t2, t3);
-    const Vector term5 = Vector(t4, t5, t5, t5);
+    const Vector4 term3 = Vector4(t1, -t0, -t1, t1);
+    const Vector4 term4 = Vector4(t3, t3, t2, t3);
+    const Vector4 term5 = Vector4(t4, t5, t5, t5);
 
     return Quaternion(term0 * term1 * term2 + term3 * term4 * term5);
 }
 
 Quaternion Quaternion::FromMatrix(const Matrix& m)
 {
-    const Vector x = Vector::Splat(m.m[0][0]).ChangeSign<false, true, true, false>();
-    const Vector y = Vector::Splat(m.m[1][1]).ChangeSign<true, false, true, false>();
-    const Vector z = Vector::Splat(m.m[2][2]).ChangeSign<true, true, false, false>();
+    const Vector4 x = Vector4::Splat(m.m[0][0]).ChangeSign<false, true, true, false>();
+    const Vector4 y = Vector4::Splat(m.m[1][1]).ChangeSign<true, false, true, false>();
+    const Vector4 z = Vector4::Splat(m.m[2][2]).ChangeSign<true, true, false, false>();
 
     Quaternion q;
-    q.q = (Vector::Splat(1.0f) + x) + (y + z);
-    q.q = Vector::Max(q.q, Vector());
-    q.q = Vector::Sqrt4(q.q) * 0.5f;
+    q.q = (Vector4::Splat(1.0f) + x) + (y + z);
+    q.q = Vector4::Max(q.q, Vector4());
+    q.q = Vector4::Sqrt4(q.q) * 0.5f;
 
     q.q.x = CopySign(q.q.x, m.m[1][2] - m.m[2][1]);
     q.q.y = CopySign(q.q.y, m.m[2][0] - m.m[0][2]);
@@ -117,19 +117,19 @@ Quaternion Quaternion::FromMatrix(const Matrix& m)
     return q;
 }
 
-Vector Quaternion::TransformVector(const Vector& v) const
+Vector4 Quaternion::TransformVector(const Vector4& v) const
 {
     // based on identity:
     //
     // t = 2 * cross(q.xyz, v)
     // v' = v + q.w * t + cross(q.xyz, t)
 
-    Vector t = Vector::Cross3(q, v);
+    Vector4 t = Vector4::Cross3(q, v);
     t = t + t;
-    return v + t * q[3] + Vector::Cross3(q, t);
+    return v + t * q[3] + Vector4::Cross3(q, t);
 }
 
-void Quaternion::ToAxis(Vector& outAxis, float& outAngle) const
+void Quaternion::ToAxis(Vector4& outAxis, float& outAngle) const
 {
     Quaternion normalized = *this;
     if (normalized.q[3] > 1.0f)
@@ -200,8 +200,8 @@ void Quaternion::ToAngles(float& outPitch, float& outYaw, float& outRoll) const
 
 Quaternion Quaternion::Interpolate(const Quaternion& q0, const Quaternion& q1, float t)
 {
-    float cosOmega = Vector::Dot4(q0, q1);
-    Vector new_q1 = q1;
+    float cosOmega = Vector4::Dot4(q0, q1);
+    Vector4 new_q1 = q1;
     if (cosOmega < 0.0f)
     {
         new_q1 = -new_q1;
@@ -228,7 +228,7 @@ Quaternion Quaternion::Interpolate(const Quaternion& q0, const Quaternion& q1, f
 
 bool Quaternion::AlmostEqual(const Quaternion& a, const Quaternion& b, float epsilon)
 {
-    float d = Vector::Dot4(a.q, b.q);
+    float d = Vector4::Dot4(a.q, b.q);
     return Abs(d) > 1.0f - epsilon;
 }
 
