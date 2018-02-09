@@ -18,7 +18,7 @@ float Box::SurfaceArea() const
         return 0.0f;
     }
 
-    const Vector size = max - min;
+    const Vector4 size = max - min;
     return 2.0f * (size.x * (size.y + size.z) + size.y * size.z);
 }
 
@@ -29,7 +29,7 @@ float Box::Volume() const
         return 0.0f;
     }
 
-    const Vector size = max - min;
+    const Vector4 size = max - min;
     return size.x * size.y * size.z;
 }
 

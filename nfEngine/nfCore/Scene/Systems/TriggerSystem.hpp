@@ -13,7 +13,7 @@
 #include "nfCommon/Containers/HashSet.hpp"
 
 #include "nfCommon/Memory/Aligned.hpp"
-#include "nfCommon/Math/Vector.hpp"
+#include "nfCommon/Math/Vector4.hpp"
 #include "nfCommon/Math/Box.hpp"
 #include "nfCommon/Utils/BVH.hpp"
 

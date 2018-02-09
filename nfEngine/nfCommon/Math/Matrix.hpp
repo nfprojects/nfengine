@@ -7,7 +7,7 @@
 #pragma once
 
 #include "Math.hpp"
-#include "Vector.hpp"
+#include "Vector4.hpp"
 
 #include <initializer_list>
 
@@ -22,7 +22,7 @@ class NFE_ALIGN(16) Matrix final
 public:
     union
     {
-        Vector r[4];   //< rows
+        Vector4 r[4];   //< rows
         float f[16];
         float m[4][4];
     };
@@ -35,7 +35,7 @@ public:
     /**
      * Create matrix from rows.
      */
-    NFE_INLINE explicit Matrix(const Vector& r0, const Vector& r1, const Vector& r2, const Vector& r3);
+    NFE_INLINE explicit Matrix(const Vector4& r0, const Vector4& r1, const Vector4& r2, const Vector4& r3);
 
     /**
      * Create matrix from element values.
@@ -45,14 +45,14 @@ public:
     /**
      * Access element (read-only).
      */
-    NFE_INLINE const Vector& GetRow(int i) const;
-    NFE_INLINE const Vector& operator[] (int i) const;
+    NFE_INLINE const Vector4& GetRow(int i) const;
+    NFE_INLINE const Vector4& operator[] (int i) const;
 
     /**
      * Access element (read-write).
      */
-    NFE_INLINE Vector& GetRow(int i);
-    NFE_INLINE Vector& operator[] (int i);
+    NFE_INLINE Vector4& GetRow(int i);
+    NFE_INLINE Vector4& operator[] (int i);
 
     /**
      * Offset matrix element by the same value.
@@ -96,7 +96,7 @@ public:
      * @param normalAxis Normalized axis.
      * @param angle Rotation angle (in radians).
      */
-    NFCOMMON_API static Matrix MakeRotationNormal(const Vector& normalAxis, float angle);
+    NFCOMMON_API static Matrix MakeRotationNormal(const Vector4& normalAxis, float angle);
 
     /**
      * Create perspective projection matrix.
@@ -118,7 +118,7 @@ public:
      * Create scaling matrix
      * @param scale Scaling factor (only XYZ components are taken into account).
      */
-    NFCOMMON_API static Matrix MakeScaling(const Vector& scale);
+    NFCOMMON_API static Matrix MakeScaling(const Vector4& scale);
 
     /**
      * Create view matrix.
@@ -126,19 +126,19 @@ public:
      * @param eyeDirection Observer's direction.
      * @param upDirection  "Up" vector.
      */
-    NFCOMMON_API static Matrix MakeLookTo(const Vector& eyePosition, const Vector& eyeDirection, const Vector& upDirection);
+    NFCOMMON_API static Matrix MakeLookTo(const Vector4& eyePosition, const Vector4& eyeDirection, const Vector4& upDirection);
 
     /**
      * Multiply a 3D vector by a 4x4 matrix (affine transform).
      * Equivalent of a[0] * m.r[0] + a[1] * m.r[1] + a[2] * m.r[2] + m.r[3]
      */
-    NFE_INLINE Vector LinearCombination3(const Vector& a) const;
+    NFE_INLINE Vector4 LinearCombination3(const Vector4& a) const;
 
     /**
      * Multiply a 4D vector by a 4x4 matrix.
      * Equivalent of a[0] * m.r[0] + a[1] * m.r[1] + a[2] * m.r[2] + a[3] * m.r[3]
      */
-    NFE_INLINE Vector LinearCombination4(const Vector& a) const;
+    NFE_INLINE Vector4 LinearCombination4(const Vector4& a) const;
 
     /**
      * Calculate matrix containing absolute values of another.
@@ -153,7 +153,7 @@ public:
     /**
      * Create matrix representing a translation by 3D vector.
      */
-    NFE_INLINE static Matrix MakeTranslation3(const Vector& pos);
+    NFE_INLINE static Matrix MakeTranslation3(const Vector4& pos);
 
     /**
      * Calculate transpose matrix.
@@ -170,7 +170,7 @@ public:
 /**
  * Alias of @p Matrix::LinearCombination4 function.
  */
-NFE_INLINE Vector operator* (const Vector& vector, const Matrix& m);
+NFE_INLINE Vector4 operator* (const Vector4& vector, const Matrix& m);
 
 
 } // namespace Math

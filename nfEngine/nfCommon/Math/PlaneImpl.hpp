@@ -12,37 +12,37 @@ namespace NFE {
 namespace Math {
 
 
-Plane::Plane(const Vector& normal, const float distance)
+Plane::Plane(const Vector4& normal, const float distance)
     : v{ normal.x, normal.y, normal.z, distance }
 {
 }
 
-Plane::Plane(const Vector& p0, const Vector& p1, const Vector& p2)
+Plane::Plane(const Vector4& p0, const Vector4& p1, const Vector4& p2)
 {
-    const Vector vA = p0 - p1;
-    const Vector vB = p0 - p2;
-    const Vector n = Vector::Cross3(vA, vB).Normalized3();
-    const float d = Vector::Dot3(n, p1);
-    v = Vector(n.x, n.y, n.z, -d);
+    const Vector4 vA = p0 - p1;
+    const Vector4 vB = p0 - p2;
+    const Vector4 n = Vector4::Cross3(vA, vB).Normalized3();
+    const float d = Vector4::Dot3(n, p1);
+    v = Vector4(n.x, n.y, n.z, -d);
 }
 
-Plane::Plane(const Vector& normal, const Vector& point)
+Plane::Plane(const Vector4& normal, const Vector4& point)
 {
-    const float d = Vector::Dot3(normal, point);
-    v = Vector(normal.x, normal.y, normal.z, -d);
+    const float d = Vector4::Dot3(normal, point);
+    v = Vector4(normal.x, normal.y, normal.z, -d);
 }
 
-float Plane::PointDistance(const Vector& p) const
+float Plane::PointDistance(const Vector4& p) const
 {
-    return Vector::Dot3(v, p) + v.w;
+    return Vector4::Dot3(v, p) + v.w;
 }
 
-Vector Plane::PointDistanceV(const Vector& p) const
+Vector4 Plane::PointDistanceV(const Vector4& p) const
 {
-    return Vector::Dot3V(v, p) + v.SplatW();
+    return Vector4::Dot3V(v, p) + v.SplatW();
 }
 
-bool Plane::Side(const Vector& p) const
+bool Plane::Side(const Vector4& p) const
 {
     return PointDistance(p) > 0.0f;
 }

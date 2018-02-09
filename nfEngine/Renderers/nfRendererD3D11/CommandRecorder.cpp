@@ -22,7 +22,7 @@
 #include "Sampler.hpp"
 #include "Translations.hpp"
 
-#include "nfCommon/Math/Vector.hpp"
+#include "nfCommon/Math/Vector4.hpp"
 #include "nfCommon/System/Assertion.hpp"
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/System/Win/Common.hpp"  // required for ID3DUserDefinedAnnotation

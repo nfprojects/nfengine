@@ -103,28 +103,28 @@ public:
      * Get global position and orientation.
      */
     const Math::Transform& GetGlobalTransform() const { return mGlobalTransform; }
-    const Math::Vector& GetGlobalPosition() const { return mGlobalTransform.GetTranslation(); }
+    const Math::Vector4& GetGlobalPosition() const { return mGlobalTransform.GetTranslation(); }
     const Math::Quaternion& GetGlobalRotation() const { return mGlobalTransform.GetRotation(); }
 
     /**
      * Get local position and orientation.
      */
     const Math::Transform& GetLocalTransform() const { return mLocalTransform; }
-    const Math::Vector& GetLocalPosition() const { return mLocalTransform.GetTranslation(); }
+    const Math::Vector4& GetLocalPosition() const { return mLocalTransform.GetTranslation(); }
     const Math::Quaternion& GetLocalRotation() const { return mLocalTransform.GetRotation(); }
 
     /**
      * Set global position and orientation.
      */
     void SetGlobalTransform(const Math::Transform& transform);
-    void SetGlobalPosition(const Math::Vector& pos);
+    void SetGlobalPosition(const Math::Vector4& pos);
     void SetGlobalOrientation(const Math::Quaternion& quat);
 
     /**
      * Set local position and orientation.
      */
     void SetLocalTransform(const Math::Transform& transform);
-    void SetLocalPosition(const Math::Vector& pos);
+    void SetLocalPosition(const Math::Vector4& pos);
     void SetLocalOrientation(const Math::Quaternion& orientation);
 
 

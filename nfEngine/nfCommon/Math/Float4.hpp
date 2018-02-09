@@ -25,7 +25,7 @@ namespace Math {
 
 
 /**
- * Structure for efficient (in terms of memory) 4D vector storing - unaligned version of Vector class.
+ * Structure for efficient (in terms of memory) 4D vector storing - unaligned version of Vector4 class.
  */
 struct Float4
 {

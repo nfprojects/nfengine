@@ -50,7 +50,7 @@ public:
 
     // TODO temporary - remove
     // spawn test object (cube, barrel, etc.)
-    void SpawnTestObject(uint32 objectType, const Math::Vector& position, const Math::Vector& velocity);
+    void SpawnTestObject(uint32 objectType, const Math::Vector4& position, const Math::Vector4& velocity);
 
 private:
     Common::UniquePtr<MainCameraView> mView;

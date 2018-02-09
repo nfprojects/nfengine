@@ -79,7 +79,7 @@ void FreeCameraController::ProcessTickEvent(const Event_Tick& tickEvent)
 
     const Quaternion rotation = prevOrientation * targetOrientation.Inverted();
     {
-        Vector axis;
+        Vector4 axis;
         float angle;
         rotation.ToAxis(axis, angle);
         body->SetAngularVelocity(-axis / dt);
@@ -87,8 +87,8 @@ void FreeCameraController::ProcessTickEvent(const Event_Tick& tickEvent)
 
     entity->SetGlobalOrientation(targetOrientation);
 
-    Vector movementDirection = mMovementDirection;
-    if (!Vector::AlmostEqual(movementDirection, Vector()))
+    Vector4 movementDirection = mMovementDirection;
+    if (!Vector4::AlmostEqual(movementDirection, Vector4()))
     {
         movementDirection.Normalize3();
     }
@@ -99,17 +99,17 @@ void FreeCameraController::ProcessTickEvent(const Event_Tick& tickEvent)
     else if (mMovementSpeed < 0.0f)
         movementDirection *= (1.0f / MOVEMENT_SPEED_MULTIPLIER);
 
-    const Vector destVelocity = targetOrientation.TransformVector(movementDirection);
-    const Vector prevVelocity =  body->GetVelocity();
+    const Vector4 destVelocity = targetOrientation.TransformVector(movementDirection);
+    const Vector4 prevVelocity =  body->GetVelocity();
 
     // low pass filter - for smooth camera movement
     const float translationFactor = dt / (CAMERA_TRANSLATION_SMOOTHING + dt);
-    const Vector newVelocity = Vector::Lerp(prevVelocity, destVelocity, translationFactor);
+    const Vector4 newVelocity = Vector4::Lerp(prevVelocity, destVelocity, translationFactor);
 
     body->SetVelocity(newVelocity);
 
     // update position manually - body is static
-    const Vector newPosition = entity->GetGlobalPosition() + newVelocity * dt;
+    const Vector4 newPosition = entity->GetGlobalPosition() + newVelocity * dt;
     entity->SetGlobalPosition(newPosition);
 }
 

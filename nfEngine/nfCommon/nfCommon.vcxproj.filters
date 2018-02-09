@@ -140,9 +140,6 @@
     <ClInclude Include="Math\FPU\RayGeometry.hpp">
       <Filter>Math\FPU</Filter>
     </ClInclude>
-    <ClInclude Include="Math\FPU\Vector.hpp">
-      <Filter>Math\FPU</Filter>
-    </ClInclude>
     <ClInclude Include="Math\FPU\Matrix.hpp">
       <Filter>Math\FPU</Filter>
     </ClInclude>
@@ -150,9 +147,6 @@
       <Filter>Math\SSE</Filter>
     </ClInclude>
     <ClInclude Include="Math\SSE\RayGeometry.hpp">
-      <Filter>Math\SSE</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\SSE\Vector.hpp">
       <Filter>Math\SSE</Filter>
     </ClInclude>
     <ClInclude Include="Math\Conversions.hpp">
@@ -420,12 +414,6 @@
     <ClInclude Include="Math\Float4Impl.hpp">
       <Filter>Math\Vector</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Vector.hpp">
-      <Filter>Math\Vector</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\VectorConstants.hpp">
-      <Filter>Math\Vector</Filter>
-    </ClInclude>
     <ClInclude Include="Math\Matrix.hpp">
       <Filter>Math\Matrix</Filter>
     </ClInclude>
@@ -530,6 +518,18 @@
     </ClInclude>
     <ClInclude Include="Math\PlaneImpl.hpp">
       <Filter>Math\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\FPU\Vector4.hpp">
+      <Filter>Math\FPU</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\SSE\Vector4.hpp">
+      <Filter>Math\SSE</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vector4.hpp">
+      <Filter>Math\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vector4Constants.hpp">
+      <Filter>Math\Vector</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

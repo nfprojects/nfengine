@@ -7,7 +7,7 @@
 #pragma once
 
 #include "Math.hpp"
-#include "Vector.hpp"
+#include "Vector4.hpp"
 #include "Ray.hpp"
 
 namespace NFE {
@@ -26,7 +26,7 @@ enum class IntersectionResult
  * @param[out] out Nearest point on the segment.
  * @return     Distance to the segment.
  */
-NFCOMMON_API float ClosestPointOnSegment(const Vector& p, const Vector& p1, const Vector& p2, Vector& out);
+NFCOMMON_API float ClosestPointOnSegment(const Vector4& p, const Vector4& p1, const Vector4& p2, Vector4& out);
 
 /**
  * Template function for intersection tests.
@@ -46,7 +46,7 @@ IntersectionResult IntersectEx(const ShapeTypeA& shapeA, const ShapeTypeB& shape
  * @param dist Distance to the intersection.
  */
 template<typename ShapeType>
-bool Intersect(const Ray& ray, const ShapeType& shape, Vector& dist);
+bool Intersect(const Ray& ray, const ShapeType& shape, Vector4& dist);
 
 
 /**

@@ -32,7 +32,7 @@ using namespace Resource;
 using namespace Renderer;
 
 LightComponent::LightComponent()
-    : mColor(Vector(1.0f, 1.0f, 1.0f, 1.0f))
+    : mColor(Vector4(1.0f, 1.0f, 1.0f, 1.0f))
     , mLightMap(nullptr)
     , mLightType(LightType::Omni)
     , mShadowMapResolution(0)
@@ -75,7 +75,7 @@ void LightComponent::OnUpdate()
 
 void LightComponent::SetColor(const Float3& color)
 {
-    mColor = Vector(color);
+    mColor = Vector4(color);
 
     // update proxy
     CreateRenderingProxy(true);

@@ -17,23 +17,23 @@ using namespace Math;
 
 struct NFE_ALIGN(16) DirLightProperties
 {
-    Math::Vector direction;
-    Math::Vector color;
+    Math::Vector4 direction;
+    Math::Vector4 color;
     uint32 cascadesCount[4];
 
-    Math::Vector splitDistance[8];
+    Math::Vector4 splitDistance[8];
     Math::Matrix viewProjMatrix[8];
 };
 
 struct NFE_ALIGN(16) SpotLightProperties
 {
-    Math::Vector position;
-    Math::Vector direction;
-    Math::Vector color;
-    Math::Vector farDist;
+    Math::Vector4 position;
+    Math::Vector4 direction;
+    Math::Vector4 color;
+    Math::Vector4 farDist;
     Math::Matrix viewProjMatrix;
     Math::Matrix viewProjMatrixInv;
-    Math::Vector shadowMapProps;
+    Math::Vector4 shadowMapProps;
 };
 
 class LightsRenderer : public RendererModule<LightsRenderer, LightsRendererContext>
@@ -87,9 +87,9 @@ public:
 
     void SetUp(LightsRendererContext* context, const RenderTargetPtr& target, GeometryBuffer *gbuffer,
                const CameraRenderDesc* camera);
-    void DrawAmbientLight(LightsRendererContext* context, const Vector& ambientLightColor,
-                          const Vector& backgroundColor);
-    void DrawOmniLight(LightsRendererContext* context, const Vector& pos, float radius, const Vector& color,
+    void DrawAmbientLight(LightsRendererContext* context, const Vector4& ambientLightColor,
+                          const Vector4& backgroundColor);
+    void DrawOmniLight(LightsRendererContext* context, const Vector4& pos, float radius, const Vector4& color,
                        ShadowMap* shadowMap);
     void DrawSpotLight(LightsRendererContext* context, const SpotLightProperties& prop,
                        ShadowMap* shadowMap, const ResourceBindingInstancePtr& pLightMap);

@@ -6,8 +6,8 @@ using namespace NFE::Math;
 
 namespace {
 
-const Box box1(Vector(1.0f, 2.0f, 3.0f), Vector(2.0f, 3.0f, 4.0f));
-const Box box2(Vector(1.0f, 2.0f, 3.0f), Vector(2.0f, 3.0f, 5.0f));
+const Box box1(Vector4(1.0f, 2.0f, 3.0f), Vector4(2.0f, 3.0f, 4.0f));
+const Box box2(Vector4(1.0f, 2.0f, 3.0f), Vector4(2.0f, 3.0f, 5.0f));
 const Box boxEmpty = Box::Empty();
 const Box boxPoint;
 

@@ -16,23 +16,23 @@
 namespace NFE {
 namespace Math {
 
-NFE_INLINE bool RayBoxIntersectInline(const Ray& ray, const Box& box, Vector& dist)
+NFE_INLINE bool RayBoxIntersectInline(const Ray& ray, const Box& box, Vector4& dist)
 {
     // The algorithm is based on "slabs" method. More info can be found here:
     // http://www.siggraph.org/education/materials/HyperGraph/raytrace/rtinter3.htm
 
-    Vector lmin, lmax, tmp1, tmp2;
+    Vector4 lmin, lmax, tmp1, tmp2;
 
     // calculate all box planes distances
     tmp1 = (box.min - ray.origin) * ray.invDir;
     tmp2 = (box.max - ray.origin) * ray.invDir;
-    lmin = Vector::Min(tmp1, tmp2);
-    lmax = Vector::Max(tmp1, tmp2);
+    lmin = Vector4::Min(tmp1, tmp2);
+    lmax = Vector4::Max(tmp1, tmp2);
 
     // transpose (we need to calculate min and max of X, Y and Z)
-    Vector lx = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(0, 0, 0, 0));
-    Vector ly = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(1, 1, 1, 1));
-    Vector lz = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(2, 2, 2, 2));
+    Vector4 lx = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(0, 0, 0, 0));
+    Vector4 ly = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(1, 1, 1, 1));
+    Vector4 lz = _mm_shuffle_ps(lmin, lmax, _MM_SHUFFLE(2, 2, 2, 2));
 
     // calculate minimum and maximum plane distances by taking min and max
     // of all 3 components
@@ -52,31 +52,31 @@ NFE_INLINE bool RayBoxIntersectInline(const Ray& ray, const Box& box, Vector& di
     return _mm_movemask_ps(_mm_cmpge_ps(lmax, lmin)) == 0xF;
 }
 
-NFE_INLINE bool RayTriangleIntersectInline(const Ray& ray, const Triangle& tri, Vector& dist)
+NFE_INLINE bool RayTriangleIntersectInline(const Ray& ray, const Triangle& tri, Vector4& dist)
 {
     // Based on "Fast, Minimum Storage Ray/Triangle Intersection" by Tomas Möller and Ben Trumbore.
 
     // find vectors for two edges sharing v0
-    Vector edge0 = tri.v1 - tri.v0;
-    Vector edge1 = tri.v2 - tri.v0;
+    Vector4 edge0 = tri.v1 - tri.v0;
+    Vector4 edge1 = tri.v2 - tri.v0;
     // begin calculating determinant - also used to calculate U parameter
-    Vector pvec = Vector::Cross3(ray.dir, edge1);
+    Vector4 pvec = Vector4::Cross3(ray.dir, edge1);
     // calculate distance from vert0 to ray origin
-    Vector tvec = ray.origin - tri.v0;
+    Vector4 tvec = ray.origin - tri.v0;
     // prepare to test V parameter
-    Vector qvec = Vector::Cross3(tvec, edge0);
+    Vector4 qvec = Vector4::Cross3(tvec, edge0);
     // if determinant is near zero, ray lies in plane of triangle
-    Vector det = Vector::Dot3V(edge0, pvec);
+    Vector4 det = Vector4::Dot3V(edge0, pvec);
     // calculate U parameter
-    Vector u = Vector::Dot3V(tvec, pvec);
+    Vector4 u = Vector4::Dot3V(tvec, pvec);
     // calculate V parameter
-    Vector v = Vector::Dot3V(ray.dir, qvec);
+    Vector4 v = Vector4::Dot3V(ray.dir, qvec);
     // calculate t (distance)
-    Vector t = Vector::Dot3V(edge1, qvec);
+    Vector4 t = Vector4::Dot3V(edge1, qvec);
 
     // prepare data to the final comparison
-    Vector tmp1 = _mm_shuffle_ps(v, u, _MM_SHUFFLE(0, 0, 0, 0));
-    Vector tmp2 = _mm_shuffle_ps(u + v, t, _MM_SHUFFLE(0, 0, 0, 0));
+    Vector4 tmp1 = _mm_shuffle_ps(v, u, _MM_SHUFFLE(0, 0, 0, 0));
+    Vector4 tmp2 = _mm_shuffle_ps(u + v, t, _MM_SHUFFLE(0, 0, 0, 0));
     tmp1 = _mm_shuffle_ps(tmp2, tmp1, _MM_SHUFFLE(2, 0, 2, 0));
     tmp1 = tmp1 / det;
     tmp2 = _mm_set_ss(1.0f);

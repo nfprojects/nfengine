@@ -164,7 +164,7 @@ public:
         return mDefaultSpecularTexture;
     }
 
-    NFE_INLINE Math::Vector GammaFix(const Math::Vector& color) const
+    NFE_INLINE Math::Vector4 GammaFix(const Math::Vector4& color) const
     {
         return color * color;
     }

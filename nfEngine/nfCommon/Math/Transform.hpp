@@ -7,7 +7,7 @@
 #pragma once
 
 #include "Math.hpp"
-#include "Vector.hpp"
+#include "Vector4.hpp"
 #include "Quaternion.hpp"
 
 
@@ -24,15 +24,15 @@ public:
     Transform(const Transform&) = default;
     Transform& operator = (const Transform&) = default;
 
-    explicit Transform(const Vector& translation, const Quaternion& rotation)
+    explicit Transform(const Vector4& translation, const Quaternion& rotation)
         : mTranslation(translation)
         , mRotation(rotation)
     { }
 
-    const Vector& GetTranslation() const { return mTranslation; }
+    const Vector4& GetTranslation() const { return mTranslation; }
     const Quaternion& GetRotation() const { return mRotation; }
 
-    void SetTranslation(const Vector& translation) { mTranslation = translation; }
+    void SetTranslation(const Vector4& translation) { mTranslation = translation; }
     void SetRotation(const Quaternion& rotation) { mRotation = rotation; }
 
     /**
@@ -56,13 +56,13 @@ public:
     /**
      * Transform a 3D point.
      */
-    NFCOMMON_API Vector TransformPoint(const Vector& p) const;
+    NFCOMMON_API Vector4 TransformPoint(const Vector4& p) const;
 
     /**
      * Transform a 3D vector (direction).
      * @note Translation is ignored.
      */
-    NFCOMMON_API Vector TransformVector(const Vector& v) const;
+    NFCOMMON_API Vector4 TransformVector(const Vector4& v) const;
 
     /**
      * Create matrix representing this transformation.
@@ -86,7 +86,7 @@ public:
     NFCOMMON_API static bool AlmostEqual(const Transform& a, const Transform& b, float epsilon = NFE_MATH_EPSILON);
 
 private:
-    Vector mTranslation;
+    Vector4 mTranslation;
     Quaternion mRotation;
 };
 

@@ -45,31 +45,31 @@ bool OnLoadCustomShapeResource(ResourceBase* res, void* data)
 
     if (strcmp(shape->GetName(), "shape_floor") == 0)
     {
-        shape->AddBox(Vector(100.0f, 10.0f, 100.0f), Matrix());
+        shape->AddBox(Vector4(100.0f, 10.0f, 100.0f), Matrix());
     }
     else if (strcmp(shape->GetName(), "shape_box") == 0)
     {
-        shape->AddBox(Vector(0.25f, 0.25f, 0.25f), Matrix());
+        shape->AddBox(Vector4(0.25f, 0.25f, 0.25f), Matrix());
     }
     else if (strcmp(shape->GetName(), "shape_frame") == 0)
     {
         // Z axis
-        shape->AddBox(Vector(0.025f, 0.025f, 0.45f), Matrix::MakeTranslation3(Vector(-0.475f, -0.475f, 0.0f)));
-        shape->AddBox(Vector(0.025f, 0.025f, 0.45f), Matrix::MakeTranslation3(Vector(-0.475f, 0.475f, 0.0f)));
-        shape->AddBox(Vector(0.025f, 0.025f, 0.45f), Matrix::MakeTranslation3(Vector(0.475f, -0.475f, 0.0f)));
-        shape->AddBox(Vector(0.025f, 0.025f, 0.45f), Matrix::MakeTranslation3(Vector(0.475f, 0.475f, 0.0f)));
+        shape->AddBox(Vector4(0.025f, 0.025f, 0.45f), Matrix::MakeTranslation3(Vector4(-0.475f, -0.475f, 0.0f)));
+        shape->AddBox(Vector4(0.025f, 0.025f, 0.45f), Matrix::MakeTranslation3(Vector4(-0.475f, 0.475f, 0.0f)));
+        shape->AddBox(Vector4(0.025f, 0.025f, 0.45f), Matrix::MakeTranslation3(Vector4(0.475f, -0.475f, 0.0f)));
+        shape->AddBox(Vector4(0.025f, 0.025f, 0.45f), Matrix::MakeTranslation3(Vector4(0.475f, 0.475f, 0.0f)));
 
         // Y axis
-        shape->AddBox(Vector(0.025f, 0.5f, 0.025f), Matrix::MakeTranslation3(Vector(-0.475f, 0.0f, -0.475f)));
-        shape->AddBox(Vector(0.025f, 0.5f, 0.025f), Matrix::MakeTranslation3(Vector(-0.475f, 0.0f, 0.475f)));
-        shape->AddBox(Vector(0.025f, 0.5f, 0.025f), Matrix::MakeTranslation3(Vector(0.475f, 0.0f, -0.475f)));
-        shape->AddBox(Vector(0.025f, 0.5f, 0.025f), Matrix::MakeTranslation3(Vector(0.475f, 0.0f, 0.475f)));
+        shape->AddBox(Vector4(0.025f, 0.5f, 0.025f), Matrix::MakeTranslation3(Vector4(-0.475f, 0.0f, -0.475f)));
+        shape->AddBox(Vector4(0.025f, 0.5f, 0.025f), Matrix::MakeTranslation3(Vector4(-0.475f, 0.0f, 0.475f)));
+        shape->AddBox(Vector4(0.025f, 0.5f, 0.025f), Matrix::MakeTranslation3(Vector4(0.475f, 0.0f, -0.475f)));
+        shape->AddBox(Vector4(0.025f, 0.5f, 0.025f), Matrix::MakeTranslation3(Vector4(0.475f, 0.0f, 0.475f)));
 
         // X axis
-        shape->AddBox(Vector(0.5f, 0.025f, 0.025f), Matrix::MakeTranslation3(Vector(0.0f, -0.475f, -0.475f)));
-        shape->AddBox(Vector(0.5f, 0.025f, 0.025f), Matrix::MakeTranslation3(Vector(0.0f, -0.475f, 0.475f)));
-        shape->AddBox(Vector(0.5f, 0.025f, 0.025f), Matrix::MakeTranslation3(Vector(0.0f, 0.475f, -0.475f)));
-        shape->AddBox(Vector(0.5f, 0.025f, 0.025f), Matrix::MakeTranslation3(Vector(0.0f, 0.475f, 0.475f)));
+        shape->AddBox(Vector4(0.5f, 0.025f, 0.025f), Matrix::MakeTranslation3(Vector4(0.0f, -0.475f, -0.475f)));
+        shape->AddBox(Vector4(0.5f, 0.025f, 0.025f), Matrix::MakeTranslation3(Vector4(0.0f, -0.475f, 0.475f)));
+        shape->AddBox(Vector4(0.5f, 0.025f, 0.025f), Matrix::MakeTranslation3(Vector4(0.0f, 0.475f, -0.475f)));
+        shape->AddBox(Vector4(0.5f, 0.025f, 0.025f), Matrix::MakeTranslation3(Vector4(0.0f, 0.475f, 0.475f)));
     }
     else if (strcmp(shape->GetName(), "shape_barrel") == 0)
     {

@@ -52,7 +52,7 @@ public:
 
     void SetTarget(DebugRendererContext* context, const RenderTargetPtr& target);
     void SetCamera(DebugRendererContext* context, const Matrix& viewMatrix, const Matrix& projMatrix);
-    void DrawLine(DebugRendererContext* context, const Vector& A, const Vector& B, const uint32 color);
+    void DrawLine(DebugRendererContext* context, const Vector4& A, const Vector4& B, const uint32 color);
     void DrawLine(DebugRendererContext* context, const Float3& A, const Float3& B, const uint32 color);
     void DrawBox(DebugRendererContext* context, const Box& box, const uint32 color);
     void DrawFilledBox(DebugRendererContext* context, const Box& box, const uint32 color);

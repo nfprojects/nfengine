@@ -11,7 +11,7 @@
 #include "../../Renderer/RenderProxies.hpp"
 
 #include "nfCommon/Memory/Aligned.hpp"
-#include "nfCommon/Math/Vector.hpp"
+#include "nfCommon/Math/Vector4.hpp"
 
 
 namespace NFE {
@@ -92,7 +92,7 @@ class NFE_ALIGN(16) CORE_API LightComponent
     NFE_DECLARE_POLYMORPHIC_CLASS(LightComponent)
 
 private:
-    Math::Vector mColor;
+    Math::Vector4 mColor;
 
     // TODO resource hash
     Resource::Texture* mLightMap;
