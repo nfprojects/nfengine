@@ -93,7 +93,7 @@ void RenderScene::RenderLights(const Common::TaskContext& context, RenderingData
 
     for (const LightProxy* lightProxy : data.visibleOmniLights)
     {
-        const Vector& position = lightProxy->desc.transform[3];
+        const Vector4& position = lightProxy->desc.transform[3];
 
         LightsRenderer::Get()->DrawOmniLight(renderCtx->lightsContext.get(), position,
                                              lightProxy->desc.omni.radius,
@@ -112,11 +112,11 @@ void RenderScene::RenderLights(const Common::TaskContext& context, RenderingData
         prop.farDist.Set(desc.spot.farDistance);
         prop.viewProjMatrix = lightProxy->viewMatrix * lightProxy->projMatrix;
         prop.viewProjMatrixInv = prop.viewProjMatrix.Inverted(); // TODO move to SpotLightData?
-        prop.shadowMapProps = Vector();
+        prop.shadowMapProps = Vector4();
 
         if (lightProxy->shadowMap)
         {
-            prop.shadowMapProps = Vector(1.0f / lightProxy->shadowMap->GetSize());
+            prop.shadowMapProps = Vector4(1.0f / lightProxy->shadowMap->GetSize());
         }
 
         LightsRenderer::Get()->DrawSpotLight(renderCtx->lightsContext.get(), prop, lightProxy->shadowMap.Get(),
@@ -148,7 +148,7 @@ void RenderScene::RenderLightsDebug(RenderingData& data, Renderer::RenderContext
 }
 
 void RenderScene::RenderGeometry(GeometryRendererContext* ctx,
-                                    const Frustum& viewFrustum, const Vector& cameraPosition) const
+                                    const Frustum& viewFrustum, const Vector4& cameraPosition) const
 {
     // draw meshes
     Common::DynArray<MeshProxy*> visibleMeshes; //TODO: dynamic allocation per frame should be avoided
@@ -212,36 +212,36 @@ void RenderScene::RenderOmniShadowMap(const Common::TaskContext& context, const 
     // The below vector arrays are front, up and right vectors for each cubemap face camera matrix:
 
     // Z axis for each cube map face
-    static const Vector zVectors[] =
+    static const Vector4 zVectors[] =
     {
-        Vector(1.0f,  0.0f,  0.0f),
-        Vector(-1.0f,  0.0f,  0.0f),
-        Vector(0.0f,  1.0f,  0.0f),
-        Vector(0.0f, -1.0f,  0.0f),
-        Vector(0.0f,  0.0f,  1.0f),
-        Vector(0.0f,  0.0f, -1.0f),
+        Vector4(1.0f,  0.0f,  0.0f),
+        Vector4(-1.0f,  0.0f,  0.0f),
+        Vector4(0.0f,  1.0f,  0.0f),
+        Vector4(0.0f, -1.0f,  0.0f),
+        Vector4(0.0f,  0.0f,  1.0f),
+        Vector4(0.0f,  0.0f, -1.0f),
     };
 
     // Y axis for each cube map face
-    static const Vector yVectors[] =
+    static const Vector4 yVectors[] =
     {
-        Vector(0.0f, 1.0f,  0.0f),
-        Vector(0.0f, 1.0f,  0.0f),
-        Vector(0.0f, 0.0f, -1.0f),
-        Vector(0.0f, 0.0f,  1.0f),
-        Vector(0.0f, 1.0f,  0.0f),
-        Vector(0.0f, 1.0f,  0.0f),
+        Vector4(0.0f, 1.0f,  0.0f),
+        Vector4(0.0f, 1.0f,  0.0f),
+        Vector4(0.0f, 0.0f, -1.0f),
+        Vector4(0.0f, 0.0f,  1.0f),
+        Vector4(0.0f, 1.0f,  0.0f),
+        Vector4(0.0f, 1.0f,  0.0f),
     };
 
     // X axis for each cube map face
-    static const Vector xVectors[] =
+    static const Vector4 xVectors[] =
     {
-        Vector(0.0f, 0.0f, -1.0f),
-        Vector(0.0f, 0.0f, 1.0f),
-        Vector(1.0f, 0.0f, 0.0f),
-        Vector(1.0f, 0.0f, 0.0f),
-        Vector(1.0f, 0.0f, 0.0f),
-        Vector(-1.0f, 0.0f, 0.0f),
+        Vector4(0.0f, 0.0f, -1.0f),
+        Vector4(0.0f, 0.0f, 1.0f),
+        Vector4(1.0f, 0.0f, 0.0f),
+        Vector4(1.0f, 0.0f, 0.0f),
+        Vector4(1.0f, 0.0f, 0.0f),
+        Vector4(-1.0f, 0.0f, 0.0f),
     };
 
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
@@ -249,7 +249,7 @@ void RenderScene::RenderOmniShadowMap(const Common::TaskContext& context, const 
     RenderContext* renderCtx = renderer->GetDeferredContext(context.threadId);
 
     // TODO: include "transform" rotation
-    const Vector& position = lightProxy->desc.transform.GetRow(3);
+    const Vector4& position = lightProxy->desc.transform.GetRow(3);
     Matrix matrix = Matrix(xVectors[face], yVectors[face], zVectors[face], position);
 
     // calculate frustum, view and projection matrices
@@ -328,8 +328,8 @@ bool RenderScene::Render(const Common::TaskContext& context, const Renderer::Vie
     }
 
     const auto* cameraBody = cameraEntity->GetComponent<Scene::BodyComponent>();
-    Vector cameraVelocity;
-    Vector cameraAngularVelocity;
+    Vector4 cameraVelocity;
+    Vector4 cameraAngularVelocity;
     if (cameraBody)
     {
         cameraVelocity = cameraBody->GetVelocity();
@@ -455,7 +455,7 @@ void RenderScene::FindVisibleLights(const Frustum& frustum, RenderingData& data)
 
     mLightProxies.Iterate([&frustum, &data](LightProxy& proxy)
     {
-        if (Vector::Less3(proxy.desc.color, VECTOR_EPSILON))
+        if (Vector4::Less3(proxy.desc.color, VECTOR_EPSILON))
         {
             // light is too dim
             return;

@@ -9,7 +9,7 @@
 #include "../Core.hpp"
 #include "Systems/System.hpp"
 
-#include "nfCommon/Math/Vector.hpp"
+#include "nfCommon/Math/Vector4.hpp"
 #include "nfCommon/Containers/UniquePtr.hpp"
 #include "nfCommon/Containers/String.hpp"
 

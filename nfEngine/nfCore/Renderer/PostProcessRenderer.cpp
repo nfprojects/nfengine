@@ -19,9 +19,9 @@ std::unique_ptr<PostProcessRenderer> PostProcessRenderer::mPtr;
 
 struct NFE_ALIGN(16) ToneMappingCBuffer
 {
-    Vector bufferInvRes;
-    Vector seed;
-    Vector params;
+    Vector4 bufferInvRes;
+    Vector4 seed;
+    Vector4 params;
 };
 
 PostProcessRenderer::PostProcessRenderer()
@@ -160,12 +160,12 @@ void PostProcessRenderer::ApplyTonemapping(PostProcessRendererContext* context,
     context->commandRecorder->SetPipelineState(mTonemappingPipelineState.GetPipelineState());
 
     ToneMappingCBuffer cbufferData;
-    cbufferData.bufferInvRes = Vector(1.0f / static_cast<float>(width),
+    cbufferData.bufferInvRes = Vector4(1.0f / static_cast<float>(width),
                                       1.0f / static_cast<float>(height));
-    cbufferData.params = Vector(params.saturation,
+    cbufferData.params = Vector4(params.saturation,
                                 params.noiseFactor,
                                 expf(params.exposureOffset));
-    cbufferData.seed = Vector(context->random.GetFloat2());
+    cbufferData.seed = Vector4(context->random.GetFloat2());
 
     context->commandRecorder->BindResources(0, src);
     context->commandRecorder->BindVolatileCBuffer(0, mTonemappingCBuffer);

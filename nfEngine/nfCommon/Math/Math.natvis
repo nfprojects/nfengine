@@ -31,9 +31,9 @@
         </Expand>
     </Type>
 
-    <!-- Vector -->
-    <Type Name="NFE::Math::Vector">
-        <DisplayString>Vector {{x={f[0]} y={f[1]} z={f[2]} w={f[3]}}}</DisplayString>
+    <!-- Vector4 -->
+    <Type Name="NFE::Math::Vector4">
+        <DisplayString>Vector4 {{x={f[0]} y={f[1]} z={f[2]} w={f[3]}}}</DisplayString>
         <Expand>
             <Item Name="x" ExcludeView="simple">f[0]</Item>
             <Item Name="y" ExcludeView="simple">f[1]</Item>

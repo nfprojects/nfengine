@@ -31,17 +31,17 @@ ConfigVariable<bool> gEnableCCD("physics/ccd", true);
 namespace {
 
 /**
-* Convert Bullet's vector NFEngine's Vector
+* Convert Bullet's vector NFEngine's Vector4
 */
-Vector bt2Vector(const btVector3& v)
+Vector4 bt2Vector(const btVector3& v)
 {
-    return Vector((float*)v.m_floats);
+    return Vector4((float*)v.m_floats);
 }
 
 /**
-* Convert NFEngine's Vector to Bullet's vector
+* Convert NFEngine's Vector to Bullet's vector4
 */
-btVector3 Vector2bt(const Vector& v)
+btVector3 Vector2bt(const Vector4& v)
 {
     return btVector3(v.f[0], v.f[1], v.f[2]);
 }
@@ -147,7 +147,7 @@ bool PhysicsScene::UpdateBodyProxy(const ProxyID proxyID, const BodyProxyInfo& n
     }
 
     // handle velocity change
-    if (!Vector::AlmostEqual(bodyProxy.info.velocity, newInfo.velocity))
+    if (!Vector4::AlmostEqual(bodyProxy.info.velocity, newInfo.velocity))
     {
         bodyProxy.info.velocity = newInfo.velocity;
         bodyProxy.rigidBody->setLinearVelocity(Vector2bt(newInfo.velocity));
@@ -155,7 +155,7 @@ bool PhysicsScene::UpdateBodyProxy(const ProxyID proxyID, const BodyProxyInfo& n
     }
 
     // handle angular velocity change
-    if (!Vector::AlmostEqual(bodyProxy.info.angularVelocity, newInfo.angularVelocity))
+    if (!Vector4::AlmostEqual(bodyProxy.info.angularVelocity, newInfo.angularVelocity))
     {
         bodyProxy.info.angularVelocity = newInfo.angularVelocity;
         bodyProxy.rigidBody->setAngularVelocity(Vector2bt(newInfo.angularVelocity));
@@ -207,8 +207,8 @@ void PhysicsScene::Update(float dt)
 
             if (proxy.info.velocityUpdateCallback)
             {
-                const Vector velocity = bt2Vector(proxy.rigidBody->getLinearVelocity());
-                const Vector angularVelocity = bt2Vector(proxy.rigidBody->getAngularVelocity());
+                const Vector4 velocity = bt2Vector(proxy.rigidBody->getLinearVelocity());
+                const Vector4 angularVelocity = bt2Vector(proxy.rigidBody->getAngularVelocity());
 
                 proxy.info.velocity = velocity;
                 proxy.info.angularVelocity = angularVelocity;

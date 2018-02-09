@@ -13,7 +13,7 @@
 namespace NFE {
 namespace Math {
 
-Matrix Matrix::MakeRotationNormal(const Vector& normalAxis, float angle)
+Matrix Matrix::MakeRotationNormal(const Vector4& normalAxis, float angle)
 {
     Matrix result;
 
@@ -24,17 +24,17 @@ Matrix Matrix::MakeRotationNormal(const Vector& normalAxis, float angle)
     float s = sinf(angle);
     float t = 1.0f - c;
 
-    result.r[0] = Vector(t * x * x + c,
+    result.r[0] = Vector4(t * x * x + c,
                          t * x * y - s * z,
                          t * x *z + s * y,
                          0.0f);
 
-    result.r[1] = Vector(t * x * y + s * z,
+    result.r[1] = Vector4(t * x * y + s * z,
                          t * y * y + c,
                          t * y * z - s * x,
                          0.0f);
 
-    result.r[2] = Vector(t * x * z - s * y,
+    result.r[2] = Vector4(t * x * z - s * y,
                          t * y * z + s * x,
                          t * z * z + c,
                          0.0f);

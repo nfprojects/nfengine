@@ -34,12 +34,12 @@ Transform& Transform::Invert()
     return *this;
 }
 
-Vector Transform::TransformPoint(const Vector& p) const
+Vector4 Transform::TransformPoint(const Vector4& p) const
 {
     return mRotation.TransformVector(p) + mTranslation;
 }
 
-Vector Transform::TransformVector(const Vector& v) const
+Vector4 Transform::TransformVector(const Vector4& v) const
 {
     return mRotation.TransformVector(v);
 }
@@ -59,12 +59,12 @@ Transform Transform::FromMatrix(const Matrix& matrix)
 
 Transform Transform::Interpolate(const Transform& t0, const Transform& t1, float t)
 {
-    return Transform(Vector::Lerp(t0.mTranslation, t1.mTranslation, t), Quaternion::Interpolate(t0.mRotation, t1.mRotation, t));
+    return Transform(Vector4::Lerp(t0.mTranslation, t1.mTranslation, t), Quaternion::Interpolate(t0.mRotation, t1.mRotation, t));
 }
 
 bool Transform::AlmostEqual(const Transform& a, const Transform& b, float epsilon)
 {
-    if (!Vector::AlmostEqual(a.mTranslation, b.mTranslation, epsilon))
+    if (!Vector4::AlmostEqual(a.mTranslation, b.mTranslation, epsilon))
         return false;
 
     return Quaternion::AlmostEqual(a.mRotation, b.mRotation, epsilon);

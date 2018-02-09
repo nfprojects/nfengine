@@ -34,13 +34,13 @@ class CORE_API NFE_ALIGN(16) EnvironmentDesc
     : public Common::Aligned<16>
 {
 public:
-    Math::Vector ambientLight;
-    Math::Vector backgroundColor;
+    Math::Vector4 ambientLight;
+    Math::Vector4 backgroundColor;
 
     EnvironmentDesc()
     {
-        ambientLight = Math::Vector(0.3f, 0.3f, 0.3f);
-        backgroundColor = Math::Vector(0.3f, 0.3f, 0.3f);
+        ambientLight = Math::Vector4(0.3f, 0.3f, 0.3f);
+        backgroundColor = Math::Vector4(0.3f, 0.3f, 0.3f);
     }
 };
 
@@ -94,7 +94,7 @@ struct NFE_ALIGN(16) LightProxy
 
 struct GeometryRenderingContext
 {
-    Math::Vector cameraPosition;
+    Math::Vector4 cameraPosition;
     Math::Frustum frustum;  // camera frustum
 };
 
@@ -227,7 +227,7 @@ private:
      * @param cameraPosition  Used for distance calculation.
      */
     void RenderGeometry(Renderer::GeometryRendererContext* ctx,
-                        const Math::Frustum& viewFrustum, const Math::Vector& cameraPosition) const;
+                        const Math::Frustum& viewFrustum, const Math::Vector4& cameraPosition) const;
 
     // Find visible mesh proxies in a given frustum
     void FindVisibleMeshes(const Math::Frustum& frustum, Common::DynArray<MeshProxy*>& out) const;

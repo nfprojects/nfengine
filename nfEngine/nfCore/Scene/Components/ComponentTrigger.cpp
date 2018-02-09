@@ -38,7 +38,7 @@ Math::Box TriggerComponent::GetBoundingBox() const
     Entity* entity = GetEntity();
     NFE_ASSERT(entity, "Component is not attached to entity");
 
-    const Vector& center = entity->GetGlobalPosition();
+    const Vector4& center = entity->GetGlobalPosition();
     Box triggerBox(center - mSize, center + mSize);
     return triggerBox;
 }
@@ -92,7 +92,7 @@ void TriggerComponent::OnUpdate()
     system->UpdateTrigger(mID, GetBoundingBox());
 }
 
-void TriggerComponent::SetSize(const Math::Vector& newSize)
+void TriggerComponent::SetSize(const Math::Vector4& newSize)
 {
     if (mSize == newSize)
     {

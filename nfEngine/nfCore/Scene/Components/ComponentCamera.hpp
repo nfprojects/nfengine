@@ -116,7 +116,7 @@ public:
     const Math::Matrix& GetViewMatrix() const { return mViewMatrix; }
     const Math::Matrix& GetProjectionMatrix() const { return mProjMatrix; }
     const Math::Matrix& GetSecondaryProjMatrix() const { return mSecondaryProjViewMatrix; }
-    const Math::Vector& GetScreenScale() const { return mScreenScale; }
+    const Math::Vector4& GetScreenScale() const { return mScreenScale; }
     const Math::Frustum& GetFrustum() const { return mFrustum; }
 
 private:
@@ -133,7 +133,7 @@ private:
     Math::Matrix mViewMatrixInv;
     Math::Matrix mProjMatrixInv;
     Math::Matrix mSecondaryProjViewMatrix;
-    Math::Vector mScreenScale;
+    Math::Vector4 mScreenScale;
     Math::Frustum mFrustum;
 
     void OnUpdate() override;
@@ -146,7 +146,7 @@ private:
      * @param angularVelocity Camera angular velocity
      * @param dt              Delta time (used to calculate secondary matrices for motion blur)
      */
-    void Update(const Math::Matrix& matrix, const Math::Vector& velocity, const Math::Vector& angularVelocity);
+    void Update(const Math::Matrix& matrix, const Math::Vector4& velocity, const Math::Vector4& angularVelocity);
 };
 
 } // namespace Scene
