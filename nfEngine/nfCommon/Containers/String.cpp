@@ -6,6 +6,8 @@
 
 #include "PCH.hpp"
 #include "String.hpp"
+#include "DynArray.hpp"
+
 #include "../Memory/DefaultAllocator.hpp"
 #include "../Math/Math.hpp"
 #include "../Logger/Logger.hpp"
@@ -49,7 +51,7 @@ String::String(const StringView& view)
     : mInternalData()
 {
     const uint32 length = view.Length();
-    if (length <= NFE_INTERNAL_STRING_LENGTH)
+    if (length <= MaxInternalLength)
     {
         mInternalData.isExternal = 0;
     }
@@ -61,6 +63,26 @@ String::String(const StringView& view)
 
     char* buffer = GetBuffer();
     memcpy(buffer, view.Data(), length);
+    buffer[length] = '\0';
+
+    SetLength(length);
+}
+
+String::String(const char* str, uint32 length)
+    : mInternalData()
+{
+    if (length <= MaxInternalLength)
+    {
+        mInternalData.isExternal = 0;
+    }
+    else
+    {
+        if (!Reserve(length))
+            return;
+    }
+
+    char* buffer = GetBuffer();
+    memcpy(buffer, str, length);
     buffer[length] = '\0';
 
     SetLength(length);
@@ -103,6 +125,51 @@ void String::Clear()
     }
 
     mInternalData = InternalData();
+}
+
+String String::Printf(const char* format, ...)
+{
+    NFE_ASSERT(format, "Format string cannot be nullptr");
+
+    const int shortStringLength = 1024;
+    char stackBuffer[shortStringLength];
+
+    DynArray<char> buffer;
+    char* formattedStr = nullptr;
+    va_list args, argsCopy;
+    va_start(args, format);
+
+    // we can't call vsnprintf with the same va_list more than once
+    va_copy(argsCopy, args);
+
+    int len = vsnprintf(stackBuffer, shortStringLength, format, args);
+    NFE_ASSERT(len >= 0, "Invalid format string");
+
+    if (len < 0)
+    {
+        va_end(argsCopy);
+        va_end(args);
+        NFE_LOG_ERROR("vsnprintf() failed, format = \"%s\"", format);
+        return String();
+    }
+
+    if (len >= shortStringLength)  // buffer on the stack is too small
+    {
+        if (buffer.Resize(len + 1))
+        {
+            formattedStr = buffer.Data();
+            vsnprintf(formattedStr, len + 1, format, argsCopy);
+        }
+    }
+    else if (len > 0)  // buffer on the stack is sufficient
+    {
+        formattedStr = stackBuffer;
+    }
+
+    va_end(argsCopy);
+    va_end(args);
+
+    return String(formattedStr);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -261,7 +328,7 @@ StringView String::ToView() const
 
 bool String::Reserve(uint32 length)
 {
-    if (length <= NFE_INTERNAL_STRING_LENGTH)
+    if (length <= MaxInternalLength)
     {
         // string will fit internal data - nothing to do
         return true;

@@ -30,7 +30,7 @@ TEST(String, Constructor_Default)
 
     ASSERT_TRUE(string.Empty());
     ASSERT_EQ(0u, string.Length());
-    ASSERT_EQ(NFE_INTERNAL_STRING_LENGTH + 1, string.Capacity());
+    ASSERT_EQ(String::MaxInternalLength + 1, string.Capacity());
     ASSERT_STREQ("", string.Str());
 }
 
@@ -40,7 +40,7 @@ TEST(String, Constructor_Char)
 
     ASSERT_FALSE(string.Empty());
     ASSERT_EQ(1u, string.Length());
-    ASSERT_EQ(NFE_INTERNAL_STRING_LENGTH + 1, string.Capacity());
+    ASSERT_EQ(String::MaxInternalLength + 1, string.Capacity());
     ASSERT_STREQ("a", string.Str());
 }
 
@@ -52,7 +52,7 @@ TEST(String, Constructor_View_Short)
 
     ASSERT_FALSE(string.Empty());
     ASSERT_EQ(1u, string.Length());
-    ASSERT_EQ(NFE_INTERNAL_STRING_LENGTH + 1, string.Capacity());
+    ASSERT_EQ(String::MaxInternalLength + 1, string.Capacity());
     ASSERT_STREQ("a", string.Str());
 }
 
@@ -171,7 +171,7 @@ TEST(String, Constructor_Copy_Empty)
 
     ASSERT_TRUE(copy.Empty());
     ASSERT_EQ(0u, copy.Length());
-    ASSERT_EQ(NFE_INTERNAL_STRING_LENGTH + 1, copy.Capacity());
+    ASSERT_EQ(String::MaxInternalLength + 1, copy.Capacity());
     ASSERT_STREQ("", copy.Str());
 }
 
@@ -182,7 +182,7 @@ TEST(String, Constructor_Copy_Short)
 
     ASSERT_FALSE(copy.Empty());
     ASSERT_EQ(1u, copy.Length());
-    ASSERT_EQ(NFE_INTERNAL_STRING_LENGTH + 1, copy.Capacity());
+    ASSERT_EQ(String::MaxInternalLength + 1, copy.Capacity());
     ASSERT_STREQ("a", copy.Str());
 }
 
@@ -211,8 +211,27 @@ TEST(String, Constructor_Copy_ExternalToInternal)
 
     ASSERT_FALSE(copy.Empty());
     ASSERT_EQ(1, copy.Length());
-    ASSERT_EQ(NFE_INTERNAL_STRING_LENGTH + 1, copy.Capacity());
+    ASSERT_EQ(String::MaxInternalLength + 1, copy.Capacity());
     ASSERT_STREQ("a", copy.Str());
+}
+
+TEST(String, Constructor_FixedArray)
+{
+    const char fixedArray[6] = { 'f', 'o', 'o', 'b', 'a', 'r' };
+    const String string = String::ConstructFromFixedArray(fixedArray, 3);
+
+    ASSERT_FALSE(string.Empty());
+    ASSERT_EQ(3u, string.Length());
+    ASSERT_STREQ("foo", string.Str());
+}
+
+TEST(String, Constructor_Printf)
+{
+    const String string = String::Printf("%u %s", 1, "foo");
+
+    ASSERT_FALSE(string.Empty());
+    ASSERT_EQ(5u, string.Length());
+    ASSERT_STREQ("1 foo", string.Str());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -254,7 +273,7 @@ TEST(String, Assign_Char)
 
     ASSERT_FALSE(string.Empty());
     ASSERT_EQ(1u, string.Length());
-    ASSERT_EQ(NFE_INTERNAL_STRING_LENGTH + 1, string.Capacity());
+    ASSERT_EQ(String::MaxInternalLength + 1, string.Capacity());
     ASSERT_STREQ("b", string.Str());
 }
 
@@ -285,7 +304,7 @@ TEST(String, Assign_StringView_Short)
 
     ASSERT_FALSE(string.Empty());
     ASSERT_EQ(1u, string.Length());
-    ASSERT_EQ(NFE_INTERNAL_STRING_LENGTH + 1, string.Capacity());
+    ASSERT_EQ(String::MaxInternalLength + 1, string.Capacity());
     ASSERT_STREQ("b", string.Str());
 }
 
@@ -309,7 +328,7 @@ TEST(String, Append_Char_Short)
 
     ASSERT_FALSE(string.Empty());
     ASSERT_EQ(2u, string.Length());
-    ASSERT_EQ(NFE_INTERNAL_STRING_LENGTH + 1, string.Capacity());
+    ASSERT_EQ(String::MaxInternalLength + 1, string.Capacity());
     ASSERT_STREQ("ab", string.Str());
 }
 
@@ -317,7 +336,7 @@ TEST(String, Append_Char_Long)
 {
     String string(TEST_STRING_MID_A);
     ASSERT_EQ(11u, string.Length());
-    ASSERT_EQ(NFE_INTERNAL_STRING_LENGTH + 1, string.Capacity());
+    ASSERT_EQ(String::MaxInternalLength + 1, string.Capacity());
 
     string += 'b';
 
@@ -334,7 +353,7 @@ TEST(String, Append_StringView)
 
     ASSERT_FALSE(string.Empty());
     ASSERT_EQ(4u, string.Length());
-    ASSERT_EQ(NFE_INTERNAL_STRING_LENGTH + 1, string.Capacity());
+    ASSERT_EQ(String::MaxInternalLength + 1, string.Capacity());
     ASSERT_STREQ("abcd", string.Str());
 }
 

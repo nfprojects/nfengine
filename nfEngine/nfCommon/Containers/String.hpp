@@ -10,8 +10,6 @@
 #include "StringView.hpp"
 
 
-#define NFE_INTERNAL_STRING_LENGTH 11
-
 namespace NFE {
 namespace Common {
 
@@ -21,6 +19,9 @@ namespace Common {
 class NFCOMMON_API String
 {
 public:
+    // maximum length of a string (without null-terminator) that can be kept in internal storage
+    static constexpr uint32 MaxInternalLength = 11;
+
     ~String();
 
     // move operators
@@ -33,6 +34,15 @@ public:
     String(const StringView& view);
     NFE_INLINE String(const String& string);
     NFE_INLINE String(const char* string);
+    String(const char* str, uint32 length);
+
+    // construct a string from a fixed-sized array
+    // array size must be less than MaxInternalLength
+    template<uint32 N>
+    NFE_INLINE static String ConstructFromFixedArray(const char(& str)[N], const uint32 length = N);
+
+    // produce printf-formated string
+    static String Printf(const char* format, ...);
 
     // assignment operators
     String& operator=(char c);
@@ -154,13 +164,15 @@ private:
     // string buffer is hold inside the String object itself (up to 12 characters, including null-termination)
     struct InternalData
     {
-        uint32 length : 31;                         // string length (without null termination)
-        uint32 isExternal : 1;                      // string mode flag
-        char data[NFE_INTERNAL_STRING_LENGTH + 1];  // internal data (+1 for null termination)
+        uint32 length : 31;                 // string length (without null termination)
+        uint32 isExternal : 1;              // string mode flag
+        char data[MaxInternalLength + 1];   // internal data (+1 for null termination)
 
         NFE_INLINE InternalData();
         NFE_INLINE InternalData(char c);
     };
+
+    static_assert(sizeof(InternalData) == 16UL, "Invalid InternalData type size");
 
     // for easy move
     struct PackedData
