@@ -57,6 +57,26 @@ String::String(const char* string)
 {
 }
 
+template<uint32 N>
+String String::ConstructFromFixedArray(const char(&str)[N], const uint32 length)
+{
+    static_assert(N <= MaxInternalLength, "Static string is too long");
+    NFE_ASSERT(length <= N, "Buffer overrun");
+
+    String result;
+    result.mInternalData.isExternal = 0;
+    result.mInternalData.length = length;
+
+    char* buffer = result.GetBuffer();
+    for (uint32 i = 0; i < N; ++i)
+    {
+        buffer[i] = str[i];
+    }
+    buffer[length] = '\0';
+
+    return result;
+}
+
 String& String::operator=(const String& other)
 {
     *this = other.ToView();
@@ -109,7 +129,7 @@ uint32 String::Length() const
 uint32 String::Capacity() const
 {
     if (IsInternal())
-        return NFE_INTERNAL_STRING_LENGTH + 1;
+        return MaxInternalLength + 1;
     else
         return mExternalData.allocSize;
 }

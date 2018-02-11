@@ -244,6 +244,7 @@
     <ClCompile Include="TestCases\Utils\ImageTest.cpp" />
     <ClCompile Include="TestCases\Utils\LatchTest.cpp" />
     <ClCompile Include="TestCases\Utils\MD5Test.cpp" />
+    <ClCompile Include="TestCases\Utils\StringUtilsTest.cpp" />
     <ClCompile Include="TestCases\Utils\ThreadPoolSimpleTest.cpp" />
     <ClCompile Include="TestCases\Utils\ThreadPoolStressTest.cpp" />
   </ItemGroup>

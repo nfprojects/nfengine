@@ -217,6 +217,9 @@
     <ClCompile Include="TestCases\Containers\StaticArrayTest.cpp">
       <Filter>TestCases\Containers</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\Utils\StringUtilsTest.cpp">
+      <Filter>TestCases\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />

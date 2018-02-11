@@ -176,6 +176,7 @@
     <ClInclude Include="Utils\MD5.hpp" />
     <ClInclude Include="Utils\OutputStream.hpp" />
     <ClInclude Include="Utils\ScopedLock.hpp" />
+    <ClInclude Include="Utils\StringUtils.hpp" />
     <ClInclude Include="Utils\ThreadPool.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -263,6 +264,7 @@
     <ClCompile Include="Utils\Latch.cpp" />
     <ClCompile Include="Utils\MD5.cpp" />
     <ClCompile Include="Utils\OutputStream.cpp" />
+    <ClCompile Include="Utils\StringUtils.cpp" />
     <ClCompile Include="Utils\ThreadPool.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

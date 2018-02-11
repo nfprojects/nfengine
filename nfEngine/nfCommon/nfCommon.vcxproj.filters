@@ -531,6 +531,9 @@
     <ClInclude Include="Math\Matrix4Impl.hpp">
       <Filter>Math\Matrix</Filter>
     </ClInclude>
+    <ClInclude Include="Utils\StringUtils.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -770,6 +773,9 @@
     </ClCompile>
     <ClCompile Include="Math\Matrix4.cpp">
       <Filter>Math\Matrix</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\StringUtils.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
