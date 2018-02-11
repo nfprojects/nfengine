@@ -522,6 +522,9 @@
     <ClInclude Include="Containers\Iterators\ArrayIteratorImpl.hpp">
       <Filter>Containers\Iterators</Filter>
     </ClInclude>
+    <ClInclude Include="Utils\StringUtils.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -761,6 +764,9 @@
     </ClCompile>
     <ClCompile Include="Math\Sphere.cpp">
       <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\StringUtils.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
