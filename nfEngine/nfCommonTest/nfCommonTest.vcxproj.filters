@@ -214,6 +214,9 @@
     <ClCompile Include="TestCases\Math\MathMatrix4Test.cpp">
       <Filter>TestCases\Math</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\Utils\StringUtilsTest.cpp">
+      <Filter>TestCases\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />
