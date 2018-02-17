@@ -34,9 +34,6 @@
     <ClCompile Include="TestCases\Math\MathGeometryTest.cpp">
       <Filter>TestCases\Math</Filter>
     </ClCompile>
-    <ClCompile Include="TestCases\Math\MathMatrixTest.cpp">
-      <Filter>TestCases\Math</Filter>
-    </ClCompile>
     <ClCompile Include="TestCases\Math\MathQuaternionTest.cpp">
       <Filter>TestCases\Math</Filter>
     </ClCompile>
@@ -213,6 +210,9 @@
     </ClCompile>
     <ClCompile Include="TestCases\Containers\StaticArrayTest.cpp">
       <Filter>TestCases\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\Math\MathMatrix4Test.cpp">
+      <Filter>TestCases\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

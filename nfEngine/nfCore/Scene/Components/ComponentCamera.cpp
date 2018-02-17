@@ -59,40 +59,40 @@ void CameraComponent::GetOrtho(OrthoProjectionDesc* desc) const
 void CameraComponent::OnUpdate()
 {
     NFE_ASSERT(GetEntity(), "Updating camera component not attached to an entity");
-    const Matrix& matrix = GetEntity()->GetGlobalTransform().ToMatrix();
+    const Matrix4& matrix = GetEntity()->GetGlobalTransform().ToMatrix();
 
     // TODO get velocity from body component
     Update(matrix, Vector4(), Vector4());
 }
 
-void CameraComponent::Update(const Matrix& matrix, const Vector4& velocity, const Vector4& angularVelocity)
+void CameraComponent::Update(const Matrix4& matrix, const Vector4& velocity, const Vector4& angularVelocity)
 {
     // calculate view matrix
-    mViewMatrix = Matrix::MakeLookTo(matrix.r[3], matrix.r[2], matrix.r[1]);
+    mViewMatrix = Matrix4::MakeLookTo(matrix.r[3], matrix.r[2], matrix.r[1]);
     mViewMatrixInv = mViewMatrix.Inverted();
 
     // calculate projection matrix
     if (mProjMode == ProjectionMode::Perspective)
     {
-        mProjMatrix = Matrix::MakePerspective(mPerspective.aspectRatio, mPerspective.FoV,
+        mProjMatrix = Matrix4::MakePerspective(mPerspective.aspectRatio, mPerspective.FoV,
                                               mPerspective.farDist, mPerspective.nearDist);
     }
     else
     {
-        mProjMatrix = Matrix::MakeOrtho(mOrtho.left, mOrtho.right, mOrtho.bottom, mOrtho.top,
+        mProjMatrix = Matrix4::MakeOrtho(mOrtho.left, mOrtho.right, mOrtho.bottom, mOrtho.top,
                                         mOrtho.nearDist, mOrtho.farDist);
     }
     mProjMatrixInv = mProjMatrix.Inverted();
 
 
     //calculate secondary view matrix for motion blur
-    Matrix rotMatrix = Matrix::MakeRotationNormal(angularVelocity, 0.01f);
-    Matrix secondaryCameraMatrix;
+    Matrix4 rotMatrix = Matrix4::MakeRotationNormal(angularVelocity, 0.01f);
+    Matrix4 secondaryCameraMatrix;
     secondaryCameraMatrix.r[0] = rotMatrix.LinearCombination3(matrix.r[0]);
     secondaryCameraMatrix.r[1] = rotMatrix.LinearCombination3(matrix.r[1]);
     secondaryCameraMatrix.r[2] = rotMatrix.LinearCombination3(matrix.r[2]);
     secondaryCameraMatrix.r[3] = (Vector4)matrix.r[3] + velocity * 0.01f;
-    Matrix secondaryViewMatrix = Matrix::MakeLookTo(secondaryCameraMatrix.r[3],
+    Matrix4 secondaryViewMatrix = Matrix4::MakeLookTo(secondaryCameraMatrix.r[3],
                                                     secondaryCameraMatrix.r[2],
                                                     secondaryCameraMatrix.r[1]);
     mSecondaryProjViewMatrix = secondaryViewMatrix * mProjMatrix;
@@ -141,7 +141,7 @@ void CameraComponent::Update(const Matrix& matrix, const Vector4& velocity, cons
     mFrustum.CalculatePlanes();
 }
 
-void CameraComponent::SplitFrustum(const Matrix& matrix, float zn, float zf, Frustum* frustum) const
+void CameraComponent::SplitFrustum(const Matrix4& matrix, float zn, float zf, Frustum* frustum) const
 {
     Vector4 xAxis, yAxis, zAxis;
     Vector4 pos = matrix.GetRow(3);

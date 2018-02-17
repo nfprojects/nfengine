@@ -9,7 +9,7 @@
 #include "../Core.hpp"
 #include "Resource.hpp"
 
-#include "nfCommon/Math/Matrix.hpp"
+#include "nfCommon/Math/Matrix4.hpp"
 
 
 //predeclarations
@@ -23,7 +23,7 @@ NFE_ALIGN(16)
 struct CompoundShapeChild
 {
     btCollisionShape* pShape;
-    Math::Matrix matrix;
+    Math::Matrix4 matrix;
 };
 
 class CORE_API CollisionShape : public ResourceBase
@@ -52,7 +52,7 @@ public:
     bool LoadFromFile(const char* pPath);
 
     // Add box shape
-    bool AddBox(const Math::Vector4& halfSize, const Math::Matrix& matrix);
+    bool AddBox(const Math::Vector4& halfSize, const Math::Matrix4& matrix);
 
     // Add cylinder shape
     bool AddCylinder(float h, float r);

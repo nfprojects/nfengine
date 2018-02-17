@@ -1,11 +1,11 @@
 /**
  * @file
  * @author Witek902 (witek902@gmail.com)
- * @brief  FPU-specific Matrix function definitions.
+ * @brief  FPU-specific Matrix4 function definitions.
  */
 
 #include "PCH.hpp"
-#include "../Matrix.hpp"
+#include "../Matrix4.hpp"
 
 
 #ifndef NFE_USE_SSE
@@ -13,9 +13,9 @@
 namespace NFE {
 namespace Math {
 
-Matrix Matrix::MakeRotationNormal(const Vector4& normalAxis, float angle)
+Matrix4 Matrix4::MakeRotationNormal(const Vector4& normalAxis, float angle)
 {
-    Matrix result;
+    Matrix4 result;
 
     float x = normalAxis[0];
     float y = normalAxis[1];
@@ -44,7 +44,7 @@ Matrix Matrix::MakeRotationNormal(const Vector4& normalAxis, float angle)
     return result;
 }
 
-Matrix Matrix::Inverted() const
+Matrix4 Matrix4::Inverted() const
 {
     float inv[16], det;
 
@@ -100,7 +100,7 @@ Matrix Matrix::Inverted() const
 
     det = f[0] * inv[0] + f[1] * inv[4] + f[2] * inv[8] + f[3] * inv[12];
 
-    return Matrix({inv[0],  inv[1],  inv[2],  inv[3],
+    return Matrix4({inv[0],  inv[1],  inv[2],  inv[3],
                    inv[4],  inv[5],  inv[6],  inv[7],
                    inv[8],  inv[9],  inv[10], inv[11],
                    inv[12], inv[13], inv[14], inv[15]}) / det;

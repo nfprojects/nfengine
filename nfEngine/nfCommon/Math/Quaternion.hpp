@@ -8,7 +8,8 @@
 
 #include "Math.hpp"
 #include "Vector4.hpp"
-#include "Matrix.hpp"
+#include "Matrix3.hpp"
+#include "Matrix4.hpp"
 
 
 namespace NFE {
@@ -76,7 +77,8 @@ struct NFE_ALIGN(16) Quaternion final
      * @note Only 3x3 is considered.
      * @return Quaternion representing the same rotation as input matrix.
      */
-    NFCOMMON_API static Quaternion FromMatrix(const Matrix& m);
+    NFCOMMON_API static Quaternion FromMatrix(const Matrix3& m);
+    NFCOMMON_API static Quaternion FromMatrix(const Matrix4& m);
 
     /**
      * Create quaternion from Euler angles.
@@ -132,7 +134,8 @@ struct NFE_ALIGN(16) Quaternion final
      * @note Quaternion must be normalized.
      * @return Matrix representing the same rotation as input quaternion.
      */
-    NFCOMMON_API Matrix ToMatrix() const;
+    NFCOMMON_API Matrix3 ToMatrix3() const;
+    NFCOMMON_API Matrix4 ToMatrix4() const;
 
     /**
      * Convert quaternion to Euler angles.

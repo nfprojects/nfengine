@@ -51,13 +51,13 @@ public:
     void OnLeave(DebugRendererContext* context) override;
 
     void SetTarget(DebugRendererContext* context, const RenderTargetPtr& target);
-    void SetCamera(DebugRendererContext* context, const Matrix& viewMatrix, const Matrix& projMatrix);
+    void SetCamera(DebugRendererContext* context, const Matrix4& viewMatrix, const Matrix4& projMatrix);
     void DrawLine(DebugRendererContext* context, const Vector4& A, const Vector4& B, const uint32 color);
     void DrawLine(DebugRendererContext* context, const Float3& A, const Float3& B, const uint32 color);
     void DrawBox(DebugRendererContext* context, const Box& box, const uint32 color);
     void DrawFilledBox(DebugRendererContext* context, const Box& box, const uint32 color);
     void DrawFrustum(DebugRendererContext* context, const Frustum& frustum, const uint32 color);
-    void DrawMesh(DebugRendererContext* context, const Resource::Mesh* mesh, const Matrix& matrix);
+    void DrawMesh(DebugRendererContext* context, const Resource::Mesh* mesh, const Matrix4& matrix);
 };
 
 } // namespace Renderer

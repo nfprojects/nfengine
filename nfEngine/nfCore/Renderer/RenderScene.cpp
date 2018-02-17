@@ -250,15 +250,15 @@ void RenderScene::RenderOmniShadowMap(const Common::TaskContext& context, const 
 
     // TODO: include "transform" rotation
     const Vector4& position = lightProxy->desc.transform.GetRow(3);
-    Matrix matrix = Matrix(xVectors[face], yVectors[face], zVectors[face], position);
+    Matrix4 matrix = Matrix4(xVectors[face], yVectors[face], zVectors[face], position);
 
     // calculate frustum, view and projection matrices
     const float nearDistance = 0.01f; // TODO this should be adjustable
     const float farDistance = lightProxy->desc.omni.radius;
     const float cutoff = Constants::pi<float> / 2.0f;
     const Frustum frustum = Frustum::ConstructForPerspective(matrix, nearDistance, farDistance, cutoff, 1.0f);
-    const Matrix viewMatrix = Matrix::MakeLookTo(matrix.GetRow(3), matrix.GetRow(2), matrix.GetRow(1));
-    const Matrix projMatrix = Matrix::MakePerspective(1.0f, cutoff, farDistance, nearDistance);
+    const Matrix4 viewMatrix = Matrix4::MakeLookTo(matrix.GetRow(3), matrix.GetRow(2), matrix.GetRow(1));
+    const Matrix4 projMatrix = Matrix4::MakePerspective(1.0f, cutoff, farDistance, nearDistance);
     // TODO write separate versions of the functions above that have cutoff value hardcoded to 90 degrees
     // (to avoid costly trigonometric operations)
 

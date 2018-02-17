@@ -12,7 +12,7 @@
 
 #include "nfCommon/Memory/Aligned.hpp"
 #include "nfCommon/Math/Vector4.hpp"
-#include "nfCommon/Math/Matrix.hpp"
+#include "nfCommon/Math/Matrix4.hpp"
 
 
 namespace NFE {

@@ -133,7 +133,7 @@ bool PhysicsScene::UpdateBodyProxy(const ProxyID proxyID, const BodyProxyInfo& n
     bool requiresActivation = false;
 
     // handle transform change
-    if (!Matrix::Equal(bodyProxy.info.transform, newInfo.transform, NFE_MATH_EPSILON))
+    if (!Matrix4::Equal(bodyProxy.info.transform, newInfo.transform, NFE_MATH_EPSILON))
     {
         // update new motion state
         btTransform bodyTransform;
@@ -198,7 +198,7 @@ void PhysicsScene::Update(float dt)
                 btTransform bodyTransform;
                 proxy.rigidBody->getMotionState()->getWorldTransform(bodyTransform);
 
-                Matrix matrix;
+                Matrix4 matrix;
                 bodyTransform.getOpenGLMatrix(matrix.f);
                 proxy.info.transform = matrix;
 
