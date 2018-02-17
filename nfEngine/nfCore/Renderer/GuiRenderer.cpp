@@ -26,7 +26,7 @@ const int INDEX_BUFFER_HYSTERESIS = 10000;
 
 struct GlobalCBuffer
 {
-    Matrix projMatrix;
+    Matrix4 projMatrix;
 };
 
 } // namespace
@@ -176,7 +176,7 @@ void GuiRenderer::SetTarget(GuiRendererContext* context, const RenderTargetPtr& 
     GlobalCBuffer cbuffer;
     int width, height;
     target->GetDimensions(width, height);
-    cbuffer.projMatrix = Matrix::MakeOrtho(0.0f, static_cast<float>(width),
+    cbuffer.projMatrix = Matrix4::MakeOrtho(0.0f, static_cast<float>(width),
                                            static_cast<float>(height), 0.0f,
                                            -1.0f, 1.0f);
 

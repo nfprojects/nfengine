@@ -124,7 +124,7 @@ void BodyComponent::SetMass(float mass)
     // TODO set mass
 }
 
-void BodyComponent::OnBodyUpdateTransform(const Math::Matrix& newTransform)
+void BodyComponent::OnBodyUpdateTransform(const Math::Matrix4& newTransform)
 {
     const Math::Transform transform = Math::Transform::FromMatrix(newTransform);
     GetEntity()->SetGlobalTransform(transform);
@@ -145,7 +145,7 @@ void BodyComponent::CreatePhysicsProxy()
     if (!GetEntity())
         return;
 
-    const auto updateCallback = [this](const Math::Matrix& newTransform) { OnBodyUpdateTransform(newTransform); };
+    const auto updateCallback = [this](const Math::Matrix4& newTransform) { OnBodyUpdateTransform(newTransform); };
 
     Physics::BodyProxyInfo proxyInfo;
     proxyInfo.collisionShape = mCollisionShape;
@@ -154,7 +154,7 @@ void BodyComponent::CreatePhysicsProxy()
     proxyInfo.inertia = Vector4(1.0f, 1.0f, 1.0f); // TODO
     proxyInfo.velocity = mVelocity;
     proxyInfo.angularVelocity = mAngularVelocity;
-    proxyInfo.transformUpdateCallback = [this](const Math::Matrix& newTransform)
+    proxyInfo.transformUpdateCallback = [this](const Math::Matrix4& newTransform)
     {
         OnBodyUpdateTransform(newTransform);
     };

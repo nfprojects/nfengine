@@ -8,7 +8,7 @@
 #include "EquationSolver.hpp"
 #include "Matrix2.hpp"
 #include "Matrix3.hpp"
-#include "Matrix.hpp"
+#include "Matrix4.hpp"
 
 
 namespace NFE {
@@ -168,7 +168,7 @@ bool EquationSolver::SolveLinearEquationsSystem3(const Matrix3& a, const Float3&
     return true;
 }
 
-bool EquationSolver::SolveLinearEquationsSystem4(const Matrix& a, const Vector4& b, Vector4& outX)
+bool EquationSolver::SolveLinearEquationsSystem4(const Matrix4& a, const Vector4& b, Vector4& outX)
 {
     // TODO
 

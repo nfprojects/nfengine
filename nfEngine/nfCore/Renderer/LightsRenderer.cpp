@@ -19,9 +19,9 @@ namespace {
 
 struct NFE_ALIGN(16) LightsGlobalCBuffer
 {
-    Matrix cameraMatrix;
-    Matrix viewMatrix;
-    Matrix projMatrix;
+    Matrix4 cameraMatrix;
+    Matrix4 viewMatrix;
+    Matrix4 projMatrix;
     Vector4 viewportResInv;
     Vector4 screenScale;
 };

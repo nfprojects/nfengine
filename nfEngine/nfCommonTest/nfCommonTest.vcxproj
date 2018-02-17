@@ -193,7 +193,7 @@
     <ClCompile Include="TestCases\Math\MathGeometryTest.cpp" />
     <ClCompile Include="TestCases\Math\MathMatrix2Test.cpp" />
     <ClCompile Include="TestCases\Math\MathMatrix3Test.cpp" />
-    <ClCompile Include="TestCases\Math\MathMatrixTest.cpp" />
+    <ClCompile Include="TestCases\Math\MathMatrix4Test.cpp" />
     <ClCompile Include="TestCases\Math\MathQuaternionTest.cpp" />
     <ClCompile Include="TestCases\Math\MathRandomTest.cpp" />
     <ClCompile Include="TestCases\Math\MathConversionsTest.cpp" />

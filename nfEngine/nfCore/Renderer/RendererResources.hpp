@@ -9,7 +9,7 @@
 #include "../Core.hpp"
 #include "../../Renderers/RendererInterface/Device.hpp"
 
-#include "nfCommon/Math/Matrix.hpp"
+#include "nfCommon/Math/Matrix4.hpp"
 
 
 namespace NFE {
@@ -25,16 +25,16 @@ struct MeshVertex
 
 struct NFE_ALIGN(16) ShadowCameraRenderDesc
 {
-    Math::Matrix viewProjMatrix;
+    Math::Matrix4 viewProjMatrix;
     Math::Vector4 lightPos;
 };
 
 struct NFE_ALIGN(16) CameraRenderDesc
 {
-    Math::Matrix matrix;        // global camera matrix (pos + orientation)
-    Math::Matrix viewMatrix;
-    Math::Matrix projMatrix;
-    Math::Matrix secViewMatrix; // for motionblur
+    Math::Matrix4 matrix;        // global camera matrix (pos + orientation)
+    Math::Matrix4 viewMatrix;
+    Math::Matrix4 projMatrix;
+    Math::Matrix4 secViewMatrix; // for motionblur
 
     Math::Vector4 velocity;
     Math::Vector4 angualrVelocity;

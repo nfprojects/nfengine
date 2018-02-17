@@ -10,7 +10,7 @@
 namespace NFE {
 namespace Math {
 
-Frustum Frustum::ConstructForPerspective(const Matrix& matrix, float nearDist, float farDist, float cutoff, float aspect)
+Frustum Frustum::ConstructForPerspective(const Matrix4& matrix, float nearDist, float farDist, float cutoff, float aspect)
 {
     const Vector4 pos = matrix.GetRow(3) & VECTOR_MASK_XYZ;
     const float scale = tanf(cutoff / 2.0f);

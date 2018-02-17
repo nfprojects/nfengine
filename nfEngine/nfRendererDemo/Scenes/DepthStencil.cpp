@@ -9,7 +9,7 @@
 #include "DepthStencil.hpp"
 #include "../Common.hpp"
 
-#include "nfCommon/Math/Matrix.hpp"
+#include "nfCommon/Math/Matrix4.hpp"
 
 #include <vector>
 #include <functional>
@@ -23,7 +23,7 @@ namespace {
 
 struct VertexCBuffer
 {
-    Matrix viewMatrix;
+    Matrix4 viewMatrix;
 };
 
 } // namespace
@@ -292,15 +292,15 @@ void DepthStencilScene::Draw(float dt)
     if (mAngle > 2.0f * Constants::pi<float>)
         mAngle -= 2.0f * Constants::pi<float>;
 
-    Matrix modelMatrix = Matrix::MakeRotationNormal(Vector4(0.0f, 1.0f, 0.0f), mAngle);
-    Matrix viewMatrix = Matrix::MakeLookTo(Vector4(6.0f, 1.2f, 0.0f), Vector4(-2.0f, -1.0f, 0.0f),
+    Matrix4 modelMatrix = Matrix4::MakeRotationNormal(Vector4(0.0f, 1.0f, 0.0f), mAngle);
+    Matrix4 viewMatrix = Matrix4::MakeLookTo(Vector4(6.0f, 1.2f, 0.0f), Vector4(-2.0f, -1.0f, 0.0f),
                                      Vector4(0.0f, 1.0f, 0.0f));
-    Matrix projMatrix = Matrix::MakePerspective(static_cast<float>(WINDOW_WIDTH) /
+    Matrix4 projMatrix = Matrix4::MakePerspective(static_cast<float>(WINDOW_WIDTH) /
                                                 static_cast<float>(WINDOW_HEIGHT),
                                                 DegToRad(70.0f), 100.0f, 0.1f);
 
-    Matrix reflectionMatrix = Matrix::MakeScaling(Vector4(1.0f, -1.0f, 1.0f)) *
-                              Matrix::MakeTranslation3(Vector4(0.0f, -2.0f, 0.0f));
+    Matrix4 reflectionMatrix = Matrix4::MakeScaling(Vector4(1.0f, -1.0f, 1.0f)) *
+                              Matrix4::MakeTranslation3(Vector4(0.0f, -2.0f, 0.0f));
 
     mCommandBuffer->Begin();
     mCommandBuffer->SetViewport(0.0f, static_cast<float>(WINDOW_WIDTH), 0.0f,

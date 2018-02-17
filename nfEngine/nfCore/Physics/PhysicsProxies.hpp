@@ -9,7 +9,7 @@
 #include "../Core.hpp"
 
 #include "nfCommon/Math/Vector4.hpp"
-#include "nfCommon/Math/Matrix.hpp"
+#include "nfCommon/Math/Matrix4.hpp"
 
 #include <functional>
 
@@ -19,7 +19,7 @@ namespace Physics {
 
 
 // TODO translation + orientation
-using BodyProxyTransformUpdateCallback = std::function<void(const Math::Matrix&)>;
+using BodyProxyTransformUpdateCallback = std::function<void(const Math::Matrix4&)>;
 using BodyProxyVelocityUpdateCallback = std::function<void(const Math::Vector4&, const Math::Vector4&)>;
 using ProxyID = uint32;
 
@@ -32,7 +32,7 @@ static constexpr ProxyID InvalidPhysicsProxyID = std::numeric_limits<ProxyID>::m
 struct NFE_ALIGN(16) BodyProxyInfo
 {
     // body transformation matrix
-    Math::Matrix transform;
+    Math::Matrix4 transform;
 
     // moment of inertia vector
     Math::Vector4 inertia;

@@ -100,7 +100,7 @@ Quaternion Quaternion::FromAngles(float pitch, float yaw, float roll)
     return Quaternion(term0 * term1 * term2 + term3 * term4 * term5);
 }
 
-Quaternion Quaternion::FromMatrix(const Matrix& m)
+Quaternion Quaternion::FromMatrix(const Matrix3& m)
 {
     const Vector4 x = Vector4::Splat(m.m[0][0]).ChangeSign<false, true, true, false>();
     const Vector4 y = Vector4::Splat(m.m[1][1]).ChangeSign<true, false, true, false>();
@@ -115,6 +115,11 @@ Quaternion Quaternion::FromMatrix(const Matrix& m)
     q.q.y = CopySign(q.q.y, m.m[2][0] - m.m[0][2]);
     q.q.z = CopySign(q.q.z, m.m[0][1] - m.m[1][0]);
     return q;
+}
+
+Quaternion Quaternion::FromMatrix(const Matrix4& m)
+{
+    return FromMatrix(m.ToMatrix3());
 }
 
 Vector4 Quaternion::TransformVector(const Vector4& v) const
@@ -150,14 +155,37 @@ void Quaternion::ToAxis(Vector4& outAxis, float& outAngle) const
     outAxis.w = 0.0f;
 }
 
-Matrix Quaternion::ToMatrix() const
+Matrix3 Quaternion::ToMatrix3() const
 {
     float xx = q.x * q.x, yy = q.y * q.y, zz = q.z * q.z;
     float xy = q.x * q.y, xz = q.x * q.z;
     float yz = q.y * q.z, wx = q.w * q.x;
     float wy = q.w * q.y, wz = q.w * q.z;
 
-    Matrix m;
+    Matrix3 m;
+    m.m[0][0] = 1.0f - 2.0f * (yy + zz);
+    m.m[0][1] = 2.0f * (xy + wz);
+    m.m[0][2] = 2.0f * (xz - wy);
+
+    m.m[1][0] = 2.0f * (xy - wz);
+    m.m[1][1] = 1.0f - 2.0f * (xx + zz);
+    m.m[1][2] = 2.0f * (yz + wx);
+
+    m.m[2][0] = 2.0f * (xz + wy);
+    m.m[2][1] = 2.0f * (yz - wx);
+    m.m[2][2] = 1.0f - 2.0f * (xx + yy);
+
+    return m;
+}
+
+Matrix4 Quaternion::ToMatrix4() const
+{
+    float xx = q.x * q.x, yy = q.y * q.y, zz = q.z * q.z;
+    float xy = q.x * q.y, xz = q.x * q.z;
+    float yz = q.y * q.z, wx = q.w * q.x;
+    float wy = q.w * q.y, wz = q.w * q.z;
+
+    Matrix4 m;
     m.m[0][0] = 1.0f - 2.0f * ( yy + zz );
     m.m[0][1] = 2.0f * ( xy + wz );
     m.m[0][2] = 2.0f * ( xz - wy );

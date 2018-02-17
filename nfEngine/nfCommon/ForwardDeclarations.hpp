@@ -108,7 +108,7 @@ class RayBoxSegment;
 class Random;
 class Matrix2;
 class Matrix3;
-class Matrix;
+class Matrix4;
 
 } // namespace Math
 
