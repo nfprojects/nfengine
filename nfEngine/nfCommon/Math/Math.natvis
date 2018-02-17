@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+    <!-- Float2 -->
+    <Type Name="NFE::Math::Float2">
+        <DisplayString>Float2 {{x={x} y={y}}}</DisplayString>
+        <Expand>
+            <Item Name="x" ExcludeView="simple">x</Item>
+            <Item Name="y" ExcludeView="simple">y</Item>
+        </Expand>
+    </Type>
+
+    <!-- Float3 -->
+    <Type Name="NFE::Math::Float3">
+        <DisplayString>Float3 {{x={x} y={y} z={z}}}</DisplayString>
+        <Expand>
+            <Item Name="x" ExcludeView="simple">x</Item>
+            <Item Name="y" ExcludeView="simple">y</Item>
+            <Item Name="z" ExcludeView="simple">z</Item>
+        </Expand>
+    </Type>
+
+    <!-- Float4 -->
+    <Type Name="NFE::Math::Float4">
+        <DisplayString>Float4 {{x={x} y={y} z={z} w={w}}}</DisplayString>
+        <Expand>
+            <Item Name="x" ExcludeView="simple">x</Item>
+            <Item Name="y" ExcludeView="simple">y</Item>
+            <Item Name="z" ExcludeView="simple">z</Item>
+            <Item Name="w" ExcludeView="simple">w</Item>
+        </Expand>
+    </Type>
+
+    <!-- Vector -->
+    <Type Name="NFE::Math::Vector">
+        <DisplayString>Vector {{x={f[0]} y={f[1]} z={f[2]} w={f[3]}}}</DisplayString>
+        <Expand>
+            <Item Name="x" ExcludeView="simple">f[0]</Item>
+            <Item Name="y" ExcludeView="simple">f[1]</Item>
+            <Item Name="z" ExcludeView="simple">f[2]</Item>
+            <Item Name="w" ExcludeView="simple">f[3]</Item>
+        </Expand>
+    </Type>
+
+    <!-- Matrix2 -->
+    <Type Name="NFE::Math::Matrix2">
+        <DisplayString>Matrix2</DisplayString>
+        <Expand>
+            <Item Name="Row 0" ExcludeView="simple">r[0]</Item>
+            <Item Name="Row 1" ExcludeView="simple">r[1]</Item>
+        </Expand>
+    </Type>
+
+    <!-- Matrix3 -->
+    <Type Name="NFE::Math::Matrix3">
+        <DisplayString>Matrix3</DisplayString>
+        <Expand>
+            <Item Name="Row 0" ExcludeView="simple">r[0]</Item>
+            <Item Name="Row 1" ExcludeView="simple">r[1]</Item>
+            <Item Name="Row 2" ExcludeView="simple">r[2]</Item>
+        </Expand>
+    </Type>
+
+    <!-- Matrix -->
+    <Type Name="NFE::Math::Matrix">
+        <DisplayString>Matrix</DisplayString>
+        <Expand>
+            <Item Name="Row 0" ExcludeView="simple">r[0]</Item>
+            <Item Name="Row 1" ExcludeView="simple">r[1]</Item>
+            <Item Name="Row 2" ExcludeView="simple">r[2]</Item>
+            <Item Name="Row 3" ExcludeView="simple">r[3]</Item>
+        </Expand>
+    </Type>
+
+    <!-- Quaternion -->
+    <Type Name="NFE::Math::Quaternion">
+        <DisplayString>Quaternion {{r={f[3]} i={f[0]} j={f[1]} k={f[2]}}}</DisplayString>
+        <Expand>
+            <Item Name="real" ExcludeView="simple">f[3]</Item>
+            <Item Name="i" ExcludeView="simple">f[0]</Item>
+            <Item Name="j" ExcludeView="simple">f[1]</Item>
+            <Item Name="k" ExcludeView="simple">f[2]</Item>
+        </Expand>
+    </Type>
+
+</AutoVisualizer>

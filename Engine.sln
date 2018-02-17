@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2020
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nfEngine", "nfEngine", "{A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}"
 EndProject
@@ -148,6 +148,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HLSL5", "HLSL5", "{9BA96BF9
 		nfEngine\Shaders\HLSL5\SpotLightPS.hlsl = nfEngine\Shaders\HLSL5\SpotLightPS.hlsl
 		nfEngine\Shaders\HLSL5\SpotLightVS.hlsl = nfEngine\Shaders\HLSL5\SpotLightVS.hlsl
 		nfEngine\Shaders\HLSL5\TonemappingPS.hlsl = nfEngine\Shaders\HLSL5\TonemappingPS.hlsl
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Natvis", "Natvis", "{24032EB4-D975-4601-AA55-4D0ABE656011}"
+	ProjectSection(SolutionItems) = preProject
+		nfEngine\nfCommon\Containers\Containers.natvis = nfEngine\nfCommon\Containers\Containers.natvis
+		nfEngine\nfCommon\Math\Math.natvis = nfEngine\nfCommon\Math\Math.natvis
 	EndProjectSection
 EndProject
 Global

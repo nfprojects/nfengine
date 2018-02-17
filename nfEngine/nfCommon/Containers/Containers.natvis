@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+    <!-- String -->
+    <Type Name="NFE::Common::String">
+        <DisplayString Condition="mInternalData.isExternal==1">{mExternalData.data}</DisplayString>
+        <DisplayString Condition="mInternalData.isExternal==0">{mInternalData.data}</DisplayString>
+        <Expand>
+            <Item Name="Length" ExcludeView="simple">mInternalData.length</Item>
+            <Item Name="External" ExcludeView="simple">mInternalData.isExternal</Item>
+        </Expand>
+    </Type>
+
+    <!-- StringView -->
+    <Type Name="NFE::Common::StringView">
+        <DisplayString>StringView {mData,[mLength]}</DisplayString>
+        <Expand>
+            <Item Name="Length" ExcludeView="simple">mLength</Item>
+        </Expand>
+    </Type>
+
+    <!-- UniquePtr -->
+    <Type Name="NFE::Common::UniquePtr&lt;*,*&gt;">
+        <SmartPointer Usage="Minimal">mPointer</SmartPointer>
+        <DisplayString Condition="mPointer==nullptr">nullptr</DisplayString>
+        <DisplayString Condition="mPointer!=nullptr">UniquePtr {*mPointer}</DisplayString>
+        <Expand>
+            <Item Condition="mPointer!=nullptr" Name="Pointee">mPointer</Item>
+        </Expand>
+    </Type>
+
+    <!-- SharedPtr -->
+    <Type Name="NFE::Common::SharedPtr&lt;*&gt;">
+        <SmartPointer Usage="Minimal">mPointer</SmartPointer>
+        <DisplayString Condition="mPointer == nullptr">nullptr</DisplayString>
+        <DisplayString Condition="mPointer != nullptr">SharedPtr {*mPointer}</DisplayString>
+        <Expand>
+            <Item Condition="mPointer!=nullptr" Name="Pointee">mPointer</Item>
+            <Item Condition="mPointer!=nullptr" Name="Strong Refs">mData->mStrongRefs</Item>
+            <Item Condition="mPointer!=nullptr" Name="Weak Refs">mData->mWeakRefs</Item>
+            <Item Condition="mPointer!=nullptr" Name="Deleter">((SharedBlockType*)mData)->mDeleter</Item>
+        </Expand>
+    </Type>
+
+    <!-- ArrayView -->
+    <Type Name="NFE::Common::ArrayView&lt;*&gt;">
+        <DisplayString>ArrayView {{ {mSize} elements }}</DisplayString>
+        <Expand>
+            <Item Name="Size" ExcludeView="simple">mSize</Item>
+            <ArrayItems>
+                <Size>mSize</Size>
+                <ValuePointer>mElements</ValuePointer>
+            </ArrayItems>
+        </Expand>
+    </Type>
+
+    <!-- DynArray -->
+    <Type Name="NFE::Common::DynArray&lt;*&gt;">
+        <DisplayString>DynArray {{ size={mSize}/{mAllocSize} }}</DisplayString>
+        <Expand>
+            <Item Name="Size" ExcludeView="simple">mSize</Item>
+            <Item Name="Capacity" ExcludeView="simple">mAllocSize</Item>
+            <ArrayItems>
+                <Size>mSize</Size>
+                <ValuePointer>mElements</ValuePointer>
+            </ArrayItems>
+        </Expand>
+    </Type>
+
+    <!-- StaticArray -->
+    <Type Name="NFE::Common::StaticArray&lt;*,*&gt;">
+        <DisplayString>StaticArray {{ size={mSize} }}</DisplayString>
+        <Expand>
+            <Item Name="Size" ExcludeView="simple">mSize</Item>
+            <ArrayItems>
+                <Size>mSize</Size>
+                <ValuePointer>mData</ValuePointer>
+            </ArrayItems>
+        </Expand>
+    </Type>
+
+    <!-- PackedArray -->
+    <Type Name="NFE::Common::PackedArray&lt;*,*&gt;">
+        <DisplayString>PackedArray {{ size={mUsed}/{mSize} }}</DisplayString>
+        <Expand>
+            <Item Name="Size" ExcludeView="simple">mUsed</Item>
+            <Item Name="Capacity" ExcludeView="simple">mSize</Item>
+            <ArrayItems>
+                <Size>mUsed</Size>
+                <ValuePointer>mObjects</ValuePointer>
+            </ArrayItems>
+        </Expand>
+    </Type>
+
+</AutoVisualizer>
