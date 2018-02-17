@@ -13,7 +13,7 @@
 namespace NFE {
 namespace Math {
 
-Matrix& Matrix::Transpose()
+Matrix4& Matrix4::Transpose()
 {
     Vector4& row0 = r[0];
     Vector4& row1 = r[1];
@@ -25,7 +25,7 @@ Matrix& Matrix::Transpose()
     return *this;
 }
 
-Matrix Matrix::Transposed() const
+Matrix4 Matrix4::Transposed() const
 {
     Vector4 row0 = r[0];
     Vector4 row1 = r[1];
@@ -34,7 +34,7 @@ Matrix Matrix::Transposed() const
 
     _MM_TRANSPOSE4_PS(row0, row1, row2, row3);
 
-    return Matrix(row0, row1, row2, row3);
+    return Matrix4(row0, row1, row2, row3);
 }
 
 } // namespace Math

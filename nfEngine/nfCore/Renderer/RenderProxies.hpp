@@ -9,7 +9,7 @@
 #include "../Core.hpp"
 
 #include "nfCommon/Math/Vector4.hpp"
-#include "nfCommon/Math/Matrix.hpp"
+#include "nfCommon/Math/Matrix4.hpp"
 
 
 namespace NFE {
@@ -24,7 +24,7 @@ namespace Renderer {
  */
 struct NFE_ALIGN(16) MeshProxyDesc
 {
-    Math::Matrix transform;
+    Math::Matrix4 transform;
     Math::Vector4 velocity;
     Math::Vector4 angularVelocity;
 
@@ -75,7 +75,7 @@ struct NFE_ALIGN(16) LightProxyDesc
     Math::Vector4 color;
 
     // global transformation matrix
-    Math::Matrix transform;
+    Math::Matrix4 transform;
 
     LightProxyType type;
 

@@ -1,39 +1,39 @@
 /**
  * @file
  * @author Witek902 (witek902@gmail.com)
- * @brief  Matrix inline functions definitions.
+ * @brief  Matrix4 inline functions definitions.
  */
 
 #pragma once
 
-#include "Matrix.hpp"
+#include "Matrix4.hpp"
 
 
 namespace NFE {
 namespace Math {
 
 
-Vector4& Matrix::GetRow(int i)
+Vector4& Matrix4::GetRow(int i)
 {
     return reinterpret_cast<Vector4&>(r[i]);
 }
 
-const Vector4& Matrix::GetRow(int i) const
+const Vector4& Matrix4::GetRow(int i) const
 {
     return reinterpret_cast<const Vector4&>(r[i]);
 }
 
-Vector4& Matrix::operator[] (int i)
+Vector4& Matrix4::operator[] (int i)
 {
     return reinterpret_cast<Vector4&>(r[i]);
 }
 
-const Vector4& Matrix::operator[] (int i) const
+const Vector4& Matrix4::operator[] (int i) const
 {
     return reinterpret_cast<const Vector4&>(r[i]);
 }
 
-Matrix::Matrix()
+Matrix4::Matrix4()
 {
     r[0] = VECTOR_X;
     r[1] = VECTOR_Y;
@@ -41,7 +41,7 @@ Matrix::Matrix()
     r[3] = VECTOR_W;
 }
 
-Matrix::Matrix(const Vector4& r0, const Vector4& r1, const Vector4& r2, const Vector4& r3)
+Matrix4::Matrix4(const Vector4& r0, const Vector4& r1, const Vector4& r2, const Vector4& r3)
 {
     r[0] = r0;
     r[1] = r1;
@@ -49,24 +49,24 @@ Matrix::Matrix(const Vector4& r0, const Vector4& r1, const Vector4& r2, const Ve
     r[3] = r3;
 }
 
-Matrix::Matrix(const std::initializer_list<float>& list)
+Matrix4::Matrix4(const std::initializer_list<float>& list)
 {
     int i = 0;
     for (float x : list)
         f[i++] = x;
 }
 
-Matrix Matrix::operator+ (const Matrix& b) const
+Matrix4 Matrix4::operator+ (const Matrix4& b) const
 {
-    return Matrix(*this) += b;
+    return Matrix4(*this) += b;
 }
 
-Matrix Matrix::operator- (const Matrix& b) const
+Matrix4 Matrix4::operator- (const Matrix4& b) const
 {
-    return Matrix(*this) -= b;
+    return Matrix4(*this) -= b;
 }
 
-Matrix& Matrix::operator+= (const Matrix& b)
+Matrix4& Matrix4::operator+= (const Matrix4& b)
 {
     r[0] += b.r[0];
     r[1] += b.r[1];
@@ -75,7 +75,7 @@ Matrix& Matrix::operator+= (const Matrix& b)
     return *this;
 }
 
-Matrix& Matrix::operator-= (const Matrix& b)
+Matrix4& Matrix4::operator-= (const Matrix4& b)
 {
     r[0] -= b.r[0];
     r[1] -= b.r[1];
@@ -84,17 +84,17 @@ Matrix& Matrix::operator-= (const Matrix& b)
     return *this;
 }
 
-Matrix Matrix::operator* (float b) const
+Matrix4 Matrix4::operator* (float b) const
 {
-    return Matrix(*this) *= b;
+    return Matrix4(*this) *= b;
 }
 
-Matrix Matrix::operator/ (float b) const
+Matrix4 Matrix4::operator/ (float b) const
 {
-    return Matrix(*this) /= b;
+    return Matrix4(*this) /= b;
 }
 
-Matrix& Matrix::operator*= (float b)
+Matrix4& Matrix4::operator*= (float b)
 {
     r[0] *= b;
     r[1] *= b;
@@ -103,7 +103,7 @@ Matrix& Matrix::operator*= (float b)
     return *this;
 }
 
-Matrix& Matrix::operator/= (float b)
+Matrix4& Matrix4::operator/= (float b)
 {
     r[0] /= b;
     r[1] /= b;
@@ -112,7 +112,7 @@ Matrix& Matrix::operator/= (float b)
     return *this;
 }
 
-bool Matrix::operator== (const Matrix& b) const
+bool Matrix4::operator== (const Matrix4& b) const
 {
     int tmp0 = r[0] == b.r[0];
     int tmp1 = r[1] == b.r[1];
@@ -121,42 +121,42 @@ bool Matrix::operator== (const Matrix& b) const
     return (tmp0 && tmp1) & (tmp2 && tmp3);
 }
 
-Matrix& Matrix::Invert()
+Matrix4& Matrix4::Invert()
 {
     *this = Inverted();
     return *this;
 }
 
-Vector4 Matrix::LinearCombination3(const Vector4& a) const
+Vector4 Matrix4::LinearCombination3(const Vector4& a) const
 {
     const Vector4 tmp0 = Vector4::MulAndAdd(a.SplatX(), r[0], a.SplatY() * r[1]);
     const Vector4 tmp1 = Vector4::MulAndAdd(a.SplatZ(), r[2], r[3]);
     return tmp0 + tmp1;
 }
 
-Vector4 Matrix::LinearCombination4(const Vector4& a) const
+Vector4 Matrix4::LinearCombination4(const Vector4& a) const
 {
     const Vector4 tmp0 = Vector4::MulAndAdd(a.SplatX(), r[0], a.SplatY() * r[1]);
     const Vector4 tmp1 = Vector4::MulAndAdd(a.SplatZ(), r[2], a.SplatW() * r[3]);
     return tmp0 + tmp1;
 }
 
-Matrix Matrix::Abs(const Matrix& m)
+Matrix4 Matrix4::Abs(const Matrix4& m)
 {
-    return Matrix(Vector4::Abs(m[0]), Vector4::Abs(m[1]), Vector4::Abs(m[2]), Vector4::Abs(m[3]));
+    return Matrix4(Vector4::Abs(m[0]), Vector4::Abs(m[1]), Vector4::Abs(m[2]), Vector4::Abs(m[3]));
 }
 
-bool Matrix::Equal(const Matrix& m1, const Matrix& m2, float epsilon)
+bool Matrix4::Equal(const Matrix4& m1, const Matrix4& m2, float epsilon)
 {
-    Matrix diff = Abs(m1 - m2);
+    Matrix4 diff = Abs(m1 - m2);
     Vector4 epsilonV = Vector4::Splat(epsilon);
     return ((diff[0] < epsilonV) && (diff[1] < epsilonV)) &&
         ((diff[2] < epsilonV) && (diff[3] < epsilonV));
 }
 
-Matrix Matrix::MakeTranslation3(const Vector4& pos)
+Matrix4 Matrix4::MakeTranslation3(const Vector4& pos)
 {
-    Matrix m;
+    Matrix4 m;
     m.r[0] = VECTOR_X;
     m.r[1] = VECTOR_Y;
     m.r[2] = VECTOR_Z;
@@ -164,7 +164,7 @@ Matrix Matrix::MakeTranslation3(const Vector4& pos)
     return m;
 }
 
-Vector4 operator* (const Vector4& vector, const Matrix& m)
+Vector4 operator* (const Vector4& vector, const Matrix4& m)
 {
     return m.LinearCombination4(vector);
 }

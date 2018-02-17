@@ -324,7 +324,7 @@ void GeometryRenderer::Draw(GeometryRendererContext* context, const RenderComman
 
             for (size_t j = 0; j < instancesToBuffer; j++)
             {
-                const Matrix tmpMatrix = buffer.commands[j + i].matrix.Transposed();
+                const Matrix4 tmpMatrix = buffer.commands[j + i].matrix.Transposed();
                 context->instanceData[j].worldMatrix[0] = tmpMatrix.r[0];
                 context->instanceData[j].worldMatrix[1] = tmpMatrix.r[1];
                 context->instanceData[j].worldMatrix[2] = tmpMatrix.r[2];

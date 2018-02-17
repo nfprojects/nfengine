@@ -1,11 +1,11 @@
 /**
  * @file
  * @author Witek902 (witek902@gmail.com)
- * @brief  Matrix function definitions.
+ * @brief  Matrix4 function definitions.
  */
 
 #include "PCH.hpp"
-#include "../Matrix.hpp"
+#include "../Matrix4.hpp"
 
 
 #ifdef NFE_USE_SSE
@@ -13,9 +13,9 @@
 namespace NFE {
 namespace Math {
 
-Matrix Matrix::MakeRotationNormal(const Vector4& normalAxis, float angle)
+Matrix4 Matrix4::MakeRotationNormal(const Vector4& normalAxis, float angle)
 {
-    Matrix result;
+    Matrix4 result;
 
     float sinAngle = sinf(angle);
     float cosAngle = cosf(angle);
@@ -62,9 +62,9 @@ Matrix Matrix::MakeRotationNormal(const Vector4& normalAxis, float angle)
     return result;
 }
 
-Matrix Matrix::Inverted() const
+Matrix4 Matrix4::Inverted() const
 {
-    Matrix MT = Transposed();
+    Matrix4 MT = Transposed();
     Vector4 V00 = _mm_shuffle_ps(MT.r[2], MT.r[2], _MM_SHUFFLE(1, 1, 0, 0));
     Vector4 V10 = _mm_shuffle_ps(MT.r[3], MT.r[3], _MM_SHUFFLE(3, 2, 3, 2));
     Vector4 V01 = _mm_shuffle_ps(MT.r[0], MT.r[0], _MM_SHUFFLE(1, 1, 0, 0));
@@ -172,7 +172,7 @@ Matrix Matrix::Inverted() const
     Vector4 vTemp = Vector4::Dot4V(C0, MT.r[0]);
     vTemp = _mm_div_ps(VECTOR_ONE, vTemp);
 
-    return Matrix(_mm_mul_ps(C0, vTemp),
+    return Matrix4(_mm_mul_ps(C0, vTemp),
                   _mm_mul_ps(C2, vTemp),
                   _mm_mul_ps(C4, vTemp),
                   _mm_mul_ps(C6, vTemp));

@@ -100,7 +100,7 @@ Quaternion Quaternion::FromAngles(float pitch, float yaw, float roll)
     return Quaternion(term0 * term1 * term2 + term3 * term4 * term5);
 }
 
-Quaternion Quaternion::FromMatrix(const Matrix& m)
+Quaternion Quaternion::FromMatrix(const Matrix4& m)
 {
     const Vector4 x = Vector4::Splat(m.m[0][0]).ChangeSign<false, true, true, false>();
     const Vector4 y = Vector4::Splat(m.m[1][1]).ChangeSign<true, false, true, false>();
@@ -150,14 +150,14 @@ void Quaternion::ToAxis(Vector4& outAxis, float& outAngle) const
     outAxis.w = 0.0f;
 }
 
-Matrix Quaternion::ToMatrix() const
+Matrix4 Quaternion::ToMatrix() const
 {
     float xx = q.x * q.x, yy = q.y * q.y, zz = q.z * q.z;
     float xy = q.x * q.y, xz = q.x * q.z;
     float yz = q.y * q.z, wx = q.w * q.x;
     float wy = q.w * q.y, wz = q.w * q.z;
 
-    Matrix m;
+    Matrix4 m;
     m.m[0][0] = 1.0f - 2.0f * ( yy + zz );
     m.m[0][1] = 2.0f * ( xy + wz );
     m.m[0][2] = 2.0f * ( xz - wy );

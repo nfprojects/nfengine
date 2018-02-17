@@ -1,7 +1,7 @@
 /**
  * @file
  * @author Witek902 (witek902@gmail.com)
- * @brief  Matrix class declaration.
+ * @brief  Matrix4 class declaration.
  */
 
 #pragma once
@@ -17,7 +17,7 @@ namespace Math {
 /**
  * 4x4 matrix
  */
-class NFE_ALIGN(16) Matrix final
+class NFE_ALIGN(16) Matrix4 final
 {
 public:
     union
@@ -30,17 +30,17 @@ public:
     /**
      * Default constructor - create identity matrix.
      */
-    NFE_INLINE Matrix();
+    NFE_INLINE Matrix4();
 
     /**
      * Create matrix from rows.
      */
-    NFE_INLINE explicit Matrix(const Vector4& r0, const Vector4& r1, const Vector4& r2, const Vector4& r3);
+    NFE_INLINE explicit Matrix4(const Vector4& r0, const Vector4& r1, const Vector4& r2, const Vector4& r3);
 
     /**
      * Create matrix from element values.
      */
-    NFE_INLINE explicit Matrix(const std::initializer_list<float>& list);
+    NFE_INLINE explicit Matrix4(const std::initializer_list<float>& list);
 
     /**
      * Access element (read-only).
@@ -57,46 +57,46 @@ public:
     /**
      * Offset matrix element by the same value.
      */
-    NFE_INLINE Matrix operator+ (const Matrix& b) const;
-    NFE_INLINE Matrix operator- (const Matrix& b) const;
-    NFE_INLINE Matrix& operator+= (const Matrix& b);
-    NFE_INLINE Matrix& operator-= (const Matrix& b);
+    NFE_INLINE Matrix4 operator+ (const Matrix4& b) const;
+    NFE_INLINE Matrix4 operator- (const Matrix4& b) const;
+    NFE_INLINE Matrix4& operator+= (const Matrix4& b);
+    NFE_INLINE Matrix4& operator-= (const Matrix4& b);
 
     /**
      * Matrix scaling.
      */
-    NFE_INLINE Matrix operator* (float b) const;
-    NFE_INLINE Matrix operator/ (float b) const;
-    NFE_INLINE Matrix& operator*= (float b);
-    NFE_INLINE Matrix& operator/= (float b);
+    NFE_INLINE Matrix4 operator* (float b) const;
+    NFE_INLINE Matrix4 operator/ (float b) const;
+    NFE_INLINE Matrix4& operator*= (float b);
+    NFE_INLINE Matrix4& operator/= (float b);
 
     /**
      * Matrix-matrix multiplication.
      */
-    NFCOMMON_API Matrix operator* (const Matrix& b) const;
-    NFCOMMON_API Matrix& operator*= (const Matrix& b);
+    NFCOMMON_API Matrix4 operator* (const Matrix4& b) const;
+    NFCOMMON_API Matrix4& operator*= (const Matrix4& b);
 
     /**
      * Returns true if all the corresponding elements are (exactly) equal.
      */
-    NFE_INLINE bool operator== (const Matrix& b) const;
+    NFE_INLINE bool operator== (const Matrix4& b) const;
 
     /**
      * Calculate matrix inverse.
      */
-    NFCOMMON_API Matrix Inverted() const;
+    NFCOMMON_API Matrix4 Inverted() const;
 
     /**
      * Calculate matrix inverse.
      */
-    NFE_INLINE Matrix& Invert();
+    NFE_INLINE Matrix4& Invert();
 
     /**
      * Create rotation matrix.
      * @param normalAxis Normalized axis.
      * @param angle Rotation angle (in radians).
      */
-    NFCOMMON_API static Matrix MakeRotationNormal(const Vector4& normalAxis, float angle);
+    NFCOMMON_API static Matrix4 MakeRotationNormal(const Vector4& normalAxis, float angle);
 
     /**
      * Create perspective projection matrix.
@@ -104,7 +104,7 @@ public:
      * @param fovY Vertical field of view angle.
      * @param farZ,nearZ Far and near distances.
      */
-    NFCOMMON_API static Matrix MakePerspective(float aspect, float fovY, float farZ, float nearZ);
+    NFCOMMON_API static Matrix4 MakePerspective(float aspect, float fovY, float farZ, float nearZ);
 
     /**
      * Create orthographic projection matrix.
@@ -112,13 +112,13 @@ public:
      * @param bottom,top Y-axis boundaries.
      * @param zNear,zFar Z-axis boundaries.
      */
-    NFCOMMON_API static Matrix MakeOrtho(float left, float right, float bottom, float top, float zNear, float zFar);
+    NFCOMMON_API static Matrix4 MakeOrtho(float left, float right, float bottom, float top, float zNear, float zFar);
 
     /**
      * Create scaling matrix
      * @param scale Scaling factor (only XYZ components are taken into account).
      */
-    NFCOMMON_API static Matrix MakeScaling(const Vector4& scale);
+    NFCOMMON_API static Matrix4 MakeScaling(const Vector4& scale);
 
     /**
      * Create view matrix.
@@ -126,7 +126,7 @@ public:
      * @param eyeDirection Observer's direction.
      * @param upDirection  "Up" vector.
      */
-    NFCOMMON_API static Matrix MakeLookTo(const Vector4& eyePosition, const Vector4& eyeDirection, const Vector4& upDirection);
+    NFCOMMON_API static Matrix4 MakeLookTo(const Vector4& eyePosition, const Vector4& eyeDirection, const Vector4& upDirection);
 
     /**
      * Multiply a 3D vector by a 4x4 matrix (affine transform).
@@ -143,34 +143,34 @@ public:
     /**
      * Calculate matrix containing absolute values of another.
      */
-    NFE_INLINE static Matrix Abs(const Matrix& m);
+    NFE_INLINE static Matrix4 Abs(const Matrix4& m);
 
     /**
      * Check if two matrices are (almost) equal.
      */
-    NFE_INLINE static bool Equal(const Matrix& m1, const Matrix& m2, float epsilon);
+    NFE_INLINE static bool Equal(const Matrix4& m1, const Matrix4& m2, float epsilon);
 
     /**
      * Create matrix representing a translation by 3D vector.
      */
-    NFE_INLINE static Matrix MakeTranslation3(const Vector4& pos);
+    NFE_INLINE static Matrix4 MakeTranslation3(const Vector4& pos);
 
     /**
      * Calculate transpose matrix.
      */
-    NFE_INLINE Matrix& Transpose();
+    NFE_INLINE Matrix4& Transpose();
 
     /**
      * Calculate transpose matrix.
      */
-    NFE_INLINE Matrix Transposed() const;
+    NFE_INLINE Matrix4 Transposed() const;
 };
 
 
 /**
- * Alias of @p Matrix::LinearCombination4 function.
+ * Alias of @p Matrix4::LinearCombination4 function.
  */
-NFE_INLINE Vector4 operator* (const Vector4& vector, const Matrix& m);
+NFE_INLINE Vector4 operator* (const Vector4& vector, const Matrix4& m);
 
 
 } // namespace Math
@@ -178,12 +178,12 @@ NFE_INLINE Vector4 operator* (const Vector4& vector, const Matrix& m);
 
 
 // architecture-independent inline function definitions go here:
-#include "MatrixImpl.hpp"
+#include "Matrix4Impl.hpp"
 
 
 // include architecture-specific implementations
 #ifdef NFE_USE_SSE
-#include "SSE/Matrix.hpp"
+#include "SSE/Matrix4.hpp"
 #else
-#include "FPU/Matrix.hpp"
+#include "FPU/Matrix4.hpp"
 #endif

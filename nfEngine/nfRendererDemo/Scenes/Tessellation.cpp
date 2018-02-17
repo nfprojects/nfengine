@@ -10,7 +10,7 @@
 #include "../Common.hpp"
 
 #include "nfCommon/Math/Math.hpp"
-#include "nfCommon/Math/Matrix.hpp"
+#include "nfCommon/Math/Matrix4.hpp"
 
 
 #include <vector>
@@ -25,12 +25,12 @@ namespace {
 
 struct VertexCBuffer
 {
-    Matrix viewMatrix;
+    Matrix4 viewMatrix;
 };
 
 struct PixelCBuffer
 {
-    Matrix viewMatrix;
+    Matrix4 viewMatrix;
 };
 
 } // namespace

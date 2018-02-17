@@ -67,12 +67,12 @@ public:
     /**
      * Create matrix representing this transformation.
      */
-    NFCOMMON_API Matrix ToMatrix() const;
+    NFCOMMON_API Matrix4 ToMatrix() const;
 
     /**
      * Create transform from matrix.
      */
-    NFCOMMON_API static Transform FromMatrix(const Matrix& matrix);
+    NFCOMMON_API static Transform FromMatrix(const Matrix4& matrix);
 
     /**
      * Interpolate two transforms.

@@ -310,7 +310,7 @@ bool Intersect(const Frustum& frustum, const Sphere& sphere)
     return false;
 }
 
-Box TransformBox(const Matrix& matrix, const Box& localBox)
+Box TransformBox(const Matrix4& matrix, const Box& localBox)
 {
     // based on:
     // http://dev.theomader.com/transform-bounding-boxes/

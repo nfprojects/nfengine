@@ -44,15 +44,15 @@ Vector4 Transform::TransformVector(const Vector4& v) const
     return mRotation.TransformVector(v);
 }
 
-Matrix Transform::ToMatrix() const
+Matrix4 Transform::ToMatrix() const
 {
-    Matrix result = mRotation.ToMatrix();
+    Matrix4 result = mRotation.ToMatrix();
     result.r[3] = mTranslation;
     result.r[3][3] = 1.0f;
     return result;
 }
 
-Transform Transform::FromMatrix(const Matrix& matrix)
+Transform Transform::FromMatrix(const Matrix4& matrix)
 {
     return Transform(matrix.GetRow(3) & VECTOR_MASK_XYZ, Quaternion::FromMatrix(matrix));
 }
