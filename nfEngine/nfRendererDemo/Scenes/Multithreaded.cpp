@@ -10,7 +10,7 @@
 #include "../Common.hpp"
 
 #include "nfCommon/Math/Math.hpp"
-#include "nfCommon/Math/Matrix.hpp"
+#include "nfCommon/Math/Matrix4.hpp"
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/System/Assertion.hpp"
 
@@ -26,7 +26,7 @@ namespace {
 
 struct VertexCBuffer
 {
-    Matrix viewMatrix;
+    Matrix4 viewMatrix;
 };
 
 } // namespace
@@ -173,7 +173,7 @@ bool MultithreadedScene::CreateIndexBuffer()
 
 bool MultithreadedScene::CreateConstantBuffer(BufferMode cbufferMode)
 {
-    const Matrix rotMatrix = Matrix::MakeRotationNormal(Vector4(0.0f, 0.0f, 1.0f), Constants::pi<float>);
+    const Matrix4 rotMatrix = Matrix4::MakeRotationNormal(Vector4(0.0f, 0.0f, 1.0f), Constants::pi<float>);
     mAngle = 0.0f;
     mCBufferMode = cbufferMode;
 
@@ -351,9 +351,9 @@ void MultithreadedScene::DrawTask(const Common::TaskContext& ctx, int i, int j)
         float yOffset = 2.0f * (static_cast<float>(j) + 0.5f) * scaleCoeff - 1.0f;
         const float angle = mAngle + 5.0f * i + 7.0f * j;
 
-        const Matrix rotMatrix = Matrix::MakeRotationNormal(Vector4(0.0f, 0.0f, 1.0f), angle);
-        const Matrix translationMatrix = Matrix::MakeTranslation3(Vector4(xOffset, yOffset, 0.0f));
-        const Matrix scaleMatrix = Matrix::MakeScaling(Vector4(scaleCoeff, scaleCoeff, 0.0f));
+        const Matrix4 rotMatrix = Matrix4::MakeRotationNormal(Vector4(0.0f, 0.0f, 1.0f), angle);
+        const Matrix4 translationMatrix = Matrix4::MakeTranslation3(Vector4(xOffset, yOffset, 0.0f));
+        const Matrix4 scaleMatrix = Matrix4::MakeScaling(Vector4(scaleCoeff, scaleCoeff, 0.0f));
 
         VertexCBuffer vertexCBufferData;
         vertexCBufferData.viewMatrix = scaleMatrix * rotMatrix * translationMatrix;

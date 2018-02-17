@@ -61,9 +61,9 @@
         </Expand>
     </Type>
 
-    <!-- Matrix -->
-    <Type Name="NFE::Math::Matrix">
-        <DisplayString>Matrix</DisplayString>
+    <!-- Matrix4 -->
+    <Type Name="NFE::Math::Matrix4">
+        <DisplayString>Matrix4</DisplayString>
         <Expand>
             <Item Name="Row 0" ExcludeView="simple">r[0]</Item>
             <Item Name="Row 1" ExcludeView="simple">r[1]</Item>

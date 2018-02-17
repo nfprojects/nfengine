@@ -22,7 +22,7 @@ struct NFE_ALIGN(16) DirLightProperties
     uint32 cascadesCount[4];
 
     Math::Vector4 splitDistance[8];
-    Math::Matrix viewProjMatrix[8];
+    Math::Matrix4 viewProjMatrix[8];
 };
 
 struct NFE_ALIGN(16) SpotLightProperties
@@ -31,8 +31,8 @@ struct NFE_ALIGN(16) SpotLightProperties
     Math::Vector4 direction;
     Math::Vector4 color;
     Math::Vector4 farDist;
-    Math::Matrix viewProjMatrix;
-    Math::Matrix viewProjMatrixInv;
+    Math::Matrix4 viewProjMatrix;
+    Math::Matrix4 viewProjMatrixInv;
     Math::Vector4 shadowMapProps;
 };
 

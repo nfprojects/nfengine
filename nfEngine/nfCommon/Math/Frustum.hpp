@@ -8,7 +8,7 @@
 
 #include "Math.hpp"
 #include "Vector4.hpp"
-#include "Matrix.hpp"
+#include "Matrix4.hpp"
 #include "Box.hpp"
 #include "Plane.hpp"
 
@@ -59,7 +59,7 @@ public:
      * @param      cutoff           Cutoff angle in Y axis (in radians).
      * @param      aspect           Aspect ratio.
      */
-    static Frustum ConstructForPerspective(const Matrix& matrix, float nearDist, float farDist, float cutoff, float aspect);
+    static Frustum ConstructForPerspective(const Matrix4& matrix, float nearDist, float farDist, float cutoff, float aspect);
 
     /**
      * Recalculate frustum planes' equations.

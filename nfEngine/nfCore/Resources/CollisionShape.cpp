@@ -145,7 +145,7 @@ bool CollisionShape::LoadFromFile(const char* pPath)
             CompoundShapeChild shape =
             {
                 new btBvhTriangleMeshShape(pMesh, true),
-                Matrix()
+                Matrix4()
             };
             mChildren.push_back(shape);
         }
@@ -160,7 +160,7 @@ bool CollisionShape::LoadFromFile(const char* pPath)
     return true;
 }
 
-btTransform Matrix2BulletTransform(const Matrix& matrix)
+btTransform Matrix2BulletTransform(const Matrix4& matrix)
 {
     btTransform transform;
     transform.setOrigin(btVector3(matrix.m[3][0], matrix.m[3][1], matrix.m[3][2]));
@@ -171,7 +171,7 @@ btTransform Matrix2BulletTransform(const Matrix& matrix)
     return transform;
 }
 
-bool CollisionShape::AddBox(const Vector4& halfSize, const Matrix& matrix)
+bool CollisionShape::AddBox(const Vector4& halfSize, const Matrix4& matrix)
 {
     CompoundShapeChild shape;
     shape.pShape = new btBoxShape(btVector3(halfSize.f[0], halfSize.f[1], halfSize.f[2])),
@@ -185,7 +185,7 @@ bool CollisionShape::AddCylinder(float h, float r)
 {
     CompoundShapeChild shape;
     shape.pShape = new btCylinderShape(btVector3(r, h * 0.5f, r));
-    shape.matrix = Matrix();
+    shape.matrix = Matrix4();
     mChildren.push_back(shape);
 
     return true;

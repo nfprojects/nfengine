@@ -52,7 +52,7 @@ bool Intersect(const Ray& ray, const ShapeType& shape, Vector4& dist);
 /**
  * Transform Box by a 4x4 matrix.
  */
-NFCOMMON_API Box TransformBox(const Matrix& matrix, const Box& localBox);
+NFCOMMON_API Box TransformBox(const Matrix4& matrix, const Box& localBox);
 
 /**
  * Transform Box using a quaternion.

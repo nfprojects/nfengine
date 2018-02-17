@@ -1,7 +1,7 @@
 #pragma once
 
 #include "nfCommon/Math/Vector4.hpp"
-#include "nfCommon/Math/Matrix.hpp"
+#include "nfCommon/Math/Matrix4.hpp"
 
 
 namespace NFE {
@@ -10,7 +10,7 @@ namespace NFE {
 typedef Math::Vector4 float4;
 typedef Math::Float3 float3;
 typedef Math::Float2 float2;
-typedef Math::Matrix float4x4;
+typedef Math::Matrix4 float4x4;
 
 struct Int4
 {

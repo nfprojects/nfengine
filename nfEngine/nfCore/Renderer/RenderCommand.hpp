@@ -11,7 +11,7 @@
 
 #include "nfCommon/Memory/Aligned.hpp"
 #include "nfCommon/Math/Vector4.hpp"
-#include "nfCommon/Math/Matrix.hpp"
+#include "nfCommon/Math/Matrix4.hpp"
 
 #include <vector>
 
@@ -31,7 +31,7 @@ NFE_ALIGN(16)
 struct RenderCommand
 {
     //instance data
-    Math::Matrix matrix;
+    Math::Matrix4 matrix;
     Math::Vector4 velocity;
     Math::Vector4 angularVelocity;
 

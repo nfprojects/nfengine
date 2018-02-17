@@ -107,7 +107,7 @@ TEST(MathQuaternion, ToMatrix)
     const Vector4 axis = testAxis.Normalized3();
     const Quaternion q = Quaternion::FromAxisAndAngle(axis, testAngle);
 
-    Matrix m = q.ToMatrix();
+    Matrix4 m = q.ToMatrix4();
     m.r[3] = Vector4(); // zero 4th row
     ASSERT_TRUE(Vector4::AlmostEqual(m.GetRow(0), transformedX, 0.00001f));
     ASSERT_TRUE(Vector4::AlmostEqual(m.GetRow(1), transformedY, 0.00001f));
@@ -122,7 +122,7 @@ TEST(MathQuaternion, FromMatrix)
     const Vector4 axis = testAxis.Normalized3();
     const Quaternion q = Quaternion::FromAxisAndAngle(axis, testAngle);
 
-    const Matrix m = q.ToMatrix();
+    const Matrix4 m = q.ToMatrix4();
     const Quaternion q2 = Quaternion::FromMatrix(m);
 
     ASSERT_TRUE(Quaternion::AlmostEqual(q, q2, 0.00001f));

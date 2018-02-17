@@ -13,9 +13,9 @@
 namespace NFE {
 namespace Math {
 
-Matrix Matrix::Transposed() const
+Matrix4 Matrix4::Transposed() const
 {
-    Matrix mat;
+    Matrix4 mat;
     mat.r[0] = Vector4(r[0].f[0], r[1].f[0], r[2].f[0], r[3].f[0]);
     mat.r[1] = Vector4(r[0].f[1], r[1].f[1], r[2].f[1], r[3].f[1]);
     mat.r[2] = Vector4(r[0].f[2], r[1].f[2], r[2].f[2], r[3].f[2]);
@@ -23,7 +23,7 @@ Matrix Matrix::Transposed() const
     return mat;
 }
 
-Matrix& Matrix::Transpose()
+Matrix4& Matrix4::Transpose()
 {
     *this = Transposed();
     return *this;

@@ -31,13 +31,13 @@ std::unique_ptr<DebugRenderer> DebugRenderer::mPtr;
  */
 struct NFE_ALIGN(16) DebugCBuffer
 {
-    Matrix viewMatrix;
-    Matrix projMatrix;
+    Matrix4 viewMatrix;
+    Matrix4 projMatrix;
 };
 
 struct NFE_ALIGN(16) DebugPerMeshCBuffer
 {
-    Matrix modelMatrix;
+    Matrix4 modelMatrix;
 };
 
 namespace {
@@ -246,8 +246,8 @@ void DebugRenderer::SetTarget(DebugRendererContext *context, const RenderTargetP
     }
 }
 
-void DebugRenderer::SetCamera(DebugRendererContext *context, const Matrix& viewMatrix,
-                              const Matrix& projMatrix)
+void DebugRenderer::SetCamera(DebugRendererContext *context, const Matrix4& viewMatrix,
+                              const Matrix4& projMatrix)
 {
     DebugCBuffer debugCBufferData;
     debugCBufferData.projMatrix = projMatrix;
@@ -396,7 +396,7 @@ void DebugRenderer::SetMeshMaterial(DebugRendererContext* context, const Resourc
 }
 
 void DebugRenderer::DrawMesh(DebugRendererContext* context, const Resource::Mesh* mesh,
-                             const Matrix& matrix)
+                             const Matrix4& matrix)
 {
     if (mesh->GetState() != Resource::ResourceState::Loaded)
         return;

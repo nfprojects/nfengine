@@ -91,7 +91,7 @@ private:
     void UpdatePhysicsProxy();
     void DeletePhysicsProxy();
 
-    void OnBodyUpdateTransform(const Math::Matrix& newTransform);
+    void OnBodyUpdateTransform(const Math::Matrix4& newTransform);
     void OnBodyUpdateVelocities(const Math::Vector4& newVelocity, const Math::Vector4& newAngularVelocity);
 };
 

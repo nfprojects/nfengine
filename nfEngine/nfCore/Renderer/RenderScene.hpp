@@ -63,8 +63,8 @@ struct NFE_ALIGN(16) LightProxy
     LightProxyDesc desc;
 
     Math::Frustum frustum;      // global-space frustum
-    Math::Matrix viewMatrix;
-    Math::Matrix projMatrix;
+    Math::Matrix4 viewMatrix;
+    Math::Matrix4 projMatrix;
 
     Common::UniquePtr<Renderer::ShadowMap> shadowMap;
     Renderer::ResourceBindingInstancePtr lightMapBindingInstance;

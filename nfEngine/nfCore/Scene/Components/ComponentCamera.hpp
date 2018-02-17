@@ -111,11 +111,11 @@ public:
      * @param zf Far distance
      * @param[out] pFrustum Result
      */
-    void SplitFrustum(const Math::Matrix& matrix, float zn, float zf, Math::Frustum* frustum) const;
+    void SplitFrustum(const Math::Matrix4& matrix, float zn, float zf, Math::Frustum* frustum) const;
 
-    const Math::Matrix& GetViewMatrix() const { return mViewMatrix; }
-    const Math::Matrix& GetProjectionMatrix() const { return mProjMatrix; }
-    const Math::Matrix& GetSecondaryProjMatrix() const { return mSecondaryProjViewMatrix; }
+    const Math::Matrix4& GetViewMatrix() const { return mViewMatrix; }
+    const Math::Matrix4& GetProjectionMatrix() const { return mProjMatrix; }
+    const Math::Matrix4& GetSecondaryProjMatrix() const { return mSecondaryProjViewMatrix; }
     const Math::Vector4& GetScreenScale() const { return mScreenScale; }
     const Math::Frustum& GetFrustum() const { return mFrustum; }
 
@@ -128,11 +128,11 @@ private:
         OrthoProjectionDesc mOrtho;
     };
 
-    Math::Matrix mViewMatrix;
-    Math::Matrix mProjMatrix;
-    Math::Matrix mViewMatrixInv;
-    Math::Matrix mProjMatrixInv;
-    Math::Matrix mSecondaryProjViewMatrix;
+    Math::Matrix4 mViewMatrix;
+    Math::Matrix4 mProjMatrix;
+    Math::Matrix4 mViewMatrixInv;
+    Math::Matrix4 mProjMatrixInv;
+    Math::Matrix4 mSecondaryProjViewMatrix;
     Math::Vector4 mScreenScale;
     Math::Frustum mFrustum;
 
@@ -146,7 +146,7 @@ private:
      * @param angularVelocity Camera angular velocity
      * @param dt              Delta time (used to calculate secondary matrices for motion blur)
      */
-    void Update(const Math::Matrix& matrix, const Math::Vector4& velocity, const Math::Vector4& angularVelocity);
+    void Update(const Math::Matrix4& matrix, const Math::Vector4& velocity, const Math::Vector4& angularVelocity);
 };
 
 } // namespace Scene
