@@ -6,7 +6,6 @@
 
 #include "PCH.hpp"
 #include "../Geometry.hpp"
-#include "../Box.hpp"
 
 
 #ifdef NFE_USE_SSE

@@ -6,11 +6,8 @@
 
 #include "PCH.hpp"
 #include "Geometry.hpp"
-#include "Box.hpp"
 #include "Sphere.hpp"
 #include "Frustum.hpp"
-#include "Triangle.hpp"
-#include "Quaternion.hpp"
 #include "Transform.hpp"
 
 

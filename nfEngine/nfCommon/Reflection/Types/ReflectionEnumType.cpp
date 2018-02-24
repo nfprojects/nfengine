@@ -7,12 +7,6 @@
 #include "PCH.hpp"
 #include "ReflectionEnumType.hpp"
 
-#include "../../System/Assertion.hpp"
-#include "../../Memory/DefaultAllocator.hpp"
-#include "../../Logger/Logger.hpp"
-#include "../../Config/Config.hpp"
-#include "../../Config/ConfigValue.hpp"
-
 
 namespace NFE {
 namespace RTTI {

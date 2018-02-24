@@ -8,8 +8,6 @@
 #include "MD5.hpp"
 #include "BitUtils.hpp"
 
-#include <iomanip>
-
 
 namespace NFE {
 namespace Common {

@@ -8,8 +8,6 @@
 #include "FileBuffered.hpp"
 #include "Logger/Logger.hpp"
 
-#include <string.h>
-
 
 namespace NFE {
 namespace Common {

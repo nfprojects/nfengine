@@ -8,8 +8,6 @@
 #include "BackendXML.hpp"
 #include "BackendCommon.hpp"
 
-#include <array>
-
 
 namespace NFE {
 namespace Common {

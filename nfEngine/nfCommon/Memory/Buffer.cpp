@@ -8,8 +8,6 @@
 #include "Buffer.hpp"
 #include "Memory/DefaultAllocator.hpp"
 
-#include <stdlib.h>
-#include <string.h>
 
 namespace NFE {
 namespace Common {
