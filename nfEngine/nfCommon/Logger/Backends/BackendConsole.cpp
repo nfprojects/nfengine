@@ -6,7 +6,6 @@
 
 #include "PCH.hpp"
 #include "BackendConsole.hpp"
-#include "Logger/Logger.hpp"
 #include "System/Console.hpp"
 
 

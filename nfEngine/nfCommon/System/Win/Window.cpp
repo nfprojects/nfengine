@@ -9,8 +9,6 @@
 #include "Common.hpp"
 #include "Logger/Logger.hpp"
 
-#include <Windowsx.h>
-
 
 namespace NFE {
 namespace Common {

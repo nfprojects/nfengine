@@ -11,7 +11,6 @@
 #include "Utils/ScopedLock.hpp"
 
 #include <assert.h>
-#include <string.h>
 
 
 namespace NFE {

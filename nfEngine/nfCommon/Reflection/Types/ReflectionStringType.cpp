@@ -6,9 +6,7 @@
 
 #include "PCH.hpp"
 #include "ReflectionStringType.hpp"
-#include "../../Logger/Logger.hpp"
 #include "../../Config/Config.hpp"
-#include "../../Config/ConfigValue.hpp"
 
 
 namespace NFE {

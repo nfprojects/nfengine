@@ -6,10 +6,7 @@
 
 #include "PCH.hpp"
 #include "Geometry.hpp"
-#include "Box.hpp"
 #include "Sphere.hpp"
-#include "Triangle.hpp"
-#include "Ray.hpp"
 
 namespace NFE {
 namespace Math {

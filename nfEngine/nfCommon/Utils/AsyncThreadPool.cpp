@@ -6,8 +6,7 @@
 
 #include "PCH.hpp"
 #include "AsyncThreadPool.hpp"
-#include "ScopedLock.hpp"
-#include "Logger/Logger.hpp"
+
 
 namespace NFE {
 namespace Common {

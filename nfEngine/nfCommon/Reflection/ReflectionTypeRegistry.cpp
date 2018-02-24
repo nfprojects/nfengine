@@ -4,13 +4,8 @@
  * @brief  Definitions of reflection system's type registry.
  */
 
-
 #include "PCH.hpp"
 #include "ReflectionTypeRegistry.hpp"
-#include "Types/ReflectionType.hpp"
-
-#include "../Logger/Logger.hpp"
-#include "../System/Assertion.hpp"
 
 
 namespace NFE {

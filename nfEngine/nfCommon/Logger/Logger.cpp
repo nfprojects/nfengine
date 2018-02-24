@@ -10,8 +10,6 @@
 #include "System/SystemInfo.hpp"
 #include "Utils/ScopedLock.hpp"
 
-#include <stdarg.h>
-
 #ifdef WIN32
 #include "System/Win/Common.hpp"
 #endif // WIN32

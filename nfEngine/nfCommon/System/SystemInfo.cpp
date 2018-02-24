@@ -8,10 +8,6 @@
 #include "SystemInfo.hpp"
 #include "SystemInfoConstants.hpp"
 
-#include <sstream>
-#include <iomanip>
-#include <string.h>
-
 
 namespace NFE {
 namespace Common {

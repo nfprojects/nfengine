@@ -10,9 +10,6 @@
 #include "../Library.hpp"
 #include "Common.hpp"
 
-#include <VersionHelpers.h>
-#include <intrin.h>
-
 
 namespace {
 typedef void (WINAPI *RtlGetVersionFuncType)(OSVERSIONINFOEXW*);
