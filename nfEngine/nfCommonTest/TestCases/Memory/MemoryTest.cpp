@@ -2,8 +2,6 @@
 #include "nfCommon/System/Memory.hpp"
 #include "nfCommon/Memory/DefaultAllocator.hpp"
 
-#include <memory>
-#include <limits>
 
 
 using namespace NFE::Common;

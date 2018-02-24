@@ -6,7 +6,6 @@
 
 #include "PCH.hpp"
 #include "nfCommon/Utils/ScopedLock.hpp"
-#include "nfCommon/System/Mutex.hpp"
 
 
 using namespace NFE;

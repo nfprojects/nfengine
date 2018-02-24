@@ -3,7 +3,6 @@
 
 #include "Constants.hpp"
 
-#include <memory>
 
 
 using namespace NFE::Common;

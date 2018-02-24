@@ -8,7 +8,6 @@
 #include "nfCommon/Logger/LogScope.hpp"
 #include "nfCommon/Logger/Logger.hpp"
 
-#include <sstream>
 
 
 using namespace NFE::Common;

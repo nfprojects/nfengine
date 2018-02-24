@@ -8,8 +8,6 @@
 
 #include "nfCommon/Utils/BVH.hpp"
 #include "nfCommon/Math/Random.hpp"
-#include "nfCommon/Math/Vector4.hpp"
-#include "nfCommon/Math/Geometry.hpp"
 #include "nfCommon/Logger/Logger.hpp"
 
 

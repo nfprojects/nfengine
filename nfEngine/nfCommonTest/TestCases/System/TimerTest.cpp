@@ -2,8 +2,6 @@
 #include "nfCommon/System/Timer.hpp"
 
 // required to test because of multi-platform sleep - std::this_thread::sleep_for
-#include <chrono>
-#include <thread>
 
 
 namespace {

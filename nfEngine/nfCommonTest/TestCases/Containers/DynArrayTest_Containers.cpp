@@ -8,9 +8,7 @@
 #include "nfCommon/Containers/DynArray.hpp"
 #include "nfCommon/Containers/String.hpp"
 #include "nfCommon/Containers/SharedPtr.hpp"
-#include "nfCommon/Containers/UniquePtr.hpp"
 
-#include "TestClasses.hpp"
 
 using namespace NFE;
 using namespace NFE::Common;
