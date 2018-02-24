@@ -1,7 +1,6 @@
 #include "PCH.hpp"
 #include "nfCommon/System/Window.hpp"
 
-#include <thread>
 
 
 namespace {

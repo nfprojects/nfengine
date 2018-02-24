@@ -7,7 +7,6 @@
 #include "PCH.hpp"
 #include "nfCommon/Memory/Aligned.hpp"
 
-#include <memory>
 
 
 using namespace NFE::Common;

@@ -7,7 +7,6 @@
 #include "PCH.hpp"
 #include "nfCommon/Utils/Latch.hpp"
 
-#include <thread>
 
 namespace {
     const unsigned int TIMEOUT = 500; /* ms */

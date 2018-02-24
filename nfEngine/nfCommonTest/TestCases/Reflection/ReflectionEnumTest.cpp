@@ -1,7 +1,5 @@
 #include "PCH.hpp"
 #include "ReflectionTestCommon.hpp"
-#include "nfCommon/Config/Config.hpp"
-#include "nfCommon/Containers/DynArray.hpp"
 
 
 using namespace NFE;

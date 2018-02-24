@@ -3,9 +3,7 @@
 #include "nfCommon/Utils/InputStream.hpp"
 #include "nfCommon/Utils/OutputStream.hpp"
 #include "nfCommon/FileSystem/FileSystem.hpp"
-#include "Constants.hpp"
 
-#include <memory>
 
 
 using namespace NFE;

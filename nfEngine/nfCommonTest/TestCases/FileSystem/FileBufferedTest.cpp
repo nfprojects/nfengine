@@ -6,14 +6,10 @@
 
 #include "PCH.hpp"
 
-#include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/FileSystem/FileBuffered.hpp"
 #include "nfCommon/FileSystem/FileSystem.hpp"
-#include "nfCommon/FileSystem/File.hpp"
 #include "nfCommon/Math/Random.hpp"
-#include "nfCommon/nfCommon.hpp"
 
-#include <type_traits>
 
 
 using namespace NFE::Common;
