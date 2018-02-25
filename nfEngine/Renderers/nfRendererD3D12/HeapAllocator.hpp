@@ -1,12 +1,14 @@
 /**
  * @file
  * @author  Witek902 (witek902@gmail.com)
- * @brief   Heap allocator declaratons
+ * @brief   Heap allocator declarations
  */
 
 #pragma once
 
 #include "Common.hpp"
+
+#include "nfCommon/Containers/DynArray.hpp"
 
 
 namespace NFE {
@@ -25,7 +27,7 @@ public:
 private:
     Type mType;
     uint32 mSize;
-    std::vector<bool> mBitmap;
+    Common::DynArray<bool> mBitmap;
 
     D3DPtr<ID3D12DescriptorHeap> mHeap;
 

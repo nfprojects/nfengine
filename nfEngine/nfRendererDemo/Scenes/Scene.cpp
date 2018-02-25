@@ -128,7 +128,7 @@ bool Scene::SwitchSubscene(size_t subScene)
     return true;
 }
 
-ShaderPtr Scene::CompileShader(const char* path, ShaderType type, ShaderMacro* macros, size_t macrosNum)
+ShaderPtr Scene::CompileShader(const char* path, ShaderType type, ShaderMacro* macros, uint32 macrosNum)
 {
     ShaderDesc desc;
     desc.type = type;

@@ -185,7 +185,7 @@ bool Multishader::LoadSubshader(int* macroValues)
     shaderDesc.path = shaderPath.Str();
     shaderDesc.type = mType;
     shaderDesc.macros = macros.data();
-    shaderDesc.macrosNum = macros.size();
+    shaderDesc.macrosNum = static_cast<uint32>(macros.size());
 
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
     mSubShaders.emplace_back(renderer->GetDevice()->CreateShader(shaderDesc));

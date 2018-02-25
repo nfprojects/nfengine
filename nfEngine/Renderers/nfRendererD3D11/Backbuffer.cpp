@@ -31,9 +31,8 @@ bool Backbuffer::GetBackbufferTexture()
 
     if (gDevice->IsDebugLayerEnabled())
     {
-        std::string textureName = "NFE::Renderer::Backbuffer \"" + mDebugName + '"';
-        D3D_CALL_CHECK(mSwapChain->SetPrivateData(WKPDID_D3DDebugObjectName,
-                                                  static_cast<UINT>(textureName.length()), textureName.c_str()));
+        const Common::String textureName = "NFE::Renderer::Backbuffer \"" + mDebugName + '"';
+        D3D_CALL_CHECK(mSwapChain->SetPrivateData(WKPDID_D3DDebugObjectName, textureName.Length(), textureName.Str()));
     }
 
     return true;
@@ -47,7 +46,7 @@ bool Backbuffer::Resize(int newWidth, int newHeight)
     if (mWidth == 0 || mHeight == 0)
         return false;
 
-    NFE_LOG_INFO("Resizing backbuffer '%s'", mDebugName.c_str());
+    NFE_LOG_INFO("Resizing backbuffer '%s'", mDebugName.Str());
 
     HRESULT hr;
     if (!mSwapChain.Get())
@@ -105,9 +104,8 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
 
     if (gDevice->IsDebugLayerEnabled())
     {
-        std::string swapChainName = "NFE::Renderer::Backbuffer \"" + mDebugName + '"';
-        D3D_CALL_CHECK(mSwapChain->SetPrivateData(WKPDID_D3DDebugObjectName,
-                                                  static_cast<UINT>(swapChainName.length()), swapChainName.c_str()));
+        const Common::String swapChainName = "NFE::Renderer::Backbuffer \"" + mDebugName + '"';
+        D3D_CALL_CHECK(mSwapChain->SetPrivateData(WKPDID_D3DDebugObjectName, swapChainName.Length(), swapChainName.Str()));
     }
 
     NFE_LOG_DEBUG("Swapchain created successfully (width=%i, height=%i, format=%s)",

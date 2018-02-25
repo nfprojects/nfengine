@@ -8,6 +8,8 @@
 
 #include "Defines.hpp"
 
+#include "nfCommon/Containers/DynArray.hpp"
+
 
 namespace NFE {
 namespace Renderer {
@@ -24,7 +26,7 @@ class SemaphorePool
 {
     VkDevice mDeviceRef;
 
-    std::vector<VkSemaphore> mSemaphores;
+    Common::DynArray<VkSemaphore> mSemaphores;
     uint32 mPreviousSemaphore;
     uint32 mCurrentSemaphore;
 

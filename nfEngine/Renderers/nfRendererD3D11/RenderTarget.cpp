@@ -38,15 +38,15 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         return false;
     }
 
-    mRTVs.reserve(desc.numTargets);
-    for (unsigned int i = 0; i < desc.numTargets; ++i)
+    mRTVs.Reserve(desc.numTargets);
+    for (uint32 i = 0; i < desc.numTargets; ++i)
     {
         Texture* tex = dynamic_cast<Texture*>(desc.targets[i].texture.Get());
 
         if (tex == nullptr)
         {
             NFE_LOG_ERROR("Invalid texture pointer");
-            mRTVs.clear();
+            mRTVs.Clear();
             return false;
         }
 
@@ -107,7 +107,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             else
             {
                 NFE_LOG_ERROR("Unsupported texture type");
-                mRTVs.clear();
+                mRTVs.Clear();
                 return false;
             }
 
@@ -116,7 +116,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         default:
             {
                 NFE_LOG_ERROR("Unsupported texture type for render target");
-                mRTVs.clear();
+                mRTVs.Clear();
                 return false;
             }
         }
@@ -126,22 +126,21 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         if (FAILED(hr))
         {
             NFE_LOG_ERROR("Failed to create render target view");
-            mRTVs.clear();
+            mRTVs.Clear();
             return false;
         }
 
         if (gDevice->IsDebugLayerEnabled() && desc.debugName)
         {
             /// set debug name
-            std::string bufferName = "NFE::Renderer::RenderTarget \"";
+            Common::String bufferName = "NFE::Renderer::RenderTarget \"";
             if (desc.debugName)
                 bufferName += desc.debugName;
             bufferName += '"';
-            D3D_CALL_CHECK(rtv->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(bufferName.length()),
-                                               bufferName.c_str()));
+            D3D_CALL_CHECK(rtv->SetPrivateData(WKPDID_D3DDebugObjectName, bufferName.Length(), bufferName.Str()));
         }
 
-        mRTVs.emplace_back(rtv);
+        mRTVs.PushBack(D3DPtr<ID3D11RenderTargetView>(rtv));
     }
 
     if (desc.depthBuffer != nullptr)

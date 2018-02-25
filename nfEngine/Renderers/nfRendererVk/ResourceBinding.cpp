@@ -178,8 +178,8 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     }
 
     // sort binding sets according to their internal mSetSlot variable
-    std::vector<ResourceBindingSet*> setPtrs;
-    setPtrs.resize(desc.numBindingSets);
+    Common::DynArray<ResourceBindingSet*> setPtrs;
+    setPtrs.Resize(desc.numBindingSets);
     for (uint32 i = 0; i < desc.numBindingSets; ++i)
         setPtrs[i] = dynamic_cast<ResourceBindingSet*>(desc.bindingSets[i].Get());
 
@@ -316,7 +316,7 @@ bool ResourceBindingInstance::Init(const ResourceBindingSetPtr& bindingSet)
     return true;
 }
 
-bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& texture)
+bool ResourceBindingInstance::WriteTextureView(uint32 slot, const TexturePtr& texture)
 {
     Texture* t = dynamic_cast<Texture*>(texture.Get());
     if (t == nullptr)
@@ -333,7 +333,7 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& te
     VK_ZERO_MEMORY(writeSet);
     writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     writeSet.dstSet = mSet->mDescriptorSet;
-    writeSet.dstBinding = static_cast<uint32>(slot);
+    writeSet.dstBinding = slot;
     writeSet.dstArrayElement = 0;
     writeSet.descriptorCount = 1;
     writeSet.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -344,7 +344,7 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& te
     return true;
 }
 
-bool ResourceBindingInstance::WriteCBufferView(size_t slot, const BufferPtr& buffer)
+bool ResourceBindingInstance::WriteCBufferView(uint32 slot, const BufferPtr& buffer)
 {
     Buffer* b = dynamic_cast<Buffer*>(buffer.Get());
     if (b == nullptr)
@@ -363,7 +363,7 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, const BufferPtr& buf
     VK_ZERO_MEMORY(writeSet);
     writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     writeSet.dstSet = mSet->mDescriptorSet;
-    writeSet.dstBinding = static_cast<uint32>(slot);
+    writeSet.dstBinding = slot;
     writeSet.dstArrayElement = 0;
     writeSet.descriptorCount = 1;
     writeSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -374,7 +374,7 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, const BufferPtr& buf
     return true;
 }
 
-bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, const TexturePtr& texture)
+bool ResourceBindingInstance::WriteWritableTextureView(uint32 slot, const TexturePtr& texture)
 {
     NFE_UNUSED(slot);
     NFE_UNUSED(texture);

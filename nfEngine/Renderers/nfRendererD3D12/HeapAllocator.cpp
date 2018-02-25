@@ -36,7 +36,7 @@ HeapAllocator::HeapAllocator(Type type, uint32 initialSize)
     : mType(type)
     , mSize(initialSize)
 {
-    mBitmap.resize(initialSize);
+    mBitmap.Resize(initialSize);
     for (uint32 i = 0; i < initialSize; ++i)
         mBitmap[i] = false;
 }
@@ -52,10 +52,14 @@ void HeapAllocator::Release()
 
     uint32 allocatedDescriptors = 0;
     for (bool state : mBitmap)
+    {
         if (state)
+        {
             allocatedDescriptors++;
+        }
+    }
 
-    mBitmap.clear();
+    mBitmap.Clear();
 
     if (allocatedDescriptors > 0)
         NFE_LOG_WARNING("There are still %u descriptors allocated in %s heap",
@@ -65,7 +69,7 @@ void HeapAllocator::Release()
 bool HeapAllocator::Init()
 {
     D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
-    heapDesc.NumDescriptors = static_cast<UINT>(mBitmap.size());
+    heapDesc.NumDescriptors = mBitmap.Size();
     heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 
     switch (mType)
@@ -119,7 +123,7 @@ uint32 HeapAllocator::Allocate(uint32 numDescriptors)
         count++;
         if (count >= numDescriptors)
         {
-            for (size_t j = first; j < first + numDescriptors; ++j)
+            for (uint32 j = first; j < first + numDescriptors; ++j)
                 mBitmap[j] = true;
             return first;
         }

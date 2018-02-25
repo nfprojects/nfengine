@@ -7,9 +7,8 @@
 #pragma once
 
 #include "Types.hpp"
-#include "../../nfCommon/nfCommon.hpp"
 
-#include <string>
+#include "../../nfCommon/Containers/String.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -64,7 +63,7 @@ struct ShaderDesc
     const char* code; //< shader code (optional)
     const char* path; //< shader path or name (optional)
     const ShaderMacro* macros;
-    size_t macrosNum;
+    uint32 macrosNum;
 
     // TODO: binary format support
 
@@ -88,7 +87,7 @@ public:
      * @param html        Generate a colorful HTML document.
      * @param output[out] Output string.
      */
-    virtual bool Disassemble(bool html, std::string& output) = 0;
+    virtual bool Disassemble(bool html, Common::String& output) = 0;
 
     /**
      * Get shader resource (texture, buffer, etc.) slot ID by name.

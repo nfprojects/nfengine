@@ -249,7 +249,6 @@ bool Shader::Init(const ShaderDesc& desc)
         return false;
     }
 
-    std::string errorMessages;
     spv::SpvBuildLogger spvLogger;
     glslang::GlslangToSpv(*progInt, mShaderSpv, &spvLogger);
 
@@ -274,13 +273,13 @@ bool Shader::Init(const ShaderDesc& desc)
     return true;
 }
 
-bool Shader::Disassemble(bool html, std::string& output)
+bool Shader::Disassemble(bool html, Common::String& output)
 {
     NFE_UNUSED(html); // TODO
     // Disassemble the shader, to provide parsing source for slot extraction
     std::stringstream ss;
     spv::Disassemble(ss, mShaderSpv);
-    output = ss.str();
+    output = ss.str().c_str();
     return true;
 }
 
@@ -292,6 +291,8 @@ bool Shader::GetIODesc()
 
 void Shader::ParseResourceSlots()
 {
+    // TODO get rid of std::vector and std::string
+
     std::stringstream disasm;
     spv::Disassemble(disasm, mShaderSpv);
 
@@ -338,13 +339,15 @@ void Shader::ParseResourceSlots()
         size_t openBracketPos = tokens[1].find('(');
         size_t closeBracketPos = tokens[1].find(')', openBracketPos+1);
 
-        std::string tokenName = tokens[1].substr(openBracketPos+1, closeBracketPos - openBracketPos - 1);
-        SetSlotMap::iterator it;
+        const Common::String tokenName = tokens[1].substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1).c_str();
+        SetSlotMap::Iterator it;
         if (tokens[2] == "DescriptorSet" || tokens[2] == "Binding")
         {
-            it = mResourceSlotMap.find(tokenName);
+            it = mResourceSlotMap.Find(tokenName);
             if (it == mResourceSlotMap.end())
-                it = std::get<0>(mResourceSlotMap.emplace(tokenName, std::make_pair(static_cast<uint16>(0), static_cast<uint16>(0))));
+            {
+                it = mResourceSlotMap.Insert(tokenName, std::make_pair(static_cast<uint16>(0), static_cast<uint16>(0))).iterator;
+            }
         }
         else
             continue;
@@ -367,8 +370,8 @@ void Shader::ParseResourceSlots()
 
 int Shader::GetResourceSlotByName(const char* name)
 {
-    auto it = mResourceSlotMap.find(name);
-    if (it == mResourceSlotMap.end())
+    auto it = mResourceSlotMap.Find(name);
+    if (it == mResourceSlotMap.End())
         return -1;
 
     const SetSlotPair& pair = it->second;

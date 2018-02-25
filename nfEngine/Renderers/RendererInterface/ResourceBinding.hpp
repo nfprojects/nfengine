@@ -16,7 +16,7 @@ namespace Renderer {
 struct ResourceBindingDesc
 {
     ShaderResourceType resourceType;
-    unsigned int slot; //< shader's resource slot
+    uint32 slot; //< shader's resource slot
     // TODO support for ranges of bindings
 
     SamplerPtr staticSampler; //< optional static sampler (for textures only)
@@ -27,8 +27,7 @@ struct ResourceBindingDesc
         , staticSampler(nullptr)
     { }
 
-    ResourceBindingDesc(ShaderResourceType resourceType, unsigned int slot,
-                        SamplerPtr staticSampler = nullptr)
+    ResourceBindingDesc(ShaderResourceType resourceType, uint32 slot, SamplerPtr staticSampler = nullptr)
         : resourceType(resourceType)
         , slot(slot)
         , staticSampler(staticSampler)
@@ -38,7 +37,7 @@ struct ResourceBindingDesc
 struct ResourceBindingSetDesc
 {
     const ResourceBindingDesc* resourceBindings;
-    size_t numBindings;
+    uint32 numBindings;
     ShaderType shaderVisibility;
 
     ResourceBindingSetDesc()
@@ -47,9 +46,7 @@ struct ResourceBindingSetDesc
         , shaderVisibility(ShaderType::Unknown)
     { }
 
-    ResourceBindingSetDesc(const ResourceBindingDesc* resourceBindings,
-                           size_t numBindings,
-                           ShaderType shaderVisibility)
+    ResourceBindingSetDesc(const ResourceBindingDesc* resourceBindings, uint32 numBindings, ShaderType shaderVisibility)
         : resourceBindings(resourceBindings)
         , numBindings(numBindings)
         , shaderVisibility(shaderVisibility)
@@ -79,13 +76,10 @@ struct VolatileCBufferBinding
 {
     ShaderType shaderVisibility;
     ShaderResourceType resourceType;
-    unsigned int slot; //< shader's resource slot
-    unsigned int size;
+    uint32 slot; //< shader's resource slot
+    uint32 size;
 
-    VolatileCBufferBinding(ShaderType shaderVisibility,
-                           ShaderResourceType resourceType,
-                           unsigned int slot,
-                           unsigned int size)
+    VolatileCBufferBinding(ShaderType shaderVisibility, ShaderResourceType resourceType, uint32 slot, uint32 size)
         : shaderVisibility(shaderVisibility)
         , resourceType(resourceType)
         , slot(slot)
@@ -97,10 +91,10 @@ struct VolatileCBufferBinding
 struct ResourceBindingLayoutDesc
 {
     const ResourceBindingSetPtr* bindingSets;
-    size_t numBindingSets;
+    uint32 numBindingSets;
 
     const VolatileCBufferBinding* volatileCBuffers;
-    size_t numVolatileCBuffers;
+    uint32 numVolatileCBuffers;
 
     const char* debugName;
 
@@ -116,9 +110,9 @@ struct ResourceBindingLayoutDesc
         , debugName(nullptr)
     { }
 
-    ResourceBindingLayoutDesc(const ResourceBindingSetPtr* bindingSets, size_t numBindingSets,
+    ResourceBindingLayoutDesc(const ResourceBindingSetPtr* bindingSets, uint32 numBindingSets,
                               const VolatileCBufferBinding* volatileCBuffers = nullptr,
-                              size_t numVolatileCBuffers = 0, const char* debugName = nullptr)
+                              uint32 numVolatileCBuffers = 0, const char* debugName = nullptr)
         : bindingSets(bindingSets)
         , numBindingSets(numBindingSets)
         , volatileCBuffers(volatileCBuffers)
@@ -160,14 +154,14 @@ public:
      * @param texture  Texture resource.
      * @return True on success.
      */
-    virtual bool WriteTextureView(size_t slot, const TexturePtr& texture) = 0;
+    virtual bool WriteTextureView(uint32 slot, const TexturePtr& texture) = 0;
 
     /**
      * Create a constant buffer view in the binding instance.
      * @param slot Target slot within the binding set.
      * @return True on success.
      */
-    virtual bool WriteCBufferView(size_t slot, const BufferPtr& buffer) = 0;
+    virtual bool WriteCBufferView(uint32 slot, const BufferPtr& buffer) = 0;
 
     /**
      * Create a writable texture view in the binding instance.
@@ -175,7 +169,7 @@ public:
      * @param texture  Shader-writable texture resource.
      * @return True on success.
      */
-    virtual bool WriteWritableTextureView(size_t slot, const TexturePtr& texture) = 0;
+    virtual bool WriteWritableTextureView(uint32 slot, const TexturePtr& texture) = 0;
 };
 
 

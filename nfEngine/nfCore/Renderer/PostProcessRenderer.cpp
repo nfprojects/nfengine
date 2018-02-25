@@ -98,17 +98,17 @@ bool PostProcessRenderer::CreateResourceBindingLayouts()
 
     VolatileCBufferBinding cbufferBindingDesc(ShaderType::Pixel, ShaderResourceType::CBuffer, paramsCBufferSlot, sizeof(ToneMappingCBuffer));
 
-    std::vector<ResourceBindingSetPtr> bindingSets;
+    Common::DynArray<ResourceBindingSetPtr> bindingSets;
     ResourceBindingDesc binding(ShaderResourceType::Texture, sourceTextureSlot,
                                  mRenderer->GetDefaultSampler());
     mTexturesBindingSet = device->CreateResourceBindingSet(ResourceBindingSetDesc(&binding, 1, ShaderType::Pixel));
     if (!mTexturesBindingSet)
         return false;
-    bindingSets.push_back(mTexturesBindingSet);
+    bindingSets.PushBack(mTexturesBindingSet);
 
     // create binding layout
     mResBindingLayout = device->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(bindingSets.data(), bindingSets.size(), &cbufferBindingDesc, 1));
+        ResourceBindingLayoutDesc(bindingSets.Data(), bindingSets.Size(), &cbufferBindingDesc, 1));
     if (!mResBindingLayout)
         return false;
 
@@ -136,8 +136,8 @@ void PostProcessRenderer::OnEnter(PostProcessRendererContext* context)
     context->commandRecorder->SetResourceBindingLayout(mResBindingLayout);
 
     BufferPtr veretexBuffers[] = { mVertexBuffer };
-    int strides[] = { sizeof(Float3) };
-    int offsets[] = { 0 };
+    uint32 strides[] = { sizeof(Float3) };
+    uint32 offsets[] = { 0 };
     context->commandRecorder->SetVertexBuffers(1, veretexBuffers, strides, offsets);
 }
 
@@ -152,16 +152,13 @@ void PostProcessRenderer::ApplyTonemapping(PostProcessRendererContext* context,
 {
     int width, height;
     dest->GetDimensions(width, height);
-    context->commandRecorder->SetViewport(0.0f, static_cast<float>(width),
-                                        0.0f, static_cast<float>(height),
-                                        0.0f, 1.0f);
+    context->commandRecorder->SetViewport(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), 0.0f, 1.0f);
     context->commandRecorder->SetScissors(0, 0, width, height);
 
     context->commandRecorder->SetPipelineState(mTonemappingPipelineState.GetPipelineState());
 
     ToneMappingCBuffer cbufferData;
-    cbufferData.bufferInvRes = Vector4(1.0f / static_cast<float>(width),
-                                      1.0f / static_cast<float>(height));
+    cbufferData.bufferInvRes = Vector4(1.0f / static_cast<float>(width), 1.0f / static_cast<float>(height));
     cbufferData.params = Vector4(params.saturation,
                                 params.noiseFactor,
                                 expf(params.exposureOffset));

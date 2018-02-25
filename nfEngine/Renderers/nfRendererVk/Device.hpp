@@ -156,7 +156,7 @@ public:
     bool FinishFrame() override;
 
     bool DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data) override;
-    bool DownloadTexture(const TexturePtr& tex, void* data, int mipmap = 0, int layer = 0) override;
+    bool DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap, uint32 layer) override;
 };
 
 extern Common::UniquePtr<Device> gDevice;

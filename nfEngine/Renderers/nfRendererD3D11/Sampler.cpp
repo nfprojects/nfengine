@@ -45,12 +45,11 @@ bool Sampler::Init(const SamplerDesc& desc)
     if (gDevice->IsDebugLayerEnabled() && desc.debugName)
     {
         /// set debug name
-        std::string bufferName = "NFE::Renderer::Sampler \"";
+        Common::String bufferName = "NFE::Renderer::Sampler \"";
         if (desc.debugName)
             bufferName += desc.debugName;
         bufferName += '"';
-        D3D_CALL_CHECK(mSamplerState->SetPrivateData(WKPDID_D3DDebugObjectName,
-                                                     static_cast<UINT>(bufferName.length()), bufferName.c_str()));
+        D3D_CALL_CHECK(mSamplerState->SetPrivateData(WKPDID_D3DDebugObjectName, bufferName.Length(), bufferName.Str()));
     }
 
     return true;

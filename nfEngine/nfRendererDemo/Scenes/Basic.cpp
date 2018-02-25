@@ -445,8 +445,8 @@ void BasicScene::Draw(float dt)
     mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget);
 
-    int stride = 9 * sizeof(float);
-    int offset = 0;
+    uint32 stride = 9 * sizeof(float);
+    uint32 offset = 0;
     if (mIndexBuffer)
         mCommandBuffer->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
 

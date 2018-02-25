@@ -20,19 +20,26 @@ namespace Renderer {
 bool ResourceBindingSet::IsBindingOverlapping(const ResourceBindingDesc& bindingDesc) const
 {
     for (const auto& desc : mBindings)
+    {
         if (desc.slot == bindingDesc.slot && desc.resourceType == bindingDesc.resourceType)
+        {
             return true;
+        }
+    }
     return false;
 }
 
 bool ResourceBindingSet::IsBindingSetOverlapping(const ResourceBindingSet* set) const
 {
     for (const auto& desc : set->mBindings)
+    {
         if (IsBindingOverlapping(desc))
-            if (mShaderVisibility == ShaderType::All ||
-                set->mShaderVisibility == ShaderType::All ||
+        {
+            if (mShaderVisibility == ShaderType::All || set->mShaderVisibility == ShaderType::All ||
                 mShaderVisibility == set->mShaderVisibility)
                 return true;
+        }
+    }
     return false;
 }
 
@@ -57,9 +64,9 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
     }
 
 
-    mBindings.reserve(desc.numBindings);
+    mBindings.Reserve(desc.numBindings);
 
-    for (size_t i = 0; i < desc.numBindings; ++i)
+    for (uint32 i = 0; i < desc.numBindings; ++i)
     {
         const ResourceBindingDesc& bindingDesc = desc.resourceBindings[i];
 
@@ -73,7 +80,7 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
             return false;
         }
 
-        mBindings.push_back(desc.resourceBindings[i]);
+        mBindings.PushBack(desc.resourceBindings[i]);
     }
 
     mShaderVisibility = desc.shaderVisibility;
@@ -82,9 +89,9 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
 
 bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
 {
-    mBindingSets.reserve(desc.numBindingSets);
+    mBindingSets.Reserve(desc.numBindingSets);
 
-    for (size_t i = 0; i < desc.numBindingSets; ++i)
+    for (uint32 i = 0; i < desc.numBindingSets; ++i)
     {
         InternalResourceBindingSetPtr bindingSet = Common::StaticCast<ResourceBindingSet>(desc.bindingSets[i]);
         if (bindingSet == nullptr)
@@ -93,29 +100,28 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
             return false;
         }
 
-        for (size_t j = 0; j < i; ++j)
+        for (uint32 j = 0; j < i; ++j)
         {
             if (mBindingSets[j] == bindingSet)
             {
-                NFE_LOG_ERROR("Same binding sets (%zu and %zu) can't be reused in a binding layout",
-                          j, i);
+                NFE_LOG_ERROR("Same binding sets (%u and %u) can't be reused in a binding layout", j, i);
                 return false;
             }
 
             if (bindingSet->IsBindingSetOverlapping(mBindingSets[j].Get()))
             {
-                NFE_LOG_ERROR("Resource binding slots are overlapping (sets %zu and %zu)", j, i);
+                NFE_LOG_ERROR("Resource binding slots are overlapping (sets %u and %u)", j, i);
                 return false;
             }
         }
 
-        mBindingSets.push_back(bindingSet);
+        mBindingSets.PushBack(bindingSet);
     }
 
-    for (size_t i = 0; i < desc.numVolatileCBuffers; ++i)
+    for (uint32 i = 0; i < desc.numVolatileCBuffers; ++i)
     {
         // TODO check if shader slots are not overlapping
-        mVolatileCBuffers.push_back(desc.volatileCBuffers[i]);
+        mVolatileCBuffers.PushBack(desc.volatileCBuffers[i]);
     }
 
     return true;
@@ -130,17 +136,16 @@ bool ResourceBindingInstance::Init(const ResourceBindingSetPtr& bindingSet)
         return false;
     }
 
-    mViews.resize(mBindingSet->mBindings.size());
-    mCBuffers.resize(mBindingSet->mBindings.size());
+    mViews.Resize(mBindingSet->mBindings.Size());
+    mCBuffers.Resize(mBindingSet->mBindings.Size());
     return true;
 }
 
-bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& texture)
+bool ResourceBindingInstance::WriteTextureView(uint32 slot, const TexturePtr& texture)
 {
-    if (slot >= mBindingSet->mBindings.size())
+    if (slot >= mBindingSet->mBindings.Size())
     {
-        NFE_LOG_ERROR("Invalid binding set slot %zu (there are %zu slots)",
-                  slot, mBindingSet->mBindings.size());
+        NFE_LOG_ERROR("Invalid binding set slot %u (there are %u slots)", slot, mBindingSet->mBindings.Size());
         return false;
     }
 
@@ -244,12 +249,11 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& te
     return true;
 }
 
-bool ResourceBindingInstance::WriteCBufferView(size_t slot, const BufferPtr& buffer)
+bool ResourceBindingInstance::WriteCBufferView(uint32 slot, const BufferPtr& buffer)
 {
-    if (slot >= mBindingSet->mBindings.size())
+    if (slot >= mBindingSet->mBindings.Size())
     {
-        NFE_LOG_ERROR("Invalid binding set slot %zu (there are %zu slots)",
-                  slot, mBindingSet->mBindings.size());
+        NFE_LOG_ERROR("Invalid binding set slot %u (there are %u slots)", slot, mBindingSet->mBindings.Size());
         return false;
     }
 
@@ -270,12 +274,11 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, const BufferPtr& buf
     return true;
 }
 
-bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, const TexturePtr& texture)
+bool ResourceBindingInstance::WriteWritableTextureView(uint32 slot, const TexturePtr& texture)
 {
-    if (slot >= mBindingSet->mBindings.size())
+    if (slot >= mBindingSet->mBindings.Size())
     {
-        NFE_LOG_ERROR("Invalid binding set slot %zu (there are %zu slots)",
-                  slot, mBindingSet->mBindings.size());
+        NFE_LOG_ERROR("Invalid binding set slot %u (there are %u slots)", slot, mBindingSet->mBindings.Size());
         return false;
     }
 

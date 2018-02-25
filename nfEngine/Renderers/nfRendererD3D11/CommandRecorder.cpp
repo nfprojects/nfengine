@@ -102,18 +102,16 @@ void CommandRecorder::SetViewport(float left, float width, float top, float heig
     mContext->RSSetViewports(1, &viewport);
 }
 
-void CommandRecorder::SetVertexBuffers(int num, const BufferPtr* vertexBuffers, int* strides, int* offsets)
+void CommandRecorder::SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, uint32* strides, uint32* offsets)
 {
     ID3D11Buffer* vbs[16];
-    for (int i = 0; i < num; ++i)
+    for (uint32 i = 0; i < num; ++i)
     {
         const Buffer* vertexBuffer = dynamic_cast<Buffer*>(vertexBuffers[i].Get());
         vbs[i] = vertexBuffer->mBuffer.Get();
     }
 
-    mContext->IASetVertexBuffers(0, num, vbs,
-                                 reinterpret_cast<UINT*>(strides),
-                                 reinterpret_cast<UINT*>(offsets));
+    mContext->IASetVertexBuffers(0, num, vbs, strides, offsets);
 }
 
 void CommandRecorder::SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFormat format)
@@ -133,7 +131,7 @@ void CommandRecorder::SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFo
     mContext->IASetIndexBuffer(ib->mBuffer.Get(), dxgiFormat, 0);
 }
 
-void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance)
+void CommandRecorder::BindResources(uint32 slot, const ResourceBindingInstancePtr& bindingSetInstance)
 {
     if (!mBindingLayout)
     {
@@ -144,14 +142,14 @@ void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePt
     const ResourceBindingInstance* instance =
         dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.Get());
 
-    if (slot >= mBindingLayout->mBindingSets.size())
+    if (slot >= mBindingLayout->mBindingSets.Size())
     {
         NFE_LOG_ERROR("Invalid binding set slot");
         return;
     }
 
     const ResourceBindingSet* bindingSet = mBindingLayout->mBindingSets[slot].Get();
-    for (size_t i = 0; i < bindingSet->mBindings.size(); ++i)
+    for (uint32 i = 0; i < bindingSet->mBindings.Size(); ++i)
     {
         const ResourceBindingDesc& bindingDesc = bindingSet->mBindings[i];
         UINT slotOffset = bindingDesc.slot;
@@ -221,7 +219,7 @@ void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePt
     }
 }
 
-void CommandRecorder::BindVolatileCBuffer(size_t slot, const BufferPtr& buffer)
+void CommandRecorder::BindVolatileCBuffer(uint32 slot, const BufferPtr& buffer)
 {
     if (!mBindingLayout)
     {
@@ -229,7 +227,7 @@ void CommandRecorder::BindVolatileCBuffer(size_t slot, const BufferPtr& buffer)
         return;
     }
 
-    if (slot >= mBindingLayout->mVolatileCBuffers.size())
+    if (slot >= mBindingLayout->mVolatileCBuffers.Size())
     {
         NFE_LOG_ERROR("Invalid dynamic buffer slot");
         return;
@@ -276,11 +274,11 @@ void CommandRecorder::BindVolatileCBuffer(size_t slot, const BufferPtr& buffer)
 
 void CommandRecorder::UpdateSamplers()
 {
-    for (size_t j = 0; j < mBindingLayout->mBindingSets.size(); ++j)
+    for (uint32 j = 0; j < mBindingLayout->mBindingSets.Size(); ++j)
     {
         const ResourceBindingSet* bindingSet = mBindingLayout->mBindingSets[j].Get();
 
-        for (size_t i = 0; i < bindingSet->mBindings.size(); ++i)
+        for (uint32 i = 0; i < bindingSet->mBindings.Size(); ++i)
         {
             const ResourceBindingDesc& bindingDesc = bindingSet->mBindings[i];
             UINT slotOffset = bindingDesc.slot;
@@ -342,9 +340,9 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
 
     ID3D11DepthStencilView* dsv = nullptr;
     ID3D11RenderTargetView* rtvs[MAX_RENDER_TARGETS] = { nullptr };
-    size_t num = rt->mRTVs.size();
+    const uint32 num = rt->mRTVs.Size();
 
-    for (size_t i = 0; i < num; ++i)
+    for (uint32 i = 0; i < num; ++i)
         rtvs[i] = rt->mRTVs[i].Get();
 
     if (rt->mDepthBuffer)
@@ -402,7 +400,7 @@ void CommandRecorder::SetStencilRef(unsigned char ref)
     mStencilRef = ref;
 }
 
-void CommandRecorder::SetScissors(int left, int top, int right, int bottom)
+void CommandRecorder::SetScissors(int32 left, int32 top, int32 right, int32 bottom)
 {
     D3D11_RECT rect;
     rect.left = left;
@@ -496,8 +494,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
                            reinterpret_cast<ID3D11Resource*>(srcTex->mTextureGeneric));
 }
 
-void CommandRecorder::Clear(int flags, uint32 numTargets, const uint32* slots,
-                          const Math::Float4* colors, float depthValue, uint8 stencilValue)
+void CommandRecorder::Clear(uint32 flags, uint32 numTargets, const uint32* slots, const Math::Float4* colors, float depthValue, uint8 stencilValue)
 {
     if (mCurrentRenderTarget)
     {
@@ -508,7 +505,7 @@ void CommandRecorder::Clear(int flags, uint32 numTargets, const uint32* slots,
                 uint32 slot = i;
                 if (slots)
                 {
-                    if (slots[i] >= mCurrentRenderTarget->mRTVs.size())
+                    if (slots[i] >= mCurrentRenderTarget->mRTVs.Size())
                     {
                         NFE_LOG_ERROR("Invalid render target texture slot = %u", slots[i]);
                         return;
@@ -567,8 +564,7 @@ void CommandRecorder::UpdateState()
     }
 }
 
-void CommandRecorder::Draw(int vertexNum, int instancesNum, int vertexOffset,
-                         int instanceOffset)
+void CommandRecorder::Draw(uint32 vertexNum, uint32 instancesNum, uint32 vertexOffset, uint32 instanceOffset)
 {
     UpdateState();
 
@@ -578,19 +574,17 @@ void CommandRecorder::Draw(int vertexNum, int instancesNum, int vertexOffset,
         mContext->Draw(vertexNum, vertexOffset);
 }
 
-void CommandRecorder::DrawIndexed(int indexNum, int instancesNum,
-                                int indexOffset, int vertexOffset, int instanceOffset)
+void CommandRecorder::DrawIndexed(uint32 indexNum, uint32 instancesNum, uint32 indexOffset, int32 vertexOffset, uint32 instanceOffset)
 {
     UpdateState();
 
     if (instancesNum >= 0)
-        mContext->DrawIndexedInstanced(indexNum, instancesNum, indexOffset, vertexOffset,
-                                       instanceOffset);
+        mContext->DrawIndexedInstanced(indexNum, instancesNum, indexOffset, vertexOffset, instanceOffset);
     else
         mContext->DrawIndexed(indexNum, indexOffset, vertexOffset);
 }
 
-void CommandRecorder::BindComputeResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance)
+void CommandRecorder::BindComputeResources(uint32 slot, const ResourceBindingInstancePtr& bindingSetInstance)
 {
     if (!mComputeBindingLayout)
     {
@@ -599,14 +593,14 @@ void CommandRecorder::BindComputeResources(size_t slot, const ResourceBindingIns
     }
 
     const ResourceBindingInstance* instance = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.Get());
-    if (slot >= mComputeBindingLayout->mBindingSets.size())
+    if (slot >= mComputeBindingLayout->mBindingSets.Size())
     {
         NFE_LOG_ERROR("Invalid binding set slot");
         return;
     }
 
     const ResourceBindingSet* bindingSet = mComputeBindingLayout->mBindingSets[slot].Get();
-    for (size_t i = 0; i < bindingSet->mBindings.size(); ++i)
+    for (uint32 i = 0; i < bindingSet->mBindings.Size(); ++i)
     {
         const ResourceBindingDesc& bindingDesc = bindingSet->mBindings[i];
         UINT slotOffset = bindingDesc.slot;
@@ -639,7 +633,7 @@ void CommandRecorder::BindComputeResources(size_t slot, const ResourceBindingIns
     }
 }
 
-void CommandRecorder::BindComputeVolatileCBuffer(size_t slot, const BufferPtr& buffer)
+void CommandRecorder::BindComputeVolatileCBuffer(uint32 slot, const BufferPtr& buffer)
 {
     if (!mComputeBindingLayout)
     {
@@ -647,7 +641,7 @@ void CommandRecorder::BindComputeVolatileCBuffer(size_t slot, const BufferPtr& b
         return;
     }
 
-    if (slot >= mComputeBindingLayout->mVolatileCBuffers.size())
+    if (slot >= mComputeBindingLayout->mVolatileCBuffers.Size())
     {
         NFE_LOG_ERROR("Invalid dynamic buffer slot");
         return;

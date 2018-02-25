@@ -24,14 +24,14 @@ class Device : public IDevice
     D3DPtr<IDXGIFactory> mDXGIFactory;
     D3DPtr<ID3D11InfoQueue> mInfoQueue;
 
-    std::vector<D3DPtr<IDXGIAdapter>> mAdapters;
+    Common::DynArray<D3DPtr<IDXGIAdapter>> mAdapters;
     int mAdapterInUse;
 
     D3D_FEATURE_LEVEL mFeatureLevel;
     bool mDebugLayerEnabled;
 
     Common::Mutex mCommandListsMutex;
-    std::vector<ID3D11CommandList*> mCommandLists;
+    Common::DynArray<ID3D11CommandList*> mCommandLists;
 
     bool DetectVideoCards(int preferredId);
 
@@ -67,7 +67,7 @@ public:
     bool WaitForGPU() override;
 
     bool DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data) override;
-    bool DownloadTexture(const TexturePtr& tex, void* data, int mipmap, int layer) override;
+    bool DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap, uint32 layer) override;
 
     NFE_INLINE bool IsDebugLayerEnabled()
     {

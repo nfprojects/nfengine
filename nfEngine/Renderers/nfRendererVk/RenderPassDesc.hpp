@@ -6,12 +6,16 @@
 
 #pragma once
 
+#include "nfCommon/Containers/DynArray.hpp"
+#include "nfCommon/Containers/Hash.hpp"
+
+
 namespace NFE {
 namespace Renderer {
 
 struct RenderPassDesc
 {
-    std::vector<VkFormat> colorFormats;
+    Common::DynArray<VkFormat> colorFormats;
     VkFormat depthFormat;
 
     RenderPassDesc()
@@ -21,9 +25,9 @@ struct RenderPassDesc
     }
 
     RenderPassDesc(VkFormat* color, uint32 colorCount, VkFormat depth)
-        : colorFormats(colorCount)
-        , depthFormat(depth)
+        : depthFormat(depth)
     {
+        colorFormats.Resize(colorCount);
         for (uint32 i = 0; i < colorCount; ++i)
             colorFormats[i] = color[i];
     }
@@ -38,30 +42,19 @@ struct RenderPassDesc
 };
 
 } // namespace Renderer
-} // namespace NFE
 
+
+namespace Common {
 
 // hash specialization for RenderPassDesc
-namespace std
+inline uint32 GetHash(const Renderer::RenderPassDesc& renderPassDesc)
 {
-    template <> struct hash<VkFormat>
-    {
-        size_t operator()(const VkFormat format) const
-        {
-            return hash<unsigned int>()(static_cast<unsigned int>(format));
-        }
-    };
+    uint32 colorHash = 0;
+    for (auto& format : renderPassDesc.colorFormats)
+        colorHash ^= GetHash(uint32(format));
+    return colorHash ^ GetHash(renderPassDesc.colorFormats.Size()) ^ GetHash(uint32(renderPassDesc.depthFormat));
+}
 
-    template <> struct hash<NFE::Renderer::RenderPassDesc>
-    {
-        size_t operator()(const NFE::Renderer::RenderPassDesc& x) const
-        {
-            size_t colorHash = 0;
-            for (auto& format: x.colorFormats)
-                colorHash ^= hash<VkFormat>()(format);
-            return colorHash ^ hash<size_t>()(x.colorFormats.size()) ^ hash<VkFormat>()(x.depthFormat);
-        }
-    };
-} // namespace std
+}
 
-
+} // namespace NFE

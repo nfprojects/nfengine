@@ -58,7 +58,7 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
 
         mBindings.push_back(vibDesc);
     }
-    
+
     // create attributes
     for (uint32 i = 0; i < desc.numElements; ++i)
     {

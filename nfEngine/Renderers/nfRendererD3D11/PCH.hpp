@@ -20,9 +20,6 @@
 #include <d3d11_1.h>
 #include <d3dcompiler.h>
 
-#include <new>
 #include <memory>
 #include <assert.h>
-#include <set>
-#include <vector>
-#include <sstream>
+#include <atomic>

@@ -39,9 +39,9 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
     }
 
 
-    mBindings.reserve(desc.numBindings);
+    mBindings.Reserve(desc.numBindings);
 
-    for (size_t i = 0; i < desc.numBindings; ++i)
+    for (uint32 i = 0; i < desc.numBindings; ++i)
     {
         const ResourceBindingDesc& bindingDesc = desc.resourceBindings[i];
 
@@ -55,7 +55,7 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
             return false;
         }
 
-        mBindings.push_back(desc.resourceBindings[i]);
+        mBindings.PushBack(desc.resourceBindings[i]);
     }
 
     mShaderVisibility = desc.shaderVisibility;
@@ -64,8 +64,8 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
 
 bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
 {
-    const size_t maxSets = 16;
-    const size_t maxBindings = 64;
+    const uint32 maxSets = 16;
+    const uint32 maxBindings = 64;
 
     D3D12_STATIC_SAMPLER_DESC staticSamplers[maxBindings];
     D3D12_DESCRIPTOR_RANGE descriptorRanges[maxBindings];
@@ -75,12 +75,12 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     rsd.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
     rsd.pParameters = rootParameters;
 
-    mBindingSets.reserve(desc.numBindingSets);
+    mBindingSets.Reserve(desc.numBindingSets);
 
     uint32 rootParamIndex = 0;
-    size_t samplerCounter = 0;
-    size_t rangeCounter = 0;
-    for (size_t i = 0; i < desc.numBindingSets; ++i, ++rootParamIndex)
+    uint32 samplerCounter = 0;
+    uint32 rangeCounter = 0;
+    for (uint32 i = 0; i < desc.numBindingSets; ++i, ++rootParamIndex)
     {
         InternalResourceBindingSetPtr bindingSet = Common::StaticCast<ResourceBindingSet>(desc.bindingSets[i]);
         if (!bindingSet)
@@ -88,12 +88,11 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
             NFE_LOG_ERROR("Invalid binding set");
             return false;
         }
-        mBindingSets.push_back(bindingSet);
+        mBindingSets.PushBack(bindingSet);
 
         // set up root signature's parameter
         rootParameters[rootParamIndex].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE; // TODO temporary
-        rootParameters[rootParamIndex].DescriptorTable.NumDescriptorRanges =
-            static_cast<UINT>(bindingSet->mBindings.size());
+        rootParameters[rootParamIndex].DescriptorTable.NumDescriptorRanges = bindingSet->mBindings.Size();
         rootParameters[rootParamIndex].DescriptorTable.pDescriptorRanges = &descriptorRanges[rangeCounter];
 
         if (!TranslateShaderVisibility(bindingSet->mShaderVisibility, rootParameters[rootParamIndex].ShaderVisibility))
@@ -103,7 +102,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         }
 
         // iterate through descriptors within the set
-        for (size_t j = 0; j < bindingSet->mBindings.size(); ++j)
+        for (uint32 j = 0; j < bindingSet->mBindings.Size(); ++j)
         {
             if (rangeCounter >= maxBindings)
             {
@@ -141,13 +140,12 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
             rangeCounter++;
 
             // fill static samplers
-            if (bindingDesc.resourceType == ShaderResourceType::Texture &&
-                bindingDesc.staticSampler != nullptr)
+            if (bindingDesc.resourceType == ShaderResourceType::Texture && bindingDesc.staticSampler != nullptr)
             {
                 Sampler* sampler = dynamic_cast<Sampler*>(bindingDesc.staticSampler.Get());
                 if (!sampler)
                 {
-                    NFE_LOG_ERROR("Invalid static sampler in binding set %zu at slot %zu", i, j);
+                    NFE_LOG_ERROR("Invalid static sampler in binding set %u at slot %u", i, j);
                     return false;
                 }
 
@@ -161,10 +159,10 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     }
 
     // initialize root parameters (root descriptors) for dynamic buffers bindings
-    for (size_t i = 0; i < desc.numVolatileCBuffers; ++i, ++rootParamIndex)
+    for (uint32 i = 0; i < desc.numVolatileCBuffers; ++i, ++rootParamIndex)
     {
         const VolatileCBufferBinding& bindingDesc = desc.volatileCBuffers[i];
-        mDynamicBuffers.push_back(bindingDesc);
+        mDynamicBuffers.PushBack(bindingDesc);
 
         // set up root signature's parameter
         switch (desc.volatileCBuffers[i].resourceType)
@@ -174,7 +172,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
             break;
         // TODO: UAVs, raw buffers, etc.
         default:
-            NFE_LOG_ERROR("Unsupported shader resource type in dynamic buffer slot %zu", i);
+            NFE_LOG_ERROR("Unsupported shader resource type in dynamic buffer slot %u", i);
             return false;
         }
 
@@ -218,7 +216,7 @@ ResourceBindingInstance::~ResourceBindingInstance()
     if (mSet)
     {
         HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
-        allocator.Free(mDescriptorHeapOffset, static_cast<uint32>(mSet->mBindings.size()));
+        allocator.Free(mDescriptorHeapOffset, mSet->mBindings.Size());
     }
 }
 
@@ -233,11 +231,11 @@ bool ResourceBindingInstance::Init(const ResourceBindingSetPtr& bindingSet)
 
     // TODO ranges support
     HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
-    mDescriptorHeapOffset = allocator.Allocate(static_cast<uint32>(mSet->mBindings.size()));
+    mDescriptorHeapOffset = allocator.Allocate(mSet->mBindings.Size());
     return mDescriptorHeapOffset != -1;
 }
 
-bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& texture)
+bool ResourceBindingInstance::WriteTextureView(uint32 slot, const TexturePtr& texture)
 {
     // TODO this won't work if there are multiple buffers (frames) in the texture
 
@@ -290,7 +288,7 @@ bool ResourceBindingInstance::WriteTextureView(size_t slot, const TexturePtr& te
     return true;
 }
 
-bool ResourceBindingInstance::WriteCBufferView(size_t slot, const BufferPtr& buffer)
+bool ResourceBindingInstance::WriteCBufferView(uint32 slot, const BufferPtr& buffer)
 {
     const Buffer* cbuffer = dynamic_cast<Buffer*>(buffer.Get());
     if (!buffer || !cbuffer->GetResource())
@@ -311,7 +309,7 @@ bool ResourceBindingInstance::WriteCBufferView(size_t slot, const BufferPtr& buf
     return true;
 }
 
-bool ResourceBindingInstance::WriteWritableTextureView(size_t slot, const TexturePtr& texture)
+bool ResourceBindingInstance::WriteWritableTextureView(uint32 slot, const TexturePtr& texture)
 {
     const Texture* tex = dynamic_cast<Texture*>(texture.Get());
     if (!tex || !tex->mBuffers[0])

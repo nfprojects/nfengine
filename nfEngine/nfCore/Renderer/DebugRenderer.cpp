@@ -198,8 +198,8 @@ void DebugRenderer::Flush(DebugRendererContext* context)
 
     if (context->mode != DebugRendererMode::Simple)
     {
-        int stride = sizeof(DebugVertex);
-        int offset = 0;
+        uint32 stride = sizeof(DebugVertex);
+        uint32 offset = 0;
         const BufferPtr& vb = mVertexBuffer;
         context->commandRecorder->SetVertexBuffers(1, &vb, &stride, &offset);
         context->commandRecorder->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
@@ -424,8 +424,8 @@ void DebugRenderer::DrawMesh(DebugRendererContext* context, const Resource::Mesh
     perMeshCBuffer.modelMatrix = matrix;
     context->commandRecorder->WriteBuffer(mPerMeshConstantBuffer, 0, sizeof(DebugPerMeshCBuffer), &perMeshCBuffer);
 
-    int strides[] = { sizeof(Resource::MeshVertex) };
-    int offsets[] = { 0 };
+    uint32 strides[] = { sizeof(Resource::MeshVertex) };
+    uint32 offsets[] = { 0 };
     context->commandRecorder->SetVertexBuffers(1, &vb, strides, offsets);
     context->commandRecorder->SetIndexBuffer(ib, IndexBufferFormat::Uint32);
     for (const auto& subMesh : mesh->GetSubMeshes())

@@ -11,8 +11,7 @@
 #include "Texture.hpp"
 
 #include "nfCommon/System/Assertion.hpp"
-
-#include <vector>
+#include "nfCommon/Containers/DynArray.hpp"
 
 
 namespace NFE {
@@ -27,8 +26,8 @@ class RenderTarget : public IRenderTarget
     };
 
     // TODO: temporary
-    std::vector<Target> mTargets;
-    std::vector<uint32> mRTVs[2];
+    Common::DynArray<Target> mTargets;
+    Common::DynArray<uint32> mRTVs[2];
 
     InternalTexturePtr mDepthTexture;
     uint32 mDepthTextureSubresource;
@@ -39,31 +38,29 @@ public:
     ~RenderTarget();
 
     // IRenderTarget
-    void GetDimensions(int& width, int& height);
-    bool Init(const RenderTargetDesc& desc);
+    virtual void GetDimensions(int& width, int& height) override;
+    virtual bool Init(const RenderTargetDesc& desc) override;
 
 
-    NFE_INLINE size_t GetNumTargets() const
+    NFE_INLINE uint32 GetNumTargets() const
     {
-        return mTargets.size();
+        return mTargets.Size();
     }
 
     // get texture pointer for given target ID
-    NFE_INLINE const InternalTexturePtr& GetTexture(size_t targetID) const
+    NFE_INLINE const InternalTexturePtr& GetTexture(uint32 targetID) const
     {
-        NFE_ASSERT(targetID < mTargets.size(), "Invalid target ID");
         return mTargets[targetID].texture;
     }
 
     // get texture subresource index for given target ID
-    NFE_INLINE uint32 GetSubresourceID(size_t targetID) const
+    NFE_INLINE uint32 GetSubresourceID(uint32 targetID) const
     {
-        NFE_ASSERT(targetID < mTargets.size(), "Invalid target ID");
         return mTargets[targetID].subresource;
     }
 
     // get RTV for given target ID
-    NFE_INLINE uint32 GetRTV(size_t targetID) const
+    NFE_INLINE uint32 GetRTV(uint32 targetID) const
     {
         const InternalTexturePtr& tex = GetTexture(targetID);
         return mRTVs[tex->GetCurrentBuffer()][targetID];

@@ -17,10 +17,10 @@ namespace Renderer {
  */
 struct RenderTargetElement
 {
-    TexturePtr texture;    //< target texture object
-    int level;            //< target mipmap level within the texture
-    int layer;            //< target layer (or slice for 3D textures) within the texture
-    ElementFormat format; //< texture format override (use "Unknown" to inherit from the texture)
+    TexturePtr texture;     //< target texture object
+    uint32 level;           //< target mipmap level within the texture
+    uint32 layer;           //< target layer (or slice for 3D textures) within the texture
+    ElementFormat format;   //< texture format override (use "Unknown" to inherit from the texture)
 
     RenderTargetElement(const TexturePtr& texture = nullptr)
         : texture(texture)
@@ -35,7 +35,7 @@ struct RenderTargetElement
  */
 struct RenderTargetDesc
 {
-    unsigned int numTargets;            //< number of targets
+    uint32 numTargets;                  //< number of targets
     const RenderTargetElement* targets; //< array of RenderTargetElement
     TexturePtr depthBuffer;             //< optional pointer to a depth buffer's texture
     const char* debugName;              //< optional debug name

@@ -10,6 +10,8 @@
 #include "Translations.hpp"
 #include "Shader.hpp"
 #include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/Utils/StringUtils.hpp"
+
 
 namespace NFE {
 namespace Renderer {
@@ -21,7 +23,7 @@ VertexLayout::VertexLayout()
 bool VertexLayout::Init(const VertexLayoutDesc& desc)
 {
     HRESULT hr;
-    std::string vertexShaderCode;
+    Common::String vertexShaderCode;
     D3D11_INPUT_ELEMENT_DESC elementDescs[16];
 
     vertexShaderCode = "struct VertexShaderInput { ";
@@ -40,11 +42,10 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
         uint32 channels = GetElementFormatChannels(desc.elements[i].format);
 
         if (i == 0)
-            vertexShaderCode += "float" + std::to_string(channels) + " pos : POSITION; ";
+            vertexShaderCode += "float" + Common::ToString(channels) + " pos : POSITION; ";
         else
-            vertexShaderCode += "float" + std::to_string(channels) +
-                                " param" + std::to_string(i - 1) + " : TEXCOORD" +
-                                std::to_string(i - 1) + "; ";
+            vertexShaderCode += "float" + Common::ToString(channels) +
+                                " param" + Common::ToString(i - 1) + " : TEXCOORD" + Common::ToString(i - 1) + "; ";
     }
 
     vertexShaderCode += "}; float4 main(VertexShaderInput input) : SV_POSITION { return input.pos.xxxx; }";
@@ -52,7 +53,7 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
     /// compile dummy vertex shader
     D3DPtr<ID3DBlob> errorsBuffer;
     D3DPtr<ID3DBlob> bytecode;
-    hr = D3DCompile(vertexShaderCode.data(), vertexShaderCode.size(), nullptr, nullptr,
+    hr = D3DCompile(vertexShaderCode.Str(), vertexShaderCode.Length(), nullptr, nullptr,
                     nullptr, "main", "vs_4_0", 0, 0, bytecode.GetPtr(), errorsBuffer.GetPtr());
     if (errorsBuffer)
     {
@@ -75,12 +76,11 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
     if (gDevice->IsDebugLayerEnabled() && desc.debugName)
     {
         /// set debug name
-        std::string bufferName = "NFE::Renderer::VertexLayout \"";
+        Common::String bufferName = "NFE::Renderer::VertexLayout \"";
         if (desc.debugName)
             bufferName += desc.debugName;
         bufferName += '"';
-        D3D_CALL_CHECK(mIL->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(bufferName.length()),
-                                           bufferName.c_str()));
+        D3D_CALL_CHECK(mIL->SetPrivateData(WKPDID_D3DDebugObjectName, bufferName.Length(), bufferName.Str()));
 }
 
     return true;

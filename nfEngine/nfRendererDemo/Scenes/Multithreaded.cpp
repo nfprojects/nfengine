@@ -329,8 +329,8 @@ void MultithreadedScene::DrawTask(const Common::TaskContext& ctx, int i, int j)
     recorder->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     recorder->SetRenderTarget(mWindowRenderTarget);
 
-    int stride = 9 * sizeof(float);
-    int offset = 0;
+    uint32 stride = 9 * sizeof(float);
+    uint32 offset = 0;
     const BufferPtr& vb = mVertexBuffer;
     recorder->SetVertexBuffers(1, &vb, &stride, &offset);
     recorder->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);

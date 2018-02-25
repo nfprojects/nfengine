@@ -34,8 +34,7 @@ protected:
     ShaderPtr mPixelShader;
 
 
-    ShaderPtr CompileShader(const char* path, ShaderType type, ShaderMacro* macros = nullptr,
-                            size_t macrosNum = 0)
+    ShaderPtr CompileShader(const char* path, ShaderType type, ShaderMacro* macros = nullptr, uint32 macrosNum = 0)
     {
         const String shaderPath = gShaderPathPrefix + path + gShaderPathExt;
 
@@ -47,8 +46,7 @@ protected:
         return gRendererDevice->CreateShader(desc);
     }
 
-    void CreateShaderProgram(const char* vsPath, const char* psPath,
-                             ShaderMacro* macros = nullptr, size_t macrosNum = 0)
+    void CreateShaderProgram(const char* vsPath, const char* psPath, ShaderMacro* macros = nullptr, uint32 macrosNum = 0)
     {
         mVertexShader = CompileShader(vsPath, ShaderType::Vertex, macros, macrosNum);
         ASSERT_NE(nullptr, mVertexShader.Get());
@@ -169,8 +167,8 @@ TEST_F(SimpleDrawTest, Culling)
             mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &CLEAR_COLOR);
 
             const BufferPtr& vb = mVertexBuffer;
-            int stride = sizeof(VertexFormat);
-            int offset = 0;
+            uint32 stride = sizeof(VertexFormat);
+            uint32 offset = 0;
             mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
             mCommandBuffer->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
             mCommandBuffer->SetResourceBindingLayout(resBindingLayout);
@@ -504,8 +502,8 @@ TEST_F(SimpleDrawTest, StaticCBuffer)
         mCommandBuffer->Clear(ClearFlagsColor, 1, nullptr, &CLEAR_COLOR);
 
         const BufferPtr& vb = mVertexBuffer;
-        int stride = sizeof(VertexFormat);
-        int offset = 0;
+        uint32 stride = sizeof(VertexFormat);
+        uint32 offset = 0;
         mCommandBuffer->SetVertexBuffers(1, &vb, &stride, &offset);
         mCommandBuffer->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
         mCommandBuffer->SetResourceBindingLayout(resBindingLayout);

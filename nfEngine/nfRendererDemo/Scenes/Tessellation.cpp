@@ -200,8 +200,8 @@ void TessellationScene::Draw(float dt)
     mCommandBuffer->SetScissors(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     mCommandBuffer->SetRenderTarget(mWindowRenderTarget);
 
-    int stride = 3 * sizeof(float);
-    int offset = 0;
+    uint32 stride = 3 * sizeof(float);
+    uint32 offset = 0;
 
     if (mVertexBuffer)
     {

@@ -122,7 +122,7 @@ public:
      * @param      tex  Texture to read.
      * @param[out] data Target CPU buffer.
      */
-    virtual bool DownloadTexture(const TexturePtr& tex, void* data, int mipmap = 0, int layer = 0) = 0;
+    virtual bool DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap = 0, uint32 layer = 0) = 0;
 };
 
 

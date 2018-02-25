@@ -592,7 +592,7 @@ bool Device::DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size,
     return false;
 }
 
-bool Device::DownloadTexture(const TexturePtr& tex, void* data, int mipmap, int layer)
+bool Device::DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap, uint32 layer)
 {
     NFE_UNUSED(tex);
     NFE_UNUSED(data);

@@ -32,7 +32,7 @@ SemaphorePool::~SemaphorePool()
 
 bool SemaphorePool::Init(uint32 semaphoreCount)
 {
-    mSemaphores.resize(semaphoreCount);
+    mSemaphores.Resize(semaphoreCount);
 
     VkSemaphoreCreateInfo semInfo;
     VK_ZERO_MEMORY(semInfo);
@@ -56,7 +56,7 @@ void SemaphorePool::Advance()
     mPreviousSemaphore = mCurrentSemaphore;
 
     ++mCurrentSemaphore;
-    if (mCurrentSemaphore >= mSemaphores.size())
+    if (mCurrentSemaphore >= mSemaphores.Size())
     {
         mCurrentSemaphore = 0;
     }

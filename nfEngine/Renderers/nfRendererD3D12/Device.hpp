@@ -11,7 +11,6 @@
 #include "PipelineState.hpp"
 #include "HeapAllocator.hpp"
 
-#include <map>
 #include <atomic>
 
 
@@ -81,7 +80,7 @@ public:
     bool FinishFrame() override;
 
     bool DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data) override;
-    bool DownloadTexture(const TexturePtr& tex, void* data, int mipmap, int layer) override;
+    bool DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap, uint32 layer) override;
 
     bool WaitForGPU() override;
 
