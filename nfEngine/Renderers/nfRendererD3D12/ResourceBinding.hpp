@@ -8,8 +8,8 @@
 
 #include "../RendererInterface/ResourceBinding.hpp"
 #include "Common.hpp"
+#include "../../nfCommon/Containers/DynArray.hpp"
 
-#include <vector>
 
 // max supported number of volatile constant buffers
 #define NFE_RENDERER_MAX_VOLATILE_CBUFFERS 4
@@ -23,7 +23,7 @@ class ResourceBindingSet : public IResourceBindingSet
     friend class ResourceBindingLayout;
     friend class CommandRecorder;
 
-    std::vector<ResourceBindingDesc> mBindings;
+    Common::DynArray<ResourceBindingDesc> mBindings;
     ShaderType mShaderVisibility;
 
 public:
@@ -42,8 +42,8 @@ class ResourceBindingLayout : public IResourceBindingLayout
     friend class PipelineState;
 
     D3DPtr<ID3D12RootSignature> mRootSignature;
-    std::vector<InternalResourceBindingSetPtr> mBindingSets;
-    std::vector<VolatileCBufferBinding> mDynamicBuffers;
+    Common::DynArray<InternalResourceBindingSetPtr> mBindingSets;
+    Common::DynArray<VolatileCBufferBinding> mDynamicBuffers;
 
 public:
     bool Init(const ResourceBindingLayoutDesc& desc) override;
@@ -71,9 +71,9 @@ public:
     ResourceBindingInstance() : mDescriptorHeapOffset(0), mSet(nullptr) { }
     ~ResourceBindingInstance();
     bool Init(const ResourceBindingSetPtr& bindingSet) override;
-    bool WriteTextureView(size_t slot, const TexturePtr& texture) override;
-    bool WriteCBufferView(size_t slot, const BufferPtr& buffer) override;
-    bool WriteWritableTextureView(size_t slot, const TexturePtr& texture) override;
+    bool WriteTextureView(uint32 slot, const TexturePtr& texture) override;
+    bool WriteCBufferView(uint32 slot, const BufferPtr& buffer) override;
+    bool WriteWritableTextureView(uint32 slot, const TexturePtr& texture) override;
 };
 
 

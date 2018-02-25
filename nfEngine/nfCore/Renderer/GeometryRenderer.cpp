@@ -159,24 +159,18 @@ bool GeometryRenderer::CreateResourceBindingLayouts()
     if (materialCBufferSlot < 0 || normalTextureSlot < 0 || specularTextureSlot < 0)
         return false;
 
-    std::vector<ResourceBindingSetPtr> bindingSets;
+    Common::DynArray<ResourceBindingSetPtr> bindingSets;
 
     ResourceBindingDesc binding2[3] =
     {
-        ResourceBindingDesc(ShaderResourceType::Texture,
-                            diffuseTextureSlot,
-                            mRenderer->GetDefaultSampler()),
-        ResourceBindingDesc(ShaderResourceType::Texture,
-                            normalTextureSlot,
-                            mRenderer->GetDefaultSampler()),
-        ResourceBindingDesc(ShaderResourceType::Texture,
-                            specularTextureSlot,
-                            mRenderer->GetDefaultSampler()),
+        ResourceBindingDesc(ShaderResourceType::Texture, diffuseTextureSlot, mRenderer->GetDefaultSampler()),
+        ResourceBindingDesc(ShaderResourceType::Texture, normalTextureSlot, mRenderer->GetDefaultSampler()),
+        ResourceBindingDesc(ShaderResourceType::Texture, specularTextureSlot, mRenderer->GetDefaultSampler()),
     };
     mMatTexturesBindingSet = device->CreateResourceBindingSet(ResourceBindingSetDesc(binding2, 3, ShaderType::Pixel));
     if (!mMatTexturesBindingSet)
         return false;
-    bindingSets.push_back(mMatTexturesBindingSet);
+    bindingSets.PushBack(mMatTexturesBindingSet);
 
     VolatileCBufferBinding cbufferBindingsDesc[2] =
     {
@@ -186,7 +180,7 @@ bool GeometryRenderer::CreateResourceBindingLayouts()
 
     // create binding layout
     mResBindingLayout = device->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(bindingSets.data(), bindingSets.size(), cbufferBindingsDesc, 2));
+        ResourceBindingLayoutDesc(bindingSets.Data(), bindingSets.Size(), cbufferBindingsDesc, 2));
     if (!mResBindingLayout)
         return false;
 
@@ -355,8 +349,8 @@ void GeometryRenderer::Draw(GeometryRendererContext* context, const RenderComman
             currVB = command.vertexBuffer;
 
             const BufferPtr buffers[] = { currVB, mInstancesVertexBuffer };
-            int strides[] = { sizeof(Resource::MeshVertex), sizeof(InstanceData) };
-            int offsets[] = { 0, 0 };
+            uint32 strides[] = { sizeof(Resource::MeshVertex), sizeof(InstanceData) };
+            uint32 offsets[] = { 0, 0 };
             context->commandRecorder->SetVertexBuffers(2, buffers, strides, offsets);
             context->commandRecorder->SetIndexBuffer(currIB, IndexBufferFormat::Uint32);
         }

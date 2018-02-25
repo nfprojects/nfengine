@@ -46,13 +46,13 @@ CommandRecorder::CommandRecorder()
     , mNumBoundVertexBuffers(0)
     , mReset(false)
 {
-    for (int i = 0; i < NFE_RENDERER_MAX_VOLATILE_CBUFFERS; ++i)
+    for (uint32 i = 0; i < NFE_RENDERER_MAX_VOLATILE_CBUFFERS; ++i)
     {
         mBoundVolatileCBuffers[i] = nullptr;
         mBoundComputeVolatileCBuffers[i] = nullptr;
     }
 
-    for (int i = 0; i < NFE_RENDERER_MAX_VERTEX_BUFFERS; ++i)
+    for (uint32 i = 0; i < NFE_RENDERER_MAX_VERTEX_BUFFERS; ++i)
         mBoundVertexBuffers[i] = nullptr;
 }
 
@@ -61,7 +61,7 @@ bool CommandRecorder::Init(ID3D12Device* device)
     HRESULT hr;
 
     mFrameCounter = 1;
-    mFenceValues.resize(mFrameCount);
+    mFenceValues.Resize(mFrameCount);
 
     for (uint32 i = 0; i < mFrameCount; ++i)
     {
@@ -74,7 +74,7 @@ bool CommandRecorder::Init(ID3D12Device* device)
             return false;
         }
 
-        mCommandAllocators.emplace_back(std::move(commandAllocator));
+        mCommandAllocators.PushBack(std::move(commandAllocator));
         mFenceValues[i] = 1;
     }
 
@@ -162,14 +162,14 @@ bool CommandRecorder::Begin()
     mCurrComputePipelineState = nullptr;
     mCurrPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
 
-    for (int i = 0; i < NFE_RENDERER_MAX_VOLATILE_CBUFFERS; ++i)
+    for (uint32 i = 0; i < NFE_RENDERER_MAX_VOLATILE_CBUFFERS; ++i)
     {
         mBoundVolatileCBuffers[i] = nullptr;
         mBoundComputeVolatileCBuffers[i] = nullptr;
     }
 
     mNumBoundVertexBuffers = 0;
-    for (int i = 0; i < NFE_RENDERER_MAX_VERTEX_BUFFERS; ++i)
+    for (uint32 i = 0; i < NFE_RENDERER_MAX_VERTEX_BUFFERS; ++i)
         mBoundVertexBuffers[i] = nullptr;
 
     mReset = true;
@@ -189,7 +189,7 @@ void CommandRecorder::SetViewport(float left, float width, float top, float heig
     mCommandList->RSSetViewports(1, &viewport);
 }
 
-void CommandRecorder::SetScissors(int left, int top, int right, int bottom)
+void CommandRecorder::SetScissors(int32 left, int32 top, int32 right, int32 bottom)
 {
     D3D12_RECT rect;
     rect.left = left;
@@ -211,14 +211,14 @@ void CommandRecorder::UnmapBuffer(const BufferPtr& buffer)
     NFE_UNUSED(buffer);
 }
 
-void CommandRecorder::SetVertexBuffers(int num, const BufferPtr* vertexBuffers, int* strides, int* offsets)
+void CommandRecorder::SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, uint32* strides, uint32* offsets)
 {
     // TODO
     NFE_UNUSED(offsets);
 
     NFE_ASSERT(num < NFE_RENDERER_MAX_VERTEX_BUFFERS, "Too many vertex buffers");
 
-    for (int i = 0; i < num; ++i)
+    for (uint32 i = 0; i < num; ++i)
     {
         D3D12_GPU_VIRTUAL_ADDRESS gpuAddress = 0;
         uint32 size = 0;
@@ -271,7 +271,7 @@ void CommandRecorder::SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFo
     mCommandList->IASetIndexBuffer(&view);
 }
 
-void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance)
+void CommandRecorder::BindResources(uint32 slot, const ResourceBindingInstancePtr& bindingSetInstance)
 {
     // TODO resource tracking
     ResourceBindingInstance* instance = dynamic_cast<ResourceBindingInstance*>(bindingSetInstance.Get());
@@ -284,15 +284,15 @@ void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePt
         mCurrBindingLayout = mBindingLayout;
     }
 
-    NFE_ASSERT(slot < mCurrBindingLayout->mBindingSets.size(), "Binding set index out of bounds");
+    NFE_ASSERT(slot < mCurrBindingLayout->mBindingSets.Size(), "Binding set index out of bounds");
 
     HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
     D3D12_GPU_DESCRIPTOR_HANDLE ptr = allocator.GetGpuHandle();
     ptr.ptr += instance->mDescriptorHeapOffset * allocator.GetDescriptorSize();
-    mCommandList->SetGraphicsRootDescriptorTable(static_cast<UINT>(slot), ptr);
+    mCommandList->SetGraphicsRootDescriptorTable(slot, ptr);
 }
 
-void CommandRecorder::BindVolatileCBuffer(size_t slot, const BufferPtr& buffer)
+void CommandRecorder::BindVolatileCBuffer(uint32 slot, const BufferPtr& buffer)
 {
     NFE_ASSERT(slot < NFE_RENDERER_MAX_VOLATILE_CBUFFERS, "Invalid volatile buffer slot number");
 
@@ -335,8 +335,8 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
         D3D12_CPU_DESCRIPTOR_HANDLE dsv;
         bool setDsv = false;
 
-        size_t numTargets = mCurrRenderTarget->GetNumTargets();
-        for (size_t i = 0; i < numTargets; ++i)
+        uint32 numTargets = mCurrRenderTarget->GetNumTargets();
+        for (uint32 i = 0; i < numTargets; ++i)
         {
             const InternalTexturePtr& tex = mCurrRenderTarget->GetTexture(i);
             uint32 subResource = mCurrRenderTarget->GetSubresourceID(i);
@@ -381,7 +381,7 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
         if (numBarriers > 0)
             mCommandList->ResourceBarrier(numBarriers, barriers);
 
-        mCommandList->OMSetRenderTargets(static_cast<UINT>(numTargets), rtvs, FALSE, setDsv ? &dsv : nullptr);
+        mCommandList->OMSetRenderTargets(numTargets, rtvs, FALSE, setDsv ? &dsv : nullptr);
     }
 }
 
@@ -398,8 +398,8 @@ void CommandRecorder::UnsetRenderTarget()
 
     if (mCurrRenderTarget != nullptr)
     {
-        size_t numTargets = mCurrRenderTarget->GetNumTargets();
-        for (size_t i = 0; i < numTargets; ++i)
+        uint32 numTargets = mCurrRenderTarget->GetNumTargets();
+        for (uint32 i = 0; i < numTargets; ++i)
         {
             const InternalTexturePtr& tex = mCurrRenderTarget->GetTexture(i);
             uint32 subResource = mCurrRenderTarget->GetSubresourceID(i);
@@ -511,7 +511,7 @@ void CommandRecorder::WriteVolatileBuffer(Buffer* buffer, const void* data)
         {
             if (mBoundComputeVolatileCBuffers[i] == buffer)
             {
-                UINT rootParamIndex = static_cast<UINT>(mComputeBindingLayout->mBindingSets.size()) + i;
+                const uint32 rootParamIndex = mComputeBindingLayout->mBindingSets.Size() + i;
                 mCommandList->SetComputeRootConstantBufferView(rootParamIndex, gpuPtr);
             }
         }
@@ -522,7 +522,7 @@ void CommandRecorder::WriteVolatileBuffer(Buffer* buffer, const void* data)
     {
         if (mBoundVolatileCBuffers[i] == buffer)
         {
-            UINT rootParamIndex = static_cast<UINT>(mBindingLayout->mBindingSets.size()) + i;
+            const uint32 rootParamIndex = mBindingLayout->mBindingSets.Size() + i;
             mCommandList->SetGraphicsRootConstantBufferView(rootParamIndex, gpuPtr);
         }
     }
@@ -692,8 +692,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
     }
 }
 
-void CommandRecorder::Clear(int flags, uint32 numTargets, const uint32* slots,
-                          const Math::Float4* colors, float depthValue, uint8 stencilValue)
+void CommandRecorder::Clear(uint32 flags, uint32 numTargets, const uint32* slots, const Math::Float4* colors, float depthValue, uint8 stencilValue)
 {
     if (mCurrRenderTarget == nullptr)
         return;
@@ -777,22 +776,19 @@ void CommandRecorder::UpdateStates()
     }
 }
 
-void CommandRecorder::Draw(int vertexNum, int instancesNum, int vertexOffset,
-                         int instanceOffset)
+void CommandRecorder::Draw(uint32 vertexNum, uint32 instancesNum, uint32 vertexOffset, uint32 instanceOffset)
 {
     UpdateStates();
     mCommandList->DrawInstanced(vertexNum, instancesNum, vertexOffset, instanceOffset);
 }
 
-void CommandRecorder::DrawIndexed(int indexNum, int instancesNum,
-                                int indexOffset, int vertexOffset, int instanceOffset)
+void CommandRecorder::DrawIndexed(uint32 indexNum, uint32 instancesNum, uint32 indexOffset, int32 vertexOffset, uint32 instanceOffset)
 {
     UpdateStates();
-    mCommandList->DrawIndexedInstanced(indexNum, instancesNum, indexOffset, vertexOffset,
-                                       instanceOffset);
+    mCommandList->DrawIndexedInstanced(indexNum, instancesNum, indexOffset, vertexOffset, instanceOffset);
 }
 
-void CommandRecorder::BindComputeResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance)
+void CommandRecorder::BindComputeResources(uint32 slot, const ResourceBindingInstancePtr& bindingSetInstance)
 {
     // TODO resource tracking
 
@@ -802,20 +798,20 @@ void CommandRecorder::BindComputeResources(size_t slot, const ResourceBindingIns
         // clear the slot
         D3D12_GPU_DESCRIPTOR_HANDLE ptr;
         ptr.ptr = 0;
-        mCommandList->SetComputeRootDescriptorTable(static_cast<UINT>(slot), ptr);
+        mCommandList->SetComputeRootDescriptorTable(slot, ptr);
         return;
     }
 
     NFE_ASSERT(mComputeBindingLayout, "Compute binding layout not set");
-    NFE_ASSERT(slot < mComputeBindingLayout->mBindingSets.size(), "Binding set index out of bounds");
+    NFE_ASSERT(slot < mComputeBindingLayout->mBindingSets.Size(), "Binding set index out of bounds");
 
     HeapAllocator& allocator = gDevice->GetCbvSrvUavHeapAllocator();
     D3D12_GPU_DESCRIPTOR_HANDLE ptr = allocator.GetGpuHandle();
     ptr.ptr += instance->mDescriptorHeapOffset * allocator.GetDescriptorSize();
-    mCommandList->SetComputeRootDescriptorTable(static_cast<UINT>(slot), ptr);
+    mCommandList->SetComputeRootDescriptorTable(slot, ptr);
 }
 
-void CommandRecorder::BindComputeVolatileCBuffer(size_t slot, const BufferPtr& buffer)
+void CommandRecorder::BindComputeVolatileCBuffer(uint32 slot, const BufferPtr& buffer)
 {
     NFE_ASSERT(slot < NFE_RENDERER_MAX_VOLATILE_CBUFFERS, "Invalid volatile buffer slot number");
 

@@ -11,7 +11,6 @@
 #include "PipelineState.hpp"
 #include "HeapAllocator.hpp"
 
-#include <map>
 #include <atomic>
 
 
@@ -28,7 +27,7 @@ class Device : public IDevice
 
     D3D_FEATURE_LEVEL mFeatureLevel;
 
-    std::vector<D3DPtr<IDXGIAdapter>> mAdapters;
+    Common::DynArray<D3DPtr<IDXGIAdapter>> mAdapters;
     int mAdapterInUse;
 
     D3DPtr<IDXGIFactory4> mDXGIFactory;
@@ -81,7 +80,7 @@ public:
     bool FinishFrame() override;
 
     bool DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data) override;
-    bool DownloadTexture(const TexturePtr& tex, void* data, int mipmap, int layer) override;
+    bool DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap, uint32 layer) override;
 
     bool WaitForGPU() override;
 

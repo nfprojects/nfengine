@@ -286,8 +286,8 @@ void VertexBuffersScene::Draw(float dt)
     if (mInstanceBuffer)
     {
         const BufferPtr vertexBuffers[] = { mPositionsVertexBuffer, mColorVertexBuffer, mInstanceBuffer };
-        int strides[] = { 3 * sizeof(float), 4 * sizeof(float), sizeof(InstanceData) };
-        int offsets[] = { 0, 0, 0 };
+        uint32 strides[] = { 3 * sizeof(float), 4 * sizeof(float), sizeof(InstanceData) };
+        uint32 offsets[] = { 0, 0, 0 };
         mCommandBuffer->SetVertexBuffers(3, vertexBuffers, strides, offsets);
 
         // update dynamic/volatile buffer
@@ -312,8 +312,8 @@ void VertexBuffersScene::Draw(float dt)
     else
     {
         const BufferPtr vertexBuffers[] = { mPositionsVertexBuffer, mColorVertexBuffer };
-        int strides[] = { 3 * sizeof(float), 4 * sizeof(float) };
-        int offsets[] = { 0, 0 };
+        uint32 strides[] = { 3 * sizeof(float), 4 * sizeof(float) };
+        uint32 offsets[] = { 0, 0 };
         mCommandBuffer->SetVertexBuffers(2, vertexBuffers, strides, offsets);
     }
 

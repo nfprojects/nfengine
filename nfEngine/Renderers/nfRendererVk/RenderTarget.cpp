@@ -44,7 +44,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         return false;
     }
 
-    mTex.resize(desc.numTargets);
+    mTex.Resize(desc.numTargets);
     mDepthTex = dynamic_cast<Texture*>(desc.depthBuffer.Get());
 
     // request a render pass from manager
@@ -71,7 +71,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
         return false;
 
     // TODO something very temporary to resolve in the future
-    mFramebuffers.resize(mTex[0]->mBuffersNum);
+    mFramebuffers.Resize(mTex[0]->mBuffersNum);
 
     VkResult result = VK_SUCCESS;
     // for each swapchain image create a framebuffer
@@ -79,10 +79,10 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
     {
         for (unsigned int i = 0; i < mTex[0]->mBuffersNum; ++i)
         {
-            std::vector<VkImageView> fbAtts;
-            fbAtts.push_back(mTex[0]->mBufferViews[i]);
+            Common::StaticArray<VkImageView, 2> fbAtts;
+            fbAtts.PushBack(mTex[0]->mBufferViews[i]);
             if (mDepthTex)
-                fbAtts.push_back(mDepthTex->mBufferViews[0]);
+                fbAtts.PushBack(mDepthTex->mBufferViews[0]);
 
             VkFramebufferCreateInfo fbInfo;
             VK_ZERO_MEMORY(fbInfo);
@@ -90,8 +90,8 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             fbInfo.width = mTex[0]->mWidth;
             fbInfo.height = mTex[0]->mHeight;
             fbInfo.renderPass = mRenderPass;
-            fbInfo.attachmentCount = static_cast<uint32>(fbAtts.size());
-            fbInfo.pAttachments = fbAtts.data();
+            fbInfo.attachmentCount = fbAtts.Size();
+            fbInfo.pAttachments = fbAtts.Data();
             fbInfo.layers = 1;
             result = vkCreateFramebuffer(gDevice->GetDevice(), &fbInfo, nullptr, &mFramebuffers[i]);
             CHECK_VKRESULT(result, "Failed to create framebuffer");

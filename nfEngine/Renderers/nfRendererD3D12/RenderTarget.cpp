@@ -25,7 +25,7 @@ RenderTarget::~RenderTarget()
 {
     HeapAllocator& allocator = gDevice->GetRtvHeapAllocator();
 
-    for (size_t i = 0; i < 2; ++i)
+    for (uint32 i = 0; i < 2; ++i)
     {
         for (uint32 offset : mRTVs[i])
             allocator.Free(offset, 1);
@@ -48,7 +48,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
 {
     HeapAllocator& rtvAllocator = gDevice->GetRtvHeapAllocator();
 
-    for (unsigned int i = 0; i < desc.numTargets; ++i)
+    for (uint32 i = 0; i < desc.numTargets; ++i)
     {
         Texture* tex = dynamic_cast<Texture*>(desc.targets[i].texture.Get());
         if (tex == nullptr)
@@ -117,13 +117,13 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             D3D12_CPU_DESCRIPTOR_HANDLE handle = rtvAllocator.GetCpuHandle();
             handle.ptr += rtvAllocator.GetDescriptorSize() * offset;
             gDevice->mDevice->CreateRenderTargetView(tex->mBuffers[n].Get(), &rtvDesc, handle);
-            mRTVs[n].push_back(offset);
+            mRTVs[n].PushBack(offset);
         }
 
         Target targetInfo;
         targetInfo.texture = Common::DynamicCast<Texture>(desc.targets[i].texture);
         targetInfo.subresource = desc.targets[i].level + desc.targets[i].layer * tex->GetMipmapsNum();
-        mTargets.push_back(targetInfo);
+        mTargets.PushBack(targetInfo);
     }
 
     if (desc.depthBuffer)

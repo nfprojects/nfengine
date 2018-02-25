@@ -111,7 +111,7 @@ public:
      * @{
      */
 
-    virtual void SetVertexBuffers(int num, const BufferPtr* vertexBuffers, int* strides, int* offsets) = 0;
+    virtual void SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, uint32* strides, uint32* offsets) = 0;
     virtual void SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFormat format) = 0;
 
     /**
@@ -120,14 +120,14 @@ public:
      * @param bindingSetInstance Binding set instance to be bound to the pipeline or NULL
      *                           to clear all bound resources for this set.
      */
-    virtual void BindResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance) = 0;
+    virtual void BindResources(uint32 slot, const ResourceBindingInstancePtr& bindingSetInstance) = 0;
 
     /**
      * Bind dynamic buffer to the graphics pipeline.
      * @param slot      Dynamic buffer slot in the current resource binding layout.
      * @param buffer    Buffer to bind.
      */
-    virtual void BindVolatileCBuffer(size_t slot, const BufferPtr& buffer) = 0;
+    virtual void BindVolatileCBuffer(uint32 slot, const BufferPtr& buffer) = 0;
 
     /**
      * Set new shaders resources binding layout for graphics pipeline.
@@ -148,10 +148,9 @@ public:
      */
     virtual void SetPipelineState(const PipelineStatePtr& state) = 0;
 
-    virtual void SetStencilRef(unsigned char ref) = 0;
-    virtual void SetViewport(float left, float width, float top, float height,
-                             float minDepth, float maxDepth) = 0;
-    virtual void SetScissors(int left, int top, int right, int bottom) = 0;
+    virtual void SetStencilRef(uint8 ref) = 0;
+    virtual void SetViewport(float left, float width, float top, float height, float minDepth, float maxDepth) = 0;
+    virtual void SetScissors(int32 left, int32 top, int32 right, int32 bottom) = 0;
 
     /**
      * Clear bound render targets with a color.
@@ -162,7 +161,7 @@ public:
      * @param depthValue    New depth value (should be between 0.0f and 1.0f).
      * @param stencilValue  New stencil value.
      */
-    virtual void Clear(int flags, uint32 numTargets, const uint32* slots, const Math::Float4* colors,
+    virtual void Clear(uint32 flags, uint32 numTargets, const uint32* slots, const Math::Float4* colors,
                        float depthValue = 0.0f, uint8 stencilValue = 0) = 0;
 
     /**
@@ -174,7 +173,7 @@ public:
      * @param vertexOffset   Vertex buffer offset (in elements).
      * @param instanceOffset Per-instance buffer offset (in elements).
      */
-    virtual void Draw(int vertexNum, int instancesNum = 1, int vertexOffset = 0, int instanceOffset = 0) = 0;
+    virtual void Draw(uint32 vertexNum, uint32 instancesNum = 1, uint32 vertexOffset = 0, uint32 instanceOffset = 0) = 0;
 
     /**
      * Draw geometry (with indexed verticies).
@@ -186,9 +185,9 @@ public:
      * @param vertexOffset   Vertex buffer offset (in elements).
      * @param instanceOffset Per-instance buffer offset (in elements).
      */
-    virtual void DrawIndexed(int indexNum,
-                             int instancesNum = 1, int indexOffset = 0,
-                             int vertexOffset = 0, int instanceOffset = 0) = 0;
+    virtual void DrawIndexed(uint32 indexNum,
+                             uint32 instancesNum = 1, uint32 indexOffset = 0,
+                             int32 vertexOffset = 0, uint32 instanceOffset = 0) = 0;
 
     /**@}*/
 
@@ -205,14 +204,14 @@ public:
      * @param bindingSetInstance Binding set instance to be bound to the pipeline or NULL
      *                           to clear all bound resources for this set.
      */
-    virtual void BindComputeResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance) = 0;
+    virtual void BindComputeResources(uint32 slot, const ResourceBindingInstancePtr& bindingSetInstance) = 0;
 
     /**
      * Bind dynamic buffer to the compute pipeline.
      * @param slot      Dynamic buffer slot in the current resource binding layout.
      * @param buffer    Buffer to bind.
      */
-    virtual void BindComputeVolatileCBuffer(size_t slot, const BufferPtr& buffer) = 0;
+    virtual void BindComputeVolatileCBuffer(uint32 slot, const BufferPtr& buffer) = 0;
 
     /**
      * Set new shaders resources binding layout for compute pipeline.

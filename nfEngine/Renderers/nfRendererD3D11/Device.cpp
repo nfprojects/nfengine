@@ -175,7 +175,7 @@ Device::~Device()
             mInfoQueue.Reset();
 
             mDXGIFactory.Reset();
-            mAdapters.clear();
+            mAdapters.Clear();
             mImmediateContext.Reset();
             mDevice.Reset();
 
@@ -278,8 +278,8 @@ CommandListID Device::RegisterCommandList(ID3D11CommandList* commandList)
     CommandListID id = INVALID_COMMAND_LIST_ID;
     {
         Common::ScopedMutexLock lock(mCommandListsMutex);
-        mCommandLists.push_back(commandList);
-        id = static_cast<CommandListID>(mCommandLists.size());
+        mCommandLists.PushBack(commandList);
+        id = static_cast<CommandListID>(mCommandLists.Size());
     }
 
     return id;
@@ -296,7 +296,7 @@ bool Device::Execute(CommandListID id)
     ID3D11CommandList* list = nullptr;
     {
         Common::ScopedMutexLock lock(mCommandListsMutex);
-        if (id > mCommandLists.size())
+        if (id > mCommandLists.Size())
         {
             NFE_LOG_ERROR("Invalid command list ID");
             return false;
@@ -335,7 +335,7 @@ bool Device::FinishFrame()
             }
         }
 
-        mCommandLists.clear();
+        mCommandLists.Clear();
     }
 
     if (danglingLists > 0)
@@ -369,7 +369,7 @@ bool Device::DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size,
     return true;
 }
 
-bool Device::DownloadTexture(const TexturePtr& tex, void* data, int mipmap, int layer)
+bool Device::DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap, uint32 layer)
 {
     const Texture* texture = dynamic_cast<Texture*>(tex.Get());
     if (!texture)
@@ -429,10 +429,10 @@ bool Device::DetectVideoCards(int preferredId)
             mAdapterInUse = i;
 
         NFE_LOG_INFO("Adapter found at slot %u: %s", i, descString.Str());
-        mAdapters.push_back(D3DPtr<IDXGIAdapter>(adapter));
+        mAdapters.PushBack(D3DPtr<IDXGIAdapter>(adapter));
     }
 
-    if (mAdapters.size() > 0)
+    if (mAdapters.Size() > 0)
     {
         if (mAdapterInUse < 0)
             mAdapterInUse = 0;

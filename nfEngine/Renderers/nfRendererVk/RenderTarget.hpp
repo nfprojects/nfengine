@@ -9,6 +9,7 @@
 #include "../RendererInterface/RenderTarget.hpp"
 #include "Texture.hpp"
 #include "Defines.hpp"
+#include "nfCommon/Containers/DynArray.hpp"
 
 
 namespace NFE {
@@ -22,10 +23,10 @@ class RenderTarget : public IRenderTarget
     int mHeight;
 
     VkRenderPass mRenderPass;
-    std::vector<Texture*> mTex;
+    Common::DynArray<Texture*> mTex;
     Texture* mDepthTex;
 
-    std::vector<VkFramebuffer> mFramebuffers;
+    Common::DynArray<VkFramebuffer> mFramebuffers;
 
 public:
     RenderTarget();

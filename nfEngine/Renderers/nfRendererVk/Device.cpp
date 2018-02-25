@@ -79,8 +79,8 @@ Device::~Device()
     mSemaphorePool.Reset();
     mRenderPassManager.Reset();
 
-    if (mCommandBufferPool.size())
-        vkFreeCommandBuffers(mDevice, mCommandPool, COMMAND_BUFFER_COUNT, mCommandBufferPool.data());
+    if (mCommandBufferPool.Size())
+        vkFreeCommandBuffers(mDevice, mCommandPool, COMMAND_BUFFER_COUNT, mCommandBufferPool.Data());
 
     if (mPipelineCache != VK_NULL_HANDLE)
         vkDestroyPipelineCache(mDevice, mPipelineCache, nullptr);
@@ -98,7 +98,7 @@ Device::~Device()
     Debugger::Instance().Release();
 }
 
-VkPhysicalDevice Device::SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices, int preferredId)
+VkPhysicalDevice Device::SelectPhysicalDevice(const Common::DynArray<VkPhysicalDevice>& devices, int preferredId)
 {
     if (preferredId < 0)
         preferredId = 0;
@@ -106,8 +106,8 @@ VkPhysicalDevice Device::SelectPhysicalDevice(const std::vector<VkPhysicalDevice
     VkPhysicalDeviceProperties devProps;
 
     // Debugging-related device description printing
-    NFE_LOG_DEBUG("%u physical devices detected:", devices.size());
-    for (unsigned int i = 0; i < devices.size(); ++i)
+    NFE_LOG_DEBUG("%u physical devices detected:", devices.Size());
+    for (uint32 i = 0; i < devices.Size(); ++i)
     {
         vkGetPhysicalDeviceProperties(devices[i], &devProps);
         NFE_LOG_DEBUG("Device #%u - %s:", i, devProps.deviceName);
@@ -125,7 +125,7 @@ VkPhysicalDevice Device::SelectPhysicalDevice(const std::vector<VkPhysicalDevice
         NFE_LOG_DEBUG("  MaxBufSize: %u", devProps.limits.maxUniformBufferRange);
     }
 
-    if (static_cast<size_t>(preferredId) >= devices.size())
+    if (static_cast<uint32>(preferredId) >= devices.Size())
     {
         NFE_LOG_ERROR("Preferred device ID #%i is not available", preferredId);
         return VK_NULL_HANDLE;
@@ -160,8 +160,9 @@ bool Device::Init(const DeviceInitParams* params)
     }
 
     // and now get details about our GPUs
-    std::vector<VkPhysicalDevice> devices(gpuCount);
-    result = vkEnumeratePhysicalDevices(instance, &gpuCount, devices.data());
+    Common::DynArray<VkPhysicalDevice> devices;
+    devices.Resize(gpuCount);
+    result = vkEnumeratePhysicalDevices(instance, &gpuCount, devices.Data());
     if (result != VK_SUCCESS)
     {
         NFE_LOG_ERROR("Unable to get more information about physical devices");
@@ -193,8 +194,8 @@ bool Device::Init(const DeviceInitParams* params)
         return false;
     }
 
-    mSupportedFormats.resize(formatCount);
-    vkGetPhysicalDeviceSurfaceFormatsKHR(mPhysicalDevice, tempSurface, &formatCount, mSupportedFormats.data());
+    mSupportedFormats.Resize(formatCount);
+    vkGetPhysicalDeviceSurfaceFormatsKHR(mPhysicalDevice, tempSurface, &formatCount, mSupportedFormats.Data());
     CleanupTemporarySurface(tempSurface);
 
     // Grab queue properties from our selected device
@@ -206,8 +207,9 @@ bool Device::Init(const DeviceInitParams* params)
         return false;
     }
 
-    std::vector<VkQueueFamilyProperties> queueProps(queueCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(mPhysicalDevice, &queueCount, queueProps.data());
+    Common::DynArray<VkQueueFamilyProperties> queueProps;
+    queueProps.Resize(queueCount);
+    vkGetPhysicalDeviceQueueFamilyProperties(mPhysicalDevice, &queueCount, queueProps.Data());
 
     for (uint32 i = 0; i < queueCount; ++i)
     {
@@ -233,15 +235,15 @@ bool Device::Init(const DeviceInitParams* params)
     queueInfo.queueCount = 1;
     queueInfo.pQueuePriorities = queuePriorities;
 
-    std::vector<const char*> enabledExtensions;
-    enabledExtensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+    Common::DynArray<const char*> enabledExtensions;
+    enabledExtensions.PushBack(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 
 
     if (params->debugLevel > 0)
     {
         // TODO right now Debug Markers are unsupported by drivers
         //      Uncomment when driver support appears
-        //enabledExtensions.push_back(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
+        //enabledExtensions.PushBack(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
     }
 
     const char* enabledLayers[] = {
@@ -255,8 +257,8 @@ bool Device::Init(const DeviceInitParams* params)
     devInfo.queueCreateInfoCount = 1;
     devInfo.pQueueCreateInfos = &queueInfo;
     devInfo.pEnabledFeatures = nullptr;
-    devInfo.enabledExtensionCount = static_cast<uint32>(enabledExtensions.size());
-    devInfo.ppEnabledExtensionNames = enabledExtensions.data();
+    devInfo.enabledExtensionCount = enabledExtensions.Size();
+    devInfo.ppEnabledExtensionNames = enabledExtensions.Data();
     if (params->debugLevel > 0)
     {
         devInfo.enabledLayerCount = 1;
@@ -295,7 +297,7 @@ bool Device::Init(const DeviceInitParams* params)
         return false;
     }
 
-    mCommandBufferPool.resize(COMMAND_BUFFER_COUNT);
+    mCommandBufferPool.Resize(COMMAND_BUFFER_COUNT);
 
     VkCommandBufferAllocateInfo cbInfo;
     VK_ZERO_MEMORY(cbInfo);
@@ -303,7 +305,7 @@ bool Device::Init(const DeviceInitParams* params)
     cbInfo.commandPool = mCommandPool;
     cbInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     cbInfo.commandBufferCount = COMMAND_BUFFER_COUNT;
-    result = vkAllocateCommandBuffers(mDevice, &cbInfo, mCommandBufferPool.data());
+    result = vkAllocateCommandBuffers(mDevice, &cbInfo, mCommandBufferPool.Data());
     CHECK_VKRESULT(result, "Failed to initialize Command Buffer Pool");
 
     mRenderPassManager.Reset(new RenderPassManager(mDevice));
@@ -592,7 +594,7 @@ bool Device::DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size,
     return false;
 }
 
-bool Device::DownloadTexture(const TexturePtr& tex, void* data, int mipmap, int layer)
+bool Device::DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap, uint32 layer)
 {
     NFE_UNUSED(tex);
     NFE_UNUSED(data);

@@ -9,7 +9,7 @@
 #include "GetProc.hpp"
 #include "Debugger.hpp"
 
-#include <memory.h>
+#include "nfCommon/Containers/DynArray.hpp"
 
 
 namespace NFE {
@@ -66,19 +66,19 @@ bool Instance::Init(bool enableDebug, VkDebugReportFlagBitsEXT flags)
     // TODO XLIB_SURFACE is still unavailable
     //      Use XCB surface instead for now
     // TODO extensions need to be in common with VkDevice
-    std::vector<const char*> enabledExtensions;
-    enabledExtensions.push_back(VK_KHR_SURFACE_EXTENSION_NAME);
+    Common::DynArray<const char*> enabledExtensions;
+    enabledExtensions.PushBack(VK_KHR_SURFACE_EXTENSION_NAME);
 
 #ifdef WIN32
-    enabledExtensions.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
+    enabledExtensions.PushBack(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
 #elif defined(__linux__) || defined(__LINUX__)
-    enabledExtensions.push_back(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
+    enabledExtensions.PushBack(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
 #else
 #error "Target platform not supported."
 #endif
 
     if (enableDebug)
-        enabledExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+        enabledExtensions.PushBack(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
 
     const char* enabledLayers[] = {
         "VK_LAYER_LUNARG_standard_validation" // for debugging
@@ -89,8 +89,8 @@ bool Instance::Init(bool enableDebug, VkDebugReportFlagBitsEXT flags)
     instInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     instInfo.pNext = nullptr;
     instInfo.pApplicationInfo = &appInfo;
-    instInfo.enabledExtensionCount = static_cast<uint32>(enabledExtensions.size());
-    instInfo.ppEnabledExtensionNames = enabledExtensions.data();
+    instInfo.enabledExtensionCount = static_cast<uint32>(enabledExtensions.Size());
+    instInfo.ppEnabledExtensionNames = enabledExtensions.Data();
     if (enableDebug)
     {
         instInfo.enabledLayerCount = 1;

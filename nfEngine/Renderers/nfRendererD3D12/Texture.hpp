@@ -8,6 +8,8 @@
 
 #include "../RendererInterface/Texture.hpp"
 #include "Common.hpp"
+#include "nfCommon/Containers/DynArray.hpp"
+
 
 namespace NFE {
 namespace Renderer {
@@ -37,7 +39,7 @@ protected:
     uint32 mCurrentBuffer;
 
     D3D12_RESOURCE_STATES mTargetState; // TODO
-    std::vector<D3D12_RESOURCE_STATES> mSubresourceStates;
+    Common::DynArray<D3D12_RESOURCE_STATES> mSubresourceStates;
 
     // upload initial data
     bool UploadData(const TextureDesc& desc);

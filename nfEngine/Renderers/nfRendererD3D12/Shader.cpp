@@ -11,8 +11,6 @@
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/FileSystem/File.hpp"
 
-#include <sstream>
-
 
 namespace NFE {
 namespace Renderer {
@@ -26,7 +24,7 @@ bool Shader::Init(const ShaderDesc& desc)
     mType = desc.type;
 
     HRESULT hr;
-    std::vector<char> str;
+    Common::DynArray<char> str;
     size_t shaderSize = 0;
     const char* code = nullptr;
 
@@ -40,13 +38,14 @@ bool Shader::Init(const ShaderDesc& desc)
 
         using namespace Common;
         File file(Common::StringView(desc.path), AccessMode::Read);
-        shaderSize = static_cast<size_t>(file.GetSize());
-        str.resize(shaderSize + 1);
+        const uint32 size = static_cast<uint32>(file.GetSize());
+        str.Resize(size + 1);
+        shaderSize = size;
 
-        if (file.Read(str.data(), shaderSize) != shaderSize)
+        if (file.Read(str.Data(), shaderSize) != shaderSize)
             return false;
-        str[shaderSize] = '\0';
-        code = str.data();
+        str[size] = '\0';
+        code = str.Data();
     }
     else
     {
@@ -88,7 +87,7 @@ bool Shader::Init(const ShaderDesc& desc)
         return false;
     }
 
-    std::stringstream macrosStr;
+    Common::String macrosStr;
     Common::UniquePtr<D3D_SHADER_MACRO[]> d3dMacros;
     if (desc.macrosNum > 0)
     {
@@ -98,15 +97,15 @@ bool Shader::Init(const ShaderDesc& desc)
             d3dMacros[i].Name = desc.macros[i].name;
             d3dMacros[i].Definition = desc.macros[i].value;
 
-            macrosStr << '\'' << d3dMacros[i].Name << "' = '" << desc.macros[i].value << '\'';
+            macrosStr += Common::String('\'') + d3dMacros[i].Name + "' = '" + desc.macros[i].value + '\'';
             if (i < desc.macrosNum - 1)
-                macrosStr << ", ";
+                macrosStr += ", ";
         }
         d3dMacros[desc.macrosNum].Name = nullptr;
         d3dMacros[desc.macrosNum].Definition = nullptr;
     }
 
-    NFE_LOG_INFO("Compiling shader '%s' with macros: [%s]...", desc.path, macrosStr.str().c_str());
+    NFE_LOG_INFO("Compiling shader '%s' with macros: [%s]...", desc.path, macrosStr.Str());
 
     ID3DBlob* errorsBuffer = nullptr;
     hr = D3DCompile(code, shaderSize, desc.path, d3dMacros.Get(),
@@ -132,7 +131,7 @@ bool Shader::Init(const ShaderDesc& desc)
     return true;
 }
 
-bool Shader::Disassemble(bool html, std::string& output)
+bool Shader::Disassemble(bool html, Common::String& output)
 {
     ID3DBlob* bytecode = mBytecode.Get();
     if (bytecode == nullptr)
@@ -153,7 +152,8 @@ bool Shader::Disassemble(bool html, std::string& output)
         return false;
 
     const char* str = static_cast<const char*>(disassembly->GetBufferPointer());
-    output = std::string(str, disassembly->GetBufferSize());
+    const uint32 len = static_cast<uint32>(Math::Min<size_t>(Common::String::MaxInternalLength, disassembly->GetBufferSize()));
+    output = Common::String(str, len);
 
     return true;
 }
@@ -245,14 +245,14 @@ bool Shader::GetIODesc()
             continue;
         }
 
-        std::string name = d3dBindingDesc.Name;
-        if (mResBindings.find(name) != mResBindings.end())
+        Common::String name = d3dBindingDesc.Name;
+        if (mResBindings.Exists(name))
         {
             NFE_LOG_ERROR("Multiple declarations of shader resource named '%s'", d3dBindingDesc.Name);
             return false;
         }
 
-        mResBindings[name] = bindingDesc;
+        mResBindings.Insert(std::move(name), bindingDesc);
     }
 
     return true;
@@ -260,8 +260,8 @@ bool Shader::GetIODesc()
 
 int Shader::GetResourceSlotByName(const char* name)
 {
-    auto iter = mResBindings.find(name);
-    if (iter != mResBindings.end())
+    auto iter = mResBindings.Find(name);
+    if (iter != mResBindings.End())
     {
         // TODO: verify resource type
         return iter->second.slot;

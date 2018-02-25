@@ -333,8 +333,8 @@ void LightsRenderer::SetUp(LightsRendererContext* context, const RenderTargetPtr
     context->commandRecorder->BindVolatileCBuffer(0, mGlobalCBuffer);
 
     BufferPtr buffers[] = { mVertexBuffer };
-    int strides[] = { sizeof(Float3) };
-    int offsets[] = { 0 };
+    uint32 strides[] = { sizeof(Float3) };
+    uint32 offsets[] = { 0 };
     context->commandRecorder->SetVertexBuffers(1, buffers, strides, offsets);
     context->commandRecorder->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);
 

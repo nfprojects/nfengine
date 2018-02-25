@@ -29,10 +29,10 @@ Backbuffer::~Backbuffer()
 {
     vkQueueWaitIdle(mPresentQueue);
 
-    if (mPostPresentCommandBuffers.size())
-        vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(), mBuffersNum, mPostPresentCommandBuffers.data());
-    if (mPresentCommandBuffers.size())
-        vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(), mBuffersNum, mPresentCommandBuffers.data());
+    if (mPostPresentCommandBuffers.Size())
+        vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(), mBuffersNum, mPostPresentCommandBuffers.Data());
+    if (mPresentCommandBuffers.Size())
+        vkFreeCommandBuffers(gDevice->GetDevice(), gDevice->GetCommandPool(), mBuffersNum, mPresentCommandBuffers.Data());
 
     if (mSwapchain != VK_NULL_HANDLE)
         vkDestroySwapchainKHR(gDevice->GetDevice(), mSwapchain, nullptr);
@@ -53,8 +53,11 @@ bool Backbuffer::SelectPresentQueue()
         return false;
     }
 
-    std::vector<VkQueueFamilyProperties> queueProps(queueCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(gDevice->GetPhysicalDevice(), &queueCount, queueProps.data());
+    Common::DynArray<VkQueueFamilyProperties> queueProps;
+    if (queueProps.Resize(queueCount))
+    {
+        vkGetPhysicalDeviceQueueFamilyProperties(gDevice->GetPhysicalDevice(), &queueCount, queueProps.Data());
+    }
 
     mPresentQueueIndex = UINT32_MAX;
     for (uint32 i = 0; i < queueCount; ++i)
@@ -96,9 +99,13 @@ bool Backbuffer::SelectSurfaceFormat(const BackbufferDesc& desc)
         return false;
     }
 
-    std::vector<VkSurfaceFormatKHR> formats(formatCount);
-    result = vkGetPhysicalDeviceSurfaceFormatsKHR(gDevice->GetPhysicalDevice(), mSurface,
-                                                  &formatCount, formats.data());
+    Common::DynArray<VkSurfaceFormatKHR> formats;
+    if (formats.Resize(formatCount))
+    {
+        result = vkGetPhysicalDeviceSurfaceFormatsKHR(gDevice->GetPhysicalDevice(), mSurface,
+                                                      &formatCount, formats.Data());
+    }
+
     CHECK_VKRESULT(result, "Unable to retrieve surface formats");
     uint32 formatIndex = 0;
     mFormat = TranslateElementFormatToVkFormat(desc.format);
@@ -129,9 +136,12 @@ bool Backbuffer::SelectPresentMode(const BackbufferDesc& desc)
                                                                 &presentModeCount, nullptr);
     CHECK_VKRESULT(result, "Failed to acquire surface's present modes");
 
-    std::vector<VkPresentModeKHR> presentModes(presentModeCount);
-    result = vkGetPhysicalDeviceSurfacePresentModesKHR(gDevice->GetPhysicalDevice(), mSurface,
-                                                       &presentModeCount, presentModes.data());
+    Common::DynArray<VkPresentModeKHR> presentModes;
+    if (presentModes.Resize(presentModeCount))
+    {
+        result = vkGetPhysicalDeviceSurfacePresentModesKHR(gDevice->GetPhysicalDevice(), mSurface,
+                                                           &presentModeCount, presentModes.Data());
+    }
     CHECK_VKRESULT(result, "Failed to acquire surface's present modes");
 
     // By default, assume FIFO present mode (aka vSync enabled)
@@ -230,10 +240,10 @@ bool Backbuffer::CreateSwapchainImageViews()
 
     mBuffersNum = swapImageCount;
 
-    mBuffers.resize(mBuffersNum);
-    mBufferViews.resize(mBuffersNum);
+    mBuffers.Resize(mBuffersNum);
+    mBufferViews.Resize(mBuffersNum);
 
-    result = vkGetSwapchainImagesKHR(gDevice->GetDevice(), mSwapchain, &mBuffersNum, mBuffers.data());
+    result = vkGetSwapchainImagesKHR(gDevice->GetDevice(), mSwapchain, &mBuffersNum, mBuffers.Data());
     CHECK_VKRESULT(result, "Failed to get swapchain images");
 
     NFE_LOG_DEBUG("%d swapchain buffers acquired", mBuffersNum);
@@ -266,8 +276,8 @@ bool Backbuffer::CreateSwapchainImageViews()
 
 bool Backbuffer::BuildPresentCommandBuffers()
 {
-    mPresentCommandBuffers.resize(mBuffersNum);
-    mPostPresentCommandBuffers.resize(mBuffersNum);
+    mPresentCommandBuffers.Resize(mBuffersNum);
+    mPostPresentCommandBuffers.Resize(mBuffersNum);
 
     VkResult result = VK_SUCCESS;
     VkCommandBufferAllocateInfo buffInfo = {};
@@ -276,9 +286,9 @@ bool Backbuffer::BuildPresentCommandBuffers()
     buffInfo.commandPool = gDevice->GetCommandPool();
     buffInfo.commandBufferCount = mBuffersNum;
     buffInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    result = vkAllocateCommandBuffers(gDevice->GetDevice(), &buffInfo, mPresentCommandBuffers.data());
+    result = vkAllocateCommandBuffers(gDevice->GetDevice(), &buffInfo, mPresentCommandBuffers.Data());
     CHECK_VKRESULT(result, "Unable to allocate present command buffer");
-    result = vkAllocateCommandBuffers(gDevice->GetDevice(), &buffInfo, mPostPresentCommandBuffers.data());
+    result = vkAllocateCommandBuffers(gDevice->GetDevice(), &buffInfo, mPostPresentCommandBuffers.Data());
     CHECK_VKRESULT(result, "Unable to allocate post present command buffer");
 
     // Build present and post-present command buffers

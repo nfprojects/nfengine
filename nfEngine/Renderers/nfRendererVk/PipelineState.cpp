@@ -34,10 +34,10 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     VkPipelineVertexInputStateCreateInfo pvisInfo;
     VK_ZERO_MEMORY(pvisInfo);
     pvisInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    pvisInfo.vertexBindingDescriptionCount = static_cast<uint32>(vl->mBindings.size());
-    pvisInfo.pVertexBindingDescriptions = vl->mBindings.data();
-    pvisInfo.vertexAttributeDescriptionCount = static_cast<uint32>(vl->mAttributes.size());
-    pvisInfo.pVertexAttributeDescriptions = vl->mAttributes.data();
+    pvisInfo.vertexBindingDescriptionCount = vl->mBindings.Size();
+    pvisInfo.pVertexBindingDescriptions = vl->mBindings.Data();
+    pvisInfo.vertexAttributeDescriptionCount = vl->mAttributes.Size();
+    pvisInfo.pVertexAttributeDescriptions = vl->mAttributes.Data();
 
     VkPipelineInputAssemblyStateCreateInfo piasInfo;
     VK_ZERO_MEMORY(piasInfo);

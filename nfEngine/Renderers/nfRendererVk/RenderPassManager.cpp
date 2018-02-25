@@ -30,7 +30,7 @@ VkRenderPass RenderPassManager::ConstructRenderPass(const RenderPassDesc& desc)
     uint32 curAtt = 0;
     VkAttachmentReference colorRefs[MAX_RENDER_TARGETS];
 
-    for (uint32 i = 0; i < desc.colorFormats.size(); ++i)
+    for (uint32 i = 0; i < desc.colorFormats.Size(); ++i)
     {
         VK_ZERO_MEMORY(atts[curAtt]);
         atts[curAtt].format = desc.colorFormats[i];
@@ -69,7 +69,7 @@ VkRenderPass RenderPassManager::ConstructRenderPass(const RenderPassDesc& desc)
     VkSubpassDescription subpass;
     VK_ZERO_MEMORY(subpass);
     subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-    subpass.colorAttachmentCount = static_cast<uint32>(desc.colorFormats.size());
+    subpass.colorAttachmentCount = desc.colorFormats.Size();
     subpass.pColorAttachments = colorRefs;
     if (desc.depthFormat != VK_FORMAT_UNDEFINED)
         subpass.pDepthStencilAttachment = &depthRef;
@@ -88,7 +88,7 @@ VkRenderPass RenderPassManager::ConstructRenderPass(const RenderPassDesc& desc)
     {
         NFE_LOG_ERROR("Failed to construct new Render Pass");
         NFE_LOG_DEBUG("Formats requested are:");
-        for (uint32 i = 0; i < desc.colorFormats.size(); ++i)
+        for (uint32 i = 0; i < desc.colorFormats.Size(); ++i)
         {
             NFE_LOG_DEBUG("    color #%i: %d (%s)", i, desc.colorFormats[i], TranslateVkFormatToString(desc.colorFormats[i]));
         }
@@ -104,12 +104,12 @@ VkRenderPass RenderPassManager::GetRenderPass(const RenderPassDesc& desc)
     // TODO uncomment when NFE_ASSERT is done right
     //NFE_ASSERT(desc.colorFormatCount <= MAX_RENDER_TARGETS, "Too many color formats requested (max is 8)");
 
-    auto rp = mRenderPasses.find(desc);
-    if (rp == mRenderPasses.end())
+    auto rp = mRenderPasses.Find(desc);
+    if (rp == mRenderPasses.End())
     {
         VkRenderPass newRp = ConstructRenderPass(desc);
         if (newRp != VK_NULL_HANDLE)
-            mRenderPasses.insert(std::make_pair(desc, newRp));
+            mRenderPasses.Insert(desc, newRp);
 
         NFE_LOG_INFO("Created new Render Pass");
         return newRp;

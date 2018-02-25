@@ -8,6 +8,8 @@
 
 #include "../RendererInterface/RenderTarget.hpp"
 #include "Common.hpp"
+#include "nfCommon/Containers/DynArray.hpp"
+
 
 namespace NFE {
 namespace Renderer {
@@ -18,7 +20,7 @@ class RenderTarget : public IRenderTarget
 {
     friend class CommandRecorder;
 
-    std::vector<D3DPtr<ID3D11RenderTargetView>> mRTVs;
+    Common::DynArray<D3DPtr<ID3D11RenderTargetView>> mRTVs;
     Texture* mDepthBuffer;
     int mWidth;
     int mHeight;

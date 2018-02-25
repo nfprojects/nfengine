@@ -118,8 +118,8 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
 
     D3D12_INPUT_LAYOUT_DESC inputLayoutDesc;
     VertexLayout* vertexLayout = dynamic_cast<VertexLayout*>(desc.vertexLayout.Get());
-    inputLayoutDesc.NumElements = static_cast<UINT>(vertexLayout->mElements.size());
-    inputLayoutDesc.pInputElementDescs = vertexLayout->mElements.data();
+    inputLayoutDesc.NumElements = vertexLayout->mElements.Size();
+    inputLayoutDesc.pInputElementDescs = vertexLayout->mElements.Data();
 
 
     mVS = StaticCast<Shader>(desc.vertexShader);

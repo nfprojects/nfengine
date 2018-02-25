@@ -16,7 +16,7 @@ class VertexLayout : public IVertexLayout
 {
     friend class PipelineState;
 
-    std::vector<D3D12_INPUT_ELEMENT_DESC> mElements;
+    Common::DynArray<D3D12_INPUT_ELEMENT_DESC> mElements;
 
 public:
     VertexLayout();

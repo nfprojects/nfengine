@@ -56,9 +56,9 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
             vibDesc.stride += GetElementFormatSize(desc.elements[i].format);
         }
 
-        mBindings.push_back(vibDesc);
+        mBindings.PushBack(vibDesc);
     }
-    
+
     // create attributes
     for (uint32 i = 0; i < desc.numElements; ++i)
     {
@@ -66,7 +66,7 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
         viaDesc.binding = desc.elements[i].vertexBufferId;
         viaDesc.format = TranslateElementFormatToVkFormat(desc.elements[i].format);
         viaDesc.offset = desc.elements[i].offset;
-        mAttributes.push_back(viaDesc);
+        mAttributes.PushBack(viaDesc);
     }
 
     return true;

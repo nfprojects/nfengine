@@ -433,7 +433,7 @@ bool Texture::Init(const TextureDesc& desc)
     mMode = desc.mode;
 
     for (uint32 subresource = 0; subresource < desc.layers * desc.mipmaps; ++subresource)
-        mSubresourceStates.push_back(initialState);
+        mSubresourceStates.PushBack(initialState);
 
     return true;
 }

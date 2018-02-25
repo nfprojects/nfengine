@@ -114,7 +114,7 @@ bool GuiRenderer::CreateResourceBindingLayouts()
     if (textureSlot < 0)
         return false;
 
-    std::vector<ResourceBindingSetPtr> bindingSets;
+    Common::DynArray<ResourceBindingSetPtr> bindingSets;
 
     VolatileCBufferBinding cbufferBindingDesc(ShaderType::All, ShaderResourceType::CBuffer, cbufferSlot, sizeof(GlobalCBuffer));
 
@@ -124,11 +124,11 @@ bool GuiRenderer::CreateResourceBindingLayouts()
         ResourceBindingSetDesc(&pixelShaderBinding, 1, ShaderType::Pixel));
     if (!mPSBindingSet)
         return false;
-    bindingSets.push_back(mPSBindingSet);
+    bindingSets.PushBack(mPSBindingSet);
 
     // create binding layout
     mResBindingLayout = device->CreateResourceBindingLayout(
-        ResourceBindingLayoutDesc(bindingSets.data(), bindingSets.size(), &cbufferBindingDesc, 1));
+        ResourceBindingLayoutDesc(bindingSets.Data(), bindingSets.Size(), &cbufferBindingDesc, 1));
     if (!mResBindingLayout)
         return false;
 
@@ -157,8 +157,8 @@ void GuiRenderer::OnEnter(GuiRendererContext* context)
 void GuiRenderer::BeginOrdinaryGuiRendering(GuiRendererContext* context)
 {
     BufferPtr vertexBuffers[] = { mVertexBuffer };
-    int strides[] = { sizeof(GuiQuadVertex) };
-    int offsets[] = { 0 };
+    uint32 strides[] = { sizeof(GuiQuadVertex) };
+    uint32 offsets[] = { 0 };
     context->commandRecorder->SetVertexBuffers(1, vertexBuffers, strides, offsets);
 
     context->commandRecorder->SetPipelineState(mPipelineState.GetPipelineState());
@@ -185,8 +185,7 @@ void GuiRenderer::SetTarget(GuiRendererContext* context, const RenderTargetPtr& 
     context->commandRecorder->BindVolatileCBuffer(0, mConstantBuffer);
     //
 
-    context->commandRecorder->WriteBuffer(mConstantBuffer, 0, sizeof(GlobalCBuffer),
-                                        &cbuffer);
+    context->commandRecorder->WriteBuffer(mConstantBuffer, 0, sizeof(GlobalCBuffer), &cbuffer);
 
     context->commandRecorder->SetRenderTarget(target);
     context->commandRecorder->SetViewport(0.0f, static_cast<float>(width),
@@ -422,8 +421,8 @@ bool GuiRenderer::DrawImGui(GuiRendererContext* context, ResourceBindingInstance
     // setup pipeline
 
     BufferPtr vertexBuffers[] = { mImGuiVertexBuffer };
-    int strides[] = { sizeof(ImDrawVert) };
-    int offsets[] = { 0 };
+    uint32 strides[] = { sizeof(ImDrawVert) };
+    uint32 offsets[] = { 0 };
     context->commandRecorder->SetVertexBuffers(1, vertexBuffers, strides, offsets);
     context->commandRecorder->SetIndexBuffer(mImGuiIndexBuffer, IndexBufferFormat::Uint16);
     context->commandRecorder->SetResourceBindingLayout(mResBindingLayout);

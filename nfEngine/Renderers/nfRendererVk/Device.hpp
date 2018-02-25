@@ -32,7 +32,7 @@ private:
     VkPhysicalDeviceMemoryProperties mMemoryProperties;
     VkDevice mDevice;
     VkCommandPool mCommandPool;
-    std::vector<VkCommandBuffer> mCommandBufferPool;
+    Common::DynArray<VkCommandBuffer> mCommandBufferPool;
     uint32 mCurrentCommandBuffer;
     uint32 mGraphicsQueueIndex;
     VkQueue mGraphicsQueue;
@@ -41,13 +41,13 @@ private:
     VkSemaphore mPresentSemaphore;
     VkSemaphore mPostPresentSemaphore;
     bool mPresented;
-    std::vector<VkSurfaceFormatKHR> mSupportedFormats;
+    Common::DynArray<VkSurfaceFormatKHR> mSupportedFormats;
     Common::UniquePtr<RenderPassManager> mRenderPassManager;
     Common::UniquePtr<SemaphorePool> mSemaphorePool;
     Common::UniquePtr<RingBuffer> mRingBuffer;
     bool mDebugEnable;
 
-    VkPhysicalDevice SelectPhysicalDevice(const std::vector<VkPhysicalDevice>& devices, int preferredId);
+    VkPhysicalDevice SelectPhysicalDevice(const Common::DynArray<VkPhysicalDevice>& devices, int preferredId);
 
     bool CreateTemporarySurface(VkSurfaceKHR& surface);
     void CleanupTemporarySurface(VkSurfaceKHR& surface);
@@ -156,7 +156,7 @@ public:
     bool FinishFrame() override;
 
     bool DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data) override;
-    bool DownloadTexture(const TexturePtr& tex, void* data, int mipmap = 0, int layer = 0) override;
+    bool DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap, uint32 layer) override;
 };
 
 extern Common::UniquePtr<Device> gDevice;

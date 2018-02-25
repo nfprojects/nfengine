@@ -258,7 +258,7 @@ Device::~Device()
     mDsvHeapAllocator.Release();
 
     mDXGIFactory.Reset();
-    mAdapters.clear();
+    mAdapters.Clear();
     mCommandQueue.Reset();
     mFence.Reset();
     mDevice.Reset();
@@ -382,10 +382,10 @@ bool Device::DetectVideoCards(int preferredId)
             mAdapterInUse = i;
 
         NFE_LOG_INFO("Adapter found at slot %u: %s", i, descString.Str());
-        mAdapters.push_back(D3DPtr<IDXGIAdapter>(adapter));
+        mAdapters.PushBack(D3DPtr<IDXGIAdapter>(adapter));
     }
 
-    if (mAdapters.size() > 0)
+    if (mAdapters.Size() > 0)
     {
         if (mAdapterInUse < 0)
             mAdapterInUse = 0;
@@ -409,7 +409,7 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
         return false;
 
     // get GPU description
-    std::wstring wideDesc = adapterDesc.Description;
+    Common::Utf16String wideDesc = adapterDesc.Description;
     Common::UTF16ToUTF8(wideDesc, info.description);
 
     // get various GPU information
@@ -428,9 +428,9 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
         NFE_LOG_ERROR("Failed to obtain D3D12 options info");
     else
     {
-        info.features.PushBack("TiledResourcesTier=" + ToString(static_cast<int>(d3d12options.TiledResourcesTier)));
-        info.features.PushBack("ResourceBindingTier=" + ToString(static_cast<int>(d3d12options.ResourceBindingTier)));
-        info.features.PushBack("ResourceHeapTier=" + ToString(static_cast<int>(d3d12options.ResourceHeapTier)));
+        info.features.PushBack("TiledResourcesTier=" + ToString(static_cast<uint32>(d3d12options.TiledResourcesTier)));
+        info.features.PushBack("ResourceBindingTier=" + ToString(static_cast<uint32>(d3d12options.ResourceBindingTier)));
+        info.features.PushBack("ResourceHeapTier=" + ToString(static_cast<uint32>(d3d12options.ResourceHeapTier)));
 
         info.features.PushBack("DoublePrecisionFloatShaderOps=" + ToString(d3d12options.DoublePrecisionFloatShaderOps));
         info.features.PushBack("OutputMergerLogicOp=" + ToString(d3d12options.OutputMergerLogicOp));
@@ -537,7 +537,7 @@ bool Device::DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size,
     return false;
 }
 
-bool Device::DownloadTexture(const TexturePtr& tex, void* data, int mipmap, int layer)
+bool Device::DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap, uint32 layer)
 {
     NFE_UNUSED(mipmap);
     NFE_UNUSED(layer);

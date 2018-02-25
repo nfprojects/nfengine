@@ -9,6 +9,8 @@
 #include "Defines.hpp"
 #include "RenderPassDesc.hpp"
 
+#include "nfCommon/Containers/HashMap.hpp"
+
 
 namespace NFE {
 namespace Renderer {
@@ -26,7 +28,7 @@ class RenderPassManager
 {
     VkDevice mDeviceRef;
 
-    using RenderPassMap = std::unordered_map<RenderPassDesc, VkRenderPass>;
+    using RenderPassMap = Common::HashMap<RenderPassDesc, VkRenderPass>;
     RenderPassMap mRenderPasses;
 
     VkRenderPass ConstructRenderPass(const RenderPassDesc& desc);

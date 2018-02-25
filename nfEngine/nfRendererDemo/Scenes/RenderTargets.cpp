@@ -410,8 +410,8 @@ void RenderTargetsScene::Draw(float dt)
 
     mCommandBuffer->Begin();
 
-    int stride = 9 * sizeof(float);
-    int offset = 0;
+    uint32 stride = 9 * sizeof(float);
+    uint32 offset = 0;
     const BufferPtr vertexBuffers[] = { mVertexBuffer };
     mCommandBuffer->SetVertexBuffers(1, vertexBuffers, &stride, &offset);
     mCommandBuffer->SetIndexBuffer(mIndexBuffer, IndexBufferFormat::Uint16);

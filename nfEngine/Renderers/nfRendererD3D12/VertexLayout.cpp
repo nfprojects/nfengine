@@ -19,6 +19,11 @@ VertexLayout::VertexLayout()
 
 bool VertexLayout::Init(const VertexLayoutDesc& desc)
 {
+    if (!mElements.Reserve(desc.numElements))
+    {
+        return false;
+    }
+
     for (uint32 i = 0; i < desc.numElements; ++i)
     {
         D3D12_INPUT_ELEMENT_DESC el;
@@ -33,7 +38,7 @@ bool VertexLayout::Init(const VertexLayoutDesc& desc)
         el.InstanceDataStepRate = desc.elements[i].perInstance ?
             desc.elements[i].instanceDataStep : 0;
 
-        mElements.push_back(el);
+        mElements.PushBack(el);
     }
 
     return true;

@@ -42,8 +42,7 @@ protected:
 
     // Methods common for all scenes:
 
-    NFE::Renderer::ShaderPtr CompileShader(const char* path, NFE::Renderer::ShaderType type,
-                                          NFE::Renderer::ShaderMacro* macros, size_t macrosNum);
+    NFE::Renderer::ShaderPtr CompileShader(const char* path, NFE::Renderer::ShaderType type, NFE::Renderer::ShaderMacro* macros, NFE::uint32 macrosNum);
 
 public:
     Scene(const std::string& name);

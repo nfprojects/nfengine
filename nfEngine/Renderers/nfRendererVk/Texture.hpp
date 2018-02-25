@@ -8,6 +8,8 @@
 
 #include "../RendererInterface/Texture.hpp"
 #include "Defines.hpp"
+#include "nfCommon/Containers/DynArray.hpp"
+
 
 namespace NFE {
 namespace Renderer {
@@ -32,8 +34,8 @@ protected:
     // tempshit to support double-buffering
     uint32 mBuffersNum;
     uint32 mCurrentBuffer;
-    std::vector<VkImage> mBuffers;
-    std::vector<VkImageView> mBufferViews;
+    Common::DynArray<VkImage> mBuffers;
+    Common::DynArray<VkImageView> mBufferViews;
     bool mFromSwapchain;
 
 public:

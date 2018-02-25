@@ -55,15 +55,15 @@ bool CommandRecorder::Begin()
     return true;
 }
 
-void CommandRecorder::SetVertexBuffers(int num, const BufferPtr* vertexBuffers, int* strides, int* offsets)
+void CommandRecorder::SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, uint32* strides, uint32* offsets)
 {
     NFE_UNUSED(strides);
 
-    const int maxBuffers = 4;
+    const uint32 maxBuffers = 4;
     VkBuffer buffers[maxBuffers];
     VkDeviceSize offs[maxBuffers];
 
-    for (int i = 0; i < num; ++i)
+    for (uint32 i = 0; i < num; ++i)
     {
         Buffer* buf = dynamic_cast<Buffer*>(vertexBuffers[i].Get());
         if (!buf)
@@ -92,7 +92,7 @@ void CommandRecorder::SetIndexBuffer(const BufferPtr& indexBuffer, IndexBufferFo
     vkCmdBindIndexBuffer(mCommandBuffer, ib->mBuffer, 0, TranslateIndexBufferFormatToVkIndexType(format));
 }
 
-void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance)
+void CommandRecorder::BindResources(uint32 slot, const ResourceBindingInstancePtr& bindingSetInstance)
 {
     NFE_UNUSED(slot);
 
@@ -108,7 +108,7 @@ void CommandRecorder::BindResources(size_t slot, const ResourceBindingInstancePt
                             &rbi->mSet->mDescriptorSet, 0, nullptr);
 }
 
-void CommandRecorder::BindVolatileCBuffer(size_t slot, const BufferPtr& buffer)
+void CommandRecorder::BindVolatileCBuffer(uint32 slot, const BufferPtr& buffer)
 {
     Buffer* b = dynamic_cast<Buffer*>(buffer.Get());
     if (b == nullptr)
@@ -186,8 +186,7 @@ void CommandRecorder::SetStencilRef(unsigned char ref)
     NFE_UNUSED(ref);
 }
 
-void CommandRecorder::SetViewport(float left, float width, float top, float height,
-                                float minDepth, float maxDepth)
+void CommandRecorder::SetViewport(float left, float width, float top, float height, float minDepth, float maxDepth)
 {
     VkViewport viewport;
     viewport.x = left;
@@ -199,7 +198,7 @@ void CommandRecorder::SetViewport(float left, float width, float top, float heig
     vkCmdSetViewport(mCommandBuffer, 0, 1, &viewport);
 }
 
-void CommandRecorder::SetScissors(int left, int top, int right, int bottom)
+void CommandRecorder::SetScissors(int32 left, int32 top, int32 right, int32 bottom)
 {
     VkRect2D scissor;
     scissor.offset.x = left;
@@ -317,8 +316,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const TexturePtr& dest)
     NFE_UNUSED(dest);
 }
 
-void CommandRecorder::Clear(int flags, uint32 numTargets, const uint32* slots,
-                            const Math::Float4* colors, float depthValue, uint8 stencilValue)
+void CommandRecorder::Clear(uint32 flags, uint32 numTargets, const uint32* slots, const Math::Float4* colors, float depthValue, uint8 stencilValue)
 {
     if (!mRenderTarget)
         return;
@@ -370,25 +368,23 @@ void CommandRecorder::Clear(int flags, uint32 numTargets, const uint32* slots,
 }
 
 
-void CommandRecorder::Draw(int vertexNum, int instancesNum, int vertexOffset,
-                         int instanceOffset)
+void CommandRecorder::Draw(uint32 vertexNum, uint32 instancesNum, uint32 vertexOffset, uint32 instanceOffset)
 {
     vkCmdDraw(mCommandBuffer, vertexNum, instancesNum, vertexOffset, instanceOffset);
 }
 
-void CommandRecorder::DrawIndexed(int indexNum, int instancesNum,
-                                int indexOffset, int vertexOffset, int instanceOffset)
+void CommandRecorder::DrawIndexed(uint32 indexNum, uint32 instancesNum, uint32 indexOffset, int32 vertexOffset, uint32 instanceOffset)
 {
     vkCmdDrawIndexed(mCommandBuffer, indexNum, instancesNum, indexOffset, vertexOffset, instanceOffset);
 }
 
-void CommandRecorder::BindComputeResources(size_t slot, const ResourceBindingInstancePtr& bindingSetInstance)
+void CommandRecorder::BindComputeResources(uint32 slot, const ResourceBindingInstancePtr& bindingSetInstance)
 {
     NFE_UNUSED(slot);
     NFE_UNUSED(bindingSetInstance);
 }
 
-void CommandRecorder::BindComputeVolatileCBuffer(size_t slot, const BufferPtr& buffer)
+void CommandRecorder::BindComputeVolatileCBuffer(uint32 slot, const BufferPtr& buffer)
 {
     NFE_UNUSED(slot);
     NFE_UNUSED(buffer);

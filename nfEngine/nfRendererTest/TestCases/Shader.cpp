@@ -23,7 +23,7 @@ TEST_F(ShaderTest, Disassemble)
     shader = gRendererDevice->CreateShader(desc);
     ASSERT_TRUE(shader != nullptr);
 
-    std::string disasm;
+    String disasm;
     ASSERT_TRUE(shader->Disassemble(false, disasm));
-    EXPECT_TRUE(disasm.length() > 0);
+    EXPECT_TRUE(disasm.Length() > 0);
 }

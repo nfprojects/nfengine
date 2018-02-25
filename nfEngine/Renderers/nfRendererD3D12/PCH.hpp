@@ -14,11 +14,7 @@
 #include <dxgi1_4.h>
 #include <d3dcompiler.h>
 
-#include <new>
+#include <atomic>
 #include <memory>
 #include <assert.h>
-#include <map>
-#include <vector>
-#include <sstream>
-#include <string>
 #include <queue>

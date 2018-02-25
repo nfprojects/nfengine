@@ -9,6 +9,7 @@
 #include "../RendererInterface/VertexLayout.hpp"
 #include "Defines.hpp"
 #include "PipelineState.hpp"
+#include "nfCommon/Containers/DynArray.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -17,8 +18,8 @@ class VertexLayout : public IVertexLayout
 {
     friend class PipelineState;
 
-    std::vector<VkVertexInputBindingDescription> mBindings;
-    std::vector<VkVertexInputAttributeDescription> mAttributes;
+    Common::DynArray<VkVertexInputBindingDescription> mBindings;
+    Common::DynArray<VkVertexInputAttributeDescription> mAttributes;
 
 public:
     VertexLayout();

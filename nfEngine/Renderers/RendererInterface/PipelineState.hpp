@@ -91,7 +91,7 @@ struct DepthStateDesc
     // comparison function for depth tesing
     CompareFunc depthCompareFunc;
 
-    unsigned char stencilMask;
+    uint8 stencilMask;
 
     // stencil buffer operation taken when stencil test fails
     StencilOp stencilOpFail;
