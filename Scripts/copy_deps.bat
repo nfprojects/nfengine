@@ -39,15 +39,22 @@ if "%3"=="" (
     goto continue
 )
 
-if exist %BasePath%%3 (
-    echo Copying %3
-    copy %BasePath%%3 %DestPath%\%~nx3
+if exist "%BasePath%%3" (
+    echo Copying %3 from %BasePath%
+    copy "%BasePath%%3" "%DestPath%\%~nx3"
 ) else (
-    echo WARN:  %3 not found - skipping...
+    echo ERROR: %3 not found - skipping...
+    set Failed=true
 )
 shift
 goto mainloop
 :continue
 
-echo Finished
 popd
+
+if defined Failed: (
+    echo Errors were found while copying dependencies.
+    exit 1
+) else (
+    echo Copy operation finished successfully.
+)
