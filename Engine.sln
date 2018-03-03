@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2027
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nfEngine", "nfEngine", "{A160B4A7-4E09-4DB6-8EF9-D2E015E20AEE}"
 EndProject
@@ -154,6 +154,33 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Natvis", "Natvis", "{24032E
 	ProjectSection(SolutionItems) = preProject
 		nfEngine\nfCommon\Containers\Containers.natvis = nfEngine\nfCommon\Containers\Containers.natvis
 		nfEngine\nfCommon\Math\Math.natvis = nfEngine\nfCommon\Math\Math.natvis
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{B5DA450B-3EEA-4E41-80D7-7987A9397F8D}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\build.sh = Scripts\build.sh
+		Scripts\clean.bat = Scripts\clean.bat
+		Scripts\clean.sh = Scripts\clean.sh
+		Scripts\clean_errors.txt = Scripts\clean_errors.txt
+		Scripts\color.py = Scripts\color.py
+		Scripts\color.pyc = Scripts\color.pyc
+		Scripts\copy_deps.bat = Scripts\copy_deps.bat
+		Scripts\copy_deps.sh = Scripts\copy_deps.sh
+		Scripts\cppcheck.bat = Scripts\cppcheck.bat
+		Scripts\cppcheck.sh = Scripts\cppcheck.sh
+		Scripts\doxygen.cfg = Scripts\doxygen.cfg
+		Scripts\format.bat = Scripts\format.bat
+		Scripts\format.sh = Scripts\format.sh
+		Scripts\gen_doc.bat = Scripts\gen_doc.bat
+		Scripts\gen_doc.sh = Scripts\gen_doc.sh
+		Scripts\pre-commit.bat = Scripts\pre-commit.bat
+		Scripts\pre-commit.sh = Scripts\pre-commit.sh
+		Scripts\rebuild-all.sh = Scripts\rebuild-all.sh
+		Scripts\style.cfg = Scripts\style.cfg
+		Scripts\syncher.py = Scripts\syncher.py
+		Scripts\tests.py = Scripts\tests.py
+		Scripts\xmlParser.py = Scripts\xmlParser.py
+		Scripts\xmlParser.pyc = Scripts\xmlParser.pyc
 	EndProjectSection
 EndProject
 Global
