@@ -113,6 +113,8 @@
     <ClInclude Include="Math\SSE\Matrix4.hpp" />
     <ClInclude Include="Math\SSE\RayGeometry.hpp" />
     <ClInclude Include="Math\SSE\Vector4.hpp" />
+    <ClInclude Include="Math\Transcendental.hpp" />
+    <ClInclude Include="Math\TranscendentalImpl.hpp" />
     <ClInclude Include="Math\Transform.hpp" />
     <ClInclude Include="Math\Triangle.hpp" />
     <ClInclude Include="Math\Vector4.hpp" />
@@ -225,6 +227,7 @@
     <ClCompile Include="Math\Sphere.cpp" />
     <ClCompile Include="Math\SSE\GeometrySSE.cpp" />
     <ClCompile Include="Math\SSE\MatrixSSE.cpp" />
+    <ClCompile Include="Math\Transcendental.cpp" />
     <ClCompile Include="Math\Transform.cpp" />
     <ClCompile Include="Memory\Buffer.cpp" />
     <ClCompile Include="Memory\DefaultAllocator.cpp" />
