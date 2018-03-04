@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "../Matrix4.hpp"
+#include "../Transcendental.hpp"
 
 
 #ifdef NFE_USE_SSE
@@ -17,8 +18,8 @@ Matrix4 Matrix4::MakeRotationNormal(const Vector4& normalAxis, float angle)
 {
     Matrix4 result;
 
-    float sinAngle = sinf(angle);
-    float cosAngle = cosf(angle);
+    float sinAngle = Sin(angle);
+    float cosAngle = Cos(angle);
     Vector4 N0, N1;
     Vector4 V0, V1, V2;
     Vector4 R0, R1, R2;
