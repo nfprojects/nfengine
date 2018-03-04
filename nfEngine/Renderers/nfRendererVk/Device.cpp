@@ -250,13 +250,17 @@ bool Device::Init(const DeviceInitParams* params)
         "VK_LAYER_LUNARG_standard_validation" // for debugging
     };
 
+    VkPhysicalDeviceFeatures features;
+    VK_ZERO_MEMORY(features);
+    features.samplerAnisotropy = VK_TRUE;
+
     VkDeviceCreateInfo devInfo;
     VK_ZERO_MEMORY(devInfo);
     devInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
     devInfo.pNext = nullptr;
     devInfo.queueCreateInfoCount = 1;
     devInfo.pQueueCreateInfos = &queueInfo;
-    devInfo.pEnabledFeatures = nullptr;
+    devInfo.pEnabledFeatures = &features;
     devInfo.enabledExtensionCount = enabledExtensions.Size();
     devInfo.ppEnabledExtensionNames = enabledExtensions.Data();
     if (params->debugLevel > 0)
