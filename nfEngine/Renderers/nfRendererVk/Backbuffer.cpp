@@ -320,7 +320,7 @@ bool Backbuffer::BuildPresentCommandBuffers()
 
         presentBarrier.image = mBuffers[i];
 
-        vkCmdPipelineBarrier(mPresentCommandBuffers[i], VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+        vkCmdPipelineBarrier(mPresentCommandBuffers[i], VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                              VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0,
                              0, nullptr, 0, nullptr,
                              1, &presentBarrier);
@@ -343,8 +343,8 @@ bool Backbuffer::BuildPresentCommandBuffers()
 
         presentBarrier.image = mBuffers[i];
 
-        vkCmdPipelineBarrier(mPostPresentCommandBuffers[i], VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
-                             VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0,
+        vkCmdPipelineBarrier(mPostPresentCommandBuffers[i], VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+                             VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, 0,
                              0, nullptr, 0, nullptr,
                              1, &presentBarrier);
 
