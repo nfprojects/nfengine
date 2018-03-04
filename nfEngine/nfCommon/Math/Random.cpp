@@ -7,7 +7,7 @@
 #include "PCH.hpp"
 #include "Random.hpp"
 #include "Float4.hpp"
-
+#include "Transcendental.hpp"
 
 
 namespace NFE {
@@ -125,7 +125,7 @@ float Random::GetFloatNormal()
 {
     // Box-Muller method
     Float2 uv = GetFloat2();
-    return sqrtf(- 2.0f * logf(uv.x)) * cosf(2.0f * Constants::pi<float> * uv.y);
+    return sqrtf(- 2.0f * logf(uv.x)) * Cos(2.0f * Constants::pi<float> * uv.y);
 }
 
 Float2 Random::GetFloatNormal2()
@@ -136,8 +136,8 @@ Float2 Random::GetFloatNormal2()
     Float2 uv = GetFloat2();
     float temp = sqrtf(- 2.0f * logf(uv.x));
 
-    result.x = temp * cosf(2.0f * Constants::pi<float> * uv.y);
-    result.y = temp * sinf(2.0f * Constants::pi<float> * uv.y);
+    result.x = temp * Cos(2.0f * Constants::pi<float> * uv.y);
+    result.y = temp * Sin(2.0f * Constants::pi<float> * uv.y);
     return result;
 }
 
@@ -148,12 +148,12 @@ Float3 Random::GetFloatNormal3()
     // Box-Muller method
     Float2 uv = GetFloat2();
     float temp = sqrtf(- 2.0f * logf(uv.x));
-    result.x = temp * cosf(2.0f * Constants::pi<float> * uv.y);
-    result.y = temp * sinf(2.0f * Constants::pi<float> * uv.y);
+    result.x = temp * Cos(2.0f * Constants::pi<float> * uv.y);
+    result.y = temp * Sin(2.0f * Constants::pi<float> * uv.y);
 
     uv = GetFloat2();
     temp = sqrtf(- 2.0f * logf(uv.x));
-    result.z = temp * cosf(2.0f * Constants::pi<float> * uv.y);
+    result.z = temp * Cos(2.0f * Constants::pi<float> * uv.y);
 
     return result;
 }
@@ -165,13 +165,13 @@ Float4 Random::GetFloatNormal4()
     // Box-Muller method
     Float2 uv = GetFloat2();
     float temp = sqrtf(- 2.0f * logf(uv.x));
-    result.x = temp * cosf(2.0f * Constants::pi<float> * uv.y);
-    result.y = temp * sinf(2.0f * Constants::pi<float> * uv.y);
+    result.x = temp * Cos(2.0f * Constants::pi<float> * uv.y);
+    result.y = temp * Sin(2.0f * Constants::pi<float> * uv.y);
 
     uv = GetFloat2();
     temp = sqrtf(- 2.0f * logf(uv.x));
-    result.z = temp * cosf(2.0f * Constants::pi<float> * uv.y);
-    result.w = temp * sinf(2.0f * Constants::pi<float> * uv.y);
+    result.z = temp * Cos(2.0f * Constants::pi<float> * uv.y);
+    result.w = temp * Sin(2.0f * Constants::pi<float> * uv.y);
 
     return result;
 }
@@ -187,7 +187,7 @@ Float2 Random::GetPointInsideCircle()
     const float u = v.y + v.z;
     const float r = (u > 1.0f) ? (2.0f - u) : u;
 
-    return Float2(r * cosf(t), r * sinf(t));
+    return Float2(r * Cos(t), r * Sin(t));
 }
 
 Float3 Random::GetPointOnSphere()
@@ -200,8 +200,8 @@ Float3 Random::GetPointOnSphere()
     const float theta = 2.0f * Constants::pi<float> * uv.y;
 
     // longitude (uniform)
-    const float x = r * cosf(theta);
-    const float y = r * sinf(theta);
+    const float x = r * Cos(theta);
+    const float y = r * Sin(theta);
 
     return Float3(x, z, y);
 }

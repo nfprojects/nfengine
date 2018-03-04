@@ -220,6 +220,9 @@
     <ClCompile Include="TestCases\Utils\StringUtilsTest.cpp">
       <Filter>TestCases\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\Math\MathTranscendental.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PCH.hpp" />

@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "Matrix2.hpp"
+#include "Transcendental.hpp"
 
 
 namespace NFE {
@@ -39,8 +40,8 @@ bool Matrix2::Invert(Matrix2& outInverted) const
 
 Matrix2 Matrix2::MakeRotation(float angle)
 {
-    const float c = cosf(angle);
-    const float s = sinf(angle);
+    const float c = Cos(angle);
+    const float s = Sin(angle);
     return Matrix2(Float2(c, -s), Float2(s, c));
 }
 

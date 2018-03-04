@@ -8,6 +8,7 @@
 #include "EquationSolver.hpp"
 #include "Matrix2.hpp"
 #include "Matrix3.hpp"
+#include "Transcendental.hpp"
 
 
 namespace NFE {
