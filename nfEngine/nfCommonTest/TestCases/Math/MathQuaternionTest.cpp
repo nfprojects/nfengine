@@ -19,6 +19,8 @@ const Vector4 transformedY = Vector4(-0.897835f, 0.435841f, -0.06272f);       //
 const Vector4 transformedZ = Vector4(-0.306636f, -0.51663f, 0.799417f);       // (0,0,1) transformed with test rotation
 const Vector4 transformed0 = Vector4(-13.545702f, -22.565163f, 39.014123f);   // testVector0 transformed with test rotation
 
+const float maxError = 0.0001f;
+
 } // namespace
 
 
@@ -30,15 +32,15 @@ TEST(MathQuaternion, Equal)
     const Quaternion q10 = Quaternion::FromAxisAndAngle(testAxis.Normalized3(), testAngle);
     const Quaternion q11 = Quaternion::FromAxisAndAngle(-testAxis.Normalized3(), -testAngle);
 
-    EXPECT_TRUE(Quaternion::AlmostEqual(q00, q01, 0.00001f));
-    EXPECT_TRUE(Quaternion::AlmostEqual(q00, q00, 0.00001f));
-    EXPECT_TRUE(Quaternion::AlmostEqual(q10, q10, 0.00001f));
-    EXPECT_TRUE(Quaternion::AlmostEqual(q11, q11, 0.00001f));
+    EXPECT_TRUE(Quaternion::AlmostEqual(q00, q01, maxError));
+    EXPECT_TRUE(Quaternion::AlmostEqual(q00, q00, maxError));
+    EXPECT_TRUE(Quaternion::AlmostEqual(q10, q10, maxError));
+    EXPECT_TRUE(Quaternion::AlmostEqual(q11, q11, maxError));
 
-    EXPECT_FALSE(Quaternion::AlmostEqual(q00, q10, 0.00001f));
-    EXPECT_FALSE(Quaternion::AlmostEqual(q00, q11, 0.00001f));
-    EXPECT_FALSE(Quaternion::AlmostEqual(q01, q10, 0.00001f));
-    EXPECT_FALSE(Quaternion::AlmostEqual(q01, q11, 0.00001f));
+    EXPECT_FALSE(Quaternion::AlmostEqual(q00, q10, maxError));
+    EXPECT_FALSE(Quaternion::AlmostEqual(q00, q11, maxError));
+    EXPECT_FALSE(Quaternion::AlmostEqual(q01, q10, maxError));
+    EXPECT_FALSE(Quaternion::AlmostEqual(q01, q11, maxError));
 }
 
 TEST(MathQuaternion, RotationAxisX)
@@ -53,7 +55,7 @@ TEST(MathQuaternion, RotationAxisX)
     EXPECT_TRUE(Vector4::AlmostEqual(tx, Vector4(1.0f, 0.0f, 0.0f)));
     EXPECT_TRUE(Vector4::AlmostEqual(ty, Vector4(0.0f, 0.0f, 1.0f)));
     EXPECT_TRUE(Vector4::AlmostEqual(tz, Vector4(0.0f, -1.0f, 0.0f)));
-    EXPECT_TRUE(Vector4::AlmostEqual(t0, Vector4(2.4f, -47.0f, -0.12f), 0.00001f));
+    EXPECT_TRUE(Vector4::AlmostEqual(t0, Vector4(2.4f, -47.0f, -0.12f), maxError));
 }
 
 TEST(MathQuaternion, RotationAxisY)
@@ -68,7 +70,7 @@ TEST(MathQuaternion, RotationAxisY)
     EXPECT_TRUE(Vector4::AlmostEqual(tx, Vector4(0.0f, 0.0f, -1.0f)));
     EXPECT_TRUE(Vector4::AlmostEqual(ty, Vector4(0.0f, 1.0f, 0.0f)));
     EXPECT_TRUE(Vector4::AlmostEqual(tz, Vector4(1.0f, 0.0f, 0.0f)));
-    EXPECT_TRUE(Vector4::AlmostEqual(t0, Vector4(47.0f, -0.12f, -2.4f), 0.00001f));
+    EXPECT_TRUE(Vector4::AlmostEqual(t0, Vector4(47.0f, -0.12f, -2.4f), maxError));
 }
 
 TEST(MathQuaternion, RotationAxisZ)
@@ -83,7 +85,7 @@ TEST(MathQuaternion, RotationAxisZ)
     EXPECT_TRUE(Vector4::AlmostEqual(tx, Vector4(0.0f, 1.0f, 0.0f)));
     EXPECT_TRUE(Vector4::AlmostEqual(ty, Vector4(-1.0f, 0.0f, 0.0f)));
     EXPECT_TRUE(Vector4::AlmostEqual(tz, Vector4(0.0f, 0.0f, 1.0f)));
-    EXPECT_TRUE(Vector4::AlmostEqual(t0, Vector4(0.12f, 2.4f, 47.0f), 0.00001f));
+    EXPECT_TRUE(Vector4::AlmostEqual(t0, Vector4(0.12f, 2.4f, 47.0f), maxError));
 }
 
 TEST(MathQuaternion, RotationAxis)
@@ -96,10 +98,10 @@ TEST(MathQuaternion, RotationAxis)
     const Vector4 tz = q.TransformVector(Vector4(0.0f, 0.0f, 1.0f));
     const Vector4 t0 = q.TransformVector(testVector0);
 
-    EXPECT_TRUE(Vector4::AlmostEqual(tx, transformedX, 0.00001f));
-    EXPECT_TRUE(Vector4::AlmostEqual(ty, transformedY, 0.00001f));
-    EXPECT_TRUE(Vector4::AlmostEqual(tz, transformedZ, 0.00001f));
-    EXPECT_TRUE(Vector4::AlmostEqual(t0, transformed0, 0.00001f));
+    EXPECT_TRUE(Vector4::AlmostEqual(tx, transformedX, maxError));
+    EXPECT_TRUE(Vector4::AlmostEqual(ty, transformedY, maxError));
+    EXPECT_TRUE(Vector4::AlmostEqual(tz, transformedZ, maxError));
+    EXPECT_TRUE(Vector4::AlmostEqual(t0, transformed0, maxError));
 }
 
 TEST(MathQuaternion, ToMatrix)
@@ -109,12 +111,12 @@ TEST(MathQuaternion, ToMatrix)
 
     Matrix4 m = q.ToMatrix4();
     m.r[3] = Vector4(); // zero 4th row
-    ASSERT_TRUE(Vector4::AlmostEqual(m.GetRow(0), transformedX, 0.00001f));
-    ASSERT_TRUE(Vector4::AlmostEqual(m.GetRow(1), transformedY, 0.00001f));
-    ASSERT_TRUE(Vector4::AlmostEqual(m.GetRow(2), transformedZ, 0.00001f));
+    ASSERT_TRUE(Vector4::AlmostEqual(m.GetRow(0), transformedX, maxError));
+    ASSERT_TRUE(Vector4::AlmostEqual(m.GetRow(1), transformedY, maxError));
+    ASSERT_TRUE(Vector4::AlmostEqual(m.GetRow(2), transformedZ, maxError));
 
     const Vector4 t0 = m.LinearCombination3(testVector0);
-    EXPECT_TRUE(Vector4::AlmostEqual(t0, transformed0, 0.00001f));
+    EXPECT_TRUE(Vector4::AlmostEqual(t0, transformed0, maxError));
 }
 
 TEST(MathQuaternion, FromMatrix)
@@ -125,17 +127,17 @@ TEST(MathQuaternion, FromMatrix)
     const Matrix4 m = q.ToMatrix4();
     const Quaternion q2 = Quaternion::FromMatrix(m);
 
-    ASSERT_TRUE(Quaternion::AlmostEqual(q, q2, 0.00001f));
+    ASSERT_TRUE(Quaternion::AlmostEqual(q, q2, maxError));
 
     const Vector4 tx = q2.TransformVector(Vector4(1.0f, 0.0f, 0.0f));
     const Vector4 ty = q2.TransformVector(Vector4(0.0f, 1.0f, 0.0f));
     const Vector4 tz = q2.TransformVector(Vector4(0.0f, 0.0f, 1.0f));
     const Vector4 t0 = q2.TransformVector(testVector0);
 
-    EXPECT_TRUE(Vector4::AlmostEqual(tx, transformedX, 0.00001f));
-    EXPECT_TRUE(Vector4::AlmostEqual(ty, transformedY, 0.00001f));
-    EXPECT_TRUE(Vector4::AlmostEqual(tz, transformedZ, 0.00001f));
-    EXPECT_TRUE(Vector4::AlmostEqual(t0, transformed0, 0.00001f));
+    EXPECT_TRUE(Vector4::AlmostEqual(tx, transformedX, maxError));
+    EXPECT_TRUE(Vector4::AlmostEqual(ty, transformedY, maxError));
+    EXPECT_TRUE(Vector4::AlmostEqual(tz, transformedZ, maxError));
+    EXPECT_TRUE(Vector4::AlmostEqual(t0, transformed0, maxError));
 }
 
 TEST(MathQuaternion, ToAxis)
@@ -149,12 +151,12 @@ TEST(MathQuaternion, ToAxis)
 
     if (Vector4::Dot3(axis, axis2) > 0.0f)
     {
-        ASSERT_TRUE(Vector4::AlmostEqual(axis, axis2, 0.00001f));
+        ASSERT_TRUE(Vector4::AlmostEqual(axis, axis2, maxError));
         ASSERT_FLOAT_EQ(testAngle, angle2);
     }
     else
     {
-        ASSERT_TRUE(Vector4::AlmostEqual(axis, -axis2, 0.00001f));
+        ASSERT_TRUE(Vector4::AlmostEqual(axis, -axis2, maxError));
         ASSERT_FLOAT_EQ(testAngle, -angle2);
     }
 }
@@ -223,24 +225,24 @@ TEST(MathQuaternion, MultiplyRotations)
     const Quaternion zRot2 = Quaternion::RotationZ(Constants::pi<float>);
 
     // rotation in the same plane
-    EXPECT_TRUE(Quaternion::AlmostEqual(xRot * xRot, xRot2, 0.00001f));
-    EXPECT_TRUE(Quaternion::AlmostEqual(yRot * yRot, yRot2, 0.00001f));
-    EXPECT_TRUE(Quaternion::AlmostEqual(zRot * zRot, zRot2, 0.00001f));
-    EXPECT_TRUE(Quaternion::AlmostEqual(xRevRot * xRot, Quaternion::Identity(), 0.00001f));
-    EXPECT_TRUE(Quaternion::AlmostEqual(yRevRot * yRot, Quaternion::Identity(), 0.00001f));
-    EXPECT_TRUE(Quaternion::AlmostEqual(zRevRot * zRot, Quaternion::Identity(), 0.00001f));
-    EXPECT_TRUE(Quaternion::AlmostEqual(xRot2 * xRot2, Quaternion::Identity(), 0.00001f));
-    EXPECT_TRUE(Quaternion::AlmostEqual(yRot2 * yRot2, Quaternion::Identity(), 0.00001f));
-    EXPECT_TRUE(Quaternion::AlmostEqual(zRot2 * zRot2, Quaternion::Identity(), 0.00001f));
-    EXPECT_TRUE(Quaternion::AlmostEqual(xRot * xRot2, xRevRot, 0.00001f));
-    EXPECT_TRUE(Quaternion::AlmostEqual(yRot * yRot2, yRevRot, 0.00001f));
-    EXPECT_TRUE(Quaternion::AlmostEqual(zRot * zRot2, zRevRot, 0.00001f));
+    EXPECT_TRUE(Quaternion::AlmostEqual(xRot * xRot, xRot2, maxError));
+    EXPECT_TRUE(Quaternion::AlmostEqual(yRot * yRot, yRot2, maxError));
+    EXPECT_TRUE(Quaternion::AlmostEqual(zRot * zRot, zRot2, maxError));
+    EXPECT_TRUE(Quaternion::AlmostEqual(xRevRot * xRot, Quaternion::Identity(), maxError));
+    EXPECT_TRUE(Quaternion::AlmostEqual(yRevRot * yRot, Quaternion::Identity(), maxError));
+    EXPECT_TRUE(Quaternion::AlmostEqual(zRevRot * zRot, Quaternion::Identity(), maxError));
+    EXPECT_TRUE(Quaternion::AlmostEqual(xRot2 * xRot2, Quaternion::Identity(), maxError));
+    EXPECT_TRUE(Quaternion::AlmostEqual(yRot2 * yRot2, Quaternion::Identity(), maxError));
+    EXPECT_TRUE(Quaternion::AlmostEqual(zRot2 * zRot2, Quaternion::Identity(), maxError));
+    EXPECT_TRUE(Quaternion::AlmostEqual(xRot * xRot2, xRevRot, maxError));
+    EXPECT_TRUE(Quaternion::AlmostEqual(yRot * yRot2, yRevRot, maxError));
+    EXPECT_TRUE(Quaternion::AlmostEqual(zRot * zRot2, zRevRot, maxError));
 
     // simple double 90 degree rotations
-    EXPECT_TRUE(Quaternion::AlmostEqual(yRot * xRot, xRot * zRevRot, 0.00001f));
-    EXPECT_TRUE(Quaternion::AlmostEqual(xRot * yRot, yRot * zRot, 0.00001f));
-    EXPECT_TRUE(Quaternion::AlmostEqual(zRot * yRot, yRot * xRevRot, 0.00001f));
-    EXPECT_TRUE(Quaternion::AlmostEqual(xRot * zRot, yRevRot * xRot, 0.00001f));
+    EXPECT_TRUE(Quaternion::AlmostEqual(yRot * xRot, xRot * zRevRot, maxError));
+    EXPECT_TRUE(Quaternion::AlmostEqual(xRot * yRot, yRot * zRot, maxError));
+    EXPECT_TRUE(Quaternion::AlmostEqual(zRot * yRot, yRot * xRevRot, maxError));
+    EXPECT_TRUE(Quaternion::AlmostEqual(xRot * zRot, yRevRot * xRot, maxError));
 }
 
 TEST(MathQuaternion, MultiplyRandomInverse)
@@ -253,20 +255,20 @@ TEST(MathQuaternion, MultiplyRandomInverse)
         const Quaternion q = Quaternion::FromAxisAndAngle(Vector4(random.GetPointOnSphere()), random.GetFloat() * Constants::pi<float>);
         const Quaternion qInv = q.Inverted();
 
-        EXPECT_TRUE(Quaternion::AlmostEqual(qInv * q, Quaternion::Identity(), 0.00001f));
-        EXPECT_TRUE(Quaternion::AlmostEqual(q * qInv, Quaternion::Identity(), 0.00001f));
+        EXPECT_TRUE(Quaternion::AlmostEqual(qInv * q, Quaternion::Identity(), maxError));
+        EXPECT_TRUE(Quaternion::AlmostEqual(q * qInv, Quaternion::Identity(), maxError));
     }
 }
 
 TEST(MathQuaternion, FromEulerAngles)
 {
     const float angle = DegToRad(10.0f);
-    ASSERT_TRUE(Quaternion::AlmostEqual(Quaternion::FromAngles(angle, 0.0f, 0.0f), Quaternion::RotationX(angle), 0.00001f));
-    ASSERT_TRUE(Quaternion::AlmostEqual(Quaternion::FromAngles(0.0f, angle, 0.0f), Quaternion::RotationY(angle), 0.00001f));
-    ASSERT_TRUE(Quaternion::AlmostEqual(Quaternion::FromAngles(0.0f, 0.0f, angle), Quaternion::RotationZ(angle), 0.00001f));
-    ASSERT_TRUE(Quaternion::AlmostEqual(Quaternion::FromAngles(-angle, 0.0f, 0.0f), Quaternion::RotationX(-angle), 0.00001f));
-    ASSERT_TRUE(Quaternion::AlmostEqual(Quaternion::FromAngles(0.0f, -angle, 0.0f), Quaternion::RotationY(-angle), 0.00001f));
-    ASSERT_TRUE(Quaternion::AlmostEqual(Quaternion::FromAngles(0.0f, 0.0f, -angle), Quaternion::RotationZ(-angle), 0.00001f));
+    ASSERT_TRUE(Quaternion::AlmostEqual(Quaternion::FromAngles(angle, 0.0f, 0.0f), Quaternion::RotationX(angle), maxError));
+    ASSERT_TRUE(Quaternion::AlmostEqual(Quaternion::FromAngles(0.0f, angle, 0.0f), Quaternion::RotationY(angle), maxError));
+    ASSERT_TRUE(Quaternion::AlmostEqual(Quaternion::FromAngles(0.0f, 0.0f, angle), Quaternion::RotationZ(angle), maxError));
+    ASSERT_TRUE(Quaternion::AlmostEqual(Quaternion::FromAngles(-angle, 0.0f, 0.0f), Quaternion::RotationX(-angle), maxError));
+    ASSERT_TRUE(Quaternion::AlmostEqual(Quaternion::FromAngles(0.0f, -angle, 0.0f), Quaternion::RotationY(-angle), maxError));
+    ASSERT_TRUE(Quaternion::AlmostEqual(Quaternion::FromAngles(0.0f, 0.0f, -angle), Quaternion::RotationZ(-angle), maxError));
 
     const float yawAngle = DegToRad(10.0f);
     const float pitchAngle = DegToRad(20.0f);
@@ -289,19 +291,19 @@ TEST(MathQuaternion, ToEulerAngles)
     float pitch, yaw, roll;
 
     Quaternion::RotationX(angle).ToAngles(pitch, yaw, roll);
-    EXPECT_FLOAT_EQ(angle, pitch);
-    EXPECT_FLOAT_EQ(0.0f, yaw);
-    EXPECT_FLOAT_EQ(0.0f, roll);
+    EXPECT_NEAR(angle, pitch, maxError);
+    EXPECT_NEAR(0.0f, yaw, maxError);
+    EXPECT_NEAR(0.0f, roll, maxError);
 
     Quaternion::RotationY(angle).ToAngles(pitch, yaw, roll);
-    EXPECT_FLOAT_EQ(0.0f, pitch);
-    EXPECT_FLOAT_EQ(angle, yaw);
-    EXPECT_FLOAT_EQ(0.0f, roll);
+    EXPECT_NEAR(0.0f, pitch, maxError);
+    EXPECT_NEAR(angle, yaw, maxError);
+    EXPECT_NEAR(0.0f, roll, maxError);
 
     Quaternion::RotationZ(angle).ToAngles(pitch, yaw, roll);
-    EXPECT_FLOAT_EQ(0.0f, pitch);
-    EXPECT_FLOAT_EQ(0.0f, yaw);
-    EXPECT_FLOAT_EQ(angle, roll);
+    EXPECT_NEAR(0.0f, pitch, maxError);
+    EXPECT_NEAR(0.0f, yaw, maxError);
+    EXPECT_NEAR(angle, roll, maxError);
 
 
     const float yawAngle = DegToRad(10.0f);
@@ -310,7 +312,7 @@ TEST(MathQuaternion, ToEulerAngles)
     const Quaternion q = Quaternion::FromAngles(pitchAngle, yawAngle, rollAngle);
     q.ToAngles(pitch, yaw, roll);
 
-    EXPECT_FLOAT_EQ(pitchAngle, pitch);
-    EXPECT_FLOAT_EQ(yawAngle, yaw);
-    EXPECT_FLOAT_EQ(rollAngle, roll);
+    EXPECT_NEAR(pitchAngle, pitch, maxError);
+    EXPECT_NEAR(yawAngle, yaw, maxError);
+    EXPECT_NEAR(rollAngle, roll, maxError);
 }
