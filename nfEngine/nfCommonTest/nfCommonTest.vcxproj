@@ -199,6 +199,7 @@
     <ClCompile Include="TestCases\Math\MathConversionsTest.cpp" />
     <ClCompile Include="TestCases\Math\MathRayGeometryTest.cpp" />
     <ClCompile Include="TestCases\Math\MathTest.cpp" />
+    <ClCompile Include="TestCases\Math\MathTranscendental.cpp" />
     <ClCompile Include="TestCases\Math\MathTransformTest.cpp" />
     <ClCompile Include="TestCases\Math\MathVectorTest.cpp" />
     <ClCompile Include="TestCases\Memory\AlignedTest.cpp" />
