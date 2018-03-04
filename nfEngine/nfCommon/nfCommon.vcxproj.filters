@@ -510,6 +510,12 @@
     <ClInclude Include="Utils\StringUtils.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Math\Transcendental.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\TranscendentalImpl.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -739,5 +745,8 @@
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="nfCommon.cpp" />
+    <ClCompile Include="Math\Transcendental.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
