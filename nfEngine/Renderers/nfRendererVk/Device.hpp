@@ -17,6 +17,7 @@
 #include "RingBuffer.hpp"
 
 #include "nfCommon/Containers/UniquePtr.hpp"
+#include "nfCommon/System/Window.hpp"
 
 
 namespace NFE {
@@ -26,6 +27,9 @@ class Device : public IDevice
 {
 private:
     friend class Backbuffer;
+
+    // required to collect available formats for Backbuffer
+    Common::Window mInvisibleWindow;
 
     Instance mInstance;
     VkPhysicalDevice mPhysicalDevice;
