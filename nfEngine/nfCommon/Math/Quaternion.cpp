@@ -6,7 +6,7 @@
 
 #include "PCH.hpp"
 #include "Quaternion.hpp"
-
+#include "Transcendental.hpp"
 
 namespace NFE {
 namespace Math {
@@ -14,27 +14,27 @@ namespace Math {
 Quaternion Quaternion::FromAxisAndAngle(const Vector4& axis, float angle)
 {
     angle *= 0.5f;
-    Quaternion q = Quaternion(axis * sinf(angle));
-    q.q.w = cosf(angle);
+    Quaternion q = Quaternion(axis * Sin(angle));
+    q.q.w = Cos(angle);
     return q;
 }
 
 Quaternion Quaternion::RotationX(float angle)
 {
     angle *= 0.5f;
-    return Quaternion(sinf(angle), 0.0f, 0.0f, cosf(angle));
+    return Quaternion(Sin(angle), 0.0f, 0.0f, Cos(angle));
 }
 
 Quaternion Quaternion::RotationY(float angle)
 {
     angle *= 0.5f;
-    return Quaternion(0.0f, sinf(angle), 0.0f, cosf(angle));
+    return Quaternion(0.0f, Sin(angle), 0.0f, Cos(angle));
 }
 
 Quaternion Quaternion::RotationZ(float angle)
 {
     angle *= 0.5f;
-    return Quaternion(0.0f, 0.0f, sinf(angle), cosf(angle));
+    return Quaternion(0.0f, 0.0f, Sin(angle), Cos(angle));
 }
 
 Quaternion Quaternion::operator * (const Quaternion& b) const
@@ -82,12 +82,12 @@ Quaternion Quaternion::FromAngles(float pitch, float yaw, float roll)
     roll *= 0.5f;
 
     Quaternion q;
-    float t0 = cosf(yaw);
-    float t1 = sinf(yaw);
-    float t2 = cosf(roll);
-    float t3 = sinf(roll);
-    float t4 = cosf(pitch);
-    float t5 = sinf(pitch);
+    float t0 = Cos(yaw);
+    float t1 = Sin(yaw);
+    float t2 = Cos(roll);
+    float t3 = Sin(roll);
+    float t4 = Cos(pitch);
+    float t5 = Sin(pitch);
 
     const Vector4 term0 = Vector4(t0, t1, t0, t0);
     const Vector4 term1 = Vector4(t2, t2, t3, t2);
@@ -222,7 +222,7 @@ void Quaternion::ToAngles(float& outPitch, float& outYaw, float& outRoll) const
     t2 = Math::Clamp(t2, -1.0f, 1.0f);
 
     outRoll = atan2f(t0, t1);
-    outPitch = asinf(t2);
+    outPitch = ASin(t2);
     outYaw = atan2f(t3, t4);
 }
 
@@ -247,8 +247,8 @@ Quaternion Quaternion::Interpolate(const Quaternion& q0, const Quaternion& q1, f
         float sinOmega = sqrtf(1.0f - cosOmega * cosOmega);
         float omega = atan2f(sinOmega, cosOmega);
         float oneOverSinOmega = 1.0f / sinOmega;
-        k0 = sinf((1.0f - t) * omega) * oneOverSinOmega;
-        k1 = sinf(t * omega) * oneOverSinOmega;
+        k0 = Sin((1.0f - t) * omega) * oneOverSinOmega;
+        k1 = Sin(t * omega) * oneOverSinOmega;
     }
 
     return Quaternion(q0.q * k0 + new_q1 * k1);
