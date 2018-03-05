@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e61ad505_a0b3100b",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2018-03-05T21:57:59Z",
+      "side": 1,
+      "message": "Minor thing: instead introducing header dependency you could you unique pointer in this case.",
+      "revId": "13fa15c2fd644af873219113895f2753f0c8b698",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1be20997_eae2b10f",
+        "filename": "nfEngine/Renderers/nfRendererVk/Device.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2018-03-05T21:57:59Z",
+      "side": 1,
+      "message": "This is not used on Linux, so maybe wrap around #ifdef?",
+      "revId": "13fa15c2fd644af873219113895f2753f0c8b698",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
