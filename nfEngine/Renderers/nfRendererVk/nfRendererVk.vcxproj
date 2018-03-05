@@ -40,7 +40,9 @@
     <ClInclude Include="Internal\RenderPassManager.hpp" />
     <ClInclude Include="Internal\RingBuffer.hpp" />
     <ClInclude Include="Internal\SemaphorePool.hpp" />
+    <ClInclude Include="Internal\Tools.hpp" />
     <ClInclude Include="Internal\Translations.hpp" />
+    <ClInclude Include="Internal\VkRAII.hpp" />
     <ClInclude Include="Internal\Win\WinExtensions.hpp" />
     <ClInclude Include="PCH.hpp" />
   </ItemGroup>
@@ -65,6 +67,7 @@
     <ClCompile Include="Internal\RenderPassManager.cpp" />
     <ClCompile Include="Internal\RingBuffer.cpp" />
     <ClCompile Include="Internal\SemaphorePool.cpp" />
+    <ClCompile Include="Internal\Tools.cpp" />
     <ClCompile Include="Internal\Translations.cpp" />
     <ClCompile Include="Internal\Win\WinExtensions.cpp" />
     <ClCompile Include="Main.cpp" />

@@ -41,7 +41,7 @@ bool RingBuffer::Init(uint32 size)
 
     // device buffer
     VkResult result = vkCreateBuffer(mDevice, &bufInfo, nullptr, &mBuffer);
-    CHECK_VKRESULT(result, "Failed to create device buffer");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create device buffer");
 
     VkMemoryRequirements deviceMemReqs;
     vkGetBufferMemoryRequirements(mDevice, mBuffer, &deviceMemReqs);
@@ -54,13 +54,13 @@ bool RingBuffer::Init(uint32 size)
     memInfo.memoryTypeIndex = gDevice->GetMemoryTypeIndex(deviceMemReqs.memoryTypeBits,
                                                           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
     result = vkAllocateMemory(mDevice, &memInfo, nullptr, &mBufferMemory);
-    CHECK_VKRESULT(result, "Failed to allocate memory for device buffer");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to allocate memory for device buffer");
 
     result = vkBindBufferMemory(mDevice, mBuffer, mBufferMemory, 0);
-    CHECK_VKRESULT(result, "Failed to bind device buffer to its memory");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to bind device buffer to its memory");
 
     result = vkMapMemory(mDevice, mBufferMemory, 0, deviceMemReqs.size, 0, reinterpret_cast<void**>(&mBufferHostMemory));
-    CHECK_VKRESULT(result, "Failed to map memory to host");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to map memory to host");
 
     mSize = static_cast<uint32>(deviceMemReqs.size);
 

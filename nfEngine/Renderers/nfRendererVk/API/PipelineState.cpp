@@ -208,7 +208,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     pipeInfo.subpass = 0;
     VkResult result = vkCreateGraphicsPipelines(gDevice->GetDevice(), VK_NULL_HANDLE, 1, &pipeInfo,
                                                 nullptr, &mPipeline);
-    CHECK_VKRESULT(result, "Failed to create Graphics Pipeline");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create Graphics Pipeline");
 
     return true;
 }
