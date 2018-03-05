@@ -75,9 +75,6 @@
     <ClCompile Include="CommandRecorder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SemaphorePool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Win\WinDevice.cpp">
       <Filter>Source Files\Win</Filter>
     </ClCompile>
@@ -153,9 +150,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CommandRecorder.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SemaphorePool.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Win\WinExtensions.hpp">
