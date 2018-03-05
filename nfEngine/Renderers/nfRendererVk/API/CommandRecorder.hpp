@@ -14,6 +14,8 @@
 #include "Buffer.hpp"
 #include "Internal/RingBuffer.hpp"
 
+#include "nfCommon/Containers/DynArray.hpp"
+
 
 namespace NFE {
 namespace Renderer {
@@ -21,6 +23,8 @@ namespace Renderer {
 class CommandRecorder: public ICommandRecorder
 {
     friend class Device;
+
+    DevicePtr mDevicePtr;
 
     VkCommandBuffer mCommandBuffer;
     VkCommandBufferBeginInfo mCommandBufferBeginInfo;
@@ -36,7 +40,7 @@ public:
     CommandRecorder();
     ~CommandRecorder();
 
-    bool Init();
+    bool Init(DevicePtr& device);
 
     /// Common methods
     bool Begin() override;

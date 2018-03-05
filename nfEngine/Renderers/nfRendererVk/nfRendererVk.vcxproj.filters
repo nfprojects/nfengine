@@ -13,6 +13,9 @@
     <Filter Include="API\Win">
       <UniqueIdentifier>{ab7effb7-0bd8-4580-bed6-79a5139b5c98}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Internal\RenderGraph">
+      <UniqueIdentifier>{cbdf8581-7bc4-4460-8570-a372f081f943}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Defines.hpp" />
@@ -83,6 +86,30 @@
     <ClInclude Include="Internal\Win\WinExtensions.hpp">
       <Filter>Internal\Win</Filter>
     </ClInclude>
+    <ClInclude Include="Internal\Tools.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\QueueManager.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\RenderGraph\RenderGraph.hpp">
+      <Filter>Internal\RenderGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\RenderGraph\RenderGraphBuffer.hpp">
+      <Filter>Internal\RenderGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\RenderGraph\RenderGraphNode.hpp">
+      <Filter>Internal\RenderGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\RenderGraph\RenderGraphPass.hpp">
+      <Filter>Internal\RenderGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\RenderGraph\RenderGraphResource.hpp">
+      <Filter>Internal\RenderGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\RenderGraph\RenderGraphTexture.hpp">
+      <Filter>Internal\RenderGraph</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -152,6 +179,30 @@
     </ClCompile>
     <ClCompile Include="Internal\Win\WinExtensions.cpp">
       <Filter>Internal\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\Tools.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\QueueManager.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\RenderGraph\RenderGraph.cpp">
+      <Filter>Internal\RenderGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\RenderGraph\RenderGraphBuffer.cpp">
+      <Filter>Internal\RenderGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\RenderGraph\RenderGraphNode.cpp">
+      <Filter>Internal\RenderGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\RenderGraph\RenderGraphPass.cpp">
+      <Filter>Internal\RenderGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\RenderGraph\RenderGraphResource.cpp">
+      <Filter>Internal\RenderGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\RenderGraph\RenderGraphTexture.cpp">
+      <Filter>Internal\RenderGraph</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

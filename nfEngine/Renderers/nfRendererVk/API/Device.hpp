@@ -12,11 +12,14 @@
 
 #include "CommandRecorder.hpp"
 #include "Internal/Instance.hpp"
+#include "Internal/Debugger.hpp"
 #include "Internal/RenderPassManager.hpp"
-#include "Internal/SemaphorePool.hpp"
 #include "Internal/RingBuffer.hpp"
+#include "Internal/QueueManager.hpp"
+#include "Internal/RenderGraph/RenderGraph.hpp"
 
 #include "nfCommon/Containers/UniquePtr.hpp"
+#include "nfCommon/Containers/SharedPtr.hpp"
 #include "nfCommon/System/Window.hpp"
 
 
@@ -27,39 +30,31 @@ class Device : public IDevice
 {
 private:
     friend class Backbuffer;
+    friend class CommandRecorder;
 
     // required to collect available formats for Backbuffer
     Common::Window mInvisibleWindow;
 
     Instance mInstance;
+    Debugger mDebugger;
     VkPhysicalDevice mPhysicalDevice;
     VkPhysicalDeviceMemoryProperties mMemoryProperties;
     VkDevice mDevice;
-    VkCommandPool mCommandPool;
+
     Common::DynArray<VkCommandBuffer> mCommandBufferPool;
     uint32 mCurrentCommandBuffer;
-    uint32 mGraphicsQueueIndex;
-    VkQueue mGraphicsQueue;
-    VkPipelineCache mPipelineCache;
-    VkSemaphore mPrePresentSemaphore;
-    VkSemaphore mPresentSemaphore;
-    VkSemaphore mPostPresentSemaphore;
-    bool mPresented;
+
     Common::DynArray<VkSurfaceFormatKHR> mSupportedFormats;
-    Common::UniquePtr<RenderPassManager> mRenderPassManager;
-    Common::UniquePtr<SemaphorePool> mSemaphorePool;
-    Common::UniquePtr<RingBuffer> mRingBuffer;
+    RenderPassManager mRenderPassManager;
+    QueueManager mQueueManager;
+    RingBuffer mRingBuffer;
+    RenderGraph mFrameGraph;
+
     bool mDebugEnable;
 
     VkPhysicalDevice SelectPhysicalDevice(const Common::DynArray<VkPhysicalDevice>& devices, int preferredId);
-
     bool CreateTemporarySurface(VkSurfaceKHR& surface);
     void CleanupTemporarySurface(VkSurfaceKHR& surface);
-
-    NFE_INLINE void SignalPresent()
-    {
-        mPresented = true;
-    }
 
 public:
     Device();
@@ -72,59 +67,29 @@ public:
         return mInstance.Get();
     }
 
-    NFE_INLINE const VkDevice& GetDevice() const
+    NFE_INLINE VkDevice GetDevice() const
     {
         return mDevice;
     }
 
-    NFE_INLINE const VkPhysicalDevice& GetPhysicalDevice() const
+    NFE_INLINE VkPhysicalDevice GetPhysicalDevice() const
     {
         return mPhysicalDevice;
     }
 
-    NFE_INLINE const VkCommandPool& GetCommandPool() const
+    NFE_INLINE VkCommandPool GetCommandPool(QueueType queue) const
     {
-        return mCommandPool;
+        return mQueueManager.GetCommandPool(queue);
     }
 
-    NFE_INLINE const VkPipelineCache& GetPipelineCache() const
+    NFE_INLINE RenderPassManager* GetRenderPassManager()
     {
-        return mPipelineCache;
+        return &mRenderPassManager;
     }
 
-    NFE_INLINE const VkQueue& GetQueue() const
+    NFE_INLINE RingBuffer* GetRingBuffer()
     {
-        return mGraphicsQueue;
-    }
-
-    NFE_INLINE const uint32& GetQueueIndex() const
-    {
-        return mGraphicsQueueIndex;
-    }
-
-    NFE_INLINE const VkSemaphore& GetPresentSemaphore() const
-    {
-        return mPresentSemaphore;
-    }
-
-    NFE_INLINE const VkSemaphore& GetPostPresentSemaphore() const
-    {
-        return mPostPresentSemaphore;
-    }
-
-    NFE_INLINE RenderPassManager* GetRenderPassManager() const
-    {
-        return mRenderPassManager.Get();
-    }
-
-    NFE_INLINE SemaphorePool* GetSemaphorePool() const
-    {
-        return mSemaphorePool.Get();
-    }
-
-    NFE_INLINE RingBuffer* GetRingBuffer() const
-    {
-        return mRingBuffer.Get();
+        return &mRingBuffer;
     }
 
     NFE_INLINE uint32 GetCurrentCommandBuffer() const
@@ -141,7 +106,6 @@ public:
     bool GetDeviceInfo(DeviceInfo& info) override;
     bool IsBackbufferFormatSupported(ElementFormat format) override;
 
-    VertexLayoutPtr CreateVertexLayout(const VertexLayoutDesc& desc) override;
     BufferPtr CreateBuffer(const BufferDesc& desc) override;
     TexturePtr CreateTexture(const TextureDesc& desc) override;
     BackbufferPtr CreateBackbuffer(const BackbufferDesc& desc) override;
@@ -152,9 +116,10 @@ public:
     ShaderPtr CreateShader(const ShaderDesc& desc) override;
     ResourceBindingSetPtr CreateResourceBindingSet(const ResourceBindingSetDesc& desc) override;
     ResourceBindingLayoutPtr CreateResourceBindingLayout(const ResourceBindingLayoutDesc& desc) override;
+    VertexLayoutPtr CreateVertexLayout(const VertexLayoutDesc& desc) override;
     ResourceBindingInstancePtr CreateResourceBindingInstance(const ResourceBindingSetPtr& set) override;
-
     CommandRecorderPtr CreateCommandRecorder() override;
+
     bool Execute(CommandListID commandList) override;
     bool WaitForGPU() override;
     bool FinishFrame() override;
@@ -162,8 +127,6 @@ public:
     bool DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data) override;
     bool DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap, uint32 layer) override;
 };
-
-extern Common::UniquePtr<Device> gDevice;
 
 extern "C" RENDERER_API IDevice* Init(const DeviceInitParams* params);
 extern "C" RENDERER_API void Release();

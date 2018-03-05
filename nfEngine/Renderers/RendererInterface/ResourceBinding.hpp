@@ -61,7 +61,6 @@ class IResourceBindingSet
 {
 public:
     virtual ~IResourceBindingSet() { }
-    virtual bool Init(const ResourceBindingSetDesc& desc) = 0;
 };
 
 
@@ -129,7 +128,6 @@ class IResourceBindingLayout
 {
 public:
     virtual ~IResourceBindingLayout() { }
-    virtual bool Init(const ResourceBindingLayoutDesc& desc) = 0;
 };
 
 
@@ -144,8 +142,6 @@ class IResourceBindingInstance
 {
 public:
     virtual ~IResourceBindingInstance() { }
-
-    virtual bool Init(const ResourceBindingSetPtr& bindingSet) = 0;
 
     // TODO: custom samplers
     /**

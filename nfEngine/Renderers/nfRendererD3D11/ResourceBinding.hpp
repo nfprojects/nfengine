@@ -25,7 +25,7 @@ class ResourceBindingSet : public IResourceBindingSet
 public:
     bool IsBindingOverlapping(const ResourceBindingDesc& bindingDesc) const;
     bool IsBindingSetOverlapping(const ResourceBindingSet* set) const;
-    bool Init(const ResourceBindingSetDesc& desc) override;
+    bool Init(const ResourceBindingSetDesc& desc);
 };
 
 using InternalResourceBindingSetPtr = Common::SharedPtr<ResourceBindingSet>;
@@ -39,7 +39,7 @@ class ResourceBindingLayout : public IResourceBindingLayout
     Common::DynArray<VolatileCBufferBinding> mVolatileCBuffers;
 
 public:
-    bool Init(const ResourceBindingLayoutDesc& desc) override;
+    bool Init(const ResourceBindingLayoutDesc& desc);
 };
 
 class ResourceBindingInstance : public IResourceBindingInstance
@@ -51,7 +51,7 @@ class ResourceBindingInstance : public IResourceBindingInstance
     Common::DynArray<ID3D11Buffer*> mCBuffers;
 
 public:
-    bool Init(const ResourceBindingSetPtr& bindingSet) override;
+    bool Init(const ResourceBindingSetPtr& bindingSet);
     bool WriteTextureView(uint32 slot, const TexturePtr& texture) override;
     bool WriteCBufferView(uint32 slot, const BufferPtr& buffer) override;
     bool WriteWritableTextureView(uint32 slot, const TexturePtr& texture) override;

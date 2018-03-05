@@ -10,7 +10,6 @@
 
 #include "Defines.hpp"
 
-
 namespace NFE {
 namespace Renderer {
 
@@ -18,6 +17,8 @@ class Buffer : public IBuffer
 {
     friend class CommandRecorder;
     friend class ResourceBindingInstance;
+
+    DevicePtr mDevicePtr;
 
     VkBuffer mBuffer;
     VkDeviceMemory mBufferMemory;
@@ -27,7 +28,7 @@ class Buffer : public IBuffer
 public:
     Buffer();
     ~Buffer();
-    bool Init(const BufferDesc& desc);
+    bool Init(DevicePtr& device, const BufferDesc& desc);
 };
 
 } // namespace Renderer
