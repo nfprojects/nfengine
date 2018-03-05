@@ -60,7 +60,6 @@ public:
     virtual ~IRenderTarget() {}
 
     virtual void GetDimensions(int& width, int& height) = 0;
-    virtual bool Init(const RenderTargetDesc& desc) = 0;
 };
 
 } // namespace Renderer

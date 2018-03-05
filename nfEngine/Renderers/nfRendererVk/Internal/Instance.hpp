@@ -29,7 +29,7 @@ public:
      * @param enableDebug Set to true if debug validation layer should be enabled.
      * @return True on success
      */
-    bool Init(bool enableDebug, VkDebugReportFlagBitsEXT flags = VK_DEBUG_REPORT_ERROR_BIT_EXT);
+    bool Init(bool enableDebug);
 
     /**
      * Acquire Vulkan instance.

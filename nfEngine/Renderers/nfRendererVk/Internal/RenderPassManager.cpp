@@ -12,16 +12,13 @@
 namespace NFE {
 namespace Renderer {
 
-RenderPassManager::RenderPassManager(VkDevice device)
-    : mDeviceRef(device)
+RenderPassManager::RenderPassManager()
 {
 }
 
 RenderPassManager::~RenderPassManager()
 {
-    for (auto& rp : mRenderPasses)
-        if (rp.second != VK_NULL_HANDLE)
-            vkDestroyRenderPass(mDeviceRef, rp.second, nullptr);
+    Release();
 }
 
 VkRenderPass RenderPassManager::ConstructRenderPass(const RenderPassDesc& desc)
@@ -97,6 +94,20 @@ VkRenderPass RenderPassManager::ConstructRenderPass(const RenderPassDesc& desc)
     }
 
     return tempRenderPass;
+}
+
+void RenderPassManager::Init(VkDevice device)
+{
+    mDeviceRef = device;
+}
+
+void RenderPassManager::Release()
+{
+    for (auto& rp : mRenderPasses)
+        if (rp.second != VK_NULL_HANDLE)
+            vkDestroyRenderPass(mDeviceRef, rp.second, nullptr);
+
+    mRenderPasses.Clear();
 }
 
 VkRenderPass RenderPassManager::GetRenderPass(const RenderPassDesc& desc)
