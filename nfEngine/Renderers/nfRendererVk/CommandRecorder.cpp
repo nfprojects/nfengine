@@ -157,6 +157,14 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
         return;
     }
 
+    for (uint32 i = 0; i < mRenderTarget->mTex.Size(); ++i)
+    {
+        mRenderTarget->mTex[i]->TransitionCurrentTexture(mCommandBuffer, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+    }
+
+    if (mRenderTarget->mDepthTex)
+        mRenderTarget->mDepthTex->TransitionCurrentTexture(mCommandBuffer, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+
     VkRenderPassBeginInfo rpBeginInfo;
     VK_ZERO_MEMORY(rpBeginInfo);
     rpBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;

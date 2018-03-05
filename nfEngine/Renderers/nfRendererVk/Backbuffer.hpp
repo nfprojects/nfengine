@@ -9,6 +9,7 @@
 #include "../RendererInterface/Backbuffer.hpp"
 #include "Texture.hpp"
 
+
 namespace NFE {
 namespace Renderer {
 
@@ -33,8 +34,8 @@ class Backbuffer : public IBackbuffer, public Texture
     VkSurfaceCapabilitiesKHR mSurfaceCapabilities;
     VkSwapchainKHR mSwapchain;
     VkPresentModeKHR mSwapPresentMode;
-    Common::DynArray<VkCommandBuffer> mPresentCommandBuffers;
-    Common::DynArray<VkCommandBuffer> mPostPresentCommandBuffers;
+    uint32 mBuffersNum;
+    bool mImageAcquired;
 
     // platform-specific surface creator
     bool CreateSurface(const BackbufferDesc& desc);
@@ -48,14 +49,13 @@ class Backbuffer : public IBackbuffer, public Texture
     bool SelectBufferCount();
     bool CreateSwapchain(const BackbufferDesc& desc);
     bool CreateSwapchainImageViews();
-    bool BuildPresentCommandBuffers();
-    bool AcquireNextImage();
 
 public:
     Backbuffer();
     ~Backbuffer();
 
     bool Init(const BackbufferDesc& desc);
+    bool AcquireNextImage();
 
     bool Resize(int newWidth, int newHeight) override;
     bool Present() override;
