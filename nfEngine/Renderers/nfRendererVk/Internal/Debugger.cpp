@@ -61,12 +61,6 @@ Debugger::~Debugger()
     Release();
 }
 
-Debugger& Debugger::Instance()
-{
-    static Debugger instance;
-    return instance;
-}
-
 bool Debugger::InitReport(VkInstance instance, VkDebugReportFlagsEXT flags)
 {
     // Gather debug-specific extensions
@@ -88,7 +82,7 @@ bool Debugger::InitReport(VkInstance instance, VkDebugReportFlagsEXT flags)
     debugInfo.pfnCallback = reinterpret_cast<PFN_vkDebugReportCallbackEXT>(DebugReport);
     debugInfo.flags = flags;
     VkResult result = vkCreateDebugReportCallbackEXT(mVkInstance, &debugInfo, nullptr, &mDebugCallback);
-    CHECK_VKRESULT(result, "Failed to allocate debug report callback");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to allocate debug report callback");
 
     NFE_LOG_DEBUG("Vulkan debug reports initialized successfully.");
     return true;

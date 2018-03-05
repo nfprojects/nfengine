@@ -249,6 +249,28 @@ const char* TranslateVkFormatToString(VkFormat format)
     }
 }
 
+const char* TranslateVkQueueFlagsToString(VkQueueFlags flags)
+{
+    switch (flags)
+    {
+    case 0x01: return "GRAPHICS";
+    case 0x02: return "COMPUTE";
+    case 0x03: return "GRAPHICS | COMPUTE";
+    case 0x04: return "TRANSFER";
+    case 0x05: return "GRAPHICS | TRANSFER";
+    case 0x06: return "COMPUTE | TRANSFER";
+    case 0x07: return "GRAPHICS | COMPUTE | TRANSFER";
+    case 0x08: return "SPARSE_BINDING";
+    case 0x09: return "GRAPHICS | SPARSE_BINDING";
+    case 0x0A: return "COMPUTE | SPARSE_BINDING";
+    case 0x0B: return "GRAPHICS | COMPUTE | SPARSE_BINDING";
+    case 0x0C: return "TRANSFER | SPARSE_BINDING";
+    case 0x0D: return "GRAPHICS | TRANSFER | SPARSE_BINDING";
+    case 0x0E: return "COMPUTE | TRANSFER | SPARSE_BINDING";
+    case 0x0F: return "GRAPHICS | COMPUTE | TRANSFER | SPARSE_BINDING";
+    default: return "OTHER";
+    }
+}
 
 VkBlendFactor TranslateBlendFuncToVkBlendFactor(BlendFunc func)
 {

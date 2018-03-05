@@ -21,27 +21,42 @@ class Texture : virtual public ITexture
     friend class ResourceBindingInstance;
 
 protected:
+    struct Image
+    {
+        VkImage image;
+        VkImageView view;
+        VkDeviceMemory memory;
+        VkImageLayout layout;
+
+        Image()
+            : image(VK_NULL_HANDLE)
+            , view(VK_NULL_HANDLE)
+            , memory(VK_NULL_HANDLE)
+            , layout(VK_IMAGE_LAYOUT_UNDEFINED)
+        {
+        }
+    };
+
+    Common::SharedPtr<Device> mDevicePtr;
+
     TextureType mType;
     uint32 mWidth;
     uint32 mHeight;
     uint32 mDepth;
     VkFormat mFormat;
-    VkImage mImage;
-    VkImageView mImageView;
-    VkImageLayout mImageLayout;
-    VkDeviceMemory mImageMemory;
+    VkImageSubresourceRange mSubresourceRange;
 
     // tempshit to support double-buffering
-    uint32 mBuffersNum;
     uint32 mCurrentBuffer;
-    Common::DynArray<VkImage> mBuffers;
-    Common::DynArray<VkImageView> mBufferViews;
+    Common::DynArray<Image> mImages;
     bool mFromSwapchain;
+
+    void TransitionCurrentTexture(VkCommandBuffer cmdBuffer, VkImageLayout newLayout = VK_IMAGE_LAYOUT_UNDEFINED);
 
 public:
     Texture();
     virtual ~Texture();
-    bool Init(const TextureDesc& desc);
+    bool Init(Common::SharedPtr<Device>& device, const TextureDesc& desc);
 };
 
 } // namespace Renderer

@@ -17,12 +17,14 @@ class Sampler : public ISampler
     friend class CommandRecorder;
     friend class ResourceBindingSet;
 
+    Common::SharedPtr<Device> mDevicePtr;
+
     VkSampler mSampler;
 
 public:
     Sampler();
     virtual ~Sampler();
-    bool Init(const SamplerDesc& desc);
+    bool Init(Common::SharedPtr<Device>& device, const SamplerDesc& desc);
 };
 
 } // namespace Renderer

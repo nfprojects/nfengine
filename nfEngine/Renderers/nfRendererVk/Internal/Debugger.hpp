@@ -32,15 +32,9 @@ class Debugger
     VkInstance mVkInstance;
     VkDevice mVkDevice;
 
-    Debugger();
-    Debugger(const Debugger&) = delete;
-    Debugger(Debugger&&) = delete;
-    Debugger& operator=(const Debugger&) = delete;
-    Debugger& operator=(Debugger&&) = delete;
-    ~Debugger();
-
 public:
-    static Debugger& Instance();
+    Debugger();
+    ~Debugger();
 
     /**
      * Initializes debugger.

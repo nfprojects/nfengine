@@ -19,12 +19,24 @@
 #include <Windows.h>
 #endif
 
+// stdcall macro to cover Vulkan callbacks on Win32
+#ifdef WIN32
+#define VK_STDCALL __stdcall
+#else
+#define VK_STDCALL
+#endif
+
+
+// Vulkan
 #include <vulkan/vulkan.h>
 #include <glslang/glslang/Public/ShaderLang.h>
 
-#include <string.h>
+
+// STL
 #include <memory>
 #include <tuple>
 #include <sstream>
 #include <queue>
 #include <algorithm>
+#include <cstring>
+#include <cstddef>
