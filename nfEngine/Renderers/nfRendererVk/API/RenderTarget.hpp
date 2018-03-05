@@ -19,8 +19,8 @@ class RenderTarget : public IRenderTarget
 {
     friend class CommandRecorder;
 
-    int mWidth;
-    int mHeight;
+    uint32 mWidth;
+    uint32 mHeight;
 
     VkRenderPass mRenderPass;
     Common::DynArray<Texture*> mTex;
