@@ -13,7 +13,6 @@
 #include "CommandRecorder.hpp"
 #include "Instance.hpp"
 #include "RenderPassManager.hpp"
-#include "SemaphorePool.hpp"
 #include "RingBuffer.hpp"
 
 #include "nfCommon/Containers/UniquePtr.hpp"
@@ -41,13 +40,8 @@ private:
     uint32 mGraphicsQueueIndex;
     VkQueue mGraphicsQueue;
     VkPipelineCache mPipelineCache;
-    VkSemaphore mPrePresentSemaphore;
-    VkSemaphore mPresentSemaphore;
-    VkSemaphore mPostPresentSemaphore;
-    bool mPresented;
     Common::DynArray<VkSurfaceFormatKHR> mSupportedFormats;
     Common::UniquePtr<RenderPassManager> mRenderPassManager;
-    Common::UniquePtr<SemaphorePool> mSemaphorePool;
     Common::UniquePtr<RingBuffer> mRingBuffer;
     bool mDebugEnable;
 
@@ -55,11 +49,6 @@ private:
 
     bool CreateTemporarySurface(VkSurfaceKHR& surface);
     void CleanupTemporarySurface(VkSurfaceKHR& surface);
-
-    NFE_INLINE void SignalPresent()
-    {
-        mPresented = true;
-    }
 
 public:
     Device();
@@ -102,24 +91,9 @@ public:
         return mGraphicsQueueIndex;
     }
 
-    NFE_INLINE const VkSemaphore& GetPresentSemaphore() const
-    {
-        return mPresentSemaphore;
-    }
-
-    NFE_INLINE const VkSemaphore& GetPostPresentSemaphore() const
-    {
-        return mPostPresentSemaphore;
-    }
-
     NFE_INLINE RenderPassManager* GetRenderPassManager() const
     {
         return mRenderPassManager.Get();
-    }
-
-    NFE_INLINE SemaphorePool* GetSemaphorePool() const
-    {
-        return mSemaphorePool.Get();
     }
 
     NFE_INLINE RingBuffer* GetRingBuffer() const

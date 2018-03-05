@@ -86,7 +86,7 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
     descInfo.bindingCount = bindings.Size();
     descInfo.pBindings = bindings.Data();
     VkResult result = vkCreateDescriptorSetLayout(gDevice->GetDevice(), &descInfo, nullptr, &mDescriptorLayout);
-    CHECK_VKRESULT(result, "Failed to create Descriptor Set Layout");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create Descriptor Set Layout");
 
     return true;
 }
@@ -174,7 +174,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         dslInfo.bindingCount = volatileBindings.Size();
         dslInfo.pBindings = volatileBindings.Data();
         result = vkCreateDescriptorSetLayout(gDevice->GetDevice(), &dslInfo, nullptr, &mVolatileBufferLayout);
-        CHECK_VKRESULT(result, "Failed to create layout for volatile buffers");
+        VK_RETURN_FALSE_IF_FAILED(result, "Failed to create layout for volatile buffers");
     }
 
     // sort binding sets according to their internal mSetSlot variable
@@ -224,7 +224,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     plInfo.setLayoutCount = layouts.Size();
     plInfo.pSetLayouts = layouts.Data();
     result = vkCreatePipelineLayout(gDevice->GetDevice(), &plInfo, nullptr, &mPipelineLayout);
-    CHECK_VKRESULT(result, "Failed to create pipeline layout");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create pipeline layout");
 
     // TODO this might be a bad idea to allocate sets this way - consider other solutions
     // generate pool sizes from descriptor sets
@@ -253,7 +253,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         poolInfo.poolSizeCount = poolSizes.Size();
         poolInfo.pPoolSizes = poolSizes.Data();
         result = vkCreateDescriptorPool(gDevice->GetDevice(), &poolInfo, nullptr, &mDescriptorPool);
-        CHECK_VKRESULT(result, "Failed to create descriptor pool");
+        VK_RETURN_FALSE_IF_FAILED(result, "Failed to create descriptor pool");
 
         // now allocate sets from pool
         // TODO it would be faster to allocate all sets at once
@@ -267,7 +267,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
             allocInfo.descriptorSetCount = 1;
             allocInfo.pSetLayouts = &rbs->mDescriptorLayout;
             result = vkAllocateDescriptorSets(gDevice->GetDevice(), &allocInfo, &(rbs->mDescriptorSet));
-            CHECK_VKRESULT(result, "Failed to allocate descriptor set from pool");
+            VK_RETURN_FALSE_IF_FAILED(result, "Failed to allocate descriptor set from pool");
         }
 
         if (desc.numVolatileCBuffers > 0)
@@ -275,7 +275,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
             allocInfo.descriptorSetCount = static_cast<uint32>(desc.numVolatileCBuffers);
             allocInfo.pSetLayouts = &mVolatileBufferLayout;
             result = vkAllocateDescriptorSets(gDevice->GetDevice(), &allocInfo, &mVolatileBufferSet);
-            CHECK_VKRESULT(result, "Failed to allocate descriptor set from pool");
+            VK_RETURN_FALSE_IF_FAILED(result, "Failed to allocate descriptor set from pool");
         }
     }
 
