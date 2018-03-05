@@ -23,19 +23,27 @@
 #include "Extensions.hpp"
 #include "Translations.hpp"
 
-#ifndef CHECK_VKRESULT
-#define CHECK_VKRESULT(result, errstr)                                              \
+#ifndef VK_RETURN_FALSE_IF_FAILED
+#define VK_RETURN_FALSE_IF_FAILED(result, errstr)                                   \
     if (result != VK_SUCCESS)                                                       \
     {                                                                               \
         NFE_LOG_ERROR("%s: %d (%s)", errstr, result, TranslateVkResultToString(result));\
         return false;                                                               \
     }
-#endif // LOG_VKRESULT
+#endif // VK_RETURN_FALSE_IF_FAILED
+
+#ifndef VK_RETURN_EMPTY_VKRAII_IF_FAILED
+#define VK_RETURN_EMPTY_VKRAII_IF_FAILED(t, result, errstr)                         \
+    if (result != VK_SUCCESS)                                                       \
+    {                                                                               \
+        NFE_LOG_ERROR("%s: %d (%s)", errstr, result, TranslateVkResultToString(result));\
+        return VkRAII<t>();                                                         \
+    }
+#endif // VK_RETURN_EMPTY_VKRAII_IF_FAILED
+
 
 #ifndef VK_ZERO_MEMORY
-#define VK_ZERO_MEMORY(x) \
-    memset(&x, 0, sizeof(x))
+#define VK_ZERO_MEMORY(x) memset(&x, 0, sizeof(x))
 #endif // VK_ZERO_MEMORY
 
 #define VK_MAX_VOLATILE_BUFFERS 8
-#define VK_SEMAPHORE_POOL_SIZE 16
