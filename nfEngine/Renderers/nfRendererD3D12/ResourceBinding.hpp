@@ -27,7 +27,7 @@ class ResourceBindingSet : public IResourceBindingSet
     ShaderType mShaderVisibility;
 
 public:
-    bool Init(const ResourceBindingSetDesc& desc) override;
+    bool Init(const ResourceBindingSetDesc& desc);
 };
 
 using InternalResourceBindingSetPtr = Common::SharedPtr<ResourceBindingSet>;
@@ -46,7 +46,7 @@ class ResourceBindingLayout : public IResourceBindingLayout
     Common::DynArray<VolatileCBufferBinding> mDynamicBuffers;
 
 public:
-    bool Init(const ResourceBindingLayoutDesc& desc) override;
+    bool Init(const ResourceBindingLayoutDesc& desc);
 
     NFE_INLINE ID3D12RootSignature* GetD3DRootSignature() const
     {
@@ -70,7 +70,7 @@ class ResourceBindingInstance : public IResourceBindingInstance
 public:
     ResourceBindingInstance() : mDescriptorHeapOffset(0), mSet(nullptr) { }
     ~ResourceBindingInstance();
-    bool Init(const ResourceBindingSetPtr& bindingSet) override;
+    bool Init(const ResourceBindingSetPtr& bindingSet);
     bool WriteTextureView(uint32 slot, const TexturePtr& texture) override;
     bool WriteCBufferView(uint32 slot, const BufferPtr& buffer) override;
     bool WriteWritableTextureView(uint32 slot, const TexturePtr& texture) override;

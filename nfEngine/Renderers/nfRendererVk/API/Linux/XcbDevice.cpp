@@ -30,7 +30,7 @@ bool Device::CreateTemporarySurface(VkSurfaceKHR& surface)
     VK_ZERO_MEMORY(surfInfo);
     surfInfo.sType = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR;
     surfInfo.connection = xcbConnection;
-    VkResult result = vkCreateXcbSurfaceKHR(gDevice->GetInstance(), &surfInfo, nullptr, &surface);
+    VkResult result = vkCreateXcbSurfaceKHR(mInstance.Get(), &surfInfo, nullptr, &surface);
 
     return (result == VK_SUCCESS);
 }

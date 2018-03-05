@@ -18,13 +18,15 @@ class PipelineState : public IPipelineState
 {
     friend class CommandRecorder;
 
+    DevicePtr mDevicePtr;
+
     PipelineStateDesc mDesc;
     VkPipeline mPipeline;
 
 public:
     PipelineState();
     ~PipelineState();
-    bool Init(const PipelineStateDesc& desc);
+    bool Init(DevicePtr& device, const PipelineStateDesc& desc);
 };
 
 } // namespace Renderer
