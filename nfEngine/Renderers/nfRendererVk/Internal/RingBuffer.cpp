@@ -11,8 +11,8 @@
 namespace NFE {
 namespace Renderer {
 
-RingBuffer::RingBuffer(VkDevice device)
-    : mDevice(device)
+RingBuffer::RingBuffer()
+    : mDevicePtr()
     , mBuffer(VK_NULL_HANDLE)
     , mBufferMemory(VK_NULL_HANDLE)
     , mSize(0)
@@ -23,16 +23,13 @@ RingBuffer::RingBuffer(VkDevice device)
 
 RingBuffer::~RingBuffer()
 {
-    vkUnmapMemory(mDevice, mBufferMemory);
-
-    if (mBufferMemory != VK_NULL_HANDLE)
-        vkFreeMemory(mDevice, mBufferMemory, nullptr);
-    if (mBuffer != VK_NULL_HANDLE)
-        vkDestroyBuffer(mDevice, mBuffer, nullptr);
+    Release();
 }
 
-bool RingBuffer::Init(uint32 size)
+bool RingBuffer::Init(Device* device, uint32 size)
 {
+    mDevicePtr = device;
+
     VkBufferCreateInfo bufInfo;
     VK_ZERO_MEMORY(bufInfo);
     bufInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -40,31 +37,48 @@ bool RingBuffer::Init(uint32 size)
     bufInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 
     // device buffer
-    VkResult result = vkCreateBuffer(mDevice, &bufInfo, nullptr, &mBuffer);
-    CHECK_VKRESULT(result, "Failed to create device buffer");
+    VkResult result = vkCreateBuffer(mDevicePtr->GetDevice(), &bufInfo, nullptr, &mBuffer);
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create device buffer");
 
     VkMemoryRequirements deviceMemReqs;
-    vkGetBufferMemoryRequirements(mDevice, mBuffer, &deviceMemReqs);
+    vkGetBufferMemoryRequirements(mDevicePtr->GetDevice(), mBuffer, &deviceMemReqs);
 
     VkMemoryAllocateInfo memInfo;
     VK_ZERO_MEMORY(memInfo);
     memInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     memInfo.allocationSize = deviceMemReqs.size;
     // TODO this memory type probably should be changed
-    memInfo.memoryTypeIndex = gDevice->GetMemoryTypeIndex(deviceMemReqs.memoryTypeBits,
-                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-    result = vkAllocateMemory(mDevice, &memInfo, nullptr, &mBufferMemory);
-    CHECK_VKRESULT(result, "Failed to allocate memory for device buffer");
+    memInfo.memoryTypeIndex = mDevicePtr->GetMemoryTypeIndex(deviceMemReqs.memoryTypeBits,
+                                                             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+    result = vkAllocateMemory(mDevicePtr->GetDevice(), &memInfo, nullptr, &mBufferMemory);
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to allocate memory for device buffer");
 
-    result = vkBindBufferMemory(mDevice, mBuffer, mBufferMemory, 0);
-    CHECK_VKRESULT(result, "Failed to bind device buffer to its memory");
+    result = vkBindBufferMemory(mDevicePtr->GetDevice(), mBuffer, mBufferMemory, 0);
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to bind device buffer to its memory");
 
-    result = vkMapMemory(mDevice, mBufferMemory, 0, deviceMemReqs.size, 0, reinterpret_cast<void**>(&mBufferHostMemory));
-    CHECK_VKRESULT(result, "Failed to map memory to host");
+    result = vkMapMemory(mDevicePtr->GetDevice(), mBufferMemory, 0, deviceMemReqs.size, 0, reinterpret_cast<void**>(&mBufferHostMemory));
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to map memory to host");
 
     mSize = static_cast<uint32>(deviceMemReqs.size);
 
     return true;
+}
+
+void RingBuffer::Release()
+{
+    if (mBufferMemory != VK_NULL_HANDLE)
+    {
+        vkUnmapMemory(mDevicePtr->GetDevice(), mBufferMemory);
+        vkFreeMemory(mDevicePtr->GetDevice(), mBufferMemory, nullptr);
+    }
+
+    if (mBuffer != VK_NULL_HANDLE)
+    {
+        vkDestroyBuffer(mDevicePtr->GetDevice(), mBuffer, nullptr);
+    }
+
+    mBufferMemory = VK_NULL_HANDLE;
+    mBuffer = VK_NULL_HANDLE;
 }
 
 uint32 RingBuffer::Write(const void* data, uint32 size)

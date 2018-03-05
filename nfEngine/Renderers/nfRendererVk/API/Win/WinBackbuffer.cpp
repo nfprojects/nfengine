@@ -15,7 +15,7 @@ bool Backbuffer::CreateSurface(const BackbufferDesc& desc)
     surfInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
     surfInfo.hwnd = mHWND;
     surfInfo.hinstance = (HINSTANCE)GetWindowLongPtr(mHWND, GWLP_HINSTANCE);
-    VkResult result = vkCreateWin32SurfaceKHR(gDevice->GetInstance(), &surfInfo, nullptr, &mSurface);
+    VkResult result = vkCreateWin32SurfaceKHR(mDevicePtr->GetInstance(), &surfInfo, nullptr, &mSurface);
 
     return (result == VK_SUCCESS);
 }
