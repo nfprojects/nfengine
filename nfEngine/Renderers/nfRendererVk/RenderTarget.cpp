@@ -94,7 +94,7 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             fbInfo.pAttachments = fbAtts.Data();
             fbInfo.layers = 1;
             result = vkCreateFramebuffer(gDevice->GetDevice(), &fbInfo, nullptr, &mFramebuffers[i]);
-            CHECK_VKRESULT(result, "Failed to create framebuffer");
+            VK_RETURN_FALSE_IF_FAILED(result, "Failed to create framebuffer");
         }
     }
     else // ...or, if we create a framebuffer from a single image

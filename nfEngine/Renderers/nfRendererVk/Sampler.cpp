@@ -44,7 +44,7 @@ bool Sampler::Init(const SamplerDesc& desc)
     sampInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK;
     sampInfo.unnormalizedCoordinates = VK_FALSE;
     VkResult result = vkCreateSampler(gDevice->GetDevice(), &sampInfo, nullptr, &mSampler);
-    CHECK_VKRESULT(result, "Failed to create Sampler");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create Sampler");
 
     NFE_LOG_INFO("Sampler created successfully");
     return true;

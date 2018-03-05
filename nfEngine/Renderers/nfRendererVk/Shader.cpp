@@ -10,6 +10,8 @@
 #include "Defines.hpp"
 #include "Device.hpp"
 #include "nfCommon/FileSystem/File.hpp"
+#include "nfCommon/Containers/DynArray.hpp"
+#include "nfCommon/Containers/String.hpp"
 
 #include <glslang/SPIRV/GlslangToSpv.h>
 #include <glslang/SPIRV/disassemble.h>
@@ -24,6 +26,8 @@ namespace {
 
 // default limits for glslang shader resources
 // taken from glslang standalone implementation
+// TODO These should be taken from VkPhysicalDevice's limits.
+//      Reconsider doing this properly.
 const TBuiltInResource DEFAULT_RESOURCE = {
     /* .MaxLights = */ 32,
     /* .MaxClipPlanes = */ 6,
@@ -121,31 +125,41 @@ const TBuiltInResource DEFAULT_RESOURCE = {
     }};
 
 const int DEFAULT_VERSION = 110;
-const std::string SHADER_HEADER_START = "#version 450\n\
+const Common::String SHADER_HEADER_START = "#version 450\n\
 #extension GL_ARB_separate_shader_objects: enable\n\
 #extension GL_ARB_shading_language_420pack: enable\n";
-const std::string DEFINE_STR = "#define ";
-const std::string SHADER_HEADER_TAIL = "\0";
+const Common::String DEFINE_STR = "#define ";
+const Common::String SHADER_HEADER_TAIL = "\0";
 
 } // namespace
 
 
 Shader::Shader()
     : mType(ShaderType::Unknown)
+    , mCompiler(NULL)
+    . mLinker(NULL)
+    , mShaderSpv()
+    , mResourceSlotMap()
     , mShader(VK_NULL_HANDLE)
+    , mStageInfo()
 {}
 
 Shader::~Shader()
 {
     if (mShader != VK_NULL_HANDLE)
         vkDestroyShaderModule(gDevice->GetDevice(), mShader, nullptr);
+
+    if (mLinker != NULL)
+        ShDestruct(mLinker);
+    if (mCompiler != NULL)
+        ShDestruct(mCompiler);
 }
 
 bool Shader::Init(const ShaderDesc& desc)
 {
     mType = desc.type;
 
-    std::vector<char> str;
+    Common::DynArray<char> str;
     size_t shaderSize = 0;
     const char* code = nullptr;
 
@@ -157,15 +171,14 @@ bool Shader::Init(const ShaderDesc& desc)
             return false;
         }
 
-        using namespace Common;
-        File file(StringView(desc.path), AccessMode::Read);
+        Common::File file(Common::StringView(desc.path), Common::AccessMode::Read);
         shaderSize = static_cast<size_t>(file.GetSize());
-        str.resize(shaderSize + 1);
+        str.Resize(shaderSize + 1);
 
-        if (file.Read(str.data(), shaderSize) != shaderSize)
+        if (file.Read(str.Data(), shaderSize) != shaderSize)
             return false;
         str[shaderSize] = '\0';
-        code = str.data();
+        code = str.Data();
     }
     else
     {
@@ -174,7 +187,7 @@ bool Shader::Init(const ShaderDesc& desc)
     }
 
     // construct a shader string containing all the macros
-    std::string shaderHead = SHADER_HEADER_START;
+    Common::String shaderHead = SHADER_HEADER_START;
     if (desc.macrosNum > 0)
     {
         for (unsigned int i = 0; i < desc.macrosNum; ++i)
@@ -208,40 +221,41 @@ bool Shader::Init(const ShaderDesc& desc)
         return false;
     }
 
-    // create and parse shader
-    mShaderGlslang.Reset(new glslang::TShader(lang));
-    if (!mShaderGlslang)
+    mCompiler = ShConstructCompiler(lang, 0);
+    if (mCompiler == NULL)
     {
-        NFE_LOG_ERROR("Memory allocation failed");
+        NFE_LOG_ERROR("Failed to construct a GLSLang compiler");
         return false;
     }
-    const char * shaderStrs[] = { shaderHead.c_str(), code };
-    mShaderGlslang->setStrings(shaderStrs, 2);
-    mShaderGlslang->setEntryPoint("main");
 
-    // TODO we might want to enable includes, so this includer is useless for later on
-    glslang::TShader::ForbidInclude includer;
+    const char * shaderStrs[] = { shaderHead.Str(), code };
+    int shaderStrLengths[] = { shaderHead.Size(), shaderSize };
     EShMessages msg = static_cast<EShMessages>(EShMsgDefault | EShMsgVulkanRules);
-    if (!mShaderGlslang->parse(&DEFAULT_RESOURCE, DEFAULT_VERSION, ENoProfile, false, false, msg, includer))
+    if (!ShCompile(mCompiler, shaderStrs, 2, shaderStrLengths, EShOptNone,
+                   &DEFAULT_RESOURCE, 0, DEFAULT_VERSION, false, msg))
     {
-        NFE_LOG_ERROR("Failed to parse shader file %s:\n%s", desc.path, mShaderGlslang->getInfoLog());
+        const char* log = ShGetInfoLog(mCompiler);
+        NFE_LOG_ERROR("Failed to parse shader file %s:\n%s", desc.path, log);
         return false;
     }
 
-    // create temporary TProgram to extract an intermediate SPIR-V
-    mProgramGlslang.Reset(new glslang::TProgram());
-    if (!mProgramGlslang)
+    mLinker = ShConstructLinker(ShGetExecutable(mCompiler), 0);
+    if (mLinker == NULL)
     {
-        NFE_LOG_ERROR("Memory allocation failed");
-        return false;
-    }
-    mProgramGlslang->addShader(mShaderGlslang.Get());
-    if (!mProgramGlslang->link(msg))
-    {
-        NFE_LOG_ERROR("Failed to pre-link shader stage:\n%s", mProgramGlslang->getInfoLog());
+        NFE_LOG_ERROR("Failed to construct a GLSLang linker");
         return false;
     }
 
+    if (!ShLinkExt(mLinker, &mCompiler, 1))
+    {
+        NFE_LOG_ERROR("Failed to pre-link shader stage:\n%s", ShGetInfoLog(mLinker));
+        return false;
+    }
+
+
+
+    /*
+    OLD C++ GLSLANG IMPLEMENTATION
     glslang::TIntermediate* progInt = mProgramGlslang->getIntermediate(lang);
     if (!progInt)
     {
@@ -251,6 +265,7 @@ bool Shader::Init(const ShaderDesc& desc)
 
     spv::SpvBuildLogger spvLogger;
     glslang::GlslangToSpv(*progInt, mShaderSpv, &spvLogger);
+    */
 
     ParseResourceSlots();
 
@@ -261,7 +276,7 @@ bool Shader::Init(const ShaderDesc& desc)
     shaderInfo.codeSize = mShaderSpv.size() * sizeof(uint32);
     shaderInfo.pCode = mShaderSpv.data();
     VkResult result = vkCreateShaderModule(gDevice->GetDevice(), &shaderInfo, nullptr, &mShader);
-    CHECK_VKRESULT(result, "Failed to create Shader module");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create Shader module");
 
     VK_ZERO_MEMORY(mStageInfo);
     mStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -276,10 +291,11 @@ bool Shader::Init(const ShaderDesc& desc)
 bool Shader::Disassemble(bool html, Common::String& output)
 {
     NFE_UNUSED(html); // TODO
-    // Disassemble the shader, to provide parsing source for slot extraction
+
     std::stringstream ss;
     spv::Disassemble(ss, mShaderSpv);
     output = ss.str().c_str();
+
     return true;
 }
 
@@ -291,14 +307,15 @@ bool Shader::GetIODesc()
 
 void Shader::ParseResourceSlots()
 {
-    // TODO get rid of std::vector and std::string
-
     std::stringstream disasm;
     spv::Disassemble(disasm, mShaderSpv);
 
-    std::string line;
-    std::vector<std::string> names;
-    std::vector<std::string> decorates;
+    Common::DynArray<Common::String> names;
+    Common::DynArray<Common::String> decorates;
+
+
+
+    /* OLD IMPLEMENTATION USING STL
     while (std::getline(disasm, line))
     {
         size_t namePos = line.find("Name");
@@ -340,13 +357,15 @@ void Shader::ParseResourceSlots()
         size_t closeBracketPos = tokens[1].find(')', openBracketPos+1);
 
         const Common::String tokenName = tokens[1].substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1).c_str();
-        SetSlotMap::Iterator it;
+        SetBindingMap::Iterator it;
         if (tokens[2] == "DescriptorSet" || tokens[2] == "Binding")
         {
             it = mResourceSlotMap.Find(tokenName);
             if (it == mResourceSlotMap.end())
             {
-                it = mResourceSlotMap.Insert(tokenName, std::make_pair(static_cast<uint16>(0), static_cast<uint16>(0))).iterator;
+                SetBindingPair emptyPair;
+                emptyPair.total = 0;
+                it = mResourceSlotMap.Insert(tokenName, emptyPair).iterator;
             }
         }
         else
@@ -355,16 +374,16 @@ void Shader::ParseResourceSlots()
         if (tokens[2] == "DescriptorSet")
         {
             NFE_LOG_DEBUG("Found resource %s with DescriptorSet = %s", tokens[1].c_str(), tokens[3].c_str());
-            it->second.first = static_cast<uint16>(std::atoi(tokens[3].c_str()));
+            it->second.pair.set = static_cast<uint16>(std::atoi(tokens[3].c_str()));
         }
 
         if (tokens[2] == "Binding")
         {
             NFE_LOG_DEBUG("Found resource %s with Binding = %s", tokens[1].c_str(), tokens[3].c_str());
-            it->second.second = static_cast<uint16>(std::atoi(tokens[3].c_str()));
+            it->second.pair.binding = static_cast<uint16>(std::atoi(tokens[3].c_str()));
         }
     }
-
+*/
     return;
 }
 
@@ -374,15 +393,7 @@ int Shader::GetResourceSlotByName(const char* name)
     if (it == mResourceSlotMap.End())
         return -1;
 
-    const SetSlotPair& pair = it->second;
-
-    // encode slot/binding pair onto a single uint
-    // 16 MSB are set, 16 LSB are binding point
-    uint32 result = std::get<0>(pair);
-    result <<= 16;
-    result |= std::get<1>(pair);
-
-    return static_cast<int>(result);
+    return it->second.total;
 }
 
 } // namespace Renderer
