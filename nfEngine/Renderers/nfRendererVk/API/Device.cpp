@@ -19,9 +19,20 @@
 #include "ComputePipelineState.hpp"
 
 #include "Internal/Translations.hpp"
-#include "Internal/Debugger.hpp"
+#include "Internal/Tools.hpp"
 
 #include "nfCommon/Utils/StringUtils.hpp"
+
+
+// Global for this module Device Shared Pointer definition
+// Defined here to be visible for GenericCreateResource below
+namespace NFE {
+namespace Renderer {
+
+DevicePtr gDevice;
+
+} // namespace Renderer
+} // namespace NFE
 
 
 namespace {
@@ -35,7 +46,7 @@ NFE::Common::SharedPtr<Type> GenericCreateResource(const Desc& desc)
         return nullptr;
     }
 
-    if (!resource->Init(desc))
+    if (!resource->Init(NFE::Renderer::gDevice, desc))
     {
         return nullptr;
     }
@@ -47,56 +58,38 @@ const NFE::uint32 COMMAND_BUFFER_COUNT = 5;
 
 } // namespace
 
+
 namespace NFE {
 namespace Renderer {
-
-Common::UniquePtr<Device> gDevice;
 
 Device::Device()
     : mInstance()
     , mPhysicalDevice(VK_NULL_HANDLE)
     , mDevice(VK_NULL_HANDLE)
-    , mCommandPool(VK_NULL_HANDLE)
     , mCurrentCommandBuffer(0)
-    , mGraphicsQueueIndex(UINT32_MAX)
-    , mGraphicsQueue(VK_NULL_HANDLE)
-    , mPipelineCache(VK_NULL_HANDLE)
-    , mPrePresentSemaphore(VK_NULL_HANDLE)
-    , mPresentSemaphore(VK_NULL_HANDLE)
-    , mPostPresentSemaphore(VK_NULL_HANDLE)
-    , mPresented(false)
-    , mRenderPassManager(nullptr)
-    , mSemaphorePool(nullptr)
-    , mRingBuffer(nullptr)
+    , mRenderPassManager()
+    , mRingBuffer()
     , mDebugEnable(false)
 {
 }
 
 Device::~Device()
 {
-    WaitForGPU();
-
-    mRingBuffer.Reset();
-    mSemaphorePool.Reset();
-    mRenderPassManager.Reset();
-
-    if (mCommandBufferPool.Size())
-        vkFreeCommandBuffers(mDevice, mCommandPool, COMMAND_BUFFER_COUNT, mCommandBufferPool.Data());
-
-    if (mPipelineCache != VK_NULL_HANDLE)
-        vkDestroyPipelineCache(mDevice, mPipelineCache, nullptr);
-    if (mCommandPool != VK_NULL_HANDLE)
-        vkDestroyCommandPool(mDevice, mCommandPool, nullptr);
-    if (mPrePresentSemaphore != VK_NULL_HANDLE)
-        vkDestroySemaphore(mDevice, mPrePresentSemaphore, nullptr);
-    if (mPresentSemaphore != VK_NULL_HANDLE)
-        vkDestroySemaphore(mDevice, mPresentSemaphore, nullptr);
-    if (mPostPresentSemaphore != VK_NULL_HANDLE)
-        vkDestroySemaphore(mDevice, mPostPresentSemaphore, nullptr);
     if (mDevice != VK_NULL_HANDLE)
-        vkDestroyDevice(mDevice, nullptr);
+    {
+        WaitForGPU();
+    }
 
-    Debugger::Instance().Release();
+    mRingBuffer.Release();
+    mRenderPassManager.Release();
+    mQueueManager.Release();
+
+    if (mDevice != VK_NULL_HANDLE)
+    {
+        vkDestroyDevice(mDevice, nullptr);
+    }
+
+    mDebugger.Release();
 }
 
 VkPhysicalDevice Device::SelectPhysicalDevice(const Common::DynArray<VkPhysicalDevice>& devices, int preferredId)
@@ -148,12 +141,20 @@ bool Device::Init(const DeviceInitParams* params)
         return false;
     }
 
-    const VkInstance& instance = mInstance.Get();
+    if (params->debugLevel > 0)
+    {
+        VkDebugReportFlagsEXT debugFlags = VK_DEBUG_REPORT_ERROR_BIT_EXT;
+        if (!mDebugger.InitReport(mInstance.Get(), debugFlags))
+        {
+            NFE_LOG_ERROR("Vulkan debug reports failed to initialize.");
+            return false;
+        }
+    }
 
     // acquire GPU count first
     unsigned int gpuCount = 0;
-    VkResult result = vkEnumeratePhysicalDevices(instance, &gpuCount, nullptr);
-    CHECK_VKRESULT(result, "Unable to enumerate physical devices");
+    VkResult result = vkEnumeratePhysicalDevices(mInstance.Get(), &gpuCount, nullptr);
+    VK_RETURN_FALSE_IF_FAILED(result, "Unable to enumerate physical devices");
     if (gpuCount == 0)
     {
         NFE_LOG_ERROR("0 physical devices available.");
@@ -163,7 +164,7 @@ bool Device::Init(const DeviceInitParams* params)
     // and now get details about our GPUs
     Common::DynArray<VkPhysicalDevice> devices;
     devices.Resize(gpuCount);
-    result = vkEnumeratePhysicalDevices(instance, &gpuCount, devices.Data());
+    result = vkEnumeratePhysicalDevices(mInstance.Get(), &gpuCount, devices.Data());
     if (result != VK_SUCCESS)
     {
         NFE_LOG_ERROR("Unable to get more information about physical devices");
@@ -199,53 +200,22 @@ bool Device::Init(const DeviceInitParams* params)
     vkGetPhysicalDeviceSurfaceFormatsKHR(mPhysicalDevice, tempSurface, &formatCount, mSupportedFormats.Data());
     CleanupTemporarySurface(tempSurface);
 
-    // Grab queue properties from our selected device
-    uint32 queueCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(mPhysicalDevice, &queueCount, nullptr);
-    if (queueCount == 0)
+    Common::DynArray<VkDeviceQueueCreateInfo> queueInfos;
+    if (!mQueueManager.Init(mPhysicalDevice, true, queueInfos))
     {
-        NFE_LOG_ERROR("Physical device does not have any queue family properties.");
+        NFE_LOG_ERROR("Failed to initalize Queues for device");
         return false;
     }
-
-    Common::DynArray<VkQueueFamilyProperties> queueProps;
-    queueProps.Resize(queueCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(mPhysicalDevice, &queueCount, queueProps.Data());
-
-    for (uint32 i = 0; i < queueCount; ++i)
-    {
-        NFE_LOG_DEBUG("Queue #%u:", i);
-        NFE_LOG_DEBUG("  Flags: %x", queueProps[i].queueFlags);
-    }
-
-    for (mGraphicsQueueIndex = 0; mGraphicsQueueIndex < queueCount; mGraphicsQueueIndex++)
-        if (queueProps[mGraphicsQueueIndex].queueFlags & VK_QUEUE_GRAPHICS_BIT)
-            break;
-
-    if (mGraphicsQueueIndex == queueCount)
-    {
-        NFE_LOG_ERROR("Selected physical device does not support graphics queue.");
-        return false;
-    }
-
-    float queuePriorities[] = { 0.0f };
-    VkDeviceQueueCreateInfo queueInfo;
-    VK_ZERO_MEMORY(queueInfo);
-    queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queueInfo.queueFamilyIndex = mGraphicsQueueIndex;
-    queueInfo.queueCount = 1;
-    queueInfo.pQueuePriorities = queuePriorities;
 
     Common::DynArray<const char*> enabledExtensions;
     enabledExtensions.PushBack(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 
-
-    if (params->debugLevel > 0)
-    {
-        // TODO right now Debug Markers are unsupported by drivers
-        //      Uncomment when driver support appears
-        //enabledExtensions.PushBack(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
-    }
+    // TODO right now Debug Markers are unsupported by drivers
+    //      Uncomment when driver support appears
+    // if (params->debugLevel > 0)
+    // {
+    //     enabledExtensions.PushBack(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
+    // }
 
     const char* enabledLayers[] = {
         "VK_LAYER_LUNARG_standard_validation" // for debugging
@@ -259,8 +229,8 @@ bool Device::Init(const DeviceInitParams* params)
     VK_ZERO_MEMORY(devInfo);
     devInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
     devInfo.pNext = nullptr;
-    devInfo.queueCreateInfoCount = 1;
-    devInfo.pQueueCreateInfos = &queueInfo;
+    devInfo.queueCreateInfoCount = queueInfos.Size();
+    devInfo.pQueueCreateInfos = queueInfos.Data();
     devInfo.pEnabledFeatures = &features;
     devInfo.enabledExtensionCount = enabledExtensions.Size();
     devInfo.ppEnabledExtensionNames = enabledExtensions.Data();
@@ -271,11 +241,11 @@ bool Device::Init(const DeviceInitParams* params)
     }
 
     result = vkCreateDevice(mPhysicalDevice, &devInfo, nullptr, &mDevice);
-    CHECK_VKRESULT(result, "Failed to create Vulkan device");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create Vulkan device");
 
     if (params->debugLevel > 0)
     {
-        if (!Debugger::Instance().InitMarkers(mDevice))
+        if (!mDebugger.InitMarkers(mDevice))
         {
             NFE_LOG_ERROR("Vulkan debugging layer was requested, but is unavailable. Closing.");
             return false;
@@ -288,53 +258,25 @@ bool Device::Init(const DeviceInitParams* params)
         return false;
     }
 
-    vkGetDeviceQueue(mDevice, mGraphicsQueueIndex, 0, &mGraphicsQueue);
-
-    VkCommandPoolCreateInfo poolInfo;
-    VK_ZERO_MEMORY(poolInfo);
-    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    poolInfo.queueFamilyIndex = mGraphicsQueueIndex;
-    poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-    result = vkCreateCommandPool(mDevice, &poolInfo, nullptr, &mCommandPool);
-    if (result != VK_SUCCESS)
+    if (!mQueueManager.InitQueues(mDevice))
     {
-        NFE_LOG_ERROR("Failed to create a graphics command pool");
+        NFE_LOG_ERROR("Failed to initialize Queues from Device");
         return false;
     }
 
     mCommandBufferPool.Resize(COMMAND_BUFFER_COUNT);
+    if (!Tools::AllocateCommandBuffers(mQueueManager.GetCommandPool(QueueType::General), COMMAND_BUFFER_COUNT,
+                                       mCommandBufferPool.Data()))
+    {
+        NFE_LOG_ERROR("Failed to create VkCommandBuffer pool");
+        return false;
+    }
 
-    VkCommandBufferAllocateInfo cbInfo;
-    VK_ZERO_MEMORY(cbInfo);
-    cbInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    cbInfo.commandPool = mCommandPool;
-    cbInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    cbInfo.commandBufferCount = COMMAND_BUFFER_COUNT;
-    result = vkAllocateCommandBuffers(mDevice, &cbInfo, mCommandBufferPool.Data());
-    CHECK_VKRESULT(result, "Failed to initialize Command Buffer Pool");
+    mRenderPassManager.Init(mDevice);
 
-    mRenderPassManager.Reset(new RenderPassManager(mDevice));
-
-    mSemaphorePool.Reset(new SemaphorePool(mDevice));
-    mSemaphorePool->Init(VK_SEMAPHORE_POOL_SIZE);
-
-    mRingBuffer.Reset(new RingBuffer(mDevice));
-    mRingBuffer->Init(1024 * 1024);
-
-    VkSemaphoreCreateInfo semInfo;
-    VK_ZERO_MEMORY(semInfo);
-    semInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-    result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mPrePresentSemaphore);
-    CHECK_VKRESULT(result, "Failed to create pre present semaphore");
-    result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mPresentSemaphore);
-    CHECK_VKRESULT(result, "Failed to create present semaphore");
-    result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mPostPresentSemaphore);
-    CHECK_VKRESULT(result, "Failed to create post present semaphore");
-
-    VkPipelineCacheCreateInfo pipeCacheInfo;
-    VK_ZERO_MEMORY(pipeCacheInfo);
-    pipeCacheInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
-    result = vkCreatePipelineCache(mDevice, &pipeCacheInfo, nullptr, &mPipelineCache);
+    // TODO Ring Buffer must be managed somewhere else
+    if (!mRingBuffer.Init(this, 1024 * 1024))
+        return false;
 
     NFE_LOG_INFO("Vulkan device initialized successfully");
     return true;
@@ -365,12 +307,7 @@ VkCommandBuffer Device::GetAvailableCommandBuffer()
 
 void* Device::GetHandle() const
 {
-    return nullptr;
-}
-
-VertexLayoutPtr Device::CreateVertexLayout(const VertexLayoutDesc& desc)
-{
-    return GenericCreateResource<VertexLayout, VertexLayoutDesc>(desc);
+    return reinterpret_cast<void*>(mDevice);
 }
 
 BufferPtr Device::CreateBuffer(const BufferDesc& desc)
@@ -423,6 +360,22 @@ ResourceBindingLayoutPtr Device::CreateResourceBindingLayout(const ResourceBindi
     return GenericCreateResource<ResourceBindingLayout, ResourceBindingLayoutDesc>(desc);
 }
 
+VertexLayoutPtr Device::CreateVertexLayout(const VertexLayoutDesc& desc)
+{
+    auto resource = NFE::Common::MakeSharedPtr<VertexLayout>();
+    if (!resource)
+    {
+        return nullptr;
+    }
+
+    if (!resource->Init(desc))
+    {
+        return nullptr;
+    }
+
+    return resource;
+}
+
 ResourceBindingInstancePtr Device::CreateResourceBindingInstance(const ResourceBindingSetPtr& set)
 {
     auto rbi = Common::MakeSharedPtr<ResourceBindingInstance>();
@@ -431,7 +384,7 @@ ResourceBindingInstancePtr Device::CreateResourceBindingInstance(const ResourceB
         return nullptr;
     }
 
-    if (!rbi->Init(set))
+    if (!rbi->Init(gDevice, set))
     {
         return nullptr;
     }
@@ -447,7 +400,7 @@ CommandRecorderPtr Device::CreateCommandRecorder()
         return nullptr;
     }
 
-    if (!cr->Init())
+    if (!cr->Init(gDevice))
     {
         return nullptr;
     }
@@ -544,44 +497,21 @@ bool Device::Execute(CommandListID commandList)
 
     gDevice->WaitForGPU(); // TODO TEMPORARY
 
-    // each time we submit a new command list, grab new semaphore to signal
-    mSemaphorePool->Advance();
-
-    VkSemaphore waitSemaphore;
-    if (mPresented)
-    {
-        waitSemaphore = mPostPresentSemaphore;
-    }
-    else
-    {
-        waitSemaphore = mSemaphorePool->GetPreviousSemaphore();
-    }
-
-    VkSemaphore signalSemaphore = mSemaphorePool->GetCurrentSemaphore();
-
-    VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-
     VkSubmitInfo submitInfo;
     VK_ZERO_MEMORY(submitInfo);
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &mCommandBufferPool[commandList - 1];
-    submitInfo.pWaitDstStageMask = &pipelineStages;
-    submitInfo.waitSemaphoreCount = 1;
-    submitInfo.pWaitSemaphores = &waitSemaphore;
-    submitInfo.signalSemaphoreCount = 1;
-    submitInfo.pSignalSemaphores = &signalSemaphore;
-
-    VkResult result = vkQueueSubmit(mGraphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    CHECK_VKRESULT(result, "Failed to submit graphics operations");
+    VkResult result = VK_SUCCESS; // FIXME vkQueueSubmit(mGraphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to submit graphics operations");
 
     return true;
 }
 
 bool Device::WaitForGPU()
 {
-    VkResult result = vkQueueWaitIdle(mGraphicsQueue);
-    CHECK_VKRESULT(result, "Failed to wait for graphics queue");
+    VkResult result = vkDeviceWaitIdle(mDevice);
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to wait for Device");
     return true;
 }
 
@@ -622,9 +552,9 @@ IDevice* Init(const DeviceInitParams* params)
 
     // initialize glslang library for shader processing
     // TODO right now glslang leaks lots of memory (one leak per TShader object,
-    //      and one per glslang's Instance).
-    //      Bump glslang version, fix it by yourself, or use other library for GLSL/HLSL->SPV.
-    glslang::InitializeProcess();
+    //      and one per glslang's Instance). Bump glslang version.
+    if (!glslang::InitializeProcess())
+        return nullptr;
 
     return gDevice.Get();
 }

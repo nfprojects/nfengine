@@ -7,7 +7,6 @@
 #include "PCH.hpp"
 #include "Instance.hpp"
 #include "GetProc.hpp"
-#include "Debugger.hpp"
 
 #include "nfCommon/Containers/DynArray.hpp"
 
@@ -26,7 +25,7 @@ Instance::~Instance()
     Release();
 }
 
-bool Instance::Init(bool enableDebug, VkDebugReportFlagBitsEXT flags)
+bool Instance::Init(bool enableDebug)
 {
     if (mInstance)
         return true;
@@ -74,16 +73,7 @@ bool Instance::Init(bool enableDebug, VkDebugReportFlagBitsEXT flags)
     }
 
     VkResult result = vkCreateInstance(&instInfo, nullptr, &mInstance);
-    CHECK_VKRESULT(result, "Failed to create Vulkan Instance");
-
-    if (enableDebug)
-    {
-        if (!Debugger::Instance().InitReport(mInstance, flags))
-        {
-            NFE_LOG_ERROR("Vulkan debug reports failed to initialize.");
-            return false;
-        }
-    }
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create Vulkan Instance");
 
     if (!nfvkInstanceExtensionsInit(mInstance))
     {

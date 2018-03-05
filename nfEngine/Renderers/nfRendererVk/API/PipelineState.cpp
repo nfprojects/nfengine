@@ -24,11 +24,13 @@ PipelineState::PipelineState()
 PipelineState::~PipelineState()
 {
     if (mPipeline != VK_NULL_HANDLE)
-        vkDestroyPipeline(gDevice->GetDevice(), mPipeline, nullptr);
+        vkDestroyPipeline(mDevicePtr->GetDevice(), mPipeline, nullptr);
 }
 
-bool PipelineState::Init(const PipelineStateDesc& desc)
+bool PipelineState::Init(DevicePtr& device, const PipelineStateDesc& desc)
 {
+    mDevicePtr = device;
+
     mDesc = desc;
 
     VertexLayout* vl = dynamic_cast<VertexLayout*>(desc.vertexLayout.Get());
@@ -146,7 +148,7 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
         colorFormats[i] = TranslateElementFormatToVkFormat(desc.rtFormats[i]);
 
     RenderPassDesc rpDesc(colorFormats, desc.numRenderTargets, depthFormat);
-    VkRenderPass renderPass = gDevice->GetRenderPassManager()->GetRenderPass(rpDesc);
+    VkRenderPass renderPass = mDevicePtr->GetRenderPassManager()->GetRenderPass(rpDesc);
     if (renderPass == VK_NULL_HANDLE)
         return false;
 
@@ -206,9 +208,9 @@ bool PipelineState::Init(const PipelineStateDesc& desc)
     pipeInfo.renderPass = renderPass;
     pipeInfo.layout = rbl->mPipelineLayout;
     pipeInfo.subpass = 0;
-    VkResult result = vkCreateGraphicsPipelines(gDevice->GetDevice(), VK_NULL_HANDLE, 1, &pipeInfo,
+    VkResult result = vkCreateGraphicsPipelines(mDevicePtr->GetDevice(), VK_NULL_HANDLE, 1, &pipeInfo,
                                                 nullptr, &mPipeline);
-    CHECK_VKRESULT(result, "Failed to create Graphics Pipeline");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create Graphics Pipeline");
 
     return true;
 }

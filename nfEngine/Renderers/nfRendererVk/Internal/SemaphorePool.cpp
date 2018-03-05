@@ -6,7 +6,10 @@
 
 #include "PCH.hpp"
 #include "SemaphorePool.hpp"
+#include "Tools.hpp"
+
 #include "API/Device.hpp"
+
 
 namespace NFE {
 namespace Renderer {
@@ -18,30 +21,11 @@ SemaphorePool::SemaphorePool(VkDevice device)
 {
 }
 
-SemaphorePool::~SemaphorePool()
-{
-    // no need to wait - Device destructor will wait for GPU for us
-    for (auto& sem : mSemaphores)
-    {
-        if (sem != VK_NULL_HANDLE)
-        {
-            vkDestroySemaphore(mDeviceRef, sem, nullptr);
-        }
-    }
-}
-
 bool SemaphorePool::Init(uint32 semaphoreCount)
 {
-    mSemaphores.Resize(semaphoreCount);
-
-    VkSemaphoreCreateInfo semInfo;
-    VK_ZERO_MEMORY(semInfo);
-    semInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-    VkResult result;
-    for (auto& sem : mSemaphores)
+    for (uint32_t i = 0; i < semaphoreCount; ++i)
     {
-        result = vkCreateSemaphore(mDeviceRef, &semInfo, nullptr, &sem);
-        CHECK_VKRESULT(result, "Failed to create semaphore");
+        mSemaphores.EmplaceBack(Tools::CreateSem());
     }
 
     mCurrentSemaphore = 0;
@@ -53,6 +37,8 @@ bool SemaphorePool::Init(uint32 semaphoreCount)
 
 void SemaphorePool::Advance()
 {
+    // TODO THIS POOL DOES NOT TAKE SEMAPHORE COLLISION INTO ACCOUNT
+    //      what if we wrap around current pool? resize it? wait until tasks are flushed?
     mPreviousSemaphore = mCurrentSemaphore;
 
     ++mCurrentSemaphore;

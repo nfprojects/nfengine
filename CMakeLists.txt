@@ -80,10 +80,7 @@ SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -Wpedantic -Wextra -Wno-sign-comp
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-multichar")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-switch")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-unused-result")
-SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-unused-private-field")
-SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-four-char-constants")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-unused-local-typedefs")
-SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-inconsistent-missing-override")
 
 ADD_DEFINITIONS(-DNFE_ROOT_DIRECTORY="${NFE_ROOT_DIRECTORY}/")
 ADD_DEFINITIONS(-DNFE_COMPILER="${CMAKE_CXX_COMPILER_ID}")
