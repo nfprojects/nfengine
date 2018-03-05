@@ -10,6 +10,8 @@
 #include "Defines.hpp"
 #include "Device.hpp"
 #include "nfCommon/FileSystem/File.hpp"
+#include "nfCommon/Containers/DynArray.hpp"
+#include "nfCommon/Containers/String.hpp"
 
 #include <glslang/SPIRV/GlslangToSpv.h>
 #include <glslang/SPIRV/disassemble.h>
@@ -261,7 +263,7 @@ bool Shader::Init(const ShaderDesc& desc)
     shaderInfo.codeSize = mShaderSpv.size() * sizeof(uint32);
     shaderInfo.pCode = mShaderSpv.data();
     VkResult result = vkCreateShaderModule(gDevice->GetDevice(), &shaderInfo, nullptr, &mShader);
-    CHECK_VKRESULT(result, "Failed to create Shader module");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create Shader module");
 
     VK_ZERO_MEMORY(mStageInfo);
     mStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -291,14 +293,12 @@ bool Shader::GetIODesc()
 
 void Shader::ParseResourceSlots()
 {
-    // TODO get rid of std::vector and std::string
-
     std::stringstream disasm;
     spv::Disassemble(disasm, mShaderSpv);
 
-    std::string line;
-    std::vector<std::string> names;
-    std::vector<std::string> decorates;
+    Common::String line;
+    Common::DynArray<Common::String> names;
+    Common::DynArray<Common::String> decorates;
     while (std::getline(disasm, line))
     {
         size_t namePos = line.find("Name");
@@ -340,13 +340,15 @@ void Shader::ParseResourceSlots()
         size_t closeBracketPos = tokens[1].find(')', openBracketPos+1);
 
         const Common::String tokenName = tokens[1].substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1).c_str();
-        SetSlotMap::Iterator it;
+        SetBindingMap::Iterator it;
         if (tokens[2] == "DescriptorSet" || tokens[2] == "Binding")
         {
             it = mResourceSlotMap.Find(tokenName);
             if (it == mResourceSlotMap.end())
             {
-                it = mResourceSlotMap.Insert(tokenName, std::make_pair(static_cast<uint16>(0), static_cast<uint16>(0))).iterator;
+                SetBindingPair emptyPair;
+                emptyPair.total = 0;
+                it = mResourceSlotMap.Insert(tokenName, emptyPair).iterator;
             }
         }
         else
@@ -355,13 +357,13 @@ void Shader::ParseResourceSlots()
         if (tokens[2] == "DescriptorSet")
         {
             NFE_LOG_DEBUG("Found resource %s with DescriptorSet = %s", tokens[1].c_str(), tokens[3].c_str());
-            it->second.first = static_cast<uint16>(std::atoi(tokens[3].c_str()));
+            it->second.pair.set = static_cast<uint16>(std::atoi(tokens[3].c_str()));
         }
 
         if (tokens[2] == "Binding")
         {
             NFE_LOG_DEBUG("Found resource %s with Binding = %s", tokens[1].c_str(), tokens[3].c_str());
-            it->second.second = static_cast<uint16>(std::atoi(tokens[3].c_str()));
+            it->second.pair.binding = static_cast<uint16>(std::atoi(tokens[3].c_str()));
         }
     }
 
@@ -374,15 +376,7 @@ int Shader::GetResourceSlotByName(const char* name)
     if (it == mResourceSlotMap.End())
         return -1;
 
-    const SetSlotPair& pair = it->second;
-
-    // encode slot/binding pair onto a single uint
-    // 16 MSB are set, 16 LSB are binding point
-    uint32 result = std::get<0>(pair);
-    result <<= 16;
-    result |= std::get<1>(pair);
-
-    return static_cast<int>(result);
+    return it->second.total;
 }
 
 } // namespace Renderer

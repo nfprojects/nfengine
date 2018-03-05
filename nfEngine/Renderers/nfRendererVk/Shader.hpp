@@ -23,14 +23,25 @@ class Shader : public IShader
     friend class CommandRecorder;
     friend class PipelineState;
 
-    typedef std::pair<uint16, uint16> SetSlotPair; // first is set, second is binding
-    typedef Common::HashMap<Common::String, SetSlotPair> SetSlotMap; // mapping Resource Name to Slot
+    union SetBindingPair
+    {
+        struct
+        {
+            uint16_t set;
+            uint16_t binding;
+        } pair;
+
+        int total;
+    };
+
+    // mapping Resource Name to Slot
+    using SetBindingMap = Common::HashMap<Common::String, SetBindingPair>;
 
     ShaderType mType;
     Common::UniquePtr<glslang::TShader> mShaderGlslang;
     Common::UniquePtr<glslang::TProgram> mProgramGlslang;
     std::vector<uint32> mShaderSpv; // TODO remove
-    SetSlotMap mResourceSlotMap;
+    SetBindingMap mResourceSlotMap;
     VkShaderModule mShader;
     VkPipelineShaderStageCreateInfo mStageInfo;
 

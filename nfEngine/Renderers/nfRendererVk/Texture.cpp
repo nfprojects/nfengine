@@ -104,7 +104,7 @@ bool Texture::Init(const TextureDesc& desc)
     bufInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
     bufInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
     result = vkCreateBuffer(gDevice->GetDevice(), &bufInfo, nullptr, &stagingBuffer);
-    CHECK_VKRESULT(result, "Failed to create staging buffer for data upload");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create staging buffer for data upload");
 
     VkMemoryRequirements stagingMemReqs;
     vkGetBufferMemoryRequirements(gDevice->GetDevice(), stagingBuffer, &stagingMemReqs);
@@ -115,15 +115,15 @@ bool Texture::Init(const TextureDesc& desc)
     memInfo.allocationSize = stagingMemReqs.size;
     memInfo.memoryTypeIndex = gDevice->GetMemoryTypeIndex(stagingMemReqs.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
     result = vkAllocateMemory(gDevice->GetDevice(), &memInfo, nullptr, &stagingBufferMemory);
-    CHECK_VKRESULT(result, "Failed to allocate memory for staging buffer");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to allocate memory for staging buffer");
 
     void* bufferData = nullptr;
     result = vkMapMemory(gDevice->GetDevice(), stagingBufferMemory, 0, memInfo.allocationSize, 0, &bufferData);
-    CHECK_VKRESULT(result, "Failed to map staging buffer's memory");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to map staging buffer's memory");
     memcpy(bufferData, desc.dataDesc[0].data, static_cast<size_t>(bufInfo.size));
     vkUnmapMemory(gDevice->GetDevice(), stagingBufferMemory);
     result = vkBindBufferMemory(gDevice->GetDevice(), stagingBuffer, stagingBufferMemory, 0);
-    CHECK_VKRESULT(result, "Failed to bind staging buffer to its memory");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to bind staging buffer to its memory");
 
     // Image creation
     VkImageCreateInfo imageInfo;
@@ -179,7 +179,7 @@ bool Texture::Init(const TextureDesc& desc)
     imageInfo.initialLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
 
     result = vkCreateImage(gDevice->GetDevice(), &imageInfo, nullptr, &mImage);
-    CHECK_VKRESULT(result, "Failed to create Image for texture");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create Image for texture");
 
     VkMemoryRequirements imageMemReqs;
     vkGetImageMemoryRequirements(gDevice->GetDevice(), mImage, &imageMemReqs);
@@ -190,10 +190,10 @@ bool Texture::Init(const TextureDesc& desc)
     imageMemInfo.allocationSize = imageMemReqs.size;
     imageMemInfo.memoryTypeIndex = gDevice->GetMemoryTypeIndex(imageMemReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
     result = vkAllocateMemory(gDevice->GetDevice(), &imageMemInfo, nullptr, &mImageMemory);
-    CHECK_VKRESULT(result, "Failed to allocate memory for Image");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to allocate memory for Image");
 
     result = vkBindImageMemory(gDevice->GetDevice(), mImage, mImageMemory, 0);
-    CHECK_VKRESULT(result, "Failed to bind Image to its memory");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to bind Image to its memory");
 
     // TODO right now copying is done on a general queue, but the devices support separate Transfer queue.
     //      Consider moving copy command buffers to transfer queue if device makes it possible.
@@ -205,14 +205,14 @@ bool Texture::Init(const TextureDesc& desc)
     cmdInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     cmdInfo.commandBufferCount = 1;
     result = vkAllocateCommandBuffers(gDevice->GetDevice(), &cmdInfo, &copyCmdBuffer);
-    CHECK_VKRESULT(result, "Failed to allocate a command buffer");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to allocate a command buffer");
 
     VkCommandBufferBeginInfo cmdBeginInfo;
     VK_ZERO_MEMORY(cmdBeginInfo);
     cmdBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     cmdBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
     result = vkBeginCommandBuffer(copyCmdBuffer, &cmdBeginInfo);
-    CHECK_VKRESULT(result, "Failed to begin command rendering for buffer copy operation");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to begin command rendering for buffer copy operation");
 
     VkImageMemoryBarrier imageBarrier;
     VK_ZERO_MEMORY(imageBarrier);
@@ -245,7 +245,7 @@ bool Texture::Init(const TextureDesc& desc)
                          0, 0, nullptr, 0, nullptr, 1, &imageBarrier);
 
     result = vkEndCommandBuffer(copyCmdBuffer);
-    CHECK_VKRESULT(result, "Failure during copy command buffer recording");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failure during copy command buffer recording");
 
     VkSubmitInfo submitInfo;
     VK_ZERO_MEMORY(submitInfo);
@@ -294,7 +294,7 @@ bool Texture::Init(const TextureDesc& desc)
     };
     ivInfo.subresourceRange = imageBarrier.subresourceRange;
     result = vkCreateImageView(gDevice->GetDevice(), &ivInfo, nullptr, &mImageView);
-    CHECK_VKRESULT(result, "Failed to generate Image View from created Texure's image");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to generate Image View from created Texure's image");
 
     NFE_LOG_INFO("Texture initialized successfully");
     return true;
