@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "10131299_fd432ffb",
+        "filename": "nfEngine/nfCommon/Linux/Console.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2018-03-05T22:03:23Z",
+      "side": 1,
+      "message": "?",
+      "range": {
+        "startLine": 39,
+        "startChar": 8,
+        "endLine": 39,
+        "endChar": 27
+      },
+      "revId": "eebdcfa637dfc82cbd544a1a868048615901b23d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
