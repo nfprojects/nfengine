@@ -91,7 +91,7 @@ bool Backbuffer::SelectSurfaceFormat(const BackbufferDesc& desc)
     uint32_t formatCount;
     VkResult result = vkGetPhysicalDeviceSurfaceFormatsKHR(gDevice->GetPhysicalDevice(), mSurface,
                                                   &formatCount, nullptr);
-    CHECK_VKRESULT(result, "Unable to retrieve surface format count.");
+    VK_RETURN_FALSE_IF_FAILED(result, "Unable to retrieve surface format count.");
 
     if (formatCount == 0)
     {
@@ -106,7 +106,7 @@ bool Backbuffer::SelectSurfaceFormat(const BackbufferDesc& desc)
                                                       &formatCount, formats.Data());
     }
 
-    CHECK_VKRESULT(result, "Unable to retrieve surface formats");
+    VK_RETURN_FALSE_IF_FAILED(result, "Unable to retrieve surface formats");
     uint32 formatIndex = 0;
     mFormat = TranslateElementFormatToVkFormat(desc.format);
     // check if format is supported
@@ -134,7 +134,7 @@ bool Backbuffer::SelectPresentMode(const BackbufferDesc& desc)
     uint32 presentModeCount = UINT32_MAX;
     VkResult result = vkGetPhysicalDeviceSurfacePresentModesKHR(gDevice->GetPhysicalDevice(), mSurface,
                                                                 &presentModeCount, nullptr);
-    CHECK_VKRESULT(result, "Failed to acquire surface's present modes");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to acquire surface's present modes");
 
     Common::DynArray<VkPresentModeKHR> presentModes;
     if (presentModes.Resize(presentModeCount))
@@ -142,7 +142,7 @@ bool Backbuffer::SelectPresentMode(const BackbufferDesc& desc)
         result = vkGetPhysicalDeviceSurfacePresentModesKHR(gDevice->GetPhysicalDevice(), mSurface,
                                                            &presentModeCount, presentModes.Data());
     }
-    CHECK_VKRESULT(result, "Failed to acquire surface's present modes");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to acquire surface's present modes");
 
     // By default, assume FIFO present mode (aka vSync enabled)
     mSwapPresentMode = VK_PRESENT_MODE_FIFO_KHR;
@@ -172,7 +172,7 @@ bool Backbuffer::SelectBufferCount()
     // Gather surface's capabilities
     VkResult result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(gDevice->GetPhysicalDevice(), mSurface,
                                                                 &mSurfaceCapabilities);
-    CHECK_VKRESULT(result, "Failed to acquire surface's capabilities");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to acquire surface's capabilities");
 
     // Ideally we should be able to double-buffer, but for safety check this against caps
     mBuffersNum = 2;
@@ -220,7 +220,7 @@ bool Backbuffer::CreateSwapchain(const BackbufferDesc& desc)
     swapInfo.clipped = VK_TRUE;
     swapInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
     VkResult result = vkCreateSwapchainKHR(gDevice->GetDevice(), &swapInfo, nullptr, &mSwapchain);
-    CHECK_VKRESULT(result, "Failed to create a swapchain");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create a swapchain");
 
     return true;
 }
@@ -229,7 +229,7 @@ bool Backbuffer::CreateSwapchainImageViews()
 {
     uint32 swapImageCount = 0;
     VkResult result = vkGetSwapchainImagesKHR(gDevice->GetDevice(), mSwapchain, &swapImageCount, nullptr);
-    CHECK_VKRESULT(result, "Failed to get swapchain image count");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to get swapchain image count");
     if (swapImageCount < mBuffersNum)
     {
         NFE_LOG_ERROR("Not enough swap images created (%d, requested %d)", swapImageCount, mBuffersNum);
@@ -244,7 +244,7 @@ bool Backbuffer::CreateSwapchainImageViews()
     mBufferViews.Resize(mBuffersNum);
 
     result = vkGetSwapchainImagesKHR(gDevice->GetDevice(), mSwapchain, &mBuffersNum, mBuffers.Data());
-    CHECK_VKRESULT(result, "Failed to get swapchain images");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to get swapchain images");
 
     NFE_LOG_DEBUG("%d swapchain buffers acquired", mBuffersNum);
     for (mCurrentBuffer = 0; mCurrentBuffer < mBuffersNum; mCurrentBuffer++)
@@ -268,7 +268,7 @@ bool Backbuffer::CreateSwapchainImageViews()
         ivInfo.subresourceRange.baseArrayLayer = 0;
         ivInfo.subresourceRange.layerCount = 1;
         result = vkCreateImageView(gDevice->GetDevice(), &ivInfo, nullptr, &mBufferViews[mCurrentBuffer]);
-        CHECK_VKRESULT(result, "Failed to generate Image View from Swapchain image");
+        VK_RETURN_FALSE_IF_FAILED(result, "Failed to generate Image View from Swapchain image");
     }
 
     return true;
@@ -287,9 +287,9 @@ bool Backbuffer::BuildPresentCommandBuffers()
     buffInfo.commandBufferCount = mBuffersNum;
     buffInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     result = vkAllocateCommandBuffers(gDevice->GetDevice(), &buffInfo, mPresentCommandBuffers.Data());
-    CHECK_VKRESULT(result, "Unable to allocate present command buffer");
+    VK_RETURN_FALSE_IF_FAILED(result, "Unable to allocate present command buffer");
     result = vkAllocateCommandBuffers(gDevice->GetDevice(), &buffInfo, mPostPresentCommandBuffers.Data());
-    CHECK_VKRESULT(result, "Unable to allocate post present command buffer");
+    VK_RETURN_FALSE_IF_FAILED(result, "Unable to allocate post present command buffer");
 
     // Build present and post-present command buffers
     // These will contain only a PipelineBarrier which will convert our image through layouts
@@ -316,7 +316,7 @@ bool Backbuffer::BuildPresentCommandBuffers()
     for (uint32 i = 0; i < mBuffersNum; ++i)
     {
         result = vkBeginCommandBuffer(mPresentCommandBuffers[i], &cmdBeginInfo);
-        CHECK_VKRESULT(result, "Failed to start recording present command buffer");
+        VK_RETURN_FALSE_IF_FAILED(result, "Failed to start recording present command buffer");
 
         presentBarrier.image = mBuffers[i];
 
@@ -326,7 +326,7 @@ bool Backbuffer::BuildPresentCommandBuffers()
                              1, &presentBarrier);
 
         result = vkEndCommandBuffer(mPresentCommandBuffers[i]);
-        CHECK_VKRESULT(result, "Error during present command buffer recording");
+        VK_RETURN_FALSE_IF_FAILED(result, "Error during present command buffer recording");
     }
 
     // layout conversion after present (whatever -> color attachment)
@@ -339,7 +339,7 @@ bool Backbuffer::BuildPresentCommandBuffers()
     for (uint32 i = 0; i < mBuffersNum; ++i)
     {
         result = vkBeginCommandBuffer(mPostPresentCommandBuffers[i], &cmdBeginInfo);
-        CHECK_VKRESULT(result, "Failed to start recording post present command buffer");
+        VK_RETURN_FALSE_IF_FAILED(result, "Failed to start recording post present command buffer");
 
         presentBarrier.image = mBuffers[i];
 
@@ -349,7 +349,7 @@ bool Backbuffer::BuildPresentCommandBuffers()
                              1, &presentBarrier);
 
         result = vkEndCommandBuffer(mPostPresentCommandBuffers[i]);
-        CHECK_VKRESULT(result, "Error during post present command buffer recording");
+        VK_RETURN_FALSE_IF_FAILED(result, "Error during post present command buffer recording");
     }
 
     return true;
@@ -360,7 +360,7 @@ bool Backbuffer::AcquireNextImage()
     // TODO handle VK_ERROR_OUT_OF_DATE (happens ex. during resize)
     VkResult result = vkAcquireNextImageKHR(gDevice->GetDevice(), mSwapchain, UINT64_MAX,
                                             gDevice->mPresentSemaphore, VK_NULL_HANDLE, &mCurrentBuffer);
-    CHECK_VKRESULT(result, "Failed to acquire next image");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to acquire next image");
 
     // Submit a pipeline barrier call to ensure our buffer is a color attachment
     VkPipelineStageFlags pipelineStages = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
@@ -375,7 +375,7 @@ bool Backbuffer::AcquireNextImage()
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = &gDevice->mPostPresentSemaphore;
     result = vkQueueSubmit(mPresentQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    CHECK_VKRESULT(result, "Failed to submit post present operations");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to submit post present operations");
 
     gDevice->SignalPresent();
 
@@ -437,7 +437,7 @@ bool Backbuffer::Present()
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = &gDevice->mPrePresentSemaphore;
     VkResult result = vkQueueSubmit(mPresentQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    CHECK_VKRESULT(result, "Failed to submit post present operations");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to submit post present operations");
 
     // Present whatever was drawn (only if render semaphore is signalled)
     VkPresentInfoKHR presentInfo;
@@ -450,7 +450,7 @@ bool Backbuffer::Present()
     presentInfo.pWaitSemaphores = &gDevice->mPrePresentSemaphore;
     presentInfo.pResults = &result;
     vkQueuePresentKHR(mPresentQueue, &presentInfo);
-    //CHECK_VKRESULT(result, "Failed to present image on current swap chain");
+    //VK_RETURN_FALSE_IF_FAILED(result, "Failed to present image on current swap chain");
     if (result != VK_SUCCESS)
     {
         NFE_LOG_ERROR("Failed to present image on current swap chain: %d (%s)", result,

@@ -261,7 +261,7 @@ bool Shader::Init(const ShaderDesc& desc)
     shaderInfo.codeSize = mShaderSpv.size() * sizeof(uint32);
     shaderInfo.pCode = mShaderSpv.data();
     VkResult result = vkCreateShaderModule(gDevice->GetDevice(), &shaderInfo, nullptr, &mShader);
-    CHECK_VKRESULT(result, "Failed to create Shader module");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create Shader module");
 
     VK_ZERO_MEMORY(mStageInfo);
     mStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;

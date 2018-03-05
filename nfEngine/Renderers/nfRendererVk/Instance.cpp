@@ -98,7 +98,7 @@ bool Instance::Init(bool enableDebug, VkDebugReportFlagBitsEXT flags)
     }
 
     VkResult result = vkCreateInstance(&instInfo, nullptr, &mInstance);
-    CHECK_VKRESULT(result, "Failed to create Vulkan Instance");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create Vulkan Instance");
 
     if (enableDebug)
     {

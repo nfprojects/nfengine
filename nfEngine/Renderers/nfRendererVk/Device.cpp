@@ -152,7 +152,7 @@ bool Device::Init(const DeviceInitParams* params)
     // acquire GPU count first
     unsigned int gpuCount = 0;
     VkResult result = vkEnumeratePhysicalDevices(instance, &gpuCount, nullptr);
-    CHECK_VKRESULT(result, "Unable to enumerate physical devices");
+    VK_RETURN_FALSE_IF_FAILED(result, "Unable to enumerate physical devices");
     if (gpuCount == 0)
     {
         NFE_LOG_ERROR("0 physical devices available.");
@@ -270,7 +270,7 @@ bool Device::Init(const DeviceInitParams* params)
     }
 
     result = vkCreateDevice(mPhysicalDevice, &devInfo, nullptr, &mDevice);
-    CHECK_VKRESULT(result, "Failed to create Vulkan device");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create Vulkan device");
 
     if (params->debugLevel > 0)
     {
@@ -310,7 +310,7 @@ bool Device::Init(const DeviceInitParams* params)
     cbInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     cbInfo.commandBufferCount = COMMAND_BUFFER_COUNT;
     result = vkAllocateCommandBuffers(mDevice, &cbInfo, mCommandBufferPool.Data());
-    CHECK_VKRESULT(result, "Failed to initialize Command Buffer Pool");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to initialize Command Buffer Pool");
 
     mRenderPassManager.Reset(new RenderPassManager(mDevice));
 
@@ -324,11 +324,11 @@ bool Device::Init(const DeviceInitParams* params)
     VK_ZERO_MEMORY(semInfo);
     semInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
     result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mPrePresentSemaphore);
-    CHECK_VKRESULT(result, "Failed to create pre present semaphore");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create pre present semaphore");
     result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mPresentSemaphore);
-    CHECK_VKRESULT(result, "Failed to create present semaphore");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create present semaphore");
     result = vkCreateSemaphore(mDevice, &semInfo, nullptr, &mPostPresentSemaphore);
-    CHECK_VKRESULT(result, "Failed to create post present semaphore");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create post present semaphore");
 
     VkPipelineCacheCreateInfo pipeCacheInfo;
     VK_ZERO_MEMORY(pipeCacheInfo);
@@ -572,7 +572,7 @@ bool Device::Execute(CommandListID commandList)
     submitInfo.pSignalSemaphores = &signalSemaphore;
 
     VkResult result = vkQueueSubmit(mGraphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    CHECK_VKRESULT(result, "Failed to submit graphics operations");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to submit graphics operations");
 
     return true;
 }
@@ -580,7 +580,7 @@ bool Device::Execute(CommandListID commandList)
 bool Device::WaitForGPU()
 {
     VkResult result = vkQueueWaitIdle(mGraphicsQueue);
-    CHECK_VKRESULT(result, "Failed to wait for graphics queue");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to wait for graphics queue");
     return true;
 }
 

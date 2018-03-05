@@ -41,7 +41,7 @@ bool SemaphorePool::Init(uint32 semaphoreCount)
     for (auto& sem : mSemaphores)
     {
         result = vkCreateSemaphore(mDeviceRef, &semInfo, nullptr, &sem);
-        CHECK_VKRESULT(result, "Failed to create semaphore");
+        VK_RETURN_FALSE_IF_FAILED(result, "Failed to create semaphore");
     }
 
     mCurrentSemaphore = 0;
