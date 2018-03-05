@@ -19,12 +19,16 @@
 #include <Windows.h>
 #endif
 
-#include <vulkan/vulkan.h>
+// Vulkan
+#include <vulkan/vulkan.hpp>
 #include <glslang/glslang/Public/ShaderLang.h>
 
-#include <string.h>
+
+// STL
 #include <memory>
 #include <tuple>
 #include <sstream>
 #include <queue>
 #include <algorithm>
+#include <cstring>
+#include <cstddef>

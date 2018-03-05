@@ -75,9 +75,6 @@
     <ClCompile Include="CommandRecorder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SemaphorePool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Win\WinDevice.cpp">
       <Filter>Source Files\Win</Filter>
     </ClCompile>
@@ -86,6 +83,12 @@
     </ClCompile>
     <ClCompile Include="Win\WinExtensions.cpp">
       <Filter>Source Files\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="SemaphorePool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tools.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -155,11 +158,17 @@
     <ClInclude Include="CommandRecorder.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Win\WinExtensions.hpp">
+      <Filter>Header Files\Win</Filter>
+    </ClInclude>
     <ClInclude Include="SemaphorePool.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Win\WinExtensions.hpp">
-      <Filter>Header Files\Win</Filter>
+    <ClInclude Include="Tools.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VkRAII.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

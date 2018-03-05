@@ -196,7 +196,7 @@ public:
         float timeElapsed = 0.0f;
         int frames = 0;
 
-        while (!IsClosed())
+        //while (!IsClosed())
         {
             float dt = static_cast<float>(timer.Stop());
             timer.Start();
