@@ -8,6 +8,7 @@
 
 #include "Defines.hpp"
 
+#include "VkHandle.hpp"
 #include "nfCommon/Containers/DynArray.hpp"
 
 
@@ -26,23 +27,22 @@ class SemaphorePool
 {
     VkDevice mDeviceRef;
 
-    Common::DynArray<VkSemaphore> mSemaphores;
+    Common::DynArray<VkHandle<VkSemaphore>> mSemaphores;
     uint32 mPreviousSemaphore;
     uint32 mCurrentSemaphore;
 
 public:
     SemaphorePool(VkDevice device);
-    ~SemaphorePool();
 
     bool Init(uint32 semaphoreCount);
     void Advance();
 
-    NFE_INLINE VkSemaphore GetPreviousSemaphore() const
+    NFE_INLINE VkSemaphore GetPreviousSemaphore()
     {
         return mSemaphores[mPreviousSemaphore];
     }
 
-    NFE_INLINE VkSemaphore GetCurrentSemaphore() const
+    NFE_INLINE VkSemaphore GetCurrentSemaphore()
     {
         return mSemaphores[mCurrentSemaphore];
     }

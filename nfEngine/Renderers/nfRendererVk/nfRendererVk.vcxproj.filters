@@ -83,6 +83,18 @@
     <ClInclude Include="Internal\Win\WinExtensions.hpp">
       <Filter>Internal\Win</Filter>
     </ClInclude>
+    <ClInclude Include="Internal\Tools.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\QueueManager.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\VkHandle.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\VkHandleImpl.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -152,6 +164,12 @@
     </ClCompile>
     <ClCompile Include="Internal\Win\WinExtensions.cpp">
       <Filter>Internal\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\Tools.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\QueueManager.cpp">
+      <Filter>Internal</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

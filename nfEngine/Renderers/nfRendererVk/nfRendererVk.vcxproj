@@ -36,11 +36,15 @@
     <ClInclude Include="Internal\Extensions.hpp" />
     <ClInclude Include="Internal\GetProc.hpp" />
     <ClInclude Include="Internal\Instance.hpp" />
+    <ClInclude Include="Internal\QueueManager.hpp" />
     <ClInclude Include="Internal\RenderPassDesc.hpp" />
     <ClInclude Include="Internal\RenderPassManager.hpp" />
     <ClInclude Include="Internal\RingBuffer.hpp" />
     <ClInclude Include="Internal\SemaphorePool.hpp" />
+    <ClInclude Include="Internal\Tools.hpp" />
     <ClInclude Include="Internal\Translations.hpp" />
+    <ClInclude Include="Internal\VkHandle.hpp" />
+    <ClInclude Include="Internal\VkHandleImpl.hpp" />
     <ClInclude Include="Internal\Win\WinExtensions.hpp" />
     <ClInclude Include="PCH.hpp" />
   </ItemGroup>
@@ -62,9 +66,11 @@
     <ClCompile Include="Internal\Debugger.cpp" />
     <ClCompile Include="Internal\Extensions.cpp" />
     <ClCompile Include="Internal\Instance.cpp" />
+    <ClCompile Include="Internal\QueueManager.cpp" />
     <ClCompile Include="Internal\RenderPassManager.cpp" />
     <ClCompile Include="Internal\RingBuffer.cpp" />
     <ClCompile Include="Internal\SemaphorePool.cpp" />
+    <ClCompile Include="Internal\Tools.cpp" />
     <ClCompile Include="Internal\Translations.cpp" />
     <ClCompile Include="Internal\Win\WinExtensions.cpp" />
     <ClCompile Include="Main.cpp" />

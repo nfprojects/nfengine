@@ -13,8 +13,8 @@
 #include "CommandRecorder.hpp"
 #include "Internal/Instance.hpp"
 #include "Internal/RenderPassManager.hpp"
-#include "Internal/SemaphorePool.hpp"
 #include "Internal/RingBuffer.hpp"
+#include "Internal/QueueManager.hpp"
 
 #include "nfCommon/Containers/UniquePtr.hpp"
 #include "nfCommon/System/Window.hpp"
@@ -35,31 +35,21 @@ private:
     VkPhysicalDevice mPhysicalDevice;
     VkPhysicalDeviceMemoryProperties mMemoryProperties;
     VkDevice mDevice;
+
     VkCommandPool mCommandPool;
     Common::DynArray<VkCommandBuffer> mCommandBufferPool;
     uint32 mCurrentCommandBuffer;
-    uint32 mGraphicsQueueIndex;
-    VkQueue mGraphicsQueue;
-    VkPipelineCache mPipelineCache;
-    VkSemaphore mPrePresentSemaphore;
-    VkSemaphore mPresentSemaphore;
-    VkSemaphore mPostPresentSemaphore;
-    bool mPresented;
+
     Common::DynArray<VkSurfaceFormatKHR> mSupportedFormats;
     Common::UniquePtr<RenderPassManager> mRenderPassManager;
-    Common::UniquePtr<SemaphorePool> mSemaphorePool;
     Common::UniquePtr<RingBuffer> mRingBuffer;
+
     bool mDebugEnable;
 
     VkPhysicalDevice SelectPhysicalDevice(const Common::DynArray<VkPhysicalDevice>& devices, int preferredId);
 
     bool CreateTemporarySurface(VkSurfaceKHR& surface);
     void CleanupTemporarySurface(VkSurfaceKHR& surface);
-
-    NFE_INLINE void SignalPresent()
-    {
-        mPresented = true;
-    }
 
 public:
     Device();
@@ -87,39 +77,9 @@ public:
         return mCommandPool;
     }
 
-    NFE_INLINE const VkPipelineCache& GetPipelineCache() const
-    {
-        return mPipelineCache;
-    }
-
-    NFE_INLINE const VkQueue& GetQueue() const
-    {
-        return mGraphicsQueue;
-    }
-
-    NFE_INLINE const uint32& GetQueueIndex() const
-    {
-        return mGraphicsQueueIndex;
-    }
-
-    NFE_INLINE const VkSemaphore& GetPresentSemaphore() const
-    {
-        return mPresentSemaphore;
-    }
-
-    NFE_INLINE const VkSemaphore& GetPostPresentSemaphore() const
-    {
-        return mPostPresentSemaphore;
-    }
-
     NFE_INLINE RenderPassManager* GetRenderPassManager() const
     {
         return mRenderPassManager.Get();
-    }
-
-    NFE_INLINE SemaphorePool* GetSemaphorePool() const
-    {
-        return mSemaphorePool.Get();
     }
 
     NFE_INLINE RingBuffer* GetRingBuffer() const
@@ -162,8 +122,6 @@ public:
     bool DownloadBuffer(const BufferPtr& buffer, size_t offset, size_t size, void* data) override;
     bool DownloadTexture(const TexturePtr& tex, void* data, uint32 mipmap, uint32 layer) override;
 };
-
-extern Common::UniquePtr<Device> gDevice;
 
 extern "C" RENDERER_API IDevice* Init(const DeviceInitParams* params);
 extern "C" RENDERER_API void Release();

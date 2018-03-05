@@ -22,10 +22,6 @@ Texture::Texture()
     , mHeight(1)
     , mDepth(1)
     , mFormat(VK_FORMAT_UNDEFINED)
-    , mImage(VK_NULL_HANDLE)
-    , mImageView(VK_NULL_HANDLE)
-    , mImageMemory(VK_NULL_HANDLE)
-    , mBuffersNum(0)
     , mCurrentBuffer(0)
     , mFromSwapchain(false)
 {
@@ -36,22 +32,19 @@ Texture::~Texture()
     // TODO this needs to go away
     gDevice->WaitForGPU();
 
-    if (mImageMemory != VK_NULL_HANDLE)
-        vkFreeMemory(gDevice->GetDevice(), mImageMemory, nullptr);
-    if (mImageView != VK_NULL_HANDLE)
-        vkDestroyImageView(gDevice->GetDevice(), mImageView, nullptr);
-    if (mImage != VK_NULL_HANDLE)
-        vkDestroyImage(gDevice->GetDevice(), mImage, nullptr);
+    for (auto& i : mImages)
+    {
+        if (i.view != VK_NULL_HANDLE)
+            vkDestroyImageView(gDevice->GetDevice(), i.view, nullptr);
 
-
-    for (auto& buf : mBuffers)
         if (!mFromSwapchain)
-            if (buf != VK_NULL_HANDLE)
-                vkDestroyImage(gDevice->GetDevice(), buf, nullptr);
-
-    for (auto& bufview : mBufferViews)
-        if (bufview != VK_NULL_HANDLE)
-            vkDestroyImageView(gDevice->GetDevice(), bufview, nullptr);
+        {
+            if (i.memory != VK_NULL_HANDLE)
+                vkFreeMemory(gDevice->GetDevice(), i.memory, nullptr);
+            if (i.image != VK_NULL_HANDLE)
+                vkDestroyImage(gDevice->GetDevice(), i.image, nullptr);
+        }
+    }
 }
 
 bool Texture::Init(const TextureDesc& desc)
@@ -69,6 +62,8 @@ bool Texture::Init(const TextureDesc& desc)
         NFE_LOG_ERROR("No initial data provided for Image");
         return false;
     }
+
+    mImages.Resize(1);
 
     mType = desc.type;
     if (desc.depthBufferFormat != DepthBufferFormat::Unknown)
@@ -105,7 +100,7 @@ bool Texture::Init(const TextureDesc& desc)
     bufInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
     bufInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
     result = vkCreateBuffer(gDevice->GetDevice(), &bufInfo, nullptr, &stagingBuffer);
-    CHECK_VKRESULT(result, "Failed to create staging buffer for data upload");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create staging buffer for data upload");
 
     VkMemoryRequirements stagingMemReqs;
     vkGetBufferMemoryRequirements(gDevice->GetDevice(), stagingBuffer, &stagingMemReqs);
@@ -116,15 +111,15 @@ bool Texture::Init(const TextureDesc& desc)
     memInfo.allocationSize = stagingMemReqs.size;
     memInfo.memoryTypeIndex = gDevice->GetMemoryTypeIndex(stagingMemReqs.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
     result = vkAllocateMemory(gDevice->GetDevice(), &memInfo, nullptr, &stagingBufferMemory);
-    CHECK_VKRESULT(result, "Failed to allocate memory for staging buffer");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to allocate memory for staging buffer");
 
     void* bufferData = nullptr;
     result = vkMapMemory(gDevice->GetDevice(), stagingBufferMemory, 0, memInfo.allocationSize, 0, &bufferData);
-    CHECK_VKRESULT(result, "Failed to map staging buffer's memory");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to map staging buffer's memory");
     memcpy(bufferData, desc.dataDesc[0].data, static_cast<size_t>(bufInfo.size));
     vkUnmapMemory(gDevice->GetDevice(), stagingBufferMemory);
     result = vkBindBufferMemory(gDevice->GetDevice(), stagingBuffer, stagingBufferMemory, 0);
-    CHECK_VKRESULT(result, "Failed to bind staging buffer to its memory");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to bind staging buffer to its memory");
 
     // Image creation
     VkImageCreateInfo imageInfo;
@@ -169,32 +164,38 @@ bool Texture::Init(const TextureDesc& desc)
 
     // TODO SHADER_WRITABLE
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_DEPTH)
+    {
         imageInfo.usage |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+        mSubresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+    }
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_RENDERTARGET)
+    {
         imageInfo.usage |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+        mSubresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    }
     if (desc.binding & NFE_RENDERER_TEXTURE_BIND_SHADER)
-        imageInfo.usage |= VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT;
+        imageInfo.usage |= VK_IMAGE_USAGE_SAMPLED_BIT;
 
-    imageInfo.usage |= VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+    imageInfo.usage |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
     imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
     imageInfo.initialLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
 
-    result = vkCreateImage(gDevice->GetDevice(), &imageInfo, nullptr, &mImage);
-    CHECK_VKRESULT(result, "Failed to create Image for texture");
+    result = vkCreateImage(gDevice->GetDevice(), &imageInfo, nullptr, &mImages[0].image);
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create Image for texture");
 
     VkMemoryRequirements imageMemReqs;
-    vkGetImageMemoryRequirements(gDevice->GetDevice(), mImage, &imageMemReqs);
+    vkGetImageMemoryRequirements(gDevice->GetDevice(), mImages[0].image, &imageMemReqs);
 
     VkMemoryAllocateInfo imageMemInfo;
     VK_ZERO_MEMORY(imageMemInfo);
     imageMemInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     imageMemInfo.allocationSize = imageMemReqs.size;
     imageMemInfo.memoryTypeIndex = gDevice->GetMemoryTypeIndex(imageMemReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-    result = vkAllocateMemory(gDevice->GetDevice(), &imageMemInfo, nullptr, &mImageMemory);
-    CHECK_VKRESULT(result, "Failed to allocate memory for Image");
+    result = vkAllocateMemory(gDevice->GetDevice(), &imageMemInfo, nullptr, &mImages[0].memory);
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to allocate memory for Image");
 
-    result = vkBindImageMemory(gDevice->GetDevice(), mImage, mImageMemory, 0);
-    CHECK_VKRESULT(result, "Failed to bind Image to its memory");
+    result = vkBindImageMemory(gDevice->GetDevice(), mImages[0].image, mImages[0].memory, 0);
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to bind Image to its memory");
 
     // TODO right now copying is done on a general queue, but the devices support separate Transfer queue.
     //      Consider moving copy command buffers to transfer queue if device makes it possible.
@@ -206,27 +207,16 @@ bool Texture::Init(const TextureDesc& desc)
     cmdInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     cmdInfo.commandBufferCount = 1;
     result = vkAllocateCommandBuffers(gDevice->GetDevice(), &cmdInfo, &copyCmdBuffer);
-    CHECK_VKRESULT(result, "Failed to allocate a command buffer");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to allocate a command buffer");
 
     VkCommandBufferBeginInfo cmdBeginInfo;
     VK_ZERO_MEMORY(cmdBeginInfo);
     cmdBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     cmdBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
     result = vkBeginCommandBuffer(copyCmdBuffer, &cmdBeginInfo);
-    CHECK_VKRESULT(result, "Failed to begin command rendering for buffer copy operation");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to begin command rendering for buffer copy operation");
 
-    VkImageMemoryBarrier imageBarrier;
-    VK_ZERO_MEMORY(imageBarrier);
-    imageBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    imageBarrier.image = mImage;
-    imageBarrier.oldLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
-    imageBarrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-    imageBarrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    imageBarrier.subresourceRange.baseMipLevel = 0;
-    imageBarrier.subresourceRange.levelCount = desc.mipmaps;
-    imageBarrier.subresourceRange.layerCount = desc.layers;
-    vkCmdPipelineBarrier(copyCmdBuffer, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                         0, 0, nullptr, 0, nullptr, 1, &imageBarrier);
+    TransitionCurrentTexture(copyCmdBuffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
     // TODO Multiple dataDescs support
     VkBufferImageCopy imageCopyRegion;
@@ -238,22 +228,17 @@ bool Texture::Init(const TextureDesc& desc)
     imageCopyRegion.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
     imageCopyRegion.imageSubresource.layerCount = desc.layers;
     imageCopyRegion.imageSubresource.mipLevel = 0;
-    vkCmdCopyBufferToImage(copyCmdBuffer, stagingBuffer, mImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &imageCopyRegion);
-
-    imageBarrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-    imageBarrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    vkCmdPipelineBarrier(copyCmdBuffer, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                         0, 0, nullptr, 0, nullptr, 1, &imageBarrier);
+    vkCmdCopyBufferToImage(copyCmdBuffer, stagingBuffer, mImages[0].image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &imageCopyRegion);
 
     result = vkEndCommandBuffer(copyCmdBuffer);
-    CHECK_VKRESULT(result, "Failure during copy command buffer recording");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failure during copy command buffer recording");
 
     VkSubmitInfo submitInfo;
     VK_ZERO_MEMORY(submitInfo);
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &copyCmdBuffer;
-    vkQueueSubmit(gDevice->GetQueue(), 1, &submitInfo, VK_NULL_HANDLE);
+    // FIXME vkQueueSubmit(gDevice->GetQueue(), 1, &submitInfo, VK_NULL_HANDLE);
 
     gDevice->WaitForGPU();
 
@@ -264,7 +249,7 @@ bool Texture::Init(const TextureDesc& desc)
     VkImageViewCreateInfo ivInfo;
     VK_ZERO_MEMORY(ivInfo);
     ivInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    ivInfo.image = mImage;
+    ivInfo.image = mImages[0].image;
 
     switch (mType)
     {
@@ -287,18 +272,41 @@ bool Texture::Init(const TextureDesc& desc)
 
     ivInfo.format = imageInfo.format;
     ivInfo.components = {
-            // order of variables in VkComponentMapping is r, g, b, a
-            VK_COMPONENT_SWIZZLE_R,
-            VK_COMPONENT_SWIZZLE_G,
-            VK_COMPONENT_SWIZZLE_B,
-            VK_COMPONENT_SWIZZLE_A,
+        // order of variables in VkComponentMapping is r, g, b, a
+        VK_COMPONENT_SWIZZLE_R,
+        VK_COMPONENT_SWIZZLE_G,
+        VK_COMPONENT_SWIZZLE_B,
+        VK_COMPONENT_SWIZZLE_A,
     };
-    ivInfo.subresourceRange = imageBarrier.subresourceRange;
-    result = vkCreateImageView(gDevice->GetDevice(), &ivInfo, nullptr, &mImageView);
-    CHECK_VKRESULT(result, "Failed to generate Image View from created Texure's image");
+    ivInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    ivInfo.subresourceRange.baseMipLevel = 0;
+    ivInfo.subresourceRange.levelCount = 1;
+    ivInfo.subresourceRange.layerCount = 1;
+    result = vkCreateImageView(gDevice->GetDevice(), &ivInfo, nullptr, &mImages[0].view);
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to generate Image View from created Texure's image");
 
     NFE_LOG_INFO("Texture initialized successfully");
     return true;
+}
+
+void Texture::TransitionCurrentTexture(VkCommandBuffer cmdBuffer, VkImageLayout newLayout)
+{
+    if (newLayout == mImages[mCurrentBuffer].layout)
+        return; // nothing to do
+
+    VkImageMemoryBarrier imageBarrier{};
+    imageBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    imageBarrier.image = mImages[mCurrentBuffer].image;
+    imageBarrier.oldLayout = mImages[mCurrentBuffer].layout;
+    imageBarrier.newLayout = newLayout;
+    imageBarrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    imageBarrier.subresourceRange.baseMipLevel = 0;
+    imageBarrier.subresourceRange.levelCount = 1;
+    imageBarrier.subresourceRange.layerCount = 1;
+    vkCmdPipelineBarrier(cmdBuffer, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                         0, 0, nullptr, 0, nullptr, 1, &imageBarrier);
+
+    mImages[mCurrentBuffer].layout = newLayout;
 }
 
 } // namespace Renderer

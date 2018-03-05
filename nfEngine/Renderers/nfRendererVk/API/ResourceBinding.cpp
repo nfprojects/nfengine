@@ -42,14 +42,16 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
     layoutBinding.stageFlags = stage;
 
     bool setApplied = false;
+    SetBindingPair bindingSlot;
     for (uint32 i = 0; i < desc.numBindings; ++i)
     {
         ResourceBindingDesc rb = desc.resourceBindings[i];
+        bindingSlot.total = rb.slot;
 
         // decode set and bind from slot value
         if (setApplied)
         {
-            if ((rb.slot >> 16) != mSetSlot)
+            if (bindingSlot.pair.set != mSetSlot)
             {
                 NFE_LOG_ERROR("Supplied bindings do not belong in the same set");
                 return false;
@@ -57,11 +59,11 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
         }
         else
         {
-            mSetSlot = rb.slot >> 16;
+            mSetSlot = bindingSlot.pair.set;
             setApplied = true;
         }
 
-        layoutBinding.binding = rb.slot & 0xFFFF;
+        layoutBinding.binding = bindingSlot.pair.binding;
         layoutBinding.descriptorCount = 1;
         layoutBinding.descriptorType = TranslateShaderResourceTypeToVkDescriptorType(rb.resourceType);
         if (rb.staticSampler)
@@ -86,7 +88,7 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
     descInfo.bindingCount = bindings.Size();
     descInfo.pBindings = bindings.Data();
     VkResult result = vkCreateDescriptorSetLayout(gDevice->GetDevice(), &descInfo, nullptr, &mDescriptorLayout);
-    CHECK_VKRESULT(result, "Failed to create Descriptor Set Layout");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create Descriptor Set Layout");
 
     return true;
 }
@@ -129,10 +131,12 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         descSizes[d] = 0;
 
     // create additional layout to support dynamic buffers
+    SetBindingPair bindingSlot;
     bool volatileSetApplied = false;
     for (uint32 buf = 0; buf < desc.numVolatileCBuffers; ++buf)
     {
         const VolatileCBufferBinding& vb = desc.volatileCBuffers[buf];
+        bindingSlot.total = vb.slot;
 
         VkDescriptorSetLayoutBinding dslBinding;
         VK_ZERO_MEMORY(dslBinding);
@@ -141,7 +145,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         // decode set and bind from slot value
         if (volatileSetApplied)
         {
-            if ((vb.slot >> 16) != mVolatileSetSlot)
+            if (bindingSlot.pair.set != mVolatileSetSlot)
             {
                 NFE_LOG_ERROR("Supplied volatile bindings do not belong in the same set");
                 return false;
@@ -149,11 +153,11 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         }
         else
         {
-            mVolatileSetSlot = vb.slot >> 16;
+            mVolatileSetSlot = bindingSlot.pair.set;
             volatileSetApplied = true;
         }
 
-        dslBinding.binding = vb.slot & 0xFFFF;
+        dslBinding.binding = bindingSlot.pair.binding;
         dslBinding.descriptorCount = 1;
         dslBinding.descriptorType = TranslateDynamicResourceTypeToVkDescriptorType(vb.resourceType);
         if (dslBinding.descriptorType == VK_DESCRIPTOR_TYPE_MAX_ENUM)
@@ -174,7 +178,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         dslInfo.bindingCount = volatileBindings.Size();
         dslInfo.pBindings = volatileBindings.Data();
         result = vkCreateDescriptorSetLayout(gDevice->GetDevice(), &dslInfo, nullptr, &mVolatileBufferLayout);
-        CHECK_VKRESULT(result, "Failed to create layout for volatile buffers");
+        VK_RETURN_FALSE_IF_FAILED(result, "Failed to create layout for volatile buffers");
     }
 
     // sort binding sets according to their internal mSetSlot variable
@@ -224,7 +228,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     plInfo.setLayoutCount = layouts.Size();
     plInfo.pSetLayouts = layouts.Data();
     result = vkCreatePipelineLayout(gDevice->GetDevice(), &plInfo, nullptr, &mPipelineLayout);
-    CHECK_VKRESULT(result, "Failed to create pipeline layout");
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create pipeline layout");
 
     // TODO this might be a bad idea to allocate sets this way - consider other solutions
     // generate pool sizes from descriptor sets
@@ -253,7 +257,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         poolInfo.poolSizeCount = poolSizes.Size();
         poolInfo.pPoolSizes = poolSizes.Data();
         result = vkCreateDescriptorPool(gDevice->GetDevice(), &poolInfo, nullptr, &mDescriptorPool);
-        CHECK_VKRESULT(result, "Failed to create descriptor pool");
+        VK_RETURN_FALSE_IF_FAILED(result, "Failed to create descriptor pool");
 
         // now allocate sets from pool
         // TODO it would be faster to allocate all sets at once
@@ -267,7 +271,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
             allocInfo.descriptorSetCount = 1;
             allocInfo.pSetLayouts = &rbs->mDescriptorLayout;
             result = vkAllocateDescriptorSets(gDevice->GetDevice(), &allocInfo, &(rbs->mDescriptorSet));
-            CHECK_VKRESULT(result, "Failed to allocate descriptor set from pool");
+            VK_RETURN_FALSE_IF_FAILED(result, "Failed to allocate descriptor set from pool");
         }
 
         if (desc.numVolatileCBuffers > 0)
@@ -275,7 +279,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
             allocInfo.descriptorSetCount = static_cast<uint32>(desc.numVolatileCBuffers);
             allocInfo.pSetLayouts = &mVolatileBufferLayout;
             result = vkAllocateDescriptorSets(gDevice->GetDevice(), &allocInfo, &mVolatileBufferSet);
-            CHECK_VKRESULT(result, "Failed to allocate descriptor set from pool");
+            VK_RETURN_FALSE_IF_FAILED(result, "Failed to allocate descriptor set from pool");
         }
     }
 
@@ -327,7 +331,7 @@ bool ResourceBindingInstance::WriteTextureView(uint32 slot, const TexturePtr& te
 
     VkDescriptorImageInfo imgInfo;
     VK_ZERO_MEMORY(imgInfo);
-    imgInfo.imageView = t->mImageView;
+    imgInfo.imageView = t->mImages[t->mCurrentBuffer].view;
 
     VkWriteDescriptorSet writeSet;
     VK_ZERO_MEMORY(writeSet);
