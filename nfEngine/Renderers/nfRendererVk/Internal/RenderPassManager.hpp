@@ -34,8 +34,11 @@ class RenderPassManager
     VkRenderPass ConstructRenderPass(const RenderPassDesc& desc);
 
 public:
-    RenderPassManager(VkDevice device);
+    RenderPassManager();
     ~RenderPassManager();
+
+    void Init(VkDevice device);
+    void Release();
 
     VkRenderPass GetRenderPass(const RenderPassDesc& desc);
 };

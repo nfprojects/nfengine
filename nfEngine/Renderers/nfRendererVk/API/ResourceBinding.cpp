@@ -27,11 +27,13 @@ ResourceBindingSet::~ResourceBindingSet()
 {
     // we leave descriptor sets alone - they will be freed together with their descriptor pool
     if (mDescriptorLayout != VK_NULL_HANDLE)
-        vkDestroyDescriptorSetLayout(gDevice->GetDevice(), mDescriptorLayout, nullptr);
+        vkDestroyDescriptorSetLayout(mDevicePtr->GetDevice(), mDescriptorLayout, nullptr);
 }
 
-bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
+bool ResourceBindingSet::Init(Common::SharedPtr<Device>& device, const ResourceBindingSetDesc& desc)
 {
+    mDevicePtr = device;
+
     // each set has its own layout
     // gather the layout right here, will be useful to allocate proper sets later on
     Common::DynArray<VkDescriptorSetLayoutBinding> bindings;
@@ -42,14 +44,16 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
     layoutBinding.stageFlags = stage;
 
     bool setApplied = false;
+    SetBindingPair bindingSlot;
     for (uint32 i = 0; i < desc.numBindings; ++i)
     {
         ResourceBindingDesc rb = desc.resourceBindings[i];
+        bindingSlot.total = rb.slot;
 
         // decode set and bind from slot value
         if (setApplied)
         {
-            if ((rb.slot >> 16) != mSetSlot)
+            if (bindingSlot.pair.set != mSetSlot)
             {
                 NFE_LOG_ERROR("Supplied bindings do not belong in the same set");
                 return false;
@@ -57,11 +61,11 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
         }
         else
         {
-            mSetSlot = rb.slot >> 16;
+            mSetSlot = bindingSlot.pair.set;
             setApplied = true;
         }
 
-        layoutBinding.binding = rb.slot & 0xFFFF;
+        layoutBinding.binding = bindingSlot.pair.binding;
         layoutBinding.descriptorCount = 1;
         layoutBinding.descriptorType = TranslateShaderResourceTypeToVkDescriptorType(rb.resourceType);
         if (rb.staticSampler)
@@ -85,8 +89,8 @@ bool ResourceBindingSet::Init(const ResourceBindingSetDesc& desc)
     descInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
     descInfo.bindingCount = bindings.Size();
     descInfo.pBindings = bindings.Data();
-    VkResult result = vkCreateDescriptorSetLayout(gDevice->GetDevice(), &descInfo, nullptr, &mDescriptorLayout);
-    CHECK_VKRESULT(result, "Failed to create Descriptor Set Layout");
+    VkResult result = vkCreateDescriptorSetLayout(mDevicePtr->GetDevice(), &descInfo, nullptr, &mDescriptorLayout);
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create Descriptor Set Layout");
 
     return true;
 }
@@ -107,19 +111,21 @@ ResourceBindingLayout::~ResourceBindingLayout()
     // we can just free the pool and sets will follow with it
     if (mDescriptorPool != VK_NULL_HANDLE)
     {
-        vkResetDescriptorPool(gDevice->GetDevice(), mDescriptorPool, 0);
-        vkDestroyDescriptorPool(gDevice->GetDevice(), mDescriptorPool, nullptr);
+        vkResetDescriptorPool(mDevicePtr->GetDevice(), mDescriptorPool, 0);
+        vkDestroyDescriptorPool(mDevicePtr->GetDevice(), mDescriptorPool, nullptr);
     }
     if (mPipelineLayout != VK_NULL_HANDLE)
-        vkDestroyPipelineLayout(gDevice->GetDevice(), mPipelineLayout, nullptr);
+        vkDestroyPipelineLayout(mDevicePtr->GetDevice(), mPipelineLayout, nullptr);
     if (mVolatileBufferLayout != VK_NULL_HANDLE)
-        vkDestroyDescriptorSetLayout(gDevice->GetDevice(), mVolatileBufferLayout, nullptr);
+        vkDestroyDescriptorSetLayout(mDevicePtr->GetDevice(), mVolatileBufferLayout, nullptr);
 
     mVolatileSetSlot = UINT16_MAX;
 }
 
-bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
+bool ResourceBindingLayout::Init(Common::SharedPtr<Device>& device, const ResourceBindingLayoutDesc& desc)
 {
+    mDevicePtr = device;
+
     VkResult result = VK_SUCCESS;
     uint8 descSizes[VK_DESCRIPTOR_TYPE_RANGE_SIZE];
     Common::DynArray<VkDescriptorSetLayoutBinding> volatileBindings;
@@ -129,10 +135,12 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         descSizes[d] = 0;
 
     // create additional layout to support dynamic buffers
+    SetBindingPair bindingSlot;
     bool volatileSetApplied = false;
     for (uint32 buf = 0; buf < desc.numVolatileCBuffers; ++buf)
     {
         const VolatileCBufferBinding& vb = desc.volatileCBuffers[buf];
+        bindingSlot.total = vb.slot;
 
         VkDescriptorSetLayoutBinding dslBinding;
         VK_ZERO_MEMORY(dslBinding);
@@ -141,7 +149,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         // decode set and bind from slot value
         if (volatileSetApplied)
         {
-            if ((vb.slot >> 16) != mVolatileSetSlot)
+            if (bindingSlot.pair.set != mVolatileSetSlot)
             {
                 NFE_LOG_ERROR("Supplied volatile bindings do not belong in the same set");
                 return false;
@@ -149,11 +157,11 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         }
         else
         {
-            mVolatileSetSlot = vb.slot >> 16;
+            mVolatileSetSlot = bindingSlot.pair.set;
             volatileSetApplied = true;
         }
 
-        dslBinding.binding = vb.slot & 0xFFFF;
+        dslBinding.binding = bindingSlot.pair.binding;
         dslBinding.descriptorCount = 1;
         dslBinding.descriptorType = TranslateDynamicResourceTypeToVkDescriptorType(vb.resourceType);
         if (dslBinding.descriptorType == VK_DESCRIPTOR_TYPE_MAX_ENUM)
@@ -173,8 +181,8 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         dslInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
         dslInfo.bindingCount = volatileBindings.Size();
         dslInfo.pBindings = volatileBindings.Data();
-        result = vkCreateDescriptorSetLayout(gDevice->GetDevice(), &dslInfo, nullptr, &mVolatileBufferLayout);
-        CHECK_VKRESULT(result, "Failed to create layout for volatile buffers");
+        result = vkCreateDescriptorSetLayout(mDevicePtr->GetDevice(), &dslInfo, nullptr, &mVolatileBufferLayout);
+        VK_RETURN_FALSE_IF_FAILED(result, "Failed to create layout for volatile buffers");
     }
 
     // sort binding sets according to their internal mSetSlot variable
@@ -223,8 +231,8 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     plInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     plInfo.setLayoutCount = layouts.Size();
     plInfo.pSetLayouts = layouts.Data();
-    result = vkCreatePipelineLayout(gDevice->GetDevice(), &plInfo, nullptr, &mPipelineLayout);
-    CHECK_VKRESULT(result, "Failed to create pipeline layout");
+    result = vkCreatePipelineLayout(mDevicePtr->GetDevice(), &plInfo, nullptr, &mPipelineLayout);
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create pipeline layout");
 
     // TODO this might be a bad idea to allocate sets this way - consider other solutions
     // generate pool sizes from descriptor sets
@@ -252,8 +260,8 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
             poolInfo.maxSets++; // plus one Volatile Buffer set
         poolInfo.poolSizeCount = poolSizes.Size();
         poolInfo.pPoolSizes = poolSizes.Data();
-        result = vkCreateDescriptorPool(gDevice->GetDevice(), &poolInfo, nullptr, &mDescriptorPool);
-        CHECK_VKRESULT(result, "Failed to create descriptor pool");
+        result = vkCreateDescriptorPool(mDevicePtr->GetDevice(), &poolInfo, nullptr, &mDescriptorPool);
+        VK_RETURN_FALSE_IF_FAILED(result, "Failed to create descriptor pool");
 
         // now allocate sets from pool
         // TODO it would be faster to allocate all sets at once
@@ -266,16 +274,16 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         {
             allocInfo.descriptorSetCount = 1;
             allocInfo.pSetLayouts = &rbs->mDescriptorLayout;
-            result = vkAllocateDescriptorSets(gDevice->GetDevice(), &allocInfo, &(rbs->mDescriptorSet));
-            CHECK_VKRESULT(result, "Failed to allocate descriptor set from pool");
+            result = vkAllocateDescriptorSets(mDevicePtr->GetDevice(), &allocInfo, &(rbs->mDescriptorSet));
+            VK_RETURN_FALSE_IF_FAILED(result, "Failed to allocate descriptor set from pool");
         }
 
         if (desc.numVolatileCBuffers > 0)
         {
             allocInfo.descriptorSetCount = static_cast<uint32>(desc.numVolatileCBuffers);
             allocInfo.pSetLayouts = &mVolatileBufferLayout;
-            result = vkAllocateDescriptorSets(gDevice->GetDevice(), &allocInfo, &mVolatileBufferSet);
-            CHECK_VKRESULT(result, "Failed to allocate descriptor set from pool");
+            result = vkAllocateDescriptorSets(mDevicePtr->GetDevice(), &allocInfo, &mVolatileBufferSet);
+            VK_RETURN_FALSE_IF_FAILED(result, "Failed to allocate descriptor set from pool");
         }
     }
 
@@ -283,7 +291,7 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
     {
         VkDescriptorBufferInfo bufInfo;
         VK_ZERO_MEMORY(bufInfo);
-        bufInfo.buffer = gDevice->GetRingBuffer()->GetVkBuffer();
+        bufInfo.buffer = mDevicePtr->GetRingBuffer()->GetVkBuffer();
         bufInfo.offset = 0;
         bufInfo.range = desc.volatileCBuffers[0].size; // FIXME we must know buffer's size here
 
@@ -297,15 +305,17 @@ bool ResourceBindingLayout::Init(const ResourceBindingLayoutDesc& desc)
         writeSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
         writeSet.pBufferInfo = &bufInfo;
 
-        vkUpdateDescriptorSets(gDevice->GetDevice(), 1, &writeSet, 0, nullptr);
+        vkUpdateDescriptorSets(mDevicePtr->GetDevice(), 1, &writeSet, 0, nullptr);
     }
 
     return true;
 }
 
 
-bool ResourceBindingInstance::Init(const ResourceBindingSetPtr& bindingSet)
+bool ResourceBindingInstance::Init(Common::SharedPtr<Device>& device, const ResourceBindingSetPtr& bindingSet)
 {
+    mDevicePtr = device;
+
     mSet = dynamic_cast<ResourceBindingSet*>(bindingSet.Get());
     if (mSet == nullptr)
     {
@@ -327,7 +337,7 @@ bool ResourceBindingInstance::WriteTextureView(uint32 slot, const TexturePtr& te
 
     VkDescriptorImageInfo imgInfo;
     VK_ZERO_MEMORY(imgInfo);
-    imgInfo.imageView = t->mImageView;
+    imgInfo.imageView = t->mImages[t->mCurrentBuffer].view;
 
     VkWriteDescriptorSet writeSet;
     VK_ZERO_MEMORY(writeSet);
@@ -339,7 +349,7 @@ bool ResourceBindingInstance::WriteTextureView(uint32 slot, const TexturePtr& te
     writeSet.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
     writeSet.pImageInfo = &imgInfo;
 
-    vkUpdateDescriptorSets(gDevice->GetDevice(), 1, &writeSet, 0, nullptr);
+    vkUpdateDescriptorSets(mDevicePtr->GetDevice(), 1, &writeSet, 0, nullptr);
 
     return true;
 }
@@ -369,7 +379,7 @@ bool ResourceBindingInstance::WriteCBufferView(uint32 slot, const BufferPtr& buf
     writeSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     writeSet.pBufferInfo = &bufInfo;
 
-    vkUpdateDescriptorSets(gDevice->GetDevice(), 1, &writeSet, 0, nullptr);
+    vkUpdateDescriptorSets(mDevicePtr->GetDevice(), 1, &writeSet, 0, nullptr);
 
     return true;
 }

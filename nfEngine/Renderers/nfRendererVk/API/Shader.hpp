@@ -12,8 +12,6 @@
 #include "nfCommon/Containers/DynArray.hpp"
 #include "nfCommon/Containers/HashMap.hpp"
 
-// TODO remove
-#include <vector>
 
 namespace NFE {
 namespace Renderer {
@@ -23,24 +21,25 @@ class Shader : public IShader
     friend class CommandRecorder;
     friend class PipelineState;
 
-    typedef std::pair<uint16, uint16> SetSlotPair; // first is set, second is binding
-    typedef Common::HashMap<Common::String, SetSlotPair> SetSlotMap; // mapping Resource Name to Slot
+    // mapping Resource Name to Slot
+    using SetBindingMap = Common::HashMap<Common::String, SetBindingPair>;
+
+    Common::SharedPtr<Device> mDevicePtr;
 
     ShaderType mType;
     Common::UniquePtr<glslang::TShader> mShaderGlslang;
     Common::UniquePtr<glslang::TProgram> mProgramGlslang;
-    std::vector<uint32> mShaderSpv; // TODO remove
-    SetSlotMap mResourceSlotMap;
+    std::vector<uint32> mShaderSpv;
+    SetBindingMap mResourceSlotMap;
     VkShaderModule mShader;
     VkPipelineShaderStageCreateInfo mStageInfo;
 
-    bool GetIODesc();
     void ParseResourceSlots();
 
 public:
     Shader();
     ~Shader();
-    bool Init(const ShaderDesc& desc);
+    bool Init(Common::SharedPtr<Device>& device, const ShaderDesc& desc);
 
     bool Disassemble(bool html, Common::String& output) override;
     int GetResourceSlotByName(const char* name) override;

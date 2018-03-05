@@ -39,7 +39,7 @@ public:
 
     // IRenderTarget
     virtual void GetDimensions(int& width, int& height) override;
-    virtual bool Init(const RenderTargetDesc& desc) override;
+    bool Init(const RenderTargetDesc& desc);
 
 
     NFE_INLINE uint32 GetNumTargets() const
