@@ -28,7 +28,7 @@ bool Backbuffer::CreateSurface(const BackbufferDesc& desc)
     surfInfo.sType = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR;
     surfInfo.connection = mConnection;
     surfInfo.window = static_cast<xcb_window_t>(reinterpret_cast<uintptr_t>(desc.windowHandle));
-    VkResult result = vkCreateXcbSurfaceKHR(gDevice->GetInstance(), &surfInfo, nullptr, &mSurface);
+    VkResult result = vkCreateXcbSurfaceKHR(mDevicePtr->GetInstance(), &surfInfo, nullptr, &mSurface);
 
     return (result == VK_SUCCESS);
 }

@@ -86,7 +86,7 @@ class DemoWindow : public NFE::Common::Window
         }
         else
         {
-            std::cerr << " - ERROR: Unable to load subcene " + std::to_string(subScene)<< std::endl;
+            std::cerr << " - ERROR: Unable to load subcene " + std::to_string(subScene) << std::endl;
 
             // assume current subscene was already working correctly and reload it
             // otherwise we probably wouldn't be here in the first place
@@ -196,7 +196,7 @@ public:
         float timeElapsed = 0.0f;
         int frames = 0;
 
-        while (!IsClosed())
+        //while (!IsClosed())
         {
             float dt = static_cast<float>(timer.Stop());
             timer.Start();

@@ -32,17 +32,16 @@ class SemaphorePool
 
 public:
     SemaphorePool(VkDevice device);
-    ~SemaphorePool();
 
     bool Init(uint32 semaphoreCount);
     void Advance();
 
-    NFE_INLINE VkSemaphore GetPreviousSemaphore() const
+    NFE_INLINE VkSemaphore GetPreviousSemaphore()
     {
         return mSemaphores[mPreviousSemaphore];
     }
 
-    NFE_INLINE VkSemaphore GetCurrentSemaphore() const
+    NFE_INLINE VkSemaphore GetCurrentSemaphore()
     {
         return mSemaphores[mCurrentSemaphore];
     }

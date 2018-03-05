@@ -19,8 +19,10 @@ class RenderTarget : public IRenderTarget
 {
     friend class CommandRecorder;
 
-    int mWidth;
-    int mHeight;
+    Common::SharedPtr<Device> mDevicePtr;
+
+    uint32 mWidth;
+    uint32 mHeight;
 
     VkRenderPass mRenderPass;
     Common::DynArray<Texture*> mTex;
@@ -33,7 +35,7 @@ public:
     ~RenderTarget();
 
     void GetDimensions(int& width, int& height);
-    bool Init(const RenderTargetDesc& desc);
+    bool Init(Common::SharedPtr<Device>& device, const RenderTargetDesc& desc);
 
     const VkFramebuffer& GetCurrentFramebuffer() const;
 };

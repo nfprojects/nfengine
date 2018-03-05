@@ -10,6 +10,9 @@
 #include "Defines.hpp"
 #include "Device.hpp"
 #include "nfCommon/FileSystem/File.hpp"
+#include "nfCommon/Containers/DynArray.hpp"
+#include "nfCommon/Containers/String.hpp"
+#include "nfCommon/Utils/StringUtils.hpp"
 
 #include <glslang/SPIRV/GlslangToSpv.h>
 #include <glslang/SPIRV/disassemble.h>
@@ -24,6 +27,8 @@ namespace {
 
 // default limits for glslang shader resources
 // taken from glslang standalone implementation
+// TODO These should be taken from VkPhysicalDevice's limits.
+//      Reconsider doing this properly.
 const TBuiltInResource DEFAULT_RESOURCE = {
     /* .MaxLights = */ 32,
     /* .MaxClipPlanes = */ 6,
@@ -121,32 +126,37 @@ const TBuiltInResource DEFAULT_RESOURCE = {
     }};
 
 const int DEFAULT_VERSION = 110;
-const std::string SHADER_HEADER_START = "#version 450\n\
+const Common::String SHADER_HEADER_START = "#version 450\n\
 #extension GL_ARB_separate_shader_objects: enable\n\
 #extension GL_ARB_shading_language_420pack: enable\n";
-const std::string DEFINE_STR = "#define ";
-const std::string SHADER_HEADER_TAIL = "\0";
+const Common::String DEFINE_STR = "#define ";
+const Common::String SHADER_HEADER_TAIL = "\0";
 
 } // namespace
 
 
 Shader::Shader()
     : mType(ShaderType::Unknown)
+    , mShaderSpv()
+    , mResourceSlotMap()
     , mShader(VK_NULL_HANDLE)
+    , mStageInfo()
 {}
 
 Shader::~Shader()
 {
     if (mShader != VK_NULL_HANDLE)
-        vkDestroyShaderModule(gDevice->GetDevice(), mShader, nullptr);
+        vkDestroyShaderModule(mDevicePtr->GetDevice(), mShader, nullptr);
 }
 
-bool Shader::Init(const ShaderDesc& desc)
+bool Shader::Init(Common::SharedPtr<Device>& device, const ShaderDesc& desc)
 {
+    mDevicePtr = device;
+
     mType = desc.type;
 
-    std::vector<char> str;
-    size_t shaderSize = 0;
+    Common::DynArray<char> str;
+    uint32 shaderSize = 0;
     const char* code = nullptr;
 
     if (desc.code == nullptr)
@@ -157,24 +167,23 @@ bool Shader::Init(const ShaderDesc& desc)
             return false;
         }
 
-        using namespace Common;
-        File file(StringView(desc.path), AccessMode::Read);
-        shaderSize = static_cast<size_t>(file.GetSize());
-        str.resize(shaderSize + 1);
+        Common::File file(Common::StringView(desc.path), Common::AccessMode::Read);
+        shaderSize = static_cast<uint32>(file.GetSize());
+        str.Resize(shaderSize + 1);
 
-        if (file.Read(str.data(), shaderSize) != shaderSize)
+        if (file.Read(str.Data(), shaderSize) != shaderSize)
             return false;
         str[shaderSize] = '\0';
-        code = str.data();
+        code = str.Data();
     }
     else
     {
         code = desc.code;
-        shaderSize = strlen(code);
+        shaderSize = static_cast<uint32>(strlen(code));
     }
 
     // construct a shader string containing all the macros
-    std::string shaderHead = SHADER_HEADER_START;
+    Common::String shaderHead = SHADER_HEADER_START;
     if (desc.macrosNum > 0)
     {
         for (unsigned int i = 0; i < desc.macrosNum; ++i)
@@ -215,7 +224,7 @@ bool Shader::Init(const ShaderDesc& desc)
         NFE_LOG_ERROR("Memory allocation failed");
         return false;
     }
-    const char * shaderStrs[] = { shaderHead.c_str(), code };
+    const char * shaderStrs[] = { shaderHead.Str(), code };
     mShaderGlslang->setStrings(shaderStrs, 2);
     mShaderGlslang->setEntryPoint("main");
 
@@ -260,8 +269,8 @@ bool Shader::Init(const ShaderDesc& desc)
     shaderInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     shaderInfo.codeSize = mShaderSpv.size() * sizeof(uint32);
     shaderInfo.pCode = mShaderSpv.data();
-    VkResult result = vkCreateShaderModule(gDevice->GetDevice(), &shaderInfo, nullptr, &mShader);
-    CHECK_VKRESULT(result, "Failed to create Shader module");
+    VkResult result = vkCreateShaderModule(mDevicePtr->GetDevice(), &shaderInfo, nullptr, &mShader);
+    VK_RETURN_FALSE_IF_FAILED(result, "Failed to create Shader module");
 
     VK_ZERO_MEMORY(mStageInfo);
     mStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -276,55 +285,45 @@ bool Shader::Init(const ShaderDesc& desc)
 bool Shader::Disassemble(bool html, Common::String& output)
 {
     NFE_UNUSED(html); // TODO
-    // Disassemble the shader, to provide parsing source for slot extraction
+
     std::stringstream ss;
     spv::Disassemble(ss, mShaderSpv);
     output = ss.str().c_str();
-    return true;
-}
 
-bool Shader::GetIODesc()
-{
-    // TODO
-    return false;
+    return true;
 }
 
 void Shader::ParseResourceSlots()
 {
-    // TODO get rid of std::vector and std::string
-
     std::stringstream disasm;
     spv::Disassemble(disasm, mShaderSpv);
+    std::string disasmStr = disasm.str();
 
-    std::string line;
-    std::vector<std::string> names;
-    std::vector<std::string> decorates;
-    while (std::getline(disasm, line))
+    Common::StringView shaderDisassembly(disasmStr.c_str(), static_cast<uint32>(disasmStr.size()));
+    Common::DynArray<Common::StringView> names;
+    Common::DynArray<Common::StringView> decorates;
+
     {
-        size_t namePos = line.find("Name");
-        size_t decoratePos = line.find("Decorate");
-        if (namePos == std::string::npos && decoratePos == std::string::npos)
-            continue;
+        Common::DynArray<Common::StringView> tokens = Common::Split(shaderDisassembly);
 
-        // trim from starting whitespaces
-        line.erase(line.begin(), std::find_if(line.begin(), line.end(),
-            [](char c) -> bool { return !std::isspace(c); }));
+        const Common::StringView nameToken("Name");
+        const Common::StringView decorateToken("Decorate");
 
-        if (namePos == std::string::npos)
-            decorates.push_back(line);
-        else
-            names.push_back(line);
+        for (uint32 i = 0; i < tokens.Size(); ++i)
+        {
+            uint32 namePos = tokens[i].FindFirst(nameToken);
+            uint32 decoratePos = tokens[i].FindFirst(decorateToken);
+
+            if (namePos != Common::StringView::END())
+                names.PushBack(tokens[i].Range(namePos, tokens[i].Length() - namePos));
+            else if (decoratePos != Common::StringView::END())
+                decorates.PushBack(tokens[i].Range(decoratePos, tokens[i].Length() - decoratePos));
+        }
     }
 
-    // TODO decoration-name matching should be done by resource IDs
-    for (auto& decoration: decorates)
+    for (uint32 i = 0; i < decorates.Size(); ++i)
     {
-        // extract number which relates to provided decorate
-        std::istringstream iss(decoration);
-        std::vector<std::string> tokens;
-        std::string token;
-        while (std::getline(iss, token,' '))
-            tokens.push_back(token);
+        Common::DynArray<Common::StringView> subtokens = Common::Split(decorates[i], ' ');
 
         // SPIR-V assumes following order:
         //   [0] - "Decorate" keyword
@@ -332,36 +331,37 @@ void Shader::ParseResourceSlots()
         //   [2] - DecoratorType (ex. DescriptorSet, Binding, Location)
         //   [3] - Decoration value (ex. Binding number for Binding DecoratorType)
         // Different amount than 4 tokens means we shouldn't care about it
-        if (tokens.size() != 4)
+        if (subtokens.Size() != 4)
             continue;
 
-        // trim ID(name) to acquire these values
-        size_t openBracketPos = tokens[1].find('(');
-        size_t closeBracketPos = tokens[1].find(')', openBracketPos+1);
+        uint32 openBracketPos = subtokens[1].FindFirst('(');
+        uint32 closeBracketPos = subtokens[1].FindLast(')');
 
-        const Common::String tokenName = tokens[1].substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1).c_str();
-        SetSlotMap::Iterator it;
-        if (tokens[2] == "DescriptorSet" || tokens[2] == "Binding")
+        Common::StringView tokenName = subtokens[1].Range(openBracketPos + 1, closeBracketPos - openBracketPos - 1);
+        SetBindingMap::Iterator it;
+        if (subtokens[2] == "DescriptorSet" || subtokens[2] == "Binding")
         {
             it = mResourceSlotMap.Find(tokenName);
             if (it == mResourceSlotMap.end())
             {
-                it = mResourceSlotMap.Insert(tokenName, std::make_pair(static_cast<uint16>(0), static_cast<uint16>(0))).iterator;
+                SetBindingPair emptyPair;
+                emptyPair.total = 0;
+                it = mResourceSlotMap.Insert(tokenName, emptyPair).iterator;
             }
         }
         else
             continue;
 
-        if (tokens[2] == "DescriptorSet")
+        if (subtokens[2] == "DescriptorSet")
         {
-            NFE_LOG_DEBUG("Found resource %s with DescriptorSet = %s", tokens[1].c_str(), tokens[3].c_str());
-            it->second.first = static_cast<uint16>(std::atoi(tokens[3].c_str()));
+            it->second.pair.set = static_cast<uint16>(std::atoi(subtokens[3].Data()));
+            NFE_LOG_DEBUG("Found resource %s with DescriptorSet = %hu", Common::String(tokenName).Str(), it->second.pair.set);
         }
 
-        if (tokens[2] == "Binding")
+        if (subtokens[2] == "Binding")
         {
-            NFE_LOG_DEBUG("Found resource %s with Binding = %s", tokens[1].c_str(), tokens[3].c_str());
-            it->second.second = static_cast<uint16>(std::atoi(tokens[3].c_str()));
+            it->second.pair.binding = static_cast<uint16>(std::atoi(subtokens[3].Data()));
+            NFE_LOG_DEBUG("Found resource %s with Binding = %hu", Common::String(tokenName).Str(), it->second.pair.binding);
         }
     }
 
@@ -374,15 +374,7 @@ int Shader::GetResourceSlotByName(const char* name)
     if (it == mResourceSlotMap.End())
         return -1;
 
-    const SetSlotPair& pair = it->second;
-
-    // encode slot/binding pair onto a single uint
-    // 16 MSB are set, 16 LSB are binding point
-    uint32 result = std::get<0>(pair);
-    result <<= 16;
-    result |= std::get<1>(pair);
-
-    return static_cast<int>(result);
+    return it->second.total;
 }
 
 } // namespace Renderer

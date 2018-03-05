@@ -32,8 +32,10 @@ CommandRecorder::~CommandRecorder()
 {
 }
 
-bool CommandRecorder::Init()
+bool CommandRecorder::Init(Common::SharedPtr<Device>& device)
 {
+    mDevicePtr = device;
+
     VK_ZERO_MEMORY(mCommandBufferBeginInfo);
     mCommandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     mCommandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
@@ -50,7 +52,7 @@ bool CommandRecorder::Begin()
     mRenderTarget = nullptr;
 
     // acquire command buffer from pool in Device
-    mCommandBuffer = gDevice->GetAvailableCommandBuffer();
+    mCommandBuffer = mDevicePtr->GetAvailableCommandBuffer();
     vkBeginCommandBuffer(mCommandBuffer, &mCommandBufferBeginInfo);
 
     return true;
@@ -58,11 +60,11 @@ bool CommandRecorder::Begin()
 
 void CommandRecorder::SetVertexBuffers(uint32 num, const BufferPtr* vertexBuffers, uint32* strides, uint32* offsets)
 {
-    NFE_UNUSED(strides);
+    NFE_UNUSED(strides); // strides are already precalculated via VertexLayout
+    NFE_ASSERT(num <= VK_MAX_VERTEX_BUFFERS, "Too many vertex buffers provided to set (provided %d)", num, VK_MAX_VERTEX_BUFFERS);
 
-    const uint32 maxBuffers = 4;
-    VkBuffer buffers[maxBuffers];
-    VkDeviceSize offs[maxBuffers];
+    VkBuffer buffers[VK_MAX_VERTEX_BUFFERS];
+    VkDeviceSize offs[VK_MAX_VERTEX_BUFFERS];
 
     for (uint32 i = 0; i < num; ++i)
     {
@@ -158,6 +160,14 @@ void CommandRecorder::SetRenderTarget(const RenderTargetPtr& renderTarget)
         return;
     }
 
+    for (uint32 i = 0; i < mRenderTarget->mTex.Size(); ++i)
+    {
+        mRenderTarget->mTex[i]->TransitionCurrentTexture(mCommandBuffer, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+    }
+
+    if (mRenderTarget->mDepthTex)
+        mRenderTarget->mDepthTex->TransitionCurrentTexture(mCommandBuffer, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+
     VkRenderPassBeginInfo rpBeginInfo;
     VK_ZERO_MEMORY(rpBeginInfo);
     rpBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -224,9 +234,9 @@ void CommandRecorder::UnmapBuffer(const BufferPtr& buffer)
 bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, const void* data)
 {
     // copy data to Ring Buffer
-    uint32 sourceOffset = gDevice->GetRingBuffer()->Write(data, static_cast<uint32>(size));
+    uint32 sourceOffset = mDevicePtr->GetRingBuffer()->Write(data, static_cast<uint32>(size));
 
-    if (sourceOffset == std::numeric_limits<uint32>::max())
+    if (sourceOffset == UINT32_MAX)
     {
         NFE_LOG_ERROR("Failed to write temporary data to Ring Ruffer - the Ring Buffer is full");
         return false;
@@ -240,7 +250,7 @@ bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, 
     region.size = size;
     region.srcOffset = static_cast<VkDeviceSize>(sourceOffset);
     region.dstOffset = static_cast<VkDeviceSize>(offset);
-    vkCmdCopyBuffer(mCommandBuffer, gDevice->GetRingBuffer()->GetVkBuffer(), b->mBuffer, 1, &region);
+    vkCmdCopyBuffer(mCommandBuffer, mDevicePtr->GetRingBuffer()->GetVkBuffer(), b->mBuffer, 1, &region);
 
     if (mRenderTarget)
     {
@@ -260,8 +270,8 @@ bool CommandRecorder::WriteDynamicBuffer(Buffer* b, size_t offset, size_t size, 
 
 bool CommandRecorder::WriteVolatileBuffer(Buffer* b, size_t size, const void* data)
 {
-    uint32 writeHead = gDevice->GetRingBuffer()->Write(data, static_cast<uint32>(size));
-    if (writeHead == std::numeric_limits<uint32>::max())
+    uint32 writeHead = mDevicePtr->GetRingBuffer()->Write(data, static_cast<uint32>(size));
+    if (writeHead == UINT32_MAX)
     {
         NFE_LOG_ERROR("Failed to write data to Ring Ruffer - the Ring Buffer is full");
         return false;
@@ -423,7 +433,7 @@ CommandListID CommandRecorder::Finish()
         return 0;
     }
 
-    return gDevice->GetCurrentCommandBuffer() + 1;
+    return mDevicePtr->GetCurrentCommandBuffer() + 1;
 }
 
 void CommandRecorder::BeginDebugGroup(const char* text)
