@@ -328,6 +328,26 @@ String& String::Replace(uint32 index, uint32 numCharacters, char c)
     return *this;
 }
 
+String String::SubStr(uint32 index, uint32 numCharacters)
+{
+    NFE_ASSERT(index < Length(), "String index out of bounds");
+
+    if (numCharacters > Length() - index)
+    {
+        numCharacters = Length() - index;
+    }
+
+    String result;
+    result.Reserve(numCharacters);
+    char* buffer = GetBuffer();
+    char* resultBuffer = result.GetBuffer();
+    memcpy(resultBuffer, buffer + index, numCharacters);
+    resultBuffer[numCharacters + 1] = '\0';
+    result.SetLength(numCharacters);
+
+    return result;
+}
+
 StringView String::ToView() const
 {
     StringView view;
