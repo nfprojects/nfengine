@@ -108,3 +108,35 @@ TEST(StringUtils, ToStringDouble)
     EXPECT_EQ("0.1", ToString(0.1));
     EXPECT_EQ("1e+06", ToString(1000000.0));
 }
+
+
+TEST(StringUtils, SplitString)
+{
+    // splitting with default delimiter (newline)
+    {
+        String a("01\n345\n\n89abcd");
+        String b1("01");
+        String b2("345");
+        String b3("89abcd");
+
+        DynArray<StringView> tokens = SplitString(a);
+        ASSERT_EQ(tokens.Size(), 4);
+        EXPECT_EQ(b1, tokens[0]);
+        EXPECT_EQ(b2, tokens[1]);
+        EXPECT_TRUE(tokens[2].Empty());
+        EXPECT_EQ(b3, tokens[3]);
+    }
+
+    {
+        String a("0123 56 89abcdef");
+        String b1("0123");
+        String b2("56");
+        String b3("89abcdef");
+
+        DynArray<StringView> tokens = SplitString(a, ' ');
+        ASSERT_EQ(tokens.Size(), 3);
+        EXPECT_EQ(b1, tokens[0]);
+        EXPECT_EQ(b2, tokens[1]);
+        EXPECT_EQ(b3, tokens[2]);
+    }
+}
