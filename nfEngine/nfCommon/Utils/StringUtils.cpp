@@ -184,6 +184,33 @@ String ToString(double value)
     return String(buffer);
 }
 
+NFE_INLINE DynArray<StringView> SplitInternal(const char* buffer, uint32 bufLen, char delim)
+{
+    DynArray<StringView> result;
+    uint32 lastDelimPos = 0;
+    uint32 i;
+    for (i = 0; i < bufLen; ++i)
+    {
+        if (*(buffer + i) == delim)
+        {
+            result.EmplaceBack(buffer + lastDelimPos, i - lastDelimPos);
+            lastDelimPos = i + 1;
+        }
+    }
+
+    result.EmplaceBack(buffer + lastDelimPos, i - lastDelimPos);
+    return result;
+}
+
+DynArray<StringView> Split(const String& a, char delim)
+{
+    return SplitInternal(a.Str(), a.Length(), delim);
+}
+
+DynArray<StringView> Split(const StringView& a, char delim)
+{
+    return SplitInternal(a.Data(), a.Length(), delim);
+}
 
 } // namespace Common
 } // namespace NFE
