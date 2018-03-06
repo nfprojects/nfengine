@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ddd72bba_c98c8fcc",
+        "filename": "nfEngine/nfCommon/System/Linux/Console.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2018-03-06T11:56:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7c6a96a_f709260e",
+      "revId": "c1e215afdf2058cbd94361ab17600c3ced8d7ed6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fc815ca4_ba8df39f",
         "filename": "nfEngine/nfCommon/System/Linux/Console.cpp",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2018-03-05T22:03:23Z",
       "side": 1,
       "message": "UniquePtr :)",
+      "revId": "c1e215afdf2058cbd94361ab17600c3ced8d7ed6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0002180c_0caf30e1",
+        "filename": "nfEngine/nfCommon/System/Linux/Console.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2018-03-06T11:56:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fc815ca4_ba8df39f",
       "revId": "c1e215afdf2058cbd94361ab17600c3ced8d7ed6",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -53,6 +89,41 @@
     },
     {
       "key": {
+        "uuid": "31ae54c4_829348f4",
+        "filename": "nfEngine/nfCommon/System/Linux/Console.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2018-03-06T11:56:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4f3b54f4_0d118043",
+      "revId": "c1e215afdf2058cbd94361ab17600c3ced8d7ed6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4f61cb81_1c56c9fa",
+        "filename": "nfEngine/nfCommon/System/Linux/Console.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2018-03-06T11:56:35Z",
+      "side": 1,
+      "message": "Done",
+      "revId": "c1e215afdf2058cbd94361ab17600c3ced8d7ed6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "25cd1576_37a0748d",
         "filename": "nfEngine/nfCommon/System/Linux/Console.cpp",
         "patchSetId": 2
@@ -64,6 +135,24 @@
       "writtenOn": "2018-03-05T22:03:23Z",
       "side": 1,
       "message": "1. Use MakeUniquePtr. \"new\" should be avoided.\n2. std::nothrow is not needed (we have disabled C++ exceptions)",
+      "revId": "c1e215afdf2058cbd94361ab17600c3ced8d7ed6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "40c4e5a1_22bb7ae3",
+        "filename": "nfEngine/nfCommon/System/Linux/Console.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2018-03-06T11:56:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "25cd1576_37a0748d",
       "revId": "c1e215afdf2058cbd94361ab17600c3ced8d7ed6",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
