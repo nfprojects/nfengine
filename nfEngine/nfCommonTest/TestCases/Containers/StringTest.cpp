@@ -822,6 +822,32 @@ TEST(String, Replace_StringView)
     }
 }
 
+TEST(String, SubStr_String)
+{
+    String a("0123456789abcdef");
+
+    {
+        String b("abcdef");
+        String c = a.SubStr(9);
+        EXPECT_TRUE(c != b);
+
+        c = a.SubStr(10);
+        EXPECT_TRUE(c == b);
+    }
+
+    {
+        String b("abcd");
+        String c = a.SubStr(8, 3);
+        EXPECT_TRUE(c != b);
+
+        c = a.SubStr(10, 4);
+        EXPECT_TRUE(c == b);
+
+        c = a.SubStr(10, 5);
+        EXPECT_TRUE(c != b);
+    }
+}
+
 TEST(String, Compare_String_String)
 {
     String stringA("abcd");

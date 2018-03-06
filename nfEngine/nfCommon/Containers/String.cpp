@@ -85,6 +85,23 @@ String::String(const char* str, uint32 length)
     SetLength(length);
 }
 
+String::String(uint32 length)
+    : mInternalData()
+{
+    if (length <= MaxInternalLength)
+    {
+        mInternalData.isExternal = 0;
+    }
+    else
+    {
+        if (!Reserve(length))
+            return;
+    }
+
+    char* buffer = GetBuffer();
+    memset(buffer, 0x0, length);
+}
+
 String& String::operator=(char c)
 {
     if (!Reserve(1))
@@ -326,6 +343,23 @@ String& String::Replace(uint32 index, uint32 numCharacters, char c)
     SetLength(targetLength);
 
     return *this;
+}
+
+String String::SubStr(uint32 index, uint32 numCharacters)
+{
+    NFE_ASSERT(index <= Length(), "String index out of bounds");
+
+    if (index + numCharacters > Length())
+    {
+        numCharacters = Length() - index;
+    }
+
+    String result;
+    result.Reserve(numCharacters);
+    char* buffer = GetBuffer();
+    memcpy(result.GetBuffer(), buffer + index + 1, numCharacters);
+
+    return result;
 }
 
 StringView String::ToView() const
