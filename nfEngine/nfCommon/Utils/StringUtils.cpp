@@ -184,6 +184,33 @@ String ToString(double value)
     return String(buffer);
 }
 
+DynArray<StringView> Split(const StringView& a, char delim)
+{
+    DynArray<StringView> result;
+
+    const char* buffer = a.Data();
+    uint32 lastDelimPos = 0;
+    uint32 i;
+    for (i = 0; i < a.Length(); ++i)
+    {
+        if (buffer[i] == delim)
+        {
+            if (i != lastDelimPos)
+            {
+                result.EmplaceBack(buffer + lastDelimPos, i - lastDelimPos);
+            }
+
+            lastDelimPos = i + 1;
+        }
+    }
+
+    if (i != lastDelimPos)
+    {
+        result.EmplaceBack(buffer + lastDelimPos, i - lastDelimPos);
+    }
+
+    return result;
+}
 
 } // namespace Common
 } // namespace NFE

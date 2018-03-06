@@ -108,3 +108,75 @@ TEST(StringUtils, ToStringDouble)
     EXPECT_EQ("0.1", ToString(0.1));
     EXPECT_EQ("1e+06", ToString(1000000.0));
 }
+
+TEST(StringUtils, Split_StringView)
+{
+    // splitting with default delimiter (newline)
+    {
+        const StringView a("01\n345\n\n89abcd");
+        const StringView b1("01");
+        const StringView b2("345");
+        const StringView b3("89abcd");
+
+        DynArray<StringView> tokens = Split(a);
+        ASSERT_EQ(tokens.Size(), 3u);
+        EXPECT_EQ(b1, tokens[0]);
+        EXPECT_EQ(b2, tokens[1]);
+        EXPECT_EQ(b3, tokens[2]);
+    }
+
+    // custom delimiter (space)
+    {
+        const StringView a("0123 56 89abcdef");
+        const StringView b1("0123");
+        const StringView b2("56");
+        const StringView b3("89abcdef");
+
+        DynArray<StringView> tokens = Split(a, ' ');
+        ASSERT_EQ(tokens.Size(), 3u);
+        EXPECT_EQ(b1, tokens[0]);
+        EXPECT_EQ(b2, tokens[1]);
+        EXPECT_EQ(b3, tokens[2]);
+    }
+
+    // delimiter at the beginning
+    {
+        const StringView a("\n01234");
+        const StringView b("01234");
+
+        DynArray<StringView> tokens = Split(a);
+        ASSERT_EQ(tokens.Size(), 1u);
+        EXPECT_EQ(b, tokens[0]);
+    }
+
+    // delimiter at the end
+    {
+        const StringView a("01234\n");
+        const StringView b("01234");
+
+        DynArray<StringView> tokens = Split(a);
+        ASSERT_EQ(tokens.Size(), 1u);
+        EXPECT_EQ(b, tokens[0]);
+    }
+
+    // multiple delimiters
+    {
+        const StringView a("012\n\n\n\n34");
+        const StringView b1("012");
+        const StringView b2("34");
+
+        DynArray<StringView> tokens = Split(a);
+        ASSERT_EQ(tokens.Size(), 2u);
+        EXPECT_EQ(b1, tokens[0]);
+        EXPECT_EQ(b2, tokens[1]);
+    }
+
+    // delimiters only
+    {
+        const StringView a("\n\n\n\n\n\n");
+
+        DynArray<StringView> tokens = Split(a);
+        ASSERT_EQ(tokens.Size(), 0u);
+    }
+}
+
