@@ -100,6 +100,15 @@ public:
     NFE_INLINE String& Replace(uint32 index, uint32 numCharacters, const char* string);
 
     /**
+     * Returns substring from position A to B.
+     * @param   index           Location of first character to be included in substring.
+     *                          If it's out of range, assertion will be called.
+     * @param   numCharacters   Length of the substring. If exceeds string size,
+     *                          returns substring from @p index to the end.
+     */
+    String SubStr(uint32 index, uint32 numCharacters = UINT32_MAX);
+
+    /**
      * Reserve memory for given string length (in characters, without null-termination).
      */
     bool Reserve(uint32 length);

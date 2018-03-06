@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "nfCommon/Containers/String.hpp"
+#include "nfCommon/Containers/DynArray.hpp"
 
 
 using namespace NFE;
@@ -821,6 +822,25 @@ TEST(String, Replace_StringView)
         ASSERT_STREQ("ABC", a.Str());
     }
 }
+
+TEST(String, SubStr_String)
+{
+    String a("0123456789abcdef");
+
+    {
+        String b("abcdef");
+        EXPECT_TRUE(a.SubStr(9) != b);
+        EXPECT_TRUE(a.SubStr(10) == b);
+    }
+
+    {
+        String b("abcd");
+        EXPECT_FALSE(a.SubStr(8, 3) == b);
+        EXPECT_TRUE(a.SubStr(10, 4) == b);
+        EXPECT_FALSE(a.SubStr(10, 5) == b);
+    }
+}
+
 
 TEST(String, Compare_String_String)
 {
