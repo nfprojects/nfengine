@@ -200,7 +200,7 @@ typename DynArray<ElementType>::IteratorType DynArray<ElementType>::EmplaceBack(
     }
 
     new (this->mElements + this->mSize) ElementType(std::forward<Args>(args) ...);
-    return IteratorType(this, this->mSize++);
+    return IteratorType(this->mElements, this->mSize++);
 }
 
 template<typename ElementType>

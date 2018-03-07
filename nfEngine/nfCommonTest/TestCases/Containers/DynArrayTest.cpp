@@ -9,6 +9,17 @@
 
 #include "TestClasses.hpp"
 
+namespace {
+
+struct TestClass
+{
+    int a;
+    int b;
+    TestClass(int a, int b) : a(a), b(b) { }
+};
+
+} // namespace
+
 using namespace NFE;
 using namespace NFE::Common;
 
@@ -38,6 +49,27 @@ TEST(DynArray, PushBack)
 
     EXPECT_EQ(1, array[0]);
     EXPECT_EQ(2, array[1]);
+}
+
+TEST(DynArray, EmplaceBack_Simple)
+{
+    DynArray<int> array;
+
+    const auto iter = array.EmplaceBack(123);
+    ASSERT_NE(array.End(), iter);
+    ASSERT_EQ(1, array.Size());
+    EXPECT_EQ(123, array[0]);
+}
+
+TEST(DynArray, EmplaceBack_Class)
+{
+    DynArray<TestClass> array;
+
+    const auto iter = array.EmplaceBack(123, 456);
+    ASSERT_NE(array.End(), iter);
+    ASSERT_EQ(1, array.Size());
+    EXPECT_EQ(123, array[0].a);
+    EXPECT_EQ(456, array[0].b);
 }
 
 TEST(DynArray, InitializeFromArray)
