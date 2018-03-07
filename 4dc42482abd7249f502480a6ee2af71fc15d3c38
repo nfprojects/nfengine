@@ -1,0 +1,118 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1b9a5f63_273104dd",
+        "filename": "nfEngine/nfCommon/Math/Transcendental.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2018-03-07T07:23:05Z",
+      "side": 1,
+      "message": "Remove if unneeded",
+      "revId": "4dc42482abd7249f502480a6ee2af71fc15d3c38",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e2697b47_01485648",
+        "filename": "nfEngine/nfCommon/Math/Transcendental.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2018-03-07T07:23:05Z",
+      "side": 1,
+      "message": "Remove if unneeded",
+      "revId": "4dc42482abd7249f502480a6ee2af71fc15d3c38",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2e5f762e_7c460cb4",
+        "filename": "nfEngine/nfCommon/Math/Transcendental.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2018-03-07T07:23:05Z",
+      "side": 1,
+      "message": "@author",
+      "revId": "4dc42482abd7249f502480a6ee2af71fc15d3c38",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6ba766fd_f560766e",
+        "filename": "nfEngine/nfCommon/Math/Transcendental.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2018-03-07T07:23:05Z",
+      "side": 1,
+      "message": "Aren\u0027t these already done?",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 20
+      },
+      "revId": "4dc42482abd7249f502480a6ee2af71fc15d3c38",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "00e3b06b_947de65f",
+        "filename": "nfEngine/nfCommon/Math/Transcendental.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2018-03-07T07:23:05Z",
+      "side": 1,
+      "message": "@note",
+      "range": {
+        "startLine": 29,
+        "startChar": 3,
+        "endLine": 29,
+        "endChar": 7
+      },
+      "revId": "4dc42482abd7249f502480a6ee2af71fc15d3c38",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9d301e14_c67cc375",
+        "filename": "nfEngine/nfCommon/Math/Transcendental.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2018-03-07T07:23:05Z",
+      "side": 1,
+      "message": "@note\n\nPlease, keep the documentation uniform.",
+      "revId": "4dc42482abd7249f502480a6ee2af71fc15d3c38",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
