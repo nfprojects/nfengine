@@ -67,13 +67,14 @@ public:
 class NFCOMMON_API Type
 {
     NFE_MAKE_NONCOPYABLE(Type)
+    NFE_MAKE_NONMOVEABLE(Type)
 
 public:
     template <typename T>
     friend class TypeCreator;
 
-    Type(const TypeInfo& info);
-    virtual ~Type() { }
+    explicit Type(const TypeInfo& info);
+    virtual ~Type();
 
     /**
      * Get type name.

@@ -8,6 +8,7 @@
 #include "../DirectoryWatch.hpp"
 #include "Logger/Logger.hpp"
 #include "Utils/ScopedLock.hpp"
+#include "Containers/String.hpp"
 
 #include <sstream>
 #include <poll.h>

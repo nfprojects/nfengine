@@ -9,7 +9,6 @@
 #include "Globals.hpp"
 #include "Engine.hpp"
 
-#include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/System/Timer.hpp"
 
 #include "btBulletCollisionCommon.h"

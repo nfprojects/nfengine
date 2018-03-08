@@ -6,7 +6,7 @@
 
 #include "PCH.hpp"
 #include "nfCommon/Logger/LogScope.hpp"
-#include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/Logger/LoggerImpl.hpp"
 
 
 
@@ -22,9 +22,9 @@ const char* scopeExitText = "Exiting scope ";
 } // namespace
 
 /**
-* Test backend for testing LoggerBackend class
+* Test backend for testing ILoggerBackend class
 */
-class TestBackend final : public LoggerBackend
+class TestBackend final : public ILoggerBackend
 {
 public:
     struct LogInfoStruct

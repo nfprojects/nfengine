@@ -6,13 +6,10 @@
 
 #include "PCH.hpp"
 #include "EntitySystem.hpp"
-#include "Engine.hpp"
 #include "../SceneManager.hpp"
 #include "../Systems/EventSystem.hpp"
 #include "../Events/Event_Tick.hpp"
-#include "Utils/ConfigVariable.hpp"
 
-#include "nfCommon/System/Assertion.hpp"
 
 
 NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::EntitySystem)

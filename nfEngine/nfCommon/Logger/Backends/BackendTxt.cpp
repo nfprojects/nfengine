@@ -5,6 +5,7 @@
  */
 
 #include "PCH.hpp"
+#include "../LoggerImpl.hpp"
 #include "BackendTxt.hpp"
 #include "BackendCommon.hpp"
 

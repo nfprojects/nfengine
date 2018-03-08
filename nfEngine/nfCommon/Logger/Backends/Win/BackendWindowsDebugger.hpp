@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../../Logger.hpp"
+#include "../../LoggerBackend.hpp"
 #include "../../../Containers/DynArray.hpp"
 #include "../../../Containers/String.hpp"
 #include "../../../System/Win/Common.hpp"
@@ -17,7 +17,7 @@ namespace Common {
 /**
  * Implementation of Windows debugger logger backend.
  */
-class NFCOMMON_API LoggerBackendWinDebugger final : public LoggerBackend
+class NFCOMMON_API LoggerBackendWinDebugger final : public ILoggerBackend
 {
     DynArray<char> mBuffer;
     String mDebugString;

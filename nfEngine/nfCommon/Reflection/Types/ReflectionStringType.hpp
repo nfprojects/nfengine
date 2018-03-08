@@ -23,9 +23,8 @@ class NFCOMMON_API StringType : public Type
     NFE_MAKE_NONCOPYABLE(StringType)
 
 public:
-    StringType(const TypeInfo& info)
-        : Type(info)
-    { }
+    StringType(const TypeInfo& info);
+    ~StringType();
 
     bool Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const override;
     bool Deserialize(void* outObject, const Common::Config& config, const Common::ConfigValue& value) const override;

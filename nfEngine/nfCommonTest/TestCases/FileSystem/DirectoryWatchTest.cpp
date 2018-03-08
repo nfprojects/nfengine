@@ -3,6 +3,7 @@
 #include "nfCommon/FileSystem/FileSystem.hpp"
 #include "nfCommon/FileSystem/File.hpp"
 #include "nfCommon/Utils/Latch.hpp"
+#include "nfCommon/Containers/String.hpp"
 
 using namespace NFE::Common;
 

@@ -5,7 +5,7 @@
  */
 
 #include "PCH.hpp"
-#include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/Logger/LoggerImpl.hpp"
 
 
 using namespace NFE::Common;
@@ -21,9 +21,9 @@ const StringView testBackendName("Test");
 } // namespace
 
 /**
-* Test backend for testing LoggerBackend class
+* Test backend for testing ILoggerBackend class
 */
-class TestBackend final : public LoggerBackend
+class TestBackend final : public ILoggerBackend
 {
 public:
     struct LogInfoStruct
@@ -60,7 +60,7 @@ public:
     {
         ASSERT_TRUE(Logger::RegisterBackend(testBackendName, MakeUniquePtr<TestBackend>()));
 
-        LoggerBackend* testBackend = Logger::GetBackend(testBackendName);
+        ILoggerBackend* testBackend = Logger::GetBackend(testBackendName);
         ASSERT_NE(nullptr, testBackend);
         testBackend->Enable(false);
     }

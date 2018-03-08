@@ -6,15 +6,13 @@
 
 #include "PCH.hpp"
 #include "Globals.hpp"
-#include "Engine.hpp"
 #include "Texture.hpp"
-#include "Renderer/HighLevelRenderer.hpp"
 #include "Renderer/GuiRenderer.hpp"
-#include "ResourcesManager.hpp"
 
-#include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/Utils/InputStream.hpp"
 #include "nfCommon/Image/Image.hpp"
+#include "nfCommon/System/Timer.hpp"
+
 
 namespace NFE {
 namespace Resource {

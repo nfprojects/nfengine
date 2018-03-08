@@ -1,5 +1,6 @@
 #include "PCH.hpp"
 #include "nfCommon/Math/Transcendental.hpp"
+#include "nfCommon/Math/Math.hpp"
 #include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/System/Timer.hpp"
 

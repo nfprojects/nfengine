@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 #include "../Library.hpp"
 #include "Logger/Logger.hpp"
+#include "Containers/String.hpp"
 
 #include <dlfcn.h>
 
