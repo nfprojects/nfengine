@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../../Logger.hpp"
+#include "../../LoggerBackend.hpp"
 #include "../../../Containers/DynArray.hpp"
 #include "../../../Containers/String.hpp"
 #include "../../../System/Win/Common.hpp"

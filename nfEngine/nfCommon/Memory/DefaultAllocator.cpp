@@ -8,6 +8,7 @@
 #include "DefaultAllocator.hpp"
 #include "Logger/Logger.hpp"
 #include "Math/Math.hpp"
+#include "System/Assertion.hpp"
 #include "Utils/ScopedLock.hpp"
 
 

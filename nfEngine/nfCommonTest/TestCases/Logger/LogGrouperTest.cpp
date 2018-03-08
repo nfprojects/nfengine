@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "nfCommon/Logger/LogGrouper.hpp"
+#include "nfCommon/Logger/LoggerImpl.hpp"
 
 
 using namespace NFE::Common;

@@ -6,15 +6,12 @@
 
 #include "PCH.hpp"
 #include "Material.hpp"
-#include "ResourcesManager.hpp"
-#include "Engine.hpp"
 #include "Globals.hpp"
 #include "Renderer/GeometryRenderer.hpp"
 
-#include "nfCommon/Logger/Logger.hpp"
-
 #include "../rapidjson/include/rapidjson/document.h"
 #include "../rapidjson/include/rapidjson/filestream.h"
+
 
 namespace NFE {
 namespace Resource {

@@ -6,12 +6,9 @@
 
 #include "PCH.hpp"
 #include "ComponentTrigger.hpp"
-#include "Engine.hpp"
 #include "../Entity.hpp"
 #include "../SceneManager.hpp"
 #include "../Systems/TriggerSystem.hpp"
-
-#include "nfCommon/System/Assertion.hpp"
 
 
 NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::TriggerComponent)

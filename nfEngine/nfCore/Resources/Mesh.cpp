@@ -8,14 +8,10 @@
 #include "Globals.hpp"
 #include "Mesh.hpp"
 #include "Material.hpp"
-#include "Renderer/HighLevelRenderer.hpp"
-#include "ResourcesManager.hpp"
 #include "Engine.hpp"
 
+#include "nfCommon/System/Timer.hpp"
 #include "nfCommon/Utils/InputStream.hpp"
-#include "nfCommon/Logger/Logger.hpp"
-#include "nfCommon/FileSystem/File.hpp"
-#include "nfCommon/Memory/DefaultAllocator.hpp"
 
 
 namespace NFE {
