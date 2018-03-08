@@ -9,6 +9,7 @@
 #include "../nfCommon.hpp"
 #include "../System/Timer.hpp"
 #include "Logger.hpp"
+#include "../Containers/String.hpp"
 
 
 namespace NFE{

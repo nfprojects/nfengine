@@ -6,11 +6,8 @@
 
 #include "PCH.hpp"
 #include "PhysicsSceneImpl.hpp"
-#include "Engine.hpp"
 #include "Utils/ConfigVariable.hpp"
 #include "Resources/CollisionShape.hpp"
-
-#include "nfCommon/System/Timer.hpp"
 
 
 namespace NFE {

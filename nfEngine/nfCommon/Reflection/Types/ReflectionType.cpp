@@ -32,6 +32,8 @@ const char* Type::TypeKindToString(const TypeKind kind)
     return "undefined";
 }
 
+Type::~Type() = default;
+
 Type::Type(const TypeInfo& info)
 {
     if (info.name)

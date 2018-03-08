@@ -10,7 +10,6 @@
 #include "../Events/Event_Input.hpp"
 #include "../SceneManager.hpp"
 
-#include "nfCommon/System/Assertion.hpp"
 
 
 NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::InputSystem)

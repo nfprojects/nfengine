@@ -9,12 +9,6 @@
 #include "../Entity.hpp"
 #include "../SceneManager.hpp"
 #include "../Systems/PhysicsSystem.hpp"
-#include "../../Physics/PhysicsScene.hpp"
-#include "Resources/ResourcesManager.hpp"
-#include "Resources/CollisionShape.hpp"
-
-#include "nfCommon/Utils/InputStream.hpp"
-#include "nfCommon/Utils/OutputStream.hpp"
 
 
 NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::BodyComponent)

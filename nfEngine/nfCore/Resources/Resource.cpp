@@ -7,12 +7,7 @@
 #include "PCH.hpp"
 #include "Engine.hpp"
 #include "Resource.hpp"
-#include "ResourcesManager.hpp"
 
-#include "nfCommon/System/Memory.hpp"
-#include "nfCommon/Logger/Logger.hpp"
-#include "nfCommon/Utils/AsyncThreadPool.hpp"
-#include "nfCommon/Utils/ScopedLock.hpp"
 
 namespace NFE {
 namespace Resource {

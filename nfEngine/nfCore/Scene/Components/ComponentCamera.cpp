@@ -8,8 +8,6 @@
 #include "ComponentCamera.hpp"
 #include "../Entity.hpp"
 
-#include "nfCommon/System/Assertion.hpp"
-
 
 NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::CameraComponent)
     NFE_CLASS_PARENT(NFE::Scene::IComponent)

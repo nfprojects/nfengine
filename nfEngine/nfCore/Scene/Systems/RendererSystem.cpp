@@ -8,8 +8,6 @@
 #include "RendererSystem.hpp"
 #include "Renderer/RenderScene.hpp"
 
-#include "nfCommon/System/Assertion.hpp"
-
 
 NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::RendererSystem)
     NFE_CLASS_PARENT(NFE::Scene::ISystem)
