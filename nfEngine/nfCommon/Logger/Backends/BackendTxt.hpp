@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Logger.hpp"
+#include "../LoggerBackend.hpp"
 #include "../../FileSystem/File.hpp"
 #include "../../Containers/DynArray.hpp"
 
@@ -26,8 +26,7 @@ public:
     LoggerBackendTxt();
 
     void Reset() override;
-    void Log(LogType type, const char* srcFile, int line, const char* str,
-             double timeElapsed) override;
+    void Log(LogType type, const char* srcFile, int line, const char* str, double timeElapsed) override;
 };
 
 } // namespace Common

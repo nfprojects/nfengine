@@ -35,6 +35,8 @@ EnumType::EnumType(const EnumTypeInfo& info)
     }
 }
 
+EnumType::~EnumType() = default;
+
 void EnumType::PrintInfo() const
 {
     Type::PrintInfo();

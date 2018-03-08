@@ -6,7 +6,6 @@
 
 #include "PCH.hpp"
 #include "Globals.hpp"
-#include "Renderer/HighLevelRenderer.hpp"
 
 namespace NFE {
 

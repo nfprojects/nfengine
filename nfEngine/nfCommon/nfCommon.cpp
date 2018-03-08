@@ -5,7 +5,7 @@
 #include "PCH.hpp"
 #include "nfCommon.hpp"
 #include "Reflection/ReflectionTypeRegistry.hpp"
-#include "Logger/Logger.hpp"
+#include "Logger/LoggerImpl.hpp"
 
 
 namespace NFE {
