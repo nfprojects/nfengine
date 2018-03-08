@@ -5,6 +5,7 @@
  */
 
 #include "PCH.hpp"
+#include "../LoggerImpl.hpp"
 #include "BackendConsole.hpp"
 #include "System/Console.hpp"
 

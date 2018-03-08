@@ -12,6 +12,11 @@
 namespace NFE {
 namespace RTTI {
 
+StringType::StringType(const TypeInfo& info)
+    : Type(info)
+{ }
+
+StringType::~StringType() = default;
 
 bool StringType::Serialize(const void* object, Common::Config& config, Common::ConfigValue& outValue) const
 {

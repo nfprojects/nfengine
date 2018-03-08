@@ -8,8 +8,6 @@
 #include "PhysicsSystem.hpp"
 #include "../../Physics/PhysicsSceneImpl.hpp"
 
-#include "nfCommon/System/Assertion.hpp"
-
 
 NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::PhysicsSystem)
     NFE_CLASS_PARENT(NFE::Scene::ISystem)

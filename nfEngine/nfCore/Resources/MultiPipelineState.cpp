@@ -8,9 +8,7 @@
 
 #include "PCH.hpp"
 #include "MultiPipelineState.hpp"
-#include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/FileSystem/File.hpp"
-#include "nfCommon/Config/ConfigValue.hpp"
 #include "nfCommon/Config/Config.hpp"
 
 

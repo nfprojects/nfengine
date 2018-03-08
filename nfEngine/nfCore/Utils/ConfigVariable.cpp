@@ -8,10 +8,6 @@
 #include "ConfigVariable.hpp"
 
 #include "nfCommon/Config/Config.hpp"
-#include "nfCommon/Config/ConfigValue.hpp"
-#include "nfCommon/FileSystem/File.hpp"
-#include "nfCommon/Logger/Logger.hpp"
-#include "nfCommon/Math/Math.hpp"
 #include "nfCommon/Math/Float4.hpp"
 
 

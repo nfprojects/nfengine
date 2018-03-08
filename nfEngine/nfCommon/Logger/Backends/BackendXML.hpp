@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Logger.hpp"
+#include "../LoggerBackend.hpp"
 #include "../../FileSystem/File.hpp"
 #include "../../Containers/DynArray.hpp"
 
@@ -17,7 +17,7 @@ namespace Common {
 /**
  * XML logger backend implementation.
  */
-class NFCOMMON_API LoggerBackendXML : public LoggerBackend
+class NFCOMMON_API LoggerBackendXML : public ILoggerBackend
 {
     File mFile;
     DynArray<char> mBuffer;
@@ -27,8 +27,7 @@ public:
     ~LoggerBackendXML();
 
     void Reset() override;
-    void Log(LogType type, const char* srcFile, int line, const char* str,
-             double timeElapsed) override;
+    void Log(LogType type, const char* srcFile, int line, const char* str, double timeElapsed) override;
 };
 
 } // namespace Common

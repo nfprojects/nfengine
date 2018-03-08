@@ -7,6 +7,7 @@
 #include "PCH.hpp"
 #include "../FileSystem.hpp"
 #include "Logger/Logger.hpp"
+#include "Containers/String.hpp"
 
 #include <dirent.h>
 

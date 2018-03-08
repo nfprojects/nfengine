@@ -8,6 +8,8 @@
 #include "../FileAsync.hpp"
 #include "Logger/Logger.hpp"
 #include "Utils/ScopedLock.hpp"
+#include "Containers/String.hpp"
+#include "Containers/UniquePtr.hpp"
 
 
 namespace NFE {

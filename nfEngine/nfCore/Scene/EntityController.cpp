@@ -1,8 +1,6 @@
 #include "PCH.hpp"
 #include "EntityController.hpp"
 
-#include "nfCommon/System/Assertion.hpp"
-
 
 namespace NFE {
 namespace Scene {

@@ -8,9 +8,6 @@
 #include "Component.hpp"
 #include "../Entity.hpp"
 
-#include "nfCommon/Logger/Logger.hpp"
-#include "nfCommon/System/Assertion.hpp"
-
 
 NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::IComponent)
 NFE_END_DEFINE_CLASS()

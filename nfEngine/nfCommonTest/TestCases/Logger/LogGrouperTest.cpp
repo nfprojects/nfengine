@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "nfCommon/Logger/LogGrouper.hpp"
+#include "nfCommon/Logger/LoggerImpl.hpp"
 
 
 using namespace NFE::Common;
@@ -17,9 +18,9 @@ const StringView testBackendName("Test");
 } // namespace
 
 /**
-* Test backend for testing LoggerBackend class
+* Test backend for testing ILoggerBackend class
 */
-class TestBackend final : public LoggerBackend
+class TestBackend final : public ILoggerBackend
 {
 public:
     struct LogInfoStruct

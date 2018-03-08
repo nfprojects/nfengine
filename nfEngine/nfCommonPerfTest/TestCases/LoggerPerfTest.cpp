@@ -5,8 +5,10 @@
  */
 
 #include "PCH.hpp"
-#include "nfCommon/System/Timer.hpp"
 #include "Test.hpp"
+
+#include "nfCommon/System/Timer.hpp"
+#include "nfCommon/Logger/LoggerImpl.hpp"
 
 #include <functional>
 

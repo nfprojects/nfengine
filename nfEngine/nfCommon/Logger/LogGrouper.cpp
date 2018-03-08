@@ -6,6 +6,7 @@
 
 #include "PCH.hpp"
 #include "LogGrouper.hpp"
+#include "LoggerImpl.hpp"
 
 #ifdef WIN32
 #include "System/Win/Common.hpp"

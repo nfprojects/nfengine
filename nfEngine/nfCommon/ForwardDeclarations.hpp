@@ -45,7 +45,7 @@ class OutputStream;
 
 // Logger
 enum class LogType;
-class LoggerBackend;
+class ILoggerBackend;
 class Logger;
 class LogGrouper;
 class LogScope;

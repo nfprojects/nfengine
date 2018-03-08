@@ -7,7 +7,7 @@
 #pragma once
 
 #include <string>
-#include "nfCommon/Logger/Logger.hpp"
+#include "nfCommon/Logger/LoggerImpl.hpp"
 
 #include <fstream>
 
@@ -40,8 +40,7 @@ public:
 
     void SetUp() override
     {
-        static const std::string gLogFilePath = LOGS_DIR + GetName() + "_" + ::getTime()
-                                                + ".txt";
+        static const std::string gLogFilePath = LOGS_DIR + GetName() + "_" + ::getTime() + ".txt";
         mFile.open(gLogFilePath, std::fstream::out | std::fstream::app);
     }
 
