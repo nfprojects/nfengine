@@ -11,6 +11,8 @@
 #include "Texture.hpp"
 #include "Device.hpp"
 
+#include "nfCommon/Containers/StaticArray.hpp"
+
 
 namespace NFE {
 namespace Renderer {

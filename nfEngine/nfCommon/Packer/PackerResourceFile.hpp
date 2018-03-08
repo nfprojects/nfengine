@@ -10,6 +10,7 @@
 
 #include "PackerResource.hpp"
 #include "../Containers/StringView.hpp"
+#include "../Containers/String.hpp"
 
 namespace NFE {
 namespace Common {

@@ -8,8 +8,8 @@
 #include "ResourceBinding.hpp"
 #include "Device.hpp"
 #include "Sampler.hpp"
-#include "Buffer.hpp"
-#include "Texture.hpp"
+
+#include "nfCommon/Containers/StaticArray.hpp"
 
 
 namespace NFE {

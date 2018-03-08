@@ -534,6 +534,12 @@
     <ClInclude Include="Utils\StringUtils.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Logger\LoggerBackend.hpp">
+      <Filter>Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger\LoggerImpl.hpp">
+      <Filter>Logger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -778,5 +784,11 @@
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="nfCommon.cpp" />
+    <ClCompile Include="Logger\LoggerBackend.cpp">
+      <Filter>Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger\LoggerImpl.cpp">
+      <Filter>Logger</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

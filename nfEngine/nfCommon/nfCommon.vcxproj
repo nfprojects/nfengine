@@ -77,6 +77,8 @@
     <ClInclude Include="Logger\Backends\BackendXML.hpp" />
     <ClInclude Include="Logger\Backends\Win\BackendWindowsDebugger.hpp" />
     <ClInclude Include="Logger\Logger.hpp" />
+    <ClInclude Include="Logger\LoggerBackend.hpp" />
+    <ClInclude Include="Logger\LoggerImpl.hpp" />
     <ClInclude Include="Logger\LogGrouper.hpp" />
     <ClInclude Include="Logger\LogScope.hpp" />
     <ClInclude Include="Math\EquationSolver.hpp" />
@@ -206,6 +208,8 @@
     <ClCompile Include="Logger\Backends\BackendXML.cpp" />
     <ClCompile Include="Logger\Backends\Win\BackendWindowsDebugger.cpp" />
     <ClCompile Include="Logger\Logger.cpp" />
+    <ClCompile Include="Logger\LoggerBackend.cpp" />
+    <ClCompile Include="Logger\LoggerImpl.cpp" />
     <ClCompile Include="Logger\LogGrouper.cpp" />
     <ClCompile Include="Logger\LogScope.cpp" />
     <ClCompile Include="Math\Box.cpp" />
