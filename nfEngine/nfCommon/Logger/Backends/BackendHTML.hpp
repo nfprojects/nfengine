@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Logger.hpp"
+#include "../LoggerBackend.hpp"
 #include "../../FileSystem/File.hpp"
 #include "../../Containers/DynArray.hpp"
 
@@ -17,7 +17,7 @@ namespace Common {
 /**
  * HTML logger backend implementation.
  */
-class NFCOMMON_API LoggerBackendHTML final : public LoggerBackend
+class NFCOMMON_API LoggerBackendHTML final : public ILoggerBackend
 {
     File mFile;
     DynArray<char> mBuffer;

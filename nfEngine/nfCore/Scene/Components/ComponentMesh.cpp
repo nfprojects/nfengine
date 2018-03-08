@@ -7,13 +7,10 @@
 #include "PCH.hpp"
 #include "ComponentMesh.hpp"
 #include "Engine.hpp"
-#include "Resources/ResourcesManager.hpp"
 #include "../Entity.hpp"
 #include "../SceneManager.hpp"
 #include "../Systems/RendererSystem.hpp"
 #include "Renderer/RenderScene.hpp"
-
-#include "nfCommon/System/Assertion.hpp"
 
 
 NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::MeshComponent)

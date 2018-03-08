@@ -516,6 +516,12 @@
     <ClInclude Include="Math\TranscendentalImpl.hpp">
       <Filter>Math</Filter>
     </ClInclude>
+    <ClInclude Include="Logger\LoggerBackend.hpp">
+      <Filter>Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger\LoggerImpl.hpp">
+      <Filter>Logger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -747,6 +753,12 @@
     <ClCompile Include="nfCommon.cpp" />
     <ClCompile Include="Math\Transcendental.cpp">
       <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger\LoggerBackend.cpp">
+      <Filter>Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger\LoggerImpl.cpp">
+      <Filter>Logger</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

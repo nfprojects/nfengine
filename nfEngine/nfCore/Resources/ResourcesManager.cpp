@@ -7,17 +7,14 @@
 #include "PCH.hpp"
 #include "ResourcesManager.hpp"
 #include "nfCommon/System/Memory.hpp"
-#include "nfCommon/Logger/Logger.hpp"
 #include "nfCommon/Utils/AsyncThreadPool.hpp"
-#include "nfCommon/Utils/ScopedLock.hpp"
 
 // TODO use RTTI system for this...
 #include "Multishader.hpp"
-#include "Texture.hpp"
 #include "Material.hpp"
 #include "Mesh.hpp"
 #include "CollisionShape.hpp"
-#include "SoundSample.hpp"
+
 
 namespace NFE {
 namespace Resource {

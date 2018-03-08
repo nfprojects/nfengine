@@ -48,8 +48,7 @@ class NFCOMMON_API EnumType : public Type
 
 public:
     explicit EnumType(const EnumTypeInfo& info);
-    EnumType(EnumType&&) = default;
-    EnumType& operator=(EnumType&&) = default;
+    ~EnumType();
 
     // list all the enum options
     const EnumOptions& GetOptions() const;

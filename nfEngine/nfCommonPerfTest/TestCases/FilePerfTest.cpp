@@ -5,10 +5,11 @@
  */
 
 #include "PCH.hpp"
+#include "Test.hpp"
 #include "nfCommon/System/Timer.hpp"
 #include "nfCommon/FileSystem/FileBuffered.hpp"
 #include "nfCommon/FileSystem/FileSystem.hpp"
-#include "Test.hpp"
+#include "nfCommon/Containers/String.hpp"
 
 
 using namespace NFE::Common;

@@ -9,14 +9,8 @@
 #include "../Entity.hpp"
 #include "../SceneManager.hpp"
 #include "../Systems/RendererSystem.hpp"
-#include "Resources/ResourcesManager.hpp"
 #include "Engine.hpp"
 #include "Renderer/RenderScene.hpp"
-#include "Renderer/LightsRenderer.hpp"
-
-#include "nfCommon/Utils/InputStream.hpp"
-#include "nfCommon/Utils/OutputStream.hpp"
-#include "nfCommon/Logger/Logger.hpp"
 
 
 NFE_BEGIN_DEFINE_POLYMORPHIC_CLASS(NFE::Scene::LightComponent)

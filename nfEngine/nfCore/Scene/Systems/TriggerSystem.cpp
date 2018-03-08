@@ -6,7 +6,6 @@
 
 #include "PCH.hpp"
 #include "TriggerSystem.hpp"
-#include "Engine.hpp"
 #include "EventSystem.hpp"
 #include "../SceneManager.hpp"
 #include "../Events/Event_Trigger.hpp"
