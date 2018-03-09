@@ -1,0 +1,197 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cf6d4d9c_ccbc03d0",
+        "filename": "nfEngine/nfCommon/Containers/String.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2018-03-09T21:52:24Z",
+      "side": 1,
+      "message": "I don\u0027t get this constructor. Is it meant to reseve space or create a string with given length. If former, we have Reserve() for that.",
+      "range": {
+        "startLine": 88,
+        "startChar": 22,
+        "endLine": 88,
+        "endChar": 23
+      },
+      "revId": "8a8834d2f839e898c365206796217e3f83d4f6de",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fd1862a2_af901b4b",
+        "filename": "nfEngine/nfCommon/Containers/String.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2018-03-09T21:52:24Z",
+      "side": 1,
+      "message": "No need to zero everything - only first byte.",
+      "revId": "8a8834d2f839e898c365206796217e3f83d4f6de",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "79ffd979_bde2333f",
+        "filename": "nfEngine/nfCommon/Containers/String.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2018-03-09T21:52:24Z",
+      "side": 1,
+      "message": "index \u003c Length()",
+      "revId": "8a8834d2f839e898c365206796217e3f83d4f6de",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9e8845be_05bbbb8d",
+        "filename": "nfEngine/nfCommon/Containers/String.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 352,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2018-03-09T21:52:24Z",
+      "side": 1,
+      "message": "1. Instead of Length() I\u0027d use UINT32_MAX constant\n2. This code won\u0027t be reached because of the macro above",
+      "revId": "8a8834d2f839e898c365206796217e3f83d4f6de",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8f8354bf_7e2ed86b",
+        "filename": "nfEngine/nfCommon/Containers/String.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2018-03-09T21:52:24Z",
+      "side": 1,
+      "message": "Should be explicit.",
+      "revId": "8a8834d2f839e898c365206796217e3f83d4f6de",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f72654b6_3c4cb2c9",
+        "filename": "nfEngine/nfCommon/Utils/StringUtils.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2018-03-09T21:52:24Z",
+      "side": 1,
+      "message": "I\u0027d merge that with Split(const StringView\u0026 a, char delim)",
+      "revId": "8a8834d2f839e898c365206796217e3f83d4f6de",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "df647589_23af37f8",
+        "filename": "nfEngine/nfCommon/Utils/StringUtils.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2018-03-09T21:52:24Z",
+      "side": 1,
+      "message": "buffer[i]",
+      "revId": "8a8834d2f839e898c365206796217e3f83d4f6de",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7e6731ca_410c74c5",
+        "filename": "nfEngine/nfCommon/Utils/StringUtils.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2018-03-09T21:52:24Z",
+      "side": 1,
+      "message": "We don\u0027t need this, because we can do string.ToView()",
+      "revId": "8a8834d2f839e898c365206796217e3f83d4f6de",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "33e08006_0463a369",
+        "filename": "nfEngine/nfCommon/Utils/StringUtils.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2018-03-09T21:52:24Z",
+      "side": 1,
+      "message": "I think we should provide also a method that allows passing list of delimiters (in form of StringView)",
+      "revId": "8a8834d2f839e898c365206796217e3f83d4f6de",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4a8fcdba_b9ca15fe",
+        "filename": "nfEngine/nfCommonTest/TestCases/Containers/StringTest.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2018-03-09T21:52:24Z",
+      "side": 1,
+      "message": "Not used",
+      "revId": "8a8834d2f839e898c365206796217e3f83d4f6de",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3fb5ed30_cd68e165",
+        "filename": "nfEngine/nfCommonTest/TestCases/Utils/StringUtilsTest.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2018-03-09T21:52:24Z",
+      "side": 1,
+      "message": "Minor, but all these variables should be turned to const",
+      "revId": "8a8834d2f839e898c365206796217e3f83d4f6de",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
