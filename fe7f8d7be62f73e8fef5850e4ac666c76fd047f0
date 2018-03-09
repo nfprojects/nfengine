@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0e91a367_1768075a",
+        "filename": "nfEngine/Renderers/nfRendererVk/Defines.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2018-03-09T21:59:58Z",
+      "side": 1,
+      "message": "Make \"t\" uppercase, as it denotes a type",
+      "revId": "fe7f8d7be62f73e8fef5850e4ac666c76fd047f0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6247bb72_1d67bcb8",
+        "filename": "nfEngine/Renderers/nfRendererVk/Shader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2018-03-09T21:59:58Z",
+      "side": 1,
+      "message": "not required",
+      "revId": "fe7f8d7be62f73e8fef5850e4ac666c76fd047f0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "66331d03_2b1c8820",
+        "filename": "nfEngine/Renderers/nfRendererVk/Shader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2018-03-09T21:59:58Z",
+      "side": 1,
+      "message": "not required",
+      "revId": "fe7f8d7be62f73e8fef5850e4ac666c76fd047f0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e8eb823a_982ac025",
+        "filename": "nfEngine/Renderers/nfRendererVk/Shader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2018-03-09T21:59:58Z",
+      "side": 1,
+      "message": "Btw, you can include \"using namespace\" or \"using Common:DynArray\" to avoid these long names",
+      "revId": "fe7f8d7be62f73e8fef5850e4ac666c76fd047f0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9dac6a73_6df98094",
+        "filename": "nfEngine/Renderers/nfRendererVk/Shader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2018-03-09T21:59:58Z",
+      "side": 1,
+      "message": "?",
+      "revId": "fe7f8d7be62f73e8fef5850e4ac666c76fd047f0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
