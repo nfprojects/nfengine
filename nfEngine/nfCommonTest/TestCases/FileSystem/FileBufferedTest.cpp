@@ -102,16 +102,16 @@ TEST_F(FileBufferedTest, ReadSeek)
     // Do tha read, yo!
     for (int i = 0; i < operationsUpperLimit; i++)
     {
-        // Roll a random number for Seek
-        float rand = mRand.GetFloat();
+        // Roll a random number for Seek (0.1; 1.0)
+        float rand = mRand.GetFloat() * 0.9f + 0.1f;
 
-        // Scale it to range (0; bufferSize/2)
+        // Scale it to range (0.1; bufferSize/2)
         NFE::int64 randomShift = static_cast<NFE::int64>((rand * bufferSize) / 2);
 
-        // Roll a random number for read size
-        rand = mRand.GetFloat();
+        // Roll a random number for read size in range (0.1; 1.0)
+        rand = mRand.GetFloat() * 0.9f + 0.1f;
 
-        // Scale it to range (0; bufferSize)
+        // Scale it to range (0.1; bufferSize)
         size_t randomSize = static_cast<size_t>((rand * bufferSize));
 
         // Make random Seek
