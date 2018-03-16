@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0c1a1851_2c617183",
+        "filename": "nfEngine/nfCommon/Math/Transcendental.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2018-03-16T08:53:11Z",
+      "side": 1,
+      "message": "Linux for sure will not accept that... :)",
+      "range": {
+        "startLine": 9,
+        "startChar": 16,
+        "endLine": 9,
+        "endChar": 17
+      },
+      "revId": "bb977f77930ee411df1e020a0cd4328f00e5c416",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
