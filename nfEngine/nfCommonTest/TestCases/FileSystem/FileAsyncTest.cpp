@@ -12,7 +12,7 @@
 #include "nfCommon/Math/Random.hpp"
 
 
-
+using namespace NFE;
 using namespace NFE::Common;
 
 // Global variables for the tests
@@ -25,13 +25,13 @@ std::atomic_uint writeOperationsCounter;
 std::atomic_uint readOperations;
 std::atomic_uint writeOperations;
 
-const int bufferSize = 1000;                              //< Size of the test buffer
-const NFE::uint8 operationsUpperLimit = 10;               //< Number of operations to perform on the buffer
-NFE::uint8 shiftArray[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}; //< Data array to pass to callbacks
-const unsigned int timeLimitMiliseconds = 10000;          //< Timeout for all operations
-Latch* operationsLatch;                                   //< Latch to wait for operations to finish (or timeout)
-const int expectedOperations = 0x3FF;                     //< Expected state of read/writeOperations variables
-                                                          //  after all operations succeed
+const uint32 bufferSize = 1000;                      //< Size of the test buffer
+const uint8 operationsUpperLimit = 10;               //< Number of operations to perform on the buffer
+uint8 shiftArray[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}; //< Data array to pass to callbacks
+const uint32 timeLimitMiliseconds = 10000;           //< Timeout for all operations
+Latch* operationsLatch;                              //< Latch to wait for operations to finish (or timeout)
+const uint32 expectedOperations = 0x3FF;             //< Expected state of read/writeOperations variables
+                                                     //  after all operations succeed
 
 const StringView testPath("./testFile.async");
 

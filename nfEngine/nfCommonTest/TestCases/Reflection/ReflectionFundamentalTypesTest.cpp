@@ -14,8 +14,8 @@ TEST(ReflectionFundamentalTypeTest, VerifyBool)
     ASSERT_NE(nullptr, type);
     EXPECT_STREQ("bool", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
-    EXPECT_EQ(1, type->GetSize());
-    EXPECT_EQ(1, type->GetAlignment());
+    EXPECT_EQ(1u, type->GetSize());
+    EXPECT_EQ(1u, type->GetAlignment());
 }
 
 TEST(ReflectionFundamentalTypeTest, VerifyInt8)
@@ -25,8 +25,8 @@ TEST(ReflectionFundamentalTypeTest, VerifyInt8)
     ASSERT_NE(nullptr, type);
     EXPECT_STREQ("NFE::int8", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
-    EXPECT_EQ(1, type->GetSize());
-    EXPECT_EQ(1, type->GetAlignment());
+    EXPECT_EQ(1u, type->GetSize());
+    EXPECT_EQ(1u, type->GetAlignment());
 }
 
 TEST(ReflectionFundamentalTypeTest, VerifyInt16)
@@ -36,8 +36,8 @@ TEST(ReflectionFundamentalTypeTest, VerifyInt16)
     ASSERT_NE(nullptr, type);
     EXPECT_STREQ("NFE::int16", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
-    EXPECT_EQ(2, type->GetSize());
-    EXPECT_EQ(2, type->GetAlignment());
+    EXPECT_EQ(2u, type->GetSize());
+    EXPECT_EQ(2u, type->GetAlignment());
 }
 
 TEST(ReflectionFundamentalTypeTest, VerifyInt32)
@@ -47,8 +47,8 @@ TEST(ReflectionFundamentalTypeTest, VerifyInt32)
     ASSERT_NE(nullptr, type);
     EXPECT_STREQ("NFE::int32", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
-    EXPECT_EQ(4, type->GetSize());
-    EXPECT_EQ(4, type->GetAlignment());
+    EXPECT_EQ(4u, type->GetSize());
+    EXPECT_EQ(4u, type->GetAlignment());
 }
 
 TEST(ReflectionFundamentalTypeTest, VerifyInt64)
@@ -58,8 +58,8 @@ TEST(ReflectionFundamentalTypeTest, VerifyInt64)
     ASSERT_NE(nullptr, type);
     EXPECT_STREQ("NFE::int64", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
-    EXPECT_EQ(8, type->GetSize());
-    EXPECT_EQ(8, type->GetAlignment());
+    EXPECT_EQ(8u, type->GetSize());
+    EXPECT_EQ(8u, type->GetAlignment());
 }
 
 
@@ -70,8 +70,8 @@ TEST(ReflectionFundamentalTypeTest, VerifyUInt8)
     ASSERT_NE(nullptr, type);
     EXPECT_STREQ("NFE::uint8", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
-    EXPECT_EQ(1, type->GetSize());
-    EXPECT_EQ(1, type->GetAlignment());
+    EXPECT_EQ(1u, type->GetSize());
+    EXPECT_EQ(1u, type->GetAlignment());
 }
 
 TEST(ReflectionFundamentalTypeTest, VerifyUInt16)
@@ -81,8 +81,8 @@ TEST(ReflectionFundamentalTypeTest, VerifyUInt16)
     ASSERT_NE(nullptr, type);
     EXPECT_STREQ("NFE::uint16", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
-    EXPECT_EQ(2, type->GetSize());
-    EXPECT_EQ(2, type->GetAlignment());
+    EXPECT_EQ(2u, type->GetSize());
+    EXPECT_EQ(2u, type->GetAlignment());
 }
 
 TEST(ReflectionFundamentalTypeTest, VerifyUInt32)
@@ -92,8 +92,8 @@ TEST(ReflectionFundamentalTypeTest, VerifyUInt32)
     ASSERT_NE(nullptr, type);
     EXPECT_STREQ("NFE::uint32", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
-    EXPECT_EQ(4, type->GetSize());
-    EXPECT_EQ(4, type->GetAlignment());
+    EXPECT_EQ(4u, type->GetSize());
+    EXPECT_EQ(4u, type->GetAlignment());
 }
 
 TEST(ReflectionFundamentalTypeTest, VerifyUInt64)
@@ -103,8 +103,8 @@ TEST(ReflectionFundamentalTypeTest, VerifyUInt64)
     ASSERT_NE(nullptr, type);
     EXPECT_STREQ("NFE::uint64", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
-    EXPECT_EQ(8, type->GetSize());
-    EXPECT_EQ(8, type->GetAlignment());
+    EXPECT_EQ(8u, type->GetSize());
+    EXPECT_EQ(8u, type->GetAlignment());
 }
 
 
@@ -115,8 +115,8 @@ TEST(ReflectionFundamentalTypeTest, VerifyFloat)
     ASSERT_NE(nullptr, type);
     EXPECT_STREQ("float", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
-    EXPECT_EQ(4, type->GetSize());
-    EXPECT_EQ(4, type->GetAlignment());
+    EXPECT_EQ(4u, type->GetSize());
+    EXPECT_EQ(4u, type->GetAlignment());
 }
 
 TEST(ReflectionFundamentalTypeTest, VerifyDouble)
@@ -126,8 +126,8 @@ TEST(ReflectionFundamentalTypeTest, VerifyDouble)
     ASSERT_NE(nullptr, type);
     EXPECT_STREQ("double", type->GetName());
     EXPECT_EQ(TypeKind::Fundamental, type->GetKind());
-    EXPECT_EQ(8, type->GetSize());
-    EXPECT_EQ(8, type->GetAlignment());
+    EXPECT_EQ(8u, type->GetSize());
+    EXPECT_EQ(8u, type->GetAlignment());
 }
 
 TEST(ReflectionFundamentalTypeTest, VerifyString)

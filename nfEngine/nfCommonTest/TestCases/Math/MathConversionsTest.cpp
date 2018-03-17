@@ -113,9 +113,9 @@ TEST(Math, ConvertInt32)
     EXPECT_EQ(-(1LL << 31), ToInt32(-1.0e+10f));
 
     // Float to 32-bit unsigned integer
-    EXPECT_EQ(0, ToUint32(0.0f));
-    EXPECT_EQ(1, ToUint32(1.0f));
-    EXPECT_EQ(0, ToUint32(-1.0f));
-    EXPECT_EQ((1LL << 32) - 1, ToUint32(4294967295.0f));
-    EXPECT_EQ((1LL << 32) - 1, ToUint32(1.0e+10f));
+    EXPECT_EQ(0u, ToUint32(0.0f));
+    EXPECT_EQ(1u, ToUint32(1.0f));
+    EXPECT_EQ(0u, ToUint32(-1.0f));
+    EXPECT_EQ((1ull << 32) - 1, ToUint32(4294967295.0f));
+    EXPECT_EQ((1ull << 32) - 1, ToUint32(1.0e+10f));
 }

@@ -210,7 +210,7 @@ TEST(String, Constructor_Copy_ExternalToInternal)
     String copy(string);
 
     ASSERT_FALSE(copy.Empty());
-    ASSERT_EQ(1, copy.Length());
+    ASSERT_EQ(1u, copy.Length());
     ASSERT_EQ(String::MaxInternalLength + 1, copy.Capacity());
     ASSERT_STREQ("a", copy.Str());
 }

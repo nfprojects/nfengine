@@ -55,24 +55,9 @@ TEST(Aligned, AlignedObject)
     *testObject64 = TestClass64(123);
     *testObject4096 = TestClass4096(123);
 
-    EXPECT_EQ(0, reinterpret_cast<size_t>(testObject16.get()) % 16);
-    EXPECT_EQ(0, reinterpret_cast<size_t>(testObject64.get()) % 64);
-    EXPECT_EQ(0, reinterpret_cast<size_t>(testObject4096.get()) % 4096);
-}
-
-TEST(Aligned, AlignedContainer)
-{
-    std::vector<int, AlignedAllocator<int, 16>> vector16;
-    std::vector<int, AlignedAllocator<int, 64>> vector64;
-    std::vector<int, AlignedAllocator<int, 4096>> vector4096;
-
-    vector16.push_back(1);
-    vector64.push_back(2);
-    vector4096.push_back(3);
-
-    EXPECT_EQ(0, reinterpret_cast<size_t>(vector16.data()) % 16);
-    EXPECT_EQ(0, reinterpret_cast<size_t>(vector64.data()) % 64);
-    EXPECT_EQ(0, reinterpret_cast<size_t>(vector4096.data()) % 4096);
+    EXPECT_EQ(0u, reinterpret_cast<size_t>(testObject16.get()) % 16);
+    EXPECT_EQ(0u, reinterpret_cast<size_t>(testObject64.get()) % 64);
+    EXPECT_EQ(0u, reinterpret_cast<size_t>(testObject4096.get()) % 4096);
 }
 
 TEST(Aligned, AlignedArray)
@@ -90,7 +75,7 @@ TEST(Aligned, AlignedArray)
         testObject4096[i] = TestClass4096(123);
     }
 
-    EXPECT_EQ(0, reinterpret_cast<size_t>(testObject16.get()) % 16);
-    EXPECT_EQ(0, reinterpret_cast<size_t>(testObject64.get()) % 64);
-    EXPECT_EQ(0, reinterpret_cast<size_t>(testObject4096.get()) % 4096);
+    EXPECT_EQ(0u, reinterpret_cast<size_t>(testObject16.get()) % 16);
+    EXPECT_EQ(0u, reinterpret_cast<size_t>(testObject64.get()) % 64);
+    EXPECT_EQ(0u, reinterpret_cast<size_t>(testObject4096.get()) % 4096);
 }

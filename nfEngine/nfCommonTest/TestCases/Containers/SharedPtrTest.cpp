@@ -37,7 +37,7 @@ TEST(SharedPtr, Empty_SingleRef)
 
     ASSERT_EQ(pointer, nullptr);
     ASSERT_FALSE(pointer);
-    ASSERT_EQ(0, pointer.RefCount());
+    ASSERT_EQ(0u, pointer.RefCount());
 }
 
 TEST(SharedPtr, Empty_MoveConstructor_SingleRef)
@@ -46,17 +46,17 @@ TEST(SharedPtr, Empty_MoveConstructor_SingleRef)
 
     ASSERT_EQ(pointer, nullptr);
     ASSERT_FALSE(pointer);
-    ASSERT_EQ(0, pointer.RefCount());
+    ASSERT_EQ(0u, pointer.RefCount());
 
     SharedPtr<int> pointer2(std::move(pointer));
 
     ASSERT_EQ(pointer, nullptr);
     ASSERT_FALSE(pointer);
-    ASSERT_EQ(0, pointer.RefCount());
+    ASSERT_EQ(0u, pointer.RefCount());
 
     ASSERT_EQ(pointer2, nullptr);
     ASSERT_FALSE(pointer2);
-    ASSERT_EQ(0, pointer.RefCount());
+    ASSERT_EQ(0u, pointer.RefCount());
 }
 
 TEST(SharedPtr, Empty_MoveAssignment_SingleRef)
@@ -66,17 +66,17 @@ TEST(SharedPtr, Empty_MoveAssignment_SingleRef)
 
     ASSERT_EQ(pointer, nullptr);
     ASSERT_FALSE(pointer);
-    ASSERT_EQ(0, pointer.RefCount());
+    ASSERT_EQ(0u, pointer.RefCount());
 
     pointer2 = std::move(pointer);
 
     ASSERT_EQ(pointer, nullptr);
     ASSERT_FALSE(pointer);
-    ASSERT_EQ(0, pointer.RefCount());
+    ASSERT_EQ(0u, pointer.RefCount());
 
     ASSERT_EQ(pointer2, nullptr);
     ASSERT_FALSE(pointer2);
-    ASSERT_EQ(0, pointer.RefCount());
+    ASSERT_EQ(0u, pointer.RefCount());
 }
 
 TEST(SharedPtr, SimpleType_SingleRef)
@@ -88,7 +88,7 @@ TEST(SharedPtr, SimpleType_SingleRef)
     ASSERT_TRUE(pointer);
     ASSERT_EQ(123, *pointer);
     ASSERT_EQ(123, *pointer.Get());
-    ASSERT_EQ(1, pointer.RefCount());
+    ASSERT_EQ(1u, pointer.RefCount());
 }
 
 TEST(SharedPtr, Destructor_SingleRef)
@@ -109,7 +109,7 @@ TEST(SharedPtr, Reset_SingleRef)
     ASSERT_EQ(0, counter);
     ASSERT_NE(pointer, nullptr);
     ASSERT_TRUE(pointer);
-    ASSERT_EQ(1, pointer.RefCount());
+    ASSERT_EQ(1u, pointer.RefCount());
 
     // destroy TestClass
     pointer.Reset();
@@ -117,7 +117,7 @@ TEST(SharedPtr, Reset_SingleRef)
     ASSERT_EQ(pointer, nullptr);
     ASSERT_FALSE(pointer);
     ASSERT_EQ(1, counter);
-    ASSERT_EQ(0, pointer.RefCount());
+    ASSERT_EQ(0u, pointer.RefCount());
 }
 
 TEST(SharedPtr, MoveConstructor_SingleRef)
@@ -189,17 +189,17 @@ TEST(SharedPtr, CopyConstructor)
     ASSERT_EQ(0, counter);
     ASSERT_NE(pointerA, nullptr);
     ASSERT_TRUE(pointerA);
-    ASSERT_EQ(1, pointerA.RefCount());
+    ASSERT_EQ(1u, pointerA.RefCount());
 
     SharedPtr<TestClass> pointerB(pointerA);
 
     ASSERT_EQ(0, counter);
     ASSERT_NE(pointerA, nullptr);
     ASSERT_TRUE(pointerA);
-    ASSERT_EQ(2, pointerA.RefCount());
+    ASSERT_EQ(2u, pointerA.RefCount());
     ASSERT_NE(pointerB, nullptr);
     ASSERT_TRUE(pointerB);
-    ASSERT_EQ(2, pointerB.RefCount());
+    ASSERT_EQ(2u, pointerB.RefCount());
     ASSERT_EQ(pointerA.Get(), pointerB.Get());
 
     // remove original reference
@@ -208,10 +208,10 @@ TEST(SharedPtr, CopyConstructor)
     ASSERT_EQ(0, counter);
     ASSERT_EQ(pointerA, nullptr);
     ASSERT_FALSE(pointerA);
-    ASSERT_EQ(0, pointerA.RefCount());
+    ASSERT_EQ(0u, pointerA.RefCount());
     ASSERT_NE(pointerB, nullptr);
     ASSERT_TRUE(pointerB);
-    ASSERT_EQ(1, pointerB.RefCount());
+    ASSERT_EQ(1u, pointerB.RefCount());
 
     // remove second reference, object should be destroyed
     pointerB.Reset();
@@ -219,10 +219,10 @@ TEST(SharedPtr, CopyConstructor)
     ASSERT_EQ(1, counter);
     ASSERT_EQ(pointerA, nullptr);
     ASSERT_FALSE(pointerA);
-    ASSERT_EQ(0, pointerA.RefCount());
+    ASSERT_EQ(0u, pointerA.RefCount());
     ASSERT_EQ(pointerB, nullptr);
     ASSERT_FALSE(pointerB);
-    ASSERT_EQ(0, pointerA.RefCount());
+    ASSERT_EQ(0u, pointerA.RefCount());
 }
 
 TEST(SharedPtr, Assignment)
@@ -234,7 +234,7 @@ TEST(SharedPtr, Assignment)
     ASSERT_EQ(0, counter);
     ASSERT_NE(pointerA, nullptr);
     ASSERT_TRUE(pointerA);
-    ASSERT_EQ(1, pointerA.RefCount());
+    ASSERT_EQ(1u, pointerA.RefCount());
     ASSERT_TRUE(pointerA != pointerB);
     ASSERT_FALSE(pointerA == pointerB);
 
@@ -243,10 +243,10 @@ TEST(SharedPtr, Assignment)
     ASSERT_EQ(0, counter);
     ASSERT_NE(pointerA, nullptr);
     ASSERT_TRUE(pointerA);
-    ASSERT_EQ(2, pointerA.RefCount());
+    ASSERT_EQ(2u, pointerA.RefCount());
     ASSERT_NE(pointerB, nullptr);
     ASSERT_TRUE(pointerB);
-    ASSERT_EQ(2, pointerB.RefCount());
+    ASSERT_EQ(2u, pointerB.RefCount());
     ASSERT_EQ(pointerA.Get(), pointerB.Get());
     ASSERT_FALSE(pointerA != pointerB);
     ASSERT_TRUE(pointerA == pointerB);
@@ -257,10 +257,10 @@ TEST(SharedPtr, Assignment)
     ASSERT_EQ(0, counter);
     ASSERT_EQ(pointerA, nullptr);
     ASSERT_FALSE(pointerA);
-    ASSERT_EQ(0, pointerA.RefCount());
+    ASSERT_EQ(0u, pointerA.RefCount());
     ASSERT_NE(pointerB, nullptr);
     ASSERT_TRUE(pointerB);
-    ASSERT_EQ(1, pointerB.RefCount());
+    ASSERT_EQ(1u, pointerB.RefCount());
     ASSERT_TRUE(pointerA != pointerB);
     ASSERT_FALSE(pointerA == pointerB);
 
@@ -270,10 +270,10 @@ TEST(SharedPtr, Assignment)
     ASSERT_EQ(1, counter);
     ASSERT_EQ(pointerA, nullptr);
     ASSERT_FALSE(pointerA);
-    ASSERT_EQ(0, pointerA.RefCount());
+    ASSERT_EQ(0u, pointerA.RefCount());
     ASSERT_EQ(pointerB, nullptr);
     ASSERT_FALSE(pointerB);
-    ASSERT_EQ(0, pointerA.RefCount());
+    ASSERT_EQ(0u, pointerA.RefCount());
     ASSERT_FALSE(pointerA != pointerB);
     ASSERT_TRUE(pointerA == pointerB);
 }
@@ -337,21 +337,21 @@ TEST(SharedPtr, CastToBaseClass)
         auto childPtr = MakeSharedPtr<ChildTestClass>(counter);
 
         ASSERT_EQ(0, counter);
-        ASSERT_EQ(1, childPtr.RefCount());
+        ASSERT_EQ(1u, childPtr.RefCount());
 
         SharedPtr<TestClass> basePtr = childPtr;
 
         ASSERT_EQ(0, counter);
-        ASSERT_EQ(2, childPtr.RefCount());
-        ASSERT_EQ(2, basePtr.RefCount());
+        ASSERT_EQ(2u, childPtr.RefCount());
+        ASSERT_EQ(2u, basePtr.RefCount());
         ASSERT_TRUE(childPtr);
         ASSERT_TRUE(basePtr);
 
         childPtr.Reset();
 
         ASSERT_EQ(0, counter);
-        ASSERT_EQ(0, childPtr.RefCount());
-        ASSERT_EQ(1, basePtr.RefCount());
+        ASSERT_EQ(0u, childPtr.RefCount());
+        ASSERT_EQ(1u, basePtr.RefCount());
         ASSERT_FALSE(childPtr);
         ASSERT_TRUE(basePtr);
     }
@@ -366,21 +366,21 @@ TEST(SharedPtr, CastToBaseClass_Reference)
         const SharedPtr<ChildTestClass>& childPtrRef = childPtr;
 
         ASSERT_EQ(0, counter);
-        ASSERT_EQ(1, childPtr.RefCount());
+        ASSERT_EQ(1u, childPtr.RefCount());
 
         const SharedPtr<TestClass>& basePtr = childPtrRef;
 
         ASSERT_EQ(0, counter);
-        ASSERT_EQ(2, childPtr.RefCount());
-        ASSERT_EQ(2, basePtr.RefCount());
+        ASSERT_EQ(2u, childPtr.RefCount());
+        ASSERT_EQ(2u, basePtr.RefCount());
         ASSERT_TRUE(childPtr);
         ASSERT_TRUE(basePtr);
 
         childPtr.Reset();
 
         ASSERT_EQ(0, counter);
-        ASSERT_EQ(0, childPtr.RefCount());
-        ASSERT_EQ(1, basePtr.RefCount());
+        ASSERT_EQ(0u, childPtr.RefCount());
+        ASSERT_EQ(1u, basePtr.RefCount());
         ASSERT_FALSE(childPtr);
         ASSERT_TRUE(basePtr);
     }

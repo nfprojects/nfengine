@@ -15,7 +15,7 @@ TEST(ArrayView, Empty)
 {
     ArrayView<int> array;
 
-    EXPECT_EQ(0, array.Size());
+    EXPECT_EQ(0u, array.Size());
     EXPECT_TRUE(array.Empty());
     EXPECT_EQ(array.Begin(), array.End());
     EXPECT_EQ(array.End(), array.Find(0));
@@ -26,7 +26,7 @@ TEST(ArrayView, Access)
     int elements[5] = { 0, 1, 2, 3, 4 };
     ArrayView<int> array(elements, 5);
 
-    ASSERT_EQ(5, array.Size());
+    ASSERT_EQ(5u, array.Size());
     ASSERT_FALSE(array.Empty());
 
     EXPECT_EQ(0, array.Front());
@@ -47,7 +47,7 @@ TEST(ArrayView, ConstAccess)
     const int elements[5] = { 0, 1, 2, 3, 4 };
     const ArrayView<const int> array(elements, 5);
 
-    ASSERT_EQ(5, array.Size());
+    ASSERT_EQ(5u, array.Size());
     ASSERT_FALSE(array.Empty());
 
     EXPECT_EQ(0, array.Front());
@@ -66,7 +66,7 @@ TEST(ArrayView, ConstructConstFromNonConst)
     const ArrayView<int> array(elements, 5);
     const ArrayView<const int> array2(array);
 
-    ASSERT_EQ(5, array2.Size());
+    ASSERT_EQ(5u, array2.Size());
     ASSERT_FALSE(array2.Empty());
 
     EXPECT_EQ(0, array2.Front());
@@ -85,7 +85,7 @@ TEST(ArrayView, AssignConstToNonConst)
     const ArrayView<int> array(elements, 5);
     const ArrayView<const int> array2 = array;
 
-    ASSERT_EQ(5, array2.Size());
+    ASSERT_EQ(5u, array2.Size());
     ASSERT_FALSE(array2.Empty());
 
     EXPECT_EQ(0, array2.Front());
@@ -102,7 +102,7 @@ TEST(ArrayView, Iterator)
 {
     int elements[5] = { 0, 10, 20, 30, 40 };
     ArrayView<int> array(elements, 5);
-    ASSERT_EQ(5, array.Size());
+    ASSERT_EQ(5u, array.Size());
 
     ArrayView<int>::Iterator iter = array.Begin();
     *iter = 123;
@@ -137,7 +137,7 @@ TEST(ArrayView, ConstIterator)
 {
     int elements[5] = { 0, 10, 20, 30, 40 };
     const ArrayView<int> array(elements, 5);
-    ASSERT_EQ(5, array.Size());
+    ASSERT_EQ(5u, array.Size());
 
     ArrayView<int>::ConstIterator iter = array.Begin();
     EXPECT_EQ(0, *iter);
@@ -171,7 +171,7 @@ TEST(ArrayView, IteratorConversion)
 {
     int elements[5] = { 0, 10, 20, 30, 40 };
     ArrayView<int> array(elements, 5);
-    ASSERT_EQ(5, array.Size());
+    ASSERT_EQ(5u, array.Size());
 
     const ArrayView<int>::Iterator iter = array.Begin();
     const ArrayView<int>::ConstIterator iter2 = iter;
@@ -184,7 +184,7 @@ TEST(ArrayView, IteratorArithmetics)
 {
     int elements[5] = { 0, 10, 20, 30, 40 };
     ArrayView<int> array(elements, 5);
-    ASSERT_EQ(5, array.Size());
+    ASSERT_EQ(5u, array.Size());
 
     const ArrayView<int>::Iterator iter = array.Begin();
     const ArrayView<int>::Iterator iter2 = iter + 1;
@@ -197,7 +197,7 @@ TEST(ArrayView, ConstIteratorArithmetics)
 {
     int elements[5] = { 0, 10, 20, 30, 40 };
     ArrayView<int> array(elements, 5);
-    ASSERT_EQ(5, array.Size());
+    ASSERT_EQ(5u, array.Size());
 
     const ArrayView<int>::ConstIterator iter = array.Begin();
     const ArrayView<int>::ConstIterator iter2 = iter + 1;
@@ -226,7 +226,7 @@ TEST(ArrayView, Range)
     ArrayView<int> array(elements, 5);
 
     ArrayView<int> array2 = array.Range(2, 3);
-    ASSERT_EQ(3, array2.Size());
+    ASSERT_EQ(3u, array2.Size());
     ASSERT_FALSE(array2.Empty());
 
     EXPECT_EQ(2, array2[0]);
