@@ -25,10 +25,10 @@ TEST(ReflectionClassTest, BaseClass_Verify)
     const size_t initialOffset = sizeof(size_t);
 
     // check class members
-    ASSERT_EQ(3, type->GetNumOfMembers());
+    ASSERT_EQ(3u, type->GetNumOfMembers());
     ClassType::Members members;
     type->ListMembers(members);
-    ASSERT_EQ(3, members.Size());
+    ASSERT_EQ(3u, members.Size());
     {
         EXPECT_STREQ("intVal", members[0].GetName());
         EXPECT_EQ(GetType<int32>(), members[0].GetType());
@@ -106,10 +106,10 @@ TEST(ReflectionClassTest, ChildClass_Verify)
     const size_t initialOffset = sizeof(size_t);
 
     // check class members
-    ASSERT_EQ(4, type->GetNumOfMembers());
+    ASSERT_EQ(4u, type->GetNumOfMembers());
     ClassType::Members members;
     type->ListMembers(members);
-    ASSERT_EQ(4, members.Size());
+    ASSERT_EQ(4u, members.Size());
     {
         EXPECT_STREQ("intVal", members[0].GetName());
         EXPECT_EQ(GetType<int32>(), members[0].GetType());
@@ -191,10 +191,10 @@ TEST(ReflectionClassTest, AbstractClass_Verify)
     const size_t initialOffset = sizeof(size_t);
 
     // check class members
-    ASSERT_EQ(2, type->GetNumOfMembers());
+    ASSERT_EQ(2u, type->GetNumOfMembers());
     ClassType::Members members;
     type->ListMembers(members);
-    ASSERT_EQ(2, members.Size());
+    ASSERT_EQ(2u, members.Size());
     {
         EXPECT_STREQ("intVal", members[0].GetName());
         EXPECT_EQ(GetType<int32>(), members[0].GetType());

@@ -32,7 +32,7 @@ TEST(UniquePtr, UniquePtrOfDynArray)
     UniquePtr<Type> ptr = MakeUniquePtr<Type>();
 
     ptr->PushBack(1);
-    ASSERT_EQ(1, ptr->Size());
+    ASSERT_EQ(1u, ptr->Size());
 
     ptr.Reset();
     ASSERT_EQ(ptr, nullptr);

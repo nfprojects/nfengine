@@ -304,7 +304,7 @@ TEST(Config, GenericValue)
 
     ASSERT_TRUE(root.HasMember("array"));
     ASSERT_TRUE(root["array"].IsArray());
-    ASSERT_EQ(3, root["array"].GetSize());
+    ASSERT_EQ(3u, root["array"].GetSize());
     EXPECT_EQ(1, root["array"][0u].Get<int32>());
     EXPECT_EQ(2, root["array"][1u].Get<int32>());
     EXPECT_EQ(3, root["array"][2u].Get<int32>());
@@ -314,7 +314,7 @@ TEST(Config, GenericValue)
 
     ASSERT_TRUE(root.HasMember("emptyArray"));
     ASSERT_TRUE(root["emptyArray"].IsArray());
-    EXPECT_EQ(0, root["emptyArray"].GetSize());
+    EXPECT_EQ(0u, root["emptyArray"].GetSize());
 
     ASSERT_TRUE(root.HasMember("twoDimensionArray"));
     ASSERT_TRUE(root["twoDimensionArray"].IsArray());
@@ -360,22 +360,22 @@ TEST(Config, DataTranslator)
     EXPECT_EQ(10.0f, object.floatValue);
     EXPECT_STREQ("this is a string", object.stringValue);
 
-    ASSERT_EQ(3, object.intArray.Size());
+    ASSERT_EQ(3u, object.intArray.Size());
     EXPECT_EQ(1, object.intArray[0]);
     EXPECT_EQ(2, object.intArray[1]);
     EXPECT_EQ(3, object.intArray[2]);
 
-    ASSERT_EQ(3, object.boolArray.Size());
+    ASSERT_EQ(3u, object.boolArray.Size());
     EXPECT_TRUE(object.boolArray[0]);
     EXPECT_FALSE(object.boolArray[1]);
     EXPECT_TRUE(object.boolArray[2]);
 
-    ASSERT_EQ(3, object.floatArray.Size());
+    ASSERT_EQ(3u, object.floatArray.Size());
     EXPECT_EQ(1.0f, object.floatArray[0]);
     EXPECT_EQ(2.0f, object.floatArray[1]);
     EXPECT_EQ(3.0f, object.floatArray[2]);
 
-    ASSERT_EQ(2, object.stringArray.Size());
+    ASSERT_EQ(2u, object.stringArray.Size());
     EXPECT_STREQ("aaa", object.stringArray[0]);
     EXPECT_STREQ("bbb", object.stringArray[1]);
 }

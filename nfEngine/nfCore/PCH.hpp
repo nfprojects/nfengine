@@ -66,10 +66,6 @@
 #include <atomic>
 #include <unordered_map>
 
-// Bullet physics Engine
-#include "btBulletCollisionCommon.h"
-#include "btBulletDynamicsCommon.h"
-
 // FreeType library
 #include "ft2build.h"
 #include "freetype/freetype.h"

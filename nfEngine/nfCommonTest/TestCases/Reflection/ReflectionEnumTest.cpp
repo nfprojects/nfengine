@@ -19,7 +19,7 @@ TEST(ReflectionEnumTest, TestEnum_Verify)
     EXPECT_EQ(alignof(TestEnum), type->GetAlignment());
 
     const auto& options = type->GetOptions();
-    ASSERT_EQ(3, options.Size());
+    ASSERT_EQ(3u, options.Size());
 
     EXPECT_STREQ("OptionA", options[0].name);
     EXPECT_STREQ("OptionB", options[1].name);

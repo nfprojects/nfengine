@@ -143,9 +143,9 @@ TEST(FileSystemTest, Iterate)
     ASSERT_TRUE(FileSystem::Iterate(root, callback));
 
     for (const String& path : test_dirs)
-        EXPECT_EQ(1, dirs.count(path)) << "check directory '" << path.Str() << "'";
+        EXPECT_EQ(1u, dirs.count(path)) << "check directory '" << path.Str() << "'";
     for (const String& path : test_files)
-        EXPECT_EQ(1, files.count(path)) << "check file '" << path.Str() << "'";
+        EXPECT_EQ(1u, files.count(path)) << "check file '" << path.Str() << "'";
 
     // cleanup
     ASSERT_TRUE(FileSystem::Remove(root, true));

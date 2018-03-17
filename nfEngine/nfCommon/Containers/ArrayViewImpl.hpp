@@ -145,7 +145,7 @@ const ElementType& ArrayView<ElementType>::operator[](uint32 index) const
 }
 
 template<typename ElementType>
-typename ArrayView<ElementType>::ArrayView ArrayView<ElementType>::Range(uint32 index, uint32 size) const
+ArrayView<ElementType> ArrayView<ElementType>::Range(uint32 index, uint32 size) const
 {
     NFE_ASSERT(index < mSize, "Invalid array index %u (size is %u)", index, mSize);
     NFE_ASSERT(index + size < mSize + 1, "Subrange exceedes array size (last index is %u, size is %u)", index + size, mSize);
