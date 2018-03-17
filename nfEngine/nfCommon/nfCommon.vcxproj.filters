@@ -19,9 +19,6 @@
     <Filter Include="Math">
       <UniqueIdentifier>{48b04ae9-ceb7-4b42-bfca-3c624ca936f7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Packer">
-      <UniqueIdentifier>{9eaf8d6a-0311-4455-8fa3-7cffd7344051}</UniqueIdentifier>
-    </Filter>
     <Filter Include="System">
       <UniqueIdentifier>{f54b2f1c-c287-4ba3-adc8-f5b73876c24f}</UniqueIdentifier>
     </Filter>
@@ -169,27 +166,6 @@
     </ClInclude>
     <ClInclude Include="Memory\Buffer.hpp">
       <Filter>Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="Packer\PackerDefines.hpp">
-      <Filter>Packer</Filter>
-    </ClInclude>
-    <ClInclude Include="Packer\PackerElement.hpp">
-      <Filter>Packer</Filter>
-    </ClInclude>
-    <ClInclude Include="Packer\PackerReader.hpp">
-      <Filter>Packer</Filter>
-    </ClInclude>
-    <ClInclude Include="Packer\PackerResource.hpp">
-      <Filter>Packer</Filter>
-    </ClInclude>
-    <ClInclude Include="Packer\PackerResourceFile.hpp">
-      <Filter>Packer</Filter>
-    </ClInclude>
-    <ClInclude Include="Packer\PackerWriter.hpp">
-      <Filter>Packer</Filter>
-    </ClInclude>
-    <ClInclude Include="Packer\Packer.hpp">
-      <Filter>Packer</Filter>
     </ClInclude>
     <ClInclude Include="Utils\BVH.hpp">
       <Filter>Utils</Filter>
@@ -641,21 +617,6 @@
     </ClCompile>
     <ClCompile Include="Memory\Buffer.cpp">
       <Filter>Memory</Filter>
-    </ClCompile>
-    <ClCompile Include="Packer\PackerReader.cpp">
-      <Filter>Packer</Filter>
-    </ClCompile>
-    <ClCompile Include="Packer\PackerResource.cpp">
-      <Filter>Packer</Filter>
-    </ClCompile>
-    <ClCompile Include="Packer\PackerResourceFile.cpp">
-      <Filter>Packer</Filter>
-    </ClCompile>
-    <ClCompile Include="Packer\PackerWriter.cpp">
-      <Filter>Packer</Filter>
-    </ClCompile>
-    <ClCompile Include="Packer\PackerDefines.cpp">
-      <Filter>Packer</Filter>
     </ClCompile>
     <ClCompile Include="Utils\BVH.cpp">
       <Filter>Utils</Filter>

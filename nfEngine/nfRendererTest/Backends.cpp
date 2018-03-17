@@ -15,7 +15,6 @@ NFE::Common::String gShaderPathExt;
 
 const NFE::Common::String D3D11_BACKEND("nfRendererD3D11");
 const NFE::Common::String D3D12_BACKEND("nfRendererD3D12");
-const NFE::Common::String OGL4_BACKEND("nfRendererOGL4");
 const NFE::Common::String VK_BACKEND("nfRendererVk");
 
 const NFE::Common::String HLSL5_SHADER_PATH_PREFIX("nfEngine/nfRendererTest/Shaders/HLSL5/");

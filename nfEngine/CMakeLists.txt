@@ -14,4 +14,3 @@ ADD_SUBDIRECTORY("Tools")
 
 # TODO uncomment during Linux version implementation
 #ADD_SUBDIRECTORY("nfCore")
-#ADD_SUBDIRECTORY("nfCoreTest")

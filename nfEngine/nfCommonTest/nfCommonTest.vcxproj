@@ -203,8 +203,6 @@
     <ClCompile Include="TestCases\Math\MathVectorTest.cpp" />
     <ClCompile Include="TestCases\Memory\AlignedTest.cpp" />
     <ClCompile Include="TestCases\Memory\MemoryTest.cpp" />
-    <ClCompile Include="TestCases\Packer\PackerBasicTest.cpp" />
-    <ClCompile Include="TestCases\Packer\PackerComplexTest.cpp" />
     <ClCompile Include="TestCases\Reflection\ReflectionClassTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>

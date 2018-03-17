@@ -12,9 +12,6 @@
     <ClCompile Include="TestCases\LoggerPerfTest.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>
-    <ClCompile Include="TestCases\PackerPerfTest.cpp">
-      <Filter>TestCases</Filter>
-    </ClCompile>
     <ClCompile Include="TestCases\ThreadPoolPerfTest.cpp">
       <Filter>TestCases</Filter>
     </ClCompile>

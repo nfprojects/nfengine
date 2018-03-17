@@ -26,7 +26,6 @@ SET_TARGET_PROPERTIES(nfRendererDemo PROPERTIES
                       LINK_FLAGS "-pthread"
                       COTIRE_CXX_PREFIX_HEADER_INIT "PCH.hpp")
 
-# nfRendererOGL4 dependency removed temporarily
 ADD_DEPENDENCIES(nfRendererDemo nfCommon)
 TARGET_LINK_LIBRARIES(nfRendererDemo nfCommon squish jpeg png dl
                       ${NFRENDERERDEMO_DEPS_LIBRARIES})
