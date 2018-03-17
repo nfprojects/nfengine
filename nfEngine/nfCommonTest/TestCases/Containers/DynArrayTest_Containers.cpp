@@ -34,7 +34,7 @@ TEST(DynArray, DynArrayOfStrings_Simple)
     array.PushBack(strB);
     array.PushBack(strC);
 
-    ASSERT_EQ(3, array.Size());
+    ASSERT_EQ(3u, array.Size());
     ASSERT_NE(array.End(), array.Find(strA));
     ASSERT_NE(array.End(), array.Find(strB));
     ASSERT_NE(array.End(), array.Find(strC));
@@ -54,7 +54,7 @@ TEST(DynArray, DynArrayOfStrings_Erase)
     expectedArray.PushBack(strC);
 
     array.Erase(array.Begin() + 1);
-    ASSERT_EQ(2, array.Size());
+    ASSERT_EQ(2u, array.Size());
     ASSERT_EQ(expectedArray, array);
 
     ASSERT_EQ(array.End(), array.Find(strB));
@@ -74,7 +74,7 @@ TEST(DynArray, DynArrayOfStrings_Insert)
     expectedArray.PushBack(strC);
 
     array.InsertAt(1, strD);
-    ASSERT_EQ(4, array.Size());
+    ASSERT_EQ(4u, array.Size());
     ASSERT_EQ(expectedArray, array);
 
     ASSERT_NE(array.End(), array.Find(strD));
@@ -90,7 +90,7 @@ TEST(DynArray, DynArrayOfUniquePtrs_Simple)
     array.PushBack(MakeUniquePtr<int>(2));
     array.PushBack(MakeUniquePtr<int>(3));
 
-    ASSERT_EQ(3, array.Size());
+    ASSERT_EQ(3u, array.Size());
     EXPECT_NE(array.End(), std::find_if(array.Begin(), array.End(), [](const UniquePtr<int>& x) { return *x == 1; }));
     EXPECT_EQ(array.End(), std::find_if(array.Begin(), array.End(), [](const UniquePtr<int>& x) { return *x == 1234; }));
 }
@@ -103,14 +103,14 @@ TEST(DynArray, DynArrayOfUniquePtrs_Erase)
     array.PushBack(MakeUniquePtr<int>(2));
     array.PushBack(MakeUniquePtr<int>(3));
 
-    ASSERT_EQ(3, array.Size());
+    ASSERT_EQ(3u, array.Size());
     EXPECT_NE(array.End(), std::find_if(array.Begin(), array.End(), [](const UniquePtr<int>& x) { return *x == 1; }));
     EXPECT_NE(array.End(), std::find_if(array.Begin(), array.End(), [](const UniquePtr<int>& x) { return *x == 2; }));
     EXPECT_NE(array.End(), std::find_if(array.Begin(), array.End(), [](const UniquePtr<int>& x) { return *x == 3; }));
 
     array.Erase(array.begin() + 1);
 
-    ASSERT_EQ(2, array.Size());
+    ASSERT_EQ(2u, array.Size());
     EXPECT_NE(array.End(), std::find_if(array.Begin(), array.End(), [](const UniquePtr<int>& x) { return *x == 1; }));
     EXPECT_EQ(array.End(), std::find_if(array.Begin(), array.End(), [](const UniquePtr<int>& x) { return *x == 2; }));
     EXPECT_NE(array.End(), std::find_if(array.Begin(), array.End(), [](const UniquePtr<int>& x) { return *x == 3; }));
@@ -126,7 +126,7 @@ TEST(DynArray, DynArrayOfDynArrays_Simple)
     array.PushBack(DynArray<int>{2, 3});
     array.PushBack(DynArray<int>{4, 5, 6});
 
-    ASSERT_EQ(3, array.Size());
+    ASSERT_EQ(3u, array.Size());
     ASSERT_NE(array.End(), array.Find(DynArray<int>{1}));
     ASSERT_NE(array.End(), array.Find(DynArray<int>{2, 3}));
     ASSERT_NE(array.End(), array.Find(DynArray<int>{4, 5, 6}));
@@ -144,8 +144,8 @@ TEST(DynArray, DynArrayOfDynArrays_CopyConstructor)
     DynArray<DynArray<int>> arrayCopy(array);
     ASSERT_EQ(array, arrayCopy);
 
-    ASSERT_EQ(3, array.Size());
-    ASSERT_EQ(3, arrayCopy.Size());
+    ASSERT_EQ(3u, array.Size());
+    ASSERT_EQ(3u, arrayCopy.Size());
     ASSERT_NE(arrayCopy.End(), arrayCopy.Find(DynArray<int>{1}));
     ASSERT_NE(arrayCopy.End(), arrayCopy.Find(DynArray<int>{2, 3}));
     ASSERT_NE(arrayCopy.End(), arrayCopy.Find(DynArray<int>{4, 5, 6}));
@@ -163,8 +163,8 @@ TEST(DynArray, DynArrayOfDynArrays_MoveConstructor)
     DynArray<DynArray<int>> arrayCopy(std::move(array));
     ASSERT_NE(array, arrayCopy);
 
-    ASSERT_EQ(0, array.Size());
-    ASSERT_EQ(3, arrayCopy.Size());
+    ASSERT_EQ(0u, array.Size());
+    ASSERT_EQ(3u, arrayCopy.Size());
     ASSERT_NE(arrayCopy.End(), arrayCopy.Find(DynArray<int>{1}));
     ASSERT_NE(arrayCopy.End(), arrayCopy.Find(DynArray<int>{2, 3}));
     ASSERT_NE(arrayCopy.End(), arrayCopy.Find(DynArray<int>{4, 5, 6}));
@@ -181,7 +181,7 @@ TEST(DynArray, DynArrayOfDynArrays_Erase)
 
     array.Erase(array.Begin() + 1);
 
-    ASSERT_EQ(2, array.Size());
+    ASSERT_EQ(2u, array.Size());
     ASSERT_NE(array.End(), array.Find(DynArray<int>{1}));
     ASSERT_EQ(array.End(), array.Find(DynArray<int>{2, 3}));
     ASSERT_NE(array.End(), array.Find(DynArray<int>{4, 5, 6}));

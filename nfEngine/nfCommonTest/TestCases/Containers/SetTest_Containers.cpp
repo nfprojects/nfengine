@@ -96,14 +96,14 @@ TEST(Set, SetOfUniquePtrs)
     auto iter2 = std::find_if(set.begin(), set.end(), [&](const KeyType& key) { return key.Get() == rawPtr2; });
     auto iter3 = std::find_if(set.begin(), set.end(), [&](const KeyType& key) { return key.Get() == rawPtr3; });
 
-    ASSERT_EQ(3, set.Size());
+    ASSERT_EQ(3u, set.Size());
     ASSERT_NE(set.End(), iter1);
     ASSERT_NE(set.End(), iter2);
     ASSERT_NE(set.End(), iter3);
     ASSERT_EQ(set.End(), set.Find(nullptr));
 
     ASSERT_FALSE(set.Erase(nullptr));
-    ASSERT_EQ(3, set.Size());
+    ASSERT_EQ(3u, set.Size());
 
     ASSERT_TRUE(set.Erase(iter2));
 
@@ -112,7 +112,7 @@ TEST(Set, SetOfUniquePtrs)
         iter2 = std::find_if(set.begin(), set.end(), [&](const KeyType& key) { return key.Get() == rawPtr2; });
         iter3 = std::find_if(set.begin(), set.end(), [&](const KeyType& key) { return key.Get() == rawPtr3; });
 
-        ASSERT_EQ(2, set.Size());
+        ASSERT_EQ(2u, set.Size());
         ASSERT_NE(set.End(), iter1);
         ASSERT_EQ(set.End(), iter2);
         ASSERT_NE(set.End(), iter3);

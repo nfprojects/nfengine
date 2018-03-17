@@ -37,22 +37,22 @@ TEST(BVH, Simple)
     const Box box3 = Box(Vector4(0.5f, 5.5f, 0.5f), Vector4(1.0f, 6.0f, 1.0f));
 
     bvh.GetStats(stats);
-    EXPECT_EQ(0, stats.height);
-    EXPECT_EQ(0, stats.leavesNum);
+    EXPECT_EQ(0u, stats.height);
+    EXPECT_EQ(0u, stats.leavesNum);
     EXPECT_EQ(0.0, stats.totalArea);
     EXPECT_EQ(0.0, stats.totalVolume);
 
     // insert two test leaves
-    EXPECT_EQ(0, bvh.GetSize());
+    EXPECT_EQ(0u, bvh.GetSize());
     uint32 leaf0 = bvh.Insert(box0, nullptr);
-    EXPECT_EQ(1, bvh.GetSize());
+    EXPECT_EQ(1u, bvh.GetSize());
     uint32 leaf1 = bvh.Insert(box1, nullptr);
-    EXPECT_EQ(2, bvh.GetSize());
+    EXPECT_EQ(2u, bvh.GetSize());
     ASSERT_NE(leaf0, leaf1);
 
     bvh.GetStats(stats);
-    EXPECT_EQ(1, stats.height);
-    EXPECT_EQ(2, stats.leavesNum);
+    EXPECT_EQ(1u, stats.height);
+    EXPECT_EQ(2u, stats.leavesNum);
     EXPECT_LT(0.0, stats.totalArea);
     EXPECT_LT(0.0, stats.totalVolume);
 
@@ -63,13 +63,13 @@ TEST(BVH, Simple)
 
     // remove test
     EXPECT_TRUE(bvh.Remove(leaf0));
-    EXPECT_EQ(1, bvh.GetSize());
+    EXPECT_EQ(1u, bvh.GetSize());
     EXPECT_TRUE(bvh.Remove(leaf1));
-    EXPECT_EQ(0, bvh.GetSize());
+    EXPECT_EQ(0u, bvh.GetSize());
 
     bvh.GetStats(stats);
-    EXPECT_EQ(0, stats.height);
-    EXPECT_EQ(0, stats.leavesNum);
+    EXPECT_EQ(0u, stats.height);
+    EXPECT_EQ(0u, stats.leavesNum);
     EXPECT_EQ(0.0, stats.totalArea);
     EXPECT_EQ(0.0, stats.totalVolume);
 
@@ -77,7 +77,7 @@ TEST(BVH, Simple)
     EXPECT_FALSE(bvh.Remove(invalidLeaf));
     EXPECT_FALSE(bvh.Remove(leaf0));
     EXPECT_FALSE(bvh.Remove(leaf1));
-    EXPECT_EQ(0, bvh.GetSize());
+    EXPECT_EQ(0u, bvh.GetSize());
 }
 
 /**

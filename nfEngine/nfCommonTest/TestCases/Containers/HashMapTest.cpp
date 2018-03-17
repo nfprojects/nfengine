@@ -16,7 +16,7 @@ TEST(HashMap, Empty)
 {
     HashMap<int, int> map;
 
-    EXPECT_EQ(0, map.Size());
+    EXPECT_EQ(0u, map.Size());
     EXPECT_TRUE(map.Empty());
     EXPECT_EQ(map.Begin(), map.End());
     EXPECT_EQ(map.End(), map.Find(0));

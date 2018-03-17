@@ -54,7 +54,7 @@ unsigned char TEST_DATA[TEST_DATA_SIZE] = { 0, 0,   0, 0, 0,   0, 255,   0, 0, 2
                                             0, 0,   0, 0, 0,   0, 255,   0, 0, 255,   0, 0,
                                             0, 0, 255, 0, 0, 255,   0, 255, 0,   0, 255, 0,
                                             0, 0, 255, 0, 0, 255,   0, 255, 0,   0, 255, 0 };
-const int TEST_DATA_MAX_MIPMAP_NUM = 2;
+const uint32 TEST_DATA_MAX_MIPMAP_NUM = 2;
 const int COMPRESSION_ARTEFACT_TRESHOLD = 20;
 
 // Image format tables
@@ -300,7 +300,7 @@ TEST_F(ImageTest, BasicConstructor)
     // For uninitialized mImage nothing should work
     ASSERT_EQ(0, mImage->GetWidth());
     ASSERT_EQ(0, mImage->GetHeight());
-    ASSERT_EQ(0, mImage->GetMipmapsNum());
+    ASSERT_EQ(0u, mImage->GetMipmapsNum());
     ASSERT_TRUE(mImage->GetData() == nullptr);
     ASSERT_TRUE(mImage->GetMipmap() == nullptr);
     ASSERT_EQ(ImageFormat::Unknown, mImage->GetFormat());
@@ -355,7 +355,7 @@ TEST_F(ImageTest, SetData)
                                 TEST_DATA_HEIGHT, TEST_DATA_FORMAT));
     const uint8* mImageData = static_cast<const uint8*>(mImage->GetData());
 
-    ASSERT_EQ(1, mImage->GetMipmapsNum());
+    ASSERT_EQ(1u, mImage->GetMipmapsNum());
     ASSERT_EQ(0, memcmp(mImageData, TEST_DATA, TEST_DATA_SIZE));
     ASSERT_EQ(TEST_DATA_FORMAT, mImage->GetFormat());
 }
@@ -368,7 +368,7 @@ TEST_F(ImageTest, Grayscale)
 
     ASSERT_TRUE(mImage->Grayscale());
 
-    ASSERT_EQ(1, mImage->GetMipmapsNum());
+    ASSERT_EQ(1u, mImage->GetMipmapsNum());
     ASSERT_EQ(TEST_DATA_FORMAT, mImage->GetFormat());
 
     const int singleTexelSize = 3;
@@ -454,7 +454,7 @@ TEST_F(ImageTest, Release)
     mImage->Release();
 
     ASSERT_TRUE(mImage->GetData() == nullptr);
-    ASSERT_EQ(0, mImage->GetMipmapsNum());
+    ASSERT_EQ(0u, mImage->GetMipmapsNum());
     ASSERT_EQ(0, mImage->GetWidth());
     ASSERT_EQ(0, mImage->GetHeight());
     ASSERT_EQ(ImageFormat::Unknown, mImage->GetFormat());
@@ -579,7 +579,7 @@ TEST_F(ImageTest, LoadDDS)
     // DDS format with mipmaps
     mImageFile.reset(new FileInputStream((TEST_IMAGES_PATH + TEXTURE_DDS_MM)));
     LoadAssert(ImageFormat::BC1);
-    ASSERT_EQ(5, mImage->GetMipmapsNum());
+    ASSERT_EQ(5u, mImage->GetMipmapsNum());
 }
 
 TEST_F(ImageTest, ImageFormatError)

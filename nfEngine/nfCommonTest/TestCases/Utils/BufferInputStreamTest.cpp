@@ -28,7 +28,7 @@ TEST_F(BufferInputStreamTest, NullBufferTest)
     // Size should be as in constructor, methods should all fail
     ASSERT_EQ(stream.GetSize(), TEXTSIZE);
     ASSERT_EQ(stream.Seek(1), false);
-    ASSERT_EQ(stream.Read(nullptr, 1), 0);
+    ASSERT_EQ(stream.Read(nullptr, 1), 0u);
 }
 
 TEST_F(BufferInputStreamTest, StringBufferTest)

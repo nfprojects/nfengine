@@ -4,13 +4,13 @@
 
 #include "TestClasses.hpp"
 
-
+using namespace NFE;
 using namespace NFE::Common;
 using namespace NFE::Math;
 
 namespace {
 
-const int MAX_OBJECTS = 1000000;
+const uint32 MAX_OBJECTS = 1000000;
 const int TEST_VALUE = 123456;
 
 } // namespace
@@ -19,10 +19,10 @@ TEST(PackedArray, AddUnsignedChar)
 {
     PackedArray<int, unsigned char> array;
 
-    const int maxObj = 0xFF;
+    const uint32 maxObj = 0xFF;
     ASSERT_EQ(maxObj, array.MaxSize());
 
-    for (int i = 0; i < maxObj; ++i)
+    for (uint32 i = 0; i < maxObj; ++i)
     {
         unsigned char idx = array.Add(i);
         ASSERT_NE(array.InvalidIndex, idx) << "i=" << i;
@@ -39,7 +39,7 @@ TEST(PackedArray, AddUnsignedShort)
 {
     PackedArray<int, unsigned short> array;
 
-    const int maxObj = 0xFFFF;
+    const uint32 maxObj = 0xFFFF;
     ASSERT_EQ(array.MaxSize(), maxObj);
 
     for (int i = 0; i < maxObj; ++i)
@@ -57,85 +57,85 @@ TEST(PackedArray, AddUnsignedShort)
 
 TEST(PackedArray, AddAndRemoveAscending)
 {
-    PackedArray<int, unsigned int> array;
+    PackedArray<int, uint32> array;
 
-    const unsigned int maxSize = 0xFFFFFFFF;
+    const uint32 maxSize = 0xFFFFFFFF;
     ASSERT_EQ(maxSize, array.MaxSize());
 
     for (int i = 0; i < MAX_OBJECTS; ++i)
     {
-        unsigned int idx = array.Add(1000 * i);
+        uint32 idx = array.Add(1000 * i);
         ASSERT_NE(array.InvalidIndex, idx) << "i=" << i;
     }
     ASSERT_EQ(MAX_OBJECTS, array.Size());
 
     for (int i = 0; i < MAX_OBJECTS; ++i)
     {
-        unsigned int idx = static_cast<unsigned int>(i);
+        uint32 idx = static_cast<uint32>(i);
         ASSERT_TRUE(array.Has(idx)) << "i=" << i;
         array.Remove(idx);
     }
-    ASSERT_EQ(0, array.Size());
+    ASSERT_EQ(0u, array.Size());
 
     for (int i = 0; i < MAX_OBJECTS; ++i)
     {
-        unsigned int idx = static_cast<unsigned int>(i);
+        uint32 idx = static_cast<uint32>(i);
         ASSERT_FALSE(array.Has(idx)) << "i=" << i;
     }
 }
 
 TEST(PackedArray, AddAndRemoveDescending)
 {
-    PackedArray<int, unsigned int> array;
+    PackedArray<int, uint32> array;
 
     for (int i = 0; i < MAX_OBJECTS; ++i)
     {
-        unsigned int idx = array.Add(1000 * i);
+        uint32 idx = array.Add(1000 * i);
         ASSERT_NE(array.InvalidIndex, idx) << "i=" << i;
     }
     ASSERT_EQ(MAX_OBJECTS, array.Size());
 
     for (int i = MAX_OBJECTS - 1; i >= 0; --i)
     {
-        unsigned int idx = static_cast<unsigned int>(i);
+        uint32 idx = static_cast<uint32>(i);
         ASSERT_TRUE(array.Has(idx)) << "i=" << i;
         array.Remove(idx);
     }
-    ASSERT_EQ(0, array.Size());
+    ASSERT_EQ(0u, array.Size());
 
     for (int i = 0; i < MAX_OBJECTS; ++i)
     {
-        unsigned int idx = static_cast<unsigned int>(i);
+        uint32 idx = static_cast<uint32>(i);
         ASSERT_FALSE(array.Has(idx)) << "i=" << i;
     }
 }
 
 TEST(PackedArray, AddAndRemoveRandom)
 {
-    PackedArray<int, unsigned int> array;
-    std::map<unsigned int, int> map;
+    PackedArray<int, uint32> array;
+    std::map<uint32, int> map;
 
-    const int maxObj = 64 * 1024;
-    const int batchSize = 8 * 1024;
-    const int iter = 10;
+    const uint32 maxObj = 64 * 1024;
+    const uint32 batchSize = 8 * 1024;
+    const uint32 iter = 10;
 
     Random random;
 
     // add initial objects
-    for (int i = 0; i < maxObj; ++i)
+    for (uint32 i = 0; i < maxObj; ++i)
     {
         int value = random.GetInt();
-        unsigned int idx = array.Add(value);
+        uint32 idx = array.Add(value);
         ASSERT_NE(array.InvalidIndex, idx) << "i=" << i;
         map[idx] = value;
     }
     ASSERT_EQ(maxObj, array.Size());
 
-    for (int i = 0; i < iter; ++i)
+    for (uint32 i = 0; i < iter; ++i)
     {
-        for (int j = 0; j < batchSize; ++j)
+        for (uint32 j = 0; j < batchSize; ++j)
         {
-            unsigned int idx;
+            uint32 idx;
             do
             {
                 idx = random.GetInt() % maxObj;
@@ -149,12 +149,12 @@ TEST(PackedArray, AddAndRemoveRandom)
 
 
         // add new objects
-        for (int j = 0; j < batchSize; ++j)
+        for (uint32 j = 0; j < batchSize; ++j)
         {
             int value = random.GetInt();
-            unsigned int idx = array.Add(value);
+            uint32 idx = array.Add(value);
             ASSERT_NE(array.InvalidIndex, idx) << "i=" << i;
-            ASSERT_EQ(0, map.count(idx)) << "i=" << i; // check if we get not duplicated index
+            ASSERT_EQ(0u, map.count(idx)) << "i=" << i; // check if we get not duplicated index
             map[idx] = value;
         }
         ASSERT_EQ(maxObj, array.Size()) << "i=" << i;
@@ -163,7 +163,7 @@ TEST(PackedArray, AddAndRemoveRandom)
         // verify
         for (const auto& it : map)
         {
-            unsigned int idx = it.first;
+            uint32 idx = it.first;
             int value = it.second;
             ASSERT_EQ(value, array[idx]) << "i=" << i;
         }

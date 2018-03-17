@@ -21,13 +21,9 @@ namespace RTTI {
 template <typename Member, typename Class>
 NFE_INLINE constexpr size_t OffsetOf(Member Class::*member)
 {
-#ifdef WIN32
-    return offsetof(Class, *member);
-#else
     // Workaround for built-in offsetof() function on GCC that does not work with non-standard-layout types.
     constexpr const size_t fakePointer = 0x10; // use non-zero value so it's not treated as nullptr_t
     return reinterpret_cast<size_t>(reinterpret_cast<const char*>(&(reinterpret_cast<const Class*>(fakePointer)->*member))) - fakePointer;
-#endif
 }
 
 } // RTTI

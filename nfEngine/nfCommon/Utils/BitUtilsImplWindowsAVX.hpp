@@ -16,6 +16,8 @@
 #include <immintrin.h>
 #endif
 
+#include <intrin.h>
+
 namespace NFE {
 namespace Common {
 
@@ -27,7 +29,7 @@ inline size_t BitUtils<uint64>::CountBits(uint64 x)
     return __popcnt64(x);
 #else
     return __popcnt(x & 0xFFFFFFFF) + __popcnt(x >> 32);
-#endif  
+#endif
 }
 
 template<>
@@ -73,7 +75,7 @@ NFE_INLINE size_t BitUtils<uint64>::CountLeadingZeros(uint64 x)
     const uint32 lo = static_cast<uint32>(x & 0xFFFFFFFFull);
     _BitScanReverse(&index, lo);
     return 32 + 31 - index;
-#endif  
+#endif
 }
 
 template<>
@@ -125,7 +127,7 @@ NFE_INLINE size_t BitUtils<uint64>::CountTrailingZeros(const uint64 x)
     const uint32 hi = static_cast<uint32>(x >> 32);
     _BitScanForward(&index, hi);
     return 32 + index;
-#endif  
+#endif
 }
 
 template<>

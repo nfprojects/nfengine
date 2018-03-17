@@ -50,7 +50,7 @@ StaticArray<ElementType, MaxSize>::StaticArray(StaticArray&& other)
 }
 
 template<typename ElementType, uint32 MaxSize>
-typename StaticArray<ElementType, MaxSize>::StaticArray& StaticArray<ElementType, MaxSize>::operator = (const StaticArray& other)
+StaticArray<ElementType, MaxSize>& StaticArray<ElementType, MaxSize>::operator = (const StaticArray& other)
 {
     if (&other == this)
         return *this;
@@ -68,7 +68,7 @@ typename StaticArray<ElementType, MaxSize>::StaticArray& StaticArray<ElementType
 }
 
 template<typename ElementType, uint32 MaxSize>
-typename StaticArray<ElementType, MaxSize>::StaticArray& StaticArray<ElementType, MaxSize>::operator = (StaticArray&& other)
+StaticArray<ElementType, MaxSize>& StaticArray<ElementType, MaxSize>::operator = (StaticArray&& other)
 {
     if (&other == this)
         return *this;

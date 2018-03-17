@@ -30,7 +30,7 @@ TEST(MemoryTest, MallocAlignment)
                                [] (char* ptr) { NFE_FREE(ptr); });
         EXPECT_NE(nullptr, buffer.get());
         EXPECT_TRUE(MemoryCheck(buffer.get(), size));
-        EXPECT_EQ(0, reinterpret_cast<size_t>(buffer.get()) & (alignment - 1));
+        EXPECT_EQ(0u, reinterpret_cast<size_t>(buffer.get()) & (alignment - 1));
     }
 }
 

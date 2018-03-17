@@ -65,7 +65,7 @@ DynArray<ElementType>::DynArray(DynArray&& other)
 }
 
 template<typename ElementType>
-typename DynArray<ElementType>::DynArray& DynArray<ElementType>::operator = (const DynArray& other)
+DynArray<ElementType>& DynArray<ElementType>::operator = (const DynArray& other)
 {
     if (&other == this)
         return *this;
@@ -88,7 +88,7 @@ typename DynArray<ElementType>::DynArray& DynArray<ElementType>::operator = (con
 }
 
 template<typename ElementType>
-typename DynArray<ElementType>::DynArray& DynArray<ElementType>::operator = (DynArray&& other)
+DynArray<ElementType>& DynArray<ElementType>::operator = (DynArray&& other)
 {
     // don't free memory if not needed
     Clear(true);

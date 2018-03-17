@@ -20,16 +20,16 @@ TEST(ReflectionClassTest, TestClassWithFundamentalMembers_Verify)
     EXPECT_EQ(nullptr, type->GetParent());
 
     // check class members
-    ASSERT_EQ(4, type->GetNumOfMembers());
+    ASSERT_EQ(4u, type->GetNumOfMembers());
     ClassType::Members members;
     type->ListMembers(members);
-    ASSERT_EQ(4, members.Size());
+    ASSERT_EQ(4u, members.Size());
 
     {
         const auto& member = members[0];
         EXPECT_STREQ("intValue", member.GetName());
         EXPECT_EQ(GetType<int32>(), member.GetType());
-        EXPECT_EQ(0, member.GetOffset());
+        EXPECT_EQ(0u, member.GetOffset());
     }
 
     {
@@ -103,16 +103,16 @@ TEST(ReflectionClassTest, TestClassWithNestedType_Verify)
     EXPECT_EQ(nullptr, type->GetParent());
 
     // check class members
-    ASSERT_EQ(2, type->GetNumOfMembers());
+    ASSERT_EQ(2u, type->GetNumOfMembers());
     ClassType::Members members;
     type->ListMembers(members);
-    ASSERT_EQ(2, members.Size());
+    ASSERT_EQ(2u, members.Size());
 
     {
         const auto& member = members[0];
         EXPECT_STREQ("foo", member.GetName());
         EXPECT_EQ(GetType<TestClassWithFundamentalMembers>(), member.GetType());
-        EXPECT_EQ(0, member.GetOffset());
+        EXPECT_EQ(0u, member.GetOffset());
     }
 
     {
@@ -168,20 +168,20 @@ TEST(ReflectionClassTest, TestClassWithArrayType_Verify)
     EXPECT_STREQ("TestClassWithArrayType", type->GetName());
     EXPECT_EQ(TypeKind::SimpleClass, type->GetKind());
     EXPECT_EQ(sizeof(TestClassWithArrayType), type->GetSize());
-    EXPECT_EQ(4, type->GetAlignment());
+    EXPECT_EQ(4u, type->GetAlignment());
     EXPECT_EQ(nullptr, type->GetParent());
 
     // check class members
-    ASSERT_EQ(2, type->GetNumOfMembers());
+    ASSERT_EQ(2u, type->GetNumOfMembers());
     ClassType::Members members;
     type->ListMembers(members);
-    ASSERT_EQ(2, members.Size());
+    ASSERT_EQ(2u, members.Size());
 
     {
         const auto& member = members[0];
         EXPECT_STREQ("arrayOfInts", member.GetName());
         EXPECT_EQ(GetType<int32[5]>(), member.GetType());
-        EXPECT_EQ(0, member.GetOffset());
+        EXPECT_EQ(0u, member.GetOffset());
     }
 
     {
@@ -278,16 +278,16 @@ TEST(ReflectionClassTest, TestClassWithDynArrayType_Verify)
     EXPECT_EQ(nullptr, type->GetParent());
 
     // check class members
-    ASSERT_EQ(2, type->GetNumOfMembers());
+    ASSERT_EQ(2u, type->GetNumOfMembers());
     ClassType::Members members;
     type->ListMembers(members);
-    ASSERT_EQ(2, members.Size());
+    ASSERT_EQ(2u, members.Size());
 
     {
         const auto& member = members[0];
         EXPECT_STREQ("arrayOfInts", member.GetName());
         EXPECT_EQ(GetType<DynArray<int32>>(), member.GetType());
-        EXPECT_EQ(0, member.GetOffset());
+        EXPECT_EQ(0u, member.GetOffset());
     }
 
     {
@@ -340,8 +340,8 @@ TEST(ReflectionClassTest, TestClassWithArrayType_Deserialization_Empty)
     TestClassWithDynArrayType obj;
     helper::DeserializeObject(type, &obj, "obj={arrayOfInts=[] arrayOfObjects=[]}");
 
-    EXPECT_EQ(0, obj.arrayOfInts.Size());
-    EXPECT_EQ(0, obj.arrayOfObjects.Size());
+    EXPECT_EQ(0u, obj.arrayOfInts.Size());
+    EXPECT_EQ(0u, obj.arrayOfObjects.Size());
 }
 
 TEST(ReflectionClassTest, TestClassWithArrayType_Deserialization_NonEmpty)
@@ -352,13 +352,13 @@ TEST(ReflectionClassTest, TestClassWithArrayType_Deserialization_NonEmpty)
     TestClassWithDynArrayType obj;
     helper::DeserializeObject(type, &obj, "obj={arrayOfInts=[2 3 5 7] arrayOfObjects=[{intValue=321 floatValue=10.0 boolValue=true}]}");
 
-    ASSERT_EQ(4, obj.arrayOfInts.Size());
+    ASSERT_EQ(4u, obj.arrayOfInts.Size());
     EXPECT_EQ(2, obj.arrayOfInts[0]);
     EXPECT_EQ(3, obj.arrayOfInts[1]);
     EXPECT_EQ(5, obj.arrayOfInts[2]);
     EXPECT_EQ(7, obj.arrayOfInts[3]);
 
-    ASSERT_EQ(1, obj.arrayOfObjects.Size());
+    ASSERT_EQ(1u, obj.arrayOfObjects.Size());
     EXPECT_EQ(321, obj.arrayOfObjects[0].intValue);
     EXPECT_EQ(10.0f, obj.arrayOfObjects[0].floatValue);
     EXPECT_EQ(true, obj.arrayOfObjects[0].boolValue);
@@ -380,10 +380,10 @@ TEST(ReflectionClassTest, TestClassWithUniquePtrType_Verify)
     EXPECT_EQ(nullptr, type->GetParent());
 
     // check class members
-    ASSERT_EQ(4, type->GetNumOfMembers());
+    ASSERT_EQ(4u, type->GetNumOfMembers());
     ClassType::Members members;
     type->ListMembers(members);
-    ASSERT_EQ(4, members.Size());
+    ASSERT_EQ(4u, members.Size());
 
     size_t totalOffset = 0;
 

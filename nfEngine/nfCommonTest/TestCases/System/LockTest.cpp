@@ -11,6 +11,12 @@
 using namespace NFE;
 using namespace NFE::Common;
 
+namespace {
+
+const uint32 maxIterations = 10000u;
+
+} // namespace
+
 
 TEST(LockTest, SimpleSharedLock)
 {
@@ -32,12 +38,10 @@ TEST(LockTest, SimpleExclusiveLock)
 
 TEST(LockTest, ExlusiveLock_Multithreaded)
 {
-    const uint32 maxIterations = 10000;
-
     uint32 sharedCounter = 0; // non atomic counter incremented from multiple threads
     RWLock lock; // for synchronizing counter access
 
-    const auto func = [&sharedCounter, &lock, maxIterations]()
+    const auto func = [&sharedCounter, &lock]()
     {
         for (uint32 i = 0; i < maxIterations; ++i)
         {

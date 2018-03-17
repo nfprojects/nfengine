@@ -11,6 +11,7 @@
 #include "Common.hpp"
 #include "../../Utils/StringUtils.hpp"
 
+#include <intrin.h>
 
 namespace NFE {
 namespace Common {

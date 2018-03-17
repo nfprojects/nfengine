@@ -11,12 +11,12 @@
 #include "nfCommon/Math/Random.hpp"
 #include "nfCommon/Containers/String.hpp"
 
-
+using namespace NFE;
 using namespace NFE::Common;
 
 // Global variables for the tests
 namespace {
-const int bufferSize = 1000;                              //< Size of the test buffer
+const uint32 bufferSize = 1000;                              //< Size of the test buffer
 const NFE::uint8 operationsUpperLimit = 10;               //< Number of operations to perform on the buffer
 const String testPath("./testFile.buffered");
 
@@ -153,7 +153,7 @@ TEST_F(FileBufferedTest, ReadWrite)
     }
 
     // There should be nothing more to read, as we've reached EOF
-    ASSERT_EQ(0, testBufferedFile.Read(bufferActual, operationSize));
+    ASSERT_EQ(0u, testBufferedFile.Read(bufferActual, operationSize));
     //ASSERT_EQ(testBufferedFile.GetSize(), testBufferedFile.GetPos());
 
     // Then append buffer values to the file
@@ -243,8 +243,8 @@ TEST_F(FileBufferedTest, OperationsOnClosed)
 
     // Make sure no operations may be performed on closed file
     char buffer[bufferSize];
-    ASSERT_EQ(0, testBufferedFile.Write(buffer, bufferSize));
-    ASSERT_EQ(0, testBufferedFile.Read(buffer, bufferSize));
+    ASSERT_EQ(0u, testBufferedFile.Write(buffer, bufferSize));
+    ASSERT_EQ(0u, testBufferedFile.Read(buffer, bufferSize));
 }
 
 TEST_F(FileBufferedTest, InvalidOperations)
@@ -255,7 +255,7 @@ TEST_F(FileBufferedTest, InvalidOperations)
     FileBuffered testBufferedFile(testPath, AccessMode::Write, true);
     ASSERT_TRUE(testBufferedFile.IsOpened());
 
-    ASSERT_EQ(0, testBufferedFile.Read(buffer, bufferSize));
+    ASSERT_EQ(0u, testBufferedFile.Read(buffer, bufferSize));
 
     testBufferedFile.Close();
 
@@ -263,7 +263,7 @@ TEST_F(FileBufferedTest, InvalidOperations)
     testBufferedFile.Open(testPath, AccessMode::Read, true);
     ASSERT_TRUE(testBufferedFile.IsOpened());
 
-    ASSERT_EQ(0, testBufferedFile.Write(buffer, bufferSize));
+    ASSERT_EQ(0u, testBufferedFile.Write(buffer, bufferSize));
 
     testBufferedFile.Close();
 }

@@ -145,8 +145,8 @@ size_t CountBitsNaive(T x)
 
 TEST(BitUtils, CountBits8)
 {
-    ASSERT_EQ(0, BitUtils<uint8>::CountBits(0));
-    ASSERT_EQ(8, BitUtils<uint8>::CountBits(0xFF));
+    ASSERT_EQ(0u, BitUtils<uint8>::CountBits(0));
+    ASSERT_EQ(8u, BitUtils<uint8>::CountBits(0xFF));
 
     const size_t maxIterations = 100;
 
@@ -161,8 +161,8 @@ TEST(BitUtils, CountBits8)
 
 TEST(BitUtils, CountBits16)
 {
-    ASSERT_EQ(0, BitUtils<uint16>::CountBits(0));
-    ASSERT_EQ(16, BitUtils<uint16>::CountBits(0xFFFF));
+    ASSERT_EQ(0u, BitUtils<uint16>::CountBits(0));
+    ASSERT_EQ(16u, BitUtils<uint16>::CountBits(0xFFFF));
 
     const size_t maxIterations = 200;
 
@@ -177,8 +177,8 @@ TEST(BitUtils, CountBits16)
 
 TEST(BitUtils, CountBits32)
 {
-    ASSERT_EQ(0, BitUtils<uint32>::CountBits(0));
-    ASSERT_EQ(32, BitUtils<uint32>::CountBits(0xFFFFFFFF));
+    ASSERT_EQ(0u, BitUtils<uint32>::CountBits(0));
+    ASSERT_EQ(32u, BitUtils<uint32>::CountBits(0xFFFFFFFF));
 
     const size_t maxIterations = 400;
 
@@ -193,8 +193,8 @@ TEST(BitUtils, CountBits32)
 
 TEST(BitUtils, CountBits64)
 {
-    ASSERT_EQ(0, BitUtils<uint64>::CountBits(0));
-    ASSERT_EQ(64, BitUtils<uint64>::CountBits(0xFFFFFFFFFFFFFFFFul));
+    ASSERT_EQ(0u, BitUtils<uint64>::CountBits(0));
+    ASSERT_EQ(64u, BitUtils<uint64>::CountBits(0xFFFFFFFFFFFFFFFFul));
 
     const size_t maxIterations = 800;
 
@@ -231,8 +231,8 @@ T ReverseBitsNaive(T v)
 
 TEST(BitUtils, ReverseBits8)
 {
-    ASSERT_EQ(0, BitUtils<uint8>::ReverseBits(0));
-    ASSERT_EQ(0xFF, BitUtils<uint8>::ReverseBits(0xFF));
+    ASSERT_EQ(0u, BitUtils<uint8>::ReverseBits(0));
+    ASSERT_EQ(0xFFu, BitUtils<uint8>::ReverseBits(0xFF));
 
     const size_t maxIterations = 100;
 
@@ -247,8 +247,8 @@ TEST(BitUtils, ReverseBits8)
 
 TEST(BitUtils, ReverseBits16)
 {
-    ASSERT_EQ(0, BitUtils<uint16>::ReverseBits(0));
-    ASSERT_EQ(0xFFFF, BitUtils<uint16>::ReverseBits(0xFFFF));
+    ASSERT_EQ(0u, BitUtils<uint16>::ReverseBits(0));
+    ASSERT_EQ(0xFFFFu, BitUtils<uint16>::ReverseBits(0xFFFF));
 
     const size_t maxIterations = 200;
 
@@ -263,8 +263,8 @@ TEST(BitUtils, ReverseBits16)
 
 TEST(BitUtils, ReverseBits32)
 {
-    ASSERT_EQ(0, BitUtils<uint32>::ReverseBits(0));
-    ASSERT_EQ(0xFFFFFFFF, BitUtils<uint32>::ReverseBits(0xFFFFFFFF));
+    ASSERT_EQ(0u, BitUtils<uint32>::ReverseBits(0));
+    ASSERT_EQ(0xFFFFFFFFu, BitUtils<uint32>::ReverseBits(0xFFFFFFFF));
 
     const size_t maxIterations = 400;
 
@@ -279,7 +279,7 @@ TEST(BitUtils, ReverseBits32)
 
 TEST(BitUtils, ReverseBits64)
 {
-    ASSERT_EQ(0, BitUtils<uint64>::ReverseBits(0));
+    ASSERT_EQ(0u, BitUtils<uint64>::ReverseBits(0));
     ASSERT_EQ(0xFFFFFFFFFFFFFFFFull, BitUtils<uint64>::ReverseBits(0xFFFFFFFFFFFFFFFFull));
 
     const size_t maxIterations = 800;
@@ -297,45 +297,45 @@ TEST(BitUtils, ReverseBits64)
 
 TEST(BitUtils, SwapEndianness)
 {
-    EXPECT_EQ(0x2301, BitUtils<uint16>::SwapEndianness(0x0123));
-    EXPECT_EQ(0x67452301, BitUtils<uint32>::SwapEndianness(0x01234567));
-    EXPECT_EQ(0xEFCDAB8967452301, BitUtils<uint64>::SwapEndianness(0x0123456789ABCDEFull));
+    EXPECT_EQ(0x2301u, BitUtils<uint16>::SwapEndianness(0x0123));
+    EXPECT_EQ(0x67452301u, BitUtils<uint32>::SwapEndianness(0x01234567));
+    EXPECT_EQ(0xEFCDAB8967452301u, BitUtils<uint64>::SwapEndianness(0x0123456789ABCDEFull));
 }
 
 //////////////////////////////////////////////////////////////////////////
 
 TEST(BitUtils, CreateBitmask8)
 {
-    EXPECT_EQ(0x00, BitUtils<uint8>::CreateBitMask(0));
-    EXPECT_EQ(0x01, BitUtils<uint8>::CreateBitMask(1));
-    EXPECT_EQ(0x03, BitUtils<uint8>::CreateBitMask(2));
-    EXPECT_EQ(0x07, BitUtils<uint8>::CreateBitMask(3));
-    EXPECT_EQ(0x0F, BitUtils<uint8>::CreateBitMask(4));
-    EXPECT_EQ(0x1F, BitUtils<uint8>::CreateBitMask(5));
-    EXPECT_EQ(0x3F, BitUtils<uint8>::CreateBitMask(6));
-    EXPECT_EQ(0x7F, BitUtils<uint8>::CreateBitMask(7));
-    EXPECT_EQ(0xFF, BitUtils<uint8>::CreateBitMask(8));
-    EXPECT_EQ(0xFF, BitUtils<uint8>::CreateBitMask(9));
+    EXPECT_EQ(0x00u, BitUtils<uint8>::CreateBitMask(0));
+    EXPECT_EQ(0x01u, BitUtils<uint8>::CreateBitMask(1));
+    EXPECT_EQ(0x03u, BitUtils<uint8>::CreateBitMask(2));
+    EXPECT_EQ(0x07u, BitUtils<uint8>::CreateBitMask(3));
+    EXPECT_EQ(0x0Fu, BitUtils<uint8>::CreateBitMask(4));
+    EXPECT_EQ(0x1Fu, BitUtils<uint8>::CreateBitMask(5));
+    EXPECT_EQ(0x3Fu, BitUtils<uint8>::CreateBitMask(6));
+    EXPECT_EQ(0x7Fu, BitUtils<uint8>::CreateBitMask(7));
+    EXPECT_EQ(0xFFu, BitUtils<uint8>::CreateBitMask(8));
+    EXPECT_EQ(0xFFu, BitUtils<uint8>::CreateBitMask(9));
 }
 
 TEST(BitUtils, CreateBitmask16)
 {
-    EXPECT_EQ(0x00, BitUtils<uint16>::CreateBitMask(0));
-    EXPECT_EQ(0x01, BitUtils<uint16>::CreateBitMask(1));
-    EXPECT_EQ(0x03, BitUtils<uint16>::CreateBitMask(2));
-    EXPECT_EQ(0x07, BitUtils<uint16>::CreateBitMask(3));
-    EXPECT_EQ(0x0F, BitUtils<uint16>::CreateBitMask(4));
-    EXPECT_EQ(0x1F, BitUtils<uint16>::CreateBitMask(5));
-    EXPECT_EQ(0x3F, BitUtils<uint16>::CreateBitMask(6));
-    EXPECT_EQ(0x7F, BitUtils<uint16>::CreateBitMask(7));
-    EXPECT_EQ(0x00FF, BitUtils<uint16>::CreateBitMask(8));
-    EXPECT_EQ(0x01FF, BitUtils<uint16>::CreateBitMask(9));
-    EXPECT_EQ(0x03FF, BitUtils<uint16>::CreateBitMask(10));
-    EXPECT_EQ(0x07FF, BitUtils<uint16>::CreateBitMask(11));
-    EXPECT_EQ(0x0FFF, BitUtils<uint16>::CreateBitMask(12));
-    EXPECT_EQ(0x1FFF, BitUtils<uint16>::CreateBitMask(13));
-    EXPECT_EQ(0x3FFF, BitUtils<uint16>::CreateBitMask(14));
-    EXPECT_EQ(0x7FFF, BitUtils<uint16>::CreateBitMask(15));
-    EXPECT_EQ(0xFFFF, BitUtils<uint16>::CreateBitMask(16));
-    EXPECT_EQ(0xFFFF, BitUtils<uint16>::CreateBitMask(17));
+    EXPECT_EQ(0x00u, BitUtils<uint16>::CreateBitMask(0));
+    EXPECT_EQ(0x01u, BitUtils<uint16>::CreateBitMask(1));
+    EXPECT_EQ(0x03u, BitUtils<uint16>::CreateBitMask(2));
+    EXPECT_EQ(0x07u, BitUtils<uint16>::CreateBitMask(3));
+    EXPECT_EQ(0x0Fu, BitUtils<uint16>::CreateBitMask(4));
+    EXPECT_EQ(0x1Fu, BitUtils<uint16>::CreateBitMask(5));
+    EXPECT_EQ(0x3Fu, BitUtils<uint16>::CreateBitMask(6));
+    EXPECT_EQ(0x7Fu, BitUtils<uint16>::CreateBitMask(7));
+    EXPECT_EQ(0x00FFu, BitUtils<uint16>::CreateBitMask(8));
+    EXPECT_EQ(0x01FFu, BitUtils<uint16>::CreateBitMask(9));
+    EXPECT_EQ(0x03FFu, BitUtils<uint16>::CreateBitMask(10));
+    EXPECT_EQ(0x07FFu, BitUtils<uint16>::CreateBitMask(11));
+    EXPECT_EQ(0x0FFFu, BitUtils<uint16>::CreateBitMask(12));
+    EXPECT_EQ(0x1FFFu, BitUtils<uint16>::CreateBitMask(13));
+    EXPECT_EQ(0x3FFFu, BitUtils<uint16>::CreateBitMask(14));
+    EXPECT_EQ(0x7FFFu, BitUtils<uint16>::CreateBitMask(15));
+    EXPECT_EQ(0xFFFFu, BitUtils<uint16>::CreateBitMask(16));
+    EXPECT_EQ(0xFFFFu, BitUtils<uint16>::CreateBitMask(17));
 }

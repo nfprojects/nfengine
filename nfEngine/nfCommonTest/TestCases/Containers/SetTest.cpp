@@ -28,7 +28,7 @@ TYPED_TEST(SetTest, Empty)
 {
     TypeParam set;
 
-    EXPECT_EQ(0, set.Size());
+    EXPECT_EQ(0u, set.Size());
     EXPECT_TRUE(set.Empty());
     EXPECT_EQ(set.Begin(), set.End());
     EXPECT_EQ(set.End(), set.Find(0));
@@ -45,18 +45,18 @@ TYPED_TEST(SetTest, SimpleInsert)
         ASSERT_NE(set.End(), result.iterator);
         EXPECT_FALSE(result.replaced);
         // set = [1]
-        EXPECT_EQ(1, set.Size());
+        EXPECT_EQ(1u, set.Size());
         EXPECT_FALSE(set.Empty());
     }
 
     ASSERT_NE(set.End(), set.Insert(2).iterator);
     // set = [1,2]
-    EXPECT_EQ(2, set.Size());
+    EXPECT_EQ(2u, set.Size());
     EXPECT_FALSE(set.Empty());
 
     ASSERT_EQ(set.End(), set.Insert(2).iterator);
     // set = [1,2]
-    EXPECT_EQ(2, set.Size());
+    EXPECT_EQ(2u, set.Size());
     EXPECT_FALSE(set.Empty());
 }
 
@@ -69,7 +69,7 @@ TYPED_TEST(SetTest, SimpleInsertOrReplace)
         ASSERT_NE(set.End(), result.iterator);
         ASSERT_FALSE(result.replaced);
         // set = [1]
-        EXPECT_EQ(1, set.Size());
+        EXPECT_EQ(1u, set.Size());
         EXPECT_FALSE(set.Empty());
     }
 
@@ -78,7 +78,7 @@ TYPED_TEST(SetTest, SimpleInsertOrReplace)
         ASSERT_NE(set.End(), result.iterator);
         ASSERT_FALSE(result.replaced);
         // set = [1,2]
-        EXPECT_EQ(2, set.Size());
+        EXPECT_EQ(2u, set.Size());
         EXPECT_FALSE(set.Empty());
     }
 
@@ -87,7 +87,7 @@ TYPED_TEST(SetTest, SimpleInsertOrReplace)
         ASSERT_NE(set.End(), result.iterator);
         ASSERT_TRUE(result.replaced);
         // set = [1,2]
-        EXPECT_EQ(2, set.Size());
+        EXPECT_EQ(2u, set.Size());
         EXPECT_FALSE(set.Empty());
     }
 }
@@ -98,11 +98,11 @@ TYPED_TEST(SetTest, Clear)
 
     ASSERT_NE(set.End(), set.Insert(1).iterator);
     ASSERT_NE(set.End(), set.Insert(2).iterator);
-    EXPECT_EQ(2, set.Size());
+    EXPECT_EQ(2u, set.Size());
     EXPECT_FALSE(set.Empty());
 
     set.Clear();
-    EXPECT_EQ(0, set.Size());
+    EXPECT_EQ(0u, set.Size());
     EXPECT_TRUE(set.Empty());
 }
 
@@ -150,8 +150,8 @@ TYPED_TEST(SetTest, CopyConstructor)
         EXPECT_EQ(0, counters.assignment);
         EXPECT_EQ(0, counters.destructor);
 
-        ASSERT_EQ(2, set.Size());
-        ASSERT_EQ(2, set2.Size());
+        ASSERT_EQ(2u, set.Size());
+        ASSERT_EQ(2u, set2.Size());
 
         // convert "set" to const to force use of ConstIterator
         const SetType& constSet = set;
@@ -228,8 +228,8 @@ TYPED_TEST(SetTest, Assign)
         EXPECT_EQ(0, counters.assignment);
         EXPECT_EQ(2, counters.destructor);
 
-        ASSERT_EQ(2, set.Size());
-        ASSERT_EQ(2, set2.Size());
+        ASSERT_EQ(2u, set.Size());
+        ASSERT_EQ(2u, set2.Size());
 
         // convert "set" to const to force use of ConstIterator
         auto iter = set.Find(value1);
@@ -265,7 +265,7 @@ TYPED_TEST(SetTest, InsertViaMove)
         // insert two initial elements
         ASSERT_NE(set.End(), set.Insert(Type(&counters, 1)).iterator);
         ASSERT_NE(set.End(), set.Insert(Type(&counters, 2)).iterator);
-        ASSERT_EQ(2, set.Size());
+        ASSERT_EQ(2u, set.Size());
         // set = [1, 2]
 
         // 2 elements created, 2 elements moved
@@ -281,7 +281,7 @@ TYPED_TEST(SetTest, InsertViaMove)
             const auto result = set.InsertOrReplace(Type(&counters, 2));
             ASSERT_NE(set.End(), result.iterator);
             ASSERT_TRUE(result.replaced);
-            ASSERT_EQ(2, set.Size());
+            ASSERT_EQ(2u, set.Size());
             // set = [1, 2]
 
             EXPECT_EQ(3, counters.constructor);
@@ -332,10 +332,10 @@ TYPED_TEST(SetTest, MoveConstructor)
         EXPECT_EQ(0, counters.destructor);
 
         // "set" should be now empty
-        EXPECT_EQ(0, set.Size());
+        EXPECT_EQ(0u, set.Size());
 
         // check if elements were moved
-        EXPECT_EQ(2, set2.Size());
+        EXPECT_EQ(2u, set2.Size());
         EXPECT_NE(set2.End(), set2.Find(Type(nullptr, 1)));
         EXPECT_NE(set2.End(), set2.Find(Type(nullptr, 2)));
     }
@@ -392,10 +392,10 @@ TYPED_TEST(SetTest, MoveAssignment)
         EXPECT_EQ(2, counters.destructor);
 
         // "set" should be now empty
-        EXPECT_EQ(0, set.Size());
+        EXPECT_EQ(0u, set.Size());
 
         // check if elements were moved
-        EXPECT_EQ(2, set2.Size());
+        EXPECT_EQ(2u, set2.Size());
         EXPECT_NE(set2.End(), set2.Find(Type(nullptr, 1)));
         EXPECT_NE(set2.End(), set2.Find(Type(nullptr, 2)));
     }
@@ -416,7 +416,7 @@ TYPED_TEST(SetTest, Iterator)
     ASSERT_NE(set.End(), set.Insert(2).iterator);
     ASSERT_NE(set.End(), set.Insert(3).iterator);
     ASSERT_NE(set.End(), set.Insert(0).iterator);
-    EXPECT_EQ(5, set.Size());
+    EXPECT_EQ(5u, set.Size());
     ASSERT_TRUE(set.Verify());
 
     auto iter = set.Begin();
@@ -474,7 +474,7 @@ TYPED_TEST(SetTest, RangeBasedFor)
     ASSERT_NE(set.End(), set.Insert(2).iterator);
     ASSERT_NE(set.End(), set.Insert(1).iterator);
     ASSERT_NE(set.End(), set.Insert(0).iterator);
-    EXPECT_EQ(5, set.Size());
+    EXPECT_EQ(5u, set.Size());
 
     int i = 0;
     for (auto val : set)
@@ -491,7 +491,7 @@ TYPED_TEST(SetTest, EraseSingleElementTree)
     ASSERT_NE(set.End(), set.Insert(0).iterator);
 
     ASSERT_TRUE(set.Erase(0));
-    ASSERT_EQ(0, set.Size());
+    ASSERT_EQ(0u, set.Size());
     ASSERT_TRUE(set.Verify());
 
     EXPECT_EQ(set.End(), set.Find(0));
@@ -500,7 +500,7 @@ TYPED_TEST(SetTest, EraseSingleElementTree)
 
 TYPED_TEST(SetTest, EraseBasic)
 {
-    const int size = 10;
+    const uint32 size = 10u;
     TypeParam set;
 
     for (int i = 0; i < size; ++i)
@@ -509,7 +509,7 @@ TYPED_TEST(SetTest, EraseBasic)
     ASSERT_TRUE(set.Erase(0));
     EXPECT_EQ(set.End(), set.Find(0));
     EXPECT_FALSE(set.Erase(0));
-    ASSERT_EQ(size - 1, set.Size());
+    ASSERT_EQ(size - 1u, set.Size());
     ASSERT_TRUE(set.Verify());
 }
 

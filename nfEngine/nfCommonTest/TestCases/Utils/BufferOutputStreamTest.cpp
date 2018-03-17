@@ -10,9 +10,9 @@ TEST(BufferOutputStreamTest, ConstructorTest)
 {
     // Perform class methods on an empty stream
     BufferOutputStream stream;
-    ASSERT_EQ(stream.GetSize(), 0);
+    ASSERT_EQ(stream.GetSize(), 0u);
     ASSERT_EQ(stream.GetData(), nullptr);
-    ASSERT_EQ(stream.Write(TEXT.Str(), 1), 1);
+    ASSERT_EQ(stream.Write(TEXT.Str(), 1), 1u);
 }
 
 TEST(BufferOutputStreamTest, WriteTest)
@@ -50,6 +50,6 @@ TEST(BufferOutputStreamTest, ClearTest)
     stream.Clear();
     size_t streamSize = stream.GetSize();
     const void* streamData = stream.GetData();
-    ASSERT_EQ(streamSize, 0);
+    ASSERT_EQ(streamSize, 0u);
     ASSERT_EQ(streamData, nullptr);
 }

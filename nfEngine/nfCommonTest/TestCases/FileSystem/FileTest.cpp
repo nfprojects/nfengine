@@ -114,7 +114,7 @@ TEST(FileTest, Overwrite)
         File file(filePath, AccessMode::Write, true);
         ASSERT_TRUE(file.IsOpened());
         ASSERT_EQ(AccessMode::Write, file.GetFileMode());
-        ASSERT_EQ(0, file.GetSize());
+        ASSERT_EQ(0u, file.GetSize());
     }
 
     // cleanup
