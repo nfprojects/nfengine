@@ -122,13 +122,6 @@
     <ClInclude Include="Memory\DefaultAllocator.hpp" />
     <ClInclude Include="Memory\MemoryHelpers.hpp" />
     <ClInclude Include="nfCommon.hpp" />
-    <ClInclude Include="Packer\Packer.hpp" />
-    <ClInclude Include="Packer\PackerDefines.hpp" />
-    <ClInclude Include="Packer\PackerElement.hpp" />
-    <ClInclude Include="Packer\PackerReader.hpp" />
-    <ClInclude Include="Packer\PackerResource.hpp" />
-    <ClInclude Include="Packer\PackerResourceFile.hpp" />
-    <ClInclude Include="Packer\PackerWriter.hpp" />
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="Reflection\ReflectionClassMacros.hpp" />
     <ClInclude Include="Reflection\ReflectionEnumMacros.hpp" />
@@ -229,11 +222,6 @@
     <ClCompile Include="Memory\Buffer.cpp" />
     <ClCompile Include="Memory\DefaultAllocator.cpp" />
     <ClCompile Include="nfCommon.cpp" />
-    <ClCompile Include="Packer\PackerDefines.cpp" />
-    <ClCompile Include="Packer\PackerReader.cpp" />
-    <ClCompile Include="Packer\PackerResource.cpp" />
-    <ClCompile Include="Packer\PackerResourceFile.cpp" />
-    <ClCompile Include="Packer\PackerWriter.cpp" />
     <ClCompile Include="PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

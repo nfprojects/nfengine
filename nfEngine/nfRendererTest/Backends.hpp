@@ -20,7 +20,6 @@ extern NFE::Common::String gShaderPathExt;
 /// Renderer backends
 extern const NFE::Common::String D3D11_BACKEND;
 extern const NFE::Common::String D3D12_BACKEND;
-extern const NFE::Common::String OGL4_BACKEND;
 extern const NFE::Common::String VK_BACKEND;
 
 extern const NFE::Common::String HLSL5_SHADER_PATH_PREFIX;

@@ -44,7 +44,6 @@
     <ClCompile Include="TestCases\FilePerfTest.cpp" />
     <ClCompile Include="TestCases\HashSetPerfTest.cpp" />
     <ClCompile Include="TestCases\LoggerPerfTest.cpp" />
-    <ClCompile Include="TestCases\PackerPerfTest.cpp" />
     <ClCompile Include="TestCases\SetPerfTest.cpp" />
     <ClCompile Include="TestCases\ThreadPoolPerfTest.cpp" />
   </ItemGroup>

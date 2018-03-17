@@ -3,6 +3,3 @@
 # @brief  CMake for Tools
 
 ADD_SUBDIRECTORY("ResourceManager")
-
-# TODO uncomment during Linux version implementation
-#ADD_SUBDIRECTORY("PackerTool")

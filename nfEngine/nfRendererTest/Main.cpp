@@ -85,11 +85,6 @@ int main(int argc, char* argv[])
         gShaderPathPrefix = HLSL5_SHADER_PATH_PREFIX;
         gShaderPathExt = HLSL5_SHADER_EXTENSION;
     }
-    else if (OGL4_BACKEND == gBackend)
-    {
-        gShaderPathPrefix = GLSL_SHADER_PATH_PREFIX;
-        gShaderPathExt = GLSL_SHADER_EXTENSION;
-    }
     else if (VK_BACKEND == gBackend)
     {
         gShaderPathPrefix = GLSL_SHADER_PATH_PREFIX;

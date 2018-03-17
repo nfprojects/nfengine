@@ -2,7 +2,7 @@
  * @file
  * @author  Witek902 (witek902@gmail.com)
  * @brief   Declarations of low-level rendering interface.
- * @details The interface is communication layer between rendering API (such as Direct3D or OpenGL)
+ * @details The interface is communication layer between rendering API (such as Direct3D or Vulkan)
  *          and high-level engine's renderer. The API provides basic abstract classes:
  *          vertex buffers, index buffers, shader constant buffers, renderer states, textures,
  *          rendertargets, etc.

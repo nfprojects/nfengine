@@ -98,7 +98,7 @@ def main(argv):
     if args.perf:
         testList = ['nfCommonPerfTest']
     else:
-        testList = ['nfCommonTest', 'nfCoreTest', 'nfRendererTest']
+        testList = ['nfCommonTest', 'nfRendererTest']
 
     # playing with paths
     currentPath = os.path.realpath(__file__)

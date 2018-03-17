@@ -178,12 +178,6 @@
     <ClCompile Include="TestCases\System\MutexTest.cpp">
       <Filter>TestCases\System</Filter>
     </ClCompile>
-    <ClCompile Include="TestCases\Packer\PackerComplexTest.cpp">
-      <Filter>TestCases\Packer</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\Packer\PackerBasicTest.cpp">
-      <Filter>TestCases\Packer</Filter>
-    </ClCompile>
     <ClCompile Include="TestCases\Utils\ImageTest.cpp">
       <Filter>TestCases\Utils</Filter>
     </ClCompile>
@@ -256,9 +250,6 @@
     </Filter>
     <Filter Include="TestCases\Memory">
       <UniqueIdentifier>{94b45222-e0a0-41d4-b5f4-2176c63aacd3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="TestCases\Packer">
-      <UniqueIdentifier>{7ca4fe4e-eef4-419f-bcf2-26e761f38ab9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
