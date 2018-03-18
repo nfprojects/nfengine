@@ -22,7 +22,6 @@ bool Backbuffer::CreateSurface(const BackbufferDesc& desc)
 
 void Backbuffer::CleanupPlatformSpecifics()
 {
-    // nothing to clean here
 }
 
 
