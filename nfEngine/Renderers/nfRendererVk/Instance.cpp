@@ -15,22 +15,9 @@
 namespace NFE {
 namespace Renderer {
 
-namespace {
-
-#ifdef WIN32
-const Common::StringView vulkanLibraryName("vulkan-1");
-#elif defined(__linux__) || defined(__LINUX__)
-const Common::StringView vulkanLibraryName("vulkan");
-#else
-#error "Target platform not supported."
-#endif
-
-}
-
 
 Instance::Instance()
-    : mVulkanLib()
-    , mInstance(VK_NULL_HANDLE)
+    : mInstance(VK_NULL_HANDLE)
 {
 }
 
@@ -43,17 +30,6 @@ bool Instance::Init(bool enableDebug, VkDebugReportFlagBitsEXT flags)
 {
     if (mInstance)
         return true;
-
-    // TODO This probably should be managed somewhere else
-    if (!mVulkanLib.Open(vulkanLibraryName))
-    {
-        NFE_LOG_ERROR("Unable to open Vulkan library.");
-        return false;
-    }
-
-    VK_GET_LIBPROC(mVulkanLib, vkCreateInstance);
-    VK_GET_LIBPROC(mVulkanLib, vkDestroyInstance);
-    VK_GET_LIBPROC(mVulkanLib, vkGetInstanceProcAddr);
 
     VkApplicationInfo appInfo = {};
     memset(&appInfo, 0, sizeof(appInfo));
@@ -122,8 +98,6 @@ void Instance::Release()
 {
     if (mInstance)
         vkDestroyInstance(mInstance, nullptr);
-
-    mVulkanLib.Close();
 }
 
 } // namespace Renderer
