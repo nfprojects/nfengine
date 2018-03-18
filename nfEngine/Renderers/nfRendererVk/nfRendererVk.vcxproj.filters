@@ -11,7 +11,7 @@
       <UniqueIdentifier>{28eb18a8-1668-4056-8308-f69db8c3181e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Win">
-      <UniqueIdentifier>{9cb615f2-93f2-4d32-99ac-2b573c627217}</UniqueIdentifier>
+      <UniqueIdentifier>{40278a0e-6572-4e4c-917b-b37923b7dff1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -30,9 +30,6 @@
     <ClCompile Include="Translations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Win\Win32Extensions.cpp">
-      <Filter>Source Files\Win</Filter>
-    </ClCompile>
     <ClCompile Include="Extensions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -41,9 +38,6 @@
     </ClCompile>
     <ClCompile Include="Texture.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Win\Win32Backbuffer.cpp">
-      <Filter>Source Files\Win</Filter>
     </ClCompile>
     <ClCompile Include="Backbuffer.cpp">
       <Filter>Source Files</Filter>
@@ -72,9 +66,6 @@
     <ClCompile Include="ComputePipelineState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Win\Win32Device.cpp">
-      <Filter>Source Files\Win</Filter>
-    </ClCompile>
     <ClCompile Include="RingBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -86,6 +77,15 @@
     </ClCompile>
     <ClCompile Include="SemaphorePool.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Win\WinDevice.cpp">
+      <Filter>Source Files\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="Win\WinBackbuffer.cpp">
+      <Filter>Source Files\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="Win\WinExtensions.cpp">
+      <Filter>Source Files\Win</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -109,9 +109,6 @@
     </ClInclude>
     <ClInclude Include="GetProc.hpp">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Win\Win32Extensions.hpp">
-      <Filter>Header Files\Win</Filter>
     </ClInclude>
     <ClInclude Include="Backbuffer.hpp">
       <Filter>Header Files</Filter>
@@ -160,6 +157,9 @@
     </ClInclude>
     <ClInclude Include="SemaphorePool.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Win\WinExtensions.hpp">
+      <Filter>Header Files\Win</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

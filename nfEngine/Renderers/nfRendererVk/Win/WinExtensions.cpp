@@ -4,9 +4,9 @@
  * @brief   Definitions of Win32-specific Vulkan extensions
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 
-#include "Win32Extensions.hpp"
+#include "WinExtensions.hpp"
 
 #include "../Extensions.hpp"
 #include "../GetProc.hpp"
@@ -18,7 +18,7 @@ namespace Renderer {
 PFN_vkCreateWin32SurfaceKHR vkCreateWin32SurfaceKHR = VK_NULL_HANDLE;
 
 // Initializes only Win32-specific extensions
-bool nfvkWin32InstanceExtensionsInit(VkInstance instance)
+bool nfvkWinInstanceExtensionsInit(VkInstance instance)
 {
     bool allExtensionsAvailable = true;
 

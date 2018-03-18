@@ -17,13 +17,7 @@ namespace Renderer {
 class Instance
 {
 private:
-    NFE::Common::Library mVulkanLib;
     VkInstance mInstance;
-
-    // TODO temporary location for Vulkan functions/extensions
-    // library-extracted entry points
-    PFN_vkCreateInstance vkCreateInstance;
-    PFN_vkDestroyInstance vkDestroyInstance;
 
 public:
     Instance();
