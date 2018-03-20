@@ -1,3 +1,39 @@
-[submodule "nfEngineDeps"]
-	path = nfEngineDeps
-	url = git@github.com:nfprojects/nfenginedeps
+[submodule "Deps/glslang"]
+	path = Deps/glslang
+	url = git@github.com:KhronosGroup/glslang
+[submodule "Deps/bullet3"]
+	path = Deps/bullet3
+	url = git@github.com:bulletphysics/bullet3
+[submodule "Deps/cotire"]
+	path = Deps/cotire
+	url = git@github.com:sakra/cotire
+[submodule "Deps/freetype2"]
+	path = Deps/freetype2
+	url = git://git.sv.nongnu.org/freetype/freetype2.git
+[submodule "Deps/googletest"]
+	path = Deps/googletest
+	url = git@github.com:google/googletest
+[submodule "Deps/imgui"]
+	path = Deps/imgui
+	url = git@github.com:ocornut/imgui
+[submodule "Deps/jpeg-compressor"]
+	path = Deps/jpeg-compressor
+	url = git@github.com:kornelski/jpeg-compressor
+[submodule "Deps/libpng"]
+	path = Deps/libpng
+	url = git@github.com:glennrp/libpng
+[submodule "Deps/rapidjson"]
+	path = Deps/rapidjson
+	url = git@github.com:Tencent/rapidjson
+[submodule "Deps/rapidxml"]
+	path = Deps/rapidxml
+	url = git@github.com:dwd/rapidxml
+[submodule "Deps/squish"]
+	path = Deps/squish
+	url = git@github.com:Cavewhere/squish
+[submodule "Deps/zlib"]
+	path = Deps/zlib
+	url = git@github.com:madler/zlib
+[submodule "Deps/dhpoware-modelobj"]
+	path = Deps/dhpoware-modelobj
+	url = git@github.com:oss-forks/dhpoware-modelobj
