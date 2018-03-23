@@ -70,13 +70,13 @@ constexpr Float3 Float3::Blend(const Float3& a, const Float3& b)
                   iz == 0 ? a.z : b.z);
 }
 
-template<bool x, bool y, bool z>
+template<bool negX, bool negY, bool negZ>
 constexpr Float3 Float3::ChangeSign() const
 {
     return Float3(
-        x ? -f[0] : f[0],
-        y ? -f[1] : f[1],
-        z ? -f[2] : f[2]
+        negX ? -x : x,
+        negY ? -y : y,
+        negZ ? -z : z
     );
 }
 

@@ -58,10 +58,10 @@ constexpr Float2 Float2::Blend(const Float2& a, const Float2& b)
     return Float2(ix == 0 ? a.x : b.x, iy == 0 ? a.y : b.y);
 }
 
-template<bool x, bool y>
+template<bool negX, bool negY>
 constexpr Float2 Float2::ChangeSign() const
 {
-    return Float2(x ? -f[0] : f[0], y ? -f[1] : f[1]);
+    return Float2(negX ? -x : x, negY ? -y : y);
 }
 
 Float2 Float2::SelectBySign(const Float2& a, const Float2& b, const Float2& sel)

@@ -59,7 +59,7 @@ struct Float3
     NFE_INLINE constexpr Float3 SplatZ() const;
     NFE_INLINE constexpr static Float3 Splat(float f);
 
-    template<bool x, bool y, bool z>
+    template<bool negX, bool negY, bool negZ>
     NFE_INLINE constexpr Float3 ChangeSign() const;
 
     template<uint32 ix, uint32 iy, uint32 iz>
