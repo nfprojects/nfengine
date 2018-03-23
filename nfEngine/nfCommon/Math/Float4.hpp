@@ -62,7 +62,7 @@ struct Float4
     NFE_INLINE constexpr Float4 SplatW() const;
     NFE_INLINE constexpr static Float4 Splat(float f);
 
-    template<bool x = false, bool y = false, bool z = false, bool w = false>
+    template<bool negX = false, bool negY = false, bool negZ = false, bool negW = false>
     NFE_INLINE constexpr Float4 ChangeSign() const;
 
     template<uint32 ix = 0, uint32 iy = 1, uint32 iz = 2, uint32 iw = 3>

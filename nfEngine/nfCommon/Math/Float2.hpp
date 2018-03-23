@@ -52,7 +52,7 @@ struct Float2
     NFE_INLINE constexpr Float2 SplatY() const;
     NFE_INLINE constexpr static Float2 Splat(float f);
 
-    template<bool x, bool y>
+    template<bool negX, bool negY>
     NFE_INLINE constexpr Float2 ChangeSign() const;
 
     template<uint32 ix, uint32 iy>

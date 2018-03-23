@@ -81,14 +81,14 @@ constexpr Float4 Float4::Blend(const Float4& a, const Float4& b)
                   iw == 0 ? a.w : b.w);
 }
 
-template<bool x, bool y, bool z, bool w>
+template<bool negX, bool negY, bool negZ, bool negW>
 constexpr Float4 Float4::ChangeSign() const
 {
     return Float4(
-        x ? -f[0] : f[0],
-        y ? -f[1] : f[1],
-        z ? -f[2] : f[2],
-        w ? -f[3] : f[3]
+        negX ? -x : x,
+        negY ? -y : y,
+        negZ ? -z : z,
+        negW ? -w : w
     );
 }
 
