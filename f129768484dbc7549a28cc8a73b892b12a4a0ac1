@@ -22,6 +22,30 @@
       "revId": "f129768484dbc7549a28cc8a73b892b12a4a0ac1",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b5bba1c3_c6d03f37",
+        "filename": "nfEngine/nfCommon/Logger/LoggerBackend.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1002654
+      },
+      "writtenOn": "2018-03-23T22:05:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0957ab62_f7123ff3",
+      "range": {
+        "startLine": 22,
+        "startChar": 19,
+        "endLine": 22,
+        "endChar": 32
+      },
+      "revId": "f129768484dbc7549a28cc8a73b892b12a4a0ac1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
