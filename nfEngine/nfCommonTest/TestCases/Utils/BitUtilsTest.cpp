@@ -205,10 +205,6 @@ TEST(BitUtils, CountBits64)
         size_t expected = CountBitsNaive(num);
         EXPECT_EQ(expected, BitUtils<uint64>::CountBits(num)) << "num=" << num;
     }
-
-    size_t n = 123;
-    for (size_t i = 0; i < 100000000; ++i)
-        n += BitUtils<uint64>::CountBits(static_cast<uint64>(i));
 }
 
 //////////////////////////////////////////////////////////////////////////
