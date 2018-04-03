@@ -4,7 +4,7 @@
  * @brief   Definition of renderer's Device for Win32 Vulkan surface
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 #include "../Device.hpp"
 
 

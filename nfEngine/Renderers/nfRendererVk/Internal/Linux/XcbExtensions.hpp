@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../Defines.hpp"
+#include "Defines.hpp"
 
 namespace NFE {
 namespace Renderer {

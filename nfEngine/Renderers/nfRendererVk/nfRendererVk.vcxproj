@@ -19,14 +19,54 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Backbuffer.cpp" />
-    <ClCompile Include="Buffer.cpp" />
-    <ClCompile Include="CommandRecorder.cpp" />
-    <ClCompile Include="ComputePipelineState.cpp" />
-    <ClCompile Include="Debugger.cpp" />
-    <ClCompile Include="Device.cpp" />
-    <ClCompile Include="Extensions.cpp" />
-    <ClCompile Include="Instance.cpp" />
+    <ClInclude Include="API\Backbuffer.hpp" />
+    <ClInclude Include="API\Buffer.hpp" />
+    <ClInclude Include="API\CommandRecorder.hpp" />
+    <ClInclude Include="API\ComputePipelineState.hpp" />
+    <ClInclude Include="API\Device.hpp" />
+    <ClInclude Include="API\PipelineState.hpp" />
+    <ClInclude Include="API\RenderTarget.hpp" />
+    <ClInclude Include="API\ResourceBinding.hpp" />
+    <ClInclude Include="API\Sampler.hpp" />
+    <ClInclude Include="API\Shader.hpp" />
+    <ClInclude Include="API\Texture.hpp" />
+    <ClInclude Include="API\VertexLayout.hpp" />
+    <ClInclude Include="Defines.hpp" />
+    <ClInclude Include="Internal\Debugger.hpp" />
+    <ClInclude Include="Internal\Extensions.hpp" />
+    <ClInclude Include="Internal\GetProc.hpp" />
+    <ClInclude Include="Internal\Instance.hpp" />
+    <ClInclude Include="Internal\RenderPassDesc.hpp" />
+    <ClInclude Include="Internal\RenderPassManager.hpp" />
+    <ClInclude Include="Internal\RingBuffer.hpp" />
+    <ClInclude Include="Internal\SemaphorePool.hpp" />
+    <ClInclude Include="Internal\Translations.hpp" />
+    <ClInclude Include="Internal\Win\WinExtensions.hpp" />
+    <ClInclude Include="PCH.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="API\Backbuffer.cpp" />
+    <ClCompile Include="API\Buffer.cpp" />
+    <ClCompile Include="API\CommandRecorder.cpp" />
+    <ClCompile Include="API\ComputePipelineState.cpp" />
+    <ClCompile Include="API\Device.cpp" />
+    <ClCompile Include="API\PipelineState.cpp" />
+    <ClCompile Include="API\RenderTarget.cpp" />
+    <ClCompile Include="API\ResourceBinding.cpp" />
+    <ClCompile Include="API\Sampler.cpp" />
+    <ClCompile Include="API\Shader.cpp" />
+    <ClCompile Include="API\Texture.cpp" />
+    <ClCompile Include="API\VertexLayout.cpp" />
+    <ClCompile Include="API\Win\WinBackbuffer.cpp" />
+    <ClCompile Include="API\Win\WinDevice.cpp" />
+    <ClCompile Include="Internal\Debugger.cpp" />
+    <ClCompile Include="Internal\Extensions.cpp" />
+    <ClCompile Include="Internal\Instance.cpp" />
+    <ClCompile Include="Internal\RenderPassManager.cpp" />
+    <ClCompile Include="Internal\RingBuffer.cpp" />
+    <ClCompile Include="Internal\SemaphorePool.cpp" />
+    <ClCompile Include="Internal\Translations.cpp" />
+    <ClCompile Include="Internal\Win\WinExtensions.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -34,66 +74,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="PipelineState.cpp" />
-    <ClCompile Include="RenderPassManager.cpp" />
-    <ClCompile Include="RenderTarget.cpp" />
-    <ClCompile Include="ResourceBinding.cpp" />
-    <ClCompile Include="RingBuffer.cpp" />
-    <ClCompile Include="Sampler.cpp" />
-    <ClCompile Include="SemaphorePool.cpp" />
-    <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="Translations.cpp">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsCpp</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsCpp</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCpp</CompileAs>
-    </ClCompile>
-    <ClCompile Include="VertexLayout.cpp" />
-    <ClCompile Include="Win\WinBackbuffer.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Win\WinDevice.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Win\WinExtensions.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Backbuffer.hpp" />
-    <ClInclude Include="Buffer.hpp" />
-    <ClInclude Include="CommandRecorder.hpp" />
-    <ClInclude Include="ComputePipelineState.hpp" />
-    <ClInclude Include="Debugger.hpp" />
-    <ClInclude Include="Defines.hpp" />
-    <ClInclude Include="Device.hpp" />
-    <ClInclude Include="Extensions.hpp" />
-    <ClInclude Include="GetProc.hpp" />
-    <ClInclude Include="Instance.hpp" />
-    <ClInclude Include="PCH.hpp" />
-    <ClInclude Include="PipelineState.hpp" />
-    <ClInclude Include="RenderPassDesc.hpp" />
-    <ClInclude Include="RenderPassManager.hpp" />
-    <ClInclude Include="RenderTarget.hpp" />
-    <ClInclude Include="ResourceBinding.hpp" />
-    <ClInclude Include="RingBuffer.hpp" />
-    <ClInclude Include="Sampler.hpp" />
-    <ClInclude Include="SemaphorePool.hpp" />
-    <ClInclude Include="Shader.hpp" />
-    <ClInclude Include="Texture.hpp" />
-    <ClInclude Include="Translations.hpp" />
-    <ClInclude Include="VertexLayout.hpp" />
-    <ClInclude Include="Win\WinExtensions.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1A1154B8-E09A-472F-A0F0-20F530741587}</ProjectGuid>
     <RootNamespace>nfRendererOGL4</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -155,7 +140,7 @@
       <PreprocessorDefinitions>VK_USE_PLATFORM_WIN32_KHR;RENDERERVK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps;$(VULKAN_SDK)\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps;$(SolutionDir)nfEngine\Renderers\nfRendererVk;$(VULKAN_SDK)\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib32\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -167,7 +152,7 @@
       <PreprocessorDefinitions>VK_USE_PLATFORM_WIN32_KHR;RENDERERVK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps;$(VULKAN_SDK)\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps;$(SolutionDir)nfEngine\Renderers\nfRendererVk;$(VULKAN_SDK)\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -181,7 +166,7 @@
       <PreprocessorDefinitions>VK_USE_PLATFORM_WIN32_KHR;RENDERERVK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps;$(VULKAN_SDK)\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps;$(SolutionDir)nfEngine\Renderers\nfRendererVk;$(VULKAN_SDK)\Include</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
     </ClCompile>
@@ -199,7 +184,7 @@
       <PreprocessorDefinitions>VK_USE_PLATFORM_WIN32_KHR;RENDERERVK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps;$(VULKAN_SDK)\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)nfEngine;$(SolutionDir)nfEngineDeps;$(SolutionDir)nfEngine\Renderers\nfRendererVk;$(VULKAN_SDK)\Include</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
     </ClCompile>

@@ -6,8 +6,10 @@
 
 #include "PCH.hpp"
 #include "VertexLayout.hpp"
-#include "Translations.hpp"
 #include "Shader.hpp"
+
+#include "Internal/Translations.hpp"
+
 
 namespace NFE {
 namespace Renderer {

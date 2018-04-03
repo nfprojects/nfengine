@@ -12,7 +12,7 @@
 #include "RenderTarget.hpp"
 #include "PipelineState.hpp"
 #include "Buffer.hpp"
-#include "RingBuffer.hpp"
+#include "Internal/RingBuffer.hpp"
 
 
 namespace NFE {

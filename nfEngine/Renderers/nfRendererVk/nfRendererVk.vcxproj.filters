@@ -1,165 +1,157 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{049a8b56-ab9c-42df-8a9f-ebcb47d47627}</UniqueIdentifier>
+    <Filter Include="API">
+      <UniqueIdentifier>{ab6af51d-183b-4864-ad04-a8337b691576}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{8adfc8fc-bf3a-4577-8fd7-fdf552d2ff3f}</UniqueIdentifier>
+    <Filter Include="Internal">
+      <UniqueIdentifier>{7ae4cb9c-2058-4965-89cf-4289618e2fe6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Win">
-      <UniqueIdentifier>{28eb18a8-1668-4056-8308-f69db8c3181e}</UniqueIdentifier>
+    <Filter Include="Internal\Win">
+      <UniqueIdentifier>{dfc02718-b2db-4a33-8c95-0364a8fb244f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Win">
-      <UniqueIdentifier>{40278a0e-6572-4e4c-917b-b37923b7dff1}</UniqueIdentifier>
+    <Filter Include="API\Win">
+      <UniqueIdentifier>{ab7effb7-0bd8-4580-bed6-79a5139b5c98}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Device.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PCH.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Instance.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Translations.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Extensions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderTarget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Backbuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Sampler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourceBinding.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Debugger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PipelineState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexLayout.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Buffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ComputePipelineState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RingBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderPassManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandRecorder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SemaphorePool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Win\WinDevice.cpp">
-      <Filter>Source Files\Win</Filter>
-    </ClCompile>
-    <ClCompile Include="Win\WinBackbuffer.cpp">
-      <Filter>Source Files\Win</Filter>
-    </ClCompile>
-    <ClCompile Include="Win\WinExtensions.cpp">
-      <Filter>Source Files\Win</Filter>
-    </ClCompile>
+    <ClInclude Include="Defines.hpp" />
+    <ClInclude Include="PCH.hpp" />
+    <ClInclude Include="Internal\Debugger.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Extensions.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\GetProc.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Instance.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\RenderPassDesc.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\RenderPassManager.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\RingBuffer.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\SemaphorePool.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Translations.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="API\Backbuffer.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="API\Buffer.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="API\CommandRecorder.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="API\ComputePipelineState.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="API\Device.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="API\PipelineState.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="API\RenderTarget.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="API\ResourceBinding.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="API\Sampler.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="API\Shader.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="API\Texture.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="API\VertexLayout.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Win\WinExtensions.hpp">
+      <Filter>Internal\Win</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Defines.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Device.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Extensions.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PCH.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Instance.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Translations.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GetProc.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Backbuffer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderTarget.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Sampler.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceBinding.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Debugger.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PipelineState.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexLayout.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Buffer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ComputePipelineState.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RingBuffer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderPassManager.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderPassDesc.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandRecorder.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SemaphorePool.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Win\WinExtensions.hpp">
-      <Filter>Header Files\Win</Filter>
-    </ClInclude>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="PCH.cpp" />
+    <ClCompile Include="Internal\Debugger.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\Extensions.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\Instance.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\RenderPassManager.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\RingBuffer.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\SemaphorePool.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\Translations.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Backbuffer.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Buffer.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="API\CommandRecorder.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="API\ComputePipelineState.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Device.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="API\PipelineState.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="API\RenderTarget.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="API\ResourceBinding.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Sampler.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Shader.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Texture.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="API\VertexLayout.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Win\WinBackbuffer.cpp">
+      <Filter>API\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Win\WinDevice.cpp">
+      <Filter>API\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\Win\WinExtensions.cpp">
+      <Filter>Internal\Win</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

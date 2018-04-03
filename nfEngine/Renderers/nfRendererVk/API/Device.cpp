@@ -6,10 +6,8 @@
 
 #include "PCH.hpp"
 #include "Device.hpp"
-#include "Debugger.hpp"
 
 // modules
-#include "Translations.hpp"
 #include "Backbuffer.hpp"
 #include "RenderTarget.hpp"
 #include "Sampler.hpp"
@@ -19,6 +17,9 @@
 #include "VertexLayout.hpp"
 #include "PipelineState.hpp"
 #include "ComputePipelineState.hpp"
+
+#include "Internal/Translations.hpp"
+#include "Internal/Debugger.hpp"
 
 #include "nfCommon/Utils/StringUtils.hpp"
 

@@ -4,7 +4,7 @@
  * @brief   Definitions of XCB-specific Vulkan extensions
  */
 
-#include "../PCH.hpp"
+#include "PCH.hpp"
 
 #include "XcbExtensions.hpp"
 

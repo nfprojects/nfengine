@@ -20,8 +20,8 @@
 #include "nfCommon/nfCommon.hpp"
 #include "nfCommon/Logger/Logger.hpp"
 
-#include "Extensions.hpp"
-#include "Translations.hpp"
+#include "Internal/Extensions.hpp"
+#include "Internal/Translations.hpp"
 
 #ifndef CHECK_VKRESULT
 #define CHECK_VKRESULT(result, errstr)                                              \

@@ -6,7 +6,7 @@
 
 #include "PCH.hpp"
 #include "SemaphorePool.hpp"
-#include "Device.hpp"
+#include "API/Device.hpp"
 
 namespace NFE {
 namespace Renderer {

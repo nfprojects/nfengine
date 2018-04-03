@@ -8,8 +8,9 @@
 
 #include "Defines.hpp"
 #include "Texture.hpp"
-#include "Translations.hpp"
 #include "Device.hpp"
+
+#include "Internal/Translations.hpp"
 
 
 namespace NFE {
