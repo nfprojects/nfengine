@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1de4ec68_c6a036f6",
+        "filename": "nfEngine/nfCommon/Containers/String.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2018-04-03T12:13:34Z",
+      "side": 1,
+      "message": "This constructor was meant to be removed.",
+      "parentUuid": "cf6d4d9c_ccbc03d0",
+      "range": {
+        "startLine": 88,
+        "startChar": 22,
+        "endLine": 88,
+        "endChar": 23
+      },
+      "revId": "8a8834d2f839e898c365206796217e3f83d4f6de",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fd1862a2_af901b4b",
         "filename": "nfEngine/nfCommon/Containers/String.cpp",
         "patchSetId": 4
@@ -53,6 +77,24 @@
       "writtenOn": "2018-03-09T21:52:24Z",
       "side": 1,
       "message": "index \u003c Length()",
+      "revId": "8a8834d2f839e898c365206796217e3f83d4f6de",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4f7a6fba_904c953e",
+        "filename": "nfEngine/nfCommon/Containers/String.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2018-04-03T12:13:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "79ffd979_bde2333f",
       "revId": "8a8834d2f839e898c365206796217e3f83d4f6de",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
