@@ -8,8 +8,9 @@
 
 #include "CommandRecorder.hpp"
 #include "Device.hpp"
-#include "Translations.hpp"
 #include "ResourceBinding.hpp"
+
+#include "Internal/Translations.hpp"
 
 #include "nfCommon/Math/Vector4.hpp"
 

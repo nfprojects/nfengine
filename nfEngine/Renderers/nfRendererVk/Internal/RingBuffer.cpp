@@ -6,7 +6,7 @@
 
 #include "PCH.hpp"
 #include "RingBuffer.hpp"
-#include "Device.hpp"
+#include "API/Device.hpp"
 
 namespace NFE {
 namespace Renderer {

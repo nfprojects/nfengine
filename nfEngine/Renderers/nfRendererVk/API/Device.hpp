@@ -11,10 +11,10 @@
 #include "../RendererInterface/Device.hpp"
 
 #include "CommandRecorder.hpp"
-#include "Instance.hpp"
-#include "RenderPassManager.hpp"
-#include "SemaphorePool.hpp"
-#include "RingBuffer.hpp"
+#include "Internal/Instance.hpp"
+#include "Internal/RenderPassManager.hpp"
+#include "Internal/SemaphorePool.hpp"
+#include "Internal/RingBuffer.hpp"
 
 #include "nfCommon/Containers/UniquePtr.hpp"
 #include "nfCommon/System/Window.hpp"

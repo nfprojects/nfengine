@@ -9,7 +9,8 @@
 #include "VertexLayout.hpp"
 #include "Device.hpp"
 #include "Shader.hpp"
-#include "RenderPassManager.hpp"
+
+#include "Internal/RenderPassManager.hpp"
 
 
 namespace NFE {

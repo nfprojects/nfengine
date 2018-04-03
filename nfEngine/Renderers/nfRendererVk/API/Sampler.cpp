@@ -6,8 +6,10 @@
 
 #include "PCH.hpp"
 #include "Sampler.hpp"
-#include "Translations.hpp"
 #include "Device.hpp"
+
+#include "Internal/Translations.hpp"
+
 
 namespace NFE {
 namespace Renderer {

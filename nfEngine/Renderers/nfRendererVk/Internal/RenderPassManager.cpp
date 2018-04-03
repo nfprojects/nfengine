@@ -6,7 +6,7 @@
 
 #include "PCH.hpp"
 #include "RenderPassManager.hpp"
-#include "Device.hpp"
+#include "API/Device.hpp"
 
 
 namespace NFE {

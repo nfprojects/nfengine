@@ -13,6 +13,15 @@
 
 #include "nfCommon/Logger/Logger.hpp"
 
+#ifdef WIN32
+#include "Win/WinExtensions.hpp"
+#elif defined(__linux__) | defined(__LINUX__)
+#include "Linux/XcbExtensions.hpp"
+#else
+#error "Target platform not supported."
+#endif
+
+
 namespace NFE {
 namespace Renderer {
 
