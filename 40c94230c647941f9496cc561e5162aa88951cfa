@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "c5e16387_fd2461d9",
+        "filename": "nfEngine/nfCommon/Containers/String.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2018-04-03T12:13:34Z",
+      "side": 1,
+      "message": "It actually is not needed. I used it at first, but then switched to StringViews and left this function.\n\nRemoved.",
+      "parentUuid": "5c04a5e6_97ca9126",
+      "revId": "40c94230c647941f9496cc561e5162aa88951cfa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fe223305_d97e17cb",
         "filename": "nfEngine/nfCommonTest/TestCases/Utils/StringUtilsTest.cpp",
         "patchSetId": 7
@@ -30,6 +48,24 @@
       "writtenOn": "2018-04-03T10:58:07Z",
       "side": 1,
       "message": "This test is redundant, just leave StringView version. This tests case makes additional explicit String-\u003eStringView conversion which is not in scope of this test.",
+      "revId": "40c94230c647941f9496cc561e5162aa88951cfa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da84f8a7_9b630a26",
+        "filename": "nfEngine/nfCommonTest/TestCases/Utils/StringUtilsTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2018-04-03T12:13:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fe223305_d97e17cb",
       "revId": "40c94230c647941f9496cc561e5162aa88951cfa",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "eefa3bdf_524f6721",
+        "filename": "nfEngine/nfCommonTest/TestCases/Utils/StringUtilsTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2018-04-03T12:13:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2f0dae2c_4bfb987f",
+      "revId": "40c94230c647941f9496cc561e5162aa88951cfa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2a59e228_e439838c",
         "filename": "nfEngine/nfCommonTest/TestCases/Utils/StringUtilsTest.cpp",
         "patchSetId": 7
@@ -64,6 +118,24 @@
       "writtenOn": "2018-04-03T10:58:07Z",
       "side": 1,
       "message": "What about cases:\n1. Delimiter at the beginning\n2. Delimiter at the end\n3. Double/multiple delimiter in a row\n4. Empty string\n5. String containing only delimiter(s)",
+      "revId": "40c94230c647941f9496cc561e5162aa88951cfa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "844d56cf_2660a6af",
+        "filename": "nfEngine/nfCommonTest/TestCases/Utils/StringUtilsTest.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1002655
+      },
+      "writtenOn": "2018-04-03T12:13:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2a59e228_e439838c",
       "revId": "40c94230c647941f9496cc561e5162aa88951cfa",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
