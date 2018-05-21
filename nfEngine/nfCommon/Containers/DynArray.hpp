@@ -135,6 +135,9 @@ public:
     NFE_INLINE IteratorType end() { return this->End(); }
 
 private:
+
+    bool ContainsElement(const ElementType& element) const;
+
     // allocated size
     uint32 mAllocSize;
 };
