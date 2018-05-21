@@ -165,8 +165,16 @@ void DynArray<ElementType>::Clear(bool freeMemory)
 }
 
 template<typename ElementType>
+bool DynArray<ElementType>::ContainsElement(const ElementType& element) const
+{
+    return (&element - this->mElements >= 0) && (&element < this->mElements + this->mSize);
+}
+
+template<typename ElementType>
 typename DynArray<ElementType>::IteratorType DynArray<ElementType>::PushBack(const ElementType& element)
 {
+    NFE_ASSERT(!ContainsElement(element), "Adding element to a DynArray that is already contained by the array is not supported");
+
     if (!Reserve(this->mSize + 1))
     {
         return this->End();
@@ -179,6 +187,8 @@ typename DynArray<ElementType>::IteratorType DynArray<ElementType>::PushBack(con
 template<typename ElementType>
 typename DynArray<ElementType>::IteratorType DynArray<ElementType>::PushBack(ElementType&& element)
 {
+    NFE_ASSERT(!ContainsElement(element), "Adding element to a DynArray that is already contained by the array is not supported");
+
     if (!Reserve(this->mSize + 1))
     {
         // memory allocation failed
