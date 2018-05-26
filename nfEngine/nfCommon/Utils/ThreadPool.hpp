@@ -10,9 +10,9 @@
 #include "../System/ConditionVariable.hpp"
 #include "../Containers/UniquePtr.hpp"
 #include "../Containers/DynArray.hpp"
+#include "../Containers/Deque.hpp"
 
 #include <inttypes.h>
-#include <queue>
 #include <functional>
 #include <atomic>
 #include <thread>
@@ -117,7 +117,7 @@ class NFCOMMON_API ThreadPool final
 
     /// Tasks queue variables:
     size_t mMaxTasks;
-    std::queue<TaskID> mTasksQueue;        //< queue for tasks with "Queued" state
+    Deque<TaskID> mTasksQueue;        //< queue for tasks with "Queued" state
     Mutex mTasksQueueMutex;                 //< lock for "mTasksQueue" access
     ConditionVariable mTaskQueueCV;         //< CV for notifying about a new task in the queue
 

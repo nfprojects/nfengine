@@ -17,4 +17,3 @@
 #include <atomic>
 #include <memory>
 #include <assert.h>
-#include <queue>

@@ -10,12 +10,12 @@
 #include "../System/ConditionVariable.hpp"
 #include "../Containers/HashMap.hpp"
 #include "../Containers/DynArray.hpp"
+#include "../Containers/Deque.hpp"
 
 #include <functional>
 #include <inttypes.h>
 #include <thread>
 #include <atomic>
-#include <queue>
 
 namespace NFE {
 namespace Common {
@@ -58,7 +58,7 @@ class NFCOMMON_API AsyncThreadPool final
     DynArray<std::thread> mWorkerThreads;
 
     ConditionVariable mTaskQueueTask;
-    std::queue<AsyncFunc*> mTasksQueue;
+    Deque<AsyncFunc*> mTasksQueue;
     Mutex mTasksQueueMutex;  //< lock for "mTasksQueue" access
 
     std::atomic<bool> mStarted;
