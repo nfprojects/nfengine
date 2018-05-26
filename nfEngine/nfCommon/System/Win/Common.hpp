@@ -11,6 +11,7 @@
 #include "../../Containers/StringView.hpp"
 #include "../../Containers/String.hpp"
 
+#include <string>
 
 namespace NFE {
 namespace Common {

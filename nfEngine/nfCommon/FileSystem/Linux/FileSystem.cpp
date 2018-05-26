@@ -8,6 +8,7 @@
 #include "../FileSystem.hpp"
 #include "Logger/Logger.hpp"
 #include "Containers/String.hpp"
+#include "Containers/Deque.hpp"
 
 #include <dirent.h>
 
@@ -243,15 +244,15 @@ bool FileSystem::Move(const String& srcPath, const String& destPath)
 bool FileSystem::Iterate(const String& path, const DirIterateCallback& callback)
 {
     struct dirent* dir;
-    std::stack<String> directories;
+    Deque<String> directories;
     String currentDir, foundPath;
 
-    directories.push(path);
+    directories.PushBack(path);
 
-    while (!directories.empty())
+    while (!directories.Empty())
     {
-        currentDir = directories.top();
-        directories.pop();
+        currentDir = directories.Back();
+        directories.PopBack();
 
         DIR* d = ::opendir(currentDir.Str());
         if (d == NULL)
@@ -280,7 +281,7 @@ bool FileSystem::Iterate(const String& path, const DirIterateCallback& callback)
             bool isDir = dir->d_type == DT_DIR;
 
             if (isDir)
-                directories.push(foundPath);
+                directories.PushBack(foundPath);
 
             if (!callback(foundPath, isDir ? PathType::Directory : PathType::File))
             {

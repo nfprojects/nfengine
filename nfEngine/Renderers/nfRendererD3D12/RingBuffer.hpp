@@ -9,8 +9,7 @@
 #include "Common.hpp"
 #include "Texture.hpp"
 
-#include <queue>
-
+#include "../../nfCommon/Containers/Deque.hpp"
 
 namespace NFE {
 namespace Renderer {
@@ -33,7 +32,7 @@ private:
     size_t mUsed;
 
     // queue holding 'tail' pointers for each frame
-    std::queue<FinishedFrameOffset> mCompletedFrames;
+    Common::Deque<FinishedFrameOffset> mCompletedFrames;
 
 public:
     static const size_t INVALID_OFFSET;

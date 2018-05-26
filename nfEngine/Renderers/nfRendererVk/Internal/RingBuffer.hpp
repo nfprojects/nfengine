@@ -8,6 +8,8 @@
 
 #include "Defines.hpp"
 
+#include "../../../nfCommon/Containers/Deque.hpp"
+
 namespace NFE {
 namespace Renderer {
 
@@ -22,7 +24,7 @@ class RingBuffer
     uint32 mTail;
 
     // pair: frame count, frame's tail
-    std::queue<uint32> mFinishedFrames;
+    Common::Deque<uint32> mFinishedFrames;
 
 public:
     RingBuffer(VkDevice device);
@@ -51,7 +53,7 @@ public:
 
     NFE_INLINE uint32 GetCurrentFrameHead()
     {
-        return mFinishedFrames.back();
+        return mFinishedFrames.Back();
     }
 };
 
