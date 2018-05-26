@@ -63,9 +63,8 @@
 #include <stddef.h>
 
 /// STL
+#include <string>
 #include <unordered_map>    // TODO remove
-#include <stack>            // TODO remove
-#include <queue>            // TODO remove
 #include <algorithm>
 
 #include <sstream>          // TODO remove

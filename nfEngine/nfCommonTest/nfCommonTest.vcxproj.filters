@@ -73,6 +73,9 @@
     <ClCompile Include="TestCases\Math\MathMatrix4Test.cpp">
       <Filter>TestCases\Math</Filter>
     </ClCompile>
+    <ClCompile Include="TestCases\Containers\DequeTest.cpp">
+      <Filter>TestCases\Containers</Filter>
+    </ClCompile>
     <ClCompile Include="TestCases\Containers\SetTest.cpp">
       <Filter>TestCases\Containers</Filter>
     </ClCompile>
