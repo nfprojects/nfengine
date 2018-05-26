@@ -248,6 +248,12 @@
     <ClInclude Include="Utils\OutputStream.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Containers\Deque.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\DequeImpl.hpp">
+      <Filter>Containers</Filter>
+    </ClInclude>
     <ClInclude Include="Containers\Comparator.hpp">
       <Filter>Containers</Filter>
     </ClInclude>

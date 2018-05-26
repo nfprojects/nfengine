@@ -10,7 +10,7 @@
 #include "System/Win/Common.hpp"
 #include "../../Containers/UniquePtr.hpp"
 #include "../../Containers/DynArray.hpp"
-
+#include "../../Containers/Deque.hpp"
 
 namespace NFE {
 namespace Common {
@@ -271,18 +271,18 @@ bool FileSystem::Iterate(const String& path, const DirIterateCallback& callback)
     HANDLE findHandle = INVALID_HANDLE_VALUE;
     WIN32_FIND_DATA findData;
     Utf16String spec, foundPath;
-    std::stack<Utf16String> directories;
+    Deque<Utf16String> directories; // TODO implement Common::Stack
 
     if (!UTF8ToUTF16(path, widePath))
         return false;
 
-    directories.push(widePath);
+    directories.PushBack(widePath);
 
-    while (!directories.empty())
+    while (!directories.Empty())
     {
-        widePath = directories.top();
+        widePath = directories.Back();
         spec = widePath + allFilesWildcard;
-        directories.pop();
+        directories.PopBack();
 
         findHandle = FindFirstFile(spec.c_str(), &findData);
         if (findHandle == INVALID_HANDLE_VALUE)
@@ -312,7 +312,7 @@ bool FileSystem::Iterate(const String& path, const DirIterateCallback& callback)
 
             if (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
             {
-                directories.push(foundPath);
+                directories.PushBack(foundPath);
                 isDir = true;
             }
 

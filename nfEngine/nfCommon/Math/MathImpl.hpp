@@ -120,6 +120,18 @@ NFE_INLINE constexpr bool IsPowerOfTwo(T x)
     return x && !(x & (x - static_cast<T>(1)));
 }
 
+NFE_INLINE constexpr uint32 NextPowerOfTwo(uint32 x)
+{
+    // reference: https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
+    x--;
+    x |= x >> 1;
+    x |= x >> 2;
+    x |= x >> 4;
+    x |= x >> 8;
+    x |= x >> 16;
+    return x + 1;
+}
+
 NFE_INLINE constexpr float RadToDeg(float radians)
 {
     return radians * 57.2957795f;

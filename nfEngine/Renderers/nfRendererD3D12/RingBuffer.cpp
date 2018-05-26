@@ -119,14 +119,14 @@ size_t RingBuffer::Allocate(size_t size)
 
 void RingBuffer::FinishFrame(uint64 frameIndex)
 {
-    mCompletedFrames.push(std::make_pair(frameIndex, mTail));
+    mCompletedFrames.EmplaceBack(frameIndex, mTail);
 }
 
 void RingBuffer::OnFrameCompleted(uint64 frameIndex)
 {
-    while (!mCompletedFrames.empty() && mCompletedFrames.front().first < frameIndex)
+    while (!mCompletedFrames.Empty() && mCompletedFrames.Front().first < frameIndex)
     {
-        size_t oldestFrameTail = mCompletedFrames.front().second;
+        size_t oldestFrameTail = mCompletedFrames.Front().second;
 
         if (mUsed > 0 )
         {
@@ -142,7 +142,7 @@ void RingBuffer::OnFrameCompleted(uint64 frameIndex)
         }
 
         mHead = oldestFrameTail;
-        mCompletedFrames.pop();
+        mCompletedFrames.PopFront();
     }
 }
 
