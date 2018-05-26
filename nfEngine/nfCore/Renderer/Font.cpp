@@ -59,7 +59,7 @@ bool Font::GetTextSize(const char* text, int& width, int& lines) const
         if (text[i] == '\n')  // carriage return
         {
             lines++;
-            maxOffsetX = std::max(maxOffsetX, offsetX);
+            maxOffsetX = Math::Max(maxOffsetX, offsetX);
             offsetX = 0;
             continue;
         }

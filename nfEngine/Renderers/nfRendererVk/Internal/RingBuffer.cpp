@@ -88,13 +88,13 @@ uint32 RingBuffer::Write(const void* data, uint32 size)
 
 void RingBuffer::FinishFrame()
 {
-    mFinishedFrames.push(mTail);
+    mFinishedFrames.PushBack(mTail);
 }
 
 void RingBuffer::PopOldestFrame()
 {
-    mHead = mFinishedFrames.front();
-    mFinishedFrames.pop();
+    mHead = mFinishedFrames.Front();
+    mFinishedFrames.PopFront();
 }
 
 } // namespace Renderer

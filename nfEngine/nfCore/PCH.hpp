@@ -56,15 +56,14 @@
 // STL lib
 #include <string>
 #include <vector>
-#include <deque>
 #include <map>
-#include <queue>
 #include <memory>
 #include <functional>
 #include <sstream>
 #include <tuple>
 #include <atomic>
 #include <unordered_map>
+#include <algorithm>
 
 // FreeType library
 #include "ft2build.h"

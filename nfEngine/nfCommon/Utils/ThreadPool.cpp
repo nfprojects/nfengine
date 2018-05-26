@@ -104,18 +104,18 @@ void ThreadPool::SchedulerCallback(WorkerThread* thread)
             ScopedExclusiveLock<Mutex> lock(mTasksQueueMutex);
 
             // wait for new task
-            while (thread->mStarted && mTasksQueue.empty())
+            while (thread->mStarted && mTasksQueue.Empty())
                 mTaskQueueCV.Wait(lock);
 
             if (!thread->mStarted)
                 return;
 
             // pop a task from the queue
-            context.taskId = mTasksQueue.front();
+            context.taskId = mTasksQueue.Front();
             task = &mTasks[context.taskId];
             context.instanceId = task->mNextInstance++;
             if (task->mNextInstance == task->mInstancesNum)
-                mTasksQueue.pop();
+                mTasksQueue.PopFront();
         }
 
         // execute
@@ -154,7 +154,7 @@ void ThreadPool::FinishTask(Task* task)
 void ThreadPool::EnqueueTask(TaskID taskID)
 {
     ScopedExclusiveLock<Mutex> lock(mTasksQueueMutex);
-    mTasksQueue.push(taskID);
+    mTasksQueue.PushBack(taskID);
     mTaskQueueCV.SignalAll();
 }
 

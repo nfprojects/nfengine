@@ -54,15 +54,15 @@ void AsyncThreadPool::SchedulerCallback()
             ScopedExclusiveLock<Mutex> lock(mTasksQueueMutex);
 
             // wait for new task
-            while (mStarted && mTasksQueue.empty())
+            while (mStarted && mTasksQueue.Empty())
                 mTaskQueueTask.Wait(lock);
 
             if (!mStarted)
                 return;
 
             // pop a task from the queue
-            currTask = mTasksQueue.front();
-            mTasksQueue.pop();
+            currTask = mTasksQueue.Front();
+            mTasksQueue.PopFront();
         }
 
         // execute
@@ -94,7 +94,7 @@ AsyncFuncID AsyncThreadPool::Enqueue(AsyncFuncCallback function)
 
     {
         NFE_SCOPED_LOCK(mTasksQueueMutex);
-        mTasksQueue.push(task);
+        mTasksQueue.PushBack(task);
         mTaskQueueTask.SignalAll();
     }
 
