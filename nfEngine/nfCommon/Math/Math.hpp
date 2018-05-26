@@ -163,6 +163,12 @@ template<typename T>
 NFE_INLINE constexpr bool IsPowerOfTwo(const T x);
 
 /**
+ * Round a number up to the nearest power of two.
+ */
+template<typename T>
+NFE_INLINE constexpr uint32 NextPowerOfTwo(uint32 x);
+
+/**
  * Convert radians to degrees.
  */
 NFE_INLINE constexpr float RadToDeg(const float radians);
