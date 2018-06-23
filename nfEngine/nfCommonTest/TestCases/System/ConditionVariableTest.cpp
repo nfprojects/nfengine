@@ -18,7 +18,7 @@ TEST(ConditionVariableTest, WaitFor_Timeout)
     const uint32 timeout = 20;
 
     {
-        ScopedMutexLock lock(mutex);
+        ScopedExclusiveLock<Mutex> lock(mutex);
         EXPECT_FALSE(cv.WaitFor(lock, timeout));
     }
 }
@@ -31,14 +31,14 @@ TEST(ConditionVariableTest, WaitFor_Multithreaded)
 
     const auto threadFunc = [&]()
     {
-        ScopedMutexLock lock(mutex);
+        ScopedExclusiveLock<Mutex> lock(mutex);
         signaled = true;
         cv.SignalOne();
     };
 
     std::thread thread(threadFunc);
 
-    ScopedMutexLock lock(mutex);
+    ScopedExclusiveLock<Mutex> lock(mutex);
     while (!signaled)
     {
         EXPECT_TRUE(cv.WaitFor(lock, 1000));
@@ -59,7 +59,7 @@ TEST(ConditionVariableTest, WaitMultipleTimes)
     {
         for (int i = 0; i < target; ++i)
         {
-            ScopedMutexLock lock(mutex);
+            ScopedExclusiveLock<Mutex> lock(mutex);
             counter++;
             cv.SignalOne();
         }
@@ -68,7 +68,7 @@ TEST(ConditionVariableTest, WaitMultipleTimes)
     std::thread thread(threadFunc);
 
     {
-        ScopedMutexLock lock(mutex);
+        ScopedExclusiveLock<Mutex> lock(mutex);
         while (counter < target)
         {
             cv.Wait(lock);

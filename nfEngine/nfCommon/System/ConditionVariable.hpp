@@ -7,6 +7,7 @@
 #pragma once
 
 #include "../nfCommon.hpp"
+#include "Mutex.hpp"
 #include "../Utils/ScopedLock.hpp"
 
 
@@ -25,13 +26,13 @@ public:
      * @note    This method must be called withing locked mutex.
      *          Otherwise behavior is undefined.
      */
-    NFE_INLINE void Wait(ScopedMutexLock& lock);
+    NFE_INLINE void Wait(ScopedExclusiveLock<Mutex>& lock);
 
     /**
      * Wait until the condition variable is signaled (with timeout).
      * @return  False if timeout was reached, true if signaled.
      */
-    NFE_INLINE bool WaitFor(ScopedMutexLock& lock, uint32 milliseconds);
+    NFE_INLINE bool WaitFor(ScopedExclusiveLock<Mutex>& lock, uint32 milliseconds);
 
     /**
      * Signal one waiting thread.

@@ -23,6 +23,11 @@ RWLock::~RWLock()
      // SRWLOCK doesn't require destruction
 }
 
+bool RWLock::TryAcquireExclusive()
+{
+    return 0 != ::TryAcquireSRWLockExclusive(&mLockObject);
+}
+
 void RWLock::AcquireExclusive()
 {
     ::AcquireSRWLockExclusive(&mLockObject);
@@ -31,6 +36,11 @@ void RWLock::AcquireExclusive()
 void RWLock::ReleaseExclusive()
 {
     ::ReleaseSRWLockExclusive(&mLockObject);
+}
+
+bool RWLock::TryAcquireShared()
+{
+    return 0 != ::TryAcquireSRWLockShared(&mLockObject);
 }
 
 void RWLock::AcquireShared()

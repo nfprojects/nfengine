@@ -25,7 +25,7 @@ ConditionVariable::~ConditionVariable()
     // CONDITION_VARIABLE doesn't require destruction
 }
 
-void ConditionVariable::Wait(ScopedMutexLock& lock)
+void ConditionVariable::Wait(ScopedExclusiveLock<Mutex>& lock)
 {
     NFE_ASSERT(lock.IsLocked(), "Scoped lock must be in locked state when waiting on ConditionVariable");
 
@@ -34,7 +34,7 @@ void ConditionVariable::Wait(ScopedMutexLock& lock)
     NFE_ASSERT(ret != 0, "SleepConditionVariableCS failed, last error code: %d", GetLastError());
 }
 
-bool ConditionVariable::WaitFor(ScopedMutexLock& lock, uint32 milliseconds)
+bool ConditionVariable::WaitFor(ScopedExclusiveLock<Mutex>& lock, uint32 milliseconds)
 {
     NFE_ASSERT(lock.IsLocked(), "Scoped lock must be in locked state when waiting on ConditionVariable");
 
