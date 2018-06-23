@@ -46,7 +46,7 @@ Logger* Logger::GetInstance()
 
 void Logger::Shutdown()
 {
-    ScopedMutexLock lock(mResetMutex);
+    ScopedExclusiveLock<Mutex> lock(mResetMutex);
 
     mBackends().Clear();
 }
@@ -56,7 +56,7 @@ void Logger::Reset()
     if (mInitialized == InitStage::Uninitialized)
         return;
 
-    ScopedMutexLock lock(mResetMutex);
+    ScopedExclusiveLock<Mutex> lock(mResetMutex);
     // Change mInitialized, to avoid Logging while backends are resetting
     mInitialized.store(InitStage::Initializing);
 
@@ -246,7 +246,7 @@ void Logger::Log(LogType type, const char* srcFile, int line, const char* str, .
     if (len < 0 || !formattedStr)
         return;
 
-    ScopedMutexLock lock(mLogMutex);
+    ScopedExclusiveLock<Mutex> lock(mLogMutex);
     for (const auto& backend : mBackends())
     {
         if (backend.ptr->IsEnabled())
@@ -264,7 +264,7 @@ void Logger::Log(LogType type, const char* srcFile, const char* str, int line)
     // TODO: consider logging local time instead of time elapsed since Logger initialization
     double logTime = mTimer.Stop();
 
-    ScopedMutexLock lock(mLogMutex);
+    ScopedExclusiveLock<Mutex> lock(mLogMutex);
     for (const auto& backend : mBackends())
     {
         if (backend.ptr->IsEnabled())

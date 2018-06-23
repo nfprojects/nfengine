@@ -30,7 +30,7 @@ AsyncThreadPool::~AsyncThreadPool()
 {
     mStarted = false;
     {
-        ScopedMutexLock lock(mTasksQueueMutex);
+        ScopedExclusiveLock<Mutex> lock(mTasksQueueMutex);
         mTaskQueueTask.SignalAll();
     }
 
@@ -51,7 +51,7 @@ void AsyncThreadPool::SchedulerCallback()
     for (;;)
     {
         {
-            ScopedMutexLock lock(mTasksQueueMutex);
+            ScopedExclusiveLock<Mutex> lock(mTasksQueueMutex);
 
             // wait for new task
             while (mStarted && mTasksQueue.empty())
@@ -70,7 +70,7 @@ void AsyncThreadPool::SchedulerCallback()
 
         // mark as done and notify waiting threads
         {
-            ScopedMutexLock lock(mTasksMutex);
+            NFE_SCOPED_LOCK(mTasksMutex);
             mTasks.Erase(currTask->ptr);
             mTasksMutexCV.SignalAll();
 
@@ -88,12 +88,12 @@ AsyncFuncID AsyncThreadPool::Enqueue(AsyncFuncCallback function)
     task->ptr = taskPtr;
 
     {
-        ScopedMutexLock lock(mTasksMutex);
+        NFE_SCOPED_LOCK(mTasksMutex);
         mTasks.Insert(taskPtr, task);
     }
 
     {
-        ScopedMutexLock lock(mTasksQueueMutex);
+        NFE_SCOPED_LOCK(mTasksQueueMutex);
         mTasksQueue.push(task);
         mTaskQueueTask.SignalAll();
     }
@@ -114,13 +114,13 @@ AsyncFunc* AsyncThreadPool::GetTask(const AsyncFuncID& taskID) const
 
 bool AsyncThreadPool::IsTaskFinished(const AsyncFuncID& taskID)
 {
-    ScopedMutexLock lock(mTasksMutex);
+    NFE_SCOPED_LOCK(mTasksMutex);
     return GetTask(taskID) == nullptr;
 }
 
 void AsyncThreadPool::WaitForTask(const AsyncFuncID& taskID)
 {
-    ScopedMutexLock lock(mTasksMutex);
+    ScopedExclusiveLock<Mutex> lock(mTasksMutex);
     while (GetTask(taskID) != nullptr)
     {
         mTasksMutexCV.Wait(lock);
@@ -129,7 +129,7 @@ void AsyncThreadPool::WaitForTask(const AsyncFuncID& taskID)
 
 void AsyncThreadPool::WaitForAllTasks()
 {
-    ScopedMutexLock lock(mTasksMutex);
+    ScopedExclusiveLock<Mutex> lock(mTasksMutex);
     while (!mTasks.Empty())
     {
         mTasksMutexCV.Wait(lock);

@@ -34,7 +34,7 @@ AsyncQueueManager& AsyncQueueManager::GetInstance()
     static AsyncQueueManager instance;
     if (!instance.mIsInitialized)
     {
-        ScopedMutexLock lock(instance.mInitLock);
+        NFE_SCOPED_LOCK(instance.mInitLock);
         if (!instance.mIsInitialized)
             instance.mIsInitialized = instance.Init();
     }

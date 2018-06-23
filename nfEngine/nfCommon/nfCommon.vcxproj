@@ -150,6 +150,10 @@
     <ClInclude Include="System\Mutex.hpp" />
     <ClInclude Include="System\RWLock.hpp" />
     <ClInclude Include="System\Memory.hpp" />
+    <ClInclude Include="System\RWSpinLock.hpp" />
+    <ClInclude Include="System\RWSpinLockImpl.hpp" />
+    <ClInclude Include="System\SpinLock.hpp" />
+    <ClInclude Include="System\SpinLockImpl.hpp" />
     <ClInclude Include="System\SystemInfo.hpp" />
     <ClInclude Include="System\SystemInfoConstants.hpp" />
     <ClInclude Include="System\Thread.hpp" />
