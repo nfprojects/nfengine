@@ -26,6 +26,11 @@ RWLock::~RWLock()
     NFE_ASSERT(result == 0, "RW lock destruction failed");
 }
 
+bool RWLock::TryAcquireExclusive()
+{
+    return 0 == ::pthread_rwlock_trywrlock(&mLockObject);
+}
+
 void RWLock::AcquireExclusive()
 {
     int result = ::pthread_rwlock_wrlock(&mLockObject);
@@ -36,6 +41,11 @@ void RWLock::ReleaseExclusive()
 {
     int result = ::pthread_rwlock_unlock(&mLockObject);
     NFE_ASSERT(result == 0, "Releasing exclusive lock failed");
+}
+
+bool RWLock::TryAcquireShared()
+{
+    return 0 == ::pthread_rwlock_tryrdlock(&mLockObject);
 }
 
 void RWLock::AcquireShared()

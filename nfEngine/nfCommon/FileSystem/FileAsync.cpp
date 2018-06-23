@@ -34,7 +34,7 @@ struct FileAsync::AsyncDataStruct
 
 bool FileAsync::SafeErasePtr(AsyncDataStruct* ptrToErase)
 {
-    ScopedMutexLock guard(mSetAccessMutex);
+    NFE_SCOPED_LOCK(mSetAccessMutex);
     bool eraseResult = mSystemPtrs.Erase(ptrToErase);
     if (ptrToErase)
         delete ptrToErase;
@@ -43,7 +43,7 @@ bool FileAsync::SafeErasePtr(AsyncDataStruct* ptrToErase)
 
 bool FileAsync::SafeInsertPtr(AsyncDataStruct* ptrToInsert)
 {
-    ScopedMutexLock guard(mSetAccessMutex);
+    NFE_SCOPED_LOCK(mSetAccessMutex);
     return mSystemPtrs.Insert(ptrToInsert).iterator != mSystemPtrs.End();
 }
 

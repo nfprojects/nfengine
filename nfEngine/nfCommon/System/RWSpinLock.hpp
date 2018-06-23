@@ -1,32 +1,29 @@
 /**
  * @file
- * @author Witek902 (witek902@gmail.com)
- * @brief  Reader/writer lock (mutex) declaration.
+ * @brief  RWSpinLock declaration.
  */
 
 #pragma once
 
 #include "../nfCommon.hpp"
 
-#if defined(WIN32)
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#include <Windows.h>
-#endif // defined(WIN32)
-
+#include <atomic>
 
 namespace NFE {
 namespace Common {
 
 /**
- * Reader/writer lock (mutex).
+ * Reader/writer spin lock.
  * There can be multiple shared locks or only one exclusive lock acquired at the same time.
+ *
+ * @remarks
+ * RWSpinLock should be used ONLY when locking occurs very rarely and for very short period of time.
+ * Otherwise, use RWLock.
  */
-class RWLock final
+class RWSpinLock final
 {
 public:
-    NFE_INLINE RWLock();
-    NFE_INLINE ~RWLock();
+    NFE_INLINE RWSpinLock() = default;
 
     /**
      * Try acquiring a lock in exclusive mode.
@@ -61,17 +58,15 @@ public:
     NFE_INLINE void ReleaseShared();
 
 private:
-    // RWLock cannot be copied nor moved
-    RWLock(const RWLock&) = delete;
-    RWLock(RWLock&&) = delete;
-    RWLock& operator = (const RWLock&) = delete;
-    RWLock& operator = (RWLock&&) = delete;
+    static constexpr int32 UnlockValue = 0;
+    static constexpr int32 WriteLockValue = -1;
 
-#if defined(WIN32)
-    ::SRWLOCK mLockObject;
-#elif defined(__LINUX__) | defined(__linux__)
-    ::pthread_rwlock_t mLockObject;
-#endif
+    RWSpinLock(const RWSpinLock&) = delete;
+    RWSpinLock(RWSpinLock&&) = delete;
+    RWSpinLock& operator = (const RWSpinLock&) = delete;
+    RWSpinLock& operator = (RWSpinLock&&) = delete;
+
+    std::atomic<int32> mValue{UnlockValue};
 };
 
 
@@ -79,8 +74,4 @@ private:
 } // namespace NFE
 
 
-#if defined(WIN32)
-#include "Win/RWLockImpl.hpp"
-#elif defined(__LINUX__) | defined(__linux__)
-#include "Linux/RWLockImpl.hpp"
-#endif
+#include "RWSpinLockImpl.hpp"

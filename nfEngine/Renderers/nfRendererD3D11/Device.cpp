@@ -29,12 +29,14 @@
 namespace NFE {
 namespace Renderer {
 
+using namespace Common;
+
 namespace {
 
 template<typename Type, typename Desc>
-Common::SharedPtr<Type> CreateGenericResource(const Desc& desc)
+SharedPtr<Type> CreateGenericResource(const Desc& desc)
 {
-    auto resource = Common::MakeSharedPtr<Type>();
+    auto resource = MakeSharedPtr<Type>();
     if (!resource)
     {
         return nullptr;
@@ -145,7 +147,7 @@ bool Device::Init(const DeviceInitParams* params)
         NFE_LOG_INFO("GPU name: %s", deviceInfo.description.Str());
         NFE_LOG_INFO("GPU info: %s", deviceInfo.misc.Str());
 
-        Common::String features;
+        String features;
         for (uint32 i = 0; i < deviceInfo.features.Size(); ++i)
         {
             if (i > 0)
@@ -262,7 +264,7 @@ CommandRecorderPtr Device::CreateCommandRecorder()
     if (FAILED(hr))
         return nullptr;
 
-    auto commandRecorder = Common::MakeSharedPtr<CommandRecorder>(context);
+    auto commandRecorder = MakeSharedPtr<CommandRecorder>(context);
     if (!commandRecorder)
     {
         D3D_SAFE_RELEASE(context);
@@ -277,7 +279,7 @@ CommandListID Device::RegisterCommandList(ID3D11CommandList* commandList)
 {
     CommandListID id = INVALID_COMMAND_LIST_ID;
     {
-        Common::ScopedMutexLock lock(mCommandListsMutex);
+        NFE_SCOPED_LOCK(mCommandListsMutex);
         mCommandLists.PushBack(commandList);
         id = static_cast<CommandListID>(mCommandLists.Size());
     }
@@ -295,7 +297,8 @@ bool Device::Execute(CommandListID id)
 
     ID3D11CommandList* list = nullptr;
     {
-        Common::ScopedMutexLock lock(mCommandListsMutex);
+        NFE_SCOPED_LOCK(mCommandListsMutex);
+
         if (id > mCommandLists.Size())
         {
             NFE_LOG_ERROR("Invalid command list ID");
@@ -323,7 +326,7 @@ bool Device::FinishFrame()
     uint32 danglingLists = 0;
 
     {
-        Common::ScopedMutexLock lock(mCommandListsMutex);
+        NFE_SCOPED_LOCK(mCommandListsMutex);
 
         // cleanup command list array
         for (ID3D11CommandList* commandList : mCommandLists)
@@ -422,8 +425,8 @@ bool Device::DetectVideoCards(int preferredId)
 
         // get GPU description
         std::wstring wideDesc = adapterDesc.Description;
-        Common::String descString;
-        Common::UTF16ToUTF8(wideDesc, descString);
+        String descString;
+        UTF16ToUTF8(wideDesc, descString);
 
         if (static_cast<uint32>(preferredId) == i)
             mAdapterInUse = i;
@@ -466,17 +469,17 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
 
     // get GPU description
     std::wstring wideDesc = adapterDesc.Description;
-    Common::UTF16ToUTF8(wideDesc, info.description);
+    UTF16ToUTF8(wideDesc, info.description);
 
     // get various GPU information
     info.misc =
-        "Vendor ID: " + Common::ToString(adapterDesc.VendorId) +
-        ", Device ID: " + Common::ToString(adapterDesc.DeviceId) +
-        ", Sub System ID: " + Common::ToString(adapterDesc.SubSysId) +
-        ", Revision: " + Common::ToString(adapterDesc.Revision) +
-        ", Dedicated Video Memory: " + Common::ToString(uint64(adapterDesc.DedicatedVideoMemory >> 10u)) + " KB"
-        ", Dedicated System Memory: " + Common::ToString(uint64(adapterDesc.DedicatedSystemMemory >> 10u)) + " KB"
-        ", Shared System Memory: " + Common::ToString(uint64(adapterDesc.SharedSystemMemory >> 10u)) + " KB";
+        "Vendor ID: " + ToString(adapterDesc.VendorId) +
+        ", Device ID: " + ToString(adapterDesc.DeviceId) +
+        ", Sub System ID: " + ToString(adapterDesc.SubSysId) +
+        ", Revision: " + ToString(adapterDesc.Revision) +
+        ", Dedicated Video Memory: " + ToString(uint64(adapterDesc.DedicatedVideoMemory >> 10u)) + " KB"
+        ", Dedicated System Memory: " + ToString(uint64(adapterDesc.DedicatedSystemMemory >> 10u)) + " KB"
+        ", Shared System Memory: " + ToString(uint64(adapterDesc.SharedSystemMemory >> 10u)) + " KB";
 
 
     info.features.Clear();
@@ -523,9 +526,9 @@ bool Device::GetDeviceInfo(DeviceInfo& info)
     if (SUCCEEDED(hr))
     {
         info.features.PushBack("PixelShaderMinPrecision=" +
-                               Common::ToString(minPrecisionData.PixelShaderMinPrecision));
+                               ToString(minPrecisionData.PixelShaderMinPrecision));
         info.features.PushBack("AllOtherShaderStagesMinPrecision=" +
-                               Common::ToString(minPrecisionData.AllOtherShaderStagesMinPrecision));
+                               ToString(minPrecisionData.AllOtherShaderStagesMinPrecision));
     }
 
     D3D11_FEATURE_DATA_D3D9_SHADOW_SUPPORT shadowSupportData;

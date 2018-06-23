@@ -200,7 +200,7 @@ void FileAsync::Close()
 
         {
             // Block access to mSystemPtrs map before accessing it
-            ScopedMutexLock guard(mSetAccessMutex);
+            NFE_SCOPED_LOCK(mSetAccessMutex);
 
             // Check if there are any ongoing jobs
             if (!mSystemPtrs.Empty())

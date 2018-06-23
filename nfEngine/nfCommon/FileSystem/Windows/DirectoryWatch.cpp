@@ -102,7 +102,7 @@ void DirectoryWatch::SetCallback(WatchCallback callback)
 bool DirectoryWatch::WatchPath(const String& path, Event eventFilter)
 {
     {
-        ScopedMutexLock lock(mMutex);
+        ScopedExclusiveLock<Mutex> lock(mMutex);
         auto it = mRequests.Find(String(path));
         if (it != mRequests.End())
         {
@@ -116,6 +116,8 @@ bool DirectoryWatch::WatchPath(const String& path, Event eventFilter)
                     NFE_LOG_ERROR("QueueUserAPC() failed for path '%s': %s", path.Str(), GetLastErrorString().Str());
                     return false;
                 }
+
+                lock.Unlock();
 
                 // wait for ERROR_OPERATION_ABORTED in DirectoryWatch::NotificationCompletion()
                 ::WaitForSingleObject(mEvent, INFINITE);
@@ -154,7 +156,7 @@ bool DirectoryWatch::WatchPath(const String& path, Event eventFilter)
     WatchRequest* requestPtr = request.Get();
     mRequestsNum++;
     {
-        ScopedMutexLock lock(mMutex);
+        NFE_SCOPED_LOCK(mMutex);
         mRequests.Insert(path, std::move(request));
     }
 
@@ -183,7 +185,7 @@ void DirectoryWatch::NotificationCompletion(DWORD errorCode, DWORD bytesTransfer
         if (::SetEvent(watch->mEvent) == 0)
             NFE_LOG_ERROR("SetEvent() failed: %s", GetLastErrorString().Str());
 
-        ScopedMutexLock lock(watch->mMutex);
+        NFE_SCOPED_LOCK(watch->mMutex);
         watch->mRequests.Erase(request->path);
         watch->mRequestsNum--;
         return;
@@ -271,7 +273,7 @@ void DirectoryWatch::TerminateProc(ULONG_PTR arg)
 {
     DirectoryWatch* watch = reinterpret_cast<DirectoryWatch*>(arg);
 
-    ScopedMutexLock lock(watch->mMutex);
+    NFE_SCOPED_LOCK(watch->mMutex);
     for (auto& request : watch->mRequests)
         request.second->Stop();
 }

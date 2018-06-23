@@ -19,13 +19,15 @@
 namespace NFE {
 namespace Resource {
 
+using namespace Common;
+
 // TEMPORARY
 const char g_CustomResourcePrefix = '/';
 
 
 ResManager::ResManager()
 {
-    mThreadPool.reset(new Common::AsyncThreadPool);
+    mThreadPool.reset(new AsyncThreadPool);
 }
 
 ResManager::~ResManager()
@@ -63,7 +65,7 @@ ResourceBase* ResManager::GetResource(const char* name, ResourceType type, bool 
         return nullptr;
     }
 
-    Common::ScopedMutexLock ulock(mResListMutex);
+    ScopedExclusiveLock<Mutex> ulock(mResListMutex);
 
     ResourceBase* resource = nullptr;
 
@@ -135,7 +137,7 @@ ResourceBase* ResManager::GetResource(const char* name, ResourceType type, bool 
 
 bool ResManager::DeleteResource(const char* name)
 {
-    Common::ScopedMutexLock ulock(mResListMutex);
+    ScopedExclusiveLock<Mutex> ulock(mResListMutex);
     std::map<const char*, ResourceBase*, CompareResName>::iterator it;
 
     it = mResources.find(name);
@@ -161,13 +163,13 @@ bool ResManager::DeleteResource(const char* name)
 
 bool ResManager::AddCustomResource(ResourceBase* resource, const char* name)
 {
-    if (!Common::MemoryCheck(resource))
+    if (!MemoryCheck(resource))
     {
         NFE_LOG_ERROR("Memory pointed by resource pointer is corrupted.");
         return false;
     }
 
-    Common::ScopedMutexLock ulock(mResListMutex);
+    ScopedExclusiveLock<Mutex> ulock(mResListMutex);
 
     // check if resource already exists
     const char* pNameToCheck = (name != nullptr) ? name : resource->mName;

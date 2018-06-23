@@ -228,8 +228,8 @@
     </ClCompile>
     <ClCompile Include="TestCases\System\ConditionVariableTest.cpp" />
     <ClCompile Include="TestCases\System\LibraryTest.cpp" />
-    <ClCompile Include="TestCases\System\LockTest.cpp" />
-    <ClCompile Include="TestCases\System\MutexTest.cpp" />
+    <ClCompile Include="TestCases\System\SharedLockTest.cpp" />
+    <ClCompile Include="TestCases\System\ExclusiveLockTest.cpp" />
     <ClCompile Include="TestCases\System\SystemInfoTest.cpp" />
     <ClCompile Include="TestCases\System\ThreadTest.cpp" />
     <ClCompile Include="TestCases\System\TimerTest.cpp" />
