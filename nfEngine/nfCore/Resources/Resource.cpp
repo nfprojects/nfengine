@@ -12,6 +12,8 @@
 namespace NFE {
 namespace Resource {
 
+using namespace Common;
+
 ResourceBase::ResourceBase()
 {
     mCustom = false;
@@ -144,7 +146,7 @@ void ResourceBase::Load()
                 SetState(result ? ResourceState::Loaded : ResourceState::Failed);
 
                 // TODO get rid of that
-                Common::ScopedMutexLock lock(mCallbacksMutex);
+                ScopedExclusiveLock<Mutex> lock(mCallbacksMutex);
                 for (const auto& callback : mPostLoadCallbacks)
                     callback();
                 mPostLoadCallbacks.clear();
@@ -202,7 +204,7 @@ void ResourceBase::Unload()
 
 void ResourceBase::AddPostLoadCallback(const ResourcePostLoadCallback& callback)
 {
-    Common::ScopedMutexLock lock(mCallbacksMutex);
+    ScopedExclusiveLock<Mutex> lock(mCallbacksMutex);
     mPostLoadCallbacks.push_back(callback);
 
     // resource is already loaded, so call the callback

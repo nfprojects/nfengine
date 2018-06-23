@@ -89,7 +89,7 @@ void* DefaultAllocator::Malloc(size_t size, size_t alignment, const char* source
         mAllocationsNum++;
 
 #ifdef _DEBUG
-        ScopedMutexLock lock(mMutex);
+        NFE_SCOPED_LOCK(mMutex);
         AllocationDebugInfo info;
         info.size = size;
         info.sourceFile = sourceFile;
@@ -114,7 +114,7 @@ void DefaultAllocator::Free(void* ptr)
 
 #ifdef _DEBUG
     {
-        ScopedMutexLock lock(mMutex);
+        NFE_SCOPED_LOCK(mMutex);
         const auto iter = mAllocationsDebugInfo.find(ptr);
 
         if (iter == mAllocationsDebugInfo.end())
@@ -138,7 +138,7 @@ void DefaultAllocator::Free(void* ptr)
 void DefaultAllocator::ReportAllocations()
 {
 #ifdef _DEBUG
-    ScopedMutexLock lock(mMutex);
+    NFE_SCOPED_LOCK(mMutex);
 
     NFE_LOG_INFO("Allocated blocks: %zu (%zu bytes)", mAllocationsNum.load(), mBytesAllocated.load());
     for (const auto& it : mAllocationsDebugInfo)

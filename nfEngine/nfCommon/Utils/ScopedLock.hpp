@@ -7,8 +7,6 @@
 #pragma once
 
 #include "../nfCommon.hpp"
-#include "../System/RWLock.hpp"
-#include "../System/Mutex.hpp"
 
 
 namespace NFE {
@@ -22,8 +20,8 @@ template<typename LockType>
 class ExclusiveLockPolicy
 {
 public:
-    static void Acquire(LockType& lock) { lock.AcquireExclusive(); }
-    static void Release(LockType& lock) { lock.ReleaseExclusive(); }
+    NFE_INLINE static void Acquire(LockType& lock) { lock.AcquireExclusive(); }
+    NFE_INLINE static void Release(LockType& lock) { lock.ReleaseExclusive(); }
 };
 
 
@@ -34,8 +32,8 @@ template<typename LockType>
 class SharedLockPolicy
 {
 public:
-    static void Acquire(LockType& lock) { lock.AcquireShared(); }
-    static void Release(LockType& lock) { lock.ReleaseShared(); }
+    NFE_INLINE static void Acquire(LockType& lock) { lock.AcquireShared(); }
+    NFE_INLINE static void Release(LockType& lock) { lock.ReleaseShared(); }
 };
 
 
@@ -48,7 +46,7 @@ template <typename LockType, typename LockingPolicy>
 class ScopedLock final
 {
 public:
-    ScopedLock(LockType& lock, bool createLocked = true)
+    NFE_INLINE ScopedLock(LockType& lock, bool createLocked = true)
         : mLock(lock)
         , mIsLocked(createLocked)
     {
@@ -58,7 +56,7 @@ public:
         }
     }
 
-    ~ScopedLock()
+    NFE_INLINE ~ScopedLock()
     {
         if (mIsLocked)
         {
@@ -66,7 +64,7 @@ public:
         }
     }
 
-    void Lock()
+    NFE_INLINE void Lock()
     {
         if (!mIsLocked)
         {
@@ -75,7 +73,7 @@ public:
         }
     }
 
-    void Unlock()
+    NFE_INLINE void Unlock()
     {
         if (mIsLocked)
         {
@@ -84,12 +82,12 @@ public:
         }
     }
 
-    constexpr bool IsLocked() const
+    NFE_INLINE constexpr bool IsLocked() const
     {
         return mIsLocked;
     }
 
-    LockType& GetLockObject() const
+    NFE_INLINE LockType& GetLockObject() const
     {
         return mLock;
     }
@@ -107,10 +105,15 @@ private:
 };
 
 
-using ScopedSharedLock = ScopedLock<RWLock, SharedLockPolicy<RWLock>>;
-using ScopedExclusiveLock = ScopedLock<RWLock, ExclusiveLockPolicy<RWLock>>;
-using ScopedMutexLock = ScopedLock<Mutex, ExclusiveLockPolicy<Mutex>>;
+template <typename LockType>
+using ScopedSharedLock = ScopedLock<LockType, SharedLockPolicy<LockType>>;
 
+template <typename LockType>
+using ScopedExclusiveLock = ScopedLock<LockType, ExclusiveLockPolicy<LockType>>;
+
+
+#define NFE_SCOPED_LOCK(lock) ScopedExclusiveLock<decltype(lock)> lockObject(lock)
+#define NFE_SCOPED_SHARED_LOCK(lock) ScopedSharedLock<decltype(lock)> lockObject(lock)
 
 } // namespace Common
 } // namespace NFE

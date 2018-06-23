@@ -26,6 +26,12 @@ public:
     NFE_INLINE ~Mutex();
 
     /**
+     * Try acquiring a lock in exclusive mode.
+     * @return  True if lock was successfully acquired.
+     */
+    NFE_INLINE bool TryAcquireExclusive();
+
+    /**
      * Acquire a lock in exclusive mode.
      */
     NFE_INLINE void AcquireExclusive();

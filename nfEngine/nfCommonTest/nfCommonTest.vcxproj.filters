@@ -172,12 +172,6 @@
     <ClCompile Include="TestCases\System\LibraryTest.cpp">
       <Filter>TestCases\System</Filter>
     </ClCompile>
-    <ClCompile Include="TestCases\System\LockTest.cpp">
-      <Filter>TestCases\System</Filter>
-    </ClCompile>
-    <ClCompile Include="TestCases\System\MutexTest.cpp">
-      <Filter>TestCases\System</Filter>
-    </ClCompile>
     <ClCompile Include="TestCases\Utils\ImageTest.cpp">
       <Filter>TestCases\Utils</Filter>
     </ClCompile>
@@ -216,6 +210,12 @@
     </ClCompile>
     <ClCompile Include="TestCases\Math\MathTranscendental.cpp">
       <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\System\SharedLockTest.cpp">
+      <Filter>TestCases\System</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCases\System\ExclusiveLockTest.cpp">
+      <Filter>TestCases\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

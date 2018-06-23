@@ -522,6 +522,18 @@
     <ClInclude Include="Logger\LoggerImpl.hpp">
       <Filter>Logger</Filter>
     </ClInclude>
+    <ClInclude Include="System\SpinLock.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\SpinLockImpl.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\RWSpinLock.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\RWSpinLockImpl.hpp">
+      <Filter>System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />

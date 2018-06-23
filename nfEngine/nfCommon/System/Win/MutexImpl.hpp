@@ -18,9 +18,11 @@ Mutex::Mutex()
     ::InitializeSRWLock(&mLockObject);
 }
 
-Mutex::~Mutex()
+Mutex::~Mutex() = default;
+
+bool Mutex::TryAcquireExclusive()
 {
-    // SRWLOCK doesn't require destruction
+    return 0 != ::TryAcquireSRWLockExclusive(&mLockObject);
 }
 
 void Mutex::AcquireExclusive()
