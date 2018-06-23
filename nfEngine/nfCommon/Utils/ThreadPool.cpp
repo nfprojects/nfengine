@@ -60,7 +60,7 @@ ThreadPool::ThreadPool(size_t maxTasks, size_t threadsNum)
 ThreadPool::~ThreadPool()
 {
     {
-        ScopedMutexLock lock(mTasksQueueMutex);
+        ScopedExclusiveLock<Mutex> lock(mTasksQueueMutex);
 
         for (const auto& thread : mThreads)
             thread->mStarted = false;
@@ -101,7 +101,7 @@ void ThreadPool::SchedulerCallback(WorkerThread* thread)
     for (;;)
     {
         {
-            ScopedMutexLock lock(mTasksQueueMutex);
+            ScopedExclusiveLock<Mutex> lock(mTasksQueueMutex);
 
             // wait for new task
             while (thread->mStarted && mTasksQueue.empty())
@@ -134,7 +134,7 @@ void ThreadPool::FinishTask(Task* task)
 
     {
         // TODO: get rid of this lock
-        ScopedMutexLock lock(mFinishedTasksMutex);
+        ScopedExclusiveLock<Mutex> lock(mFinishedTasksMutex);
         mFinishedTasksCV.SignalAll();
     }
 
@@ -153,7 +153,7 @@ void ThreadPool::FinishTask(Task* task)
 
 void ThreadPool::EnqueueTask(TaskID taskID)
 {
-    ScopedMutexLock lock(mTasksQueueMutex);
+    ScopedExclusiveLock<Mutex> lock(mTasksQueueMutex);
     mTasksQueue.push(taskID);
     mTaskQueueCV.SignalAll();
 }
@@ -185,7 +185,7 @@ TaskID ThreadPool::CreateTask(const TaskFunction& function, size_t instancesNum,
     {
         Task& dependency = mTasks[dependencyID];
 
-        ScopedMutexLock lock(mFinishedTasksMutex); // TODO: how to get rid of it?
+        ScopedExclusiveLock<Mutex> lock(mFinishedTasksMutex); // TODO: how to get rid of it?
         if (dependency.mTasksLeft > 0)
         {
             // update dependency list
@@ -217,7 +217,7 @@ void ThreadPool::WaitForTask(TaskID taskID)
     if (mTasks[taskID].mTasksLeft == 0)
         return;
 
-    ScopedMutexLock lock(mFinishedTasksMutex);
+    ScopedExclusiveLock<Mutex> lock(mFinishedTasksMutex);
     while (mTasks[taskID].mTasksLeft > 0)
         mFinishedTasksCV.Wait(lock);
 }
@@ -229,7 +229,7 @@ void ThreadPool::WaitForTasks(TaskID* tasks, size_t tasksNum)
         if (mTasks[tasks[i]].mTasksLeft == 0)
             continue;
 
-        ScopedMutexLock lock(mFinishedTasksMutex);
+        ScopedExclusiveLock<Mutex> lock(mFinishedTasksMutex);
         while (mTasks[tasks[i]].mTasksLeft > 0)
             mFinishedTasksCV.Wait(lock);
     }
@@ -242,7 +242,7 @@ void ThreadPool::WaitForAllTasks()
         if (mTasks[i].mTasksLeft == 0)
             continue;
 
-        ScopedMutexLock lock(mFinishedTasksMutex);
+        ScopedExclusiveLock<Mutex> lock(mFinishedTasksMutex);
         while (mTasks[i].mTasksLeft > 0)
             mFinishedTasksCV.Wait(lock);
     }

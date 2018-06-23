@@ -58,7 +58,7 @@ bool DirectoryWatch::WatchPath(const String& path, Event eventFilter)
         ::inotify_rm_watch(inotifyFd, fd);
         mWatchPathMap.Erase(iter);
 
-        ScopedMutexLock lock(mWatchDescriptorMapMutex);
+        NFE_SCOPED_LOCK(mWatchDescriptorMapMutex);
         mWatchDescriptorMap.Erase(fd);
         return true;
     }
@@ -83,7 +83,7 @@ bool DirectoryWatch::WatchPath(const String& path, Event eventFilter)
     }
 
     {
-        ScopedMutexLock lock(mWatchDescriptorMapMutex);
+        NFE_SCOPED_LOCK(mWatchDescriptorMapMutex);
 
         const auto oldFdIter = mWatchPathMap.Find(path);
         if (oldFdIter != mWatchPathMap.End())
@@ -159,7 +159,7 @@ bool DirectoryWatch::ProcessInotifyEvent(void* event)
 
     char path[PATH_MAX];
     {
-        ScopedMutexLock lock(mWatchDescriptorMapMutex);
+        NFE_SCOPED_LOCK(mWatchDescriptorMapMutex);
         const auto iter = mWatchDescriptorMap.Find(e->wd);
         if (iter == mWatchDescriptorMap.End())
         {

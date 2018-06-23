@@ -20,14 +20,14 @@ Latch::Latch()
 
 void Latch::Set()
 {
-    ScopedMutexLock lock(mMutex);
+    ScopedExclusiveLock<Mutex> lock(mMutex);
     mSet = true;
     mCV.SignalAll();
 }
 
 void Latch::Wait()
 {
-    ScopedMutexLock lock(mMutex);
+    ScopedExclusiveLock<Mutex> lock(mMutex);
     while (!mSet)
     {
         mCV.Wait(lock);
@@ -41,7 +41,7 @@ bool Latch::Wait(const unsigned int timeoutMs)
 
     const double timeoutSeconds = static_cast<double>(timeoutMs) / 1000.0f;
 
-    ScopedMutexLock lock(mMutex);
+    ScopedExclusiveLock<Mutex> lock(mMutex);
     while (!mSet)
     {
         if (timer.Stop() >= timeoutSeconds)

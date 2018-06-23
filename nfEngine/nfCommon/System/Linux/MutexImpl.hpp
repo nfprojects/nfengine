@@ -26,6 +26,11 @@ Mutex::~Mutex()
     NFE_ASSERT(result == 0, "Mutex destruction failed");
 }
 
+bool Mutex::TryAcquireExclusive()
+{
+    return 0 == ::pthread_mutex_trylock(&mMutexObject);
+}
+
 void Mutex::AcquireExclusive()
 {
     int result = ::pthread_mutex_lock(&mMutexObject);

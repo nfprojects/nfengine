@@ -28,13 +28,13 @@ ConditionVariable::~ConditionVariable()
     NFE_ASSERT(result == 0, "Condition variable destruction failed, error code = %i", errno);
 }
 
-void ConditionVariable::Wait(ScopedMutexLock& lock)
+void ConditionVariable::Wait(ScopedExclusiveLock<Mutex>& lock)
 {
     int result = ::pthread_cond_wait(&mConditionVariableObject, lock.GetLockObject().GetMutexObject());
     NFE_ASSERT(result == 0, "Condition variable waiting failed, error code = %i", errno);
 }
 
-bool ConditionVariable::WaitFor(ScopedMutexLock& lock, uint32 milliseconds)
+bool ConditionVariable::WaitFor(ScopedExclusiveLock<Mutex>& lock, uint32 milliseconds)
 {
     ::timeval tv;
     gettimeofday(&tv, NULL);
