@@ -16,13 +16,8 @@
 namespace NFE {
 namespace Common {
 
-const size_t LogGrouper::mInitialSize = 16;
-
 LogGrouper::LogGrouper()
-    : mLogs(new LogStruct[mInitialSize])
-    , mCurrentSize(mInitialSize)
-    , mLogCounter(0)
-    , mTimer(Logger::GetInstance()->GetTimer())
+    : mTimer(Logger::GetInstance()->GetTimer())
 {
 }
 
@@ -111,7 +106,7 @@ void LogGrouper::Log(LogType type, const char* str, int line, const char* file)
     log.type = type;
     log.msg = String(str);
 
-    InsertLog(log);
+    mLogs.PushBack(std::move(log));
 
     // If it's a fatal log, flush logs
     if (type == NFE::Common::LogType::Fatal)
@@ -123,31 +118,21 @@ void LogGrouper::Log(LogType type, const char* str, int line, const char* file)
 void LogGrouper::Flush()
 {
     const LoggerBackendMap& backends = Logger::ListBackends();
-    for (size_t i = 0; i < mLogCounter; i++)
+    for (const LogStruct& log : mLogs)
     {
         for (const auto& b : backends)
         {
-            LogStruct log = mLogs[i];
             if (b.ptr->IsEnabled())
                 b.ptr->Log(log.type, log.file.Str(), log.line, log.msg.Str(), log.time);
         }
     }
 
-    mLogCounter = 0;
+    mLogs.Clear();
 }
 
-void LogGrouper::InsertLog(LogStruct log)
+void LogGrouper::InsertLog(const LogStruct& log)
 {
-    mLogCounter++;
-    if (mCurrentSize == mLogCounter)
-    {
-        mCurrentSize *= 2;
-        LogStruct* newArray = new LogStruct[mCurrentSize];
-        memcpy(newArray, mLogs.get(), sizeof(LogStruct) * mLogCounter);
-        mLogs.reset(newArray);
-    }
-
-    mLogs[mLogCounter - 1] = log;
+    mLogs.PushBack(log);
 }
 
 } // namespace Common

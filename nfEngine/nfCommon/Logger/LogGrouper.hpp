@@ -10,7 +10,7 @@
 #include "../System/Timer.hpp"
 #include "Logger.hpp"
 #include "../Containers/String.hpp"
-
+#include "../Containers/DynArray.hpp"
 
 namespace NFE{
 namespace Common{
@@ -26,12 +26,9 @@ class NFCOMMON_API LogGrouper
         LogType type;
     };
 
-    std::unique_ptr<LogStruct[]> mLogs;
-    static const size_t mInitialSize;
-    size_t mCurrentSize;
-    size_t mLogCounter;
+    DynArray<LogStruct> mLogs;
     Timer mTimer;
-    void InsertLog(LogStruct log);
+    void InsertLog(const LogStruct& log);
 
 public:
     LogGrouper();
