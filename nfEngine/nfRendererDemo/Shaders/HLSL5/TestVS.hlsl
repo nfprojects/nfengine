@@ -13,7 +13,7 @@ struct VertexShaderOutput
 };
 
 #if (USE_CBUFFER > 0)
-cbuffer TestCBuffer : register(c0)
+cbuffer TestCBuffer : register(b0)
 {
     float4x4 viewMatrix;
 };
