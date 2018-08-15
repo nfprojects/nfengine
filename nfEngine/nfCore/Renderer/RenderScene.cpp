@@ -207,7 +207,7 @@ void RenderScene::RenderSpotShadowMap(const Common::TaskContext& context, const 
     GeometryRenderer::Get()->OnLeave(shadowsContext);
 };
 
-void RenderScene::RenderOmniShadowMap(const Common::TaskContext& context, const LightProxy* lightProxy, RenderingData& data) const
+void RenderScene::RenderOmniShadowMap(const Common::TaskContext& context, const LightProxy* lightProxy, RenderingData& data, uint32 faceID) const
 {
     // The below vector arrays are front, up and right vectors for each cubemap face camera matrix:
 
@@ -245,12 +245,11 @@ void RenderScene::RenderOmniShadowMap(const Common::TaskContext& context, const 
     };
 
     HighLevelRenderer* renderer = Engine::GetInstance()->GetRenderer();
-    uint32 face = static_cast<uint32>(context.instanceId);
     RenderContext* renderCtx = renderer->GetDeferredContext(context.threadId);
 
     // TODO: include "transform" rotation
     const Vector4& position = lightProxy->desc.transform.GetRow(3);
-    Matrix4 matrix = Matrix4(xVectors[face], yVectors[face], zVectors[face], position);
+    Matrix4 matrix = Matrix4(xVectors[faceID], yVectors[faceID], zVectors[faceID], position);
 
     // calculate frustum, view and projection matrices
     const float nearDistance = 0.01f; // TODO this should be adjustable
@@ -269,7 +268,7 @@ void RenderScene::RenderOmniShadowMap(const Common::TaskContext& context, const 
 
     GeometryRendererContext* shadowsContext = renderCtx->shadowsContext.get();
     GeometryRenderer::Get()->OnEnter(shadowsContext);
-    GeometryRenderer::Get()->SetUpForShadowMap(shadowsContext, lightProxy->shadowMap.Get(), &cameraDesc, face);
+    GeometryRenderer::Get()->SetUpForShadowMap(shadowsContext, lightProxy->shadowMap.Get(), &cameraDesc, faceID);
     RenderGeometry(shadowsContext, frustum, position);
     GeometryRenderer::Get()->OnLeave(shadowsContext);
 };
@@ -299,8 +298,14 @@ void RenderScene::RenderShadowMaps(const Common::TaskContext& context, Rendering
 
         if (lightProxy->shadowMap)
         {
-            const auto func = [this, &data, lightProxy](const Common::TaskContext& ctx) { RenderOmniShadowMap(ctx, lightProxy, data); };
-            threadPool->CreateTask(func, 6, context.taskId);
+            for (uint32 i = 0; i < 6; ++i)
+            {
+                const auto func = [this, &data, lightProxy, i](const Common::TaskContext& ctx)
+                {
+                    RenderOmniShadowMap(ctx, lightProxy, data, i);
+                };
+                threadPool->CreateTask(func, context.taskId);
+            }
         }
     }
 
@@ -365,7 +370,7 @@ bool RenderScene::Render(const Common::TaskContext& context, const Renderer::Vie
         {
             RenderShadowMaps(context, *renderingData);
         };
-        renderingData->geometryPassTask = threadPool->CreateTask(func, 1, context.taskId);
+        renderingData->geometryPassTask = threadPool->CreateTask(func, context.taskId);
     }
 
     // enqueue geometry pass task
@@ -383,7 +388,7 @@ bool RenderScene::Render(const Common::TaskContext& context, const Renderer::Vie
             RenderGeometry(gbufferContext, camera->GetFrustum(), cameraEntity->GetGlobalPosition());
             GeometryRenderer::Get()->OnLeave(gbufferContext);
         };
-        renderingData->geometryPassTask = threadPool->CreateTask(func, 1, context.taskId);
+        renderingData->geometryPassTask = threadPool->CreateTask(func, context.taskId);
     }
 
     // enqueue light pass task
@@ -392,7 +397,7 @@ bool RenderScene::Render(const Common::TaskContext& context, const Renderer::Vie
         {
             RenderLights(context, *renderingData);
         };
-        renderingData->geometryPassTask = threadPool->CreateTask(func, 1, context.taskId);
+        renderingData->geometryPassTask = threadPool->CreateTask(func, context.taskId);
     }
 
     // enqueue debug layer pass task
@@ -402,7 +407,7 @@ bool RenderScene::Render(const Common::TaskContext& context, const Renderer::Vie
         {
             RenderDebugLayer(context, *renderingData);
         };
-        renderingData->geometryPassTask = threadPool->CreateTask(func, 1, context.taskId);
+        renderingData->geometryPassTask = threadPool->CreateTask(func, context.taskId);
     }
 
     return true;

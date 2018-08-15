@@ -20,9 +20,6 @@ void Task::Reset()
 {
     mTasksLeft = 0;
     mParent = NFE_INVALID_TASK_ID;
-    mInstancesNum = 0;
-    mNextInstance = 0;
-    mInstancesLeft = 0;
     mDependency = NFE_INVALID_TASK_ID;
     mHead = NFE_INVALID_TASK_ID;
     mTail = NFE_INVALID_TASK_ID;
@@ -113,17 +110,14 @@ void ThreadPool::SchedulerCallback(WorkerThread* thread)
             // pop a task from the queue
             context.taskId = mTasksQueue.Front();
             task = &mTasks[context.taskId];
-            context.instanceId = task->mNextInstance++;
-            if (task->mNextInstance == task->mInstancesNum)
-                mTasksQueue.PopFront();
+            mTasksQueue.PopFront();
         }
 
         // execute
         task->mCallback(context);
 
-        // check if task has been completed (last instance just finished its execution)
-        if (--task->mInstancesLeft == 0)
-            FinishTask(task);
+        // notify dependencies
+        FinishTask(task);
     }
 }
 
@@ -158,12 +152,8 @@ void ThreadPool::EnqueueTask(TaskID taskID)
     mTaskQueueCV.SignalAll();
 }
 
-TaskID ThreadPool::CreateTask(const TaskFunction& function, size_t instancesNum,
-                              TaskID parentID, TaskID dependencyID)
+TaskID ThreadPool::CreateTask(const TaskFunction& function, TaskID parentID, TaskID dependencyID)
 {
-    if (instancesNum == 0)
-        return NFE_INVALID_TASK_ID;
-
     TaskID taskID = mTasksNum++;
     if (taskID >= mMaxTasks)
         return NFE_INVALID_TASK_ID;
@@ -173,7 +163,6 @@ TaskID ThreadPool::CreateTask(const TaskFunction& function, size_t instancesNum,
     task.mTasksLeft = 1;
     task.mCallback = function;
     task.mParent = parentID;
-    task.mInstancesNum =  task.mInstancesLeft = static_cast<uint32>(instancesNum);
     task.mDependency = dependencyID;
     task.mHead = NFE_INVALID_TASK_ID;
 

@@ -217,7 +217,7 @@ private:
     void RenderLightsDebug(RenderingData& data, Renderer::RenderContext* ctx) const;
     void RenderShadowMaps(const Common::TaskContext& context, RenderingData& data);
     void RenderSpotShadowMap(const Common::TaskContext& context, const LightProxy* lightData, RenderingData& data) const;
-    void RenderOmniShadowMap(const Common::TaskContext& context, const LightProxy* lightData, RenderingData& data) const;
+    void RenderOmniShadowMap(const Common::TaskContext& context, const LightProxy* lightData, RenderingData& data, uint32 faceID) const;
     void RenderLights(const Common::TaskContext& context, RenderingData& data) const;
 
     /**

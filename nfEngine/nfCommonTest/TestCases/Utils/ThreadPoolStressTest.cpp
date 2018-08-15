@@ -34,10 +34,9 @@ TEST(ThreadPoolStress, SingleDependency)
     std::vector<TaskInfo> tasks;
     tasks.reserve(numTasks);
 
-    auto func = [&](const TaskContext& context, size_t id)
+    auto func = [&](size_t id)
     {
         TaskInfo& taskInfo = tasks[id];
-        ASSERT_TRUE(context.instanceId < taskInfo.instanceNum) << "Task instance ID out of bound";
 
         if (taskInfo.dependency != NFE_INVALID_TASK_ID)
         {
@@ -64,9 +63,8 @@ TEST(ThreadPoolStress, SingleDependency)
         else
             task.dependency = NFE_INVALID_TASK_ID;
 
-        task.instanceNum = rand() % 4 + 1;
         tasks.push_back(task);
-        taskId = tp.CreateTask(std::bind(func, _1, i), task.instanceNum, NFE_INVALID_TASK_ID, task.dependency);
+        taskId = tp.CreateTask([func, i](const TaskContext&) { func(i); }, NFE_INVALID_TASK_ID, task.dependency);
         ASSERT_EQ(i, taskId);
         taskIds.push_back(taskId);
     }

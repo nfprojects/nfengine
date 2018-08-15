@@ -33,7 +33,6 @@ class ThreadPool;
 struct TaskContext
 {
     ThreadPool* pool;
-    size_t instanceId;
     size_t threadId;
     TaskID taskId;
 };
@@ -53,6 +52,20 @@ class Task final
 {
     friend class ThreadPool;
 
+public:
+    enum class State : uint8
+    {
+        Created = 0,
+        Scheduled,
+        Enqueued,
+        Finished,
+    };
+
+    Task();
+    void Reset();
+
+private:
+
     TaskFunction mCallback;  //< task routine
 
     /**
@@ -62,22 +75,11 @@ class Task final
     std::atomic<uint32> mTasksLeft;
     TaskID mParent;
 
-    /// Instances counters:
-    uint32 mInstancesNum;                //< total number of the task instances
-    uint32 mNextInstance;                //< next instance ID to execute
-    std::atomic<uint32> mInstancesLeft;  //< number of instances left to complete
-
     /// Dependency pointers:
     TaskID mDependency;  //< dependency tasks ID
     TaskID mHead;        //< the first task that is dependent on this task
     TaskID mTail;        //< the last task that is dependent on this task
     TaskID mSibling;     //< the next task that is dependent on the same "mDependency" task
-
-    // TODO: alignment
-
-public:
-    Task();
-    void Reset();
 };
 
 /**
@@ -98,6 +100,10 @@ class WorkerThread
 public:
     WorkerThread(ThreadPool* pool, size_t id);
     ~WorkerThread();
+
+private:
+    WorkerThread(const WorkerThread&) = delete;
+    WorkerThread& operator = (const WorkerThread&) = delete;
 };
 
 using WorkerThreadPtr = UniquePtr<WorkerThread>;
@@ -155,14 +161,12 @@ public:
      * Create a new task and enqueue it if dependency is resolved.
      *
      * @param function     Task routine.
-     * @param instancesNum Number of the task instances.
      * @param parentID     Parent task ID.
      * @param dependencyID Dependency task ID.
      *
      * @remarks This function is thread-safe.
      */
     TaskID CreateTask(const TaskFunction& function,
-                      size_t instancesNum = 1,
                       TaskID parentID = NFE_INVALID_TASK_ID,
                       TaskID dependencyID = NFE_INVALID_TASK_ID);
 
