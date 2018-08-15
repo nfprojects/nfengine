@@ -137,6 +137,42 @@ DynArray<ElementType>::DynArray(const ElementType* elements, uint32 count)
     }
 }
 
+template<typename ElementType>
+DynArray<ElementType>::DynArray(uint32 size)
+    : DynArray()
+{
+    static_assert(std::is_trivially_constructible<ElementType>::value, "Element type is not trivially constructible");
+
+    if (!Reserve(size))
+    {
+        NFE_LOG_ERROR("Failed to reserve memory for DynArray");
+        return;
+    }
+
+    this->mSize = size;
+    for (uint32 i = 0; i < size; ++i)
+    {
+        new (this->mElements + i) ElementType();
+    }
+}
+
+template<typename ElementType>
+DynArray<ElementType>::DynArray(uint32 size, const ElementType& value)
+    : DynArray()
+{
+    if (!Reserve(size))
+    {
+        NFE_LOG_ERROR("Failed to reserve memory for DynArray");
+        return;
+    }
+
+    this->mSize = size;
+    for (uint32 i = 0; i < size; ++i)
+    {
+        new (this->mElements + i) ElementType(value);
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 
 template<typename ElementType>

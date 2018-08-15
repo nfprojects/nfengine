@@ -33,6 +33,32 @@ TEST(DynArray, Empty)
     EXPECT_EQ(array.End(), array.Find(0));
 }
 
+TEST(DynArray, CreateWithSize_Default)
+{
+    const uint32 size = 123;
+    DynArray<int> array(size);
+
+    EXPECT_EQ(size, array.Size());
+
+    for (uint32 i = 0; i < size; ++i)
+    {
+        EXPECT_EQ(0, array[i]) << "i=" << i;
+    }
+}
+
+TEST(DynArray, CreateWithSize_Custom)
+{
+    const uint32 size = 123;
+    DynArray<int> array(size, 567);
+
+    EXPECT_EQ(size, array.Size());
+
+    for (uint32 i = 0; i < size; ++i)
+    {
+        EXPECT_EQ(567, array[i]) << "i=" << i;
+    }
+}
+
 TEST(DynArray, PushBack)
 {
     DynArray<int> array;
