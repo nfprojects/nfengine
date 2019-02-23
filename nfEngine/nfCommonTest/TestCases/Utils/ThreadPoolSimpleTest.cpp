@@ -263,7 +263,7 @@ TEST(ThreadPoolSimple, DependencyChain)
         else
         {
             size_t counter = counters[task - 1];
-            EXPECT_EQ(1, counter) << "Task #" << task;
+            EXPECT_EQ(1u, counter) << "Task #" << task;
         }
 
         counters[task]++;
@@ -285,7 +285,7 @@ TEST(ThreadPoolSimple, DependencyChain)
     // verify counters
     for (int i = 0; i < chainLen; ++i)
     {
-        EXPECT_EQ(1, counters[i]) << "Task #" << i;
+        EXPECT_EQ(1u, counters[i]) << "Task #" << i;
     }
 }
 
