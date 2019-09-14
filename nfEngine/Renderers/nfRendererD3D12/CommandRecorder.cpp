@@ -758,6 +758,9 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
     Texture* srcTex = dynamic_cast<Texture*>(src.Get());
     NFE_ASSERT(src, "Invalid 'src' pointer");
 
+    Backbuffer* destBackbuffer = static_cast<Backbuffer*>(dest.Get());
+    NFE_ASSERT(src, "Invalid 'src' pointer");
+
     if (srcTex->GetMode() == BufferMode::Readback || srcTex->GetMode() == BufferMode::Volatile)
     {
         NFE_LOG_ERROR("Can't copy from this texture");
@@ -774,23 +777,26 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
     rb.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
     rb.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 
+    const D3D12_RESOURCE_STATES srcTextureState = srcTex->GetSamplesNum() == 1 ? D3D12_RESOURCE_STATE_COPY_SOURCE : D3D12_RESOURCE_STATE_RESOLVE_SOURCE;
+    const D3D12_RESOURCE_STATES destTextureState = srcTex->GetSamplesNum() == 1 ? D3D12_RESOURCE_STATE_COPY_DEST : D3D12_RESOURCE_STATE_RESOLVE_DEST;
+
     // transit source texture to "copy source" state
-    const D3D12_RESOURCE_STATES prevSrcTextureState = mResourceStateCache.SetResourceState(srcTex, 0, D3D12_RESOURCE_STATE_COPY_SOURCE);
-    if (prevSrcTextureState != D3D12_RESOURCE_STATE_COPY_SOURCE)
+    const D3D12_RESOURCE_STATES prevSrcTextureState = mResourceStateCache.SetResourceState(srcTex, 0, srcTextureState);
+    if (prevSrcTextureState != srcTextureState)
     {
         rb.Transition.pResource = srcTex->GetResource();
         rb.Transition.StateBefore = prevSrcTextureState;
-        rb.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE;
+        rb.Transition.StateAfter = srcTextureState;
         barriers.PushBack(rb);
     }
 
     // transit destination backbuffer to "copy destination" state
-    const D3D12_RESOURCE_STATES prevDestTextureState = mResourceStateCache.SetResourceState(backbuffer, 0, D3D12_RESOURCE_STATE_COPY_DEST);
+    const D3D12_RESOURCE_STATES prevDestTextureState = mResourceStateCache.SetResourceState(backbuffer, 0, destTextureState);
     NFE_ASSERT(prevDestTextureState == D3D12_RESOURCE_STATE_PRESENT, "Backbuffer is expected to be in 'Present' state");
     {
         rb.Transition.pResource = backbuffer->GetCurrentBuffer();
         rb.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-        rb.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST;
+        rb.Transition.StateAfter = destTextureState;
         barriers.PushBack(rb);
     }
 
@@ -800,15 +806,22 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
     }
 
     // perform copy
-    mCommandList->CopyResource(backbuffer->GetCurrentBuffer(), srcTex->GetResource());
+    if (srcTex->GetSamplesNum() == 1)
+    {
+        mCommandList->CopyResource(backbuffer->GetCurrentBuffer(), srcTex->GetResource());
+    }
+    else
+    {
+        mCommandList->ResolveSubresource(backbuffer->GetCurrentBuffer(), 0, srcTex->GetResource(), 0, destBackbuffer->GetFormat());
+    }
 
     barriers.Clear();
 
     // transit source texture to previous state
-    if (prevSrcTextureState != D3D12_RESOURCE_STATE_COPY_SOURCE)
+    if (prevSrcTextureState != srcTextureState)
     {
         rb.Transition.pResource = srcTex->GetResource();
-        rb.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE;
+        rb.Transition.StateBefore = srcTextureState;
         rb.Transition.StateAfter = prevSrcTextureState;
         barriers.PushBack(rb);
 
@@ -818,7 +831,7 @@ void CommandRecorder::CopyTexture(const TexturePtr& src, const BackbufferPtr& de
     // transit destination backbuffer to "present" state
     {
         rb.Transition.pResource = backbuffer->GetCurrentBuffer();
-        rb.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+        rb.Transition.StateBefore = destTextureState;
         rb.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
         barriers.PushBack(rb);
 

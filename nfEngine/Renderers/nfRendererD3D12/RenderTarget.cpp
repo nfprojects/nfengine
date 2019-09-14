@@ -77,29 +77,50 @@ bool RenderTarget::Init(const RenderTargetDesc& desc)
             break;
         case TextureType::Texture2D:
         case TextureType::TextureCube:
-            if (tex->mLayers == 1)
+            if (tex->mSamplesNum == 1)
             {
-                rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-                rtvDesc.Texture2D.MipSlice = 0;
-                rtvDesc.Texture2D.PlaneSlice = 0;
+                if (tex->mLayers == 1)
+                {
+                    rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+                    rtvDesc.Texture2D.MipSlice = 0;
+                    rtvDesc.Texture2D.PlaneSlice = 0;
+                }
+                else if (tex->mLayers > 1)
+                {
+                    rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DARRAY;
+                    rtvDesc.Texture2DArray.MipSlice = desc.targets[i].level;
+                    rtvDesc.Texture2DArray.FirstArraySlice = desc.targets[i].layer;
+                    rtvDesc.Texture2DArray.ArraySize = 1;
+                    rtvDesc.Texture2DArray.PlaneSlice = 0;
+                }
+                else
+                {
+                    NFE_LOG_ERROR("Unsupported texture type");
+                    return false;
+                }
             }
-            else if (tex->mLayers > 1)
+            else if (tex->mSamplesNum > 1 )
             {
-                rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DARRAY;
-                rtvDesc.Texture2DArray.MipSlice = desc.targets[i].level;
-                rtvDesc.Texture2DArray.FirstArraySlice = desc.targets[i].layer;
-                rtvDesc.Texture2DArray.ArraySize = 1;
-                rtvDesc.Texture2DArray.PlaneSlice = 0;
-            }
-            else
-            {
-                NFE_LOG_ERROR("Unsupported texture type");
-                return false;
+                if (tex->mLayers == 1)
+                {
+                    rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DMS;
+                }
+                else if (tex->mLayers > 1)
+                {
+                    NFE_ASSERT(desc.targets[i].level == 0, "Mipmapping for multisampled, multilayered texture are not supported");
+                    rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DMSARRAY;
+                    rtvDesc.Texture2DMSArray.FirstArraySlice = desc.targets[i].layer;
+                    rtvDesc.Texture2DMSArray.ArraySize = 1;
+                }
+                else
+                {
+                    NFE_LOG_ERROR("Unsupported texture type");
+                    return false;
+                }
             }
 
             break;
             // TODO TextureType::Texture3D
-            // TODO multisampled textures
 
         default:
             NFE_LOG_ERROR("Unsupported texture type for render target");

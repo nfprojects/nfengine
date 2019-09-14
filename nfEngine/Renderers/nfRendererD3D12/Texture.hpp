@@ -29,7 +29,8 @@ protected:
     uint16 mWidth;
     uint16 mLayers;
     uint16 mHeight;
-    uint16 mMipmapsNum;
+    uint8 mMipmapsNum;
+    uint8 mSamplesNum;
     TextureType mType;
     BufferMode mMode;
     ElementFormat mFormat;
@@ -63,7 +64,7 @@ public:
         return mLayers;
     }
 
-    NFE_INLINE uint16 GetMipmapsNum() const
+    NFE_INLINE uint8 GetMipmapsNum() const
     {
         return mMipmapsNum;
     }
@@ -81,6 +82,11 @@ public:
     NFE_INLINE ElementFormat GetFormat() const
     {
         return mFormat;
+    }
+
+    NFE_INLINE uint8 GetSamplesNum() const
+    {
+        return mSamplesNum;
     }
 };
 

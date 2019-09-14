@@ -182,6 +182,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Scenes\Multisample.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../PCH.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Scenes\Multithreaded.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../PCH.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../PCH.hpp</PrecompiledHeaderFile>
@@ -251,6 +257,7 @@
     <ClInclude Include="Scenes\Basic.hpp" />
     <ClInclude Include="Scenes\Compute.hpp" />
     <ClInclude Include="Scenes\DepthStencil.hpp" />
+    <ClInclude Include="Scenes\Multisample.hpp" />
     <ClInclude Include="Scenes\Multithreaded.hpp" />
     <ClInclude Include="Scenes\RenderTargets.hpp" />
     <ClInclude Include="Scenes\Scene.hpp" />

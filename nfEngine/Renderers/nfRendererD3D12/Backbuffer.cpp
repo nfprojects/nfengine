@@ -19,6 +19,7 @@ Backbuffer::Backbuffer()
     , mVSync(false)
     , mWidth(0)
     , mHeight(0)
+    , mFormat(DXGI_FORMAT_UNKNOWN)
     , mCurrentBuffer(0)
 { }
 
@@ -49,6 +50,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     mHeight = static_cast<uint32>(desc.height);
     mWindow = static_cast<HWND>(desc.windowHandle);
     mVSync = desc.vSync;
+    mFormat = TranslateElementFormat(desc.format);
 
     mBuffers.Resize(3); // make it configurable
 
@@ -56,7 +58,7 @@ bool Backbuffer::Init(const BackbufferDesc& desc)
     scd.BufferCount = mBuffers.Size();
     scd.Width = desc.width;
     scd.Height = desc.height;
-    scd.Format = TranslateElementFormat(desc.format);
+    scd.Format = mFormat;
     scd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
     scd.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
     scd.SampleDesc.Count = 1;

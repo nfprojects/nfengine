@@ -15,6 +15,7 @@
 #include "Scenes/Tessellation.hpp"
 #include "Scenes/Compute.hpp"
 #include "Scenes/Multithreaded.hpp"
+#include "Scenes/Multisample.hpp"
 
 #include "../Renderers/RendererInterface/Device.hpp"
 
@@ -116,13 +117,14 @@ public:
         // TODO: move scene registration to their source files
         // TODO: switching to arbitrary scene (e.g. omitting a single scene should be
         //       possible, when a feature is not implemented in renderer
-        mScenes.push_back(NFE::Common::MakeUniquePtr<BasicScene>());
-        mScenes.push_back(NFE::Common::MakeUniquePtr<DepthStencilScene>());
-        mScenes.push_back(NFE::Common::MakeUniquePtr<RenderTargetsScene>());
-        mScenes.push_back(NFE::Common::MakeUniquePtr<VertexBuffersScene>());
-        mScenes.push_back(NFE::Common::MakeUniquePtr<TessellationScene>());
-        mScenes.push_back(NFE::Common::MakeUniquePtr<ComputeScene>());
-        mScenes.push_back(NFE::Common::MakeUniquePtr<MultithreadedScene>());
+        //mScenes.push_back(NFE::Common::MakeUniquePtr<BasicScene>());
+        mScenes.push_back(NFE::Common::MakeUniquePtr<MultisampleScene>());
+        //mScenes.push_back(NFE::Common::MakeUniquePtr<DepthStencilScene>());
+        //mScenes.push_back(NFE::Common::MakeUniquePtr<RenderTargetsScene>());
+        //mScenes.push_back(NFE::Common::MakeUniquePtr<VertexBuffersScene>());
+        //mScenes.push_back(NFE::Common::MakeUniquePtr<TessellationScene>());
+        //mScenes.push_back(NFE::Common::MakeUniquePtr<ComputeScene>());
+        //mScenes.push_back(NFE::Common::MakeUniquePtr<MultithreadedScene>());
     }
 
     /**

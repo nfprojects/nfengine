@@ -25,6 +25,11 @@ public:
     bool Present();
     bool Init(const BackbufferDesc& desc);
 
+    NFE_INLINE DXGI_FORMAT GetFormat() const
+    {
+        return mFormat;
+    }
+
     NFE_INLINE ID3D12Resource* GetCurrentBuffer() const
     {
         return mBuffers[mCurrentBuffer].Get();
@@ -33,6 +38,8 @@ public:
 private:
     uint32 mWidth;
     uint32 mHeight;
+
+    DXGI_FORMAT mFormat;
 
     HWND mWindow;
     bool mVSync;

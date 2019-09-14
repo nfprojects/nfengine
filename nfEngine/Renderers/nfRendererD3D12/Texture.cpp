@@ -179,12 +179,6 @@ bool Texture::Init(const TextureDesc& desc)
         return false;
     }
 
-    if (desc.samplesNum > 1)
-    {
-        NFE_LOG_ERROR("Multisampled textures are not supported yet");
-        return false;
-    }
-
     if (desc.width < 1 || desc.width >= std::numeric_limits<uint16>::max())
     {
         NFE_LOG_ERROR("Invalid texture width");
@@ -231,7 +225,7 @@ bool Texture::Init(const TextureDesc& desc)
     resourceDesc.Alignment = 0;
     resourceDesc.MipLevels = static_cast<UINT16>(desc.mipmaps);
     resourceDesc.Format = TranslateElementFormat(desc.format);
-    resourceDesc.SampleDesc.Count = 1;
+    resourceDesc.SampleDesc.Count = desc.samplesNum;
     resourceDesc.SampleDesc.Quality = 0;
     resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
     resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
@@ -295,7 +289,7 @@ bool Texture::Init(const TextureDesc& desc)
         resourceDesc.DepthOrArraySize = 1;
         resourceDesc.MipLevels = 1;
         resourceDesc.Format = DXGI_FORMAT_UNKNOWN;
-        resourceDesc.SampleDesc.Count = 1;
+        resourceDesc.SampleDesc.Count = desc.samplesNum;
         resourceDesc.SampleDesc.Quality = 0;
         resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
         resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
@@ -384,6 +378,10 @@ bool Texture::Init(const TextureDesc& desc)
             }
         }
 
+        UINT64 requiredSize = 0;
+        gDevice->GetDevice()->GetCopyableFootprints(&resourceDesc, 0, 1, 0, nullptr, nullptr, nullptr, &requiredSize);
+        NFE_LOG_DEBUG("Allocating texture '%s' requires %llu bytes", desc.debugName, requiredSize);
+
         // create the texture resource
         hr = D3D_CALL_CHECK(gDevice->GetDevice()->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE,
                                                                           &resourceDesc, initialState,
@@ -420,7 +418,8 @@ bool Texture::Init(const TextureDesc& desc)
     mWidth = static_cast<uint16>(desc.width);
     mHeight = static_cast<uint16>(desc.height);
     mLayers = static_cast<uint16>(desc.layers);
-    mMipmapsNum = static_cast<uint16>(desc.mipmaps);
+    mMipmapsNum = static_cast<uint8>(desc.mipmaps);
+    mSamplesNum = static_cast<uint8>(desc.samplesNum);
     mMode = desc.mode;
 
     return true;
