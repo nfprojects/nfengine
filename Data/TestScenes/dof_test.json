@@ -1,0 +1,22 @@
+{
+    "lights":
+    [
+        {
+            "type": "background",
+            "color": [2.0, 2.0, 2.0],
+            "texture" : "TEXTURES/ENV/OutdoorCityParkingLotEveningClear_HIRES.exr"
+        }
+    ],
+    "camera":
+    {
+        "transform":
+        {
+            "translation": [0.0, 0.0, 3.0],
+            "orientation": [-0.3, 0.46, 0.0]
+        },
+        "aperture": 0.2,
+        "enableDOF": true,
+        "focalDistance": 2.0,
+        "fieldOfView": 55.0
+    }
+}

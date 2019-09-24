@@ -1,0 +1,51 @@
+{
+    "materials":
+    [
+        {
+            "name": "top",
+            "bsdf": "roughPlastic",
+            "baseColor": [1.0, 1.0, 1.0],
+            "roughness": 0.5
+        },
+        {
+            "name": "bottom",
+            "bsdf": "metal",
+            "baseColor": [1.0, 1.0, 1.0],
+            "IoR": 1.0972,
+            "K": 6.7942,
+            "metalness": 1.0,
+            "roughness": 0.0
+        }
+    ],
+    "objects":
+    [
+        {
+            "type": "sphere",
+            "radius": 0.5,
+            "transform": { "translation": [0.0, 0.6, 0.0] },
+            "material": "top"
+        },
+        {
+            "type": "sphere",
+            "radius": 0.5,
+            "transform": { "translation": [0.0, -0.6, 0.0] },
+            "material": "bottom"
+        }
+    ],
+    "lights":
+    [
+        {
+            "type": "background",
+            "color": [1.0, 1.0, 1.0]
+        }
+    ],
+    "camera":
+    {
+        "transform":
+        {
+            "translation": [0.0, 0.0, 3.0],
+            "orientation": [0.0, 180.0, 0.0]
+        },
+        "fieldOfView": 60.0
+    }
+}

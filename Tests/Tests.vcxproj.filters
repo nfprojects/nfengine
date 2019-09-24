@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="External">
+      <UniqueIdentifier>{f9c7611a-9597-4d10-8830-d89ce90c16a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestCases">
+      <UniqueIdentifier>{206ef3ba-e1d2-4e43-8865-84909943ce26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestCases\Math">
+      <UniqueIdentifier>{0374d38d-2bd3-4266-a385-ed03393032c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestCases\Containters">
+      <UniqueIdentifier>{6e410ad5-edd1-428b-bccf-29702979dd91}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="PCH.cpp" />
+    <ClCompile Include="..\External\googletest\src\gtest-death-test.cc">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External\googletest\src\gtest-filepath.cc">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External\googletest\src\gtest-port.cc">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External\googletest\src\gtest-printers.cc">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External\googletest\src\gtest-test-part.cc">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External\googletest\src\gtest-typed-test.cc">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External\googletest\src\gtest.cc">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorTest.cpp" />
+    <ClCompile Include="RaytracingTests.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="HashGridTest.cpp" />
+    <ClCompile Include="MathVectorInt8Test.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="MathGeometryTest.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="MathMatrix4Test.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="MathTest.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="MathTranscendentalTest.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="MathVector4Test.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="MathVector8Test.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="MathVectorInt4Test.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrayViewTest.cpp">
+      <Filter>TestCases\Containters</Filter>
+    </ClCompile>
+    <ClCompile Include="DynArrayTest.cpp">
+      <Filter>TestCases\Containters</Filter>
+    </ClCompile>
+    <ClCompile Include="MathDistributionTest.cpp" />
+    <ClCompile Include="MathQuaternionTest.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="RandomTest.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
+    <ClCompile Include="MathPackedTest.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="KdTreeTest.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
+    <ClCompile Include="BitmapTest.cpp">
+      <Filter>TestCases</Filter>
+    </ClCompile>
+    <ClCompile Include="MathVector4LoadTest.cpp">
+      <Filter>TestCases\Math</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PCH.h" />
+    <ClInclude Include="..\External\googletest\include\gtest\gtest-death-test.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\gtest-message.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\gtest-param-test.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\gtest-printers.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\gtest-spi.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\gtest-test-part.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\gtest-typed-test.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\gtest.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\gtest_pred_impl.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\gtest_prod.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\internal\custom\gtest-port.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\internal\custom\gtest-printers.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\internal\custom\gtest.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\internal\gtest-death-test-internal.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\internal\gtest-filepath.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\internal\gtest-internal.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\internal\gtest-linked_ptr.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\internal\gtest-param-util-generated.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\internal\gtest-param-util.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\internal\gtest-port-arch.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\internal\gtest-port.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\internal\gtest-string.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\internal\gtest-tuple.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\include\gtest\internal\gtest-type-util.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\googletest\src\gtest-internal-inl.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="TestClasses.h">
+      <Filter>TestCases\Containters</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

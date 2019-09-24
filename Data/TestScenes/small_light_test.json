@@ -1,0 +1,50 @@
+{
+    "materials":
+    [
+        {
+            "name": "top",
+            "bsdf": "diffuse",
+            "baseColor": [1.0, 1.0, 1.0]
+        },
+        {
+            "name": "bottom",
+            "bsdf": "roughDiffuse",
+            "baseColor": [1.0, 1.0, 1.0],
+            "roughness": 0.75
+        }
+    ],
+    "objects":
+    [
+        {
+            "type": "sphere",
+            "radius": 0.5,
+            "transform": { "translation": [0.0, 0.6, 0.0] },
+            "material": "top"
+        },
+        {
+            "type": "sphere",
+            "radius": 0.5,
+            "transform": { "translation": [0.0, -0.6, 0.0] },
+            "material": "bottom"
+        }
+    ],
+    "lights":
+    [
+        {
+            "type": "area",
+            "color": [50.0, 50.0, 50.0],
+            "position": [10.0, -0.5, -0.5],
+            "edge0": [0.0, 1.0, 0.0],
+            "edge1": [0.0, 0.0, 1.0]
+        }
+    ],
+    "camera":
+    {
+        "transform":
+        {
+            "translation": [0.0, 0.0, 3.0],
+            "orientation": [0.0, 3.14, 0.0]
+        },
+        "fieldOfView": 60.0
+    }
+}

@@ -1,0 +1,236 @@
+{
+    "materials":
+    [
+        {
+            "name": "ground",
+            "bsdf": "diffuse",
+            "baseColor": [0.9, 0.9, 0.9],
+            "baseColorTexture": "TEXTURES/Poliigon/Tiles05/6K/Tiles05_COL_VAR1_6K.bmp",
+            "metalness": 0.0,
+            "roughness": 0.5,
+            "roughnessTexture": "TEXTURES/Poliigon/Tiles05/6K/Tiles05_ROUGHNESS_6K.bmp",
+            "normalMap": "TEXTURES/Poliigon/Tiles05/6K/Tiles05_NRM_6K.DDS"
+        },
+
+        {
+            "name": "plastic_0",
+            "bsdf": "plastic",
+            "baseColor": [0.9, 0.1, 0.05],
+            "metalness": 0.0,
+            "roughness": 0.0
+        },
+        {
+            "name": "aluminium_0",
+            "bsdf": "metal",
+            "baseColor": [1.0, 1.0, 1.0],
+            "IoR": 1.0972,
+            "K": 6.7942,
+            "metalness": 1.0,
+            "roughness": 0.0
+        },
+        {
+            "name": "glass_0",
+            "bsdf": "roughDielectric",
+            "baseColor": [1.0, 1.0, 1.0],
+            "transparent": true,
+            "metalness": 0.0,
+            "roughness": 0.01
+        },
+
+        {
+            "name": "plastic_1",
+            "bsdf": "roughPlastic",
+            "baseColor": [0.9, 0.1, 0.05],
+            "metalness": 0.0,
+            "roughness": 0.2
+        },
+        {
+            "name": "aluminium_1",
+            "bsdf": "roughMetal",
+            "baseColor": [1.0, 1.0, 1.0],
+            "IoR": 1.0972,
+            "K": 6.7942,
+            "metalness": 1.0,
+            "roughness": 0.2
+        },
+        {
+            "name": "glass_1",
+            "bsdf": "roughDielectric",
+            "baseColor": [1.0, 1.0, 1.0],
+            "transparent": true,
+            "metalness": 0.0,
+            "roughness": 0.2
+        },
+
+        {
+            "name": "plastic_2",
+            "bsdf": "roughPlastic",
+            "baseColor": [0.9, 0.1, 0.05],
+            "metalness": 0.0,
+            "roughness": 0.4
+        },
+        {
+            "name": "aluminium_2",
+            "bsdf": "roughMetal",
+            "baseColor": [1.0, 1.0, 1.0],
+            "IoR": 1.0972,
+            "K": 6.7942,
+            "metalness": 1.0,
+            "roughness": 0.4
+        },
+        {
+            "name": "glass_2",
+            "bsdf": "roughDielectric",
+            "baseColor": [1.0, 1.0, 1.0],
+            "transparent": true,
+            "metalness": 0.0,
+            "roughness": 0.4
+        }
+    ],
+    "objects":
+    [
+        {
+            "type": "plane",
+            "transform": { "translation": [0.0, -1.0, 0.0], "orientation": [-90.0, 0.0, 0.0] },
+            "textureScale" : [0.2, 0.2],
+            "size": [5.0, 5.0],
+            "material": "ground"
+        },
+
+
+        {
+            "type": "sphere",
+            "radius": 0.5,
+            "transform": { "translation": [1.5, 0.5, 0.0] },
+            "material": "plastic_0"
+        },
+        {
+            "type": "box",
+            "size": [0.5, 0.495, 0.5],
+            "transform": { "translation": [1.5, -0.5, 0.0] },
+            "material": "plastic_0"
+        },
+
+        {
+            "type": "sphere",
+            "radius": 0.5,
+            "transform": { "translation": [0.0, 0.5, 0.0] },
+            "material": "aluminium_0"
+        },
+        {
+            "type": "box",
+            "size": [0.5, 0.495, 0.5],
+            "transform": { "translation": [0.0, -0.5, 0.0] },
+            "material": "aluminium_0"
+        },
+
+        {
+            "type": "sphere",
+            "radius": 0.5,
+            "transform": { "translation": [-1.5, 0.5, 0.0] },
+            "material": "glass_0"
+        },
+        {
+            "type": "box",
+            "size": [0.5, 0.495, 0.5],
+            "transform": { "translation": [-1.5, -0.5, 0.0], "orientation": [0.0, 0.2, 0.0] },
+            "material": "glass_0"
+        },
+
+
+        {
+            "type": "sphere",
+            "radius": 0.5,
+            "transform": { "translation": [1.5, 0.5, -1.5] },
+            "material": "plastic_1"
+        },
+        {
+            "type": "box",
+            "size": [0.5, 0.495, 0.5],
+            "transform": { "translation": [1.5, -0.5, -1.5] },
+            "material": "plastic_1"
+        },
+
+        {
+            "type": "sphere",
+            "radius": 0.5,
+            "transform": { "translation": [0.0, 0.5, -1.5] },
+            "material": "aluminium_1"
+        },
+        {
+            "type": "box",
+            "size": [0.5, 0.495, 0.5],
+            "transform": { "translation": [0.0, -0.5, -1.5] },
+            "material": "aluminium_1"
+        },
+
+        {
+            "type": "sphere",
+            "radius": 0.5,
+            "transform": { "translation": [-1.5, 0.5, -1.5] },
+            "material": "glass_1"
+        },
+        {
+            "type": "box",
+            "size": [0.5, 0.495, 0.5],
+            "transform": { "translation": [-1.5, -0.5, -1.5] },
+            "material": "glass_1"
+        },
+
+
+        {
+            "type": "sphere",
+            "radius": 0.5,
+            "transform": { "translation": [1.5, 0.5, -3.0] },
+            "material": "plastic_2"
+        },
+        {
+            "type": "box",
+            "size": [0.5, 0.495, 0.5],
+            "transform": { "translation": [1.5, -0.5, -3.0] },
+            "material": "plastic_2"
+        },
+
+        {
+            "type": "sphere",
+            "radius": 0.5,
+            "transform": { "translation": [0.0, 0.5, -3.0] },
+            "material": "aluminium_2"
+        },
+        {
+            "type": "box",
+            "size": [0.5, 0.495, 0.5],
+            "transform": { "translation": [0.0, -0.5, -3.0] },
+            "material": "aluminium_2"
+        },
+
+        {
+            "type": "sphere",
+            "radius": 0.5,
+            "transform": { "translation": [-1.5, 0.5, -3.0] },
+            "material": "glass_2"
+        },
+        {
+            "type": "box",
+            "size": [0.5, 0.495, 0.5],
+            "transform": { "translation": [-1.5, -0.5, -3.0] },
+            "material": "glass_2"
+        }
+    ],
+    "lights":
+    [
+        {
+            "type": "background",
+            "color": [2.0, 2.0, 2.0]
+        }
+    ],
+    "camera":
+    {
+        "transform":
+        {
+            "translation": [-2.4, 4.03, 3.49],
+            "orientation": [40.0, 158.0, 0.0]
+        },
+        "fieldOfView": 45.0
+    }
+}
